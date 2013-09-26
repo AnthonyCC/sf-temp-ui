@@ -3,8 +3,10 @@
 /**
  * @param items some path, list of items
  * @param itemType item variant
+ * @param? title optional title string
  */
 {template .simpleCarousel autoescape="false"}
+<center>{$title}</center>							//TODO: formatting...	Font: Eagle book 20pt, Color #996699
 <div data-component="carousel" class="first">
 <div data-component="carousel-mask">
 <ul data-component="carousel-list" data-carousel-page="0">

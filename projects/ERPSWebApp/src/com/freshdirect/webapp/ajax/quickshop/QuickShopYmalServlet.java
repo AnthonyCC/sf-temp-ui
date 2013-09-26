@@ -92,6 +92,7 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 			String siteFeature = requestData.getFeature();
 			
 			List<QuickShopLineItem> items;	// this will be the list of resulting items
+			String title = null;			// optional title
 			
 			if ( QS_TOP_RECOMMENDER_VIRTUAL_SITEFEATURE.equals( siteFeature ) ) {
 				
@@ -101,6 +102,7 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 				// Do the crazy dance
 				LOG.info( "CRAZY_QUICKSHOP recommendations for: deptId="+deptId );
 				items = doTheCrazyQuickshopRecommendations( user, session, deptId, maxItems, listContent);
+				title = getTheCrazyQuickshopTitle( deptId );
 				
 			} else {
 				
@@ -116,6 +118,7 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 				Map<String,Object> recommenderResult = new HashMap<String,Object>();
 				recommenderResult.put("items", items);
 				recommenderResult.put("siteFeature",requestData.getFeature());
+				if ( title != null ) recommenderResult.put("title",title);
 				result.put("recommenderResult", recommenderResult);
 				writeResponseData(response, result);				
 			}
@@ -142,8 +145,7 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 		}
     }    
 	
-    @SuppressWarnings( "unchecked" )
-	protected static void initFromSession(HttpSession session, SessionInput input) {
+    protected static void initFromSession(HttpSession session, SessionInput input) {
 		if ( session != null ) {
 			input.setPreviousRecommendations((Map<String, List<ContentKey>>) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS));
 		}
@@ -282,7 +284,6 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 						tag.setDeptId( deptId );
 						tag.setUseMinCount( false );
 						
-						@SuppressWarnings( "unchecked" )
 						Collection<Object> skus = tag.getPeakProduce( department, maxItems );						
 						return convertToQuickshopItems( user, maxItems, skus );
 						
@@ -327,7 +328,7 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 						CategoryModel meatDeals = (CategoryModel)ContentFactory.getInstance().getContentNode( ContentType.get( "Category" ), "wgd_butchers" );
 						if ( meatDeals != null ) {
 							
-							return convertToQuickshopItems( user, maxItems, (Collection<? extends Object>)meatDeals.getAllChildProductsAsList() );
+							return convertToQuickshopItems( user, maxItems, meatDeals.getAllChildProductsAsList() );
 						}
 					}					
 					
@@ -342,6 +343,47 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 		// default siteFeature is :  SideCart Featured Items (SCR_FEAT_ITEMS) + whole store as currentNode
 		EnumSiteFeature siteFeature = getSiteFeature( "SCR_FEAT_ITEMS" );
 		return doRecommend( user, session, siteFeature, maxItems, listContent, ContentFactory.getInstance().getStore() );
+	}
+
+	private static String getTheCrazyQuickshopTitle( String deptId ) {
+		if ( deptId != null && !deptId.trim().isEmpty() ) {
+			if ( 
+					DEPT_FRUIT.equals( deptId ) || 
+					DEPT_VEG.equals( deptId ) || 
+					DEPT_SEAFOOD.equals( deptId ) 
+				) {
+				
+				return "Great Right Now";
+				
+			} else if (
+					DEPT_MEAT.equals( deptId ) 
+				) {
+				
+				return "This Week's Best Deals on Meat";
+				
+			} else if (
+					DEPT_DAIRY.equals( deptId ) 
+				) {
+				
+				return "Brand Name Deals in Dairy";
+
+			} else if (
+					DEPT_GROCERY.equals( deptId ) 
+				) {
+				
+				return "Brand Name Deals in Grocery";
+
+			} else if (
+					DEPT_FROZEN.equals( deptId ) 
+				) {
+				
+				return "Brand Name Deals in Frozen";
+
+			}					
+		}
+		
+		// There are no rules for all other departments, just use the default 
+		return "Customer Favorites";
 	}
 
 }
