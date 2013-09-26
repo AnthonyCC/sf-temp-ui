@@ -228,6 +228,10 @@
   vertical-align: middle;
 }
 
+.qs-popup.helppopup .qs-listhelp h2 {
+  font-weight: normal;
+  margin-bottom: 1em;
+}
 .qs-listhelp h3 {
   font-size: 12px;
   font-weight: bold;
