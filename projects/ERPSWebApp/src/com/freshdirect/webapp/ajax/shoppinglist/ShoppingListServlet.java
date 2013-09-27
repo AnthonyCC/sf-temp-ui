@@ -48,7 +48,7 @@ public class ShoppingListServlet extends BaseJsonServlet {
         getInternal( request, response, user, false, null );
 	}
 	
-	private void getInternal( HttpServletRequest request, HttpServletResponse response, FDUserI user, boolean shoppingListPageRefreshNeeded, List<AddToListResponseItem> responseItems ) throws HttpErrorResponse {
+	private static void getInternal( HttpServletRequest request, HttpServletResponse response, FDUserI user, boolean shoppingListPageRefreshNeeded, List<AddToListResponseItem> responseItems ) throws HttpErrorResponse {
 		try {			
 			// Collect data
 			List<ShoppingListInfo> listInfos = collectListInfos( user );
@@ -250,7 +250,7 @@ public class ShoppingListServlet extends BaseJsonServlet {
 	}
 
 
-	private void addItemsToList( FDCustomerList list, List<AddToCartItem> items, String recipeId, String recipeName, List<AddToListResponseItem> responseItems, boolean listCreated ) {
+	private static void addItemsToList( FDCustomerList list, List<AddToCartItem> items, String recipeId, String recipeName, List<AddToListResponseItem> responseItems, boolean listCreated ) {
 		
 		for ( AddToCartItem item : items ) {
 			
@@ -322,7 +322,7 @@ public class ShoppingListServlet extends BaseJsonServlet {
 	}
 
 
-	private String collectRecipeIngredients(List<AddToCartItem> items, String recipeId, String recipeVariantId ) {
+	private static String collectRecipeIngredients(List<AddToCartItem> items, String recipeId, String recipeVariantId ) {
 		//Collect recipe ingredients
 		Recipe recipe = (Recipe)ContentFactory.getInstance().getContentNodeByKey( new ContentKey( ContentType.get( "Recipe" ), recipeId ) );
 		RecipeVariant recipeVariant = null;
@@ -380,7 +380,7 @@ public class ShoppingListServlet extends BaseJsonServlet {
 		return listInfos;
 	}
 		
-	private String createList( FDUserI user, String name ) throws FDResourceException, FDCustomerListExistsException {
+	private static String createList( FDUserI user, String name ) throws FDResourceException, FDCustomerListExistsException {
 		String newId = FDListManager.createCustomerCreatedList( user, name );
 		user.invalidateCache();
 		return newId;
@@ -388,7 +388,7 @@ public class ShoppingListServlet extends BaseJsonServlet {
 	
 	
 	@SuppressWarnings( "unused" )
-	private void removeLineItem(FDUserI user, String lineId) throws FDResourceException {
+	private static void removeLineItem(FDUserI user, String lineId) throws FDResourceException {
 		FDListManager.removeCustomerListItem(user, new PrimaryKey(lineId));
 		user.invalidateCache();
 	}

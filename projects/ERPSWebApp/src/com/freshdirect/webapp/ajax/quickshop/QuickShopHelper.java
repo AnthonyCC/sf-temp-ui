@@ -639,21 +639,19 @@ public class QuickShopHelper {
 			} catch ( FDResourceException fe ) {
 				// Never mind. Show regular price for the material.
 			}
-			if ( grpPrices != null ) {
+			if ( grpPrices != null && grpPrices.length > 0 ) {
 				// Group scale price applicable to this material. So modify material prices array to accomodate GS price.
 				MaterialPrice regularPrice = availMatPrices[0];// Get the regular price/single unit price first.
 
-				if ( grpPrices != null && grpPrices.length > 0 ) {
-					// Get the first group scale price and set the lower bound to be upper bound of regular price.
-					MaterialPrice newRegularPrice = new MaterialPrice( regularPrice.getPrice(), regularPrice.getPricingUnit(), regularPrice.getScaleLowerBound(), grpPrices[0].getScaleLowerBound(), grpPrices[0].getScaleUnit(), regularPrice.getPromoPrice() );
-					// Add the modified regular price.
-					matPriceList.add( newRegularPrice );
-					// Add the remaining group scale prices.
-					for ( int i = 0; i < grpPrices.length; i++ ) {
-						matPriceList.add( grpPrices[i] );
-					}
-					matPrices = (MaterialPrice[])matPriceList.toArray( new MaterialPrice[0] );
+				// Get the first group scale price and set the lower bound to be upper bound of regular price.
+				MaterialPrice newRegularPrice = new MaterialPrice( regularPrice.getPrice(), regularPrice.getPricingUnit(), regularPrice.getScaleLowerBound(), grpPrices[0].getScaleLowerBound(), grpPrices[0].getScaleUnit(), regularPrice.getPromoPrice() );
+				// Add the modified regular price.
+				matPriceList.add( newRegularPrice );
+				// Add the remaining group scale prices.
+				for ( int i = 0; i < grpPrices.length; i++ ) {
+					matPriceList.add( grpPrices[i] );
 				}
+				matPrices = matPriceList.toArray( new MaterialPrice[0] );
 			}
 		}
 
@@ -762,7 +760,6 @@ public class QuickShopHelper {
 			postProcessPopulate( user, qsItem );
 	    	
 	    	//check if we have temporary configuration for this item in session
-			@SuppressWarnings("unchecked")
 			Map<String, QuickShopLineItem> tempConfigs = (Map<String, QuickShopLineItem>) session.getAttribute(SessionName.SESSION_QS_CONFIG_REPLACEMENTS);
 	    	
 			if(tempConfigs!=null){
@@ -814,13 +811,12 @@ public class QuickShopHelper {
 		return orderHistoryInfo;
 	}
 
-	@SuppressWarnings( "unchecked" )
 	public static List<String> getActiveReplacements( HttpSession session ) {
 		return (List<String>)session.getAttribute( SessionName.SESSION_QS_REPLACEMENT );
 	}
 
 	
-	public static List<StarterList> getStarterLists() throws FDResourceException {
+	public static List<StarterList> getStarterLists() {
 		List<StarterList> result = new ArrayList<StarterList>();
 		FDFolder folder = (FDFolder)ContentFactory.getInstance().getContentNode("starterLists");
 		if (folder == null) {
@@ -890,14 +886,16 @@ public class QuickShopHelper {
 	private static void getStarterLists(ContentKey key, List<StarterList> starterLists, boolean active, boolean recursive) {
 		ContentNodeI node = CmsManager.getInstance().getContentNode(key);
 		List children = null;
+		
 		if(node.getAttribute("children") == null) {
 			return;
-		} else {
-			children = (List) node.getAttribute("children").getValue();
-			if (children == null) {
-				return;
-			}
 		}
+		
+		children = (List) node.getAttribute("children").getValue();
+		if (children == null) {
+			return;
+		}
+		
 		for (Object object : children) {
 	    	ContentKey childKey = (ContentKey)object;
 	    	if (childKey.getType().equals(FDContentTypes.STARTER_LIST)) {  

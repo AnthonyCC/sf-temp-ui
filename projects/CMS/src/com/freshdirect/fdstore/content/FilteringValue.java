@@ -1,6 +1,8 @@
 package com.freshdirect.fdstore.content;
 
-public interface FilteringValue {
+import java.io.Serializable;
+
+public interface FilteringValue extends Serializable {
 	
 	public String getName();
 	

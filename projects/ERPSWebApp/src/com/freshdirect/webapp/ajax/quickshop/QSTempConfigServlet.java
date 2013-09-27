@@ -30,9 +30,6 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class QSTempConfigServlet extends BaseJsonServlet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -7678311808717457332L;
 	private static final Logger LOG = LoggerFactory.getInstance( QSTempConfigServlet.class );
 	
@@ -80,7 +77,7 @@ public class QSTempConfigServlet extends BaseJsonServlet {
 		}
         
         //put item into session
-        updateSession(request, item);
+        updateSession(request.getSession(), item);
         
         //prepare the result
         Map<String, QuickShopLineItem> result = new HashMap<String, QuickShopLineItem>();
@@ -89,10 +86,8 @@ public class QSTempConfigServlet extends BaseJsonServlet {
         
 	}
 
-	private void updateSession(HttpServletRequest request, QuickShopLineItem item) {
-		HttpSession session = request.getSession();
-        @SuppressWarnings("unchecked")
-		Map<String, QuickShopLineItem> tempConfigs = (Map<String, QuickShopLineItem>) session.getAttribute(SessionName.SESSION_QS_CONFIG_REPLACEMENTS);
+	private static void updateSession(HttpSession session, QuickShopLineItem item) {
+        Map<String, QuickShopLineItem> tempConfigs = (Map<String, QuickShopLineItem>) session.getAttribute(SessionName.SESSION_QS_CONFIG_REPLACEMENTS);
         
         if(tempConfigs==null){
         	tempConfigs = new HashMap<String, QuickShopLineItem>();

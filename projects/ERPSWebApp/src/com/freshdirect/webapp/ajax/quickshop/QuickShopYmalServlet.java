@@ -128,7 +128,7 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 		
 	}
 	
-	private EnumSiteFeature getSiteFeature( String sfName ) throws HttpErrorResponse {
+	private static EnumSiteFeature getSiteFeature( String sfName ) throws HttpErrorResponse {
 		EnumSiteFeature siteFeat = EnumSiteFeature.getEnum(sfName);
 		if (siteFeat == null) {
 			returnHttpError(400, "Missing or invalid site feature ID " + sfName);
@@ -250,7 +250,7 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
     public static final String DEPT_HBA = "hba";
     public static final String DEPT_BUYBIG = "big";
     
-	private List<QuickShopLineItem> doTheCrazyQuickshopRecommendations(FDUserI user, HttpSession session, String deptId, int maxItems, Set<ContentKey> listContent) throws HttpErrorResponse, FDResourceException {
+	private static List<QuickShopLineItem> doTheCrazyQuickshopRecommendations(FDUserI user, HttpSession session, String deptId, int maxItems, Set<ContentKey> listContent) throws HttpErrorResponse, FDResourceException {
 		
 		if ( deptId != null && !deptId.trim().isEmpty() ) {
 			

@@ -1,7 +1,11 @@
 package com.freshdirect.webapp.ajax.shoppinglist;
 
+import java.io.Serializable;
 
-public class ShoppingListInfo {
+
+public class ShoppingListInfo implements Serializable {
+	
+	private static final long	serialVersionUID	= -3913154264269253209L;
 	
 	private String listId = null;
 	private String name = null;

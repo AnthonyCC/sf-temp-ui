@@ -1,6 +1,10 @@
 package com.freshdirect.webapp.ajax.quickshop.data;
 
-public class QuickShopPagerValues {
+import java.io.Serializable;
+
+public class QuickShopPagerValues implements Serializable {
+	
+	private static final long	serialVersionUID	= 8516839336642121634L;
 	
 	private int pageSize;
 	private int itemCount;

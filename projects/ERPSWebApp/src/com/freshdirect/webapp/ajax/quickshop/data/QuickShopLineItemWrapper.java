@@ -37,6 +37,7 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 	}
 	
 	public final static Comparator<QuickShopLineItemWrapper> FULL_NAME_PRODUCT_COMPARATOR = new Comparator<QuickShopLineItemWrapper>() {
+		@Override
 		public int compare(QuickShopLineItemWrapper p1, QuickShopLineItemWrapper p2) {
 			
 			//put unavailable items to the end of the list
@@ -53,13 +54,14 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 			int d = name1.compareTo(name2);
 			if (d != 0)
 				return d;
-			else
-				return p1.getProduct().getContentKey().getId().compareTo(p2.getProduct().getContentKey().getId());
+			
+			return p1.getProduct().getContentKey().getId().compareTo(p2.getProduct().getContentKey().getId());
 		}
 	};
 	
 	public final static Comparator<QuickShopLineItemWrapper> FREQUENCY_COMPARATOR = new Comparator<QuickShopLineItemWrapper>() {
 
+		@Override
 		public int compare(QuickShopLineItemWrapper h1, QuickShopLineItemWrapper h2) {
 			
 			//put unavailable items to the end of the list
@@ -77,6 +79,7 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 	
 	public final static Comparator<QuickShopLineItemWrapper> RECENT_PURCHASE_COMPARATOR_DESC = new Comparator<QuickShopLineItemWrapper>() {
 
+		@Override
 		public int compare(QuickShopLineItemWrapper h1, QuickShopLineItemWrapper h2) {
 			
 			//put unavailable items to the end of the list
@@ -95,6 +98,7 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 	// Expert rating comparator uses both expert and wine ratings!
 	public final static Comparator<QuickShopLineItemWrapper> EXPERT_RATING_COMPARATOR = new Comparator<QuickShopLineItemWrapper>() {
 
+		@Override
 		public int compare(QuickShopLineItemWrapper h1, QuickShopLineItemWrapper h2) {
 			
 			//put unavailable items to the end of the list
@@ -117,6 +121,7 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 	
 	public final static Comparator<QuickShopLineItemWrapper> FAVOURITES_COMPARATOR = new Comparator<QuickShopLineItemWrapper>() {
 
+		@Override
 		public int compare(QuickShopLineItemWrapper h1, QuickShopLineItemWrapper h2) {
 			
 			//put unavailable items to the end of the list
@@ -240,151 +245,126 @@ public class QuickShopLineItemWrapper implements ContentNodeModel {
 
 	@Override
 	public int getPriority() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public ContentKey getContentKey() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getContentName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getContentType() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object getCmsAttributeValue(String name) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public ContentNodeModel getParentNode() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public boolean hasParentWithName(String[] contentNames) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public String getParentId() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object getNotInheritedAttributeValue(String name) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public AttributeDefI getAttributeDef(String name) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getAltText() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getBlurb() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Html getEditorial() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getEditorialTitle() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getFullName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getGlanceName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getNavName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getKeywords() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public boolean isSearchable() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean isHidden() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public String getHideUrl() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Image getSideNavImage() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getPath() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public boolean isOrphan() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public Collection<ContentKey> getParentKeys() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

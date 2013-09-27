@@ -29,7 +29,9 @@ public class CartRequestData implements Serializable {
 		this.data = data;
 	}
 	
-	public static class Change {
+	public static class Change implements Serializable {
+		
+		private static final long	serialVersionUID	= -506884437929605359L;
 		
 		public static final String CHANGE_QUANTITY = "cqu"; 
 		public static final String CHANGE_SALESUNIT = "csu"; 

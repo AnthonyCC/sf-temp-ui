@@ -43,6 +43,7 @@ public class QuickShopMenuOrderUtil {
 	/** Sorts orders by dlv. start time, descending */
 	private final static Comparator<FilteringMenuItem> ORDER_COMPARATOR = new Comparator<FilteringMenuItem>() {
 		private final SimpleDateFormat formatter = new SimpleDateFormat(DateUtil.MONTH_DAY_YEAR_DAYOFWEEK_FORMATTER_STRING);
+		@Override
 		public int compare(FilteringMenuItem o1, FilteringMenuItem o2) {
 			try {
 				Date d1 = formatter.parse(o1.getName());
@@ -58,6 +59,7 @@ public class QuickShopMenuOrderUtil {
 	/** Sorts menu items by A-Z */
 	private final static Comparator<FilteringMenuItem> AZ_COMPARATOR = new Comparator<FilteringMenuItem>() {
 
+		@Override
 		public int compare(FilteringMenuItem o1, FilteringMenuItem o2) {
 			return o1.getName().compareToIgnoreCase(o2.getName());
 		}
@@ -66,6 +68,7 @@ public class QuickShopMenuOrderUtil {
 	/** Sorts menu items (domains) by A-Z */
 	private final static Comparator<FilteringValue> AZ_FILTERINGVALUE_COMPARATOR = new Comparator<FilteringValue>() {
 
+		@Override
 		public int compare(FilteringValue o1, FilteringValue o2) {
 			return o1.getDisplayName().compareTo(o2.getDisplayName());
 		}

@@ -71,8 +71,7 @@ public class ModifyOrderHelper {
 	}
 	
 	public static void handleRedemptionPromotions(FDSessionUser currentUser, FDOrderAdapter order) {
-		for (Iterator i = order.getUsedPromotionCodes().iterator(); i.hasNext();) {
-			String promoCode = (String) i.next();
+		for ( String promoCode : order.getUsedPromotionCodes() ) {
 			Promotion promo = (Promotion) PromotionFactory.getInstance().getPromotion(promoCode);
 			RedemptionCodeStrategy redemption = (RedemptionCodeStrategy) promo.getStrategy(RedemptionCodeStrategy.class);
 			if (redemption != null) {
@@ -106,10 +105,9 @@ public class ModifyOrderHelper {
 		FDGiftCardInfoList gcList = user.getGiftCardList();
 		//Clear any hold amounts.
 		gcList.clearAllHoldAmount();
-    	List appliedGiftCards = originalOrder.getAppliedGiftCards();
+    	List<ErpAppliedGiftCardModel> appliedGiftCards = originalOrder.getAppliedGiftCards();
     	if(appliedGiftCards != null && appliedGiftCards.size() > 0) {
-	    	for(Iterator it = appliedGiftCards.iterator(); it.hasNext();) {
-	    		ErpAppliedGiftCardModel agcmodel = (ErpAppliedGiftCardModel) it.next();
+	    	for( ErpAppliedGiftCardModel agcmodel : appliedGiftCards ) {
 	    		String certNum = agcmodel.getCertificateNum();
 	    		FDGiftCardI fg = gcList.getGiftCard(certNum);
 	    		if(fg != null) {

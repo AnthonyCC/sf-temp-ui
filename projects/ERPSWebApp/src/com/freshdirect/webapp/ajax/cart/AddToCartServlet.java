@@ -111,7 +111,7 @@ public class AddToCartServlet extends BaseJsonServlet {
 		}
 	}
 
-	public FDCartModel modifyOrder(HttpServletRequest request, FDUserI user, FDCartModel cart, AddToCartRequestData reqData) throws HttpErrorResponse {
+	public static FDCartModel modifyOrder(HttpServletRequest request, FDUserI user, FDCartModel cart, AddToCartRequestData reqData) throws HttpErrorResponse {
 		
 		FDSessionUser sessionUser = null;
 		if(user instanceof FDSessionUser){
@@ -165,7 +165,7 @@ public class AddToCartServlet extends BaseJsonServlet {
 		return cart;
 	}
 
-	public void returnWithModifyPopup(HttpServletResponse response, FDUserI user, FDCartModel cart, List<AddToCartItem> items) throws FDResourceException, HttpErrorResponse {
+	public static void returnWithModifyPopup(HttpServletResponse response, FDUserI user, FDCartModel cart, List<AddToCartItem> items) throws FDResourceException, HttpErrorResponse {
 		
 		// Create response data object
 		AddToCartResponseData responseData = new AddToCartResponseData();
@@ -223,7 +223,7 @@ public class AddToCartServlet extends BaseJsonServlet {
 		writeResponseData( response, responseData );
 	}
 	
-	private List<PendingPopupOrderInfo> getPendingOrderInfos(FDUserI user) throws FDResourceException{
+	private static List<PendingPopupOrderInfo> getPendingOrderInfos(FDUserI user) throws FDResourceException{
 		
 		List<PendingPopupOrderInfo> result = new ArrayList<PendingPopupOrderInfo>();
 

@@ -50,6 +50,7 @@ public enum EnumQuickShopFilteringValue implements FilteringValue {
 		return name;
 	}
 
+	@Override
 	public String getDisplayName() {
 		return displayName;
 	}
@@ -77,6 +78,7 @@ public enum EnumQuickShopFilteringValue implements FilteringValue {
 		throw new IllegalArgumentException("No enum found with name: " + name);
 	}
 	
+	@Override
 	public boolean isShowIfEmpty() {
 		return showIfEmpty;
 	}

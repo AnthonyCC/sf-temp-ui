@@ -101,11 +101,15 @@ public class ProductsGroupingAndPagingTag extends BodyTagSupportEx {
 		return groupingTool;
 	}
 
+	// FIXME comparing a List<Object> to a String with equals() is kind of pointless... I'm not sure about the original intention here.
 	private boolean isShowGrouped() {
-		return !simpleView && nav.getSortBy().equals(SearchSortType.BY_RECENCY) && nav.getFilterValues().get(
-				EnumSearchFilteringValue.BRAND) == null && nav.getFilterValues().get(EnumSearchFilteringValue.DEPT) == null && (nav.getFilterValues().get(
-				EnumSearchFilteringValue.CAT) == null || nav.getFilterValues().get(EnumSearchFilteringValue.CAT).equals(
-				FDStoreProperties.getNewProductsCatId()));
+		return 
+				!simpleView && 
+				nav.getSortBy().equals(SearchSortType.BY_RECENCY) && 
+				nav.getFilterValues().get(EnumSearchFilteringValue.BRAND) == null && 
+				nav.getFilterValues().get(EnumSearchFilteringValue.DEPT) == null && 
+				(nav.getFilterValues().get(EnumSearchFilteringValue.CAT) == null || nav.getFilterValues().get(EnumSearchFilteringValue.CAT).equals(FDStoreProperties.getNewProductsCatId())
+			);
 	}
 
 	public void setItems(List<FilteringSortingItem<ProductModel>> items) {

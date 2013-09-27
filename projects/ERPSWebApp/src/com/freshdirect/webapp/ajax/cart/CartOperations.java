@@ -84,9 +84,6 @@ import com.freshdirect.webapp.util.FDEventFactory;
  *  
  *  TODO LIST:
  *   
- *  	* this whole package should be moved out of taglib package (to com.freshdirect.webapp.cart) 
- *  		(to be done after it is merged back to trunk to avoid merge conflicts)
- *  
  *  	* CartDataTag should be refactored to a servlet (similar to AddToCartServlet)
  *   
  * 
@@ -95,6 +92,9 @@ import com.freshdirect.webapp.util.FDEventFactory;
 public class CartOperations {
 	
 	private static final Logger LOG = LoggerFactory.getInstance( CartOperations.class );
+	
+	// Epsilon value for comparing floating point values - as we use that for quantities a very high value is used - quantities should have a granularity of about two decimal points only.
+	private static final double	EPSILON	= 5E-3;	//0.005
 	
 	public static boolean addToCart( FDUserI user, FDCartModel cart, List<AddToCartItem> items, String serverName, AddToCartRequestData reqData, AddToCartResponseData responseData, HttpSession session ) {
 		
@@ -288,7 +288,7 @@ public class CartOperations {
 				return;
 			}
 	
-			if ( newQ == oldQ ) {
+			if ( Math.abs( newQ - oldQ ) < EPSILON ) {
 				// Quantity did not change after all, do nothing
 				LOG.info( "cartline quantity did not change" );
 				return;
@@ -311,7 +311,7 @@ public class CartOperations {
 				// how much we're adding/removing
 				double deltaQty = newQ - oldQ;
 	
-				if ( deltaQty == 0 ) {
+				if ( deltaQty < EPSILON ) {
 					// nothing to do
 					return;
 					

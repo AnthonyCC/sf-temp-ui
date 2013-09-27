@@ -291,7 +291,6 @@ public class QuickShopFilterValueDecorator extends GenericFilterDecorator<Filter
 					}
 					
 					//check erps props
-					@SuppressWarnings( "unchecked" )
 					Set<EnumOrganicValue> commonOrgs = product.getCommonNutritionInfo(ErpNutritionInfoType.ORGANIC);
 					if (!commonOrgs.isEmpty()) {
 						for (Iterator<EnumOrganicValue> ic = commonOrgs.iterator(); ic.hasNext();) {
@@ -354,7 +353,7 @@ public class QuickShopFilterValueDecorator extends GenericFilterDecorator<Filter
 
 	}
 	
-	private List<ProductModel> collectParents(ProductModelPricingAdapter node) {
+	private static List<ProductModel> collectParents(ProductModelPricingAdapter node) {
 
 		List<ProductModel> parentNodes = new ArrayList<ProductModel>();
 

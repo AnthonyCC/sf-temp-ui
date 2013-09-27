@@ -78,7 +78,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 			}
 		}
 
-		pageContext.setAttribute("tableWidth", countTableWidth(peakProduce));
+		pageContext.setAttribute("tableWidth", peakProduce == null ? 0 : countTableWidth(peakProduce));
 		return peakProduce;
 	}
 	

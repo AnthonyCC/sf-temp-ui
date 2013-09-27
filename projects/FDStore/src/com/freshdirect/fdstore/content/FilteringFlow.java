@@ -18,8 +18,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public abstract class FilteringFlow<N extends ContentNodeModel> {
 
-	private static final long serialVersionUID = 3670819169820229610L;
-
+	@SuppressWarnings( "unused" )
 	private final static Logger LOG = LoggerFactory.getInstance(FilteringFlow.class);
 
 	public FilteringFlowResult<N> doFlow(FilteringNavigator nav, List<FilteringSortingItem<N>> items) {

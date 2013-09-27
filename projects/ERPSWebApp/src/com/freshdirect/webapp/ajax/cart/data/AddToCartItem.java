@@ -1,9 +1,12 @@
 package com.freshdirect.webapp.ajax.cart.data;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddToCartItem {
+public class AddToCartItem implements Serializable {
+	
+	private static final long	serialVersionUID	= 3871290125664273306L;
 	
 	private String atcItemId = null;
 	private String listId = null;

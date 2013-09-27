@@ -106,6 +106,7 @@ public class FilteringNavigator {
 	private FilteringNavigator() {
 	}
 
+	@Override
 	public FilteringNavigator clone() {
 
 		FilteringNavigator nav = new FilteringNavigator();
@@ -127,7 +128,7 @@ public class FilteringNavigator {
 		return nav;
 	}
 
-	private Map<FilteringValue, List<Object>> cloneFilterValues(Map<FilteringValue, List<Object>> filterValues2) {
+	private static Map<FilteringValue, List<Object>> cloneFilterValues(Map<FilteringValue, List<Object>> filterValues2) {
 		Map<FilteringValue, List<Object>> clone = new HashMap<FilteringValue, List<Object>>();
 
 		for (Map.Entry<FilteringValue, List<Object>> e : filterValues2.entrySet()) {
@@ -165,13 +166,13 @@ public class FilteringNavigator {
 		String val;
 
 		/* search terms */
-		val = (String) params.get("searchParams");
+		val = params.get("searchParams");
 		if (val != null && val.trim().length() > 0) {
 			searchTerm = val.trim();
 		}
 
 		/* view */
-		val = (String) params.get("view");
+		val = params.get("view");
 		if (val != null && val.length() > 0) {
 			if ("list".equalsIgnoreCase(val)) {
 				view = VIEW_LIST;
@@ -187,7 +188,7 @@ public class FilteringNavigator {
 
 		/* paging parameters */
 
-		val = (String) params.get("pageSize");
+		val = params.get("pageSize");
 		if (val != null && val.length() > 0) {
 			pageSize = Integer.parseInt(val);
 		} else {
@@ -201,21 +202,21 @@ public class FilteringNavigator {
 		}
 
 		// start = offset*page size
-		val = (String) params.get("start");
+		val = params.get("start");
 		if (val != null && val.length() > 0) {
 			int offset = Integer.parseInt(val);
 			pageNumber = offset / pageSize;
 		}
 
 		// offset = page number
-		val = (String) params.get("offset");
+		val = params.get("offset");
 		if (val != null && val.length() > 0) {
 			pageNumber = Integer.parseInt(val);
 		}
 
 		/* filters */
 
-		String filterSource = (String) params.get(QueryParameter.GENERIC_FILTER);
+		String filterSource = params.get(QueryParameter.GENERIC_FILTER);
 
 		if (filterSource != null) {
 			filterValues = filterDecoder.decode(filterSource);
@@ -225,7 +226,7 @@ public class FilteringNavigator {
 
 		/* sort */
 
-		val = (String) params.get("sort");
+		val = params.get("sort");
 		if (val != null && val.length() > 0) {
 			sortBy = SearchSortType.findByLabel(val) /*
 													 * SearchNavigator.convertToSort (val)
@@ -252,18 +253,18 @@ public class FilteringNavigator {
 			isSortByDefault = true;
 		}
 
-		val = (String) params.get("order");
+		val = params.get("order");
 		if (val != null && val.length() > 0) {
 			isOrderAscending = !("desc".equalsIgnoreCase(val));
 		} else {
 			isOrderAscending = true;
 		}
 
-		val = (String) params.get("fromDym");
+		val = params.get("fromDym");
 		if (val != null && val.length() > 0)
 			fromDym = true;
 
-		val = (String) params.get("refinement");
+		val = params.get("refinement");
 		if (val != null && val.length() > 0)
 			refined = true;
 
@@ -839,7 +840,7 @@ public class FilteringNavigator {
 	}
 
 	// convenience method
-	private String safeURLEncode(String str) {
+	private static String safeURLEncode(String str) {
 		try {
 			return URLEncoder.encode(str, "ISO-8859-1");
 		} catch (UnsupportedEncodingException e) {
@@ -1075,6 +1076,7 @@ public class FilteringNavigator {
 		return recipes;
 	}
 
+	@Override
 	public String toString() {
 		return getLink();
 	}
@@ -1103,6 +1105,7 @@ public class FilteringNavigator {
 		return isSortByDefault;
 	}
 
+	@SuppressWarnings( "hiding" )
 	private class OriginalStatus {
 
 		private String searchTerm;

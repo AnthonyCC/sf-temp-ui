@@ -52,12 +52,7 @@ public class QuickShopTabMetaServlet extends BaseJsonServlet{
 			LOG.error("Can't calculate custom lists tab meta! e: " + e);
 		}
 		
-		//fd lists tab
-		try {
-			meta.put("fd_lists", QuickShopHelper.getStarterLists().size());
-		} catch (FDResourceException e) {
-			LOG.error("Can't calculate FD lists tab meta! e: " + e);
-		}
+		meta.put("fd_lists", QuickShopHelper.getStarterLists().size());
 		
 		//standing orders tab
 		try {

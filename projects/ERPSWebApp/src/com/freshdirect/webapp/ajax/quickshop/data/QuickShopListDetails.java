@@ -1,6 +1,10 @@
 package com.freshdirect.webapp.ajax.quickshop.data;
 
-public class QuickShopListDetails {
+import java.io.Serializable;
+
+public class QuickShopListDetails implements Serializable {
+	
+	private static final long	serialVersionUID	= 8126444320662373215L;
 	
 	private String recipeId;
 	private String recipeUrl;

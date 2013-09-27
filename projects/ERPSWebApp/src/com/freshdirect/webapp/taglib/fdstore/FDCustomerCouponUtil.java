@@ -248,8 +248,10 @@ public class FDCustomerCouponUtil implements Serializable {
 			LOGGER.info("Exception in evaluateCartAndCoupons() "+cse);
 			return false;
 		} finally{
-			user.setCouponEvaluationRequired(isCouponEvaluationNeeded);
-			user.setRefreshCouponWalletRequired(false);
+			if ( user != null ) {
+				user.setCouponEvaluationRequired(isCouponEvaluationNeeded);
+				user.setRefreshCouponWalletRequired(false);
+			}
 		}
 		return true;
 				

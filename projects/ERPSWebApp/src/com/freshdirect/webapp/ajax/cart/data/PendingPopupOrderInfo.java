@@ -1,8 +1,11 @@
 package com.freshdirect.webapp.ajax.cart.data;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class PendingPopupOrderInfo {
+public class PendingPopupOrderInfo implements Serializable {
+	
+	private static final long	serialVersionUID	= -1823201329915341752L;
 	
 	private String erpSalesId;
 	private Date requestedDate;

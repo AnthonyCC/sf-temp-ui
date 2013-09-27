@@ -46,11 +46,11 @@ public class AddToCartResponseData implements Serializable {
 		this.coremetrics = coremetrics;
 	}
 
-	public void addCoremetrics( List<String> coremetrics ) {
-		if ( coremetrics == null ) {
-			coremetrics = new ArrayList<String>();
+	public void addCoremetrics( List<String> cm ) {
+		if ( cm == null ) {
+			cm = new ArrayList<String>();
 		}
-		this.coremetrics.add( coremetrics );
+		this.coremetrics.add( cm );
 	}
 	
 	public Map<String, String> getCouponStatus() {

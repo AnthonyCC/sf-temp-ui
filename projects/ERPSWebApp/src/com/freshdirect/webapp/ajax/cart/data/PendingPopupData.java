@@ -1,10 +1,13 @@
 package com.freshdirect.webapp.ajax.cart.data;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 
-public class PendingPopupData {
+public class PendingPopupData implements Serializable {
+	
+	private static final long	serialVersionUID	= -187337745204915510L;
 	
 	private List<PendingPopupOrderInfo> orderInfos;
 	private List<QuickShopLineItem> pendingItems;

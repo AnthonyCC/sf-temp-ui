@@ -1,6 +1,10 @@
 package com.freshdirect.webapp.ajax.quickshop.data;
 
-public class QuickShopSorterValues {
+import java.io.Serializable;
+
+public class QuickShopSorterValues implements Serializable {
+	
+	private static final long	serialVersionUID	= -5736297639029178465L;
 	
 	private String sortId;
 	private String name;

@@ -111,8 +111,10 @@ public class CartData implements Serializable {
 	}	
 	
 
-	public static class Section {
+	public static class Section implements Serializable {
 		
+		private static final long	serialVersionUID	= 1965764194639278346L;
+
 		/**
 		 * Section title
 		 */
@@ -151,8 +153,10 @@ public class CartData implements Serializable {
 	}
 	
 	
-	public static class Item {
+	public static class Item implements Serializable {
 		
+		private static final long	serialVersionUID	= -546124781472359953L;
+
 		/**
 		 * Cartline id - currently the bizarre random id is used, as on the view cart page .... FIXME: use some consistent id instead....
 		 */
@@ -243,8 +247,10 @@ public class CartData implements Serializable {
 		}		
 	}
 	
-	public static class Quantity {		
+	public static class Quantity implements Serializable {		
 		
+		private static final long	serialVersionUID	= -9046346863794560757L;
+
 		public Quantity() {
 		}
 		
@@ -302,8 +308,10 @@ public class CartData implements Serializable {
 		}
 	}
 
-	public static class SalesUnit {
+	public static class SalesUnit implements Serializable {
 				
+		private static final long	serialVersionUID	= -924336302405745446L;
+
 		public SalesUnit() {
 		}
 		

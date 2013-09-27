@@ -18,9 +18,9 @@ public class QuickShopListRequestObject {
 	private String yourListId;
 	private String starterListId;
 	private String searchTerm;
-	private List<Object> orderIdList;
-	private List<Object> deptIdList;
-	private List<Object> filterIdList;
+	private List<Object> orderIdList;		//FIXME : why list of OBJECT ???
+	private List<Object> deptIdList;		//FIXME : why list of OBJECT ???
+	private List<Object> filterIdList;		//FIXME : why list of OBJECT ???
 	private String timeFrame;
 	private String sortId;
 	private boolean orderAsc=true;
@@ -107,19 +107,8 @@ public class QuickShopListRequestObject {
 		this.yourListId = yourListId;
 	}
 	
-	public boolean compareSort(String otherSortId){
-		
-		if(otherSortId==null){
-			if(sortId==null){
-				return true;
-			}else{
-				return false;
-			}
-		}else if(otherSortId.equals(sortId)){
-			return true;
-		}
-		
-		return false;
+	public boolean compareSort( String otherSortId ) {		
+		return ( otherSortId == null && sortId == null ) || ( otherSortId != null && otherSortId.equals( sortId ) );
 	}
 
 	@Override
@@ -157,146 +146,135 @@ public class QuickShopListRequestObject {
 		result = prime * result + ((timeFrame == null) ? 0 : timeFrame.hashCode());
 		return result;
 	}
+	
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals( Object obj ) {
+		if ( this == obj )
 			return true;
-		if (obj == null)
+		if ( obj == null )
 			return false;
-		if (getClass() != obj.getClass())
+		if ( getClass() != obj.getClass() )
 			return false;
-		
-		QuickShopListRequestObject other = (QuickShopListRequestObject) obj;
-		
-		if (deptIdList == null) {
-			if (other.getDeptIdList() != null)
+
+		QuickShopListRequestObject other = (QuickShopListRequestObject)obj;
+
+		if ( deptIdList == null ) {
+			if ( other.getDeptIdList() != null )
 				return false;
 		} else {
-			if(other.getDeptIdList()==null){
+			if ( other.getDeptIdList() == null ) {
 				return false;
-			}else{
-				for(Object o1:deptIdList){
-					if(!other.getDeptIdList().contains(o1)){
-						return false;
-					}
+			}
+			for ( Object o1 : deptIdList ) {
+				if ( !other.getDeptIdList().contains( o1 ) ) {
+					return false;
 				}
 			}
 		}
-		
-		if (filterIdList == null) {
-			if (other.getFilterIdList() != null)
+
+		if ( filterIdList == null ) {
+			if ( other.getFilterIdList() != null )
 				return false;
 		} else {
-			if(other.getFilterIdList()==null){
+			if ( other.getFilterIdList() == null ) {
 				return false;
-			}else{
-				for(Object o1:filterIdList){
-					if(!other.getFilterIdList().contains(o1)){
-						return false;
-					}
+			}
+			for ( Object o1 : filterIdList ) {
+				if ( !other.getFilterIdList().contains( o1 ) ) {
+					return false;
 				}
 			}
 		}
-		
-		if (orderIdList == null) {
-			if (other.getOrderIdList() != null)
+
+		if ( orderIdList == null ) {
+			if ( other.getOrderIdList() != null )
 				return false;
 		} else {
-			if(other.getOrderIdList()==null){
+			if ( other.getOrderIdList() == null ) {
 				return false;
-			}else{
-				for(Object o1:orderIdList){
-					if(!other.getOrderIdList().contains(o1)){
-						return false;
-					}
+			}
+			for ( Object o1 : orderIdList ) {
+				if ( !other.getOrderIdList().contains( o1 ) ) {
+					return false;
 				}
 			}
 		}
-		
-		if (searchTerm == null) {
-			if (other.searchTerm != null)
+
+		if ( searchTerm == null ) {
+			if ( other.searchTerm != null )
 				return false;
-		} else if (!searchTerm.equals(other.searchTerm))
+		} else if ( !searchTerm.equals( other.searchTerm ) )
 			return false;
-		if (userId == null) {
-			if (other.userId != null)
+		if ( userId == null ) {
+			if ( other.userId != null )
 				return false;
-		} else if (!userId.equals(other.userId))
+		} else if ( !userId.equals( other.userId ) )
 			return false;
-		if ((starterListId == null && other.starterListId != null) || (!starterListId.equals(other.starterListId))) {
-			return false;
-		}
-		if (timeFrame == null) {
-			if (other.timeFrame != null)
+		if ( starterListId == null ) {
+			if ( other.starterListId != null )
 				return false;
-		} else if (!timeFrame.equals(other.timeFrame))
+		} else if ( !starterListId.equals( other.starterListId ) )
+			return false;		
+		if ( timeFrame == null ) {
+			if ( other.timeFrame != null )
+				return false;
+		} else if ( !timeFrame.equals( other.timeFrame ) )
 			return false;
-		
+
 		return true;
-	}
+	}	
 	
-	
-	public final FilteringNavigator createFilteringNavigatorFromThis() {
-		
-		QuickShopListRequestObject reqSrc = this;
+	public final FilteringNavigator convertToFilteringNavigator() {
+
 		Map<FilteringValue, List<Object>> filterValues = new HashMap<FilteringValue, List<Object>>();
 		SortTypeI sortBy = null;
-		boolean isOrderAscending = true;
-		String searchTerm = "";
-		
-		if(reqSrc!=null){
-			
-			//department filter
-			if(reqSrc.getDeptIdList()!=null && !reqSrc.getDeptIdList().isEmpty()){
-				filterValues.put(EnumQuickShopFilteringValue.DEPT, reqSrc.getDeptIdList());				
-			}
-			
-			//order filter
-			if(reqSrc.getOrderIdList()!=null && !reqSrc.getOrderIdList().isEmpty()){
-				filterValues.put(EnumQuickShopFilteringValue.ORDERS_BY_DATE, reqSrc.getOrderIdList());				
-			}
-			
-			//preferences (kosher, sale, etc.)
-			if(reqSrc.getFilterIdList()!=null && !reqSrc.getFilterIdList().isEmpty()){
-				for(Object pref: reqSrc.getFilterIdList()){
-					List<Object> values = new ArrayList<Object>();
-					values.add(pref);
-					filterValues.put(EnumQuickShopFilteringValue.getByName((String)pref), values);
-				}							
-			}
-			
-			//starter list id
-			if(reqSrc.getStarterListId()!=null){
-				List<Object> values = new ArrayList<Object>();
-				values.add(reqSrc.getStarterListId());
-				filterValues.put(EnumQuickShopFilteringValue.STARTER_LISTS, values);
-			}
-			
-			//timeframe filter
-			if(reqSrc.getTimeFrame()!=null){
-				List<Object> values = new ArrayList<Object>();
-				values.add(EnumQuickShopFilteringValue.getByName(reqSrc.getTimeFrame()).getName());
-				filterValues.put(EnumQuickShopFilteringValue.getByName(reqSrc.getTimeFrame()), values);
-			}
-			
-			//sortid
-			if(reqSrc.getSortId()!=null){
-				sortBy=QuickShopSortType.findByLabel(reqSrc.getSortId());
-			}
-			
-			//your listid filter
-			if(reqSrc.getYourListId()!=null){
-				List<Object> values = new ArrayList<Object>();
-				values.add(reqSrc.getYourListId());
-				filterValues.put(EnumQuickShopFilteringValue.YOUR_LISTS, values);
-			}
-			
-			isOrderAscending=reqSrc.isOrderAsc();
-			searchTerm = reqSrc.getSearchTerm();
+
+		// department filter
+		if ( getDeptIdList() != null && !getDeptIdList().isEmpty() ) {
+			filterValues.put( EnumQuickShopFilteringValue.DEPT, getDeptIdList() );
 		}
-		
-		return new FilteringNavigator( filterValues, sortBy, isOrderAscending, searchTerm );
-	}
-	
+
+		// order filter
+		if ( getOrderIdList() != null && !getOrderIdList().isEmpty() ) {
+			filterValues.put( EnumQuickShopFilteringValue.ORDERS_BY_DATE, getOrderIdList() );
+		}
+
+		// preferences (kosher, sale, etc.)
+		if ( getFilterIdList() != null && !getFilterIdList().isEmpty() ) {
+			for ( Object pref : getFilterIdList() ) {
+				List<Object> values = new ArrayList<Object>();
+				values.add( pref );
+				filterValues.put( EnumQuickShopFilteringValue.getByName( (String)pref ), values );
+			}
+		}
+
+		// starter list id
+		if ( getStarterListId() != null ) {
+			List<Object> values = new ArrayList<Object>();
+			values.add( getStarterListId() );
+			filterValues.put( EnumQuickShopFilteringValue.STARTER_LISTS, values );
+		}
+
+		// timeframe filter
+		if ( getTimeFrame() != null ) {
+			List<Object> values = new ArrayList<Object>();
+			values.add( EnumQuickShopFilteringValue.getByName( getTimeFrame() ).getName() );
+			filterValues.put( EnumQuickShopFilteringValue.getByName( getTimeFrame() ), values );
+		}
+
+		// sortid
+		if ( getSortId() != null ) {
+			sortBy = QuickShopSortType.findByLabel( getSortId() );
+		}
+
+		// your listid filter
+		if ( getYourListId() != null ) {
+			List<Object> values = new ArrayList<Object>();
+			values.add( getYourListId() );
+			filterValues.put( EnumQuickShopFilteringValue.YOUR_LISTS, values );
+		}
+
+		return new FilteringNavigator( filterValues, sortBy, isOrderAsc(), getSearchTerm() );
+	}	
 
 }

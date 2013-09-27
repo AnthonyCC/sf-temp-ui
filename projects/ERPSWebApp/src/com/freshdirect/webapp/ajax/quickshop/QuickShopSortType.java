@@ -25,23 +25,28 @@ public enum QuickShopSortType implements SortTypeI {
 	    	this.textDesc = textDesc;
 	    }
 
-	    public int getType() {
+	    @Override
+		public int getType() {
 	    	return this.type;
 	    }
 	    
-	    public String getLabel() {
+	    @Override
+		public String getLabel() {
 	    	return this.label;
 	    }
 	    
-	    public String getText() {
+	    @Override
+		public String getText() {
 			return text;
 		}
 	    
-	    public String getTextAsc() {
+	    @Override
+		public String getTextAsc() {
 			return textAsc;
 		}
 	    
-	    public String getTextDesc() {
+	    @Override
+		public String getTextDesc() {
 			return textDesc;
 		}
 	    

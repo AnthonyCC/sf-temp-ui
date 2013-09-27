@@ -1,8 +1,11 @@
 package com.freshdirect.fdstore.content;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class FilteringMenuItem {
+public class FilteringMenuItem implements Serializable {
+	
+	private static final long	serialVersionUID	= 264989063964263913L;
 	
 	private String name;
 	private String filteringUrlValue;

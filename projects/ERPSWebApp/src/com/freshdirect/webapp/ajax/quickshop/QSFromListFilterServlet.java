@@ -67,7 +67,7 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 	protected QuickShopReturnValue process( FDUserI user, HttpSession session, QuickShopListRequestObject requestData ) throws HttpErrorResponse {
 		
 		//transform request data
-		FilteringNavigator nav = requestData.createFilteringNavigatorFromThis();
+		FilteringNavigator nav = requestData.convertToFilteringNavigator();
 		FilteringFlowResult<QuickShopLineItemWrapper> result = null;
 
 		try {
@@ -174,7 +174,6 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 							
 							// remove temp config from session if any
 							HttpSession session = request.getSession();
-							@SuppressWarnings("unchecked")
 							Map<String, QuickShopLineItem> tempConfigs = (Map<String, QuickShopLineItem>) session.getAttribute(SessionName.SESSION_QS_CONFIG_REPLACEMENTS);
 							if(tempConfigs!=null){
 								tempConfigs.remove(reqData.getAtcItemId());								
@@ -215,7 +214,7 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 		writeResponseData(response, returnWrapper);
 	}
 	
-	private void deleteLineFromList(List<FDCustomerListItem> cclItems, String listId, String lineId, String userId) throws FDResourceException{
+	private static void deleteLineFromList(List<FDCustomerListItem> cclItems, String listId, String lineId, String userId) {
 		Iterator<FDCustomerListItem> it = cclItems.iterator();
 		while(it.hasNext()){
 			FDCustomerListItem item = it.next();
@@ -237,7 +236,7 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 	 * 
 	 * Method checks if we need to select a list for the user
 	 */
-	private void selectList(FDUserI user, FilteringNavigator nav) throws FDResourceException {
+	private static void selectList(FDUserI user, FilteringNavigator nav) throws FDResourceException {
 		
 		// select a list if ...
 		if(nav.getFilterValues().get(EnumQuickShopFilteringValue.YOUR_LISTS)==null){ //there is no list selected
@@ -270,7 +269,7 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 	 * 
 	 * Try to find a list that can be selected
 	 */
-	private void findAListToBeSelected(FilteringNavigator nav, FDUserI user) throws FDResourceException{
+	private static void findAListToBeSelected(FilteringNavigator nav, FDUserI user) throws FDResourceException{
 		
 		String defaultListId = user.getDefaultListId();  
 		List<FDCustomerCreatedList> lists = FDListManager.getCustomerCreatedLists(user);

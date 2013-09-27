@@ -1,6 +1,10 @@
 package com.freshdirect.webapp.ajax.cart.data;
 
-public class AddToCartResponseDataItem {
+import java.io.Serializable;
+
+public class AddToCartResponseDataItem implements Serializable {
+	
+	private static final long	serialVersionUID	= 5260328381889774679L;
 	
 	private String itemId;
 	private double inCartAmount;
@@ -8,8 +12,7 @@ public class AddToCartResponseDataItem {
 	private Status status;
 	
 	
-	public AddToCartResponseDataItem(){
-		
+	public AddToCartResponseDataItem() {		
 	}
 	
 	public AddToCartResponseDataItem(String itemId, double inCartAmount, String message) {

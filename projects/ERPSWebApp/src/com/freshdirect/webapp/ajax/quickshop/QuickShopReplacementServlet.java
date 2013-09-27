@@ -25,7 +25,6 @@ public class QuickShopReplacementServlet extends BaseJsonServlet {
 	@Override
 	protected void doGet( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
 		
-		@SuppressWarnings( "unchecked" )
 		List<String> replacements = (List<String>)request.getSession().getAttribute( SessionName.SESSION_QS_REPLACEMENT );
 		if ( replacements == null ) {
 			replacements = new ArrayList<String>();

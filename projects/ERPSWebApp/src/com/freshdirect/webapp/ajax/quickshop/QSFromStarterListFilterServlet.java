@@ -63,7 +63,7 @@ public class QSFromStarterListFilterServlet extends QuickShopServlet {
 			}
 			
 			//transform request data
-			FilteringNavigator nav = requestData.createFilteringNavigatorFromThis();
+			FilteringNavigator nav = requestData.convertToFilteringNavigator();
 			FilteringFlowResult<QuickShopLineItemWrapper> result = null;
 			
 			List<FilteringSortingItem<QuickShopLineItemWrapper>> items = QuickShopCacheUtil.getListFromCache(QuickShopCacheUtil.STARTER_LISTS_CACHE_NAME, QuickShopCacheUtil.STARTER_LISTS_CACHE_KEY);

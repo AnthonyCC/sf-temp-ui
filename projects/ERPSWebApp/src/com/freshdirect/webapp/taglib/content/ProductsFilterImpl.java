@@ -11,7 +11,6 @@ import javax.servlet.jsp.PageContext;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumSearchFilteringValue;
 import com.freshdirect.fdstore.content.FilteringComparatorUtil;
@@ -25,8 +24,6 @@ import com.freshdirect.fdstore.content.ProductFilterValueDecorator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SearchSortType;
-import com.freshdirect.fdstore.customer.FDAuthenticationException;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
@@ -36,10 +33,9 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class ProductsFilterImpl extends FilteringFlow<ProductModel> {
 	
+	@SuppressWarnings( "unused" )
 	private static Category LOGGER = LoggerFactory.getInstance(ProductsFilterImpl.class);
 
-	private static final long serialVersionUID = -3101346359422968490L;
-	
 	private SearchResults results;
 	private FilteringNavigator nav;
 	private PageContext pageContext;
@@ -70,6 +66,7 @@ public class ProductsFilterImpl extends FilteringFlow<ProductModel> {
 		this.pageContext = pageContext;
 	}
 
+	@Override
 	protected GenericFilterDecorator<FilteringSortingItem<ProductModel>> createFilterValueDecorator() {
 		return new ProductFilterValueDecorator(filters);
 	}
@@ -90,7 +87,7 @@ public class ProductsFilterImpl extends FilteringFlow<ProductModel> {
 	}
 	
 	@Override
-	protected Comparator<FilteringSortingItem<ProductModel>> createComparator(List<FilteringSortingItem<ProductModel>> products) {
+	protected Comparator<FilteringSortingItem<ProductModel>> createComparator(List<FilteringSortingItem<ProductModel>> products1) {
 		String suggestedTerm = results.getSuggestedTerm();
 		if (suggestedTerm == null)
 			suggestedTerm = results.getSearchTerm();
@@ -98,9 +95,10 @@ public class ProductsFilterImpl extends FilteringFlow<ProductModel> {
 		return FilteringComparatorUtil.createProductComparator(getItems(), getUserId(), getPricingContext(), suggestedTerm, nav, isShowGrouped());
 	}
 	
-	protected List<FilteringSortingItem<ProductModel>> reOrganizeFavourites(List<FilteringSortingItem<ProductModel>> products) {
+	@Override
+	protected List<FilteringSortingItem<ProductModel>> reOrganizeFavourites(List<FilteringSortingItem<ProductModel>> products1) {
 		
-		return FilteringComparatorUtil.reOrganizeFavourites(products, getUserId(), getPricingContext());
+		return FilteringComparatorUtil.reOrganizeFavourites(products1, getUserId(), getPricingContext());
 
 	}
 
@@ -128,7 +126,7 @@ public class ProductsFilterImpl extends FilteringFlow<ProductModel> {
 	}
 
 	public String getUserId() {
-		FDUserI user = getFDUser();
+		getFDUser();
 		if (user != null) {
 			FDIdentity identity = user.getIdentity();
 			if (identity != null)
@@ -138,17 +136,20 @@ public class ProductsFilterImpl extends FilteringFlow<ProductModel> {
 	}
 
 	public PricingContext getPricingContext() {
-		FDUserI user = getFDUser();
+		getFDUser();
 		if (user != null)
 			return user.getPricingContext();
 		return PricingContext.DEFAULT;
 	}
 	
+	// FIXME comparing a List<Object> to a String with equals() is kind of pointless... I'm not sure about the original intention here.
 	private boolean isShowGrouped() {
-		return nav.getSortBy().equals(SearchSortType.BY_RECENCY) && nav.getFilterValues().get(
-				EnumSearchFilteringValue.BRAND) == null && nav.getFilterValues().get(EnumSearchFilteringValue.DEPT) == null && (nav.getFilterValues().get(
-				EnumSearchFilteringValue.CAT) == null || nav.getFilterValues().get(EnumSearchFilteringValue.CAT).equals(
-				FDStoreProperties.getNewProductsCatId()));
+		return 
+				nav.getSortBy().equals(SearchSortType.BY_RECENCY) && 
+				nav.getFilterValues().get(EnumSearchFilteringValue.BRAND) == null && 
+				nav.getFilterValues().get(EnumSearchFilteringValue.DEPT) == null && 
+				(nav.getFilterValues().get(EnumSearchFilteringValue.CAT) == null || nav.getFilterValues().get(EnumSearchFilteringValue.CAT).equals(FDStoreProperties.getNewProductsCatId())
+			);
 	}
 
 	@Override
@@ -158,8 +159,6 @@ public class ProductsFilterImpl extends FilteringFlow<ProductModel> {
 
 	@Override
 	protected void midProcess(List<FilteringSortingItem<ProductModel>> items) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

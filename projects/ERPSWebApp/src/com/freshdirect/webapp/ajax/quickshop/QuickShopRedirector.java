@@ -221,30 +221,27 @@ public class QuickShopRedirector extends BodyTagSupport {
 			if ( soCount > 0 ) {
 				// Happiness, we have standing orders, display them
 				return URL_NEW_QS_STANDING_ORDERS;
-			} else {
-				// No actual standing orders, show past orders instead
-				return URL_NEW_QS_PAST_ORDERS;
 			}
 			
-		} else {
-			// Residential
-			
-			// Count the orders
-			int orderCount = 0;			
-			try {
-				orderCount = QuickShopHelper.getRecentOrderHistoryInfoIds(user).size();
-			} catch (FDResourceException ignore) {
-			}
-			
-			if ( orderCount > 0 ) {
-				// Customer has real orders, show them!
-				return URL_NEW_QS_PAST_ORDERS;
-			} else {
-				// Customer has no orders at all, must be new here, show them the FD lists
-				return URL_NEW_QS_FD_LISTS;
-			}
+			// No actual standing orders, show past orders instead
+			return URL_NEW_QS_PAST_ORDERS;
 			
 		}
+		
+		// Count the orders
+		int orderCount = 0;			
+		try {
+			orderCount = QuickShopHelper.getRecentOrderHistoryInfoIds(user).size();
+		} catch (FDResourceException ignore) {
+		}
+		
+		if ( orderCount > 0 ) {
+			// Customer has real orders, show them!
+			return URL_NEW_QS_PAST_ORDERS;
+		}
+		
+		// Customer has no orders at all, must be new here, show them the FD lists
+		return URL_NEW_QS_FD_LISTS;
 	}
 
 	/* =======================================================

@@ -146,7 +146,9 @@ public class ProductConfigResponseData implements Serializable {
 	 * 	defaultSku:	is the default sku?
 	 *	variations: list of variation enums 
 	 */
-	public static class Sku {
+	public static class Sku implements Serializable {
+		
+		private static final long	serialVersionUID	= 8484303804488950735L;
 		
 		// Core product config data 
 		private String skuCode;
@@ -361,7 +363,10 @@ public class ProductConfigResponseData implements Serializable {
 	 * display: 	display format (checkbox/dropdown)
 	 * variations: 	[variation enum: {value,label} ]
 	 */
-	public static class Variation {
+	public static class Variation implements Serializable {
+		
+		private static final long	serialVersionUID	= -982722495940470686L;
+		
 		private String name;
 		private String label;
 		private boolean optional;
@@ -412,7 +417,10 @@ public class ProductConfigResponseData implements Serializable {
 	 *	label: 		string description 
 	 *	selected:	is selected in current config?
 	 */
-	public static class VarItem {
+	public static class VarItem implements Serializable {
+		
+		private static final long	serialVersionUID	= -2219315493994618243L;
+		
 		private String name;
 		private String label;
 		private boolean isLabelValue;

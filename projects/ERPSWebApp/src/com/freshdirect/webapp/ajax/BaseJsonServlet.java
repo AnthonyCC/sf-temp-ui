@@ -51,6 +51,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 			response.sendError( e.getErrorCode() );
 		}
 	}	
+	@SuppressWarnings( "static-method" )
 	protected void doGet( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
 		returnHttpError( 405 );	// 405 Method Not Allowed
 	}
@@ -61,16 +62,18 @@ public abstract class BaseJsonServlet extends HttpServlet {
 			FDUserI user = authenticate( request );
 			if ( synchronizeOnUser() ) {
 				synchronized ( user ) {
-					parsePutData(request);
+					fixPutRequestParams(request);
 					doPut( request, response, user );
 				}
 			} else {
+				fixPutRequestParams(request);
 				doPut( request, response, user );
 			}
 		} catch ( HttpErrorResponse e ) {
 			response.sendError( e.getErrorCode() );
 		}
 	}
+	@SuppressWarnings( "static-method" )
 	protected void doPut( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
 		returnHttpError( 405 );	// 405 Method Not Allowed
 	}
@@ -81,7 +84,6 @@ public abstract class BaseJsonServlet extends HttpServlet {
 			FDUserI user = authenticate( request );
 			if ( synchronizeOnUser() ) {
 				synchronized ( user ) {
-					parsePutData(request);
 					doDelete( request, response, user );
 				}
 			} else {
@@ -91,25 +93,12 @@ public abstract class BaseJsonServlet extends HttpServlet {
 			response.sendError( e.getErrorCode() );
 		}
 	}
+	@SuppressWarnings( "static-method" )
 	protected void doDelete( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
 		returnHttpError( 405 );	// 405 Method Not Allowed
 	}
 	
-	private void parsePutData(HttpServletRequest request) throws HttpErrorResponse {
-		
-		BufferedReader br;
-		String data = null;
-		try {
-			br = new BufferedReader(new InputStreamReader(request.getInputStream()));
-			data = br.readLine();
-			if(data.contains("data=")){
-				request.setAttribute("data", data.substring(data.indexOf("=")+1, data.length()));
-			}
-		} catch (IOException e1) {
-			returnHttpError( 400, "Cannot read request data" );	// 400 Bad Request
-		}
-	}
-	
+	@Override
 	protected final void doPost( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException {		
 		try {
 			FDUserI user = authenticate( request );
@@ -124,18 +113,19 @@ public abstract class BaseJsonServlet extends HttpServlet {
 			response.sendError( e.getErrorCode() );
 		}
 	}
+	@SuppressWarnings( "static-method" )
 	protected void doPost( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
 		returnHttpError( 405 );	// 405 Method Not Allowed
 	}
 	
 	
-	protected final <T> T parseRequestData( HttpServletRequest request, Class<T> typeClass ) throws HttpErrorResponse {
+	protected final static <T> T parseRequestData( HttpServletRequest request, Class<T> typeClass ) throws HttpErrorResponse {
 		return parseRequestData( request, typeClass, false );
 	}
 	
-	protected final <T> T parseRequestData( HttpServletRequest request, Class<T> typeClass, boolean allowEmpty ) throws HttpErrorResponse {
+	protected final static <T> T parseRequestData( HttpServletRequest request, Class<T> typeClass, boolean allowEmpty ) throws HttpErrorResponse {
 	
-		String reqJson = (String)request.getParameter( "data" );
+		String reqJson = request.getParameter( "data" );
 		if(reqJson == null){
 			reqJson = (String)request.getAttribute( "data" );
 			if(reqJson != null){
@@ -149,9 +139,8 @@ public abstract class BaseJsonServlet extends HttpServlet {
 		if ( reqJson == null ) {
 			if ( allowEmpty ) {
 				return null;
-			} else {
-				returnHttpError( 400, "Empty request. Aborting" );	// 400 Bad Request
 			}
+			returnHttpError( 400, "Empty request. Aborting" );	// 400 Bad Request
 		}
 		
 		LOG.debug( "Parsing request data: " + reqJson );
@@ -169,7 +158,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 		return reqData;
 	}
 	
-	protected final <T> void writeResponseData( HttpServletResponse response, T responseData ) throws HttpErrorResponse {
+	protected final static <T> void writeResponseData( HttpServletResponse response, T responseData ) throws HttpErrorResponse {
 		
 		// Set response parameters
 		configureJsonResponse( response );
@@ -199,6 +188,22 @@ public abstract class BaseJsonServlet extends HttpServlet {
         	returnHttpError( 500, "Error writing JSON response", e );	// 500 Internal Server Error
 		}
 	}
+	
+	private static void fixPutRequestParams( HttpServletRequest request ) throws HttpErrorResponse {
+
+		BufferedReader br;
+		String line = null;
+		try {
+			br = new BufferedReader( new InputStreamReader( request.getInputStream() ) );
+			line = br.readLine();
+			if ( line != null && line.contains( "data=" ) ) {
+				request.setAttribute( "data", line.substring( line.indexOf( "=" ) + 1, line.length() ) );
+			}
+		} catch ( IOException e1 ) {
+			returnHttpError( 400, "Cannot read request data" ); // 400 Bad Request
+		}
+	}	
+	
 	
 	public final static void configureJsonResponse(HttpServletResponse response) {
 		// Set common response properties for JSON response
@@ -240,6 +245,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 	 * 
 	 * @return the required user level (use GUEST,RECOGNIZED,SIGNED_IN constants from FDUserI)
 	 */
+	@SuppressWarnings( "static-method" )
 	protected int getRequiredUserLevel() {		
 		return FDUserI.RECOGNIZED;
 	}
@@ -248,6 +254,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 	 * Subclasses can override and return false to turn off automatic synchronization on the user object and do their own synchronization manually. 
 	 * @return
 	 */
+	@SuppressWarnings( "static-method" )
 	protected boolean synchronizeOnUser() {
 		return true;
 	}
@@ -279,15 +286,15 @@ public abstract class BaseJsonServlet extends HttpServlet {
 		}
 	}
 
-	protected final void returnHttpError( int errorCode ) throws HttpErrorResponse {
+	protected final static void returnHttpError( int errorCode ) throws HttpErrorResponse {
     	LOG.error( "Aborting with HTTP"+errorCode );
     	throw new HttpErrorResponse( errorCode );
 	}
-	protected final void returnHttpError( int errorCode, String errorMessage ) throws HttpErrorResponse {
+	protected final static void returnHttpError( int errorCode, String errorMessage ) throws HttpErrorResponse {
     	LOG.error( errorMessage );
     	throw new HttpErrorResponse( errorCode );
 	}
-	protected final void returnHttpError( int errorCode, String errorMessage, Throwable e ) throws HttpErrorResponse {
+	protected final static void returnHttpError( int errorCode, String errorMessage, Throwable e ) throws HttpErrorResponse {
     	LOG.error( errorMessage, e );
     	throw new HttpErrorResponse( errorCode );
 	}

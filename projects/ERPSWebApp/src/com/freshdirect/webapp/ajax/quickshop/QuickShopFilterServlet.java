@@ -58,7 +58,7 @@ public class QuickShopFilterServlet extends QuickShopServlet {
 		LOG.info("Start processing request...");
 		
 		//transform request data
-		FilteringNavigator nav = requestData.createFilteringNavigatorFromThis();
+		FilteringNavigator nav = requestData.convertToFilteringNavigator();
 		FilteringFlowResult<QuickShopLineItemWrapper> result = null;
 
 		List<FilteringSortingItem<QuickShopLineItemWrapper>> items = QuickShopCacheUtil.getListFromCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
@@ -122,7 +122,7 @@ public class QuickShopFilterServlet extends QuickShopServlet {
 	 * 
 	 * Merge the original search result with the user's order history
 	 */
-	private void search(String searchTerm, List<FilteringSortingItem<QuickShopLineItemWrapper>> items){
+	private static void search(String searchTerm, List<FilteringSortingItem<QuickShopLineItemWrapper>> items){
 		
 		List<String> productIds = null;
 		if(searchTerm!=null){

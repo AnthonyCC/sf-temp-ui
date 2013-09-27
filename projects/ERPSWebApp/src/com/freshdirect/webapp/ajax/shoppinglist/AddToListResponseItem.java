@@ -1,5 +1,7 @@
 package com.freshdirect.webapp.ajax.shoppinglist;
 
+import java.io.Serializable;
+
 /**
  * Simple java bean representing the add to list response JSON structure
  * Holding information for the add to list result popup
@@ -7,7 +9,9 @@ package com.freshdirect.webapp.ajax.shoppinglist;
  * @author szabi
  *
  */
-public class AddToListResponseItem {
+public class AddToListResponseItem implements Serializable {
+	
+	private static final long	serialVersionUID	= 5663007153678387979L;
 	
 	private String lineId;
 	private String listId;
