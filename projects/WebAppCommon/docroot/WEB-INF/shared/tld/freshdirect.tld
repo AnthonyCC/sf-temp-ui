@@ -5568,17 +5568,6 @@
 		</attribute>
      </tag>
 	<tag>
-		<name>CartData</name>
-		<tagclass>com.freshdirect.webapp.ajax.cart.CartDataTag</tagclass>
-		<teiclass>com.freshdirect.webapp.ajax.cart.CartDataTag$TagEI</teiclass>
-		<info></info>
-		<attribute>
-			<name>cmScript</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
 		<name>ToJSON</name>
 		<tagclass>com.freshdirect.webapp.taglib.ToJSONTag</tagclass>
 		<info></info>

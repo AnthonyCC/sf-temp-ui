@@ -81,6 +81,15 @@
 	</servlet-mapping>
 
   	<servlet>
+		<servlet-name>CartDataServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.cart.CartDataServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CartDataServlet</servlet-name>
+		<url-pattern>/api/cartdata/*</url-pattern>
+	</servlet-mapping>
+	
+  	<servlet>
 		<servlet-name>AddToCartServlet</servlet-name>
 		<servlet-class>com.freshdirect.webapp.ajax.cart.AddToCartServlet</servlet-class>
 	</servlet>

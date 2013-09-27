@@ -21,7 +21,7 @@ public class CmProductViewTag extends AbstractCmTag {
 	}
 	
 	@Override
-	protected String getTagJs() throws SkipTagException {
+	public String getTagJs() throws SkipTagException {
 
 		builder.setVirtualCategoryId(extractVirtualCategoryId());
 		ProductViewTagModel model = builder.buildTagModel();

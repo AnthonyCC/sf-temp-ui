@@ -164,7 +164,7 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 		}
 	}
 
-	protected abstract String getTagJs() throws SkipTagException; 
+	public abstract String getTagJs() throws SkipTagException; 
 	
 	protected abstract String getFunctionName();
 

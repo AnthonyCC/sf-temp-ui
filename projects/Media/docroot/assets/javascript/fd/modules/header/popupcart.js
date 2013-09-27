@@ -16,7 +16,7 @@ var FreshDirect = FreshDirect || {};
 			CARTDATA_SECTIONS = 'cartSections',
 			CARTDATA_CARTLINES = 'itemCount',
       HEADER_COUNTER = 'requestCounter',
-      API_URL = '/api/cart_data.jsp';
+      API_URL = '/api/cartdata';
 	
 	
 	

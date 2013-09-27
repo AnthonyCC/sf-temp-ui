@@ -12,11 +12,6 @@ import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagData;
-import javax.servlet.jsp.tagext.TagExtraInfo;
-import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Logger;
 
@@ -34,58 +29,34 @@ import com.freshdirect.fdstore.customer.FDModifyCartLineI;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.webapp.BodyTagSupport;
+import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.cart.data.CartData;
 import com.freshdirect.webapp.ajax.cart.data.CartRequestData;
-import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.JspMethods;
 
-/**
- *	JSP tag to include cart data in JSON serialized form.
- *	
- * @author treer
- */
-public class CartDataTag extends BodyTagSupport {
 
-	private static final long serialVersionUID = 1218690545170566016L;
+public class CartDataServlet extends BaseJsonServlet {
 
-	private static final Logger LOG = LoggerFactory.getInstance( CartDataTag.class );
+	private static final long	serialVersionUID	= -3650318272577031376L;
 
-	private static final String cartVarName = "cart";
-	private static final String cartDataVarName = "cartData";
-	private static final String cartItemListVarName = "explicitList";
+	private static final Logger LOG = LoggerFactory.getInstance( CartDataServlet.class );
 	
-	/**
-	 * Coremetrics script
-	 */
-	private String cmScript;
-	
-	
-	public String getCmScript() {
-		return cmScript;
-	}	
-	public void setCmScript( String cmScript ) {
-		this.cmScript = cmScript;
-	}
-
 	@Override
-	public int doStartTag() throws JspException {
+	protected void doPost( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
+		process( request, response, user );
+	}
+	
+	@Override
+	protected void doGet( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
+		process( request, response, user );
+	}
+	
+	//TODO: correctly separate GET and POST calls - until then it stays combined in one method as refactored from CartDataTag.doStartTag()
+	private static void process( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
 		
-        HttpSession session = pageContext.getSession();        
-    	HttpServletRequest request = ((HttpServletRequest)pageContext.getRequest());
-    	HttpServletResponse response = ((HttpServletResponse)pageContext.getResponse());
-    	
     	// Fetch server name
     	String serverName = request.getServerName();    	
 
-        FDUserI user = ((FDUserI)session.getAttribute(SessionName.USER));
-        if ( user == null ) {
-        	// There is no user data in the session. Serious problem, should not happen.
-        	LOG.error( "No user in session!" );
-        	sendError( response, 401 );	// 401 Unauthorized
-    		return SKIP_BODY;
-        }
-        
         String userId = user.getUserId();
         if ( userId == null || userId.trim().equals( "" ) ) {
         	userId = "[UNIDENTIFIED-USER]";
@@ -95,18 +66,13 @@ public class CartDataTag extends BodyTagSupport {
         if ( cart == null ) {
             // user doesn't have a cart, this is a bug, as login or site_access should put it there
         	LOG.error( "No cart found for user " + userId );
-        	sendError( response, 500 );	// 500 Internal Server Error
-    		return SKIP_BODY;
+        	returnHttpError( 500, "No cart found for user " + userId );	// 500 Internal Server Error
         }
         
         synchronized ( cart ) {
         	// line items added to the list will be passed towards CM Shop5 tag
         	List<FDCartLineI> clines2report = new ArrayList<FDCartLineI>();
 
-	        // Expose FDCartModel to jsp context
-	        pageContext.setAttribute( cartVarName, cart );
-			pageContext.setAttribute( cartItemListVarName, clines2report );
-	        
 	    	// Create response data object
 	    	CartData cartData = new CartData();		
 	
@@ -114,22 +80,24 @@ public class CartDataTag extends BodyTagSupport {
 	    	if ( "POST".equalsIgnoreCase( request.getMethod() ) ) {
 	    		
 	    		// Parse request data
-	    		String reqJson = (String)request.getParameter( "change" );
+	    		String reqJson = request.getParameter( "change" );
 	    		if ( reqJson == null ) {
-	    			LOG.error( "Empty POST request. Aborting" );
-	            	sendError( response, 400 );	// 400 Bad Request
-	    			return SKIP_BODY;
+	    			LOG.error( "Empty POST request. Aborting." );
+	    			returnHttpError( 400, "Empty POST request. Aborting." );	// 400 Bad Request
 	    		}
 	    		
-	    		CartRequestData reqData;
+	    		CartRequestData reqData = null;
 	    		try {
 	    			reqData = new ObjectMapper().readValue(reqJson, CartRequestData.class);
-	    			LOG.debug( reqData.toString() ); 
+	    			LOG.debug( reqData ); 
 	    		} catch (IOException e) {
 	    			LOG.error("Cannot read JSON", e);
-	            	sendError( response, 400 );	// 400 Bad Request
-	    			return SKIP_BODY;
+	    			returnHttpError( 400, "Cannot read JSON" );	// 400 Bad Request
 				}
+	    		if ( reqData == null ) {
+	    			LOG.error("Cannot read JSON");
+	    			returnHttpError( 400, "Cannot read JSON" );	// 400 Bad Request
+	    		}
 	    		
 	    		// Send back 'header'
 	    		cartData.setHeader( reqData.getHeader() );
@@ -139,8 +107,7 @@ public class CartDataTag extends BodyTagSupport {
 	                List<FDCartLineI> cartLines = cart.getOrderLines();
 	                if ( cartLines == null ) {
 	                	LOG.error( "Orderlines in cart is a null object. Aborting. User:" + userId );
-	                	sendError( response, 500 );	// 500 Internal Server Error
-	            		return SKIP_BODY;
+	                	returnHttpError( 500, "Orderlines in cart is a null object. Aborting." );	// 500 Internal Server Error
 	                }
 	                
 	                Map<Integer,CartRequestData.Change> changes = reqData.getData();
@@ -168,12 +135,15 @@ public class CartDataTag extends BodyTagSupport {
 	    				} else if ( CartRequestData.Change.REMOVE.equals( chType ) ) {
 	    					CartOperations.removeCartLine( user, cart, cartLine, serverName );
 	    					
-	    				}
-	    				
+	    				}	    				
 	    			}
+	    			
+	    			// populate coremetrics data
+	    			CartOperations.populateCoremetricsShopTag( cartData, clines2report, cart );
+	    			
 	        	} catch (Exception e) {
 	        		LOG.error("Error while modifying cart for user " + userId, e);
-	            	sendError( response, 500 );	// 500 Internal Server Error
+	        		returnHttpError( 500, "Error while modifying cart" );	// 500 Internal Server Error
 	    		}
 	    	}
 	    	
@@ -184,9 +154,8 @@ public class CartDataTag extends BodyTagSupport {
 	        	// Fetch new cartlines
 	        	List<FDCartLineI> cartLines = cart.getOrderLines();
 	            if ( cartLines == null ) {
-	            	LOG.error( "Orderlines in modified cart is a null object. Aborting. User:" + userId );
-	            	sendError( response, 500 );	// 500 Internal Server Error
-	        		return SKIP_BODY;
+	            	LOG.error( "Orderlines in cart is a null object. Aborting. User:" + userId );
+	            	returnHttpError( 500, "Orderlines in cart is a null object. Aborting." );	// 500 Internal Server Error
 	            }
 	            
 	            // Fetch recent cartline ids
@@ -324,36 +293,15 @@ public class CartDataTag extends BodyTagSupport {
 				cartData.setModifyOrder( cart instanceof FDModifyCartModel );
 				
 				cartData.setErrorMessage( null );
-				cartData.setCoremetricsScript( cmScript );
-				
-				pageContext.setAttribute( cartDataVarName, cartData );
-				
-				return EVAL_BODY_BUFFERED;
 				
 			} catch (Exception e) {
 				LOG.error("Error while processing cart for user " + userId, e);
-	        	sendError( response, 500 );	// 500 Internal Server Error
-			}        
-			return SKIP_BODY;   
+				returnHttpError( 500, "Error while processing cart for user " + userId );	// 500 Internal Server Error
+			}    
+	        
+	        writeResponseData( response, cartData );
 		}
 	}
 
-    public static class TagEI extends TagExtraInfo {
-        @Override
-		public VariableInfo[] getVariableInfo(TagData data) {
-            return new VariableInfo[] {
-                new VariableInfo(cartVarName, "com.freshdirect.fdstore.customer.FDCartModel", true, VariableInfo.AT_END),
-                new VariableInfo(cartDataVarName, "com.freshdirect.webapp.ajax.cart.data.CartData", true, VariableInfo.AT_END),
-                new VariableInfo(cartItemListVarName, "java.util.List<com.freshdirect.fdstore.customer.FDCartLineI>", true, VariableInfo.AT_END)
-            };
-        }
-    }
-
-    private static final void sendError( HttpServletResponse response, int errorCode ) {
-    	try {
-			response.sendError( errorCode );
-		} catch ( IOException e ) {
-			LOG.error( "Failed to send error response", e );
-		}
-    }
+	
 }

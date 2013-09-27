@@ -21,7 +21,7 @@ public class CmOrderTag extends AbstractCmTag {
 	}
 	
 	@Override
-	protected String getTagJs() throws SkipTagException {
+	public String getTagJs() throws SkipTagException {
 		
 		FDUserI user = (FDUserI) getSession().getAttribute(SessionName.USER);		
 		

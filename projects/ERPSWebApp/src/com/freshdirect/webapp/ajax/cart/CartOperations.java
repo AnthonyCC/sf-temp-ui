@@ -59,6 +59,8 @@ import com.freshdirect.webapp.ajax.cart.data.AddToCartRequestData;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseData;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem.Status;
+import com.freshdirect.webapp.ajax.cart.data.CartData;
+import com.freshdirect.webapp.taglib.coremetrics.CmShop5Tag;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.display.FDCouponTag;
@@ -81,12 +83,6 @@ import com.freshdirect.webapp.util.FDEventFactory;
  *  business logic parts copied from FDShoppingCartController, 2013/03 (change/remove cartlines)
  *  business logic parts copied from FDShoppingCartController, 2013/05 (add to cart)
  *  
- *  
- *  TODO LIST:
- *   
- *  	* CartDataTag should be refactored to a servlet (similar to AddToCartServlet)
- *   
- * 
  * @author treer
  */
 public class CartOperations {
@@ -158,22 +154,7 @@ public class CartOperations {
 				
 				cartLinesToAdd.add(cartLine);
 				
-				// 		COREMETRICS SHOP5
-				try {
-					
-					cartLine.refreshConfiguration();
-					
-					ShopTagModel cmTag2 = AbstractShopTagModelBuilder.createTagModel( cartLine, cartLine.getProductRef(), false );
-					
-					responseData.addCoremetrics( cmTag2.toStringList() );
-					
-				} catch ( SkipTagException ignore ) {
-					LOG.warn( "Failed to generate coremetrics data", ignore );
-				} catch ( FDResourceException ignore ) {
-					LOG.warn( "Failed to generate coremetrics data", ignore );
-				} catch ( FDInvalidConfigurationException ignore ) {
-					LOG.warn( "Failed to generate coremetrics data", ignore );
-				}
+				populateCoremetricsShopTag( responseData, cartLine );
 				
 			}
 								
@@ -193,6 +174,45 @@ public class CartOperations {
 		
 		return true;
 
+	}
+
+
+	private static void populateCoremetricsShopTag( AddToCartResponseData responseData, FDCartLineI cartLine ) {
+		// 		COREMETRICS SHOP5
+		try {
+			
+			cartLine.refreshConfiguration();
+			
+			ShopTagModel cmTag = AbstractShopTagModelBuilder.createTagModel( cartLine, cartLine.getProductRef(), false );
+			
+			responseData.addCoremetrics( cmTag.toStringList() );
+			
+		} catch ( SkipTagException ignore ) {
+			LOG.warn( "Failed to generate coremetrics data", ignore );
+		} catch ( FDResourceException ignore ) {
+			LOG.warn( "Failed to generate coremetrics data", ignore );
+		} catch ( FDInvalidConfigurationException ignore ) {
+			LOG.warn( "Failed to generate coremetrics data", ignore );
+		}
+	}
+
+	public static void populateCoremetricsShopTag( CartData responseData, List<FDCartLineI> cartLines, FDCartModel cart ) {
+		// 		COREMETRICS SHOP5
+		String cmScript = null;
+		try {
+			CmShop5Tag cmTag = new CmShop5Tag();
+			cmTag.setWrapIntoScriptTag( false );
+			cmTag.setOutStringVar( "cmStr" );
+			cmTag.setCart( cart );
+			cmTag.setExplicitList( cartLines );
+			cmScript = cmTag.getTagJs();
+		} catch (SkipTagException ignore) {
+			// ignore exception, cmScript is already null
+		}
+		if ( cmScript != null && cmScript.trim().isEmpty() ) {
+			cmScript = null;
+		}
+		responseData.setCoremetricsScript( cmScript );		
 	}
 	
 	

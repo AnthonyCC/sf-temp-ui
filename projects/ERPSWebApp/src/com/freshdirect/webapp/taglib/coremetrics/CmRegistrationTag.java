@@ -45,7 +45,7 @@ public class CmRegistrationTag extends AbstractCmTag implements SessionName{
 	}
 	
 	@Override
-	protected String getTagJs() throws SkipTagException {
+	public String getTagJs() throws SkipTagException {
 
 		HttpSession session = getSession();
 		boolean pendingRegistration = Boolean.TRUE.equals(session.getAttribute(PENDING_REGISTRATION_EVENT));

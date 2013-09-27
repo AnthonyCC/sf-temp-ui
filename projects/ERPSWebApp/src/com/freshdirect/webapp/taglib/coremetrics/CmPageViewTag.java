@@ -25,7 +25,7 @@ public class CmPageViewTag extends AbstractCmTag {
 	}
 	
 	@Override
-	protected String getTagJs() throws SkipTagException {
+	public String getTagJs() throws SkipTagException {
 
 		tagModelBuilder.setRequest(getRequest());
 		PageViewTagModel tagModel = tagModelBuilder.buildTagModel();

@@ -24,7 +24,7 @@ public class CmFieldDecoratorTag extends AbstractCmTag {
 	 * Class overrides doCmTag so getTagJs is not used
 	 */
 	@Override
-	protected String getTagJs() {
+	public String getTagJs() {
 		throw new UnsupportedOperationException();
 	}
 

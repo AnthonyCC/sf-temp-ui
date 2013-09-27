@@ -17,7 +17,7 @@ public abstract class AbstractCmShopTag <X extends AbstractShopTagModelBuilder> 
 	protected X tagModelBuilder;
 	
 	@Override
-	protected String getTagJs() throws SkipTagException {
+	public String getTagJs() throws SkipTagException {
 		initTag();
 		StringBuilder shopScriptSb = new StringBuilder();
 		List<ShopTagModel> tagModels = tagModelBuilder.buildTagModels();
