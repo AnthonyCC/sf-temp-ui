@@ -3,20 +3,28 @@ var FreshDirect = FreshDirect || {};
 
 (function (fd) {
 	
-	var OAS_UPDATER = "OAS_UPDATER_",
-		i=0;
+	var OAS_UPDATER = "OAS_UPDATER";
+	
+	function getIfr(){
+		var ifr = document.getElementById('OAS_UPDATER');
+		if(!ifr) {
+			ifr = document.createElement('IFRAME');
+			ifr.id=OAS_UPDATER;
+			ifr.src="about:blank";
+			document.body.appendChild(ifr);
+		}
+
+		return ifr;
+	}
 	
 	function updateOAS(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query, OAS_POS) {
-		var ifr = document.createElement('IFRAME'),
+		var ifr = getIfr(),
 			scriptUrl = OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query);
 		
-		i++;
-		ifr.id=OAS_UPDATER+i;
-		ifr.src="about:blank";
-		document.body.appendChild(ifr);
 
 		if(ifr.contentDocument) {
 			// OMG, MY ADS ARE BURNING
+			ifr.contentDocument.open();
 			ifr.contentDocument.write('<!DOCTYPE html><head><script src="'+scriptUrl+'"></script></head><body><script>OAS_RICH("'+OAS_POS+'");window.parent.FreshDirect.quickshop.common.updateOAS.done("'+OAS_POS+'",document.body.innerHTML)</script></body></html>');
 		}
 		

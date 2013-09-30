@@ -171,4 +171,6 @@
 .qs-no-lists .qs-list-header { display:none; }
  
 
-
+#OAS_UPDATER {
+	display:none;
+}
