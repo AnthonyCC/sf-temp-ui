@@ -26,6 +26,7 @@
 
 [data-component="carousel"] ul li {
 	text-indent:0;
+	width: 153px;
 }
 
 [data-component="carousel-prev"],
