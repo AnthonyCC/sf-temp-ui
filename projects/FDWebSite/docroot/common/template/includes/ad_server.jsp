@@ -594,15 +594,20 @@ function OAS_RICH(pos) {
 	if (!FDStoreProperties.getAdServerUsesDeferredImageLoading()) {
 %>
 <script type="text/JavaScript">
+
+function OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query) {
+	return OAS_url + 'adstream_mjx.ads/' +
+			OAS_sitepage + '/1' + OAS_rns + '@' +
+			OAS_listpos + '?' + OAS_query;
+}
+
 OAS_version = 11;
 if ((navigator.userAgent.indexOf('Mozilla/3') != -1) ||
   (navigator.userAgent.indexOf('Mozilla/4.0 WebTV') != -1))
 	OAS_version = 10;  
   
 if (OAS_version >= 11)
-  document.write('<scr' + 'ipt type="text/javascript" src="' + OAS_url + 'adstream_mjx.ads/' +
-OAS_sitepage + '/1' + OAS_rns + '@' +
-OAS_listpos + '?' + OAS_query + '"><\/script>');
+	document.write('<scr' + 'ipt type="text/javascript" src="' + OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query) + '"><\/script>');
 </script>
 <script type="text/javascript">
 document.write('');

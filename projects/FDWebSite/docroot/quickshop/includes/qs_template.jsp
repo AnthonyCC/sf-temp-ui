@@ -41,7 +41,7 @@
                     <%} %>
                 </ul>
             </div>
-            <div class="oas-cnt"><script type="text/javascript">OAS_AD('QSTop');</script></div>
+            <div class="oas-cnt" id="QSTop"><script type="text/javascript">OAS_AD('QSTop');</script></div>
             <ul class="tabs qs-tabs clearfix">
                 <li><a href="/quickshop/qs_past_orders.jsp" class="<tmpl:get name='poSelected'/>"><strong>shop from past orders</strong> <span class="count" data-component="tabMeta" data-tabMeta="pastorders"></span></a></li>
                 <li><a href="/quickshop/qs_shop_from_list.jsp" class="<tmpl:get name='listSelected'/>"><strong>shop from your lists</strong> <span class="count" data-component="tabMeta" data-tabMeta="lists"></span></a></li>
