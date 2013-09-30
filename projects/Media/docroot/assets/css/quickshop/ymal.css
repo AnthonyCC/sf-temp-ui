@@ -3,6 +3,15 @@
 	min-height:120px;
 }
 
+#qs-ymal h2 {
+	font-family: 'EagleBook', Verdana, Arial, sans-serif;
+	font-weight: normal;
+	font-size:20px;
+	line-height:1em;
+	color:#996699;
+	text-align: center;
+}
+
 #qs-ymal .changed .itemlist-item-header:after  {
 	content:'';
 }

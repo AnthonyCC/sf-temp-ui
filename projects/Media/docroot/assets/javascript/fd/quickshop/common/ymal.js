@@ -39,12 +39,20 @@ var FreshDirect = FreshDirect || {};
 			}
 		},
 		update:{
-			value:function(){
+			value:function(data){
+				var deptId = "";
+				if (data) {
+					data.DEPT.forEach(function(dept){
+						if (dept.selected) {
+							deptId = dept.filteringUrlValue;
+						}
+					});
+				}
 				DISPATCHER.signal('server',{
 					url:'/api/qs/ymal',
 					method:'GET',
 					data: {
-			            data: JSON.stringify({ feature: FEATURE, deptId: "mea" })	//FIXME: add real deptId from filter
+			            data: JSON.stringify({ feature: FEATURE, deptId: deptId })
 			    }});
 			}
 		}
@@ -52,7 +60,7 @@ var FreshDirect = FreshDirect || {};
 	
 	Object.create(fd.common.signalTarget,{
 		signal:{
-			value:'atcResult'
+			value:'DEPARTMENTS'
 		},
 		callback:{
 			value:ymal.update.bind(ymal)

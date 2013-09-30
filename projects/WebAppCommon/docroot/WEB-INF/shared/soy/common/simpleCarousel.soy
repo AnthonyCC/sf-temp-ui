@@ -6,19 +6,19 @@
  * @param? title optional title string
  */
 {template .simpleCarousel autoescape="false"}
-{if $title}<center>{$title}</center>{/if}							//TODO: formatting...	Font: Eagle book 20pt, Color #996699
 <div data-component="carousel" class="first">
-<div data-component="carousel-mask">
-<ul data-component="carousel-list" data-carousel-page="0">
-{foreach $item in $items}
-{delcall common.carouselItem variant="$itemType"}
-	{param item:$item /}
-{/delcall}
-{/foreach}
-</ul>
-</div>
-<button data-component="carousel-prev" data-carousel-nav="prev">previous</button>
-<button data-component="carousel-next" data-carousel-nav="next">next</button>
+	{if $title}<h2>{$title}</h2>{/if}
+	<div data-component="carousel-mask">
+		<ul data-component="carousel-list" data-carousel-page="0">
+			{foreach $item in $items}
+			{delcall common.carouselItem variant="$itemType"}
+				{param item:$item /}
+			{/delcall}
+			{/foreach}
+		</ul>
+	</div>
+	<button data-component="carousel-prev" data-carousel-nav="prev">previous</button>
+	<button data-component="carousel-next" data-carousel-nav="next">next</button>
 </div>
 {/template}
 
