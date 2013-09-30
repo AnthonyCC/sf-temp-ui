@@ -40,14 +40,7 @@ var FreshDirect = FreshDirect || {};
 		},
 		update:{
 			value:function(data){
-				var deptId = "";
-				if (data) {
-					data.DEPT.forEach(function(dept){
-						if (dept.selected) {
-							deptId = dept.filteringUrlValue;
-						}
-					});
-				}
+				var deptId = data || "";
 				DISPATCHER.signal('server',{
 					url:'/api/qs/ymal',
 					method:'GET',
@@ -59,8 +52,11 @@ var FreshDirect = FreshDirect || {};
 	});
 	
 	Object.create(fd.common.signalTarget,{
+		allowNull:{
+			value:true
+		},
 		signal:{
-			value:'DEPARTMENTS'
+			value:'departmentChanged'
 		},
 		callback:{
 			value:ymal.update.bind(ymal)

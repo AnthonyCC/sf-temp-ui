@@ -6,6 +6,7 @@ var FreshDirect = FreshDirect || {};
 
 	var $ = fd.libs.$;
 	var DATALISTWIDGET = fd.quickshop.datalistWidget;
+	var DISPATCHER = fd.common.dispatcher;
 
 	function reduceValues(prev,current) {
 		prev.push(current.value);
@@ -53,6 +54,10 @@ var FreshDirect = FreshDirect || {};
 	});
 
 	departments.listen();
+	
+	$(document).on('change','#departments input[type="radio"]',function(e){
+		DISPATCHER.signal('departmentChanged',departments.serialize().deptIdList[0] || null);		
+	});
 
 	fd.modules.common.utils.register("quickshop.common", "departments", departments, fd);
 }(FreshDirect));
