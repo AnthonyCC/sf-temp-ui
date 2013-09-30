@@ -1,24 +1,10 @@
-.timeframes {
-	font-family: Verdana,sans-serif;
-	font-size:11px;
-	color:#333;	
-}
-
 .timeframes-list {
 	overflow:auto;
 }
 
-.timeframes-header {
-}
-
-.timeframes label {
-	width:120px;
-}
-
 .timeframes-list-all_frame label span {
 	font-family: Verdana,sans-serif;
-	font-size:10px;
+	font-size:12px;
 	color:#333;
 	text-transform: uppercase;
-	font-weight: bold;
 }

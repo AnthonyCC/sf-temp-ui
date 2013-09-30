@@ -12,14 +12,17 @@
 .departments-list-clear_dept label,
 .departments-list-all_dept label {
 	font-family: Verdana,sans-serif;
-	font-size:10px;
+	font-size:12px;
 	color:#333;
 	text-transform: uppercase;
-	font-weight: bold;
 }
 .departments-list-clear_dept:hover label,
 .departments-list-all_dept:hover label {
 	text-decoration: underline;
+}
+.departments-list-clear_dept input[checked] + label,
+.departments-list-all_dept input[checked] + label {
+	font-weight: bold;
 }
 
 .departments-list-clear_dept hr {
