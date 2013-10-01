@@ -26,6 +26,7 @@ var FreshDirect = FreshDirect || {};
 			// OMG, MY ADS ARE BURNING
 			ifr.contentDocument.open();
 			ifr.contentDocument.write('<!DOCTYPE html><head><script src="'+scriptUrl+'"></script></head><body><script>OAS_RICH("'+OAS_POS+'");window.parent.FreshDirect.quickshop.common.updateOAS.done("'+OAS_POS+'",document.body.innerHTML)</script></body></html>');
+			ifr.contentDocument.close();
 		}
 		
 	}
