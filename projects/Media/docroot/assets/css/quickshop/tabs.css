@@ -88,9 +88,9 @@
 	vertical-align: middle;
 }
 #quickshop .qs-tabs .selected .fd {
-	width: 35px;
+	width: 47px;
 	height: 27px;
-	background: url(/media_stat/images/quickshop/tab-fd-selected.png) no-repeat;
+	background: url(/media_stat/images/quickshop/tab-fd-selected.png) no-repeat 50% 50%;
 }
 
 #quickshop .tabbed-carousel .tabs {
