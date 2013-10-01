@@ -109,9 +109,21 @@
 .productDisplay-skulist>li:first-child:nth-last-child(1) input {
 	display:none;
 } 
+.productDisplay-skulist>li:first-child:nth-last-child(1) label {
+	padding-right: 0;
+} 
+
+.productDisplay-skulist>li label {
+	display: block;
+	position: relative;
+	padding-right: 1.9em;
+}
 
 .productDisplay-skulist>li input {
-	margin-left:0.5em;
+	position: absolute;
+	right: 0;
+	top: 0;
+	margin: 0;
 }
 
 .productDisplay-sustrating {
