@@ -133,7 +133,7 @@
 			no_alcohol_address.jsp,step_2_verify_age.jsp,step_2_green_popup.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,category.jsp,
 			build_order_recipes.jsp,cancel_modify_order.jsp,cancel_order.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,
 			place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,place_order_related_items.jsp,product.jsp,product_modify.jsp,
-			recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,carton_contents_view.jsp,carton_detail_view.jsp,expert_rating_popup.jsp,filter.jsp,recipe_source.jsp,cg_meal_item_detail.jsp,recipe_search.jsp			
+			recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,order_transaction_details.jsp,carton_contents_view.jsp,carton_detail_view.jsp,expert_rating_popup.jsp,filter.jsp,recipe_source.jsp,cg_meal_item_detail.jsp,recipe_search.jsp,delivery_center_details.jsp,carton_exceptions_view.jsp			
 		</links>
 		<links name="quickshop">
 			quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,makegood_from_order.jsp,recipes.jsp,
@@ -186,7 +186,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="order">build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_EBT_unavail.jsp,checkout_confirmation.jsp,sms_capture.jsp,checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_edit_ebt_card.jsp,edit_ebt_card.jsp,checkout_new_address.jsp,checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_ebt_card.jsp,new_ebt_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_verify_age.jsp,step_2_green_popup.jsp,add_bad_account.jsp,add_config_to_cart.jsp,build_order_browse.jsp,build_order_category.jsp,category.jsp,
 			build_order_recipes.jsp,cancel_modify_order.jsp,cancel_order.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,
 			place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,place_order_related_items.jsp,product.jsp,product_modify.jsp,
-			recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,carton_contents_view.jsp,carton_detail_view.jsp,expert_rating_popup.jsp,filter.jsp,recipe_source.jsp,cg_meal_item_detail.jsp,recipe_search.jsp</links>
+			recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,carton_contents_view.jsp,carton_detail_view.jsp,expert_rating_popup.jsp,filter.jsp,recipe_source.jsp,cg_meal_item_detail.jsp,recipe_search.jsp,delivery_center_details.jsp,carton_exceptions_view.jsp</links>
 		
 		<links name="quickshop">quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,makegood_from_order.jsp,recipes.jsp,shop_from_list.jsp,shop_from_order.jsp</links>
 		<links name="returns">approve_credit.jsp,reverse_credit.jsp,issue_credit.jsp,issue_credit_confirm.jsp,return_order.jsp</links>
@@ -204,7 +204,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="transportation">crmLateIssues.jsp,VSStatusLog.jsp,campaigns.jsp,add_campaign.jsp,delete_campaign.jsp,update_campaign.jsp,vsDetails.jsp,vsRedial.jsp,route_stop_report.jsp</links>
 		<links name="reports">late_delivery_report.jsp</links>
 		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
-		<links name="customer">order_details.jsp,order_not_submitted.jsp,carton_contents_view.jsp,carton_detail_view.jsp,resubmit_success.jsp,order_search_results.jsp,account_details.jsp,order_cases.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,case_history.jsp,order_history.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,delivery_pass.jsp</links>
+		<links name="customer">order_details.jsp,order_not_submitted.jsp,carton_contents_view.jsp,carton_detail_view.jsp,resubmit_success.jsp,order_search_results.jsp,account_details.jsp,order_cases.jsp,customer_search_results.jsp,company_search_results.jsp,summary_report.jsp,summary.jsp,case_history.jsp,order_history.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,delivery_pass.jsp,delivery_center_details.jsp,carton_exceptions_view.jsp</links>
 		<links name="actions">lateLog</links>
 		
 	</role>
@@ -311,7 +311,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="returns">approve_credit.jsp,reverse_credit.jsp,issue_credit.jsp,issue_credit_confirm.jsp,return_order.jsp</links>
 		<links name="promotions">promo_view.jsp,promo_home.jsp,promo_details.jsp,promotion_popup.jsp,export_promo_list.jsp</links>		
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
-		<links name="customeraccount">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,account_details.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_ebt_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,new_ebt_card.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,username_password_option.jsp</links>
+		<links name="customeraccount">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,account_details.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_ebt_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,new_ebt_card.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,username_password_option.jsp,delivery_center_details.jsp,carton_exceptions_view.jsp</links>
 		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp</links>
 		<links name="actions">rejectCredit,autoApprove,lateLog,buyDeliveryPass,editAddress,editPayment,skipAddApartment</links>
 
@@ -340,7 +340,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="returns">approve_credit.jsp,reverse_credit.jsp,issue_credit.jsp,issue_credit_confirm.jsp,return_order.jsp</links>
 		<links name="promotions">promo_view.jsp,promo_home.jsp,promo_details.jsp,promotion_popup.jsp,export_promo_list.jsp</links>		
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
-		<links name="customeraccount">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_ebt_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,new_ebt_card.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,username_password_option.jsp</links>
+		<links name="customeraccount">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_ebt_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,new_ebt_card.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,username_password_option.jsp,delivery_center_details.jsp,carton_exceptions_view.jsp</links>
 		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp</links>
 		<links name="actions">rejectCredit,autoApprove,lateLog,buyDeliveryPass,editAddress,editPayment,skipAddApartment</links>
 
@@ -370,7 +370,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="returns">approve_credit.jsp,reverse_credit.jsp,issue_credit.jsp,issue_credit_confirm.jsp,return_order.jsp</links>
 		<links name="promotions">promo_view.jsp,promo_home.jsp,promo_details.jsp,promotion_popup.jsp,export_promo_list.jsp</links>		
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
-		<links name="customeraccount">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_ebt_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,new_ebt_card.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,username_password_option.jsp</links>
+		<links name="customeraccount">order_details.jsp,order_not_submitted.jsp,resubmit_success.jsp,add_delivery_address.jsp,deactivate_account.jsp,edit_checking_account.jsp,new_checking_account.jsp,edit_credit_card.jsp,edit_ebt_card.jsp,edit_delivery_address.jsp,extend_reservation.jsp,name_contact_info.jsp,new_credit_card.jsp,new_ebt_card.jsp,promo_eligibility.jsp,reserve_timeslot.jsp,username_password_option.jsp,delivery_center_details.jsp,carton_exceptions_view.jsp</links>
 		<links name="registration">nw_cst_check_zone.jsp,nw_cst_enter_details.jsp,nw_cst_web_enter_details.jsp,more_info.jsp,proceed_w_caution.jsp,alt_dlv_corporate.jsp,alt_dlv_home.jsp,delivery.jsp,more_info.jsp</links>
 		<links name="actions">rejectCredit,autoApprove,lateLog,buyDeliveryPass,editAddress,editPayment</links>
 
@@ -426,7 +426,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 			step_2_green_popup.jsp,cancel_modify_order.jsp,cancel_order.jsp,add_config_to_cart.jsp,build_order_category.jsp,category.jsp,
 			build_order_recipes.jsp,health_warning.jsp,order_modify.jsp,payment_exception.jsp,
 			place_order_batch_search_results.jsp,place_order_recipe_search_results.jsp,place_order_related_items.jsp,product.jsp,product_modify.jsp,
-			recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,carton_contents_view.jsp,carton_detail_view.jsp,expert_rating_popup.jsp,filter.jsp,recipe_source.jsp,cg_meal_item_detail.jsp,recipe_search.jsp
+			recipe.jsp,recipe_cat.jsp,recipe_subcat.jsp,carton_contents_view.jsp,carton_detail_view.jsp,expert_rating_popup.jsp,filter.jsp,recipe_source.jsp,cg_meal_item_detail.jsp,recipe_search.jsp,delivery_center_details.jsp,carton_exceptions_view.jsp
 		</links>
 		<links name="quickshop">
 			quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,recipes.jsp,shop_from_list.jsp
