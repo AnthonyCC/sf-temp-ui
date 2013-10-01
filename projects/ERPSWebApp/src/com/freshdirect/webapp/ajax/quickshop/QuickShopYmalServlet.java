@@ -53,8 +53,6 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 		
-		returnHttpError( 200, "Temporarily disabled feature." );
-		
 		HttpSession session = request.getSession();
 		
 		// parse request data
@@ -343,7 +341,7 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 		}
 		
 		// default siteFeature is :  SideCart Featured Items (SCR_FEAT_ITEMS) + whole store as currentNode
-		EnumSiteFeature siteFeature = getSiteFeature( "SCR_FEAT_ITEMS" );
+		EnumSiteFeature siteFeature = getSiteFeature( "SCARAB_PERSONAL" );	//TODO: replaced for testing
 		return doRecommend( user, session, siteFeature, maxItems, listContent, ContentFactory.getInstance().getStore() );
 	}
 
