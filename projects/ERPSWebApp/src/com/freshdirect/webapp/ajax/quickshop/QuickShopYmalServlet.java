@@ -53,6 +53,8 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 		
+		returnHttpError( 404, "Temporarily disabled feature." );
+		
 		HttpSession session = request.getSession();
 		
 		// parse request data
