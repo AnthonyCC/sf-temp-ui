@@ -159,6 +159,7 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
     	
     	long start = new Date().getTime();
     	LOG.debug( DEBUG + "START doRecommend" );
+    	LOG.debug( DEBUG + "siteFeature: " + siteFeat );
     	
 		FDStoreRecommender recommender = FDStoreRecommender.getInstance();	    
 		SessionInput si = new SessionInput(user);			
