@@ -2,6 +2,7 @@ package com.freshdirect.webapp.ajax.quickshop;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -153,24 +154,49 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 		}
     }
 
+    private static final String DEBUG = "CRAZY_DEBUG: ";
     public static List<QuickShopLineItem> doRecommend( FDUserI user, HttpSession session, EnumSiteFeature siteFeat, int maxItems, Set<ContentKey> listContent, ContentNodeModel currentNode ) throws FDResourceException {
+    	
+    	long start = new Date().getTime();
+    	LOG.debug( DEBUG + "START doRecommend" );
     	
 		FDStoreRecommender recommender = FDStoreRecommender.getInstance();	    
 		SessionInput si = new SessionInput(user);			
 		initFromSession(session, si);
+		
+    	LOG.debug( DEBUG + "setting maxRecommendations to: " + maxItems );
 		si.setMaxRecommendations(maxItems);
+		
 		si.setExcludeAlcoholicContent(false);
+		
+    	LOG.debug( DEBUG + "setting currentNode to: " + currentNode );
 		si.setCurrentNode( currentNode );
 		
 		if ( listContent != null && listContent.size() > 0 ) {
+	    	LOG.debug( DEBUG + "setting cart content to: " + listContent );
 			si.setCartContents( listContent );
 		}
 
+    	LOG.debug( DEBUG + "sessioninput is: " + si );
+		
+    	LOG.debug( DEBUG + "recommender.getRecommendations starting, " + 1000.0*( new Date().getTime() - start ) );
+    	
 		Recommendations results = recommender.getRecommendations(siteFeat, user, si);
+
+    	LOG.debug( DEBUG + "recommender.getRecommendations finished, " + 1000.0*( new Date().getTime() - start ) );
+    	LOG.debug( DEBUG + "recommender.getRecommendations result count: " + results.getAllProducts().size() );
+		
 		persistToSession(session, results);
 		
+    	LOG.debug( DEBUG + "convertToQuickshopItems starting, " + 1000.0*( new Date().getTime() - start ) );
+    	
 		List<QuickShopLineItem> items = convertToQuickshopItems( user, maxItems, results, !siteFeat.equals( EnumSiteFeature.DYF ) );
 		
+    	LOG.debug( DEBUG + "convertToQuickshopItems finished, " + 1000.0*( new Date().getTime() - start ) );
+    	LOG.debug( DEBUG + "convertToQuickshopItems result count: " + items.size() );
+    	
+    	LOG.debug( DEBUG + "END doRecommend" );
+    	
 		return items;
     }
 
