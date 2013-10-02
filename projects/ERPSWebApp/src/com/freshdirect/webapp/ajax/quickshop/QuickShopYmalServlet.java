@@ -2,7 +2,6 @@ package com.freshdirect.webapp.ajax.quickshop;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -50,11 +49,14 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 	private final static Logger LOG = LoggerFactory.getInstance(QuickShopYmalServlet.class);
 	
 	public static final String QS_TOP_RECOMMENDER_VIRTUAL_SITEFEATURE = "CRAZY_QUICKSHOP";
+
+	@Override
+	protected boolean synchronizeOnUser() {
+		return false;
+	}
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
-		
-//		returnHttpError( 200, "Temporarily disabled feature." );
 		
 		HttpSession session = request.getSession();
 		
@@ -154,49 +156,24 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 		}
     }
 
-    private static final String DEBUG = "CRAZY_DEBUG: ";
     public static List<QuickShopLineItem> doRecommend( FDUserI user, HttpSession session, EnumSiteFeature siteFeat, int maxItems, Set<ContentKey> listContent, ContentNodeModel currentNode ) throws FDResourceException {
-    	
-    	long start = new Date().getTime();
-    	LOG.debug( DEBUG + "START doRecommend" );
-    	LOG.debug( DEBUG + "siteFeature: " + siteFeat );
     	
 		FDStoreRecommender recommender = FDStoreRecommender.getInstance();	    
 		SessionInput si = new SessionInput(user);			
 		initFromSession(session, si);
-		
-    	LOG.debug( DEBUG + "setting maxRecommendations to: " + maxItems );
 		si.setMaxRecommendations(maxItems);
-		
 		si.setExcludeAlcoholicContent(false);
-		
-    	LOG.debug( DEBUG + "setting currentNode to: " + currentNode );
 		si.setCurrentNode( currentNode );
 		
 		if ( listContent != null && listContent.size() > 0 ) {
-	    	LOG.debug( DEBUG + "setting cart content to: " + listContent );
 			si.setCartContents( listContent );
 		}
 
-    	LOG.debug( DEBUG + "sessioninput is: " + si );
-		
-    	LOG.debug( DEBUG + "recommender.getRecommendations starting, " + 1000.0*( new Date().getTime() - start ) );
-    	
 		Recommendations results = recommender.getRecommendations(siteFeat, user, si);
-
-    	LOG.debug( DEBUG + "recommender.getRecommendations finished, " + 1000.0*( new Date().getTime() - start ) );
-    	LOG.debug( DEBUG + "recommender.getRecommendations result count: " + results.getAllProducts().size() );
 		
 		persistToSession(session, results);
-		
-    	LOG.debug( DEBUG + "convertToQuickshopItems starting, " + 1000.0*( new Date().getTime() - start ) );
     	
 		List<QuickShopLineItem> items = convertToQuickshopItems( user, maxItems, results, !siteFeat.equals( EnumSiteFeature.DYF ) );
-		
-    	LOG.debug( DEBUG + "convertToQuickshopItems finished, " + 1000.0*( new Date().getTime() - start ) );
-    	LOG.debug( DEBUG + "convertToQuickshopItems result count: " + items.size() );
-    	
-    	LOG.debug( DEBUG + "END doRecommend" );
     	
 		return items;
     }
@@ -281,99 +258,105 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
     
 	private static List<QuickShopLineItem> doTheCrazyQuickshopRecommendations(FDUserI user, HttpSession session, String deptId, int maxItems, Set<ContentKey> listContent) throws HttpErrorResponse, FDResourceException {
 		
-//		if ( deptId != null && !deptId.trim().isEmpty() ) {
-//			
-//			try {
-//				DepartmentModel department = (DepartmentModel)ContentFactory.getInstance().getContentNode( ContentType.get( "Department" ), deptId );
-//				if ( department != null ) {
-//	
-//					if ( 
-//							DEPT_FRUIT.equals( deptId ) || 
-//							DEPT_VEG.equals( deptId ) || 
-//							DEPT_SEAFOOD.equals( deptId ) 
-//						) {
-//						// For fruit, vegetables and seafood we should show 'great right now' stuff, whatever that is
-//						
-//						// create a 'peak produce tag' 
-//						// it turns out that this is behind the so called 'Great Right Now' 
-//						// don't be misguided by other codes that are labeled 'great right now'
-//						// they are most probably dead for a while now
-//						// the 'peak produce tag' is a tragic mess of a code
-//						// any reasons for it's existence are unknown
-//						// it would be much much easier to do this in a normal way
-//						// for example just use smart-store recommenders
-//						// because that's what they are for in the first place...
-//						// but we have to recreate the same mess here
-//						// so that's exactly what we'll do
-//						
-//						// anyway the peak produce tag seems to return SkuModel objects most of the time, 
-//						// but technically they could return anything ...
-//						
-//						GetPeakProduceTag tag = new GetPeakProduceTag();
-//						tag.setDeptId( deptId );
-//						tag.setUseMinCount( false );
-//						
-//						Collection<Object> skus = tag.getPeakProduce( department, maxItems );						
-//						return convertToQuickshopItems( user, maxItems, skus );
-//						
-//					} else if ( 
-//							DEPT_DELI.equals( deptId ) || 
-//							DEPT_CHEESE.equals( deptId ) ||							
-//							DEPT_4MM.equals( deptId ) || 
-//							DEPT_RTC.equals( deptId ) || 
-//							DEPT_HEAT.equals( deptId ) || 
-//							DEPT_BAKERY.equals( deptId ) ||							
-//							DEPT_CATERING.equals( deptId ) || 
-//							DEPT_FLOWERS.equals( deptId ) || 
-//							DEPT_PET.equals( deptId ) || 
-//							DEPT_PASTA.equals( deptId ) || 
-//							DEPT_COFFEE.equals( deptId ) || 
-//							DEPT_HBA.equals( deptId ) || 
-//							DEPT_BUYBIG.equals( deptId ) 
-//						) {
-//						// So called 'customer favorites department level' recommendations 
-//
-//						// siteFeature: SideCart Featured Items (SCR_FEAT_ITEMS) + dept as currentNode
-//						
-//						EnumSiteFeature siteFeature = getSiteFeature( "SCR_FEAT_ITEMS" );		
-//						return doRecommend( user, session, siteFeature, maxItems, listContent, department );
-//						
-//					} else if (
-//							DEPT_DAIRY.equals( deptId ) || 
-//							DEPT_GROCERY.equals( deptId ) || 
-//							DEPT_FROZEN.equals( deptId ) 
-//						) {
-//						// 'Brand Name Deals' recommendations, + dept as currentNode
-//						
-//						EnumSiteFeature siteFeature = getSiteFeature( "BRAND_NAME_DEALS" );		
-//						return doRecommend( user, session, siteFeature, maxItems, listContent, department );
-//						
-//					} else if (
-//							DEPT_MEAT.equals( deptId ) 
-//						) {
-//						// For meat we should display 'meat deals' 
-//						// which is actually a manually maintained category, also called as "This week's best deals on meat" in "what's good" department
-//						
-//						CategoryModel meatDeals = (CategoryModel)ContentFactory.getInstance().getContentNode( ContentType.get( "Category" ), "wgd_butchers" );
-//						if ( meatDeals != null ) {
-//							
-//							return convertToQuickshopItems( user, maxItems, meatDeals.getAllChildProductsAsList() );
-//						}
-//					}					
-//					
-//					// There are no rules for all other departments, just use the default 
-//					
-//				}
-//			} catch (Exception e) {
-//				LOG.error( "Something failed while serving the crazy quickshop recommendations. Returning default 'customer favorites' instead.", e );
-//			}
-//		}
-		
-		// TODO : testing only the default case:
+		if ( deptId != null && !deptId.trim().isEmpty() ) {
+			
+			try {
+				DepartmentModel department = (DepartmentModel)ContentFactory.getInstance().getContentNode( ContentType.get( "Department" ), deptId );
+				if ( department != null ) {
+	
+					if ( 
+							DEPT_FRUIT.equals( deptId ) || 
+							DEPT_VEG.equals( deptId ) || 
+							DEPT_SEAFOOD.equals( deptId ) 
+						) {
+						// For fruit, vegetables and seafood we should show 'great right now' stuff, whatever that is
+						
+						// create a 'peak produce tag' 
+						// it turns out that this is behind the so called 'Great Right Now' 
+						// don't be misguided by other codes that are labeled 'great right now'
+						// they are most probably dead for a while now
+						// the 'peak produce tag' is a tragic mess of a code
+						// any reasons for it's existence are unknown
+						// it would be much much easier to do this in a normal way
+						// for example just use smart-store recommenders
+						// because that's what they are for in the first place...
+						// but we have to recreate the same mess here
+						// so that's exactly what we'll do
+						
+						// anyway the peak produce tag seems to return SkuModel objects most of the time, 
+						// but technically they could return anything ...
+						
+						GetPeakProduceTag tag = new GetPeakProduceTag();
+						tag.setDeptId( deptId );
+						tag.setUseMinCount( false );
+						
+						Collection<Object> skus = tag.getPeakProduce( department, maxItems );						
+						return convertToQuickshopItems( user, maxItems, skus );
+						
+					} else if ( 
+							DEPT_DELI.equals( deptId ) || 
+							DEPT_CHEESE.equals( deptId ) ||							
+							DEPT_4MM.equals( deptId ) || 
+							DEPT_RTC.equals( deptId ) || 
+							DEPT_HEAT.equals( deptId ) || 
+							DEPT_BAKERY.equals( deptId ) ||							
+							DEPT_CATERING.equals( deptId ) || 
+							DEPT_FLOWERS.equals( deptId ) || 
+							DEPT_PET.equals( deptId ) || 
+							DEPT_PASTA.equals( deptId ) || 
+							DEPT_COFFEE.equals( deptId ) || 
+							DEPT_HBA.equals( deptId ) || 
+							DEPT_BUYBIG.equals( deptId ) 
+						) {
+						// So called 'customer favorites department level' recommendations 
+
+						// siteFeature: SideCart Featured Items (SCR_FEAT_ITEMS) + dept as currentNode
+						
+						EnumSiteFeature siteFeature = getSiteFeature( "SCR_FEAT_ITEMS" );		
+						return doRecommend( user, session, siteFeature, maxItems, listContent, department );
+						
+					} else if (
+							DEPT_DAIRY.equals( deptId ) || 
+							DEPT_GROCERY.equals( deptId ) || 
+							DEPT_FROZEN.equals( deptId ) 
+						) {
+						// 'Brand Name Deals' recommendations, + dept as currentNode
+						
+						EnumSiteFeature siteFeature = getSiteFeature( "BRAND_NAME_DEALS" );		
+						return doRecommend( user, session, siteFeature, maxItems, listContent, department );
+						
+					} else if (
+							DEPT_MEAT.equals( deptId ) 
+						) {
+						// For meat we should display 'meat deals' 
+						// which is actually a manually maintained category, also called as "This week's best deals on meat" in "what's good" department
+						
+						CategoryModel meatDeals = (CategoryModel)ContentFactory.getInstance().getContentNode( ContentType.get( "Category" ), "wgd_butchers" );
+						if ( meatDeals != null ) {
+							
+							return convertToQuickshopItems( user, maxItems, meatDeals.getAllChildProductsAsList() );
+						}
+					}					
+					
+					// There are no rules for all other departments, just use the default 
+					
+				}
+			} catch (Exception e) {
+				LOG.error( "Something failed while serving the crazy quickshop recommendations. Returning default 'customer favorites' instead.", e );
+			}
+		}
 		
 		// default siteFeature is :  SideCart Featured Items (SCR_FEAT_ITEMS) + whole store as currentNode
+		
+		// FIXME : using the whole store as currentNode does not work in some environments! 
+		// The recursive traversing of the whole store is most probably hitting the memory limits
+		// Do not use until it is investigated!
+		// ContentNodeModel rootNode = ContentFactory.getInstance().getStore();
+		
+		// Using something else instead as the root node ... "President's Picks" should be full of great stuff
+		ContentNodeModel rootNode = ContentFactory.getInstance().getContentNode( ContentType.get( "Category" ), "picks_love" );
 		EnumSiteFeature siteFeature = getSiteFeature( "SCR_FEAT_ITEMS" );
-		return doRecommend( user, session, siteFeature, maxItems, listContent, ContentFactory.getInstance().getStore() );
+		return doRecommend( user, session, siteFeature, maxItems, listContent, rootNode );
 	}
 
 	private static String getTheCrazyQuickshopTitle( String deptId ) {
