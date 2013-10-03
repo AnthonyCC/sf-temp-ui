@@ -66,7 +66,7 @@ FD_QuickBuy.style = {
 	if(null != segmentMessage && segmentMessage.isLocation2()) {
         	location2Media = true;
     }
-   	request.setAttribute("listPos", "SystemMessage,HPFeatureTop,HPFeature,HPTab1,HPTab2,HPTab3,HPTab4,HPFeatureBottom,HPWideBottom");
+   	request.setAttribute("listPos", "SystemMessage,HPFeatureTop,HPFeature,HPTab1,HPTab2,HPTab3,HPTab4,HPFeatureBottom,HPWideBottom,HPLeftBottom,HPMiddleBottom,HPRightBottom");
 %>
 
 <% 
@@ -116,7 +116,11 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 			tab2="HPTab2"
 			tab3="HPTab3"
 			tab4="HPTab4"
-			bottom="HPFeatureBottom" />
+			bottom="HPFeatureBottom"
+			hpBottomLeft="HPLeftBottom"
+			hpBottomMiddle="HPMiddleBottom"
+			hpBottomRight="HPRightBottom"
+		/>
 <%
 	   		StoreModel store = (StoreModel) ContentFactory.getInstance().getContentNode("Store", "FreshDirect");
 	   		if (store != null) {

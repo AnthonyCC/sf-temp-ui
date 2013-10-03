@@ -50,7 +50,7 @@ FD_QuickBuy.style = {
 	if(null != segmentMessage && segmentMessage.isLocation2()) {
         	location2Media = true;
     }
-   	request.setAttribute("listPos", "SystemMessage,HPFeatureTop,HPFeature,HPTab1,HPTab2,HPTab3,HPTab4,HPFeatureBottom,HPWideBottom,COSBottom");
+   	request.setAttribute("listPos", "SystemMessage,HPFeatureTop,HPFeature,HPTab1,HPTab2,HPTab3,HPTab4,HPFeatureBottom,HPWideBottom,COSBottom,HPLeftBottom,HPMiddleBottom,HPRightBottom");
 %>
 
 <% 
@@ -82,7 +82,11 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 			tab2="HPTab2"
 			tab3="HPTab3"
 			tab4="HPTab4"
-			bottom="HPFeatureBottom" />
+			bottom="HPFeatureBottom"
+			hpBottomLeft="HPLeftBottom"
+			hpBottomMiddle="HPMiddleBottom"
+			hpBottomRight="HPRightBottom"
+		/>
 		<div id="most-popular" class="grid-carousel grid-view">
 			<comp:recommenderCarousel siteFeature="COS_HOME" user="<%= user %>" trkCode="<%= trkCode %>" facility="default" id="cos_carousel" maxItems="24" numItems="6" width="910" />
 		</div>

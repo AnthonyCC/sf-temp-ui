@@ -5,7 +5,10 @@
 		attribute name="tab2" required="true" rtexprvalue="true" type="java.lang.String" %><%@ 		
 		attribute name="tab3" required="true" rtexprvalue="true" type="java.lang.String" %><%@ 		
 		attribute name="tab4" required="true" rtexprvalue="true" type="java.lang.String" %><%@ 		
-		attribute name="bottom" required="true" rtexprvalue="true" type="java.lang.String" %>
+		attribute name="bottom" required="true" rtexprvalue="true" type="java.lang.String" %><%@ 		
+		attribute name="hpBottomLeft" required="false" rtexprvalue="true" type="java.lang.String" %><%@ 		
+		attribute name="hpBottomMiddle" required="false" rtexprvalue="true" type="java.lang.String" %><%@ 		
+		attribute name="hpBottomRight" required="false" rtexprvalue="true" type="java.lang.String" %>
 		<div class="oas_feature_frame" style="padding-top: 10px;">
 			<span>
 				<script type="text/javascript">
@@ -43,6 +46,25 @@
    		</div>
 	   	<div class="clear" style="font-size: 0px;"></div>
 	   	
+		<div class="oas_feature_frame" style="padding-top: 10px;">
+			<div class="left">
+				<script type="text/javascript">
+					OAS_AD('<%= hpBottomLeft %>');
+				</script>
+	   		</div>			
+			<div class="left">
+				<script type="text/javascript">
+					OAS_AD('<%= hpBottomMiddle %>');
+				</script>
+	   		</div>			
+			<div class="left">
+				<script type="text/javascript">
+					OAS_AD('<%= hpBottomRight %>');
+				</script>
+	   		</div>
+		</div>
+	   	<div class="clear" style="font-size: 0px;"></div>
+	   	
 		<div class="oas_feature_frame">
 			<span>
 	   			<script type="text/javascript">
@@ -50,3 +72,5 @@
 				</script>
 			</span>
 		</div>
+	   	<div class="clear" style="font-size: 0px;"></div>
+
