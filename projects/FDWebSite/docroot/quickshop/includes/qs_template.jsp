@@ -33,11 +33,11 @@
             <div class="header">
                 <h1>Quickshop</h1>
                 <ul>
-                    <li><a href="/quickshop/qs_past_orders.jsp">Shop From Past Orders</a> - Shop from an individual order or time frame.</li>
-                    <li><a href="/quickshop/qs_shop_from_list.jsp">Shop From Your Lists</a> - Create and shop from personalized lists.</li>
-                    <li><a href="/quickshop/qs_fd_lists.jsp">Shop Recommended Lists</a> - We've created lists for the basics in life.</li>
+                    <li><a href="/quickshop/qs_past_orders.jsp">Shop From Past Orders</a></li>
+                    <li><a href="/quickshop/qs_shop_from_list.jsp">Shop From Your Lists</a></li>
+                    <li><a href="/quickshop/qs_fd_lists.jsp">Shop Recommended Lists</a></li>
                     <% if (user.isEligibleForStandingOrders()) { %>
-                        <li><a href="/quickshop/qs_standing_orders.jsp">Create Recurring Orders</a> - Set it and forget it.</li></li>
+                        <li><a href="/quickshop/qs_standing_orders.jsp">Create Recurring Orders</a></li></li>
                     <%} %>
                 </ul>
             </div>

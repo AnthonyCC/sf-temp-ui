@@ -16,13 +16,14 @@
 	font-size: 12px;
 }
 #quickshop .header {
-	width: 577px;
+	width: 171px;
 	float: left;
+	margin-right:25px;
 }
 #quickshop .header h1 {
 	font-family: 'EagleRegular', Verdana, Arial, sans-serif;
 	color: #969;
-	font-size: 38px;
+	font-size: 36px;
 	margin: 5px 0 0;
 	font-weight: normal;
 }
@@ -30,7 +31,7 @@
 #quickshop .header ul {
 	margin: 10px 5px 20px 10px;
 	padding: 0;
-	font-size: 11px;
+	font-size: 9px;
 }
 #quickshop .header li {
 	list-style: none;
