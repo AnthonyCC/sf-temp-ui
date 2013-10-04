@@ -163,7 +163,7 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 						// item found, delete it first
 						deleteLineFromList(cclItems, listId, lineId, user.getIdentity().getErpCustomerPK());
 						
-						shoppingListPageRefreshNeeded=true;
+						shoppingListPageRefreshNeeded=false; // need some cleanup
 						if (!reqData.isDeleteItem()) { // if the request was an update then create the new data and put it back to the list
 							
 							newItem = ShoppingListServlet.createListLineItem(reqData, reqData.getRecipeId(), true);

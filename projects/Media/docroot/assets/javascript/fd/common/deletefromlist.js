@@ -70,8 +70,12 @@ var FreshDirect = FreshDirect || {};
               data: { data: JSON.stringify(item) },
               method: 'PUT'
           });
+        
+          $(this.popup.$trigger).closest('.itemlist-item').remove();
         }
-
+        
+        
+        
         this.close();
       }
     }
