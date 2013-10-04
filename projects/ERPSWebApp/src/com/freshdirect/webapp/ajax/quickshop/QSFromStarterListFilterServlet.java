@@ -1,13 +1,13 @@
 package com.freshdirect.webapp.ajax.quickshop;
 
 
-import static com.freshdirect.webapp.ajax.quickshop.EnumQuickShopFilteringValue.DEPT;
-import static com.freshdirect.webapp.ajax.quickshop.EnumQuickShopFilteringValue.GLUTEN_FREE;
-import static com.freshdirect.webapp.ajax.quickshop.EnumQuickShopFilteringValue.KOSHER;
-import static com.freshdirect.webapp.ajax.quickshop.EnumQuickShopFilteringValue.LOCAL;
-import static com.freshdirect.webapp.ajax.quickshop.EnumQuickShopFilteringValue.ON_SALE;
-import static com.freshdirect.webapp.ajax.quickshop.EnumQuickShopFilteringValue.ORGANIC;
-import static com.freshdirect.webapp.ajax.quickshop.EnumQuickShopFilteringValue.STARTER_LISTS;
+import static com.freshdirect.fdstore.content.EnumQuickShopFilteringValue.DEPT;
+import static com.freshdirect.fdstore.content.EnumQuickShopFilteringValue.GLUTEN_FREE;
+import static com.freshdirect.fdstore.content.EnumQuickShopFilteringValue.KOSHER;
+import static com.freshdirect.fdstore.content.EnumQuickShopFilteringValue.LOCAL;
+import static com.freshdirect.fdstore.content.EnumQuickShopFilteringValue.ON_SALE;
+import static com.freshdirect.fdstore.content.EnumQuickShopFilteringValue.ORGANIC;
+import static com.freshdirect.fdstore.content.EnumQuickShopFilteringValue.STARTER_LISTS;
 
 import java.util.ArrayList;
 import java.util.HashSet;

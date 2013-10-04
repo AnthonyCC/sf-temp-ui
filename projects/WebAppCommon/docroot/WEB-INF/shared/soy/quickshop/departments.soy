@@ -17,7 +17,7 @@
 {foreach $dataItem in $data}
 {let $id}dept_{index($dataItem)}{/let}
 <li>
-  <span class="{if $dataItem.counter < 1}noitem{/if}">
+  <span class="{if (($dataItem.counter < 1) and (not $dataItem.selected)) }noitem{/if}">
 	  <input id="{$id}" type="radio" name="deptIdList" value="{$dataItem.filteringUrlValue}" {($dataItem.selected) ? 'checked="checked"' : ''}>
   	<label for="{$id}"><span>{$dataItem.name}</span> ({$dataItem.counter})</label>
   </span>			

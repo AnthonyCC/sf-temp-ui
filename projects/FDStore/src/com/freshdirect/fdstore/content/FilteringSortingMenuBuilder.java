@@ -29,6 +29,7 @@ public class FilteringSortingMenuBuilder<N extends ContentNodeModel> extends Gen
 
 	}
 	
+	@Override
 	public void buildMenuForFilter(List<FilteringSortingItem<N>> items, FilteringValue filter, boolean removeFilter, boolean temporary){
 		
 		Map<String, FilteringMenuItem> domain = new HashMap<String, FilteringMenuItem>();
@@ -110,20 +111,20 @@ public class FilteringSortingMenuBuilder<N extends ContentNodeModel> extends Gen
 	}
 
 	/**
-	 * @param filterValues
+	 * @param fValues
 	 * 
 	 *            if subcategory or category selected first then domains above
 	 *            them (department, category) needs to be narrowed this method
 	 *            only needed when multiselection is not supported!
 	 *            Only used on search page
 	 */
-	private void narrowTree(Map<FilteringValue, List<Object>> filterValues) {
+	private void narrowTree(Map<FilteringValue, List<Object>> fValues) {
 
-		String dept = filterValues.get(EnumSearchFilteringValue.DEPT) != null ? (String) filterValues.get(EnumSearchFilteringValue.DEPT).get(0) : null;
-		String cat = filterValues.get(EnumSearchFilteringValue.CAT) != null ? (String) filterValues.get(EnumSearchFilteringValue.CAT).get(0) : null;
-		String subCat = filterValues.get(EnumSearchFilteringValue.SUBCAT) != null ? (String) filterValues.get(EnumSearchFilteringValue.SUBCAT).get(0) : null;
-		String recipe = filterValues.get(EnumSearchFilteringValue.RECIPE_CLASSIFICATION) != null ? (String) filterValues.get(EnumSearchFilteringValue.RECIPE_CLASSIFICATION).get(0) : null;
-		String brand = filterValues.get(EnumSearchFilteringValue.BRAND) != null ? (String) filterValues.get(EnumSearchFilteringValue.BRAND).get(0) : null;
+		String dept = fValues.get(EnumSearchFilteringValue.DEPT) != null ? (String) fValues.get(EnumSearchFilteringValue.DEPT).get(0) : null;
+		String cat = fValues.get(EnumSearchFilteringValue.CAT) != null ? (String) fValues.get(EnumSearchFilteringValue.CAT).get(0) : null;
+		String subCat = fValues.get(EnumSearchFilteringValue.SUBCAT) != null ? (String) fValues.get(EnumSearchFilteringValue.SUBCAT).get(0) : null;
+		String recipe = fValues.get(EnumSearchFilteringValue.RECIPE_CLASSIFICATION) != null ? (String) fValues.get(EnumSearchFilteringValue.RECIPE_CLASSIFICATION).get(0) : null;
+		String brand = fValues.get(EnumSearchFilteringValue.BRAND) != null ? (String) fValues.get(EnumSearchFilteringValue.BRAND).get(0) : null;
 
 		if (subCat != null && cat == null) {
 			ContentNodeModel subCatModel = ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY, subCat);
@@ -201,7 +202,7 @@ public class FilteringSortingMenuBuilder<N extends ContentNodeModel> extends Gen
 		}
 	}
 
-	private void checkSelected(Collection<FilteringMenuItem> menuItems, List<Object> itemFilteringValues) {
+	private static void checkSelected(Collection<FilteringMenuItem> menuItems, List<Object> itemFilteringValues) {
 		if (itemFilteringValues == null) {
 			return;
 		}

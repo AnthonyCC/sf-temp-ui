@@ -1,7 +1,7 @@
 package com.freshdirect.webapp.ajax.quickshop;
 
 
-import static com.freshdirect.webapp.ajax.quickshop.EnumQuickShopFilteringValue.*;
+import static com.freshdirect.fdstore.content.EnumQuickShopFilteringValue.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,6 +20,7 @@ import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.EnumSearchFilteringValue;
 import com.freshdirect.fdstore.content.FilteringMenuItem;
 import com.freshdirect.fdstore.content.FilteringSortingItem;

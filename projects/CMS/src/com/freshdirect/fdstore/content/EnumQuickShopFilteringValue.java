@@ -1,7 +1,11 @@
-package com.freshdirect.webapp.ajax.quickshop;
+package com.freshdirect.fdstore.content;
 
-import com.freshdirect.fdstore.content.FilteringValue;
 
+/**
+*
+* 	Filters for quickshop
+*
+*/
 public enum EnumQuickShopFilteringValue implements FilteringValue {
 	
 	TIME_FRAME_ALL("timeFrameAll","All - Past Year",1,true,"TIME FRAME",true,false,false),

@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.FilteringMenuItem;
 import com.freshdirect.fdstore.content.FilteringValue;
-import com.freshdirect.webapp.ajax.quickshop.EnumQuickShopFilteringValue;
 
 /**
  * Grouping return values for quickshop (JSON ready)

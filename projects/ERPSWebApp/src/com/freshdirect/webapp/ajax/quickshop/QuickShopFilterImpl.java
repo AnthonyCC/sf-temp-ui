@@ -10,7 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.FilteringFlow;
 import com.freshdirect.fdstore.content.FilteringMenuItem;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
@@ -93,6 +97,7 @@ public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>
 	@Override
 	protected void postProcess(List<FilteringSortingItem<QuickShopLineItemWrapper>> items, GenericFilteringMenuBuilder<FilteringSortingItem<QuickShopLineItemWrapper>> menuBuilder) {
 		
+
 		Map<FilteringValue, Map<String, FilteringMenuItem>> menu = menuBuilder.getDomains();
 		
 		//all departments should be selected (if there is no dept filter selected)
@@ -170,6 +175,29 @@ public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>
 			if ( activeReplacements != null && activeReplacements.contains( item.getItemId() ) ) {
 				item.setUseReplacement( true );
 			}			
+		}
+		
+		// Quickshop department filter special		
+		Map<String, FilteringMenuItem> deptMenu = menu.get( EnumQuickShopFilteringValue.DEPT );
+		if ( nav != null ) {
+			Map<FilteringValue, List<Object>> fv = nav.getFilterValues();
+			if ( fv != null ) {
+				List<Object> fs = fv.get( EnumQuickShopFilteringValue.DEPT );
+				if ( fs != null ) {
+					String deptId = (String)fs.get( 0 );
+					if ( deptId != null ) {
+						if ( !deptMenu.containsKey( deptId ) ) {
+							DepartmentModel dept = (DepartmentModel)ContentFactory.getInstance().getContentNode( ContentType.get("Department"), deptId );
+							if ( dept != null ) {
+								FilteringMenuItem fmi = new FilteringMenuItem( dept.getFullName(), deptId, 0, EnumQuickShopFilteringValue.DEPT );
+								fmi.setSelected( true );
+								deptMenu.put( deptId, fmi );
+								
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 

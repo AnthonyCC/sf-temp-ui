@@ -1,5 +1,10 @@
 package com.freshdirect.fdstore.content;
 
+/**
+ *
+ * 	Filters for the search page
+ *
+ */
 public enum EnumSearchFilteringValue implements FilteringValue {
 	
 	DEPT("dept",null,1,false,false,false,false),
@@ -32,10 +37,12 @@ public enum EnumSearchFilteringValue implements FilteringValue {
 		this.midProcessingNeeded = midProcessingNeeded;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 	
+	@Override
 	public Integer getPosition() {
 		return position;
 	}
@@ -43,14 +50,17 @@ public enum EnumSearchFilteringValue implements FilteringValue {
 	/**
 	 *	Multi-select filters have an OR logic, single-select filters have an AND logic 
 	 */
+	@Override
 	public boolean isMultiSelect() {
 		return multiSelect;
 	}
 
+	@Override
 	public boolean isShowIfEmpty() {
 		return showIfEmpty;
 	}
 
+	@Override
 	public String getDisplayName() {
 		return displayName;
 	}
