@@ -13,6 +13,7 @@
 					if (user.getLevel() >= FDUserI.RECOGNIZED) { 
 							int pendingOrderCount = 0;
 							List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI>();
+							user.invalidateOrderHistoryCache();//Clear the order history cache, to get the latest order history info.
 							validPendingOrders.addAll(user.getPendingOrders());
 							//Collections.reverse(validPendingOrders);
 							
