@@ -1,5 +1,5 @@
 #qs-ymal {
-	padding-left:15px;
+	padding:0 10px;
 	min-height:120px;
 }
 
@@ -10,6 +10,7 @@
 	line-height:1em;
 	color:#996699;
 	text-align: center;
+	margin-bottom:10px;
 }
 
 #qs-ymal .changed .itemlist-item-header:after  {
@@ -18,14 +19,11 @@
 
 #qs-ymal [data-component="carousel"] {
 	margin-bottom:0;
-	margin-top: 20px;
+	margin-top: 15px;
 }
 
-#qs-ymal .itemlist-item {
-	display:inline-block;
-	width:693px;
-	border-bottom:none;
-	vertical-align: top;
+#qs-ymal .portrait-item {
+	width:152px;
 }
 
 #qs-ymal [data-component="carousel-prev"],
