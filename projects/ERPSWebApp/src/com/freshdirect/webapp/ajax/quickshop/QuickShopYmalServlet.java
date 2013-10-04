@@ -35,7 +35,10 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
+import com.freshdirect.smartstore.fdstore.FactorUtil;
 import com.freshdirect.smartstore.fdstore.Recommendations;
+import com.freshdirect.smartstore.fdstore.ScoreProvider;
+import com.freshdirect.smartstore.scoring.HelperFunctions;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopYmalRequestObject;
@@ -150,17 +153,14 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 		}
     }    
 	
-    protected static void initFromSession(HttpSession session, SessionInput input) {
-		if ( session != null ) {
-			input.setPreviousRecommendations((Map<String, List<ContentKey>>) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS));
-		}
-    }
-
-    public static List<QuickShopLineItem> doRecommend( FDUserI user, HttpSession session, EnumSiteFeature siteFeat, int maxItems, Set<ContentKey> listContent, ContentNodeModel currentNode ) throws FDResourceException {
+    protected static SessionInput createSessionInput(HttpSession session, FDUserI user, int maxItems, ContentNodeModel currentNode, Set<ContentKey> listContent ) {
     	
-		FDStoreRecommender recommender = FDStoreRecommender.getInstance();	    
-		SessionInput si = new SessionInput(user);			
-		initFromSession(session, si);
+		SessionInput si = new SessionInput(user);		
+		
+		if ( session != null ) {
+			si.setPreviousRecommendations((Map<String, List<ContentKey>>) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS));
+		}
+		
 		si.setMaxRecommendations(maxItems);
 		si.setExcludeAlcoholicContent(false);
 		si.setCurrentNode( currentNode );
@@ -168,8 +168,15 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 		if ( listContent != null && listContent.size() > 0 ) {
 			si.setCartContents( listContent );
 		}
+		
+		return si;
+    }
 
-		Recommendations results = recommender.getRecommendations(siteFeat, user, si);
+    public static List<QuickShopLineItem> doRecommend( FDUserI user, HttpSession session, EnumSiteFeature siteFeat, int maxItems, Set<ContentKey> listContent, ContentNodeModel currentNode ) throws FDResourceException {
+    	
+		FDStoreRecommender recommender = FDStoreRecommender.getInstance();	    
+
+		Recommendations results = recommender.getRecommendations(siteFeat, user, createSessionInput( session, user, maxItems, currentNode, listContent ) );
 		
 		persistToSession(session, results);
     	
@@ -256,7 +263,7 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
     public static final String DEPT_HBA = "hba";
     public static final String DEPT_BUYBIG = "big";
     
-	private static List<QuickShopLineItem> doTheCrazyQuickshopRecommendations(FDUserI user, HttpSession session, String deptId, int maxItems, Set<ContentKey> listContent) throws HttpErrorResponse, FDResourceException {
+	private static List<QuickShopLineItem> doTheCrazyQuickshopRecommendations(FDUserI user, HttpSession session, String deptId, int maxItems, Set<ContentKey> listContent) throws FDResourceException {
 		
 		if ( deptId != null && !deptId.trim().isEmpty() ) {
 			
@@ -352,11 +359,17 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 		// The recursive traversing of the whole store is most probably hitting the memory limits
 		// Do not use until it is investigated!
 		// ContentNodeModel rootNode = ContentFactory.getInstance().getStore();
+		// EnumSiteFeature siteFeature = getSiteFeature( "SCR_FEAT_ITEMS" );
+		// return doRecommend( user, session, siteFeature, maxItems, listContent, rootNode );
 		
 		// Using something else instead as the root node ... "President's Picks" should be full of great stuff
-		ContentNodeModel rootNode = ContentFactory.getInstance().getContentNode( ContentType.get( "Category" ), "picks_love" );
-		EnumSiteFeature siteFeature = getSiteFeature( "SCR_FEAT_ITEMS" );
-		return doRecommend( user, session, siteFeature, maxItems, listContent, rootNode );
+		CategoryModel rootNode = (CategoryModel)ContentFactory.getInstance().getContentNode( ContentType.get( "Category" ), "picks_love" );
+		
+		@SuppressWarnings( { "unchecked", "rawtypes" } )
+		List<ContentNodeModel> prespicks = (List)rootNode.getProducts(); // DDPP content!
+		
+		List<ProductModel> result = HelperFunctions.getTopN( prespicks, FactorUtil.GLOBAL_POPULARITY_8W_COLUMN, maxItems, createSessionInput( session, user, maxItems, rootNode, listContent ), ScoreProvider.getInstance() );		
+		return convertToQuickshopItems( user, maxItems, result );
 	}
 
 	private static String getTheCrazyQuickshopTitle( String deptId ) {
