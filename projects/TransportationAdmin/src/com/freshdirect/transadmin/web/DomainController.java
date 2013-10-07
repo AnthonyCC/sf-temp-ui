@@ -449,9 +449,13 @@ public class DomainController extends AbstractMultiActionController {
 				ZoneSupervisor _zoneSupervisor = iterator.next();
 				if("AM".equalsIgnoreCase(_zoneSupervisor.getDayPart())){
 					webEmpInfo = employeeManagerService.getEmployee(_zoneSupervisor.getSupervisorId());
-					_zoneSupervisor.setSupervisorFirstName(webEmpInfo.getEmpInfo().getFirstName());
-					_zoneSupervisor.setSupervisorLastName(webEmpInfo.getEmpInfo().getLastName());
-					amZoneSupervisors.add(_zoneSupervisor);
+					if(webEmpInfo != null && webEmpInfo.getEmpInfo() != null) {
+						_zoneSupervisor.setSupervisorFirstName(webEmpInfo.getEmpInfo().getFirstName());
+						_zoneSupervisor.setSupervisorLastName(webEmpInfo.getEmpInfo().getLastName());
+						amZoneSupervisors.add(_zoneSupervisor);
+					} else {
+						zoneManagerService.removeEntityEx(_zoneSupervisor);
+					}
 				}
 			}
 			supervisorLst = zoneManagerService.getDefaultZoneSupervisor(_tmpZone.getZoneCode(), "PM", TransStringUtil.getCurrentDate());
@@ -459,9 +463,13 @@ public class DomainController extends AbstractMultiActionController {
 				ZoneSupervisor _zoneSupervisor = iterator.next();
 				if("PM".equalsIgnoreCase(_zoneSupervisor.getDayPart())){
 					webEmpInfo = employeeManagerService.getEmployee(_zoneSupervisor.getSupervisorId());
-					_zoneSupervisor.setSupervisorFirstName(webEmpInfo.getEmpInfo().getFirstName());
-					_zoneSupervisor.setSupervisorLastName(webEmpInfo.getEmpInfo().getLastName());
-					pmZoneSupervisors.add(_zoneSupervisor);
+					if(webEmpInfo != null && webEmpInfo.getEmpInfo() != null) {
+						_zoneSupervisor.setSupervisorFirstName(webEmpInfo.getEmpInfo().getFirstName());
+						_zoneSupervisor.setSupervisorLastName(webEmpInfo.getEmpInfo().getLastName());
+						pmZoneSupervisors.add(_zoneSupervisor);
+					}  else {
+						zoneManagerService.removeEntityEx(_zoneSupervisor);
+					}
 				}
 			}
 			_tmpZone.setAmZoneSupervisors(amZoneSupervisors);
