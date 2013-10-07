@@ -672,9 +672,13 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 				
 				ZoneSupervisor _zoneSupervisor = (ZoneSupervisor) iterator.next();
 				WebEmployeeInfo emp = employeeManagerService.getEmployeeEx(_zoneSupervisor.getSupervisorId());
-				_zoneSupervisor.setSupervisorName(emp.getEmpInfo().getSupervisorName());
-				_zoneSupervisor.setSupervisorId(emp.getEmpInfo().getEmployeeId());
-				zoneLst.add(new ZoneSupervisorCommand(_zoneSupervisor));							
+				if(emp != null && emp.getEmpInfo() != null) {
+					_zoneSupervisor.setSupervisorName(emp.getEmpInfo().getSupervisorName());
+					_zoneSupervisor.setSupervisorId(emp.getEmpInfo().getEmployeeId());
+					zoneLst.add(new ZoneSupervisorCommand(_zoneSupervisor));
+				} else {
+					locationManagerService.removeEntityEx(_zoneSupervisor);
+				}
 			}
 		}
 		Collections.sort(zoneLst);
