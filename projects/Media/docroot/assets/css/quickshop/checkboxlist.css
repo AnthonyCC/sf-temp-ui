@@ -9,6 +9,7 @@
 
 .checkboxlist li {
 	margin-top:10px;
+	position: relative;
 }
 
 .checkboxlist li:hover span {
@@ -24,17 +25,22 @@
 
 .checkboxlist input {
 	vertical-align: top;
+	position: absolute;
 }
 .checkboxlist label {
-	display:inline-block;
-	vertical-align:baseline;
-	width:125px;
+	display: block;
+	vertical-align: baseline;
 	cursor: pointer;
-	padding: 2px 0 2px 3px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	box-sizing: border-box;
+	padding: 2px 0 2px 20px;
 	line-height: 15px;
 	font-size: 9px;
 	color: #606060;
 }
+
 
 .checkboxlist label span {
 	font-size: 13px;
