@@ -373,6 +373,13 @@ public class ShoppingListServlet extends BaseJsonServlet {
 		Collections.sort( listInfos, new Comparator<ShoppingListInfo>() {
 			@Override
 			public int compare( ShoppingListInfo o1, ShoppingListInfo o2 ) {
+				// Default list is always the first
+				if ( o1.isDefault() )
+					return -1;				
+				if ( o2.isDefault() )
+					return 1;
+				
+				// Sort the rest alphabetically
 				return o1.getName().compareToIgnoreCase( o2.getName() );
 			}
 		} );
