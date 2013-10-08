@@ -32,6 +32,6 @@
   <span class="name" data-listid="{$item.listId}"><span>{$item.name}</span> <i>({$item.count})</i></span>
   <span class="rename"><label class="error"></label><input name="rename" maxlength="35" /></span>
   <span class="default"><input type="radio" name="default" {if $item.default}checked{/if}/></span>
-  <span class="delete"><input type="checkbox" name="delete" id="list_delete_{$item.listId}" {if $item.delete}checked{/if}/><label for="list_delete_{$item.listId}">delete</label></span>
+  <span class="delete"><input type="checkbox" name="delete" id="list_delete_{$item.listId}" {if $item.delete}checked{/if}/></span>
 {/template}
 
