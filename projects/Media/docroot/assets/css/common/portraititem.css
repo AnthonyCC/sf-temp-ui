@@ -32,6 +32,10 @@
 	width:100%;
 }
 
+.portrait-item-header .atc-info {
+	height: 16px;
+}
+
 .portrait-item-productimage_wrapper {
 	position:relative;
 }

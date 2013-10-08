@@ -26,10 +26,6 @@
 	width:152px;
 }
 
-#qs-ymal .portrait-item .atc-info {
-	height: 16px;
-}
-
 #qs-ymal [data-component="carousel-prev"],
 #qs-ymal [data-component="carousel-next"] {
     width: 35px;
