@@ -6,7 +6,7 @@ var FreshDirect = FreshDirect || {};
 
 	var $ = fd.libs.$;
 	var DISPATCHER = fd.common.dispatcher;
-	var MESSAGE = "Something went wrong, please reload the page."
+	var MESSAGE = "Timing error, please reload page."
 	var errorDialogNode = null;
 
 
