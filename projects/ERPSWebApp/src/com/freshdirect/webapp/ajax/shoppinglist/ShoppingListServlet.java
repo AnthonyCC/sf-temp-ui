@@ -44,6 +44,11 @@ public class ShoppingListServlet extends BaseJsonServlet {
 	
 	
 	@Override
+	protected int getRequiredUserLevel() {
+		return FDUserI.GUEST;
+	}	
+
+	@Override
 	protected void doGet( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {        
         getInternal( request, response, user, false, null );
 	}
