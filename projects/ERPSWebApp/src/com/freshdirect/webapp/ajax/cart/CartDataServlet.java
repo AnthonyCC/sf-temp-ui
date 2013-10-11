@@ -41,6 +41,12 @@ public class CartDataServlet extends BaseJsonServlet {
 
 	private static final Logger LOG = LoggerFactory.getInstance( CartDataServlet.class );
 	
+	
+	@Override
+	protected int getRequiredUserLevel() {
+		return FDUserI.GUEST;
+	}
+	
 	@Override
 	protected void doPost( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
 		process( request, response, user );

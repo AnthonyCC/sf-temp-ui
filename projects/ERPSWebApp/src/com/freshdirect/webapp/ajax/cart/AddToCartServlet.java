@@ -47,6 +47,12 @@ public class AddToCartServlet extends BaseJsonServlet {
 	
 	private static final Logger LOG = LoggerFactory.getInstance( AddToCartServlet.class );
 	
+	
+	@Override
+	protected int getRequiredUserLevel() {
+		return FDUserI.GUEST;
+	}	
+
 	@Override
 	protected void doPost( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
         
