@@ -7,7 +7,7 @@ var FreshDirect = FreshDirect || {};
 	var $ = fd.libs.$;
 	var DISPATCHER = fd.common.dispatcher;
 	var errorMessages={
-			"401":'<div class="unauthorized">You must have a FreshDirect account in order to use Shopping Lists.<br><br><b>New Customer?  </b><a href="">Sign Up</a><br><b>Current Customer?  </b><a href="/login/login.jsp">Log In</a></div>'
+			"401":'<div class="unauthorized">You have to be logged in with a FreshDirect account.<br><br><a href="/login/login.jsp">Please Log In</a></div>'
 	}
 
 

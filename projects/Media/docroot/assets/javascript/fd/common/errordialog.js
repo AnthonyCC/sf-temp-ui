@@ -6,7 +6,7 @@ var FreshDirect = FreshDirect || {};
 
 	var $ = fd.libs.$;
 	var DISPATCHER = fd.common.dispatcher;
-	var MESSAGE = "Timing error, please reload page.<br><button>Reload</button>"
+	var MESSAGE = "Timing error, please reload page.";
 	var errorDialogNode = null;
 
 
@@ -16,7 +16,7 @@ var FreshDirect = FreshDirect || {};
 		},
 		init:{
 			value:function() {
-				errorDialogNode = $('<div data-component="errorDialog"><div data-component="errorDialog.panel"><p data-component="errorDialog.message"></p></div></div>')
+				errorDialogNode = $('<div data-component="errorDialog"><div data-component="errorDialog.panel"><p data-component="errorDialog.message"></p><button>Reload</button></div></div>')
 				$(document.body).append(errorDialogNode);
 			}
 		},
