@@ -165,6 +165,12 @@ public class ShoppingListServlet extends BaseJsonServlet {
 	
 	@Override
 	protected void doPost( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
+		
+		// POST requires at least RECOGNIZED
+		if ( user.getLevel() < FDUserI.RECOGNIZED ) {
+        	// User level not sufficient. 
+        	returnHttpError( 401, "User auth level not sufficient!" ); // 401 Unauthorized
+		}
         
 		// Parse request data
 		AddToListRequestData reqData = parseRequestData( request, AddToListRequestData.class );
@@ -364,6 +370,10 @@ public class ShoppingListServlet extends BaseJsonServlet {
 	private static List<ShoppingListInfo> collectListInfos( FDUserI user ) {
 		String defaultListId = user.getDefaultListId();
 		List<FDCustomerListInfo> lists = user.getCustomerCreatedListInfos();
+		if ( lists == null ) {
+			return new ArrayList<ShoppingListInfo>();
+		}
+		
 		List<ShoppingListInfo> listInfos = new ArrayList<ShoppingListInfo>( lists.size() );
 		for ( FDCustomerListInfo list : lists ) {
 			ShoppingListInfo info = new ShoppingListInfo();
