@@ -36,4 +36,8 @@
 [data-component="errorDialog"] .unauthorized {
 	font-size:14px;
 	text-align:left;
+	border: 2px solid #969;
+	padding: 20px;
+	border-radius: 10px;
 }
+
