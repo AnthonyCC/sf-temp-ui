@@ -6,6 +6,9 @@ var FreshDirect = FreshDirect || {};
 
 	var $ = fd.libs.$;
 	var DISPATCHER = fd.common.dispatcher;
+	var errorMessages={
+			"401":'<div class="unauthorized">You must have a FreshDirect account in order to use Shopping Lists.<br><br><b>New Customer?  </b><a href="">Sign Up</a><br><b>Current Customer?  </b><a href="/login/login.jsp">Log In</a></div>'
+	}
 
 
 	/* helper function for successHandler
@@ -25,9 +28,13 @@ var FreshDirect = FreshDirect || {};
 	};
 
 	var errorHandler = function( e ){
-		if("quickshop" in fd && "itemType" in fd.quickshop) {
-			DISPATCHER.signal('errorDialog',{});			
+		var status = e.status;
+		if(status === 401) {
+			DISPATCHER.signal('errorDialog',{
+				message:errorMessages[status]
+			});
 		}
+
 	};
 
 	var server = Object.create(fd.common.signalTarget,{

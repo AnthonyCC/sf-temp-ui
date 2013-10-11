@@ -32,3 +32,8 @@
 	margin:0;
 
 }
+
+[data-component="errorDialog"] .unauthorized {
+	font-size:14px;
+	text-align:left;
+}
