@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.ProductModelPromotionAdapter;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -192,7 +193,13 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 			Iterator<ProductModel> it = results.getAllProducts().iterator();
 			while ( maxItems != 0 && it.hasNext() ) {
 				ProductModel product = it.next();
-				QuickShopLineItem item = QuickShopHelper.createItemFromProduct( product, null, user, useFavBurst ); 
+				QuickShopLineItem item = QuickShopHelper.createItemFromProduct( product, null, user, useFavBurst );
+				
+				// Availability check - do not let anything unavailable beyond this point
+				if ( !item.isAvailable() ) {
+					continue;
+				}				
+
 				items.add( item );
 				--maxItems;
 			}
@@ -212,6 +219,13 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 					// We got a SkuModel
 					sku = (SkuModel)skuObj;
 					product = sku.getProductModel();
+				} else if ( skuObj instanceof ProductModelPromotionAdapter ) {
+					// We got a ProductModelPromotionAdapter
+					// Warning: ProductModelPromotionAdapter is broken! 
+					// It can return an unavailable, non-default sku as the default sku!
+					// This is dangerous, so we will just get the embedded ProductModel... 
+					product = ((ProductModelPromotionAdapter)skuObj).getProductModel();
+					sku = product.getDefaultSku();
 				} else if ( skuObj instanceof ProductModel ) {
 					// We got a ProductModel
 					product = (ProductModel)skuObj;
@@ -225,10 +239,19 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 					continue;
 				}
 				
-				items.add( QuickShopHelper.createItemFromProduct( sku.getProductModel(), sku, user, true ) );
+				QuickShopLineItem item = QuickShopHelper.createItemFromProduct( sku.getProductModel(), sku, user, true );
+				
+				// Availability check - do not let anything unavailable beyond this point
+				if ( !item.isAvailable() ) {
+					continue;
+				}
+				
+				// Add item to result
+				items.add( item );
 				if ( --maxItems <= 0 ) {
 					break;
 				}
+				
 			}
 		}
 		return items;
