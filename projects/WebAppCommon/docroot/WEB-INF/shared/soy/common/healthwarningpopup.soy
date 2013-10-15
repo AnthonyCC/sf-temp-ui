@@ -64,7 +64,7 @@
 	     <tr><td>
 	     	<div style="text-align:center;">
 	     		{if $onclickValue}
-		     		<a href="#" id="USQCancelButton" onclick="window.FreshDirect.USQLegalWarning.blockSubmit(location.search,'false'); return false;"><img name="dont_see_beer_button" src="/media_stat/images/wine/decline.gif" border="0" alt="Click here to decline"></a>
+		     		<a href="#" id="USQCancelButton" onclick="window.parent.FreshDirect.USQLegalWarning.blockSubmit(location.search,false); return false;"><img name="dont_see_beer_button" src="/media_stat/images/wine/decline.gif" border="0" alt="Click here to decline"></a>
 				    <a href="#" id="USQAcceptButton" onclick="{$onclickValue}"><img name="see_beer_button" src="/media_stat/images/wine/click_here_to_accept.gif" border="0" alt="Click here to accept"></a><br><br><br>
 			    {else}
 		     		<button id="USQCancelButton"><img name="dont_see_beer_button" src="/media_stat/images/wine/decline.gif" border="0" alt="Click here to decline"></button>

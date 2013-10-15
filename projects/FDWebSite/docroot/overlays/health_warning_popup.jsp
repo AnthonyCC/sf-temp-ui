@@ -19,17 +19,20 @@
 
 	    <%
 
-	    String onclickValue = "if(window.FreshDirect.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1')==false) {window.FreshDirect.USQLegalWarning.setCookie('freshdirect.healthwarning','1')};";
+	    String onclickValue = "if(window.parent.FreshDirect.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1')==false) {window.parent.FreshDirect.USQLegalWarning.setCookie('freshdirect.healthwarning','1')};";
+ 		onclickValue += decorate;
      	if (instant != null && !"".equals(instant)) {
-     		onclickValue += decorate;
      		if (!"true".equals(atc)) {
-	        	onclickValue += instant;
+	        	onclickValue += instant+";";
      		}
+     		onclickValue +="window.parent.FreshDirect.USQLegalWarning.blockSubmit(location.search,'"+atc+"');";
+    	} else {
+    		onclickValue += "window.parent.FreshDirect.USQLegalWarning.doNormalSubmit(location.search,'"+atc+"');";
     	}
-     	onclickValue += "window.FreshDirect.USQLegalWarning.doNormalSubmit(location.search,'"+atc+"'); return false;";
+     	onclickValue += "return false;";
 
 		Map<String,String> dataMap = new HashMap<String,String>();
-		dataMap.put( "onclick", onclickValue );
+		dataMap.put( "onclickValue", onclickValue );
 
 		%>
 
