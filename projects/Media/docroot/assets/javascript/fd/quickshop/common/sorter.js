@@ -27,7 +27,7 @@ var FreshDirect = FreshDirect || {};
 		},
 		handleClick:{
 			value:function(clickEvent){
-				var clicked = $(clickEvent.target),
+				var clicked = $(clickEvent.currentTarget),
 					parent = clicked.parents('[data-component="sorter"]');
 				$('button.selected',parent).removeClass('selected');
 				clicked.addClass('selected');
