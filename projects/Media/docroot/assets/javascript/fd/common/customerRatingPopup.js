@@ -38,7 +38,7 @@ var FreshDirect = FreshDirect || {};
     open: {
       value: function (config) {
 		var target = config.element;
-		console.log(target.data());
+		// console.log(target.data());
 		this.refreshBody({
 			ratingValue:target.data('customerRating'),
 			reviewCount:target.data('customerReviewcount')

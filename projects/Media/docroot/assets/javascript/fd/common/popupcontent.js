@@ -202,9 +202,7 @@ var FreshDirect = FreshDirect || {};
 
     if (this.config.valign === 'bottom') {
       this.$el.css({top: (offset.top + height) + 'px', bottom: 'auto'});
-  	console.log({top: (offset.top + height) + 'px', bottom: 'auto'});
     } else {
-    	console.log({bottom: offset.top + 'px', top: 'auto'});
       this.$el.css({bottom: offset.top + 'px', top: 'auto'});
     }
 

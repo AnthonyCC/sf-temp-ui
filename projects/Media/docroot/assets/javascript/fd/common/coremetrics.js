@@ -18,7 +18,7 @@ var FreshDirect = FreshDirect || {};
 					var fname = coremetricsItem.shift();
 					window[fname].apply(window,coremetricsItem);
 				} catch(e) {
-					console.log('cm: '+e);
+					// console.log('cm: '+e);
 				}
 			}
 		},

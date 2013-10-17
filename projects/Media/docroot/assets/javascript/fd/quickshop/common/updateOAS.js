@@ -51,7 +51,7 @@ var FreshDirect = FreshDirect || {};
 				try {
 					updateOAS(OAS_url, siteUrl, OAS_rns, OAS_listpos, OAS_query, "QSTop");
 				} catch (e) {
-					console.log('OAS update failed: '+e);
+					// console.log('OAS update failed: '+e);
 				}
 			}
 		}

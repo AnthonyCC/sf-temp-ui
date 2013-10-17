@@ -120,7 +120,7 @@ var FreshDirect = FreshDirect || {};
     } catch (e) {
 		// Ignore any errors coming from coremetrics:
     	// if coremetrics fails we don't want the whole js code to die ...
-    	console.log( "coremetrics script has failed! " + e );
+    	// console.log( "coremetrics script has failed! " + e );
 	}
   }
 
