@@ -37,8 +37,7 @@ public class CyberSource implements Gateway{
 
 	@Override
 	public GatewayType getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return GatewayType.CYBERSOURCE;
 	}
 
 	@Override
