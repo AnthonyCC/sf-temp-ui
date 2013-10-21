@@ -1,9 +1,6 @@
 package com.freshdirect.transadmin.web.model;
 
-import java.util.Date;
 import java.util.List;
-
-import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 
 public class EarlyWarningCommand extends BaseCommand {
 	
@@ -26,7 +23,7 @@ public class EarlyWarningCommand extends BaseCommand {
 	private String referenceId;
 	
 	private boolean isRegion;
-
+	private String waveCode;
 	
 	private int openCount = 0;
 	private int closedCount = 0;
@@ -166,6 +163,13 @@ public class EarlyWarningCommand extends BaseCommand {
 	public void setNoOfResources(int noOfResources) {
 		this.noOfResources = noOfResources;
 	}
-	
+
+	public String getWaveCode() {
+		return waveCode;
+	}
+
+	public void setWaveCode(String waveCode) {
+		this.waveCode = waveCode;
+	}
 	
 }

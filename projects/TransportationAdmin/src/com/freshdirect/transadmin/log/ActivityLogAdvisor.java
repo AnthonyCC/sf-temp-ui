@@ -1,7 +1,6 @@
 package com.freshdirect.transadmin.log;
 
 import java.lang.reflect.Method;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,12 +10,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.TreeSet;
 
-import org.springframework.aop.AfterReturningAdvice;
 import org.springframework.aop.MethodBeforeAdvice;
-import org.springframework.aop.support.DefaultPointcutAdvisor;
 
 import com.freshdirect.transadmin.dao.DispatchManagerDaoI;
 import com.freshdirect.transadmin.model.Dispatch;
@@ -191,7 +186,7 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 								dispatchManagerDao.evictDispatch(_resDispatch);
 								if(_resDispatch.getRegion() != null && newDispatch.getRegion() != null
 												&& !_resDispatch.getRegion().getCode().equalsIgnoreCase(newDispatch.getRegion().getCode())) {
-									if("AM".equals(DispatchPlanUtil.getShift(newDispatch.getDispatchDate(), newDispatch.getFirstDlvTime()))){
+									if("AM".equals(DispatchPlanUtil.getShift(newDispatch.getStartTime()))){
 										inRegionAMResourceChanges.add(newPlanResource.getId().getResourceId());
 									}else {
 										inRegionPMResourceChanges.add(newPlanResource.getId().getResourceId());
@@ -199,7 +194,7 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 								}
 								if(newDispatch.getDispatchId() == null 
 										|| !newDispatch.getDispatchId().equals(_resDispatch.getDispatchId())) {
-									if("AM".equals(DispatchPlanUtil.getShift(newDispatch.getDispatchDate(), newDispatch.getFirstDlvTime()))){
+									if("AM".equals(DispatchPlanUtil.getShift(newDispatch.getStartTime()))){
 										resourceAMChanges.add(newPlanResource.getId().getResourceId());
 									}else {
 										resourcePMChanges.add(newPlanResource.getId().getResourceId());
@@ -282,17 +277,26 @@ class PlanComparator extends LogComparator
 		{
 			updates=new ArrayList();
 			Object obj;
-			if(( obj=compareValues("PLAN_DATE",getTimeOnly(oldPlan.getPlanDate(),sf1),getTimeOnly(newPlan.getPlanDate(),sf1)))!=null)
-			{
+			if ((obj = compareValues("PLAN_DATE",
+					getTimeOnly(oldPlan.getPlanDate(), sf1),
+					getTimeOnly(newPlan.getPlanDate(), sf1))) != null) {
 				updates.add(obj);
 			}
-			if(oldPlan.getOriginFacility()!=null && newPlan.getOriginFacility()!=null &&
-					( obj=compareValues("ORIGIN_FACILITY",oldPlan.getOriginFacility().getFacilityId(),newPlan.getOriginFacility().getFacilityId()))!=null)
-			{
+			if (oldPlan.getOriginFacility() != null
+					&& newPlan.getOriginFacility() != null
+					&& (obj = compareValues("ORIGIN_FACILITY" 
+							, oldPlan.getOriginFacility().getFacilityId()
+							, newPlan.getOriginFacility().getFacilityId())) != null) {
 				updates.add(obj);
 			}
-			if(oldPlan.getDestinationFacility()!=null && newPlan.getDestinationFacility()!=null &&
-					( obj=compareValues("DESTINATION_FACILITY",oldPlan.getDestinationFacility().getFacilityId(),newPlan.getDestinationFacility().getFacilityId()))!=null)
+			if (oldPlan.getDestinationFacility() != null
+					&& newPlan.getDestinationFacility() != null
+					&& (obj = compareValues("DESTINATION_FACILITY"
+							, oldPlan.getDestinationFacility().getFacilityId()
+							, newPlan.getDestinationFacility().getFacilityId())) != null) {
+				updates.add(obj);
+			}			
+			if(( obj=compareValues("DISPATCH_GROUPTIME",getTimeOnly(new Date(oldPlan.getDispatchGroup().getTime()),sf),getTimeOnly(newPlan.getDispatchGroup(),sf)))!=null)
 			{
 				updates.add(obj);
 			}
@@ -303,14 +307,11 @@ class PlanComparator extends LogComparator
 			if(( obj=compareValues("REGION",oldPlan.getRegion().getCode(),newPlan.getRegion().getCode()))!=null)
 			{
 				updates.add(obj);
-			}
-			//oldPlan.setFirstDeliveryTime(new Date(oldPlan.getFirstDeliveryTime().getTime()));			
-			if(( obj=compareValues("FIRST_DLV_TIME",getTimeOnly(new Date(oldPlan.getFirstDeliveryTime().getTime()),sf),getTimeOnly(newPlan.getFirstDeliveryTime(),sf)))!=null)
+			}			
+			if(( obj=compareValues("END_TIME",getTimeOnly(new Date(oldPlan.getEndTime().getTime()),sf),getTimeOnly(newPlan.getEndTime(),sf)))!=null)
 			{
 				updates.add(obj);
 			}
-			
-			//oldPlan.setStartTime(new Date(oldPlan.getStartTime().getTime()));
 			if(( obj=compareValues("START_TIME",getTimeOnly(new Date(oldPlan.getStartTime().getTime()),sf),getTimeOnly(newPlan.getStartTime(),sf)))!=null)
 			{
 				updates.add(obj);

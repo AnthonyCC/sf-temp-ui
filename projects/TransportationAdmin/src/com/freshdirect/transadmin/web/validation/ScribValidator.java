@@ -1,12 +1,8 @@
 package com.freshdirect.transadmin.web.validation;
 
-import java.text.ParseException;
-
 import org.springframework.validation.Errors;
 
-import com.freshdirect.framework.util.DateComparator;
 import com.freshdirect.transadmin.model.Scrib;
-import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class ScribValidator extends AbstractValidator {	
 	
@@ -24,41 +20,34 @@ public class ScribValidator extends AbstractValidator {
 		if(model != null && model.getDestinationFacility() == null) {
 			errors.rejectValue("destinationFacility", "app.error.112", new Object[]{"Destination Facility"},"required field");
 		}
-		if(model.getStartTime()==null)
-		{
+		if (model.getStartTime() == null) {
 			errors.rejectValue("startTimeS", "app.error.112", new Object[]{"Start Time"},"required field");
 		}
-		if(model.getFirstDeliveryTime()==null)
-		{
-			errors.rejectValue("firstDlvTimeS", "app.error.112", new Object[]{"First Dlv Time"},"required field");
+		if (model.getDispatchGroup() == null) {
+			errors.rejectValue("dispatchGroupS", "app.error.112", new Object[]{"Dispatch group time"},"required field");
 		}
-		if(model.getLastDeliveryTime()==null)
-		{
-			errors.rejectValue("endDlvTimeS", "app.error.112", new Object[]{"Last Dlv Time"},"required field");
+		if (model.getEndTime() == null) {
+			errors.rejectValue("endTimeS", "app.error.112", new Object[]{"Truck end time"},"required field");
 		}
-		if(model.getScribDate()==null)
-		{
+		if (model.getScribDate() == null) {
 			errors.rejectValue("scribDate", "app.error.112", new Object[]{"Date"},"required field");
 		}
-		if(model.getSupervisorCode()==null||model.getSupervisorCode().trim().length()==0)
-		{
+		if (model.getSupervisorCode() == null
+				|| model.getSupervisorCode().trim().length() == 0) {
 			errors.rejectValue("supervisorCode", "app.error.112", new Object[]{"Supervisor"},"required field");
 		}
-		if(model.getCutOffTime()==null)
-		{
+		if (model.getCutOffTime() == null) {
 			errors.rejectValue("cutOffTimeS", "app.error.112", new Object[]{"CutOff Time"},"required field");
 		}
 		
-		if(model.getFirstDeliveryTime() != null && model.getLastDeliveryTime() != null
-				&& model.getLastDeliveryTime().before(model.getFirstDeliveryTime())) {
-			errors.rejectValue("endDlvTimeS", "app.error.152", "Invalid Time");
+		if(model.getStartTime() != null && model.getDispatchGroup() != null
+				&& model.getStartTime().before(model.getDispatchGroup())) {
+			errors.rejectValue("startTimeS", "app.error.152", "Invalid Time");
 		}
 		
-		if(model.getFirstDeliveryTime() != null && model.getLastDeliveryTime() != null
-				&& model.getFirstDeliveryTime().after(model.getLastDeliveryTime())) {
-			errors.rejectValue("firstDlvTimeS", "app.error.151", "Invalid Time");
+		if(model.getStartTime() != null && model.getEndTime() != null && model.getEndTime().before(model.getStartTime())) {
+			errors.rejectValue("endTimeS", "app.error.151", "Invalid Time");
 		}
 	}
-	
 
 }

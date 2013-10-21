@@ -335,6 +335,7 @@ public class ScribController extends AbstractMultiActionController
 		}
 	}
 			
+	@SuppressWarnings("unchecked")
 	public ModelAndView scribSummaryHandler(HttpServletRequest request, HttpServletResponse response) 
 														throws ServletException, ParseException   {
 		
@@ -368,12 +369,9 @@ public class ScribController extends AbstractMultiActionController
           
           Collection<Scrib> selectedScribs = dispatchManagerService.getScribList(TransStringUtil.getServerDate(selectedDate));
           Collection<Scrib> baseScribs = dispatchManagerService.getScribList(TransStringUtil.getServerDate(baseDate));
-          
-          //relateTimeRange(allWindows, selectedWindows);
-          //relateTimeRange(allWindows, baseWindows);
-          
-          relateFirstDeliveryTime(allWindows, selectedScribMapping, selectedScribs);
-          relateFirstDeliveryTime(allWindows, baseScribMapping, baseScribs);
+            
+          relateTruckDispatchTime(allWindows, selectedScribMapping, selectedScribs);
+          relateTruckDispatchTime(allWindows, baseScribMapping, baseScribs);
                    
           request.setAttribute("selectedDate", selectedDate);
           request.setAttribute("baseDate", baseDate);
@@ -402,14 +400,14 @@ public class ScribController extends AbstractMultiActionController
 		}
 	}*/
 	
-	private void relateFirstDeliveryTime(Set<CustomTimeOfDay> allWindows, Map<String, Map<CustomTimeOfDay, Integer>> scribMapping
+	private void relateTruckDispatchTime(Set<CustomTimeOfDay> allWindows, Map<String, Map<CustomTimeOfDay, Integer>> scribMapping
 											, Collection<Scrib> scribs) {
 		
 		CustomTimeOfDay _timeOfDay = null;
 		if(scribs != null) {        	  
       	  for(Scrib _scrib : scribs) {
       		  if(_scrib.getZone() != null) {
-      			 _timeOfDay = new CustomTimeOfDay(_scrib.getFirstDeliveryTime());
+      			 _timeOfDay = new CustomTimeOfDay(_scrib.getStartTime());
       			allWindows.add(_timeOfDay);
       			if(!scribMapping.containsKey(_scrib.getZone().getZoneCode())) {
       				scribMapping.put(_scrib.getZone().getZoneCode(), new TreeMap<CustomTimeOfDay, Integer>());

@@ -66,10 +66,6 @@
 						</div>	&nbsp;					
 						<div style="float:left;"><br>
 	                   	  <span>&nbsp;<input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','weekdate','zone','facilityLocation','plan.do');" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
-						 <% if(!TransportationAdminProperties.isAutoDispatchEnabled()) {%>
-						  <span><input id="view_button" type="image" alt="Dispatch" src="./images/icons/dispatch.gif" onclick="javascript:doAutoDispatch('weekdate','daterange','zone','autoDispatch.do');" onmousedown="this.src='./images/icons/dispatch_ON.gif'" /> 
-							<a href="#"  onclick="javascript:doAutoDispatch('weekdate','daterange','zone','autoDispatch.do')" class="dispatch_link">Dispatch</a></span>
-						 <%}%>
 	                      <input style="font-size:11px" type = "button" height="18" value=" U/A " onclick="javascript:doUnavailable('plan.do','weekdate','daterange','y')" />
 	                      <input style="font-size:11px" type = "button" height="18" value="Kronos" onclick="javascript:doKronos('plan.do','weekdate','daterange','y','1')" />                  
 	                      <input style="font-size:11px" type = "button" height="18" value="Publish" onclick="javascript:doPublish();" />
@@ -105,15 +101,15 @@
               <ec:column property="planDay" sortable="true" title="Day"/>
 			  <ec:column property="facilityInfoEx" sortable="true" title="ORF-DTF"/>
 			  <ec:column property="equipmentTypeS" sortable="true" title="Equipment Type"/> 
-              <ec:column  cell="tooltip" alias="zoneCode" property="zoneNameEx" title="Zone"/>
+              <ec:column cell="tooltip" alias="zoneCode" property="zoneNameEx" title="Zone"/>
               <ec:column alias="region" property="regionCode" title="Region"/>
               <ec:column property="supervisorEx"   title="Sup" cell="tooltip"  />
-              <ec:column cell="date" format="hh:mm aaa" alias="startTime" property="startTimeEx" title="Start Time"/>
-              <ec:column cell="date" format="hh:mm aaa" alias="firstDeliveryTime" property="firstDeliveryTimeEx" title="First Dlv Time"/>
-              <ec:column cell="date" format="hh:mm aaa" alias="lastDeliveryTime" property="lastDeliveryTimeEx" title="Last Dlv Time"/>
-              <ec:column  filterable="true" property="drivers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Driver" alias="drivers"/>
-              <ec:column  filterable="true" property="helpers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Helper" alias="helpers"/>
-              <ec:column  filterable="true" property="runners"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Runner" alias="runners"/>
+              <ec:column cell="date" format="hh:mm aaa"  property="dispatchGroup" title="Dispatch Group Time"/>
+              <ec:column cell="date" format="hh:mm aaa"  property="startTime" title="Truck Dispatch Time"/>
+              <ec:column cell="date" format="hh:mm aaa"  property="endTime" title="Truck End Time"/>
+              <ec:column filterable="true" property="drivers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Driver" alias="drivers"/>
+              <ec:column filterable="true" property="helpers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Helper" alias="helpers"/>
+              <ec:column filterable="true" property="runners"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Runner" alias="runners"/>
               <ec:column property="sequence"  width="4px" title="Rank"/>
               <ec:column property="open"  width="4px" title="Open"/>
               <ec:column cell="date" format="hh:mm aaa" alias="cutOffTime" property="cutOffTimeEx" title="Handoff Time"/>
@@ -152,18 +148,7 @@
   			} 
   		}
 	 }
-		
-      function doAutoDispatch(compId1,compId2,compId3, url) {
-    	  	var param2 = document.getElementById(compId2).value;
-    	  	if(param2==''){
-		  		alert('Please enter the DATE to AUTO-DISPATCH for.');
-			}else{
-				var hasConfirmed = confirm ("You are about to perform AUTO-DISPATCH.  If DISPATCHES already exist for the "+param2+", ALL CHANGES WILL BE LOST.  Do you want to continue?")
-				if (hasConfirmed) {				
-					doCompositeLink(compId1,compId2,compId3, url);
-				}
-			} 
-      }
+	
       function doCompositeLink(compId1,compId2,compId3,compId4,url) {
           var param1 = document.getElementById(compId1).value;
           var param2 = document.getElementById(compId2).value;

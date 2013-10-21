@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.transadmin.model.AssetActivity;
 import com.freshdirect.transadmin.model.DispatchResource;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRole;
@@ -54,6 +55,7 @@ public class DispatchCommand extends WebPlanInfo {
     
     private String location;
     private String dispatchTime;
+    private Date firstDlvTime;
     private String checkedInTime;
     private EnumStatus dispatchStatus;
 	private boolean dispatched;
@@ -146,7 +148,12 @@ public class DispatchCommand extends WebPlanInfo {
 	public void setComments(String comments) {
 		this.comments = comments;
 	}
-		
+	public Date getFirstDlvTime() {
+		return firstDlvTime;
+	}
+	public void setFirstDlvTime(Date firstDlvTime) {
+		this.firstDlvTime = firstDlvTime;
+	}
 
 	@SuppressWarnings("unchecked")
 	public Set getResources() {
@@ -207,7 +214,7 @@ public class DispatchCommand extends WebPlanInfo {
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void setResources(EmployeeManagerI employeeManagerService,Set resources, Map resourceReqs, Collection punchInfos , Map empInfo,Map empRoleMap,
-			Map empStatusMap,Map empTruckPrefMap,Map empTeams, Map<String, Map<String, List<String>>> scannedAssetMapping) {
+			Map empStatusMap,Map empTruckPrefMap,Map empTeams, Map<String, List<AssetActivity>> scannedAssetMapping) {
 		
 		boolean hasPunchInfo=(punchInfos==null)?false:punchInfos.isEmpty()?false:true;
 		if(resources == null || resources.isEmpty())
@@ -314,25 +321,20 @@ public class DispatchCommand extends WebPlanInfo {
 		return _clonedPunchInfo;
 	}
 
-	private List<AssetScanInfo> setResourceAssetScanInfo(ResourceInfoI resourceInfo,
-			Map<String, List<String>> assetMapping) {
+	private void setResourceAssetScanInfo(ResourceInfoI resourceInfo,
+			List<AssetActivity> resourceScannedAssets) {
 		
 		List<AssetScanInfo> result = new ArrayList<AssetScanInfo>();
 		resourceInfo.setScannedAssets(result);
-		if(assetMapping != null) {
-			for(Map.Entry<String, List<String>> asseyEntry: assetMapping.entrySet()) {
-				if(asseyEntry.getValue() != null) {
-					for(String s : asseyEntry.getValue()) {
-						AssetScanInfo _asset = new AssetScanInfo();
-						result.add(_asset);
-						_asset.setAssetNo(s);
-						_asset.setEmployeeId(resourceInfo.getEmployeeId());
-						_asset.setStatus(asseyEntry.getKey());
-					}
-				}
+		if(resourceScannedAssets != null) {
+			for(AssetActivity asseyEntry: resourceScannedAssets) {				
+				AssetScanInfo _asset = new AssetScanInfo();
+				result.add(_asset);
+				_asset.setAssetNo(asseyEntry.getAssetNo());
+				_asset.setEmployeeId(resourceInfo.getEmployeeId());
+				_asset.setStatus(asseyEntry.getStatus());
 			}
 		}
-		return null;
 	}
 
 	private void setStatus(PunchInfoI punchInfo)

@@ -18,7 +18,8 @@ import com.freshdirect.transadmin.model.WaveInstance;
 import com.freshdirect.transadmin.model.WaveInstancePublish;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 
-public class WaveUtil {
+@SuppressWarnings("rawtypes")
+public class WaveUtil {	
 	
 	public static List<List<WaveInstance>> getWavesForPublish(Collection sourceData, Date deliveryDate
 													, String actionBy, EnumWaveInstancePublishSrc source
@@ -87,11 +88,8 @@ public class WaveUtil {
 					if(_tmpWaveInstance.getStartTime().before(_rootWaveInstance.getStartTime())) {
 						_rootWaveInstance.setStartTime(_tmpWaveInstance.getStartTime());
 					}
-					if(_tmpWaveInstance.getFirstDeliveryTime().before(_rootWaveInstance.getFirstDeliveryTime())) {
-						_rootWaveInstance.setFirstDeliveryTime(_tmpWaveInstance.getFirstDeliveryTime());
-					}
-					if(_tmpWaveInstance.getLastDeliveryTime().after(_rootWaveInstance.getLastDeliveryTime())) {
-						_rootWaveInstance.setLastDeliveryTime(_tmpWaveInstance.getLastDeliveryTime());
+					if(_tmpWaveInstance.getEndTime().after(_rootWaveInstance.getEndTime())) {
+						_rootWaveInstance.setEndTime(_tmpWaveInstance.getEndTime());
 					}
 					if(_tmpWaveInstance.getNoOfResources() > _rootWaveInstance.getNoOfResources()) {
 						_rootWaveInstance.setNoOfResources(_tmpWaveInstance.getNoOfResources());
@@ -128,8 +126,8 @@ public class WaveUtil {
 				key = new WaveInstanceKey();
 				key.setDeliveryDate(_tmpWaveInstance.getDeliveryDate());
 				key.setDispatchTime(_tmpWaveInstance.getDispatchTime());
-				key.setFirstDeliveryTime(_tmpWaveInstance.getFirstDeliveryTime());
-				key.setLastDeliveryTime(_tmpWaveInstance.getLastDeliveryTime());
+				key.setEndTime(_tmpWaveInstance.getEndTime());
+				key.setMaxTime(_tmpWaveInstance.getMaxTime());
 				key.setCutOffTime(_tmpWaveInstance.getCutOffTime());
 				key.setZone(_tmpWaveInstance.getArea());
 				key.setOriginFacility(_tmpWaveInstance.getOriginFacility());
@@ -150,8 +148,8 @@ public class WaveUtil {
 					key = new WaveInstanceKey();
 					key.setDeliveryDate(instanceSource.getDeliveryDate());
 					key.setDispatchTime(instanceSource.getStartTime());
-					key.setFirstDeliveryTime(instanceSource.getFirstDeliveryTime());
-					key.setLastDeliveryTime(instanceSource.getLastDeliveryTime());
+					key.setEndTime(instanceSource.getEndTime());
+					key.setMaxTime(instanceSource.getMaxReturnTime());
 					key.setCutOffTime(instanceSource.getCutOffTime());
 					key.setZone(instanceSource.getZone().getZoneCode());
 					key.setOriginFacility(instanceSource.getOriginFacility());
@@ -208,8 +206,8 @@ public class WaveUtil {
 			_tmpWaveInstance.setCutOffTime(waveMppEntry.getKey().getCutOffTime());
 			_tmpWaveInstance.setDeliveryDate(waveMppEntry.getKey().getDeliveryDate());
 			_tmpWaveInstance.setDispatchTime(waveMppEntry.getKey().getDispatchTime());
-			_tmpWaveInstance.setFirstDeliveryTime(waveMppEntry.getKey().getFirstDeliveryTime());
-			_tmpWaveInstance.setLastDeliveryTime(waveMppEntry.getKey().getLastDeliveryTime());
+			_tmpWaveInstance.setEndTime(waveMppEntry.getKey().getEndTime());
+			_tmpWaveInstance.setMaxTime(waveMppEntry.getKey().getMaxTime());
 			_tmpWaveInstance.setEquipmentType(waveMppEntry.getKey().getEquipmentType());
 					
 			_tmpWaveInstance.setModifiedTime(new Date());				

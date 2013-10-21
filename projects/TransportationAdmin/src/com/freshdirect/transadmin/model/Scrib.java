@@ -13,30 +13,38 @@ import com.freshdirect.transadmin.util.TransStringUtil;
 public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 	
 	private String scribId;
+	private TrnFacility originFacility;
+	private TrnFacility destinationFacility;
 	private Zone zone;
 	private Region region;
-	private Date scribDate;
+	private Date scribDate;	
+	private Date dispatchGroup;
 	private Date startTime;
-	private Date firstDeliveryTime;
-	private Date lastDeliveryTime;
+	private Date endTime;
 	private Date maxReturnTime;
 	private int routeLength;
-	private int count;
-	private int resources;
+	private int truckCnt;
+	private int handTruckCnt;
 	private String supervisorCode;
 	private String supervisorName;
-	
 	private String shiftType;
 	private double shiftDuration;
 	private String scribLabel;
-	private String firstDeliveryTimeModified;
-	private String zoneModified;
-	
 	private Date cutOffTime;
-	private TrnFacility originFacility;
-	private TrnFacility destinationFacility;
 	private String equipmentTypeS;
-	private List<EquipmentType> equipmentTypes;
+	private List<EquipmentType> equipmentTypes;	
+	
+	private String dispatchGroupModified;
+	private String zoneModified;
+		
+	public Date getDispatchGroup() {
+		return dispatchGroup;
+	}
+
+	public void setDispatchGroup(Date dispatchGroup) {
+		this.dispatchGroup = dispatchGroup;
+	}
+
 	public TrnFacility getOriginFacility() {
 		return originFacility;
 	}
@@ -51,79 +59,6 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 
 	public void setDestinationFacility(TrnFacility destinationFacility) {
 		this.destinationFacility = destinationFacility;
-	}
-
-	public Date getFirstDeliveryTime() {
-		return firstDeliveryTime;
-	}
-
-	public Date getLastDeliveryTime() {
-		return lastDeliveryTime;
-	}
-
-	public void setFirstDeliveryTime(Date firstDeliveryTime) {
-		this.firstDeliveryTime = firstDeliveryTime;
-	}
-
-	public void setLastDeliveryTime(Date lastDeliveryTime) {
-		this.lastDeliveryTime = lastDeliveryTime;
-	}
-
-	public String getZoneModified() {
-		return zoneModified;
-	}
-
-	public void setZoneModified(String zoneModified) {
-		this.zoneModified = zoneModified;
-	}
-
-	public String getFirstDeliveryTimeModified() {
-		return firstDeliveryTimeModified;
-	}
-
-	public void setFirstDeliveryTimeModified(String firstDeliveryTimeModified) {
-		this.firstDeliveryTimeModified = firstDeliveryTimeModified;
-	}
-	
-	public String getScribLabel() {
-		return scribLabel;
-	}
-	public void setScribLabel(String scribLabel) {
-		this.scribLabel = scribLabel;
-	}
-	public String getShiftType() {
-		return shiftType;
-	}
-	public void setShiftType(String shiftType) {
-		this.shiftType = shiftType;
-	}
-	public double getShiftDuration() {
-		return shiftDuration;
-	}
-	public void setShiftDuration(double shiftDuration) {
-		this.shiftDuration = shiftDuration;
-	}
-	public int getCount() {
-		return count;
-	}
-	public String getCount1() {
-		return resources==0?null:""+resources;
-	}
-	public void setCount(int count) {
-		this.count = count;
-	}
-	
-	public Region getRegion() {
-		return region;
-	}
-	public void setRegion(Region region) {
-		this.region = region;
-	}
-	public int getRouteLength() {
-		return routeLength;
-	}
-	public void setRouteLength(int routeLength) {
-		this.routeLength = routeLength;
 	}
 	public Date getScribDate() {
 		return scribDate;
@@ -143,104 +78,162 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 	public void setStartTime(Date scribTime) {
 		this.startTime = scribTime;
 	}
-	
 	public Zone getZone() {
 		return zone;
 	}
 	public void setZone(Zone zone) {
 		this.zone = zone;
 	}
+	public Date getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+	public Date getMaxReturnTime() {
+		return maxReturnTime;
+	}
+	public void setMaxReturnTime(Date maxReturnTime) {
+		this.maxReturnTime = maxReturnTime;
+	}
+
+	public String getZoneModified() {
+		return zoneModified;
+	}
+
+	public void setZoneModified(String zoneModified) {
+		this.zoneModified = zoneModified;
+	}
 	
-	public Date getPrefRuturn()
-	{
-		if(lastDeliveryTime==null)return null;
-		Calendar c=Calendar.getInstance();
-		c.setTime(lastDeliveryTime);
-		int stemTime=0;
-		if(zone != null && zone.getStemNotNullFromTime()!=null)
-			stemTime = zone.getStemNotNullFromTime().intValue();
-		else if (destinationFacility != null && destinationFacility.getLeadFromTime() != null)
-			stemTime = destinationFacility.getLeadFromTime().intValue();
+	public String getScribLabel() {
+		return scribLabel;
+	}
+	public void setScribLabel(String scribLabel) {
+		this.scribLabel = scribLabel;
+	}
+	public String getShiftType() {
+		return shiftType;
+	}
+	public void setShiftType(String shiftType) {
+		this.shiftType = shiftType;
+	}
+	public double getShiftDuration() {
+		return shiftDuration;
+	}
+	public void setShiftDuration(double shiftDuration) {
+		this.shiftDuration = shiftDuration;
+	}		
+	public int getTruckCnt() {
+		return truckCnt;
+	}
+	public void setTruckCnt(int truckCnt) {
+		this.truckCnt = truckCnt;
+	}
+	public String getDispatchGroupModified() {
+		return dispatchGroupModified;
+	}
+	public void setDispatchGroupModified(String dispatchGroupModified) {
+		this.dispatchGroupModified = dispatchGroupModified;
+	}
+	public String getHandTruckCnt1() {
+		return handTruckCnt == 0 ? null : "" + handTruckCnt;
+	}	
+	public Region getRegion() {
+		return region;
+	}
+	public void setRegion(Region region) {
+		this.region = region;
+	}
+	public int getRouteLength() {
+		return routeLength;
+	}
+	public void setRouteLength(int routeLength) {
+		this.routeLength = routeLength;
+	}
+
+	public Date getWaveStart() {
+		Calendar c = Calendar.getInstance();
+		c.setTime(startTime);
+		int stemTime = 0;
+		if (zone != null && zone.getPreTripTime() != null) {
+			stemTime = zone.getPreTripTime().intValue();
+		} else if (destinationFacility != null) {
+			stemTime = destinationFacility.getLeadToTime() != null 
+							? destinationFacility.getLeadToTime().intValue() 
+									: destinationFacility.getLeadFromTime() != null ? destinationFacility.getLeadFromTime().intValue() : 0;
+		}
 		c.add(Calendar.MINUTE, stemTime);
 		return c.getTime();
 	}
-	public Date getMaxReturnTime() 
-	{
-		return maxReturnTime;
-		
-	}
-	public Date getMaxReturnTimeDisplay() 
-	{
-		Date d=maxReturnTime;
-		if(d==null)d=getPrefRuturn();
-		return d;
-	}
-	public Date getMaxReturnTimeDisplay1() 
-	{
-		Date d=maxReturnTime;		
-		return d;
-	}
-	public void setMaxReturnTime(Date maxReturnTime) 
-	{
-		this.maxReturnTime = maxReturnTime;
-	}
-	
-	public Date getWaveStart()
-	{
-		Calendar c=Calendar.getInstance();
-		c.setTime(firstDeliveryTime);
-		int stemTime=0;
-		if(zone != null && zone.getStemToTime()!=null)
-			stemTime = zone.getStemToTime().intValue();
-		else if (destinationFacility != null && destinationFacility.getLeadToTime() != null)
-			stemTime = destinationFacility.getLeadToTime().intValue();
+
+	public Date getPrefRunTime() {
+		if (endTime == null)
+			return null;
+		Calendar c = Calendar.getInstance();
+		c.setTime(endTime);
+		int stemTime = 0;
+		if (zone != null && zone.getPostTripTime() != null) {
+			stemTime = zone.getPostTripTime().intValue();
+		} else if (destinationFacility != null) {
+			stemTime = destinationFacility.getLeadFromTime() != null 
+							? destinationFacility.getLeadFromTime().intValue() 
+									: destinationFacility.getLeadToTime() != null ? destinationFacility.getLeadToTime().intValue() : 0;
+		}
 		c.add(Calendar.MINUTE, -stemTime);
-		return c.getTime();
-	}
-	public Date getPrefTime()
-	{
-		long time=getPrefRuturn().getTime()-getWaveStart().getTime();
-		return new Date(time-TimeZone.getDefault().getRawOffset());
-	}
-	public Date getMaxTime()
-	{
-		long time=getMaxReturnTimeDisplay().getTime()-getWaveStart().getTime();
-		return new Date(time-TimeZone.getDefault().getRawOffset());
-	}
-	public Date getMaxTime1()
-	{
-		if(maxReturnTime==null) return null;
-		else return getMaxTime();
-	}
-	public Date getMaxTimeOrig()
-	{
-		long time=getMaxReturnTimeDisplay().getTime()-getWaveStart().getTime();
-		return new Date(time);
-	}
 
-	public Date getStemToTime() {
-		long time = 0;
-		if (zone != null && zone.getStemToTime() != null)
-			time = zone.getStemToTime().intValue() * 60 * 1000;
-		else if (destinationFacility != null && destinationFacility.getLeadToTime() != null)
-			time = destinationFacility.getLeadToTime().intValue() * 60 * 1000;
+		long time = c.getTime().getTime() - getWaveStart().getTime();
 		return new Date(time - TimeZone.getDefault().getRawOffset());
 	}
 
-	public Date getStemFromTime() {
+	public Date getMaxRunTime() {
+
+		if (maxReturnTime == null) {
+			return getPrefRunTime();
+		}
+		Calendar c = Calendar.getInstance();
+		c.setTime(maxReturnTime);
+		int stemTime = 0;
+		if (zone != null && zone.getPostTripTime() != null) {
+			stemTime = zone.getPostTripTime().intValue();
+		} else if (destinationFacility != null) {
+			stemTime = destinationFacility.getLeadFromTime() != null 
+							? destinationFacility.getLeadFromTime().intValue() 
+									: destinationFacility.getLeadToTime() != null ? destinationFacility.getLeadToTime().intValue() : 0;
+		}
+		c.add(Calendar.MINUTE, -stemTime);
+
+		long time = c.getTime().getTime() - getWaveStart().getTime();
+		return new Date(time - TimeZone.getDefault().getRawOffset());
+
+	}
+
+	public Date getPreTripTime() {
 		long time = 0;
-		if (zone != null && zone.getStemFromTime() != null) {
-			time = zone.getStemFromTime().intValue() * 60 * 1000;
-		} else if (destinationFacility != null && destinationFacility.getLeadFromTime() != null) {
-			time = destinationFacility.getLeadFromTime().intValue() * 60 * 1000;
+		if (zone != null && zone.getPreTripTime() != null)
+			time = zone.getPreTripTime().intValue() * 60 * 1000;
+		else if (destinationFacility != null)
+			time = destinationFacility.getLeadToTime() != null 
+						? destinationFacility.getLeadToTime().intValue() * 60 * 1000 
+								: destinationFacility.getLeadFromTime() != null ? destinationFacility.getLeadFromTime().intValue() * 60 * 1000  : 0;			
+		return new Date(time - TimeZone.getDefault().getRawOffset());
+	}
+
+	public Date getPostTripTime() {
+		long time = 0;
+		if(zone != null && zone.getPostTripTime() != null) {
+			time = zone.getPostTripTime().intValue() * 60 * 1000;		
+		} else if (destinationFacility != null) {
+			time = destinationFacility.getLeadFromTime() != null 
+					? destinationFacility.getLeadFromTime().intValue() * 60 * 1000 
+							: destinationFacility.getLeadToTime() != null ? destinationFacility.getLeadToTime().intValue() * 60 * 1000  : 0;
 		}
 		return new Date(time - TimeZone.getDefault().getRawOffset());
 	}
 	
-	public String getEndDlvTimeS() {
+	public String getEndTimeS() {
 		try {
-			if (lastDeliveryTime != null)
-				return TransStringUtil.getServerTime(lastDeliveryTime);
+			if (endTime != null)
+				return TransStringUtil.getServerTime(endTime);
 		} catch (ParseException e) {
 
 		}
@@ -248,34 +241,12 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 
 	}
 
-	public void setEndDlvTimeS(String endDlvTimeS) {
+	public void setEndTimeS(String endTimeS) {
 		try {
-			if (endDlvTimeS != null && endDlvTimeS.length() > 0)
-				lastDeliveryTime = TransStringUtil.getServerTime(endDlvTimeS);
+			if (endTimeS != null && endTimeS.length() > 0)
+				endTime = TransStringUtil.getServerTime(endTimeS);
 			else
-				lastDeliveryTime = null;
-		} catch (ParseException e) {
-
-		}
-	}
-
-	public String getFirstDlvTimeS() {
-		try {
-			if (firstDeliveryTime != null)
-				return TransStringUtil.getServerTime(firstDeliveryTime);
-		} catch (ParseException e) {
-
-		}
-		return null;
-	}
-
-	public void setFirstDlvTimeS(String firstDlvTimeS) {
-		try {
-			if (firstDlvTimeS != null && firstDlvTimeS.length() > 0)
-				firstDeliveryTime = TransStringUtil
-						.getServerTime(firstDlvTimeS);
-			else
-				firstDeliveryTime = null;
+				endTime = null;
 		} catch (ParseException e) {
 
 		}
@@ -323,28 +294,66 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 
 		}
 	}
+	
+	public String getDispatchGroupS() {
+		try {
+			if (dispatchGroup != null)
+				return TransStringUtil.getServerTime(dispatchGroup);
+		} catch (ParseException e) {
+
+		}
+		return null;
+	}
+	public void setDispatchGroupS(String timeS) {
+
+		try 
+		{
+			if (timeS != null && timeS.length() > 0)
+				dispatchGroup = TransStringUtil.getServerTime(timeS);
+			else dispatchGroup = null;
+		} catch (ParseException e) 
+		{
+			
+		}
+	}
 
 	public String getZoneS() 
 	{
-		if(zone!=null)return zone.getZoneCode();
+		if (zone != null)
+			return zone.getZoneCode();
 		return null;
 	}
 	public String getRegionS() 
 	{
-		if(region!=null)return region.getCode();
+		if (region != null)
+			return region.getCode();
 		return null;
 	}
 	public void setZoneS(String zoneS) 
 	{
-		if(zoneS!=null&&zoneS.length()>0){ zone=new Zone();zone.setZoneCode(zoneS);}
-		else zone=null;
+		if (zoneS != null && zoneS.length() > 0) {
+			zone = new Zone();
+			zone.setZoneCode(zoneS);
+		} else {
+			zone = null;
+		}
 	}
-	public int getResources() {
-		return resources;
+	public void setRegionS(String regionS) 
+	{
+		if (regionS != null && regionS.length() > 0) {
+			region = new Region();
+			region.setCode(regionS);
+		} else {
+			region = null;
+		}
 	}
-	public void setResources(int resources) {
-		this.resources = resources;
+	public int getHandTruckCnt() {
+		return handTruckCnt;
 	}
+	public void setHandTruckCnt(int handTruckCnt) {
+		this.handTruckCnt = handTruckCnt;
+	}
+
 	public String getSupervisorCode() {
 		return supervisorCode;
 	}
@@ -374,7 +383,6 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 
 		}
 		return null;
-
 	}
 
 	public void setCutOffTimeS(String cutOffTimeS) {
@@ -399,21 +407,21 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 		// TODO Auto-generated method stub
 		return this.getZone() != null && this.getZone().getArea() != null 
 						&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot()) 
-						&& EnumTransportationFacilitySrc.DEPOTDELIVERY.getName().equals(this.getOriginFacility().getTrnFacilityType().getName()) ? this.getResources() : this.getCount() ;
+						&& EnumTransportationFacilitySrc.DEPOTDELIVERY.getName().equals(this.getOriginFacility().getTrnFacilityType().getName()) ? this.getHandTruckCnt() : this.getTruckCnt() ;
 	}
 
 	public int getNoOfResources1() {
 		// TODO Auto-generated method stub
 		return this.getZone() != null && this.getZone().getArea() != null 
 						&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot()) 
-						 ? this.getResources() : this.getCount() ;
+						 ? this.getHandTruckCnt() : this.getTruckCnt() ;
 	}
 
 	@Override
 	public boolean isValidSource() {
 		// TODO Auto-generated method stub
 		return this.getOriginFacility() != null && this.getDeliveryDate() != null && this.getStartTime()!= null 
-					&& this.getFirstDeliveryTime() != null && this.getLastDeliveryTime() != null 
+					&& this.getDispatchGroup() != null && this.getEndTime() != null 
 					&& this.getCutOffTime() != null && this.getZone() != null;
 	}
 
@@ -434,9 +442,9 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 		if(this.getZone() != null && this.getZone().getArea() != null 
 				&& "X".equalsIgnoreCase(this.getZone().getArea().getIsDepot())
 				&& EnumTransportationFacilitySrc.DEPOTDELIVERY.getName().equals(this.getOriginFacility().getTrnFacilityType().getName())) {
-			this.setResources(value);
+			this.setHandTruckCnt(value);
 		} else {
-			this.setCount(value);
+			this.setTruckCnt(value);
 		}
 	}
 	
@@ -464,9 +472,7 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 			originFacility = null;
 			destinationFacility = null;
 		}
-	}
-
-	
+	}	
 
 	public String getEquipmentTypeS() {
 		return equipmentTypeS;

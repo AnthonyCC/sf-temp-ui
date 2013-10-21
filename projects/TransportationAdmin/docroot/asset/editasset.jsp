@@ -263,7 +263,7 @@
 				{key:'attributeMatch',label:'Is Overriden?',formatter:function(elCell, oRecord, oColumn, oData) {
 												if(oData === 'O'){
         											elCell.innerHTML = '<img src="images/icons/tick.gif" title="Overriden" />';
-        										}else if(oData === 'U'){
+        										} else if(oData === 'U'){
 													elCell.innerHTML = '<img src="images/icons/unique.gif" title="Unique" />';
 												}
     			}}

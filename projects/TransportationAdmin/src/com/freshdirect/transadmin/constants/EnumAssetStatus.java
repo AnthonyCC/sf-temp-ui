@@ -47,4 +47,14 @@ public class EnumAssetStatus  extends Enum {
 	public String toString() {
 		return this.getName();
 	}
+	
+	public static EnumAssetStatus getEnumByDesc(String desc) {
+		
+		for(Object _option :  EnumAssetStatus.getEnumList()){
+			if(((EnumAssetStatus) _option).getDescription().equalsIgnoreCase(desc)){
+				return (EnumAssetStatus) _option;
+			}
+		}
+		return null;
+	}
 }

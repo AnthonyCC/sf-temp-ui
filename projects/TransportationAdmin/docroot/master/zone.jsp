@@ -83,8 +83,8 @@
             				  <ec:column  filterable="true" property="pmZoneSupervisors"  cell="com.freshdirect.transadmin.web.ui.FDZoneSupervisorCell" title="PM Supervisors" alias="pmSupervisors"/>
                               <ec:column alias="priority" property="priority" title="Priority"/>
                               <ec:column alias="enableCOS" property="cosEnabled" title="COS Enabled"/>
-                              <ec:column alias="stemfrom" property="stemToTime" title="Avg To Stem Time(Mins)"/>
-							  <ec:column alias="stemto" property="stemFromTime" title="Avg From Stem Time(Mins)"/>							  
+                              <ec:column alias="preTrip" property="preTripTime" title="Pre-Trip (Mins)"/>
+							  <ec:column alias="postTrip" property="postTripTime" title="Post-Trip (Mins)"/>
 							  <ec:column alias="loadingPriority" property="loadingPriority" title="Loading Priority"/>
 							  <ec:column property="ecoFriendly" title="Eco Friendly Radius"/>
 							  <ec:column property="steeringRadius" title="Steering Radius"/>
@@ -107,10 +107,10 @@
 							  <ec:column alias="region" property="region.name" title="Region"/>
                               <ec:column alias="serviceTimeType" property="defaultServiceTimeType.name" title="ServiceTime Type"/>
                               <ec:column alias="priority" property="priority" title="Priority"/>
-                               <ec:column alias="enableCOS" property="cosEnabled" title="COS Enabled"/>
+                              <ec:column alias="enableCOS" property="cosEnabled" title="COS Enabled"/>
 							  <ec:column alias="unattended" property="unattended" title="Unattended"/>
-							  <ec:column alias="stemfrom" property="stemToTime" title="Avg To Stem Time(Mins)"/>
-							  <ec:column alias="stemto" property="stemFromTime" title="Avg From Stem Time(Mins)"/>							  
+							  <ec:column alias="preTrip" property="preTripTime" title="Pre-Trip (Mins)"/>
+							  <ec:column alias="postTrip" property="postTripTime" title="Post-Trip (Mins)"/>						  
 							  <ec:column alias="loadingPriority" property="loadingPriority" title="Loading Priority"/>
 							  <ec:column property="ecoFriendly" title="Eco Friendly Radius"/>
 							  <ec:column property="steeringRadius" title="Steering Radius"/>

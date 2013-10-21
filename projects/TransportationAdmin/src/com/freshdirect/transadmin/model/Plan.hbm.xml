@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+
 <hibernate-mapping schema="transp" >
     <class name="com.freshdirect.transadmin.model.Plan" table="PLAN">
         <id name="planId" type="string">
@@ -22,11 +22,14 @@
         <property name="planDate" type="date">
             <column name="PLAN_DATE" length="7" not-null="true" />
         </property>
-        <property name="firstDeliveryTime" type="timestamp">
-            <column name="FIRST_DLV_TIME" length="7" not-null="true" />
+        <property name="dispatchGroup" type="timestamp">
+            <column name="DISPATCH_GROUPTIME" length="7" not-null="true" />
         </property>
         <property name="startTime" type="timestamp">
-            <column name="START_TIME" length="7" not-null="true" />
+            <column name="TRUCK_DISPATCHTIME" length="7" not-null="true" />
+        </property>
+        <property name="endTime" type="timestamp">
+            <column name="TRUCK_ENDTIME" length="7" not-null="true" />
         </property>
         <property name="sequence" type="int">
             <column name="SEQUENCE" precision="5" scale="0" not-null="true" />
@@ -34,7 +37,7 @@
         <property name="isBullpen" type="string">
             <column name="IS_BULLPEN" length="1" />
         </property>
-         <property name="maxTime" type="timestamp">
+         <property name="maxReturnTime" type="timestamp">
             <column name="MAX_TIME" length="7"  />
         </property>
         <property name="open" type="string">
@@ -42,9 +45,6 @@
         </property>
         <property name="isTeamOverride" type="yes_no">
             <column name="ISTEAMOVERRIDE" length="1" />
-        </property>
-        <property name="lastDeliveryTime" type="timestamp">
-            <column name="LAST_DLV_TIME" length="7" not-null="true" />
         </property>
         <property name="cutOffTime" type="timestamp">
             <column name="CUTOFF_DATETIME" length="7" />

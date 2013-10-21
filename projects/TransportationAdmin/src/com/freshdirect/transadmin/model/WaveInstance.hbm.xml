@@ -17,13 +17,13 @@
             <column name="DELIVERY_DATE" length="7" not-null="true" />
         </property>
         <property name="dispatchTime" type="timestamp">
-            <column name="DISPATCH_TIME" length="7" not-null="true" />
+            <column name="TRUCK_DISPATCHTIME" length="7" not-null="true" />
         </property>
-        <property name="firstDeliveryTime" type="timestamp">
-            <column name="FIRST_DLV_TIME" length="7" not-null="true" />
+        <property name="endTime" type="timestamp">
+            <column name="TRUCK_ENDTIME" length="7" not-null="true" />
         </property>
-        <property name="lastDeliveryTime" type="timestamp">
-            <column name="LAST_DLV_TIME" length="7" not-null="true" />
+        <property name="maxTime" type="timestamp">
+            <column name="MAX_TIME" length="7" />
         </property>
         <property name="cutOffTime" type="timestamp">
             <column name="CUTOFF_DATETIME" length="7" not-null="true" />

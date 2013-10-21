@@ -195,7 +195,7 @@ public class MaintenanceLogFormController extends AbstractFormController {
 						if(EnumServiceStatus.ACTIVE.getDescription().equalsIgnoreCase(_command.getServiceStatus()))
 							((Asset)asset.iterator().next()).setAssetStatus(EnumAssetStatus.ACTIVE);
 						else
-							((Asset)asset.iterator().next()).setAssetStatus(EnumAssetStatus.INCOMING);
+							((Asset)asset.iterator().next()).setAssetStatus(EnumAssetStatus.OUTSERVICE );
 						getAssetManagerService().saveEntity(((Asset)asset.iterator().next()));
 					}
 				}

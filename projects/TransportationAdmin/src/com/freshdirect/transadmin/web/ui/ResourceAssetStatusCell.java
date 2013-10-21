@@ -31,30 +31,21 @@ public class ResourceAssetStatusCell extends FDBaseCell  {
 						.get(i);
 				if(resourceInfo.getScannedAssets() != null) {
 					for (int j = 0; j < resourceInfo.getScannedAssets().size(); j++) {
-						String name = getAssetNo(((AssetScanInfo) resourceInfo
-								.getScannedAssets().get(j)));
+						String name = ((AssetScanInfo) resourceInfo.getScannedAssets().get(j)).getAssetNo();;
 						response.append(name);
 	
-						if (i < (resourceInfo.getScannedAssets().size() - 1)
-								&& !TransStringUtil.isEmpty(name)) {
-							response.append(TransportationAdminProperties
-									.getCellDataSeperator());
+						if (i < (resourceInfo.getScannedAssets().size() - 1) && !TransStringUtil.isEmpty(name)) {
+							response.append(TransportationAdminProperties.getCellDataSeperator());
 						}
 					}
 				}
 			}
-			if (TransportationAdminProperties.getCellDataSeperator().equals(
-					response.toString())) {
+			if (TransportationAdminProperties.getCellDataSeperator().equals(response.toString())) {
 				return "";
 			}
 
-			if (response.toString().endsWith(
-					TransportationAdminProperties.getCellDataSeperator()))
-				return response.toString().substring(
-						0,
-						response.toString().lastIndexOf(
-								TransportationAdminProperties
-										.getCellDataSeperator()));
+			if (response.toString().endsWith(TransportationAdminProperties.getCellDataSeperator()))
+				return response.toString().substring(0,	response.toString().lastIndexOf(TransportationAdminProperties.getCellDataSeperator()));
 			return response.toString();
 		}
 		return "";    
@@ -76,8 +67,8 @@ public class ResourceAssetStatusCell extends FDBaseCell  {
 				DispatchResourceInfo resourceInfo = (DispatchResourceInfo) resources.get(i);
 				if(resourceInfo.getScannedAssets() != null) {
 					for (int j = 0; j < resourceInfo.getScannedAssets().size(); j++) {
-						String assetNo = getAssetNo(((AssetScanInfo)resourceInfo.getScannedAssets().get(j)));
-						String status = getAssetStatus(((AssetScanInfo)resourceInfo.getScannedAssets().get(j)));
+						String assetNo = ((AssetScanInfo)resourceInfo.getScannedAssets().get(j)).getAssetNo();
+						String status =  ((AssetScanInfo)resourceInfo.getScannedAssets().get(j)).getStatus();
 						
 						html.tr(j).close();
 						HtmlBuilder td = html.td(0);
@@ -100,22 +91,5 @@ public class ResourceAssetStatusCell extends FDBaseCell  {
         return columnBuilder.toString();
     	
     }
-    
-    public String getAssetNo(AssetScanInfo asset) {
-    	if(asset != null) {
-    		return asset.getAssetNo();
-    	} else {
-    		return "";
-    	}
-    }
-    
-    public String getAssetStatus(AssetScanInfo asset) {
-    	if(asset != null) {
-    		return asset.getStatus();
-    	} else {
-    		return "";
-    	}
-    }
-    
-    
+
 }

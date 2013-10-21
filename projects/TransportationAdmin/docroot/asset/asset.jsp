@@ -103,6 +103,7 @@
 							  <ec:column property="assetStatus.description" title="Status" />
 							  <ec:column property="domicile" title="Domicile"/>
 							  <ec:column property="vendor" title="Vendor"/>
+							  <ec:column property="vendorNumber" title="Vendor Number"/>
 							  <ec:column property="bodyLength" title="Body Length" />
 							</ec:row>
 						  </ec:table>

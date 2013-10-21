@@ -10,8 +10,8 @@ public class WaveInstance implements java.io.Serializable, TrnBaseEntityI  {
 	private String area;
 	private Date deliveryDate;
 	private Date dispatchTime;
-	private Date firstDeliveryTime;
-	private Date lastDeliveryTime;
+	private Date endTime;
+	private Date maxTime;
 	private Date cutOffTime;
 	private int noOfResources;
 	private EnumWaveInstanceStatus status;
@@ -45,12 +45,8 @@ public class WaveInstance implements java.io.Serializable, TrnBaseEntityI  {
 	public Date getDeliveryDate() {
 		return deliveryDate;
 	}
-	
-	public Date getFirstDeliveryTime() {
-		return firstDeliveryTime;
-	}
-	public Date getLastDeliveryTime() {
-		return lastDeliveryTime;
+	public Date getEndTime() {
+		return endTime;
 	}
 	public Date getCutOffTime() {
 		return cutOffTime;
@@ -95,12 +91,14 @@ public class WaveInstance implements java.io.Serializable, TrnBaseEntityI  {
 	public void setDeliveryDate(Date deliveryDate) {
 		this.deliveryDate = deliveryDate;
 	}
-	
-	public void setFirstDeliveryTime(Date firstDeliveryTime) {
-		this.firstDeliveryTime = firstDeliveryTime;
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}	
+	public Date getMaxTime() {
+		return maxTime;
 	}
-	public void setLastDeliveryTime(Date lastDeliveryTime) {
-		this.lastDeliveryTime = lastDeliveryTime;
+	public void setMaxTime(Date maxTime) {
+		this.maxTime = maxTime;
 	}
 	public void setCutOffTime(Date cutOffTime) {
 		this.cutOffTime = cutOffTime;

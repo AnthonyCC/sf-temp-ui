@@ -21,6 +21,8 @@ public class Dispatch implements java.io.Serializable{
 	private String truck;
 	private String physicalTruck;
 	private Date startTime;
+	private Date endTime;
+	private Date dispatchGroup;
 	private Date firstDlvTime;
 	private Boolean confirmed;
 	private String planId;
@@ -77,7 +79,7 @@ public class Dispatch implements java.io.Serializable{
 	public Dispatch(String dispatchId, Zone zone,
 			DispositionType dispositionType, Date dispatchDate,
 			String supervisorId, String route, String truck, Date startTime,
-			Date firstDlvTime, Boolean confirmed, String planId,
+			Date dispatchGroup, Boolean confirmed, String planId,
 			String comments, Set dispatchResources) {
 		this.dispatchId = dispatchId;
 		this.zone = zone;
@@ -87,7 +89,7 @@ public class Dispatch implements java.io.Serializable{
 		this.route = route;
 		this.truck = truck;
 		this.startTime = startTime;
-		this.firstDlvTime = firstDlvTime;
+		this.dispatchGroup = dispatchGroup;
 		this.confirmed = confirmed;
 		this.planId = planId;
 		this.comments = comments;
@@ -157,9 +159,25 @@ public class Dispatch implements java.io.Serializable{
 	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
+	
+	public Date getEndTime() {
+		return endTime;
+	}
 
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public Date getDispatchGroup() {
+		return dispatchGroup;
+	}
+
+	public void setDispatchGroup(Date dispatchGroup) {
+		this.dispatchGroup = dispatchGroup;
+	}
+	
 	public Date getFirstDlvTime() {
-		return this.firstDlvTime;
+		return firstDlvTime;
 	}
 
 	public void setFirstDlvTime(Date firstDlvTime) {

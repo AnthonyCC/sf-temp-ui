@@ -10,21 +10,24 @@ public class HandOffBatchPlan implements IHandOffBatchPlan  {
 	private String zoneCode;
 	private String region;
 	private Date planDate;
-	private Date firstDeliveryTime;
-	private Date startTime;
+
+	private Date dispatchTime;
+	private Date endTime;
+	private Date maxTime;
+
+	private Date cutOffTime;
+	
 	private int sequence;
 	private String isBullpen;
 	private Set batchPlanResources = new HashSet(0);
 	private String supervisorId;
 	private String userId;
-	private Date maxTime;
 	private String isOpen;
 	private Boolean isTeamOverride;
 	
-	private Date lastDeliveryTime;
-	private Date cutOffTime;
 	private String originFacility;
 	private String destinationFacility;
+	private Date dispatchGroup;
 	private int runnerMax;
 	
 	public HandOffBatchPlan() {
@@ -32,18 +35,18 @@ public class HandOffBatchPlan implements IHandOffBatchPlan  {
 	}
 
 	public HandOffBatchPlan(String planId, String zoneCode, String region,
-			Date planDate, Date firstDeliveryTime, Date startTime,
+			Date planDate, Date endTime, Date dispatchTime,
 			int sequence, String isBullpen, Set batchPlanResources,
 			String supervisorId,String userId, Date maxTime, String isOpen, Boolean isTeamOverride, String originFacility,
 			String destinationFacility,
-			Date lastDeliveryTime, Date cutOffTime) {
+			Date cutOffTime, Date dispatchGroup) {
 		super();
 		this.planId = planId;
 		this.zoneCode = zoneCode;
 		this.region = region;
 		this.planDate = planDate;
-		this.firstDeliveryTime = firstDeliveryTime;
-		this.startTime = startTime;
+		this.endTime = endTime;
+		this.dispatchTime = dispatchTime;
 		this.sequence = sequence;
 		this.isBullpen = isBullpen;
 		this.batchPlanResources = batchPlanResources;	
@@ -52,10 +55,10 @@ public class HandOffBatchPlan implements IHandOffBatchPlan  {
 		this.maxTime = maxTime;
 		this.isOpen = isOpen;
 		this.isTeamOverride = isTeamOverride;
-		this.lastDeliveryTime = lastDeliveryTime;
 		this.originFacility = originFacility;
 		this.destinationFacility = destinationFacility;
 		this.cutOffTime = cutOffTime;
+		this.dispatchGroup = dispatchGroup;
 	}
 
 	public String getPlanId() {
@@ -90,24 +93,32 @@ public class HandOffBatchPlan implements IHandOffBatchPlan  {
 		this.planDate = planDate;
 	}
 
-	public Date getFirstDeliveryTime() {
-		return firstDeliveryTime;
+	public Date getDispatchTime() {
+		return dispatchTime;
 	}
 
-	public void setFirstDeliveryTime(Date firstDeliveryTime) {
-		this.firstDeliveryTime = firstDeliveryTime;
+	public void setDispatchTime(Date dispatchTime) {
+		this.dispatchTime = dispatchTime;
 	}
 
-	public Date getStartTime() {
-		return startTime;
+	public Date getDispatchGroup() {
+		return dispatchGroup;
 	}
 
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
+	public void setDispatchGroup(Date dispatchGroup) {
+		this.dispatchGroup = dispatchGroup;
 	}
 
 	public int getSequence() {
 		return sequence;
+	}
+	
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 
 	public void setSequence(int sequence) {
@@ -169,15 +180,7 @@ public class HandOffBatchPlan implements IHandOffBatchPlan  {
 	public void setIsTeamOverride(Boolean isTeamOverride) {
 		this.isTeamOverride = isTeamOverride;
 	}
-
-	public Date getLastDeliveryTime() {
-		return lastDeliveryTime;
-	}
-
-	public void setLastDeliveryTime(Date lastDeliveryTime) {
-		this.lastDeliveryTime = lastDeliveryTime;
-	}
-
+	
 	public Date getCutOffTime() {
 		return cutOffTime;
 	}

@@ -47,7 +47,7 @@
 	<br/> 
 	<div align="center">
 		<form:form commandName = "scribForm" method="post">		
-		<form:hidden path="firstDeliveryTimeModified"/>
+		<form:hidden path="dispatchGroupModified"/>
 		<form:hidden path="zoneModified"/>		
 		<table width="100%" height="90%" cellpadding="0" cellspacing="0" border="0">
 			<tr>
@@ -102,9 +102,6 @@
 									<form:option value="null" label="--Please Select Zone"/>
 									<form:options items="${zones}" itemLabel="displayName" itemValue="zoneCode" />
 								</form:select>
-								
-								
-									
 							</td>
 							<td><form:errors path="zoneS" />&nbsp;</td>
 						</tr>
@@ -120,58 +117,51 @@
 									</form:select>
 								</td>
 							<td><form:errors path="region" />&nbsp;</td>
+						</tr>
+						<tr>
+							<td align="right">Dispatch Group Time</td>
+							<td> 
+								<form:select path="dispatchGroupS">
+									<form:option value="" label="--Please Select Dispatch Group"/>
+									<form:options items="${dispatchGroups}" itemLabel="name" itemValue="groupTime" />
+								</form:select> 
+							</td>
+							<td><form:errors path="dispatchGroupS" />&nbsp;</td>
 						</tr>  
 						<tr>
-							<td align="right">Start&nbsp;Time</td>
+							<td align="right">Truck&nbsp;Dispatch&nbsp;Time</td>
 							<td>         
 								<form:input maxlength="50" size="24" path="startTimeS" onblur="this.value=time(this.value);" /> 
 							</td>
 							<td><form:errors path="startTimeS" />&nbsp;</td>                 
 						</tr>
 						<tr>
-							<td align="right">First Dlv Time</td>
-							<td>  
-								<c:if test='${!empty scribForm.scribId}'>
-									<c:set var="hasScrib" value="true"/>
-								</c:if>
-								<c:choose>          
-									<c:when test='${hasScrib}'>     
-										<form:input maxlength="50" size="24" path="firstDlvTimeS" onblur="this.value=time(this.value);"/>             
-									</c:when>
-									<c:otherwise> 
-										<form:input maxlength="50" size="24" path="firstDlvTimeS" onblur="this.value=time(this.value);firstDeliveryTimeChanged();"/>
-									</c:otherwise>
-								</c:choose>							
-							</td>
-							<td><form:errors path="firstDlvTimeS" />&nbsp;</td>                 
-						</tr>
-						<tr>
-							<td align="right">Last Dlv Time</td>
+							<td align="right">Truck&nbsp;End&nbsp;Time</td>
 							<td>         
-								<form:input maxlength="50" size="24" path="endDlvTimeS" onblur="this.value=time(this.value);" /> 
+								<form:input maxlength="50" size="24" path="endTimeS" onblur="this.value=time(this.value);" /> 
 							</td>
-							<td><form:errors path="endDlvTimeS" />&nbsp;</td>                 
-						</tr>   
+							<td><form:errors path="endTimeS" />&nbsp;</td>
+						</tr
 						<tr>
 							<td align="right">Max Return Time</td>
 							<td>         
 								<form:input maxlength="50" size="24" path="maxReturnTimeS" onblur="this.value=time(this.value);" /> 
 							</td>
 							<td><form:errors path="maxReturnTimeS" />&nbsp;</td>                 
-						</tr> 
+						</tr>
 						<tr>
 							<td align="right">No of Trucks/CD Trailers </td>
 							<td>         
-								<form:input maxlength="50" size="24" path="count"  /> 
+								<form:input maxlength="50" size="24" path="truckCnt"  /> 
 							</td>
-							<td><form:errors path="count" />&nbsp;</td>                 
+							<td><form:errors path="truckCnt" />&nbsp;</td>
 						</tr>  
 						<tr>
 							<td align="right">No of HandTrucks</td>
 							<td>         
-								<form:input maxlength="50" size="24" path="resources"  /> 
+								<form:input maxlength="50" size="24" path="handTruckCnt"  /> 
 							</td>
-							<td><form:errors path="resources" />&nbsp;</td>                 
+							<td><form:errors path="handTruckCnt" />&nbsp;</td>
 						</tr>
 						<tr> 
 						<tr>
@@ -288,8 +278,8 @@
 			document.getElementById("scribForm").submit();
 		}
 
-		function  firstDeliveryTimeChanged() {
-			document.getElementById("firstDeliveryTimeModified").value = "true";
+		function  dispatchGroupTimeChanged() {
+			document.getElementById("dispatchGroupModified").value = "true";
 			submitData();			
 		}
 		function back()

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+
 <hibernate-mapping schema="transp">
     <class name="com.freshdirect.transadmin.model.Scrib" table="SCRIB">
         <id name="scribId" type="string">
@@ -11,7 +11,7 @@
 			</generator>
         </id>
         <many-to-one name="zone" class="com.freshdirect.transadmin.model.Zone" fetch="select" lazy="false">
-            <column name="ZONE_ID" length="16" />
+            <column name="ZONE_CODE" length="16" />
         </many-to-one>
         <many-to-one name="region" class="com.freshdirect.transadmin.model.Region" fetch="select" lazy="false">
             <column name="REGION_ID" length="16" />
@@ -19,14 +19,14 @@
         <property name="scribDate" type="date">
             <column name="SCRIB_DATE" length="7" />
         </property>
+        <property name="dispatchGroup" type="timestamp">
+            <column name="DISPATCH_GROUPTIME" length="7" />
+        </property>
         <property name="startTime" type="timestamp">
-            <column name="START_TIME" length="7" />
+            <column name="TRUCK_DISPATCHTIME" length="7" />
         </property>
-        <property name="firstDeliveryTime" type="timestamp">
-            <column name="FIRST_WINDOW_TIME" length="7" />
-        </property>
-        <property name="lastDeliveryTime" type="timestamp">
-            <column name="END_WINDOW_TIME" length="7" />
+        <property name="endTime" type="timestamp">
+            <column name="TRUCK_ENDTIME" length="7" />
         </property>
         <property name="maxReturnTime" type="timestamp">
             <column name="MAX_RETURN_TIME" length="7" />
@@ -34,10 +34,10 @@
          <property name="routeLength" type="int">
             <column name="ROUTE_LENGTH" precision="5" scale="0" />
         </property>
-         <property name="count" type="int">
+         <property name="truckCnt" type="int">
             <column name="COUNT" precision="5" scale="0"  />
         </property>
-        <property name="resources" type="int">
+        <property name="handTruckCnt" type="int">
             <column name="MIN_DEPOT_RESOURCE" precision="5" scale="0"  />
         </property>
         <property name="supervisorCode" type="string">

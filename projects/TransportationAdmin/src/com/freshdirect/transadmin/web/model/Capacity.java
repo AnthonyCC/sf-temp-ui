@@ -9,6 +9,7 @@ public class Capacity implements java.io.Serializable {
 	private boolean manuallyClosed;
 	private String referenceId;
 	private boolean dynamicActive;
+	private String waveCode;
 	
 	int openCount = 0;
 	int closedCount = 0;
@@ -119,13 +120,16 @@ public class Capacity implements java.io.Serializable {
 	public void setTotalAllocated(double totalAllocated) {
 		this.totalAllocated = totalAllocated;
 	}
-
 	public int getNoOfResources() {
 		return noOfResources;
 	}
-
 	public void setNoOfResources(int noOfResources) {
 		this.noOfResources = noOfResources;
 	}
-	
+	public String getWaveCode() {
+		return waveCode;
+	}
+	public void setWaveCode(String waveCode) {
+		this.waveCode = waveCode;
+	}	
 }

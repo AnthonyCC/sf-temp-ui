@@ -11,10 +11,10 @@
 			</generator>
         </id>
         <property name="name" type="string">
-            <column name="FACILITY_CODE" length="32" not-null="true"/>
+            <column name="FACILITY_CODE" length="8" not-null="true"/>
         </property>
         <property name="description" type="string">
-            <column name="DESCRIPTION" length="256" />
+            <column name="DESCRIPTION" length="32" />
         </property>
         <property name="routingCode" type="string">
             <column name="ROUTING_CODE" length="8" />

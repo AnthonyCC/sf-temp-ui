@@ -39,10 +39,16 @@
 		<priority value="error" />
 	</category>
 	<category name="com.scarabresearch">
-		<priority value="warn" />
+		<priority value="debug" />
 	</category>
 	<category name="httpclient">
 		<priority value="info" />
+	</category>
+	<category name="com.freshdirect.fdstore.sempixel">
+		<priority value="error" />
+	</category>
+	<category name="com.freshdirect.framework.monitor">
+		<priority value="error" />
 	</category>
 	
 	<category name="com.freshdirect.framework.monitor.RequestLogger" additivity="false">

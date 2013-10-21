@@ -18,26 +18,29 @@ import com.freshdirect.transadmin.util.EnumResourceType;
 public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstanceSource  {
 
 	private String planId;
+	private TrnFacility originFacility;
+	private TrnFacility destinationFacility;
+	private Date dispatchGroup;
 	private Zone zone;
 	private Region region;
 	private Date planDate;
-	private Date firstDeliveryTime;
 	private Date startTime;
+	private Date endTime;
+	private Date maxReturnTime;
+
 	private int sequence;
 	private String isBullpen;
-	private Set planResources = new HashSet(0);
+
 	private String ignoreErrors;
 	private Date errorDate;
 	private String supervisorId;
 	private String userId;
-	private Date maxTime;
 	private String isOpen;
 	private Boolean isTeamOverride;
 	
-	private Date lastDeliveryTime;
 	private Date cutOffTime;
-	private TrnFacility originFacility;
-	private TrnFacility destinationFacility;
+
+	private Set planResources = new HashSet(0);
 	private Set waveResources = new HashSet(0);
 	
 	private String equipmentTypeS;
@@ -68,6 +71,14 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstance
 		this.destinationFacility = destinationFacility;
 	}
 
+	public Date getDispatchGroup() {
+		return dispatchGroup;
+	}
+
+	public void setDispatchGroup(Date dispatchGroup) {
+		this.dispatchGroup = dispatchGroup;
+	}
+
 	public String getSupervisorId() {
 		return supervisorId;
 	}
@@ -90,32 +101,6 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstance
 	}
 	public void setIgnoreErrors(String ignoreErrors) {
 		this.ignoreErrors = ignoreErrors;
-	}
-
-	
-
-	public Plan(String planId, Region region, Date planDate, Date firstDeliveryTime,
-			Date startTime, int sequence) {
-		this.planId = planId;
-		this.region = region;
-		this.planDate = planDate;
-		this.firstDeliveryTime = firstDeliveryTime;
-		this.startTime = startTime;
-		this.sequence = sequence;
-	}
-
-	public Plan(String planId, Zone zone, Region region, Date planDate,
-			Date firstDeliveryTime, Date startTime, int sequence, String isBullpen,
-			Set planResources) {
-		this.planId = planId;
-		this.zone = zone;
-		this.region = region;
-		this.planDate = planDate;
-		this.firstDeliveryTime = firstDeliveryTime;
-		this.startTime = startTime;
-		this.sequence = sequence;
-		this.isBullpen = isBullpen;
-		this.planResources = planResources;
 	}
 
 	public String getPlanId() {
@@ -150,20 +135,20 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstance
 		this.planDate = planDate;
 	}
 
-	public Date getFirstDeliveryTime() {
-		return this.firstDeliveryTime;
-	}
-
-	public void setFirstDeliveryTime(Date firstDeliveryTime) {
-		this.firstDeliveryTime = firstDeliveryTime;
-	}
-
 	public Date getStartTime() {
 		return this.startTime;
 	}
 
 	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 
 	public int getSequence() {
@@ -219,12 +204,12 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstance
 		this.userId = userId;
 	}
 
-	public Date getMaxTime() {
-		return maxTime;
+	public Date getMaxReturnTime() {
+		return maxReturnTime;
 	}
 
-	public void setMaxTime(Date maxTime) {
-		this.maxTime = maxTime;
+	public void setMaxReturnTime(Date maxReturnTime) {
+		this.maxReturnTime = maxReturnTime;
 	}
 
 	public String getOpen() {
@@ -243,16 +228,8 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstance
 		this.isTeamOverride = isTeamOverride;
 	}
 
-	public Date getLastDeliveryTime() {
-		return lastDeliveryTime;
-	}
-
 	public Date getCutOffTime() {
 		return cutOffTime;
-	}
-
-	public void setLastDeliveryTime(Date lastDeliveryTime) {
-		this.lastDeliveryTime = lastDeliveryTime;
 	}
 
 	public void setCutOffTime(Date cutOffTime) {
@@ -310,7 +287,7 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI, IWaveInstance
 	public boolean isValidSource() {
 		// TODO Auto-generated method stub
 		return this.getDeliveryDate() != null && this.getStartTime()!= null 
-						&& this.getFirstDeliveryTime() != null && this.getLastDeliveryTime() != null 
+						&& this.getEndTime() != null && this.getDispatchGroup() != null 
 							&& this.getCutOffTime() != null && this.getZone() != null; // && !"Y".equalsIgnoreCase(this.isOpen);
 	}
 	

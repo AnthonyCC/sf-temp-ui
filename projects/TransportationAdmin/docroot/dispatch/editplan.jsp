@@ -54,7 +54,7 @@
 		<form:hidden path="ignoreErrors"/>
 		<form:hidden path="errorDate"/>
 		<form:hidden path="zoneModified"/>
-		<form:hidden path="firstDeliveryTimeModified"/>		
+		<form:hidden path="dispatchGroupModified"/>		
 		<form:hidden path="destFacilityModified"/>
 		
 		<table width="100%" height="75%" cellpadding="0" cellspacing="0" border="0">
@@ -78,30 +78,26 @@
 							</td>   
 										<td><form:errors path="planDate" />&nbsp;</td>
 									</tr>
-									<tr>
-										<td>Origin Facility</td>
-							<td>
+						<tr>
+									<td>Origin Facility</td>
+									<td>
 											<form:select path="originFacility" onChange="showZoneSelection(this, planForm.destinationFacility)">
 												<form:option value="" label="--Please Select Origin Facility"/>
 												<form:options items="${trnFacilitys}" itemLabel="name" itemValue="facilityId" />
 											</form:select> 
-							</td>
-										<td><form:errors path="originFacility" />&nbsp;</td>
+									</td>
+									<td><form:errors path="originFacility" />&nbsp;</td>
 						</tr>  
 						<tr>
-										<td>Destination Facility</td>
-										<td> 
+									<td>Destination Facility</td>
+									<td> 
 											<form:select path="destinationFacility" onChange="showZoneSelection(planForm.originFacility, this)">
 												<form:option value="" label="--Please Select Destination Facility"/>
 												<form:options items="${trnFacilitys}" itemLabel="name" itemValue="facilityId" />
 											</form:select> 
-										</td>
-										<td><form:errors path="destinationFacility" />&nbsp;</td>
-									</tr>
-									
-						
-						
-						
+									</td>
+									<td><form:errors path="destinationFacility" />&nbsp;</td>
+						</tr>
 						<tr>
 							<td>Zone</td>
 							<td> 
@@ -143,6 +139,51 @@
 							<td colspan="2"><form:checkbox path="isBullpen" value="Y" onclick="bullpen()"/></td>
 						</tr>
 						<tr>
+							<td>Dispatch Group&nbsp;Time</td>
+							<td>
+								<c:if test='${!empty planForm.planId}'>
+									<c:set var="hasPlan" value="true"/>
+								</c:if>
+								<c:choose>          
+									<c:when test='${hasPlan}'>     
+										<form:select path="dispatchGroupS">
+											<form:option value="" label="--Please Select Dispatch Group"/>
+											<form:options items="${dispatchGroups}" itemLabel="name" itemValue="groupTime" />
+										</form:select>            
+									</c:when>
+									<c:otherwise>
+										<form:select path="dispatchGroupS" onChange="dispatchGroupChanged();">
+											<form:option value="" label="--Please Select Dispatch Group" />
+											<form:options items="${dispatchGroups}" itemLabel="name" itemValue="groupTime" />
+										</form:select>
+									</c:otherwise>
+								</c:choose>
+							</td>
+							<td><form:errors path="dispatchGroupS" />&nbsp;</td>                 
+						</tr>
+						
+						<tr>
+							<td>Truck Dispatch&nbsp;Time</td>
+							<td>         
+								<form:input maxlength="50" size="24" path="startTime" onblur="this.value=time(this.value);" /> 
+							</td>
+							<td><form:errors path="startTime" />&nbsp;</td>                 
+						</tr> 
+						<tr>
+							<td><a id="timeLastDlv_toggler">Truck End&nbsp;Time</a></td>
+							<td>
+								<form:input maxlength="50" size="24" path="endTime" onblur="this.value=time(this.value);"/>
+							</td>
+							<td><form:errors path="endTime" />&nbsp;</td>                 
+						</tr>
+						<tr>
+							<td><a id="maxTime_toggler">Max Time</a></td>
+							<td>     
+								<form:input maxlength="50" size="24" path="maxTime" onblur="this.value=time(this.value);" />             
+							</td>
+							<td><form:errors path="maxTime" />&nbsp;</td>                 
+						</tr>						
+						<tr>
 							<td>Supervisor</td>
 							<td> 
 								<form:select path="supervisorCode">
@@ -151,45 +192,7 @@
 								</form:select>
 							</td>
 							<td><form:errors path="supervisorCode" />&nbsp;</td>
-						</tr>
-						<tr>
-							<td><a id="timeStart_toggler">Start&nbsp;Time</a></td>
-							<td>         
-								<form:input maxlength="50" size="24" path="startTime" onblur="this.value=time(this.value);" /> 
-							</td>
-							<td><form:errors path="startTime" />&nbsp;</td>                 
-						</tr>   
-						<tr>
-							<td><a id="timeFirstDlv_toggler">First Dlv.&nbsp;Time</a></td>
-							<td>
-								<c:if test='${!empty planForm.planId}'>
-									<c:set var="hasPlan" value="true"/>
-								</c:if>
-								<c:choose>          
-									<c:when test='${hasPlan}'>     
-										<form:input maxlength="50" size="24" path="firstDeliveryTime" onblur="this.value=time(this.value);"/>             
-									</c:when>
-									<c:otherwise> 
-										<form:input maxlength="50" size="24" path="firstDeliveryTime" onblur="this.value=time(this.value);firstDeliveryTimeChanged();"/>
-									</c:otherwise>
-								</c:choose>
-							</td>
-							<td><form:errors path="firstDeliveryTime" />&nbsp;</td>                 
-						</tr>
-						<tr>
-							<td><a id="timeLastDlv_toggler">Last Dlv.&nbsp;Time</a></td>
-							<td>
-								<form:input maxlength="50" size="24" path="lastDeliveryTime" onblur="this.value=time(this.value);"/>
-							</td>
-							<td><form:errors path="lastDeliveryTime" />&nbsp;</td>                 
-						</tr>
-						<tr>
-							<td><a id="maxTime_toggler">Max Time</a></td>
-							<td>     
-								<form:input maxlength="50" size="24" path="maxTime" onblur="this.value=hour(this.value);" />             
-							</td>
-							<td><form:errors path="maxTime" />&nbsp;</td>                 
-						</tr>
+						</tr> 
 					</table>
 				</td>
 				<td align="center" valign="top">
@@ -373,8 +376,8 @@
 			document.getElementById("zoneModified").value = "true";
 			submitData();
 		}
-		function  firstDeliveryTimeChanged() {
-			document.getElementById("firstDeliveryTimeModified").value = "true";
+		function  dispatchGroupChanged() {
+			document.getElementById("dispatchGroupModified").value = "true";
 			submitData();
 		}
 		function submitData() {

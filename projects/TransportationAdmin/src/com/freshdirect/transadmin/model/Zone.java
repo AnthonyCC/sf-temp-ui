@@ -1,7 +1,5 @@
 package com.freshdirect.transadmin.model;
 
-// Generated Nov 18, 2008 3:11:21 PM by Hibernate Tools 3.2.2.GA
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashSet;
@@ -25,9 +23,10 @@ public class Zone implements java.io.Serializable {
 	private BigDecimal priority;
 	private String obsolete;
 	private final BigDecimal DEFAULT_PRIORITY=new BigDecimal(-1);
-    private BigInteger stemFromTime;
-    private BigInteger stemToTime;
-    //private BigInteger maxstemTime;
+    
+    private BigInteger preTripTime;
+    private BigInteger postTripTime;
+    
     private BigDecimal svcAdjReductionFactor;
 	private DlvServiceTimeType defaultServiceTimeType;
 	
@@ -191,33 +190,26 @@ public class Zone implements java.io.Serializable {
 	public void setPriority(BigDecimal priority) {
 		this.priority = priority;
 	}
-
-	public BigInteger getStemFromTime() {
-		return stemFromTime;
+	
+	public BigInteger getPreTripTime() {
+		return preTripTime;
 	}
 
-	public BigInteger getStemNotNullFromTime() {
-		return stemFromTime==null?stemToTime:stemFromTime;
-	}
-	public void setStemFromTime(BigInteger stemFromTime) {
-		this.stemFromTime = stemFromTime;
+	public void setPreTripTime(BigInteger preTripTime) {
+		this.preTripTime = preTripTime;
 	}
 
-	public BigInteger getStemToTime() {
-		return stemToTime;
+	public BigInteger getPostTripTime() {
+		return postTripTime;
 	}
 
-	public void setStemToTime(BigInteger stemToTime) {
-		this.stemToTime = stemToTime;
+	public void setPostTripTime(BigInteger postTripTime) {
+		this.postTripTime = postTripTime;
 	}
-
-	/*public BigInteger getMaxstemTime() {
-		return maxstemTime;
+	
+	public BigInteger getTripNotNullPostTime() {
+		return postTripTime == null ? preTripTime : postTripTime;
 	}
-
-	public void setMaxstemTime(BigInteger maxstemTime) {
-		this.maxstemTime = maxstemTime;
-	}*/
 
 	public BigDecimal getLoadingPriority() {
 		return loadingPriority;

@@ -104,7 +104,7 @@ public class RestrictionController extends AbstractMultiActionController {
 				TimeslotRestrictionCommand restriction = new TimeslotRestrictionCommand(r);
 				restrictions.add(restriction);
 			} catch (ParseException e) {
-				saveMessage(request, getMessage("app.actionmessage.163", null));
+				saveMessage(request, getMessage("app.actionmessage.164", null));
 			}
 		}
 		return new ModelAndView("tsRestrictionView","timeslotRestrictions",restrictions);

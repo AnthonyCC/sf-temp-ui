@@ -11,8 +11,10 @@ public class HandOffDispatch implements IHandOffDispatch  {
 	private String zone;
 	private String region;
 	private Date dispatchDate;
-	private Date firstDeliveryTime;
-	private Date startTime;
+	private Date endTime;
+	private Date dispatchTime;
+	private Date dispatchGroup;
+	private Date firstDlvTime;
 	private String isBullpen;	
 	private String supervisorId;
 	private Date maxTime;
@@ -31,8 +33,8 @@ public class HandOffDispatch implements IHandOffDispatch  {
 	}
 
 	public HandOffDispatch(String dispatchId, String planId, String zone,
-			String region, Date dispatchDate, Date firstDeliveryTime,
-			Date startTime, String isBullpen, String supervisorId,
+			String region, Date dispatchDate, Date endTime,
+			Date dispatchTime, String isBullpen, String supervisorId,
 			Date maxTime, Date checkInTime, String route, String truck, Date cutoffTime, String originFacility,
 			String destinationFacility,
 			Set dispatchResources) {
@@ -42,8 +44,8 @@ public class HandOffDispatch implements IHandOffDispatch  {
 		this.zone = zone;
 		this.region = region;
 		this.dispatchDate = dispatchDate;
-		this.firstDeliveryTime = firstDeliveryTime;
-		this.startTime = startTime;
+		this.endTime = endTime;
+		this.dispatchTime = dispatchTime;
 		this.isBullpen = isBullpen;
 		this.supervisorId = supervisorId;
 		this.maxTime = maxTime;
@@ -95,21 +97,29 @@ public class HandOffDispatch implements IHandOffDispatch  {
 	public void setDispatchDate(Date dispatchDate) {
 		this.dispatchDate = dispatchDate;
 	}
-
-	public Date getFirstDeliveryTime() {
-		return firstDeliveryTime;
+	
+	public Date getDispatchTime() {
+		return dispatchTime;
 	}
 
-	public void setFirstDeliveryTime(Date firstDeliveryTime) {
-		this.firstDeliveryTime = firstDeliveryTime;
+	public void setDispatchTime(Date dispatchTime) {
+		this.dispatchTime = dispatchTime;
 	}
 
-	public Date getStartTime() {
-		return startTime;
+	public Date getEndTime() {
+		return endTime;
 	}
 
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+	
+	public Date getFirstDlvTime() {
+		return firstDlvTime;
+	}
+
+	public void setFirstDlvTime(Date firstDlvTime) {
+		this.firstDlvTime = firstDlvTime;
 	}
 
 	public String getIsBullpen() {
@@ -126,6 +136,14 @@ public class HandOffDispatch implements IHandOffDispatch  {
 
 	public void setSupervisorId(String supervisorId) {
 		this.supervisorId = supervisorId;
+	}
+	
+	public Date getDispatchGroup() {
+		return dispatchGroup;
+	}
+
+	public void setDispatchGroup(Date dispatchGroup) {
+		this.dispatchGroup = dispatchGroup;
 	}
 
 	public Date getMaxTime() {

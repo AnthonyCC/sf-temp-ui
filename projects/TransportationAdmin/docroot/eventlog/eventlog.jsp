@@ -11,7 +11,7 @@
 
 <tmpl:put name='title' direct='true'> Operations : Event Log</tmpl:put>
 <% 
-  boolean hasPrivilege = com.freshdirect.transadmin.security.SecurityManager.hasPrivilege(request, Privilege.MOTEVENTLOG_ADD );
+  boolean hasPrivilege = com.freshdirect.transadmin.security.SecurityManager.hasPrivilege(request, Privilege.EVENTLOG_ADD );
 %>
 	 
   <tmpl:put name='content' direct='true'> 
@@ -192,8 +192,8 @@ $(document).ready(function () {
         			$('#orderNo').css({'background-color': '#FFDEAD'});
         			$('#route').removeAttr('disabled');
         			$('#route').css({'background-color': '#FFFFFF'});
+        		}
         	}
-        }
         }
     }); 
 	
@@ -674,7 +674,7 @@ function lookUpWindows(routeId, selWindow) {
 					<td valign="top">
 							 <table>
 									<tr>
-										<td><label for='form-stop'>Stop(s)</label> <input
+										<td>Stop No.<input
 											type='text' id='stopEntryEx' class='form-splinput'
 											name='stopEntryEx' />&nbsp;</td>
 										<td style="text-align: center;">

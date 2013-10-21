@@ -665,8 +665,8 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		return result;
 	}
 
-	public Collection getUnAvailableEmployeesScheduleTime(Collection plans,
-			String date) {
+	public Collection getUnAvailableEmployeesScheduleTime(Collection plans, String date) {
+
 		List result = new ArrayList();
 		Collection off = getScheduleInfo(date);
 		for (Iterator i = plans.iterator(); i.hasNext();) {
@@ -681,51 +681,26 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 							PunchInfo punch = (PunchInfo) k.next();
 							if (r.getId().getResourceId().equals(
 									punch.getEmployeeId())) {
-								if (DispatchPlanUtil
-										.isEligibleForUnAvailable(domainManagerDao
-												.getEmployeeRole(r.getId()
-														.getResourceId()))) {
+								if (DispatchPlanUtil.isEligibleForUnAvailable(domainManagerDao.getEmployeeRole(r.getId().getResourceId()))) {
 									isPunchAvalable = true;
 									try {
-										String planTime = TransStringUtil
-												.getServerTime(p.getStartTime());
+										String planTime = TransStringUtil.getServerTime(p.getStartTime());
 										String punchTime = "";
 										if (punch.getStartTime() != null)
-											punchTime = TransStringUtil
-													.getServerTime(punch
-															.getStartTime());
-										if ("003".equalsIgnoreCase(r
-												.getEmployeeRoleType()
-												.getCode())) {
-											String day = TransStringUtil
-													.getServerDay(
-															TransStringUtil
-																	.getServerDateString(date))
-													.toUpperCase();
-											ScheduleEmployee se = getSchedule(
-													r.getId().getResourceId(),
-													TransStringUtil
-															.getServerDate(TransStringUtil
-																	.getWeekOf(date)),
+											punchTime = TransStringUtil.getServerTime(punch.getStartTime());
+										if ("003".equalsIgnoreCase(r.getEmployeeRoleType().getCode())) {
+											String day = TransStringUtil.getServerDay(TransStringUtil.getServerDateString(date)).toUpperCase();
+											ScheduleEmployee se = getSchedule(r.getId().getResourceId(), TransStringUtil.getServerDate(TransStringUtil.getWeekOf(date)),
 													day);
-											if (se != null
-													&& se.getTime() != null)
-												planTime = TransStringUtil
-														.getServerTime(se
-																.getTime());
+											if (se != null && se.getDispatchGroupTime() != null)
+												planTime = TransStringUtil.getServerTime(se.getDispatchGroupTime());
 										}
 										if (r.getId().getAdjustmentTime() != null) {
-											planTime = TransStringUtil
-													.getServerTime(r
-															.getId()
-															.getAdjustmentTime());
+											planTime = TransStringUtil.getServerTime(r.getId().getAdjustmentTime());
 										}
-										if (planTime != null
-												&& !planTime
-														.equalsIgnoreCase(punchTime)) {
+										if (planTime != null && !planTime.equalsIgnoreCase(punchTime)) {
 											WebPlanResource wpr = new WebPlanResource();
-											wpr.setEmp(getEmployee(punch
-													.getEmployeeId()));
+											wpr.setEmp(getEmployee(punch.getEmployeeId()));
 											wpr.setPlanId(p.getPlanId());
 											wpr.setPaycode("Schedule");
 											result.add(wpr);
@@ -745,9 +720,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 						wpr.setPlanId(p.getPlanId());
 						wpr.setPaycode("Schedule");
 						if (DispatchPlanUtil
-								.isEligibleForUnAvailable(domainManagerDao
-										.getEmployeeRole(r.getId()
-												.getResourceId()))) {
+								.isEligibleForUnAvailable(domainManagerDao.getEmployeeRole(r.getId().getResourceId()))) {
 							result.add(wpr);
 						}
 					}

@@ -29,10 +29,10 @@
             <column name="TRUCK" length="12" />
         </property>
         <property name="startTime" type="timestamp">
-            <column name="START_TIME" length="7" not-null="true" />
+            <column name="TRUCK_DISPATCHTIME" length="7" not-null="true" />
         </property>
-        <property name="firstDlvTime" type="timestamp">
-            <column name="FIRST_DLV_TIME" length="7" />
+        <property name="dispatchGroup" type="timestamp">
+            <column name="DISPATCH_GROUPTIME" length="7" not-null="true" />
         </property>
         <property name="confirmed" type="yes_no">
             <column name="CONFIRMED" length="1" />

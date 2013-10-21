@@ -9,6 +9,7 @@ import java.util.Set;
 import org.springframework.dao.DataAccessException;
 
 import com.freshdirect.customer.ErpTruckMasterInfo;
+import com.freshdirect.transadmin.model.DispatchGroup;
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.IssueSubType;
@@ -67,13 +68,13 @@ public interface DomainManagerI extends BaseManagerI {
 	Region getRegion(String id);
 	
 	TrnCutOff getCutOff(String id);
-	
-	//TrnPlantCapacity getPlantCapacity(String id);
-	
-	//Collection getPlantCapacities(Date dispatchDate);
-	
+		
 	Collection getCutOffs();
-			
+	
+	DispatchGroup getDispatchGroup(String id);
+	
+	Collection getDispatchGroups();
+	
 	Collection getDeliveryModels();
 		
 	Collection getZonetypeResources(String zoneTypeId);
@@ -162,6 +163,8 @@ public interface DomainManagerI extends BaseManagerI {
 	
 	Collection getVIRRecords();
 	
+	Collection getVIRRecordByTruckNo(String truckNumber);
+	
 	Collection getVIRRecords(Date createDate, String truckNumber);
 	
 	VIRRecord getVIRRecord(String id);
@@ -169,6 +172,8 @@ public interface DomainManagerI extends BaseManagerI {
 	String saveVIRRecord(String createDate, String truckNumber, String vendor
 			, String driver, String createdBy, String socStart, String socEnd, String socReeferStart, String socReeferEnd
 			, String[][] recordIssues);
+	
+	Collection getMaintenanceIssueByTruckNo(String truckNumber);
 	
 	Collection getMaintenanceIssue(String truckNumber, String issueType, String issueSubType);
 	

@@ -97,12 +97,12 @@
 	border-color: white;
 }
 
-.eXtremeTable .odd a, .even a , .even obsoleteRow, .even confirmedRow, .even earlyWarningRow, .even earlyWarningTotalRow  {
+.eXtremeTable .odd a, .even a , .even obsoleteRow, .even confirmedRow, .even earlyWarningRow, .even earlyWarningTotalRow, .even earlyWarningYellowRow, .even earlyWarningOrangeRow  {
 	color: Black;
 	font-size: 10px;
 }
 
-.eXtremeTable .odd td, .eXtremeTable .even td, .eXtremeTable .obsoleteRow td , .eXtremeTable .confirmedRow td, .eXtremeTable .earlyWarningRow td , .eXtremeTable .earlyWarningTotalRow td{
+.eXtremeTable .odd td, .eXtremeTable .even td, .eXtremeTable .obsoleteRow td , .eXtremeTable .confirmedRow td, .eXtremeTable .earlyWarningRow td , .eXtremeTable .earlyWarningTotalRow td, .eXtremeTable .earlyWarningYellowRow td, .eXtremeTable .earlyWarningOrangeRow td{
 	padding-top: 2px;
 	padding-right: 3px;
 	padding-bottom: 2px;
@@ -144,6 +144,14 @@
 
 .eXtremeTable .earlyWarningRow {
   	background-color: red;
+}
+
+.eXtremeTable .earlyWarningOrangeRow {
+  	background-color: orange;
+}
+
+.eXtremeTable .earlyWarningYellowRow {
+  	background-color: yellow;
 }
 
 .eXtremeTable .earlyWarningTotalRow {

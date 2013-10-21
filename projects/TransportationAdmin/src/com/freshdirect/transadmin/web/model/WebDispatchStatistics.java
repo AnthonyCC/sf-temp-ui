@@ -147,9 +147,9 @@ public class WebDispatchStatistics  implements Serializable
 		{
 			DispatchCommand command =(DispatchCommand )i.next();	
 			try{
-				if(("N".equalsIgnoreCase(command.getIsBullpen())||"false".equalsIgnoreCase(command.getIsBullpen()))&& "AM".equalsIgnoreCase(getShiftForDispatch(command, command.getDispatchDate())))
+				if(("N".equalsIgnoreCase(command.getIsBullpen())||"false".equalsIgnoreCase(command.getIsBullpen()))&& "AM".equalsIgnoreCase(getShiftForDispatch(command)))
 					amCount++;
-				else if(("N".equalsIgnoreCase(command.getIsBullpen())||"false".equalsIgnoreCase(command.getIsBullpen()))&& "PM".equalsIgnoreCase(getShiftForDispatch(command, command.getDispatchDate())))
+				else if(("N".equalsIgnoreCase(command.getIsBullpen())||"false".equalsIgnoreCase(command.getIsBullpen()))&& "PM".equalsIgnoreCase(getShiftForDispatch(command)))
 					pmCount++;			
 			}catch(ParseException px){
 				px.printStackTrace();
@@ -184,30 +184,15 @@ public class WebDispatchStatistics  implements Serializable
 		plannedPmRoute = pmCount;
 	}
 	
-	private String getShiftForPlan(Plan p) throws ParseException {		
-		int day = TransStringUtil.getDayOfWeek(p.getPlanDate());
-		double hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(p.getFirstDeliveryTime()));
-		if (hourOfDay < 12 && day != 7) {
-			return "AM";
-		} else if (hourOfDay < 10 && day == 7) {
-			return "AM";
-		} else
-			return "PM";		
+	private String getShiftForPlan(Plan p) throws ParseException {	
+		
+		double hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(p.getDispatchGroup()));
+		return hourOfDay < 14 ? "AM" : "PM";	
 	}
 	
-	private static String getShiftForDispatch(WebPlanInfo planInfo, String dispatchDate) throws ParseException {		
-		int day;
-		if(dispatchDate!=null && planInfo.getPlanDate()==null)
-			day = TransStringUtil.getDayOfWeek(TransStringUtil.getDate(dispatchDate));
-		else
-			day = TransStringUtil.getDayOfWeek(planInfo.getPlanDate());
-		double hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(TransStringUtil.getServerTime(planInfo.getFirstDeliveryTime())));
-		if (hourOfDay < 12 && day != 7) {
-			return "AM";
-		} else if (hourOfDay < 10 && day == 7) {
-			return "AM";
-		} else
-			return "PM";		
+	private static String getShiftForDispatch(WebPlanInfo planInfo) throws ParseException {		
+		double hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(planInfo.getDispatchGroup()));
+		return hourOfDay < 14 ? "AM" : "PM";	
 	}	
 	
 	public void calculateFireTruckorMOT(Collection dataList)
@@ -219,10 +204,10 @@ public class WebDispatchStatistics  implements Serializable
 				DispatchCommand command = (DispatchCommand) i.next();
 				if(command.getRoute()!=null){
 					if (((command.getRoute().startsWith("FIRE"))
-							|| (command.getRoute().startsWith("MOT")))&& "AM".equalsIgnoreCase(getShiftForDispatch(command, command.getDispatchDate())))
+							|| (command.getRoute().startsWith("MOT")))&& "AM".equalsIgnoreCase(getShiftForDispatch(command)))
 						amCount++;
 					else if (((command.getRoute().startsWith("FIRE"))
-							|| (command.getRoute().startsWith("MOT")))&& "PM".equalsIgnoreCase(getShiftForDispatch(command, command.getDispatchDate()))) 
+							|| (command.getRoute().startsWith("MOT")))&& "PM".equalsIgnoreCase(getShiftForDispatch(command))) 
 						pmCount++;
 				}
 			}
@@ -253,9 +238,9 @@ public class WebDispatchStatistics  implements Serializable
 					}
 					DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,null,null,null,null,null,null,null,null,null);
 							
-					if("AM".equalsIgnoreCase(getShiftForDispatch(command, command.getDispatchDate())))
+					if("AM".equalsIgnoreCase(getShiftForDispatch(command)))
 						amCount++;
-					else if("PM".equalsIgnoreCase(getShiftForDispatch(command, command.getDispatchDate())))
+					else if("PM".equalsIgnoreCase(getShiftForDispatch(command)))
 						pmCount++;					
 				}
 			}			

@@ -27,6 +27,25 @@ public class Asset implements java.io.Serializable{
 	private Set assetAttributes = new HashSet(0);
 	private Map<String, String> attibuteMap = new HashMap<String, String>();
 	
+	private Object source;
+	private String currentAssetNo;
+	
+	public Object getSource() {
+		return source;
+	}
+		
+	public String getCurrentAssetNo() {
+		return currentAssetNo;
+	}
+
+
+
+	public void setCurrentAssetNo(String currentAssetNo) {
+		this.currentAssetNo = currentAssetNo;
+	}
+
+
+
 	public Asset() {
 		
 	}
@@ -34,6 +53,10 @@ public class Asset implements java.io.Serializable{
 	public Asset(String assetId) {
 		super();
 		this.assetId = assetId;
+	}
+
+	public void setSource(Object source) {
+		this.source = source;
 	}
 
 	public Asset(String assetId, String assetNo, String assetDescription,
@@ -154,6 +177,10 @@ public class Asset implements java.io.Serializable{
 	
 	public String getBodyLength() {
 		return this.getAttibuteMap().get("Body Length");
+	}
+	
+	public String getVendorNumber() {
+		return this.getAttibuteMap().get("Vendor Number#");		
 	}
 
 	@Override

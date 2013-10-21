@@ -1,8 +1,8 @@
 package com.freshdirect.transadmin.web.validation;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -24,33 +24,48 @@ public class PlanValidator extends AbstractValidator {
 	}
 
 	public void validate(Object obj, Errors errors) {
+	
 		WebPlanInfo model = (WebPlanInfo)obj;
-		//  need to decide about the validation part
+	
 		ValidationUtils.rejectIfEmpty(errors, "planDate", "app.error.112", new Object[]{"Plan Date"},"required field");
-		ValidationUtils.rejectIfEmpty(errors, "startTime", "app.error.112", new Object[]{"Start Time"},"required field");
-		ValidationUtils.rejectIfEmpty(errors, "firstDeliveryTime", "app.error.112", new Object[]{"First Delivery Time"},"required field");
-		ValidationUtils.rejectIfEmpty(errors, "lastDeliveryTime", "app.error.112", new Object[]{"Last Delivery Time"},"required field");
+		ValidationUtils.rejectIfEmpty(errors, "startTime", "app.error.112", new Object[]{"Dispatch Time"},"required field");
+		ValidationUtils.rejectIfEmpty(errors, "dispatchGroup", "app.error.112", new Object[]{"Group Time"},"required field");
+		ValidationUtils.rejectIfEmpty(errors, "endTime", "app.error.112", new Object[]{"End Time"},"required field");
 		ValidationUtils.rejectIfEmpty(errors, "cutOffTime", "app.error.112", new Object[]{"CutOff Time"},"required field");
 		
-		checkDate("startTime", model.getStartTime(), model.getFirstDeliveryTime(),errors);
-		checkDate("firstDeliveryTime", model.getFirstDeliveryTime(), model.getLastDeliveryTime(),errors);
+		if (model != null && model.getOriginFacility() == null) {
+			errors.rejectValue("originFacility", "app.error.112",
+					new Object[] { "Origin Facility" }, "required field");
+		}
+		if (model != null && model.getDestinationFacility() == null
+				&& !"Y".equalsIgnoreCase(model.getIsBullpen())) {
+			errors.rejectValue("destinationFacility", "app.error.112",
+					new Object[] { "Destination Facility" }, "required field");
+		}
+		if (model != null
+				&& TransStringUtil.isEmpty(model.getZoneCode())
+				&& model.getDestinationFacility() != null
+				&& model.getDestinationFacility().getTrnFacilityType() != null
+				&& !DispatchPlanUtil.isBullpen(model.getIsBullpen())
+				&& !EnumTransportationFacilitySrc.CROSSDOCK.getName()
+						.equalsIgnoreCase(
+								model.getDestinationFacility()
+										.getTrnFacilityType().getName())) {
+			errors.rejectValue("zoneCode", "app.error.112",
+					new Object[] { "Zone" }, "required field");
+		}
+		if (TransStringUtil.isEmpty(model.getRegionCode())) {
+			errors.rejectValue("regionCode", "app.error.112",
+					new Object[] { "Region" }, "required field");
+		}
+		if (model != null && TransStringUtil.isEmpty(model.getSupervisorCode())) {
+			errors.rejectValue("supervisorCode", "app.error.112",
+					new Object[] { "Supervisor" }, "required field");
+		}
 		
-		if(model != null && model.getOriginFacility() == null) {
-			errors.rejectValue("originFacility", "app.error.112", new Object[]{"Origin Facility"},"required field");
-		}
-		if(model != null && model.getDestinationFacility() == null && !"Y".equalsIgnoreCase(model.getIsBullpen())) {
-			errors.rejectValue("destinationFacility", "app.error.112", new Object[]{"Destination Facility"},"required field");
-		}
-		if(model != null && TransStringUtil.isEmpty(model.getZoneCode()) && model.getDestinationFacility() != null && model.getDestinationFacility().getTrnFacilityType() != null
-				&& !DispatchPlanUtil.isBullpen(model.getIsBullpen()) && !EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(model.getDestinationFacility().getTrnFacilityType().getName())) {
-			errors.rejectValue("zoneCode", "app.error.112", new Object[]{"Zone"},"required field");
-		}
-		if(TransStringUtil.isEmpty(model.getRegionCode())) {
-			errors.rejectValue("regionCode", "app.error.112", new Object[]{"Region"},"required field");
-		}
-		if(model != null && TransStringUtil.isEmpty(model.getSupervisorCode())) {
-			errors.rejectValue("supervisorCode", "app.error.112", new Object[]{"Supervisor"},"required field");
-		}
+		checkTime("startTime", model.getStartTime(), model.getEndTime(),errors);
+		checkDate("dispatchGroup", model.getDispatchGroup(), model.getStartTime(),errors);
+		
 		ValidationUtils.rejectIfEmpty(errors, "sequence", "app.error.112", new Object[]{"Sequence"},"required field");
 		validateIntegerMinMax("sequence",new Integer(model.getSequence()),0,99,errors);
 		if( TransportationAdminProperties.isPlanValidation())
@@ -128,15 +143,26 @@ public class PlanValidator extends AbstractValidator {
 		}
 		return selectedResources;
 	}
-	private void checkDate(String field, String startTime, String endTime, Errors errors) {
+	private void checkTime(String field, String startTime, String endTime, Errors errors) {
 		
 		try {
-			if(DateComparator.compare(DateComparator.PRECISION_MINUTE, TransStringUtil.getServerTime(startTime), TransStringUtil.getServerTime(endTime))>=0) {
+			if (DateComparator.compare(DateComparator.PRECISION_MINUTE,
+					TransStringUtil.getServerTime(startTime),
+					TransStringUtil.getServerTime(endTime)) >= 0) {
 				errors.rejectValue(field, "app.error.123","Invalid Time");
 			}
 		} catch (ParseException e) {
 			errors.rejectValue(field, "typeMismatch.time", new Object[]{},"Invalid Time");	
-		}
+		}		
+	}
+	private void checkDate(String field, Date startTime, String endTime, Errors errors) {
 		
+		try {
+			if (DateComparator.compare(DateComparator.PRECISION_MINUTE,	startTime, TransStringUtil.getServerTime(endTime)) >= 0) {
+				errors.rejectValue(field, "app.error.123","Invalid Time");
+			}
+		} catch (ParseException e) {
+			errors.rejectValue(field, "typeMismatch.time", new Object[]{},"Invalid Time");	
+		}		
 	}
 }

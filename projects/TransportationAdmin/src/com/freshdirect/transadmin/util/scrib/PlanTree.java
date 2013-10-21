@@ -221,7 +221,7 @@ class RegionNode extends PlanTreeNode  {
 	Map<Date, TimeNode> times = new HashMap<Date, TimeNode>();
 
 	public void prepare(Scrib s) {
-		Date key = s.getStartTime();
+		Date key = s.getDispatchGroup();
 		TimeNode value = (TimeNode) times.get(key);
 		if (value == null) {
 			value = new TimeNode(this.getTree());
@@ -232,7 +232,7 @@ class RegionNode extends PlanTreeNode  {
 	}
 
 	public void prepare(ScheduleEmployeeDetails s) {
-		Date key = s.getSchedule().getTime();
+		Date key = s.getSchedule().getDispatchGroupTime();
 		TimeNode value = (TimeNode) times.get(key);
 		if (value == null) {
 			value = new TimeNode(this.getTree());
@@ -363,7 +363,7 @@ class DepotOriginFacilityNode  extends PlanTreeNode {
 	Map<Date, DepotOriginTimeNode> times = new HashMap<Date, DepotOriginTimeNode>();
 
 	public void prepare(Scrib s) {
-		Date key = s.getStartTime();
+		Date key = s.getDispatchGroup();
 		DepotOriginTimeNode value = (DepotOriginTimeNode) times.get(key);
 		if (value == null) {
 			value = new DepotOriginTimeNode(this.getTree(), this);
@@ -373,7 +373,7 @@ class DepotOriginFacilityNode  extends PlanTreeNode {
 	}
 
 	public void prepare(ScheduleEmployeeDetails s) {
-			Date key = s.getSchedule().getTime();
+			Date key = s.getSchedule().getDispatchGroupTime();
 			DepotOriginTimeNode value = (DepotOriginTimeNode) times.get(key);
 			if (value == null) {
 				value = new DepotOriginTimeNode(this.getTree(), this);
@@ -416,7 +416,7 @@ class DepotDestFacilityNode  extends PlanTreeNode {
 	Map<Date, DepotDestTimeNode> times = new HashMap<Date, DepotDestTimeNode>();
 
 	public void prepare(Scrib s) {
-		Date key = s.getStartTime();
+		Date key = s.getDispatchGroup();
 		DepotDestTimeNode value = (DepotDestTimeNode) times.get(key);
 		if (value == null) {
 			value = new DepotDestTimeNode(this.getTree(), this);
@@ -426,7 +426,7 @@ class DepotDestFacilityNode  extends PlanTreeNode {
 	}
 
 	public void prepare(ScheduleEmployeeDetails s) {
-			Date key = s.getSchedule().getTime();
+			Date key = s.getSchedule().getDispatchGroupTime();
 			DepotDestTimeNode value = (DepotDestTimeNode) times.get(key);
 			if (value == null) {
 				value = new DepotDestTimeNode(this.getTree(), this);
@@ -472,14 +472,14 @@ class TimeNode extends PlanTreeNode  {
 	
 
 	public Collection getPlan() {
-		Collections.sort(trucks, new ZoneComparator());
+		Collections.sort(trucks, new TruckComparator());
 		resourceTeams  = TreeDataUtil.teamUp(this.getTree(), employees);		
 		assemble(resourceTeams);
 		return plans;
 	}
 
 	public void prepare(Scrib s) {
-		int n = s.getCount();
+		int n = s.getTruckCnt();
 		for (int i = 0; i < n; i++) {
 			TruckNode t = new TruckNode(this.getTree());
 			trucks.add(t);
@@ -513,11 +513,11 @@ class TimeNode extends PlanTreeNode  {
 			p.setZone(s.getZone());
 			p.setRegion(s.getRegion());
 			p.setStartTime(s.getStartTime());
-			p.setFirstDeliveryTime(s.getFirstDeliveryTime());
-			p.setLastDeliveryTime(s.getLastDeliveryTime());
+			p.setEndTime(s.getEndTime());
+			p.setDispatchGroup(s.getDispatchGroup());
 			p.setCutOffTime(s.getCutOffTime());
 			p.setSupervisorId(s.getSupervisorCode());
-			p.setMaxTime(s.getMaxTime());
+			p.setMaxReturnTime(s.getMaxReturnTime());
 			p.setSequence(rank++);
 
 			Set zoneTypeResources = null;
@@ -658,9 +658,9 @@ class TimeNode extends PlanTreeNode  {
 					p.setPlanDate(_currResource.getDate());
 					p.setOriginFacility(_currResource.getSchedule().getRegion().getOriginFacility());
 					p.setRegion(_currResource.getSchedule().getRegion());
-					p.setStartTime(_currResource.getSchedule().getTime());
-					p.setFirstDeliveryTime(_currResource.getSchedule().getTime());
-					p.setLastDeliveryTime(_currResource.getSchedule().getTime());
+					p.setStartTime(_currResource.getSchedule().getDispatchGroupTime());
+					p.setEndTime(_currResource.getSchedule().getDispatchGroupTime());
+					p.setDispatchGroup(_currResource.getSchedule().getDispatchGroupTime());
 					p.setIsBullpen("Y");
 
 					for(ScheduleEmployeeDetails ss : _currResource.getMembers()) {						
@@ -681,18 +681,19 @@ class TimeNode extends PlanTreeNode  {
 			}
 		}
 
-		// create bullpens for remaining employees
+		// Bullpens for non-team employees
 		while(resources != null && resources.size() > 0){
 			ScheduleEmployeeDetails s = (ScheduleEmployeeDetails) resources.toArray()[0];
 			Plan p = new Plan();
-			plans.add(p);
 			
 			p.setPlanDate(s.getDate());
 			p.setOriginFacility(s.getSchedule().getRegion().getOriginFacility());
 			p.setRegion(s.getSchedule().getRegion());
-			p.setStartTime(s.getSchedule().getTime());
-			p.setFirstDeliveryTime(s.getSchedule().getTime());
-			p.setLastDeliveryTime(s.getSchedule().getTime());	
+			
+			p.setStartTime(s.getSchedule().getDispatchGroupTime());
+			p.setEndTime(s.getSchedule().getDispatchGroupTime());
+			p.setDispatchGroup(s.getSchedule().getDispatchGroupTime());			
+
 			p.setIsBullpen("Y");
 			
 			int driverMax = TransportationAdminProperties.getDriverMaxForBullpen();
@@ -725,23 +726,26 @@ class TimeNode extends PlanTreeNode  {
 						p.getPlanResources().add(planResource);
 						k.remove();
 					}
-				}else{
+				} else {
 					k.remove();
 				}
-			}				
+			}
+			if(p.getPlanResources().size() > 0) {
+				plans.add(p);
+			}
 		}
 
 		while(trailerResources != null && trailerResources.size() > 0){
 			ScheduleEmployeeDetails s = (ScheduleEmployeeDetails) trailerResources.toArray()[0];
 			Plan p = new Plan();
-			plans.add(p);
 
 			p.setPlanDate(s.getDate());
 			p.setOriginFacility(s.getSchedule().getRegion().getOriginFacility());
 			p.setRegion(s.getSchedule().getRegion());
-			p.setStartTime(s.getSchedule().getTime());
-			p.setFirstDeliveryTime(s.getSchedule().getTime());
-			p.setLastDeliveryTime(s.getSchedule().getTime());
+			p.setStartTime(s.getSchedule().getDispatchGroupTime());
+			p.setEndTime(s.getSchedule().getDispatchGroupTime());
+			p.setDispatchGroup(s.getSchedule().getDispatchGroupTime());	
+
 			p.setIsBullpen("Y");
 
 			int driverMax = TransportationAdminProperties.getDriverMaxForBullpen();
@@ -778,6 +782,9 @@ class TimeNode extends PlanTreeNode  {
 					k.remove();
 				}
 			}
+			if(p.getPlanResources().size() > 0) {
+				plans.add(p);
+			}
 		}
 	}
 	
@@ -804,7 +811,7 @@ class DepotOriginTimeNode extends PlanTreeNode  {
 	}
 	
 	public Collection getPlan() {
-		Collections.sort(trucks, new ZoneComparator());
+		Collections.sort(trucks, new TruckComparator());
 		resourceTeams = TreeDataUtil.teamUp(this.getTree(), employees);
 		assemble(resourceTeams);
 		return plans;
@@ -841,11 +848,11 @@ class DepotOriginTimeNode extends PlanTreeNode  {
 			p.setZone(s.getZone());
 			p.setRegion(s.getRegion());
 			p.setStartTime(s.getStartTime());
-			p.setFirstDeliveryTime(s.getFirstDeliveryTime());
-			p.setLastDeliveryTime(s.getLastDeliveryTime());
+			p.setEndTime(s.getEndTime());
+			p.setDispatchGroup(s.getDispatchGroup());
 			p.setCutOffTime(s.getCutOffTime());
 			p.setSupervisorId(s.getSupervisorCode());
-			p.setMaxTime(s.getMaxTime());
+			p.setMaxReturnTime(s.getMaxReturnTime());
 			p.setSequence(rank++);
 
 			ScheduleEmployeeDetails _currResource = null;
@@ -883,19 +890,18 @@ class DepotOriginTimeNode extends PlanTreeNode  {
 			} 
 		}
 				
-		// Create Team Bullpen
+		// Bullpen for team employees
 		if (resources != null && resources.size() > 0) {
 			for (Iterator i = resources.iterator(); i.hasNext();) {
 				ScheduleEmployeeDetails _currResource = (ScheduleEmployeeDetails) i.next();
 				if(_currResource.getMembers() != null && _currResource.getMembers().size() > 0) {
 					Plan p = new Plan();
-					plans.add(p);
 					p.setPlanDate(_currResource.getDate());
 					p.setOriginFacility(_currResource.getSchedule().getRegion().getOriginFacility());
 					p.setRegion(_currResource.getSchedule().getRegion());
-					p.setStartTime(_currResource.getSchedule().getTime());
-					p.setFirstDeliveryTime(_currResource.getSchedule().getTime());
-					p.setLastDeliveryTime(_currResource.getSchedule().getTime());
+					p.setStartTime(_currResource.getSchedule().getDispatchGroupTime());
+					p.setEndTime(_currResource.getSchedule().getDispatchGroupTime());
+					p.setDispatchGroup(_currResource.getSchedule().getDispatchGroupTime());
 					p.setIsBullpen("Y");
 					for(ScheduleEmployeeDetails ss : _currResource.getMembers()) {						
 						Collection c = ss.getEmpRoles();
@@ -913,8 +919,12 @@ class DepotOriginTimeNode extends PlanTreeNode  {
 							p.getPlanResources().add(planResource);
 						}
 					}
-					i.remove();					
-				} 
+					i.remove();
+
+					if(p.getPlanResources().size() > 0) {
+						plans.add(p);
+					}
+				}
 			}
 		}
 
@@ -922,14 +932,13 @@ class DepotOriginTimeNode extends PlanTreeNode  {
 		while(resources != null && resources.size() > 0){			
 			ScheduleEmployeeDetails s = (ScheduleEmployeeDetails) resources.toArray()[0];
 			Plan p = new Plan();
-			plans.add(p);
 			
 			p.setPlanDate(s.getDate());
 			p.setOriginFacility(s.getSchedule().getRegion().getOriginFacility());
 			p.setRegion(s.getSchedule().getRegion());
-			p.setStartTime(s.getSchedule().getTime());
-			p.setFirstDeliveryTime(s.getSchedule().getTime());
-			p.setLastDeliveryTime(s.getSchedule().getTime());	
+			p.setStartTime(s.getSchedule().getDispatchGroupTime());
+			p.setEndTime(s.getSchedule().getDispatchGroupTime());
+			p.setDispatchGroup(s.getSchedule().getDispatchGroupTime());	
 			p.setIsBullpen("Y");
 			
 			int runnerCount = 0;
@@ -954,6 +963,9 @@ class DepotOriginTimeNode extends PlanTreeNode  {
 						k.remove();
 					}
 					
+			}
+			if(p.getPlanResources().size() > 0) {
+				plans.add(p);
 			}
 		}		
 	}
@@ -980,7 +992,7 @@ class DepotDestTimeNode extends PlanTreeNode  {
 	}
 		
 	public Collection getPlan() {
-		Collections.sort(trucks, new ZoneComparator());
+		Collections.sort(trucks, new TruckComparator());
 		resourceTeams = TreeDataUtil.teamUp(this.getTree(), employees);
 		assemble(resourceTeams);
 		return plans;
@@ -1017,11 +1029,11 @@ class DepotDestTimeNode extends PlanTreeNode  {
 			p.setZone(s.getZone());
 			p.setRegion(s.getRegion());
 			p.setStartTime(s.getStartTime());
-			p.setFirstDeliveryTime(s.getFirstDeliveryTime());
-			p.setLastDeliveryTime(s.getLastDeliveryTime());
+			p.setEndTime(s.getEndTime());
+			p.setDispatchGroup(s.getDispatchGroup());
 			p.setCutOffTime(s.getCutOffTime());
 			p.setSupervisorId(s.getSupervisorCode());
-			p.setMaxTime(s.getMaxTime());
+			p.setMaxReturnTime(s.getMaxReturnTime());
 			p.setSequence(rank++);
 	
 			Set zoneTypeResources = null;
@@ -1042,7 +1054,6 @@ class DepotDestTimeNode extends PlanTreeNode  {
 						resources.remove(_currResource);
 					} else {
 						zoneTypeResources = s.getZone().getTrnZoneType().getZonetypeResources();
-						
 							for (Iterator j = zoneTypeResources.iterator(); j.hasNext();) {
 								ZonetypeResource r = (ZonetypeResource) j.next();
 								// Driver
@@ -1096,14 +1107,13 @@ class DepotDestTimeNode extends PlanTreeNode  {
 			for (Iterator i = resources.iterator(); i.hasNext();) {
 				ScheduleEmployeeDetails _currResource = (ScheduleEmployeeDetails) i.next();
 				if(_currResource.getMembers() != null && _currResource.getMembers().size() > 0) {
-					Plan p = new Plan();
-					plans.add(p);
+					Plan p = new Plan();					
 					p.setPlanDate(_currResource.getDate());
 					p.setOriginFacility(_currResource.getSchedule().getRegion().getOriginFacility());
 					p.setRegion(_currResource.getSchedule().getRegion());
-					p.setStartTime(_currResource.getSchedule().getTime());
-					p.setFirstDeliveryTime(_currResource.getSchedule().getTime());
-					p.setLastDeliveryTime(_currResource.getSchedule().getTime());
+					p.setStartTime(_currResource.getSchedule().getDispatchGroupTime());
+					p.setEndTime(_currResource.getSchedule().getDispatchGroupTime());
+					p.setDispatchGroup(_currResource.getSchedule().getDispatchGroupTime());
 					p.setIsBullpen("Y");
 					for(ScheduleEmployeeDetails ss : _currResource.getMembers()) {						
 						Collection c = ss.getEmpRoles();
@@ -1121,23 +1131,27 @@ class DepotDestTimeNode extends PlanTreeNode  {
 							p.getPlanResources().add(planResource);
 						}
 					}
-					i.remove();					
+					i.remove();	
+
+					if(p.getPlanResources().size() > 0) {
+						plans.add(p);
+					}
 				} 
 			}
 		}
 
-		// add bullpen for remaining employees
+		// Bullpens for non-team employees
 		while(resources != null && resources.size() > 0){			
 			ScheduleEmployeeDetails s = (ScheduleEmployeeDetails) resources.toArray()[0];
 			Plan p = new Plan();
-			plans.add(p);
-			
+						
 			p.setPlanDate(s.getDate());
 			p.setOriginFacility(s.getSchedule().getRegion().getOriginFacility());
 			p.setRegion(s.getSchedule().getRegion());
-			p.setStartTime(s.getSchedule().getTime());
-			p.setFirstDeliveryTime(s.getSchedule().getTime());
-			p.setLastDeliveryTime(s.getSchedule().getTime());
+			p.setStartTime(s.getSchedule().getDispatchGroupTime());
+			p.setEndTime(s.getSchedule().getDispatchGroupTime());
+			p.setDispatchGroup(s.getSchedule().getDispatchGroupTime());	
+
 			p.setIsBullpen("Y");
 			
 			int driverCount = 0, helperCount = 0;
@@ -1166,7 +1180,12 @@ class DepotDestTimeNode extends PlanTreeNode  {
 						k.remove();
 					}
 			}
+
+			if(p.getPlanResources().size() > 0) {
+				plans.add(p);
+			}
 		}
+
 	}
 
 	public String toString() {
@@ -1190,13 +1209,13 @@ class TruckNode extends PlanTreeNode {
 	
 	public String toString() {
 		StringBuffer strBuf = new StringBuffer();
-		strBuf.append(s.getCount());		
+		strBuf.append(s.getTruckCnt());		
 		return strBuf.toString();
 	}
 }
 
 @SuppressWarnings({ "rawtypes" })
-class ZoneComparator implements Comparator {
+class TruckComparator implements Comparator {
 
 	public int compare(Object o1, Object o2) {
 		if (o1 instanceof Scrib && o2 instanceof Scrib) {
@@ -1208,7 +1227,9 @@ class ZoneComparator implements Comparator {
 				z1 = s1.getZone().getPriority().intValue();
 			if (s2.getZone() != null && s2.getZone().getPriority() != null)
 				z2 = s2.getZone().getPriority().intValue();
-			return z2 - z1;
+			if (z2 - z1 != 0)
+				return z2 - z1;
+			return s1.getStartTime().compareTo(s2.getStartTime());
 		}
 		return 0;
 	}
@@ -1250,9 +1271,9 @@ class EmployeeScheduleComparator implements Comparator {
 			Date d1 = null;
 			Date d2 = null;
 			if (s1.getSchedule() != null)
-				d1 = s1.getSchedule().getTime();
+				d1 = s1.getSchedule().getDispatchGroupTime();
 			if (s2.getSchedule() != null)
-				d2 = s2.getSchedule().getTime();			
+				d2 = s2.getSchedule().getDispatchGroupTime();			
 			return d1.compareTo(d2);
 		}
 		return 0;

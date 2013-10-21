@@ -20,10 +20,10 @@
             <column name="EMPLOYEE_ID"  />
         </property>
         <property name="day" type="string">
-            <column name="DAY"  />
+            <column name="DAY" />
         </property>
-        <property name="time" type="timestamp">
-            <column name="TIME" length="7" />
+        <property name="dispatchGroupTime" type="timestamp">
+            <column name="DISPATCH_GROUPTIME" length="7" />
         </property> 
         <property name="weekOf" type="date">
             <column name="WEEK_OF" length="7" not-null="true" />

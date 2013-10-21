@@ -224,15 +224,14 @@ public class CopyPlanFormController extends AbstractFormController {
 			
 			tmpNewPlan.setOriginFacility(tmpPlan.getOriginFacility());
 			tmpNewPlan.setDestinationFacility(tmpPlan.getDestinationFacility());
-			
-			tmpNewPlan.setFirstDeliveryTime(tmpPlan.getFirstDeliveryTime());
-			tmpNewPlan.setLastDeliveryTime(tmpPlan.getLastDeliveryTime());
+			tmpNewPlan.setDispatchGroup(tmpPlan.getDispatchGroup());
 			tmpNewPlan.setCutOffTime(tmpPlan.getCutOffTime());
-
 			tmpNewPlan.setIsBullpen(tmpPlan.getIsBullpen());
 			tmpNewPlan.setRegion(tmpPlan.getRegion());
 			tmpNewPlan.setSequence(tmpPlan.getSequence());
 			tmpNewPlan.setStartTime(tmpPlan.getStartTime());
+			tmpNewPlan.setEndTime(tmpPlan.getEndTime());
+			tmpNewPlan.setMaxReturnTime(tmpPlan.getMaxReturnTime());
 			tmpNewPlan.setZone(tmpPlan.getZone());
 			tmpNewPlan.setSupervisorId(tmpPlan.getSupervisorId());
 			if(includeEmpDetails) {

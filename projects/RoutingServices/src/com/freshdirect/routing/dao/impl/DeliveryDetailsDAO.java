@@ -89,8 +89,8 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			"tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.BALANCE_BY BALANCE_BY, a.LOADBALANCE_FACTOR LOADBALANCE_FACTOR, a.NEEDS_LOADBALANCE NEEDS_LOADBALANCE from transp.zone z, transp.trn_area a, transp.trn_region tr " +
 			" where z.area = a.code  and a.region_code = tr.code  and (z.OBSOLETE <> 'X' or z.OBSOLETE IS NULL)";
 	
-	private static final String GET_TIMESLOTSBYDATE_QRY = "select t.ID REF_ID, ta.AREA, ta.STEM_FROM_TIME  STEM_FROM, ta.STEM_TO_TIME STEM_TO, ta.STEM_MAX_TIME STEM_MAX, z.ZONE_CODE, z.NAME, t.START_TIME , t.END_TIME" +
-			", case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR " +
+	private static final String GET_TIMESLOTSBYDATE_QRY = "select t.ID REF_ID, ta.AREA, ta.POSTTRIP_TIME  POST_TRIP, ta.PRETRIP_TIME PRE_TRIP, ta.STEM_MAX_TIME STEM_MAX, z.ZONE_CODE, z.NAME, t.START_TIME , t.END_TIME" +
+			", case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH:MI PM') else TO_CHAR(t.premium_cutoff_time, 'HH:MI PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR " +
 			" from dlv.timeslot t , dlv.zone z, transp.zone ta, transp.trn_area a, transp.trn_region tr " +
 			" where t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE and a.region_code = tr.code " +
 			" and t.base_date = ?";
@@ -173,7 +173,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	
 	private static final String GET_TIMESLOTSBYDATEANDZONE_QRY =
 		"select t.id REF_ID, t.base_date, t.start_time, t.end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, z.zone_code, t.ct_capacity" +
-		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stem_from, ta.STEM_TO_TIME stem_to, z.NAME ZONE_NAME, " +
+		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.POSTTRIP_TIME POST_TRIP, ta.PRETRIP_TIME PRE_TRIP, z.NAME ZONE_NAME, " +
 		"case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, a.DELIVERY_RATE AREA_DLV_RATE,  " 
 		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, " 
 		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, " 
@@ -192,7 +192,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	
 	private static final String TIMESLOT_BY_ID =
 			"select distinct ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.premium_cutoff_time,ts.status, ts.zone_id, ts.capacity, ts.ct_capacity" +
-			", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, " +
+			", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.POSTTRIP_TIME stemfrom, ta.PRETRIP_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, " +
 			"case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, " +
 			"ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE,"
 				+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
@@ -280,8 +280,8 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		         					IAreaModel _aModel = new AreaModel();
 		         					_aModel.setAreaCode(rs.getString("AREA_CODE"));
 		         					_aModel.setDeliveryRate(rs.getDouble("AREA_DLV_RATE"));
-		         					_aModel.setStemFromTime(rs.getInt("stemfrom"));
-		         					_aModel.setStemToTime(rs.getInt("stemto"));
+		         					_aModel.setPostTripTime(rs.getInt("stemfrom"));
+		         					_aModel.setPreTripTime(rs.getInt("stemto"));
 		         					
 		         					IRegionModel _rModel = new RegionModel();
 		         					_rModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")) ? true : false);
@@ -493,8 +493,8 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 							
 							IAreaModel _aModel = new AreaModel();
 							_aModel.setAreaCode(rs.getString("AREA"));
-							_aModel.setStemFromTime(rs.getInt("STEM_FROM"));
-							_aModel.setStemToTime(rs.getInt("STEM_TO"));	
+							_aModel.setPostTripTime(rs.getInt("POST_TRIP"));
+							_aModel.setPreTripTime(rs.getInt("PRE_TRIP"));	
 							
 							IRegionModel _rModel = new RegionModel();
          					_rModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")) ? true : false);
@@ -1187,8 +1187,8 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 							
 							IAreaModel _aModel = new AreaModel();
 							_aModel.setAreaCode(rs.getString("AREA_CODE"));
-							_aModel.setStemFromTime(rs.getInt("STEM_FROM"));
-							_aModel.setStemToTime(rs.getInt("STEM_TO"));							
+							_aModel.setPostTripTime(rs.getInt("POST_TRIP"));
+							_aModel.setPreTripTime(rs.getInt("PRE_TRIP"));							
 						
 							IRegionModel _rModel = new RegionModel();
          					_rModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")) ? true : false);

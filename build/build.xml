@@ -254,9 +254,9 @@
 		<checkoutLabeled dir="projects/CRM/docroot"/>
 		<checkoutLabeled dir="projects/Tools/src"/>
 		<checkoutLabeled dir="projects/Tests"/>
-		<checkoutLabeled dir="projects/MarketingAdmin"/>
-		<checkoutLabeled dir="projects/TransportationAdmin"/>
-		<checkoutLabeled dir="projects/RoutingServices"/>
+    	<checkoutLabeled dir="projects/MarketingAdmin"/>
+    	<checkoutLabeled dir="projects/TransportationAdmin"/>
+    	<checkoutLabeled dir="projects/RoutingServices"/>
 		<checkoutLabeled dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->
 		<checkoutLabeled dir="projects/StandingOrdersService"/> <!-- Standing Orders background service -->
 		<checkoutLabeled dir="projects/CoremetricsService"/> <!-- Coremetrics background service -->
@@ -313,9 +313,9 @@
 		<checkoutLatest dir="projects/CRM/docroot"/>
 		<checkoutLatest dir="projects/Tools/src"/>
 		<checkoutLatest dir="projects/Tests"/>
-		<checkoutLatest dir="projects/MarketingAdmin"/>
-		<checkoutLatest dir="projects/TransportationAdmin"/>
-		<checkoutLatest dir="projects/RoutingServices"/>
+        <checkoutLatest dir="projects/MarketingAdmin"/>
+        <checkoutLatest dir="projects/TransportationAdmin"/>
+        <checkoutLatest dir="projects/RoutingServices"/>
 		<checkoutLatest dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->        	
 		<checkoutLatest dir="projects/StandingOrdersService"/>
 		<checkoutLatest dir="projects/CoremetricsService"/>
@@ -1745,7 +1745,7 @@
 			<pathelement location="${work.dir}/RoutingServices.jar"/>
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
-			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
+         <pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
@@ -1796,7 +1796,7 @@
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
 			<pathelement location="${work.dir}/RoutingServices.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
-			<pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
+            <pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
@@ -2021,6 +2021,7 @@
 			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
 		</path>
 		<trycatch>
 			<try>
@@ -2073,6 +2074,7 @@
 			<fileset dir="${thirdparty.home}" includes="jackson-databind-2.2.0.jar"/>
 			<fileset dir="${thirdparty.home}" includes="jackson-annotations-2.2.0.jar"/>
 			<fileset dir="${thirdparty.home}" includes="urlrewrite-2.6.0.jar"/>
+			<fileset dir="${thirdparty.home}" includes="opencsv-1.8.jar"/>
 		</copy>
 
 		<!-- create .war file -->

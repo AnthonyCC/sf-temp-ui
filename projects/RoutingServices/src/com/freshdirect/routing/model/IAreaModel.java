@@ -23,11 +23,11 @@ public interface IAreaModel {
 	double getDeliveryRate();
 	void setDeliveryRate(double deliveryRate);
 	
-	int getStemFromTime();
-	void setStemFromTime(int stemFromTime);
+	public int getPreTripTime();
+	public void setPreTripTime(int preTripTime);
 
-	int getStemToTime();
-	void setStemToTime(int stemToTime);
+	public int getPostTripTime();
+	public void setPostTripTime(int postTripTime); 
 	
 	String getPrefix();
 	void setPrefix(String prefix);

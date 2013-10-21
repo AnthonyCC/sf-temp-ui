@@ -62,9 +62,10 @@ final int W_GENERIC_LAYOUT_NOT_DEPARTMENT = 601;
 	DisplayObject displayObj = null;
 	
 	// if we are on the vegetable folder: (not in a subfolder of veg) then don't show any products.
+	//changed for APPDEV-3237 to check only SPECIFICALLY for those words as fullname
 	boolean showOnlyFolders = false;
 	int rowsPainted = 0;
-	if ( ( (ContentNodeModel)currentFolder ).getFullName().toUpperCase().indexOf( "VEGETABLES" ) >= 0 || ( (ContentNodeModel)currentFolder ).getFullName().toUpperCase().indexOf( "SEAFOOD" ) >= 0 ) {
+	if ( "VEGETABLES".equals(( (ContentNodeModel)currentFolder ).getFullName().toUpperCase()) || "SEAFOOD".equals(( (ContentNodeModel)currentFolder ).getFullName().toUpperCase()) ) {
 		showOnlyFolders = true;
 	}
 	

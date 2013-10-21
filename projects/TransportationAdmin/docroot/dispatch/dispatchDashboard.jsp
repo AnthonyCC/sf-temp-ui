@@ -66,7 +66,7 @@
             rowsDisplayed="1000" view="dispatchdbtable" filterable="false" >
     	<ec:row interceptor="obsoletemarker">
 	        <ec:column alias="trnZoneRegion" property="regionZone" title="Region-Zone" filterable="false" sortable="false"/>              
-	        <ec:column alias="trnTimeslotslotName" property="startTime" title="Start Time" filterable="false" sortable="false"/>
+	        <ec:column alias="trnTimeslotslotName" property="startTime" title="Truck Dispatch Time" filterable="false" sortable="false"/>
 	        <ec:column alias="trnRouterouteNumber" property="route"  width="10" title="Route" filterable="false" sortable="false"/>
 	        <ec:column alias="trnTrucktruckNumber" property="truck" width="10"  title="Truck" filterable="false" sortable="false"/>              
 	        <ec:column alias="trnTruckLocation" property="location" width="10"  title="Loc" filterable="false" sortable="false"/>
@@ -74,7 +74,7 @@
 	        <ec:column alias="trnStatus" property="dispatchStatus"  title="Status" filterable="false" sortable="false"/>
 	        <ec:column property="drivers" cell="dispatchDashBoardResCell" title="Driver"  filterable="false" alias="drivers" sortable="false"/>
 	        <ec:column property="helpers" cell="dispatchDashBoardResCell" title="Helper"  filterable="false" alias="helpers" sortable="false"/>             
-	        <ec:column alias="dispatchTime" property="dispatchTimeEx" title="Dispatch Time" filterable="false" sortable="false" cell="date" format="hh:mm aaa"/>
+	        <ec:column alias="dispatchTime" property="dispatchTimeEx" title="Actual Dispatch Time" filterable="false" sortable="false" cell="date" format="hh:mm aaa"/>
         </ec:row>
     </ec:table>  
           <div id="nodata" style="display:none;">

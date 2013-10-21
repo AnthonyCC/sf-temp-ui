@@ -71,7 +71,7 @@ public class TransAdminCacheManager {
 	/* AdHoc Route data holder */
 	protected static final String STORE_ADHOCROUTEINFODATA = "TRANSAPP_CACHE_ADHOCROUTEINFODATA.ser";
 	
-	/* AdHoc Route data holder */
+	/* EventLog AuthUser holder */
 	protected static final String STORE_AUTHUSERDATA = "TRANSAPP_CACHE_AUTHUSERINFODATA.ser";
 
 	private TransAdminCacheManager() {

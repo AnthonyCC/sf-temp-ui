@@ -15,9 +15,13 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.ServletRequestDataBinder;
 
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.transadmin.model.DispatchGroup;
+import com.freshdirect.transadmin.model.TrnFacility;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
+import com.freshdirect.transadmin.web.editor.DispatchGroupPropertyEditor;
+import com.freshdirect.transadmin.web.editor.TrnFacilityPropertyEditor;
 import com.freshdirect.transadmin.web.model.WebSchedule;
 
 public class ScheduleFormController extends AbstractFormController {
@@ -34,6 +38,8 @@ public class ScheduleFormController extends AbstractFormController {
 		Map refData = new HashMap();
 		refData.put("region", getDomainManagerService().getRegions());
 		refData.put("depotFacility", locationManagerService.getTrnFacilityByType("DPT"));
+		refData.put("dispatchGroups", domainManagerService.getDispatchGroups());
+
 		return refData;
 	}
 
@@ -85,6 +91,7 @@ public class ScheduleFormController extends AbstractFormController {
 	public void initBinder(HttpServletRequest request,
 			ServletRequestDataBinder binder) throws Exception {
 		super.initBinder(request, binder);
+		binder.registerCustomEditor(TrnFacility.class, new TrnFacilityPropertyEditor());
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

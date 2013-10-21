@@ -239,6 +239,7 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 		return runnerPlans;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private static void constructDispatchModelList(Map<String, IHandOffDispatch> dispatchMapping
 															, List<IHandOffBatchPlan> zonePlanList
 															, List<IHandOffBatchRoute> zoneRouteList
@@ -260,9 +261,8 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			_dispatch.setPlanId(_plan.getPlanId());
 			_dispatch.setOriginFacility(_plan.getOriginFacility());
 			_dispatch.setDestinationFacility(_plan.getDestinationFacility());
-			_dispatch.setStartTime(_plan.getStartTime());
-			_dispatch.setFirstDeliveryTime(RoutingDateUtil.getServerTime(_plan.getFirstDeliveryTime()) != null ?
-						RoutingDateUtil.getServerTime(RoutingDateUtil.getServerTime(_plan.getFirstDeliveryTime())): null);
+			_dispatch.setDispatchGroup(_plan.getDispatchGroup());
+			_dispatch.setDispatchTime(_plan.getDispatchTime());
 			_dispatch.setSupervisorId(_plan.getSupervisorId());
 			_dispatch.setIsBullpen(_plan.getIsBullpen() == null ? "N" : _plan.getIsBullpen());
 			_dispatch.setMaxTime(_plan.getMaxTime());
@@ -277,10 +277,6 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 				IHandOffBatchTrailer trailer = matchTrailer(_plan, batchTrailers);
 				if(trailer != null) {
 					_dispatch.setRoute(trailer.getTrailerId());
-					if(trailer.getStartTime() != null){
-						_dispatch.setFirstDeliveryTime(RoutingDateUtil.getServerTime(trailer.getStartTime()) != null ?
-							RoutingDateUtil.getServerTime(RoutingDateUtil.getServerTime(trailer.getStartTime())): null);
-					}
 					_dispatch.setCheckInTime(trailer.getCompletionTime());		
 					trailer = null;
 				}
@@ -293,13 +289,13 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 								facilityLookUp.get(_plan.getDestinationFacility())!=null &&
 								facilityLookUp.get(_plan.getDestinationFacility()).getTrnFacilityType().getName().equals(EnumTransportationFacilitySrc.DEPOTDELIVERY.getName()))
 				{
-					DateRange planRange = new DateRange(_plan.getFirstDeliveryTime(), _plan.getFirstDeliveryTime());
+					DateRange planRange = new DateRange(_plan.getDispatchGroup(), _plan.getDispatchGroup());
 					
 					int runnerCount = 0;	
 						for (Iterator<IHandOffBatchPlan> k = runnerPlans.iterator(); k.hasNext() && runnerCount< _plan.getRunnerMax();) 
 						{
 							IHandOffBatchPlan runnerPlan = k.next();
-							DateRange runnerRange = new DateRange(runnerPlan.getFirstDeliveryTime(), runnerPlan.getLastDeliveryTime());
+							DateRange runnerRange = new DateRange(runnerPlan.getDispatchGroup(), runnerPlan.getEndTime());
 							
 							if(runnerPlan.getOriginFacility().equals(_dispatch.getDestinationFacility()) && 
 									runnerRange.overlaps(planRange) && 
@@ -317,17 +313,17 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 								runnerCount++;
 							}
 						}
-						if(runnerCount>0) _dispatch.setDestinationFacility(zoneFacility);
+					if (runnerCount > 0)
+						_dispatch.setDestinationFacility(zoneFacility);
 				}
 				route = matchRoute(_plan, zoneRouteList);	
 				
 				if(route != null) {
 					_dispatch.setRoute(route.getRouteId());
-					if(route.getFirstDeliveryTime() != null){
-						_dispatch.setFirstDeliveryTime(RoutingDateUtil.getServerTime(route.getFirstDeliveryTime()) != null ?
+					/*if(route.getFirstDeliveryTime() != null){
+						_dispatch.setFirstDlvTime(RoutingDateUtil.getServerTime(route.getFirstDeliveryTime()) != null ?
 							RoutingDateUtil.getServerTime(RoutingDateUtil.getServerTime(route.getFirstDeliveryTime())): null);
-					}
-
+					}*/
 					_dispatch.setCheckInTime(route.getCheckInTime());				
 					_dispatch.setZone(route.getArea());
 					route = null;
@@ -354,9 +350,9 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			_dispatch.setPlanId(_plan.getPlanId());
 			_dispatch.setOriginFacility(_plan.getOriginFacility());
 			_dispatch.setDestinationFacility(_plan.getDestinationFacility());
-			_dispatch.setStartTime(_plan.getStartTime());
-			_dispatch.setFirstDeliveryTime(RoutingDateUtil.getServerTime(_plan.getFirstDeliveryTime()) != null ?
-						RoutingDateUtil.getServerTime(RoutingDateUtil.getServerTime(_plan.getFirstDeliveryTime())): null);
+			_dispatch.setDispatchGroup(_plan.getDispatchGroup());
+			_dispatch.setDispatchTime(_plan.getDispatchTime());
+			_dispatch.setEndTime(_plan.getEndTime());
 			_dispatch.setSupervisorId(_plan.getSupervisorId());
 			_dispatch.setIsBullpen(_plan.getIsBullpen() == null ? "N" : _plan.getIsBullpen());
 			_dispatch.setMaxTime(_plan.getMaxTime());
@@ -427,10 +423,8 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			Iterator<IHandOffBatchRoute> _routeItr = routeList.iterator();
 			while(_routeItr.hasNext()) {
 				IHandOffBatchRoute route = _routeItr.next();				
-				if(route.getDispatchTime() != null && p.getStartTime()!= null){
-					String routeStartTime = route.getDispatchTime() != null ? RoutingDateUtil.getServerTime(route.getDispatchTime().getNormalDate()) : "";
-					String planStartTime = RoutingDateUtil.getServerTime(p.getStartTime());					
-					if(routeStartTime != null && routeStartTime.length() > 0 && planStartTime.equals(routeStartTime)) {
+				if(route.getDispatchTime() != null && p.getDispatchTime() != null){
+					if(route.getDispatchTime().getAsDate().equals(p.getDispatchTime())) {
 						result = route;						
 						_routeItr.remove();
 						break;						
@@ -448,11 +442,8 @@ public class HandOffAutoDispatchAction extends AbstractHandOffAction {
 			Iterator<IHandOffBatchTrailer> _trailerItr = trailerList.iterator();
 			while(_trailerItr.hasNext()) {
 				IHandOffBatchTrailer trailer = _trailerItr.next();
-						
-				if(trailer.getTrailerDispatchTime()!= null && p.getStartTime()!= null){
-					String startTimeFromRoute = RoutingDateUtil.getServerTime(trailer.getTrailerDispatchTime()) != null ? RoutingDateUtil.getServerTime(trailer.getTrailerDispatchTime()) : "";
-					String planStartTime = RoutingDateUtil.getServerTime(p.getStartTime());					
-					if(planStartTime != null && planStartTime.length() > 0 && planStartTime.equals(startTimeFromRoute)) {
+				if(trailer.getTrailerDispatchTime()!= null && p.getDispatchTime() != null){
+					if(trailer.getTrailerDispatchTime().equals(p.getDispatchTime())) {
 						result = trailer;
 						_trailerItr.remove();
 						break;

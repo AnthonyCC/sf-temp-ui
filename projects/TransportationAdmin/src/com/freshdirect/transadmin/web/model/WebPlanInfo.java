@@ -27,42 +27,42 @@ import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumResourceType;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
+@SuppressWarnings({ "rawtypes", "serial" })
 public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	
 	private String planId;
 	private String planDay;
 	private String zoneCode;
 	private String zoneName;
+	private String zoneType;
 	private String regionCode;
 	private String regionName;	
 	private Date planDate;
-	private String firstDeliveryTime;
+
+	private TrnFacility originFacility;
+	private TrnFacility destinationFacility;
+	private Date dispatchGroup;
+
 	private String startTime;
+	private String endTime;
+	private String maxTime;
+
 	private int sequence;
 	private String isBullpen;
 	private String ignoreErrors;
-	private String zoneModified;
 	private Date errorDate;
-	private String  supervisorCode;
-    private String maxTime;
-    
+	private String supervisorCode;
 	private String supervisorName;
-	private String zoneType;
 	private boolean plan;
-	/*private ResourceList drivers= new ResourceList();
-	private ResourceList helpers=new ResourceList();		      
-	private ResourceList runners=new ResourceList();*/
-		      
-	private List drivers= new ResourceList();
-	private List helpers=new ResourceList();		      
-	private List runners=new ResourceList();
+	
+	private List drivers = new ResourceList();
+	private List helpers = new ResourceList();
+	private List runners = new ResourceList();
 	
 	private int driverReq;
-	private int driverMax;
-	
+	private int driverMax;	
 	private int helperReq;
 	private int helperMax;
-
 	private int runnerReq;
 	private int runnerMax;
 
@@ -74,17 +74,26 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	
 	private String referenceContextId;
 	private boolean isTeamOverride;
-	private String firstDeliveryTimeModified;
 	
 	private String lastDeliveryTime;
 	private String cutOffTime;
-	private String destFacilityModified;
 	private boolean isZoneReg;
-	private TrnFacility originFacility;
-	private TrnFacility destinationFacility;
 	private String dispatchType;
 	private String equipmentTypeS;
 	private List<EquipmentType> equipmentTypes;
+	
+	private String zoneModified;
+	private String dispatchGroupModified;
+	private String destFacilityModified;
+		
+	public Date getDispatchGroup() {
+		return dispatchGroup;
+	}
+
+	public void setDispatchGroup(Date dispatchGroup) {
+		this.dispatchGroup = dispatchGroup;
+	}
+
 	public TrnFacility getOriginFacility() {
 		return originFacility;
 	}
@@ -117,17 +126,17 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 		this.destFacilityModified = destFacilityModified;
 	}
 
-	public String getFirstDeliveryTimeModified() {
-		return firstDeliveryTimeModified;
+	public String getDispatchGroupModified() {
+		return dispatchGroupModified;
 	}
 
-	public void setFirstDeliveryTimeModified(String firstDeliveryTimeModified) {
-		this.firstDeliveryTimeModified = firstDeliveryTimeModified;
+	public void setDispatchGroupModified(String dispatchGroupModified) {
+		this.dispatchGroupModified = dispatchGroupModified;
 	}
 
 	public String getWeekDate() {
 		try {
-			if(this.planDate!=null){
+			if(this.planDate!=null) {
 				return TransStringUtil.getDate(TransStringUtil.getWeekOf(this.planDate));
 			}			
 		} catch (ParseException e) {
@@ -142,34 +151,34 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	public void setIsTeamOverride(boolean isTeamOverride) {
 		this.isTeamOverride = isTeamOverride;
 	}
-	public String getOpen()
-	{		
-		if(!isPlan()){
-		if(getResourceSize(drivers)<driverReq||getResourceSize(helpers)<helperReq||getResourceSize(runners)<runnerReq)
-		{
-			return "Y";
-		}
-		}
-		return null;
-	}
-	public String getOverride()
-	{		
-		if(getIsOverride())
-		{
-			return "Y";
+
+	public String getOpen() {
+		if (!isPlan()) {
+			if (getResourceSize(drivers) < driverReq
+					|| getResourceSize(helpers) < helperReq
+						|| getResourceSize(runners) < runnerReq) {
+				return "Y";
+			}
 		}
 		return null;
 	}
-	
-	public int getResourceSize(List resources)
-	{
-		int result=0;
-			if(resources!=null)
-		for(int i=0,n=resources.size();i<n;i++)
-		{
-			EmployeeInfo e=(EmployeeInfo)resources.get(i);
-			if(e!=null&&e.getEmployeeId()!=null&&e.getEmployeeId().length()>0)result++;
+
+	public String getOverride() {
+		if (getIsOverride()) {
+			return "Y";
 		}
+		return null;
+	}
+
+	public int getResourceSize(List resources) {
+		int result = 0;
+		if (resources != null)
+			for (int i = 0, n = resources.size(); i < n; i++) {
+				EmployeeInfo e = (EmployeeInfo) resources.get(i);
+				if (e != null && e.getEmployeeId() != null
+						&& e.getEmployeeId().length() > 0)
+					result++;
+			}
 		return result;
 	}
 	
@@ -187,14 +196,15 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	}
 	
 	public Tooltip getZoneNameEx() {
-		if(!TransStringUtil.isEmpty(zoneName)) {
-			String value=new StringBuffer(100).append(zoneName).append("\n").append(zoneType).toString();
+		if (!TransStringUtil.isEmpty(zoneName)) {
+			String value = new StringBuffer(100).append(zoneName)
+													.append("\n")
+														.append(zoneType).toString();
 			return new Tooltip(this.getZoneCode(), value);
-		}else if ("Y".equalsIgnoreCase(isBullpen)){
-			return new Tooltip("Bullpen","");
+		} else if ("Y".equalsIgnoreCase(isBullpen)) {
+			return new Tooltip("Bullpen", "");
 		}
 		return new Tooltip("","");
-
 	}
 	
 		
@@ -366,19 +376,7 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	 */
 	public void setRegionName(String regionName) {
 		this.regionName = regionName;
-	}
-	/**
-	 * @return the reportTime
-	 */
-	public String getFirstDeliveryTime() {
-		return firstDeliveryTime;
-	}
-	/**
-	 * @param reportTime the reportTime to set
-	 */
-	public void setFirstDeliveryTime(String firstDeliveryTime) {
-		this.firstDeliveryTime = firstDeliveryTime;
-	}
+	}	
 	/**
 	 * @return the sequence
 	 */
@@ -403,6 +401,15 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	public void setStartTime(String startTime) {
 		this.startTime = startTime;
 	}
+		
+	public String getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+
 	/**
 	 * @return the zoneCode
 	 */
@@ -457,45 +464,46 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	public String getSupervisorName() {
 		return supervisorName;
 	}
+
 	public void addDriver(ResourceInfoI driver) {
-		if(driver!=null)
+		if (driver != null)
 			drivers.add(driver);
 	}
 
 	public void addHelper(ResourceInfoI helper) {
-		if(helper!=null)
+		if (helper != null)
 			helpers.add(helper);
 	}
-	
+
 	public void addRunner(ResourceInfoI runner) {
-		if(runner!=null)
+		if (runner != null)
 			runners.add(runner);
-	}	
-	
+	}
+
 	public List getDrivers() {
 		return drivers;
 	}
-	
+
 	public List getRunners() {
 		return runners;
 	}
-	
+
 	public List getHelpers() {
 		return helpers;
 	}
-	
+
 	public ResourceList getDummyResources(ResourceReq resourceReq) {
-		
-		int size=resourceReq.getMax().intValue();
-		ResourceList resourceList=new ResourceList(size);
-		//resourceList.setResourceReq(resourceReq);
-		for(int i=0;i<size;i++) {
+
+		int size = resourceReq.getMax().intValue();
+		ResourceList resourceList = new ResourceList(size);
+		for (int i = 0; i < size; i++) {
 			resourceList.add(constructResourceInfo());
 		}
 		return resourceList;
 
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Set getResources() {
 		Set planResources=new HashSet();
 		ResourceInfoI supervisorInfo = constructResourceInfo();
@@ -506,6 +514,7 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 		return planResources;
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected Set getResources(List resources, EnumResourceType role) {
 		Set planResources=new HashSet();
 		if(resources==null || resources.size()==0)
@@ -519,49 +528,46 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 		return planResources;
 	}
 	
-	protected ResourceI getResource(ResourceInfoI resourceInfo, EnumResourceType role) {
-		
+	protected ResourceI getResource(ResourceInfoI resourceInfo, EnumResourceType role) {		
 		
 		if(TransStringUtil.isEmpty(resourceInfo.getEmployeeId())) {
 			return null;
 		}
-		ResourceI resource= new PlanResource();
-		EmployeeRoleType empRole=new EmployeeRoleType();
+		ResourceI resource = new PlanResource();
+		EmployeeRoleType empRole = new EmployeeRoleType();
 		empRole.setCode(role.getName());
-		ResourceId r=new ResourceId(this.planId,resourceInfo.getEmployeeId());
+		ResourceId r = new ResourceId(this.planId, resourceInfo.getEmployeeId());
 		r.setAdjustmentTime(resourceInfo.getAdjustmentTime());
 		resource.setId(r);
 		resource.setEmployeeRoleType(empRole);
 		return resource;
-		
 	}
 	
 	public void setResourceRequirements(Map resourceReqs) {
-		Iterator it=resourceReqs.keySet().iterator();
-		while(it.hasNext()) {
-			Object key=it.next();
-			ResourceReq resourceReq=(ResourceReq)resourceReqs.get(key);
-			if(EnumResourceType.DRIVER.equals(key)) {
+		Iterator it = resourceReqs.keySet().iterator();
+		while (it.hasNext()) {
+			Object key = it.next();
+			ResourceReq resourceReq = (ResourceReq) resourceReqs.get(key);
+			if (EnumResourceType.DRIVER.equals(key)) {
 				this.setDrivers(getDummyResources(resourceReq));
-			}else if(EnumResourceType.HELPER.equals(key)) {
+			} else if (EnumResourceType.HELPER.equals(key)) {
 				this.setHelpers(getDummyResources(resourceReq));
-			}else if(EnumResourceType.RUNNER.equals(key)) {
+			} else if (EnumResourceType.RUNNER.equals(key)) {
 				this.setRunners(getDummyResources(resourceReq));
 			}
 		}
 	}
 	
+	@SuppressWarnings({ "unchecked", "unchecked" })
 	public void setResources(EmployeeManagerI employeeManagerService,Set resources, Map resourceReqs, Map empInfo, Map empRoleMap,Map empStatusMap,Map empTruckPrefMap,Map empTeams) {
 		
+		if (resources == null || resources.isEmpty()) return;
 		
-		if(resources == null || resources.isEmpty())
-			return;
-		Iterator _it=resources.iterator();
-		int driverCount=0;
-        int helperCount=0;
-        int runnerCount=0;
-        while(_it.hasNext()) {
-        	
+		Iterator _it = resources.iterator();
+		int driverCount = 0;
+		int helperCount = 0;
+		int runnerCount = 0;
+		while (_it.hasNext()) {        	
         	
             ResourceI resource=(ResourceI)_it.next();
             EnumResourceType role=EnumResourceType.getEnum(resource.getEmployeeRoleType().getCode());   
@@ -614,36 +620,35 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	
 	
 
-	public void setResourceInfo(List resources, boolean isZoneModified, EnumResourceType role,EmployeeManagerI employeeManagerService, int max) {
+	@SuppressWarnings("unchecked")
+	public void setResourceInfo(List resources, boolean isZoneModified, EnumResourceType role,EmployeeManagerI employeeManagerService, int max) {		
 		
-		
-		//int max=resources.getResourceReq().getMax().intValue();
-		if(max==0) {
+		if (max == 0) {
 			resources.clear();
-		}else if (resources.size()>max) {
-			trimResources(resources,max);
-		}else if (resources.size()<max) {
-			int difference=max-resources.size();
-			for(int i=0;i<difference;i++) {
+		} else if (resources.size() > max) {
+			trimResources(resources, max);
+		} else if (resources.size() < max) {
+			int difference = max - resources.size();
+			for (int i = 0; i < difference; i++) {
 				resources.add(constructResourceInfo());
 			}
 		}
 		if(isZoneModified) {
 			return;
 		}
-		int size=resources.size();
-		for(int i=0;i<size;i++) {
-			ResourceInfoI resourceInfo=(ResourceInfoI)resources.get(i);
-			if(!TransStringUtil.isEmpty(resourceInfo.getEmployeeId())) {
-				WebEmployeeInfo webEmplInfo=employeeManagerService.getEmployee(resourceInfo.getEmployeeId());
+		int size = resources.size();
+		for (int i = 0; i < size; i++) {
+			ResourceInfoI resourceInfo = (ResourceInfoI) resources.get(i);
+			if (!TransStringUtil.isEmpty(resourceInfo.getEmployeeId())) {
+				WebEmployeeInfo webEmplInfo = employeeManagerService.getEmployee(resourceInfo.getEmployeeId());
 				webEmplInfo.getEmpInfo().setAdjustmentTime(resourceInfo.getAdjustmentTime());
-				String nexttel=resourceInfo.getNextelNo();
-				if(webEmplInfo!=null && webEmplInfo.getEmpInfo()!=null) {
+				String nexttel = resourceInfo.getNextelNo();
+				if (webEmplInfo != null && webEmplInfo.getEmpInfo() != null) {
 					resources.remove(i);
-					ResourceInfoI resourceInfoI=getResourceInfo(webEmplInfo, null);	
+					ResourceInfoI resourceInfoI = getResourceInfo(webEmplInfo, null);
 					resourceInfoI.setAdjustmentTime(resourceInfo.getAdjustmentTime());
 					resourceInfoI.setNextelNo(nexttel);
-					resources.add(i,resourceInfoI );
+					resources.add(i, resourceInfoI);
 				}
 			}
 		}
@@ -651,20 +656,20 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	
 	private static void trimResources(List resources, int max) {
 		
-		if(resources==null || resources.size()==0)
+		if (resources == null || resources.size() == 0)
 			return;
-		int trimCount=resources.size()-max;
-		for(int i=0;i<trimCount;i++) {
-			resources.remove(resources.size()-1);
+		int trimCount = resources.size() - max;
+		for (int i = 0; i < trimCount; i++) {
+			resources.remove(resources.size() - 1);
 		}
 	}
 	
-	public ResourceInfoI constructResourceInfo(){
+	public ResourceInfoI constructResourceInfo() {
 		return new EmployeeInfo();
 	}
-	
+
 	public ResourceInfoI getResourceInfo(WebEmployeeInfo webEmpInfo, ResourceI resource){
-		if(webEmpInfo!=null && webEmpInfo.getEmpInfo()!=null ) {
+		if (webEmpInfo != null && webEmpInfo.getEmpInfo() != null) {
 			EmployeeInfo empInfo= new EmployeeInfo();
 			empInfo.setEmployeeId(webEmpInfo.getEmpInfo().getEmployeeId());
 			empInfo.setFirstName(webEmpInfo.getEmpInfo().getFirstName());
@@ -672,21 +677,15 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 			if(resource!=null&&resource.getId()!=null)
 			empInfo.setAdjustmentTime(resource.getId().getAdjustmentTime());
 			return empInfo;
-			
-		}else {
+
+		} else {
 			return new EmployeeInfo();
 		}
 	}
 
-	
-
-
-
 	public String getZoneModified() {
 		return zoneModified;
 	}
-
-
 
 	public void setZoneModified(String zoneModified) {
 		this.zoneModified = zoneModified;
@@ -714,11 +713,30 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 				if(termintedEmployees.contains(resourceInfo.getEmployeeId()) ) {
 					result = true;
 					break;
-				}
-				
+				}				
 			}
 		}
 		return result;
+	}
+	
+	public String getDispatchGroupS() {
+		try {
+			if (dispatchGroup != null)
+				return TransStringUtil.getServerTime(dispatchGroup);
+		} catch (ParseException e) {
+
+		}
+		return null;
+	}
+	public void setDispatchGroupS(String timeS) {
+
+		try {
+			if (timeS != null && timeS.length() > 0)
+				dispatchGroup = TransStringUtil.getServerTime(timeS);
+			else dispatchGroup = null;
+		} catch (ParseException e) {
+			
+		}
 	}
 	
    public Date getStartTimeEx() {
@@ -727,16 +745,7 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 			return getStartTime() != null ? TransStringUtil.getServerTime(getStartTime()) : null;
 		} catch (ParseException e) {
 			return null;
-		}
-		
-	}
-		
-	public Date getFirstDeliveryTimeEx() {
-		try {
-			return getFirstDeliveryTime() != null ? TransStringUtil.getServerTime(getFirstDeliveryTime()): null;
-		} catch (ParseException e) {
-			return null;
-		}
+		}		
 	}
 	
 	public Date getLastDeliveryTimeEx() {
@@ -839,10 +848,10 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	public String getFacilityInfoEx() {
 		if (originFacility == null)
 			return null;
-	
+
 		StringBuffer buf = new StringBuffer();
 		buf.append(originFacility.getName());
-		if(this.destinationFacility != null) {
+		if (this.destinationFacility != null) {
 			buf.append(" - " + destinationFacility.getName());
 		}
 
@@ -864,7 +873,6 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 		this.plan = plan;
 	}
 
-
 	public String getEquipmentTypeS() {
 		return equipmentTypeS;
 	}
@@ -880,6 +888,5 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	public void setEquipmentTypes(List<EquipmentType> equipmentTypes) {
 		this.equipmentTypes = equipmentTypes;
 	}
-	
 	
 }

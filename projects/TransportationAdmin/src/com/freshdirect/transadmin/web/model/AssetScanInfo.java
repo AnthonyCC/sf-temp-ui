@@ -6,6 +6,7 @@ public class AssetScanInfo {
 	private String employeeId;
 	private String employeeName;
 	private String status;
+	private String scanTime;
 		
 	public AssetScanInfo(String assetNo, String employeeId, String status) {
 		super();
@@ -39,6 +40,12 @@ public class AssetScanInfo {
 	}
 	public void setEmployeeName(String employeeName) {
 		this.employeeName = employeeName;
+	}	
+	public String getScanTime() {
+		return scanTime;
+	}
+	public void setScanTime(String scanTime) {
+		this.scanTime = scanTime;
 	}
 	@Override
 	public int hashCode() {

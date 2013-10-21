@@ -163,8 +163,7 @@
          };
           
           sDataSource = new YAHOO.util.DataSource(dataIncrementer);
-         <% if(TransportationAdminProperties.isAutoDispatchEnabled()) {%>
-			  var sColumns =  [ 
+          var sColumns =  [ 
 					{key:"batchId", label:"Batch ID",sortable:false, width: 50, className:"forms1"}, 
 					{key:"deliveryDate", label:"Delivery Date",sortable:false, width: 80,className:"forms1"},			    
 					{key:"creationInfo", label:"Process Audit Details",sortable:false, width: 142,className:"forms1"},
@@ -178,24 +177,8 @@
 					{key:"report", label:"Download", sortable:false, width: 150, className:"forms1",
 									formatter:"dropdown", dropdownOptions:["","HandOff Report","Community Report","SAP Upload Files"] }
 					
-			 ];
-		<%}else{%>
-				var sColumns =  [ 
-					{key:"batchId", label:"Batch ID",sortable:false, width: 50, className:"forms1"}, 
-					{key:"deliveryDate", label:"Delivery Date",sortable:false, width: 80,className:"forms1"},			    
-					{key:"creationInfo", label:"Process Audit Details",sortable:false, width: 142,className:"forms1"},
-					{key:"status", label:"Status",sortable:false, width: 60,className:"forms1"},
-					{key:"sessionInfo", label:"Session",sortable:false, width: 305,className:"forms1"},
-					{key:"systemMessage", label:"System Message", width: 200,sortable:false,className:"forms1"},
-					
-					{key:"action", label:"Action", sortable:false, width: 125, className:"forms1",
-									formatter:"dropdown", dropdownOptions:["","ROUTEIN","ROUTEOUT","COMMIT","CANCEL"] },
-
-					{key:"report", label:"Download", sortable:false, width: 150, className:"forms1",
-									formatter:"dropdown", dropdownOptions:["","HandOff Report","Community Report","SAP Upload Files"] }
-					
-			 ];
-		<%}%>
+		 ];
+		
 		  var sMyConfigs = { 
 			    paginator : new YAHOO.widget.Paginator({ 
 			        rowsPerPage    : 5

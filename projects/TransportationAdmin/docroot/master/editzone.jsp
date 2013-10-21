@@ -154,23 +154,23 @@
                 </td>
                </tr>
                <tr>
-                  <td>Avg To Stem Time (Mins)</td>
+                  <td>Pre-Trip Time (Mins)</td>
                   <td>                  
-                    <form:input maxlength="50" size="30" path="stemToTime"/>
+                    <form:input maxlength="50" size="30" path="preTripTime"/>
                 </td>
                 <td>
-                  &nbsp;<form:errors path="stemToTime" />
+                  &nbsp;<form:errors path="preTripTime" />
                 </td>
                </tr>
                <tr>
-                  <td>Avg From Stem Time (Mins)</td>
+                  <td>Post-Trip Time (Mins)</td>
                   <td>                  
-                    <form:input maxlength="50" size="30" path="stemFromTime"/>
+                    <form:input maxlength="50" size="30" path="postTripTime"/>
                 </td>
                 <td>
-                  &nbsp;<form:errors path="stemFromTime" />
+                  &nbsp;<form:errors path="postTripTime" />
                 </td>
-               </tr>              
+               </tr>
                <tr>
                   <td>Loading Priority</td>
                   <td>                  

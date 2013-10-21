@@ -700,11 +700,13 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 							
 							model.setTrailerId(_waveInstance.getRoutingCode()+"-"+trailerCount);
 							model.setDispatchTime(_waveInstance.getDispatchTime());
-							model.setPreferredRunTime(_waveInstance.getPreferredRunTime());
-							model.setMaxRunTime(_waveInstance.getMaxRunTime());
-							model.setStartTime(_waveInstance.getWaveStartTime().getAsDate());											
-							model.setCompletionTime(RoutingDateUtil.addSeconds(model.getStartTime(), model.getMaxRunTime()));
+							model.setCompletionTime(_waveInstance.getWaveStartTime().getAsDate()); // Route(s) on trailer should be after this time. (i.e. Truck Dispatch time + To-Facility time)
 							
+							//model.setPreferredRunTime(_waveInstance.getPreferredRunTime());
+							//model.setMaxRunTime(_waveInstance.getMaxRunTime());
+							//model.setStartTime(_waveInstance.getWaveStartTime().getAsDate());											
+							//model.setCompletionTime(RoutingDateUtil.addSeconds(model.getStartTime(), model.getMaxRunTime()));
+														
 							model.setRoutes(new TreeSet<IHandOffBatchRoute>(new RouteComparator1()));
 							trailers.add(model);
 						}

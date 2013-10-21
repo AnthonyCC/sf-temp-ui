@@ -2,7 +2,6 @@ package com.freshdirect.transadmin.web;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.util.RoutingServicesProperties;
-import com.freshdirect.transadmin.model.EmployeeInfo;
+import com.freshdirect.transadmin.model.DispatchGroup;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.TrnFacility;
 import com.freshdirect.transadmin.model.Zone;
@@ -33,10 +32,12 @@ import com.freshdirect.transadmin.util.EnumResourceSubType;
 import com.freshdirect.transadmin.util.EnumResourceType;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.WaveUtil;
+import com.freshdirect.transadmin.web.editor.DispatchGroupPropertyEditor;
 import com.freshdirect.transadmin.web.editor.TrnFacilityPropertyEditor;
 import com.freshdirect.transadmin.web.model.ResourceList;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
 
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class PlanningFormController extends AbstractFormController {
 
 	private DomainManagerI domainManagerService;
@@ -48,80 +49,23 @@ public class PlanningFormController extends AbstractFormController {
 	private ZoneManagerI zoneManagerService;
 	
 	private LocationManagerI locationManagerService;
+	
 	private AssetManagerI assetManagerService;
 	
-	
-	public LocationManagerI getLocationManagerService() {
-		return locationManagerService;
-	}
-
-	public void setLocationManagerService(LocationManagerI locationManagerService) {
-		this.locationManagerService = locationManagerService;
-	}
-
-	public DispatchManagerI getDispatchManagerService() {
-		return dispatchManagerService;
-	}
-
-	public void setDispatchManagerService(DispatchManagerI dispatchManagerService) {
-		this.dispatchManagerService = dispatchManagerService;
-	}
-
-	public EmployeeManagerI getEmployeeManagerService() {
-		return employeeManagerService;
-	}
-
-	public void setEmployeeManagerService(EmployeeManagerI employeeManagerService) {
-		this.employeeManagerService = employeeManagerService;
-	}
-
-	public ZoneManagerI getZoneManagerService() {
-		return zoneManagerService;
-	}
-
-	public void setZoneManagerService(ZoneManagerI zoneManagerService) {
-		this.zoneManagerService = zoneManagerService;
-	}
-
-	public DomainManagerI getDomainManagerService() {
-		return domainManagerService;
-	}
-
-	public void setDomainManagerService(DomainManagerI domainManagerService) {
-		this.domainManagerService = domainManagerService;
-	}
-
-	private void printRequestParameters(HttpServletRequest request) {
-		Enumeration e=request.getParameterNames();
-		while(e.hasMoreElements()) {
-			String parameter=(String)e.nextElement();
-			System.out.println("Parameter :"+parameter);
-			String[] values=request.getParameterValues(parameter);
-			for(int i=0;i<values.length;i++)
-				if(values.length==1) {
-					System.out.println("{ "+values[i]+" }");
-				} else	if(i==0)
-					System.out.print("{ "+values[i]+", ");
-				else if(i==(values.length-1)) {
-					System.out.print(values[i]+"}");
-				}
-		}
-	}
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 		
-		Collection zones=getDomainManagerService().getZones();
+		Collection zones = getDomainManagerService().getZones();
 		Collection activeZoneCodes = getZoneManagerService().getActiveZoneCodes();
-    	if(zones != null && activeZoneCodes != null) {
-    		Iterator _iterator = zones.iterator();
-    		Zone _tmpZone = null;
-    		while(_iterator.hasNext()) {
-    			_tmpZone = (Zone)_iterator.next();
-    			if(!activeZoneCodes.contains(_tmpZone.getZoneCode())) {
-    				_iterator.remove();
-    			}
-    		}
-    	}
+		if (zones != null && activeZoneCodes != null) {
+			Iterator _iterator = zones.iterator();
+			Zone _tmpZone = null;
+			while (_iterator.hasNext()) {
+				_tmpZone = (Zone) _iterator.next();
+				if (!activeZoneCodes.contains(_tmpZone.getZoneCode())) {
+					_iterator.remove();
+				}
+			}
+		}
 				
 		Map refData = new HashMap();
 		refData.put("days", domainManagerService.getDays());
@@ -134,24 +78,26 @@ public class PlanningFormController extends AbstractFormController {
 
 		WebPlanInfo model = null;
 		String id = request.getParameter("id");
-		if(TransStringUtil.isEmpty(id)) {
-			id=request.getParameter("planRefId");
+		if (TransStringUtil.isEmpty(id)) {
+			id = request.getParameter("planRefId");
 		}
-		if(id != null)
+		if (id != null) {
 			model = (WebPlanInfo) this.getBackingObject(id, request);
+		}
 
 		String destFacility = request.getParameter("destinationFacility");
-		TrnFacility deliveryFacility = locationManagerService.getTrnFacility(destFacility == null ? (model != null &&  model.getDestinationFacility() != null ?
-				 model.getDestinationFacility().getFacilityId() : destFacility) : destFacility);
+		TrnFacility deliveryFacility = locationManagerService
+				.getTrnFacility(destFacility == null ? (model != null && model.getDestinationFacility() != null ? model.getDestinationFacility().getFacilityId() : destFacility) : destFacility);
+		
 		if(deliveryFacility != null && 
-				EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())){
+				EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())) {
 			drivers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRoleAndSubRole(EnumResourceType.DRIVER.getName()
 																										, EnumResourceSubType.TRAILER_DRIVER.getName()));
 			helpers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRoleAndSubRole(EnumResourceType.HELPER.getName()
 																										, EnumResourceSubType.TRAILER_HELPER.getName()));
 			runners = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRoleAndSubRole(EnumResourceType.RUNNER.getName()
 																										, EnumResourceSubType.TRAILER_RUNNER.getName()));
-		}else{
+		} else {
 			drivers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.DRIVER.getName(), null, null));
 			helpers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.HELPER.getName(), null, null));
 			runners = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.RUNNER.getName(), null, null));
@@ -160,29 +106,20 @@ public class PlanningFormController extends AbstractFormController {
 		refData.put("drivers", drivers);
 		refData.put("helpers", helpers);
 		refData.put("runners", runners);
-		
+
 		refData.put("supervisors", DispatchPlanUtil.getSortedResources(employeeManagerService.getSupervisors()));
 		refData.put("cutoffs", getDomainManagerService().getCutOffs());
 		refData.put("trnFacilitys", locationManagerService.getTrnFacilitys());
+		refData.put("dispatchGroups", getDomainManagerService().getDispatchGroups());
+
 		return refData;
-	}
-
-
-	public void printEmployeeInfo(List data) {
-
-		Iterator<EmployeeInfo> it = data.iterator();
-		while(it.hasNext()) {
-			EmployeeInfo empInfo = it.next();
-		}
-
 	}
 	
 	protected Object formBackingObject(HttpServletRequest request)
 			throws Exception {
 		String id = getIdFromRequest(request);
-
 		if (StringUtils.hasText(id)) {
-			Object  tmp = getBackingObject(id, request);
+			Object tmp = getBackingObject(id, request);
 			return tmp;
 		} else {
 			return getDefaultBackingObject();
@@ -207,19 +144,18 @@ public class PlanningFormController extends AbstractFormController {
 	}
 	
 	@Override
-	public Object getBackingObject(String id) {
-		// Replaced by getBackingObject(String id, request)
+	public Object getBackingObject(String id) {		
 		return null;
 	}
 
 	private WebPlanInfo getCommand(Plan plan) {
 
 		Zone zone=null;
-		if(plan.getZone()!=null) {
-			zone=domainManagerService.getZone(plan.getZone().getZoneCode());
+		if (plan.getZone() != null) {
+			zone = domainManagerService.getZone(plan.getZone().getZoneCode());
 			plan.setEquipmentTypes(assetManagerService.getEquipmentTypes(plan.getZone().getArea().getRegion()));
 		}
-		return DispatchPlanUtil.getWebPlanInfo(plan,zone,employeeManagerService, true,null,null,null,null,null);
+		return DispatchPlanUtil.getWebPlanInfo(plan, zone, employeeManagerService, true, null, null, null, null, null);
 	}
 
 	public Object getDefaultBackingObject() {
@@ -234,7 +170,7 @@ public class PlanningFormController extends AbstractFormController {
 	public String getDomainObjectName() {
 		return "Plan";
 	}
-
+	
 	public List saveDomainObject(HttpServletRequest request, Object command) {
 
 		List errorList = null;
@@ -305,7 +241,7 @@ public class PlanningFormController extends AbstractFormController {
 		{
 			model.setEquipmentTypes(assetManagerService.getEquipmentTypes(zone.getArea().getRegion()));
 		}
-		model= DispatchPlanUtil.reconstructWebPlanInfo(model, zone, model.getFirstDeliveryTimeModified()
+		model= DispatchPlanUtil.reconstructWebPlanInfo(model, zone, model.getDispatchGroupModified()
 															,null, employeeManagerService, zoneManagerService, true);
 
 		//set userId to command object
@@ -316,7 +252,7 @@ public class PlanningFormController extends AbstractFormController {
 
 		WebPlanInfo _command=(WebPlanInfo)command;
 		if("true".equalsIgnoreCase(_command.getZoneModified())
-				||"true".equalsIgnoreCase(_command.getFirstDeliveryTimeModified())
+				||"true".equalsIgnoreCase(_command.getDispatchGroupModified())
 				   ||"true".equalsIgnoreCase(_command.getDestFacilityModified())) {
 			return true;
 		}
@@ -324,12 +260,11 @@ public class PlanningFormController extends AbstractFormController {
 			return isFormChangeRequest(request);
 	}
 
-	protected void onFormChange(HttpServletRequest request, HttpServletResponse response, Object command)
-	throws Exception {
+	protected void onFormChange(HttpServletRequest request, HttpServletResponse response, Object command) throws Exception {
 
-		WebPlanInfo _command=(WebPlanInfo)command;
+		WebPlanInfo _command = (WebPlanInfo) command;
 		_command.setZoneModified("false");
-		_command.setFirstDeliveryTimeModified("false");
+		_command.setDispatchGroupModified("false");
 		_command.setDestFacilityModified("false");
 	}
 
@@ -340,18 +275,18 @@ public class PlanningFormController extends AbstractFormController {
 
 	protected String getIdFromRequest(HttpServletRequest request){
 		String id = request.getParameter("id");
-		if(TransStringUtil.isEmpty(id)) {
-			id=request.getParameter("planId");
-		} 
-		if(TransStringUtil.isEmpty(id)) {
-			id=request.getParameter("planRefId");
+		if (TransStringUtil.isEmpty(id)) {
+			id = request.getParameter("planId");
+		}
+		if (TransStringUtil.isEmpty(id)) {
+			id = request.getParameter("planRefId");
 		}
 		return id;
 	}
 
 	public void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
 		super.initBinder(request,binder);
-		binder.registerCustomEditor(TrnFacility.class, new TrnFacilityPropertyEditor());
+		binder.registerCustomEditor(TrnFacility.class, new TrnFacilityPropertyEditor());		
 	}
 
 	public AssetManagerI getAssetManagerService() {
@@ -361,5 +296,47 @@ public class PlanningFormController extends AbstractFormController {
 	public void setAssetManagerService(AssetManagerI assetManagerService) {
 		this.assetManagerService = assetManagerService;
 	}
+	
 
+	public LocationManagerI getLocationManagerService() {
+		return locationManagerService;
 	}
+
+	public void setLocationManagerService(LocationManagerI locationManagerService) {
+		this.locationManagerService = locationManagerService;
+	}
+
+	public DispatchManagerI getDispatchManagerService() {
+		return dispatchManagerService;
+	}
+
+	public void setDispatchManagerService(DispatchManagerI dispatchManagerService) {
+		this.dispatchManagerService = dispatchManagerService;
+	}
+
+	public EmployeeManagerI getEmployeeManagerService() {
+		return employeeManagerService;
+	}
+
+	public void setEmployeeManagerService(EmployeeManagerI employeeManagerService) {
+		this.employeeManagerService = employeeManagerService;
+	}
+
+	public ZoneManagerI getZoneManagerService() {
+		return zoneManagerService;
+	}
+
+	public void setZoneManagerService(ZoneManagerI zoneManagerService) {
+		this.zoneManagerService = zoneManagerService;
+	}
+
+	public DomainManagerI getDomainManagerService() {
+		return domainManagerService;
+	}
+
+	public void setDomainManagerService(DomainManagerI domainManagerService) {
+		this.domainManagerService = domainManagerService;
+	}
+
+
+}

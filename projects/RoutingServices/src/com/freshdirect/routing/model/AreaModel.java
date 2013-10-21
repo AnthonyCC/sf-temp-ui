@@ -16,9 +16,9 @@ public class AreaModel extends BaseModel implements IAreaModel  {
 
 	private double deliveryRate;
 	
-	private int stemFromTime;
+	private int preTripTime;
 	
-    private int stemToTime;
+    private int postTripTime;
     
     private IRegionModel region;
     
@@ -44,20 +44,20 @@ public class AreaModel extends BaseModel implements IAreaModel  {
 		this.prefix = prefix;
 	}
 
-	public int getStemFromTime() {
-		return stemFromTime;
+	public int getPreTripTime() {
+		return preTripTime;
 	}
 
-	public void setStemFromTime(int stemFromTime) {
-		this.stemFromTime = stemFromTime;
+	public void setPreTripTime(int preTripTime) {
+		this.preTripTime = preTripTime;
 	}
 
-	public int getStemToTime() {
-		return stemToTime;
+	public int getPostTripTime() {
+		return postTripTime;
 	}
 
-	public void setStemToTime(int stemToTime) {
-		this.stemToTime = stemToTime;
+	public void setPostTripTime(int postTripTime) {
+		this.postTripTime = postTripTime;
 	}
 
 	public double getDeliveryRate() {

@@ -127,7 +127,7 @@ else if("3".equals(request.getParameter("mode"))) modeStr=" - N/R";
     		imagePath="${pageContext.request.contextPath}/images/table/*.gif" title="&nbsp;" width="100%"
             rowsDisplayed="1000" view="dispatchdbtable" filterable="false" >
     	<ec:row interceptor="obsoletemarker">	                      
-	        <ec:column alias="trnTimeslotslotName" property="startTime" title="Dispatch Time" filterable="false" sortable="false"/>
+	        <ec:column alias="trnTimeslotslotName" property="startTime" title="Truck Dispatch Time" filterable="false" sortable="false"/>
 	        <ec:column alias="trnRouterouteNumber" property="route"  width="10" title="Route" filterable="false" sortable="false"/>
 	        <ec:column alias="trnTrucktruckNumber" property="truck" width="10"  title="Truck" filterable="false" sortable="false"/>              
 	        <ec:column alias="trnTruckLocation" property="location" width="10"  title="Parking Loc" filterable="false" sortable="false"/>	

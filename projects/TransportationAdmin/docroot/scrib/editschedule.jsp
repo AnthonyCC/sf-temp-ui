@@ -164,14 +164,20 @@
 											<form:option value="OFF" label="OFF"/>
 											<form:options items="${region}" itemLabel="name" itemValue="code" />
 										</form:select>
-										</td><td><form:input maxlength="10" size="6" path="mon.timeS" onblur="this.value=time(this.value);" /></td>
+										</td>
 										<td>
-										<form:select path="mon.depotFacilityS" cssStyle="width:180px">
+											<form:select path="mon.dispatchGroupS" cssStyle="width:100px" onchange="javascript:disableTimeFacility('mon')">
+												<form:option value="" label="Select Dispatch Group"/>
+												<form:options items="${dispatchGroups}" itemLabel="name" itemValue="groupTime" />
+											</form:select>
+										</td>
+										<td>
+										<form:select path="mon.depotFacility" cssStyle="width:180px">
 												<form:option value="" label="Select"/>
 												<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
 										</form:select>
 										</td>
-										<td><form:errors path="mon.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="mon.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="mon.depotFacilityS" /></td>
+										<td><form:errors path="mon.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="mon.dispatchGroupS" />&nbsp&nbsp;&nbsp;<form:errors path="mon.depotFacility" /></td>
 									</tr>
 									<tr>
 										<td width="60">Tue</td>
@@ -183,14 +189,21 @@
 											<form:option value="OFF" label="OFF"/>
 											<form:options items="${region}" itemLabel="name" itemValue="code" />
 										</form:select>
-										</td><td><form:input maxlength="10" size="6" path="tue.timeS" onblur="this.value=time(this.value);"/></td>
-										<td>
-										<form:select path="tue.depotFacilityS" cssStyle="width:180px">
-												<form:option value="" label="Select"/>
-												<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
-										</form:select>
 										</td>
-										<td><form:errors path="tue.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="tue.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="tue.depotFacilityS" /></td>
+										<td>
+											<form:select path="tue.dispatchGroupS" cssStyle="width:100px" onchange="javascript:disableTimeFacility('tue')">
+												<form:option value="" label="Select Dispatch Group"/>												
+												<form:options items="${dispatchGroups}" itemLabel="name" itemValue="groupTime" />
+											</form:select>
+										</td>
+										<td>
+											<form:select path="tue.depotFacility" cssStyle="width:180px">
+													<form:option value="" label="Select"/>
+													<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
+											</form:select>
+										</td>
+										<td><form:errors path="tue.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="tue.dispatchGroupS" />&nbsp&nbsp;&nbsp;<form:errors path="tue.depotFacility" /></td>
+
 									</tr>
 									<tr>
 										<td width="60">Wed</td>
@@ -202,14 +215,20 @@
 											<form:option value="OFF" label="OFF"/>
 											<form:options items="${region}" itemLabel="name" itemValue="code" />
 										</form:select>
-										</td><td><form:input maxlength="10" size="6" path="wed.timeS" onblur="this.value=time(this.value);"/></td>
-										<td>
-										<form:select path="wed.depotFacilityS" cssStyle="width:180px">
-												<form:option value="" label="Select"/>
-												<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
-										</form:select>
 										</td>
-										<td><form:errors path="wed.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="wed.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="wed.depotFacilityS" /></td>
+										<td>
+											<form:select path="wed.dispatchGroupS" cssStyle="width:100px" onchange="javascript:disableTimeFacility('wed')">
+												<form:option value="" label="Select Dispatch Group"/>												
+												<form:options items="${dispatchGroups}" itemLabel="name" itemValue="groupTime" />
+											</form:select>
+										</td>
+										<td>
+											<form:select path="wed.depotFacility" cssStyle="width:180px">
+													<form:option value="" label="Select"/>
+													<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
+											</form:select>
+										</td>
+										<td><form:errors path="wed.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="wed.dispatchGroupS" />&nbsp&nbsp;&nbsp;<form:errors path="wed.depotFacility" /></td>
 									</tr>
 									<tr>
 										<td width="60">Thu</td>
@@ -221,14 +240,20 @@
 											<form:option value="OFF" label="OFF"/>
 											<form:options items="${region}" itemLabel="name" itemValue="code" />
 										</form:select>
-										</td><td><form:input maxlength="10" size="6" path="thu.timeS" onblur="this.value=time(this.value);"/></td>
-										<td>
-										<form:select path="thu.depotFacilityS" cssStyle="width:180px">
-												<form:option value="" label="Select"/>
-												<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
-										</form:select>
 										</td>
-										<td><form:errors path="thu.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="thu.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="thu.depotFacilityS" /></td>
+										<td>
+											<form:select path="thu.dispatchGroupS" cssStyle="width:100px" onchange="javascript:disableTimeFacility('thu')">
+												<form:option value="" label="Select Dispatch Group"/>												
+												<form:options items="${dispatchGroups}" itemLabel="name" itemValue="groupTime" />
+											</form:select>
+										</td>
+										<td>
+											<form:select path="thu.depotFacility" cssStyle="width:180px">
+													<form:option value="" label="Select"/>
+													<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
+											</form:select>
+										</td>
+										<td><form:errors path="thu.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="thu.dispatchGroupS" />&nbsp&nbsp;&nbsp;<form:errors path="thu.depotFacility" /></td>
 									</tr>
 									<tr>
 										<td width="60">Fri</td>
@@ -240,14 +265,21 @@
 											<form:option value="OFF" label="OFF"/>
 											<form:options items="${region}" itemLabel="name" itemValue="code" />
 										</form:select>
-										</td><td><form:input maxlength="10" size="6" path="fri.timeS" onblur="this.value=time(this.value);"/></td>
-										<td>
-										<form:select path="fri.depotFacilityS" cssStyle="width:180px">
-												<form:option value="" label="Select"/>
-												<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
-										</form:select>
 										</td>
-										<td><form:errors path="fri.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="fri.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="fri.depotFacilityS" /></td>
+										<td>
+											<form:select path="fri.dispatchGroupS" cssStyle="width:100px" onchange="javascript:disableTimeFacility('fri')">
+												<form:option value="" label="Select Dispatch Group"/>												
+												<form:options items="${dispatchGroups}" itemLabel="name" itemValue="groupTime" />
+											</form:select>
+										</td>
+										<td>
+											<form:select path="fri.depotFacility" cssStyle="width:180px">
+													<form:option value="" label="Select"/>
+													<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
+											</form:select>
+										</td>
+										<td><form:errors path="fri.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="fri.dispatchGroupS" />&nbsp&nbsp;&nbsp;<form:errors path="fri.depotFacility" /></td>
+
 									</tr>
 									<tr>
 										<td width="60">Sat</td>
@@ -259,14 +291,21 @@
 											<form:option value="OFF" label="OFF"/>
 											<form:options items="${region}" itemLabel="name" itemValue="code" />
 										</form:select>
-										</td><td><form:input maxlength="10" size="6" path="sat.timeS" onblur="this.value=time(this.value);"/></td>
-										<td>
-										<form:select path="sat.depotFacilityS" cssStyle="width:180px">
-												<form:option value="" label="Select"/>
-												<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
-										</form:select>
 										</td>
-										<td><form:errors path="sat.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="sat.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="sat.depotFacilityS" /></td>
+										<td>
+											<form:select path="sat.dispatchGroupS" cssStyle="width:100px" onchange="javascript:disableTimeFacility('sat')">
+												<form:option value="" label="Select Dispatch Group"/>												
+												<form:options items="${dispatchGroups}" itemLabel="name" itemValue="groupTime" />
+											</form:select>
+										</td>
+										<td>
+											<form:select path="sat.depotFacility" cssStyle="width:180px">
+													<form:option value="" label="Select"/>
+													<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
+											</form:select>
+										</td>
+										<td><form:errors path="sat.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="sat.dispatchGroupS" />&nbsp&nbsp;&nbsp;<form:errors path="sat.depotFacility" /></td>
+
 									</tr>
 									<tr>
 										<td width="60">Sun</td>
@@ -278,14 +317,21 @@
 											<form:option value="OFF" label="OFF"/>
 											<form:options items="${region}" itemLabel="name" itemValue="code" />
 										</form:select>
-										</td><td><form:input maxlength="10" size="6" path="sun.timeS" onblur="this.value=time(this.value);"/></td>
-										<td>
-										<form:select path="sun.depotFacilityS" cssStyle="width:180px">
-												<form:option value="" label="Select"/>
-												<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
-										</form:select>
 										</td>
-										<td><form:errors path="sun.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="sun.timeS" />&nbsp&nbsp;&nbsp;<form:errors path="sun.depotFacilityS" /></td>
+										<td>
+											<form:select path="sun.dispatchGroupS" cssStyle="width:100px" onchange="javascript:disableTimeFacility('sun')">
+												<form:option value="" label="Select Dispatch Group"/>												
+												<form:options items="${dispatchGroups}" itemLabel="name" itemValue="groupTime" />
+											</form:select>
+										</td>
+										<td>
+											<form:select path="sun.depotFacility" cssStyle="width:180px">
+													<form:option value="" label="Select"/>
+													<form:options items="${depotFacility}" itemLabel="name" itemValue="facilityId" />
+											</form:select>
+										</td>
+										<td><form:errors path="sun.regionS" />&nbsp&nbsp;&nbsp;<form:errors path="sun.dispatchGroupS" />&nbsp&nbsp;&nbsp;<form:errors path="sun.depotFacility" /></td>
+
 									</tr>
 									
 									</table>
@@ -409,50 +455,51 @@
 		 </div>
 		 <%@ include file='i_schedulecopy.jspf'%>
 		 <%@ include file='i_teamtree.jspf'%>
+
 		 <script>
-		
-	function disableTimeFacility(day) {
-		var f=document.forms["scheduleForm"];	
-		var value=eval("f['"+day+".regionS'].value");
-		if(value=='OFF') {	   
-			eval("f['"+day+".timeS'].disabled=true");
-			eval("f['"+day+".timeS'].value=''");
-			eval("f['"+day+".depotFacilityS'].disabled=true");
-			eval("f['"+day+".depotFacilityS'].value=''");
-		}
-		else {
-			eval("f['"+day+".timeS'].disabled=false");	
-			if(value=='Depot') {
-				eval("f['"+day+".depotFacilityS'].disabled=false");
-			}
-			else {
-				eval("f['"+day+".depotFacilityS'].value=''");
-				eval("f['"+day+".depotFacilityS'].disabled=true");
-			}
-		}
-	}
-	disableTimeFacility("mon");
-	disableTimeFacility("tue");
-	disableTimeFacility("wed");
-	disableTimeFacility("thu");
-	disableTimeFacility("fri");
-	disableTimeFacility("sat");
-	disableTimeFacility("sun");
-	
-	function back() {
-	  	var filters=unescape(getParameter("filter"));	  	    	
-	  	var params=filters.split("&");
-	  	var planForm=document.forms["employee"];
-	  	for(var i=0;i<params.length;i++) {
-	  		var param=params[i].split("="); 
-	  		if(param[0] != 'ec_f_employeeId') {        				
-	  			add_input(planForm,"hidden",param[0],param[1]);
-	  		}
-	  	}     	      	
-	  	planForm.submit();
-	}
-	showTeamTree();
-	</script>
+
+				function disableTimeFacility(day) {
+					var f = document.forms["scheduleForm"];
+					var value = eval("f['" + day + ".regionS'].value");
+					if (value == 'OFF') {
+						eval("f['" + day + ".dispatchGroupS'].disabled=true");
+						eval("f['" + day + ".dispatchGroupS'].value=''");
+						eval("f['" + day + ".depotFacility'].disabled=true");
+						eval("f['" + day + ".depotFacility'].value=''");
+					} else {
+						eval("f['" + day + ".dispatchGroupS'].disabled=false");
+						if (value == 'Depot') {
+							eval("f['" + day
+									+ ".depotFacility'].disabled=false");
+						} else {
+							eval("f['" + day + ".depotFacility'].value=''");
+							eval("f['" + day
+									+ ".depotFacility'].disabled=true");
+						}
+					}
+				}
+				disableTimeFacility("mon");
+				disableTimeFacility("tue");
+				disableTimeFacility("wed");
+				disableTimeFacility("thu");
+				disableTimeFacility("fri");
+				disableTimeFacility("sat");
+				disableTimeFacility("sun");
+
+				function back() {
+					var filters = unescape(getParameter("filter"));
+					var params = filters.split("&");
+					var planForm = document.forms["employee"];
+					for ( var i = 0; i < params.length; i++) {
+						var param = params[i].split("=");
+						if (param[0] != 'ec_f_employeeId') {
+							add_input(planForm, "hidden", param[0], param[1]);
+						}
+					}
+					planForm.submit();
+				}
+				showTeamTree();
+			</script>
 	<form name="employee" action="employee.do?empstatus=S" method="post">  </form>
 	</tmpl:put>
 	 

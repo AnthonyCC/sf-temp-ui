@@ -85,7 +85,6 @@ public class ScheduleUploadFormController extends BaseFormController {
 		      Object command, BindException errors) throws ServletException, IOException    {
 			
 		ScheduleFileUploadCommand bean = (ScheduleFileUploadCommand) command;
-		byte[] bytes = bean.getFile();
 		EnumUploadSource newSource = EnumUploadSource.SCHEDULE;
 		try{
 			if(bean.getProcessType() != null) {
@@ -97,35 +96,43 @@ public class ScheduleUploadFormController extends BaseFormController {
 				Map<String, Zone> zoneMapping = new HashMap<String, Zone>();
 				Map<String, Region> regionMapping = new HashMap<String, Region>();
 				Map<String, TrnFacility> facilityMapping = new HashMap<String, TrnFacility>();
-			
-				if(newSource != null) {
-					
-					Iterator _facilityItr = facilityLocs.iterator();
+				StringBuilder  uploadErrMsg = new StringBuilder();
+				
+				if(facilityLocs != null) {
 					TrnFacility facility = null;
-					while(_facilityItr.hasNext()){
-						facility = (TrnFacility)_facilityItr.next();
-						facilityMapping.put(facility.getName(), facility);
+					if(masterZones != null) {
+						Iterator _facilityItr = facilityLocs.iterator();						
+						while(_facilityItr.hasNext()){
+							facility = (TrnFacility)_facilityItr.next();
+							facilityMapping.put(facility.getName(), facility);
+						}
+					}
+					Zone zone = null;
+					if(masterZones != null) {
+						Iterator _zoneItr = masterZones.iterator();						
+						while(_zoneItr.hasNext()) {
+							zone = (Zone)_zoneItr.next();									
+							zoneMapping.put(zone.getZoneCode(), zone);
+						}
+					}					
+					Region region = null;
+					if(masterRegions != null) {
+						Iterator _regionItr = masterRegions.iterator();						
+						while(_regionItr.hasNext()) {
+							region = (Region)_regionItr.next();									
+							regionMapping.put(region.getCode(), region);
+						}
 					}
 					
 					if(newSource.equals(EnumUploadSource.SCRIB)) {
 						
-						List<Scrib> scribs = new ScheduleUploadDataManager()
-																		.processUploadScrib(request
-																			, bytes
-																			, com.freshdirect.transadmin.security.SecurityManager.getUserName(request)
-																			, domainManagerService);
-						if(scribs != null) {
+						List<Scrib> scribs = new ScheduleUploadDataManager().processUploadScrib(request, bean.getFile(), newSource);
+						
+						if(scribs != null && scribs.size() > 0) {
 							Set<Date> scribDates = new TreeSet<Date>();
 							
-							
 							if(masterZones != null && facilityLocs != null) {
-								Iterator _zoneItr = masterZones.iterator();
-								Zone zone = null;
-								while(_zoneItr.hasNext()) {
-									zone = (Zone)_zoneItr.next();									
-									zoneMapping.put(zone.getZoneCode(), zone);
-								}
-								
+															
 								TrnFacility originFacility = null;
 								TrnFacility destFacility = null;
 								for(Scrib scrib : scribs) {
@@ -163,46 +170,28 @@ public class ScheduleUploadFormController extends BaseFormController {
 								}
 								//if(hasPublishedScrib.size() == 0) {
 									this.getDispatchManagerService().uploadScrib(scribDates, scribs);
-									saveMessage(request, getMessage("app.actionmessage.161", new Object[]{newSource.getDescription()}));
+									saveMessage(request, getMessage("app.actionmessage.163", new Object[]{newSource.getDescription()}));
 								//} else {
 									//saveErrorMessage(request, getMessage("app.error.132", new Object[] {publishErrMsg.toString()}));
 								//}								
 							}
 						}
 					} else {
-						StringBuffer errorMsg = new StringBuffer();
+						
 						Set<String> facilityErrorLst = new HashSet<String>();
 						Set<String> regionErrorLst = new HashSet<String>();
 						
 						List<ScheduleEmployee> schedules = new ScheduleUploadDataManager()
-																		.processUploadSchedules(request
-																			, bytes
-																			, com.freshdirect.transadmin.security.SecurityManager.getUserName(request)
-																			, domainManagerService);
-						if(masterZones != null) {
-							Iterator _zoneItr = masterZones.iterator();
-							Zone zone = null;
-							while(_zoneItr.hasNext()) {
-								zone = (Zone)_zoneItr.next();									
-								zoneMapping.put(zone.getZoneCode(), zone);
-							}
-						}
-						
-						if(masterRegions != null) {
-							Iterator _regionItr = masterRegions.iterator();
-							Region region = null;
-							while(_regionItr.hasNext()) {
-								region = (Region)_regionItr.next();									
-								regionMapping.put(region.getCode(), region);
-							}
-						}
+																.processUploadSchedules(request, bean.getFile(), newSource);
+																		
 						boolean validDepotFacility = false;
 						boolean validDepotRegion = false;
-						boolean validStartTime = false;
+						boolean validGroupTime = false;
 						TrnFacility _depotFacility = null;
-						if(schedules != null) {
+						
+						if(schedules != null && schedules.size() > 0) {
 							for(ScheduleEmployee _scheduleEmp : schedules) {
-
+								
 								if(_scheduleEmp.getDepotFacility() != null) {
 									_depotFacility = facilityMapping.get(_scheduleEmp.getDepotFacilityS());
 									if(_depotFacility == null) {
@@ -226,61 +215,59 @@ public class ScheduleUploadFormController extends BaseFormController {
 								if(_scheduleEmp.getDepotFacilityS() != null && (_scheduleEmp.getRegionS() == null || TransStringUtil.isEmpty(_scheduleEmp.getRegionS()))){
 									validDepotRegion = true;
 								}
+								if(_scheduleEmp.getRegionS() != null &&	(_scheduleEmp.getDispatchGroupS() == null || TransStringUtil.isEmpty(_scheduleEmp.getDispatchGroupS()))) {
+									validGroupTime = true;
+								}
+							}
 								
-								if(_scheduleEmp.getRegionS() != null &&	(_scheduleEmp.getTimeS() == null || TransStringUtil.isEmpty(_scheduleEmp.getTimeS()))) {
-									validStartTime = true;
-								}							
-						
-							}							
-						}
-						
-						if((regionErrorLst != null && regionErrorLst.size() > 0) || (facilityErrorLst != null && facilityErrorLst.size() > 0) 
-								|| validDepotFacility || validDepotRegion || validStartTime){
-							StringBuilder  uploadErrMsg = new StringBuilder();
-							if(facilityErrorLst.size() > 0) 
-								uploadErrMsg.append("Depot Facility ");
-							for(String _error : facilityErrorLst){
-								uploadErrMsg.append(_error);
-								if(uploadErrMsg.length() > 0) {
-									uploadErrMsg.append(",");
+							if((regionErrorLst != null && regionErrorLst.size() > 0) || (facilityErrorLst != null && facilityErrorLst.size() > 0) 
+									|| validDepotFacility || validDepotRegion || validGroupTime){
+								
+								if(facilityErrorLst.size() > 0) 
+									uploadErrMsg.append("Depot Facility ");
+								for(String _error : facilityErrorLst){
+									uploadErrMsg.append(_error);
+									if(uploadErrMsg.length() > 0) {
+										uploadErrMsg.append(",");
+									}
 								}
-							}
-							if(facilityErrorLst.size() > 0) 
-								uploadErrMsg.append(" doesn't exist in active Facilities ");
-							
-							if(regionErrorLst.size() > 0) 
-								uploadErrMsg.append("<br>").append(" Region ");
-							for(String _error : regionErrorLst){
-								uploadErrMsg.append(_error);
-								if(uploadErrMsg.length() > 0) {
-									uploadErrMsg.append(",");
+								if(facilityErrorLst.size() > 0) 
+									uploadErrMsg.append(" doesn't exist in active Facilities ");
+								
+								if(regionErrorLst.size() > 0) 
+									uploadErrMsg.append("<br>").append(" Region ");
+								for(String _error : regionErrorLst){
+									uploadErrMsg.append(_error);
+									if(uploadErrMsg.length() > 0) {
+										uploadErrMsg.append(",");
+									}
 								}
+								if(regionErrorLst.size() > 0) { 
+									uploadErrMsg.append(" doesn't exist in active Regions ");
+								}
+								
+								if(validDepotFacility) {
+									uploadErrMsg.append("<br>").append(" Facility is empty for one or more entries for Depot region(s).");
+								}
+								
+								if(validDepotRegion) {
+									uploadErrMsg.append("<br>").append(" Region is empty for one or more entries for Depot facility(s).");
+								}						
+	
+								if(validGroupTime) {
+									uploadErrMsg.append("<br>").append(" Dispatch group Time is empty for one or more entries.");
+								}
+								
+								saveErrorMessage(request, getMessage("app.error.131", new Object[] {newSource.getDescription()}));
+								saveErrorMessage(request, uploadErrMsg.toString());
+							} else {
+								getDomainManagerService().saveOrUpdateEmployeeSchedule(schedules);
+								saveMessage(request, getMessage("app.actionmessage.163", new Object[]{newSource.getDescription()}));
 							}
-							if(regionErrorLst.size() > 0) { 
-								uploadErrMsg.append(" doesn't exist in active Regions ");
-							}
-							
-							if(validDepotFacility) {
-								uploadErrMsg.append("<br>").append(" Facility is empty for one or more entries for Depot region(s).");
-							}
-							
-							if(validDepotRegion) {
-								uploadErrMsg.append("<br>").append(" Region is empty for one or more entries for Depot zone(s).");
-							}						
-
-							if(validStartTime) {
-								uploadErrMsg.append("<br>").append(" Start Time is empty for one or more entries.");
-							}
-							
-							saveErrorMessage(request, getMessage("app.error.131", new Object[] {newSource.getDescription()}));
-							saveErrorMessage(request, uploadErrMsg.toString());
-						} else {
-							getDomainManagerService().saveOrUpdateEmployeeSchedule(schedules);
-							saveMessage(request, getMessage("app.actionmessage.161", new Object[]{newSource.getDescription()}));
-						}
 					}					
 				}
-			}					
+			}	
+		  }
 		} catch(DataIntegrityViolationException ex) {
 			ex.printStackTrace();
 			saveErrorMessage(request, getMessage("app.error.131", new Object[] {newSource.getDescription()}));
@@ -297,11 +284,8 @@ public class ScheduleUploadFormController extends BaseFormController {
 	}
 
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws ServletException  {
-	    // to actually be able to convert Multipart instance to byte[]
-	    // we have to register a custom editor
 	    logger.info("FileUploadController -- custom editor to convert Multipart instance to byte[] is registered here.");
-	    binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
-	    // now Spring knows how to handle multipart object and convert them
+	    binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());	   
 	}
 
 }

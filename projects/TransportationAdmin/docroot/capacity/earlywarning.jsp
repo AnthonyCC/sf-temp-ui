@@ -90,8 +90,8 @@
 						    var rows = table.tBodies[0].getElementsByTagName("tr");	 	       
 						    for (i = 0; i < rows.length; i++) {	    	
 						        var cells = rows[i].getElementsByTagName("td");
-						        
-						        for (j = 0; j < cells.length-2; j++) {
+						       
+						        for (j = 0; j < cells.length-3; j++) {
 						        	
 						            cells[j].onmouseover = function () {
 						            	previousClass = this.parentNode.className;
@@ -102,8 +102,8 @@
 						              	this.parentNode.className = previousClass;
 						            };
 						        
-						            cells[j].onclick = function () {  										      		
-								      		showTimeslot('panel-'+this.parentNode.rowIndex
+						            cells[j].onclick = function () {
+								      		showTimeslot('panel-'+this.parentNode.getElementsByTagName("td")[1].innerHTML
 								      						, findPosX(this.parentNode)
 								      						, findPosY(this.parentNode));									      		
 								    };
@@ -114,7 +114,7 @@
                     
                  function showTimeslot(rowDiv, rowX, rowY) {
                  	var tsPanel = new YAHOO.widget.Panel(rowDiv, {       
-					                          width: "540px",					                           
+					                          width: "700px",					                           
 					                          close: true, 
 					                          draggable: true, 
 					                          zindex:4,
@@ -324,11 +324,11 @@
 	    		while(_itr.hasNext()) {
 	    			_command = _itr.next();
 	    			  %>
-			    	<div id="panel-<%=_rowIndex %>">
+			    	<div id="panel-<%=_command.getCode() %>">
 			    	<div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />&nbsp;&nbsp;&nbsp;<%="Breakdown-"+_command.getName() %></div>
 			    	<div class="bd">
 			    	<div class="eXtremeTable" >
-			    	<table id="timeslot_table-<%=_rowIndex %>"  border="0"  cellspacing="0"  cellpadding="0"  class="tableRegion"  width="98%" >
+			    	<table id="timeslot_table-<%=_command.getCode() %>"  border="0"  cellspacing="0"  cellpadding="0"  class="tableRegion"  width="98%" >
 				    	<thead>
 						<tr>
 							<td class="tableHeader" >Name</td>
@@ -338,6 +338,7 @@
 					
 							<td class="tableHeader" >Allocated</td>
 							<td class="tableHeader" >% Allocated</td>
+							<td class="tableHeader" >Cut Off</td>
 							<td class="tableHeader" >#Trucks</td>
 							<td class="tableHeader" >&nbsp;</td>
 							<%--<td class="tableHeader" >&nbsp;</td>--%>
@@ -361,7 +362,8 @@
 								<td><%=_commandTS.getConfirmedCapacity() %></td>
 								<td><%=_commandTS.getPercentageConfirmed() %></td>
 								<td><%=_commandTS.getAllocatedCapacity()%></td>
-								<td><%=_commandTS.getPercentageAllocated()%></td>								
+								<td><%=_commandTS.getPercentageAllocated()%></td>
+								<td><%=_commandTS.getWaveCode()%></td>
 								<td><%= rType != null && rType.equalsIgnoreCase("O") ? "n/a" : ""+_commandTS.getNoOfResources() %></td>
 								<td><input type="button" 
 										class="<%= _commandTS.getClosedCount() > 0 ? "timeslot_closed" : "timeslot_open" %>" 

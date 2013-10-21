@@ -17,6 +17,7 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.transadmin.constants.EnumDispatchType;
 import com.freshdirect.transadmin.model.Asset;
+import com.freshdirect.transadmin.model.AssetActivity;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DispatchReason;
 import com.freshdirect.transadmin.model.EmployeeInfo;
@@ -51,26 +52,17 @@ public class DispatchPlanUtil {
 	public static final String ASSETTYPE_TRAILER = "TRAILER";
 	public static final String SCANNED_ASSETS = "SCANNEDASSETS";
 	
-	private static class EmployeeComparator implements Comparator{
-
+	private static class EmployeeComparator implements Comparator {
 
 		public int compare(Object o1, Object o2) {
 
-			if(o1 instanceof EmployeeInfo && o2 instanceof EmployeeInfo)
-			{
-				EmployeeInfo p1=(EmployeeInfo)o1;
-				EmployeeInfo p2=(EmployeeInfo)o2;
-
-				/*int value=p1.getHireDate().compareTo(p2.getHireDate());
-				if(value==0) {
-					return p1.getLastName().compareTo(p2.getLastName());
-				}
-				return value;*/
+			if (o1 instanceof EmployeeInfo && o2 instanceof EmployeeInfo) {
+				EmployeeInfo p1 = (EmployeeInfo) o1;
+				EmployeeInfo p2 = (EmployeeInfo) o2;
 				return p1.getLastName().compareTo(p2.getLastName());
 			}
 			return 0;
 		}
-
 	}
 
 	public static WebPlanInfo getWebPlanInfo(Plan plan, Zone zone,EmployeeManagerI employeeManagerService, boolean isPlan, Map empInfo, Map empRoleMap,Map empStatusMap,Map empTruckPrefMap,Map empTeams) {
@@ -90,14 +82,13 @@ public class DispatchPlanUtil {
 		}
 		planInfo.setRegionCode(plan.getRegion().getCode());
 		planInfo.setRegionName(plan.getRegion().getName());
-		try{
-			planInfo.setFirstDeliveryTime(TransStringUtil.getServerTime(plan.getFirstDeliveryTime()));
-			planInfo.setLastDeliveryTime(TransStringUtil.getServerTime(plan.getLastDeliveryTime()));
-			planInfo.setCutOffTime(TransStringUtil.getServerTime(plan.getCutOffTime()));
-			
+		try {
+			planInfo.setDispatchGroup(plan.getDispatchGroup());
 			planInfo.setStartTime(TransStringUtil.getServerTime(plan.getStartTime()));
-			planInfo.setMaxTime(TransStringUtil.formatTimeFromDate(plan.getMaxTime()));
-		}catch(ParseException exp){
+			planInfo.setEndTime(TransStringUtil.getServerTime(plan.getEndTime()));
+			planInfo.setMaxTime(plan.getMaxReturnTime() != null ? TransStringUtil.getServerTime(plan.getMaxReturnTime()) : null);
+			planInfo.setCutOffTime(plan.getCutOffTime() != null ? TransStringUtil.getServerTime(plan.getCutOffTime()) : null);
+		} catch (ParseException exp) {
 			throw new RuntimeException("Unparseable date "+exp.getMessage());
 		}
 		planInfo.setIsBullpen(plan.getIsBullpen());
@@ -107,7 +98,7 @@ public class DispatchPlanUtil {
 		planInfo.setDestinationFacility(plan.getDestinationFacility());
 		
 		WebEmployeeInfo webEmp = null;
-		if(empInfo!=null && empInfo.containsKey(plan.getSupervisorId()))
+		if (empInfo != null && empInfo.containsKey(plan.getSupervisorId()))
 		{
 			Object obj = empInfo.get(plan.getSupervisorId());
 			Object roles = (empRoleMap!=null)?empRoleMap.get(plan.getSupervisorId()):null;
@@ -142,7 +133,7 @@ public class DispatchPlanUtil {
 
 	@SuppressWarnings("unchecked")
 	public static DispatchCommand getDispatchCommand(Dispatch dispatch, Zone zone,EmployeeManagerI employeeManagerService, Collection punchInfos,
-			Map htInData,Map htOutData, Map empInfo, Map empRoleMap,Map empStatusMap,Map empTruckPrefMap,Map empTeams, Map<String, Map<String, List<String>>> scannedAssetMapping) {
+			Map htInData,Map htOutData, Map empInfo, Map empRoleMap,Map empStatusMap,Map empTruckPrefMap,Map empTeams, Map<String, List<AssetActivity>> scannedAssetMapping) {
 		DispatchCommand command = new DispatchCommand();
 		command.setDispatchId(dispatch.getDispatchId());
 		try{
@@ -213,14 +204,15 @@ public class DispatchPlanUtil {
 			command.setTruck("");
 		}
 
-		try{
+		try {
+			command.setDispatchGroup(dispatch.getDispatchGroup());
 			command.setStartTime(TransStringUtil.getServerTime(dispatch.getStartTime()));
-			command.setFirstDeliveryTime(TransStringUtil.getServerTime(dispatch.getFirstDlvTime()));
+			command.setFirstDlvTime(dispatch.getFirstDlvTime());
 			if(dispatch.getDispatchTime()!=null)
-			command.setDispatchTime(TransStringUtil.getServerTime(dispatch.getDispatchTime()));
+				command.setDispatchTime(TransStringUtil.getServerTime(dispatch.getDispatchTime()));
 			if(dispatch.getCheckedInTime()!=null)
 				command.setCheckedInTime(TransStringUtil.getServerTime(dispatch.getCheckedInTime()));
-		}catch(ParseException ex){
+		} catch(ParseException ex) {
 			throw new IllegalArgumentException("Unparseable date "+ex.getMessage());
 		}
 		if(dispatch.getConfirmed() != null )
@@ -271,26 +263,25 @@ public class DispatchPlanUtil {
 
 		if(!DispatchPlanUtil.isBullpen(planInfo.getIsBullpen())) {
 			Zone zone = null;
-			if(planInfo.getZoneCode() != null && !"".equalsIgnoreCase(planInfo.getZoneCode())){
+			if (planInfo.getZoneCode() != null
+					&& !"".equalsIgnoreCase(planInfo.getZoneCode())) {
 				zone = new Zone();
-			zone.setZoneCode(planInfo.getZoneCode());
-			plan.setEquipmentTypeS(planInfo.getEquipmentTypeS());
+				zone.setZoneCode(planInfo.getZoneCode());
+				plan.setEquipmentTypeS(planInfo.getEquipmentTypeS());
 			}
 			plan.setZone(zone);
 		}
 
-		Region region=new Region();
+		Region region = new Region();
 		region.setCode(planInfo.getRegionCode());
 		plan.setRegion(region);
-		try{
-
-			plan.setFirstDeliveryTime(TransStringUtil.getServerTime(planInfo.getFirstDeliveryTime()));
-			plan.setLastDeliveryTime(TransStringUtil.getServerTime(planInfo.getLastDeliveryTime()));
-			plan.setCutOffTime(TransStringUtil.getServerTime(planInfo.getCutOffTime()));
-			
+		try {
+			plan.setDispatchGroup(planInfo.getDispatchGroup());
 			plan.setStartTime(TransStringUtil.getServerTime(planInfo.getStartTime()));
-			plan.setMaxTime(TransStringUtil.formatTimeFromString(planInfo.getMaxTime()));
-		}catch(ParseException exp){
+			plan.setEndTime(TransStringUtil.getServerTime(planInfo.getEndTime()));
+			plan.setMaxReturnTime((planInfo.getMaxTime() != null && !planInfo.getMaxTime().isEmpty())? TransStringUtil.getServerTime(planInfo.getMaxTime()) : null);
+			plan.setCutOffTime((planInfo.getCutOffTime() != null && !planInfo.getCutOffTime().isEmpty())? TransStringUtil.getServerTime(planInfo.getCutOffTime()) : null);
+		} catch(ParseException exp) {
 			throw new RuntimeException("Unparseable date "+exp.getMessage());
 		}
 		plan.setSequence(planInfo.getSequence());
@@ -302,8 +293,8 @@ public class DispatchPlanUtil {
 		plan.setIsTeamOverride(planInfo.getIsTeamOverride());
 		plan.setOriginFacility(planInfo.getOriginFacility());
 		plan.setDestinationFacility(planInfo.getDestinationFacility());
-		return plan;
 
+		return plan;
 	}
 
 	public static Dispatch getDispatch(DispatchCommand command, DomainManagerI domainManagerService) {
@@ -319,9 +310,9 @@ public class DispatchPlanUtil {
 		}
 		if(!DispatchPlanUtil.isBullpen(command.getIsBullpen()) && !"".equals(command.getZoneCode())) {
 			Zone zone=new Zone();
-			zone.setZoneCode(command.getZoneCode());
+				zone.setZoneCode(command.getZoneCode());
 			dispatch.setZone(zone);
-		}
+			}
 		Region region=new Region();
 		region.setCode(command.getRegionCode());
 		dispatch.setRegion(region);
@@ -334,7 +325,7 @@ public class DispatchPlanUtil {
 		dispatch.setBullPen(Boolean.valueOf(command.getIsBullpen()));
 		try{
 			dispatch.setStartTime(TransStringUtil.getServerTime(command.getStartTime()));
-			dispatch.setFirstDlvTime(TransStringUtil.getServerTime(command.getFirstDeliveryTime()));
+			dispatch.setDispatchGroup(command.getDispatchGroup());
 			if(command.getDispatchTime()!=null)
 				dispatch.setDispatchTime(TransStringUtil.getServerTime(command.getDispatchTime()));
 			if(command.getCheckedInTime()!=null)
@@ -389,30 +380,36 @@ public class DispatchPlanUtil {
 
 	}
 
-	public static WebPlanInfo reconstructWebPlanInfo(WebPlanInfo planInfo,Zone zone,String isfirstDlvTimeModified,
+	public static WebPlanInfo reconstructWebPlanInfo(WebPlanInfo planInfo,Zone zone,String dispatchGroupModified,
 			String dispatchDate,EmployeeManagerI employeeManagerService,ZoneManagerI zoneManagerService, boolean isPlan) {
 
 		setResourceReq(planInfo,zone);
 		boolean isZoneModified=false;
 		planInfo.setPlan(zone!=null && zone.getArea()!=null && isPlan && "X".equals(zone.getArea().getIsDepot()));
-		isZoneModified=isZoneModified(zone,planInfo);
+		isZoneModified = isZoneModified(zone, planInfo);
 		if(zone!=null && isZoneModified) {
 			planInfo.setZoneName(zone.getName());
 			planInfo.setRegionCode(zone.getRegion().getCode());
 			planInfo.setRegionName(zone.getRegion().getName());	
 		}
-		if(zone!=null && planInfo.getFirstDeliveryTime()!=null 
-				&& ("true".equalsIgnoreCase(isfirstDlvTimeModified)|| "true".equalsIgnoreCase(planInfo.getZoneModified()))) {
+		if (zone != null
+				&& planInfo.getDispatchGroupModified() != null
+					&& ("true".equalsIgnoreCase(dispatchGroupModified) 
+							|| "true".equalsIgnoreCase(planInfo.getZoneModified()))) {
 			
 			try {
-				String shift = getShiftForPlan(planInfo,dispatchDate);
-				if("true".equalsIgnoreCase(isfirstDlvTimeModified)|| "true".equalsIgnoreCase(planInfo.getZoneModified()))
-					planInfo.setSupervisorCode(null);
+				String shift = null;
+				if(planInfo.getDispatchGroup() != null && planInfo.getDispatchGroup() != null) {
+					shift = getShift(planInfo.getDispatchGroup());
+				}
+				planInfo.setSupervisorCode(null);
+				
 				Date _currentDate = null;
-				if(dispatchDate!=null && planInfo.getPlanDate()==null)
+				if (dispatchDate != null && planInfo.getPlanDate() == null)
 					_currentDate = TransStringUtil.getServerDateString1(dispatchDate);
-				else						
+				else
 					_currentDate = planInfo.getPlanDate();
+
 				Collection supervisorLst = new ArrayList();
 				if("AM".equals(shift)){
 					supervisorLst = zoneManagerService.getDefaultZoneSupervisor(planInfo.getZoneCode(), shift, TransStringUtil.getDate(_currentDate));
@@ -424,7 +421,7 @@ public class DispatchPlanUtil {
 							}							
 							planInfo.setSupervisorCode(_supervisor.getSupervisorId());
 					}
-				}else if("PM".equals(shift)){
+				} else if ("PM".equals(shift)) {
 					supervisorLst = zoneManagerService.getDefaultZoneSupervisor(planInfo.getZoneCode(), shift,TransStringUtil.getDate(_currentDate));
 					for (Iterator<ZoneSupervisor> itr = supervisorLst.iterator(); itr.hasNext();) {
 						ZoneSupervisor _supervisor = itr.next();						
@@ -444,30 +441,6 @@ public class DispatchPlanUtil {
 		return planInfo;
 	}
 	
-	/* 
-	 * APPDEV-2994
-	 * Shift is 'AM' if the hour part of the first delivery time is less than 14. Shift is 'PM' otherwise.
-	 * 
-	 * */
-	private static String getShiftForPlan(WebPlanInfo planInfo, String dispatchDate) throws ParseException {		
-		int day;
-		if(dispatchDate!=null && planInfo.getPlanDate()==null)
-			day = TransStringUtil.getDayOfWeek(TransStringUtil.getDate(dispatchDate));
-		else
-			day = TransStringUtil.getDayOfWeek(planInfo.getPlanDate());
-				
-		double hourOfDay = 0.0;
-		if (planInfo.getFirstDeliveryTime() != null) {
-			hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(TransStringUtil.getServerTime(planInfo.getFirstDeliveryTime())));
-			if (hourOfDay < 14) {
-				return "AM";
-			} else {
-				return "PM";
-			} 
-		}	
-		return "";
-	}
-
 	public static boolean isBullpen(String bullpen) {
 
 		if("Y".equalsIgnoreCase(bullpen) || "true".equalsIgnoreCase(bullpen)) {
@@ -1210,17 +1183,16 @@ public class DispatchPlanUtil {
 	
 	/* 
 	 * APPDEV-2994
-	 * Shift is 'AM' if the hour part of the first delivery time is less than 14. Shift is 'PM' otherwise.
+	 * Shift is 'AM' if the hour part of the dispatch group time is less than 14. Shift is 'PM' otherwise.
 	 * 
 	 * */	
-	public static String getShift(Date deliveryDate, Date firstDeliveryTime) throws ParseException {		
-		int day = TransStringUtil.getDayOfWeek(deliveryDate);
-		double hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(firstDeliveryTime));
-		if (hourOfDay < 14) {
-			return "AM";
-		} else {
-			return "PM";
+	public static String getShift(Date dispatchGroupTime) throws ParseException {		
+		
+		if(dispatchGroupTime != null) {
+			double hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(dispatchGroupTime));
+			return hourOfDay < 14 ? "AM" : "PM";
 		}
+		return null;
 	}
 	
 	 public static WebEmployeeInfo buildEmpInfo( EmployeeInfo empInfo, List<EmployeeRole> empRoles,List<EmployeeStatus> empStatus,

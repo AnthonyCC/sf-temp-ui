@@ -64,7 +64,7 @@ public class DispatchManagerDaoHibernateImpl extends
 		}
 
 		strBuf
-				.append(" order by p.planDate, p.firstDeliveryTime ,p.region, p.sequence");
+				.append(" order by p.planDate, p.dispatchGroup, p.startTime, p.region, p.sequence");
 		return getDataList(strBuf.toString());
 	}
 
@@ -95,7 +95,7 @@ public class DispatchManagerDaoHibernateImpl extends
 		if (isBullPen) {
 			strBuf.append(" and p.isBullpen = 'Y'");
 		}
-		strBuf.append(" order by p.planDate, p.zone.zoneCode, p.startTime, p.sequence");
+		strBuf.append(" order by p.planDate, p.zone.zoneCode, p.dispatchGroup, p.startTime, p.sequence");
 		
 		return (Collection) getHibernateTemplate().find(strBuf.toString(),	new Object[] { planDate, startTime });		
 	}
@@ -108,7 +108,7 @@ public class DispatchManagerDaoHibernateImpl extends
 				.append(" where p.planDate='")
 				.append(date)
 				.append(
-						"' order by p.planDate, p.zone.zoneCode, p.startTime, p.sequence");
+						"' order by p.planDate, p.zone.zoneCode, p.dispatchGroup, p.startTime, p.sequence");
 
 		return (Collection<Plan>) getHibernateTemplate().find(strBuf.toString());
 	}
@@ -123,7 +123,7 @@ public class DispatchManagerDaoHibernateImpl extends
 			if(region!=null)	
 				strBuf.append("' and p.region.code='").append(region);
 			
-				strBuf.append("' order by p.planDate, p.zone.zoneCode, p.startTime, p.sequence");
+				strBuf.append("' order by p.planDate, p.zone.zoneCode, p.dispatchGroup, p.startTime, p.sequence");
 
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
@@ -141,7 +141,7 @@ public class DispatchManagerDaoHibernateImpl extends
 				.append(resourceId)
 				.append("' in (select r.id.resourceId from p.planResources r)")
 				.append(
-						" order by p.planDate, p.zone.zoneCode, p.startTime, p.sequence");
+						" order by p.planDate, p.zone.zoneCode,  p.dispatchGroup, p.startTime, p.sequence");
 
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
@@ -324,7 +324,7 @@ public class DispatchManagerDaoHibernateImpl extends
 				.append(" where s.scribDate='")
 				.append(date)
 				.append(
-						"' order by s.scribDate,s.region,s.firstDeliveryTime,s.zone,s.startTime");
+						"' order by s.scribDate, s.zone.zoneCode, s.dispatchGroup, s.startTime, s.cutOffTime");
 
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
@@ -338,9 +338,9 @@ public class DispatchManagerDaoHibernateImpl extends
 				.append(date)
 				.append("' ");
 			if(region!=null)	
-				strBuf.append("and s.region.code='").append(region+"' ");
+				strBuf.append(" and s.region.code='").append(region+"' ");
 			
-				strBuf.append("order by s.scribDate,s.region,s.firstDeliveryTime,s.zone,s.startTime");
+				strBuf.append(" order by s.scribDate, s.zone.zoneCode, s.dispatchGroup, s.startTime, s.cutOffTime");
 
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
@@ -414,7 +414,7 @@ public class DispatchManagerDaoHibernateImpl extends
 		if (zone != null) {
 			strBuf.append(" and p.zone.zoneCode = '").append(zone).append("'");
 		}
-		strBuf.append(" order by p.planDate, p.zone.zoneCode, p.startTime, p.firstDeliveryTime, p.cutOffTime, p.sequence");
+		strBuf.append(" order by p.planDate, p.zone.zoneCode, p.dispatchGroup, p.startTime, p.cutOffTime, p.sequence");
 
 		return (Collection) getHibernateTemplate().find(strBuf.toString(),	new Object[] { planDate});		
 	}
@@ -426,7 +426,7 @@ public class DispatchManagerDaoHibernateImpl extends
 		if (zone != null) {
 			strBuf.append(" and p.zone.zoneCode = '").append(zone).append("'");
 		}
-		strBuf.append(" order by p.scribDate, p.zone.zoneCode, p.startTime, p.firstDeliveryTime, p.cutOffTime");
+		strBuf.append(" order by p.scribDate, p.zone.zoneCode, p.dispatchGroup, p.startTime, p.cutOffTime");
 
 		return (Collection) getHibernateTemplate().find(strBuf.toString(),	new Object[] { scribDate});		
 	}
@@ -442,7 +442,7 @@ public class DispatchManagerDaoHibernateImpl extends
 		if (area != null) {
 			strBuf.append(" and p.area = '").append(area).append("'");
 		}
-		strBuf.append(" order by p.deliveryDate, p.area, p.dispatchTime, p.firstDeliveryTime, p.cutOffTime");	
+		strBuf.append(" order by p.deliveryDate, p.area, p.dispatchTime, p.cutOffTime");	
 		return (Collection) getHibernateTemplate().find(strBuf.toString(),	new Object[] { deliveryDate });		
 	}
 	
@@ -450,7 +450,7 @@ public class DispatchManagerDaoHibernateImpl extends
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from WaveInstance p where p.deliveryDate = ? ");
 		strBuf.append(" and p.cutOffTime = ?");
-		strBuf.append(" order by p.deliveryDate, p.area, p.dispatchTime, p.firstDeliveryTime, p.cutOffTime");	
+		strBuf.append(" order by p.deliveryDate, p.area, p.dispatchTime, p.cutOffTime");	
 		return (Collection) getHibernateTemplate().find(strBuf.toString(),	new Object[] { deliveryDate,  cutOff});		
 	}
 	
@@ -460,7 +460,7 @@ public class DispatchManagerDaoHibernateImpl extends
 		if(cutOff != null) {
 			strBuf.append(" and p.cutOffTime = ?");
 		}
-		strBuf.append(" order by p.deliveryDate, p.area, p.dispatchTime, p.firstDeliveryTime, p.cutOffTime");
+		strBuf.append(" order by p.deliveryDate, p.area, p.dispatchTime, p.cutOffTime");
 		if(cutOff != null) {
 			return (Collection) getHibernateTemplate().find(strBuf.toString(),	new Object[] { cutOff});
 		} else {

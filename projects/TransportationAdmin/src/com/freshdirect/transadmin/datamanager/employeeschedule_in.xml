@@ -13,7 +13,7 @@
                 </record-element>
                 <record-element length="0" beanref="rowBean.employeeId" type="char"/>
                 <record-element length="0" beanref="rowBean.regionS" type="char"/>
-                <record-element length="0" beanref="rowBean.timeS" type="char"/>             
+                <record-element length="0" beanref="rowBean.dispatchGroupS" type="char"/>             
 	            <record-element length="0" beanref="rowBean.depotFacilityS" type="char"/>                                                             
             </line>
         </record-definition>

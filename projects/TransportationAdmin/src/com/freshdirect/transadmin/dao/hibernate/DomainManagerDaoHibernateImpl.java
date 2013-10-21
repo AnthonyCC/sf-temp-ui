@@ -19,6 +19,7 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import com.freshdirect.transadmin.constants.EnumIssueStatus;
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
 import com.freshdirect.transadmin.model.CapacitySnapshot;
+import com.freshdirect.transadmin.model.DispatchGroup;
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
@@ -116,16 +117,15 @@ public class DomainManagerDaoHibernateImpl
 	public Collection getCutOffs() throws DataAccessException {
 		return getDataList("TrnCutOff Order By  sequenceNo");
 	}
-
-/*	public Collection getPlantCapacities(Date dispatchDate) throws DataAccessException {
-		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("from TrnPlantCapacity pc where trunc(dispatchDate) = ?");
-		return (Collection) getHibernateTemplate().find(strBuf.toString(),new Object[] { dispatchDate });
-	}
 	
-	public TrnPlantCapacity getPlantCapacity(String id) throws DataAccessException {
-		return (TrnPlantCapacity)getEntityById("TrnPlantCapacity","id",id);
-	}	*/
+	public DispatchGroup getDispatchGroup(String id) throws DataAccessException {
+		return (DispatchGroup) getEntityById("DispatchGroup","dispatchGroupId",id);
+	}
+
+	public Collection getDispatchGroups() throws DataAccessException {
+		return getDataList("DispatchGroup Order By groupTime");
+	}
+
 	public void saveRouteNumberGroup(final Map routeMapping) throws DataAccessException {
 		
 		List _routeMapping = new ArrayList();
@@ -427,6 +427,16 @@ public class DomainManagerDaoHibernateImpl
 		
 		return (Collection) getHibernateTemplate().find(strBuf.toString(),new Object[] { createDate });
 }
+	
+	public Collection getVIRRecordByTruckNo(String truckNumber) throws DataAccessException {
+			
+			StringBuffer strBuf = new StringBuffer();
+			strBuf.append("from VIRRecord v where");
+			if (truckNumber != null && !truckNumber.equals(""))
+				strBuf.append(" v.truckNumber ='").append(truckNumber).append("'");		
+			
+			return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
 
 	
 	public VIRRecord getVIRRecord(String id) throws DataAccessException{
@@ -441,6 +451,16 @@ public class DomainManagerDaoHibernateImpl
 			strBuf.append("and m.issueType='").append(issueType).append("'");
 			strBuf.append("and m.issueSubType='").append(issueSubType).append("'");
 			strBuf.append("and m.issueStatus in ('Open','Verified','Re-Verified')");
+		}
+		
+		return (Collection)getHibernateTemplate().find(strBuf.toString());
+	}
+	
+	public Collection getMaintenanceIssueByTruckNo(String truckNumber) throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from MaintenanceIssue m ");
+		if(truckNumber != null){
+			strBuf.append("where m.truckNumber='").append(truckNumber).append("'");
 		}
 		
 		return (Collection)getHibernateTemplate().find(strBuf.toString());

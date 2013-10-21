@@ -1376,9 +1376,12 @@ div.eXor_Active, div.eXor_AdHoc { margin-left: 10px; width: 98%; }
 	background-color: #677F5F;
 }
 
+/*green for checkin*/
 .asset_checkin {
 	background-color: #3C691B;
 }
+
+/*red for checkout*/
 .asset_checkout {
 	background-color: #FF0000;
 }

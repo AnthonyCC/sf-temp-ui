@@ -35,6 +35,7 @@ import com.freshdirect.transadmin.constants.EnumServiceStatus;
 import com.freshdirect.transadmin.datamanager.assembler.IDataAssembler;
 import com.freshdirect.transadmin.datamanager.parser.FileCreator;
 import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormCreatorException;
+import com.freshdirect.transadmin.model.DispatchGroup;
 import com.freshdirect.transadmin.model.MaintenanceIssue;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
@@ -64,6 +65,7 @@ import com.freshdirect.transadmin.web.model.WebTeamSchedule;
  *
  * @author Sivachandar
  */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class DomainController extends AbstractMultiActionController {
 
 
@@ -443,6 +445,7 @@ public class DomainController extends AbstractMultiActionController {
 		List pmZoneSupervisors = new ResourceList();
 		Collection supervisorLst = new ArrayList();
 		WebEmployeeInfo webEmpInfo = null;
+		Collection clearSupervisorLst = new ArrayList();
 		try {
 			supervisorLst = zoneManagerService.getDefaultZoneSupervisor(_tmpZone.getZoneCode(), "AM", TransStringUtil.getCurrentDate());
 			for (Iterator<ZoneSupervisor> iterator = supervisorLst.iterator(); iterator.hasNext();) {		
@@ -450,11 +453,11 @@ public class DomainController extends AbstractMultiActionController {
 				if("AM".equalsIgnoreCase(_zoneSupervisor.getDayPart())){
 					webEmpInfo = employeeManagerService.getEmployee(_zoneSupervisor.getSupervisorId());
 					if(webEmpInfo != null && webEmpInfo.getEmpInfo() != null) {
-						_zoneSupervisor.setSupervisorFirstName(webEmpInfo.getEmpInfo().getFirstName());
-						_zoneSupervisor.setSupervisorLastName(webEmpInfo.getEmpInfo().getLastName());
-						amZoneSupervisors.add(_zoneSupervisor);
+					_zoneSupervisor.setSupervisorFirstName(webEmpInfo.getEmpInfo().getFirstName());
+					_zoneSupervisor.setSupervisorLastName(webEmpInfo.getEmpInfo().getLastName());
+					amZoneSupervisors.add(_zoneSupervisor);
 					} else {
-						zoneManagerService.removeEntityEx(_zoneSupervisor);
+						clearSupervisorLst.add(_zoneSupervisor);
 					}
 				}
 			}
@@ -464,17 +467,17 @@ public class DomainController extends AbstractMultiActionController {
 				if("PM".equalsIgnoreCase(_zoneSupervisor.getDayPart())){
 					webEmpInfo = employeeManagerService.getEmployee(_zoneSupervisor.getSupervisorId());
 					if(webEmpInfo != null && webEmpInfo.getEmpInfo() != null) {
-						_zoneSupervisor.setSupervisorFirstName(webEmpInfo.getEmpInfo().getFirstName());
-						_zoneSupervisor.setSupervisorLastName(webEmpInfo.getEmpInfo().getLastName());
-						pmZoneSupervisors.add(_zoneSupervisor);
+					_zoneSupervisor.setSupervisorFirstName(webEmpInfo.getEmpInfo().getFirstName());
+					_zoneSupervisor.setSupervisorLastName(webEmpInfo.getEmpInfo().getLastName());
+					pmZoneSupervisors.add(_zoneSupervisor);
 					}  else {
-						zoneManagerService.removeEntityEx(_zoneSupervisor);
+						clearSupervisorLst.add(_zoneSupervisor);
 					}
 				}
 			}
 			_tmpZone.setAmZoneSupervisors(amZoneSupervisors);
 			_tmpZone.setPmZoneSupervisors(pmZoneSupervisors);
-			
+			zoneManagerService.removeEntity(clearSupervisorLst);
 		} catch (Exception e) {				
 			e.printStackTrace();
 		}
@@ -1034,8 +1037,8 @@ public class DomainController extends AbstractMultiActionController {
 	public void setZoneManagerService(ZoneManagerI zoneManagerService) {
 		this.zoneManagerService = zoneManagerService;
 	}
-
 	
+
 	public ModelAndView timesheetHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		
 		String selectedDate = request.getParameter("selectedDate");
@@ -1103,5 +1106,32 @@ public class DomainController extends AbstractMultiActionController {
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	public ModelAndView dispatchGroupHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		
+		Collection dataList = domainManagerService.getDispatchGroups();
+		return new ModelAndView("dispatchGroupView","dispatchGroups",dataList);
+	}
+	
+	public ModelAndView dispatchGroupDeleteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+
+		Set dispatchGroupSet = new HashSet();
+		String arrEntityList[] = getParamList(request);
+		DispatchGroup tmpEntity = null;
+		if (arrEntityList != null) {
+			int arrLength = arrEntityList.length;
+			for (int intCount = 0; intCount < arrLength; intCount++) {
+				tmpEntity = domainManagerService.getDispatchGroup(arrEntityList[intCount]);
+				dispatchGroupSet.add(tmpEntity);
+			}
+		}
+		try {
+			domainManagerService.removeEntity(dispatchGroupSet);
+			saveMessage(request, getMessage("app.actionmessage.103", null));
+		} catch (DataIntegrityViolationException e) {
+			saveMessage(request, getMessage("app.actionmessage.127", null));
+		}
+		return dispatchGroupHandler(request, response);
 	}
 }

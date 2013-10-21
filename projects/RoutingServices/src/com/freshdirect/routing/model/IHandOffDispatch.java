@@ -3,8 +3,6 @@ package com.freshdirect.routing.model;
 import java.util.Date;
 import java.util.Set;
 
-import com.freshdirect.sap.bapi.BapiSendHandOff;
-
 public interface IHandOffDispatch {	
 
 	 String getDispatchId();
@@ -20,13 +18,19 @@ public interface IHandOffDispatch {
 	 void setRegion(String region);
 
 	 Date getDispatchDate();
-	 void setDispatchDate(Date dispatchDate); 
+	 void setDispatchDate(Date dispatchDate);
 
-	 Date getFirstDeliveryTime();
-	 void setFirstDeliveryTime(Date firstDeliveryTime);
+	 Date getDispatchGroup();
+	 void setDispatchGroup(Date dispatchGroup);
 
-	 Date getStartTime(); 
-	 void setStartTime(Date startTime);
+	 Date getDispatchTime();
+     void setDispatchTime(Date dispatchTime);
+
+	 Date getEndTime();
+	 void setEndTime(Date endTime);
+
+	 Date getFirstDlvTime();
+	 void setFirstDlvTime(Date firstDlvTime);
 
 	 String getIsBullpen(); 
 	 void setIsBullpen(String isBullpen);

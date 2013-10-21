@@ -72,7 +72,7 @@
 	     	<access-roles>TrnAdmin,TrnOperations,TrnPlanning,TrnDispatch</access-roles>
      	</menu>
 		<menu id="OPR009" title="Asset" orientation="RIGHT" link="asset.do?pAssetType=TRUCK">
-	     	<access-uris>asset.do,editasset.do,assettemplate.do,editassettemplate.do,deleteasset.do</access-uris>
+	     	<access-uris>asset.do,editasset.do,assettemplate.do,editassettemplate.do,deleteasset.do,uploadasset.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 	    </menu>
 
@@ -200,14 +200,7 @@
 	     	<access-uris>cutoff.do,deletecutoff.do,editcutoff.do</access-uris>
      	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
      	 </menu> 
-     	 
-     	<menu id="ADO011" title="Snapshot" orientation="LEFT" link="capacitySnapshot.do">
-	     	<access-uris>capacitySnapshot.do,deletecapacitySnapshot.do</access-uris>
-	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
-		</menu>
-     	
-     	 
-     	  <menu id="ADO003" title="Notification" orientation="RIGHT" link="notification.do">
+     	 <menu id="ADO003" title="Notification" orientation="RIGHT" link="notification.do">
 	     	<access-uris>notification.do</access-uris>
 	     	<access-roles>TrnAdmin</access-roles>
 	     </menu>
@@ -248,10 +241,21 @@
 	     	<access-roles>TrnAdmin</access-roles>
 	     </menu>
 	     
-	      <menu id="ADO012" title="Dashboard" orientation="LEFT" link="dashboard.do">
+     	 <menu id="ADO011" title="Snapshot" orientation="LEFT" link="capacitySnapshot.do">
+	     	<access-uris>capacitySnapshot.do,deletecapacitySnapshot.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+		 </menu>
+	     
+	     <menu id="ADO012" title="Dashboard" orientation="LEFT" link="dashboard.do">
 	     	<access-uris>dashboard.do</access-uris>
 	     	<access-roles>TrnAdmin</access-roles>
 	     </menu>
+	     
+     	 <menu id="ADO013" title="Dispatch Group" orientation="LEFT" link="dispatchgroup.do">
+	     	<access-uris>dispatchgroup.do,deletedispatchgroup.do,editdispatchgroup.do</access-uris>
+     	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+     	 </menu>  
+     	 
 	     
 
 	</menu>

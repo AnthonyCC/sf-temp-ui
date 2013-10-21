@@ -1,6 +1,5 @@
 package com.freshdirect.transadmin.model;
 
-
 import java.util.Date;
 
 public interface IWaveInstanceSource {
@@ -8,10 +7,11 @@ public interface IWaveInstanceSource {
 	Date getDeliveryDate();
 	TrnFacility getOriginFacility();
 	TrnFacility getDestinationFacility();
+	Date getDispatchGroup();
 	Zone getZone();
 	Date getStartTime();
-	Date getFirstDeliveryTime();
-	Date getLastDeliveryTime();
+	Date getEndTime();
+	Date getMaxReturnTime(); 
 	Date getCutOffTime();
 	int getNoOfResources();
 	boolean isValidSource();
@@ -22,11 +22,12 @@ public interface IWaveInstanceSource {
 
 	void setOriginFacility(TrnFacility originFacility);
 	void setDestinationFacility(TrnFacility destinationFacility);
+	void setDispatchGroup(Date dispatchGroup);
 	void setStartTime(Date value);
-	void setFirstDeliveryTime(Date value);
-	void setLastDeliveryTime(Date value);
+	void setEndTime(Date value);
+	void setMaxReturnTime(Date value);
 	void setCutOffTime(Date value);
 	void setNoOfResources(int value);
-	int getNoOfResources1(); 
+	int getNoOfResources1();
 }
 

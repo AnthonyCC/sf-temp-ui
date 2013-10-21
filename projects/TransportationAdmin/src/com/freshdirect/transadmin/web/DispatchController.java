@@ -61,6 +61,7 @@ import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.datamanager.report.DrivingDirectionsReport;
 import com.freshdirect.transadmin.datamanager.report.ReportGenerationException;
 import com.freshdirect.transadmin.model.Asset;
+import com.freshdirect.transadmin.model.AssetActivity;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRole;
@@ -374,18 +375,18 @@ public class DispatchController extends AbstractMultiActionController {
 			return(o1.getStartTime().compareTo(o2.getStartTime()));
 		}
 	}
-	public static class PlanFirstDeliveryTimeComparator implements Comparator<Plan> {
+	public static class PlanStartTimeComparator implements Comparator<Plan> {
 
 		@Override
 		public int compare(Plan o1, Plan o2) {
-			return(o1.getFirstDeliveryTime().compareTo(o2.getFirstDeliveryTime()));
+			return (o1.getStartTime().compareTo(o2.getStartTime()));
 		}
 	}
 	public static class PlanMaxTimeComparator implements Comparator<Plan> {
 
 		@Override
 		public int compare(Plan o1, Plan o2) {
-			return(o1.getMaxTime().compareTo(o2.getMaxTime()));
+			return(o1.getMaxReturnTime().compareTo(o2.getMaxReturnTime()));
 		}
 	}	
 	
@@ -430,11 +431,12 @@ public class DispatchController extends AbstractMultiActionController {
 							//Set scheduled emp date
 							getKronosEmployeeDate(p, r, s);
 							
-							s.setShiftType(DispatchPlanUtil.getShift(p.getPlanDate(), p.getFirstDeliveryTime()));
+							s.setShiftType(DispatchPlanUtil.getShift(p.getDispatchGroup()));
 							//set Employee Time	
 							setKronosEmployeeTime(p, r, s,plansForDateMap);							
 							//set shift duration
-							double maxTime = getKronosEmployeeShiftDuration(p, r, s,"Depot".equalsIgnoreCase(p.getRegion().getCode())?getPlans(p.getPlanDate(), p.getRegion().getCode(),plansForDateAndRegionMap):null);
+							double maxTime = getKronosEmployeeShiftDuration(p, r, s,
+									"Depot".equalsIgnoreCase(p.getRegion().getCode()) ? getPlans(p.getPlanDate(), p.getRegion().getCode(), plansForDateAndRegionMap):null);
 							s.setShiftDuration(maxTime);
 							
 							scribMap.put(s.getShiftType(),s);
@@ -464,26 +466,27 @@ public class DispatchController extends AbstractMultiActionController {
 
 	private void setKronosEmployeeTime(Plan p, PlanResource r, Scrib s,Map<String,Collection<Plan>> plansForDateMap)
 			throws ParseException {
-		if(r.getId().getAdjustmentTime()!=null)
+		if (r.getId().getAdjustmentTime() != null)
 			s.setStartTime(r.getId().getAdjustmentTime());
-		else
-		{
+		else {
 			List<Plan> resPlans = null;
-			resPlans=getResourcePlansForShift(p.getPlanDate(), r,  s,getPlansForDate(p.getPlanDate(),plansForDateMap));
-			Collections.sort(resPlans,new PlanFirstDeliveryTimeComparator());
+			resPlans = getResourcePlansForShift(p.getPlanDate(), r, s, getPlansForDate(p.getPlanDate(), plansForDateMap));
+			Collections.sort(resPlans, new PlanStartTimeComparator());
 			s.setStartTime(resPlans.get(0).getStartTime());
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void getKronosEmployeeDate(Plan p, PlanResource r, Scrib s)	throws ParseException {
 		
 		boolean isYardWorker = false;
-		for(Iterator subType=r.getEmployeeRoleType().getSubRoles().iterator();subType.hasNext();){
-			EmployeeSubRoleType subRole=(EmployeeSubRoleType)subType.next();
-			if("007".equalsIgnoreCase(subRole.getCode())){
-				isYardWorker=true;
+		for (Iterator<EmployeeSubRoleType> subType = r.getEmployeeRoleType().getSubRoles()
+				.iterator(); subType.hasNext();) {
+			EmployeeSubRoleType subRole = subType.next();
+			if ("007".equalsIgnoreCase(subRole.getCode())) {
+				isYardWorker = true;
 				break;
-			}								
+			}
 		}
 		boolean isGreater=false;
 		if(isYardWorker){
@@ -499,13 +502,13 @@ public class DispatchController extends AbstractMultiActionController {
 	}
 
 	private double getKronosEmployeeShiftDuration(Plan p, PlanResource r, Scrib s,Collection<Plan> depotPlans) throws ParseException {
-		double maxTime=0;
+		double maxTime = 0;
 		if("Depot".equalsIgnoreCase(p.getRegion().getCode()))
 		{
 			List<Plan> resPlans=new ArrayList<Plan>();
 			for (Iterator<Plan> iterator = depotPlans.iterator(); iterator.hasNext();) {
 				Plan _depotPlan = iterator.next();
-					String shiftType = DispatchPlanUtil.getShift(_depotPlan.getPlanDate(), _depotPlan.getFirstDeliveryTime());
+					String shiftType = DispatchPlanUtil.getShift(_depotPlan.getDispatchGroup());
 					if(shiftType.equalsIgnoreCase(s.getShiftType())){
 						Set _depotPlanRsr = _depotPlan.getPlanResources();
 						for (Iterator<PlanResource> itr = _depotPlanRsr.iterator(); itr.hasNext();) {
@@ -518,10 +521,10 @@ public class DispatchController extends AbstractMultiActionController {
 			}			
 			for (Iterator<Plan>it =resPlans.iterator();it.hasNext();) {
 				Plan _p = it.next();
-				maxTime = maxTime + Double.parseDouble(TransStringUtil.formatTime1(_p.getMaxTime()));
+				maxTime = maxTime + Double.parseDouble(TransStringUtil.formatTime1(_p.getMaxReturnTime()));
 			}
-		}else{
-			maxTime = Double.parseDouble(TransStringUtil.formatTime1(p.getMaxTime()));
+		} else {
+			maxTime = Double.parseDouble(TransStringUtil.formatTime1(p.getMaxReturnTime()));
 		}
 		return maxTime;
 	}	
@@ -554,7 +557,7 @@ public class DispatchController extends AbstractMultiActionController {
 		List<Plan> resPlans=new ArrayList<Plan>();
 		for (Iterator<Plan> iterator = plans.iterator(); iterator.hasNext();) {
 			Plan _rPlan = iterator.next();
-			String shiftType = DispatchPlanUtil.getShift(_rPlan.getPlanDate(), _rPlan.getFirstDeliveryTime());
+			String shiftType = DispatchPlanUtil.getShift(_rPlan.getDispatchGroup());
 			if(shiftType.equalsIgnoreCase(s.getShiftType())){
 				Set<PlanResource> _rPlanRsr = _rPlan.getPlanResources();
 				for (Iterator<PlanResource> itr = _rPlanRsr.iterator(); itr.hasNext();) {
@@ -615,7 +618,7 @@ public class DispatchController extends AbstractMultiActionController {
 	        
 	        hssfCell = row.createCell(cellnum++);		        
 	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
-	        hssfCell.setCellValue(new HSSFRichTextString("Shift"));
+	        hssfCell.setCellValue(new HSSFRichTextString("Shift Duration"));
 	        
 	        row = sheet.createRow(rownum++);//blank Row
 	    
@@ -857,14 +860,7 @@ public class DispatchController extends AbstractMultiActionController {
 		mav.getModel().put(DispatchPlanUtil.ASSETTYPE_GPS, DispatchPlanUtil.getAssetMapping(assetManagerService.getActiveAssets(DispatchPlanUtil.ASSETTYPE_GPS)));
 		mav.getModel().put(DispatchPlanUtil.ASSETTYPE_EZPASS, DispatchPlanUtil.getAssetMapping(assetManagerService.getActiveAssets(DispatchPlanUtil.ASSETTYPE_EZPASS)));
 		mav.getModel().put(DispatchPlanUtil.ASSETTYPE_MOTKIT, DispatchPlanUtil.getAssetMapping(assetManagerService.getActiveAssets(DispatchPlanUtil.ASSETTYPE_MOTKIT)));
-		
-		try {
-			mav.getModel().put(DispatchPlanUtil.SCANNED_ASSETS
-					, assetManagerService.getScannedAssets(dispDate != null ? TransStringUtil.getServerDateString1(dispDate) : TransStringUtil.getServerDateString1(TransStringUtil.getCurrentDate())));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
+				
 		if(!TransStringUtil.isEmpty(dispDate)) {			
 			//boolean punchInfo=getServerDate(dispDate).equals(TransStringUtil.getCurrentServerDate())?true:false;			
 			Collection c = getDispatchInfos(getServerDate(dispDate), null, zone, region
@@ -968,7 +964,7 @@ public class DispatchController extends AbstractMultiActionController {
 						WebEmployeeInfo empInfo = employeeManagerService.getEmployeeEx(r.getId().getResourceId());
 							
 						wp.setEmp(empInfo);
-						wp.setShiftType(DispatchPlanUtil.getShift(p.getPlanDate(), p.getFirstDeliveryTime()));
+						wp.setShiftType(DispatchPlanUtil.getShift(p.getDispatchGroup()));
 						resMap.put(r.getId().getResourceId(), wp);						
 					}			
 				}
@@ -1318,7 +1314,7 @@ public class DispatchController extends AbstractMultiActionController {
 						.getTeamByEmployees(resourceIds);
 			}
 			
-			Map<String, Map<String, List<String>>> scannedAssetMapping = assetManagerService.getScannedAssets(TransStringUtil.serverDateFormat.parse(dispDate));
+			Map<String, List<AssetActivity>> scannedAssetMapping = assetManagerService.getScannedAssets(TransStringUtil.serverDateFormat.parse(dispDate));
 
 			dispatchItr = dispatchList.iterator();
 			while (dispatchItr.hasNext()) {
@@ -1588,53 +1584,6 @@ public class DispatchController extends AbstractMultiActionController {
 		}
 	}
 
-	public ModelAndView autoDispatchHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException, ParseException {
-
-		// if there is a dispatch record for the same date then check what user role
-		// if not admin send an error message
-		// if admin delete the existing record and run the autodispatch crap
-		long start = System.currentTimeMillis();
-		
-		String dispatchDate = request.getParameter("daterange");
-			try {
-				if (!TransStringUtil.isEmpty(dispatchDate)) {
-					dispatchDate = TransStringUtil.getServerDate(dispatchDate);
-				} else {
-					dispatchDate = TransStringUtil.getServerDate(new Date());
-				}
-			} catch (ParseException e) {
-				e.printStackTrace();
-				saveMessage(request, getMessage("app.error.115", new String[] { "Invalid Date" }));
-				return planHandler(request, response);
-			}
-
-			Collection planList=dispatchManagerService.getPlanList(dispatchDate);
-
-		    if(planList == null || planList.size() == 0){
-		    	saveMessage(request, getMessage("app.actionmessage.142", null));
-		    	return planHandler(request,response);
-		    }
-		    if( TransportationAdminProperties.isAutoDispatchValidation())
-		    {
-			   Collection unavailable=employeeManagerService.getUnAvailableEmployees(planList, dispatchDate);
-			   if(unavailable!=null&&unavailable.size()>0)
-			   {
-				   saveMessage(request, getMessage("app.actionmessage.147", null));
-			    	return planHandler(request,response);
-			   }
-		    }
-			Collection dispList = dispatchManagerService.getDispatchList(dispatchDate,null,null,null);
-			if(!SecurityManager.isUserAdmin(request)){
-				  saveMessage(request, getMessage("app.actionmessage.140", null));
-				  return planHandler(request,response);
-			}
-		   dispatchManagerService.processAutoDispatch(dispatchDate);
-		   saveMessage(request, getMessage("app.actionmessage.143", null));
-		   long end = System.currentTimeMillis();
-		   System.err.println("autoDispatchHandler in (sec) "+(end-start)/1000);
-		   return planHandler(request,response);
-	}
-
 	public ModelAndView unassignedRouteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException  {
 
 		ModelAndView mav = new ModelAndView("unassignedRouteView");
@@ -1683,12 +1632,9 @@ public class DispatchController extends AbstractMultiActionController {
         
         Collection<Plan> selectedScribs = dispatchManagerService.getPlanList(TransStringUtil.getServerDate(selectedDate));
         Collection<Plan> baseScribs = dispatchManagerService.getPlanList(TransStringUtil.getServerDate(baseDate));
-        
-        //relateTimeRange(allWindows, selectedWindows);
-        //relateTimeRange(allWindows, baseWindows);
-        
-        relateFirstDeliveryTime(allWindows, selectedPlanMapping, selectedScribs);
-        relateFirstDeliveryTime(allWindows, basePlanMapping, baseScribs);
+                
+        relateTruckDispatchTime(allWindows, selectedPlanMapping, selectedScribs);
+        relateTruckDispatchTime(allWindows, basePlanMapping, baseScribs);
                  
         request.setAttribute("selectedDate", selectedDate);
         request.setAttribute("baseDate", baseDate);
@@ -1717,14 +1663,14 @@ public class DispatchController extends AbstractMultiActionController {
 		}
 	}*/
 	
-	private void relateFirstDeliveryTime(Set<CustomTimeOfDay> allWindows, Map<String, Map<CustomTimeOfDay, Integer>> scribMapping
+	private void relateTruckDispatchTime(Set<CustomTimeOfDay> allWindows, Map<String, Map<CustomTimeOfDay, Integer>> scribMapping
 												, Collection<Plan> plans) {
 		
 		CustomTimeOfDay _timeOfDay = null;
 		if(plans != null) {        	  
       	  for(Plan _plan : plans) {
       		  if(_plan.getZone() != null) {
-      			 _timeOfDay = new CustomTimeOfDay(_plan.getFirstDeliveryTime());
+      			 _timeOfDay = new CustomTimeOfDay(_plan.getStartTime());
       			allWindows.add(_timeOfDay);
       			if(!scribMapping.containsKey(_plan.getZone().getZoneCode())) {
       				scribMapping.put(_plan.getZone().getZoneCode(), new TreeMap<CustomTimeOfDay, Integer>());

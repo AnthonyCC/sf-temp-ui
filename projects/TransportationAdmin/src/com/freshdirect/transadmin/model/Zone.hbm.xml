@@ -35,16 +35,13 @@
         </property>
         <property name="obsolete" type="string">
             <column name="OBSOLETE" length="1" />
-        </property> 
-        <property name="stemFromTime" type="big_integer">
-            <column name="STEM_FROM_TIME" precision="5" scale="0" />
-        </property> 
-        <property name="stemToTime" type="big_integer">
-            <column name="STEM_TO_TIME" precision="5" scale="0" />
         </property>
-        <!-- <property name="maxstemTime" type="big_integer">
-            <column name="STEM_MAX_TIME" precision="5" scale="0"  not-null="true"/>
-        </property>  --> 
+        <property name="preTripTime" type="big_integer">
+            <column name="PRETRIP_TIME" precision="5" scale="0" />
+        </property> 
+        <property name="postTripTime" type="big_integer">
+            <column name="POSTTRIP_TIME" precision="5" scale="0" />
+        </property> 
         <property name="loadingPriority" type="big_decimal">
             <column name="LOADING_PRIORITY" precision="22" scale="0"/>
         </property>

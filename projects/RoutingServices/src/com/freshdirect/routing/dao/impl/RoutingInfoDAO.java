@@ -242,7 +242,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 		tmpModel.setDefaultTrailerContainerCount(rs.getInt("TRAILER_CONTAINERMAX"));
 		tmpModel.setDefaultContainerCartonCount(rs.getInt("TRAILER_CONTAINERCARTONMAX"));
 		tmpModel.setBulkThreshold(rs.getDouble("BULK_THRESHOLD"));
-		
+
 		return tmpModel;
 	}
 	
@@ -325,28 +325,28 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 	}
 	
 	private static final String GET_WAVEINSTANCE_BYSTATUS_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, F.FACILITY_CODE ORIGIN_FACILITY, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
-	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
-	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT, P.EQUIPMENT_TYPE, P.TODRESTRICTION, TR.CODE REGION  " +
+	", P.TRUCK_DISPATCHTIME, P.TRUCK_ENDTIME, P.MAX_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
+	", Z.PRETRIP_TIME, Z.POSTTRIP_TIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT, P.EQUIPMENT_TYPE, P.TODRESTRICTION, TR.CODE REGION  " +
 	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a, TRANSP.TRN_REGION TR, transp.trn_facility f where P.DELIVERY_DATE = ?  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE AND TR.CODE = A.REGION_CODE and f.ID = P.ORIGIN_FACILITY and STATUS = ? " +
-	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
+	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.TRUCK_DISPATCHTIME";
 	
 	private static final String GET_WAVEINSTANCE_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, F.FACILITY_CODE ORIGIN_FACILITY, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
-	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
-	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT, P.EQUIPMENT_TYPE, P.TODRESTRICTION, TR.CODE REGION " +
+	", P.TRUCK_DISPATCHTIME, P.TRUCK_ENDTIME, P.MAX_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
+	", Z.PRETRIP_TIME, Z.POSTTRIP_TIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT, P.EQUIPMENT_TYPE, P.TODRESTRICTION, TR.CODE REGION " +
 	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a,  TRANSP.TRN_REGION TR, transp.trn_facility f where P.DELIVERY_DATE = ?  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE AND TR.CODE = A.REGION_CODE and f.ID = P.ORIGIN_FACILITY " +
-	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
+	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.TRUCK_DISPATCHTIME";
 	
 	private static final String GET_FUTURE_WAVEINSTANCE_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, F.FACILITY_CODE ORIGIN_FACILITY, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
-	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
-	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT, P.EQUIPMENT_TYPE, P.TODRESTRICTION, TR.CODE REGION  " +
+	", P.TRUCK_DISPATCHTIME, P.TRUCK_ENDTIME, P.MAX_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
+	", Z.PRETRIP_TIME, Z.POSTTRIP_TIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT, P.EQUIPMENT_TYPE, P.TODRESTRICTION, TR.CODE REGION  " +
 	" from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a, TRANSP.TRN_REGION TR, transp.trn_facility f where P.DELIVERY_DATE > sysdate  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE AND TR.CODE = A.REGION_CODE and f.ID = P.ORIGIN_FACILITY " +
-	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
+	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.TRUCK_DISPATCHTIME";
 	
 	private static final String GET_FUTURE_WAVEINSTANCE_BYSTATUS_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, F.FACILITY_CODE ORIGIN_FACILITY, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
-	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
-	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT, P.EQUIPMENT_TYPE,P.TODRESTRICTION,  TR.CODE REGION  " +
+	", P.TRUCK_DISPATCHTIME, P.TRUCK_ENDTIME, P.MAX_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.SOURCE, P.STATUS, P.NOTIFICATION_MSG " +
+	", Z.PRETRIP_TIME, Z.POSTTRIP_TIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT, P.EQUIPMENT_TYPE, P.TODRESTRICTION, TR.CODE REGION  " +
 	" from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a,TRANSP.TRN_REGION TR, transp.trn_facility f where P.DELIVERY_DATE > sysdate  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE AND TR.CODE = A.REGION_CODE  and f.ID = P.ORIGIN_FACILITY and STATUS = ? " +
-	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
+	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.TRUCK_DISPATCHTIME";
 	
 	public Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> getWaveInstanceTree
 																							(final Date deliveryDate, final  EnumWaveInstanceStatus status)  throws SQLException {
@@ -382,9 +382,10 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 			public void processRow(ResultSet rs) throws SQLException {				    	
 				do {
 					Date _dispatchDate = rs.getDate("DISPATCH_DATE");
-					Date _firstDeliveryTime = rs.getTimestamp("FIRST_DLV_TIME");
-					Date _lastDeliveryTime = rs.getTimestamp("LAST_DLV_TIME");
-					Date _startTime = rs.getTimestamp("DISPATCH_TIME");
+					Date _startTime = rs.getTimestamp("TRUCK_DISPATCHTIME");
+					Date _endTime = rs.getTimestamp("TRUCK_ENDTIME");
+					Date _maxTime = rs.getTimestamp("MAX_TIME");
+					
 					RoutingTimeOfDay _cutOffTime = new RoutingTimeOfDay(rs.getTimestamp("CUT_OFF"));
 
 					String _zoneCode = rs.getString("ZONE");
@@ -392,8 +393,8 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					String _waveInstanceId = rs.getString("WAVEINSTANCE_ID"); 
 					EnumWaveInstanceStatus status = EnumWaveInstanceStatus.getEnum(rs.getString("STATUS"));
 					
-					int toZoneTime = rs.getInt("TO_ZONETIME");
-					int fromZoneTime = rs.getInt("FROM_ZONETIME");
+					int preTripTime = rs.getInt("PRETRIP_TIME");
+					int postTripTime = rs.getInt("POSTTRIP_TIME");
 					int noOfResources = rs.getInt("RESOURCE_COUNT");
 					boolean force = rs.getString("FORCE_SYNCHRONIZE") != null 
 										? "Y".equalsIgnoreCase(rs.getString("FORCE_SYNCHRONIZE")) : false;
@@ -408,17 +409,22 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					equipmentType.setRegionID(rs.getString("REGION"));
 					 
 					
-					if(_firstDeliveryTime != null && _lastDeliveryTime != null 
+					if(_dispatchDate != null && _endTime != null 
 							&& _startTime != null && _cutOffTime != null && _zoneCode != null) {
 
 						RoutingTimeOfDay _dispatchTime = new RoutingTimeOfDay(_startTime);
 
-						Date startTime = RoutingDateUtil.addMinutes(_firstDeliveryTime
-								, (toZoneTime != 0 ? -toZoneTime : -fromZoneTime));
-						Date endTime = RoutingDateUtil.addMinutes(_lastDeliveryTime
-								, (fromZoneTime != 0 ? fromZoneTime : toZoneTime));
-
+						Date startTime = RoutingDateUtil.addMinutes(_startTime, preTripTime);
+						Date endTime = RoutingDateUtil.addMinutes(_endTime, -postTripTime);
+						
 						int runTime = RoutingDateUtil.getDiffInSeconds(endTime, startTime);
+						int maxRunTime = 0;
+						if(_maxTime != null) {
+							Date maxTime = RoutingDateUtil.addMinutes(_maxTime, -postTripTime);
+							maxRunTime = RoutingDateUtil.getDiffInSeconds(maxTime, startTime);
+						} else {
+							maxRunTime = runTime;
+						}
 
 						RoutingTimeOfDay _waveStartTime = new RoutingTimeOfDay(startTime);
 
@@ -426,8 +432,8 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 						waveInstance.setCutOffTime(_cutOffTime);
 						waveInstance.setDispatchTime(_dispatchTime);
 						waveInstance.setWaveStartTime(_waveStartTime);
-						waveInstance.setMaxRunTime(runTime);
 						waveInstance.setPreferredRunTime(runTime);
+						waveInstance.setMaxRunTime(maxRunTime);
 						waveInstance.setNoOfResources(noOfResources);
 						waveInstance.setForce(force);
 						waveInstance.setNeedsConsolidation(needsConsolidation);
@@ -466,11 +472,11 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 	}
 	
 	private static final String GET_PLANBYDATE_QRY = "select P.PLAN_DATE DISPATCH_DATE, P.ZONE ZONE, P.CUTOFF_DATETIME CUT_OFF, P.ORIGIN_FACILITY, P.DESTINATION_FACILITY " +
-			", P.START_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME " +
-			", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY " +
+			", P.DISPATCH_GROUPTIME, P.TRUCK_DISPATCHTIME, P.TRUCK_ENDTIME, P.MAX_TIME " +
+			", Z.PRETRIP_TIME, Z.POSTTRIP_TIME, Z.LOADING_PRIORITY " +
 		 	"from transp.plan p, transp.zone z, transp.trn_facility f where P.PLAN_DATE = ? and P.ZONE = Z.ZONE_CODE and P.ZONE is not null " +
 			"and F.ID = P.ORIGIN_FACILITY and F.FACILITYTYPE_CODE <>'DPT' " +
-			"order by P.ZONE, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
+			" order by P.ZONE, P.CUTOFF_DATETIME, P.TRUCK_DISPATCHTIME";
 	//Result Description -> Map<ZoneCode, Map<DispatchTIme, Map<CutOffTime, IWaveInstance>>>
 	public Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>> getPlannedDispatchTree(final Date deliveryDate)  throws SQLException {
 		
@@ -493,37 +499,44 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 				  new RowCallbackHandler() { 
 				      public void processRow(ResultSet rs) throws SQLException {				    	
 				    	do {
-				    		Date _firstDeliveryTime = rs.getTimestamp("FIRST_DLV_TIME");
-				    		Date _lastDeliveryTime = rs.getTimestamp("LAST_DLV_TIME");
-				    		Date _startTime = rs.getTimestamp("DISPATCH_TIME");
+				    		Date _startTime = rs.getTimestamp("TRUCK_DISPATCHTIME");
+				    		Date _endTime = rs.getTimestamp("TRUCK_ENDTIME");
+				    		Date _maxTime = rs.getTimestamp("MAX_TIME");
+				    		
 				    		RoutingTimeOfDay _cutOffTime = new RoutingTimeOfDay(rs.getTimestamp("CUT_OFF"));
 				    		
 				    		String _zoneCode = rs.getString("ZONE");
-				    		int toZoneTime = rs.getInt("TO_ZONETIME");
-				    		int fromZoneTime = rs.getInt("FROM_ZONETIME");
+				    		int preTripTime = rs.getInt("PRETRIP_TIME");
+				    		int postTripTime = rs.getInt("POSTTRIP_TIME");
 				    		
 				    		String originFacility =  rs.getString("ORIGIN_FACILITY");
 				    		String destinationFacility =  rs.getString("DESTINATION_FACILITY");
 				    		
-				    		if(_firstDeliveryTime != null && _lastDeliveryTime != null 
-				    					&& _startTime != null && _cutOffTime != null && _zoneCode != null) {
+				    		if(_startTime != null && _endTime != null 
+				    					&& _cutOffTime != null && _zoneCode != null) {
 				    			
 					    		RoutingTimeOfDay _dispatchTime = new RoutingTimeOfDay(_startTime);
 					    						    		
-					    		Date startTime = RoutingDateUtil.addMinutes(_firstDeliveryTime
-					    														, (toZoneTime != 0 ? -toZoneTime : -fromZoneTime));
-					    		Date endTime = RoutingDateUtil.addMinutes(_lastDeliveryTime
-					    														, (fromZoneTime != 0 ? fromZoneTime : toZoneTime));
+					    		Date startTime = RoutingDateUtil.addMinutes(_startTime, preTripTime);
+					    		Date endTime = RoutingDateUtil.addMinutes(_endTime, -postTripTime);
 					    		
 					    		int runTime = RoutingDateUtil.getDiffInSeconds(endTime, startTime);
-					    		
-					    		RoutingTimeOfDay _waveStartTime = new RoutingTimeOfDay(startTime);
-					    		
+				    		
+								int maxRunTime = 0;
+								if(_maxTime != null) {
+									Date maxTime = RoutingDateUtil.addMinutes(_maxTime, -postTripTime);
+									maxRunTime = RoutingDateUtil.getDiffInSeconds(maxTime, startTime);
+								} else {
+									maxRunTime = runTime;
+								}
+
+								RoutingTimeOfDay _waveStartTime = new RoutingTimeOfDay(startTime);
+								
 					    		IWaveInstance waveInstance = new WaveInstance();
 					    		waveInstance.setCutOffTime(_cutOffTime);
 					    		waveInstance.setDispatchTime(_dispatchTime);
 					    		waveInstance.setWaveStartTime(_waveStartTime);
-					    		waveInstance.setMaxRunTime(runTime);
+					    		waveInstance.setMaxRunTime(maxRunTime);
 					    		waveInstance.setPreferredRunTime(runTime);
 					    		
 					    		waveInstance.setOriginFacility((facilityMap.get(originFacility)!=null)?facilityMap.get(originFacility).getName():"");
@@ -569,10 +582,10 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 	}
 	
 	private static final String GET_FUTURE_WAVEINSTANCE_ERRORS_QRY = "select P.DELIVERY_DATE DISPATCH_DATE, P.AREA ZONE, P.CUTOFF_DATETIME CUT_OFF " +
-	", P.DISPATCH_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.STATUS, P.NOTIFICATION_MSG " +
-	", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT, TR.code REGION_CODE, TR.name REGION_NAME, TR.description REGION_DESCR " +
-	"from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a,TRANSP.TRN_REGION TR where P.DELIVERY_DATE > sysdate and (P.STATUS = 'NYN' or P.NOTIFICATION_MSG is not null)  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE AND TR.CODE = A.REGION_CODE " +
-	"order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
+		" , P.TRUCK_DISPATCHTIME, P.TRUCK_ENDTIME, P.MAX_TIME, P.RESOURCE_COUNT, P.FORCE_SYNCHRONIZE, P.REFERENCE_ID, P.WAVEINSTANCE_ID, P.STATUS, P.NOTIFICATION_MSG " +
+		" , Z.PRETRIP_TIME, Z.POSTTRIP_TIME, Z.LOADING_PRIORITY, TR.IS_DEPOT IS_DEPOT, TR.code REGION_CODE, TR.name REGION_NAME, TR.description REGION_DESCR " +
+		" from transp.WAVE_INSTANCE p, transp.zone z, transp.trn_area a,TRANSP.TRN_REGION TR where P.DELIVERY_DATE > sysdate and (P.STATUS = 'NYN' or P.NOTIFICATION_MSG is not null)  and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE AND TR.CODE = A.REGION_CODE " +
+		" order by P.DELIVERY_DATE, P.AREA, P.CUTOFF_DATETIME, P.TRUCK_DISPATCHTIME";
 	
 	public List<IWaveInstance> getWaveInstanceWithErrors()  throws SQLException {
 		final List<IWaveInstance> result = new ArrayList<IWaveInstance>();
@@ -725,7 +738,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 	}
 
 	
-	private static final String GET_PLANNEDTRAILERBYDATE_QRY = "select P.PLAN_DATE DISPATCH_DATE, P.REGION, P.START_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME, P.MAX_TIME, P.CUTOFF_DATETIME CUT_OFF, F.FACILITY_CODE, "+ 
+	private static final String GET_PLANNEDTRAILERBYDATE_QRY = "select P.PLAN_DATE DISPATCH_DATE, P.REGION, P.DISPATCH_GROUPTIME, P.TRUCK_DISPATCHTIME, P.TRUCK_ENDTIME, P.MAX_TIME, P.CUTOFF_DATETIME CUT_OFF, F.FACILITY_CODE, "+ 
 			"F.LEAD_TO_TIME TO_LEADTIME, F.LEAD_FROM_TIME FROM_LEADTIME, F.ROUTING_CODE " +
 			"from transp.plan p, TRANSP.TRN_FACILITY f "+
 			"where P.DESTINATION_FACILITY = F.ID and P.PLAN_DATE = ? "+
@@ -745,22 +758,23 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 		PreparedStatementCreator creator=new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 			
-			PreparedStatement ps =	connection.prepareStatement(updateQ.toString());
-			ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
-			if(cutOff != null){
-				ps.setTimestamp(2, new Timestamp(cutOff.getTime()));
+				PreparedStatement ps =	connection.prepareStatement(updateQ.toString());
+				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+				if(cutOff != null){
+					ps.setTimestamp(2, new Timestamp(cutOff.getTime()));
+				}
+				return ps;
 			}
-			return ps;
-}
 		};
 		
 		jdbcTemplate.query(creator, 
 				  new RowCallbackHandler() { 
 				      public void processRow(ResultSet rs) throws SQLException {				    	
-				    	  	do{
-				    	  		Date _firstDeliveryTime = rs.getTimestamp("FIRST_DLV_TIME");
-					    		Date _lastDeliveryTime = rs.getTimestamp("LAST_DLV_TIME");
-					    		Date _startTime = rs.getTimestamp("DISPATCH_TIME");
+				    	  	do {				    	  		
+				    	  		Date _groupTime = rs.getTimestamp("DISPATCH_GROUPTIME");
+					    		Date _startTime = rs.getTimestamp("TRUCK_DISPATCHTIME");
+					    		Date _endTime = rs.getTimestamp("TRUCK_ENDTIME");
+					    		Date _maxTime = rs.getTimestamp("MAX_TIME");
 					    		RoutingTimeOfDay _cutOffTime = new RoutingTimeOfDay(rs.getTimestamp("CUT_OFF"));
 					    		
 					    		String _destCode = rs.getString("FACILITY_CODE");
@@ -768,23 +782,30 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					    		int fromFacilityTime = rs.getInt("FROM_LEADTIME");
 					    		String routingCode = rs.getString("ROUTING_CODE");
 					    		
-					    		if(_firstDeliveryTime != null && _lastDeliveryTime != null 
-				    					&& _startTime != null && _cutOffTime != null && _destCode != null) {
+					    		if(_startTime != null && _endTime != null 
+				    					&& _cutOffTime != null && _destCode != null) {
 					    			
-					    			RoutingTimeOfDay _dispatchTime = new RoutingTimeOfDay(_startTime);
+					    			RoutingTimeOfDay _dispatchTime = new RoutingTimeOfDay(_groupTime);
 					    			
-					    			Date startTime = RoutingDateUtil.addMinutes(_firstDeliveryTime
-					    															, (toFacilityTime != 0 ? -toFacilityTime : -fromFacilityTime));
+					    			Date startTime = RoutingDateUtil.addMinutes(_startTime
+					    															, (toFacilityTime != 0 ? toFacilityTime : fromFacilityTime));
 					    			
-					    			int runTime = RoutingDateUtil.getDiffInSeconds(_lastDeliveryTime, startTime);
+					    			int runTime = RoutingDateUtil.getDiffInSeconds(_endTime, startTime);
 					    			
+					    			int maxRunTime = 0;
+									if(_maxTime != null) {
+										maxRunTime = RoutingDateUtil.getDiffInSeconds(_maxTime, startTime);
+									} else {
+										maxRunTime = runTime;
+									}
+
 					    			RoutingTimeOfDay _waveStartTime = new RoutingTimeOfDay(startTime);
 					    								    			
 					    			IWaveInstance waveInstance = new WaveInstance();
 						    		waveInstance.setCutOffTime(_cutOffTime);
 						    		waveInstance.setDispatchTime(_dispatchTime);
 						    		waveInstance.setWaveStartTime(_waveStartTime);
-						    		waveInstance.setMaxRunTime(runTime);
+						    		waveInstance.setMaxRunTime(maxRunTime);
 						    		waveInstance.setPreferredRunTime(runTime);
 						    		
 						    		waveInstance.setRoutingCode(routingCode);
@@ -817,7 +838,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 						    			result.get(_destCode).get(_dispatchTime).put(_cutOffTime, _tmpWaves);
 						    		}
 					    		}
-				    	  	}while(rs.next());
+				    	  	} while(rs.next());
 				      }
 		});	
 		
@@ -955,8 +976,8 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 			return result;
 		}
 		
-		private static final String GET_WAVEINSTANCE_DISPATCHTIME_QRY = "select p.*, a.delivery_rate,TR.CODE REGION, TR.IS_DEPOT from transp.WAVE_INSTANCE p , transp.zone z, transp.trn_area a " +
-				", TRANSP.TRN_REGION TR WHERE  P.DELIVERY_DATE = ? and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE and TR.CODE = A.REGION_CODE order by p.dispatch_time, p.area asc";
+		private static final String GET_WAVEINSTANCE_DISPATCHTIME_QRY = "select p.*, a.delivery_rate,TR.CODE REGION, TR.IS_DEPOT, z.* from transp.WAVE_INSTANCE p , transp.zone z, transp.trn_area a " +
+				", TRANSP.TRN_REGION TR WHERE  P.DELIVERY_DATE = ? and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE and TR.CODE = A.REGION_CODE order by p.truck_dispatchtime, p.area asc";
 				
 				public List<IWaveInstance> getWavesByDispatchTime(final Date deliveryDate)  throws SQLException {
 					final List<IWaveInstance> result = new ArrayList<IWaveInstance>();
@@ -974,28 +995,42 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					jdbcTemplate.query(creator, 
 							new RowCallbackHandler() { 
 						public void processRow(ResultSet rs) throws SQLException {				    	
-							do {
-								Date _firstDeliveryTime = rs.getTimestamp("FIRST_DLV_TIME");
-								Date _lastDeliveryTime = rs.getTimestamp("LAST_DLV_TIME");
-								Date _startTime = rs.getTimestamp("DISPATCH_TIME");
+							do {								
+								Date _startTime = rs.getTimestamp("TRUCK_DISPATCHTIME");
+								Date _endTime = rs.getTimestamp("TRUCK_ENDTIME");
+								Date _maxTime = rs.getTimestamp("MAX_TIME");								
 								RoutingTimeOfDay _cutOffTime = new RoutingTimeOfDay(rs.getTimestamp("CUTOFF_DATETIME"));
 
+								int preTripTime = rs.getInt("PRETRIP_TIME");
+								int postTripTime = rs.getInt("POSTTRIP_TIME");
 								String _zoneCode = rs.getString("AREA");
 								String _routingWaveInstanceId = rs.getString("REFERENCE_ID");
 								String _waveInstanceId = rs.getString("WAVEINSTANCE_ID"); 
 								int noOfResources = rs.getInt("RESOURCE_COUNT");
 								Date _deliveryDate = rs.getDate("DELIVERY_DATE");
 								
-								if(_firstDeliveryTime != null && _lastDeliveryTime != null 
-										&& _startTime != null && _cutOffTime != null && _zoneCode != null) {
+								if(_startTime != null && _endTime != null 
+										&& _cutOffTime != null && _zoneCode != null) {
 
 									RoutingTimeOfDay _dispatchTime = new RoutingTimeOfDay(_startTime);
-									int runTime = RoutingDateUtil.getDiffInSeconds(_lastDeliveryTime, _firstDeliveryTime);
-
+						    		
+						    		Date startTime = RoutingDateUtil.addMinutes(_startTime, preTripTime);
+						    		Date endTime = RoutingDateUtil.addMinutes(_endTime, -postTripTime);
+						    		
+						    		int runTime = RoutingDateUtil.getDiffInSeconds(endTime, startTime);
+					    		
+									int maxRunTime = 0;
+									if(_maxTime != null) {
+										Date maxTime = RoutingDateUtil.addMinutes(_maxTime, -postTripTime);
+										maxRunTime = RoutingDateUtil.getDiffInSeconds(maxTime, startTime);
+									} else {
+										maxRunTime = runTime;
+									}
+									
 									IWaveInstance waveInstance = new WaveInstance();
 									waveInstance.setCutOffTime(_cutOffTime);
 									waveInstance.setDispatchTime(_dispatchTime);
-									waveInstance.setMaxRunTime(runTime);
+									waveInstance.setMaxRunTime(maxRunTime);
 									waveInstance.setPreferredRunTime(runTime);
 									waveInstance.setNoOfResources(noOfResources);
 									waveInstance.setRoutingWaveInstanceId(_routingWaveInstanceId);
@@ -1013,7 +1048,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 									
 								}
 									
-							} while(rs.next());		        		    	
+							} while(rs.next());
 						}
 					}
 					);
@@ -1149,21 +1184,21 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					return result;
 				}
 
-				
+		
 				private static final String GET_ROUTING_WAVEINSTANCES_IDS = "select distinct REFERENCE_ID from transp.WAVE_INSTANCE p where P.DELIVERY_DATE = ?";
-						
+				
 				@Override
 				public Set retrieveRoutingWaveInstIds(final Date deliveryDate)
 						throws SQLException {
 						final Set result = new HashSet();
 						PreparedStatementCreator creator=new PreparedStatementCreator() {
 							public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-								
+		
 								PreparedStatement ps = null;
 								if(deliveryDate != null) {
 									ps = connection.prepareStatement(GET_ROUTING_WAVEINSTANCES_IDS);
 									ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
-								}
+}
 								return ps;
 							}
 						};

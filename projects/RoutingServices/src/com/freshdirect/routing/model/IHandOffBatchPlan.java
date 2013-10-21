@@ -3,8 +3,6 @@ package com.freshdirect.routing.model;
 import java.util.Date;
 import java.util.Set;
 
-import com.freshdirect.sap.bapi.BapiSendHandOff;
-
 public interface IHandOffBatchPlan {	
 
 	public String getPlanId();
@@ -23,13 +21,17 @@ public interface IHandOffBatchPlan {
 
 	public void setPlanDate(Date planDate);
 
-	public Date getFirstDeliveryTime();
+	public Date getEndTime();
 
-	public void setFirstDeliveryTime(Date firstDeliveryTime);
+	public void setEndTime(Date endTime);
 
-	public Date getStartTime();
+	public Date getDispatchTime();
 
-	public void setStartTime(Date startTime);
+	public void setDispatchTime(Date dispatchTime);
+	
+	public Date getDispatchGroup();
+
+	public void setDispatchGroup(Date dispatchGroup);
 
 	public int getSequence();
 
@@ -62,10 +64,6 @@ public interface IHandOffBatchPlan {
 	public Boolean getIsTeamOverride();
 
 	public void setIsTeamOverride(Boolean isTeamOverride);
-
-	public Date getLastDeliveryTime(); 
-
-	public void setLastDeliveryTime(Date lastDeliveryTime); 
 
 	public Date getCutOffTime();
 	

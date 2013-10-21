@@ -615,7 +615,7 @@ $(document).ready(function () {
 					<td valign="top">
 							 <table>
 									<tr>
-										<td><label for='form-stop'>Stop(s)</label> <input
+										<td>Stop No.<input
 											type='text' id='stopEntryEx' class='form-splinput'
 											name='stopEntryEx' />&nbsp;</td>
 										<td style="text-align: center;">

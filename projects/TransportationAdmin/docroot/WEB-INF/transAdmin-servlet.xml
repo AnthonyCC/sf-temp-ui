@@ -27,7 +27,6 @@
 		<property name="mappings">
 			<props>   				
  		 	    <prop key="/welcome.do">domainController</prop>
- 		 	    <prop key="/autoDispatch.do">dispatchController</prop>
  		 	    <prop key="/employee.do">domainController</prop>					            
  		 	    <prop key="/route.do">domainController</prop>	
  		 	    <prop key="/unassignedroute.do">dispatchController</prop>				                    
@@ -190,6 +189,11 @@
 				
 				<prop key="/eventlog.do">eventLogController</prop>
 				<prop key="/dashboard.do">dashboardController</prop>
+
+				<prop key="/dispatchgroup.do">domainController</prop>
+				<prop key="/deletedispatchgroup.do">domainController</prop>
+				<prop key="/editdispatchgroup.do">dispatchGroupFormController</prop>
+
 			</props>
 		</property>
 	</bean>
@@ -261,7 +265,7 @@
 	
 	<bean id="assetController" class="com.freshdirect.transadmin.web.AssetController">
 		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
-        <property name="assetManagerService" ref="assetManagerService"/>        
+        <property name="assetManagerService" ref="assetManagerService"/>
 	</bean>
 	
 	<bean id="yardController" class="com.freshdirect.transadmin.web.YardController">
@@ -287,7 +291,6 @@
 			<prop key="/employee.do">employeeHandler</prop>				       
 			<prop key="/route.do">compositeRouteHandler</prop>
 			<prop key="/unassignedroute.do">unassignedRouteHandler</prop>			
-			<prop key="/autoDispatch.do">autoDispatchHandler</prop>					
  		  	<prop key="/zone.do">zoneHandler</prop>		
 			<prop key="/region.do">regionHandler</prop>		 		 				                
  		 	<prop key="/truck.do">truckHandler</prop>
@@ -330,7 +333,7 @@
 	 	    <prop key="/deletedlvbuilding.do">dlvBuildingDeleteHandler</prop>
 	 	    <prop key="/deletedlvbuildingdtl.do">dlvBuildingDtlDeleteHandler</prop>
 	 	    <prop key="/geocodedlvbuilding.do">dlvBuildingGeocodeHandler</prop>	
-	 	    <prop key="/dlvbuildinglocation.do">dlvBuildingLocationHandler</prop>
+	 	    <prop key="/dlvbuildinglocation.do">dlvBuildingLocationHandler</prop>	 
 	 	    <prop key="/customerinfo.do">customerInfoHandler</prop>	 
 	 	    <prop key="/dlvservicetimescenario.do">dlvServiceTimeScenarioHandler</prop>
 	 	    <prop key="/dlvservicetimescenariodisplay.do">dlvServiceTimeScenarioDisplayHandler</prop>
@@ -394,6 +397,10 @@
             
             <prop key="/eventlog.do">eventLogHandler</prop>			
             <prop key="/dashboard.do">dashboardHandler</prop>			
+
+            <prop key="/dispatchgroup.do">dispatchGroupHandler</prop>
+ 		 	<prop key="/deletedispatchgroup.do">dispatchGroupDeleteHandler</prop>
+
            
 			</props>
 		</property>
@@ -482,6 +489,16 @@
         <property name="validator" ref="cutOffValidator"/>
         <property name="successView" value="cutOffEdit" />
         <property name="formView" value="cutOffEdit" />
+	</bean>
+	
+	<bean id="dispatchGroupFormController" class="com.freshdirect.transadmin.web.DispatchGroupFormController">
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="dispatchGroupForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.DispatchGroup"/>
+        <property name="validator" ref="dispatchGroupValidator"/>
+        <property name="successView" value="dispatchGroupEdit" />
+        <property name="formView" value="dispatchGroupEdit" />
 	</bean>
 	
 	<bean id="routeFormController" class="com.freshdirect.transadmin.web.RouteFormController">
@@ -917,6 +934,7 @@
 	<bean id="routingOutValidator" class="com.freshdirect.transadmin.web.validation.RoutingOutValidator"/>
 	<bean id="routingMergeValidator" class="com.freshdirect.transadmin.web.validation.RoutingMergeValidator"/>
 	<bean id="cutOffValidator" class="com.freshdirect.transadmin.web.validation.CutOffValidator"/>
+	<bean id="dispatchGroupValidator" class="com.freshdirect.transadmin.web.validation.DispatchGroupValidator"/>
 
 	
 	<bean id="geoRestrictionValidator" class="com.freshdirect.transadmin.web.validation.GeoRestrictionValidator"/>

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.freshdirect.routing.model.EquipmentType;
 import com.freshdirect.transadmin.model.Asset;
+import com.freshdirect.transadmin.model.AssetActivity;
 import com.freshdirect.transadmin.model.AssetTemplate;
 import com.freshdirect.transadmin.model.AssetType;
 
@@ -47,6 +48,6 @@ public interface AssetManagerI extends BaseManagerI {
 	
 	Asset getAssetByBarcode(String barcode);
 	
-	Map<String, Map<String, List<String>>> getScannedAssets(Date assetScanDate);
+	 Map<String, List<AssetActivity>> getScannedAssets(Date assetScanDate);
 	
 }

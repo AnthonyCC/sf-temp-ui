@@ -152,7 +152,7 @@ public Collection getAssetAttributeTypes(String assetType) throws DataAccessExce
 	public Collection getScannedAssets(Date deliveryDate) throws DataAccessException {
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from AssetActivity where deliveryDate = ? ");
-		strBuf.append(" order by deliveryDate, scannedTime");	
+		strBuf.append(" order by deliveryDate, scannedTime desc");	
 		return (Collection) getHibernateTemplate().find(strBuf.toString(),	new Object[] { deliveryDate });
 	}
 	

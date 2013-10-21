@@ -229,7 +229,7 @@
                         var paramValues = null;
                         for (i = 0; i < checkboxList.length; i++) {
                           if (checkboxList[i].type=="checkbox" && checkboxList[i].checked&& !checkboxList[i].disabled&&checkboxList[i].name.indexOf("_")==-1) {
-                            var routeId = checkboxList[i].parentNode.parentNode.getElementsByTagName("td")[columnIndex].innerHTML
+                            var routeId = checkboxList[i].parentNode.parentNode.getElementsByTagName("td")[columnIndex].innerHTML;
                             if(routeId != null && routeId.length > 0) {
 	                            if (paramValues != null) {
 	                              paramValues = paramValues+","+routeId;
@@ -434,8 +434,8 @@
 			  <ec:column property="facilityInfoEx" sortable="true" title="ORF-DTF"/>
               <ec:column alias="trnZoneRegion" property="regionZone" title="Region - Zone" />             
               <ec:column property="supervisorEx"   title="Sup" cell="tooltip"  />
-              <ec:column alias="trnTimeslotslotName" cell="date" format="hh:mm aaa" property="startTimeEx" title="Start Time"/> 
-              <ec:column alias="trnTimeEndslotslotName" cell="date" format="hh:mm aaa" property="firstDeliveryTimeEx" title="First Dlv."/>
+              <ec:column cell="date" format="hh:mm aaa"  property="dispatchGroup" title="Group Time"/>
+              <ec:column cell="date" format="hh:mm aaa"  property="startTime" title="Truck Dispatch Time"/>
               <ec:column alias="trnRouterouteNumber" property="route"  width="10" title="Route"/>
               <ec:column alias="trnTrucktruckNumber" property="truck" width="10"  title="Truck"/>
               <ec:column alias="trnTruckLocation" property="location" width="10"  title="Location"/>
@@ -443,8 +443,8 @@
               <ec:column property="helpers"  cell="dispatchResCell" title="Helper"  filterable="true" alias="helpers"/>
               <ec:column property="runners"  cell="dispatchResCell" title="Runner"  filterable="true" alias="runners"/>
               <ec:column cell="dispatchExtCell" property="extras" width="10"  title="Extras"/>
-              <ec:column cell="dispatchAssetScanCell" property="scanAssets" width="10"  title="Asset Status"/>
-              <ec:column alias="dispatchTime"  property="dispatchTimeEx" title="Dispatch Time"  cell="date" format="hh:mm aaa"/>
+              <ec:column cell="dispatchAssetScanCell" property="scanAssets" width="10" title="Asset Status"/>
+              <ec:column alias="dispatchTime"  property="dispatchTimeEx" title="Actual Dispatch Time"  cell="date" format="hh:mm aaa"/>
               <ec:column property="override"  title="Override Dispatch"/>
               <ec:column alias="trnComments" filterable="false" property="comments"  title="Comments"/> 
               

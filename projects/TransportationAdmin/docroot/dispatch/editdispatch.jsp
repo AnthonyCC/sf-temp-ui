@@ -37,7 +37,7 @@
       <input type=hidden name="zoneId" value="" />
       <input type=hidden name="dispDate" value="<%=dispDate %>" />
 	  <form:hidden path="overrideUser" />
-	  <form:hidden path="firstDeliveryTimeModified"/>
+	  <form:hidden path="dispatchGroupModified"/>
       <form:hidden path="destFacilityModified"/>
       <form:hidden path="dispatchTypeModified"/>
       
@@ -183,7 +183,50 @@
                         <td>
                           &nbsp;<form:errors path="regionCode" />
                         </td>  
-					</tr>       
+					</tr>
+					<tr>
+							<td>Dispatch Group&nbsp;Time</td>
+							<td>
+								<c:if test="${!empty dispatchForm.dispatchId }">
+										<c:set var="hasDispatch" value="true"/>
+								</c:if>
+								<spring:bind path="dispatchForm.confirmed"> 
+								<c:choose>          
+									<c:when test='${hasDispatch}'>     
+										<form:select path="dispatchGroupS" disabled="${hasDispatch}">
+											<form:option value="" label="--Please Select Dispatch Group"/>
+											<form:options items="${dispatchGroups}" itemLabel="name" itemValue="groupTime" />
+										</form:select>            
+									</c:when>
+									<c:otherwise>
+										<form:select path="dispatchGroupS" onChange="dispatchGroupChanged();">
+											<form:option value="" label="--Please Select Dispatch Group" />
+											<form:options items="${dispatchGroups}" itemLabel="name" itemValue="groupTime" />
+										</form:select>
+									</c:otherwise>
+								</c:choose>
+								</spring:bind>
+							</td>
+							<td><form:errors path="dispatchGroupS" />&nbsp;</td>                 
+						</tr>
+					<tr>
+						<td><a id="timeStart_toggler">Truck Dispatch&nbsp;Time</a></td>
+						<td>  
+							<spring:bind path="dispatchForm.confirmed"> 
+								<c:choose>                    
+								<c:when test='${status.value == "false"}'> 
+									<form:input maxlength="50" size="8" path="startTime" onblur="this.value=time(this.value);" />
+								</c:when>
+								 <c:otherwise> 
+								 <form:input maxlength="50" size="8" path="startTime" readOnly="true"/>
+								</c:otherwise> 
+								 </c:choose>
+							 </spring:bind>
+						</td>
+						<td>
+							<form:errors path="startTime" />&nbsp;
+						</td>                 
+					</tr>
 					<tr>
 						<td>Supervisor</td>
 						<td>      
@@ -204,50 +247,7 @@
 						<td>
 							<form:errors path="supervisorCode" />&nbsp;
 						</td>
-					</tr> 
-					<tr>
-						<td><a id="timeStart_toggler">Start&nbsp;Time</a></td>
-						<td>  
-							<spring:bind path="dispatchForm.confirmed"> 
-								<c:choose>                    
-								<c:when test='${status.value == "false"}'> 
-									<form:input maxlength="50" size="8" path="startTime" onblur="this.value=time(this.value);" />
-									<!-- <div id="timeStart_picker" class="time_picker_div"></div> -->
-								</c:when>
-								 <c:otherwise> 
-								 <form:input maxlength="50" size="8" path="startTime" readOnly="true"/>
-								</c:otherwise> 
-								 </c:choose>
-							 </spring:bind>
-						</td>
-						<td>
-							<form:errors path="startTime" />&nbsp;
-						</td>                 
-					</tr>   
-					<tr>
-						<td><a id="timeFirstDlv_toggler">First Dlv.&nbsp;Time</a></td>
-						<td>  
-							 <spring:bind path="dispatchForm.confirmed"> 
-								<c:if test="${!empty dispatchForm.dispatchId }">
-										<c:set var="hasDispatch" value="true"/>
-								</c:if>
-								<c:choose>                    
-									<c:when test='${!hasDispatch}'>   
-										<form:input maxlength="50" size="8" path="firstDeliveryTime" onblur="this.value=time(this.value);firstDeliveryTimeChanged();"/>									
-									</c:when>									
-									<c:when test='${status.value == "false"}'> 
-										<form:input maxlength="50" size="8" path="firstDeliveryTime" onblur="this.value=time(this.value);" />									
-									</c:when>
-									 <c:otherwise> 
-									 	<form:input maxlength="50" size="8" path="firstDeliveryTime" readOnly="true"/>
-									</c:otherwise> 
-								 </c:choose>
-							 </spring:bind> 
-						</td>
-						<td>
-							<form:errors path="firstDeliveryTime" />&nbsp;
-						</td>                 
-					</tr> 
+					</tr>  
 					<input type="hidden" name = "selectedroute"  value="<c:out value="${dispatchForm.route}"/>" />
                 <tr>
                   <td>Route Number</td>
@@ -793,8 +793,8 @@
 						.getElementById('dispatchId'));
 			}
 
-			function firstDeliveryTimeChanged() {
-				document.getElementById("firstDeliveryTimeModified").value = "true";
+			function  dispatchGroupChanged() {
+				document.getElementById("dispatchGroupModified").value = "true";
 				dispatchForm.submit();
 			}
 

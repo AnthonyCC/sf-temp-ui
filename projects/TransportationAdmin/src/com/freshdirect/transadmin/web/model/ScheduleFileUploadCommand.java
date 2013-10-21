@@ -1,29 +1,20 @@
 package com.freshdirect.transadmin.web.model;
 
-import java.io.File;
+import org.springframework.web.multipart.MultipartFile;
 
 public class ScheduleFileUploadCommand extends BaseCommand {
 	
-	private byte[] file;
 	
-	//private File file;
+	private MultipartFile file;
 	
-	public byte[] getFile() {
+	public MultipartFile getFile() {
 		return file;
 	}
 
-	public void setFile(byte[] file) {
+	public void setFile(MultipartFile file) {
 		this.file = file;
 	}
 
-	/*public File getFile() {
-		return file;
-	}
-
-	public void setFile(File file) {
-		this.file = file;
-	}
-*/
 	private String processType;
 	
 	public String getProcessType() {

@@ -213,9 +213,9 @@ public class AssetManagerImpl
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Map<String, Map<String, List<String>>> getScannedAssets(Date assetScanDate) {
+	public Map<String, List<AssetActivity>> getScannedAssets(Date assetScanDate) {
 		
-		Map<String, Map<String, List<String>>> assetMapping = new HashMap<String, Map<String,List<String>>>();
+		Map<String, List<AssetActivity>> assetMapping = new HashMap<String, List<AssetActivity>>();
 		
 		Collection assets = getAssetManagerDao().getScannedAssets(assetScanDate);
 		
@@ -224,12 +224,25 @@ public class AssetManagerImpl
 			while(assetItr.hasNext()) {
 				AssetActivity asset = assetItr.next();
 				if(!assetMapping.containsKey(asset.getEmployeeId())){
-					assetMapping.put(asset.getEmployeeId(), new HashMap<String, List<String>>());
+					assetMapping.put(asset.getEmployeeId(), new ArrayList<AssetActivity>());
 				}
-				if(!assetMapping.get(asset.getEmployeeId()).containsKey(asset.getStatus())){
-					assetMapping.get(asset.getEmployeeId()).put(asset.getStatus(), new ArrayList<String>());
+				List<AssetActivity> employeeScannedAssets = assetMapping.get(asset.getEmployeeId());
+				boolean foundScannedAsset = false;
+				if(employeeScannedAssets != null && employeeScannedAssets.size() > 0) {
+					for(AssetActivity _resAsset : employeeScannedAssets) {
+						if(asset.getAssetNo().equals(_resAsset.getAssetNo()) 
+								&& asset.getScannedTime().after(_resAsset.getScannedTime())) {
+							employeeScannedAssets.remove(_resAsset);
+							employeeScannedAssets.add(asset);
+							foundScannedAsset = true;
+						}
+					}
+					if(!foundScannedAsset) {
+						assetMapping.get(asset.getEmployeeId()).add(asset);
+					}
+				} else {
+					assetMapping.get(asset.getEmployeeId()).add(asset);
 				}
-				assetMapping.get(asset.getEmployeeId()).get(asset.getStatus()).add(asset.getAssetNo());
 			}
 		}
 		

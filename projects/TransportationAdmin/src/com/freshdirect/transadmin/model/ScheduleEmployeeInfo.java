@@ -8,20 +8,21 @@ import java.util.Iterator;
 
 import com.freshdirect.transadmin.util.TransStringUtil;
 
+@SuppressWarnings("rawtypes")
 public class ScheduleEmployeeInfo 
 {
-	public static final String DRIVER="001";
-	public static final String HELPER="002";
-	public static final String RUNNER="003";
-	public static final String DEPOT="Depot";
-	public static final String OFF="OFF";
-	public static final String NO_SHIFT="No Shift";
-	public static final String DAY[]=new String[]{"MON","TUE","WED","THU","FRI","SAT","SUN"};
-	public static final Date OFFDATE=new Timestamp(-1);
+	public static final String DRIVER = "001";
+	public static final String HELPER = "002";
+	public static final String RUNNER = "003";
+	public static final String DEPOT = "Depot";
+	public static final String OFF = "OFF";
+	public static final String NO_SHIFT = "No Shift";
+	public static final String DAY[] = new String[] { "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN" };
+	public static final Date OFFDATE = new Timestamp(-1);
 	private EmployeeInfo empInfo;
 	private String role;
 	private Collection schedule;
-	private Collection  empRole;
+	private Collection empRole;
 	private String trnStatus;
 	private int scheduledDays;
 	
@@ -31,46 +32,55 @@ public class ScheduleEmployeeInfo
 	public EmployeeInfo getLeadInfo() {
 		return leadInfo;
 	}
+
 	public void setLeadInfo(EmployeeInfo leadInfo) {
 		this.leadInfo = leadInfo;
 	}
+
 	public boolean isLead() {
 		return isLead;
 	}
+
 	public void setLead(boolean isLead) {
 		this.isLead = isLead;
 	}
-	public String getEmployeeId()
-	{
-		return empInfo!=null?empInfo.getEmployeeId():"";
+
+	public String getEmployeeId() {
+		return empInfo != null ? empInfo.getEmployeeId() : "";
 	}
-	public String getFirstName()
-	{
-		return empInfo!=null?empInfo.getFirstName():"";
+
+	public String getFirstName() {
+		return empInfo != null ? empInfo.getFirstName() : "";
 	}
-	public String getLastName()
-	{
-		return empInfo!=null?empInfo.getLastName():"";
+
+	public String getLastName() {
+		return empInfo != null ? empInfo.getLastName() : "";
 	}
-	public Date getHireDate()
-	{
-		return empInfo!=null?empInfo.getHireDate():null;
+
+	public Date getHireDate() {
+		return empInfo != null ? empInfo.getHireDate() : null;
 	}
+
 	public EmployeeInfo getEmpInfo() {
 		return empInfo;
 	}
+
 	public void setEmpInfo(EmployeeInfo empInfo) {
 		this.empInfo = empInfo;
 	}
+
 	public String getRole() {
 		return role;
 	}
+
 	public void setRole(String role) {
 		this.role = role;
 	}
+
 	public Collection getSchedule() {
 		return schedule;
 	}
+
 	public void setSchedule(Collection schedule) {
 		this.schedule = schedule;
 	}
@@ -85,15 +95,12 @@ public class ScheduleEmployeeInfo
 				ScheduleEmployee se=(ScheduleEmployee)it.next();
 				if(day.equalsIgnoreCase(se.getDay()))
 				{
-					if(se.getRegion()==null&&se.getTime()==null)
-					{
-						result=OFF;
-					}
-					else
-					{
+					if (se.getRegion() == null && se.getDispatchGroupTime() == null) {
+						result = OFF;
+					} else {
 						String time="";
 						try {
-							time=TransStringUtil.getServerTime(se.getTime());
+							time = TransStringUtil.getServerTime(se.getDispatchGroupTime());
 						} catch (ParseException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -103,7 +110,8 @@ public class ScheduleEmployeeInfo
 				}
 			}
 		}
-		if(result==null)result=NO_SHIFT;
+		if (result == null)
+			result = NO_SHIFT;
 		return result;
 	}
 	
@@ -115,9 +123,10 @@ public class ScheduleEmployeeInfo
 		{
 			for(Iterator it=schedule.iterator();it.hasNext();)
 			{
-				ScheduleEmployee se=(ScheduleEmployee)it.next();
-				if(!(se.getRegion()==null&&se.getTime()==null))
+				ScheduleEmployee se = (ScheduleEmployee) it.next();
+				if (!(se.getRegion() == null && se.getDispatchGroupTime() == null)) {
 					scheduledDays++;
+				}
 			}
 		}
 		return scheduledDays;
@@ -153,16 +162,14 @@ public class ScheduleEmployeeInfo
 	}
 	
 	public String getEmployeeRoleType() {
-		if(empRole==null) return null;
+		if (empRole == null)
+			return null;
+		StringBuffer buf = new StringBuffer();
 
-//		System.out.println("getEmployeeRoleType:"+empRole);
-
-		StringBuffer buf=new StringBuffer();
-
-		Iterator iterator=empRole.iterator();
-		while(iterator.hasNext()){
-			EmployeeRole role=(EmployeeRole)iterator.next();
-			if(buf.length()>0)
+		Iterator iterator = empRole.iterator();
+		while (iterator.hasNext()) {
+			EmployeeRole role = (EmployeeRole) iterator.next();
+			if (buf.length() > 0)
 				buf.append("/").append(role.getEmployeeSubRoleType().getName());
 			else
 				buf.append(role.getEmployeeSubRoleType().getName());
@@ -183,20 +190,23 @@ public class ScheduleEmployeeInfo
 		this.trnStatus = trnStatus;
 	}
 	
-	public String getStatus()
-	{
-		String status=empInfo.getStatus();
-		if("Inactive".equalsIgnoreCase(status))
-		{
-			if("true".equalsIgnoreCase(trnStatus)) return "FA";
-			if("false".equalsIgnoreCase(trnStatus)) return "I";
-			if(trnStatus==null) return "I";
+	public String getStatus() {
+		String status = empInfo.getStatus();
+		if ("Inactive".equalsIgnoreCase(status)) {
+			if ("true".equalsIgnoreCase(trnStatus))
+				return "FA";
+			if ("false".equalsIgnoreCase(trnStatus))
+				return "I";
+			if (trnStatus == null)
+				return "I";
 		}
-		if("Active".equalsIgnoreCase(status))
-		{
-			if("true".equalsIgnoreCase(trnStatus)) return "A";
-			if("false".equalsIgnoreCase(trnStatus)) return "FI";
-			if(trnStatus==null) return "A";
+		if ("Active".equalsIgnoreCase(status)) {
+			if ("true".equalsIgnoreCase(trnStatus))
+				return "A";
+			if ("false".equalsIgnoreCase(trnStatus))
+				return "FI";
+			if (trnStatus == null)
+				return "A";
 		}
 		return null;
 	}
@@ -216,9 +226,9 @@ public class ScheduleEmployeeInfo
 		return false;
 		
 	}
-	
+
 	public EmployeeInfo getLeadInfoEx() {
-		if(this.isLead()) {
+		if (this.isLead()) {
 			return this.getEmpInfo();
 		} else {
 			return leadInfo;

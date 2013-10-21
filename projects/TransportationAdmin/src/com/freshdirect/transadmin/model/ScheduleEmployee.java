@@ -11,9 +11,9 @@ public class ScheduleEmployee implements Serializable, Cloneable {
 	private String scheduleId;
 	private String employeeId;
 	private Region region;
-	private Date time;
+	private Date dispatchGroupTime;
 	private TrnFacility depotFacility;
-	private String day;
+	private String day;	
 	private boolean isDepotFacilityCode;
 	
 	private Date weekOf;
@@ -32,12 +32,13 @@ public class ScheduleEmployee implements Serializable, Cloneable {
 	}
 	
 	public ScheduleEmployee(String scheduleId, String employeeId,
-			Region region, Date time, TrnFacility depotFacility, String day, Date weekOf) {
+			Region region, Date dispatchGroupTime, TrnFacility depotFacility, String day, Date weekOf) {
+
 		super();
 		this.scheduleId = scheduleId;
 		this.employeeId = employeeId;
 		this.region = region;
-		this.time = time;
+		this.dispatchGroupTime = dispatchGroupTime;
 		this.depotFacility = depotFacility;
 		this.day = day;
 		this.weekOf = weekOf;
@@ -63,13 +64,6 @@ public class ScheduleEmployee implements Serializable, Cloneable {
 	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
 	}
-	
-	public Date getTime() {
-		return time;
-	}
-	public void setTime(Date time) {
-		this.time = time;
-	}
 	public TrnFacility getDepotFacility() {
 		return depotFacility;
 	}
@@ -88,36 +82,51 @@ public class ScheduleEmployee implements Serializable, Cloneable {
 	public void setScheduleId(String scheduleId) {
 		this.scheduleId = scheduleId;
 	}	
+	public Date getDispatchGroupTime() {
+		return dispatchGroupTime;
+	}
+	public void setDispatchGroupTime(Date dispatchGroupTime) {
+		this.dispatchGroupTime = dispatchGroupTime;
+	}
 	public boolean isDepotFacilityCode() {
 		return isDepotFacilityCode;
 	}
-
 	public void setDepotFacilityCode(boolean isDepotFacilityCode) {
 		this.isDepotFacilityCode = isDepotFacilityCode;
 	}
 
-	public String getTimeS() 
-	{
-		try {
-			if(time!=null)return TransStringUtil.getServerTime(time);
-		} catch (ParseException e) 
-		{
-			
-		}
+	public String getRegionS() {
+		if (region != null)
+			return region.getCode();
 		return null;
 	}
-	public void setTimeS(String timeS) 
-	{
+	public void setRegionS(String regionS)	{
+		if (regionS != null && regionS.length() > 0) {
+			region = new Region();
+			region.setCode(regionS);
+		} else
+			region = null;
+	}
+
+	public String getDispatchGroupS() {
 		try {
-			if (timeS != null && timeS.length() > 0)
-				time = TransStringUtil.getServerTime(timeS);
-			else
-				time = null;
+			if (dispatchGroupTime != null)
+				return TransStringUtil.getServerTime(dispatchGroupTime);
 		} catch (ParseException e) {
 
 		}
+		return null;
 	}
-	
+	public void setDispatchGroupS(String timeS) {
+		try {
+			if (timeS != null && timeS.length() > 0)
+				dispatchGroupTime = TransStringUtil.getServerTime(timeS);
+			else 
+				dispatchGroupTime = null;
+		} catch (ParseException e) {
+			
+		}
+	}
 	public String getDepotFacilityS() 
 	{
 		if (depotFacility != null && !isDepotFacilityCode)
@@ -135,17 +144,6 @@ public class ScheduleEmployee implements Serializable, Cloneable {
 			depotFacility = null;
 		}
 	}
-	
-	public String getRegionS() 
-	{
-		if(region!=null)return region.getCode();
-		return null;
-	}
-	public void setRegionS(String regionS) 
-	{
-		if(regionS!=null&&regionS.length()>0){ region=new Region();region.setCode(regionS);}
-		else region=null;
-	}	
 	public boolean isEmpty(EmployeeInfo empInfo,String day)
 	{
 		if(region!=null)
@@ -155,10 +153,12 @@ public class ScheduleEmployee implements Serializable, Cloneable {
 			if(ScheduleEmployeeInfo.OFF.equalsIgnoreCase(region.getCode()))
 			{
 				region = null;
-				time = null;
+				dispatchGroupTime = null;
 				depotFacility = null;
+
 			}
-			if(this.scheduleId!=null&&this.scheduleId.trim().length()==0)this.scheduleId=null;
+			if (this.scheduleId != null && this.scheduleId.trim().length() == 0)
+				this.scheduleId = null;
 			return false;
 		}
 		return true;
@@ -167,7 +167,7 @@ public class ScheduleEmployee implements Serializable, Cloneable {
 	public Object clone() throws CloneNotSupportedException {
 		
 		ScheduleEmployee _clone = new ScheduleEmployee(this.getScheduleId(), this.getEmployeeId(),
-											this.getRegion(), this.getTime(), this.getDepotFacility(), this.getDay(), this.getWeekOf());
+											this.getRegion(), this.getDispatchGroupTime(), this.getDepotFacility(), this.getDay(), this.getWeekOf());
 		return _clone;
 	}
 	

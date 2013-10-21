@@ -122,33 +122,45 @@ public class WebSchedule implements Serializable {
 	
 	public void setSchdules(Collection s)
 	{
-		for(Iterator it=s.iterator();it.hasNext();)
-		{
-			ScheduleEmployee se=(ScheduleEmployee)it.next();
-			if(se.getDay()!=null&&se.getTime()==null&&se.getRegion()==null)
-			{				
-				se.setRegion(new Region(ScheduleEmployeeInfo.OFF,null));
+		for (Iterator it = s.iterator(); it.hasNext();) {
+			ScheduleEmployee se = (ScheduleEmployee) it.next();
+			if (se.getDay() != null && se.getDispatchGroupTime() == null && se.getRegion() == null) {
+				se.setRegion(new Region(ScheduleEmployeeInfo.OFF, null));
 			}
-			if(ScheduleEmployeeInfo.DAY[0].equalsIgnoreCase(se.getDay())) mon=se;
-			if(ScheduleEmployeeInfo.DAY[1].equalsIgnoreCase(se.getDay())) tue=se;
-			if(ScheduleEmployeeInfo.DAY[2].equalsIgnoreCase(se.getDay())) wed=se;
-			if(ScheduleEmployeeInfo.DAY[3].equalsIgnoreCase(se.getDay())) thu=se;
-			if(ScheduleEmployeeInfo.DAY[4].equalsIgnoreCase(se.getDay())) fri=se;
-			if(ScheduleEmployeeInfo.DAY[5].equalsIgnoreCase(se.getDay())) sat=se;
-			if(ScheduleEmployeeInfo.DAY[6].equalsIgnoreCase(se.getDay())) sun=se;
+			if (ScheduleEmployeeInfo.DAY[0].equalsIgnoreCase(se.getDay()))
+				mon = se;
+			if (ScheduleEmployeeInfo.DAY[1].equalsIgnoreCase(se.getDay()))
+				tue = se;
+			if (ScheduleEmployeeInfo.DAY[2].equalsIgnoreCase(se.getDay()))
+				wed = se;
+			if (ScheduleEmployeeInfo.DAY[3].equalsIgnoreCase(se.getDay()))
+				thu = se;
+			if (ScheduleEmployeeInfo.DAY[4].equalsIgnoreCase(se.getDay()))
+				fri = se;
+			if (ScheduleEmployeeInfo.DAY[5].equalsIgnoreCase(se.getDay()))
+				sat = se;
+			if (ScheduleEmployeeInfo.DAY[6].equalsIgnoreCase(se.getDay()))
+				sun = se;
 		}
 	}
 	
-	public Collection getSchedules()
-	{
-		List l=new ArrayList();
-		if(!mon.isEmpty(empInfo,ScheduleEmployeeInfo.DAY[0]))l.add(mon);
-		if(!tue.isEmpty(empInfo,ScheduleEmployeeInfo.DAY[1]))l.add(tue);
-		if(!wed.isEmpty(empInfo,ScheduleEmployeeInfo.DAY[2]))l.add(wed);
-		if(!thu.isEmpty(empInfo,ScheduleEmployeeInfo.DAY[3]))l.add(thu);
-		if(!fri.isEmpty(empInfo,ScheduleEmployeeInfo.DAY[4]))l.add(fri);
-		if(!sat.isEmpty(empInfo,ScheduleEmployeeInfo.DAY[5]))l.add(sat);
-		if(!sun.isEmpty(empInfo,ScheduleEmployeeInfo.DAY[6]))l.add(sun);
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Collection getSchedules() {
+		List l = new ArrayList();
+		if (!mon.isEmpty(empInfo, ScheduleEmployeeInfo.DAY[0]))
+			l.add(mon);
+		if (!tue.isEmpty(empInfo, ScheduleEmployeeInfo.DAY[1]))
+			l.add(tue);
+		if (!wed.isEmpty(empInfo, ScheduleEmployeeInfo.DAY[2]))
+			l.add(wed);
+		if (!thu.isEmpty(empInfo, ScheduleEmployeeInfo.DAY[3]))
+			l.add(thu);
+		if (!fri.isEmpty(empInfo, ScheduleEmployeeInfo.DAY[4]))
+			l.add(fri);
+		if (!sat.isEmpty(empInfo, ScheduleEmployeeInfo.DAY[5]))
+			l.add(sat);
+		if (!sun.isEmpty(empInfo, ScheduleEmployeeInfo.DAY[6]))
+			l.add(sun);
 		return l;
 	}
 	

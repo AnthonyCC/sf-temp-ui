@@ -30,6 +30,7 @@ import com.freshdirect.transadmin.dao.ZoneExpansionDaoI;
 import com.freshdirect.transadmin.datamanager.model.WorkTableModel;
 import com.freshdirect.transadmin.model.CapacitySnapshot;
 import com.freshdirect.transadmin.model.CapacitySnapshotModel;
+import com.freshdirect.transadmin.model.DispatchGroup;
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
@@ -197,6 +198,14 @@ public class DomainManagerImpl
 	
 	public Collection getCutOffs() {
 		return getDomainManagerDao().getCutOffs();
+	}
+	
+	public DispatchGroup getDispatchGroup(String id) {
+		return getDomainManagerDao().getDispatchGroup(id);
+	}
+	
+	public Collection getDispatchGroups() {
+		return getDomainManagerDao().getDispatchGroups();
 	}
 	
 /*	public TrnPlantCapacity getPlantCapacity(String id){
@@ -893,6 +902,10 @@ public class DomainManagerImpl
 		return getDomainManagerDao().getVIRRecords();
 	}
 	
+	public Collection getVIRRecordByTruckNo(String truckNumber) {
+		return getDomainManagerDao().getVIRRecordByTruckNo(truckNumber);
+	}
+	
 	public Collection getVIRRecords(Date createDate, String truckNumber){
 		return getDomainManagerDao().getVIRRecords(createDate, truckNumber);
 	}
@@ -905,6 +918,10 @@ public class DomainManagerImpl
 		return getDomainManagerDao().getMaintenanceIssue(truckNumber, issueTypeId, issueSubTypeId);
 	}
 	
+	public Collection getMaintenanceIssueByTruckNo(String truckNumber) throws DataAccessException {
+		return getDomainManagerDao().getMaintenanceIssueByTruckNo(truckNumber);
+	}
+
 	public Collection getMaintenanceIssue(IssueType issueTypeId, IssueSubType issueSubTypeId){
 		return getDomainManagerDao().getMaintenanceIssue(issueTypeId, issueSubTypeId);
 	}

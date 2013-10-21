@@ -202,6 +202,7 @@ public class DispatchFormController extends AbstractFormController {
 		refData.put(DispatchPlanUtil.ASSETTYPE_MOTKIT, assetManagerService.getActiveAssets(DispatchPlanUtil.ASSETTYPE_MOTKIT));
 		
 		refData.put("dispatchTypes", EnumDispatchType.getEnumList());
+		refData.put("dispatchGroups", getDomainManagerService().getDispatchGroups());
 		
 		return refData;
 	}
@@ -251,7 +252,6 @@ public class DispatchFormController extends AbstractFormController {
 		try{
 			command.setDispatchDate(TransStringUtil.getDate(new Date()));
 			command.setStartTime(TransStringUtil.getServerTime(new Date()));
-			command.setFirstDeliveryTime(TransStringUtil.getServerTime(new Date()));
 		} catch (ParseException exp) {
 			exp.printStackTrace();
 		}
@@ -390,7 +390,7 @@ public class DispatchFormController extends AbstractFormController {
 			model.setOverrideReasonCode(null);
 		
 		model = (DispatchCommand) DispatchPlanUtil.reconstructWebPlanInfo(
-				model, zone, model.getFirstDeliveryTimeModified(), model.getDispatchDate(), employeeManagerService,	zoneManagerService, false);
+				model, zone, model.getDispatchGroupModified(), model.getDispatchDate(), employeeManagerService,	zoneManagerService, false);
 		try {
 			boolean routeChanged = false;
 			Collection assignedRoutes = getDispatchManagerService().getAssignedRoutes(TransStringUtil.getServerDate(model.getDispatchDate()));
@@ -405,8 +405,8 @@ public class DispatchFormController extends AbstractFormController {
 			if(routeChanged && assignedRoutes.contains(model.getRoute())){
 				errors.rejectValue("route","app.error.135", new String[]{model.getRoute()},null);
 			}
-		}catch(ParseException exp){
-			//Ignore it
+		} catch (ParseException exp) {
+			// Ignore it
 		}
 		//set userId to command object
 		model.setUserId(getUserId(request));
@@ -414,7 +414,7 @@ public class DispatchFormController extends AbstractFormController {
 	protected boolean isFormChangeRequest(HttpServletRequest request, Object command) {
 
 		DispatchCommand _command=(DispatchCommand)command;
-		if("true".equalsIgnoreCase(_command.getFirstDeliveryTimeModified())
+		if("true".equalsIgnoreCase(_command.getDispatchGroupModified())
 				|| "true".equalsIgnoreCase(_command.getDestFacilityModified())
 					|| "true".equalsIgnoreCase(_command.getDispatchTypeModified())) {
 			return true;
@@ -427,7 +427,7 @@ public class DispatchFormController extends AbstractFormController {
 			HttpServletResponse response, Object command) throws Exception {
 
 		DispatchCommand _command=(DispatchCommand)command;		
-		_command.setFirstDeliveryTimeModified("false");
+		_command.setDispatchGroupModified("false");
 		_command.setDestFacilityModified("false");
 		_command.setDispatchTypeModified("false");
 	}

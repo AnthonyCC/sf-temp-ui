@@ -225,8 +225,6 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRUCK_DAMAGE_LOCATIONS = "transportation.issuelog.truckdamagelocations";
 	private final static String PROP_TRUCK_LOCATIONS = "transportation.maintenancelog.trucklocations";
 	
-	private final static String PROP_AUTODISPATCH_ENABLED = "transportation.autodispatch.enabled";
-
 	/* Crisis Manager */
 	private static final String ADMIN_SERVICE_URL_KEY = "admin.service.url";
     private final static String PROP_TRANSPORTATION_FILENAME_MARKETINGORDERRPT = "transportation.filename.marketingorderrpt";
@@ -437,8 +435,6 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRUCK_DAMAGE_LOCATIONS,"Front,Back");
 		defaults.put(PROP_TRUCK_LOCATIONS,"FreshDirect,Hub-Maspeth,Hub-Vernon,Hub-Dealer,Ryder,Ryder-Dealer,Milea-Queens,Milea-Bronx,Public Service,Public Service-Dealer,Body Shop,Rental Facility,Thermo King-Vernon,Thermo King-LI");	
 		
-		defaults.put(PROP_AUTODISPATCH_ENABLED,"true");
-
 		// APPDEV-1606 Order Crisis Management URL
         defaults.put(ADMIN_SERVICE_URL_KEY, "http://localhost:7001/admin_service");
         defaults.put(PROP_TRANSPORTATION_FILENAME_MARKETINGORDERRPT,"trn_marketingorderreport_");
@@ -860,10 +856,6 @@ public class TransportationAdminProperties {
 	
 	public static String getTruckLocations() {
 		return get(PROP_TRUCK_LOCATIONS);
-    }
-	
-	public static boolean isAutoDispatchEnabled() {
-        return (new Boolean(get(PROP_AUTODISPATCH_ENABLED))).booleanValue();
     }
 
 	public static String getMarketingOrderRptFileName() {

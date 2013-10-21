@@ -28,6 +28,7 @@ import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.service.AssetManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.TransAdminCacheManager;
+import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.AssetScanInfo;
 
 public class AssetProviderController extends BaseJsonRpcController  implements IAssetProvider {
@@ -312,7 +313,7 @@ public class AssetProviderController extends BaseJsonRpcController  implements I
 					assetScanInfo.setEmployeeId(assets[intCount][0]);
 					assetScanInfo.setStatus(EnumAssetScanStatus.getEnumByDesc(assets[intCount][2]).getName());
 					assetScanInfo.setScannedBy(com.freshdirect.transadmin.security.SecurityManager.getUserName(getHttpServletRequest()));
-					assetScanInfo.setScannedTime(new Date());
+					assetScanInfo.setScannedTime(TransStringUtil.getDatewithTime(assets[intCount][3]));
 					assetScanInfo.setDeliveryDate(new Date());
 				}
 				if(scannedAssets.size() > 0) {

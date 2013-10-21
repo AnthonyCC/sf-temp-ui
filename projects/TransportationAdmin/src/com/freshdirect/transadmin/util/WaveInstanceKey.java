@@ -4,37 +4,33 @@ import java.util.Date;
 
 import com.freshdirect.transadmin.model.TrnFacility;
 
+@SuppressWarnings("serial")
 public class WaveInstanceKey implements java.io.Serializable {
 	
 	private Date deliveryDate;
-	private Date dispatchTime;
-	private Date firstDeliveryTime;
-	private Date lastDeliveryTime;
-	private Date cutOffTime;
-	private String zone;
 	private TrnFacility originFacility;	
 	private TrnFacility destinationFacility;
+	private Date dispatchTime;
+	private Date endTime;
+	private Date maxTime;
+	private Date cutOffTime;
+	private String zone;
 	private String equipmentType;
 
 	public TrnFacility getOriginFacility() {
 		return originFacility;
 	}
-
 	public void setOriginFacility(TrnFacility originFacility) {
 		this.originFacility = originFacility;
 	}
-
 	public Date getDeliveryDate() {
 		return deliveryDate;
 	}
 	public Date getDispatchTime() {
 		return dispatchTime;
-	}
-	public Date getFirstDeliveryTime() {
-		return firstDeliveryTime;
-	}
-	public Date getLastDeliveryTime() {
-		return lastDeliveryTime;
+	}	
+	public Date getEndTime() {
+		return endTime;
 	}
 	public Date getCutOffTime() {
 		return cutOffTime;
@@ -47,20 +43,22 @@ public class WaveInstanceKey implements java.io.Serializable {
 	}
 	public void setDispatchTime(Date dispatchTime) {
 		this.dispatchTime = dispatchTime;
-	}
-	public void setFirstDeliveryTime(Date firstDeliveryTime) {
-		this.firstDeliveryTime = firstDeliveryTime;
-	}
-	public void setLastDeliveryTime(Date lastDeliveryTime) {
-		this.lastDeliveryTime = lastDeliveryTime;
+	}	
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 	public void setCutOffTime(Date cutOffTime) {
 		this.cutOffTime = cutOffTime;
 	}
 	public void setZone(String zone) {
 		this.zone = zone;
+	}	
+	public Date getMaxTime() {
+		return maxTime;
 	}
-
+	public void setMaxTime(Date maxTime) {
+		this.maxTime = maxTime;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -77,13 +75,10 @@ public class WaveInstanceKey implements java.io.Serializable {
 				+ ((dispatchTime == null) ? 0 : dispatchTime.hashCode());
 		result = prime * result
 				+ ((equipmentType == null) ? 0 : equipmentType.hashCode());
-		result = prime
-				* result
-				+ ((firstDeliveryTime == null) ? 0 : firstDeliveryTime
-						.hashCode());
-		result = prime
-				* result
-				+ ((lastDeliveryTime == null) ? 0 : lastDeliveryTime.hashCode());
+		result = prime * result
+				+ ((endTime == null) ? 0 : endTime.hashCode());
+		result = prime * result
+				+ ((maxTime == null) ? 0 : maxTime.hashCode());
 		result = prime * result
 				+ ((originFacility == null) ? 0 : originFacility.hashCode());
 		result = prime * result + ((zone == null) ? 0 : zone.hashCode());
@@ -123,15 +118,15 @@ public class WaveInstanceKey implements java.io.Serializable {
 				return false;
 		} else if (!equipmentType.equals(other.equipmentType))
 			return false;
-		if (firstDeliveryTime == null) {
-			if (other.firstDeliveryTime != null)
+		if (endTime == null) {
+			if (other.endTime != null)
 				return false;
-		} else if (!firstDeliveryTime.equals(other.firstDeliveryTime))
+		} else if (!endTime.equals(other.endTime))
 			return false;
-		if (lastDeliveryTime == null) {
-			if (other.lastDeliveryTime != null)
+		if (maxTime == null) {
+			if (other.maxTime != null)
 				return false;
-		} else if (!lastDeliveryTime.equals(other.lastDeliveryTime))
+		} else if (!maxTime.equals(other.maxTime))
 			return false;
 		if (originFacility == null) {
 			if (other.originFacility != null)

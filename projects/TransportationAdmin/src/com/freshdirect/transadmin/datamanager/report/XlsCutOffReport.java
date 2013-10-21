@@ -976,7 +976,7 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 			result.setDeliveryDate(batch.getDeliveryDate());
 			result.setDispatchTime(trailer.getDispatchTime().getAsDate());
 			
-			result.setTotalTravelTime(TransStringUtil.getTime(TransStringUtil.calcHMS(TransStringUtil.getDiffInSeconds(trailer.getCompletionTime(), trailer.getStartTime()))));
+			result.setTotalTravelTime(TransStringUtil.getTime(TransStringUtil.calcHMS(TransStringUtil.getDiffInSeconds(trailer.getCompletionTime(), trailer.getDispatchTime().getAsDate()))));
 			
 			int maxCartonsPerPallet = 0;
 			int maxPalletPerTrailer = 0;

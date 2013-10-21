@@ -19,6 +19,7 @@ import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.constants.EnumRouteType;
+import com.freshdirect.transadmin.model.DispatchGroup;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.TrnFacility;
@@ -32,6 +33,7 @@ import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.ScribUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.WaveUtil;
+import com.freshdirect.transadmin.web.editor.DispatchGroupPropertyEditor;
 import com.freshdirect.transadmin.web.editor.RegionPropertyEditor;
 import com.freshdirect.transadmin.web.editor.TrnFacilityPropertyEditor;
 
@@ -43,24 +45,8 @@ public class ScribFormController extends AbstractDomainFormController {
 	private ZoneManagerI zoneManagerService;
 	private LocationManagerI locationManagerService;
 	private AssetManagerI assetManagerService;
-	
-	public LocationManagerI getLocationManagerService() {
-		return locationManagerService;
-	}
-
-	public void setLocationManagerService(LocationManagerI locationManagerService) {
-		this.locationManagerService = locationManagerService;
-	}
-	
-	public EmployeeManagerI getEmployeeManagerService() {
-		return employeeManagerService;
-	}
-
-	public void setEmployeeManagerService(EmployeeManagerI employeeManagerService) {
-		this.employeeManagerService = employeeManagerService;
-	}
-
-	@SuppressWarnings("unchecked")
+		
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 		Collection zones=getDomainManagerService().getZones();
 		Collection activeZoneCodes = zoneManagerService.getActiveZoneCodes();
@@ -81,6 +67,7 @@ public class ScribFormController extends AbstractDomainFormController {
 		refData.put("routeTypes", EnumRouteType.getEnumList());
 		refData.put("trnFacilitys", locationManagerService.getTrnFacilitys());
 		refData.put("regions", getDomainManagerService().getRegions());
+		refData.put("dispatchGroups", getDomainManagerService().getDispatchGroups());
 		
 		return refData;
 	}
@@ -102,7 +89,7 @@ public class ScribFormController extends AbstractDomainFormController {
 		if(!TransStringUtil.isEmpty(scribRefId)) {
 			scrib.setScribId(null);
 			scrib.setNoOfResources(0);
-			scrib.setCount(0);
+			scrib.setTruckCnt(0);
 		}
 		return scrib;
 	}
@@ -136,9 +123,9 @@ public class ScribFormController extends AbstractDomainFormController {
 				EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(deliveryFacility.getTrnFacilityType().getName())){
 			model.setZone(null);
 			model.setEquipmentTypeS("");
-		}
-		model= ScribUtil.reconstructWebPlanInfo(model,zone,model.getFirstDeliveryTimeModified(),
-				employeeManagerService,zoneManagerService, assetManagerService);		
+		}		
+		model = ScribUtil.reconstructScribInfo(model, zone, model.getDispatchGroupModified(), 
+							employeeManagerService,	zoneManagerService, assetManagerService);	
 	}
 
 	
@@ -147,18 +134,18 @@ public class ScribFormController extends AbstractDomainFormController {
 
 		Scrib _command = (Scrib) command;
 		if("true".equalsIgnoreCase(_command.getZoneModified()) 
-				|| "true".equalsIgnoreCase(_command.getFirstDeliveryTimeModified())) {
+				|| "true".equalsIgnoreCase(_command.getDispatchGroupModified())) {
 			return true;
-		}
-		else
+		} else {
 			return isFormChangeRequest(request);
+		}
 	}
 
 	protected void onFormChange(HttpServletRequest request, HttpServletResponse response, Object command)
 																							throws Exception {
 		Scrib _command=(Scrib)command;
 		_command.setZoneModified("false");
-		_command.setFirstDeliveryTimeModified("false");
+		_command.setDispatchGroupModified("false");
 	}
 
 	protected void preProcessDomainObject(Object domainObject) {
@@ -169,14 +156,7 @@ public class ScribFormController extends AbstractDomainFormController {
 		}
 	}
 
-	public void setDispatchManagerService(DispatchManagerI dispatchManagerService) {
-		this.dispatchManagerService = dispatchManagerService;
-	}
-
-	public DispatchManagerI getDispatchManagerService() {
-		return dispatchManagerService;
-	}
-
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public List saveDomainObject(HttpServletRequest request, Object domainObject) {
 		List errorList = null;
 		Scrib model = null;
@@ -225,15 +205,12 @@ public class ScribFormController extends AbstractDomainFormController {
 		}
 		return id;
 	}
-
-	public void setZoneManagerService(ZoneManagerI zoneManagerService) {
-		this.zoneManagerService = zoneManagerService;
-	}
+	
 	
 	public void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
 		super.initBinder(request,binder);
 		binder.registerCustomEditor(Region.class, new RegionPropertyEditor());
-		binder.registerCustomEditor(TrnFacility.class, new TrnFacilityPropertyEditor());
+		binder.registerCustomEditor(TrnFacility.class, new TrnFacilityPropertyEditor());		
     }
 
 	public AssetManagerI getAssetManagerService() {
@@ -243,5 +220,36 @@ public class ScribFormController extends AbstractDomainFormController {
 	public void setAssetManagerService(AssetManagerI assetManagerService) {
 		this.assetManagerService = assetManagerService;
 	}
+	
+	public LocationManagerI getLocationManagerService() {
+		return locationManagerService;
+	}
 
+	public void setLocationManagerService(LocationManagerI locationManagerService) {
+		this.locationManagerService = locationManagerService;
+	}
+	
+	public EmployeeManagerI getEmployeeManagerService() {
+		return employeeManagerService;
+	}
+
+	public void setEmployeeManagerService(EmployeeManagerI employeeManagerService) {
+		this.employeeManagerService = employeeManagerService;
+	}
+	
+	public void setDispatchManagerService(DispatchManagerI dispatchManagerService) {
+		this.dispatchManagerService = dispatchManagerService;
+	}
+
+	public DispatchManagerI getDispatchManagerService() {
+		return dispatchManagerService;
+	}
+
+	public ZoneManagerI getZoneManagerService() {
+		return zoneManagerService;
+	}
+
+	public void setZoneManagerService(ZoneManagerI zoneManagerService) {
+		this.zoneManagerService = zoneManagerService;
+	}
 }

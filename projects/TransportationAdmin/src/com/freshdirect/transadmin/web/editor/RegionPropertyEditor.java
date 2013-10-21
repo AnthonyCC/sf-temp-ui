@@ -17,20 +17,15 @@ public class RegionPropertyEditor extends PropertyEditorSupport {
 	
 	public void setAsText(String text) throws IllegalArgumentException {
 		if ("null".equals(text)) {
-		setValue(null);
+			setValue(null);
 		} else {
-					 		
-		  try {
-		        
-			  Region view = new Region();
-		        view.setCode(text);
-		        if (view == null) {
-		          throw new IllegalArgumentException("Invalid argument for TrnArea: " + text);
-		        }
-		        setValue(view);
-		      } catch (NumberFormatException ex) {
-		        throw new IllegalArgumentException("Invalid id for TrnArea: " + text);
-		      }
+			try {
+				Region view = new Region();
+				view.setCode(text);
+				setValue(view);
+			} catch (NumberFormatException ex) {
+				throw new IllegalArgumentException("Invalid id for Region: " + text);
+			}
 		}
 	}
 }

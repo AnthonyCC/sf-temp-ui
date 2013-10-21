@@ -3,8 +3,6 @@ package com.freshdirect.routing.handoff.action;
 import static com.freshdirect.routing.manager.IProcessMessage.INFO_MESSAGE_TRUCKASSIGNMENTCOMPLETED;
 import static com.freshdirect.routing.manager.IProcessMessage.INFO_MESSAGE_TRUCKASSIGNMENTPROGRESS;
 
-
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -17,36 +15,28 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import lpsolve.LpSolveException;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
-import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.routing.constants.EnumTruckPreference;
 import com.freshdirect.routing.model.HandOffBatchRoute;
-import com.freshdirect.routing.model.HandOffDispatch;
 import com.freshdirect.routing.model.IHandOffBatch;
-import com.freshdirect.routing.model.IHandOffDispatchResource;
-import com.freshdirect.routing.model.IHandOffBatchPlan;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchTrailer;
 import com.freshdirect.routing.model.IHandOffDispatch;
+import com.freshdirect.routing.model.IHandOffDispatchResource;
 import com.freshdirect.routing.model.IRouteModel;
-import com.freshdirect.routing.model.IZoneModel;
-import com.freshdirect.routing.model.TrnFacility;
 import com.freshdirect.routing.model.TruckPreferenceStat;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
-import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
-import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.truckassignment.Dispatch;
 import com.freshdirect.routing.truckassignment.Employee;
 import com.freshdirect.routing.truckassignment.Route;
@@ -268,7 +258,7 @@ public class HandOffTruckAssignmentAction extends AbstractHandOffAction {
 				else
 					area = "_";
 				String route = _dispatch.getRoute();
-				int start = toMinutes(_dispatch.getStartTime());
+				int start = toMinutes(_dispatch.getDispatchTime());
 				
 				if(_dispatch.getRoute() != null && !_dispatch.isTrailer()) {
 					IHandOffBatchRoute routeEx = routeMapping.get(route);

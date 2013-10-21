@@ -36,10 +36,6 @@ public class DispatchValidator extends AbstractValidator {
 		
 		if(model != null && !(EnumDispatchType.LIGHTDUTYDISPATCH.getName().equals(model.getDispatchType())) ) {
 
-			ValidationUtils.rejectIfEmpty(errors, "firstDeliveryTime", "app.error.112", new Object[]{"First Delivery Time"},"required field");
-			checkDate("startTime",model.getStartTime(),model.getFirstDeliveryTime(),errors);
-
-			
 			if(model != null && TransStringUtil.isEmpty(model.getZoneCode()) && model.getDestinationFacility() != null && model.getDestinationFacility().getTrnFacilityType() != null
 					&& !DispatchPlanUtil.isBullpen(model.getIsBullpen()) && (EnumTransportationFacilitySrc.DELIVERYZONE.getName().equalsIgnoreCase(model.getDestinationFacility().getTrnFacilityType().getName())
 					|| EnumTransportationFacilitySrc.DEPOTDELIVERY.getName().equalsIgnoreCase(model.getDestinationFacility().getTrnFacilityType().getName()))) {

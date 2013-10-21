@@ -83,12 +83,11 @@
 				<value>com/freshdirect/transadmin/model/TrnFacility.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/TrnFacilityType.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/TrnFacilityLocation.hbm.xml</value>
-
 				<value>com/freshdirect/transadmin/model/Sector.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/SectorZipcode.hbm.xml</value>
-				<value>com/freshdirect/transadmin/model/TimeslotRestriction.hbm.xml</value>
-				
 
+				<value>com/freshdirect/transadmin/model/TimeslotRestriction.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/DispatchGroup.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">

@@ -126,101 +126,6 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			getDispatchManagerDao().savePlan((Plan)it.next());
 		}
 	}
-
-	@SuppressWarnings("unchecked")
-	public void autoDisptch(String date) {
-		// TODO Auto-generated method stub
-		
-		// get the plan for the dispatch Date order by sequence number 
-		// get the route and truck for the date order by route number
-		// create the dispatch model from above data
-		// insert the data in dispatch table		
-		Collection dispList = getDispatchList(date,null,null,null);
-		
-		if(dispList!=null || dispList.size()>0){						
-			  Iterator iterator=dispList.iterator();
-			  while(iterator.hasNext()){							  
-						  Dispatch disp=(Dispatch)iterator.next();
-						  disp.setUserId("AUTO-DISPATCH");
-						  Set disResList=disp.getDispatchResources();
-						  removeEntity(disResList);							  							  
-				  }
-				  removeEntity(dispList);			
-		}		  		  				
-						
-		Collection planList=getPlanList(date);		
-		Collection routeList=getDomainManagerService().getRoutes(date);
-		
-		Collection dispatchList=ModelUtil.constructDispatchModel(planList,routeList, (List<TrnFacility>)getTrnFacilitys());
-		
-		Map childMap=new HashMap();
-		Iterator iterator=dispatchList.iterator();
-		while(iterator.hasNext()){
-			Dispatch dis=(Dispatch)iterator.next();
-			Set res=dis.getDispatchResources();
-			childMap.put(dis.getPlanId(),res);
-			dis.setDispatchResources(null);
-		}
-		
-		// first save the parent 
-		getDispatchManagerDao().saveEntityList(dispatchList);
-		
-		Iterator resIterator=dispatchList.iterator();
-		while(resIterator.hasNext()){
-			Dispatch dis=(Dispatch)resIterator.next();
-			Set disResource=(Set)childMap.get(dis.getPlanId());
-			if(disResource!=null)
-			{ 
-				ModelUtil.assosiateDispatchToResource(disResource,dis);
-				getDispatchManagerDao().saveEntityList(disResource);
-			}
-			
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void processAutoDispatch(String dispatchDate) {
-		
-		Collection dispList = getDispatchList(dispatchDate, null, null, null);
-
-		if (dispList != null && dispList.size() > 0) {
-			Iterator iterator = dispList.iterator();
-			while (iterator.hasNext()) {
-				Dispatch disp = (Dispatch) iterator.next();
-				Object[] param = new Object[] { disp.getDispatchId(),"DELETED", "", "" };
-				logManager.log("AUTO-DISPATCH", 3, param);
-				Set disResList = disp.getDispatchResources();
-				removeEntity(disResList);
-			}
-			removeEntity(dispList);
-		}
-
-		Collection planList = getPlanList(dispatchDate);
-		Collection routeList = getDomainManagerService().getRoutes(dispatchDate);
-		Collection dispatchList = ModelUtil.constructDispatchModel(planList, routeList,(List<TrnFacility>)getTrnFacilitys());
-		
-		Map childMap = new HashMap();
-		Iterator iterator = dispatchList.iterator();
-		while (iterator.hasNext()) {
-			Dispatch dis = (Dispatch) iterator.next();
-			Set res = dis.getDispatchResources();
-			childMap.put(dis.getPlanId(), res);
-			dis.setDispatchResources(null);
-		}
-		
-		// first save the parent
-		getDispatchManagerDao().saveEntityList(dispatchList);
-
-		Iterator resIterator = dispatchList.iterator();
-		while (resIterator.hasNext()) {
-			Dispatch dis = (Dispatch) resIterator.next();
-			Set disResource = (Set) childMap.get(dis.getPlanId());
-			if (disResource != null) {
-				ModelUtil.assosiateDispatchToResource(disResource, dis);
-				getDispatchManagerDao().saveEntityList(disResource);
-			}
-		}
-	}
 	
 	@SuppressWarnings("unchecked")
 	public Collection getDispatchList(String date, String facilityLocation, String zone, String region) {
@@ -358,14 +263,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	public void setDomainManagerService(DomainManagerI domainManagerService) {
 		this.domainManagerService = domainManagerService;
 	}
-	
-	
-	public static void main(String args[]){
 		
-		DispatchManagerImpl impl=new DispatchManagerImpl();
-		impl.autoDisptch("11/26/2008");
-	}
-	
 	public void savePlan(Plan	plan) {
 		getDispatchManagerDao().savePlan(plan);
 	}

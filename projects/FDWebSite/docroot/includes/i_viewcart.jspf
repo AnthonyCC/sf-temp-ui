@@ -673,8 +673,9 @@ FDIdentity identity = user.getIdentity();
 		<%	} else if((int)cart.getChargeAmount(EnumChargeType.DELIVERY) == 0 ) { %>   
 			<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right">Delivery Charge<% if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%> (waived)<%}%>:</td>
-			<td colspan="3" align="left"><%if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%>$0.00<%}else{%>&nbsp;&nbsp;&nbsp;<b>check</b>&nbsp;<A HREF="javascript:popup('/help/delivery_info.jsp','large_long')"><b>delivery fee</b></A><%}%></td>
-			<td></td>		
+			<td colspan="1" align="right"><%if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%>$0.00<%}else{%>&nbsp;&nbsp;&nbsp;<b>check</b>&nbsp;<A HREF="javascript:popup('/help/delivery_info.jsp','large_long')"><b>delivery fee</b></A><%}%></td>
+			<td></td>
+			<td></td>
 			</tr>
         <%} if ((int)cart.getChargeAmount(EnumChargeType.DLVPREMIUM) > 0) {
 		%>

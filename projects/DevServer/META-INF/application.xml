@@ -26,6 +26,18 @@
     </web>
   </module>
   <module>
+        <web>
+            <web-uri>../CRM/docroot</web-uri>
+            <context-root>crm</context-root>
+        </web>
+  </module>
+  <module>
+        <web>
+            <web-uri>../TransportationAdmin/docroot</web-uri>
+            <context-root>TrnAdmin</context-root>
+        </web>
+  </module>
+  <module>
     <web>
       <web-uri>../FDIntegrationServices/docroot</web-uri>
       <context-root>mobileapi</context-root>
@@ -64,7 +76,7 @@
             <context-root>ocf-adm</context-root>
         </web>
     </module>
-    -->
+   
   <module>
     <web>
       <web-uri>../RefAdmin/docroot</web-uri>
@@ -77,4 +89,5 @@
       <context-root>cms-gwt</context-root>
     </web>
   </module>
+   -->
 </application>
