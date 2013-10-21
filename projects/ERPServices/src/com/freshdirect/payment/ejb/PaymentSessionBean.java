@@ -117,7 +117,9 @@ public class PaymentSessionBean extends SessionBeanSupport{
 		}
 		
 		Map requiredCaptures = new CaptureStrategy(sale).getOutstandingCaptureAmounts();
-				
+		PaymentGatewayContext context = new PaymentGatewayContext(StringUtil.isEmpty(paymentMethod.getProfileID())?GatewayType.CYBERSOURCE:GatewayType.PAYMENTECH, null);
+		Gateway gateway = GatewayFactory.getGateway(context);	
+		
 		try{
 				
 			List fdCaptures = freeOrder ? new ArrayList() : Collections.EMPTY_LIST;
@@ -134,7 +136,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 						auths = mergeEcheckAuthorizations(auths, paymentMethod);
 					}
 					
-					Map captureMap = getCaptureAmounts(auths, remainingAmount);
+					Map captureMap = getCaptureAmounts(gateway,auths, remainingAmount);
 			
 					utx = null;
 					
@@ -163,8 +165,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 							capture = this.doFDCapture(auth, captureAmount.doubleValue(), 0.0);
 							fdCaptures.add(capture);
 						}else{
-							PaymentGatewayContext context = new PaymentGatewayContext(StringUtil.isEmpty(paymentMethod.getProfileID())?GatewayType.CYBERSOURCE:GatewayType.PAYMENTECH, null);
-							Gateway gateway = GatewayFactory.getGateway(context);
+							
 							String orderNumber = saleId + "X" + captureCount;
 							capture = gateway.capture(auth, paymentMethod, captureAmount.doubleValue(), 0.0, orderNumber);
 							
@@ -456,7 +457,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 		}
 	}
 	
-	protected static Map getCaptureAmounts(List auths, double amount){
+	protected static Map<String,Double> getCaptureAmounts(Gateway gateway, List<ErpAuthorizationModel> auths, double amount){
 		if(auths.isEmpty()){
 			return Collections.EMPTY_MAP;
 		}
@@ -467,21 +468,24 @@ public class PaymentSessionBean extends SessionBeanSupport{
 		String largestAuth = a.getPK().getId();
 		double remainingAmount = amount;
 		
-		Map ret = new HashMap();
-		for(Iterator i = auths.iterator(); i.hasNext() && remainingAmount > 0; ){
-			a = (ErpAuthorizationModel) i.next();
+		Map<String,Double> ret = new HashMap<String,Double>();
+		for(Iterator<ErpAuthorizationModel> i = auths.iterator(); i.hasNext() && remainingAmount > 0; ){
+			a =  i.next();
 			double captureAmount = Math.min(a.getAmount(), remainingAmount);
-			if(captureAmount <= 1 && !ret.isEmpty()){
-				Double d = (Double) ret.get(largestAuth);
-				ret.put(largestAuth, new Double(MathUtil.roundDecimal(d.doubleValue()+captureAmount)));
-			}else{
+			if(GatewayType.CYBERSOURCE.equals(gateway.getType())) {
+				if(captureAmount <= 1 && !ret.isEmpty()){
+					Double d = (Double) ret.get(largestAuth);
+					ret.put(largestAuth, new Double(MathUtil.roundDecimal(d.doubleValue()+captureAmount)));
+				}else{
+					ret.put(a.getPK().getId(), new Double(MathUtil.roundDecimal(captureAmount)));
+				}
+			} else {
 				ret.put(a.getPK().getId(), new Double(MathUtil.roundDecimal(captureAmount)));
 			}
 			remainingAmount = MathUtil.roundDecimal(remainingAmount - captureAmount);
 		}
 		return ret;
 	}
-
 	private static List mergeEcheckAuthorizations(List auths, ErpPaymentMethodI paymentMethod) {
 		ErpAuthorizationModel combinedAuth = null;
 		for(Iterator i = auths.iterator(); i.hasNext(); ){
@@ -611,7 +615,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 						remainingAmount = amount.doubleValue();
 					}
 					List auths = sale.getApprovedAuthorizations(aff, paymentMethod);
-					Map captureMap = getCaptureAmounts(auths, remainingAmount);
+					Map captureMap = getCaptureAmounts(GatewayFactory.getGateway(GatewayType.PAYMENTECH),auths, remainingAmount);
 			
 					utx = null;
 					

@@ -11,6 +11,8 @@ import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.payment.gateway.GatewayType;
+import com.freshdirect.payment.gateway.impl.GatewayFactory;
 
 public class CaptureAmountTestCase extends TestCase {
 	
@@ -22,7 +24,7 @@ public class CaptureAmountTestCase extends TestCase {
 		auths.add(this.makeAuth("102", 5));
 		
 		double amount = 105.99;
-		Map result = PaymentSessionBean.getCaptureAmounts(auths, amount);
+		Map result = PaymentSessionBean.getCaptureAmounts(GatewayFactory.getGateway(GatewayType.CYBERSOURCE),auths, amount);
 		
 		assertFalse(result.containsKey("102"));
 		assertEquals(result.get("200"), new Double(100.99));
@@ -35,7 +37,7 @@ public class CaptureAmountTestCase extends TestCase {
 		auths.add(this.makeAuth("102", 10));
 		
 		amount = 94;
-		result = PaymentSessionBean.getCaptureAmounts(auths, amount);
+		result = PaymentSessionBean.getCaptureAmounts(GatewayFactory.getGateway(GatewayType.CYBERSOURCE),auths, amount);
 		assertFalse(result.containsKey("101"));
 		assertFalse(result.containsKey("102"));
 		assertEquals(result.get("100"), new Double(94.0));
@@ -43,7 +45,7 @@ public class CaptureAmountTestCase extends TestCase {
 		auths.clear();
 		
 		amount = 100.0;
-		result = PaymentSessionBean.getCaptureAmounts(auths, amount);
+		result = PaymentSessionBean.getCaptureAmounts(GatewayFactory.getGateway(GatewayType.CYBERSOURCE),auths, amount);
 		assertTrue(result.isEmpty());
 		
 		auths.clear();
@@ -51,7 +53,7 @@ public class CaptureAmountTestCase extends TestCase {
 		auths.add(this.makeAuth("100", 50));
 		
 		amount = 100.0;
-		result = PaymentSessionBean.getCaptureAmounts(auths, amount);
+		result = PaymentSessionBean.getCaptureAmounts(GatewayFactory.getGateway(GatewayType.CYBERSOURCE),auths, amount);
 		assertEquals(result.get("100"), new Double(50.0));
 		
 		auths.clear();
@@ -59,7 +61,7 @@ public class CaptureAmountTestCase extends TestCase {
 		auths.add(this.makeAuth("101", 10.20));
 		
 		amount = 140.80;
-		result = PaymentSessionBean.getCaptureAmounts(auths, amount);
+		result = PaymentSessionBean.getCaptureAmounts(GatewayFactory.getGateway(GatewayType.CYBERSOURCE),auths, amount);
 		assertEquals(result.size(), 2);
 		assertEquals(result.get("100"), new Double(123.8));
 		assertEquals(result.get("101"), new Double(10.20));
@@ -70,14 +72,14 @@ public class CaptureAmountTestCase extends TestCase {
 		auths.add(this.makeAuth("101", 2.32));
 		
 		amount = 51.98;
-		result = PaymentSessionBean.getCaptureAmounts(auths, amount);
+		result = PaymentSessionBean.getCaptureAmounts(GatewayFactory.getGateway(GatewayType.CYBERSOURCE),auths, amount);
 		assertEquals(result.size(), 1);
 		assertEquals(result.get("100"), new Double(51.98));
 		
 		auths.clear();
 		auths.add(this.makeAuth("100", 51.63));
 		amount = 51.98;
-		result = PaymentSessionBean.getCaptureAmounts(auths, amount);
+		result = PaymentSessionBean.getCaptureAmounts(GatewayFactory.getGateway(GatewayType.CYBERSOURCE),auths, amount);
 		assertEquals(result.size(), 1);
 		assertEquals(result.get("100"), new Double(51.63));
 		
@@ -85,7 +87,7 @@ public class CaptureAmountTestCase extends TestCase {
 		auths.add(this.makeAuth("100", 2.65));
 		auths.add(this.makeAuth("101", 2.20));
 		amount = 5;
-		result = PaymentSessionBean.getCaptureAmounts(auths, amount);
+		result = PaymentSessionBean.getCaptureAmounts(GatewayFactory.getGateway(GatewayType.CYBERSOURCE),auths, amount);
 		assertEquals(result.get("100"), new Double(2.65));
 		assertEquals(result.get("101"), new Double(2.20));
 		
@@ -93,7 +95,7 @@ public class CaptureAmountTestCase extends TestCase {
 		auths.add(this.makeAuth("900", 2.50));
 		auths.add(this.makeAuth("10", 1.00));
 		amount = 3.00;
-		result = PaymentSessionBean.getCaptureAmounts(auths, amount);
+		result = PaymentSessionBean.getCaptureAmounts(GatewayFactory.getGateway(GatewayType.CYBERSOURCE),auths, amount);
 		assertEquals(result.size(), 1);
 		assertFalse(result.containsKey("10"));
 		assertEquals(result.get("900"), new Double(3.00));
