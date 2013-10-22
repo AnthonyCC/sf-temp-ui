@@ -231,10 +231,10 @@ public class AssetManagerImpl
 				if(employeeScannedAssets != null && employeeScannedAssets.size() > 0) {
 					for(AssetActivity _resAsset : employeeScannedAssets) {
 						if(asset.getAssetNo().equals(_resAsset.getAssetNo()) 
-								&& asset.getScannedTime().after(_resAsset.getScannedTime())) {
-							employeeScannedAssets.remove(_resAsset);
-							employeeScannedAssets.add(asset);
+								&& asset.getScannedTime().after(_resAsset.getScannedTime())) {							
 							foundScannedAsset = true;
+							assetMapping.get(asset.getEmployeeId()).remove(_resAsset);
+							assetMapping.get(asset.getEmployeeId()).add(asset);
 						}
 					}
 					if(!foundScannedAsset) {
