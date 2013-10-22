@@ -498,7 +498,7 @@ public class CapacityController extends AbstractMultiActionController {
 								_capacity.setManuallyClosed(_refSlot.isManuallyClosed());
 								_capacity.setDynamicActive(_refSlot.isDynamicActive());
 								_capacity.setReferenceId(_refSlot.getReferenceId());
-								_capacity.setWaveCode(_refSlot.getWaveCode());
+								_capacity.setWaveCode(_refSlot.getWaveCode().replaceFirst("_", ":").replace("_", " "));
 							}
 							
 						}						
@@ -575,7 +575,7 @@ public class CapacityController extends AbstractMultiActionController {
 								_capacity.setManuallyClosed(_refSlot.isManuallyClosed());
 								_capacity.setDynamicActive(_refSlot.isDynamicActive());
 								_capacity.setReferenceId(_refSlot.getReferenceId());
-								_capacity.setWaveCode(_refSlot.getWaveCode());
+								_capacity.setWaveCode(_refSlot.getWaveCode().replaceFirst("_", ":").replace("_", " "));
 							}
 						}						
 					}					

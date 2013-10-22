@@ -90,7 +90,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			" where z.area = a.code  and a.region_code = tr.code  and (z.OBSOLETE <> 'X' or z.OBSOLETE IS NULL)";
 	
 	private static final String GET_TIMESLOTSBYDATE_QRY = "select t.ID REF_ID, ta.AREA, ta.POSTTRIP_TIME  POST_TRIP, ta.PRETRIP_TIME PRE_TRIP, ta.STEM_MAX_TIME STEM_MAX, z.ZONE_CODE, z.NAME, t.START_TIME , t.END_TIME" +
-			", case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH:MI PM') else TO_CHAR(t.premium_cutoff_time, 'HH:MI PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR " +
+			", case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR " +
 			" from dlv.timeslot t , dlv.zone z, transp.zone ta, transp.trn_area a, transp.trn_region tr " +
 			" where t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE and a.region_code = tr.code " +
 			" and t.base_date = ?";
