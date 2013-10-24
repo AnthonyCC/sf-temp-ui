@@ -91,7 +91,7 @@ var FreshDirect = FreshDirect || {};
                     oldname: oldname,
                     name: name || "",
                     "delete": del,
-                    default: def
+                    "default": def
                   };
                   changes.push(listItem);
                 }        	  
