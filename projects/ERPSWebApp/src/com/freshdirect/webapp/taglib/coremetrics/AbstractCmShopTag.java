@@ -12,7 +12,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public abstract class AbstractCmShopTag <X extends AbstractShopTagModelBuilder> extends AbstractCmTag {
 	private static final Logger LOGGER = LoggerFactory.getInstance(AbstractCmShopTag.class);
-	private static final String DISPLAY_SHOPS = "cmDisplayShops";
+	public static final String DISPLAY_SHOPS = "cmDisplayShops";
 
 	protected X tagModelBuilder;
 	

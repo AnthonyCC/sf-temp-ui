@@ -60,6 +60,7 @@ import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseData;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem.Status;
 import com.freshdirect.webapp.ajax.cart.data.CartData;
+import com.freshdirect.webapp.taglib.coremetrics.AbstractCmShopTag;
 import com.freshdirect.webapp.taglib.coremetrics.CmShop5Tag;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -183,9 +184,12 @@ public class CartOperations {
 			
 			cartLine.refreshConfiguration();
 			
-			ShopTagModel cmTag = AbstractShopTagModelBuilder.createTagModel( cartLine, cartLine.getProductRef(), false );
-			
+			ShopTagModel cmTag = AbstractShopTagModelBuilder.createTagModel( cartLine, cartLine.getProductRef(), false );			
 			responseData.addCoremetrics( cmTag.toStringList() );
+
+			List<String> cmFinalTag = new ArrayList<String>(1);
+			cmFinalTag.add( AbstractCmShopTag.DISPLAY_SHOPS );
+			responseData.addCoremetrics( cmFinalTag );
 			
 		} catch ( SkipTagException ignore ) {
 			LOG.warn( "Failed to generate coremetrics data", ignore );
