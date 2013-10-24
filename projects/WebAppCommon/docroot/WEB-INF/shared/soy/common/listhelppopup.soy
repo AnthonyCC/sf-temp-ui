@@ -16,17 +16,22 @@
  */
 {template .listhelppopupContent autoescape="true"}
 <div class="qs-listhelp">
-  	<h2>Your list manager is an easy way to rename lists, change your default list or delete lists, all in one place.</h2>
-	<h3>Rename a List</h3>
-	<p>Simply type the new name in the space provided.</p>
-	<h3>Set a Default Shopping List</h3>
-	<p>This is the first list displayed when you return to the “Shop from Your Lists” page. Your current default shopping list is displayed first in the “Manage lists” window. The rest of your lists are in alphabetical order below it. To change your preferred default list select a corresponding radio button under the “Default List” header.</p>
-	<h3>Delete a Shopping List</h3>
-	<p>Click the checkbox to select any list you would like to delete. The list will be deleted when you confirm your selection.</p>
-	<h3>Review and Confirm</h3>
-	<p>When you have made your changes, select “confirm changes”—here you will be able to review a summary of your changes before saving. Once approved, make sure to click “save” before returning to the “Shop Your Lists” screen. Choose “cancel” to discard any changes from the previous screen.</p>
+<p>Create new lists for weekly shopping, your own favorite recipes or monthly staples. Keep a list of foods the kids love, your workday lunch items or tried-and-true party foods.</p>
+<p>To save a product to a List, click Save to Shopping List. You can continue saving items to your default list with one click, or create multiple lists, to cover different needs.</p>
+<p>To manage and shop from Your Shopping Lists, visit Quickshop. Modify, add or delete items, then buy some or all of the items in a list with just a few clicks! Return to your lists at any time to easily shop for the foods you buy most often.</p>
+<p>Pretty soon, you'll love lists like we love lists.</p>
 </div>
 {/template}
 
-
+/**
+ */
+{template .listhelp autoescape="true"}
+<div class="qs-list-header">
+<div id="listheader"><h2>Create a list!</h2></div>
+</div>
+<div class="qs-listhelp">
+<b>You currently have no lists, but you can make a new one in a flash.</b>
+</div>
+{call .listhelppopupContent /}
+{/template}
 

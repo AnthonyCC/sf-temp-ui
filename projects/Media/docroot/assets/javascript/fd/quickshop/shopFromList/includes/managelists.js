@@ -27,10 +27,10 @@ var FreshDirect = FreshDirect || {};
       value: 'lists manageshoppinglists'
     },
     helpTemplate: {
-      value: 'common.listhelppopup'
+      value: 'common.managelisthelp'
     },
     helpHeader: {
-      value: 'about shopping lists'
+      value: 'about list manager'
     },
     bodyTemplate: {
       value: quickshop.manageshoppinglists

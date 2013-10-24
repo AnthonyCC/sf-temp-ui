@@ -169,8 +169,12 @@
 .qs-no-past-orders .qs-empty-result .selection { display:none; }
 .qs-no-past-orders .qs-empty-result .no-orders { display:block; }
  
-.qs-no-lists .qs-list-header { display:none; }
+.qs-no-lists .qs-list-header {  }
  
+.qs-no-lists .qs-listhelp {
+	clear:both;
+
+ }
 
 #OAS_UPDATER {
 	display:none;
