@@ -17,6 +17,7 @@
 	<fd:javascript src="/assets/javascript/atcPendingOrder.js"/>
 	<fd:javascript src="/assets/javascript/popupLogicDispatcher.js"/>
 	<fd:javascript src="/assets/javascript/coremetrics.js"/>
+	<fd:javascript src="/assets/javascript/USQLegalWarning.js"/>
 	
 	<script type="text/javascript" language="javascript">
 
