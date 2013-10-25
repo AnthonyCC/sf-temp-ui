@@ -33,6 +33,10 @@ public class PlanValidator extends AbstractValidator {
 		ValidationUtils.rejectIfEmpty(errors, "endTime", "app.error.112", new Object[]{"End Time"},"required field");
 		ValidationUtils.rejectIfEmpty(errors, "cutOffTime", "app.error.112", new Object[]{"CutOff Time"},"required field");
 		
+		if (model != null && model.getDispatchGroup() == null) {
+			errors.rejectValue("dispatchGroupS", "app.error.112", new Object[]{"Dispatch group time"},"required field");
+		}
+		
 		if (model != null && model.getOriginFacility() == null) {
 			errors.rejectValue("originFacility", "app.error.112",
 					new Object[] { "Origin Facility" }, "required field");
@@ -64,7 +68,7 @@ public class PlanValidator extends AbstractValidator {
 		}
 		
 		checkTime("startTime", model.getStartTime(), model.getEndTime(),errors);
-		checkDate("dispatchGroup", model.getDispatchGroup(), model.getStartTime(),errors);
+		checkDate("dispatchGroupS", model.getDispatchGroup(), model.getStartTime(),errors);
 		
 		ValidationUtils.rejectIfEmpty(errors, "sequence", "app.error.112", new Object[]{"Sequence"},"required field");
 		validateIntegerMinMax("sequence",new Integer(model.getSequence()),0,99,errors);
@@ -146,23 +150,21 @@ public class PlanValidator extends AbstractValidator {
 	private void checkTime(String field, String startTime, String endTime, Errors errors) {
 		
 		try {
-			if (DateComparator.compare(DateComparator.PRECISION_MINUTE,
-					TransStringUtil.getServerTime(startTime),
-					TransStringUtil.getServerTime(endTime)) >= 0) {
-				errors.rejectValue(field, "app.error.123","Invalid Time");
+			if (startTime!=null && endTime!=null && TransStringUtil.getServerTime(endTime).before(TransStringUtil.getServerTime(startTime))) {
+				errors.rejectValue(field, "app.error.151","Truck end time cannot be before truck dispatch time");
 			}
 		} catch (ParseException e) {
-			errors.rejectValue(field, "typeMismatch.time", new Object[]{},"Invalid Time");	
+			errors.rejectValue(field, "typeMismatch.time", new Object[]{},"Truck end time cannot be before truck dispatch time");	
 		}		
 	}
 	private void checkDate(String field, Date startTime, String endTime, Errors errors) {
 		
 		try {
-			if (DateComparator.compare(DateComparator.PRECISION_MINUTE,	startTime, TransStringUtil.getServerTime(endTime)) >= 0) {
-				errors.rejectValue(field, "app.error.123","Invalid Time");
+			if (startTime!=null && endTime!=null && TransStringUtil.getServerTime(endTime).before(startTime)) {
+				errors.rejectValue(field, "app.error.152","Truck dispatch time cannot be before dispatch group time");
 			}
 		} catch (ParseException e) {
-			errors.rejectValue(field, "typeMismatch.time", new Object[]{},"Invalid Time");	
+			errors.rejectValue(field, "typeMismatch.time", new Object[]{},"Truck dispatch time cannot be before dispatch group time");	
 		}		
 	}
 }
