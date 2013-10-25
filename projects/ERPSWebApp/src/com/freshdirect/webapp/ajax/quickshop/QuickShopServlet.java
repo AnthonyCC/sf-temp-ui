@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.FilteringMenuItem;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.FilteringValue;
@@ -120,7 +121,7 @@ public abstract class QuickShopServlet extends BaseJsonServlet {
 	protected static void generateCoremetricsElementTags( QuickShopReturnValue responseData, Map<FilteringValue, Map<String, FilteringMenuItem>> menu, String categoryName ) {		
 		for ( Map<String, FilteringMenuItem> f : menu.values() ) {
 			for( FilteringMenuItem i : f.values() ) {
-				if ( i.isSelected() ) {
+				if ( i.isSelected() && !i.getFilter().equals( EnumQuickShopFilteringValue.TIME_FRAME_ALL )) {
 					ElementTagModel eTagModel = new ElementTagModel();
 					eTagModel.setElementCategory( categoryName );
 					eTagModel.setElementId( i.getName() );
