@@ -2050,7 +2050,6 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 							dispatch.setDispatchDate(rs.getTimestamp("DISPATCH_DATE")); 
 							dispatch.setDispatchGroup(rs.getTimestamp("DISPATCH_GROUPTIME"));
 							dispatch.setDispatchTime(rs.getTimestamp("TRUCK_DISPATCHTIME"));
-							dispatch.setEndTime(rs.getTimestamp("TRUCK_ENDTIME"));
 							dispatch.setIsBullpen(rs.getString("ISBULLPEN"));
 							dispatch.setSupervisorId(rs.getString("SUPERVISOR_ID"));					
 							dispatch.setRoute(rs.getString("ROUTE"));
