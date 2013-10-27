@@ -41,7 +41,9 @@ public class TransStringUtil {
 	
 	public static DateFormat dateFormatwithTime = new SimpleDateFormat("MM/dd/yyyy hh:mm aaa");
 	
-	public static DateFormat dateFormatwithTime1 = new SimpleDateFormat("MM/dd/yyyy hh:mm aaa");	
+	public static DateFormat dateFormatwithTime1 = new SimpleDateFormat("MM/dd/yyyy hh:mm aaa");
+	
+	public static DateFormat dateFormatwithTime2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
 		
 	public static Calendar clientCalendar = Calendar.getInstance();
 	
@@ -193,6 +195,9 @@ public class TransStringUtil {
 	}
 	public static Date getDatewithTime(String clientDate) throws ParseException {       
         return dateFormatwithTime.parse(clientDate);
+	}
+	public static Date getDateWithSeconds(String clientDate) throws ParseException {       
+        return dateFormatwithTime2.parse(clientDate);
 	}
 	public static boolean checkHourOfDate(Date clientDate) throws ParseException {       
         boolean isGreater=false;        

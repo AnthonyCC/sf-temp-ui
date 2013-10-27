@@ -18,7 +18,7 @@
       	 	
          editAssetScanPanel = new YAHOO.widget.Panel("assetscanpanel", {       
                           width: "800px", 
-                          height: "500px",
+                          height: "525px",
                           fixedcenter: true, 
                           close: true, 
                           draggable: false, 
@@ -41,15 +41,15 @@
 										elCell.innerHTML = '<img src="images/icons/truck_in.png" title="Check-In" />';
 									}	
 				}},				
- 			  	{key:'editBtn', label:'',formatter:function(elCell, oRecord, oColumn, oData) {
+ 			  	{key:'editBtn', label:'',width: 90,formatter:function(elCell, oRecord, oColumn, oData) {
 														elCell.innerHTML = '<img src="images/icons/edit.gif" title="edit row" />';
 														elCell.style.cursor = 'pointer';		
  			    }},
- 			    {key:'deleteBtn',label:'',formatter:function(elCell) {
+ 			    {key:'deleteBtn',label:'',width: 90, formatter:function(elCell) {
          										elCell.innerHTML = '<img src="images/icons/delete.gif" title="delete row" />';
          										elCell.style.cursor = 'pointer';
      			}},
-     			{key:"scanTime", label:'',sortable:false, className:"forms1"}
+     			{key:"scanTime", label:'',sortable:false, width: 100, className:"forms1"}
  		 ];
  				 	 
  		assetScanDataTable = new YAHOO.widget.DataTable("contassettable", assetScanColumns, assetScanDataSource, { selectionMode:"single" });
@@ -227,8 +227,13 @@
      
      function getCurrentTimeStamp() {
          var now = new Date();
-         return ((now.getMonth() + 1) + '/' + (now.getDate()) + '/' + now.getFullYear() + " " + now.getHours() + ':'
-                       + ((now.getMinutes() < 10) ? ("0" + now.getMinutes()) : (now.getMinutes())) + ' ' + ((now.getHours() < 12) ? "AM" : "PM"));
+         /* return ((now.getMonth() + 1) + '/' + (now.getDate()) + '/' + now.getFullYear() + " " + now.getHours() + ':'
+                       + ((now.getMinutes() < 10) ? ("0" + now.getMinutes()) : (now.getMinutes())) + ':'
+                       + ((now.getSeconds() < 10) ? ("0" + now.getSeconds()) : (now.getSeconds()))); */
+         
+         return ((now.getFullYear()) + '-' + (now.getMonth() + 1) + '-' + now.getDate() + " " + now.getHours() + ':'
+                 + ((now.getMinutes() < 10) ? ("0" + now.getMinutes()) : (now.getMinutes())) + ':'
+                 + ((now.getSeconds() < 10) ? ("0" + now.getSeconds()) : (now.getSeconds()))) + '.000000';
      }
 
  </script>

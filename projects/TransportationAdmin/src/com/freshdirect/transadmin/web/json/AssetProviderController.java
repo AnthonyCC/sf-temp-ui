@@ -313,7 +313,7 @@ public class AssetProviderController extends BaseJsonRpcController  implements I
 					assetScanInfo.setEmployeeId(assets[intCount][0]);
 					assetScanInfo.setStatus(EnumAssetScanStatus.getEnumByDesc(assets[intCount][2]).getName());
 					assetScanInfo.setScannedBy(com.freshdirect.transadmin.security.SecurityManager.getUserName(getHttpServletRequest()));
-					assetScanInfo.setScannedTime(TransStringUtil.getDatewithTime(assets[intCount][3]));
+					assetScanInfo.setScannedTime(TransStringUtil.getDateWithSeconds(assets[intCount][3]));
 					assetScanInfo.setDeliveryDate(new Date());
 				}
 				if(scannedAssets.size() > 0) {
