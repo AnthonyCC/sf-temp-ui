@@ -27,12 +27,13 @@ var FreshDirect = FreshDirect || {};
 		}
 	};
 
-	var errorHandler = function( e ){
+	var errorHandler = function( e, textStatus, errorThrown ){
 		var status = e.status;
-		DISPATCHER.signal('errorDialog',{
-			message:errorMessages[status]
-		});
-
+		if(status != 0) {
+			DISPATCHER.signal('errorDialog',{
+				message:errorMessages[status]
+			});
+		}
 	};
 
 	var server = Object.create(fd.common.signalTarget,{
