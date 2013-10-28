@@ -92,7 +92,6 @@
               <ec:column cell="date" format="hh:mm aaa"  property="endTime" title="Truck End Time"/>
               <ec:column cell="date" format="HH:mm"      property="preTripTime" title="Pre-Trip Time"/>
               <ec:column cell="date" format="HH:mm"      property="postTripTime" title="Post-Trip Time"/>
-			  <ec:column cell="date" format="hh:mm aaa"  property="endTime" title="*Pref Return"/>   
 			  <ec:column cell="date" format="hh:mm aaa"  property="maxReturnTime" title="Max Return"/>  
               <ec:column property="truckCnt" sortable="true" title="No of Trucks/CD Trailers"/> 
               <ec:column property="equipmentTypeS" sortable="true" title="Equipment Type"/> 

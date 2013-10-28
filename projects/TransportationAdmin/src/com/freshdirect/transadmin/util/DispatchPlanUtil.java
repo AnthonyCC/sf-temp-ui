@@ -206,8 +206,7 @@ public class DispatchPlanUtil {
 
 		try {
 			command.setDispatchGroup(dispatch.getDispatchGroup());
-			command.setStartTime(TransStringUtil.getServerTime(dispatch.getStartTime()));
-			command.setFirstDlvTime(dispatch.getFirstDlvTime());
+			command.setStartTime(TransStringUtil.getServerTime(dispatch.getStartTime()));			
 			if(dispatch.getDispatchTime()!=null)
 				command.setDispatchTime(TransStringUtil.getServerTime(dispatch.getDispatchTime()));
 			if(dispatch.getCheckedInTime()!=null)

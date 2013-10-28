@@ -435,7 +435,7 @@
               <ec:column alias="trnZoneRegion" property="regionZone" title="Region - Zone" />             
               <ec:column property="supervisorEx"   title="Sup" cell="tooltip"  />
               <ec:column cell="date" format="hh:mm aaa"  property="dispatchGroup" title="Group Time"/>
-              <ec:column cell="date" format="hh:mm aaa"  property="startTime" title="Truck Dispatch Time"/>
+              <ec:column cell="date" format="hh:mm aaa"  property="startTimeEx" title="Truck Dispatch Time"/>
               <ec:column alias="trnRouterouteNumber" property="route"  width="10" title="Route"/>
               <ec:column alias="trnTrucktruckNumber" property="truck" width="10"  title="Truck"/>
               <ec:column alias="trnTruckLocation" property="location" width="10"  title="Location"/>

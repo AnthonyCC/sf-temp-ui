@@ -74,8 +74,7 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	
 	private String referenceContextId;
 	private boolean isTeamOverride;
-	
-	private String lastDeliveryTime;
+		
 	private String cutOffTime;
 	private boolean isZoneReg;
 	private String dispatchType;
@@ -748,9 +747,9 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 		}		
 	}
 	
-	public Date getLastDeliveryTimeEx() {
+	public Date getEndTimeEx() {
 		try {
-			return getLastDeliveryTime() != null ? TransStringUtil.getServerTime(getLastDeliveryTime()) : null;
+			return getEndTime() != null ? TransStringUtil.getServerTime(getEndTime()) : null;
 		} catch (ParseException e) {
 			return null;
 		}
@@ -829,16 +828,8 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 		this.referenceContextId = referenceContextId;
 	}
 
-	public String getLastDeliveryTime() {
-		return lastDeliveryTime;
-	}
-
 	public String getCutOffTime() {
 		return cutOffTime;
-	}
-
-	public void setLastDeliveryTime(String lastDeliveryTime) {
-		this.lastDeliveryTime = lastDeliveryTime;
 	}
 
 	public void setCutOffTime(String cutOffTime) {

@@ -105,8 +105,8 @@
               <ec:column alias="region" property="regionCode" title="Region"/>
               <ec:column property="supervisorEx"   title="Sup" cell="tooltip"  />
               <ec:column cell="date" format="hh:mm aaa"  property="dispatchGroup" title="Dispatch Group Time"/>
-              <ec:column cell="date" format="hh:mm aaa"  property="startTime" title="Truck Dispatch Time"/>
-              <ec:column cell="date" format="hh:mm aaa"  property="endTime" title="Truck End Time"/>
+              <ec:column cell="date" format="hh:mm aaa"  property="startTimeEx" title="Truck Dispatch Time"/>
+              <ec:column cell="date" format="hh:mm aaa"  property="endTimeEx" title="Truck End Time"/>
               <ec:column filterable="true" property="drivers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Driver" alias="drivers"/>
               <ec:column filterable="true" property="helpers"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Helper" alias="helpers"/>
               <ec:column filterable="true" property="runners"  cell="com.freshdirect.transadmin.web.ui.FDPlanResourceCell" title="Runner" alias="runners"/>

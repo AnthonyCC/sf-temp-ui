@@ -55,7 +55,6 @@ public class DispatchCommand extends WebPlanInfo {
     
     private String location;
     private String dispatchTime;
-    private Date firstDlvTime;
     private String checkedInTime;
     private EnumStatus dispatchStatus;
 	private boolean dispatched;
@@ -148,13 +147,7 @@ public class DispatchCommand extends WebPlanInfo {
 	public void setComments(String comments) {
 		this.comments = comments;
 	}
-	public Date getFirstDlvTime() {
-		return firstDlvTime;
-	}
-	public void setFirstDlvTime(Date firstDlvTime) {
-		this.firstDlvTime = firstDlvTime;
-	}
-
+	
 	@SuppressWarnings("unchecked")
 	public Set getResources() {
 		Set dispatchResources = new HashSet();
