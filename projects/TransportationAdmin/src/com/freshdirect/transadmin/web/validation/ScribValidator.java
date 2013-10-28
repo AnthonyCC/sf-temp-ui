@@ -21,7 +21,7 @@ public class ScribValidator extends AbstractValidator {
 			errors.rejectValue("destinationFacility", "app.error.112", new Object[]{"Destination Facility"},"required field");
 		}
 		if (model.getStartTime() == null) {
-			errors.rejectValue("startTimeS", "app.error.112", new Object[]{"Start Time"},"required field");
+			errors.rejectValue("startTimeS", "app.error.112", new Object[]{"Truck Dispatch Time"},"required field");
 		}
 		if (model.getDispatchGroup() == null) {
 			errors.rejectValue("dispatchGroupS", "app.error.112", new Object[]{"Dispatch group time"},"required field");
