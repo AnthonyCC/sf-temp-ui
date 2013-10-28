@@ -11,7 +11,11 @@
 	{param item:$item /}
 	{param type:$itemType /}
 {/call}
-{ifempty}
+{/foreach}
+</ol>
+
+{if length($data) == 0}
+<div class="qs-tabhelp">
 {switch $itemType}
 {case 'shopfromlists'}
 	{call common.listhelp /}
@@ -20,6 +24,6 @@
 {default}
 	{call quickshop.pastOrdersHelp /}
 {/switch}
-{/foreach}
-</ol>
+</div>
+{/if}
 {/template}
