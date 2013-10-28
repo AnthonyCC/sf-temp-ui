@@ -770,8 +770,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 		jdbcTemplate.query(creator, 
 				  new RowCallbackHandler() { 
 				      public void processRow(ResultSet rs) throws SQLException {				    	
-				    	  	do {				    	  		
-				    	  		Date _groupTime = rs.getTimestamp("DISPATCH_GROUPTIME");
+				    	  	do {
 					    		Date _startTime = rs.getTimestamp("TRUCK_DISPATCHTIME");
 					    		Date _endTime = rs.getTimestamp("TRUCK_ENDTIME");
 					    		Date _maxTime = rs.getTimestamp("MAX_TIME");
@@ -785,7 +784,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					    		if(_startTime != null && _endTime != null 
 				    					&& _cutOffTime != null && _destCode != null) {
 					    			
-					    			RoutingTimeOfDay _dispatchTime = new RoutingTimeOfDay(_groupTime);
+					    			RoutingTimeOfDay _dispatchTime = new RoutingTimeOfDay(_startTime);
 					    			
 					    			Date startTime = RoutingDateUtil.addMinutes(_startTime
 					    															, (toFacilityTime != 0 ? toFacilityTime : fromFacilityTime));
