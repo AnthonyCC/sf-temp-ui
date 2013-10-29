@@ -64,6 +64,9 @@ var FreshDirect = FreshDirect || {};
         if (item) {
           item.lineId = itemId;
           item.deleteItem = true;
+          if(listId) {
+        	  item.listId = listId;
+          }
 
           this.DISPATCHER.signal('server',{
               url: '/api/qs/shoppingLists/'+listId+'/'+itemId,
