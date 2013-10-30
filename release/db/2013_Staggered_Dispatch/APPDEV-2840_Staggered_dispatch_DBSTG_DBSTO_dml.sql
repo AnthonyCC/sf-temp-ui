@@ -1,7 +1,5 @@
 /* Rollout DML scripts */
 
-update transp.zone set pretrip_time = 15, posttrip_time = 0;
-
 update transp.scrib set zone_code = zone_id;
 
 update transp.scrib_bid sb set sb.dispatch_grouptime = sb.time;
@@ -50,5 +48,57 @@ Insert into TRANSP.DISPATCH_GROUP  (ID, NAME, DISPATCH_GROUPTIME) Values (transp
 Insert into TRANSP.DISPATCH_GROUP  (ID, NAME, DISPATCH_GROUPTIME) Values (transp.DISPATCHGROUPSEQ.nextval, '04:30 PM', TO_DATE('01/01/1970 16:30:00', 'MM/DD/YYYY HH24:MI:SS'));
 Insert into TRANSP.DISPATCH_GROUP  (ID, NAME, DISPATCH_GROUPTIME) Values (transp.DISPATCHGROUPSEQ.nextval, '05:00 PM', TO_DATE('01/01/1970 17:00:00', 'MM/DD/YYYY HH24:MI:SS'));
 Insert into TRANSP.DISPATCH_GROUP  (ID, NAME, DISPATCH_GROUPTIME) Values (transp.DISPATCHGROUPSEQ.nextval, '06:30 PM', TO_DATE('01/01/1970 18:30:00', 'MM/DD/YYYY HH24:MI:SS'));
+
+update transp.zone set pretrip_time = 20, posttrip_time = 15 where zone_code='920';
+update transp.zone set pretrip_time = 20, posttrip_time = 15 where zone_code='922';
+update transp.zone set pretrip_time = 40, posttrip_time = 15 where zone_code='005';
+update transp.zone set pretrip_time = 40, posttrip_time = 15 where zone_code='013';
+update transp.zone set pretrip_time = 40, posttrip_time = 15 where zone_code='014';
+update transp.zone set pretrip_time = 10, posttrip_time = 15 where zone_code='019';
+update transp.zone set pretrip_time = 30, posttrip_time = 15 where zone_code='030';
+update transp.zone set pretrip_time = 40, posttrip_time = 15 where zone_code='040';
+update transp.zone set pretrip_time = 40, posttrip_time = 15 where zone_code='050';
+update transp.zone set pretrip_time = 40, posttrip_time = 15 where zone_code='060';
+update transp.zone set pretrip_time = 40, posttrip_time = 15 where zone_code='061';
+update transp.zone set pretrip_time = 40, posttrip_time = 15 where zone_code='080';
+update transp.zone set pretrip_time = 40, posttrip_time = 15 where zone_code='520';
+update transp.zone set pretrip_time = 40, posttrip_time = 15 where zone_code='521';
+update transp.zone set pretrip_time = 40, posttrip_time = 15 where zone_code='522';
+update transp.zone set pretrip_time = 40, posttrip_time = 15 where zone_code='523';
+update transp.zone set pretrip_time = 40, posttrip_time = 15 where zone_code='524';
+update transp.zone set pretrip_time = 30, posttrip_time = 15 where zone_code='531';
+update transp.zone set pretrip_time = 30, posttrip_time = 15 where zone_code='532';
+update transp.zone set pretrip_time = 30, posttrip_time = 15 where zone_code='533';
+update transp.zone set pretrip_time = 30, posttrip_time = 15 where zone_code='536';
+update transp.zone set pretrip_time = 30, posttrip_time = 15 where zone_code='541';
+update transp.zone set pretrip_time = 30, posttrip_time = 15 where zone_code='542';
+update transp.zone set pretrip_time = 30, posttrip_time = 15 where zone_code='543';
+update transp.zone set pretrip_time = 50, posttrip_time = 15 where zone_code='505';
+update transp.zone set pretrip_time = 20, posttrip_time = 15 where zone_code='562';
+update transp.zone set pretrip_time = 28, posttrip_time = 15 where zone_code='580';
+update transp.zone set pretrip_time = 30, posttrip_time = 15 where zone_code='002';
+update transp.zone set pretrip_time = 45, posttrip_time = 15 where zone_code='500';
+update transp.zone set pretrip_time = 40, posttrip_time = 15 where zone_code='515';
+update transp.zone set pretrip_time = 40, posttrip_time = 15 where zone_code='516';
+update transp.zone set pretrip_time = 50, posttrip_time = 15 where zone_code='560';
+update transp.zone set pretrip_time = 50, posttrip_time = 15 where zone_code='561';
+update transp.zone set pretrip_time = 30, posttrip_time = 15 where zone_code='581';
+update transp.zone set pretrip_time = 25, posttrip_time = 15 where zone_code='400';
+update transp.zone set pretrip_time = 5,  posttrip_time = 15 where zone_code='450';
+update transp.zone set pretrip_time = 15, posttrip_time = 15 where zone_code='451';
+update transp.zone set pretrip_time = 30, posttrip_time = 15 where zone_code='452';
+update transp.zone set pretrip_time = 5,  posttrip_time = 15 where zone_code='453';
+update transp.zone set pretrip_time = 20, posttrip_time = 15 where zone_code='475';
+update transp.zone set pretrip_time = 20, posttrip_time = 15 where zone_code='476';
+update transp.zone set pretrip_time = 35, posttrip_time = 15 where zone_code='477';
+update transp.zone set pretrip_time = 20, posttrip_time = 15 where zone_code='478';
+update transp.zone set pretrip_time = 20, posttrip_time = 15 where zone_code='479';
+update transp.zone set pretrip_time = 20, posttrip_time = 15 where zone_code='483';
+update transp.zone set pretrip_time = 0,  posttrip_time = 15 where zone_code='680';
+update transp.zone set pretrip_time = 0,  posttrip_time = 15 where zone_code='690';
+update transp.zone set pretrip_time = 50, posttrip_time = 15 where zone_code='200';
+update transp.zone set pretrip_time = 40, posttrip_time = 15 where zone_code='585';
+update transp.zone set pretrip_time = 10, posttrip_time = 15 where zone_code='700';
+update transp.zone set pretrip_time = 30, posttrip_time = 15 where zone_code='750';
 
 commit;
