@@ -29,7 +29,9 @@ import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
+import com.freshdirect.fdstore.atp.NullAvailability;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartI;
@@ -82,6 +84,7 @@ import com.freshdirect.webapp.taglib.fdstore.FDShoppingCartControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.util.RestrictionUtil;
+import com.freshdirect.webapp.util.ShoppingCartUtil;
 
 /**
  * Mobile API wrapper for FDCart
@@ -102,6 +105,12 @@ public class Cart {
         return newInstance;
     }
 
+    public static Cart cloneCart(Cart cart) {
+        Cart newInstance = new Cart();
+        newInstance.cart = new FDCartModel(cart.getCart());
+        return newInstance;
+    }
+    
     private Cart() {
     }
 
@@ -148,7 +157,10 @@ public class Cart {
     public void setDeliveryAddress(ShipToAddress shippingAddress) {
         ((FDCartModel) cart).setDeliveryAddress(shippingAddress.getAddress());
     }
-
+    
+    public void setUnavailablePasses(List<DlvPassAvailabilityInfo> unavailablePasses) {
+        ((FDCartModel) cart).setUnavailablePasses(unavailablePasses);
+    }
     /**
      * Sets availability flag and returns results
      * 
@@ -386,6 +398,18 @@ public class Cart {
         return ((FDCartModel) cart).getDeliveryAddress();
     }
 
+    public FDReservation getDeliveryReservation() {
+        return ((FDCartModel) cart).getDeliveryReservation();
+    }
+    
+	public FDAvailabilityI getAvailability() {
+		return ((FDCartModel) cart).getAvailability() == null ? NullAvailability.AVAILABLE : ((FDCartModel) cart).getAvailability();
+	}
+
+	public void setAvailability(FDAvailabilityI availability) {
+		((FDCartModel) cart).setAvailability(availability);
+	}
+	
     /**
      * @param qetRequestData
      * @param user
@@ -418,6 +442,10 @@ public class Cart {
     
     public double getSubTotal() {
         return cart.getSubTotal();
+    }
+
+    public double getSubTotalATPCheck() {
+        return ShoppingCartUtil.getSubTotal(cart);
     }
 
     public double getTotal() {

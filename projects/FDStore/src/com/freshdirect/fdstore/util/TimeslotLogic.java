@@ -29,6 +29,7 @@ import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.delivery.restriction.TimeslotRestriction;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
@@ -37,19 +38,12 @@ import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.promotion.PromotionHelper;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
-import com.freshdirect.fdstore.rules.TimeslotCondition;
+import com.freshdirect.fdstore.rules.OrderMinimumCalculator;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
-import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
-import com.freshdirect.rules.ConditionI;
-import com.freshdirect.rules.Rule;
-import com.freshdirect.rules.RuleRuntime;
-import com.freshdirect.rules.RuleRuntimeI;
-import com.freshdirect.rules.RulesEngineI;
-import com.freshdirect.rules.RulesRegistry;
 
 /**
  * Utility to calculate available capacity in given circumstances.
@@ -170,7 +164,7 @@ public class TimeslotLogic {
 		}
 		
 		user.setSteeringSlotIds(new HashSet<String>());
-		boolean isVariableMinimumSet = false;
+		boolean minOrderReqd = false;
 		
 		for (FDTimeslotUtil list : timeslotList) {
 			for (Collection<FDTimeslot> col : list.getTimeslots()) {
@@ -329,13 +323,12 @@ public class TimeslotLogic {
 
 					stats.incrementTotalSlots();
 					
-					//isVariableMinimumSet = applyOrderMinium(user, timeslot);
+					minOrderReqd = applyOrderMinimum(user, timeslot) || minOrderReqd;
 				}
 			}
-			
-			if(isVariableMinimumSet) {
-				deliveryModel.setMinimumOrderSet(true);
-			}
+		
+			deliveryModel.setMinOrderReqd(minOrderReqd);
+		
 
 			stats.updateKosherSlotAvailable(list.isKosherSlotAvailable(restrictions));
 			if (!genericTimeslots)
@@ -349,61 +342,55 @@ public class TimeslotLogic {
 		return stats;
 	}
 
-
-	/*------------------------------- APPDEV-3019 - variable order minimum ---------------------------------*/
-	//check each FDTimeslot to see if it has a minimum to be displayed			
-	private static boolean applyOrderMinium(FDUserI user, FDTimeslot timeslot) {
-		boolean isVariableMinimumSet = false;
+	public static boolean applyOrderMinimum(FDUserI user, FDTimeslot timeslot) {
 		try{
-			RulesEngineI ruleEngine = RulesRegistry.getRulesEngine("TIMESLOT");
-			Map rules = ruleEngine.getRules();
-			StringBuffer vMsg = new StringBuffer();
-			FDRulesContextImpl ctx = new FDRulesContextImpl(user);
-			for(Iterator i = rules.values().iterator(); i.hasNext(); ) {
-				Rule r = (Rule) i.next();
-				List<ConditionI> c=r.getConditions();
-				if(c!=null&&c.size()>0) {
-					for (ConditionI cObj : c) {
-						if(cObj instanceof TimeslotCondition) {
-							TimeslotCondition con=(TimeslotCondition)cObj;
-								
-							if(con.getStartTimeDay()!=null && con.getStartTimeDay().equals(timeslot.getDlvTimeslot().getStartTime())
-								   && con.getEndTimeDay()!=null && con.getEndTimeDay().equals(timeslot.getDlvTimeslot().getEndTime())
-								   && con.getDay()!=null && con.getDay().equalsIgnoreCase(DateUtil.formatDayOfWeek(timeslot.getBaseDate()))) {
-								isVariableMinimumSet = true;
-								double orderTotal = MathUtil.roundDecimal(ctx.getOrderTotal());
-								Double conMinimum = con.getOrderMinimum();
-								if(MathUtil.roundDecimal(conMinimum.doubleValue()) <= orderTotal) {
-									/*order minimum met, do nothing */
-								} else {
-									//order minimum not met
-									vMsg.append("$"+QUANTITY_FORMATTER.format(conMinimum.doubleValue())+"&nbsp;Min.");
-								}
-							} else {
-								/*timslot rule is not for this timeslot. so break the loop*/
-								break;
-							}
-						} else {
-							RuleRuntimeI rt = new RuleRuntime(rules);
-							boolean res = cObj.evaluate(ctx, rt); // rt.evaluateRule(new FDRulesContextImpl(user), r);
-							if (!res) {
-								isVariableMinimumSet = false;
-								break;
-							}
-						}
-					}
-				}
-			}	
-			if(isVariableMinimumSet && vMsg.length() > 0) {
-				timeslot.setVariableMinimumMsg(vMsg.toString());
+			OrderMinimumCalculator calc = new OrderMinimumCalculator("TIMESLOT");
+			FDRulesContextImpl ctx = new FDRulesContextImpl(user, timeslot);
+			double orderMinimum = calc.getOrderMinimum(ctx);
+			
+			if(orderMinimum > 0) {
+				timeslot.setMinOrderMet(false);
+				timeslot.setMinOrderAmt(orderMinimum);
+				timeslot.setMinOrderMsg(formatMinAmount(orderMinimum)+" Min.");
+			}else{
+				timeslot.setMinOrderMet(true);
+				timeslot.setMinOrderAmt(0);
+				timeslot.setMinOrderMsg("");
 			}
+			
 		}catch(Exception e){
 			LOGGER.error(e);
+			e.printStackTrace();
 		}
-		return isVariableMinimumSet;
+		return !timeslot.isMinOrderMet();
 	}
 
+	public static boolean applyOrderMinimum(FDUserI user, FDTimeslot timeslot, double subTotal) {
+		try{
+			OrderMinimumCalculator calc = new OrderMinimumCalculator("TIMESLOT");
+			FDRulesContextImpl ctx = new FDRulesContextImpl(user, timeslot, subTotal);
+			double orderMinimum = calc.getOrderMinimum(ctx);
+			
+			if(orderMinimum > 0) {
+				timeslot.setMinOrderMet(false);
+				timeslot.setMinOrderAmt(orderMinimum);
+				timeslot.setMinOrderMsg(formatMinAmount(orderMinimum)+"&nbsp;Min.");
+			}else{
+				timeslot.setMinOrderMet(true);
+				timeslot.setMinOrderAmt(0);
+				timeslot.setMinOrderMsg("");
+			}
+			
+		}catch(Exception e){
+			LOGGER.error(e);
+			e.printStackTrace();
+		}
+		return !timeslot.isMinOrderMet();
+	}
 
+	public static String formatMinAmount(double minOrderAmt){
+		return "$"+QUANTITY_FORMATTER.format(minOrderAmt);
+	}
 	private static boolean isTimeslotAlcoholRestricted(List<RestrictionI> alcoholRestrictions, FDTimeslot slot) {
 		if(alcoholRestrictions.size()>0 && slot != null){
 			DateRange slotRange = new DateRange(slot.getBegDateTime(),slot.getEndDateTime());
@@ -472,7 +459,54 @@ public class TimeslotLogic {
 			}
 		}
 	}
+	public static void clearVariableMinimum(FDUserI user, Collection<FDTimeslotUtil> timeslotList) {
+		for (FDTimeslotUtil list : timeslotList) {
+			for (Collection<FDTimeslot> col : list.getTimeslots()) {
+				for (Iterator<FDTimeslot> k = col.iterator(); k.hasNext(); ) {
+					FDTimeslot timeslot = k.next();
+						timeslot.setMinOrderAmt(0);
+						timeslot.setMinOrderMet(true);
+						timeslot.setMinOrderMsg("");
+				}
+			}
+		}
+		if(user!=null && user.getReservation()!=null && !user.getReservation().isMinOrderMet()){
+			clearVariableMinimumTs(user.getReservation().getTimeslot());
+		}
+		if(user!=null && user.getShoppingCart()!=null &&  user.getShoppingCart().getDeliveryReservation()!=null && 
+				!user.getShoppingCart().getDeliveryReservation().isMinOrderMet()){
+			clearVariableMinimumTs(user.getShoppingCart().getDeliveryReservation().getTimeslot());
+		}
+	}
+	public static void clearVariableMinimumTs(FDTimeslot timeslot){
+		if(timeslot!=null){
+			timeslot.setMinOrderAmt(0);
+			timeslot.setMinOrderMet(true);
+			timeslot.setMinOrderMsg("");
+		}
+	}
 	
+	public static boolean isTSPreReserved(FDReservation rsv, FDDeliveryTimeslotModel deliveryModel){
+		
+		return (rsv!=null && !rsv.isMinOrderMet() 
+	    		&& (deliveryModel.getTimeSlotId().equals(rsv.getTimeslotId()) || 
+	    				(deliveryModel.getPreReserveSlotId().equals(rsv.getTimeslotId()) && deliveryModel.isPreReserved()) ));
+	}
+	
+	public static boolean isTSMinOrderNotMet(FDTimeslot slot, FDReservation rsv, FDDeliveryTimeslotModel deliveryModel){
+		
+		return (!slot.isMinOrderMet() && !(rsv!=null && !rsv.isMinOrderMet() && rsv.getTimeslotId().equals(slot.getTimeslotId())
+				&& (deliveryModel.getTimeSlotId().equals(rsv.getTimeslotId())||
+						(deliveryModel.getPreReserveSlotId().equals(rsv.getTimeslotId()) && deliveryModel.isPreReserved())) ));
+	}
+	
+	public static boolean isTSRsvOrderNotMet(FDTimeslot slot, FDReservation rsv, FDDeliveryTimeslotModel deliveryModel){
+	
+		return (rsv!=null && !rsv.isMinOrderMet() && rsv.getTimeslotId().equals(slot.getTimeslotId())
+			&& (deliveryModel.getTimeSlotId().equals(rsv.getTimeslotId())||
+					(deliveryModel.getPreReserveSlotId().equals(rsv.getTimeslotId()) && deliveryModel.isPreReserved())));
+	}
+
 
 	/**
 	 * Utility method to purge SameDay items from timeslot list

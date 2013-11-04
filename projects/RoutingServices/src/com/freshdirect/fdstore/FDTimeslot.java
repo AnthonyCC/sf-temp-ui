@@ -35,7 +35,9 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	private String storeFrontAvailable;
 	private boolean unavailable;
 	private DecimalFormat premiumAmountFmt = new DecimalFormat("#.##");
-	private String variableMinimumMsg;
+	private String minOrderMsg = "";
+	private double minOrderAmt = 0;
+	private boolean minOrderMet = true;
 	private boolean timeslotRestricted;
 	/** Creates new FDTimeslot */
 	public FDTimeslot(DlvTimeslotModel dlvTimeslot) {
@@ -285,12 +287,12 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 		return dlvTimeslot.getRegionSvcType();
 	}
 
-	public String getVariableMinimumMsg() {
-		return variableMinimumMsg;
+	public String getMinOrderMsg() {
+		return minOrderMsg;
 	}
 
-	public void setVariableMinimumMsg(String variableMinimumMsg) {
-		this.variableMinimumMsg = variableMinimumMsg;
+	public void setMinOrderMsg(String minOrderMsg) {
+		this.minOrderMsg = minOrderMsg;
 	}
 
 	public void setTimeslotRestricted(boolean tsRestricted) {
@@ -299,5 +301,25 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 
 	public boolean isTimeslotRestricted() {
 		return timeslotRestricted;
+	}
+
+	public double getMinOrderAmt() {
+		return minOrderAmt;
+	}
+
+	public boolean isMinOrderSlot() {
+		return (minOrderAmt>0)?true:false;
+	}
+
+	public void setMinOrderAmt(double minOrderAmt) {
+		this.minOrderAmt = minOrderAmt;
+	}
+
+	public boolean isMinOrderMet() {
+		return minOrderMet;
+	}
+
+	public void setMinOrderMet(boolean minOrderMet) {
+		this.minOrderMet = minOrderMet;
 	}
 }

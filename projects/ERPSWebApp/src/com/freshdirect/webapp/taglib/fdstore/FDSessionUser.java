@@ -1625,4 +1625,14 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public boolean isPaymentechEnabled() {
 		return this.user.isPaymentechEnabled();
 	}
+
+	@Override
+	public double getMinHomeOrderAmount() {
+    	return this.user.getMinHomeOrderAmount();
+    }
+
+	@Override
+	public void applyOrderMinimum() {
+		this.user.applyOrderMinimum();
+	}
 }

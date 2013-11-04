@@ -51,6 +51,9 @@
     String timeSlotId = request.getParameter("deliveryTimeslotId");
 	int page_type = TimeslotLogic.PAGE_NORMAL;
 	
+	FDReservation rsv = ( user!=null &&  user.getShoppingCart()!=null)  ? user.getShoppingCart().getDeliveryReservation(): null;
+	if(rsv == null) rsv = user!=null ? user.getReservation(): null;
+
 	final boolean forceOrder = "true".equalsIgnoreCase(request.getParameter("forceorder"));
 	TimeslotContext timeSlotCtx= TimeslotContext.CHECKOUT_TIMESLOTS;
 %>
@@ -130,7 +133,16 @@
     <% if (CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"forceorder")) { %>
 		<td align="right"><a href="/checkout/checkout_delivery_time.jsp?forceorder=true" class="checkout">FORCE ORDER >></a></td>
 	<% } %>
-	<td align="right"><a href="javascript:select_delivery_slot.submit()" class="checkout">CONTINUE CHECKOUT >></a></td>
+	
+	 <td align="right">
+   <%  if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
+    		<a onclick="return false" id="disablecheckout">CONTINUE CHECKOUT >></a>
+	
+	<% }else{ %>
+			<a href="javascript:select_delivery_slot.submit()" class="checkout">CONTINUE CHECKOUT >></a>
+	<% } %>
+	</td>
+	
 	</TR>
 </TABLE>
 
@@ -157,6 +169,12 @@
 	<!-- LOYALTY -->
 
 <!--START MESSAGING SECTION-->
+
+<% 
+String view_cart_redir = "/order/place_order_build.jsp";
+if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
+<%@ include file="/shared/includes/delivery/i_variable_minnotmet_messages.jspf"%> 
+<%} %>
 
 <!-- GEO Restriction Message Added -->
 <% if(messages != null && messages.size() >= 1) { %>
@@ -228,6 +246,13 @@
 		<td align="right">
 					<table>
 							<tr>
+								<%if(deliveryModel.isMinOrderReqd()){%>
+										<td>
+											<font class="tsDiscountC" style="color:#669933;">$&nbsp;</font>
+										</td>
+										<td><div onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_variable_minimum.html&windowSize=small&name=Minimum Order','small');return false;"><%= FDStoreProperties.getMinOrderLabel()%></div></td>
+										<td>&nbsp;</td>
+								<%}%>
 								<%if(deliveryModel.getEcoFriendlyCount() > 0){%>
 									<td>
 										<img src="/media_stat/images/timeslots/ecofriendly_leaf.gif" WIDTH="16" HEIGHT="16" border="0">
@@ -382,6 +407,29 @@
 <%}%>
 
 	</FORM>
+	<script type="text/javascript">
+	
+			function handlechangetimeslot(reserved_slot){
+			
+				if(reserved_slot!=''){
+					$jq(':radio').each(function(){
+						if($jq(this).val() == reserved_slot){
+							if($jq(this).parent().siblings().hasClass("tsMinOrderPropE") || $jq(this).parent().siblings().hasClass("tsMinOrderPropC")){	
+								$jq(this).parent().siblings(".tsMinOrderPropE").find(".tsMinOrderE").attr('style','color:#669933')
+								$jq(this).parent().siblings(".tsMinOrderPropC").find(".tsMinOrderC").attr('style','color:#669933')
+								$jq(this).remove();
+							}
+						}
+					});
+					$jq("#disablecheckout").attr('href', 'javascript:select_delivery_slot.submit()');
+					$jq("#disablecheckout").attr('class', 'checkout');
+					$jq("#disablecheckout").removeAttr('onclick');
+					$jq("#disablecheckout").removeAttr('id');
+				}
+			}
+			
+			
+	</script>
 </TABLE>
 </div>
 </tmpl:put>

@@ -47,6 +47,8 @@ public interface MessageCodes {
 
     public static final String ERR_ATP_FAILED = "ERR_ATP_FAILED";
     
+    public static final String ERR_ATP_MIN_ORDER_FAILED = "ERR_ATP_MIN_ORDER_FAILED";
+    
     public static final String ERR_ATP_TYPE_KOSHER = "ERR_ATP_TYPE_KOSHER";
 
     public static final String ERR_ATP_TYPE_GENERIC_RESTRICTED_AVAILABILITY = "ERR_ATP_TYPE_GENERIC_RESTRICTED_AVAILABILITY";

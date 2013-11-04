@@ -119,6 +119,9 @@ int page_type = TimeslotLogic.PAGE_NORMAL;
 	String selectedSlotId = deliveryModel.getTimeSlotId();
 	String preReserveSlotId = deliveryModel.getPreReserveSlotId();
 	boolean hasPreReserved = deliveryModel.isPreReserved();
+	FDReservation rsv = cart.getDeliveryReservation();
+	if(rsv == null) rsv = user.getReservation();
+	
 	boolean defaultColExp = false;
 	String zoneId = deliveryModel.getZoneId();
 
@@ -208,7 +211,7 @@ zonePromoEnabled=true;
 		<span class="checkout-delivery-fee"><% if (FDStoreProperties.isNewFDTimeslotGridEnabled()) { %><fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/><% } %></span>
 		<%@ include file="/includes/i_cart_delivery_fee.jspf" %>
 	</tmpl:put>
-	<tmpl:put name="next-button"><%@ include file="/includes/i_cart_next_step_button.jspf" %></tmpl:put>
+	<tmpl:put name="next-button"><%@ include file="/includes/i_cart_next_step2_button.jspf" %></tmpl:put>
 </tmpl:insert>
 <!-- PROFILE HEADER -->
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL%>" ALIGN="center">
@@ -224,6 +227,7 @@ zonePromoEnabled=true;
 		</td>
 	</TR>
 </TABLE>
+
 
 <!--START MESSAGING SECTION-->
 
@@ -255,6 +259,12 @@ if (errorMsg==null && user.isPromotionAddressMismatch()) {
 if (errorMsg!=null) {%> 
 	<%@ include file="/includes/i_timeslot_error_messages.jspf"%> 
 <%}%>
+
+<% 
+String view_cart_redir = "/checkout/view_cart.jsp";
+if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
+<%@ include file="/shared/includes/delivery/i_variable_minnotmet_messages.jspf"%> 
+<%} %>
 
 <!-- Alcohol, SpecialItems, holiday, deliveryPass, noCapacity warning Messages -->
 
@@ -338,11 +348,12 @@ if (errorMsg!=null) {%>
 						<td Valign="middle" align="right">
 						 	<table>
 								<tr>
-									<%if(deliveryModel.isMinimumOrderSet()){%>
+									<%if(deliveryModel.isMinOrderReqd()){%>
 										<td>
 											<font class="tsDiscountC" style="color:#669933;">$&nbsp;</font>
 										</td>
-										<td style="color:#000000;">Minimum Order Applies</td>
+										<td style="color:#000000;">
+										<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_variable_minimum.html&windowSize=small&name=Minimum Order','small');return false;"><%= FDStoreProperties.getMinOrderLabel()%></td>
 										<td>&nbsp;</td>
 									<%}%>
 									<%if(deliveryModel.getEcoFriendlyCount() > 0){%>
@@ -578,7 +589,7 @@ if (errorMsg!=null) {%>
 	</div>
 	<% if (hasCapacity) { %>
 	<div style="float: right;">
-		<% if(modifyOrderMode) { %><a class="imgButtonWhite cancel_updates" href="/your_account/cancel_modify_order.jsp">cancel updates</a><% } %><%@ include file="/includes/i_cart_next_step_button.jspf" %>
+		<% if(modifyOrderMode) { %><a class="imgButtonWhite cancel_updates" href="/your_account/cancel_modify_order.jsp">cancel updates</a><% } %><%@ include file="/includes/i_cart_next_step2_button.jspf" %>
 	</div>
 	<% } %>
 	<div style="clear: both;"></div>
@@ -611,6 +622,24 @@ if (errorMsg!=null) {%>
 		if(document.getElementById("loyalty2")){
 			document.getElementById("loyalty2").style.display="block";
 		}
+	}
+	
+	function handlechangetimeslot(reserved_slot){
+		
+		$jq(':radio').each(function(){
+			if($jq(this).val() == reserved_slot){
+				if($jq(this).parent().siblings().hasClass("tsMinOrderPropE") || $jq(this).parent().siblings().hasClass("tsMinOrderPropC")){	
+					$jq(this).parent().siblings(".tsMinOrderPropE").find(".tsMinOrderE").attr('style','color:#669933')
+					$jq(this).parent().siblings(".tsMinOrderPropC").find(".tsMinOrderC").attr('style','color:#669933')
+					$jq(this).remove();
+				}
+			}
+		});
+		$jq('button.imgButtonGrey').each(function(){
+			$jq(this).attr("class","imgButtonOrange");
+			$jq(this).append('<img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" />');
+			$jq(this).attr("disabled",false);
+		});
 	}
 	
 </script>

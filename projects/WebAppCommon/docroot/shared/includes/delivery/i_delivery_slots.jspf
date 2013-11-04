@@ -35,6 +35,7 @@
 <%
 
 
+String varminslot = "".equals(selectedSlotId)?preReserveSlotId:selectedSlotId;
 boolean showPremiumSlots = deliveryModel.isShowPremiumSlots();
 boolean dpNewTcBlock = user.isDpNewTcBlocking(false);
 Date sameDayCutoff = deliveryModel.getSameDayCutoff();

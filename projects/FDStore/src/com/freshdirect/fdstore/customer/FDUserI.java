@@ -285,6 +285,8 @@ public interface FDUserI extends java.io.Serializable {
 	public double getBaseDeliveryFee();
 
 	public double getMinCorpOrderAmount();
+	
+	public double getMinHomeOrderAmount();
 
 	public double getCorpDeliveryFee();
 
@@ -579,4 +581,5 @@ public interface FDUserI extends java.io.Serializable {
 	public IPackagingModel getHistoricOrderSize() throws FDResourceException;
 	public EnumRegionServiceType getRegionSvcType(String addressId);
 	public boolean isPaymentechEnabled();
+	public void applyOrderMinimum();
 }

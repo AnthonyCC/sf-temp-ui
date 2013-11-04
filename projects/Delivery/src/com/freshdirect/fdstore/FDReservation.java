@@ -20,7 +20,7 @@ public class FDReservation extends ModelSupport {
 	
 	private final Date expirationDateTime;
 	private final EnumReservationType type;
-	private final FDTimeslot timeslot;
+	private FDTimeslot timeslot;
 	private final String customerId;
 	private final String addressId;
 	private final String orderId;
@@ -35,7 +35,7 @@ public class FDReservation extends ModelSupport {
 	private String locationId;
 	private int reservedOrdersAtBuilding;
 	private EnumRegionServiceType regionSvcType;
-	
+   
 	public FDReservation(
 		PrimaryKey pk,
 		FDTimeslot timeslot,
@@ -122,6 +122,10 @@ public class FDReservation extends ModelSupport {
 	
 	public FDTimeslot getTimeslot() {
 		return this.timeslot;
+	}
+	
+	public void setTimeslot(FDTimeslot timeslot) {
+		this.timeslot = timeslot;
 	}
 
 	public String getZoneId() {
@@ -221,4 +225,14 @@ public class FDReservation extends ModelSupport {
 	public boolean isInBulkZone(){
 		return (this.regionSvcType!=null && EnumRegionServiceType.isHybrid(this.regionSvcType));
 	}
+	public boolean isMinOrderMet() {
+		return this.timeslot.isMinOrderMet();
+	}
+	public double getMinOrderAmt() {
+		return this.timeslot.getMinOrderAmt();
+	}
+	public boolean isMinOrderSlot() {
+		return this.timeslot.isMinOrderSlot();
+	}
+
 }

@@ -1,13 +1,17 @@
+<%@page import="com.freshdirect.webapp.util.ShoppingCartUtil"%>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="com.freshdirect.fdstore.atp.*" %>
+<%@ page import="com.freshdirect.fdstore.util.*" %>
 <%@ page import="com.freshdirect.delivery.restriction.FDRestrictedAvailabilityInfo" %>
 <%@ page import='com.freshdirect.webapp.util.JspLogger' %>
 <%@ page import='com.freshdirect.delivery.restriction.EnumDlvRestrictionReason' %>
 <%@ page import='com.freshdirect.common.pricing.MunicipalityInfo' %>
 <%@ page import='java.util.*' %>
 <%@ page import='org.apache.commons.lang.StringUtils'%>
+<%@ page import='com.freshdirect.fdstore.util.TimeslotLogic'%>
+
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="logic" prefix="logic" %>
@@ -44,6 +48,26 @@ if(invsInfoMap.size() > 0 ){
 <img src="/media_stat/images/layout/ff9933.gif" width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL%>" height="1" border="0"><br>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="6" border="0"><br>
 </td></tr>
+
+
+<% 
+Double subTotal = null;
+
+
+FDCartModel clonedCart = new FDCartModel( cart );
+clonedCart.setUnavailablePasses(cart.getUnavailablePasses());
+clonedCart.setAvailability(cart.getAvailability());
+subTotal = ShoppingCartUtil.getSubTotal(clonedCart);
+TimeslotLogic.applyOrderMinimum(user, reservation.getTimeslot(), subTotal);		
+	
+if(subTotal!=null && subTotal < reservation.getMinOrderAmt()) {
+	String view_cart_redir = "/checkout/view_cart.jsp";
+	String timeslot_redir = "/checkout/step_2_select.jsp";
+%>
+<%@ include file="/shared/includes/delivery/i_variable_unavail_minnotmet_messages.jspf"%> 
+<% } 
+else{%>
+
 <tr><td class="text11">
 		We're sorry, but some items are not available for delivery on <%= dateFormatter.format(reservation.getStartTime()) %>.
 		If you choose to continue, the items below will be adjusted to the quantity we can deliver.
@@ -57,6 +81,8 @@ if(invsInfoMap.size() > 0 ){
 		
 		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4">
 </td></tr>
+<%} %>
+
 </table>
 <br> 
 
@@ -263,7 +289,13 @@ if (day != null) {
 			<% } %>
 		</td>
 		<td width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL/2%>" align="right" valign="bottom">
-			<%@ include file="/includes/i_cart_next_step_button.jspf" %>
+			<% if(reservation!=null && !reservation.isMinOrderMet()){%>
+				<a href="/checkout/view_cart.jsp" ><img src="/media_stat/images/timeslots/button_continue.png" border="0"></a>
+			<%}else{
+				%><a class="imgButtonOrange" href="/checkout/step_2_adjust.jsp?successPage=<%=request.getParameter("successPage")%>">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></a>
+			<%}
+			incNextButtonCount++;
+			%>
 		</td>
 	</tr>
 </table>

@@ -50,6 +50,7 @@ import com.freshdirect.customer.ErpTransactionI;
 import com.freshdirect.customer.ErpTransactionModel;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
+import com.freshdirect.deliverypass.DlvPassAvailabilityInfo;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDepotManager;
@@ -58,6 +59,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.customer.FDBulkRecipientList;
 import com.freshdirect.fdstore.customer.FDBulkRecipientModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -1441,6 +1443,42 @@ public class FDOrderAdapter implements FDOrderI {
 	@Override
 	public boolean isMakeGood() {
 		return EnumPaymentType.MAKE_GOOD.equals(getPaymentMethod().getPaymentType());
+	}
+
+	@Override
+	public Map<String, FDAvailabilityInfo> getUnavailabilityMap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public FDCartLineI getOrderLineById(int parseInt) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getOrderLineIndex(int parseInt) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void removeOrderLine(int cartIndex) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<DlvPassAvailabilityInfo> getUnavailablePasses() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void refreshAll(boolean b) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

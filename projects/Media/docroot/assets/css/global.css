@@ -2167,6 +2167,26 @@ button.submitOrder {
 	display:inline-block;
 }
 
+.imgButtonGrey {
+	position:relative;
+	border:none;
+	height:30px;
+	line-height:30px;
+	font-size: 12px;
+	font-weight: bold;
+	cursor: pointer;
+	white-space: nowrap;
+	text-shadow: 1px 1px #666;
+	font-family:Verdana,Arial,sans-serif;
+	color:white;
+	overflow:visible;
+	margin:0 8px;
+	background-image: url(/media_stat/images/buttons/buttons_f2.png);
+	background-repeat: no-repeat;
+	background-position-x: center;
+	padding:0 8px;
+	display:inline-block;
+}
 a.imgButtonOrange,
 a.imgButtonWhite,
 a.imgButtonBlue,
@@ -2234,6 +2254,18 @@ a.imgButtonWhite:hover,
     background-repeat: no-repeat;
 }
 
+.imgButtonGrey:before,
+.imgButtonGrey:after{
+    content:' ';
+    width:5px;
+    height:100%;
+    top:0;
+    position:absolute;
+    display:block;
+    background-image: url(/media_stat/images/buttons/buttons_f2.png);
+    background-repeat: no-repeat;
+}
+
 .imgButtonSmall,
 .imgButtonSmall:after,
 .imgButtonSmall:before { 
@@ -2248,16 +2280,21 @@ a.imgButtonWhite:hover,
 .imgButtonBlue:before,
 .imgButtonRed:before,
 .imgButtonBrown:before,
-.imgButtonPurple:before {
+.imgButtonPurple:before,
+.imgButtonGrey:before {
     left:-5px;
 }
+
+
        
 .imgButtonOrange:after,
 .imgButtonWhite:after,
 .imgButtonBlue:after,
 .imgButtonRed:after,
 .imgButtonBrown:after,
-.imgButtonPurple:after {
+.imgButtonPurple:after,
+.imgButtonGrey:after
+ {
     right:-5px;
 }
 
@@ -2280,6 +2317,11 @@ a.imgButtonWhite:hover,
 .imgButtonOrange		{ background-position:center -90px;	}
 .imgButtonOrange:after	{ background-position:right -90px;	}
 .imgButtonOrange:before	{ background-position:left -90px;	}
+
+
+.imgButtonGrey		{ background-position:center -90px;	}
+.imgButtonGrey:after	{ background-position:right -90px;	}
+.imgButtonGrey:before	{ background-position:left -90px;	}
 
 .imgButtonBrown			{ background-position:center -120px;}
 .imgButtonBrown:after	{ background-position:right -120px;	}

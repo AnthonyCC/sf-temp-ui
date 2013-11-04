@@ -32,6 +32,10 @@ public class Timeslot implements DateFormat {
     
     private double premiumAmount;
     private boolean premiumSlot;
+    
+    private String minOrderMsg;
+    private double minOrderAmt;
+    private boolean minOrderMet;
 
     private final SimpleDateFormat formatter = new SimpleDateFormat(STANDARDIZED_DATE_FORMAT);
 
@@ -59,6 +63,11 @@ public class Timeslot implements DateFormat {
         this.premiumAmount = slot.getPremiumAmount();
         this.premiumSlot = slot.isPremiumSlot();
         this.unavailable = slot.isUnavailable();
+        
+        this.minOrderMsg = slot.getMinOrderMsg();
+        this.minOrderAmt = slot.getMinOrderAmt();
+        this.minOrderMet = slot.isMinOrderMet();
+        
     
     }
 
@@ -162,6 +171,22 @@ public class Timeslot implements DateFormat {
 	
 	public boolean isUnavailable() {
 		return unavailable;
+	}
+	
+	public String getMinOrderMsg() {
+		return minOrderMsg;
+	}
+	
+	public double getMinOrderAmt() {
+		return minOrderAmt;
+	}
+	
+	public boolean getMinOrderSlot() {
+		return (minOrderAmt>0)?true:false;
+	}
+	
+	public boolean isMinOrderMet() {
+		return minOrderMet;
 	}
 	
 }

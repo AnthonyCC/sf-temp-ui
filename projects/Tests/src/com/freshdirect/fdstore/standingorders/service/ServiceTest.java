@@ -597,4 +597,20 @@ class MockRuleContext implements FDRuleContextI {
 		// TODO Auto-generated method stub
 		return user.getShoppingCart().getDeliveryReservation().getTimeslot().getBaseDate();
 	}
+
+	@Override
+	public FDTimeslot getTimeslot() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+
+
+	@Override
+	public Double getSubTotal() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

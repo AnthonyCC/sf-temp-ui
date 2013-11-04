@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.customer;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.customer.EnumChargeType;
@@ -9,7 +10,10 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.deliverypass.DlvPassAvailabilityInfo;
 import com.freshdirect.fdstore.FDReservation;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.rules.FDRuleContextI;
 
 public interface FDCartI extends java.io.Serializable {
@@ -129,5 +133,17 @@ public interface FDCartI extends java.io.Serializable {
 	public double getChargeAmountDiscountApplied(EnumChargeType chargeType);
 	public double getChargeAmount(EnumChargeType chargeType);
 	public double getPremiumFee(FDRuleContextI ctx);
+
+	public Map<String, FDAvailabilityInfo> getUnavailabilityMap();
+
+	public FDCartLineI getOrderLineById(int parseInt);
+
+	public int getOrderLineIndex(int parseInt);
+
+	public void removeOrderLine(int cartIndex);
+
+	public List<DlvPassAvailabilityInfo> getUnavailablePasses();
+
+	public void refreshAll(boolean b) throws FDResourceException, FDInvalidConfigurationException;
 
 }

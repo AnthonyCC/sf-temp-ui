@@ -9,8 +9,9 @@
 	@param boolean __genericTsTable              true = generic timeslot table / false = Normal timeslots
 	@param boolean __isAm                        true = AM / false = PM
  --%>
- 
 
+
+<%@page import="com.freshdirect.fdstore.util.TimeslotLogic"%>
 <%
 	stringBuffer.append("						<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">\n");
 
@@ -120,7 +121,7 @@
 						if(!isNextDayTimeSlotNotAvailable){
 							isNextDayTimeSlotNotAvailable = day != null && nextDay != null && day.equals(nextDay);
 						}
-					} else if(slot.getVariableMinimumMsg() != null && slot.getVariableMinimumMsg().length() > 0) {
+					} else if(TimeslotLogic.isTSMinOrderNotMet(slot, rsv, deliveryModel)) {
 						/* do nothing? */
 					} else {
 						if (isStaticSlot) {
@@ -129,11 +130,14 @@
 							if (!slot.hasAvailCTCapacity() && !(isSelectedSlotId || isPreReservedSlotId) && isForce) {
 								/* do nothing? */
 							}
-							stringBuffer.append("<input type=\"radio\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\" name=\"deliveryTimeslotId\"") 
-										.append(
-											( isSelectedSlotId || ("".equals(selectedSlotId) && isPreReservedSlotId && hasPreReserved) ) 
-											? "checked" : ""
-										)
+						
+							stringBuffer.append("<input type=\"radio\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\" name=\"deliveryTimeslotId\"");
+							//if(slot.getMinOrderSlot())
+							stringBuffer.append(" onchange=\"javascript:handlechangetimeslot("+varminslot+");\"");
+							stringBuffer.append(
+									( isSelectedSlotId || ("".equals(selectedSlotId) && isPreReservedSlotId && hasPreReserved) ) 
+									? "checked" : ""
+									)
 										.append(
 											" value=\""+
 											(
@@ -169,18 +173,6 @@
 	/* add hidden ts info */
 	stringBuffer.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_timeInfo\" style=\"display: none;\" >"+slot.getBegDateTime().getTime()+"-"+slot.getEndDateTime().getTime()+"</div>");
 
-	if(slot.getVariableMinimumMsg() != null && slot.getVariableMinimumMsg().length() > 0) {
-		stringBuffer.append("									<div class=\"tsDiscountPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
-					.append("										<div>")
-							.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
-							.append("<div><a onClick=\"javascript:popup(\'/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_variable_minimum.html&windowSize=small&name=Alcohol Restriction\',\'small\');return false;\" style=\"text-decoration:none;\"><font class=\"tsDiscountE\" style=\"color:#669933;\" >" + slot.getVariableMinimumMsg() +"</font></a></div>")
-						.append("</div>\n")
-					.append("									</div>")
-					.append("									<div class=\"tsDiscountPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
-					.append("										<div><font class=\"tsDiscountC\" style=\"color:#669933;\">$</font></div>\n")
-					.append("									</div>");
-	}
-
 	/* START Timeslot promotion display */
 	if ((!soldOut||!slot.isUnavailable()) && deliveryModel.isAlcoholDelivery() && slot.isAlcoholRestricted()) {
 		stringBuffer.append("									<div class=\"fleft tsAlcoholResPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgARE\">")
@@ -198,16 +190,34 @@
 				.append("<div><font class=\"tsUnavailE\">UNAVAILABLE</font></div>")
 			.append("</div>")
 		.append("</div>\n");
-	}
-	else if (soldOut) {
+	} else if (soldOut) {
 		stringBuffer.append("									<div class=\"tsSoldoutPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
 					.append("										<div class=\"tsSoldoutE_cont\">")
 							.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
 							.append("<div><font class=\"tsSoldoutE\">SOLD&nbsp;OUT</font></div>")
 						.append("</div>")
 					.append("</div>\n");
-	}
-	else if (isSelectedSlotId) {
+	} else if(TimeslotLogic.isTSMinOrderNotMet(slot, rsv, deliveryModel)) {
+		stringBuffer.append("									<div class=\"tsMinOrderPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
+					.append("										<div>")
+							.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
+							.append("<div><a onClick=\"javascript:popup(\'/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_variable_minimum.html&windowSize=small&name=Minimum Order\',\'small\');return false;\" style=\"text-decoration:none;\"><font class=\"tsMinOrderE\" style=\"color:#669933;\" >" + slot.getMinOrderMsg() +"</font></a></div>")
+						.append("</div>\n")
+					.append("									</div>")
+					.append("									<div class=\"tsMinOrderPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
+					.append("										<div><font class=\"tsMinOrderC\" style=\"color:#669933;\">$</font></div>\n")
+					.append("									</div>");
+	} else if(TimeslotLogic.isTSRsvOrderNotMet(slot, rsv, deliveryModel)) {
+		stringBuffer.append("									<div class=\"tsMinOrderPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
+		.append("										<div>")
+				.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"16\" height=\"16\" border=\"0\">")
+				.append("<div><a onClick=\"javascript:popup(\'/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_variable_minimum.html&windowSize=small&name=Minimum Order\',\'small\');return false;\" style=\"text-decoration:none;\"><font class=\"tsMinOrderE\" style=\"color:#ff0000;\" >" + slot.getMinOrderMsg() +"</font></a></div>")
+			.append("</div>\n")
+		.append("									</div>")
+		.append("									<div class=\"tsMinOrderPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
+		.append("										<div><font class=\"tsMinOrderC\" style=\"color:#ff0000;\">$</font></div>\n")
+		.append("									</div>");
+	} else if (isSelectedSlotId) {
 		stringBuffer.append("									<div class=\"tsSelectedSlotPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
 					.append("										<div>")
 							.append("<img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\">")
@@ -219,8 +229,7 @@
 							.append("<img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\">")
 						.append("</div>\n")
 					.append("									</div>\n");
-	} 
-	else if (slot.getDlvTimeslot().isPremiumSlot() && slot.getPremiumAmount()>0 && ( deliveryModel.getShoppingCart() != null 
+	} else if (slot.getDlvTimeslot().isPremiumSlot() && slot.getPremiumAmount()>0 && ( deliveryModel.getShoppingCart() != null 
 																		&& deliveryModel.getShoppingCart().getDeliveryPremium() == 0.0)) {
 					stringBuffer.append("						<div class=\"tsPremiumPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
 					.append("										<div>")
@@ -231,8 +240,7 @@
 					.append("									<div class=\"tsPremiumPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">\n")
 					.append("										<div><font class=\"tsPremiumC\">"+slot.getPremiumAmountFmt()+"</font></div>\n")
 					.append("									</div>");
-	}
-	else if (isPreReservedSlotId && hasPreReserved ){
+	} else if (isPreReservedSlotId && hasPreReserved ){
 		stringBuffer.append("									<div class=\"tsReservationPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
 					.append("										<div>");
 						if(isSelectedSlotId){
@@ -274,7 +282,7 @@
 						.append("									<div class=\"tsEcoFriendlyPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
 							.append("<img class=\"tsEcoFriendlyImage\" src=\"/media_stat/images/timeslots/ecofriendly_leaf.gif\" width=\"16\" height=\"16\" border=\"0\">\n")
 						.append("</div>");
-		}else{
+	}else{
 			stringBuffer.append("									<div class=\"tsNeighbourhoodPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
 						.append("										<div>")
 								.append("<img src=\"/media_stat/images/timeslots/neighbourhood_favs.gif\" width=\"15\" height=\"20\" border=\"0\">")

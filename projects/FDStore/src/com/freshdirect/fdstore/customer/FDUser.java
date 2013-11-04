@@ -106,6 +106,7 @@ import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.fdstore.util.SiteFeatureHelper;
+import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -472,12 +473,20 @@ public class FDUser extends ModelSupport implements FDUserI {
 				this.setReferralPromoList();
 			}			
 			this.applyPromotions();
+			this.applyOrderMinimum();
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e.getMessage());
 		}
     }
 
-    private void applyPromotions(){
+    public void applyOrderMinimum() {
+    	if(this.getReservation()!=null)
+    		TimeslotLogic.applyOrderMinimum(this, this.getReservation().getTimeslot());
+    	if(this.getShoppingCart()!=null && this.getShoppingCart().getDeliveryReservation()!=null)
+    		TimeslotLogic.applyOrderMinimum(this, this.getShoppingCart().getDeliveryReservation().getTimeslot());
+    }
+
+	private void applyPromotions(){
     	// clear previous promotions
     	this.setSignupDiscountRule(null);
 		this.setPromotionAddressMismatch(false);
@@ -2718,5 +2727,22 @@ public class FDUser extends ModelSupport implements FDUserI {
 		FDUser robotUser = new FDUser(new PrimaryKey(ROBOT_USER_NAME));
         robotUser.setRobot(true);
         return robotUser;
+	}
+
+	@Override
+	public double getMinHomeOrderAmount() {
+
+    	if (getShoppingCart() != null && getShoppingCart().getDeliveryAddress() != null){
+			try {
+				String county = FDDeliveryManager.getInstance().getCounty(getShoppingCart().getDeliveryAddress());
+				if("SUFFOLK".equalsIgnoreCase(county)){
+					return 99;
+				}
+			} catch (FDResourceException e) {
+				throw new FDRuntimeException(e);
+			}
+		}
+		return MINIMUM_ORDER_AMOUNT;
+	
 	}
 }

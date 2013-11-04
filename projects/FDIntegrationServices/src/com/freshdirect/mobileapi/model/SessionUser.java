@@ -364,6 +364,8 @@ public class SessionUser {
         //        if (rsv == null && hasWeeklyReservation) { //Removed "hasWeeklyReservation" condition because we don't care about it here.
         if (reservation != null && matchReservationToAddress(reservation, address)) {
             timeSlotCalculationResult.setReservationTimeslotId(reservation.getTimeslotId());
+            if(!reservation.isMinOrderMet())
+                timeSlotCalculationResult.setShowMinNotMetMessage(true);
         } else {
             //Specific reservation doesn't exist. try to match by day of week and time range.
             String foundId = "";
@@ -399,10 +401,14 @@ public class SessionUser {
             }
         }
 
+        
         //Set timeslot for checkout         
         FDReservation deliveryReservation = this.sessionUser.getShoppingCart().getDeliveryReservation();
         if (deliveryReservation != null && matchReservationToAddress(deliveryReservation, address)) {
             timeSlotCalculationResult.setPreselectedTimeslotId(deliveryReservation.getTimeslotId());
+            if(!deliveryReservation.isMinOrderMet())
+            	timeSlotCalculationResult.setShowMinNotMetMessage(true);
+            	
         }
     }
     

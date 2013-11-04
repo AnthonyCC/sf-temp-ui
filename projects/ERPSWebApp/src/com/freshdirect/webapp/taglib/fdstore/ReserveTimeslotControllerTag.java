@@ -21,6 +21,7 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
@@ -111,6 +112,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 	private void changeReservation(FDUserI user, FDReservation reservation, String timeslot, TimeslotEventModel event) throws FDResourceException, ReservationException {
 		FDActionInfo aInfo = new FDActionInfo(EnumTransactionSource.SYSTEM, user.getIdentity(), "SYSTEM", "Changed Pre-Reservation", null, user.getPrimaryKey());
 		FDReservation rsv = FDCustomerManager.changeReservation(user.getIdentity(), reservation, timeslot, this.rsvType, this.addressId, aInfo, chefstable, event);
+		//TimeslotLogic.applyOrderMinimum(user, rsv.getTimeslot());
 		user.setReservation(rsv);
 	}
 
@@ -144,6 +146,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 
 	private void reserveTimeslot(FDUserI user, String timeslotId, FDActionInfo aInfo, TimeslotEventModel event) throws FDResourceException, ReservationException {
 		FDReservation rsv = FDCustomerManager.makeReservation(user.getIdentity(), timeslotId, this.rsvType, this.addressId, aInfo, chefstable, event, false);
+		//TimeslotLogic.applyOrderMinimum(user, rsv.getTimeslot());
 		user.setReservation(rsv);
 	}
 	

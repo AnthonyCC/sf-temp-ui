@@ -73,8 +73,8 @@ public class FDDeliveryTimeslotModel implements Serializable{
     private int ecoFriendlyCount;
     private int alcoholRestrictedCount;
     private boolean isAlcoholDelivery;
-    private boolean isMinimumOrderSet;
-   
+    private boolean minOrderReqd;
+    
     public boolean isAlcoholDelivery() {
 		return isAlcoholDelivery;
 	}
@@ -279,11 +279,10 @@ public class FDDeliveryTimeslotModel implements Serializable{
 	public void setSameDayCutoffUTC(String sameDayCutoffUTC) {
 		this.sameDayCutoffUTC = sameDayCutoffUTC;
 	}
-	public boolean isMinimumOrderSet() {
-		return isMinimumOrderSet;
+	public boolean isMinOrderReqd() {
+		return minOrderReqd;
 	}
-	public void setMinimumOrderSet(boolean isMinimumOrderSet) {
-		this.isMinimumOrderSet = isMinimumOrderSet;
+	public void setMinOrderReqd(boolean minOrderReqd) {
+		this.minOrderReqd = minOrderReqd;
 	}
-
 }

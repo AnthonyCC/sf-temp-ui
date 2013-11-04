@@ -1,6 +1,5 @@
 package com.freshdirect.mobileapi.controller;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,13 +14,14 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
-import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
+import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -34,7 +34,6 @@ import com.freshdirect.mobileapi.controller.data.request.PaymentMethodRequest;
 import com.freshdirect.mobileapi.controller.data.request.PaymentMethodSelection;
 import com.freshdirect.mobileapi.controller.data.response.CVVResponse;
 import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
-import com.freshdirect.mobileapi.controller.data.response.OrderReceipt;
 import com.freshdirect.mobileapi.controller.data.response.PaymentMethods;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.model.Cart;
@@ -552,7 +551,20 @@ public class CheckoutController extends BaseController {
         //And what to do...choose another date? or remove item?
 
         if (!isProductFullyAvailable) {
-            result.addError(new ActionError(ERR_ATP_FAILED, "One of the products were not available."));
+        	Double subTotal = null;
+        	Cart cart = user.getShoppingCart();
+        	FDReservation reservation = cart.getDeliveryReservation();
+        	Cart clonedCart = Cart.cloneCart(cart);
+        	clonedCart.setUnavailablePasses(cart.getUnavailablePasses());
+        	clonedCart.setAvailability(cart.getAvailability());
+        	subTotal = clonedCart.getSubTotalATPCheck();
+        	TimeslotLogic.applyOrderMinimum(user.getFDSessionUser(), reservation.getTimeslot(), subTotal);		
+
+        	if(subTotal!=null && subTotal < reservation.getMinOrderAmt()){
+        		result.addError(new ActionError(ERR_ATP_MIN_ORDER_FAILED, "Your order total has fallen below the "+ TimeslotLogic.formatMinAmount(reservation.getMinOrderAmt()) + " required for the selected delivery time. Unavailable items will remain in your cart."));
+        	}else{
+        		result.addError(new ActionError(ERR_ATP_FAILED, "One of the products were not available."));
+        	}
         }
 
         return result;

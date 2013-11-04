@@ -26,6 +26,8 @@ else if (!user.isOrderMinimumMet()) {
 		+ " minimum. Please <a href='/index.jsp'>shop for replacement items</a> and then return to Checkout."
 		+ " We apologize for the inconvenience.");
 	}
+}else if(user.getShoppingCart().getSubTotal() < user.getShoppingCart().getDeliveryReservation().getMinOrderAmt()){
+	redir = "/checkout/view_cart.jsp";
 }
 response.sendRedirect(redir);
 %>

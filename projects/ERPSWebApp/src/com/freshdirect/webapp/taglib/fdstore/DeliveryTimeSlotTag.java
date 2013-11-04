@@ -29,9 +29,7 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
-import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumDeliveryStatus;
-import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.model.SectorVO;
 import com.freshdirect.delivery.restriction.AlcoholRestriction;
@@ -318,12 +316,19 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		
 		// Post-op: remove unnecessary timeslots
 		TimeslotLogic.purge(timeslotList);
+		
+		// unflag variable min order timeslots for deliveryinfo timeslots
+		if(timeSlotContext!=null && !timeSlotContext.equals(TimeslotContext.CHECKOUT_TIMESLOTS)){
+			TimeslotLogic.clearVariableMinimum(user, timeslotList);
+			deliveryModel.setMinOrderReqd(false);
+		}
 
 		deliveryModel.setTimeslotList(timeslotList);
 		stats.apply(deliveryModel);
 		// update chefs table stats in user
 		stats.apply(user);
 		
+		user.applyOrderMinimum();
 		
 		deliveryModel.setZoneId(cart.getDeliveryZone());		
 		
@@ -416,8 +421,10 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		stats.apply(user);
 
 
-
-
+		// unflag variable min order timeslots for deliveryinfo timeslots
+		TimeslotLogic.clearVariableMinimum(user, singleTSset);
+		deliveryModel.setMinOrderReqd(false);
+		
 		// fill in delivery model
 		deliveryModel.setShoppingCart(cart);
 		deliveryModel.setCurrentStandingOrder(user.getCurrentStandingOrder()); // <== ??? does it matter here?

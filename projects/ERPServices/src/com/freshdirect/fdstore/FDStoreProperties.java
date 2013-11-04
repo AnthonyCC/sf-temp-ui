@@ -447,6 +447,7 @@ public class FDStoreProperties {
 	private static final String PROP_PROMO_TIMESLOT_LABEL = "fdstore.promo.ts.label";
 	private static final String PROP_ALCOHOL_TIMESLOT_LABEL = "fdstore.alcohol.ts.label";
 	private static final String PROP_ECOFRIENDLY_TIMESLOT_LABEL = "fdstore.ecofriendly.ts.label";
+	private static final String PROP_MINORDER_TIMESLOT_LABEL = "fdstore.minorder.ts.label";
 	private static final String PROP_BUILDINGFAVS_TIMESLOT_LABEL = "fdstore.buildingfavs.ts.label";
 	//APPDEV-3107 SAP upgrade customer messaging
 	private static final String PROP_TIMESLOT_MSGING = "fdstore.ts.specialmessaging";
@@ -1074,6 +1075,7 @@ public class FDStoreProperties {
         defaults.put(PROP_PROMO_TIMESLOT_LABEL, "Discount Delivery Times");
         defaults.put(PROP_ALCOHOL_TIMESLOT_LABEL, "Alcohol Delivery Restriction");
         defaults.put(PROP_ECOFRIENDLY_TIMESLOT_LABEL, "Eco-Friendly");
+        defaults.put(PROP_MINORDER_TIMESLOT_LABEL, "Minimum Order Applies");
         defaults.put(PROP_BUILDINGFAVS_TIMESLOT_LABEL, "Delivery Helper");
     	//APPDEV-3107 SAP upgrade customer messaging
         defaults.put(PROP_TIMESLOT_MSGING, "d=01/01/2000:m=no_media.html");
@@ -2659,6 +2661,10 @@ public class FDStoreProperties {
 
 	public static String getEcoFriendlyLabel(){
         return get(PROP_ECOFRIENDLY_TIMESLOT_LABEL);
+	}
+
+	public static String getMinOrderLabel(){
+        return get(PROP_MINORDER_TIMESLOT_LABEL);
 	}
 
 	public static String getMyBuildingFavsLabel(){

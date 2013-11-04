@@ -163,6 +163,8 @@ public class ChooseTimeslotAction extends WebActionSupport {
 						erpAddress,
 						chefsTable,
 						ctDeliveryProfile, isForced,event, hasSteeringDiscount);
+				TimeslotLogic.applyOrderMinimum(user,timeSlotResrv.getTimeslot());
+				
 
 				if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
 					setDeliveryTimeslot(session, timeSlotResrv);
@@ -170,7 +172,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 					setSODeliveryTimeslot(session, timeSlotResrv);
 				}
 			}
-
+			
 			return this.getResult().isSuccess() ? SUCCESS : ERROR;
 
 		} catch (ReservationUnavailableException re) {

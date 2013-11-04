@@ -278,6 +278,7 @@ public class FDStandingOrder extends ModelSupport {
 		PAYMENT( "There was a problem with the payment method you selected.", "Use the link below to modify this standing order and update the payment options.",true ), 
 		ALCOHOL( "You must verify your age to receive deliveries containing alcohol.", "Use the link below to modify this standing order and confirm that you are over 21 years of age.",true ), 
 		MINORDER( "The order subtotal was below our $50 minimum.", "Please adjust the items or quantities by editing the shopping list for this standing order.",true ), 		
+		TIMESLOT_MINORDER( "The order subtotal was below our $x minimum.", "Please adjust the items or quantities by editing the shopping list for this standing order.",true),
 		TIMESLOT( "Your selected timeslot was unavailable or sold out.", "Use the link below to modify this standing order and choose a different timeslot.",true ),
 		PAYMENT_ADDRESS( "The address you entered does not match the information on file with your card provider.", "Please contact a FreshDirect representative at 9999 for assistance.",true ),
 		NO_ADDRESS( "The address you set up for this standing order no longer exists in the system.", "Use the link below to modify this standing order and choose a different address.",true ), 
@@ -292,7 +293,7 @@ public class FDStandingOrder extends ModelSupport {
 			this.errorDetail = errorDetail;
 			this.sendEmail = sendEmail;
 		}
-		
+	
 		public boolean isTechnical() {
 			return this == TECHNICAL || this == GENERIC || this == TIMESLOT || this == CLOSED_DAY;
 		}
@@ -307,6 +308,11 @@ public class FDStandingOrder extends ModelSupport {
 		public String getErrorDetail(FDCustomerInfo user) {
 			if (this == PAYMENT_ADDRESS)
 				return errorDetail.replace("9999", user.getCustomerServiceContact());
+			return errorDetail;
+		}
+		public String getErrorHeader(FDReservation rsv) {
+			if (this == TIMESLOT_MINORDER)
+				return errorHeader.replace("$x", Double.toString(rsv.getMinOrderAmt()));
 			return errorDetail;
 		}
 	};

@@ -37,6 +37,9 @@ public class DeliveryTimeslots extends CheckoutResponse {
     private boolean showDPTermsAndConditions;
 
     private Date sameDayCutoff;
+    
+    private boolean minOrderReqd;
+    
 
     public String getReservedTimeslotId() {
         return reservedTimeslotId;
@@ -49,6 +52,8 @@ public class DeliveryTimeslots extends CheckoutResponse {
     private List<Timeslot> timeSlots = new ArrayList<Timeslot>();
 
     private List<Restriction> restrictions = new ArrayList<Restriction>();
+
+	private boolean showMinNotMetMessage;
 
     public List<Timeslot> getTimeSlots() {
         return timeSlots;
@@ -83,6 +88,8 @@ public class DeliveryTimeslots extends CheckoutResponse {
         this.showPremiumSlots = result.isShowPremiumSlots();
         this.showDPTermsAndConditions = result.isShowDPTermsAndConditions();
         this.sameDayCutoff = result.getSameDayCutoff();
+        this.minOrderReqd = result.isMinOrderReqd();
+        this.showMinNotMetMessage = result.isShowMinNotMetMessage();
         
     }
 
@@ -108,6 +115,14 @@ public class DeliveryTimeslots extends CheckoutResponse {
 
 	public void setShowDPTermsAndConditions(boolean showDPTermsAndConditions) {
 		this.showDPTermsAndConditions = showDPTermsAndConditions;
+	}
+
+	public boolean isMinOrderReqd() {
+		return minOrderReqd;
+	}
+	
+	public boolean isShowMinNotMetMessage() {
+		return showMinNotMetMessage;
 	}
 
 }

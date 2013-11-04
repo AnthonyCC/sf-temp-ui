@@ -5,13 +5,14 @@
 		<rulesConfig subsystem="TIMESLOT" serviceName="com.freshdirect.fdstore.rules.timeslot.Engine">
 			<condition class="com.freshdirect.rules.OgnlCondition" label="OGNL Condition" xmlTag="OgnlCondition"/>
 			<condition class="com.freshdirect.rules.RuleRef" label="Rule Reference" xmlTag="rule-ref"/>
+			<condition class="com.freshdirect.fdstore.rules.ProfileCondition" label="Profile Value" xmlTag="ProfileCondition"/>
 			<condition class="com.freshdirect.fdstore.rules.OrderAmount" label="Order Amount" xmlTag="OrderAmount"/>
 			<condition class="com.freshdirect.fdstore.rules.ServiceTypeCondition" label="Service Type" xmlTag="serviceType"/>
-			<condition class="com.freshdirect.fdstore.rules.ProfileCondition" label="Profile Value" xmlTag="ProfileCondition"/>
 			<condition class="com.freshdirect.fdstore.rules.CountyCondition" label="County" xmlTag="County"/>
 			<condition class="com.freshdirect.fdstore.rules.TimeslotCondition" label="Timeslot Condition" xmlTag="TimeslotCondition"/>
 			<outcome class="com.freshdirect.fdstore.rules.BasePrice" label="Base Price" xmlTag="BasePrice"/>
 			<outcome class="com.freshdirect.fdstore.rules.Adjustment" label="Adjustment" xmlTag="Adjustment"/>
+			<outcome class="java.lang.String" label="Order Minimum" xmlTag="orderMinimum"/>
 		</rulesConfig>
 	</contribution>
 	

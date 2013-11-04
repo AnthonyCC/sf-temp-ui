@@ -1,5 +1,7 @@
 package com.freshdirect.fdstore.rules;
 
+import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.rules.ConditionI;
 import com.freshdirect.rules.RuleRuntimeI;
@@ -14,8 +16,6 @@ public class TimeslotCondition implements ConditionI {
     private String startTime;
     private String endTime;
     private String day;
-    private TimeOfDay startTimeDay;
-    private TimeOfDay endTimeDay;
     private Double orderMinimum;
     
     
@@ -28,19 +28,37 @@ public class TimeslotCondition implements ConditionI {
 
 
 	public boolean evaluate(Object target, RuleRuntimeI ctx) {
-		// TODO Auto-generated method stub
-		return true;
+		
+		FDRuleContextI context = (FDRuleContextI) target;
+		
+		if(getStartTimeEx()!=null && 
+				(getStartTimeEx().before(context.getTimeslot().getDlvTimeslot().getStartTime()) || getStartTimeEx().equals(context.getTimeslot().getDlvTimeslot().getStartTime()))
+				   && getEndTimeEx()!=null && 
+				   (getEndTimeEx().after(context.getTimeslot().getDlvTimeslot().getEndTime()) || (getEndTimeEx().equals(context.getTimeslot().getDlvTimeslot().getEndTime())))
+				   && day!=null && day.equalsIgnoreCase(DateUtil.formatDayOfWeek(context.getTimeslot().getBaseDate()))
+				   && context.getSubTotal() < orderMinimum) {
+			return true;
+		} 
+		return false;
+		
+		
 	}
 
 	public boolean validate() {
-		// TODO Auto-generated method stub
+
+		if(day == null || "".equals(day))
+			return false;
 		return true;
 	}
 
 	public String getStartTime() {
 		return startTime;
 	}
-
+	
+	public TimeOfDay getStartTimeEx() {
+		return (startTime!=null)?new TimeOfDay(startTime):null;
+	}
+	
 	public void setStartTime(String startTime) {
 		this.startTime = startTime;
 	}
@@ -48,39 +66,15 @@ public class TimeslotCondition implements ConditionI {
 	public String getEndTime() {
 		return endTime;
 	}
+	public TimeOfDay getEndTimeEx() {
+		return (endTime!=null)?new TimeOfDay(endTime):null;
+	}
 
 	public void setEndTime(String endTime) {
 		this.endTime = endTime;
 	}
 
-	public TimeOfDay getStartTimeDay() 
-	{
-		if(startTimeDay==null&&startTime!=null)
-		{
-			this.startTimeDay=new TimeOfDay(startTime);
-		}
-		return startTimeDay;
-	}
-
-	public void setStartTimeDay(TimeOfDay startTimeDay) {
-		this.startTimeDay = startTimeDay;
-	}
-
-	public TimeOfDay getEndTimeDay() 
-	{
-		if(endTimeDay==null&&endTime!=null)
-		{
-			this.endTimeDay=new TimeOfDay(endTime);
-		}
-		return endTimeDay;
-	}
-
-	public void setEndTimeDay(TimeOfDay endTimeDay) {
-		this.endTimeDay = endTimeDay;
-	}
-
-	public String getDay() 
-	{		
+	public String getDay() {		
 		return day;
 	}
 
@@ -95,6 +89,4 @@ public class TimeslotCondition implements ConditionI {
 	public void setOrderMinimum(Double orderMinimum) {
 		this.orderMinimum = orderMinimum;
 	}
-	
-
 }

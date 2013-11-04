@@ -79,6 +79,10 @@ public class DeliveryTimeslots {
 		private boolean showDPTermsAndConditions = false;
 
 		private Date sameDayCutoff;
+		
+		private boolean minOrderReqd;
+
+		private boolean showMinNotMetMessage;
 
         public boolean isUserChefTable() {
             return isUserChefTable;
@@ -104,7 +108,7 @@ public class DeliveryTimeslots {
          */
         public TimeSlotCalculationResult(FDDeliveryTimeslotModel model, boolean isUserChefTable, boolean preReservationMode, boolean isDpNewTcBlocking) throws FDResourceException {
             this(model.getTimeslotList(), model.getZones(), model.isZoneCtActive(), model.getGeoRestrictionmessages(), isUserChefTable
-            			, model.isShowPremiumSlots(), isDpNewTcBlocking, model.getSameDayCutoff());
+            			, model.isShowPremiumSlots(), isDpNewTcBlocking, model.getSameDayCutoff(), model.isMinOrderReqd());
         }
         
         
@@ -117,7 +121,7 @@ public class DeliveryTimeslots {
          * @throws FDResourceException
          */
         public TimeSlotCalculationResult(List<FDTimeslotUtil> timeslotLists, Map<String, DlvZoneModel> zones, boolean zoneCtActive,
-                List<String> messages, boolean isUserChefTable, boolean showPremiumSlots, boolean isDpNewTcBlocking, Date sameDayCutoff) throws FDResourceException {
+                List<String> messages, boolean isUserChefTable, boolean showPremiumSlots, boolean isDpNewTcBlocking, Date sameDayCutoff, boolean minOrderReqd) throws FDResourceException {
             this.timeslotList = TimeslotList.wrap(timeslotLists);
             //this.zones = zones;
             this.zoneCtActive = zoneCtActive;
@@ -127,6 +131,7 @@ public class DeliveryTimeslots {
             this.showPremiumSlots = showPremiumSlots;
             this.showDPTermsAndConditions = showPremiumSlots && isDpNewTcBlocking;
             this.sameDayCutoff = sameDayCutoff;
+            this.minOrderReqd = minOrderReqd;
             
         }
 
@@ -198,7 +203,17 @@ public class DeliveryTimeslots {
 		public boolean isShowDPTermsAndConditions() {
 			return showDPTermsAndConditions;
 		}
+		public boolean isMinOrderReqd() {
+			return minOrderReqd;
+		}
+
+		public void setShowMinNotMetMessage(boolean showMinNotMetMessage) {
+			this.showMinNotMetMessage  = showMinNotMetMessage;
+		}
 		
+		public boolean isShowMinNotMetMessage() {
+			return showMinNotMetMessage;
+		}
     }
 
 }

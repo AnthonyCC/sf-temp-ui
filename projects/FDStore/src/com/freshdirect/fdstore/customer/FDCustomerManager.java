@@ -126,6 +126,7 @@ import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
+import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.FTLEmailI;
 import com.freshdirect.framework.mail.XMLEmailI;
@@ -380,6 +381,7 @@ public class FDCustomerManager {
 		if (identity != null) {
 			List<FDReservation> rsvList = FDDeliveryManager.getInstance().getReservationsForCustomer(identity.getErpCustomerPK());
 			for ( FDReservation rsv : rsvList ) {
+				//TimeslotLogic.applyOrderMinimum(user, rsv.getTimeslot());
 				if (EnumReservationType.STANDARD_RESERVATION.equals(rsv.getReservationType())) {
 					user.getShoppingCart().setDeliveryReservation(rsv);
 				} else {
@@ -946,7 +948,7 @@ public class FDCustomerManager {
 			}
 			if (matchingTimeslot != null) {
 				long duration = Math.abs(System.currentTimeMillis() - reservation.getCutoffTime().getTime());
-				return FDDeliveryManager.getInstance().reserveTimeslot(
+				FDReservation rsv = FDDeliveryManager.getInstance().reserveTimeslot(
 					matchingTimeslot,
 					user.getIdentity().getErpCustomerPK(),
 					duration,
@@ -954,6 +956,8 @@ public class FDCustomerManager {
 					address,
 					reservation.isChefsTable(),
 					null, false, event, false);
+				//TimeslotLogic.applyOrderMinimum(user, rsv.getTimeslot());
+				return rsv;
 			}
 			
 			return null;

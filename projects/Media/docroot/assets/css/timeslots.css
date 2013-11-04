@@ -403,6 +403,35 @@ div.tsHeaderC {
 .tsDiscountPropC {
 	padding:2px 0 0 4px;
 }
+
+/*Variable minimum order slot*/
+.tsMinOrderE {
+	color: #E99722;
+	font-weight: bold;
+	font-size: 11px; 
+	font-family: Verdana, Arial, sans-serif;
+}
+.tsMinOrderPropE {
+	overflow: hidden;
+	margin-top: 2px;
+	text-align: right;
+	padding: 2px 0px 0 0;
+}
+
+.tsCol div.tsContent div.tsMinOrderPropE {
+	height: 28px;
+}
+.tsMinOrderC {
+	color: #e99722;
+	font-weight: bold;
+	font-size: 10px; 
+	font-family: Verdana, Arial, sans-serif;
+	float: left;
+}
+.tsMinOrderPropC {
+	padding:2px 0 0 4px;
+}
+
 .tsCTStar {
 	margin-right:3px;
 }
@@ -418,6 +447,19 @@ div.tsHeaderC {
 	margin-top: 5px; 
 	margin-bottom: -5px;
 }
+/* variable min order */
+.tsMinOrderPropE div div { 
+	float: left;
+	margin-top: 5px; 
+	margin-bottom: -5px;
+}
+
+.tsMinOrderPropE div img { 
+	float: left; 
+	margin-top: 5px; 
+	margin-bottom: -5px;
+}
+
 /* same day */
 .tsPremiumE {
 	color: #78ABDC;
@@ -813,6 +855,8 @@ td.noTopBorder {
 .tsContainerBGC .tsSelectedSlotPropE, 
 .tsContainerBGC .tsSoldoutE_cont, 
 .tsContainerBGC .tsUnavailE_cont, 
+.tsContainerBGE .tsMinOrderPropC,
+.tsContainerBGC .tsMinOrderPropE, 
 .tsContainerBGC .ts_rb
 {
 	display: none;
@@ -837,6 +881,8 @@ td.noTopBorder {
 .tsContainerBGE .tsSelectedSlotPropE, 
 .tsContainerBGE .tsSoldoutE_cont,
 .tsContainerBGE .tsUnavailE_cont,
+.tsContainerBGC .tsMinOrderPropC,
+.tsContainerBGE .tsMinOrderPropE,
 .tsContainerBGE .ts_rb
 {
 	display: block;
@@ -915,4 +961,9 @@ td.noTopBorder {
 	text-align:left;
 	line-height:1.4em;
 	font-weight:normal;
+}
+
+#disablecheckout{
+    text-decoration:none;
+    color: #ccc;
 }

@@ -1,3 +1,4 @@
+<%@ page import="com.freshdirect.webapp.util.ShoppingCartUtil"%>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.webapp.util.JspLogger"%>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
@@ -9,6 +10,7 @@
 <%@ page import='com.freshdirect.common.pricing.MunicipalityInfo' %>
 <%@ page import="com.freshdirect.delivery.restriction.FDRestrictedAvailabilityInfo" %>
 <%@ page import="com.freshdirect.fdstore.atp.FDStockAvailabilityInfo" %>
+<%@ page import='com.freshdirect.fdstore.util.TimeslotLogic'%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="logic" prefix="logic" %>
@@ -24,10 +26,12 @@
 <%
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 FDCartModel cart = user.getShoppingCart();
+FDReservation reservation = cart.getDeliveryReservation();
 
 // get map of cartLineId -> unav FDAvailabilityInfos
 Map<String,FDAvailabilityInfo> invsInfoMap = cart.getUnavailabilityMap();
 Date day = null;
+Double subTotal = null;
 if(invsInfoMap.size() > 0 ){
 %>
 
@@ -38,6 +42,25 @@ if(invsInfoMap.size() > 0 ){
 <img src="/media_stat/images/layout/ff9933.gif" width="693" height="1" border="0"><br>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="6" border="0"><br>
 </td></tr>
+
+
+<% 
+FDCartModel clonedCart = new FDCartModel( cart );
+clonedCart.setUnavailablePasses(cart.getUnavailablePasses());
+clonedCart.setAvailability(cart.getAvailability());
+subTotal = ShoppingCartUtil.getSubTotal(clonedCart);
+TimeslotLogic.applyOrderMinimum(user, reservation.getTimeslot(), subTotal);		
+
+if(subTotal!=null && subTotal < reservation.getMinOrderAmt()) {
+String view_cart_redir = "/order/place_order_build.jsp";
+String timeslot_redir = "/checkout/checkout_delivery_time.jsp";
+%>
+
+<%@ include file="/shared/includes/delivery/i_variable_unavail_minnotmet_messages.jspf"%> 
+
+<% } 
+else{%>
+
 <tr><td>
 	<span class="text11">
 		We're sorry, but some items are not available for delivery on <%= CCFormatter.formatRequestedDate(cart.getDeliveryReservation().getStartTime()) %>.
@@ -54,6 +77,7 @@ if(invsInfoMap.size() > 0 ){
 		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="4">
 	</span>
 </td></tr>
+<%} %>
 </table>
 	
 <br><br>
@@ -210,11 +234,22 @@ if(day != null){
 		</td>
 		<td></td>
 		<td width="265" align="RIGHT" valign="MIDDLE">
+		
+		<% if(subTotal!=null && subTotal < reservation.getMinOrderAmt()) { %>
+		
+			<a onclick="return false;"><img src="/media_stat/images/buttons/continue_checkout.gif" width="117" height="9" border="0" alt="CONTINUE CHECKOUT" vspace="0"></a>		
+		<% }else { %>
 			<a href="/checkout/checkout_ATP_adjust.jsp?successPage=<%=request.getParameter("successPage")%>"><img src="/media_stat/images/buttons/continue_checkout.gif" width="117" height="9" border="0" alt="CONTINUE CHECKOUT" vspace="0"></a>
+		<% } %>
 			<br>Items will be removed from your cart<br>
 		</td>
 		<td width="35" align="RIGHT" valign="MIDDLE">
+		
+		<% if(subTotal!=null && subTotal < reservation.getMinOrderAmt()) { %>
+			<font class="space2pix"><br></font><a onclick="return false;"><img src="/media_stat/images/buttons/checkout_arrow.gif" width="29" height="29" border="0" alt="CONTINUE CHECKOUT" vspace="0"></a>
+		<% }else { %>
 			<font class="space2pix"><br></font><a href="/checkout/checkout_ATP_adjust.jsp?successPage=<%=request.getParameter("successPage")%>"><img src="/media_stat/images/buttons/checkout_arrow.gif" width="29" height="29" border="0" alt="CONTINUE CHECKOUT" vspace="0"></a>
+		<% } %>
 		</td>
 	</tr>
 </table>

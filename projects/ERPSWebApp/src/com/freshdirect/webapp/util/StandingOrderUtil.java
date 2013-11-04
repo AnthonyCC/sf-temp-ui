@@ -83,6 +83,7 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.ProcessActionResult;
 import com.freshdirect.fdstore.standingorders.SOResult;
+import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
@@ -406,7 +407,6 @@ public class StandingOrderUtil {
 				reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot, customer.getErpCustomerPK(),
 						RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
 						null, false, event, false);
-				
 				selectedTimeslot = timeslot;
 				LOGGER.info( "Timeslot reserved successfully: " + timeslot.toString() );
 			} catch ( ReservationUnavailableException e ) {
@@ -441,8 +441,10 @@ public class StandingOrderUtil {
 					LOGGER.warn( "Reservation failed for timeslot[forceCapacity]: " + timeslot.toString(), e );
 				}
 			}
-			if ( reservation != null ) 
+			if ( reservation != null ) {
+				TimeslotLogic.applyOrderMinimum(customerUser, reservation.getTimeslot());
 				break;
+			}
 		}
 		
 		if ( reservation == null || selectedTimeslot == null ) {
@@ -547,6 +549,12 @@ public class StandingOrderUtil {
 		//cart.recalculateTaxAndBottleDeposit(deliveryAddressModel.getZipCode());
 		//updateDeliverySurcharges(cart, new FDRulesContextImpl(customerUser));
 
+		double variableMinimum = cart.getDeliveryReservation().getMinOrderAmt();
+		if(variableMinimum > cartPrice){
+			String msg = "The order subtotal ($"+cartPrice+") was below the "+TimeslotLogic.formatMinAmount(variableMinimum)+" minimum for a premium delivery window.";
+			LOGGER.info( msg );
+			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.TIMESLOT_MINORDER,  msg );
+		}
 
 		// ==========================
 		//    Placing the order
@@ -569,6 +577,7 @@ public class StandingOrderUtil {
 			unavCartItems.removeAll(cart.getOrderLines());
 			cart.setTransactionSource(EnumTransactionSource.STANDING_ORDER);
 			customerUser.updateUserState();
+			
 			
 			String orderId = FDCustomerManager.placeOrder( orderActionInfo, cart, customerUser.getAllAppliedPromos(), false, cra, null );
 			

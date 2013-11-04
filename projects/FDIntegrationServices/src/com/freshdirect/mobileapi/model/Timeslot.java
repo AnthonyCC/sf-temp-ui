@@ -175,4 +175,19 @@ public class Timeslot {
 	public boolean isAlcoholRestricted() {
 		return slot.isAlcoholRestricted();
 	}
+	
+	public String getMinOrderMsg() {
+		return slot.getMinOrderMsg();
+	}
+	public double getMinOrderAmt() {
+		return slot.getMinOrderAmt();
+	}
+
+	public boolean getMinOrderSlot() {
+		return (slot.getMinOrderAmt()>0)?true:false;
+	}
+
+	public boolean isMinOrderMet() {
+		return slot.isMinOrderMet();
+	}
 }

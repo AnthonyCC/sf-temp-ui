@@ -7,8 +7,10 @@ import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.delivery.depot.DlvDepotModel;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDepotManager;
+import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.rules.RulesRuntimeException;
@@ -20,11 +22,24 @@ import com.freshdirect.rules.RulesRuntimeException;
 public class FDRulesContextImpl implements FDRuleContextI {
 	
 	private final FDUserI user;
+	private final FDTimeslot timeslot;
+	private Double subTotal;
 
 	public FDRulesContextImpl(FDUserI user) {
 		this.user = user;
+		this.timeslot = null;
 	}
 
+	public FDRulesContextImpl(FDUserI user, FDTimeslot timeslot) {
+		this.user = user;
+		this.timeslot = timeslot;
+		this.subTotal = getOrderTotal();
+	}
+	public FDRulesContextImpl(FDUserI user, FDTimeslot timeslot, Double subTotal) {
+		this.user = user;
+		this.timeslot = timeslot;
+		this.subTotal = subTotal;
+	}
 	public String getCounty() {
 		try {
 			ErpAddressModel address = user.getShoppingCart().getDeliveryAddress();
@@ -89,4 +104,10 @@ public class FDRulesContextImpl implements FDRuleContextI {
 		return this.user;
 	}
 
+	public FDTimeslot getTimeslot() {
+		return timeslot;
+	}
+	public Double getSubTotal() {
+		return subTotal;
+	}
 }
