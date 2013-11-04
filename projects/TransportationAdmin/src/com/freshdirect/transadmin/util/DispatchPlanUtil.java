@@ -324,6 +324,7 @@ public class DispatchPlanUtil {
 		dispatch.setBullPen(Boolean.valueOf(command.getIsBullpen()));
 		try{
 			dispatch.setStartTime(TransStringUtil.getServerTime(command.getStartTime()));
+			dispatch.setDispatchTimeEx(TransStringUtil.getServerTime(command.getStartTime()));
 			dispatch.setDispatchGroup(command.getDispatchGroup());
 			if(command.getDispatchTime()!=null)
 				dispatch.setDispatchTime(TransStringUtil.getServerTime(command.getDispatchTime()));

@@ -348,8 +348,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	  				" and p.truck_dispatchtime in "+ BATCH_COMPLETED_DISPATCH_CND + " ";
    	
 	private static final String INSERT_HANDOFFBATCH_AUTODISPATCHES = "INSERT INTO TRANSP.DISPATCH ( DISPATCH_ID, DISPATCH_DATE, ORIGIN_FACILITY, DESTINATION_FACILITY, " +
-			" ZONE, SUPERVISOR_ID, ROUTE, DISPATCH_GROUPTIME, TRUCK_DISPATCHTIME, PLAN_ID, ISBULLPEN, REGION, PHYSICAL_TRUCK, CUTOFF_DATETIME, DISPATCH_TYPE ) " +
-			" VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
+			" ZONE, SUPERVISOR_ID, ROUTE, DISPATCH_GROUPTIME, TRUCK_DISPATCHTIME, PLAN_ID, ISBULLPEN, REGION, PHYSICAL_TRUCK, CUTOFF_DATETIME, DISPATCH_TYPE, START_TIME ) " +
+			" VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
 	
 	private static final String INSERT_HANDOFFBATCH_AUTODISPATCHRESOURCES = "INSERT INTO TRANSP.DISPATCH_RESOURCE ( DISPATCH_ID, RESOURCE_ID , ROLE ) VALUES ( ?,?,? )";
 		
@@ -1829,6 +1829,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
 				batchUpdater.compile();
 				
 				BatchSqlUpdate batchResourceUpdater = new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),INSERT_HANDOFFBATCH_AUTODISPATCHRESOURCES);
@@ -1860,6 +1861,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 												, model.getTruck()
 												, model.getCutoffTime()
 												, model.getDispatchType()
+												, model.getDispatchTime()
 										});
 						Set<IHandOffDispatchResource> dispatchResources = model.getDispatchResources();
 						if(dispatchResources != null){

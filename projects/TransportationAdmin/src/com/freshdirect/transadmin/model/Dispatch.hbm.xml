@@ -28,6 +28,9 @@
         <property name="truck" type="string">
             <column name="TRUCK" length="12" />
         </property>
+        <property name="dispatchTimeEx" type="timestamp">
+            <column name="START_TIME" length="7" not-null="true" />
+        </property>
         <property name="startTime" type="timestamp">
             <column name="TRUCK_DISPATCHTIME" length="7" not-null="true" />
         </property>

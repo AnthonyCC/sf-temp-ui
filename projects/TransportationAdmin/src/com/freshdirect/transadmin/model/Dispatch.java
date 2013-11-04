@@ -49,6 +49,9 @@ public class Dispatch implements java.io.Serializable{
 	private TrnFacility destinationFacility;	
 	private String dispatchType;
 	
+	/* Temp variable to fill START_TIME column on TRANSP.DISPATCH */
+	private Date dispatchTimeEx;
+	
 	public TrnFacility getOriginFacility() {
 		return originFacility;
 	}
@@ -368,6 +371,12 @@ public class Dispatch implements java.io.Serializable{
 	public void setKeysIn(Boolean keysIn) {
 		this.keysIn = keysIn;
 	}
-	
-	
+
+	public Date getDispatchTimeEx() {
+		return dispatchTimeEx;
+	}
+
+	public void setDispatchTimeEx(Date dispatchTimeEx) {
+		this.dispatchTimeEx = dispatchTimeEx;
+	}
 }
