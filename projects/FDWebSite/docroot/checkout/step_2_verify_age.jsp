@@ -80,7 +80,7 @@ If your order contains alcoholic beverages, the person receiving your delivery m
 				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
 		</TD>
 		<TD ALIGN="RIGHT" VALIGN="MIDDLE">
-			<button class="imgButtonOrange" type="submit">choose time <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
+			<button class="imgButtonOrange" type="submit">choose time <img src="/media_stat/images/buttons/button_arrow.png" alt="" /></button>
 		</TD>
 </TR>
 <tr>

@@ -8,19 +8,19 @@
 			/* determine button for page */
 			if (uriNextButton.indexOf("view_cart") > -1) {
 				%>
-				<button class="imgButtonOrange" type="submit" name="nextStep" value="true">choose delivery address <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
+				<button class="imgButtonOrange" type="submit" name="nextStep" value="true">choose delivery address <img src="/media_stat/images/buttons/button_arrow.png" alt="" /></button>
 				<%									
 			} else if (uriNextButton.indexOf("step_1") > -1) {
 				%>
-				<button class="imgButtonOrange" type="submit">choose time <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
+				<button class="imgButtonOrange" type="submit">choose time <img src="/media_stat/images/buttons/button_arrow.png" alt="" /></button>
 				<%									
 			} else if (uriNextButton.indexOf("step_2") > -1) {
 				if (uriNextButton.indexOf("step_2_duplicate") > -1) { %>
-				<a class="imgButtonOrange" href="/checkout/step_3_choose.jsp?duplicateCheck=skip">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></a>
+				<a class="imgButtonOrange" href="/checkout/step_3_choose.jsp?duplicateCheck=skip">choose payment <img src="/media_stat/images/buttons/button_arrow.png" alt="" /></a>
 				<% } else if (uriNextButton.indexOf("step_2_unavail") > -1) { %>
-				<a class="imgButtonOrange" href="/checkout/step_2_adjust.jsp?successPage=<%=request.getParameter("successPage")%>">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></a>
+				<a class="imgButtonOrange" href="/checkout/step_2_adjust.jsp?successPage=<%=request.getParameter("successPage")%>">choose payment <img src="/media_stat/images/buttons/button_arrow.png" alt="" /></a>
 				<% } else { %>
-				<button class="imgButtonOrange" type="submit">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
+				<button class="imgButtonOrange" type="submit">choose payment <img src="/media_stat/images/buttons/button_arrow.png" alt="" /></button>
 				<% }							
 			} else if (uriNextButton.indexOf("step_3") > -1) {
 				String butActionName = "setPaymentMethod"; //default action
@@ -30,7 +30,7 @@
 					butActionName = "setNoPaymentMethod";
 				}
 				%>
-				<button class="imgButtonOrange" type="submit" onclick="setActionName(this.form,'<%= butActionName %>'); return true;">review order <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
+				<button class="imgButtonOrange" type="submit" onclick="setActionName(this.form,'<%= butActionName %>'); return true;">review order <img src="/media_stat/images/buttons/button_arrow.png" alt="" /></button>
 				<%
 			} else if (uriNextButton.indexOf("step_4") > -1) {
 				/* step 4 is the only step with a different button on order modify (and also needs nettracker tracking) */
