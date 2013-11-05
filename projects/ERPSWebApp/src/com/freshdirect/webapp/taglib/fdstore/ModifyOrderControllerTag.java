@@ -448,7 +448,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		ModifyOrderHelper.loadGiftCardsIntoCart(currentUser, order);
 		
 		// resolve timeslot id based on delivery reservation id
-		ModifyOrderHelper.handleReservation(currentUser, order, cart);
+		ModifyOrderHelper.handleReservation(order, cart);
 		
 		
 		// resolve the redemption promotions

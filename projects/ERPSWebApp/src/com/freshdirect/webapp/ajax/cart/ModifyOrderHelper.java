@@ -25,7 +25,6 @@ import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
-import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -66,9 +65,8 @@ public class ModifyOrderHelper {
 		currentUser.setShoppingCart( cart );
 	}
 	
-	public static void handleReservation(FDSessionUser user, FDOrderAdapter order, FDModifyCartModel cart) throws FDResourceException {
+	public static void handleReservation(FDOrderAdapter order, FDModifyCartModel cart) throws FDResourceException {
 		FDReservation reservation = FDDeliveryManager.getInstance().getReservation( order.getDeliveryReservationId() );
-		//TimeslotLogic.applyOrderMinimum(user, reservation.getTimeslot());
 		cart.setDeliveryReservation(reservation);
 	}
 	

@@ -146,7 +146,7 @@ public class AddToCartServlet extends BaseJsonServlet {
 			ModifyOrderHelper.loadGiftCardsIntoCart(sessionUser, order);
 			
 			//resolve timeslot id based on delivery reservation id
-			ModifyOrderHelper.handleReservation(sessionUser, order, modifycart);
+			ModifyOrderHelper.handleReservation(order, modifycart);
 			
 			HttpSession session = request.getSession();
 			
