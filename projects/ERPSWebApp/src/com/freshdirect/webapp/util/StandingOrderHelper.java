@@ -330,11 +330,13 @@ public class StandingOrderHelper {
 					// exact timeslot match!
 					LOGGER.debug(" +--> " + ts + " (exact match)");
 					__so_timeslotId = ts.getTimeslotId();
+					if(ts.isTimeslotRestricted()) ts.setTimeslotRestricted(false);
 					break;
 				} else if (ts.isWithinRange(selDate, __ds) /* || ts.isWithinRange(selDate, __de) */) {
 					// starting bound falls within timeslot
 					LOGGER.debug(" ===> " + ts+ " (overlap)");
 					__so_timeslotId = ts.getTimeslotId();
+					if(ts.isTimeslotRestricted()) ts.setTimeslotRestricted(false);
 					break;
 				}
 			}
