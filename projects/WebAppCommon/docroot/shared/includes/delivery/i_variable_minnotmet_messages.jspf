@@ -39,3 +39,4 @@
 
 <div style="text-align:center"><a href="<%=response.encodeURL(view_cart_redir)%>">
 		<img src="/media_stat/images/timeslots/button_continue.png" border="0"></a></div>
+<img src="/media_stat/images/layout/clear.gif" width="1" height="6">
