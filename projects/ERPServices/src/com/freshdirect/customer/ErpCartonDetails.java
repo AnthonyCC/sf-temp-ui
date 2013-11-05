@@ -137,7 +137,7 @@ public class ErpCartonDetails implements Serializable {
 			String barcode,
 			double packedQuantity,
 			double netWeight,
-			String weightUnit, String skuCode, String materialDesc) {
+			String weightUnit, String skuCode, String materialDesc, boolean shortShipped) {
 			this.cartonInfo = cartonInfo;
 			this.orderLineNumber = orderLineNumber;
 			this.materialNumber = materialNumber;
@@ -148,6 +148,7 @@ public class ErpCartonDetails implements Serializable {
 			this.skuCode = skuCode;
 			this.materialDesc = materialDesc;
 			components = new ArrayList<ErpCartonDetails>();
+			this.shortShipped = shortShipped;
 	}
 
 	public ErpCartonDetails() {
@@ -177,5 +178,12 @@ public class ErpCartonDetails implements Serializable {
 	private String skuCode;
 	private String materialDesc;
 	private List<ErpCartonDetails> components = new ArrayList<ErpCartonDetails>();
+	private boolean shortShipped;
+	public boolean isShortShipped() {
+		return shortShipped;
+	}
+	public void setShortShipped(boolean shortShipped) {
+		this.shortShipped = shortShipped;
+	}
 
 }

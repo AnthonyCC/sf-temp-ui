@@ -71,6 +71,7 @@ class JcoBapiCartonDetailsForSale extends JcoBapiFunction implements BapiCartonD
 			String weightUnit = lstCartonInfo.getString("GEWEI");
 			String skuCode = lstCartonInfo.getString("WEBID");
 			String materialDesc = lstCartonInfo.getString("MAKTX");
+			boolean shortShipped = "X".equalsIgnoreCase(lstCartonInfo.getString("SHORTSHP"))?true:false;
 			
 			String unit = lstCartonInfo.getString("PACK_UOM");
 			String actualQty = lstCartonInfo.getString("ACT_QTY");
@@ -93,9 +94,9 @@ class JcoBapiCartonDetailsForSale extends JcoBapiFunction implements BapiCartonD
 			}
 			
 			System.out.println(cartonNumber + "-" + skuCode + " -" + parentId + "-" + childId);
-			if("0000000000".equalsIgnoreCase(cartonNumber)) { // This is a header item and will have components
+			if("0000000000".equalsIgnoreCase(cartonNumber) && !shortShipped) { // This is a header item and will have components
 				headerLineItemToCartonDetails.put(parentId, new ErpCartonDetails(null, parentId, materialNumber, barCode
-						, Double.parseDouble(packedQty), Double.parseDouble(netWeight), weightUnit, skuCode, materialDesc));
+						, Double.parseDouble(packedQty), Double.parseDouble(netWeight), weightUnit, skuCode, materialDesc,shortShipped));
 			} else {
 				if(!cartonNoToCartonInfo.containsKey(cartonNumber)) {
 					cartonNoToCartonInfo.put(cartonNumber, new ErpCartonInfo(saleId, saleSapId, cartonNumber, cartonType));
@@ -103,7 +104,7 @@ class JcoBapiCartonDetailsForSale extends JcoBapiFunction implements BapiCartonD
 				currentCartonInfo = cartonNoToCartonInfo.get(cartonNumber);
 				if("000000".equalsIgnoreCase(childId)) { // This is a normal line item so don't expect components
 					currentCartonInfo.getDetails().add(new ErpCartonDetails(currentCartonInfo, parentId, materialNumber, barCode
-							, Double.parseDouble(packedQty), Double.parseDouble(netWeight), weightUnit, skuCode, materialDesc));
+							, Double.parseDouble(packedQty), Double.parseDouble(netWeight), weightUnit, skuCode, materialDesc,shortShipped));
 				} else {
 					if(!cartonNoToHeaderLineToComponent.containsKey(cartonNumber)) {
 						cartonNoToHeaderLineToComponent.put(cartonNumber, new HashMap<String, List<ErpCartonDetails>>());
@@ -112,7 +113,7 @@ class JcoBapiCartonDetailsForSale extends JcoBapiFunction implements BapiCartonD
 						cartonNoToHeaderLineToComponent.get(cartonNumber).put(parentId, new ArrayList<ErpCartonDetails>());
 					}
 					cartonNoToHeaderLineToComponent.get(cartonNumber).get(parentId).add(new ErpCartonDetails(currentCartonInfo, childId, materialNumber, barCode
-																	, Double.parseDouble(packedQty), Double.parseDouble(netWeight), weightUnit, skuCode, materialDesc));
+																	, Double.parseDouble(packedQty), Double.parseDouble(netWeight), weightUnit, skuCode, materialDesc,shortShipped));
 				}
 			}									
 							
@@ -136,8 +137,7 @@ class JcoBapiCartonDetailsForSale extends JcoBapiFunction implements BapiCartonD
 					currentCartonDetail.setMaterialDesc(tempCartonDetail.getMaterialDesc());
 					currentCartonDetail.setPackedQuantity(tempCartonDetail.getPackedQuantity());
 					currentCartonDetail.setWeightUnit(tempCartonDetail.getWeightUnit());				
-					currentCartonDetail.setNetWeight(tempCartonDetail.getNetWeight());			
-					
+					currentCartonDetail.setNetWeight(tempCartonDetail.getNetWeight());	
 					currentCartonDetail.setCartonInfo(currentCartonInfo); // Initial data from SAP will not have correct carton no, so updating it back
 					currentCartonDetail.getComponents().addAll(headerEntrySet.getValue());
 				}				

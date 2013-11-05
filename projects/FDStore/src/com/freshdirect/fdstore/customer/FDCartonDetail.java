@@ -7,6 +7,7 @@
 package com.freshdirect.fdstore.customer;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
 import com.freshdirect.customer.ErpCartonDetails;
 
@@ -40,4 +41,22 @@ public class FDCartonDetail implements Serializable {
 		return cartLine;
 	}
 
+	public boolean isShortShipped(){
+		boolean isShortShipped = false;
+		if(null != cartonDetail){
+			isShortShipped = cartonDetail.isShortShipped();
+			if(!isShortShipped){
+				for (Iterator<ErpCartonDetails> iterator = cartonDetail.getComponents().iterator(); iterator
+						.hasNext();) {
+					ErpCartonDetails cartonDetails = (ErpCartonDetails) iterator.next();
+					if(cartonDetails.isShortShipped()){
+						isShortShipped = cartonDetails.isShortShipped();
+						break;
+					}
+					
+				}
+			}
+		}
+		return isShortShipped;
+	}
 }

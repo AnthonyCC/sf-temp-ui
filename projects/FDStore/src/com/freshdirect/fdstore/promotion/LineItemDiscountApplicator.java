@@ -168,6 +168,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 					  FDCartLineI cartLine=(FDCartLineI)newOrderLines.get(i);
 					  boolean e = evaluate(cartLine, promotionCode, context);
 					  if(e) {
+						skuCount = skuCountMap.get(promo.getPromotionCode());
 						int availableSkuLimit = skuLimit - skuCount;
 						if(availableSkuLimit > (int)cartLine.getQuantity()) {
 							availableSkuLimit = (int)cartLine.getQuantity();
@@ -250,6 +251,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 					FDCartLineI cartLine=(FDCartLineI)newOrderLines.get(i);
 					boolean e = evaluate(cartLine, promotionCode, context);
 					if(e) {
+						skuCount = skuCountMap.get(promo.getPromotionCode());
 						int availableSkuLimit = skuLimit - skuCount;
 						if(availableSkuLimit > (int)cartLine.getQuantity()) {
 							availableSkuLimit = (int)cartLine.getQuantity();
