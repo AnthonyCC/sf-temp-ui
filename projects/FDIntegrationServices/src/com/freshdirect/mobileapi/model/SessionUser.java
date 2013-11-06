@@ -372,7 +372,8 @@ public class SessionUser {
             //Specific reservation doesn't exist. try to match by day of week and time range.
             String foundId = "";
             ErpCustomerInfoModel customerInfo = FDCustomerFactory.getErpCustomerInfo(sessionUser.getIdentity());
-            boolean hasWeeklyReservation = customerInfo.getRsvAddressId() != null && !"".equals(customerInfo.getRsvAddressId());
+            boolean hasWeeklyReservation = customerInfo.getRsvAddressId() != null && !"".equals(customerInfo.getRsvAddressId()) 
+            		&&  address != null && address.getPK() != null && address.getPK().getId() != null && customerInfo.getRsvAddressId().equals(address.getPK().getId());
             if (hasWeeklyReservation) {
                 int maxloop = 8;
                 int index = 0;
