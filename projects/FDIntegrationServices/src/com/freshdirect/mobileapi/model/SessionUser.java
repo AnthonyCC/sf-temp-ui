@@ -366,6 +366,8 @@ public class SessionUser {
             timeSlotCalculationResult.setReservationTimeslotId(reservation.getTimeslotId());
             if(!reservation.isMinOrderMet())
                 timeSlotCalculationResult.setShowMinNotMetMessage(true);
+            else
+            	timeSlotCalculationResult.setShowMinNotMetMessage(false);
         } else {
             //Specific reservation doesn't exist. try to match by day of week and time range.
             String foundId = "";
@@ -408,6 +410,8 @@ public class SessionUser {
             timeSlotCalculationResult.setPreselectedTimeslotId(deliveryReservation.getTimeslotId());
             if(!deliveryReservation.isMinOrderMet())
             	timeSlotCalculationResult.setShowMinNotMetMessage(true);
+            else
+            	timeSlotCalculationResult.setShowMinNotMetMessage(false);
             	
         }
     }
