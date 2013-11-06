@@ -18,6 +18,7 @@
 <%@page import="com.freshdirect.cms.application.service.xml.FlexContentHandler"%>
 <%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@page import="com.freshdirect.cms.ContentNodeI"%><html>
+<%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <head>
 	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 	<title>Producers' Map</title>
