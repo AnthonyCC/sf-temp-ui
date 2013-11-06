@@ -51,13 +51,6 @@
     String timeSlotId = request.getParameter("deliveryTimeslotId");
 	int page_type = TimeslotLogic.PAGE_NORMAL;
 	
-	FDReservation rsv = (user!=null && user.getShoppingCart()!=null && user.getShoppingCart().getDeliveryReservation()!=null && 
-			(selectedSlotId.equals(user.getShoppingCart().getDeliveryReservation().getTimeslotId()) || (hasPreReserved && preReserveSlotId.equals(user.getShoppingCart().getDeliveryReservation().getTimeslotId()))))?user.getShoppingCart().getDeliveryReservation():null;
-
-	if(rsv == null) rsv = (user!=null && user.getReservation()!=null && 
-			(selectedSlotId.equals(user.getReservation().getTimeslotId()) || (hasPreReserved && preReserveSlotId.equals(user.getReservation().getTimeslotId()))))?user.getReservation():null;
-
-
 	final boolean forceOrder = "true".equalsIgnoreCase(request.getParameter("forceorder"));
 	TimeslotContext timeSlotCtx= TimeslotContext.CHECKOUT_TIMESLOTS;
 %>
@@ -76,6 +69,13 @@
 	String selectedSlotId = deliveryModel.getTimeSlotId();
 	String preReserveSlotId = deliveryModel.getPreReserveSlotId();
 	boolean hasPreReserved = deliveryModel.isPreReserved();
+	
+	FDReservation rsv = (user!=null && user.getShoppingCart()!=null && user.getShoppingCart().getDeliveryReservation()!=null && 
+			(selectedSlotId.equals(user.getShoppingCart().getDeliveryReservation().getTimeslotId()) || (hasPreReserved && preReserveSlotId.equals(user.getShoppingCart().getDeliveryReservation().getTimeslotId()))))?user.getShoppingCart().getDeliveryReservation():null;
+
+	if(rsv == null) rsv = (user!=null && user.getReservation()!=null && 
+			(selectedSlotId.equals(user.getReservation().getTimeslotId()) || (hasPreReserved && preReserveSlotId.equals(user.getReservation().getTimeslotId()))))?user.getReservation():null;
+
 	boolean defaultColExp = false;
 	String zoneId = deliveryModel.getZoneId();
 
