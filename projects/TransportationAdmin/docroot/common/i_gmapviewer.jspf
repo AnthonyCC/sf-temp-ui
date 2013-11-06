@@ -1,17 +1,44 @@
-<script>
+<div id="wait"></div>
+<form name="panel-1-form" id="panel-1-form" method="post">
+	<div id="panel-1">
+		<div class="hd">
+			<img src="images/gmap-icon.gif" width="16" height="16" border="0"
+				alt="Gmap" align="absmiddle" />&nbsp;Geography Boundary
+		</div>
+		<div class="bd">
+			<p>
+				Latitude:<input type="text" size="20" id="latitude" value="" />&nbsp;&nbsp;
+				Longitude:<input type="text" size="20" id="longitude" value="" /> 
+				<input type="button" value="Locate!" onclick="javascript:plotPoint('P')" />&nbsp;&nbsp; 
+				<input type="text" size="40" id="address" value="2330 BORDEN AVE, 11101, NY" /> <input type="button" value="Locate!" onclick="javascript:plotPoint('A')" />
+			</p>
+			<div id="info-panel"></div>
+			<div id="map-canvas" style="width: 940px; height: 590px"></div>
+			<div id="loccontainer"
+				style="overflow-y: scroll; width: 940px; height: 35px; border: 1px solid #aaa;">
+				<div id="locdiv" style="height: 50px;">&nbsp;</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+
+ <script>
             
       var editPanel;
       var waitPanel;
-      var map;
-      var currentAddress;
+      var map;      
       var defaultZoomLevel = 15;
+      var markers = [];
+      var polygons = [];
                   
       var jsonrpcClient = new JSONRpcClient("geographyprovider.ax");
       var currentBoundary;
-      
-     var locIndex = 0;
+      var locateAddresses;
+      var locIndex = 0;
+      var boundz;
   	    
-      function init() {
+      function initialize() {
         editPanel = new YAHOO.widget.Panel("panel-1", {       
                           width: "960px", 
                           fixedcenter: true, 
@@ -37,216 +64,339 @@
         waitPanel.setHeader("Loading, please wait...");
         waitPanel.setBody("<img src=\"images/rel_interstitial_loading.gif\"/>");
         
-        map = new GMap2(document.getElementById("map_canvas"));
-      
-	     map.addControl(new GSmallMapControl());
-		 map.addControl(new GMapTypeControl());
-		 map.enableDragging();
-		 
+        var mapOptions = {
+					          zoom: 10,
+					          // Center the map on New York, USA.
+    						  center: new google.maps.LatLng(40.739878, -73.947262),
+					          mapTypeId: google.maps.MapTypeId.ROADMAP,
+					
+					          // map type control
+					          mapTypeControl: true,
+					          mapTypeControlOptions: {
+					              style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+					              position: google.maps.ControlPosition.TOP_RIGHT
+					          },
+					          
+					          // zoom control
+					          zoomControl: true,
+					          zoomControlOptions: {
+					            style: google.maps.ZoomControlStyle.LARGE
+					          },
+					
+					
+					          // scale control
+					          scaleControl: true,
+					          scaleControlOptions: {
+					              position: google.maps.ControlPosition.BOTTOM_RIGHT
+					          },
+					          
+							  // Street Control
+					          streetViewControl: true,
+					          streetViewControlOptions: {
+					              position: google.maps.ControlPosition.LEFT_RIGHT
+					          }
+
+        };
+                
+        map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+        infoPanel = document.getElementById('info-panel');
+     	// put markers
+		boundz = new google.maps.LatLngBounds();
+	 
 	}
-       
-              
-      function showBoundary(boundaryKey) {          
-        
-          waitPanel.render(document.body);
-          waitPanel.show();
-          
-    	  var result = jsonrpcClient.AsyncGeographyProvider.getBoundaries(showBoundaryCallback, boundaryKey); 
-    	  currentBoundary = boundaryKey;
-      }
-      
-      function showBoundaryCallback(result, exception) {
-      	  map.clearOverlays();
-          if(exception) { 
-              waitPanel.hide();
-              alert('Unable to connect to host system. Please contact system administrator!');               
-              return;
-          }
-          
-          
-		  var polygonDepth = "20";
-		  var fillColor = "#0000FF"; // blue fill
-		  var lineColor = "#000000"; // black line
-	      var opacity = .5;
-	      var lineWeight = .5; 
-	      
-          waitPanel.hide();                              
-          if(result.list != null) {        	          	  
-        	  for (j=0; j < result.list.length; j++) {
-        		  
-        		  var centerpoint = new GLatLng(result.list[j].center['y'], result.list[j].center['x']);
-                  map.setCenter(centerpoint, 12);
-                  
-                  var markerCenter = createFlatMarker(centerpoint, result.list[j].code, result.list[j].zone, result.list[j].sector,(result.list[j].code+"<br/>"+result.list[j].name));//createMarker(centerpoint,"P",(result.list[j].code+"<br/>"+result.list[j].name));
-                  map.addOverlay(markerCenter);
-		          if(result.list[j].geoloc.list != null) {
-		        	var polyPoints = [];
-		          	for (i=0; i < result.list[j].geoloc.list.length; i++) {
-		          		
-		          	 	var tmpPoint = result.list[j].geoloc.list[i];          	 	
-		          		polyPoints.push(new GLatLng(tmpPoint['y'], tmpPoint['x']));		          		
-		       		     	
-		          	}
-		          	var polyShape = new GPolygon(polyPoints,lineColor,lineWeight,opacity, genHexColor(),opacity);
-	                map.addOverlay(polyShape);          	          	
-		          }
-        	  }
-          }
-          //map.setZoom(defaultZoomLevel);
-                             
-          editPanel.render(document.body);    
-          //editPanel.moveTo(450, 200);
-          
-          
-          editPanel.show();
-      }
 
-      function genHexColor(){
-    	  colors = new Array(14)
-    	  colors[0]="0"
-    	  colors[1]="1"
-    	  colors[2]="2"
-    	  colors[3]="3"
-    	  colors[4]="4"
-    	  colors[5]="5"
-    	  colors[5]="6"
-    	  colors[6]="7"
-    	  colors[7]="8"
-    	  colors[8]="9"
-    	  colors[9]="a"
-    	  colors[10]="b"
-    	  colors[11]="c"
-    	  colors[12]="d"
-    	  colors[13]="e"
-    	  colors[14]="f"
+	function showBoundary(boundaryKey, addresses) {
 
-    	  digit = new Array(5)
-    	  color="#"
-    	  for (i=0; i<6; i++){
-    	  	digit[i]=colors[Math.round(Math.random()*14)]
-    	  	color = color+digit[i];
-    	  }
-    	  return color;
-   	  }
-       	  
-      function plotPoint(type) {
-      	if('A' == type) {
-      		// Create new geocoding object
-      	   var geocoder = new GClientGeocoder();
-		   currentAddress = document.getElementById('address').value;
-	       // Retrieve location information, pass it to addToMap()
-    	   geocoder.getLocations(document.getElementById('address').value, addToMap);
- 	   
-      	   
-      	} else {
-      	   var centerpoint = new GLatLng(document.getElementById('latitude').value, document.getElementById('longitude').value);
-	       map.setCenter(centerpoint, 12);
-	          
-	       var markerCenter = createMarker(centerpoint,"P",
-	       							("Latitude="+document.getElementById('latitude').value+"<br/>"+"Longitude="+document.getElementById('longitude').value));
-	       map.addOverlay(markerCenter);
-      	}
-      	      	      	
-      }
-      
-       function addToMap(response)  {      
-		  var place = response.Placemark[0];
-	      var addressPoint = new GLatLng(place.Point.coordinates[1],
-	                          place.Point.coordinates[0]);
+		waitPanel.render(document.body);
+		waitPanel.show();
+
+		var result = jsonrpcClient.AsyncGeographyProvider.getBoundaries(
+				showBoundaryCallback, boundaryKey);
+		currentBoundary = boundaryKey;
+		locateAddresses = addresses;
+	}
+
+	function showBoundaryCallback(result, exception) {
+
+		// clear if any markers on Map
+		deleteAll();		
 	
-	      // Center the map on this point
-	      map.setCenter(addressPoint, 12);
-	            
-	               
-	      var addressMarker = createLabelledMarker(addressPoint,""+(++locIndex),currentAddress+"<br/>"
-	      					+("Latitude="+place.Point.coordinates[1]+"<br/>"+"Longitude="+place.Point.coordinates[0]));
+		if (exception) {
+			waitPanel.hide();
+			alert('Unable to connect to host system. Please contact system administrator!');
+			return;
+		}
+		
+		waitPanel.hide();
+
+		if (result.list != null) {
+			var point;
+			for ( var j = 0; j < result.list.length; j++) {
+
+				point = new google.maps.LatLng(result.list[j].center['y'], result.list[j].center['x']);				
+				map.setCenter(point, 12);
+				boundz.extend(point);
+				
+				createFlatMarker(point,
+						result.list[j].code, result.list[j].zone,
+						result.list[j].sector,
+						(result.list[j].code + "<br/>" + result.list[j].name));
+				
+							
+				if (result.list[j].geoloc.list != null) {
+					var polyLines = [];
+					for (var i = 0; i < result.list[j].geoloc.list.length; i++) {
+						var tmpPoint = result.list[j].geoloc.list[i];
+						var pointX = new google.maps.LatLng(tmpPoint['y'], tmpPoint['x'])
+						boundz.extend(pointX);
+						polyLines.push(pointX);
+
+					}
+					var polyShape = new google.maps.Polygon({
+															  paths: polyLines,
+															  strokeColor: '#000000',
+															  strokeWeight: 1,
+															  strokeOpacity: 0.5,
+															  fillColor: genHexColor(),
+															  fillOpacity: 0.5
+															});
+
+					polygons.push(polyShape);				
+				}
+				// Sets the map on all markers in the array
+				showMarkerAndPoligons();	
+				
+				if(locateAddresses != null) {
+					plotAddresses('A', locateAddresses);
+				}
+				
+				// fit all markers
+				map.setZoom(getZoomByBounds(map, boundz));
+				map.setCenter(boundz.getCenter());
+			}
+		}
+
+		editPanel.render(document.body);
+
+		editPanel.show();
+	}
 	
-	      // Add the marker to map
-	      map.addOverlay(addressMarker);
-	      
-	      var _locDiv = document.getElementById('locdiv');
-       	  var _newLoc = document.createElement('a');
-       	  _newLoc.appendChild(document.createTextNode(document.getElementById('address').value));
-       	  _newLoc.href = "javascript:gotoPoint('"+place.Point.coordinates[1]+"','"+place.Point.coordinates[0]+"')";
-       	  _locDiv.appendChild(document.createTextNode(locIndex+"."));
-       	  _locDiv.appendChild(_newLoc);
-       	  _locDiv.appendChild(document.createTextNode("  "));
-      }
+	// Sets the map on all markers in the array.
+	function setAllMap(map) {
+	  for (var i = 0; i < markers.length; i++) {
+	     markers[i].setMap(map);
+	  }	  
+	  for (var i = 0; i < polygons.length; i++) {
+		 polygons[i].setMap(map);
+	  }
+	}
 
- 	  function gotoPoint(valX, valY) {
- 		 map.setCenter(new GLatLng(valX, valY), 12);
- 	  }
+	// Removes the markers from the map, but keeps them in the array.
+	function clearAll() {
+	  setAllMap(null);
+	}
 
- 	 function createLabelledMarker(point, info, legend) {
-              var newIcon = MapIconMaker.createLabeledMarkerIcon({width: 30, height: 30, primaryColor: "#ff0000", label:info, labelColor:"#ffffff"});
- 		   var marker = new GMarker(point, {icon: newIcon});
- 			GEvent.addListener(marker, "click", function() {
-		    marker.openInfoWindowHtml(legend);
-		  });
-    	  return marker;
-   	} 
-    	
-       function createFlatMarker(point, info, isZone, isSector, legend) {
-           var shapeVal = "roundrect";
-           if(isZone) {
-        	   shapeVal = "circle";
-           } 
-	       var newIcon = MapIconMaker.createFlatIcon({width: 30, height: 30, primaryColor: "#ff0000", label:info, shape: shapeVal, labelColor:"#ffffff"});
-   		   if(isSector){
-   				newIcon = MapIconMaker.createMarkerIcon({width: 30, height: 30, addStar: true, primaryColor: "#A52A2A", label:info, labelColor:"#ffffff"});
-   		   }
-	       var marker = new GMarker(point, {icon: newIcon});
-   			GEvent.addListener(marker, "click", function() {
-		    marker.openInfoWindowHtml(legend);
-		  });
-      	  return marker;
-     	} 
-       
-      
-      function createMarker(point, letterCode, info) {
-		var baseIcon = new GIcon();
-		baseIcon.shadow = "http://www.google.com/mapfiles/shadow50.png";
-		baseIcon.iconSize = new GSize(20, 34);
-		baseIcon.shadowSize = new GSize(37, 34);
-		baseIcon.iconAnchor = new GPoint(9, 34);
-		baseIcon.infoWindowAnchor = new GPoint(9, 2);
-		baseIcon.infoShadowAnchor = new GPoint(18, 25);     	
-		  // Create a lettered icon for this point using our icon class
-		  var letter = String.fromCharCode(letterCode.charCodeAt(0));
-		  var letteredIcon = new GIcon(baseIcon);
-		  letteredIcon.image = "http://www.google.com/mapfiles/marker" + letter + ".png";
+	// Shows any markers currently in the array.
+	function showMarkerAndPoligons() {
+	  setAllMap(map);
+	}
+
+	// Deletes all markers in the array by removing references to them.
+	function deleteAll() {
+	  clearAll();
+	  markers = [];
+	  polygons = [];
+	}
+	
+	function createFlatMarker(bbLatLng, info, isZone, isSector, contentString) {
+		var shapeVal = "roundrect";
+		if (isZone) {
+			shapeVal = "circle";
+		}
+		var iconMakerResponse = MapIconMaker.createFlatIcon({label:info, shape: shapeVal});
+		if (isSector) {
+			iconMakerResponse = MapIconMaker.createMarkerIcon({label:info, shape: shapeVal});
+		}
+								
+		var iconMarker = new google.maps.Marker({
+			position : bbLatLng,
+			icon : iconMakerResponse.icon,
+			map : map
+		});
 		
-		  // Set up our GMarkerOptions object
-		  markerOptions = { icon:letteredIcon, draggable: true };
-		  var marker = new GMarker(point, markerOptions);
+		markers.push(iconMarker);
 		
-		  GEvent.addListener(marker, "click", function() {
-		    marker.openInfoWindowHtml(info);
-		  });
-		  return marker;
-      } 
-      
-      
-      
-      YAHOO.util.Event.addListener(window, "load", init);
-      YAHOO.util.Event.addListener(window, "unload", GUnload);
-    </script>
-   
-    <div id="wait"></div>
-    <form name="panel-1-form" id="panel-1-form" method="post">
-      <div id="panel-1">
-      <div class="hd"><img src="images/gmap-icon.gif" width="16" height="16" border="0" alt="Gmap" align="absmiddle" />&nbsp;Geography Boundary</div>
-      <div class="bd">
-      <p>
-      	Latitude:<input type="text" size="20" id="latitude" value="" />&nbsp;&nbsp;Longitude:<input type="text" size="20" id="longitude" value="" />
-	    <input type="button" value="Locate!" onclick="javascript:plotPoint('P')" />
-	    &nbsp;&nbsp;
-	    <input type="text" size="40" id="address" value="2330 BORDEN AVE, 11101, NY"  />
-	    <input type="button" value="Locate!" onclick="javascript:plotPoint('A')" />	    
- 	 </p>
- 	 <div id="map_canvas" style="width: 940px; height: 600px"></div>
- 	 <div id="loccontainer" style="overflow-y: scroll;width:940px; height: 35px;border: 1px solid #aaa;">
- 	 	<div id="locdiv" style="height:50px;">&nbsp;</div>
- 	  </div>	
-        </div>
-    </div>
+		var infowindow = new google.maps.InfoWindow({
+		      content: contentString
+		});
+		
+		google.maps.event.addListener(iconMarker, 'click', function() {
+		    infowindow.open(map, iconMarker);
+		});
+				
+		return iconMarker;
+	}
+		
+	function genHexColor() {
+		colors = new Array(14)
+		colors[0] = "0"
+		colors[1] = "1"
+		colors[2] = "2"
+		colors[3] = "3"
+		colors[4] = "4"
+		colors[5] = "5"
+		colors[5] = "6"
+		colors[6] = "7"
+		colors[7] = "8"
+		colors[8] = "9"
+		colors[9] = "a"
+		colors[10] = "b"
+		colors[11] = "c"
+		colors[12] = "d"
+		colors[13] = "e"
+		colors[14] = "f"
+
+		digit = new Array(5)
+		color = "#"
+		for (i = 0; i < 6; i++) {
+			digit[i] = colors[Math.round(Math.random() * 14)]
+			color = color + digit[i];
+		}
+		return color;
+	}
+
+	
+	var geocoder = new google.maps.Geocoder();
+	var infoPanel;
+	var geocodeMarker;
+	
+	function geocodeAddress() {
+		  var address = document.getElementById('address').value;
+		  infoPanel.innerHTML = '<p>Original address: ' + address + '</p>';
+		  geocoder.geocode({'address': address}, geocode_result_handler);
+	}	
+
+	function geocode_result_handler(result, status) {
+		if (status != google.maps.GeocoderStatus.OK) {
+			alert('Geocoding failed. ' + status);
+		} else {
+			map.fitBounds(result[0].geometry.viewport);
+			infoPanel.innerHTML += '<p>Result for geocoding is <em>'
+					+ result[0].geometry.location_type.toLowerCase()
+					+ '</em> to <em>' + result[0].formatted_address
+					+ '</em> of types <em>'
+					+ result[0].types.join('</em>, <em>').replace(/_/, ' ')
+					+ '</em> at <tt>' + result[0].geometry.location
+					+ '</tt></p>';
+					
+			var latLng = result[0].geometry.location;
+			map.setCenter(latLng, 12);
+					
+			var marker_title = result[0].formatted_address + ' at '	+ latLng;
+			
+			var infowindow = new google.maps.InfoWindow({
+			      content: marker_title
+			});
+			
+			var mapIconResponse = MapIconMaker.createLabeledMarkerIcon({label:'A', addStar: true});
+			
+			if (geocodeMarker) {
+				geocodeMarker.setPosition(latLng);
+				geocodeMarker.setTitle(marker_title);
+			} else {
+				geocodeMarker = new google.maps.Marker({
+					position : latLng,
+					title : marker_title,
+					icon : mapIconResponse.icon,
+					map : map
+				});				
+				
+				google.maps.event.addListener(geocodeMarker, 'click', function() {
+				    infowindow.open(map, geocodeMarker);
+				});
+			}
+			markers.push(geocodeMarker);			
+		}
+	}
+	
+	/**
+	* Returns the zoom level at which the given rectangular region fits in the map view. 
+	* The zoom level is computed for the currently selected map type. 
+	* @param {google.maps.Map} map
+	* @param {google.maps.LatLngBounds} bounds 
+	* @return {Number} zoom level
+	**/
+	function getZoomByBounds( map, bounds ){
+	  var MAX_ZOOM = map.mapTypes.get( map.getMapTypeId() ).maxZoom || 21 ;
+	  var MIN_ZOOM = map.mapTypes.get( map.getMapTypeId() ).minZoom || 0 ;
+	
+	  var ne= map.getProjection().fromLatLngToPoint( bounds.getNorthEast() );
+	  var sw= map.getProjection().fromLatLngToPoint( bounds.getSouthWest() ); 
+	
+	  var worldCoordWidth = Math.abs(ne.x-sw.x);
+	  var worldCoordHeight = Math.abs(ne.y-sw.y);
+	
+	  //Fit padding in pixels 
+	  var FIT_PAD = 40;
+	
+	  for( var zoom = MAX_ZOOM; zoom >= MIN_ZOOM; --zoom ){ 
+	      if( worldCoordWidth*(1<<zoom)+2*FIT_PAD < $(map.getDiv()).width() && 
+	          worldCoordHeight*(1<<zoom)+2*FIT_PAD < $(map.getDiv()).height() )
+	          return zoom;
+	  }
+	  return 0;
+	}
+
+	function plotPoint(type) {
+		if ('A' == type) {
+			geocodeAddress();
+		} else {
+			infoPanel.innerHTML = '';
+			var latLng = new google.maps.LatLng(document.getElementById('latitude').value, document.getElementById('longitude').value);
+			map.setCenter(latLng, 12);
+			
+			var marker_title = "Latitude="+ document.getElementById('latitude').value	+ ", " + "Longitude=" + document.getElementById('longitude').value;
+			
+			var infowindow = new google.maps.InfoWindow({
+			      content: "Latitude="+ document.getElementById('latitude').value	+ "<br/> " + "Longitude=" + document.getElementById('longitude').value
+			});
+			
+			var mapIconResponse = MapIconMaker.createLabeledMarkerIcon({label:'P', addStar: true});
+			
+			geocodeMarker = new google.maps.Marker({
+				position : latLng,
+				title : marker_title,
+				icon : mapIconResponse.icon,
+				map : map
+			});
+			
+			markers.push(geocodeMarker);
+			
+			google.maps.event.addListener(geocodeMarker, 'click', function() {
+			    infowindow.open(map, geocodeMarker);
+			});
+		}
+	}
+	
+	function plotAddresses(type, result) {
+			if ('A' == type) {
+				if (result != null) {
+					var address = [];
+					address = result.split('_');
+					var count = 0;
+					for (j = 0; j < address.length - 1; j++) {
+						geocoder.geocode({'address' : address[j]}, geocode_result_handler);
+					}
+				}
+			}
+	}
+
+	function hideForm() {
+		YAHOO.util.Dom.get("info-panel").value = "";
+		editPanel.hide();
+	}
+
+	YAHOO.util.Event.addListener(window, "load", initialize);
+	YAHOO.util.Event.addListener(window, "unload", hideForm);
+</script>
+

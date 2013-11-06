@@ -201,7 +201,7 @@
 			</div>
 	</div>
 
-<%@ include file='/common/i_gmapanalyzerviewer.jspf'%>
+<%@ include file='/common/i_gmapviewer.jspf'%>
 <script>
       
        function doCompositeLink(compId1,compId2,compId3,compId4,compId5,url) {
@@ -234,24 +234,28 @@
 		
 		function doBoundary() {
 			var table_capacity = document.getElementById("tbl_capacityAnalyzer");
-			var checkboxList_Address = table_capacity.getElementsByTagName("input");
-			var addressList = document.getElementsByName('address');
-            var checked = "";
-            var result = "";
-            for (i = 0; i < checkboxList_Address.length; i++) {            
-              if (checkboxList_Address[i].type=="checkbox" && !checkboxList_Address[i].disabled)  {
-              	if(checkboxList_Address[i].checked) {
-              		checked += checkboxList_Address[i].name+",";
-					result += addressList[i].innerHTML+"_";
-              	}
-              }
-            }
-            if(checked.length == 0) {
-             	alert('Please Select a Row!');
-            }
-            else {
-              	showBoundary(checked.substring(0,checked.length-1), result);
-            }
+			if(table_capacity != null) {
+				var checkboxList_Address = table_capacity.getElementsByTagName("input");
+				var addressList = document.getElementsByName('address');
+	            var checked = "";
+	            var result = "";
+	            for (i = 0; i < checkboxList_Address.length; i++) {            
+	              if (checkboxList_Address[i].type=="checkbox" && !checkboxList_Address[i].disabled)  {
+	              	if(checkboxList_Address[i].checked) {
+	              		checked += checkboxList_Address[i].name+",";
+						result += addressList[i].innerHTML+"_";
+	              	}
+	              }
+	            }
+	            if(checked.length == 0) {
+	             	alert('Please Select a Row!');
+	            }
+	            else {
+	              	showBoundary(checked.substring(0,checked.length-1), result);
+	            }
+			} else {
+				alert('Please Select a Row!');
+			}
 		}
 
 		function doSelect() {

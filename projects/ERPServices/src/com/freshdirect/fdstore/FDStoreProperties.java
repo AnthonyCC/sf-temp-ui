@@ -1238,6 +1238,8 @@ public class FDStoreProperties {
         defaults.put(SHOW_DLVPASS_LINK_ON_DELINFO, "false");
         
         defaults.put(PROP_ASSIGNED_CUSTOMER_PARAMS_QUERY_ID, "1");
+        
+        defaults.put(GMAPS_API_KEY, "AIzaSyAALx7g2uVEDP46IaGU_zxYT5gBSKac2ks");        
 				
         refresh();
     }

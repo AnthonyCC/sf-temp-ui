@@ -1,17 +1,23 @@
+<%@ page import='com.freshdirect.transadmin.util.*' %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <title>Google Maps Location Match</title>
-    <script src="http://maps.google.com/maps?file=api&v=2&key=<%= request.getParameter("mapkey") %>"
-      	type="text/javascript"></script>
+    <script type="text/javascript"
+      src="http://maps.googleapis.com/maps/api/js?sensor=false&key=<%= request.getParameter("mapkey") %>">
+	</script>
+	<script type="text/javascript" language="javascript" src="js/gmap/mapiconmaker.js"></script>
     <script type="text/javascript">
 
     //<![CDATA[
 
    var geocoder;
-   var map;
+   var map;   
+   var infoPanel;
+   var geocodeMarker;
 
    var address = '<%= request.getParameter("address") %>';
    var latitude = '<%= request.getParameter("latitude") %>';
@@ -22,82 +28,115 @@
    function load()
    {  
          
-      // Create new map object
-      map = new GMap2(document.getElementById("map"));
-      
-      map.addControl(new GSmallMapControl());
-	  map.addControl(new GMapTypeControl());
-	  map.enableDragging();
-      
+	   var mapOptions = {
+		          zoom: 8,
+		          // Center the map on New York, USA.
+				  center: new google.maps.LatLng(40.739878, -73.947262),
+		          mapTypeId: google.maps.MapTypeId.ROADMAP,
+		
+		          // map type control
+		          mapTypeControl: true,
+		          mapTypeControlOptions: {
+		              style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+		              position: google.maps.ControlPosition.TOP_LEFT
+		          },
+		          
+		          // zoom control
+		          zoomControl: true,
+		          zoomControlOptions: {
+		            style: google.maps.ZoomControlStyle.SMALL
+		          },
+		
+		
+		          // scale control
+		          scaleControl: true,
+		          scaleControlOptions: {
+		              position: google.maps.ControlPosition.BOTTOM_RIGHT
+		          },
+		          
+				  // Street Control
+		          streetViewControl: true,
+		          streetViewControlOptions: {
+		              position: google.maps.ControlPosition.LEFT_TOP
+		          }
 
+		};
+ 
+	  map = new google.maps.Map(document.getElementById('map'), mapOptions);
+      
       // Create new geocoding object
-      geocoder = new GClientGeocoder();
+      geocoder = new google.maps.Geocoder();
 
       // Retrieve location information, pass it to addToMap()
-      geocoder.getLocations(address, addToMap);
+      geocodeAddress();
    }
-
-   // This function adds the point to the map
-
-   function addToMap(response)
-   {      
-      // Retrieve the object
-      place = response.Placemark[0];
-      
-      // Retrieve the latitude and longitude
-      point = new GLatLng(latitude, longitude);
-      
-      addressPoint = new GLatLng(place.Point.coordinates[1],
-                          place.Point.coordinates[0]);
-
-      // Center the map on this point
-      map.setCenter(point, 13);
-            
-      // Create a marker
-      markerPoint = createMarker(point,"P",("Latitude="+latitude+"<br/>"+"Longitude="+longitude));
-          
-      addressMarker = createMarker(addressPoint,"A",address+"<br/>"
-      					+("Latitude="+place.Point.coordinates[1]+"<br/>"+"Longitude="+place.Point.coordinates[0]));
-
-      // Add the marker to map
-      map.addOverlay(addressMarker);
-      
-      map.addOverlay(markerPoint);
-
-   }
-   
   
-	  
-	  // Creates a marker whose info window displays the letter corresponding
-        // to the given index.
-    function createMarker(point, letterCode, info) {
-      var baseIcon = new GIcon();
-	    baseIcon.shadow = "http://www.google.com/mapfiles/shadow50.png";
-	    baseIcon.iconSize = new GSize(20, 34);
-	    baseIcon.shadowSize = new GSize(37, 34);
-	    baseIcon.iconAnchor = new GPoint(9, 34);
-	    baseIcon.infoWindowAnchor = new GPoint(9, 2);
-	    baseIcon.infoShadowAnchor = new GPoint(18, 25);     	
-      // Create a lettered icon for this point using our icon class
-      var letter = String.fromCharCode(letterCode.charCodeAt(0));
-      var letteredIcon = new GIcon(baseIcon);
-      letteredIcon.image = "http://www.google.com/mapfiles/marker" + letter + ".png";
+	
+	function geocodeAddress() {		  
+		
+		var pointLatLng = new google.maps.LatLng(latitude, longitude);
+		map.setCenter(pointLatLng, 12);
+		
+		var mapIconResponse = MapIconMaker.createLabeledMarkerIcon({label:'P', addStar: false});
+	     
+	    var infowindow = new google.maps.InfoWindow({
+		      content: "Latitude="+ latitude + ", " + "Longitude=" + longitude
+		});
+	    
+	    
+	    var pointMarker = new google.maps.Marker({
+				position : pointLatLng,
+				icon : mapIconResponse.icon,
+				map : map
+			});
+	    
+	    google.maps.event.addListener(pointMarker, 'click', function() {
+		    infowindow.open(map, pointMarker);
+		});		
+				
+		geocoder.geocode({'address': address}, geocode_result_handler);
 
-      // Set up our GMarkerOptions object
-      markerOptions = { icon:letteredIcon, draggable: true };
-      var marker = new GMarker(point, markerOptions);
+	}	
 
-      GEvent.addListener(marker, "click", function() {
-        marker.openInfoWindowHtml(info);
-      });
-      return marker;
-    } 
-  
+	function geocode_result_handler(result, status) {
+		if (status != google.maps.GeocoderStatus.OK) {
+			alert('Geocoding failed. ' + status);
+		} else {
+			map.fitBounds(result[0].geometry.viewport);					
+			var latLng = result[0].geometry.location;
+			map.setCenter(latLng, 10);
+					
+			var marker_title = result[0].formatted_address + ' at '	+ latLng;
+			
+			var infowindow = new google.maps.InfoWindow({
+			      content: marker_title
+			});
+			
+			var mapIconResponse = MapIconMaker.createLabeledMarkerIcon({label:'A', addStar: false});
+			
+			if (geocodeMarker) {
+				geocodeMarker.setPosition(latLng);
+				geocodeMarker.setTitle(marker_title);
+			} else {
+				geocodeMarker = new google.maps.Marker({
+					position : latLng,
+					title : marker_title,
+					icon : mapIconResponse.icon,
+					map : map
+				});				
+				
+				google.maps.event.addListener(geocodeMarker, 'click', function() {
+				    infowindow.open(map, geocodeMarker);
+				});
+			}			
+		}
+	}
 
-    //]]>
-    </script>
+</script>
+
   </head>
-  <body onload="load()" onunload="GUnload()">
+  <body onload="load()">
+  	<div id="info-panel"></div>
     <div id="map" style="width: <%= request.getParameter("width") %>px; height: <%= request.getParameter("height") %>px"></div>
   </body>
 </html>

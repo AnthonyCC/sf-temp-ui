@@ -28,13 +28,11 @@
 		}
 	</script>
 	<!-- API key for euedge LAN -->
-	<script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAA_vQMRhd3qlUmT3zj0jdnbRQ_Otc3iLgBzHJWFB--uAmRBu3eWhQE2TzLNhULb6hoCW_ruK3nho0pDg"></script>
+	<script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?sensor=false&key=<%= FDStoreProperties.getGoogleMapsAPIKey() %>">
+	</script>
 	<script type="text/javascript">
 	google.load("maps", "2");
-
-	// define default FD marker icon
-	var FD_ICON = new GIcon();
-	FD_ICON.image = 'http://www.google.com/mapfiles/marker.png';
 	 
     // Creates a marker whose info window displays the letter corresponding
     // to the given index.
@@ -45,24 +43,58 @@
 		// letteredIcon.image = "http://www.google.com/mapfiles/marker" + letter + ".png";
 		
 		// Set up our GMarkerOptions object
-		var marker = new GMarker(point, { icon: FD_ICON });
-		
-		GEvent.addListener(marker, "click", function() {
-			marker.openInfoWindowHtml("Marker <b>Valami</b>");
+		var marker = new google.maps.Marker({
+							position : point,			
+							map : map
 		});
+		
+		var infowindow = new google.maps.InfoWindow({
+		    content: "Marker <b>kkanuganti</b>"
+		});
+		
+		google.maps.event.addListener(marker, 'click', function() {				
+	    	infowindow.open(map, marker);
+		});
+		
 		return marker;
     }
 
     function initialize() {
-		if (GBrowserIsCompatible()) {
-			var map = new GMap2(document.getElementById("map_canvas"));
-			map.setCenter(new GLatLng(41.75902,-72.625122), 8);
-			map.setUIToDefault();
+		
+			 var mapOptions = {
+			          zoom: 8,
+			          // Center the map on New York, USA.
+					  center: new google.maps.LatLng(41.75902,-72.625122),
+			          mapTypeId: google.maps.MapTypeId.ROADMAP,
 			
-			// customize UI
-			var customUI = map.getDefaultUI();
-			customUI.controls.scalecontrol = false;
-			map.setUI(customUI);
+			          // map type control
+			          mapTypeControl: true,
+			          mapTypeControlOptions: {
+			              style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+			              position: google.maps.ControlPosition.TOP_LEFT
+			          },
+			          
+			          // zoom control
+			          zoomControl: true,
+			          zoomControlOptions: {
+			            style: google.maps.ZoomControlStyle.LARGE
+			          },		
+			
+			          // scale control
+			          scaleControl: false,
+			          scaleControlOptions: {
+			              position: google.maps.ControlPosition.BOTTOM_RIGHT
+			          },
+			          
+					  // Street Control
+			          streetViewControl: true,
+			          streetViewControlOptions: {
+			              position: google.maps.ControlPosition.LEFT_TOP
+			          }
+
+			};
+	   
+			map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
 
 			// put markers
 <%
@@ -72,16 +104,16 @@
 	for (ContentKey k : keys) {
 		ProducerModel p = (ProducerModel) ContentFactory.getInstance().getContentNode(k.getType(), k.getId());
 		String[] coords = p.getLocation().split(",");
-%>			map.addOverlay(createMarker(new GLatLng(<%= coords[0] %>, <%= coords[1] %>)));
+%>			createMarker(new google.maps.LatLng(<%= coords[0] %>, <%= coords[1] %>));
 <%
 	}
 %>
-		}
+		
 	}
  
     </script> 
 </head>
-<body onload="initialize()" onunload="GUnload()">
+<body onload="initialize()">
 	<!-- MAP --> 
 	<div id="map_canvas" style="width: 695px; height: 695px"></div>
 	<div id="message"></div>

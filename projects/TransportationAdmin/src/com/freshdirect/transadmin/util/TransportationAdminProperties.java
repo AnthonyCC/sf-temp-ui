@@ -291,7 +291,7 @@ public class TransportationAdminProperties {
 
 		defaults.put(PROP_TRANSPORTATION_DEFAULT_COUNTRY,"US");
 
-		defaults.put(PROP_TRANSPORTATION_DEFAULT_MAPKEY,"ABQIAAAAfVoMocpSDwijA4jg7oArwxRSY3LvYPilQO9bLyn0b52peXkumBS12_vtsrd6kaDHSJwpbH-EdOSnOA");
+		defaults.put(PROP_TRANSPORTATION_DEFAULT_MAPKEY,"AIzaSyAALx7g2uVEDP46IaGU_zxYT5gBSKac2ks");
 
 		defaults.put(PROP_TRANSPORTATION_FILENAME_ERROR,"trn_error_");
 
@@ -433,7 +433,7 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_FORMAT_SCRIB_UPLOAD, 	"com/freshdirect/transadmin/datamanager/scrib_in.xml");
 		defaults.put(PROP_VENDOR_DETAILS,"HUB,MILEA,PUBLIC SERVICE,RYDER,UTF");
 		defaults.put(PROP_TRUCK_DAMAGE_LOCATIONS,"Front,Back");
-		defaults.put(PROP_TRUCK_LOCATIONS,"FreshDirect,Hub-Maspeth,Hub-Vernon,Hub-Dealer,Ryder,Ryder-Dealer,Milea-Queens,Milea-Bronx,Public Service,Public Service-Dealer,Body Shop,Rental Facility,Thermo King-Vernon,Thermo King-LI");	
+		defaults.put(PROP_TRUCK_LOCATIONS,"FreshDirect,Hub-Maspeth,Hub-Vernon,Hub-Dealer,Ryder,Ryder-Dealer,Milea-Queens,Milea-Bronx,Outside Vendor,Public Service,Public Service-Dealer,Body Shop,Rental Facility,Thermo King-Vernon,Thermo King-LI");	
 		
 		// APPDEV-1606 Order Crisis Management URL
         defaults.put(ADMIN_SERVICE_URL_KEY, "http://localhost:7001/admin_service");

@@ -43,82 +43,147 @@ if (cat == null)
 	<tmpl:put name='head_content'>
 
 <script type="text/javascript">
-	// define default FD marker icon
-	var FD_ICON = new GIcon(G_DEFAULT_ICON);
-	FD_ICON.image = 'http://www.google.com/mapfiles/marker.png';
+	
+	
+	/**
+	* Returns the zoom level at which the given rectangular region fits in the map view. 
+	* The zoom level is computed for the currently selected map type. 
+	* @param {google.maps.Map} map
+	* @param {google.maps.LatLngBounds} bounds 
+	* @return {Number} zoom level
+	**/
+	function getZoomByBounds( map, bounds ){
+	  var MAX_ZOOM = map.mapTypes.get( map.getMapTypeId() ).maxZoom || 21 ;
+	  var MIN_ZOOM = map.mapTypes.get( map.getMapTypeId() ).minZoom || 0 ;
+	
+	  var ne= map.getProjection().fromLatLngToPoint( bounds.getNorthEast() );
+	  var sw= map.getProjection().fromLatLngToPoint( bounds.getSouthWest() ); 
+	
+	  var worldCoordWidth = Math.abs(ne.x-sw.x);
+	  var worldCoordHeight = Math.abs(ne.y-sw.y);
+	
+	  //Fit padding in pixels 
+	  var FIT_PAD = 40;
+	
+	  for( var zoom = MAX_ZOOM; zoom >= MIN_ZOOM; --zoom ){ 
+	      if( worldCoordWidth*(1<<zoom)+2*FIT_PAD < $(map.getDiv()).width() && 
+	          worldCoordHeight*(1<<zoom)+2*FIT_PAD < $(map.getDiv()).height() )
+	          return zoom;
+	  }
+	  return 0;
+	}
+	
 
 
 	// initialize map
 	function initialize() {
-		if (GBrowserIsCompatible()) {
-			var map = new GMap2(document.getElementById("map_canvas"));
-			map.setCenter(new GLatLng(41.75902,-72.625122), 8);
-			map.setUIToDefault();
+		
+		 var mapOptions = {
+		          zoom: 8,
+		          // Center the map on New York, USA.
+				  center: new google.maps.LatLng(41.75902,-72.625122),
+		          mapTypeId: google.maps.MapTypeId.ROADMAP,
+		
+		          // map type control
+		          mapTypeControl: true,
+		          mapTypeControlOptions: {
+		              style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+		              position: google.maps.ControlPosition.TOP_LEFT
+		          },
+		          
+		          // zoom control
+		          zoomControl: true,
+		          zoomControlOptions: {
+		            style: google.maps.ZoomControlStyle.LARGE
+		          },		
+		
+		          // scale control
+		          scaleControl: false,
+		          scaleControlOptions: {
+		              position: google.maps.ControlPosition.BOTTOM_RIGHT
+		          },
+		          
+				  // Street Control
+		          streetViewControl: true,
+		          streetViewControlOptions: {
+		              position: google.maps.ControlPosition.LEFT_TOP
+		          }
 
-			// Geocoder API
-			var geocoder = new GClientGeocoder();
+		};
+   
+		map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+		
+		// Geocoder API
+		var geocoder = new google.maps.Geocoder();
 			
-			// customize UI
-			var customUI = map.getDefaultUI();
-			customUI.controls.scalecontrol = false;
-			map.setUI(customUI);
-
-			// put markers
-			var boundz = new GLatLngBounds();
-
-			var point, ic, marker;
+		// put markers
+		var boundz = new google.maps.LatLngBounds();
+		
+		var point, ic, marker;
 
 <%
 	for (ProducerModel p : prodz) {
 		ProducerModel.Geolocation loc = p.getGeolocation();
 		if (loc != null) {
 %>			// '<%= p.getFullName() %>'
-			point = new GLatLng(<%= loc.lat %>, <%= loc.lng %>);
+			point = new google.maps.LatLng(<%= loc.lat %>, <%= loc.lng %>);
 			boundz.extend(point);
 
 <%			Image icon = p.getIconImage();
 			Image shadow = p.getIconShadowImage();
 			if (icon != null) {
 			
-%>			ic = new GIcon(G_DEFAULT_ICON);
+%>			ic = {};
 			ic.image = '<%= StringEscapeUtils.escapeJavaScript( icon.getPath() )  %>';
-			ic.iconSize = new GSize(<%= icon.getWidth() %>, <%= icon.getHeight() %>);
+			ic.iconSize = new google.maps.Size(<%= icon.getWidth() %>, <%= icon.getHeight() %>);
 <%
 			if (shadow != null) {
 %>			ic.shadow = '<%= StringEscapeUtils.escapeJavaScript( shadow.getPath() )  %>';
-			ic.shadowSize = new GSize(<%= shadow.getWidth() %>, <%= shadow.getHeight() %>);
+			ic.shadowSize = new google.maps.Size(<%= shadow.getWidth() %>, <%= shadow.getHeight() %>);
 <%
 			}
-%>			ic.iconAnchor = new GPoint(<%= icon.getWidth()/2 %>, <%= icon.getHeight() %>);
+%>			ic.iconAnchor = new google.maps.Point(<%= icon.getWidth()/2 %>, <%= icon.getHeight() %>);
 <% 			if (bi.isFirefox()) {%>
 				ic.imageMap = [0, 0, <%= icon.getWidth()-1 %>, 0, <%= icon.getWidth()-1 %>, <%= icon.getHeight()-1 %>, 0, <%= icon.getHeight()-1 %>];
 <% 			} %>
+
+
+			marker = new google.maps.Marker({
+						position : point,
+						icon : ic,
+						map : map
+			});
 			
-			marker = new GMarker(point, { icon: ic });
 <%
 		} else {
-%>			marker = new GMarker(point, { icon: FD_ICON });
+%>
+			marker = new google.maps.Marker({
+						position : point,			
+						map : map
+			});
 <%
 		}
-%>			GEvent.addListener(marker, "click", function() {
-				var winId = 'prod-<%= p.getContentKey().getId() %>';
-				var kontent = document.getElementById(winId);
-				var klone = kontent.cloneNode(true);
-				klone.setAttribute("id", winId+'-act');
-				this.openInfoWindowHtml(klone);
+%>
+			var winId = 'prod-<%= p.getContentKey().getId() %>';
+			var kontent = document.getElementById(winId);
+			var klone = kontent.cloneNode(true);
+			klone.setAttribute("id", winId+'-act');
+			
+			var infowindow = new google.maps.InfoWindow({
+			    content: klone
 			});
-
-			map.addOverlay(marker);
-
+			
+			google.maps.event.addListener(marker, 'click', function() {				
+		    	infowindow.open(map, marker);
+			});
 <%
 		}
 	}
 %>
 			// fit all markers
-			map.setZoom(map.getBoundsZoomLevel(boundz));
+			map.setZoom(getZoomByBounds(map, boundz));
 			map.setCenter(boundz.getCenter());
-
-		}
+		
     }
 </script>
 
