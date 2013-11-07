@@ -179,6 +179,15 @@
 		<url-pattern>/api/qs/tabMeta</url-pattern>
 	</servlet-mapping>
 	
+	<servlet>
+		<servlet-name>LoginServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.login.LoginServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LoginServlet</servlet-name>
+		<url-pattern>/api/login/*</url-pattern>
+	</servlet-mapping>
+	
   <servlet>
     <servlet-name>JavascriptServlet</servlet-name>
     <servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
