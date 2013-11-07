@@ -11,7 +11,7 @@
 	onclick="return FreshDirect.Wine.hideExpertRatingPopup();"></div>
 <fd:IncludeMedia name="<%= wineMediaPathTop %>"/>
 <div class="wine-xprt-rating-key" style="width: 425px; text-align: center; margin: 0px auto;">
-<fd:IncludeMedia name="<%= wineMediaPathkey %>"/>
+<fd:IncludeMedia name="<%= wineMediaPathKey %>"/>
 </div>
 <div>
 <fd:IncludeMedia name="<%= wineMediaPathBottom %>"/>
