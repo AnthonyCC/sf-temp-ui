@@ -238,12 +238,12 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
 			this.loadFromResultSet(conn,rs);
-			// load children
+			/*// load children
 			loadChildren(conn);
 			//Setting the final price for the line item after coupon discounts.
 			if(null !=this.model.getCouponDiscount()){
 				this.model.setPrice(this.model.getPrice()-this.model.getCouponDiscount().getDiscountAmt());
-			}
+			}*/
 		} else {
 			throw new SQLException("No such ErpOrderLine PK: " + this.getPK()); 
 		}
@@ -315,6 +315,10 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		this.model.setUpc(rs.getString("UPC"));
 		this.model.setTaxationType(EnumTaxationType.getEnum(rs.getString("TAXATION_TYPE")));
 		loadChildren(conn);
+		//Setting the final price for the line item after coupon discounts.
+		if(null !=this.model.getCouponDiscount()){
+			this.model.setPrice(this.model.getPrice()-this.model.getCouponDiscount().getDiscountAmt());
+		}
 		
 		
 		this.unsetModified();

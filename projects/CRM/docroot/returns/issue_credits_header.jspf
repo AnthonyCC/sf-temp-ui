@@ -13,6 +13,7 @@
 
   	Set __is_deptNames = OrderLineUtil.collectDepartmentNames(_is_orderLines);
   	Set cartonComplNames = ComplaintUtil.getReasonsForDepartments(__is_deptNames, (_is_cartonInfo == null) );
+  	List cartonComplsList = ComplaintUtil.getReasonsListForDepartments(__is_deptNames, (_is_cartonInfo == null) );
 %>	<tr>
 		<td COLSPAN="5" class="text12" style="padding-top: 1em; font-weight: bold; background-color: #eee">
 <% if (_is_cartonInfo != null) { %>
@@ -65,14 +66,14 @@
 </script>
         </td>
         <td style="padding-top: 1em; background-color: #CCCCee;">
-            <SELECT id="<%= _is_groupName %>_complaints" name="n_<%= _is_groupName %>_complaints" class="pulldown_detail" style="background-color: #dee" <%= cartonComplNames.size() > 0 ? "" : "\"disabled\"=\"1\""  %>>
+            <SELECT id="<%= _is_groupName %>_complaints" name="n_<%= _is_groupName %>_complaints" class="pulldown_detail" style="background-color: #dee" <%= cartonComplsList.size() > 0 ? "" : "\"disabled\"=\"1\""  %>>
                 <OPTION value="0">select credit reason</OPTION>
 <%
-			if (cartonComplNames.size() > 0) {
+			if (cartonComplsList.size() > 0) {
 				int k = 1;
-				for (Iterator rit=cartonComplNames.iterator(); rit.hasNext(); ) {
-					String reasonName = (String) rit.next();
-%>              <option value="<%= k %>"><%= reasonName %></option>
+				for (Iterator rit=cartonComplsList.iterator(); rit.hasNext(); ) {
+					ErpComplaintReason reason = (ErpComplaintReason) rit.next();
+%>              <option value="<%= reason.getId() %>"><%= reason.getReason() %></option>
 <%
 					k++;
 				}
@@ -81,6 +82,31 @@
 			}
 %>
             </SELECT>
+            <script type="text/javascript">
+    
+	$E.on('<%= _is_groupName %>_complaints', 'change', function(e) {
+		populateComplaintLines('CR_'+<%= _is_groupName %>, this.value);
+		
+	});
+	
+	function populateComplaintLines(_is_groupName, thisVar){
+		
+		var mainObj = $('tbl_order_detail');
+		
+		var objs = $jq('select[cartonGroup|='+_is_groupName+']');
+		
+			//val(this.value)
+			for (var k=0; k<objs.length; k++) {				
+				$jq(objs[k]).val(thisVar);
+				//$jq(objs[k]).find("option:eq("+this.value+")").prop('selected', true);
+				if (objs[k].onchange)
+					objs[k].onchange();
+			}
+
+
+		this.value = "";
+	}
+</script>
         </td>
         <td style="padding-top: 1em; background-color: #CCCCee;">
             <SELECT id="<%= _is_groupName %>_cmethods" name="n_<%= _is_groupName %>_cmethods" class="pulldown_detail" style="background-color: #ede">
@@ -89,6 +115,11 @@
                 <OPTION value="CSH">cash back</OPTION>
             </SELECT>
 <script type="text/javascript">
+$E.on('<%= _is_groupName %>_cmethods', 'change', function(e) {
+	populateComplaintLines('CM_'+<%= _is_groupName %>, this.value);
+	
+});
+
 	$E.onDOMReady(function() {
 		var grp1 = new ISGroupControl('tbl_order_detail', 'CR_<%= _is_groupName %>', '#dee', true);
 		var grp2 = new ISGroupControl('tbl_order_detail', 'CM_<%= _is_groupName %>', '#ede', false);

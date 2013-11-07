@@ -111,6 +111,38 @@ public class ComplaintUtil {
     	return r0; // convert final set back to list
     }
 
+    /**
+     * 
+     * @param depts
+     * @param excludeCartReq
+     * @return
+     * @throws FDResourceException
+     */
+    public static List<ErpComplaintReason> getReasonsListForDepartments(Collection depts, boolean excludeCartReq) throws FDResourceException {
+    	Iterator it=depts.iterator();
+    	
+    	// Case k=0
+    	if (!it.hasNext())
+    		return Collections.EMPTY_LIST;
+    	
+    	String deptName = (String) it.next();
+    	List reasons = getReasonsForDepartment(deptName, excludeCartReq);
+
+    	// Case k=1
+    	if (!it.hasNext())
+    		return reasons;
+
+    	// Case k>1
+    	List r0 = reasons; // convert list to set
+    	while (it.hasNext()) {
+        	deptName = (String) it.next();
+        	List r1 = getReasonsForDepartment(deptName, excludeCartReq);
+        	
+        	r0.retainAll(r1); // intersect r0 and r1
+    	}
+
+    	return r0; // convert final set back to list
+    }
 
     public static ErpComplaintReason getReasonById(String id) throws FDResourceException {
         Map allReasons = getReasonMap(false);

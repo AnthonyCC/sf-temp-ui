@@ -167,7 +167,7 @@ public class PopupHandlerTag extends BodyTagSupportEx {
 		CategoryModel categoryModel = null;
 		
 		try {
-			if (!skuCode.equals("")) {
+			if (null!=skuCode && !skuCode.equals("")) {
 				prodModel = ContentFactory.getInstance().getProduct(skuCode);
 				categoryModel = prodModel.getCategory();
 			}

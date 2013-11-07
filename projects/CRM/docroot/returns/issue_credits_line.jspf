@@ -184,7 +184,7 @@ boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].
         	<INPUT TYPE="TEXT" id="qty<%= rid %>" orderline="<%= _is_orderline.getOrderLineId() %>" NAME="ol_credit_qty" SIZE="4" cartonGroup="QI_<%= _is_cartonNumber %>" fullQuantity="<%= _is_the_quantity %>" value="<%= _is_form_returnQty == null ? "0" : _is_form_returnQty[_is_index] %>" onblur="setEditReturnQty(<%=_is_index%>)">
 		</td>
         <td WIDTH="17%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>">
-            <SELECT name="ol_credit_reason" class="pulldown_detail" cartonGroup="CR_<%= _is_cartonNumber %>">
+            <SELECT name="ol_credit_reason" class="pulldown_detail CR_<%= _is_cartonNumber %>" cartonGroup="CR_<%= _is_cartonNumber %>">
                 <OPTION value="">select credit reason</OPTION>
 <%
 		for (Iterator it=ComplaintUtil.getReasonsForDepartment(deptDesc, (_is_detail == null) ).iterator(); it.hasNext();) {

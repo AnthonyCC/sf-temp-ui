@@ -145,7 +145,7 @@ if (request.getParameter("fldMessage") !=null) {
 		</td>
         <td rowspan="10" width="15"><img src="/media_stat/images/layout/clear.gif" width="15" height="1" border="0" /></td>
         <td colspan="2">
-			<input type="text" maxlength="55" size="21" class="text11" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>" required="true" value="<%=fldYourName %>" />
+			<input type="text" maxlength="55" size="21" class="text11" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>"  value="<%=fldYourName %>" />
 			<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>' id='errorMsg'>
 				<span class="text11rbold">&nbsp;<%=errorMsg%></span>
 			</fd:ErrorHandler>
@@ -160,7 +160,7 @@ if (request.getParameter("fldMessage") !=null) {
 			</span>
 		</td>
         <td colspan="2">
-			<input type="text" maxlength="80" size="21" class="text11" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>" required="true" value="<%=fldYourEmail %>" />
+			<input type="text" maxlength="80" size="21" class="text11" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>"  id="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>"  value="<%=fldYourEmail %>" />
 			<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>' id='errorMsg'>
 				<span class="text11rbold">&nbsp;<%=errorMsg%></span>
 			</fd:ErrorHandler>
@@ -200,7 +200,7 @@ if (request.getParameter("fldMessage") !=null) {
 			</span>
         </td>
         <td colspan="2">
-			<input type="text" maxlength="80" size="21"  class="text11" name="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" required="true" value="<%= fldRecipientEmail %>" />
+			<input type="text" maxlength="80" size="21"  class="text11" name="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>" id="<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>"  value="<%= fldRecipientEmail %>" />
 			<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode() %>' id='errorMsg'>
 				<span class="text11rbold">&nbsp;<%=errorMsg%></span>
 			</fd:ErrorHandler>

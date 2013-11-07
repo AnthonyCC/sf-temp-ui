@@ -107,11 +107,15 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 
 			HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 			HttpSession session = (HttpSession) request.getSession();
-			this.orderId = (String) session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
+			orderId = (String) request.getParameter("orderId");
+			if (orderId == null || "".equals(orderId)) {
+				orderId = (String) session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
+			}
+			/*this.orderId = (String) session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 			// this is the situation when this is called from pending_credit_list.jsp
 			if (orderId == null || "".equals(orderId)) {
 				orderId = (String) request.getParameter("orderId");
-			}
+			}*/
 			try {
 				this.order = FDCustomerManager.getOrder(orderId);
 			} catch (FDResourceException fdre) {
@@ -218,12 +222,14 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 					if (actionResult.isSuccess() && "true".equalsIgnoreCase(request.getParameter("do_issue_credit"))) {
 						try {
 							// Create complaint first
-							addComplaint(actionResult, complaintModel,autoApproveAuthorized,limit);
-							
+//							addComplaint(actionResult, complaintModel,autoApproveAuthorized,limit);
+//							[APPDEV-3220]- Create case first before complaint.
 							// Generate an auto case
 							CrmCaseModel autoCase = AutoCaseGenerator.createAutoCase(CrmSession.getCurrentAgent(session), order, complaintModel, pageContext.getRequest());
 							// store case
 							PrimaryKey autoCasePK = CrmManager.getInstance().createCase(autoCase);
+							
+							addComplaint(actionResult, complaintModel,autoApproveAuthorized,limit);
 
 							FDCustomerManager.assignAutoCaseToComplaint(complaintModel, autoCasePK);
 

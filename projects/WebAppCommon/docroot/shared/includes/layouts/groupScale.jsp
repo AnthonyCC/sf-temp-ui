@@ -519,7 +519,8 @@ final int W_GROUPSCALE_TOTAL = 601;
 						</tr>
 						<tr>
 							<td align="right" style="padding-top: 5px;" class="text11">
-								<input width="93" type="image" height="20" border="0" style="padding: 5px 2px 3px; display: block;" src="/media_stat/images/buttons/add_to_cart.gif" name="add_to_cart">
+								<input width="93" type="image" height="20" border="0" style="padding: 5px 2px 3px; display: block;" src="/media_stat/images/buttons/add_to_cart.gif" name="add_to_cart" id="add_to_cart_1">
+								<fd:PopupHandler id='<%=TX_FORM_NAME %>' multiForm="true" quantityCheck="true" event="onsubmit" elementId="add_to_cart_1" skuCode="<%=reqSkuCode%>" action="addMultipleToCart" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
 							</td>
 							<td width="10">&nbsp;</td><%-- buffer cell --%>
 							<td align="right" style="padding-top: 8px; 5px;" class="text11bold">Price&nbsp;<input type="text" value="" onfocus="blur()" onchange="" size="6" name="total" id="total_top" class="text11bold">
@@ -1015,7 +1016,8 @@ final int W_GROUPSCALE_TOTAL = 601;
 				<table cellspacing="0" cellpadding="0" border="0" align="left"> 
 				<tr>
 					<td align="right" style="padding-top: 5px;" class="text11">
-						<input width="93" type="image" height="20" border="0" style="padding: 5px 2px 3px; display: block;" src="/media_stat/images/buttons/add_to_cart.gif" name="add_to_cart">
+						<input width="93" type="image" height="20" border="0" style="padding: 5px 2px 3px; display: block;" src="/media_stat/images/buttons/add_to_cart.gif" name="add_to_cart" id="add_to_cart_2">
+						<fd:PopupHandler id='<%= TX_FORM_NAME %>'  multiForm="true" quantityCheck="true" event="onsubmit" elementId="add_to_cart_2" skuCode="<%=reqSkuCode%>" action="addMultipleToCart" hasPendingOrder='<%= (Boolean)pageContext.getAttribute("hasPendingOrder")%>'/>
 					</td>
 					<td width="10">&nbsp;</td><%-- buffer cell --%>
 					<td align="right" style="padding-top: 8px; 5px;" class="text11bold">Price&nbsp;<input type="text" value="" onfocus="blur()" onchange="" size="6" name="total" id="total_bottom" class="text11bold">

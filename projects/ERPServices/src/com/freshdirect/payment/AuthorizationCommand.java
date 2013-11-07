@@ -73,6 +73,7 @@ public class AuthorizationCommand {
 		}
 
 		if ((EnumCardType.DISC.equals(paymentMethod.getCardType()) || EnumCardType.AMEX.equals(paymentMethod.getCardType())) && authAmount < 1.0) {
+			LOGGER.info(info.getSaleId()+" - required authorization for :"+authAmount);
 			authAmount = 1.0;
 		}
 
