@@ -126,9 +126,10 @@ final int W_NEW_WINE_PRODUCT_RIGHT = 165;
 	<%-- OTHER RATINGS LEGEND --%>
 <%
 	if (productNode.hasWineOtherRatings()) {
+		String otherRatingsMediapath = "/media/editorial/win_"+JspMethods.getWineAssociateId().toLowerCase()+"/other_ratings_key.html";
 %>	<tr>
 		<td colspan="2">
-			<fd:IncludeMedia name="/media/editorial/win_usq/other_ratings_key.html"/>
+			<fd:IncludeMedia name="<%= otherRatingsMediapath %>"/>
 		</td>
 	</tr>
 <%		

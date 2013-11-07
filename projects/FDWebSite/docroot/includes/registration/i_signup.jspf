@@ -284,7 +284,7 @@ if(user.isDepotUser()){
 		*&nbsp;Repeat E-mail
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td colspan="3">&nbsp;&nbsp;<input size="21" class="text9" maxlength="128" type="text" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%= fldEmail %>" required="true" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+	<td colspan="3">&nbsp;&nbsp;<input size="21" class="text9" maxlength="128" type="text" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%= fldRepeatEmail %>" required="true" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
 <tr valign="middle">
 	<td width="120"></td>

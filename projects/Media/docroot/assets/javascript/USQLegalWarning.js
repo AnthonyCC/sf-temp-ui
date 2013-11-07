@@ -14,15 +14,19 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 	USQLegalWarning.rootWindow = rootWindow;
 
 	var normalSubmit = function(data) {
+		var oldOnSubmit = data.form.onsubmit;
+		//remove
 		data.form.onsubmit = null;
 		data.form.submit();
+		//(replace else older IEs will double submit)
+		data.form.onsubmit = oldOnSubmit;
 	};
 	
 	var isAlcoholicProductAdded = function(data) {
 		var form = data.form;
 		var alcoholicFlag = false;
 		if ('true' == data.quantityCheck) {
-			$( "#" + form.id +" .usq_quantity" ).each(function( index, quantityElement ) {
+			$( "#" + form.id +" .wine_quantity" ).each(function( index, quantityElement ) {
 				var quantity = USQLegalWarning.containsElement(form, quantityElement.value);
 				if (quantity != null && quantity.value != null && quantity.value != "" &&  quantity.value > 0) {
 					alcoholicFlag = true;
@@ -44,7 +48,9 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 				if (data.atc == 'true') {
 					USQLegalWarning.submitWithAtc(data);
 				} else {
-					eval(data.instant)();
+					if ($.isFunction(data.instant)) {
+						eval(data.instant)();
+					}
 				}
 				return;
 			}
@@ -82,7 +88,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			uri += '&atc=true';
 		} 
 		if (!data.panel) {
-			data.panel = new YAHOO.widget.Panel('usq_legal_warning_choice_' + id, {
+			data.panel = new YAHOO.widget.Panel('wine_legal_warning_choice_' + id, {
 				fixedcenter: true, 
 				constraintoviewport: true, 
 				underlay: "matte", 
@@ -108,16 +114,16 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			var body = rootWindow.document.body;
 			data.panel.render(body);
 
-			YAHOO.util.Dom.addClass('usq_legal_warning_choice_' + id + '_c', 'usq_legal_warning_choice_c');
-			YAHOO.util.Dom.addClass('usq_legal_warning_choice_' + id, 'usq_legal_warning_choice');
+			YAHOO.util.Dom.addClass('wine_legal_warning_choice_' + id + '_c', 'wine_legal_warning_choice_c');
+			YAHOO.util.Dom.addClass('wine_legal_warning_choice_' + id, 'wine_legal_warning_choice');
 		}
 
 		var content = "";
-		content += '<div id="usq_legal_warning_choice_content_' + id + '" class="usq_legal_warning_choice_content">\n';
-		content += '<div id="usq_legal_warning_choice_progress_' + id + '" class="usq_legal_warning_choice_progress">\n';
+		content += '<div id="wine_legal_warning_choice_content_' + id + '" class="wine_legal_warning_choice_content">\n';
+		content += '<div id="wine_legal_warning_choice_progress_' + id + '" class="wine_legal_warning_choice_progress">\n';
 		content += 'Please wait... <img src="/media_stat/images/navigation/spinner.gif" width="50" height="50">\n';
 		content += '</div>\n';
-		content += '  <iframe id="usq_legal_warning_choice_frame_' + id + '" class="usq_legal_warning_choice_frame" style="z-index:150" frameborder="0" src="' + uri + '"></iframe>';
+		content += '  <iframe id="wine_legal_warning_choice_frame_' + id + '" class="wine_legal_warning_choice_frame" style="z-index:150" frameborder="0" src="' + uri + '"></iframe>';
 		content += '</div>\n';
 		
 		data.panel.setBody(content);
@@ -130,7 +136,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 	USQLegalWarning.refreshPanelInner = function(query) {
 		var id = FreshDirect.PopupDispatcher.getFormId(query);
 		if (id && FreshDirect.PopupDispatcher.forms[id] && FreshDirect.PopupDispatcher.forms[id].panel) {
-			var progress = rootWindow.document.getElementById('usq_legal_warning_choice_progress_' + id);
+			var progress = rootWindow.document.getElementById('wine_legal_warning_choice_progress_' + id);
 			if (progress)
 				progress.style.display = 'none';
 			FreshDirect.PopupDispatcher.forms[id].panel.center();

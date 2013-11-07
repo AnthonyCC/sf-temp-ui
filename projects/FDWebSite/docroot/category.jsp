@@ -171,7 +171,7 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 
 	Object useProdImageObj = pageContext.getAttribute("useProdImage");
 	boolean useProdImage = useProdImageObj == null ? false : (Boolean)useProdImageObj;
-	boolean isWineProduct = prodModel.getDepartment() != null ? "usq".equals(prodModel.getDepartment().getContentKey().getId()) : false;
+	boolean isWineProduct = prodModel.getDepartment() != null ? JspMethods.getWineAssociateId().toLowerCase().equals(prodModel.getDepartment().getContentKey().getId()) : false;
 
 	if ( zoomImage != null && zoomImage.getPath().indexOf("clear.gif") == -1 && !useProdImage && !isWineProduct ) {
 	%>

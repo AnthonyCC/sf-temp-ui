@@ -3,6 +3,7 @@
 %><%@ page import="com.freshdirect.fdstore.ecoupon.EnumCouponContext"
 %><%@ page import="com.freshdirect.fdstore.content.Image" 
 %><%@ page import="com.freshdirect.fdstore.ecoupon.*"
+%><%@page import="com.freshdirect.webapp.util.JspMethods"
 %><%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' 
 %><%
 	/*	requires productNode
@@ -14,7 +15,7 @@
 	final Image packageImage=(Image) __pi_prd.getPackageImage();
 	Object useProdImageObj = pageContext.getAttribute("useProdImage");
 	boolean useProdImage = useProdImageObj == null ? false : (Boolean)useProdImageObj;
-	boolean isWineProduct = __pi_prd.getDepartment() != null ? "usq".equals(__pi_prd.getDepartment().getContentKey().getId()) : false;
+	boolean isWineProduct = __pi_prd.getDepartment() != null ? JspMethods.getWineAssociateId().toLowerCase().equals(__pi_prd.getDepartment().getContentKey().getId()) : false;
 	String prodImageType = "";
 	String actionURI_pi = null;
 	if ( zoomImage != null && zoomImage.getPath().indexOf("clear.gif") == -1 && !useProdImage && !isWineProduct ) {

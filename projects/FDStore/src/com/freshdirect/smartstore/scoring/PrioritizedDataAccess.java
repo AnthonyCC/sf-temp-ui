@@ -10,6 +10,7 @@ import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.WineUtil;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.filter.ContentFilter;
@@ -80,7 +81,7 @@ public class PrioritizedDataAccess implements DataAccess {
 		if (dept != null) {
 			final ContentKey aKey = dept.getContentKey();
 
-			if (aKey != null && "usq".equalsIgnoreCase(aKey.getId())) {
+			if (aKey != null && WineUtil.getWineAssociateId().toLowerCase().equalsIgnoreCase(aKey.getId())) {
 				return true;
 			}
 		}

@@ -88,7 +88,7 @@ public class FDUserCouponUtil implements Serializable {
 		FDCustomerCoupon customerCoupon = null;
 		if(isCouponsInfoDisplayable(user,ctx) && null != prodInfo && isValidUPC(prodInfo.getUpc())){
 			FDCouponInfo coupon = FDCouponFactory.getInstance().getCouponByUpc(prodInfo.getUpc());
-			if(null !=coupon && null !=user.getCouponWallet() && !(EnumCouponContext.PRODUCT.equals(ctx)&& (user.getCouponWallet().isExpired(coupon.getCouponId()) || user.getCouponWallet().isRedeemPending(coupon.getCouponId()))) && checkForPendingCoupons(user,coupon.getCouponId(),ctx)){
+			if(null !=coupon && null !=user.getCouponWallet() && !(EnumCouponContext.PRODUCT.equals(ctx) && (user.getCouponWallet().isExpired(coupon.getCouponId()) || user.getCouponWallet().isRedeemPending(coupon.getCouponId()))) && checkForPendingCoupons(user,coupon.getCouponId(),ctx)){
 				EnumCouponStatus couponStatus = getCustomerCouponStatus(null !=coupon?coupon.getCouponId():null, couponWallet,ctx);
 				if(couponStatus != null) {
 					boolean displayMessage = getDisplayStatusMessage(ctx, couponStatus);

@@ -12,15 +12,16 @@
 <%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
 <%@ page import="com.freshdirect.fdstore.content.MediaI"%>
 <%@ page import="com.freshdirect.fdstore.content.Html"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
 <%@ taglib uri='oscache' prefix='oscache' %>
 
 <% //expanded page dimensions
-final int W_USQ_WINE_INFO_TOTAL = 601;
-final int W_USQ_WINE_INFO_LEFT = 150;
-final int W_USQ_WINE_INFO_CENTER_PADDING = 14;
-final int W_USQ_WINE_INFO_RIGHT = 437;
+final int W_WINE_INFO_TOTAL = 601;
+final int W_WINE_INFO_LEFT = 150;
+final int W_WINE_INFO_CENTER_PADDING = 14;
+final int W_WINE_INFO_RIGHT = 437;
 %>
 
 <%
@@ -72,7 +73,7 @@ final int W_USQ_WINE_INFO_RIGHT = 437;
 		<img src="<%= perfPairThumbNail.getPath() %>" border="0" alt="test image" title="" />
     </td>    
     <td width="95%" style="padding-left:8px;">   
-		<img src="/media/editorial/win_usq/perfect_pairings.gif" width="192" height="15" alt="" style="padding-bottom:2px;" /><br>
+		<img src="/media/editorial/win_<%= JspMethods.getWineAssociateId().toLowerCase() %>/perfect_pairings.gif" width="192" height="15" alt="" style="padding-bottom:2px;" /><br>
 		<b>Try it with <a href="<%=perfPaitProdPaths.get(0)%>"><%= perfPairProdNames.get(0) %></a></b>
 		<div style="padding-top:4px; font-style:italic;"><%= perfectPair.getBlurb() %></div>
      </td>   
@@ -144,7 +145,7 @@ final int W_USQ_WINE_INFO_RIGHT = 437;
 				_wineRegion = wineRegionList.get(0);
 				if (_wineRegion!=null) {
 					wineRegionLabel=_wineRegion.getLabel();
-					wineRegionName="/media/editorial/win_usq/maps/"+_wineRegion.getContentName()+".html";
+					wineRegionName="/media/editorial/win_"+JspMethods.getWineAssociateId().toLowerCase()+"/maps/"+_wineRegion.getContentName()+".html";
 				}
 				if (wineRegionLabel != null) {
 					wineRegionLabel = wineRegionLabel.trim();
@@ -170,12 +171,12 @@ final int W_USQ_WINE_INFO_RIGHT = 437;
 
 <%-- THE TABLE --%>
 <div class="prdsep" style="background-color: #cccccc">&nbsp;</div>
-<div style="width: <%=W_USQ_WINE_INFO_TOTAL%>px">
+<div style="width: <%=W_WINE_INFO_TOTAL%>px">
 	<% if (hasLeftColumn) { %>
-	<div style="float: left; margin-right: <%=W_USQ_WINE_INFO_CENTER_PADDING%>px; x-margin-bottom: 2em; text-align: left; width: <%=W_USQ_WINE_INFO_LEFT%>px;">
+	<div style="float: left; margin-right: <%=W_WINE_INFO_CENTER_PADDING%>px; x-margin-bottom: 2em; text-align: left; width: <%=W_WINE_INFO_LEFT%>px;">
 			<%-- REGION IMAGE --%>
 			<% if (wineRegionName != null) { %>
-			<fd:IncludeMedia name="<%= wineRegionName %>" />
+				<fd:IncludeMedia name="<%= wineRegionName %>" />
 			<% } %>
 
 			<%-- RATINGS --%>
@@ -254,7 +255,7 @@ final int W_USQ_WINE_INFO_RIGHT = 437;
             <%}%>
 	</div>
 	<% } %>
-	<div style="<%= hasLeftColumn ? "float: left; width: " + W_USQ_WINE_INFO_RIGHT +"px" : "" %>">
+	<div style="<%= hasLeftColumn ? "float: left; width: " + W_WINE_INFO_RIGHT +"px" : "" %>">
 			<%-- DESC --%>
    		<% if ( FDStoreProperties.useOscache() ) { %> 
 	        <oscache:cache time="300">

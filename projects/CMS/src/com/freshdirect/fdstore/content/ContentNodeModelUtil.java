@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.WineUtil;
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
@@ -136,7 +137,7 @@ public class ContentNodeModelUtil {
 		
 		Set<ContentKey> keys = CmsManager.getInstance().getParentKeys(key);
 		for (ContentKey currentKey : keys) {
-			if (FDContentTypes.DEPARTMENT.equals(currentKey.getType()) && "USQ".equalsIgnoreCase(currentKey.getId())) {
+			if (FDContentTypes.DEPARTMENT.equals(currentKey.getType()) && WineUtil.getWineAssociateId().equalsIgnoreCase(currentKey.getId())) {
 				return true;
 			} else {
 				if (hasWineDepartment(currentKey)) return true;

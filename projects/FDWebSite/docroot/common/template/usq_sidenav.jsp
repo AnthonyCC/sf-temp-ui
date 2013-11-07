@@ -10,11 +10,11 @@
 <%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %>
 
 <% //expanded page dimensions
-final int W_USQ_SIDENAV_TOTAL = 970;
-final int W_USQ_SIDENAV_LEFT = 150;
-final int W_USQ_PADDING = 14;
-final int W_USQ_SIDENAV_CENTER = 601;
-final int W_USQ_SIDENAV_RIGHT = 191;
+final int W_WINE_SIDENAV_TOTAL = 970;
+final int W_WINE_SIDENAV_LEFT = 150;
+final int W_WINE_PADDING = 14;
+final int W_WINE_SIDENAV_CENTER = 601;
+final int W_WINE_SIDENAV_RIGHT = 191;
 %>
 
 
@@ -50,43 +50,43 @@ final int W_USQ_SIDENAV_RIGHT = 191;
 <%	} %>
 <%@ include file="/common/template/includes/globalnav.jspf" %> 
 <CENTER CLASS="text10">
-<table width="<%=W_USQ_SIDENAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
+<table width="<%=W_WINE_SIDENAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 <tr>
-	<td width="<%=W_USQ_SIDENAV_LEFT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_SIDENAV_LEFT%>" height="1" border="0"></td>
-	<td width="<%=W_USQ_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_PADDING%>" height="1" border="0"></td>
-	<td width="<%=W_USQ_SIDENAV_CENTER%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_SIDENAV_CENTER%>" height="1" border="0"></td>
-	<td width="<%=W_USQ_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_PADDING%>" height="1" border="0"></td>
-	<td width="<%=W_USQ_SIDENAV_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_SIDENAV_RIGHT%>" height="1" border="0"></td>
+	<td width="<%=W_WINE_SIDENAV_LEFT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_WINE_SIDENAV_LEFT%>" height="1" border="0"></td>
+	<td width="<%=W_WINE_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_WINE_PADDING%>" height="1" border="0"></td>
+	<td width="<%=W_WINE_SIDENAV_CENTER%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_WINE_SIDENAV_CENTER%>" height="1" border="0"></td>
+	<td width="<%=W_WINE_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_WINE_PADDING%>" height="1" border="0"></td>
+	<td width="<%=W_WINE_SIDENAV_RIGHT%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_WINE_SIDENAV_RIGHT%>" height="1" border="0"></td>
 </tr>
 <tr valign="top">
-	<td class="wine-sidenav" bgcolor="#e2dfcc" style="z-index: 0;"><div align="center" style="background: #272324"><a href="/department.jsp?deptId=usq&trk=snav"><img src="/media/editorial/win_usq/usq_logo_sidenav_bottom.gif" width="150" height="109" border="0"></a><br></div>
+	<td class="wine-sidenav" bgcolor="#e2dfcc" style="z-index: 0;"><div align="center" style="background: #272324"><a href="/department.jsp?deptId=<%= JspMethods.getWineAssociateId().toLowerCase() %>&trk=snav"><img src="/media/editorial/win_<%= JspMethods.getWineAssociateId().toLowerCase() %>/<%= JspMethods.getWineAssociateId().toLowerCase() %>_logo_sidenav_bottom.gif" width="150" height="109" border="0"></a><br></div>
 	<% try { %><%@ include file="/common/template/includes/left_side_nav_usq.jspf" %>
                 <% } catch (Exception ex) {ex.printStackTrace();} %></td>
-	<td width="<%=W_USQ_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_PADDING%>" height="1" border="0"></td>
+	<td width="<%=W_WINE_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_WINE_PADDING%>" height="1" border="0"></td>
 	<td align="center">   
                 <!-- content lands here -->
          		<tmpl:get name='content'/>
                 <!-- content ends above here-->
     </td>
-	<td width="<%=W_USQ_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_PADDING%>" height="1" border="0"></td>
+	<td width="<%=W_WINE_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_WINE_PADDING%>" height="1" border="0"></td>
     <td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"><br /><%@ include file="/common/template/includes/right_side_nav.jspf" %></td>
 </tr>
 <tr valign="top">
 	<td bgcolor="#e2dfcc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-	<td width="<%=W_USQ_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_PADDING%>" height="1" border="0"></td>
+	<td width="<%=W_WINE_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_WINE_PADDING%>" height="1" border="0"></td>
 	<td style="padding-top:20px;padding-bottom:5px;" align="center">
 		<%@ include file="/shared/includes/usq_bottom_links.jspf" %>
 	</td>
-	<td width="<%=W_USQ_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_PADDING%>" height="1" border="0"></td>
+	<td width="<%=W_WINE_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_WINE_PADDING%>" height="1" border="0"></td>
     <td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 </tr>
 <tr valign="top">
 	<td bgcolor="#e2dfcc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-	<td width="<%=W_USQ_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_PADDING%>" height="1" border="0"></td>
+	<td width="<%=W_WINE_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_WINE_PADDING%>" height="1" border="0"></td>
 	<td style="padding-top:5px;padding-bottom:10px;" align="center">
 		<%@ include file="/shared/includes/usq_copyright.jspf" %>
 	</td>
-	<td width="<%=W_USQ_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_USQ_PADDING%>" height="1" border="0"></td>
+	<td width="<%=W_WINE_PADDING%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_WINE_PADDING%>" height="1" border="0"></td>
     <td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 </tr>
 </table>

@@ -16,6 +16,7 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Category;
 
+import com.freshdirect.WineUtil;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -437,8 +438,10 @@ public class ProductImageTag extends BodyTagSupport {
         buf.append(">");
 		try {
 			if ( ContentNodeModelUtil.hasWineDepartment(product.getContentKey()) && (product.getSku(0).getProduct() != null && !"".equals(product.getSku(0).getProduct().getMaterial().getAlcoholicContent().getCode())) ) {
-				if ((pageContext.getRequest().getParameter("catId") == null || !pageContext.getRequest().getParameter("catId").startsWith("usq")) && !"usq".equals(pageContext.getRequest().getParameter("deptId")) && !((HttpServletRequest)pageContext.getRequest()).getServletPath().contains("wine")) {
-					buf.append("<span class=\"burst-usq\"></span>");
+				if ((pageContext.getRequest().getParameter("catId") == null || !pageContext.getRequest().getParameter("catId").startsWith(WineUtil.getWineAssociateId().toLowerCase())) && !WineUtil.getWineAssociateId().toLowerCase().equals(pageContext.getRequest().getParameter("deptId")) && !((HttpServletRequest)pageContext.getRequest()).getServletPath().contains("wine")) {
+					 /* check for usq wine for usq badge */
+					//generic css class (switch css image instead)
+					buf.append("<span class=\"burst-wine\"></span>");
 				}
 			}
 		} catch (FDResourceException e1) {
@@ -496,7 +499,9 @@ public class ProductImageTag extends BodyTagSupport {
             buf.append(
             		  "departmentId: '" + deptId + "', "
             		+ "categoryId: '" + catId + "', "
-            		+ "productId: '" + prdId + "'");
+            		+ "productId: '" + prdId + "', "
+            		+ "wineDeptId: '" + WineUtil.getWineAssociateId() + "'"
+            		);
             buf.append("}");
             if (t.isValid()) {
             	buf.append(", ");

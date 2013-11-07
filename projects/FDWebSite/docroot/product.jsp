@@ -136,7 +136,7 @@ if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
 
 	Object useProdImageObj = pageContext.getAttribute("useProdImage");
 	boolean useProdImage = useProdImageObj == null ? false : (Boolean)useProdImageObj;
-	boolean isWineProduct = productNode.getDepartment() != null ? "usq".equals(productNode.getDepartment().getContentKey().getId()) : false;
+	boolean isWineProduct = productNode.getDepartment() != null ? JspMethods.getWineAssociateId().equalsIgnoreCase(productNode.getDepartment().getContentKey().getId()) : false;
 
 	if ( zoomImage != null && zoomImage.getPath().indexOf("clear.gif") == -1 && !useProdImage && !isWineProduct ) {
 	%>

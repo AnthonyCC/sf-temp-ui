@@ -125,7 +125,7 @@
 						serviceType: '',
 						corpServiceType: ''
 					},
-					rafTerms: '<%= rpModel.getReferralPageLegal() %>',
+					rafTerms: "<%= rpModel.getReferralPageLegal() %>",
 					rafImage: '<%= rpModel.getSiteAccessImageFile() %>'
 				};
 				<% if ( !"WEB".equals(serviceType) ) { %>

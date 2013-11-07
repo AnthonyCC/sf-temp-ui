@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.WineUtil;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -133,7 +134,7 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 				if (dept != null) {
 					final ContentKey aKey = dept.getContentKey();
 
-					if (aKey != null && "usq".equalsIgnoreCase(aKey.getId())) {
+					if (aKey != null && WineUtil.getWineAssociateId().toLowerCase().equalsIgnoreCase(aKey.getId())) {
 						LOGGER.debug("sampler: exclude alcoholic item: " + aKey );
 						exclusions.add(rc.getContentKey());
 					}

@@ -111,7 +111,7 @@ public class ProductRatingTag extends BodyTagSupport {
 		final String deptName = product.getDepartment() != null ?
 				product.getDepartment().getContentName() : "";
 
-		if ("usq".equalsIgnoreCase(deptName)) {
+		if (JspMethods.getWineAssociateId().toLowerCase().equalsIgnoreCase(deptName)) {
 			// [A] WINE RATINGS
 
 			if(showOnly == RatingEnum.ALL || showOnly == RatingEnum.WINE) {

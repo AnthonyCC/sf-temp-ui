@@ -89,7 +89,8 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 	//if there is  redirect_url setting  then go to that url regardless of the previewmode setting
 	String redirectURL = (currentFolder instanceof HasRedirectUrl ? ((HasRedirectUrl)currentFolder).getRedirectUrl() : null);
 	if (redirectURL != null) {
-		redirectURL = response.encodeRedirectURL(redirectURL); 		response.sendRedirect(redirectURL);
+		redirectURL = response.encodeRedirectURL(redirectURL);
+ 		response.sendRedirect(redirectURL);
 		return;
 	}
 
@@ -109,7 +110,11 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 	
 		if("fru".equals(deptId) ||"veg".equals(deptId) || "sea".equals(deptId) || "wgd".equals(deptId)) {
 			if(user.isProduceRatingEnabled()) { 
-				//Caching fru,veg,sea,gro,hba,dai,fro,big,mea,wgd depts per pricing zone.	             keyPrefix=keyPrefix+user.getPricingZoneId();	             keyPrefix=keyPrefix+user.isProduceRatingEnabled()+"_";	             ttl=180;	 		}
+				//Caching fru,veg,sea,gro,hba,dai,fro,big,mea,wgd depts per pricing zone.
+	             keyPrefix=keyPrefix+user.getPricingZoneId();
+	             keyPrefix=keyPrefix+user.isProduceRatingEnabled()+"_";
+	             ttl=180;
+	 		}
 		} else if("gro".equals(deptId) ||"hba".equals(deptId)||"dai".equals(deptId) ||"fro".equals(deptId) ||"big".equals(deptId)){
 			keyPrefix=keyPrefix+user.getPricingZoneId();
 			ttl=3600;
@@ -149,7 +154,7 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 			if ( "OUR_PICKS, FRO, GRO, DAI, SPE".indexOf(departmentModel.getContentName().toUpperCase())==-1 &&
 				!"bak".equals(deptId) &&
 				!"win".equals(deptId) &&
-				!"usq".equals(deptId) &&
+				!JspMethods.getWineAssociateId().equals(deptId.toUpperCase()) &&
 				introCopy!=null &&
 				introCopy.trim().length()>0) { %>
 				
@@ -205,7 +210,7 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 
 			if ("win".equals(deptId)) { // bc wine page
 				%><%@ include file="/departments/wine/bc_home.jspf"%><%
-			} else if ("usq".equals(deptId)) { //usq wine page
+			} else if (JspMethods.getWineAssociateId().equals(deptId.toUpperCase())) { //usq wine page
 				%><%@ include file="/departments/wine/usq_home.jspf"%><%
 				
 			//-----------------------------------------------------------------------------------
@@ -253,7 +258,8 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 		
 	/*} catch (Exception ex) {
 		LOG.error("error while generating department page body", ex);
-		*/  		%>
+		*/
+  		%>
 		<%-- oscache:usecached/ --%>
   	<%-- } --%>
 	

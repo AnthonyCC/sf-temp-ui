@@ -1,4 +1,4 @@
-
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <!--[if IE 6]>
 <div class="ie6">
 <![endif]-->
@@ -41,7 +41,7 @@
 			<span class="dot"><a class="globalnavitem" id="globalnavitem-hba" href="/department.jsp?deptId=hba&trk=gnav"><span>Health &amp; Beauty</span></a></span>
 			<span class="dot"><a class="globalnavitem" id="globalnavitem-big" href="/department.jsp?deptId=big&trk=gnav"><span>Buy Big</span></a></span>
 			<span class="dot"><a class="globalnavitem" id="globalnavitem-fro" href="/department.jsp?deptId=fro&trk=gnav"><span>Frozen</span></a></span>
-			<span class="dot"><a class="globalnavitem" id="globalnavitem-usq" href="/department.jsp?deptId=usq&trk=gnav"><span>Wine</span></a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-<%= JspMethods.getWineAssociateId().toLowerCase() %>" href="/department.jsp?deptId=<%= JspMethods.getWineAssociateId().toLowerCase() %>&trk=gnav"><span>Wine</span></a></span>
 		</div>
 	</div>
 	<div class="globalnav-right">

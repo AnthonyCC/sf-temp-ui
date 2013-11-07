@@ -286,7 +286,7 @@ public class FDCouponTag extends BodyTagSupport {
 			String cStatusText = this.getCouponStatusText();
 			if (cStatusText == null) { cStatusText = ""; }
 			
-			if (coupon.getStatus() != null) {
+			if (coupon != null && coupon.getStatus() != null) {
 				if ( coupon.getStatus().equals(EnumCouponStatus.COUPON_MIN_QTY_NOT_MET) || cStatusText.equals(EnumCouponStatus.COUPON_MIN_QTY_NOT_MET.getDescription()) ) {
 					this.setCouponStatusClass(this.getCouponStatusClass() + " cStat_minQty");
 				}

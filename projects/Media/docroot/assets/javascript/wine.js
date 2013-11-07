@@ -70,7 +70,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
     var erPanel = null;
     
     var ajaxSuccess = function(o) {
-		erPanel = new YAHOO.widget.Panel("usq-er-panel", {
+		erPanel = new YAHOO.widget.Panel("wine-er-panel", {
 			fixedcenter: true,
 			underlay: "none",
 			close: false,
@@ -82,11 +82,11 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		erPanel.setBody(o.responseText);
 		
 		erPanel.render(document.body);
-		YAHOO.util.Dom.addClass("usq-er-panel_c", "usq-brown-border");
-		YAHOO.util.Dom.addClass("usq-er-panel_c", "usq-lightbrown-bg");
+		YAHOO.util.Dom.addClass("wine-er-panel_c", "wine-brown-border");
+		YAHOO.util.Dom.addClass("wine-er-panel_c", "wine-lightbrown-bg");
 		
 		// override .yui-panel hidden setting
-		YAHOO.util.Dom.get("usq-er-panel").style.overflow = "visible";
+		YAHOO.util.Dom.get("wine-er-panel").style.overflow = "visible";
 		
 		// show panel
 		erPanel.show();

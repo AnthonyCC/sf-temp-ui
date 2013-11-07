@@ -15,6 +15,7 @@
 		import="com.freshdirect.fdstore.*"
 		import="com.freshdirect.fdstore.content.ProductModel"
 		import="com.freshdirect.fdstore.FDProduct"
+		import="com.freshdirect.WineUtil"
 %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -93,7 +94,7 @@
         try {
         	fdproduct = FDCachedFactory.getProduct(pi.getProductInfo());
            
-		if ( "USQ".equalsIgnoreCase(pm.getDepartment().toString()) && (fdproduct != null && !"".equals(fdproduct.getMaterial().getAlcoholicContent().getCode())) ) {
+		if ( WineUtil.getWineAssociateId().equalsIgnoreCase(pm.getDepartment().toString()) && (fdproduct != null && !"".equals(fdproduct.getMaterial().getAlcoholicContent().getCode())) ) {
 			imageSize = "zoom";
 		}
        } catch (Exception fdsnf){

@@ -18,6 +18,7 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.WineUtil;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.fdstore.FDContentTypes;
@@ -1657,7 +1658,7 @@ inner:
 	@Override
 	public boolean isShowWineRatings() {
 		// NOT wine
-		if (!"usq".equalsIgnoreCase(getDepartment().getContentName()))
+		if (!WineUtil.getWineAssociateId().equalsIgnoreCase(getDepartment().getContentName()))
 			return false;
 		
 		// NOT enabled

@@ -630,6 +630,9 @@ public class FDStoreProperties {
 	private final static String PROP_QS_ENABLED = "quickshop.enabled";
 	
 	private final static String   PROP_ASSIGNED_CUSTOMER_PARAMS_QUERY_ID="fdstore.assignedCustomerParams.query.id";
+	
+	//APPDEV-3100 2013 Wine Transition
+	private final static String PROP_WINE_ASSID="fdstore.wine.assid";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1240,6 +1243,9 @@ public class FDStoreProperties {
         defaults.put(PROP_ASSIGNED_CUSTOMER_PARAMS_QUERY_ID, "1");
         
         defaults.put(GMAPS_API_KEY, "AIzaSyAALx7g2uVEDP46IaGU_zxYT5gBSKac2ks");        
+        
+        //APPDEV-3100 2013 Wine Transition
+        defaults.put(PROP_WINE_ASSID, "USQ");
 				
         refresh();
     }
@@ -3174,6 +3180,12 @@ public class FDStoreProperties {
     
     public static int getAssignedCustomerParamsQueryId() {
         return Integer.parseInt(get(PROP_ASSIGNED_CUSTOMER_PARAMS_QUERY_ID));
+    }
+    
+
+	//APPDEV-3100 2013 Wine Transition
+    public static String getWineAssid() {
+    	return get(PROP_WINE_ASSID);
     }
 }
 

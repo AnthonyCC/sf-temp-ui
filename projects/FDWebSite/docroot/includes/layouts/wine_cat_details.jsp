@@ -14,6 +14,7 @@
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@page import="com.freshdirect.fdstore.pricing.ProductPricingFactory"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@page import="java.util.Collection"%>
 <%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
@@ -56,7 +57,7 @@ if (isFilter) {
 				<div class="title18" style="text-align: left; padding: 8px 0px;"><%= category.getFullName() %></div>
 				<fd:IncludeHtml html="<%= category.getEditorial() %>"/>
 				<div style="padding: 8px 0px;">
-					<div class="usq-middlebrown-border" style="font-size: 0px; border-width: 8px 0px 0px;">&nbsp;</div>
+					<div class="wine-middlebrown-border" style="font-size: 0px; border-width: 8px 0px 0px;">&nbsp;</div>
 				</div>
 			</td>
 		</tr>
@@ -107,8 +108,10 @@ if (isFilter) {
 	<% if (!groups.get(0).getProducts().isEmpty()) { %>
 	<%@ include file="/shared/includes/wine/i_wine_expert_ratings_key.jspf" %>
 	<% } %>
-	<% if (wineHasOtherRatings) { %>
-	<fd:IncludeMedia name="/media/editorial/win_usq/other_ratings_key.html"/>
+	<% if (wineHasOtherRatings) {
+		String wineOtherRatingsmediaPath = "/media/editorial/win_"+JspMethods.getWineAssociateId().toLowerCase()+"/other_ratings_key.html";
+	%>
+	<fd:IncludeMedia name="<%= wineOtherRatingsmediaPath %>" />
 	<% } %>
 
 	</fd:WineSorter>

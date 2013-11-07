@@ -12,6 +12,7 @@
 <%@page import="com.freshdirect.fdstore.FDProduct"%>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 <%@ page import="com.freshdirect.framework.util.NVL"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <% /* 
 	
 	input parameters:
@@ -62,7 +63,7 @@
 	        try {
 	        	fdproduct = FDCachedFactory.getProduct(pi.getProductInfo());
 	           
-			if ( "USQ".equalsIgnoreCase(pm.getDepartment().toString()) && (fdproduct != null && !"".equals(fdproduct.getMaterial().getAlcoholicContent().getCode())) ) {
+			if ( JspMethods.getWineAssociateId().equalsIgnoreCase(pm.getDepartment().toString()) && (fdproduct != null && !"".equals(fdproduct.getMaterial().getAlcoholicContent().getCode())) ) {
 				imageSize = "zoom";
 			}
 	       } catch (Exception fdsnf){

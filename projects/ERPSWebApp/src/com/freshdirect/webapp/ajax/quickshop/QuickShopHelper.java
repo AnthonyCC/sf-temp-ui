@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.WineUtil;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
@@ -429,7 +430,7 @@ public class QuickShopHelper {
 
 		// Wine Rating		
 		final String deptName = product.getDepartment() != null ? product.getDepartment().getContentName() : "";
-		if ( "usq".equalsIgnoreCase( deptName ) ) {
+		if ( WineUtil.getWineAssociateId().toLowerCase().equalsIgnoreCase( deptName ) ) {
 			try {
 				EnumOrderLineRating r = product.getProductRatingEnum( skuCode );
 				if ( r != null ) {

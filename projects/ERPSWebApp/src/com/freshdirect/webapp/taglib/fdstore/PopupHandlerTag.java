@@ -156,7 +156,7 @@ public class PopupHandlerTag extends BodyTagSupportEx {
 			buf.append("});\r\n");
 		buf.append("</script>\r\n");
 		if (isAlcoholic(false)) {
-			buf.append("<input type='hidden' class='usq_quantity' name='alcoholic_" + tagCounter + "' id='alcoholic_" + tagCounter + "' value='quantity_" + ("".equals(inputTagPostFix)?"":(inputTagPostFix + "_")) + tagCounter + "'/>");
+			buf.append("<input type='hidden' class='wine_quantity' name='alcoholic_" + tagCounter + "' id='alcoholic_" + tagCounter + "' value='quantity_" + ("".equals(inputTagPostFix)?"":(inputTagPostFix + "_")) + tagCounter + "'/>");
 		}
 
 	}

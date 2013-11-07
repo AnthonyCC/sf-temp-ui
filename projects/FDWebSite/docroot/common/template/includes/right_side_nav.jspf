@@ -166,7 +166,7 @@ if(weRecommendImgProds.size() > 0) {
 	if (cnm instanceof DepartmentModel) {
 		deptName = cnm.getFullName();
 		isDeptPage = true;
-		if ( cnm.getContentName().equals( "rec" ) || cnm.getContentName().equals( "usq" ) )
+		if ( cnm.getContentName().equals( "rec" ) || cnm.getContentName().equals( JspMethods.getWineAssociateId().toLowerCase() ) )
 			isWineOrRecipe = true;
 	} else if (cnm instanceof RecipeCategory) {
 		deptName = "Recipes";
@@ -176,7 +176,7 @@ if(weRecommendImgProds.size() > 0) {
 		if (p != null)
 			deptName = p.getFullName();
 		isCatPage = true;
-		if ( p.getContentName().equals( "rec" ) || p.getContentName().equals( "usq" ) )
+		if ( p.getContentName().equals( "rec" ) || p.getContentName().equals( JspMethods.getWineAssociateId().toLowerCase() ) )
 			isWineOrRecipe = true;
 	} else if (cnm instanceof ProductModel ) {
 		isProdPage = true;

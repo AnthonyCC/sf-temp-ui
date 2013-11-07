@@ -15,9 +15,9 @@ function swapImageWithBurst(imgName,imgURL, isAlcoholic, burstId){
     		document.images[imgName].src = imgURL;
     		if (isAlcoholic=="true" && document.getElementById(burstId)) {
     			//document.getElementsByName(burstName)[0].style.background="url(\"/media_stat/images/layout/small_usq.png\") no-repeat scroll right bottom transparent";
-    			document.getElementById(burstId).className = "burst-usq";
+    			document.getElementById(burstId).className = "burst-wine";
     		} else {
-    			document.getElementById(burstId).className = "burst-usq.without-background";
+    			document.getElementById(burstId).className = "burst-wine.without-background";
 			}
     	}
 }

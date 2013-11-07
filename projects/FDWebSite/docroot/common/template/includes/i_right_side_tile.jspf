@@ -1,4 +1,5 @@
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
 
@@ -23,7 +24,8 @@ final int W_RIGHT_SIDE_TILE_TOTAL = 191;
 	FD_QuickBuy.decorate('tile_<%= webId %>', 'tileButton_<%= webId %>', {
 			departmentId: '<%= tileProduct.getDepartment().getContentName() %>',
 			categoryId: '<%=  tileProduct.getParentNode().getContentName() %>',
-			productId: '<%= tileProduct.getContentName() %>'
+			productId: '<%= tileProduct.getContentName() %>',
+			wineDeptId: '<%= JspMethods.getWineAssociateId() %>'
 	});
 </script>
 </display:GetContentNodeWebId>

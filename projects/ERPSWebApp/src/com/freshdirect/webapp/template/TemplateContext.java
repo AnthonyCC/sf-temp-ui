@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.jsp.JspException;
 
@@ -1061,11 +1062,13 @@ public class TemplateContext extends BaseTemplateContext{
 		}
 		return scaleDisplay != null ? scaleDisplay : "";
 	}
+	
+	/* for test page purposes */
 	public ArrayList<String> getMethodsFromClass(Class classObj) {
 		ArrayList<String> methodList = new ArrayList<String>();
 		Method[] methods = classObj.getDeclaredMethods();
 		for (Method method : methods) {
-			String methodString = "Name: " + method.getName();
+			/*String methodString = "Name: " + method.getName();
 			String returnString = "Return Type: " + method.getReturnType().getName();
 			String parameterString = "Parameter Types: ";
 			Class[] parameterTypes = method.getParameterTypes();
@@ -1074,12 +1077,12 @@ public class TemplateContext extends BaseTemplateContext{
 			}
 			if (parameterTypes.length == 0) {
 				parameterString = "";
-			}
+			}*/
 			//methodList.add(methodString + " " + returnString + " " + parameterString + " " + method.toGenericString());
 			methodList.add(method.toGenericString());
-        	}
+        }
 		
-		methods = classObj.getMethods();
+		/*methods = classObj.getMethods();
 		for (Method method : methods) {
 			String methodString = "Name: " + method.getName();
 			String returnString = "Return Type: " + method.getReturnType().getName();
@@ -1092,11 +1095,60 @@ public class TemplateContext extends BaseTemplateContext{
 				parameterString = "";
 			}
 			//methodList.add(methodString + " " + returnString + " " + parameterString);
-		}
+		}*/
 		
 		return methodList;
 	}
 	
+	private static final Map<String, Class<?>> BUILT_IN_MAP = 
+	    new ConcurrentHashMap<String, Class<?>>();
+
+	static {
+	    for (Class<?> c : new Class[]{void.class, boolean.class, byte.class, char.class,  
+	            short.class, int.class, float.class, double.class, long.class})
+	        BUILT_IN_MAP.put(c.getName(), c);
+	}
+
+	public Class<?> forName(String name) throws ClassNotFoundException {
+	    Class<?> c = BUILT_IN_MAP.get(name);
+	    if (c == null)
+	        // assumes you have only one class loader!
+	        BUILT_IN_MAP.put(name, c = Class.forName(name));
+	    return c;
+	}
+	/* for test page purposes */
+	public Object getNewInstanceByStringName(String fullClassName) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		Object instanceObject = null;
+		try {
+//			Class cls = null;
+//			cls = this.forName(fullClassName);
+//			if (cls == null) {
+//				cls = Class.forName(fullClassName);
+//				instanceObject = cls.newInstance();
+//			} else {
+//				instanceObject = cls;
+//			}
+			Class<?> cls;
+
+			if (fullClassName.endsWith("[]")) {
+				instanceObject = java.lang.reflect.Array.newInstance(Class.forName(fullClassName.replaceAll("\\[\\]", "")), 0);
+			} else {
+				cls = Class.forName(fullClassName);
+				instanceObject = cls.newInstance();
+			}
+		} catch (ClassNotFoundException e) {
+			LOGGER.debug("Unable to find Class with name: " + fullClassName + " (Freemarker)");
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			LOGGER.debug("Unable to initialize Class with name: " + fullClassName + " (Freemarker)");
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			LOGGER.debug("Unable to access Class with name: " + fullClassName + " (Freemarker)");
+			e.printStackTrace();
+		}
+		
+		return instanceObject;
+	}
 	
 	/* expose coupon to freemarker */
 	public FDCustomerCoupon getCoupon(FDSessionUser user, String id, String skuOverride, String coupContext) {
@@ -1223,5 +1275,10 @@ public class TemplateContext extends BaseTemplateContext{
 		}
 		
 		return displayHtml;
+	}
+	
+	/* helper method for making current wine id avail to ftls */
+	public String getWineAssociateId() {
+		return JspMethods.getWineAssociateId();
 	}
 }

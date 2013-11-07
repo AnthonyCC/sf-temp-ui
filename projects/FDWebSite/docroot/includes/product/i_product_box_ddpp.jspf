@@ -7,6 +7,7 @@
 <%@page import='com.freshdirect.webapp.util.JspLogger'%>
 <%@page import="com.freshdirect.fdstore.customer.EnumQuickbuyStatus" %>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%-- 
 	[DDPP version of i_product_box (different style/layout)]
 	
@@ -69,7 +70,7 @@
 			        try {
 			        	fdproduct = FDCachedFactory.getProduct(pi.getProductInfo());
 			           
-					if ( "USQ".equalsIgnoreCase(pm.getDepartment().toString()) && (fdproduct != null && !"".equals(fdproduct.getMaterial().getAlcoholicContent().getCode())) ) {
+					if ( JspMethods.getWineAssociateId().equalsIgnoreCase(pm.getDepartment().toString()) && (fdproduct != null && !"".equals(fdproduct.getMaterial().getAlcoholicContent().getCode())) ) {
 						imageSize = "zoom";
 					}
 			       } catch (Exception fdsnf){

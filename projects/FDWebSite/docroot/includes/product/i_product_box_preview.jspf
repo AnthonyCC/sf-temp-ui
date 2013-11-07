@@ -8,6 +8,7 @@
 <%@page import="com.freshdirect.fdstore.FDSkuNotFoundException"%>
 <%@page import="com.freshdirect.fdstore.*"%>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 
 <% /* 
 	
@@ -43,7 +44,7 @@
         try {
         	fdproduct = FDCachedFactory.getProduct(pi.getProductInfo());
            
-		if ( "USQ".equalsIgnoreCase(pm.getDepartment().toString()) && (fdproduct != null && !"".equals(fdproduct.getMaterial().getAlcoholicContent().getCode())) ) {
+		if ( JspMethods.getWineAssociateId().equalsIgnoreCase(pm.getDepartment().toString()) && (fdproduct != null && !"".equals(fdproduct.getMaterial().getAlcoholicContent().getCode())) ) {
 			imageSize = "zoom";
 		}
        } catch (Exception fdsnf){

@@ -89,8 +89,13 @@ if (session.getAttribute("fd.user") != null) {
 			} else {
 				ActionError error = result.getErrors().iterator().next();
 				if (error.getType().startsWith("quantity")) {
-					LOGGER.info("quantity not specified");
-					json.put("statusHtml", getStatusMessage(EnumQuickbuyStatus.SPECIFY_QUANTITY));
+					if (error.getDescription().indexOf("there is a limit of") != -1) {
+						LOGGER.info("quantity at maximum limit");
+						json.put("statusHtml", getStatusMessage(EnumQuickbuyStatus.QUANTITY_LIMIT));
+					} else {
+						LOGGER.info("quantity not specified");
+						json.put("statusHtml", getStatusMessage(EnumQuickbuyStatus.SPECIFY_QUANTITY));
+					}
 				}
 			}
 		%></fd:FDShoppingCart><%

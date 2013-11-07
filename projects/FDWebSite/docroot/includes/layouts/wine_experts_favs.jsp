@@ -16,6 +16,7 @@
 <%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
 
@@ -75,17 +76,17 @@ FreshDirect.Wine.addTabItem("favs", "<%= "tab_" + subcategory.getContentKey().ge
 <div class="usq" style="padding-top: 15px;">
 <table width="<%=W_WINE_EXPERT_FAVS_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 	<tr>
-		<td class="usq-xprt-bg" width="6" valign="top"><img src="/media_stat/images/wine/top_left_usq_xprt_filled.png" width="7" height="7"></td>
-		<td class="usq-xprt-bg usq-lightbrown" align="left">
+		<td class="wine-xprt-bg" width="6" valign="top"><img src="/media_stat/images/wine/top_left_<%= JspMethods.getWineAssociateId().toLowerCase() %>_xprt_filled.png" width="7" height="7"></td>
+		<td class="wine-xprt-bg wine-lightbrown" align="left">
 			<div class="title19 wine-narrow" style="padding: 0.4em 5px 0.25em;"><%= category.getAltText() %></div>
 		</td>
-		<td class="usq-xprt-bg" width="6" valign="top"><img src="/media_stat/images/wine/top_right_usq_xprt_filled.png" width="7" height="7"></td>
+		<td class="wine-xprt-bg" width="6" valign="top"><img src="/media_stat/images/wine/top_right_<%= JspMethods.getWineAssociateId().toLowerCase() %>_xprt_filled.png" width="7" height="7"></td>
 	</tr>
 </table>
-<div class="usq-xprt-bg">
+<div class="wine-xprt-bg">
 <div style="float: left;">
-<div class="usq-brown-border" style="border-width: 0px 0px 1px; font-size: 0px;"></div>
-<table class="usq-xprt" width="<%= subcategories.size() < 4 ? "auto" : W_WINE_EXPERT_FAVS_TOTAL %>" height="27" cellspacing="0" cellpadding="0" border="0" style="text-align: center; line-height: 19px;">
+<div class="wine-brown-border" style="border-width: 0px 0px 1px; font-size: 0px;"></div>
+<table class="wine-xprt-bg" width="<%= subcategories.size() < 4 ? "auto" : W_WINE_EXPERT_FAVS_TOTAL %>" height="27" cellspacing="0" cellpadding="0" border="0" style="text-align: center; line-height: 19px;">
 	<tr>
 	<% for (int i = 0; i < subcategories.size(); i++) {
 		CategoryModel subcategory = subcategories.get(i);
@@ -110,7 +111,7 @@ FreshDirect.Wine.addTabItem("favs", "<%= "tab_" + subcategory.getContentKey().ge
 <div style="clear: both; font-size: 0px;"></div>
 </div>
 <div style="width: <%=W_WINE_EXPERT_FAVS_TOTAL%>px;" class="usq" style="background: #fff none;">
-	<div id="jesseRecommends" class="usq-brown-border usq-xprt">
+	<div id="jesseRecommends" class="wine-brown-border wine-xprt">
 		<% for (CategoryModel cat : subcategories) { boolean hideOnly = !cat.isHideWineRatingPricing(); %>
 			<% int imgHeight = 0; String tabId = cat != dftSubcat ? "tab_" + cat.getContentKey().getId() : null; %>
 			<display:ItemGrabber id="prods" category="<%= cat %>" depth="0" filterUnavailable="true">

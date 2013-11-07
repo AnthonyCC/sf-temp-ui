@@ -6,6 +6,7 @@
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.fdstore.content.util.EnumWinePageSize"%>
 <%@page import="com.freshdirect.fdstore.content.util.QueryParameter"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -73,7 +74,7 @@ Per page:
 <% } %>
 <%@ include file="/shared/includes/wine/i_wine_expert_ratings_key.jspf" %>
 <% if (wineView == EnumWineViewType.DETAILS && wineHasOtherRatings) { %>
-<fd:IncludeMedia name="/media/editorial/win_usq/other_ratings_key.html"/>
+<fd:IncludeMedia name="/media/editorial/win_<%= JspMethods.getWineAssociateId().toLowerCase() %>/other_ratings_key.html"/>
 <% } %>
 </fd:WineSorter>
 </fd:WineFilter>

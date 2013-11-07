@@ -32,7 +32,7 @@
         	}
 
         	final DepartmentModel __dept = ((ProductModel) productNode).getDepartment(); 
-			if ( isQuickBuy && __dept != null && "usq".equalsIgnoreCase(__dept.getContentKey().getId())) {
+			if ( isQuickBuy && __dept != null && JspMethods.getWineAssociateId().equalsIgnoreCase(__dept.getContentKey().getId())) {
 				// [APPDEV-1283] special format for wines in QuickBuy panel
 %>				<div class="text13bold">
 					<span class="normal-price" style="<%= _isOnSale ? "color: #C94747" : "" %>"><%= _defPrice %></span><span class="normal-price" style="<%= _isOnSale ? "color: #C94747" : "" %>">/<%= _z != null ? _z : productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></span>

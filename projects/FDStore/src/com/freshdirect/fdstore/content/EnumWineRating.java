@@ -69,7 +69,7 @@ public enum EnumWineRating implements WineFilterValue {
 			return "Not Rated";
 		StringBuilder buf = new StringBuilder();
 		for (int i = 0; i < starCount; i++)
-			buf.append("<span class=\"usq-rating-sm\"></span>");
+			buf.append("<span class=\"wine-rating-sm\"></span>");
 		return buf.toString();
 	}
 }

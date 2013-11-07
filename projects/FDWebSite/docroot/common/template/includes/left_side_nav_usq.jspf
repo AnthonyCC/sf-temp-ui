@@ -40,7 +40,7 @@
 
 <%
 
-DepartmentModel dept = (DepartmentModel) ContentFactory.getInstance().getContentNode("Department", "usq");
+DepartmentModel dept = (DepartmentModel) ContentFactory.getInstance().getContentNode("Department", JspMethods.getWineAssociateId().toLowerCase());
 String catId = request.getParameter("catId");
 CategoryModel selected = catId != null ? (CategoryModel) ContentFactory.getInstance().getContentNode("Category", catId) : null;
 WineFilterValue lastDomain = null;

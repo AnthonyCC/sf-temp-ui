@@ -2,6 +2,7 @@
 <%@ page import='com.freshdirect.customer.EnumUnattendedDeliveryFlag' %>
 <%@ page import='com.freshdirect.framework.util.NVL' %>
 <%@ page import='com.freshdirect.payment.EnumPaymentMethodType'%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <% //expanded page dimensions
 final int W_YA_OD_DELIVERY_PAYMENT_TOTAL = 970;
 final int W_YA_OD_DELIVERY_PAYMENT_HALF = 410;
@@ -159,7 +160,7 @@ final int W_YA_OD_DELIVERY_PAYMENT_DELIMITER = 150;
 				if(views != null) {
 					for (Iterator i = views.iterator(); i.hasNext();) {
 						com.freshdirect.fdstore.customer.WebOrderViewI temp = (com.freshdirect.fdstore.customer.WebOrderViewI) i.next();
-						if(temp.getAffiliate().getCode().equals("USQ")) {
+						if(temp.getAffiliate().getCode().equals(JspMethods.getWineAssociateId())) {
 							usq_message = true;
 							break;
 						}

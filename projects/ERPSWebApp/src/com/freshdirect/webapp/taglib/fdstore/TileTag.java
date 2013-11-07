@@ -12,6 +12,7 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.WineUtil;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.PricingContext;
@@ -61,7 +62,7 @@ public class TileTag extends BodyTagSupportEx {
 		if (filterTag != null) {
 			wineFilter = (WineFilter) pageContext.getAttribute(filterTag.getFilterId());
 			if (wineFilter != null && wineFilter.isFiltering() && department == null)
-				department = (DepartmentModel) ContentFactory.getInstance().getContentNode(FDContentTypes.DEPARTMENT, "usq");
+				department = (DepartmentModel) ContentFactory.getInstance().getContentNode(FDContentTypes.DEPARTMENT, WineUtil.getWineAssociateId().toLowerCase());
 		}
 
 		if ((contentNode != null || wineFilter != null ) && department != null) {

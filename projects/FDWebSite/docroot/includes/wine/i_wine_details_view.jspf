@@ -3,6 +3,7 @@
 <%@page import="com.freshdirect.fdstore.content.ProductRatingGroup"%>
 <%@page import="com.freshdirect.fdstore.content.EnumWineRating"%>
 <%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
 
@@ -45,7 +46,7 @@ final int W_WINE_DETAILS_VIEW_TOTAL = 601;
 <tr>
 <td align="left" valign="top"><%-- text --%>
 	<div class="title14"><a href="<%=actionUrl%>"><%=product.getFullName()%></a></div>
-	<div class="usq_region" style="padding-top: 8px;"><display:WineRegionLabel product="<%= product %>" excludeCountry="true"/></div>
+	<div class="wine_region" style="padding-top: 8px;"><display:WineRegionLabel product="<%= product %>" excludeCountry="true"/></div>
 	<div class="text11" style="padding-top:4px;">
 	<fd:IncludeHtml html="<%= product.getProductAbout() %>"/><% if (product.getProductAbout() != null) { %> <nobr><a href="<%= actionUrl %>">More &raquo;</a></nobr><% } %>
 	</div>
@@ -104,7 +105,8 @@ final int W_WINE_DETAILS_VIEW_TOTAL = 601;
 				FD_QuickBuy.decorate('hotspot-<%= webId %>', ['qbButton-<%= webId %>', 'hotspot-<%= webId %>'], {
 						departmentId: '<%= product.getDepartment().getContentName() %>',
 						categoryId: '<%= __c.getContentName() %>',
-						productId: '<%= product.getContentName() %>'
+						productId: '<%= product.getContentName() %>',
+						wineDeptId: '<%= JspMethods.getWineAssociateId() %>'
 				}, '<%= webId %>');
 			});
 		</script>

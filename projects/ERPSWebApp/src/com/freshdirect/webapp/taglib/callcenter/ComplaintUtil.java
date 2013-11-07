@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.WineUtil;
 import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDResourceException;
@@ -182,7 +183,7 @@ public class ComplaintUtil {
 		else if ( "transportation".equalsIgnoreCase(dept) ) { r = "TRN"; }
         else if ( "extraitem".equalsIgnoreCase(dept) ) { r = "XTR"; }
         else if ( "kosher".equalsIgnoreCase(dept) ) { r = "KOS"; }
-        else if ( "wine".equalsIgnoreCase(dept) || "wines".equalsIgnoreCase(dept) || (dept!=null && dept.toLowerCase().startsWith("usq")) ){ r = "WIN"; }
+        else if ( "wine".equalsIgnoreCase(dept) || "wines".equalsIgnoreCase(dept) || (dept!=null && dept.toLowerCase().startsWith("usq")) || (dept!=null && dept.toLowerCase().startsWith(WineUtil.getWineAssociateId().toLowerCase())) ){ r = "WIN"; }
         else if ( "Easy Meals".equalsIgnoreCase(dept) ){ r = "EZM"; }
         else if ( "Ready to Cook".equalsIgnoreCase(dept) ){ r = "RTC"; }
 //        else if ( dept.toLowerCase().indexOf("health") != -1 ) { r = "HBA"; }

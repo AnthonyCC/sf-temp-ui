@@ -1,4 +1,5 @@
-<script type="text/javascript" language="JavaScript">
+<%@page import="com.freshdirect.webapp.util.JspMethods"
+%><script type="text/javascript" language="JavaScript">
 
 var cursorX = 0; var cursorY = 0; var rollX = 0; var rollY = 0;
 function UpdateCursorPosition(e){
@@ -93,13 +94,14 @@ function ShowContent(d) {
     reviews.add(getReview(productNode.getWineReview2()));
     reviews.add(getReview(productNode.getWineReview3()));
 
+	String wineMediaPathIcons = "/media/editorial/win_"+JspMethods.getWineAssociateId().toLowerCase()+"/icons/"; 
+    
+    wineTypeIcons.addAll(getIconPath(wineType, wineMediaPathIcons, ".gif"));
+    wineTypeIcons.addAll(getIconPath(ratings, wineMediaPathIcons, ".gif"));
 
-    wineTypeIcons.addAll(getIconPath(wineType,"/media/editorial/win_usq/icons/",".gif"));
-    wineTypeIcons.addAll(getIconPath(ratings,"/media/editorial/win_usq/icons/",".gif"));
-
-    ratingIcons.addAll(getIconPath(wineRating1,"/media/editorial/win_usq/icons/rating/",".gif"));
-    ratingIcons.addAll(getIconPath(wineRating2,"/media/editorial/win_usq/icons/rating/",".gif"));
-    ratingIcons.addAll(getIconPath(wineRating3,"/media/editorial/win_usq/icons/rating/",".gif"));
+    ratingIcons.addAll(getIconPath(wineRating1, wineMediaPathIcons+"rating/", ".gif"));
+    ratingIcons.addAll(getIconPath(wineRating2, wineMediaPathIcons+"rating/", ".gif"));
+    ratingIcons.addAll(getIconPath(wineRating3, wineMediaPathIcons+"rating/", ".gif"));
    
 if (wineTypeIcons.size() > 0) {
 

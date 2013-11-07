@@ -53,6 +53,8 @@ FD_QuickBuy._randomId = function(length) {
     return str;
 };
 
+//current wineDeptid (set in decorate)
+FD_QuickBuy._wineDeptId = null;
 
 
 /**
@@ -112,7 +114,8 @@ FD_QuickBuy.showPanel = function(deptId, catId, prdId, iatcNamespace, tracking) 
 			zIndex: 11000,
 			draggable: false}
 		);
-		var isWineDept = ("usq" == deptId);
+		var wineDeptId = (FD_QuickBuy._wineDeptId==null) ? '' : FD_QuickBuy._wineDeptId;
+		var isWineDept = ((deptId).toUpperCase() == (wineDeptId).toUpperCase());
 		
 		if(isWineDept) {
 			oStyle={
@@ -259,6 +262,7 @@ FD_QuickBuy._attachHotspot = function(hotspot, btn, multiple) {
  * @param {Object} hotspot Hotspot area where mouse is detected
  * @param {Object} btn Quick Buy button
  * @param {Object} prd Product object with three attributes: departmentId, categoryId and productId
+ * 					optional fourth param the current wine dept id
  * @param {Object} tracking Optional parameter. It contains various codes such as variantId, impressionId, etc.
  * 
  */
@@ -279,6 +283,10 @@ FD_QuickBuy.decorate = function(hotspot, btn, prd, tracking) {
 		}
 	}
 
+	//check if wineDeptId is specified, and set
+	if (prd.hasOwnProperty('wineDeptId')) {
+		FD_QuickBuy._wineDeptId = prd.wineDeptId;
+	}
 
 	// BUTTONS / click receivers
 	//

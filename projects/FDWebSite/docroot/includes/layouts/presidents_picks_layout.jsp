@@ -199,7 +199,7 @@
 						draggable: false,
 						zIndex: '10'
 					});
-					var isWineDept = ("usq" == deptId);
+					var isWineDept = ("<%= JspMethods.getWineAssociateId().toLowerCase() %>" == deptId);
 					
 					if(isWineDept) {
 						oStyle={

@@ -22,6 +22,7 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.WineUtil;
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -976,5 +977,10 @@ public class JspMethods {
 		if(idx < 10)
 			return numToWords[idx];
 		return idx +"";
+	}
+	
+	/* Convenience method  */
+	public static String getWineAssociateId() {
+		return WineUtil.getWineAssociateId();
 	}
 }

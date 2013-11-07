@@ -16,6 +16,7 @@
 <%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
 
@@ -76,8 +77,8 @@ FreshDirect.Wine.addTabItem("deals", "<%= "tab_" + subcategory.getContentKey().g
 <div class="usq" style="padding-top: 15px;">
 <div>
 <div style="float: left;">
-<div class="usq-brown-border" style="border-width: 0px 0px 1px; font-size: 0px;"></div>
-<table class="usq-deals" width="<%= subcategories.size() < 3 ? "auto" : W_WINE_DEALS_TOTAL %>" height="27" cellspacing="0" cellpadding="0" border="0" style="text-align: center; line-height: 19px;">
+<div class="wine-brown-border" style="border-width: 0px 0px 1px; font-size: 0px;"></div>
+<table class="wine-deals" width="<%= subcategories.size() < 3 ? "auto" : W_WINE_DEALS_TOTAL %>" height="27" cellspacing="0" cellpadding="0" border="0" style="text-align: center; line-height: 19px;">
 	<tr>
 	<% for (int i = 0; i < subcategories.size(); i++) {
 		CategoryModel subcategory = subcategories.get(i);
@@ -102,7 +103,7 @@ FreshDirect.Wine.addTabItem("deals", "<%= "tab_" + subcategory.getContentKey().g
 <div style="clear: both; font-size: 0px;"></div>
 </div>
 <div style="width: <%=W_WINE_DEALS_TOTAL%>px;" class="usq">
-	<div id="dealsTop" class="usq-brown-border usq-deals">
+	<div id="dealsTop" class="wine-brown-border wine-deals">
 		<% for (CategoryModel cat : subcategories) { boolean hideOnly = !cat.isHideWineRatingPricing(); %>
 			<% int imgHeight = 0; String tabId = cat != dftSubcat ? "tab_" + cat.getContentKey().getId() : null; %>
 			<display:ItemGrabber id="prods" category="<%= cat %>" depth="0" filterUnavailable="true">
@@ -124,7 +125,7 @@ FreshDirect.Wine.addTabItem("deals", "<%= "tab_" + subcategory.getContentKey().g
 				<display:Carousel id="carouselTag" carouselId="<%= cat.getContentKey().getId() %>" itemsToShow="<%= prods %>"
 						width="<%=W_WINE_DEALS_TOTAL-90%>" trackingCode="<%= trk %>"
 						hideContainer="<%= tabId %>" numItems="4" bottomHeader="<%= cat.getAltText() %>"
-						bottomHeaderClass="title14 usq-sienna" appendWineParams="<%= true %>" parentId="dealsTop" offset="80" eventHandlersObj='<%=handlerObj%>'><% ProductModel product = (ProductModel) currentItem; PriceCalculator pc = product.getPriceCalculator(); %>
+						bottomHeaderClass="title14 wine-sienna" appendWineParams="<%= true %>" parentId="dealsTop" offset="80" eventHandlersObj='<%=handlerObj%>'><% ProductModel product = (ProductModel) currentItem; PriceCalculator pc = product.getPriceCalculator(); %>
 					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 						<display:ProductImage priceCalculator="<%= pc %>" showRolloverImage="true" action="<%= actionUrl %>"
 								useAlternateImage="<%= useAlternateImage %>" className="productImage" height="<%= imgHeight %>" enableQuickBuy="true" webId="<%= webId %>" excludeCaseDeals="true"/>
@@ -164,7 +165,7 @@ if (bigs.size() > 0) {
 	final int bigsW = W_WINE_DEALS_BIG * bigs.size();
 
 %>
-	<div style="padding-top: 10px;"><img src="/media/editorial/win_usq/deals/hdr_biggest_deal.gif" alt="MISSING HEADER IMAGE"></div>
+	<div style="padding-top: 10px;"><img src="/media/editorial/win_<%= JspMethods.getWineAssociateId().toLowerCase() %>/deals/hdr_biggest_deal.gif" alt="MISSING HEADER IMAGE"></div>
 	<div style="text-align: center; padding-top: 20px;">
 	<table width="<%= bigsW %>" cellspacing="0" cellpadding="0" border="0" style="text-align: center; margin: 0px auto;">
 		<tr>
@@ -184,7 +185,8 @@ if (bigs.size() > 0) {
 						FD_QuickBuy.decorate('hotspot-<%= webId %>', ['qbButton-<%= webId %>', 'hotspot-<%= webId %>'], {
 								departmentId: '<%= bigPrd.getDepartment().getContentName() %>',
 								categoryId: '<%=  bigPrd.getParentNode().getContentName() %>',
-								productId: '<%= bigPrd.getContentName() %>'
+								productId: '<%= bigPrd.getContentName() %>',
+								wineDeptId: '<%= JspMethods.getWineAssociateId() %>'
 						});
 					</script>
 					<%-- QUICK BUY SECTION END --%>
@@ -224,7 +226,7 @@ if (bigs.size() > 0) {
 
 if (rest != null) {
 %>
-	<div style="padding-top: 10px;"><img src="/media/editorial/win_usq/deals/hdr_allsale.gif" alt="MISSING HEADER IMAGE"></div>
+	<div style="padding-top: 10px;"><img src="/media/editorial/win_<%= JspMethods.getWineAssociateId().toLowerCase() %>/deals/hdr_allsale.gif" alt="MISSING HEADER IMAGE"></div>
 	<table width="<%=W_WINE_DEALS_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 	<% for (ProductModel product : rest) { PriceCalculator price = product.getPriceCalculator(); 
 		   Image img = product.getDescriptiveImage();
@@ -248,7 +250,8 @@ if (rest != null) {
 							FD_QuickBuy.decorate('hotspot-<%= webId %>', ['qbButton-<%= webId %>', 'hotspot-<%= webId %>'], {
 									departmentId: '<%= product.getDepartment().getContentName() %>',
 									categoryId: '<%=  product.getParentNode().getContentName() %>',
-									productId: '<%= product.getContentName() %>'
+									productId: '<%= product.getContentName() %>',
+									wineDeptId: '<%= JspMethods.getWineAssociateId() %>'
 							});
 						</script>
 						<%-- QUICK BUY SECTION END --%>
@@ -272,7 +275,7 @@ if (rest != null) {
 				<display:ProductUrl id="actionUrl" product="<%= product %>" trackingCode="<%= trk %>" appendWineParams="<%= true %>">
 				<div class="title16" style="padding-top: 4px;"><a href="<%= actionUrl %>"><%=product.getFullName()%></a></div>
 				</display:ProductUrl>
-				<div class="usq_region" style="padding-top: 4px;"><display:WineRegionLabel product="<%= product %>"/></div>
+				<div class="wine_region" style="padding-top: 4px;"><display:WineRegionLabel product="<%= product %>"/></div>
 				<div class="title16" style="padding-top: 4px;">
 					<display:ProductDefaultPrice priceCalculator="<%= price %>"/>
 					<% if (price.isOnSale()) { %>

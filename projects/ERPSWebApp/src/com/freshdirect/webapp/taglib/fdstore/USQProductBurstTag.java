@@ -8,6 +8,7 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.WineUtil;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -33,10 +34,10 @@ public class USQProductBurstTag extends BodyTagSupportEx {
 		
 		try {
 			if ( "true".equals(forceLogo) || ContentNodeModelUtil.hasWineDepartment(product.getContentKey()) && (product.getSku(0).getProduct() != null && !"".equals(product.getSku(0).getProduct().getMaterial().getAlcoholicContent().getCode())) ) {
-				if ((pageContext.getRequest().getParameter("catId") == null || !pageContext.getRequest().getParameter("catId").startsWith("usq")) && 
-					(!"usq".equals(pageContext.getRequest().getParameter("deptId")) || "usq".equals(pageContext.getRequest().getParameter("deptId")) && pageContext.getRequest().getParameter("genericFilter") != null) && 
+				if ((pageContext.getRequest().getParameter("catId") == null || !pageContext.getRequest().getParameter("catId").startsWith(WineUtil.getWineAssociateId().toLowerCase())) && 
+					(!WineUtil.getWineAssociateId().toLowerCase().equals(pageContext.getRequest().getParameter("deptId")) || WineUtil.getWineAssociateId().toLowerCase().equals(pageContext.getRequest().getParameter("deptId")) && pageContext.getRequest().getParameter("genericFilter") != null) && 
 					!((HttpServletRequest)pageContext.getRequest()).getServletPath().contains("wine")) {
-					pageContext.getOut().append("<span id=\"burst-usq-" + suffix + "\" name=\"burst-usq\" class=\"burst-usq\"></span>");
+					pageContext.getOut().append("<span id=\"burst-wine-" + suffix + "\" name=\"burst-wine\" class=\"burst-wine\"></span>");
 				}
 			}
 		} catch (IOException e) {

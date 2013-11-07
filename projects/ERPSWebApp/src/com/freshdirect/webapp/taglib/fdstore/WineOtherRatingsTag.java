@@ -3,6 +3,7 @@ package com.freshdirect.webapp.taglib.fdstore;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.freshdirect.WineUtil;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
@@ -18,7 +19,7 @@ public class WineOtherRatingsTag extends AbstractGetterTag<List<String>> {
 	protected List<String> getResult() throws Exception {
 		DomainValue[] values = { product.getWineRatingValue1(), product.getWineRatingValue2(), product.getWineRatingValue2() };
 
-		String basePath = "/media/editorial/win_usq/icons/rating" + (small ? "_small" : "") + "/";
+		String basePath = "/media/editorial/win_"+WineUtil.getWineAssociateId().toLowerCase()+"/icons/rating" + (small ? "_small" : "") + "/";
 		String extension = ".gif";
 		int width = small ? 42 : 25;
 		int height = small ? 15 : 43;
