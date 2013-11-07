@@ -356,7 +356,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 											<font class="tsDiscountC" style="color:#669933;">$&nbsp;</font>
 										</td>
 										<td style="color:#000000;">
-										<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_variable_minimum.html&windowSize=small&name=Minimum Order','small');return false;"><%= FDStoreProperties.getMinOrderLabel()%></td>
+										<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_variable_minimum.html&windowSize=small&name=Minimum Order','large');return false;"><%= FDStoreProperties.getMinOrderLabel()%></td>
 										<td>&nbsp;</td>
 									<%}%>
 									<%if(deliveryModel.getEcoFriendlyCount() > 0){%>
