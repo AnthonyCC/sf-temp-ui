@@ -73,7 +73,7 @@ if (cat == null)
 	  return 0;
 	}
 	
-
+	var map;
 
 	// initialize map
 	function initialize() {
@@ -120,34 +120,26 @@ if (cat == null)
 		var boundz = new google.maps.LatLngBounds();
 		
 		var point, ic, marker;
+		
+		var infowindow = new google.maps.InfoWindow();
 
 <%
 	for (ProducerModel p : prodz) {
-		ProducerModel.Geolocation loc = p.getGeolocation();
+		ProducerModel.Geolocation loc = p.getGeolocation();		
 		if (loc != null) {
 %>			// '<%= p.getFullName() %>'
 			point = new google.maps.LatLng(<%= loc.lat %>, <%= loc.lng %>);
 			boundz.extend(point);
 
-<%			Image icon = p.getIconImage();
+<%			Image icon = p.getIconImage();			
 			Image shadow = p.getIconShadowImage();
 			if (icon != null) {
 			
 %>			ic = {};
-			ic.image = '<%= StringEscapeUtils.escapeJavaScript( icon.getPath() )  %>';
-			ic.iconSize = new google.maps.Size(<%= icon.getWidth() %>, <%= icon.getHeight() %>);
-<%
-			if (shadow != null) {
-%>			ic.shadow = '<%= StringEscapeUtils.escapeJavaScript( shadow.getPath() )  %>';
-			ic.shadowSize = new google.maps.Size(<%= shadow.getWidth() %>, <%= shadow.getHeight() %>);
-<%
-			}
-%>			ic.iconAnchor = new google.maps.Point(<%= icon.getWidth()/2 %>, <%= icon.getHeight() %>);
-<% 			if (bi.isFirefox()) {%>
-				ic.imageMap = [0, 0, <%= icon.getWidth()-1 %>, 0, <%= icon.getWidth()-1 %>, <%= icon.getHeight()-1 %>, 0, <%= icon.getHeight()-1 %>];
-<% 			} %>
-
-
+			ic.url = '<%= StringEscapeUtils.escapeJavaScript( icon.getPath() )  %>';
+			ic.size = new google.maps.Size(<%= icon.getWidth() %>, <%= icon.getHeight() %>);
+			ic.anchor = new google.maps.Point(<%= icon.getWidth()/2 %>, <%= icon.getHeight() %>);
+			
 			marker = new google.maps.Marker({
 						position : point,
 						icon : ic,
@@ -163,25 +155,24 @@ if (cat == null)
 			});
 <%
 		}
-%>
-			var winId = 'prod-<%= p.getContentKey().getId() %>';
-			var kontent = document.getElementById(winId);
-			var klone = kontent.cloneNode(true);
-			klone.setAttribute("id", winId+'-act');
-			
-			var infowindow = new google.maps.InfoWindow({
-			    content: klone
-			});
-			
-			google.maps.event.addListener(marker, 'click', function() {				
-		    	infowindow.open(map, marker);
-			});
+%>							
+			google.maps.event.addListener(marker, 'click', (function(marker) {
+			    return function() {
+			    	var winId = 'prod-<%= p.getContentKey().getId() %>';
+					var kontent = document.getElementById(winId);
+					var klone = kontent.cloneNode(true);
+					klone.setAttribute("id", winId+'-act');
+			        infowindow.setContent(klone);
+			        infowindow.open(map, marker);
+			    }
+   			  })(marker));			
 <%
 		}
 	}
 %>
 			// fit all markers
-			map.setZoom(getZoomByBounds(map, boundz));
+			//map.setZoom(getZoomByBounds(map, boundz));
+			map.fitBounds(boundz);
 			map.setCenter(boundz.getCenter());
 		
     }

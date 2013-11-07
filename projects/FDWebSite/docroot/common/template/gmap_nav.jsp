@@ -22,7 +22,7 @@ final int W_GMAP_NAV_TOTAL = 970;
     <%-- @ include file="/shared/template/includes/ccl.jspf" --%>
 	<script type="text/javascript" src="http://www.google.com/jsapi?key=<%= gmap_api_key %>"></script>
 	<script type="text/javascript">
-	google.load("maps", "2");
+		google.load("maps", "3", {other_params: "sensor=false"});
 	</script>
 	
 	<tmpl:get name='head_content'/>

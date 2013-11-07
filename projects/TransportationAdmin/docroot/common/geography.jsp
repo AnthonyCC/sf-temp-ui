@@ -9,7 +9,7 @@
     <script type="text/javascript"
       src="http://maps.googleapis.com/maps/api/js?sensor=false&key=<%= request.getParameter("mapkey") %>">
 	</script>
-	<script type="text/javascript" language="javascript" src="js/gmap/mapiconmaker.js"></script>
+	<script type="text/javascript" language="javascript" src="../js/gmap/mapiconmaker.js"></script>
     <script type="text/javascript">
 
     //<![CDATA[
@@ -44,7 +44,7 @@
 		          // zoom control
 		          zoomControl: true,
 		          zoomControlOptions: {
-		            style: google.maps.ZoomControlStyle.SMALL
+		            style: google.maps.ZoomControlStyle.LARGE
 		          },
 		
 		
