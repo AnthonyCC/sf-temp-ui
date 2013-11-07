@@ -291,6 +291,7 @@
 					
 			var latLng = result[0].geometry.location;
 			map.setCenter(latLng, 12);
+			boundz.extend(latLng);
 					
 			var marker_title = result[0].formatted_address + ' at '	+ latLng;
 			
@@ -315,7 +316,10 @@
 				    infowindow.open(map, geocodeMarker);
 				});
 			}
-			markers.push(geocodeMarker);			
+			markers.push(geocodeMarker);
+			
+			map.fitBounds(boundz);
+			map.setCenter(boundz.getCenter());
 		}
 	}
 	
@@ -354,6 +358,7 @@
 			infoPanel.innerHTML = '';
 			var latLng = new google.maps.LatLng(document.getElementById('latitude').value, document.getElementById('longitude').value);
 			map.setCenter(latLng, 12);
+			boundz.extend(latLng);
 			
 			var marker_title = "Latitude="+ document.getElementById('latitude').value	+ ", " + "Longitude=" + document.getElementById('longitude').value;
 			
@@ -375,6 +380,10 @@
 			google.maps.event.addListener(geocodeMarker, 'click', function() {
 			    infowindow.open(map, geocodeMarker);
 			});
+			
+			// fit all markers
+			map.fitBounds(boundz);
+			map.setCenter(boundz.getCenter());
 		}
 	}
 	
