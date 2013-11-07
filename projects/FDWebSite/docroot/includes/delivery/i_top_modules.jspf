@@ -45,7 +45,11 @@ double currentHour = h+m;
 <table width="<%=W_TOP_MODULES_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
 	<tr valign="TOP">
 		<td width="<%=W_TOP_MODULES_C%>" rowspan="2" align="center">
-			<%if(user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName())){%>
+		
+			<%if(deliveryModel.isMinOrderReqd()){ %>
+				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/msg_variable_minimum_top_module.html"/>
+
+			<%}else if(user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName())){%>
 				
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/corporate_top_module.html"/>
 
