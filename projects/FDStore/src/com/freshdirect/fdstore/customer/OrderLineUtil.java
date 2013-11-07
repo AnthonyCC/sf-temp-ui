@@ -390,7 +390,8 @@ public class OrderLineUtil {
 		}
 
 		if (!productInfo.isAvailable()) {
-			throw new FDInvalidConfigurationException.Unavailable("SKU no longer available " + prodSel.getSkuCode());
+			
+			throw new FDInvalidConfigurationException.Unavailable("Product "+prodNode.getFullName()+"[" +prodSel.getSkuCode()+"] is no longer available");
 		}
 
 		FDProduct product;

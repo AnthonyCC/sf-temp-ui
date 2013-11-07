@@ -3,8 +3,10 @@ package com.freshdirect.webapp.taglib.standingorder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,9 +15,6 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.fdstore.EnumCheckoutMode;
-import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -29,16 +28,9 @@ import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDTransientCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
-import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.lists.FDStandingOrderList;
-import com.freshdirect.fdstore.promotion.EnumOfferType;
-import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
-import com.freshdirect.fdstore.promotion.Promotion;
-import com.freshdirect.fdstore.promotion.PromotionFactory;
-import com.freshdirect.fdstore.promotion.PromotionI;
-import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -133,6 +125,7 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 		FDSessionUser user = (FDSessionUser) pageContext.getSession().getAttribute(SessionName.USER);
 
 		FDActionInfo info = AccountActivityUtil.getActionInfo(pageContext.getSession());
+		Map<String, Double> skusAndQuantities=new HashMap<String, Double>();
 		if ("skip".equalsIgnoreCase(action)) {
 			if (!so.isDeleted()) {
 				try {
@@ -177,6 +170,7 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 			} else {
 				cart = ModifyOrderControllerTag.modifyOrder((HttpServletRequest) pageContext.getRequest(), user, orderId,
 						request.getSession(), so, EnumCheckoutMode.MODIFY_SO_MSOI, false);
+				skusAndQuantities=getSkusAndQuantities(cart);
 				cart.clearOrderLines();
 			}	
 
@@ -185,11 +179,35 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 			}			
 			
 			/* Load list items to cart */
+			Double qty=0d;
 			for (FDCartLineI cartLine : getCartLinesFromSo(so, user)){
 				if (orderId == null){
 					cart.addOrderLine(cartLine);
 				} else {
-					((FDModifyCartModel)cart).addOriginalOrderLine(cartLine);
+					
+					if(skusAndQuantities.containsKey(cartLine.getSkuCode())) {// Order instance contains sku from so template
+						qty=skusAndQuantities.get(cartLine.getSkuCode());
+						if(qty>cartLine.getQuantity()) {//ordered quantity>template qty
+							((FDModifyCartModel)cart).addOriginalOrderLine(cartLine);
+							qty=qty-cartLine.getQuantity();
+							skusAndQuantities.put(cartLine.getSkuCode(), qty);
+						} else if(qty==cartLine.getQuantity()){//ordered quantity=template qty
+							((FDModifyCartModel)cart).addOriginalOrderLine(cartLine);
+							skusAndQuantities.remove(cartLine.getSkuCode());
+						}else if(qty<cartLine.getQuantity()){
+							FDCartLineI cartLineCopy=cartLine.createCopy();
+							cartLineCopy.setQuantity(qty);
+							((FDModifyCartModel)cart).addOriginalOrderLine(cartLineCopy);
+							Double diff=cartLine.getQuantity()-qty;
+							cartLine.setQuantity(diff);
+							cart.addOrderLine(cartLine);
+							skusAndQuantities.remove(cartLine.getSkuCode());
+						}
+					} else {
+					
+						cart.addOrderLine(cartLine);//add template item to cart.
+					}
+					
 				}
 			}
 			
@@ -201,6 +219,26 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 			FDCustomerCouponUtil.evaluateCartAndCoupons(session);
 			throw new RedirectToPage( "/checkout/view_cart.jsp" );
 		}
+	}
+
+	private Map<String, Double> getSkusAndQuantities(FDCartModel cart) {
+		Map<String, Double> skusAndQuantities=new HashMap<String, Double>();
+		String key="";
+		Double value=0d;
+		
+		for (FDCartLineI cartLine : cart.getOrderLines()){
+			
+			key=cartLine.getSkuCode();
+			value=cartLine.getQuantity();
+			if(skusAndQuantities.containsKey(key)) {
+				value=skusAndQuantities.get(key)+value;
+				skusAndQuantities.put(key, value);
+				
+			} else {
+				skusAndQuantities.put(key, value);
+			}
+		}
+		return skusAndQuantities;
 	}
 
 	private Collection<FDCartLineI> getCartLinesFromSo(FDStandingOrder so, FDSessionUser user) throws FDResourceException {
@@ -216,9 +254,8 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 			final ProductModel prd = p.getProductRef().lookupProductModel();
 			
 			FDCartLineI cartLine = new FDCartLineModel(p.getSku(), prd, p.getConfiguration(), null, p.getPricingContext().getZoneId());
-			//cartLine.refreshConfiguration();
 			
-			if (cartLine.lookupFDProductInfo().isAvailable()) {
+			if (cartLine.lookupFDProductInfo().isAvailable()&& !cartLine.lookupProduct().isUnavailable() ) {
 				cartLines.add(cartLine);
 			}
 		}

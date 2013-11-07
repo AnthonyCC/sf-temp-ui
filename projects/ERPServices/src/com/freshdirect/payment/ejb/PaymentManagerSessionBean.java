@@ -106,11 +106,10 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 	private static boolean isMatching(ErpPaymentMethodI custPymt,ErpPaymentMethodI salePymt) {
 		
 		if(custPymt==null || salePymt==null)
-			return false;
+			 return false;
 		if(StringUtils.isEmpty(salePymt.getProfileID()))
-			return salePymt.getAccountNumber().equalsIgnoreCase(custPymt.getAccountNumber());
-		 else 
-			return custPymt.getProfileID().equals(salePymt.getProfileID());
+			 return salePymt.getAccountNumber().equalsIgnoreCase(custPymt.getAccountNumber());
+		else return salePymt.getProfileID().equals(custPymt.getProfileID());
 		
 	}
 	
