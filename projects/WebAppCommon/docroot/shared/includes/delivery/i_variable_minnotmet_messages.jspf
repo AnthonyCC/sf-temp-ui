@@ -38,5 +38,5 @@
 <br>
 
 <div style="text-align:center"><a href="<%=response.encodeURL(view_cart_redir)%>">
-		<img src="/media_stat/images/timeslots/button_continue.png" border="0"></a></div>
+	<img name="viewcartbutton" onmouseout="swapImage('viewcartbutton','/media_stat/images/buttons/button_continueshop_f1.png')" onmouseover="swapImage('viewcartbutton','/media_stat/images/buttons/button_continueshop_f2.png')" src="/media_stat/images/buttons/button_continueshop_f1.png" border="0"></a></div>
 <img src="/media_stat/images/layout/clear.gif" width="1" height="6">
