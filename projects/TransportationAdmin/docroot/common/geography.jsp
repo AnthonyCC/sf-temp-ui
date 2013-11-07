@@ -17,7 +17,8 @@
    var geocoder;
    var map;   
    var infoPanel;
-   var geocodeMarker;
+   var geocodeMarker; 
+   var boundz;
 
    var address = '<%= request.getParameter("address") %>';
    var latitude = '<%= request.getParameter("latitude") %>';
@@ -66,9 +67,13 @@
       
       // Create new geocoding object
       geocoder = new google.maps.Geocoder();
+      
+   	  // put markers
+	  boundz = new google.maps.LatLngBounds();
 
       // Retrieve location information, pass it to addToMap()
-      geocodeAddress();
+      geocodeAddress();      
+   	  
    }
   
 	
@@ -76,6 +81,7 @@
 		
 		var pointLatLng = new google.maps.LatLng(latitude, longitude);
 		map.setCenter(pointLatLng, 12);
+		boundz.extend(pointLatLng);
 		
 		var mapIconResponse = MapIconMaker.createLabeledMarkerIcon({label:'P', addStar: false});
 	     
@@ -105,7 +111,8 @@
 			map.fitBounds(result[0].geometry.viewport);					
 			var latLng = result[0].geometry.location;
 			map.setCenter(latLng, 10);
-					
+			boundz.extend(latLng);
+			
 			var marker_title = result[0].formatted_address + ' at '	+ latLng;
 			
 			var infowindow = new google.maps.InfoWindow({
@@ -128,7 +135,10 @@
 				google.maps.event.addListener(geocodeMarker, 'click', function() {
 				    infowindow.open(map, geocodeMarker);
 				});
-			}			
+			}
+			
+			map.fitBounds(boundz);
+			map.setCenter(boundz.getCenter());
 		}
 	}
 
