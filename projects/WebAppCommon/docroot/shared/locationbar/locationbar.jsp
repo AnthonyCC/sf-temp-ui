@@ -71,7 +71,197 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 	} %> 
 </tmpl:put>
 
-<tmpl:put name="loginButton"><a href="/login/login.jsp" class="loginButton">login</a></tmpl:put>
+<tmpl:put name="loginButton">
+	<button class="loginButton" id="locabar_loginButton">login</button>
+	<style>
+		.ccc {
+			color: #ccc;
+		}
+		.bold {
+			folt-weight: bold;
+		}
+		.alignRight {
+			text-align: right;
+		}
+		#login_cont {
+			display: inline-block;
+		}
+		#login_cont_formContent {
+			position: absolute;
+			z-index: 10001;
+			width: 200px;
+			height: auto;
+			background-color: #fff;
+			padding: 15px 20px;
+			box-shadow: 3px 3px 3px 0 #666, -3px 3px 6px #888;
+			border: 1px solid #666;
+			border-left: 1px solid #888;
+			border-top: 1px solid #5B8710;
+		    border-radius: 10px 0 10px 10px;
+		}
+		#login_cont_formContent_email, #login_cont_formContent_password {
+			width: 100%;
+		}
+		#login_cont_formContent .errorMsg {
+			border: 1px solid #f00;
+			background-color: #FEE7ED;
+			padding: 6px;
+		}
+		#login_cont_formContent .errorMsg .header {
+			font-weight: bold;
+			font-size: 12px;
+		}
+		#login_cont_formContentForm_signInCont {
+			text-align: right;
+		}
+		#login_cont_formContent div {
+			margin: 6px 0;
+		}
+		#locationbar .loginButtonTab {
+			z-index: 10002;
+    		background-image: url("/media_stat/images/locationbar/button_login_tab.png");
+		}
+		.loginButton {
+			border: 0 none;
+			cursor: pointer;
+		}
+	</style>
+	<script>
+		/* input type changer for jQuery < 1.9
+		 * inputElem is the <input/> element
+		 * type is the type you want to change it to
+		 */
+		function changeType(inputElem, type) {
+			var elem = $jq(inputElem);
+		    if(elem.prop('type') == type)
+		        return elem; //That was easy.
+		    try {
+		        return elem.prop('type', type); //Stupid IE security will not allow this
+		    } catch(e) {
+		        //Try re-creating the element
+		        //jQuery has no html() method for the element, so we have to put into a div first
+		        var html = $jq("<div>").append(elem.clone()).html();
+		        var regex = /type=(\")?([^\"\s]+)(\")?/; //matches type=text or type="text"
+		        //If no match, we add the type attribute to the end; otherwise, we replace
+		        var tmp = $jq(html.match(regex) == null ?
+		            html.replace(">", ' type="' + type + '">') :
+		            html.replace(regex, 'type="' + type + '"') );
+		        //Copy data from old element
+		        tmp.data('type', elem.data('type') );
+		        var events = elem.data('events');
+		        var cb = function(events) {
+		            return function() {
+		                //Bind all prior events
+		                for(i in events) {
+		                    var y = events[i];
+		                    for(j in y)
+		                        tmp.bind(i, y[j].handler);
+		                }
+		            }
+		        }(events);
+		        elem.replaceWith(tmp);
+		        setTimeout(cb, 10); //Wait a bit to call function
+		        return tmp;
+		    }
+		}
+		 
+		$jq(document).ready(function() {
+            $jq(document).on('mouseup', function(event) {
+            	if($jq(event.target).attr('id') != 'locabar_loginButton' && $jq(event.target).closest('#login_cont_formContent').length==0) {
+                	$jq("#locabar_loginButton").removeClass("loginButtonTab");
+                	$jq('#login_cont_formContent').hide();
+            	}
+            });
+            function alignLoginDropbox() {
+				//call this each time to ensure alignment
+				var cssObj = $jq("#locabar_loginButton").offset();
+				cssObj.top = cssObj.top + $jq("#locabar_loginButton").height() + 'px';
+				cssObj.left = ((cssObj.left + $jq("#locabar_loginButton").outerWidth()) - $jq('#login_cont_formContent').outerWidth()) + 'px';
+				$jq('#login_cont_formContent').css(cssObj);
+            	
+            }
+    		$jq(window).resize(function() {
+    			alignLoginDropbox();
+    		});
+            
+            if ($jq('#login_cont_formContent').length == 0) {
+            	var loginDropboxHtml = '';
+            	loginDropboxHtml += '<div id="login_cont_formContent" style="display: none">';
+            		loginDropboxHtml += '<form id="login_cont_formContentForm">';
+            			loginDropboxHtml += '<div><input id="login_cont_formContent_email" name="userId" value="Username" data-deftext="Username" class="ccc" /></div>';
+            			loginDropboxHtml += '<div><input id="login_cont_formContent_password" name="password" value="Password" data-deftext="Password" class="ccc" type="text" /></div>';
+            		loginDropboxHtml += '</form>';
+            		loginDropboxHtml += '<div id="login_cont_formContentForm_signInCont"><button id="login_cont_formContentForm_signIn" class="imgButtonOrange">sign in</button></div>';
+        			loginDropboxHtml += '<div class="errorMsg" style="display: none;">'
+        				loginDropboxHtml += '<div class="header">Please re-enter your Email and Password.</div>'; 
+        				loginDropboxHtml += 'The information you entered is incorrect. Please try again.';
+        			loginDropboxHtml += '</div>';
+            		loginDropboxHtml += '<div class="bold alignRight">Forgot your <a href="/login/forget_password.jsp">password</a>?</div>';
+            	loginDropboxHtml += '</div>';
+            	
+				$jq('body').append(loginDropboxHtml);
+				
+			}
+
+            $jq('#login_cont_formContentForm_signIn').click(function(event){
+				event.preventDefault();
+            	$jq('#login_cont_formContentForm').submit();
+            });
+            
+            $jq('#login_cont_formContentForm').submit(function(event) {
+				event.preventDefault();
+				
+            	var form = $jq(this);
+            	if (!form.data('submitting')) {
+    				$jq('#login_cont_formContent .errorMsg').hide();
+    				
+            		form.data('submitting', true);
+            		var formData = {};
+            		$jq(form.serializeArray()).each(function () { formData[this.name] = this.value; });
+            		$jq.post('/api/login/', "data="+JSON.stringify(formData), function(data) {
+            			if (data.success) {
+            				console.log('success');
+            			} else {
+            				console.log('err');
+            				$jq('#login_cont_formContent .errorMsg').show();
+            			}
+                		form.data('submitting', false);
+            		});
+            	}
+            });
+            
+            $jq('#login_cont_formContent input').on('focus blur', function(event) {
+            	var elem = $jq(this);
+            	var defText = elem.data('deftext');
+            	if (event.type == 'focus') {
+            		if (elem.hasClass('ccc') && elem.val() == defText) {
+            			elem.val('');
+            			elem.toggleClass('ccc');
+            		}
+        			if (elem.attr('id') == 'login_cont_formContent_password') {
+        				changeType(elem, 'password');
+        			}
+            	} else if (event.type == 'blur') {
+            		if (elem.val() == '') {
+            			elem.val(defText);
+            			elem.toggleClass('ccc');
+            			if (elem.attr('id') == 'login_cont_formContent_password') {
+            				changeType(elem, 'text');
+            			}
+            		}
+            	}
+            });
+            
+			$jq('#locabar_loginButton').click(function(event) {
+    			alignLoginDropbox();
+				
+	            //first
+               	$jq("#locabar_loginButton").toggleClass("loginButtonTab");
+               	$jq('#login_cont_formContent').toggle();
+			});
+		});
+	</script>
+</tmpl:put>
 <tmpl:put name="logoutButton"><a href="/logout.jsp" class="logoutButton">logout</a></tmpl:put>
 <tmpl:put name="signupButton"><% 
 	if(FDStoreProperties.isLightSignupEnabled()) { 

@@ -2348,6 +2348,17 @@ a.imgButtonGreen:active {
 }
 
 
+button.imgButtonOrange:active:before, button.imgButtonOrange:active, button.imgButtonOrange:active:after,
+button.imgButtonWhite:active:before, button.imgButtonWhite:active, button.imgButtonWhite:active:after,
+button.imgButtonBlue:active:before, button.imgButtonBlue:active, button.imgButtonBlue:active:after,
+button.imgButtonRed:active:before, button.imgButtonRed:active, button.imgButtonRed:active:after,
+button.imgButtonBrown:active:before, button.imgButtonBrown:active, button.imgButtonBrown:active:after,
+button.imgButtonPurple:active:before, button.imgButtonPurple:active, button.imgButtonPurple:active:after,
+button.imgButtonGreen:active:before, button.imgButtonGreen:active, button.imgButtonGreen:active:after {
+	background-image: url(/media_stat/images/buttons/buttons.png);
+}
+
+
 a.imgButtonWhite,
 a.imgButtonWhite:visited,
 a.imgButtonWhite:active,
