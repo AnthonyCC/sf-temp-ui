@@ -37,6 +37,7 @@
       var locateAddresses;
       var locIndex = 0;
       var boundz;
+      var displayInfoPanel;
   	    
       function initialize() {
         editPanel = new YAHOO.widget.Panel("panel-1", {       
@@ -105,7 +106,7 @@
 	 
 	}
 
-	function showBoundary(boundaryKey, addresses) {
+	function showBoundary(boundaryKey, addresses, displayInfoPanelFlag) {
 
 		waitPanel.render(document.body);
 		waitPanel.show();
@@ -114,6 +115,7 @@
 				showBoundaryCallback, boundaryKey);
 		currentBoundary = boundaryKey;
 		locateAddresses = addresses;
+		displayInfoPanel = displayInfoPanelFlag || false;
 	}
 
 	function showBoundaryCallback(result, exception) {
@@ -281,14 +283,15 @@
 			alert('Geocoding failed. ' + status);
 		} else {
 			map.fitBounds(result[0].geometry.viewport);
-			infoPanel.innerHTML += '<p>Result for geocoding is <em>'
+			if(displayInfoPanel) {
+				infoPanel.innerHTML += '<p>Result for geocoding is <em>'
 					+ result[0].geometry.location_type.toLowerCase()
 					+ '</em> to <em>' + result[0].formatted_address
 					+ '</em> of types <em>'
 					+ result[0].types.join('</em>, <em>').replace(/_/, ' ')
 					+ '</em> at <tt>' + result[0].geometry.location
 					+ '</tt></p>';
-					
+			}		
 			var latLng = result[0].geometry.location;
 			map.setCenter(latLng, 12);
 			boundz.extend(latLng);

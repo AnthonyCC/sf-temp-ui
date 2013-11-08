@@ -133,7 +133,7 @@
             }
             else {
                 if(doShow) {
-            		showBoundary(checked.substring(0,checked.length-1), null);
+            		showBoundary(checked.substring(0,checked.length-1), null, true);
                 } else {
                 	location.href = "gmapexport.do?code="+checked.substring(0,checked.length-1);	
                 }
