@@ -20,7 +20,7 @@ final int W_GMAP_NAV_TOTAL = 970;
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     <%-- @ include file="/shared/template/includes/ccl.jspf" --%>
-	<script type="text/javascript" src="http://www.google.com/jsapi?key=<%= gmap_api_key %>"></script>
+	<script type="text/javascript" src="https://www.google.com/jsapi?key=<%= gmap_api_key %>"></script>
 	<script type="text/javascript">
 		google.load("maps", "3", {other_params: "sensor=false"});
 	</script>
