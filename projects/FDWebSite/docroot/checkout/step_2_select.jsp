@@ -120,10 +120,10 @@ int page_type = TimeslotLogic.PAGE_NORMAL;
 	String preReserveSlotId = deliveryModel.getPreReserveSlotId();
 	boolean hasPreReserved = deliveryModel.isPreReserved();
 	FDReservation rsv = (cart!=null && cart.getDeliveryReservation()!=null && 
-						(selectedSlotId.equals(cart.getDeliveryReservation().getTimeslotId()) || (hasPreReserved && preReserveSlotId.equals(cart.getDeliveryReservation().getTimeslotId()))))?cart.getDeliveryReservation():null;
+						((selectedSlotId!=null && selectedSlotId.equals(cart.getDeliveryReservation().getTimeslotId())) || (hasPreReserved && preReserveSlotId!=null && preReserveSlotId.equals(cart.getDeliveryReservation().getTimeslotId()))))?cart.getDeliveryReservation():null;
 
 	if(rsv == null) rsv = (user!=null && user.getReservation()!=null && 
-			(selectedSlotId.equals(user.getReservation().getTimeslotId()) || (hasPreReserved && preReserveSlotId.equals(user.getReservation().getTimeslotId()))))?user.getReservation():null;
+			((selectedSlotId!=null && selectedSlotId.equals(user.getReservation().getTimeslotId())) || (hasPreReserved && preReserveSlotId!=null && preReserveSlotId.equals(user.getReservation().getTimeslotId()))))?user.getReservation():null;
 
 	boolean defaultColExp = false;
 	String zoneId = deliveryModel.getZoneId();
@@ -638,7 +638,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 				}
 			}
 		});
-		$jq('button.imgButtonWhite').each(function(){
+		$jq('button.imgButtonWhite.checkoutbutton').each(function(){
 			$jq(this).attr("class","imgButtonOrange");
 			$jq(this).append('<img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" />');
 			$jq(this).attr("disabled",false);

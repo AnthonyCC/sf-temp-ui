@@ -489,22 +489,22 @@ public class TimeslotLogic {
 	public static boolean isTSPreReserved(FDReservation rsv, FDDeliveryTimeslotModel deliveryModel){
 		
 		return (rsv!=null && !rsv.isMinOrderMet() 
-	    		&& (deliveryModel.getTimeSlotId().equals(rsv.getTimeslotId()) || 
-	    				(deliveryModel.getPreReserveSlotId().equals(rsv.getTimeslotId()) && deliveryModel.isPreReserved()) ));
+	    		&& ((deliveryModel.getTimeSlotId()!=null && deliveryModel.getTimeSlotId().equals(rsv.getTimeslotId())) || 
+	    				(deliveryModel.getPreReserveSlotId()!=null && deliveryModel.getPreReserveSlotId().equals(rsv.getTimeslotId()) && deliveryModel.isPreReserved()) ));
 	}
 	
 	public static boolean isTSMinOrderNotMet(FDTimeslot slot, FDReservation rsv, FDDeliveryTimeslotModel deliveryModel){
 		
 		return (!slot.isMinOrderMet() && !(rsv!=null && !rsv.isMinOrderMet() && rsv.getTimeslotId().equals(slot.getTimeslotId())
-				&& (deliveryModel.getTimeSlotId().equals(rsv.getTimeslotId())||
-						(deliveryModel.getPreReserveSlotId().equals(rsv.getTimeslotId()) && deliveryModel.isPreReserved())) ));
+				&& ((deliveryModel.getTimeSlotId()!=null && deliveryModel.getTimeSlotId().equals(rsv.getTimeslotId())) ||
+						(deliveryModel.getPreReserveSlotId()!=null && deliveryModel.getPreReserveSlotId().equals(rsv.getTimeslotId()) && deliveryModel.isPreReserved())) ));
 	}
 	
 	public static boolean isTSRsvOrderNotMet(FDTimeslot slot, FDReservation rsv, FDDeliveryTimeslotModel deliveryModel){
 	
 		return (rsv!=null && !rsv.isMinOrderMet() && rsv.getTimeslotId().equals(slot.getTimeslotId())
-			&& (deliveryModel.getTimeSlotId().equals(rsv.getTimeslotId())||
-					(deliveryModel.getPreReserveSlotId().equals(rsv.getTimeslotId()) && deliveryModel.isPreReserved())));
+			&& ((deliveryModel.getTimeSlotId()!=null && deliveryModel.getTimeSlotId().equals(rsv.getTimeslotId()))||
+					(deliveryModel.getPreReserveSlotId()!=null && deliveryModel.getPreReserveSlotId().equals(rsv.getTimeslotId()) && deliveryModel.isPreReserved())));
 	}
 
 
