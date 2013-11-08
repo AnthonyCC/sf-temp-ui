@@ -229,7 +229,7 @@ public class LoginServlet extends HttpServlet {
 		            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
 	        	}
 	        }
-	        if(loginResponse.getErrorMessages()==null && loginResponse.getErrorMessages().isEmpty()){
+		    if(loginResponse.getErrorMessages()==null || loginResponse.getErrorMessages().isEmpty()){
 	        	loginResponse.setSuccess(true);
 	        }
         }

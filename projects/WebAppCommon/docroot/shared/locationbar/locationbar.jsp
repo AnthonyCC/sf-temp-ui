@@ -125,6 +125,11 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 			border: 0 none;
 			cursor: pointer;
 		}
+		#login_cont_formContentForm_loggingIn {
+			float: left;
+			font-size: 11px;
+			font-weight: bold;
+		}
 	</style>
 	<script>
 		/* input type changer for jQuery < 1.9
@@ -190,8 +195,8 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
             		loginDropboxHtml += '<form id="login_cont_formContentForm">';
             			loginDropboxHtml += '<div><input id="login_cont_formContent_email" name="userId" value="Username" data-deftext="Username" class="ccc" /></div>';
             			loginDropboxHtml += '<div><input id="login_cont_formContent_password" name="password" value="Password" data-deftext="Password" class="ccc" type="text" /></div>';
+                		loginDropboxHtml += '<div id="login_cont_formContentForm_signInCont"><span style="display: none;" id="login_cont_formContentForm_loggingIn">Logging in...</span><button id="login_cont_formContentForm_signIn" name="submit" class="imgButtonOrange">sign in</button></div>';
             		loginDropboxHtml += '</form>';
-            		loginDropboxHtml += '<div id="login_cont_formContentForm_signInCont"><button id="login_cont_formContentForm_signIn" class="imgButtonOrange">sign in</button></div>';
         			loginDropboxHtml += '<div class="errorMsg" style="display: none;">'
         				loginDropboxHtml += '<div class="header">Please re-enter your Email and Password.</div>'; 
         				loginDropboxHtml += 'The information you entered is incorrect. Please try again.';
@@ -214,19 +219,26 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
             	var form = $jq(this);
             	if (!form.data('submitting')) {
     				$jq('#login_cont_formContent .errorMsg').hide();
-    				
             		form.data('submitting', true);
+    				$jq('#login_cont_formContentForm_loggingIn').show();
+    				$jq('#login_cont_formContentForm_signIn').toggleClass('imgButtonOrange imgButtonWhite');
+    				
             		var formData = {};
             		$jq(form.serializeArray()).each(function () { formData[this.name] = this.value; });
             		$jq.post('/api/login/', "data="+JSON.stringify(formData), function(data) {
             			if (data.success) {
-            				console.log('success');
+            				//refresh
+            				window.location = window.location;
+            				
+                           	$jq("#locabar_loginButton").toggleClass("loginButtonTab");
+                           	$jq('#login_cont_formContent').toggle();
             			} else {
-            				console.log('err');
             				$jq('#login_cont_formContent .errorMsg').show();
             			}
+        				$jq('#login_cont_formContentForm_loggingIn').hide();
                 		form.data('submitting', false);
-            		});
+        				$jq('#login_cont_formContentForm_signIn').toggleClass('imgButtonWhite imgButtonOrange');
+            		}, "json");
             	}
             });
             
