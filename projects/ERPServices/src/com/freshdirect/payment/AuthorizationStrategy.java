@@ -74,13 +74,6 @@ public class AuthorizationStrategy extends PaymentStrategy {
 			}
 		}
 		
-		
-		if (fdAuthInfo.getSubtotal() <= 0 && bcAuthInfo.getSubtotal() <= 0 && usqAuthInfo.getSubtotal() <= 0) {
-			//  new gift card changes 
-			if(!this.sale.getType().equals(EnumSaleType.GIFTCARD) && !this.sale.getType().equals(EnumSaleType.DONATION))
-			    throw new FDRuntimeException("Order with not orderlines");
-		}
-
 		for ( ErpChargeLineModel cl : order.getCharges() ) {
 			fdAuthInfo.addCharge(cl);
 		}
