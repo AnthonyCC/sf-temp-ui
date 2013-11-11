@@ -13,11 +13,21 @@ public class LoginResponse implements Serializable{
 	private boolean success = false;	
 	private Map<String,String> errorMessages;	
 	private String message;
+	private String successPage;
 	
 	public LoginResponse() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
+	public String getSuccessPage() {
+		return successPage;
+	}
+
+	public void setSuccessPage(String successPage) {
+		this.successPage = successPage;
+	}
+
 	public boolean isSuccess() {
 		return success;
 	}
