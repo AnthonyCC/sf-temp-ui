@@ -292,7 +292,7 @@ if (day != null) {
 			<% if(reservation!=null && !reservation.isMinOrderMet()){%>
 				<a href="/checkout/view_cart.jsp" ><img name="viewcartbutton1" onmouseout="swapImage('viewcartbutton1','/media_stat/images/buttons/button_continueshop_f1.png')" onmouseover="swapImage('viewcartbutton1','/media_stat/images/buttons/button_continueshop_f2.png')" src="/media_stat/images/buttons/button_continueshop_f1.png" border="0"></a>
 			<%}else{
-				%><a class="imgButtonOrange" href="/checkout/step_2_adjust.jsp?successPage=<%=request.getParameter("successPage")%>">choose payment <img src="/media_stat/images/buttons/button_arrow.gif" alt="" /></a>
+				%><a class="imgButtonOrange" href="/checkout/step_2_adjust.jsp?successPage=<%=request.getParameter("successPage")%>">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></a>
 			<%}
 			incNextButtonCount++;
 			%>

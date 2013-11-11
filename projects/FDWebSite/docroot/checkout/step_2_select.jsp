@@ -640,7 +640,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 		});
 		$jq('button.imgButtonWhite.checkoutbutton').each(function(){
 			$jq(this).attr("class","imgButtonOrange");
-			$jq(this).append('<img src="/media_stat/images/buttons/button_arrow.gif" alt="" />');
+			$jq(this).append('<img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" />');
 			$jq(this).attr("disabled",false);
 		});
 	}

@@ -2318,18 +2318,7 @@ a.imgButtonBlue:visited,
 a.imgButtonRed:visited,
 a.imgButtonBrown:visited,
 a.imgButtonPurple:visited,
-a.imgButtonGreen:visited {
-	text-decoration: none;
-	color:white;
-}
-
-.imgButtonOrange:hover,
-.imgButtonWhite:hover,
-.imgButtonBlue:hover,
-.imgButtonRed:hover,
-.imgButtonBrown:hover,
-.imgButtonPurple:hover,
-.imgButtonGreen:hover,
+a.imgButtonGreen:visited,
 a.imgButtonOrange:hover,
 a.imgButtonWhite:hover,
 a.imgButtonBlue:hover,
@@ -2344,7 +2333,8 @@ a.imgButtonRed:active,
 a.imgButtonBrown:active,
 a.imgButtonPurple:active,
 a.imgButtonGreen:active {
-	background-image: url(/media_stat/images/buttons/buttons_rollover.png);
+	text-decoration: none;
+	color:white;
 }
 
 
@@ -2425,23 +2415,6 @@ a.imgButtonWhite:hover,
 .imgButtonPurple:after,
 .imgButtonGreen:after {
     right:-5px;
-}
-
-.imgButtonOrange:hover:before,
-.imgButtonWhite:hover:before,
-.imgButtonBlue:hover:before,
-.imgButtonRed:hover:before,
-.imgButtonBrown:hover:before,
-.imgButtonPurple:hover:before,
-.imgButtonGreen:hover:before,
-.imgButtonOrange:hover:after,
-.imgButtonWhite:hover:after,
-.imgButtonBlue:hover:after,
-.imgButtonRed:hover:after,
-.imgButtonBrown:hover:after,
-.imgButtonPurple:hover:after,
-.imgButtonGreen:hover:after {
-    background-image: url(/media_stat/images/buttons/buttons_rollover.png);
 }
 
 
