@@ -260,7 +260,7 @@
 
 		digit = new Array(5)
 		color = "#"
-		for (i = 0; i < 6; i++) {
+		for (var i = 0; i < 6; i++) {
 			digit[i] = colors[Math.round(Math.random() * 14)]
 			color = color + digit[i];
 		}
@@ -303,22 +303,20 @@
 			});
 			
 			var mapIconResponse = MapIconMaker.createLabeledMarkerIcon({label:'A', addStar: true});
-			
-			if (geocodeMarker) {
-				geocodeMarker.setPosition(latLng);
-				geocodeMarker.setTitle(marker_title);
-			} else {
-				geocodeMarker = new google.maps.Marker({
+									
+			geocodeMarker = new google.maps.Marker({
 					position : latLng,
 					title : marker_title,
 					icon : mapIconResponse.icon,
 					map : map
-				});				
-				
-				google.maps.event.addListener(geocodeMarker, 'click', function() {
-				    infowindow.open(map, geocodeMarker);
-				});
-			}
+			});
+			
+			google.maps.event.addListener(geocodeMarker, 'click', (function(geocodeMarker) {
+			    return function() {			    	
+			        infowindow.open(map, geocodeMarker);
+			    }
+   			})(geocodeMarker));	
+						
 			markers.push(geocodeMarker);
 			
 			map.fitBounds(boundz);
@@ -358,7 +356,9 @@
 		if ('A' == type) {
 			geocodeAddress();
 		} else {
-			infoPanel.innerHTML = '';
+			if(displayInfoPanel) {
+				infoPanel.innerHTML = '';
+			}
 			var latLng = new google.maps.LatLng(document.getElementById('latitude').value, document.getElementById('longitude').value);
 			map.setCenter(latLng, 12);
 			boundz.extend(latLng);
@@ -389,15 +389,15 @@
 			map.setCenter(boundz.getCenter());
 		}
 	}
-	
+	var address = [];
 	function plotAddresses(type, result) {
 			if ('A' == type) {
-				if (result != null) {
-					var address = [];
-					address = result.split('_');
-					var count = 0;
-					for (j = 0; j < address.length - 1; j++) {
-						geocoder.geocode({'address' : address[j]}, geocode_result_handler);
+				if (result != null) {					
+					address = result.split('_');					
+					for (var j = 0; j < address.length - 1; j++) {
+						if(address[j].length > 0) {
+							geocoder.geocode({'address' : address[j]}, geocode_result_handler);
+						}
 					}
 				}
 			}
