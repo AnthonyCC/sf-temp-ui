@@ -6,10 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -20,9 +18,7 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.transadmin.dao.SpatialManagerDaoI;
-import com.freshdirect.transadmin.model.SectorZipcode;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
 import com.freshdirect.transadmin.web.model.SpatialPoint;
 
@@ -45,7 +41,7 @@ private JdbcTemplate jdbcTemplate;
 	private static final String GET_ZONE_GEOMENTRICBOUNDARY_QRY =
 						"select z.zone_code, z.name,gg.column_value	from dlv.region r, dlv.region_data rd, dlv.zone z, transp.zone  zd , table(z.geoloc.sdo_ordinates) gg	" +
 						"where zd.zone_code = z.zone_code and rd.id = z.region_data_id and rd.region_id = r.id and z.zone_code = ? " +
-						"and rd.start_date = (select max(start_date) from dlv.region_data where start_date <= sysdate and region_id=r.id)";
+						"and rd.start_date = (select max(start_date) from dlv.region_data where region_id=r.id)";
 	
 
 	private static final String GET_SECTOR_GEOMENTRICBOUNDARY_QRY = "select sz.zipcode CODE, sz.sector_name NAME, gg.column_value "+
