@@ -74,6 +74,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 				    		tmpModel.setName(rs.getString("NAME"));
 				    		tmpModel.setDescription(rs.getString("DESCRIPTION"));
 				    		tmpModel.setFixedServiceTime(rs.getDouble("FIXED_SERVICE_TIME"));
+				    		tmpModel.setStopServiceTime(rs.getDouble("STOP_SERVICE_TIME"));
 				    		tmpModel.setVariableServiceTime(rs.getDouble("VARIABLE_SERVICE_TIME"));
 				    		
 				    		results.put(tmpModel.getCode(), tmpModel);
@@ -248,7 +249,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 	
 	private static final String GET_SCENARIO_ZONEMAPPING = "select DZ.ZONE_CODE " +
 			", DZ.SERVICETIME_TYPE , DZ.SERVICETIME_OVERRIDE , DZ.SERVICETIME_OPERATOR , DZ.SERVICETIME_ADJUSTMENT, " +
-			"FIXED_SERVICE_TIME ,VARIABLE_SERVICE_TIME " +
+			"FIXED_SERVICE_TIME ,VARIABLE_SERVICE_TIME, STOP_SERVICE_TIME " +
 			"FROM DLV.SCENARIO_ZONES DZ, DLV.SERVICETIME_TYPE ST where DZ.CODE = ? and DZ.SERVICETIME_TYPE = ST.CODE(+)";
 	
 	public Map<String, IZoneScenarioModel> getRoutingScenarioMapping(final String code)  throws SQLException {
@@ -277,6 +278,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					    		IServiceTimeTypeModel locServiceTimeType = new ServiceTimeTypeModel();
 					    		locServiceTimeType.setCode( serviceTimeType);
 					    		locServiceTimeType.setFixedServiceTime(rs.getDouble("FIXED_SERVICE_TIME"));
+					    		locServiceTimeType.setStopServiceTime(rs.getDouble("STOP_SERVICE_TIME"));
 					    		locServiceTimeType.setVariableServiceTime(rs.getDouble("VARIABLE_SERVICE_TIME"));
 					    		model.setServiceTimeType(locServiceTimeType);
 				    		}    						    		

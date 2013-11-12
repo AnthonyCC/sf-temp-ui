@@ -135,17 +135,7 @@
                   &nbsp;<form:errors path="dlvServiceTimeType" />
                 </td>
                </tr>
-               
-                <tr>
-                  <td>Service Time Override</td>
-                  <td>                  
-                    <form:input maxlength="50" size="30" path="serviceTimeOverride" />
-                </td>
-                <td>
-                  &nbsp;<form:errors path="serviceTimeOverride" />
-                </td>
-               </tr>
-               
+              
                <tr>
                   <td>Service Time Adjustment</td>
                   <td style="">

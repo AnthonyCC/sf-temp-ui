@@ -13,7 +13,7 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	private Date deliveryCutoffTime;
 	private IPackagingModel packagingDetail;
 	
-	private double calculatedServiceTime;
+	private IServiceTime calculatedServiceTime;
 	private double calculatedOrderSize;
 	
 	private ILocationModel deliveryLocation;
@@ -80,10 +80,10 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 		this.deliveryZone = deliveryZone;
 	}
 				
-	public double getCalculatedServiceTime() {
+	public IServiceTime getCalculatedServiceTime() {
 		return calculatedServiceTime;
 	}	
-	public void setCalculatedServiceTime(double calculatedServiceTime) {
+	public void setCalculatedServiceTime(IServiceTime calculatedServiceTime) {
 		this.calculatedServiceTime = calculatedServiceTime;
 	}
 	

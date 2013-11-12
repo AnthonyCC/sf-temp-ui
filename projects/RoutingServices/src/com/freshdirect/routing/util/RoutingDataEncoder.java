@@ -214,11 +214,15 @@ public class RoutingDataEncoder {
 			order.setDeliveryWindowEnd(getTime(orderModel.getDeliveryInfo().getDeliveryEndTime()));
 		}
 		
-		double finalServiceTime = orderModel.getDeliveryInfo().getCalculatedServiceTime();
-		if(finalServiceTime <= 0) {
-			finalServiceTime = RoutingServicesProperties.getDefaultServiceTime();
+		double orderServiceTime = orderModel.getDeliveryInfo().getCalculatedServiceTime().getOrderServiceTime();
+		double stopServiceTime = orderModel.getDeliveryInfo().getCalculatedServiceTime().getStopServiceTime();
+		
+		if(orderServiceTime <= 0) {
+			orderServiceTime = RoutingServicesProperties.getDefaultServiceTime();
 		}
-		order.setOrderServiceTime((int)(finalServiceTime*60));
+		
+		order.setOrderServiceTime((int)(orderServiceTime*60));
+		order.setStopServiceTime((int)(stopServiceTime*60));
 		order.setLocationId(orderModel.getDeliveryInfo().getDeliveryLocation().getLocationId());
 		order.setLocationType(locationType);
 		order.setDescription(locationType);
@@ -260,12 +264,16 @@ public class RoutingDataEncoder {
 			order.setDeliveryWindowEnd(getTime(orderModel.getDeliveryInfo().getDeliveryEndTime()));
 		}
 		
-		double finalServiceTime = orderModel.getDeliveryInfo().getCalculatedServiceTime();
-		if(finalServiceTime <= 0) {
-			finalServiceTime = RoutingServicesProperties.getDefaultServiceTime();
+		double orderServiceTime = orderModel.getDeliveryInfo().getCalculatedServiceTime().getOrderServiceTime();
+		double stopServiceTime = orderModel.getDeliveryInfo().getCalculatedServiceTime().getStopServiceTime();
+		
+		if(orderServiceTime <= 0) {
+			orderServiceTime = RoutingServicesProperties.getDefaultServiceTime();
 		}
-
-		order.setOrderServiceTime((int)(finalServiceTime*60));
+		
+		order.setOrderServiceTime((int)(orderServiceTime*60));
+		order.setStopServiceTime((int)(stopServiceTime*60));
+		
 		order.setLocationId(orderModel.getDeliveryInfo().getDeliveryLocation().getLocationId());
 		order.setLocationType(locationType);
 		order.setDescription(orderModel.getOrderNumber());
@@ -298,12 +306,16 @@ public class RoutingDataEncoder {
 		quantities.setSize3(0);
 		order.setQuantities(quantities);
 		
-		double finalServiceTime = orderModel.getDeliveryInfo().getCalculatedServiceTime();
-		if(finalServiceTime <= 0) {
-			finalServiceTime = RoutingServicesProperties.getDefaultServiceTime();
+		double orderServiceTime = orderModel.getDeliveryInfo().getCalculatedServiceTime().getOrderServiceTime();
+		double stopServiceTime = orderModel.getDeliveryInfo().getCalculatedServiceTime().getStopServiceTime();
+		
+		if(orderServiceTime <= 0) {
+			orderServiceTime = RoutingServicesProperties.getDefaultServiceTime();
 		}
 		
-		order.setOrderServiceTime((int)(finalServiceTime*60));
+		order.setOrderServiceTime((int)(orderServiceTime*60));
+		order.setStopServiceTime((int)(stopServiceTime*60));
+		
 		order.setLocationId(orderModel.getDeliveryInfo().getDeliveryLocation().getLocationId());
 		order.setLocationType(locationType);
 		order.setDescription(orderModel.getOrderNumber());
@@ -436,7 +448,8 @@ public class RoutingDataEncoder {
 		quantities.setSize2(0);
 		quantities.setSize3(0);
 		options.setNewQuantities(quantities);
-		options.setNewOrderServiceTime((int)(orderModel.getDeliveryInfo().getCalculatedServiceTime()*60));
+		options.setNewOrderServiceTime((int)(orderModel.getDeliveryInfo().getCalculatedServiceTime().getOrderServiceTime()*60));
+		options.setNewStopServiceTime((int)(orderModel.getDeliveryInfo().getCalculatedServiceTime().getStopServiceTime()*60));
 				
 		return options;
 	}

@@ -20,5 +20,9 @@
         <property name="variableServiceTime" type="big_decimal">
             <column name="VARIABLE_SERVICE_TIME" precision="10" />
         </property>
+        <property name="stopServiceTime" type="big_decimal">
+            <column name="STOP_SERVICE_TIME" precision="10" />
+        </property>
+        
     </class>
 </hibernate-mapping>

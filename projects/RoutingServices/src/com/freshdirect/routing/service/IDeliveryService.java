@@ -22,6 +22,7 @@ import com.freshdirect.routing.model.IDrivingDirection;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
+import com.freshdirect.routing.model.IServiceTime;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.model.IZoneModel;
@@ -37,7 +38,7 @@ public interface IDeliveryService {
 	
 	String getDeliveryZoneType(String zoneCode) throws RoutingServiceException;	
 	
-	double getServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario, RoutingActivityType routingType) throws RoutingServiceException;
+	IServiceTime getServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario, RoutingActivityType routingType) throws RoutingServiceException;
 	
 	Map getDeliveryZoneDetails()  throws RoutingServiceException;
 	

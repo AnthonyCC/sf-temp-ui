@@ -36,6 +36,7 @@ import com.freshdirect.routing.model.IRoutingEquipmentType;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IRoutingStopModel;
+import com.freshdirect.routing.model.IServiceTime;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.LocationModel;
@@ -48,6 +49,7 @@ import com.freshdirect.routing.model.RoutingEquipmentType;
 import com.freshdirect.routing.model.RoutingNotificationModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.model.RoutingStopModel;
+import com.freshdirect.routing.model.ServiceTime;
 import com.freshdirect.routing.model.WaveInstance;
 import com.freshdirect.routing.model.ZoneModel;
 import com.freshdirect.routing.proxy.stub.transportation.ChangedOrderIdentity;
@@ -446,7 +448,12 @@ public class RoutingDataDecoder {
     		dModel.setDeliveryEndTime(model.getDeliveryWindowEnd().getAsCalendar().getTime());
     		dModel.setReservationId(model.getIdentity().getOrderNumber());
     		dModel.setCalculatedOrderSize(model.getQuantities().getSize1());
-			dModel.setCalculatedServiceTime(model.getServiceTime());
+    		
+    		IServiceTime serviceTime = new ServiceTime();
+    		serviceTime.setOrderServiceTime(model.getOrderServiceTime());
+    		serviceTime.setStopServiceTime(model.getStopServiceTime());
+    		
+			dModel.setCalculatedServiceTime(serviceTime);
     		
     		IZoneModel zModel = new ZoneModel();
     		IAreaModel areaModel = new AreaModel();

@@ -12,4 +12,7 @@ public interface IServiceTimeTypeModel {
 	void setFixedServiceTime(double fixedServiceTime);
 	double getVariableServiceTime();
 	void setVariableServiceTime(double variableServiceTime);
+	double getStopServiceTime();
+	void setStopServiceTime(double stopServiceTime);
+	
 }

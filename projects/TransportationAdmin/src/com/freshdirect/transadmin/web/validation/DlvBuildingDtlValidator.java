@@ -36,8 +36,8 @@ public class DlvBuildingDtlValidator extends AbstractValidator {
 		}
 		
 		
-		validateServiceTimeGroup("serviceTimeAdjustable",model.getDlvServiceTimeType(),model.getServiceTimeOverride(),
-		model.getServiceTimeAdjustable(),"ST Type or ST Override or ST Adjustment",errors);
+		validateServiceTimeGroup("serviceTimeAdjustable",model.getDlvServiceTimeType(),
+		model.getServiceTimeAdjustable(),"ST Type or ST Adjustment",errors);
 		
 		
 		/*--What ? if ("1".equals(model.getSvcEnt())) {

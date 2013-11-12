@@ -382,7 +382,6 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 		result.setDifficultToDeliver(buildingDetail.getDifficultToDeliver());
 		
 		result.setServiceTimeType(buildingDetail.getBuilding().getServiceTimeType());
-		result.setServiceTimeOverride(buildingDetail.getBuilding().getServiceTimeOverride());
 		result.setServiceTimeOperator(buildingDetail.getBuilding().getServiceTimeOperator());
 		result.setServiceTimeAdjustable(buildingDetail.getBuilding().getServiceTimeAdjustable());	
 		
@@ -512,7 +511,6 @@ private DlvBuildingDetail encode(DlvBuildingDtl buildingDtl) {
 		buildingDetail.setDifficultReason(buildingDtl.getDifficultReason());
 		buildingDetail.setDifficultToDeliver(buildingDtl.getDifficultToDeliver());
 		buildingDetail.getBuilding().setServiceTimeType(buildingDtl.getServiceTimeType());
-		buildingDetail.getBuilding().setServiceTimeOverride(buildingDtl.getServiceTimeOverride());
 		buildingDetail.getBuilding().setServiceTimeOperator(buildingDtl.getServiceTimeOperator());
 		buildingDetail.getBuilding().setServiceTimeAdjustable(buildingDtl.getServiceTimeAdjustable());		
 		buildingDetail.setAdditional(buildingDtl.getAdditional());
@@ -750,7 +748,6 @@ private DlvBuildingDetail encode(DlvBuildingDtl buildingDtl) {
 			DlvBuilding modifiedBuilding = buildingDetail.getBuilding();
 			building.setServiceTimeAdjustable(modifiedBuilding.getServiceTimeAdjustable());
 			building.setServiceTimeOperator(modifiedBuilding.getServiceTimeOperator());
-			building.setServiceTimeOverride(modifiedBuilding.getServiceTimeOverride());
 			building.setServiceTimeType(modifiedBuilding.getServiceTimeType());
 			
 			//getLocationManagerService().saveEntity(domainObject);

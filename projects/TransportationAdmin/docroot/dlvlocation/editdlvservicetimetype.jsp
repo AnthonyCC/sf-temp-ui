@@ -67,6 +67,16 @@
                 </td>
                </tr>
                
+               <tr>
+                  <td>Stop Service Time(in minutes)</td>
+                  <td>                  
+                    <form:input maxlength="50" size="30" path="stopServiceTime" />
+                </td>
+                <td>
+                  &nbsp;<form:errors path="stopServiceTime" />
+                </td>
+               </tr>
+               
                 <tr>
                   <td>Variable Service Time(in minutes)</td>
                   <td>                  

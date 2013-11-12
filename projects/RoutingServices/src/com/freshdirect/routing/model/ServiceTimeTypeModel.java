@@ -7,7 +7,8 @@ public class ServiceTimeTypeModel extends BaseModel implements IServiceTimeTypeM
 	private String description;
 	private double fixedServiceTime;
 	private double variableServiceTime;
-		
+	private double stopServiceTime;
+	
 	public String getCode() {
 		return code;
 	}
@@ -39,8 +40,20 @@ public class ServiceTimeTypeModel extends BaseModel implements IServiceTimeTypeM
 		this.variableServiceTime = variableServiceTime;
 	}
 		
+	@Override
 	public String toString() {
-		return fixedServiceTime+" -> "+variableServiceTime+"\n";
+		return "ServiceTimeTypeModel [code=" + code + ", fixedServiceTime="
+				+ fixedServiceTime + ", variableServiceTime="
+				+ variableServiceTime + ", stopServiceTime=" + stopServiceTime
+				+ "]";
+	}
+	@Override
+	public double getStopServiceTime() {
+		return stopServiceTime;
+	}
+	@Override
+	public void setStopServiceTime(double stopServiceTime) {
+		this.stopServiceTime = stopServiceTime;
 	}
 
 }

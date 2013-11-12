@@ -33,15 +33,15 @@ public class DlvServiceTimeScenarioValidator extends AbstractValidator {
 				
 		UtilityManager manager = new UtilityManager();
 		if(!manager.isValidExpression(model.getServiceTimeFactorFormula(), getServiceTimeFactorVariables())) {
-			errors.rejectValue("serviceTimeFactorFormula", "app.error.124", new Object[]{},"Invalid Service Time Factor Formula");
+			errors.rejectValue("serviceTimeFactorFormula", "app.actionmessage.124", new Object[]{},"Invalid Service Time Factor Formula");
 		}
 		
 		if(!manager.isValidExpression(model.getServiceTimeFormula(), getServiceTimeVariables())) {
-			errors.rejectValue("serviceTimeFormula", "app.error.125", new Object[]{},"Invalid Service Time Formula");
+			errors.rejectValue("serviceTimeFormula", "app.actionmessage.125", new Object[]{},"Invalid Service Time Formula");
 		}
 		
 		if(!manager.isValidExpression(model.getOrderSizeFormula(), getOrderSizeVariables())) {
-			errors.rejectValue("orderSizeFormula", "app.error.126", new Object[]{},"Invalid Order Size Formula");
+			errors.rejectValue("orderSizeFormula", "app.actionmessage.126", new Object[]{},"Invalid Order Size Formula");
 		}
 		
 		validateLength("code", model.getCode(), 8, errors);

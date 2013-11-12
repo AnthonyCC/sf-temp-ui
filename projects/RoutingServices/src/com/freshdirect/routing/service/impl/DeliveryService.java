@@ -1,5 +1,6 @@
 package com.freshdirect.routing.service.impl;
 
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.axis2.AxisFault;
 import org.apache.log4j.Category;
 
 import com.freshdirect.analytics.TimeslotEventModel;
@@ -35,12 +37,13 @@ import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
+import com.freshdirect.routing.model.IServiceTime;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.IZoneScenarioModel;
-import com.freshdirect.routing.model.ZoneModel;
+import com.freshdirect.routing.model.ServiceTime;
 import com.freshdirect.routing.proxy.stub.transportation.DirectionData;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingRoute;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSession;
@@ -69,7 +72,7 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 	}
 
 	
-	public double getServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario, RoutingActivityType routingType) throws RoutingServiceException {
+	public IServiceTime getServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario, RoutingActivityType routingType) throws RoutingServiceException {
 		
 		IZoneModel zone = orderModel.getDeliveryInfo().getDeliveryZone();
 		ILocationModel location = orderModel.getDeliveryInfo().getDeliveryLocation();
@@ -85,13 +88,13 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 			}
 		}
 		//if zoneScenario is null then there is no scenario level override, let find serviceTime first
-		if(location.getServiceTimeOverride() > 0) {
+		/*if(location.getServiceTimeOverride() > 0) {
 			return location.getServiceTimeOverride();
 		} else if(building.getServiceTimeOverride() > 0) {
 			return building.getServiceTimeOverride();
 		} else if(zoneScenario != null && zoneScenario.getServiceTimeOverride() > 0) {
 			return zoneScenario.getServiceTimeOverride();
-		}
+		}*/
 		int stPriority = 0;
 		// Couldn't find serviceTime going to find the serviceTimeType
 		IServiceTimeTypeModel serviceTimeType = null;
@@ -115,6 +118,8 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 											, ServiceTimeUtil.getServiceTimeFactorParams(orderModel.getDeliveryInfo().getPackagingDetail()));			
 		double valY = ServiceTimeUtil.evaluateExpression(scenario.getServiceTimeFormula()
 											, ServiceTimeUtil.getServiceTimeParams(serviceTimeType.getFixedServiceTime(), serviceTimeType.getVariableServiceTime(), valX ));
+		
+		double valZ = serviceTimeType.getStopServiceTime();
 		
 		int adjustmentPriority = 0;
 		//Lets see if we need a adjustment
@@ -145,13 +150,16 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 				if(orderModel.getDeliveryInfo().getReservedOrdersAtBuilding()!=0 && zone.getSvcAdjReductionFactor()>0)
 					serviceTimeAdjustment = serviceTimeAdjustment * zone.getSvcAdjReductionFactor();
 			}
-			if((valY + serviceTimeAdjustment) > 0) {
-				valY = valY + serviceTimeAdjustment;
+			if((valZ + serviceTimeAdjustment) > 0) {
+				valZ = valZ + serviceTimeAdjustment;
 			} else {
-				valY = 0;
+				valZ = 0;
 			}
 		}
-		return valY;
+		IServiceTime serviceTime = new ServiceTime();
+		serviceTime.setOrderServiceTime(valY);
+		serviceTime.setStopServiceTime(valZ);
+		return serviceTime;
 	}
 	
 		
@@ -220,7 +228,7 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 	
 	public IDrivingDirection buildDriverDirections(Set<String> routeIDs, String sessionID, IRoutingSchedulerIdentity schedulerId)  throws RoutingServiceException {
 		try {
-			TransportationWebService port = RoutingServiceLocator.getInstance().getTransportationSuiteService("DRIVINGDIRECTIONS");
+			TransportationWebService port = getTransportationSuiteService(schedulerId.getRegionId());
 			List<DirectionData> directions = new ArrayList<DirectionData>();
 			for(String routeID: routeIDs)
 			{
@@ -235,6 +243,23 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		}
 		return null;
 	}
+	
+	protected TransportationWebService getTransportationSuiteService(String region) throws RemoteException {
+		
+		try {
+			
+			if(region!=null) {		
+				return RoutingServiceLocator.getInstance().getTransportationSuiteService(region);
+			} else {
+				return RoutingServiceLocator.getInstance().getDrivingDirectionProviderService();
+			}
+			
+		} catch(AxisFault ax) {
+			ax.printStackTrace();
+			throw new RemoteException();
+		}
+	}
+	
 	
 	public Map<String, List<IDeliverySlot>> getTimeslotsByDate(Date deliveryDate, Date cutOffTime, String zoneCode, EnumLogicalOperator condition) throws RoutingServiceException {
 		
@@ -484,7 +509,7 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 			} else {
 				    this.setReservationReservedMetrics(reservation.getId()
 															, order.getDeliveryInfo().getCalculatedOrderSize()
-															, order.getDeliveryInfo().getCalculatedServiceTime()
+															, order.getDeliveryInfo().getCalculatedServiceTime().getOrderServiceTime()
 															, EnumRoutingUpdateStatus.SUCCESS);
 					clearUnassignedInfo(reservation.getId());
 					if(!EnumRoutingUpdateStatus.OVERRIDDEN.equals(reservation.getUpdateStatus())
@@ -611,7 +636,7 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 				if(((reservation.getReservedOrderSize() != null
 						&& order.getDeliveryInfo().getCalculatedOrderSize() < reservation.getReservedOrderSize())
 						|| (reservation.getReservedServiceTime() != null
-								&& order.getDeliveryInfo().getCalculatedServiceTime() < reservation.getReservedServiceTime()))
+								&& order.getDeliveryInfo().getCalculatedServiceTime().getOrderServiceTime() < reservation.getReservedServiceTime()))
 								&& (timeslot != null && DateUtil.getDiffInMinutes(Calendar.getInstance().getTime()
 														,(timeslot.getDlvTimeslot().getPremiumCutoffTime()!=null)?timeslot.getDlvTimeslot().getPremiumCutoffAsDate():timeslot.getDlvTimeslot().getCutoffTimeAsDate())
 										> RoutingServicesProperties.getOMUseOriginalThreshold()) 
@@ -624,7 +649,7 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 					
 					if(isUpdated) {
 						setReservationReservedMetrics(reservation.getId(), order.getDeliveryInfo().getCalculatedOrderSize()
-															, order.getDeliveryInfo().getCalculatedServiceTime()
+															, order.getDeliveryInfo().getCalculatedServiceTime().getOrderServiceTime()
 															, EnumRoutingUpdateStatus.SUCCESS);
 					} else {
 						if(!EnumRoutingUpdateStatus.OVERRIDDEN.equals(reservation.getUpdateStatus())) {

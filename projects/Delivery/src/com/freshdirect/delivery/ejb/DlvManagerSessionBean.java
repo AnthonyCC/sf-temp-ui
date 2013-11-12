@@ -788,6 +788,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				routingTimeslots.add(new FDTimeslot(timeslot));
 			}
 			
+			routingTimeslots  = filterTimeslotsByOrderSize(routingTimeslots, iPackagingModel, address, null);
+			
 			/*if(FDStoreProperties.isDynamicRoutingEnabled()) {
 				routingTimeslots = this.getTimeslotForDateRangeAndZoneEx(routingTimeslots, address);
 			}*/
@@ -2029,6 +2031,12 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 					_reservation = doReserveEx(reservation, address, timeslot, event);
 					if( _reservation != null && _reservation.isReserved()) {
 						doConfirmEx(reservation, address, event);
+						try{
+						reservation = getReservation(reservation.getId());
+						}catch(Exception e){
+							LOGGER.debug("Exception retrieving reservation from DB:"+ e);
+						}
+						updateReservationEx(reservation, address, timeslot);
 					}
 				}
 			} else {
@@ -2129,7 +2137,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		}
 		LOGGER.debug("End updateReservationStatus for Id: "+reservation.getId());
 	}
-	
+		
 	public void updateReservationEx(DlvReservationModel reservation, ContactAddressModel address, FDTimeslot timeslot) {
 
 		if(reservation==null || !reservation.isInUPS() || reservation.getUnassignedActivityType() != null)
@@ -2145,7 +2153,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				if(((reservation.getReservedOrderSize() != null
 						&& order.getDeliveryInfo().getCalculatedOrderSize() < reservation.getReservedOrderSize())
 						|| (reservation.getReservedServiceTime() != null
-								&& order.getDeliveryInfo().getCalculatedServiceTime() < reservation.getReservedServiceTime()))
+								&& order.getDeliveryInfo().getCalculatedServiceTime().getOrderServiceTime() < reservation.getReservedServiceTime()))
 								&& (timeslot != null && DateUtil.getDiffInMinutes(Calendar.getInstance().getTime()
 														, (timeslot.getDlvTimeslot().getPremiumCutoffTime()!=null)?timeslot.getDlvTimeslot().getPremiumCutoffAsDate():timeslot.getDlvTimeslot().getCutoffTimeAsDate())
 										> RoutingServicesProperties.getOMUseOriginalThreshold()) 
@@ -2158,7 +2166,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 					
 					if(isUpdated) {
 						setReservationReservedMetrics(reservation.getId(), order.getDeliveryInfo().getCalculatedOrderSize()
-															, order.getDeliveryInfo().getCalculatedServiceTime()
+															, order.getDeliveryInfo().getCalculatedServiceTime().getOrderServiceTime()
 															, EnumRoutingUpdateStatus.SUCCESS);
 					} else {
 						if(!EnumRoutingUpdateStatus.OVERRIDDEN.equals(reservation.getUpdateStatus())) {
@@ -2689,7 +2697,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 			} else {
 				    this.setReservationReservedMetrics(reservation.getId()
 															, order.getDeliveryInfo().getCalculatedOrderSize()
-															, order.getDeliveryInfo().getCalculatedServiceTime()
+															, order.getDeliveryInfo().getCalculatedServiceTime().getOrderServiceTime()
 															, EnumRoutingUpdateStatus.SUCCESS);
 					clearUnassignedInfo(reservation.getId());
 					if(!EnumRoutingUpdateStatus.OVERRIDDEN.equals(reservation.getUpdateStatus())

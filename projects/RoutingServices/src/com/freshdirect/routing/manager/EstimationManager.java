@@ -5,6 +5,7 @@ import java.util.Map;
 import com.freshdirect.routing.constants.EnumProcessInfoType;
 import com.freshdirect.routing.constants.EnumProcessType;
 import com.freshdirect.routing.constants.RoutingActivityType;
+import com.freshdirect.routing.model.IServiceTime;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.service.exception.RoutingProcessException;
@@ -18,7 +19,7 @@ public class EstimationManager extends BaseProcessManager {
 		IServiceTimeScenarioModel scenario = request.getRoutingScenario();
 		DeliveryServiceProxy proxy = new DeliveryServiceProxy();
 								
-		double serviceTime = 0.0;
+		IServiceTime serviceTime = null;
 		try {
 			Map<String, IServiceTimeTypeModel> serviceTimeTypeMapping = (Map<String, IServiceTimeTypeModel>)request.getServiceTimeTypeCache();
 			

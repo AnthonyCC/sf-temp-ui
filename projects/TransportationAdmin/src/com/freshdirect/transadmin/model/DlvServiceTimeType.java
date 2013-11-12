@@ -9,6 +9,7 @@ public class DlvServiceTimeType implements java.io.Serializable, TrnBaseEntityI 
 	private String description;
 	private BigDecimal fixedServiceTime;
 	private BigDecimal variableServiceTime;
+	private BigDecimal stopServiceTime;
 	
 	private String isNew;
 
@@ -88,6 +89,14 @@ public class DlvServiceTimeType implements java.io.Serializable, TrnBaseEntityI 
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
+	}
+
+	public BigDecimal getStopServiceTime() {
+		return stopServiceTime;
+	}
+
+	public void setStopServiceTime(BigDecimal stopServiceTime) {
+		this.stopServiceTime = stopServiceTime;
 	}
 	
 }

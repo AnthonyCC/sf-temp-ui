@@ -98,7 +98,18 @@ public class RoutingServiceLocator {
 		return stub;
 	}
 
-
+	public TransportationWebService getDrivingDirectionProviderService() throws AxisFault {
+		TransportationWebServiceStub stub = null;
+		if(RoutingServicesProperties.isProxyEnabled()) {
+			stub = new TransportationWebServiceStub(RoutingServicesProperties.getTransportationSuiteProxyURL());
+			LOGGER.debug("RSL:getDrivingDirectionProviderService()Proxy:"+ RoutingServicesProperties.getTransportationSuiteProxyURL());
+		} else {
+			stub = new TransportationWebServiceStub(RoutingServicesProperties.getDrivingDirectionsProviderURL());
+			LOGGER.debug("RSL:getDrivingDirectionProviderService()No Proxy:"+ RoutingServicesProperties.getDrivingDirectionsProviderURL());
+		}
+		initStub(stub);
+		return stub;
+	}
 
 	public TransportationWebService getTransportationSuiteProviderService() throws AxisFault {
 		TransportationWebServiceStub stub = new TransportationWebServiceStub(RoutingServicesProperties.getTransportationSuiteProviderURL());
@@ -139,15 +150,15 @@ public class RoutingServiceLocator {
 		if(RoutingServicesProperties.isProxyEnabled()) {
 			url = RoutingServicesProperties.getTransportationSuiteProxyURL();
 		} else {
-			url = RoutingServicesProperties.getTransportationSuiteProviderURL(deliveryType);
+			url = RoutingServicesProperties.getDrivingDirectionsProviderURL(deliveryType);
 		}
 		
 
 		if(url == null) {
-			url = RoutingServicesProperties.getTransportationSuiteProviderURL();
-			LOGGER.debug("getTransportationSuiteService Server not found :"+ deliveryType +":"+ url);
+			url = RoutingServicesProperties.getDrivingDirectionsProviderURL();
+			LOGGER.debug("getDrivingDirectionsProviderURL Server not found :"+ deliveryType +":"+ url);
 		} else {
-			LOGGER.debug("getTransportationSuiteService:"+ deliveryType +":"+ url);
+			LOGGER.debug("getDrivingDirectionsProviderURL:"+ deliveryType +":"+ url);
 		}
 
 		TransportationWebServiceStub stub = new TransportationWebServiceStub(url);

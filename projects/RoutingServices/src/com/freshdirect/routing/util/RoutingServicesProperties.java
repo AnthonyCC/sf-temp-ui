@@ -22,6 +22,8 @@ public class RoutingServicesProperties {
 		
 	private final static String PROP_TRANSPORTATIONSUITE_PROVIDER_URL		= "routingservices.transportationsuite.providerURL";
 	
+	private final static String PROP_DRIVINGDIRECTIONS_PROVIDER_URL		= "routingservices.drivingdirections.providerURL";
+	
 	private final static String PROP_ROADNET_PROVIDER_URL		= "routingservices.roadnet.providerURL";
 		
 	private final static String PROP_DEFAULT_TRUCKREGION		= "routingservices.default.truckregion";
@@ -148,6 +150,7 @@ public class RoutingServicesProperties {
 	static {
 		
 		defaults.put(PROP_TRANSPORTATIONSUITE_PROVIDER_URL, 	"http://localhost:81");
+		defaults.put(PROP_DRIVINGDIRECTIONS_PROVIDER_URL, 	"http://localhost:81");
 		defaults.put(PROP_ROADNET_PROVIDER_URL, 	"http://localhost:82");	
 		
 		defaults.put(PROP_DEFAULT_TRUCKREGION, 	"FD");
@@ -277,7 +280,9 @@ public class RoutingServicesProperties {
 	public static String getTransportationSuiteProviderURL() {
 		return get(get(PROP_TRANSPORTATIONSUITE_PROVIDER_URL));
 	}
-
+	public static String getDrivingDirectionsProviderURL() {
+		return get(get(PROP_DRIVINGDIRECTIONS_PROVIDER_URL));
+	}
 	public static String getTransportationSuiteProxyURL() {
 		return get(get(PROP_TRANSPORTATIONSUITE_PROXY_URL));
 	}
@@ -289,6 +294,13 @@ public class RoutingServicesProperties {
 
 	public static String getTransportationSuiteProviderURL(String serviceType) {
 		String _refUrl = get(PROP_TRANSPORTATIONSUITE_PROVIDER_URL+"."+serviceType);
+		if(_refUrl != null) {
+			return get(_refUrl);
+		}
+		return null;
+	}
+	public static String getDrivingDirectionsProviderURL(String serviceType) {
+		String _refUrl = get(PROP_DRIVINGDIRECTIONS_PROVIDER_URL+"."+serviceType);
 		if(_refUrl != null) {
 			return get(_refUrl);
 		}

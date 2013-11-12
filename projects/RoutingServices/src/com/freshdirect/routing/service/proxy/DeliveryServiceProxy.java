@@ -22,6 +22,7 @@ import com.freshdirect.routing.model.IDrivingDirection;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
+import com.freshdirect.routing.model.IServiceTime;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.model.IZoneModel;
@@ -48,7 +49,7 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 		return RoutingServiceLocator.getInstance().getDeliveryService();
 	}
 	
-	public double getServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario, RoutingActivityType routingType) throws RoutingServiceException {
+	public IServiceTime getServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario, RoutingActivityType routingType) throws RoutingServiceException {
 		return getService().getServiceTime(orderModel, scenario, routingType);	
 	}
 	
