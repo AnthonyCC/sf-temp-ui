@@ -151,8 +151,11 @@ public class CartOperations {
 				}
 				
 				cartLine.setSource( evtSrc ); 					
-				cartLine.setAddedFromSearch(false);				//TODO : added from search?
+				cartLine.setAddedFromSearch(false);	 // currently search page does not use ajax based add-to-cart. TODO when search page is changed ...  
 				
+				cartLine.setCoremetricsPageContentHierarchy( reqData.getCoremetricsPageContentHierarchy() );
+				cartLine.setCoremetricsPageId( reqData.getCoremetricsPageId() );
+
 				cartLinesToAdd.add(cartLine);
 				
 				populateCoremetricsShopTag( responseData, cartLine );

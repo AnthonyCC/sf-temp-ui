@@ -21,6 +21,11 @@ public class AddToCartRequestData implements Serializable {
 	private String variantId;
 	private String tab;
 	
+	// coremetrics extra fields
+	private String coremetricsPageContentHierarchy;
+	private String coremetricsPageId;
+
+	
 	public List<AddToCartItem> getItems() {
 		return items;
 	}	
@@ -62,5 +67,17 @@ public class AddToCartRequestData implements Serializable {
 	}	
 	public void setSiteFeature( String siteFeature ) {
 		this.siteFeature = siteFeature;
+	}	
+	public String getCoremetricsPageContentHierarchy() {
+		return coremetricsPageContentHierarchy;
+	}	
+	public void setCoremetricsPageContentHierarchy( String coremetricsPageContentHierarchy ) {
+		this.coremetricsPageContentHierarchy = coremetricsPageContentHierarchy;
+	}	
+	public String getCoremetricsPageId() {
+		return coremetricsPageId;
+	}	
+	public void setCoremetricsPageId( String coremetricsPageId ) {
+		this.coremetricsPageId = coremetricsPageId;
 	}
 }
