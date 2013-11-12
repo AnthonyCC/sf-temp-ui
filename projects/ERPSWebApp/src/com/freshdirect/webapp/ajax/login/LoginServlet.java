@@ -52,6 +52,7 @@ public class LoginServlet extends HttpServlet {
 	private static final String ERROR_CODE_400 = "400";
 	private static final String BAD_REQUEST = "Bad request";
 	private static final String DATA = "data";
+	private static final String mergePage = "/login/merge_cart.jsp";
 	
 	/**
 	 * 
@@ -73,7 +74,7 @@ public class LoginServlet extends HttpServlet {
 		if(loginRequest != null) {
 			ActionResult actionResult = new ActionResult();
 			String updatedSuccessPage = UserUtil.loginUser(request.getSession(), request, response, actionResult
-															, loginRequest.getUserId(), loginRequest.getPassword(), "", "");
+															, loginRequest.getUserId(), loginRequest.getPassword(), mergePage, "");
 			loginResponse.setSuccessPage(updatedSuccessPage);
 			if(actionResult.getErrors() == null || actionResult.getErrors().isEmpty()) {
 				loginResponse.setSuccess(true);
