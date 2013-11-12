@@ -1,6 +1,5 @@
 package com.freshdirect.fdstore.promotion;
 
-import com.freshdirect.fdstore.FDStoreProperties;
 
 public class MaxRedemptionStrategy implements PromotionStrategyI {
 	
@@ -20,7 +19,7 @@ public class MaxRedemptionStrategy implements PromotionStrategyI {
 			//allow if modifying that order OR Promotion already applied beginning of the session. Give it to the customer. 
 			return ALLOW;
 		} else {
-			Integer redeemCount = PromotionFactory.getInstance().getRedemptions(promotionCode);
+			Integer redeemCount = PromotionFactory.getInstance().getRedemptions(promotionCode, null);
 			if(redeemCount != null && redeemCount.intValue() < this.maxRedemptions)
 				return ALLOW;
 		}
@@ -33,7 +32,7 @@ public class MaxRedemptionStrategy implements PromotionStrategyI {
 			//allow if modifying that order. 
 			return ALLOW;
 		} else {
-			Integer redeemCount = PromotionFactory.getInstance().getRedemptions(promotionCode);
+			Integer redeemCount = PromotionFactory.getInstance().getRedemptions(promotionCode, null);
 			if(redeemCount != null && redeemCount.intValue() < this.maxRedemptions)
 				return ALLOW;
 		}

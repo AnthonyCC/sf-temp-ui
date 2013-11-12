@@ -40,6 +40,7 @@ public class PromotionFactory {
 
 	private CacheI<String, PromotionI> redeemPromotions;
 	private CacheI<String, Integer> redemptions;
+
 	private Map<String, PromotionI> promotionMap = new LinkedHashMap<String, PromotionI>();
 	private Date maxLastModified;
 	
@@ -193,7 +194,7 @@ public class PromotionFactory {
 	 * @param promoId
 	 * @return
 	 */
-	public Integer getRedemptions(String promoId) {
+	public Integer getRedemptions(String promoId, Date requestedDate) {
 		Integer redeemCount = null;
 		try{
 			if(promoId == null){
@@ -205,7 +206,7 @@ public class PromotionFactory {
 			if(redeemCount == null){
 				LOGGER.info("REFRESHING REDEMPTION COUNT FOR PROMOTION "+promoId);
 				//The object has become stale or it's yet to be loaded into the cache.
-				redeemCount = FDPromotionNewManager.getRedemptionCount(promoId);
+				redeemCount = FDPromotionNewManager.getRedemptionCount(promoId, requestedDate);
 				if(redeemCount != null){
 					//Promotion can be null if the promotion has a incomplete configuration.
 					getRedemptions().put(promoId, redeemCount);	

@@ -380,7 +380,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	
 		complaints.create(conn);
 		if(model.hasUsedPromotionCodes()==true) {
-			ErpPromotionDAO.insert(conn, getPK(), model.getUsedPromotionCodes());
+			ErpPromotionDAO.insert(conn, getPK(), model.getUsedPromotionCodes(), model.getCurrentOrder().getRequestedDate());
 		}
 		createCroModMaxDate(conn);
 
@@ -672,7 +672,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
 			ErpPromotionDAO.delete(conn, getPK());
 			if(model.hasUsedPromotionCodes())
-				ErpPromotionDAO.insert(conn, getPK(), model.getUsedPromotionCodes());
+				ErpPromotionDAO.insert(conn, getPK(), model.getUsedPromotionCodes(), model.getCurrentOrder().getRequestedDate());
 		}
 		//store children
 		ErpTransactionList txList = getTransactionPBList();

@@ -15,37 +15,44 @@
 	
 	<tmpl:put name='content' direct='true'>
 	<crm:GetCurrentAgent id='currentAgent'>
-	<%	WSPromoFilterCriteria  wsFilter =  (WSPromoFilterCriteria)request.getSession().getAttribute("wsFilter"); 
+	<%	
+		WSPromoFilterCriteria  wsFilter =  (WSPromoFilterCriteria)request.getSession().getAttribute("wsFilter"); 
 		DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 		String fromDateStr = null;
 		String toDateStr = null;
-		String status = null;
-		if(null !=request.getParameter("ws_filter_submit")){
+		String dlvDateStr = null;
+		String zone = null;
+		String status = "PUBLISHED";
+		if(null != request.getParameter("ws_filter_submit")){
 			fromDateStr = request.getParameter("wsFromDate");
 			toDateStr = request.getParameter("wsToDate");
+			dlvDateStr = request.getParameter("wsDlvDate");
+			zone = request.getParameter("zone");
 			status = request.getParameter("promoStatus");
 			
 			wsFilter = new WSPromoFilterCriteria();
 			wsFilter.setFromDateStr(fromDateStr);
 			wsFilter.setToDateStr(toDateStr);
 			wsFilter.setStatus(status);
+			wsFilter.setDlvDateStr(dlvDateStr);
+			wsFilter.setZone(zone);
 		}
 		else if(null == wsFilter || wsFilter.isEmpty()){
+			
 			Calendar cal = Calendar.getInstance();
-			
-			
 			wsFilter = new WSPromoFilterCriteria();
-			wsFilter.setToDate(cal.getTime());
-			wsFilter.setToDateStr(sdf.format(cal.getTime()));
-			cal.add(Calendar.DATE, -90);
-			wsFilter.setFromDate(cal.getTime());
-			wsFilter.setFromDateStr(sdf.format(cal.getTime()));
+			cal.add(Calendar.DATE, 1);
+			wsFilter.setDlvDate(cal.getTime());
+			wsFilter.setDlvDateStr(sdf.format(cal.getTime()));
+			wsFilter.setStatus(status);
 		}
 		
 		if(null != wsFilter && !wsFilter.isEmpty()){
 			fromDateStr = wsFilter.getFromDateStr();
 			toDateStr = wsFilter.getToDateStr();
 			status = wsFilter.getStatus();
+			dlvDateStr = wsFilter.getDlvDateStr();
+			zone = wsFilter.getZone();
 		}	
 	%>
 	
@@ -61,8 +68,6 @@
 				<%	}	%>
 			
 			<tr>
-					
-			
 					<td>Dates From:
 					<input type="text" id="wsFromDate" value="<%= fromDateStr %>" name="wsFromDate" size="10" maxlength="10" /> 
 					<a href="#" onclick="return false;" class="promo_ico_cont" id="wsFromDate_trigger" name="wsFromDate_trigger">
@@ -70,18 +75,19 @@
 					<td>To:<input type="text" id="wsToDate" value="<%= toDateStr %>" name="wsToDate" size="10" maxlength="10" /> 
 					<a href="#" onclick="return false;" class="promo_ico_cont" id="wsToDate_trigger" name="wsToDate_trigger">
 					<img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a></td>
+					<td>Delivery Date:
+					<input type="text" id="wsDlvDate" value="<%= dlvDateStr %>" name="wsDlvDate" size="10" maxlength="10" /> 
+					<a href="#" onclick="return false;" class="promo_ico_cont" id="wsDlvDate_trigger" name="wsDlvDate_trigger">
+					<img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a></td>					
+					<td>Zone:
+					<input type="text" id="zone" value="<%= zone %>" name="zone" size="10" maxlength="10" />
+					</td> 
 					<td>&nbsp;</td>
 					<td>Status:
 						<select id="promoStatus" name="promoStatus" class="promo_filter">
-						<option value="ALL">ALL</option>
-						<% for (Object promoStatusObj : EnumPromotionStatus.getEnumList()) { 
-						if(promoStatusObj instanceof EnumPromotionStatus){
-							EnumPromotionStatus promoStatus = (EnumPromotionStatus)promoStatusObj;
-						%> 
-						<option value="<%= promoStatus.getName() %>" 
-						<%= (status!=null && status.equals(promoStatus.getName()))?"selected":""%>>
-						<%= promoStatus.getDescription()%></option>
-								<% } } %>							
+							<option value="ALL">ALL</option>
+							<option value="CANCELLED" <%= (status != null && status.equals("CANCELLED")) ? "selected":"" %>>Cancelled</option>
+							<option value="PUBLISHED" <%= (status != null && status.equals("PUBLISHED")) ? "selected":"" %>>Published</option>
 						</select>
 					</td>					
 					<td>&nbsp;</td>
@@ -176,6 +182,16 @@ Calendar.setup(
 			ifFormat : "%m/%d/%Y",
 			singleClick: true,
 			button : "wsToDate_trigger"
+		}
+	);
+Calendar.setup(
+		{
+			showsTime : false,
+			electric : false,
+			inputField : "wsDlvDate",
+			ifFormat : "%m/%d/%Y",
+			singleClick: true,
+			button : "wsDlvDate_trigger"
 		}
 	);
 </script>

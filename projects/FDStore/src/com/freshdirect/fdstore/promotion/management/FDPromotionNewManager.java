@@ -116,11 +116,11 @@ public class FDPromotionNewManager {
 		}
 	}
 	
-	public static List<WSPromotionInfo> getWSPromotionInfos(Date fromDate, Date toDate,String status) throws FDResourceException {
+	public static List<WSPromotionInfo> getWSPromotionInfos(Date fromDate, Date toDate, Date dlvDate, String zone, String status) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDPromotionManagerNewSB sb = managerHome.create();
-			List<WSPromotionInfo> promotions =  sb.getWSPromotionInfos(fromDate, toDate,status);
+			List<WSPromotionInfo> promotions =  sb.getWSPromotionInfos(fromDate, toDate, dlvDate, zone, status);
 			return promotions;
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -548,10 +548,10 @@ public class FDPromotionNewManager {
 		}
 	}
 	
-	public static Integer getRedemptionCount(String promoId) throws FDResourceException{
+	public static Integer getRedemptionCount(String promoId, Date requestedDate) throws FDResourceException{
 		try {
 			FDPromotionManagerNewSB sb = managerHome.create();
-			return sb.getRedemptionCount(promoId);
+			return sb.getRedemptionCount(promoId, requestedDate);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

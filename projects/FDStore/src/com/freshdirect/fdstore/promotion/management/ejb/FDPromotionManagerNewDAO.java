@@ -1,6 +1,5 @@
 package com.freshdirect.fdstore.promotion.management.ejb;
 
-import java.math.BigDecimal;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.Date;
@@ -16,46 +15,43 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import oracle.sql.ARRAY;
 import oracle.sql.ArrayDescriptor;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.delivery.EnumDeliveryOption;
+import com.freshdirect.enums.WeekDay;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
 import com.freshdirect.fdstore.promotion.EnumPromoChangeType;
 import com.freshdirect.fdstore.promotion.EnumPromotionSection;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
-import com.freshdirect.fdstore.promotion.Promotion;
-import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoContentModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoCustStrategyModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoDlvDateModel;
+import com.freshdirect.fdstore.promotion.management.FDPromoDlvDayModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoDlvTimeSlotModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoDlvZoneStrategyModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
 import com.freshdirect.fdstore.promotion.management.FDPromoPaymentStrategyModel;
+import com.freshdirect.fdstore.promotion.management.FDPromoStateCountyRestriction;
 import com.freshdirect.fdstore.promotion.management.FDPromoZipRestriction;
 import com.freshdirect.fdstore.promotion.management.FDPromotionAttributeParam;
-import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 import com.freshdirect.fdstore.promotion.management.WSAdminInfo;
 import com.freshdirect.fdstore.promotion.management.WSPromotionInfo;
-import com.freshdirect.fdstore.promotion.management.FDPromoStateCountyRestriction;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
@@ -226,68 +222,96 @@ public class FDPromotionManagerNewDAO {
 		return promotion;
 	}
 	private final static String GET_WS_PROMOTION_INFOS = 
-		"select P.ID, P.CODE, P.NAME, D.START_DATE DLV_DATE, P.START_DATE,  P.EXPIRATION_DATE, (select COLUMN_VALUE from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
-		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, T.DLV_WINDOWTYPE, P.MAX_AMOUNT,  P.REDEEM_CNT, P.STATUS, pc.DELIVERY_DAY_TYPE from cust.promotion_new p, cust.promo_cust_strategy pc, "
-		+ "cust.promo_dlv_zone_strategy z, cust.promo_dlv_timeslot t, cust.promo_delivery_dates d "
+		"select P.ID, P.CODE, P.NAME, DD.START_DATE DLV_DATE, D.DAY_ID, P.START_DATE, P.EXPIRATION_DATE, (select COLUMN_VALUE from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
+		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, T.DLV_WINDOWTYPE, P.MAX_AMOUNT, decode(P.REDEEM_CNT, 0, (select distinct(redeem_cnt) from  cust.promo_dlv_day where PROMO_DLV_ZONE_ID = z.id), P.REDEEM_CNT) as REDEEM_CNT, P.STATUS, pc.DELIVERY_DAY_TYPE from cust.promotion_new p, cust.promo_cust_strategy pc, "
+		+ "cust.promo_dlv_zone_strategy z, cust.promo_dlv_timeslot t, cust.promo_delivery_dates dd, cust.promo_dlv_day d "
 		+ "where p.id = PC.PROMOTION_ID "
 		+ "and P.ID = Z.PROMOTION_ID " 
 		+ "and Z.ID = T.PROMO_DLV_ZONE_ID(+) "
-		+ "and p.id = D.PROMOTION_ID "
-		+ "and  (select count(ID) from cust.promo_delivery_dates where PROMOTION_ID = p.id) = 1 "
-		+ "and trunc(D.START_DATE) =  trunc(D.END_DATE) "
-		+ "and (select count(*) from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE) x where id = z.id) = 1 "
-		+ "and (select count(ID) from cust.promo_dlv_timeslot where PROMO_DLV_ZONE_ID = z.id) <= 1 "
+		+ "and p.id = DD.PROMOTION_ID(+) "
+		+ "and Z.ID = D.PROMO_DLV_ZONE_ID(+) "
+		+ "and (select count(*) from cust.promo_dlv_zone_strategy, table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE) x where id = z.id) = 1 "		
 		+ "and P.OFFER_TYPE = 'WINDOW_STEERING' "
 		+ "and P.CAMPAIGN_CODE = 'HEADER'";
-	public static List<WSPromotionInfo> getWSPromotionInfos(Connection conn, java.util.Date fromDate, java.util.Date toDate,String status) throws SQLException {
+	
+	public static List<WSPromotionInfo> getWSPromotionInfos(Connection conn, java.util.Date fromDate, java.util.Date toDate, 
+			java.util.Date dlvDate, String zone, String status) throws SQLException {
+		
 		List<WSPromotionInfo> infos = new ArrayList<WSPromotionInfo>();
+		Map<String, WSPromotionInfo> promoMap = new HashMap<String, WSPromotionInfo>();
 		
 		StringBuffer buf = new StringBuffer();
 		buf.append(GET_WS_PROMOTION_INFOS);
 		if(fromDate != null && toDate != null) {
-			buf.append(" AND P.START_DATE >=? AND P.START_DATE <=?");
+			buf.append(" AND P.START_DATE >= ? AND P.START_DATE <= ? ");
 		}
-		if(status!=null && !"ALL".equals(status))
+		if(dlvDate != null) {
+			buf.append(" AND DD.START_DATE = ? ");
+		}
+		if(zone != null && !"".equals(zone)) {
+			buf.append(" AND (select COLUMN_VALUE from cust.promo_dlv_zone_strategy, table(cust.PROMO_DLV_ZONE_STRATEGY.DLV_ZONE)  x where id = z.id) = ? ");
+		}
+		if(status!=null && !"ALL".equals(status)) {
 			buf.append(" AND P.STATUS = ?");
+		}
 		buf.append(" ORDER BY P.START_DATE DESC");
 		PreparedStatement ps = conn.prepareStatement(buf.toString());
+		int i = 1;
 		if(fromDate != null && toDate != null) {
-			ps.setDate(1, new java.sql.Date(fromDate.getTime()));
-			ps.setDate(2, new java.sql.Date(toDate.getTime()));
-			if(status!=null && !"ALL".equals(status))
-				ps.setString(3, status);
+			ps.setDate(i++, new java.sql.Date(fromDate.getTime()));
+			ps.setDate(i++, new java.sql.Date(toDate.getTime()));
 		}
-		else if((fromDate == null ||toDate == null) && status!=null && !"ALL".equals(status)){
-			ps.setString(1, status);
+		if(dlvDate != null) {
+			ps.setDate(i++, new java.sql.Date(dlvDate.getTime()));
 		}
+		if(zone != null && !"".equals(zone)) {
+			ps.setString(i++, zone);
+		}
+		if(status!=null && !"ALL".equals(status)) {
+			ps.setString(i++, status);
+		}		
 		ResultSet rs = ps.executeQuery();
-
-
+		WeekDay weekNames[] = WeekDay.values();
 		while (rs.next()) {
-			WSPromotionInfo wsPromotionInfo = new WSPromotionInfo();
-			wsPromotionInfo.setPK(new PrimaryKey(rs.getString("ID")));
-			wsPromotionInfo.setPromotionCode(rs.getString("CODE"));
-			wsPromotionInfo.setName(rs.getString("NAME"));
-			wsPromotionInfo.setEffectiveDate(rs.getDate("DLV_DATE"));
-			wsPromotionInfo.setStartDate(rs.getTimestamp("START_DATE"));
-			wsPromotionInfo.setEndDate(rs.getTimestamp("EXPIRATION_DATE"));
-			wsPromotionInfo.setZoneCode(rs.getString("ZONE_CODE"));
-			wsPromotionInfo.setStartTime(rs.getString("START_TIME"));
-			wsPromotionInfo.setEndTime(rs.getString("END_TIME"));
-			wsPromotionInfo.setDiscount(rs.getDouble("MAX_AMOUNT"));
-			wsPromotionInfo.setRedeemCount(rs.getInt("REDEEM_CNT"));
-			Array windowArray = rs.getArray("DLV_WINDOWTYPE");
-			wsPromotionInfo.setWindowType(windowArray != null ? (String[]) rs.getArray("DLV_WINDOWTYPE").getArray() : null);
-			wsPromotionInfo.setStatus(EnumPromotionStatus.getEnum(rs.getString("STATUS"))); 
-			Timestamp expDate = rs.getTimestamp("EXPIRATION_DATE");
-			java.util.Date today = new java.util.Date();
-			if(expDate.before(today) && wsPromotionInfo.getStatus().equals(EnumPromotionStatus.LIVE)){
-				wsPromotionInfo.setStatus(EnumPromotionStatus.EXPIRED);
+			String promoCode = rs.getString("CODE");
+			int dayId = rs.getInt("DAY_ID");
+			if(!promoMap.containsKey(promoCode)){
+				WSPromotionInfo wsPromotionInfo = new WSPromotionInfo();
+				promoMap.put(promoCode, wsPromotionInfo);
+				
+				wsPromotionInfo.setPK(new PrimaryKey(rs.getString("ID")));
+				wsPromotionInfo.setPromotionCode(rs.getString("CODE"));
+				wsPromotionInfo.setName(rs.getString("NAME"));
+				wsPromotionInfo.setEffectiveDate(rs.getDate("DLV_DATE"));
+				wsPromotionInfo.setStartDate(rs.getTimestamp("START_DATE"));
+				wsPromotionInfo.setEndDate(rs.getTimestamp("EXPIRATION_DATE"));
+				wsPromotionInfo.setZoneCode(rs.getString("ZONE_CODE"));
+				wsPromotionInfo.setStartTime(rs.getString("START_TIME"));
+				wsPromotionInfo.setEndTime(rs.getString("END_TIME"));
+				wsPromotionInfo.setDiscount(rs.getDouble("MAX_AMOUNT"));
+				wsPromotionInfo.setRedeemCount(rs.getInt("REDEEM_CNT"));
+				Array windowArray = rs.getArray("DLV_WINDOWTYPE");
+				wsPromotionInfo.setWindowType(windowArray != null ? (String[]) rs.getArray("DLV_WINDOWTYPE").getArray() : null);
+				wsPromotionInfo.setStatus(EnumPromotionStatus.getEnum(rs.getString("STATUS"))); 
+				Timestamp expDate = rs.getTimestamp("EXPIRATION_DATE");
+				java.util.Date today = new java.util.Date();
+				if(expDate.before(today) && wsPromotionInfo.getStatus().equals(EnumPromotionStatus.LIVE)){
+					wsPromotionInfo.setStatus(EnumPromotionStatus.EXPIRED);
+				}
+				wsPromotionInfo.setDeliveryDayType(EnumDeliveryOption.getEnum(rs.getString("DELIVERY_DAY_TYPE")));
+				wsPromotionInfo.setDayOfWeek(new String[0]);
 			}
-			wsPromotionInfo.setDeliveryDayType(EnumDeliveryOption.getEnum(rs.getString("DELIVERY_DAY_TYPE")));
-			infos.add(wsPromotionInfo);
+			if(dayId != 0) {
+				String[] dayArray = promoMap.get(promoCode).getDayOfWeek();
+				List<String> weekDays = new ArrayList<String>();
+				weekDays.addAll(Arrays.asList(dayArray));
+				if(!weekDays.contains(weekNames[--dayId].name().toString())) {
+					weekDays.add(weekNames[dayId].toString());
+				}
+				promoMap.get(promoCode).setDayOfWeek(weekDays.toArray(new String[weekDays.size()]));
+			}
 		}
-
+		infos.addAll(promoMap.values());
 		rs.close();
 		ps.close();
 		return infos;
@@ -1608,20 +1632,27 @@ public class FDPromotionManagerNewDAO {
 	private static String INSERT_PROMO_DLV_TIMESLOT = "INSERT INTO cust.PROMO_DLV_TIMESLOT"
 		+ " (id, PROMO_DLV_ZONE_ID,DAY_ID,START_TIME,END_TIME,DLV_WINDOWTYPE)"
 		+ " VALUES(?,?,?,?,?,?)";
+	
+	private static String INSERT_PROMO_DLV_DAY = "INSERT INTO cust.PROMO_DLV_DAY"
+			+ " (id, PROMO_DLV_ZONE_ID,DAY_ID,REDEEM_CNT)"
+			+ " VALUES(?,?,?,?)";
 
 	private static void storePromoDlvZoneStrategy(Connection conn,
 			String promotionId, FDPromotionNewModel promotion)
 			throws SQLException {
 		removePromoDlvTimeSlots(conn,promotionId);
+		removePromoDlvDays(conn,promotionId);
 		removeDlvZoneStrategy(conn,promotionId);
 		PreparedStatement ps = null;
 		PreparedStatement ps1 = null;
+		PreparedStatement ps2 = null;
 		int index = 1;
 		try {
 			List<FDPromoDlvZoneStrategyModel> dlvZoneStrategies = promotion.getDlvZoneStrategies();
 			if(null!= dlvZoneStrategies && !dlvZoneStrategies.isEmpty()){
 				ps = conn.prepareStatement(INSERT_PROMO_DLV_ZONE_STRATEGY);
 				ps1= conn.prepareStatement(INSERT_PROMO_DLV_TIMESLOT);
+				ps2= conn.prepareStatement(INSERT_PROMO_DLV_DAY);
 				for (FDPromoDlvZoneStrategyModel model : dlvZoneStrategies) {
 					String promoDlvZoneId = SequenceGenerator.getNextId(conn,"CUST");
 					List<FDPromoDlvTimeSlotModel>timeSlotModel = model.getDlvTimeSlots();
@@ -1639,6 +1670,17 @@ public class FDPromotionManagerNewDAO {
 						}						
 					}
 					
+					List<FDPromoDlvDayModel> dlvdayModel = model.getDlvDayRedemtions();
+					if(null != dlvdayModel && !dlvdayModel.isEmpty()){
+						for (FDPromoDlvDayModel promoDlvDayModel : dlvdayModel) {
+							ps2.setString(1, SequenceGenerator.getNextId(conn,"CUST"));
+							ps2.setString(2, promoDlvZoneId);
+							ps2.setInt(3, promoDlvDayModel.getDayId());
+							ps2.setInt(4, promoDlvDayModel.getRedeemCount());
+							ps2.addBatch();
+						}						
+					}
+					
 					ps.setString(index++, promoDlvZoneId);
 					ps.setString(index++, promotionId);
 					ps.setString(index++, model.getDlvDays());	
@@ -1649,6 +1691,7 @@ public class FDPromotionManagerNewDAO {
 				}	
 				ps.executeBatch();
 				ps1.executeBatch();
+				ps2.executeBatch();
 			}
 			
 		} finally {
@@ -1656,6 +1699,8 @@ public class FDPromotionManagerNewDAO {
 				ps.close();
 			if (ps1 != null)
 				ps1.close();
+			if (ps2 != null)
+				ps2.close();
 		}
 	}
 	
@@ -1673,6 +1718,15 @@ public class FDPromotionManagerNewDAO {
 			String promotionId) throws SQLException {
 		PreparedStatement ps = conn
 				.prepareStatement("DELETE CUST.promo_dlv_timeslot WHERE PROMO_DLV_ZONE_ID in (select id from CUST.promo_dlv_zone_strategy WHERE PROMOTION_ID = ?)");
+		ps.setString(1, promotionId);
+		ps.executeUpdate();
+		ps.close();
+	}
+	
+	protected static void removePromoDlvDays(Connection conn,
+			String promotionId) throws SQLException {
+		PreparedStatement ps = conn
+				.prepareStatement("DELETE CUST.promo_dlv_day WHERE PROMO_DLV_ZONE_ID in (select id from CUST.promo_dlv_zone_strategy WHERE PROMOTION_ID = ?)");
 		ps.setString(1, promotionId);
 		ps.executeUpdate();
 		ps.close();
@@ -1760,6 +1814,11 @@ public class FDPromotionManagerNewDAO {
 	private final static String LOAD_PROMO_TIME_SLOTS = "select id, PROMO_DLV_ZONE_ID, DAY_ID, START_TIME, END_TIME, DLV_WINDOWTYPE"
 		+ " from cust.PROMO_DLV_TIMESLOT pdt "
 		+ "where pdt.PROMO_DLV_ZONE_ID = ?";
+	
+	private final static String LOAD_PROMO_DAY_REDEMTIONS = "select id, PROMO_DLV_ZONE_ID, DAY_ID, REDEEM_CNT as DAYREDEEM_CNT"
+		+ " from cust.PROMO_DLV_DAY pdt "
+		+ " where pdt.PROMO_DLV_ZONE_ID = ?";		
+	
 
 	protected static List<FDPromoDlvZoneStrategyModel> loadPromoDlvZoneStrategies(Connection conn, String promotionId)
 			throws SQLException {
@@ -1767,7 +1826,9 @@ public class FDPromotionManagerNewDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		ResultSet rs1 = null;
+		ResultSet rs2 = null;
 		PreparedStatement ps1 = null;
+		PreparedStatement ps2 = null;
 		List<FDPromoDlvZoneStrategyModel> list = new ArrayList<FDPromoDlvZoneStrategyModel>();
 		try {
 			ps = conn.prepareStatement(LOAD_PROMO_DLV_ZONE_STRATEGY);
@@ -1800,6 +1861,21 @@ public class FDPromotionManagerNewDAO {
 					timeSlotList.add(timeSlotModel);
 				}
 				dlvZoneStrategyModel.setDlvTimeSlots(timeSlotList);
+								
+				ps2 = conn.prepareStatement(LOAD_PROMO_DAY_REDEMTIONS);
+				ps2.setString(1, dlvZoneStrategyModel.getId());
+				rs2 = ps2.executeQuery();
+				List<FDPromoDlvDayModel> dayList = new ArrayList<FDPromoDlvDayModel>();
+				while (rs2.next()) {
+					FDPromoDlvDayModel dayModel = new FDPromoDlvDayModel();
+					dayModel.setId(rs2.getString("id"));
+					dayModel.setPromoDlvZoneId(dlvZoneStrategyModel.getId());
+					dayModel.setDayId(rs2.getInt("DAY_ID"));
+					dayModel.setRedeemCount(rs2.getInt("DAYREDEEM_CNT"));
+					dayList.add(dayModel);
+				}
+				dlvZoneStrategyModel.setDlvDayRedemtions(dayList);
+				
 				list.add(dlvZoneStrategyModel);
 			}
 		} finally  {

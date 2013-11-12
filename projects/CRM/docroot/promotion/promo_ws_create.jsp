@@ -33,7 +33,7 @@
 <%@page import="java.text.DecimalFormat"%>
 
 <%!
-	DateFormat DATE_YEAR_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
+	DateFormat DATE_YEAR_FORMATTER = new SimpleDateFormat("MM/dd/yyyy");
 %>
 <%  
 	Date today = Calendar.getInstance().getTime();
@@ -84,8 +84,7 @@ function numbersonly(myfield, e, dec)
 
 <fd:GetPromotionNew id="promotion" promotionId="<%=promoId%>">
 <%
-	String f_effectiveDate = request.getParameter("effectiveDate");
-	//NVL.apply(request.getParameter("effectiveDate"), CCFormatter.formatDateYear(today));
+	String f_effectiveDate = request.getParameter("effectiveDate");	
 	String startDate = request.getParameter("startDate"); 		
 	String endDate = request.getParameter("endDate");
 	String selectedZoneId = request.getParameter("selectedZoneId");
@@ -111,11 +110,11 @@ function numbersonly(myfield, e, dec)
 	cohortList = request.getParameterValues("cohorts") != null ? Arrays.asList(request.getParameterValues("cohorts")) : new ArrayList() ;		
 	if(promotion != null && promotion.getPromotionCode() != null) {
 		if(f_effectiveDate == null)
-			f_effectiveDate =  CCFormatter.formatDateYear(promotion.getWSSelectedDlvDate());
+			f_effectiveDate =  null;//CCFormatter.defaultFormatDate(promotion.getWSSelectedDlvDate());
 		if(startDate == null)
-			startDate =  CCFormatter.formatDateYear(promotion.getStartDate());
+			startDate =  CCFormatter.defaultFormatDate(promotion.getStartDate());
 		if(endDate == null)
-			endDate =  CCFormatter.formatDateYear(promotion.getExpirationDate());
+			endDate =  CCFormatter.defaultFormatDate(promotion.getExpirationDate());
 		if(selectedZoneId == null)
 			selectedZoneId = promotion.getWSSelectedZone();
 		if(startTime == null)
@@ -161,12 +160,10 @@ function numbersonly(myfield, e, dec)
 		}
 	}
 	Date defaultDate = DateUtil.addDays(today, 1); //Today + 1
-	f_effectiveDate = (f_effectiveDate != null) ? f_effectiveDate : CCFormatter.formatDateYear(defaultDate);
-	startDate = (startDate != null) ? startDate : CCFormatter.formatDateYear(today);
-	endDate = (endDate != null) ? endDate : CCFormatter.formatDateYear(defaultDate);	
-	selectedZoneId = (selectedZoneId != null) ? selectedZoneId : "";
-	startTime = (startTime != null) ? startTime : "";
-	endTime = (endTime != null) ? endTime : "";
+	f_effectiveDate = (f_effectiveDate != null) ? f_effectiveDate : CCFormatter.defaultFormatDate(defaultDate);
+	startDate = (startDate != null) ? startDate : CCFormatter.defaultFormatDate(today);
+	endDate = (endDate != null) ? endDate : CCFormatter.defaultFormatDate(defaultDate);	
+	selectedZoneId = (selectedZoneId != null) ? selectedZoneId : "";	
 	discount = (discount != null) ? discount : "";
 	
 	Date effectiveDate = DATE_YEAR_FORMATTER.parse(f_effectiveDate);
@@ -186,8 +183,6 @@ function numbersonly(myfield, e, dec)
 		<%@ include file="/includes/promotions/i_promo_trn_nav.jspf" %>
 		<script language="JavaScript" type="text/javascript">
 			function doPublish() {
-				document.timePick.startTime.value = document.timePick.picked0.value;
-				document.timePick.endTime.value = document.timePick.picked1.value;
 				document.timePick.selectedZoneId.value = document.timePick.zone.value;
 				document.timePick.actionName.value = "publish";
 				document.timePick.submit();
@@ -259,6 +254,9 @@ function numbersonly(myfield, e, dec)
 				</fd:ErrorHandler>
 				<fd:ErrorHandler result='<%= result %>' name='windowTypeEmpty' id='errorMsg'>
 				   <%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="daysEmpty" id="errorMsg">
+					<%@ include file="/includes/i_error_messages.jspf" %>   
 				</fd:ErrorHandler>							
 				<%
 					String publish = NVL.apply(request.getParameter("publish"), "");
@@ -332,48 +330,126 @@ function numbersonly(myfield, e, dec)
 				</tr>
 				<% } %>
 				<tr>
-					<td width="3%">&nbsp;</td>
-					<td>Delivery Date: 
-					<% if(isToday) { %>
-						today -<%= f_displayDate %> 
-					<% } else  {%>
-						<%= f_displayDate %>
-					<% } %>
-					&nbsp;&nbsp;
-					<input type="hidden" name="effectiveDate" id="effectiveDate" value="<%=f_effectiveDate%>">
-					<input type="hidden" name="startDate" id="startDate" value="<%=startDate%>">
-					<input type="hidden" name="endDate" id="endDate" value="<%=endDate%>">
-					<input type="hidden" name="selectedZoneId" id="selectedZoneId" value="<%=selectedZoneId%>">
-					<input type="hidden" name="startTime" id="startTime" value="<%= startTime %>">
-					<input type="hidden" name="endTime" id="endTime" value="<%= endTime %>">
-					<input type="hidden" name="promoCode" id="promoCode" value="<%= promoId %>">
-					<input type="hidden" name="actionName" id="actionName" value="">
-                    <input type="text" name="newEffectiveDate" id="newEffectiveDate" size="10" value="<%=f_effectiveDate%>" disabled="true" onchange="setDate(this);"> &nbsp;<a href="#" id="trigger_dlvDate" style="font-size: 9px;">Change</a>
- 		        	<script language="javascript">
+					<td class="promo_detail_label">Delivery restriction:</td>
+					<td class="alignL vTop padL8R16">
+						<table width="100%">
+							<tr>
+								<% 
+										 List list = promotion.getDlvZoneStrategies();
+										 String selectedDays = "";
+										 if(null != list && !list.isEmpty()){
+											 FDPromoDlvZoneStrategyModel zoneStrgyModel =(FDPromoDlvZoneStrategyModel)list.get(0);											
+											 selectedDays = null != zoneStrgyModel.getDlvDays() ? zoneStrgyModel.getDlvDays() : "";
+										 } 
+										 Date selectedDlvdate = promotion.getWSSelectedDlvDate();
+								%>
+								<td class="alignL vTop padL8R16">
+								<input type="radio" id="edit_dlvreq_Rest_date" name="edit_dlvreq_Rest" onclick="toggleDeliveryRadio()" value="DELIVERYDATE" <%= ("".equals(selectedDays.trim()) || (selectedDlvdate != null) ) ? "checked":""  %>/>Delivery Date
+								<div><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></div>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date:<b> 
+								<% if(isToday) { %>
+									today -<%= f_displayDate %> 
+								<% } else  {%>
+									<%= f_displayDate %>
+								<% } %></b>
+								&nbsp;&nbsp;
+								<input type="hidden" name="effectiveDate" id="effectiveDate" value="<%=f_effectiveDate%>">
+								<input type="hidden" name="startDate" id="startDate" value="<%=startDate%>">
+								<input type="hidden" name="endDate" id="endDate" value="<%=endDate%>">
+								<input type="hidden" name="selectedZoneId" id="selectedZoneId" value="<%=selectedZoneId%>">
+								<input type="hidden" name="promoCode" id="promoCode" value="<%= promoId %>">
+								<input type="hidden" name="actionName" id="actionName" value="">
+			                    <input type="text" name="newEffectiveDate" id="newEffectiveDate" size="10" value="<%=f_effectiveDate%>" disabled="true" onchange="setDate(this);"> &nbsp;<a href="#" id="trigger_dlvDate" style="font-size: 9px;">Change</a>
+			 		        	<script language="javascript">
+			
+								    function setDate(field){
+								    	document.getElementById("effectiveDate").value=field.value;
+								    	document.timePick.selectedZoneId.value = document.timePick.zone.value;
+								    	document.timePick.actionName.value = "changeDate";
+										document.timePick.submit();
+								    }
+					
+					
+								    Calendar.setup(
+								    {
+									    showsTime : false,
+									    electric : false,
+									    inputField : "newEffectiveDate",
+									    ifFormat : "%m/%d/%Y" ,
+									    singleClick: true,
+									    button : "trigger_dlvDate" 
+								    });
+								    
+								 
+									
+									function toggleDeliveryRadio(){							
+										if(document.getElementById("edit_dlvreq_Rest_date").checked){
+											selectNCB('edit_dlvreq_dayOfWeekParent', '', false, '', true);
+										} 
+									}
+						    
+							</script>										 		
+								</td>
+							</tr>
+							<tr>								
+								<td class="alignL vTop padL8R16">
+									<input type="radio" id="edit_dlvreq_Rest_day" name="edit_dlvreq_Rest" onclick="toggleDeliveryRadio()" value="DELIVERYDAY" <%= (!"".equals(selectedDays.trim()) && (selectedDlvdate == null) ) ? "checked":""  %> />Delivery Day
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										<div><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></div>
+										<div class="gray" id="timeslotDisp">Eligible Day(s):</div>
+										<table class="tableCollapse" width="100%" id="edit_dlvreq_dayOfWeekParent" name="edit_dlvreq_dayOfWeekParent">
+											<tr>
+												<%-- sets the column widths --%>
+												<td width="50%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+												<td width="50%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+											</tr>
+											<%
+												//create week
+												List dayOfWeek = new ArrayList();
+													dayOfWeek.add("SUNDAY");
+													dayOfWeek.add("MONDAY");
+													dayOfWeek.add("TUESDAY");
+													dayOfWeek.add("WEDNESDAY");
+													dayOfWeek.add("THURSDAY");
+													dayOfWeek.add("FRIDAY");
+													dayOfWeek.add("SATURDAY");
 
-					    function setDate(field){
-					    	document.getElementById("effectiveDate").value=field.value;
-					    	document.timePick.selectedZoneId.value = document.timePick.zone.value;
-					    	document.timePick.actionName.value = "changeDate";
-							document.timePick.submit();
-					    }
-		
-		
-					    Calendar.setup(
-					    {
-					    showsTime : false,
-					    electric : false,
-					    inputField : "newEffectiveDate",
-					    ifFormat : "%Y-%m-%d",
-					    singleClick: true,
-					    button : "trigger_dlvDate" 
-					    }
-					    );
-			    
-				</script>
-							 		
-					</td>
-						
+												boolean bgGray = false;
+
+												for (int i = 0; i < dayOfWeek.size(); i++) {
+													String dowLong = dayOfWeek.get(i).toString();
+													String dowShort = dowLong.substring(0,3);//.toLowerCase();
+													boolean even = (i%2 == 0) ? true:false;
+
+													if (i == 0) {
+														%><tr><%
+													}
+
+													if (i!=0 && even) { %><tr><% }
+													%>
+
+														<td class="alignL vTop padL8R16 bord1px999<%=(bgGray)?" BG_exp":""%>" id="edit_dlvreq_chk<%=dowShort%>_parent" name="edit_dlvreq_chk<%=dowShort%>_parent" >
+															<input type="checkbox" id="edit_dlvreq_chk<%=dowShort%>" name="edit_dlvreq_chk<%=dowShort%>" onclick="cbToggle(this.id);" onchange="cbToggle(this.id);" <%= (selectedDays.indexOf(""+(i+1)) >-1 && selectedDlvdate == null)  ? "checked": "" %> /> <%=dowLong%>
+														</td>
+
+													<%
+													if (!even) { %></tr><% }
+
+													if (even) { bgGray = !bgGray; }
+												}
+											%>
+												<td class="alignL vTop padL8R16 gray8pt">Please choose atleast a single day</td>
+											</tr>
+											<tr>
+												<td colspan="2" class="alignR">
+													<a href="#" onclick="selectNCB('edit_dlvreq_dayOfWeekParent', '', true, '', true); return false;" class="greenLink">(Select All)</a>&nbsp;
+													<a href="#" onclick="selectNCB('edit_dlvreq_dayOfWeekParent', '', false, '', true); return false;" class="greenLink">(Select None)</a>
+												</td>
+											</tr>
+										</table>
+								</td>
+							</tr>
+							</table>
 				</tr>
 				
 				<tr>
@@ -393,7 +469,7 @@ function numbersonly(myfield, e, dec)
 							    showsTime : false,
 							    electric : false,
 							    inputField : "newStartDate",
-							    ifFormat : "%Y-%m-%d",
+							    ifFormat : "%m/%d/%Y" ,
 							    singleClick: true,
 							    button : "trigger_startDate" 
 						    }
@@ -438,7 +514,7 @@ function numbersonly(myfield, e, dec)
 						    showsTime : false,
 						    electric : false,
 						    inputField : "newEndDate",
-						    ifFormat : "%Y-%m-%d",
+						    ifFormat : "%m/%d/%Y" ,
 						    singleClick: true,
 						    button : "trigger_endDate" 
 						    }
@@ -478,20 +554,14 @@ function numbersonly(myfield, e, dec)
 					
 					function toggleRadius(){							
 							if(document.getElementById("radius").checked){
-								document.timePick.picked0.value = '';
-								document.timePick.picked1.value = '';
-								document.timePick.picked0.disabled = true;
-								document.timePick.picked1.disabled = true;
-								document.timePick.datepicker0.disabled = true;
-								document.timePick.datepicker1.disabled = true;	
+								document.getElementById("startTime").disabled = true;
+								document.getElementById("endTime").disabled = true;	
+								document.getElementById("startTime").value = '';
+								document.getElementById("endTime").value = '';	
 								document.getElementById("window_type").disabled=false;
 							} else {								
-								document.timePick.picked0.disabled = false;
-								document.timePick.picked1.disabled = false;
-								document.timePick.datepicker0.disabled = false;
-								document.timePick.datepicker1.disabled = false;	
-								document.timePick.picked0.value = '';
-								document.timePick.picked1.value = '';
+								document.getElementById("startTime").disabled = false;
+								document.getElementById("endTime").disabled = false;
 								deleteAllWindowType('windowTypeListTB');
 								document.getElementById("window_type").disabled=true;
 							}
@@ -580,33 +650,9 @@ function numbersonly(myfield, e, dec)
 					
 				<tr>
 					<td width="3%">&nbsp;</td>
-					<td> 
-					<!-- 
-						<select id="timeslot" name="timeslot" class="h10px w200px">
-							<option value="">Select Timeslot</option>
-						</select>
-					-->
-					<script language="JavaScript" type="text/javascript">
-							var howMany=2;//(number of times to be picked)
-							var pickerName=new Array('Start Time','End Time');//must contain entries as much as is value of howMany
-							var hCol='red';//hour hand color
-							var mCol='green';//minute hand color
-							var bgCol='#B0F0F0';//background color
-							var showMin=1;//possible values: 1,5,10,15,20,30
-							var show24=0;//set to 1, if 00:00 o'clock should be displayed as 24:00
-
-							if(document.getElementById){
-								document.write(writeAll(false));
-								document.close();
-							}
-							else{
-								document.write('Your browser doesn\'t support getElementById. Due to that, the time picker is not displayed.<br>');
-								document.close();
-							}
-							 document.timePick.picked0.value= document.timePick.startTime.value;
-							 document.timePick.picked1.value = document.timePick.endTime.value;
-										
-						</script>
+					<td>
+						<span>Start Time <input type="text" id="startTime" name="startTime" value="<%= startTime %>" size="10" maxlength="8" onblur="this.value=time(this.value);"/></span>
+					    <span>End Time <input type="text" id="endTime" name="endTime" value="<%= endTime %>" size="10" maxlength="8" onblur="this.value=time(this.value);"/></span>
 					</td>
 				</tr>	
 				<tr>
@@ -851,6 +897,100 @@ function numbersonly(myfield, e, dec)
 			document.observe('dom:loaded', function() {				
 				toggleRadius();
 			});
+			
+
+
+			String.prototype.trim = function() {
+				return this.replace(/^\s+|\s+$/g, "");
+			}
+
+			function time(time_string) {
+
+				var ampm = 'a';
+				var hour = -1;
+				var minute = 0;
+				var temptime = '';
+				time_string = time_string.trim();
+				var ampmPatEnd = (/AM|PM$/);
+				if (time_string.length == 8 && time_string.match(ampmPatEnd)) {
+					return time_string;
+				}
+				for ( var n = 0; n < time_string.length; n++) {
+
+					var ampmPat = (/a|p|A|P/);
+					if (time_string.charAt(n).match(ampmPat)) {
+						ampm = time_string.charAt(n);
+						break;
+					} else {
+						ampm = 'a';
+					}
+
+					var digPat = (/\d/);
+					if (time_string.charAt(n).match(digPat)) {
+						temptime += time_string.charAt(n);
+					}
+				}
+				if (temptime.length > 0 && temptime.length <= 2) {
+					hour = temptime;
+					minute = 0;
+				} else if (temptime.length == 3 || temptime.length == 4) {
+					if (temptime.length == 3) {
+						hour = time_string.charAt(0);
+						minute = time_string.charAt(1);
+						minute += time_string.charAt(2);
+					} else {
+						hour = time_string.charAt(0);
+						hour += time_string.charAt(1);
+						minute = time_string.charAt(2);
+						minute += time_string.charAt(3);
+					}
+				} else {
+					return '';
+				}
+
+				if ((hour <= 12) && (minute <= 59)) {
+
+					if (hour.toString().length == 1) {
+						hour = '0' + hour;
+					}
+
+					if (minute.toString().length == 1) {
+						minute = '0' + minute;
+					}
+					if (hour == '00') {
+						ampm = 'a'
+					}
+					//if (hour == '12' ) { ampm='p' }
+					temptime = hour + ':' + minute + ' ' + ampm.toUpperCase() + 'M';
+				} else {
+					temptime = '';
+				}
+
+				return temptime
+
+			}
+
+			function hour(time) {
+
+				var result = parseFloat(time.trim());
+				if (result == null || isNaN(result))
+					return "";
+				if (result > 24)
+					return "";
+				var result1 = "" + result;
+				if (result1.indexOf(".") == -1)
+					result1 += ".00";
+				else {
+					var index = result1.indexOf(".");
+					var le = result1.trim().length;
+					if (le - index > 3)
+						result1 = result1.substring(0, index + 3);
+				}
+				if (time.trim().length == 1)
+					result1 = "0" + result1;
+				return result1;
+
+			}
 		</script>
 		</crm:WSPromoController>
 	</crm:GetCurrentAgent>

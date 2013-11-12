@@ -42,7 +42,9 @@ function openURL(inLocationURL) {
 	<td class="border_bold">&nbsp;</td>
 	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Name</b></span></td>	
 	<td class="border_bold">&nbsp;</td>
-	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Delivery Date</b></span></td>	
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Delivery Date</b></span></td>
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Delivery Day</b></span></td>
 	<td class="border_bold">&nbsp;</td>
 	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Start Date</b></span></td>	
 	<td class="border_bold">&nbsp;</td>
@@ -94,11 +96,13 @@ function openURL(inLocationURL) {
 	<td class="border_bottom">&nbsp;</td>
 	<td class="border_bottom"><span class="detail_text"><%= promotion.getName() %></span></td>
 	<td class="border_bottom">&nbsp;</td>
-	<td class="border_bottom"><span class="detail_text"><%= CCFormatter.formatDateMonth(promotion.getEffectiveDate()) %></span></td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getEffectiveDate() != null ? CCFormatter.formatDateMonth(promotion.getEffectiveDate()) : null %></span></td>
 	<td class="border_bottom">&nbsp;</td>
-	<td class="border_bottom"><span class="detail_text"><%= CCFormatter.formatCaseDate(promotion.getStartDate()) %></span></td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getDayOfWeekStr() %></span></td>
 	<td class="border_bottom">&nbsp;</td>
-	<td class="border_bottom"><span class="detail_text"><%= CCFormatter.formatCaseDate(promotion.getEndDate()) %></span></td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getStartDate() != null ? CCFormatter.formatCaseDate(promotion.getStartDate()) : null %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getEndDate() != null ? CCFormatter.formatCaseDate(promotion.getEndDate()) : null %></span></td>
 	<td class="border_bottom">&nbsp;</td>
 	<td class="border_bottom"><span class="detail_text"><%= promotion.getZoneCode() %></span></td>
 	<td class="border_bottom">&nbsp;</td>
@@ -112,7 +116,7 @@ function openURL(inLocationURL) {
 	<td class="border_bottom">&nbsp;</td>
 	<td class="border_bottom"><span class="detail_text"><%= promotion.getRedeemCount() %></span></td>
 	<td class="border_bottom">&nbsp;</td>
-	<td class="border_bottom"><span class="detail_text"><%= PromotionFactory.getInstance().getRedemptions(promotion.getPromotionCode()) %></span></td>
+	<td class="border_bottom"><span class="detail_text"><%= PromotionFactory.getInstance().getRedemptions(promotion.getPromotionCode(), null) %></span></td>
 	<td class="border_bottom">&nbsp;</td>
 	<td class="border_bottom"><span class="detail_text"><%= promotion.getStatus().getName() %></span></td>
 	<% if(FDStoreProperties.isPromoPublishNodeMaster() && CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"promo_ws_create.jsp")) { %>

@@ -57,6 +57,7 @@ import com.freshdirect.fdstore.promotion.PromoVariantModelImpl;
 import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionApplicatorI;
 import com.freshdirect.fdstore.promotion.PromotionDlvDate;
+import com.freshdirect.fdstore.promotion.PromotionDlvDay;
 import com.freshdirect.fdstore.promotion.PromotionDlvTimeSlot;
 import com.freshdirect.fdstore.promotion.PromotionGeography;
 import com.freshdirect.fdstore.promotion.PromotionI;
@@ -382,6 +383,12 @@ public class FDPromotionNewDAO {
 		return redemptionCode;
 	}
 	
+	public static String promoRedemptionsWithNoDlvDateSQL =
+			"SELECT COUNT(sale_id) redemptions FROM CUST.PROMOTION_PARTICIPATION WHERE PROMOTION_ID = (SELECT ID FROM CUST.PROMOTION_NEW WHERE CODE = ?)";
+
+	public static String promoRedemptionsWithDlvDateSQL =
+			"SELECT COUNT(sale_id) redemptions FROM CUST.PROMOTION_PARTICIPATION WHERE PROMOTION_ID = (SELECT ID FROM CUST.PROMOTION_NEW WHERE CODE = ?) and REQUESTED_DATE = ?";
+	
 	/**
 	 * Load a redemption promotion
 	 * @param conn
@@ -390,12 +397,18 @@ public class FDPromotionNewDAO {
 	 * for AI is implemented, value returned will be promotion ID.
 	 * @throws SQLException
 	 */
-	public static Integer getRedemptions(Connection conn, String promoId) throws SQLException {
+	public static Integer getRedemptions(Connection conn, String promoId, Date requestedDate) throws SQLException {
 		
-		//TODO later the select query need to be changed to return ID column instead of Code. 
-		PreparedStatement ps = conn.prepareStatement("SELECT COUNT(sale_id) redemptions FROM CUST.PROMOTION_PARTICIPATION WHERE " +
-													 "PROMOTION_ID = (SELECT ID FROM CUST.PROMOTION_NEW WHERE CODE = ?)");
+		PreparedStatement ps = null;
+		if(requestedDate != null) {
+			ps = conn.prepareStatement(promoRedemptionsWithDlvDateSQL);
+		} else {
+			ps = conn.prepareStatement(promoRedemptionsWithNoDlvDateSQL);
+		}			
 		ps.setString(1, promoId);
+		if(requestedDate != null) {
+			ps.setDate(2, new java.sql.Date(requestedDate.getTime()));
+		}
 		ResultSet rs = ps.executeQuery();
 		int redemptions = 0;
 		if (rs.next()) {
@@ -1453,6 +1466,7 @@ public class FDPromotionNewDAO {
 	private final static String GET_PROMO_DLV_DATES = " select * from CUST.PROMO_DELIVERY_DATES where PROMOTION_ID = ?";
 	private final static String GET_PROMO_DLV_ZONES = " select * from CUST.PROMO_DLV_ZONE_STRATEGY where PROMOTION_ID = ?";
 	private final static String GET_PROMO_DLV_TIMESLOTS = " select * from CUST.PROMO_DLV_TIMESLOT where PROMO_DLV_ZONE_ID = ?";
+	private final static String GET_PROMO_DLV_DAYS = " select * from CUST.PROMO_DLV_DAY where PROMO_DLV_ZONE_ID = ?";
 	
 	protected static DlvZoneStrategy loadDlvZoneStrategy(Connection conn, String promoPK) throws SQLException {
 		DlvZoneStrategy dlvZoneStrategy = new DlvZoneStrategy();
@@ -1465,6 +1479,7 @@ public class FDPromotionNewDAO {
 			DlvZoneStrategy dlvZoneStrategy)
 			throws SQLException {
 		Map<Integer,List<PromotionDlvTimeSlot>> dlvTimeSlots = new HashMap<Integer,List<PromotionDlvTimeSlot>>();
+		Map<Integer, PromotionDlvDay> dlvDays = new HashMap<Integer, PromotionDlvDay>();
 		PreparedStatement ps;
 		ResultSet rs;
 		ps = conn.prepareStatement(GET_PROMO_DLV_ZONES);
@@ -1480,7 +1495,7 @@ public class FDPromotionNewDAO {
 		}
 		rs.close();
 		ps.close();
-		if(null !=dlvZoneStrategy.getDlvZoneId() && !"".equals(dlvZoneStrategy.getDlvZoneId().trim())){
+		if(null != dlvZoneStrategy.getDlvZoneId() && !"".equals(dlvZoneStrategy.getDlvZoneId().trim())){
 			ps = conn.prepareStatement(GET_PROMO_DLV_TIMESLOTS);
 			ps.setString(1, dlvZoneStrategy.getDlvZoneId());
 			rs = ps.executeQuery();
@@ -1498,8 +1513,21 @@ public class FDPromotionNewDAO {
 			}
 			rs.close();
 			ps.close();
+			
+			ps = conn.prepareStatement(GET_PROMO_DLV_DAYS);
+			ps.setString(1, dlvZoneStrategy.getDlvZoneId());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				PromotionDlvDay dlvDay = new PromotionDlvDay(rs.getInt("DAY_ID"), rs.getInt("REDEEM_CNT"));
+				if(!dlvDays.containsKey(dlvDay.getDayId())){
+					dlvDays.put(dlvDay.getDayId(), dlvDay);
+				}			
+			}
+			rs.close();
+			ps.close();
 		}
 		dlvZoneStrategy.setDlvTimeSlots(dlvTimeSlots);
+		dlvZoneStrategy.setDlvDayRedemtions(dlvDays);
 		loadDlvDayTypeStrategy(conn, promoPK, dlvZoneStrategy);
 	}
 
@@ -1535,6 +1563,7 @@ public class FDPromotionNewDAO {
 		ps.close();
 		dlvZoneStrategy.setDlvDates(dlvDates);
 	}
+
 	private static CartStrategy loadCartStrategy(Connection conn, String promoPK) throws SQLException{
 		CartStrategy cartStrategy = new CartStrategy();
 		PreparedStatement ps = conn.prepareStatement("select id, promotion_id, content_type, content_id from cust.promo_cart_strategy pcs where pcs.promotion_id = ? ");

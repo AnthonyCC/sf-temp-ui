@@ -100,8 +100,10 @@
                 <td colspan="7" align="center">
 						<input id="view_button" type="image" alt="View" src="./images/icons/view.gif"      onclick="javascript:doCompositeLink('srubbedAddress','zipCode','confidence','quality','group','dlvbuilding.do')"
 						onmousedown="this.src='./images/icons/view_ON.gif'" />
-                </td> 
+                </td>
+                <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request)){%>  
                 <td><input height="18" type="button" onclick="javascript:addtosnapshot('ec_table');" value="Add To Snapshot" style="font-size:11px"></td>
+                <% } %>
 				
 				 <td colspan="7" align="center">
 					 <input id="group_button" type="image" alt="Group" src="./images/icons/groups.gif" onclick="javascript:showDeliveryGroupsTable();" />

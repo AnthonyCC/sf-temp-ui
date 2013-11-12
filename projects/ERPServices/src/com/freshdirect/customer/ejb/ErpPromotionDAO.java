@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -20,17 +21,18 @@ public class ErpPromotionDAO {
 		ps.close();
 	}
 
-	public static void insert(Connection conn, PrimaryKey salePk, Set<String> promotionCodes) throws SQLException {
+	public static void insert(Connection conn, PrimaryKey salePk, Set<String> promotionCodes, Date requestedDate) throws SQLException {
 		if (promotionCodes.isEmpty()) {
 			return;
 		}
 
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"INSERT INTO CUST.PROMOTION_PARTICIPATION(SALE_ID, PROMOTION_ID) VALUES (?,(SELECT ID FROM CUST.PROMOTION_NEW WHERE CODE=?))");
+				"INSERT INTO CUST.PROMOTION_PARTICIPATION(SALE_ID, PROMOTION_ID, REQUESTED_DATE) VALUES (?, (SELECT ID FROM CUST.PROMOTION_NEW WHERE CODE=?), ?)");
 		for ( String promoCode : promotionCodes ) {
 			ps.setString(1, salePk.getId());
 			ps.setString(2, promoCode);
+			ps.setDate(3, new java.sql.Date(requestedDate.getTime()));
 			ps.addBatch();
 		}
 

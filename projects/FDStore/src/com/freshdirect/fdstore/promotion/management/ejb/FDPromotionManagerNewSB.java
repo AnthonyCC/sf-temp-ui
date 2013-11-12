@@ -89,7 +89,7 @@ public interface FDPromotionManagerNewSB extends EJBObject {
 	
 	public void storePromotionCustReqInfo(FDPromotionNewModel promotion)throws FDResourceException, FDDuplicatePromoFieldException,	FDPromoTypeNotFoundException, FDPromoCustNotFoundException,RemoteException ;
 	
-	public Integer getRedemptionCount(String promoId) throws FDResourceException, RemoteException;
+	public Integer getRedemptionCount(String promoId, Date requestedDate) throws FDResourceException, RemoteException;
 	
 	public String getRedemptionPromotionId(String  redemptionCode) throws RemoteException;
 	
@@ -109,7 +109,7 @@ public interface FDPromotionManagerNewSB extends EJBObject {
 	
 	public List<FDPromotionNewModel> getModifiedOnlyPromotions(Date lastModified) throws FDResourceException, RemoteException;
 	
-	public List<WSPromotionInfo> getWSPromotionInfos(Date fromDate, Date toDate,String status) throws FDResourceException,RemoteException;
+	public List<WSPromotionInfo> getWSPromotionInfos(Date fromDate, Date toDate, Date dlvDate, String zone, String status) throws FDResourceException,RemoteException;
 	
 	public WSPromotionInfo getWSPromotionInfo(String zoneCode, String startTime, 
 			String endTime, Date effectiveDate, String[] windowTypes) throws FDResourceException, RemoteException;

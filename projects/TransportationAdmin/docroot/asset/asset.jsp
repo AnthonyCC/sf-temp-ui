@@ -115,7 +115,9 @@
 		<script>		
 		 	var jsonrpcClient = new JSONRpcClient("asset.ax");
 		 	
-			addMultiRowHandlersColumn('ec_table', 'rowMouseOver', 'editasset.do', 'id', 0, 0, 'pAssetType','assetType');
+		 	<%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdminOrPlanning(request)){%> 
+				addMultiRowHandlersColumn('ec_table', 'rowMouseOver', 'editasset.do', 'id', 0, 0, 'pAssetType','assetType');
+			<% } %>
 			
 			function getFilterTestValue() {
 				var filters = getFilterValue(document.getElementById("assetForm"),false);

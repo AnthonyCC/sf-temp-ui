@@ -28,7 +28,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 	private List<PromotionDlvDate> dlvDates;
 	private String dlvZoneId;
 	private EnumDeliveryOption dlvDayType;
-	
+	private Map<Integer, PromotionDlvDay> dlvDayRedemtions;
 	
 	public String getDlvDays() {
 		return dlvDays;
@@ -70,6 +70,14 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		this.dlvZoneId = dlvZoneId;
 	}
 
+	public Map<Integer, PromotionDlvDay> getDlvDayRedemtions() {
+		return dlvDayRedemtions;
+	}
+
+	public void setDlvDayRedemtions(Map<Integer, PromotionDlvDay> dlvDayRedemtions) {
+		this.dlvDayRedemtions = dlvDayRedemtions;
+	}
+
 	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
 		String zoneCode =context.getDeliveryZone();
@@ -86,6 +94,9 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 						}
 						int day = dlvReservation.getTimeslot().getDayOfWeek();		
 						boolean e = dlvDays.contains(String.valueOf(day));
+						if(e && null != dlvDayRedemtions && !dlvDayRedemtions.isEmpty()){
+							e = checkDayMaxRedemtions(dlvReservation.getTimeslot(), promotionCode);
+						}
 						if(e && null !=dlvTimeSlots && !dlvTimeSlots.isEmpty()){
 							List<PromotionDlvTimeSlot> dlvTimeSlotList = dlvTimeSlots.get(day);
 							if(null != dlvTimeSlotList) {								
@@ -253,16 +264,20 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 
 	public boolean isZonePresent(String zoneId) {
 		if(dlvZones == null || dlvZones.isEmpty()) return false;
-			if(zoneId != null) return (dlvZones.contains(zoneId) || dlvZones.contains("ALL"));
+			if(zoneId != null) 
+				return (dlvZones.contains(zoneId) || dlvZones.contains("ALL"));
 		return false;
 	}
 	
-	public boolean isTimeSlotEligible(FDTimeslot ts, Map<Double, List<FDTimeslot>> tsWindowMap, FDUserI user) {
+	public boolean isTimeSlotEligible(FDTimeslot ts, Map<Double, List<FDTimeslot>> tsWindowMap, FDUserI user, String promotionCode) {
 		if(null == dlvDays || dlvDays.isEmpty())return false;
 		int day = ts.getDayOfWeek();
 		boolean e = dlvDays.contains(String.valueOf(day));
 		if(e && null != dlvDates && !dlvDates.isEmpty()){
 			e = checkBaseDateRange(ts.getDlvTimeslot().getBaseDate());
+		}
+		if(e && null != dlvDayRedemtions && !dlvDayRedemtions.isEmpty()){
+			e = checkDayMaxRedemtions(ts, promotionCode);
 		}
 		if(e && null !=dlvTimeSlots && !dlvTimeSlots.isEmpty()){
 			List<PromotionDlvTimeSlot> dlvTimeSlotList = dlvTimeSlots.get(day);
@@ -273,6 +288,21 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		return e;
 	}
 	
+	private boolean checkDayMaxRedemtions(FDTimeslot ts, String promotionCode) {
+		// TODO Auto-generated method stub
+		if(null != dlvDayRedemtions && !dlvDayRedemtions.isEmpty()){
+			PromotionDlvDay dlvDay = dlvDayRedemtions.get(ts.getDayOfWeek());
+			if(dlvDay != null) {
+				int redeemCnt = PromotionFactory.getInstance().getRedemptions(promotionCode, ts.getBaseDate());
+				if(redeemCnt < dlvDay.getRedeemCnt()) {
+					return true;	
+				}
+			}
+		}
+		
+		return false;
+	}
+
 	@Override
 	public int getPrecedence() {
 		

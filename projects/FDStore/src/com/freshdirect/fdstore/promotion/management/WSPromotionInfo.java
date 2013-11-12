@@ -13,6 +13,7 @@ public class WSPromotionInfo extends ModelSupport {
 	private Date startDate;
 	private Date endDate;
 	private EnumDeliveryOption deliveryDayType;
+
 	public Date getStartDate() {
 		return startDate;
 	}
@@ -34,6 +35,7 @@ public class WSPromotionInfo extends ModelSupport {
 	private int redemptions;
 	private int dayofweek;
 	private String[] windowType;
+	private String[] dayOfWeek;
 	
 	public int getRedemptions() {
 		return redemptions;
@@ -115,7 +117,12 @@ public class WSPromotionInfo extends ModelSupport {
 	public void setDeliveryDayType(EnumDeliveryOption deliveryDayType) {
 		this.deliveryDayType = deliveryDayType;
 	}
-	
+	public String[] getDayOfWeek() {
+		return dayOfWeek;
+	}
+	public void setDayOfWeek(String[] dayOfWeek) {
+		this.dayOfWeek = dayOfWeek;
+	}
 	public String getWindowTypeStr() {
 		StringBuffer buf = new StringBuffer();
 		if(this.windowType != null && this.windowType.length > 0){
@@ -125,6 +132,17 @@ public class WSPromotionInfo extends ModelSupport {
 				buf.append(",");
 			}
 			buf.append(" min(s)");
+		}
+		return buf.toString();
+	}
+	public String getDayOfWeekStr() {
+		StringBuffer buf = new StringBuffer();
+		if(this.dayOfWeek != null && this.dayOfWeek.length > 0){
+			for(int i=0;i < this.dayOfWeek.length;i++){
+				buf.append(this.dayOfWeek[i]);
+				if(i < this.dayOfWeek.length-1)
+				buf.append(",");
+			}
 		}
 		return buf.toString();
 	}

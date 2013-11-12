@@ -66,9 +66,11 @@
                  <td>
                      <input type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doCompositeLink('rDate','unassigned.do', 'autorefresh')" />
                   </td> 
+                  <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request)){%> 
                   <td>
                      <input type = "button" value="&nbsp;Mass ReRoute&nbsp;" onclick="javascript:showReRouteForm()" />
                   </td>
+                  <% } %>
               </tr>
               </table>        
               
@@ -189,8 +191,9 @@
 		    }
 		}
 	 }
-
-	 addAsyncHandler('ec_table', 'rowMouseOver', 0);
+		 <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request)){%> 
+		 		addAsyncHandler('ec_table', 'rowMouseOver', 0);
+		 <% } %>
 	<% } %>	
     </script>
   </tmpl:put>

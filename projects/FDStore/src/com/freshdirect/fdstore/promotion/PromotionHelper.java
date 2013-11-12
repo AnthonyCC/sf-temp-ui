@@ -86,7 +86,7 @@ public class PromotionHelper {
 						app = (PromotionApplicatorI) p.getApplicatorList().get(0);
 					DlvZoneStrategy zoneStrategy = app != null ? app.getDlvZoneStrategy() : null;
 					if(zoneStrategy != null && zoneStrategy.isZonePresent(timeSlot.getZoneCode()) 
-							&& zoneStrategy.isTimeSlotEligible(timeSlot, tsWindowMap, user)){						
+							&& zoneStrategy.isTimeSlotEligible(timeSlot, tsWindowMap, user, promoId)){
 						double promoAmt = p.getHeaderDiscountTotal();
 						if(isMaxDiscountAmount(promoAmt, p.getPriority(), applied)){
 							applied = new Discount(promoId, EnumDiscountType.DOLLAR_OFF, promoAmt);
@@ -170,7 +170,7 @@ public class PromotionHelper {
 							DlvZoneStrategy dlvZoneStrategy = app.getDlvZoneStrategy();
 							if(dlvZoneStrategy != null) {
 								if(dlvZoneStrategy.getDlvTimeSlots() != null && !dlvZoneStrategy.getDlvTimeSlots().isEmpty()){
-									isEligible = dlvZoneStrategy.isTimeSlotEligible(timeSlot, null, user);
+									isEligible = dlvZoneStrategy.isTimeSlotEligible(timeSlot, null, user, promotion.getPromotionCode());
 								} else if(dlvZoneStrategy.getDlvDates() != null && !dlvZoneStrategy.getDlvDates().isEmpty()) {
 									isEligible = dlvZoneStrategy.checkDlvDates(timeSlot);
 								}

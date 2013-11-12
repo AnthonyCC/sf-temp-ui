@@ -22,6 +22,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.delivery.EnumDeliveryOption;
+import com.freshdirect.enums.WeekDay;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.promotion.EnumOfferType;
@@ -36,6 +37,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoCustNotFoundException;
 import com.freshdirect.fdstore.promotion.management.FDPromoCustStrategyModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoDlvDateModel;
+import com.freshdirect.fdstore.promotion.management.FDPromoDlvDayModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoDlvTimeSlotModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoDlvZoneStrategyModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoTypeNotFoundException;
@@ -57,10 +59,10 @@ import com.freshdirect.webapp.util.CCFormatter;
 public class WSPromoControllerTag extends AbstractControllerTag {
 	
 	private static Category LOGGER = LoggerFactory.getInstance(AdminToolsControllerTag.class);
-	private static  final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private static  final DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	private static  final DateFormat timeFormat = new SimpleDateFormat("hh:mm a");
 	private final static String JUST_BEFORE_MIDNIGHT = "11:59:59 PM";
-	private static  final DateFormat endDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");	
+	private static  final DateFormat endDateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");	
 	
 	private final static String PROMO_DESCRIPTION = "${0} timeslot discount - see delivery page for details";
 	private final static String OFFER_DESCRIPTION = "This offer is good for a ${0} discount on orders received in Zone {1} " +
@@ -106,6 +108,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 						windowTypes = new String[]{"ALL"};
 					}
 					String profileOperator = NVL.apply(request.getParameter("custreq_profileAndOr"),"").trim();
+					String dlvRestrictionType = NVL.apply(request.getParameter("edit_dlvreq_Rest"),"").trim();
 					
 					if(promoCode.length() == 0 ){
 						//Validate if the given effecttive_date/zone/timeslot or window type combination already exists.
@@ -136,7 +139,8 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 							return true;
 						}
 						//Create a new WS Promotion.
-						FDPromotionNewModel promotion = constructPromotion(effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit, cohorts, deliveryDayType, radius, windowTypes, attrParamList, profileOperator);
+						FDPromotionNewModel promotion = constructPromotion(request, effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit, cohorts, 
+								deliveryDayType, radius, windowTypes, attrParamList, profileOperator, dlvRestrictionType);
 						postValidate(promotion, actionResult);
 						
 
@@ -197,7 +201,8 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 						promotion.setModifiedBy(agent.getUserId());
 						promotion.setModifiedDate(new Date());
 
-						updatePromotion(promotion, effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit, deliveryDayType, radius, windowTypes, attrParamList, profileOperator);
+						updatePromotion(request, promotion, effectiveDate, startDateStr, endDateStr, zone, startTime, endTime, discount, redeemLimit, deliveryDayType, 
+								radius, windowTypes, attrParamList, profileOperator, dlvRestrictionType);
 
 						postValidate(promotion, actionResult);
 						/*APPDEV-2004*/
@@ -313,18 +318,8 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 					"newBlkEndDate",
 					"End Date cannot be less than the Start Date");
 			success = false;
-		}	
+		}
 
-		String effectiveDate = NVL.apply(request.getParameter("effectiveDate"), "").trim();
-		if(effectiveDate == null || effectiveDate.length() == 0){
-			actionResult.addError(true, "effectiveDate", "Please select a valid Delivery date.");
-			success = false; 
-		}
-		Date dlvDate  = dateFormat.parse(effectiveDate);
-		if(success && (dlvDate.before(startDate) || dlvDate.after(endDate))) {
-			actionResult.addError(true, "effectiveDate", "Delivery date should fall within Promotion start date and end date.");
-			success = false; 
-		}
 		String zone = NVL.apply(request.getParameter("selectedZoneId"), "").trim();
 		if(zone == null || zone.length() == 0){
 			actionResult.addError(true, "zone", "Please select a Zone.");
@@ -365,6 +360,32 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 		} catch (ParseException e) {
 			//Do nothing.
 		}
+		String dlvRestrictionType = NVL.apply(request.getParameter("edit_dlvreq_Rest"),"").trim();
+		if("DELIVERYDAY".equals(dlvRestrictionType)) {
+			WeekDay weekNames[] = WeekDay.values();
+			boolean isADayAdded = false;
+			for (int i = 0; i < weekNames.length; i++) {
+				String daySelected = request.getParameter("edit_dlvreq_chk"+weekNames[i].name());
+				if(null != daySelected) {
+					isADayAdded = true;	
+					break;
+				}
+			}
+			if(!isADayAdded){
+				actionResult.addError(true, "daysEmpty", " Atleast a day should be selected for the ZONE type geography restriction.");
+			}
+		} else {
+			String effectiveDate = NVL.apply(request.getParameter("effectiveDate"), "").trim();
+			if(effectiveDate == null || effectiveDate.length() == 0){
+				actionResult.addError(true, "effectiveDate", "Please select a valid Delivery date.");
+				success = false; 
+			}
+			Date dlvDate  = dateFormat.parse(effectiveDate);
+			if(success && (dlvDate.before(startDate) || dlvDate.after(endDate))) {
+				actionResult.addError(true, "effectiveDate", "Delivery date should fall within Promotion start date and end date.");
+				success = false; 
+			}
+		}
 
 		return success; 
 	}
@@ -401,8 +422,9 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			}
 	}
 	@SuppressWarnings("unchecked")
-	private FDPromotionNewModel constructPromotion(String effectiveDate, String startDateStr, String endDateStr, String zone, String startTime,
-			String endTime, String discount, String redeemLimit, String[] cohorts, String deliveryDayType, String radius, String[] windowTypes, List attrParamList, String profileOperator) throws FDResourceException {
+	private FDPromotionNewModel constructPromotion(HttpServletRequest request, String effectiveDate, String startDateStr, String endDateStr, String zone, String startTime,
+			String endTime, String discount, String redeemLimit, String[] cohorts, String deliveryDayType, String radius, String[] windowTypes, List attrParamList, String profileOperator,
+			String dlvRestrictionType) throws FDResourceException {
 
 		try {
 			Date startDate = dateFormat.parse(startDateStr);
@@ -417,7 +439,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			
 			long E4 = Math.round(Math.random()*1000); //Unique counter
 			String section1 = "X".equalsIgnoreCase(radius) ? "RADIUS" : "STATIC";
-			promotion.setName("WS_"+effectiveDate+"_Zone"+zone+"_"+section1+"_"+E4+"_$"+discount);
+			promotion.setName("WS_"+DateUtil.format(DateUtil.parseMDY(effectiveDate))+"_Zone"+zone+"_"+section1+"_"+E4+"_$"+discount);
 			
 			promotion.setPromotionType(EnumPromotionType.HEADER.getName());
 			promotion.setOfferType(EnumOfferType.WINDOW_STEERING.getName());
@@ -428,8 +450,10 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
 			promotion.setTerms(formatTerms(TERMS, discount, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
 			promotion.setMaxUsage("999");
-			if(redeemCnt > 0)
+			if(redeemCnt > 0 && "DELIVERYDATE".equals(dlvRestrictionType))
 				promotion.setRedeemCount(redeemCnt);
+			else
+				promotion.setRedeemCount(null);
 			List<FDPromoCustStrategyModel> custStrategies = new ArrayList<FDPromoCustStrategyModel>();
 			FDPromoCustStrategyModel custModel = new FDPromoCustStrategyModel();
 			custModel.setOrderTypeHome(true);
@@ -450,33 +474,74 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			}
 			promotion.setExpirationDate(expDate);
 
-			Date dlvDate = dateFormat.parse(effectiveDate);
 			promotion.setRadius(radius);
-			FDPromoDlvDateModel dateModel = new FDPromoDlvDateModel();
-			dateModel.setDlvDateStart(dlvDate);
-			dateModel.setDlvDateEnd(dlvDate);
-			List<FDPromoDlvDateModel> dlvDates = new ArrayList<FDPromoDlvDateModel>();
-			dlvDates.add(dateModel);
-			promotion.setDlvDates(dlvDates);
-			FDPromoDlvTimeSlotModel timeSlotModel = new FDPromoDlvTimeSlotModel();
-			timeSlotModel.setPromoDlvZoneId(zone);
-			if(!"X".equalsIgnoreCase(radius)){
-				timeSlotModel.setDlvTimeStart(startTime);
-				timeSlotModel.setDlvTimeEnd(endTime);
-			} else {
-				timeSlotModel.setWindowTypes(windowTypes);
-			}
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(dlvDate);
-			int dayId = cal.get(Calendar.DAY_OF_WEEK);
-			timeSlotModel.setDayId(dayId);
-			List<FDPromoDlvTimeSlotModel> dlvTimeSlots = new ArrayList<FDPromoDlvTimeSlotModel>();
-			dlvTimeSlots.add(timeSlotModel);
+
+			Date dlvDate = null;
+			FDPromoDlvTimeSlotModel timeSlotModel = null;
+			FDPromoDlvDayModel dlvDay = null;
+			
 			FDPromoDlvZoneStrategyModel dlvZoneModel = new FDPromoDlvZoneStrategyModel();
-			dlvZoneModel.setDlvZones(new String[]{zone});
+			List<FDPromoDlvTimeSlotModel> dlvTimeSlots = new ArrayList<FDPromoDlvTimeSlotModel>();
+			List<FDPromoDlvDayModel> dlvDays = new ArrayList<FDPromoDlvDayModel>();
+
+			dlvZoneModel.setDlvDayRedemtions(dlvDays);
 			dlvZoneModel.setDlvTimeSlots(dlvTimeSlots);
+			dlvZoneModel.setDlvZones(new String[]{zone});
 			dlvZoneModel.setPromotionId("");
-			dlvZoneModel.setDlvDays(String.valueOf(dayId));
+			
+			if("DELIVERYDATE".equals(dlvRestrictionType)) {
+				dlvDate = dateFormat.parse(effectiveDate);
+				FDPromoDlvDateModel dateModel = new FDPromoDlvDateModel();
+				dateModel.setDlvDateStart(dlvDate);
+				dateModel.setDlvDateEnd(dlvDate);
+				List<FDPromoDlvDateModel> dlvDates = new ArrayList<FDPromoDlvDateModel>();
+				dlvDates.add(dateModel);
+				promotion.setDlvDates(dlvDates);
+			
+				timeSlotModel = new FDPromoDlvTimeSlotModel();
+				timeSlotModel.setPromoDlvZoneId(zone);
+			
+				if(!"X".equalsIgnoreCase(radius)){
+					timeSlotModel.setDlvTimeStart(startTime);
+					timeSlotModel.setDlvTimeEnd(endTime);
+				} else {
+					timeSlotModel.setWindowTypes(windowTypes);
+				}
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(dlvDate);
+				int dayId = cal.get(Calendar.DAY_OF_WEEK);
+				timeSlotModel.setDayId(dayId);
+				dlvZoneModel.setDlvDays(String.valueOf(dayId));
+				dlvTimeSlots.add(timeSlotModel);
+				
+			} else if("DELIVERYDAY".equals(dlvRestrictionType)) {
+
+				WeekDay weekNames[] = WeekDay.values();
+				StringBuffer daysSelected = new StringBuffer();								
+				for (int i = 0; i < weekNames.length; i++) {
+					String daySelected = request.getParameter("edit_dlvreq_chk"+weekNames[i].name());
+					if(null != daySelected) {
+						timeSlotModel = new FDPromoDlvTimeSlotModel();
+						timeSlotModel.setPromoDlvZoneId(zone);
+						if(!"X".equalsIgnoreCase(radius)){
+							timeSlotModel.setDlvTimeStart(startTime);
+							timeSlotModel.setDlvTimeEnd(endTime);
+						} else {
+							timeSlotModel.setWindowTypes(windowTypes);
+						}
+						timeSlotModel.setDayId(i+1);
+						dlvTimeSlots.add(timeSlotModel);
+						daysSelected.append(i+1);
+						
+						dlvDay = new FDPromoDlvDayModel();
+						dlvDay.setDayId(i+1);
+						dlvDay.setRedeemCount(redeemCnt);
+						dlvDays.add(dlvDay);
+					}	
+				}
+				dlvZoneModel.setDlvDays(daysSelected.toString());
+			}
+			
 			List<FDPromoDlvZoneStrategyModel> dlvZones = new ArrayList<FDPromoDlvZoneStrategyModel>();
 			dlvZones.add(dlvZoneModel);
 			promotion.setDlvZoneStrategies(dlvZones);
@@ -491,8 +556,9 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 		}
 	}
 
-	private void updatePromotion(FDPromotionNewModel promotion, String effectiveDate, String startDateStr, String endDateStr, String zone, String startTime, 
-			String endTime, String discount, String redeemLimit, String deliveryDayType, String radius, String[] windowTypes, List attrParamList, String profileOperator) throws FDResourceException{
+	private void updatePromotion(HttpServletRequest request, FDPromotionNewModel promotion, String effectiveDate, String startDateStr, String endDateStr, String zone, String startTime, 
+			String endTime, String discount, String redeemLimit, String deliveryDayType, String radius, String[] windowTypes, List attrParamList, String profileOperator,
+			String dlvRestrictionType) throws FDResourceException{
 		try {
 			Date startDate = dateFormat.parse(startDateStr);
 			Date expDate = endDateFormat.parse(endDateStr+" "+JUST_BEFORE_MIDNIGHT);
@@ -503,7 +569,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			
 			long E4 = Math.round(Math.random()*1000); //Unique counter
 			String section1 = "X".equalsIgnoreCase(radius)?"RADIUS":"STATIC";
-			promotion.setName("WS_"+effectiveDate+"_Zone"+zone+"_"+section1+"_"+E4+"_$"+discount);
+			promotion.setName("WS_"+DateUtil.format(DateUtil.parseMDY(effectiveDate))+"_Zone"+zone+"_"+section1+"_"+E4+"_$"+discount);
 			promotion.setDescription(formatPromoDescription(PROMO_DESCRIPTION, discount));
 			promotion.setOfferDesc(formatAudienceDescription(OFFER_DESCRIPTION, discount, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
 			promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
@@ -517,37 +583,83 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 				promotion.setStartDate(DateUtil.truncate(startDate));
 			}
 			promotion.setExpirationDate(expDate);
-			if(redeemCnt > 0)
+			if(redeemCnt > 0 && "DELIVERYDATE".equals(dlvRestrictionType))
 				promotion.setRedeemCount(redeemCnt);
-			Date dlvDate = dateFormat.parse(effectiveDate);
-			FDPromoDlvDateModel dateModel = new FDPromoDlvDateModel();
-			dateModel.setDlvDateStart(dlvDate);
-			dateModel.setDlvDateEnd(dlvDate);
-			List<FDPromoDlvDateModel> dlvDates = new ArrayList<FDPromoDlvDateModel>();
-			dlvDates.add(dateModel);
-			promotion.setDlvDates(dlvDates);
-			FDPromoDlvTimeSlotModel timeSlotModel = new FDPromoDlvTimeSlotModel();
-			if(!"X".equalsIgnoreCase(radius)){
-				timeSlotModel.setDlvTimeStart(startTime);
-				timeSlotModel.setDlvTimeEnd(endTime);
-			} else {
-				timeSlotModel.setWindowTypes(windowTypes);
-			}
-			timeSlotModel.setPromoDlvZoneId(zone);
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(dlvDate);
-			int dayId = cal.get(Calendar.DAY_OF_WEEK);
-			timeSlotModel.setDayId(dayId);
-			List<FDPromoDlvTimeSlotModel> dlvTimeSlots = new ArrayList<FDPromoDlvTimeSlotModel>();
-			dlvTimeSlots.add(timeSlotModel);
+			else
+				promotion.setRedeemCount(null);
+				
+			Date dlvDate = null;
+			FDPromoDlvTimeSlotModel timeSlotModel = null;
+			FDPromoDlvDayModel dlvDay = null;
+			
 			FDPromoDlvZoneStrategyModel dlvZoneModel = new FDPromoDlvZoneStrategyModel();
-			dlvZoneModel.setDlvZones(new String[]{zone});
+			List<FDPromoDlvTimeSlotModel> dlvTimeSlots = new ArrayList<FDPromoDlvTimeSlotModel>();	
+			List<FDPromoDlvDateModel> dlvDates = new ArrayList<FDPromoDlvDateModel>();
+			List<FDPromoDlvDayModel> dlvDays = new ArrayList<FDPromoDlvDayModel>();
+			
+			dlvZoneModel.setDlvDayRedemtions(dlvDays);
 			dlvZoneModel.setDlvTimeSlots(dlvTimeSlots);
-			dlvZoneModel.setPromotionId(promotion.getId());
-			dlvZoneModel.setDlvDays(String.valueOf(dayId));
+			dlvZoneModel.setDlvZones(new String[]{zone});			
+			dlvZoneModel.setPromotionId("");
+			
+			if("DELIVERYDATE".equals(dlvRestrictionType)) {
+				dlvDate = dateFormat.parse(effectiveDate);
+				FDPromoDlvDateModel dateModel = new FDPromoDlvDateModel();
+				dateModel.setDlvDateStart(dlvDate);
+				dateModel.setDlvDateEnd(dlvDate);
+				
+				dlvDates.add(dateModel);
+				promotion.setDlvDates(dlvDates);				
+			
+				timeSlotModel = new FDPromoDlvTimeSlotModel();
+				timeSlotModel.setPromoDlvZoneId(zone);
+			
+				if(!"X".equalsIgnoreCase(radius)){
+					timeSlotModel.setDlvTimeStart(startTime);
+					timeSlotModel.setDlvTimeEnd(endTime);
+				} else {
+					timeSlotModel.setWindowTypes(windowTypes);
+				}
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(dlvDate);
+				int dayId = cal.get(Calendar.DAY_OF_WEEK);
+				timeSlotModel.setDayId(dayId);
+				dlvZoneModel.setDlvDays(String.valueOf(dayId));
+				dlvTimeSlots.add(timeSlotModel);
+				
+			} else if("DELIVERYDAY".equals(dlvRestrictionType)) {
+
+				WeekDay weekNames[] = WeekDay.values();
+				StringBuffer daysSelected = new StringBuffer();								
+				for (int i = 0; i < weekNames.length; i++) {
+					String daySelected = request.getParameter("edit_dlvreq_chk"+weekNames[i].name());
+					if(null != daySelected) {
+						timeSlotModel = new FDPromoDlvTimeSlotModel();
+						timeSlotModel.setPromoDlvZoneId(zone);
+						if(!"X".equalsIgnoreCase(radius)){
+							timeSlotModel.setDlvTimeStart(startTime);
+							timeSlotModel.setDlvTimeEnd(endTime);
+						} else {
+							timeSlotModel.setWindowTypes(windowTypes);
+						}
+						timeSlotModel.setDayId(i+1);
+						dlvTimeSlots.add(timeSlotModel);
+						daysSelected.append(i+1);
+						
+						dlvDay = new FDPromoDlvDayModel();
+						dlvDay.setDayId(i+1);
+						dlvDay.setRedeemCount(redeemCnt);
+						dlvDays.add(dlvDay);
+					}	
+				}
+				dlvZoneModel.setDlvDays(daysSelected.toString());
+				promotion.setDlvDates(dlvDates);
+			}
+
 			List<FDPromoDlvZoneStrategyModel> dlvZones = new ArrayList<FDPromoDlvZoneStrategyModel>();
 			dlvZones.add(dlvZoneModel);
 			promotion.setDlvZoneStrategies(dlvZones);
+
 			List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();
 			if(custStrategies != null && !custStrategies.isEmpty()){
 				FDPromoCustStrategyModel custStrategy = custStrategies.get(0);

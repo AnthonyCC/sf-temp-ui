@@ -171,7 +171,10 @@
 	          location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+ param2;
         } 
 
-       	addRowHandlersFilterTest('ec_table', 'rowMouseOver', 'editscrib.do','scribId',0, 0);
+        <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdminOrPlanning(request)){%>
+       		addRowHandlersFilterTest('ec_table', 'rowMouseOver', 'editscrib.do','scribId',0, 0);
+       	<% } %>
+       	
       	document.getElementById("scribDay").value='<%=request.getAttribute("scribDay")%>';
 
         function getFilterTestValue()

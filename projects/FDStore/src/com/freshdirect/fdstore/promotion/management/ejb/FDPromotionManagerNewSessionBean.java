@@ -1,6 +1,5 @@
 package com.freshdirect.fdstore.promotion.management.ejb;
 
-import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -88,11 +87,11 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public List<WSPromotionInfo> getWSPromotionInfos(Date fromDate, Date toDate,String status) throws FDResourceException {
+	public List<WSPromotionInfo> getWSPromotionInfos(Date fromDate, Date toDate, Date dlvDate, String zone, String status) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			List<WSPromotionInfo> promotions = FDPromotionManagerNewDAO.getWSPromotionInfos(conn, fromDate, toDate,status);
+			List<WSPromotionInfo> promotions = FDPromotionManagerNewDAO.getWSPromotionInfos(conn, fromDate, toDate, dlvDate, zone, status);
 			return promotions;
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
@@ -795,11 +794,11 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public Integer getRedemptionCount(String promoId) throws FDResourceException {
+	public Integer getRedemptionCount(String promoId, Date requestedDate) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			Integer count = FDPromotionNewDAO.getRedemptions(conn, promoId);
+			Integer count = FDPromotionNewDAO.getRedemptions(conn, promoId, requestedDate);
 			return count;
 
 		} catch (SQLException sqle) {

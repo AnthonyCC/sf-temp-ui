@@ -14,7 +14,9 @@ public class WSPromoFilterCriteria {
 	private Date toDate;
 	private String toDateStr;
 	private String status;
-	
+	private Date dlvDate;
+	private String dlvDateStr;
+	private String zone;
 	
 	public WSPromoFilterCriteria() {
 	
@@ -51,9 +53,7 @@ public class WSPromoFilterCriteria {
 
 	public boolean isEmpty(){
 		boolean isEmtpy = true;
-		if((null != fromDate) 
-				|| (null != toDate))
-				{
+		if(null != dlvDate) {
 			isEmtpy = false;
 		}
 		return isEmtpy;
@@ -81,4 +81,29 @@ public class WSPromoFilterCriteria {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	public Date getDlvDate() {
+		return getFormattedDate(dlvDateStr, "00:00 AM");
+	}
+
+	public void setDlvDate(Date dlvDate) {
+		this.dlvDate = dlvDate;
+	}
+
+	public String getDlvDateStr() {
+		return dlvDateStr;
+	}
+
+	public void setDlvDateStr(String dlvDateStr) {
+		this.dlvDateStr = dlvDateStr;
+	}
+
+	public String getZone() {
+		return zone;
+	}
+
+	public void setZone(String zone) {
+		this.zone = zone;
+	}
+	
 }
