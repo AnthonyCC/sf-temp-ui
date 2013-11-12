@@ -171,10 +171,11 @@
 						 	<tr>
 								<td class=""><input type="checkbox" <%= (_command.getZoneCode()!=null ?  " " : " disabled=\"disabled\"") %>  name="<%=_command.getZoneCode()%>"/></td>
 								<td class=""><%= _command.getZoneCode()%></td>
-								<td class="" name="address"><%= _command.getAddress()%></td>
+								<td class="" id="address-<%= i %>"><%= _command.getAddress()%></td>
 								<td class=""><%= _command.getSoldOutWindow()%></td>
 						
-							 <%	
+							 <%
+							 	 i++;
 								 for(TimeRange range : allWindows) {
 	 							    String subClass = "";
 									String isDynamic = "";
@@ -236,14 +237,13 @@
 			var table_capacity = document.getElementById("tbl_capacityAnalyzer");
 			if(table_capacity != null) {
 				var checkboxList_Address = table_capacity.getElementsByTagName("input");
-				var addressList = document.getElementsByName('address');
 	            var checked = "";
 	            var result = "";
-	            for (i = 0; i < checkboxList_Address.length; i++) {            
+	            for (var i = 0; i < checkboxList_Address.length; i++) {            
 	              if (checkboxList_Address[i].type=="checkbox" && !checkboxList_Address[i].disabled)  {
 	              	if(checkboxList_Address[i].checked) {
 	              		checked += checkboxList_Address[i].name+",";
-						result += addressList[i].innerHTML+"_";
+	              		result += document.getElementById("address-"+i).innerHTML+"_";
 	              	}
 	              }
 	            }
