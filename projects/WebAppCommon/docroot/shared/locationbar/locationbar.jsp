@@ -93,19 +93,22 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 			height: auto;
 			background-color: #fff;
 			padding: 15px 20px;
-			box-shadow: 3px 3px 3px 0 #666, -3px 3px 6px #888;
-			border: 1px solid #666;
-			border-left: 1px solid #888;
-			border-top: 1px solid #5B8710;
-		    border-radius: 10px 0 10px 10px;
+			border: 1px solid #E3E6D7;
+    		border-radius: 10px 0 10px 10px;
+    		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+		}
+		#login_cont_formContent a {
+			font-size: 11px;
 		}
 		#login_cont_formContent_email, #login_cont_formContent_password {
 			width: 100%;
+			-moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
 		}
 		#login_cont_formContent .errorMsg {
 			border: 1px solid #f00;
 			background-color: #FEE7ED;
 			padding: 6px;
+			margin-top: 20px;
 		}
 		#login_cont_formContent .errorMsg .header {
 			font-weight: bold;
@@ -113,8 +116,9 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 		}
 		#login_cont_formContentForm_signInCont {
 			text-align: right;
+			padding-right: 5px;
 		}
-		#login_cont_formContent div {
+		#login_cont_formContent .fieldInputs {
 			margin: 6px 0;
 		}
 		#locationbar .loginButtonTab {
@@ -129,6 +133,9 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 			float: left;
 			font-size: 11px;
 			font-weight: bold;
+		}
+		#login_cont_formContentForm_signIn {
+			margin: 10px 0 0 0;
 		}
 	</style>
 	<script>
@@ -193,15 +200,15 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
             	var loginDropboxHtml = '';
             	loginDropboxHtml += '<div id="login_cont_formContent" style="display: none">';
             		loginDropboxHtml += '<form id="login_cont_formContentForm">';
-            			loginDropboxHtml += '<div><input id="login_cont_formContent_email" name="userId" value="Username" data-deftext="Username" class="ccc" /></div>';
-            			loginDropboxHtml += '<div><input id="login_cont_formContent_password" name="password" value="Password" data-deftext="Password" class="ccc" type="text" /></div>';
+            			loginDropboxHtml += '<div class="fieldInputs"><input id="login_cont_formContent_email" name="userId" value="Email" data-deftext="Email" class="ccc" /></div>';
+            			loginDropboxHtml += '<div class="fieldInputs"><input id="login_cont_formContent_password" name="password" value="Password" data-deftext="Password" class="ccc" type="text" /></div>';
                 		loginDropboxHtml += '<div id="login_cont_formContentForm_signInCont"><span style="display: none;" id="login_cont_formContentForm_loggingIn">Logging in...</span><button id="login_cont_formContentForm_signIn" name="submit" class="imgButtonOrange">sign in</button></div>';
             		loginDropboxHtml += '</form>';
         			loginDropboxHtml += '<div class="errorMsg" style="display: none;">'
         				loginDropboxHtml += '<div class="header">Please re-enter your Email and Password.</div>'; 
         				loginDropboxHtml += 'The information you entered is incorrect. Please try again.';
         			loginDropboxHtml += '</div>';
-            		loginDropboxHtml += '<div class="bold alignRight">Forgot your <a href="/login/forget_password.jsp">password</a>?</div>';
+            		loginDropboxHtml += '<div class="bold alignRight" style="margin: 20px 0;">Forgot your <a href="/login/forget_password.jsp">password</a>?</div>';
             	loginDropboxHtml += '</div>';
             	
 				$jq('body').append(loginDropboxHtml);
@@ -227,8 +234,12 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
             		$jq(form.serializeArray()).each(function () { formData[this.name] = this.value; });
             		$jq.post('/api/login/', "data="+JSON.stringify(formData), function(data) {
             			if (data.success) {
-            				//refresh
-            				window.location = window.location;
+            				if (data.hasOwnproperty('successPage') && data.successPage != '' && data.successPage != null) {
+            					window.location.pathname = data.successPage;
+            				} else {
+            					//refresh
+            					window.location = window.location;
+            				}
             				
                            	$jq("#locabar_loginButton").toggleClass("loginButtonTab");
                            	$jq('#login_cont_formContent').toggle();
