@@ -31,9 +31,13 @@ var FreshDirect = FreshDirect || {};
 
 	coremetrics.listen();
 	
+	function addCmData(propertyName,value,event){
+		event.cmData[propertyName] = value;
+	}
+	
 	function populateCmData(propertyName,event){
 		var $ct = $(event.currentTarget);
-		event.cmData[propertyName] = $ct.data('cm'+propertyName.toLowerCase());
+		addCmData(propertyName,$ct.data('cm'+propertyName.toLowerCase()), event);
 	}
 	
 	$(document.body).on('addToCart','[data-cmsitefeature]',function(event){
@@ -46,6 +50,15 @@ var FreshDirect = FreshDirect || {};
 
 	$(document.body).on('addToCart','[data-cmvariantid]',function(event){
 		populateCmData('variantId',event);
+	});
+
+	$(document.body).on('addToCart',function(event){
+		try {
+			addCmData('coremetricsPageId',Coremetrics.pageId,event);
+			addCmData('coremetricsPageContentHierarchy',Coremetrics.pageContentHierarchy,event);			
+		} catch(e){
+			// TODO: log coremetrics errors
+		}
 	});
 
 	fd.modules.common.utils.register("components", "coremetrics", coremetrics, fd);

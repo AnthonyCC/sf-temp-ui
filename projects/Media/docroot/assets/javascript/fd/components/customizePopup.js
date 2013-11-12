@@ -53,7 +53,8 @@ var FreshDirect = FreshDirect || {};
     		hasApply:false,
     		lineId:false,
     		listId:false,
-    		ATCApply:false
+    		ATCApply:false,
+    		cmEventSource:''
     	},
     	writable:true
     },
@@ -88,6 +89,7 @@ var FreshDirect = FreshDirect || {};
     		value.originalLineId = this.dataConfig.lineId;
     		value.listId = this.dataConfig.listId;
     		value.ATCApply = this.dataConfig.ATCApply;
+    		value.cmEventSource = this.dataConfig.cmEventSource;
     		this.refreshBody(value);
     		this.refreshSkuControls();
     	}
@@ -111,6 +113,7 @@ var FreshDirect = FreshDirect || {};
         		hasApply:config.hasApply,
         		lineId:item.lineId,
         		listId:item.listId,
+        		cmEventSource:config.cmEventSource || '',
         		ATCApply:config.hasApply && fd.quickshop.itemType === 'pastOrders'
         };
 
@@ -131,11 +134,13 @@ var FreshDirect = FreshDirect || {};
   $(document).on('click', '[data-component="customizeButton"]', function(event){
 	  var element = event.currentTarget;
 	  var item = fd.modules.common.productSerialize(element).pop();
+	  var cmEventSourceElement = $(element).closest('[data-cmeventsource]');
 	  
 	  customizePopup.open({
 		  element:element,
 		  item:item,
-		  hasApply:$(element).data('hasapply') || false
+		  hasApply:$(element).data('hasapply') || false,
+		  cmEventSource:cmEventSourceElement.data('cmeventsource')
 	  });
   });
 
