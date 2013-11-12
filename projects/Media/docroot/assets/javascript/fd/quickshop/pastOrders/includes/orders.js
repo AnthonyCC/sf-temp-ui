@@ -94,7 +94,7 @@ var FreshDirect = FreshDirect || {};
 					list.removeClass('locked');
 				} else {
 					list.addClass('locked').addClass('open');
-					$target.html('hide');
+					$('button',list).html('hide');
 				}
 			}
 		}
