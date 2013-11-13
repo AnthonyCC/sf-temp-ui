@@ -396,7 +396,8 @@ public class UserUtil {
                 
                 if ((currentLines > 0) && (loginLines > 0)) {
                     // keep the current cart in the session and send them to the merge cart page
-                    if(successPage != null && !successPage.contains("/robin_hood") && !successPage.contains("/gift_card")){
+                    if(successPage != null && !successPage.contains("/robin_hood") && !successPage.contains("/gift_card")
+                    		&& mergePage != null && mergePage.trim().length() > 0){
 	                    session.setAttribute(SessionName.CURRENT_CART, currentUser.getShoppingCart());
 	                    updatedSuccessPage =  mergePage + "?successPage=" + URLEncoder.encode( successPage ) ;
                     }
