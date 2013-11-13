@@ -152,4 +152,5 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 	public void flagExpiredReservations() {
 		getService().flagExpiredReservations();
 	}
+
 }

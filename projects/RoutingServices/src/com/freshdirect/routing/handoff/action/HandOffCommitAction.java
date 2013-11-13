@@ -15,6 +15,7 @@ import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
+import com.freshdirect.routing.model.IHandOffBatchRouteBreak;
 import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.model.IHandOffBatchTrailer;
 import com.freshdirect.routing.service.exception.IIssue;
@@ -25,6 +26,7 @@ import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.sap.bapi.BapiInfo;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffDispatchIn;
+import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffRouteBreakIn;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffRouteIn;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffStopIn;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffTrailerIn;
@@ -75,11 +77,13 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 		List trailers = proxy.getHandOffBatchTrailers(this.getBatch().getBatchId());
 		List routes = proxy.getHandOffBatchRoutes(this.getBatch().getBatchId());
 		List stops = proxy.getHandOffBatchStops(this.getBatch().getBatchId(), false);
+		List<IHandOffBatchRouteBreak> breaks = proxy.getHandOffBatchRouteBreaks(this.getBatch().getBatchId());
 		List<HandOffDispatchIn> dispatchStatus = proxy.getHandOffBatchDispatches(this.getBatch().getBatchId());
 		
 		List<HandOffStopIn> stopsToCommit = new ArrayList<HandOffStopIn>();
 		List<HandOffRouteIn> routesToCommit = new ArrayList<HandOffRouteIn>(); 
 		List<HandOffTrailerIn> trailersToCommit = new ArrayList<HandOffTrailerIn>();
+		List<HandOffRouteBreakIn> breaksToCommit = new ArrayList<HandOffRouteBreakIn>(breaks);
 		
 		int noOfRoutes = routes != null ? routes.size() : 0;
 		int noOfStops = stops != null ? stops.size() : 0;
@@ -169,6 +173,7 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 	    		SapSendHandOff sapHandOffEngine = new SapSendHandOff(routesToCommit
 																		, stopsToCommit
 																		, trailersToCommit
+																		, breaksToCommit
 																		, dispatchStatus
 																		, RoutingServicesProperties.getDefaultPlantCode()
 																		, this.getBatch().getDeliveryDate()

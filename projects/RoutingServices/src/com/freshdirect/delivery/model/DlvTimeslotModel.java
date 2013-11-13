@@ -149,6 +149,8 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 		super();
 		this.setStartTime(shiftTimeslot.getStartTime());
 		this.setEndTime(shiftTimeslot.getEndTime());
+		this.setRoutingStartTime(shiftTimeslot.getRoutingStartTime());
+		this.setRoutingEndTime(shiftTimeslot.getRoutingEndTime());
 		this.setCutoffTime(shiftTimeslot.getCutoffTime());
 		if(shiftTimeslot.getPremiumCutoffTime()!=null)
 		this.setPremiumCutoffTime(shiftTimeslot.getPremiumCutoffTime());
@@ -156,7 +158,7 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	}
 
 	public DlvTimeslotModel(PrimaryKey pk, String zoneId, Date baseDate,
-			TimeOfDay startTime, TimeOfDay endTime, TimeOfDay cutoffTime,
+			TimeOfDay startTime, TimeOfDay endTime, TimeOfDay routingStartTime, TimeOfDay routingEndTime, TimeOfDay cutoffTime,
 			EnumTimeslotStatus status, int capacity, int ctCapacity,
 			int baseAllocation, int ctAllocation, int ctReleaseTime, boolean ctActive,String zoneCode, int premiumCapacity,
 			 int premiumCtCapacity, TimeOfDay premiumCutoffTime, int premiumCtReleaseTime, 
@@ -167,6 +169,8 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 		this.setZoneId(zoneId);
 		this.setStartTime(startTime);
 		this.setEndTime(endTime);
+		this.setRoutingStartTime(routingStartTime);
+		this.setRoutingEndTime(routingEndTime);
 		this.setCutoffTime(cutoffTime);
 		this.setPremiumCutoffTime(premiumCutoffTime);
 		this.setStatus(status);
@@ -459,6 +463,14 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 		return getEndTime().getAsDate(getBaseDate());
 	}
 	
+	public Date getRoutingStartTimeAsDate() {
+		return new TimeOfDay(getRoutingSlot().getStartTime()).getAsDate(getBaseDate());
+	}
+
+	public Date getRoutingEndTimeAsDate() {
+		return new TimeOfDay(getRoutingSlot().getStopTime()).getAsDate(getBaseDate());
+	}
+	
 	public Date getPremiumCutoffAsDate() {
 		return getPremiumCutoffTime().getAsDate(getBaseDate());
 	}
@@ -495,6 +507,15 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 		return false;
 	}
 	
+	public boolean isRoutingSlotMatching(Date baseDate, Date startTime, Date endTime) {
+		if (this.baseDate.equals(DateUtil.truncate(baseDate))
+				&& new TimeOfDay(this.getRoutingSlot().getStartTime()).equals(new TimeOfDay(startTime))
+				&& new TimeOfDay(this.getRoutingSlot().getStopTime()).equals(new TimeOfDay(endTime))) {
+			return true;
+		}
+		return false;
+	}
+	
 	
 	/**
 	 * Checks whether t falls within boundaries of timeslot 
@@ -512,7 +533,6 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 		}
 		return false;
 	}
-	
 	
 	public IDeliverySlot getRoutingSlot() {
 		return routingSlot;

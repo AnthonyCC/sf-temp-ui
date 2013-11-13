@@ -25,6 +25,12 @@
      	<component name="endTime" class="com.freshdirect.framework.util.TimeOfDay"> 
         	<property name="normalDate" column="END_TIME" type="timestamp" not-null="true"/>
         </component>       
+        <component name="routingStartTime" class="com.freshdirect.framework.util.TimeOfDay"> 
+        	<property name="normalDate" column="ROUTING_START_TIME" type="timestamp" not-null="false"/>
+        </component>       
+     	<component name="routingEndTime" class="com.freshdirect.framework.util.TimeOfDay"> 
+        	<property name="normalDate" column="ROUTING_END_TIME" type="timestamp" not-null="false"/>
+        </component>        
      	<component name="cutoffTime" class="com.freshdirect.framework.util.TimeOfDay"> 
         	<property name="normalDate" column="CUTOFF_TIME" type="timestamp" not-null="true"/>
         </component>       

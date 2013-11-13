@@ -97,7 +97,7 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 	}
 	
     private final static String timeslotForDateRangeAndZoneQuery =
-        "select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, z.zone_code, " +
+        "select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.ROUTING_START_TIME, ts.ROUTING_END_TIME, ts.cutoff_time, ts.status, ts.zone_id, z.zone_code, " +
         "ts.capacity, ts.ct_capacity, ts.is_dynamic, " +
         "(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, " + 
         "(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, " +
@@ -139,6 +139,8 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 				TimeOfDay startTime = new TimeOfDay(rs.getTime("START_TIME"));
 				TimeOfDay endTime = new TimeOfDay(rs.getTime("END_TIME"));
 				TimeOfDay cutoffTime = new TimeOfDay(rs.getTime("CUTOFF_TIME"));
+				TimeOfDay routingStartTime = (rs.getTime("ROUTING_START_TIME")!=null)?new TimeOfDay(rs.getTime("ROUTING_START_TIME")):null;
+				TimeOfDay routingEndTime = (rs.getTime("ROUTING_END_TIME")!=null)?new TimeOfDay(rs.getTime("ROUTING_END_TIME")):null;
 				
 				EnumTimeslotStatus status = EnumTimeslotStatus.getEnum(rs.getInt("STATUS"));
 				int capacity = rs.getInt("CAPACITY");
@@ -160,7 +162,7 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 				String zoneId = rs.getString("ZONE_ID");
 				int totalConfirmed = rs.getInt("TOTAL_CONFIRMED");
 				 
-				DlvTimeslotModel model = new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, 
+				DlvTimeslotModel model = new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, routingStartTime, routingEndTime, cutoffTime, status, capacity, 
 						chefsTableCapacity, baseAllocation, ctAllocation, ctReleaseTime,ctActive,zoneCode, premiumCapacity,
 						  premiumCtCapacity, premiumCutoffTime,  premiumCtReleaseTime, 
 						  premiumCtActive, premiumAllocation, premiumCtAllocation, false, totalConfirmed);
@@ -185,7 +187,7 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 		return timeslots;
 		
 	}
-	private static final String TIMESLOT_REGION_QUERY = "select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, " +
+	private static final String TIMESLOT_REGION_QUERY = "select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.ROUTING_START_TIME, ts.ROUTING_END_TIME, ts.cutoff_time, ts.status, ts.zone_id, " +
 		"z.zone_code, ts.capacity, ts.traffic_factor, ts.ct_capacity, ts.is_dynamic, "+
 		"(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "+
 		"(select count(*) from dlv.reservation where zone_id=z.id and ts.id=timeslot_id and status_code <> ? and status_code <> ? and chefstable = 'X' and class is null) as ct_allocation, "+
@@ -240,6 +242,9 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 				java.util.Date baseDate = rs.getDate("BASE_DATE");
 				TimeOfDay startTime = new TimeOfDay(rs.getTime("START_TIME"));
 				TimeOfDay endTime = new TimeOfDay(rs.getTime("END_TIME"));
+				TimeOfDay routingStartTime = (rs.getTime("ROUTING_START_TIME")!=null)?new TimeOfDay(rs.getTime("ROUTING_START_TIME")):null;
+				TimeOfDay routingEndTime = (rs.getTime("ROUTING_END_TIME")!=null)?new TimeOfDay(rs.getTime("ROUTING_END_TIME")):null;
+				
 				TimeOfDay cutoffTime = new TimeOfDay(rs.getTime("CUTOFF_TIME"));
 				EnumTimeslotStatus status = EnumTimeslotStatus.getEnum(rs.getInt("STATUS"));
 				int capacity = rs.getInt("CAPACITY");
@@ -262,7 +267,7 @@ public class DlvTemplateManagerSessionBean extends SessionBeanSupport {
 				String zoneId = rs.getString("ZONE_ID");
 				
 		 		String zoneCode = rs.getString("ZONE_CODE");
-				DlvTimeslotModel model = new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, cutoffTime, status, capacity, 
+				DlvTimeslotModel model = new DlvTimeslotModel(pk, zoneId, baseDate, startTime, endTime, routingStartTime, routingEndTime, cutoffTime, status, capacity, 
 						chefsTableCapacity, baseAllocation, ctAllocation, ctReleaseTime,ctActive,zoneCode, premiumCapacity,
 						  premiumCtCapacity, premiumCutoffTime,   premiumCtReleaseTime, 
 						  premiumCtActive, premiumAllocation,  premiumCtAllocation, false, totalConfirmed);

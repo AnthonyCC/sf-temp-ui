@@ -74,11 +74,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			"from cust.sale s, cust.salesaction sa, cust.deliveryinfo di "+
 			"where s.id = ? and s.id = sa.sale_id and s.customer_id = sa.customer_id and sa.id = di.salesaction_id "+ 
 			"and sa.action_type in ('CRO','MOD') and sa.action_date=s.CROMOD_DATE and s.type='REG'";
-	
-	/*private static final String GET_SERVICETIME_QRY = "select st.FIXED_SERVICE_TIME  FIXED_SERVICE_TIME , st.VARIABLE_SERVICE_TIME VARIABLE_SERVICE_TIME "+			
-			"from dlv.SERVICETIME st "+
-			"where st.SERVICETIME_TYPE = ? and st.ZONE_TYPE = ? ";*/
-	
+
 	private static final String GET_DELIVERYTYPE_QRY = "select r.SERVICE_TYPE SERVICE_TYPE from dlv.region r, dlv.region_data rd, dlv.zone z "+
 			"where rd.id = z.region_data_id and rd.region_id = r.id and z.zone_code = ? "  +
 			"and rd.start_date = (select max(start_date) from dlv.region_data where start_date <= sysdate and region_id=r.id)";
@@ -89,7 +85,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			"tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.BALANCE_BY BALANCE_BY, a.LOADBALANCE_FACTOR LOADBALANCE_FACTOR, a.NEEDS_LOADBALANCE NEEDS_LOADBALANCE from transp.zone z, transp.trn_area a, transp.trn_region tr " +
 			" where z.area = a.code  and a.region_code = tr.code  and (z.OBSOLETE <> 'X' or z.OBSOLETE IS NULL)";
 	
-	private static final String GET_TIMESLOTSBYDATE_QRY = "select t.ID REF_ID, ta.AREA, ta.POSTTRIP_TIME  POST_TRIP, ta.PRETRIP_TIME PRE_TRIP, ta.STEM_MAX_TIME STEM_MAX, z.ZONE_CODE, z.NAME, t.START_TIME , t.END_TIME" +
+	private static final String GET_TIMESLOTSBYDATE_QRY = "select t.ID REF_ID, ta.AREA, ta.POSTTRIP_TIME  POST_TRIP, ta.PRETRIP_TIME PRE_TRIP, ta.STEM_MAX_TIME STEM_MAX, z.ZONE_CODE, z.NAME, t.START_TIME , t.END_TIME, t.ROUTING_START_TIME , t.ROUTING_END_TIME" +
 			", case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR " +
 			" from dlv.timeslot t , dlv.zone z, transp.zone ta, transp.trn_area a, transp.trn_region tr " +
 			" where t.ZONE_ID = z.ID and z.ZONE_CODE = ta.ZONE_CODE and ta.AREA = a.CODE and a.region_code = tr.code " +
@@ -136,7 +132,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	private static final String UPDATE_TIMESLOTCUTUFF_QRYAPPEND = " and tx.cutoff_time = (select cutoff_time from transp.trn_cutoff c where c.id = ?) ";
 	
 	private static final String EARLY_WARNING_QUERY =
-		"select code, name, st, et, sum(orders) as total_order, sum(capacity) as capacity, "
+		"select code, name, st, et, rst, ret, sum(orders) as total_order, sum(capacity) as capacity, "
 			+ "sum(total_alloc) as total_alloc, "
 			+ "sum(premium_alloc) as premium_alloc, "	
 			+ "sum(base_orders) as base_orders, "
@@ -146,7 +142,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			+ "sum(ct_orders) as ct_orders "			
 			+ "from "
 			+ "( "
-			+ "select z.zone_code as code, z.name, ts.capacity, ts.ct_capacity, ts.START_TIME st, ts.END_TIME et, z.ct_active as ct_active, "
+			+ "select z.zone_code as code, z.name, ts.capacity, ts.ct_capacity, ts.START_TIME st, ts.END_TIME et, ts.ROUTING_START_TIME rst, ts.ROUTING_END_TIME ret, z.ct_active as ct_active, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = '10' ) as orders, "
 			+ "decode((sysdate-(TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time - (z.ct_release_time/60/24), 'HH24:MI:SS'), " 
 			+ "'YYYY-MM-DD HH24:MI:SS'))- abs(sysdate-(TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time - (z.ct_release_time/60/24), " 
@@ -172,7 +168,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			"where s.CUSTOMER_ID = ? and s.STATUS = 'STL' and s.TYPE = 'REG' order by s.CROMOD_DATE desc) tbl where rownum <= ?";
 	
 	private static final String GET_TIMESLOTSBYDATEANDZONE_QRY =
-		"select t.id REF_ID, t.base_date, t.start_time, t.end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, z.zone_code, t.ct_capacity" +
+		"select t.id REF_ID, t.base_date, t.start_time, t.end_time,t.ROUTING_START_TIME, t.ROUTING_END_TIME, t.cutoff_time, t.status, t.zone_id, t.capacity, z.zone_code, t.ct_capacity" +
 		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.POSTTRIP_TIME POST_TRIP, ta.PRETRIP_TIME PRE_TRIP, z.NAME ZONE_NAME, " +
 		"case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, a.DELIVERY_RATE AREA_DLV_RATE,  " 
 		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, " 
@@ -191,7 +187,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		" (t.premium_cutoff_Time is not null and to_date(to_char(t.base_date, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE)) ";
 	
 	private static final String TIMESLOT_BY_ID =
-			"select distinct ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.premium_cutoff_time,ts.status, ts.zone_id, ts.capacity, ts.ct_capacity" +
+			"select distinct ts.id, ts.base_date, ts.start_time, ts.end_time,ts.ROUTING_START_TIME, ts.ROUTING_END_TIME,  ts.cutoff_time, ts.premium_cutoff_time,ts.status, ts.zone_id, ts.capacity, ts.ct_capacity" +
 			", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.POSTTRIP_TIME stemfrom, ta.PRETRIP_TIME stemto, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, " +
 			"case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, " +
 			"ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE,"
@@ -265,8 +261,17 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		         					
 		         					// Prepare routing slot configuration from result set
 		         					IDeliverySlot routingSlot = new DeliverySlot();
-		         					routingSlot.setStartTime(rs.getTimestamp("START_TIME"));
-		         					routingSlot.setStopTime(rs.getTimestamp("END_TIME"));
+		         					
+		         					routingSlot.setDisplayStartTime(rs.getTimestamp("START_TIME"));
+		         					routingSlot.setDisplayStopTime(rs.getTimestamp("END_TIME"));
+		         					
+		         					routingSlot.setRoutingStartTime(rs.getTimestamp("ROUTING_START_TIME"));
+		         					routingSlot.setRoutingStopTime(rs.getTimestamp("ROUTING_END_TIME"));
+		         					
+		         					routingSlot.setStartTime((routingSlot.getRoutingStartTime()!=null)?routingSlot.getRoutingStartTime():routingSlot.getDisplayStartTime());
+		         					routingSlot.setStopTime((routingSlot.getRoutingStopTime()!=null)?routingSlot.getRoutingStopTime():routingSlot.getDisplayStopTime());
+		         					
+		         					
 		         					routingSlot.setWaveCode(rs.getString("WAVE_CODE"));
 		         					routingSlot.setDynamicActive("X".equalsIgnoreCase(rs.getString("IS_DYNAMIC")) ? true : false);
 		         					routingSlot.setManuallyClosed("X".equalsIgnoreCase(rs.getString("IS_CLOSED")) ? true : false);
@@ -476,12 +481,20 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    	do {        		    		
 				    		String zCode = rs.getString("ZONE_CODE");
 				    		IDeliverySlot tmpModel = new DeliverySlot();
-				    		tmpModel.setStartTime(rs.getTimestamp("START_TIME"));
-				    		tmpModel.setStopTime(rs.getTimestamp("END_TIME"));
+				    		
 				    		tmpModel.setWaveCode(rs.getString("WAVE_CODE"));
 				    		tmpModel.setDynamicActive("X".equalsIgnoreCase(rs.getString("IS_DYNAMIC")) ? true : false);
 				    		tmpModel.setManuallyClosed("X".equalsIgnoreCase(rs.getString("IS_CLOSED")) ? true : false);
 				    		tmpModel.setReferenceId(rs.getString("REF_ID"));
+				    		
+				    		tmpModel.setDisplayStartTime(rs.getTimestamp("START_TIME"));
+				    		tmpModel.setDisplayStopTime(rs.getTimestamp("END_TIME"));
+				    		
+				    		tmpModel.setRoutingStartTime(rs.getTimestamp("ROUTING_START_TIME"));
+				    		tmpModel.setRoutingStopTime(rs.getTimestamp("ROUTING_END_TIME"));
+				    		
+				    		tmpModel.setStartTime((tmpModel.getRoutingStartTime()!=null)?tmpModel.getRoutingStartTime():tmpModel.getDisplayStartTime());
+				    		tmpModel.setStopTime((tmpModel.getRoutingStopTime()!=null)?tmpModel.getRoutingStopTime():tmpModel.getDisplayStopTime());
 				    		
 				    		if(!timeslotByArea.containsKey(zCode)) {
 				    			timeslotByArea.put(zCode, new ArrayList<IDeliverySlot>());
@@ -529,7 +542,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			query.append(" and ((ts.premium_cutoff_Time is not null and ts.premium_cutoff_Time "+conditionValue+" ?) or (ts.premium_cutoff_Time is null and ts.CUTOFF_TIME "+conditionValue+" ?))");
 		}
 		
-		query.append(") group by code, name, st, et order by code");
+		query.append(") group by code, name, st, et, rst, ret order by code");
 		
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
@@ -553,8 +566,11 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		IDeliveryWindowMetrics metrics = new DeliveryWindowMetrics();				    		
 				    		String zCode = rs.getString("code");
 				    		
-				    		metrics.setDeliveryStartTime(rs.getTimestamp("st"));
-				    		metrics.setDeliveryEndTime(rs.getTimestamp("et"));
+				    		metrics.setDisplayStartTime(rs.getTimestamp("st"));
+				    		metrics.setDisplayEndTime(rs.getTimestamp("et"));
+				    		metrics.setDeliveryStartTime((rs.getTimestamp("rst")!=null)?rs.getTimestamp("rst"):metrics.getDisplayStartTime());
+				    		metrics.setDeliveryStartTime((rs.getTimestamp("ret")!=null)?rs.getTimestamp("ret"):metrics.getDisplayEndTime());
+				    			
 				    		metrics.setOrderCapacity(rs.getInt("capacity"));
 				    		metrics.setTotalConfirmedOrders(rs.getInt("total_order"));
 				    		metrics.setTotalAllocatedOrders(rs.getInt("total_alloc"));
@@ -1175,8 +1191,17 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		
 				    		IDeliverySlot tmpModel = new DeliverySlot();
 				    		tmpModel.setReferenceId(rs.getString("REF_ID"));
-				    		tmpModel.setStartTime(rs.getTimestamp("START_TIME"));
-				    		tmpModel.setStopTime(rs.getTimestamp("END_TIME"));
+				    		
+				    		tmpModel.setDisplayStartTime(rs.getTimestamp("START_TIME"));
+				    		tmpModel.setDisplayStopTime(rs.getTimestamp("END_TIME"));
+				    		
+				    		tmpModel.setRoutingStartTime(rs.getTimestamp("ROUTING_START_TIME"));
+				    		tmpModel.setRoutingStopTime(rs.getTimestamp("ROUTING_END_TIME"));
+				    		
+				    		tmpModel.setStartTime((tmpModel.getRoutingStartTime()!=null)?tmpModel.getRoutingStartTime():tmpModel.getDisplayStartTime());
+				    		tmpModel.setStopTime((tmpModel.getRoutingStopTime()!=null)?tmpModel.getRoutingStopTime():tmpModel.getDisplayStopTime());
+				    		
+				    		
 				    		tmpModel.setZoneCode(rs.getString("ZONE_CODE"));
 				    		tmpModel.setWaveCode(rs.getString("WAVE_CODE"));
 				    		tmpModel.setDynamicActive("X".equalsIgnoreCase(rs.getString("IS_DYNAMIC")) ? true : false);

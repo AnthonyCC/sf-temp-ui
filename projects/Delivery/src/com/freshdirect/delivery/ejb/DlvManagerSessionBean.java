@@ -483,8 +483,10 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				
 				/** Get the first delivery slot as it will have only one */
 	
-				eventD.setStartTime(dlvSlot.getRoutingSlot().getStartTime());
-				eventD.setStopTime(dlvSlot.getRoutingSlot().getStopTime());
+				eventD.setStartTime(dlvSlot.getRoutingSlot().getDisplayStartTime());
+				eventD.setStopTime(dlvSlot.getRoutingSlot().getDisplayStopTime());
+				eventD.setRoutingStartTime(dlvSlot.getRoutingSlot().getRoutingStartTime());
+				eventD.setRoutingStopTime(dlvSlot.getRoutingSlot().getRoutingStopTime());
 				eventD.setCutOff(dlvSlot.getCutoffTimeAsDate());
 				eventD.setZoneCode(slot.getZoneCode());
 				eventD.setDeliveryDate(slot.getSchedulerId().getDeliveryDate());
@@ -522,8 +524,10 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 									
 									}
 									detailModel.setRoutingModel(routingModel);
-									detailModel.setStartTime(routingSlot.getStartTime());
-									detailModel.setStopTime(routingSlot.getStopTime());
+									detailModel.setStartTime(routingSlot.getDisplayStartTime());
+									detailModel.setStopTime(routingSlot.getDisplayStopTime());
+									detailModel.setRoutingStartTime(routingSlot.getRoutingStartTime());
+									detailModel.setRoutingStopTime(routingSlot.getRoutingStopTime());
 									if(routingSlot.getSchedulerId()!=null)
 										detailModel.setDeliveryDate(routingSlot.getSchedulerId().getDeliveryDate());
 									detailModel.setManuallyClosed(routingSlot.isManuallyClosed());

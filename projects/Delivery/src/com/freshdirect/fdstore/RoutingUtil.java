@@ -792,8 +792,8 @@ public class RoutingUtil {
 		identity.setDeliveryDate(timeSlot.getBaseDate());
 		deliverySlot.setZoneCode(timeSlot.getZoneCode());
 		deliverySlot.setSchedulerId(identity);
-		deliverySlot.setStartTime(timeSlot.getStartTimeAsDate());
-		deliverySlot.setStopTime(timeSlot.getEndTimeAsDate());
+		deliverySlot.setStartTime(timeSlot.getRoutingStartTimeAsDate());
+		deliverySlot.setStopTime(timeSlot.getRoutingEndTimeAsDate());
 		deliverySlot.setWaveCode(timeSlot.getRoutingSlot().getWaveCode()); 
 		return deliverySlot;
 	}

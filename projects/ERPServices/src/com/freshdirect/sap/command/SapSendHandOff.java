@@ -15,6 +15,7 @@ import com.freshdirect.sap.bapi.BapiFactory;
 import com.freshdirect.sap.bapi.BapiInfo;
 import com.freshdirect.sap.bapi.BapiSendHandOff;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffDispatchIn;
+import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffRouteBreakIn;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffRouteIn;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffStopIn;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffTrailerIn;
@@ -36,11 +37,12 @@ public class SapSendHandOff extends SapCommandSupport {
 	private boolean dropNow;
 	private List<HandOffDispatchIn> dispatches;
 	private List<HandOffTrailerIn> trailers;
+	private List<HandOffRouteBreakIn> breaks;
 	
 	private BapiInfo[] bapiInfos = null;
 	
 	public SapSendHandOff(List<HandOffRouteIn> routes,
-			List<HandOffStopIn> stops, List<HandOffTrailerIn> trailers, List<HandOffDispatchIn> dispatches, String plantCode, Date deliveryDate,
+			List<HandOffStopIn> stops, List<HandOffTrailerIn> trailers, List<HandOffRouteBreakIn> breaks, List<HandOffDispatchIn> dispatches, String plantCode, Date deliveryDate,
 			String waveRunNo, boolean dropNow) {
 		super();
 		this.trailers = trailers;
@@ -51,6 +53,7 @@ public class SapSendHandOff extends SapCommandSupport {
 		this.waveRunNo = waveRunNo;
 		this.dropNow = dropNow;	
 		this.dispatches = dispatches;
+		this.breaks = breaks;
 	}
 
 
@@ -62,7 +65,7 @@ public class SapSendHandOff extends SapCommandSupport {
 		bapi.setHandOffStops(stops);
 		bapi.setHandOffDispatchStatus(dispatches);
 		bapi.setHandOffTrailers(trailers);
-		
+		bapi.setHandOffRouteBreaks(breaks);
 		this.invoke(bapi);
 		bapiInfos = bapi.getInfos();
 	}

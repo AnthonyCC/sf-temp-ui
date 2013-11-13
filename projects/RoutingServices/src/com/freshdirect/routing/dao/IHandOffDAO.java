@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.delivery.model.TimeslotWindow;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
@@ -17,6 +18,7 @@ import com.freshdirect.routing.model.IHandOffBatchDepotScheduleEx;
 import com.freshdirect.routing.model.IHandOffBatchPlan;
 import com.freshdirect.routing.model.IHandOffBatchPlanResource;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
+import com.freshdirect.routing.model.IHandOffBatchRouteBreak;
 import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.model.IHandOffBatchTrailer;
 import com.freshdirect.routing.model.IHandOffDispatch;
@@ -121,5 +123,12 @@ public interface IHandOffDAO {
 	
 	void updateHandOffDispatchTruckInfo(List<IHandOffDispatch> dispatchEntry) throws SQLException;
 	int getStopCount(String batchId) throws SQLException;
+	
+	void addNewHandOffRouteBreaks(List<IHandOffBatchRouteBreak> dataList) throws SQLException;
+	
+	void clearHandOffBatchRouteBreaks(String handOffBatchId) throws SQLException;
+	
+	List<IHandOffBatchRouteBreak> getHandOffBatchRouteBreaks(final String batchId) throws SQLException;
+
 	
 }

@@ -142,6 +142,14 @@
     <component id="insertTimeslotStartTime" type="Insert">
         <binding name="value" value='components.forEachTimeslot.value.startTime'/>
     </component>
+    
+    <component id="insertTimeslotRoutingEndTime" type="Insert">
+        <binding name="value" value='components.forEachTimeslot.value.routingEndTime'/>
+    </component>
+
+    <component id="insertTimeslotRoutingStartTime" type="Insert">
+        <binding name="value" value='components.forEachTimeslot.value.routingStartTime'/>
+    </component>
 
     <component id="insertWeek" type="Insert">
         <binding name="value" value='selectedWeek'/>

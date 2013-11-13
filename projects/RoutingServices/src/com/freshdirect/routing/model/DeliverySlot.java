@@ -15,6 +15,12 @@ public class DeliverySlot extends BaseModel implements IDeliverySlot  {
 	private IRoutingSchedulerIdentity schedulerId;
 	private Date startTime;
 	private Date stopTime;
+	private Date routingStartTime;
+	private Date routingStopTime;
+	
+	private Date displayStartTime;
+	private Date displayStopTime;
+	
 	private String waveCode;
 	private String zoneCode;
 	
@@ -115,6 +121,38 @@ public class DeliverySlot extends BaseModel implements IDeliverySlot  {
 	}
 	public void setReservedOrdersAtBuilding(int reservedOrdersAtBuilding) {
 		this.reservedOrdersAtBuilding = reservedOrdersAtBuilding;
+	}
+	@Override
+	public Date getRoutingStartTime() {
+		return routingStartTime;
+	}
+	@Override
+	public void setRoutingStartTime(Date routingStartTime) {
+		this.routingStartTime = routingStartTime;
+	}
+	@Override
+	public Date getRoutingStopTime() {
+		return routingStopTime;
+	}
+	@Override
+	public void setRoutingStopTime(Date routingStopTime) {
+		this.routingStopTime = routingStopTime;
+	}
+	@Override
+	public Date getDisplayStartTime() {
+		return displayStartTime ;
+	}
+	@Override
+	public void setDisplayStartTime(Date displayStartTime) {
+		this.displayStartTime = displayStartTime;
+	}
+	@Override
+	public Date getDisplayStopTime() {
+		return displayStopTime ;
+	}
+	@Override
+	public void setDisplayStopTime(Date displayStopTime) {
+		this.displayStopTime = displayStopTime;
 	}
 	
 }

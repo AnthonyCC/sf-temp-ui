@@ -100,7 +100,7 @@ public class TimeslotLogicTest extends TestCase {
 
 	private static DlvTimeslotModel createTimeslot(Date base, int totalCapacity, int ctCapacity, int baseAllocation, int ctAllocation) {
 		return new DlvTimeslotModel(new PrimaryKey(""), "", base,
-				new TimeOfDay("09:00 am"), new TimeOfDay("11:00 am"),
+				new TimeOfDay("09:00 am"), new TimeOfDay("11:00 am"), null, null, 
 				new TimeOfDay("09:00 pm"), EnumTimeslotStatus.PREMIUM,
 				totalCapacity, ctCapacity, baseAllocation, ctAllocation, 30, false,"",0,0,new TimeOfDay("10:00 am"),0,false,0,0,false,0);
 	}

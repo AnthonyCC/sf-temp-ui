@@ -30,7 +30,7 @@ public class TimeslotEventDAO {
 			"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	private static final String TIMESLOT_LOG_DTL_INSERT="INSERT INTO MIS.TIMESLOT_EVENT_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME" +
-			", END_TIME, ZONE_CODE) VALUES (?,?,?,?,?)";
+			", END_TIME, ZONE_CODE,ROUTING_START_TIME,ROUTING_END_TIME) VALUES (?,?,?,?,?,?,?)";
 	
 	private static final String TIMESLOT_LOG_DTL_WITH_COST_INSERT="INSERT INTO MIS.TIMESLOT_EVENT_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME, " +
 			"END_TIME, ADD_DISTANCE, ADD_RUNTIME, ADD_STOPCOST, COSTPERMILE, FIXED_RT_COST, MAXRUNTIME,"+
@@ -38,8 +38,8 @@ public class TimeslotEventDAO {
 	" TOTAL_ROUTE_COST , TOTAL_RUNTIME ,  TOTAL_SVC_TIME,TOTAL_TRAVEL_TIME,  TOTAL_WAIT_TIME,  IS_AVAIL " +
 	",  IS_FILTERED ,  IS_MISSED_TW,ZONE_CODE, ws_amount,alcohol_restriction,holiday_restriction,ecofriendlyslot,neighbourhoodslot" +
 	", totalCapacity,CTCapacity,Manually_Closed,cutoff, storefront_avl,CT_Allocated,Total_Allocated, WAVE_VEHICLES,WAVE_VEHICLES_IN_USE," +
-	"WAVE_STARTTIME,UNAVAILABILITY_REASON,WAVE_ORDERS_TAKEN,TOTAL_QUANTITIES, NEWROUTE, CAPACITIES, GEORESTRICTED)" +
-	" VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?,?)";
+	"WAVE_STARTTIME,UNAVAILABILITY_REASON,WAVE_ORDERS_TAKEN,TOTAL_QUANTITIES, NEWROUTE, CAPACITIES, GEORESTRICTED,ROUTING_START_TIME,ROUTING_END_TIME)" +
+	" VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		
 	private static final String TIMESLOT_EVENT_DETAIL_QRY = "SELECT * FROM MIS.TIMESLOT_EVENT_DTL WHERE TIMESLOT_LOG_ID = ?";
 	
@@ -419,8 +419,6 @@ public class TimeslotEventDAO {
 		    				ps.setDouble(45, 0);
 		    				ps.setNull(46, java.sql.Types.VARCHAR);
 		    				ps.setDouble(47, 0);
-
-
 		    			}
 		    			ps.setString(27, eventD.getZoneCode());
 		    			ps.setBigDecimal(28, new BigDecimal(eventD.getWs_amount()));
@@ -433,13 +431,32 @@ public class TimeslotEventDAO {
 		    			ps.setString(35,get(eventD.isManuallyClosed()));
 		    			if(eventD.getCutOff()!=null)
 		    				ps.setTimestamp(36,new java.sql.Timestamp(eventD.getCutOff().getTime()));
+		    			else
+	    					ps.setNull(36, java.sql.Types.TIMESTAMP );
 		    			ps.setString(37,eventD.getStoreFrontAvailable());
 		    			ps.setInt(38,eventD.getCtAllocated());
 		    			ps.setInt(39,eventD.getTotalAllocated());
 		    			ps.setString(48, get(eventD.isGeoRestricted()));
-
+		    			
+			    		if(eventD.getRoutingStartTime()!=null)
+			    			ps.setTimestamp(49, new java.sql.Timestamp(eventD.getRoutingStartTime().getTime()));
+			    		else
+			    			ps.setNull(49, java.sql.Types.TIMESTAMP );
+			    		if(eventD.getRoutingStopTime()!=null)
+			    			ps.setTimestamp(50, new java.sql.Timestamp(eventD.getRoutingStopTime().getTime()));
+			    		else
+			    			ps.setNull(50, java.sql.Types.TIMESTAMP );
 		    		} else {
 		    			ps.setString(5, eventD.getZoneCode());
+		    			if(eventD.getRoutingStartTime()!=null)
+			    			ps.setTimestamp(6, new java.sql.Timestamp(eventD.getRoutingStartTime().getTime()));
+		    			else
+			    			ps.setNull(6, java.sql.Types.TIMESTAMP );
+			    		if(eventD.getRoutingStopTime()!=null)
+			    			ps.setTimestamp(7, new java.sql.Timestamp(eventD.getRoutingStopTime().getTime()));
+			    		else
+			    			ps.setNull(7, java.sql.Types.TIMESTAMP );
+
 		    		}
 
 		    		ps.addBatch();

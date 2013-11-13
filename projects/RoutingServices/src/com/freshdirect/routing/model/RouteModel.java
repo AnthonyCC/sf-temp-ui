@@ -252,7 +252,6 @@ public class RouteModel extends BaseModel implements IRouteModel {
 	}
 
 	public void setWaveId(String waveId) {
-		// TODO Auto-generated method stub
 		this.waveId = waveId;
 	}
 }

@@ -48,6 +48,18 @@
         <binding name="validator" expression='beans.timeValidator'/>
         <binding name="value" expression='components.forEachTimeslot.value.startTime'/>
     </component>
+    
+    <component id="inputRoutingEndTime" type="ValidField">
+        <static-binding name="displayName">Routing ET</static-binding>
+        <binding name="validator" expression='beans.timeValidator'/>
+        <binding name="value" expression='components.forEachTimeslot.value.routingEndTime'/>
+    </component>
+
+    <component id="inputRoutingStartTime" type="ValidField">
+        <static-binding name="displayName">Routing ST</static-binding>
+        <binding name="validator" expression='beans.timeValidator'/>
+        <binding name="value" expression='components.forEachTimeslot.value.routingStartTime'/>
+    </component>
 
     <component id="selectStatus" type="PropertySelection">
         <binding name="model" expression='statusPropertySelectionModel'/>

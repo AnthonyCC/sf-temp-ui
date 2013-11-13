@@ -152,6 +152,10 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 		}
 	}
 	
+	public boolean isRoutingSlotMatching(Date baseDate, Date startTime, Date endTime){
+	    return this.dlvTimeslot.isRoutingSlotMatching(baseDate, startTime, endTime);
+	}
+
 	public boolean isMatching(Date baseDate, Date startTime, Date endTime){
 	    return this.dlvTimeslot.isMatching(baseDate, startTime, endTime);
 	}

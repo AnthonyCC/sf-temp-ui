@@ -68,6 +68,15 @@ public abstract class EditTimeslots extends BaseComponent {
 				delegate.setFormComponent(null);
 				delegate.record(new ValidatorException("Start Time must be before End Time"));
 			}
+			else if (timeslot.getRoutingStartTime()!=null &&  timeslot.getRoutingEndTime() !=null 
+					&& timeslot.getRoutingStartTime().after( timeslot.getRoutingEndTime() )) {
+				delegate.setFormComponent(null);
+				delegate.record(new ValidatorException("Routing ST must be before Routing ET"));
+			}
+			else if (!timeslot.isWithinRange()) {
+				delegate.setFormComponent(null);
+				delegate.record(new ValidatorException("Routing ST/ET should be within the range of ST/ET"));
+			}
 		}
 
 		return !delegate.getHasErrors();	

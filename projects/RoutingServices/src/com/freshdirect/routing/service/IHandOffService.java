@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.delivery.model.TimeslotWindow;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
@@ -16,6 +17,7 @@ import com.freshdirect.routing.model.IHandOffBatchDepotScheduleEx;
 import com.freshdirect.routing.model.IHandOffBatchPlan;
 import com.freshdirect.routing.model.IHandOffBatchPlanResource;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
+import com.freshdirect.routing.model.IHandOffBatchRouteBreak;
 import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.model.IHandOffBatchTrailer;
 import com.freshdirect.routing.model.IHandOffDispatch;
@@ -52,7 +54,7 @@ public interface IHandOffService {
 	void clearHandOffBatchStopRoute(Date deliveryDate, String handOffBatchId) throws RoutingServiceException;
 	
 	void updateHandOffBatchDetails(String handOffBatchId, List<IHandOffBatchTrailer> trailers, List<IHandOffBatchRoute> routes
-			, List<IHandOffBatchStop> stops, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) throws RoutingServiceException;
+			, List<IHandOffBatchStop> stops, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus, List<IHandOffBatchRouteBreak> breaks) throws RoutingServiceException;
 	
 	List<IHandOffBatchStop> getHandOffBatchStops(String batchId, boolean filterException) throws RoutingServiceException;
 	List<IHandOffBatchRoute> getHandOffBatchRoutes(String batchId) throws RoutingServiceException;
@@ -103,5 +105,8 @@ public interface IHandOffService {
 	void updateHandOffDispatchTruckInfo(List<IHandOffDispatch> dispatchEntry) throws RoutingServiceException;
 	
 	int getStopCount(String batchId) throws RoutingServiceException;
+	
+	List<IHandOffBatchRouteBreak> getHandOffBatchRouteBreaks(String batchId) throws RoutingServiceException;
+		
 	
 }

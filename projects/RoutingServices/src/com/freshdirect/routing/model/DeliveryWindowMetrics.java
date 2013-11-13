@@ -8,15 +8,15 @@ public class DeliveryWindowMetrics  extends BaseModel  implements IDeliveryWindo
 	
 	private Date deliveryEndTime;
 	
+	private Date displayStartTime;
+	
+	private Date displayEndTime;
+	
 	private int vehiclesInUse;
 
 	private int  allocatedVehicles;
 	
 	private int confirmedItems;
-
-//	private int confirmedDeliveryQuantity;
-
-	//private int confirmedPickupQuantity;
 
 	private double confirmedServiceTime;
 
@@ -103,22 +103,6 @@ public class DeliveryWindowMetrics  extends BaseModel  implements IDeliveryWindo
 		this.confirmedItems = confirmedItems;
 	}
 
-/*	public int getConfirmedDeliveryQuantity() {
-		return confirmedDeliveryQuantity;
-	}
-
-	public void setConfirmedDeliveryQuantity(int confirmedDeliveryQuantity) {
-		this.confirmedDeliveryQuantity = confirmedDeliveryQuantity;
-	}
-
-	public int getConfirmedPickupQuantity() {
-		return confirmedPickupQuantity;
-	}
-
-	public void setConfirmedPickupQuantity(int confirmedPickupQuantity) {
-		this.confirmedPickupQuantity = confirmedPickupQuantity;
-	}
-*/
 	public double getConfirmedServiceTime() {
 		return confirmedServiceTime;
 	}
@@ -217,5 +201,21 @@ public class DeliveryWindowMetrics  extends BaseModel  implements IDeliveryWindo
 	@Override
 	public void setOrderPremiumCtCapacity(int orderPremiumCtCapacity) {
 		 this.orderPremiumCtCapacity = orderPremiumCtCapacity;
+	}
+
+	public Date getDisplayStartTime() {
+		return displayStartTime;
+	}
+
+	public void setDisplayStartTime(Date displayStartTime) {
+		this.displayStartTime = displayStartTime;
+	}
+
+	public Date getDisplayEndTime() {
+		return displayEndTime;
+	}
+
+	public void setDisplayEndTime(Date displayEndTime) {
+		this.displayEndTime = displayEndTime;
 	}
 }

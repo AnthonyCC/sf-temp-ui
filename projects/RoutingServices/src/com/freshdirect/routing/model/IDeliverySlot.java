@@ -14,11 +14,23 @@ public interface IDeliverySlot {
 	IRoutingSchedulerIdentity getSchedulerId();
 	void setSchedulerId(IRoutingSchedulerIdentity schedulerId);
 	
+	Date getDisplayStartTime();
+	void setDisplayStartTime(Date displayStartTime);
+	
+	Date getDisplayStopTime();
+	void setDisplayStopTime(Date displayStopTime);
+	
 	Date getStartTime();
 	void setStartTime(Date startTime);
 	
 	Date getStopTime();
 	void setStopTime(Date stopTime);
+	
+	Date getRoutingStartTime();
+	void setRoutingStartTime(Date routingStartTime);
+	
+	Date getRoutingStopTime();
+	void setRoutingStopTime(Date routingStopTime);
 	
 	String getWaveCode();
 	void setWaveCode(String waveCode);

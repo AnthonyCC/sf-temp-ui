@@ -18,6 +18,12 @@ public interface IDeliveryModel  {
 	Date getDeliveryStartTime();
 	void setDeliveryStartTime(Date deliveryStartTime);
 	
+	Date getRoutingEndTime();
+	void setRoutingEndTime(Date routingEndTime);
+	
+	Date getRoutingStartTime();
+	void setRoutingStartTime(Date routingStartTime);
+	
 	IZoneModel getDeliveryZone();
 	void setDeliveryZone(IZoneModel deliveryZone);	
 	

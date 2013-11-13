@@ -25,6 +25,8 @@ public class DlvShiftTimeslotModel extends ModelSupport {
 	
     private TimeOfDay startTime;
     private TimeOfDay endTime;
+    private TimeOfDay routingStartTime;
+    private TimeOfDay routingEndTime;
     private TimeOfDay cutoffTime;
     private TimeOfDay premiumCutoffTime;
     private EnumTimeslotStatus status;
@@ -89,4 +91,34 @@ public class DlvShiftTimeslotModel extends ModelSupport {
 		this.premiumCutoffTime = premiumCutoffTime;
 	}
 
+	public TimeOfDay getRoutingStartTime() {
+		return routingStartTime;
+	}
+
+	public void setRoutingStartTime(TimeOfDay routingStartTime) {
+		this.routingStartTime = routingStartTime;
+	}
+
+	public TimeOfDay getRoutingEndTime() {
+		return routingEndTime;
+	}
+
+	public void setRoutingEndTime(TimeOfDay routingEndTime) {
+		this.routingEndTime = routingEndTime;
+	}
+
+	
+	public boolean isWithinRange() {
+		if 	((this.getRoutingStartTime() == null && this.getRoutingEndTime() == null)
+			||
+			(this.getRoutingStartTime() == null && (this.getRoutingEndTime()!=null && this.getEndTime().compareTo(this.getRoutingEndTime()) >= 0))
+			|| 
+			(this.getRoutingEndTime() == null && (this.getRoutingStartTime()!=null && this.getStartTime().compareTo(this.getRoutingStartTime()) <= 0))
+			||
+			(this.getRoutingStartTime() != null && this.getRoutingEndTime() != null && this.getStartTime().compareTo(this.getRoutingStartTime()) <= 0 && this.getEndTime().compareTo(this.getRoutingEndTime()) >= 0)) {
+			return true;
+		}
+		return false;
+	}
+	
 }

@@ -25,6 +25,9 @@ public class TimeslotEventDetailModel implements Serializable {
 	private String zoneCode;
 	private Date startTime;
 	private Date stopTime;
+	private Date routingStartTime;
+	private Date routingStopTime;
+	
 	private Date deliveryDate;
 	private Date cutOff;
 	private boolean manuallyClosed;
@@ -181,6 +184,22 @@ public class TimeslotEventDetailModel implements Serializable {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public void setRoutingStartTime(Date routingStartTime) {
+		this.routingStartTime = routingStartTime;
+	}
+
+	public Date getRoutingStopTime() {
+		return routingStopTime;
+	}
+
+	public void setRoutingStopTime(Date routingStopTime) {
+		this.routingStopTime = routingStopTime;
+	}
+
+	public Date getRoutingStartTime() {
+		return routingStartTime;
 	}
 
 }

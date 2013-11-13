@@ -234,6 +234,7 @@
                   <select id="rType" name="rType">                      
                       <option <c:choose> <c:when test="${rType == 'T'}" >selected </c:when> </c:choose> value="T">Time</option>  
                       <option <c:choose> <c:when test="${rType == 'O'}" >selected </c:when> </c:choose> value="O">Order</option>
+                      <option <c:choose> <c:when test="${rType == 'D'}" >selected </c:when> </c:choose> value="D">Display</option>
                    </select>
                 
                 </td>

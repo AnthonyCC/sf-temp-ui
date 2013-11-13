@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.delivery.model.BreakWindow;
+import com.freshdirect.delivery.model.TimeslotWindow;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
@@ -24,6 +27,7 @@ import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
 import com.freshdirect.routing.model.HandOffBatchDepotSchedule;
 import com.freshdirect.routing.model.HandOffBatchRoute;
+import com.freshdirect.routing.model.HandOffBatchRouteBreak;
 import com.freshdirect.routing.model.HandOffBatchStop;
 import com.freshdirect.routing.model.HandOffBatchTrailer;
 import com.freshdirect.routing.model.IAreaModel;
@@ -32,6 +36,7 @@ import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchDepotSchedule;
 import com.freshdirect.routing.model.IHandOffBatchDepotScheduleEx;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
+import com.freshdirect.routing.model.IHandOffBatchRouteBreak;
 import com.freshdirect.routing.model.IHandOffBatchSession;
 import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.model.IHandOffBatchTrailer;
@@ -82,8 +87,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 				, this.getBatch().getCutOffDateTime());
     	
 		Iterator<IHandOffBatchStop> _tmpStopIterator = _tmpStops.iterator();
-		while(_tmpStopIterator.hasNext())
-		{
+		while(_tmpStopIterator.hasNext()){
 			IHandOffBatchStop _tmpStop = (IHandOffBatchStop)_tmpStopIterator.next();
 			rsvToOrderMap.put(_tmpStop.getDeliveryInfo().getReservationId(), _tmpStop.getOrderNumber());
 		}
@@ -94,11 +98,12 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		Calendar cutoffCal = cutoffTime.getAsCalendar(this.getBatch().getDeliveryDate());
 		cutoffCal.add(Calendar.DATE, -1);
 		
-		if(cal.getTime().after(cutoffCal.getTime()) && stopCount != _tmpStops.size())
-		{
+		if(cal.getTime().after(cutoffCal.getTime()) && stopCount != _tmpStops.size()){
 			throw new RoutingServiceException("Order count mismatch between Storefront & RoadNet. Route In again."
 					, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}
+		
+		Map<String, BreakWindow> breaks = computeBreaks(this.getBatch().getBatchId());
 		
 		Map<IHandOffBatchSession, Map<String, Set<IRouteModel>>> sessionMapping = new HashMap<IHandOffBatchSession
 																						, Map<String, Set<IRouteModel>>>();
@@ -110,6 +115,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		IHandOffBatchStop s_stop = null;
 		IHandOffBatchRoute s_route = null;
 		IHandOffBatchTrailer s_trailer = null;
+		List<IHandOffBatchRouteBreak> s_breaks = new ArrayList<IHandOffBatchRouteBreak>();
 		
 		proxy.addNewHandOffBatchDepotSchedules(this.getBatch().getBatchId(), this.getBatch().getDepotSchedule());
 		proxy.addNewHandOffBatchDepotSchedulesEx(dayOfWeek,this.getBatch().getCutOffDateTime(), masterDepotSchedule);
@@ -196,6 +202,9 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 														+ areaEntry.getKey()+ formatRouteNumber(routeCnts.get(areaEntry.getKey())));
 								Iterator itr = route.getStops().iterator();
 								IRoutingStopModel _stop = null;
+								Set<TimeslotWindow> breaksperRoute = new TreeSet<TimeslotWindow>(new TimeslotWindowComparator());
+								Set<TimeslotWindow> windowsperRoute = new HashSet<TimeslotWindow>();
+								
 								while(itr.hasNext()) {
 									_stop = (IRoutingStopModel)itr.next();
 									if(_stop.getStopArrivalTime() == null || _stop.getStopDepartureTime() == null) {
@@ -207,6 +216,10 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 									else
 										throw new RoutingServiceException("Order Number "+_stop.getOrderNumber()+" is not in the system for the cutoff. Check the routing session"
 												, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+									
+									
+									breaksperRoute.addAll(breaks.get(_stop.getOrderNumber()).getBreaks());
+									windowsperRoute.addAll(breaks.get(_stop.getOrderNumber()).getWindows());
 									
 									_stops.add(_stop);
 									s_stop = new HandOffBatchStop(_stop);
@@ -222,6 +235,22 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 										s_stop.setRoutingRouteId(route.getRoutingRouteId().get(0));
 									}
 									s_stops.add(s_stop);
+								}
+								List<TimeslotWindow> consolidatedBreaks = combineBreaks(breaksperRoute);
+								
+								int numBreaksToShow = computeNumBreaksToShow(windowsperRoute);
+								int breakCount = 0;
+								IHandOffBatchRouteBreak s_break = null;
+								for(TimeslotWindow breakWindow : consolidatedBreaks){
+									if(breakCount++ < numBreaksToShow){
+										s_break = new HandOffBatchRouteBreak(this.getBatch().getBatchId(), 
+																			sesEntry.getKey().getSessionName(), 
+																			route.getRouteId(),
+																			String.format("%03d", breakCount),
+																			breakWindow.getStartTime(),
+																			breakWindow.getEndTime());
+										s_breaks.add(s_break);
+									}
 								}
 								route.setStops(_stops);
 								
@@ -316,7 +345,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 							}
 					}
 				}			
-			proxy.updateHandOffBatchDetails(this.getBatch().getBatchId(), s_trailers, s_routes, s_stops, correlationResult.getDispatchStatus());
+			proxy.updateHandOffBatchDetails(this.getBatch().getBatchId(), s_trailers, s_routes, s_stops, correlationResult.getDispatchStatus(), s_breaks);
 		}
 		
 		checkStopExceptions();
@@ -327,6 +356,59 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		return null;		
 	}
 	
+	private List<TimeslotWindow> combineBreaks(Set<TimeslotWindow> breaksperRoute) {
+		List<TimeslotWindow> consolidatedBreaks = new ArrayList<TimeslotWindow>();
+		OUTER : for(TimeslotWindow window : breaksperRoute){
+			for(TimeslotWindow consolidatedWindow: consolidatedBreaks){
+				if(window.isWithinRange(consolidatedWindow))
+					break OUTER;
+				else if(window.overlaps(consolidatedWindow)){
+					consolidatedWindow.setEndTime(window.getEndTime());
+					break OUTER;
+				}	
+			}
+			consolidatedBreaks.add(window);
+		}
+		return consolidatedBreaks;
+	}
+
+
+	
+	private int computeNumBreaksToShow(Set<TimeslotWindow> windowsperRoute) {
+		int windowscount = windowsperRoute.size();
+		if(windowscount <= 2)
+			return 2;
+		else if(windowscount == 3)
+			return 2;
+		else if(windowscount >=4)
+			return 3;
+		else
+			return 0;
+	}
+
+	private Map<String, BreakWindow> computeBreaks(String batchId) {
+		HandOffServiceProxy proxy = new HandOffServiceProxy();
+		List<IHandOffBatchStop> _tmpStops = proxy.getHandOffBatchStops(batchId, false);
+		
+		Map<String, BreakWindow> orderToWindowMap = new HashMap<String, BreakWindow>();
+		for(IHandOffBatchStop _stop : _tmpStops){
+			if(!orderToWindowMap.containsKey(_stop.getOrderNumber()))
+				orderToWindowMap.put(_stop.getOrderNumber(), new BreakWindow());
+			Set<TimeslotWindow> windows = new HashSet<TimeslotWindow>();
+			windows.add(new TimeslotWindow(_stop.getDeliveryInfo().getDeliveryStartTime(), _stop.getDeliveryInfo().getDeliveryEndTime()));
+			Set<TimeslotWindow> breaks = new HashSet<TimeslotWindow>();
+			if(DateUtil.getDiffInMinutes(_stop.getDeliveryInfo().getDeliveryStartTime(), _stop.getDeliveryInfo().getRoutingStartTime())>0){
+				breaks.add(new TimeslotWindow(_stop.getDeliveryInfo().getDeliveryStartTime(), _stop.getDeliveryInfo().getRoutingStartTime()));
+			}
+			if(DateUtil.getDiffInMinutes(_stop.getDeliveryInfo().getDeliveryEndTime(), _stop.getDeliveryInfo().getRoutingEndTime())>0){
+				breaks.add(new TimeslotWindow(_stop.getDeliveryInfo().getRoutingEndTime(), _stop.getDeliveryInfo().getDeliveryEndTime()));
+			}
+			orderToWindowMap.get(_stop.getOrderNumber()).setBreaks(breaks);
+			orderToWindowMap.get(_stop.getOrderNumber()).setWindows(windows);
+		}
+		return orderToWindowMap;
+	}
+
 	private void assignDispatchSequence(List<IHandOffBatchRoute> routes, Map<String, IZoneModel> zoneLookup
 											, Map<RoutingTimeOfDay, Integer> currDispatchSequence) {
 		
@@ -463,6 +545,15 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		}	
 	}
 	
+	protected class TimeslotWindowComparator implements Comparator<TimeslotWindow> {		
+		
+		public int compare(TimeslotWindow w1, TimeslotWindow w2){
+			if(w1.getStartTime() != null &&  w2.getStartTime() != null) {
+				return w1.getStartTime().compareTo(w2.getStartTime());
+			}
+			return 0;
+		}	
+	}
 	protected class StopComparator implements Comparator<IRoutingStopModel> {		
 		
 		public int compare(IRoutingStopModel obj1, IRoutingStopModel obj2){

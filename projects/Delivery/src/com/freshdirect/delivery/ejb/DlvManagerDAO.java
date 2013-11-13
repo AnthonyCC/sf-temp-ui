@@ -138,7 +138,7 @@ public class DlvManagerDAO {
 		}
 	}
 
-	private static final String TIMESLOTS = "select t.id, t.base_date, t.start_time, t.end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, z.zone_code, t.ct_capacity"
+	private static final String TIMESLOTS = "select t.id, t.base_date, t.start_time, t.end_time, t.routing_start_time, t.routing_end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, z.zone_code, t.ct_capacity"
 			+ ", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.POSTTRIP_TIME POST_TRIP, ta.PRETRIP_TIME PRE_TRIP, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, "
 			+ "case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE, r.service_type region_svc_type, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "
@@ -181,9 +181,9 @@ public class DlvManagerDAO {
 		ps.setInt(6, EnumReservationStatus.EXPIRED.getCode());
 		ps.setInt(7, EnumReservationStatus.CANCELED.getCode());
 		ps.setInt(8, EnumReservationStatus.EXPIRED.getCode());
-		/*if(address.getBuildingId()==null)
+		if(address.getBuildingId()==null)
 			ps.setNull(9, Types.VARCHAR);
-		else*/
+		else
 			ps.setString(9, address.getBuildingId());
 		ps.setString(10, address.getServiceType().getName());
 
@@ -209,7 +209,7 @@ public class DlvManagerDAO {
 		return timeslots;
 	}
 
-	private static final String CF_TIMESLOTS = "select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, z.zone_code, ts.ct_capacity"
+	private static final String CF_TIMESLOTS = "select ts.id, ts.base_date, ts.start_time, ts.end_time,  ts.routing_start_time, ts.routing_end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, z.zone_code, ts.ct_capacity"
 			+ " , ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.POSTTRIP_TIME POST_TRIP, ta.PRETRIP_TIME PRE_TRIP, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, "
 			+ " case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE,  r.service_type region_svc_type,  "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = ' ' and class is null) as base_allocation, "
@@ -325,6 +325,8 @@ public class DlvManagerDAO {
 		java.util.Date baseDate = rs.getDate("BASE_DATE");
 		TimeOfDay startTime = new TimeOfDay(rs.getTime("START_TIME"));
 		TimeOfDay endTime = new TimeOfDay(rs.getTime("END_TIME"));
+		TimeOfDay routingStartTime = (rs.getTime("ROUTING_START_TIME")!=null)?new TimeOfDay(rs.getTime("ROUTING_START_TIME")):null;
+		TimeOfDay routingEndTime = (rs.getTime("ROUTING_END_TIME")!=null)?new TimeOfDay(rs.getTime("ROUTING_END_TIME")):null;
 		TimeOfDay cutoffTime = new TimeOfDay(rs.getTime("CUTOFF_TIME"));
 
 		EnumTimeslotStatus status = EnumTimeslotStatus.getEnum(rs
@@ -351,7 +353,7 @@ public class DlvManagerDAO {
 		int totalConfirmed = rs.getInt("TOTAL_CONFIRMED");
 		
 		DlvTimeslotModel _tmpSlot = new DlvTimeslotModel(pk, zoneId, baseDate,
-				startTime, endTime, cutoffTime, status, capacity, ctCapacity,
+				startTime, endTime, routingStartTime, routingEndTime, cutoffTime, status, capacity, ctCapacity,
 				baseAllocation, ctAllocation, ctReleaseTime, ctActive,
 				zoneCode, premiumCapacity, premiumCtCapacity,
 				premiumCutoffTime, premiumCtReleaseTime, premiumCtActive,
@@ -376,8 +378,16 @@ public class DlvManagerDAO {
 
 		// Prepare routing slot configuration from result set
 		IDeliverySlot routingSlot = new DeliverySlot();
-		routingSlot.setStartTime(rs.getTimestamp("START_TIME"));
-		routingSlot.setStopTime(rs.getTimestamp("END_TIME"));
+		routingSlot.setDisplayStartTime(rs.getTimestamp("START_TIME"));
+		routingSlot.setDisplayStopTime(rs.getTimestamp("END_TIME"));
+		
+		routingSlot.setRoutingStartTime(rs.getTimestamp("ROUTING_START_TIME"));
+		routingSlot.setRoutingStopTime(rs.getTimestamp("ROUTING_END_TIME"));
+		
+		routingSlot.setStartTime((routingSlot.getRoutingStartTime()!=null)?routingSlot.getRoutingStartTime():routingSlot.getDisplayStartTime());
+		routingSlot.setStopTime((routingSlot.getRoutingStopTime()!=null)?routingSlot.getRoutingStopTime():routingSlot.getDisplayStopTime());
+		
+		
 		routingSlot.setWaveCode(rs.getString("WAVE_CODE"));
 		routingSlot.setDynamicActive("X".equalsIgnoreCase(rs
 				.getString("IS_DYNAMIC")) ? true : false);
@@ -416,7 +426,7 @@ public class DlvManagerDAO {
 		return _tmpSlot;
 	}
 
-	private static final String DEPOT_TIMESLOTS = "select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, z.zone_code, ts.ct_capacity"
+	private static final String DEPOT_TIMESLOTS = "select ts.id, ts.base_date, ts.start_time, ts.end_time,  ts.routing_start_time, ts.routing_end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, z.zone_code, ts.ct_capacity"
 			+ ", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.POSTTRIP_TIME POST_TRIP, ta.PRETRIP_TIME PRE_TRIP, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, "
 			+ "case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, " 
 			+ "ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE,  r.service_type region_svc_type, "
@@ -473,7 +483,7 @@ public class DlvManagerDAO {
 		return timeslots;
 	}
 
-	private static final String TIMESLOT_BY_ID = "select distinct ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, ts.ct_capacity"
+	private static final String TIMESLOT_BY_ID = "select distinct ts.id, ts.base_date, ts.start_time, ts.end_time,  ts.routing_start_time, ts.routing_end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, ts.ct_capacity"
 			+ ", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.POSTTRIP_TIME POST_TRIP, ta.PRETRIP_TIME PRE_TRIP, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, rg.service_type region_svc_type, "
 			+ "case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR,  a.DELIVERY_RATE AREA_DLV_RATE,"
 			+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
@@ -966,7 +976,7 @@ public class DlvManagerDAO {
 		return infos;
 	}
 
-	private static final String ZONE_CAPACITY_QUERY = "select t.id, t.base_date, t.start_time, t.end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, t.ct_capacity"
+	private static final String ZONE_CAPACITY_QUERY = "select t.id, t.base_date, t.start_time, t.end_time,  t.routing_start_time, t.routing_end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, t.ct_capacity"
 			+ ", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.POSTTRIP_TIME POST_TRIP, ta.PRETRIP_TIME PRE_TRIP, ta.ZONE_ECOFRIENDLY ecoFriendly, ta.STEERING_RADIUS steeringRadius, z.NAME ZONE_NAME, "
 			+ "case when t.premium_cutoff_time is null then TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(t.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, " 
 			+ "t.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR,  a.DELIVERY_RATE AREA_DLV_RATE, r.service_type REGION_SVC_TYPE, "
@@ -1705,7 +1715,7 @@ public class DlvManagerDAO {
 		ps.close();
 	}
 
-	private static final String TIMESLOTS_BY_DATE = "select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.premium_cutoff_time, ts.status, ts.zone_id, ts.capacity, ts.premium_capacity,  ta.STEERING_RADIUS steeringRadius,"
+	private static final String TIMESLOTS_BY_DATE = "select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.routing_start_time, ts.routing_end_time, ts.cutoff_time, ts.premium_cutoff_time, ts.status, ts.zone_id, ts.capacity, ts.premium_capacity,  ta.STEERING_RADIUS steeringRadius,"
 			+ " z.zone_code, ts.ct_capacity,ts.premium_ct_capacity, ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.POSTTRIP_TIME POST_TRIP, ta.PRETRIP_TIME PRE_TRIP, ta.ZONE_ECOFRIENDLY ecoFriendly, z.NAME ZONE_NAME, "
 			+ "case when ts.premium_cutoff_time is null then TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') else TO_CHAR(ts.premium_cutoff_time, 'HH_MI_PM') end WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, tr.IS_DEPOT IS_DEPOT, " 
 			+ " tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR, a.DELIVERY_RATE AREA_DLV_RATE, R.SERVICE_TYPE REGION_SVC_TYPE, "

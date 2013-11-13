@@ -31,6 +31,8 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 	private JCO.Table dispatches;
 
 	private JCO.Table trailers;
+	
+	private JCO.Table breaks;
 
 	public JcoBapiSendHandOff() {
 		super("ZBAPI_ROUTEINFO_UPLOAD_TO_SAP");
@@ -166,5 +168,19 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 			lstCartonInfo.nextRow();
 		}*/
 		return null;
+	}
+
+	@Override
+	public void setHandOffRouteBreaks(List<HandOffRouteBreakIn> breaksIn) {
+		
+		breaks = this.function.getTableParameterList().getTable("T_DRBREAK_UPLOAD");
+		for(HandOffRouteBreakIn breakIn : breaksIn){
+			breaks.insertRow(1);
+			breaks.setValue(breakIn.getRouteId(), "ZZTRKNO"); //Route No
+			breaks.setValue(breakIn.getBreakId(), "ZBREAK_SEQ"); // Break Sequence
+			breaks.setValue(formatTime1(breakIn.getStartTime()), "ZSTART_TIME"); // Start Time
+			breaks.setValue(formatTime1(breakIn.getEndTime()), "ZEND_TIME"); // Start Time
+			breaks.nextRow();
+		}
 	}
 }

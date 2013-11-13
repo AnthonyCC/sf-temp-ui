@@ -6,6 +6,9 @@ public class Capacity implements java.io.Serializable {
 		
 	private Date deliveryStartTime;
 	private Date deliveryEndTime;
+	private Date displayStartTime;
+	private Date displayEndTime;
+	
 	private boolean manuallyClosed;
 	private String referenceId;
 	private boolean dynamicActive;
@@ -131,5 +134,25 @@ public class Capacity implements java.io.Serializable {
 	}
 	public void setWaveCode(String waveCode) {
 		this.waveCode = waveCode;
+	}
+
+
+	public Date getDisplayStartTime() {
+		return displayStartTime;
+	}
+
+
+	public void setDisplayStartTime(Date displayStartTime) {
+		this.displayStartTime = displayStartTime;
+	}
+
+
+	public Date getDisplayEndTime() {
+		return displayEndTime;
+	}
+
+
+	public void setDisplayEndTime(Date displayEndTime) {
+		this.displayEndTime = displayEndTime;
 	}	
 }

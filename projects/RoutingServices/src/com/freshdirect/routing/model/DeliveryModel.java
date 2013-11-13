@@ -9,6 +9,8 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	private IZoneModel deliveryZone;	
 	private Date deliveryStartTime;
 	private Date deliveryEndTime;
+	private Date routingStartTime;
+	private Date routingEndTime;
 	private String serviceType;
 	private Date deliveryCutoffTime;
 	private IPackagingModel packagingDetail;
@@ -109,5 +111,17 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	@Override
 	public void setDeliveryCutoffTime(Date deliveryCutoffTime) {
 		this.deliveryCutoffTime = deliveryCutoffTime;
+	}
+	public Date getRoutingStartTime() {
+		return routingStartTime;
+	}
+	public void setRoutingStartTime(Date routingStartTime) {
+		this.routingStartTime = routingStartTime;
+	}
+	public Date getRoutingEndTime() {
+		return routingEndTime;
+	}
+	public void setRoutingEndTime(Date routingEndTime) {
+		this.routingEndTime = routingEndTime;
 	}
 }

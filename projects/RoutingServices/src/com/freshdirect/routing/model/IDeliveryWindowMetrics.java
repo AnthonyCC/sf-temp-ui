@@ -8,25 +8,21 @@ public interface IDeliveryWindowMetrics {
 
 	Date getDeliveryEndTime();
 
+	Date getDisplayStartTime();
+
+	Date getDisplayEndTime();
+
 	int getVehiclesInUse();
 
 	int getAllocatedVehicles();
 
 	int getConfirmedItems();
 
-/*	int getConfirmedDeliveryQuantity();
-
-	int getConfirmedPickupQuantity();*/
-
 	double getConfirmedServiceTime();
 
 	double getConfirmedTravelTime();
 
 	int getReservedItems();
-
-//	int getReservedDeliveryQuantity();
-
-//	int getReservedPickupQuantity();
 
 	double getReservedServiceTime();
 
@@ -36,6 +32,9 @@ public interface IDeliveryWindowMetrics {
 		
 	void setDeliveryEndTime(Date deliveryEndTime);
 
+	void setDisplayStartTime(Date deliveryStartTime);
+	
+	void setDisplayEndTime(Date deliveryEndTime);
 		
 	void setVehiclesInUse(int vehiclesInUse);
 		
@@ -43,19 +42,11 @@ public interface IDeliveryWindowMetrics {
 		
 	void setConfirmedItems(int confirmedItems);
 
-	/*void setConfirmedDeliveryQuantity(int confirmedDeliveryQuantity);		
-
-	void setConfirmedPickupQuantity(int confirmedPickupQuantity);	*/	
-
 	void setConfirmedServiceTime(double confirmedServiceTime);		
 
 	void setConfirmedTravelTime(double confirmedTravelTime);		
 
 	void setReservedItems(int reservedItems);		
-
-//	void setReservedDeliveryQuantity(int reservedDeliveryQuantity);		
-
-//	void setReservedPickupQuantity(int reservedPickupQuantity);		
 
 	void setReservedServiceTime(double reservedServiceTime);
 		

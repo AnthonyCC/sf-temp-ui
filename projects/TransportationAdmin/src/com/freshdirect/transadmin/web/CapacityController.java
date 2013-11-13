@@ -50,6 +50,7 @@ import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
+import com.freshdirect.transadmin.constants.EnumEarlyWarningViewContext;
 import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.Region;
@@ -140,12 +141,17 @@ public class CapacityController extends AbstractMultiActionController {
 		
 		if("T".equalsIgnoreCase(rType)) {			
 			processEarlyWarning(mav, new TimeEarlyWarningFormatter()
-												, executeEarlyWarningTime(mav, rDate, cutOff, rType, EnumLogicalOperator.getEnum(condition))
-												, discountMapping);
-		} else {
+												, executeEarlyWarningTime(mav, rDate, cutOff, rType, EnumLogicalOperator.getEnum(condition), EnumEarlyWarningViewContext.TIME)
+												, discountMapping, EnumEarlyWarningViewContext.TIME);
+		} else if("O".equalsIgnoreCase(rType)) {
 			processEarlyWarning(mav, new OrderEarlyWarningFormatter()
-												, executeEarlyWarningOrder(mav, rDate, cutOff, rType, EnumLogicalOperator.getEnum(condition))
-												, discountMapping);
+												, executeEarlyWarningOrder(mav, rDate, cutOff, rType, EnumLogicalOperator.getEnum(condition), EnumEarlyWarningViewContext.ORDER)
+												, discountMapping, EnumEarlyWarningViewContext.ORDER);
+		}else{
+			processEarlyWarning(mav, new OrderEarlyWarningFormatter()
+												, executeEarlyWarningOrder(mav, rDate, cutOff, rType, EnumLogicalOperator.getEnum(condition), EnumEarlyWarningViewContext.DISPLAY)
+												, discountMapping, EnumEarlyWarningViewContext.DISPLAY);
+		
 		}
 		
 		
@@ -406,7 +412,7 @@ public class CapacityController extends AbstractMultiActionController {
 		return slot != null && slot.getDeliveryCost() != null && slot.getDeliveryCost().isAvailable();
 	}
 	
-	private IDeliverySlot matchSlotToMetrics(List<IDeliverySlot> slots, IDeliveryWindowMetrics metrics) {
+	private IDeliverySlot matchSlotToMetrics(List<IDeliverySlot> slots, IDeliveryWindowMetrics metrics, EnumEarlyWarningViewContext context) {
 		
 		IDeliverySlot result = null;
 		Iterator<IDeliverySlot> _itr = slots.iterator();
@@ -415,11 +421,10 @@ public class CapacityController extends AbstractMultiActionController {
 		if(slots != null) {
 			while(_itr.hasNext()) {
 				_tmpSlot = _itr.next();
-				
-				if(isMatchingTime(_tmpSlot.getStartTime(), metrics.getDeliveryStartTime())
-						&& isMatchingTime(_tmpSlot.getStopTime(), metrics.getDeliveryEndTime())) {
-					result = _tmpSlot;
-					break;
+					if(isMatchingTime(_tmpSlot.getStartTime(), metrics.getDeliveryStartTime())
+							&& isMatchingTime(_tmpSlot.getStopTime(), metrics.getDeliveryEndTime())) {
+						result = _tmpSlot;
+						break;
 				}
 			}
 		}
@@ -443,7 +448,7 @@ public class CapacityController extends AbstractMultiActionController {
 		return result;
 	}
 	
-	private Map<String, List<Capacity>> executeEarlyWarningOrder(ModelAndView mav, String rDate, String cutOff, String rType, EnumLogicalOperator condition) {
+	private Map<String, List<Capacity>> executeEarlyWarningOrder(ModelAndView mav, String rDate, String cutOff, String rType, EnumLogicalOperator condition, EnumEarlyWarningViewContext context) {
 		
 		Map<String, List<Capacity>> capacityMapping = new TreeMap<String, List<Capacity>>();
 				
@@ -487,13 +492,16 @@ public class CapacityController extends AbstractMultiActionController {
 							
 							_capacity.setDeliveryStartTime(_metrics.getDeliveryStartTime());
 							_capacity.setDeliveryEndTime(_metrics.getDeliveryEndTime());
+							_capacity.setDisplayStartTime(_metrics.getDisplayStartTime());
+							_capacity.setDisplayEndTime(_metrics.getDisplayEndTime());
+							
 							_capacity.setTotalCapacity(_metrics.getOrderCapacity());
 							_capacity.setTotalAllocated(_metrics.getTotalAllocatedOrders());
 							_capacity.setTotalConfirmed(_metrics.getTotalConfirmedOrders());
 							
 							_capacity.setNoOfResources(0);
 							
-							_refSlot = matchSlotToMetrics(refSlotsByZone.get(_zoneCode), _metrics);
+							_refSlot = matchSlotToMetrics(refSlotsByZone.get(_zoneCode), _metrics, context);
 							if(_refSlot != null) {
 								_capacity.setManuallyClosed(_refSlot.isManuallyClosed());
 								_capacity.setDynamicActive(_refSlot.isDynamicActive());
@@ -511,7 +519,7 @@ public class CapacityController extends AbstractMultiActionController {
 		return capacityMapping;
 	}
 
-	private Map<String, List<Capacity>> executeEarlyWarningTime(ModelAndView mav, String rDate, String cutOff, String rType, EnumLogicalOperator condition) {
+	private Map<String, List<Capacity>> executeEarlyWarningTime(ModelAndView mav, String rDate, String cutOff, String rType, EnumLogicalOperator condition, EnumEarlyWarningViewContext context) {
 		
 		Map<String, List<Capacity>> capacityMapping = new TreeMap<String, List<Capacity>>();
 		
@@ -570,7 +578,7 @@ public class CapacityController extends AbstractMultiActionController {
 															+ _metrics.getConfirmedTravelTime());	
 							_capacity.setNoOfResources(_metrics.getAllocatedVehicles());
 							
-							_refSlot = matchSlotToMetrics(_slots, _metrics);
+							_refSlot = matchSlotToMetrics(_slots, _metrics, context);
 							if(_refSlot != null) {
 								_capacity.setManuallyClosed(_refSlot.isManuallyClosed());
 								_capacity.setDynamicActive(_refSlot.isDynamicActive());
@@ -589,7 +597,7 @@ public class CapacityController extends AbstractMultiActionController {
 	
 	private void processEarlyWarning(ModelAndView mav, EarlyWarningFormatter formatter
 										, Map<String, List<Capacity>> capacityMapping
-										, Map<String, List<TimeRange>> discountMapping)  {
+										, Map<String, List<TimeRange>> discountMapping, EnumEarlyWarningViewContext context)  {
 		
 		List<EarlyWarningCommand> capacity = new ArrayList<EarlyWarningCommand>();
 		Map<Region, Capacity> regionCapacity = new HashMap<Region, Capacity>();
@@ -668,8 +676,13 @@ public class CapacityController extends AbstractMultiActionController {
 					_timeslotCommand.setReferenceId(_capacity.getReferenceId());
 					_timeslotCommand.setNoOfResources(_capacity.getNoOfResources());
 					timeslotDetails.add(_timeslotCommand);
+					if(context.equals(EnumEarlyWarningViewContext.DISPLAY)){
+						_timeslotCommand.setName(RoutingDateUtil.formatDateTime
+								(_capacity.getDisplayStartTime(), _capacity.getDisplayEndTime()));
+					}else{
 					_timeslotCommand.setName(RoutingDateUtil.formatDateTime
 							(_capacity.getDeliveryStartTime(), _capacity.getDeliveryEndTime()));
+					}
 					_timeslotCommand.setTotalCapacity(formatter.formatCapacity(_capacity.getTotalCapacity()));
 					_timeslotCommand.setConfirmedCapacity(formatter.formatCapacity(_capacity.getTotalConfirmed()));
 					_timeslotCommand.setAllocatedCapacity(formatter.formatCapacity(_capacity.getTotalAllocated()));

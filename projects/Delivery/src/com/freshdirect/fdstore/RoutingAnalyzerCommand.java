@@ -114,7 +114,7 @@ public class RoutingAnalyzerCommand implements Serializable, Runnable {
 				if(slots != null && slots != null) {
 					for (IDeliverySlot slot : slots) {
 						for (FDTimeslot dlvslot : this.getContext().getDlvTimeSlots()) {
-							if(dlvslot.isMatching(slot.getSchedulerId().getDeliveryDate(), slot.getStartTime(), slot.getStopTime())) {
+							if(dlvslot.isRoutingSlotMatching(slot.getSchedulerId().getDeliveryDate(), slot.getStartTime(), slot.getStopTime())) {
 								
 								dlvslot.getDlvTimeslot().getRoutingSlot().setDeliveryCost(slot.getDeliveryCost());
 								dlvslot.getDlvTimeslot().getRoutingSlot().setDeliveryMetrics(slot.getDeliveryMetrics());
