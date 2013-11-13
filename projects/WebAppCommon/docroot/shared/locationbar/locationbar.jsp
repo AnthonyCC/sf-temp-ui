@@ -234,7 +234,7 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
             		$jq(form.serializeArray()).each(function () { formData[this.name] = this.value; });
             		$jq.post('/api/login/', "data="+JSON.stringify(formData), function(data) {
             			if (data.success) {
-            				if (data.hasOwnproperty('successPage') && data.successPage != '' && data.successPage != null) {
+            				if (data.hasOwnProperty('successPage') && data.successPage != '' && data.successPage != null) {
             					window.location.pathname = data.successPage;
             				} else {
             					//refresh
