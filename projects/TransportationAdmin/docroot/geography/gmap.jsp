@@ -1,5 +1,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import='com.freshdirect.transadmin.web.ui.*' %>
 
 <%    
@@ -31,9 +32,27 @@
 		</div>
 	</c:if>
 	
-  <table >  
+  <table>  
   		<tr>
-   			<td colspan="4" align="right">
+  			<td align="left">
+  				<br/>
+  				<b>Start Date:<input maxlength="40" name="startDate" id="startDate" value='<c:out value="${startDate}"/>' style="width:90px"/></b>
+						 	<a href="#" id="trigger_startDate" style="font-size: 9px;">
+                        			<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Start Date" title="Start Date"></a>
+  			</td>
+  			<script>
+  				Calendar.setup(
+  	               {
+  	                 showsTime : false,
+  	                 electric : false,
+  	                 inputField : "startDate",
+  	                 ifFormat : "%m/%d/%Y",
+  	                 singleClick: true,
+  	                 button : "trigger_startDate" 
+  	                }
+  	               );
+  			</script>
+   			<td colspan="3" align="right">
 			&nbsp;&nbsp;<input id="view_button1" type="image" alt="Google Maps Viewer" src="./images/googlemaps.gif" 
    			onclick="javascript:doBoundary(true)"/>
    			
@@ -99,6 +118,7 @@
 	<%@ include file='/common/i_gmapviewer.jspf'%>
 	<script>
 		function doBoundary(doShow) {
+			var startDate = document.getElementById("startDate").value;
 			var table_zone = document.getElementById("zone_boundaries_table");
 			var table_georestriction = document.getElementById("georestriction_boundaries_table");
 			var table_neighbourhood = document.getElementById("neighbourhood_boundaries_table");
@@ -107,22 +127,22 @@
 			var checkboxList_Neighbourhood = table_neighbourhood.getElementsByTagName("input");
             var checked = "";
             
-            for (i = 0; i < checkboxList_Zone.length; i++) {            
-              if (checkboxList_Zone[i].type=="checkbox" && !checkboxList_Zone[i].disabled)  {
+            for (var i = 1; i < checkboxList_Zone.length; i++) {
+              if (checkboxList_Zone[i].type=="checkbox" && !checkboxList_Zone[i].disabled && !checkboxList_Zone[i].id)  {
               	if(checkboxList_Zone[i].checked) {
               		checked += checkboxList_Zone[i].name+",";
               	}                          	
               }
             }
-            for (i = 0; i < checkboxList_GeoRestriction.length; i++) {            
-                if (checkboxList_GeoRestriction[i].type=="checkbox" && !checkboxList_GeoRestriction[i].disabled)  {
+            for (var i = 1; i < checkboxList_GeoRestriction.length; i++) {            
+                if (checkboxList_GeoRestriction[i].type=="checkbox" && !checkboxList_GeoRestriction[i].disabled && !checkboxList_GeoRestriction[i].id)  {
                 	if(checkboxList_GeoRestriction[i].checked) {
                 		checked += "$_"+checkboxList_GeoRestriction[i].name+",";
                 	}                          	
                 }
            }
-		    for (i = 0; i < checkboxList_Neighbourhood.length; i++) {            
-              if (checkboxList_Neighbourhood[i].type=="checkbox" && !checkboxList_Neighbourhood[i].disabled)  {
+		    for (var i = 1; i < checkboxList_Neighbourhood.length; i++) {            
+              if (checkboxList_Neighbourhood[i].type=="checkbox" && !checkboxList_Neighbourhood[i].disabled && !checkboxList_Neighbourhood[i].id)  {
             	if(checkboxList_Neighbourhood[i].checked) {
                 	checked += "NH_"+checkboxList_Neighbourhood[i].name+",";
                 }
@@ -133,7 +153,7 @@
             }
             else {
                 if(doShow) {
-            		showBoundary(checked.substring(0,checked.length-1), null, true);
+            		showBoundary(checked.substring(0,checked.length-1), null, startDate, true);
                 } else {
                 	location.href = "gmapexport.do?code="+checked.substring(0,checked.length-1);	
                 }
@@ -148,17 +168,17 @@
             var checkboxList_GeoRestriction = table_georestriction.getElementsByTagName("input");
             var checkboxList_Neighbourhood = table_neighbourhood.getElementsByTagName("input");
             
-			for (i = 0; i < checkboxList_Zone.length; i++) {            
+			for (var i = 0; i < checkboxList_Zone.length; i++) {            
               if (checkboxList_Zone[i].type=="checkbox" && !checkboxList_Zone[i].disabled)  {
             	  checkboxList_Zone[i].checked = false;                       	
               }
             }
-            for (i = 0; i < checkboxList_GeoRestriction.length; i++) {            
+            for (var i = 0; i < checkboxList_GeoRestriction.length; i++) {            
                 if (checkboxList_GeoRestriction[i].type=="checkbox" && !checkboxList_GeoRestriction[i].disabled)  {
                 	checkboxList_GeoRestriction[i].checked = false;                       	
                 }
             }
-		    for (i = 0; i < checkboxList_Neighbourhood.length; i++) {            
+		    for (var i = 0; i < checkboxList_Neighbourhood.length; i++) {            
               if (checkboxList_Neighbourhood[i].type=="checkbox" && !checkboxList_Neighbourhood[i].disabled)  {
             	  checkboxList_Neighbourhood[i].checked = false;                       	
               }

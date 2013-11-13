@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.service.impl;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -77,8 +78,8 @@ public class RestrictionManagerImpl extends BaseManagerImpl implements Restricti
 		return this.getSpatialManagerDao().getGeoRestrictionBoundary(code);
 	}
 	
-	public SpatialBoundary getZoneBoundary(String code) {
-		return this.getSpatialManagerDao().getZoneBoundary(code);
+	public SpatialBoundary getZoneBoundary(String code, Date startDate) {
+		return this.getSpatialManagerDao().getZoneBoundary(code, startDate);
 	}
 	
 	public void deleteGeoRestrictions(Set restrictions) {

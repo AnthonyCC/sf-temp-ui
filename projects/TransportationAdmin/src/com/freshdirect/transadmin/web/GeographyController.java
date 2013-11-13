@@ -3,6 +3,7 @@ package com.freshdirect.transadmin.web;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.service.RestrictionManagerI;
 import com.freshdirect.transadmin.service.ZoneManagerI;
+import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
 import com.freshdirect.transadmin.web.model.SpatialPoint;
 
@@ -78,11 +80,14 @@ public class GeographyController extends AbstractMultiActionController {
 	 * @param response current HTTP response
 	 * @return a ModelAndView to render the response
 	 */
+	@SuppressWarnings("unchecked")
 	public ModelAndView geographicBoundaryHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
 		ModelAndView mav = new ModelAndView("geographyView");
-		
+		String startDate = request.getParameter("startDate");
 		String status = request.getParameter("status");
+		if (startDate == null || "".equals(startDate))
+			startDate = TransStringUtil.getNextDate();
 		
 		Collection geoRestrictions = new ArrayList();
 		Collection geoZones = new ArrayList();
@@ -106,6 +111,7 @@ public class GeographyController extends AbstractMultiActionController {
     	mav.getModel().put("zoneboundaries", geoZones);
 		mav.getModel().put("georestrictionboundaries", geoRestrictions);
 		mav.getModel().put("geoSectors", geoSectors);
+		mav.getModel().put("startDate", startDate);
 		return mav;
 	}
 	
@@ -118,6 +124,7 @@ public class GeographyController extends AbstractMultiActionController {
 	public ModelAndView geographicBoundaryExportHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		
 		String code = request.getParameter("code");
+		String startDate = request.getParameter("startDate");
 		
 		SpatialBoundary boundary = null;
 		List<SpatialBoundary> boundaries = null;
@@ -143,7 +150,7 @@ public class GeographyController extends AbstractMultiActionController {
 			        			}
 			        		}
 			        } else {
-			        	boundary = getRestrictionManagerService().getZoneBoundary(_tmpCode);
+			        	boundary = getRestrictionManagerService().getZoneBoundary(_tmpCode, TransStringUtil.getDate(startDate));
 			        }
 			        appendBoundary(boundary, strBuf);
 				}
@@ -154,6 +161,9 @@ public class GeographyController extends AbstractMultiActionController {
 			
 		} catch (IOException e) {
 			//Send Empty File
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} 
 			
 		return null;

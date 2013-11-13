@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,7 @@ private JdbcTemplate jdbcTemplate;
 	private static final String GET_ZONE_GEOMENTRICBOUNDARY_QRY =
 						"select z.zone_code, z.name,gg.column_value	from dlv.region r, dlv.region_data rd, dlv.zone z, transp.zone  zd , table(z.geoloc.sdo_ordinates) gg	" +
 						"where zd.zone_code = z.zone_code and rd.id = z.region_data_id and rd.region_id = r.id and z.zone_code = ? " +
-						"and rd.start_date = (select max(start_date) from dlv.region_data where region_id=r.id)";
+						"and rd.start_date = (select max(start_date) from dlv.region_data where  start_date <= ? and region_id=r.id)";
 	
 
 	private static final String GET_SECTOR_GEOMENTRICBOUNDARY_QRY = "select sz.zipcode CODE, sz.sector_name NAME, gg.column_value "+
@@ -56,12 +57,12 @@ private JdbcTemplate jdbcTemplate;
 	
 	public SpatialBoundary getGeoRestrictionBoundary(final String code) throws DataAccessException  {
 		
-		return getSpatialBoundary(code, GET_GEOREST_GEOMENTRICBOUNDARY_QRY);
+		return getSpatialBoundary(code, null, GET_GEOREST_GEOMENTRICBOUNDARY_QRY);
 	}
 	
-	public SpatialBoundary getZoneBoundary(final String code) throws DataAccessException  {
+	public SpatialBoundary getZoneBoundary(final String code, final Date startDate) throws DataAccessException  {
 		
-		return getSpatialBoundary(code, GET_ZONE_GEOMENTRICBOUNDARY_QRY);
+		return getSpatialBoundary(code, startDate, GET_ZONE_GEOMENTRICBOUNDARY_QRY);
 	}
 	
 	public List<SpatialBoundary> getSectorBoundary(final String code) throws DataAccessException  {
@@ -109,7 +110,7 @@ private JdbcTemplate jdbcTemplate;
 		boundarymapping.get(_zipcode).getGeoloc().add(point);
 		
 	}
-	private SpatialBoundary getSpatialBoundary(final String code, final String query) throws DataAccessException   {
+	private SpatialBoundary getSpatialBoundary(final String code, final Date startDate, final String query) throws DataAccessException   {
 		final SpatialBoundary result = new SpatialBoundary();
 		final List geoloc = new ArrayList();
 		result.setGeoloc(geoloc);
@@ -119,6 +120,9 @@ private JdbcTemplate jdbcTemplate;
                 PreparedStatement ps =
                     connection.prepareStatement(query);
                 ps.setString(1, code);
+                if(startDate != null) {
+                	ps.setDate(2, new java.sql.Date(startDate.getTime()));
+                }
                 return ps;
             }  
         };

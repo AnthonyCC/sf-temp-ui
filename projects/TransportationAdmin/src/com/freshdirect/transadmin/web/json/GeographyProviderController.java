@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.web.json;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -57,12 +58,22 @@ public class GeographyProviderController extends JsonRpcController  implements I
 		return getRestrictionManagerService().getGeoRestrictionBoundary(code);
 	}
 	
-	public SpatialBoundary getZoneBoundary(String code) {
-		// TODO Auto-generated method stub
-		return getRestrictionManagerService().getZoneBoundary(code);
+	public SpatialBoundary getZoneBoundary(String code, String startDate) {		
+		if (startDate == null || "".equals(startDate))
+			startDate = TransStringUtil.getNextDate();
+		try {
+			return getRestrictionManagerService().getZoneBoundary(code,
+					TransStringUtil.getDate(startDate));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
-	public List getBoundaries(String code) {
+	public List getBoundaries(String code, String startDate) {
+		
+		if (startDate == null || "".equals(startDate))
+			startDate = TransStringUtil.getNextDate();
 		List result = new ArrayList<SpatialBoundary>();
 		SpatialBoundary boundary = null;
 		List<SpatialBoundary> boundaries = null;
@@ -79,8 +90,14 @@ public class GeographyProviderController extends JsonRpcController  implements I
 		        			result.addAll(boundaries);
 		        	}
 		        } else{
-		        	boundary = getRestrictionManagerService().getZoneBoundary(_tmpCode);
+		        	try {
+						boundary = getRestrictionManagerService().getZoneBoundary(_tmpCode, TransStringUtil.getDate(startDate));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 		        	boundary.setZone(true);
+		        	boundary.setCode(_tmpCode);
 		        }
 		        if(boundary != null) 
 		        	result.add(boundary);

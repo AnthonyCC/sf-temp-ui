@@ -103,16 +103,16 @@
         infoPanel = document.getElementById('info-panel');
      	// put markers
 		boundz = new google.maps.LatLngBounds();
-	 
+		
 	}
 
-	function showBoundary(boundaryKey, addresses, displayInfoPanelFlag) {
-
+	function showBoundary(boundaryKey, addresses, startDate, displayInfoPanelFlag) {
+		infoPanel.innerHTML = '';
 		waitPanel.render(document.body);
 		waitPanel.show();
 
-		var result = jsonrpcClient.AsyncGeographyProvider.getBoundaries(
-				showBoundaryCallback, boundaryKey);
+		jsonrpcClient.AsyncGeographyProvider.getBoundaries(
+				showBoundaryCallback, boundaryKey, startDate);
 		currentBoundary = boundaryKey;
 		locateAddresses = addresses;
 		displayInfoPanel = displayInfoPanelFlag || false;
@@ -130,51 +130,62 @@
 		}
 		
 		waitPanel.hide();
-
+		var zonePolygonMsg = '<p>Zone(s) ';
 		if (result.list != null) {
 			var point;
 			for ( var j = 0; j < result.list.length; j++) {
-
-				point = new google.maps.LatLng(result.list[j].center['y'], result.list[j].center['x']);				
-				map.setCenter(point, 12);
-				boundz.extend(point);
 				
-				createFlatMarker(point,
-						result.list[j].code, result.list[j].zone,
-						result.list[j].sector,
-						(result.list[j].code + "<br/>" + result.list[j].name));
-				
-							
-				if (result.list[j].geoloc.list != null) {
-					var polyLines = [];
-					for (var i = 0; i < result.list[j].geoloc.list.length; i++) {
-						var tmpPoint = result.list[j].geoloc.list[i];
-						var pointX = new google.maps.LatLng(tmpPoint['y'], tmpPoint['x'])
-						boundz.extend(pointX);
-						polyLines.push(pointX);
+				if(result.list[j].geoloc.list.length > 0) {
 
+					point = new google.maps.LatLng(result.list[j].center['y'], result.list[j].center['x']);				
+					map.setCenter(point, 12);
+					boundz.extend(point);
+					
+					createFlatMarker(point,
+							result.list[j].code, result.list[j].zone,
+							result.list[j].sector,
+							(result.list[j].code + "<br/>" + result.list[j].name));
+					
+								
+					if (result.list[j].geoloc.list != null) {
+						var polyLines = [];
+						for (var i = 0; i < result.list[j].geoloc.list.length; i++) {
+							var tmpPoint = result.list[j].geoloc.list[i];
+							var pointX = new google.maps.LatLng(tmpPoint['y'], tmpPoint['x'])
+							boundz.extend(pointX);
+							polyLines.push(pointX);
+	
+						}
+						var polyShape = new google.maps.Polygon({
+																  paths: polyLines,
+																  strokeColor: '#000000',
+																  strokeWeight: 1,
+																  strokeOpacity: 0.5,
+																  fillColor: genHexColor(),
+																  fillOpacity: 0.5
+																});
+	
+						polygons.push(polyShape);				
 					}
-					var polyShape = new google.maps.Polygon({
-															  paths: polyLines,
-															  strokeColor: '#000000',
-															  strokeWeight: 1,
-															  strokeOpacity: 0.5,
-															  fillColor: genHexColor(),
-															  fillOpacity: 0.5
-															});
-
-					polygons.push(polyShape);				
-				}
-				// Sets the map on all markers in the array
-				showMarkerAndPoligons();	
-				
-				if(locateAddresses != null) {
-					plotAddresses('A', locateAddresses);
-				}
-				
-				// fit all markers
-				map.setZoom(getZoomByBounds(map, boundz));
-				map.setCenter(boundz.getCenter());
+				} else {					
+					zonePolygonMsg += '<em>' + result.list[j].code	+ '</em>' + '<em>' + ', ' + '</em>';					
+				}				
+			}
+			
+			// Sets the map on all markers in the array
+			showMarkerAndPoligons();	
+			
+			if(locateAddresses != null) {
+				plotAddresses('A', locateAddresses);
+			}
+			
+			// fit all markers
+			map.setZoom(getZoomByBounds(map, boundz));
+			map.setCenter(boundz.getCenter());
+			
+			if(displayInfoPanel && zonePolygonMsg.length > 11) {
+				zonePolygonMsg += 'do not exist for the date specified';
+				infoPanel.innerHTML += zonePolygonMsg;
 			}
 		}
 
