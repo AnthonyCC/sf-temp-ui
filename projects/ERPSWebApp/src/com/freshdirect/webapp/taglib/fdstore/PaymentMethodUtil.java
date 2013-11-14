@@ -761,6 +761,8 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     }
     
     protected static int validateCardBrand(String number, String brand) {
+    	if(number.length()<2)
+    		return INVALID;
         String digit2 = number.substring(0,2);
         
         // for VISA prefix is 4 and lenght must be 13 || 16
