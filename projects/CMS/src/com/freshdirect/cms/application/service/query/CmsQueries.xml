@@ -178,6 +178,67 @@ order by contenttype_id
 					</CmsReport>
 -->
 					
+					<CmsReport id="stackedSkus">
+						<name>Stacked Skus</name>
+						<description>Finds products which have more than one Sku</description>
+						<script>
+<![CDATA[
+select parent_contentnode_id as parent_key$, child_contentnode_id as child_key$ from cms.relationship 
+where def_name = 'skus'
+and parent_contentnode_id in (
+ select parent_contentnode_id
+ from cms.relationship where def_name = 'skus' 
+ group by parent_contentnode_id 
+ having count(*) > 1
+) 
+ 
+order by parent_contentnode_id
+]]>
+						</script>
+					</CmsReport>
+
+
+					<CmsReport id="virtualSkus">
+						<name>Virtual Skus</name>
+						<description>Finds materials which have more than one associated Product</description>
+						<script>
+<![CDATA[
+select CONCAT('ErpMaterial:', sap_id) as grandchild_key$, child_contentnode_id as child_key$, parent_contentnode_id as parent_key$
+ from (
+  select parent_contentnode_id, child_contentnode_id from cms.relationship where def_name = 'skus' ) ps
+join (
+  select p.sku_code, m.sap_id
+  from erps.product p, erps.materialproxy px, erps.material m
+  where p.version=(select max(version) from erps.product where sku_code=p.sku_code)
+  and p.id=px.product_id
+  and px.mat_id=m.id
+) sm
+  
+on SUBSTR(ps.child_contentnode_id,5)=sm.sku_code
+
+where sap_id in (
+
+  select sap_id
+  
+   from (
+    select parent_contentnode_id as "product", child_contentnode_id from cms.relationship where def_name = 'skus' ) ps
+  join (
+    select p.sku_code, m.sap_id
+    from erps.product p, erps.materialproxy px, erps.material m
+    where p.version=(select max(version) from erps.product where sku_code=p.sku_code)
+    and p.id=px.product_id
+    and px.mat_id=m.id
+  ) sm
+    
+  on SUBSTR(ps.child_contentnode_id,5)=sm.sku_code
+  
+  group by sap_id
+  having count(*) > 1
+)
+order by sap_id
+]]>
+						</script>
+					</CmsReport>
 					
 					<CmsReport id="recipesSummary">
 						<name>Recipes summary</name>
@@ -334,7 +395,6 @@ order by parent_contentnode_id, ordinal
 ]]>
 						</script>
 					</CmsReport>
-
 					
 				</queries>
 			</CmsQueryFolder>
