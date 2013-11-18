@@ -173,13 +173,13 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 	@Override
 	public void setHandOffRouteBreaks(List<HandOffRouteBreakIn> breaksIn) {
 		
-		breaks = this.function.getTableParameterList().getTable("T_DRBREAK_UPLOAD");
+		breaks = this.function.getTableParameterList().getTable("T_DRBRK_UPLOAD");
 		for(HandOffRouteBreakIn breakIn : breaksIn){
 			breaks.insertRow(1);
 			breaks.setValue(breakIn.getRouteId(), "ZZTRKNO"); //Route No
-			breaks.setValue(breakIn.getBreakId(), "ZBREAK_SEQ"); // Break Sequence
-			breaks.setValue(formatTime1(breakIn.getStartTime()), "ZSTART_TIME"); // Start Time
-			breaks.setValue(formatTime1(breakIn.getEndTime()), "ZEND_TIME"); // Start Time
+			breaks.setValue(breakIn.getBreakId(), "SEQNO"); // Break Sequence
+			breaks.setValue(formatTime1(breakIn.getStartTime()), "STRTM"); // Start Time
+			breaks.setValue(formatTime1(breakIn.getEndTime()), "ENDTM"); // End Time
 			breaks.nextRow();
 		}
 	}
