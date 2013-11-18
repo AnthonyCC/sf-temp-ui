@@ -145,7 +145,7 @@
 
     //--------OAS Page Variables-----------------------
 	request.setAttribute("sitePage", currentFolder.getPath());
-	request.setAttribute("listPos", "PPSuperBuy,PPHeader,PPHeader2,PPLeftBottom,PPMidBottom,PPRightBottom");
+	request.setAttribute("listPos", "PPSuperBuy1,PPSuperBuy2,PPSuperBuy3,PPSuperBuy4,PPHeader,PPHeader2,PPLeftBottom,PPMidBottom,PPRightBottom");
 
 	Map<String, List<ProductModel>> promoProducts = new HashMap<String, List<ProductModel>>();
 	List<ProductModel> promotionProducts = new ArrayList<ProductModel>();
@@ -379,6 +379,8 @@
 		<style>
 			.product-grid { width: 967px; }
 			.items { width: 971px; }
+			.ddpa_erpCat { font-size:30px; color:green; height:1em !important}
+			.ddpa_erpCat_Center { width: 250px; background-color:#F3E2A9; border-style:solid;border-width:1px; border-color:green;}
 			.grid-view .grid-item-container { width: 242px; }
 		</style>
 		<script>
@@ -420,48 +422,25 @@
 						isFeatProd = true;
 						String prodContStyle = "";
 					%>
-						<logic:iterate id="contentNode" collection="<%= featProds %>" type="java.lang.Object" indexId="idx">
-							<%
-								seqDDPP = idx; //use a seperate var for include
-								
-								if ( request.getParameter("featurebox") != null && request.getParameter("featurebox").equals("old") ) {
-								
-									ProductModelPromotionAdapter pm = (ProductModelPromotionAdapter) contentNode;
-									String actionURI = FDURLUtil.getProductURI( pm, trkCode );
-																
-									pi = confStrat.configure((ProductModel) pm, confContext);
-									impressions.add(pi);
-			
-									prodContStyle = "left: "+curLeftPos+"px;";
-								
-							%>
-							
-							<%@ include file="/includes/product/i_product_box_ddpp.jspf" %>
-							<% 
-								}
-								else {
-								
-									ProductModelPromotionAdapter productModelAdapter = (ProductModelPromotionAdapter) contentNode;
-									String actionURI = FDURLUtil.getProductURI( productModelAdapter, trkCode );
-																
-									pi = confStrat.configure((ProductModel) productModelAdapter, confContext);
-									impressions.add(pi);
-			
-									%>
-									<div class="grid-item-container featurebox">
-									<%@ include file="/includes/product/i_product_box_featured.jspf" %>
-									</div>
-									<% 
-									
-								}
-								/* break out if we have more than three products in the featured setup */
-								if (seqDDPP == 3) { break; }
-								curLeftPos = curLeftPos + 255; /* take from css, cont width + 14 (gutter) */
-							%>
-						</logic:iterate>
+						
 						<div class="PPSuperBuy">
 							<script type="text/javascript">
-									OAS_AD('PPSuperBuy');
+									OAS_AD('PPSuperBuy1');
+							</script>
+						</div>
+						<div class="PPSuperBuy">
+							<script type="text/javascript">
+									OAS_AD('PPSuperBuy2');
+							</script>
+						</div>
+						<div class="PPSuperBuy">
+							<script type="text/javascript">
+									OAS_AD('PPSuperBuy3');
+							</script>
+						</div>
+						<div class="PPSuperBuy">
+							<script type="text/javascript">
+									OAS_AD('PPSuperBuy4');
 							</script>
 						</div>
 					</div>
@@ -497,7 +476,7 @@
 						%>
 						</div><br>
 						<% } %>
-							<div class="items">
+							<div class="grid-item-saving ddpa_erpCat"><div class="ddpa_erpCat_Center"><%=pa.getErpCategory() %></div></div><div class="items">
 						<%}
 						%><div class="grid-item-container"><% if(disableLinks) { %><%@ 
 							include file="/includes/product/i_product_box_preview.jspf" %><% 
