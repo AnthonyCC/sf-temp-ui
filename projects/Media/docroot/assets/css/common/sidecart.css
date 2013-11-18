@@ -230,7 +230,7 @@
 }
 
 #popupcart .modifynote {
-	max-height:0;
+	max-height:0px;
 	text-align:center;
 	font-size:10px;
 	overflow:hidden;
@@ -383,7 +383,7 @@
 #popupcart tr.cartline td>div {
   margin-top: 1px;
   overflow:hidden;
-  max-height:60px;
+  max-height:100px;
   -webkit-transition: all 100ms ease;
   -moz-transition: all 100ms ease;
   -ms-transition: all 100ms ease;
