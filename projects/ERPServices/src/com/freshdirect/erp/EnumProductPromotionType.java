@@ -14,6 +14,8 @@ public class EnumProductPromotionType extends Enum {
 			"PRESIDENTS_PICKS", 101,"President's Picks"); // President's Picks
 	public static final EnumProductPromotionType NUTRITIONISTS_CHOICE = new EnumProductPromotionType(
 			"NUTRITIONISTS_CHOICE",102, "Nutritionist's Choice"); // Nutritionist's Choice
+	public static final EnumProductPromotionType PRODUCTS_ASSORTMENTS = new EnumProductPromotionType(
+			"PRODUCTS_ASSORTMENTS",201, "Products Assortments"); // Products Assortments(DDPA)
 
 	private final String description;
 	private final Integer code;

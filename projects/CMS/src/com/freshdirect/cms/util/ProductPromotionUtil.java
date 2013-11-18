@@ -151,6 +151,19 @@ public class ProductPromotionUtil {
 		return nonFeatProducts;
 	}
 	
+	public static List<ProductModel> getSortedProducts(List<ProductModel> products, String sortByType){
+		if(null != sortByType){
+			if(sortByType.equalsIgnoreCase(ProductPromotionData.SORT_BY_DEPT_VIEW)){
+				Collections.sort(products, DEPTFULL_COMPARATOR); 
+			}else if(sortByType.equalsIgnoreCase(ProductPromotionData.SORT_BY_PRICE_VIEW)){
+				Collections.sort(products, ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR); 
+			}else if(sortByType.equalsIgnoreCase(ProductPromotionData.SORT_BY_PRICE_VIEW_INVERSE)){
+				Collections.sort(products, ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE); 
+			}					
+		}
+		return products;
+	}
+	
 	/**
 	 * To sort by product's original parent department.
 	 */
@@ -181,7 +194,7 @@ public class ProductPromotionUtil {
 		Map<String,List<FDProductPromotionInfo>> productPromotionInfoMap = erpProductPromotionPreviewInfo.getProductPromotionInfoMap();
 		Map<String,List<FDProductPromotionInfo>> productPromotionPreviewInfoMap = new HashMap<String,List<FDProductPromotionInfo>>();
 		Map<String,ErpProductInfoModel> erpProductInfoMap =  erpProductPromotionPreviewInfo.getErpProductInfoMap();
-		if(null !=productPromotionInfoMap && null !=erpProductInfoMap){
+		if(null !=productPromotionInfoMap){
 			for(Iterator itr = productPromotionInfoMap.keySet().iterator();itr.hasNext();){
 				String zoneCode =(String)itr.next();
 				List<FDProductPromotionInfo> productPromotionInfoList =(List<FDProductPromotionInfo>)productPromotionInfoMap.get(zoneCode);
@@ -193,27 +206,33 @@ public class ProductPromotionUtil {
 				if(null !=productPromotionInfoList){
 					for (Iterator iterator = productPromotionInfoList.iterator(); iterator.hasNext();) {
 						FDProductPromotionInfo productPromotionInfo = (FDProductPromotionInfo) iterator.next();
-						ErpProductInfoModel erpProductInfoModel = erpProductInfoMap.get(productPromotionInfo.getSkuCode());
+						ErpProductInfoModel erpProductInfoModel = null !=erpProductInfoMap?erpProductInfoMap.get(productPromotionInfo.getSkuCode()):null;
 						FDProductPromotionPreviewInfo productPromotionPreviewInfo = new FDProductPromotionPreviewInfo(productPromotionInfo);
-						if(null !=erpProductInfoModel.getMaterialPrices()){
-							FDProductInfo fdProductInfo = FDFactory.getProductInfo(erpProductInfoModel);
+						FDProductInfo fdProductInfo = null;
+						String skuCode = productPromotionInfo.getSkuCode();
+						try {
+							if(null !=erpProductInfoMap && null!=erpProductInfoModel.getMaterialPrices()){
+								fdProductInfo = FDFactory.getProductInfo(erpProductInfoModel);
+							}else{
+								fdProductInfo = FDFactory.getProductInfo(skuCode);
+							}
 							productPromotionPreviewInfo.setFdProductInfo(fdProductInfo);
 							if(null != fdProductInfo){
 								ZonePriceInfoListing zonePriceListing = fdProductInfo.getZonePriceInfoList();
-								try {
-									FDProductInfo fdCachedProductInfo =FDCachedFactory.getProductInfo(erpProductInfoModel.getSkuCode());
-									FDProduct fdCachedProduct = FDCachedFactory.getProduct(fdCachedProductInfo);
-									productPromotionPreviewInfo.setFdProduct(fdCachedProduct);
-									if(null ==zonePriceListing.getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE)){	
-										zonePriceListing.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE,fdCachedProductInfo.getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).clone());									
-									}
-								}catch (FDSkuNotFoundException e) {
-									LOGGER.warn(erpProductInfoModel.getSkuCode()+ " not found.");
-								}
-							}
 							
-							productPromotionPreviewInfoList.add(productPromotionPreviewInfo);
+								FDProductInfo fdCachedProductInfo =FDCachedFactory.getProductInfo(skuCode);
+								FDProduct fdCachedProduct = FDCachedFactory.getProduct(fdCachedProductInfo);
+								productPromotionPreviewInfo.setFdProduct(fdCachedProduct);
+								if(null ==zonePriceListing.getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE)){	
+									zonePriceListing.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE,fdCachedProductInfo.getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).clone());									
+								}
+								
+							}
+						}catch (FDSkuNotFoundException e) {
+							LOGGER.warn(skuCode+ " not found.");
 						}
+						productPromotionPreviewInfoList.add(productPromotionPreviewInfo);
+//						}
 						
 					}
 				}

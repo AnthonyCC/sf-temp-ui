@@ -35,7 +35,7 @@
 	<fd:css href="/assets/css/wine-ie.css" />
 	<![endif]-->
 	
-	<% if (layoutTypeCSS == EnumLayoutType.PRESIDENTS_PICKS.getId()) { %>
+	<% if (layoutTypeCSS == EnumLayoutType.PRESIDENTS_PICKS.getId() || layoutTypeCSS == EnumLayoutType.PRODUCTS_ASSORTMENTS.getId()) { %>
     <%-- TODO: create a jawr bundle, don't use if --%>
 		<fd:css href="/assets/css/common/grid_supplement.css" />
  		<fd:css href="/assets/css/common/product_grid.css" />

@@ -83,8 +83,9 @@ public enum EnumLayoutType implements Serializable {
 
     //promo page layouts
     PRESIDENTS_PICKS					("President's Picks", 200),
-    E_COUPONS					("E-Coupons", 201);
-
+    E_COUPONS					("E-Coupons", 201),
+    PRODUCTS_ASSORTMENTS					("Products Assortments", 202);
+    
     public static List<EnumLayoutType> getLayoutTypes() {
         return Arrays.asList(values());
     }

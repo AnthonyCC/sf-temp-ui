@@ -35,9 +35,9 @@ public class FDProductPromotionFactory {
 	
 	private Map<String, Map<String,List<FDProductPromotionInfo>>> promotionMap = new LinkedHashMap<String, Map<String,List<FDProductPromotionInfo>>>();
 	private Date lastPublished;
-	private Date currentTime;
+//	private Date currentTime;
 	
-	private ExpiringReference< Map<String,List<FDProductPromotionInfo>>> presPickPromotion = new ExpiringReference<Map<String,List<FDProductPromotionInfo>>>(5 * 60 * 1000) {
+	private ExpiringReference< Map<String,List<FDProductPromotionInfo>>> presPickPromotion = new ExpiringReference<Map<String,List<FDProductPromotionInfo>>>(1 * 60 * 1000) {
 		protected Map<String,List<FDProductPromotionInfo>> load() {
 			try {
 				LOGGER.info("REFRESHING PRESIDENT'S PICK PRODUCT PROMOTION FOR ANY NEW PROMOTIONS FROM LAST MODIFIED TIME "+lastPublished);
@@ -45,7 +45,7 @@ public class FDProductPromotionFactory {
 					currentTime = format.parse(format.format(new Date()));
 				} catch (ParseException e) {
 				}*/
-				currentTime = new Date();
+				Date currentTime = new Date();
 				Map<String,List<FDProductPromotionInfo>> productPromoInfoMap = null;
 				if(null !=lastPublished){
 					productPromoInfoMap = ProductPromotionInfoManager.getAllProductsByType(EnumProductPromotionType.PRESIDENTS_PICKS.getName(),lastPublished);					
@@ -54,6 +54,26 @@ public class FDProductPromotionFactory {
 				}
 				lastPublished = currentTime;
 				LOGGER.info("REFRESHED PROMOTION MAP FOR ANY NEW PROMOTIONS.");
+				return productPromoInfoMap;
+			} catch (FDResourceException ex) {
+				throw new FDRuntimeException(ex);
+			}
+		}
+	};
+	
+	private ExpiringReference< Map<String,List<FDProductPromotionInfo>>> productsAssortmentPromotion = new ExpiringReference<Map<String,List<FDProductPromotionInfo>>>(1 * 60 * 1000) {
+		protected Map<String,List<FDProductPromotionInfo>> load() {
+			try {
+				LOGGER.info("REFRESHING PRODUCTS ASSORTMENT PROMOTION FOR ANY NEW PROMOTIONS FROM LAST MODIFIED TIME "+lastPublished);				
+				Date currentTime = new Date();
+				Map<String,List<FDProductPromotionInfo>> productPromoInfoMap = null;
+				if(null !=lastPublished){
+					productPromoInfoMap = ProductPromotionInfoManager.getAllProductsByType(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName(),lastPublished);					
+				}else{
+					loadPromotions();
+				}
+				lastPublished = currentTime;
+				LOGGER.info("REFRESHED PROMOTION MAP FOR ANY NEW PRODUCTS ASSORTMENT PROMOTIONS.");
 				return productPromoInfoMap;
 			} catch (FDResourceException ex) {
 				throw new FDRuntimeException(ex);
@@ -73,6 +93,10 @@ public class FDProductPromotionFactory {
 			Map<String,List<FDProductPromotionInfo>> promoInfos = ProductPromotionInfoManager.getAllProductsByType(EnumProductPromotionType.PRESIDENTS_PICKS.getName());
 			if(null !=promoInfos && !promoInfos.isEmpty()){
 				this.promotionMap.put(EnumProductPromotionType.PRESIDENTS_PICKS.getName(),promoInfos);
+			}
+			promoInfos = ProductPromotionInfoManager.getAllProductsByType(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName());
+			if(null !=promoInfos && !promoInfos.isEmpty()){
+				this.promotionMap.put(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName(),promoInfos);
 			}
 		} catch (FDResourceException ex) {
 			LOGGER.error("Failed to load product promotions", ex);
@@ -95,6 +119,10 @@ public class FDProductPromotionFactory {
 		if(null !=promoInfos && !promoInfos.isEmpty()){
 			this.promotionMap.put(EnumProductPromotionType.PRESIDENTS_PICKS.getName(),promoInfos);
 		}
+		promoInfos = this.productsAssortmentPromotion.get();
+		if(null !=promoInfos && !promoInfos.isEmpty()){
+			this.promotionMap.put(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName(),promoInfos);
+		}
 		return this.promotionMap;
 	}
 	
@@ -116,6 +144,9 @@ public class FDProductPromotionFactory {
 	public void forceRefresh(String type) {
 		if(EnumProductPromotionType.PRESIDENTS_PICKS.equals(type)){
 			presPickPromotion.forceRefresh();
+		}
+		if(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.equals(type)){
+			productsAssortmentPromotion.forceRefresh();
 		}
 	}	
 	

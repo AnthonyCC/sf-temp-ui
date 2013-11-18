@@ -49,7 +49,7 @@ public class CategoryModel extends ProductContainer {
 			TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
 			new ThreadPoolExecutor.DiscardPolicy());
 	
-	private static final long FIVE_MINUTES = 5l * 60l * 1000l;
+	private static final long FIVE_MINUTES = 1l * 60l * 1000l;
 	
 	private final class RecommendedProductsRef extends BalkingExpiringReference<List<ProductModel>> {
 	    String zoneId;
@@ -152,6 +152,9 @@ public class CategoryModel extends ProductContainer {
 					if("PRESIDENTS_PICKS_PREVIEW".equals(ppType)||"PRESIDENTS_PICKS".equals(ppType)){
 						ppType = "PRESIDENTS_PICKS";
 					}
+					if("PRODUCTS_ASSORTMENTS_PREVIEW".equals(ppType)||"PRODUCTS_ASSORTMENTS".equals(ppType)){
+						ppType = "PRODUCTS_ASSORTMENTS";
+					}
 				}
 				if(!"E_COUPONS".equals(ppType)){
 					synchronized (FDProductPromotionManager.getInstance()) {					
@@ -236,15 +239,18 @@ public class CategoryModel extends ProductContainer {
 				ProductModel productModel = null;
 				ProductModel prodModel = null;
 				try {
-					prodModel = ((SkuModel) ContentFactory.getInstance().getContentNodeByKey(new ContentKey(FDContentTypes.SKU, sku))).getProductModel();
-					if(isPreview){
-						ProductModel prdModelClone = (ProductModel)prodModel.clone();
-						productModel = new ProductModelPromotionAdapter(prdModelClone,fDProductPromotionSku.isFeatured(),fDProductPromotionSku.getFeaturedHeader(),sku);
-						((ProductModelPromotionAdapter)productModel).setPreview(isPreview);
-						((ProductModelPromotionAdapter)productModel).setFdProdInfo(((FDProductPromotionPreviewInfo)fDProductPromotionSku).getFdProductInfo());
-						((ProductModelPromotionAdapter)productModel).setFdProduct(((FDProductPromotionPreviewInfo)fDProductPromotionSku).getFdProduct());
-					}else{
-						productModel = new ProductModelPromotionAdapter(prodModel,fDProductPromotionSku.isFeatured(),fDProductPromotionSku.getFeaturedHeader(),sku);
+					SkuModel skuModel = ((SkuModel) ContentFactory.getInstance().getContentNodeByKey(new ContentKey(FDContentTypes.SKU, sku)));
+					if(null !=skuModel){
+						prodModel = skuModel.getProductModel();
+						if(isPreview){
+							ProductModel prdModelClone = (ProductModel)prodModel.clone();
+							productModel = new ProductModelPromotionAdapter(prdModelClone,fDProductPromotionSku.isFeatured(),fDProductPromotionSku.getFeaturedHeader(),sku,fDProductPromotionSku.getErpCategory(),fDProductPromotionSku.getErpCatPosition());
+							((ProductModelPromotionAdapter)productModel).setPreview(isPreview);
+							((ProductModelPromotionAdapter)productModel).setFdProdInfo(((FDProductPromotionPreviewInfo)fDProductPromotionSku).getFdProductInfo());
+							((ProductModelPromotionAdapter)productModel).setFdProduct(((FDProductPromotionPreviewInfo)fDProductPromotionSku).getFdProduct());
+						}else{
+							productModel = new ProductModelPromotionAdapter(prodModel,fDProductPromotionSku.isFeatured(),fDProductPromotionSku.getFeaturedHeader(),sku,fDProductPromotionSku.getErpCategory(),fDProductPromotionSku.getErpCatPosition());
+						}
 					}
 				} catch (Exception e){
 					LOGGER.warn("Failed to get product for sku: " + sku +", promo products for category " + CategoryModel.this.getContentName(), e);				}

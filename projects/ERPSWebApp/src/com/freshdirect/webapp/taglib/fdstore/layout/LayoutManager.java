@@ -501,7 +501,10 @@ public class LayoutManager extends BodyTagSupport {
 		}	else if (layoutType == EnumLayoutType.E_COUPONS.getId()) {
 			s.setIncludeUnavailable(false);			
 			s.setLayoutFileName("/ecoupon.jsp");
-		}
+		}	else if (layoutType == EnumLayoutType.PRODUCTS_ASSORTMENTS.getId()) {
+			s.setIncludeUnavailable(false);			
+			s.setLayoutFileName("/includes/layouts/products_assortments_layout.jsp");
+		}	
 		
 		if (layoutType == EnumLayoutType.TEMPLATE_LAYOUT.getId()) {				
 			s.setLayoutFileName("/includes/layouts/template_layouts.jsp");

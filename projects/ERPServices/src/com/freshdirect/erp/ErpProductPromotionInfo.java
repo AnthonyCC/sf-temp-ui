@@ -10,6 +10,8 @@ public class ErpProductPromotionInfo extends ModelSupport {
 	private String matNumber;
 	private String erpDeptId;
 	private String featured;
+	private String erpCategory;
+	private int erpCatPosition;
 	public String getFeatured() {
 		return featured;
 	}
@@ -67,5 +69,17 @@ public class ErpProductPromotionInfo extends ModelSupport {
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public String getErpCategory() {
+		return erpCategory;
+	}
+	public void setErpCategory(String erpCategory) {
+		this.erpCategory = erpCategory;
+	}
+	public int getErpCatPosition() {
+		return erpCatPosition;
+	}
+	public void setErpCatPosition(int erpCatPosition) {
+		this.erpCatPosition = erpCatPosition;
 	}
 }

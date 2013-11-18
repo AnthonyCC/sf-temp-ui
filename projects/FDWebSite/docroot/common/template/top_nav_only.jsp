@@ -7,7 +7,7 @@
 	
 	request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE); %><%
 	
-	if (layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId()) {
+	if (layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId() || layoutType == EnumLayoutType.PRODUCTS_ASSORTMENTS.getId()) {
 		%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><%
 	} else {
 		%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><%

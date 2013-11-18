@@ -33,6 +33,7 @@ public class SAPProductPromotionContentLoader implements BapiFunctionI, SapProdu
 
 	public static final String SAP_FUNCTION_ID = "ZDDPP_PUBLISH";
 	public static final String SAP_PROGRAM_ID = "ZDDPP_PUB";
+	public static final String MASTER_DEFAULT_ZONE="100000";
 	
 	
 	private int batchNumber;
@@ -68,7 +69,9 @@ public class SAPProductPromotionContentLoader implements BapiFunctionI, SapProdu
 				new DataStructure(FIELD_ZONEID, JCO.TYPE_CHAR, 6, 0, "Pricing Zone ID"),
 				new DataStructure(FIELD_PRIORY, JCO.TYPE_NUM, 2, 0, "Priority"),
 				new DataStructure(FIELD_FEATR, JCO.TYPE_CHAR, 1, 0, "Featured"),
-				new DataStructure(FIELD_FEATRH, JCO.TYPE_NUM, 3, 0, "Featured Header"),				
+				new DataStructure(FIELD_FEATRH, JCO.TYPE_NUM, 3, 0, "Featured Header"),		
+				new DataStructure(FIELD_CATEGORY, JCO.TYPE_NUM, 50, 0, "Category"),
+				new DataStructure(FIELD_CATEGORY_POSITION, JCO.TYPE_NUM, 3, 0, "Category Position"),
 								
 		};
 		smeta[0] = new JCO.MetaData("PARAM1");
@@ -150,11 +153,21 @@ public class SAPProductPromotionContentLoader implements BapiFunctionI, SapProdu
 					Integer priority = ppInfoTable.getInt(FIELD_PRIORY);
 					String featured = ppInfoTable.getString(FIELD_FEATR);
 					String featuredHeader = ppInfoTable.getString(FIELD_FEATRH);
+					
 					ErpProductPromotionInfo ppInfo= new ErpProductPromotionInfo();				
 					ppInfo.setType(enumType.getName());		
 					ppInfo.setSkuCode(skuCode);
 					ppInfo.setMatNumber(matNum);
 					ppInfo.setErpDeptId(dept);
+					if(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.equals(enumType)){
+						String erpCategory = ppInfoTable.getString(FIELD_CATEGORY);
+						Integer erpCatPosition = ppInfoTable.getInt(FIELD_CATEGORY_POSITION);
+						ppInfo.setErpCategory(erpCategory);
+						ppInfo.setErpCatPosition(erpCatPosition);
+						if (zoneId==null || "".equals(zoneId.trim())){
+							zoneId=MASTER_DEFAULT_ZONE;
+						}
+					}
 					ppInfo.setZoneId("0000"+zoneId);
 					ppInfo.setPriority(priority);
 					ppInfo.setFeaturedHeader(featuredHeader);
@@ -203,7 +216,7 @@ public class SAPProductPromotionContentLoader implements BapiFunctionI, SapProdu
 					productPromotion.setEndDate(DateUtil.parseMDY2(endDate));				
 					ppList.add(productPromotion);
 				} else{
-					LOGGER.warn("Not a valid value for 'PRTYP' of 'ZDDPP_PROMO_HDR' with promotion id:"+ppId);									
+					LOGGER.warn(ppType+" is not a valid value for 'PRTYP' of 'ZDDPP_PROMO_HDR' with promotion id:"+ppId);									
 				}
 			} catch (Exception e) {
 				LOGGER.error("Exception while parsing a row from 'ZDDPP_PROMO_HDR':"+e.getMessage());				

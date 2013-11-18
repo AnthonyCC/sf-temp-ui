@@ -51,6 +51,8 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	private boolean isPreview;
 	private FDProductInfo fdProdInfo;
 	private FDProduct fdProduct;
+	private String erpCategory;
+	private int erpCatPosition;
 
 	
 	public ProductModel getProductModel() {
@@ -96,6 +98,13 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 		this.ppSkuCode = sku;
 	}
 
+	public ProductModelPromotionAdapter(ProductModel productModel,
+			boolean isFeatured, String featuredHeader,String sku,String erpCategory, int erpCatPosition) {
+		this(productModel,isFeatured,featuredHeader,sku);
+		this.erpCategory = erpCategory;
+		this.erpCatPosition = erpCatPosition;
+	}
+	
 	@Override
 	public boolean enforceQuantityMax() {
 		 return productModel.enforceQuantityMax();
@@ -1355,6 +1364,22 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	@Override
 	public Image getPackageImage() {
 		return productModel.getPackageImage();
+	}
+
+	public String getErpCategory() {
+		return erpCategory;
+	}
+
+	public void setErpCategory(String erpCategory) {
+		this.erpCategory = erpCategory;
+	}
+
+	public int getErpCatPosition() {
+		return erpCatPosition;
+	}
+
+	public void setErpCatPosition(int erpCatPosition) {
+		this.erpCatPosition = erpCatPosition;
 	}
 
 }

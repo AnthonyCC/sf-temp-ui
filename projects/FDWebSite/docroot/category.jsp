@@ -143,7 +143,7 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 	        jspTemplate = "/common/template/usq_sidenav.jsp";
 	    } else { //assuming the default (Generic) Template
 			//unless it's data-driven
-			if (layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId()) {
+			if (layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId() || EnumLayoutType.PRODUCTS_ASSORTMENTS.getId() == layoutType) {
 				jspTemplate = "/common/template/top_nav_only.jsp";
 			} else {
 				jspTemplate = "/common/template/both_dnav.jsp";
@@ -238,8 +238,8 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 		      introTitle="";
 			  isWineLayout=true;
 		    }
-		 	// remove intro from ddpp
-		    if ( layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId() ) {
+		 	// remove intro from ddpp/ddpa
+		    if ( layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId() || layoutType == EnumLayoutType.PRODUCTS_ASSORTMENTS.getId()) {
 		      introCopy="";
 		      introTitle="";
 		    }
@@ -433,7 +433,7 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 	   			EnumLayoutType.BULK_MEAT_PRODUCT.getId() != layoutType && 
 	   			EnumLayoutType.VALENTINES_CATEGORY.getId() != layoutType && 
 	   			EnumLayoutType.FOURMM_CATEGORY.getId() != layoutType &&
-	   			EnumLayoutType.PRESIDENTS_PICKS.getId() != layoutType
+	   			EnumLayoutType.PRESIDENTS_PICKS.getId() != layoutType && EnumLayoutType.PRODUCTS_ASSORTMENTS.getId() != layoutType
 	   		) { 
 	   		%><%@ include file="/includes/i_bottom_template.jspf" %><%
 		} %>

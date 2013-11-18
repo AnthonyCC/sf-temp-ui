@@ -30,7 +30,7 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 	private List<ErpProductInfoModel> erpProductInfoList = new ArrayList<ErpProductInfoModel>();
 	private Map<String, ErpProductInfoModel> erpProductInfoMap = new HashMap<String,ErpProductInfoModel>();
 	private Map<String,List<FDProductPromotionInfo>> productPromotionInfoMap;
-	
+	private String functionName = null;
 	public List<ErpProductInfoModel> getErpProductInfoList() {
 		return erpProductInfoList;
 	}
@@ -59,6 +59,7 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 
 	public JcoBapiProductPromotionPreview(String functionName) {
 		super(functionName);
+		this.functionName = functionName; 
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -69,12 +70,17 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 	protected void processResponse() throws BapiException {
 		super.processResponse();
 
-//		JCO.Table ppHeaderpromoHeader = function.getTableParameterList().getTable(TABLE_ZDDPP_PROMO_HDR);		
-		JCO.Table ppDetailTbl = function.getTableParameterList().getTable(TABLE_ZDDPP_PROMO_DTL);
-		productPromotionInfoMap =getProductPromotionInfo(ppDetailTbl);
-		JCO.Table ppPriceTbl = function.getTableParameterList().getTable(TABLE_ZDDPP_PROMO_PRICE);
-		Map<String,Map<String,List<ErpMaterialPrice>>> ppPricesMap =getProductPromotionPrices(ppPriceTbl);
-		populatePrices(ppPricesMap);
+//		JCO.Table ppHeaderpromoHeader = function.getTableParameterList().getTable(TABLE_ZDDPP_PROMO_HDR);	
+		if("ZDDPA_PREVIEW".equals(functionName)){
+			JCO.Table ppDetailTbl = function.getTableParameterList().getTable(TABLE_ZDDPP_PROMO_DTL);
+			productPromotionInfoMap =getProductPromotionInfo(ppDetailTbl);			
+		}else{
+			JCO.Table ppDetailTbl = function.getTableParameterList().getTable(TABLE_ZDDPP_PROMO_DTL);
+			productPromotionInfoMap =getProductPromotionInfo(ppDetailTbl);
+			JCO.Table ppPriceTbl = function.getTableParameterList().getTable(TABLE_ZDDPP_PROMO_PRICE);
+			Map<String,Map<String,List<ErpMaterialPrice>>> ppPricesMap =getProductPromotionPrices(ppPriceTbl);
+			populatePrices(ppPricesMap);
+		}
 	}
 
 	private void populatePrices(
@@ -160,6 +166,9 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 					String matNum = ppInfoTable.getString(FIELD_MATNR).trim();
 					String dept = ppInfoTable.getString(FIELD_ZZDEPT).trim();
 					String zoneId = ppInfoTable.getString(FIELD_ZONEID).trim();
+					if (zoneId==null || "".equals(zoneId.trim())){
+						zoneId=MASTER_DEFAULT_ZONE;
+					}
 					zoneId ="0000"+zoneId;
 					Integer priority = ppInfoTable.getInt(FIELD_PRIORY);
 					String featured = ppInfoTable.getString(FIELD_FEATR);

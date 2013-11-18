@@ -9,6 +9,7 @@
 package com.freshdirect.sap.bapi;
 
 import com.freshdirect.customer.EnumSaleType;
+import com.freshdirect.erp.EnumProductPromotionType;
 import com.freshdirect.sap.jco.JcoBapiFunctionFactory;
 
 /**
@@ -58,7 +59,7 @@ public abstract class BapiFactory {
 	
 	public abstract BapiRouteStatusInfo getBapiRouteStatusInfoBuilder();
 	
-	public abstract BapiProductPromotionPreviewI getBapiProductPromotionPreviewBuilder();
+	public abstract BapiProductPromotionPreviewI getBapiProductPromotionPreviewBuilder(EnumProductPromotionType type );
 	
 	public abstract BapiSendSettlementByCommand getBapiSendEBTSettlementSender();
 	

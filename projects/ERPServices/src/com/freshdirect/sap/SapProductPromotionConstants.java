@@ -5,6 +5,9 @@ public interface SapProductPromotionConstants {
 	public static final String TABLE_ZDDPP_PROMO_DTL = "ZDDPP_PROMO_DTL";
 	public static final String TABLE_ZDDPP_PROMO_HDR = "ZDDPP_PROMO_HDR";
 	public static final String TABLE_ZDDPP_PROMO_PRICE = "ZDDPP_PROMO_PRICE";
+	public static final String TABLE_ZDDPA_PROMO_DTL = "ZDDPA_PROMO_DTL";
+	public static final String TABLE_ZDDPA_PROMO_HDR = "ZDDPA_PROMO_HDR";
+	public static final String MASTER_DEFAULT_ZONE="100000";
 	
 	public static final String FIELD_FEATRH = "FEATRN";
 	public static final String FIELD_FEATR = "FEATR";
@@ -27,6 +30,9 @@ public interface SapProductPromotionConstants {
 	public static final String FIELD_ZPRICE_RATE = "ZPRICE_RATE";
 	public static final String FIELD_ZPRICE_UOM = "ZPRICE_UOM";
 	public static final String FIELD_REQUESTID = "REQUESTID";
+	
+	public static final String FIELD_CATEGORY="ZCATEGORY";
+	public static final String FIELD_CATEGORY_POSITION="CATPOS";
 	
 	public static final String FEATURED="FEATURED";
 	public static final String NON_FEATURED="NON_FEATURED";

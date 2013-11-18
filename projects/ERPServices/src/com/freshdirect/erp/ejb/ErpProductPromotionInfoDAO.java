@@ -31,13 +31,15 @@ public class ErpProductPromotionInfoDAO implements Serializable{
 	private static final String COLUMN_FEATURED="FEATURED";
 	private static final String COLUMN_FEATURED_HEADER="FEATURED_HEADER";
 	private static final String COLUMN_TYPE="TYPE";
+	private static final String COLUMN_ERP_CATEGORY="ERP_CATEGORY";
+	private static final String COLUMN_ERP_CAT_POSITION="ERP_CAT_POSITION";
 	
 	private static final String FEATURED="FEATURED";
 	private static final String NON_FEATURED="NON_FEATURED";
 	
 	
-	private static final String ALL_ZONES_PRODUCTS_SQL="select * from ERPS.PRODUCT_PROMOTION_GROUP ppg where ppg.version=(select max(ppg1.version) from ERPS.PRODUCT_PROMOTION_GROUP ppg1,ERPS.PRODUCT_PROMOTION_HISTORY pph where ppg1.version=pph.version and ppg1.type=? and pph.status='S') and ppg.type=? order by ppg.zone_id,  to_number(ppg.priority),ppg.featured ";
-	private static final String ALL_ZONES_REFRESH_PRODUCTS_SQL="select * from ERPS.PRODUCT_PROMOTION_GROUP ppg where ppg.version=(select max(ppg1.version) from ERPS.PRODUCT_PROMOTION_GROUP ppg1,ERPS.PRODUCT_PROMOTION_HISTORY pph where ppg1.version=pph.version and ppg1.type=? and pph.status='S' and PPH.DATE_CREATED > ? ) and ppg.type=? order by ppg.zone_id, to_number(ppg.priority),ppg.featured ";
+	private static final String ALL_ZONES_PRODUCTS_SQL="select * from ERPS.PRODUCT_PROMOTION_GROUP ppg where ppg.version=(select max(ppg1.version) from ERPS.PRODUCT_PROMOTION_GROUP ppg1,ERPS.PRODUCT_PROMOTION_HISTORY pph where ppg1.version=pph.version and ppg1.type=? and pph.status='S') and ppg.type=? order by ppg.zone_id,  to_number(ppg.erp_cat_position),to_number(ppg.priority),ppg.featured ";
+	private static final String ALL_ZONES_REFRESH_PRODUCTS_SQL="select * from ERPS.PRODUCT_PROMOTION_GROUP ppg where ppg.version=(select max(ppg1.version) from ERPS.PRODUCT_PROMOTION_GROUP ppg1,ERPS.PRODUCT_PROMOTION_HISTORY pph where ppg1.version=pph.version and ppg1.type=? and pph.status='S' and PPH.DATE_CREATED > ? ) and ppg.type=? order by ppg.zone_id, to_number(ppg.erp_cat_position),to_number(ppg.priority),ppg.featured ";
 	/**
 	 * Method to get latest products for all zones, by ppType.
 	 * @param conn
@@ -80,6 +82,8 @@ public class ErpProductPromotionInfoDAO implements Serializable{
 	            	 promotionProduct.setFeatured(isFeatured);
 	            	 promotionProduct.setFeaturedHeader(rs.getString(COLUMN_FEATURED_HEADER));
 	            	 promotionProduct.setType(rs.getString(COLUMN_TYPE));
+	            	 promotionProduct.setErpCategory(rs.getString(COLUMN_ERP_CATEGORY));
+	            	 promotionProduct.setErpCatPosition(null !=rs.getString(COLUMN_ERP_CAT_POSITION)?Integer.parseInt(rs.getString(COLUMN_ERP_CAT_POSITION)):0);
 	            	 promotionProducts.add(promotionProduct);	            	 
 	           }
 	       }catch(SQLException e){
@@ -125,6 +129,8 @@ public class ErpProductPromotionInfoDAO implements Serializable{
 	            	 promotionProduct.setFeatured(isFeatured);
 	            	 promotionProduct.setFeaturedHeader(rs.getString(COLUMN_FEATURED_HEADER));
 	            	 promotionProduct.setType(rs.getString(COLUMN_TYPE));
+	            	 promotionProduct.setErpCategory(rs.getString(COLUMN_ERP_CATEGORY));
+	            	 promotionProduct.setErpCatPosition(Integer.parseInt(rs.getString(COLUMN_ERP_CAT_POSITION)));
 	            	 promotionProducts.add(promotionProduct);		            	 
 	             }
 	       }catch(SQLException e){

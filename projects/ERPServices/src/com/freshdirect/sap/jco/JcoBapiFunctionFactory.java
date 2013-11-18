@@ -9,6 +9,7 @@
 package com.freshdirect.sap.jco;
 
 import com.freshdirect.customer.EnumSaleType;
+import com.freshdirect.erp.EnumProductPromotionType;
 import com.freshdirect.sap.bapi.BapiCartonDetailsForSale;
 import com.freshdirect.sap.bapi.BapiCartonInfo;
 import com.freshdirect.sap.bapi.BapiCreateCustomer;
@@ -125,7 +126,10 @@ public class JcoBapiFunctionFactory extends BapiFactory {
 	}
 
 	@Override
-	public BapiProductPromotionPreviewI getBapiProductPromotionPreviewBuilder() {
+	public BapiProductPromotionPreviewI getBapiProductPromotionPreviewBuilder(EnumProductPromotionType type) {
+		if(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.equals(type)){
+			return new JcoBapiProductPromotionPreview("ZDDPA_PREVIEW");
+		}
 		return new JcoBapiProductPromotionPreview("ZDDPP_PREVIEW");
 	}
 	

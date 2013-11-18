@@ -3,6 +3,7 @@ package com.freshdirect.sap.command;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.erp.EnumProductPromotionType;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
@@ -30,7 +31,13 @@ public class SapProductPromotionPreviewCommand extends SapCommandSupport {
 	}
 	@Override
 	public void execute() throws SapException {
-		BapiProductPromotionPreviewI bapi = BapiFactory.getInstance().getBapiProductPromotionPreviewBuilder();
+		EnumProductPromotionType type = EnumProductPromotionType.PRESIDENTS_PICKS;
+		if(null !=previewId){
+			if(previewId.endsWith(""+EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getCode())){
+				type = EnumProductPromotionType.PRODUCTS_ASSORTMENTS;
+			}
+		}
+		BapiProductPromotionPreviewI bapi = BapiFactory.getInstance().getBapiProductPromotionPreviewBuilder(type);
 		bapi.addRequest(this.previewId);
 		this.invoke(bapi);
 		erpProductPromotionPreviewInfo = new ErpProductPromotionPreviewInfo();
