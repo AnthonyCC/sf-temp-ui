@@ -27,7 +27,7 @@
 
 	// Query string
 	QueryParameterCollection qv = QueryParameterCollection.decode(request.getQueryString()); 
-
+	String ppId = NVL.apply(request.getParameter("ppId"), "");
 	String isPreviewMode = NVL.apply(request.getParameter("ppPreviewId"), "false");
 	boolean disableLinks = false;
 	
@@ -69,7 +69,7 @@
 	String successPage = request.getRequestURI()+(request.getQueryString() == null ? "" : "?" + request.getQueryString());
 	
 	String catId = NVL.apply(request.getParameter("catId"), ""); //category id
-	String ppId = request.getParameter("pp_id");
+	//String ppId = request.getParameter("pp_id");
 	
 	String TX_FORM_NAME        = catId+"_form"; // impression form name
 	String TX_JS_NAMESPACE     = catId+"_JSnamespace"; // impression javascript namespace
@@ -86,13 +86,13 @@
 		if ("".equals(sort)) { sort = "ourFaves"; }
 	String order = NVL.apply(request.getParameter("order"), "asc"); //switch sort param, if not "price", "priceDesc" or "dept", then use default ("ourFaves")
 		if ("".equals(order)) { order = "asc"; }
-	String trkCode =  NVL.apply(request.getParameter("trkCode"), "ddpp");
-		if ("".equals(trkCode)) { trkCode = "ddpp"; }
+	String trkCode =  NVL.apply(request.getParameter("trkCode"), "ddpa");
+		if ("".equals(trkCode)) { trkCode = "ddpa"; }
 		
 	boolean isFeatProd = true;
 	int tempCounter = 0;
 	int seqDDPP = 0;
-	String trk = "ddpp";
+	String trk = "ddpa";
 	
 	Set hideBursts = new HashSet();
 		hideBursts.add(EnumBurstType.DEAL);
@@ -135,7 +135,7 @@
 				queryString.addParam(name, value);
 			} catch (UnsupportedEncodingException e) {
 				// Not really possible, throw unchecked
-			    throw new IllegalStateException("presidents_picks_layout.jsp: No UTF-8");
+			    throw new IllegalStateException("products_assortments_layout.jsp: No UTF-8");
 			}
 		}
 	}
@@ -153,10 +153,12 @@
 	String ppPreviewId = request.getParameter("ppPreviewId");
 	boolean isPpPreview = (null ==((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getProductPromotionType()|| null==ppPreviewId)?false:true;
 	
-	if(!isPpPreview){
-		promotionProducts = ((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getProducts();
-	}else{
+	if(isPpPreview){
 		promotionProducts = ((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getPromotionPageProductsForPreview(ppPreviewId);
+	}/* else if("".equals(ppId)){
+		promotionProducts = ((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getProducts();
+	}  */else{
+		promotionProducts = ((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getAssortmentPromotionPageProducts(ppId);
 	}
 	
 	List<ProductModel> featProds = ProductPromotionUtil.getFeaturedProducts(promotionProducts,isPpPreview);
@@ -468,7 +470,7 @@
 						pi = confStrat.configure(pm1, confContext);
 						ProductModelPromotionAdapter pa = (ProductModelPromotionAdapter) pm1;
 						boolean newCat = false;
-						if(!erpCat.equalsIgnoreCase(pa.getErpCategory())){
+						if(null!=erpCat &&!erpCat.equalsIgnoreCase(pa.getErpCategory())){
 							newCat = true;
 							erpCat = pa.getErpCategory();
 							if(!isFirst){
@@ -476,7 +478,8 @@
 						%>
 						</div><br>
 						<% } %>
-							<div class="grid-item-saving ddpa_erpCat"><div class="ddpa_erpCat_Center"><%=pa.getErpCategory() %></div></div><div class="items">
+							<% if(null !=erpCat && !"".equals(erpCat)){ %><div class="grid-item-saving ddpa_erpCat"><div class="ddpa_erpCat_Center"><%=pa.getErpCategory() %></div></div><%} %>
+							<div class="items">
 						<%}
 						%><div class="grid-item-container"><% if(disableLinks) { %><%@ 
 							include file="/includes/product/i_product_box_preview.jspf" %><% 

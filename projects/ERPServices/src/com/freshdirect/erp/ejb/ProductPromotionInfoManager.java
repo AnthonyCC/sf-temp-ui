@@ -138,4 +138,20 @@ public class ProductPromotionInfoManager {
 			}
 		}		
 	}
+		
+	public static Map<String,Map<String,List<FDProductPromotionInfo>>> getAllPromotionsByType(String ppType,Date lastPublishedDate) throws FDResourceException{
+		lookupManagerHome();
+
+		try {
+			ErpProductPromotionInfoSB sb = managerHome.create();
+			Map<String,Map<String,List<FDProductPromotionInfo>>> productPromoInfoMap =sb.getAllPromotionsByType(ppType,lastPublishedDate);
+			return productPromoInfoMap;
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}		
+	}
 }

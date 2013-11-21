@@ -17,6 +17,8 @@ public class ProductPromotionData {
 	private List<ProductModel> productModels;
 	private Map<String,Map<String, List<ProductModel>>> zoneProductModelsMap;
 	private Map<String,ProductModel> skuProductMap;
+	private String productPromotitonType;
+	private String promotionId;
 //	private Set<String> skus;
 	
 
@@ -46,6 +48,19 @@ public class ProductPromotionData {
 			Map<String, Map<String, List<ProductModel>>> zoneProductModelsMap) {
 		this.zoneProductModelsMap = zoneProductModelsMap;
 	}
+	public String getProductPromotitonType() {
+		return productPromotitonType;
+	}
+	public void setProductPromotitonType(String productPromotitonType) {
+		this.productPromotitonType = productPromotitonType;
+	}
+	public String getPromotionId() {
+		return promotionId;
+	}
+	public void setPromotionId(String promotionId) {
+		this.promotionId = promotionId;
+	}
+	
 	
 	
 }

@@ -189,6 +189,9 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 //	            		promotionProductsMap.put(isFeatured?FEATURED:NON_FEATURED, promotionProducts);
 	            		zonePromoProdMap.put(zoneId, promotionProducts);
 	            	}
+	            	String erpCategory = ppInfoTable.getString(FIELD_CATEGORY);
+					Integer erpCatPosition = ppInfoTable.getInt(FIELD_CATEGORY_POSITION);
+					
 	            	FDProductPromotionInfo ppInfo= new FDProductPromotionInfo();				
 					ppInfo.setType(enumType.getName());		
 					ppInfo.setSkuCode(skuCode);
@@ -198,6 +201,8 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 					ppInfo.setPriority(priority);
 					ppInfo.setFeaturedHeader(featuredHeader);
 					ppInfo.setFeatured(isFeatured);
+					ppInfo.setErpCategory(erpCategory);
+					ppInfo.setErpCatPosition(erpCatPosition);
 					promotionProducts.add(ppInfo);
 					if(null==erpProductInfoMap.get(skuCode)){
 					ErpProductInfoModel erpProductInfoModel = new ErpProductInfoModel(skuCode,new String[]{matNum},EnumATPRule.JIT,

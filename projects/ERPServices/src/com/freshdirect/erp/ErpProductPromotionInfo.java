@@ -12,6 +12,8 @@ public class ErpProductPromotionInfo extends ModelSupport {
 	private String featured;
 	private String erpCategory;
 	private int erpCatPosition;
+	private String erpPromtoionId;
+	
 	public String getFeatured() {
 		return featured;
 	}
@@ -81,5 +83,11 @@ public class ErpProductPromotionInfo extends ModelSupport {
 	}
 	public void setErpCatPosition(int erpCatPosition) {
 		this.erpCatPosition = erpCatPosition;
+	}
+	public String getErpPromtoionId() {
+		return erpPromtoionId;
+	}
+	public void setErpPromtoionId(String erpPromtoionId) {
+		this.erpPromtoionId = erpPromtoionId;
 	}
 }

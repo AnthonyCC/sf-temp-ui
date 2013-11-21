@@ -102,4 +102,26 @@ public class ErpProductPromotionInfoSessionBean extends SessionBeanSupport {
 			throw new EJBException(e);
 		}
 	}
+	
+	
+	public  Map<String,Map<String,List<FDProductPromotionInfo>>> getAllPromotionsByType(String ppType, Date lastPublishDate) throws FDResourceException, RemoteException{
+		Connection conn = null;
+		Map<String,Map<String,List<FDProductPromotionInfo>>> promotionProducts=null;
+		try{
+			conn = getConnection();			
+			promotionProducts=ErpProductPromotionInfoDAO.getAllPromotionsByType(conn,ppType,lastPublishDate);
+		}catch(SQLException sqle){
+			LOGGER.error("Unable to get product promotions of type: "+ppType+",with lastPublishDate:"+lastPublishDate , sqle);
+			throw new EJBException(sqle);
+		}finally {
+			try {
+				if (conn != null)
+					conn.close();
+			} catch (SQLException sqle) {
+				LOGGER.error("Unable to close db resources", sqle);
+				throw new EJBException(sqle);
+			}
+		}		
+		return promotionProducts;
+	}
 }

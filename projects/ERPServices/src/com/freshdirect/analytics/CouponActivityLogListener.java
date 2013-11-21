@@ -30,10 +30,10 @@ public class CouponActivityLogListener extends EventListener{
 		ObjectMessage objMsg = (ObjectMessage) message;
 		try {
 			Object obj = objMsg.getObject();
-			LOGGER.debug("Received message is:"+obj);	
+//			LOGGER.debug("Received message is:"+obj);	
 			if(obj instanceof FDCouponActivityLogModel)	{
 				logCouponActivity((FDCouponActivityLogModel)obj);
-				LOGGER.debug("Completed logging the coupon activity.");
+//				LOGGER.debug("Completed logging the coupon activity.");
 			}
 		} catch (JMSException e) {
 			LOGGER.error("JMSException in CouponActivityLogListener:"+e);

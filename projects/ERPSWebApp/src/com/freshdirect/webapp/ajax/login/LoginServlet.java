@@ -6,15 +6,11 @@ package com.freshdirect.webapp.ajax.login;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URLDecoder;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.ListIterator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
@@ -22,25 +18,9 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.customer.FDAuthenticationException;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDUser;
-import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.giftcard.EnumGiftCardType;
-import com.freshdirect.giftcard.RecipientModel;
-import com.freshdirect.mail.EmailUtil;
-import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
-import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
-import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
-import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
-import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 
 /**

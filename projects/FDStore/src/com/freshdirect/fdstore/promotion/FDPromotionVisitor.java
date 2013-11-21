@@ -38,10 +38,10 @@ public class FDPromotionVisitor {
 		List ruleBasedPromotions = FDPromotionRulesEngine.getEligiblePromotions(context);
 		context.setRulePromoCode(ruleBasedPromotions);
 		FDPromotionEligibility eligibilities = evaluatePromotions(context);
-		LOGGER.info("Promotion eligibility:after evaluate " + eligibilities);
+//		LOGGER.info("Promotion eligibility:after evaluate " + eligibilities);
 		resolveConflicts(eligibilities);
 		resolveLineItemConflicts(context, eligibilities);
-		LOGGER.info("Promotion eligibility:after resolve conflicts " + eligibilities);					
+//		LOGGER.info("Promotion eligibility:after resolve conflicts " + eligibilities);					
 		Set<String> combinableOffers = applyPromotions(context, eligibilities);
 		
         //Add applied line item discounts to the applied list.
@@ -52,15 +52,15 @@ public class FDPromotionVisitor {
         		eligibilities.setApplied(code);
         }
         
-		LOGGER.info("Promotion eligibility: after apply " + eligibilities);
-		LOGGER.info("Promotion eligibility:context.isPostPromoConflictEnabled() " + context.isPostPromoConflictEnabled());
+//		LOGGER.info("Promotion eligibility: after apply " + eligibilities);
+//		LOGGER.info("Promotion eligibility:context.isPostPromoConflictEnabled() " + context.isPostPromoConflictEnabled());
 		
 		if(context.isPostPromoConflictEnabled()){
 			// post resolve conflict
 			boolean e = postResolveConflicts(context,eligibilities);
 			if(e)
 				context.getUser().setPromoConflictResolutionApplied(true);
-			LOGGER.info("Promotion eligibility: after postResolveConflicts() " + eligibilities);
+//			LOGGER.info("Promotion eligibility: after postResolveConflicts() " + eligibilities);
 			context.getUser().setPostPromoConflictEnabled(false);
 			
 		}		
@@ -88,7 +88,7 @@ public class FDPromotionVisitor {
         //Reconcile the discounts to make sure total header discounts does not exceed pre-deduction total(subtotal + dlv charge + tax).
         reconcileDiscounts(context, eligibilities, combinableOffers, redemptionValue);
        
-		LOGGER.info("Promotion eligibility: after redemption apply " + eligibilities);
+//		LOGGER.info("Promotion eligibility: after redemption apply " + eligibilities);
 		//applyZonePromotion(context, eligibilities);
 		LOGGER.info("Apply Promotions - END TIME ");
 		long endTime = System.currentTimeMillis();

@@ -17,6 +17,7 @@ public class FDProductPromotionInfo extends ModelSupport {
 	private String type;
 	private String erpCategory;
 	private int erpCatPosition;
+	private String erpPromtoionId;
 	public int getVersion() {
 		return version;
 	}
@@ -82,6 +83,12 @@ public class FDProductPromotionInfo extends ModelSupport {
 	}
 	public void setErpCatPosition(int erpCatPosition) {
 		this.erpCatPosition = erpCatPosition;
+	}
+	public String getErpPromtoionId() {
+		return erpPromtoionId;
+	}
+	public void setErpPromtoionId(String erpPromtoionId) {
+		this.erpPromtoionId = erpPromtoionId;
 	}
 	
 	

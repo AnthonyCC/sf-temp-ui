@@ -72,7 +72,7 @@ public class YTCouponProvider implements CouponService {
 		TreeMap<String,String> urlParameters = new TreeMap<String, String>();
 		String urlToCallStr = CouponConfigProvider.getYTCustomerCouponsURL();
 		addRetailerName(urlParameters);
-		LOGGER.debug("getCouponsForUser>"+couponCustomer.getCouponUserId()+" || "+couponCustomer.getCouponCustomerId());
+//		LOGGER.debug("getCouponsForUser>"+couponCustomer.getCouponUserId()+" || "+couponCustomer.getCouponCustomerId());
 		if(couponCustomer.getCouponUserId() == null && couponCustomer.getCouponCustomerId() == null){
 			throw new CouponServiceException();
 		}else{
@@ -112,7 +112,7 @@ public class YTCouponProvider implements CouponService {
 			LOGGER.error("Exception while making a call to YT: "+io);
 			throw new CouponServiceException(io);
 		}
-		LOGGER.debug("callYT/Response = "+returnString);
+//		LOGGER.debug("callYT/Response = "+returnString);
 		return returnString;
 	}
 	
@@ -224,7 +224,7 @@ public class YTCouponProvider implements CouponService {
 		}
 		urlParameters.put(YT_PARAM_COUPON_ID_LIST,couponId);		
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr,urlParameters);
-		LOGGER.debug("doClipCoupon()->Request URL: "+urlToCall);
+//		LOGGER.debug("doClipCoupon()->Request URL: "+urlToCall);
 		String jsonResponse = sendGetRequest(urlToCall);
 		YTCouponResponse response = parseResponse(jsonResponse,YTCouponResponse.class);
 		return response;
@@ -249,10 +249,10 @@ public class YTCouponProvider implements CouponService {
 			String ean13 = null;
 			for (Iterator iterator = orderLines.iterator(); iterator.hasNext();) {
 				ErpOrderLineModel erpOrderLineModel = (ErpOrderLineModel) iterator.next();
-				LOGGER.debug("Orderline UPC->"+erpOrderLineModel.getUpc());
+//				LOGGER.debug("Orderline UPC->"+erpOrderLineModel.getUpc());
 				if(null !=erpOrderLineModel.getUpc() && erpOrderLineModel.getUpc().length() == 12) { // We will be sending only 12 digit upc order line UPC-A
 					ean13 = StringUtil.convertToEan13(erpOrderLineModel.getUpc());//0007940003864
-					LOGGER.debug("EAN13 Orderline UPC->"+ean13);
+//					LOGGER.debug("EAN13 Orderline UPC->"+ean13);
 					if(StringUtil.isNumeric(ean13)){
 						if(i!=0){
 							itemList.append(",");
@@ -274,9 +274,9 @@ public class YTCouponProvider implements CouponService {
 		}
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr,urlParameters);
 //		appendMac(urlParameters);	
-		LOGGER.debug("submitOrder()->Request URL: "+urlToCall.toString());
+//		LOGGER.debug("submitOrder()->Request URL: "+urlToCall.toString());
 		String jsonResponse = sendGetRequest(urlToCall);
-		LOGGER.debug("Resonse:"+jsonResponse);
+//		LOGGER.debug("Resonse:"+jsonResponse);
 		YTCouponResponse response = parseResponse(jsonResponse,YTCouponCartResponse.class);
 		return (YTCouponCartResponse)response;
 	}
@@ -300,11 +300,11 @@ public class YTCouponProvider implements CouponService {
 			String ean13 = null;
 			for (Iterator iterator = orderLines.iterator(); iterator.hasNext();) {					
 					ErpOrderLineModel erpOrderLineModel = (ErpOrderLineModel) iterator.next();
-					LOGGER.debug("Orderline UPC->"+erpOrderLineModel.getUpc());
+//					LOGGER.debug("Orderline UPC->"+erpOrderLineModel.getUpc());
 					if(null !=erpOrderLineModel.getUpc() && erpOrderLineModel.getUpc().length() == 12) { // We will be sending only 12 digit upc order line UPC-A
 						ean13 = StringUtil.convertToEan13(erpOrderLineModel.getUpc());//0007940003864
 						if(StringUtil.isNumeric(ean13)){
-							LOGGER.debug("EAN13 Orderline UPC->"+ean13);
+//							LOGGER.debug("EAN13 Orderline UPC->"+ean13);
 //							if(ean13.indexOf("FD")<=-1){
 								if(i!=0){
 									itemList.append(",");
@@ -329,9 +329,9 @@ public class YTCouponProvider implements CouponService {
 		
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr,urlParameters);		
 //		appendMac(urlParameters);	
-		LOGGER.debug("evaluateCartAndCoupons()->Request URL: "+urlToCall.toString());
+//		LOGGER.debug("evaluateCartAndCoupons()->Request URL: "+urlToCall.toString());
 		String jsonResponse = sendGetRequest(urlToCall);
-		LOGGER.debug("Response: "+jsonResponse);
+//		LOGGER.debug("Response: "+jsonResponse);
 		YTCouponResponse response = parseResponse(jsonResponse,YTCouponCartResponse.class);
 		return (YTCouponCartResponse)response;
 	}
@@ -363,7 +363,7 @@ public class YTCouponProvider implements CouponService {
 		urlParameters.put(YT_PARAM_TRANSACTION_ID, orderId);
 		
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr,urlParameters);
-		LOGGER.debug("cancelOrder()->Request URL: "+urlToCall);
+//		LOGGER.debug("cancelOrder()->Request URL: "+urlToCall);
 		String jsonResponse = sendGetRequest(urlToCall);
 		YTCouponResponse response = parseResponse(jsonResponse,YTCouponResponse.class);
 		return response;
@@ -384,7 +384,7 @@ public class YTCouponProvider implements CouponService {
 			urlParameters.put(YT_PARAM_COUPON_ID_LIST , couponsStr);
 		}
 		StringBuilder urlToCall = getBaseUrl(urlToCallStr,urlParameters);
-		LOGGER.debug("confirmOrder()->Request URL: "+urlToCall);
+//		LOGGER.debug("confirmOrder()->Request URL: "+urlToCall);
 		String jsonResponse = sendGetRequest(urlToCall);
 		YTCouponResponse response = parseResponse(jsonResponse,YTCouponResponse.class);
 		return response;

@@ -23,6 +23,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.smartstore.CmsRecommenderService;
 import com.freshdirect.cms.util.ProductPromotionUtil;
+import com.freshdirect.erp.EnumProductPromotionType;
 import com.freshdirect.erp.ErpProductPromotionPreviewInfo;
 import com.freshdirect.erp.ejb.FDProductPromotionManager;
 import com.freshdirect.erp.ejb.ProductPromotionInfoManager;
@@ -35,6 +36,7 @@ import com.freshdirect.fdstore.ProductModelPromotionAdapter;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.fdstore.ecoupon.FDCouponFactory;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponUPCInfo;
+import com.freshdirect.fdstore.productpromotion.FDProductAssortmentPromotionFactory;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.BalkingExpiringReference;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -49,7 +51,7 @@ public class CategoryModel extends ProductContainer {
 			TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
 			new ThreadPoolExecutor.DiscardPolicy());
 	
-	private static final long FIVE_MINUTES = 1l * 60l * 1000l;
+	private static final long FIVE_MINUTES = 5l * 60l * 1000l;
 	
 	private final class RecommendedProductsRef extends BalkingExpiringReference<List<ProductModel>> {
 	    String zoneId;
@@ -152,9 +154,9 @@ public class CategoryModel extends ProductContainer {
 					if("PRESIDENTS_PICKS_PREVIEW".equals(ppType)||"PRESIDENTS_PICKS".equals(ppType)){
 						ppType = "PRESIDENTS_PICKS";
 					}
-					if("PRODUCTS_ASSORTMENTS_PREVIEW".equals(ppType)||"PRODUCTS_ASSORTMENTS".equals(ppType)){
+					/*if("PRODUCTS_ASSORTMENTS_PREVIEW".equals(ppType)||"PRODUCTS_ASSORTMENTS".equals(ppType)){
 						ppType = "PRODUCTS_ASSORTMENTS";
-					}
+					}*/
 				}
 				if(!"E_COUPONS".equals(ppType)){
 					synchronized (FDProductPromotionManager.getInstance()) {					
@@ -271,9 +273,69 @@ public class CategoryModel extends ProductContainer {
 		return productPromotionData;
 	}
 	
+	
+	private final class ProductAssortmentPromotionDataRef extends BalkingExpiringReference<ProductPromotionData> {
+
+		private String productPromotitonType; 
+		private String zoneId;
+		private String promotionId;
+		
+		public ProductAssortmentPromotionDataRef(Executor executor, String zoneId, String promotionId, String productPromotitonType) {
+			super(FIVE_MINUTES, executor);
+			this.zoneId = zoneId;
+			this.productPromotitonType = productPromotitonType;
+			this.promotionId = promotionId;
+			
+			// synchronous load
+            try {
+                set(load());
+            } catch (RuntimeException e) {
+                LOGGER.error("failed to initialize promo products for category " + CategoryModel.this.getContentName() + " synchronously");
+            }
+		}	
+		
+
+		@Override
+		protected ProductPromotionData load() {
+			ProductPromotionData productPromotionData = new ProductPromotionData();
+			productPromotionData.setProductPromotitonType(productPromotitonType);
+			productPromotionData.setPromotionId(promotionId);
+			
+			loadProductPromotionData(productPromotionData);
+			
+			return productPromotionData;
+		}
+
+		public void loadProductPromotionData(
+				ProductPromotionData productPromotionData) {
+			try {
+				Map<String,List<FDProductPromotionInfo>> productPromoInfoMap ;
+				String ppType =productPromotionData.getProductPromotitonType();
+				String promotionId =productPromotionData.getPromotionId();
+				if(null !=ppType){					
+					if("PRODUCTS_ASSORTMENTS_PREVIEW".equals(ppType)||"PRODUCTS_ASSORTMENTS".equals(ppType)){
+						ppType = "PRODUCTS_ASSORTMENTS";
+					}
+				}
+				synchronized (FDProductAssortmentPromotionFactory.getInstance()) {					
+						productPromoInfoMap = FDProductAssortmentPromotionFactory.getInstance().getProductPromotion(ppType,promotionId);				
+				}
+				populateProductPromotionData(productPromotionData,productPromoInfoMap,zoneId,false);
+				
+
+			} catch (FDResourceException e) {
+				LOGGER.error("failed to load promo products for category " + CategoryModel.this.getContentName(), e);
+				throw new RuntimeException(e);
+			}
+		}
+		
+	}
+	
 	private Map<String, RecommendedProductsRef> recommendedProductsRefMap = new HashMap<String, RecommendedProductsRef>();
 	
 	private Map<String, ProductPromotionDataRef> productPromotionDataRefMap = new HashMap<String, ProductPromotionDataRef>();
+	
+	private Map<String, ProductAssortmentPromotionDataRef> productAssortmentPromotionDataRefMap = new HashMap<String, ProductAssortmentPromotionDataRef>();
 	
 	private String promotionPageType;
 	
@@ -587,18 +649,24 @@ public class CategoryModel extends ProductContainer {
         }
     }
     
-    private void addDynamicProductsForPromotion(Collection<ProductModel> srcProducts, Collection<ProductModel> destProducts){
+    private void addDynamicProductsForPromotion(Collection<ProductModel> srcProducts, Collection<ProductModel> destProducts, boolean overrideParentNode){
     	if (srcProducts != null) {
             for ( ProductModel prod : srcProducts ) {
             	ProductModel newProdModel = (ProductModel)prod.clone();
             	ProductModel newProd = ((ProductModelPromotionAdapter)newProdModel).getProductModel();
-                ( (ContentNodeModelImpl)newProd ).setParentNode(this);
+            	if(overrideParentNode){
+            		( (ContentNodeModelImpl)newProd ).setParentNode(this);
+            	}
                 if (!destProducts.contains(newProdModel)) {
                     ( (ContentNodeModelImpl)newProd ).setPriority(destProducts.size());
                     destProducts.add(newProdModel);
                 }
             }
         }
+    }
+    
+    private void addDynamicProductsForPromotion(Collection<ProductModel> srcProducts, Collection<ProductModel> destProducts){
+    	addDynamicProductsForPromotion(srcProducts,destProducts, true);
     }
     /**
      * @return all, non smart products.
@@ -1010,4 +1078,55 @@ public class CategoryModel extends ProductContainer {
 		return getAttribute("HIDE_FEATURED_ITEMS", false);
 	}
 
+	
+	/*public List<ProductModel> getPromotionPageProductsById(String ppId) {	
+		if(getProductPromotionType()!=null){
+			String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
+			List<ProductModel> productModelList = null;
+			try {	
+				Map<String,List<FDProductPromotionInfo>> productPromotionInfoMap =FDProductAssortmentPromotionFactory.getInstance().getProductPromotion(getProductPromotionType(),ppId);			
+				ProductPromotionData ppData = new ProductPromotionData();
+				ppData = populateProductPromotionData(ppData, productPromotionInfoMap, zoneId,false);
+				productModelList = new ArrayList<ProductModel>();
+				addDynamicProductsForPromotion(ppData.getProductModels(), productModelList,false);
+				// If we want to show the default promotion type products when the products by given promotion id is empty.
+				if(null == productModelList || productModelList.isEmpty()){
+					productModelList =  this.getPromotionPageProducts(productModelList,zoneId,getProductPromotionType());//get products from cache.
+				}
+				return productModelList;
+			} catch(FDResourceException e){
+				LOGGER.error(e);
+			}
+		}
+		return null;
+	}*/
+	
+	public List<ProductModel> getAssortmentPromotionPageProducts(String promotionId) {
+		List<ProductModel> prodList =new ArrayList<ProductModel>();
+		String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
+		if (EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName().equalsIgnoreCase(getProductPromotionType())) {
+			loadProductAssortmentPromotion(zoneId, promotionId);
+			try {
+				if(null !=productAssortmentPromotionDataRefMap.get(promotionId).get()) {
+					prodList = new ArrayList<ProductModel>();
+					addDynamicProductsForPromotion(productAssortmentPromotionDataRefMap.get(promotionId).get().getProductModels(), prodList);
+				}
+		    } catch (Exception e) {
+		        LOGGER.warn("exception during promo category product assignment", e);
+		    }
+		}
+		return prodList;
+	}
+	
+	private synchronized boolean loadProductAssortmentPromotion(String zoneId, String promotionId){
+		String currentProductPromotionType = getProductPromotionType();		
+		if (currentProductPromotionType == null ){
+			return false;			
+		} else {			
+			if (productAssortmentPromotionDataRefMap.get(promotionId) == null ){
+				productAssortmentPromotionDataRefMap.put(promotionId, new ProductAssortmentPromotionDataRef(threadPool,  zoneId, promotionId, currentProductPromotionType));
+			}
+			return true;
+        }
+	}
 }

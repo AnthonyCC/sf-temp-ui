@@ -172,6 +172,7 @@ public class SAPProductPromotionContentLoader implements BapiFunctionI, SapProdu
 					ppInfo.setPriority(priority);
 					ppInfo.setFeaturedHeader(featuredHeader);
 					ppInfo.setFeatured(featured);
+					ppInfo.setErpPromtoionId(ppId);
 					ppInfoList.add(ppInfo);
 				}else{
 					//Not a valid product promotion type.
