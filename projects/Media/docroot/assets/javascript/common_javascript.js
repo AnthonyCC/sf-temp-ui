@@ -1574,3 +1574,41 @@ function checkBatch() {
            return true;
     }
 
+
+	/* input type changer for jQuery < 1.9
+	 * inputElem is the <input/> element
+	 * type is the type you want to change it to
+	 */
+	function changeType(inputElem, type) {
+		var elem = $jq(inputElem);
+	    if(elem.prop('type') == type)
+	        return elem; //That was easy.
+	    try {
+	        return elem.prop('type', type); //Stupid IE security will not allow this
+	    } catch(e) {
+	        //Try re-creating the element
+	        //jQuery has no html() method for the element, so we have to put into a div first
+	        var html = $jq("<div>").append(elem.clone()).html();
+	        var regex = /type=(\")?([^\"\s]+)(\")?/; //matches type=text or type="text"
+	        //If no match, we add the type attribute to the end; otherwise, we replace
+	        var tmp = $jq(html.match(regex) == null ?
+	            html.replace(">", ' type="' + type + '">') :
+	            html.replace(regex, 'type="' + type + '"') );
+	        //Copy data from old element
+	        tmp.data('type', elem.data('type') );
+	        var events = elem.data('events');
+	        var cb = function(events) {
+	            return function() {
+	                //Bind all prior events
+	                for(i in events) {
+	                    var y = events[i];
+	                    for(j in y)
+	                        tmp.bind(i, y[j].handler);
+	                }
+	            }
+	        }(events);
+	        elem.replaceWith(tmp);
+	        setTimeout(cb, 10); //Wait a bit to call function
+	        return tmp;
+	    }
+	}

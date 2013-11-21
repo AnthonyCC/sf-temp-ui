@@ -1,63 +1,66 @@
-#locationbar {
-	position:relative;
-/*	height:30px; */
-	font-family:Arial;
-	vertical-align:top;
-	width:970px;
-	padding-top:5px;
-	text-align: left;
-	background:white;
-	overflow:hidden;
+
+.vertCenter {
+  overflow: auto;
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
 }
 
-#locationbar .topbg {
-	position:absolute;
-	top:0;
-	left:0;
-	width:100%;
-	height:9px;
-	background:white top left repeat-x;
-	border:0;
-	padding:0;
-	margin:0;
+#locationbar {
+	position:relative;
+	height: 23px;
+	font-family: Arial;
+	vertical-align: middle;
+	width: 970px;
+	margin-top: 5px;
+	text-align: left;
+	background: white;
+	overflow: hidden;
 }
 
 #locationbar .zipdisplay,
 #locationbar .hoicon,
 #locationbar .buttons {
-	display:inline-block;
-	overflow:hidden;
-	white-space:nowrap;
-	vertical-align:middle;
-	position:relative;
-	height:22px;
+	display: inline-block;
+	overflow: hidden;
+	white-space: nowrap;
+	vertical-align: middle;
+	position: relative;
+	/*height:22px;*/
+}
+
+#locationbar .buttons {
+	height: 23px;
+	line-height: 23px;
 }
 
 #locationbar .zipdisplay {
-	font-size:11px;
-	color:#333;
-	padding-left:15px;
-	min-width:355px;
-	text-align:left;
+	font-size: 11px;
+	color: #333;
+	margin-left: 15px;
+	min-width: 390px;
+	text-align: left;
+	height: 23px;
 }
 
 #locationbar .zipdisplay label,
 #locationbar .zipdisplay .address {
-	vertical-align:baseline;
+	/*vertical-align: baseline;*/
 }
 
 #locationbar .zipdisplay .zipcode {
-	font-family:Tahoma,Arial;
-	font-size:14px;
-	font-weight:bold;
+	display: inline-block;
+	font-family: Tahoma,Arial;
+	font-size: 14px;
+	font-weight: bold;
+	height: 23px;
+    line-height: 19px;
+    vertical-align: middle;
 }
 
 #newzip {
-	display:inline-block;
-	vertical-align:middle;
-	height:15px;
-	line-height:15px;
-	top:5px;
+	display: inline-block;
+	vertical-align: middle;
 }
 
 #newziptext {
@@ -65,7 +68,7 @@
 	font-size:11px;
 	font-family:Arial;
 	padding:1px 2px;
-	vertical-align:top;
+	/*vertical-align:top;*/
 	margin:0 2px;
 	height:11px;
 	width:90px;
@@ -73,7 +76,7 @@
 
 #newzipgo {
 	height:15px;
-	vertical-align:top;
+	/*vertical-align:top;*/
 }
 
 #locationbar .address select {
@@ -122,54 +125,59 @@
 }
 
 
+	#newzipgo {
+		width: 40px;
+		background-image:url(/media_stat/images/locationbar/button_go.png);
+	}
+	
 	#locationbar .loginButton {
+		width: 68px;
 		background-image:url(/media_stat/images/locationbar/button_login.png);
 	}
+	
 	#locationbar .logoutButton {
+		width: 70px;
 		background-image:url(/media_stat/images/locationbar/button_logout.png);
-	}
-	#locationbar .signUpButton {
-		background-image:url(/media_stat/images/locationbar/button_signup.png);
-	}
-
-	#locationbar .loginButton,
-	#locationbar .logoutButton {
-		width:78px;
 	}
 
 	#locationbar .signUpButton {
 		width:85px;
+		background-image:url(/media_stat/images/locationbar/button_signup.png);
 	}
 
 	#locationbar .loginButton,
 	#locationbar .logoutButton,
-	#locationbar .signUpButton {
+	#locationbar .signUpButton,
+	#newzipgo
+	{
 		display:inline-block;
-		height:22px;
+		height:15px;
 		margin-right:8px;
 		text-decoration:none;
 		overflow:hidden;
 		text-indent:90px;
 		background-position:top left;
 		vertical-align:middle;
+		border: 0 none;
+		cursor: pointer;
 	}
 
-	#locationbar .loginButton,
-	#locationbar .signUpButton {
-		height:20px;
-	}
 
 	#locationbar .logoutButton:hover,
-	#locationbar .logoutButton:active	 {
-		background-position:0 -22px;
+	#locationbar .loginButton:hover,
+	#locationbar .signUpButton:hover,
+	#newzipgo:hover
+	{
+		background-position:0 -15px;
 	}
 	
 
-	#locationbar .loginButton:hover,
-	#locationbar .signUpButton:hover,
+	#locationbar .logoutButton:active,
 	#locationbar .loginButton:active,
-	#locationbar .signUpButton:active	 {
-		background-position:0 -20px;
+	#locationbar .signUpButton:active,
+	#newzipgo:active
+	{
+		background-position:0 top;
 	}
 	
 
@@ -292,4 +300,68 @@
 }
 #messages .nodeliver-form form.p .p {
 	display:block;
+}
+
+.ccc {
+	color: #ccc;
+}
+.bold {
+	folt-weight: bold;
+}
+.alignRight {
+	text-align: right;
+}
+#login_cont {
+	display: inline-block;
+}
+#login_cont_formContent {
+	position: absolute;
+	z-index: 10001;
+	width: 200px;
+	height: auto;
+	background-color: #fff;
+	padding: 15px 20px;
+	border: 1px solid #E3E6D7;
+  		border-radius: 10px 0 10px 10px;
+  		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+#login_cont_formContent a {
+	font-size: 11px;
+}
+#login_cont_formContent_email, #login_cont_formContent_password {
+	width: 100%;
+	-moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+#login_cont_formContent .errorMsg {
+	border: 1px solid #f00;
+	background-color: #FEE7ED;
+	padding: 6px;
+	margin-top: 20px;
+}
+#login_cont_formContent .errorMsg .header {
+	font-weight: bold;
+	font-size: 12px;
+}
+#login_cont_formContentForm_signInCont {
+	text-align: right;
+	padding-right: 5px;
+}
+#login_cont_formContent .fieldInputs {
+	margin: 6px 0;
+}
+#locationbar .loginButtonTab {
+	z-index: 10002;
+  		background-image: url("/media_stat/images/locationbar/button_login_tab.png");
+}
+.loginButton {
+	border: 0 none;
+	cursor: pointer;
+}
+#login_cont_formContentForm_loggingIn {
+	float: left;
+	font-size: 11px;
+	font-weight: bold;
+}
+#login_cont_formContentForm_signIn {
+	margin: 10px 0 0 0;
 }

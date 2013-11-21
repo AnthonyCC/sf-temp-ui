@@ -138,5 +138,110 @@
 	});
 	
 	
+	$document.on('mouseup', function(event) {
+    	if($(event.target).attr('id') != 'locabar_loginButton' && $(event.target).closest('#login_cont_formContent').length==0) {
+        	$("#locabar_loginButton").removeClass("loginButtonTab");
+        	$('#login_cont_formContent').hide();
+    	}
+    });
+    var alignLoginDropbox = function() {
+		//call this each time to ensure alignment
+		var cssObj = $("#locabar_loginButton").offset();
+		cssObj.top = cssObj.top + $("#locabar_loginButton").height() + 'px';
+		cssObj.left = ((cssObj.left + $("#locabar_loginButton").outerWidth()) - $('#login_cont_formContent').outerWidth()) + 'px';
+		$('#login_cont_formContent').css(cssObj);
+    	
+    }
+	$(window).resize(function() {
+		alignLoginDropbox();
+	});
+    
+    if ($('#login_cont_formContent').length == 0) {
+    	var loginDropboxHtml = '';
+    	loginDropboxHtml += '<div id="login_cont_formContent" style="display: none">';
+    		loginDropboxHtml += '<form id="login_cont_formContentForm">';
+    			loginDropboxHtml += '<div class="fieldInputs"><input id="login_cont_formContent_email" name="userId" value="Email" data-deftext="Email" class="ccc" /></div>';
+    			loginDropboxHtml += '<div class="fieldInputs"><input id="login_cont_formContent_password" name="password" value="Password" data-deftext="Password" class="ccc" type="text" /></div>';
+        		loginDropboxHtml += '<div id="login_cont_formContentForm_signInCont"><span style="display: none;" id="login_cont_formContentForm_loggingIn">Logging in...</span><button id="login_cont_formContentForm_signIn" name="submit" class="imgButtonOrange">sign in</button></div>';
+    		loginDropboxHtml += '</form>';
+			loginDropboxHtml += '<div class="errorMsg" style="display: none;">'
+				loginDropboxHtml += '<div class="header">Please re-enter your Email and Password.</div>'; 
+				loginDropboxHtml += 'The information you entered is incorrect. Please try again.';
+			loginDropboxHtml += '</div>';
+    		loginDropboxHtml += '<div class="bold alignRight" style="margin: 20px 0;">Forgot your <a href="/login/forget_password.jsp">password</a>?</div>';
+    	loginDropboxHtml += '</div>';
+    	
+		$('body').append(loginDropboxHtml);
+		
+	}
+
+    $('#login_cont_formContentForm_signIn').click(function(event){
+		event.preventDefault();
+    	$('#login_cont_formContentForm').submit();
+    });
+    
+    $('#login_cont_formContentForm').submit(function(event) {
+		event.preventDefault();
+		
+    	var form = $(this);
+    	if (!form.data('submitting')) {
+			$('#login_cont_formContent .errorMsg').hide();
+    		form.data('submitting', true);
+			$('#login_cont_formContentForm_loggingIn').show();
+			$('#login_cont_formContentForm_signIn').toggleClass('imgButtonOrange imgButtonWhite');
+			
+    		var formData = {};
+    		$(form.serializeArray()).each(function () { formData[this.name] = this.value; });
+    		$jq.post('/api/login/', "data="+JSON.stringify(formData), function(data) {
+    			if (data.success) {
+    				if (data.hasOwnProperty('successPage') && data.successPage != '' && data.successPage != null) {
+    					window.location.pathname = data.successPage;
+    				} else {
+    					//refresh
+    					window.location = window.location;
+    				}
+    				
+                   	$("#locabar_loginButton").toggleClass("loginButtonTab");
+                   	$('#login_cont_formContent').toggle();
+    			} else {
+    				$('#login_cont_formContent .errorMsg').show();
+    			}
+				$('#login_cont_formContentForm_loggingIn').hide();
+        		form.data('submitting', false);
+				$('#login_cont_formContentForm_signIn').toggleClass('imgButtonWhite imgButtonOrange');
+    		}, "json");
+    	}
+    });
+    
+    $('#login_cont_formContent input').on('focus blur', function(event) {
+    	var elem = $(this);
+    	var defText = elem.data('deftext');
+    	if (event.type == 'focus') {
+    		if (elem.hasClass('ccc') && elem.val() == defText) {
+    			elem.val('');
+    			elem.toggleClass('ccc');
+    		}
+			if (elem.attr('id') == 'login_cont_formContent_password') {
+				changeType(elem, 'password');
+			}
+    	} else if (event.type == 'blur') {
+    		if (elem.val() == '') {
+    			elem.val(defText);
+    			elem.toggleClass('ccc');
+    			if (elem.attr('id') == 'login_cont_formContent_password') {
+    				changeType(elem, 'text');
+    			}
+    		}
+    	}
+    });
+    
+	$('#locabar_loginButton').click(function(event) {
+		alignLoginDropbox();
+		
+        //first
+       	$("#locabar_loginButton").toggleClass("loginButtonTab");
+       	$('#login_cont_formContent').toggle();
+	});	
+	
 }(jQuery));
 
