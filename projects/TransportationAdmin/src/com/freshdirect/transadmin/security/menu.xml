@@ -88,22 +88,17 @@
 			<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
 
-		<menu id="RUT002" title="Service Time Scenario" orientation="RIGHT"
-			link="dlvservicetimescenario.do">
-			<access-uris>dlvservicetimescenario.do,deletedlvservicetimescenario.do,editdlvservicetimescenario.do,dlvservicetimescenariodisplay.do
-			</access-uris>
+		<menu id="RUT002" title="Service Time Scenario" orientation="RIGHT" link="dlvservicetimescenario.do">
+			<access-uris>dlvservicetimescenario.do,deletedlvservicetimescenario.do,editdlvservicetimescenario.do,dlvservicetimescenariodisplay.do</access-uris>
 			<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
 
-		<menu id="RUT003" title="Service Time Type" orientation="RIGHT"
-			link="dlvservicetimetype.do">
-			<access-uris>dlvservicetimetype.do,deletedlvservicetimetype.do,editdlvservicetimetype.do
-			</access-uris>
+		<menu id="RUT003" title="Service Time Type" orientation="RIGHT" link="dlvservicetimetype.do">
+			<access-uris>dlvservicetimetype.do,deletedlvservicetimetype.do,editdlvservicetimetype.do</access-uris>
 			<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
 
-		<menu id="RUT006" title="Early Warning" orientation="LEFT"
-			link="earlywarning.do">
+		<menu id="RUT006" title="Early Warning" orientation="LEFT"	link="earlywarning.do">
 			<access-uris>earlywarning.do</access-uris>
 			<access-roles>TrnAdmin,TrnGuest,TrnPlanning,TrnOperations</access-roles>
 		</menu>
@@ -113,13 +108,11 @@
 			<access-roles>TrnAdmin,TrnGuest,TrnPlanning,TrnOperations</access-roles>
 		</menu>
 
-		<menu id="RUT008" title="Wave Monitor" orientation="RIGHT"
-			link="wavemonitor.do">
+		<menu id="RUT008" title="Wave Monitor" orientation="RIGHT" link="wavemonitor.do">
 			<access-uris>wavemonitor.do</access-uris>
 			<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
-		<menu id="RUT009" title="Capacity Analyzer" orientation="LEFT"
-			link="capacityanalyzer.do">
+		<menu id="RUT009" title="Capacity Analyzer" orientation="LEFT" link="capacityanalyzer.do">
 			<access-uris>capacityanalyzer.do</access-uris>
 			<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
@@ -134,8 +127,7 @@
 			<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
 		<menu id="GEO002" title="Zone Type" orientation="RIGHT" link="zonetype.do">
-			<access-uris>zonetype.do,deletezonetype.do,editzonetype.do
-			</access-uris>
+			<access-uris>zonetype.do,deletezonetype.do,editzonetype.do</access-uris>
 			<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
 		<menu id="GEO003" title="Zone" orientation="RIGHT"
@@ -144,16 +136,14 @@
 			<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
 		<menu id="GEO004" title="Building" orientation="LEFT" link="dlvbuilding.do">
-			<access-uris>dlvbuilding.do,deletedlvbuilding.do,geocodedlvbuilding.do,dlvbuildinglocation.do,editdlvbuilding.do,customerinfo.do
-			</access-uris>
+			<access-uris>dlvbuilding.do,deletedlvbuilding.do,geocodedlvbuilding.do,dlvbuildinglocation.do,editdlvbuilding.do,customerinfo.do</access-uris>
 			<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
 		<menu id="GEO005" title="Location" orientation="LEFT" link="dlvlocation.do">
 			<access-uris>dlvlocation.do,deletedlvlocation.do,updatedlvlocation.do,senddlvlocation.do,editdlvlocation.do</access-uris>
 			<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
-		<menu id="GEO006" title="Building Info" orientation="LEFT"
-			link="dlvbuildingdtl.do">
+		<menu id="GEO006" title="Building Info" orientation="LEFT" link="dlvbuildingdtl.do">
 			<access-uris>dlvbuildingdtl.do,deletedlvbuildingdtl.do,editdlvbuildingdtl.do
 			</access-uris>
 			<access-roles>TrnAdmin,TrnPlanning</access-roles>
@@ -167,8 +157,7 @@
 			<access-roles>TrnAdmin</access-roles>
 		</menu>
 		<menu id="GEO012" title="Timeslot Restriction" orientation="RIGHT" link="timeslotrestriction.do">
-			<access-uris>timeslotrestriction.do,deletetimeslotrestriction.do,edittimeslotrestriction.do
-			</access-uris>
+			<access-uris>timeslotrestriction.do,deletetimeslotrestriction.do,edittimeslotrestriction.do</access-uris>
 			<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
 
