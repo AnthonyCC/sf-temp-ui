@@ -23,20 +23,20 @@
           		</tr>
 			</table>
 			<table width="100%" cellpadding="0" cellspacing="0" border="0" align="right">
-				<tr>&nbsp;</tr>
-          		<% if(com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request)) { %>
+				<tr>&nbsp;</tr>          		
 				<tr>
 					<td align="left">
 						 &nbsp;&nbsp;&nbsp;<input style="font-size:11px" type = "button" value="Force Refresh" onclick="javascript:showYardMonitorData();" />
 					</td>
 					<td>&nbsp;&nbsp;&nbsp;<div id="errExceptionContainer" style="float:left;"></div></td>
+				<% if(com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request)) { %>
             		<td align="right">
 					 <input style="font-size:11px" type = "button" value="Manage Locations" onclick="javascript:showParkingLocation();" />
 					 <input style="font-size:11px" type = "button" value="View Slots" onclick="javascript:viewSlots();" />
 					 <input style="font-size:11px" type = "button" value="Manage Slots" onclick="javascript:showParkingSlotForm();" />&nbsp;&nbsp;&nbsp;
 					</td>
-          		</tr>
 				<% } %>
+          		</tr>				
 			 </table>
 			 <div>&nbsp;</div>
 			 <table align="center" class="yardMonitorTable">
