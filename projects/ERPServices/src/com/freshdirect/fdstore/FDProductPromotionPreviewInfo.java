@@ -20,6 +20,9 @@ public class FDProductPromotionPreviewInfo extends FDProductPromotionInfo {
 		this.setPriority(fdProductPromotionInfo.getPriority());
 		this.setVersion(fdProductPromotionInfo.getVersion());
 		this.setType(fdProductPromotionInfo.getType());
+		this.setErpCategory(fdProductPromotionInfo.getErpCategory());
+		this.setErpCatPosition(fdProductPromotionInfo.getErpCatPosition());
+		this.setErpPromtoionId(fdProductPromotionInfo.getErpPromtoionId());
 	}
 	
 	public FDProductInfo getFdProductInfo() {
