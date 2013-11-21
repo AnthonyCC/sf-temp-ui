@@ -9,7 +9,7 @@ public interface SystemMessageList {
 
 	public final static String MSG_REQUIRED				= "This information is required.";
     public final static String MSG_TECHNICAL_ERROR    	= "Sorry, we're experiencing technical difficulties. Please try again later.";
-    public final static String MSG_MISSING_INFO       	= "We're sorry; some of the information below is missing or was filled out incorrectly. Please check:";
+    public final static String MSG_MISSING_INFO       	= "We're sorry; some of the information below is missing or was filled out incorrectly.<br />Please check:";
 	public final static String MSG_MISSING_SURVEY_INFO  = "We're sorry; some required information is missing. Please make sure you've answered the questions marked in red below.";
     public final static String MSG_CONTACT_INFO       	= "If you are still unable to proceed, please call us at {0}, Monday through Thursday from 6.30 a.m. to 1 a.m., Friday from 6.30 a.m. to 10 p.m., Saturday from 7:30 a.m. to 10 p.m., and Sunday from 7:30 a.m. to 1 a.m.";
 

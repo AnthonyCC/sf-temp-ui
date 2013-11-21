@@ -237,7 +237,7 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 			<td colspan="4"><fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler> <fd:ErrorHandler result='<%=result%>' name='duplicate_user_address' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 		</tr>
 		<tr valign="TOP">
-			<td ROWSPAN="10"><img src="/media_stat/images/layout/clear.gif" width="15" height="1" border="0"></td>
+			<td ROWSPAN="12"><img src="/media_stat/images/layout/clear.gif" width="15" height="1" border="0"></td>
 			<td align="right" class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;First Name&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>"></span></fd:ErrorHandler></td>
 			<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br><input type="text" SIZE="21" maxlength="25" class="text11" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" required="true" value="<%=fldFirstName %>">&nbsp;(full name or first initial)<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>' id='errorMsg'>&nbsp;<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 		</tr>
@@ -280,18 +280,31 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 		</tr>
 		<tr valign="MIDDLE">
 			<td align="right" class="text12">
-			<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
-			*&nbsp;Street Address&nbsp;&nbsp;
-			<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>"></span></fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
+				*&nbsp;Street Address&nbsp;&nbsp;
+				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>"></span></fd:ErrorHandler>
 			</td>
 			<td colspan="2">
-			<input type="text" SIZE="21" maxlength="50" class="text11" name="<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>" required="true" value="<%= fldAddress1 %>">&nbsp;&nbsp;
-			<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;&nbsp;
-			<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
-			&nbsp;<span id="aptText"><%= EnumServiceType.HOME.equals(fldServiceType) ? "Apt. #" : "Floor/Suite&nbsp;#" %></span>
-			<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>"></span></fd:ErrorHandler>
-			&nbsp;&nbsp;<input type="text" maxlength="10" class="text11" size="4" name="<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>" value="<%= fldApartment %>">&nbsp;&nbsp;
-			<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+				<input type="text" SIZE="21" maxlength="50" class="text11" name="<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>" required="true" value="<%= fldAddress1 %>">&nbsp;&nbsp;
+				
+				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
+				&nbsp;<span id="aptText"><%= EnumServiceType.HOME.equals(fldServiceType) ? "Apt. #" : "Floor/Suite&nbsp;#" %></span>
+				<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>"></span></fd:ErrorHandler>
+				&nbsp;&nbsp;<input type="text" maxlength="10" class="text11" size="4" name="<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>" value="<%= fldApartment %>">&nbsp;&nbsp;
+				
+			</td>
+		</tr>
+		<tr valign="MIDDLE">
+			<td align="right" class="text12">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			<td class="text12" colspan="2">
+				<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;&nbsp;
+			</td>
+		</tr>
+		<tr valign="MIDDLE">
+			<td align="right" class="text12">&nbsp;</td>
+			<td class="text12" colspan="2">
+				<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+			</td>
 		</tr>
 		<tr valign="MIDDLE">
 			<td align="right" class="text12">Address Line 2&nbsp;&nbsp;</td>

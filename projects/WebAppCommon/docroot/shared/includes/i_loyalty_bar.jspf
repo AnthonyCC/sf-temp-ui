@@ -5,42 +5,59 @@ final int W_LOYALTY_BAR = 970;
 final int W_LOYALTY_BAR_FP = 570;
 final int W_LOYALTY_BAR_LP = 400;
 %>
-
+<style>
+	.needHelpButton {
+		margin-right: -2px;
+	}
+	.needHelpButton {
+		font-size: 11px;
+	}
+	.csPhoneNumber {
+		font-weight: bold;
+		font-size: 11px;
+	}
+</style>
+<script type="text/javascript">
+	$jq(document).ready(function() {
+		$jq('.csPhoneNumber:first').each(function(i,e) {
+			$jq(e).text( ($jq(e).text().match(/[0-9\-]{14}/)||[''])[0] );
+			$(e).show();
+		});
+	});
+	
+	
+</script>
 <table cellspacing="0" cellpadding="0" border="0" width="<%= W_LOYALTY_BAR %>" id="timeslotloyalityHeader" align="left">
 	<tr>
-	<%if(user.isChefsTable()){%>
+	<%if(user.isChefsTable()) { %>
 		<td width="30"><img src="/media/editorial/site_pages/ct/CT_header_left.gif" width="30" height="25" border="0"></td>
-    <td width="<%= W_LOYALTY_BAR_FP - 20 %>" align="left" style="background:#333433; color: #fff">
+		<td width="<%= W_LOYALTY_BAR_FP - 20 %>" align="left" style="background:#333433; color: #fff">
 			<font style="font-weight:bold;font-size:11px;">		
-
 				<%= user.getFirstName() %> <%= user.getLastName() %>
 				<% if(user.isChefsTable() && !user.getChefsTableInduction().equals("0") && user.getChefsTableInduction().length() == 8) { %> </font><font style="font-weight:bold;">- Chef's Table Member since <%= user.getChefsTableInduction().substring(0,4) %><% } %>
-			
 			</font>
 		</td>
-    <td width="<%= W_LOYALTY_BAR_LP %>" align="right" style="background:#333433; color: #fff">
-			<font style="font-weight:bold;">
-				<%if(user.getTotalCTSlots()>0 && (request.getRequestURI().indexOf("/checkout/step_2_select.jsp")>-1
-					|| request.getRequestURI().indexOf("/your_account/delivery_info_avail_slots.jsp")>-1
-					|| request.getRequestURI().indexOf("/your_account/reserve_timeslot.jsp")>-1)){%>
-					 <%= user.getTotalCTSlots() %> <%= (user.getTotalCTSlots() > 1 ? "timeslots" : "timeslot")%> just for you <a href="/your_account/manage_account.jsp" class="tsCTBenefits">More Benefits</a>
-				<%}else if(!user.getCheckoutMode().isStandingOrderMode()){%>
-					Your Order&nbsp; <a href="/help/index.jsp" class="tsCTBenefits">Need Help?</a>
-				<%}%>
-			</font>
+	    <td width="<%= W_LOYALTY_BAR_LP %>" align="right" style="background:#333433; color: #fff" valign="middle">
+			<%if(user.getTotalCTSlots()>0 && (request.getRequestURI().indexOf("/checkout/step_2_select.jsp")>-1
+				|| request.getRequestURI().indexOf("/your_account/delivery_info_avail_slots.jsp")>-1
+				|| request.getRequestURI().indexOf("/your_account/reserve_timeslot.jsp")>-1)){%>
+				 <font style="font-weight:bold;font-size:11px;"><%= user.getTotalCTSlots() %> <%= (user.getTotalCTSlots() > 1 ? "timeslots" : "timeslot")%> just for you <a href="/your_account/manage_account.jsp" class="tsCTBenefits">More Benefits</a></font>
+			<%}else if(!user.getCheckoutMode().isStandingOrderMode()){%>
+				<span class="csPhoneNumber" style="display: none;"><fd:IncludeMedia name="<%= user.getCustomerServiceContactMediaPath() %>" /></span> <button onclick="window.location='/help/index.jsp'; return false" class="imgButtonRed imgButtonSmall needHelpButton">need help?</button>
+			<%}%>
 		</td>
 		<td width="10"><img src="/media/editorial/site_pages/ct/CT_header_right.gif" width="10" height="25" border="0"></td>
 	<%}else{%>
 		<td width="10"><img src="/media/editorial/site_pages/non_chefstable/NC_header_left.gif" width="10" height="25" border="0"></td>
-    <td width="<%= W_LOYALTY_BAR_FP %>" align="left" style="background:#999966; color: #fff">
+    	<td width="<%= W_LOYALTY_BAR_FP %>" align="left" style="background:#999966; color: #fff">
 			<font style="font-weight:bold;font-size:11px;">		
 				Welcome to FreshDirect&nbsp;
 				<%= user.getFirstName() %> <%= user.getLastName() %>
 			</font>
 		</td>
-    <td width="<%= W_LOYALTY_BAR_LP %>" align="right" style="background:#999966; color: #fff">
+    	<td width="<%= W_LOYALTY_BAR_LP %>" align="right" style="background:#999966; color: #fff">
 			<%if(!user.getCheckoutMode().isStandingOrderMode()){ %>
-			<font style="font-weight:bold;">Your <%=(user !=null && user.getOrderHistory() != null && user.getOrderHistory().getTotalOrderCount()>0) ? "":"First "%>Order&nbsp; <a href="/help/index.jsp" class="tsNCBenefits">Need Help?</a></font>
+				<span class="csPhoneNumber" style="display: none;"><fd:IncludeMedia name="<%= user.getCustomerServiceContactMediaPath() %>" /></span> <button onclick="window.location='/help/index.jsp'; return false" class="imgButtonRed imgButtonSmall needHelpButton">need help?</button>
 			<%} %>
 		</td>
 		<td width="10"><img src="/media/editorial/site_pages/non_chefstable/NC_header_right.gif" width="10" height="25" border="0"></td>
