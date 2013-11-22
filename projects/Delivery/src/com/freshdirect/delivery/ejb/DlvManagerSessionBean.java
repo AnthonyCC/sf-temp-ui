@@ -2154,10 +2154,8 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				setReservationMetricsStatus(reservation.getId(), EnumRoutingUpdateStatus.SUCCESS);
 			} else {
 				order = RoutingUtil.calculateReservationSize(reservation, order, timeslot);
-				if(((reservation.getReservedOrderSize() != null
-						&& order.getDeliveryInfo().getCalculatedOrderSize() < reservation.getReservedOrderSize())
-						|| (reservation.getReservedServiceTime() != null
-								&& order.getDeliveryInfo().getCalculatedServiceTime().getOrderServiceTime() < reservation.getReservedServiceTime()))
+				if(reservation.getReservedOrderSize() != null
+						&& order.getDeliveryInfo().getCalculatedOrderSize() < reservation.getReservedOrderSize()
 								&& (timeslot != null && DateUtil.getDiffInMinutes(Calendar.getInstance().getTime()
 														, (timeslot.getDlvTimeslot().getPremiumCutoffTime()!=null)?timeslot.getDlvTimeslot().getPremiumCutoffAsDate():timeslot.getDlvTimeslot().getCutoffTimeAsDate())
 										> RoutingServicesProperties.getOMUseOriginalThreshold()) 
