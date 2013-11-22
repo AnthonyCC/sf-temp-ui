@@ -178,8 +178,8 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 			breaks.insertRow(1);
 			breaks.setValue(breakIn.getRouteId(), "ZZTRKNO"); //Route No
 			breaks.setValue(breakIn.getBreakId(), "SEQNO"); // Break Sequence
-			breaks.setValue(formatTime1(breakIn.getStartTime()), "STRTM"); // Start Time
-			breaks.setValue(formatTime1(breakIn.getEndTime()), "ENDTM"); // End Time
+			breaks.setValue(formatTime(breakIn.getStartTime()), "STRTM"); // Start Time
+			breaks.setValue(formatTime(breakIn.getEndTime()), "ENDTM"); // End Time
 			breaks.nextRow();
 		}
 	}
