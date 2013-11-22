@@ -323,7 +323,7 @@
 
 #popupcart table .item,
 #popupcart table .price {
-  max-height:2.4em;
+  max-height:7.2em;
   line-height:1.2em;
   overflow:hidden;
   font-size:11px;
@@ -383,7 +383,7 @@
 #popupcart tr.cartline td>div {
   margin-top: 1px;
   overflow:hidden;
-  max-height:100px;
+  max-height:150px;
   -webkit-transition: all 100ms ease;
   -moz-transition: all 100ms ease;
   -ms-transition: all 100ms ease;
