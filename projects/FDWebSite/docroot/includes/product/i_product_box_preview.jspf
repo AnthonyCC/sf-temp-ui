@@ -8,6 +8,9 @@
 <%@page import="com.freshdirect.fdstore.FDSkuNotFoundException"%>
 <%@page import="com.freshdirect.fdstore.*"%>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.FDProduct"%>
+<%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
+<%@ page import="com.freshdirect.framework.util.NVL"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 
 <% /* 
@@ -26,18 +29,23 @@
 
 	String imageSize = "detail";
 	ProductModel pm = pi.getProductModel();	
+	FDCustomerCoupon curCoupon = null;
+	if ( null != pm.getDefaultSku() && pm.getDefaultSku().getProductInfo() != null ){
+		curCoupon = user.getCustomerCoupon(pm.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,pm.getParentId(),pm.getContentName());
+	}
 %>
 
 <%@page import="com.freshdirect.fdstore.FDProduct"%><display:ProductAvailability id="productAvailability" product="<%= pm %>">
 <%
 	String unavailableClass = "";
+	String statusPlaceholderId = "instant_atc_status_" + seq;
 	if (!productAvailability.isFullyAvailable())
 		unavailableClass = "grid-item-unavailable";
 %>
 <div class="grid-item <%= unavailableClass %>">
 <div class="grid-item-saving"><display:ProductSaving product="<%= pm %>"/></div>
 <display:ProductBurstClass id="burstClass" product="<%= pm %>" hideDeal="true">
-<div class="grid-item-image">
+<div class="grid-item-image"><span class="grid-item-image-helper"></span>
 <a>
 <%
   		FDProduct fdproduct = null;
@@ -63,11 +71,22 @@
 <div class="grid-item-price">
 <% if (productAvailability.isFullyAvailable()) { %>
 <display:ProductDefaultPrice product="<%= pm %>" showDescription="true"/>
-<% if (pm.getPriceCalculator().isOnSale()) { %><span class="was-price">(<font style="text-decoration: line-through;"><display:ProductWasPrice product="<%= pm %>"/></font>)</span><% } %>
+<% if (pm.getPriceCalculator().isOnSale()) { %><span class="was-price">(<span style="text-decoration: line-through;"><display:ProductWasPrice product="<%= pm %>"/></span>)</span><% } %>
 <display:ProductAboutPrice product="<%= pm %>" />
 <% } %>
 <a class="product-group-price-link"><display:ProductGroupPricing product="<%= pm %>"/></a>
 </div>
+
+		<div class="grid-item-coupon">
+			<% 
+				String couponStatusPlaceholderId = null;
+				String fDCouponContClassProdBox = "";
+				if (curCoupon != null) {
+				couponStatusPlaceholderId = "instant_atc_couponStatus_" + seq;
+			%>
+				<display:FDCoupon coupon="<%= curCoupon %>" contClass="<%= fDCouponContClassProdBox %>" couponStatusPlaceholderId="<%= couponStatusPlaceholderId %>"></display:FDCoupon>
+			<% } %>
+		</div>
 <div class="grid-item-controls">
 <span class="grid-item-controls-content">
 <%
@@ -76,7 +95,12 @@
 	}
 %>
 </span>
-</div>
+		<div class="grid-item-status" id="<%= statusPlaceholderId %>">
+	    	<div class="grid-item-status-in-cart"><fd:ProductCartStatusMessage product="<%= pm %>"/></div>
+			<div class="grid-item-status-added"></div>
+		</div>
+	</div>
+	<div class="grid-item-separator"></div>
 </div><!--  grid-item -->
 </display:ProductAvailability>
 <%
