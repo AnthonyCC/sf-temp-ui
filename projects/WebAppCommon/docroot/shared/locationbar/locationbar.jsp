@@ -88,7 +88,7 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 	} else if (user!=null && user.getLevel() == FDUserI.RECOGNIZED) {	
 		%><tmpl:put name="buttons"><tmpl:get name="cheftable" /><tmpl:get name="loginButton" /></tmpl:put><%
 	} else { 
-		%><tmpl:put name="buttons"><label>New customer?</label><tmpl:get name="signupButton" /><tmpl:get name="loginButton" /></tmpl:put>
+		%><tmpl:put name="buttons"><tmpl:get name="signupButton" /><tmpl:get name="loginButton" /></tmpl:put>
 		<tmpl:put name="location_message"><jsp:include page="location_messages.jsp" /></tmpl:put><%
     }
 

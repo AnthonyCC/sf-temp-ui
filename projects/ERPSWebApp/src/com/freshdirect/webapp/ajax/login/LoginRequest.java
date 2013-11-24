@@ -8,6 +8,7 @@ public class LoginRequest implements Serializable{
 	
 	private String userId;
 	private String password;
+	private String successPage;
 	
 	public String getUserId() {
 		return userId;
@@ -21,5 +22,13 @@ public class LoginRequest implements Serializable{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+	public String getSuccessPage() {
+		if (this.successPage == null) {
+			this.setSuccessPage("");
+		}
+		return successPage;
+	}
+	public void setSuccessPage(String successPage) {
+		this.successPage = successPage;
+	}
 }

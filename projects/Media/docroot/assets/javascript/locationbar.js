@@ -192,6 +192,13 @@
 			
     		var formData = {};
     		$(form.serializeArray()).each(function () { formData[this.name] = this.value; });
+    		var sPage = $jq.QueryString["successPage"];
+    		if (sPage != null && typeof sPage !== 'undefined') {
+    			formData.successPage = sPage;
+    		} else {
+    			formData.successPage = window.location.pathname+window.location.search;
+    		}
+    		formData.successPage = encodeURIComponent(formData.successPage);
     		$jq.post('/api/login/', "data="+JSON.stringify(formData), function(data) {
     			if (data.success) {
     				if (data.hasOwnProperty('successPage') && data.successPage != '' && data.successPage != null) {

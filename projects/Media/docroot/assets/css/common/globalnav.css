@@ -13,6 +13,7 @@
 
 .globalnav_top {
   position: relative;
+  margin-top: 20px;
 }
 
 .globalnav_top a.logo {

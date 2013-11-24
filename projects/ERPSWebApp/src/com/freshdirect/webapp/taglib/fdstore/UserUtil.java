@@ -491,7 +491,10 @@ public class UserUtil {
 	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
         	}
         }
-        
+        //if updatedSuccessPage hasn't been updated, but successPage was passed in, return it for redirection
+        if (updatedSuccessPage == null && !"".equals(successPage)) {
+        	updatedSuccessPage = successPage;
+        }
         return updatedSuccessPage;		
 	}
 }

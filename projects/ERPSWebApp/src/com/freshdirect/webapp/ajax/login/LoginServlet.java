@@ -54,7 +54,7 @@ public class LoginServlet extends HttpServlet {
 		if(loginRequest != null) {
 			ActionResult actionResult = new ActionResult();
 			String updatedSuccessPage = UserUtil.loginUser(request.getSession(), request, response, actionResult
-															, loginRequest.getUserId(), loginRequest.getPassword(), mergePage, "");
+															, loginRequest.getUserId(), loginRequest.getPassword(), mergePage, loginRequest.getSuccessPage());
 			loginResponse.setSuccessPage(updatedSuccessPage);
 			if(actionResult.getErrors() == null || actionResult.getErrors().isEmpty()) {
 				loginResponse.setSuccess(true);

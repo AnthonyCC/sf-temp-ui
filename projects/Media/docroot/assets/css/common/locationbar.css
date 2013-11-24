@@ -1,6 +1,6 @@
 
 .vertCenter {
-  overflow: auto;
+  overflow: hidden;
   margin: auto;
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
@@ -26,7 +26,6 @@
 	white-space: nowrap;
 	vertical-align: middle;
 	position: relative;
-	/*height:22px;*/
 }
 
 #locationbar .buttons {
@@ -37,10 +36,10 @@
 #locationbar .zipdisplay {
 	font-size: 11px;
 	color: #333;
-	margin-left: 15px;
 	min-width: 390px;
 	text-align: left;
 	height: 23px;
+	overflow: hidden;
 }
 
 #locationbar .zipdisplay label,
@@ -85,7 +84,7 @@
 }
 
 #locationbar .hoicon {
-	width:190px;
+	width:170px;
 	text-align:center;
 	vertical-align:middle;
 	font-size:11px;
