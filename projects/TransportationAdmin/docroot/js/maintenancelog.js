@@ -217,12 +217,12 @@ function sendElectricFleetCallback(result, exception) {
 	if (result !== null) {
 		socDriveFlag = result.map.EDF;
 		socReeferFlag = result.map.ERF;
-		if (socDriveFlag === 'Y') {
+		if (socDriveFlag === 'Electric' || socDriveFlag === 'Diesel') {
 			$("#electricDrive").show();
 		}
-		if (socDriveFlag === 'Y' && socReeferFlag === 'Y') {
+		if (socDriveFlag === 'Electric' && socReeferFlag === 'Electric') {
 			$("#electricReeferTextDiv").show();
-		} else if (socDriveFlag === 'N' && socReeferFlag === 'Y') {
+		} else if (socDriveFlag === 'Diesel' && socReeferFlag === 'Generator') {
 			$("#electricReeferDropdownDiv").show();
 		}
 
