@@ -1887,6 +1887,10 @@ public class FDPromotionManagerNewDAO {
 				rs1.close();
 			}if(ps1!=null){
 				ps1.close();
+			}if(rs2!=null){
+				rs2.close();
+			}if(ps2!=null){
+				ps2.close();
 			}
 		}
 			    
