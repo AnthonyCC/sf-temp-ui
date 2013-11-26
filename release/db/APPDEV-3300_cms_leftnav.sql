@@ -1,5 +1,3 @@
---TODO check booleans (req, nav, etc)
-
 -- Tag                                                                                                         
 INSERT INTO cms.contenttype (ID,NAME,DESCRIPTION,GENERATE_ID) VALUES ('Tag','Tag','Definition of type Tag','F');
 INSERT INTO cms.attributedefinition (NAME,ID,CONTENTTYPE_ID,ATTRIBUTETYPE_CODE,INHERITABLE,REQUIRED,LABEL,CARDINALITY_CODE,LOOKUP_CODE) VALUES ('name','Tag.name','Tag','S','F','T','Name','One',NULL);
