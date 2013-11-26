@@ -995,4 +995,38 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	 */
 	public boolean isRetainOriginalSkuOrder();
 
+	
+	// ** APPDEV-3179 **
+	// Upsell and Cross-Sell attributes for PDP feature
+
+	/**
+	 * Return upsell products
+	 * 
+	 * @return list of {@link ProductModel} objects
+	 */
+	public List<ProductModel> getUpSellProducts();
+
+	/**
+	 * Return cross-sell products
+	 * 
+	 * @return list of {@link ProductModel} objects
+	 */
+	public List<ProductModel> getCrossSellProducts();
+	
+	public String getBrowseRecommenderType();
+
+	/**
+	 * Return heat rating factor
+	 * @return integer between 0 and 5
+	 */
+	public int getHeatRating();
+
+	/* PROD_IMAGE_JUMBO */
+	public Image getJumboImage();
+
+	/* PROD_IMAGE_ITEM */
+	public Image getItemImage();
+
+	/* PROD_IMAGE_EXTRA */
+	public Image getExtraImage();
 }

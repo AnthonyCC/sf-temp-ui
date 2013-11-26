@@ -18,7 +18,6 @@ import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
@@ -34,6 +33,17 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	
 	// List of ProductModel or SkuModel type objects
 	private final List<ContentNodeModel> recommendedAlternatives = new ArrayList<ContentNodeModel>();
+
+	/**
+	 *  [APPDEV-3179] list of merchant selected products for upsell recommender
+	 */
+	private List<ProductModel> upSellProducts = new ArrayList<ProductModel>();
+
+	/**
+	 *  [APPDEV-3179] list of merchant selected products for cross-sell recommender
+	 */
+	private List<ProductModel> crossSellProducts = new ArrayList<ProductModel>();
+
 
 	public ConfiguredProduct(ContentKey key) {
 		super(key);
@@ -440,5 +450,57 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	@Override
 	public SkuModel getDefaultTemporaryUnavSku() {
 		return getSku();
+	}
+
+	/**
+	 * @see {@link ProductModel#getUpSellProducts()}
+	 */
+	@Override
+	public List<ProductModel> getUpSellProducts() {
+		ContentNodeModelUtil.refreshModels(this, "PDP_UPSELL", upSellProducts, true);
+		return new ArrayList<ProductModel>(upSellProducts);
+	}
+
+	/**
+	 * @see {@link ProductModel#getCrossSellProducts()}
+	 */
+	@Override
+	public List<ProductModel> getCrossSellProducts() {
+		ContentNodeModelUtil.refreshModels(this, "PDP_XSELL", crossSellProducts, true);
+		return new ArrayList<ProductModel>(crossSellProducts);
+	}
+	
+	@Override
+	public String getBrowseRecommenderType(){
+		return getProduct().getBrowseRecommenderType();
+	}
+
+	@Override
+	public int getHeatRating() {
+		return getProduct().getHeatRating();
+	}
+
+	/**
+	 * @see {@link ProductModel#getJumboImage()}
+	 */
+	@Override
+	public Image getJumboImage() {
+        return FDAttributeFactory.constructImage(this, "PROD_IMAGE_JUMBO", IMAGE_BLANK);
+	}
+
+	/**
+	 * @see {@link ProductModel#getItemImage()}
+	 */
+	@Override
+	public Image getItemImage() {
+        return FDAttributeFactory.constructImage(this, "PROD_IMAGE_ITEM", IMAGE_BLANK);
+	}
+
+	/**
+	 * @see {@link ProductModel#getExtraImage()}
+	 */
+	@Override
+	public Image getExtraImage() {
+        return FDAttributeFactory.constructImage(this, "PROD_IMAGE_EXTRA", IMAGE_BLANK);
 	}
 }

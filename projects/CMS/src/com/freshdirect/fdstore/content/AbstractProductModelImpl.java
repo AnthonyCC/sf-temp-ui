@@ -26,6 +26,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	private List<ProductModel> alsoSoldAs = new ArrayList<ProductModel>();
 	private List<ProductModel> alsoSoldAsList = new ArrayList<ProductModel>();
 	private List<ProductModel> alsoSoldAsRefs = new ArrayList<ProductModel>();
+	private List<TagModel> tags = new ArrayList<TagModel>();
 
 	public AbstractProductModelImpl(ContentKey key) {
 		super(key);
@@ -621,5 +622,10 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 
 	public boolean isExcludedForEBTPayment(){
 		return getAttribute("EXCLUDED_EBT_PAYMENT", false);
+	}
+	
+	public List<TagModel> getTags() {
+		ContentNodeModelUtil.refreshModels(this, "tags", tags, false);
+		return Collections.unmodifiableList(tags);
 	}
 }

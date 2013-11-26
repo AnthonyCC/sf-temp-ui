@@ -374,6 +374,10 @@ public class CategoryModel extends ProductContainer {
 	
     final private List<CategoryModel> virtualGroups = new ArrayList<CategoryModel>();
 	
+	private List<ProductGrabberModel> productGrabbers = new ArrayList<ProductGrabberModel>();
+    
+    private List<ProductModel> catMerchantRecommenderProducts = new ArrayList<ProductModel>();
+
 	public CategoryModel(com.freshdirect.cms.ContentKey cKey) {
 		super(cKey);
 		categoryAlias = null;
@@ -1077,7 +1081,40 @@ public class CategoryModel extends ProductContainer {
 	public boolean isHideFeaturedItems() {
 		return getAttribute("HIDE_FEATURED_ITEMS", false);
 	}
+	
+	public List<ProductGrabberModel> getProductGrabbers() {
+		ContentNodeModelUtil.refreshModels(this, "productGrabbers", productGrabbers, true);
+		return new ArrayList<ProductGrabberModel>(productGrabbers);
+	}
 
+	public boolean isPreferenceCategory() {
+		return getAttribute("preferenceCategory", false);
+	}
+	
+	public Html getDescription() {
+		return FDAttributeFactory.constructHtml(this, "description");
+	}
+
+	public final Image getNameImage() {
+		return FDAttributeFactory.constructImage(this, "nameImage");
+	}
+
+	public String getCatMerchantRecommenderTitle() {
+		return getAttribute("catMerchantRecommenderTitle", "");
+	}
+
+	public List<ProductModel> getCatMerchantRecommenderProducts() {
+		ContentNodeModelUtil.refreshModels(this, "catMerchantRecommenderProducts", catMerchantRecommenderProducts, true, true);
+		return new ArrayList<ProductModel>(catMerchantRecommenderProducts);
+	}
+
+	public boolean isCatMerchantRecommenderRandomizeProducts() {
+	    return getAttribute("catMerchantRecommenderRandomizeProducts", false);
+	}
+
+	public boolean isHideIfFilteringIsSupported() {
+	    return getAttribute("hideIfFilteringIsSupported", false);
+	}
 	
 	/*public List<ProductModel> getPromotionPageProductsById(String ppId) {	
 		if(getProductPromotionType()!=null){

@@ -108,6 +108,12 @@ public class ContentNodeModelUtil {
         TYPE_MODEL_MAP.put("DonationOrganization", DonationOrganization.class);
         TYPE_MODEL_MAP.put("YoutubeVideo", YoutubeVideoModel.class);
         TYPE_MODEL_MAP.put("Page", PageModel.class);
+        TYPE_MODEL_MAP.put("ProductFilter", ProductFilterModel.class);
+        TYPE_MODEL_MAP.put("ProductFilterGroup", ProductFilterGroupModel.class);
+        TYPE_MODEL_MAP.put("ProductGrabber", ProductGrabberModel.class);
+        TYPE_MODEL_MAP.put("Tag", TagModel.class);
+        TYPE_MODEL_MAP.put("ProductFilterMultiGroup", ProductFilterMultiGroupModel.class);
+        TYPE_MODEL_MAP.put("SortingOption", SortOptionModel.class);
 	}
 
 	/**

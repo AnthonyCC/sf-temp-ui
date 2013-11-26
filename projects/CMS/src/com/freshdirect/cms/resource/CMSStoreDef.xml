@@ -41,6 +41,11 @@
 				<DestinationDef contentType="GlobalMenuItem" />
 				<DestinationDef contentType="YoutubeVideo"/>
 				<DestinationDef contentType="DonationOrganization" />
+				<DestinationDef contentType="ProductFilterGroup" />
+				<DestinationDef contentType="ProductFilter" />
+				<DestinationDef contentType="Tag" />
+				<DestinationDef contentType="ProductFilterMultiGroup" />
+				<DestinationDef contentType="SortOption" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -180,6 +185,17 @@
             <AttributeDef type="S" name="DEPARTMENT_ALT_TEMPLATE_PATH" label="Department Cohort Match Template Path"/>
             <AttributeDef type="S" name="GLOBAL_MENU_TITLE_LABEL" label="Global Menu Title Label"/>
             <AttributeDef type="S" name="GLOBAL_MENU_LINK_LABEL" label="Global Menu Link Label"/>
+			<AttributeDef type="B" name="noGroupingByCategory" label="Disable Product Grouping By Category" inheritable="true"/>
+			<EnumDef type="S" name="browseRecommenderType" label="Browse Recommender Type" inheritable="true">
+				<EnumValue value="NONE" label="None"/>
+				<EnumValue value="PDP_XSELL" label="Cross-sell (first item)"/>
+				<EnumValue value="PDP_UPSELL" label="Upsell (first item)"/>
+			</EnumDef>
+			<AttributeDef type="S" name="featuredRecommenderTitle" label="Title"/>
+			<AttributeDef type="B" name="featuredRecommenderRandomizeProducts" label="Randomize Products (only if Source Category is set)"/>
+			<AttributeDef type="S" name="featuredRecommenderSiteFeature" label="Site Feature (ignored if Source Category is set)"/>
+			<AttributeDef type="S" name="merchantRecommenderTitle" label="Title"/>
+			<AttributeDef type="B" name="merchantRecommenderRandomizeProducts" label="Randomize Products"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="categories" navigable="true" cardinality="Many">
@@ -237,8 +253,34 @@
 			<RelationshipDef name="tile_list" cardinality="Many"  label="Assigned Tiles" >
 				<DestinationDef contentType="TileList" />
 			</RelationshipDef>
-			
-			
+			<RelationshipDef name="productFilterGroups" cardinality="Many" label="Product Filter Groups" inheritable="true">
+				<DestinationDef contentType="ProductFilterGroup" />
+				<DestinationDef contentType="ProductFilterMultiGroup" />
+			</RelationshipDef>
+			<RelationshipDef name="sortOptions" cardinality="Many" label="Sort Options">
+				<DestinationDef contentType="SortOption" />
+			</RelationshipDef>
+			<RelationshipDef name="popularCategories" cardinality="Many" label="Popular Categories">
+				<DestinationDef contentType="Category" />
+			</RelationshipDef>
+			<RelationshipDef name="titleBar" cardinality="One" label="Title Bar" >
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="productTags" cardinality="Many" inheritable="true" label="Tags For Products">
+				<DestinationDef contentType="Tag" />
+			</RelationshipDef>
+			<RelationshipDef name="categoryBanner" label="Category Banner" cardinality="One" inheritable="true">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="departmentBanner" label="Department Banner" cardinality="One">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="featuredRecommenderSourceCategory" label="Source Category" cardinality="One">
+				<DestinationDef contentType="Category" />
+			</RelationshipDef>
+			<RelationshipDef name="merchantRecommenderProducts" label="Products" cardinality="Many">
+				<DestinationDef contentType="Product" />
+			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
 	<!--
@@ -260,6 +302,7 @@
 			<AttributeDef type="S" name="FILTER_LIST"  label="Filter List"/>
 			<!-- layout related stuff -->
 			<AttributeDef type="B" name="FAVORITE_ALL_SHOW_PRICE"  label="Favorite All Show Price" inheritable="true" />
+			<AttributeDef type="B" name="noGroupingByCategory" label="Disable Product Grouping By Category" inheritable="true"/>
 			
 			<EnumDef type="S" name="LIST_AS"   label="List As Name" inheritable="true">
 				<EnumValue value="full" label="Full Name"/>
@@ -336,6 +379,15 @@
 				<EnumValue value="PRESIDENTS_PICKS" label="President's Picks"/>
 				<EnumValue value="E_COUPONS" label="E-Coupons"/>
 			</EnumDef>
+			<AttributeDef type="B" name="preferenceCategory" label="Preference Category"/>
+			<EnumDef type="S" name="browseRecommenderType" label="Browse Recommender Type" inheritable="true">
+				<EnumValue value="NONE" label="None"/>
+				<EnumValue value="PDP_XSELL" label="Cross-sell (first item)"/>
+				<EnumValue value="PDP_UPSELL" label="Upsell (first item)"/>
+			</EnumDef>
+			<AttributeDef type="S" name="catMerchantRecommenderTitle" label="Title" inheritable="true"/>
+			<AttributeDef type="B" name="catMerchantRecommenderRandomizeProducts" label="Randomize Products" inheritable="true"/>
+			<AttributeDef type="B" name="hideIfFilteringIsSupported"  label="Hide If Filtering Is Supported"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="ALTERNATE_CONTENT" label="Alternate Content">
@@ -485,7 +537,31 @@
 			<RelationshipDef name="CATEGORY_PREVIEW_MEDIA" label="Category Preview Media">
 				<DestinationDef contentType="Html" />
 			</RelationshipDef>
-			
+			<RelationshipDef name="productGrabbers" navigable="true" cardinality="Many">
+				<DestinationDef contentType="ProductGrabber" />
+			</RelationshipDef>
+			<RelationshipDef name="productFilterGroups" cardinality="Many" label="Product Filter Groups" inheritable="true">
+				<DestinationDef contentType="ProductFilterGroup" />
+				<DestinationDef contentType="ProductFilterMultiGroup" />
+			</RelationshipDef>
+			<RelationshipDef name="sortOptions" cardinality="Many" inheritable="true">
+				<DestinationDef contentType="SortOption" />
+			</RelationshipDef>
+			<RelationshipDef name="productTags" cardinality="Many" inheritable="true">
+				<DestinationDef contentType="Tag" />
+			</RelationshipDef>
+			<RelationshipDef name="nameImage" label="Name Image" cardinality="One">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="description" label="Description" cardinality="One">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="categoryBanner" label="Category Banner" cardinality="One" inheritable="true">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="catMerchantRecommenderProducts" label="Products" cardinality="Many" inheritable="true">
+				<DestinationDef contentType="Product" />
+			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
 	<!--
@@ -637,6 +713,22 @@
 				<EnumValue value="5" label="5"/>
 			</EnumDef>
 			<AttributeDef type="B" name="retainOriginalSkuOrder"  label="Retain Original SKU Order" inheritable="true"/>
+			<EnumDef type="S" name="browseRecommenderType" label="Browse Recommender Type" inheritable="true">
+				<EnumValue value="NONE" label="None"/>
+				<EnumValue value="PDP_XSELL" label="Cross-sell (first item)"/>
+				<EnumValue value="PDP_UPSELL" label="Upsell (first item)"/>
+			</EnumDef>
+
+			<!-- PDP CMS Features / APPDEV-3179 -->
+			<EnumDef type="I" name="HEAT_RATING" label="Heat Rating" inheritable="false">
+				<EnumValue value="-1" label="N/A"/>
+				<EnumValue value="0" label="No Heat"/>
+				<EnumValue value="1" label="Minor Heat"/>
+				<EnumValue value="2" label="Subtle Heat"/>
+				<EnumValue value="3" label="Medium Heat"/>
+				<EnumValue value="4" label="Strong Heat"/>
+				<EnumValue value="5" label="Fiery Heat"/>
+			</EnumDef>
 		</AttributeDefs>
 		
 		
@@ -778,6 +870,16 @@
 			<RelationshipDef name="PROD_IMAGE_PACKAGE" label="Product Package Image">
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
+			<!--  PDP CMS Features / APPDEV-3179 -->
+			<RelationshipDef name="PROD_IMAGE_JUMBO" label="Prod Image Jumbo">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="PROD_IMAGE_ITEM" label="Prod Image Item">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="PROD_IMAGE_EXTRA" label="Prod Image Extra">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
 			<!-- iPhone related -->
 			<RelationshipDef name="ALTERNATE_PROD_IMAGE" label="Alternate Product Image">
 				<DestinationDef contentType="Image" />
@@ -878,7 +980,20 @@
                 <DestinationDef contentType="Category" />
                 <DestinationDef contentType="Department" />
             </RelationshipDef>
-					
+			<RelationshipDef name="tags" cardinality="Many" navigable="false">
+				<DestinationDef contentType="Tag" />
+			</RelationshipDef>
+
+			<!-- PDP CMS Features / APPDEV-3179 -->
+			<RelationshipDef name="PDP_UPSELL" label="Upsell" cardinality="Many">
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="ConfiguredProduct"/>
+			</RelationshipDef>
+
+			<RelationshipDef name="PDP_XSELL" label="Cross-Sell" cardinality="Many">
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="ConfiguredProduct"/>
+			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
 	<!--
@@ -990,7 +1105,27 @@
 			<RelationshipDef name="ymalSets" cardinality="Many" label="YMAL sets" inheritable="true">
 				<DestinationDef contentType="YmalSet" />
 			</RelationshipDef>
-			
+
+			<!-- PDP CMS Features / APPDEV-3179 -->
+			<RelationshipDef name="PROD_IMAGE_JUMBO" label="Prod Image Jumbo">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="PROD_IMAGE_ITEM" label="Prod Image Item">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="PROD_IMAGE_EXTRA" label="Prod Image Extra">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+
+			<RelationshipDef name="PDP_UPSELL" label="Upsell" cardinality="Many">
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="ConfiguredProduct"/>
+			</RelationshipDef>
+
+			<RelationshipDef name="PDP_XSELL" label="Cross-Sell" cardinality="Many">
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="ConfiguredProduct"/>
+			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
 	
@@ -1835,4 +1970,135 @@
 		
 	</ContentTypeDef>	
 
+	<ContentTypeDef name="ProductGrabber">
+		<RelationshipDefs>
+			<RelationshipDef name="productFilters" cardinality="Many" label="ProductFilters">
+				<DestinationDef contentType="ProductFilter"/>
+			</RelationshipDef>
+			<RelationshipDef name="scope" cardinality="Many" label="Scope">
+				<DestinationDef contentType="Department"/>
+				<DestinationDef contentType="Category"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<ContentTypeDef name="ProductFilterGroup">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" label="Name" required="true"/>
+			<AttributeDef type="S" name="allSelectedLabel" label="All Selected Label"/>
+			<AttributeDef type="B" name="displayOnCategoryListingPage" label="Display On Category Listing Page"/>
+			<EnumDef type="S" name="type" label="Type" required="true">
+				<EnumValue value="SINGLE" label="Single Select"/>
+				<EnumValue value="POPUP" label="Popup"/>
+				<EnumValue value="MULTI" label="Multi-select (additive)"/>
+			</EnumDef>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="productFilters" cardinality="Many" label="Product Filters" navigable="true" required="true">
+				<DestinationDef contentType="ProductFilter"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<ContentTypeDef name="ProductFilter">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" label="Name" required="true"/>
+			<EnumDef type="S" name="type" label="Type" required="true">
+				<EnumValue value="AND" label="AND (Filter Combination)"/>
+				<EnumValue value="OR" label="OR (Filter Combination)"/>
+				<EnumValue value="ALLERGEN" label="Allergen (ERPSy Flag)"/>
+				<EnumValue value="BACK_IN_STOCK" label="Back In Stock"/>
+				<EnumValue value="BRAND" label="Brand"/>
+				<EnumValue value="CLAIM" label="Claim (ERPSy Flag)"/>
+				<EnumValue value="CUSTOMER_RATING" label="Customer Rating (Range)"/>
+				<EnumValue value="DOMAIN_VALUE" label="Domain Value"/>
+				<EnumValue value="EXPERT_RATING" label="Expert Rating (Range)"/>
+				<EnumValue value="FRESHNESS" label="Freshness (Range)"/>
+				<EnumValue value="KOSHER" label="Kosher"/>
+				<EnumValue value="NEW" label="New"/>
+				<EnumValue value="NUTRITION" label="Nutrition (Range)"/>
+				<EnumValue value="ON_SALE" label="On Sale"/>
+				<EnumValue value="PRICE" label="Price (Range)"/>
+				<EnumValue value="SUSTAINABILITY_RATING" label="Sustainability Rating (Range)"/>
+				<EnumValue value="TAG" label="Tag"/>
+			</EnumDef>
+			<AttributeDef type="B" name="invert" label="Invert"/>
+			<!-- range filter -->
+			<AttributeDef type="D" name="fromValue" label="From Value"/>
+			<AttributeDef type="D" name="toValue" label="To Value"/>
+			<AttributeDef type="S" name="nutritionCode" label="Nutrition Code (only for Nutrition filter)"/>
+			<!-- erpsy flag-->
+			<AttributeDef type="S" name="erpsyFlagCode" label="ERPSy Flag Code"/>
+
+		</AttributeDefs>
+		<RelationshipDefs>
+			<!-- domain value filter -->
+			<RelationshipDef name="domainValue" label="Domain Value">
+				<DestinationDef contentType="DomainValue"/>
+			</RelationshipDef>
+			<!-- tag filter -->
+			<RelationshipDef name="tag" label="Tag">
+				<DestinationDef contentType="Tag"/>
+			</RelationshipDef>
+			<!-- brand filter -->
+			<RelationshipDef name="brand" label="Brand">
+				<DestinationDef contentType="Brand"/>
+			</RelationshipDef>
+			<!-- filter combination-->
+			<RelationshipDef name="filter" cardinality="Many" label="Filters">
+				<DestinationDef contentType="ProductFilter"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	<ContentTypeDef name="Tag">
+		<AttributeDefs>
+			<AttributeDef type="S" name="name" label="Name" required="true"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="children" navigable="true" cardinality="Many" label="Children">
+				<DestinationDef contentType="Tag"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<ContentTypeDef name="ProductFilterMultiGroup">
+		<AttributeDefs>
+			<AttributeDef type="S" name="level1Name" label="Level 1 Name" required="true"/>
+			<AttributeDef type="S" name="level1AllSelectedLabel" label="Level 1 All Selected Label" />
+			<EnumDef type="S" name="level1Type" label="Level 1 Type" required="true">
+				<EnumValue value="SINGLE" label="Single Select"/>
+				<EnumValue value="POPUP" label="Popup"/>
+			</EnumDef>
+			<AttributeDef type="S" name="level2Name" label="Level 2 Name"/>
+			<AttributeDef type="S" name="level2AllSelectedLabel" label="Level 2 All Selected Label"/>
+			<EnumDef type="S" name="level2Type" label="Level 2 Type">
+				<EnumValue value="SINGLE" label="Single Select"/>
+				<EnumValue value="POPUP" label="Popup"/>
+			</EnumDef>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="rootTag" cardinality="One" label="Root Tag" required="true">
+				<DestinationDef contentType="Tag"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<ContentTypeDef name="SortOption">
+		<AttributeDefs>
+			<AttributeDef type="S" name="label" label="Label" required="true"/>
+			<AttributeDef type="S" name="selectedLabel" label="Selected Label" />
+			<AttributeDef type="S" name="selectedLabelReverseOrder" label="Selected Label Reverse Order" />
+			<EnumDef type="S" name="strategy" label="Strategy" required="true">
+				<EnumValue value="CUSTOMER_RATING" label="Customer Rating"/>
+				<EnumValue value="EXPERT_RATING" label="Expert Rating"/>
+				<EnumValue value="NAME" label="Name"/>
+				<EnumValue value="POPULARITY" label="Popularity"/>
+				<EnumValue value="PRICE" label="Price"/>
+				<EnumValue value="SALE" label="Sale"/>
+				<EnumValue value="SUSTAINABILITY_RATING" label="Sustainability Rating"/>
+			</EnumDef>
+		</AttributeDefs>
+	</ContentTypeDef>
+	
 </CMSDef>

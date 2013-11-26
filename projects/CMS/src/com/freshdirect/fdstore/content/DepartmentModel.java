@@ -1,7 +1,6 @@
 package com.freshdirect.fdstore.content;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -17,11 +16,15 @@ public class DepartmentModel extends ProductContainer {
 
 	private final List<CategoryModel> categoryModels = new ArrayList<CategoryModel>();
 	
+	private final List<CategoryModel> popularCategories = new ArrayList<CategoryModel>();
+	
 	private final List<CategoryModel> deptNav = new ArrayList<CategoryModel>();
 	
 	private final List<CategoryModel> featuredCategories = new ArrayList<CategoryModel> ();
 
     private final List<TileList> tileList = new ArrayList<TileList> ();
+    
+    private final List<ProductModel> merchantRecommenderProducts = new ArrayList<ProductModel>();
 	
 	
 	public DepartmentModel(ContentKey cKey) {
@@ -157,4 +160,47 @@ public class DepartmentModel extends ProductContainer {
 		ContentNodeModelUtil.refreshModels(this, "tile_list", tileList, false);
 		return Collections.unmodifiableList(tileList);
 	}
+	
+	public List<CategoryModel> getPopularCategories() {
+		ContentNodeModelUtil.refreshModels(this, "popularCategories", popularCategories, false);
+		return new ArrayList<CategoryModel>(popularCategories);
+	}
+
+	public Image getTitle() {
+        return FDAttributeFactory.constructImage(this, "title");
+	}
+
+	public Html getDepartmentBanner() {
+		return FDAttributeFactory.constructHtml(this, "departmentBanner");
+	}
+
+	public String getFeaturedRecommenderTitle() {
+		return getAttribute("featuredRecommenderTitle", "");
+	}
+	
+	public boolean isFeaturedRecommenderRandomizeProducts() {
+	    return getAttribute("featuredRecommenderRandomizeProducts", false);
+	}
+
+	public String getFeaturedRecommenderSiteFeature() {
+		return getAttribute("featuredRecommenderSiteFeature", "");
+	}
+
+	public CategoryModel getFeaturedRecommenderSourceCategory() {
+		return getSingleRelationshipNode("featuredRecommenderSourceCategory");
+	}
+	
+	public String getMerchantRecommenderTitle() {
+		return getAttribute("merchantRecommenderTitle", "");
+	}
+
+	public List<ProductModel> getMerchantRecommenderProducts() {
+		ContentNodeModelUtil.refreshModels(this, "merchantRecommenderProducts", merchantRecommenderProducts, true);
+		return new ArrayList<ProductModel>(merchantRecommenderProducts);
+	}
+
+	public boolean isMerchantRecommenderRandomizeProducts() {
+	    return getAttribute("merchantRecommenderRandomizeProducts", false);
+	}
+
 }

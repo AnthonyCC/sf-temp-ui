@@ -29,6 +29,9 @@
 			<CmsEditor ref="faq" />
 			<CmsEditor ref="donationOrganization" />
 			<CmsEditor ref="youtubeVideo"/>
+			<CmsEditor ref="productFilter"/>
+			<CmsEditor ref="productFilterGroup"/>
+			<CmsEditor ref="productFilterMultiGroup"/>
 		</editors>
 	</CmsFolder>
 	
@@ -121,6 +124,57 @@
 			<CmsPage ref="ratings"/>
 			<CmsPage ref="category_setup"/>
 			<CmsPage ref="product_setup"/>
+			<CmsPage>
+				<title>Site Redesign</title>
+				<sections>
+					<CmsSection>
+						<title>BROWSE SETUP</title>
+						<fields>
+							<CmsField><attribute>productFilterGroups</attribute></CmsField>
+							<CmsField><attribute>sortOptions</attribute></CmsField>
+							<CmsField><attribute>noGroupingByCategory</attribute></CmsField>
+							<CmsField><attribute>popularCategories</attribute></CmsField>
+							<CmsField><attribute>browseRecommenderType</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>DATA SETUP</title>
+						<fields>
+							<CmsField><attribute>productTags</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>DEPARTMENT CONTENT</title>
+						<fields>
+							<CmsField><attribute>titleBar</attribute></CmsField>
+							<CmsField><attribute>departmentBanner</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>FEATURED RECOMMENDER</title>
+						<fields>
+							<CmsField><attribute>featuredRecommenderTitle</attribute></CmsField>
+							<CmsField><attribute>featuredRecommenderSourceCategory</attribute></CmsField>
+							<CmsField><attribute>featuredRecommenderRandomizeProducts</attribute></CmsField>
+							<CmsField><attribute>featuredRecommenderSiteFeature</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>MERCHANT RECOMMENDER</title>
+						<fields>
+							<CmsField><attribute>merchantRecommenderTitle</attribute></CmsField>
+							<CmsField><attribute>merchantRecommenderProducts</attribute></CmsField>
+							<CmsField><attribute>merchantRecommenderRandomizeProducts</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>CATEGORY CONTENT</title>
+						<fields>
+							<CmsField><attribute>categoryBanner</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
 		</pages>
 	</CmsEditor>
 	
@@ -361,6 +415,45 @@
 				</sections>
 			</CmsPage>
 			<CmsPage ref="product_setup"/>
+			<CmsPage>
+				<title>Site Redesign</title>
+				<sections>
+					<CmsSection>
+						<title>BROWSE SETUP</title>
+						<fields>
+							<CmsField><attribute>productFilterGroups</attribute></CmsField>
+							<CmsField><attribute>hideIfFilteringIsSupported</attribute></CmsField>
+							<CmsField><attribute>sortOptions</attribute></CmsField>
+							<CmsField><attribute>noGroupingByCategory</attribute></CmsField>
+							<CmsField><attribute>preferenceCategory</attribute></CmsField>
+							<CmsField><attribute>browseRecommenderType</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>DATA SETUP</title>
+						<fields>
+							<CmsField><attribute>productTags</attribute></CmsField>
+							<CmsField><attribute>productGrabbers</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>CATEGORY CONTENT</title>
+						<fields>
+							<CmsField><attribute>nameImage</attribute></CmsField>
+							<CmsField><attribute>description</attribute></CmsField>
+							<CmsField><attribute>categoryBanner</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>MERCHANT RECOMMENDER</title>
+						<fields>
+							<CmsField><attribute>catMerchantRecommenderTitle</attribute></CmsField>
+							<CmsField><attribute>catMerchantRecommenderProducts</attribute></CmsField>
+							<CmsField><attribute>catMerchantRecommenderRandomizeProducts</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
 		</pages>
 	</CmsEditor>	
 	
@@ -401,6 +494,10 @@
 							<CmsField><attribute>PROD_IMAGE_ZOOM</attribute></CmsField>
 							<CmsField><attribute>PROD_IMAGE_FEATURE</attribute></CmsField>
 							<CmsField><attribute>RATING_RELATED_IMAGE</attribute></CmsField>
+
+							<CmsField><attribute>PROD_IMAGE_JUMBO</attribute></CmsField>
+							<CmsField><attribute>PROD_IMAGE_ITEM</attribute></CmsField>
+							<CmsField><attribute>PROD_IMAGE_EXTRA</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -478,6 +575,7 @@
 							<CmsField><attribute>RATING</attribute></CmsField>                            
 							<CmsField><attribute>USAGE_LIST</attribute></CmsField>
 							<CmsField><attribute>DEFAULT_SUSTAINABILITY_RATING</attribute></CmsField>
+							<CmsField><attribute>HEAT_RATING</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -548,6 +646,8 @@
 							<CmsField><attribute>RECOMMENDED_ALTERNATIVES</attribute></CmsField>
 							<CmsField><attribute>PRODUCT_BUNDLE</attribute></CmsField>
 							<CmsField><attribute>PREFERRED_SKU</attribute></CmsField>
+							<CmsField><attribute>PDP_UPSELL</attribute></CmsField>
+							<CmsField><attribute>PDP_XSELL</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>
@@ -631,7 +731,24 @@
 						</fields>
 					</CmsSection>
 				</sections>
-			</CmsPage>                               
+			</CmsPage>
+			<CmsPage>
+				<title>Site Redesign</title>
+				<sections>
+					<CmsSection>
+						<title>BROWSE SETUP</title>
+						<fields>
+							<CmsField><attribute>browseRecommenderType</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>DATA SETUP</title>
+						<fields>
+							<CmsField><attribute>tags</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
 		</pages>
 	</CmsEditor>    
 
@@ -802,6 +919,8 @@
 							<CmsField><attribute>PRODUCT_QUALITY_NOTE</attribute></CmsField>
 							<CmsField><attribute>RELATED_PRODUCTS</attribute></CmsField>
 							<CmsField><attribute>ymalSets</attribute></CmsField>
+							<CmsField><attribute>PDP_UPSELL</attribute></CmsField>
+							<CmsField><attribute>PDP_XSELL</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -812,8 +931,13 @@
 							<CmsField><attribute>PROD_IMAGE_ZOOM</attribute></CmsField>
 							<CmsField><attribute>PROD_IMAGE_FEATURE</attribute></CmsField>
 							<CmsField><attribute>PROD_IMAGE_CONFIRM</attribute></CmsField>
+							<!-- descriptive images -->
 							<CmsField><attribute>ALTERNATE_IMAGE</attribute></CmsField>
 							<CmsField><attribute>DESCRIPTIVE_IMAGE</attribute></CmsField>
+
+							<CmsField><attribute>PROD_IMAGE_JUMBO</attribute></CmsField>
+							<CmsField><attribute>PROD_IMAGE_ITEM</attribute></CmsField>
+							<CmsField><attribute>PROD_IMAGE_EXTRA</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>
@@ -1489,6 +1613,117 @@
 						<title>Settings</title>
 						<fields>
 							<CmsField><attribute>showSideNav</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+
+	<CmsEditor id="productFilter">
+		<contentType>ProductFilter</contentType>
+		<pages>
+			<CmsPage>
+				<title>Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Core Fields</title>
+						<fields>
+							<CmsField><attribute>name</attribute></CmsField>
+							<CmsField><attribute>type</attribute></CmsField>
+							<CmsField><attribute>invert</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Fields for type 'Filter Combination'</title>
+						<fields>
+							<CmsField><attribute>filters</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Fields for type 'Brand'</title>
+						<fields>
+							<CmsField><attribute>brand</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Fields for type 'Domain Value'</title>
+						<fields>
+							<CmsField><attribute>domainValue</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Fields for type 'ERPSy Flag'</title>
+						<fields>
+							<CmsField><attribute>erpsyFlagCode</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Fields for type 'Range'</title>
+						<fields>
+							<CmsField><attribute>fromValue</attribute></CmsField>
+							<CmsField><attribute>toValue</attribute></CmsField>
+							<CmsField><attribute>nutritionCode</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Fields for type 'Tag'</title>
+						<fields>
+							<CmsField><attribute>tag</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+
+	<CmsEditor id="productFilterGroup">
+		<contentType>ProductFilterGroup</contentType>
+		<pages>
+			<CmsPage>
+				<title>Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Core Fields</title>
+						<fields>
+							<CmsField><attribute>name</attribute></CmsField>
+							<CmsField><attribute>type</attribute></CmsField>
+							<CmsField><attribute>allSelectedLabel</attribute></CmsField>
+							<CmsField><attribute>displayOnCategoryListingPage</attribute></CmsField>
+							<CmsField><attribute>productFilters</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+
+	<CmsEditor id="productFilterMultiGroup">
+		<contentType>ProductFilterMultiGroup</contentType>
+		<pages>
+			<CmsPage>
+				<title>Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Root Tag</title>
+						<fields>
+							<CmsField><attribute>rootTag</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Level 1 Attributes</title>
+						<fields>
+							<CmsField><attribute>level1Name</attribute></CmsField>
+							<CmsField><attribute>level1Type</attribute></CmsField>
+							<CmsField><attribute>level1AllSelectedLabel</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Level 2 Attributes (optional)</title>
+						<fields>
+							<CmsField><attribute>level2Name</attribute></CmsField>
+							<CmsField><attribute>level2Type</attribute></CmsField>
+							<CmsField><attribute>level2AllSelectedLabel</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>

@@ -119,6 +119,17 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 * */
 	private final List giftcardTypes=new ArrayList();
 	
+	/**
+	 *  [APPDEV-3179] list of merchant selected products for upsell recommender
+	 */
+	private List<ProductModel> upSellProducts = new ArrayList<ProductModel>();
+
+	/**
+	 *  [APPDEV-3179] list of merchant selected products for cross-sell recommender
+	 */
+	private List<ProductModel> crossSellProducts = new ArrayList<ProductModel>();
+
+
 	public ProductModelImpl(ContentKey cKey) {
 		super(cKey);
 	}
@@ -1810,4 +1821,60 @@ inner:
 		return getAttribute("DISABLED_RECOMMENDATION", false);
 	}
 
+	
+	/**
+	 * @see {@link ProductModel#getUpSellProducts()}
+	 */
+	@Override
+	public List<ProductModel> getUpSellProducts() {
+		ContentNodeModelUtil.refreshModels(this, "PDP_UPSELL", upSellProducts, true);
+		return new ArrayList<ProductModel>(upSellProducts);
+	}
+
+	/**
+	 * @see {@link ProductModel#getCrossSellProducts()}
+	 */
+	@Override
+	public List<ProductModel> getCrossSellProducts() {
+		ContentNodeModelUtil.refreshModels(this, "PDP_XSELL", crossSellProducts, true);
+		return new ArrayList<ProductModel>(crossSellProducts);
+	}
+	
+	@Override
+	public String getBrowseRecommenderType(){
+		return getAttribute("browseRecommenderType", "NONE");
+	}
+	
+	/**
+	 * @see {@link ProductModel#getHeatRating()}
+	 */
+	@Override
+	public int getHeatRating() {
+		Object value = FDAttributeFactory.constructWrapperValue( this, "HEAT_RATING" );
+		return value instanceof Number ? ( (Number)value ).intValue() : -1;
+	}
+
+	/**
+	 * @see {@link ProductModel#getJumboImage()}
+	 */
+	@Override
+	public Image getJumboImage() {
+        return FDAttributeFactory.constructImage(this, "PROD_IMAGE_JUMBO", IMAGE_BLANK);
+	}
+
+	/**
+	 * @see {@link ProductModel#getItemImage()}
+	 */
+	@Override
+	public Image getItemImage() {
+        return FDAttributeFactory.constructImage(this, "PROD_IMAGE_ITEM", IMAGE_BLANK);
+	}
+
+	/**
+	 * @see {@link ProductModel#getExtraImage()}
+	 */
+	@Override
+	public Image getExtraImage() {
+        return FDAttributeFactory.constructImage(this, "PROD_IMAGE_EXTRA", IMAGE_BLANK);
+	}
 }

@@ -363,4 +363,15 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
 	public Image getSideNavImage() {
 	    return FDAttributeFactory.constructImage(this, "SIDENAV_IMAGE");
 	}
+	
+	@SuppressWarnings("unchecked")
+	public <T extends ContentNodeModel> T getSingleRelationshipNode(String name) {
+		ContentKey key = (ContentKey) getCmsAttributeValue(name);
+		
+        if (key != null) {
+            return (T) ContentFactory.getInstance().getContentNodeByKey(key);
+        }
+        return null;
+	}
+
 }

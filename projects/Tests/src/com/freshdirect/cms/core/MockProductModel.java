@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
@@ -2020,6 +2020,41 @@ public class MockProductModel extends MockContentNodeModel implements
 	@Override
 	public Image getPackageImage() {
 		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ProductModel> getUpSellProducts() {
+		return null;
+	}
+
+	@Override
+	public List<ProductModel> getCrossSellProducts() {
+		return null;
+	}
+	
+	@Override
+	public String getBrowseRecommenderType(){
+		return null;
+	}
+
+	@Override
+	public int getHeatRating() {
+		return 0;
+	}
+
+	@Override
+	public Image getJumboImage() {
+		return null;
+	}
+
+	@Override
+	public Image getItemImage() {
+		return null;
+	}
+
+	@Override
+	public Image getExtraImage() {
 		return null;
 	}
 }

@@ -20,7 +20,13 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 
 	private Map<String, List<Domain>> ratingDomains = new HashMap<String, List<Domain>>();
 
-	public abstract List<ProductModel> getFeaturedProducts();
+    private final List<ContentNodeModel> productFilterGroups = new ArrayList<ContentNodeModel>(); //can include ProductFilterGroupModels and ProductFilterMultiGroupModels
+
+    private final List<SortOptionModel> sortOptions =  new ArrayList<SortOptionModel>();
+
+    private final List<TagModel> productTags = new ArrayList<TagModel>();
+    
+    public abstract List<ProductModel> getFeaturedProducts();
 
 	public abstract List<CategoryModel> getSubcategories();
 
@@ -286,4 +292,28 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 	public boolean isExcludedForEBTPayment(){
 		return getAttribute("EXCLUDED_EBT_PAYMENT", false);
 	}
+
+    public List<ContentNodeModel> getProductFilterGroups() {
+        ContentNodeModelUtil.refreshModels(this, "productFilterGroups", productFilterGroups, false, true);
+        return new ArrayList<ContentNodeModel>(productFilterGroups);
+    }
+    
+    public List<SortOptionModel> getSortOptions() {
+        ContentNodeModelUtil.refreshModels(this, "sortOptions", sortOptions, false, true);
+        return new ArrayList<SortOptionModel>(sortOptions);
+    }
+
+	public boolean isNoGroupingByCategory(){
+		return getAttribute("noGroupingByCategory", false);
+	}
+
+    public List<TagModel> getProductTags() {
+        ContentNodeModelUtil.refreshModels(this, "productTags", productTags, false, true);
+        return new ArrayList<TagModel>(productTags);
+    }
+    
+	public Html getCategoryBanner() {
+		return FDAttributeFactory.constructHtml(this, "categoryBanner");
+	}
+
 }
