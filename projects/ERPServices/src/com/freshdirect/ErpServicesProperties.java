@@ -206,6 +206,12 @@ public class ErpServicesProperties {
 	private final static String PROP_DP_REPORT_MAIL_TO = "dpReport.mail.to";
 	private final static String PROP_DP_REPORT_MAIL_CC = "dpReport.mail.cc";
 	private final static String PROP_DP_REPORT_MAIL_FROM = "dpReport.mail.from";
+	
+	public final static String PROP_PRODUCT_FEED_UPLOADER_FTP_HOST		= "product.feed.uploader.ftp.host";
+	public final static String PROP_PRODUCT_FEED_UPLOADER_FTP_USER		= "product.feed.uploader.ftp.user";
+	public final static String PROP_PRODUCT_FEED_UPLOADER_FTP_PASSWD	= "product.feed.uploader.ftp.passwd";
+	public final static String PROP_PRODUCT_FEED_UPLOADER_FTP_WORKDIR	= "product.feed.uploader.ftp.workdir";
+	
 	static {
 		Properties defaults = new Properties();
 
@@ -368,6 +374,11 @@ public class ErpServicesProperties {
 		defaults.put(PROP_DP_REPORT_MAIL_TO, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_DP_REPORT_MAIL_CC, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_DP_REPORT_MAIL_FROM, "applicationdevelopment@freshdirect.com");
+		
+		defaults.put(PROP_PRODUCT_FEED_UPLOADER_FTP_WORKDIR, "/opt/fdlog/weblogic-web01/");
+		defaults.put(PROP_PRODUCT_FEED_UPLOADER_FTP_HOST, "web01.stdev05.nyc1.freshdirect.com");
+		defaults.put(PROP_PRODUCT_FEED_UPLOADER_FTP_USER, "fdadmin");
+		defaults.put(PROP_PRODUCT_FEED_UPLOADER_FTP_PASSWD, "fd8848admin");
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);

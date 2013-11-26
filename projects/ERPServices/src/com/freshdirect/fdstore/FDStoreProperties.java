@@ -633,6 +633,8 @@ public class FDStoreProperties {
 	
 	//APPDEV-3100 2013 Wine Transition
 	private final static String PROP_WINE_ASSID="fdstore.wine.assid";
+	
+	private final static String PROP_PRODUCT_FEED_GENERATION_ENABLED = "prop.product.feed.gen.enabled";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1246,6 +1248,8 @@ public class FDStoreProperties {
         
         //APPDEV-3100 2013 Wine Transition
         defaults.put(PROP_WINE_ASSID, "USQ");
+        
+        defaults.put(PROP_PRODUCT_FEED_GENERATION_ENABLED, "false");
 				
         refresh();
     }
@@ -3187,5 +3191,9 @@ public class FDStoreProperties {
     public static String getWineAssid() {
     	return get(PROP_WINE_ASSID);
     }
+    
+    public static boolean isProductFeedGenerationEnabled() {
+        return Boolean.valueOf(get(PROP_PRODUCT_FEED_GENERATION_ENABLED)).booleanValue();
+ }
 }
 

@@ -832,6 +832,23 @@ version="3.0">
         <res-auth>Container</res-auth>
       </resource-ref>
     </session>
+    <session>
+      <ejb-name>ProductFeed</ejb-name>
+      <home>
+      com.freshdirect.fdstore.content.productfeed.FDProductFeedHome</home>
+      <remote>
+      com.freshdirect.fdstore.content.productfeed.FDProductFeedSB</remote>
+      <ejb-class>
+      com.freshdirect.fdstore.content.productfeed.FDProductFeedSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Container</transaction-type>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
+    
     <entity>
       <ejb-name>ErpProduct</ejb-name>
       <home>com.freshdirect.erp.ejb.ErpProductHome</home>

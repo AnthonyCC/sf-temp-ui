@@ -768,13 +768,13 @@ public class DlvManagerDAO {
 			throws SQLException, InvalidAddressException {
 
 		if ((address.getLatitude() == 0.0) || (address.getLongitude() == 0.0)) {
-			LOGGER.debug("getZoneInfo[geocodeAddress] :" + address);
+//			LOGGER.debug("getZoneInfo[geocodeAddress] :" + address);
 			geocodeAddress(conn, address, useApartment);
 		}
 
 		DlvZoneInfoModel response;
 
-		LOGGER.debug("getZoneInfo[QUERY] :" + address + "->" + date);
+//		LOGGER.debug("getZoneInfo[QUERY] :" + address + "->" + date);
 		PreparedStatement ps = conn.prepareStatement(ZONE_CODE);
 		ps.setString(1, address.getServiceType().getName());
 		ps.setDate(2, new java.sql.Date(date.getTime()));
@@ -792,7 +792,7 @@ public class DlvManagerDAO {
 							.getString("cos_enabled")), EnumRegionServiceType.getEnum(rs
 							.getString("service_type")));
 		} else {
-			LOGGER.debug("DlvManagerDAO.getZoneInfo(DONOT_DELIVER): " + address);
+//			LOGGER.debug("DlvManagerDAO.getZoneInfo(DONOT_DELIVER): " + address);
 			response = new DlvZoneInfoModel(null, null, null,
 					EnumZipCheckResponses.DONOT_DELIVER, false, false);
 		}
@@ -2038,7 +2038,7 @@ public class DlvManagerDAO {
 			throws SQLException {
 		SectorVO response = null;
 
-		LOGGER.debug("getSectorInfo[QUERY] :" + address);
+//		LOGGER.debug("getSectorInfo[QUERY] :" + address);
 		if (address != null) {
 			PreparedStatement ps = conn.prepareStatement(GET_SECTOR_INFO);
 			ps.setString(1, address.getZipCode());
@@ -2048,10 +2048,10 @@ public class DlvManagerDAO {
 				response = new SectorVO();
 				response.setName(rs.getString("name"));
 				response.setDescription(rs.getString("description"));
-			} else {
+			}/* else {
 				LOGGER.debug("DlvManagerDAO.getSectorInfo(NO_SECTOR): "
 						+ address.getZipCode());
-			}
+			}*/
 
 			rs.close();
 			ps.close();

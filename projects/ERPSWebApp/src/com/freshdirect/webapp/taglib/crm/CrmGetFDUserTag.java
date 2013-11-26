@@ -56,6 +56,8 @@ public class CrmGetFDUserTag extends AbstractGetterTag {
 				session.removeAttribute(SessionName.LIST_SEARCH_RAW);
 				user.isLoggedIn(true);
 			}
+			session.setAttribute(SessionName.USER, user);
+			FDCustomerCouponUtil.initCustomerCoupons(session);
 		}else {
 			user = (FDSessionUser) session.getAttribute(SessionName.USER);
 		}
@@ -65,7 +67,7 @@ public class CrmGetFDUserTag extends AbstractGetterTag {
 		}
 		
 		session.setAttribute(SessionName.USER, user);
-		FDCustomerCouponUtil.initCustomerCoupons(session);
+//		FDCustomerCouponUtil.initCustomerCoupons(session);
 		CrmSessionStatus sessionStatus =CrmSession.getSessionStatus(session);
 		if(null !=sessionStatus){
 			sessionStatus.setFDUser(user);

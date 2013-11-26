@@ -8,13 +8,19 @@
  */
 package com.freshdirect.content.attributes;
 
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.lang.enums.Enum;
+
 /**
  * Type-safe enumeration for attribute names.
  *
  * @version $Revision$
  * @author $Author$
  */
-public class EnumAttributeName {
+public class EnumAttributeName extends Enum implements Serializable{
 
 	public final static EnumAttributeName DESCRIPTION               = new EnumAttributeName("description", EnumAttributeType.STRING, "");
 	public final static EnumAttributeName OPTIONAL                  = new EnumAttributeName("optional", EnumAttributeType.BOOLEAN, new Boolean(false));
@@ -44,14 +50,15 @@ public class EnumAttributeName {
     private final Object defaultValue;
 
 	private EnumAttributeName(String name, EnumAttributeType type, Object defaultValue) {
+		super(name);
 		this.name = name;
         this.type = type;
         this.defaultValue = defaultValue;
 	}
 
-	public String getName() {
+	/*public String getName() {
 		return this.name;
-	}
+	}*/
     
     public EnumAttributeType getType() {
         return this.type;
@@ -65,11 +72,18 @@ public class EnumAttributeName {
 		return this.name;
 	}
 
-	public boolean equals(Object o) {
+	/*public boolean equals(Object o) {
 		if (o instanceof EnumAttributeName) {
 			return this.getName().equals(((EnumAttributeName)o).getName());
 		}
 		return false;
-	}
+	}*/
 
+	public static List getEnumList() {
+		return getEnumList(EnumAttributeName.class);
+	}
+	
+	public static Iterator iterator() {
+		return iterator(EnumAttributeName.class);
+	}
 }

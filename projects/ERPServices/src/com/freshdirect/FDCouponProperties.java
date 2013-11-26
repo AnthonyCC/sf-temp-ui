@@ -1,14 +1,8 @@
-/*
- * ErpServiceProperties.java
- *
- * Created on December 12, 2001, 6:34 PM
- */
-
 package com.freshdirect;
 
 /**
  *
- * @author  knadeem
+ * @author  ksriram
  * @version
  */
 import java.util.ArrayList;
