@@ -13,12 +13,12 @@ public class SortOptionModel extends ContentNodeModelImpl {
 		return (String) getCmsAttributeValue("label");
 	}
 
-	public String getSelectedLabel1() {
-		return (String) getCmsAttributeValue("selectedLabel1");
+	public String getSelectedLabel() {
+		return (String) getCmsAttributeValue("selectedLabel");
 	}
 
-	public String getSelectedLabel2() {
-		return (String) getCmsAttributeValue("getSelectedLabel1");
+	public String getSelectedLabelReverseOrder() {
+		return (String) getCmsAttributeValue("selectedLabelReverseOrder");
 	}
 
 	public String getStrategy() {
