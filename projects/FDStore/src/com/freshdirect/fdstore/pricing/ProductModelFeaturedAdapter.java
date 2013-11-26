@@ -1276,4 +1276,49 @@ public class ProductModelFeaturedAdapter implements ProductModel, Serializable,
 	public Image getPackageImage() {
 		return productModel.getPackageImage();
 	}
+
+
+	/**
+	 * @see {@link ProductModel#getUpSellProducts()}
+	 */
+	@Override
+	public List<ProductModel> getUpSellProducts() {
+		return productModel.getUpSellProducts();
+	}
+
+	/**
+	 * @see {@link ProductModel#getCrossSellProducts()}
+	 */
+	@Override
+	public List<ProductModel> getCrossSellProducts() {
+		return productModel.getCrossSellProducts();
+	}
+	
+	@Override
+	public String getBrowseRecommenderType(){
+		return productModel.getBrowseRecommenderType();
+	}
+
+	/**
+	 * @see {@link ProductModel#getHeatRating()}
+	 */
+	@Override
+	public int getHeatRating() {
+		return productModel.getHeatRating();
+	}
+
+	@Override
+	public Image getJumboImage() {
+		return productModel.getJumboImage();
+	}
+
+	@Override
+	public Image getItemImage() {
+		return productModel.getItemImage();
+	}
+
+	@Override
+	public Image getExtraImage() {
+		return productModel.getExtraImage();
+	}
 }

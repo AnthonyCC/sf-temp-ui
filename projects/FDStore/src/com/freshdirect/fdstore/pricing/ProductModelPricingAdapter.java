@@ -1437,4 +1437,49 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public Image getPackageImage() {
 		return this.prodModel.getPackageImage();
 	}
+
+	/**
+	 * @see {@link ProductModel#getUpSellProducts()}
+	 */
+	@Override
+	public List<ProductModel> getUpSellProducts() {
+		return this.prodModel.getUpSellProducts();
+	}
+
+	/**
+	 * @see {@link ProductModel#getCrossSellProducts()}
+	 */
+	@Override
+	public List<ProductModel> getCrossSellProducts() {
+		return this.prodModel.getCrossSellProducts();
+	}
+	
+	@Override
+	public String getBrowseRecommenderType(){
+		return prodModel.getBrowseRecommenderType();
+	}
+
+
+	/**
+	 * @see {@link ProductModel#getHeatRating()}
+	 */
+	@Override
+	public int getHeatRating() {
+		return this.prodModel.getHeatRating();
+	}
+
+	@Override
+	public Image getJumboImage() {
+		return this.prodModel.getJumboImage();
+	}
+
+	@Override
+	public Image getItemImage() {
+		return this.prodModel.getItemImage();
+	}
+
+	@Override
+	public Image getExtraImage() {
+		return this.prodModel.getExtraImage();
+	}
 }
