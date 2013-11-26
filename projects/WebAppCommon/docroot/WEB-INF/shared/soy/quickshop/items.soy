@@ -108,7 +108,7 @@
 				{else}<button class="addtocart {$inCart}" data-component="ATCButton">add to cart</button>
 				{/if}
 			{else}
-				<button class="addtocart {$inCart}" data-component="ATCButton">add to cart</button>
+				{if not $item.customizePopup }<button class="addtocart {$inCart}" data-component="ATCButton">add to cart</button>{/if}
 			{/if}
 			{call common.atcInCart}
 				{param amount:$item.inCartAmount /}
