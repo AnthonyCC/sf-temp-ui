@@ -2154,7 +2154,10 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 				setReservationMetricsStatus(reservation.getId(), EnumRoutingUpdateStatus.SUCCESS);
 			} else {
 				order = RoutingUtil.calculateReservationSize(reservation, order, timeslot);
-				if(reservation.getReservedOrderSize() != null
+				
+				if(reservation.getReservedServiceTime() != null 
+						&& order.getDeliveryInfo().getCalculatedServiceTime().getOrderServiceTime() == reservation.getReservedServiceTime()
+						&& reservation.getReservedOrderSize() != null
 						&& order.getDeliveryInfo().getCalculatedOrderSize() < reservation.getReservedOrderSize()
 								&& (timeslot != null && DateUtil.getDiffInMinutes(Calendar.getInstance().getTime()
 														, (timeslot.getDlvTimeslot().getPremiumCutoffTime()!=null)?timeslot.getDlvTimeslot().getPremiumCutoffAsDate():timeslot.getDlvTimeslot().getCutoffTimeAsDate())
@@ -2164,12 +2167,32 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 					
 				} else {
 					
+					if(reservation.getReservedServiceTime() != null 
+						&& order.getDeliveryInfo().getCalculatedServiceTime().getOrderServiceTime() != reservation.getReservedServiceTime()
+						&& reservation.getReservedOrderSize() != null
+						&& order.getDeliveryInfo().getCalculatedOrderSize() < reservation.getReservedOrderSize()
+						&& (timeslot != null && DateUtil.getDiffInMinutes(Calendar.getInstance().getTime()
+								, (timeslot.getDlvTimeslot().getPremiumCutoffTime()!=null)?timeslot.getDlvTimeslot().getPremiumCutoffAsDate():timeslot.getDlvTimeslot().getCutoffTimeAsDate())
+								> RoutingServicesProperties.getOMUseOriginalThreshold())){
+						order.getDeliveryInfo().setCalculatedOrderSize(reservation.getReservedOrderSize());
+					}
+					
 					boolean isUpdated = RoutingUtil.updateReservation(reservation, order);
 					
 					if(isUpdated) {
+						
+						if(reservation.getReservedOrderSize() != null 
+								&& order.getDeliveryInfo().getCalculatedOrderSize() < reservation.getReservedOrderSize()
+								&& (timeslot != null && DateUtil.getDiffInMinutes(Calendar.getInstance().getTime()
+														, (timeslot.getDlvTimeslot().getPremiumCutoffTime()!=null)?timeslot.getDlvTimeslot().getPremiumCutoffAsDate():timeslot.getDlvTimeslot().getCutoffTimeAsDate())
+										> RoutingServicesProperties.getOMUseOriginalThreshold())){
 						setReservationReservedMetrics(reservation.getId(), order.getDeliveryInfo().getCalculatedOrderSize()
-															, order.getDeliveryInfo().getCalculatedServiceTime().getOrderServiceTime()
-															, EnumRoutingUpdateStatus.SUCCESS);
+															, order.getDeliveryInfo().getCalculatedServiceTime().getOrderServiceTime());
+						} else{
+						setReservationReservedMetrics(reservation.getId(), order.getDeliveryInfo().getCalculatedOrderSize()
+									, order.getDeliveryInfo().getCalculatedServiceTime().getOrderServiceTime(), EnumRoutingUpdateStatus.SUCCESS);
+						}
+						
 					} else {
 						if(!EnumRoutingUpdateStatus.OVERRIDDEN.equals(reservation.getUpdateStatus())) {
 							this.setReservationMetricsStatus(reservation.getId(), EnumRoutingUpdateStatus.FAILED);
