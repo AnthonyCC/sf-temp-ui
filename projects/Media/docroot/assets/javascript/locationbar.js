@@ -202,7 +202,7 @@
     		$jq.post('/api/login/', "data="+JSON.stringify(formData), function(data) {
     			if (data.success) {
     				if (data.hasOwnProperty('successPage') && data.successPage != '' && data.successPage != null) {
-    					window.location.pathname = data.successPage;
+    					window.location = data.successPage;
     				} else {
     					//refresh
     					window.location = window.location;
