@@ -346,7 +346,7 @@ public class UserUtil {
 										, ActionResult actionResult, String userId, String password
 										, String mergePage, String successPage) {
 		
-		String updatedSuccessPage = null;
+		String updatedSuccessPage = successPage;
 		
 		if (userId == null ||  userId.length() < 1 ) {
             actionResult.addError(new ActionError(EnumUserInfoName.USER_ID.getCode(), SystemMessageList.MSG_REQUIRED));
@@ -490,10 +490,6 @@ public class UserUtil {
 	            		MessageFormat.format(SystemMessageList.MSG_AUTHENTICATION, 
 	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
         	}
-        }
-        //if updatedSuccessPage hasn't been updated, but successPage was passed in, return it for redirection
-        if (updatedSuccessPage == null && !"".equals(successPage)) {
-        	updatedSuccessPage = successPage;
         }
         return updatedSuccessPage;		
 	}
