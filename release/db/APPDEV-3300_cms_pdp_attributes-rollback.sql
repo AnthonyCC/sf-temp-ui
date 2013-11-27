@@ -1,44 +1,44 @@
 -- 
--- APPDEV-3179 ROLLBACK
+-- APPDEV-3300 ROLLBACK
 --
 -- Attributes for PDP feature
--- Be sure to apply this changeset to CMS schema!
+-- Be sure to apply this changeset on the CMS DB!
 
-delete from relationshipdestination where RELATIONSHIPDEFINITION_ID='Product.PDP_XSELL';
-delete from relationshipdefinition where id='Product.PDP_XSELL';
+delete from cms.relationshipdestination where RELATIONSHIPDEFINITION_ID='Product.PDP_XSELL';
+delete from cms.relationshipdefinition where id='Product.PDP_XSELL';
 
-delete from relationshipdestination where RELATIONSHIPDEFINITION_ID='Product.PDP_UPSELL';
-delete from relationshipdefinition where id='Product.PDP_UPSELL';
+delete from cms.relationshipdestination where RELATIONSHIPDEFINITION_ID='Product.PDP_UPSELL';
+delete from cms.relationshipdefinition where id='Product.PDP_UPSELL';
 
-delete from relationshipdestination where RELATIONSHIPDEFINITION_ID='ConfiguredProduct.PDP_XSELL';
-delete from relationshipdefinition where id='ConfiguredProduct.PDP_XSELL';
+delete from cms.relationshipdestination where RELATIONSHIPDEFINITION_ID='ConfiguredProduct.PDP_XSELL';
+delete from cms.relationshipdefinition where id='ConfiguredProduct.PDP_XSELL';
 
-delete from relationshipdestination where RELATIONSHIPDEFINITION_ID='ConfiguredProduct.PDP_UPSELL';
-delete from relationshipdefinition where id='ConfiguredProduct.PDP_UPSELL';
+delete from cms.relationshipdestination where RELATIONSHIPDEFINITION_ID='ConfiguredProduct.PDP_UPSELL';
+delete from cms.relationshipdefinition where id='ConfiguredProduct.PDP_UPSELL';
 
 -- Heat Rating
 
-delete from attributedefinition where ID='Product.HEAT_RATING';
-delete from lookup where LOOKUPTYPE_CODE='Product.HEAT_RATING';
-delete from lookuptype where CODE='Product.HEAT_RATING';
+delete from cms.attributedefinition where ID='Product.HEAT_RATING';
+delete from cms.lookup where LOOKUPTYPE_CODE='Product.HEAT_RATING';
+delete from cms.lookuptype where CODE='Product.HEAT_RATING';
 
 -- Additional Images
 
-delete from relationshipdestination where RELATIONSHIPDEFINITION_ID='Product.PROD_IMAGE_JUMBO';
-delete from relationshipdefinition where id='Product.PROD_IMAGE_JUMBO';
+delete from cms.relationshipdestination where RELATIONSHIPDEFINITION_ID='Product.PROD_IMAGE_JUMBO';
+delete from cms.relationshipdefinition where id='Product.PROD_IMAGE_JUMBO';
 
-delete from relationshipdestination where RELATIONSHIPDEFINITION_ID='ConfiguredProduct.PROD_IMAGE_JUMBO';
-delete from relationshipdefinition where id='ConfiguredProduct.PROD_IMAGE_JUMBO';
+delete from cms.relationshipdestination where RELATIONSHIPDEFINITION_ID='ConfiguredProduct.PROD_IMAGE_JUMBO';
+delete from cms.relationshipdefinition where id='ConfiguredProduct.PROD_IMAGE_JUMBO';
 
-delete from relationshipdestination where RELATIONSHIPDEFINITION_ID='Product.PROD_IMAGE_ITEM';
-delete from relationshipdefinition where id='Product.PROD_IMAGE_ITEM';
+delete from cms.relationshipdestination where RELATIONSHIPDEFINITION_ID='Product.PROD_IMAGE_ITEM';
+delete from cms.relationshipdefinition where id='Product.PROD_IMAGE_ITEM';
 
-delete from relationshipdestination where RELATIONSHIPDEFINITION_ID='ConfiguredProduct.PROD_IMAGE_ITEM';
-delete from relationshipdefinition where id='ConfiguredProduct.PROD_IMAGE_ITEM';
+delete from cms.relationshipdestination where RELATIONSHIPDEFINITION_ID='ConfiguredProduct.PROD_IMAGE_ITEM';
+delete from cms.relationshipdefinition where id='ConfiguredProduct.PROD_IMAGE_ITEM';
 
-delete from relationshipdestination where RELATIONSHIPDEFINITION_ID='Product.PROD_IMAGE_EXTRA';
-delete from relationshipdefinition where id='Product.PROD_IMAGE_EXTRA';
+delete from cms.relationshipdestination where RELATIONSHIPDEFINITION_ID='Product.PROD_IMAGE_EXTRA';
+delete from cms.relationshipdefinition where id='Product.PROD_IMAGE_EXTRA';
 
-delete from relationshipdestination where RELATIONSHIPDEFINITION_ID='ConfiguredProduct.PROD_IMAGE_EXTRA';
-delete from relationshipdefinition where id='ConfiguredProduct.PROD_IMAGE_EXTRA';
+delete from cms.relationshipdestination where RELATIONSHIPDEFINITION_ID='ConfiguredProduct.PROD_IMAGE_EXTRA';
+delete from cms.relationshipdefinition where id='ConfiguredProduct.PROD_IMAGE_EXTRA';
 
