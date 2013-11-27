@@ -118,21 +118,14 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
     public boolean uploadProductFeed() throws FDResourceException, RemoteException {
     	
     	try {
-//			if(FDStoreProperties.isProductFeedGenerationEnabled()){
-				long startTime = System.currentTimeMillis();
+			if(FDStoreProperties.isProductFeedGenerationEnabled()){
+				LOGGER.info("Inside uploadProductFeed()..");
 				Products xmlProducts = new Products();
 				JAXBContext jaxbCtx = JAXBContext.newInstance(Products.class);
-//			System.out.println(org.eclipse.persistence.Version.getVersion());
-				populateProducts(xmlProducts);					
-				long endTime = System.currentTimeMillis();			
-				LOGGER.info("Available products fetched: "+xmlProducts.getProduct().size());
-				LOGGER.debug("Time taken to fetch: "+(endTime-startTime)/1000+" seconds");
+				populateProducts(xmlProducts);								
 				uploadProductFeedFile(xmlProducts, jaxbCtx);
-				endTime = System.currentTimeMillis();			
-				LOGGER.debug("Total Time taken to generate the feed xml: "+(endTime-startTime)/1000+" seconds");
-			/*}else{
-				LOGGER.info("ProductFeedXMLGenerator property disabled.");
-			}*/
+				LOGGER.info("Available products fetched & uploaded: "+xmlProducts.getProduct().size());
+			}
 		} catch (PropertyException e) {
 			throw new FDResourceException(e);
 		} catch (FileNotFoundException e) {

@@ -20,10 +20,10 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
 
-public class ProductFeedXMLGeneratorCron {
+public class FDProductFeedGeneratorCron {
 	
 
-	private static final Logger LOGGER = LoggerFactory.getInstance(ProductFeedXMLGeneratorCron.class);
+	private static final Logger LOGGER = LoggerFactory.getInstance(FDProductFeedGeneratorCron.class);
 	
 	/**
 	 * @param args
@@ -31,7 +31,7 @@ public class ProductFeedXMLGeneratorCron {
 	public static void main(String[] args) {
 		Context ctx = null;
 		try {
-			LOGGER.info("ProductFeedXMLGeneratorCron Started.");
+			LOGGER.info("FDProductFeedGeneratorCron Started.");
 			ctx = getInitialContext();
 			FDProductFeedHome managerHome = (FDProductFeedHome) ctx.lookup("freshdirect.fdstore.ProductFeed");
 			FDProductFeedSB sb = managerHome.create();
@@ -40,19 +40,19 @@ public class ProductFeedXMLGeneratorCron {
 			StringWriter sw = new StringWriter();
 			e.printStackTrace(new PrintWriter(sw));
 			String _msg=sw.getBuffer().toString();
-			LOGGER.info(new StringBuilder("ProductFeedXMLGeneratorCron failed with Exception...").append(_msg).toString());
+			LOGGER.info(new StringBuilder("FDProductFeedGeneratorCron failed with Exception...").append(_msg).toString());
 			LOGGER.error(_msg);
 			if(_msg!=null && _msg.indexOf("timed out while waiting to get an instance from the free pool")==-1)
 				email(Calendar.getInstance().getTime(), _msg);		
 		} 
-		LOGGER.info("ProductFeedXMLGeneratorCron Stopped.");
+		LOGGER.info("FDProductFeedGeneratorCron Stopped.");
 	}
 
 	
 	private static void email(Date processDate, String exceptionMsg) {
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
-			String subject="ProductFeedXMLGeneratorCron: "+ (processDate != null ? dateFormatter.format(processDate) : " ");
+			String subject="FDProductFeedGeneratorCron: "+ (processDate != null ? dateFormatter.format(processDate) : " ");
 			StringBuffer buff = new StringBuffer();
 			buff.append("<html>").append("<body>");			
 			if(exceptionMsg != null) {
@@ -66,7 +66,7 @@ public class ProductFeedXMLGeneratorCron {
 					subject, buff.toString(), true, "");
 			
 		}catch (MessagingException e) {
-			LOGGER.warn("Error Sending ProductFeedXMLGeneratorCron report email: ", e);
+			LOGGER.warn("Error Sending FDProductFeedGeneratorCron report email: ", e);
 		}
 		
 	}
