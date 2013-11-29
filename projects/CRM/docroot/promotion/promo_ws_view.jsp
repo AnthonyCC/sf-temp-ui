@@ -22,7 +22,16 @@
 		String toDateStr = null;
 		String dlvDateStr = null;
 		String zone = null;
-		String status = "PUBLISHED";
+		String status = "LIVE";
+		
+		if(null == wsFilter || wsFilter.isEmpty()){			
+			Calendar cal = Calendar.getInstance();
+			wsFilter = new WSPromoFilterCriteria();
+			cal.add(Calendar.DATE, 1);
+			wsFilter.setDlvDate(cal.getTime());
+			wsFilter.setDlvDateStr(sdf.format(cal.getTime()));
+			wsFilter.setStatus(status);
+		}
 		if(null != request.getParameter("ws_filter_submit")){
 			fromDateStr = request.getParameter("wsFromDate");
 			toDateStr = request.getParameter("wsToDate");
@@ -36,18 +45,7 @@
 			wsFilter.setStatus(status);
 			wsFilter.setDlvDateStr(dlvDateStr);
 			wsFilter.setZone(zone);
-		}
-		else if(null == wsFilter || wsFilter.isEmpty()){
-			
-			Calendar cal = Calendar.getInstance();
-			wsFilter = new WSPromoFilterCriteria();
-			cal.add(Calendar.DATE, 1);
-			wsFilter.setDlvDate(cal.getTime());
-			wsFilter.setDlvDateStr(sdf.format(cal.getTime()));
-			wsFilter.setStatus(status);
-		}
-		
-		if(null != wsFilter && !wsFilter.isEmpty()){
+		} else if(null != wsFilter && !wsFilter.isEmpty()){
 			fromDateStr = wsFilter.getFromDateStr();
 			toDateStr = wsFilter.getToDateStr();
 			status = wsFilter.getStatus();
@@ -61,7 +59,7 @@
 		<form method='POST' name="frmWSpromo" id="frmWSPromo"  action="/promotion/promo_ws_view.jsp">
 			<div class="BG_live">
 		
-			<table class="BG_live" width="60%" style="border-bottom:2px solid #000000;border-top:1px solid #000000;">
+			<table class="BG_live" width="90%" style="border-bottom:2px solid #000000;border-top:1px solid #000000;">
 			
 				<% if(pageContext.getAttribute("dateErr")!=null) {%>
 		<tr><td><span class="error"><%= pageContext.getAttribute("dateErr")%></span>
@@ -87,11 +85,16 @@
 						<select id="promoStatus" name="promoStatus" class="promo_filter">
 							<option value="ALL">ALL</option>
 							<option value="CANCELLED" <%= (status != null && status.equals("CANCELLED")) ? "selected":"" %>>Cancelled</option>
-							<option value="PUBLISHED" <%= (status != null && status.equals("PUBLISHED")) ? "selected":"" %>>Published</option>
+							<option value="PUBLISHED" <%= (status != null && status.equals("LIVE")) ? "selected":"" %>>Live</option>
 						</select>
 					</td>					
 					<td>&nbsp;</td>
 					<td><input type="submit" value="FILTER" onclick="" id="ws_filter_submit" name="ws_filter_submit" class="promo_btn_grn" /></td>
+					<td>
+						<div class="promo_sub_nav_export">
+							<a href="/promotion/export_ws_promo_list.jsp?actionName=export">Export .xls</a>
+						</div>
+					</td>
 			</tr>	
 			</table>
 			</div>

@@ -136,7 +136,7 @@
 			<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
 		<menu id="GEO004" title="Building" orientation="LEFT" link="dlvbuilding.do">
-			<access-uris>dlvbuilding.do,deletedlvbuilding.do,geocodedlvbuilding.do,dlvbuildinglocation.do,editdlvbuilding.do,customerinfo.do</access-uris>
+			<access-uris>dlvbuilding.do,deletedlvbuilding.do,geocodedlvbuilding.do,dlvbuildinglocation.do,editdlvbuilding.do,editdlvbuildingdtl.do,customerinfo.do</access-uris>
 			<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
 		<menu id="GEO005" title="Location" orientation="LEFT" link="dlvlocation.do">
@@ -144,8 +144,7 @@
 			<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
 		<menu id="GEO006" title="Building Info" orientation="LEFT" link="dlvbuildingdtl.do">
-			<access-uris>dlvbuildingdtl.do,deletedlvbuildingdtl.do,editdlvbuildingdtl.do
-			</access-uris>
+			<access-uris>dlvbuildingdtl.do,deletedlvbuildingdtl.do,editdlvbuildingdtl.do</access-uris>
 			<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
 		<menu id="GEO007" title="Zone Region" orientation="RIGHT" link="region.do">
