@@ -492,8 +492,6 @@ public class CapacityController extends AbstractMultiActionController {
 							
 							_capacity.setDeliveryStartTime(_metrics.getDeliveryStartTime());
 							_capacity.setDeliveryEndTime(_metrics.getDeliveryEndTime());
-							_capacity.setDisplayStartTime(_metrics.getDisplayStartTime());
-							_capacity.setDisplayEndTime(_metrics.getDisplayEndTime());
 							
 							_capacity.setTotalCapacity(_metrics.getOrderCapacity());
 							_capacity.setTotalAllocated(_metrics.getTotalAllocatedOrders());
@@ -507,6 +505,9 @@ public class CapacityController extends AbstractMultiActionController {
 								_capacity.setDynamicActive(_refSlot.isDynamicActive());
 								_capacity.setReferenceId(_refSlot.getReferenceId());
 								_capacity.setWaveCode(_refSlot.getWaveCode().replaceFirst("_", ":").replace("_", " "));
+								_capacity.setDisplayStartTime(_refSlot.getDisplayStartTime());
+								_capacity.setDisplayEndTime(_refSlot.getDisplayStopTime());
+								
 							}
 							
 						}						
@@ -584,6 +585,8 @@ public class CapacityController extends AbstractMultiActionController {
 								_capacity.setDynamicActive(_refSlot.isDynamicActive());
 								_capacity.setReferenceId(_refSlot.getReferenceId());
 								_capacity.setWaveCode(_refSlot.getWaveCode().replaceFirst("_", ":").replace("_", " "));
+								_capacity.setDisplayStartTime(_refSlot.getDisplayStartTime());
+								_capacity.setDisplayEndTime(_refSlot.getDisplayStopTime());
 							}
 						}						
 					}					
@@ -692,7 +695,7 @@ public class CapacityController extends AbstractMultiActionController {
 						_timeslotCommand.setPercentageConfirmed(""+Math.round((_capacity.getTotalConfirmed()/_capacity.getTotalCapacity())*100.0)+"%");
 						_timeslotCommand.setPercentageAllocated(""+Math.round((_capacity.getTotalAllocated()/_capacity.getTotalCapacity())*100.0)+"%");								
 					}
-					boolean isDiscounted = this.isDiscounted(discountSlots, _zoneCode, _capacity.getDeliveryStartTime(), _capacity.getDeliveryEndTime());
+					boolean isDiscounted = this.isDiscounted(discountSlots, _zoneCode, _capacity.getDisplayStartTime(), _capacity.getDisplayEndTime());
 					if(isDiscounted) {
 						_timeslotCommand.setDiscounted(isDiscounted);
 						hasDiscount = true;

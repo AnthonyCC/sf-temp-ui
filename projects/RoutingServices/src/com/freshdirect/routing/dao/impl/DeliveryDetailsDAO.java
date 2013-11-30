@@ -569,7 +569,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		metrics.setDisplayStartTime(rs.getTimestamp("st"));
 				    		metrics.setDisplayEndTime(rs.getTimestamp("et"));
 				    		metrics.setDeliveryStartTime((rs.getTimestamp("rst")!=null)?rs.getTimestamp("rst"):metrics.getDisplayStartTime());
-				    		metrics.setDeliveryStartTime((rs.getTimestamp("ret")!=null)?rs.getTimestamp("ret"):metrics.getDisplayEndTime());
+				    		metrics.setDeliveryEndTime((rs.getTimestamp("ret")!=null)?rs.getTimestamp("ret"):metrics.getDisplayEndTime());
 				    			
 				    		metrics.setOrderCapacity(rs.getInt("capacity"));
 				    		metrics.setTotalConfirmedOrders(rs.getInt("total_order"));
