@@ -210,8 +210,8 @@ public class RoutingDataEncoder {
 		order.setQuantities(quantities);
 
 		if(needTimeSlot) {
-			order.setDeliveryWindowStart(getTime(orderModel.getDeliveryInfo().getDeliveryStartTime()));
-			order.setDeliveryWindowEnd(getTime(orderModel.getDeliveryInfo().getDeliveryEndTime()));
+			order.setDeliveryWindowStart(getTime(orderModel.getDeliveryInfo().getRoutingStartTime()));
+			order.setDeliveryWindowEnd(getTime(orderModel.getDeliveryInfo().getRoutingEndTime()));
 		}
 		
 		double orderServiceTime = orderModel.getDeliveryInfo().getCalculatedServiceTime().getOrderServiceTime();
