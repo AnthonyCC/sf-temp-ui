@@ -81,28 +81,34 @@ final int W_FOOTER_TOTAL = 970;
 	<tr>
 		<td align="center" class="text11bold" style="padding: 5px 0px;">
 			<% if (!new BrowserInfo(request).isIE6()) { %>
-			<div class="addthis_toolbox addthis_default_style left" style="width: 270px; padding-top: 8px; float: left;">
-				<a class="addthis_button_facebook_like" fb:like:href="http://www.facebook.com/FreshDirect" fb:like:layout="button_count" fb:like:width="95" fb:like:height="25"></a>
-				<a class="addthis_button_twitter_follow_native" tf:screen_name="freshdirect" tf:width="80px" tf:show-screen-name="false" tf:show-count="false"></a>
-				<div style="width: 81px; overflow: hidden;">
-				<a class="addthis_button_google_plusone" g:plusone:href="https://plus.google.com/107881041343024996566" g:plusone:size="medium"></a>
-				<div class="atclear"></div>
+				<div class="addthis_toolbox addthis_default_style left" style="width: 270px; padding-top: 8px; float: left;">
+					<a class="addthis_button_facebook_like" fb:like:href="http://www.facebook.com/FreshDirect" fb:like:layout="button_count" fb:like:width="95" fb:like:height="25"></a>
+					<a class="addthis_button_twitter_follow_native" tf:screen_name="freshdirect" tf:width="80px" tf:show-screen-name="false" tf:show-count="false"></a>
+					<div style="width: 81px; overflow: hidden;">
+					<a class="addthis_button_google_plusone" g:plusone:href="https://plus.google.com/107881041343024996566" g:plusone:size="medium"></a>
+					<div class="atclear"></div>
+					</div>
+					<div class="atclear"></div>
 				</div>
-				<div class="atclear"></div>
-			</div>
-			<script type="text/javascript">
-				var addthis_config = {
-					data_ga_property: 'UA-20535945-1',
-					data_ga_social : true
-				};
-				var addThisScript = document.createElement('script');
-				addThisScript.type= 'text/javascript';
-				var addThisUrl = location.protocol + "//s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d69806100449805";
-				addThisScript.src= addThisUrl;
-				document.body.appendChild(addThisScript);
-			</script>
+				<script type="text/javascript">
+					var addthis_config = {
+						data_ga_property: 'UA-20535945-1',
+						data_ga_social : true
+					};
+					if (!window['initAddThis']) {
+						window['initAddThis'] = function() {
+							if (addthis) {
+								addthis.init();	
+							} else {
+								setTimeout(initAddThis, 500);
+							}
+						}
+						$jq(document).ready(function () { initAddThis(); });
+					}
+				</script>
+				<script src="//s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d69806100449805&async=1" type="text/javascript"></script>
 			<% } else { %>
-			<div class="left" style="width: 270px; height: 20px; margin: 0px; padding: 0px;"></div>
+				<div class="left" style="width: 270px; height: 20px; margin: 0px; padding: 0px;"></div>
 			<% } %>
 			<div style="float:left; width:1px; height:40px; margin: 0px 12px 0px 0px" class="dotted_separator_v"></div>
 			<div style="float:left">
