@@ -6,7 +6,6 @@ public class ScenarioZoneCommand implements java.io.Serializable{
 	
 	private String scenarioZonesId;
 	private String serviceTimeType;
-	private String serviceTimeOverride;
 	private String serviceTimeOperator;
 	private String serviceTimeAdjustment;
 	
@@ -15,8 +14,6 @@ public class ScenarioZoneCommand implements java.io.Serializable{
 		this.scenarioZonesId  = src.getScenarioZonesId().getZoneCode()!=null ? src.getScenarioZonesId().getZoneCode(): "";
 		this.serviceTimeType = src.getServiceTimeType()!=null
 								    ? src.getServiceTimeType():"";
-		this.serviceTimeOverride = src.getServiceTimeOverride() != null 
-									? src.getServiceTimeOverride().toString() : "";
 		this.serviceTimeOperator =  src.getServiceTimeOperator() != null 
 										? src.getServiceTimeOperator().toString() : "";
 		this.serviceTimeAdjustment = src.getServiceTimeAdjustment() != null 
@@ -35,12 +32,6 @@ public class ScenarioZoneCommand implements java.io.Serializable{
 	}
 	public void setServiceTimeType(String serviceTimeType) {
 		this.serviceTimeType = serviceTimeType;
-	}
-	public String getServiceTimeOverride() {
-		return serviceTimeOverride;
-	}
-	public void setServiceTimeOverride(String serviceTimeOverride) {
-		this.serviceTimeOverride = serviceTimeOverride;
 	}
 	public String getServiceTimeOperator() {
 		return serviceTimeOperator;

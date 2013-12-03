@@ -9,7 +9,6 @@ public class DlvScenarioZones{
 
 	private ScenarioZonesId scenarioZonesId;
 	private String serviceTimeType;
-	private BigDecimal serviceTimeOverride;
 	private EnumArithmeticOperator serviceTimeOperator;
 	private BigDecimal serviceTimeAdjustment;
 	
@@ -21,12 +20,11 @@ public class DlvScenarioZones{
 	}
 
 	public DlvScenarioZones(ScenarioZonesId scenarioZonesId,
-			String serviceTimeType, BigDecimal serviceTimeOverride,
+			String serviceTimeType,
 			EnumArithmeticOperator serviceTimeOperator,BigDecimal serviceTimeAdjustment) {
 		
 		this.scenarioZonesId = scenarioZonesId;
 		this.serviceTimeType = serviceTimeType;
-		this.serviceTimeOverride = serviceTimeOverride;
 		this.serviceTimeOperator = serviceTimeOperator;
 		this.serviceTimeAdjustment = serviceTimeAdjustment;		
 	}
@@ -50,12 +48,6 @@ public class DlvScenarioZones{
 	}
 	public void setServiceTimeType(String serviceTimeType) {
 		this.serviceTimeType = serviceTimeType;
-	}
-	public BigDecimal getServiceTimeOverride() {
-		return serviceTimeOverride;
-	}
-	public void setServiceTimeOverride(BigDecimal serviceTimeOverride) {
-		this.serviceTimeOverride = serviceTimeOverride;
 	}
 	public BigDecimal getServiceTimeAdjustment() {
 		return serviceTimeAdjustment;

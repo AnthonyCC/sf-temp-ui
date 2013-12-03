@@ -552,9 +552,8 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 			try {
 				DlvScenarioZones sZone = new DlvScenarioZones(zid);
 				sZone.setServiceTimeType(TransStringUtil.isEmpty(zone[i][1]) ?  null : zone[i][1]);
-				sZone.setServiceTimeOverride(TransStringUtil.isEmpty(zone[i][2]) ?  null : new BigDecimal(zone[i][2]));
-				sZone.setServiceTimeOperator(TransStringUtil.isEmpty(zone[i][3]) ?  null : EnumArithmeticOperator.getEnum(zone[i][3]));
-				sZone.setServiceTimeAdjustment(TransStringUtil.isEmpty(zone[i][4]) ?  null : new BigDecimal(zone[i][4]));
+				sZone.setServiceTimeOperator(TransStringUtil.isEmpty(zone[i][2]) ?  null : EnumArithmeticOperator.getEnum(zone[i][2]));
+				sZone.setServiceTimeAdjustment(TransStringUtil.isEmpty(zone[i][3]) ?  null : new BigDecimal(zone[i][3]));
 				selZoneLst.add(sZone);				
 			} catch(NumberFormatException exp) {
 				return false;

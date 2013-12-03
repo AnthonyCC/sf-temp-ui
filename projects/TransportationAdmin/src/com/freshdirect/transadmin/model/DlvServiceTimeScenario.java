@@ -252,7 +252,6 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 			DlvScenarioZones var= (DlvScenarioZones)itr.next();
 			result.append(" \nZoneCode="+ var.getScenarioZonesId().getZoneCode());
 			result.append(" serviceTimeType="+ var.getServiceTimeType());
-			result.append(" serviceTimeOverride="+ var.getServiceTimeOverride());
 			result.append(" serviceTimeOperator="+ var.getServiceTimeOperator());
 			result.append(" serviceTimeAdjustment="+ var.getServiceTimeAdjustment());
 		}

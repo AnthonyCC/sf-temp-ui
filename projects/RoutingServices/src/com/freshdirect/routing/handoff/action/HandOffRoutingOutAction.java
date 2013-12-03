@@ -377,7 +377,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 	private int computeNumBreaksToShow(Set<TimeslotWindow> windowsperRoute) {
 		int windowscount = windowsperRoute.size();
 		if(windowscount <= 2)
-			return 2;
+			return 1;
 		else if(windowscount == 3)
 			return 2;
 		else if(windowscount >=4)
