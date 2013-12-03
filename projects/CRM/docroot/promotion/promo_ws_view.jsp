@@ -158,8 +158,9 @@
 			</div>	
 			<input type="hidden" name="promoCode" id="promoCode" value="">
 			<input type="hidden" name="actionName" id="actionName" value="">
-		
+			<div style="width: 100%;overflow-x: scroll">
 			<%@ include file="/includes/promotions/ws_promotions.jspf" %>
+			</div>
 		</form>
 		</crm:WSPromoController>
 		</fd:GetWSPromotions>
