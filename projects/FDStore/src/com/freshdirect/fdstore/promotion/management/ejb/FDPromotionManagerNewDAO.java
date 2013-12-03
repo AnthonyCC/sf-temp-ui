@@ -223,7 +223,7 @@ public class FDPromotionManagerNewDAO {
 	}
 	private final static String GET_WS_PROMOTION_INFOS = 
 		"select P.ID, P.CODE, P.NAME, DD.START_DATE DLV_DATE, D.DAY_ID, P.START_DATE, P.EXPIRATION_DATE, (select COLUMN_VALUE from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
-		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, T.DLV_WINDOWTYPE, P.MAX_AMOUNT, decode(P.REDEEM_CNT, 0, (select distinct(redeem_cnt) from  cust.promo_dlv_day where PROMO_DLV_ZONE_ID = z.id), P.REDEEM_CNT) as REDEEM_CNT, P.STATUS, pc.DELIVERY_DAY_TYPE from cust.promotion_new p, cust.promo_cust_strategy pc, "
+		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, T.DLV_WINDOWTYPE, P.MAX_AMOUNT, decode(P.REDEEM_CNT, NULL, (select distinct(redeem_cnt) from  cust.promo_dlv_day where PROMO_DLV_ZONE_ID = z.id), P.REDEEM_CNT) as REDEEM_CNT, P.STATUS, pc.DELIVERY_DAY_TYPE from cust.promotion_new p, cust.promo_cust_strategy pc, "
 		+ "cust.promo_dlv_zone_strategy z, cust.promo_dlv_timeslot t, cust.promo_delivery_dates dd, cust.promo_dlv_day d "
 		+ "where p.id = PC.PROMOTION_ID "
 		+ "and P.ID = Z.PROMOTION_ID " 
@@ -320,7 +320,7 @@ public class FDPromotionManagerNewDAO {
 	private final static String GET_WS_PROMOTION_INFO = 
 
 		"select P.ID, P.CODE, P.NAME, P.START_DATE,  (select COLUMN_VALUE from cust.promo_dlv_zone_strategy, table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
-		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, T.DLV_WINDOWTYPE, P.MAX_AMOUNT, P.REDEEM_CNT, P.STATUS, pc.DELIVERY_DAY_TYPE from cust.promotion_new p, cust.promo_cust_strategy pc, "
+		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, T.DLV_WINDOWTYPE, P.MAX_AMOUNT, decode(P.REDEEM_CNT, NULL, (select distinct(redeem_cnt) from  cust.promo_dlv_day where PROMO_DLV_ZONE_ID = z.id), P.REDEEM_CNT) as REDEEM_CNT, P.STATUS, pc.DELIVERY_DAY_TYPE from cust.promotion_new p, cust.promo_cust_strategy pc, "
 		+ "cust.promo_dlv_zone_strategy z, cust.promo_dlv_timeslot t, cust.promo_delivery_dates d "
 		+ "where p.id = PC.PROMOTION_ID "
 		+ "and P.ID = Z.PROMOTION_ID "
@@ -3330,7 +3330,7 @@ public class FDPromotionManagerNewDAO {
 		return dowLimits;
 	}
 
-	private static final String GET_ALL_ACTIVE_PROMOTIONS = "select P.ID, P.CODE, P.REDEEM_CNT, P.MAX_AMOUNT, T.DAY_ID, P.STATUS, "+
+	private static final String GET_ALL_ACTIVE_PROMOTIONS = "select P.ID, P.CODE, decode(P.REDEEM_CNT, NULL, (select distinct(redeem_cnt) from  cust.promo_dlv_day where PROMO_DLV_ZONE_ID = z.id), P.REDEEM_CNT) as REDEEM_CNT, P.MAX_AMOUNT, T.DAY_ID, P.STATUS, "+
 	"(SELECT count(s.id) from cust.sale s, cust.salesaction sa, cust.PROMOTION_PARTICIPATION pa "+
 	"where S.ID = SA.SALE_ID "+
 	"and S.CUSTOMER_ID = SA.CUSTOMER_ID "+
