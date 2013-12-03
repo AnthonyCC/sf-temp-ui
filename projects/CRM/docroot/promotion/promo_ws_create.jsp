@@ -109,8 +109,8 @@ function numbersonly(myfield, e, dec)
 	List cohortList = new ArrayList();
 	cohortList = request.getParameterValues("cohorts") != null ? Arrays.asList(request.getParameterValues("cohorts")) : new ArrayList() ;		
 	if(promotion != null && promotion.getPromotionCode() != null) {
-		if(f_effectiveDate == null)
-			f_effectiveDate =  null;//CCFormatter.defaultFormatDate(promotion.getWSSelectedDlvDate());
+		if(f_effectiveDate == null && promotion.getWSSelectedDlvDate() != null)
+			f_effectiveDate =  CCFormatter.defaultFormatDate(promotion.getWSSelectedDlvDate());
 		if(startDate == null)
 			startDate =  CCFormatter.defaultFormatDate(promotion.getStartDate());
 		if(endDate == null)
@@ -145,6 +145,9 @@ function numbersonly(myfield, e, dec)
 					if(tm.getWindowTypes() != null && tm.getWindowTypes().length != 0){
 						windowTypeList = Arrays.asList(tm.getWindowTypes());
 					}
+					if("0".equalsIgnoreCase(redeemLimit) && zsm.getDlvDayRedemtions() != null && zsm.getDlvDayRedemtions().get(0) != null) {
+						redeemLimit = String.valueOf(zsm.getDlvDayRedemtions().get(0).getRedeemCount());
+					}
 				}								
 			}
 		}
@@ -158,6 +161,8 @@ function numbersonly(myfield, e, dec)
 				}								
 			}
 		}
+		
+		
 	}
 	Date defaultDate = DateUtil.addDays(today, 1); //Today + 1
 	f_effectiveDate = (f_effectiveDate != null) ? f_effectiveDate : CCFormatter.defaultFormatDate(defaultDate);
@@ -348,9 +353,9 @@ function numbersonly(myfield, e, dec)
 								<div><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></div>
 								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date:<b> 
 								<% if(isToday) { %>
-									today -<%= f_displayDate %> 
+									<%-- today -<%= f_displayDate %> --%> 
 								<% } else  {%>
-									<%= f_displayDate %>
+									<%-- <%= f_displayDate %> --%>
 								<% } %></b>
 								&nbsp;&nbsp;
 								<input type="hidden" name="effectiveDate" id="effectiveDate" value="<%=f_effectiveDate%>">
@@ -365,8 +370,6 @@ function numbersonly(myfield, e, dec)
 								    function setDate(field){
 								    	document.getElementById("effectiveDate").value=field.value;
 								    	document.timePick.selectedZoneId.value = document.timePick.zone.value;
-								    	document.timePick.actionName.value = "changeDate";
-										document.timePick.submit();
 								    }
 					
 					
