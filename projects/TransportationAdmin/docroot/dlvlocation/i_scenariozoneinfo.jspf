@@ -33,7 +33,6 @@
 		var depotColumns =  [ 
 			    {key:"scenarioZonesId", label:"Zone",sortable:false, width: 60, className:"forms1"}, 
 			    {key:"serviceTimeType", label:"STime Type",sortable:false, width: 95, className:"forms1"},
-			    {key:"serviceTimeOverride", label:"STime Override",sortable:false, width: 90, className:"forms1"},
 			    {key:"serviceTimeOperator", label:"STime Operator",sortable:false, width: 90, className:"forms1"},
 			    {key:"serviceTimeAdjustment", label:"STime Adjustment",sortable:false, width: 100, className:"forms1"},
 			    {key:'delete',label:' ',formatter:function(elCell) {
@@ -59,27 +58,18 @@
      function doAdd() {
      		var _zone = document.getElementById('szone').value;
      		var _stype = document.getElementById('stype').value;
-     		var _stimeOverride = document.getElementById('serviceTimeOverride').value;
      		var _stimeOpt = document.getElementById('sTimeOperator').value;
      		var _stimeAdj = document.getElementById('serviceTimeAdjustment').value;
 			var hasError=false;
 
-     		if(_stype==0 && _stimeOverride.trim().length==0 && _stimeAdj.trim().length==0){ 
+     		if(_stype==0 && _stimeAdj.trim().length==0){ 
                   alert("Service Time group cannot be empty. Please choose one from the group!!");   
             	  hasError=true;
             }
             
-            if((_stype!=0 && _stimeOverride.trim().length!=0 && _stimeOpt==0 && _stimeAdj.trim().length==0)
-                    ||(_stype!=0 && _stimeOverride.trim().length==0 && _stimeOpt==0 && _stimeAdj.trim().length!=0)
-                    ||(_stype==0 && _stimeOverride.trim().length!=0 && _stimeOpt==0 && _stimeAdj.trim().length!=0)
-                    ||(_stype!=0 && _stimeOverride.trim().length==0 && _stimeOpt!=0 && _stimeAdj.trim().length!=0)
-                    ||(_stype==0 && _stimeOverride.trim().length!=0 && _stimeOpt!=0 && _stimeAdj.trim().length!=0)
-                    ||(_stype!=0 && _stimeOverride.trim().length!=0 && _stimeOpt!=0 && _stimeAdj.trim().length==0)
-                    ||(_stype!=0 && _stimeOverride.trim().length!=0 && _stimeOpt!=0 && _stimeAdj.trim().length!=0)
-                    ||(_stype!=0 && _stimeOverride.trim().length!=0 && _stimeOpt!=0 && _stimeAdj.trim().length!=0)){
+            if(_stype!=0 && _stimeAdj.trim().length!=0){
                 hasError=true;
-                alert("Please choose only one from ServiceTime group!!");   
-
+                alert("Please choose only one from ServiceTime group!!");
             }
             if(depotDataTable.getRecordSet() != null 
      	  			&& depotDataTable.getRecordSet().getRecords()) {
@@ -101,7 +91,7 @@
         	{  	_stimeOpt=''; 	}
         	   		
      		if(!hasError) {
-     			depotDataTable.addRow({scenarioZonesId:_zone, serviceTimeType:_stype, serviceTimeOverride:_stimeOverride,
+     			depotDataTable.addRow({scenarioZonesId:_zone, serviceTimeType:_stype, 
      				serviceTimeOperator:_stimeOpt,serviceTimeAdjustment:_stimeAdj});
      		}
      }
@@ -115,9 +105,8 @@
       	  		_data[i] = new Array();
       	  		_data[i][0] = records[i].getData('scenarioZonesId');
       	  		_data[i][1] = records[i].getData('serviceTimeType');
-      	  		_data[i][2] = records[i].getData('serviceTimeOverride');
-      	  		_data[i][3] = records[i].getData('serviceTimeOperator');
-      	  		_data[i][4] = records[i].getData('serviceTimeAdjustment');
+      	  		_data[i][2] = records[i].getData('serviceTimeOperator');
+      	  		_data[i][3] = records[i].getData('serviceTimeAdjustment');
       	  	}
       	  }
        	  var result=jsonrpcClient.AsyncDispatchProvider.doScenarioZone(sendScenarioFormCallback,_currentBatchId,_data);
@@ -164,9 +153,6 @@
 			        	</c:forEach>                                      
 			          </select>
                    </td> 
-                   <td>                 
-	                   ST Override<input style="margin-top:4px" size="10" id="serviceTimeOverride" /> 
-	               </td>                    
                    <td>ST Operator                   
                       <select id="sTimeOperator" style="width: 60;margin-top:4px" name="sTimeOperator">  
                     	<c:forEach var="serviceTimeOperator" items="${serviceTimeOperators}">       
