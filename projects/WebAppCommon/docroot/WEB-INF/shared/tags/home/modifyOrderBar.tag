@@ -12,8 +12,12 @@
 		attribute name="htmlId" required="true" rtexprvalue="true" type="java.lang.String" %><%
 					if (user.getLevel() >= FDUserI.RECOGNIZED) { 
 							int pendingOrderCount = 0;
-							List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI>();
-							user.invalidateOrderHistoryCache();//Clear the order history cache, to get the latest order history info.
+							List<FDOrderInfoI> validPendingOrders = new ArrayList<FDOrderInfoI>();							
+							//If there is any order in 'NEW' status, clear the order history to fetch and see the order is submitted to SAP which makes the order modifiable.
+							if(user.isAnyNewOrder()){
+								user.invalidateOrderHistoryCache();
+								user.setAnyNewOrder(false);
+							}
 							validPendingOrders.addAll(user.getPendingOrders());
 							//Collections.reverse(validPendingOrders);
 							

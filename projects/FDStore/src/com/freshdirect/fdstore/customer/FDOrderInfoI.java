@@ -87,4 +87,6 @@ public interface FDOrderInfoI extends Serializable {
 	};
 	
 	public boolean isMakeGood();
+	
+	public boolean isNewOrder();
 }

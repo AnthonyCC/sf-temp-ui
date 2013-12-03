@@ -187,4 +187,8 @@ public class FDOrderInfoAdapter implements FDOrderInfoI {
 	public boolean isMakeGood() {
 		return saleInfo.isMakeGood();
 	}
+	
+	public boolean isNewOrder(){
+		return this.getOrderStatus().isNewOrder();
+	}
 }

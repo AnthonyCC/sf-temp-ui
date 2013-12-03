@@ -1635,4 +1635,16 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void applyOrderMinimum() {
 		this.user.applyOrderMinimum();
 	}
+
+	@Override
+	public boolean isAnyNewOrder() {
+		// TODO Auto-generated method stub
+		return this.user.isAnyNewOrder();
+	}
+
+	@Override
+	public void setAnyNewOrder(boolean anyNewOrder) {
+		this.user.setAnyNewOrder(anyNewOrder);
+		
+	}
 }

@@ -275,6 +275,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	private String defaultListId = null;
 	
+	private boolean anyNewOrder = false;
+	
 
 	public String getTsaPromoCode() {
 		return tsaPromoCode;
@@ -2232,9 +2234,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	/* return List of orderInfos for all pending orders inclusions optional. */
 	public List<FDOrderInfoI> getPendingOrders(boolean incGiftCardOrds, boolean incDonationOrds, boolean sorted) throws FDResourceException {
-
-		FDOrderHistory history = (FDOrderHistory) getOrderHistory();//Changed to fetch from cache.  
 		
+		FDOrderHistory history = (FDOrderHistory) getOrderHistory();//Changed to fetch from cache.  
+		Date currentDate = new Date();
 		List<FDOrderInfoI> orderHistoryInfo = new ArrayList<FDOrderInfoI>(history.getFDOrderInfos(EnumSaleType.REGULAR));
 		
 		if (incGiftCardOrds) {
@@ -2285,9 +2287,11 @@ public class FDUser extends ModelSupport implements FDUserI {
 							continue;
 				 */
 
-				if (new Date().before(orderInfo.getDeliveryCutoffTime())) {
+				if (currentDate.before(orderInfo.getDeliveryCutoffTime())) {
 					validPendingOrders.add(orderInfo);
 				}
+			}else if(orderInfo.isNewOrder() && EnumSaleType.REGULAR.equals(orderInfo.getSaleType())){
+				this.setAnyNewOrder(true);
 			}
 		}
 		
@@ -2744,5 +2748,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 		return MINIMUM_ORDER_AMOUNT;
 	
+	}
+
+	public boolean isAnyNewOrder() {
+		return anyNewOrder;
+	}
+
+	public void setAnyNewOrder(boolean anyNewOrder) {
+		this.anyNewOrder = anyNewOrder;
 	}
 }

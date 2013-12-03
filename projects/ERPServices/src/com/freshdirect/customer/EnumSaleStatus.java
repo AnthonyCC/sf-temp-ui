@@ -122,4 +122,8 @@ public class EnumSaleStatus implements java.io.Serializable {
 	public boolean isReturned() {
 		return this.equals(RETURNED);
 	}
+	
+	public boolean isNewOrder() {
+		return this.equals(NEW);
+	}
 }

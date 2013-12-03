@@ -582,4 +582,6 @@ public interface FDUserI extends java.io.Serializable {
 	public EnumRegionServiceType getRegionSvcType(String addressId);
 	public boolean isPaymentechEnabled();
 	public void applyOrderMinimum();
+	public boolean isAnyNewOrder();
+	public void setAnyNewOrder(boolean anyNewOrder);
 }
