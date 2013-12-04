@@ -178,7 +178,7 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			new Selection(CrmCaseSubject.CODE_COMPLAINT, "Delivery Feedback"),
 			new Selection(CrmCaseSubject.CODE_SERVICE_AVAILABILITY, "Delivery Time Status"),
 			new Selection(CrmCaseSubject.CODE_IPHONE_INFO , "FreshDirect iPhone app"),
-			new Selection(CrmCaseSubject.CODE_GENERAL_INFO , "Fresh Meal Vending"),
+			/*new Selection(CrmCaseSubject.CODE_GENERAL_INFO , "Fresh Meal Vending"),*/
 			new Selection(CrmCaseSubject.CODE_GENERAL_INFO, "General Feedback"),
 			new Selection(CrmCaseSubject.CODE_GIFT_CARD_INFO , "Gift Cards"),
 			new Selection(CrmCaseSubject.CODE_PROBLEM, "Problem with an order I received"),
