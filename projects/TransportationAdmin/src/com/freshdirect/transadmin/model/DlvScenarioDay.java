@@ -69,13 +69,16 @@ public class DlvScenarioDay implements java.io.Serializable{
 	
 	
 	public String getDayOfWeekInText(){
-		if(this==null) return "";
-
-		EnumDayOfWeek dow=EnumDayOfWeek.getEnum(Integer.toString(this.getDayOfWeek().intValue()));
-		if(dow!=null)
-			return dow.getDesc();
-		else
+		if (this == null)
 			return "";
+
+		if (this.getDayOfWeek() != null) {
+			EnumDayOfWeek dow = EnumDayOfWeek.getEnum(Integer.toString(this
+					.getDayOfWeek().intValue()));
+			if (dow != null)
+				return dow.getDesc();
+		}
+		return "";
 	}
 
 	public String getTimeRange(){

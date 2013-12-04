@@ -400,155 +400,154 @@ public class LocationController extends AbstractMultiActionController  {
 	 * @param response current HTTP response
 	 * @return a ModelAndView to render the response
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public ModelAndView dlvServiceTimeScenarioHandler(HttpServletRequest request, HttpServletResponse response) 
-									throws ServletException {		
+									throws ServletException {
 		
-		Set<DlvScenarioDay> scenarios=new HashSet<DlvScenarioDay>();
-		try{	
-			for(int i=1;i<=7;i++){
-				Calendar baseDate = DateUtil.truncate(Calendar.getInstance());					
-				baseDate.add(Calendar.DATE, i);
-				String date = TransStringUtil.dateFormat.format(baseDate.getTime());
-				
-				Date tmpDate=null;
-				try {
-					tmpDate = TransStringUtil.getDate(date);
-					Calendar calendar=Calendar.getInstance();
-					calendar.setTime(tmpDate);
-					int dayOfweek = calendar.get(Calendar.DAY_OF_WEEK);
-					Set<DlvScenarioDay> dataList=new HashSet<DlvScenarioDay>();
-					if(date!=null){
-						Collection scenariosForDate = locationManagerService.getServiceTimeScenarios(date);
-						for(Iterator itr=scenariosForDate.iterator();itr.hasNext();){
-							Object[] object = (Object[])itr.next();
-							if(null != object && object.length > 0){
-								DlvScenarioDay scenario=(DlvScenarioDay)object[1];
-								if(scenario!=null)
-									dataList.add(scenario);
+		String scenarioView = request.getParameter("defaultView");
+		String startDate = request.getParameter("fromdaterange");
+		String endDate = request.getParameter("todaterange");
+		
+		Set<DlvScenarioDay> scenarios = new HashSet<DlvScenarioDay>();
+		try {
+			if(scenarioView == null || "".equalsIgnoreCase(scenarioView)) {
+					
+				for (int i = 1; i <= 7; i++) {
+					Calendar baseDate = DateUtil.truncate(Calendar.getInstance());
+					baseDate.add(Calendar.DATE, i);
+					String date = TransStringUtil.dateFormat.format(baseDate.getTime());
+
+					Date tmpDate = null;
+					try {
+						tmpDate = TransStringUtil.getDate(date);
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(tmpDate);
+						int dayOfweek = calendar.get(Calendar.DAY_OF_WEEK);
+						Set<DlvScenarioDay> dataList = new HashSet<DlvScenarioDay>();
+						if (date != null) {
+							Collection scenariosForDate = locationManagerService.getServiceTimeScenarios(date);
+							for (Iterator itr = scenariosForDate.iterator(); itr.hasNext();) {
+								Object[] object = (Object[]) itr.next();
+								if (null != object && object.length > 0) {
+									DlvScenarioDay scenario = (DlvScenarioDay) object[1];
+									if (scenario != null)
+										dataList.add(scenario);
+								}
+							}
+							if (dataList.isEmpty()) {
+								Collection scenariosForDayOfWeek = locationManagerService.getServiceTimeScenariosForDayofWeek(dayOfweek);
+								for (Iterator itr = scenariosForDayOfWeek.iterator(); itr.hasNext();) {
+									Object[] object = (Object[]) itr.next();
+									if (null != object && object.length > 0) {
+										DlvScenarioDay scenario = (DlvScenarioDay) object[1];
+										if (scenario != null)
+											dataList.add(scenario);
+									}
+								}
+							}
+							if (dataList.isEmpty()) {
+								Collection defaultScenario = locationManagerService.getDefaultServiceTimeScenarioDay();
+								for (Iterator itr = defaultScenario.iterator(); itr.hasNext();) {
+									DlvScenarioDay scenario = (DlvScenarioDay) itr.next();
+									if (scenario != null)
+										dataList.add(scenario);
+								}
 							}
 						}
-						if(dataList.isEmpty()){
-							Collection scenariosForDayOfWeek = locationManagerService.getServiceTimeScenariosForDayofWeek(dayOfweek);
-								for(Iterator itr=scenariosForDayOfWeek.iterator();itr.hasNext();){
+						scenarios.addAll(dataList);
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+				}
+			} else {
+				List finalScenarioList = new ArrayList();
+				Collection tempScenarios = new ArrayList();
+				Collection scenariosWithNoDays = new ArrayList();
+				if (("".equals(startDate) || startDate == null)
+						|| (endDate == null || "".equals(endDate))) {
+					tempScenarios  = locationManagerService.getDlvServiceTimeScenarioDays();
+				    scenariosWithNoDays = locationManagerService.getScenariosWithNoDay();		
+						
+					for (Iterator itr = scenariosWithNoDays.iterator(); itr
+							.hasNext();) {
+						DlvServiceTimeScenario scenario=(DlvServiceTimeScenario)itr.next();
+						DlvScenarioDay sd=new DlvScenarioDay();
+						sd.setScenario(scenario);
+						tempScenarios.add(sd);
+					}
+					finalScenarioList.addAll(tempScenarios);					
+					return new ModelAndView("dlvServiceTimeScenarioView","dlvservicetimescenariolist",finalScenarioList);
+				} else {
+					Date d1 = TransStringUtil.getDate(startDate);
+					Date d2 = TransStringUtil.getDate(endDate);
+					Calendar cal1 = Calendar.getInstance();
+					Calendar cal2 = Calendar.getInstance();
+					cal1.setTime(d1);
+					cal2.setTime(d2);
+					cal2.add(Calendar.DATE, 1);
+					String date = "";
+					Date tempDate = null;
+		            
+					while (cal1.before(cal2)) {
+						try {					
+							date = TransStringUtil.dateFormat.format(cal1.getTime());
+							
+							tempDate=TransStringUtil.getDate(date);
+							Calendar calendar=Calendar.getInstance();
+							calendar.setTime(tempDate);
+							int dayOfweek = calendar.get(Calendar.DAY_OF_WEEK);
+							
+							Set<DlvScenarioDay> dataList = new HashSet<DlvScenarioDay>();
+							if (date != null) {
+								Collection scenariosForDate = locationManagerService.getServiceTimeScenarios(date);
+								for (Iterator itr = scenariosForDate.iterator(); itr.hasNext();) {
 									Object[] object = (Object[])itr.next();
 									if(null != object && object.length > 0){
 										DlvScenarioDay scenario=(DlvScenarioDay)object[1];
-										if(scenario!=null) dataList.add(scenario);
+										if(scenario!=null) 
+											dataList.add(scenario);
 									}
-								}							
-						}
-						if(dataList.isEmpty()){
-							Collection defaultScenario = locationManagerService.getDefaultServiceTimeScenarioDay();
-								for(Iterator itr=defaultScenario.iterator();itr.hasNext();){
-									DlvScenarioDay scenario=(DlvScenarioDay)itr.next();
-									if(scenario!=null)dataList.add(scenario);									
-								}				
-						}	
-					}					
-					scenarios.addAll(dataList);					
-					
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}		
-			}			
-			return new ModelAndView("dlvServiceTimeScenarioView","dlvservicetimescenariolist",scenarios);
-		}catch (Exception e) {
-			e.printStackTrace();
-			saveMessage(request, getMessage("app.actionmessage.154", null));
-			return new ModelAndView("dlvServiceTimeScenarioView");	
-		}	
-	}
-
-
-	public ModelAndView dlvServiceTimeScenarioDisplayHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {		
-		try{
-			String startDate = request.getParameter("fromdaterange");
-			String endDate = request.getParameter("todaterange");
-			Collection scenarios=new ArrayList();
-			Collection scenariosWithNoDays= new ArrayList();
-			List finalScenarioList=new ArrayList();
-			Set<DlvScenarioDay> scenarioLst=new HashSet<DlvScenarioDay>();
-			if(("".equals(startDate)||startDate==null)||(endDate==null||"".equals(endDate))){
-				scenarios  = locationManagerService.getDlvServiceTimeScenarioDays();
-			    scenariosWithNoDays = locationManagerService.getScenariosWithNoDay();		
-					
-				for(Iterator itr=scenariosWithNoDays.iterator();itr.hasNext();){
-					DlvServiceTimeScenario scenario=(DlvServiceTimeScenario)itr.next();
-					DlvScenarioDay sd=new DlvScenarioDay();
-					sd.setScenario(scenario);
-					scenarios.add(sd);
-				}
-				finalScenarioList.addAll(scenarios);	
-				return new ModelAndView("dlvServiceTimeScenarioView","dlvservicetimescenariolist",finalScenarioList);
-			}else{
-				
-				Date d1=TransStringUtil.getDate(startDate);				
-				Date d2=TransStringUtil.getDate(endDate);
-				Calendar cal1 = Calendar.getInstance();
-				Calendar cal2 = Calendar.getInstance();
-				cal1.setTime(d1);				
-				cal2.setTime(d2);
-				cal2.add(Calendar.DATE, 1);
-	            String date="";
-	            Date tempDate=null;
-	            
-				while(cal1.before(cal2)){
-					try {					
-						date = TransStringUtil.dateFormat.format(cal1.getTime());
-						
-						tempDate=TransStringUtil.getDate(date);
-						Calendar calendar=Calendar.getInstance();
-						calendar.setTime(tempDate);
-						int dayOfweek = calendar.get(Calendar.DAY_OF_WEEK);
-						
-						Set<DlvScenarioDay> dataList=new HashSet<DlvScenarioDay>();
-						if(date!=null){
-							Collection scenariosForDate = locationManagerService.getServiceTimeScenarios(date);
-							for(Iterator itr=scenariosForDate.iterator();itr.hasNext();){
-								Object[] object = (Object[])itr.next();
-								if(null != object && object.length > 0){
-									DlvScenarioDay scenario=(DlvScenarioDay)object[1];
-									if(scenario!=null)dataList.add(scenario);
 								}
-							}
-							if(dataList.isEmpty()){
-								Collection scenariosForDayOfWeek = locationManagerService.getServiceTimeScenariosForDayofWeek(dayOfweek);
-									for(Iterator itr=scenariosForDayOfWeek.iterator();itr.hasNext();){
-										Object[] object = (Object[])itr.next();
-										if(null != object && object.length > 0){
-											DlvScenarioDay scenario=(DlvScenarioDay)object[1];
-											if(scenario!=null) dataList.add(scenario);
-										}
-									}							
-							}
-							if(dataList.isEmpty()){
-								Collection defaultScenario = locationManagerService.getDefaultServiceTimeScenarioDay();
-								for(Iterator itr=defaultScenario.iterator();itr.hasNext();){
-									DlvScenarioDay scenario=(DlvScenarioDay)itr.next();
-									if(scenario!=null) dataList.add(scenario);									
-								}				
-							}						
-						}							
-						scenarios.addAll(dataList);						
-					} catch (ParseException e) {
-						e.printStackTrace();
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}				
-					//TODO: Look for next day if any.
-					cal1.add(Calendar.DATE, 1);				
+								if (dataList.isEmpty()) {
+									Collection scenariosForDayOfWeek = locationManagerService.getServiceTimeScenariosForDayofWeek(dayOfweek);
+										for(Iterator itr=scenariosForDayOfWeek.iterator();itr.hasNext();){
+											Object[] object = (Object[])itr.next();
+											if(null != object && object.length > 0){
+												DlvScenarioDay scenario=(DlvScenarioDay)object[1];
+												if (scenario != null)
+													dataList.add(scenario);
+											}
+										}							
+								}
+								if (dataList.isEmpty()) {
+									Collection defaultScenario = locationManagerService.getDefaultServiceTimeScenarioDay();
+									for(Iterator itr=defaultScenario.iterator();itr.hasNext();){
+										DlvScenarioDay scenario=(DlvScenarioDay)itr.next();
+										if (scenario != null)
+											dataList.add(scenario);									
+									}				
+								}						
+							}							
+							tempScenarios.addAll(dataList);						
+						} catch (ParseException e) {
+							e.printStackTrace();
+						} catch (Exception ex) {
+							ex.printStackTrace();
+						}				
+						//TODO: Look for next day if any.
+						cal1.add(Calendar.DATE, 1);				
+					}
+					scenarios.addAll(tempScenarios);	
 				}
-				scenarioLst.addAll(scenarios);	
-				return new ModelAndView("dlvServiceTimeScenarioView","dlvservicetimescenariolist",scenarioLst);
 			}
-			
+			return new ModelAndView("dlvServiceTimeScenarioView", "dlvservicetimescenariolist", scenarios);
 		}catch (Exception e) {
 			e.printStackTrace();
 			saveMessage(request, getMessage("app.actionmessage.155", null));
 			return new ModelAndView("dlvServiceTimeScenarioView");	
-		}		
+		}	
 	}
-		
+	
 	/**
 	 * Custom handler for welcome
 	 * @param request current HTTP request

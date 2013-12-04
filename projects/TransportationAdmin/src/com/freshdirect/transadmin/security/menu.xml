@@ -89,7 +89,7 @@
 		</menu>
 
 		<menu id="RUT002" title="Service Time Scenario" orientation="RIGHT" link="dlvservicetimescenario.do">
-			<access-uris>dlvservicetimescenario.do,deletedlvservicetimescenario.do,editdlvservicetimescenario.do,dlvservicetimescenariodisplay.do</access-uris>
+			<access-uris>dlvservicetimescenario.do,deletedlvservicetimescenario.do,editdlvservicetimescenario.do</access-uris>
 			<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
 

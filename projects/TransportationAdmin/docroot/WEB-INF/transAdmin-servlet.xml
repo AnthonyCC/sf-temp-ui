@@ -95,7 +95,6 @@
  		 	    <prop key="/editdlvbuildingdtl.do">deliveryBuildingDtlFormController</prop> 
  		 	    <prop key="/deletedlvbuildingdtl.do">locationController</prop> 
  		 	    <prop key="/dlvservicetimescenario.do">locationController</prop>
- 		 	    <prop key="/dlvservicetimescenariodisplay.do">locationController</prop>
  		 	    <prop key="/deletedlvservicetimescenario.do">locationController</prop>					                
 				<prop key="/editdlvservicetimescenario.do">dlvServiceTimeScenarioFormController</prop> 
 				<prop key="/cutoff.do">domainController</prop>
@@ -336,7 +335,6 @@
 	 	    <prop key="/dlvbuildinglocation.do">dlvBuildingLocationHandler</prop>	 
 	 	    <prop key="/customerinfo.do">customerInfoHandler</prop>	 
 	 	    <prop key="/dlvservicetimescenario.do">dlvServiceTimeScenarioHandler</prop>
-	 	    <prop key="/dlvservicetimescenariodisplay.do">dlvServiceTimeScenarioDisplayHandler</prop>
  		 	<prop key="/deletedlvservicetimescenario.do">dlvServiceTimeScenarioDeleteHandler</prop>	
  		 	<prop key="/cutoff.do">cutOffHandler</prop>					                
  		 	<prop key="/deletecutoff.do">cutOffDeleteHandler</prop>

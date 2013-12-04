@@ -23,8 +23,7 @@
 	    {
 	    	var param1 = document.getElementById(compId1).value;         
 	        var param2 = document.getElementById(compId2).value;
-	        var param3="";         
-	        location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+ param2;
+	        location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+ param2+"&displayView=D";
 		} 
     </script>
 	<div class="contentroot">
@@ -74,7 +73,7 @@
 	    				</script>
                     </span>
                     &nbsp;&nbsp;				
-					<span><input id="view_button" height="18"  type="button" value="View"   onclick="javascript:doCompositeLink('fromdaterange','todaterange','dlvservicetimescenariodisplay.do');" /></span>
+					<span><input id="view_button" height="18"  type="button" value="View"   onclick="javascript:doCompositeLink('fromdaterange','todaterange','dlvservicetimescenario.do');" /></span>
 					<span><input id="clear_button" height="18"  type="button" value="Clear" onclick="document.getElementById('fromdaterange').value='';document.getElementById('todaterange').value='';" /></span>
 					<span><input id="delete_button" height="18" type="button" value="Delete Scenario" onclick="javascript:deleteScenarioHandlers();" /></span>
 					&nbsp;&nbsp;&nbsp;
@@ -96,7 +95,7 @@
 				<form id="dlvServiceTimeScenarioForm" action="" method="post">
         <ec:table items="dlvservicetimescenariolist"   action="${pageContext.request.contextPath}/dlvservicetimescenario.do"
             imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title=""
-            width="98%"  view="fd" form="dlvServiceTimeScenarioForm" autoIncludeParameters="false" rowsDisplayed="25"  >
+            width="98%"  view="fd" form="dlvServiceTimeScenarioForm" autoIncludeParameters="true" rowsDisplayed="25"  >
             
             <ec:exportPdf fileName="transportationservicetimescenarios.pdf" tooltip="Export PDF" 
                       headerTitle="Transportation Service Time Scenarios" />
