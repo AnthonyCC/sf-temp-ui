@@ -85,7 +85,7 @@
 						<select id="promoStatus" name="promoStatus" class="promo_filter">
 							<option value="ALL">ALL</option>
 							<option value="CANCELLED" <%= (status != null && status.equals("CANCELLED")) ? "selected":"" %>>Cancelled</option>
-							<option value="PUBLISHED" <%= (status != null && status.equals("LIVE")) ? "selected":"" %>>Live</option>
+							<option value="LIVE" <%= (status != null && status.equals("LIVE")) ? "selected":"" %>>Live</option>
 						</select>
 					</td>					
 					<td>&nbsp;</td>

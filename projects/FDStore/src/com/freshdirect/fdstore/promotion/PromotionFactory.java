@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.promotion;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -39,7 +40,7 @@ public class PromotionFactory {
 	private static final Category LOGGER = LoggerFactory.getInstance(PromotionFactory.class);
 
 	private CacheI<String, PromotionI> redeemPromotions;
-	private CacheI<String, Integer> redemptions;
+	private CacheI<String, Map<Date, Integer>> redemptions;
 
 	private Map<String, PromotionI> promotionMap = new LinkedHashMap<String, PromotionI>();
 	private Date maxLastModified;
@@ -64,7 +65,7 @@ public class PromotionFactory {
 
 	private PromotionFactory() {
 		this.redeemPromotions = new ManagedCache<String, PromotionI>("PROMOTION", constructCache());
-		this.redemptions = new ManagedCache<String, Integer>("REDEMPTION", constructRedemptionCache());
+		this.redemptions = new ManagedCache<String, Map<Date, Integer>>("REDEMPTION", constructRedemptionCache());
 		loadAutomaticPromotions();
 	}
 
@@ -201,7 +202,10 @@ public class PromotionFactory {
 				//This happens when promotion_popup page passes a null promotion code.
 				return null;
 			}
-			redeemCount = (Integer) getRedemptions().get(promoId);
+			
+			if(getRedemptions().get(promoId) != null) {
+				redeemCount = (Integer) getRedemptions().get(promoId).get(requestedDate);
+			}
 			
 			if(redeemCount == null){
 				LOGGER.info("REFRESHING REDEMPTION COUNT FOR PROMOTION "+promoId);
@@ -209,7 +213,11 @@ public class PromotionFactory {
 				redeemCount = FDPromotionNewManager.getRedemptionCount(promoId, requestedDate);
 				if(redeemCount != null){
 					//Promotion can be null if the promotion has a incomplete configuration.
-					getRedemptions().put(promoId, redeemCount);	
+					if(getRedemptions().get(promoId) == null) {
+						getRedemptions().put(promoId, new HashMap<Date, Integer>());
+					}
+					getRedemptions().get(promoId).put(requestedDate, redeemCount);
+					
 				}
 				LOGGER.info("REFRESHING REDEMPTION COUNT FOR PROMOTION DONE.");
 			}
@@ -266,7 +274,7 @@ public class PromotionFactory {
 		return this.redeemPromotions;
 	}
 	
-	private CacheI<String, Integer> getRedemptions() {
+	private CacheI<String, Map<Date, Integer>> getRedemptions() {
 		return this.redemptions;
 	}
 	
@@ -278,8 +286,8 @@ public class PromotionFactory {
 		return lruCache;
 	}
 	
-	private CacheI<String, Integer> constructRedemptionCache(){
-		SimpleLruCache<String, Integer> lruCache = new SimpleLruCache<String, Integer>();
+	private CacheI<String, Map<Date, Integer>> constructRedemptionCache(){
+		SimpleLruCache<String, Map<Date, Integer>> lruCache = new SimpleLruCache<String, Map<Date, Integer>>();
 		lruCache.setName("REDEMPTION");
 		lruCache.setCapacity(2000);
 		lruCache.setTimeout(FDStoreProperties.getRedeemCntRefreshPeriod());
