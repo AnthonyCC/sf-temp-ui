@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.taglib.callcenter;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -134,7 +135,7 @@ public class ComplaintUtil {
     		return reasons;
 
     	// Case k>1
-    	List r0 = reasons; // convert list to set
+    	List r0 = new ArrayList(reasons); // convert list to set
     	while (it.hasNext()) {
         	deptName = (String) it.next();
         	List r1 = getReasonsForDepartment(deptName, excludeCartReq);
@@ -155,6 +156,18 @@ public class ComplaintUtil {
                 if (reason.getId().equals(id)) {
                     return reason;
                 }
+            }
+        } 
+        return null;
+    }
+    
+    public static ErpComplaintReason getReasonByDeptAndText(String dept,String reasonText) throws FDResourceException {
+        List allReasons = getReasonsForDepartment(dept);
+        for (Iterator rIter = allReasons.iterator(); rIter.hasNext(); ) {
+//            String lDept = (String) rIter.next();
+            ErpComplaintReason reason = (ErpComplaintReason) rIter.next();
+            if (reason.getReason().equals(reasonText)) {
+                return reason;
             }
         } 
         return null;

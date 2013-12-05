@@ -13,7 +13,7 @@
 
   	Set __is_deptNames = OrderLineUtil.collectDepartmentNames(_is_orderLines);
   	Set cartonComplNames = ComplaintUtil.getReasonsForDepartments(__is_deptNames, (_is_cartonInfo == null) );
-  	List cartonComplsList = ComplaintUtil.getReasonsListForDepartments(__is_deptNames, (_is_cartonInfo == null) );
+  	//List cartonComplsList = ComplaintUtil.getReasonsListForDepartments(__is_deptNames, (_is_cartonInfo == null) );
 %>	<tr>
 		<td COLSPAN="5" class="text12" style="padding-top: 1em; font-weight: bold; background-color: #eee">
 <% if (_is_cartonInfo != null) { %>
@@ -66,14 +66,14 @@
 </script>
         </td>
         <td style="padding-top: 1em; background-color: #CCCCee;">
-            <SELECT id="<%= _is_groupName %>_complaints" name="n_<%= _is_groupName %>_complaints" class="pulldown_detail" style="background-color: #dee" <%= cartonComplsList.size() > 0 ? "" : "\"disabled\"=\"1\""  %>>
+            <SELECT id="<%= _is_groupName %>_complaints" name="n_<%= _is_groupName %>_complaints" class="pulldown_detail" style="background-color: #dee" <%= cartonComplNames.size() > 0 ? "" : "\"disabled\"=\"1\""  %>>
                 <OPTION value="0">select credit reason</OPTION>
 <%
-			if (cartonComplsList.size() > 0) {
+			if (cartonComplNames.size() > 0) {
 				int k = 1;
-				for (Iterator rit=cartonComplsList.iterator(); rit.hasNext(); ) {
-					ErpComplaintReason reason = (ErpComplaintReason) rit.next();
-%>              <option value="<%= reason.getId() %>"><%= reason.getReason() %></option>
+				for (Iterator rit=cartonComplNames.iterator(); rit.hasNext(); ) {
+					String reason = (String) rit.next();
+%>              <option value="<%= reason %>"><%= reason %></option>
 <%
 					k++;
 				}

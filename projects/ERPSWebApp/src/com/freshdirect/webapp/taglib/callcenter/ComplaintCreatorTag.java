@@ -326,7 +326,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
             processCreditAmount(line, orderline, olstat, i, result);
 
             if ( orderLineReason[i] != null && !"".equals(orderLineReason[i]) )
-                line.setReason( ComplaintUtil.getReasonById(orderLineReason[i]) );
+                line.setReason( ComplaintUtil.getReasonByDeptAndText(orderline.getDepartmentDesc(),orderLineReason[i]) );
             if ( EnumComplaintLineMethod.STORE_CREDIT.getStatusCode().equals( orderLineMethod[i] ) ) {
                 line.setMethod( EnumComplaintLineMethod.STORE_CREDIT );
             } else if ( EnumComplaintLineMethod.CASH_BACK.getStatusCode().equals( orderLineMethod[i] ) ) {
