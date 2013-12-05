@@ -358,16 +358,21 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 	
 	private List<TimeslotWindow> combineBreaks(Set<TimeslotWindow> breaksperRoute) {
 		List<TimeslotWindow> consolidatedBreaks = new ArrayList<TimeslotWindow>();
-		OUTER : for(TimeslotWindow window : breaksperRoute){
+		for(TimeslotWindow window : breaksperRoute){
+			boolean addToList = true;
 			for(TimeslotWindow consolidatedWindow: consolidatedBreaks){
-				if(window.isWithinRange(consolidatedWindow))
-					break OUTER;
+				if(window.isWithinRange(consolidatedWindow)){
+					addToList = false;
+					break;
+				}					
 				else if(window.overlaps(consolidatedWindow)){
 					consolidatedWindow.setEndTime(window.getEndTime());
-					break OUTER;
+					addToList = false;
+					break;
 				}	
 			}
-			consolidatedBreaks.add(window);
+			if(addToList)
+				consolidatedBreaks.add(window);
 		}
 		return consolidatedBreaks;
 	}
