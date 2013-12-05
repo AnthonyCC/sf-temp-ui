@@ -551,6 +551,14 @@
       </method>
       <trans-attribute>RequiresNew</trans-attribute>
     </container-transaction>
+    <container-transaction>
+      <method>
+        <ejb-name>ProductFeed</ejb-name>
+        <method-intf>Remote</method-intf>
+        <method-name>*</method-name>
+      </method>
+      <trans-attribute>NotSupported</trans-attribute>   
+    </container-transaction>
 
                 		<!--
 		****************************

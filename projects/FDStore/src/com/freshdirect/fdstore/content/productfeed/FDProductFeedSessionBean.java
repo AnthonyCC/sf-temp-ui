@@ -126,17 +126,8 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 				uploadProductFeedFile(xmlProducts, jaxbCtx);
 				LOGGER.info("Available products fetched & uploaded: "+xmlProducts.getProduct().size());
 			}
-		} catch (PropertyException e) {
-			throw new FDResourceException(e);
-		} catch (FileNotFoundException e) {
-			throw new FDResourceException(e);
-		} catch (JAXBException e) {
-			throw new FDResourceException(e);
-		} catch (IOException e) {
-			throw new FDResourceException(e);
-		} catch (JSchException e) {
-			throw new FDResourceException(e);
-		} catch (SftpException e) {
+		} catch (Exception e) {
+			LOGGER.error("Exception :"+e.getMessage());
 			throw new FDResourceException(e);
 		}
     	return true;
