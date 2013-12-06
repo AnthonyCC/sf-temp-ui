@@ -62,7 +62,7 @@ function openURL(inLocationURL) {
 	<td class="border_bold">&nbsp;</td>
 	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Redemption Limit</b></span></td>	
 	<td class="border_bold">&nbsp;</td>
-	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Actual Redemptions</b></span></td>	
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Actual Redemptions (across all days)</b></span></td>	
 	<td class="border_bold">&nbsp;</td>
 	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Status</b></span></td>
 	<% if(FDStoreProperties.isPromoPublishNodeMaster() && CrmSecurityManager.hasAccessToPage(agent.getRole().getLdapRoleName(),"promo_ws_create.jsp")) { %>

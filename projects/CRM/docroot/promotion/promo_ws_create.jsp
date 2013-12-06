@@ -145,7 +145,7 @@ function numbersonly(myfield, e, dec)
 					if(tm.getWindowTypes() != null && tm.getWindowTypes().length != 0){
 						windowTypeList = Arrays.asList(tm.getWindowTypes());
 					}
-					if("0".equalsIgnoreCase(redeemLimit) && zsm.getDlvDayRedemtions() != null && zsm.getDlvDayRedemtions().get(0) != null) {
+					if("0".equalsIgnoreCase(redeemLimit) && zsm.getDlvDayRedemtions() != null && zsm.getDlvDayRedemtions().size() > 0 && zsm.getDlvDayRedemtions().get(0) != null) {
 						redeemLimit = String.valueOf(zsm.getDlvDayRedemtions().get(0).getRedeemCount());
 					}
 				}								
@@ -261,6 +261,9 @@ function numbersonly(myfield, e, dec)
 				   <%@ include file="/includes/i_error_messages.jspf" %>   
 				</fd:ErrorHandler>
 				<fd:ErrorHandler result="<%=result%>" name="daysEmpty" id="errorMsg">
+					<%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="redeemlimit" id="errorMsg">
 					<%@ include file="/includes/i_error_messages.jspf" %>   
 				</fd:ErrorHandler>							
 				<%
@@ -388,7 +391,10 @@ function numbersonly(myfield, e, dec)
 									function toggleDeliveryRadio(){							
 										if(document.getElementById("edit_dlvreq_Rest_date").checked){
 											selectNCB('edit_dlvreq_dayOfWeekParent', '', false, '', true);
-										} 
+											enableOrDisableCheckbok('edit_dlvreq_dayOfWeekParent', true);
+										} else {
+											enableOrDisableCheckbok('edit_dlvreq_dayOfWeekParent', false);
+										}
 									}
 						    
 							</script>										 		
@@ -899,6 +905,7 @@ function numbersonly(myfield, e, dec)
 		<script>
 			document.observe('dom:loaded', function() {				
 				toggleRadius();
+				toggleDeliveryRadio();
 			});
 			
 
@@ -993,6 +1000,23 @@ function numbersonly(myfield, e, dec)
 					result1 = "0" + result1;
 				return result1;
 
+			}
+			
+			function enableOrDisableCheckbok(parentId, truefalse) {
+				var curCount = 0;
+				var totalCount = 0;
+				var parent = document.getElementById(parentId);
+				if (parent == null) { return -1; }
+				var children = parent.getElementsByTagName('input');
+					
+					//ALL
+					for (var i=0;i<children.length;i++) {
+						if (children[i].type == "checkbox" && (children[i].className).indexOf("clickAllExclude") < 0) {
+							children[i].disabled = truefalse;
+						}
+					}			
+				
+				return totalCount;
 			}
 		</script>
 		</crm:WSPromoController>

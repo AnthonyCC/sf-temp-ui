@@ -387,6 +387,12 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			}
 		}
 
+		String redeemlimit = NVL.apply(request.getParameter("redeemlimit"), "").trim();
+		if(redeemlimit == null || redeemlimit.length() == 0 || "0".equalsIgnoreCase(redeemlimit)){
+			actionResult.addError(true, "redeemlimit", "Please select a Redemtion limit > 0");
+			success = false; 
+		}
+		
 		return success; 
 	}
 	
