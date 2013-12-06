@@ -348,6 +348,12 @@ public class UserUtil {
 		
 		String updatedSuccessPage = successPage;
 		
+		//hard-code redirects and allow logic to override later
+		if (successPage.indexOf("/registration/signup.jsp")!=-1 || successPage.indexOf("/checkout/signup_ckt.jsp")!=-1) {
+			//hard-code redirects
+			successPage = "/index.jsp";
+		}
+		
 		if (userId == null ||  userId.length() < 1 ) {
             actionResult.addError(new ActionError(EnumUserInfoName.USER_ID.getCode(), SystemMessageList.MSG_REQUIRED));
         } else if (!EmailUtil.isValidEmailAddress(userId)) {
