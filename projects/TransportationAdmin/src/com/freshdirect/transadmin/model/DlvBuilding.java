@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.freshdirect.routing.constants.EnumArithmeticOperator;
+
 public class DlvBuilding implements java.io.Serializable, TrnBaseEntityI  {
 	
 	private String buildingId;
@@ -144,6 +146,14 @@ public class DlvBuilding implements java.io.Serializable, TrnBaseEntityI  {
 	}
 
 	public BigDecimal getServiceTimeAdjustable() {
+		return serviceTimeAdjustable;
+	}
+	
+	public BigDecimal getServiceTimeAdjustableEx() {
+		if(serviceTimeAdjustable==null)
+			return null;
+		if(EnumArithmeticOperator.SUB.toString().equals(serviceTimeOperator))
+			return serviceTimeAdjustable.negate();
 		return serviceTimeAdjustable;
 	}
 

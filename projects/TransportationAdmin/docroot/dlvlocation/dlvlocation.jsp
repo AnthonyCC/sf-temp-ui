@@ -140,7 +140,7 @@
               <ec:column property="geocodeConfidence" title="Confidence" width="10px"/>
               <ec:column property="geocodeQuality" title="Quality" width="10px"/>             
               <ec:column alias="serviceTimeType" property="serviceTimeType.name" title="Service Time Type" width="15px"/>
-              <ec:column alias="serviceTimeAdjustable" property="serviceTimeAdjustable" title="Service Time Adjustment"/>
+              <ec:column alias="serviceTimeAdjustableEx" property="serviceTimeAdjustableEx" title="Service Time Adjustment"/>
               <ec:column alias="geocode" property="id" title=" " filterable="false" cell="geocodecol" width="5px" />
               <ec:column sortable="false" alias="showcustomer" property="locationId" title=" " filterable="false" cell="customercol" width="5px" />
             </ec:row>

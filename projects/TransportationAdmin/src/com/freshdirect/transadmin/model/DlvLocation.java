@@ -2,6 +2,8 @@ package com.freshdirect.transadmin.model;
 
 import java.math.BigDecimal;
 
+import com.freshdirect.routing.constants.EnumArithmeticOperator;
+
 public class DlvLocation implements java.io.Serializable, TrnBaseEntityI  {
 	
 	private String locationId;	
@@ -34,6 +36,13 @@ public class DlvLocation implements java.io.Serializable, TrnBaseEntityI  {
 		if(serviceTimeAdjustable==null)
 			this.serviceTimeOperator=null;
 		this.serviceTimeAdjustable = serviceTimeAdjustable;
+	}
+	public BigDecimal getServiceTimeAdjustableEx() {
+		if(serviceTimeAdjustable==null)
+			return null;
+		if(EnumArithmeticOperator.SUB.toString().equals(serviceTimeOperator))
+			return serviceTimeAdjustable.negate();
+		return serviceTimeAdjustable;
 	}
 	public String getApartment() {
 		return apartment;
