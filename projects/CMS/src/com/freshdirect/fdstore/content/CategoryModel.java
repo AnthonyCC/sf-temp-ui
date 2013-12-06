@@ -1146,7 +1146,7 @@ public class CategoryModel extends ProductContainer {
 			try {
 				if(null !=productAssortmentPromotionDataRefMap.get(promotionId).get()) {
 					prodList = new ArrayList<ProductModel>();
-					addDynamicProductsForPromotion(productAssortmentPromotionDataRefMap.get(promotionId).get().getProductModels(), prodList);
+					addDynamicProductsForPromotion(productAssortmentPromotionDataRefMap.get(promotionId).get().getProductModels(), prodList,false);
 				}
 		    } catch (Exception e) {
 		        LOGGER.warn("exception during promo category product assignment", e);

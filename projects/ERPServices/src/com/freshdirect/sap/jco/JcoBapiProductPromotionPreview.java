@@ -1,6 +1,7 @@
 package com.freshdirect.sap.jco;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -204,6 +205,7 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 					ppInfo.setErpCategory(erpCategory);
 					ppInfo.setErpCatPosition(erpCatPosition);
 					promotionProducts.add(ppInfo);
+					Collections.sort(promotionProducts, new FDProductPromotionInfoComparator());
 					if(null==erpProductInfoMap.get(skuCode)){
 					ErpProductInfoModel erpProductInfoModel = new ErpProductInfoModel(skuCode,new String[]{matNum},EnumATPRule.JIT,
 							EnumAvailabilityStatus.AVAILABLE.getStatusCode(),new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
@@ -297,5 +299,19 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 			}
 		}
 		return skuZoneMatPrices;
+	}
+	
+	public class FDProductPromotionInfoComparator implements Comparator<FDProductPromotionInfo>{
+
+		@Override
+		public int compare(FDProductPromotionInfo arg0,
+				FDProductPromotionInfo arg1) {
+			if(((Integer)arg0.getErpCatPosition()).equals(arg1.getErpCatPosition())){
+				return ((Integer)arg0.getPriority()).compareTo(arg1.getPriority());
+			}else{
+				return  ((Integer)arg0.getErpCatPosition()).compareTo(arg1.getErpCatPosition());
+			}
+		}
+		
 	}
 }

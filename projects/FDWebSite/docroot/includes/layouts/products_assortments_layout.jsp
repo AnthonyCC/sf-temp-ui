@@ -473,24 +473,22 @@
 						if(null!=erpCat &&!erpCat.equalsIgnoreCase(pa.getErpCategory())){
 							newCat = true;
 							erpCat = pa.getErpCategory();
-							if(!isFirst){
-								
+							if(!isFirst){								
 						%>
 						</div><br>
 						<% } %>
 							<% if(null !=erpCat && !"".equals(erpCat)){ %><div class="grid-item-saving ddpa_erpCat"><div class="ddpa_erpCat_Center"><%=pa.getErpCategory() %></div></div><%} %>
-							<div class="items">
-						<%}
-						%><div class="grid-item-container"><% if(disableLinks) { %><%@ 
+							<div class="items"><% if(isFirst){ isFirst =false; } } %>
+							<div class="grid-item-container"><% if(disableLinks) { %><%@ 
 							include file="/includes/product/i_product_box_preview.jspf" %><% 
 						} else { %><%@ 
 							include file="/includes/product/i_product_box.jspf" %><% 
-						} %></div><% if(!newCat){ isFirst =false; %>
+						} %></div>
 							
 						<%}
-					}
-				%><div class="clear"></div>
-				</div>
+					if(!isFirst){
+				%></div><br><% } %><div class="clear"></div>
+				
 			
 		</div>
 		<%
