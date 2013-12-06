@@ -13,7 +13,9 @@ public class WSPromotionInfo extends ModelSupport {
 	private Date startDate;
 	private Date endDate;
 	private EnumDeliveryOption deliveryDayType;
-
+	private Date requestedDate;
+	private boolean isRecurringPromo;
+	
 	public Date getStartDate() {
 		return startDate;
 	}
@@ -122,6 +124,18 @@ public class WSPromotionInfo extends ModelSupport {
 	}
 	public void setDayOfWeek(String[] dayOfWeek) {
 		this.dayOfWeek = dayOfWeek;
+	}	
+	public Date getRequestedDate() {
+		return requestedDate;
+	}
+	public void setRequestedDate(Date requestedDate) {
+		this.requestedDate = requestedDate;
+	}	
+	public boolean isRecurringPromo() {
+		return isRecurringPromo;
+	}
+	public void setRecurringPromo(boolean isRecurringPromo) {
+		this.isRecurringPromo = isRecurringPromo;
 	}
 	public String getWindowTypeStr() {
 		StringBuffer buf = new StringBuffer();

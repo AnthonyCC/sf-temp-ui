@@ -136,10 +136,27 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
 	}	
 	
 	private static final String GET_ALL_WINDOWSTEERING_DISCOUNTS =
-		"select p.id PID, P.MAX_AMOUNT PAMOUNT, P.OFFER_TYPE, PDZ.DLV_ZONE ZONES, PTS.DAY_ID DAY_OF_WEEK, PTS.START_TIME STIME, PTS.END_TIME ETIME, PTS.DLV_WINDOWTYPE WINDOWTYPE " +
-		"from CUST.PROMOTION_NEW p, CUST.PROMO_DLV_ZONE_STRATEGY pdz, CUST.PROMO_DLV_TIMESLOT pts, CUST.PROMO_DELIVERY_DATES pds " +
-		"where p.campaign_code='HEADER' and p.offer_type = 'WINDOW_STEERING' and p.status='LIVE' and P.EXPIRATION_DATE >= sysdate and to_char(?,'D') = PTS.DAY_ID and PDS.START_DATE <= ? and PDS.END_DATE >= ? " +
-		"and PDZ.PROMOTION_ID = p.id and PTS.PROMO_DLV_ZONE_ID = PDZ.ID and p.id = PDS.PROMOTION_ID ";
+		"SELECT p.id PID, "+
+		       "P.MAX_AMOUNT PAMOUNT, "+
+		       "P.OFFER_TYPE, "+
+		       "z.DLV_ZONE ZONES, "+
+		       "t.DAY_ID DAY_OF_WEEK, "+
+		       "t.START_TIME STIME, "+
+		       "t.END_TIME ETIME, "+
+		       "t.DLV_WINDOWTYPE WINDOWTYPE, d.START_DATE "+
+		  "FROM CUST.PROMOTION_NEW p, "+
+		       "CUST.PROMO_DLV_ZONE_STRATEGY z, "+
+		       "CUST.PROMO_DLV_TIMESLOT t, "+
+		       "CUST.PROMO_DELIVERY_DATES d "+
+		 "WHERE     P.ID = Z.PROMOTION_ID "+
+		       "AND T.PROMO_DLV_ZONE_ID = Z.ID "+
+		       "AND P.ID = D.PROMOTION_ID(+) "+
+		       "AND p.campaign_code = 'HEADER' "+
+		       "AND p.offer_type = 'WINDOW_STEERING' "+
+		       "AND p.status = 'LIVE' "+
+		       "AND P.EXPIRATION_DATE >= sysdate "+
+		       "AND to_char(?,'D') = T.DAY_ID  "+
+		       "AND (( d.START_DATE is NULL AND d.END_DATE is NULL) OR (d.START_DATE <= ? and d.END_DATE >= ?))";
 	
 	public Map<String, List<TimeRange>> getWindowSteeringDiscounts(final Date deliveryDate) throws DataAccessException {
 		

@@ -55,10 +55,13 @@ public class WSPromoCancellationCron {
 			while(it.hasNext()){
 				WSPromotionInfo promo = it.next();
 				if(promo.getDayofweek() == dayofweek) {
-					if(promo.getStatus().equals(EnumPromotionStatus.LIVE))
-						//add to the list only Promotion is still LIVE.
+					if(promo.getStatus().equals(EnumPromotionStatus.LIVE) && !promo.isRecurringPromo()) {
+						//add to the list only Promotion is still LIVE & not recurring promotion
 						temp.add(promo.getPromotionCode());
-					totalDiscount += (promo.getDiscount() * promo.getRedemptions());
+					}
+					if(!promo.isRecurringPromo() || (promo.isRecurringPromo() && cal.getTime().equals(promo.getRequestedDate()))) {
+						totalDiscount += (promo.getDiscount() * promo.getRedemptions());
+					}
 				}
 			}
 			Double dowLimit = dowLimits.get(new Integer(dayofweek));
@@ -74,9 +77,9 @@ public class WSPromoCancellationCron {
 		Iterator<WSPromotionInfo> it = wspromotions.iterator();
 		while(it.hasNext()){
 			WSPromotionInfo promo = it.next();
-			if(!cancelPromoCodes.contains(promo.getPromotionCode())){
+			if(!cancelPromoCodes.contains(promo.getPromotionCode()) && !promo.isRecurringPromo()){
 				//Check for redemption limit.
-				if(promo.getStatus().equals(EnumPromotionStatus.LIVE) && promo.getRedeemCount() >0 && promo.getRedemptions() >= promo.getRedeemCount()) {
+				if(promo.getStatus().equals(EnumPromotionStatus.LIVE) && promo.getRedeemCount() > 0 && promo.getRedemptions() >= promo.getRedeemCount()) {
 					//Limit reached.
 					cancelPromoCodes.add(promo.getPromotionCode());
 				}

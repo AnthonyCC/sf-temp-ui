@@ -459,7 +459,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			if(redeemCnt > 0 && "DELIVERYDATE".equals(dlvRestrictionType))
 				promotion.setRedeemCount(redeemCnt);
 			else
-				promotion.setRedeemCount(null);
+				promotion.setRedeemCount(0);
 			List<FDPromoCustStrategyModel> custStrategies = new ArrayList<FDPromoCustStrategyModel>();
 			FDPromoCustStrategyModel custModel = new FDPromoCustStrategyModel();
 			custModel.setOrderTypeHome(true);
@@ -592,7 +592,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			if(redeemCnt > 0 && "DELIVERYDATE".equals(dlvRestrictionType))
 				promotion.setRedeemCount(redeemCnt);
 			else
-				promotion.setRedeemCount(null);
+				promotion.setRedeemCount(0);
 				
 			Date dlvDate = null;
 			FDPromoDlvTimeSlotModel timeSlotModel = null;

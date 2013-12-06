@@ -290,7 +290,7 @@ public class FDPromotionNewManager {
 		try {
 			FDPromotionManagerNewSB sb = managerHome.create();
 			boolean val = sb.fixPromoStatusAfterPublish(codes);
-			FDPromotionNewModelFactory.getInstance().forceRefresh();
+//			FDPromotionNewModelFactory.getInstance().forceRefresh();
 			return val;
 		} catch (CreateException ce) {
 			invalidateManagerHome();

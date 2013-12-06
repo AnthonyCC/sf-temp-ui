@@ -223,7 +223,7 @@ public class FDPromotionManagerNewDAO {
 	}
 	private final static String GET_WS_PROMOTION_INFOS = 
 		"select P.ID, P.CODE, P.NAME, DD.START_DATE DLV_DATE, D.DAY_ID, P.START_DATE, P.EXPIRATION_DATE, (select COLUMN_VALUE from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
-		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, T.DLV_WINDOWTYPE, P.MAX_AMOUNT, decode(P.REDEEM_CNT, NULL, (select distinct(redeem_cnt) from  cust.promo_dlv_day where PROMO_DLV_ZONE_ID = z.id), P.REDEEM_CNT) as REDEEM_CNT, P.STATUS, pc.DELIVERY_DAY_TYPE from cust.promotion_new p, cust.promo_cust_strategy pc, "
+		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, T.DLV_WINDOWTYPE, P.MAX_AMOUNT, decode(P.REDEEM_CNT, 0, (select distinct(redeem_cnt) from  cust.promo_dlv_day where PROMO_DLV_ZONE_ID = z.id), P.REDEEM_CNT) as REDEEM_CNT, P.STATUS, pc.DELIVERY_DAY_TYPE from cust.promotion_new p, cust.promo_cust_strategy pc, "
 		+ "cust.promo_dlv_zone_strategy z, cust.promo_dlv_timeslot t, cust.promo_delivery_dates dd, cust.promo_dlv_day d "
 		+ "where p.id = PC.PROMOTION_ID "
 		+ "and P.ID = Z.PROMOTION_ID " 
@@ -320,7 +320,7 @@ public class FDPromotionManagerNewDAO {
 	private final static String GET_WS_PROMOTION_INFO = 
 
 		"select P.ID, P.CODE, P.NAME, P.START_DATE,  (select COLUMN_VALUE from cust.promo_dlv_zone_strategy, table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
-		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, T.DLV_WINDOWTYPE, P.MAX_AMOUNT, decode(P.REDEEM_CNT, NULL, (select distinct(redeem_cnt) from  cust.promo_dlv_day where PROMO_DLV_ZONE_ID = z.id), P.REDEEM_CNT) as REDEEM_CNT, P.STATUS, pc.DELIVERY_DAY_TYPE from cust.promotion_new p, cust.promo_cust_strategy pc, "
+		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, T.DLV_WINDOWTYPE, P.MAX_AMOUNT, decode(P.REDEEM_CNT, 0, (select distinct(redeem_cnt) from  cust.promo_dlv_day where PROMO_DLV_ZONE_ID = z.id), P.REDEEM_CNT) as REDEEM_CNT, P.STATUS, pc.DELIVERY_DAY_TYPE from cust.promotion_new p, cust.promo_cust_strategy pc, "
 		+ "cust.promo_dlv_zone_strategy z, cust.promo_dlv_timeslot t, cust.promo_delivery_dates d "
 		+ "where p.id = PC.PROMOTION_ID "
 		+ "and P.ID = Z.PROMOTION_ID "
@@ -3330,24 +3330,55 @@ public class FDPromotionManagerNewDAO {
 		return dowLimits;
 	}
 
-	private static final String GET_ALL_ACTIVE_PROMOTIONS = "select P.ID, P.CODE, decode(P.REDEEM_CNT, NULL, (select distinct(redeem_cnt) from  cust.promo_dlv_day where PROMO_DLV_ZONE_ID = z.id), P.REDEEM_CNT) as REDEEM_CNT, P.MAX_AMOUNT, T.DAY_ID, P.STATUS, "+
-	"(SELECT count(s.id) from cust.sale s, cust.salesaction sa, cust.PROMOTION_PARTICIPATION pa "+
-	"where S.ID = SA.SALE_ID "+
-	"and S.CUSTOMER_ID = SA.CUSTOMER_ID "+
-	"and S.CROMOD_DATE = SA.ACTION_DATE "+
-	"and SA.ACTION_TYPE IN ('CRO','MOD') "+
-	"and S.STATUS <> 'CAN' "+
-	"and S.ID = PA.SALE_ID "+
-	"and SA.REQUESTED_DATE >= P.CREATE_DATE "+
-	"and PA.PROMOTION_ID = P.ID and to_char(SA.REQUESTED_DATE,'D') = T.DAY_ID) RCOUNT "+ 
-	"FROM cust.promotion_new p, cust.PROMO_DLV_ZONE_STRATEGY z, "+
-	"cust.PROMO_DLV_TIMESLOT t "+
-	"where P.ID = Z.PROMOTION_ID "+
-	"and Z.ID = T.PROMO_DLV_ZONE_ID "+
-	"and P.CAMPAIGN_CODE='HEADER' and P.OFFER_TYPE= 'WINDOW_STEERING' "+
-	"and P.STATUS IN ('LIVE','CANCELLED') "+
-	"and  P.START_DATE <= ? "+
-	"and  P.EXPIRATION_DATE >= ?";
+	private static final String GET_ALL_ACTIVE_PROMOTIONS = 
+				"SELECT P.ID, "+
+						"P.CODE, "+
+					    "DECODE (P.REDEEM_CNT, "+
+					            "0, (SELECT redeem_cnt "+
+					                     "FROM cust.promo_dlv_day "+
+					                    "WHERE DAY_ID = T.DAY_ID AND PROMO_DLV_ZONE_ID = z.id), "+
+					            "P.REDEEM_CNT) "+
+					       "AS REDEEM_CNT, "+
+					    "P.MAX_AMOUNT, "+
+					    "T.DAY_ID, "+
+					    "P.STATUS, "+
+					    "(SELECT COUNT (s.id) "+
+					       "FROM cust.sale s, "+
+					            "cust.salesaction sa, "+
+					            "cust.PROMOTION_PARTICIPATION pa "+
+					      "WHERE     S.ID = SA.SALE_ID "+
+					            "AND S.CUSTOMER_ID = SA.CUSTOMER_ID "+
+					            "AND S.CROMOD_DATE = SA.ACTION_DATE "+
+					            "AND SA.ACTION_TYPE IN ('CRO', 'MOD') "+
+					            "AND S.STATUS <> 'CAN' "+
+					            "AND S.ID = PA.SALE_ID "+
+					            "AND SA.REQUESTED_DATE >= P.CREATE_DATE "+
+					            "AND PA.PROMOTION_ID = P.ID "+
+					            "AND TO_CHAR (SA.REQUESTED_DATE, 'D') = T.DAY_ID) "+
+					       "RCOUNT, "+
+					    "PP.REQUESTED_DATE, "+
+					    "CASE "+
+					       "WHEN (SELECT COUNT (*) "+
+					               "FROM CUST.PROMO_DLV_DAY "+
+					              "WHERE PROMO_DLV_ZONE_ID = z.id) > 0 "+
+					       "THEN "+
+					          "'X' "+ 
+					       "ELSE "+
+					          "NULL "+
+					    "END "+
+					       "AS IS_RECURRING_PROMO "+
+					"FROM cust.PROMOTION_NEW p, "+
+					    "cust.PROMO_DLV_ZONE_STRATEGY z, "+
+					    "cust.PROMO_DLV_TIMESLOT t, "+
+					    "cust.PROMOTION_PARTICIPATION pp "+
+					"WHERE   P.ID = Z.PROMOTION_ID "+
+					    "AND Z.ID = T.PROMO_DLV_ZONE_ID "+
+					    "AND P.ID = PP.PROMOTION_ID(+) "+
+					    "AND P.CAMPAIGN_CODE = 'HEADER' "+
+					    "AND P.OFFER_TYPE = 'WINDOW_STEERING' "+
+					    "AND P.STATUS IN ('LIVE', 'CANCELLED') "+
+					    "AND P.START_DATE <= ? "+
+					    "AND P.EXPIRATION_DATE >= ? ";	
 
 	public static List<WSPromotionInfo> getAllActiveWSPromotions(java.util.Date effectiveDate, Connection conn) throws SQLException {
 		PreparedStatement ps = null;
@@ -3367,6 +3398,8 @@ public class FDPromotionManagerNewDAO {
 				promo.setDayofweek(rs.getInt("DAY_ID"));
 				promo.setRedemptions(rs.getInt("RCOUNT"));
 				promo.setStatus(EnumPromotionStatus.getEnum(rs.getString("STATUS")));
+				promo.setRequestedDate(rs.getTimestamp("REQUESTED_DATE"));
+				promo.setRecurringPromo("X".equalsIgnoreCase(rs.getString("IS_RECURRING_PROMO")) ? true : false);
 				wspromotions.add(promo);
 			}
 		
