@@ -47,7 +47,8 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 	
 	public EmployeeInfo() {
 	}
-	public EmployeeInfo(String employeeId, String firstName, String lastName, String middleInitial, String shortName, String jobType, Date hireDate, String status, String supervisorId, String supervisorFirstName, String supervisorMiddleInitial, String supervisorLastName, String supervisorShortName,Date terminationDate) {
+	public EmployeeInfo(String employeeId, String firstName, String lastName, String middleInitial, String shortName, String jobType, Date hireDate, 
+			String status, String supervisorId, String supervisorFirstName, String supervisorMiddleInitial, String supervisorLastName, String supervisorShortName,Date terminationDate) {
 		super();
 		this.employeeId = employeeId;
 		this.firstName = firstName;
@@ -64,6 +65,23 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 		this.supervisorMiddleInitial = supervisorMiddleInitial;
 		this.supervisorLastName = supervisorLastName;
 		this.supervisorShortName = supervisorShortName;
+		this.terminationDate=terminationDate;
+	}
+	
+	public EmployeeInfo(String employeeId, String firstName, String lastName, String middleInitial, String shortName, String jobType, Date hireDate, 
+			String status, String supervisorId, Date terminationDate) {
+		super();
+		this.employeeId = employeeId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		
+		this.middleInitial = middleInitial;
+		this.shortName = shortName;
+		
+		this.jobType = jobType;
+		this.hireDate = hireDate;
+		this.status = status;
+		this.supervisorId = supervisorId;
 		this.terminationDate=terminationDate;
 	}
 		
@@ -281,5 +299,17 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 	}
 	public void setScannedAssets(List<AssetScanInfo> scannedAssets) {
 		this.scannedAssets = scannedAssets;
+	}
+	public void setSupervisorFirstName(String supervisorFirstName) {
+		this.supervisorFirstName = supervisorFirstName;
+	}
+	public void setSupervisorMiddleInitial(String supervisorMiddleInitial) {
+		this.supervisorMiddleInitial = supervisorMiddleInitial;
+	}
+	public void setSupervisorLastName(String supervisorLastName) {
+		this.supervisorLastName = supervisorLastName;
+	}
+	public void setSupervisorShortName(String supervisorShortName) {
+		this.supervisorShortName = supervisorShortName;
 	}
 }

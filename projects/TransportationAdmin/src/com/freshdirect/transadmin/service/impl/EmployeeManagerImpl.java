@@ -54,6 +54,8 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 	private EmployeeManagerDaoI employeeManagerDAO = null;
 	private DomainManagerDaoI domainManagerDao = null;
 	private PunchInfoDaoI punchInfoDAO = null;
+	private PunchInfoDaoI punchInfoCloudDAO = null;
+	private EmployeeManagerDaoI employeeManagerCloudDAO = null;
 	
 	public PunchInfoDaoI getPunchInfoDAO() {
 		return punchInfoDAO;
@@ -222,11 +224,17 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 	}
 
 	public Collection getKronosEmployees() {
-		return employeeManagerDAO.getEmployees();
+		if(TransportationAdminProperties.isKronosCloudEnabled())
+			return employeeManagerCloudDAO.getEmployees();
+		else
+			return employeeManagerDAO.getEmployees();
 	}
 
 	public Collection getSupervisors() {
-		return employeeManagerDAO.getSupervisors();
+		if(TransportationAdminProperties.isKronosCloudEnabled())
+			return employeeManagerCloudDAO.getSupervisors();
+		else
+			return employeeManagerDAO.getSupervisors();
 	}
 
 	public DomainManagerDaoI getDomainManagerDao() {
@@ -414,7 +422,10 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 
 
 	public Map<String, EmployeeInfo> getKronosTerminatedEmployees() {
-		return employeeManagerDAO.getTerminatedEmployees();
+		if(TransportationAdminProperties.isKronosCloudEnabled())
+			return employeeManagerCloudDAO.getTerminatedEmployees();
+		else
+			return employeeManagerDAO.getTerminatedEmployees();
 	}
 	
 	/* Get Employees By Role type & dispatch type, 
@@ -473,7 +484,10 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 
 	public Collection getPunchInfo(String date) throws Exception {
 		try {		
-			return punchInfoDAO.getPunchInfo(date);
+			if(TransportationAdminProperties.isKronosCloudEnabled())
+				return punchInfoCloudDAO.getPunchInfo(date);
+			else
+				return punchInfoDAO.getPunchInfo(date);
 		} catch (Exception e) {
 			throw new Exception("Could not load employee punch information from kronos database", e);
 		}
@@ -482,7 +496,10 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 	public Collection getScheduleInfo(String date) {
 		try {
 			if (!TransportationAdminProperties.isKronosBlackhole()) {
-				return punchInfoDAO.getScheduleInfo(date);
+				if(TransportationAdminProperties.isKronosCloudEnabled())
+					return punchInfoCloudDAO.getScheduleInfo(date);
+				else
+					return punchInfoDAO.getScheduleInfo(date);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -575,7 +592,11 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		Collection off = null;
 		try {
 			if (!TransportationAdminProperties.isKronosBlackhole()) {
-				off = punchInfoDAO.getPunchInfoPayCode(date);
+				if(TransportationAdminProperties.isKronosCloudEnabled())
+					off = punchInfoCloudDAO.getPunchInfoPayCode(date);
+				else
+					off = punchInfoDAO.getPunchInfoPayCode(date);
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -794,11 +815,15 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 
 	public Collection getKronosActiveInactiveEmployees() {
 		// TODO Auto-generated method stub
-		return employeeManagerDAO.getActiveInactiveEmployees();
+		if(TransportationAdminProperties.isKronosCloudEnabled())
+			return employeeManagerCloudDAO.getActiveInactiveEmployees();
+		else
+			return employeeManagerDAO.getActiveInactiveEmployees();
 	}
 
 	public void syncEmployess() {
-		
+		if(TransportationAdminProperties.isKronosCloudEnabled())
+			return;
 		employeeManagerDAO.refresh("KRONOS_EMPLOYEE");	
 		TransAdminCacheManager.getInstance().refreshCacheData(EnumCachedDataType.EMPLOYEE_DATA);
 		
@@ -898,5 +923,22 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 	}
 	public Set listToSet(List list) {
 	    return new HashSet(list);
+	}
+
+	public PunchInfoDaoI getPunchInfoCloudDAO() {
+		return punchInfoCloudDAO;
+	}
+
+	public void setPunchInfoCloudDAO(PunchInfoDaoI punchInfoCloudDAO) {
+		this.punchInfoCloudDAO = punchInfoCloudDAO;
+	}
+
+	public EmployeeManagerDaoI getEmployeeManagerCloudDAO() {
+		return employeeManagerCloudDAO;
+	}
+
+	public void setEmployeeManagerCloudDAO(
+			EmployeeManagerDaoI employeeManagerCloudDAO) {
+		this.employeeManagerCloudDAO = employeeManagerCloudDAO;
 	}
 }

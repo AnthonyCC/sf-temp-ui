@@ -251,6 +251,7 @@ public class TransportationAdminProperties {
 	private final static String PROP_EVENTLOG_MAILCC		= "transportation.eventlog.mailcc";
 	private final static String PROP_EVENTLOG_MAILSUBJECT = "transportation.eventlog.mailsubject";
 	private final static String PROP_EVENTLOG_DATALOOKUP = "transportation.eventlog.lookup.days";
+	private final static String PROP_KRONOS_CLOUD_ENABLE = "transportation.kronoscloud.enable";
 	
 	static {
 
@@ -459,7 +460,8 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_EVENTLOG_MAILCC, "");
 		defaults.put(PROP_EVENTLOG_MAILSUBJECT, "Eventlog Notification");
 		defaults.put(PROP_EVENTLOG_DATALOOKUP, "-2");		
-
+		defaults.put(PROP_KRONOS_CLOUD_ENABLE, "true");
+		
 		refresh();
 	}
 
@@ -962,6 +964,10 @@ public class TransportationAdminProperties {
 
 	}
 	
+	public static boolean isKronosCloudEnabled() {
+		return (new Boolean(get(PROP_KRONOS_CLOUD_ENABLE))).booleanValue();
+	}
+
 	public static String getAccessKey() {
 		return get(PROP_TXTMESSAGE_ACCESSKEY);
 	}

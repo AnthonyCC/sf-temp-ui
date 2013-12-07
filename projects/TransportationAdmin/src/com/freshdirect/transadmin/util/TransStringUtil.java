@@ -22,7 +22,9 @@ import com.freshdirect.framework.util.DateUtil;
 
 public class TransStringUtil {
 	
-	//public static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	
+	public static DateFormat sqlserverdateFormat = new SimpleDateFormat("yyyy/MM/dd");
+
 	public static DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	
 	public static DateFormat serverDateFormat = new SimpleDateFormat("dd-MMM-yyyy");
@@ -168,6 +170,16 @@ public class TransStringUtil {
 	public static String getServerDate(String clientDate) throws ParseException {       
         return serverDateFormat.format((Date)dateFormat.parse(clientDate));
 	}
+	
+	public static String getSqlServerDate(String clientDate) {
+		try{
+        return sqlserverdateFormat.format((Date)serverDateFormat.parse(clientDate));
+		}catch(ParseException pe){
+			pe.printStackTrace();
+		}
+		return "";
+	}
+	
 	public static Date getServerDateString(String clientDate) throws ParseException {       
         return serverDateFormat.parse(clientDate);
 	}

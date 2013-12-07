@@ -103,6 +103,10 @@
     <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
 		<property name="jndiName" value="fdtrndatasource"/>
 	</bean>
+	
+	<bean id="kronosCloudDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="fdsqldatasource"/>
+	</bean>
 	   
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
@@ -118,7 +122,11 @@
     <bean id="employeeManagerDAO" class="com.freshdirect.transadmin.dao.oracle.EmployeeManagerDaoOracleImpl">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>	
-    
+	
+  	<bean id="employeeManagerCloudDAO" class="com.freshdirect.transadmin.dao.oracle.EmployeeManagerCloudDaoOracleImpl">
+		<property name="dataSource" ref="kronosCloudDataSource"/>
+	</bean>	
+	
 	<bean id="zoneManagerDAO" class="com.freshdirect.transadmin.dao.oracle.ZoneManagerDaoOracleImpl">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
@@ -133,6 +141,10 @@
 	
     <bean id="punchInfoDAO" class="com.freshdirect.transadmin.dao.sqlserver.PunchInfoDaoImpl">
 		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<bean id="punchInfoCloudDAO" class="com.freshdirect.transadmin.dao.sqlserver.PunchInfoCloudDaoImpl">
+		<property name="dataSource" ref="kronosCloudDataSource"/>
 	</bean>
 	
 	<bean id="eventLogManagerDAO" class="com.freshdirect.transadmin.dao.oracle.EventLogDAO">
@@ -189,8 +201,10 @@
 	
 	<bean id="employeeManagerService" class="com.freshdirect.transadmin.service.impl.EmployeeManagerImpl">
         <property name="employeeManagerDAO" ref="employeeManagerDAO"/>
-          <property name="domainManagerDao" ref="domainManagerDAO"/>
-          <property name="punchInfoDAO" ref="punchInfoDAO"/>
+        <property name="domainManagerDao" ref="domainManagerDAO"/>
+        <property name="punchInfoDAO" ref="punchInfoDAO"/>
+        <property name="punchInfoCloudDAO" ref="punchInfoCloudDAO"/>
+        <property name="employeeManagerCloudDAO" ref="employeeManagerCloudDAO"/> 
     </bean>
 	
 	
