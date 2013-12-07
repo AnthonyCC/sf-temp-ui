@@ -230,7 +230,21 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 			return employeeManagerDAO.getEmployees();
 	}
 
+	
 	public Collection getSupervisors() {
+		Map kronosEmployees = TransAdminCacheManager
+				.getInstance().getActiveInactiveEmployeeInfo(this);
+		List<EmployeeInfo> supervisors = new ArrayList<EmployeeInfo>();
+		for (Iterator it = kronosEmployees.values().iterator(); it.hasNext();) {
+			EmployeeInfo e = (EmployeeInfo) it.next();
+			if ("Active".equals(e.getStatus()) && ("MANAGER".equals(e.getJobType()) || "SUPERVISOR".equals(e.getJobType()))) {
+				supervisors.add(e);
+			}
+		}
+		return supervisors;
+	}
+	
+	public Collection getSupervisorsEx() {
 		if(TransportationAdminProperties.isKronosCloudEnabled())
 			return employeeManagerCloudDAO.getSupervisors();
 		else

@@ -19,7 +19,6 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.transadmin.dao.PunchInfoDaoI;
-import com.freshdirect.transadmin.dao.oracle.EmployeeManagerDaoOracleImpl;
 import com.freshdirect.transadmin.model.PunchInfo;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
