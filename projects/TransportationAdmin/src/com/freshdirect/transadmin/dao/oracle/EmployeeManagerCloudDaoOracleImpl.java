@@ -129,6 +129,9 @@ public class EmployeeManagerCloudDaoOracleImpl implements EmployeeManagerDaoI {
        	);
         
         for(EmployeeInfo e1 : list){
+        	if(!"Terminated".equals(e1.getStatus()))
+        		e1.setTerminationDate(null);
+        	
         	if(e1.getSupervisorId()!=null && empMap.containsKey(e1.getSupervisorId())){
         		if(empMap.get(e1.getSupervisorId())!=null){
         			e1.setSupervisorFirstName(empMap.get(e1.getSupervisorId()).getFirstName());
