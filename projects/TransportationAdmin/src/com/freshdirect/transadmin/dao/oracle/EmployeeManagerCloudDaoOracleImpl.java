@@ -108,6 +108,7 @@ public class EmployeeManagerCloudDaoOracleImpl implements EmployeeManagerDaoI {
 						Date hireDate = rs.getDate("SENIORITYRANK_DATE");
 						String status = rs.getString("STATUS");
 						String supervisorId = rs.getString("SUP_KRONOS_ID");
+						Date terminationDate = rs.getDate("TERMINATION_DATE");
 						/*String supervisorFirstName = rs.getString("SUP_FIRST_NAME");
 						String supervisorMiddleInitial = rs.getString("SUP_MIDDLE_INITIAL");
 						String supervisorLastName = rs.getString("SUP_LAST_NAME");
@@ -117,7 +118,7 @@ public class EmployeeManagerCloudDaoOracleImpl implements EmployeeManagerDaoI {
 																	firstName, lastName, middleInitial, shortName,
 																	jobType, hireDate, status, supervisorId,/*
 																	supervisorFirstName, supervisorMiddleInitial,
-																	supervisorLastName, supervisorShortName,*/ null);
+																	supervisorLastName, supervisorShortName,*/ terminationDate);
        		    		empMap.put(employeeId, model);
 
        		    		list.add(model);
