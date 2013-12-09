@@ -220,6 +220,9 @@ zonePromoEnabled=true;
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL%>" ALIGN="center">
 	<TR>
 		<td colspan="2">
+			<% if(!modifyOrderMode) { %>
+				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+			<% } %>
 			<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 		</td>
 	</TR>

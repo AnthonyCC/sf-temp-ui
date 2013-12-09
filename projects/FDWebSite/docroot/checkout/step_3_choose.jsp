@@ -217,6 +217,9 @@ final int W_CHECKOUT_STEP_3_CHOOSE_TOTAL = 970;
 			
 			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><br />
 			<!-- PROFILE HEADER -->
+			<% if(!modifyOrderMode) { %>
+				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+			<% } %>
 			<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><br />
 			
@@ -350,6 +353,9 @@ if (isPaymentRequired) {
 	<input type="hidden" name="deletePaymentId" value="">
 
 	<!-- PROFILE HEADER -->
+	<% if(!modifyOrderMode) { %>
+		<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+	<% } %>
 	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><br />
 

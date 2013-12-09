@@ -146,7 +146,8 @@
     });
     var alignLoginDropbox = function() {
 		//call this each time to ensure alignment
-		var cssObj = $("#locabar_loginButton").offset();
+		var cssObj = ($("#locabar_loginButton")) ? $("#locabar_loginButton").offset() : null;
+		if (cssObj == null) { return; }
 		cssObj.top = cssObj.top + $("#locabar_loginButton").height() + 'px';
 		cssObj.left = ((cssObj.left + $("#locabar_loginButton").outerWidth()) - $('#login_cont_formContent').outerWidth()) + 'px';
 		$('#login_cont_formContent').css(cssObj);
@@ -194,7 +195,7 @@
     		$(form.serializeArray()).each(function () { formData[this.name] = this.value; });
     		var sPage = $jq.QueryString["successPage"];
     		if (sPage != null && typeof sPage !== 'undefined') {
-    			formData.successPage = sPage;
+        		formData.successPage = sPage;
     		} else {
     			formData.successPage = window.location.pathname+window.location.search;
     		}

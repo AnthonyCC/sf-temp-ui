@@ -50,7 +50,7 @@ final int W_CHECKOUT_STEP_3_CARD_EDIT_TOTAL = 970;
 	</TR>
 </TABLE>
 
-<img src="/media_stat/images/layout/clear.gif" width="1" height="16" border="0"><br/>
+<img src="/media_stat/images/layout/clear.gif" width="1" height="16" border="0"><br />
 <!-- PROFILE HEADER -->
 <%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
