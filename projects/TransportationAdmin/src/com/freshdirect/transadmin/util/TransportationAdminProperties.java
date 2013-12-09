@@ -460,7 +460,7 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_EVENTLOG_MAILCC, "");
 		defaults.put(PROP_EVENTLOG_MAILSUBJECT, "Eventlog Notification");
 		defaults.put(PROP_EVENTLOG_DATALOOKUP, "-2");		
-		defaults.put(PROP_KRONOS_CLOUD_ENABLE, "true");
+		defaults.put(PROP_KRONOS_CLOUD_ENABLE, "false");
 		
 		refresh();
 	}

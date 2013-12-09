@@ -105,7 +105,7 @@
 	</bean>
 	
 	<bean id="kronosCloudDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-		<property name="jndiName" value="kronossqldatasource"/>
+		<property name="jndiName" value="fdtrndatasource"/>
 	</bean>
 	   
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
