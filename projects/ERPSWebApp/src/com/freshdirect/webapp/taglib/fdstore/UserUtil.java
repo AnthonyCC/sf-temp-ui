@@ -349,9 +349,10 @@ public class UserUtil {
 		String updatedSuccessPage = successPage;
 		
 		//hard-code redirects and allow logic to override later
-		if (successPage.indexOf("/registration/signup.jsp")!=-1 || successPage.indexOf("/checkout/signup_ckt.jsp")!=-1) {
-			//hard-code redirects
+		if (updatedSuccessPage.indexOf("/registration/signup.jsp")!=-1 || updatedSuccessPage.indexOf("/checkout/signup_ckt.jsp")!=-1) {
+			//hard-code redirects (be sure to set both vars)
 			successPage = "/index.jsp";
+			updatedSuccessPage = "/index.jsp";
 		}
 		
 		if (userId == null ||  userId.length() < 1 ) {
