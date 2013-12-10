@@ -404,7 +404,7 @@ public class LocationController extends AbstractMultiActionController  {
 	public ModelAndView dlvServiceTimeScenarioHandler(HttpServletRequest request, HttpServletResponse response) 
 									throws ServletException {
 		
-		String scenarioView = request.getParameter("defaultView");
+		String scenarioView = request.getParameter("displayView");
 		String startDate = request.getParameter("fromdaterange");
 		String endDate = request.getParameter("todaterange");
 		
