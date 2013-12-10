@@ -148,7 +148,7 @@
 		//call this each time to ensure alignment
 		var cssObj = ($("#locabar_loginButton")) ? $("#locabar_loginButton").offset() : null;
 		if (cssObj == null) { return; }
-		cssObj.top = cssObj.top + $("#locabar_loginButton").height() + 'px';
+		cssObj.top = cssObj.top + $("#locabar_loginButton").outerHeight() + 'px';
 		cssObj.left = ((cssObj.left + $("#locabar_loginButton").outerWidth()) - $('#login_cont_formContent').outerWidth()) + 'px';
 		$('#login_cont_formContent').css(cssObj);
     	
