@@ -173,6 +173,10 @@
 			<access-uris>sector.do,deletesector.do,editsector.do</access-uris>
 			<access-roles>TrnAdmin,TrnPlanning</access-roles>
 		</menu>
+		<menu id="GEO012" title="Route Region" orientation="RIGHT" link="routingRegion.do">
+			<access-uris>routingRegion.do,deleteRoutingRegion.do,editRoutingRegion.do</access-uris>
+			<access-roles>TrnAdmin,TrnPlanning</access-roles>
+		</menu>		
 	</menu>
 
 	<menu id="MNM005" title="Admin" orientation="LEFT" link="">
