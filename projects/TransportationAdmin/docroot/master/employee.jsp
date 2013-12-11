@@ -96,11 +96,7 @@
 							<ec:exportCsv fileName="transportationemployee.csv" tooltip="Export CSV" delimiter="|"/>
 								
 							<ec:row interceptor="obsoletemarker">            
-								<% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))) { %>
-								<ec:column title=" " width="5px" 
-										filterable="false" sortable="false" cell="selectcol"
-										property="employeeId" />
-								<% } %>		
+								
 								<ec:column property="firstName" title="First Name"/>
 								<ec:column property="lastName" title="Last Name"/>
 								<ec:column alias="kronosId" property="employeeId" title="KronosID"/>
@@ -128,11 +124,11 @@
 							<ec:exportCsv fileName="transportationemployee.csv" tooltip="Export CSV" delimiter="|"/>
 								
 							<ec:row interceptor="obsoletemarker">            
-								<% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))) { %>
+								
 								<ec:column title=" " width="5px" 
 										filterable="false" sortable="false" cell="selectcol"
 										property="employeeId" />  
-								<% } %>		
+										
 								<ec:column property="trnStatus1" title="Status" width="5px"/>	
 								<ec:column property="firstName" title="First Name"/>
 								<ec:column property="lastName" title="Last Name"/>

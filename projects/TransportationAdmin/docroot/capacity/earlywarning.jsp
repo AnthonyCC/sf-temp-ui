@@ -9,7 +9,7 @@
 <%  
    pageContext.setAttribute("HAS_ADDBUTTON", "false");
    pageContext.setAttribute("HAS_DELETEBUTTON", "false");
-   pageContext.setAttribute("IS_USERADMIN", ""+com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request));
+   pageContext.setAttribute("IS_USERADMIN_OR_PLANNING", ""+com.freshdirect.transadmin.security.SecurityManager.isUserAdminOrPlanning(request));
    String dateRangeVal = request.getParameter("rDate") != null ? request.getParameter("rDate") : "";
    if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getNextDate();
    String scenariotitle = "<span style=\"font-size: 11pt;\">Service Time Scenario : ";

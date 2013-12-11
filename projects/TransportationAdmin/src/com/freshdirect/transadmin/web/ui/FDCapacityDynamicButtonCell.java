@@ -38,7 +38,7 @@ public class FDCapacityDynamicButtonCell extends FDBaseCell  {
 															.append(command.isRegion() ? "2" : "1")
 															.append("')\"")
 															.append(" ")
-															.append("true".equalsIgnoreCase((String)model.getContext().getPageAttribute("IS_USERADMIN")) ? "" : "disabled=\"disabled\"")
+															.append("true".equalsIgnoreCase((String)model.getContext().getPageAttribute("IS_USERADMIN_OR_PLANNING")) ? "" : "disabled=\"disabled\"")
 	            											.append(" />");
             	}
             	//columnBuilder.getHtmlBuilder().input("checkbox").name(column.getPropertyValueAsString()).styleClass("datalistchx");            
