@@ -150,7 +150,7 @@ public class RoutingServicesProperties {
 	static {
 		
 		defaults.put(PROP_TRANSPORTATIONSUITE_PROVIDER_URL, 	"http://localhost:81");
-		defaults.put(PROP_DRIVINGDIRECTIONS_PROVIDER_URL, 	"http://localhost:81");
+		defaults.put(PROP_DRIVINGDIRECTIONS_PROVIDER_URL, 	"SERVER6060");
 		defaults.put(PROP_ROADNET_PROVIDER_URL, 	"http://localhost:82");	
 		
 		defaults.put(PROP_DEFAULT_TRUCKREGION, 	"FD");
