@@ -2,7 +2,7 @@ CREATE OR REPLACE PROCEDURE MIS.ORDER_DELIVERY_METRIC_CAPTURE
 IS
 BEGIN
    DECLARE
-      CURRENT_DATE              DATE := SYSDATE;
+      C_DATE              DATE := SYSDATE;
 
       CURSOR c_deliverymetric
       IS
@@ -183,7 +183,7 @@ BEGIN
                                                 WORK_TIME,
                                                 MIN_UNTIL_DELIVERY,
                                                 ESTIMATED_DLV_TIME)
-              VALUES (CURRENT_DATE,
+              VALUES (C_DATE,
                       deliverymetric_data_rec.WEBORDER_ID,
                       deliverymetric_data_rec.ROUTE_NO,
                       deliverymetric_data_rec.ROUTING_ROUTE_NO,
