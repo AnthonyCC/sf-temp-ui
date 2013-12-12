@@ -39,6 +39,7 @@ import com.freshdirect.fdstore.ecoupon.model.FDCouponUPCInfo;
 import com.freshdirect.fdstore.productpromotion.FDProductAssortmentPromotionFactory;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.BalkingExpiringReference;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CategoryModel extends ProductContainer {
@@ -1160,7 +1161,7 @@ public class CategoryModel extends ProductContainer {
 		if (currentProductPromotionType == null ){
 			return false;			
 		} else {			
-			if (productAssortmentPromotionDataRefMap.get(promotionId) == null ){
+			if (productAssortmentPromotionDataRefMap.get(promotionId) == null && null !=promotionId && StringUtil.isNumeric(promotionId) && promotionId.trim().length()<=16){
 				productAssortmentPromotionDataRefMap.put(promotionId, new ProductAssortmentPromotionDataRef(threadPool,  zoneId, promotionId, currentProductPromotionType));
 			}
 			return true;

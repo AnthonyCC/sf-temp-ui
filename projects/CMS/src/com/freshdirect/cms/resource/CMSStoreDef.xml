@@ -378,6 +378,7 @@
 			<EnumDef type="S" name="PRODUCT_PROMOTION_TYPE" label="Product Promotion Type">
 				<EnumValue value="PRESIDENTS_PICKS" label="President's Picks"/>
 				<EnumValue value="E_COUPONS" label="E-Coupons"/>
+				<EnumValue value="PRODUCTS_ASSORTMENTS" label="Products Assortments"/>
 			</EnumDef>
 			<AttributeDef type="B" name="preferenceCategory" label="Preference Category"/>
 			<EnumDef type="S" name="browseRecommenderType" label="Browse Recommender Type" inheritable="true">

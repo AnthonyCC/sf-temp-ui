@@ -27,7 +27,7 @@ public class FDProductAssortmentPromotionFactory {
 	
 	
 	
-	private ExpiringReference< Map<String,Map<String,List<FDProductPromotionInfo>>>> productsAssortmentPromotion = new ExpiringReference<Map<String,Map<String,List<FDProductPromotionInfo>>>>(1 * 60 * 1000) {
+	private ExpiringReference< Map<String,Map<String,List<FDProductPromotionInfo>>>> productsAssortmentPromotion = new ExpiringReference<Map<String,Map<String,List<FDProductPromotionInfo>>>>(5 * 60 * 1000) {
 		protected Map<String,Map<String,List<FDProductPromotionInfo>>> load() {
 			try {
 				LOGGER.info("REFRESHING PRODUCTS ASSORTMENT PROMOTION FOR ANY NEW PROMOTIONS FROM LAST MODIFIED TIME "+lastPublished);				

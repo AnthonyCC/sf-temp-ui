@@ -1,17 +1,10 @@
 package com.freshdirect.fdstore.productpromotion;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.log4j.Category;
 
@@ -20,7 +13,6 @@ import com.freshdirect.erp.ejb.ProductPromotionInfoManager;
 import com.freshdirect.fdstore.FDProductPromotionInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.ExpiringReference;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -38,7 +30,7 @@ public class FDProductPromotionFactory {
 //	private Date productsAssortmentLastPublished;
 //	private Date currentTime;
 	
-	private ExpiringReference< Map<String,List<FDProductPromotionInfo>>> presPickPromotion = new ExpiringReference<Map<String,List<FDProductPromotionInfo>>>(1 * 60 * 1000) {
+	private ExpiringReference< Map<String,List<FDProductPromotionInfo>>> presPickPromotion = new ExpiringReference<Map<String,List<FDProductPromotionInfo>>>(5 * 60 * 1000) {
 		protected Map<String,List<FDProductPromotionInfo>> load() {
 			try {
 				LOGGER.info("REFRESHING PRESIDENT'S PICK PRODUCT PROMOTION FOR ANY NEW PROMOTIONS FROM LAST MODIFIED TIME "+presPickLastPublished);
