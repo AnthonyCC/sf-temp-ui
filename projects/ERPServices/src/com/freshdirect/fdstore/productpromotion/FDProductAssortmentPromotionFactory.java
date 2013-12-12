@@ -78,7 +78,9 @@ public class FDProductAssortmentPromotionFactory {
 		
 		Map<String,Map<String,List<FDProductPromotionInfo>>> promoInfos = this.productsAssortmentPromotion.get();
 		if(null !=promoInfos && !promoInfos.isEmpty()){
-			this.promotionMap.put(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName(),promoInfos);
+			Map<String,Map<String,List<FDProductPromotionInfo>>> lPromos =this.promotionMap.get(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName());
+			lPromos.putAll(promoInfos);
+			this.promotionMap.put(EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName(),lPromos);
 		}
 		return this.promotionMap;
 	}

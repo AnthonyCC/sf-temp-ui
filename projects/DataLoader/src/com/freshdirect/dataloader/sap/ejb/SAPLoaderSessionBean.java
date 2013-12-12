@@ -552,7 +552,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
                 Iterator<String> skuIter = affectedSkus.iterator();
                 while (skuIter.hasNext()) {
                     skuCode = skuIter.next();
-
+                    LOGGER.info("\nWorking on sku: " + skuCode + "\n");
 					ErpProductModel erpProductModel = new ErpProductModel();
 					erpProductModel.setProxiedMaterial(erpMatlModel);
 
