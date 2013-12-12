@@ -1145,7 +1145,7 @@ public class CategoryModel extends ProductContainer {
 		if (EnumProductPromotionType.PRODUCTS_ASSORTMENTS.getName().equalsIgnoreCase(getProductPromotionType())) {
 			loadProductAssortmentPromotion(zoneId, promotionId);
 			try {
-				if(null !=productAssortmentPromotionDataRefMap.get(promotionId).get()) {
+				if(null != productAssortmentPromotionDataRefMap.get(promotionId) && null !=productAssortmentPromotionDataRefMap.get(promotionId).get()) {
 					prodList = new ArrayList<ProductModel>();
 					addDynamicProductsForPromotion(productAssortmentPromotionDataRefMap.get(promotionId).get().getProductModels(), prodList,false);
 				}
@@ -1161,10 +1161,14 @@ public class CategoryModel extends ProductContainer {
 		if (currentProductPromotionType == null ){
 			return false;			
 		} else {			
-			if (productAssortmentPromotionDataRefMap.get(promotionId) == null && null !=promotionId && StringUtil.isNumeric(promotionId) && promotionId.trim().length()<=16){
+			if (productAssortmentPromotionDataRefMap.get(promotionId) == null && isValidAssortmentPromotion(currentProductPromotionType,promotionId)){
 				productAssortmentPromotionDataRefMap.put(promotionId, new ProductAssortmentPromotionDataRef(threadPool,  zoneId, promotionId, currentProductPromotionType));
 			}
 			return true;
         }
+	}
+	
+	private boolean isValidAssortmentPromotion(String productPromotionType, String promotionId){		
+		return (null !=FDProductAssortmentPromotionFactory.getInstance().getProductPromotion(productPromotionType,promotionId))?true:false;
 	}
 }
