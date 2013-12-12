@@ -145,7 +145,7 @@
 
     //--------OAS Page Variables-----------------------
 	request.setAttribute("sitePage", currentFolder.getPath());
-	request.setAttribute("listPos", "PPSuperBuy1,PPSuperBuy2,PPSuperBuy3,PPSuperBuy4,PPHeader,PPHeader2,PPLeftBottom,PPMidBottom,PPRightBottom");
+	request.setAttribute("listPos", "PPSuperBuy1,PPHeader,PPHeader2,PPLeftBottom,PPMidBottom,PPRightBottom");
 
 	Map<String, List<ProductModel>> promoProducts = new HashMap<String, List<ProductModel>>();
 	List<ProductModel> promotionProducts = new ArrayList<ProductModel>();
@@ -409,45 +409,13 @@
 						OAS_AD('PPHeader2');
 				</script>
 			</div>
-			<fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' source='<%= request.getParameter("fdsc.source")%>'>
-				<% //START error messaging %>
-				<fd:ErrorHandler result='<%=result%>' name='quantity' id='errorMsg'>
-					<img src="/media_stat/images/layout/clear.gif" width="20" height="12" alt="" border="0" />
-					<%@ include file="/includes/i_error_messages.jspf" %>
-				</fd:ErrorHandler>
-				<% //END error messaging %>
-				<div style="text-align: left;"><%-- this fixes chrome, don't remove --%>
-					<div class="ddpp_feat_prod_cont grid-view" id="ddpp_feat_prod_cont">
-				
-					<%
-						int curLeftPos = 0;
-						isFeatProd = true;
-						String prodContStyle = "";
-					%>
-						
-						<div class="PPSuperBuy">
-							<script type="text/javascript">
-									OAS_AD('PPSuperBuy1');
-							</script>
-						</div>
-						<div class="PPSuperBuy">
-							<script type="text/javascript">
-									OAS_AD('PPSuperBuy2');
-							</script>
-						</div>
-						<div class="PPSuperBuy">
-							<script type="text/javascript">
-									OAS_AD('PPSuperBuy3');
-							</script>
-						</div>
-						<div class="PPSuperBuy">
-							<script type="text/javascript">
-									OAS_AD('PPSuperBuy4');
-							</script>
-						</div>
-					</div>
-				</div>
-			</fd:FDShoppingCart>
+			
+			<div class="PPSuperBuy1">
+				<script type="text/javascript">
+						OAS_AD('PPSuperBuy1');
+				</script>
+			</div>
+			
 		</div>
 		<br style="clear:both" />
 <!--[if lt IE 7]><div class="ie ie6"><![endif]-->
