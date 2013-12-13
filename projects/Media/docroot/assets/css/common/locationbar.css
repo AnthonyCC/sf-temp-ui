@@ -90,7 +90,6 @@
 	font-size:11px;
 	font-weight:bold;
 	color:#777955;
-	margin:0 2em;
 }
 
 #locationbar .hoicon a,
@@ -364,4 +363,8 @@
 }
 #login_cont_formContentForm_signIn {
 	margin: 10px 0 0 0;
+}
+
+#login_cont_formContent a:hover {
+	text-decoration:underline !important; 
 }
