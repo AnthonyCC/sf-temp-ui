@@ -10,6 +10,14 @@
 	String pageTitle = "Asset";	
 	String atrValue = request.getParameter("atrValue") != null ? request.getParameter("atrValue") : "";
 	String atrName = request.getParameter("atrName") != null ? request.getParameter("atrName") : "";
+	
+	if(com.freshdirect.transadmin.security.SecurityManager.isUserAdminOrPlanning(request)){
+		pageContext.setAttribute("HAS_ADDBUTTON", "true");	
+		pageContext.setAttribute("HAS_DELETEBUTTON", "true");
+	} else {
+		pageContext.setAttribute("HAS_ADDBUTTON", "false");	
+		pageContext.setAttribute("HAS_DELETEBUTTON", "false");
+	}
 %>
   <tmpl:put name='title' direct='true'> Admin : <%=pageTitle%></tmpl:put>
 	<tmpl:put name='yui-lib'>

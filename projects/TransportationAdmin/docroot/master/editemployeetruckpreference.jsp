@@ -174,6 +174,19 @@
 
 
 		}
+		
+		function back()
+	    {
+	      	var filters=unescape(getParameter("filter"));	      	     	
+	      	var params=filters.split("&");
+	      	var truckPrefForm=document.forms["truckpreference"];
+	      	for(var i=0;i<params.length;i++)
+	      	{
+	      		var param=params[i].split("=");         				
+	      		add_input(truckPrefForm,"hidden",param[0],param[1]);
+	      	}     	      	
+	      	truckPrefForm.submit();
+	    }
 	</script>
 	</tmpl:put>
 </tmpl:insert>

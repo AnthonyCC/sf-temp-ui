@@ -3,11 +3,21 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page import='com.freshdirect.transadmin.web.ui.*' %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
-<%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
+<%@ page import= 'com.freshdirect.transadmin.util.*' %>
 
 <%
-  pageContext.setAttribute("HAS_COPYBUTTON", "true");	
-  pageContext.setAttribute("HAS_CLONEBUTTON", "true");	
+	if(com.freshdirect.transadmin.security.SecurityManager.isUserAdminOrPlanning(request)){
+		pageContext.setAttribute("HAS_ADDBUTTON", "true");	
+		pageContext.setAttribute("HAS_DELETEBUTTON", "true");
+		pageContext.setAttribute("HAS_COPYBUTTON", "true");	
+		pageContext.setAttribute("HAS_CLONEBUTTON", "true");
+	} else {
+		pageContext.setAttribute("HAS_ADDBUTTON", "false");	
+		pageContext.setAttribute("HAS_DELETEBUTTON", "false");
+		pageContext.setAttribute("HAS_COPYBUTTON", "false");	
+		pageContext.setAttribute("HAS_CLONEBUTTON", "false");
+	}
+	
   String dateRangeVal = request.getParameter("daterange") != null ? request.getParameter("daterange") : "";
   String zoneVal = request.getParameter("zone") != null ? request.getParameter("zone") : "";
   if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getCurrentDate();
@@ -50,13 +60,13 @@
 	                      		<option value="2">Monday</option><option value="3">Tuesday</option><option value="4">Wednesday</option><option value="5">Thurdsay</option><option value="6">Friday</option><option value="7">Saturday</option><option value="8">Sunday</option>
 	                    	 </select>				
 							<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','scribDay','scrib.do')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
-							
+							<% if(com.freshdirect.transadmin.security.SecurityManager.isUserAdminOrPlanning(request)) { %>
 							<span> <input style="font-size:11px" type = "button" height="18" value="Generate Plan" onclick="javascript:showGeneratePlanForm();" /></span>
 							<span> <input style="font-size:11px" type = "button" height="18"  value="Add Label" onclick="javascript:showLabelForm();" /></span>
 							<span> <input style="font-size:11px" type = "button" height="18"  value="View Labels" onclick="javascript:showViewLabelsForm();" /></span>
 							<span> <input style="font-size:11px" type = "button" height="18"  value="Publish" onclick="javascript:doPublish();" /></span>
 							<span> <input style="font-size:11px" type = "button" height="18"  value="Upload" onclick="javascript:uploadScribs();" /></span>							
-							
+							<% } %>
 						</div>
 					</div>			
 				</div>
