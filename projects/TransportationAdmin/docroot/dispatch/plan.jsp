@@ -68,7 +68,9 @@
 	                   	  <span>&nbsp;<input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','weekdate','zone','facilityLocation','plan.do');" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
 	                      <input style="font-size:11px" type = "button" height="18" value=" U/A " onclick="javascript:doUnavailable('plan.do','weekdate','daterange','y')" />
 	                      <input style="font-size:11px" type = "button" height="18" value="Kronos" onclick="javascript:doKronos('plan.do','weekdate','daterange','y','1')" />                  
-	                      <input style="font-size:11px" type = "button" height="18" value="Publish" onclick="javascript:doPublish();" />
+	                      <% if(com.freshdirect.transadmin.security.SecurityManager.isUserAdminOrPlanning(request)) { %>							
+	                      	<input style="font-size:11px" type = "button" height="18" value="Publish" onclick="javascript:doPublish();" />
+	                      <%} %>
 	                      <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request)){%> 
 		                    <input style="font-size:11px" type = "button" value="Activity Log" onclick="javascript:doActivityLog('daterange')" />		                  
 		                  <%} %>
