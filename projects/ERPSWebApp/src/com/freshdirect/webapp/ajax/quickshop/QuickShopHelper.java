@@ -199,6 +199,12 @@ public class QuickShopHelper {
 		if (productModel == null) {
 			return null;
 		}
+		
+		// is hidden in quickshop?
+		if(productModel.getPrimaryHome().getDepartment().isHidddenInQuickshop()){
+			return null;
+		}
+		
 		if ( productModel instanceof ProductModelPricingAdapter ) {
 			// strip down, get the naked product model
 			productModel = ((ProductModelPricingAdapter)productModel).getRealProduct();
