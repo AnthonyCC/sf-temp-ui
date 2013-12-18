@@ -34,7 +34,7 @@ img { border:none }
 
 /* "common" spacer row sizes */
 .onePxTall { font-size: 1px; line-height: 0px; }
-.threePxTall { font-size: 1px; line-height: 3x; }
+.threePxTall { font-size: 1px; line-height: 3px; }
 .fourPxTall { font-size: 1px; line-height: 4px; }
 .fivePxTall { font-size: 1px; line-height: 5px; }
 .sixPxTall { font-size: 1px; line-height: 6px; }
@@ -2312,6 +2312,7 @@ a.imgButtonBlue,
 a.imgButtonRed,
 a.imgButtonBrown,
 a.imgButtonPurple,
+a.imgButtonGreen,
 a.imgButtonOrange:visited,
 a.imgButtonWhite:visited,
 a.imgButtonBlue:visited,
@@ -2319,13 +2320,6 @@ a.imgButtonRed:visited,
 a.imgButtonBrown:visited,
 a.imgButtonPurple:visited,
 a.imgButtonGreen:visited,
-a.imgButtonOrange:hover,
-a.imgButtonWhite:hover,
-a.imgButtonBlue:hover,
-a.imgButtonRed:hover,
-a.imgButtonBrown:hover,
-a.imgButtonPurple:hover,
-a.imgButtonGreen:hover,
 a.imgButtonOrange:active,
 a.imgButtonWhite:active,
 a.imgButtonBlue:active,
@@ -2336,18 +2330,6 @@ a.imgButtonGreen:active {
 	text-decoration: none;
 	color:white;
 }
-
-
-button.imgButtonOrange:active:before, button.imgButtonOrange:active, button.imgButtonOrange:active:after,
-button.imgButtonWhite:active:before, button.imgButtonWhite:active, button.imgButtonWhite:active:after,
-button.imgButtonBlue:active:before, button.imgButtonBlue:active, button.imgButtonBlue:active:after,
-button.imgButtonRed:active:before, button.imgButtonRed:active, button.imgButtonRed:active:after,
-button.imgButtonBrown:active:before, button.imgButtonBrown:active, button.imgButtonBrown:active:after,
-button.imgButtonPurple:active:before, button.imgButtonPurple:active, button.imgButtonPurple:active:after,
-button.imgButtonGreen:active:before, button.imgButtonGreen:active, button.imgButtonGreen:active:after {
-	background-image: url(/media_stat/images/buttons/buttons.png);
-}
-
 
 a.imgButtonWhite,
 a.imgButtonWhite:visited,
@@ -2365,19 +2347,13 @@ a.imgButtonWhite:hover,
 	font-size:11px;
 }
 
-.imgButtonOrange:before,
-.imgButtonWhite:before,
-.imgButtonBlue:before,
-.imgButtonRed:before,
-.imgButtonBrown:before,
-.imgButtonPurple:before,
-.imgButtonOrange:after,
-.imgButtonWhite:after,
-.imgButtonBlue:after,
-.imgButtonRed:after,
-.imgButtonBrown:after,
-.imgButtonPurple:after,
-.imgButtonGreen:after {
+.imgButtonOrange:before, .imgButtonOrange:after,
+.imgButtonWhite:before, .imgButtonWhite:after,
+.imgButtonBlue:before, .imgButtonBlue:after,
+.imgButtonRed:before, .imgButtonRed:after,
+.imgButtonBrown:before, .imgButtonBrown:after,
+.imgButtonPurple:before,.imgButtonPurple:after,
+.imgButtonGreen:before, .imgButtonGreen:after {
     content:' ';
     width:5px;
     height:100%;
@@ -2418,64 +2394,167 @@ a.imgButtonWhite:hover,
 }
 
 
+.imgButtonWhite, .imgButtonWhite:active		{ background-position:-20px top; }
+.imgButtonWhite:after,
+.imgButtonWhite:active:after,
+.imgButtonWhite:visited:after				{ background-position:-395px top; }
+.imgButtonWhite:before,
+.imgButtonWhite:active:before,
+.imgButtonWhite:visited:after				{ background-position:left top; }
+.imgButtonWhite:hover						{ background-position:-420px top; }
+.imgButtonWhite:hover:after					{ background-position:-795px top; }
+.imgButtonWhite:hover:before				{ background-position:-400px top; }
+
+.imgButtonRed, .imgButtonRed:active			{ background-position:-20px -30px; }
+.imgButtonRed:after,
+.imgButtonRed:active:after,
+.imgButtonRed:visited:after					{ background-position:-395px -30px; }
+.imgButtonRed:before,
+.imgButtonRed:active:before,
+.imgButtonRed:visited:after					{ background-position:left -30px; }
+.imgButtonRed:hover							{ background-position:-420px -30px; }
+.imgButtonRed:hover:after					{ background-position:-795px -30px; }
+.imgButtonRed:hover:before					{ background-position:-400px -30px; }
+
+.imgButtonPurple, .imgButtonPurple:active	{ background-position:-20px -60px; }
+.imgButtonPurple:after,
+.imgButtonPurple:active:after,
+.imgButtonPurple:visited:after				{ background-position:-395px -60px; }
+.imgButtonPurple:before,
+.imgButtonPurple:active:before,
+.imgButtonPurple:visited:after				{ background-position:left -60px; }
+.imgButtonPurple:hover						{ background-position:-420px -60px; }
+.imgButtonPurple:hover:after				{ background-position:-795px -60px; }
+.imgButtonPurple:hover:before				{ background-position:-400px -60px; }
+
+.imgButtonOrange, .imgButtonOrange:active	{ background-position:-20px -90px; }
+.imgButtonOrange:after,
+.imgButtonOrange:active:after,
+.imgButtonOrange:visited:after				{ background-position:-395px -90px; }
+.imgButtonOrange:before,
+.imgButtonOrange:active:before,
+.imgButtonOrange:visited:after				{ background-position:left -90px; }
+.imgButtonOrange:hover						{ background-position:-420px -90px; }
+.imgButtonOrange:hover:after				{ background-position:-795px -90px; }
+.imgButtonOrange:hover:before				{ background-position:-400px -90px; }
+
+.imgButtonBrown, .imgButtonBrown:active		{ background-position:-20px -120px; }
+.imgButtonBrown:after,
+.imgButtonBrown:active:after,
+.imgButtonBrown:visited:after				{ background-position:-395px -120px; }
+.imgButtonBrown:before,
+.imgButtonBrown:active:before,
+.imgButtonBrown:visited:after				{ background-position:left -120px; }
+.imgButtonBrown:hover						{ background-position:-420px -120px; }
+.imgButtonBrown:hover:after					{ background-position:-795px -120px; }
+.imgButtonBrown:hover:before				{ background-position:-400px -120px; }
+
+.imgButtonBlue, .imgButtonBlue:active		{ background-position:-20px -150px; }
+.imgButtonBlue:after,
+.imgButtonBlue:active:after,
+.imgButtonBlue:visited:after				{ background-position:-395px -150px; }
+.imgButtonBlue:before,
+.imgButtonBlue:active:before,
+.imgButtonBlue:visited:after				{ background-position:left -150px; }
+.imgButtonBlue:hover						{ background-position:-420px -150px; }
+.imgButtonBlue:hover:after					{ background-position:-795px -150px; }
+.imgButtonBlue:hover:before					{ background-position:-400px -150px; }
+
+.imgButtonGreen, .imgButtonGreen:active		{ background-position:-20px -180px; }
+.imgButtonGreen:after,
+.imgButtonGreen:active:after,
+.imgButtonGreen:visited:after				{ background-position:-395px -180px; }
+.imgButtonGreen:before,
+.imgButtonGreen:active:before,
+.imgButtonGreen:visited:after				{ background-position:left -180px; }
+.imgButtonGreen:hover						{ background-position:-420px -180px; }
+.imgButtonGreen:hover:after					{ background-position:-795px -180px; }
+.imgButtonGreen:hover:before				{ background-position:-400px -180px; }
 
 
+.imgButtonWhite.imgButtonSmall,
+.imgButtonWhite.imgButtonSmall:active				{ background-position:-20px top; }
+.imgButtonWhite.imgButtonSmall:after,
+.imgButtonWhite.imgButtonSmall:active:after,
+.imgButtonWhite.imgButtonSmall:visited:after		{ background-position:-395px top; }
+.imgButtonWhite.imgButtonSmall:before,
+.imgButtonWhite.imgButtonSmall:active:before,
+.imgButtonWhite.imgButtonSmall:visited:after		{ background-position:left top; }
+.imgButtonWhite.imgButtonSmall:hover				{ background-position:-420px top; }
+.imgButtonWhite.imgButtonSmall:hover:after			{ background-position:-795px top; }
+.imgButtonWhite.imgButtonSmall:hover:before			{ background-position:-400px top; }
 
-.imgButtonWhite 		{ background-position:center top;	}
-.imgButtonWhite:after	{ background-position:right top;	}
-.imgButtonWhite:before	{ background-position:left top;	}
+.imgButtonRed.imgButtonSmall,
+.imgButtonRed.imgButtonSmall:active					{ background-position:-20px -20px; }
+.imgButtonRed.imgButtonSmall:after,
+.imgButtonRed.imgButtonSmall:active:after,
+.imgButtonRed.imgButtonSmall:visited:after			{ background-position:-395px -20px; }
+.imgButtonRed.imgButtonSmall:before,
+.imgButtonRed.imgButtonSmall:active:before,
+.imgButtonRed.imgButtonSmall:visited:after			{ background-position:left -20px; }
+.imgButtonRed.imgButtonSmall:hover					{ background-position:-420px -20px; }
+.imgButtonRed.imgButtonSmall:hover:after			{ background-position:-795px -20px; }
+.imgButtonRed.imgButtonSmall:hover:before			{ background-position:-400px -20px; }
 
-.imgButtonRed			{ background-position:center -30px;	}
-.imgButtonRed:after		{ background-position:right -30px;	}
-.imgButtonRed:before	{ background-position:left -30px;	}
+.imgButtonPurple.imgButtonSmall,
+.imgButtonPurple.imgButtonSmall:active				{ background-position:-20px -40px; }
+.imgButtonPurple.imgButtonSmall:after,
+.imgButtonPurple.imgButtonSmall:active:after,
+.imgButtonPurple.imgButtonSmall:visited:after		{ background-position:-395px -40px; }
+.imgButtonPurple.imgButtonSmall:before,
+.imgButtonPurple.imgButtonSmall:active:before,
+.imgButtonPurple.imgButtonSmall:visited:after		{ background-position:left -40px; }
+.imgButtonPurple.imgButtonSmall:hover				{ background-position:-420px -40px; }
+.imgButtonPurple.imgButtonSmall:hover:after			{ background-position:-795px -40px; }
+.imgButtonPurple.imgButtonSmall:hover:before		{ background-position:-400px -40px; }
 
-.imgButtonPurple		{ background-position:center -60px;	}
-.imgButtonPurple:after	{ background-position:right -60px;	}
-.imgButtonPurple:before	{ background-position:left -60px;	}
+.imgButtonOrange.imgButtonSmall,
+.imgButtonOrange.imgButtonSmall:active				{ background-position:-20px -60px; }
+.imgButtonOrange.imgButtonSmall:after,
+.imgButtonOrange.imgButtonSmall:active:after,
+.imgButtonOrange.imgButtonSmall:visited:after		{ background-position:-395px -60px; }
+.imgButtonOrange.imgButtonSmall:before,
+.imgButtonOrange.imgButtonSmall:active:before,
+.imgButtonOrange.imgButtonSmall:visited:after		{ background-position:left -60px; }
+.imgButtonOrange.imgButtonSmall:hover				{ background-position:-420px -60px; }
+.imgButtonOrange.imgButtonSmall:hover:after			{ background-position:-795px -60px; }
+.imgButtonOrange.imgButtonSmall:hover:before		{ background-position:-400px -60px; }
 
-.imgButtonOrange		{ background-position:center -90px;	}
-.imgButtonOrange:after	{ background-position:right -90px;	}
-.imgButtonOrange:before	{ background-position:left -90px;	}
+.imgButtonBrown.imgButtonSmall,
+.imgButtonBrown.imgButtonSmall:active				{ background-position:-20px -80px; }
+.imgButtonBrown.imgButtonSmall:after,
+.imgButtonBrown.imgButtonSmall:active:after,
+.imgButtonBrown.imgButtonSmall:visited:after		{ background-position:-395px -80px; }
+.imgButtonBrown.imgButtonSmall:before,
+.imgButtonBrown.imgButtonSmall:active:before,
+.imgButtonBrown.imgButtonSmall:visited:after		{ background-position:left -80px; }
+.imgButtonBrown.imgButtonSmall:hover				{ background-position:-420px -80px; }
+.imgButtonBrown.imgButtonSmall:hover:after			{ background-position:-795px -80px; }
+.imgButtonBrown.imgButtonSmall:hover:before			{ background-position:-400px -80px; }
 
-.imgButtonBrown			{ background-position:center -120px;}
-.imgButtonBrown:after	{ background-position:right -120px;	}
-.imgButtonBrown:before	{ background-position:left -120px;	}
+.imgButtonBlue.imgButtonSmall,
+.imgButtonBlue.imgButtonSmall:active				{ background-position:-20px -100px; }
+.imgButtonBlue.imgButtonSmall:after,
+.imgButtonBlue.imgButtonSmall:active:after,
+.imgButtonBlue.imgButtonSmall:visited:after			{ background-position:-395px -100px; }
+.imgButtonBlue.imgButtonSmall:before,
+.imgButtonBlue.imgButtonSmall:active:before,
+.imgButtonBlue.imgButtonSmall:visited:after			{ background-position:left -100px; }
+.imgButtonBlue.imgButtonSmall:hover					{ background-position:-420px -100px; }
+.imgButtonBlue.imgButtonSmall:hover:after			{ background-position:-795px -100px; }
+.imgButtonBlue.imgButtonSmall:hover:before			{ background-position:-400px -100px; }
 
-.imgButtonBlue			{ background-position:center -150px;}
-.imgButtonBlue:after	{ background-position:right -150px;	}
-.imgButtonBlue:before	{ background-position:left -150px;	}
-
-.imgButtonGreen			{ background-position:center -180px;}
-.imgButtonGreen:after	{ background-position:right -150px;	}
-.imgButtonGreen:before	{ background-position:left -150px;	}
-
-.imgButtonWhite.imgButtonSmall					{ background-position:center 0px;	}
-.imgButtonWhite.imgButtonSmall:after			{ background-position:right 0px;	}		
-.imgButtonWhite.imgButtonSmall:before			{ background-position:left 0px;		}
-
-.imgButtonRed.imgButtonSmall					{ background-position:center -20px;	}			
-.imgButtonRed.imgButtonSmall:after				{ background-position:right -20px;	}
-.imgButtonRed.imgButtonSmall:before				{ background-position:left -20px;	}
-
-.imgButtonPurple.imgButtonSmall					{ background-position:center -40px;	}
-.imgButtonPurple.imgButtonSmall:after			{ background-position:right -40px;	}		
-.imgButtonPurple.imgButtonSmall:before			{ background-position:left -40px;	}
-
-.imgButtonOrange.imgButtonSmall					{ background-position:center -60px;	}
-.imgButtonOrange.imgButtonSmall:after			{ background-position:right -60px;	}		
-.imgButtonOrange.imgButtonSmall:before			{ background-position:left -60px;	}
-
-.imgButtonBrown.imgButtonSmall					{ background-position:center -80px;	}
-.imgButtonBrown.imgButtonSmall:after			{ background-position:right -80px;	}		
-.imgButtonBrown.imgButtonSmall:before			{ background-position:left -80px;	}
-
-.imgButtonBlue.imgButtonSmall					{ background-position:center -100px;}
-.imgButtonBlue.imgButtonSmall:after				{ background-position:right -100px;	}	
-.imgButtonBlue.imgButtonSmall:before			{ background-position:left -100px;	}
-
-.imgButtonGreen.imgButtonSmall					{ background-position:center -120px;}
-.imgButtonGreen.imgButtonSmall:after			{ background-position:right -100px;	}
-.imgButtonGreen.imgButtonSmall:before			{ background-position:left -100px;	}
+.imgButtonGreen.imgButtonSmall,
+.imgButtonGreen.imgButtonSmall:active				{ background-position:-20px -120px; }
+.imgButtonGreen.imgButtonSmall:after,
+.imgButtonGreen.imgButtonSmall:active:after,
+.imgButtonGreen.imgButtonSmall:visited:after		{ background-position:-395px -120px; }
+.imgButtonGreen.imgButtonSmall:before,
+.imgButtonGreen.imgButtonSmall:active:before,
+.imgButtonGreen.imgButtonSmall:visited:after		{ background-position:left -120px; }
+.imgButtonGreen.imgButtonSmall:hover				{ background-position:-420px -120px; }
+.imgButtonGreen.imgButtonSmall:hover:after			{ background-position:-795px -120px; }
+.imgButtonGreen.imgButtonSmall:hover:before			{ background-position:-400px -120px; }
 
 .imgButtonOrange img,
 .imgButtonWhite img,

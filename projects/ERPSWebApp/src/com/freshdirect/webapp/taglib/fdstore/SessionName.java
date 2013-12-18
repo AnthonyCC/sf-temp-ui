@@ -50,6 +50,7 @@ public interface SessionName {
 	public static final String PREV_VARIANT_FOUND = "prevVariantFound";
 	
 	public static final String TSA_PROMO = "fd.tsapromo";
+	public static final String TSA_PROMO_KEY = "fd.tsapromoKey";
 	
 	public static final String PENDING_REGISTRATION_EVENT = "pendingCoremetricsRegistrationEvent";
 	public static final String PENDING_LOGIN_EVENT = "pendingCoremetricsLoginEvent";
