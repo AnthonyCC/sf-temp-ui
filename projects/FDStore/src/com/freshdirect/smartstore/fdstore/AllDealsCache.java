@@ -65,39 +65,39 @@ public class AllDealsCache {
 
 					Collection<ContentKey> products = CmsManager.getInstance().getContentKeysByType(ContentType.get("Product"));
 					LOGGER_LOADER.info("found " + products.size() + " product candidates for deals cache reload");
-//					int i = 0;
-//					for (ContentKey product : products) {
-//						double[][] value = deals.get(product);
-//						if (value == null) {
-//							value = new double[2][zoneIndexes.size()];
-//							deals.put(product, value);
-//						}
-//
-//						// check if size increased
-//						if (value[0].length < zoneIndexes.size()) {
-//							//LOGGER_LOADER.debug("Array before copy ");
-//							//print(value);
-//							double newValue[][] = new double[2][zoneIndexes.size()];
-//							System.arraycopy(value[0], 0, newValue[0], 0, value[0].length);
-//							System.arraycopy(value[1], 0, newValue[1], 0, value[1].length);
-//							value=newValue;
-//							//LOGGER_LOADER.debug("Array after copy ");
-//							//print(value);
-//							deals.put(product, value);
-//						}
-//
-//						for (Map.Entry<String, Integer> zoneEntry : zoneIndexes.entrySet()) {
-//							ProductModel contentNode = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(product);
-//							if (contentNode != null && !contentNode.isDiscontinued()) {
-//								PriceCalculator pc = new PriceCalculator(new PricingContext(zoneEntry.getKey()), contentNode);
-//								value[0][zoneEntry.getValue()] = pc.getDealPercentage();
-//								value[1][zoneEntry.getValue()] = pc.getTieredDealPercentage();
-//							}
-//						}
-//						i++;
-//						if (i % 1000 == 0)
-//							LOGGER_LOADER.info("processed " + i + " products so far");
-//					}
+					int i = 0;
+					for (ContentKey product : products) {
+						double[][] value = deals.get(product);
+						if (value == null) {
+							value = new double[2][zoneIndexes.size()];
+							deals.put(product, value);
+						}
+
+						// check if size increased
+						if (value[0].length < zoneIndexes.size()) {
+							//LOGGER_LOADER.debug("Array before copy ");
+							//print(value);
+							double newValue[][] = new double[2][zoneIndexes.size()];
+							System.arraycopy(value[0], 0, newValue[0], 0, value[0].length);
+							System.arraycopy(value[1], 0, newValue[1], 0, value[1].length);
+							value=newValue;
+							//LOGGER_LOADER.debug("Array after copy ");
+							//print(value);
+							deals.put(product, value);
+						}
+
+						for (Map.Entry<String, Integer> zoneEntry : zoneIndexes.entrySet()) {
+							ProductModel contentNode = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(product);
+							if (contentNode != null && !contentNode.isDiscontinued()) {
+								PriceCalculator pc = new PriceCalculator(new PricingContext(zoneEntry.getKey()), contentNode);
+								value[0][zoneEntry.getValue()] = pc.getDealPercentage();
+								value[1][zoneEntry.getValue()] = pc.getTieredDealPercentage();
+							}
+						}
+						i++;
+						if (i % 1000 == 0)
+							LOGGER_LOADER.info("processed " + i + " products so far");
+					}
 				} catch (FDResourceException e) {
 					LOGGER_LOADER.error("failed to reload / initialize all deals cache", e);
 				}

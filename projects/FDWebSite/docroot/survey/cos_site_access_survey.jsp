@@ -51,10 +51,11 @@
 			noServiceCOS: {
 				referrer_page: '<%= request.getParameter("referrer_page") %>',
 				successPage: '<%= StringEscapeUtils.escapeJavaScript( successPage ) %>',
-				cosSurveyContentUrl: '/survey/includes/cos_catering_survey.jsp?survey=cos_catering_survey'
+				cosSurveyContentUrl: '/survey/includes/cos.jsp?survey=cos_site_access_survey&sa=true'
 			}
 		});
 	</script>
-	<fd:IncludeMedia name="/media/editorial/site_pages/survey/cos_catering_survey.html" />
+
+	<fd:IncludeMedia name="/media/editorial/site_access/zipfail/cos_site_access_survey.html" />
 </body>
 </html>

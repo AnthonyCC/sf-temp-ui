@@ -387,12 +387,8 @@
 			}
 			}
 		}
-		if (request.getParameter("TSAPROMO") != null || session.getAttribute(SessionName.TSA_PROMO_KEY) != null) {
-			if(request.getParameter("TSAPROMO") != null) {
-				queryString.addParam("TSAPROMO", request.getParameter("TSAPROMO"));
-			} else if (session.getAttribute(SessionName.TSA_PROMO_KEY) != null && session.getAttribute(SessionName.TSA_PROMO_KEY) == "TSAPROMO") {
-				queryString.addParam("TSAPROMO", session.getAttribute(SessionName.TSA_PROMO));
-			}
+		if (request.getParameter("TSAPROMO") != null) {
+			queryString.addParam("TSAPROMO",request.getParameter("TSAPROMO"));
 		}else if (
 				("/about/index.jsp".equalsIgnoreCase(request.getRequestURI()) || "/site_access/site_access.jsp".equalsIgnoreCase(request.getRequestURI())) &&
 				request.getParameter("successPage") != null
@@ -424,12 +420,8 @@
 			    }
 			}
 		}
-		if(request.getParameter("apc") != null || session.getAttribute(SessionName.TSA_PROMO_KEY) != null) {
-			if(request.getParameter("apc") != null) {
-				queryString.addParam("apc", request.getParameter("apc"));
-			} else if (session.getAttribute(SessionName.TSA_PROMO_KEY) != null && session.getAttribute(SessionName.TSA_PROMO_KEY) == "apc") {
-				queryString.addParam("apc", session.getAttribute(SessionName.TSA_PROMO));
-			}
+		if(request.getParameter("apc") != null) {
+			queryString.addParam("apc", request.getParameter("apc"));
 		}
 		//APPDEV-2500 - add subtotal to oas query string
 		StringBuilder campgnString=new StringBuilder(); String tmpCampgnStr ="";

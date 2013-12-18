@@ -24,12 +24,13 @@ if ("".equals(redirectSuccessPage)) {
 String survey_source=(String)request.getAttribute("survey_source");
 String sPage = request.getRequestURI();
 String slite = "";
-if("slite".equals(request.getParameter("referrer_page")) && sPage.indexOf("referrer_page=slite") == -1) {
+if("slite".equals(request.getParameter("referrer_page"))) {
 	if(sPage.indexOf("?") != -1) {
 		sPage = sPage + "&referrer_page=slite";		
 	} else {
 		sPage = sPage + "?referrer_page=slite";
 	}
+	slite="&referrer_page=slite";	
 }
 %>
     
@@ -120,13 +121,16 @@ if("slite".equals(request.getParameter("referrer_page")) && sPage.indexOf("refer
 	            <input type="image" value="submit" src="/media_stat/images/template/help/b_submit.gif" width="68" height="18">
 	            <input type="image"  src="/media_stat/images/template/help/b_clear.gif"  onclick="document.corporateServiceSurvey.reset(); return false;" width="69" height="19">
 	            <%--input type="submit" value="SUBMIT SURVEY" style="background-color:#336600; color:#FFFFFF; font-weight: bold; font-size:9pt; padding-left: 40px; padding-right: 40px;"--%><br>
-	            <img src="/media_stat/images/layout/999966.gif" width="100%" height="1" vspace="10"></td>
+	            <img src="/media_stat/images/layout/999966.gif" width="100%" height="1" vspace="10">
 	        </tr>
+		<input type="hidden" name="successPage" value="<%=redirectSuccessPage%>">
+	 <% 
+	       if(survey_source!=null && survey_source.trim().length()>0)
+	       {
+	    %>
+	      <input type="hidden" name="survey_source" value="<%=survey_source%>">
+	    <%  }  %>  
 	</table>
-	<input type="hidden" name="successPage" value="<%=redirectSuccessPage%>">
-	<% if(survey_source!=null && survey_source.trim().length()>0) { %>
-		<input type="hidden" name="survey_source" value="<%=survey_source%>">
-	<% } %>  
 	</div>
 	</form>
 <% } %>

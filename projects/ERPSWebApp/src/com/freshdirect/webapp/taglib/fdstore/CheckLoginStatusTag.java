@@ -120,15 +120,15 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         
         /*APPDEV-2024*/
         if(request.getParameter("apc") != null) {
-        	session.setAttribute(SessionName.TSA_PROMO_KEY, "apc");
         	session.setAttribute(SessionName.TSA_PROMO, request.getParameter("apc"));
         }
-        /* APPDEV-3286 addition to APPDEV-2024 */
-        if(request.getParameter("TSAPROMO") != null) {
-        	session.setAttribute(SessionName.TSA_PROMO_KEY, "TSAPROMO");
-        	session.setAttribute(SessionName.TSA_PROMO, request.getParameter("TSAPROMO"));
+        	
+
+        /*APPDEV-2024*/
+        if(request.getParameter("apc") != null) {
+        	session.setAttribute(SessionName.TSA_PROMO, request.getParameter("apc"));
         }
-        
+        	
 
         if (RobotRecognizer.isHostileRobot(
                     (HttpServletRequest) pageContext.getRequest())) {
