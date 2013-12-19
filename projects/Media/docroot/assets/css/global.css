@@ -953,7 +953,7 @@ div.control, div.slotRow, div.time {
 	}
 	
 	.index_ordMod_cont a:hover {
-		text-decoration: underline;
+		text-decoration: none;
 		font-weight: bold;
 	}
 
