@@ -81,7 +81,7 @@ public class ProductSearchResult {
             StringBuilder currentPrice = new StringBuilder("$").append(String.format("%01.2f", sku.getPrice())).append("/").append(
                     sku.getPriceUnit().toLowerCase());
             if (sku.isHasWasPrice()) {
-                formattedUnitPriceLabel = currentPrice.append(" (was ").append("$").append(String.format("%01.2f", sku.getBasePrice())).append(
+                formattedUnitPriceLabel = currentPrice.append(" (").append("$").append(String.format("%01.2f", sku.getBasePrice())).append(
                         ")").toString();
             } else {
                 formattedUnitPriceLabel = currentPrice.toString();
