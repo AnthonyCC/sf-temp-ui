@@ -954,7 +954,7 @@ div.control, div.slotRow, div.time {
 	}
 	
 	.index_ordMod_cont a:hover {
-		text-decoration: none;
+		text-decoration: underline;
 		font-weight: bold;
 	}
 
@@ -976,8 +976,13 @@ div.control, div.slotRow, div.time {
 		width: 400px;
 		text-align:right;
 	}
+		
 	.index_ordMod_cont .ordModifyButCont .ordModifyViewDetails {
 		font-weight: normal;
+	}
+	
+	a.ordModifyModOrderButton:hover {
+		text-decoration: none;
 	}
 
 /* html "buttons" */
