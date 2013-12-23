@@ -17,10 +17,29 @@
 			} else if (uriNextButton.indexOf("step_2") > -1) {
 				if (uriNextButton.indexOf("step_2_duplicate") > -1) { %>
 				<a class="imgButtonOrange" href="/checkout/step_3_choose.jsp?duplicateCheck=skip">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></a>
-				<% } else if (uriNextButton.indexOf("step_2_unavail") > -1) { %>
-				<a class="imgButtonOrange" href="/checkout/step_2_adjust.jsp?successPage=<%=request.getParameter("successPage")%>">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></a>
-				<% } else { %>
-				<button class="imgButtonOrange" type="submit">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
+				<% } else if (uriNextButton.indexOf("step_2_unavail") > -1) {
+				if(user.getShoppingCart()!=null && user.getShoppingCart().getDeliveryReservation()!=null && !user.getShoppingCart().getDeliveryReservation().isMinOrderMet()){%>
+						<a href="/checkout/view_cart.jsp" ><img name="viewcartbutton1" onmouseout="swapImage('viewcartbutton1','/media_stat/images/buttons/continueshop_f1.png')" onmouseover="swapImage('viewcartbutton1','/media_stat/images/buttons/continueshop_f2.png')" src="/media_stat/images/buttons/continueshop_f1.png" border="0"></a>
+				<%}else{%>
+						<a class="imgButtonOrange" href="/checkout/step_2_adjust.jsp?successPage=<%=request.getParameter("successPage")%>">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></a>
+				<%}
+				 } else { 	
+				%>
+				<script type="text/javascript" style="display:none">
+					function step2Validator(formId) {
+						if (!$(formId)) { return false; }
+						var premiumslots = document.getElementsByName('deliveryTimeslotId');
+						var premiumslotId ="";
+						for(var i =0;i<=premiumslots.length;i++){
+							if(premiumslots[i].checked==true){
+								premiumslotId = premiumslots[i];
+								break;
+							}
+						}
+						return checkPremiumSlot(premiumslotId.value, formId);
+					}
+				</script>
+				<button class="imgButtonOrange" onclick="return step2Validator('step2Form');">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
 				<% }							
 			} else if (uriNextButton.indexOf("step_3") > -1) {
 				String butActionName = "setPaymentMethod"; //default action

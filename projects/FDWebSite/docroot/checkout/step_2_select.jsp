@@ -214,7 +214,7 @@ zonePromoEnabled=true;
 		<span class="checkout-delivery-fee"><% if (FDStoreProperties.isNewFDTimeslotGridEnabled()) { %><fd:IncludeMedia name="/media/editorial/timeslots/msg_timeslots_learnmore.html"/><% } %></span>
 		<%@ include file="/includes/i_cart_delivery_fee.jspf" %>
 	</tmpl:put>
-	<tmpl:put name="next-button"><%@ include file="/includes/i_cart_next_step2_button.jspf" %></tmpl:put>
+	<tmpl:put name="next-button"><%@ include file="/includes/i_cart_next_step_button.jspf" %></tmpl:put>
 </tmpl:insert>
 <!-- PROFILE HEADER -->
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_CHECKOUT_STEP_2_SELECT_TOTAL%>" ALIGN="center">
@@ -356,9 +356,9 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 								<tr>
 									<%if(deliveryModel.isMinOrderReqd()){%>
 										<td>
-											<font class="tsDiscountC" style="color:#669933;">$&nbsp;</font>
+											<img src="/media_stat/images/timeslots/diamond_icon.png" WIDTH="16" HEIGHT="16" border="0">
 										</td>
-										<td style="color:#000000;">
+										<td>
 										<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_variable_minimum.html&windowSize=small&name=Minimum Order','large');return false;"><%= FDStoreProperties.getMinOrderLabel()%></td>
 										<td>&nbsp;</td>
 									<%}%>
@@ -595,7 +595,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 	</div>
 	<% if (hasCapacity) { %>
 	<div style="float: right;">
-		<% if(modifyOrderMode) { %><a class="imgButtonWhite cancel_updates" href="/your_account/cancel_modify_order.jsp">cancel updates</a><% } %><%@ include file="/includes/i_cart_next_step2_button.jspf" %>
+		<% if(modifyOrderMode) { %><a class="imgButtonWhite cancel_updates" href="/your_account/cancel_modify_order.jsp">cancel updates</a><% } %><%@ include file="/includes/i_cart_next_step_button.jspf" %>
 	</div>
 	<% } %>
 	<div style="clear: both;"></div>
@@ -630,23 +630,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 		}
 	}
 	
-	function handlechangetimeslot(reserved_slot){
-		
-		$jq(':radio').each(function(){
-			if($jq(this).val() == reserved_slot){
-				if($jq(this).parent().siblings().hasClass("tsMinOrderPropE") || $jq(this).parent().siblings().hasClass("tsMinOrderPropC")){	
-					$jq(this).parent().siblings(".tsMinOrderPropE").find(".tsMinOrderE").attr('style','color:#669933')
-					$jq(this).parent().siblings(".tsMinOrderPropC").find(".tsMinOrderC").attr('style','color:#669933')
-					$jq(this).remove();
-				}
-			}
-		});
-		$jq('button.imgButtonWhite.checkoutbutton').each(function(){
-			$jq(this).attr("class","imgButtonOrange");
-			$jq(this).append('<img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" />');
-			$jq(this).attr("disabled",false);
-		});
-	}
+
 	
 </script>
 

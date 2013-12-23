@@ -19,6 +19,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='crm' prefix='crm' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
 <%@ page import="com.freshdirect.fdstore.util.TimeslotContext" %>
@@ -27,6 +28,7 @@
 <%@ page import="com.freshdirect.fdstore.util.TimeslotLogic" %>
 <%@ page import="com.freshdirect.fdstore.util.RestrictionUtil" %>
 <%@ page import="com.freshdirect.customer.EnumChargeType %>
+ <jwr:style src="/global.css"/>
 
 <%
     String successPage = "checkout_select_payment.jsp";
@@ -124,7 +126,7 @@
 </fd:ErrorHandler>
 
 <TABLE WIDTH="730" CELLPADDING="2" CELLSPACING="0" BORDER="0" ALIGN="CENTER" class="checkout_header<%= (user.isActive()) ? "" : "_warning" %>">
-<FORM name="select_delivery_slot" method="POST" action="">
+<FORM name="select_delivery_slot" id="select_delivery_slot"  method="POST" action="">
 	<TR>
 	<TD WIDTH="75%">
         &nbsp;Step 2 of 4: Select Delivery Time
@@ -137,16 +139,22 @@
     <% if (CrmSecurityManager.hasAccessToPage(currentAgent.getRole().getLdapRoleName(),"forceorder")) { %>
 		<td align="right"><a href="/checkout/checkout_delivery_time.jsp?forceorder=true" class="checkout">FORCE ORDER >></a></td>
 	<% } %>
-	
-	 <td align="right">
-   <%  if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
-    		<a onclick="return false" id="disablecheckout">CONTINUE CHECKOUT >></a>
-	
-	<% }else{ %>
-			<a href="javascript:select_delivery_slot.submit()" class="checkout">CONTINUE CHECKOUT >></a>
-	<% } %>
-	</td>
-	
+		<script type="text/javascript" style="display:none">
+					function step2Validator(formId) {
+						if (!$(formId)) { return false; }
+						<% /* first, check that the promo is valid */ %>
+						var premiumslots = document.getElementsByName('deliveryTimeslotId');
+						var premiumslotId ="";
+						for(var i =0;i<=premiumslots.length;i++){
+							if(premiumslots[i].checked==true){
+								premiumslotId = premiumslots[i];
+								break;
+							}
+						}
+						return checkPremiumSlot(premiumslotId.value, formId);
+					}
+		</script>
+		<td align="right"><a href="#" onclick="return step2Validator('select_delivery_slot');" class="checkout">CONTINUE CHECKOUT >></a></td>
 	</TR>
 </TABLE>
 
@@ -252,9 +260,10 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 							<tr>
 								<%if(deliveryModel.isMinOrderReqd()){%>
 										<td>
-											<font class="tsDiscountC" style="color:#669933;">$&nbsp;</font>
+											<img src="/media_stat/images/timeslots/diamond_icon.png" WIDTH="16" HEIGHT="16" border="0">
 										</td>
-										<td><div onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_variable_minimum.html&windowSize=small&name=Minimum Order','large');return false;"><%= FDStoreProperties.getMinOrderLabel()%></div></td>
+										<td>
+										<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_variable_minimum.html&windowSize=small&name=Minimum Order','large');return false;"><%= FDStoreProperties.getMinOrderLabel()%></td>
 										<td>&nbsp;</td>
 								<%}%>
 								<%if(deliveryModel.getEcoFriendlyCount() > 0){%>
@@ -411,29 +420,6 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 <%}%>
 
 	</FORM>
-	<script type="text/javascript">
-	
-			function handlechangetimeslot(reserved_slot){
-			
-				if(reserved_slot!=''){
-					$jq(':radio').each(function(){
-						if($jq(this).val() == reserved_slot){
-							if($jq(this).parent().siblings().hasClass("tsMinOrderPropE") || $jq(this).parent().siblings().hasClass("tsMinOrderPropC")){	
-								$jq(this).parent().siblings(".tsMinOrderPropE").find(".tsMinOrderE").attr('style','color:#669933')
-								$jq(this).parent().siblings(".tsMinOrderPropC").find(".tsMinOrderC").attr('style','color:#669933')
-								$jq(this).remove();
-							}
-						}
-					});
-					$jq("#disablecheckout").attr('href', 'javascript:select_delivery_slot.submit()');
-					$jq("#disablecheckout").attr('class', 'checkout');
-					$jq("#disablecheckout").removeAttr('onclick');
-					$jq("#disablecheckout").removeAttr('id');
-				}
-			}
-			
-			
-	</script>
 </TABLE>
 </div>
 </tmpl:put>

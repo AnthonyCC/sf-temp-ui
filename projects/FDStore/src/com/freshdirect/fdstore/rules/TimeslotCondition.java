@@ -16,7 +16,7 @@ public class TimeslotCondition implements ConditionI {
     private String startTime;
     private String endTime;
     private String day;
-    private Double orderMinimum;
+   // private Double orderMinimum;
     
     
 	public TimeslotCondition() {
@@ -35,8 +35,7 @@ public class TimeslotCondition implements ConditionI {
 				(getStartTimeEx().before(context.getTimeslot().getDlvTimeslot().getStartTime()) || getStartTimeEx().equals(context.getTimeslot().getDlvTimeslot().getStartTime()))
 				   && getEndTimeEx()!=null && 
 				   (getEndTimeEx().after(context.getTimeslot().getDlvTimeslot().getEndTime()) || (getEndTimeEx().equals(context.getTimeslot().getDlvTimeslot().getEndTime())))
-				   && day!=null && day.equalsIgnoreCase(DateUtil.formatDayOfWeek(context.getTimeslot().getBaseDate()))
-				   && context.getSubTotal() < orderMinimum) {
+				   && day!=null && day.equalsIgnoreCase(DateUtil.formatDayOfWeek(context.getTimeslot().getBaseDate()))) {
 			return true;
 		} 
 		return false;
@@ -80,13 +79,5 @@ public class TimeslotCondition implements ConditionI {
 
 	public void setDay(String day) {
 		this.day = day;
-	}
-	
-	public Double getOrderMinimum() {
-		return orderMinimum;
-	}
-
-	public void setOrderMinimum(Double orderMinimum) {
-		this.orderMinimum = orderMinimum;
 	}
 }

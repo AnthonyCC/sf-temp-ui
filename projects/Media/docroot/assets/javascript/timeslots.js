@@ -2440,3 +2440,30 @@ var fdTSDisplayInitializeFuncs = window['fdTSDisplayInitializeFuncs'] || [];
 			timeslotChooserFunctions[timeSlotId]();
 		}
 	}
+	
+	function checkPremiumSlot(deliveryTimeSlotId, formId){
+		
+		new Ajax.Request('/checkout/check_premium_slot.jsp', {
+			parameters: {
+				deliveryTimeSlotId: deliveryTimeSlotId						
+			},
+			onComplete: function(transport) {
+				checkPremiumSlotPopup(transport.responseText, formId);
+			}
+		});	
+		return false;
+	}
+
+	function checkPremiumSlotPopup(JSONstring, formId) {
+		var params = JSONstring.evalJSON(true);	
+		var url = '/overlays/variable_minnotmet_popup.jsp?amt='+params.minorderamt;
+		if (!(params.minordermet)) {
+			$jq(document).ready(function() {
+				vmo_overlayDialog = doOverlayDialogWithSpinner(url);
+				$jq('#choosenewtimeslot').live('click', function(e) { e.preventDefault(); vmo_overlayDialog.dialog('close'); });
+
+			});
+		} else{
+			document.forms[formId].submit();
+		}
+	}

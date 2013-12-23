@@ -343,49 +343,41 @@ public class TimeslotLogic {
 	}
 
 	public static boolean applyOrderMinimum(FDUserI user, FDTimeslot timeslot) {
+		double orderMinimum  = 0;
 		try{
 			OrderMinimumCalculator calc = new OrderMinimumCalculator("TIMESLOT");
 			FDRulesContextImpl ctx = new FDRulesContextImpl(user, timeslot);
-			double orderMinimum = calc.getOrderMinimum(ctx);
+			orderMinimum = calc.getOrderMinimum(ctx);
 			
-			if(orderMinimum > 0) {
-				timeslot.setMinOrderMet(false);
-				timeslot.setMinOrderAmt(orderMinimum);
-				timeslot.setMinOrderMsg(formatMinAmount(orderMinimum)+" Min.");
-			}else{
-				timeslot.setMinOrderMet(true);
-				timeslot.setMinOrderAmt(0);
-				timeslot.setMinOrderMsg("");
+			if(orderMinimum > 0){
+					timeslot.setMinOrderAmt(orderMinimum);
+					timeslot.setMinOrderMsg(formatMinAmount(orderMinimum)+" Min.");
+					timeslot.setMinOrderMet( (orderMinimum > user.getShoppingCart().getSubTotal())?false:true);
 			}
-			
 		}catch(Exception e){
 			LOGGER.error(e);
 			e.printStackTrace();
 		}
-		return !timeslot.isMinOrderMet();
+		return orderMinimum > 0;
 	}
 
-	public static boolean applyOrderMinimum(FDUserI user, FDTimeslot timeslot, double subTotal) {
+	public static void applyOrderMinimum(FDUserI user, FDTimeslot timeslot, double subTotal) {
 		try{
 			OrderMinimumCalculator calc = new OrderMinimumCalculator("TIMESLOT");
 			FDRulesContextImpl ctx = new FDRulesContextImpl(user, timeslot, subTotal);
 			double orderMinimum = calc.getOrderMinimum(ctx);
-			
-			if(orderMinimum > 0) {
-				timeslot.setMinOrderMet(false);
-				timeslot.setMinOrderAmt(orderMinimum);
-				timeslot.setMinOrderMsg(formatMinAmount(orderMinimum)+"&nbsp;Min.");
-			}else{
-				timeslot.setMinOrderMet(true);
-				timeslot.setMinOrderAmt(0);
-				timeslot.setMinOrderMsg("");
+			if(orderMinimum > 0){
+				if(orderMinimum > subTotal) {
+					timeslot.setMinOrderMet(false);
+				}else{
+					timeslot.setMinOrderMet(true);
+				}
 			}
 			
 		}catch(Exception e){
 			LOGGER.error(e);
 			e.printStackTrace();
 		}
-		return !timeslot.isMinOrderMet();
 	}
 
 	public static String formatMinAmount(double minOrderAmt){

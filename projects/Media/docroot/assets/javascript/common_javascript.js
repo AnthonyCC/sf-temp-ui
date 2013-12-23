@@ -1348,6 +1348,21 @@ function doOverlayWindow(olURL, titleVar) {
 		return overlayDialog;
 	}
 
+	/* use dialog by url */
+	function doOverlayDialogWithSpinner(olURL, olData) {
+		var overlayDialog = setupOverlayDialog();
+		
+		if (olData != 'undefined' && (typeof olData).toLowerCase() == 'object') {
+			//if data is passed in, POST it
+			overlayDialog.load(olURL, olData, function() { overlayDialog.dialog('open'); }).html('<img src="/media_stat/images/navigation/sidecart/spinner.gif" alt="loading..."/> ');
+		} else {
+			overlayDialog.load(olURL, function() { overlayDialog.dialog('open'); }).html('<img src="/media_stat/images/navigation/sidecart/spinner.gif" alt="loading..."/> ');
+		}
+
+		return overlayDialog;
+	}
+
+	
 	function dialogWindowResizeFunc() {
 		var overlayDialog = $jq('#uimodal-output');
 		var maxContextHeight = Math.round(document.documentElement.clientHeight * overlayDialog.dialog('option', 'maxClientHeight'));

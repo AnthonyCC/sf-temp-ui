@@ -422,8 +422,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 
 
 		// unflag variable min order timeslots for deliveryinfo timeslots
-		TimeslotLogic.clearVariableMinimum(user, singleTSset);
-		deliveryModel.setMinOrderReqd(false);
+		// TimeslotLogic.clearVariableMinimum(user, singleTSset);
+		// deliveryModel.setMinOrderReqd(false);
 		
 		// fill in delivery model
 		deliveryModel.setShoppingCart(cart);

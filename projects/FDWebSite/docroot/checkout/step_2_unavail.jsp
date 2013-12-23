@@ -50,7 +50,9 @@ if(invsInfoMap.size() > 0 ){
 </td></tr>
 
 
-<% 
+<%
+final int W_CHECKOUT_VARMIN_MESSAGE = 810;
+
 Double subTotal = null;
 
 
@@ -289,13 +291,7 @@ if (day != null) {
 			<% } %>
 		</td>
 		<td width="<%=W_CHECKOUT_STEP_2_UNAVAIL_TOTAL/2%>" align="right" valign="bottom">
-			<% if(reservation!=null && !reservation.isMinOrderMet()){%>
-				<a href="/checkout/view_cart.jsp" ><img name="viewcartbutton1" onmouseout="swapImage('viewcartbutton1','/media_stat/images/buttons/button_continueshop_f1.png')" onmouseover="swapImage('viewcartbutton1','/media_stat/images/buttons/button_continueshop_f2.png')" src="/media_stat/images/buttons/button_continueshop_f1.png" border="0"></a>
-			<%}else{
-				%><a class="imgButtonOrange" href="/checkout/step_2_adjust.jsp?successPage=<%=request.getParameter("successPage")%>">choose payment <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></a>
-			<%}
-			incNextButtonCount++;
-			%>
+			<%@ include file="/includes/i_cart_next_step_button.jspf" %>
 		</td>
 	</tr>
 </table>

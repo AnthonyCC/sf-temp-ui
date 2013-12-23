@@ -1080,7 +1080,7 @@ public class FDStoreProperties {
         defaults.put(PROP_PROMO_TIMESLOT_LABEL, "Discount Delivery Times");
         defaults.put(PROP_ALCOHOL_TIMESLOT_LABEL, "Alcohol Delivery Restriction");
         defaults.put(PROP_ECOFRIENDLY_TIMESLOT_LABEL, "Eco-Friendly");
-        defaults.put(PROP_MINORDER_TIMESLOT_LABEL, "Minimum Order Applies");
+        defaults.put(PROP_MINORDER_TIMESLOT_LABEL, "Premium Timeslot");
         defaults.put(PROP_BUILDINGFAVS_TIMESLOT_LABEL, "Delivery Helper");
     	//APPDEV-3107 SAP upgrade customer messaging
         defaults.put(PROP_TIMESLOT_MSGING, "d=01/01/2000:m=no_media.html");

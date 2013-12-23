@@ -289,18 +289,6 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		EnumReservationType type,
 		ContactAddressModel address, boolean chefsTable, String profileName, boolean isForced, TimeslotEventModel event, boolean hasSteeringDiscount) throws ReservationException {
 
-		// Get the Timeslot object
-		/*DlvTimeslotModel timeslotModel;
-		try {
-			timeslotModel = this.getTimeslotById(timeslotId);
-		} catch (FinderException e) {
-			this.getSessionContext().setRollbackOnly();
-			throw new ReservationException("Cannot find timeslot " + timeslotId);
-		}*/
-
-		//
-		// ensure we're not past cutoff
-		//
 		Date timeslotCutoff = timeslotModel.getCutoffTimeAsDate();
 		Date now = new Date();
 		if (timeslotCutoff.before(now)) {
@@ -879,21 +867,6 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 
 	public void removeReservation(String reservationId) {
 		cancelReservation(reservationId);
-		/*Connection conn = null;
-		try {
-			conn = this.getConnection();
-			DlvManagerDAO.removeReservation(conn, reservationId);
-		} catch (SQLException e) {
-			throw new EJBException(e);
-		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				LOGGER.warn("SQLException while trying to cleanup", e);
-			}
-		}*/
 	}
 
 	private final static String FIND_ZONES_BY_ZONEID_QUERY =

@@ -45,6 +45,8 @@ if(invsInfoMap.size() > 0 ){
 
 
 <% 
+final int W_CHECKOUT_VARMIN_MESSAGE = 670;
+
 FDCartModel clonedCart = new FDCartModel( cart );
 clonedCart.setUnavailablePasses(cart.getUnavailablePasses());
 clonedCart.setAvailability(cart.getAvailability());
