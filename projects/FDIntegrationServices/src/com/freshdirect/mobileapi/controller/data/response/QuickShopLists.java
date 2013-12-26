@@ -33,7 +33,7 @@ public class QuickShopLists extends Message {
         for (OrderInfo list : lists) {
             try {
                 newInstance.lists.add(new QuickShopList(list.getId(), newInstance.formatter.format(list.getRequestedDate()),
-                        CommonFormatter.formatCurrency(list.getTotal())));
+                        CommonFormatter.formatCurrency(list.getTotal()), list.getDisplayStatus()));
             } catch (PricingException e) {
                 //If we get error on an order, just move on...
                 LOG.warn("Unable to retrieve total amount for order: " + list.getId(), e);
@@ -78,11 +78,21 @@ public class QuickShopLists extends Message {
             this.id = id;
         }
 
-        private String id;
+        public QuickShopList(String id, String label, String caption,
+				String status) {
+            this.label = label;
+            this.caption = caption;
+            this.id = id;
+            this.status = status;
+        }
+
+		private String id;
 
         private String label;
 
         private String caption;
+        
+        private String status;
 
         public String getId() {
             return id;
@@ -107,6 +117,14 @@ public class QuickShopLists extends Message {
         public void setCaption(String caption) {
             this.caption = caption;
         }
+
+		public String getStatus() {
+			return status;
+		}
+
+		public void setStatus(String status) {
+			this.status = status;
+		}
     }
 
 }

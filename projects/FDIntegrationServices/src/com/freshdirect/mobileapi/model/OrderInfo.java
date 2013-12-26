@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumDeliveryType;
-import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
@@ -133,4 +132,14 @@ public class OrderInfo {
     public boolean isInPast(Date now) {
         return (now.compareTo(target.getDeliveryEndTime()) > 0);
     }
+
+	public String getDisplayStatus() {
+		String status = getOrderStatus();
+		if("Cancelled".equals(status) || "Processing".equals(status)){
+			return status;
+		}else if("Submitted".equals(status)){
+			return "Pending";
+		}
+		return "";
+	}
 }

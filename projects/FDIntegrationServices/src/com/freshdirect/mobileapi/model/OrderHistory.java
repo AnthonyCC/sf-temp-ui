@@ -100,10 +100,7 @@ public class OrderHistory {
         List<OrderInfo> completedOrder = new ArrayList<OrderInfo>();
 
         for (OrderInfo info : infos) {
-            info.getOrderStatus();
-            if (!info.isPending()) {
-                completedOrder.add(info);
-            }
+               completedOrder.add(info);
         }
         Collections.sort(completedOrder, ORDER_INFO_COMPARATOR);
 
