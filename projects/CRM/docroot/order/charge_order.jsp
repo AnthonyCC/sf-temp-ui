@@ -397,6 +397,13 @@ if(order.hasInvoice()) {
             }
             return true;
     }
+    
+    function submitChargeOrder(){
+    	if(confirm('Are you sure want to charge this order ?')){
+    		document.getElementById('submitBtn').disabled = 'true';
+    		document.forms['charge_order'].submit();
+    	}
+    }
 
 </script>
 <% 	String actionName = request.getParameter("actionName");
@@ -505,7 +512,7 @@ if(order.hasInvoice()) {
 <FORM name="submit_charge">
 <b><i>Total Charge:&nbsp;&nbsp;</i><input type="text" align="right" size="7" name="charge_amount_2" readonly value="<%=JspMethods.formatPrice(order.getInvoicedTotal()+totalFees)%>">
 </FORM>
-</span></b></span></td><td width="60%"><input type="submit" class="submit" style="width: 250px;" value="CHARGE THIS ORDER" onClick="javascript:document.forms['charge_order'].submit();"></td></tr></table></div>
+</span></b></span></td><td width="60%"><input type="submit" id="submitBtn" class="submit" style="width: 250px;" value="CHARGE THIS ORDER" onClick="javascript:submitChargeOrder();"></td></tr></table></div>
 </tmpl:put>
 
 </crm:GetErpCustomer>

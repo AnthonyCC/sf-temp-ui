@@ -109,7 +109,8 @@ public class ErpInvoiceModel extends ErpAbstractInvoiceModel {
 			thisLine = (ErpInvoiceLineModel) thisLines.get(i);
 			testLine = (ErpInvoiceLineModel) testLines.get(i);
 			if (!(thisLine.getMaterialNumber().equals(testLine.getMaterialNumber()) &&
-				MathUtil.roundDecimal(thisLine	.getQuantity()) == MathUtil.roundDecimal(testLine.getQuantity()))) {
+//				MathUtil.roundDecimal(thisLine	.getQuantity()) == MathUtil.roundDecimal(testLine.getQuantity()))) {
+				MathUtil.roundDecimal(thisLine	.getQuantity()) == MathUtil.roundDecimalCeiling(testLine.getQuantity()))) {
 				return false;
 			}
 		}

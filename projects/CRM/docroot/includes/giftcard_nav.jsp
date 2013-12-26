@@ -51,7 +51,6 @@ if(!bulk_purchase_gc){
 			<% } else if (purchase_history) { %>Purchase&nbsp;History
 			<% } else if (check_balance) { %>Check&nbsp;Balance
 			<% } else if (giftcard_added) { %>Added/Used
-			<% } else if (giftcard_generate) { %>Generate&nbsp;New
 			<% } else if (bt_giftcard) { %>Balance&nbsp;Transfer
 			<% } else if (isReceiptPage) { %>Receipt
 			<% } %>
@@ -75,10 +74,7 @@ if(!bulk_purchase_gc){
 
 		<a href="/gift_card/giftcard_addused.jsp" class="<% if (giftcard_added) { %>cust_gc_sub_nav_on<% 
 			}else{ %>cust_sub_nav_text cust_gc_sub_nav<% } %>">Added/Used</a>
-
-		<a href="/gift_card/generate_new_giftcard.jsp" class="<% if (giftcard_generate) { %>cust_gc_sub_nav_on<% 
-			}else{ %>cust_sub_nav_text cust_gc_sub_nav<% } %>">Generate&nbsp;New</a>
-
+		
 		<a href="/gift_card/bt_giftcard.jsp" class="<% if (bt_giftcard) { %>cust_gc_sub_nav_on<% 
 			}else{ %>cust_sub_nav_text cust_gc_sub_nav<% } %>">Balance&nbsp;Transfer</a>
 
