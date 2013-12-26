@@ -389,6 +389,8 @@
 		}
 		if (request.getParameter("TSAPROMO") != null) {
 			queryString.addParam("TSAPROMO",request.getParameter("TSAPROMO"));
+		}else if (null != session.getAttribute(SessionName.TSA_PROMO)) {
+			queryString.addParam("TSAPROMO",session.getAttribute(SessionName.TSA_PROMO));
 		}else if (
 				("/about/index.jsp".equalsIgnoreCase(request.getRequestURI()) || "/site_access/site_access.jsp".equalsIgnoreCase(request.getRequestURI())) &&
 				request.getParameter("successPage") != null
@@ -422,6 +424,8 @@
 		}
 		if(request.getParameter("apc") != null) {
 			queryString.addParam("apc", request.getParameter("apc"));
+		}else if(null != session.getAttribute(SessionName.APC_PROMO)){
+			queryString.addParam("apc", session.getAttribute(SessionName.APC_PROMO));
 		}
 		//APPDEV-2500 - add subtotal to oas query string
 		StringBuilder campgnString=new StringBuilder(); String tmpCampgnStr ="";

@@ -89,8 +89,8 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 					user.setCouponEvaluationRequired(true);
 					session.setAttribute(SessionName.USER, user);
 				}
-				if(session.getAttribute(SessionName.TSA_PROMO) != null) {
-					session.removeAttribute(SessionName.TSA_PROMO);
+				if(session.getAttribute(SessionName.APC_PROMO) != null) {
+					session.removeAttribute(SessionName.APC_PROMO);
 				}
 			}
 			else if ("removeGiftCard".equalsIgnoreCase(action)) {
@@ -130,12 +130,12 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 		} else {
 			/*APPDEV-2024*/		
 			HttpSession session = (HttpSession) pageContext.getSession();
-			String tsapromo = null;
-			if(session.getAttribute(SessionName.TSA_PROMO) != null) {			
-				tsapromo = (String) session.getAttribute(SessionName.TSA_PROMO);
+			String apcpromo = null;
+			if(session.getAttribute(SessionName.APC_PROMO) != null) {			
+				apcpromo = (String) session.getAttribute(SessionName.APC_PROMO);
 			}
-			if(tsapromo != null) {
-				applyTsaPromo(request, actionResult, tsapromo);
+			if(apcpromo != null) {
+				applyApcPromo(request, actionResult, apcpromo);
 			}
 		}
 		}catch(FDResourceException fre){
@@ -147,19 +147,19 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		/*APPDEV-2024*/		
 		HttpSession session = (HttpSession) pageContext.getSession();
-		String tsapromo = null;
-		if(session.getAttribute(SessionName.TSA_PROMO) != null) {			
-			tsapromo = (String) session.getAttribute(SessionName.TSA_PROMO);
+		String apcpromo = null;
+		if(session.getAttribute(SessionName.APC_PROMO) != null) {			
+			apcpromo = (String) session.getAttribute(SessionName.APC_PROMO);
 		}
 
-		if ("redeemCode".equals(this.getActionName()) || tsapromo != null) {
+		if ("redeemCode".equals(this.getActionName()) || apcpromo != null) {
 			try{				
 				FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 				request.setAttribute("isEligible", false);
 				String redemptionCode = NVL.apply(request.getParameter("redemptionCode"), "").trim();
 				if ("".equals(redemptionCode)) {
-					if(tsapromo != null) {
-						return applyTsaPromo(request, actionResult, tsapromo);
+					if(apcpromo != null) {
+						return applyApcPromo(request, actionResult, apcpromo);
 					} else {
 						actionResult.addError(true, "redemption_error", "Promotion Code is required");
 						return true;
@@ -279,7 +279,7 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 		return true;
 	}
 	
-	protected boolean applyTsaPromo(HttpServletRequest request, ActionResult actionResult, String tsaPromoCode) throws JspException {
+	protected boolean applyApcPromo(HttpServletRequest request, ActionResult actionResult, String tsaPromoCode) throws JspException {
 			try{				
 				HttpSession session = (HttpSession) pageContext.getSession();
 				FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
@@ -348,7 +348,7 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 							actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_ALREADY_USED);
 						}
 					} 
-					session.removeAttribute(SessionName.TSA_PROMO);
+					session.removeAttribute(SessionName.APC_PROMO);
 				} else if (!isApplied) {
 					request.setAttribute("isEligible", eligible);
 					if(user.isFraudulent()&& promotion.isFraudCheckRequired()){

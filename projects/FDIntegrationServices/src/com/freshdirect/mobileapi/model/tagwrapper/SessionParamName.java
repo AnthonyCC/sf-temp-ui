@@ -48,7 +48,7 @@ public interface SessionParamName {
     public static final String SESSION_PARAM_PREV_SAVINGS_VARIANT = SessionName.PREV_SAVINGS_VARIANT;
         
     //Apply/Remove Promo Code
-     public static final String SESSION_PARAM_TSA_PROMO = SessionName.TSA_PROMO; 
+     public static final String SESSION_PARAM_APC_PROMO = SessionName.APC_PROMO; 
           
      //Site Access More Page Param
      public static final String SESSION_PARAM_SITEACCESS_MOREPAGE = "morepage";

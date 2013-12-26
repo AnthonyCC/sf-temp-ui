@@ -41,7 +41,7 @@ public class RedemptionCodeControllerTagWrapper extends ControllerTagWrapper imp
      * @throws FDException
      */
     public ResultBundle applyRedemptionCode(String redemptionCode) throws FDException {
-        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION,  SESSION_PARAM_TSA_PROMO }, new String[] { SESSION_PARAM_USER }); //gets,sets
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION,  SESSION_PARAM_APC_PROMO }, new String[] { SESSION_PARAM_USER }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_RECENT_ORDER_NUMBER, }, new String[] { REQ_PARAM_REDEEM_OVERRIDE_MSG });//gets,sets
 
         addRequestValue(REQ_PARAM_REDEMPTION_CODE, redemptionCode);
@@ -59,7 +59,7 @@ public class RedemptionCodeControllerTagWrapper extends ControllerTagWrapper imp
      * @throws FDException
      */
     public ResultBundle removeRedemptionCode(String redemptionCode) throws FDException {
-        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_TSA_PROMO }, new String[] { SESSION_PARAM_USER }); //gets,sets
+        addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION, SESSION_PARAM_APC_PROMO }, new String[] { SESSION_PARAM_USER }); //gets,sets
         addExpectedRequestValues(new String[] { REQ_PARAM_ACTION, REQ_PARAM_RECENT_ORDER_NUMBER },
                 new String[] { REQ_PARAM_REDEEM_OVERRIDE_MSG });//gets,sets
 
