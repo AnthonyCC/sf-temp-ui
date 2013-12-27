@@ -46,6 +46,19 @@ public class DeliveryWindowMetrics  extends BaseModel  implements IDeliveryWindo
 	
 	private int orderPremiumCtCapacity;
 	
+	private Date deliveryDate;
+	
+	/** Number of reservations in base pool */
+	private int baseAllocation;
+
+	/** Number of reservations in CT pool */
+	private int chefsTableAllocation;
+
+	private int premiumAllocation;
+	
+	private int premiumCtAllocation;
+	
+	private boolean isDynamic;
 	
 	public int getOrderCtCapacity() {
 		return orderCtCapacity;
@@ -218,4 +231,52 @@ public class DeliveryWindowMetrics  extends BaseModel  implements IDeliveryWindo
 	public void setDisplayEndTime(Date displayEndTime) {
 		this.displayEndTime = displayEndTime;
 	}
+
+	public Date getDeliveryDate() {
+		return deliveryDate;
+	}
+
+	public void setDeliveryDate(Date deliveryDate) {
+		this.deliveryDate = deliveryDate;
+	}
+
+	public int getBaseAllocation() {
+		return baseAllocation;
+	}
+
+	public void setBaseAllocation(int baseAllocation) {
+		this.baseAllocation = baseAllocation;
+	}
+
+	public int getChefsTableAllocation() {
+		return chefsTableAllocation;
+	}
+
+	public void setChefsTableAllocation(int chefsTableAllocation) {
+		this.chefsTableAllocation = chefsTableAllocation;
+	}
+
+	public int getPremiumAllocation() {
+		return premiumAllocation;
+	}
+
+	public void setPremiumAllocation(int premiumAllocation) {
+		this.premiumAllocation = premiumAllocation;
+	}
+
+	public int getPremiumCtAllocation() {
+		return premiumCtAllocation;
+	}
+
+	public void setPremiumCtAllocation(int premiumCtAllocation) {
+		this.premiumCtAllocation = premiumCtAllocation;
+	}
+
+	public boolean isDynamic() {
+		return isDynamic;
+	}
+
+	public void setDynamic(boolean isDynamic) {
+		this.isDynamic = isDynamic;
+	}	
 }

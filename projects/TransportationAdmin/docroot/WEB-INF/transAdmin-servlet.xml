@@ -7,7 +7,11 @@
 		<property name="basename" value="messages"/>
 	</bean>
 
-	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- max file size in bytes -->
+	    <property name="maxUploadSize" value="2000000" />
+	    <!-- other properties... -->
+	</bean>
         
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
 		<property name="basename" value="views"/>
@@ -192,6 +196,8 @@
 				<prop key="/dispatchgroup.do">domainController</prop>
 				<prop key="/deletedispatchgroup.do">domainController</prop>
 				<prop key="/editdispatchgroup.do">dispatchGroupFormController</prop>
+
+				<prop key="/uploadtimeslotcapacity.do">capacityController</prop>
 
 			</props>
 		</property>
@@ -399,7 +405,7 @@
             <prop key="/dispatchgroup.do">dispatchGroupHandler</prop>
  		 	<prop key="/deletedispatchgroup.do">dispatchGroupDeleteHandler</prop>
 
-           
+           	<prop key="/uploadtimeslotcapacity.do">uploadTimeslotMetricHandler</prop>
 			</props>
 		</property>
 	</bean>

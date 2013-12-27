@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.web;
 
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,10 +18,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Category;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.util.EnumLogicalOperator;
 import com.freshdirect.framework.util.TimeOfDay;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.BuildingModel;
@@ -56,6 +61,7 @@ import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.Zone;
+import com.freshdirect.transadmin.parser.TimeslotCapacityParser;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
@@ -69,6 +75,8 @@ import com.freshdirect.transadmin.web.model.UnassignedCommand;
 import com.freshdirect.transadmin.web.model.WaveInstanceCommand;
 
 public class CapacityController extends AbstractMultiActionController {
+	
+	private static Category LOGGER = LoggerFactory.getInstance(CapacityController.class);
 	
 	private DomainManagerI domainManagerService;
 	
@@ -108,6 +116,36 @@ public class CapacityController extends AbstractMultiActionController {
 
 	public void setLocationManagerService(LocationManagerI locationManagerService) {
 		this.locationManagerService = locationManagerService;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void uploadTimeslotMetricHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		
+		MultipartHttpServletRequest mpr = (MultipartHttpServletRequest) request;
+		Iterator<String> itr =  mpr.getFileNames();
+		MultipartFile mpf = mpr.getFile(itr.next());
+		
+		TimeslotCapacityParser parser = new TimeslotCapacityParser();
+		DeliveryServiceProxy proxy = new DeliveryServiceProxy();
+		
+		try {
+			parser.parseFile(mpf);
+			parser.validateTimeslotMetrics();
+			if (parser.parseSuccessful() && parser.metricsSuccessful()) {				
+				proxy.updateTimeslotMetrics(parser.getTimeslotMetrics());
+				saveMessage(request, "Timeslot capacity upload successful");
+			} else {
+				saveErrorMessage(request, getMessage("app.error.131", new Object[] {"Timeslot Capacity"}));				
+			}
+			response.addHeader ("Content-Disposition","attachment;filename="+mpf.getOriginalFilename());
+			response.setContentType("application/Text"); 
+			PrintWriter pw = response.getWriter();
+			pw.write(parser.buildResponseHtml());
+			pw.flush();
+		} catch(Exception ex) {
+			logger.error("Error while upload timeslot capacity metrics: "+ ex.getMessage());
+			saveErrorMessage(request, getMessage("app.error.131", new Object[] {"Timeslot Capacity"}));
+		}
 	}
 
 	/**

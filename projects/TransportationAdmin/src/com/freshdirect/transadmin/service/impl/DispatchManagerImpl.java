@@ -347,7 +347,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			
 			Collection dispList=getDispatchList(date,null,null,null);
 			Set dispatchResources=new HashSet();
-			if(dispList!=null || dispList.size()>0)
+			if (dispList != null && dispList.size() > 0)
 			{						
 				  Iterator iterator=dispList.iterator();
 				  while(iterator.hasNext()){							  

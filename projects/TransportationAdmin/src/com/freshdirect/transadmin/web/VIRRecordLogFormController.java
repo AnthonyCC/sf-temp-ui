@@ -3,6 +3,7 @@ package com.freshdirect.transadmin.web;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -62,8 +63,11 @@ public class VIRRecordLogFormController extends AbstractFormController {
 		if("true".equalsIgnoreCase(isRefreshReqd)){
 			domainManagerService.refreshCachedData(EnumCachedDataType.TRUCK_DATA);
 		}
-		refData.put("truckAssets",  getAssetManagerService().getActiveAssets("TRUCK"));
-		
+		Collection assets = getAssetManagerService().getActiveAssets("TRUCK");
+		if(assets != null)
+			assets.addAll(getAssetManagerService().getActiveAssets("TRAILER"));
+		refData.put("truckAssets", assets);
+				
 		List drivers = DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.DRIVER.getName(), null, null));
 		drivers.addAll(DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.MANAGER.getName(), null, null)));
 		

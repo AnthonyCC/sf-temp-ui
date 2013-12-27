@@ -20,8 +20,8 @@
    scenariotitle += "</span>";
  %>
   
-  <link rel="stylesheet" href="css/transportation.css" type="text/css" />		
-<tmpl:insert template='/common/sitelayout.jsp'>
+
+<tmpl:insert template='/common/sitelayout.jsp'>	
 
     <tmpl:put name='title' direct='true'>Early Warning View</tmpl:put>
 	<tmpl:put name='yui-lib'>
@@ -30,6 +30,12 @@
 	<tmpl:put name='yui-skin'>yui-skin-sam</tmpl:put>
 	
   <tmpl:put name='content' direct='true'>
+  
+	<link rel="stylesheet" href="css/transportation.css" type="text/css" />
+	<link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/ui-darkness/jquery-ui.css" rel="stylesheet">
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+	
     <br/> 
     <div class="contentroot">               
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -185,8 +191,57 @@
                      	window.location.reload();
                      }                           
                  }
-                          
-                  </script>
+
+                 function showUploadTimeslotCapacityForm() {
+
+                	 $(function() {
+             			$("#dialog").dialog({
+            				modal: true,
+            				width: 825,
+            				height: 400,
+            				buttons: {
+            					"Cancel": function() {
+            						$(this).dialog("close");
+            					}
+            				}
+             			});
+             		});
+        		 }
+
+                 function uploadTimeslotCapacity() {
+                	 //Callback handler for form submit event
+                	 $("#capacityform").submit(function(e)
+                	 {
+                		 
+                		 $('#result').html('');
+                	  
+                	     var formObj = $(this);
+                	     var formURL = formObj.attr("action");
+                	     var formData = new FormData(this);
+                	     
+                	     $.ajax({
+                	         url: formURL,
+                	     	 type: 'POST',
+                	         data:  formData,
+                	     	 mimeType:"multipart/form-data",
+                	         contentType: false,
+                	         cache: false,
+                	         processData:false,
+	                	     success: function(data, textStatus, jqXHR)
+	                	     {
+	                	  		$('#result').html(data);
+	                	     },
+	                	     error: function(jqXHR, textStatus, errorThrown) 
+	                	     {
+	                	    	 alert('Timeslot capacity upload failed');
+	                	     }
+                	     });
+                	     e.preventDefault(); //Prevent Default action.
+                	 });
+                	  
+                	 $("#capacityform").submit(); //Submit the form
+                 }
+             </script>
                 </td>
                 <td>
                   &nbsp;<form:errors path="rDate" />
@@ -240,10 +295,41 @@
                    </select>
                 
                 </td>
-                <td><span style="font-size: 12px">&nbsp;Auto Refresh :</span><input type="checkbox" name="autorefresh" id="autorefresh" <%= ("on".equalsIgnoreCase(request.getParameter("autorefresh")) ? "checked=\"true\"" : "false") %>  /></td>
+                <td><span style="font-size: 11px">&nbsp;Auto Refresh :</span><input type="checkbox" name="autorefresh" id="autorefresh" <%= ("on".equalsIgnoreCase(request.getParameter("autorefresh")) ? "checked=\"true\"" : "false") %>  /></td>
                    <td>
-                     <input type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doCompositeLink('rDate','cutOff','rType','autorefresh','condition','earlywarning.do')" />
-                  </td>  
+                     <input style="font-size:11px" type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doCompositeLink('rDate','cutOff','rType','autorefresh','condition','earlywarning.do')" />
+                  </td> 
+                  <td>
+                     <input style="font-size:11px" type = "button" value="&nbsp;Upload Capacity&nbsp;" onclick="javascript:showUploadTimeslotCapacityForm()" />
+                     <div style='display:none;' id="dialog" title="Timeslot Capacity Xls file Upload">
+						<form enctype="multipart/form-data" method="POST" action="uploadtimeslotcapacity.do" name="capacityform" id="capacityform">
+							<table cellspacing="0" cellpadding="0" class="tableForm">
+								<thead>
+									<tr>
+										<th>Timeslot Capacity File Upload</th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:if test="${not empty messages}">
+							          <tr>
+							            <td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
+							          </tr>
+							        </c:if>	
+									<tr>
+										<td><input type="file" class="input" name="fileToUpload" size="45" id="fileToUpload"></td>
+									</tr>
+									<tr>
+										<td>Please select a Xls file and click Upload button</td>
+									</tr>
+									<tr>
+										<td><input type = "button" id="buttonUpload" value="Upload" onclick="javascript:uploadTimeslotCapacity()"></input></td>
+									</tr>
+								</tbody>
+							</table>
+							<div id="result" width="800"></div>
+						</form>
+					</div>
+                  </td> 
                   
               </tr>
               </table>        
@@ -372,7 +458,7 @@
 										class="<%= _commandTS.getClosedCount() > 0 ? "timeslot_closed" : "timeslot_open" %>" 
 												value="<%= (_commandTS.getClosedCount() > 0 ? "C" : "O") %>" 
 														onclick="updateTimeslot(this, '<%= _commandTS.getReferenceId() %>', '0')"
-														<%= (com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request) ?  " " : " disabled=\"disabled\"") %> /></td>
+														<%= (com.freshdirect.transadmin.security.SecurityManager.isUserAdminOrPlanning(request) ?  " " : " disabled=\"disabled\"") %> /></td>
 								<%-- <td><input type="button" 
 										class="<%= _commandTS.getDynamicActiveCount() > 0 ? "dynamic_enabled" : "dynamic_disabled" %>" 
 												value="<%= (_commandTS.getDynamicActiveCount() > 0 ? "D" : "S") %>" 
@@ -393,14 +479,79 @@
 	    	} %>
 	    	
 	        </div>
+
 	        <script>
 		      addTSRowHandlers('ec_table', 'rowMouseOver');
 		      <% if(request.getParameter("cutOff") != null && request.getParameter("rType") != null && "true".equalsIgnoreCase(request.getParameter("autorefresh"))) { %>
 		      		doRefresh(<%= TransportationAdminProperties.getCapacityRefreshTime() %>);
 		      <% } %>
 		    </script>
-	     </div>     
-	  
+	     </div>
+
+	  			<style>
+
+						table.tableForm {
+						    border-collapse: collapse;
+						    margin: 1em auto;
+						}
+						
+						table.tableForm thead th {
+						    color: #FF0000;
+						    font: bold 11px Arial,Helvetica,sans-serif;
+						    padding: 4px 8px;
+						    text-align: left;
+						    text-transform: uppercase;
+						    white-space: nowrap;
+						}
+						
+						table.tableForm tbody td {
+						    padding: 4px 8px;
+						}
+						
+						.button {
+						    font: bold 12px Arial,Helvetica,sans-serif;
+						}
+						
+						table.summaryTable th, table.summaryTable td {
+							cursor: pointer;
+							cursor: hand;
+						}
+						table.summaryTable th.submenu {
+							border: 0px solid #fff;
+						}
+						table.summaryTable th.first {
+							border-right: 1px solid #fff;
+							border-left: 1px solid #fff;
+						}
+						table.summaryTable th.last {
+							border-right: 1px solid #fff;
+						}
+						table.summaryTable th {
+							border: 1px solid #fff;							
+						}
+						table.summaryTable td.first {
+							border: 1px dashed #fff;
+							border-left: 1px solid #fff;
+						}
+						table.summaryTable td.last {
+							border-right: 1px solid #fff;
+							border-bottom: 1px dashed #fff;	
+							padding: 2px;
+							align: left;
+						}
+						table.summaryTable td {
+							border-right: 1px dashed #fff;
+							border-bottom: 1px dashed #fff;			
+							color: #ffffff;
+						}
+						table.summaryTable td.red {
+							background-color: red;
+						}
+						table.summaryTable td.yellow {
+							background-color: yellow;			
+						}
+						
+					</style>
   </tmpl:put>
   
 </tmpl:insert>

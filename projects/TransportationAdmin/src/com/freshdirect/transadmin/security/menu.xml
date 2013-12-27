@@ -3,7 +3,7 @@
 
 	<menu id="MNM001" title="Scheduling" orientation="LEFT" link="">
 		<access-uris></access-uris>
-		<access-roles></access-roles>
+		<access-roles>TrnAdmin,TrnPlanning,TrnOperations</access-roles>
 		<menu id="SCH001" title="Scrib" orientation="LEFT" link="scrib.do">
 			<access-uris>scrib.do,editscrib.do,copyscrib.do,deletescrib.do,viewscriblabel.do</access-uris>
 			<access-roles>TrnAdmin,TrnPlanning,TrnOperations</access-roles>
@@ -32,7 +32,7 @@
 	<menu id="MNM002" title="Operations" orientation="LEFT" link="">
 
 		<access-uris></access-uris>
-		<access-roles></access-roles>
+		<access-roles>TrnAdmin,TrnPlanning,TrnOperations</access-roles>
 
 		<menu id="OPR001" title="Dispatch" orientation="LEFT" link="dispatch.do">
 			<access-uris>dispatch.do,deletedispatch.do,editdispatch.do,confirmdispatch.do,refreshRoute.do</access-uris>
@@ -81,7 +81,7 @@
 
 	<menu id="MNM003" title="Routing" orientation="LEFT" link="">
 		<access-uris></access-uris>
-		<access-roles></access-roles>
+		<access-roles>TrnAdmin,TrnGuest,TrnPlanning,TrnOperations</access-roles>
 
 		<menu id="RUT001" title="HandOff" orientation="RIGHT" link="handoff.do">
 			<access-uris>handoff.do</access-uris>
@@ -99,7 +99,7 @@
 		</menu>
 
 		<menu id="RUT006" title="Early Warning" orientation="LEFT"	link="earlywarning.do">
-			<access-uris>earlywarning.do</access-uris>
+			<access-uris>earlywarning.do,uploadtimeslotcapacity.do</access-uris>
 			<access-roles>TrnAdmin,TrnGuest,TrnPlanning,TrnOperations</access-roles>
 		</menu>
 
@@ -120,7 +120,7 @@
 
 	<menu id="MNM004" title="Geography" orientation="LEFT" link="">
 		<access-uris></access-uris>
-		<access-roles></access-roles>
+		<access-roles>TrnAdmin,TrnGuest,TrnPlanning,TrnOperations</access-roles>
 
 		<menu id="GEO001" title="Area" orientation="RIGHT" link="area.do">
 			<access-uris>area.do,deletearea.do,editarea.do</access-uris>
@@ -181,7 +181,7 @@
 
 	<menu id="MNM005" title="Admin" orientation="LEFT" link="">
 		<access-uris></access-uris>
-		<access-roles></access-roles>
+		<access-roles>TrnAdmin,TrnPlanning</access-roles>
 
 		<menu id="ADO001" title="Timeslot Log" orientation="RIGHT" link="timeslotlog.do">
 			<access-uris>timeslotlog.do</access-uris>

@@ -217,7 +217,7 @@ function sendElectricFleetCallback(result, exception) {
 	if (result !== null) {
 		socDriveFlag = result.map.EDF;
 		socReeferFlag = result.map.ERF;
-		if (socDriveFlag === 'Electric' || socDriveFlag === 'Diesel') {
+		if (socDriveFlag === 'Electric') {
 			$("#electricDrive").show();
 		}
 		if (socDriveFlag === 'Electric' && socReeferFlag === 'Electric') {

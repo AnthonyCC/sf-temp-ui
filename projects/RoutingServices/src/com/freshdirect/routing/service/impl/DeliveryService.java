@@ -44,6 +44,7 @@ import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.IZoneScenarioModel;
 import com.freshdirect.routing.model.ServiceTime;
+import com.freshdirect.routing.model.TimeslotCapacityModel;
 import com.freshdirect.routing.proxy.stub.transportation.DirectionData;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingRoute;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSession;
@@ -694,6 +695,15 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 			LOGGER.debug("Unable to flag expired reservations."+e.toString());
 		}
 		
+	}
+	
+	public void updateTimeslotMetrics(List<TimeslotCapacityModel> timeslotMetrics) throws RoutingServiceException {
+		try {
+			deliveryDAOImpl.updateTimeslotMetrics(timeslotMetrics);
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e,
+					"SQLException in updateTimeslotMetrics() call ");
+		}
 	}
 
 }

@@ -16,6 +16,7 @@ import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IUnassignedModel;
+import com.freshdirect.routing.model.TimeslotCapacityModel;
 
 public interface IDeliveryDetailsDAO {
 	
@@ -82,5 +83,7 @@ public interface IDeliveryDetailsDAO {
 			Date deliveryDate, Date cutOff) throws SQLException;
 
 	void flagExpiredReservations() throws SQLException;
+	
+	void updateTimeslotMetrics(List<TimeslotCapacityModel> timeslotMetrics) throws SQLException;
 	
 }

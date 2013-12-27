@@ -10,8 +10,8 @@ import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.delivery.DepotLocationModel;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
-import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
+import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.framework.util.EnumLogicalOperator;
 import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.IDeliveryModel;
@@ -26,6 +26,7 @@ import com.freshdirect.routing.model.IServiceTime;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.model.IZoneModel;
+import com.freshdirect.routing.model.TimeslotCapacityModel;
 import com.freshdirect.routing.service.IDeliveryService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
@@ -151,6 +152,10 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 
 	public void flagExpiredReservations() {
 		getService().flagExpiredReservations();
+	}
+	
+	public void updateTimeslotMetrics(List<TimeslotCapacityModel> timeslotMetrics) {
+		getService().updateTimeslotMetrics(timeslotMetrics);
 	}
 
 }

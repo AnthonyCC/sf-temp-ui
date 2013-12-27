@@ -79,5 +79,30 @@ public interface IDeliveryWindowMetrics {
 	void setOrderPremiumCapacity(int orderPremiumCapacity);
 
 	void setOrderPremiumCtCapacity(int orderPremiumCtCapacity);
+	
+	Date getDeliveryDate();
+
+	void setDeliveryDate(Date deliveryDate);
+	
+	int getBaseAllocation();
+
+	void setBaseAllocation(int baseAllocation);
+
+	int getChefsTableAllocation();
+
+	void setChefsTableAllocation(int chefsTableAllocation);
+
+	int getPremiumAllocation();
+
+	void setPremiumAllocation(int premiumAllocation);
+
+	int getPremiumCtAllocation();
+
+	void setPremiumCtAllocation(int premiumCtAllocation);
+	
+	boolean isDynamic();
+
+	void setDynamic(boolean isDynamic);
+	
 
 }

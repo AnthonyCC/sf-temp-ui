@@ -4,16 +4,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.core.SqlParameter;
+import org.springframework.jdbc.object.BatchSqlUpdate;
 
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
@@ -47,10 +51,12 @@ import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IDeliveryModel;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
+import com.freshdirect.routing.model.IHandOffBatchTrailer;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IRegionModel;
+import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IUnassignedModel;
@@ -61,6 +67,7 @@ import com.freshdirect.routing.model.PackagingModel;
 import com.freshdirect.routing.model.RegionModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.model.ServiceTimeTypeModel;
+import com.freshdirect.routing.model.TimeslotCapacityModel;
 import com.freshdirect.routing.model.UnassignedModel;
 import com.freshdirect.routing.model.ZoneModel;
 import com.freshdirect.routing.util.RoutingUtil;
@@ -132,17 +139,20 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	private static final String UPDATE_TIMESLOTCUTUFF_QRYAPPEND = " and tx.cutoff_time = (select cutoff_time from transp.trn_cutoff c where c.id = ?) ";
 	
 	private static final String EARLY_WARNING_QUERY =
-		"select code, name, st, et, rst, ret, sum(orders) as total_order, sum(capacity) as capacity, "
+		"select base_date, code, name, st, et, rst, ret, is_dynamic, sum(orders) as total_order, sum(capacity) as capacity, "
 			+ "sum(total_alloc) as total_alloc, "
-			+ "sum(premium_alloc) as premium_alloc, "	
-			+ "sum(base_orders) as base_orders, "
 			+ "sum(base_alloc) as base_alloc, "
+			+ "sum(base_orders) as base_orders, "
 			+ "sum(ct_capacity) as ct_capacity, "
 			+ "sum(ct_alloc) as ct_alloc, "
-			+ "sum(ct_orders) as ct_orders "			
+			+ "sum(ct_orders) as ct_orders, "
+			+ "sum(premium_capacity) as premium_capacity, "
+			+ "sum(premium_alloc) as premium_alloc, "
+			+ "sum(premium_basealloc) as premium_basealloc, "
+            + "sum(premium_ct_alloc) as premium_ct_alloc "
 			+ "from "
 			+ "( "
-			+ "select z.zone_code as code, z.name, ts.capacity, ts.ct_capacity, ts.START_TIME st, ts.END_TIME et, ts.ROUTING_START_TIME rst, ts.ROUTING_END_TIME ret, z.ct_active as ct_active, "
+			+ "select z.zone_code as code, z.name, ts.base_date, ts.capacity, ts.ct_capacity,  ts.premium_capacity, ts.START_TIME st, ts.END_TIME et, ts.ROUTING_START_TIME rst, ts.ROUTING_END_TIME ret, z.ct_active as ct_active, ts.is_dynamic, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = '10' ) as orders, "
 			+ "decode((sysdate-(TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time - (z.ct_release_time/60/24), 'HH24:MI:SS'), " 
 			+ "'YYYY-MM-DD HH24:MI:SS'))- abs(sysdate-(TO_DATE(TO_CHAR(ts.base_date - 1, 'YYYY-MM-DD')||' '||to_char(ts.cutoff_time - (z.ct_release_time/60/24), " 
@@ -153,13 +163,14 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			+ "'YYYY-MM-DD HH24:MI:SS'))- abs(sysdate-(TO_DATE(TO_CHAR(ts.base_date, 'YYYY-MM-DD')||' '||to_char(ts.premium_cutoff_time - (z.premium_ct_release_time/60/24), " 
 			+ "'HH24:MI:SS'), 'YYYY-MM-DD HH24:MI:SS')))),0,(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> '15' and status_code <> '20' " 
 			+ "and class is not null),(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> '15' and status_code <> '20' and class = 'P')+ts.premium_ct_capacity) as premium_alloc, "
+			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> '15' and status_code <> '20' and chefstable = ' ' and class = 'P') as premium_basealloc, "
+			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> '15' and status_code <> '20' and chefstable = 'X' and class = 'PC') as premium_ct_alloc, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = '10' and chefstable = ' ' and class is null) as base_orders, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> '15' and status_code <> '20' and chefstable = ' ' and class is null) as base_alloc, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> '15' and status_code <> '20' and chefstable = 'X' and class is null) as ct_alloc, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = '10' and chefstable = 'X' and class is null) as ct_orders "
 			+ "from dlv.timeslot ts, dlv.zone z "
-			+ "where ts.zone_id=z.id and ts.capacity<>0 and ts.base_date = ? "//and ts.CUTOFF_TIME =  ? "
-			//+ ") group by code, name, st, et order by code "
+			+ "where ts.zone_id=z.id and ts.base_date = ? "
 			;
 			
 	private static final String ORDERSIZE_ESTIMATION_QUERY = "select Ceil(Avg(tbl.NUM_REGULAR_CARTONS)) CCOUNT, " +
@@ -542,7 +553,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			query.append(" and ((ts.premium_cutoff_Time is not null and ts.premium_cutoff_Time "+conditionValue+" ?) or (ts.premium_cutoff_Time is null and ts.CUTOFF_TIME "+conditionValue+" ?))");
 		}
 		
-		query.append(") group by code, name, st, et, rst, ret order by code");
+		query.append(") group by code, name, base_date, st, et, rst, ret, is_dynamic order by code");
 		
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
@@ -566,6 +577,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		IDeliveryWindowMetrics metrics = new DeliveryWindowMetrics();				    		
 				    		String zCode = rs.getString("code");
 				    		
+				    		metrics.setDeliveryDate(rs.getDate("base_date"));
 				    		metrics.setDisplayStartTime(rs.getTimestamp("st"));
 				    		metrics.setDisplayEndTime(rs.getTimestamp("et"));
 				    		metrics.setDeliveryStartTime((rs.getTimestamp("rst")!=null)?rs.getTimestamp("rst"):metrics.getDisplayStartTime());
@@ -574,6 +586,12 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		metrics.setOrderCapacity(rs.getInt("capacity"));
 				    		metrics.setTotalConfirmedOrders(rs.getInt("total_order"));
 				    		metrics.setTotalAllocatedOrders(rs.getInt("total_alloc"));
+				    		
+				    		metrics.setBaseAllocation(rs.getInt("base_alloc"));
+				    		metrics.setChefsTableAllocation(rs.getInt("ct_alloc"));
+				    		metrics.setPremiumAllocation(rs.getInt("premium_basealloc"));
+				    		metrics.setPremiumCtAllocation(rs.getInt("premium_ct_alloc"));
+				    		metrics.setDynamic("X".equalsIgnoreCase(rs.getString("is_dynamic")) ? true : false);
 				    		
 				    		if(!timeslotByZone.containsKey(zCode)) {
 				    			timeslotByZone.put(zCode, new ArrayList<IDeliveryWindowMetrics>());
@@ -1372,6 +1390,44 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			
 		}finally{
 			if(connection!=null) connection.close();
+		}
+	}
+
+	private static final String UPDATE_TIMESLOT_METRICS = " UPDATE DLV.TIMESLOT T set T.CAPACITY = ?, T.CT_CAPACITY = ?, T.PREMIUM_CAPACITY = ?, T.PREMIUM_CT_CAPACITY = ? "
+			+ " WHERE T.ID IN (SELECT TS.ID FROM DLV.TIMESLOT TS, DLV.ZONE Z WHERE Z.ID = TS.ZONE_ID AND TS.BASE_DATE = ? AND TS.START_TIME = ? AND TS.END_TIME = ? AND Z.ZONE_CODE = ? ) ";
+
+	public void updateTimeslotMetrics(List<TimeslotCapacityModel> timeslotMetrics) throws SQLException {
+		Connection connection = null;
+		try {
+			BatchSqlUpdate batchUpdater = new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),	UPDATE_TIMESLOT_METRICS);
+			batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));			
+			batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
+			batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
+			batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
+			batchUpdater.declareParameter(new SqlParameter(Types.DATE));
+			batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
+			batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			
+			batchUpdater.compile();
+			
+			connection = this.jdbcTemplate.getDataSource().getConnection();
+			
+			for(TimeslotCapacityModel _tsMetric : timeslotMetrics) {				
+				batchUpdater.update(new Object[] { _tsMetric.getCapacity(),
+													_tsMetric.getChefsTableCapacity(),
+													_tsMetric.getPremiumCapacity(),
+													_tsMetric.getPremiumCtCapacity(),
+													_tsMetric.getBaseDate(),
+													_tsMetric.getStartTime(),
+													_tsMetric.getEndTime(),
+													_tsMetric.getArea()
+				});
+			}	
+			batchUpdater.flush();
+		} finally {
+			if (connection != null)
+				connection.close();
 		}
 	}
 }

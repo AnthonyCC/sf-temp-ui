@@ -26,6 +26,7 @@ import com.freshdirect.routing.model.IServiceTime;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.model.IZoneModel;
+import com.freshdirect.routing.model.TimeslotCapacityModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 
 public interface IDeliveryService {
@@ -90,4 +91,6 @@ public interface IDeliveryService {
 			Date deliveryDate, Date cutOff);
 
 	void flagExpiredReservations();
+	
+	void updateTimeslotMetrics(List<TimeslotCapacityModel> timeslotMetrics) throws RoutingServiceException;
 }
