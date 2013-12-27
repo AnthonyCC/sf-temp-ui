@@ -18,6 +18,7 @@ import javax.naming.NamingException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
+
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmSystemCaseInfo;
@@ -52,6 +53,9 @@ import com.freshdirect.payment.AuthorizationCommand;
 import com.freshdirect.payment.AuthorizationStrategy;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.PaymentManager;
+import com.freshdirect.payment.gateway.Gateway;
+import com.freshdirect.payment.gateway.GatewayType;
+import com.freshdirect.payment.gateway.impl.GatewayFactory;
 
 public class PaymentManagerSessionBean extends SessionBeanSupport {
 
@@ -485,20 +489,22 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 	}
 
 	private ErpCaptureModel captureAuthorization(String saleId, ErpAuthorizationModel auth) throws ErpTransactionException {
+		
+		
 		try {
 
 			ErpSaleEB saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-
 			ErpPaymentMethodI paymentMethod = saleEB.getCurrentOrder().getPaymentMethod();
 			ErpCaptureModel capture = null;
+			String orderNumber =auth.getGatewayOrderID();
 			if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
 				List<ErpCaptureModel> captures = saleEB.getCaptures();
 				int captureCount = (captures != null) ? captures.size() : 0;
-				String orderNumber = saleId + "X" + captureCount;
-				capture = CPMServerGateway.captureECAuthorization(auth, paymentMethod, auth.getAmount(), auth.getTax(), orderNumber);
-			} else {
-				capture = CPMServerGateway.captureCCAuthorization(auth, auth.getAmount(), auth.getTax());
-			}
+				orderNumber = saleId + "X" + captureCount;
+			} 
+			PaymentGatewayContext context = new PaymentGatewayContext(StringUtils.isEmpty(paymentMethod.getProfileID())?GatewayType.CYBERSOURCE:GatewayType.PAYMENTECH, null);
+			Gateway gateway = GatewayFactory.getGateway(context);	
+			gateway.capture(auth, paymentMethod, auth.getAmount(),  auth.getTax(), orderNumber);
 			saleEB.addCapture(capture);
 			return capture;
 		} catch (Exception e) {

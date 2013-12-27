@@ -165,8 +165,18 @@ final class PaymentechRequestHelper {
 						StringUtils.substring(paymentMethod.getCity(), 0, 20));
 			}
 			if(!StringUtil.isEmpty(paymentMethod.getState())) {
+				
+				String state="";
+				if(paymentMethod.getState().length()!=2) {
+					if(paymentMethod.getState().length()<2)
+						state=StringUtils.leftPad(paymentMethod.getState(), 2, '0');
+					else 
+						state=StringUtils.substring(paymentMethod.getState(), 0, 2);
+				} else {
+					state=paymentMethod.getState();
+				}
 				request.setFieldValue(PaymentechFields.ProfileRequest.CustomerState.name(),
-						StringUtils.substring(paymentMethod.getState(), 0, 2));
+						state);
 			}
 			if(!StringUtil.isEmpty(paymentMethod.getZipCode())) {
 				request.setFieldValue(PaymentechFields.ProfileRequest.CustomerZIP.name(),
