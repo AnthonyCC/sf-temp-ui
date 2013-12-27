@@ -808,6 +808,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
     			//check that site access isn't returning an error from the POST...
     			if ("FALSE".equals(noMobile) && "GET".equals(request.getMethod())){
 					try {
+						request.setAttribute("origReqUri", request.getRequestURI());
 						request.getRequestDispatcher("/mobile/index.jsp").forward(request, response);
 					} catch (ServletException e) {
 						throw new JspException(e);

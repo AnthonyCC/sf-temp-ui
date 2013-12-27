@@ -33,6 +33,10 @@
 	//put in baseUrl
 		String baseUrl = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort();
 		params.put("baseUrl", baseUrl);
+		String origReqUri = (request.getAttribute("origReqUri") != null) ? request.getAttribute("origReqUri").toString() : "";
+		if (!"".equals(origReqUri)) {
+			params.put("origReqUri", origReqUri);
+		}
 		params.put("context", request.getRequestURI());
 
 	//put in device type
