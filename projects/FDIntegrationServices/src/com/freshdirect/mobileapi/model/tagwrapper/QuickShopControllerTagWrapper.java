@@ -49,6 +49,23 @@ public class QuickShopControllerTagWrapper extends NonStandardControllerTagWrapp
 
         return result;
     }
+    
+    public ResultBundle getQuickCartFromStarterList(String starterListId) throws FDException {
+        addExpectedSessionValues(new String[] { SESSION_PARAM_USER, SESSION_PARAM_FD_QUICKCART },
+                new String[] { SESSION_PARAM_FD_QUICKCART }); //gets,sets
+        addExpectedRequestValues(new String[] { REQ_PARAM_ORDER_ID, REQ_PARAM_FD_ACTION, REQ_PARAM_QUICK_SHOP_DEPT_ID, REQ_PARAM_SORT_BY,
+                REQ_PARAM_QUICK_CART }, new String[] { REQ_PARAM_QUICK_CART, "loadedCclList" });//gets,sets
+
+        ((QuickShopControllerTag) wrapTarget).setStarterListId(starterListId);
+        ((QuickShopControllerTag) wrapTarget).setId(QUICK_CART_ID);
+        ((QuickShopControllerTag) wrapTarget).setAction("");
+
+        ResultBundle result = new ResultBundle(executeTagLogic(), this);
+
+        result.addExtraData(QUICK_CART_ID, getResult());
+
+        return result;
+    }
 
     @Override
     protected void setResult() {

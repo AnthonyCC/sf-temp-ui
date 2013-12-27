@@ -217,9 +217,10 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 										throw new RoutingServiceException("Order Number "+_stop.getOrderNumber()+" is not in the system for the cutoff. Check the routing session"
 												, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 									
-									
-									breaksperRoute.addAll(breaks.get(_stop.getOrderNumber()).getBreaks());
-									windowsperRoute.addAll(breaks.get(_stop.getOrderNumber()).getWindows());
+									if(breaks.get(_stop.getOrderNumber())!=null){
+										breaksperRoute.addAll(breaks.get(_stop.getOrderNumber()).getBreaks());
+										windowsperRoute.addAll(breaks.get(_stop.getOrderNumber()).getWindows());
+									}
 									
 									_stops.add(_stop);
 									s_stop = new HandOffBatchStop(_stop);

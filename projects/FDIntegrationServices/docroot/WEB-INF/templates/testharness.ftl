@@ -364,6 +364,14 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/orders/quickshop/");
   	$("#payload").val('{"page" : "1"}');
   	$("#result").val("");
+  } else if (loaddata == "FdLists") {
+  	$("#url").val("/saptest12@freshdirect.com/starterlists/");
+  	$("#payload").val('{"page" : "1"}');
+  	$("#result").val("");
+  } else if (loaddata == "QuickShopFdLists") {
+  	$("#url").val("/saptest12@freshdirect.com/starterlist/id/list_basics/quickshop/");
+  	$("#payload").val("");
+  	$("#result").val("");
   } else if (loaddata == "QuickShopLists") {
   	$("#url").val("/saptest12@freshdirect.com/shoppinglist/id/2153098981/quickshop/");
   	$("#payload").val("");
@@ -736,6 +744,8 @@ function doStuff() {
   <option value="OrderHistoryQuickshop">QUICKSHOP - Previous Orders</option>
   <option value="QuickShopOrder">QUICKSHOP - Shop from Order</option>
   <option value="ShoppingLists">QUICKSHOP - Shopping Lists</option>
+  <option value="FdLists">QUICKSHOP - Fd Lists</option>
+  <option value="QuickShopFdLists">QUICKSHOP - Shop from Fd Lists</option>
   <option value="QuickShopLists">QUICKSHOP - Shop from Shopping List</option>
   <option value="QuickShopEveryItemOrderedDept">QUICKSHOP - Department Everything You've Ever Ordered!</option>
   <option value="QuickShopEveryItemOrdered">QUICKSHOP - Everything You've Ever Ordered!</option>

@@ -312,6 +312,44 @@ public class SessionUser {
         }
         return result;
     }
+    
+    public List<ProductConfiguration> getStarterListProducts(String starterListId) throws FDException, ModelException {
+        List<ProductConfiguration> result = new ArrayList<ProductConfiguration>();
+
+        QuickShopControllerTagWrapper wrapper = new QuickShopControllerTagWrapper(this);
+
+        ResultBundle resultBundle = wrapper.getQuickCartFromStarterList(starterListId);
+        QuickCart quickCart = (QuickCart) resultBundle.getExtraData(QuickShopControllerTagWrapper.QUICK_CART_ID);
+
+        List<FDProductSelectionI> products = quickCart.getProducts();
+        List<FDCartLineI> cartLines = getShoppingCart().getOrderLines();
+
+        for (FDProductSelectionI product : products) {
+
+            ProductConfiguration productConfiguration = new ProductConfiguration();
+            try {
+                Product productData = Product.wrap(product.getProductRef().lookupProductModel(), this.sessionUser.getUser(), null, EnumCouponContext.PRODUCT);
+                Sku sku = productData.getSkyByCode(product.getSkuCode());
+                if(sku != null) {
+                    productConfiguration.populateProductWithModel(productData, com.freshdirect.mobileapi.controller.data.Sku.wrap(sku));
+                } else {
+                    productConfiguration.populateProductWithModel(productData, product.getSkuCode());
+                }
+            } catch (ModelException e) {
+                throw new FDResourceException(e);
+            }
+            
+            productConfiguration.setFromProductSelection(ProductSelection.wrap(product));
+
+            for (FDCartLineI cartLine : cartLines) {
+                if (OrderLineUtil.isSameConfiguration(cartLine, product)) {
+                    productConfiguration.getProduct().setInCart(true);
+                }
+            }
+            result.add(productConfiguration);
+        }
+        return result;
+    }
 
     public void setFDUserOnConfigurationContext(ConfigurationContext confContext) {
         confContext.setFDUser(sessionUser);

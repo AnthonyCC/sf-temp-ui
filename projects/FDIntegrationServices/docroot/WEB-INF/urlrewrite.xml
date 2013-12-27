@@ -370,6 +370,18 @@
 		<from>^/v/([0-9]+)/(.*)/orders/quickshop/</from>
 		<to last="true">/order.do?action=getquickshoporders&amp;ver=$1</to>
 	</rule>
+	
+	<!--  FD Lists -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/starterlists/</from>
+		<to last="true">/shoppinglist.do?action=getStarterLists&amp;ver=$1</to>
+	</rule>
+	
+	<!-- Shop from  FD Lists  -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/starterlist/id/(.*)/quickshop/</from>
+		<to last="true">/shoppinglist.do?action=getStarterListProducts&amp;listId=$3&amp;ver=$1</to>
+	</rule>
 
 	<!-- Modify Order -->
 	<rule>

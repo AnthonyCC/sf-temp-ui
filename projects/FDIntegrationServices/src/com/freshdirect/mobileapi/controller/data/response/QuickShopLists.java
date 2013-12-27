@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.pricing.PricingException;
+import com.freshdirect.fdstore.content.StarterList;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.model.CustomerCreatedList;
 import com.freshdirect.mobileapi.model.OrderInfo;
@@ -58,6 +59,14 @@ public class QuickShopLists extends Message {
         QuickShopLists newInstance = new QuickShopLists();
         for (CustomerCreatedList list : lists) {
             newInstance.lists.add(new QuickShopList(list.getId(), list.getName(), Integer.toString(list.getCount())));
+        }
+        return newInstance;
+    }
+    
+    public static QuickShopLists initWithStarterList(List<StarterList> lists) {
+        QuickShopLists newInstance = new QuickShopLists();
+        for (StarterList list : lists) {
+            newInstance.lists.add(new QuickShopList(list.getContentKey().getId(), list.getFullName(), Integer.toString(list.getListContents().size())));
         }
         return newInstance;
     }
