@@ -1,6 +1,8 @@
 package com.freshdirect.webapp.util;
 
+import java.net.InetAddress;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.regex.Pattern;
 
@@ -114,5 +116,14 @@ public class RequestUtil {
 			ip = request.getRemoteAddr();
 		}
 		return ip;
+	}
+	public static String getServerName(){
+		try {
+			return InetAddress.getLocalHost().getHostName();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
 	}
 }

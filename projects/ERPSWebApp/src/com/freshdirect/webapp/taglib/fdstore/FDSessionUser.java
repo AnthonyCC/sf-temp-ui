@@ -248,6 +248,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		        		sessionEvent.setCustomerId(user.getIdentity().getErpCustomerPK());
 		        		sessionEvent.setLoginTime(loginTime);
 		        		sessionEvent.setLogoutTime(new Date());
+		        		sessionEvent.setClientIp(user.getClientIp());
+		        		sessionEvent.setServerName(user.getServerName());
 		        		EventLog.getInstance().logEvent(sessionEvent);
 	        		}
 	        	}
@@ -1646,5 +1648,21 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setAnyNewOrder(boolean anyNewOrder) {
 		this.user.setAnyNewOrder(anyNewOrder);
 		
+	}
+	
+	public String getClientIp() {
+		return this.user.getClientIp();
+	}
+
+	public void setClientIp(String clientIp) {
+		this.user.setClientIp(clientIp);
+	}
+
+	public String getServerName() {
+		return this.user.getServerName();
+	}
+
+	public void setServerName(String serverName) {
+		this.user.setServerName(serverName);
 	}
 }

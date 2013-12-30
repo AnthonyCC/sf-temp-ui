@@ -19,7 +19,8 @@ public class SessionEvent extends EventModel{
 	private String pageType;
 	private String sector;
 	private String sameDay;
-	
+	private String clientIp;
+	private String serverName;
 	public String getCustomerId() {
 		return customerId;
 	}
@@ -103,5 +104,17 @@ public class SessionEvent extends EventModel{
 	}
 	public void setSameDay(String sameDay) {
 		this.sameDay = sameDay;
+	}
+	public String getClientIp() {
+		return clientIp;
+	}
+	public void setClientIp(String clientIp) {
+		this.clientIp = clientIp;
+	}
+	public String getServerName() {
+		return serverName;
+	}
+	public void setServerName(String serverName) {
+		this.serverName = serverName;
 	}
 }

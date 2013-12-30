@@ -277,6 +277,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	private boolean anyNewOrder = false;
 	
+	private String clientIp;
+	private String serverName;
+	
 
 	public String getTsaPromoCode() {
 		return tsaPromoCode;
@@ -2756,5 +2759,21 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public void setAnyNewOrder(boolean anyNewOrder) {
 		this.anyNewOrder = anyNewOrder;
+	}
+
+	public String getClientIp() {
+		return clientIp;
+	}
+
+	public void setClientIp(String clientIp) {
+		this.clientIp = clientIp;
+	}
+
+	public String getServerName() {
+		return serverName;
+	}
+
+	public void setServerName(String serverName) {
+		this.serverName = serverName;
 	}
 }

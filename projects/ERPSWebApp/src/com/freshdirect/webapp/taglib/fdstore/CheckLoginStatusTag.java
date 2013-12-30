@@ -315,6 +315,8 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         // Set/clear masquerade agent for activity logging
         if (user != null) {
             FDActionInfo.setMasqueradeAgentTL(user.getMasqueradeAgent());
+            user.setClientIp(RequestUtil.getClientIp(request));
+            user.setServerName(RequestUtil.getServerName());
         }
 
         /*
