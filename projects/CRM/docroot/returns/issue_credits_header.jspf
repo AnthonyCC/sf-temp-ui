@@ -7,7 +7,7 @@
 <%
 	/* bindings */
 	final Set _is_orderLines			= (Set) request.getAttribute("__issue_credits_orderlines");
-	final String _is_groupName			= (String) request.getAttribute("__issue_credits_groupName");
+	final Integer _is_groupName			= (Integer) request.getAttribute("__issue_credits_groupName");
 	final FDCartonInfo _is_cartonInfo	= (FDCartonInfo) request.getAttribute("__issue_credits_cartonInfo");
 
 
