@@ -27,7 +27,7 @@ String _is_lastdept					= (String) request.getAttribute("__is__lastdept");
 FDCartLineI _is_orderline			= (FDCartLineI) request.getAttribute("__issue_credit_orderline");
 List _is_lineComplaints				= (List) request.getAttribute("__issue_credit_lineComplaints");
 ActionResult	_is_result			= (ActionResult) request.getAttribute("__issue_credit_actionResult");
-Integer	_is_cartonNumber			= (Integer) request.getAttribute("__issue_credit_cartonNumber");
+String	_is_cartonNumber			= (String) request.getAttribute("__issue_credit_cartonNumber");
 FDCartonDetail _is_detail			= (FDCartonDetail) request.getAttribute("__issue_credits_cartonDetail"); // optional
 Set multis							= (Set) request.getAttribute("__is__multiples");
 

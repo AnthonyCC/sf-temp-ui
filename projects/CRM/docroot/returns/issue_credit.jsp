@@ -353,7 +353,7 @@ var OL_PRICES = {};
 
 	    	// bind values
 	        request.setAttribute("__issue_credits_orderlines", orderLines);
-	        request.setAttribute("__issue_credits_groupName", Integer.parseInt(cartNum));
+	        request.setAttribute("__issue_credits_groupName", cartNum);
 	        request.setAttribute("__issue_credits_cartonInfo", cInfo);
 			request.setAttribute("__is__multiples", multipleOrderlines);
 %>
@@ -373,7 +373,7 @@ var OL_PRICES = {};
 		        request.setAttribute("__issue_credit_orderline", orderLine);
 		        request.setAttribute("__issue_credit_lineComplaints", lineComplaints);
 		        request.setAttribute("__issue_credit_actionResult", result);
-		        request.setAttribute("__issue_credit_cartonNumber", Integer.parseInt(cartNum));
+		        request.setAttribute("__issue_credit_cartonNumber", cartNum);
 		        request.setAttribute("__issue_credit_paramIndex", new Integer(i));
 		        request.setAttribute("__issue_credits_cartonDetail", cDetail);
 %>

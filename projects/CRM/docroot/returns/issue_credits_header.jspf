@@ -7,9 +7,8 @@
 <%
 	/* bindings */
 	final Set _is_orderLines			= (Set) request.getAttribute("__issue_credits_orderlines");
-	final Integer _is_groupName			= (Integer) request.getAttribute("__issue_credits_groupName");
+	final String _is_groupName			= (String) request.getAttribute("__issue_credits_groupName");
 	final FDCartonInfo _is_cartonInfo	= (FDCartonInfo) request.getAttribute("__issue_credits_cartonInfo");
-
 
   	Set __is_deptNames = OrderLineUtil.collectDepartmentNames(_is_orderLines);
   	Set cartonComplNames = ComplaintUtil.getReasonsForDepartments(__is_deptNames, (_is_cartonInfo == null) );
@@ -85,16 +84,14 @@
             <script type="text/javascript">
     
 	$E.on('<%= _is_groupName %>_complaints', 'change', function(e) {
-		populateComplaintLines('CR_'+<%= _is_groupName %>, this.value);
+		populateComplaintLines('CR_'+'<%= _is_groupName %>', this.value);
 		
 	});
 	
 	function populateComplaintLines(_is_groupName, thisVar){
-		
 		var mainObj = $('tbl_order_detail');
 		
 		var objs = $jq('select[cartonGroup|='+_is_groupName+']');
-		
 			//val(this.value)
 			for (var k=0; k<objs.length; k++) {				
 				$jq(objs[k]).val(thisVar);
@@ -116,7 +113,7 @@
             </SELECT>
 <script type="text/javascript">
 $E.on('<%= _is_groupName %>_cmethods', 'change', function(e) {
-	populateComplaintLines('CM_'+<%= _is_groupName %>, this.value);
+	populateComplaintLines('CM_'+'<%= _is_groupName %>', this.value);
 	
 });
 
