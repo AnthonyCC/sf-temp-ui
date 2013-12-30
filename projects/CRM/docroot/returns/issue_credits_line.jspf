@@ -189,7 +189,7 @@ boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].
 <%
 		for (Iterator it=ComplaintUtil.getReasonsForDepartment(deptDesc, (_is_detail == null) ).iterator(); it.hasNext();) {
 			com.freshdirect.customer.ErpComplaintReason reason = (com.freshdirect.customer.ErpComplaintReason) it.next();
-%>				<OPTION value="<%= reason.getReason() %>" <%= ( _is_form_reason != null && reason.getId().equals(_is_form_reason[_is_index]) ) ? "SELECTED" : "" %>>
+%>				<OPTION value="<%= reason.getReason() %>" <%= ( _is_form_reason != null && reason.getReason().equals(_is_form_reason[_is_index]) ) ? "SELECTED" : "" %>>
 					<%= reason.getReason() %>
 				</OPTION>
 <%
