@@ -2744,7 +2744,9 @@ public class FDUser extends ModelSupport implements FDUserI {
     	if (getShoppingCart() != null && getShoppingCart().getDeliveryAddress() != null){
 			try {
 				String county = FDDeliveryManager.getInstance().getCounty(getShoppingCart().getDeliveryAddress());
-				if("SUFFOLK".equalsIgnoreCase(county)){
+				String zip = getShoppingCart().getDeliveryAddress().getZipCode();
+				String zipcodes = FDStoreProperties.getSuffolkZips();
+				if("SUFFOLK".equalsIgnoreCase(county) && (zipcodes.indexOf(zip)==-1) ){
 					return 99;
 				}
 			} catch (FDResourceException e) {
