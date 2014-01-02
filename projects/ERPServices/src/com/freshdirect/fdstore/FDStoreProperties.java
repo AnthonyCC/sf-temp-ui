@@ -635,6 +635,9 @@ public class FDStoreProperties {
 	private final static String PROP_WINE_ASSID="fdstore.wine.assid";
 	
 	private final static String PROP_PRODUCT_FEED_GENERATION_ENABLED = "prop.product.feed.gen.enabled";
+	
+	private final static String PROP_SUFFOLK_ZIPS = "prop.suffolk.zips";
+	
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -917,6 +920,8 @@ public class FDStoreProperties {
         defaults.put(PROP_FDWHATSGOOD_PEAKPRODUCE_ENABLED, "true");
         defaults.put(PROP_FDWHATSGOOD_BBLOCK_ENABLED, "false");
         defaults.put(PROP_FDWHATSGOOD_ROWS, "");
+        defaults.put(PROP_SUFFOLK_ZIPS, "11703,11725,11729,11731,11767,11787,11788,11798,11704,11746,11702");
+        
         defaults.put(PROP_FDWHATSGOOD_DEBUG_ENABLED, "false");
 
         defaults.put(DYNAMIC_ROUTING_ENABLED, "true");
@@ -2093,7 +2098,11 @@ public class FDStoreProperties {
     public static String getWhatsGoodRows() {
         return get(PROP_FDWHATSGOOD_ROWS);
     }
-
+    
+    public static String getSuffolkZips() {
+        return get(PROP_SUFFOLK_ZIPS);
+    }
+    
     public static boolean isWhatsGoodDebugOn() {
         return Boolean.valueOf(get(PROP_FDWHATSGOOD_DEBUG_ENABLED))
                       .booleanValue();
