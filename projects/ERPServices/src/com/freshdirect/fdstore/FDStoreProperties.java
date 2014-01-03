@@ -920,7 +920,7 @@ public class FDStoreProperties {
         defaults.put(PROP_FDWHATSGOOD_PEAKPRODUCE_ENABLED, "true");
         defaults.put(PROP_FDWHATSGOOD_BBLOCK_ENABLED, "false");
         defaults.put(PROP_FDWHATSGOOD_ROWS, "");
-        defaults.put(PROP_SUFFOLK_ZIPS, "11703,11725,11729,11731,11767,11787,11788,11798,11704,11746,11702");
+        defaults.put(PROP_SUFFOLK_ZIPS, "11703,11725,11729,11731,11767,11787,11788,11798,11704,11746,11702,11747");
         
         defaults.put(PROP_FDWHATSGOOD_DEBUG_ENABLED, "false");
 
