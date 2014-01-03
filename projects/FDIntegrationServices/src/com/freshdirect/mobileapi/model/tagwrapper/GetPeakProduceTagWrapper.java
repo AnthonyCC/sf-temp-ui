@@ -21,6 +21,12 @@ public class GetPeakProduceTagWrapper extends GetterTagWrapper {
         return (List<ProductModel>) getResult();
     }
 
+    public List<ProductModel> getPeakProduct(String globalPeakProduce) throws FDException {
+        ((GetPeakProduceTag) wrapTarget).setDeptId(departmentId);
+        ((GetPeakProduceTag) wrapTarget).setGlobalPeakProduceSku(globalPeakProduce);
+        return (List<ProductModel>) getResult();
+    }
+
     public String getDepartmentId() {
         return departmentId;
     }

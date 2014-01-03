@@ -27,6 +27,8 @@ public interface RequestParamName {
 
     //Add To Cart
     public static final String REQ_PARAM_SKU_CODE = "skuCode";
+        
+    public static final String REQ_PARAM_DEPARTMENT_ID = "departmentId";
 
     //Add To Cart
     public static final String REQ_PARAM_CATEGORY_ID = "catId";
@@ -287,4 +289,8 @@ public interface RequestParamName {
     public static final String REQ_PARAM_CM_PAGEID="coremetricsPageId";
     
     public static final String REQ_PARAM_CM_PAGECONTENT_HIERARCHY = "coremetricsPageContentHierarchy";  
+    
+    public static final String SMART_STORE_IMPRESSION = SessionName.IMPRESSION;
+    
+    public static final String REQ_PARAM_TABLE_WIDTH = "tableWidth";
 }

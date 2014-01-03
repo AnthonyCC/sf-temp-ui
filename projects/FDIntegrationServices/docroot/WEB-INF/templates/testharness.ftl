@@ -438,6 +438,26 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/smartstore/fdfavorite/");
   	$("#payload").val("");
   	$("#result").val("");
+  }else if (loaddata == "SSBestDealCarousel") {
+  	$("#url").val("/smartstore/bestdealcarousel/xxx/");
+  	$("#payload").val("");
+  	$("#result").val("");
+  }else if (loaddata == "SSYourFavoriteCarousel") {
+  	$("#url").val("/smartstore/yourfavouritecarousel/xxx/");
+  	$("#payload").val("");
+  	$("#result").val("");
+  }else if (loaddata == "SSPeakProduceCarousel") {
+  	$("#url").val("/smartstore/peakproducecarousel/xxx/");
+  	$("#payload").val("");
+  	$("#result").val("");
+  }else if (loaddata == "SSBestDealMeatCarousel") {
+  	$("#url").val("/smartstore/bestdealmeatcarousel/xxx/");
+  	$("#payload").val("");
+  	$("#result").val("");
+  }else if (loaddata == "SSDepartmentCarousel") {
+  	$("#url").val("/smartstore/carousel/xxx/");
+  	$("#payload").val("");
+  	$("#result").val("");
   }else if (loaddata == "WGDCategories") {
   	$("#url").val("/product/whatsgood/categories/");
   	$("#payload").val("");
@@ -757,6 +777,11 @@ function doStuff() {
   <option value="SSYourFavorite">SMARTSTORE - YourFavorite</option>
   <option value="SSFavorite">SMARTSTORE - Favorite (either FD or Yours)</option>
   <option value="SSFDFavorite">SMARTSTORE - FreshDirect Favorite</option>
+ <!-- <option value="SSYourFavoriteCarousel">SMARTSTORE - YourFavorite Carousel</option>
+  <option value="SSBestDealCarousel">SMARTSTORE - BestDeal Carousel</option>
+  <option value="SSPeakProduceCarousel">SMARTSTORE - Peak Produce Carousel</option>
+  <option value="SSBestDealMeatCarousel">SMARTSTORE - BestDeal Meat Carousel</option>  -->
+  <option value="SSDepartmentCarousel">SMARTSTORE - Department Carousel</option>  
   <option value=""> ========== CONTACT US ========== </option>
   <option value="ContactUsFormData">CONTACT US - Init</option>
   <option value="ContactUsSubmit">CONTACT US - Submit</option>

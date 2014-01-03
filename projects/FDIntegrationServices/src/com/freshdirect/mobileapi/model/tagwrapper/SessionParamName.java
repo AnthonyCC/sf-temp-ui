@@ -68,6 +68,10 @@ public interface SessionParamName {
      public static final String SESSION_PARAM_REGISTRATION_ORIG_ZIP_CODE = SessionName.REGISTRATION_ORIG_ZIP_CODE;
      
      public static final String SESSION_PARAM_AUTH_FAIL_MESSAGE = "authFailMessage"; 
+     
+     public static final String SMART_STORE_PREV_RECOMMENDATIONS = SessionName.SMART_STORE_PREV_RECOMMENDATIONS;
+     
+     public static final String SMART_STORE_IMPRESSION = SessionName.IMPRESSION;
     
 
 

@@ -40,7 +40,7 @@ public class WhatsGood {
      * Returns list of category Ids configured in the property file (or CMS)
      * @return
      */
-    private static String[] getWhatsGoodCategoryIds() {
+    protected static String[] getWhatsGoodCategoryIds() {
         /*
          * DUP: FDWebSite/docroot/whatsgood.jsp
          * LAST UPDATED ON: 12/10/2009

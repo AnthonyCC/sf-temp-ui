@@ -60,6 +60,10 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
     
     public final static EnumSiteFeature PAYMENTECH_GATEWAY=new EnumSiteFeature("Paymentech");
     
+    public final static EnumSiteFeature PEAK_PRODUCE = new EnumSiteFeature("PEAK_PRODUCE", true, "Peak Produce");
+    
+    public final static EnumSiteFeature WEEKS_MEAT_BEST_DEALS = new EnumSiteFeature("WEEKS_MEAT_BEST_DEALS", true, "Best Deals on Meat");
+    
     String name;
 	
 	/**

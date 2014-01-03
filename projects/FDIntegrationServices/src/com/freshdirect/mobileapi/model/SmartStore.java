@@ -1,6 +1,7 @@
 package com.freshdirect.mobileapi.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -17,8 +18,12 @@ import com.freshdirect.event.ImpressionLogger;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ConfiguredProductGroup;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.util.SortStrategyElement;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -28,6 +33,11 @@ import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.SmartStore.SmartStoreRecommendationContainer.SmartStoreRecommendationType;
+import com.freshdirect.mobileapi.model.tagwrapper.GetPeakProduceTagWrapper;
+import com.freshdirect.mobileapi.model.tagwrapper.ItemGrabberTagWrapper;
+import com.freshdirect.mobileapi.model.tagwrapper.ItemSorterTagWrapper;
+import com.freshdirect.mobileapi.model.tagwrapper.LayoutManagerWrapper;
+import com.freshdirect.mobileapi.model.tagwrapper.ProductGroupRecommenderTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.RequestParamName;
 import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.mobileapi.model.tagwrapper.UtilsWrapper;
@@ -38,6 +48,7 @@ import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.impl.AbstractRecommendationService;
 import com.freshdirect.smartstore.ymal.YmalUtil;
+import com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings;
 import com.freshdirect.webapp.taglib.smartstore.Impression;
 import com.freshdirect.webapp.util.ConfigurationContext;
 import com.freshdirect.webapp.util.ConfigurationStrategy;
@@ -50,6 +61,8 @@ import com.freshdirect.webapp.util.prodconf.SmartStoreConfigurationStrategy;
 public class SmartStore {
 
     public static final String RECOMMENDATION = "RECOMMENDATION";
+    
+    public static final String PEAKPRODUCE = "PEAKPRODUCE";
 
     private final static Category LOG = LoggerFactory.getInstance(SmartStore.class);
 
@@ -253,6 +266,207 @@ public class SmartStore {
 
         return resultBundle;
     }
+    
+    public ResultBundle getRecommendations(final String siteFeature, final String deptId, RequestData requestData,
+            final Recommendations previousRecommendations, final String previousImpression, final String page) {
+        Recommendations recommendations;
+        ResultBundle resultBundle = new ResultBundle();
+        resultBundle.setActionResult(new ActionResult());
+        Map<String, String> prd2recommendation = null;
+       
+        ProductGroupRecommenderTagWrapper wrapper = new ProductGroupRecommenderTagWrapper(siteFeature, deptId, user);
+        wrapper.addExpectedSessionValues(new String[] { SessionParamName.SESSION_PARAM_PREVIOUS_RECOMMENDATIONS,
+                SessionParamName.SESSION_PARAM_PREVIOUS_IMPRESSION, SessionParamName.SMART_STORE_PREV_RECOMMENDATIONS }, new String[] {
+                SessionParamName.SESSION_PARAM_PREVIOUS_RECOMMENDATIONS, SessionParamName.SESSION_PARAM_PREVIOUS_IMPRESSION });
+        wrapper.addExpectedRequestValues(new String[] { RequestParamName.REQ_PARAM_DEPARTMENT_ID, RequestParamName.SMART_STORE_IMPRESSION }, new String[] { RequestParamName.REQ_PARAM_DEPARTMENT_ID, RequestParamName.SMART_STORE_IMPRESSION });
+        try {
+			recommendations = wrapper.getFeatureRecommendations();
+		} catch (FDException o) {
+			FDException e = (FDException) o;
+	            LOG.error("Failed to retrieve recommendations", e);
+	            resultBundle.getActionResult().addError(
+	                    new ActionError("smartStore", "failed to retrieve recommendations: " + e.getMessage() + ", see log for details"));
+	            return resultBundle;
+		}
+              
+        // wrapper is used to save recommendations in the session
+        wrapper.addSessionValue(SessionParamName.SESSION_PARAM_PREVIOUS_RECOMMENDATIONS, recommendations);
+        resultBundle.setWrapper(wrapper);
+
+        List<ProductModel> rProds = recommendations != null ? recommendations.getProducts() : new ArrayList<ProductModel>();
+        Variant variant = recommendations != null ? recommendations.getVariant() : null;
+
+        SmartStoreRecommendationContainer smartStoreRecommendationContainer = new SmartStoreRecommendationContainer();
+        smartStoreRecommendationContainer.setLast(recommendations != null ? recommendations.isLastPage() : false);
+
+        SmartStoreRecommendationType type = null;
+        if (EnumSiteFeature.DYF.getName().equals(siteFeature))
+            type = SmartStoreRecommendationType.YOUR_FAVORITE;
+        else if (EnumSiteFeature.BRAND_NAME_DEALS.getName().equals(siteFeature))
+            type = SmartStoreRecommendationType.BRAND_NAME_DEALS;
+        
+        smartStoreRecommendationContainer.setType(type);
+
+        ConfigurationContext confContext = new ConfigurationContext();
+        user.setFDUserOnConfigurationContext(confContext);
+        ConfigurationStrategy cUtil = SmartStoreConfigurationStrategy.getInstance();
+        List<ProductImpression> impressions = new ArrayList<ProductImpression>();
+        for (ProductModel rProd : rProds) {
+            ProductImpression pi = cUtil.configure(rProd, confContext);
+            impressions.add(pi);
+        }
+
+        int rank = 1;
+        for (ProductImpression pi : impressions) {
+
+            ProductModel product = pi.getProductModel();
+            SmartStoreRecommendationProduct resultItem = new SmartStoreRecommendationProduct();
+            try {
+
+                if (product.getParentNode() instanceof ConfiguredProductGroup) {
+                    System.out.println("ConfiguredProductGroup");
+                }
+                resultItem.setProduct(Product.wrap(product, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
+
+                ProductLabeling pl = new ProductLabeling(user.getFDSessionUser(), product, variant.getHideBursts());
+                // added this using the thread local values
+                String trkd = prd2recommendation != null ? prd2recommendation.get(product.getContentKey().getId()) : pl.getTrackingCode();
+                resultItem.setTrackingCodeEx(trkd);
+                resultItem.setParameterBundle(StringEscapeUtils.unescapeHtml(FDURLUtil.getProductURI(product, recommendations.getVariant()
+                        .getId(), recommendations.getVariant().getSiteFeature().getName().toLowerCase(), trkd, rank, recommendations
+                        .getImpressionId(product))));
+
+                if (pi instanceof TransactionalProductImpression) {
+                    FDConfigurableI configuration = ((TransactionalProductImpression) pi).getConfiguration();
+                    for (Iterator iit = configuration.getOptions().entrySet().iterator(); iit.hasNext();) {
+                        Map.Entry entry = (Map.Entry) iit.next();
+                        resultItem.addOption(entry.getKey().toString(), entry.getValue().toString());
+                    }
+                }
+
+                // you should add the product model to the result only if it's generated
+                // otherwise the product property will be null
+                smartStoreRecommendationContainer.addProduct(resultItem);
+            } catch (ModelException e) {
+                LOG.debug("ModelException encountered while trying to wrap sku=" + pi.getSku().getSkuCode(), e);
+                continue;
+            }
+            rank++;
+        }
+
+        // clean up thread locals after use
+        // TODO fix required, see above (APPREQ-748)
+        AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.set(null);
+        AbstractRecommendationService.RECOMMENDER_STRATEGY_SERVICE_AUDIT.set(null);
+
+        resultBundle.addExtraData(RECOMMENDATION, smartStoreRecommendationContainer);
+
+        resultBundle.setActionResult(new ActionResult());
+
+        return resultBundle;
+    }
+    
+    public ResultBundle getPeakProduceProductList(String deptId) {
+    	List<Product> result = new ArrayList<com.freshdirect.mobileapi.model.Product>();
+		
+		ResultBundle resultBundle = new ResultBundle();
+        resultBundle.setActionResult(new ActionResult());
+        
+		if(deptId != null) {
+			GetPeakProduceTagWrapper wrapper = new GetPeakProduceTagWrapper(deptId, user);
+			wrapper.addExpectedRequestValues(new String[] { RequestParamName.REQ_PARAM_TABLE_WIDTH }, new String[] { RequestParamName.REQ_PARAM_TABLE_WIDTH });
+	        
+			try {
+				List<ProductModel> productModels = wrapper.getPeakProduct();
+				for (ProductModel pm : productModels) {
+					if (!pm.isUnavailable()) {
+						try {
+							result.add(Product.wrap(pm, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
+						} catch (ModelException e) {
+							LOG.warn("ModelException in a product in peak produce. continuing on, instead of failing on entire list.", e);
+						}
+					}
+				}
+				resultBundle.addExtraData(PEAKPRODUCE, result);
+			
+				resultBundle.setActionResult(new ActionResult());
+			} catch (FDException o) {
+				FDException e = (FDException) o;
+		            LOG.error("Failed to retrieve peak produce", e);
+		            resultBundle.getActionResult().addError(
+		                    new ActionError("smartStore", "failed to retrieve peak produce: " + e.getMessage() + ", see log for details"));
+		            return resultBundle;
+			}
+		} else {
+			LOG.error("Peak Produce: Department ID is NULL");
+            resultBundle.getActionResult().addError(
+                    new ActionError("Peak Produce: Department ID is NULL"));           
+		}
+        return resultBundle;
+    }
+    
+    public List<Product> getMeatBestDeals() {
+    	
+    	String[] categoryIds = WhatsGood.getWhatsGoodCategoryIds();
+
+        for (String categoryId : categoryIds) {            
+        	if ("mea_feat".equals(categoryId)) {
+            	return getProducts(categoryId, user);
+            }
+        }
+		return new ArrayList<Product>();
+	}
+    
+    @SuppressWarnings("unchecked")
+	public static List<Product> getProducts(String contentNodeId, SessionUser user) {
+        List<Product> result = new ArrayList<Product>();
+        List contents = new ArrayList();
+        try {               
+                ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(contentNodeId);
+                LayoutManagerWrapper layoutManagerTagWrapper = new LayoutManagerWrapper(user);
+                Settings layoutManagerSetting = layoutManagerTagWrapper.getLayoutManagerSettings(currentFolder);
+
+                //We have layout manager
+                if (layoutManagerSetting != null) {
+                    ItemGrabberTagWrapper itemGrabberTagWrapper = new ItemGrabberTagWrapper(user);
+                    if(currentFolder instanceof CategoryModel && null != ((CategoryModel)currentFolder).getProductPromotionType() &&ContentFactory.getInstance().isEligibleForDDPP()){
+                    	layoutManagerSetting.setFilterUnavailable(true);
+                    	List list = new ArrayList<SortStrategyElement>();
+                    	list.add(new SortStrategyElement(SortStrategyElement.NO_SORT));
+                    	layoutManagerSetting.setSortStrategy(list);
+                    }
+                    contents = itemGrabberTagWrapper.getProducts(layoutManagerSetting, currentFolder);
+
+                    ItemSorterTagWrapper sortTagWrapper = new ItemSorterTagWrapper(user);
+                    sortTagWrapper.sort(contents, layoutManagerSetting.getSortStrategy());
+
+                } else {
+                    //Error happened. It's a internal error so don't expose to user. just log and return empty list
+                    ActionResult layoutResult = (ActionResult) layoutManagerTagWrapper.getResult();
+                    if (layoutResult.isFailure()) {
+                        Collection<ActionError> errors = layoutResult.getErrors();
+                        for (ActionError error : errors) {
+                            LOG.error("Error while trying to retrieve meat best deals product: ec=" + error.getType() + "::desc="
+                                    + error.getDescription());
+                        }
+                    }
+                }
+
+                for (Object content : contents) {
+                    if (content instanceof ProductModel) {
+                        try {
+                            result.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
+                        } catch (Exception e) {
+                            //Don't let one rotten egg ruin it for the bunch
+                            LOG.error("ModelException encountered. Product ID=" + ((ProductModel) content).getFullName(), e);
+                        }
+                    }
+                }
+        } catch (FDException e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return result;
+    }
 
     private void alignPage(Recommendations recommendations, String page) {
         Integer n = null;
@@ -446,7 +660,7 @@ public class SmartStore {
     public static class SmartStoreRecommendationContainer {
 
         public enum SmartStoreRecommendationType {
-            FRESHDIRECT_FAVORITE, YOUR_FAVORITE, YOU_MIGHT_ALSO_LIKE
+            FRESHDIRECT_FAVORITE, YOUR_FAVORITE, YOU_MIGHT_ALSO_LIKE, BRAND_NAME_DEALS
         }
 
         private SmartStoreRecommendationType type;
@@ -540,4 +754,6 @@ public class SmartStore {
         }
 
     }
+
+	
 }

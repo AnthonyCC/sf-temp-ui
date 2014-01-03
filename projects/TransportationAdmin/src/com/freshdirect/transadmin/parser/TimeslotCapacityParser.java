@@ -2,7 +2,6 @@ package com.freshdirect.transadmin.parser;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -29,7 +28,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.TimeslotCapacityModel;
