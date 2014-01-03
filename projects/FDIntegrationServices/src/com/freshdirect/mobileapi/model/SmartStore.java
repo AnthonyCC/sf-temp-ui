@@ -436,7 +436,8 @@ public class SmartStore {
                     	layoutManagerSetting.setSortStrategy(list);
                     }
                     contents = itemGrabberTagWrapper.getProducts(layoutManagerSetting, currentFolder);
-
+                    layoutManagerSetting.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, false));
+                    
                     ItemSorterTagWrapper sortTagWrapper = new ItemSorterTagWrapper(user);
                     sortTagWrapper.sort(contents, layoutManagerSetting.getSortStrategy());
 
@@ -455,7 +456,9 @@ public class SmartStore {
                 for (Object content : contents) {
                     if (content instanceof ProductModel) {
                         try {
-                            result.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
+                        	if (!((ProductModel) content).isUnavailable()) {
+                        		result.add(Product.wrap((ProductModel) content, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
+                        	}
                         } catch (Exception e) {
                             //Don't let one rotten egg ruin it for the bunch
                             LOG.error("ModelException encountered. Product ID=" + ((ProductModel) content).getFullName(), e);
