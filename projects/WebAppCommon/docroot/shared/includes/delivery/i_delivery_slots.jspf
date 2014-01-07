@@ -157,6 +157,9 @@ if (timeslots.size() > 0) {
 		//fdTSDisplayInitializeFuncs.push( function(argsObj) { console.log('this is set in i_delivery_slots.jspf', argsObj.this);} );
 		
 		var timeslotChooserFunctions = {};
+		var varminslots = varminslots || {};
+		<logic:iterate id="slot" indexId="idx" collection="<%= timeslots.getTimeslotsFlat() %>" type="com.freshdirect.fdstore.FDTimeslot">varminslots['<%= slot.getTimeslotId() %>'] = "<%= slot.getMinOrderAmt()+ " "+slot.isMinOrderMet() %>";</logic:iterate>
+		
 		<% if (CrmSession.getCurrentAgent(session) != null || user.getMasqueradeAgent() != null) { 
 			/* do nothing */
 		} else { %>

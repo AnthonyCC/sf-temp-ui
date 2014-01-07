@@ -2443,17 +2443,26 @@ var fdTSDisplayInitializeFuncs = window['fdTSDisplayInitializeFuncs'] || [];
 	
 	function checkPremiumSlot(deliveryTimeSlotId, formId){
 		
-		new Ajax.Request('/checkout/check_premium_slot.jsp', {
-			parameters: {
-				deliveryTimeSlotId: deliveryTimeSlotId						
-			},
-			onComplete: function(transport) {
-				checkPremiumSlotPopup(transport.responseText, formId);
-			}
-		});	
-		return false;
-	}
+		if(deliveryTimeSlotId.indexOf("f_") == 0)
+			deliveryTimeSlotId = deliveryTimeSlotId.substr(2, deliveryTimeSlotId.length);
+		if (varminslots.hasOwnProperty(deliveryTimeSlotId)) {
+			var attributeStr = varminslots[deliveryTimeSlotId];
+			var attributes = attributeStr.split(" ");
+			if(attributes[1] == 'false'){
+				var url = '/overlays/variable_minnotmet_popup.jsp?amt='+attributes[0];
+				$jq(document).ready(function() {
+					vmo_overlayDialog = doOverlayDialogWithSpinner(url);
+					$jq('#choosenewtimeslot').live('click', function(e) { e.preventDefault(); vmo_overlayDialog.dialog('close'); });
 
+				});
+			} else{
+				document.forms[formId].submit();
+			}	
+		} else{
+			document.forms[formId].submit();
+		}
+	}
+/*
 	function checkPremiumSlotPopup(JSONstring, formId) {
 		var params = JSONstring.evalJSON(true);	
 		var url = '/overlays/variable_minnotmet_popup.jsp?amt='+params.minorderamt;
@@ -2466,4 +2475,4 @@ var fdTSDisplayInitializeFuncs = window['fdTSDisplayInitializeFuncs'] || [];
 		} else{
 			document.forms[formId].submit();
 		}
-	}
+	}*/

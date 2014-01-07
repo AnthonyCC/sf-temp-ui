@@ -142,7 +142,6 @@
 		<script type="text/javascript" style="display:none">
 					function step2Validator(formId) {
 						if (!$(formId)) { return false; }
-						<% /* first, check that the promo is valid */ %>
 						var premiumslots = document.getElementsByName('deliveryTimeslotId');
 						var premiumslotId ="";
 						for(var i =0;i<=premiumslots.length;i++){
