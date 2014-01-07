@@ -926,13 +926,16 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 		String vendorName = "";
 		try{
 			Collection asset = getAssetManagerService().getAsset(truckNumber, "TRUCK");
+			if(asset == null || (asset != null && asset.size() == 0))
+				asset = getAssetManagerService().getAsset(truckNumber, "TRAILER");
 			if(asset != null){
 				Set assetAttributes = ((Asset)asset.iterator().next()).getAssetAttributes();
 				if(assetAttributes != null && assetAttributes.size() > 0){
 					Iterator<AssetAttribute> itr = assetAttributes.iterator();
 					while(itr.hasNext()){
 						AssetAttribute attribute = itr.next();
-						if("Vendor - Truck".equalsIgnoreCase(attribute.getId().getAttributeType())){
+						if("Vendor - Truck".equalsIgnoreCase(attribute.getId().getAttributeType())
+								|| "Vendor - TRAILER".equalsIgnoreCase(attribute.getId().getAttributeType())){
 							vendorName = attribute.getAttributeValue();
 							break;
 						}						
