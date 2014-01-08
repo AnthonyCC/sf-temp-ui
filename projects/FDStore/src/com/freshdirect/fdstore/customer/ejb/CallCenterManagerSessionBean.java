@@ -3340,12 +3340,12 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		List<CustomerCreditModel> ccmList = new ArrayList<CustomerCreditModel>();
 		try {
 			conn = this.getConnection();
-			ps = conn.prepareStatement("select ID, to_char(order_Date, 'MM/DD/YYYY') as order_date, status, approved_by from cust.AUTO_LATE_DELIVERY order by order_date desc");
+			ps = conn.prepareStatement("select ID, order_Date as order_date, status, approved_by from cust.AUTO_LATE_DELIVERY order by order_date desc");
 			rset = ps.executeQuery();
 			while(rset.next()) {
 				CustomerCreditModel ccm = new CustomerCreditModel();
 				ccm.setId(rset.getString("ID"));
-				ccm.setOrderDate(rset.getString("order_date"));
+				ccm.setOrderDate(rset.getDate("order_date") != null ? DateUtil.formatDate(rset.getDate("order_date")) : null);
 				ccm.setStatus(rset.getString("status"));
 				ccm.setApprovedBy(rset.getString("approved_by"));
 				ccmList.add(ccm);
