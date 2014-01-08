@@ -194,6 +194,8 @@ public class MaintenanceLogFormController extends AbstractFormController {
 
 				if(_command.getTruckNumber() != null){
 					Collection asset = getAssetManagerService().getAsset(_command.getTruckNumber(), "TRUCK");
+					if(asset == null || (asset != null && asset.size() == 0))
+						asset = getAssetManagerService().getAsset(_command.getTruckNumber(), "TRAILER");
 					if(asset != null){
 						if(EnumServiceStatus.ACTIVE.getDescription().equalsIgnoreCase(_command.getServiceStatus()))
 							((Asset)asset.iterator().next()).setAssetStatus(EnumAssetStatus.ACTIVE);

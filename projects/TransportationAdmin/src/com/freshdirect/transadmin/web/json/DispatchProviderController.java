@@ -1026,7 +1026,7 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 		Map electricFleetMapping = new HashMap();
 		try {
 			Collection asset = getAssetManagerService().getAsset(truckNumber, "TRUCK");
-			if (asset != null) {
+			if (asset != null && asset.size() > 0) {
 				Set assetAttributes = ((Asset) asset.iterator().next()).getAssetAttributes();
 				if (assetAttributes != null && assetAttributes.size() > 0) {
 					Iterator<AssetAttribute> itr = assetAttributes.iterator();
