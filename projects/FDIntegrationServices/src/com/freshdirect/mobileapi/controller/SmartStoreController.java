@@ -100,29 +100,18 @@ public class SmartStoreController extends BaseController {
    			SessionUser user, HttpServletRequest request, HttpServletResponse response) throws JsonException {
        	
            SearchResult data = new SearchResult();
-           String postData = getPostData(request, response);
-           int page = 1;
-           int resultMax = 6;
-           LOGGER.debug("PostData received: [" + postData + "]");
-           if (StringUtils.isNotEmpty(postData)) {
-               SearchQuery requestMessage = parseRequestObject(request, response, SearchQuery.class);
-               page = requestMessage.getPage();
-               resultMax = requestMessage.getMax();
-           }
            
            SmartStore smartStore = new SmartStore(user);
            
            List<com.freshdirect.mobileapi.model.Product> products = smartStore.getMeatBestDeals();
-           ListPaginator<com.freshdirect.mobileapi.model.Product> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Product>(
-       			products, resultMax);
-
-           data.setProductsFromModel(paginator.getPage(page));
+         
+           data.setProductsFromModel(products);
            data.setTotalResultCount(products.size());
            data.setSuccessMessage(EnumSiteFeature.WEEKS_MEAT_BEST_DEALS.getTitle() + " have been retrieved successfully.");
            setResponseMessage(model, data, user);
            return model;
     }
-    
+       	
  	private ModelAndView getPeakProduce(ModelAndView model,
 			SessionUser user, HttpServletRequest request, HttpServletResponse response) throws JsonException {
 		
@@ -131,15 +120,6 @@ public class SmartStoreController extends BaseController {
         Message responseMessage = null;
     	
         SearchResult data = new SearchResult();
-        String postData = getPostData(request, response);
-        int page = 1;
-        int resultMax = 6;
-        LOGGER.debug("PostData received: [" + postData + "]");
-        if (StringUtils.isNotEmpty(postData)) {
-            SearchQuery requestMessage = parseRequestObject(request, response, SearchQuery.class);
-            page = requestMessage.getPage();
-            resultMax = requestMessage.getMax();
-        }
         
         SmartStore smartStore = new SmartStore(user);
         
@@ -147,14 +127,13 @@ public class SmartStoreController extends BaseController {
 
         ActionResult result = resultBundle.getActionResult();
         List<com.freshdirect.mobileapi.model.Product> products = (List<Product>) resultBundle.getExtraData(SmartStore.PEAKPRODUCE);
-        if (result.isSuccess()) {
-        	ListPaginator<com.freshdirect.mobileapi.model.Product> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Product>(
-        			products, resultMax);
-
-            data.setProductsFromModel(paginator.getPage(page));
+        if (result.isSuccess() && products.size() > 0) {
+            data.setProductsFromModel(products);
             data.setTotalResultCount(products.size());
             data.setSuccessMessage(EnumSiteFeature.PEAK_PRODUCE.getTitle() + " have been retrieved successfully.");
             setResponseMessage(model, data, user);
+        } else if(result.isSuccess() && products.size() == 0) {
+        	model = getRecommendations(EnumSiteFeature.DYF.getName(), model, user, request);
         } else {
             responseMessage = getErrorMessage(result, request);
             responseMessage.addWarningMessages(result.getWarnings());
@@ -177,6 +156,16 @@ public class SmartStoreController extends BaseController {
         ResultBundle resultBundle = smartStore.getRecommendations(siteFeature, deptId, qetRequestData(request), (Recommendations) request
                 .getSession().getAttribute(SessionParamName.SESSION_PARAM_PREVIOUS_RECOMMENDATIONS), (String) request.getSession()
                 .getAttribute(SessionParamName.SESSION_PARAM_PREVIOUS_IMPRESSION), page);
+        
+        SmartStoreRecommendations ssResult = new SmartStoreRecommendations((SmartStoreRecommendationContainer) resultBundle
+                .getExtraData(SmartStore.RECOMMENDATION));
+        
+        if (ssResult != null && ssResult.getProducts().size() == 0
+        		&& EnumSiteFeature.DYF.getName().equals(siteFeature)) {
+        	resultBundle = smartStore.getRecommendations(EnumSiteFeature.FAVORITES.getName(), deptId, qetRequestData(request), (Recommendations) request
+                    .getSession().getAttribute(SessionParamName.SESSION_PARAM_PREVIOUS_RECOMMENDATIONS), (String) request.getSession()
+                    .getAttribute(SessionParamName.SESSION_PARAM_PREVIOUS_IMPRESSION), page);
+        }
 
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);

@@ -18,6 +18,7 @@ public class GetPeakProduceTagWrapper extends GetterTagWrapper {
     public List<ProductModel> getPeakProduct() throws FDException {
         ((GetPeakProduceTag) wrapTarget).setDeptId(departmentId);
         ((GetPeakProduceTag) wrapTarget).setGlobalPeakProduceSku("true");
+        ((GetPeakProduceTag) wrapTarget).setDefaultMaxCount(false);
         return (List<ProductModel>) getResult();
     }
 

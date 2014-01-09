@@ -48,8 +48,10 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 	private static final int SPARE_WIDTH=50;
 	
 	String deptId = null;
+
 	String getGlobalPeakProduceSku="false";
 	boolean useMinCount = true; //allow ignoring of min value in Tag
+	boolean isDefaultMaxCount = true;
 	
 	public void setDeptId(String deptId) {
 		this.deptId = deptId;
@@ -62,19 +64,27 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 	public void setGlobalPeakProduceSku(String b){
 		this.getGlobalPeakProduceSku=b;
 	}
-			
 	
+	public boolean isDefaultMaxCount() {
+		return isDefaultMaxCount;
+	}
+
+	public void setDefaultMaxCount(boolean isDefaultMaxCount) {
+		this.isDefaultMaxCount = isDefaultMaxCount;
+	}
+
 	protected Object getResult() throws FDResourceException {
 		HttpSession session = pageContext.getSession();
-		FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		FDIdentity identity = user.getIdentity();
-		Collection peakProduce=null;
+		Collection peakProduce = null;
 		ContentNodeModel node=ContentFactory.getInstance().getContentNode(deptId);
 		if(node instanceof DepartmentModel) {
-			if("true".equalsIgnoreCase(getGlobalPeakProduceSku)){
-				peakProduce=getAllPeakProduceForDept((DepartmentModel)node);
-			}else{
-				peakProduce=getPeakProduce((DepartmentModel)node, MAX_PEAK_PRODUCE_COUNT);
+			if ("true".equalsIgnoreCase(getGlobalPeakProduceSku)) {
+				peakProduce = getAllPeakProduceForDept((DepartmentModel) node);
+			} else {
+				peakProduce = getPeakProduce((DepartmentModel) node,
+						isDefaultMaxCount ? MAX_PEAK_PRODUCE_COUNT : 1000); // setting max to 1000 if need to return all products
 			}
 		}
 

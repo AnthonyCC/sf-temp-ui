@@ -69,6 +69,8 @@ public class SmartStore {
     private SessionUser user;
 
     private static final int MAX_RECOMMENDATION = 25;
+    
+    private static final int MAX_CAROUSEL_RECOMMENDATION = 30;
 
     public SmartStore(SessionUser user) {
         this.user = user;
@@ -274,7 +276,7 @@ public class SmartStore {
         resultBundle.setActionResult(new ActionResult());
         Map<String, String> prd2recommendation = null;
        
-        ProductGroupRecommenderTagWrapper wrapper = new ProductGroupRecommenderTagWrapper(siteFeature, deptId, user);
+        ProductGroupRecommenderTagWrapper wrapper = new ProductGroupRecommenderTagWrapper(siteFeature, deptId, user, MAX_CAROUSEL_RECOMMENDATION);
         wrapper.addExpectedSessionValues(new String[] { SessionParamName.SESSION_PARAM_PREVIOUS_RECOMMENDATIONS,
                 SessionParamName.SESSION_PARAM_PREVIOUS_IMPRESSION, SessionParamName.SMART_STORE_PREV_RECOMMENDATIONS }, new String[] {
                 SessionParamName.SESSION_PARAM_PREVIOUS_RECOMMENDATIONS, SessionParamName.SESSION_PARAM_PREVIOUS_IMPRESSION });
