@@ -168,7 +168,10 @@ public class Asset implements java.io.Serializable{
 	}
 
 	public String getVendor() {
-		return this.getAttibuteMap().get("Vendor - Truck");		
+		String vendor = this.getAttibuteMap().get("Vendor - Truck");
+		if(vendor == null)
+			this.getAttibuteMap().get("Vendor - TRAILER");
+		return vendor;		
 	}
 	
 	public String getDomicile() {
