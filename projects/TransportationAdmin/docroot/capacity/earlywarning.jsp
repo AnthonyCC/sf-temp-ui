@@ -320,6 +320,7 @@
                    <td>
                      <input style="font-size:11px" type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doCompositeLink('rDate','cutOff','rType','autorefresh','condition','earlywarning.do')" />
                   </td> 
+                  <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdminOrPlanning(request)){%>
                   <td>
                      <input style="font-size:11px" type = "button" value="&nbsp;Upload Capacity&nbsp;" onclick="javascript:showUploadTimeslotCapacityForm()" />
                      <div style='display:none;' id="dialog" title="Timeslot Capacity Xls file Upload">
@@ -349,7 +350,7 @@
 						</form>
 					</div>
                   </td> 
-                  
+                  <% } %>
               </tr>
               </table>        
               
