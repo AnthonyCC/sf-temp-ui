@@ -214,6 +214,7 @@
                 	 {
                 		 
                 		 $('#result').html('');
+                		 addSysMessage("", false);
                 	  
                 	     var formObj = $(this);
                 	     var formURL = formObj.attr("action");
@@ -229,11 +230,17 @@
                 	         processData:false,
 	                	     success: function(data, textStatus, jqXHR)
 	                	     {
-	                	  		$('#result').html(data);
+	                	    	 if(data == null || date.trim().length == 0) {
+	                	      	  	addSysMessage("Timeslot capacity upload successful", false);	
+	                	    	 } else {
+	                	    		addSysMessage("Timeslot capacity upload failed", true);	
+	                	    	 }
+	                	      	 
+	                	    	 $('#result').html(data);
 	                	     },
 	                	     error: function(jqXHR, textStatus, errorThrown) 
 	                	     {
-	                	    	 alert('Timeslot capacity upload failed');
+	                	    	 addSysMessage("Timeslot capacity upload failed", true);
 	                	     }
                 	     });
                 	     e.preventDefault(); //Prevent Default action.
@@ -241,6 +248,20 @@
                 	  
                 	 $("#capacityform").submit(); //Submit the form
                  }
+                 
+                 var errColor = "#FF0000";
+           	     var msgColor = "#00FF00";
+                 
+                 function addSysMessage(msg, isError) {
+               		var errContObj = YAHOO.util.Dom.get("errContainer");
+         		    if(isError) {
+         		    	errContObj.style.color = errColor;
+         	      	} else {
+         	      		errContObj.style.color = msgColor;
+         	      	}
+         	      	errContObj.style.fontWeight="bold";
+               		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
+                }
              </script>
                 </td>
                 <td>
@@ -310,11 +331,9 @@
 									</tr>
 								</thead>
 								<tbody>
-									<c:if test="${not empty messages}">
-							          <tr>
-							            <td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
-							          </tr>
-							        </c:if>	
+									<tr>
+										<td><div id="errContainer"></div></td>
+									</tr>
 									<tr>
 										<td><input type="file" class="input" name="fileToUpload" size="45" id="fileToUpload"></td>
 									</tr>
