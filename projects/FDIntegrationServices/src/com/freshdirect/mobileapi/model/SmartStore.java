@@ -72,6 +72,8 @@ public class SmartStore {
     
     private static final int MAX_CAROUSEL_RECOMMENDATION = 30;
 
+	private static final int MIN_PEAK_PRODUCE_COUNT = 3;
+
     public SmartStore(SessionUser user) {
         this.user = user;
     }
@@ -380,6 +382,9 @@ public class SmartStore {
 	        
 			try {
 				List<ProductModel> productModels = wrapper.getPeakProduct();
+				if(productModels != null && productModels.size() < MIN_PEAK_PRODUCE_COUNT) {
+					productModels = new ArrayList<ProductModel>();
+				}
 				for (ProductModel pm : productModels) {
 					if (!pm.isUnavailable()) {
 						try {
