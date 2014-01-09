@@ -150,10 +150,10 @@
 								break;
 							}
 						}
-						return checkPremiumSlot(premiumslotId.value, formId);
+						checkPremiumSlot(premiumslotId.value, formId);
 					}
 		</script>
-		<td align="right"><a href="#" onclick="return step2Validator('select_delivery_slot');" class="checkout">CONTINUE CHECKOUT >></a></td>
+		<td align="right"><a href="#" onclick="step2Validator('select_delivery_slot'); return false;" class="checkout">CONTINUE CHECKOUT >></a></td>
 	</TR>
 </TABLE>
 
