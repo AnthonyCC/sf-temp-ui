@@ -145,7 +145,7 @@
 
     //--------OAS Page Variables-----------------------
 	request.setAttribute("sitePage", currentFolder.getPath());
-	request.setAttribute("listPos", "PPSuperBuy1,PPHeader,PPHeader2,PPLeftBottom,PPMidBottom,PPRightBottom");
+	request.setAttribute("listPos", "PPSuperBuy1,PPSuperBuy2,PPSuperBuy3,PPSuperBuy4,PPHeader,PPHeader2,PPLeftBottom,PPMidBottom,PPRightBottom");
 
 	Map<String, List<ProductModel>> promoProducts = new HashMap<String, List<ProductModel>>();
 	List<ProductModel> promotionProducts = new ArrayList<ProductModel>();
@@ -394,8 +394,8 @@
 		
 		<div class="ddpp clearfix">
 			<div class="socialMedia">
-				<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.freshdirect.com%2F&amp;send=false&amp;layout=button_count&amp;width=150&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font=tahoma&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width: 100px; height:21px;" allowTransparency="true"></iframe>
-				<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+				<iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.freshdirect.com%2F&amp;send=false&amp;layout=button_count&amp;width=150&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font=tahoma&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width: 100px; height:21px;" allowTransparency="true"></iframe>
+				<a href="//twitter.com/share" class="twitter-share-button" data-count="horizontal">Tweet</a><script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
 			</div>
 			
 			<div class="PPHeader">
@@ -409,13 +409,50 @@
 						OAS_AD('PPHeader2');
 				</script>
 			</div>
-			
 			<div class="PPSuperBuy1">
 				<script type="text/javascript">
 						OAS_AD('PPSuperBuy1');
 				</script>
 			</div>
-			
+			<fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' source='<%= request.getParameter("fdsc.source")%>'>
+				<% //START error messaging %>
+				<fd:ErrorHandler result='<%=result%>' name='quantity' id='errorMsg'>
+					<img src="/media_stat/images/layout/clear.gif" width="20" height="12" alt="" border="0" />
+					<%@ include file="/includes/i_error_messages.jspf" %>
+				</fd:ErrorHandler>
+				<% //END error messaging %>
+				<div style="text-align: left;"><%-- this fixes chrome, don't remove --%>
+					<div class="ddpp_feat_prod_cont grid-view" id="ddpp_feat_prod_cont">
+				
+					<%
+						int curLeftPos = 0;
+						isFeatProd = true;
+						String prodContStyle = "";
+					%>
+						
+						<div class="PPSuperBuy">
+							<script type="text/javascript">
+									OAS_AD('PPSuperBuy1');
+							</script>
+						</div>
+						<div class="PPSuperBuy">
+							<script type="text/javascript">
+									OAS_AD('PPSuperBuy2');
+							</script>
+						</div>
+						<div class="PPSuperBuy">
+							<script type="text/javascript">
+									OAS_AD('PPSuperBuy3');
+							</script>
+						</div>
+						<div class="PPSuperBuy">
+							<script type="text/javascript">
+									OAS_AD('PPSuperBuy4');
+							</script>
+						</div>
+					</div>
+				</div>
+			</fd:FDShoppingCart>
 		</div>
 		<br style="clear:both" />
 <!--[if lt IE 7]><div class="ie ie6"><![endif]-->
