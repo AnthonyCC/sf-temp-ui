@@ -47,7 +47,7 @@ public class SmartStoreController extends BaseController {
     
     private static String ACTION_GET_BRANDNAME_DEAL_CAROUSEL = "getBrandNameDealCarousel";
     
-    private static String ACTION_GET_YOUR_FAVORITE_CAROUSEL = "getYourFavoriteCarousel";
+    private static String ACTION_GET_CUSTOMER_FAVORITE_CAROUSEL = "getCustomerFavoriteCarousel";
     
     private static String ACTION_GET_PEAKPRODUCE_CAROUSEL = "getPeakProduceCarousel";
     
@@ -71,8 +71,8 @@ public class SmartStoreController extends BaseController {
             model = getFavoritesRecommendations(model, user, request);
         } else if (ACTION_GET_BRANDNAME_DEAL_CAROUSEL.equals(action)) {        	
             model = getRecommendations(EnumSiteFeature.BRAND_NAME_DEALS.getName(), model, user, request);
-        } else if (ACTION_GET_YOUR_FAVORITE_CAROUSEL.equals(action)) {        	
-            model = getRecommendations(EnumSiteFeature.DYF.getName(), model, user, request);
+        } else if (ACTION_GET_CUSTOMER_FAVORITE_CAROUSEL.equals(action)) {        	
+            model = getRecommendations(EnumSiteFeature.FAVORITES.getName(), model, user, request);
         } else if (ACTION_GET_PEAKPRODUCE_CAROUSEL.equals(action)) {
         	model = getPeakProduce(model, user, request, response);
         } else if (ACTION_GET_MEAT_BESTDEAL_CAROUSEL.equals(action)) {
@@ -84,8 +84,8 @@ public class SmartStoreController extends BaseController {
         	if(siteFeature != null) {
         		if (EnumSiteFeature.BRAND_NAME_DEALS.equals(siteFeature)) {        	
                     model = getRecommendations(EnumSiteFeature.BRAND_NAME_DEALS.getName(), model, user, request);
-        		} else if (EnumSiteFeature.DYF.equals(siteFeature)) {        	
-                    model = getRecommendations(EnumSiteFeature.DYF.getName(), model, user, request);
+        		} else if (EnumSiteFeature.FAVORITES.equals(siteFeature)) {        	
+                    model = getRecommendations(EnumSiteFeature.FAVORITES.getName(), model, user, request);
                 } else if (EnumSiteFeature.PEAK_PRODUCE.equals(siteFeature)) {        	
                     model = getPeakProduce(model, user, request, response);
                 } else if (EnumSiteFeature.WEEKS_MEAT_BEST_DEALS.equals(siteFeature)) {        	
@@ -133,7 +133,7 @@ public class SmartStoreController extends BaseController {
             data.setSuccessMessage(EnumSiteFeature.PEAK_PRODUCE.getTitle() + " have been retrieved successfully.");
             setResponseMessage(model, data, user);
         } else if(result.isSuccess() && products.size() == 0) {
-        	model = getRecommendations(EnumSiteFeature.DYF.getName(), model, user, request);
+        	model = getRecommendations(EnumSiteFeature.FAVORITES.getName(), model, user, request);
         } else {
             responseMessage = getErrorMessage(result, request);
             responseMessage.addWarningMessages(result.getWarnings());
@@ -157,16 +157,6 @@ public class SmartStoreController extends BaseController {
                 .getSession().getAttribute(SessionParamName.SESSION_PARAM_PREVIOUS_RECOMMENDATIONS), (String) request.getSession()
                 .getAttribute(SessionParamName.SESSION_PARAM_PREVIOUS_IMPRESSION), page);
         
-        SmartStoreRecommendations ssResult = new SmartStoreRecommendations((SmartStoreRecommendationContainer) resultBundle
-                .getExtraData(SmartStore.RECOMMENDATION));
-        
-        if (ssResult != null && ssResult.getProducts().size() == 0
-        		&& EnumSiteFeature.DYF.getName().equals(siteFeature)) {
-        	resultBundle = smartStore.getRecommendations(EnumSiteFeature.FAVORITES.getName(), deptId, qetRequestData(request), (Recommendations) request
-                    .getSession().getAttribute(SessionParamName.SESSION_PARAM_PREVIOUS_RECOMMENDATIONS), (String) request.getSession()
-                    .getAttribute(SessionParamName.SESSION_PARAM_PREVIOUS_IMPRESSION), page);
-        }
-
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
 

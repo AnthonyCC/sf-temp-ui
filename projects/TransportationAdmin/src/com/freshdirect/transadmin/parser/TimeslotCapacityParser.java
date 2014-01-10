@@ -44,11 +44,14 @@ public class TimeslotCapacityParser {
 	List exceptionList = null;
 	List<TimeslotCapacityModel> timeslotMetrics = null;
 	boolean isTimeslotMetricsValid = true;
+	List<TimeslotCapacityModel> timeslotsNotInUploadFileWithException = null;
+	
 
 	public TimeslotCapacityParser() {
 		super();
 		this.exceptionList = new ArrayList();
 		this.timeslotMetrics = new ArrayList<TimeslotCapacityModel>();
+		timeslotsNotInUploadFileWithException = new ArrayList<TimeslotCapacityModel>();
 	}
 
 	/**
@@ -228,9 +231,59 @@ public class TimeslotCapacityParser {
 				TimeslotCapacityModel _ts = _tsItr.next();
 				matchSlotToMetrics(slotsByZone.get(_ts.getArea()), _ts);
 			}
+			
+			TimeslotCapacityModel _ts = null;
+			// check for time slots not in the upload XLS file
+			// if found any, set the capacity to 0, if no allocation exists for the time slot
+			for(Map.Entry<String, List<IDeliveryWindowMetrics>> _slotByZoneEntry : slotsByZone.entrySet()) {
+				List<IDeliveryWindowMetrics> _zoneTsList = _slotByZoneEntry.getValue();
+				Iterator<IDeliveryWindowMetrics> _metricsItr = _zoneTsList.iterator();
+				while(_metricsItr.hasNext()) {
+					IDeliveryWindowMetrics _metrics = _metricsItr.next();
+					boolean foundTs = matchMetricToSlot(this.getTimeslotMetrics(), _metrics);
+					
+					_ts = new TimeslotCapacityModel();
+					_ts.setBaseDate(_metrics.getDeliveryDate());
+					_ts.setStartTime(_metrics.getDeliveryStartTime());
+					_ts.setEndTime(_metrics.getDeliveryEndTime());
+					_ts.setArea(_slotByZoneEntry.getKey());
+					
+					if(!foundTs && _metrics.getTotalAllocatedOrders() > 0) {	
+						_ts.getExceptions().add("Can't upload capacity to 0 if alloction exists");
+						isTimeslotMetricsValid = false;
+						timeslotsNotInUploadFileWithException.add(_ts);
+					} else if(!_metrics.isDynamic()) {
+						_ts.setCapacity(0);
+						_ts.setChefsTableCapacity(0);
+						_ts.setPremiumCapacity(0);
+						_ts.setPremiumCtCapacity(0);
+						this.getTimeslotMetrics().add(_ts);
+					}
+				}
+			}
 		}		
 		
 		
+	}
+	
+	private boolean matchMetricToSlot(List<TimeslotCapacityModel> timeslotLst, IDeliveryWindowMetrics tsMetrics) {		
+		
+		boolean foundTs = false;
+		if(timeslotLst != null) {
+			Iterator<TimeslotCapacityModel> _tsItr = timeslotLst.iterator();
+			while(_tsItr.hasNext()) {
+				TimeslotCapacityModel _tmpTimeslot =  _tsItr.next();				
+				if (tsMetrics.getDeliveryDate().equals(_tmpTimeslot.getBaseDate())
+						&& isMatchingTime(_tmpTimeslot.getStartTime(),
+								tsMetrics.getDeliveryStartTime())
+						&& isMatchingTime(_tmpTimeslot.getEndTime(),
+								tsMetrics.getDeliveryEndTime())) {
+					foundTs = true;;
+					break;
+				}
+			}
+		}
+		return foundTs;
 	}
 	
 	private void matchSlotToMetrics(List<IDeliveryWindowMetrics> metrics, TimeslotCapacityModel ts) {		
@@ -256,70 +309,67 @@ public class TimeslotCapacityParser {
 				if(_tsMetric.isDynamic()) {
 					ts.getExceptions().add("Timeslot is DYNAMIC. Can't upload capacity for DYNAMIC timeslots");
 					isTimeslotMetricsValid = false;
-				}
-				
-				// validate capacity metrics to allocation
-				/**
-				 * Current allocation has a time-dependent definition:
-				 * <ul>
-				 *  <li>before CT Release Time = Base Allocation + CT Capacity + Premium capacity,</li>
-				 *  <li>after CT Release Time = Base Allocation + CT Allocation + Premium capacity.</li>
-				 * </ul	 
-				 * @return current allocation based on current date.
-				 */
-				if(ts.getCapacity() < (_tsMetric.getBaseAllocation() + ts.getChefsTableCapacity() + ts.getPremiumCapacity())) {
-					ts.getExceptions().add(
-							"Total capacity should meet current allocation # "
-									+ (_tsMetric.getBaseAllocation() + ts.getChefsTableCapacity() + ts.getPremiumCapacity()));
-					isTimeslotMetricsValid = false;
-				}
-				
-				// MIN CT capacity
-				if(ts.getChefsTableCapacity() < _tsMetric.getChefsTableAllocation()) {
-					ts.getExceptions().add(
-							"CT capacity should be MIN of CT allocation # "
-									+ _tsMetric.getChefsTableAllocation());
-					isTimeslotMetricsValid = false;
-				}
-				// MAX CT capacity
-				if(ts.getChefsTableCapacity() > (ts.getCapacity() - _tsMetric.getBaseAllocation())) {
-					ts.getExceptions().add(
-							"CT capacity should be MAX of # "
-									+ (ts.getCapacity() - _tsMetric.getBaseAllocation()));
-					isTimeslotMetricsValid = false;
-				}
-				
-				// MIN PREMIUM capacity
-				if(ts.getPremiumCapacity() < (ts.getPremiumCtCapacity() + _tsMetric.getPremiumAllocation())) {
-					ts.getExceptions().add(
-							"Premium capacity should be MIN of allocation # "
-									+ (ts.getPremiumCtCapacity() + _tsMetric.getPremiumAllocation()));
-					isTimeslotMetricsValid = false;
-				}
-				
-				// MAX PREMIUM capacity
-				if(ts.getPremiumCapacity() > (ts.getCapacity() - ts.getChefsTableCapacity())) {
-					ts.getExceptions().add(
-							"Premium capacity should be MAX of # "
-									+ (ts.getCapacity() - ts.getChefsTableCapacity()));
-					isTimeslotMetricsValid = false;
-				}
-				
-				// MIN PREMIUM CT capacity
-				if(ts.getPremiumCtCapacity() < _tsMetric.getPremiumCtAllocation()) {
-					ts.getExceptions().add(
-							"Premium CT capacity should be MIN of allocation # "
-									+ _tsMetric.getPremiumCtAllocation());
-					isTimeslotMetricsValid = false;
-				}
-				// MAX PREMIUM CT capacity
-				if(ts.getPremiumCtCapacity() > (ts.getPremiumCapacity() - _tsMetric.getPremiumAllocation())) {
-					ts.getExceptions().add(
-							"Premium CT capacity should be MAX of # "
-									+ (ts.getPremiumCapacity() - _tsMetric.getPremiumAllocation()));
-					isTimeslotMetricsValid = false;
-				}
+				} else {
 					
+					// validate capacity metrics to allocation
+					/**
+					 * Current allocation has a time-dependent definition:
+					 * <ul>
+					 *  <li>before CT Release Time = Base Allocation + CT Capacity + Premium capacity,</li>
+					 *  <li>after CT Release Time = Base Allocation + CT Allocation + Premium capacity.</li>
+					 * </ul	 
+					 * @return current allocation based on current date.
+					 */
+					if(ts.getCapacity() < (_tsMetric.getBaseAllocation() + ts.getChefsTableCapacity() + ts.getPremiumCapacity())) {
+						ts.getExceptions().add(
+								"Total capacity should meet current allocation # "
+										+ (_tsMetric.getBaseAllocation() + ts.getChefsTableCapacity() + ts.getPremiumCapacity()));
+						isTimeslotMetricsValid = false;
+					}
+					
+					// MIN CT capacity
+					if(ts.getChefsTableCapacity() < _tsMetric.getChefsTableAllocation()) {
+						ts.getExceptions().add(
+								"CT capacity should be MIN of CT allocation # "
+										+ _tsMetric.getChefsTableAllocation());
+						isTimeslotMetricsValid = false;
+					}
+					// MAX CT capacity
+					if(ts.getChefsTableCapacity() > (ts.getCapacity() - _tsMetric.getBaseAllocation())) {
+						ts.getExceptions().add(
+								"CT capacity should be MAX of Total capacity - Base allocation");
+						isTimeslotMetricsValid = false;
+					}
+					
+					// MIN PREMIUM capacity
+					if(ts.getPremiumCapacity() < (ts.getPremiumCtCapacity() + _tsMetric.getPremiumAllocation())) {
+						ts.getExceptions().add(
+								"Premium capacity should be MIN of allocation # "
+										+ (ts.getPremiumCtCapacity() + _tsMetric.getPremiumAllocation()));
+						isTimeslotMetricsValid = false;
+					}
+					
+					// MAX PREMIUM capacity
+					if(ts.getPremiumCapacity() > (ts.getCapacity() - ts.getChefsTableCapacity())) {
+						ts.getExceptions().add(
+								"Premium capacity should be MAX of Total capacity - CT capacity");
+						isTimeslotMetricsValid = false;
+					}
+					
+					// MIN PREMIUM CT capacity
+					if(ts.getPremiumCtCapacity() < _tsMetric.getPremiumCtAllocation()) {
+						ts.getExceptions().add(
+								"Premium CT capacity should be MIN of allocation # "
+										+ _tsMetric.getPremiumCtAllocation());
+						isTimeslotMetricsValid = false;
+					}
+					// MAX PREMIUM CT capacity
+					if(ts.getPremiumCtCapacity() > (ts.getPremiumCapacity() - _tsMetric.getPremiumAllocation())) {
+						ts.getExceptions().add(
+								"Premium CT capacity should be MAX of Premium capacity - Premium allocation ");
+						isTimeslotMetricsValid = false;
+					}
+				}	
 			} else {
 				ts.getExceptions().add("No matching timeslot exists");
 				isTimeslotMetricsValid = false;
@@ -391,6 +441,30 @@ public class TimeslotCapacityParser {
 					if(this.getTimeslotMetrics() != null) {
 						TimeslotCapacityModel _dlvTimeSlot = null;	
 						Iterator<TimeslotCapacityModel> _itr = this.getTimeslotMetrics().iterator();			
+						
+						while(_itr.hasNext()) {
+							_dlvTimeSlot = _itr.next();	
+							if(_dlvTimeSlot.getExceptions().size() > 0) {
+								buff.append("<tr>")
+									.append("<td class=\"first\" align=\"center\">").append(TransStringUtil.getDate(_dlvTimeSlot.getBaseDate())).append("</td>")
+									.append("<td align=\"center\">").append(_dlvTimeSlot.getArea()).append("</td>")
+									.append("<td align=\"center\">").append(_dlvTimeSlot.getDispalyWindow()).append("</td>");
+								buff.append("<td class=\"last\">");				
+								
+								Iterator<String> _tsExceptionItr = _dlvTimeSlot.getExceptions().iterator();
+								while(_tsExceptionItr.hasNext()) {
+									String _exception = _tsExceptionItr.next();
+									buff.append(_exception).append("<br/>");
+								}
+								buff.append("</td>");
+								buff.append("</tr>");
+							}
+						}					
+					}
+					
+					if(this.timeslotsNotInUploadFileWithException != null) {
+						TimeslotCapacityModel _dlvTimeSlot = null;	
+						Iterator<TimeslotCapacityModel> _itr = this.timeslotsNotInUploadFileWithException.iterator();			
 						
 						while(_itr.hasNext()) {
 							_dlvTimeSlot = _itr.next();	

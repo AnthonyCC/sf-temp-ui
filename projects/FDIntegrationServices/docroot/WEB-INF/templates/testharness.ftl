@@ -442,8 +442,8 @@ function loadStuff() {
   	$("#url").val("/smartstore/bestdealcarousel/xxx/");
   	$("#payload").val("");
   	$("#result").val("");
-  }else if (loaddata == "SSYourFavoriteCarousel") {
-  	$("#url").val("/smartstore/yourfavouritecarousel/xxx/");
+  }else if (loaddata == "SSCustomerFavoriteCarousel") {
+  	$("#url").val("/smartstore/customerfavouritecarousel/xxx/");
   	$("#payload").val("");
   	$("#result").val("");
   }else if (loaddata == "SSPeakProduceCarousel") {
@@ -777,7 +777,7 @@ function doStuff() {
   <option value="SSYourFavorite">SMARTSTORE - YourFavorite</option>
   <option value="SSFavorite">SMARTSTORE - Favorite (either FD or Yours)</option>
   <option value="SSFDFavorite">SMARTSTORE - FreshDirect Favorite</option>
- <!-- <option value="SSYourFavoriteCarousel">SMARTSTORE - YourFavorite Carousel</option>
+ <!-- <option value="SSCustomerFavoriteCarousel">SMARTSTORE - CustomerFavorite Carousel</option>
   <option value="SSBestDealCarousel">SMARTSTORE - BestDeal Carousel</option>
   <option value="SSPeakProduceCarousel">SMARTSTORE - Peak Produce Carousel</option>
   <option value="SSBestDealMeatCarousel">SMARTSTORE - BestDeal Meat Carousel</option>  -->

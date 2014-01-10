@@ -9,7 +9,7 @@ public class DepartmentCarouselUtil {
 	
 	public static EnumSiteFeature getCarousel(String deptId) {
 		
-		EnumSiteFeature siteFeature = EnumSiteFeature.DYF;
+		EnumSiteFeature siteFeature = EnumSiteFeature.FAVORITES;
 						
 		String brandNameDealdeptIds[] = { "dai", "gro", "fro" };
 		

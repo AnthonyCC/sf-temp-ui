@@ -304,8 +304,8 @@ public class SmartStore {
         smartStoreRecommendationContainer.setLast(recommendations != null ? recommendations.isLastPage() : false);
 
         SmartStoreRecommendationType type = null;
-        if (EnumSiteFeature.DYF.getName().equals(siteFeature))
-            type = SmartStoreRecommendationType.YOUR_FAVORITE;
+        if (EnumSiteFeature.FAVORITES.getName().equals(siteFeature))
+            type = SmartStoreRecommendationType.FRESHDIRECT_FAVORITE;
         else if (EnumSiteFeature.BRAND_NAME_DEALS.getName().equals(siteFeature))
             type = SmartStoreRecommendationType.BRAND_NAME_DEALS;
         

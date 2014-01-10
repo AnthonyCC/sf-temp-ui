@@ -483,8 +483,8 @@
 		<to last="true">/smartstore.do?action=getBrandNameDealCarousel&amp;ver=$1&amp;departmentId=$2</to>
 	</rule>
 	<rule>
-		<from>^/v/([0-9]+)/smartstore/yourfavouritecarousel/(.*)/$</from>
-		<to last="true">/smartstore.do?action=getYourFavoriteCarousel&amp;ver=$1&amp;departmentId=$2</to>
+		<from>^/v/([0-9]+)/smartstore/customerfavouritecarousel/(.*)/$</from>
+		<to last="true">/smartstore.do?action=getCustomerFavoriteCarousel&amp;ver=$1&amp;departmentId=$2</to>
 	</rule>
 	<rule>
 		<from>^/v/([0-9]+)/smartstore/peakproducecarousel/(.*)/$</from>
