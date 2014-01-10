@@ -308,7 +308,7 @@ public class TimeslotCapacityParser {
 				// MIN PREMIUM CT capacity
 				if(ts.getPremiumCtCapacity() < _tsMetric.getPremiumCtAllocation()) {
 					ts.getExceptions().add(
-							"Premium capacity should be MIN of allocation # "
+							"Premium CT capacity should be MIN of allocation # "
 									+ _tsMetric.getPremiumCtAllocation());
 					isTimeslotMetricsValid = false;
 				}
@@ -361,60 +361,63 @@ public class TimeslotCapacityParser {
 	public String buildResponseHtml() {
 		
 		StringBuffer buff = new StringBuffer();
-
-		buff.append("<html>").append("<body>");
 		
-		try {
-			buff.append("<table class=\"summaryTable\" valign=\"top\" width=\"780\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\">");
-			if(this.exceptionList.size() > 0) {
-				buff.append("<tr>").append("<th class=\"submenu\"  colspan=\"4\" align=\"center\">").append("DATA EXCEPTIONS").append("</th>").append("</tr>");
-				Iterator<BadDataException> _Itr = this.exceptionList.iterator();
-				buff.append("<tr>");
-				buff.append("<td class=\"first\" colspan=\"4\">");
-				while(_Itr.hasNext()) {
-					BadDataException _exception = _Itr.next();
-					buff.append(_exception.getMessage()).append("<br/>");
-				}				
-				buff.append("<br/></td>");
-				buff.append("</tr>");	
-			}
+		if(!isTimeslotMetricsValid || this.exceptionList.size() > 0) {
+
+			buff.append("<html>").append("<body>");
 			
-			if(!isTimeslotMetricsValid) {
-				buff.append("<tr>").append("<th class=\"submenu\" colspan=\"4\" align=\"center\">").append("TIMESLOT VALIDATION ERRORS").append("</th>");
-				buff.append("<tr>").append("<th>").append("Delivery Date").append("</th>")
-					.append("<th>").append("Zone").append("</th>")
-					.append("<th>").append("Timeslot Window").append("</th>")
-					.append("<th>").append("Exceptions").append("</th>").append("</tr>");
-			
-				if(this.getTimeslotMetrics() != null) {
-					TimeslotCapacityModel _dlvTimeSlot = null;	
-					Iterator<TimeslotCapacityModel> _itr = this.getTimeslotMetrics().iterator();			
-					
-					while(_itr.hasNext()) {
-						_dlvTimeSlot = _itr.next();	
-						if(_dlvTimeSlot.getExceptions().size() > 0) {
-							buff.append("<tr>")
-								.append("<td class=\"first\" align=\"center\">").append(TransStringUtil.getDate(_dlvTimeSlot.getBaseDate())).append("</td>")
-								.append("<td align=\"center\">").append(_dlvTimeSlot.getArea()).append("</td>")
-								.append("<td align=\"center\">").append(_dlvTimeSlot.getDispalyWindow()).append("</td>");
-							buff.append("<td class=\"last\">");				
-							
-							Iterator<String> _tsExceptionItr = _dlvTimeSlot.getExceptions().iterator();
-							while(_tsExceptionItr.hasNext()) {
-								String _exception = _tsExceptionItr.next();
-								buff.append(_exception).append("<br/>");
-							}
-							buff.append("</td>");
-							buff.append("</tr>");
-						}
-					}					
+			try {
+				buff.append("<table class=\"summaryTable\" valign=\"top\" width=\"780\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\">");
+				if(this.exceptionList.size() > 0) {
+					buff.append("<tr>").append("<th class=\"submenu\"  colspan=\"4\" align=\"center\">").append("DATA EXCEPTIONS").append("</th>").append("</tr>");
+					Iterator<BadDataException> _Itr = this.exceptionList.iterator();
+					buff.append("<tr>");
+					buff.append("<td class=\"first\" colspan=\"4\">");
+					while(_Itr.hasNext()) {
+						BadDataException _exception = _Itr.next();
+						buff.append(_exception.getMessage()).append("<br/>");
+					}				
+					buff.append("<br/></td>");
+					buff.append("</tr>");	
 				}
+				
+				if(!isTimeslotMetricsValid) {
+					buff.append("<tr>").append("<th class=\"submenu\" colspan=\"4\" align=\"center\">").append("TIMESLOT VALIDATION ERRORS").append("</th>");
+					buff.append("<tr>").append("<th>").append("Delivery Date").append("</th>")
+						.append("<th>").append("Zone").append("</th>")
+						.append("<th>").append("Timeslot Window").append("</th>")
+						.append("<th>").append("Exceptions").append("</th>").append("</tr>");
+				
+					if(this.getTimeslotMetrics() != null) {
+						TimeslotCapacityModel _dlvTimeSlot = null;	
+						Iterator<TimeslotCapacityModel> _itr = this.getTimeslotMetrics().iterator();			
+						
+						while(_itr.hasNext()) {
+							_dlvTimeSlot = _itr.next();	
+							if(_dlvTimeSlot.getExceptions().size() > 0) {
+								buff.append("<tr>")
+									.append("<td class=\"first\" align=\"center\">").append(TransStringUtil.getDate(_dlvTimeSlot.getBaseDate())).append("</td>")
+									.append("<td align=\"center\">").append(_dlvTimeSlot.getArea()).append("</td>")
+									.append("<td align=\"center\">").append(_dlvTimeSlot.getDispalyWindow()).append("</td>");
+								buff.append("<td class=\"last\">");				
+								
+								Iterator<String> _tsExceptionItr = _dlvTimeSlot.getExceptions().iterator();
+								while(_tsExceptionItr.hasNext()) {
+									String _exception = _tsExceptionItr.next();
+									buff.append(_exception).append("<br/>");
+								}
+								buff.append("</td>");
+								buff.append("</tr>");
+							}
+						}					
+					}
+				}
+				buff.append("</table>");
+			} catch(ParseException ex) {
+				LOGGER.error(ex.getMessage());
 			}
-			buff.append("</table>");
-		} catch(ParseException ex) {
-			LOGGER.error(ex.getMessage());
+			buff.append("</body>").append("</html>");
 		}
-		buff.append("</body>").append("</html>");
 		
 		return buff.toString();
 	}
