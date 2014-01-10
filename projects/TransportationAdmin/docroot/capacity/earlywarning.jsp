@@ -230,13 +230,14 @@
                 	         processData:false,
 	                	     success: function(data, textStatus, jqXHR)
 	                	     {
-	                	    	 if(data == null || date.trim().length == 0) {
-	                	      	  	addSysMessage("Timeslot capacity upload successful", false);	
-	                	    	 } else {
-	                	    		addSysMessage("Timeslot capacity upload failed", true);	
-	                	    	 }
-	                	      	 
+	                	    	
 	                	    	 $('#result').html(data);
+	                	    	 
+	                	    	 if(data != null && data != '') {
+	                	      	  	addSysMessage("Timeslot capacity upload failed", true);	
+	                	    	 } else {
+	                	    		addSysMessage("Timeslot capacity upload successful", false);	
+	                	    	 }
 	                	     },
 	                	     error: function(jqXHR, textStatus, errorThrown) 
 	                	     {
