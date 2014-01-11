@@ -70,9 +70,9 @@ public class QuickShopRedirector extends BodyTagSupport {
 	public int doStartTag() throws JspException {
 		
 		// first check property that disables the whole partial rollout stuff - do not redirect anything
-		if ( FDStoreProperties.isQuickshopIgnorePartialRollout() ) {
+		/*if ( FDStoreProperties.isQuickshopIgnorePartialRollout() ) {
 			return EVAL_BODY_BUFFERED;
-		}
+		}*/
 		
 		// partial rollout check
 		isNewQs = isEligibleForNewQuickShop( user );		
@@ -320,15 +320,15 @@ public class QuickShopRedirector extends BodyTagSupport {
 	
 	public static boolean isEligibleForNewQuickShop( FDUserI user ) {
 
-		// If partial rollout is disabled anyone is eligible for anything
-		if ( FDStoreProperties.isQuickshopIgnorePartialRollout() ) {
+		
+		
+		// If quickshop property is not enabled, customers with 'QS_ELIGIBLE' profile are only eligible for the new qs.
+		// If quickshop property is enabled, everyone will be eligible for the new qs.
+		if ( FDStoreProperties.isQuickshopEnabled() ) {
 			return true;
 		}
+				
 		
-		// If quickshop is not enabled no one is eligible for the new qs
-		if ( !FDStoreProperties.isQuickshopEnabled() ) {
-			return false;
-		}
 		
 		// Currently this is an "employee" check for "partial rollout"... 
 		// Change below code to modify or extend partial rollout rules
