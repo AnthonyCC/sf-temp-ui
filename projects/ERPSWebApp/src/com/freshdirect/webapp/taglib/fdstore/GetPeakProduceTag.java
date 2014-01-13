@@ -51,7 +51,6 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 
 	String getGlobalPeakProduceSku="false";
 	boolean useMinCount = true; //allow ignoring of min value in Tag
-	boolean isDefaultMaxCount = true;
 	
 	public void setDeptId(String deptId) {
 		this.deptId = deptId;
@@ -64,14 +63,6 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 	public void setGlobalPeakProduceSku(String b){
 		this.getGlobalPeakProduceSku=b;
 	}
-	
-	public boolean isDefaultMaxCount() {
-		return isDefaultMaxCount;
-	}
-
-	public void setDefaultMaxCount(boolean isDefaultMaxCount) {
-		this.isDefaultMaxCount = isDefaultMaxCount;
-	}
 
 	protected Object getResult() throws FDResourceException {
 		HttpSession session = pageContext.getSession();
@@ -83,8 +74,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 			if ("true".equalsIgnoreCase(getGlobalPeakProduceSku)) {
 				peakProduce = getAllPeakProduceForDept((DepartmentModel) node);
 			} else {
-				peakProduce = getPeakProduce((DepartmentModel) node,
-						isDefaultMaxCount ? MAX_PEAK_PRODUCE_COUNT : 1000); // setting max to 1000 if need to return all products
+				peakProduce = getPeakProduce((DepartmentModel) node, MAX_PEAK_PRODUCE_COUNT);
 			}
 		}
 

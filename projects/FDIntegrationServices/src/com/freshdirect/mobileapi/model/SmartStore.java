@@ -23,6 +23,7 @@ import com.freshdirect.fdstore.content.ConfiguredProductGroup;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.util.SortStrategyElement;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
@@ -72,7 +73,9 @@ public class SmartStore {
     
     private static final int MAX_CAROUSEL_RECOMMENDATION = 30;
 
-	private static final int MIN_PEAK_PRODUCE_COUNT = 3;
+    private static final int MAX_PEAK_PRODUCE_COUNT = 15;
+    
+    private static final int MIN_PEAK_PRODUCE_COUNT = 3;
 
     public SmartStore(SessionUser user) {
         this.user = user;
@@ -271,14 +274,14 @@ public class SmartStore {
         return resultBundle;
     }
     
-    public ResultBundle getRecommendations(final String siteFeature, final String deptId, RequestData requestData,
+    public ResultBundle getCarouselRecommendations(final EnumSiteFeature siteFeature, final String deptId, RequestData requestData,
             final Recommendations previousRecommendations, final String previousImpression, final String page) {
         Recommendations recommendations;
         ResultBundle resultBundle = new ResultBundle();
         resultBundle.setActionResult(new ActionResult());
         Map<String, String> prd2recommendation = null;
        
-        ProductGroupRecommenderTagWrapper wrapper = new ProductGroupRecommenderTagWrapper(siteFeature, deptId, user, MAX_CAROUSEL_RECOMMENDATION);
+        ProductGroupRecommenderTagWrapper wrapper = new ProductGroupRecommenderTagWrapper(siteFeature != null ? siteFeature.getName() : null, deptId, user, MAX_CAROUSEL_RECOMMENDATION);
         wrapper.addExpectedSessionValues(new String[] { SessionParamName.SESSION_PARAM_PREVIOUS_RECOMMENDATIONS,
                 SessionParamName.SESSION_PARAM_PREVIOUS_IMPRESSION, SessionParamName.SMART_STORE_PREV_RECOMMENDATIONS }, new String[] {
                 SessionParamName.SESSION_PARAM_PREVIOUS_RECOMMENDATIONS, SessionParamName.SESSION_PARAM_PREVIOUS_IMPRESSION });
@@ -304,11 +307,10 @@ public class SmartStore {
         smartStoreRecommendationContainer.setLast(recommendations != null ? recommendations.isLastPage() : false);
 
         SmartStoreRecommendationType type = null;
-        if (EnumSiteFeature.FAVORITES.getName().equals(siteFeature))
-            type = SmartStoreRecommendationType.FRESHDIRECT_FAVORITE;
-        else if (EnumSiteFeature.BRAND_NAME_DEALS.getName().equals(siteFeature))
+        if (EnumSiteFeature.BRAND_NAME_DEALS.equals(siteFeature))
             type = SmartStoreRecommendationType.BRAND_NAME_DEALS;
-        
+        else
+        	type = SmartStoreRecommendationType.CUSTOMER_FAVOURITES;
         smartStoreRecommendationContainer.setType(type);
 
         ConfigurationContext confContext = new ConfigurationContext();
@@ -381,17 +383,37 @@ public class SmartStore {
 			wrapper.addExpectedRequestValues(new String[] { RequestParamName.REQ_PARAM_TABLE_WIDTH }, new String[] { RequestParamName.REQ_PARAM_TABLE_WIDTH });
 	        
 			try {
-				List<ProductModel> productModels = wrapper.getPeakProduct();
-				if(productModels != null && productModels.size() < MIN_PEAK_PRODUCE_COUNT) {
-					productModels = new ArrayList<ProductModel>();
+				Collection<Object> skus = wrapper.getPeakProduct(MAX_PEAK_PRODUCE_COUNT);			
+				
+				if(skus != null && skus.size() < MIN_PEAK_PRODUCE_COUNT) {
+					skus = new ArrayList<Object>();
 				}
-				for (ProductModel pm : productModels) {
-					if (!pm.isUnavailable()) {
-						try {
-							result.add(Product.wrap(pm, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
-						} catch (ModelException e) {
-							LOG.warn("ModelException in a product in peak produce. continuing on, instead of failing on entire list.", e);
+				
+				for (Object skuObj : skus) {
+					SkuModel sku;
+					ProductModel product;					
+				
+					if ( skuObj instanceof SkuModel ) {
+						// We got a SkuModel
+						sku = (SkuModel)skuObj;
+						product = sku.getProductModel();
+						if (!product.isUnavailable()) {
+							try {
+								result.add(Product.wrap(product, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
+							} catch (ModelException e) {
+								LOG.warn("ModelException in a product in peak produce. continuing on, instead of failing on entire list.", e);
+							}
 						}
+					} else if ( skuObj instanceof ProductModel ) {
+						// We got a ProductModel
+						product = (ProductModel)skuObj;
+						if (!product.isUnavailable()) {
+							try {
+								result.add(Product.wrap(product, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
+							} catch (ModelException e) {
+								LOG.warn("ModelException in a product in peak produce. continuing on, instead of failing on entire list.", e);
+							}
+						}					
 					}
 				}
 				resultBundle.addExtraData(PEAKPRODUCE, result);
@@ -670,7 +692,7 @@ public class SmartStore {
     public static class SmartStoreRecommendationContainer {
 
         public enum SmartStoreRecommendationType {
-            FRESHDIRECT_FAVORITE, YOUR_FAVORITE, YOU_MIGHT_ALSO_LIKE, BRAND_NAME_DEALS
+            FRESHDIRECT_FAVORITE, YOUR_FAVORITE, YOU_MIGHT_ALSO_LIKE, BRAND_NAME_DEALS, CUSTOMER_FAVOURITES
         }
 
         private SmartStoreRecommendationType type;

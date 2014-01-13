@@ -98,9 +98,9 @@ public class ProductGroupRecommenderTag extends RecommendationsTag {
         }
         
         EnumSiteFeature siteFeat = EnumSiteFeature.getEnum(siteFeature);
-        if(siteFeat==null) {
+        /*if(siteFeat==null) {
         	throw new IllegalArgumentException("illegal argument: siteFeature");
-        }
+        }*/
 		Recommendations results = recommender.getRecommendations(siteFeat, user, si);
 
         collectRequestId(request, results, user);

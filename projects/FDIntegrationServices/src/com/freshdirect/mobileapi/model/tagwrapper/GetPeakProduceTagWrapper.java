@@ -1,8 +1,13 @@
 package com.freshdirect.mobileapi.model.tagwrapper;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.webapp.taglib.fdstore.GetPeakProduceTag;
@@ -18,14 +23,21 @@ public class GetPeakProduceTagWrapper extends GetterTagWrapper {
     public List<ProductModel> getPeakProduct() throws FDException {
         ((GetPeakProduceTag) wrapTarget).setDeptId(departmentId);
         ((GetPeakProduceTag) wrapTarget).setGlobalPeakProduceSku("true");
-        ((GetPeakProduceTag) wrapTarget).setDefaultMaxCount(false);
         return (List<ProductModel>) getResult();
     }
 
-    public List<ProductModel> getPeakProduct(String globalPeakProduce) throws FDException {
-        ((GetPeakProduceTag) wrapTarget).setDeptId(departmentId);
-        ((GetPeakProduceTag) wrapTarget).setGlobalPeakProduceSku(globalPeakProduce);
-        return (List<ProductModel>) getResult();
+    @SuppressWarnings("unchecked")
+	public Collection<Object> getPeakProduct(int maxPeakProduceCount) throws FDException {
+    	DepartmentModel department = (DepartmentModel) ContentFactory.getInstance().getContentNode( ContentType.get( "Department" ), departmentId );
+		if ( department != null ) {
+		
+			((GetPeakProduceTag) wrapTarget).setDeptId(departmentId);
+			((GetPeakProduceTag) wrapTarget).setUseMinCount(false);
+			
+			 return (Collection<Object>) ((GetPeakProduceTag) wrapTarget).getPeakProduce(department, maxPeakProduceCount);
+        
+		}
+        return new ArrayList<Object>();
     }
 
     public String getDepartmentId() {

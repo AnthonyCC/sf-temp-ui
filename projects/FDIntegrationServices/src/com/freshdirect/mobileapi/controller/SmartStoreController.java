@@ -5,7 +5,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -14,7 +13,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.SearchResult;
-import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.response.SmartStoreRecommendations;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
@@ -25,7 +23,6 @@ import com.freshdirect.mobileapi.model.SmartStore;
 import com.freshdirect.mobileapi.model.SmartStore.SmartStoreRecommendationContainer;
 import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
-import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.webapp.util.DepartmentCarouselUtil;
 
@@ -45,14 +42,6 @@ public class SmartStoreController extends BaseController {
 
     private static String ACTION_GET_FAVORITE = "favorite";
     
-    private static String ACTION_GET_BRANDNAME_DEAL_CAROUSEL = "getBrandNameDealCarousel";
-    
-    private static String ACTION_GET_CUSTOMER_FAVORITE_CAROUSEL = "getCustomerFavoriteCarousel";
-    
-    private static String ACTION_GET_PEAKPRODUCE_CAROUSEL = "getPeakProduceCarousel";
-    
-    private static String ACTION_GET_MEAT_BESTDEAL_CAROUSEL = "getMeatBestDealCarousel";
-    
     private static String ACTION_GET_DEPARTMENT_CAROUSEL = "getDepartmentCarousel";
     
     private static final String PARAM_DEPT_ID = "departmentId";
@@ -69,30 +58,27 @@ public class SmartStoreController extends BaseController {
             model = getRecommendations(EnumSiteFeature.FAVORITES, model, user, request);
         } else if (ACTION_GET_FAVORITE.equals(action)) {
             model = getFavoritesRecommendations(model, user, request);
-        } else if (ACTION_GET_BRANDNAME_DEAL_CAROUSEL.equals(action)) {        	
-            model = getRecommendations(EnumSiteFeature.BRAND_NAME_DEALS.getName(), model, user, request);
-        } else if (ACTION_GET_CUSTOMER_FAVORITE_CAROUSEL.equals(action)) {        	
-            model = getRecommendations(EnumSiteFeature.FAVORITES.getName(), model, user, request);
-        } else if (ACTION_GET_PEAKPRODUCE_CAROUSEL.equals(action)) {
-        	model = getPeakProduce(model, user, request, response);
-        } else if (ACTION_GET_MEAT_BESTDEAL_CAROUSEL.equals(action)) {
-        	model = getMeatBestDeals(model, user, request, response);
-        } else if (ACTION_GET_DEPARTMENT_CAROUSEL.equals(action)) {        
-        	String deptId = request.getParameter(PARAM_DEPT_ID);
-        	EnumSiteFeature siteFeature = DepartmentCarouselUtil.getCarousel(deptId);
-        	
-        	if(siteFeature != null) {
-        		if (EnumSiteFeature.BRAND_NAME_DEALS.equals(siteFeature)) {        	
-                    model = getRecommendations(EnumSiteFeature.BRAND_NAME_DEALS.getName(), model, user, request);
-        		} else if (EnumSiteFeature.FAVORITES.equals(siteFeature)) {        	
-                    model = getRecommendations(EnumSiteFeature.FAVORITES.getName(), model, user, request);
-                } else if (EnumSiteFeature.PEAK_PRODUCE.equals(siteFeature)) {        	
-                    model = getPeakProduce(model, user, request, response);
-                } else if (EnumSiteFeature.WEEKS_MEAT_BEST_DEALS.equals(siteFeature)) {        	
-                    model = getMeatBestDeals(model, user, request, response);
-                }   
-        	}
-        }
+        } else if (ACTION_GET_DEPARTMENT_CAROUSEL.equals(action)) {
+			
+			String deptId = request.getParameter(PARAM_DEPT_ID);
+			EnumSiteFeature siteFeature = DepartmentCarouselUtil.getCarousel(deptId);
+
+			if (EnumSiteFeature.BRAND_NAME_DEALS.equals(siteFeature)) {
+				model = getCarouselRecommendations(
+						EnumSiteFeature.BRAND_NAME_DEALS, model,
+						user, request);
+			} else if (EnumSiteFeature.PEAK_PRODUCE.equals(siteFeature)) {
+				model = getPeakProduce(model, user, request, response);
+			} else if (EnumSiteFeature.WEEKS_MEAT_BEST_DEALS.equals(siteFeature)) {
+				model = getMeatBestDeals(model, user, request, response);
+			} else {
+				// So called 'customer favorites department level' recommendations
+				// siteFeature: SideCart Featured Items (SCR_FEAT_ITEMS) + dept as currentNode
+				siteFeature = getSiteFeature("SCR_FEAT_ITEMS");
+				model = getCarouselRecommendations(siteFeature,	model, user, request);
+			}
+
+		}
         return model;
     }
         
@@ -133,7 +119,8 @@ public class SmartStoreController extends BaseController {
             data.setSuccessMessage(EnumSiteFeature.PEAK_PRODUCE.getTitle() + " have been retrieved successfully.");
             setResponseMessage(model, data, user);
         } else if(result.isSuccess() && products.size() == 0) {
-        	model = getRecommendations(EnumSiteFeature.FAVORITES.getName(), model, user, request);
+        	siteFeature = getSiteFeature("SCR_FEAT_ITEMS");
+			model = getCarouselRecommendations(siteFeature, model, user, request);
         } else {
             responseMessage = getErrorMessage(result, request);
             responseMessage.addWarningMessages(result.getWarnings());
@@ -143,7 +130,7 @@ public class SmartStoreController extends BaseController {
         return model;
 	}
 
-    private ModelAndView getRecommendations(String siteFeature, ModelAndView model,
+    private ModelAndView getCarouselRecommendations(EnumSiteFeature siteFeature, ModelAndView model,
 			SessionUser user, HttpServletRequest request) throws JsonException {
 		
     	String deptId = request.getParameter(PARAM_DEPT_ID);
@@ -153,7 +140,7 @@ public class SmartStoreController extends BaseController {
     	
     	SmartStore smartStore = new SmartStore(user);
        
-        ResultBundle resultBundle = smartStore.getRecommendations(siteFeature, deptId, qetRequestData(request), (Recommendations) request
+        ResultBundle resultBundle = smartStore.getCarouselRecommendations(siteFeature, deptId, qetRequestData(request), (Recommendations) request
                 .getSession().getAttribute(SessionParamName.SESSION_PARAM_PREVIOUS_RECOMMENDATIONS), (String) request.getSession()
                 .getAttribute(SessionParamName.SESSION_PARAM_PREVIOUS_IMPRESSION), page);
         
@@ -163,7 +150,7 @@ public class SmartStoreController extends BaseController {
         if (result.isSuccess()) {
             responseMessage = new SmartStoreRecommendations((SmartStoreRecommendationContainer) resultBundle
                     .getExtraData(SmartStore.RECOMMENDATION));
-            responseMessage.setSuccessMessage(siteFeature + " recommendations have been retrieved successfully.");
+            responseMessage.setSuccessMessage(siteFeature == null ? "Customer Favourites" : siteFeature.getTitle() + " recommendations have been retrieved successfully.");
         } else {
             responseMessage = getErrorMessage(result, request);
         }
@@ -222,4 +209,9 @@ public class SmartStoreController extends BaseController {
         setResponseMessage(model, responseMessage, user);
         return model;
     }
+    
+    private static EnumSiteFeature getSiteFeature( String sfName ) {
+		EnumSiteFeature siteFeat = EnumSiteFeature.getEnum(sfName);		
+		return siteFeat;
+	}
 }
