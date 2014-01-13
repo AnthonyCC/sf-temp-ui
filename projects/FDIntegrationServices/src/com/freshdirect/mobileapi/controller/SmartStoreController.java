@@ -119,8 +119,7 @@ public class SmartStoreController extends BaseController {
             data.setSuccessMessage(EnumSiteFeature.PEAK_PRODUCE.getTitle() + " have been retrieved successfully.");
             setResponseMessage(model, data, user);
         } else if(result.isSuccess() && products.size() == 0) {
-        	siteFeature = getSiteFeature("SCR_FEAT_ITEMS");
-			model = getCarouselRecommendations(siteFeature, model, user, request);
+			model = getCarouselRecommendations(getSiteFeature("SCR_FEAT_ITEMS"), model, user, request);
         } else {
             responseMessage = getErrorMessage(result, request);
             responseMessage.addWarningMessages(result.getWarnings());
