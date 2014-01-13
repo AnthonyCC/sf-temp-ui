@@ -33,8 +33,7 @@ public class FDPromotionVisitor {
 
 	public static FDPromotionEligibility applyPromotions(PromotionContextI context) {
 		long startTime = System.currentTimeMillis();
-		LOGGER.info("Apply Promotions - START TIME ");
-		
+				
 		List ruleBasedPromotions = FDPromotionRulesEngine.getEligiblePromotions(context);
 		context.setRulePromoCode(ruleBasedPromotions);
 		FDPromotionEligibility eligibilities = evaluatePromotions(context);
@@ -88,13 +87,6 @@ public class FDPromotionVisitor {
         //Reconcile the discounts to make sure total header discounts does not exceed pre-deduction total(subtotal + dlv charge + tax).
         reconcileDiscounts(context, eligibilities, combinableOffers, redemptionValue);
        
-//		LOGGER.info("Promotion eligibility: after redemption apply " + eligibilities);
-		//applyZonePromotion(context, eligibilities);
-		LOGGER.info("Apply Promotions - END TIME ");
-		long endTime = System.currentTimeMillis();
-		LOGGER.info("Apply Promotions - TOTAL EXECUTION TIME "+(endTime - startTime)+" milliseconds");
-		//LOGGER.info("Promotion eligibility: after applyZonePromotion() " + eligibilities);
-		
 		return eligibilities;
 	}
 

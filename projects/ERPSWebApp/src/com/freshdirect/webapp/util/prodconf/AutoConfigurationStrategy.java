@@ -19,8 +19,6 @@ public class AutoConfigurationStrategy extends SimpleConfigurationStrategy {
 			String sku = productModel.getDefaultSkuCode();
 					
 			if (sku != null) {
-				LOGGER.debug("configuring using auto-configurer + "
-						+ productModel.getContentKey().getId());
 				return new TransactionalProductImpression(productModel,
 						sku, configuration);
 			} else

@@ -26,7 +26,6 @@ public class CouponActivityLogListener extends EventListener{
 	@Override
 	public void onMessage(Message message) {
 
-		LOGGER.debug("In CouponActivityLogListener -Before processing the received message");
 		ObjectMessage objMsg = (ObjectMessage) message;
 		try {
 			Object obj = objMsg.getObject();

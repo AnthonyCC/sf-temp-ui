@@ -31,16 +31,12 @@ public class SoyImportTag extends SimpleTagSupport {
 	@Override
 	public void doTag() throws JspException {
 				
-		LOGGER.info( "Importing package: " + packageName );
-		
 		try {
 			packageName = packageName.replace( '.', '/' );
 		    packageName = SoyTemplateEngine.cleanPackageName( packageName );
 				
 			JspWriter out = getJspContext().getOut();
-			out.write(  "<script src=\""+ SOY_JS_BASE + packageName + "\"></script>" );			
-
-			LOGGER.info( "Imported package: " + packageName );
+			out.write(  "<script src=\""+ SOY_JS_BASE + packageName + "\"></script>" );		
 			
 	    } catch ( IOException e ) {
 			throw new JspException( "Failed to import package: "+packageName, e );

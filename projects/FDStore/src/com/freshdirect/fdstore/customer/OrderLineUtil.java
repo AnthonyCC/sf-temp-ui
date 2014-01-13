@@ -57,28 +57,28 @@ public class OrderLineUtil {
 			try {
 				ps = pl.convertToSelection();
 			} catch (FDSkuNotFoundException e1) {
-	            LOGGER.warn("No sku found for " + pl);
+	            //LOGGER.warn("No sku found for " + pl);
 				continue;
 			} catch (FDResourceException e1) {
-				LOGGER.warn("Resource exception (" + pl + ')');
+				//LOGGER.warn("Resource exception (" + pl + ')');
 				continue;
 			} 
 			try {
 				OrderLineUtil.cleanup(ps);
 			} catch (FDInvalidConfigurationException.Unavailable e) {
-				LOGGER.warn("Unavailable item found: " + e.getMessage() + '(' + pl + ')');
+				//LOGGER.warn("Unavailable item found: " + e.getMessage() + '(' + pl + ')');
 				// OK, let it go
 			} catch (FDInvalidConfigurationException.InvalidSalesUnit e) {
-				LOGGER.warn("Configuration exception: " + e.getMessage() + '(' + pl + ')');
+				//LOGGER.warn("Configuration exception: " + e.getMessage() + '(' + pl + ')');
 				// OK, let it go
 			} catch (FDInvalidConfigurationException.MissingVariation e) {
-				LOGGER.warn("Missing variation exception: " + e.getMessage() + '(' + pl + ')');
+				//LOGGER.warn("Missing variation exception: " + e.getMessage() + '(' + pl + ')');
 				// OK, let it go
 			} catch (FDInvalidConfigurationException.InvalidOption e) {
-				LOGGER.warn("Invalid option exeption: " + e.getMessage() + '(' + pl + ')');
+				//LOGGER.warn("Invalid option exeption: " + e.getMessage() + '(' + pl + ')');
 				// OK, let it go
 			} catch (FDInvalidConfigurationException e) {	
-				LOGGER.warn("Configuration exception: " + e.getMessage() + '(' + pl + ')');
+				//LOGGER.warn("Configuration exception: " + e.getMessage() + '(' + pl + ')');
 				continue;
 			}
 			validItems.add(pl);
@@ -405,7 +405,7 @@ public class OrderLineUtil {
 
 		if (prodNode.hasComponentGroups()) {
 			boolean charAvail = prodNode.isCharacteristicsComponentsAvailable(prodSel);
-			LOGGER.warn("OrderLineUtil.cleanup() "+prodNode +" -> "+charAvail);
+			//LOGGER.warn("OrderLineUtil.cleanup() "+prodNode +" -> "+charAvail);
 			if (!charAvail) {
 				throw new FDInvalidConfigurationException("This configuration is not available");
 			}

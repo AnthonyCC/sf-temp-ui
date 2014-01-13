@@ -78,11 +78,9 @@ class FDCustomerListDAO {
 	}
 
 	private FDCustomerList createList(Connection conn, PrimaryKey customerPk, EnumCustomerListType type, String name, Date createDate, Date modificationDate, String recipeId, String recipeName) throws SQLException {
-		LOGGER.debug( "FDCustomerListDAO:createList() - type = " + type );
-		
+				
 		String id = getNextId(conn);
-		LOGGER.debug( "getNextId() returned :" + id );
-		
+				
 		PreparedStatement ps = conn.prepareStatement(CREATE_LIST);
 		ps.setString(1, id);
 		ps.setString(2, customerPk.getId());
@@ -135,7 +133,6 @@ class FDCustomerListDAO {
 		ResultSet rs = ps.executeQuery();
 
 		if (!rs.next()) {
-			LOGGER.debug("Attempted to load list of type "+ type.getName()+" with name " + name + " for customer " + identity.getErpCustomerPK() + ": no list found.");
 			rs.close();
 			ps.close();
 			return null;
@@ -176,8 +173,7 @@ class FDCustomerListDAO {
 			ps.setString(3, type.getName());
 			rs = ps.executeQuery();
 	
-			if (!rs.next()) {
-				LOGGER.debug("Attempted to load list of type "+ type.getName()+" with ID " + listId + " for customer " + identity.getErpCustomerPK() + ": no list found.");
+			if (!rs.next()) {				
 				return null;
 			}
 	
@@ -389,11 +385,9 @@ class FDCustomerListDAO {
 
 		String listId = list.getId();
 		if (list.getId() != null) {
-			LOGGER.debug( "Updating already existing list. listId = " + list.getId() );
 			// Update the list if it already exists
 			updateCustomerList(conn, list);
 		} else {
-			LOGGER.debug( "Persisting list." );
 			listId = persistList(conn, list);
 			list.setId( listId );
 		}
@@ -414,7 +408,7 @@ class FDCustomerListDAO {
 	}
 	
 	private String persistList(Connection conn, FDCustomerList list) throws SQLException {
-		LOGGER.debug( "FDCustomerListDAO:persistList()" );
+		
 		FDCustomerList persistedList = createList(conn, list.getCustomerPk(), list.getType(), list.getName(), list.getCreateDate(), list.getModificationDate(), list.getRecipeId(), list.getRecipeName());
 
 		list.setPK(persistedList.getPK());
@@ -489,8 +483,7 @@ class FDCustomerListDAO {
 		list.setCustomerPk(new PrimaryKey(identity.getErpCustomerPK()));
 		list.setName(FDCustomerShoppingList.EVERY_ITEM_LIST);
 
-		LOGGER.info("generateEveryItemEverOrderedList for " + identity.getErpCustomerPK());
-
+		
 		PreparedStatement ps = conn.prepareStatement(QUERY_EVERY_ITEM);
 		ps.setString(1, list.getCustomerPk().getId());
 		ResultSet rs = ps.executeQuery();
@@ -544,8 +537,6 @@ class FDCustomerListDAO {
 			"AND NVL(ol.delivery_grp, 0) = 0";
 
 		public List<FDQsProductListLineItem> getQsSpecificEveryItemEverOrderedList(Connection conn, FDIdentity identity) throws SQLException {
-
-			LOGGER.info("getQsSpecificEveryItemEverOrderedList for " + identity.getErpCustomerPK());
 
 			PreparedStatement ps = conn.prepareStatement(QUERY_EVERY_ITEM_QS);
 			
