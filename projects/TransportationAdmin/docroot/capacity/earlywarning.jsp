@@ -193,6 +193,9 @@
                  }
 
                  function showUploadTimeslotCapacityForm() {
+                	 
+                	 $('#result').html('');
+            		 addSysMessage("", false);
 
                 	 $(function() {
              			$("#dialog").dialog({

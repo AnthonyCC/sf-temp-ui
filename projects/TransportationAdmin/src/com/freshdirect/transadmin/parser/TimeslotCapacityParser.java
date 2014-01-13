@@ -208,15 +208,18 @@ public class TimeslotCapacityParser {
 		
 		DeliveryServiceProxy deliveryProxy = new DeliveryServiceProxy();
 		
-		Map<String, List<IDeliveryWindowMetrics>> slotsByZone = new HashMap<String, List<IDeliveryWindowMetrics>>();
-		Set<Date> deliveryDates = new TreeSet<Date>();
-		if(this.timeslotMetrics.size() > 0) {			
+		Map<String, List<IDeliveryWindowMetrics>> slotsByZone = new HashMap<String, List<IDeliveryWindowMetrics>>();		
+		Map<Date, List<String>> deliveryDateToZoneMapping = new HashMap<Date, List<String>>();
+		if(this.timeslotMetrics.size() > 0) {
 			Collections.sort(getTimeslotMetrics(), timeslotCapacityComparator);
-			for(TimeslotCapacityModel _ts : this.timeslotMetrics) {
-				deliveryDates.add(_ts.getBaseDate());
+			for(TimeslotCapacityModel _ts : this.timeslotMetrics) {				
+				if(!deliveryDateToZoneMapping.containsKey(_ts.getBaseDate())) {
+					deliveryDateToZoneMapping.put(_ts.getBaseDate(), new ArrayList<String>());
+				}
+				deliveryDateToZoneMapping.get(_ts.getBaseDate()).add(_ts.getArea());
 			}			
-			for(Date _baseDate : deliveryDates) {
-				Map<String, List<IDeliveryWindowMetrics>> _slotsByZone = deliveryProxy.getTimeslotsByDateEx(_baseDate, null, null, null);
+			for(Map.Entry<Date, List<String>> _dateEntry : deliveryDateToZoneMapping.entrySet()) {
+				Map<String, List<IDeliveryWindowMetrics>> _slotsByZone = deliveryProxy.getTimeslotsByDateEx(_dateEntry.getKey(), null, null, null);
 				for(Map.Entry<String, List<IDeliveryWindowMetrics>> _tempMap : _slotsByZone.entrySet()){
 					if(!slotsByZone.containsKey(_tempMap.getKey())) {
 						slotsByZone.put(_tempMap.getKey(), _tempMap.getValue());
@@ -240,30 +243,37 @@ public class TimeslotCapacityParser {
 				Iterator<IDeliveryWindowMetrics> _metricsItr = _zoneTsList.iterator();
 				while(_metricsItr.hasNext()) {
 					IDeliveryWindowMetrics _metrics = _metricsItr.next();
-					boolean foundTs = matchMetricToSlot(this.getTimeslotMetrics(), _metrics);
 					
-					_ts = new TimeslotCapacityModel();
-					_ts.setBaseDate(_metrics.getDeliveryDate());
-					_ts.setStartTime(_metrics.getDeliveryStartTime());
-					_ts.setEndTime(_metrics.getDeliveryEndTime());
-					_ts.setArea(_slotByZoneEntry.getKey());
-					
-					if(!foundTs && _metrics.getTotalAllocatedOrders() > 0) {	
-						_ts.getExceptions().add("Can't upload capacity to 0 if alloction exists");
-						isTimeslotMetricsValid = false;
-						timeslotsNotInUploadFileWithException.add(_ts);
-					} else if(!_metrics.isDynamic()) {
-						_ts.setCapacity(0);
-						_ts.setChefsTableCapacity(0);
-						_ts.setPremiumCapacity(0);
-						_ts.setPremiumCtCapacity(0);
-						this.getTimeslotMetrics().add(_ts);
+					List<String> zoneCodes = deliveryDateToZoneMapping.get(_metrics.getDeliveryDate());
+					if(zoneCodes != null) {
+						for(String _zoneCode : zoneCodes) {
+							if(_zoneCode.equals(_slotByZoneEntry.getKey())) {
+								
+								boolean foundTs = matchMetricToSlot(this.getTimeslotMetrics(), _metrics);
+								
+								_ts = new TimeslotCapacityModel();
+								_ts.setBaseDate(_metrics.getDeliveryDate());
+								_ts.setStartTime(_metrics.getDisplayStartTime());
+								_ts.setEndTime(_metrics.getDisplayEndTime());
+								_ts.setArea(_slotByZoneEntry.getKey());
+								
+								if(!foundTs && _metrics.getTotalAllocatedOrders() > 0) {	
+									_ts.getExceptions().add("Can't upload capacity to 0 if alloction exists");
+									isTimeslotMetricsValid = false;
+									timeslotsNotInUploadFileWithException.add(_ts);
+								} else if(!_metrics.isDynamic()) {
+									_ts.setCapacity(0);
+									_ts.setChefsTableCapacity(0);
+									_ts.setPremiumCapacity(0);
+									_ts.setPremiumCtCapacity(0);
+									this.getTimeslotMetrics().add(_ts);
+								}
+							}
+						}
 					}
 				}
 			}
-		}		
-		
-		
+		}
 	}
 	
 	private boolean matchMetricToSlot(List<TimeslotCapacityModel> timeslotLst, IDeliveryWindowMetrics tsMetrics) {		
@@ -275,9 +285,9 @@ public class TimeslotCapacityParser {
 				TimeslotCapacityModel _tmpTimeslot =  _tsItr.next();				
 				if (tsMetrics.getDeliveryDate().equals(_tmpTimeslot.getBaseDate())
 						&& isMatchingTime(_tmpTimeslot.getStartTime(),
-								tsMetrics.getDeliveryStartTime())
+								tsMetrics.getDisplayStartTime())
 						&& isMatchingTime(_tmpTimeslot.getEndTime(),
-								tsMetrics.getDeliveryEndTime())) {
+								tsMetrics.getDisplayEndTime())) {
 					foundTs = true;;
 					break;
 				}
@@ -295,9 +305,9 @@ public class TimeslotCapacityParser {
 				IDeliveryWindowMetrics _tmpTsMetric =  _metricsItr.next();				
 				if (_tmpTsMetric.getDeliveryDate().equals(ts.getBaseDate())
 						&& isMatchingTime(ts.getStartTime(),
-								_tmpTsMetric.getDeliveryStartTime())
+								_tmpTsMetric.getDisplayStartTime())
 						&& isMatchingTime(ts.getEndTime(),
-								_tmpTsMetric.getDeliveryEndTime())) {
+								_tmpTsMetric.getDisplayEndTime())) {
 					foundTS = true;
 					_tsMetric = _tmpTsMetric;
 					break;
