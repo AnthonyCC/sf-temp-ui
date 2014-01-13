@@ -1,4 +1,4 @@
-package com.freshdirect.payment.ejb;
+retpackage com.freshdirect.payment.ejb;
 
 import java.rmi.RemoteException;
 import java.sql.SQLException;
@@ -95,6 +95,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 		}
 		
 		long currentTime = System.currentTimeMillis();
+		
 		long difference = deliveryTime.getTime() - currentTime;
 		difference = difference / (1000 * 60 * 60);
 
@@ -504,10 +505,11 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			} 
 			PaymentGatewayContext context = new PaymentGatewayContext(StringUtils.isEmpty(paymentMethod.getProfileID())?GatewayType.CYBERSOURCE:GatewayType.PAYMENTECH, null);
 			Gateway gateway = GatewayFactory.getGateway(context);	
-			gateway.capture(auth, paymentMethod, auth.getAmount(),  auth.getTax(), orderNumber);
+			capture=gateway.capture(auth, paymentMethod, auth.getAmount(),  auth.getTax(), orderNumber);
 			saleEB.addCapture(capture);
 			return capture;
 		} catch (Exception e) {
+			
 			throw new ErpTransactionException(e.getMessage());
 		}
 	}
