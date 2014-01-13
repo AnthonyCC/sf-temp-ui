@@ -1191,7 +1191,7 @@ public class FourMinuteMealsHelper {
 			if("Calories".equals(nutr.getName())) {
 				double cal = nutr.getValue();
 				newCache.calories.put(prod, cal);
-				System.out.println(prod.getFullName() + " " + cal + " " +  nutr.getUnitOfMeasure());
+//				System.out.println(prod.getFullName() + " " + cal + " " +  nutr.getUnitOfMeasure());
 				break;
 			}
 		}
