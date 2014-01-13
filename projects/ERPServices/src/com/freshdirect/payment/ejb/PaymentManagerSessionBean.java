@@ -1,4 +1,4 @@
-retpackage com.freshdirect.payment.ejb;
+package com.freshdirect.payment.ejb;
 
 import java.rmi.RemoteException;
 import java.sql.SQLException;
