@@ -122,7 +122,7 @@ if(user != null) {
     <div class="topnavitem">
       <a href="/your_account/manage_account.jsp" onMouseover="swapImage('NAV_YOURACCOUNT_IMG','/media_stat/images/navigation/global_nav/nav_button_your_account2_r.gif')" onMouseout="swapImage('NAV_YOURACCOUNT_IMG','/media_stat/images/navigation/global_nav/nav_button_your_account2.gif')"><img src="/media_stat/images/navigation/global_nav/nav_button_your_account2.gif" name="NAV_YOURACCOUNT_IMG" width="71" height="25" alt="YOUR ACCOUNT" border="0"></a>
     </div>
-		<div class="topnavitem" id="topnav_ecoupons"><a href="/ecoupon.jsp?sort=prio&searchParams=&view=grid&pageSize=0&refinement=1"><img src="/media/images/ecoupon/coupon_savings.gif" name="NAV_COUPON_IMG" width="71" height="27" alt="COUPON SAVINGS" border="0" /></a></div>
+		<div class="topnavitem" id="topnav_ecoupons"><a href="/ecoupon.jsp?sort=prio&searchParams=&view=grid&refinement=1"><img src="/media/images/ecoupon/coupon_savings.gif" name="NAV_COUPON_IMG" width="71" height="27" alt="COUPON SAVINGS" border="0" /></a></div>
     <div class="topnavitem">
       <a href="/quickshop/index.jsp" onMouseover="swapImage('NAV_QUICKSHOP_IMG','/media_stat/images/navigation/global_nav/nav_button_quick_shop_r.gif')" onMouseout="swapImage('NAV_QUICKSHOP_IMG','/media_stat/images/navigation/global_nav/nav_button_quick_shop.gif')"><img src="/media_stat/images/navigation/global_nav/nav_button_quick_shop.gif" name="NAV_QUICKSHOP_IMG" width="54" height="26" alt="QUICK SHOP" border="0"></a>
     </div>
