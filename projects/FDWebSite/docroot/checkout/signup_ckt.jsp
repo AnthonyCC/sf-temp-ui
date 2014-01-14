@@ -58,9 +58,9 @@ for (Iterator erItr = aerrs.iterator();erItr.hasNext();) {
 	<%@ include file="/includes/i_error_messages.jspf" %>	
 </fd:ErrorHandler>
 
+<form name="address" method="post">
 <table width="<%=W_CHECKOUT_SIGNUP_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
 <tr><td width="<%=W_CHECKOUT_SIGNUP_TOTAL-175%>" class="text13">
-<FORM name="address" method="post">
 
 <%
 		FDUserI userx = (FDUserI)session.getAttribute(SessionName.USER);
