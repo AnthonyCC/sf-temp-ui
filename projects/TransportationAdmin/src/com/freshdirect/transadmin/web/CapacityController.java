@@ -133,9 +133,8 @@ public class CapacityController extends AbstractMultiActionController {
 			parser.validateTimeslotMetrics();
 			if (parser.parseSuccessful() && parser.metricsSuccessful()) {				
 				proxy.updateTimeslotMetrics(parser.getTimeslotMetrics());
-				saveMessage(request, "Timeslot capacity upload successful");
 			} else {
-				saveErrorMessage(request, getMessage("app.error.131", new Object[] {"Timeslot Capacity"}));				
+				//saveErrorMessage(request, getMessage("app.error.131", new Object[] {"Timeslot Capacity"}));				
 			}
 			response.addHeader ("Content-Disposition","attachment;filename="+mpf.getOriginalFilename());
 			response.setContentType("application/Text"); 
@@ -144,7 +143,7 @@ public class CapacityController extends AbstractMultiActionController {
 			pw.flush();
 		} catch(Exception ex) {
 			logger.error("Error while upload timeslot capacity metrics: "+ ex.getMessage());
-			saveErrorMessage(request, getMessage("app.error.131", new Object[] {"Timeslot Capacity"}));
+			//saveErrorMessage(request, getMessage("app.error.131", new Object[] {"Timeslot Capacity"}));
 		}
 	}
 

@@ -196,6 +196,7 @@
                 	 
                 	 $('#result').html('');
             		 addSysMessage("", false);
+            		 $('#capacityform').trigger('reset');
 
                 	 $(function() {
              			$("#dialog").dialog({

@@ -13,8 +13,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.log4j.Category;
 import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
@@ -208,23 +206,36 @@ public class TimeslotCapacityParser {
 		
 		DeliveryServiceProxy deliveryProxy = new DeliveryServiceProxy();
 		
-		Map<String, List<IDeliveryWindowMetrics>> slotsByZone = new HashMap<String, List<IDeliveryWindowMetrics>>();		
-		Map<Date, List<String>> deliveryDateToZoneMapping = new HashMap<Date, List<String>>();
+		// Delivery Date - Zone - TimeslotMetrics list
+		Map<Date, Map<String, List<IDeliveryWindowMetrics>>> slotsByDateZoneMapping = new HashMap<Date, Map<String,List<IDeliveryWindowMetrics>>>();
+		
+		// Delivery Date - Zone - TimeslotMetrics list
+		Map<Date, Map<String, List<TimeslotCapacityModel>>> uploadFileSlotsByDateZoneMapping = new HashMap<Date, Map<String,List<TimeslotCapacityModel>>>();
+		
 		if(this.timeslotMetrics.size() > 0) {
 			Collections.sort(getTimeslotMetrics(), timeslotCapacityComparator);
-			for(TimeslotCapacityModel _ts : this.timeslotMetrics) {				
-				if(!deliveryDateToZoneMapping.containsKey(_ts.getBaseDate())) {
-					deliveryDateToZoneMapping.put(_ts.getBaseDate(), new ArrayList<String>());
-				}
-				deliveryDateToZoneMapping.get(_ts.getBaseDate()).add(_ts.getArea());
-			}			
-			for(Map.Entry<Date, List<String>> _dateEntry : deliveryDateToZoneMapping.entrySet()) {
+			for(TimeslotCapacityModel _ts : this.timeslotMetrics) {	
+				if(!uploadFileSlotsByDateZoneMapping.containsKey(_ts.getBaseDate())) {
+					uploadFileSlotsByDateZoneMapping.put(_ts.getBaseDate(), new HashMap<String, List<TimeslotCapacityModel>>());
+				} 
+				if(!uploadFileSlotsByDateZoneMapping.get(_ts.getBaseDate()).containsKey(_ts.getArea())) {
+					uploadFileSlotsByDateZoneMapping.get(_ts.getBaseDate()).put(_ts.getArea(), new ArrayList<TimeslotCapacityModel>());
+				} 
+				uploadFileSlotsByDateZoneMapping.get(_ts.getBaseDate()).get(_ts.getArea()).add(_ts);
+			}
+			
+			for(Map.Entry<Date, Map<String, List<TimeslotCapacityModel>>> _dateEntry : uploadFileSlotsByDateZoneMapping.entrySet()) {
 				Map<String, List<IDeliveryWindowMetrics>> _slotsByZone = deliveryProxy.getTimeslotsByDateEx(_dateEntry.getKey(), null, null, null);
 				for(Map.Entry<String, List<IDeliveryWindowMetrics>> _tempMap : _slotsByZone.entrySet()){
-					if(!slotsByZone.containsKey(_tempMap.getKey())) {
-						slotsByZone.put(_tempMap.getKey(), _tempMap.getValue());
-					} else {
-						slotsByZone.get(_tempMap.getKey()).addAll(_tempMap.getValue());
+					List<IDeliveryWindowMetrics> _zoneTsList = _tempMap.getValue();
+					for(IDeliveryWindowMetrics _ts : _zoneTsList) {
+						if(!slotsByDateZoneMapping.containsKey(_ts.getDeliveryDate())) {
+							slotsByDateZoneMapping.put(_ts.getDeliveryDate(), new HashMap<String, List<IDeliveryWindowMetrics>>());
+						} 
+						if(!slotsByDateZoneMapping.get(_ts.getDeliveryDate()).containsKey(_tempMap.getKey())) {
+							slotsByDateZoneMapping.get(_ts.getDeliveryDate()).put(_tempMap.getKey(), new ArrayList<IDeliveryWindowMetrics>());
+						} 
+						slotsByDateZoneMapping.get(_ts.getDeliveryDate()).get(_tempMap.getKey()).add(_ts);
 					}
 				}	
 			}
@@ -232,44 +243,45 @@ public class TimeslotCapacityParser {
 			Iterator<TimeslotCapacityModel> _tsItr = this.getTimeslotMetrics().iterator();
 			while(_tsItr.hasNext()) {
 				TimeslotCapacityModel _ts = _tsItr.next();
-				matchSlotToMetrics(slotsByZone.get(_ts.getArea()), _ts);
+				matchSlotToMetrics(slotsByDateZoneMapping.get(_ts.getBaseDate()).get(_ts.getArea()), _ts);
 			}
 			
 			TimeslotCapacityModel _ts = null;
 			// check for time slots not in the upload XLS file
 			// if found any, set the capacity to 0, if no allocation exists for the time slot
-			for(Map.Entry<String, List<IDeliveryWindowMetrics>> _slotByZoneEntry : slotsByZone.entrySet()) {
-				List<IDeliveryWindowMetrics> _zoneTsList = _slotByZoneEntry.getValue();
-				Iterator<IDeliveryWindowMetrics> _metricsItr = _zoneTsList.iterator();
-				while(_metricsItr.hasNext()) {
-					IDeliveryWindowMetrics _metrics = _metricsItr.next();
+			for(Map.Entry<Date, Map<String, List<IDeliveryWindowMetrics>>> _slotByDateZoneEntry : slotsByDateZoneMapping.entrySet()) {
+				
+				if(uploadFileSlotsByDateZoneMapping.containsKey(_slotByDateZoneEntry.getKey())) {
 					
-					List<String> zoneCodes = deliveryDateToZoneMapping.get(_metrics.getDeliveryDate());
-					if(zoneCodes != null) {
-						for(String _zoneCode : zoneCodes) {
-							if(_zoneCode.equals(_slotByZoneEntry.getKey())) {
-								
-								boolean foundTs = matchMetricToSlot(this.getTimeslotMetrics(), _metrics);
-								
-								_ts = new TimeslotCapacityModel();
-								_ts.setBaseDate(_metrics.getDeliveryDate());
-								_ts.setStartTime(_metrics.getDisplayStartTime());
-								_ts.setEndTime(_metrics.getDisplayEndTime());
-								_ts.setArea(_slotByZoneEntry.getKey());
-								
-								if(!foundTs && _metrics.getTotalAllocatedOrders() > 0) {	
-									_ts.getExceptions().add("Can't upload capacity to 0 if alloction exists");
-									isTimeslotMetricsValid = false;
-									timeslotsNotInUploadFileWithException.add(_ts);
-								} else if(!_metrics.isDynamic()) {
-									_ts.setCapacity(0);
-									_ts.setChefsTableCapacity(0);
-									_ts.setPremiumCapacity(0);
-									_ts.setPremiumCtCapacity(0);
-									this.getTimeslotMetrics().add(_ts);
+					for(Map.Entry<String, List<IDeliveryWindowMetrics>> _metricEntry : _slotByDateZoneEntry.getValue().entrySet()) {
+						
+						if(uploadFileSlotsByDateZoneMapping.get(_slotByDateZoneEntry.getKey()).containsKey(_metricEntry.getKey())){
+							List<IDeliveryWindowMetrics> _metrics = _metricEntry.getValue();
+							if(_metrics != null) {
+								Iterator<IDeliveryWindowMetrics> _metricsItr = _metrics.iterator();
+								while(_metricsItr.hasNext()) {
+									IDeliveryWindowMetrics _tsMetrics = _metricsItr.next();
+									_ts = new TimeslotCapacityModel();
+									_ts.setBaseDate(_tsMetrics.getDeliveryDate());
+									_ts.setStartTime(_tsMetrics.getDisplayStartTime());
+									_ts.setEndTime(_tsMetrics.getDisplayEndTime());
+									_ts.setArea(_metricEntry.getKey());
+									
+									if(_tsMetrics.getTotalAllocatedOrders() > 0) {	
+										_ts.getExceptions().add("Can't upload capacity to 0 if alloction exists");
+										isTimeslotMetricsValid = false;
+										timeslotsNotInUploadFileWithException.add(_ts);
+									} else if(!_tsMetrics.isDynamic()) {
+										_ts.setCapacity(0);
+										_ts.setChefsTableCapacity(0);
+										_ts.setPremiumCapacity(0);
+										_ts.setPremiumCtCapacity(0);
+										this.getTimeslotMetrics().add(_ts);
+									}
 								}
 							}
 						}
+
 					}
 				}
 			}
@@ -310,6 +322,7 @@ public class TimeslotCapacityParser {
 								_tmpTsMetric.getDisplayEndTime())) {
 					foundTS = true;
 					_tsMetric = _tmpTsMetric;
+					_metricsItr.remove();
 					break;
 				}
 			}
