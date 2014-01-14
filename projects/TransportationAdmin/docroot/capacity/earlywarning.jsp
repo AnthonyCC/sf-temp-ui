@@ -197,7 +197,7 @@
                 	 $('#result').html('');
             		 addSysMessage("", false);
             		 $('#capacityform').trigger('reset');
-
+            		 
                 	 $(function() {
              			$("#dialog").dialog({
             				modal: true,
@@ -211,48 +211,53 @@
              			});
              		});
         		 }
+                 
+                 $(document).ready(function(){
+
+                	 $( "#capacityform" ).bind("submit", function(e) {
+
+                		  e.preventDefault(); //Prevent Default action.
+
+                		  $('#result').html('');
+                		  addSysMessage("", false);                		  
+                		        
+                		  var formObj = $(this);
+                		  var formURL = formObj.attr("action");
+                		  var formData = new FormData(this);
+                		  
+                		  $.ajax({
+                		         url: formURL,
+                		         type: 'POST',
+                		         data:  formData,
+                		         mimeType:"multipart/form-data",
+                		         contentType: false,
+                		         cache: false,
+                		         processData:false,
+                		                success: function(data, textStatus, jqXHR)
+                		                {
+                		                  
+                		                       $('#result').html(data);
+                		                       
+                		                       if(data != null && data != '') {
+                		                                 addSysMessage("Timeslot capacity upload failed", true);       
+                		                       } else {
+                		                                 addSysMessage("Timeslot capacity upload successful", false);  
+                		                       }
+                		                },
+                		                error: function(jqXHR, textStatus, errorThrown) 
+                		                {
+                		                       addSysMessage("Timeslot capacity upload failed", true);
+                		                }
+                		  });
+                	});
+                });	
 
                  function uploadTimeslotCapacity() {
-                	 //Callback handler for form submit event
-                	 $("#capacityform").submit(function(e)
-                	 {
-                		 
-                		 $('#result').html('');
-                		 addSysMessage("", false);
-                	  
-                	     var formObj = $(this);
-                	     var formURL = formObj.attr("action");
-                	     var formData = new FormData(this);
-                	     
-                	     $.ajax({
-                	         url: formURL,
-                	     	 type: 'POST',
-                	         data:  formData,
-                	     	 mimeType:"multipart/form-data",
-                	         contentType: false,
-                	         cache: false,
-                	         processData:false,
-	                	     success: function(data, textStatus, jqXHR)
-	                	     {
-	                	    	
-	                	    	 $('#result').html(data);
-	                	    	 
-	                	    	 if(data != null && data != '') {
-	                	      	  	addSysMessage("Timeslot capacity upload failed", true);	
-	                	    	 } else {
-	                	    		addSysMessage("Timeslot capacity upload successful", false);	
-	                	    	 }
-	                	     },
-	                	     error: function(jqXHR, textStatus, errorThrown) 
-	                	     {
-	                	    	 addSysMessage("Timeslot capacity upload failed", true);
-	                	     }
-                	     });
-                	     e.preventDefault(); //Prevent Default action.
-                	 });
                 	  
                 	 $("#capacityform").submit(); //Submit the form
                  }
+                 
+                
                  
                  var errColor = "#FF0000";
            	     var msgColor = "#00FF00";
