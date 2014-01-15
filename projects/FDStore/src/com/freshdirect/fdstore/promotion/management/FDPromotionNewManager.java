@@ -549,6 +549,8 @@ public class FDPromotionNewManager {
 	}
 	
 	public static Integer getRedemptionCount(String promoId, Date requestedDate) throws FDResourceException{
+		lookupManagerHome();
+
 		try {
 			FDPromotionManagerNewSB sb = managerHome.create();
 			return sb.getRedemptionCount(promoId, requestedDate);
