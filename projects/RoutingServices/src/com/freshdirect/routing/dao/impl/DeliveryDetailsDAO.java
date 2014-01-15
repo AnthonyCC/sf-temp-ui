@@ -550,7 +550,8 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			query.append(" and ((ts.premium_cutoff_Time is not null and ts.premium_cutoff_Time "+conditionValue+" ?) or (ts.premium_cutoff_Time is null and ts.CUTOFF_TIME "+conditionValue+" ?))");
 		}
 		
-		query.append(") group by code, name, base_date, st, et, rst, ret, is_dynamic order by code");
+		query.append(") group by code, name, base_date, st, et, rst, ret, is_dynamic " +
+				"order by code, name, base_date, st, et");
 		
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
