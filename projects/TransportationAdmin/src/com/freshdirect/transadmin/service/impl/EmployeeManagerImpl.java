@@ -367,8 +367,10 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 			removeEntity(l);
 		}
 		
-		removeEntityEx(employeeInfo.getEmpSupervisor());
-		if(!"".equals(employeeInfo.getEmpSupervisor().getId().getSupervisorId())) {
+		Collection oldSupList = getDomainManagerDao().getEmployeeSupervisor(
+				employeeInfo.getEmployeeId());
+		removeEntity(oldSupList);
+		if(employeeInfo.getEmpSupervisor().getId() != null && !"".equals(employeeInfo.getEmpSupervisor().getId().getSupervisorId())) {
 			saveEntity(employeeInfo.getEmpSupervisor());
 		}
 		

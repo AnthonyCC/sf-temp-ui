@@ -17,9 +17,9 @@ public class EmployeeValidator extends AbstractValidator {
 
 		ValidationUtils.rejectIfEmpty(errors, "empRole", "app.error.112", new Object[]{" Role Types"},"required field");
 		
-		if(model != null && model.getEmpSupervisor() != null
-				&& ("".equals(model.getEmpSupervisor().getHomeShift()) || "".equals(model.getEmpSupervisor().getHomeRegion())) 
-						&& "".equals(model.getEmpSupervisor().getId().getSupervisorId())) {
+		if(model != null && model.getEmpSupervisor() != null 
+				&& (!"".equals(model.getEmpSupervisor().getHomeShift()) || !"".equals(model.getEmpSupervisor().getHomeRegion()))
+				&& "".equals(model.getEmpSupervisor().getId().getSupervisorId())) {
 			errors.rejectValue("homeSupervisorId", "app.error.112", new Object[]{"Supervisor"},"required field");
 		}
 	}
