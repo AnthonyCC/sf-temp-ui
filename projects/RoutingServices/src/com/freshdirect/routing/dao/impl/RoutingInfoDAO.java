@@ -419,7 +419,12 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 						Date startTime = RoutingDateUtil.addMinutes(_startTime, preTripTime);
 						Date endTime = RoutingDateUtil.addMinutes(_endTime, -postTripTime);
 						
-						int runTime = RoutingDateUtil.getDiffInSeconds(endTime, startTime);
+						int runTime = 0;
+						if(endTime.before(startTime))
+							runTime = (int)(RoutingDateUtil.DAY/RoutingDateUtil.SECOND) - RoutingDateUtil.getDiffInSeconds(endTime, startTime);
+						else
+							runTime = RoutingDateUtil.getDiffInSeconds(endTime, startTime);
+						
 						int maxRunTime = 0;
 						if(_maxTime != null) {
 							Date maxTime = RoutingDateUtil.addMinutes(_maxTime, -postTripTime);

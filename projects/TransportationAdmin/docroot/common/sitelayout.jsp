@@ -17,6 +17,7 @@
 
 	<script src="js/RowHandlers.js" language="javascript" type="text/javascript"></script>
 	<script src="js/action.js" language="javascript" type="text/javascript"></script>
+	<script src="js/common.js" language="javascript" type="text/javascript"></script>
 		
     <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/calendar.js"></script>
     <script type="text/javascript" language="javascript" src="js/jscalendar-1.0/lang/calendar-en.js"></script>

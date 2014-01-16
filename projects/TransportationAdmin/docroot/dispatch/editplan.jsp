@@ -296,7 +296,7 @@
 							</td>
 						<% } else { %>
 							<td colspan="3" align="center">
-								<input type = "submit" value="&nbsp;Save&nbsp;" />
+								<input type = "button" onclick="validateForm();return false;" value="&nbsp;Save&nbsp;" />
 								<input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:back();" />
 							</td> 
 						<% } %>   
@@ -328,6 +328,16 @@
 			if(selIndex == 0) selIndex = 7;
 		};
 
+		function validateForm(){
+			var _starttime = document.getElementById('startTime').value;
+	     	var _endtime = document.getElementById('endTime').value;
+	     			
+			if(_starttime.trim().length > 0 && _endtime.trim().length > 0 && checkTime(_endtime, _starttime)) 
+					if(confirm("Truck end time is before truck dispatch time. The end time will be considered past midnight.")){
+						submitData();
+					}	
+		}
+		
 		function showZoneSelection(originRefVar, destRefVar) {
 			
 			var originRef = originRefVar.value || '';
