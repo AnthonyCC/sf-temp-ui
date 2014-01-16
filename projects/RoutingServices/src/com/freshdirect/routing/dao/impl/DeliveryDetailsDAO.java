@@ -167,7 +167,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> '15' and status_code <> '20' and chefstable = 'X' and class is null) as ct_alloc, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = '10' and chefstable = 'X' and class is null) as ct_orders "
 			+ "from dlv.timeslot ts, dlv.zone z "
-			+ "where ts.zone_id=z.id and ts.base_date = ? "
+			+ "where ts.zone_id=z.id and ts.capacity <> 0 and ts.base_date = ? "
 			;
 			
 	private static final String ORDERSIZE_ESTIMATION_QUERY = "select Ceil(Avg(tbl.NUM_REGULAR_CARTONS)) CCOUNT, " +
