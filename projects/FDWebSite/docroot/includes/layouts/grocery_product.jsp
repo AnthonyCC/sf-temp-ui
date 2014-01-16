@@ -1060,7 +1060,7 @@ if(((pageNumber -1) * itemsToDisplay) > skuCount) {
 	        	skus.add( sku ); //why are we doing this?
 	        			
 				if (sku.getSkuCode().equals(syncProdSkuCode)) {
-					syncProdIdx = o;
+					syncProdIdx = (o - ((pageNumber-1) * itemsToDisplay));
 				}
 				FDCustomerCoupon curCoupon = null;
 				
