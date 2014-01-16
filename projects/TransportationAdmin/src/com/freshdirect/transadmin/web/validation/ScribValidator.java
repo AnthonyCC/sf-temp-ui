@@ -45,9 +45,9 @@ public class ScribValidator extends AbstractValidator {
 			errors.rejectValue("startTimeS", "app.error.152", "Truck dispatch time cannot be before dispatch group time");
 		}
 		
-		if(model.getStartTime() != null && model.getEndTime() != null && model.getEndTime().before(model.getStartTime())) {
+		/*if(model.getStartTime() != null && model.getEndTime() != null && model.getEndTime().before(model.getStartTime())) {
 			errors.rejectValue("endTimeS", "app.error.151", "Truck end time cannot be before truck dispatch time");
-		}
+		}*/
 	}
 
 }

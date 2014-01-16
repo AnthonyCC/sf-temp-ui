@@ -67,7 +67,7 @@ public class PlanValidator extends AbstractValidator {
 					new Object[] { "Supervisor" }, "required field");
 		}
 		
-		checkTime("startTime", model.getStartTime(), model.getEndTime(),errors);
+		//checkTime("startTime", model.getStartTime(), model.getEndTime(),errors);
 		checkDate("dispatchGroupS", model.getDispatchGroup(), model.getStartTime(),errors);
 		
 		ValidationUtils.rejectIfEmpty(errors, "sequence", "app.error.112", new Object[]{"Sequence"},"required field");
