@@ -114,7 +114,8 @@ public class CartOperations {
 			// Get event source
 			EnumEventSource evtSrc = EnumEventSource.UNKNOWN;
 			try {
-				evtSrc = EnumEventSource.valueOf( reqData.getEventSource() );
+				if(null !=reqData.getEventSource())
+					evtSrc = EnumEventSource.valueOf( reqData.getEventSource() );
 			} catch (Exception ignore) {
 				LOG.warn( "Invalid event source, ignoring", ignore );
 			}
