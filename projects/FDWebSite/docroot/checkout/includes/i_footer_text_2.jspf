@@ -26,4 +26,4 @@ final int W_FOOTER_TEXT_2_TOTAL = 970;
 </table>
 <br>
 <br>
-<%@ include file="/includes/net_insight/i_tag_checkout.jspf" %>
+

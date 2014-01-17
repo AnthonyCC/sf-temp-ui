@@ -250,4 +250,3 @@ String prodPrice = null;
                     }%>
     </tmpl:put>
 </tmpl:insert>
-<%@ include file="/includes/net_insight/i_tag_footer.jspf" %>

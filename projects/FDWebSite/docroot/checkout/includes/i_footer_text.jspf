@@ -25,4 +25,4 @@ for (Iterator iterator = fdcsHours.iterator(); iterator.hasNext();) {
 	</td>
 </tr>
 </table>
---%><%@ include file="/includes/net_insight/i_tag_checkout.jspf" %>
+--%>

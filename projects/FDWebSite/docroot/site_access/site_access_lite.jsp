@@ -241,8 +241,7 @@ request.setAttribute("listPos", "CategoryNote");
 				<tr><td><img src="/media_stat/images/layout/clear.gif" width="196" height="20"><br></td></tr>
 			</table>
 			<%@ include file="/shared/template/includes/copyright.jspf" %>
-		</div>	
-	<%@ include file="/includes/net_insight/i_tag_footer.jspf" %>
+		</div>
 	</fd:SiteAccessController>
 	</body>
 </html>

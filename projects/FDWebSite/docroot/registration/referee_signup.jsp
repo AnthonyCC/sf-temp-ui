@@ -184,9 +184,7 @@
 			</script>
 			
 			<fd:IncludeMedia name="/media/editorial/site_access/referral_site_access.html" />
-
-		
-			<%@ include file="/includes/net_insight/i_tag_footer.jspf" %>			
+			
 
 		</fd:SiteAccessController>
 		<% }  else { 

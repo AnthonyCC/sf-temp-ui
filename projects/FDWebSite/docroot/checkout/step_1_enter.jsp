@@ -126,11 +126,11 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 	<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL%>">
 	    <tr valign="top">
 			<td width="35" style="text-align: left;">
-					<a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="previousX">
+					<a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" id="previousX">
 					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
 			</td>
 		    <td width="<%=W_CHECKOUT_STEP_1_ENTER_TOTAL-35%>" style="text-align: left;">
-				<a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelText">
+				<a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc ")%>" id="cancelText">
 				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
 				Your Cart<br/>
 				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">

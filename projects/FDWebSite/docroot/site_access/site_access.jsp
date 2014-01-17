@@ -208,8 +208,6 @@ request.setAttribute("listPos", "CategoryNote,SiteAccess,DeliveryFees");
 				<% } %>
 			</script>
 
-		
-			<%@ include file="/includes/net_insight/i_tag_footer.jspf" %>
 			<%
 				/* Publicis Pixel */
 				SemPixelModel semPixel_PUB = FDSemPixelCache.getInstance().getSemPixel("Publicis");
