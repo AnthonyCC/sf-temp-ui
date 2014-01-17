@@ -725,19 +725,13 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
 		    		ipLocatorEventDTO.setIplocRolloutPercent(rolloutPercent);
 		    		
 		    		user = createUser(ipLocatorData, ipLocatorEventDTO);
-		    		LOGGER.debug("IP locator success: "+ip+" -> "+ipLocatorData);
 	
 		    	} catch (Exception e) {
 					LOGGER.error("IP Locator failed: ", e);
 				}
 
-    		} else {
-    			LOGGER.debug("IP Locator not rolled out to user");
-    		}
-    	
-    	} else {
-    		LOGGER.debug("IP Locator disabled");
-    	}
+    		}    	
+    	} 
     	
    		return user;
     }
