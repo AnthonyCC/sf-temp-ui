@@ -441,11 +441,6 @@ class DispatchComparator extends LogComparator
 			{
 				updates.add(obj);
 			}
-			//oldDispatch.setFirstDlvTime(new Date(oldDispatch.getFirstDlvTime().getTime()));			
-			if(( obj=compareValues("FIRST_DLV_TIME",getTimeOnly(new Date(oldDispatch.getFirstDlvTime().getTime()),sf),getTimeOnly(newDispatch.getFirstDlvTime(),sf)))!=null)
-			{
-				updates.add(obj);
-			}
 			
 			//oldDispatch.setStartTime(new Date(oldDispatch.getStartTime().getTime()));
 			if(( obj=compareValues("START_TIME",getTimeOnly(new Date(oldDispatch.getStartTime().getTime()),sf),getTimeOnly(newDispatch.getStartTime(),sf)))!=null)
