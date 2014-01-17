@@ -272,10 +272,10 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		}
 	}
 	
-	public Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(Date deliveryDate, Date cutOffTime, String zoneCode, EnumLogicalOperator condition) throws RoutingServiceException {
+	public Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(Date deliveryDate, Date cutOffTime, String zoneCode, EnumLogicalOperator condition, boolean filterTimeslots) throws RoutingServiceException {
 		
 		try {
-			return deliveryDAOImpl.getTimeslotsByDateEx(deliveryDate, cutOffTime, zoneCode, condition);
+			return deliveryDAOImpl.getTimeslotsByDateEx(deliveryDate, cutOffTime, zoneCode, condition, filterTimeslots);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			throw new RoutingServiceException(e, IIssue.PROCESS_LOADLATEDELIVERYORDERS_UNSUCCESSFUL);

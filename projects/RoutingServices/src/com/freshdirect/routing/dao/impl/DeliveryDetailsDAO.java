@@ -167,7 +167,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and  status_code <> '15' and status_code <> '20' and chefstable = 'X' and class is null) as ct_alloc, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code = '10' and chefstable = 'X' and class is null) as ct_orders "
 			+ "from dlv.timeslot ts, dlv.zone z "
-			+ "where ts.zone_id=z.id and ts.capacity <> 0 and ts.base_date = ? "
+			+ "where ts.zone_id=z.id and ts.base_date = ? "
 			;
 			
 	private static final String ORDERSIZE_ESTIMATION_QUERY = "select Ceil(Avg(tbl.NUM_REGULAR_CARTONS)) CCOUNT, " +
@@ -535,7 +535,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		return timeslotByArea;
 	}
 	
-	public Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(final Date deliveryDate, final Date cutOffTime, final String zoneCode, final EnumLogicalOperator condition) throws SQLException {
+	public Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(final Date deliveryDate, final Date cutOffTime, final String zoneCode, final EnumLogicalOperator condition, final boolean filterTimeslots) throws SQLException {
 		
 		final Map<String, List<IDeliveryWindowMetrics>> timeslotByZone = new TreeMap<String, List<IDeliveryWindowMetrics>>();
 		
@@ -545,6 +545,9 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		String conditionValue = "=";
 		if(condition != null) {
 			conditionValue = condition.getName();
+		}
+		if(filterTimeslots) {
+			query.append(" and ts.capacity <> 0 ");
 		}
 		if(cutOffTime != null) {
 			query.append(" and ((ts.premium_cutoff_Time is not null and ts.premium_cutoff_Time "+conditionValue+" ?) or (ts.premium_cutoff_Time is null and ts.CUTOFF_TIME "+conditionValue+" ?))");

@@ -225,7 +225,7 @@ public class TimeslotCapacityParser {
 			}
 			
 			for(Map.Entry<Date, Map<String, List<TimeslotCapacityModel>>> _dateEntry : uploadFileSlotsByDateZoneMapping.entrySet()) {
-				Map<String, List<IDeliveryWindowMetrics>> _slotsByZone = deliveryProxy.getTimeslotsByDateEx(_dateEntry.getKey(), null, null, null);
+				Map<String, List<IDeliveryWindowMetrics>> _slotsByZone = deliveryProxy.getTimeslotsByDateEx(_dateEntry.getKey(), null, null, null, false);
 				for(Map.Entry<String, List<IDeliveryWindowMetrics>> _tempMap : _slotsByZone.entrySet()){
 					List<IDeliveryWindowMetrics> _zoneTsList = _tempMap.getValue();
 					for(IDeliveryWindowMetrics _ts : _zoneTsList) {

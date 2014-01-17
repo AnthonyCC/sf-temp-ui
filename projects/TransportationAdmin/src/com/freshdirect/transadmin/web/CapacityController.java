@@ -499,7 +499,7 @@ public class CapacityController extends AbstractMultiActionController {
 																	(deliveryDate, getCutOffTime(cutOff), null, condition);
 				
 				Map<String, List<IDeliveryWindowMetrics>> slotsByZone = deliveryProxy.getTimeslotsByDateEx
-																			(deliveryDate, getCutOffTime(cutOff), null, condition);
+																			(deliveryDate, getCutOffTime(cutOff), null, condition, true);
 									
 				Iterator<String> _itr = slotsByZone.keySet().iterator();
 								
