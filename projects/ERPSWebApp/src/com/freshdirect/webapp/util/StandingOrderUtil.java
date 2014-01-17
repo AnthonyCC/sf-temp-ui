@@ -370,7 +370,6 @@ public class StandingOrderUtil {
 			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.TIMESLOT );
 		}
 		
-		
 		// making a reservation ...
 		FDActionInfo reserveActionInfo = info;
 		if(reserveActionInfo == null) {
@@ -384,66 +383,127 @@ public class StandingOrderUtil {
 		//Geo-Restrictions
 		List<GeographyRestriction> geographicRestrictions = new ArrayList<GeographyRestriction>();
 		geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictions(deliveryAddressModel);
-		
-		for ( FDTimeslot timeslot : timeslots ) {
-			
-			if ( !deliveryTimes.checkTimeslot( timeslot ) ) {
-				// this timeslot falls outside the required time interval, or is past the cutoff time, skip it
-				LOGGER.info( "Skipping timeslot: " + timeslot.toString() );
-				continue;
-			}
-			//check if timeslot is Geo-Restricted.
-			if(GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions,timeslot, new ArrayList<String>(),new DateRange(deliveryTimes.getDayStart(),deliveryTimes.getDayEnd()),new ArrayList<String>())){
-				// this timeslot is geo-restricted, skip it
-				LOGGER.info( "Skipping Geo-Restricted timeslot: " + timeslot.toString() );
-				continue;
-			}
-			if ( event == null ) {
-				event = new TimeslotEventModel(EnumTransactionSource.STANDING_ORDER.getCode(), false, 0.00, false, false,(customerUser!=null)?customerUser.getPrimaryKey():null);
-			}	
-			deliveryAddress=FDCustomerManager.getAddress(customer,deliveryAddressId);
-			try { 
-				LOGGER.info( "Trying to make reservation for timeslot: " + timeslot.toString() );
-				reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot, customer.getErpCustomerPK(),
-						RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
-						null, false, event, false);
 				
-				selectedTimeslot = timeslot;
-				LOGGER.info( "Timeslot reserved successfully: " + timeslot.toString() );
-			} catch ( ReservationUnavailableException e ) {
-				if(forceCapacity){
-					try {
+		FDTimeslot _tmpTimeslot = null;
+		for ( FDTimeslot timeslot : timeslots ) {		
+			if ( deliveryTimes.checkTimeslot( timeslot ) ) {
+				// this time slot matches to SO template window, and is within the cutoff time
+				LOGGER.info( "Found matched timeslot: " + timeslot.toString() );
+				_tmpTimeslot = timeslot;
+				//check if timeslot is Geo-Restricted.
+				if(GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, timeslot, new ArrayList<String>(),new DateRange(deliveryTimes.getDayStart(),deliveryTimes.getDayEnd()),new ArrayList<String>())){
+					// this timeslot is geo-restricted, skip it
+					LOGGER.info( "Skipping Geo-Restricted template match timeslot: " + timeslot.toString() );
+				} else {
+					if ( event == null ) {
+						event = new TimeslotEventModel(EnumTransactionSource.STANDING_ORDER.getCode(), false, 0.00, false, false,(customerUser!=null)?customerUser.getPrimaryKey():null);
+					}	
+					deliveryAddress = FDCustomerManager.getAddress(customer,deliveryAddressId);
+					try { 
+						LOGGER.info( "Trying to make reservation for timeslot: " + timeslot.toString() );
 						reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot, customer.getErpCustomerPK(),
 								RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
-								null, forceCapacity, event, false);
+								null, false, event, false);
 						
-					} catch (ReservationException e1) {						
-						e1.printStackTrace();
+						selectedTimeslot = timeslot;
+						LOGGER.info( "Timeslot reserved successfully: " + timeslot.toString() );
+					} catch ( ReservationUnavailableException e ) {
+						if(forceCapacity){
+							try {
+								reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot, customer.getErpCustomerPK(),
+										RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
+										null, forceCapacity, event, false);
+								
+							} catch (ReservationException e1) {						
+								e1.printStackTrace();
+							}
+							selectedTimeslot = timeslot;
+							LOGGER.info( "Timeslot reserved successfully[forceCapacity]: " + timeslot.toString() );
+						} else {
+							// no more capacity in this time slot
+							LOGGER.info( "No more capacity in timeslot[forceCapacity]: " + timeslot.toString(), e );
+						}
+					} catch (ReservationException e) {
+						if(forceCapacity){
+							try {
+								reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot, customer.getErpCustomerPK(),
+										RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
+										null, forceCapacity, event, false);
+							} catch (ReservationException e1) {						
+								e1.printStackTrace();
+							}
+							selectedTimeslot = timeslot;
+							LOGGER.info( "Timeslot reserved successfully[forceCapacity]: " + timeslot.toString() );
+						} else {
+							// other error
+							LOGGER.warn( "Reservation failed for timeslot[forceCapacity]: " + timeslot.toString(), e );
+						}
 					}
-					selectedTimeslot = timeslot;
-					LOGGER.info( "Timeslot reserved successfully[forceCapacity]: " + timeslot.toString() );
-				} else {
-					// no more capacity in this timeslot
-					LOGGER.info( "No more capacity in timeslot[forceCapacity]: " + timeslot.toString(), e );
 				}
-			} catch (ReservationException e) {
-				if(forceCapacity){
-					try {
-						reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot, customer.getErpCustomerPK(),
-								RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
-								null, forceCapacity, event, false);
-					} catch (ReservationException e1) {						
-						e1.printStackTrace();
-					}
-					selectedTimeslot = timeslot;
-					LOGGER.info( "Timeslot reserved successfully[forceCapacity]: " + timeslot.toString() );
-				} else {
-					// other error
-					LOGGER.warn( "Reservation failed for timeslot[forceCapacity]: " + timeslot.toString(), e );
-				}
-			}
-			if ( reservation != null ) 
 				break;
+			}
+		}
+		
+		//To allow time windows that do not exactly match the window specified in the standing order template. 
+		//If an exact match time window is not available, but time windows exist that overlap the template's time window, 
+		//then select the overlapping time window with the earliest start time 		
+		if(_tmpTimeslot == null && FDStoreProperties.isStandingOrdersOverlapWindowsEnabled()) {
+			
+			List<FDTimeslot> altTimeslots = deliveryTimes.getAltTimeslots(timeslots);
+			for ( FDTimeslot timeslot : altTimeslots ) {				
+				//check if time slot is Geo-Restricted.
+				if(GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions,timeslot, new ArrayList<String>(),new DateRange(deliveryTimes.getDayStart(),deliveryTimes.getDayEnd()),new ArrayList<String>())){
+					// this time slot is geo-restricted, skip it
+					LOGGER.info( "Skipping Geo-Restricted overlap timeslot: " + timeslot.toString() );
+					continue;
+				}
+				if ( event == null ) {
+					event = new TimeslotEventModel(EnumTransactionSource.STANDING_ORDER.getCode(), false, 0.00, false, false,(customerUser!=null)?customerUser.getPrimaryKey():null);
+				}	
+				deliveryAddress = FDCustomerManager.getAddress(customer, deliveryAddressId);
+				try { 
+					LOGGER.info( "Trying to make reservation for timeslot: " + timeslot.toString() );
+					reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot, customer.getErpCustomerPK(),
+							RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
+							null, false, event, false);
+					
+					selectedTimeslot = timeslot;
+					LOGGER.info( "Timeslot reserved successfully: " + timeslot.toString() );
+				} catch ( ReservationUnavailableException e ) {
+					if(forceCapacity){
+						try {
+							reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot, customer.getErpCustomerPK(),
+									RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
+									null, forceCapacity, event, false);
+							
+						} catch (ReservationException e1) {						
+							e1.printStackTrace();
+						}
+						selectedTimeslot = timeslot;
+						LOGGER.info( "Timeslot reserved successfully[forceCapacity]: " + timeslot.toString() );
+					} else {
+						// no more capacity in this timeslot
+						LOGGER.info( "No more capacity in timeslot[forceCapacity]: " + timeslot.toString(), e );
+					}
+				} catch (ReservationException e) {
+					if(forceCapacity){
+						try {
+							reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot, customer.getErpCustomerPK(),
+									RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
+									null, forceCapacity, event, false);
+						} catch (ReservationException e1) {						
+							e1.printStackTrace();
+						}
+						selectedTimeslot = timeslot;
+						LOGGER.info( "Timeslot reserved successfully[forceCapacity]: " + timeslot.toString() );
+					} else {
+						// other error
+						LOGGER.warn( "Reservation failed for timeslot[forceCapacity]: " + timeslot.toString(), e );
+					}
+				}
+				if ( reservation != null ) 
+					break;
+			}
 		}
 		
 		if ( reservation == null || selectedTimeslot == null ) {

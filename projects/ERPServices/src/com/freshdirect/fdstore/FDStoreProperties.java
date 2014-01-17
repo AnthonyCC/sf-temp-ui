@@ -352,6 +352,7 @@ public class FDStoreProperties {
 
     //Standing Orders
     private final static String SO_GLOBAL_ENABLER = "fdstore.standingorders.enabled";
+    private final static String SO_OVERLAP_WINDOWS = "fdstore.standingorders.overlap.windows.enabled";
 
     //Standing Orders
     private final static String CLIENT_CODES_GLOBAL_ENABLER = "fdstore.clientcodes.enabled";
@@ -977,6 +978,7 @@ public class FDStoreProperties {
 
         //Standing Orders
         defaults.put(SO_GLOBAL_ENABLER, "false");
+        defaults.put(SO_OVERLAP_WINDOWS, "true");
 
         //Client Codes
         defaults.put(CLIENT_CODES_GLOBAL_ENABLER, "false");
@@ -2317,6 +2319,10 @@ public class FDStoreProperties {
 
     public static boolean isStandingOrdersEnabled() {
         return Boolean.valueOf(get(SO_GLOBAL_ENABLER)).booleanValue();
+    }
+    
+    public static boolean isStandingOrdersOverlapWindowsEnabled() {
+        return Boolean.valueOf(get(SO_OVERLAP_WINDOWS)).booleanValue();
     }
 
     public static boolean isClientCodesEnabled() {

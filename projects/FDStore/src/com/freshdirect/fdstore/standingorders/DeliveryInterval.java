@@ -1,9 +1,15 @@
 package com.freshdirect.fdstore.standingorders;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
+import java.util.ListIterator;
 
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.framework.util.DateRange;
 
 
 public class DeliveryInterval {
@@ -117,11 +123,47 @@ public class DeliveryInterval {
 		Date tsEnd = timeslot.getEndDateTime();
 		Date cutoffTime = timeslot.getCutoffDateTime();
 
-		return ( reqStart.equals( tsStart ) || reqStart.before( tsStart ) ) && ( reqEnd.equals( tsEnd ) || reqEnd.after( tsEnd ) ) && cutoffTime.after( new Date() );
+		return ( reqStart.equals( tsStart ) && ( reqEnd.equals( tsEnd ) ) && cutoffTime.after( new Date() ) );
 	}
 	
+	//Alternate timeslot are matached based on window overlap.
+	//If the window overlap
+	public List<FDTimeslot> getAltTimeslots(List<FDTimeslot> timeslots) {
+		if (timeslots == null || start == null || end == null)
+			return new ArrayList<FDTimeslot>();
+
+		List<FDTimeslot> altTimeslots = new ArrayList<FDTimeslot>();
+		Date reqStart = start.getTime();
+		Date reqEnd = end.getTime();
+		DateRange templateWindowRange = new DateRange(reqStart, reqEnd);
+
+		if (timeslots != null) {
+			for (ListIterator<FDTimeslot> i = timeslots.listIterator(); i
+					.hasNext();) {
+
+				FDTimeslot ts = i.next();
+
+				DateRange tsWindowRange = new DateRange(ts.getBegDateTime(),
+						ts.getEndDateTime());
+
+				if (tsWindowRange.overlaps(templateWindowRange)
+						&& ts.getCutoffDateTime().after(new Date())) {
+					altTimeslots.add(ts);
+				}
+			}
+		}
+		Collections.sort(altTimeslots, timeslotComparator);
+		return altTimeslots;
+	}
+
 	@Override
 	public String toString() {
 		return "DeliveryInterval[ " + nextDelivery.getTime().toString() + " / " + start.getTime().toString() + " / " +  end.getTime().toString() + " ]";
 	}
+	
+	private Comparator<FDTimeslot> timeslotComparator = new Comparator<FDTimeslot>() {
+		public int compare(FDTimeslot ts1, FDTimeslot ts2) {
+			return ts1.getBegDateTime().compareTo(ts2.getBegDateTime());
+		}
+	};
 }
