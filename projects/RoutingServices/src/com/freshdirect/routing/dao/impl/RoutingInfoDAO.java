@@ -424,7 +424,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 						int maxRunTime = 0;
 						if(_maxTime != null) {
 							Date maxTime = RoutingDateUtil.addMinutes(_maxTime, -postTripTime);
-							maxRunTime = RoutingDateUtil.getDiffInSeconds(maxTime, startTime);
+							maxRunTime = calcRunTime(startTime, maxTime);
 						} else {
 							maxRunTime = runTime;
 						}
@@ -537,7 +537,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 								int maxRunTime = 0;
 								if(_maxTime != null) {
 									Date maxTime = RoutingDateUtil.addMinutes(_maxTime, -postTripTime);
-									maxRunTime = RoutingDateUtil.getDiffInSeconds(maxTime, startTime);
+									maxRunTime = calcRunTime(startTime, maxTime);
 								} else {
 									maxRunTime = runTime;
 								}
@@ -805,7 +805,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 						    		
 					    			int maxRunTime = 0;
 									if(_maxTime != null) {
-										maxRunTime = RoutingDateUtil.getDiffInSeconds(_maxTime, startTime);
+										maxRunTime = calcRunTime(startTime, _maxTime);
 									} else {
 										maxRunTime = runTime;
 									}
@@ -1033,7 +1033,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 									int maxRunTime = 0;
 									if(_maxTime != null) {
 										Date maxTime = RoutingDateUtil.addMinutes(_maxTime, -postTripTime);
-										maxRunTime = RoutingDateUtil.getDiffInSeconds(maxTime, startTime);
+										maxRunTime = calcRunTime(startTime, maxTime);
 									} else {
 										maxRunTime = runTime;
 									}
