@@ -7,6 +7,15 @@
     <c:remove var="messages" scope="session"/>
 </c:if>
 
+
+<c:if test="${not empty appwarnings}">
+		<br/>      
+       <c:forEach var="warn" items="${appwarnings}">            
+            <div class="appwarntxt"><c:out value="${warn}" escapeXml="false"/></div><br />
+       </c:forEach>   
+    <c:remove var="appwarnings" scope="session"/>
+</c:if>
+
 <c:if test="${not empty apperrors}">
 		<br/>      
        <c:forEach var="err" items="${apperrors}">            

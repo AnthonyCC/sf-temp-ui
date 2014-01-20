@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.web;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,6 +34,8 @@ import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.ScheduleFileUploadCommand;
+import com.freshdirect.transadmin.web.validation.ScribValidator;
+import com.freshdirect.transadmin.web.validation.ValidationInfo;
 
 public class ScheduleUploadFormController extends BaseFormController {
 	
@@ -135,6 +138,11 @@ public class ScheduleUploadFormController extends BaseFormController {
 															
 								TrnFacility originFacility = null;
 								TrnFacility destFacility = null;
+								
+								List<ValidationInfo> validationerrors = new ArrayList<ValidationInfo>();
+								ScribValidator validator = new ScribValidator();
+								Set<String> errorSet = new HashSet<String>();
+								Set<String> warningSet = new HashSet<String>();
 								for(Scrib scrib : scribs) {
 									int _codelength = scrib.getZoneS() != null ? scrib.getZoneS().length(): 3;				
 									if(_codelength < 3) {
@@ -155,25 +163,44 @@ public class ScheduleUploadFormController extends BaseFormController {
 										scrib.setRegion(zone.getRegion());
 									}
 									scribDates.add(scrib.getScribDate());
-								}
-								Set<Date> hasPublishedScrib = new TreeSet<Date>();
-								StringBuffer publishErrMsg = new StringBuffer();
-								for(Date scribDate : scribDates) {
-									Collection wavePublishes = getDispatchManagerService().getWaveInstancePublish(scribDate);
-									if(wavePublishes != null && wavePublishes.size() > 0) {
-										hasPublishedScrib.add(scribDate);
-										if(publishErrMsg.length() > 0) {
-											publishErrMsg.append(",");
+									
+									validationerrors = validator.validateEx(scrib);
+									
+									if(validationerrors.size()>0){
+										for(ValidationInfo error : validationerrors){
+											if(ValidationInfo.ERROR.equals(error.getLevel())){
+												errorSet.add(getMessage(error.getKey(), error.getArgs()));
+											}else{
+												warningSet.add(getMessage(error.getKey(), error.getArgs()));
+											}
 										}
-										publishErrMsg.append(TransStringUtil.getDate(scribDate));
 									}
 								}
-								//if(hasPublishedScrib.size() == 0) {
+								if(warningSet.size()>0){
+									for(String warning: warningSet){
+										saveWarningMessage(request, warning);
+									}
+								}
+								if(errorSet.size()>0){
+									for(String error: errorSet){
+										saveErrorMessage(request, error);
+									}
+								}else{
+									Set<Date> hasPublishedScrib = new TreeSet<Date>();
+									StringBuffer publishErrMsg = new StringBuffer();
+									for(Date scribDate : scribDates) {
+										Collection wavePublishes = getDispatchManagerService().getWaveInstancePublish(scribDate);
+										if(wavePublishes != null && wavePublishes.size() > 0) {
+											hasPublishedScrib.add(scribDate);
+											if(publishErrMsg.length() > 0) {
+												publishErrMsg.append(",");
+											}
+											publishErrMsg.append(TransStringUtil.getDate(scribDate));
+										}
+									}
 									this.getDispatchManagerService().uploadScrib(scribDates, scribs);
 									saveMessage(request, getMessage("app.actionmessage.163", new Object[]{newSource.getDescription()}));
-								//} else {
-									//saveErrorMessage(request, getMessage("app.error.132", new Object[] {publishErrMsg.toString()}));
-								//}								
+								}
 							}
 						}
 					} else {

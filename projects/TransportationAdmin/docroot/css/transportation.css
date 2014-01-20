@@ -281,6 +281,12 @@ body {
 	font-size: 9pt; 
 }
 
+.screenmessages div.appwarntxt {
+	color: orange;
+	font-family: Verdana, Arial, Helvetica,sans-serif; 
+	font-size: 9pt; 
+}
+
 .fileTabHeader {
 	font-family: Verdana, Arial, Helvetica,sans-serif; 
 	font-size: 9pt;	

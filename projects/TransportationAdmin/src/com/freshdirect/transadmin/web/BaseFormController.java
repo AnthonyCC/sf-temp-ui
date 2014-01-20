@@ -55,6 +55,19 @@ public class BaseFormController extends SimpleFormController {
 		request.getSession().setAttribute("apperrors", messages);
 	}
 
+	public void saveWarningMessage(HttpServletRequest request, Object msg) {
+		List messages = (List) request.getSession().getAttribute("appwarnings");
+		if (messages == null) {
+			messages = new ArrayList();
+		}
+		if(msg instanceof Collection) {
+			messages.addAll((Collection)msg);
+		} else {
+			messages.add(msg);
+		}
+		request.getSession().setAttribute("appwarnings", messages);
+	}
+	
 	public String getMessage(String key, Object[] param) {
 
 		return getMessageSourceAccessor().getMessage(key, param);

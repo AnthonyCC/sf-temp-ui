@@ -296,7 +296,7 @@
 							</td>
 						<% } else { %>
 							<td colspan="3" align="center">
-								<input type = "button" onclick="validateForm();return false;" value="&nbsp;Save&nbsp;" />
+								<input type = "button" onclick="validateForm();" value="&nbsp;Save&nbsp;" />
 								<input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:back();" />
 							</td> 
 						<% } %>   
@@ -333,9 +333,10 @@
 	     	var _endtime = document.getElementById('endTime').value;
 	     			
 			if(_starttime.trim().length > 0 && _endtime.trim().length > 0 && checkTime(_endtime, _starttime)) 
-					if(confirm("Truck end time is before truck dispatch time. The end time will be considered past midnight.")){
-						submitData();
-					}	
+					if(!confirm("Truck end time is before truck dispatch time. The end time will be considered past midnight.")){
+						return;
+					}
+			submitData();
 		}
 		
 		function showZoneSelection(originRefVar, destRefVar) {
