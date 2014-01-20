@@ -87,7 +87,7 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 					tagOut = wrapIntoFunction ? wrapIntoFunction(tagOut) : tagOut;
 					tagOut = wrapIntoScriptTag ? wrapIntoScriptTag(tagOut) : tagOut;
 				}
-				LOGGER.debug(tagOut);
+				//LOGGER.debug(tagOut);
 				if ( outStringVar != null ) {
 					getJspContext().setAttribute( outStringVar, tagOut );
 				} else {

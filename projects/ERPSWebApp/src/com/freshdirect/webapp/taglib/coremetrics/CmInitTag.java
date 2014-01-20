@@ -37,7 +37,7 @@ public class CmInitTag extends AbstractCmTag {
 				toJsVar(FDStoreProperties.getCoremetricsDataCollectionDomain()), 
 				toJsVar(FDStoreProperties.getCoremetricsCookieDomain()) );
 		
-		LOGGER.debug(setClientIdScript);
+		//LOGGER.debug(setClientIdScript);
 		return setClientIdScript;
 	}
 

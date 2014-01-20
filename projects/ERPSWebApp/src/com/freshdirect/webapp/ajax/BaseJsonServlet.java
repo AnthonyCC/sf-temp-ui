@@ -143,7 +143,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 			returnHttpError( 400, "Empty request. Aborting" );	// 400 Bad Request
 		}
 		
-		LOG.debug( "Parsing request data: " + reqJson );
+		//LOG.debug( "Parsing request data: " + reqJson );
 		
 		T reqData = null;
 		try {
@@ -172,7 +172,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 			ServletOutputStream out = response.getOutputStream();
 			String responseStr = writer.toString();
 			
-			LOG.debug( "Generated response data: " + responseStr );
+			//LOG.debug( "Generated response data: " + responseStr );
 			
 			out.print( responseStr );
 			

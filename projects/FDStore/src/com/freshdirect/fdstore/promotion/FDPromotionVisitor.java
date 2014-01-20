@@ -238,7 +238,7 @@ public class FDPromotionVisitor {
 				actualPromoCodes.add(promo.getPromotionCode());
 			}
 
-			LOGGER.warn("Promotion conflict resolution from " + promoCodes + " retained " + actualPromoCodes);
+			//LOGGER.warn("Promotion conflict resolution from " + promoCodes + " retained " + actualPromoCodes);
 
 			eligibilities.setEligiblity(promoCodes, false);
 			eligibilities.setEligiblity(actualPromoCodes, true);

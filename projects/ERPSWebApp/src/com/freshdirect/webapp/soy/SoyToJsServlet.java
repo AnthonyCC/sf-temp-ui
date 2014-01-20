@@ -26,7 +26,7 @@ public class SoyToJsServlet extends HttpServlet {
 		
 	    String packageName = SoyTemplateEngine.cleanPackageName( request.getPathInfo() );
 	    		
-		LOGGER.info( "Serving soy package: " + packageName );
+		//LOGGER.info( "Serving soy package: " + packageName );
 				
 		try {
 			List<String> jsSrcs = SoyTemplateEngine.getInstance().getJsSrc( getServletContext(), packageName ); 
@@ -39,7 +39,7 @@ public class SoyToJsServlet extends HttpServlet {
 				out.write( js );
 			}			
 
-			LOGGER.info( "Served soy package: " + packageName );
+			//LOGGER.info( "Served soy package: " + packageName );
 			
 	    } catch ( IOException e ) {
 	    	LOGGER.error( "Failed to serve soy package: "+packageName, e );

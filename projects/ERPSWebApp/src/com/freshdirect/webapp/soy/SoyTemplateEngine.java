@@ -102,7 +102,7 @@ public class SoyTemplateEngine {
 	 * @throws IOException
 	 */
 	public String render( ServletContext servletCtx, String template, SoyMapData data ) throws IOException {
-		LOGGER.info( "Rendering template: " + template );
+		//LOGGER.info( "Rendering template: " + template );
 		
 		String packageName = packagePathOf( template );
 		AbstractSoyTemplate tofu; 
@@ -126,7 +126,7 @@ public class SoyTemplateEngine {
 		//----------------
 		
 		String result = tofu.render( template, data ); 
-		LOGGER.info( "Successfully rendered template: " + template );
+		//LOGGER.info( "Successfully rendered template: " + template );
 		
 		return result;
 	}	
@@ -140,7 +140,7 @@ public class SoyTemplateEngine {
 	 * @return
 	 */
 	public List<String> getJsSrc( ServletContext servletCtx, String packageName ) throws IOException {
-		LOGGER.info( "Getting javascript sources for package: " + packageName );
+		//LOGGER.info( "Getting javascript sources for package: " + packageName );
 
 		List<String> jsSrc; 
 		
@@ -160,7 +160,7 @@ public class SoyTemplateEngine {
 		}
 		
 		
-		LOGGER.info( "Successfully got javascript sources for package: " + packageName );
+		//LOGGER.info( "Successfully got javascript sources for package: " + packageName );
 		
 		return jsSrc;
 	}
@@ -182,11 +182,11 @@ public class SoyTemplateEngine {
 			loadProperties( servletCtx );
 		}
 			
-		LOGGER.info( "Loading package " + packageName );		
+		//LOGGER.info( "Loading package " + packageName );		
 		
 		SoyFileSet sfs = buildSoyFileSet( servletCtx, packageName );	
 		
-		LOGGER.info( "Loaded package " + packageName );
+		//LOGGER.info( "Loaded package " + packageName );
 		
 		try {
 			AbstractSoyTemplate tofu;
@@ -239,14 +239,14 @@ public class SoyTemplateEngine {
 	 * @throws IOException
 	 */
 	private final void loadProperties( ServletContext servletCtx ) throws IOException {		
-		LOGGER.info( "Loading properties" );
+		//LOGGER.info( "Loading properties" );
 		
 		InputStream propsStream = servletCtx.getResourceAsStream( SOY_BASE + "soy.properties" );			
 		props.clear();
 		props.load( propsStream );
 		propsStream.close();
 					
-		LOGGER.info( "Loaded properties" );
+		//LOGGER.info( "Loaded properties" );
 	}
 
 	/**
@@ -283,7 +283,7 @@ public class SoyTemplateEngine {
 	 */
 	private static final SoyFileSet buildSoyFileSet( ServletContext servletCtx, String pkgStr ) throws IOException {
 		
-		LOGGER.info( "Building fileset for package " + pkgStr );
+		//LOGGER.info( "Building fileset for package " + pkgStr );
 		Set<String> soyFiles = new HashSet<String>();
 		collectSoyFiles( servletCtx, soyFiles, pkgStr );
 		
@@ -303,7 +303,7 @@ public class SoyTemplateEngine {
 			}
 		}
 		SoyFileSet sfs = sfsb.build();
-		LOGGER.info( "Fileset built for package " + pkgStr );
+		//LOGGER.info( "Fileset built for package " + pkgStr );
 		
 		return sfs;
 	}
@@ -336,16 +336,16 @@ public class SoyTemplateEngine {
 				for ( String file : files ) {
 					if ( file.contains( "/." ) ) {
 						// skip hidden files/folders
-						LOGGER.info( "Skipping " + file );
+						//LOGGER.info( "Skipping " + file );
 						continue;
 					}
 					if ( file.endsWith( ".soy" ) ) {
 						// add soy files
-						LOGGER.info( "Adding " + file );
+						//LOGGER.info( "Adding " + file );
 						result.add( file );
 					} else if ( file.endsWith( "/" ) ) {
 						// add subfolders
-						LOGGER.info( "Adding folder " + file );
+						//LOGGER.info( "Adding folder " + file );
 						file = file.substring( SOY_BASE.length(), file.length()-1 );
 						collectSoyFiles( servletCtx, result, file );
 					}

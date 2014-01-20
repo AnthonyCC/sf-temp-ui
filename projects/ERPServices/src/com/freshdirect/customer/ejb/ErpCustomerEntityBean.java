@@ -641,7 +641,7 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 	
 	public List<ErpGiftCardModel> getGiftCards() throws RemoteException {
 		List<ErpPaymentMethodModel> pmList = this.paymentMethodList.getModelList();
-		LOGGER.info("Pm List before contains "+pmList);
+		//LOGGER.info("Pm List before contains "+pmList);
 		for( Iterator<ErpPaymentMethodModel> it = pmList.iterator(); it.hasNext(); ) {
 			ErpPaymentMethodModel model = it.next();
 			if( !( model instanceof ErpGiftCardModel ) ) {
@@ -649,7 +649,7 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 				it.remove();
 			}
 		}
-		LOGGER.info("Pm List after contains "+pmList);
+		//LOGGER.info("Pm List after contains "+pmList);
 		return (List<ErpGiftCardModel>)(List)pmList;
 	}
 

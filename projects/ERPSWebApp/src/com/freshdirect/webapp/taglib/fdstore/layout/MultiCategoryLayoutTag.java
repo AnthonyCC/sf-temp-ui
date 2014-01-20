@@ -185,22 +185,22 @@ public class MultiCategoryLayoutTag extends BodyTagSupport {
 		for (ContentNodeModel node : sortedCollection) {
 			CategoryModel c = null;
 			if ( (c = isDirectSubCategory(node)) != null) {
-				LOGGER.debug( "Create a new list with header cat " + c.getFullName() );
+				//LOGGER.debug( "Create a new list with header cat " + c.getFullName() );
 				p = new Pair(c);
 				multiList.add(p);
 			} else if ( node instanceof ProductModel || node instanceof CategoryModel ) {
 				// what is it?
 				if ( p == null) {
-					LOGGER.debug( "Create a headless list (ie. no header category)!");
+					//LOGGER.debug( "Create a headless list (ie. no header category)!");
 					p = new Pair( null );
 					multiList.add(p);
 				}
 				
 				p.addNode(node);
-				LOGGER.debug( "  .. << " + node.getFullName() + " / " + node.getClass().getSimpleName() );
+				//LOGGER.debug( "  .. << " + node.getFullName() + " / " + node.getClass().getSimpleName() );
 			} else {
 				//skip node
-				LOGGER.debug( "  .. discard " + node.getFullName() + " ..");
+				//LOGGER.debug( "  .. discard " + node.getFullName() + " ..");
 			}
 		}
 

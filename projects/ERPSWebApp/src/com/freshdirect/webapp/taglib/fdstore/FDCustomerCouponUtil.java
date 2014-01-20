@@ -150,7 +150,7 @@ public class FDCustomerCouponUtil implements Serializable {
 		boolean isCouponEvaluationNeeded = false;
 		try {
 			if(null !=user && user.isEligibleForCoupons()){
-				LOGGER.debug("isEligibleForCoupons:"+true);
+				//LOGGER.debug("isEligibleForCoupons:"+true);
 				if(user.isRefreshCouponWalletRequired()){
 					getCustomerCoupons(session);
 				}
@@ -160,7 +160,7 @@ public class FDCustomerCouponUtil implements Serializable {
 				FDCustomerCouponWallet custCoupons =user.getCouponWallet();
 				
 				if(null ==custCoupons){
-					LOGGER.debug("isCouponWalletEmpty:"+true);
+					//LOGGER.debug("isCouponWalletEmpty:"+true);
 					return true;//Nothing to evaluate
 				}else{
 					//Clear this map always before evaluating, to make sure the map will always have the entries for the clipped coupons of just the current cart lines .
@@ -171,7 +171,7 @@ public class FDCustomerCouponUtil implements Serializable {
 				Set<String> appliedCoupons = new HashSet<String>();
 				//Nothing to evaluate, if the cart is empty OR if the customer doesn't have clipped coupons OR if the cart doesn't have at least one line-item which has a customer clipped coupon.
 				boolean isClippedOrderLinesAvailable=checkClippedOrderLines(custCoupons, user.getShoppingCart());
-				LOGGER.debug("isClippedOrderLinesAvailable:"+isClippedOrderLinesAvailable);
+				//LOGGER.debug("isClippedOrderLinesAvailable:"+isClippedOrderLinesAvailable);
 				if(isClippedOrderLinesAvailable){
 					
 					List<ErpOrderLineModel> orderLines = new ArrayList<ErpOrderLineModel>();
@@ -188,9 +188,9 @@ public class FDCustomerCouponUtil implements Serializable {
 					CouponCart couponCart = prepareCouponCart(user, orderLines,couponCustomer);
 					
 					Map<String, Double> couponDiscAmtMap = new HashMap<String,Double>(); 
-					LOGGER.debug("Before the evaluateCartAndCoupons call:");
+					//LOGGER.debug("Before the evaluateCartAndCoupons call:");
 					Map<String, FDCouponEligibleInfo> eligibleCouponsInfo =FDCouponManager.evaluateCartAndCoupons(couponCart,couponActivityContext);
-					LOGGER.debug("After the evaluateCartAndCoupons call:"+(null !=eligibleCouponsInfo?eligibleCouponsInfo.toString():eligibleCouponsInfo));
+					//LOGGER.debug("After the evaluateCartAndCoupons call:"+(null !=eligibleCouponsInfo?eligibleCouponsInfo.toString():eligibleCouponsInfo));
 					if(null != eligibleCouponsInfo){						
 						List<FDCartLineI> fdSortedOrderlines = new ArrayList<FDCartLineI>(user.getShoppingCart().getOrderLines());
 						Collections.sort(fdSortedOrderlines, new PriceComparator());
