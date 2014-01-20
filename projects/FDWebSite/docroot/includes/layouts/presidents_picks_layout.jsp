@@ -50,7 +50,9 @@
 		} else {
 			// production JS libs
 		%>
+		<%-- no longer in use
 		<script type="text/javascript" src="/assets/javascript/rounded_corners-min.js"></script>
+		 --%>
 		<%
 		}
 %>
@@ -150,13 +152,15 @@
 	Map<String, List<ProductModel>> promoProducts = new HashMap<String, List<ProductModel>>();
 	List<ProductModel> promotionProducts = new ArrayList<ProductModel>();
 	
+	CategoryModel categoryNode = (CategoryModel)currentFolder;
+	
 	String ppPreviewId = request.getParameter("ppPreviewId");
-	boolean isPpPreview = (null ==((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getProductPromotionType()|| null==ppPreviewId)?false:true;
+	boolean isPpPreview = (null ==(categoryNode).getProductPromotionType()|| null==ppPreviewId)?false:true;
 	
 	if(!isPpPreview){
-		promotionProducts = ((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getProducts();
+		promotionProducts = categoryNode.getProducts();
 	}else{
-		promotionProducts = ((com.freshdirect.fdstore.content.CategoryModel)currentFolder).getPromotionPageProductsForPreview(ppPreviewId);
+		promotionProducts = categoryNode.getPromotionPageProductsForPreview(ppPreviewId);
 	}
 	
 	List<ProductModel> featProds = ProductPromotionUtil.getFeaturedProducts(promotionProducts,isPpPreview);
@@ -389,9 +393,8 @@
 		</script>
 		
 		<div class="ddpp clearfix">
-			<div class="socialMedia">
-				<iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.freshdirect.com%2F&amp;send=false&amp;layout=button_count&amp;width=150&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font=tahoma&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width: 100px; height:21px;" allowTransparency="true"></iframe>
-				<a href="//twitter.com/share" class="twitter-share-button" data-count="horizontal">Tweet</a><script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
+			<div class="socialMedia container">
+				<div style="float: right;"><%-- requires (CategoryModel)categoryNode --%><%@ include file="/includes/i_category_soc_buttons.jspf" %></div>
 			</div>
 			
 			<div class="PPHeader">
@@ -576,11 +579,10 @@
 	</tr>
 </table>
 <%
-	CategoryModel cat = (CategoryModel)currentFolder;
-	if (cat.getBottomMedia() != null) {
+	if (categoryNode.getBottomMedia() != null) {
 		String deptBotItm = null;
 		
-		for(Iterator<Html> deptBotItr = cat.getBottomMedia().iterator(); deptBotItr.hasNext();) {
+		for(Iterator<Html> deptBotItr = categoryNode.getBottomMedia().iterator(); deptBotItr.hasNext();) {
 			Html piece = deptBotItr.next();
 			if (piece != null) {
 				deptBotItm = piece.getPath();
