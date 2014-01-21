@@ -56,29 +56,19 @@
 				%>
 				<% /* Unfortunately, this function needs to live in this page since it needs java parsing... */ %>
 				<script type="text/javascript" style="display:none">
-					function orderSubmitValidator(formId, loc) {
+					function orderSubmitValidator(formId) {
 						if (!$(formId)) { return false; }
 						<% /* first, check that the promo is valid */ %>
 						if (checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>')) {
 							<% /* set loc value (button position) */ %>
-							var locName = '';
-							if (loc == 0) {
-								locName = 'Top';
-							} else if (locName == 1) {
-								locName = 'Bottom';
-							}
-							
-							<% /* and now, nettracker. why would this ever return false? */ %>
-							if (ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos='+locName)) {
-								$(formId).submit();
-							}
+							$(formId).submit();
 						}
 
 						return false;
 					}
 				</script>
 			
-				<button class="imgButtonOrange submitOrder" onclick="orderSubmitValidator('order_submit', <%= incNextButtonCount %>); return false;">SUBMIT ORDER</button>
+				<button class="imgButtonOrange submitOrder" onclick="orderSubmitValidator('order_submit'); return false;">SUBMIT ORDER</button>
 				<%
 			}
 	incNextButtonCount++;
