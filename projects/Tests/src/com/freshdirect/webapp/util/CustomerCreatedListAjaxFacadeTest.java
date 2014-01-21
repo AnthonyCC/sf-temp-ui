@@ -117,36 +117,43 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 		user.getLevel();
 		userC.setReturnValue(FDUserI.RECOGNIZED);
 		user.getIdentity();
-		userC.setReturnValue((FDIdentity)null); // Invalid value, but our createList stub catches it anyways 
+		FDIdentity identity=new FDIdentity("", "");
+		userC.setReturnValue(identity); // Invalid value, but our createList stub catches it anyways 
 		user.invalidateCache();
+		user.getIdentity();
+		userC.setReturnValue(identity); // Invalid value, but our createList stub catches it anyways 
 		userC.replay();
 				
 		facade.createList(session, "Recipes");		
-		assertLatestStubCall(createList, new Object[] {(FDIdentity)null, "Recipes"});
+		assertLatestStubCall(createList, new Object[] {identity, "Recipes"});
 		
 		// RENAME "Recipes" to "Recipes2"
 		resetState();
 		user.getLevel();
 		userC.setReturnValue(FDUserI.SIGNED_IN);
 		user.getIdentity();
-		userC.setReturnValue((FDIdentity)null); // Invalid value, but our createList stub catches it anyways 
+		userC.setReturnValue(identity); // Invalid value, but our createList stub catches it anyways 
 		user.invalidateCache();
+		user.getIdentity();
+		userC.setReturnValue(identity); // Invalid value, but our createList stub catches it anyways 
 		userC.replay();
 				
 		facade.renameList(session, "Recipes", "Recipes2");		
-		assertLatestStubCall(renameList, new Object[] {(FDIdentity)null, "Recipes", "Recipes2"});
+		assertLatestStubCall(renameList, new Object[] {identity, "Recipes", "Recipes2"});
 		
 		// RENAME "Recipes2" to "Recipes"
 		resetState();
 		user.getLevel();
 		userC.setReturnValue(FDUserI.SIGNED_IN);
 		user.getIdentity();
-		userC.setReturnValue((FDIdentity)null); // Invalid value, but our createList stub catches it anyways 
+		userC.setReturnValue(identity); // Invalid value, but our createList stub catches it anyways 
 		user.invalidateCache();
+		user.getIdentity();
+		userC.setReturnValue(identity); // Invalid value, but our createList stub catches it anyways 
 		userC.replay();
 				
 		facade.renameList(session, "Recipes2", "Recipes");		
-		assertLatestStubCall(renameList, new Object[] {(FDIdentity)null, "Recipes2", "Recipes"});
+		assertLatestStubCall(renameList, new Object[] {identity, "Recipes2", "Recipes"});
 		
 	}
 	
@@ -154,13 +161,16 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 		// Set up FDUserI mock object
 		user.getLevel();
 		userC.setReturnValue(FDUserI.RECOGNIZED);
+		FDIdentity identity=new FDIdentity("", "");
 		user.getIdentity();
-		userC.setReturnValue((FDIdentity)null); // Invalid value, but our createList stub catches it anyways 
+		userC.setReturnValue(identity); // Invalid value, but our createList stub catches it anyways 
 		user.invalidateCache();
+		user.getIdentity();
+		userC.setReturnValue(identity);
 		userC.replay();
 				
 		facade.createList(session, "list1");		
-		assertLatestStubCall(createList, new Object[] {(FDIdentity)null, "list1"});
+		assertLatestStubCall(createList, new Object[] {identity, "list1"});
 		
 		resetState(); // Reset mock state
 		
@@ -199,13 +209,16 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 		// Set up FDUserI mock object
 		user.getLevel();
 		userC.setReturnValue(FDUserI.SIGNED_IN);
+		FDIdentity identity=new FDIdentity("", "");
 		user.getIdentity();
-		userC.setReturnValue((FDIdentity)null); // Invalid value, but our createList stub catches it anyways 
+		userC.setReturnValue(identity); // Invalid value, but our createList stub catches it anyways 
 		user.invalidateCache();
+		user.getIdentity();
+		userC.setReturnValue(identity);
 		userC.replay();
 				
 		facade.deleteList(session, "list1");		
-		assertLatestStubCall(deleteList, new Object[] {(FDIdentity)null, "list1"});
+		assertLatestStubCall(deleteList, new Object[] {identity, "list1"});
 		
 		resetState(); // Reset mock state
 		
@@ -213,12 +226,14 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 		user.getLevel();
 		userC.setReturnValue(FDUserI.SIGNED_IN);
 		user.getIdentity();
-		userC.setReturnValue((FDIdentity)null); // Invalid value, but our createList stub catches it anyways 
+		userC.setReturnValue(identity); // Invalid value, but our createList stub catches it anyways 
 		user.invalidateCache();
+		user.getIdentity();
+		userC.setReturnValue(identity);
 		userC.replay();
 				
 		facade.deleteList(session, "    ");		
-		assertLatestStubCall(deleteList, new Object[] {(FDIdentity)null, "    "});
+		assertLatestStubCall(deleteList, new Object[] {identity, "    "});
 	}
 
 	public void testGetListNames() throws Exception {
@@ -401,13 +416,16 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 		// Set up FDUserI mock object
 		user.getLevel();
 		userC.setReturnValue(FDUserI.SIGNED_IN);
+		FDIdentity identity=new FDIdentity("", "");
 		user.getIdentity();
-		userC.setReturnValue((FDIdentity)null); // Invalid value, but our createList stub catches it anyways 
+		userC.setReturnValue(identity); // Invalid value, but our createList stub catches it anyways 
 		user.invalidateCache();
+		user.getIdentity();
+		userC.setReturnValue(identity);
 		userC.replay();
 				
 		facade.renameList(session, "list1", "list2");		
-		assertLatestStubCall(renameList, new Object[] {(FDIdentity)null, "list1", "list2"});
+		assertLatestStubCall(renameList, new Object[] {identity, "list1", "list2"});
 		
 		resetState(); // Reset mock state
 		
@@ -442,7 +460,7 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 		user.getLevel();
 		userC.setReturnValue(FDUserI.SIGNED_IN);
 		user.getIdentity();
-		userC.setReturnValue((FDIdentity)null); // Invalid value, but our renameList stub catches it anyways 
+		userC.setReturnValue(identity); // Invalid value, but our renameList stub catches it anyways 
 		userC.replay();
 		throwException = new FDCustomerListExistsException();
 		
@@ -453,7 +471,7 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 			// Pass
 		}
 		assertEquals(1, stubLog.size());			
-		assertLatestStubCall(renameList, new Object[] {(FDIdentity)null, "list1", "list2"});
+		assertLatestStubCall(renameList, new Object[] {identity, "list1", "list2"});
 	}
 	
 	public void testAddItemsToList() throws Exception {
@@ -512,11 +530,14 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 
 		user.getLevel();
 		userC.setReturnValue(FDUserI.SIGNED_IN);
+		FDIdentity identity=new FDIdentity("", "");
 		user.getIdentity();
-		userC.setReturnValue((FDIdentity)null); // Invalid value, but our createList stub catches it anyways 
+		userC.setReturnValue(identity); // Invalid value, but our createList stub catches it anyways 
 		user.getIdentity();
-		userC.setReturnValue((FDIdentity)null); // Invalid value, but our createList stub catches it anyways 
+		userC.setReturnValue(identity); // Invalid value, but our createList stub catches it anyways 
 		user.invalidateCache();
+		user.getIdentity();
+		userC.setReturnValue(identity);
 		userC.replay();
 
 		returnObj = new FDCustomerCreatedList();

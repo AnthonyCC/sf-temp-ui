@@ -69,7 +69,7 @@ public class FDPromotionDAOTestCase extends DbTestCaseSupport {
 		assertEquals("P_ONE", p1.getPromotionCode());
 		assertEquals("Header Promotion One", p1.getDescription());
 		assertEquals(EnumPromotionType.HEADER, p1.getPromotionType());
-		assertNull(p1.getApplicatorList());
+		assertEquals(0,p1.getApplicatorList().size());
 
 		assertEquals(7, p1.getStrategies().size());
 		assertNotNull(p1.getStrategy(DateRangeStrategy.class));
