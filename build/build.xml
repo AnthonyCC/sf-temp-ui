@@ -565,7 +565,7 @@
 				<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
 				<pathelement location="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
 				<pathelement location="${thirdparty.home}/lucene-snowball-${lucene.version}.jar"/>
-
+		                <pathelement location="${thirdparty.home}/PaymentechSDK.jar"/>
 		                <pathelement location="${work.dir}/Framework-emma.jar"/>
 		                <pathelement location="${work.dir}/ERPServices-emma.jar"/>
 		                <pathelement location="${work.dir}/Delivery-emma.jar"/>
