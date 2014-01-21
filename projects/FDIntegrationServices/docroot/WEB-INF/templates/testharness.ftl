@@ -439,23 +439,23 @@ function loadStuff() {
   	$("#payload").val("");
   	$("#result").val("");
   }else if (loaddata == "SSBestDealCarousel") {
-  	$("#url").val("/smartstore/bestdealcarousel/xxx/");
+  	$("#url").val("/saptest12@freshdirect.com/smartstore/bestdealcarousel/xxx/");
   	$("#payload").val("");
   	$("#result").val("");
   }else if (loaddata == "SSCustomerFavoriteCarousel") {
-  	$("#url").val("/smartstore/customerfavouritecarousel/xxx/");
+  	$("#url").val("/saptest12@freshdirect.com/smartstore/customerfavouritecarousel/xxx/");
   	$("#payload").val("");
   	$("#result").val("");
   }else if (loaddata == "SSPeakProduceCarousel") {
-  	$("#url").val("/smartstore/peakproducecarousel/xxx/");
+  	$("#url").val("/saptest12@freshdirect.com/smartstore/peakproducecarousel/xxx/");
   	$("#payload").val("");
   	$("#result").val("");
   }else if (loaddata == "SSBestDealMeatCarousel") {
-  	$("#url").val("/smartstore/bestdealmeatcarousel/xxx/");
+  	$("#url").val("/saptest12@freshdirect.com/smartstore/bestdealmeatcarousel/xxx/");
   	$("#payload").val("");
   	$("#result").val("");
   }else if (loaddata == "SSDepartmentCarousel") {
-  	$("#url").val("/smartstore/carousel/xxx/");
+  	$("#url").val("/saptest12@freshdirect.com/smartstore/carousel/xxx/");
   	$("#payload").val("");
   	$("#result").val("");
   }else if (loaddata == "WGDCategories") {

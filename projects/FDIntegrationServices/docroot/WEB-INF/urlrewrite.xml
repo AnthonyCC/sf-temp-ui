@@ -479,24 +479,24 @@
 		<to last="true">/smartstore.do?action=getfdfavorite&amp;page=next&amp;ver=$1</to>
 	</rule>
 	<rule>
-		<from>^/v/([0-9]+)/smartstore/bestdealcarousel/(.*)/$</from>
-		<to last="true">/smartstore.do?action=getBrandNameDealCarousel&amp;ver=$1&amp;departmentId=$2</to>
+		<from>^/v/([0-9]+)/(.*)/smartstore/bestdealcarousel/(.*)/$</from>
+		<to last="true">/smartstore.do?action=getBrandNameDealCarousel&amp;ver=$1&amp;departmentId=$3</to>
 	</rule>
 	<rule>
-		<from>^/v/([0-9]+)/smartstore/customerfavouritecarousel/(.*)/$</from>
-		<to last="true">/smartstore.do?action=getCustomerFavoriteCarousel&amp;ver=$1&amp;departmentId=$2</to>
+		<from>^/v/([0-9]+)/(.*)/smartstore/customerfavouritecarousel/(.*)/$</from>
+		<to last="true">/smartstore.do?action=getCustomerFavoriteCarousel&amp;ver=$1&amp;departmentId=$3</to>
 	</rule>
 	<rule>
-		<from>^/v/([0-9]+)/smartstore/peakproducecarousel/(.*)/$</from>
-		<to last="true">/smartstore.do?action=getPeakProduceCarousel&amp;ver=$1&amp;departmentId=$2</to>
+		<from>^/v/([0-9]+)/(.*)/smartstore/peakproducecarousel/(.*)/$</from>
+		<to last="true">/smartstore.do?action=getPeakProduceCarousel&amp;ver=$1&amp;departmentId=$3</to>
 	</rule>
 	<rule>
-		<from>^/v/([0-9]+)/smartstore/bestdealmeatcarousel/(.*)/$</from>
-		<to last="true">/smartstore.do?action=getMeatBestDealCarousel&amp;ver=$1&amp;departmentId=$2</to>
+		<from>^/v/([0-9]+)/(.*)/smartstore/bestdealmeatcarousel/(.*)/$</from>
+		<to last="true">/smartstore.do?action=getMeatBestDealCarousel&amp;ver=$1&amp;departmentId=$3</to>
 	</rule>
 	<rule>
-		<from>^/v/([0-9]+)/smartstore/carousel/(.*)/$</from>
-		<to last="true">/smartstore.do?action=getDepartmentCarousel&amp;ver=$1&amp;departmentId=$2</to>
+		<from>^/v/([0-9]+)/(.*)/smartstore/carousel/(.*)/$</from>
+		<to last="true">/smartstore.do?action=getDepartmentCarousel&amp;ver=$1&amp;departmentId=$3</to>
 	</rule>
 
 	<!-- Contact Us : Get -->
