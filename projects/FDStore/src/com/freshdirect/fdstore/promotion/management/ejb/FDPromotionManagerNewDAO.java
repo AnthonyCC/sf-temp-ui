@@ -3330,55 +3330,48 @@ public class FDPromotionManagerNewDAO {
 		return dowLimits;
 	}
 
-	private static final String GET_ALL_ACTIVE_PROMOTIONS = 
-				"SELECT P.ID, "+
-						"P.CODE, "+
-					    "DECODE (P.REDEEM_CNT, "+
-					            "0, (SELECT redeem_cnt "+
-					                     "FROM cust.promo_dlv_day "+
-					                    "WHERE DAY_ID = T.DAY_ID AND PROMO_DLV_ZONE_ID = z.id), "+
-					            "P.REDEEM_CNT) "+
-					       "AS REDEEM_CNT, "+
-					    "P.MAX_AMOUNT, "+
-					    "T.DAY_ID, "+
-					    "P.STATUS, "+
-					    "(SELECT COUNT (s.id) "+
-					       "FROM cust.sale s, "+
-					            "cust.salesaction sa, "+
-					            "cust.PROMOTION_PARTICIPATION pa "+
-					      "WHERE     S.ID = SA.SALE_ID "+
-					            "AND S.CUSTOMER_ID = SA.CUSTOMER_ID "+
-					            "AND S.CROMOD_DATE = SA.ACTION_DATE "+
-					            "AND SA.ACTION_TYPE IN ('CRO', 'MOD') "+
-					            "AND S.STATUS <> 'CAN' "+
-					            "AND S.ID = PA.SALE_ID "+
-					            "AND SA.REQUESTED_DATE >= P.CREATE_DATE "+
-					            "AND PA.PROMOTION_ID = P.ID "+
-					            "AND TO_CHAR (SA.REQUESTED_DATE, 'D') = T.DAY_ID) "+
-					       "RCOUNT, "+
-					    "PP.REQUESTED_DATE, "+
-					    "CASE "+
-					       "WHEN (SELECT COUNT (*) "+
-					               "FROM CUST.PROMO_DLV_DAY "+
-					              "WHERE PROMO_DLV_ZONE_ID = z.id) > 0 "+
-					       "THEN "+
-					          "'X' "+ 
-					       "ELSE "+
-					          "NULL "+
-					    "END "+
-					       "AS IS_RECURRING_PROMO "+
-					"FROM cust.PROMOTION_NEW p, "+
-					    "cust.PROMO_DLV_ZONE_STRATEGY z, "+
-					    "cust.PROMO_DLV_TIMESLOT t, "+
-					    "cust.PROMOTION_PARTICIPATION pp "+
-					"WHERE   P.ID = Z.PROMOTION_ID "+
-					    "AND Z.ID = T.PROMO_DLV_ZONE_ID "+
-					    "AND P.ID = PP.PROMOTION_ID(+) "+
-					    "AND P.CAMPAIGN_CODE = 'HEADER' "+
-					    "AND P.OFFER_TYPE = 'WINDOW_STEERING' "+
-					    "AND P.STATUS IN ('LIVE', 'CANCELLED') "+
-					    "AND P.START_DATE <= ? "+
-					    "AND P.EXPIRATION_DATE >= ? ";	
+	private static final String GET_ALL_ACTIVE_PROMOTIONS = "SELECT P.ID, "
+			+ "P.CODE, "
+			+ "DECODE (P.REDEEM_CNT, "
+			+ "0, (SELECT redeem_cnt "
+			+ "FROM cust.promo_dlv_day "
+			+ "WHERE DAY_ID = T.DAY_ID AND PROMO_DLV_ZONE_ID = z.id), "
+			+ "P.REDEEM_CNT) "
+			+ "AS REDEEM_CNT, "
+			+ "P.MAX_AMOUNT, "
+			+ "T.DAY_ID, "
+			+ "P.STATUS, "
+			+ "X.REQUESTED_DATE, "
+			+ "X.RCOUNT, "
+			+ "CASE "
+			+ "WHEN (SELECT COUNT (*) "
+			+ "FROM CUST.PROMO_DLV_DAY "
+			+ "WHERE PROMO_DLV_ZONE_ID = z.id) > 0 "
+			+ "THEN "
+			+ "'X' "
+			+ "ELSE "
+			+ "NULL "
+			+ "END "
+			+ "AS IS_RECURRING_PROMO "
+			+ "FROM cust.PROMOTION_NEW p, "
+			+ "cust.PROMO_DLV_ZONE_STRATEGY z, "
+			+ "cust.PROMO_DLV_TIMESLOT t, "
+			+ "( "
+			+ " SELECT PP.PROMOTION_ID, PP.REQUESTED_DATE, COUNT (*) as RCOUNT "
+			+ "FROM cust.SALE s, cust.PROMOTION_PARTICIPATION pp, cust.PROMOTION_NEW p "
+			+ "WHERE  S.STATUS <> 'CAN' AND S.ID = PP.SALE_ID "
+			+ "AND PP.PROMOTION_ID = P.ID AND P.START_DATE <= ? AND P.EXPIRATION_DATE >= ? "
+			+ "GROUP BY PP.PROMOTION_ID, PP.REQUESTED_DATE "
+			+  ") X "
+			+ "WHERE  P.ID = Z.PROMOTION_ID "
+			+ "AND Z.ID = T.PROMO_DLV_ZONE_ID "
+			+ "AND P.CAMPAIGN_CODE = 'HEADER' "
+			+ "AND P.OFFER_TYPE = 'WINDOW_STEERING' "
+			+ "AND P.STATUS IN ('LIVE', 'CANCELLED') "
+			+ "AND P.ID = X.PROMOTION_ID "
+			+ "AND T.DAY_ID = TO_CHAR (X.REQUESTED_DATE, 'D') "
+			+ "AND P.START_DATE <= ? " + "AND P.EXPIRATION_DATE >= ? ";		    	                        
+					
 
 	public static List<WSPromotionInfo> getAllActiveWSPromotions(java.util.Date effectiveDate, Connection conn) throws SQLException {
 		PreparedStatement ps = null;
@@ -3389,6 +3382,8 @@ public class FDPromotionManagerNewDAO {
 			ps = conn.prepareStatement(GET_ALL_ACTIVE_PROMOTIONS);
 			ps.setTimestamp(1, new Timestamp(effectiveDate.getTime()));
 			ps.setTimestamp(2, new Timestamp(effectiveDate.getTime()));
+			ps.setTimestamp(3, new Timestamp(effectiveDate.getTime()));
+			ps.setTimestamp(4, new Timestamp(effectiveDate.getTime()));
 			rs = ps.executeQuery();
 			while(rs.next()) {
 				WSPromotionInfo promo = new WSPromotionInfo();
