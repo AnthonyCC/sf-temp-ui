@@ -1,57 +1,44 @@
 <ehcache>
 
-    <diskStore path="java.io.tmpdir"/>
-
     <defaultCache
-            maxEntriesLocalHeap="10000"
-            eternal="false"
-            timeToIdleSeconds="120"
-            timeToLiveSeconds="120"
-            diskSpoolBufferSizeMB="30"
-            maxEntriesLocalDisk="10000000"
-            diskExpiryThreadIntervalSeconds="120"
-            memoryStoreEvictionPolicy="LRU"
-            statistics="false">
+           maxEntriesLocalHeap="100"
+           eternal="false"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="3600"
+           memoryStoreEvictionPolicy="LFU"
+           transactionalMode="off">
     </defaultCache>
 
     <cache name="pastOrdersCache"
-           maxEntriesLocalHeap="10000"
-           maxEntriesLocalDisk="1000"
+           maxEntriesLocalHeap="100"
            eternal="false"
-           diskSpoolBufferSizeMB="20"
-           timeToIdleSeconds="1800"
+           timeToIdleSeconds="300"
            timeToLiveSeconds="3600"
            memoryStoreEvictionPolicy="LFU"
            transactionalMode="off">
     </cache>
 
 	<cache name="pastOrdersSearchCache"
-           maxEntriesLocalHeap="10000"
-           maxEntriesLocalDisk="1000"
+           maxEntriesLocalHeap="100"
            eternal="false"
-           diskSpoolBufferSizeMB="20"
-           timeToIdleSeconds="1800"
+           timeToIdleSeconds="300"
            timeToLiveSeconds="3600"
            memoryStoreEvictionPolicy="LFU"
            transactionalMode="off">
     </cache>
 
 	<cache name="yourListsCache"
-           maxEntriesLocalHeap="10000"
-           maxEntriesLocalDisk="1000"
+           maxEntriesLocalHeap="100"
            eternal="false"
-           diskSpoolBufferSizeMB="20"
-           timeToIdleSeconds="1800"
+           timeToIdleSeconds="300"
            timeToLiveSeconds="3600"
            memoryStoreEvictionPolicy="LFU"
            transactionalMode="off">
     </cache>
 
 	<cache name="fdListsCache"
-           maxEntriesLocalHeap="10000"
-           maxEntriesLocalDisk="1000"
+           maxEntriesLocalHeap="100"
            eternal="false"
-           diskSpoolBufferSizeMB="20"
            timeToIdleSeconds="0"
            timeToLiveSeconds="0"
            memoryStoreEvictionPolicy="LFU"
