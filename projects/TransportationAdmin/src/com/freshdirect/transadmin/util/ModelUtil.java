@@ -458,16 +458,10 @@ public class ModelUtil {
 	}
 
 	public static Collection<EmployeeInfo> getEmployees(
-			Collection<WebEmployeeInfo> activeEmployees,
-			Collection<WebEmployeeInfo> terminatedEmployees) {
+			Collection<WebEmployeeInfo> activeEmployees) {
 		Collection<EmployeeInfo> result = new ArrayList<EmployeeInfo>();
 		if (activeEmployees != null) {
 			for (WebEmployeeInfo emp : activeEmployees) {
-				result.add(emp.getEmpInfo());
-			}
-		}
-		if (terminatedEmployees != null) {
-			for (WebEmployeeInfo emp : terminatedEmployees) {
 				result.add(emp.getEmpInfo());
 			}
 		}

@@ -36,9 +36,8 @@ public class EmployeeFormController extends AbstractFormController {
 
 		Map refData = new HashMap();
 		Collection<WebEmployeeInfo> activeEmployees = employeeManagerService.getEmployees();
-		Collection<WebEmployeeInfo> terminatedEmployees = employeeManagerService.getTerminatedEmployees();
 		
-		refData.put("employees", DispatchPlanUtil.getSortedResources(ModelUtil.getEmployees(activeEmployees, terminatedEmployees)));
+		refData.put("employees", DispatchPlanUtil.getSortedResources(ModelUtil.getEmployees(activeEmployees)));
 		refData.put("roleTypes", getEmployeeManagerService().getEmployeeSubRoleTypes());
 		refData.put("supervisors", DispatchPlanUtil.getSortedResources(employeeManagerService.getSupervisors()));
 		refData.put("regions", getDomainManagerService().getRegions());
