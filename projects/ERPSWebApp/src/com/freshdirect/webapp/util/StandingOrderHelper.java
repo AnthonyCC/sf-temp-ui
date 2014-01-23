@@ -22,6 +22,7 @@ import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
+import com.freshdirect.framework.util.DateRange;
 
 /**
  * Helper class for standing orders, any static method which has no place anywhere else should be here.
@@ -323,18 +324,20 @@ public class StandingOrderHelper {
 			
 			final Date __ds = so.getStartTime();
 			final Date __de = so.getEndTime();
-
-
+			DateRange _soRange = new DateRange(__ds, __de);
+			DateRange _tsRange = null;
+			
 			for (FDTimeslot ts : l) {
+				_tsRange = new DateRange(ts.getBegDateTime(), ts.getEndDateTime());
 				if (ts.isMatching(selDate, __ds, __de)) {
-					// exact timeslot match!
+					// exact time slot match!
 					LOGGER.debug(" +--> " + ts + " (exact match)");
 					__so_timeslotId = ts.getTimeslotId();
 					if(ts.isTimeslotRestricted()) ts.setTimeslotRestricted(false);
 					break;
-				} else if (ts.isWithinRange(selDate, __ds) /* || ts.isWithinRange(selDate, __de) */) {
-					// starting bound falls within timeslot
-					LOGGER.debug(" ===> " + ts+ " (overlap)");
+				} else if (_tsRange.overlaps(_soRange) /* ts.isWithinRange(selDate, __ds) */) {
+					// starting bound falls within time slot
+					LOGGER.debug(" ===> " + ts + " (overlap)");
 					__so_timeslotId = ts.getTimeslotId();
 					if(ts.isTimeslotRestricted()) ts.setTimeslotRestricted(false);
 					break;
