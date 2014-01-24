@@ -14,12 +14,14 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
+import com.freshdirect.fdstore.standingorders.DeliveryInterval;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
 import com.freshdirect.framework.util.DateRange;
@@ -321,21 +323,27 @@ public class StandingOrderHelper {
 			LOGGER.debug("NO TIMESLOTS FOR DATE " + _dw);
 		} else {
 			LOGGER.debug("TIMESLOTS FOR DATE " + _dw + ": " + l);
+						
+			DeliveryInterval deliveryTimes = new DeliveryInterval(selDate, so.getStartTime(), so.getEndTime());
 			
-			final Date __ds = so.getStartTime();
-			final Date __de = so.getEndTime();
-			DateRange _soRange = new DateRange(__ds, __de);
-			DateRange _tsRange = null;
-			
-			for (FDTimeslot ts : l) {
-				_tsRange = new DateRange(ts.getBegDateTime(), ts.getEndDateTime());
-				if (ts.isMatching(selDate, __ds, __de)) {
-					// exact time slot match!
-					LOGGER.debug(" +--> " + ts + " (exact match)");
+			FDTimeslot _tmpTimeslot = null;
+			for ( FDTimeslot ts : l ) {		
+				if ( deliveryTimes.checkTimeslot( ts ) ) {
+					// this time slot matches to SO template window, and is within the cutoff time
+					LOGGER.info( "Found matched timeslot: " + ts.toString() );
+					_tmpTimeslot = ts;
 					__so_timeslotId = ts.getTimeslotId();
 					if(ts.isTimeslotRestricted()) ts.setTimeslotRestricted(false);
 					break;
-				} else if (_tsRange.overlaps(_soRange) /* ts.isWithinRange(selDate, __ds) */) {
+				}
+			}
+			
+			//To allow time windows that do not exactly match the window specified in the standing order template. 
+			//If an exact match time window is not available, but time windows exist that overlap the template's time window, 
+			//then select the overlapping time window with the earliest start time 		
+			if(_tmpTimeslot == null && FDStoreProperties.isStandingOrdersOverlapWindowsEnabled()) {				
+				List<FDTimeslot> altTimeslots = deliveryTimes.getAltTimeslots(l);
+				for ( FDTimeslot ts : altTimeslots ) {
 					// starting bound falls within time slot
 					LOGGER.debug(" ===> " + ts + " (overlap)");
 					__so_timeslotId = ts.getTimeslotId();
