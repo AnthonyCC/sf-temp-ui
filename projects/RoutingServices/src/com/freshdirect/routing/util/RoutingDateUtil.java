@@ -192,9 +192,17 @@ public class RoutingDateUtil {
 	}
 	/** sequence number in transp.trn_Cutoff table is used to determine whether the cutOffEntry is later to rCutOff */
 	
-	public static boolean isLaterCutoff(Map<RoutingTimeOfDay, Integer> cutOffSeqMap, RoutingTimeOfDay cutOffEntry, RoutingTimeOfDay rCutOff)
-	{
+	public static boolean isLaterCutoff(Map<RoutingTimeOfDay, Integer> cutOffSeqMap, RoutingTimeOfDay cutOffEntry, RoutingTimeOfDay rCutOff){
 		return cutOffSeqMap!=null && cutOffSeqMap.get(cutOffEntry)!=null && cutOffSeqMap.get(rCutOff)!=null &&
 				 cutOffSeqMap.get(cutOffEntry) > cutOffSeqMap.get(rCutOff);
 	}
+	
+
+	public static int calcRunTime(Date startTime, Date endTime) {
+		if(endTime.before(startTime))
+			return (int)(RoutingDateUtil.DAY/RoutingDateUtil.SECOND) - RoutingDateUtil.getDiffInSeconds(endTime, startTime);
+		else
+			return RoutingDateUtil.getDiffInSeconds(endTime, startTime);
+	}
+	
 }

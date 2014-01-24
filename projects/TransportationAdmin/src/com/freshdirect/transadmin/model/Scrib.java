@@ -8,6 +8,7 @@ import java.util.TimeZone;
 
 import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.routing.model.EquipmentType;
+import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class Scrib implements java.io.Serializable, IWaveInstanceSource {
@@ -181,7 +182,7 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 		}
 		c.add(Calendar.MINUTE, -stemTime);
 
-		long time = c.getTime().getTime() - getWaveStart().getTime();
+		long time =  RoutingDateUtil.calcRunTime(getWaveStart(), c.getTime()) * 1000;
 		return new Date(time - TimeZone.getDefault().getRawOffset());
 	}
 
@@ -202,7 +203,7 @@ public class Scrib implements java.io.Serializable, IWaveInstanceSource {
 		}
 		c.add(Calendar.MINUTE, -stemTime);
 
-		long time = c.getTime().getTime() - getWaveStart().getTime();
+		long time =  RoutingDateUtil.calcRunTime(getWaveStart(), c.getTime()) * 1000;
 		return new Date(time - TimeZone.getDefault().getRawOffset());
 
 	}
