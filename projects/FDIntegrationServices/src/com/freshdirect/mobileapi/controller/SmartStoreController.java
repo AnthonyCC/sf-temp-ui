@@ -1,5 +1,6 @@
 package com.freshdirect.mobileapi.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,8 +12,11 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.mobileapi.controller.data.DepartmentCarouselResult;
 import com.freshdirect.mobileapi.controller.data.Message;
+import com.freshdirect.mobileapi.controller.data.ProductSearchResult;
 import com.freshdirect.mobileapi.controller.data.SearchResult;
+import com.freshdirect.mobileapi.controller.data.SmartStoreProductResult;
 import com.freshdirect.mobileapi.controller.data.response.SmartStoreRecommendations;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
@@ -32,7 +36,7 @@ import com.freshdirect.webapp.util.DepartmentCarouselUtil;
  */
 public class SmartStoreController extends BaseController {
   
-	private static Category LOGGER = LoggerFactory.getInstance(CustomerCreatedListController.class);
+	private static Category LOGGER = LoggerFactory.getInstance(SmartStoreController.class);
 
     private static String ACTION_GET_YMAL = "getymal";
 
@@ -62,80 +66,78 @@ public class SmartStoreController extends BaseController {
 			
 			String deptId = request.getParameter(PARAM_DEPT_ID);
 			EnumSiteFeature siteFeature = DepartmentCarouselUtil.getCarousel(deptId);
-
-			if (EnumSiteFeature.BRAND_NAME_DEALS.equals(siteFeature)) {
-				model = getCarouselRecommendations(
-						EnumSiteFeature.BRAND_NAME_DEALS, model,
-						user, request);
-			} else if (EnumSiteFeature.PEAK_PRODUCE.equals(siteFeature)) {
-				model = getPeakProduce(model, user, request, response);
+			String title = DepartmentCarouselUtil.getCarouselTitle(deptId);
+			
+			DepartmentCarouselResult result = new DepartmentCarouselResult();
+			List products = null;
+			
+			if (EnumSiteFeature.PEAK_PRODUCE.equals(siteFeature)) {
+				products = getPeakProduce(model, user, request, response);				
 			} else if (EnumSiteFeature.WEEKS_MEAT_BEST_DEALS.equals(siteFeature)) {
-				model = getMeatBestDeals(model, user, request, response);
+				products = getMeatBestDeals(model, user, request, response);
+			} else if (EnumSiteFeature.BRAND_NAME_DEALS.equals(siteFeature)) {
+				products = getCarouselRecommendations(siteFeature, model, user, request);
 			} else {
 				// So called 'customer favorites department level' recommendations
 				// siteFeature: SideCart Featured Items (SCR_FEAT_ITEMS) + dept as currentNode
 				siteFeature = getSiteFeature("SCR_FEAT_ITEMS");
-				model = getCarouselRecommendations(siteFeature,	model, user, request);
+				products = getCarouselRecommendations(siteFeature,	model, user, request);
 			}
-
+			
+			result.setTitle(title);
+			result.setSiteFeature(siteFeature.getName());
+			result.setProducts(products);
+			if(products == null || (products != null && products.isEmpty())  ) {
+				result.setSuccessMessage("No recommendations found.");
+			} else {
+				result.setSuccessMessage(siteFeature.getTitle() + " have been retrieved successfully.");
+			}
+			setResponseMessage(model, result, user);
 		}
         return model;
     }
         
-   	private ModelAndView getMeatBestDeals(ModelAndView model,
+   	private List<ProductSearchResult> getMeatBestDeals(ModelAndView model,
    			SessionUser user, HttpServletRequest request, HttpServletResponse response) throws JsonException {
-       	
-           SearchResult data = new SearchResult();
-           
-           SmartStore smartStore = new SmartStore(user);
-           
-           List<com.freshdirect.mobileapi.model.Product> products = smartStore.getMeatBestDeals();
-         
-           data.setProductsFromModel(products);
-           data.setTotalResultCount(products.size());
-           data.setSuccessMessage(EnumSiteFeature.WEEKS_MEAT_BEST_DEALS.getTitle() + " have been retrieved successfully.");
-           setResponseMessage(model, data, user);
-           return model;
+       	   
+		SmartStore smartStore = new SmartStore(user);
+		List<com.freshdirect.mobileapi.model.Product> products = smartStore
+				.getMeatBestDeals();
+
+		return setProductsFromModel(products);
+    }
+   	
+    public List<ProductSearchResult> setProductsFromModel(List<com.freshdirect.mobileapi.model.Product> products) {
+    	List<ProductSearchResult> result = new ArrayList<ProductSearchResult>();
+        if(products != null) {
+	    	for (com.freshdirect.mobileapi.model.Product product : products) {
+	        	result.add(ProductSearchResult.wrap(product));
+	        }
+        }
+        return result;
     }
        	
- 	private ModelAndView getPeakProduce(ModelAndView model,
+ 	@SuppressWarnings("unchecked")
+	private List<ProductSearchResult> getPeakProduce(ModelAndView model,
 			SessionUser user, HttpServletRequest request, HttpServletResponse response) throws JsonException {
 		
     	String deptId = request.getParameter(PARAM_DEPT_ID);
-    	    	
-        Message responseMessage = null;
-    	
-        SearchResult data = new SearchResult();
-        
         SmartStore smartStore = new SmartStore(user);
-        
         ResultBundle resultBundle = smartStore.getPeakProduceProductList(deptId);
 
         ActionResult result = resultBundle.getActionResult();
-        List<com.freshdirect.mobileapi.model.Product> products = (List<Product>) resultBundle.getExtraData(SmartStore.PEAKPRODUCE);
-        if (result.isSuccess() && products.size() > 0) {
-            data.setProductsFromModel(products);
-            data.setTotalResultCount(products.size());
-            data.setSuccessMessage(EnumSiteFeature.PEAK_PRODUCE.getTitle() + " have been retrieved successfully.");
-            setResponseMessage(model, data, user);
-        } else if(result.isSuccess() && products.size() == 0) {
-			model = getCarouselRecommendations(getSiteFeature("SCR_FEAT_ITEMS"), model, user, request);
-        } else {
-            responseMessage = getErrorMessage(result, request);
-            responseMessage.addWarningMessages(result.getWarnings());
-            setResponseMessage(model, responseMessage, user);
-        }
-        
-        return model;
+        List<com.freshdirect.mobileapi.model.Product> products = null; 
+        if(result.isSuccess()) {
+        	products = (List<Product>) resultBundle.getExtraData(SmartStore.PEAKPRODUCE);
+        }                
+        return setProductsFromModel(products);
 	}
 
-    private ModelAndView getCarouselRecommendations(EnumSiteFeature siteFeature, ModelAndView model,
+    private List<SmartStoreProductResult> getCarouselRecommendations(EnumSiteFeature siteFeature, ModelAndView model,
 			SessionUser user, HttpServletRequest request) throws JsonException {
 		
     	String deptId = request.getParameter(PARAM_DEPT_ID);
-    	
     	String page = request.getParameter("page");
-        Message responseMessage = null;
     	
     	SmartStore smartStore = new SmartStore(user);
        
@@ -145,17 +147,12 @@ public class SmartStoreController extends BaseController {
         
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
-
+        SmartStoreRecommendations recommendations = null;
         if (result.isSuccess()) {
-            responseMessage = new SmartStoreRecommendations((SmartStoreRecommendationContainer) resultBundle
-                    .getExtraData(SmartStore.RECOMMENDATION));
-            responseMessage.setSuccessMessage(siteFeature == null ? "Customer Favourites" : siteFeature.getTitle() + " recommendations have been retrieved successfully.");
-        } else {
-            responseMessage = getErrorMessage(result, request);
-        }
-        responseMessage.addWarningMessages(result.getWarnings());
-        setResponseMessage(model, responseMessage, user);
-        return model;
+        	recommendations = new SmartStoreRecommendations((SmartStoreRecommendationContainer) resultBundle
+                    .getExtraData(SmartStore.RECOMMENDATION));        
+        } 
+        return recommendations.getProducts();
 	}
 
 	private ModelAndView getFavoritesRecommendations(ModelAndView model, SessionUser user, HttpServletRequest request) throws JsonException {
