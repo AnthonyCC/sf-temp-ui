@@ -593,5 +593,5 @@
 		}
 	}
 %>
-<fd:javascript src="/assets/javascript/fd/common/utils.js" />
+<fd:javascript src="/assets/javascript/fd/utils.js" />
 <fd:javascript src="/assets/javascript/fd/modules/search/statusupdate.js" />
