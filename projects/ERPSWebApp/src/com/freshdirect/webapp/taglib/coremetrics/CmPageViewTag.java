@@ -41,7 +41,7 @@ public class CmPageViewTag extends AbstractCmTag {
 		sb.append(getTagDelimiter());				
 		sb.append(getFormattedTag(INIT_TRACKING_JS_PBJECT, new String[]{toJsVar(tagModel.getPageId()), toJsVar(getPackedPageLocationSubset(tagModel))}));
 		
-		LOGGER.debug(sb.toString());
+		//LOGGER.debug(sb.toString());
 		return sb.toString();
 	}
 

@@ -137,7 +137,7 @@ public abstract class RecommendationsTag extends AbstractGetterTag<Recommendatio
         Recommendations results = getRecommendations();
         
 		if (results == null || results.getProducts().isEmpty()) {
-        	LOGGER.debug("Return empty result");
+        	//LOGGER.debug("Return empty result");
         	results = null;
         }
 
@@ -157,7 +157,7 @@ public abstract class RecommendationsTag extends AbstractGetterTag<Recommendatio
             		buf.append(", ");
             }
             buf.append("]");
-            LOGGER.debug(buf.toString());
+            //LOGGER.debug(buf.toString());
         }
         return results;
     }

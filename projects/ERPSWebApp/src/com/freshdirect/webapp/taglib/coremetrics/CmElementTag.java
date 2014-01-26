@@ -50,7 +50,7 @@ public class CmElementTag extends AbstractCmTag {
 			
 		}
 
-		LOGGER.debug(tagJs);
+		//LOGGER.debug(tagJs);
 		return tagJs;
 	}
 	

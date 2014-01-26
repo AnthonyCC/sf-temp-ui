@@ -998,7 +998,7 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		try {
 			conn = this.getConnection();
 			EnumAddressVerificationResult result = dao.verify(address, useApartment, conn);
-			LOGGER.debug("Verify Address Result: " + result.getCode());
+			
 			return new DlvAddressVerificationResponse(result, address);
 		} catch (SQLException se) {
 			throw new EJBException(se);
@@ -1066,9 +1066,9 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 
 			conn = getConnection();
 			GeographyDAO dao = new GeographyDAO();
-			LOGGER.debug("before geocode --> "+address);
+			//LOGGER.debug("before geocode --> "+address);
 			result = dao.geocode(address, conn);
-			LOGGER.debug("after geocode --> "+address);
+			//LOGGER.debug("after geocode --> "+address);
 			return new DlvAddressGeocodeResponse(address, result);
 
 		} catch (SQLException sqle) {

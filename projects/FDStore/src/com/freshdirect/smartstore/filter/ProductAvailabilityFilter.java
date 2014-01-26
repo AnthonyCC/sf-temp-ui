@@ -38,7 +38,7 @@ public class ProductAvailabilityFilter extends ContentFilter {
         if (product != null)
             return (X) product;
         else {
-            LOGGER.debug("not available: " + model);
+            //LOGGER.debug("not available: " + model);
             return null;
         }
     }

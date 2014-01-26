@@ -99,7 +99,7 @@ public abstract class AbstractCmTag extends SimpleTagSupport {
 				}
 	
 			} catch (SkipTagException e) {
-				LOGGER.debug("no tag will be inserted here due to SkipTagException: "+ e.getMessage());
+				//LOGGER.debug("no tag will be inserted here due to SkipTagException: "+ e.getMessage());
 				handleException(sb);
 			} catch (CmContextException e) {
 				LOGGER.debug("CmContextException: " + e.getMessage());
