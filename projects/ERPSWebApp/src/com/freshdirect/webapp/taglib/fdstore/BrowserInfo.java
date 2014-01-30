@@ -6,7 +6,8 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 public class BrowserInfo {
-	private static final String MSIE_REGEX = "Mozilla\\/4.0.*MSIE\\s(\\d+\\.\\d+).*";
+	//old regex (IE < 9):  private static final String MSIE_REGEX = "Mozilla\\/4.0.*MSIE\\s(\\d+\\.\\d+).*";
+	private static final String MSIE_REGEX = ".*MSIE\\s(\\d+\\.\\d+).*";
 	private static final String SAFARI_REGEX = ".*AppleWebKit\\/(\\d+(\\.\\d+)?).*";
 	private static final String FIREFOX_REGEX = ".*Firefox\\/(\\d+\\.\\d+(\\.\\d+)?).*";
 	private static final String OPERA_REGEX = "Opera\\/(\\d+\\.\\d+(\\.\\d+)?).*";
@@ -110,7 +111,7 @@ public class BrowserInfo {
 	public boolean isInternetExplorer() {
 		return "MSIE".equals(type);
 	}
-
+		
 	public boolean isIE6() {
 		if (!"MSIE".equals(type))
 			return false;
@@ -164,6 +165,10 @@ public class BrowserInfo {
 
 	public boolean isUnsupported() {
 		return type == null;
+	}
+	
+	public boolean isMac() {
+		return userAgentString.indexOf("Mac") > -1;
 	}
 	
 

@@ -1,0 +1,15 @@
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
+<%-- this file will be included just before the closing </body> tag --%>
+<soy:import packageName="common"/>
+<jwr:script src="/fdmodules.js"  useRandomParam="false" />
+<jwr:script src="/fdcomponents.js"  useRandomParam="false" />
+
+	  <%-- Bazaarvoice --%>
+  
+  <% 
+  if(FDStoreProperties.isBazaarvoiceEnabled()){
+  	String bvapiUrl = FDStoreProperties.getBazaarvoiceBvapiUrl(); %>
+  	<script type="text/javascript" src="<%= bvapiUrl %>"></script>
+  <% } %>

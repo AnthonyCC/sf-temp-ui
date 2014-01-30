@@ -4,7 +4,7 @@
 
 request.setAttribute("listPos", "SystemMessage,WDelivery,WAffiliate");
 
-%><tmpl:insert template="/common/template/page_template.jsp">
+%><tmpl:insert template="/common/template/page_template_optimized.jsp">
 	<tmpl:put name="title">FreshDirect</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 		
@@ -23,7 +23,7 @@ request.setAttribute("listPos", "SystemMessage,WDelivery,WAffiliate");
 		
 	<tmpl:put name='extraHead' direct='true'>
 		<fd:css href="/assets/css/common/page.css" />
-		<link media="all" rel="stylesheet" type="text/css" href="/media/editorial/welcome/welcome-eng.css" />
+		<fd:css href="/media/editorial/welcome/welcome-eng.css" />
 	</tmpl:put>
 
 	<tmpl:put name='extraBody' direct='true'>

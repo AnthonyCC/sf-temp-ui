@@ -24,11 +24,10 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
     String trkCode = "dpage";
 %>
 
-<tmpl:insert template='/common/template/no_shell.jsp'>
+<tmpl:insert template='/common/template/no_shell_optimized.jsp'>
 	<tmpl:put name='title' direct='true'>Welcome to FreshDirect</tmpl:put>
 	<tmpl:put name="customCss">
 		<fd:css href="/assets/css/homepage/homepage.css"/>
-		<fd:css href="/assets/css/common/product_grid.css"/>
 	</tmpl:put>
 	<tmpl:put name="customJsBottom">
 		<fd:javascript src="/assets/javascript/fd/modules/search/seemore.js" />

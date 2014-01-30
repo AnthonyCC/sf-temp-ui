@@ -144,7 +144,12 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 	    } else { //assuming the default (Generic) Template
 			//unless it's data-driven
 			if (layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId() || EnumLayoutType.PRODUCTS_ASSORTMENTS.getId() == layoutType) {
-				jspTemplate = "/common/template/top_nav_only.jsp";
+				//css jawr optimizing test
+				if (layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId()) {
+					jspTemplate = "/common/template/top_nav_only_optimized.jsp";
+				} else {
+					jspTemplate = "/common/template/top_nav_only.jsp";
+				}
 			} else {
 				jspTemplate = "/common/template/both_dnav.jsp";
 			}

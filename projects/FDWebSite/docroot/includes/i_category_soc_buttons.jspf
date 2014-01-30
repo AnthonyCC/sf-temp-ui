@@ -22,15 +22,28 @@
 	<script type="text/javascript">
 		if (!window['initAddThis']) {
 			window['initAddThis'] = function() {
-				if (addthis) {
-					addthis.init();	
+				if (window['addthis']) {
+					addthis.init();
 				} else {
-					setTimeout(initAddThis, 500);
+					setTimeout(initAddThis, 1000);
 				}
 			}
-			$jq(document).ready(function () { initAddThis(); });
+			$jq(window).ready(function () {
+				var at = document.createElement('script'); 
+
+				at.type = 'text/javascript'; 
+	
+				at.async = true;
+				at.src = ('https:' == document.location.protocol ? 'https://' : 'http://') 
+	
+				+ 's7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d69806100449805&async=1';
+				var sat = document.getElementsByTagName('script')[0]; 
+	
+				sat.parentNode.insertBefore(at, sat);
+			
+				initAddThis();
+			});
 		}
 	</script>
-	<script type="text/javascript" src="https://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d69806100449805&async=1"></script>
 	<!-- AddThis Button END -->
 <% } %>
