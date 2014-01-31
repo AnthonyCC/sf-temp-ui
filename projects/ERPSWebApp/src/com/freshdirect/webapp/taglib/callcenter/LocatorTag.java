@@ -69,6 +69,9 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 					searchResults = Collections.EMPTY_LIST;
 				} else if (this.criteria instanceof FDCustomerSearchCriteria) {
 					System.out.println("trying to locate the customers");
+					if (isWildcardOrPercentageCharacter(criteria)) {
+						doErrorRedirect("Narrow down search criteria.");
+					}
 					searchResults = doLocateCustomers((FDCustomerSearchCriteria) this.criteria);
 				} else if (this.criteria instanceof FDOrderSearchCriteria) {
 					System.out.println("trying to locate the orders");
@@ -97,6 +100,48 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 		pageContext.setAttribute(results, searchResults);
 		return EVAL_BODY_BUFFERED;
 
+	}
+
+	// APPDEV-2801
+	private boolean isWildcardOrPercentageCharacter(
+			FDSearchCriteria fdSearchCriteria) {
+
+		boolean result = false;
+
+		// if email or customerId is present go ahead with search and no need to
+		// validate other search parameters.
+		if (fdSearchCriteria.getEmail() != null
+				|| fdSearchCriteria.getCustomerId() != null) {
+			result = false;
+		}
+
+		// check to see if the parameters falls under broad category and if yes
+		// show the validation message.
+		else if (validateSearchParam(fdSearchCriteria.getFirstName())
+				&& validateSearchParam(fdSearchCriteria.getLastName())
+				&& validateSearchParam(fdSearchCriteria.getPhone())) {
+			result = true;
+		}
+		return result;
+	}
+
+	private boolean validateSearchParam(String inputStr) {
+		if (inputStr == null
+				|| (inputStr.trim().equals("*") || inputStr.trim().equals("%") || validateExceptionPattern(inputStr))) {
+			return true;
+		}
+
+		return false;
+
+	}
+
+	// Exception Pattern for example "*a*" is not supported for search
+	private boolean validateExceptionPattern(String inputStr) {
+		if (inputStr.length() == 3 && inputStr.charAt(0) == '*'
+				&& inputStr.charAt(2) == '*') {
+			return true;
+		}
+		return false;
 	}
 
 	private void doErrorRedirect(String errorMsg) {
