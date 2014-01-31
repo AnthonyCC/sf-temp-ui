@@ -135,10 +135,12 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 
 	}
 
-	// Exception Pattern for example "*a*" is not supported for search
+	// Exception Pattern for example is "*a*" and "%a%" is not supported for
+	// search
 	private boolean validateExceptionPattern(String inputStr) {
-		if (inputStr.length() == 3 && inputStr.charAt(0) == '*'
-				&& inputStr.charAt(2) == '*') {
+		if (inputStr.length() == 3
+				&& (inputStr.charAt(0) == '*' || inputStr.charAt(0) == '%')
+				&& (inputStr.charAt(2) == '*' || inputStr.charAt(2) == '%')) {
 			return true;
 		}
 		return false;
