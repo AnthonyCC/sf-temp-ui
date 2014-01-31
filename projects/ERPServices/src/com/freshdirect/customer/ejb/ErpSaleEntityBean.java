@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,8 +20,6 @@ import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
 
 import org.apache.log4j.Category;
-
-import weblogic.jdbc.wrapper.Array;
 
 import com.freshdirect.common.pricing.Price;
 import com.freshdirect.common.pricing.PricingEngine;
@@ -86,8 +83,9 @@ import com.freshdirect.payment.EnumPaymentMethodType;
 
 /**
  * ErpSale entity bean implementation.
- * @version	$Revision:84$
- * @author	 $Author:Kashif Nadeem$
+ * 
+ * @version $Revision:84$
+ * @author $Author:Kashif Nadeem$
  * @ejbHome <{ErpSaleHome}>
  * @ejbRemote <{ErpSaleEB}>
  * @ejbPrimaryKey <{PrimaryKey}>
@@ -95,16 +93,21 @@ import com.freshdirect.payment.EnumPaymentMethodType;
  */
 public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
-	private static final long	serialVersionUID	= 4750923330554772316L;
+	private static final long serialVersionUID = 4750923330554772316L;
 
-	private static Category LOGGER = LoggerFactory.getInstance(ErpSaleEntityBean.class);
+	private static Category LOGGER = LoggerFactory
+			.getInstance(ErpSaleEntityBean.class);
 
 	private ErpSaleModel model;
 
 	private ErpComplaintList complaints;
 
 	public void initialize() {
-		model = new ErpSaleModel(null, null, new ArrayList<ErpTransactionModel>(), new ArrayList<ErpComplaintModel>(), null, null, Collections.<String>emptySet(), new ArrayList<ErpCartonInfo>(), null, null, null, false);
+		model = new ErpSaleModel(null, null,
+				new ArrayList<ErpTransactionModel>(),
+				new ArrayList<ErpComplaintModel>(), null, null,
+				Collections.<String> emptySet(),
+				new ArrayList<ErpCartonInfo>(), null, null, null, false);
 		complaints = new ErpComplaintList();
 	}
 
@@ -124,9 +127,10 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public PrimaryKey getPK() {
 		return model.getPK();
 	}
+
 	/**
 	 * Template method that returns the cache key to use for caching resources.
-	 *
+	 * 
 	 * @return the bean's home interface name
 	 */
 	protected String getResourceCacheKey() {
@@ -134,44 +138,47 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	}
 
 	public void forcePaymentStatus() throws ErpTransactionException {
-		try{
+		try {
 			model.forcePaymentStatus();
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void forceSettlement() throws ErpTransactionException {
-		try{
+		try {
 			model.forceSettlement();
 			setModified();
-		}catch(ErpTransactionException e){
-			getEntityContext().setRollbackOnly();
-			throw e;
-		}
-	}
-	
-	public void forceSettlementFailed() throws ErpTransactionException {
-		try{
-			model.forceSettlementFailed();
-			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public PrimaryKey ejbFindByPrimaryKey(PrimaryKey pk) throws ObjectNotFoundException, FinderException {
+	public void forceSettlementFailed() throws ErpTransactionException {
+		try {
+			model.forceSettlementFailed();
+			setModified();
+		} catch (ErpTransactionException e) {
+			getEntityContext().setRollbackOnly();
+			throw e;
+		}
+	}
+
+	public PrimaryKey ejbFindByPrimaryKey(PrimaryKey pk)
+			throws ObjectNotFoundException, FinderException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.SALE where ID=?");
+			PreparedStatement ps = conn
+					.prepareStatement("SELECT ID FROM CUST.SALE where ID=?");
 			ps.setString(1, pk.getId());
 			ResultSet rs = ps.executeQuery();
 			if (!rs.next()) {
-				throw new ObjectNotFoundException("Unable to find ErpSale with PK " + pk);
+				throw new ObjectNotFoundException(
+						"Unable to find ErpSale with PK " + pk);
 			}
 
 			PrimaryKey foundPk = new PrimaryKey(rs.getString(1));
@@ -192,32 +199,35 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			}
 		}
 	}
-	
-	public Collection<PrimaryKey> ejbFindMultipleByPrimaryKeys(Collection<PrimaryKey> pks) throws ObjectNotFoundException, FinderException {
+
+	public Collection<PrimaryKey> ejbFindMultipleByPrimaryKeys(
+			Collection<PrimaryKey> pks) throws ObjectNotFoundException,
+			FinderException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			
-			StringBuilder q = new StringBuilder("SELECT ID FROM CUST.SALE where ID in (");
 
-			for(int i=0;i<pks.size();++i){
-				if(i==pks.size()-1){
-					q.append("?)");					
-				}else{
+			StringBuilder q = new StringBuilder(
+					"SELECT ID FROM CUST.SALE where ID in (");
+
+			for (int i = 0; i < pks.size(); ++i) {
+				if (i == pks.size() - 1) {
+					q.append("?)");
+				} else {
 					q.append("?,");
 				}
 			}
 			PreparedStatement ps = conn.prepareStatement(q.toString());
-			int i=1;
-			for(PrimaryKey key: pks){
+			int i = 1;
+			for (PrimaryKey key : pks) {
 				ps.setString(i, key.getId());
 				++i;
 			}
 
 			ResultSet rs = ps.executeQuery();
-			
+
 			List<PrimaryKey> keys = new ArrayList<PrimaryKey>();
-			while(rs.next()){
+			while (rs.next()) {
 				keys.add(new PrimaryKey(rs.getString(1)));
 			}
 
@@ -239,15 +249,19 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		}
 	}
 
-	public PrimaryKey ejbFindByComplaintId(String complaintId) throws ObjectNotFoundException, FinderException {
+	public PrimaryKey ejbFindByComplaintId(String complaintId)
+			throws ObjectNotFoundException, FinderException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			PreparedStatement ps = conn.prepareStatement("SELECT SALE_ID FROM CUST.COMPLAINT WHERE ID = ?");
+			PreparedStatement ps = conn
+					.prepareStatement("SELECT SALE_ID FROM CUST.COMPLAINT WHERE ID = ?");
 			ps.setString(1, complaintId);
 			ResultSet rs = ps.executeQuery();
 			if (!rs.next()) {
-				throw new ObjectNotFoundException("Unable to find ErpSale for ComplaintId: " + complaintId);
+				throw new ObjectNotFoundException(
+						"Unable to find ErpSale for ComplaintId: "
+								+ complaintId);
 			}
 			PrimaryKey pk = new PrimaryKey(rs.getString("SALE_ID"));
 
@@ -269,11 +283,15 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		}
 	}
 
-	public Collection<PrimaryKey> ejbFindByStatus(EnumSaleStatus saleStatus) throws FinderException {
-		return performFind("SELECT ID FROM CUST.SALE WHERE STATUS=?", saleStatus.getStatusCode());
+	// APPDEV-3456
+	public Collection<PrimaryKey> ejbFindByStatus(EnumSaleStatus saleStatus)
+			throws FinderException {
+		return performFind("SELECT ID FROM CUST.SALE WHERE STATUS=?"
+				+ " and rownum < 1000", saleStatus.getStatusCode());
 	}
 
-	private Collection<PrimaryKey> performFind(String statement, String parameter) throws FinderException {
+	private Collection<PrimaryKey> performFind(String statement,
+			String parameter) throws FinderException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -308,17 +326,19 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		}
 	}
 
-
 	/**
-	 * Create sales with a create order transcation and uses a delivery pass. Status will be NEW.
+	 * Create sales with a create order transcation and uses a delivery pass.
+	 * Status will be NEW.
 	 */
-	public PrimaryKey ejbCreate(PrimaryKey customerPk, ErpCreateOrderModel createOrder, Set<String> usedPromotionCodes, String dlvPassId,EnumSaleType saleType)
-		throws CreateException {
-	    
+	public PrimaryKey ejbCreate(PrimaryKey customerPk,
+			ErpCreateOrderModel createOrder, Set<String> usedPromotionCodes,
+			String dlvPassId, EnumSaleType saleType) throws CreateException {
+
 		Connection conn = null;
 		try {
 			initialize();
-			model = new ErpSaleModel(customerPk, createOrder, usedPromotionCodes, dlvPassId,saleType);
+			model = new ErpSaleModel(customerPk, createOrder,
+					usedPromotionCodes, dlvPassId, saleType);
 			conn = getConnection();
 			return create(conn);
 
@@ -331,34 +351,39 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 					conn.close();
 				}
 			} catch (SQLException sqle2) {
-				throw new EJBException("Error in ejbcreate while closing the connection.");
+				throw new EJBException(
+						"Error in ejbcreate while closing the connection.");
 			}
 		}
 	}
 
-	public void ejbPostCreate(PrimaryKey customerPk, ErpCreateOrderModel createOrder, Set<String> usedPromotionCodes, String dlvPassId,EnumSaleType type) {
+	public void ejbPostCreate(PrimaryKey customerPk,
+			ErpCreateOrderModel createOrder, Set<String> usedPromotionCodes,
+			String dlvPassId, EnumSaleType type) {
 		// this space is intentionally blank :)
 	}
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		setPK(new PrimaryKey(getNextId(conn, "CUST")));
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALE (ID,CUSTOMER_ID,STATUS,SAP_NUMBER, DLV_PASS_ID,TYPE,CROMOD_DATE) values (?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn
+				.prepareStatement("INSERT INTO CUST.SALE (ID,CUSTOMER_ID,STATUS,SAP_NUMBER, DLV_PASS_ID,TYPE,CROMOD_DATE) values (?,?,?,?,?,?,?)");
 		ps.setString(1, getPK().getId());
 		ps.setString(2, model.getCustomerPk().getId());
 		ps.setString(3, model.getStatus().getStatusCode());
 		ps.setString(4, model.getSapOrderNumber());
 		String dlvPassId = model.getDeliveryPassId();
-		if(dlvPassId != null){
-			//True when this order uses a delivery pass.
+		if (dlvPassId != null) {
+			// True when this order uses a delivery pass.
 			ps.setString(5, dlvPassId);
-		}else{
-			//True when this order contains a delivery pass.
+		} else {
+			// True when this order contains a delivery pass.
 			ps.setNull(5, Types.VARCHAR);
 		}
 
-		ps.setString(6,model.getType().getSaleType());
-		//Added as part of PERF-27 task.
-		ps.setTimestamp(7, new java.sql.Timestamp(model.getCurrentOrder().getTransactionDate().getTime()));
+		ps.setString(6, model.getType().getSaleType());
+		// Added as part of PERF-27 task.
+		ps.setTimestamp(7, new java.sql.Timestamp(model.getCurrentOrder()
+				.getTransactionDate().getTime()));
 
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -377,42 +402,46 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
 		// create client codes
 		createClientCodes(conn);
-	
+
 		complaints.create(conn);
-		if(model.hasUsedPromotionCodes()==true) {
-			ErpPromotionDAO.insert(conn, getPK(), model.getUsedPromotionCodes(), model.getCurrentOrder().getRequestedDate());
+		if (model.hasUsedPromotionCodes() == true) {
+			ErpPromotionDAO.insert(conn, getPK(),
+					model.getUsedPromotionCodes(), model.getCurrentOrder()
+							.getRequestedDate());
 		}
 		createCroModMaxDate(conn);
 
 		return getPK();
 	}
-	
+
 	private void deleteClientCodes(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("DELETE FROM CUST.ORDERLINE_CLIENTCODE WHERE SALE_ID = ?");
+		PreparedStatement ps = conn
+				.prepareStatement("DELETE FROM CUST.ORDERLINE_CLIENTCODE WHERE SALE_ID = ?");
 		ps.setString(1, getPK().getId());
 		ps.executeUpdate();
-		ps.close();		
+		ps.close();
 	}
 
 	private void createClientCodes(Connection conn) throws SQLException {
 		PreparedStatement ps;
-		Map<String,List<ErpClientCodeReport>> clientCodes = new HashMap<String, List<ErpClientCodeReport>>();
+		Map<String, List<ErpClientCodeReport>> clientCodes = new HashMap<String, List<ErpClientCodeReport>>();
 		ErpAbstractOrderModel currentOrder = getCurrentOrder();
 		List<ErpOrderLineModel> orderLines = currentOrder.getOrderLines();
 		for (ErpOrderLineModel item : orderLines) {
 			// basic error resolution
 			if (item.getCartlineId() == null)
 				continue;
-			
+
 			ArrayList<ErpClientCodeReport> ccList = new ArrayList<ErpClientCodeReport>();
 			for (ErpClientCode cc : item.getClientCodes()) {
 				ErpClientCodeReport ccr = new ErpClientCodeReport(cc);
-				double disAmount=0;
+				double disAmount = 0;
 				Price p = new Price(item.getBasePrice());
 				Price discountP = null;
 				if (item.getDiscount() != null) {
 					try {
-						discountP = PricingEngine.applyDiscount(p, 1, item.getDiscount(), item.getBasePriceUnit());
+						discountP = PricingEngine.applyDiscount(p, 1,
+								item.getDiscount(), item.getBasePriceUnit());
 						disAmount = discountP.getBasePrice();
 					} catch (PricingException e) {
 						disAmount = 0.0;
@@ -420,7 +449,10 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 				}
 				if (item.getCouponDiscount() != null) {
 					try {
-						discountP = PricingEngine.applyCouponDiscount(null!=discountP?discountP:p, 1, item.getCouponDiscount(), item.getBasePriceUnit());
+						discountP = PricingEngine.applyCouponDiscount(
+								null != discountP ? discountP : p, 1,
+								item.getCouponDiscount(),
+								item.getBasePriceUnit());
 						disAmount = discountP.getBasePrice();
 					} catch (PricingException e) {
 						disAmount = 0.0;
@@ -438,9 +470,11 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			// we'll overwrite possible duplicates
 			clientCodes.put(item.getCartlineId(), ccList);
 		}
-		ps = conn.prepareStatement("INSERT INTO CUST.ORDERLINE_CLIENTCODE (CLIENT_CODE, QUANTITY, ORDINAL, CUSTOMER_ID, CARTLINE_ID, SALE_ID, UNIT_PRICE, TAX_RATE, PRODUCT_DESCRIPTION, DELIVERY_DATE) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		ps = conn
+				.prepareStatement("INSERT INTO CUST.ORDERLINE_CLIENTCODE (CLIENT_CODE, QUANTITY, ORDINAL, CUSTOMER_ID, CARTLINE_ID, SALE_ID, UNIT_PRICE, TAX_RATE, PRODUCT_DESCRIPTION, DELIVERY_DATE) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-		for (Map.Entry<String, List<ErpClientCodeReport>> cartItem : clientCodes.entrySet()) {
+		for (Map.Entry<String, List<ErpClientCodeReport>> cartItem : clientCodes
+				.entrySet()) {
 			for (int i = 0; i < cartItem.getValue().size(); i++) {
 				ErpClientCodeReport ccItem = cartItem.getValue().get(i);
 				ps.setString(1, ccItem.getClientCode());
@@ -449,12 +483,15 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 				ps.setString(4, model.getCustomerPk().getId());
 				ps.setString(5, cartItem.getKey());
 				ps.setString(6, getPK().getId());
-				//ps.setDouble(7, ccItem.getUnitPrice());
-				ps.setBigDecimal(7, new java.math.BigDecimal(ccItem.getUnitPrice()));
-				//ps.setDouble(8, ccItem.getTaxRate());
-				ps.setBigDecimal(8, new java.math.BigDecimal(ccItem.getTaxRate()));
+				// ps.setDouble(7, ccItem.getUnitPrice());
+				ps.setBigDecimal(7,
+						new java.math.BigDecimal(ccItem.getUnitPrice()));
+				// ps.setDouble(8, ccItem.getTaxRate());
+				ps.setBigDecimal(8,
+						new java.math.BigDecimal(ccItem.getTaxRate()));
 				ps.setString(9, ccItem.getProductDescription());
-				ps.setDate(10, new java.sql.Date(ccItem.getDeliveryDate().getTime()));
+				ps.setDate(10, new java.sql.Date(ccItem.getDeliveryDate()
+						.getTime()));
 				ps.addBatch();
 			}
 		}
@@ -462,32 +499,38 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		ps.close();
 	}
 
-	private void createCroModMaxDate(Connection conn)throws SQLException {
+	private void createCroModMaxDate(Connection conn) throws SQLException {
 		PreparedStatement ps = null;
-		try{
-			ps = conn.prepareStatement("INSERT INTO CUST.SALE_CRO_MOD_DATE(SALE_ID, MAX_DATE) VALUES(?,?)");
+		try {
+			ps = conn
+					.prepareStatement("INSERT INTO CUST.SALE_CRO_MOD_DATE(SALE_ID, MAX_DATE) VALUES(?,?)");
 			ps.setString(1, getPK().getId());
-			ps.setTimestamp(2, new java.sql.Timestamp(model.getCurrentOrder().getTransactionDate().getTime()));
+			ps.setTimestamp(2, new java.sql.Timestamp(model.getCurrentOrder()
+					.getTransactionDate().getTime()));
 			ps.execute();
-		}finally{
-			if(ps != null){
+		} finally {
+			if (ps != null) {
 				ps.close();
 			}
 		}
 	}
 
-	private ErpTransactionList getTransactionPBList() throws SQLException{
+	private ErpTransactionList getTransactionPBList() throws SQLException {
 		ErpTransactionList txList = new ErpTransactionList();
 		txList.setParentPK(getPK());
-		for ( ErpTransactionModel m : model.getTransactions() ) {
-			if(m.getTransactionType().isUpdatable()) {
-				ErpUpdatableTransactionBean upb = ErpTransactionList.createUpdatablePersistentBean(m.getTransactionType(), m.getPK(), getPK());
+		for (ErpTransactionModel m : model.getTransactions()) {
+			if (m.getTransactionType().isUpdatable()) {
+				ErpUpdatableTransactionBean upb = ErpTransactionList
+						.createUpdatablePersistentBean(m.getTransactionType(),
+								m.getPK(), getPK());
 				m.setCustomerId(model.getCustomerPk().getId());
 				upb.setFromModel(m);
 				txList.add(upb);
 			} else {
-				ErpTransactionPersistentBean pb = ErpTransactionList.createPersistentBean(m.getTransactionType(), m.getPK(), getPK());
-				//Added as part of PERF-27 task.
+				ErpTransactionPersistentBean pb = ErpTransactionList
+						.createPersistentBean(m.getTransactionType(),
+								m.getPK(), getPK());
+				// Added as part of PERF-27 task.
 				m.setCustomerId(model.getCustomerPk().getId());
 				pb.setFromModel(m);
 				txList.add(pb);
@@ -496,22 +539,20 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		return txList;
 	}
 
-
 	private ErpComplaintList buildComplaintPBList() {
 		ErpComplaintList compList = new ErpComplaintList();
 		compList.setParentPK(getPK());
-		for ( ErpComplaintModel m : model.getComplaints() ) {
+		for (ErpComplaintModel m : model.getComplaints()) {
 			ErpComplaintPersistentBean pb = new ErpComplaintPersistentBean();
-			pb.setFromModel( m );
+			pb.setFromModel(m);
 			compList.add(pb);
 		}
 		return compList;
 	}
 
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps =
-			conn.prepareStatement(
-			"SELECT CUSTOMER_ID, STATUS, SAP_NUMBER, WAVE_NUMBER, TRUCK_NUMBER, STOP_SEQUENCE, NUM_REGULAR_CARTONS, NUM_FREEZER_CARTONS, NUM_ALCOHOL_CARTONS, DLV_PASS_ID, TYPE, STANDINGORDER_ID FROM CUST.SALE WHERE ID=?");
+		PreparedStatement ps = conn
+				.prepareStatement("SELECT CUSTOMER_ID, STATUS, SAP_NUMBER, WAVE_NUMBER, TRUCK_NUMBER, STOP_SEQUENCE, NUM_REGULAR_CARTONS, NUM_FREEZER_CARTONS, NUM_ALCOHOL_CARTONS, DLV_PASS_ID, TYPE, STANDINGORDER_ID FROM CUST.SALE WHERE ID=?");
 		ps.setString(1, getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (!rs.next()) {
@@ -521,36 +562,37 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		PrimaryKey customerPk = new PrimaryKey(rs.getString(1));
 		EnumSaleStatus status = EnumSaleStatus.getSaleStatus(rs.getString(2));
 		String sapOrderNumber = rs.getString(3);
-		ErpShippingInfo shippingInfo = new ErpShippingInfo(rs.getString(4), rs.getString(5), rs.getString(6), rs.getInt(7), rs.getInt(8), rs.getInt(9));
+		ErpShippingInfo shippingInfo = new ErpShippingInfo(rs.getString(4),
+				rs.getString(5), rs.getString(6), rs.getInt(7), rs.getInt(8),
+				rs.getInt(9));
 		String dlvPassId = rs.getString(10);
-		String _saleType=rs.getString(11);
+		String _saleType = rs.getString(11);
 		String standingOrderId = rs.getString(12);
-		EnumSaleType saleType=EnumSaleType.REGULAR;
-		if(_saleType!=null) {
-			saleType=EnumSaleType.getSaleType(_saleType);
+		EnumSaleType saleType = EnumSaleType.REGULAR;
+		if (_saleType != null) {
+			saleType = EnumSaleType.getSaleType(_saleType);
 		}
 		rs.close();
 		ps.close();
 		boolean hasSignature = false;
-		PreparedStatement pstmt =null;ResultSet resultSet =null;
-		try
-		{
-			
-			pstmt = conn.prepareStatement(
-				"SELECT 1 FROM CUST.SALE_SIGNATURE WHERE SALE_ID=?");
+		PreparedStatement pstmt = null;
+		ResultSet resultSet = null;
+		try {
+
+			pstmt = conn
+					.prepareStatement("SELECT 1 FROM CUST.SALE_SIGNATURE WHERE SALE_ID=?");
 			pstmt.setString(1, getPK().getId());
 			resultSet = pstmt.executeQuery();
-			
-			if(resultSet.next()){	hasSignature = true;}
-		}
-		catch(Exception e)
-		{
+
+			if (resultSet.next()) {
+				hasSignature = true;
+			}
+		} catch (Exception e) {
 			LOGGER.debug("Exception while fetching the signature");
-		}
-		finally{
-			if(resultSet!=null)
+		} finally {
+			if (resultSet != null)
 				resultSet.close();
-			if(pstmt!=null)
+			if (pstmt != null)
 				pstmt.close();
 		}
 
@@ -559,7 +601,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		ErpTransactionList txList = new ErpTransactionList();
 		txList.setParentPK(getPK());
 		txList.load(conn);
-		
+
 		ErpComplaintList compList = new ErpComplaintList();
 		compList.setParentPK(getPK());
 		compList.load(conn);
@@ -568,34 +610,40 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
 		PrimaryKey oldPk = model.getPK();
 
-		List<ErpCartonInfo> cartonInfo = ErpCartonsDAO.getCartonInfo(conn, getPK());		
-		model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, cartonInfo, dlvPassId, saleType, standingOrderId, hasSignature);
+		List<ErpCartonInfo> cartonInfo = ErpCartonsDAO.getCartonInfo(conn,
+				getPK());
+		model = new ErpSaleModel(customerPk, status, txList.getModelList(),
+				compList.getModelList(), sapOrderNumber, shippingInfo,
+				usedPromotionCodes, cartonInfo, dlvPassId, saleType,
+				standingOrderId, hasSignature);
 		model.setPK(oldPk);
-		
+
 		super.decorateModel(model);
-		
+
 		PreparedStatement ps1 = null;
 		ResultSet rs1 = null;
 		Map<String, Integer> cartonMetrics = new HashMap<String, Integer>();
 		try {
-			ps1 = conn.prepareStatement("select CI.CARTON_TYPE, count(*) as CARTON_CNT from CUST.CARTON_INFO ci where ci.sale_id = ? group by CI.CARTON_TYPE");
+			ps1 = conn
+					.prepareStatement("select CI.CARTON_TYPE, count(*) as CARTON_CNT from CUST.CARTON_INFO ci where ci.sale_id = ? group by CI.CARTON_TYPE");
 			ps1.setString(1, getPK().getId());
 			rs1 = ps1.executeQuery();
-			while(rs1.next()){				
-				if(!cartonMetrics.containsKey(rs1.getString("CARTON_TYPE"))){
-					cartonMetrics.put(rs1.getString("CARTON_TYPE"), rs1.getInt("CARTON_CNT"));
+			while (rs1.next()) {
+				if (!cartonMetrics.containsKey(rs1.getString("CARTON_TYPE"))) {
+					cartonMetrics.put(rs1.getString("CARTON_TYPE"),
+							rs1.getInt("CARTON_CNT"));
 				}
 			}
-		} catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
-		}finally{
-			if(rs1!=null)
+		} finally {
+			if (rs1 != null)
 				rs1.close();
-			if(ps1!=null)
+			if (ps1 != null)
 				ps1.close();
 		}
-		
-		model.setCartonMetrics(cartonMetrics);		
+
+		model.setCartonMetrics(cartonMetrics);
 
 		// load client codes
 		loadClientCodes(conn);
@@ -604,10 +652,11 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	private void loadClientCodes(Connection conn) throws SQLException {
 		PreparedStatement ps;
 		ResultSet rs;
-		ps = conn.prepareStatement("SELECT CLIENT_CODE, QUANTITY, CARTLINE_ID FROM CUST.ORDERLINE_CLIENTCODE WHERE SALE_ID = ? ORDER BY CARTLINE_ID, ORDINAL");
+		ps = conn
+				.prepareStatement("SELECT CLIENT_CODE, QUANTITY, CARTLINE_ID FROM CUST.ORDERLINE_CLIENTCODE WHERE SALE_ID = ? ORDER BY CARTLINE_ID, ORDINAL");
 		ps.setString(1, getPK().getId());
 		rs = ps.executeQuery();
-		Map<String,List<ErpClientCode>> clientCodes = new HashMap<String, List<ErpClientCode>>();
+		Map<String, List<ErpClientCode>> clientCodes = new HashMap<String, List<ErpClientCode>>();
 		while (rs.next()) {
 			ErpClientCode cc = new ErpClientCode();
 			cc.setClientCode(rs.getString("CLIENT_CODE"));
@@ -625,11 +674,9 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 				ol.getClientCodes().addAll(clientCodes.get(ol.getCartlineId()));
 	}
 
-	String saleUpdateWithWaveSQL =
-		"UPDATE CUST.SALE SET STATUS=?, SAP_NUMBER=?, TRUCK_NUMBER=?, STOP_SEQUENCE=?, NUM_REGULAR_CARTONS=?, NUM_FREEZER_CARTONS=?, NUM_ALCOHOL_CARTONS=?, DLV_PASS_ID=?, CROMOD_DATE=?, WAVE_NUMBER=? WHERE ID=?";
+	String saleUpdateWithWaveSQL = "UPDATE CUST.SALE SET STATUS=?, SAP_NUMBER=?, TRUCK_NUMBER=?, STOP_SEQUENCE=?, NUM_REGULAR_CARTONS=?, NUM_FREEZER_CARTONS=?, NUM_ALCOHOL_CARTONS=?, DLV_PASS_ID=?, CROMOD_DATE=?, WAVE_NUMBER=? WHERE ID=?";
 
-	String saleUpdateWithNoWaveSQL =
-		"UPDATE CUST.SALE SET STATUS=?, SAP_NUMBER=?, TRUCK_NUMBER=?, STOP_SEQUENCE=?, NUM_REGULAR_CARTONS=?, NUM_FREEZER_CARTONS=?, NUM_ALCOHOL_CARTONS=?, DLV_PASS_ID=?, CROMOD_DATE=? WHERE ID=?";
+	String saleUpdateWithNoWaveSQL = "UPDATE CUST.SALE SET STATUS=?, SAP_NUMBER=?, TRUCK_NUMBER=?, STOP_SEQUENCE=?, NUM_REGULAR_CARTONS=?, NUM_FREEZER_CARTONS=?, NUM_ALCOHOL_CARTONS=?, DLV_PASS_ID=?, CROMOD_DATE=? WHERE ID=?";
 
 	public void store(Connection conn) throws SQLException {
 		if (isModified()) {
@@ -644,22 +691,26 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			ps.setString(index++, model.getStatus().getStatusCode());
 			ps.setString(index++, model.getSapOrderNumber());
 			ps.setString(index++, sInfo != null ? sInfo.getTruckNumber() : null);
-			ps.setString(index++, sInfo != null ? sInfo.getStopSequence() : null);
+			ps.setString(index++, sInfo != null ? sInfo.getStopSequence()
+					: null);
 			ps.setInt(index++, sInfo != null ? sInfo.getRegularCartons() : 0);
 			ps.setInt(index++, sInfo != null ? sInfo.getFreezerCartons() : 0);
 			ps.setInt(index++, sInfo != null ? sInfo.getAlcoholCartons() : 0);
-			LOGGER.debug("Delivery pass id in store "+model.getDeliveryPassId());
-			//Update delivery pass id.
-			if(model.getDeliveryPassId() != null){
+			LOGGER.debug("Delivery pass id in store "
+					+ model.getDeliveryPassId());
+			// Update delivery pass id.
+			if (model.getDeliveryPassId() != null) {
 				ps.setString(index++, model.getDeliveryPassId());
-			}else{
+			} else {
 				ps.setNull(index++, Types.VARCHAR);
 			}
 
-			//Added as part of PERF-27 task.
-			ps.setTimestamp(index++, new java.sql.Timestamp(model.getCurrentOrder().getTransactionDate().getTime()));
+			// Added as part of PERF-27 task.
+			ps.setTimestamp(index++, new java.sql.Timestamp(model
+					.getCurrentOrder().getTransactionDate().getTime()));
 
-			// DO NOT UPDATE SALE.wave_number in database if getWaveNumber returns null
+			// DO NOT UPDATE SALE.wave_number in database if getWaveNumber
+			// returns null
 			if (sInfo != null && sInfo.getWaveNumber() != null) {
 				ps.setString(index++, sInfo.getWaveNumber());
 			}
@@ -671,34 +722,38 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			ps.close();
 
 			ErpPromotionDAO.delete(conn, getPK());
-			if(model.hasUsedPromotionCodes())
-				ErpPromotionDAO.insert(conn, getPK(), model.getUsedPromotionCodes(), model.getCurrentOrder().getRequestedDate());
+			if (model.hasUsedPromotionCodes())
+				ErpPromotionDAO.insert(conn, getPK(), model
+						.getUsedPromotionCodes(), model.getCurrentOrder()
+						.getRequestedDate());
 		}
-		//store children
+		// store children
 		ErpTransactionList txList = getTransactionPBList();
 		if (txList.isModified()) {
 			txList.store(conn);
 			updateCroModMaxDate(conn);
 		}
-		
+
 		deleteClientCodes(conn);
 		createClientCodes(conn);
-	
+
 		if (complaints.isModified()) {
 			complaints.store(conn);
 		}
 
 	}
 
-	private void updateCroModMaxDate(Connection conn)throws SQLException {
+	private void updateCroModMaxDate(Connection conn) throws SQLException {
 		PreparedStatement ps = null;
-		try{
-			ps = conn.prepareStatement("UPDATE CUST.SALE_CRO_MOD_DATE SET MAX_DATE = ? WHERE SALE_ID = ?");
-			ps.setTimestamp(1, new java.sql.Timestamp(model.getCurrentOrder().getTransactionDate().getTime()));
+		try {
+			ps = conn
+					.prepareStatement("UPDATE CUST.SALE_CRO_MOD_DATE SET MAX_DATE = ? WHERE SALE_ID = ?");
+			ps.setTimestamp(1, new java.sql.Timestamp(model.getCurrentOrder()
+					.getTransactionDate().getTime()));
 			ps.setString(2, getPK().getId());
 			ps.execute();
-		}finally{
-			if(ps != null){
+		} finally {
+			if (ps != null) {
 				ps.close();
 			}
 		}
@@ -729,18 +784,20 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	}
 
 	/**
-	 * Notification that the create order did not make it into SAP.
-	 * Status will be NOT_SUBMITTED after this operation.
-	 *
-	 * @param message detailed description of the error
-	 *
-	 * @throws ErpTransactionException on violation of business transaction rules
+	 * Notification that the create order did not make it into SAP. Status will
+	 * be NOT_SUBMITTED after this operation.
+	 * 
+	 * @param message
+	 *            detailed description of the error
+	 * 
+	 * @throws ErpTransactionException
+	 *             on violation of business transaction rules
 	 */
 	public void submitFailed(String message) throws ErpTransactionException {
-		try{
+		try {
 			model.submitFailed(message);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
@@ -749,32 +806,37 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	/**
 	 * Notification that the create order is successfully completed in SAP.
 	 * Status will be SUBMITTED after this operation.
-	 *
-	 * @param sapOrderNumber order number assigned in SAP
-	 *
-	 * @throws ErpTransactionException on violation of business transaction rules
+	 * 
+	 * @param sapOrderNumber
+	 *            order number assigned in SAP
+	 * 
+	 * @throws ErpTransactionException
+	 *             on violation of business transaction rules
 	 */
-	public void createOrderComplete(String sapOrderNumber) throws ErpTransactionException {
-		try{
+	public void createOrderComplete(String sapOrderNumber)
+			throws ErpTransactionException {
+		try {
 			model.createOrderComplete(sapOrderNumber);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	/**
-	 * Change the order. Can only change a SUBMITTED order.
-	 * Status will be MODIFIED after this operation.
-	 *
-	 * @throws ErpTransactionException on violation of business transaction rules
+	 * Change the order. Can only change a SUBMITTED order. Status will be
+	 * MODIFIED after this operation.
+	 * 
+	 * @throws ErpTransactionException
+	 *             on violation of business transaction rules
 	 */
-	public void modifyOrder(ErpModifyOrderModel model, Set<String> usedPromotionCodes) throws ErpTransactionException {
-		try{
+	public void modifyOrder(ErpModifyOrderModel model,
+			Set<String> usedPromotionCodes) throws ErpTransactionException {
+		try {
 			this.model.modifyOrder(model, usedPromotionCodes);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
@@ -783,141 +845,152 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	/**
 	 * Notification that the last change order is successfully completed in SAP.
 	 * Status will be SUBMITTED after this operation.
-	 *
-	 * @throws ErpTransactionException on violation of business transaction rules
+	 * 
+	 * @throws ErpTransactionException
+	 *             on violation of business transaction rules
 	 */
 	public void modifyOrderComplete() throws ErpTransactionException {
-		try{
+		try {
 			model.modifyOrderComplete();
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	/**
-	 * Cancel the order. The Sale must be in SUBMITTED status.
-	 * Status will be MODIFIED after this operation.
-	 *
-	 * @throws ErpTransactionException on violation of business transaction rules
+	 * Cancel the order. The Sale must be in SUBMITTED status. Status will be
+	 * MODIFIED after this operation.
+	 * 
+	 * @throws ErpTransactionException
+	 *             on violation of business transaction rules
 	 */
-	public void cancelOrder(ErpCancelOrderModel cancelOrder) throws ErpTransactionException {
-		try{
+	public void cancelOrder(ErpCancelOrderModel cancelOrder)
+			throws ErpTransactionException {
+		try {
 			model.cancelOrder(cancelOrder);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	/**
-	 * Cancel the order. The Gift Card Sale must be in ENROUTE status.
-	 * Status will be MODIFIED after this operation.
-	 *
-	 * @throws ErpTransactionException on violation of business transaction rules
+	 * Cancel the order. The Gift Card Sale must be in ENROUTE status. Status
+	 * will be MODIFIED after this operation.
+	 * 
+	 * @throws ErpTransactionException
+	 *             on violation of business transaction rules
 	 */
-	public void cancelGCOrder(ErpCancelOrderModel cancelOrder) throws ErpTransactionException {
-		try{
+	public void cancelGCOrder(ErpCancelOrderModel cancelOrder)
+			throws ErpTransactionException {
+		try {
 			model.cancelGCOrder(cancelOrder);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * Notification that the cancel order is successfully completed in SAP.
 	 * Status will be CANCELED after this operation.
-	 *
-	 * @throws ErpTransactionException on violation of business transaction rules
+	 * 
+	 * @throws ErpTransactionException
+	 *             on violation of business transaction rules
 	 */
 	public void cancelOrderComplete() throws ErpTransactionException {
-		try{
+		try {
 			model.cancelOrderComplete();
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void cutoff() throws ErpTransactionException {
-		try{
+		try {
 			model.cutoff();
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
-	
-	public void emailPending() throws ErpTransactionException{
-		try{
+
+	public void emailPending() throws ErpTransactionException {
+		try {
 			model.emailPending();
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
-		
+
 	}
 
-	public void setGiftCardRegPending() throws ErpTransactionException{
-		try{
+	public void setGiftCardRegPending() throws ErpTransactionException {
+		try {
 			model.setGiftCardRegPending();
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
-		
-	}	
-	
+
+	}
 
 	/**
-	 * Add the invoice coming from SAP. The Sale must be in the INPROCESS status.
-	 * Status will be ENROUTE after this operation.
-	 *
-	 * @throws ErpTransactionException on violation of business transaction rules
+	 * Add the invoice coming from SAP. The Sale must be in the INPROCESS
+	 * status. Status will be ENROUTE after this operation.
+	 * 
+	 * @throws ErpTransactionException
+	 *             on violation of business transaction rules
 	 */
-	public void addInvoice(ErpInvoiceModel invoiceModel) throws ErpTransactionException {
-		try{
+	public void addInvoice(ErpInvoiceModel invoiceModel)
+			throws ErpTransactionException {
+		try {
 			model.addInvoice(invoiceModel);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public void addChargeInvoice(ErpChargeInvoiceModel chargeInvoiceModel) throws ErpTransactionException {
-		try{
+	public void addChargeInvoice(ErpChargeInvoiceModel chargeInvoiceModel)
+			throws ErpTransactionException {
+		try {
 			model.addChargeInvoice(chargeInvoiceModel);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public List<CrmSystemCaseInfo> reconcileSale() throws ErpTransactionException {
-		try{
+	public List<CrmSystemCaseInfo> reconcileSale()
+			throws ErpTransactionException {
+		try {
 			return model.reconcileSale();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	/**
-	 * update the truckNumber and stopSequence number of sale after SAP sends this
-	 * information in invoice batch.
-	 *
-	 * @param String truckNumber truck number the sale is on
-	 * @param String stopSequence stop sequnce on the route for this sale
+	 * update the truckNumber and stopSequence number of sale after SAP sends
+	 * this information in invoice batch.
+	 * 
+	 * @param String
+	 *            truckNumber truck number the sale is on
+	 * @param String
+	 *            stopSequence stop sequnce on the route for this sale
 	 */
 	public void updateShippingInfo(ErpShippingInfo shippingInfo) {
 		model.updateShippingInfo(shippingInfo);
@@ -925,171 +998,184 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	}
 
 	public void markAsRedelivery() throws ErpTransactionException {
-		try{
+		try {
 			model.markAsRedelivery();
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void markAsEnroute() throws ErpTransactionException {
-		try{
+		try {
 			model.markAsEnroute();
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void markAsReturn() throws ErpTransactionException {
-		try{
+		try {
 			model.markAsReturn();
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public void addReturn(ErpReturnOrderModel returnModel) throws ErpTransactionException {
-		try{
+	public void addReturn(ErpReturnOrderModel returnModel)
+			throws ErpTransactionException {
+		try {
 			model.addReturn(returnModel);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public void addRedelivery(ErpRedeliveryModel redeliveryModel) throws ErpTransactionException {
-		try{
+	public void addRedelivery(ErpRedeliveryModel redeliveryModel)
+			throws ErpTransactionException {
+		try {
 			model.addRedelivery(redeliveryModel);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public void addDeliveryConfirm(ErpDeliveryConfirmModel deliveryConfirmModel) throws ErpTransactionException {
-		try{
-			// If the order involves gift cards, do 'Post Auth', else proceed as usual.
-			if(null != getCurrentOrder().getAppliedGiftcards() && getCurrentOrder().getAppliedGiftcards().size() > 0) {
-				model.addDeliveryConfirm(deliveryConfirmModel,EnumSaleStatus.POST_AUTH_PENDING);
+	public void addDeliveryConfirm(ErpDeliveryConfirmModel deliveryConfirmModel)
+			throws ErpTransactionException {
+		try {
+			// If the order involves gift cards, do 'Post Auth', else proceed as
+			// usual.
+			if (null != getCurrentOrder().getAppliedGiftcards()
+					&& getCurrentOrder().getAppliedGiftcards().size() > 0) {
+				model.addDeliveryConfirm(deliveryConfirmModel,
+						EnumSaleStatus.POST_AUTH_PENDING);
 				setModified();
-			}else{
-				model.addDeliveryConfirm(deliveryConfirmModel,EnumSaleStatus.CAPTURE_PENDING);
+			} else {
+				model.addDeliveryConfirm(deliveryConfirmModel,
+						EnumSaleStatus.CAPTURE_PENDING);
 				setModified();
 			}
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
-	
-	
-	
-	public void addRegisterGiftCard(ErpGiftCardTransModel registerGCModel) throws ErpTransactionException {
-		
-		try{
+
+	public void addRegisterGiftCard(ErpGiftCardTransModel registerGCModel)
+			throws ErpTransactionException {
+
+		try {
 			model.addRegisterGiftCard(registerGCModel);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
-		}		
+		}
 	}
-			
 
-	public void addGiftCardEmailInfo(ErpGiftCardTransModel emailGCModel) throws ErpTransactionException {
-		
-		try{			
+	public void addGiftCardEmailInfo(ErpGiftCardTransModel emailGCModel)
+			throws ErpTransactionException {
+
+		try {
 			model.addGiftCardEmailInfo(emailGCModel);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
-		}		
+		}
 	}
-	
 
-	public void addGiftCardDeliveryConfirm(ErpGiftCardTransModel registerGCModel) throws ErpTransactionException {
-		
-		try{
+	public void addGiftCardDeliveryConfirm(ErpGiftCardTransModel registerGCModel)
+			throws ErpTransactionException {
+
+		try {
 			model.addGiftCardDlvConfirm(registerGCModel);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
-		}		
+		}
 	}
-	
-	
+
 	/**
-	 * Add an ErpComplaintModel to the list of complaints. The Sale must be in the COMPLETE status.
-	 *
-	 * @throws ErpTransactionException on violation of business transaction rules
+	 * Add an ErpComplaintModel to the list of complaints. The Sale must be in
+	 * the COMPLETE status.
+	 * 
+	 * @throws ErpTransactionException
+	 *             on violation of business transaction rules
 	 */
-	public void addComplaint(ErpComplaintModel complaintModel) throws ErpTransactionException {
-		try{
+	public void addComplaint(ErpComplaintModel complaintModel)
+			throws ErpTransactionException {
+		try {
 			model.addComplaint(complaintModel);
 			complaints = buildComplaintPBList();
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public void updateComplaint(ErpComplaintModel newComplaint) throws ErpTransactionException {
-		try{
+	public void updateComplaint(ErpComplaintModel newComplaint)
+			throws ErpTransactionException {
+		try {
 			model.updateComplaint(newComplaint);
 			complaints = buildComplaintPBList();
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public void addChargeback(ErpChargebackModel chargebackModel) throws ErpTransactionException {
-		try{
+	public void addChargeback(ErpChargebackModel chargebackModel)
+			throws ErpTransactionException {
+		try {
 			model.addChargeback(chargebackModel);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public void addChargebackReversal(ErpChargebackReversalModel cbkReversal) throws ErpTransactionException {
-		try{
+	public void addChargebackReversal(ErpChargebackReversalModel cbkReversal)
+			throws ErpTransactionException {
+		try {
 			model.addChargebackReversal(cbkReversal);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public void addAdjustment(ErpAdjustmentModel adjustmentModel) throws ErpTransactionException {
-		try{
+	public void addAdjustment(ErpAdjustmentModel adjustmentModel)
+			throws ErpTransactionException {
+		try {
 			model.addAdjustment(adjustmentModel);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public void addResubmitPayment(ErpResubmitPaymentModel resubmitPaymentModel) throws ErpTransactionException {
-		try{
+	public void addResubmitPayment(ErpResubmitPaymentModel resubmitPaymentModel)
+			throws ErpTransactionException {
+		try {
 			model.addResubmitPayment(resubmitPaymentModel);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
@@ -1097,149 +1183,166 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
 	/**
 	 * this will add an authorization to the sale
-	 *
-	 * @param ErpAuthorizationModel authorizationModel
+	 * 
+	 * @param ErpAuthorizationModel
+	 *            authorizationModel
 	 * @return void
 	 */
-	public void addAuthorization(ErpAuthorizationModel authorizationModel) throws ErpTransactionException {
-		try{
+	public void addAuthorization(ErpAuthorizationModel authorizationModel)
+			throws ErpTransactionException {
+		try {
 			model.addAuthorization(authorizationModel);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
-	
-	
+
 	/**
 	 * this will add an authorization to the sale
-	 *
-	 * @param ErpAuthorizationModel authorizationModel
+	 * 
+	 * @param ErpAuthorizationModel
+	 *            authorizationModel
 	 * @return void
 	 */
-	public void addGiftCardBalanceTransfer(ErpGiftCardTransModel authorizationModel) throws ErpTransactionException {
-		try{
+	public void addGiftCardBalanceTransfer(
+			ErpGiftCardTransModel authorizationModel)
+			throws ErpTransactionException {
+		try {
 			model.addGCBalanceTransfer(authorizationModel);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
-	
 
-	public void addSettlement(ErpSettlementModel settlementModel) throws ErpTransactionException {
-		try{
+	public void addSettlement(ErpSettlementModel settlementModel)
+			throws ErpTransactionException {
+		try {
 			model.addSettlement(settlementModel);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public void addFailedSettlement(ErpFailedSettlementModel failedSettlementModel) throws ErpTransactionException {
-		try{
+	public void addFailedSettlement(
+			ErpFailedSettlementModel failedSettlementModel)
+			throws ErpTransactionException {
+		try {
 			model.addFailedSettlement(failedSettlementModel);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public void addChargeSettlement(ErpChargeSettlementModel chargeSettlementModel) throws ErpTransactionException {
-		try{
+	public void addChargeSettlement(
+			ErpChargeSettlementModel chargeSettlementModel)
+			throws ErpTransactionException {
+		try {
 			model.addChargeSettlement(chargeSettlementModel);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public void addFundsRedeposit(ErpFundsRedepositModel fundsRedepositModel) throws ErpTransactionException {
-		try{
+	public void addFundsRedeposit(ErpFundsRedepositModel fundsRedepositModel)
+			throws ErpTransactionException {
+		try {
 			model.addFundsRedeposit(fundsRedepositModel);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public void addFailedChargeSettlement(ErpFailedChargeSettlementModel failedChargeSettlementModel) throws ErpTransactionException {
-		try{
+	public void addFailedChargeSettlement(
+			ErpFailedChargeSettlementModel failedChargeSettlementModel)
+			throws ErpTransactionException {
+		try {
 			model.addFailedChargeSettlement(failedChargeSettlementModel);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public void addManualAuthorization(ErpAuthorizationModel authorizationModel) throws ErpTransactionException {
-		try{
+	public void addManualAuthorization(ErpAuthorizationModel authorizationModel)
+			throws ErpTransactionException {
+		try {
 			model.addManualAuthorization(authorizationModel);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public void addReversal(ErpReversalModel reversalModel) throws ErpTransactionException {
-		try{
+	public void addReversal(ErpReversalModel reversalModel)
+			throws ErpTransactionException {
+		try {
 			model.addReversal(reversalModel);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public void addCashback(ErpCashbackModel cashbackModel) throws ErpTransactionException {
-		try{
+	public void addCashback(ErpCashbackModel cashbackModel)
+			throws ErpTransactionException {
+		try {
 			model.addCashback(cashbackModel);
 			setModified();
-		}catch(ErpTransactionException e){
-			getEntityContext().setRollbackOnly();
-			throw e;
-		}
-	}	
-
-	public void addCapture(ErpCaptureModel captureModel) throws ErpTransactionException {
-		try{
-			model.addCapture(captureModel);
-			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public void addVoidCapture(ErpVoidCaptureModel voidCapture) throws ErpTransactionException {
-		try{
+	public void addCapture(ErpCaptureModel captureModel)
+			throws ErpTransactionException {
+		try {
+			model.addCapture(captureModel);
+			setModified();
+		} catch (ErpTransactionException e) {
+			getEntityContext().setRollbackOnly();
+			throw e;
+		}
+	}
+
+	public void addVoidCapture(ErpVoidCaptureModel voidCapture)
+			throws ErpTransactionException {
+		try {
 			model.addVoidCapture(voidCapture);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public java.util.Date getCaptureDate() throws ErpTransactionException {
-		try{
+		try {
 			return model.getCaptureDate();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	/**
-	 * Get how the current order looks like. Returns the last create or change order transaction.
+	 * Get how the current order looks like. Returns the last create or change
+	 * order transaction.
 	 */
 	public ErpAbstractOrderModel getCurrentOrder() {
 		return model.getCurrentOrder();
@@ -1261,19 +1364,21 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		return model.getCaptures();
 	}
 
-	public List<ErpSettlementModel> getSettlements() throws ErpTransactionException {
-		try{
+	public List<ErpSettlementModel> getSettlements()
+			throws ErpTransactionException {
+		try {
 			return model.getSettlements();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public List<ErpAdjustmentModel> getAdjustments() throws ErpTransactionException {
-		try{
+	public List<ErpAdjustmentModel> getAdjustments()
+			throws ErpTransactionException {
+		try {
 			return model.getAdjustments();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
@@ -1284,15 +1389,16 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	}
 
 	public ErpInvoiceModel getInvoice() throws ErpTransactionException {
-		try{
+		try {
 			return model.getInvoice();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public void updateCartonInfo(List<ErpCartonInfo> cartonInfo) throws ErpTransactionException, RemoteException {
+	public void updateCartonInfo(List<ErpCartonInfo> cartonInfo)
+			throws ErpTransactionException, RemoteException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -1314,7 +1420,8 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		}
 	}
 
-	public List<ErpCartonInfo> getCartonInfo() throws ErpTransactionException, RemoteException {
+	public List<ErpCartonInfo> getCartonInfo() throws ErpTransactionException,
+			RemoteException {
 		List<ErpCartonInfo> returnList = new ArrayList<ErpCartonInfo>();
 		Connection conn = null;
 		try {
@@ -1340,11 +1447,11 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		return model.getChargeInvoice();
 	}
 
-	public  boolean getIsChargePayment(String authId) {
+	public boolean getIsChargePayment(String authId) {
 		return model.getIsChargePayment(authId);
 	}
 
-	public  boolean getIsChargePayment(double chargeAmount) {
+	public boolean getIsChargePayment(double chargeAmount) {
 		return model.getIsChargePayment(chargeAmount);
 	}
 
@@ -1368,7 +1475,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		return model.getChargeSettlements();
 	}
 
-	public List<ErpFundsRedepositModel> getFundsRedeposits(){
+	public List<ErpFundsRedepositModel> getFundsRedeposits() {
 		return model.getFundsRedeposits();
 	}
 
@@ -1380,7 +1487,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		try {
 			model.reverseChargePayment();
 			setModified();
-		} catch ( ErpTransactionException e ) {
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
@@ -1390,71 +1497,79 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		return model.getIsSettlementFailedAfterSettled();
 	}
 
-	//For Gift Cards _ begin.
-	
-	public List<ErpPreAuthGiftCardModel> getPendingGCAuthorizations(ErpPaymentMethodI pm) {
+	// For Gift Cards _ begin.
+
+	public List<ErpPreAuthGiftCardModel> getPendingGCAuthorizations(
+			ErpPaymentMethodI pm) {
 		return model.getPendingGCAuthorizations(pm);
 	}
-	
-	public List<ErpReverseAuthGiftCardModel> getPendingGCReverseAuths(ErpPaymentMethodI pm) {
+
+	public List<ErpReverseAuthGiftCardModel> getPendingGCReverseAuths(
+			ErpPaymentMethodI pm) {
 		return model.getPendingGCReverseAuths(pm);
 	}
 
-	public List<ErpPreAuthGiftCardModel> getValidGCAuthorizations(ErpPaymentMethodI pm){
+	public List<ErpPreAuthGiftCardModel> getValidGCAuthorizations(
+			ErpPaymentMethodI pm) {
 		return model.getValidGCAuthorizations(pm);
-	}	
-	
+	}
+
 	public List<ErpPreAuthGiftCardModel> getPendingGCAuthorizations() {
 		return model.getPendingGCAuthorizations();
 	}
-	
+
 	public List<ErpReverseAuthGiftCardModel> getPendingReverseGCAuthorizations() {
 		return model.getPendingReverseGCAuthorizations();
 	}
-	
+
 	public List<ErpPreAuthGiftCardModel> getValidGCAuthorizations() {
 		return model.getValidGCAuthorizations();
 	}
-	
+
 	public List<ErpPostAuthGiftCardModel> getValidGCPostAuthorizations() {
 		return model.getValidGCPostAuthorizations();
 	}
-	
-	public void addGCPreAuthorization(ErpPreAuthGiftCardModel auth) throws ErpTransactionException {
+
+	public void addGCPreAuthorization(ErpPreAuthGiftCardModel auth)
+			throws ErpTransactionException {
 		try {
 			model.addGCAuthorization(auth);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
-	public void addPostAuthorization(ErpPostAuthGiftCardModel postAuth) throws ErpTransactionException {
+
+	public void addPostAuthorization(ErpPostAuthGiftCardModel postAuth)
+			throws ErpTransactionException {
 		try {
 			model.addPostAuthorization(postAuth);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
-		}		
+		}
 	}
-	
-	public void addReverseGCPreAuthorization(ErpReverseAuthGiftCardModel rauth) throws ErpTransactionException {
+
+	public void addReverseGCPreAuthorization(ErpReverseAuthGiftCardModel rauth)
+			throws ErpTransactionException {
 		try {
 			model.addReverseGCAuthorization(rauth);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 
 	}
-	
-	public void cancelGCPreAuthorization(ErpPreAuthGiftCardModel auth) throws ErpTransactionException {
+
+	public void cancelGCPreAuthorization(ErpPreAuthGiftCardModel auth)
+			throws ErpTransactionException {
 		try {
 			model.cancelGCAuthorization(auth);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
@@ -1464,71 +1579,76 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public boolean hasValidPostAuth(ErpPaymentMethodI pm, String preAuthCode) {
 		return model.hasValidPostAuth(pm, preAuthCode);
 	}
-	
-	public void updateGCAuthorization(ErpGiftCardAuthModel auth) throws ErpTransactionException {
+
+	public void updateGCAuthorization(ErpGiftCardAuthModel auth)
+			throws ErpTransactionException {
 		try {
 			model.updateGCAuthorization(auth);
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
-	
+
 	public void markAsCapturePending() throws ErpTransactionException {
 		try {
 			model.markAsCapturePending();
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
-		}		
-		
+		}
+
 	}
-	
+
 	public void markAsSettlementPending() throws ErpTransactionException {
 		try {
 			model.markAsSettlementPending();
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
-		}			
-		
+		}
+
 	}
-	
+
 	public void markAsSettlementToSAPPending() throws ErpTransactionException {
 		try {
 			model.markAsSettlementToSAPPending();
 			setModified();
-		}catch(ErpTransactionException e){
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
-		}			
-		
+		}
+
 	}
-	
+
 	private static class ErpTransactionList extends DependentPersistentBeanList {
 
-		private static final long	serialVersionUID	= 4204931950533869261L;
+		private static final long serialVersionUID = 4204931950533869261L;
 
 		public void load(Connection conn) throws SQLException {
 			PrimaryKey ppk = (PrimaryKey) ErpTransactionList.this.getParentPK();
 			List<DependentPersistentBeanSupport> txList = new ArrayList<DependentPersistentBeanSupport>();
 
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM CUST.SALESACTION WHERE SALE_ID=?");
+			PreparedStatement ps = conn
+					.prepareStatement("SELECT * FROM CUST.SALESACTION WHERE SALE_ID=?");
 			ps.setString(1, ppk.getId());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				PrimaryKey txPk = new PrimaryKey(rs.getString("ID"));
-				EnumTransactionType txType = EnumTransactionType.getTransactionType(rs.getString("ACTION_TYPE"));
-				if(txType.isUpdatable()) {
-					ErpUpdatableTransactionBean updatableTxBean = createUpdatablePersistentBean(txType, txPk, ppk);
+				EnumTransactionType txType = EnumTransactionType
+						.getTransactionType(rs.getString("ACTION_TYPE"));
+				if (txType.isUpdatable()) {
+					ErpUpdatableTransactionBean updatableTxBean = createUpdatablePersistentBean(
+							txType, txPk, ppk);
 					updatableTxBean.setParentPK(ppk);
 					updatableTxBean.load(conn);
 					txList.add(updatableTxBean);
 				} else {
-					ErpTransactionPersistentBean txBean = createPersistentBean(txType, txPk, ppk);
+					ErpTransactionPersistentBean txBean = createPersistentBean(
+							txType, txPk, ppk);
 					txBean.setParentPK(ppk);
 					txBean.load(conn);
 					txList.add(txBean);
@@ -1539,9 +1659,11 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
 			ErpTransactionList.this.set(txList);
 		}
-		
-		public static ErpUpdatableTransactionBean createUpdatablePersistentBean(EnumTransactionType txType, PrimaryKey txPk, PrimaryKey ppk) throws SQLException{
-			//Added for Gift cards
+
+		public static ErpUpdatableTransactionBean createUpdatablePersistentBean(
+				EnumTransactionType txType, PrimaryKey txPk, PrimaryKey ppk)
+				throws SQLException {
+			// Added for Gift cards
 			if (EnumTransactionType.PREAUTH_GIFTCARD.equals(txType)) {
 				return new ErpPreAuthPersistentBean(txPk);
 			}
@@ -1554,13 +1676,15 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			if (EnumTransactionType.BALANCETRANSFER_GIFTCARD.equals(txType)) {
 				return new ErpBalanceTransferPersistentBean(txPk);
 			}
-			
-			
-			throw new SQLException("Unknown transaction type " + txType.getCode() + " encountered in sale " + ppk);
+
+			throw new SQLException("Unknown transaction type "
+					+ txType.getCode() + " encountered in sale " + ppk);
 		}
 
-		public static ErpTransactionPersistentBean createPersistentBean(EnumTransactionType txType, PrimaryKey txPk, PrimaryKey ppk) throws SQLException{
-			if(EnumTransactionType.CREATE_ORDER.equals(txType)){
+		public static ErpTransactionPersistentBean createPersistentBean(
+				EnumTransactionType txType, PrimaryKey txPk, PrimaryKey ppk)
+				throws SQLException {
+			if (EnumTransactionType.CREATE_ORDER.equals(txType)) {
 				return new ErpCreateOrderPersistentBean(txPk);
 			}
 			if (EnumTransactionType.MODIFY_ORDER.equals(txType)) {
@@ -1638,75 +1762,83 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			if (EnumTransactionType.GIFTCARD_DLV_CONFIRM.equals(txType)) {
 				return new ErpGiftCardDlvConfirmPersistentBean(txPk);
 			}
-			throw new SQLException("Unknown transaction type " + txType.getCode() + " encountered in sale " + ppk);
+			throw new SQLException("Unknown transaction type "
+					+ txType.getCode() + " encountered in sale " + ppk);
 		}
 	}
 
 	private static class ErpComplaintList extends DependentPersistentBeanList {
-		
-		private static final long	serialVersionUID	= 8774828244401069072L;
+
+		private static final long serialVersionUID = 8774828244401069072L;
 
 		public void load(Connection conn) throws SQLException {
 			PrimaryKey ppk = (PrimaryKey) ErpComplaintList.this.getParentPK();
 			List<DependentPersistentBeanSupport> complaintList = new ArrayList<DependentPersistentBeanSupport>();
-			complaintList.addAll(ErpComplaintPersistentBean.findByParent(conn, ppk));
+			complaintList.addAll(ErpComplaintPersistentBean.findByParent(conn,
+					ppk));
 			ErpComplaintList.this.set(complaintList);
 		}
 	}
 
-	public Collection<PrimaryKey> ejbFindByDeliveryPassId(String dlvPassId) throws FinderException {
-		return performFind("SELECT ID FROM CUST.SALE WHERE DLV_PASS_ID = ?", dlvPassId);
+	public Collection<PrimaryKey> ejbFindByDeliveryPassId(String dlvPassId)
+			throws FinderException {
+		return performFind("SELECT ID FROM CUST.SALE WHERE DLV_PASS_ID = ?",
+				dlvPassId);
 	}
 
 	/**
 	 * This method updates the delivery pass id of the sale model.
+	 * 
 	 * @param dlvPassId
 	 * @throws RemoteException
 	 */
 
 	public void updateDeliveryPassId(String dlvPassId) {
-			model.setDeliveryPassId(dlvPassId);
-			setModified();
+		model.setDeliveryPassId(dlvPassId);
+		setModified();
 	}
 
-	private final static String GET_NTH_NONCOS_REG_ORDER_QUERY="select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "+
-                                                                   " s.CUSTOMER_ID=? and s.type='REG' and s.id=sa.sale_id and pi.salesaction_id=sa.id and "+
-                                                                   //" sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+
-                                                                   " sa.action_type IN ('CRO','MOD') and sa.action_date=s.cromod_date and "+
-                                                                   " di.salesaction_id=sa.id AND s.status=?  and di.delivery_type <>'C' and pi.payment_method_type=?  and pi.on_fd_account<>'M' ) where row_num=1";
+	private final static String GET_NTH_NONCOS_REG_ORDER_QUERY = "select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "
+			+ " s.CUSTOMER_ID=? and s.type='REG' and s.id=sa.sale_id and pi.salesaction_id=sa.id and "
+			+
+			// " sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+
+			" sa.action_type IN ('CRO','MOD') and sa.action_date=s.cromod_date and "
+			+ " di.salesaction_id=sa.id AND s.status=?  and di.delivery_type <>'C' and pi.payment_method_type=?  and pi.on_fd_account<>'M' ) where row_num=1";
 
-	private final static String GET_NTH_NONCOS_SUB_ORDER_QUERY="select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "+
-    " s.CUSTOMER_ID=? and s.type='SUB' and s.id=sa.sale_id and pi.salesaction_id=sa.id and "+
-    //" sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+
-    " sa.action_type IN ('CRO','MOD') and sa.action_date=s.cromod_date and "+
-    " di.salesaction_id=sa.id AND s.status=?  and di.delivery_type <>'C' and pi.payment_method_type=?) where row_num=1";
+	private final static String GET_NTH_NONCOS_SUB_ORDER_QUERY = "select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "
+			+ " s.CUSTOMER_ID=? and s.type='SUB' and s.id=sa.sale_id and pi.salesaction_id=sa.id and "
+			+
+			// " sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+
+			" sa.action_type IN ('CRO','MOD') and sa.action_date=s.cromod_date and "
+			+ " di.salesaction_id=sa.id AND s.status=?  and di.delivery_type <>'C' and pi.payment_method_type=?) where row_num=1";
 
-	public PrimaryKey ejbFindByCriteria(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus, EnumPaymentMethodType pymtMethodType) throws ObjectNotFoundException, FinderException {
+	public PrimaryKey ejbFindByCriteria(String customerID,
+			EnumSaleType saleType, EnumSaleStatus saleStatus,
+			EnumPaymentMethodType pymtMethodType)
+			throws ObjectNotFoundException, FinderException {
 		Connection conn = null;
-		PreparedStatement ps =null;
+		PreparedStatement ps = null;
 		try {
-			if(null==saleType) {
-				saleType=EnumSaleType.REGULAR;
+			if (null == saleType) {
+				saleType = EnumSaleType.REGULAR;
 			}
 			conn = getConnection();
-			if(EnumSaleType.REGULAR.equals(saleType)) {
-			  ps=conn.prepareStatement(GET_NTH_NONCOS_REG_ORDER_QUERY);
-			}
-			else {
-				ps=conn.prepareStatement(GET_NTH_NONCOS_SUB_ORDER_QUERY);
+			if (EnumSaleType.REGULAR.equals(saleType)) {
+				ps = conn.prepareStatement(GET_NTH_NONCOS_REG_ORDER_QUERY);
+			} else {
+				ps = conn.prepareStatement(GET_NTH_NONCOS_SUB_ORDER_QUERY);
 			}
 			ps.setString(1, customerID);
 			ps.setString(2, saleStatus.getStatusCode());
-			ps.setString(3,pymtMethodType.getName());
+			ps.setString(3, pymtMethodType.getName());
 			ResultSet rs = ps.executeQuery();
 			if (!rs.next()) {
-				throw new ObjectNotFoundException(new StringBuffer(100).append("Unable to find ErpSale for customer : " )
-						                                               .append(customerID)
-						                                               .append(" with sale status as ")
-						                                               .append(saleStatus.getStatusCode())
-						                                               .append(" and payment type as ")
-						                                               .append(pymtMethodType.getDescription())
-						                                               .toString());
+				throw new ObjectNotFoundException(new StringBuffer(100)
+						.append("Unable to find ErpSale for customer : ")
+						.append(customerID).append(" with sale status as ")
+						.append(saleStatus.getStatusCode())
+						.append(" and payment type as ")
+						.append(pymtMethodType.getDescription()).toString());
 			}
 
 			PrimaryKey foundPk = new PrimaryKey(rs.getString(1));
@@ -1731,16 +1863,18 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public ErpRegisterGiftCardModel getRecentRegistration() {
 		return model.getRecentRegisteration();
 	}
-	
-	public void addDeliveryConfirm(ErpDeliveryConfirmModel deliveryConfirmModel, EnumSaleStatus enumSaleStatus) throws ErpTransactionException{
-		try{
-			model.addDeliveryConfirm(deliveryConfirmModel,enumSaleStatus);			
+
+	public void addDeliveryConfirm(
+			ErpDeliveryConfirmModel deliveryConfirmModel,
+			EnumSaleStatus enumSaleStatus) throws ErpTransactionException {
+		try {
+			model.addDeliveryConfirm(deliveryConfirmModel, enumSaleStatus);
 			setModified();
-			
-		}catch(ErpTransactionException e){
+
+		} catch (ErpTransactionException e) {
 			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
-	
+
 }
