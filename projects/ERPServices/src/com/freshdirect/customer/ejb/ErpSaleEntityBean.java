@@ -269,8 +269,11 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		}
 	}
 
-	public Collection<PrimaryKey> ejbFindByStatus(EnumSaleStatus saleStatus) throws FinderException {
-		return performFind("SELECT ID FROM CUST.SALE WHERE STATUS=?", saleStatus.getStatusCode());
+	// APPDEV-3456
+	public Collection<PrimaryKey> ejbFindByStatus(EnumSaleStatus saleStatus)
+			throws FinderException {
+		return performFind("SELECT ID FROM CUST.SALE WHERE STATUS=?"
+				+ " AND ROWNUM < 1000", saleStatus.getStatusCode());
 	}
 
 	private Collection<PrimaryKey> performFind(String statement, String parameter) throws FinderException {
