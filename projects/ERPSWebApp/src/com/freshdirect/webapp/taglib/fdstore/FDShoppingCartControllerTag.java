@@ -1748,7 +1748,14 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 										try {
 											OrderLineUtil.cleanup(newLine);
 										} catch (FDInvalidConfigurationException e) {
-											throw new JspException( "Orderline [" + newLine.getDescription() +"] configuration no longer valid", e);
+											// throw new JspException(
+											// "Orderline [" +
+											// newLine.getDescription()
+											// +"] configuration no longer valid",
+											// e);
+											// APPDEV-3050
+											throw new JspException(
+													e.getMessage());
 										}
 										newLine.setQuantity(deltaQty);
 										i.add(newLine);

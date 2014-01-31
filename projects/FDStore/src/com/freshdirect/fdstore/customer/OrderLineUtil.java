@@ -391,7 +391,13 @@ public class OrderLineUtil {
 
 		if (!productInfo.isAvailable()) {
 			
-			throw new FDInvalidConfigurationException.Unavailable("Product "+prodNode.getFullName()+"[" +prodSel.getSkuCode()+"] is no longer available");
+			// throw new
+			// FDInvalidConfigurationException.Unavailable("Product "+prodNode.getFullName()+"["
+			// +prodSel.getSkuCode()+"] is no longer available");
+			// APPDEV-3050
+			throw new FDInvalidConfigurationException.Unavailable(
+					prodNode.getFullName()
+							+ " is discontinued or is no longer available.");
 		}
 
 		FDProduct product;

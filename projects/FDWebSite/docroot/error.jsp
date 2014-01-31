@@ -40,10 +40,10 @@ final int W_ERROR_TOTAL = 970;
 														
 								Sorry, the Web site is unable to process that request. Please click your browser's back button and try again. If that does not work, contact FreshDirect customer service at 1-212-796-8002. We apologize for any inconvenience.
 								<br><br>
-								Reference: 
+								Detail Message: 
 		    	<% if (exception!=null) { 
 				%>
-					<%=String.valueOf(exception)%>
+					<%=String.valueOf(exception.getMessage())%>
 					<% JspLogger.GENERIC.error("Got an error page", exception); %>
 				<% } %>
 				<br><br>
