@@ -73,27 +73,13 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 
 <tmpl:put name="loginButton">
 	<button class="loginButton" id="locabar_loginButton">login</button>
-	<div id="login_cont_formContentHolder" style="display: none">
-		<form id="login_cont_formContentForm" action="/" method="post" name="fd_login">
-    		<div class="fieldInputs"><input id="login_cont_formContent_email" name="userId" value="Email" data-deftext="Email" class="ccc" /></div>
-   			<div class="fieldInputs"><input id="login_cont_formContent_password" name="password" value="Password" data-deftext="Password" class="ccc" type="text" /></div>
-			<div id="login_cont_formContentForm_signInCont"><span style="display: none;" id="login_cont_formContentForm_loggingIn">Logging in...</span><button id="login_cont_formContentForm_signIn" name="submit" type="submit" class="imgButtonOrange">sign in</button></div>
-			
-			<div class="errorMsg" style="display: none;">
-				<div class="header">Please re-enter your Email and Password.</div> 
-					The information you entered is incorrect. Please try again.
-				</div>
-		    	<div class="bold alignRight" style="margin: 20px 0;">Forgot your <a href="/login/forget_password.jsp">password</a>?</div>
-		    </div>
-    	</form>
-    </div>
 </tmpl:put>
-<tmpl:put name="logoutButton"><a href="#" onclick="window.location='/logout.jsp'; return false;" class="logoutButton">logout</a></tmpl:put>
+<tmpl:put name="logoutButton"><button onclick="window.location='/logout.jsp';" class="logoutButton">logout</button></tmpl:put>
 <tmpl:put name="signupButton"><% 
 	if(FDStoreProperties.isLightSignupEnabled()) { 
-		%><a href="#" class="signUpButton" onclick="doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/signup_lite.jsp\' width=\'480px\' height=\'590px\' frameborder=\'0\' ></iframe>', '<span class=\'text12\' style=\'color: #000; margin-left: -12px;\'><strong>Already have a password? <a href=\'/login/login.jsp\' onclick=\'window.top.location=this.href;return false;\' style=\'text-decoration:none;\'>Log in now</a></strong></span>')">signup</a><% 
+		%><button class="signUpButton" onclick="doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/signup_lite.jsp\' width=\'480px\' height=\'590px\' frameborder=\'0\' ></iframe>', '<span class=\'text12\' style=\'color: #000; margin-left: -12px;\'><strong>Already have a password? <a href=\'/login/login.jsp\' onclick=\'window.top.location=this.href;return false;\' style=\'text-decoration:none;\'>Log in now</a></strong></span>')">signup</button><% 
 	} else { 
-		%><a href="#" class="signUpButton" onclick="window.location='/registration/signup.jsp'; return true;">signup</a><% 
+		%><button class="signUpButton" onclick="window.location='/registration/signup.jsp';">signup</button><% 
 	} 
 %></tmpl:put>
 <%
