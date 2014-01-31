@@ -20,7 +20,7 @@
  *	Set up email toggle
  *	Assume false by default, only turning on if "email=true" is sent in the request
  */
-	String templatePath = "/common/template/dnav_no_space.jsp"; //the default
+	String templatePath = "/common/template/dnav_no_space_optimized.jsp"; //the default
 	emailPage = false;
 
 	if ( "true".equals ((String)request.getParameter("email")) ) {

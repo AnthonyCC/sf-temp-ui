@@ -85,16 +85,13 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 <fd:SimpleSearch id="search" nav="<%= nav %>"/>
 <bean:define id="activeTabVal" value='<%= (!search.getProducts().isEmpty() && request.getParameter("recipes")==null) || (search.getProducts().isEmpty() && search.getRecipes().isEmpty()) ? "products" : "recipes" %>' />
 
-<tmpl:insert template='/common/template/search.jsp'>
+<tmpl:insert template='/common/template/search_optimized.jsp'>
 	<tmpl:put name="customCss">
-		<fd:css href="/assets/css/common/grid_supplement.css" />
-		<fd:css href="/assets/css/common/product_grid.css" />
 		<style>
 			.product-grid { width:803px; }
 			.items { width:804px; }
 			.grid-view .grid-item-container { width:201px; }
 		</style>
-		<fd:css href="/assets/css/search.css"></fd:css>
 	</tmpl:put>
 	<tmpl:put name="customJs">
 	</tmpl:put>
