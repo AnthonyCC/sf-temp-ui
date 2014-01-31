@@ -97,41 +97,35 @@ import com.freshdirect.webapp.util.QuickCartCache;
 import com.freshdirect.webapp.util.RequestUtil;
 
 @Deprecated
-public class FDShoppingCartControllerTag extends BodyTagSupport implements
-		SessionName {
+public class FDShoppingCartControllerTag extends BodyTagSupport implements SessionName {
 
 	public static String PARAM_ADDED_FROM_SEARCH = "addedfromsearch";
-
+	
 	public static String PARAM_ADDED_FROM = "addedfrom";
 
 	private static final long serialVersionUID = -7350790143456750035L;
 
-	private static Category LOGGER = LoggerFactory
-			.getInstance(FDShoppingCartControllerTag.class);
-
+	private static Category LOGGER = LoggerFactory.getInstance(FDShoppingCartControllerTag.class);
+	
 	public final static String FD_SHOPPING_CART_ACTION_STACK_ID = "__FDShoppingCart_Action_Stack";
 
 	@SuppressWarnings("unchecked")
 	private static Stack<String> getActionStack(PageContext pageContext) {
-		if (pageContext instanceof PageContextImpl) {
-			return (Stack<String>) pageContext
-					.getAttribute(FD_SHOPPING_CART_ACTION_STACK_ID,
-							PageContext.REQUEST_SCOPE);
-		}
+		if(pageContext instanceof PageContextImpl){
+			return (Stack<String>) pageContext.getAttribute(FD_SHOPPING_CART_ACTION_STACK_ID, PageContext.REQUEST_SCOPE);
+		}		
 		return null;
 	}
 
-	private static void putActionStack(PageContext pageContext,
-			Stack<String> stack) {
-		if (pageContext instanceof PageContextImpl) {
-			pageContext.setAttribute(FD_SHOPPING_CART_ACTION_STACK_ID, stack,
-					PageContext.REQUEST_SCOPE);
+	private static void putActionStack(PageContext pageContext, Stack<String> stack) {
+		if(pageContext instanceof PageContextImpl){
+			pageContext.setAttribute(FD_SHOPPING_CART_ACTION_STACK_ID, stack, PageContext.REQUEST_SCOPE);			
 		}
 	}
 
 	/**
-	 * If an AddToCartPending tag is embedded in an FDShoppingCartController tag
-	 * then it should be able to figure out the current shopping cart 'action'
+	 * If an AddToCartPending tag is embedded in an FDShoppingCartController tag then
+	 * it should be able to figure out the current shopping cart 'action'
 	 * This stack is used to handle this embedded relationship
 	 * 
 	 * We need a stack because theoretically there's a little chance of
@@ -167,7 +161,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 		else
 			return null;
 	}
-
+	
 	private String id;
 
 	private String action;
@@ -189,9 +183,9 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 	private ActionResult result;
 
 	private FDCartModel cart;
-
+	
 	private boolean pending;
-
+	
 	private boolean filterCoupons;
 
 	/**
@@ -218,7 +212,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 	public void setAction(String a) {
 		this.action = a;
 	}
-
+	
 	public String getAction() {
 		return action;
 	}
@@ -288,20 +282,20 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 		return "addMultipleToCart".equals(action) || "addToCart".equals(action);
 	}
 
+
 	@Override
 	public int doStartTag() throws JspException {
 		pushAction(pageContext, action);
 		HttpSession session = pageContext.getSession();
 
 		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
-		// user.updateUserState();
+		//user.updateUserState();
 		boolean suppressSuspendPendingOvarlay = false;
-
+		
 		if (pending) {
 			// check if has pending order otherwise throw exception
-			// the exception will be handled by the calling atc_pending.jsp AJAX
-			// service
-			if (!user.isPopUpPendingOrderOverlay()) {
+			// the exception will be handled by the calling atc_pending.jsp AJAX service
+			if (!user.isPopUpPendingOrderOverlay()){
 				throw new JspException("User has not pending order");
 			}
 			this.cart = user.getMergePendCart();
@@ -321,9 +315,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 		this.request = (HttpServletRequest) pageContext.getRequest();
 		this.result = new ActionResult();
 		int affectedLines = 0;
-		boolean evaluateCoupons = false;
-		String application = (String) session
-				.getAttribute(SessionName.APPLICATION);
+		boolean evaluateCoupons=false;
+		String application = (String) session.getAttribute(SessionName.APPLICATION);
 		boolean inCallCenter = "callcenter".equalsIgnoreCase(application);
 
 		ErpComplaintModel complaintModel = new ErpComplaintModel();
@@ -338,10 +331,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 				// find suffix from request, strict check, do not use product
 				// minimum, do not skip zeros
 				ItemSelectionCheckResult checkResult = new ItemSelectionCheckResult();
-				checkResult
-						.setResponseType(ItemSelectionCheckResult.SAVE_SELECTION);
-				checkResult.setSelection(getProductSelection(null, true, false,
-						false));
+				checkResult.setResponseType(ItemSelectionCheckResult.SAVE_SELECTION);
+				checkResult.setSelection(getProductSelection(null, true, false,false));
 				checkResult.setErrors(result.getErrors());
 				checkResult.setWarnings(result.getWarnings());
 				request.setAttribute("check_result", checkResult);
@@ -356,10 +347,9 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 				if (qcType == null || "".equals(qcType))
 					qcType = QuickCart.PRODUCT_TYPE_CCL;
 
-				if (!(qcType.equals(QuickCart.PRODUCT_TYPE_CCL) || qcType
-						.equals(QuickCart.PRODUCT_TYPE_SO)))
+				if (!(qcType.equals(QuickCart.PRODUCT_TYPE_CCL) || qcType.equals(QuickCart.PRODUCT_TYPE_SO)))
 					throw new JspException("Invalid list type " + qcType);
-
+				
 				boolean worked = false;
 				try {
 					if ("modify".equalsIgnoreCase(listAction)) {
@@ -372,159 +362,110 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 
 						// the list is only stored if actual modifications take
 						// place
-						FDCustomerList cclist = FDListManager
-								.getCustomerListById(
-										user.getIdentity(),
-										QuickCart.PRODUCT_TYPE_SO
-												.equals(qcType) ? EnumCustomerListType.SO
-												: EnumCustomerListType.CC_LIST,
-										ccListId);
+						FDCustomerList cclist = FDListManager.getCustomerListById(
+								user.getIdentity(),
+								QuickCart.PRODUCT_TYPE_SO.equals(qcType) ? EnumCustomerListType.SO : EnumCustomerListType.CC_LIST,
+								ccListId);
 						List<FDCustomerListItem> items = cclist.getLineItems();
 						worked = true;
 
-						for (Enumeration<String> e = request
-								.getParameterNames(); e.hasMoreElements();) {
+						for (Enumeration<String> e = request.getParameterNames(); e.hasMoreElements();) {
 							String paramName = e.nextElement();
 							if (paramName.startsWith("skuCode")) {
-								String suffix = paramName.substring("skuCode"
-										.length());
+								String suffix = paramName.substring("skuCode".length());
 
-								FDCartLineI cartI = this.processCartLine(
-										suffix, null, true, false);
+								FDCartLineI cartI = this.processCartLine(suffix, null, true, false);
 
 								if (cartI != null) {
 									boolean found = false;
-									for (Iterator<FDCustomerListItem> I = items
-											.iterator(); I.hasNext();) {
-										FDCustomerProductListLineItem item = (FDCustomerProductListLineItem) I
-												.next();
+									for (Iterator<FDCustomerListItem> I = items.iterator(); I.hasNext();) {
+										FDCustomerProductListLineItem item = (FDCustomerProductListLineItem) I.next();
 										if (item.getId().equals(lineId)) {
 											found = true;
 											I.remove();
-											FDCustomerProductListLineItem li = new FDCustomerProductListLineItem(
-													cartI.getSkuCode(),
-													new FDConfiguration(cartI
-															.getConfiguration()),
-													cartI.getRecipeSourceId());
+											FDCustomerProductListLineItem li = new FDCustomerProductListLineItem(cartI.getSkuCode(),
+													new FDConfiguration(cartI.getConfiguration()), cartI.getRecipeSourceId());
 											li.setFrequency(1);
 
 											cclist.addLineItem(li);
-											FDListManager
-													.storeCustomerList(cclist);
+											FDListManager.storeCustomerList(cclist);
 
 											// invalidate caches
-											QuickCartCache.invalidateOnChange(
-													session, qcType, ccListId,
-													null);
+											QuickCartCache.invalidateOnChange(session, qcType, ccListId, null);
 											break;
 										}
 									}
 
 									if (!found)
-										LOGGER.warn("Item with id " + lineId
-												+ " is not on list");
+										LOGGER.warn("Item with id " + lineId + " is not on list");
 								} else
 									worked = false;
 							} // item
 						} // items
 					} else if ("remove".equalsIgnoreCase(listAction)) {
-						FDListManager.removeCustomerListItem(user,
-								new PrimaryKey(lineId));
-						QuickCartCache.invalidateOnChange(session, qcType,
-								ccListId, null);
+						FDListManager.removeCustomerListItem(user, new PrimaryKey(lineId));
+						QuickCartCache.invalidateOnChange(session, qcType, ccListId, null);
 						user.invalidateCache();
 
 						worked = true;
 					} else {
-						LOGGER.warn("list_action = " + listAction
-								+ " (remove or modify accepted)");
-						throw new JspException(
-								"Incorrect request parameter: list_action= "
-										+ listAction);
+						LOGGER.warn("list_action = " + listAction + " (remove or modify accepted)");
+						throw new JspException( "Incorrect request parameter: list_action= " + listAction);
 					}
 
 					if (worked) {
-
-						if (QuickCart.PRODUCT_TYPE_SO.equals(qcType)) {
-							FDStandingOrder so = (FDStandingOrder) session
-									.getAttribute("__actual_so");
-
-							if (so != null
-									&& so.getLastError() == ErrorCode.MINORDER) {
-
-								FDCustomerList customerList = FDListManager
-										.getCustomerListById(
-												user.getIdentity(),
-												EnumCustomerListType.SO,
-												ccListId);
-								FDCartModel temporaryCart = new FDTransientCartModel();
-								List<FDProductSelectionI> productSelectionList = OrderLineUtil
-										.getValidProductSelectionsFromCCLItems(customerList
-												.getLineItems());
+						
+						if ( QuickCart.PRODUCT_TYPE_SO.equals( qcType ) ) {
+							FDStandingOrder so = (FDStandingOrder)session.getAttribute( "__actual_so" );
+							
+							if ( so != null && so.getLastError() == ErrorCode.MINORDER ) {
+								
+								FDCustomerList customerList = FDListManager.getCustomerListById(user.getIdentity(),EnumCustomerListType.SO,ccListId);							
+								FDCartModel temporaryCart = new FDTransientCartModel();							
+								List<FDProductSelectionI> productSelectionList = OrderLineUtil.getValidProductSelectionsFromCCLItems( customerList.getLineItems() );
 								try {
-									ErpAddressModel address = so
-											.getDeliveryAddress();
-									temporaryCart.setDeliveryAddress(address);
-									temporaryCart
-											.setZoneInfo(FDDeliveryManager
-													.getInstance()
-													.getZoneInfo(
-															address,
-															so.getNextDeliveryDate(),
-															user.getHistoricOrderSize(),
-															null));
-
-									for (FDProductSelectionI ps : productSelectionList) {
-										FDCartLineI cartLine = new FDCartLineModel(
-												ps);
-										if (!cartLine.isInvalidConfig()) {
-											temporaryCart
-													.addOrderLine(cartLine);
+									ErpAddressModel address = so.getDeliveryAddress();
+									temporaryCart.setDeliveryAddress( address );
+									temporaryCart.setZoneInfo( FDDeliveryManager.getInstance().getZoneInfo( address, so.getNextDeliveryDate(), user.getHistoricOrderSize(), null ) );
+								
+									for ( FDProductSelectionI ps : productSelectionList ) {
+										FDCartLineI cartLine = new FDCartLineModel( ps );
+										if ( !cartLine.isInvalidConfig() ) {
+											temporaryCart.addOrderLine( cartLine );
 										}
 									}
-									temporaryCart.refreshAll(true);
-								} catch (FDInvalidConfigurationException e) {
-								} catch (FDInvalidAddressException e) {
+									temporaryCart.refreshAll(true);			
+								} catch ( FDInvalidConfigurationException e ) {
+								} catch ( FDInvalidAddressException e ){									
 								}
-
-								if (temporaryCart.getSubTotal() >= user
-										.getMinimumOrderAmount()) {
+								
+								if ( temporaryCart.getSubTotal() >= user.getMinimumOrderAmount() ) {
 									try {
 										so.clearLastError();
-										FDActionInfo info = AccountActivityUtil
-												.getActionInfo(pageContext
-														.getSession());
-										FDStandingOrdersManager.getInstance()
-												.save(info, so);
-									} catch (FDResourceException e) {
-										LOGGER.warn(
-												"Could not save standing order.",
-												e);
+										FDActionInfo info = AccountActivityUtil.getActionInfo(pageContext.getSession());
+										FDStandingOrdersManager.getInstance().save( info, so );
+									} catch ( FDResourceException e ) {
+										LOGGER.warn( "Could not save standing order.", e );
 									}
 								}
 							}
 						}
 
-						HttpServletResponse response = (HttpServletResponse) pageContext
-								.getResponse();
-						String redirectURL = response
-								.encodeRedirectURL(successPage);
+						HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+						String redirectURL = response.encodeRedirectURL(successPage);
 						if (redirectURL == null)
 							redirectURL = request.getParameter("successPage");
 						if (redirectURL == null)
 							return SKIP_BODY;
-						LOGGER.debug("List modified, redirecting to "
-								+ redirectURL);
+						LOGGER.debug("List modified, redirecting to " + redirectURL);
 						response.sendRedirect(redirectURL);
 
 						return SKIP_BODY;
 					}
 				} catch (IOException ioe) {
-					throw new JspException("Error redirecting: "
-							+ ioe.getMessage());
+					throw new JspException("Error redirecting: "+ ioe.getMessage());
 				} catch (FDResourceException re) {
-					throw new JspException("Error in accessing resource: "
-							+ re.getMessage());
+					throw new JspException("Error in accessing resource: "+ re.getMessage());
 				}
 			} else if ("CCL:AddMultipleToList".equalsIgnoreCase(action)) {
 
@@ -541,16 +482,13 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 				} else if (source.startsWith("ccl_sidebar")) {
 					// use the selected ccl_sidebar's suffix, non-strict check,
 					// use product minimum, do not skip zeros
-					selection = getProductSelection(
-							source.substring("ccl_sidebar".length()), false,
-							true, false);
+					selection = getProductSelection(source.substring("ccl_sidebar".length()), false, true, false);
 				} else {
 					LOGGER.warn("Invalid source: " + source);
 					throw new JspException("Invalid source: " + source);
 				}
 				ItemSelectionCheckResult checkResult = new ItemSelectionCheckResult();
-				checkResult
-						.setResponseType(ItemSelectionCheckResult.SAVE_SELECTION);
+				checkResult.setResponseType(ItemSelectionCheckResult.SAVE_SELECTION);
 				checkResult.setSelection(selection);
 				checkResult.setErrors(result.getErrors());
 				checkResult.setWarnings(result.getWarnings());
@@ -564,11 +502,9 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 				String ccListId = request.getParameter(CclUtils.CC_LIST_ID);
 				String listName = null;
 				try {
-					listName = FDListManager.getListName(user.getIdentity(),
-							ccListId);
+					listName = FDListManager.getListName(user.getIdentity(), ccListId);
 					if (listName == null)
-						throw new JspException("List with id " + ccListId
-								+ " not found");
+						throw new JspException("List with id " + ccListId + " not found");
 				} catch (FDResourceException e) {
 					e.printStackTrace();
 					throw new JspException(e);
@@ -576,15 +512,12 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 
 				// deduce suffices from request, strict only if not multiple, do
 				// not use minimum, skip zeros if multiple
-				boolean multiple = "multiple".equalsIgnoreCase(request
-						.getParameter("ccl_copy_type"));
+				boolean multiple = "multiple".equalsIgnoreCase(request.getParameter("ccl_copy_type"));
 
 				ItemSelectionCheckResult checkResult = new ItemSelectionCheckResult();
-				FDCustomerCreatedList selection = getProductSelection(null,
-						!multiple, false, multiple);
+				FDCustomerCreatedList selection = getProductSelection(null,!multiple, false, multiple);
 				checkResult.setSelection(selection);
-				checkResult
-						.setResponseType(ItemSelectionCheckResult.COPY_SELECTION);
+				checkResult.setResponseType(ItemSelectionCheckResult.COPY_SELECTION);
 				checkResult.setListName(listName);
 				checkResult.setErrors(result.getErrors());
 				checkResult.setWarnings(result.getWarnings());
@@ -601,16 +534,14 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 			} else if ("changeOrderLine".equalsIgnoreCase(action)) {
 				affectedLines = changeOrderLine() ? 1 : 0;
 			} else if ("updateQuantities".equalsIgnoreCase(action)) {
-				// suppressSuspendPendingOvarlay = true;
+				//suppressSuspendPendingOvarlay = true;
 				affectedLines = updateQuantities() ? 1 : 0;
 				evaluateCoupons = true;
-				if (!inCallCenter && successPage != null
-						&& successPage.indexOf("checkout/step") > -1)
+				if (!inCallCenter && successPage != null && successPage.indexOf("checkout/step") > -1)
 					try {
 						LOGGER.debug("  about to call calidate Order min");
 						cart.refreshAll(true);
-						UserValidationUtil
-								.validateCartNotEmpty(request, result);
+						UserValidationUtil.validateCartNotEmpty(request, result);
 					} catch (FDResourceException ex) {
 						throw new JspException(ex);
 					} catch (FDException e) {
@@ -631,43 +562,34 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 				if ("true".equals(request.getParameter("makegood"))) {
 					this.getFormData(request, result);
 					for (int i = 0; i < orderLineId.length; i++) {
-						if (orderLineId[i] == null
-								|| "".equals(orderLineId[i].trim())) {
+						if (orderLineId[i] == null || "".equals(orderLineId[i].trim())) {
 							result.addError(new ActionError(
-									"system",
-									"Order line ID from original order is missing, please go back clean all items in cart and select items from original order again."));
+								"system",
+								"Order line ID from original order is missing, please go back clean all items in cart and select items from original order again."));
 						}
 					}
 					for (int i = 0; i < orderLineReason.length; i++) {
-						if (orderLineReason[i] == null
-								|| "".equals(orderLineReason[i].trim())) {
-							result.addError(new ActionError("system",
-									"Make good reason is missing"));
+						if (orderLineReason[i] == null || "".equals(orderLineReason[i].trim())) {
+							result.addError(new ActionError("system", "Make good reason is missing"));
 						}
 					}
 
 					try {
 						buildComplaint(result, complaintModel);
 					} catch (FDResourceException ex) {
-						LOGGER.warn(
-								"FDResourceException while building ErpComplaintModel",
-								ex);
+						LOGGER.warn("FDResourceException while building ErpComplaintModel", ex);
 						throw new JspException(ex.getMessage());
 					}
-					session.setAttribute(SessionName.MAKEGOOD_COMPLAINT,
-							complaintModel);
-					session.setAttribute("makeGoodOrder",
-							request.getParameter("makeGoodOrder"));
-					session.setAttribute("referencedOrder",
-							request.getParameter("referencedOrder"));
+					session.setAttribute(SessionName.MAKEGOOD_COMPLAINT, complaintModel);
+					session.setAttribute("makeGoodOrder", request.getParameter("makeGoodOrder"));
+					session.setAttribute("referencedOrder", request.getParameter("referencedOrder"));
 				}
 			} else {
 				// unrecognized action, it's probably not for this tag then
 				// return EVAL_BODY_BUFFERED;
 				LOGGER.warn("Unrecognized action:" + action);
 			}
-		} else if ((request.getParameter("remove") != null)
-				&& "GET".equalsIgnoreCase(request.getMethod())) {
+		} else if ((request.getParameter("remove") != null) && "GET".equalsIgnoreCase(request.getMethod())) {
 			if (request.getParameter("cartLine") == null) {
 				// no specific orderline -> remove all
 				affectedLines = this.removeAllCartLines();
@@ -675,35 +597,32 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 				// remove single line
 				affectedLines = removeOrderLine() ? 1 : 0;
 			}
-
+			
 			if (result.isSuccess() && successPage == null) {
-				HttpServletResponse response = (HttpServletResponse) pageContext
-						.getResponse();
-
+				HttpServletResponse response = (HttpServletResponse)pageContext.getResponse();
+				
 				/*
-				 * Construct the success page's URL, removing the delete
-				 * action's query strings, and redirect to that URL.
+				 * Construct the success page's URL, removing the delete action's query strings,
+				 * and redirect to that URL.
 				 */
-				String requestParams = RequestUtil.getFilteredQueryString(
-						request, new String[] { "remove", "cartLine" });
+				String requestParams = RequestUtil.getFilteredQueryString(request, new String[] {"remove", "cartLine"});
 				String succPage = request.getRequestURI();
-				if (requestParams != null && requestParams.trim().length() > 0) {
+				if ( requestParams != null && requestParams.trim().length() > 0 ) {
 					succPage += "?" + requestParams;
 				}
-
+				
 				try {
 					response.sendRedirect(response.encodeRedirectURL(succPage));
 				} catch (IOException e) {
 					return SKIP_BODY;
 				}
 			}
-
-		} else if ((request.getParameter("removeRecipe") != null)
-				&& "GET".equalsIgnoreCase(request.getMethod())) {
+		
+		} else if ((request.getParameter("removeRecipe") != null) && "GET".equalsIgnoreCase(request.getMethod())) {
 			affectedLines = this.removeRecipe();
 		}
-
-		if (pending) {
+		
+		if(pending){
 			try {
 				cart.refreshAll(true);
 			} catch (FDException e) {
@@ -713,38 +632,32 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 		} else {
 			// Handle delivery pass (if any) in the cart.
 			cart.handleDeliveryPass();
-
+	
 			if (user.getSelectedServiceType() == EnumServiceType.HOME) {
 				/*
-				 * If home address perform delivery pass status check on the
-				 * user object. Otherwise delivery pass doesn't apply.
+				 * If home address perform delivery pass status check on the user
+				 * object. Otherwise delivery pass doesn't apply.
 				 */
 				try {
 					user.performDlvPassStatusCheck();
 				} catch (FDResourceException ex) {
-					LOGGER.warn(
-							"FDResourceException during user.performDlvPassStatusCheck()",
-							ex);
+					LOGGER.warn("FDResourceException during user.performDlvPassStatusCheck()",ex);
 					throw new JspException(ex);
 				}
 			} else {
 				// If corporate or pickup do not apply the pass.
 				// If corporate or pickup do not apply the pass.
-				if (cart.isDlvPassApplied()) { // This if condition was added
-												// for
+				if (cart.isDlvPassApplied()) { // This if condition was added for
 					// Bug fix MNT-12
 					// If corporate or pickup do not apply the pass.
 					cart.setDlvPassApplied(false);
-					cart.setChargeWaived(EnumChargeType.DELIVERY, false,
-							DlvPassConstants.PROMO_CODE);
+					cart.setChargeWaived(EnumChargeType.DELIVERY, false, DlvPassConstants.PROMO_CODE);
 				}
 			}
-
+	
 			if (affectedLines > 0) {
-				// once we change the cart in a normal flow we no longer pop up
-				// the overlay
-				if (!user.isSupendShowPendingOrderOverlay()
-						&& !suppressSuspendPendingOvarlay)
+				// once we change the cart in a normal flow we no longer pop up the overlay
+				if (!user.isSupendShowPendingOrderOverlay() && !suppressSuspendPendingOvarlay)
 					user.setShowPendingOrderOverlay(false);
 
 				try {
@@ -753,24 +666,23 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 					LOGGER.warn("Error refreshing cart", e);
 					throw new JspException(e.getMessage());
 				}
-				// This method retains all product keys that are in the cart in
-				// the
+				// This method retains all product keys that are in the cart in the
 				// dcpd promo product info.
-				user.getDCPDPromoProductCache().retainAll(
-						cart.getProductKeysForLineItems());
-
+				user.getDCPDPromoProductCache().retainAll(cart.getProductKeysForLineItems());
+	
 				user.updateUserState();
-
+	
 				cart.sortOrderLines();
-			}
-
-			if (affectedLines > 0 || evaluateCoupons) {
+			}			
+		
+			if(affectedLines > 0 || evaluateCoupons){			
 				FDCustomerCouponUtil.evaluateCartAndCoupons(session);
 			}
-
+	
 			// Check for expired or cancelled passes if already used.
 			checkForExpOrCanPasses(user);
-
+	
+			
 			//
 			// sort and save the cart in session
 			// if anything in the cart was changed
@@ -783,28 +695,23 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 				session.setAttribute(USER, user);
 				session.setAttribute("SkusAdded", frmSkuIds);
 			}
-
+	
 			//
 			// redirect to success page if an action was successfully performed
 			// and a success page was defined
 			//
-			if ("POST".equalsIgnoreCase(request.getMethod())
-					&& (action != null) && (successPage != null)
-					&& result.isSuccess()) {
-				String redir = (affectedLines > 1 && this.multiSuccessPage != null) ? this.multiSuccessPage
-						: successPage;
-				HttpServletResponse response = (HttpServletResponse) pageContext
-						.getResponse();
+			if ("POST".equalsIgnoreCase(request.getMethod()) && (action != null) && (successPage != null) && result.isSuccess()) {
+				String redir = (affectedLines > 1 && this.multiSuccessPage != null) ? this.multiSuccessPage : successPage;
+				HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 				try {
 					response.sendRedirect(response.encodeRedirectURL(redir));
 					return SKIP_BODY;
 				} catch (IOException ioe) {
 					// if there was a problem redirecting, well.. fuck it.. :)
-					throw new JspException("Error redirecting "
-							+ ioe.getMessage());
+					throw new JspException("Error redirecting " + ioe.getMessage());
 				}
 			}
-
+	
 			if (this.cleanupCart) {
 				try {
 					this.doCartCleanup();
@@ -815,21 +722,18 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 				// !!! refactor to doEndTag
 				this.finishCartCleanup();
 			}
-			pageContext.setAttribute("cartCleanupRemovedSomeStuff",
-					Boolean.valueOf(!(this.removeIds == null || this.removeIds
-							.size() == 0)));
+			pageContext.setAttribute("cartCleanupRemovedSomeStuff", Boolean.valueOf(!(this.removeIds == null || this.removeIds.size() == 0)));
 		}
 		//
 		// place the cart as a scripting variable in the page
 		//
 		pageContext.setAttribute(id, cart);
 		pageContext.setAttribute(resultName, result);
-
-		// Evaluate Coupons.
-		// if(null!=request.getAttribute(SessionName.PARAM_EVALUATE_COUPONS) &&
-		// true==(Boolean)request.getAttribute(SessionName.PARAM_EVALUATE_COUPONS)){
-		if (user.isCouponEvaluationRequired()) {
-			FDCustomerCouponUtil.evaluateCartAndCoupons(session, filterCoupons);
+		
+		//Evaluate Coupons.
+//		if(null!=request.getAttribute(SessionName.PARAM_EVALUATE_COUPONS) && true==(Boolean)request.getAttribute(SessionName.PARAM_EVALUATE_COUPONS)){
+		if(user.isCouponEvaluationRequired()){
+			FDCustomerCouponUtil.evaluateCartAndCoupons(session,filterCoupons);
 		}
 
 		return EVAL_BODY_BUFFERED;
@@ -840,12 +744,13 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 		popAction(pageContext);
 		return super.doEndTag();
 	}
-
+	
 	private void checkForExpOrCanPasses(FDSessionUser user) {
 		/*
 		 * if(user.getDlvPassInfo() != null &&
 		 * user.getDlvPassInfo().isUnlimited() && user.isDlvPassExpired() &&
 		 * user.getShoppingCart().isDlvPassAlreadyApplied()){
+		 * 
 		 */// -Commented DP1.1
 		/*
 		 * This Condition happens only for unlimited pass. Let say user places
@@ -857,8 +762,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 		/*
 		 * StringBuffer buffer = new
 		 * StringBuffer(SystemMessageList.MSG_1_UNLIMITED_PASS_EXPIRED);
-		 * buffer.append
-		 * (CCFormatter.defaultFormatDate(user.getDlvPassInfo().getExpDate()));
+		 * buffer.append(CCFormatter.defaultFormatDate(user.getDlvPassInfo().getExpDate()));
 		 * buffer.append(SystemMessageList.MSG_2_UNLIMITED_PASS_EXPIRED);
 		 * result.addWarning(new ActionWarning("pass_expired",
 		 * buffer.toString())); }
@@ -874,10 +778,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 			 * order. Since the applied pass got already cancelled, we remove
 			 * the pass applied to the order afer notifying the user.
 			 */
-			StringBuffer buffer = new StringBuffer(
-					SystemMessageList.MSG_UNLIMITED_PASS_CANCELLED);
-			result.addWarning(new ActionWarning("pass_cancelled", buffer
-					.toString()));
+			StringBuffer buffer = new StringBuffer(SystemMessageList.MSG_UNLIMITED_PASS_CANCELLED);
+			result.addWarning(new ActionWarning("pass_cancelled", buffer.toString()));
 		}
 	}
 
@@ -895,8 +797,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 
 			boolean isAvail = false;
 			try {
-				FDProductInfo pi = FDCachedFactory.getProductInfo(cartLine
-						.getSkuCode());
+				FDProductInfo pi = FDCachedFactory.getProductInfo(cartLine.getSkuCode());
 				isAvail = pi.isAvailable();
 			} catch (FDSkuNotFoundException ex) {
 				// isAvail is false, that's fine
@@ -928,20 +829,15 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 	 * @return items selected
 	 * @throws JspException
 	 */
-	protected FDCustomerCreatedList getProductSelection(String suffix,
-			boolean strict, boolean useProductMinimum, boolean skipZeros)
-			throws JspException {
+	protected FDCustomerCreatedList getProductSelection(String suffix, boolean strict, boolean useProductMinimum, boolean skipZeros) throws JspException {
 		FDCustomerCreatedList selection = new FDCustomerCreatedList();
 
 		// known suffix
 		if (suffix != null) {
-			FDCartLineI cartI = this.processCartLine(suffix, null, strict,
-					useProductMinimum);
+			FDCartLineI cartI = this.processCartLine(suffix, null, strict, useProductMinimum);
 			if (cartI != null) {
 				FDCustomerProductListLineItem lineItem = new FDCustomerProductListLineItem(
-						cartI.getSkuCode(), new FDConfiguration(
-								cartI.getConfiguration()),
-						cartI.getRecipeSourceId());
+						cartI.getSkuCode(), new FDConfiguration(cartI.getConfiguration()), cartI.getRecipeSourceId());
 				selection.addLineItem(lineItem);
 			}
 			return selection;
@@ -949,8 +845,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 
 		// find selected suffices
 		String prefix = "skuCode";
-		for (Enumeration<String> e = request.getParameterNames(); e
-				.hasMoreElements();) {
+		for (Enumeration<String> e = request.getParameterNames(); e.hasMoreElements();) {
 			String paramName = e.nextElement();
 			if (paramName.startsWith(prefix)) {
 				suffix = paramName.substring(prefix.length());
@@ -959,22 +854,17 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 					String quant = request.getParameter("quantity" + suffix);
 					if (quant == null || "".equals(quant) || "0".equals(quant))
 						continue;
-					String salesUnit = request.getParameter("salesUnit"
-							+ suffix);
+					String salesUnit = request.getParameter("salesUnit" + suffix);
 					if (salesUnit == null || "".equals(salesUnit))
 						continue;
 				}
 
-				if ("ccl_actual_selection".equals(request
-						.getParameter("source")) && "_big".equals(suffix))
+				if ("ccl_actual_selection".equals(request.getParameter("source")) && "_big".equals(suffix))
 					continue;
-				FDCartLineI cartI = this.processCartLine(suffix, null, strict,
-						useProductMinimum);
+				FDCartLineI cartI = this.processCartLine(suffix, null, strict, useProductMinimum);
 				if (cartI != null) {
 					FDCustomerProductListLineItem lineItem = new FDCustomerProductListLineItem(
-							cartI.getSkuCode(), new FDConfiguration(
-									cartI.getConfiguration()),
-							cartI.getRecipeSourceId());
+							cartI.getSkuCode(), new FDConfiguration(cartI.getConfiguration()), cartI.getRecipeSourceId());
 					selection.addLineItem(lineItem);
 				}
 			}
@@ -985,7 +875,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 				String errorMsg = "ccl_actual_selection"
 						.equalsIgnoreCase(request.getParameter("source")) ? SystemMessageList.MSG_CCL_QUANTITY_REQUIRED
 						: SystemMessageList.MSG_QUANTITY_REQUIRED;
-				result.addError(new ActionError("quantity", errorMsg));
+				result.addError(new ActionError("quantity", errorMsg));				
 			}
 		}
 
@@ -1023,21 +913,18 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 		// first figure out which cartLine we're talking about
 		//
 		if (cartLine == null) {
-			result.addError(new ActionError("system",
-					SystemMessageList.MSG_IDENTIFY_CARTLINE));
+			result.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_CARTLINE));
 			return false;
 		}
 		int cartIndex = -1;
 		try {
 			cartIndex = cart.getOrderLineIndex(Integer.parseInt(cartLine));
 		} catch (NumberFormatException nfe) {
-			result.addError(new ActionError("system",
-					SystemMessageList.MSG_IDENTIFY_CARTLINE));
+			result.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_CARTLINE));
 			return false;
 		}
 		if (cartIndex == -1) {
-			result.addError(new ActionError("system",
-					SystemMessageList.MSG_IDENTIFY_CARTLINE));
+			result.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_CARTLINE));
 			return false;
 		}
 		//
@@ -1052,16 +939,13 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 			if (newCartLine != null) {
 				if (originalLine.getClientCodes().size() > 0) {
 					newCartLine.getClientCodes().clear();
-					newCartLine.getClientCodes().addAll(
-							originalLine.getClientCodes());
+					newCartLine.getClientCodes().addAll(originalLine.getClientCodes());
 					int quantity = (int) newCartLine.getQuantity();
 					int sum = 0;
 					for (ErpClientCode item : newCartLine.getClientCodes())
 						sum += item.getQuantity();
 					if (sum > quantity) {
-						ListIterator<ErpClientCode> it = newCartLine
-								.getClientCodes().listIterator(
-										newCartLine.getClientCodes().size());
+						ListIterator<ErpClientCode> it = newCartLine.getClientCodes().listIterator(newCartLine.getClientCodes().size());
 						while (it.hasPrevious()) {
 							ErpClientCode item = it.previous();
 							if (item.getQuantity() < sum - quantity) {
@@ -1070,9 +954,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 							} else if (item.getQuantity() == sum - quantity) {
 								it.remove();
 								break;
-							} else /* larger quantity */{
-								item.setQuantity(item.getQuantity()
-										- (sum - quantity));
+							} else /* larger quantity */ {
+								item.setQuantity(item.getQuantity() - (sum - quantity));
 								break;
 							}
 						}
@@ -1105,8 +988,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 
 	protected int removeRecipe() {
 		String recipeId = request.getParameter("removeRecipe");
-		List<FDCartLineI> cartLinesRemoved = cart
-				.removeOrderLinesByRecipe(recipeId);
+		List<FDCartLineI> cartLinesRemoved = cart.removeOrderLinesByRecipe(recipeId);
 		for (FDCartLineI removedLine : cartLinesRemoved) {
 			removedLine.setSource(getEventSource());
 			FDEventUtil.logRemoveCartEvent(removedLine, request);
@@ -1118,8 +1000,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 		String cartLine = request.getParameter("cartLine");
 
 		if (cartLine == null) {
-			result.addError(new ActionError("system",
-					SystemMessageList.MSG_IDENTIFY_CARTLINE));
+			result.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_CARTLINE));
 			return false;
 		}
 
@@ -1127,13 +1008,11 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 		try {
 			cartIndex = cart.getOrderLineIndex(Integer.parseInt(cartLine));
 		} catch (NumberFormatException nfe) {
-			result.addError(new ActionError("system",
-					SystemMessageList.MSG_IDENTIFY_CARTLINE));
+			result.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_CARTLINE));
 			return false;
 		}
 		if (cartIndex == -1) {
-			result.addError(new ActionError("system",
-					SystemMessageList.MSG_IDENTIFY_CARTLINE));
+			result.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_CARTLINE));
 			return false;
 		}
 		FDCartLineI originalLine = cart.getOrderLine(cartIndex);
@@ -1159,33 +1038,28 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 		}
 		return false;
 	}
-
+	
 	/**
 	 * Deduce a suffix pattern for multiple add to carts.
 	 * 
-	 * This method recognizes a pattern <tt>productId</tt>&lt;SUFFIX&gt;
-	 * <tt>_</tt>&lt;NUMBER&gt;</tt> and assumes that &lt;SUFFIX&gt; will be
-	 * used consistently for related parameters, such as <tt>quantity</tt>,
-	 * <tt>catId</tt>, etc.
+	 * This method recognizes a pattern <tt>productId</tt>&lt;SUFFIX&gt;<tt>_</tt>&lt;NUMBER&gt;</tt>
+	 * and assumes that &lt;SUFFIX&gt; will be used consistently for related parameters, such
+	 * as <tt>quantity</tt>, <tt>catId</tt>, etc.
 	 * 
-	 * There is already a (hard-coded) pattern of <tt>productId</tt><i>_big</i>,
-	 * which will not match this (since big is not a number). &lt;SUFFIX&gt;
-	 * being the empty string is OK.
+	 * There is already a (hard-coded) pattern of <tt>productId</tt><i>_big</i>, which will not
+	 * match this (since big is not a number). &lt;SUFFIX&gt; being the empty string is OK.
 	 * 
-	 * @return "&lt;SUFFIX&gt;_" (the underscore is part of the return) for
-	 *         matches, "_" otherwise
+	 * @return "&lt;SUFFIX&gt;_" (the underscore is part of the return) for matches, "_" otherwise
 	 */
 	private String deduceMultipleSuffix() {
-		for (Enumeration<String> e = request.getParameterNames(); e
-				.hasMoreElements();) {
+		for(Enumeration<String> e = request.getParameterNames(); e.hasMoreElements();) {
 			String name = e.nextElement().toString();
 			if (name.startsWith("productId")) {
 				int end = name.lastIndexOf('_');
-				if (end == -1)
-					continue;
+				if (end == -1) continue;
 				try {
-					Integer.parseInt(name.substring(end + 1));
-					return name.substring("productId".length(), end + 1);
+					Integer.parseInt(name.substring(end+1));
+					return name.substring("productId".length(), end+1);
 				} catch (NumberFormatException ex) {
 					continue;
 				}
@@ -1201,27 +1075,24 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 
 		int l = "addSingleToCart_".length();
 		String suffix = null;
-		for (Enumeration<String> e = request.getParameterNames(); e
-				.hasMoreElements();) {
+		for (Enumeration<String> e = request.getParameterNames(); e.hasMoreElements();) {
 			String n = e.nextElement();
 			if (n.startsWith("addSingleToCart_")) {
 				suffix = n.substring(l, n.indexOf('.'));
 				break;
 			}
 		}
-
+		
 		if (suffix != null) {
 			// add single item from multiple to cart
 			LOGGER.debug("addSingleToCart " + suffix);
 
-			FDCartLineI cartLine = this.processCartLine("_" + suffix, null,
-					false, true);
+			FDCartLineI cartLine = this.processCartLine("_" + suffix, null, false, true);
 			if (cartLine != null) {
 				cart.addOrderLine(cartLine);
 				cartLine.setSource(getEventSource());
-				// cartLine.setAddedFromSearch(Boolean.parseBoolean(request.getParameter(PARAM_ADDED_FROM_SEARCH)));
-				cartLine.setAddedFrom(EnumATCContext.getEnum(request
-						.getParameter(PARAM_ADDED_FROM)));
+//				cartLine.setAddedFromSearch(Boolean.parseBoolean(request.getParameter(PARAM_ADDED_FROM_SEARCH)));
+				cartLine.setAddedFrom(EnumATCContext.getEnum(request.getParameter(PARAM_ADDED_FROM)));
 				/*
 				 * Logs a AddToCartEvent whenever the user adds a single item
 				 * from Product detail page.
@@ -1246,10 +1117,10 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 			//
 			// allow adding qty 0 if add multiple
 			boolean strict = false;
+			
 
 			for (int i = 0; i < itemCount; i++) {
-				FDCartLineI cartLine = this.processCartLine(
-						deduceMultipleSuffix() + i, null, strict, false);
+				FDCartLineI cartLine = this.processCartLine(deduceMultipleSuffix() + i, null, strict, false);
 				if (cartLine == null) {
 					// skip
 					continue;
@@ -1263,9 +1134,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 					// don't care
 				}
 				cartLine.setSource(getEventSource());
-				// cartLine.setAddedFromSearch(Boolean.parseBoolean(request.getParameter(PARAM_ADDED_FROM_SEARCH)));
-				cartLine.setAddedFrom(EnumATCContext.getEnum(request
-						.getParameter(PARAM_ADDED_FROM)));
+//				cartLine.setAddedFromSearch(Boolean.parseBoolean(request.getParameter(PARAM_ADDED_FROM_SEARCH)));
+				cartLine.setAddedFrom(EnumATCContext.getEnum(request.getParameter(PARAM_ADDED_FROM)));
 				if (!pending)
 					FDEventUtil.logAddToCartEvent(cartLine, request);
 				addedLines++;
@@ -1278,17 +1148,16 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 					cart.addOrderLines(cartLinesToAdd);
 					cartLinesToAdd.clear();
 				} else {
-					String errorMsg = "ccl_actual_selection"
-							.equalsIgnoreCase(request.getParameter("source")) ? SystemMessageList.MSG_CCL_QUANTITY_REQUIRED
-							: SystemMessageList.MSG_QUANTITY_REQUIRED;
+					String errorMsg = "ccl_actual_selection" .equalsIgnoreCase(request.getParameter("source")) 
+						? SystemMessageList.MSG_CCL_QUANTITY_REQUIRED
+						: SystemMessageList.MSG_QUANTITY_REQUIRED;
 					result.addError(new ActionError("quantity", errorMsg));
 				}
 			}
 			return addedLines;
 
 		} catch (NumberFormatException ex) {
-			throw new JspException("Invalid itemCount supplied "
-					+ ex.getMessage());
+			throw new JspException("Invalid itemCount supplied " + ex.getMessage());
 		}
 
 	}
@@ -1297,8 +1166,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 	 * @return the FDCartLine built from the request, or null if there were any
 	 *         problems
 	 */
-	private FDCartLineI processCartLine(FDCartLineI originalLine)
-			throws JspException {
+	private FDCartLineI processCartLine(FDCartLineI originalLine) throws JspException {		
 		return this.processCartLine("", originalLine, true, false);
 	}
 
@@ -1314,9 +1182,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 	 * @return the FDCartLine built from the request, or null if there were any
 	 *         problems
 	 */
-	private FDCartLineI processCartLine(String suffix,
-			FDCartLineI originalLine, boolean strictCheck,
-			boolean useProductMinimum) throws JspException {
+	private FDCartLineI processCartLine(String suffix, FDCartLineI originalLine, boolean strictCheck, boolean useProductMinimum) throws JspException {
 
 		final String paramSkuCode = "skuCode" + suffix;
 		final String paramCatId = "catId" + suffix;
@@ -1338,39 +1204,32 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 
 		String prodName = request.getParameter(paramProductId);
 		// variant tracking
-		String variantId = request.getParameter(suffix != null ? "variant"
-				+ suffix : "variant"); // SmartStore
-
+		String variantId = request.getParameter(suffix != null ? "variant"+suffix : "variant"); // SmartStore
+		
 		boolean contentSpecified = !(prodName == null || prodName.length() == 0);
 
 		if (strictCheck && !contentSpecified) {
-			result.addError(new ActionError(paramProductId,
-					"Please select a product."));
+			result.addError(new ActionError(paramProductId, "Please select a product."));
 			return null;
 		}
 
 		ProductModel prodNode = null;
 		try {
 			if (contentSpecified) {
-				prodNode = ContentFactory.getInstance().getProductByName(
-						catName, prodName);
-				if (prodNode == null && skuCode != null
-						&& !"".equalsIgnoreCase(skuCode)) {
+				prodNode = ContentFactory.getInstance().getProductByName( catName, prodName);
+				if (prodNode == null && skuCode!=null && !"".equalsIgnoreCase(skuCode)) {
 					prodNode = ContentFactory.getInstance().getProduct(skuCode);
 				}
 				if (prodNode == null) {
-					throw new JspException(
-							"Selected product not found in specified category: category: "
-									+ catName + " Product: " + prodName);
+					throw new JspException( "Selected product not found in specified category: category: " + catName + " Product: " + prodName);
 				}
 			} else {
-				if (skuCode != null && !"".equalsIgnoreCase(skuCode)) {
+				if (skuCode!=null && !"".equalsIgnoreCase(skuCode)) {
 					prodNode = ContentFactory.getInstance().getProduct(skuCode);
 				}
 			}
 		} catch (FDSkuNotFoundException ex) {
-			throw new JspException("Error accessing resources: "
-					+ ex.getMessage());
+			throw new JspException("Error accessing resources: " + ex.getMessage());
 		}
 
 		if ("".equals(skuCode)) {
@@ -1387,8 +1246,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 
 			String quan = request.getParameter(paramQuantity);
 			if (quan == null) {
-				result.addError(new ActionError(paramQuantity,
-						MESSAGE_INVALID_QUANTITY));
+				result.addError(new ActionError(paramQuantity, MESSAGE_INVALID_QUANTITY));
 			} else if ("".equals(quan) && useProductMinimum) {
 				quan = prodNode.getQuantityMinimum() + "";
 			}
@@ -1399,28 +1257,23 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 			}
 			quantity = new Double(quan).doubleValue();
 		} catch (NumberFormatException nfe) {
-			result.addError(new ActionError(paramQuantity,
-					MESSAGE_INVALID_QUANTITY));
+			result.addError(new ActionError(paramQuantity, MESSAGE_INVALID_QUANTITY));
 		}
 
-		double origQuantity = originalLine == null ? 0 : originalLine
-				.getQuantity();
+		double origQuantity = originalLine == null ? 0 : originalLine.getQuantity();
 
 		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(USER);
-		String errorMessage = this.validateQuantity(user, prodNode, quantity,
-				origQuantity);
+		String errorMessage = this.validateQuantity(user, prodNode, quantity, origQuantity);
 		if (errorMessage != null) {
 			result.addError(new ActionError(paramQuantity, errorMessage));
 		}
 
 		FDProduct product;
 		try {
-			product = FDCachedFactory.getProduct(FDCachedFactory
-					.getProductInfo(skuCode));
+			product = FDCachedFactory.getProduct(FDCachedFactory .getProductInfo(skuCode));
 		} catch (FDResourceException fdre) {
 			LOGGER.warn("Error accessing resource", fdre);
-			throw new JspException("Error accessing resource "
-					+ fdre.getMessage());
+			throw new JspException("Error accessing resource " + fdre.getMessage());
 		} catch (FDSkuNotFoundException fdsnfe) {
 			LOGGER.warn("SKU not found", fdsnfe);
 			throw new JspException("SKU not found", fdsnfe);
@@ -1434,8 +1287,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 		FDSalesUnit salesUnit = null;
 
 		String requestedUnit = request.getParameter(paramSalesUnit);
-		if ((("".equals(requestedUnit) || requestedUnit == null) && useProductMinimum)
-				|| product.getSalesUnits().length == 1) {
+		if ((("".equals(requestedUnit) || requestedUnit == null) && useProductMinimum) || product.getSalesUnits().length == 1) {
 			// get the default sales unit
 			salesUnit = product.getSalesUnits()[0];
 		} else {
@@ -1450,62 +1302,51 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 		//
 		// no sales unit, alert user
 		//
-		result.addError(
-				salesUnit == null,
-				paramSalesUnit,
-				"Please select "
-						+ ContentNodeModelUtil.nullValue(
-								prodNode.getSalesUnitLabel(), "Sales Unit"));
+		result.addError(salesUnit == null, paramSalesUnit, "Please select "
+		                + ContentNodeModelUtil.nullValue(prodNode.getSalesUnitLabel(), "Sales Unit")); 
 
 		LOGGER.debug("Consented " + request.getParameter("consented" + suffix));
-		if (prodNode.hasTerms()
-				&& !"true".equals(request.getParameter("consented" + suffix))) {
-			LOGGER.debug("ADDING ERROR, since consented" + suffix + "="
-					+ request.getParameter("consented" + suffix));
+		if (prodNode.hasTerms() && !"true".equals(request.getParameter("consented" + suffix))) {
+			LOGGER.debug("ADDING ERROR, since consented" + suffix + "=" + request.getParameter("consented" + suffix));
 			if (!"yes".equalsIgnoreCase(request.getParameter("agreeToTerms"))) {
-				result.addError(new ActionError("agreeToTerms", "Product terms"));
+				result .addError(new ActionError("agreeToTerms", "Product terms"));
 			}
 		}
 		/*
 		 * Get the original cartlineId if one is present else set it blank.
 		 */
-		String origCartLineId = originalLine == null ? "" : originalLine
-				.getCartlineId();
+		String origCartLineId = originalLine == null ? "" : originalLine.getCartlineId();
 		/*
 		 * The following fix is for a zone pricing bug seems to be there for a
 		 * while now which was identified when fixing IPHONE-57 bug.
 		 */
-		PricingContext origPricingCtx = null;
+		PricingContext origPricingCtx = null; 
 		if (originalLine != null)
 			origPricingCtx = originalLine.getPricingContext();
 		String pricingZoneId;
-		if (origPricingCtx != null) {
+		if(origPricingCtx != null) {
 			pricingZoneId = origPricingCtx.getZoneId();
 		} else {
 			pricingZoneId = user.getPricingZoneId();
 		}
-
+		
 		FDGroup originalGrp = null;
 		if (originalLine != null) {
 			originalGrp = originalLine.getOriginalGroup();
-			// reset skipProductPriceValidation.
-			// This is temporary fix for Appbug-130 until we fix the behaviour
-			// of Modify Product Page.
-			if (originalGrp != null)
+			//reset skipProductPriceValidation.
+			//This is temporary fix for Appbug-130 until we fix the behaviour of Modify Product Page.
+			if(originalGrp != null)
 				originalGrp.setSkipProductPriceValidation(false);
 		}
-
-		FDCartLineI theCartLine = processSimple(suffix, prodNode, product,
-				quantity, salesUnit, origCartLineId, variantId, pricingZoneId,
-				originalGrp);
+				
+		FDCartLineI theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, pricingZoneId ,originalGrp);
 
 		if (theCartLine != null) {
-			theCartLine.setCoremetricsPageId(request
-					.getParameter("coremetricsPageId"));
-			theCartLine.setCoremetricsPageContentHierarchy(request
-					.getParameter("coremetricsPageContentHierarchy"));
+			theCartLine.setCoremetricsPageId(request.getParameter("coremetricsPageId"));
+			theCartLine.setCoremetricsPageContentHierarchy(request.getParameter("coremetricsPageContentHierarchy"));
 		}
-
+		
+		
 		// recipe source tracking
 		String recipeId;
 		if (originalLine != null) {
@@ -1515,57 +1356,50 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 			recipeId = request.getParameter(paramRecipeId);
 		}
 		if (recipeId != null) {
-			Recipe recipe = (Recipe) ContentFactory.getInstance()
-					.getContentNode(recipeId);
+			Recipe recipe = (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
 			if (recipe != null && theCartLine != null) {
 				theCartLine.setRecipeSourceId(recipeId);
-				boolean requestNotification = request
-						.getParameter("requestNotification") != null;
+				boolean requestNotification = request .getParameter("requestNotification") != null;
 				theCartLine.setRequestNotification(requestNotification);
 			}
 		}
-		// Get the original discount applied flag if available
+		//Get the original discount applied flag if available
 		boolean discountApplied = false;
 		if (originalLine != null) {
 			discountApplied = originalLine.isDiscountFlag();
 		}
-
+		
 		if (theCartLine != null) {
 			String catId = request.getParameter("catId");
-			String sfx = request.getParameter("ymal_box") != null ? ""
-					: suffix != null ? suffix : "";
-			String ymalSetId = request.getParameter("ymalSetId" + sfx);
-			String originatingProductId = request
-					.getParameter("originatingProductId" + sfx);
-			String originalOrderLineId = request
-					.getParameter("originalOrderLineId" + suffix);
+			String sfx = request.getParameter("ymal_box") != null ? "" : suffix != null ? suffix : ""; 
+			String ymalSetId = request.getParameter("ymalSetId"+sfx);
+			String originatingProductId = request.getParameter("originatingProductId"+sfx);
+			String originalOrderLineId = request.getParameter("originalOrderLineId" + suffix);
 
 			theCartLine.setYmalCategoryId(catId);
 			theCartLine.setYmalSetId(ymalSetId);
 			theCartLine.setOriginatingProductId(originatingProductId);
 			theCartLine.setOrderLineId(originalOrderLineId);
-
+			
 			// record 'deals' status
 			if (suffix != null) {
 				request.setAttribute("atc_suffix", suffix);
 			}
-
+			
 			if (originalLine != null) {
-				// First get the savingsId(already determined for promotion
-				// eligibility) if available else get variant id.
+				//First get the savingsId(already determined for promotion eligibility) if available else get variant id.
 				String savingsId = originalLine.getSavingsId();
-				if (savingsId == null)
-					savingsId = originalLine.getVariantId();
+				if(savingsId == null) savingsId = originalLine.getVariantId();
 				theCartLine.setSavingsId(savingsId);
 			} else {
-				// for any new recommended line
+				//for any new recommended line
 				theCartLine.setSavingsId(variantId);
 			}
 
 			theCartLine.setDiscountFlag(discountApplied);
-
+			
 			String cartonNumber = request.getParameter("cartonNumber");
-			if (cartonNumber != null) {
+			if(cartonNumber!=null)	{ 
 				theCartLine.setCartonNumber(cartonNumber);
 			}
 		}
@@ -1574,21 +1408,19 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 
 	private FDCartLineI processSimple(String suffix, ProductModel prodNode,
 			FDProduct product, double quantity, FDSalesUnit salesUnit,
-			String origCartLineId, String variantId, String pZoneId,
-			FDGroup group) {
+			String origCartLineId, String variantId, String pZoneId, FDGroup group) {
 
 		//
 		// walk through the variations to see what's been set and try to build a
 		// variation map
 		//
-		HashMap<String, String> varMap = new HashMap<String, String>();
+		HashMap<String,String> varMap = new HashMap<String,String>();
 		FDVariation[] variations = product.getVariations();
 		for (int i = 0; i < variations.length; i++) {
 			FDVariation variation = variations[i];
 			FDVariationOption[] options = variation.getVariationOptions();
 
-			String optionName = request.getParameter(variation.getName()
-					+ suffix);
+			String optionName = request.getParameter(variation.getName() + suffix);
 
 			if (options.length == 1) {
 				//
@@ -1596,8 +1428,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 				//
 				varMap.put(variation.getName(), options[0].getName());
 
-			} else if (((optionName == null) || "".equals(optionName))
-					&& variation.isOptional()) {
+			} else if (((optionName == null) || "".equals(optionName)) && variation.isOptional()) {
 				//
 				// user didn't select anything for an optional variation, pick
 				// the SELECTED option for them
@@ -1649,7 +1480,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 			 * cart.
 			 */
 			cartLine = new FDCartLineModel(new FDSku(product), prodNode,
-					new FDConfiguration(quantity, salesUnit.getName(), varMap),
+					new FDConfiguration(quantity, salesUnit .getName(), varMap), 
 					variantId, pZoneId);
 		} else {
 			/*
@@ -1658,11 +1489,9 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 			 */
 			List<ErpClientCode> clientCodes = Collections.emptyList();
 			cartLine = new FDCartLineModel(new FDSku(product), prodNode,
-					new FDConfiguration(quantity, salesUnit.getName(), varMap),
-					origCartLineId, null, false, variantId, pZoneId,
-					clientCodes);
-			// Any group info from original cartline is moved to new cartline on
-			// modify.
+					new FDConfiguration(quantity, salesUnit .getName(), varMap), 
+					origCartLineId, null, false, variantId, pZoneId, clientCodes);
+			//Any group info from original cartline is moved to new cartline on modify.
 			cartLine.setFDGroup(group);
 		}
 
@@ -1679,8 +1508,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 	private double getCartlinesQuantity(ProductModel product) {
 		String productName = product.getContentName();
 		double sum = 0;
-		for (Iterator<FDCartLineI> i = this.cartLinesToAdd.iterator(); i
-				.hasNext();) {
+		for (Iterator<FDCartLineI> i = this.cartLinesToAdd.iterator(); i.hasNext();) {
 			FDCartLineI line = i.next();
 			if (productName.equals(line.getProductName())) {
 				sum += line.getQuantity();
@@ -1689,20 +1517,17 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 		return sum;
 	}
 
-	private String validateQuantity(FDUserI user, ProductModel prodNode,
-			double quantity, double adjustmentQuantity) {
-
+	private String validateQuantity(FDUserI user, ProductModel prodNode, double quantity, double adjustmentQuantity) {
+		
 		DecimalFormat formatter = new DecimalFormat("0.##");
 		if (quantity < prodNode.getQuantityMinimum()) {
 			return "FreshDirect cannot deliver less than "
-					+ formatter.format(prodNode.getQuantityMinimum()) + " "
+					+ formatter.format( prodNode.getQuantityMinimum() ) + " "
 					+ prodNode.getFullName();
 		}
 
-		if ((quantity - prodNode.getQuantityMinimum())
-				% prodNode.getQuantityIncrement() != 0) {
-			return "Quantity must be an increment of "
-					+ formatter.format(prodNode.getQuantityIncrement());
+		if ((quantity - prodNode.getQuantityMinimum()) % prodNode.getQuantityIncrement() != 0) {
+			return "Quantity must be an increment of " + formatter.format( prodNode.getQuantityIncrement() );
 		}
 
 		// For CCL Requests (other than cart events)
@@ -1711,9 +1536,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 			if (getCartlinesQuantity(prodNode)
 					+ cart.getTotalQuantity(prodNode) + quantity
 					- adjustmentQuantity > user.getQuantityMaximum(prodNode)) {
-				return "Please note: there is a limit of "
-						+ formatter.format(user.getQuantityMaximum(prodNode))
-						+ " per order of " + prodNode.getFullName();
+				return "Please note: there is a limit of " + formatter.format( user.getQuantityMaximum(prodNode) ) + 
+					   " per order of " + prodNode.getFullName();				
 			}
 		}
 
@@ -1729,12 +1553,10 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(USER);
 
 		boolean cartChanged = false;
-		ArrayList<FDCartLineI> orderLines = new ArrayList<FDCartLineI>(
-				cart.getOrderLines());
+		ArrayList<FDCartLineI> orderLines = new ArrayList<FDCartLineI>(cart.getOrderLines());
 		try {
 			int idx = -1;
-			for (ListIterator<FDCartLineI> i = orderLines.listIterator(); i
-					.hasNext();) {
+			for (ListIterator<FDCartLineI> i = orderLines.listIterator(); i.hasNext();) {
 				idx++;
 				FDCartLineI orderLine = i.next();
 
@@ -1747,8 +1569,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 				orderLine.setSource(getEventSource());
 
 				ProductModel prodNode = ContentFactory.getInstance()
-						.getProductByName(orderLine.getCategoryName(),
-								orderLine.getProductName());
+						.getProductByName(orderLine.getCategoryName(), orderLine.getProductName());
 
 				boolean modifyOrderMode = orderLine instanceof FDModifyCartLineI;
 
@@ -1775,24 +1596,18 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 							continue;
 						}
 
-						// make sure prodNode isn't null before checking mins
+						
+						//make sure prodNode isn't null before checking mins
 						if (prodNode != null) {
 							if (quantity < prodNode.getQuantityMinimum()) {
 								quantity = prodNode.getQuantityMinimum();
 							} else {
-								double totalQty = cart
-										.getTotalQuantity(prodNode);
-								if (quantity + totalQty
-										- orderLine.getQuantity() > user
-											.getQuantityMaximum(prodNode)) {
-									quantity = user
-											.getQuantityMaximum(prodNode)
-											- totalQty
-											+ orderLine.getQuantity();
+								double totalQty = cart.getTotalQuantity(prodNode);
+								if (quantity + totalQty - orderLine.getQuantity() > user.getQuantityMaximum(prodNode)) {
+									quantity = user.getQuantityMaximum(prodNode) - totalQty + orderLine.getQuantity();
 								}
 							}
-							quantity = Math.floor((quantity - prodNode
-									.getQuantityMinimum())
+							quantity = Math.floor((quantity - prodNode.getQuantityMinimum())
 									/ prodNode.getQuantityIncrement())
 									* prodNode.getQuantityIncrement()
 									+ prodNode.getQuantityMinimum();
@@ -1811,13 +1626,10 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 						}
 
 						if ("1".equals(request.getParameter("clicode_dirty"))) {
-							List<ErpClientCode> clientCodes = orderLine
-									.getClientCodes();
+							List<ErpClientCode> clientCodes = orderLine.getClientCodes();
 							if (quantity == 1) {
 								// clicode_single
-								String reqCCode = request
-										.getParameter("clicode_clientcode_"
-												+ idx);
+								String reqCCode = request.getParameter("clicode_clientcode_" + idx);
 								if (reqCCode != null)
 									reqCCode = reqCCode.trim();
 								else
@@ -1832,25 +1644,17 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 								} else {
 									if (clientCodes.size() == 0) {
 										// add
-										clientCodes.add(new ErpClientCode(
-												reqCCode, 1));
-										user.getClientCodesHistory().add(
-												new IgnoreCaseString(reqCCode));
+										clientCodes.add(new ErpClientCode(reqCCode, 1));
+										user.getClientCodesHistory().add(new IgnoreCaseString(reqCCode));
 										cartChanged = true;
 									} else {
-										ErpClientCode firstCC = clientCodes
-												.get(0);
-										if (clientCodes.size() != 1
-												|| firstCC.getQuantity() != 1
-												|| !firstCC.getClientCode()
-														.equals(reqCCode)) {
+										ErpClientCode firstCC = clientCodes.get(0);
+										if (clientCodes.size() != 1 || firstCC.getQuantity() != 1
+												|| !firstCC.getClientCode().equals(reqCCode)) {
 											// update
 											clientCodes.clear();
-											clientCodes.add(new ErpClientCode(
-													reqCCode, 1));
-											user.getClientCodesHistory().add(
-													new IgnoreCaseString(
-															reqCCode));
+											clientCodes.add(new ErpClientCode(reqCCode, 1));
+											user.getClientCodesHistory().add(new IgnoreCaseString(reqCCode));
 											cartChanged = true;
 										}
 									}
@@ -1858,17 +1662,14 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 							} else if (quantity > 1) {
 								// clicode_multi
 								try {
-									String multiValString = request
-											.getParameter("clicode_multi_val_"
-													+ idx);
+									String multiValString = request.getParameter("clicode_multi_val_" + idx);
 									if (multiValString == null)
 										multiValString = "";
 									else
 										multiValString = multiValString.trim();
 
 									if (multiValString.length() != 0) {
-										JSONObject multiVal = new JSONObject(
-												multiValString);
+										JSONObject multiVal = new JSONObject(multiValString);
 										@SuppressWarnings("unchecked")
 										Iterator<String> it = multiVal.keys();
 										SortedSet<Integer> keys = new TreeSet<Integer>();
@@ -1877,42 +1678,26 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 
 										List<ErpClientCode> ccs = new ArrayList<ErpClientCode>();
 										for (int key : keys) {
-											JSONObject item = multiVal
-													.getJSONObject(Integer
-															.toString(key));
-											int ccQuantity = item
-													.getInt("quantity");
-											String clientCode = item
-													.getString("clientCode");
-											ccs.add(new ErpClientCode(
-													clientCode, ccQuantity));
-											user.getClientCodesHistory().add(
-													new IgnoreCaseString(
-															clientCode));
+											JSONObject item = multiVal.getJSONObject(Integer.toString(key));
+											int ccQuantity = item.getInt("quantity");
+											String clientCode = item.getString("clientCode");
+											ccs.add(new ErpClientCode(clientCode, ccQuantity));
+											user.getClientCodesHistory().add(new IgnoreCaseString(clientCode));
 										}
 
-										if (!ErpClientCode
-												.equalsList(orderLine
-														.getClientCodes(), ccs)) {
+										if (!ErpClientCode.equalsList(orderLine.getClientCodes(), ccs)) {
 											orderLine.getClientCodes().clear();
-											orderLine.getClientCodes().addAll(
-													ccs);
+											orderLine.getClientCodes().addAll(ccs);
 											cartChanged = true;
 										}
 									}
 								} catch (RuntimeException e) {
-									LOGGER.warn(
-											"error when processing multi-value client codes for cart line #"
-													+ idx, e);
-									LOGGER.warn("client code values for cart line #"
-											+ idx
+									LOGGER.warn("error when processing multi-value client codes for cart line #" + idx, e);
+									LOGGER.warn("client code values for cart line #" + idx
 											+ " are not changed due to previous error");
 								} catch (ParseException e) {
-									LOGGER.warn(
-											"error when parsing multi-value client codes for cart line #"
-													+ idx, e);
-									LOGGER.warn("client code values for cart line #"
-											+ idx
+									LOGGER.warn("error when parsing multi-value client codes for cart line #" + idx, e);
+									LOGGER.warn("client code values for cart line #" + idx
 											+ " are not changed due to previous error");
 								}
 							}
@@ -1925,83 +1710,61 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 								// order mode
 								orderLine.setQuantity(quantity);
 								// Log that the quantity has been updated.
-								FDEventUtil
-										.logEditCartEvent(orderLine, request);
+								FDEventUtil .logEditCartEvent(orderLine, request);
 
 							} else {
 								// modify order mode
 
 								// how much we're adding/removing
-								double deltaQty = quantity
-										- orderLine.getQuantity();
+								double deltaQty = quantity - orderLine.getQuantity();
 
 								if (deltaQty < 0) {
 									// need to remove some, that's easy, i can
 									// do that...
 									orderLine.setQuantity(quantity);
 									// Log that the quantity has been updated.
-									FDEventUtil.logEditCartEvent(orderLine,
-											request);
+									FDEventUtil.logEditCartEvent(orderLine, request);
 
 								} else {
 									// deltaQty>0, see how much can we add to
 									// this orderline
 									double origQuantity = ((FDModifyCartLineI) orderLine)
-											.getOriginalOrderLine()
-											.getQuantity();
-									double origDiff = origQuantity
-											- orderLine.getQuantity();
+											.getOriginalOrderLine().getQuantity();
+									double origDiff = origQuantity - orderLine.getQuantity();
 
 									if (origDiff > 0) {
-										double addToLine = Math.min(origDiff,
-												deltaQty);
-										orderLine.setQuantity(orderLine
-												.getQuantity() + addToLine);
-										// Log that the quantity has been
-										// updated.
-										FDEventUtil.logEditCartEvent(orderLine,
-												request);
+										double addToLine = Math.min(origDiff, deltaQty);
+										orderLine.setQuantity(orderLine .getQuantity() + addToLine);
+										// Log that the quantity has been updated.
+										FDEventUtil.logEditCartEvent(orderLine, request);
 										deltaQty -= addToLine;
 									}
 
-									// add a new orderline for rest of the
-									// difference, if any
+									// add a new orderline for rest of the difference, if any
 									if (deltaQty > 0) {
 
-										FDCartLineI newLine = orderLine
-												.createCopy();
-										newLine.setPricingContext(new PricingContext(
-												user.getPricingZoneId()));
+										FDCartLineI newLine = orderLine.createCopy();
+										newLine.setPricingContext(new PricingContext(user.getPricingZoneId()));
 										try {
 											OrderLineUtil.cleanup(newLine);
 										} catch (FDInvalidConfigurationException e) {
-											// throw new JspException(
-											// "Orderline [" +
-											// newLine.getDescription()
-											// +"] configuration no longer valid",
-											// e);
-											// APPDEV-3050
-											throw new JspException(
-													e.getMessage());
+											throw new JspException( "Orderline [" + newLine.getDescription() +"] configuration no longer valid", e);
 										}
 										newLine.setQuantity(deltaQty);
 										i.add(newLine);
 										// Log a addToCart event.
-										FDEventUtil.logAddToCartEvent(newLine,
-												request);
+										FDEventUtil.logAddToCartEvent(newLine, request);
 									}
 								}
 							}
 							cartChanged = true;
 						}
 					} catch (NumberFormatException nfe) {
-						result.addError(new ActionError("quantity_" + idx,
-								"Invalid quantity " + reqQty + ", not a number"));
+						result .addError(new ActionError("quantity_" + idx, "Invalid quantity " + reqQty + ", not a number"));
 					}
 				} else {
 					// it's a sales unit chg
-					String reqSalesUnit = request.getParameter("salesUnit_"
-							+ idx);
+					String reqSalesUnit = request.getParameter("salesUnit_" + idx);
 
 					if ("".equals(reqSalesUnit)) {
 						// mark orderline for removal
@@ -2022,8 +1785,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 							if (!modifyOrderMode) {
 								orderLine.setSalesUnit(reqSalesUnit);
 								// Log that the quantity has been updated.
-								FDEventUtil
-										.logEditCartEvent(orderLine, request);
+								FDEventUtil.logEditCartEvent(orderLine, request);
 							} else {
 								// modify order mode - replace orderline
 								// FDCartLineI newLine =
@@ -2036,25 +1798,21 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 								orderLine.setSalesUnit(reqSalesUnit);
 								i.set(orderLine);
 								// Log that the salesunit has been updated.
-								FDEventUtil
-										.logEditCartEvent(orderLine, request);
+								FDEventUtil.logEditCartEvent(orderLine, request);
 
 							}
 							cartChanged = true;
 						} else {
 							result.addError(new ActionError("salesUnit_" + idx,
-									"Sales unit " + reqSalesUnit
-											+ " is not valid"));
+									"Sales unit " + reqSalesUnit + " is not valid"));
 						}
 					}
 
 					if ("1".equals(request.getParameter("clicode_dirty"))) {
 						// clicode_sunit (Sales Unit based Client Codes)
-						List<ErpClientCode> clientCodes = orderLine
-								.getClientCodes();
+						List<ErpClientCode> clientCodes = orderLine.getClientCodes();
 
-						String reqCCode = request
-								.getParameter("clicode_clientcode_" + idx);
+						String reqCCode = request.getParameter("clicode_clientcode_" + idx);
 						if (reqCCode != null)
 							reqCCode = reqCCode.trim();
 						else
@@ -2070,21 +1828,16 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 							if (clientCodes.size() == 0) {
 								// add
 								clientCodes.add(new ErpClientCode(reqCCode, 1));
-								user.getClientCodesHistory().add(
-										new IgnoreCaseString(reqCCode));
+								user.getClientCodesHistory().add(new IgnoreCaseString(reqCCode));
 								cartChanged = true;
 							} else {
 								ErpClientCode firstCC = clientCodes.get(0);
-								if (clientCodes.size() != 1
-										|| firstCC.getQuantity() != 1
-										|| !firstCC.getClientCode().equals(
-												reqCCode)) {
+								if (clientCodes.size() != 1 || firstCC.getQuantity() != 1
+										|| !firstCC.getClientCode().equals(reqCCode)) {
 									// update
 									clientCodes.clear();
-									clientCodes.add(new ErpClientCode(reqCCode,
-											1));
-									user.getClientCodesHistory().add(
-											new IgnoreCaseString(reqCCode));
+									clientCodes.add(new ErpClientCode(reqCCode, 1));
+									user.getClientCodesHistory().add(new IgnoreCaseString(reqCCode));
 									cartChanged = true;
 								}
 							}
@@ -2100,8 +1853,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 		}
 		if (cartChanged) {
 			// remove marked orderlines
-			for (ListIterator<FDCartLineI> i = orderLines.listIterator(); i
-					.hasNext();) {
+			for (ListIterator<FDCartLineI> i = orderLines.listIterator(); i.hasNext();) {
 				if (i.next() == null) {
 					i.remove();
 				}
@@ -2114,8 +1866,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 
 	protected int removeAllCartLines() {
 		int lines = cart.numberOfOrderLines();
-		ArrayList<FDCartLineI> orderLines = new ArrayList<FDCartLineI>(
-				cart.getOrderLines());
+		ArrayList<FDCartLineI> orderLines = new ArrayList<FDCartLineI>(cart.getOrderLines());
 		cart.clearOrderLines();
 		// Log a removeCart Event for each of those orderLine.
 		for (Iterator<FDCartLineI> i = orderLines.listIterator(); i.hasNext();) {
@@ -2130,8 +1881,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 	 * Builds a valid, well-formed ErpComplaintModel
 	 * 
 	 */
-	private void buildComplaint(ActionResult result,
-			ErpComplaintModel complaintModel) throws FDResourceException {
+	private void buildComplaint(ActionResult result, ErpComplaintModel complaintModel) throws FDResourceException {
 
 		this.parseOrderLines(result, complaintModel);
 		this.setComplaintDetails(result, complaintModel);
@@ -2142,15 +1892,12 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 	 * Build complaint lines for each order line and validate data.
 	 * 
 	 */
-	private void parseOrderLines(ActionResult result,
-			ErpComplaintModel complaintModel) throws FDResourceException {
+	private void parseOrderLines(ActionResult result, ErpComplaintModel complaintModel) throws FDResourceException {
 
 		ArrayList<ErpComplaintLineModel> lines = new ArrayList<ErpComplaintLineModel>();
-		// FDOrderAdapter order = (FDOrderAdapter)
-		// FDCustomerManager.getOrder(request.getParameter("orig_sale_id"));
-		List<FDCartLineI> lineItems = new ArrayList<FDCartLineI>(
-				this.cart.getOrderLines());
-
+		//FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder(request.getParameter("orig_sale_id"));
+		List<FDCartLineI> lineItems=new ArrayList<FDCartLineI>(this.cart.getOrderLines());
+		
 		for (int i = 0; i < orderLineReason.length; i++) {
 
 			ErpComplaintLineModel line = new ErpComplaintLineModel();
@@ -2189,23 +1936,24 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 			// Investigate for errors
 			//
 			if (!line.isValidComplaintLine()) {
-				result.addError(new ActionError("ol_error_" + i,
-						"Missing or invalid data in this line."));
+				result.addError(new ActionError("ol_error_" + i, "Missing or invalid data in this line."));
 				addGeneralError(result);
 			}
-			// add carton id for makegood orders
-			try {
-				if (lineItems != null) {
-					for (FDCartLineI lineItem : lineItems) {
-						if (this.orderLineId[i].equals(lineItem
-								.getOrderLineId())) {
+			//add carton id for makegood orders
+			try
+			{				
+				if(lineItems!=null)
+				{
+					for(FDCartLineI lineItem :lineItems)
+					{
+						if(this.orderLineId[i].equals(lineItem.getOrderLineId()))
+						{
 							lineItems.remove(lineItem);
 							line.setCartonNumber(lineItem.getCartonNumber());
 						}
 					}
-				}
-			} catch (Exception e) {
-			}
+				}				
+			}catch(Exception e){}
 
 		}
 
@@ -2214,15 +1962,12 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 		complaintModel.setType(EnumComplaintType.STORE_CREDIT);
 	}
 
-	private void setComplaintDetails(ActionResult result,
-			ErpComplaintModel complaintModel) {
-		CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext
-				.getSession());
+	private void setComplaintDetails(ActionResult result, ErpComplaintModel complaintModel) {
+		CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext.getSession());
 		if (agent != null) {
 			complaintModel.setCreatedBy(agent.getUserId());
 		} else {
-			CallcenterUser ccUser = (CallcenterUser) pageContext.getSession()
-					.getAttribute(SessionName.CUSTOMER_SERVICE_REP);
+			CallcenterUser ccUser = (CallcenterUser) pageContext.getSession().getAttribute(SessionName.CUSTOMER_SERVICE_REP);
 			complaintModel.setCreatedBy(ccUser.getId());
 		}
 
@@ -2241,8 +1986,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 	 */
 	private void addGeneralError(ActionResult result) {
 		if (!result.hasError("general_error_msg"))
-			result.addError(new ActionError("general_error_msg",
-					GENERAL_ERR_MSG));
+			result.addError(new ActionError("general_error_msg", GENERAL_ERR_MSG));
 	}
 
 	/**
@@ -2256,7 +2000,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements
 		orderLineReason = request.getParameterValues("ol_credit_reason");
 
 	} // method getFormData
-
+	
 	public void setFilterCoupons(boolean filterCoupons) {
 		this.filterCoupons = filterCoupons;
 	}
