@@ -68,10 +68,10 @@ String sPage = (request.getParameter("successPage")!=null)?request.getParameter(
 					
 				<% }else{ %>
 					<font class="text13bold">New Customer?</FONT><BR>
-						<A HREF='<%= response.encodeURL("/index.jsp") %>'><font class="text13">See if we deliver to your area</font></a>.<% } %>
+						<a href="javascript:popup('/help/delivery_zones.jsp','large')" class="text13">See if we deliver to your area</a>.<% } %>
 			<%} else { %>        
 				<font class="text13bold">New Customer?</FONT><BR>
-				<A HREF='<%= response.encodeURL("/index.jsp") %>'><font class="text13">See if we deliver to your area</font></a>.<% } %>
+				<a href="javascript:popup('/help/delivery_zones.jsp','large')" class="text13">See if we deliver to your area</a>.<% } %>
 		<% } %><br><br>
 			</td>
 		</tr>

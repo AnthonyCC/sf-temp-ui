@@ -25,7 +25,7 @@
 			<A HREF='<%= response.encodeURL("/gift_card/purchase/register_and_purchase.jsp") %>'><font class="text13"><b>Click here</b> to continue with gift card purchase</font></a>.<br><br></td>
                 <% } else { %>        
 			<font class="text13bold">New Customer?</FONT><BR>
-			<A HREF='<%= response.encodeURL("/index.jsp") %>'><font class="text13">See if we deliver to your area</font></a>.<br><br></td>
+			<a href="javascript:popup('/help/delivery_zones.jsp','large')" class="text13">See if we deliver to your area</a>.<br><br></td>
                 <% } %>
                 </tr>
 </TABLE>
