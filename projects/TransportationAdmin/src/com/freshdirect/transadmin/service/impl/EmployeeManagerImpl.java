@@ -28,6 +28,7 @@ import com.freshdirect.transadmin.model.EmployeeSupervisor;
 import com.freshdirect.transadmin.model.EmployeeTeam;
 import com.freshdirect.transadmin.model.EmployeeTruckPreference;
 import com.freshdirect.transadmin.model.EmployeeTruckPreferenceId;
+import com.freshdirect.transadmin.model.KronosEmployeeInfo;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.PunchInfo;
@@ -956,5 +957,37 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 	public void setEmployeeManagerCloudDAO(
 			EmployeeManagerDaoI employeeManagerCloudDAO) {
 		this.employeeManagerCloudDAO = employeeManagerCloudDAO;
+	}
+	
+
+	@Override
+	public void syncEmployees() throws Exception {
+		List<KronosEmployeeInfo> kronosemplist = new ArrayList<KronosEmployeeInfo>();
+		List<KronosEmployeeInfo> transpemplist = new ArrayList<KronosEmployeeInfo>();
+		List<KronosEmployeeInfo> inserts = new ArrayList<KronosEmployeeInfo>();
+		List<KronosEmployeeInfo> updates = new ArrayList<KronosEmployeeInfo>();
+		List<KronosEmployeeInfo> deletes = new ArrayList<KronosEmployeeInfo>();
+
+	
+		if (TransportationAdminProperties.isKronosCloudEnabled()) {
+				kronosemplist = employeeManagerCloudDAO.getAllKronosEmployees();
+				transpemplist = employeeManagerDAO.getAllKronosEmployees();
+		}
+
+		for (KronosEmployeeInfo emp : kronosemplist) {
+				if (transpemplist.contains(emp)) {
+					updates.add(emp);
+				} else {
+					inserts.add(emp);
+				}
+		}
+
+		transpemplist.removeAll(updates);
+		transpemplist.removeAll(inserts);
+		deletes = transpemplist;
+
+		employeeManagerDAO.syncEmployees(inserts, updates, deletes);
+			
+			
 	}
 }

@@ -23,6 +23,7 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.transadmin.dao.EmployeeManagerDaoI;
 import com.freshdirect.transadmin.model.EmployeeInfo;
+import com.freshdirect.transadmin.model.KronosEmployeeInfo;
 
 public class EmployeeManagerCloudDaoOracleImpl implements EmployeeManagerDaoI {
 
@@ -79,7 +80,13 @@ public class EmployeeManagerCloudDaoOracleImpl implements EmployeeManagerDaoI {
 	"and LA1.LABORLEV5NM in ('10001', '10002', '10003', '10004', '10005', '10006', '10007', '10008', '10009', '10012', '10101', '10102', '10103', '10104', '10105','10014','10015','10016','10017','10018','10020') "+
 	"and getdate() between ha.effectivedtm and ha.expirationdtm";
 	
-
+	private static final String GET_KRONOS_EMPLOYEE_QRY =
+	"SELECT a.* " +
+	"from dbo.combhomeacct HA, dbo.laboracct LA1, dbo.vp_employeev42 a "+
+	"where LA1.LABORACCTID = HA.LABORACCTID "+
+	"and HA.employeeid = a.employeeid "+
+	"and LA1.LABORLEV5NM in ('10001', '10002', '10003', '10004', '10005', '10006', '10007', '10008', '10009', '10012', '10101', '10102', '10103', '10104', '10105','10014','10015','10016','10017','10018','10020') "+
+	"and getdate() between ha.effectivedtm and ha.expirationdtm";
 	
 	public List<EmployeeInfo> getAllEmployees() {
 		// TODO Auto-generated method stub
@@ -213,6 +220,42 @@ public class EmployeeManagerCloudDaoOracleImpl implements EmployeeManagerDaoI {
 	public void refresh(String worktable) throws DataAccessException {
 		// TODO Auto-generated method stub
 		
+	}
+	
+
+	
+	public List<KronosEmployeeInfo> getAllKronosEmployees() {
+     final List<KronosEmployeeInfo> kronosemplist = new ArrayList<KronosEmployeeInfo>();
+        PreparedStatementCreator creator=new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement ps =
+                    connection.prepareStatement(GET_KRONOS_EMPLOYEE_QRY);
+                return ps;
+            }
+        };
+        jdbcTemplate.query(creator,
+       		  new RowCallbackHandler() {
+       		      public void processRow(ResultSet rs) throws SQLException {
+
+       		    	do {
+       		    		KronosEmployeeInfo model = KronosEmployeeInfo.build(rs);
+       		    		kronosemplist.add(model);
+       		    	   }
+       		    	   while(rs.next());
+       		      }
+       		  }
+       	);
+        
+        return kronosemplist;
+
+	}
+
+	@Override
+	public void syncEmployees(List<KronosEmployeeInfo> inserts,
+			List<KronosEmployeeInfo> updates, List<KronosEmployeeInfo> deletes)
+			throws SQLException {
+		
+		return;
 	}
 	
 }

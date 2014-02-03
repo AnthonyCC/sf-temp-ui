@@ -15,6 +15,8 @@ import com.freshdirect.transadmin.web.model.WebSchedule;
 
 public interface EmployeeManagerI extends BaseManagerI {
 	
+	void syncEmployees() throws Exception;
+	
 	Collection getEmployees();
 	
 	Collection getKronosEmployees();

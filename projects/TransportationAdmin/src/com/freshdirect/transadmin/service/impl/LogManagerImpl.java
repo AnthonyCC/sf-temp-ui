@@ -23,8 +23,7 @@ public class LogManagerImpl extends BaseManagerImpl implements LogManagerI {
 
 
 	protected BaseManagerDaoI getBaseManageDao() 	{
-		// TODO Auto-generated method stub
-		return null;
+		return logManagerDao;
 	}
 
 

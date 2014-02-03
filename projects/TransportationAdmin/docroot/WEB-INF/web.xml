@@ -169,6 +169,7 @@
 		<url-pattern>download.do</url-pattern>
 		<url-pattern>dispatchDashboardScreen.do</url-pattern>
 		<url-pattern>truckRefresh.do</url-pattern>
+		<url-pattern>empRefresh.do</url-pattern>
 		<url-pattern>/v/*</url-pattern>
 		<http-method>GET</http-method>
 		</web-resource-collection>

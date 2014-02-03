@@ -4,6 +4,7 @@ package com.freshdirect.transadmin.web;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1134,4 +1135,27 @@ public class DomainController extends AbstractMultiActionController {
 		}
 		return dispatchGroupHandler(request, response);
 	}
+	
+
+	public void employeeRefreshHandler(HttpServletRequest request, HttpServletResponse response)
+	throws ServletException {
+		PrintWriter pw = null;
+		String exceptionMsg = null;
+		try{
+			pw = response.getWriter();
+			employeeManagerService.syncEmployees();
+			pw.write("Employee refresh was successful");
+		}
+		catch (Exception exp) {
+			exp.printStackTrace();
+			exceptionMsg = exp.getMessage();
+			response.setStatus(500);
+		} finally{
+			if(pw!=null){
+				pw.write(exceptionMsg);
+				pw.flush();
+			}
+		}
+	}
+	
 }
