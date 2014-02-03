@@ -1262,47 +1262,33 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
     " from PAYLINX.CC_TRANSACTION_NEW cc, cust.sale s where CC.TRANS_DATE_TIME between to_date(?,'MM-DD-YYYY HH24:MI') and   to_date(?,'MM-DD-YYYY HH24:MI') and "+
     " CC.TRANSACTION_CODE='100' AND SUBSTR(CC.ORDER_NUMBER,1,INSTRB(CC.ORDER_NUMBER, 'X', 1, 1)-1)=s.id(+) ";
 	//order by cc.TRANS_DATE_TIME asc
+	
+	private static final String AUTH_SEARCH_QUERY_MIS="select GAL.TRANSACTION_TIME TRANS_DATE_TIME,GAL.CUSTOMER_NAME ,GAL.MERCHANT MERCHANT_ID, GAL.AMOUNT, GAL.AUTH_CODE APPROVAL_CODE, GAL.CVV_RESPONSE_CODE, "+
+	" GAL.STATUS_MSG AUTH_RESPONSE_MSG, GAL.IS_AVS_MATCH ZIP_MATCH, GAL.CUSTOMER_ID CustomerID, GAL.CARD_TYPE CardType, GAL.ORDER_ID ORDER_NUMBER, "+
+	" NVL(s.id,'N/A') as ORDERNUMBER,GAL.CUSTOMER_ADDRESS1||' '|| GAL.CUSTOMER_CITY||' '|| GAL.CUSTOMER_STATE||' '|| GAL.CUSTOMER_ZIP as Address "+ 
+	" from MIS.GATEWAY_ACTIVITY_LOG gal, cust.sale s where  GAL.TRANSACTION_TIME between to_date(?,'MM-DD-YYYY HH24:MI') and   to_date(?,'MM-DD-YYYY HH24:MI') and "+
+	"   GAL.TRANSACTION_TYPE IN ('AUTHORIZE','CC_VERIFY') AND SUBSTR(GAL.ORDER_ID,1,INSTRB(GAL.ORDER_ID, 'X', 1, 1)-1)=s.id(+)  ";  
+	
 	public List<CrmAuthInfo> getAuthorizations(CrmAgentRole role,CrmAuthSearchCriteria filter)throws FDResourceException {
 		Connection conn = null;
 		try {
 			StringBuilder query=new StringBuilder(AUTH_SEARCH_QUERY);
+			StringBuilder query1=new StringBuilder(AUTH_SEARCH_QUERY_MIS);
+			
 			if(!StringUtil.isEmpty(filter.getCustomerName())) {
 				query.append(" AND UPPER(trim(cc.customer_name)) LIKE UPPER('%").append(filter.getCustomerName()).append("%') ");
+				query1.append(" AND UPPER(trim(GAL.customer_name)) LIKE UPPER('%").append(filter.getCustomerName()).append("%') ");
 			}
 			if(filter.getAmount()!="0") {
 				query.append(" AND cc.amount ='").append(filter.getAmount()).append("' ");
+				query1.append(" AND GAL.amount ='").append(filter.getAmount()).append("' ");
 			}
+			
 			
 			conn = this.getConnection();
-
-			PreparedStatement ps = conn.prepareStatement(query.toString());
-			ps.setString(1, filter.getFromDateStr());
-			ps.setString(2, filter.getToDateStr());
-			ResultSet rs = ps.executeQuery();
-			List<CrmAuthInfo> crmAuthInfoList=new ArrayList<CrmAuthInfo>();
-			CrmAuthInfo crmAuthInfo=null;
-			while (rs.next()) {
-				crmAuthInfo=new CrmAuthInfo();
-				crmAuthInfo.setTransactionTime(rs.getTimestamp("TRANS_DATE_TIME"));
-				crmAuthInfo.setCustomerName(rs.getString("CUSTOMER_NAME"));
-				crmAuthInfo.setMerchantId(rs.getString("MERCHANT_ID"));
-				crmAuthInfo.setAmount(rs.getBigDecimal("AMOUNT"));
-				crmAuthInfo.setApprovalCode(rs.getString("APPROVAL_CODE"));
-				crmAuthInfo.setCvvResponseCode(rs.getString("CVV_RESPONSE_CODE"));
-				crmAuthInfo.setAuthResponse(rs.getString("AUTH_RESPONSE_MSG"));
-				crmAuthInfo.setZipCheckReponse(rs.getString("ZIP_MATCH"));
-				crmAuthInfo.setCardType(EnumCardType.getCardType(rs.getString("CardType")));
-				crmAuthInfo.setAddress(rs.getString("Address"));
-				crmAuthInfo.setOrder(rs.getString("ORDER_NUMBER"));
-				crmAuthInfo.setValidOrder(!"N/A".equals(rs.getString("ORDERNUMBER")));
-				crmAuthInfo.setCustomerId(rs.getString("CustomerID"));
-				crmAuthInfoList.add(crmAuthInfo);
-				
-			}
-			
-
-			rs.close();
-			ps.close();
+			List<CrmAuthInfo> crmAuthInfoList=new ArrayList<CrmAuthInfo>(50);
+			crmAuthInfoList.addAll(getAuthInfo(query.toString(),conn,filter));
+			crmAuthInfoList.addAll(getAuthInfo(query1.toString(),conn,filter));
 			
 			return crmAuthInfoList;
 		} catch (SQLException e) {
@@ -1316,6 +1302,37 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 				throw new FDResourceException(se);
 			}
 		}
+	}
+	
+	private List<CrmAuthInfo> getAuthInfo(String query, Connection conn,CrmAuthSearchCriteria filter) throws SQLException {
+		
+		PreparedStatement ps = conn.prepareStatement(query);
+		ps.setString(1, filter.getFromDateStr());
+		ps.setString(2, filter.getToDateStr());
+		ResultSet rs = ps.executeQuery();
+		List<CrmAuthInfo> crmAuthInfoList=new ArrayList<CrmAuthInfo>(50);
+		CrmAuthInfo crmAuthInfo=null;
+		while (rs.next()) {
+			crmAuthInfo=new CrmAuthInfo();
+			crmAuthInfo.setTransactionTime(rs.getTimestamp("TRANS_DATE_TIME"));
+			crmAuthInfo.setCustomerName(rs.getString("CUSTOMER_NAME"));
+			crmAuthInfo.setMerchantId(rs.getString("MERCHANT_ID"));
+			crmAuthInfo.setAmount(rs.getBigDecimal("AMOUNT"));
+			crmAuthInfo.setApprovalCode(rs.getString("APPROVAL_CODE"));
+			crmAuthInfo.setCvvResponseCode(rs.getString("CVV_RESPONSE_CODE"));
+			crmAuthInfo.setAuthResponse(rs.getString("AUTH_RESPONSE_MSG"));
+			crmAuthInfo.setZipCheckReponse(rs.getString("ZIP_MATCH"));
+			crmAuthInfo.setCardType(EnumCardType.getCardType(rs.getString("CardType")));
+			crmAuthInfo.setAddress(rs.getString("Address"));
+			crmAuthInfo.setOrder(rs.getString("ORDER_NUMBER"));
+			crmAuthInfo.setValidOrder(!"N/A".equals(rs.getString("ORDERNUMBER")));
+			crmAuthInfo.setCustomerId(rs.getString("CustomerID"));
+			crmAuthInfoList.add(crmAuthInfo);
+			
+		}
+		rs.close();
+		ps.close();
+		return crmAuthInfoList;
 	}
 	
 	public CustomerCreditModel getOrderForLateCredit(String saleId, String autoId) throws FDResourceException {
