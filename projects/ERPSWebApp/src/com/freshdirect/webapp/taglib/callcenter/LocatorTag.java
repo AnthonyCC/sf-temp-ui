@@ -72,7 +72,9 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 					if (isWildcardOrPercentageCharacter(criteria)) {
 						doErrorRedirect("Narrow down search criteria.");
 					}
+					else {
 					searchResults = doLocateCustomers((FDCustomerSearchCriteria) this.criteria);
+					}
 				} else if (this.criteria instanceof FDOrderSearchCriteria) {
 					System.out.println("trying to locate the orders");
 					searchResults = doLocateOrders((FDOrderSearchCriteria) this.criteria);
