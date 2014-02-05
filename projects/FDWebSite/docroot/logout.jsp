@@ -49,6 +49,9 @@ if (toSiteAccess) {
 	response.sendRedirect(response.encodeRedirectURL("/about/index.jsp?siteAccessPage=aboutus&bloglogout=true&successPage=/index.jsp"));
 }
 
+//else just go on to welcome, nothing here down is used.
+//copied blog iframe to welcome.jsp so it gets called still
+response.sendRedirect("/welcome.jsp");
 %>
 
 

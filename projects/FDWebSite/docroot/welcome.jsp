@@ -33,3 +33,6 @@ request.setAttribute("listPos", "SystemMessage,WDelivery,WAffiliate");
 	</tmpl:put>		
 	
 </tmpl:insert>
+
+<% /* add this here since there's no log out page now */ %>
+<iframe src="<%=MyFdFeed.getInstance().getBlogUrl()%>/?autologout" width="0" height="0" frameBorder="0"/>
