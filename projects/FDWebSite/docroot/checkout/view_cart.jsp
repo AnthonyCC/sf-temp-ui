@@ -211,13 +211,6 @@ StringBuffer buffer = new StringBuffer(
 	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
 <% } %>
 
-<% /* bottom continue button */ %>
-<form name="viewcart_bottom" method="post" style="margin:0px ! important" id="viewcart_bottom">
-<div class="right">
-	<% if(modifyOrderMode) { %><a class="imgButtonWhite cancel_updates" href="/your_account/cancel_modify_order.jsp">cancel updates</a><% } %><%@ include file="/includes/i_cart_next_step_button.jspf" %>
-</div><div style="clear: both;"></div>
-</form>
-
 <br />
 <img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
 
