@@ -155,7 +155,7 @@
                 if(doShow) {
             		showBoundary(checked.substring(0,checked.length-1), null, startDate, true);
                 } else {
-                	location.href = "gmapexport.do?code="+checked.substring(0,checked.length-1);	
+                	location.href = "gmapexport.do?code="+checked.substring(0,checked.length-1)+"&startDate="+startDate;	
                 }
             }
 		}

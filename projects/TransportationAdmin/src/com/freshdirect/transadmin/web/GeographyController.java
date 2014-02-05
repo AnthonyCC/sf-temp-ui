@@ -125,6 +125,8 @@ public class GeographyController extends AbstractMultiActionController {
 		
 		String code = request.getParameter("code");
 		String startDate = request.getParameter("startDate");
+		if (startDate == null || "".equals(startDate))
+			startDate = TransStringUtil.getNextDate();
 		
 		SpatialBoundary boundary = null;
 		List<SpatialBoundary> boundaries = null;
