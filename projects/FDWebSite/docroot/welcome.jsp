@@ -1,3 +1,4 @@
+<%@ page import="com.freshdirect.fdstore.myfd.blog.MyFdFeed"%>
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" /><%
