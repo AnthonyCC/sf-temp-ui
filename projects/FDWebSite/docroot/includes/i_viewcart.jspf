@@ -1020,7 +1020,9 @@ FDIdentity identity = user.getIdentity();
 		%></fd:CustomerCreditHistoryGetterTag><%
 	}
 	%>
-	<tr><td colspan="6" align="right">
+</table>
+<table width="100%">
+	<tr><td align="right">
 		<% /* bottom continue button */ %>
 		<form name="viewcart_bottom" id="viewcart_bottom" method="post" action="/view_cart.jsp" style="margin:0px ! important">
 		<div class="right">
@@ -1028,7 +1030,7 @@ FDIdentity identity = user.getIdentity();
 		</div><div style="clear: both;"></div>
 		</form>
 	</td></tr>
-	<tr><td colspan="6" align="right"><br><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;<strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = State Bottle Deposit</td></tr>
+	<tr><td align="right"><br /><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;<strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = State Bottle Deposit</td></tr>
 </table>
 </div>
 
