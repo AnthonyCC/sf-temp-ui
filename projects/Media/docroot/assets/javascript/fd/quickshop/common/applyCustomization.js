@@ -33,12 +33,15 @@ var FreshDirect = FreshDirect || {};
 		},
 		saveCustomization:{
 			value:function(event){
-				var element = event.currentTarget;
-	            var items = fd.components.AddToCart.atcFilter(this.getItem(element));
-		        var item = items && items[0];
-		        if(item){
-			        fd.modules.common.editinlistpopup.saveChange(item.listId,item.lineId,item);		        	
-		        }
+				var items = this.getItem(event.currentTarget);
+				if(fd.components.AddToCart.requiredValidator(items)){
+					items = fd.components.AddToCart.atcFilter(items);
+					var item = items && items[0];
+					if(item){
+						fd.modules.common.editinlistpopup.saveChange(item.listId,item.lineId,item);
+						fd.modules.common.editinlistpopup.close();
+					}
+				}
 			}
 		}
 	});

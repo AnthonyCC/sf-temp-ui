@@ -39,7 +39,7 @@
 		<span data-component="applyCustomization"><button data-component="ATCButton">add to cart</button></span>		
 	{else}
  	   	<button data-component="ATCButton">add to cart</button>
-		{if $data.hasApply}<div class="applyCustomization">Save changes permanently.<br><button data-component="saveCustomization" data-popup-control="close">save customization</button></div>{/if}
+		{if $data.hasApply}<div class="applyCustomization">Save changes permanently.<br><button data-component="saveCustomization">save customization</button></div>{/if}
 	{/if}
 	{if $data.originalLineId}<input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$data.originalLineId}">{/if}
 	{if $data.listId}<input type="hidden" data-component="productData" data-productdata-name="listId" name="listId" value="{$data.listId}">{/if}
