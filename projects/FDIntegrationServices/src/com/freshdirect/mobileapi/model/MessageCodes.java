@@ -227,6 +227,8 @@ public interface MessageCodes {
     public static final String WARNING_COUPONS_EXP_DELIVERY_DATE ="WARNING_COUPONS_EXP_DELIVERY_DATE";
     public final static String MSG_COUPONS_EXP_DELIVERY_DATE ="Some of your coupons are not valid on your chosen delivery date. All of your coupons will be valid if your delivery date is on or before: ";
     
+    public final static String MSG_OUTERSPACE_ADDRESS_MOB			= "We're sorry, but you must have a valid home address in one of our delivery zones in order to register a new delivery location.";
+    
     public static class ErrorMessage {
         public final static String PASS_THROUGH = "PASS_THROUGH";
 
@@ -303,7 +305,7 @@ public interface MessageCodes {
             } else if ("csv".equals(key) && desc.contains("double-check")) {
                 returnValue = new ErrorMessage(ERR_PAYMENT_INCORRECT_CVV, desc);
             } else if ("address1".equals(key) && desc.contains("valid home address")) {
-                returnValue = new ErrorMessage(ERR_DELIVERY_ADDRESS_INVALID, desc);
+                returnValue = new ErrorMessage(ERR_DELIVERY_ADDRESS_INVALID, MSG_OUTERSPACE_ADDRESS_MOB);
             } else if ("zipcode".equals(key) && !desc.contains("required")) {
                 returnValue = new ErrorMessage(ERR_ZIP_INVALID, desc);
             } else if ("quantity".equals(key)) {
