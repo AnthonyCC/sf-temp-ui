@@ -109,7 +109,7 @@
 }
 
 .grid-item-rating {
-	padding: 5px 0;
+	padding: 5px 0 0;
 	height: 16px;
 }
 
@@ -130,7 +130,7 @@
 
 .grid-item-saving {
 	height: 2em;
-	font-size: 24px;
+	font-size: 18px;
 	line-height: 1em;
 	color: #c00;
 	font-family: 'BebasNeueRegular';
@@ -416,7 +416,7 @@
 }
 
 .grid-view .grid-item {
-	margin: 18px 0;
+	margin: 15px 0;
 	padding: 0 10px;
 	text-align: center;
 	color: #333;

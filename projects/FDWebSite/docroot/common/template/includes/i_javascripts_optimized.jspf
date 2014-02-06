@@ -32,7 +32,7 @@
 	<jwr:script src="/fdproto.js" useRandomParam="false" />
 	<jwr:script src="/fdlibsyui.js"  useRandomParam="false" />
 	
-	<script type="text/javascript" language="javascript">
+	<script type="text/javascript">
 
 		var FreshDirect = FreshDirect || {};
 		FreshDirect.USQLegalWarning = FreshDirect.USQLegalWarning || {};

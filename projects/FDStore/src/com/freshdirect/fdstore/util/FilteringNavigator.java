@@ -35,6 +35,16 @@ public class FilteringNavigator {
 	private OriginalStatus originalStatus;
 
 	private String searchTerm = "";
+	private String catId = ""; //actual catId, not filter
+	
+	public String getCatId() {
+		return catId;
+	}
+
+	public void setCatId(String catId) {
+		this.catId = catId;
+	}
+
 	private boolean recipes = false;
 	private boolean faq = false;
 
@@ -124,6 +134,7 @@ public class FilteringNavigator {
 		nav.setRecipes(recipes);
 		nav.setView(view);
 		nav.setFaq(faq);
+		nav.setCatId(catId);
 
 		return nav;
 	}
@@ -164,6 +175,12 @@ public class FilteringNavigator {
 	 */
 	private void init(Map<String, String> params) {
 		String val;
+		
+		/* add support for usage in category.jsp */
+		val = params.get("catId");
+		if (val != null && val.trim().length() > 0) {
+			catId = val.trim();
+		}
 
 		/* search terms */
 		val = params.get("searchParams");
@@ -862,66 +879,71 @@ public class FilteringNavigator {
 		
 		if(!faq){
 
-		// search terms
-		buf.append("searchParams=");
-		// buf.append(safeURLEncode(searchTerms, "ISO-8859-1"));
-		// buf.append(StringUtil.escapeUri(searchTerms));
-		buf.append(safeURLEncode(searchTerm));
-
-		/* VIEW */
-		buf.append("&amp;view=" + getViewName());
-
-		if (!(view == VIEW_TEXT || (view == VIEW_LIST && pageSize == defaultPageSize) || (view == VIEW_GRID && pageSize == defaultPageSize))) {
-			buf.append("&amp;pageSize=");
-			buf.append(pageSize);
-		}
-
-		/* PAGE */
-		if (pageSize > 0 && pageNumber > 0) {
-			buf.append("&amp;start=");
-			buf.append(pageSize * pageNumber);
-		}
-
-		/* FILTER */
-
-		if (!filterValues.isEmpty()) {
-			buf.append("&amp;genericFilter=");
-
-			for (FilteringValue key : filterValues.keySet()) {
-				List<Object> fl = filterValues.get(key);
-				for (Object value : fl) {
-					buf.append(key.getName() + "=" + value.toString() + ",");
+			//category.jsp
+			if (!"".equalsIgnoreCase(catId)) {
+				buf.append("catId=" + catId);
+			}
+				
+			// search terms
+			buf.append("&amp;searchParams=");
+			// buf.append(safeURLEncode(searchTerms, "ISO-8859-1"));
+			// buf.append(StringUtil.escapeUri(searchTerms));
+			buf.append(safeURLEncode(searchTerm));
+	
+			/* VIEW */
+			buf.append("&amp;view=" + getViewName());
+	
+			if (!(view == VIEW_TEXT || (view == VIEW_LIST && pageSize == defaultPageSize) || (view == VIEW_GRID && pageSize == defaultPageSize))) {
+				buf.append("&amp;pageSize=");
+				buf.append(pageSize);
+			}
+	
+			/* PAGE */
+			if (pageSize > 0 && pageNumber > 0) {
+				buf.append("&amp;start=");
+				buf.append(pageSize * pageNumber);
+			}
+	
+			/* FILTER */
+	
+			if (!filterValues.isEmpty()) {
+				buf.append("&amp;genericFilter=");
+	
+				for (FilteringValue key : filterValues.keySet()) {
+					List<Object> fl = filterValues.get(key);
+					for (Object value : fl) {
+						buf.append(key.getName() + "=" + value.toString() + ",");
+					}
+				}
+	
+				int lastComma = buf.lastIndexOf(",");
+				if (lastComma != -1) {
+					buf = new StringBuffer(buf.substring(0, lastComma));
 				}
 			}
-
-			int lastComma = buf.lastIndexOf(",");
-			if (lastComma != -1) {
-				buf = new StringBuffer(buf.substring(0, lastComma));
+	
+			/* SORT */
+			// no sort options in recipes view, ignore them
+			if (!isDefaultSort()) {
+				buf.append("&amp;sort=" + sortBy.getLabel());
 			}
-		}
-
-		/* SORT */
-		// no sort options in recipes view, ignore them
-		if (!isDefaultSort()) {
-			buf.append("&amp;sort=" + sortBy.getLabel());
-		}
-
-		if (!isOrderAscending) {
-			buf.append("&amp;order=desc");
-		}
-		
-		/* DEPT */
-		if (filterValues.get(EnumSearchFilteringValue.DEPT) != null && !filterValues.get(EnumSearchFilteringValue.DEPT).isEmpty() ) {
-			buf.append("&amp;deptId=" + filterValues.get(EnumSearchFilteringValue.DEPT).get(0) );
-		}
-
-		if (fromDym)
-			buf.append("&amp;fromDym=1");
-
-		if (recipes)
-			buf.append("&amp;recipes");
-
-		buf.append("&amp;refinement=1");
+	
+			if (!isOrderAscending) {
+				buf.append("&amp;order=desc");
+			}
+			
+			/* DEPT */
+			if (filterValues.get(EnumSearchFilteringValue.DEPT) != null && !filterValues.get(EnumSearchFilteringValue.DEPT).isEmpty() ) {
+				buf.append("&amp;deptId=" + filterValues.get(EnumSearchFilteringValue.DEPT).get(0) );
+			}
+	
+			if (fromDym)
+				buf.append("&amp;fromDym=1");
+	
+			if (recipes)
+				buf.append("&amp;recipes");
+	
+			buf.append("&amp;refinement=1");
 		
 		} else {
 			buf.append("searchFAQ=");

@@ -14,7 +14,7 @@
 //expanded page dimensions
 final int W_CATEGORY_WITH_LEFT_NAV = 601;
 final int W_CATEGORY_NO_LEFT_NAV = 765;
-
+	
 	boolean disableLinks = false;
 	if (null !=request.getParameter("ppPreviewId")) {
 		/* manipulate layout for preview mode */
@@ -146,7 +146,9 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 			if (layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId() || EnumLayoutType.PRODUCTS_ASSORTMENTS.getId() == layoutType) {
 				//css jawr optimizing test
 				if (layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId()) {
-					jspTemplate = "/common/template/top_nav_only_optimized.jsp";
+					/* forward to new jsp, include won't work due to byte size on compilation */
+					RequestDispatcher rd = request.getRequestDispatcher("/ddpp.jsp");
+					rd.forward(request, response);
 				} else {
 					jspTemplate = "/common/template/top_nav_only.jsp";
 				}
@@ -158,291 +160,292 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 	request.setAttribute("layoutType", layoutType); //make layoutType available in jspTemplate
 	request.setAttribute("noLeftNav",noLeftNav);
 	request.setAttribute("jspTemplate",jspTemplate);
-%><tmpl:insert template='<%=jspTemplate%>'><%
-	if (!noLeftNav) {
-		%><tmpl:put name='leftnav' direct='true'> <%-- <<< some whitespace is needed here --%></tmpl:put><%
-	} 
-	%>
 
-	<tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
-	<tmpl:put name='facebookmeta' direct='true'>
-		<meta property="og:title" content="FreshDirect - <%= currentFolder.getFullName() %>"/>
-		<meta property="og:site_name" content="FreshDirect"/>
-
-<% if (prodModel!=null) {
-
-	Image productImage = prodModel.getDetailImage();
-	Image zoomImage = (Image) prodModel.getZoomImage();
-
-	Object useProdImageObj = pageContext.getAttribute("useProdImage");
-	boolean useProdImage = useProdImageObj == null ? false : (Boolean)useProdImageObj;
-	boolean isWineProduct = prodModel.getDepartment() != null ? JspMethods.getWineAssociateId().toLowerCase().equals(prodModel.getDepartment().getContentKey().getId()) : false;
-
-	if ( zoomImage != null && zoomImage.getPath().indexOf("clear.gif") == -1 && !useProdImage && !isWineProduct ) {
-	%>
-		<meta property="og:image" content="https://www.freshdirect.com<%= prodModel.getZoomImage().getPathWithPublishId() %>"/>
-	<%
-	} else {
-	%>
-		<meta property="og:image" content="https://www.freshdirect.com<%= prodModel.getDetailImage().getPathWithPublishId() %>"/>
-	<%
-	}
-}%>
-		<meta property="og:image" content="https://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
-		<meta property="og:image" content="https://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
-		<meta property="og:image" content="https://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
-	</tmpl:put>
-
-	<tmpl:put name='content' direct='true'>
-		<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=currentFolder%>"/>
+	%><tmpl:insert template='<%=jspTemplate%>'><%
+		if (!noLeftNav) {
+			%><tmpl:put name='leftnav' direct='true'> <%-- <<< some whitespace is needed here --%></tmpl:put><%
+		} 
+		%>
+	
+		<tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
+		<tmpl:put name='facebookmeta' direct='true'>
+			<meta property="og:title" content="FreshDirect - <%= currentFolder.getFullName() %>"/>
+			<meta property="og:site_name" content="FreshDirect"/>
+	
+	<% if (prodModel!=null) {
+	
+		Image productImage = prodModel.getDetailImage();
+		Image zoomImage = (Image) prodModel.getZoomImage();
+	
+		Object useProdImageObj = pageContext.getAttribute("useProdImage");
+		boolean useProdImage = useProdImageObj == null ? false : (Boolean)useProdImageObj;
+		boolean isWineProduct = prodModel.getDepartment() != null ? JspMethods.getWineAssociateId().toLowerCase().equals(prodModel.getDepartment().getContentKey().getId()) : false;
+	
+		if ( zoomImage != null && zoomImage.getPath().indexOf("clear.gif") == -1 && !useProdImage && !isWineProduct ) {
+		%>
+			<meta property="og:image" content="https://www.freshdirect.com<%= prodModel.getZoomImage().getPathWithPublishId() %>"/>
 		<%
-		if(layoutType == EnumLayoutType.GROCERY_PRODUCT.getId()){
-			%><fd:CmProductView quickbuy="false" wrapIntoScriptTag="true" productModel="<%=prodModel%>"/> <%
-		}
-		// TODO duplicated -- boolean virtualGrocerySpecified = request.getParameter("groceryVirtual")!=null;
-		//if (layoutType==EnumLayoutType.FEATURED_ALL.getId()) layoutType=19;
-		boolean noCache =  (EnumLayoutType.GROCERY_PRODUCT.getId()==layoutType
-		                    || isGroceryVirtual /* virtualGrocerySpecified */
-		                    || EnumLayoutType.BULK_MEAT_PRODUCT.getId()==layoutType
-		                    || EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId()==layoutType
-		                    || EnumLayoutType.TRANSAC_GROUPED_ITEMS.getId()==layoutType
-		                    || EnumLayoutType.THANKSGIVING_CATEGORY.getId()==layoutType
-		                    || EnumLayoutType.PARTY_PLATTER_CATEGORY.getId()==layoutType
-		                    || EnumLayoutType.HOLIDAY_MENU.getId()==layoutType
-		                    || EnumLayoutType.WINE_CATEGORY.getId()==layoutType
-		                    || EnumLayoutType.VALENTINES_CATEGORY.getId()==layoutType
-		                    || EnumLayoutType.TRANSAC_MULTI_PAIRED_ITEMS.getId()==layoutType);
-		                    
-		
-		String keyPrefix="catLayout_";
-		int ttl=300;
-		FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
-		if(deptId != null && ("fru".equals(deptId)||"veg".equals(deptId)||"orgnat".equals(deptId)||"local".equals(deptId)||"mea".equals(deptId))) {
-		    if(user.isProduceRatingEnabled()) {
-		        keyPrefix=keyPrefix+user.isProduceRatingEnabled()+"_";
-		        ttl=180;
-		    }
-		}
-		
-		int tablewid = noLeftNav ? W_CATEGORY_NO_LEFT_NAV : W_CATEGORY_WITH_LEFT_NAV;
-		
-		
-		// Beginning of ifAlternateContent
-		if( alternateContentFile != null ) {
-			%><fd:IncludeMedia name='<%= alternateContentFile %>' /><%
 		} else {
-		
-			Html introCopyAttribute = currentFolder.getEditorial();
-			String introCopy = introCopyAttribute==null?"":introCopyAttribute.getPath();
-		            
-			String introTitle = currentFolder.getEditorialTitle();
-		    
-		    // no other option wine trouble
-		    if ( EnumTemplateType.WINE.equals( EnumTemplateType.getTemplateType(templateType) ) ) {
-		      introCopy="";
-		      introTitle="";
-			  isWineLayout=true;
-		    }
-		 	// remove intro from ddpp/ddpa
-		    if ( layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId() || layoutType == EnumLayoutType.PRODUCTS_ASSORTMENTS.getId()) {
-		      introCopy="";
-		      introTitle="";
-		    }
-		    
-			boolean showLine = false;   // if true, the last gray line prior to the categories-display will be printed
+		%>
+			<meta property="og:image" content="https://www.freshdirect.com<%= prodModel.getDetailImage().getPathWithPublishId() %>"/>
+		<%
+		}
+	}%>
+			<meta property="og:image" content="https://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
+			<meta property="og:image" content="https://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
+			<meta property="og:image" content="https://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
+		</tmpl:put>
+	
+		<tmpl:put name='content' direct='true'>
+			<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=currentFolder%>"/>
+			<%
+			if(layoutType == EnumLayoutType.GROCERY_PRODUCT.getId()){
+				%><fd:CmProductView quickbuy="false" wrapIntoScriptTag="true" productModel="<%=prodModel%>"/> <%
+			}
+			// TODO duplicated -- boolean virtualGrocerySpecified = request.getParameter("groceryVirtual")!=null;
+			//if (layoutType==EnumLayoutType.FEATURED_ALL.getId()) layoutType=19;
+			boolean noCache =  (EnumLayoutType.GROCERY_PRODUCT.getId()==layoutType
+			                    || isGroceryVirtual /* virtualGrocerySpecified */
+			                    || EnumLayoutType.BULK_MEAT_PRODUCT.getId()==layoutType
+			                    || EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId()==layoutType
+			                    || EnumLayoutType.TRANSAC_GROUPED_ITEMS.getId()==layoutType
+			                    || EnumLayoutType.THANKSGIVING_CATEGORY.getId()==layoutType
+			                    || EnumLayoutType.PARTY_PLATTER_CATEGORY.getId()==layoutType
+			                    || EnumLayoutType.HOLIDAY_MENU.getId()==layoutType
+			                    || EnumLayoutType.WINE_CATEGORY.getId()==layoutType
+			                    || EnumLayoutType.VALENTINES_CATEGORY.getId()==layoutType
+			                    || EnumLayoutType.TRANSAC_MULTI_PAIRED_ITEMS.getId()==layoutType);
+			                    
 			
-			//  get the rating & ranking stuff
-		    StringBuffer rateNRankLinks = new StringBuffer();
-
-		    if ( !isIncludeMediaLayout 
-		    		&& EnumLayoutType.BULK_MEAT_PRODUCT.getId() != layoutType
-		            && EnumLayoutType.VALENTINES_CATEGORY.getId() != layoutType 
-		            && EnumLayoutType.PARTY_PLATTER_CATEGORY.getId() != layoutType ) { // don't paint intro stuff if we'll be using bulkMeat layout
-
-				if (productContainer != null) { rateNRankLinks.append(RatingUtil.buildCategoryRatingLink(productContainer, response)); }
-
-				if ( !noCache 
-					|| EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId()==layoutType 
-					|| EnumLayoutType.HOLIDAY_MENU.getId()==layoutType  
-					|| EnumLayoutType.PARTY_PLATTER_CATEGORY.getId()==layoutType 
-					|| EnumLayoutType.WINE_CATEGORY.getId()==layoutType 
-					|| EnumLayoutType.TRANSAC_MULTI_PAIRED_ITEMS.getId()==layoutType 
-					|| ( isWineLayout && EnumLayoutType.TRANSAC_GROUPED_ITEMS.getId()==layoutType ) ) {
-					
-					if (FDStoreProperties.isAdServerEnabled()) { %>
-						<script type="text/javascript">
-							OAS_AD('CategoryNote');
-						</script> <%
-					}
-				} 				
-
-				if ( !noCache 
-					|| EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId()==layoutType
-				    || EnumLayoutType.HOLIDAY_MENU.getId()==layoutType  
-				    || EnumLayoutType.PARTY_PLATTER_CATEGORY.getId()==layoutType ) { //not DFGS %>
-
-					<%-- start header stuff --%>
-					<table width="<%=tablewid%>" border="0" cellspacing="0" cellpadding="0">
-						 
-						<% 
-						if ( !"nm".equalsIgnoreCase(introTitle) && introTitle != null && introTitle.trim().length() > 0 
-								&& EnumLayoutType.FOURMM_CATEGORY.getId() != layoutType ) {
-							
-							showLine=true; %>
-							<tr><td align="center"><% 
-								if ( !introTitle.equals("") ) { %>
-									<font class="title16"><%=introTitle%></font>
-								<% }
-								String seasonText = (productContainer==null) ? null : productContainer.getSeasonText();
-								if (seasonText != null ) { %>
-									<br/><img src="/media_stat/images/layout/clear.gif" height="4" width="1"><br/>
-									<font class="text12orbold"><%= seasonText %></font>
-								<% } %>
-							</td></tr>
-						<% }
-						
-						if ( layoutType == EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId() ) {
-							showLine=false;						
-							%>
-							<tr><td><img src="/media_stat/images/layout/clear.gif" height="5" width="1"></td></tr>
-							<tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" height="1" width="1"></td></tr>
-							<% 
-						} 
-
-						// bypass beer
-						if ( introCopy != null 
-								&& introCopy.trim().length() > 0 
-								&& introCopy.indexOf("blank_file.txt") == -1 
-								&& !( layoutType == EnumLayoutType.GROCERY_CATEGORY.getId() 
-										&& currentFolder.getEditorial() != null 
-										&& (currentFolder instanceof CategoryModel && ((CategoryModel)currentFolder).getCategoryLabel() != null )) 
-								&& EnumLayoutType.FOURMM_CATEGORY.getId() != layoutType
-							) { 
-							
-							if ( layoutType != EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId() ) 
-								showLine=true;
-							
-							if ( introCopy != null && introCopy.trim().length() > 0 ) {
-								%><tr><td align="center">
-									<img src="/media_stat/images/layout/clear.gif" height="5" width="1"><br/>
-									<fd:IncludeMedia name='<%= introCopy %>'/><br/>
-									<img src="/media_stat/images/layout/clear.gif" height="4" width="1">
-								</td></tr><%  
-							}
-						}
-
-						if ( rateNRankLinks.length() > 0 ) {
-							
-							showLine=true; %>
-							<tr><td><img src="/media_stat/images/layout/clear.gif" height="7" width="1"></td></tr>
-							<tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" height="1" width="1"></td></tr>
-							<tr><td><img src="/media_stat/images/layout/clear.gif" height="4" width="1"></td></tr>
-							<tr><td align="center">
-								<table cellpadding="0" cellspacing="0" border="0">
-									<tr>
-										<td>
-											<img src="/media_stat/images/template/gstar.gif" width="15" height="14" border="0" alt="*">
-											<img src="/media_stat/images/layout/clear.gif" height="1" width="6">
-										</td>
-										<td class="text11bold">Compare by:&nbsp;</td>
-										<%=rateNRankLinks%>
-										<td>
-											<img src="/media_stat/images/layout/clear.gif" height="1" width="6">
-											<img src="/media_stat/images/template/gstar.gif" width="15" height="14" border="0" alt="*">
-										</td>
-									</tr>
-								</table>
-							</td></tr>
-						<% }
-
-						if ( showLine && layoutType != EnumLayoutType.HOLIDAY_MENU.getId() && layoutType != EnumLayoutType.FEATURED_MENU.getId() ) { %>
-							<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
-							<tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
-							<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
-							
-							<%
-							List brandAttrib = (currentFolder instanceof CategoryModel) ? ((CategoryModel)currentFolder).getTopMedia() : null; 
-							if (brandAttrib != null && brandAttrib.size() > 0) { %>
-								<tr><td><fd:IncludeMedia name="<%= ( (Html)brandAttrib.get(0) ).getPath() %>" /></td></tr>
-							<% } 
-						} // end of if intro copy set to blank, do nothing
-						
-						//place the products in out temporary list..then assign it to the array itemsToDisplayArray
-						%>
-					</table>
-					
-					
-					<% 
-					//if ( rateNRankLinks.length() > 0 || ( "hmr".equals( currentFolder.getParentNode().toString() ) && currentFolder.getBlurb() == null ) ) {
-					//null check
-					if ( rateNRankLinks.length() > 0 || ( "hmr".equals( (currentFolder.getParentNode() != null) ? currentFolder.getParentNode().toString() : "" ) && currentFolder.getBlurb() == null ) ) { 
-						%><br/><%
-					}
-					
-				} else if ( EnumLayoutType.TRANSAC_GROUPED_ITEMS.getId() == layoutType ) {
-				 	//paint the category_detail_image, intro copy and full name
-					MediaModel catDetailImg = categoryModel != null ? categoryModel.getCategoryDetailImage() : null;
-
-					Html editorialAttribute = currentFolder.getEditorial();
-					String catEditorialPath = editorialAttribute==null ? null : editorialAttribute.getPath();
-					%>
-					
-					<table width="<%= tablewid %>" border="0" cellspacing="0" cellpadding="0">
-								
-						<tr><td align="center" colspan="3"><br/><font class="title18"><%=currentFolder.getFullName()%></font><br/><br/></td></tr>
-						<tr valign="top">
-							<td width="<%= catDetailImg.getWidth() + 2 %>">
-								<%	if(catDetailImg!=null) { %>
-									<img src="<%=catDetailImg.getPath()%>" width="<%=catDetailImg.getWidth()%>" height="<%=catDetailImg.getHeight()%>" border="0">
-								<%  } else { %>
-									<img src="/media_stat/images/layout/clear.gif" width="100" HEIGHT="1" border="0">
-								<% } %>
-							</td>
-							<td><img src="/media_stat/images/layout/clear.gif" width="8" HEIGHT="1" border="0"></td>
-							<td>
-								<% if ( catEditorialPath != null ) { %>
-									<fd:IncludeMedia name='<%= catEditorialPath %>'/>
-								<% } else {	%>
-									&nbsp;
-								<% } %>
-							</td>
-						</tr>
-					</table>
-				<% 
-				}
-			} %>
-					
-			<%-- end header stuff --%>
-
-			<% 
-			//if ( "hmr".equals( currentFolder.getParentNode().toString() ) && currentFolder.getBlurb() != null ) { 
-			//null check
-			if ( "hmr".equals( (currentFolder.getParentNode() != null) ? currentFolder.getParentNode().toString() : "" ) && currentFolder.getBlurb() != null ) { 
-			%>
-				<table width="<%= tablewid %>" border="0" cellspacing="0" cellpadding="0">
-					<tr><td>
-						<%= currentFolder.getBlurb() %><FONT CLASS="space4pix"><br/><br/></FONT>
-					</td></tr>
-				</table>
-				<br/><% 
+			String keyPrefix="catLayout_";
+			int ttl=300;
+			FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
+			if(deptId != null && ("fru".equals(deptId)||"veg".equals(deptId)||"orgnat".equals(deptId)||"local".equals(deptId)||"mea".equals(deptId))) {
+			    if(user.isProduceRatingEnabled()) {
+			        keyPrefix=keyPrefix+user.isProduceRatingEnabled()+"_";
+			        ttl=180;
+			    }
 			}
 			
-			%><%@ include file="/common/template/includes/catLayoutManager.jspf" %><%      
-		} // else AlternateContent
-		
-		/* Layout may have put a request attribute called brandsList, of type set...get it into the brands var */
-	  	if ( request.getAttribute("brandsList") != null ) {
-			brands = (Set)request.getAttribute("brandsList");
-	   	}
-	   	if (
-	   			EnumLayoutType.BULK_MEAT_PRODUCT.getId() != layoutType && 
-	   			EnumLayoutType.VALENTINES_CATEGORY.getId() != layoutType && 
-	   			EnumLayoutType.FOURMM_CATEGORY.getId() != layoutType &&
-	   			EnumLayoutType.PRESIDENTS_PICKS.getId() != layoutType && EnumLayoutType.PRODUCTS_ASSORTMENTS.getId() != layoutType
-	   		) { 
-	   		%><%@ include file="/includes/i_bottom_template.jspf" %><%
-		} %>
+			int tablewid = noLeftNav ? W_CATEGORY_NO_LEFT_NAV : W_CATEGORY_WITH_LEFT_NAV;
 			
-	</tmpl:put><%
-		//@ include file="/includes/i_promotion_counter.jspf"
-%></tmpl:insert>
+			
+			// Beginning of ifAlternateContent
+			if( alternateContentFile != null ) {
+				%><fd:IncludeMedia name='<%= alternateContentFile %>' /><%
+			} else {
+			
+				Html introCopyAttribute = currentFolder.getEditorial();
+				String introCopy = introCopyAttribute==null?"":introCopyAttribute.getPath();
+			            
+				String introTitle = currentFolder.getEditorialTitle();
+			    
+			    // no other option wine trouble
+			    if ( EnumTemplateType.WINE.equals( EnumTemplateType.getTemplateType(templateType) ) ) {
+			      introCopy="";
+			      introTitle="";
+				  isWineLayout=true;
+			    }
+			 	// remove intro from ddpp/ddpa
+			    if ( layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId() || layoutType == EnumLayoutType.PRODUCTS_ASSORTMENTS.getId()) {
+			      introCopy="";
+			      introTitle="";
+			    }
+			    
+				boolean showLine = false;   // if true, the last gray line prior to the categories-display will be printed
+				
+				//  get the rating & ranking stuff
+			    StringBuffer rateNRankLinks = new StringBuffer();
+	
+			    if ( !isIncludeMediaLayout 
+			    		&& EnumLayoutType.BULK_MEAT_PRODUCT.getId() != layoutType
+			            && EnumLayoutType.VALENTINES_CATEGORY.getId() != layoutType 
+			            && EnumLayoutType.PARTY_PLATTER_CATEGORY.getId() != layoutType ) { // don't paint intro stuff if we'll be using bulkMeat layout
+	
+					if (productContainer != null) { rateNRankLinks.append(RatingUtil.buildCategoryRatingLink(productContainer, response)); }
+	
+					if ( !noCache 
+						|| EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId()==layoutType 
+						|| EnumLayoutType.HOLIDAY_MENU.getId()==layoutType  
+						|| EnumLayoutType.PARTY_PLATTER_CATEGORY.getId()==layoutType 
+						|| EnumLayoutType.WINE_CATEGORY.getId()==layoutType 
+						|| EnumLayoutType.TRANSAC_MULTI_PAIRED_ITEMS.getId()==layoutType 
+						|| ( isWineLayout && EnumLayoutType.TRANSAC_GROUPED_ITEMS.getId()==layoutType ) ) {
+						
+						if (FDStoreProperties.isAdServerEnabled()) { %>
+							<script type="text/javascript">
+								OAS_AD('CategoryNote');
+							</script> <%
+						}
+					} 				
+	
+					if ( !noCache 
+						|| EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId()==layoutType
+					    || EnumLayoutType.HOLIDAY_MENU.getId()==layoutType  
+					    || EnumLayoutType.PARTY_PLATTER_CATEGORY.getId()==layoutType ) { //not DFGS %>
+	
+						<%-- start header stuff --%>
+						<table width="<%=tablewid%>" border="0" cellspacing="0" cellpadding="0">
+							 
+							<% 
+							if ( !"nm".equalsIgnoreCase(introTitle) && introTitle != null && introTitle.trim().length() > 0 
+									&& EnumLayoutType.FOURMM_CATEGORY.getId() != layoutType ) {
+								
+								showLine=true; %>
+								<tr><td align="center"><% 
+									if ( !introTitle.equals("") ) { %>
+										<font class="title16"><%=introTitle%></font>
+									<% }
+									String seasonText = (productContainer==null) ? null : productContainer.getSeasonText();
+									if (seasonText != null ) { %>
+										<br/><img src="/media_stat/images/layout/clear.gif" height="4" width="1"><br/>
+										<font class="text12orbold"><%= seasonText %></font>
+									<% } %>
+								</td></tr>
+							<% }
+							
+							if ( layoutType == EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId() ) {
+								showLine=false;						
+								%>
+								<tr><td><img src="/media_stat/images/layout/clear.gif" height="5" width="1"></td></tr>
+								<tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" height="1" width="1"></td></tr>
+								<% 
+							} 
+	
+							// bypass beer
+							if ( introCopy != null 
+									&& introCopy.trim().length() > 0 
+									&& introCopy.indexOf("blank_file.txt") == -1 
+									&& !( layoutType == EnumLayoutType.GROCERY_CATEGORY.getId() 
+											&& currentFolder.getEditorial() != null 
+											&& (currentFolder instanceof CategoryModel && ((CategoryModel)currentFolder).getCategoryLabel() != null )) 
+									&& EnumLayoutType.FOURMM_CATEGORY.getId() != layoutType
+								) { 
+								
+								if ( layoutType != EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId() ) 
+									showLine=true;
+								
+								if ( introCopy != null && introCopy.trim().length() > 0 ) {
+									%><tr><td align="center">
+										<img src="/media_stat/images/layout/clear.gif" height="5" width="1"><br/>
+										<fd:IncludeMedia name='<%= introCopy %>'/><br/>
+										<img src="/media_stat/images/layout/clear.gif" height="4" width="1">
+									</td></tr><%  
+								}
+							}
+	
+							if ( rateNRankLinks.length() > 0 ) {
+								
+								showLine=true; %>
+								<tr><td><img src="/media_stat/images/layout/clear.gif" height="7" width="1"></td></tr>
+								<tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" height="1" width="1"></td></tr>
+								<tr><td><img src="/media_stat/images/layout/clear.gif" height="4" width="1"></td></tr>
+								<tr><td align="center">
+									<table cellpadding="0" cellspacing="0" border="0">
+										<tr>
+											<td>
+												<img src="/media_stat/images/template/gstar.gif" width="15" height="14" border="0" alt="*">
+												<img src="/media_stat/images/layout/clear.gif" height="1" width="6">
+											</td>
+											<td class="text11bold">Compare by:&nbsp;</td>
+											<%=rateNRankLinks%>
+											<td>
+												<img src="/media_stat/images/layout/clear.gif" height="1" width="6">
+												<img src="/media_stat/images/template/gstar.gif" width="15" height="14" border="0" alt="*">
+											</td>
+										</tr>
+									</table>
+								</td></tr>
+							<% }
+	
+							if ( showLine && layoutType != EnumLayoutType.HOLIDAY_MENU.getId() && layoutType != EnumLayoutType.FEATURED_MENU.getId() ) { %>
+								<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
+								<tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
+								<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
+								
+								<%
+								List brandAttrib = (currentFolder instanceof CategoryModel) ? ((CategoryModel)currentFolder).getTopMedia() : null; 
+								if (brandAttrib != null && brandAttrib.size() > 0) { %>
+									<tr><td><fd:IncludeMedia name="<%= ( (Html)brandAttrib.get(0) ).getPath() %>" /></td></tr>
+								<% } 
+							} // end of if intro copy set to blank, do nothing
+							
+							//place the products in out temporary list..then assign it to the array itemsToDisplayArray
+							%>
+						</table>
+						
+						
+						<% 
+						//if ( rateNRankLinks.length() > 0 || ( "hmr".equals( currentFolder.getParentNode().toString() ) && currentFolder.getBlurb() == null ) ) {
+						//null check
+						if ( rateNRankLinks.length() > 0 || ( "hmr".equals( (currentFolder.getParentNode() != null) ? currentFolder.getParentNode().toString() : "" ) && currentFolder.getBlurb() == null ) ) { 
+							%><br/><%
+						}
+						
+					} else if ( EnumLayoutType.TRANSAC_GROUPED_ITEMS.getId() == layoutType ) {
+					 	//paint the category_detail_image, intro copy and full name
+						MediaModel catDetailImg = categoryModel != null ? categoryModel.getCategoryDetailImage() : null;
+	
+						Html editorialAttribute = currentFolder.getEditorial();
+						String catEditorialPath = editorialAttribute==null ? null : editorialAttribute.getPath();
+						%>
+						
+						<table width="<%= tablewid %>" border="0" cellspacing="0" cellpadding="0">
+									
+							<tr><td align="center" colspan="3"><br/><font class="title18"><%=currentFolder.getFullName()%></font><br/><br/></td></tr>
+							<tr valign="top">
+								<td width="<%= catDetailImg.getWidth() + 2 %>">
+									<%	if(catDetailImg!=null) { %>
+										<img src="<%=catDetailImg.getPath()%>" width="<%=catDetailImg.getWidth()%>" height="<%=catDetailImg.getHeight()%>" border="0">
+									<%  } else { %>
+										<img src="/media_stat/images/layout/clear.gif" width="100" HEIGHT="1" border="0">
+									<% } %>
+								</td>
+								<td><img src="/media_stat/images/layout/clear.gif" width="8" HEIGHT="1" border="0"></td>
+								<td>
+									<% if ( catEditorialPath != null ) { %>
+										<fd:IncludeMedia name='<%= catEditorialPath %>'/>
+									<% } else {	%>
+										&nbsp;
+									<% } %>
+								</td>
+							</tr>
+						</table>
+					<% 
+					}
+				} %>
+						
+				<%-- end header stuff --%>
+	
+				<% 
+				//if ( "hmr".equals( currentFolder.getParentNode().toString() ) && currentFolder.getBlurb() != null ) { 
+				//null check
+				if ( "hmr".equals( (currentFolder.getParentNode() != null) ? currentFolder.getParentNode().toString() : "" ) && currentFolder.getBlurb() != null ) { 
+				%>
+					<table width="<%= tablewid %>" border="0" cellspacing="0" cellpadding="0">
+						<tr><td>
+							<%= currentFolder.getBlurb() %><FONT CLASS="space4pix"><br/><br/></FONT>
+						</td></tr>
+					</table>
+					<br/><% 
+				}
+				
+				%><%@ include file="/common/template/includes/catLayoutManager.jspf" %><%      
+			} // else AlternateContent
+			
+			/* Layout may have put a request attribute called brandsList, of type set...get it into the brands var */
+		  	if ( request.getAttribute("brandsList") != null ) {
+				brands = (Set)request.getAttribute("brandsList");
+		   	}
+		   	if (
+		   			EnumLayoutType.BULK_MEAT_PRODUCT.getId() != layoutType && 
+		   			EnumLayoutType.VALENTINES_CATEGORY.getId() != layoutType && 
+		   			EnumLayoutType.FOURMM_CATEGORY.getId() != layoutType &&
+		   			EnumLayoutType.PRESIDENTS_PICKS.getId() != layoutType && EnumLayoutType.PRODUCTS_ASSORTMENTS.getId() != layoutType
+		   		) { 
+		   		%><%@ include file="/includes/i_bottom_template.jspf" %><%
+			} %>
+				
+		</tmpl:put><%
+			//@ include file="/includes/i_promotion_counter.jspf"
+	%></tmpl:insert>
