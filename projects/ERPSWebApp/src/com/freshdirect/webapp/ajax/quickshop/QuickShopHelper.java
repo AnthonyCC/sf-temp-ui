@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +31,8 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDVariation;
+import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ConfiguredProductGroup;
@@ -358,10 +361,38 @@ public class QuickShopHelper {
 		item.setAlcoholic( isAlcoholic( productModel, fdProduct ) );
 		item.setUsq( isUsq( productModel, fdProduct ) );		
 		item.setProductPageUrl( FDURLUtil.getProductURI( productModel, (String)null ) );
-		
+					
 		populateRatings( item, user, productModel, sku.getSkuCode() );
 		populateBursts( item, user, productModel, priceCalculator, useFavBurst );
 		populateQuantityAndSalesUnits( item, user, productModel, fdProduct, orderLine );
+		
+		// make a variation map
+		HashMap<String, String> optionMap = new HashMap<String, String>();
+		FDVariation[] variations = fdProduct.getVariations();
+		if(variations != null) {
+			boolean autoConfiguration = false;
+			for (FDVariation variation : variations) {
+				FDVariationOption[] options = variation.getVariationOptions();
+				if(options != null && options.length == 1) {
+					autoConfiguration = true;
+				} else {
+					autoConfiguration = false;
+				}
+			}
+			
+			if(autoConfiguration) {
+				for (FDVariation variation : variations) {
+					FDVariationOption[] options = variation.getVariationOptions();
+					if(options != null) {
+						for (int n = 0;n < options.length; n++) {
+							FDVariationOption option = options[n % options.length];						
+							optionMap.put(variation.getName(), option.getName());
+						}
+					}
+				}
+				item.setConfiguration(optionMap);
+			}
+		}
 		
 		//get frequency and recency values from smartstore
 		String[] variables = new String[2];
