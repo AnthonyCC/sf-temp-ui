@@ -37,15 +37,14 @@
 %><%@ page import='java.io.UnsupportedEncodingException'
 %><%@ page import='java.net.*' 
 %><%@ page import='java.net.URLEncoder'
-%><%@ page import='java.util.*' %>
-
-<%@ taglib uri='template' prefix='tmpl'%>
-<%@ taglib uri='bean' prefix='bean'%>
-<%@ taglib uri='logic' prefix='logic'%>
-<%@ taglib uri='freshdirect' prefix='fd'%>
-<%@ taglib uri='oscache' prefix='oscache'%>
-<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
-<% //expanded page dimension
+%><%@ page import='java.util.*'
+%><%@ taglib uri='template' prefix='tmpl'
+%><%@ taglib uri='bean' prefix='bean'
+%><%@ taglib uri='logic' prefix='logic'
+%><%@ taglib uri='freshdirect' prefix='fd'
+%><%@ taglib uri='oscache' prefix='oscache'
+%><%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'
+%><% //expanded page dimension
 final int W_INDEX_TOTAL = 970;
 final int W_INDEX_CENTER_PADDING = 20;
 final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
