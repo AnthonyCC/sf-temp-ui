@@ -12,6 +12,7 @@ import java.util.List;
 import com.freshdirect.customer.ErpInvoiceLineModel;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.MathUtil;
 
 /**
  * ErpInvoiceLine persistent bean.
@@ -91,13 +92,14 @@ public class ErpInvoiceLinePersistentBean extends ErpReadOnlyPersistentBean {
 	}
 
 	public PrimaryKey create(Connection conn) throws SQLException {
+		
 		String id = this.getNextId(conn, "CUST");
 		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.INVOICELINE (ID, SALESACTION_ID, ORDERLINE_NUMBER, ACTUAL_PRICE, ACTUAL_QUANTITY, LINE_TAX, DEPOSIT_VALUE, MATERIAL_NUMBER, ACTUAL_WEIGHT, CUSTOMIZATION_PRICE, ACTUAL_COST, DISCOUNT_AMT,COUPON_DISC_AMT) values (?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
 		ps.setString(3, this.model.getOrderLineNumber());
 		ps.setBigDecimal(4, new BigDecimal(String.valueOf(this.model.getActualPrice())));
-		ps.setBigDecimal(5, new BigDecimal(String.valueOf(this.model.getQuantity())));
+		ps.setBigDecimal(5, new BigDecimal(String.valueOf(MathUtil.roundDecimal(this.model.getQuantity()))));
 		ps.setBigDecimal(6, new BigDecimal(String.valueOf(this.model.getTaxValue())));
 		ps.setBigDecimal(7, new BigDecimal(String.valueOf(this.model.getDepositValue())));
 		ps.setString(8, this.model.getMaterialNumber());
