@@ -121,7 +121,7 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 		// show the validation message.
 		else if (validateSearchParam(fdSearchCriteria.getFirstName())
 				&& validateSearchParam(fdSearchCriteria.getLastName())
-				&& validateSearchParam(fdSearchCriteria.getPhone())) {
+				&& validatePhoneParam(fdSearchCriteria.getPhone())) {
 			result = true;
 		}
 		return result;
@@ -136,15 +136,50 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 		return false;
 
 	}
+	
+	private boolean validatePhoneParam(String inputStr) {
+		if (inputStr == null
+				|| (inputStr.trim().equals("*") || inputStr.trim().equals("%") || validatePhonePattern(inputStr))) {
+			return true;
+		}
 
+		return false;
+
+	}
 	// Exception Pattern for example is "*a*" and "%a%" is not supported for
 	// search
 	private boolean validateExceptionPattern(String inputStr) {
 		if (inputStr.length() == 3
 				&& (inputStr.charAt(0) == '*' || inputStr.charAt(0) == '%')
 				&& (inputStr.charAt(2) == '*' || inputStr.charAt(2) == '%')) {
-			return true;
+			return true;			
 		}
+		return false;
+	}	
+	
+	// Exception Pattern for phone is if the num of character =< 4 followed by "*" 
+	// e.g Invalid Search Pattern e.g (212)*, 1*2*,12*,1* 
+	//Valid Search Pattern *123,*12,1*2 ..etc
+	private boolean validatePhonePattern(String inputStr) {
+		if ((inputStr.contains("*"))
+				&& inputStr.length() <= 4) {		
+			if (countWildChars(inputStr)) {
+				return true;
+			}
+			else if(inputStr.charAt(inputStr.length()-1) == '*'){
+				return true;
+			}
+		}
+		return false;
+	}				
+
+	private boolean countWildChars(String inputStr) {
+
+		int countWildCard = inputStr.length()
+				- inputStr.replaceAll("\\*", "").length();
+		if (countWildCard > 1) {
+			return true;
+		} 
 		return false;
 	}
 
