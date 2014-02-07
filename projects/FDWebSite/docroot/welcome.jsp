@@ -8,7 +8,6 @@ request.setAttribute("listPos", "SystemMessage,WDelivery,WAffiliate");
 %><tmpl:insert template="/common/template/page_template_optimized.jsp">
 	<tmpl:put name="title">FreshDirect</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-		
 	    <div class="content span-24">
 		<% if ( request.getParameter("lang") != null) { %>
 			<% if ("espanol".equalsIgnoreCase(request.getParameter("lang"))) { %> 
@@ -28,12 +27,11 @@ request.setAttribute("listPos", "SystemMessage,WDelivery,WAffiliate");
 	</tmpl:put>
 
 	<tmpl:put name='extraBody' direct='true'>
+		<% /* add this here since there's no log out page now */ %>
+		<iframe src="<%=MyFdFeed.getInstance().getBlogUrl()%>/?autologout" width="0" height="0" frameBorder="0"/>
 	</tmpl:put>
 
 	<tmpl:put name='nav' direct='true'>
 	</tmpl:put>		
 	
 </tmpl:insert>
-
-<% /* add this here since there's no log out page now */ %>
-<iframe src="<%=MyFdFeed.getInstance().getBlogUrl()%>/?autologout" width="0" height="0" frameBorder="0"/>
