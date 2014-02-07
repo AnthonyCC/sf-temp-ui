@@ -1,48 +1,43 @@
-<%@page import="com.freshdirect.customer.EnumATCContext"%>
-<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
-<%@ page import='com.freshdirect.framework.webapp.*'%>
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
-<%@ page import='com.freshdirect.content.attributes.*'%>
-<%@ page import="com.freshdirect.fdstore.util.URLGenerator"%>
-<%@ page import="com.freshdirect.fdstore.util.FilteringNavigator"%>
-<%@ page import="com.freshdirect.fdstore.*"%>
-<%@ page import="com.freshdirect.cms.*"%>
-<%@ page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
-<%@ page import="com.freshdirect.fdstore.content.*"%>
-<%@ page import='com.freshdirect.fdstore.attributes.*'%>
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName'%>
-<%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
-<%@ page import="java.text.DecimalFormat"%>
-<%@ page import="com.freshdirect.framework.util.NVL"%>
-<%@ page import="com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy"%>
-<%@ page import="com.freshdirect.framework.util.log.LoggerFactory"%>
-<%@ page import="com.freshdirect.fdstore.util.FilteringNavigator"%>
-<%@ page import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
-<%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
-<%@ page import="com.freshdirect.FDCouponProperties"%>
-<%@ page import="com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil"%>
-
-<%@page import="com.freshdirect.customer.EnumATCContext"%>
-<%@ page import="java.text.SimpleDateFormat"%>
-<%@ page import="java.text.DecimalFormat"%>
-<%@ page import='java.util.*'  %>
-<%@ page import='java.net.*' %>
-<%@ page import='java.net.URLEncoder'%>
-<%@ page import='java.io.UnsupportedEncodingException'%>
-<%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
-<%@ page import='com.freshdirect.content.attributes.*' %>
-<%@ page import='com.freshdirect.fdstore.*' %>
-<%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ page import="com.freshdirect.framework.webapp.*"%>
-<%@ page import='com.freshdirect.framework.util.*' %>
-<%@ page import="com.freshdirect.webapp.util.ConfigurationContext"%>
-<%@ page import="com.freshdirect.webapp.util.ConfigurationStrategy"%>
-<%@ page import="com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy"%>
-<%@ page import="com.freshdirect.fdstore.customer.EnumQuickbuyStatus" %>
-<%@ page import='com.freshdirect.cms.util.*' %>
-<%@ page import="com.freshdirect.fdstore.content.util.QueryParameterCollection"%>
+<%@ page import='com.freshdirect.FDCouponProperties'
+%><%@ page import='com.freshdirect.cms.*'
+%><%@ page import='com.freshdirect.cms.fdstore.FDContentTypes'
+%><%@ page import='com.freshdirect.fdstore.*'
+%><%@ page import='com.freshdirect.fdstore.content.*'
+%><%@ page import='com.freshdirect.fdstore.content.DomainValue'
+%><%@ page import='com.freshdirect.fdstore.content.util.QueryParameterCollection'
+%><%@ page import='com.freshdirect.fdstore.customer.EnumQuickbuyStatus' 
+%><%@ page import='com.freshdirect.fdstore.util.FilteringNavigator'
+%><%@ page import='com.freshdirect.fdstore.util.URLGenerator'
+%><%@ page import='com.freshdirect.framework.util.NVL'
+%><%@ page import='com.freshdirect.framework.util.log.LoggerFactory'
+%><%@ page import='com.freshdirect.framework.webapp.*'
+%><%@ page import='com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil'
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil'
+%><%@ page import='com.freshdirect.webapp.util.ConfigurationContext'
+%><%@ page import='com.freshdirect.webapp.util.ConfigurationStrategy'
+%><%@ page import='com.freshdirect.webapp.util.FDURLUtil'
+%><%@ page import='com.freshdirect.webapp.util.prodconf.DefaultProductConfigurationStrategy'
+%><%@ page import='java.text.DecimalFormat'
+%><%@ page import='java.text.SimpleDateFormat'
+%><%@ page import='org.apache.commons.lang.StringEscapeUtils'
+%><%@ page import='com.freshdirect.cms.util.*' 
+%><%@ page import='com.freshdirect.content.attributes.*' 
+%><%@ page import='com.freshdirect.content.attributes.*'
+%><%@ page import='com.freshdirect.fdstore.*' 
+%><%@ page import='com.freshdirect.fdstore.attributes.*' 
+%><%@ page import='com.freshdirect.fdstore.attributes.*'
+%><%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' 
+%><%@ page import='com.freshdirect.fdstore.customer.*' 
+%><%@ page import='com.freshdirect.framework.util.*' 
+%><%@ page import='com.freshdirect.framework.webapp.*'
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*' 
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
+%><%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName'
+%><%@ page import='com.freshdirect.customer.EnumATCContext'
+%><%@ page import='java.io.UnsupportedEncodingException'
+%><%@ page import='java.net.*' 
+%><%@ page import='java.net.URLEncoder'
+%><%@ page import='java.util.*' %>
 
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='bean' prefix='bean'%>
@@ -588,7 +583,6 @@ if (categoryModel != null) {
 		<tmpl:put name="productTabItemCount"><%= itemCount %></tmpl:put>
 		
 		<tmpl:put name="content-header">
-			<tmpl:get name="socialMedia-header"/>
 			
 			<div class="ddpp clearfix">
 				
@@ -659,10 +653,6 @@ if (categoryModel != null) {
 				</fd:FDShoppingCart>
 			</div>
 			<br style="clear:both" />
-			<!--[if lt IE 7]><div class="ie ie6"><![endif]-->
-			<!--[if IE 7]><div class="ie ie7"> <![endif]-->
-			<!--[if IE 8]><div class="ie ie8"> <![endif]-->
-			<!--[if gt IE 8]><!--><div><!--<![endif]-->		
 		</tmpl:put>
 		
 		<logic:equal name="activeTabVal" value="products">

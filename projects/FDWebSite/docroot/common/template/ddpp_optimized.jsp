@@ -26,10 +26,10 @@
 	<!--[if gt IE 8]><!-->
 	<body class="searchpage <tmpl:get name="activeTab"/>-active <tmpl:get name="activeView"/>-view <tmpl:get name="noResult"/> <tmpl:get name="startPage"/>">
 	<!--<![endif]-->
-		<%@ include file="/shared/template/includes/i_body_start.jspf" %>      
+		<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 		<%@ include file="/common/template/includes/globalnav_optimized.jspf" %>
-		
-		<center class="text10">
+		      
+		<div style="margin: 0 auto 15px auto; width: <%=W_DNAV_NO_SPACE_TOTAL%>px;">
 			<table width="<%=W_DNAV_NO_SPACE_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 				<tr>
 					<td width="<%=W_DNAV_NO_SPACE_TOTAL%>" valign="top"><img src="/media_stat/images/layout/clear.gif" width="<%=W_DNAV_NO_SPACE_TOTAL%>" height="5" border="0" alt="" /></td>
@@ -40,36 +40,46 @@
 					</td>
 				</tr>
 				<tr>
-					<td width="<%=W_DNAV_NO_SPACE_TOTAL%>" bgcolor="#999966"><img src="/media_stat/images/layout/999966.gif" width="1" height="1" border="0" alt="" /></td>
+					<td width="<%=W_DNAV_NO_SPACE_TOTAL%>" bgcolor="#999966" class="onePxTall"><img src="/media_stat/images/layout/999966.gif" width="1" height="1" border="0" alt="" /></td>
 				</tr>
 			</table>
-		
-		    <div id="content_top" class="content-header container">
-			    <tmpl:get name="content-header"/>
-		    </div>
-				    
-			<div class="toolbar container"><div class="toolbar-content"><tmpl:get name="toolbar" /></div></div>
-				
-		    <div id="main" class="container">
-		    	<div id="sidebar">
-		        	<tmpl:get name='filterNavigator'/>
-		    	</div>
-			    <div id="content" class="product-grid">
-			    	
-				    		<div id="pager-top" class="pager"><tmpl:get name='pagerTop'/></div>
-				    		<div class="items"><tmpl:get name='content'/><div class="clear"></div></div>
-				    		<div id="pager-bottom" class="pager"><tmpl:get name='pagerBottom'/></div>
-				    		<tmpl:get name='recommendations'/>
-			    </div>
-		    </div>
-			<tmpl:get name='deal-carousel-grofrodai' />
-			<tmpl:get name='bottom-ads' />
-			<tmpl:get name='bottom-media' />
+		</div>
+		<tmpl:get name="socialMedia-header"/>
+	
+	    <div id="content_top" class="content-header container">
+		    <tmpl:get name="content-header"/>
+	    </div>
+			    
+		<div class="toolbar container"><div class="toolbar-content"><tmpl:get name="toolbar" /></div></div>
 			
-		</center>
+	    <div id="main" class="container">
+	    	<div id="sidebar">
+	        	<tmpl:get name='filterNavigator'/>
+	    	</div>
+		    <div id="content" class="product-grid">
+		    	
+			    		<div id="pager-top" class="pager"><tmpl:get name='pagerTop'/></div>
+			    		<div class="items"><tmpl:get name='content'/><div class="clear"></div></div>
+			    		<div id="pager-bottom" class="pager"><tmpl:get name='pagerBottom'/></div>
+			    		<tmpl:get name='recommendations'/>
+		    </div>
+	    </div>
+	    
+		<div style="margin: 0 auto; width: <%=W_DNAV_NO_SPACE_TOTAL%>px;">
+			<tmpl:get name='deal-carousel-grofrodai' />
+	    </div>
+	    
+		<div style="margin: 0 auto; width: <%=W_DNAV_NO_SPACE_TOTAL%>px;">
+			<tmpl:get name='bottom-ads' />
+	    </div>
+	    
+		<div style="margin: 0 auto; width: <%=W_DNAV_NO_SPACE_TOTAL%>px;">
+			<tmpl:get name='bottom-media' />
+	    </div>
+			
 	    
 		<%@ include file="/common/template/includes/footer.jspf" %>
     	<%@ include file="/common/template/includes/i_jsmodules_optimized.jspf" %>
-	  <tmpl:get name='customJsBottom'/>
+		<tmpl:get name='customJsBottom'/>
 	</body>
 </html> 
