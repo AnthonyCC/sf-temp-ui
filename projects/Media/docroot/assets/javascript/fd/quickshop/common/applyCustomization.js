@@ -39,7 +39,7 @@ var FreshDirect = FreshDirect || {};
 					var item = items && items[0];
 					if(item){
 						fd.modules.common.editinlistpopup.saveChange(item.listId,item.lineId,item);
-						fd.modules.common.editinlistpopup.close();
+						$('#customizePopup').hide();
 					}
 				}
 			}
