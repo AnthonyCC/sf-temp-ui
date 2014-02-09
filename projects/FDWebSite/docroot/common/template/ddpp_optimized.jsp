@@ -54,6 +54,11 @@
 			
 	    <div id="main" class="container">
 	    	<div id="sidebar">
+	    		<%-- spacer above left filter sidebar --%>
+				<div id="selection" class="sidebar-content">
+	    			<tmpl:get name='selection-header'/>
+	    			<tmpl:get name='selection-list'/>
+	    		</div>
 	        	<tmpl:get name='filterNavigator'/>
 	    	</div>
 		    <div id="content" class="product-grid">
