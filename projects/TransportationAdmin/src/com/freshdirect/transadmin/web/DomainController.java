@@ -1140,7 +1140,7 @@ public class DomainController extends AbstractMultiActionController {
 	public void employeeRefreshHandler(HttpServletRequest request, HttpServletResponse response)
 	throws ServletException {
 		PrintWriter pw = null;
-		String exceptionMsg = null;
+		String exceptionMsg = "";
 		try{
 			pw = response.getWriter();
 			employeeManagerService.syncEmployees();
