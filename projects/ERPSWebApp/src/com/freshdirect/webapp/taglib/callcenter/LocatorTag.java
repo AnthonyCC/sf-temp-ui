@@ -158,19 +158,32 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 	}	
 	
 	// Exception Pattern for phone is if the num of character =< 4 followed by "*" 
-	// e.g Invalid Search Pattern e.g (212)*, 1*2*,12*,1* 
-	//Valid Search Pattern *123,*12,1*2 ..etc
+	// e.g Invalid Search Pattern e.g (212)*, 1*2*,12*,1* , 212*******
+	
+	//Valid Search Pattern *123,*12,1*2, 212****12
 	private boolean validatePhonePattern(String inputStr) {
-		if ((inputStr.contains("*"))
-				&& inputStr.length() <= 4) {		
-			if (countWildChars(inputStr)) {
-				return true;
+		boolean isPhonePatternNotValid = false;
+		if ((inputStr.contains("*")) && inputStr.length() <= 4) {
+			if (inputStr.charAt(inputStr.length() - 1) == '*' || countWildChars(inputStr)) {
+				isPhonePatternNotValid = true;
 			}
-			else if(inputStr.charAt(inputStr.length()-1) == '*'){
-				return true;
+		} else if (inputStr.charAt(inputStr.length() - 1) == '*') {
+			char[] arry = inputStr.substring(3, inputStr.length())
+					.toCharArray();
+			boolean hasValidNum = false;
+			for (char c : arry) {
+				if (c != '*') {
+					hasValidNum = true;
+					break;
+				}
+			}
+			if (!hasValidNum) {
+				isPhonePatternNotValid = true;
+			} else {
+				isPhonePatternNotValid = false;
 			}
 		}
-		return false;
+		return isPhonePatternNotValid;
 	}				
 
 	private boolean countWildChars(String inputStr) {
