@@ -17,8 +17,8 @@ final int W_GLOBAL_NAV_TOP_TOTAL = 970;
 <jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
 <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 <div id="toptoolbar">
-<jsp:include page="/shared/locationbar/locationbar_optimized.jsp" />
-<jsp:include page="/shared/messages/messages_optimized.jsp" />
+<jsp:include page="/shared/locationbar/locationbar.jsp" />
+<jsp:include page="/shared/messages/messages.jsp" />
 </div>
 <%
 //*****************************************************************

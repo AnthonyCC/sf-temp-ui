@@ -5,7 +5,7 @@
 <soy:import packageName="common"/>
 <jwr:script src="/fdmodules.js"  useRandomParam="false" />
 <jwr:script src="/fdcomponents.js"  useRandomParam="false" />
-<jwr:script src="/locabar.js"  useRandomParam="false" />
+<!-- jwr:script src="/locabar.js"  useRandomParam="false" / -->
 
 	  <%-- Bazaarvoice --%>
   
