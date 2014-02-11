@@ -1,0 +1,19 @@
+{namespace pdp.accordion}
+
+/**
+* @param heatRating
+*/
+{template .explanatory}
+  {if isNonnull($heatRating) and $heatRating > -1}
+    <li class="pdp-accordion-explanatory pdp-accordion-item">
+      <input type="checkbox" id="pdp-explanatory">
+      <label for="pdp-explanatory">
+        <span class="pdp-accordion-item-carrot"></span>Explanatory Information
+      </label>
+      <a id="explanatory"></a>
+      <div>
+        {call pdp.accordion.explancontent.heatRating /}
+      </div>
+    </li>
+  {/if}
+{/template}

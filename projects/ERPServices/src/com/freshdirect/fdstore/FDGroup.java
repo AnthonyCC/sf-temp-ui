@@ -1,27 +1,13 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore;
 
 import java.io.Serializable;
 
-/**
- * Lightweight class representing a SKU code / version pair.
- *
- * @version $Revision$
- * @author $Author$
- */
 public class FDGroup implements Serializable {
 
-	/** SKU code */
+	private static final long	serialVersionUID	= -5832100527957081984L;
+
 	private final String groupId;
 	
-	/** Business object version */
 	private final int version;
     
 	private boolean skipProductPriceValidation; 
@@ -64,18 +50,26 @@ public class FDGroup implements Serializable {
 		return this.version;
 	}
 	
+	@Override
 	public String toString() {
 		return "FDGroup[" + this.groupId + ", " + this.version + "]";
 	}
 	
+	@Override
 	public final int hashCode() {
 		return this.groupId.hashCode() ^ this.version;
 	}
 
+	@Override
 	public final boolean equals(Object o) {
 		if (!(o instanceof FDGroup)) return false;
 		FDGroup group = (FDGroup)o;
 		return this.groupId.equals(group.groupId) && (this.version==group.version);
+	}
+	
+	
+	public String getGroupPageUrl( String skuCode ) {
+        return "/group.jsp?grpId=" + groupId + "&version=" + version + "&skuCode=" + skuCode;		
 	}
 
 }

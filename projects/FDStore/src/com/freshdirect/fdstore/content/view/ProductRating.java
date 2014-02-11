@@ -5,12 +5,15 @@
  */
 package com.freshdirect.fdstore.content.view;
 
+import java.io.Serializable;
+
 /**
  *
  *  @author knadeem
  */
-public class ProductRating {
-	
+public class ProductRating implements Serializable {
+	private static final long serialVersionUID = 1173007518807218437L;
+
 	private String ratingName;
 	private String rating;
 	

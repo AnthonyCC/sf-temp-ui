@@ -1,0 +1,18 @@
+{namespace pdp}
+
+/**
+ * @param productList
+ */
+{template .likethat}
+    {if $productList and length($productList) > 1}
+	<div class="pdp-likethat">
+		<h2>Like That? You'll Love This.</h2>
+		<div class="first"> 
+    	{call common.simpleCarousel}
+    		{param items:$productList /}
+    		{param itemType:'grid' /}
+    	{/call}
+    	</div>
+    </div>
+    {/if}
+{/template}

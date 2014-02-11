@@ -33,8 +33,10 @@ import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartRequestData;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseData;
+import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem;
 import com.freshdirect.webapp.ajax.cart.data.PendingPopupData;
 import com.freshdirect.webapp.ajax.cart.data.PendingPopupOrderInfo;
+import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem.Status;
 import com.freshdirect.webapp.ajax.quickshop.QuickShopHelper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
@@ -108,6 +110,16 @@ public class AddToCartServlet extends BaseJsonServlet {
            	if ( !result ) {
            		// Global failure
            		returnHttpError( 500, "Error while adding items to cart for user " + user.getUserId() );
+           	}
+           	
+           	if ( "pdp_main".equals( reqData.getEventSource() ) ) {
+           		// redirect to cart-confirm page only for PDP page main ATC button
+           		for ( AddToCartResponseDataItem item : responseData.getAtcResult() ) {
+           			// get the first successful item for cart-confirm
+           			if ( item.getStatus() == Status.SUCCESS ) {
+           				responseData.setRedirectUrl( "/cart_confirm_pdp.jsp?catId="+item.getCategoryId()+"&productId="+item.getProductId()+"&cartlineId="+item.getCartlineId() );
+           			}
+           		}
            	}
            	
 			writeResponseData( response, responseData );

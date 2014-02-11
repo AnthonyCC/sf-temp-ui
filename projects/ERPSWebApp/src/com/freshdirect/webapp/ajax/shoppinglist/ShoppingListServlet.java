@@ -63,6 +63,9 @@ public class ShoppingListServlet extends BaseJsonServlet {
 			responseData.setListInfos( listInfos );
 			responseData.setResponseItems(responseItems);
 			responseData.setShoppingListPageRefreshNeeded(shoppingListPageRefreshNeeded);
+			if( user.getLevel() == FDUserI.GUEST ) {
+				responseData.setListInfos( null );
+			};
 			writeResponseData( response, responseData );
 			
 		} catch ( Exception e ) {
@@ -299,15 +302,13 @@ public class ShoppingListServlet extends BaseJsonServlet {
 			throw new FDResourceException();
 		}
 		if (item.getSalesUnit() != null && quantity == 0.0) {
-			// has a sales-unit, but no quantity has been set => set quantity to
-			// one
+			// has a sales-unit, but no quantity has been set => set quantity to one
 			item.setQuantity("1.0");
 		}
 		if (item.getSalesUnit() == null && quantity != 0.0) {
 			// has no sales-unit set, only quantity => set sales-unit to default
 			try {
-				// FIXME : this is quite bizarre for simply getting a default(?)
-				// sales-unit ...
+				// FIXME : this is quite bizarre for simply getting a default(?) sales-unit ...
 				item.setSalesUnit(FDCachedFactory.getProduct(FDCachedFactory.getProductInfo(item.getSkuCode())).getSalesUnits()[0].getName());
 			} catch (FDResourceException e) {
 				LOG.warn("Warning: skipped item " + item.getSkuCode() + ", because of invalid quantity and sales-unit.");

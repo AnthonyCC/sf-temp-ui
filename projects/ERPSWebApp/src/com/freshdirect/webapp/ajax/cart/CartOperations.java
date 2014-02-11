@@ -143,6 +143,9 @@ public class CartOperations {
 				AddToCartResponseDataItem responseItem = new AddToCartResponseDataItem();
 				responseData.getAtcResult().add(responseItem);
 				
+				responseItem.setCategoryId( item.getCategoryId() );
+				responseItem.setProductId( item.getProductId() );
+				
 				// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 				FDCartLineI cartLine = processCartLine(user,cart,item,cartLinesToAdd,responseItem, variantId);
 				// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -643,6 +646,11 @@ public class CartOperations {
 			return null;
 		}
 		
+		if ( prodNode.getSku( skuCode ).isUnavailable() ) {
+			responseItem.setStatus( Status.ERROR );
+			responseItem.setMessage("Product not available (unavailable sku)");
+			return null;
+		}
 		
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		//									FDPRODUCT
@@ -792,6 +800,8 @@ public class CartOperations {
 		}
 
 		responseItem.setInCartAmount( calculateInCartAmount( prodNode, cartLinesToAdd, cart, quantity ) );
+		responseItem.setCartlineId( theCartLine.getRandomId() );
+		
 		if(responseItem.getMessage()==null){
 			responseItem.setStatus( Status.SUCCESS );
 			responseItem.setMessage("Added to Cart");

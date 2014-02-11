@@ -456,7 +456,7 @@ public class JspMethods {
 				if (k == 0) { // Since this cell is in the first row use the
 					// image tag to set the spacing
 					outputRows.append("<IMG SRC=\"");
-					outputRows.append("/media_stat/images/layout/clear.gif");
+					outputRows.append(Image.BLANK_IMAGE.getPath());
 					outputRows
 							.append("\" ALT=\"\" WIDTH=\""+W_DISPLAY_FA_PRODUCTS_PADDING+"\" HEIGHT=\"1\" BORDER=\"0\">");
 				} else {
@@ -488,7 +488,7 @@ public class JspMethods {
 				if (k == 0) { // Since this cell is in the first row use the
 					// image tag to set the spacing
 					outputRows.append("<IMG SRC=\"");
-					outputRows.append("/media_stat/images/layout/clear.gif");
+					outputRows.append(Image.BLANK_IMAGE.getPath());
 					outputRows
 							.append("\" ALT=\"\" WIDTH=\""+W_DISPLAY_FA_PRODUCTS_NO_PRICE_PADDING+"\" HEIGHT=\"1\" BORDER=\"0\">");
 				} else {
@@ -880,8 +880,8 @@ public class JspMethods {
 	public static CategoryInfo getCategoryInfo(HttpServletRequest request) {
 		CategoryInfo c = new CategoryInfo();
 		c.catId = request.getParameter("catId");
-		c.fldrLbl = "/media_stat/images/layout/clear.gif";
-		c.navBar = "/media_stat/images/layout/clear.gif";
+		c.fldrLbl = Image.BLANK_IMAGE.getPath();
+		c.navBar = Image.BLANK_IMAGE.getPath();
 
 		c.link = "#";
 

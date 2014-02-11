@@ -1,0 +1,17 @@
+{namespace pdp}
+/**
+ * @param productId productId
+ * @param? catId categoryId
+ * @param? skuCode skuId
+ * @param? alcoholic product configuration
+ * 
+ */
+{template .productDataMin autoescape="false"}
+{call common.productDataMin}
+	{param atcItemId:'pdp_'+$catId+'_'+$productId+'_'+$skuCode /}
+	{param productId:$productId /}
+	{param catId:$catId /}
+	{param skuCode:$skuCode /}
+	{param alcoholic:$alcoholic /}
+{/call}
+{/template}

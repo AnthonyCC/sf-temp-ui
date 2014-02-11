@@ -33,6 +33,7 @@ public class ToJSONTag extends BodyTagSupport {
 	
 	private Object object;
 	private String jsonpWrapper;
+	private boolean noHeaders = false;
 	
 	public Object getObject() {
 		return object;
@@ -46,7 +47,13 @@ public class ToJSONTag extends BodyTagSupport {
 	public void setJsonpWrapper( String jsonpWrapper ) {
 		this.jsonpWrapper = jsonpWrapper;
 	}
-
+	public boolean isNoHeaders() {
+		return noHeaders;
+	}	
+	public void setNoHeaders( boolean noHeaders ) {
+		this.noHeaders = noHeaders;
+	}
+	
 	
 
 	@Override
@@ -61,18 +68,20 @@ public class ToJSONTag extends BodyTagSupport {
 	    		setJsonpWrapper( jsonpParam );
 	    	}
 
-	        // Set common response properties for JSON response
-	    	response.setHeader("Cache-Control", "no-cache");
-	    	response.setHeader("Pragma", "no-cache");
-			if ( jsonpWrapper != null ) {
-				// JSONP
-		    	response.setContentType( "application/javascript" );
-			} else {
-				// JSON
-		    	response.setContentType( "application/json" );
-			}
-	    	response.setLocale( Locale.US );
-	    	response.setCharacterEncoding( "ISO-8859-1" );
+	    	if ( !noHeaders ) {
+		        // Set common response properties for JSON response
+		    	response.setHeader("Cache-Control", "no-cache");
+		    	response.setHeader("Pragma", "no-cache");
+				if ( jsonpWrapper != null ) {
+					// JSONP
+			    	response.setContentType( "application/javascript" );
+				} else {
+					// JSON
+			    	response.setContentType( "application/json" );
+				}
+		    	response.setLocale( Locale.US );
+		    	response.setCharacterEncoding( "ISO-8859-1" );
+	    	}
 
 			// Serialize data to JSON and write out the result 
 			Writer writer = new StringWriter();

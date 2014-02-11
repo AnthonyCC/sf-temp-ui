@@ -34,6 +34,6 @@ public class ShoppingListResponseData implements Serializable {
 	}
 	public void setResponseItems(List<AddToListResponseItem> responseItems) {
 		this.responseItems = responseItems;
-	}
+	}	
 	
 }

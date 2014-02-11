@@ -122,6 +122,37 @@ var FreshDirect = FreshDirect || {};
 		createCookie(name,"",-1);
   }  
   
+  // create dummy console if there's no real one
+  if (!window.console) {
+    window.console = {
+    	      log: function () {},
+    	      debug: function () {},
+    	      error: function () {}
+    };
+  }
+
+  /**
+   * Discovers a function/attribute under the fully qualified path
+   *
+   * @param {string} The fully qualified path of the object/function
+   * @param {string} Optional, the starting container
+   *
+   * @return {object|null} The discovered member
+   */
+  utils.discover = function (fqpath, container) {
+    var ns = fqpath.split('.'),
+        o = container || window,
+        i, len;
+
+    for (i = 0, len = ns.length; i < len; i++) {
+        o = o[ns[i]] || null;
+        if(!o){
+          break;
+        }
+    }
+
+    return o;
+  };
 
   utils.register("modules.common", "utils", utils, fd);
 

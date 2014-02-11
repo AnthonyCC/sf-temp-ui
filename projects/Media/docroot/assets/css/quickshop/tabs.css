@@ -74,6 +74,9 @@
 #quickshop .qs-tabs li a.selected strong {
 	font-family: 'EagleBook', Verdana, Arial, sans-serif;
 	font-weight: normal;
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;		
 }
 
 #quickshop .qs-tabs .fd {
@@ -117,6 +120,9 @@
 	box-shadow: none;
 	font-family: 'EagleBook', Verdana, Arial, sans-serif;
 	font-weight: normal;
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;		
 }
 
 #quickshop .tabbed-carousel [data-component="carousel"] {

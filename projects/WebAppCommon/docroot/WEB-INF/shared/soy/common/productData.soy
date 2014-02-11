@@ -12,6 +12,34 @@
  * 
  */
 {template .productData autoescape="false"}
+{call .productDataMin}
+{param atcItemId:$atcItemId /}
+{param productId:$productId /}
+{param catId:$catId /}
+{param skuCode:$skuCode /}
+{param alcoholic:$isAlcoholic /}
+{/call}
+{if $listId}
+<input type="hidden" data-component="productData" data-productdata-name="listId" name="listId" value="{$listId}">
+{/if}
+{if $originalLineId}
+<input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$originalLineId}">
+{/if}
+{if $configuration}
+{foreach $key in keys($configuration)}
+<input type="hidden" data-component="productDataConfiguration" data-productdata-name="{$key}" name="{$key}" value="{$configuration[$key]}">
+{/foreach}
+{/if}
+{/template}
+/**
+ * @param? atcItemId atcItemId
+ * @param productId productId
+ * @param? catId categoryId
+ * @param? skuCode skuId
+ * @param? alcoholic product configuration
+ * 
+ */
+{template .productDataMin autoescape="false"}
 {if isNonnull($atcItemId)}
 <input type="hidden" data-component="productData" data-productdata-name="atcItemId" name="atcItemId" value="{$atcItemId}">
 {else}
@@ -26,18 +54,7 @@
 {if $skuCode}
 <input type="hidden" data-component="productData" data-productdata-name="skuCode" name="skuCode" value="{$skuCode}">
 {/if}
-{if $listId}
-<input type="hidden" data-component="productData" data-productdata-name="listId" name="listId" value="{$listId}">
-{/if}
-{if $isAlcoholic}
-<input type="hidden" data-component="productData" data-productdata-name="isAlcoholic" name="isAlcoholic" value="{$isAlcoholic}">
-{/if}
-{if $originalLineId}
-<input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$originalLineId}">
-{/if}
-{if $configuration}
-{foreach $key in keys($configuration)}
-<input type="hidden" data-component="productDataConfiguration" data-productdata-name="{$key}" name="{$key}" value="{$configuration[$key]}">
-{/foreach}
+{if $alcoholic}
+<input type="hidden" data-component="productData" data-productdata-name="isAlcoholic" name="isAlcoholic" value="{$alcoholic}">
 {/if}
 {/template}

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
@@ -34,7 +35,15 @@ public class SoyToJsServlet extends HttpServlet {
 			
 			Writer out = response.getWriter();
 			response.setContentType( "application/javascript" );
-						
+
+			if ( FDStoreProperties.isSoyDebugMode() ) {				
+				// debug mode
+				response.addHeader( "Cache-control", "public, max-age=0, no-cache" );
+			} else {
+				// production mode - set cache headers to very long expiration
+				response.addHeader( "Cache-control", "public, max-age=15552000" );
+			}				
+			
 			for ( String js : jsSrcs ) {
 				out.write( js );
 			}			

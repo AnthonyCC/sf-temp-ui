@@ -1827,7 +1827,7 @@ inner:
 	 */
 	@Override
 	public List<ProductModel> getUpSellProducts() {
-		ContentNodeModelUtil.refreshModels(this, "PDP_UPSELL", upSellProducts, true);
+		ContentNodeModelUtil.refreshModels(this, "PDP_UPSELL", upSellProducts, false);
 		return new ArrayList<ProductModel>(upSellProducts);
 	}
 
@@ -1836,7 +1836,7 @@ inner:
 	 */
 	@Override
 	public List<ProductModel> getCrossSellProducts() {
-		ContentNodeModelUtil.refreshModels(this, "PDP_XSELL", crossSellProducts, true);
+		ContentNodeModelUtil.refreshModels(this, "PDP_XSELL", crossSellProducts, false);
 		return new ArrayList<ProductModel>(crossSellProducts);
 	}
 	
@@ -1859,7 +1859,7 @@ inner:
 	 */
 	@Override
 	public Image getJumboImage() {
-        return FDAttributeFactory.constructImage(this, "PROD_IMAGE_JUMBO", IMAGE_BLANK);
+        return FDAttributeFactory.constructImage(this, "PROD_IMAGE_JUMBO", Image.BLANK_IMAGE);
 	}
 
 	/**
@@ -1867,7 +1867,7 @@ inner:
 	 */
 	@Override
 	public Image getItemImage() {
-        return FDAttributeFactory.constructImage(this, "PROD_IMAGE_ITEM", IMAGE_BLANK);
+        return FDAttributeFactory.constructImage(this, "PROD_IMAGE_ITEM", Image.BLANK_IMAGE);
 	}
 
 	/**
@@ -1875,6 +1875,6 @@ inner:
 	 */
 	@Override
 	public Image getExtraImage() {
-        return FDAttributeFactory.constructImage(this, "PROD_IMAGE_EXTRA", IMAGE_BLANK);
+        return FDAttributeFactory.constructImage(this, "PROD_IMAGE_EXTRA", Image.BLANK_IMAGE);
 	}
 }

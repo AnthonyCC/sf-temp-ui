@@ -2,15 +2,15 @@
 
 /**
  * @param coupon coupon data
- * @param showCoupon display coupon information 
- * @param isClipped is coupon clipped (checkbox will be disabled)
+ * @param couponDisplay display coupon information 
+ * @param couponClipped is coupon clipped (checkbox will be disabled)
  * @param couponStatusText the html formatted coupon status message
  */
 {template .ecoupon autoescape="false"}
-{if $showCoupon } 
+{if $couponDisplay } 
 	{let $couponName}fdCoupon_{$coupon.couponId}{/let}
 	<div name="{$couponName}_cont" class="fdCoupon_cont" data-component="ecoupon" data-ecouponid="{$coupon.couponId}">
-	{call common.ecoupon.clipBoxHtml }{param couponName:$couponName /}{param isClipped:$isClipped /}{/call}
+	{call common.ecoupon.clipBoxHtml }{param couponName:$couponName /}{param isClipped:$couponClipped /}{/call}
 	<img src="/media/images/ecoupon/logo-small.gif" class="fdCoupon_img">
 	{call common.ecoupon.messageHtml}{param couponName:$couponName /}{param coupon:$coupon /}{/call}
 	{call common.ecoupon.detailsHtml}{param couponName:$couponName /}{/call}

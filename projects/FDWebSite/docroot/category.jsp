@@ -9,7 +9,11 @@
 %><%@ taglib uri='logic' prefix='logic' 
 %><%@ taglib uri='freshdirect' prefix='fd' 
 %><%@ taglib uri='oscache' prefix='oscache' 
-%><%
+%>
+<fd:CheckLoginStatus id = "user"/>
+<fd:PDPRedirector user="<%=user %>"/>
+
+<%
 
 //expanded page dimensions
 final int W_CATEGORY_WITH_LEFT_NAV = 601;
@@ -40,7 +44,7 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 			return;
 		}
 		}
-%><fd:CheckLoginStatus /><%
+	
 	Set brands = null ; // set in the grocery_category_layout page. will be referenced by  i_bottom_template
 	
 	String catId = request.getParameter("catId");
@@ -90,8 +94,7 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 			}       
 		}
 	}
-	boolean containsBeer = (categoryModel != null && categoryModel.isHavingBeer()); 
-	FDSessionUser yser = (FDSessionUser)session.getAttribute(SessionName.USER);%>
+	boolean containsBeer = (categoryModel != null && categoryModel.isHavingBeer()); %>
 	<fd:IsAlcoholic noProduct="true">
 		<%
 		if(containsBeer /*&& !yser.isHealthWarningAcknowledged()*/){
@@ -202,21 +205,21 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 			if(layoutType == EnumLayoutType.GROCERY_PRODUCT.getId()){
 				%><fd:CmProductView quickbuy="false" wrapIntoScriptTag="true" productModel="<%=prodModel%>"/> <%
 			}
-			// TODO duplicated -- boolean virtualGrocerySpecified = request.getParameter("groceryVirtual")!=null;
-			//if (layoutType==EnumLayoutType.FEATURED_ALL.getId()) layoutType=19;
-			boolean noCache =  (EnumLayoutType.GROCERY_PRODUCT.getId()==layoutType
-			                    || isGroceryVirtual /* virtualGrocerySpecified */
-			                    || EnumLayoutType.BULK_MEAT_PRODUCT.getId()==layoutType
-			                    || EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId()==layoutType
-			                    || EnumLayoutType.TRANSAC_GROUPED_ITEMS.getId()==layoutType
-			                    || EnumLayoutType.THANKSGIVING_CATEGORY.getId()==layoutType
-			                    || EnumLayoutType.PARTY_PLATTER_CATEGORY.getId()==layoutType
-			                    || EnumLayoutType.HOLIDAY_MENU.getId()==layoutType
-			                    || EnumLayoutType.WINE_CATEGORY.getId()==layoutType
-			                    || EnumLayoutType.VALENTINES_CATEGORY.getId()==layoutType
-			                    || EnumLayoutType.TRANSAC_MULTI_PAIRED_ITEMS.getId()==layoutType);
-			                    
-			
+		// TODO duplicated -- boolean virtualGrocerySpecified = request.getParameter("groceryVirtual")!=null;
+		//if (layoutType==EnumLayoutType.FEATURED_ALL.getId()) layoutType=19;
+		boolean noCache =  (EnumLayoutType.GROCERY_PRODUCT.getId()==layoutType
+		                    || isGroceryVirtual /* virtualGrocerySpecified */
+		                    || EnumLayoutType.BULK_MEAT_PRODUCT.getId()==layoutType
+		                    || EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId()==layoutType
+		                    || EnumLayoutType.TRANSAC_GROUPED_ITEMS.getId()==layoutType
+		                    || EnumLayoutType.THANKSGIVING_CATEGORY.getId()==layoutType
+		                    || EnumLayoutType.PARTY_PLATTER_CATEGORY.getId()==layoutType
+		                    || EnumLayoutType.HOLIDAY_MENU.getId()==layoutType
+		                    || EnumLayoutType.WINE_CATEGORY.getId()==layoutType
+		                    || EnumLayoutType.VALENTINES_CATEGORY.getId()==layoutType
+		                    || EnumLayoutType.TRANSAC_MULTI_PAIRED_ITEMS.getId()==layoutType);
+		                    
+		
 			String keyPrefix="catLayout_";
 			int ttl=300;
 			FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);

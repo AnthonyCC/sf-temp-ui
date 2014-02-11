@@ -32,6 +32,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.framework.xml.XMLSerializer;
+import com.freshdirect.webapp.util.NutritionInfoPanelRendererUtil;
 
 /**
  *	Simple JSP tag to display a nutrition panel given a sku-code.
@@ -150,6 +151,8 @@ public class NutritionPanelTag extends BodyTagSupport {
         	return SKIP_BODY;
         }
         
+        /**
+        
         if ( showErpsExtra ) {
         	
 	        String infoSource = nutritionModel.getUomFor(ErpNutritionType.SOURCE);
@@ -195,5 +198,12 @@ public class NutritionPanelTag extends BodyTagSupport {
         	LOG.error( "XSL Transformer error while rendering classic nutrition panel for sku:"+skuCode, e );
         	return SKIP_BODY;
 		}
+		
+		**/
+        
+        if (NutritionInfoPanelRendererUtil.renderClassicPanel(nutritionModel, showErpsExtra, out, pageContext.getServletContext()) ) {
+			return EVAL_BODY_BUFFERED;
+        }
+    	return SKIP_BODY;
 	}
 }

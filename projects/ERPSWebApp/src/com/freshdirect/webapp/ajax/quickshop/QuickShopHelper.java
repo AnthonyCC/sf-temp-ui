@@ -1,6 +1,5 @@
 package com.freshdirect.webapp.ajax.quickshop;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -19,17 +18,12 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.common.pricing.MaterialPrice;
-import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.customer.EnumSaleType;
-import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDCachedFactory;
-import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
@@ -38,7 +32,6 @@ import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ConfiguredProductGroup;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.FDFolder;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
@@ -47,9 +40,6 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.StarterList;
-import com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext;
-import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO;
-import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderHistory;
@@ -58,9 +48,6 @@ import com.freshdirect.fdstore.customer.FDProductSelection;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
-import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
-import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
-import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
@@ -68,24 +55,20 @@ import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.pricing.SkuModelPricingAdapter;
-import com.freshdirect.fdstore.util.DYFUtil;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
-import com.freshdirect.webapp.ajax.cart.CartOperations;
-import com.freshdirect.webapp.ajax.cart.data.CartData.Quantity;
-import com.freshdirect.webapp.ajax.cart.data.CartData.SalesUnit;
+import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.quickshop.data.EnumQuickShopTab;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.freshdirect.webapp.taglib.fdstore.display.ProductSavingTag;
-import com.freshdirect.webapp.util.FDURLUtil;
 
 public class QuickShopHelper {
 
 	private static final int TIME_LIMIT = -13;
-	private final static Logger LOG = LoggerFactory.getInstance(QuickShopHelper.class);
+	public final static Logger LOG = LoggerFactory.getInstance(QuickShopHelper.class);
 
 	public static List<FilteringSortingItem<QuickShopLineItemWrapper>> getWrappedOrderHistory(FDUserI user, EnumQuickShopTab tab) throws FDResourceException {
 
@@ -163,21 +146,20 @@ public class QuickShopHelper {
 		String compositeId = null;
 		if(tab!=null){
 			switch(tab){
-			case PAST_ORDERS:{
-				idSuffix = productSelection.getOrderLineId();					
-				compositeId = tab + "_" + idSuffix;
-				break;
-			}
-			case CUSTOMER_LISTS:{
-				idSuffix = productSelection.getCustomerListLineId();
-				compositeId = tab + "_" + idSuffix;
-				break;
-			}
-			case FD_LISTS:{
-				idSuffix = starterList.getContentKey().getId();
-				compositeId = tab + "_" + productSelection.getSkuCode() + "_" + idSuffix;
-			}
-			
+				case PAST_ORDERS:{
+					idSuffix = productSelection.getOrderLineId();					
+					compositeId = tab + "_" + idSuffix;
+					break;
+				}
+				case CUSTOMER_LISTS:{
+					idSuffix = productSelection.getCustomerListLineId();
+					compositeId = tab + "_" + idSuffix;
+					break;
+				}
+				case FD_LISTS:{
+					idSuffix = starterList.getContentKey().getId();
+					compositeId = tab + "_" + productSelection.getSkuCode() + "_" + idSuffix;
+				}
 			}			
 		}
 		
@@ -279,17 +261,23 @@ public class QuickShopHelper {
 			}
 		}
 
-		// === POPULATE === 
-				
-		populatePricing( item, latestFdProduct, latestFdProductInfo, priceCalculator );
+		// === POPULATE ===
+		
+		ProductDetailPopulator.populateBasicProductData( item, user, productModel );
+		ProductDetailPopulator.populateProductData( item, user, productModel, skuModel, latestFdProduct, priceCalculator, productSelection, true );
+		ProductDetailPopulator.populatePricing( item, latestFdProduct, latestFdProductInfo, priceCalculator );
+		
+		populateOrderLineData( item, productSelection );
 		
 		try {
-			populateOrderLineData( item, productSelection );
-		} catch (Exception e) {
-			LOG.error( "Failed to populate orderline data", e );
+			ProductDetailPopulator.populateSkuData( item, user, productModel, skuModel, latestFdProduct );
+		} catch (FDSkuNotFoundException e) {
+			LOG.error( "Failed to populate sku data", e );
+		} catch ( HttpErrorResponse e ) {
+			LOG.error( "Failed to populate sku data", e );
 		}
-		
-		populateProductData( item, user, productModel, skuModel, latestFdProduct, priceCalculator, productSelection, true );
+
+		ProductDetailPopulator.postProcessPopulate( user, item, item.getSkuCode() );
 		
 		// User specific data - scores
 		if (user != null) {
@@ -322,24 +310,35 @@ public class QuickShopHelper {
 		}
 		String skuCode = skuModel.getSkuCode();
 		
-		FDProductInfo productInfo;
-		FDProduct fdProduct;
 		try {
-			productInfo = skuModel.getProductInfo();
-			fdProduct = skuModel.getProduct();
+			FDProductInfo productInfo = skuModel.getProductInfo();
+			FDProduct fdProduct = skuModel.getProduct();
+		
+			PriceCalculator priceCalculator = productModel.getPriceCalculator();
+			
+			ProductDetailPopulator.populateBasicProductData( item, user, productModel );
+			ProductDetailPopulator.populateProductData( item, user, productModel, skuModel, fdProduct, priceCalculator, null, useFavBurst );
+			ProductDetailPopulator.populatePricing( item, fdProduct, productInfo, priceCalculator );
+			
+			try {
+				ProductDetailPopulator.populateSkuData( item, user, productModel, skuModel, fdProduct );
+			} catch (FDSkuNotFoundException e) {
+				LOG.error( "Failed to populate sku data", e );
+			} catch ( HttpErrorResponse e ) {
+				LOG.error( "Failed to populate sku data", e );
+			}
+			
+			ProductDetailPopulator.postProcessPopulate( user, item, item.getSkuCode() );
+			
+			return item;
+			
 		} catch (FDSkuNotFoundException e) {
 			LOG.warn( "Sku not found: "+skuCode, e );
 			return null;
-		}
-		
-		PriceCalculator priceCalculator = productModel.getPriceCalculator();
-		
-		populateProductData( item, user, productModel, skuModel, fdProduct, priceCalculator, null, useFavBurst );
-		populatePricing( item, fdProduct, productInfo, priceCalculator );
-		
-		postProcessPopulate( user, item );
-		
-		return item;		
+		} /*catch ( HttpErrorResponse e ) {
+			LOG.warn( "Error creating item: "+skuCode, e );
+			return null;
+		}*/
 	}
 
 	
@@ -413,7 +412,14 @@ public class QuickShopHelper {
 	}
 	
 
-	private static void populateReplacements( QuickShopLineItem item, ProductModel originalProduct, FDUserI user ) {
+	/**
+	 * Populates quickshop specific replacement items
+	 * 
+	 * @param item
+	 * @param originalProduct
+	 * @param user
+	 */
+	public static void populateReplacements( QuickShopLineItem item, ProductModel originalProduct, FDUserI user ) {
 		// look up a recommended replacement
 		List<ContentNodeModel> alternatives = originalProduct.getRecommendedAlternatives();
 		
@@ -457,7 +463,7 @@ public class QuickShopHelper {
 	}
 
 
-	private static void populateRatings( QuickShopLineItem item, FDUserI user, ProductModel product, String skuCode ) {
+	private static void populateRatings( QuickShopLineItem item, FDProductSelectionI orderLine ) {
 		
 		int wineRating = 0;
 		int expertRating = 0;
@@ -624,180 +630,15 @@ public class QuickShopHelper {
 	}
 
 	
-	private static void populatePricing( QuickShopLineItem item, FDProduct fdProduct, FDProductInfo productInfo, PriceCalculator priceCalculator ) throws FDResourceException {
-
-		ZonePriceInfoModel zpi;
-		try {
-			zpi = priceCalculator.getZonePriceInfoModel();
-			item.setPrice( zpi.getDefaultPrice() );
-			item.setScaleUnit( productInfo.getDisplayableDefaultPriceUnit().toLowerCase() );
-		} catch ( FDSkuNotFoundException e ) {
-			// No sku (cannot happen) - don't even try the pricing
-			return;
-		} 
-		
-		// Tax and Deposit
-		
-		StringBuilder taxAndDepositBuilder = new StringBuilder();
-		boolean hasTax = fdProduct.isTaxable();
-		boolean hasDeposit = fdProduct.hasDeposit();
-		if ( hasTax || hasDeposit ) {
-			taxAndDepositBuilder.append( "plus " );
-			if ( hasTax ) {
-				taxAndDepositBuilder.append( "tax " );
-			}
-			if ( hasTax && hasDeposit ) {
-				taxAndDepositBuilder.append( "& " );
-			}
-			if ( hasDeposit ) {
-				taxAndDepositBuilder.append( "deposit" );
-			}
-		}
-		item.setTaxAndDeposit( taxAndDepositBuilder.toString() );    	
-		item.setAboutPriceText( priceCalculator.getAboutPriceFormatted( priceCalculator.getDealPercentage() ) );
-		
-		populateWithSubtotalInfo( item, fdProduct, productInfo, priceCalculator );
-		populateSaving( item, productInfo, priceCalculator );
-	}	
-	
-
-	private static void populateWithSubtotalInfo( QuickShopLineItem item, FDProduct fdProduct, FDProductInfo productInfo, PriceCalculator priceCalculator ) throws FDResourceException {
-
-		String pricingZoneId = priceCalculator.getPricingContext().getZoneId();
-		MaterialPrice[] availMatPrices = fdProduct.getPricing().getZonePrice( pricingZoneId ).getMaterialPrices();
-		MaterialPrice[] matPrices = null;
-		List<MaterialPrice> matPriceList = new ArrayList<MaterialPrice>();
-
-		if ( productInfo.isGroupExists() ) {
-			// Has a Group Scale associated with it. Check if there is GS price defined for current pricing zone.
-			FDGroup group = productInfo.getGroup();
-			MaterialPrice[] grpPrices = null;
-			try {
-				grpPrices = GroupScaleUtil.getGroupScalePrices( group, pricingZoneId );
-			} catch ( FDResourceException fe ) {
-				// Never mind. Show regular price for the material.
-			}
-			if ( grpPrices != null && grpPrices.length > 0 ) {
-				// Group scale price applicable to this material. So modify material prices array to accomodate GS price.
-				MaterialPrice regularPrice = availMatPrices[0];// Get the regular price/single unit price first.
-
-				// Get the first group scale price and set the lower bound to be upper bound of regular price.
-				MaterialPrice newRegularPrice = new MaterialPrice( regularPrice.getPrice(), regularPrice.getPricingUnit(), regularPrice.getScaleLowerBound(), grpPrices[0].getScaleLowerBound(), grpPrices[0].getScaleUnit(), regularPrice.getPromoPrice() );
-				// Add the modified regular price.
-				matPriceList.add( newRegularPrice );
-				// Add the remaining group scale prices.
-				for ( int i = 0; i < grpPrices.length; i++ ) {
-					matPriceList.add( grpPrices[i] );
-				}
-				matPrices = matPriceList.toArray( new MaterialPrice[0] );
-			}
-		}
-
-		if ( matPrices == null ) {
-			// Set the default prices defined for the material.
-			matPrices = availMatPrices;
-		}
-
-		if ( fdProduct.getPricing() != null ) {
-			item.setAvailMatPrices( matPrices );
-			item.setCvPrices( fdProduct.getPricing().getCharacteristicValuePrices() );
-			item.setSuRatios( fdProduct.getPricing().getSalesUnitRatios() );
-		}
-		if ( productInfo.isGroupExists() && productInfo.getGroup() != null ) {
-			item.setGrpPrices( GroupScaleUtil.getGroupScalePrices( productInfo.getGroup(), pricingZoneId ) );
-		}
-		ZonePriceInfoModel zone = productInfo.getZonePriceInfo( pricingZoneId );
-		if ( zone != null && zone.isItemOnSale() ) {
-			item.setWasPrice( zone.getSellingPrice() );
-		}
-	}
-
-	
-	private static void populateSaving( QuickShopLineItem item, FDProductInfo productInfo, PriceCalculator priceCalculator ) throws FDResourceException {
-		
-		FDGroup group = productInfo.getGroup();
-		
-		StringBuffer buf = new StringBuffer();
-		MaterialPrice matPrice = null;
-		
-		if (group != null) {
-			matPrice = GroupScaleUtil.getGroupScalePrice(group, priceCalculator.getPricingContext().getZoneId());
-		}
-
-		if (matPrice != null) {
-			item.setMixNMatch(true);
-		} else {
-			String scaleString = priceCalculator.getTieredPrice(0, null);
-			if (scaleString != null) {
-				buf.append("Save! ");
-				buf.append(scaleString);
-			} else if (priceCalculator.isOnSale()) {
-				buf.append("Save ");
-				buf.append(priceCalculator.getDealPercentage());
-				buf.append("%");
-			} else {
-				// no sales, do nothing
-			}
-		}
-		
-		item.setSavingString(buf.toString());
-		
-		if ( group != null ) {
-			item.setDealInfo( ProductSavingTag.getGroupPrice(group, priceCalculator.getPricingContext().getZoneId()) );
-		}
-
-	}
-		
-	public static void postProcessPopulate( FDUserI user, QuickShopLineItem qsItem ) {
-		
-		// lookup product data
-		ProductModel productModel;
-		FDProductInfo productInfo;
-		try {
-			productModel = ContentFactory.getInstance().getProduct( qsItem.getSkuCode() );
-			productInfo = FDCachedFactory.getProductInfo( qsItem.getSkuCode() );
-		} catch ( FDSkuNotFoundException e ) {
-			LOG.warn( "Sku not found in quickshop post-process populate. This is unexpected. Skipping item." );
-			return;
-		} catch ( FDResourceException e ) {
-			LOG.error( "Error in quickshop post-process populate. Skipping item." );
-			return;
-		}
-		
-		// populate Ecoupons data
-		FDCustomerCoupon coupon = user.getCustomerCoupon(productInfo, EnumCouponContext.PRODUCT, productModel.getParentId(), productModel.getContentName());
-		qsItem.setCoupon(coupon);
-		
-		if ( coupon != null ) {
-			EnumCouponStatus status = coupon.getStatus();
-			qsItem.setCouponDisplay( status != EnumCouponStatus.COUPON_CLIPPED_REDEEMED && status != EnumCouponStatus.COUPON_CLIPPED_EXPIRED );
-			qsItem.setCouponClipped( status != EnumCouponStatus.COUPON_ACTIVE );
-			qsItem.setCouponStatusText( CartOperations.generateFormattedCouponMessage( coupon, status ) );
-		} else {
-			qsItem.setCouponDisplay( false );
-			qsItem.setCouponClipped( false );
-		}
-		
-    	// populate in cart amount    	
-    	FDCartModel cart = user.getShoppingCart(); 
-    	qsItem.setInCartAmount( cart.getTotalQuantity( productModel ) );
-    	
-    	// post-process replacement item too, if any
-    	QuickShopLineItem replItem = qsItem.getReplacement();
-    	if ( replItem != null ) {
-    		postProcessPopulate( user, replItem );
-    	}
-    	
-	}
-	
 	public static void postProcessPopulate( FDUserI user, FilteringFlowResult<QuickShopLineItemWrapper> result, HttpSession session ) {		
 		
 		for ( FilteringSortingItem<QuickShopLineItemWrapper> fsItem : result.getItems() ) {
 			QuickShopLineItem qsItem = fsItem.getNode().getItem();
 			
-			postProcessPopulate( user, qsItem );
+			ProductDetailPopulator.postProcessPopulate( user, qsItem, qsItem.getSkuCode() );
 	    	
 	    	//check if we have temporary configuration for this item in session
+			@SuppressWarnings( "unchecked" )
 			Map<String, QuickShopLineItem> tempConfigs = (Map<String, QuickShopLineItem>) session.getAttribute(SessionName.SESSION_QS_CONFIG_REPLACEMENTS);
 	    	
 			if(tempConfigs!=null){
@@ -849,6 +690,7 @@ public class QuickShopHelper {
 		return orderHistoryInfo;
 	}
 
+	@SuppressWarnings( "unchecked" )
 	public static List<String> getActiveReplacements( HttpSession session ) {
 		return (List<String>)session.getAttribute( SessionName.SESSION_QS_REPLACEMENT );
 	}

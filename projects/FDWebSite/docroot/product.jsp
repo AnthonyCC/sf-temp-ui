@@ -21,7 +21,8 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
-<fd:CheckLoginStatus />
+<fd:CheckLoginStatus id="user" />
+<fd:PDPRedirector user="<%=user %>"/>
 <%!
 	java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 	java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
@@ -87,8 +88,7 @@ if (productNode.getLayout().isGroceryLayout()) {
 }
 
 
-// [redirection] Alcohol alert -> redirect health warning page
-FDSessionUser yser = (FDSessionUser)session.getAttribute(SessionName.USER);%>
+// [redirection] Alcohol alert -> redirect health warning page %>
 <fd:IsAlcoholic noProduct="true">
 	<%
 	if( ((CategoryModel)productNode.getParentNode()).isHavingBeer() /*&& !yser.isHealthWarningAcknowledged()*/){
@@ -186,7 +186,6 @@ if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
 
 <fd:FDShoppingCart id='cart' result='actionResult' action='<%= tgAction %>' successPage='<%= sPage %>' source='<%= request.getParameter("fdsc.source")%>' >
 <%  //hand the action results off to the dynamic include
-	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	String cartMode = CartName.ADD_TO_CART;
 	FDCartLineI templateLine = null ;
 	
