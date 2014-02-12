@@ -15,7 +15,7 @@ import com.freshdirect.webapp.ajax.cart.data.CartData.SalesUnit;
  * 
  * @author treer
  */
-public class ProductConfigResponseData extends BasicProductData {
+public class ProductConfigResponseData implements Serializable {
 	
 	private static final long	serialVersionUID	= 8413382103584983050L;
 	
@@ -23,6 +23,25 @@ public class ProductConfigResponseData extends BasicProductData {
 	 * list of skus 
 	 */
 	private List<Sku> skus;
+	
+	private boolean soldBySalesUnit;
+
+	// Product level extra data
+	private String productId;
+	private String productName;
+	private String productImage;
+	private String akaName;
+	private String quantityText;
+	private String packageDescription;
+	private double inCartAmount;
+
+	private String productPageUrl;
+
+	// Alcoholic content
+	private boolean alcoholic = false;
+	
+	// USQ alcoholic
+	private boolean usq = false; 
 	
 	
 	public List<Sku> getSkus() {
@@ -32,13 +51,102 @@ public class ProductConfigResponseData extends BasicProductData {
 		this.skus = skus;
 	}
 
+	public boolean isSoldBySalesUnit() {
+		return soldBySalesUnit;
+	}
+	public void setSoldBySalesUnit(boolean soldBySalesUnit) {
+		this.soldBySalesUnit = soldBySalesUnit;
+	}
+	
+	public String getProductId() {
+		return productId;
+	}	
+	public void setProductId( String productId ) {
+		this.productId = productId;
+	}
+	
+	public String getProductName() {
+		return productName;
+	}	
+	public void setProductName( String productName ) {
+		this.productName = productName;
+	}
+	
+	public String getProductImage() {
+		return productImage;
+	}	
+	public void setProductImage( String productImage ) {
+		this.productImage = productImage;
+	}
+
+	public double getInCartAmount() {
+		return inCartAmount;
+	}	
+	public void setInCartAmount( double inCartAmount ) {
+		this.inCartAmount = inCartAmount;
+	}
+	
+
+
+	public String getAkaName() {
+		return akaName;
+	}
+	public void setAkaName(String akaName) {
+		this.akaName = akaName;
+	}
+
+
+
+	public String getPackageDescription() {
+		return packageDescription;
+	}
+	public void setPackageDescription(String packageDescription) {
+		this.packageDescription = packageDescription;
+	}
+
+
+
+	public String getQuantityText() {
+		return quantityText;
+	}
+	public void setQuantityText(String quantityText) {
+		this.quantityText = quantityText;
+	}
+
+	
+	public boolean isAlcoholic() {
+		return alcoholic;
+	}
+	
+	public void setAlcoholic( boolean alcoholic ) {
+		this.alcoholic = alcoholic;
+	}
+	
+	public boolean isUsq() {
+		return usq;
+	}
+	
+	public void setUsq( boolean usq ) {
+		this.usq = usq;
+	}
+
+	public String getProductPageUrl() {
+		return productPageUrl;
+	}
+	
+	public void setProductPageUrl( String productPageUrl ) {
+		this.productPageUrl = productPageUrl;
+	}
+
+	
+	
 	/**
 	 * 	available: is available?
 	 * 	selected: is currently selected?
 	 * 	defaultSku:	is the default sku?
 	 *	variations: list of variation enums 
 	 */
-	public static class Sku implements Serializable, SkuData {
+	public static class Sku implements Serializable {
 		
 		private static final long	serialVersionUID	= 8484303804488950735L;
 		
@@ -84,207 +192,126 @@ public class ProductConfigResponseData extends BasicProductData {
 		private boolean hasSalesUnitDescription;
 		
 		
-		@Override
 		public Quantity getQuantity() {
 			return quantity;
 		}		
-		@Override
 		public void setQuantity( Quantity quantity ) {
 			this.quantity = quantity;
 		}		
-		@Override
 		public List<SalesUnit> getSalesUnit() {
 			return salesUnit;
 		}		
-		@Override
 		public void setSalesUnit( List<SalesUnit> salesUnit ) {
 			this.salesUnit = salesUnit;
 		}
-		@Override
 		public double getPrice() {
 			return price;
 		}		
-		@Override
 		public void setPrice( double price ) {
 			this.price = price;
 		}		
-		@Override
 		public double getWasPrice() {
 			return wasPrice;
 		}		
-		@Override
 		public void setWasPrice( double wasPrice ) {
 			this.wasPrice = wasPrice;
 		}		
-		@Override
 		public String getScaleUnit() {
 			return scaleUnit;
 		}		
-		@Override
 		public void setScaleUnit( String scaleUnit ) {
 			this.scaleUnit = scaleUnit;
 		}		
-		@Override
 		public String getTaxAndDeposit() {
 			return taxAndDeposit;
 		}		
-		@Override
 		public void setTaxAndDeposit( String taxAndDeposit ) {
 			this.taxAndDeposit = taxAndDeposit;
 		}		
-		@Override
 		public String getSavingString() {
 			return savingString;
 		}		
-		@Override
 		public void setSavingString( String savingString ) {
 			this.savingString = savingString;
 		}
-		@Override
 		public MaterialPrice[] getAvailMatPrices() {
 			return availMatPrices;
 		}		
-		@Override
 		public void setAvailMatPrices( MaterialPrice[] availMatPrices ) {
 			this.availMatPrices = availMatPrices;
 		}		
-		@Override
 		public CharacteristicValuePrice[] getCvPrices() {
 			return cvPrices;
 		}		
-		@Override
 		public void setCvPrices( CharacteristicValuePrice[] cvPrices ) {
 			this.cvPrices = cvPrices;
 		}		
-		@Override
 		public SalesUnitRatio[] getSuRatios() {
 			return suRatios;
 		}		
-		@Override
 		public void setSuRatios( SalesUnitRatio[] suRatios ) {
 			this.suRatios = suRatios;
 		}		
-		@Override
 		public MaterialPrice[] getGrpPrices() {
 			return grpPrices;
 		}		
-		@Override
 		public void setGrpPrices( MaterialPrice[] grpPrices ) {
 			this.grpPrices = grpPrices;
 		}		
-		@Override
 		public int getDeal() {
 			return deal;
 		}		
-		@Override
 		public void setDeal( int deal ) {
 			this.deal = deal;
 		}		
-		@Override
 		public String getDealInfo() {
 			return dealInfo;
 		}		
-		@Override
 		public void setDealInfo( String dealInfo ) {
 			this.dealInfo = dealInfo;
 		}		
-		@Override
 		public int getWineRating() {
 			return wineRating;
 		}		
-		@Override
 		public void setWineRating( int wineRating ) {
 			this.wineRating = wineRating;
 		}		
-		@Override
 		public double getCustomerRating() {
 			return customerRating;
 		}		
-		@Override
 		public void setCustomerRating( double customerRating ) {
 			this.customerRating = customerRating;
 		}		
-		@Override
 		public int getExpertRating() {
 			return expertRating;
 		}		
-		@Override
 		public void setExpertRating( int expertRating ) {
 			this.expertRating = expertRating;
 		}		
-		@Override
 		public String getSustainabilityRating() {
 			return sustainabilityRating;
 		}		
-		@Override
 		public void setSustainabilityRating( String sustainabilityRating ) {
 			this.sustainabilityRating = sustainabilityRating;
 		}		
-		@Override
 		public String getBadge() {
 			return badge;
 		}		
-		@Override
 		public void setBadge( String badge ) {
 			this.badge = badge;
 		}
-		@Override
 		public String getSkuCode() {
 			return skuCode;
 		}		
-		@Override
 		public void setSkuCode( String skuCode ) {
 			this.skuCode = skuCode;
 		}
-		@Override
 		public boolean isAvailable() {
 			return available;
 		}		
-		@Override
 		public void setAvailable( boolean available ) {
 			this.available = available;
 		}		
-		@Override
-		public List<Variation> getVariations() {
-			return variations;
-		}
-		@Override
-		public void setVariations( List<Variation> variations ) {
-			this.variations = variations;
-		}
-		@Override
-		public String getSalesUnitLabel() {
-			return salesUnitLabel;
-		}
-		@Override
-		public void setSalesUnitLabel(String salesUnitLabel) {
-			this.salesUnitLabel = salesUnitLabel;
-		}
-		@Override
-		public boolean isHasSalesUnitDescription() {
-			return hasSalesUnitDescription;
-		}
-		@Override
-		public void setHasSalesUnitDescription(boolean hasSalesUnitDescription) {
-			this.hasSalesUnitDescription = hasSalesUnitDescription;
-		}		
-		@Override
-		public String getLabel() {
-			return label;
-		}		
-		@Override
-		public void setLabel( String label ) {
-			this.label = label;
-		}
-		@Override
-		public String getAboutPriceText() {
-			return aboutPriceText;
-		}	
-		@Override
-		public void setAboutPriceText( String aboutPriceText ) {
-			this.aboutPriceText = aboutPriceText;
-		}
-		
 		public boolean isSelected() {
 			return selected;
 		}		
@@ -297,7 +324,36 @@ public class ProductConfigResponseData extends BasicProductData {
 		public void setDefaultSku( boolean defaultSku ) {
 			this.defaultSku = defaultSku;
 		}		
-		
+		public List<Variation> getVariations() {
+			return variations;
+		}
+		public void setVariations( List<Variation> variations ) {
+			this.variations = variations;
+		}
+		public String getSalesUnitLabel() {
+			return salesUnitLabel;
+		}
+		public void setSalesUnitLabel(String salesUnitLabel) {
+			this.salesUnitLabel = salesUnitLabel;
+		}
+		public boolean isHasSalesUnitDescription() {
+			return hasSalesUnitDescription;
+		}
+		public void setHasSalesUnitDescription(boolean hasSalesUnitDescription) {
+			this.hasSalesUnitDescription = hasSalesUnitDescription;
+		}		
+		public String getLabel() {
+			return label;
+		}		
+		public void setLabel( String label ) {
+			this.label = label;
+		}
+		public String getAboutPriceText() {
+			return aboutPriceText;
+		}	
+		public void setAboutPriceText( String aboutPriceText ) {
+			this.aboutPriceText = aboutPriceText;
+		}
 	}
 	
 	/**
@@ -317,7 +373,6 @@ public class ProductConfigResponseData extends BasicProductData {
 		private String display;		
 		private List<VarItem> values;
 		private String underLabel;
-		private String descrPopup;
 		
 		public String getName() {
 			return name;
@@ -354,12 +409,6 @@ public class ProductConfigResponseData extends BasicProductData {
 		}
 		public void setUnderLabel(String underLabel) {
 			this.underLabel = underLabel;
-		}		
-		public String getDescrPopup() {
-			return descrPopup;
-		}		
-		public void setDescrPopup( String descrPopup ) {
-			this.descrPopup = descrPopup;
 		}
 	}
 	

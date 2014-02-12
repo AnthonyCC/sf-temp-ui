@@ -46,9 +46,7 @@ public class SoyRendererTag extends SimpleTagSupport {
 		
 	    SoyMapData soyData;
 	    
-	    if ( data == null ) {
-	    	soyData = new SoyMapData();
-	    } else if ( data instanceof SoyMapData ) {
+	    if ( data instanceof SoyMapData ) {
 	    	soyData = (SoyMapData)data;
 	    } else {
 	    	soyData = new SoyMapData( data );

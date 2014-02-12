@@ -1,29 +1,23 @@
 package com.freshdirect.webapp.util;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
-import java.net.HttpURLConnection;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
 import com.freshdirect.common.pricing.PricingContext;
+
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.content.TemplateRenderer;
 import com.freshdirect.framework.template.ITemplateRenderer;
 import com.freshdirect.framework.template.TemplateException;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.IncludeMediaTag;
 import com.freshdirect.webapp.template.TemplateContext;
 
 public class MediaUtils {
-	private static final Logger LOGGER = LoggerFactory.getInstance(MediaUtils.class);
-	
+
 	public static URL resolve(String rootPath, String childPath)
 			throws IOException {
 		// remove absolute path mark
@@ -105,38 +99,5 @@ public class MediaUtils {
 		boolean errorReport = withErrorReport == null ? false : withErrorReport.booleanValue();
 
 		MediaUtils.renderMedia(url, out, context, errorReport);
-	}
-
-
-	/**
-	 * Convenience method to check if a media exists at the given path
-	 * 
-	 * @param mediaPath
-	 * @return
-	 */
-	public static boolean checkMedia(String mediaPath) {
-		try {
-			URL url = MediaUtils.resolve(FDStoreProperties.getMediaPath(), mediaPath);
-			if ("file".equalsIgnoreCase( url.getProtocol())) {
-				File f = new File(url.toURI());
-				return f.exists();
-			} else if ("http".equalsIgnoreCase( url.getProtocol())) {
-				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-				conn.setRequestMethod("HEAD"); 
-				conn.connect(); 
-				int resp = conn.getResponseCode();
-				conn.disconnect();
-				return resp == HttpURLConnection.HTTP_OK;
-			} else {
-				LOGGER.warn("Unknown protocol " + url.getProtocol());
-				return false;
-			}
-		} catch (IOException e) {
-			LOGGER.error("Something broke while checking media: " + mediaPath, e);
-			return false;
-		} catch (URISyntaxException e) {
-			LOGGER.error("Bad URL for media: " + mediaPath, e);
-			return false;
-		}
 	}
 }

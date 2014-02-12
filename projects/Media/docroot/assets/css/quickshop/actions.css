@@ -27,7 +27,9 @@
 }
 
 button.addtocart,
+button[data-component="ATCButton"],
 button.customize,
+button[data-component="customizeButton"],
 button[data-component="applyCustomization"],
 button[data-component="saveCustomization"],
 #reset {
@@ -43,33 +45,46 @@ button[data-component="saveCustomization"],
 
 
 
-button.addtocart {
+
+button.addtocart,
+button[data-component="ATCButton"] {
 	width:82px;
     background-position: -5px -5px;
 }
 
 button.addtocart:hover,
 button.addtocart:focus,
+button[data-component="ATCButton"]:hover,
+button[data-component="ATCButton"]:focus,
 button.addtocart.incart:hover,
-button.addtocart.incart:focus {
+button.addtocart.incart:focus,
+button[data-component="ATCButton"].incart:hover,
+button[data-component="ATCButton"].incart:focus {
     background-position: -97px -5px;
 }
 
-button.addtocart.incart {
+button.addtocart.incart,
+button[data-component="ATCButton"].incart {
     background-position: -105px -115px;
 }
 
-button.customize {
+button.customize,
+button[data-component="customizeButton"] {
     width: 82px;
     background-position: -240px -152px;
 }
 button.customize:hover,
 button.customize:focus,
+button[data-component="customizeButton"]:hover,
+button[data-component="customizeButton"]:focus,
 button.customize.incart:hover,
-button.customize.incart:focus {
+button.customize.incart:focus,
+button[data-component="customizeButton"].incart:hover,
+button[data-component="customizeButton"].incart:focus {
     background-position: -240px -184px;
 }
-button.customize.incart{
+button.customize.incart,
+button[data-component="customizeButton"].incart {
     background-position: -155px -216px;
 }
 

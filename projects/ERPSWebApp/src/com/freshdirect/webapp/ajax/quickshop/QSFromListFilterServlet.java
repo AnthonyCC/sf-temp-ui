@@ -36,7 +36,6 @@ import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
-import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.quickshop.data.EnumQuickShopTab;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
@@ -205,8 +204,7 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 			try {
 				rv = QuickShopHelper.createItemCore(newItem.convertToSelection(), list, null, user, EnumQuickShopTab.CUSTOMER_LISTS);
 				if(rv!=null){
-					QuickShopLineItem item = rv.getNode().getItem();
-					ProductDetailPopulator.postProcessPopulate(user, item, item.getSkuCode());
+					QuickShopHelper.postProcessPopulate(user, rv.getNode().getItem());
 					returnWrapper.put("updateItem", rv.getNode().getItem());							
 				}
 			} catch (FDException e) {

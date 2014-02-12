@@ -44,14 +44,14 @@ var FreshDirect = FreshDirect || {};
 			var required = item.required;
 			if(required.length) {
 				Object.keys(item).forEach(function(data){
-					if(required.indexOf(data) > -1 && (!item[data] || item[data]==='0') ) {
+					if(required.inArray(data) && (!item[data] || item[data]==='0') ) {
 						item.DOMElement.find('[data-productdata-name="'+data+'"]').addClass('missing-data');
 						item.invalid = true;
 						valid = false;
 					}
 				});
 				Object.keys(item.configuration || {}).forEach(function(data){
-					if(required.indexOf(data) > -1 && !item.configuration[data]) {
+					if(required.inArray(data) && !item.configuration[data]) {
 						item.DOMElement.find('[data-productdata-name="'+data+'"]').addClass('missing-data');
 						item.invalid = true;
 						valid = false;

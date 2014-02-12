@@ -286,20 +286,20 @@ public abstract class BaseJsonServlet extends HttpServlet {
 		}
 	}
 
-	public final static void returnHttpError( int errorCode ) throws HttpErrorResponse {
+	protected final static void returnHttpError( int errorCode ) throws HttpErrorResponse {
     	LOG.error( "Aborting with HTTP"+errorCode );
     	throw new HttpErrorResponse( errorCode );
 	}
-	public final static void returnHttpError( int errorCode, String errorMessage ) throws HttpErrorResponse {
+	protected final static void returnHttpError( int errorCode, String errorMessage ) throws HttpErrorResponse {
     	LOG.error( errorMessage );
     	throw new HttpErrorResponse( errorCode );
 	}
-	public final static void returnHttpError( int errorCode, String errorMessage, Throwable e ) throws HttpErrorResponse {
+	protected final static void returnHttpError( int errorCode, String errorMessage, Throwable e ) throws HttpErrorResponse {
     	LOG.error( errorMessage, e );
     	throw new HttpErrorResponse( errorCode );
 	}
 	
-	public final static class HttpErrorResponse extends Exception {
+	protected final static class HttpErrorResponse extends Exception {
 				
 		private static final long	serialVersionUID	= -4320607318778165536L;
 

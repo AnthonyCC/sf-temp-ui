@@ -2,20 +2,20 @@
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
-  "use strict";
+	"use strict"
 
-  var $ = fd.libs.$;
-  
-  var QuantityBox = { initialized: false };
+	var $ = fd.libs.$;
+	
+	var QuantityBox = { initialized: false };
 
-  function triggerEvent($quantitybox, newVal) {
-    $quantitybox.trigger('quantity-change',{ newVal: newVal });
-    $quantitybox.trigger('quantity-change-'+($quantitybox.find('input.qty').val()<newVal?'inc':'dec'));
-  }
+	function triggerEvent($quantitybox, newVal) {
+		$quantitybox.trigger('quantity-change',{ newVal: newVal });
+		$quantitybox.trigger('quantity-change-'+($quantitybox.find('input.qty').val()<newVal?'inc':'dec'));
+	};
 
-  function getInput($quantitybox) {
-    return $('input[data-component="quantitybox.value"]',$quantitybox);
-  }
+	function getInput($quantitybox) {
+		return $('input[data-component="quantitybox.value"]',$quantitybox);
+	}
 
   function markProductChanged($quantitybox) {
     var $product = $quantitybox.$product || $quantitybox.parents('[data-component=product]').first();
@@ -26,84 +26,55 @@ var FreshDirect = FreshDirect || {};
     }
   }
 
-  function chgQty(value, min, max, inc) {
-    var qty = parseFloat(value) + 0;
 
-    if (isNaN(qty) || qty < min) {
-      qty = min;
-    } else if (qty >= max) {
-      qty = max;
-    }
-    qty = Math.floor( (qty-min)/inc )*inc  + min;
-
-    return qty;
-  }
-
-  var getValue = function($quantitybox){
-    var $qtybox = $($quantitybox),
-        min = $qtybox.data('min'),
-        max = $qtybox.data('max'),
-        inc = $qtybox.data('step');
-    
-    if($quantitybox) {
-      return chgQty( getInput($quantitybox).val(), parseFloat(min), parseFloat(max), parseFloat(inc) );
-    } else {
-      return 0;
-    }
-  };
+	var getValue = function($quantitybox){
+		if($quantitybox) {
+			return getInput($quantitybox).val();
+		} else {
+			return 0;
+		}
+	};
 
 
-  $(document).on('click','[data-component="quantitybox"]',function(e){
-    var $input,$this,mul,increment, newVal, oldVal, min, button;
+	$(document).on('click','[data-component="quantitybox"]',function(e){
+		var $input,$this,mul,increment, newVal, oldVal, min, button;
 
-    $this=$(this);
-    $input=getInput($this);
-    button = $(e.target).data("component");
+		$this=$(this);
+		$input=getInput($this);
+		button = $(e.target).data("component");
 
-    mul = 0;
-    if(button === "quantitybox.dec" ) {
-      mul = -1;
-    } else if(button === "quantitybox.inc") {
-      mul = 1;
-    }
+		mul = 0;
+		if(button === "quantitybox.dec" ) {
+			mul = -1;
+		} else if(button === "quantitybox.inc") {
+			mul = 1;
+		}
 
-    if(mul) {
-      increment = +$this.data("step")*mul;
-      oldVal = +$input.val();
-      min = +$this.data("min");
+		if(mul) {
+			increment = +$this.data("step")*mul;
+			oldVal = +$input.val();
+			min = +$this.data("min");
 
-      newVal= oldVal+increment;
-      if($this.data("mayempty") && newVal < min  && increment < 0) {
-        newVal = 0;
-      } else {
-        newVal=Math.max(min,Math.min(+$this.data("max"),newVal));
-      }
+			newVal= oldVal+increment;
+			if($this.data("mayempty") && newVal < min  && increment < 0) {
+				newVal = 0;
+			} else {
+				newVal=Math.max(min,Math.min(+$this.data("max"),newVal));
+			}
 
-      $input.val(newVal);
-      markProductChanged($this);
-      triggerEvent($this,newVal);     
-    }
-  });
+			$input.val(newVal);
+			markProductChanged($this);
+			triggerEvent($this,newVal);			
+		}
+	});
 
-  $(document).on('keyup','[data-component="quantitybox"]',function(e){
-    var $input,$this;
-    $this=$(this);
-    $input=getInput($this);
-    markProductChanged($this);
-    triggerEvent($this,$input.val());
-  });
-
-  $(document).on('change','[data-component="quantitybox.value"]',function(e){
-
-    var $qtyinput = $(this),
-        $qtybox = $qtyinput.closest('[data-component="quantitybox"]'),
-        min = $qtybox.data('min'),
-        max = $qtybox.data('max'),
-        inc = $qtybox.data('step');
-    
-    $(this).val(chgQty($qtyinput.val(), parseFloat(min), parseFloat(max), parseFloat(inc)));
-    triggerEvent($qtybox,$qtyinput.val());
-  });
+	$(document).on('keyup','[data-component="quantitybox"]',function(e){
+		var $input,$this;
+		$this=$(this);
+		$input=getInput($this);
+		markProductChanged($this);
+		triggerEvent($this,$input.val());
+	});
 
 /*
 * plugin for quantitybox
@@ -112,21 +83,21 @@ var FreshDirect = FreshDirect || {};
 * return value of the quantityboxes
 */
 
-  var getBoxAndValue = function() {
-    return { 
-      quantityBox:this,
-      value:getValue(this)
-    };
-  };
-  
-  var _updateSubtotal = function(index) {
-    var $input,$this;
+	var getBoxAndValue = function() {
+		return { 
+			quantityBox:this,
+			value:getValue(this)
+		};
+	};
+	
+	var _updateSubtotal = function(index) {
+		var $input,$this;
 
-    $this=$(this);
-    $input=getInput($this);
-  };
+		$this=$(this);
+		$input=getInput($this);
+	};
 
-  var methods = {
+	var methods = {
     value : function( ) { 
        return getValue(this[0]);
     },
@@ -134,18 +105,18 @@ var FreshDirect = FreshDirect || {};
       return this.map(getBoxAndValue);
     },
     show:function(){
-    return this.map(_updateSubtotal);
+		return this.map(_updateSubtotal);
     }
   };
 
-  $.fn.quantityBox = function( method ) { 
-      // Method calling logic
-    if ( methods[method] ) {
-      return methods[ method ].apply( this, Array.prototype.slice.call( arguments, 1 ));
-    } else {
-      $.error( 'Method ' +  method + ' does not exist on jQuery.quantityBox' );
-    }    
-  };
-  
-  fd.modules.common.utils.register("components", "QuantityBox", QuantityBox, fd);
+	$.fn.quantityBox = function( method ) {	
+	    // Method calling logic
+		if ( methods[method] ) {
+		  return methods[ method ].apply( this, Array.prototype.slice.call( arguments, 1 ));
+		} else {
+		  $.error( 'Method ' +  method + ' does not exist on jQuery.quantityBox' );
+		}    
+	};
+	
+	fd.modules.common.utils.register("components", "QuantityBox", QuantityBox, fd);
 }(FreshDirect));

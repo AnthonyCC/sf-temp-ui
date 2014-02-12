@@ -24,7 +24,7 @@
 }
 
 [data-productdata-name].missing-data {
-	border:2px solid red;
+	outline:2px solid red;
 }
 
 .atc-info .incart-message.ERROR {

@@ -9,7 +9,9 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
@@ -23,6 +25,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class ComponentGroupModel extends ContentNodeModelImpl {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(ComponentGroupModel.class);
+
+	private final static Image IMAGE_BLANK = new Image("/media_stat/images/layout/clear.gif", 1, 1);
 
 	private List<String> characteristics;
 
@@ -39,7 +43,7 @@ public class ComponentGroupModel extends ContentNodeModelImpl {
 	 * @return
 	 */
 	public Image getHeaderImage() {
-            return FDAttributeFactory.constructImage(this, "HEADER_IMAGE", Image.BLANK_IMAGE);
+            return FDAttributeFactory.constructImage(this, "HEADER_IMAGE", IMAGE_BLANK);
 	}
 
 	/**

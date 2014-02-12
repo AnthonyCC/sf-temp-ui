@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +20,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.google.template.soy.SoyFileSet;
-import com.google.template.soy.data.SoyDataException;
 import com.google.template.soy.data.SoyMapData;
 import com.google.template.soy.jssrc.SoyJsSrcOptions;
-import com.google.template.soy.tofu.SoyTofuException;
 
 
 public class SoyTemplateEngine {
@@ -64,6 +61,10 @@ public class SoyTemplateEngine {
 	 */
 	private Map<String,List<String>> jsCache = new ConcurrentHashMap<String, List<String>>();
 	
+	/**
+	 * Soy Debug Mode flag. Only checks fdstore.properties on startup.
+	 */
+	private static boolean debugMode = FDStoreProperties.isSoyDebugMode(); 
 	
 	
 	/**
@@ -98,23 +99,19 @@ public class SoyTemplateEngine {
 	 * @param template
 	 * @param data
 	 * @return
-	 * @throws IOException and some soy specific runtime exceptions
+	 * @throws IOException
 	 */
 	public String render( ServletContext servletCtx, String template, SoyMapData data ) throws IOException {
 		//LOGGER.info( "Rendering template: " + template );
-		
-		if ( data == null ) {
-			LOGGER.warn( "Missing data. Skipping rendering of null." );
-			throw new SoyDataException( "Failed to render template with null data for " + template );
-		}
 		
 		String packageName = packagePathOf( template );
 		AbstractSoyTemplate tofu; 
 		
 		//----------------
-		if ( FDStoreProperties.isSoyDebugMode() ) {
+		if ( debugMode ) {
 			// Always compile in debug mode
-			load( servletCtx, packageName );
+			tofuCache.remove( packageName );			
+			load( servletCtx, packageName);
 			tofu = tofuCache.get( packageName );
 			
 		} else {
@@ -127,11 +124,6 @@ public class SoyTemplateEngine {
 		}
 		
 		//----------------
-		
-		if ( tofu == null ) {
-			LOGGER.error( "Failed to load template tofu for " + template );
-			throw new SoyTofuException( "Failed to load template tofu for " + template );
-		}
 		
 		String result = tofu.render( template, data ); 
 		//LOGGER.info( "Successfully rendered template: " + template );
@@ -152,16 +144,17 @@ public class SoyTemplateEngine {
 
 		List<String> jsSrc; 
 		
-		if ( FDStoreProperties.isSoyDebugMode() ) {
+		if ( debugMode ) {
 			// Always compile in debug mode
-			load( servletCtx, packageName );
+			jsCache.remove( packageName );			
+			load( servletCtx, packageName);
 			jsSrc = jsCache.get( packageName );
 			
 		} else {
 			// Use cache in production mode
 			jsSrc = jsCache.get( packageName );			
 			if ( jsSrc == null ) {
-				load( servletCtx, packageName );
+				load( servletCtx, packageName);
 				jsSrc = jsCache.get( packageName );
 			}
 		}
@@ -191,14 +184,13 @@ public class SoyTemplateEngine {
 			
 		//LOGGER.info( "Loading package " + packageName );		
 		
-		SoyFileSet sfsWithDeps = buildSoyFileSet( servletCtx, packageName, true );	
-		SoyFileSet sfsNoDeps = buildSoyFileSet( servletCtx, packageName, false );	
+		SoyFileSet sfs = buildSoyFileSet( servletCtx, packageName );	
 		
 		//LOGGER.info( "Loaded package " + packageName );
 		
 		try {
 			AbstractSoyTemplate tofu;
-			if ( FDStoreProperties.isSoyDebugMode() ) {
+			if ( debugMode ) {
 				
 //				// Compile to 'Tofu' - using the 'experimental java src backend' 
 //				// DO NOT USE the experimental backend, there are important features missing, e.g. deltemplates, variants
@@ -208,24 +200,24 @@ public class SoyTemplateEngine {
 //				LOGGER.info( "Package " + packageName + " compiled successfully to SoyTemplateRuntimes" );
 
 				// Compile to 'Tofu' - using the 'classic tofu' backend
-				tofu = new AbstractSoyTemplate( sfsWithDeps.compileToTofu() );
+				tofu = new AbstractSoyTemplate( sfs.compileToTofu() );
 				tofuCache.put( packageName, tofu );
 				LOGGER.info( "Package " + packageName + " compiled successfully to SoyTemplateRuntimes" );
 				
 				// Compile to JS - use default compiler options, and no message bundle
-				List<String> jsSrc = sfsNoDeps.compileToJsSrc( new SoyJsSrcOptions(), null );
+				List<String> jsSrc = sfs.compileToJsSrc( new SoyJsSrcOptions(), null );
 				jsCache.put( packageName, jsSrc );
 				LOGGER.info( "Package " + packageName + " compiled successfully to javascript source" );
 			} else {
 				
 				// Compile to 'production Tofu'
-				tofu = new AbstractSoyTemplate( sfsWithDeps.compileToTofu() );
+				tofu = new AbstractSoyTemplate( sfs.compileToTofu() );
 				tofuCache.put( packageName, tofu );
 				LOGGER.info( "Package " + packageName + " compiled successfully to SoyTofu" );
 				
 				// TODO: using internal js compile in production mode too - need to analyze 
 				// Compile to JS - use default compiler options, and no message bundle
-				List<String> jsSrc = sfsNoDeps.compileToJsSrc( new SoyJsSrcOptions(), null );
+				List<String> jsSrc = sfs.compileToJsSrc( new SoyJsSrcOptions(), null );
 				jsCache.put( packageName, jsSrc );
 				LOGGER.info( "Package " + packageName + " compiled successfully to javascript source" );
 			}
@@ -287,18 +279,17 @@ public class SoyTemplateEngine {
 	
 	/**
 	 * Method to build a complete soy-fileset for a given package
-	 * @param resolveDependencies 
 	 * @return
 	 */
-	private static final SoyFileSet buildSoyFileSet( ServletContext servletCtx, String pkgStr, boolean resolveDependencies ) throws IOException {
+	private static final SoyFileSet buildSoyFileSet( ServletContext servletCtx, String pkgStr ) throws IOException {
 		
 		//LOGGER.info( "Building fileset for package " + pkgStr );
 		Set<String> soyFiles = new HashSet<String>();
-		collectSoyFiles( servletCtx, soyFiles, pkgStr, resolveDependencies );
+		collectSoyFiles( servletCtx, soyFiles, pkgStr );
 		
 		SoyFileSet.Builder sfsb = new SoyFileSet.Builder();
 		for ( String path : soyFiles ) {
-			if ( FDStoreProperties.isSoyDebugMode() ) {
+			if ( debugMode ) {
 				// Add as volatile files
 				path = servletCtx.getRealPath( path );
 				File soyFile = new File( path );
@@ -322,22 +313,19 @@ public class SoyTemplateEngine {
 	 * Helper method to collect soy files recursively.
 	 * 
 	 * @param servletCtx
-	 * @param resolveDependencies 
 	 * @param soyFiles
 	 * @param path
 	 */
-	private static final void collectSoyFiles( ServletContext servletCtx, Set<String> result, String pkgStr, boolean resolveDependencies ) {
+	private static final void collectSoyFiles( ServletContext servletCtx, Set<String> result, String pkgStr ) {
 		
 		Set<String> soyPaths = new HashSet<String>();
 		soyPaths.add( pkgStr );
 		
-		if ( resolveDependencies ) {
-			String dependencies = (String)props.get( pkgStr );
-			if ( dependencies != null ) {
-				StringTokenizer tok = new StringTokenizer( dependencies, " ," );
-				while ( tok.hasMoreTokens() ) {
-					soyPaths.add( tok.nextToken() );
-				}
+		String dependencies = (String)props.get( pkgStr );
+		if ( dependencies != null ) {
+			StringTokenizer tok = new StringTokenizer( dependencies, " ," );
+			while ( tok.hasMoreTokens() ) {
+				soyPaths.add( tok.nextToken() );
 			}
 		}
 		
@@ -359,7 +347,7 @@ public class SoyTemplateEngine {
 						// add subfolders
 						//LOGGER.info( "Adding folder " + file );
 						file = file.substring( SOY_BASE.length(), file.length()-1 );
-						collectSoyFiles( servletCtx, result, file, resolveDependencies );
+						collectSoyFiles( servletCtx, result, file );
 					}
 				}
 			}
@@ -377,7 +365,6 @@ public class SoyTemplateEngine {
 	@SuppressWarnings( "unchecked" )
 	public static Map<String,Object> convertToMap( Object bean ) {
 	  	ObjectMapper m = new ObjectMapper();
-	  	m.setDateFormat(new SimpleDateFormat("MM/dd/yyyy"));
 	  	Map<String,Object> map = m.convertValue( bean, Map.class );
 	  	return map;		
 	}

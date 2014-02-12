@@ -97,9 +97,6 @@ var FreshDirect = FreshDirect || {};
 		}
 	}).listen();
 	
-	var firstTab = $('[data-component="tabbedRecommender"] [data-tabname]:first-child');
-	fd.common.tabbedRecommender.selectTab($('[data-component="tabbedRecommender"]'),firstTab.data('tabname'),firstTab);
-	
 
 	fd.modules.common.utils.register("quickshop.shopFromList", "main", main, fd);
 }(FreshDirect));

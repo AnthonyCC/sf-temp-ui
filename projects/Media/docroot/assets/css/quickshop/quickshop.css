@@ -26,10 +26,6 @@
 	font-size: 36px;
 	margin: 5px 0 0;
 	font-weight: normal;
-	/* Better Font Rendering =========== */
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;		
-	
 }
 
 #quickshop .header ul {
@@ -146,9 +142,6 @@
 	font-size: 64px;
 	border:1px solid #c1b5c1;
 	border-top:none;
-	/* Better Font Rendering =========== */
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;		
 }
 
 .qs-loading:before {

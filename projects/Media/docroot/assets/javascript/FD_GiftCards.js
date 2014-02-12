@@ -59,7 +59,7 @@ function gcLog(logMsg) {
 	var timeNow = time.getHours() + ":" + time.getMinutes() + ":"
 			+ time.getSeconds() + "." + time.getMilliseconds();
 	if ((global_gcDebug || global_gcLog) && window.console) {
-		//console.log(timeNow + ' Log: ' + this.lastLog);
+		console.log(timeNow + ' Log: ' + this.lastLog);
 	}
 }
 
@@ -744,7 +744,7 @@ function showDialogs() {
 				this.lastLog = logMsg;
 				if ((global_gcDebug || global_gcLog) || this.debug) {
 					if (window.console) {
-						//console.log(new Date().toLocaleTimeString()+' Log: '+this.lastLog);
+						console.log(new Date().toLocaleTimeString()+' Log: '+this.lastLog);
 					}
 				}
 			}

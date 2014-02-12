@@ -585,11 +585,7 @@ public class PriceCalculator {
     
 	public boolean isOnSale() {
 		try {
-			FDProductInfo pInfo = getProductInfo();
-			if ( pInfo == null ) {
-				return false;
-			}			
-			return pInfo.getZonePriceInfo(ctx.getZoneId()).isItemOnSale();
+			return getProductInfo().getZonePriceInfo(ctx.getZoneId()).isItemOnSale();
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e);
 		} catch (FDSkuNotFoundException e) {

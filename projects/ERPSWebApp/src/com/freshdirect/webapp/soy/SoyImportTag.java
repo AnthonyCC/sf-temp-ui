@@ -16,10 +16,6 @@ public class SoyImportTag extends SimpleTagSupport {
 
 	private static final Logger LOGGER = LoggerFactory.getInstance( SoyImportTag.class );
 	
-	/**
-	 * Soy-to-Js servlet base url. 
-	 * Should be consistent with actual servlet mapping in web.xml.
-	 */
 	public static final String SOY_JS_BASE = "/api/soy/";
 		
 	private String packageName;

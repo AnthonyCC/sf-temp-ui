@@ -1,25 +1,23 @@
 {namespace common}
 
 /**
- * @param? soldBySalesUnit
- * @param? salesUnit
- * @param? quantity
+ * @param item
  * @param? removeSalesUnit
  * @param? optional
  */
 {template .atcControls autoescape="false"}
-	{if $soldBySalesUnit}
+	{if $item.soldBySalesUnit}
 		<input type="hidden" value="1" data-productdata-name="quantity" data-component="productData">
 		{call common.salesunit}
-			{param options:$salesUnit /}
+			{param options:$item.salesUnit /}
 			{param optional:$optional /}
 		{/call}
 	{else}
 		{if not $removeSalesUnit}
-		<input type="hidden" name="salesUnit" value="{$salesUnit[0].id}" data-component="productData" data-productdata-name="salesUnit">
+		<input type="hidden" name="salesUnit" value="{$item.salesUnit[0].id}" data-component="productData" data-productdata-name="salesUnit">
 		{/if}
 		{call common.quantitybox}
-        	{param quantity:$quantity /}
+        	{param quantity:$item.quantity /}
 			{param optional:$optional /}
       	{/call}
 	{/if}

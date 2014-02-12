@@ -1163,7 +1163,7 @@ function fdTSDisplay(refIdArg) {
 			logMsg = ' '+logMsg;
 
 			if (this.opts.debug && window.console) {
-				//console.log(new Date().toLocaleTimeString(), logMsg);
+				console.log(new Date().toLocaleTimeString(), logMsg);
 			}
 		}
 

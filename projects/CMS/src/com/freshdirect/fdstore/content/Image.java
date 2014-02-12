@@ -6,9 +6,6 @@ import com.freshdirect.cms.util.PublishId;
 public class Image extends MediaModel {
 	private static final long serialVersionUID = 4997898696622901527L;
 
-	private static final String PATH_BLANK_IMAGE	= "/media_stat/images/layout/clear.gif";
-	public static final Image BLANK_IMAGE			= new Image(PATH_BLANK_IMAGE, 1, 1);
-
 	private int width;
 	private int height;
 
@@ -97,14 +94,5 @@ public class Image extends MediaModel {
     	float heightScale = (float) fitToHeight / (float) getHeight();
     	float scale = Math.min(widthScale, heightScale);
 		return scale;
-	}
-
-
-	/**
-	 * Check if this instance is a blank ( or placeholder) image
-	 * @return
-	 */
-	public boolean isBlank() {
-		return PATH_BLANK_IMAGE.equalsIgnoreCase( getPath() );
 	}
 }

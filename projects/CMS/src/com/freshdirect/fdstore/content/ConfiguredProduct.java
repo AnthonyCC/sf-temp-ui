@@ -144,23 +144,23 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	}
 
 	public Image getCategoryImage() {
-            return FDAttributeFactory.constructImage(this, "PROD_IMAGE", Image.BLANK_IMAGE);
+            return FDAttributeFactory.constructImage(this, "PROD_IMAGE", IMAGE_BLANK);
 	}
 
 	public Image getConfirmImage() {
-            return FDAttributeFactory.constructImage(this, "PROD_IMAGE_CONFIRM", Image.BLANK_IMAGE);
+            return FDAttributeFactory.constructImage(this, "PROD_IMAGE_CONFIRM", IMAGE_BLANK);
 	}
 
 	public Image getDetailImage() {
-            return FDAttributeFactory.constructImage(this, "PROD_IMAGE_DETAIL", Image.BLANK_IMAGE);
+            return FDAttributeFactory.constructImage(this, "PROD_IMAGE_DETAIL", IMAGE_BLANK);
 	}
 
 	public Image getFeatureImage() {
-            return FDAttributeFactory.constructImage(this, "PROD_IMAGE_FEATURE", Image.BLANK_IMAGE);
+            return FDAttributeFactory.constructImage(this, "PROD_IMAGE_FEATURE", IMAGE_BLANK);
 	}
 
 	public Image getZoomImage() {
-            return FDAttributeFactory.constructImage(this, "PROD_IMAGE_ZOOM", Image.BLANK_IMAGE);
+            return FDAttributeFactory.constructImage(this, "PROD_IMAGE_ZOOM", IMAGE_BLANK);
 	}
 
 	public Image getAlternateImage() {
@@ -457,7 +457,7 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	 */
 	@Override
 	public List<ProductModel> getUpSellProducts() {
-		ContentNodeModelUtil.refreshModels(this, "PDP_UPSELL", upSellProducts, false);
+		ContentNodeModelUtil.refreshModels(this, "PDP_UPSELL", upSellProducts, true);
 		return new ArrayList<ProductModel>(upSellProducts);
 	}
 
@@ -466,7 +466,7 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	 */
 	@Override
 	public List<ProductModel> getCrossSellProducts() {
-		ContentNodeModelUtil.refreshModels(this, "PDP_XSELL", crossSellProducts, false);
+		ContentNodeModelUtil.refreshModels(this, "PDP_XSELL", crossSellProducts, true);
 		return new ArrayList<ProductModel>(crossSellProducts);
 	}
 	
@@ -485,7 +485,7 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	 */
 	@Override
 	public Image getJumboImage() {
-        return FDAttributeFactory.constructImage(this, "PROD_IMAGE_JUMBO", Image.BLANK_IMAGE);
+        return FDAttributeFactory.constructImage(this, "PROD_IMAGE_JUMBO", IMAGE_BLANK);
 	}
 
 	/**
@@ -493,7 +493,7 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	 */
 	@Override
 	public Image getItemImage() {
-        return FDAttributeFactory.constructImage(this, "PROD_IMAGE_ITEM", Image.BLANK_IMAGE);
+        return FDAttributeFactory.constructImage(this, "PROD_IMAGE_ITEM", IMAGE_BLANK);
 	}
 
 	/**
@@ -501,6 +501,6 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	 */
 	@Override
 	public Image getExtraImage() {
-        return FDAttributeFactory.constructImage(this, "PROD_IMAGE_EXTRA", Image.BLANK_IMAGE);
+        return FDAttributeFactory.constructImage(this, "PROD_IMAGE_EXTRA", IMAGE_BLANK);
 	}
 }

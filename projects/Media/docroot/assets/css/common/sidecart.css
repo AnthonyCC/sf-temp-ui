@@ -133,10 +133,6 @@
   z-index: 1001;
 }
 
-.popupcontent-show {
-	display:block;
-}
-
 #popupcart .spinner,
 #popupcart .emptymsg,
 #popupcart .error {

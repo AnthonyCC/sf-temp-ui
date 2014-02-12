@@ -7,8 +7,6 @@ import com.freshdirect.customer.ErpZoneMasterInfo;
 
 public class GroupScalePricing extends FDGroup {
 		
-	private static final long	serialVersionUID	= -3247305173630685836L;
-	
 	private String longDesc;
 	private String shortDesc;
 	private boolean isActive;

@@ -36,8 +36,7 @@
   margin-top: 20px;
 }
 
-.itemlist-item-header-buttons button,
-button[data-component="addToListButton"] {
+.itemlist-item-header-buttons button {
 	display: inline-block;
 	padding: 0;
 	border: none;
@@ -49,8 +48,7 @@ button[data-component="addToListButton"] {
 
 .itemlist-item-header-buttons button.save,
 .itemlist-item-header-buttons button.deletefromlist,
-.itemlist-item-header-buttons button.addtolist,
-button[data-component="addToListButton"] {
+.itemlist-item-header-buttons button.addtolist {
 	background:url(/media_stat/images/quickshop/buttons-sprite.png) no-repeat;
 }
 
@@ -80,16 +78,13 @@ button[data-component="addToListButton"] {
     background-position: -221px -5px;
 
 }
-.itemlist-item-header-buttons button.addtolist,
-button[data-component="addToListButton"] {
+.itemlist-item-header-buttons button.addtolist {
     width: 22px;
     height: 22px;
     background-position: -253px -5px;
 }
 .itemlist-item-header-buttons button.addtolist:hover,
-.itemlist-item-header-buttons button.addtolist:focus,
-button[data-component="addToListButton"]:hover,
-button[data-component="addToListButton"]:focus {
+.itemlist-item-header-buttons button.addtolist:focus {
     background-position: -285px -5px;
 }
 

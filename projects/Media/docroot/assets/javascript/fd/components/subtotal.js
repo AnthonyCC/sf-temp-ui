@@ -17,9 +17,7 @@ var FreshDirect = FreshDirect || {};
 			salesUnit = itemInfo.salesUnit,
 			qty = parseFloat(itemInfo.quantity),
 			origqty = qty,
-			pricingUnit = "",
-      template = $subtotal.attr('data-template') || '[]';
-      template = FreshDirect.modules.common.utils.discover(template);
+			pricingUnit = "";
 		
 		
 		/* Convert JSON string to JSON object */
@@ -78,13 +76,8 @@ var FreshDirect = FreshDirect || {};
 
 	      price = Math.round( price * 100 ) /100;
 
-		if (price) {
-      if( template && template.call ){
-        $subtotal.html( template.call( null, { 'price' : price, 'quantity' : qty, 'pricingUnit' : pricingUnit } ) );
-      }
-      else{ // fallback
-        $subtotal.html( Subtotal.innerTemplate.call(null, { 'price' : price }) );
-      }
+		if (price && qty > qInc) {
+		  $subtotal.html("subtotal: <b>$"+price+"</b>");
 		} else {
 		  $subtotal.html("");
 		}
@@ -100,8 +93,7 @@ var FreshDirect = FreshDirect || {};
 				if($subtotal.length) {
 					_update($subtotal);					
 				}
-			},
-			innerTemplate:common.subtotalInner
+			}
 	};
 	
 	function eventHandler(event){
@@ -117,6 +109,7 @@ var FreshDirect = FreshDirect || {};
 	$(document).on('salesunit-change','[data-component="product"]',eventHandler);
 	
 	$(document).on('change','[data-component="productDataConfiguration"]',eventHandler);
-
+	
+	
 	fd.modules.common.utils.register("components", "Subtotal", Subtotal, fd);
 }(FreshDirect));

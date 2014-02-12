@@ -10,9 +10,6 @@ public class AddToCartResponseDataItem implements Serializable {
 	private double inCartAmount;
 	private String message;
 	private Status status;
-	private int cartlineId;
-	private String productId;
-	private String categoryId;
 	
 	
 	public AddToCartResponseDataItem() {		
@@ -56,35 +53,9 @@ public class AddToCartResponseDataItem implements Serializable {
 	public void setStatus( Status status ) {
 		this.status = status;
 	}
-	
-	public int getCartlineId() {
-		return cartlineId;
-	}
-	
-	public void setCartlineId( int cartlineId ) {
-		this.cartlineId = cartlineId;
-	}
-	
-	public String getProductId() {
-		return productId;
-	}
-	
-	public void setProductId( String productId ) {
-		this.productId = productId;
-	}
-	
-	public String getCategoryId() {
-		return categoryId;
-	}
-	
-	public void setCategoryId( String categoryId ) {
-		this.categoryId = categoryId;
-	}
 
 
 	public static enum Status {
 		SUCCESS, WARNING, ERROR;
 	}
-
-
 }

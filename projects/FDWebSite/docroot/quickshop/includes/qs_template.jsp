@@ -5,8 +5,6 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties'%>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
-<%@ page import="com.freshdirect.webapp.soy.SoyTemplateEngine"%>
-<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%  request.setAttribute("sitePage", "www.freshdirect.com/quickshop/");
@@ -78,11 +76,18 @@
                 </div>
                 <div class="qs-loading">loading products</div>
             </div>
-            <%
-                Map<String,Object> soyData = new HashMap<String,Object>();
-                soyData.put("hasYourFavoritesRecommendation", QuickShopHelper.hasYourFavoritesRecommendation( user ));
-            %>
-            <soy:render template="common.tabbedCarousel" data="<%= soyData %>" />
+            <div id="tabbedCarousel" class="tabbed-carousel" data-component="tabbedRecommender" data-cmeventsource="qs_tabbedRecommender">
+                <ul class="tabs clearfix">
+                	<% if ( QuickShopHelper.hasYourFavoritesRecommendation( user ) ) { %>
+                    <li data-component="tabitem" data-tabname="yourfav" data-sitefeature="DYF">your favorites</li>
+                    <% } %>
+                    <li data-component="tabitem" data-tabname="deals" data-sitefeature="DEALS_QS">don't miss deals</li>
+                    <li data-component="tabitem" data-tabname="fdfav"  data-sitefeature="FAVORITES_QS">FD favorites</li>
+                    <li data-component="tabitem" data-tabname="expert" data-sitefeature="EXPRATED_QS">expert rated</li>
+                    <li data-component="tabitem" data-tabname="custrating" data-sitefeature="CUSTRATED_QS">customer rated</li>
+                </ul>
+                <div class="tab-container light-carousel" data-component="tabpanel"></div>
+            </div>
           <!-- content ends above here-->
         </div>
     </div>

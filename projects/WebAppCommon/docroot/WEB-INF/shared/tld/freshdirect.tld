@@ -5581,11 +5581,6 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-		<attribute>
-			<name>noHeaders</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
 	</tag>
 	<tag>
 		<name>QuickShopRedirector</name>
@@ -5599,16 +5594,6 @@
 		<attribute>
 			<name>from</name>
 			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
-		<name>PDPRedirector</name>
-		<tagclass>com.freshdirect.webapp.ajax.PDPRedirector</tagclass>
-		<info></info>
-		<attribute>
-			<name>user</name>
-			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>

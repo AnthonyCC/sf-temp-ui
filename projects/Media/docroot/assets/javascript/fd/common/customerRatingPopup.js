@@ -30,7 +30,6 @@ var FreshDirect = FreshDirect || {};
       value: {
 	    valign: 'bottom',
 	    halign: 'left',
-	    align:'tc-bc',
 	    placeholder: false,
 	    stayOnClick: false,
         overlay:false

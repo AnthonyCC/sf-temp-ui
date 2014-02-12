@@ -77,6 +77,8 @@ public class TemplateContext extends BaseTemplateContext{
 	private PricingContext pricingContext;
 	private static List<PricingContext> pricingContexts = null;
 
+	private final static Image IMAGE_BLANK = new Image("/media_stat/images/layout/clear.gif", 1, 1);
+
 	private final static Logger LOGGER = LoggerFactory.getInstance(TemplateContext.class);
 		
 	/**
@@ -810,7 +812,7 @@ public class TemplateContext extends BaseTemplateContext{
 		} else if (node instanceof CategoryModel) {
 			img = ((CategoryModel) node).getCategoryPhoto();
 		}
-		return img == null ? Image.BLANK_IMAGE : img;
+		return img == null ? IMAGE_BLANK : img;
 	}
 	
 	/**

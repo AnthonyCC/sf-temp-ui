@@ -21,10 +21,7 @@ public enum EnumEventSource {
 	qs_customerLists("QS-shopping-lists"),
 	qs_fdLists("QS-FD-lists"),	
 	qs_ymal("QS-top-recommender"),
-	qs_tabbedRecommender("QS-bottom-recommender"),
-	
-	// Site Redesign - PDP
-	pdp_main("pdp_main");
+	qs_tabbedRecommender("QS-bottom-recommender");
 	
 	String name;
 	

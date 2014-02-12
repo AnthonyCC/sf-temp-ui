@@ -11,9 +11,6 @@
 	color:#996699;
 	text-align: center;
 	margin-bottom:10px;
-	/* Better Font Rendering =========== */
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;		
 }
 
 #qs-ymal .changed .itemlist-item-header:after  {
@@ -76,7 +73,4 @@
 	font-size:22px;
 	line-height:1em;
 	color:#996699;
-	/* Better Font Rendering =========== */
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;		
 }

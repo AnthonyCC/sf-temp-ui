@@ -28,9 +28,6 @@ var FreshDirect = FreshDirect || {};
     this.shown = false;
     this.disabled = this.config.disabled || false;
     this.config.placeholder = !!(this.config.placeholder && $trigger);
-    if(config['align']){
-    	this.config.align=config.align;
-    }
 
     this.hideProxy = $.proxy(this.hide, this);
 
@@ -140,37 +137,22 @@ var FreshDirect = FreshDirect || {};
     }
   };
 
-  PopupContent.prototype.show = function ($trigger, align) {
-	var screenOffset, boundingRect;
+  PopupContent.prototype.show = function ($trigger) {
     if ($trigger) {
       this.$trigger = $trigger;
       this.$alignTo = $trigger;
     }
-    this.config.align=align;
     if (this.$trigger && !this.shown && !this.disabled) {
       this.shown = true;
       this.$trigger.addClass("hover");
       this.reposition();
       this.$el.css({display: "block"});
-      this.$el.addClass('shown');
       if (this.config.placeholder) {
         this.$ghost.css({display: "block"});
       }
       if (this.config.overlay) {
         this.$overlay.css({display: "block"});
       }
-      var el = this.$el;
-      setTimeout(function(){
-          boundingRect = el[0].getBoundingClientRect();
-          
-          screenOffset =  $(window).height() - (boundingRect.bottom);
-    	  //console.log(screenOffset);
-          if(screenOffset<0) {
-        	  el.smoothScroll();
-          }     	  
-      },500);
-      
-      
     }
   };
 
@@ -179,7 +161,6 @@ var FreshDirect = FreshDirect || {};
       this.$trigger.removeClass("hover");
     }
     this.$el.css({display: "none"});
-    this.$el.removeClass('shown');
     this.clicked = false;
     this.shown = false;
     this.$el.removeClass('clicked');
@@ -200,11 +181,8 @@ var FreshDirect = FreshDirect || {};
         height = this.$alignTo.outerHeight(),
         fwidth = this.$alignTo.outerWidth(true),
         fheight = this.$alignTo.outerHeight(true),
-        contentWidth = this.$el.outerWidth(),
-        contentHeight = this.$el.outerHeight(),
-        screenOffset;
+        contentWidth = this.$el.outerWidth();
 
-    var align = this.config.align;
 
     if (this.config.placeholder) {
       this.$ghost.css({
@@ -221,45 +199,18 @@ var FreshDirect = FreshDirect || {};
       });
       this.$alignTo.appendTo(this.$ghost);
     }
-    
-    if(align) {
-    	var position={};
-    	if(align[0]==='t') position.top = offset.top
-    	else if(align[0]==='b') position.top = offset.top + height
-    	else if(align[0]==='c') position.top = offset.top + height/2;
-    	
-    	if(align[1]==='l') position.left = offset.left
-    	else if(align[1]==='r') position.left = offset.left + width
-    	else if(align[1]==='c') position.left = offset.left + width/2;
-    	
-    	if(align[3]==='c') position.top = position.top - contentHeight/2
-    	else if(align[3]==='b') position.top = position.top - contentHeight;
-    	
-    	if(align[4]==='c') position.left = position.left - contentWidth/2
-    	else if(align[4]==='r') position.left = position.left - contentWidth;
-    	    	
-		this.$el.css({
-    		top:position.top+'px',
-    		left:position.left+'px',
-    		right:'auto',
-    		bottom:'auto'
-    	});
-    	
-    } else if(align!==false) {
-        if (this.config.valign === 'bottom') {
-            this.$el.css({top: (offset.top + height) + 'px', bottom: 'auto'});
-        } else {
-            this.$el.css({top: offset.top + 'px', bottom: 'auto'});
-        }
 
-	if (this.config.halign === 'right') {
-		    this.$el.css({left: (offset.left + width - contentWidth) + 'px', right: 'auto'});
-	} else {
-	    this.$el.css({left: offset.left + 'px', right: 'auto'});
-	}
+    if (this.config.valign === 'bottom') {
+      this.$el.css({top: (offset.top + height) + 'px', bottom: 'auto'});
+    } else {
+      this.$el.css({bottom: offset.top + 'px', top: 'auto'});
     }
-    
 
+    if (this.config.halign === 'right') {
+      this.$el.css({left: (offset.left + width - contentWidth) + 'px', right: 'auto'});
+    } else {
+      this.$el.css({left: offset.left + 'px', right: 'auto'});
+    }
 
   };
 

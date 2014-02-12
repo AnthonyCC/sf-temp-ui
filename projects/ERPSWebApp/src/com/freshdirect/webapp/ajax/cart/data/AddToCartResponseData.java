@@ -24,9 +24,6 @@ public class AddToCartResponseData implements Serializable {
 
 	// map: couponId -> statusMessage 
 	private Map<String,String> couponStatus = new HashMap<String, String>();
-
-	// redirect for optional cart-confirm page
-	private String redirectUrl;
 	
 	public List<AddToCartResponseDataItem> getAtcResult() {
 		return atcResult;
@@ -62,14 +59,6 @@ public class AddToCartResponseData implements Serializable {
 	
 	public void setCouponStatus( Map<String, String> couponStatus ) {
 		this.couponStatus = couponStatus;
-	}
-	
-	public String getRedirectUrl() {
-		return redirectUrl;
-	}
-	
-	public void setRedirectUrl( String redirectUrl ) {
-		this.redirectUrl = redirectUrl;
 	}
 
 }
