@@ -1,10 +1,10 @@
 package com.freshdirect.webapp.ajax.quickshop;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,20 +19,19 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.customer.EnumSaleType;
-import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDVariation;
+import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ConfiguredProductGroup;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.FDFolder;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
@@ -41,8 +40,6 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.StarterList;
-import com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext;
-import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderHistory;
@@ -58,13 +55,10 @@ import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.pricing.SkuModelPricingAdapter;
-import com.freshdirect.fdstore.util.DYFUtil;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
-import com.freshdirect.webapp.ajax.cart.data.CartData.Quantity;
-import com.freshdirect.webapp.ajax.cart.data.CartData.SalesUnit;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.quickshop.data.EnumQuickShopTab;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
@@ -74,7 +68,7 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 public class QuickShopHelper {
 
 	private static final int TIME_LIMIT = -13;
-	private final static Logger LOG = LoggerFactory.getInstance(QuickShopHelper.class);
+	public final static Logger LOG = LoggerFactory.getInstance(QuickShopHelper.class);
 
 	public static List<FilteringSortingItem<QuickShopLineItemWrapper>> getWrappedOrderHistory(FDUserI user, EnumQuickShopTab tab) throws FDResourceException {
 
@@ -348,6 +342,67 @@ public class QuickShopHelper {
 	}
 
 	
+	private static void populateProductData( QuickShopLineItem item, FDUserI user, ProductModel productModel, SkuModel sku, FDProduct fdProduct, PriceCalculator priceCalculator, FDProductSelectionI orderLine, boolean useFavBurst ) {
+		
+		if ( sku.isUnavailable() ) {
+			item.setAvailable( false );
+			// if unavailable add product replacements
+			populateReplacements( item, productModel, user );
+		} else {
+			item.setAvailable( true );
+		}
+		item.setCatId(productModel.getPrimaryHome().getContentKey().getId());
+		item.setProductImage( productModel.getProdImage().getPathWithPublishId() );
+		item.setProductName( productModel.getFullName() );
+		item.setProductId( productModel.getContentKey().getId() );
+		item.setSkuCode( sku.getSkuCode() );
+		item.setCustomizePopup( !productModel.isAutoconfigurable() );
+		item.setAlcoholic( isAlcoholic( productModel, fdProduct ) );
+		item.setUsq( isUsq( productModel, fdProduct ) );		
+		item.setProductPageUrl( FDURLUtil.getProductURI( productModel, (String)null ) );
+					
+		populateRatings( item, user, productModel, sku.getSkuCode() );
+		populateBursts( item, user, productModel, priceCalculator, useFavBurst );
+		populateQuantityAndSalesUnits( item, user, productModel, fdProduct, orderLine );
+		
+		// make a variation map
+		HashMap<String, String> optionMap = new HashMap<String, String>();
+		FDVariation[] variations = fdProduct.getVariations();
+		if(variations != null) {
+			boolean autoConfiguration = false;
+			for (FDVariation variation : variations) {
+				FDVariationOption[] options = variation.getVariationOptions();
+				if(options != null && options.length == 1) {
+					autoConfiguration = true;
+				} else {
+					autoConfiguration = false;
+				}
+			}
+			
+			if(autoConfiguration) {
+				for (FDVariation variation : variations) {
+					FDVariationOption[] options = variation.getVariationOptions();
+					if(options != null) {
+						for (int n = 0;n < options.length; n++) {
+							FDVariationOption option = options[n % options.length];						
+							optionMap.put(variation.getName(), option.getName());
+						}
+					}
+				}
+				item.setConfiguration(optionMap);
+			}
+		}
+		
+		//get frequency and recency values from smartstore
+		String[] variables = new String[2];
+		variables[0] = ScoreProvider.USER_FREQUENCY;
+		variables[1] = ScoreProvider.RECENCY_DISCRETIZED;
+		double[] scores = ScoreProvider.getInstance().getVariables(user.getIdentity().getErpCustomerPK(), productModel.getPricingContext(), productModel.getContentKey(), variables);
+		item.setFrequency(scores[0]);
+		item.setRecency(scores[1]);
+		
+	}
+
 	public static boolean isUsq( ProductModel productModel, FDProduct fdProduct ) {
 		return fdProduct.isWine() && ContentNodeModelUtil.hasWineDepartment( productModel.getContentKey() );
 	}
@@ -408,7 +463,7 @@ public class QuickShopHelper {
 	}
 
 
-	private static void populateRatings( QuickShopLineItem item, FDUserI user, ProductModel product, String skuCode ) {
+	private static void populateRatings( QuickShopLineItem item, FDProductSelectionI orderLine ) {
 		
 		int wineRating = 0;
 		int expertRating = 0;
@@ -548,7 +603,7 @@ public class QuickShopHelper {
 	}
 
 	
-	private static void populateOrderLineData( QuickShopLineItem item, FDProductSelectionI orderLine ) {
+	private static void populateOrderLineData( QuickShopLineItem item, FDProductSelectionI orderLine ) throws Exception {
 		
 		// Orderline data
 		

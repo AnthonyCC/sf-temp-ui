@@ -222,7 +222,7 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 		
 			String keyPrefix="catLayout_";
 			int ttl=300;
-			// FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
+			FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 			if(deptId != null && ("fru".equals(deptId)||"veg".equals(deptId)||"orgnat".equals(deptId)||"local".equals(deptId)||"mea".equals(deptId))) {
 			    if(user.isProduceRatingEnabled()) {
 			        keyPrefix=keyPrefix+user.isProduceRatingEnabled()+"_";
