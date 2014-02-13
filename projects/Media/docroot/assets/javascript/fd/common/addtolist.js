@@ -4,145 +4,149 @@ var FreshDirect = FreshDirect || {};
 
 // module initialization
 (function (fd) {
-	
-	var $=fd.libs.$;
-	var POPUPWIDGET = fd.modules.common.popupWidget;
+  
+  var $=fd.libs.$;
+  var POPUPWIDGET = fd.modules.common.popupWidget;
 
-	var listPopup = Object.create(POPUPWIDGET,{
-	    signal:{
-	        value:'listInfos'
-	      },
-	      allowNull:{
-	    	value:true  
-	      },
-	      update: {
-	        value: function (data) {
-	          this.DISPATCHER.signal('server', {
-	            url: '/api/shoppinglist',
-	            data: {
-	              data:JSON.stringify(data || {})
-	            }
-	          });
-	        }
-	      },
-	      headerContent: {
-	        value: '',
-	        writable:true
-	      },
-	      customClass: {
-	        value: 'addtolistpopup'
-	      },
-	      helpTemplate: {
-	        value: 'common.listhelppopup'
-	      },
-	      helpHeader: {
-	        value: 'about shopping lists'
-	      },
-	      bodyTemplate: {
-	        value: null,
-	        writable:true
-	      },
-	      $trigger: {
-	        value: null,
-	        writable:true
-	      },
-	      trigger: {
-	        value: '',
-	        writable:true
-	      },
-	      popupId: {
-	        value: '',
-	        writable:true
-	      },
-	      popupConfig: {
-	        value: {
-	          openonclick: true,
-	          halign: 'right'
-	        }
-	      },
-	      hasClose:{
-	    	value:true  
-	      },
-	      open: {
-	        value: function (e) {
-	          this.DISPATCHER.signal('server',{
-	              url: '/api/shoppinglist'
-	          });
+  var listPopup = Object.create(POPUPWIDGET,{
+      signal:{
+          value:'listInfos'
+        },
+        allowNull:{
+        value:true  
+        },
+        update: {
+          value: function (data) {
+            this.DISPATCHER.signal('server', {
+              url: '/api/shoppinglist',
+              data: {
+                data:JSON.stringify(data || {})
+              }
+            });
+          }
+        },
+        headerContent: {
+          value: '',
+          writable:true
+        },
+        customClass: {
+          value: 'addtolistpopup'
+        },
+        helpTemplate: {
+          value: 'common.listhelppopup'
+        },
+        helpHeader: {
+          value: 'about shopping lists'
+        },
+        bodyTemplate: {
+          value: null,
+          writable:true
+        },
+        $trigger: {
+          value: null,
+          writable:true
+        },
+        trigger: {
+          value: '',
+          writable:true
+        },
+        popupId: {
+          value: '',
+          writable:true
+        },
+        popupConfig: {
+          value: {
+            openonclick: true,
+            halign: 'right'
+          }
+        },
+        hasClose:{
+        value:true  
+        },
+        open: {
+          value: function (e) {
+            if (this.validateOpen && !this.validateOpen(e)) {
+              return;
+            }
 
-	          this.popup.show($(e.currentTarget));
-	          this.popup.clicked = true;
-	        }
-	      },
-	      close: {
-	        value: function () {
-	          this.popup.hide();
-	          $('#'+this.popupId).find(this.bodySelector).html('');
-	        }
-	      },
-	      validName:{
-	    	value: function( name, lists ) {
-	    		var trimmed = name.trim(),
-	    			result = new String('');
-	    		if(trimmed.length > 0){
-	    			if(lists.indexOf(name)>-1) {
-	    				result = new String( 'Oops! That name is taken!' );
-	    				result.taken = true;
-	    			} else {
-	    				result.ok = true;
-	    			}
-	    		} else {
-	    			result = new String('Name cannot be empty.');
-	    			result.empty = true;
-	    		}
-	    		
-	    		return result;
-	    	}  
-	      },
-	      saveToList: {
-	        value: function (changes) {
-	          var listId = $('#'+this.popupId).find('select[name=selectList]').val();
-	          $('#'+this.popupId).find('button.enabled').removeClass('enabled');
-	          this.DISPATCHER.signal('server',{
-	              url: '/api/shoppinglist',
-	              method: 'POST',
-	              data: {
-	                data: JSON.stringify({
-	                  listId: listId,
-	                  items: fd.components.AddToCart.atcFilter(
-	                  			fd.modules.common.productSerialize(this.popup.$trigger))
-	                })
-	              }
-	          });
-	        }
-	      },
-	      saveToNew: {
-	        value: function (changes) {
-	          var listName = $('#'+this.popupId).find('#addtolist-newList').val()
-	          		validator = this.validName(listName,$.makeArray($('#addtolist-selectList option')).map(function(e){
-	          			return e.innerHTML;
-	          		}));
+            this.DISPATCHER.signal('server',{
+                url: '/api/shoppinglist'
+            });
 
-	          if (validator.ok) {
-	              $('#'+this.popupId).find('button.enabled').removeClass('enabled');
-	            this.DISPATCHER.signal('server',{
-	                url: '/api/shoppinglist',
-	                method: 'POST',
-	                data: {
-	                  data: JSON.stringify({
-	                    listName: listName,
-	                    items: fd.components.AddToCart.atcFilter(
-	                  		  	fd.modules.common.productSerialize(this.popup.$trigger))
-	                  })
-	                }
-	            });
-	          } else {
-	        	  $('#'+this.popupId).find('.error').html(validator.toString());
-	          }
-	        }
-	      }
-	    });
-	
-	
+            this.popup.show($(e.currentTarget));
+            this.popup.clicked = true;
+          }
+        },
+        close: {
+          value: function () {
+            this.popup.hide();
+            $('#'+this.popupId).find(this.bodySelector).html('');
+          }
+        },
+        validName:{
+        value: function( name, lists ) {
+          var trimmed = name.trim(),
+            result = new String('');
+          if(trimmed.length > 0){
+            if(lists.indexOf(name)>-1) {
+              result = new String( 'Oops! That name is taken!' );
+              result.taken = true;
+            } else {
+              result.ok = true;
+            }
+          } else {
+            result = new String('Name cannot be empty.');
+            result.empty = true;
+          }
+          
+          return result;
+        }  
+        },
+        saveToList: {
+          value: function (changes) {
+            var listId = $('#'+this.popupId).find('select[name=selectList]').val();
+            $('#'+this.popupId).find('button.enabled').removeClass('enabled');
+            this.DISPATCHER.signal('server',{
+                url: '/api/shoppinglist',
+                method: 'POST',
+                data: {
+                  data: JSON.stringify({
+                    listId: listId,
+                    items: fd.components.AddToCart.atcFilter(
+                          fd.modules.common.productSerialize(this.popup.$trigger))
+                  })
+                }
+            });
+          }
+        },
+        saveToNew: {
+          value: function (changes) {
+            var listName = $('#'+this.popupId).find('#addtolist-newList').val()
+                validator = this.validName(listName,$.makeArray($('#addtolist-selectList option')).map(function(e){
+                  return e.innerHTML;
+                }));
+
+            if (validator.ok) {
+                $('#'+this.popupId).find('button.enabled').removeClass('enabled');
+              this.DISPATCHER.signal('server',{
+                  url: '/api/shoppinglist',
+                  method: 'POST',
+                  data: {
+                    data: JSON.stringify({
+                      listName: listName,
+                      items: fd.components.AddToCart.atcFilter(
+                            fd.modules.common.productSerialize(this.popup.$trigger))
+                    })
+                  }
+              });
+            } else {
+              $('#'+this.popupId).find('.error').html(validator.toString());
+            }
+          }
+        }
+      });
+  
+  
   var addtolistpopup = Object.create(listPopup,{
     headerContent: {
       value: 'add to list'
@@ -151,7 +155,7 @@ var FreshDirect = FreshDirect || {};
       value: common.addtolistpopup
     },
     $trigger:{
-    	value:null
+      value:null
     },
     trigger: {
       value: '[data-component=product] button.addtolist'
@@ -159,11 +163,30 @@ var FreshDirect = FreshDirect || {};
     popupId: {
       value: 'addtolistpopup'
     },
+    validateOpen: {
+      value: function (e) {
+        var target = $(e.currentTarget),
+            product = target.parents('[data-component="product"]').first(),
+            req = product.find('[data-atl-required="true"]'),
+            valid = true;
+
+        req.each(function (i, el) {
+          if ($(el).val() === "") {
+            valid = false;
+            $(el).addClass('missing-data');
+          } else {
+            $(el).removeClass('missing-data');
+          }
+        });
+
+        return valid;
+      }
+    },
     callback:{
-  	  value:function(data){
-  		  data = {data:data, url:encodeURIComponent(location.pathname+location.search)};
-  		  fd.modules.common.widget.callback.call(this,data);
-  	  }
+      value:function(data){
+        data = {data:data, url:encodeURIComponent(location.pathname+location.search)};
+        fd.modules.common.widget.callback.call(this,data);
+      }
     }
   });
 
@@ -175,7 +198,7 @@ var FreshDirect = FreshDirect || {};
       value: common.createlistpopup
     },
     $trigger:{
-    	value:null
+      value:null
     },
     trigger: {
       value: '.qs-actions button.qs-addtolist'

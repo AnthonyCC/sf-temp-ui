@@ -7,7 +7,7 @@
  */
 {template .salesunit}
 <div class="itemlist-item-salesunit">
-  <select class="salesunit" data-component="salesunit" data-productdata-name="salesUnit" {if isNonnull($optional) and not $optional}data-atc-required="true"{/if}>
+  <select class="salesunit" data-component="salesunit" data-productdata-name="salesUnit" {if isNonnull($optional) and not $optional}data-atc-required="true" data-atl-required="true"{/if}>
   {if $label}<option value="">{$label}</option>{/if}
   {foreach $option in $options}
     <option value="{$option.id}" {($option.selected) ? 'selected="selected"' : ''}>{$option.name}</option>
