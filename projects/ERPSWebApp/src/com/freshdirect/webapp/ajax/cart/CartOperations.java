@@ -29,6 +29,8 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDVariation;
+import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.coremetrics.builder.AbstractShopTagModelBuilder;
@@ -716,6 +718,13 @@ public class CartOperations {
 			return null;
 		}
 		
+		errorMessage = validateConfiguration(product,item.getConfiguration());
+
+		if (errorMessage != null) {
+			responseItem.setStatus( Status.ERROR );
+			responseItem.setMessage(errorMessage);
+			return null;
+		}
 
 		// TODO: add 'agree to terms' warning/error		
 //		LOGGER.debug("Consented " + request.getParameter("consented" + suffix));
@@ -842,7 +851,7 @@ public class CartOperations {
 		if ( varMap == null ) {
 			varMap = new HashMap<String, String>();
 		}
-		
+				
 		//
 		// make the order line and add it to the cart
 		//
@@ -909,6 +918,66 @@ public class CartOperations {
 		return null;
 	}
 
+	/**
+	 * Validates configuration, returns an error message string, or null if OK.
+	 * 
+	 * Salvaged from FDShoppingCartControllerTag.
+	 * 
+	 */
+	private static String validateConfiguration( FDProduct product, Map<String,String> varMap ) {
+		//
+		// walk through the variations to see what's been set and try to build a
+		// variation map
+		//
+		FDVariation[] variations = product.getVariations();
+		for (int i = 0; i < variations.length; i++) {
+			FDVariation variation = variations[i];
+			FDVariationOption[] options = variation.getVariationOptions();
+
+			String optionName = varMap.get( variation.getName() );
+
+			if (options.length == 1) {
+				//
+				// there's only a single option, pick that
+				//
+				varMap.put(variation.getName(), options[0].getName());
+
+			} else if (((optionName == null) || "".equals(optionName)) && variation.isOptional()) {
+				//
+				// user didn't select anything for an optional variation, pick
+				// the SELECTED option for them
+				//
+				String selected = null;
+				for (int j = 0; j < options.length; j++) {
+					if (options[j].isSelected())
+						selected = options[j].getName();
+				}
+				varMap.put(variation.getName(), selected);
+			} else if (optionName != null && !"".equals(optionName)) {
+				//
+				// validate & add the option the user selected
+				//
+				boolean validOption = false;
+				for (int j = 0; j < options.length; j++) {
+					if (optionName.equals(options[j].getName())) {
+						validOption = true;
+						break;
+					}
+				}
+				if (!validOption) {
+					return "Please select " + variation.getDescription();
+				}
+			} else {
+				//
+				// user didn't select anything for a required variation, alert
+				// them
+				//
+				return "Please select " + variation.getDescription();
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * Deduce the quantity that has already been processed but not yet added to
 	 * the cart.

@@ -296,16 +296,16 @@ public class ShoppingListServlet extends BaseJsonServlet {
 		// extra fail-safe sales-unit/quantity handling
 		double quantity = CartOperations.extractQuantity( item );
 		
-		if (item.getSalesUnit() == null &&  quantity == 0.0) {
+		if ((item.getSalesUnit() == null || item.getSalesUnit().trim().isEmpty()) &&  quantity == 0.0) {
 			// has no sales-unit, nor quantity set => skip item
 			LOG.warn("Warning: skipped item " + item.getSkuCode() + ", because of missing quantity and sales-unit.");
 			throw new FDResourceException();
 		}
-		if (item.getSalesUnit() != null && quantity == 0.0) {
+		if (item.getSalesUnit() != null && !item.getSalesUnit().trim().isEmpty() && quantity == 0.0) {
 			// has a sales-unit, but no quantity has been set => set quantity to one
 			item.setQuantity("1.0");
 		}
-		if (item.getSalesUnit() == null && quantity != 0.0) {
+		if ((item.getSalesUnit() == null || item.getSalesUnit().trim().isEmpty()) && quantity != 0.0) {
 			// has no sales-unit set, only quantity => set sales-unit to default
 			try {
 				// FIXME : this is quite bizarre for simply getting a default(?) sales-unit ...
@@ -320,6 +320,12 @@ public class ShoppingListServlet extends BaseJsonServlet {
 				LOG.warn("Warning: skipped item " + item.getSkuCode() + ", because of invalid quantity and sales-unit.");
 				throw new FDResourceException(e);
 			}
+		}
+		
+		// Paranoid check
+		if ( item.getSalesUnit() == null || item.getSalesUnit().trim().isEmpty() ) {
+			LOG.warn( "Missing salesunit!" );
+			throw new FDResourceException();
 		}
 
 		// create and add list item
