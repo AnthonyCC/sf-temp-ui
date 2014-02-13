@@ -12,6 +12,9 @@ var FreshDirect = FreshDirect || {};
 	    signal:{
 	        value:'listInfos'
 	      },
+	      allowNull:{
+	    	value:true  
+	      },
 	      update: {
 	        value: function (data) {
 	          this.DISPATCHER.signal('server', {
@@ -56,6 +59,9 @@ var FreshDirect = FreshDirect || {};
 	          openonclick: true,
 	          halign: 'right'
 	        }
+	      },
+	      hasClose:{
+	    	value:true  
 	      },
 	      open: {
 	        value: function (e) {
@@ -152,6 +158,12 @@ var FreshDirect = FreshDirect || {};
     },
     popupId: {
       value: 'addtolistpopup'
+    },
+    callback:{
+  	  value:function(data){
+  		  data = {data:data, url:encodeURIComponent(location.pathname+location.search)};
+  		  fd.modules.common.widget.callback.call(this,data);
+  	  }
     }
   });
 
@@ -201,7 +213,7 @@ var FreshDirect = FreshDirect || {};
   listaddlistener.listen();
   createlistpopup.listen();
   addtolistpopup.listen();
-  addtolistpopup.update();
+  addtolistpopup.render();
 
   $(document).on('click', addtolistpopup.trigger, addtolistpopup.open.bind(addtolistpopup));
   $(document).on('click', createlistpopup.trigger, createlistpopup.open.bind(createlistpopup));

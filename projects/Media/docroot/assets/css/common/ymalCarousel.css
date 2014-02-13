@@ -1,0 +1,32 @@
+.ymalCarousel {
+	border: 1px solid #D2C8D3;
+	overflow:hidden;
+	border-radius:10px;
+}
+
+.ymalCarousel .carousel {
+	margin-bottom:0px;
+}
+
+.ymalCarousel h2 {
+background: #EEE0EE;
+color: #855885;
+font-family: "EagleBook", Verdana, Arial, sans-serif;
+margin: 0;
+font-size: 20px;
+height:29px;
+text-align: center;
+font-weight: bold;
+border-bottom:1px solid #D2C8D3;
+/* Better Font Rendering =========== */
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;		
+
+}
+
+.ymalCarousel .expertrating,
+.ymalCarousel .customerrating,
+.ymalCarousel .winerating,
+.ymalCarousel .sustrating {
+	margin: auto;
+}

@@ -1,0 +1,88 @@
+
+/* tabs */
+.tabbed-carousel .tabs {
+	clear: both;
+	margin: 0;
+	padding: 0;
+}
+.tabbed-carousel .tabs li {
+	display: block;
+	float: left;
+	height: 35px;
+	line-height: 35px;
+	min-width: 174px;
+	font-size: 13px;
+	font-weight: bold;
+	color: #fff;
+	text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+	text-align: center;
+	margin-right: -1px;
+	background: #996699;
+	border: 1px solid #7a4b70;
+	border-bottom: none;
+	box-shadow: inset 1px 1px 2px rgba(255,255,255,0.3), inset -1px 0px 4px rgba(0,0,0,0.3);
+	cursor: pointer;
+	border-radius: 8px 8px 0 0;
+}
+.tabbed-carousel .tabs li:hover,
+.tabbed-carousel .tabs li:focus,
+.tabbed-carousel .tabs li:hover strong,
+.tabbed-carousel .tabs li:focus strong {
+	text-decoration: underline;
+}
+.tabbed-carousel .tabs li a,
+.tabbed-carousel .tabs li button {
+	display: block;
+	width: 100%;
+	color: #fff;
+}
+.tabbed-carousel .tabs li.selected,
+.tabbed-carousel .tabs li .selected {
+	font-size: 21px;
+}
+.tabbed-carousel .tabs {
+	height: 35px;
+	border-bottom: 1px solid #c2c292;
+}
+.tabbed-carousel .tabs li {
+	background: #63602d;
+	border: 1px solid #63602d;
+}
+.tabbed-carousel .tabs li.selected {
+	width: auto;
+	padding: 0 20px;
+	line-height: 42px;
+	height: 42px;
+	margin: -7px -2px -1px 0;
+	position: relative;
+	background: #e2e2cf;
+	color: #64612a;
+	border-radius: 8px 8px 0 0;
+	border: 1px solid #c2c292;
+	text-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	font-family: 'EagleBook', Verdana, Arial, sans-serif;
+	font-weight: normal;
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;			
+}
+.tabbed-carousel [data-component="carousel"] {
+	background:white;
+}
+.tabbed-carousel .tab-container {
+	position: relative;
+	border: 1px solid #c2c292;
+	border-top: none;
+	background: #e2e2cf;
+	padding: 11px 0;
+}
+.tabbed-carousel .tab-container .light-carousel {
+	background: #fff;
+	border-top: 1px solid #938f60;
+	border-bottom: 1px solid #938f60;
+}
+.tabbed-carousel .tab-container .light-carousel .portrait-item {
+	width:156px;
+}

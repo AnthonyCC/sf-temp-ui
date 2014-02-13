@@ -1,0 +1,17 @@
+{namespace pdp}
+
+/**
+ * @param quantity
+ * @param lineTotal
+ * @param configDescr
+ */
+{template .productInfoLite}
+	<ul class="product-info">
+		<li><span class="product-info-label">Quantity:</span>{$quantity.quantity}</li>
+{if $configDescr}
+		<li><span class="product-info-label">Options:</span>{$configDescr}</li>
+{/if}
+		<li><span class="product-info-label">Est. Price:</span>{$lineTotal}</li>
+	</ul>
+
+{/template}

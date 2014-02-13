@@ -1,0 +1,15 @@
+{namespace pdp.accordion}
+
+/**
+ * @param allergens	
+ */
+{template .allergens}
+{if $allergens and length($allergens) > 0}
+<li class="pdp-accordion-allergens pdp-accordion-item"><input type="checkbox" id="pdp-allergens" checked="checked"><label for="pdp-allergens"><span class="pdp-accordion-item-carrot"></span>Allergens</label><div>
+<ul>
+{foreach $allergen in $allergens}
+<li>{$allergen}</li>
+{/foreach}
+</ul></div></li>
+{/if}
+{/template}

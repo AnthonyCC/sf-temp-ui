@@ -122,12 +122,12 @@
 				{param wasPrice:$item.wasPrice /}
 				{param price:$item.price /}
 				{param scaleUnit:$item.scaleUnit /}
-				{param aboutPrice:$item.aboutPriceText /}
+				{param aboutPriceText:$item.aboutPriceText /}
 			{/call}
 			{if $item.taxAndDeposit}<i>{$item.taxAndDeposit}</i>{/if}
 			{if $item.dealInfo}<div class="itemlist-item-price-deal">{$item.dealInfo}</div>{/if}
 			{if $item.savingString}<div class="itemlist-item-price-deal">{$item.savingString}</div>{/if}
-			{if $item.coupon}{call common.ecoupon}{param coupon:$item.coupon /}{param showCoupon:$item.couponDisplay /}{param isClipped:$item.couponClipped /}{param couponStatusText:$item.couponStatusText /}{/call}{/if}
+			{if $item.coupon}{call common.ecoupon}{param coupon:$item.coupon /}{param couponDisplay:$item.couponDisplay /}{param couponClipped:$item.couponClipped /}{param couponStatusText:$item.couponStatusText /}{/call}{/if}
 		</div>
 		{call common.productData}
 			{param productId:$item.productId /}
@@ -163,11 +163,13 @@
   </div>
 	<div class="itemlist-item-header">{call .itemHeader}{param itemTitle:$itemTitle /}{param item:$item /}{/call}</div>
 	<div class="itemlist-item-controls">
-		{if $item.coupon}{call common.ecoupon}{param coupon:$item.coupon /}{param showCoupon:$item.couponDisplay /}{param isClipped:$item.couponClipped /}{param couponStatusText:$item.couponStatusText /}{/call}{/if}
+		{if $item.coupon}{call common.ecoupon}{param coupon:$item.coupon /}{param couponDisplay:$item.couponDisplay /}{param couponClipped:$item.couponClipped /}{param couponStatusText:$item.couponStatusText /}{/call}{/if}
 		<div class="itemlist-item-controls-subtotal">
 		{if not $item.customizePopup}
 			{call common.atcControls}
-				{param item:$item /}
+				{param soldBySalesUnit:$item.soldBySalesUnit /}
+				{param salesUnit:$item.salesUnit /}
+				{param quantity:$item.quantity /}
 			{/call}
 			{call common.subtotal}
 	    		{param availMatPrices:$item.availMatPrices /}
@@ -200,7 +202,7 @@
 				{param wasPrice:$item.wasPrice /}
 				{param price:$item.price /}
 				{param scaleUnit:$item.scaleUnit /}
-				{param aboutPrice:$item.aboutPriceText /}
+				{param aboutPriceText:$item.aboutPriceText /}
 			{/call}
 			{if $item.taxAndDeposit}<i>{$item.taxAndDeposit}</i>{/if}
 			{if $item.dealInfo}<div class="itemlist-item-price-deal">{$item.dealInfo}</div>{/if}

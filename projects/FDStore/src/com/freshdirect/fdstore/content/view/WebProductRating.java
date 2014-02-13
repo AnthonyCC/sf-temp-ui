@@ -9,10 +9,12 @@ package com.freshdirect.fdstore.content.view;
  *
  *  @author knadeem
  */
+import java.io.Serializable;
 import java.util.List;
 
-public class WebProductRating {
-	
+public class WebProductRating implements Serializable {
+	private static final long serialVersionUID = -7393075498094272983L;
+
 	private String ratingLabel;
 	private List<ProductRating> ratings;
 	private List<ProductRating> textRatings;

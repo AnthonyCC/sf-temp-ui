@@ -1,0 +1,82 @@
+{namespace pdp}
+
+/**
+ * @param productList
+ */
+{template .evenBetter}
+    {if $productList and length($productList) > 0}
+		<div class="pdp-evenbetter">
+			<h2>Even Better!</h2>
+			{call .evenBetterItem data="$productList[0]"/}
+		    {if length($productList) > 1}
+				{call .evenBetterItem data="$productList[1]"/}
+		    {/if}
+		</div>    
+    {/if}
+{/template}
+
+/**
+ * @param productImage
+ * @param price
+ * @param scaleUnit
+ * @param availMatPrices
+ * @param soldBySalesUnit
+ * @param quantity
+ * @param salesUnit
+ * @param sustainabilityRating
+ * @param wineRating
+ * @param expertRating
+ * @param bazaarVoice
+ * @param savingString
+ * @param dealInfo
+ * @param suRatios
+ * @param salesUnitLabel
+ * @param variations
+ * @param skuCode
+ * @param grpPrices
+ * @param cvPrices
+ * @param productId
+ * @param catId
+ * @param inCartAmount
+ * @param configDescr
+ * @param brandName
+ * @param productNameNoBrand
+ */
+{template .evenBetterItem}
+{let $atcItemId: 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) /}
+<div class="pdp-evenbetter-item" data-component="evenBetterItem" data-product-id="{$productId}" data-cat-id="{$catId}">
+	<div class="pdp-evenbetter-image">
+		<img src="{$productImage}" data-evenbetteritem-trigger>
+	</div>
+	<div class="pdp-evenbetter-productinfo">
+		<h3 data-evenbetteritem-trigger><a href="/product.jsp?productId={$productId}&catId={$catId}"><b>{$brandName}</b> {$productNameNoBrand}</a></h3><i>{$configDescr}</i>
+		<div class="pdp-evenbetter-price">{call common.price data="all" /}</div>
+		<div class="pdp-evenbetter-savestring">{call .dealinfo data="all" /}{call .savestring data="all" /}</div>
+		<div class="pdp-evenbetter-ratings">{call pdp.ratings data="all" /}</div>
+		<div class="pdp-evenbetter-atc">
+			<input type="hidden" name="skuCode" value="{$skuCode}" data-component="productData" data-productdata-name="skuCode">
+			<input type="hidden" data-component="productData" data-productdata-name="atcItemId" name="atcItemId" value="{$atcItemId}">
+			{call common.skuControlSalesunit data="all" /}
+			{call pdp.skuControlVariations data="all" /}
+			<div class="pdp-evenbetter-quantity">
+				{call common.skuControlQuantity data="all" /}
+				{call common.subtotal}
+		    		{param availMatPrices:$availMatPrices /}
+		    		{param suRatios:$suRatios /}
+		        	{param grpPrices:$grpPrices /}
+		        	{param cvPrices:$cvPrices /}
+		        	{param qInc:$quantity.qInc /}
+				{/call}
+			</div>
+			<div class="pdp-evenbetter-atcbutton">
+				<button data-component="ATCButton" class="cssbutton orange small">add to cart</button>
+				{call common.atcInCart}
+					{param amount:$inCartAmount /}
+					{param atcItemId:$atcItemId /}
+				{/call}
+			</div>
+			<button class="addtolist pdp-evenbetter-addtolist cssbutton purple notext icon-file2-before" data-component="addToListButton">add to list</button>
+		</div>
+	</div>
+</div>
+{/template}

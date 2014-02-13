@@ -1,6 +1,7 @@
 <!-- Left side nav -->
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import="java.util.*"%>
 
 <%! //expanded page dimensions
 private static final int W_LEFT_NAV_TOTAL = 150;

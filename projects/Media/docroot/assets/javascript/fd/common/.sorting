@@ -8,6 +8,7 @@ clickleavetoggler.js
 autocomplete.js
 popupcontent.js
 popup.js
+tooltipPopup.js
 productSerialize.js
 USQLegalWarning.js
 USQPopup.js
@@ -19,3 +20,5 @@ helppopup.js
 dialog.js
 unselectable.js
 messages.js
+tabpanel.js
+tabbedRecommender.js

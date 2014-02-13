@@ -42,11 +42,13 @@ public class SoyRendererTag extends SimpleTagSupport {
 		JspWriter out = getJspContext().getOut();
 		ServletContext servletCtx = ((PageContext)getJspContext()).getServletContext();		
 		
-		LOGGER.info( "Rendering " + template + " with data " + data );
+		LOGGER.debug( "Rendering " + template);
 		
 	    SoyMapData soyData;
 	    
-	    if ( data instanceof SoyMapData ) {
+	    if ( data == null ) {
+	    	soyData = new SoyMapData();
+	    } else if ( data instanceof SoyMapData ) {
 	    	soyData = (SoyMapData)data;
 	    } else {
 	    	soyData = new SoyMapData( data );
@@ -56,9 +58,9 @@ public class SoyRendererTag extends SimpleTagSupport {
 	    	String result = SoyTemplateEngine.getInstance().render( servletCtx, template, soyData ); 
 	    	out.write( result );
 	    	
-			LOGGER.info( "Rendered " + template + " successfully.");
-			LOGGER.debug( "data = " + data );
-			LOGGER.debug( "result = " + result );
+			LOGGER.debug( "Rendered " + template + " successfully.");
+//			LOGGER.debug( "data = " + data );
+//			LOGGER.debug( "result = " + result );
 
 	    } catch ( IOException e ) {
 			throw new JspException( "Failed to render template: "+template, e );

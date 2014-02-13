@@ -1,0 +1,28 @@
+{namespace common}
+
+/**
+ * @param? hasYourFavoritesRecommendation
+ * @param? productList
+ * @param? selected
+ */
+{template .tabbedCarousel}
+<div id="tabbedCarousel" class="tabbed-carousel" data-component="tabbedRecommender" data-cmeventsource="qs_tabbedRecommender">
+    <ul class="tabs clearfix">
+    	{if $hasYourFavoritesRecommendation}
+        <li data-component="tabitem" class="{if $selected and $selected=='yourfav' }selected{/if}" data-tabname="yourfav" data-sitefeature="DYF">your favorites</li>
+        {/if}
+        <li data-component="tabitem" class="{if $selected and $selected=='deals' }selected{/if}" data-tabname="deals" data-sitefeature="DEALS_QS">don't miss deals</li>
+        <li data-component="tabitem" class="{if $selected and $selected=='fdfav' }selected{/if}" data-tabname="fdfav"  data-sitefeature="FAVORITES_QS">FD favorites</li>
+        <li data-component="tabitem" class="{if $selected and $selected=='expert' }selected{/if}" data-tabname="expert" data-sitefeature="EXPRATED_QS">expert rated</li>
+        <li data-component="tabitem" class="{if $selected and $selected=='custrating' }selected{/if}" data-tabname="custrating" data-sitefeature="CUSTRATED_QS">customer rated</li>
+    </ul>
+    <div class="tab-container light-carousel" data-component="tabpanel">
+    {if $productList }
+    	{call common.simpleCarousel}
+    		{param items:$productList /}
+    		{param itemType:'grid' /}
+    	{/call}
+    {/if}
+    </div>
+</div>
+{/template}

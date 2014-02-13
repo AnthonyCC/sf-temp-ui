@@ -1,0 +1,233 @@
+{namespace pdp.accordion}
+
+
+/**
+ * @param claims
+ * @param organicClaims
+ * @param kosherType
+ * @param kosherSymbol	
+ * @param heatingInstructions
+ * @param origin
+ * @param brands
+ * @param seasonText
+ * @param cheese101
+ * @param buyerGuide
+ * @param productAboutMedia
+ * @param productDescriptionNote
+ * @param productDescription
+ * @param frozenSeafood
+ * @param frozenBakery
+ * @param servingSuggestions
+ */
+{template .description}
+<li class="pdp-accordion-description pdp-accordion-item"><input type="checkbox" id="pdp-description" checked="checked"><label for="pdp-description"><span class="pdp-accordion-item-carrot"></span>Description</label><div>
+{call .descriptionText data="all" /}
+{call .claims}
+	{param organicClaims:$organicClaims /}
+	{param claims:$claims /}
+	{param kosherType:$kosherType /}
+	{param kosherSymbol:$kosherSymbol /}
+{/call}
+{call .heating}
+	{param heatingInstructions:$heatingInstructions /}
+{/call}
+{call .frozenSeafood}
+	{param frozenSeafood:$frozenSeafood /}
+{/call}
+{call .frozenBakery}
+	{param frozenBakery:$frozenBakery /}
+{/call}
+{call .origin}
+	{param origin:$origin /}
+{/call}
+{call .season}
+	{param seasonText:$seasonText /}
+{/call}
+{call .buyerGuide}
+	{param halfPint:$buyerGuide.halfPint /}
+	{param pint:$buyerGuide.pint /}
+	{param quart:$buyerGuide.quart /}
+{/call}
+{call .cheese101}
+	{param cheese101:$cheese101 /}
+{/call}
+{call .servingSuggestions}
+	{param servingSuggestions:$servingSuggestions /}
+{/call}
+{call .brand}
+	{param brands:$brands /}
+{/call}
+</div></li>
+{/template}
+
+
+/**
+ * @param productAboutMedia
+ * @param productDescriptionNote
+ * @param productDescription
+ */
+{template .descriptionText}
+<div class="pdp-accordion-description-description">{$productDescription|noAutoescape}
+</div>
+{if $productDescriptionNote}
+<div class="pdp-accordion-description-note">{$productDescriptionNote|noAutoescape}</div>
+{/if}
+{if $productAboutMedia}
+<div class="pdp-accordion-description-about">{$productAboutMedia|noAutoescape}</div>
+{/if}
+{/template}
+
+/**
+ * @param claims
+ * @param organicClaims
+ * @param kosherType
+ * @param kosherSymbol	
+ */
+{template .claims}
+{if $claims and length($claims)}
+<strong>Claims</strong>
+<ul>
+{foreach $claim in $organicClaims}
+<li>{$claim}</li>
+{/foreach}
+{foreach $claim in $claims}
+<li>{$claim}</li>
+{/foreach}
+</ul>
+{/if}
+{if $kosherType and $kosherSymbol}
+<div class="pdp-accordion-description-kosher"><img src="/media/editorial/kosher/symbols/{$kosherSymbol}_s.gif"> {$kosherType}</div>
+{/if}
+{/template}
+
+/**
+ * @param heatingInstructions
+ */
+{template .heating}
+{if $heatingInstructions}
+<strong>Heating Instructions</strong>
+<p class="pdp-accordion-description-heating">{$heatingInstructions}</p>
+{/if}
+{/template}
+
+/**
+ * @param frozenSeafood
+ */
+{template .frozenSeafood}
+{if $frozenSeafood}
+<strong>May arrive partially frozen.</strong>
+<p class="pdp-accordion-description-frozen"><a href="javascript:popup('popup.jsp?deptId=sea&attrib=PARTIALLY_FROZEN&tmpl=small&spec=info_about_flash_frozen','small')">Find out why</a> seafood is flash-frozen for freshness.</p>
+{/if}
+{/template}
+
+/**
+ * @param frozenBakery
+ */
+{template .frozenBakery}
+{if $frozenBakery}
+<strong>May arrive partially frozen.</strong>
+<p class="pdp-accordion-description-frozen">Heat our parbaked frozen breads in your oven and taste perfect bread in minutes, whenever you want. <br><a href="javascript:popup('popup.jsp?deptId=bak&attrib=PARTIALLY_FROZEN&tmpl=large&spec=parbaked_promo','large')">About parbaked frozen</a></p>
+{/if}
+{/template}
+
+/**
+ * @param origin
+ */
+{template .origin}
+{if $origin}
+<strong>Origin</strong>
+<p class="pdp-accordion-description-origin">{$origin}</p>
+{/if}
+{/template}
+
+/**
+ * @param brands
+ */
+{template .brand}
+{if $brands and length($brands)}
+<strong>Brand</strong>
+{foreach $brand in $brands}
+{if $brand.contentPath}
+<a class="pdp-accordion-description-brand" href="{$brand.contentPath}" data-component="ajaxpopup" data-popup-width="560px">About {$brand.name}</a>
+{else}
+<span class="pdp-accordion-description-brand" >{$brand.name}</span>
+{/if}
+{/foreach}
+{/if}
+{/template}
+
+/**
+ * @param seasonText
+ */
+{template .season autoescape="false"}
+{if $seasonText}
+<strong>Season</strong>
+<div class="pdp-accordion-description-season" >{$seasonText}</div>
+{/if}
+{/template}
+
+/**
+ * @param cheese101
+ */
+{template .cheese101 autoescape="false"}
+{if $cheese101}
+<strong>Cheese 101</strong>
+<a class="pdp-accordion-description-cheese101" data-component="ajaxpopup" data-popup-width="400px" data-popupurl="" href="/departments/cheese/101_selecting.jsp" >Learn the essentials — from buying to serving</a>
+{/if}
+{/template}
+
+/**
+ * @param servingSuggestions
+ */
+{template .servingSuggestions autoescape="false"}
+{if $servingSuggestions}
+<strong>How much should I buy?</strong>
+<div class="pdp-accordion-description-serving"  >{$servingSuggestions}</div>
+{/if}
+{/template}
+
+
+/**
+ * @param? halfPint
+ * @param? pint
+ * @param? quart
+ */
+{template .buyerGuide}
+{if $halfPint or $pint or $quart}
+<strong>Buying Guide</strong>
+<div class="pdp-buying-guide">
+{call .buyingGuideItem}
+	{param imgUrl:'/media_stat/images/template/deli/container2_sm.jpg' /}
+	{param title:'1/2 pint' /}
+	{param value:$halfPint /}
+{/call}
+{call .buyingGuideItem}
+	{param imgUrl:'/media_stat/images/template/deli/container2_md.jpg' /}
+	{param title:'1 pint' /}
+	{param value:$pint /}
+{/call}
+{call .buyingGuideItem}
+	{param imgUrl:'/media_stat/images/template/deli/container2_lg.jpg' /}
+	{param title:'1 quart' /}
+	{param value:$quart /}
+{/call}
+</div>
+{/if}
+{/template}
+
+
+/**
+ * @param imgUrl
+ * @param title
+ * @param value
+ */
+{template .buyingGuideItem}
+{if $value}
+	<div class="pdp-buying-guide-item">
+	<img src="{$imgUrl}">
+	<b>{$title}</b>
+	<span>about<br>{$value}</span>	
+	</div>
+{/if}
+{/template}
+

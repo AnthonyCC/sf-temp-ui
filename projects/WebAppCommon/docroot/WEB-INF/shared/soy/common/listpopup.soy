@@ -34,9 +34,19 @@
  * @param data shopping lists
  */
 {template .addtolistpopup autoescape="true"}
-	{call .selectList data="all" /}
-	<div class="addtolist-or"><span>or</span></div>
-	{call .newList /}
+	{if isNonnull($data.data)}
+		{if length($data.data) > 0}
+			{call .selectList}
+				{param data:$data.data /}
+			{/call}
+			<div class="addtolist-or"><span>or</span></div>
+		{/if}
+		{call .newList /}
+	{else}
+		{call .addtolistsignin }
+			{param url: $data.url /}
+		{/call}
+	{/if}
 {/template}
 
 /**
@@ -44,7 +54,22 @@
  */
 {template .createlistpopup autoescape="true"}
 	{call .newList /}
-	<div class="addtolist-or"><span>or</span></div>
-	{call .selectList data="all" /}
+	{if length($data) > 0}
+		<div class="addtolist-or"><span>or</span></div>
+		{call .selectList data="all" /}
+	{/if}
 {/template}
 
+/**
+ * @param? url
+ */
+{template .addtolistsignin}
+{if $url}
+<p>You must have a FreshDirect account in order to use Shopping Lists.</p>
+
+<p><b>New Customer?</b> <a href="/registration/signup.jsp?successPage={$url}">Sign Up</a></p>
+<p><b>Current Customer?</b> <a href="/login/login.jsp?successPage={$url}">Log In</a></p>
+{else}
+{sp}
+{/if}
+{/template}

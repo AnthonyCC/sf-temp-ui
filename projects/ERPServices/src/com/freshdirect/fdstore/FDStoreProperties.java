@@ -630,6 +630,9 @@ public class FDStoreProperties {
 	private final static String PROP_QS_IGNORE_PARTIAL_ROLLOUT = "quickshop.ignorePartialRollout";
 	private final static String PROP_QS_ENABLED = "quickshop.enabled";
 	
+	private final static String PROP_PDP_IGNORE_PARTIAL_ROLLOUT = "pdp.ignorePartialRollout";
+	private final static String PROP_PDP_ENABLE_TO_ALL = "pdp.enableToAll";
+	
 	private final static String   PROP_ASSIGNED_CUSTOMER_PARAMS_QUERY_ID="fdstore.assignedCustomerParams.query.id";
 	
 	//APPDEV-3100 2013 Wine Transition
@@ -1243,6 +1246,8 @@ public class FDStoreProperties {
 		defaults.put(PROP_QS_CACHING, "true");		
 		defaults.put(PROP_QS_IGNORE_PARTIAL_ROLLOUT, "false");		
 		defaults.put(PROP_QS_ENABLED, "true");
+		defaults.put(PROP_PDP_IGNORE_PARTIAL_ROLLOUT, "false");		
+		defaults.put(PROP_PDP_ENABLE_TO_ALL, "false");		
 
 		defaults.put(PROP_PAYMENTECH_GATEWAY_ENABLED, "false");
 		
@@ -3184,6 +3189,12 @@ public class FDStoreProperties {
 	}
 	public static boolean isQuickshopEnabled() {
 		return ( Boolean.valueOf( get( PROP_QS_ENABLED ) ) ).booleanValue();
+	}
+	public static boolean isPDPIgnorePartialRollout() {
+		return ( Boolean.valueOf( get( PROP_PDP_IGNORE_PARTIAL_ROLLOUT ) ) ).booleanValue();
+	}
+	public static boolean isPDPEnableToAll() {
+		return ( Boolean.valueOf( get( PROP_PDP_ENABLE_TO_ALL ) ) ).booleanValue();
 	}
 
 	 public static boolean isPaymentechGatewayEnabled() {

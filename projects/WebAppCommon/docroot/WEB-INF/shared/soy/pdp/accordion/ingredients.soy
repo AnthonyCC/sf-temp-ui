@@ -1,0 +1,11 @@
+{namespace pdp.accordion}
+
+/**
+ * @param ingredients	
+ */
+{template .ingredients}
+{if $ingredients}
+<li class="pdp-accordion-ingredients pdp-accordion-item"><input type="checkbox" id="pdp-ingredients"><label for="pdp-ingredients"><span class="pdp-accordion-item-carrot"></span>Ingredients</label>
+<div>{$ingredients}</div></li>
+{/if}
+{/template}

@@ -34,8 +34,6 @@ import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.FactorUtil;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
@@ -44,7 +42,7 @@ import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopYmalRequestObject;
 import com.freshdirect.webapp.taglib.fdstore.GetPeakProduceTag;
-import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.util.ProductRecommenderUtil;
 
 public class QuickShopYmalServlet extends BaseJsonServlet{
 
@@ -54,6 +52,11 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 	
 	public static final String QS_TOP_RECOMMENDER_VIRTUAL_SITEFEATURE = "CRAZY_QUICKSHOP";
 
+	@Override
+	protected int getRequiredUserLevel() {
+		return FDUserI.GUEST;
+	}
+	
 	@Override
 	protected boolean synchronizeOnUser() {
 		return false;
@@ -145,44 +148,10 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 		return siteFeat;
 	}
 	
-	protected static void persistToSession(HttpSession session, Recommendations r) {
-		if ( session != null ) {
-	        Map<String, List<ContentKey>> previousRecommendations = r.getPreviousRecommendations();
-	        if (previousRecommendations!=null) {
-	            session.setAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS, previousRecommendations);
-	        }
-		}
-    }    
-	
-    protected static SessionInput createSessionInput(HttpSession session, FDUserI user, int maxItems, ContentNodeModel currentNode, Set<ContentKey> listContent ) {
-    	
-		SessionInput si = new SessionInput(user);		
-		
-		if ( session != null ) {
-			si.setPreviousRecommendations((Map<String, List<ContentKey>>) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS));
-		}
-		
-		si.setMaxRecommendations(maxItems);
-		si.setExcludeAlcoholicContent(false);
-		si.setCurrentNode( currentNode );
-		
-		if ( listContent != null && listContent.size() > 0 ) {
-			si.setCartContents( listContent );
-		}
-		
-		return si;
-    }
-
     public static List<QuickShopLineItem> doRecommend( FDUserI user, HttpSession session, EnumSiteFeature siteFeat, int maxItems, Set<ContentKey> listContent, ContentNodeModel currentNode ) throws FDResourceException {
     	
-		FDStoreRecommender recommender = FDStoreRecommender.getInstance();	    
-
-		Recommendations results = recommender.getRecommendations(siteFeat, user, createSessionInput( session, user, maxItems, currentNode, listContent ) );
-		
-		persistToSession(session, results);
-    	
+		Recommendations results = ProductRecommenderUtil.doRecommend(user, session, siteFeat, maxItems, listContent, currentNode);
 		List<QuickShopLineItem> items = convertToQuickshopItems( user, maxItems, results, !siteFeat.equals( EnumSiteFeature.DYF ) );
-    	
 		return items;
     }
 
@@ -391,7 +360,7 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 		@SuppressWarnings( { "unchecked", "rawtypes" } )
 		List<ContentNodeModel> prespicks = (List)rootNode.getProducts(); // DDPP content!
 		
-		List<ProductModel> result = HelperFunctions.getTopN( prespicks, FactorUtil.GLOBAL_POPULARITY_8W_COLUMN, maxItems, createSessionInput( session, user, maxItems, rootNode, listContent ), ScoreProvider.getInstance() );		
+		List<ProductModel> result = HelperFunctions.getTopN( prespicks, FactorUtil.GLOBAL_POPULARITY_8W_COLUMN, maxItems, ProductRecommenderUtil.createSessionInput( session, user, maxItems, rootNode, listContent ), ScoreProvider.getInstance() );		
 		return convertToQuickshopItems( user, maxItems, result );
 	}
 

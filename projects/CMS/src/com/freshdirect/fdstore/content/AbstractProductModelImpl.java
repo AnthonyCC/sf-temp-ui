@@ -20,9 +20,6 @@ import com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 public abstract class AbstractProductModelImpl extends ContentNodeModelImpl implements ProductModel {
-
-	protected final static Image IMAGE_BLANK = new Image("/media_stat/images/layout/clear.gif", 1, 1);
-
 	private List<ProductModel> alsoSoldAs = new ArrayList<ProductModel>();
 	private List<ProductModel> alsoSoldAsList = new ArrayList<ProductModel>();
 	private List<ProductModel> alsoSoldAsRefs = new ArrayList<ProductModel>();
@@ -58,7 +55,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 
 
 	private Image getImage(String key) {
-            return FDAttributeFactory.constructImage(this, key, IMAGE_BLANK);
+            return FDAttributeFactory.constructImage(this, key, Image.BLANK_IMAGE);
 	}
 
 	public Image getCategoryImage() {
@@ -492,7 +489,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		return coolInfo;
 	}
 
-	private String getCOOLText(List<String> countries) {
+	public static String getCOOLText(List<String> countries) {
 		if(countries==null)
 			return "";
 

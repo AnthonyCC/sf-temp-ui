@@ -1,6 +1,7 @@
 <%-- ProductModel productNode: required --%>
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"
-		import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"%>
+		import="com.freshdirect.webapp.taglib.coremetrics.CmMarketingLinkUtil"
+		import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo" %>
 <% if (FDStoreProperties.isSocialButtonsEnabled() && !new BrowserInfo(request).isIE6()) {
 	final String BASE = FDStoreProperties.getHostUrl();
 	final String url = BASE + "/product.jsp?catId=" + productNode.getCategory().getContentName() + "&productId=" + productNode.getContentName();

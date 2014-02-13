@@ -24,6 +24,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartRequestData;
+import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.quickshop.data.EnumQuickShopTab;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -69,7 +70,7 @@ public class QSTempConfigServlet extends BaseJsonServlet {
         	}
         	
 			item = QuickShopHelper.createItemCore(mockSelection, null, null, user, tab).getNode().getItem();
-			QuickShopHelper.postProcessPopulate(user, item);
+			ProductDetailPopulator.postProcessPopulate(user, item, item.getSkuCode());
 			item.setListId(source.getListId());
 		} catch (FDException e) {
 			LOG.error("Cannot create line item. e: " + e);
