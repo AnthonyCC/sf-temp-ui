@@ -6,6 +6,14 @@
 	overflow:visible;
 }
 
+.pdp-atc .qtyinput {
+  width: 105px;
+}
+
+.pdp-atc .qtyinput input.qty {
+  width: 3em;
+}
+
 .itemlist-item-salesunit .subtotal,
 .qtyinput .subtotal {
 	white-space: nowrap;

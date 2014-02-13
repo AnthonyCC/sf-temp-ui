@@ -21,23 +21,32 @@
 <potato:annotations annotations="annotations" productId='${param.productId}' categoryId='${param.catId}'/>
 
 <script>
+var FreshDirect = FreshDirect || {};
+FreshDirect.pdp = FreshDirect.pdp || {};
+
 productData=<fd:ToJSON object="${productPotato}" noHeaders="true"/>
 productExtraData=<fd:ToJSON object="${productExtraPotato}" noHeaders="true"/>
 images=<fd:ToJSON object="${imagePotato}" noHeaders="true"/>
 evenBetter=<fd:ToJSON object="${evenBetter}" noHeaders="true"/>
 xsell=<fd:ToJSON object="${xsell}" noHeaders="true"/>
-annotations=<fd:ToJSON object="${annotations}" noHeaders="true"/>
+
+FreshDirect.pdp.annotations=<fd:ToJSON object="${annotations}" noHeaders="true"/>
 </script>
+<% ProductModel productNode = ContentFactory.getInstance().getProduct(request.getParameter("catId"), request.getParameter("productId")); %>
 <div class="pdp">
 	<div class="span-16">
-    <script type="text/javascript">OAS_AD('ProductNote');</script>
+		<%if (FDStoreProperties.isAdServerEnabled()) {%>
+			<center><script type="text/javascript">OAS_AD('ProductNote');</script></center>
+		<%} else {%>
+    		<%@ include file="/shared/includes/product/i_product_quality_note.jspf" %>
+		<%}%>
+		
 		<soy:render template="pdp.productName" data="${productPotato}" />
 		<div id="" class="span-7 first">
 			<soy:render template="pdp.prdImage" data="${imagePotato}" />
 			<soy:render template="pdp.thumbnails" data="${imagePotato}" />
 <c:if test="${productPotato.available}">			
 			<soy:render template="pdp.freshnessGuarantee" data="${productExtraPotato}"/>
-			<% ProductModel productNode = ContentFactory.getInstance().getProduct(request.getParameter("catId"), request.getParameter("productId")); %>
 			<%@ include file="/includes/product/i_product_soc_buttons.jspf" %>
 		    <ul class="pdp-accordion">
 		        <soy:render template="pdp.accordion.description" data="${productExtraPotato}"/>
@@ -77,7 +86,7 @@ annotations=<fd:ToJSON object="${annotations}" noHeaders="true"/>
 				<soy:render template="pdp.ecoupon" data="${productPotato}" />
 				<div class="pdp-atc">
 					<div>
-						<soy:render template="common.skuControlQuantity" data="${productPotato}" /><div class="pdp-atc-button-wrapper"><button class="cssbutton orange medium icon-cart-before" data-component="ATCButton">add to cart</button><soy:render template="pdp.atcInCart" data="${productPotato}"/></div><button class="addtolist cssbutton purple medium" data-component="addToListButton">add to list</button>
+						<soy:render template="common.skuControlQuantity" data="${productPotato}" /><div class="pdp-atc-button-wrapper"><button class="cssbutton orange medium" data-component="ATCButton">add to cart</button><soy:render template="pdp.atcInCart" data="${productPotato}"/></div><button class="addtolist cssbutton purple medium" data-component="addToListButton">add to list</button>
 					</div>
 					<div>
 						<soy:render template="pdp.subtotal" data="${productPotato}"/>

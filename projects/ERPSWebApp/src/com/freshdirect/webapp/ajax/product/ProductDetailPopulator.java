@@ -568,7 +568,7 @@ public class ProductDetailPopulator {
 		// Numeric quantity
 		Quantity quantity = new Quantity();
 		quantity.setqMin( productModel.getQuantityMinimum() );
-		quantity.setqMax( user.getQuantityMaximum( productModel ) );
+		quantity.setqMax( PopulatorUtil.calculateSafeMaximumQuantity( user, productModel ) );
 		quantity.setqInc( productModel.getQuantityIncrement() );
 		quantity.setQuantity( orderLine != null ? orderLine.getQuantity() : quantity.getqMin() );	
 		item.setQuantity( quantity );

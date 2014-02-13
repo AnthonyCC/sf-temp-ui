@@ -27,21 +27,28 @@
 <div class="availability-dialog">
 <h1>Availability Messaging</h1>
 {if $unavailability}{call .availabilityText}{param text:'We\'re sorry! This item is temporarily unavailable.' /}{/call}{/if}
-{if $msgCancellation}{call .availabilityText}{param text:$msgCancellation /}{/call}{/if}
-{if $msgKosherRestriction}{call .availabilityText}{param text:$msgKosherRestriction /}{/call}{/if}
-{if $msgDeliveryNote}{call .availabilityText}{param text:$msgDeliveryNote /}{/call}{/if}
 {if $msgCutoffHeader}{call .availabilityWithHeader}
 {param header:$msgCutoffHeader /}
 {param text:$msgCutoffNotice /}
 {/call}{/if}
+
 {if $msgDayOfWeekHeader}{call .availabilityWithHeader}
 {param header:$msgDayOfWeekHeader /}
 {param text:$msgDayOfWeek /}
 {/call}{/if}
+
 {if $msgLeadTimeHeader}{call .availabilityWithHeader}
 {param header:$msgLeadTimeHeader /}
 {param text:$msgLeadTime /}
 {/call}{/if}
+
+{if $msgCancellation}{call .availabilityText}{param text:$msgCancellation /}{/call}{/if}
+{if $msgKosherRestriction}{call .availabilityText}{param text:$msgKosherRestriction /}{/call}{/if}
+
+/*
+{if $msgDeliveryNote}{call .availabilityText}{param text:$msgDeliveryNote /}{/call}{/if}
+*/
+
 </div>
 {/if}
 {/template}

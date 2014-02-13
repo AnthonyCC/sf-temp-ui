@@ -46,9 +46,9 @@ var FreshDirect = FreshDirect || {};
         inc = $qtybox.data('step');
     
     if($quantitybox) {
-      return chgQty( getInput($quantitybox).val(), parseFloat(min), parseFloat(max), parseFloat(inc) );
+      return chgQty( getInput($quantitybox).val(), parseFloat(min), parseFloat(max), parseFloat(inc) )+'';
     } else {
-      return 0;
+      return '0';
     }
   };
 

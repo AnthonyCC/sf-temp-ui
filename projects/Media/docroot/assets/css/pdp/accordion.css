@@ -12,7 +12,7 @@
 }
 
 .pdp-accordion>li:first-child {
-	margin-top:40px;
+	margin-top:10px;
 }
 
 .pdp-accordion>li>input[type="checkbox"] {

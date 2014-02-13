@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.content.Html"%>
 <%
     String productQuailityNote =null;
     Html attribProdQuality = productNode.getProductQualityNote();

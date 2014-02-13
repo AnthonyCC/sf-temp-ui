@@ -1,0 +1,14 @@
+{namespace pdp}
+
+/**
+ * @param data
+ * @param? erpsyLink
+ */
+{template .annotationPopup}
+  <ul>
+    <li>Availability: {$data.availability}</li>
+    <li>Material: {$data.material}</li>
+    <li>SKU: {$data.skuCode}</li>
+    <li><a href="{$erpsyLink}">Erpsy</a></li>
+  </ul>
+{/template}

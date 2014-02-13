@@ -17,6 +17,7 @@
  * @param productDescription
  * @param frozenSeafood
  * @param frozenBakery
+ * @param partiallyFrozenMedia
  * @param servingSuggestions
  */
 {template .description}
@@ -36,6 +37,9 @@
 {/call}
 {call .frozenBakery}
 	{param frozenBakery:$frozenBakery /}
+{/call}
+{call .frozenMedia}
+	{param frozenMedia:$partiallyFrozenMedia /}
 {/call}
 {call .origin}
 	{param origin:$origin /}
@@ -128,6 +132,13 @@
 <strong>May arrive partially frozen.</strong>
 <p class="pdp-accordion-description-frozen">Heat our parbaked frozen breads in your oven and taste perfect bread in minutes, whenever you want. <br><a href="javascript:popup('popup.jsp?deptId=bak&attrib=PARTIALLY_FROZEN&tmpl=large&spec=parbaked_promo','large')">About parbaked frozen</a></p>
 {/if}
+{/template}
+
+/**
+ * @param frozenMedia
+ */
+{template .frozenMedia autoescape="false"}
+{if $frozenMedia}{$frozenMedia}{/if}
 {/template}
 
 /**
