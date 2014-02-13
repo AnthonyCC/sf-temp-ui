@@ -69,7 +69,7 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 					searchResults = Collections.EMPTY_LIST;
 				} else if (this.criteria instanceof FDCustomerSearchCriteria) {
 					System.out.println("trying to locate the customers");
-					if (isWildcardOrPercentageCharacter(criteria)) {
+					if (isWildcardOrPercentageCharacter((FDCustomerSearchCriteria) this.criteria)) {
 						doErrorRedirect("Narrow down search criteria.");
 					}
 					else {
@@ -106,22 +106,26 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 
 	// APPDEV-2801
 	private boolean isWildcardOrPercentageCharacter(
-			FDSearchCriteria fdSearchCriteria) {
+			FDCustomerSearchCriteria fdSearchCriteria) {
 
 		boolean result = false;
 
-		// if email or customerId is present go ahead with search and no need to
+		// if emailor customerId or apartment or zipcode or order number
+		//is present then go ahead with search and no need to
 		// validate other search parameters.
 		if (fdSearchCriteria.getEmail() != null
-				|| fdSearchCriteria.getCustomerId() != null) {
+				|| fdSearchCriteria.getCustomerId() != null
+				|| fdSearchCriteria.getApartment() != null
+				|| fdSearchCriteria.getZipCode() != null
+				|| fdSearchCriteria.getOrderNumber() != null) {
 			result = false;
 		}
-
-		// check to see if the parameters falls under broad category and if yes
+		// check to see if the following parameters falls under broad search category and if yes
 		// show the validation message.
 		else if (validateSearchParam(fdSearchCriteria.getFirstName())
 				&& validateSearchParam(fdSearchCriteria.getLastName())
-				&& validatePhoneParam(fdSearchCriteria.getPhone())) {
+				&& validatePhoneParam(fdSearchCriteria.getPhone())
+				&& validateSearchParam(fdSearchCriteria.getAddress())) {
 			result = true;
 		}
 		return result;
