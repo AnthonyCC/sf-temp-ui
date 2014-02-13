@@ -5,7 +5,8 @@
  * @param claims
  * @param organicClaims
  * @param kosherType
- * @param kosherSymbol	
+ * @param kosherSymbol
+ * @param kosherIconPath
  * @param heatingInstructions
  * @param origin
  * @param brands
@@ -28,6 +29,7 @@
 	{param claims:$claims /}
 	{param kosherType:$kosherType /}
 	{param kosherSymbol:$kosherSymbol /}
+	{param kosherIconPath:$kosherIconPath /}
 {/call}
 {call .heating}
 	{param heatingInstructions:$heatingInstructions /}
@@ -86,6 +88,7 @@
  * @param organicClaims
  * @param kosherType
  * @param kosherSymbol	
+ * @param kosherIconPath
  */
 {template .claims}
 {if $claims and length($claims)}
@@ -100,7 +103,7 @@
 </ul>
 {/if}
 {if $kosherType and $kosherSymbol}
-<div class="pdp-accordion-description-kosher"><img src="/media/editorial/kosher/symbols/{$kosherSymbol}_s.gif"> {$kosherType}</div>
+<div class="pdp-accordion-description-kosher"><img src="{$kosherIconPath}"/> {$kosherType}</div>
 {/if}
 {/template}
 
