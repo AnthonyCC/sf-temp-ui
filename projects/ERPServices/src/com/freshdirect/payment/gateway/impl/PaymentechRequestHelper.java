@@ -2,8 +2,10 @@ package com.freshdirect.payment.gateway.impl;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -20,7 +22,8 @@ import com.paymentech.orbital.sdk.request.FieldNotFoundException;
 
 
 final class PaymentechRequestHelper {
-	//private static final SimpleDateFormat SF = new SimpleDateFormat("MMyy");
+	
+	final static List<String> validCountryCodes= Arrays.asList(PaymentechConstants.COUNTRY_CODES);
 	
 	private  static final ThreadLocal<DateFormat> df = new ThreadLocal<DateFormat> () {
 		
@@ -214,9 +217,12 @@ final class PaymentechRequestHelper {
 						StringUtils.substring(paymentMethod.getZipCode(), 0, 10));
 			}
 			if(!StringUtil.isEmpty(paymentMethod.getCountry())) {
+				String countryCode=StringUtils.substring(paymentMethod.getCountry(),0,2);
 				request.setFieldValue(PaymentechFields.NewOrderRequest.AVScountryCode.name(),
-						StringUtils.substring(paymentMethod.getCountry(),0,2));
-			}		
+						validCountryCodes.contains(countryCode)?countryCode:" ");
+			} else {
+				request.setFieldValue(PaymentechFields.NewOrderRequest.AVScountryCode.name()," ");
+			}
 		}
 		
 	}

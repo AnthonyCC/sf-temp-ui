@@ -18,6 +18,7 @@ final class PaymentechConstants implements java.io.Serializable {
 	public static final String CVV_MATCH="M";
 	public static final String VOID_INDICATOR="N";
 	public static final String REVERSE_AUTH_INDICATOR="Y";
+	public static final String[] COUNTRY_CODES={"US","UK","GB","CA"};
 	private PaymentechConstants() {
 	}
 
