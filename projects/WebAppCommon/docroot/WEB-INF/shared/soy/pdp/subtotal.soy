@@ -4,7 +4,7 @@
  * @param price
  */
 {template .subtotalInner}
-<b>${$price}</b> Price</span>
+<b>{call common.formatDecimalPrice}{param price:$price /}{/call}</b> Price</span>
 {/template}
 
 /**
@@ -13,7 +13,7 @@
  * @param pricingUnit
  */
 {template .subtotalInnerPricingUnit}
-<b>${$price}</b>{sp}Price{sp}<span class="qty"><b>{round($quantity,2)}</b>/{$pricingUnit}</span>{sp}<a onclick="pop('/help/estimated_price.jsp','small')">Estimated</a>
+<b>{call common.formatDecimalPrice}{param price:$price /}{/call}</b>{sp}Price{sp}<span class="qty"><b>{round($quantity,2)}</b>/{$pricingUnit}</span>{sp}<a onclick="pop('/help/estimated_price.jsp','small')">Estimated</a>
 {/template}
 
 /**
