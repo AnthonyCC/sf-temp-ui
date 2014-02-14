@@ -181,6 +181,7 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 	//if yes then return false else return true
 	private boolean isPatternSearchable(String inputStr,int index) {
 		boolean result = true;
+		inputStr = inputStr.replace('%', '*');
 		if (inputStr.charAt(inputStr.length() - 1) == '*') {
 			char[] arry = inputStr.substring(index, inputStr.length())
 					.toCharArray();
