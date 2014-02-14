@@ -61,7 +61,7 @@
 }
 
 .pdp-accordion>li>input[type="checkbox"]:checked ~ div {
-  max-height:1000px;
+  max-height:9000px;
 }
 
 /* accordion open in IE */
