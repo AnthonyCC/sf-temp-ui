@@ -1,0 +1,17 @@
+{namespace pdp.accordion}
+
+/**
+ * @param servingSuggestions
+ */
+{template .servingSuggestions autoescape="false"}
+{if $servingSuggestions}
+<li class="pdp-accordion-servingsuggestions pdp-accordion-item">
+<input type="checkbox" id="pdp-servingsuggestions">
+<label for="pdp-servingsuggestions"><span class="pdp-accordion-item-carrot"></span>Serving Suggestion</label>
+<div>
+	<strong>How much should I buy?</strong>
+	<div class="pdp-accordion-description-serving">{$servingSuggestions}</div>
+</div>
+</li>
+{/if}
+{/template}

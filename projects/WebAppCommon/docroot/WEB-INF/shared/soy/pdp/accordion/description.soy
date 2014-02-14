@@ -19,7 +19,6 @@
  * @param frozenSeafood
  * @param frozenBakery
  * @param partiallyFrozenMedia
- * @param servingSuggestions
  */
 {template .description}
 <li class="pdp-accordion-description pdp-accordion-item"><input type="checkbox" id="pdp-description" checked="checked"><label for="pdp-description"><span class="pdp-accordion-item-carrot"></span>Description</label><div>
@@ -56,9 +55,6 @@
 {/call}
 {call .cheese101}
 	{param cheese101:$cheese101 /}
-{/call}
-{call .servingSuggestions}
-	{param servingSuggestions:$servingSuggestions /}
 {/call}
 {call .brand}
 	{param brands:$brands /}
@@ -189,17 +185,6 @@
 <a class="pdp-accordion-description-cheese101" data-popup-width="400px" href="#" onclick="pop('/departments/cheese/101_selecting.jsp')" >Learn the essentials — from buying to serving</a>
 {/if}
 {/template}
-
-/**
- * @param servingSuggestions
- */
-{template .servingSuggestions autoescape="false"}
-{if $servingSuggestions}
-<strong>How much should I buy?</strong>
-<div class="pdp-accordion-description-serving"  >{$servingSuggestions}</div>
-{/if}
-{/template}
-
 
 /**
  * @param? halfPint
