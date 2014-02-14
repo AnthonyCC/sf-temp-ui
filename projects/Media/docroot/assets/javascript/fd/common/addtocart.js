@@ -29,7 +29,11 @@ var FreshDirect = FreshDirect || {};
 
 		
 		$.extend(request,event.ATCMeta,event.cmData);
-		fd.components.atcInfo.setServerMessage(request.items);
+    
+    if (fd.components && fd.components.atcInfo) {
+      fd.components.atcInfo.setServerMessage(request.items);
+    }
+
 		fd.common.dispatcher.signal('server',{
 			url:'/api/addtocart',
 			data:{data:JSON.stringify(request)},
