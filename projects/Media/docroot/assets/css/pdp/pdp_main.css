@@ -675,7 +675,7 @@ span.cssbutton.annotation:hover {
  */
 .thumbnails{
   margin:20px 0 40px 0;
-  line-height:80px;
+  line-height:60px;
 }
 
 .thumbnails img, .vertic-rule{
