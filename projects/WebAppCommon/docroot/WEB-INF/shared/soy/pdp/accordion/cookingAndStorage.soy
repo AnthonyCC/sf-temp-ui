@@ -14,7 +14,7 @@
 {if ($donenessGuideList and length($donenessGuideList)>0) or
 	($howToCookItList and length($howToCookItList)>0) or 
 	$freshTips or 
-	($webRating and $webRating.rating and length($webRating.rating)>0) or
+	($webRating and $webRating.ratings and length($webRating.ratings)>0) or
 	($webRating and $webRating.textRatings and length($webRating.textRatings)>0) or
 	($categoryStorageGuideLabel and $categoryStorageGuideLink) or
 	($usageList and length($usageList) > 0)
@@ -34,7 +34,7 @@
 {/if}
 {if $freshTips}
 <strong>Fresh Tip</strong>
-<a href="{$freshTips.link}" target="_blank" data-component="ajaxpopup" data-popup-width="560px">{$freshTips.label}</a>
+<a href="{$freshTips.link}">{$freshTips.label}</a>
 {/if}
 {call .webRatingScale}
 	{param ratingLabel:$webRating.ratingLabel /}
@@ -43,6 +43,7 @@
 {call .webRatingText}
 	{param textRatings:$webRating.textRatings /}
 {/call}
+{if $webRating.compareByLabel}<a href="/rating_ranking.jsp?{$webRating.linkParams}" target="_blank" data-component="ajaxpopup" data-popup-width="560px">{$webRating.compareByLabel}</a>{/if}
 {if $categoryStorageGuideLabel and $categoryStorageGuideLink}
 <strong>Storage Guide</strong>
 <a href="{$categoryStorageGuideLink}" target="_blank" data-component="ajaxpopup" data-popup-width="560px">{$categoryStorageGuideLabel}</a>
