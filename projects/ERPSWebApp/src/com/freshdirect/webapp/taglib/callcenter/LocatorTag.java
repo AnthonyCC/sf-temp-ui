@@ -108,11 +108,10 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 	private boolean isWildcardOrPercentageCharacter(
 			FDCustomerSearchCriteria fdSearchCriteria) {
 
-		boolean result = false;
+		boolean result = true;
 
-		// if emailor customerId or apartment or zipcode or order number
-		//is present then go ahead with search and no need to
-		// validate other search parameters.
+		// if  either one of the parameter among, email, customerId ,apartment, zipcode, order number
+		//is present then proceed with the search without validating other search parameters.
 		if (fdSearchCriteria.getEmail() != null
 				|| fdSearchCriteria.getCustomerId() != null
 				|| fdSearchCriteria.getApartment() != null
@@ -120,77 +119,79 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 				|| fdSearchCriteria.getOrderNumber() != null) {
 			result = false;
 		}
-		// check to see if the following parameters falls under broad search category and if yes
-		// show the validation message.
+		// check to see if the either of the parameter does not falls under broad search category and if yes
+		// proceed with the Search 
 		else if (validateSearchParam(fdSearchCriteria.getFirstName())
-				&& validateSearchParam(fdSearchCriteria.getLastName())
-				&& validatePhoneParam(fdSearchCriteria.getPhone())
-				&& validateAddresshParam(fdSearchCriteria.getAddress())) {
-			result = true;
+				|| validateSearchParam(fdSearchCriteria.getLastName())
+				|| validatePhoneParam(fdSearchCriteria.getPhone())
+				|| validateAddressParam(fdSearchCriteria.getAddress())) {
+			result = false;
 		}
 		return result;
 	}
 
 	private boolean validateSearchParam(String inputStr) {
 		if (inputStr == null
-				|| (inputStr.trim().equals("*") || inputStr.trim().equals("%") || validateExceptionPattern(inputStr))) {
-			return true;
+				|| (inputStr.trim().equals("*") || inputStr.trim().equals("%") || !validateExceptionPattern(inputStr))) {
+			return false;
 		}
 
-		return false;
+		return true;
 
 	}
 	
-	private boolean validateAddresshParam(String inputStr) {
+	private boolean validateAddressParam(String inputStr) {
 		if (inputStr == null
-				|| (inputStr.trim().equals("*") || inputStr.trim().equals("%"))) {
-			return true;
+				|| (inputStr.trim().equals("*") || inputStr.trim().equals("%") || !isPatternSearchable(inputStr,0))) {
+			return false;
 		}
 
-		return false;
+		return true;
 
 	}
 	
 	private boolean validatePhoneParam(String inputStr) {
 		if (inputStr == null
-				|| (inputStr.trim().equals("*") || inputStr.trim().equals("%") || validatePhonePattern(inputStr))) {
-			return true;
+				|| (inputStr.trim().equals("*") || inputStr.trim().equals("%") || !validatePhonePattern(inputStr))) {
+			return false;
 		}
 
-		return false;
+		return true;
 
 	}
-	// Exception Pattern for example is "*a*" and "%a%" is not supported for
+	// Exception Pattern for first name and last name : "*a*","%a%",*a** are not supported for
 	// search
 	private boolean validateExceptionPattern(String inputStr) {
 		
-		boolean isTextPatternNotValid = false;
+		boolean isTextPatternSearchable = true;
 		
 		if (inputStr.length() == 3
 				&& (inputStr.charAt(0) == '*' || inputStr.charAt(0) == '%')
 				&& (inputStr.charAt(2) == '*' || inputStr.charAt(2) == '%')) {
-			isTextPatternNotValid = true;			
+			isTextPatternSearchable = false;			
 		}
 		else if(inputStr.length() > 3){		
-			 isTextPatternNotValid = isNotValidPattern(inputStr,2);
+			 isTextPatternSearchable = isPatternSearchable(inputStr,2);
 			
 		}
-		return isTextPatternNotValid;
+		return isTextPatternSearchable;
 	}
-
-	private boolean isNotValidPattern(String inputStr,int index) {
-		boolean result = false;
+	
+	// This Utility Checks if substring "inputStr.substring(index, inputStr.length())" has any character not equal to '*'
+	//if yes then return false else return true
+	private boolean isPatternSearchable(String inputStr,int index) {
+		boolean result = true;
 		if (inputStr.charAt(inputStr.length() - 1) == '*') {
 			char[] arry = inputStr.substring(index, inputStr.length())
 					.toCharArray();
-			boolean hasValidText = false;
+			boolean hasValidTextForSearch = false;
 			for (char c : arry) {
 				if (c != '*') {
-					hasValidText = true;
+					hasValidTextForSearch = true;
 					break;
 				}
 			}
-			if (!hasValidText) {
+			if (hasValidTextForSearch) {
 				result = true;
 			} else {
 				result = false;
@@ -204,15 +205,15 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 	
 	//Valid Search Pattern *123,*12,1*2, 212****12
 	private boolean validatePhonePattern(String inputStr) {
-		boolean isPhonePatternNotValid = false;
+		boolean isPhonePatternSearchable = true;
 		if ((inputStr.contains("*")) && inputStr.length() <= 4) {
 			if (inputStr.charAt(inputStr.length() - 1) == '*' || countWildChars(inputStr)) {
-				isPhonePatternNotValid = true;
+				isPhonePatternSearchable = false;
 			}
 		} else{
-			isPhonePatternNotValid = isNotValidPattern(inputStr,3);
+			isPhonePatternSearchable = isPatternSearchable(inputStr,3);
 		}
-		return isPhonePatternNotValid;
+		return isPhonePatternSearchable;
 	}				
 
 	private boolean countWildChars(String inputStr) {
