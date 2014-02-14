@@ -25,7 +25,8 @@ import com.freshdirect.framework.xml.XMLSerializer;
 
 public class NutritionInfoPanelRendererUtil {
 	private static final Logger LOG = LoggerFactory.getInstance( NutritionInfoPanelRendererUtil.class );
-
+	private static Transformer transformer = null;
+	
 	public static boolean renderClassicPanel(ErpNutritionModel nutritionModel, boolean showErpsExtra, Writer out, ServletContext srvCtx) throws IOException {
 		
         // JspWriter out = pageContext.getOut();
@@ -70,12 +71,16 @@ public class NutritionInfoPanelRendererUtil {
         try {
         	
         	// ServletContext srvCtx = pageContext.getServletContext();
-	        InputStream xslStream = srvCtx.getResourceAsStream( "/WEB-INF/shared/xml/nutrition_label.xsl" );
-			Transformer transformer = TransformerFactory.newInstance().newTransformer( new StreamSource( xslStream ) );
+	        if (transformer == null) {
+	        	InputStream xslStream = srvCtx.getResourceAsStream( "/WEB-INF/shared/xml/nutrition_label.xsl" );
+				transformer = TransformerFactory.newInstance().newTransformer( new StreamSource( xslStream ) );
+	        }
 			
 			org.dom4j.Document doc = new XMLSerializer().serializeDocument("nutrition", nutritionList);
 	        StringWriter st = new StringWriter();
-			transformer.transform(new org.dom4j.io.DocumentSource(doc), new StreamResult(st));
+			synchronized(transformer) {
+				transformer.transform(new org.dom4j.io.DocumentSource(doc), new StreamResult(st));
+			}
 			
 			out.write( st.toString() );
 			
