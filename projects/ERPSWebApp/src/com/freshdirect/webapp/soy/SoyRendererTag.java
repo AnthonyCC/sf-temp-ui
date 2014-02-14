@@ -1,6 +1,8 @@
 package com.freshdirect.webapp.soy;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -9,6 +11,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -55,7 +58,7 @@ public class SoyRendererTag extends SimpleTagSupport {
 	    }
 	    
 	    try {
-	    	String result = SoyTemplateEngine.getInstance().render( servletCtx, template, soyData ); 
+	    	String result = StringEscapeUtils.unescapeHtml(SoyTemplateEngine.getInstance().render( servletCtx, template, soyData ));
 	    	out.write( result );
 	    	
 			LOGGER.debug( "Rendered " + template + " successfully.");
