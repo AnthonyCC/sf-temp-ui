@@ -1,6 +1,16 @@
 var id= "";
 var css="";
 
+window.originalClose = window.close;
+
+window.close = function () {
+  window.originalClose();
+
+  try {
+    window.parent.FreshDirect.components.ifrPopup.close();
+  } catch (e) {}
+};
+
 function soon() { alert("Coming soon"); }
 
 //preferred roll-over swap technique..
