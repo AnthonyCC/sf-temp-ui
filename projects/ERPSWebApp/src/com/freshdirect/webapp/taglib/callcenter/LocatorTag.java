@@ -174,6 +174,10 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 			 isTextPatternSearchable = isPatternSearchable(inputStr,2);
 			
 		}
+		else if(inputStr.length() < 3){		
+			 isTextPatternSearchable = isPatternSearchable(inputStr,0);
+			
+		}
 		return isTextPatternSearchable;
 	}
 	
