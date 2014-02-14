@@ -66,10 +66,11 @@ h1.pdpTitle,
 	margin:15px 0 20px 0;
 }
 
-button.cssbutton.annotation,
-button.cssbutton.annotation:hover {
+span.cssbutton.annotation,
+span.cssbutton.annotation:hover {
   display:none;
   color: #000;
+  overflow: hidden;
 }
 
 .pdp h1 .productDisplay-akaName {
