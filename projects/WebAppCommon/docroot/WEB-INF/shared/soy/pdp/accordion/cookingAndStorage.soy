@@ -8,6 +8,7 @@
  * @param webRating
  * @param categoryStorageGuideLabel
  * @param categoryStorageGuideLink
+ * @param usageList
  */
 {template .cookingAndStorage}
 {if ($donenessGuideList and length($donenessGuideList)>0) or
@@ -15,7 +16,8 @@
 	$freshTips or 
 	($webRating and $webRating.rating and length($webRating.rating)>0) or
 	($webRating and $webRating.textRatings and length($webRating.textRatings)>0) or
-	($categoryStorageGuideLabel and $categoryStorageGuideLink)
+	($categoryStorageGuideLabel and $categoryStorageGuideLink) or
+	($usageList and length($usageList) > 0)
 }
 <li class="pdp-accordion-cookingandstorage pdp-accordion-item"><input type="checkbox" id="pdp-cookingandstorage"><label for="pdp-cookingandstorage"><span class="pdp-accordion-item-carrot"></span>Cooking & Storage</label><div>
 {if $donenessGuideList and length($donenessGuideList)>0 }
@@ -44,6 +46,12 @@
 {if $categoryStorageGuideLabel and $categoryStorageGuideLink}
 <strong>Storage Guide</strong>
 <a href="{$categoryStorageGuideLink}" target="_blank" data-component="ajaxpopup" data-popup-width="560px">{$categoryStorageGuideLabel}</a>
+{/if}
+{if $usageList and length($usageList) > 0}
+<strong>Usage List</strong>
+{foreach $ulitem in $usageList}
+{$ulitem}{if not isLast($ulitem)}, {/if}
+{/foreach}
 {/if}
 </div>
 </li>
