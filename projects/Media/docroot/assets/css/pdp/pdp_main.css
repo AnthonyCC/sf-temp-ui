@@ -98,6 +98,10 @@ span.cssbutton.annotation:hover {
 	font-size:13px;
 }
 
+.pdp .pdp-price .save-price {
+	color:#c94747;
+}
+
 .pdp .pdp-price .price-deal {
 	display:inline;
 	padding-left:0.5em;
