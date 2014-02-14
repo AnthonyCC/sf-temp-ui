@@ -125,7 +125,7 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 		else if (validateSearchParam(fdSearchCriteria.getFirstName())
 				&& validateSearchParam(fdSearchCriteria.getLastName())
 				&& validatePhoneParam(fdSearchCriteria.getPhone())
-				&& validateSearchParam(fdSearchCriteria.getAddress())) {
+				&& validateAddresshParam(fdSearchCriteria.getAddress())) {
 			result = true;
 		}
 		return result;
@@ -134,6 +134,16 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 	private boolean validateSearchParam(String inputStr) {
 		if (inputStr == null
 				|| (inputStr.trim().equals("*") || inputStr.trim().equals("%") || validateExceptionPattern(inputStr))) {
+			return true;
+		}
+
+		return false;
+
+	}
+	
+	private boolean validateAddresshParam(String inputStr) {
+		if (inputStr == null
+				|| (inputStr.trim().equals("*") || inputStr.trim().equals("%"))) {
 			return true;
 		}
 
@@ -153,12 +163,40 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 	// Exception Pattern for example is "*a*" and "%a%" is not supported for
 	// search
 	private boolean validateExceptionPattern(String inputStr) {
+		
+		boolean isTextPatternNotValid = false;
+		
 		if (inputStr.length() == 3
 				&& (inputStr.charAt(0) == '*' || inputStr.charAt(0) == '%')
 				&& (inputStr.charAt(2) == '*' || inputStr.charAt(2) == '%')) {
-			return true;			
+			isTextPatternNotValid = true;			
 		}
-		return false;
+		else if(inputStr.length() > 3){		
+			 isTextPatternNotValid = isNotValidPattern(inputStr,2);
+			
+		}
+		return isTextPatternNotValid;
+	}
+
+	private boolean isNotValidPattern(String inputStr,int index) {
+		boolean result = false;
+		if (inputStr.charAt(inputStr.length() - 1) == '*') {
+			char[] arry = inputStr.substring(index, inputStr.length())
+					.toCharArray();
+			boolean hasValidText = false;
+			for (char c : arry) {
+				if (c != '*') {
+					hasValidText = true;
+					break;
+				}
+			}
+			if (!hasValidText) {
+				result = true;
+			} else {
+				result = false;
+			}
+		}
+		return result;
 	}	
 	
 	// Exception Pattern for phone is if the num of character =< 4 followed by "*" 
@@ -171,21 +209,8 @@ public class LocatorTag extends com.freshdirect.framework.webapp.BodyTagSupport 
 			if (inputStr.charAt(inputStr.length() - 1) == '*' || countWildChars(inputStr)) {
 				isPhonePatternNotValid = true;
 			}
-		} else if (inputStr.charAt(inputStr.length() - 1) == '*') {
-			char[] arry = inputStr.substring(3, inputStr.length())
-					.toCharArray();
-			boolean hasValidNum = false;
-			for (char c : arry) {
-				if (c != '*') {
-					hasValidNum = true;
-					break;
-				}
-			}
-			if (!hasValidNum) {
-				isPhonePatternNotValid = true;
-			} else {
-				isPhonePatternNotValid = false;
-			}
+		} else{
+			isPhonePatternNotValid = isNotValidPattern(inputStr,3);
 		}
 		return isPhonePatternNotValid;
 	}				
