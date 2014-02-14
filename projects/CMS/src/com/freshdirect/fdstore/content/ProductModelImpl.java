@@ -1275,7 +1275,16 @@ inner:
 	}
 
 	public Html getFreshTips() {
-		return FDAttributeFactory.constructHtml( this, "FRESH_TIPS" );
+		// FIXME temporary fix (expects scalar value although this is designed to be a to many relationship)
+	    @SuppressWarnings("unchecked")
+		List<Html> oneList = (List<Html>) FDAttributeFactory.constructWrapperList( this, "FRESH_TIPS" );
+
+	    if (oneList == null || oneList.isEmpty()) {
+	    	return null;
+	    }
+
+	    // return the first item
+		return oneList.get(0);
 	}
 
 	public List<Html> getDonenessGuide() {
