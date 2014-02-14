@@ -14,7 +14,7 @@
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="520">
 <TR VALIGN="TOP">
 <TD COLSPAN="5" WIDTH="520">
-<A HREF="javascript:window.close();"><img src="/media_stat/images/layout/pop_up_header_lg.gif" 
+<A HREF="javascript:try { window.close(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}"><img src="/media_stat/images/layout/pop_up_header_lg.gif" 
 width="520" height="33" border="0" alt="freshdirect    (close window)"></A><BR>
 <FONT CLASS="space10pix"><BR></FONT>
 </TD>
@@ -94,7 +94,7 @@ a bowl of the fruits of the season. It's a simple work of art.
 		<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="379">
 			<TR VALIGN="TOP">
 				<TD WIDTH="189"><A HREF="#top">Back to Top</A></TD>
-				<TD WIDTH="190" ALIGN="RIGHT"><A HREF="javascript:window.close();">close window</A>&nbsp;&nbsp;</TD>
+				<TD WIDTH="190" ALIGN="RIGHT"><A HREF="javascript:try { window.close(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}">close window</A>&nbsp;&nbsp;</TD>
 			</TR>
 		</TABLE>
 </TD>
