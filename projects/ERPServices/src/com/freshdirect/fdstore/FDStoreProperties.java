@@ -631,9 +631,6 @@ public class FDStoreProperties {
 	private final static String PROP_QS_IGNORE_PARTIAL_ROLLOUT = "quickshop.ignorePartialRollout";
 	private final static String PROP_QS_ENABLED = "quickshop.enabled";
 	
-	private final static String PROP_PDP_IGNORE_PARTIAL_ROLLOUT = "pdp.ignorePartialRollout";
-	private final static String PROP_PDP_ENABLE_TO_ALL = "pdp.enableToAll";
-	
 	private final static String   PROP_ASSIGNED_CUSTOMER_PARAMS_QUERY_ID="fdstore.assignedCustomerParams.query.id";
 	
 	//APPDEV-3100 2013 Wine Transition
@@ -1248,9 +1245,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_QS_CACHING, "true");		
 		defaults.put(PROP_QS_IGNORE_PARTIAL_ROLLOUT, "false");		
 		defaults.put(PROP_QS_ENABLED, "true");
-		defaults.put(PROP_PDP_IGNORE_PARTIAL_ROLLOUT, "false");		
-		defaults.put(PROP_PDP_ENABLE_TO_ALL, "false");		
-
+		
 		defaults.put(PROP_PAYMENTECH_GATEWAY_ENABLED, "false");
 		
 		//APPDEV-2817 Link to DeliveryPass category from top nav of Delivery Info page
@@ -1264,6 +1259,9 @@ public class FDStoreProperties {
         defaults.put(PROP_WINE_ASSID, "USQ");
         
         defaults.put(PROP_PRODUCT_FEED_GENERATION_ENABLED, "false");
+        
+        defaults.put("feature.rollout.pdplayout2014", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.pplayout2014", "GLOBAL:ENABLED,true;");
 				
         refresh();
     }
@@ -3192,19 +3190,11 @@ public class FDStoreProperties {
 	public static boolean isQuickshopEnabled() {
 		return ( Boolean.valueOf( get( PROP_QS_ENABLED ) ) ).booleanValue();
 	}
-	public static boolean isPDPIgnorePartialRollout() {
-		return ( Boolean.valueOf( get( PROP_PDP_IGNORE_PARTIAL_ROLLOUT ) ) ).booleanValue();
-	}
-	public static boolean isPDPEnableToAll() {
-		return ( Boolean.valueOf( get( PROP_PDP_ENABLE_TO_ALL ) ) ).booleanValue();
-	}
-
-	 public static boolean isPaymentechGatewayEnabled() {
+	
+	public static boolean isPaymentechGatewayEnabled() {
 	        return Boolean.valueOf(get(PROP_PAYMENTECH_GATEWAY_ENABLED)).booleanValue();
-	 }
-	 
-	 
-
+	}
+	
 	//APPDEV-2817 Link to DeliveryPass category from top nav of Delivery Info page
     public static boolean doDpDeliveryInfoLink() {
         return (Boolean.valueOf(get(SHOW_DLVPASS_LINK_ON_DELINFO))).booleanValue();

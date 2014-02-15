@@ -1,6 +1,5 @@
 package com.freshdirect.fdstore.rollout;
 
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 
@@ -35,6 +34,12 @@ public class ProfileRolloutStrategy  extends AbstractRolloutStrategy {
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public EnumFeatureRolloutStrategy getRolloutStrategyType() {
+		// TODO Auto-generated method stub
+		return EnumFeatureRolloutStrategy.PROFILE;
 	}
 
 	@Override

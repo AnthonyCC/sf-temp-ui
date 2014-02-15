@@ -30,7 +30,11 @@ public class CohortRolloutStrategy  extends AbstractRolloutStrategy {
 		return "CohortRolloutStrategy [eligibleCohorts=" + eligibleCohorts
 				+ "]";
 	}
-	
-	
+
+	@Override
+	public EnumFeatureRolloutStrategy getRolloutStrategyType() {
+		// TODO Auto-generated method stub
+		return EnumFeatureRolloutStrategy.COHORT;
+	}	
 
 }

@@ -12,6 +12,13 @@ import com.freshdirect.fdstore.FDStoreProperties.ConfigLoadedListener;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
+//Controlled Rollout fdstore.properties samples
+// feature.rollout.pdplayout2014=GLOBAL:ENABLED,false;PROFILE:VIPCustomer,true;COHORT:C9;
+// feature.rollout.pdplayout2014=GLOBAL:ENABLED,false;PROFILE:VIPCustomer,false;
+
+//Full Rollout fdstore.properties sample
+// feature.rollout.pdplayout2014=GLOBAL:ENABLED,true;
+
 public class FeatureRolloutArbiter implements ConfigLoadedListener {
 	
 	private static final Category LOGGER = LoggerFactory.getInstance(FeatureRolloutArbiter.class);
@@ -27,16 +34,16 @@ public class FeatureRolloutArbiter implements ConfigLoadedListener {
     	FDStoreProperties.addConfigLoadedListener(new FeatureRolloutArbiter());
     }
     
-	public static boolean isEligibleForFeatureRollout(EnumRolloutFeature feature, FDUserI user) {
+	public static EnumFeatureRolloutStrategy getFeatureRolloutStrategy(EnumRolloutFeature feature, FDUserI user) {
 		
 		if(featureStrategyConfig.containsKey(feature)) {
 			for(IRolloutStrategy strategy : featureStrategyConfig.get(feature)) {
 				if(strategy.isEligibleForFeatureRollout(user)) {
-					return true;
+					return strategy.getRolloutStrategyType();
 				}
 			}
 		}
-		return false;
+		return EnumFeatureRolloutStrategy.NONE;
 	}
 	
 	private synchronized static void refresh() {

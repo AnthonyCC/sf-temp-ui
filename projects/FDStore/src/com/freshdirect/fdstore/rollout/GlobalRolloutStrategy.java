@@ -22,6 +22,12 @@ public class GlobalRolloutStrategy extends AbstractRolloutStrategy {
 		// TODO Auto-generated method stub
 		return isFeatureEnabled;
 	}
+	
+	@Override
+	public EnumFeatureRolloutStrategy getRolloutStrategyType() {
+		// TODO Auto-generated method stub
+		return EnumFeatureRolloutStrategy.GLOBAL;
+	}
 
 	@Override
 	public String toString() {
