@@ -150,12 +150,12 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 			if (layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId() || EnumLayoutType.PRODUCTS_ASSORTMENTS.getId() == layoutType) {
 				//css jawr optimizing test
 				if (layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId()) {
-					if(FeatureRolloutArbiter.isEligibleForFeatureRollout(EnumRolloutFeature.pplayout2014, user)) {
+					if(EnumFeatureRolloutStrategy.NONE.equals(FeatureRolloutArbiter.getFeatureRolloutStrategy(EnumRolloutFeature.pplayout2014, user))) {
+						jspTemplate = "/common/template/top_nav_only_optimized.jsp";
+					} else {
 						/* forward to new jsp, include won't work due to byte size on compilation */
 						RequestDispatcher rd = request.getRequestDispatcher("/ddpp.jsp");
 						rd.forward(request, response);
-					} else {
-						jspTemplate = "/common/template/top_nav_only_optimized.jsp";
 					}
 				} else {
 					jspTemplate = "/common/template/top_nav_only.jsp";

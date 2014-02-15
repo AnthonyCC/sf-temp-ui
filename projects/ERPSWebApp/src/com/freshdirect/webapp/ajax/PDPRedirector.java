@@ -8,14 +8,13 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.EnumProductLayout;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.customer.FDCustomerFactory;
-import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.rollout.EnumFeatureRolloutStrategy;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 
@@ -48,13 +47,8 @@ public class PDPRedirector extends BodyTagSupport {
 	@Override
 	public int doStartTag() throws JspException {
 		
-		// first check property that disables the whole partial rollout stuff - do not redirect anything
-		if ( FDStoreProperties.isPDPIgnorePartialRollout() ) {
-			return EVAL_BODY_BUFFERED;
-		}
-		
 		// partial rollout check
-		boolean isPDP = isEligibleForPDP( user );		
+		boolean isPDP = !EnumFeatureRolloutStrategy.NONE.equals(FeatureRolloutArbiter.getFeatureRolloutStrategy(EnumRolloutFeature.pdplayout2014, user));
 		String redirectUrl = null;
 
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest(); 
@@ -105,7 +99,6 @@ public class PDPRedirector extends BodyTagSupport {
 	 		}
 		}
 		
-
 		// No need for redirecting, (continue rendering the old page)
 		if ( redirectUrl == null ) {
 			return EVAL_BODY_BUFFERED;
@@ -117,40 +110,6 @@ public class PDPRedirector extends BodyTagSupport {
 	}
 
 	
-
-	/* =======================================================
-	 * 			ELIGIBILITY testing logic
-	 * ======================================================= */
-
-	public static boolean isEligibleForPDP( FDUserI user ) {
-
-		// If partial rollout is disabled anyone is eligible for anything
-		// Also if the global 'enable for all' flag is set 
-		if ( FDStoreProperties.isPDPIgnorePartialRollout() || FDStoreProperties.isPDPEnableToAll() ) {
-			return true;
-		}
-		
-		// customer profile attribute
-		try {
-			if ( user == null || user.getIdentity() == null || user.getIdentity().getFDCustomerPK() == null ) {
-				return false;
-			}
-			FDCustomerModel fdCust = FDCustomerFactory.getFDCustomer( user.getIdentity() );
-			
-			String eligibleAttr = fdCust.getProfile().getAttribute( "PDP_ELIGIBLE" );
-			if ( "true".equalsIgnoreCase( eligibleAttr ) ) {
-				return true;
-			}
-			
-		} catch ( FDResourceException e ) {
-			LOG.warn( "Failed to get customer profile", e );
-		} catch ( Exception e ) {
-			LOG.warn( "Failed to get customer profile", e );
-		}
-		
-        return false;
-	}
-
 	/* =======================================================
 	 * 			REDIRECT utility method
 	 * ======================================================= */

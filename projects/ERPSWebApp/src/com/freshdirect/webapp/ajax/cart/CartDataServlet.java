@@ -95,7 +95,6 @@ public class CartDataServlet extends BaseJsonServlet {
 	    		CartRequestData reqData = null;
 	    		try {
 	    			reqData = new ObjectMapper().readValue(reqJson, CartRequestData.class);
-	    			LOG.debug( reqData ); 
 	    		} catch (IOException e) {
 	    			LOG.error("Cannot read JSON", e);
 	    			returnHttpError( 400, "Cannot read JSON" );	// 400 Bad Request
