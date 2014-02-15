@@ -154,6 +154,7 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 						jspTemplate = "/common/template/top_nav_only_optimized.jsp";
 					} else {
 						/* forward to new jsp, include won't work due to byte size on compilation */
+						jspTemplate = "/common/template/blank.jsp";
 						RequestDispatcher rd = request.getRequestDispatcher("/ddpp.jsp");
 						rd.forward(request, response);
 					}

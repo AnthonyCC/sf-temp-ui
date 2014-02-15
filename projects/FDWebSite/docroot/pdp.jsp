@@ -46,7 +46,16 @@ request.setAttribute("listPos", "SystemMessage,ProductNote");
 
 //REDIRECT to the redirect-url IF there is any
 String redirectURL = productNode.getRedirectUrl();
-if ( redirectURL != null && !"".equals(redirectURL.trim()) && !"nm".equals(redirectURL.trim()) ) {
+ContentNodeModel parentNode =productNode.getParentNode();
+boolean isDDPP = false;
+if(null !=parentNode && parentNode instanceof CategoryModel){
+	CategoryModel catModel = ((CategoryModel)parentNode);
+	if(null !=catModel.getProductPromotionType()){
+		isDDPP = true;
+	}
+}
+
+if ( !isDDPP && redirectURL != null && !"".equals(redirectURL.trim()) && !"nm".equals(redirectURL.trim()) ) {
 	StringBuffer buf = new StringBuffer( response.encodeRedirectURL( redirectURL ) );	
 	FDURLUtil.appendCommonParameters( buf, request.getParameterMap() ); // append tracking codes, etc.
 	response.sendRedirect( buf.toString() );
