@@ -5,6 +5,7 @@
 %><%@ page import='com.freshdirect.fdstore.attributes.*' 
 %><%@ page import='java.net.URLEncoder'
 %><%@ page import="com.freshdirect.fdstore.util.RatingUtil" 
+%><%@ page import="com.freshdirect.fdstore.rollout.*" 
 %><%@ taglib uri='template' prefix='tmpl' 
 %><%@ taglib uri='logic' prefix='logic' 
 %><%@ taglib uri='freshdirect' prefix='fd' 
@@ -149,9 +150,13 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 			if (layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId() || EnumLayoutType.PRODUCTS_ASSORTMENTS.getId() == layoutType) {
 				//css jawr optimizing test
 				if (layoutType == EnumLayoutType.PRESIDENTS_PICKS.getId()) {
-					/* forward to new jsp, include won't work due to byte size on compilation */
-					RequestDispatcher rd = request.getRequestDispatcher("/ddpp.jsp");
-					rd.forward(request, response);
+					if(FeatureRolloutArbiter.isEligibleForFeatureRollout(EnumRolloutFeature.pplayout2014, user)) {
+						/* forward to new jsp, include won't work due to byte size on compilation */
+						RequestDispatcher rd = request.getRequestDispatcher("/ddpp.jsp");
+						rd.forward(request, response);
+					} else {
+						jspTemplate = "/common/template/top_nav_only_optimized.jsp";
+					}
 				} else {
 					jspTemplate = "/common/template/top_nav_only.jsp";
 				}
