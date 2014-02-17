@@ -8,8 +8,6 @@ var FreshDirect = FreshDirect || {};
   var POPUPWIDGET = fd.modules.common.popupWidget;
 
   var nutritionPopup = Object.create(POPUPWIDGET,{
-    customClass: {
-    },
     template:{
       value:common.fixedPopup
     },
