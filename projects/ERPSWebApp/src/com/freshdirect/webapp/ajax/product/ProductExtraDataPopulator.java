@@ -491,8 +491,13 @@ public class ProductExtraDataPopulator {
 		
 		// storage guide (category level)
 		{
-			final CategoryModel _parentNode = (CategoryModel) productNode
+			CategoryModel _parentNode = (CategoryModel) productNode
 					.getParentNode();
+
+//			if (_parentNode != null && _parentNode.getAliasCategory() != null) {
+//				_parentNode = _parentNode.getAliasCategory();
+//			}
+//
 			if (_parentNode != null && _parentNode.getCategoryStorageGuideMedia() != null) {
 				data.setCategoryStorageGuideLabel( department.getFullName() +" Storage Guide");
 				data.setCategoryStorageGuideLink( popupPage + "?catId=" + _parentNode.getContentName() + "&attrib=CAT_STORAGE_GUIDE_MEDIA&tmpl=large" );
@@ -805,6 +810,13 @@ public class ProductExtraDataPopulator {
 			data.setMsgKosherRestriction( buf.toString() );
 		}
 		
+		// earliest availability - product not yet available but will in the near future
+		if (defaultSku != null) {
+			data.setMsgEarliestAvailability( defaultSku.getEarliestAvailabilityMessage() );
+		}
+
+
+
 		// --- --- //
 		
 		// Perishable product - freshness warranty

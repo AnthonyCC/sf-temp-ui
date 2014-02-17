@@ -377,6 +377,9 @@ public class ProductExtraData implements Serializable {
 	protected String msgLeadTimeHeader;
 	protected String msgKosherRestriction;
 	
+	// Earliest availability message (optional)
+	// it contains a date in short format Fri, 02/14
+	protected String msgEarliestAvailability;
 	
 	public List<String> getAllergens() {
 		return allergens;
@@ -791,5 +794,13 @@ public class ProductExtraData implements Serializable {
 	
 	public void setMsgKosherRestriction( String msgKosherRestriction ) {
 		this.msgKosherRestriction = msgKosherRestriction;
+	}
+
+	public String getMsgEarliestAvailability() {
+		return msgEarliestAvailability;
+	}
+	
+	public void setMsgEarliestAvailability(String msgEarliestAvailability) {
+		this.msgEarliestAvailability = msgEarliestAvailability;
 	}
 }
