@@ -87,20 +87,24 @@
  * @param kosherIconPath
  */
 {template .claims}
-{if $claims and length($claims)}
-<strong>Claims</strong>
-<ul>
-{foreach $claim in $organicClaims}
-<li>{$claim}</li>
-{/foreach}
-{foreach $claim in $claims}
-<li>{$claim}</li>
-{/foreach}
-</ul>
-{/if}
-{if $kosherType and $kosherSymbol}
-<div class="pdp-accordion-description-kosher"><img src="{$kosherIconPath}"/> {$kosherType}</div>
-{/if}
+	{if ($claims and length($claims)) or ($organicClaims and length($organicClaims))}
+		<strong>Claims</strong>
+		<ul>
+			{if $organicClaims}
+				{foreach $claim in $organicClaims}
+					<li>{$claim}</li>
+				{/foreach}
+			{/if}
+			{if $claims}
+				{foreach $claim in $claims}
+					<li>{$claim}</li>
+				{/foreach}
+			{/if}
+		</ul>
+	{/if}
+	{if $kosherType and $kosherSymbol}
+		<div class="pdp-accordion-description-kosher"><img src="{$kosherIconPath}"/> {$kosherType}</div>
+	{/if}
 {/template}
 
 /**
