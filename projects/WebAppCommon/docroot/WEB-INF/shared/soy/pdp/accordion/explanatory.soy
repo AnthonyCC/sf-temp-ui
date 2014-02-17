@@ -5,7 +5,6 @@
 * @param heatRating
 */
 {template .explanatory}
-  {if $expertRating}
     <li class="pdp-accordion-explanatory pdp-accordion-item">
       <input type="checkbox" id="pdp-explanatory">
       <label for="pdp-explanatory">
@@ -13,20 +12,12 @@
       </label>
       <a id="explanatory"></a>
       <div>
+      {if $expertRating}
         {call pdp.accordion.explancontent.expertRating /}
-      </div>
-    </li>
-  {/if}
-  {if isNonnull($heatRating) and $heatRating > -1}
-    <li class="pdp-accordion-explanatory pdp-accordion-item">
-      <input type="checkbox" id="pdp-explanatory">
-      <label for="pdp-explanatory">
-        <span class="pdp-accordion-item-carrot"></span>Explanatory Information
-      </label>
-      <a id="explanatory"></a>
-      <div>
+      {/if}
+      {if isNonnull($heatRating) and $heatRating > -1}
         {call pdp.accordion.explancontent.heatRating /}
+      {/if}
       </div>
     </li>
-  {/if}
 {/template}
