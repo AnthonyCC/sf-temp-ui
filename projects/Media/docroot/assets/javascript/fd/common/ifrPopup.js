@@ -68,6 +68,7 @@ var FreshDirect = FreshDirect || {};
     	  }
     	  
     	  try {
+            var maxHeight = $(document.body).height() * 0.8 - 50;
         	  $($ifr[0].contentWindow).on('load',function(){
         		  var 	body = this.document.body,
         		  		$body = $(body); 
@@ -83,7 +84,7 @@ var FreshDirect = FreshDirect || {};
         		  });
         		  $ifr.css({
         			  width:(crect.width+20)+'px',
-        			  height:crect.height+'px'
+        			  height:Math.min(crect.height, maxHeight)+'px'
         		  });
         	  });
     		  
