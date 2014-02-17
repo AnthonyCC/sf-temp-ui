@@ -94,8 +94,10 @@ span.cssbutton.annotation:hover {
 	font-weight:normal;
 }
 
+/* was price */
 .pdp .price s {
 	font-size:13px;
+	color: #333;
 }
 
 .pdp .pdp-price .save-price {
