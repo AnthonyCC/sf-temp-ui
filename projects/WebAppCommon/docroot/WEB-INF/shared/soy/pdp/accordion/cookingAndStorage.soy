@@ -23,7 +23,8 @@
 {if $donenessGuideList and length($donenessGuideList)>0 }
 <strong>Doneness</strong>
 {foreach $donnes in $donenessGuideList}
-<a href="{$donnes.link}" target="_blank" data-component="ajaxpopup" data-popup-width="560px">{$donnes.label}</a>
+<a href="{$donnes.link}" target="_blank" data-component="ajaxpopup" data-popup-width="560px">{$donnes.label ? $donnes.label : 'View Doneness Guide'}</a>
+{if not isLast($donnes)}<br/>{/if}
 {/foreach}
 {/if}
 {if $howToCookItList and length($howToCookItList)>0 }
@@ -34,7 +35,7 @@
 {/if}
 {if $freshTips}
 <strong>Fresh Tip</strong>
-<a href="{$freshTips.link}">{$freshTips.label}</a>
+<a href="{$freshTips.link}" target="_blank" data-component="ajaxpopup" data-popup-width="560px">{$freshTips.label ? $freshTips.label : 'View Fresh Tip'}</a>
 {/if}
 {call .webRatingScale}
 	{param ratingLabel:$webRating.ratingLabel /}
