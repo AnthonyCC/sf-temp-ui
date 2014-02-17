@@ -172,7 +172,9 @@
     		loginDropboxHtml += '<div class="bold alignRight" style="margin: 20px 0;">Forgot your <a href="/login/forget_password.jsp">password</a>?</div>';
     	loginDropboxHtml += '</div>';
     	
-		$('body').append(loginDropboxHtml);
+    	$(document).ready(function() {
+			$('body').append(loginDropboxHtml);
+		});
 		
 	}
 

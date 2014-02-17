@@ -6,7 +6,13 @@
 %><%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' 
 %><%@ page import='com.freshdirect.fdstore.customer.*' %><%
 
-	float welcomepageBI_ver = Float.parseFloat(welcomepageBI.getVersion());
+	//BrowserInfo cannot currently parse IE11 - batchley 20140217
+	float welcomepageBI_ver = 0;
+	try {
+		welcomepageBI_ver = Float.parseFloat(welcomepageBI.getVersion());
+	} catch (NullPointerException npe){
+		//do nothing
+	}
 %>
 
 <%-- optimizely --%>
