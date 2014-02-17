@@ -8,9 +8,12 @@
 		<div class="pdp-evenbetter">
 			<h2>Even Better!</h2>
 			{call .evenBetterItem data="$productList[0]"/}
-		    {if length($productList) > 1}
-				{call .evenBetterItem data="$productList[1]"/}
-		    {/if}
+      {if length($productList) > 1}
+        {call .evenBetterItem data="$productList[1]"/}
+      {/if}
+      {if length($productList) > 2}
+        {call .evenBetterItem data="$productList[2]"/}
+      {/if}
 		</div>    
     {/if}
 {/template}
