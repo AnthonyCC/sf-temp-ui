@@ -87,15 +87,15 @@
  * @param kosherIconPath
  */
 {template .claims}
-	{if ($claims and length($claims)) or ($organicClaims and length($organicClaims))}
+	{if ($claims and length($claims) > 0) or ($organicClaims and length($organicClaims) > 0)}
 		<strong>Claims</strong>
 		<ul>
-			{if $organicClaims}
+			{if $organicClaims and length($organicClaims) > 0}
 				{foreach $claim in $organicClaims}
 					<li>{$claim}</li>
 				{/foreach}
 			{/if}
-			{if $claims}
+			{if $claims and length($claims) > 0}
 				{foreach $claim in $claims}
 					<li>{$claim}</li>
 				{/foreach}
