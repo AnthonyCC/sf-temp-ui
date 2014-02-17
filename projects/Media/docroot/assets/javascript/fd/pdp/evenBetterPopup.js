@@ -38,6 +38,7 @@ var FreshDirect = FreshDirect || {};
 	    halign: 'left',
 	    placeholder: true,
 	    stayOnClick: true,
+      zIndex: 500,
         overlay:true,
         delay: 300        
       }

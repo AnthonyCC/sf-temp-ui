@@ -17,7 +17,8 @@ var FreshDirect = FreshDirect || {};
 		},
 		setMessage:{
 			value:function(item) {
-				var element = $(document.getElementById(item.itemId || item.atcItemId ));
+        // the original element might be copied (like in case of transactional popup), so we have to match for multiple ids
+				var element = $('[id="'+item.itemId+'"], [id="'+item.atcItemId+'"]');
 				if(element) {
 					element.addClass('atc-info-message');
 					element.html(this.template({
@@ -40,7 +41,7 @@ var FreshDirect = FreshDirect || {};
 		},
 		renderItem:{
 			value:function(item) {
-				var element = $(document.getElementById(item.itemId));
+				var element = $('[id="'+item.itemId+'"], [id="'+item.atcItemId+'"]');
 				if(element) {
 					element.addClass('atc-info-message');
 					element.closest('[data-component="product"]').find('[data-component="ATCButton"],[data-component="customizeButton"]').addClass('incart');

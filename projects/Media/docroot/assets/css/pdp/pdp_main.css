@@ -351,11 +351,17 @@ span.cssbutton.annotation:hover {
 	margin:10px 0;
 }
 
-
-
 .pdp-evenbetter-quantity,
 .pdp-evenbetter-atcbutton {
 	display:inline-block;
+}
+
+.pdp-evenbetter-atcbutton {
+  width: 75px;
+}
+
+.pdp-evenbetter-atcbutton .atc-info .incart-message {
+  white-space: nowrap;
 }
 
 .pdp-evenbetter-quantity,
