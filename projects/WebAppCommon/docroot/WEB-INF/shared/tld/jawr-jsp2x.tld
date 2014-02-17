@@ -1,9 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
 <taglib xmlns="http://java.sun.com/xml/ns/j2ee" 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd" 
+  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd" 
   version="2.0">  
 	<display-name>JSP jawr Library</display-name>
-	<tlib-version>3.3</tlib-version>
+	<tlib-version>3.6</tlib-version>
 	<short-name>Jawr</short-name>
 	<uri>http://jawr.net/tags/jsp_2x</uri>
 
@@ -14,6 +16,16 @@
 		<attribute>
 			<name>src</name>
 			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>async</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>defer</name>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
@@ -457,6 +469,7 @@
         </description>
         <name>image</name>
         <tag-class>net.jawr.web.taglib.ImageInputTag</tag-class>
+        <body-content>tagdependent</body-content>
         <attribute>
             <description>
                 <![CDATA[

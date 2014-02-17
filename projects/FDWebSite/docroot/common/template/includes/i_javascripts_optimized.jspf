@@ -93,7 +93,7 @@
 	
 	<jwr:script src="/fdccl.js"  useRandomParam="false" />
 
-	<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html"/>
+	<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html" />
 	
 	<%
 		FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);

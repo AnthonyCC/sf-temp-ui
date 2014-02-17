@@ -5,8 +5,13 @@
 	
 	  var SystemMessage='SystemMessage',
 	  messages = {},order = ['sitemessage',SystemMessage,'cutoff','platterwarning','reservationwarning'],
-	  messageObj = document.getElementById('messages'),hashes = {},
-	  jsessionId=fd.USQLegalWarning.getJSessionId(),
+	  messageObj = document.getElementById('messages'),
+	  hashes = {},
+	  /* REMOVE THIS DEPENDENCY - USQLegalWarning can be an object with only sessionStore prop
+	   * jsessionId=fd.USQLegalWarning.getJSessionId(), */
+	  jsessionId = ($.isFunction(fd.USQLegalWarning.getJSessionId)) ? fd.USQLegalWarning.getJSessionId() : function() {
+		  return (fd.USQLegalWarning.hasOwnProperty('sessionStore')) ? fd.USQLegalWarning.sessionStore : 'FD_NO_SESSION_ID';
+	  },
 	  hashesStorageKey = jsessionId+'/messageHashes',
 	  closedStorageKey = jsessionId+'/messagesClose',
 	  isClosed = false,

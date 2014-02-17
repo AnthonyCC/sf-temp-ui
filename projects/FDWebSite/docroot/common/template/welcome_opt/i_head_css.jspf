@@ -1,0 +1,30 @@
+<%--
+	Requires:
+		imports: (BrowserInfo) welcomepageBI
+		taglibs: fd, jwr
+--%><%
+	float welcomepageBI_ver = Float.parseFloat(welcomepageBI.getVersion());
+
+%>
+<%--
+	semi-optimized css bundle
+--%>
+	<jwr:style src="/welcome_opt_head.css" />
+	
+<%-- new css --%>
+<style type="text/css">
+	.body-nav {
+	}
+	.globalnav_top img {
+		border: 0;
+	}
+	#globalnav_searchButton {
+		margin: 1px 4px;
+	}
+	.footer-nav {
+	}
+	/* attrib addition */
+	#messages .handler {
+		text-align: center;
+	}
+</style>
