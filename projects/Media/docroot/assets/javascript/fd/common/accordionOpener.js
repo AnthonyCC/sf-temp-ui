@@ -16,7 +16,12 @@ var FreshDirect = FreshDirect || {};
           accTarg = $("#" + targ.data('accordion-target'));
 
       if(accTarg){
-          openAccordion(accTarg);
+    	  if($("body").hasClass("ie8")){
+    		  openCloseAccordion( accTarg.siblings("label") );
+    	  }
+    	  else{
+    		  openAccordion(accTarg);
+    	  }
       }
   });
 
