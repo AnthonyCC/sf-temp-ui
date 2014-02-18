@@ -165,31 +165,3 @@
 
 .pdp-accordion-webratingscale-item {
 }
-
-.pdp-accordion-nutrition .nutrition-holder {
-	overflow:hidden;
-}
-
-.pdp .pdp-accordion-nutrition>input[type="checkbox"]:checked ~ div {
-	max-height:200px;
-	
-}
-
-.pdp-accordion-nutrition .nutrition-overlay {
-	height: 100%;
-	width: 100%;
-	left: 0;
-	top: 0;
-	z-index: 2;
-	position: absolute;
-	box-shadow: -40px -50px 100px -20px #FFF inset;
-	text-align: center;
-	font-size: 25px;
-	font-weight: bold;
-	color: #693;
-	text-shadow: 0 0 2px #000;
-	background: RGba(255,255,255,0.8);	
-	cursor:pointer;
-	line-height:200px;
-}
-

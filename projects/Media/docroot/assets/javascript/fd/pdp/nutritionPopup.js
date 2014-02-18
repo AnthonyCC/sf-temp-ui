@@ -48,7 +48,9 @@ var FreshDirect = FreshDirect || {};
 
   nutritionPopup.render();
   
-  $(document).on('click','.pdp-accordion-nutrition .nutrition-overlay',function(){
+  $(document).on('click','.nutropen',function(e){
+	  e.preventDefault();
+	  
 	  nutritionPopup.open();
   });
   
