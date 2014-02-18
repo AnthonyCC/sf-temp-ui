@@ -56,6 +56,8 @@ HEAD items
 		</tmpl:put><%--
 	css
 	--%><tmpl:put name="head_css">
+			<%--  this file can NOT go in to jawr because of the path difference --%>
+			 <fd:css href="/media/editorial/welcome/welcome-eng.css" />
 			<%@ include file="/common/template/welcome_opt/i_head_css.jspf" %>
 		</tmpl:put><%--
 	javascript
