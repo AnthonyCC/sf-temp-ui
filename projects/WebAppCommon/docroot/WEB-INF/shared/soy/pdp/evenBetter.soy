@@ -48,6 +48,10 @@
  * @param configDescr
  * @param brandName
  * @param productNameNoBrand
+ * @param? coupon
+ * @param? couponDisplay
+ * @param? couponClipped
+ * @param? couponStatusText
  */
 {template .evenBetterItem}
 {let $atcItemId: 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) /}
@@ -63,7 +67,10 @@
 		<div class="pdp-evenbetter-price">{call common.price data="all" /}</div>
 		<div class="pdp-evenbetter-savestring">{call .dealinfo data="all" /}{call .savestring data="all" /}</div>
 		<div class="pdp-evenbetter-ratings">{call pdp.ratings data="all" /}</div>
-		<div class="pdp-evenbetter-atc">
+
+    {if $coupon}{call common.ecoupon}{param coupon:$coupon /}{param couponDisplay:$couponDisplay /}{param couponClipped:$couponClipped /}{param couponStatusText:$couponStatusText /}{/call}{/if}
+		
+    <div class="pdp-evenbetter-atc">
 			<input type="hidden" name="skuCode" value="{$skuCode}" data-component="productData" data-productdata-name="skuCode">
 			<input type="hidden" data-component="productData" data-productdata-name="atcItemId" name="atcItemId" value="{$atcItemId}">
 			{call common.skuControlSalesunit data="all" /}
