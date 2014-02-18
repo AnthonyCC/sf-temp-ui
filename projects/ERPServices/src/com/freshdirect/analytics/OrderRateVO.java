@@ -20,6 +20,7 @@ public class OrderRateVO {
 	private float ordersExpected;
 	private String cutoffTimeFormatted;
 	private String startTimeFormatted;
+	private int totalAllocation;
 	
 	public String getZone() {
 		return zone;
@@ -116,6 +117,12 @@ public class OrderRateVO {
 	}
 	public void setStartTimeFormatted(String startTimeFormatted) {
 		this.startTimeFormatted = startTimeFormatted;
+	}
+	public int getTotalAllocation() {
+		return totalAllocation;
+	}
+	public void setTotalAllocation(int totalAllocation) {
+		this.totalAllocation = totalAllocation;
 	}
 	
 	

@@ -51,7 +51,8 @@
 							  <ec:column property="name" title="Name"/>
 							  <ec:column property="description" title="Description"/>
 							  <ec:column property="sequenceNo" title="Sequence No"/>  
-							  <ec:column property="cutOffTime" title="Handoff Time"/>            
+							  <ec:column property="cutOffTime" title="Handoff Time"/>
+							  <ec:column property="shift" title="Shift"/>            
 							</ec:row>
 						  </ec:table>
 					 </form>

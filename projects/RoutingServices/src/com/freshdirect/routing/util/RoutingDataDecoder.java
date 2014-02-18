@@ -613,7 +613,7 @@ public class RoutingDataDecoder {
 				for(int intCount=0;intCount<route.getOrders().length ;intCount++) {
 					_refStop = route.getOrders()[intCount];
 					
-					if(_refStop.getSequenceNumber() >= 0 && _refStop.getConfirmed()) {
+					if(_refStop.getSequenceNumber() >= 0) {
 						_stop = new RoutingStopModel(_refStop.getSequenceNumber() >= 0 ? _refStop.getSequenceNumber() : lastSequence);
 						lastSequence =  _refStop.getSequenceNumber();
 						deliveryInfo = new DeliveryModel();
@@ -621,14 +621,17 @@ public class RoutingDataDecoder {
 								deliveryInfo.setDeliveryStartTime(_refStop.getDeliveryWindowStart().getAsCalendar().getTime());
 						if(_refStop.getDeliveryWindowEnd() != null && _refStop.getDeliveryWindowEnd().getAsCalendar()!=null)
 								deliveryInfo.setDeliveryEndTime(_refStop.getDeliveryWindowEnd().getAsCalendar().getTime());
-					
 						
 						_stop.setDeliveryInfo(deliveryInfo);
 						_stop.setStopArrivalTime(_refStop.getPlannedArrivalTime().getTime());
 						_stop.setOrderNumber(_refStop.getReferenceNumber());
 						_stop.setServiceTime(_refStop.getServiceTime());
 						
-						result.getStops().add(_stop);
+						result.getAllocatedStops().add(_stop);
+						
+						if(_refStop.getConfirmed()) {
+							result.getStops().add(_stop);
+						}
 					}
 				}
 			}

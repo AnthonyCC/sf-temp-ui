@@ -13,6 +13,8 @@ public class RouteModel extends BaseModel implements IRouteModel {
 	
 	private TreeSet stops;
 	
+	private TreeSet allocatedStops;
+	
 	private Date firstDeliveryTime;
 	
 	private Date startTime;
@@ -254,4 +256,14 @@ public class RouteModel extends BaseModel implements IRouteModel {
 	public void setWaveId(String waveId) {
 		this.waveId = waveId;
 	}
+
+	public TreeSet getAllocatedStops() {
+		return allocatedStops;
+	}
+
+	public void setAllocatedStops(TreeSet allocatedStops) {
+		this.allocatedStops = allocatedStops;
+	}
+	
+	
 }

@@ -18,9 +18,10 @@ public class CutOffValidator extends AbstractValidator {
 		ValidationUtils.rejectIfEmpty(errors, "sequenceNo", "app.error.112", new Object[]{"Sequence No"},"required field");
 		ValidationUtils.rejectIfEmpty(errors, "name", "app.error.112", new Object[]{"CutOff Name"},"required field");	
 		ValidationUtils.rejectIfEmpty(errors, "cutOffTime", "app.error.112", new Object[]{"CutOff Time"},"required field");
-				
+		ValidationUtils.rejectIfEmpty(errors, "shift", "app.error.112", new Object[]{"Shift"},"required field");
+		
 		validateLength("name", model.getName(), 32, errors);
 		validateLength("description", model.getDescription(), 256, errors);	
-		
+		validateLength("shift", model.getShift(), 2, errors);
 	}
 }

@@ -17,6 +17,9 @@ public interface IRouteModel {
 	TreeSet getStops();
 	void setStops(TreeSet stops);
 	
+	TreeSet getAllocatedStops();
+	void setAllocatedStops(TreeSet stops);
+	
 	IDrivingDirection getDrivingDirection();
 	void setDrivingDirection(IDrivingDirection drivingDirection);
 	

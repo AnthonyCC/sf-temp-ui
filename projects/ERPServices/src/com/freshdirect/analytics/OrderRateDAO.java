@@ -27,10 +27,11 @@ public class OrderRateDAO {
 	
 	
 	private static final String ORDER_RATE_QUERY_BY_TIMESLOT_SNAPSHOT = "select t.base_date , t.starttime , t.capacity, t.endtime , t.zone_code zone ,t.cutofftime, " +
-			"t.order_count - nvl(q2.order_count,0)  as order_count from (select nvl(order_count,0) order_count, t.* from  (select t.base_date, " +
+			"t.order_count - nvl(q2.order_count,0)  as order_count, t.total_alloc from (select nvl(order_count,0) order_count, t.* from  (select t.base_date, " +
 			"to_date(to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.START_TIME, 'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') starttime, " +
 			"to_date(to_char(t.base_date, 'MM/DD/YYYY')||' '||to_char(T.END_TIME, 'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') endtime, t.capacity, " +
-			"to_date(to_char(t.base_date-1, 'MM/DD/YYYY')||' '|| to_char(t.cutoff_time, 'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') cutofftime, z.zone_code " +
+			"to_date(to_char(t.base_date-1, 'MM/DD/YYYY')||' '|| to_char(t.cutoff_time, 'HH:MI:SS AM'),'MM/DD/YYYY HH:MI:SS AM') cutofftime, z.zone_code, " +
+			"(select count(*) from dlv.reservation where timeslot_id=t.id and  status_code <> '15' and status_code <> '20' and (chefstable = ' ' OR chefstable = 'X') and class is null) as total_alloc " +
 			"from dlv.timeslot t, dlv.zone z where t.zone_ID = z.ID and t.base_date > SYSDATE ) t ,  ( select count(*) order_count, di.starttime, di.endtime, " +
 			"di.cutofftime, SA.REQUESTED_DATE, di.zone from  cust.sale s, cust.salesaction sa, cust.deliveryinfo di WHERE s.ID=sa.SALE_ID AND s.CUSTOMER_ID=sa.CUSTOMER_ID " +
 			"AND DI.SALESACTION_ID = SA.ID AND sa.ACTION_TYPE IN ('CRO','MOD') AND sa.REQUESTED_DATE > TRUNC(SYSDATE) AND s.type='REG' and s.status <>'CAN' " +
@@ -44,7 +45,7 @@ public class OrderRateDAO {
 	private static final String MAX_DELIVERY_DATE = "select max(delivery_date) from mis.order_rate";
 	
 	private static final String ORDER_RATE_SNAPSHOT_INSERT = "INSERT INTO MIS.ORDER_RATE(CAPACITY, ZONE, CUTOFF, " +
-			"TIMESLOT_START, TIMESLOT_END, ORDER_COUNT,PROJECTED_COUNT, DELIVERY_DATE, SNAPSHOT_TIME, ACTUAL_SO, PROJECT_SO, WEIGHTED_PROJECTED_COUNT, ORDERS_EXPECTED) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			"TIMESLOT_START, TIMESLOT_END, ORDER_COUNT,PROJECTED_COUNT, DELIVERY_DATE, SNAPSHOT_TIME, ACTUAL_SO, PROJECT_SO, WEIGHTED_PROJECTED_COUNT, ORDERS_EXPECTED, TOTAL_ALLOCATION) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	private static final String AVG_ORDER_RATE_QUERY = "select order_count, snapshot_time from ((select order_count, snapshot_time from MIS.order_rate where to_char(snapshot_time,'MM/DD/YYYY HH:MI:SS AM') " +
 			">=  ? and to_char(timeslot_start,'MM/DD/YYYY HH:MI:SS AM') = ?  and zone = ?) union (select order_count,snapshot_time from MIS.order_rate where to_char(snapshot_time,'MM/DD/YYYY HH:MI:SS AM') " +
@@ -117,6 +118,7 @@ public class OrderRateDAO {
 					vo.setEndTime(new Date(rs.getTimestamp("endtime").getTime()));
 					vo.setOrderCount(rs.getFloat("order_count"));
 					vo.setBaseDate(rs.getDate("base_date"));
+					vo.setTotalAllocation(rs.getInt("total_alloc"));
 					vo.setSnapshotTime(snapshotTime);
 					voList.add(vo);
 					baseDates.add(vo.getBaseDate());
@@ -389,6 +391,7 @@ public class OrderRateDAO {
 			
 			ps.setFloat(12, vo.getWeightedProjectRate());
 			ps.setFloat(13, vo.getOrdersExpected());
+			ps.setInt(14, vo.getTotalAllocation());
 			ps.addBatch();
 		}
 		ps.executeBatch();

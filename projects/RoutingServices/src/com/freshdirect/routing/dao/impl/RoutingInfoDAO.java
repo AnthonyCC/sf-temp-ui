@@ -1144,9 +1144,10 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 		
 				private static final String GET_STATIC_ROUTES_BY_AREA = 
 						"SELECT TA.CODE, T.CUTOFF_TIME, R.ORDER_ID, T.START_TIME FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z , TRANSP.ZONE TZ, TRANSP.TRN_AREA TA " +
-						"WHERE R.TIMESLOT_ID = T.ID AND R.STATUS_CODE = '10' AND T.ZONE_ID = Z.ID AND T.BASE_DATE = ? AND Z.ZONE_CODE = TZ.ZONE_CODE " +
+						"WHERE R.TIMESLOT_ID = T.ID AND R.STATUS_CODE in (10, 5) AND T.ZONE_ID = Z.ID AND T.BASE_DATE = ? AND Z.ZONE_CODE = TZ.ZONE_CODE " +
 						"AND TZ.AREA = TA.CODE AND R.IN_UPS IS NULL";
 				
+				@SuppressWarnings("unchecked")
 				public Map<String, Map<RoutingTimeOfDay, List<IRouteModel>>> getStaticRoutesByArea(final Date deliveryDate) throws SQLException {
 					final Map<String, Map<RoutingTimeOfDay, List<IRouteModel>>> result = new HashMap<String, Map<RoutingTimeOfDay, List<IRouteModel>>>();
 					
@@ -1160,12 +1161,13 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 					};
 					
 					jdbcTemplate.query(creator, 
-							new RowCallbackHandler() { 
+							new RowCallbackHandler() {
 						public void processRow(ResultSet rs) throws SQLException {				    	
 							do {
 								String areaCode  = rs.getString("CODE");
 								RoutingTimeOfDay cutoff = new RoutingTimeOfDay(rs.getTimestamp("CUTOFF_TIME"));
 								Date departureTime = rs.getTimestamp("START_TIME");
+								int rsvStatusCode = rs.getInt("STATUS_CODE");
 								
 								IRoutingStopModel stop = new RoutingStopModel();
 								stop.setOrderNumber(rs.getString("ORDER_ID"));
@@ -1177,9 +1179,13 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 									result.get(areaCode).put(cutoff,new ArrayList<IRouteModel>());
 									IRouteModel routeModel = new RouteModel();
 									routeModel.setStops(new TreeSet());
+									routeModel.setAllocatedStops(new TreeSet());
 									result.get(areaCode).get(cutoff).add(routeModel);
 								}
-								result.get(areaCode).get(cutoff).get(0).getStops().add(stop);
+								if(rsvStatusCode == 10) {
+									result.get(areaCode).get(cutoff).get(0).getStops().add(stop);
+								}
+								result.get(areaCode).get(cutoff).get(0).getAllocatedStops().add(stop);
 							} while(rs.next());		        		    	
 						}
 					}

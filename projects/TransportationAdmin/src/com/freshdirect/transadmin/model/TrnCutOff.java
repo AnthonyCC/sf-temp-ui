@@ -15,6 +15,8 @@ public class TrnCutOff implements java.io.Serializable, TrnBaseEntityI {
 	
 	private TimeOfDay cutOffTime;
 	
+	private String shift;
+	
 	public String getDescription() {
 		return description;
 	}
@@ -58,8 +60,16 @@ public class TrnCutOff implements java.io.Serializable, TrnBaseEntityI {
 
 	public void setCutOffTime(TimeOfDay cutOffTime) {
 		this.cutOffTime = cutOffTime;
-	}
+	}	
 	
+	public String getShift() {
+		return shift;
+	}
+
+	public void setShift(String shift) {
+		this.shift = shift;
+	}
+
 	public String getCutOffTimeEx() {
 		if(getCutOffTime() != null) {
 			try {

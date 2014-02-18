@@ -1190,7 +1190,7 @@ public class DispatchPlanUtil {
 		
 		if(dispatchGroupTime != null) {
 			double hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(dispatchGroupTime));
-			return hourOfDay < 14 ? "AM" : "PM";
+			return hourOfDay < 12 ? "AM" : "PM";
 		}
 		return null;
 	}

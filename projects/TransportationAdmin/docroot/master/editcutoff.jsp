@@ -63,6 +63,20 @@
                 </td>
                </tr>
                
+               <tr>
+                  <td>Shift</td>
+                  <td>                  
+                     <form:select path="shift">
+						<form:option value="" label="--Please Select Shift"/>
+						<form:option value="AM" label="AM"/>
+						<form:option value="PM" label="PM"/>
+					</form:select>
+                </td>
+                <td>
+                  &nbsp;<form:errors path="shift" />
+                </td>
+               </tr>
+              
                
               <tr><td colspan="3">&nbsp;</td></tr>
               <tr>

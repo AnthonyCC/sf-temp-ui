@@ -11,6 +11,7 @@ public class DispatchVolumeModel {
 	private double plannedCapacity;
 	private int plantCapacity;
 	private int orderCount;
+	private int allocatedOrderCnt;
 	private int noOftrucks;
 	public RoutingTimeOfDay getDispatchTime() {
 		return dispatchTime;
@@ -54,6 +55,12 @@ public class DispatchVolumeModel {
 	}
 	public void setSnapshotTime(Date snapshotTime) {
 		this.snapshotTime = snapshotTime;
+	}
+	public int getAllocatedOrderCnt() {
+		return allocatedOrderCnt;
+	}
+	public void setAllocatedOrderCnt(int allocatedOrderCnt) {
+		this.allocatedOrderCnt = allocatedOrderCnt;
 	}
 	@Override
 	public String toString() {

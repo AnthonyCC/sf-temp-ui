@@ -241,6 +241,7 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 						dispatchMap.get(plantDispatch).setNoOftrucks(dispatchMap.get(plantDispatch).getNoOftrucks()+1);
 					dispatchMap.get(plantDispatch).setPlantCapacity((plantCapacity!=null && plantCapacity.get(plantDispatch)!=null)?plantCapacity.get(plantDispatch):0);
 					dispatchMap.get(plantDispatch).setOrderCount(dispatchMap.get(plantDispatch).getOrderCount()+route.getStops().size());
+					dispatchMap.get(plantDispatch).setAllocatedOrderCnt(dispatchMap.get(plantDispatch).getAllocatedOrderCnt() + route.getAllocatedStops().size());
 					dispatchMap.get(plantDispatch).setDispatchTime(plantDispatch);
 					dispatchMap.get(plantDispatch).setDispatchDate(deliveryDate);
 					dispatchMap.get(plantDispatch).setSnapshotTime(snapshotTime);
