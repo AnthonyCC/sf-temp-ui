@@ -44,7 +44,7 @@
 {call .webRatingText}
 	{param textRatings:$webRating.textRatings /}
 {/call}
-{if $webRating.compareByLabel}<a href="/rating_ranking.jsp?{$webRating.linkParams}" target="_blank" data-component="ajaxpopup" data-popup-width="560px">{$webRating.compareByLabel}</a>{/if}
+{if $webRating.compareByLabel}<a href="/rating_ranking.jsp?{$webRating.linkParams}">{$webRating.compareByLabel}</a>{/if}
 {if $categoryStorageGuideLabel and $categoryStorageGuideLink}
 <strong>Storage Guide</strong>
 <a href="{$categoryStorageGuideLink}" target="_blank" data-component="ajaxpopup" data-popup-width="560px">{$categoryStorageGuideLabel}</a>
