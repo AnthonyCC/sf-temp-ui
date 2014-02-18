@@ -16,8 +16,6 @@
  * @param productAboutMedia
  * @param productDescriptionNote
  * @param productDescription
- * @param frozenSeafood
- * @param frozenBakery
  * @param partiallyFrozenMedia
  */
 {template .description}
@@ -32,12 +30,6 @@
 {/call}
 {call .heating}
 	{param heatingInstructions:$heatingInstructions /}
-{/call}
-{call .frozenSeafood}
-	{param frozenSeafood:$frozenSeafood /}
-{/call}
-{call .frozenBakery}
-	{param frozenBakery:$frozenBakery /}
 {/call}
 {call .frozenMedia}
 	{param frozenMedia:$partiallyFrozenMedia /}
@@ -120,6 +112,8 @@
 {/template}
 
 /**
+ * deprecated due to APPBUG-1705
+ * 
  * @param frozenSeafood
  */
 {template .frozenSeafood}
@@ -130,6 +124,8 @@
 {/template}
 
 /**
+ * deprecated due to APPBUG-1705
+ * 
  * @param frozenBakery
  */
 {template .frozenBakery}
@@ -143,7 +139,7 @@
  * @param frozenMedia
  */
 {template .frozenMedia autoescape="false"}
-{if $frozenMedia}{$frozenMedia}{/if}
+{if $frozenMedia}<div class="pdp-accordion-description-media">{$frozenMedia|noAutoescape}</div>{/if}
 {/template}
 
 /**

@@ -269,6 +269,19 @@ public class ProductExtraDataPopulator {
 		}
 		
 		// partially frozen / baked
+		Html frozenMedia = productNode.getPartallyFrozen();
+		if (frozenMedia != null) {
+			try {
+				data.setPartiallyFrozenMedia(fetchMedia(frozenMedia.getPath(), user, false));
+				data.setFrozen(true);
+			} catch (IOException e) {
+				LOG.error("Failed to fetch partially frozen media " + frozenMedia.getPath(), e);
+			} catch (TemplateException e) {
+				LOG.error("Failed to fetch partially frozen media " + frozenMedia.getPath(), e);
+			}
+		}
+		
+		// Deprecated due to APPBUG-1705, preserved because you never know ...
 		if (productNode.isHasPartiallyFrozen()) {
 			if ("SEAFOOD".equalsIgnoreCase(deptFullName)) {
 				// seafood department
@@ -278,16 +291,6 @@ public class ProductExtraDataPopulator {
 				data.setFrozenBakery(true);
 			}
 			
-			Html media = productNode.getPartallyFrozen();
-			if (media != null) {
-				try {
-					data.setPartiallyFrozenMedia(fetchMedia(media.getPath(), user, false));
-				} catch (IOException e) {
-					LOG.error("Failed to fetch partially frozen media " + media.getPath(), e);
-				} catch (TemplateException e) {
-					LOG.error("Failed to fetch partially frozen media " + media.getPath(), e);
-				}
-			}
 		}
 
 		// origin (or Country of Origin Label, a.k.a. COOL)

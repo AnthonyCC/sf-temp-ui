@@ -45,7 +45,7 @@
 	{param textRatings:$webRating.textRatings /}
 {/call}
 {if $categoryStorageGuide}
-	{$categoryStorageGuide}
+	<div class="pdp-accordion-description-media">{$categoryStorageGuide|noAutoescape}</div>
 {/if}
 {if $usageList and length($usageList) > 0}
 <strong>Usage List</strong>

@@ -102,6 +102,11 @@ public class ProductExtraData implements Serializable {
 	 * Mutually exclusive with {@link ProductExtraData#isFrozenSeafood}
 	 */
 	protected boolean isFrozenBakery;
+
+	/**
+	 * New generic attribute for anything with a frozen media due to APPBUG-1705
+	 */
+	protected boolean isFrozen;
 	
 	protected String partiallyFrozenMedia;
 	
@@ -802,5 +807,15 @@ public class ProductExtraData implements Serializable {
 	
 	public void setMsgEarliestAvailability(String msgEarliestAvailability) {
 		this.msgEarliestAvailability = msgEarliestAvailability;
+	}
+
+	
+	public boolean isFrozen() {
+		return isFrozen;
+	}
+
+	
+	public void setFrozen( boolean isFrozen ) {
+		this.isFrozen = isFrozen;
 	}
 }

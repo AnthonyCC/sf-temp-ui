@@ -117,6 +117,10 @@
 	margin:0;
 }
 
+.pdp-accordion-description-media {
+	margin-top:5px;
+}
+
 .pdp-accordion-description-frozen {
 	background:url(/media_stat/images/template/bakery/snowflake_grey.gif) no-repeat top left;
 	padding-left:25px;
