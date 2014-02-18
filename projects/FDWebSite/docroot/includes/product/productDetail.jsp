@@ -50,9 +50,9 @@ FreshDirect.pdp.annotations=<fd:ToJSON object="${annotations}" noHeaders="true"/
 			<%@ include file="/includes/product/i_product_soc_buttons.jspf" %>
 		    <ul class="pdp-accordion">
 		        <soy:render template="pdp.accordion.description" data="${productExtraPotato}"/>
+		        <soy:render template="pdp.nutrition.panel" data="${productExtraPotato}"/>
 		        <soy:render template="pdp.accordion.customerReviews" data="${productPotato}"/>
 		        <soy:render template="pdp.accordion.allergens" data="${productExtraPotato}"/>
-		        <soy:render template="pdp.nutrition.panel" data="${productExtraPotato}"/>
 		        <soy:render template="pdp.accordion.ingredients" data="${productExtraPotato}"/>
 		        <soy:render template="pdp.accordion.cookingAndStorage" data="${productExtraPotato}"/>
 		        <soy:render template="pdp.accordion.servingSuggestions" data="${productExtraPotato}"/>
