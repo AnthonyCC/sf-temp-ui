@@ -441,19 +441,18 @@ span.cssbutton.annotation:hover {
 	background:#693;
 	color:white;
 	font-size:14px;
-	padding:2px 20px;
+	padding:0 40px 0 10px;
 	border-bottom-right-radius:10px;
 	font-weight:normal;
 	text-shadow:none;
-	padding-left:36px;
 }
 
-#evenBetterPopup .pdp-evenbetter-learnmore:before {
+#evenBetterPopup .pdp-evenbetter-learnmore:after {
 	background:url(/media_stat/pdp/icons.png) no-repeat;
 	position:absolute;
 	content:' ' ;
 	top:0;
-	left:0;
+	right:8px;
 	width:28px;
 	height:24px;
 	background-position:-122px -202px; 
