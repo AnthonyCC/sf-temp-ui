@@ -4,8 +4,10 @@
  * @param price
  */
 {template .formatDecimalPrice}
-	{if $price-floor($price) == 0}
+	{if $price - floor($price) == 0}
 		{floor($price)}.00
+	{elseif $price * 10 - floor($price * 10) == 0}
+		{$price}0
 	{else}
 		${$price}
 	{/if}
@@ -18,13 +20,13 @@
  * @param? aboutPriceText aboutPriceText
  */
 {template .price autoescape="false"}
-			{if $wasPrice}
-				  <span class="save-price">{call common.formatDecimalPrice}{param price:$price /}{/call}/{$scaleUnit}</span> <s>(${$wasPrice})</s>
-			{else}
-				{call common.formatDecimalPrice}{param price:$price /}{/call}/{$scaleUnit}
-			{/if}
-			{if $aboutPriceText}
-				a<span class="about-price">{$aboutPriceText}</span>
-			{/if}
+	{if $wasPrice}
+		<span class="save-price">{call common.formatDecimalPrice}{param price:$price /}{/call}/{$scaleUnit}</span> <s>(${$wasPrice})</s>
+	{else}
+		{call common.formatDecimalPrice}{param price:$price /}{/call}/{$scaleUnit}
+	{/if}
+	{if $aboutPriceText}
+		<span class="about-price">{$aboutPriceText}</span>
+	{/if}
 {/template}
 
