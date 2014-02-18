@@ -6,8 +6,7 @@
  * @param howToCookItList
  * @param freshTips
  * @param webRating
- * @param categoryStorageGuideLabel
- * @param categoryStorageGuideLink
+ * @param categoryStorageGuide
  * @param usageList
  */
 {template .cookingAndStorage}
@@ -16,7 +15,7 @@
 	$freshTips or 
 	($webRating and $webRating.ratings and length($webRating.ratings)>0) or
 	($webRating and $webRating.textRatings and length($webRating.textRatings)>0) or
-	($categoryStorageGuideLabel and $categoryStorageGuideLink) or
+	($categoryStorageGuide) or
 	($usageList and length($usageList) > 0)
 }
 <li class="pdp-accordion-cookingandstorage pdp-accordion-item"><input type="checkbox" id="pdp-cookingandstorage"><label for="pdp-cookingandstorage"><span class="pdp-accordion-item-carrot"></span>Cooking & Storage</label><div>
@@ -45,9 +44,8 @@
 {call .webRatingText}
 	{param textRatings:$webRating.textRatings /}
 {/call}
-{if $categoryStorageGuideLabel and $categoryStorageGuideLink}
-<strong>Storage Guide</strong>
-<a href="{$categoryStorageGuideLink}" target="_blank" data-component="ajaxpopup" data-popup-width="560px">{$categoryStorageGuideLabel}</a>
+{if $categoryStorageGuide}
+	{$categoryStorageGuide}
 {/if}
 {if $usageList and length($usageList) > 0}
 <strong>Usage List</strong>
