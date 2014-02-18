@@ -81,6 +81,9 @@ span.cssbutton.annotation:hover {
 
 .pdp .pdp-info {
 	overflow:hidden;
+  font-size: 13px;
+  line-height: 16px;
+  color: #333;
 }
 
 .pdp .pdp-price .save-price,
