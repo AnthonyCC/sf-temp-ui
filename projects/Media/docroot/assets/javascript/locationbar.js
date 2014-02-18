@@ -178,80 +178,82 @@
 		
 	}
 
-    $('#login_cont_formContentForm_signIn').click(function(event){
-		event.preventDefault();
-    	$('#login_cont_formContentForm').submit();
-    });
-    
-    $('#login_cont_formContentForm').submit(function(event) {
-		event.preventDefault();
-		
-    	var form = $(this);
-    	if (!form.data('submitting')) {
-			$('#login_cont_formContent .errorMsg').hide();
-    		form.data('submitting', true);
-			$('#login_cont_formContentForm_loggingIn').show();
-			$('#login_cont_formContentForm_signIn').toggleClass('imgButtonOrange imgButtonWhite');
+	$(document).ready(function() {
+	    $('#login_cont_formContentForm_signIn').click(function(event){
+			event.preventDefault();
+	    	$('#login_cont_formContentForm').submit();
+	    });
+	    
+	    $('#login_cont_formContentForm').submit(function(event) {
+			event.preventDefault();
 			
-    		var formData = {};
-    		$(form.serializeArray()).each(function () { formData[this.name] = this.value; });
-    		var sPage = $jq.QueryString["successPage"];
-    		if (sPage != null && typeof sPage !== 'undefined') {
-        		formData.successPage = sPage;
-    		} else {
-    			formData.successPage = window.location.pathname+window.location.search;
-    		}
-    		formData.successPage = encodeURIComponent(formData.successPage);
-    		$jq.post('/api/login/', "data="+JSON.stringify(formData), function(data) {
-    			if (data.success) {
-    				if (data.hasOwnProperty('successPage') && data.successPage != '' && data.successPage != null) {
-    					window.location = data.successPage;
-    				} else {
-    					//refresh
-    					window.location = window.location;
-    				}
-    				
-                   	$("#locabar_loginButton").toggleClass("loginButtonTab");
-                   	$('#login_cont_formContent').toggle();
-    			} else {
-    				$('#login_cont_formContent .errorMsg').show();
-    			}
-				$('#login_cont_formContentForm_loggingIn').hide();
-        		form.data('submitting', false);
-				$('#login_cont_formContentForm_signIn').toggleClass('imgButtonWhite imgButtonOrange');
-    		}, "json");
-    	}
-    });
-    
-    $('#login_cont_formContent input').on('focus blur', function(event) {
-    	var elem = $(this);
-    	var defText = elem.data('deftext');
-    	if (event.type == 'focus') {
-    		if (elem.hasClass('ccc') && elem.val() == defText) {
-    			elem.val('');
-    			elem.toggleClass('ccc');
-    		}
-			if (elem.attr('id') == 'login_cont_formContent_password') {
-				changeType(elem, 'password');
-			}
-    	} else if (event.type == 'blur') {
-    		if (elem.val() == '') {
-    			elem.val(defText);
-    			elem.toggleClass('ccc');
-    			if (elem.attr('id') == 'login_cont_formContent_password') {
-    				changeType(elem, 'text');
-    			}
-    		}
-    	}
-    });
-    
-	$('#locabar_loginButton').click(function(event) {
-		alignLoginDropbox();
-		
-        //first
-       	$("#locabar_loginButton").toggleClass("loginButtonTab");
-       	$('#login_cont_formContent').toggle();
-	});	
+	    	var form = $(this);
+	    	if (!form.data('submitting')) {
+				$('#login_cont_formContent .errorMsg').hide();
+	    		form.data('submitting', true);
+				$('#login_cont_formContentForm_loggingIn').show();
+				$('#login_cont_formContentForm_signIn').toggleClass('imgButtonOrange imgButtonWhite');
+				
+	    		var formData = {};
+	    		$(form.serializeArray()).each(function () { formData[this.name] = this.value; });
+	    		var sPage = $jq.QueryString["successPage"];
+	    		if (sPage != null && typeof sPage !== 'undefined') {
+	        		formData.successPage = sPage;
+	    		} else {
+	    			formData.successPage = window.location.pathname+window.location.search;
+	    		}
+	    		formData.successPage = encodeURIComponent(formData.successPage);
+	    		$jq.post('/api/login/', "data="+JSON.stringify(formData), function(data) {
+	    			if (data.success) {
+	    				if (data.hasOwnProperty('successPage') && data.successPage != '' && data.successPage != null) {
+	    					window.location = data.successPage;
+	    				} else {
+	    					//refresh
+	    					window.location = window.location;
+	    				}
+	    				
+	                   	$("#locabar_loginButton").toggleClass("loginButtonTab");
+	                   	$('#login_cont_formContent').toggle();
+	    			} else {
+	    				$('#login_cont_formContent .errorMsg').show();
+	    			}
+					$('#login_cont_formContentForm_loggingIn').hide();
+	        		form.data('submitting', false);
+					$('#login_cont_formContentForm_signIn').toggleClass('imgButtonWhite imgButtonOrange');
+	    		}, "json");
+	    	}
+	    });
+	    
+	    $('#login_cont_formContent input').on('focus blur', function(event) {
+	    	var elem = $(this);
+	    	var defText = elem.data('deftext');
+	    	if (event.type == 'focus') {
+	    		if (elem.hasClass('ccc') && elem.val() == defText) {
+	    			elem.val('');
+	    			elem.toggleClass('ccc');
+	    		}
+				if (elem.attr('id') == 'login_cont_formContent_password') {
+					changeType(elem, 'password');
+				}
+	    	} else if (event.type == 'blur') {
+	    		if (elem.val() == '') {
+	    			elem.val(defText);
+	    			elem.toggleClass('ccc');
+	    			if (elem.attr('id') == 'login_cont_formContent_password') {
+	    				changeType(elem, 'text');
+	    			}
+	    		}
+	    	}
+	    });
+	    
+		$('#locabar_loginButton').click(function(event) {
+			alignLoginDropbox();
+			
+	        //first
+	       	$("#locabar_loginButton").toggleClass("loginButtonTab");
+	       	$('#login_cont_formContent').toggle();
+		});
+	});
 	
 }(jQuery));
 
