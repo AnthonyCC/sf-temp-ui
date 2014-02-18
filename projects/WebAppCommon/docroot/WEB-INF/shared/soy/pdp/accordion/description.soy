@@ -103,7 +103,9 @@
 		</ul>
 	{/if}
 	{if $kosherType and $kosherSymbol}
-		<div class="pdp-accordion-description-kosher"><img src="{$kosherIconPath}"/> {$kosherType}</div>
+		<div class="pdp-accordion-description-kosher">
+      <a href="javascript:pop('/shared/popup.jsp?attrib=KOSHER&spec=k&tmpl=small', 400, 585);"><img src="{$kosherIconPath}"/></a> {$kosherType}
+    </div>
 	{/if}
 {/template}
 
