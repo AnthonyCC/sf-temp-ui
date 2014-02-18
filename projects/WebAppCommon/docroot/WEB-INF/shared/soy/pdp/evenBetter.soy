@@ -33,6 +33,8 @@
  * @param sustainabilityRating
  * @param wineRating
  * @param expertRating
+ * @param? customerRating
+ * @param? customerRatingReviewCount
  * @param bazaarVoice
  * @param savingString
  * @param dealInfo
@@ -66,7 +68,10 @@
 		<h3 data-evenbetteritem-trigger><a href="/product.jsp?productId={$productId}&catId={$catId}"><b>{$brandName}</b> {$productNameNoBrand}</a></h3><i>{$configDescr}</i>
 		<div class="pdp-evenbetter-price">{call common.price data="all" /}</div>
 		<div class="pdp-evenbetter-savestring">{call .dealinfo data="all" /}{call .savestring data="all" /}</div>
-		<div class="pdp-evenbetter-ratings">{call pdp.ratings data="all" /}</div>
+		<div class="pdp-evenbetter-ratings">
+      {call pdp.ratings data="all" /}
+      {call common.rating.customer}{param ratingValue:$customerRating /}{param reviewCount:$customerRatingReviewCount /}{/call}
+    </div>
 
     {if $coupon}{call common.ecoupon}{param coupon:$coupon /}{param couponDisplay:$couponDisplay /}{param couponClipped:$couponClipped /}{param couponStatusText:$couponStatusText /}{/call}{/if}
 		
