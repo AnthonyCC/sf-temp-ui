@@ -359,10 +359,6 @@ span.cssbutton.annotation:hover {
 	display:inline-block;
 }
 
-.pdp-evenbetter-atcbutton {
-  width: 75px;
-}
-
 .pdp-evenbetter-atcbutton .atc-info .incart-message {
   white-space: nowrap;
 }
@@ -373,6 +369,19 @@ span.cssbutton.annotation:hover {
 	vertical-align:text-top;
 }
 
+.pdp-evenbetter-atcbutton {
+  max-width: 135px;
+}
+
+.pdp-evenbetter-atcbutton button {
+  vertical-align: top;
+}
+
+.pdp-evenbetter-atcbutton button::-moz-focus-inner {
+  padding: 0;
+  margin: -1px;
+}
+
 .pdp-evenbetter-quantity {
 	width:96px;
 }
@@ -381,10 +390,15 @@ span.cssbutton.annotation:hover {
 .pdp-evenbetter-atcbutton .atc-info{
 	float: right;
 	width:100%;
-	overflow:hidden;
+	overflow:visible;
 	text-align:center;
-  	font-size:10px;
+  font-size:10px;
 	height:auto;
+}
+
+.pdp-evenbetter-atcbutton .atc-info{
+  float: left;
+  max-width: 75px;
 }
 
 #evenBetterPopup {
