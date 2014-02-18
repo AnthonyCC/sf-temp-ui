@@ -23,6 +23,8 @@
 /**
  * @param productImage
  * @param price
+ * @param badge
+ * @param deal
  * @param scaleUnit
  * @param availMatPrices
  * @param soldBySalesUnit
@@ -51,7 +53,10 @@
 {let $atcItemId: 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) /}
 <div class="pdp-evenbetter-item" data-component="evenBetterItem" data-product-id="{$productId}" data-cat-id="{$catId}">
 	<div class="pdp-evenbetter-image">
-		<img src="{$productImage}" data-evenbetteritem-trigger>
+		<div class="portrait-item-burst_wrapper">
+			<img src="{$productImage}" data-evenbetteritem-trigger class="portrait-item-productimage">
+			{call common.bursts}{param badge:$badge /}{param deal:$deal /}{/call}
+		</div>
 	</div>
 	<div class="pdp-evenbetter-productinfo">
 		<h3 data-evenbetteritem-trigger><a href="/product.jsp?productId={$productId}&catId={$catId}"><b>{$brandName}</b> {$productNameNoBrand}</a></h3><i>{$configDescr}</i>
