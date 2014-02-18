@@ -84,7 +84,7 @@ public class ProductImageDataPopulator {
 			addImage( productNode.getDescriptiveImage(), imageList );
 			
 			// PROD_IMAGE (Secondary / Category Image)
-			addImage( productNode.getProdImage(), imageList );
+			// addImage( productNode.getProdImage(), imageList );
 			
 			// PROD_IMAGE_PACKAGE
 			addImage( productNode.getPackageImage(), imageList );
