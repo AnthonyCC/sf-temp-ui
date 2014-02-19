@@ -88,7 +88,7 @@ FreshDirect.pdp.annotations=<fd:ToJSON object="${annotations}" noHeaders="true"/
 				<soy:render template="pdp.ecoupon" data="${productPotato}" />
 				<div class="pdp-atc">
 					<div>
-						<soy:render template="common.skuControlQuantity" data="${productPotato}" /><div class="pdp-atc-button-wrapper"><button class="cssbutton orange medium" data-component="ATCButton">add to cart</button><soy:render template="pdp.atcInCart" data="${productPotato}"/></div><button class="addtolist cssbutton purple medium" data-component="addToListButton">add to list</button>
+						<soy:render template="common.skuControlQuantity" data="${productPotato}" /><div class="pdp-atc-button-wrapper"><button class="cssbutton orange medium" data-component="ATCButton">add to cart</button><soy:render template="pdp.atcInCart" data="${productPotato}"/></div><button id="pdp-atc-addtolist" class="addtolist cssbutton purple medium" data-component="addToListButton">add to list</button>
 					</div>
 					<div>
 						<soy:render template="pdp.subtotal" data="${productPotato}"/>
