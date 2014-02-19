@@ -10,6 +10,7 @@
  * @param msgDayOfWeek
  * @param msgLeadTimeHeader
  * @param msgLeadTime
+ * @param msgEarliestAvailability
  * @param? unavailability
  */
 {template .availability}
@@ -22,7 +23,8 @@
 	$msgDayOfWeekHeader or
 	$msgDayOfWeek or
 	$msgLeadTimeHeader or
-	$msgLeadTime
+	$msgLeadTime or
+	$msgEarliestAvailability
 }
 <div class="availability-dialog">
 <h1>Availability Messaging</h1>
@@ -48,6 +50,8 @@
 /*
 {if $msgDeliveryNote}{call .availabilityText}{param text:$msgDeliveryNote /}{/call}{/if}
 */
+
+{if $msgEarliestAvailability}<p>Earliest Available {$msgEarliestAvailability}</p>{/if}
 
 </div>
 {/if}
@@ -87,6 +91,7 @@
 	{param msgDayOfWeek:false /}
 	{param msgLeadTimeHeader:false /}
 	{param msgLeadTime:false /}
+	{param msgEarliestAvailability: false /}
 {/call}
 {/template}
 
