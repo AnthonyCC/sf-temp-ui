@@ -138,7 +138,7 @@ if ( productNode.isHidden() ) {
 		</jsp:include>
 	</tmpl:put>
 
-	<% 
+	<% if ( productExtraPotato != null ) {
 		// dynamic css generator for different kinds of nutrition panels
 		Map nutritionPanel = (Map)productExtraPotato.get("nutritionPanel");
 		String nutritionKind = null;
@@ -155,6 +155,6 @@ if ( productNode.isHidden() ) {
 			</tmpl:put>
 			<%
 		}
-	%>
+	} %>
 
 </tmpl:insert>
