@@ -78,6 +78,7 @@ FreshDirect.pdp.annotations=<fd:ToJSON object="${annotations}" noHeaders="true"/
 				<soy:render template="pdp.badges" data="${productExtraPotato}" />
 				<soy:render template="pdp.heatRating" data="${productPotato}" />
 			</div>
+			<hr/>
 			<div class="pdp-productconfig" data-component="product" data-cmeventsource="pdp_main">
 				<soy:render template="pdp.productDataMin" data="${productPotato}" />
 				<div class="pdp-atcdata">
