@@ -143,6 +143,7 @@ span.cssbutton.annotation:hover {
 	list-style-type:none;
 	margin:0;
 	padding:0;
+	margin-top:20px;
 }
 
 .pdp .ratings li:first-child {
@@ -202,7 +203,8 @@ span.cssbutton.annotation:hover {
 .pdp .scale-deal {
 	font-family:Verdana,sans-serif;
 	font-weight:bold;
-  line-height: 16px;
+    line-height: 16px;
+    margin:20px 0px;
 }
 .pdp .scale-deal-title {
 	font-size:11px;
