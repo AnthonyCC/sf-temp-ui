@@ -25,7 +25,7 @@ var FreshDirect = FreshDirect || {};
     stayOnClick: true
   };
 
-  this.popup = new fd.modules.common.PopupContent(
+  var popup = new fd.modules.common.PopupContent(
     $popup,
     $trigger,
     popupConfig
