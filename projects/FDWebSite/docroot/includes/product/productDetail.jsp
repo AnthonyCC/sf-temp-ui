@@ -102,7 +102,7 @@ FreshDirect.pdp.annotations=<fd:ToJSON object="${annotations}" noHeaders="true"/
 <c:if test="${not productPotato.available }">
 	<soy:render template="pdp.unavailability" data="${productExtraPotato}"/>
 </c:if>		    
-			<soy:render template="pdp.productRequest" data="${productExtraPotato}" />
+			<soy:render template="pdp.productRequest"/>
 			
 		</div>
 	</div>

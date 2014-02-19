@@ -61,14 +61,16 @@
  * @param productDescription
  */
 {template .descriptionText}
-<div class="pdp-accordion-description-description">{$productDescription|noAutoescape}
-</div>
+{if $productDescription}
+	<div class="pdp-accordion-description-description">{$productDescription|noAutoescape}
+	</div>
+{/if}
 {if $productDescriptionNote}
-<div class="pdp-accordion-description-note">{$productDescriptionNote|noAutoescape}</div>
+	<div class="pdp-accordion-description-note">{$productDescriptionNote|noAutoescape}</div>
 {/if}
 {if $productAboutMedia}
-<strong>More About This Product</strong>
-<div class="pdp-accordion-description-about">{$productAboutMedia|noAutoescape}</div>
+	<strong>More About This Product</strong>
+	<div class="pdp-accordion-description-about">{$productAboutMedia|noAutoescape}</div>
 {/if}
 {/template}
 
