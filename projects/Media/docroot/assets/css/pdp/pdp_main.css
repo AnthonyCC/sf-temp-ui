@@ -86,6 +86,10 @@ span.cssbutton.annotation:hover {
   color: #333;
 }
 
+.pdp-info .customerrating{
+    display:none
+}
+
 .pdp .pdp-price .save-price,
 .pdp .pdp-price {
 	font-size:16px;
