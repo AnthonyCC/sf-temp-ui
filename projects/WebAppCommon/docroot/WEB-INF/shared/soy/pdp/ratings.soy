@@ -16,7 +16,6 @@
 {if $expertRating}<li>{call common.rating.expert}{param ratingValue:$expertRating /}{/call}</li>{/if}
 {if $bazaarVoice}<li><label for="pdp-customerReview" id="BVRRSummaryContainer"></label></li>{/if}
 {if $wineRating}<li>{call common.rating.wine}{param ratingValue:$wineRating /}{/call}</li>{/if}
-{if $customerRating}<li>{call common.rating.customer}{param ratingValue:$customerRating /}{param reviewCount:$customerRatingReviewCount /}{/call}</li>{/if}
 </ul>
 {/template}
 
