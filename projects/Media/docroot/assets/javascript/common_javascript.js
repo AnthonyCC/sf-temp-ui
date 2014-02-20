@@ -3,13 +3,17 @@ var css="";
 
 window.originalClose = window.close;
 
-window.close = function () {
+// works in IE too
+window.reallyClose = function () {
   window.originalClose();
 
   try {
     window.parent.FreshDirect.components.ifrPopup.close();
   } catch (e) {}
 };
+
+// works in other browsers
+window.close = window.reallyClose;
 
 function soon() { alert("Coming soon"); }
 
