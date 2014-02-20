@@ -602,6 +602,7 @@ public class RoutingDataDecoder {
 			result.setOriginId(route.getDepotLocationId());
 			result.setRouteId(Integer.toString(route.getIdentity().getRouteId()));
 			result.setStops(new TreeSet());
+			result.setAllocatedStops(new TreeSet());
 			IRoutingStopModel _stop = null;
 			IDeliveryModel deliveryInfo = null;
 			result.setWaveId(""+route.getWaveId());
