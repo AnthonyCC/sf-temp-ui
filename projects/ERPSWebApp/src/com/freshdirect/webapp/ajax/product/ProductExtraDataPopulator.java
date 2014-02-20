@@ -538,8 +538,6 @@ public class ProductExtraDataPopulator {
 			// media
 			Html _fdDefGrade = productNode.getFddefGrade();
 			Html _fdDefSource = productNode.getFddefSource();
-			Html _fdDefFrenching = productNode.getFddefFrenching();
-			Html _fdDefRipeness = productNode.getFddefRipeness();
 			
 			TitledMedia tm = null;
 			for (DomainValue dv : defaultSku.getVariationMatrix()) {
@@ -550,10 +548,6 @@ public class ProductExtraDataPopulator {
 					tm = (TitledMedia)_fdDefGrade;
 				} else if ("source".equalsIgnoreCase(dName)) {
 					tm = (TitledMedia)_fdDefSource;
-				} else if ("frenching".equalsIgnoreCase(dName)) {
-					tm = (TitledMedia)_fdDefFrenching;
-				} else if ("ripeness".equalsIgnoreCase(dName)) {
-					tm = (TitledMedia)_fdDefRipeness;
 				} else {
 					continue;
 				}
