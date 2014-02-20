@@ -8,6 +8,7 @@
 
 .pdp-atc .qtyinput {
   width: 105px;
+  height:30px;
 }
 
 .pdp-atc .qtyinput input.qty {
