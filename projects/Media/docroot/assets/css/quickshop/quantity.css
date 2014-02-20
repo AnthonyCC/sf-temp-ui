@@ -11,7 +11,10 @@
 }
 
 .pdp-atc .qtyinput input.qty {
-  width: 3em;
+   width:3em;
+   font-size:16px;	 
+   color: #333;	 
+   font-family: Verdana, Arial, sans-serif;
 }
 
 .itemlist-item-salesunit .subtotal,

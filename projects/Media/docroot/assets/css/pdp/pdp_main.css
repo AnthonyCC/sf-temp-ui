@@ -294,6 +294,7 @@ span.cssbutton.annotation:hover {
 	display:inline-block;
 	position:relative;
 	margin-bottom:16px;
+	margin-left:20px;
 }
 
 .pdp-atc-button-wrapper .atc-info {
