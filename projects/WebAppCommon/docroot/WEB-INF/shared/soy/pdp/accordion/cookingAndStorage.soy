@@ -50,7 +50,7 @@
 {if $usageList and length($usageList) > 0}
 <strong>Usage List</strong>
 {foreach $ulitem in $usageList}
-{$ulitem}{if not isLast($ulitem)}, {/if}
+{$ulitem|noAutoescape}{if not isLast($ulitem)}, {/if}
 {/foreach}
 {/if}
 </div>
