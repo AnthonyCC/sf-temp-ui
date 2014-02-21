@@ -635,13 +635,13 @@ span.cssbutton.annotation:hover {
 	text-align:left;
 }
 
-.pdp .skucontrol-variations-item *:first-child,
-#evenBetterPopup .skucontrol-variations-item *:first-child {
+.pdp .skucontrol-variations-item > *:first-child,
+#evenBetterPopup .skucontrol-variations-item > *:first-child {
 	margin-top:10px;
 }
 
-.pdp .skucontrol-variations-item *:last-child,
-#evenBetterPopup .skucontrol-variations-item *:last-child {
+.pdp .skucontrol-variations-item > *:last-child,
+#evenBetterPopup .skucontrol-variations-item > *:last-child {
 	margin-bottom:10px;
 }
 
