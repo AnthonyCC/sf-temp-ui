@@ -27,7 +27,7 @@
 	$msgEarliestAvailability
 }
 <div class="availability-dialog">
-<h1>Availability Messaging</h1>
+<h1>Availability Note</h1>
 {if $unavailability}{call .availabilityText}{param text:'We\'re sorry! This item is temporarily unavailable.' /}{/call}{/if}
 {if $msgCutoffHeader}{call .availabilityWithHeader}
 {param header:$msgCutoffHeader /}
