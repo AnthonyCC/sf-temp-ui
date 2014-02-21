@@ -33,7 +33,7 @@ String recTable = product.getRecommendTable().getPath();
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="520">
 <TR VALIGN="TOP">
 	<TD WIDTH="520">
-		<A HREF="javascript:window.close();"><img src="/media_stat/images/layout/pop_up_header_lg.gif" border="0" alt="freshdirect    (close window)"></A><BR>
+		<A HREF="javascript:window.reallyClose();"><img src="/media_stat/images/layout/pop_up_header_lg.gif" border="0" alt="freshdirect    (close window)"></A><BR>
 		<FONT CLASS="space10pix"><BR></FONT>
 	</TD>
 </TR>
@@ -62,7 +62,7 @@ String recTable = product.getRecommendTable().getPath();
 <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="520">
 	<TR VALIGN="TOP">
 		<TD WIDTH="260"><A HREF="#top">Back to Top</A></TD>
-		<TD WIDTH="260" ALIGN="RIGHT"><A HREF="javascript:window.close();">close window</A>&nbsp;&nbsp;</TD>
+		<TD WIDTH="260" ALIGN="RIGHT"><A HREF="javascript:window.reallyClose();">close window</A>&nbsp;&nbsp;</TD>
 	</TR>
 </TABLE>
 </CENTER>

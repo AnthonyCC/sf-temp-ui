@@ -41,7 +41,7 @@ ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);%
 				<%@ include file="/includes/your_account/reminder.jspf" %>
 			</td>
 		<tr>
-			<td colspan="2" align="center"><br><input type="image" src="/media_stat/images/template/reminder/cancel.gif" width="63" height="19" onClick="javascript:window.close()"> <input type="image" src="/media_stat/images/template/reminder/submit.gif" width="60" height="19" onClick="javascript:document.reminder_signup.submit()"></td>
+			<td colspan="2" align="center"><br><input type="image" src="/media_stat/images/template/reminder/cancel.gif" width="63" height="19" onClick="javascript:window.reallyClose()"> <input type="image" src="/media_stat/images/template/reminder/submit.gif" width="60" height="19" onClick="javascript:document.reminder_signup.submit()"></td>
 		</tr>
 		</form>
 	</table>

@@ -15,7 +15,7 @@
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <table border="0" cellpadding="0" cellspacing="0" width="330">
 <tr valign="top">
-	<td><a href="javascript:try { window.close(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}"><img src="/media_stat/images/template/pop_up_header_sm.gif" alt="FreshDirect" width="330" height="43" border="0"></a><br>
+	<td><a href="javascript:try { window.reallyClose(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}"><img src="/media_stat/images/template/pop_up_header_sm.gif" alt="FreshDirect" width="330" height="43" border="0"></a><br>
 	<font class="space2pix"><br></font></td>
 </tr>
 <tr>

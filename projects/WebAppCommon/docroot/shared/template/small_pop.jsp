@@ -18,7 +18,7 @@
 <a name="top"></a>
 <table border="0" cellpadding="0" cellspacing="0" width="330">
 <tr>
-<td colspan="2"><a href="javascript:try { window.close(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}"><img src="/media_stat/images/layout/pop_up_header_sm.gif" width="400" height="43" border="0" alt="FreshDirect     (close window)"></a></td>
+<td colspan="2"><a href="javascript:try { window.reallyClose(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}"><img src="/media_stat/images/layout/pop_up_header_sm.gif" width="400" height="43" border="0" alt="FreshDirect     (close window)"></a></td>
 </tr>
 <tr>
 <td><img src="/media_stat/images/layout/clear.gif" width="165" height="8"></td>
@@ -34,7 +34,7 @@
 </tr>
 <tr>
 <td><a href="#top">Back to top</a></td>
-<td align="right"><a href="javascript:try { window.close(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}">Close window</a></td>
+<td align="right"><a href="javascript:try { window.reallyClose(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}">Close window</a></td>
 </tr>
 </table>
 </center>

@@ -119,7 +119,7 @@
     	<tr>
 		<td></td>
 		<td colspan="3">
-			<INPUT TYPE="button" VALUE="CANCEL" onClick="window.close()">
+			<INPUT TYPE="button" VALUE="CANCEL" onClick="window.reallyClose()">
 		</td>        
 	</tr>
     

@@ -254,7 +254,7 @@ Our Customer Service Agents will be available to assist you from Friday to Sunda
 		</td>
 		<td width="150" align="RIGHT">			
 			&nbsp;
-			<p><a href="javascript:window.close();">close window</a>
+			<p><a href="javascript:window.reallyClose();">close window</a>
 		</td>
 	</tr>
 </table>

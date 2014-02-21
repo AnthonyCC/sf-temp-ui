@@ -37,7 +37,7 @@
 						//-->
 					</SCRIPT>
 
-				<div align="center"><a href="javascript:linkTo('<%=addCheckPage%>'); window.close();" target="_parent"><img src="/media_stat/images/buttons/sign_up_now.gif" width="104" height="17" border="0" alt="SIGN UP NOW"></a></div>
+				<div align="center"><a href="javascript:linkTo('<%=addCheckPage%>'); window.reallyClose();" target="_parent"><img src="/media_stat/images/buttons/sign_up_now.gif" width="104" height="17" border="0" alt="SIGN UP NOW"></a></div>
 				<br />
 				<div align="center"><hr style="width: 75%;" /><br /></div>
 				<div class="text11"><strong>Please note:</strong> To pay for your order from a banking account you must have received and paid for one order and there must be a valid credit card attached to your FreshDirect customer account. In the event that sufficient funds are not available in your banking account, FreshDirect will charge the full amount of the order to your credit card. There is a $25 fee for insufficient funds. FreshDirect cannot accept paper checks. FreshDirect reserves the right to withdraw the online check payment option from any account for any reason at any time. For details, see full terms of use in the <a href="javascript:popup('/registration/user_agreement.jsp?show=terms&backTo=/pay_by_check.jsp','large')">FreshDirect Customer Agreement</a>.</div>

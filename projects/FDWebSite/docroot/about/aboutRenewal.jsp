@@ -61,7 +61,7 @@ if(windowSize.equalsIgnoreCase("large")){
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="<%=tableWidth%>">
 <TR VALIGN="TOP">
 	<TD COLSPAN="5" WIDTH="<%=tableWidth%>">
-		<A HREF="javascript:window.close();"><img src="<%=headerImg%>" border="0" alt="freshdirect (close window)"></A><BR>
+		<A HREF="javascript:window.reallyClose();"><img src="<%=headerImg%>" border="0" alt="freshdirect (close window)"></A><BR>
 		<FONT CLASS="space10pix"><BR></FONT>
 	</TD>
 </TR>
@@ -121,7 +121,7 @@ On the day your pass expires, a new <%=term%> DeliveryPass will automatically be
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="520">
 <TR VALIGN="TOP">
 	<TD WIDTH="275">&nbsp;<A HREF="#top">Back to top</A></TD>
-	<TD WIDTH="275" ALIGN="RIGHT">&nbsp;<A HREF="javascript:window.close();">close window</A></TD>
+	<TD WIDTH="275" ALIGN="RIGHT">&nbsp;<A HREF="javascript:window.reallyClose();">close window</A></TD>
 </TR>
 </TABLE>
 

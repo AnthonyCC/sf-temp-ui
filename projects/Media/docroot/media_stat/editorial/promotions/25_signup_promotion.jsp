@@ -129,7 +129,7 @@ function goToPage(pagePath) {
 		</td>
 		<td width="150" align="RIGHT">			
 			&nbsp;
-			<p><a href="javascript:window.close();">close window</a>
+			<p><a href="javascript:window.reallyClose();">close window</a>
 		</td>
 	</tr>
 </table>

@@ -161,7 +161,7 @@ if (brandId!=null) {
 %>
 <tr>
 	<td><img src="/media_stat/images/layout/clear.gif" width="260" height="20"><br><a href="#top">Back to top</a></td>
-	<td align="right"><img src="/media_stat/images/layout/clear.gif" width="260" height="20"><br><a href="javascript:try { window.close(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}">Close window</a></td>
+	<td align="right"><img src="/media_stat/images/layout/clear.gif" width="260" height="20"><br><a href="javascript:try { window.reallyClose(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}">Close window</a></td>
 </tr>
 </table>
 </center>

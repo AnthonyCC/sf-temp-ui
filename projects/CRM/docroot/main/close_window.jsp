@@ -4,10 +4,10 @@
 <TITLE>CRM - Request Processed</TITLE>
 </HEAD>
 <%
-	String onLoadStr = "javascript:window.close();";
+	String onLoadStr = "javascript:window.reallyClose();";
 	String reloadParent = request.getParameter("reloadParent");
 	if ("true".equalsIgnoreCase(reloadParent)) {
-		onLoadStr = "javascript:opener.location.reload(true);window.close();";
+		onLoadStr = "javascript:opener.location.reload(true);window.reallyClose();";
 	} 
 %>
 <body bgcolor="#FFFFFF" text="#333333" ONLOAD="<%=onLoadStr%>">

@@ -17,7 +17,7 @@
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="550">
 <TR VALIGN="TOP">
-<TD COLSPAN="3" WIDTH="550"><A HREF="javascript:window.close();"><img src="/media_stat/images/template/pop_up_header_lg.gif" width="550" height="43" border="0" alt="FreshDirect"></A><BR>
+<TD COLSPAN="3" WIDTH="550"><A HREF="javascript:window.reallyClose();"><img src="/media_stat/images/template/pop_up_header_lg.gif" width="550" height="43" border="0" alt="FreshDirect"></A><BR>
 <FONT CLASS="space10pix"><BR></FONT>
 </TD>
 </TR>
@@ -31,7 +31,7 @@ WIDTH="10" HEIGHT="1" HSPACE="0" VSPACE="0"></TD>
 </TR>
 <TR VALIGN="TOP">
 <TD COLSPAN="3" WIDTH="550" ALIGN="RIGHT">
-<A HREF="javascript:window.close();">close window</A>&nbsp;&nbsp;</TD>
+<A HREF="javascript:window.reallyClose();">close window</A>&nbsp;&nbsp;</TD>
 </TR>
 </TABLE>
 </BODY>

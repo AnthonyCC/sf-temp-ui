@@ -59,7 +59,7 @@ function buildImgSrc (numDirection) {
 </script>
 
 
-<div align="center"><a href="javascript:window.close();"><img src="<%=currImgSrc%>" width="235" height="294" name="deptImg" border="0"></a>
+<div align="center"><a href="javascript:window.reallyClose();"><img src="<%=currImgSrc%>" width="235" height="294" name="deptImg" border="0"></a>
 <br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><span class="text12"><a href="javascript:swapImage('deptImg',buildImgSrc('prev'));">< previous image</a> | <a href="javascript:swapImage('deptImg',buildImgSrc('next'));">next image ></a>
 </span><br><img src="/media_stat/images/layout/clear.gif" width="1" height="18"></div>
 	</tmpl:put>

@@ -22,10 +22,10 @@
 <tr>
 	<td>
 	<%if( (Image)productNode.getZoomImage()!=null ){%>
-	<a href="javascript:window.close();"><IMG SRC="<%= ((Image)productNode.getZoomImage()).getPath() %>" width="<%= ((Image)productNode.getZoomImage()).getWidth() %>" HEIGHT="<%= ((Image)productNode.getZoomImage()).getHeight() %>" ALT="<%= productNode.getFullName() %>  (click to close window)" border="0"></a>
+	<a href="javascript:window.reallyClose();"><IMG SRC="<%= ((Image)productNode.getZoomImage()).getPath() %>" width="<%= ((Image)productNode.getZoomImage()).getWidth() %>" HEIGHT="<%= ((Image)productNode.getZoomImage()).getHeight() %>" ALT="<%= productNode.getFullName() %>  (click to close window)" border="0"></a>
 	<%}else{%>
 	<div align="center">
-	<a href="javascript:window.close();"><IMG SRC="/media/images/temp/soon_260x260.gif" ALT="Photo Coming Soon  (click to close window)" border="0"></a>
+	<a href="javascript:window.reallyClose();"><IMG SRC="/media/images/temp/soon_260x260.gif" ALT="Photo Coming Soon  (click to close window)" border="0"></a>
 	</div>
 	<%}%>
 	</td>

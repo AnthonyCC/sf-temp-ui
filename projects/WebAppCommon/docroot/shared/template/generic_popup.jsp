@@ -66,20 +66,20 @@ if(windowSize.equalsIgnoreCase("custom")){
 	<tr valign="top">
 		<% if (!customWidth) { %>
 			<td width="<%=tableWidth%>" colspan="3">
-        <a href="javascript:try { window.close(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}"><img src="<%=headerImg%>" border="0" alt="freshdirect (close window)"></a><br>
+        <a href="javascript:try { window.reallyClose(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}"><img src="<%=headerImg%>" border="0" alt="freshdirect (close window)"></a><br>
 				<font class="space10pix"><br></font>
 			</td>
 		<% }else{ %>
 			<td width="">
-				<a href="javascript:try { window.close(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}"><img src="/media_stat/images/layout/pop_up_header_custom_left.gif" border="0" alt="freshdirect (close window)"></a><br>
+				<a href="javascript:try { window.reallyClose(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}"><img src="/media_stat/images/layout/pop_up_header_custom_left.gif" border="0" alt="freshdirect (close window)"></a><br>
 				<font class="space10pix"><br></font>
 			</td>
 			<td width="<%=customMiddleWidth%>">
-				<a href="javascript:try { window.close(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}"><img src="/media_stat/images/layout/pop_up_header_custom_middle.gif" height="43" width="<%=customMiddleWidth%>" border="0" alt="freshdirect (close window)"></a><br>
+				<a href="javascript:try { window.reallyClose(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}"><img src="/media_stat/images/layout/pop_up_header_custom_middle.gif" height="43" width="<%=customMiddleWidth%>" border="0" alt="freshdirect (close window)"></a><br>
 				<font class="space10pix"><br></font>
 			</td>
 			<td width="">
-				<a href="javascript:try { window.close(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}"><img src="/media_stat/images/layout/pop_up_header_custom_right.gif" border="0" alt="freshdirect (close window)"></a><br>
+				<a href="javascript:try { window.reallyClose(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}"><img src="/media_stat/images/layout/pop_up_header_custom_right.gif" border="0" alt="freshdirect (close window)"></a><br>
 				<font class="space10pix"><br></font>
 			</td>
 		<% } %>
@@ -98,7 +98,7 @@ if(windowSize.equalsIgnoreCase("custom")){
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="<%=tableWidth%>">
 <TR VALIGN="TOP">
 	<TD WIDTH="<%=cellWidth%>">&nbsp;<A HREF="#top">Back to top</A></TD>
-	<TD WIDTH="<%=cellWidth%>" ALIGN="RIGHT">&nbsp;<A HREF="javascript:try { window.close(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}">close window</A></TD>
+	<TD WIDTH="<%=cellWidth%>" ALIGN="RIGHT">&nbsp;<A HREF="javascript:try { window.reallyClose(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}">close window</A></TD>
 </TR>
 </TABLE>
 

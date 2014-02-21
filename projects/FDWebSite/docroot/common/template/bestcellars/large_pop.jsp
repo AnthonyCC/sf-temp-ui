@@ -18,7 +18,7 @@
 <a name="top"></a>
 <table border="0" cellpadding="0" cellspacing="0" width="520">
 <tr>
-	<td colspan="2" align="center"><a href="javascript:window.close();"><img src="/media_stat/images/template/wine/bc_logo_s.gif" width="158" height="25" border="0" alt="Best Cellars (close window)"></a></td>
+	<td colspan="2" align="center"><a href="javascript:window.reallyClose();"><img src="/media_stat/images/template/wine/bc_logo_s.gif" width="158" height="25" border="0" alt="Best Cellars (close window)"></a></td>
 </tr>
 <tr>
 <td><img src="/media_stat/images/layout/clear.gif" width="260" height="8"></td>
@@ -34,7 +34,7 @@
 <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="12"></td></tr>
 <tr>
 	<td><a href="#top">Back to top</a></td>
-	<td align="right"><a href="javascript:window.close();">Close window</a></td>
+	<td align="right"><a href="javascript:window.reallyClose();">Close window</a></td>
 </tr>
 </table>
 </center>

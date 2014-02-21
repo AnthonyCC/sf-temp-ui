@@ -34,7 +34,7 @@ All content is the property of FreshDirect or its content suppliers and<br>may n
 <tr>
 	<td width="33%"><a href="#top">Back to top</a></td>
 	<td align="center" width="34%"><a href="javascript:window.print();">Print page</a></td>
-	<td align="right" width="33%"><a href="javascript:window.close();">Close window</a></td>
+	<td align="right" width="33%"><a href="javascript:window.reallyClose();">Close window</a></td>
 </tr--%>
 </table>
 </center>

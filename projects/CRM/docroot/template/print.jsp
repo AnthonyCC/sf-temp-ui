@@ -17,7 +17,7 @@
 			<b><tmpl:get name='title'/></b>
 		</td>
 		<td align="right" class="popup">
-			<a href="javascript:window.print();">Print page</a> &nbsp;|&nbsp; <a href="javascript:window.close();">x Close</a>
+			<a href="javascript:window.print();">Print page</a> &nbsp;|&nbsp; <a href="javascript:window.reallyClose();">x Close</a>
 		</td>
 	</tr>
 </table>
@@ -25,7 +25,7 @@
 <tmpl:get name='content'/>
 
 <table width="100%" cellpadding="5" class="popup">
-<tr><td><a href="#top">^ Back to top</a></td><td align="right"><a href="javascript:window.close();">x Close</a></td></tr>
+<tr><td><a href="#top">^ Back to top</a></td><td align="right"><a href="javascript:window.reallyClose();">x Close</a></td></tr>
 </table>
 
 </body>

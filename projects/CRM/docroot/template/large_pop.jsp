@@ -14,7 +14,7 @@
 <a name="top"></a>
 <div class="sub_nav" style="padding-top: 4px;">
 	<div class="column" style="padding-left: 8px; padding-top: 10px;"><b>FreshDirect CRM : <tmpl:get name='title'/></b></div>
-	<div class="column" style="float: right; padding-right: 8px; padding-top: 10px;"><a href="javascript:window.close();">x Close</a></div><br clear="all">
+	<div class="column" style="float: right; padding-right: 8px; padding-top: 10px;"><a href="javascript:window.reallyClose();">x Close</a></div><br clear="all">
 </div>
 
 <div class="content_scroll" style="height:85%;">
@@ -23,7 +23,7 @@
 
 <div class="sub_nav" style="padding-top: 4px; border-top: 1px solid; border-bottom: none;">
 	<div class="column" style="padding-left: 8px; padding-top: 10px;"><a href="#top">Back to top</a></div>
-	<div class="column" style="float: right; padding-right: 8px; padding-top: 10px;"><a href="javascript:window.close();">x Close</a></div><br clear="all">
+	<div class="column" style="float: right; padding-right: 8px; padding-top: 10px;"><a href="javascript:window.reallyClose();">x Close</a></div><br clear="all">
 </div>
 
 </body>

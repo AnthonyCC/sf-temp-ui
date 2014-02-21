@@ -104,11 +104,11 @@ public String getProdPageRatings(ProductModel _productNode, HttpServletResponse 
 <tr>
 	<td align="center" class="title12"><br/><span class="title18"><b><%= productNode.getFullName().toUpperCase() %></b></span><br/><br/>
 	<% if( zoomImage!=null && zoomImage.getPath().indexOf("clear.gif")==-1 ){%>
-		<a href="javascript:window.close();"><img src="<%= zoomImage.getPath() %>" width="<%= zoomImage.getWidth() %>" height="<%= zoomImage.getHeight() %>" ALT="<%= productNode.getFullName() %>  (click to close window)" border="0"></a>
+		<a href="javascript:window.reallyClose();"><img src="<%= zoomImage.getPath() %>" width="<%= zoomImage.getWidth() %>" height="<%= zoomImage.getHeight() %>" ALT="<%= productNode.getFullName() %>  (click to close window)" border="0"></a>
 	<% } else if (productImage!=null && productImage.getPath().indexOf("clear.gif")==-1) { %>
-		<a href="javascript:window.close();"><img border=0 src="<%= productImage.getPath() %>" width="<%= productImage.getWidth() %>" height="<%= productImage.getHeight() %>" ALT="<%= productNode.getFullName() %>  (click to close window)" border="0"></a>
+		<a href="javascript:window.reallyClose();"><img border=0 src="<%= productImage.getPath() %>" width="<%= productImage.getWidth() %>" height="<%= productImage.getHeight() %>" ALT="<%= productNode.getFullName() %>  (click to close window)" border="0"></a>
 	<%} else { %>
-		<a href="javascript:window.close();"><img src="/media/images/temp/soon_260x260.gif" ALT="Photo Coming Soon  (click to close window)" border="0"></a>
+		<a href="javascript:window.reallyClose();"><img src="/media/images/temp/soon_260x260.gif" ALT="Photo Coming Soon  (click to close window)" border="0"></a>
 	<%}%>
 	<br/><br/>
 	</td></tr>
