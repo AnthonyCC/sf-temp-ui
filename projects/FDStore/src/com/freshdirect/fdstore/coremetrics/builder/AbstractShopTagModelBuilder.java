@@ -61,7 +61,7 @@ public abstract class AbstractShopTagModelBuilder {
 		}else if ( variantId == null || variantId.trim().length() == 0 ){
 			
 			EnumEventSource source = cartLine.getSource();
-			if (source == null || EnumEventSource.BROWSE.equals(source)){
+			if (source == null || EnumEventSource.BROWSE.equals(source) || EnumEventSource.pdp_main.equals( source )){
 				tagModel.setCategoryId(productRef.getCategoryId());
 
 			} else {
