@@ -174,8 +174,10 @@ var FreshDirect = FreshDirect || {};
           if ($(el).val() === "") {
             valid = false;
             $(el).addClass('missing-data');
+            $(el).parents('.errorcontainer').first().addClass('haserror');
           } else {
             $(el).removeClass('missing-data');
+            $(el).parents('.errorcontainer').first().removeClass('haserror');
           }
         });
 

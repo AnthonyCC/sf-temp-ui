@@ -6,7 +6,8 @@
  * @param? optional
  */
 {template .salesunit}
-<div class="itemlist-item-salesunit">
+<div class="itemlist-item-salesunit errorcontainer">
+  <span class="error"><img src="/media_stat/images/layout/error.gif" />Please select <em>{$label}</em></span>
   <select class="salesunit" data-component="salesunit" data-productdata-name="salesUnit" {if isNonnull($optional) and not $optional}data-atc-required="true" data-atl-required="true"{/if}>
   {if $label}<option value="">{$label}</option>{/if}
   {foreach $option in $options}

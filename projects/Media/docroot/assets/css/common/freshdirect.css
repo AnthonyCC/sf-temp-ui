@@ -230,6 +230,29 @@ h2.centerline span {
 
 /* }}} */
 
+.errorcontainer span.error {
+  display: none;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: Verdana, sans-serif;
+  line-height: 18px;
+  vertical-align: middle;
+}
+
+.errorcontainer.haserror span.error {
+  display: block;
+}
+
+.errorcontainer span.error img {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 4px 4px 0;
+}
+
+.errorcontainer span.error em {
+  font-style: normal;
+  text-transform: lowercase;
+}
 
 .salesunit {
   font-size: 12px;

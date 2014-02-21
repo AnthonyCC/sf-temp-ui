@@ -50,16 +50,24 @@ var FreshDirect = FreshDirect || {};
 				Object.keys(item).forEach(function(data){
 					if(required.indexOf(data) > -1 && (!item[data] || item[data]==='0') ) {
 						item.DOMElement.find('[data-productdata-name="'+data+'"]').addClass('missing-data');
+						item.DOMElement.find('[data-productdata-name="'+data+'"]').parents('.errorcontainer').first().addClass('haserror');
 						item.invalid = true;
 						valid = false;
-					}
+					} else {
+						item.DOMElement.find('[data-productdata-name="'+data+'"]').removeClass('missing-data');
+						item.DOMElement.find('[data-productdata-name="'+data+'"]').parents('.errorcontainer').first().removeClass('haserror');
+          }
 				});
 				Object.keys(item.configuration || {}).forEach(function(data){
 					if(required.indexOf(data) > -1 && !item.configuration[data]) {
 						item.DOMElement.find('[data-productdata-name="'+data+'"]').addClass('missing-data');
+						item.DOMElement.find('[data-productdata-name="'+data+'"]').parents('.errorcontainer').first().addClass('haserror');
 						item.invalid = true;
 						valid = false;
-					}
+					} else {
+						item.DOMElement.find('[data-productdata-name="'+data+'"]').removeClass('missing-data');
+						item.DOMElement.find('[data-productdata-name="'+data+'"]').parents('.errorcontainer').first().removeClass('haserror');
+          }
 				});
 			}
 		});

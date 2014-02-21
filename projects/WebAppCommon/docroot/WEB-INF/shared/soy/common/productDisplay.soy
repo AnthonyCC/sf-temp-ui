@@ -119,7 +119,8 @@
 {if $variations}
 <div class="skucontrol-variations">
 {foreach $variation in $variations}
-	<div class="skucontrol-variations-item">
+	<div class="skucontrol-variations-item errorcontainer">
+  <span class="error"><img src="/media_stat/images/layout/error.gif" />Please select <em>{$variation.label}</em></span>
 	{delcall common.variation variant="$variation.display"}
 		{param label:$variation.label /}
 		{param name:$variation.name /}
