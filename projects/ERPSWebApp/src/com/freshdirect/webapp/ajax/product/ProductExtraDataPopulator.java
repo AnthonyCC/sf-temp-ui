@@ -696,7 +696,7 @@ public class ProductExtraDataPopulator {
 		
 		// Party platter cancellation notice
 		if ( productNode.isPlatter() ) {
-			data.setMsgCancellation( "* Orders for this item cancelled later than 3PM on the day before delivery (or 12 Noon on Fri., Sat. and Sun. and certain holidays) will be subject to a 50% fee." ); 
+			data.setMsgCancellation( "* Orders for this item cancelled after 3PM the day before delivery (or Noon on Friday/Saturday/Sunday and major holidays) will be subject to a 50% fee." ); 
 		}
 
 		// Party platter cutoff notice (header+text)
@@ -705,8 +705,8 @@ public class ProductExtraDataPopulator {
 			String headerTime;
 			String bodyTime;
 			if (new TimeOfDay("12:00 PM").equals(cutoffTime)) {
-				headerTime = "12 NOON";
-				bodyTime = "12 Noon";
+				headerTime = "10AM";
+				bodyTime = "10AM";
 			} else {
 				SimpleDateFormat headerTimeFormat = new SimpleDateFormat("h:mm a");
 				SimpleDateFormat bodyTimeFormat = new SimpleDateFormat("ha");
@@ -714,8 +714,8 @@ public class ProductExtraDataPopulator {
 				headerTime = headerTimeFormat.format(cutoffTime.getAsDate());
 				bodyTime = bodyTimeFormat.format(cutoffTime.getAsDate());
 			}
-			data.setMsgCutoffHeader( "PLEASE ORDER BY " + headerTime + " FOR DELIVERY TOMORROW" );
-			data.setMsgCutoffNotice( "To assure the highest quality, our chefs prepare this item to order. You must <b>complete checkout by " + bodyTime + "</b> to order this item for delivery tomorrow." );
+			data.setMsgCutoffHeader( "Order by " + headerTime + " for Delivery Tomorrow" );
+			data.setMsgCutoffNotice( "Freshly made item. Please <b>complete checkout by " + bodyTime + "</b> to order for delivery tomorrow." );
 			
 		}
 
@@ -753,7 +753,7 @@ public class ProductExtraDataPopulator {
 				daysStringBuffer.replace(li,li+1,(isInverted ?" and ": " or ") );
 			}
 			
-			data.setMsgDayOfWeekHeader( "SPECIALLY PREPARED ITEM - LIMITED AVAILABILITY" );
+			data.setMsgDayOfWeekHeader( "Limited Availability" );
 			data.setMsgDayOfWeek( "This item is <b>" + ( isInverted ? "only" : "not" ) + "</b> available for delivery on <b>" + daysStringBuffer.toString() + "</b>" );
 			
 			data.setMsgDeliveryNote( "Only available for delivery on " + blockedDays.inverted().format(true) + "." );
@@ -765,8 +765,8 @@ public class ProductExtraDataPopulator {
 		if ( fdprd != null ) {
 			int leadTime = fdprd.getMaterial().getLeadTime();		
 			if( leadTime > 0 && FDStoreProperties.isLeadTimeOasAdTurnedOff() ) {
-				data.setMsgLeadTimeHeader( "CURRENTLY AVAILABLE - " + JspMethods.convertNumToWord(leadTime) + " DAY LEAD TIME." );
-				data.setMsgLeadTime( "To assure the highest quality, our chefs prepare this item to order.<br/>Please order at least two days in advance<br/>(for example, order on Thursday for Saturday delivery)." );
+				data.setMsgLeadTimeHeader( JspMethods.convertNumToWord(leadTime) + "-Day Lead Time" );
+				data.setMsgLeadTime( "Freshly made item. Please complete checkout at least two days in advance. (Order by Thursday for Saturday)." );
 			}
 		}
 		
