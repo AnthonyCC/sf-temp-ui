@@ -4,6 +4,10 @@
  * @param quantity
  * @param lineTotal
  * @param configDescr
+ * @param coupon coupon data
+ * @param couponDisplay display coupon information 
+ * @param couponClipped is coupon clipped (checkbox will be disabled)
+ * @param couponStatusText the html formatted coupon status message
  */
 {template .productInfoLite}
 	<ul class="product-info">
@@ -12,6 +16,15 @@
 		<li><span class="product-info-label">Options:</span>{$configDescr}</li>
 {/if}
 		<li><span class="product-info-label">Est. Price:</span>{$lineTotal}</li>
+		
+		<li>		
+			{call common.ecoupon}
+				{param coupon:$coupon /}
+				{param couponDisplay:$couponDisplay /}
+				{param couponClipped:$couponClipped /}
+				{param couponStatusText:$couponStatusText /}
+			{/call}
+		</li>	
 	</ul>
 
 {/template}
