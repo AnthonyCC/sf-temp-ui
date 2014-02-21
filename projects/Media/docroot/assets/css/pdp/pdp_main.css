@@ -406,6 +406,10 @@ span.cssbutton.annotation:hover {
 	height:auto;
 }
 
+.pdp-evenbetter-quantity .subtotal b{
+	display:block;
+}
+
 .pdp-evenbetter-atcbutton .atc-info{
   float: left;
   max-width: 75px;
