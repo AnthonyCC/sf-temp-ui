@@ -76,8 +76,17 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 </tmpl:put>
 <tmpl:put name="logoutButton"><button onclick="window.location='/logout.jsp';" class="logoutButton">logout</button></tmpl:put>
 <tmpl:put name="signupButton"><% 
-	if(FDStoreProperties.isLightSignupEnabled()) { 
-		%><button class="signUpButton" onclick="doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/signup_lite.jsp\' width=\'480px\' height=\'590px\' frameborder=\'0\' ></iframe>', '<span class=\'text12\' style=\'color: #000; margin-left: -12px;\'><strong>Already have a password? <a href=\'/login/login.jsp\' onclick=\'window.top.location=this.href;return false;\' style=\'text-decoration:none;\'>Log in now</a></strong></span>')">signup</button><% 
+	if(FDStoreProperties.isLightSignupEnabled()) {
+		%>
+		<button id="lsuButton" class="signUpButton">signup</button>
+		<script type="text/javascript">
+			$jq('#lsuButton').click(function(e) {
+				e.preventDefault();
+				var lsuDialog = doOverlayDialogByHtml('<iframe id=\'signupframe\' src=\'/registration/signup_lite.jsp\' width=\'480px\' height=\'590px\' frameborder=\'0\' ></iframe>');
+				lsuDialog.dialog('option', 'title', '<span class=\'text12\' style=\'color: #000; margin-left: 12px; font-weight: bold;\'>Already have a password? <a href=\'/login/login.jsp\' onclick=\'window.top.location=this.href;return false;\' \'>Log in now</a></div>');
+			});
+		</script>
+		<% 
 	} else { 
 		%><button class="signUpButton" onclick="window.location='/registration/signup.jsp';">signup</button><% 
 	} 

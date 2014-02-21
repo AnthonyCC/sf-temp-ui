@@ -101,10 +101,9 @@
 						Your FreshDirect Customer Service Team<br/>
 						Keep in mind that we are here for you:<br/>
 						<br/>
-						Monday-Thursday 6:30am-12am<br/>
-						Fridays 6:30am-11pm<br/>
-						Saturdays 7:30am-8pm<br/>
-						Sundays 7:30am-12am<br/>
+						<xsl:for-each select="contactHours/contactHours">
+							<xsl:value-of select="daysDisplay"/><xsl:value-of select="hoursDisplay"/><br />
+						</xsl:for-each>
 
 						<p><xsl:call-template name="h_footer_v1"/></p>
 
