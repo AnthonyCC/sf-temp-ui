@@ -72,7 +72,7 @@ public class PageViewTagModelBuilder  {
 			
 			} else if ("department".equals(fileName) || "department_cohort_match".equals(fileName) || "category".equals(fileName) || "newsletter".equals(fileName) || "whatsgood".equals(fileName)){
 				processDeptOrCat();
-			} else if ("product".equals(fileName)){
+			} else if ("product".equals(fileName) || "pdp".equals(fileName)){
 				processProduct();
 			}
 		} 
