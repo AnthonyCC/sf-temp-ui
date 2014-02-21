@@ -8,7 +8,16 @@ window.reallyClose = function () {
   window.originalClose();
 
   try {
-    window.parent.FreshDirect.components.ifrPopup.close();
+    if (window.parent) {
+      window.parent.FreshDirect.components.ifrPopup.close();
+    }
+  } catch (e) {}
+
+  try {
+    if (window.FreshDirect) {
+      window.FreshDirect.components.ifrPopup.close();
+      window.FreshDirect.components.ajaxPopup.close();
+    }
   } catch (e) {}
 };
 
