@@ -18,6 +18,11 @@
 	$wineData.grape
 }
 <li class="pdp-accordion-wine pdp-accordion-item"><input type="checkbox" id="pdp-wine"><label for="pdp-wine"><span class="pdp-accordion-item-carrot"></span>Wine Information</label><div>
+/*
+ * table element is added to ensure that broken media don't break the site
+ * TODO remove if all broken media is fixed
+ */
+<table><tr><td>
 {if $wineData.country}
 <strong>Country</strong>
 <div>{$wineData.country}</div>
@@ -62,6 +67,11 @@
 <strong>Grape</strong>
 <div>{$wineData.grape}</div>
 {/if}
+/*
+ * table element is added to ensure that broken media don't break the site
+ * TODO remove if all broken media is fixed
+ */
+</td></tr></table>
 </div></li>
 {/if}
 {/template}

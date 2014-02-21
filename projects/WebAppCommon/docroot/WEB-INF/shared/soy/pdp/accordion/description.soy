@@ -20,6 +20,11 @@
  */
 {template .description}
 <li class="pdp-accordion-description pdp-accordion-item"><input type="checkbox" id="pdp-description" checked="checked"><label for="pdp-description"><span class="pdp-accordion-item-carrot"></span>Description</label><div>
+/*
+ * table element is added to ensure that broken media don't break the site
+ * TODO remove if all broken media is fixed
+ */
+<table><tr><td>
 {call .descriptionText data="all" /}
 {call .claims}
 	{param organicClaims:$organicClaims /}
@@ -51,6 +56,11 @@
 {call .brand}
 	{param brands:$brands /}
 {/call}
+/*
+ * table element is added to ensure that broken media don't break the site
+ * TODO remove if all broken media is fixed
+ */
+</td></tr></table>
 </div></li>
 {/template}
 

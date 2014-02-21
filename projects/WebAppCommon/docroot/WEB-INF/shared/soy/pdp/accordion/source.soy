@@ -7,6 +7,11 @@
 {template .source}
 {if $source}
 <li class="pdp-accordion-source pdp-accordion-item"><a name="origin"></a><input type="checkbox" id="pdp-source"><label for="pdp-source"><span class="pdp-accordion-item-carrot"></span>Origin</label><div>
+/*
+ * table element is added to ensure that broken media don't break the site
+ * TODO remove if all broken media is fixed
+ */
+<table><tr><td>
 {if $source and $source.grade}
 <strong>Grade</strong>
 	{if $source.grade.path} 
@@ -23,6 +28,11 @@
 		{$source.source.label}
 	{/if}
 {/if}
+/*
+ * table element is added to ensure that broken media don't break the site
+ * TODO remove if all broken media is fixed
+ */
+</td></tr></table>
 </div></li>
 {/if}
 {/template}

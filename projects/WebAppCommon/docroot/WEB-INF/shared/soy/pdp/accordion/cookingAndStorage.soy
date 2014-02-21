@@ -19,6 +19,11 @@
 	($usageList and length($usageList) > 0)
 }
 <li class="pdp-accordion-cookingandstorage pdp-accordion-item"><input type="checkbox" id="pdp-cookingandstorage"><label for="pdp-cookingandstorage"><span class="pdp-accordion-item-carrot"></span>Cooking & Storage</label><div>
+/*
+ * table element is added to ensure that broken media don't break the site
+ * TODO remove if all broken media is fixed
+ */
+<table><tr><td>
 {if $donenessGuideList and length($donenessGuideList)>0 }
 <strong>Doneness</strong>
 {foreach $donnes in $donenessGuideList}
@@ -53,6 +58,11 @@
 {$ulitem|noAutoescape}{if not isLast($ulitem)}, {/if}
 {/foreach}
 {/if}
+/*
+ * table element is added to ensure that broken media don't break the site
+ * TODO remove if all broken media is fixed
+ */
+</td></tr></table>
 </div>
 </li>
 {/if}

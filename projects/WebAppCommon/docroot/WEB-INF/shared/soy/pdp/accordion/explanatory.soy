@@ -13,12 +13,22 @@
       </label>
       <a id="explanatory"></a>
       <div>
+      /*
+       * table element is added to ensure that broken media don't break the site
+       * TODO remove if all broken media is fixed
+       */
+      <table><tr><td>
       {if $expertRating}
         {call pdp.accordion.explancontent.expertRating /}
       {/if}
       {if isNonnull($heatRating) and $heatRating > -1}
         {call pdp.accordion.explancontent.heatRating /}
       {/if}
+      /*
+       * table element is added to ensure that broken media don't break the site
+       * TODO remove if all broken media is fixed
+       */
+      </td></tr></table>
       </div>
     </li>
   {/if}
