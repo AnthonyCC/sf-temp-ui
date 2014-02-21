@@ -103,7 +103,8 @@
 }
 
 .pdp-accordion-item td>strong,
-.pdp-accordion-item>div>strong {
+.pdp-accordion-item>div>strong,
+.pdp-accordion-description-media strong{
 	padding-top:10px;
 	margin-top:10px;
 	display:block;
