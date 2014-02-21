@@ -640,6 +640,8 @@ public class FDStoreProperties {
 	
 	private final static String PROP_SUFFOLK_ZIPS = "prop.suffolk.zips";
 	
+	private final static String PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE = "fdstore.media.render.utils.reallyclose";
+	
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1262,6 +1264,8 @@ public class FDStoreProperties {
         
         defaults.put("feature.rollout.pdplayout2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.pplayout2014", "GLOBAL:ENABLED,true;");
+        
+        defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
 				
         refresh();
     }
@@ -3212,6 +3216,10 @@ public class FDStoreProperties {
     
     public static boolean isProductFeedGenerationEnabled() {
         return Boolean.valueOf(get(PROP_PRODUCT_FEED_GENERATION_ENABLED)).booleanValue();
- }
+    }
+    
+    public static boolean isMediaUtilsReallyClose(){
+    	return Boolean.valueOf(get(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE)).booleanValue();
+    }
 }
 

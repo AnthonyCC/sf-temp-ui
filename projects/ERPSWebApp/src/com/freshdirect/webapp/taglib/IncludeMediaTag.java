@@ -2,10 +2,12 @@ package com.freshdirect.webapp.taglib;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Category;
 
@@ -75,9 +77,18 @@ public class IncludeMediaTag extends BodyTagSupport {
 			this.parameters.put("user", (FDUserI)user);
 			this.parameters.put("sessionUser", (FDSessionUser)user);
 			
-			MediaUtils.render(this.name, this.pageContext.getOut(), this.parameters, this.withErrorReport, 
+			StringWriter writer = new StringWriter();
+			
+			MediaUtils.render(this.name, writer, this.parameters, this.withErrorReport, 
 					user != null && user.getPricingContext() != null ? user.getPricingContext() : PricingContext.DEFAULT);
-				
+			
+			String out = writer.toString();
+			
+			//fix media if needed
+			out = MediaUtils.fixMedia(out);
+			
+			this.pageContext.getOut().write(out);
+			
 			return SKIP_BODY;
 			
 		} catch (FileNotFoundException e) {

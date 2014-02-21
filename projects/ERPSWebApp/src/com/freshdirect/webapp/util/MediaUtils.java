@@ -139,4 +139,12 @@ public class MediaUtils {
 			return false;
 		}
 	}
+	
+	public static String fixMedia(String media){
+		if(FDStoreProperties.isMediaUtilsReallyClose()){
+			media = media.replaceAll("window.close", "window.reallyClose");
+		}
+		
+		return media;
+	}
 }

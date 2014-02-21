@@ -877,10 +877,15 @@ public class ProductExtraDataPopulator {
 		parameters.put("sessionUser", (FDSessionUser)user);
 		
 		StringWriter out = new StringWriter();
-		
+				
 		MediaUtils.render(mediaPath, out, parameters, false, 
 				user != null && user.getPricingContext() != null ? user.getPricingContext() : PricingContext.DEFAULT);
 
-		return quoted ? JSONObject.quote( out.toString() ) : out.toString();
+		String outString = out.toString();
+		
+		//fix media if needed
+		outString = MediaUtils.fixMedia(outString);
+		
+		return quoted ? JSONObject.quote( outString ) : outString;
 	}
 }
