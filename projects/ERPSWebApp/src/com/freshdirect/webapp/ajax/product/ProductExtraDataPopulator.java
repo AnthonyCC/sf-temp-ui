@@ -754,7 +754,7 @@ public class ProductExtraDataPopulator {
 			}
 			
 			data.setMsgDayOfWeekHeader( "Limited Availability" );
-			data.setMsgDayOfWeek( "This item is <b>" + ( isInverted ? "only" : "not" ) + "</b> available for delivery on <b>" + daysStringBuffer.toString() + "</b>" );
+			data.setMsgDayOfWeek( "This item is <b>" + ( isInverted ? "only" : "not" ) + "</b> available for delivery on <b>" + daysStringBuffer.toString() + "</b>." );
 			
 			data.setMsgDeliveryNote( "Only available for delivery on " + blockedDays.inverted().format(true) + "." );
 		}
