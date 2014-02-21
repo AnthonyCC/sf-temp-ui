@@ -288,6 +288,25 @@ span.cssbutton.annotation:hover {
 .pdp-ecoupon {
 	margin-bottom:5px;
 	padding:5px 10px;
+	height:18px;
+}
+
+.pdp-ecoupon .fdCoupon_cont{
+	line-height:18px;
+}
+
+.pdp-ecoupon .fdCoupon_img,
+.pdp-ecoupon .fdCoupon_msg{
+	margin-left:5px;
+}
+
+.pdp-ecoupon .fdCoupon_detCont{
+	margin-left:10px;
+}
+
+.pdp-ecoupon .fdCoupon_cbCont span,
+.pdp-ecoupon .fdCoupon_cbCont img{
+	display:inline-block;
 }
 
 .pdp-atc {
