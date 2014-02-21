@@ -38,7 +38,7 @@ FreshDirect.pdp.annotations=<fd:ToJSON object="${annotations}" noHeaders="true"/
 		<%if (FDStoreProperties.isAdServerEnabled()) {%>
 			<center><script type="text/javascript">OAS_AD('ProductNote');</script></center>
 		<%} else {%>
-    		<%@ include file="/shared/includes/product/i_product_quality_note.jspf" %>
+    		<center><%@ include file="/shared/includes/product/i_product_quality_note.jspf" %></center>
 		<%}%>
 		
 		<soy:render template="pdp.productName" data="${productPotato}" />
