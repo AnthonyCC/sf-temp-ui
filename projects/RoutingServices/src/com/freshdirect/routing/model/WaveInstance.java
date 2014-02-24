@@ -50,6 +50,8 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 	
 	private String todRestrictionModel;
 	
+	private String shift;
+	
 	public String getRoutingCode() {
 		return routingCode;
 	}
@@ -433,5 +435,12 @@ public class WaveInstance  extends BaseModel implements IWaveInstance {
 	public void setDestinationFacility(String destinationFacility) {
 		this.destinationFacility = destinationFacility;
 	}
-	
+
+	public String getShift() {
+		return shift;
+	}
+
+	public void setShift(String shift) {
+		this.shift = shift;
+	}
 }

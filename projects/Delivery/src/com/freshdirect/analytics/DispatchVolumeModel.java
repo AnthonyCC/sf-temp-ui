@@ -13,6 +13,8 @@ public class DispatchVolumeModel {
 	private int orderCount;
 	private int allocatedOrderCnt;
 	private int noOftrucks;
+	private String shift;
+	
 	public RoutingTimeOfDay getDispatchTime() {
 		return dispatchTime;
 	}
@@ -61,6 +63,12 @@ public class DispatchVolumeModel {
 	}
 	public void setAllocatedOrderCnt(int allocatedOrderCnt) {
 		this.allocatedOrderCnt = allocatedOrderCnt;
+	}	
+	public String getShift() {
+		return shift;
+	}
+	public void setShift(String shift) {
+		this.shift = shift;
 	}
 	@Override
 	public String toString() {
@@ -68,7 +76,7 @@ public class DispatchVolumeModel {
 				+ ", snapshotTime=" + snapshotTime + ", dispatchDate="
 				+ dispatchDate + ", plannedCapacity=" + plannedCapacity
 				+ ", plantCapacity=" + plantCapacity + ", orderCount="
-				+ orderCount + ", noOftrucks=" + noOftrucks + "]";
+				+ orderCount + ", noOftrucks=" + noOftrucks+ ", shift=" + shift + "]";
 	}
 	
 }

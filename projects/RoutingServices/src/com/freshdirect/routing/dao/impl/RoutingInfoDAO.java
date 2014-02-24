@@ -979,8 +979,8 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 			return result;
 		}
 		
-		private static final String GET_WAVEINSTANCE_DISPATCHTIME_QRY = "select p.*, a.delivery_rate,TR.CODE REGION, TR.IS_DEPOT, z.* from transp.WAVE_INSTANCE p , transp.zone z, transp.trn_area a " +
-				", TRANSP.TRN_REGION TR WHERE  P.DELIVERY_DATE = ? and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE and TR.CODE = A.REGION_CODE order by p.truck_dispatchtime, p.area asc";
+		private static final String GET_WAVEINSTANCE_DISPATCHTIME_QRY = "select p.*, a.delivery_rate,TR.CODE REGION, TR.IS_DEPOT, z.*, c.SHIFT from transp.WAVE_INSTANCE p , transp.zone z, transp.trn_area a, transp.trn_cutoff c  " +
+				", TRANSP.TRN_REGION TR WHERE  P.DELIVERY_DATE = ? and P.AREA = Z.ZONE_CODE and z.AREA = a.CODE and TR.CODE = A.REGION_CODE and P.CUTOFF_DATETIME = C.CUTOFF_TIME order by p.truck_dispatchtime, p.area asc";
 				
 				public List<IWaveInstance> getWavesByDispatchTime(final Date deliveryDate)  throws SQLException {
 					final List<IWaveInstance> result = new ArrayList<IWaveInstance>();
@@ -1011,6 +1011,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 								String _waveInstanceId = rs.getString("WAVEINSTANCE_ID"); 
 								int noOfResources = rs.getInt("RESOURCE_COUNT");
 								Date _deliveryDate = rs.getDate("DELIVERY_DATE");
+								String _shift = rs.getString("SHIFT");
 								
 								if(_startTime != null && _endTime != null 
 										&& _cutOffTime != null && _zoneCode != null) {
@@ -1039,6 +1040,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 									waveInstance.setRoutingWaveInstanceId(_routingWaveInstanceId);
 									waveInstance.setWaveInstanceId(_waveInstanceId);
 									waveInstance.setDeliveryDate(_deliveryDate);
+									waveInstance.setShift(_shift);
 									IAreaModel area = new AreaModel();
 									area.setAreaCode(_zoneCode);
 									area.setDeliveryRate(rs.getBigDecimal("DELIVERY_RATE").doubleValue());

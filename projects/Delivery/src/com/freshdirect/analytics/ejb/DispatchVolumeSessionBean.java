@@ -261,6 +261,7 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 			dispatchMap.get(plantDispatch).setDispatchTime(plantDispatch);
 			dispatchMap.get(plantDispatch).setDispatchDate(waveInstance.getDeliveryDate());
 			dispatchMap.get(plantDispatch).setSnapshotTime(snapshotTime);
+			dispatchMap.get(plantDispatch).setShift(waveInstance.getShift());
 			
 		}
 		
@@ -429,6 +430,7 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 					newRoute.setCompletionTime(route.getDepotArrivalTime());
 					newRoute.setOriginId(route.getOriginId());
 					newRoute.setStops(new TreeSet());
+					newRoute.setAllocatedStops(new TreeSet());
 					newRoute.setDispatchTime(new RoutingTimeOfDay(route.getTruckDepartureTime()));
 					result.add(newRoute);
 					

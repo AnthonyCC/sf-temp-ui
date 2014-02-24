@@ -111,4 +111,8 @@ public interface IWaveInstance {
 	String getTodRestrictionModel();
 
 	void setTodRestrictionModel(String todRestrictionModel);	
+	
+	String getShift();
+
+	void setShift(String shift);
 }
