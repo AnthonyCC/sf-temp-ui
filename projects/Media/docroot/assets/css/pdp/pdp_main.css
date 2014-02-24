@@ -97,7 +97,7 @@ span.cssbutton.annotation:hover {
 }
 
 .pdp .pdp-price s {
-	font-size:13px;
+	font-size:14px;
 	font-weight:normal;
 }
 
@@ -114,7 +114,7 @@ span.cssbutton.annotation:hover {
 .pdp .pdp-price .price-deal {
 	display:inline;
 	padding-left:0.5em;
-	font-size:13px;
+	font-size:14px;
 	color:#c94747;
 	font-weight:bold;
 	font-family:Verdana,sans-serif;
@@ -209,29 +209,22 @@ span.cssbutton.annotation:hover {
 	font-weight:bold;
     line-height: 16px;
     margin:20px 0px;
+    font-size:14px;
 }
 .pdp .scale-deal-title {
-	font-size:11px;
-  line-height: 16px;
 	color:#CB0600;
 }
 .pdp .scale-deal-text {
-	font-size:11px;
-  line-height: 16px;
 	color:#360;
 }
 .pdp .scale-deal-price {
-	font-size:14px;
-  line-height: 16px;
 	color:#CB0600;
 }
 .pdp .scale-deal-link,
 .pdp .scale-deal-link:hover,
 .pdp .scale-deal-link:visited {
 	display:block;
-	font-size:13px;
 	color:#360;
-  line-height:16px;
 }
 
 .pdp .skucontrol-salesunit,
