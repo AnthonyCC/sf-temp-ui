@@ -29,6 +29,9 @@
 <div class="availability-dialog">
 <h1>Availability Note</h1>
 {if $unavailability}{call .onlyHeader}{param text:'We\'re sorry! This item is temporarily unavailable.' /}{/call}{/if}
+
+{if $msgCancellation}{call .availabilityText}{param text:$msgCancellation /}{/call}{/if}
+
 {if $msgCutoffHeader}{call .availabilityWithHeader}
 {param header:$msgCutoffHeader /}
 {param text:$msgCutoffNotice /}
@@ -44,7 +47,6 @@
 {param text:$msgLeadTime /}
 {/call}{/if}
 
-{if $msgCancellation}{call .availabilityText}{param text:$msgCancellation /}{/call}{/if}
 {if $msgKosherRestriction}{call .availabilityText}{param text:$msgKosherRestriction /}{/call}{/if}
 
 /*
