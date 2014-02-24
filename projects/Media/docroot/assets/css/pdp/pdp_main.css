@@ -726,13 +726,21 @@ span.cssbutton.annotation:hover {
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;		
-	
+	text-decoration: none;
+}
+
+.pdp-freshness a:hover {
+	text-decoration: none;
 }
 
 .pdp-freshness .atleast{
 	font-family: Verdana,sans-serif;
 	font-size:16px;
 	color:#360;
+}
+
+.pdp-freshness a:hover .atleast{
+  text-decoration: underline;
 }
 
 #drugpanel{
