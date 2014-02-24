@@ -641,7 +641,7 @@ public class FDStoreProperties {
 	private final static String PROP_SUFFOLK_ZIPS = "prop.suffolk.zips";
 	
 	private final static String PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE = "fdstore.media.render.utils.reallyclose";
-	
+	private final static String PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING = "fdstore.media.render.utils.sourceencoding";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1266,7 +1266,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.pplayout2014", "GLOBAL:ENABLED,true;");
         
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
-				
+        defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");				
         refresh();
     }
 
@@ -3221,5 +3221,10 @@ public class FDStoreProperties {
     public static boolean isMediaUtilsReallyClose(){
     	return Boolean.valueOf(get(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE)).booleanValue();
     }
+    
+	public static String getMediaUtilsSourceEncoding() {
+		return get(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING);
+	}
+
 }
 

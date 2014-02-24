@@ -59,10 +59,12 @@ public class MediaUtils {
 				renderer.render(url, out, context, withErrorReport);
 
 			} else {
+				String encoding = FDStoreProperties.getMediaUtilsSourceEncoding();
+				
 				byte[] buf = new byte[4096];
 				int i;
 				while ((i = in.read(buf)) != -1) {
-					out.write(new String(buf, 0, i));
+					out.write(new String(buf, 0, i, encoding));
 				}
 			}		
 		} finally {
