@@ -304,6 +304,10 @@ span.cssbutton.annotation:hover {
 	margin-left:10px;
 }
 
+.pdp-ecoupon .fdCoupon_cbCont{
+	margin-left:0px;
+}
+
 .pdp-ecoupon .fdCoupon_cbCont span,
 .pdp-ecoupon .fdCoupon_cbCont img{
 	display:inline-block;
