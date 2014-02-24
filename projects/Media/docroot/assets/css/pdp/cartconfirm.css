@@ -14,6 +14,10 @@
 	position: relative;
 	min-height: 150px;
 }
+.pdp-cc .cc-info .fdCoupon_stat {
+  display: block;
+  margin-left: 12px;
+}
 .pdp-cc .cc-product-image {
 	float: right;
 	text-align: right;
