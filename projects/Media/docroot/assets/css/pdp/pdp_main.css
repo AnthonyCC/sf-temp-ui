@@ -270,6 +270,8 @@ span.cssbutton.annotation:hover {
 
 .pdp-atcdata .skucontrol-salesunit b {
 	margin-bottom:5px;
+	font-size:12px;
+	font-family:Verdana,sans-serif;
 }
 
 .pdp-atcdata a{
@@ -611,6 +613,12 @@ span.cssbutton.annotation:hover {
 }
 
 #evenBetterPopup .skucontrol-variations {
+}
+
+.pdp .skucontrol-variations-item select,
+.pdp .skucontrol-salesunit select{
+	font-size:14px;
+	font-family:Verdana, sans-serif;
 }
 
 #evenBetterPopup .skucontrol-variations-item select,
