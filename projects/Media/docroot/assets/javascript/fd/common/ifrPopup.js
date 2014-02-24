@@ -72,6 +72,19 @@ var FreshDirect = FreshDirect || {};
 
         }
         var $ifr = $('#ifrPopup iframe');
+
+        if (config.width) {
+          $ifr.css({
+            width: config.width
+          });
+        }
+        if (config.height) {
+          $ifr.css({
+            width: config.height
+          });
+        }
+
+
         try {
             $ifr[0].contentWindow.close = function(){
               ifrPopup.popup.hide();
