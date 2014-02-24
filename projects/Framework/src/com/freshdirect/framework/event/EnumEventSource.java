@@ -24,7 +24,9 @@ public enum EnumEventSource {
 	qs_tabbedRecommender("QS-bottom-recommender"),
 	
 	// Site Redesign - PDP
-	pdp_main("pdp_main");
+	pdp_main("pdp_main"),
+	EB("EB"), //PDP Even Better!
+	LTYLT("LTYLT"); //PDP Like That? You'll Love This.
 	
 	String name;
 	

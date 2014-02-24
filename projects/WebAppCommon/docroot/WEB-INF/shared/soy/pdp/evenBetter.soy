@@ -74,7 +74,7 @@
 
     {if $coupon}{call common.ecoupon}{param coupon:$coupon /}{param couponDisplay:$couponDisplay /}{param couponClipped:$couponClipped /}{param couponStatusText:$couponStatusText /}{/call}{/if}
 		
-    <div class="pdp-evenbetter-atc">
+    <div class="pdp-evenbetter-atc" data-cmeventsource="EB">
 			<input type="hidden" name="skuCode" value="{$skuCode}" data-component="productData" data-productdata-name="skuCode">
 			<input type="hidden" data-component="productData" data-productdata-name="atcItemId" name="atcItemId" value="{$atcItemId}">
 			{call common.skuControlSalesunit data="all" /}
