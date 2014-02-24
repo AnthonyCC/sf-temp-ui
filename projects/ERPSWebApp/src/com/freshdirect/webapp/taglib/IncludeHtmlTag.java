@@ -2,6 +2,7 @@ package com.freshdirect.webapp.taglib;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Map;
 
 import javax.servlet.jsp.JspException;
@@ -31,9 +32,19 @@ public class IncludeHtmlTag extends BodyTagSupportEx {
 				return SKIP_BODY;
 
 			FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
+			
+			StringWriter writer = new StringWriter();
+			
 			// Pass the pricing context to the template context
-			MediaUtils.render(html.getPath(), this.pageContext.getOut(), parameters, withErrorReport, user != null
+			MediaUtils.render(html.getPath(), writer, parameters, withErrorReport, user != null
 					&& user.getPricingContext() != null ? user.getPricingContext() : PricingContext.DEFAULT);
+			
+			String out = writer.toString();
+			
+			//fix media if needed
+			out = MediaUtils.fixMedia(out);
+			
+			this.pageContext.getOut().write(out);
 
 			return SKIP_BODY;
 
