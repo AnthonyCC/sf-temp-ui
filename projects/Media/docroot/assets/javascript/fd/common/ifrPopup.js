@@ -1,17 +1,39 @@
-/*global jQuery,quickshop*/
+/*global jQuery,common*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
 
   var $ = fd.libs.$;
   var POPUPWIDGET = fd.modules.common.popupWidget;
+  var maxwidth, maxheight;
+
+  var reposition = function () {
+    var $ifr = $('#ifrPopup iframe'),
+        $content = $('#ifrPopup .qs-popup-content');
+
+    try {
+      var maxHeight = $(document.body).height() * 0.8 - 50,
+          $body = $($ifr[0].contentWindow.document.body);
+
+      $body.css({
+        display:'inline-block',
+        margin:'0 auto'
+      });
+      $ifr.css({
+        width: Math.min(maxwidth || 2000, ($body.innerWidth() || $body.parent().innerWidth() || maxwidth-25) + 25),
+        height: Math.min(maxheight || 2000, maxHeight)
+      });
+    } catch(e) {
+      
+    }
+  };
 
   var ifrPopup = Object.create(POPUPWIDGET,{
     template:{
       value:common.fixedPopup
     },
     bodySelector:{
-    	value:'.qs-popup-content'
+      value:'.qs-popup-content'
     },    
     bodyTemplate: {
       value: common.ifrPopup
@@ -27,77 +49,61 @@ var FreshDirect = FreshDirect || {};
     },
     popupConfig: {
       value: {
-	    valign: 'bottom',
-	    halign: 'left',
-	    placeholder: false,
-	    stayOnClick: false,
+      valign: 'bottom',
+      halign: 'left',
+      placeholder: false,
+      stayOnClick: false,
         overlay:true
       }
     },
     open: {
       value: function (config) {
-    	  if(config.url) {
-        	  if(config.url[0]!=='/' && config.url.substr(0,4)!=='http') {
-        		  config.url="/"+config.url;
-        	  }
-        	  ifrPopup.refreshBody(config);
-        	  ifrPopup.popup.clicked=true;
-        	  ifrPopup.popup.show($('body'),false);
+        if(config.url) {
+            if(config.url[0]!=='/' && config.url.substr(0,4)!=='http') {
+              config.url="/"+config.url;
+            }
+            ifrPopup.refreshBody(config);
 
-    	  }
-    	  var $ifr = $('#ifrPopup iframe');
-    	  try {
-        	  $ifr[0].contentWindow.close = function(){
-        		  ifrPopup.popup.hide();
-        	  };    		  
-    	  } catch(e) {
-    		  
-    	  }
-    	  
-    	  try {
-        	  $ifr[0].contentWindow.resizeTo=function(width,height){
-        		  $ifr.css({
-        			  width:width+'px',
-        			  height:height+'px'
-        		  });
-        	  };
-        	  
-    		  
-    	  } catch(e) {
-    		  
-    	  }
-    	  
-    	  try {
-            var maxHeight = $(document.body).height() * 0.8 - 50;
-        	  $($ifr[0].contentWindow).on('load',function(){
-        		  var 	body = this.document.body,
-        		  		$body = $(body); 
-        		  $body.css({
-        			  display:'inline-block',
-        			  margin:'0 auto'
-        		  });
-        		  var crect = body.getBoundingClientRect();
-        		  $body.css({
-        			  	display:'block',
-            			width:crect.width+'px',
-            			height:crect.height+'px'
-        		  });
-        		  $ifr.css({
-        			  width:(crect.width+20)+'px',
-        			  height:Math.min(crect.height, maxHeight)+'px'
-        		  });
-        	  });
-    		  
-    	  } catch(e) {
-    		  
-    	  }
+            if (!ifrPopup.popup.hasOwnProperty('reposition')) {
+              ifrPopup.popup.reposition = reposition;
+            }
+            ifrPopup.popup.clicked=true;
+            ifrPopup.popup.show($('body'),false);
+
+        }
+        var $ifr = $('#ifrPopup iframe');
+        try {
+            $ifr[0].contentWindow.close = function(){
+              ifrPopup.popup.hide();
+            };          
+        } catch(e) {
+          
+        }
+        
+        try {
+            $ifr[0].contentWindow.resizeTo=function(width,height){
+              height = height || 400;
+              width = width || 400;
+
+              maxwidth = width;
+              maxheight = height;
+
+              $ifr.css({
+                height: height,
+                width: width
+              });
+
+              reposition();
+            };
+        } catch(e) {
+          
+        }
+        
       }
     }
   });
 
   ifrPopup.render();
-  
-
   
   fd.modules.common.utils.register("components", "ifrPopup", ifrPopup, fd);
 }(FreshDirect));

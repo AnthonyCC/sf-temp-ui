@@ -25,8 +25,7 @@
 	vertical-align:middle;
 	text-align:left;
 	max-height:80%;
-	overflow-y:auto;
-	overflow-x:hidden;
+	overflow:hidden;
 	display:inline-flex;
 	flex-direction:column;
 }
