@@ -1,11 +1,14 @@
 package com.freshdirect.webapp.ajax.product.data;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.TitledMedia;
 import com.freshdirect.fdstore.content.view.WebHowToCookIt;
 import com.freshdirect.fdstore.content.view.WebProductRating;
@@ -28,7 +31,12 @@ public class ProductExtraData implements Serializable {
 
 		public LabelAndLink(TitledMedia tm) {
 			this.label = tm.getMediaTitle();
-			this.link = tm.getPath();
+			try {
+				this.link = "/shared/template/plain_media_include.jsp?contentPath=" + URLEncoder.encode(tm.getPath(), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				//Fall-back to original
+				this.link = tm.getPath();
+			}
 		}
 
 		public String label;
