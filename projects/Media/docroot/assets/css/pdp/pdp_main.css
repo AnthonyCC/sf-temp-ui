@@ -262,13 +262,19 @@ span.cssbutton.annotation:hover {
 }
 
 .pdp-atcdata .skucontrol-salesunit b {
-	margin-bottom:5px;
+	display:block;
+	margin-bottom:15px;
 	font-size:12px;
 	font-family:Verdana,sans-serif;
 }
 
 .pdp-atcdata a{
 	margin-left:10px;
+}
+
+.pdp-atcdata hr{
+	margin-top:0px;
+	margin-bottom:20px;
 }
 
 
