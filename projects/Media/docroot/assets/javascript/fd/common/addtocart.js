@@ -25,13 +25,17 @@ var FreshDirect = FreshDirect || {};
 	function atcHandler(event){
 		
 		var productList = atcFilter(event.atcList),
-			request = { items:productList };
-
+			request = { items:productList },
+      eventSource = $(document.body).data('cmeventsource');
 		
 		$.extend(request,event.ATCMeta,event.cmData);
     
     if (fd.components && fd.components.atcInfo) {
       fd.components.atcInfo.setServerMessage(request.items);
+    }
+
+    if (!request.eventSource && eventSource) {
+      request.eventSource = eventSource;
     }
 
 		fd.common.dispatcher.signal('server',{
@@ -119,7 +123,7 @@ var FreshDirect = FreshDirect || {};
 
 	
 	function triggerATC(items,meta,triggerElement){
-		$(triggerElement || document).trigger({
+		$(triggerElement || document.body).trigger({
 			type:'addToCart',
 			atcList:items,
 			ATCMeta:(meta || {}),

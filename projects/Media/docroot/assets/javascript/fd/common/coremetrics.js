@@ -45,6 +45,9 @@ var FreshDirect = FreshDirect || {};
 	});
 
 	$(document.body).on('addToCart','[data-cmeventsource]',function(event){
+    if (event.cmData && event.cmData.eventSource) {
+      return;
+    }
 		populateCmData('eventSource',event);
 	});
 
