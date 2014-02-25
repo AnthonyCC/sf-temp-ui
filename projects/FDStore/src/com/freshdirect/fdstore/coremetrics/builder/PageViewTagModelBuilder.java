@@ -127,7 +127,7 @@ public class PageViewTagModelBuilder  {
 			} else if (uriAfterSlash.contains("error.jsp") || uriAfterSlash.contains("unsupported.jsp")){
 				tagModel.setCategoryId(CustomCategory.ERROR.toString());
 			
-			} else if (uriAfterSlash.contains("cart.jsp") || uriAfterSlash.contains("confirm.jsp") || uriAfterSlash.contains("quickbuy")
+			} else if (uriAfterSlash.contains("cart.jsp") || uriAfterSlash.contains("confirm.jsp") || uriAfterSlash.contains("cart_confirm_pdp.jsp") || uriAfterSlash.contains("quickbuy")
 					|| uriAfterSlash.contains("shop5.jsp") || uriAfterSlash.contains("product_modify.jsp")){
 				tagModel.setCategoryId(CustomCategory.CART.toString());
 				

@@ -6,6 +6,15 @@
  * @param? selected
  */
 {template .tabbedCarousel}
+{let $siteFeature}
+  {switch $selected}
+    {case 'yourfav'}DYF
+    {case 'deals'}DEALS_QS
+    {case 'fdfav'}FAVORITES_QS
+    {case 'expert'}EXPRATED_QS
+    {case 'custrating'}CUSTRATED_QS
+  {/switch}
+{/let}
 <div id="tabbedCarousel" class="tabbed-carousel" data-component="tabbedRecommender" data-cmeventsource="qs_tabbedRecommender">
     <ul class="tabs clearfix">
     	{if $hasYourFavoritesRecommendation}
@@ -16,7 +25,8 @@
         <li data-component="tabitem" class="{if $selected and $selected=='expert' }selected{/if}" data-tabname="expert" data-sitefeature="EXPRATED_QS">expert rated</li>
         <li data-component="tabitem" class="{if $selected and $selected=='custrating' }selected{/if}" data-tabname="custrating" data-sitefeature="CUSTRATED_QS">customer rated</li>
     </ul>
-    <div class="tab-container light-carousel" data-component="tabpanel">
+
+    <div class="tab-container light-carousel" data-component="tabpanel" data-cmSiteFeature="{$siteFeature}">
     {if $productList }
     	{call common.simpleCarousel}
     		{param items:$productList /}

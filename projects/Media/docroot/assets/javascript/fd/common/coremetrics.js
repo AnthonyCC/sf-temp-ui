@@ -37,7 +37,7 @@ var FreshDirect = FreshDirect || {};
 	
 	function populateCmData(propertyName,event){
 		var $ct = $(event.currentTarget);
-		addCmData(propertyName,$ct.data('cm'+propertyName.toLowerCase()), event);
+		addCmData(propertyName,$ct.attr('data-cm'+propertyName.toLowerCase()), event);
 	}
 	
 	$(document.body).on('addToCart','[data-cmsitefeature]',function(event){
