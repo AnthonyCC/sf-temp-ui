@@ -25,6 +25,12 @@ var FreshDirect = FreshDirect || {};
     },
     callback:{
       value:function( data ) {
+        var $ph = $(this.placeholder);
+
+        if ($ph.length === 0) {
+          $('<div id="'+this.placeholder.substr(1)+'"></div>').appendTo(document.body);
+        }
+
         this.render(data);
         this.data = data;
       }
