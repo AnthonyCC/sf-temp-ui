@@ -775,12 +775,12 @@ span.cssbutton.annotation:hover {
 }
 
 .main-image{
-	height:260px;
+	min-height:265px;
 	position:relative;
 }
 
 .pdp .main-image img{
-	max-height:260px;
+	max-width:333px;
 	cursor:url('/media_stat/pdp/zoom.png'), auto;
 }
 
