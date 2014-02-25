@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.rules;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -72,11 +73,15 @@ public class OrderMinimumCalculator {
 	}
 
 	public double getOrderMinimum(FDRuleContextI ctx) {
-		Map<?,Rule> firedRules = (Map<?,Rule>)getRulesEngine().evaluateRules(ctx);
-		//Set<Rule> rules = resolveConflicts(firedRules.values());
+		RulesEngineI rulesEngine = getRulesEngine();
 		String value = null;
-		for (Rule r : firedRules.values()) {
-			value = (String) r.getOutcome();
+
+		if (rulesEngine != null) {
+			Map<?,Rule> firedRules = (Map<?,Rule>)rulesEngine.evaluateRules(ctx);
+			//Set<Rule> rules = resolveConflicts(firedRules.values());
+			for (Rule r : firedRules.values()) {
+				value = (String) r.getOutcome();
+			}
 		}
 
 		return value == null ? 0 : Double.parseDouble(value);
