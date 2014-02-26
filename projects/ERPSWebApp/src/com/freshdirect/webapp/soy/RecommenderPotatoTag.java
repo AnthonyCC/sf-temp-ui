@@ -80,7 +80,7 @@ public class RecommenderPotatoTag extends SimpleTagSupport {
 			FDStoreRecommender recommender = FDStoreRecommender.getInstance();	  
 			
 			ContentNodeModel currentNode = null;
-			if( currentNodeKey != null && ""!=currentNodeKey) {
+			if( currentNodeKey != null && currentNodeKey.length()!=0) {
 				currentNode = ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode( currentNodeKey ));
 			}
 			
