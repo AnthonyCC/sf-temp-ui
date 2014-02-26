@@ -12,6 +12,10 @@
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
 <potato:cartConfirm name="cartConfirmPotato" cartlineId='${param.cartlineId}'/>
+<c:if test="${cartConfirmPotato == null}">
+	<jsp:forward page="/checkout/view_cart.jsp"/>
+</c:if>
+
 <potato:recommender siteFeature="DEALS_QS" name="deals" maxItems="25"  />
 <potato:recommender siteFeature="YMAL" name="ymal" maxItems="25" currentNodeKey="${cartConfirmPotato.cartLine.cmskey}"/>
 <c:set target="${deals}" property="selected" value="deals" />
