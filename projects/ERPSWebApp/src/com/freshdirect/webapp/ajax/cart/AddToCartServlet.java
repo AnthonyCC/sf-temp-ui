@@ -118,6 +118,7 @@ public class AddToCartServlet extends BaseJsonServlet {
            			// get the first successful item for cart-confirm
            			if ( item.getStatus() == Status.SUCCESS ) {
            				responseData.setRedirectUrl( "/cart_confirm_pdp.jsp?catId="+item.getCategoryId()+"&productId="+item.getProductId()+"&cartlineId="+item.getCartlineId() );
+           				break;
            			}
            		}
            	}
