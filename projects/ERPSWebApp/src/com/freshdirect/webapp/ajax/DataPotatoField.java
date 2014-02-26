@@ -13,6 +13,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -216,6 +217,9 @@ public class DataPotatoField {
 	 */
 	public static Map<String, ?> digProductAnnotations( FDUserI user, String categoryId, String productId ) {
 		// first get a ProductData for product level attributes
+		if (!FDStoreProperties.isAnnotationMode())
+			return null;
+
 		try {
 			ProductAnnotationData annotationData = ProductAnnotationDataPopulator.createAnnotationData( user, productId, categoryId );
 			
