@@ -824,6 +824,7 @@ span.cssbutton.annotation:hover {
 	width:none;
 	height:none;
 	max-height:none;
+  max-width:none;
 }
 
 #annotationPopup {
