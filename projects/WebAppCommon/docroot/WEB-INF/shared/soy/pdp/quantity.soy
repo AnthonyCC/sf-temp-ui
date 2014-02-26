@@ -10,6 +10,7 @@
   {let $hasMax: $qMax < 99 and $qMax > 0 /}
 
   {if $hasMin or $hasMax}
+    <div class="min-max-quantity">
     Note:{sp} 
 
     {if $hasMin}
@@ -23,6 +24,7 @@
     {if $hasMax}
       {sp}limit {round($qMax)}
     {/if}
+    </div>
   {/if}
 {/template}
 

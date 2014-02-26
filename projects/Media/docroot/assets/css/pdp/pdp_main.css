@@ -143,11 +143,16 @@ span.cssbutton.annotation:hover {
 	margin-top:20px;
 }
 
-.pdp .ratings {
+.pdp .ratings,
+.pdp .heatRating {
 	list-style-type:none;
 	margin:0;
 	padding:0;
 	margin-top:20px;
+}
+
+.pdp .heatRating{
+	margin:0px;
 }
 
 .pdp .ratings li:first-child {
@@ -157,10 +162,12 @@ span.cssbutton.annotation:hover {
 	margin-bottom:5px;
 }
 
+.pdp .heatRating li.heat,
 .pdp .ratings li.heat{
 	font-size:11px;
 }
 
+.pdp .heatRating li.heat a,
 .pdp .ratings li.heat a{
 	font-style:italic;
 }
@@ -227,6 +234,10 @@ span.cssbutton.annotation:hover {
 	color:#360;
 }
 
+.pdp .skucontrol-salesunit{
+	margin-bottom:15px;
+}
+
 .pdp .skucontrol-salesunit,
 .pdp .skucontrol-variations,
 #evenBetterPopup .skucontrol-salesunit,
@@ -253,6 +264,7 @@ span.cssbutton.annotation:hover {
 }
 
 .pdp-atcdata {
+	margin-top:20px;
 	margin-bottom:20px;
 	font-weight:normal;
 }
@@ -316,6 +328,7 @@ span.cssbutton.annotation:hover {
 
 .pdp-atc {
 	height:70px;
+	margin-top:20px;
 }
 
 .pdp-atc-button-wrapper {
@@ -432,6 +445,10 @@ span.cssbutton.annotation:hover {
 
 .pdp-evenbetter-quantity .subtotal b{
 	display:block;
+}
+
+.pdp-evenbetter-quantity .salesunit{
+	min-width:7em;
 }
 
 .pdp-evenbetter-atcbutton .atc-info{
@@ -640,8 +657,11 @@ span.cssbutton.annotation:hover {
 	display:inline;
 }
 
-#evenBetterPopup .skucontrol-salesunit select,
-.pdp .skucontrol-salesunit select {
+.pdp .skucontrol-salesunit select{
+	
+}
+
+#evenBetterPopup .skucontrol-salesunit select{
 	margin:10px 0;
 	text-align:left;
 }
@@ -651,7 +671,10 @@ span.cssbutton.annotation:hover {
 	margin-top:10px;
 }
 
-.pdp .skucontrol-variations-item > *:last-child,
+.pdp .skucontrol-variations-item > *:last-child{
+	margin-bottom:15px;
+}
+
 #evenBetterPopup .skucontrol-variations-item > *:last-child {
 	margin-bottom:10px;
 }
