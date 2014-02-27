@@ -19,7 +19,7 @@ public class DispatchVolumeDAO implements IDispatchVolumeDAO{
 		PreparedStatement ps = null;
 		try
 		{
-			ps = conn.prepareStatement("INSERT INTO MIS.DISPATCH_VOLUME(SNAPSHOT_TIME,DISPATCH_DATE,DISPATCH_TIME,PLANNED_CAPACITY,PLANT_CAPACITY,ORDERS,TRUCKS,ALLOCATED_ORDERS) VALUES(?,?,?,?,?,?,?,?)");
+			ps = conn.prepareStatement("INSERT INTO MIS.DISPATCH_VOLUME(SNAPSHOT_TIME,DISPATCH_DATE,DISPATCH_TIME,PLANNED_CAPACITY,PLANT_CAPACITY,ORDERS,TRUCKS,ALLOCATED_ORDERS,SHIFT) VALUES(?,?,?,?,?,?,?,?,?)");
 			
 			for(Entry<RoutingTimeOfDay, DispatchVolumeModel> dispatchEntry: dispatchMap.entrySet())
 			{
@@ -31,6 +31,7 @@ public class DispatchVolumeDAO implements IDispatchVolumeDAO{
 				ps.setInt(6, dispatchEntry.getValue().getOrderCount());
 				ps.setInt(7, dispatchEntry.getValue().getNoOftrucks());
 				ps.setInt(8, dispatchEntry.getValue().getAllocatedOrderCnt());
+				ps.setString(9,  dispatchEntry.getValue().getShift());
 				ps.addBatch();
 			}
 			ps.executeBatch();
