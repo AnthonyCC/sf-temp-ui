@@ -2,6 +2,7 @@
 
 /**
  * @param label sku label
+ * @param salesUnitDescrPDP
  * @param? packageDescription
  */
 {template .skuInfo}
@@ -10,5 +11,6 @@
 <div class="pdp-skuinfo-label"><a href="#origin" data-component="accordion-opener" data-accordion-target="pdp-source">{$label}</a></div>
 </div>
 {/if}
+<div class="pdp-configDescr">{$salesUnitDescrPDP}</div>
 {if $packageDescription}<div class="productDisplay-packageDescription">{$packageDescription}</div>{/if}
 {/template}
