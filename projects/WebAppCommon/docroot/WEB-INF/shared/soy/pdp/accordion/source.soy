@@ -23,7 +23,7 @@
 {if $source and $source.source}
 <strong>Source</strong>
 <div>
-	{if $source.grade.path} 
+	{if $source.source.path} 
 		<a href="{$source.source.path}" target="_blank" data-component="ajaxpopup" data-popup-width="560px">{$source.source.label}</a>
 	{else}
 		{$source.source.label}
