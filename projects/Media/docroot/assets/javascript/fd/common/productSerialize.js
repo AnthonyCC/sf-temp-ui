@@ -83,15 +83,16 @@ var FreshDirect = FreshDirect || {};
 	function serialize(element, collectRequired) {
 		if ($.isArray(element)) { // serialize array of quickshopitems directly instead of dom element
 			return  element.map(function(item){
-			          return {
-			            atcItemId: item.itemId,
-			            categoryId: item.catId,
-			            productId: item.productId,
-			            quantity: item.quantity.quantity,
-			            salesUnit: item.salesUnit.filter(function(su){return su.selected;})[0].id,
-			            skuCode: item.skuCode
-			          };
-			        });
+                return {
+                  atcItemId: item.itemId,
+                  categoryId: item.catId,
+                  configuration: item.configuration,
+                  productId: item.productId,
+                  quantity: item.quantity.quantity,
+                  salesUnit: item.salesUnit.filter(function(su){return su.selected;})[0].id,
+                  skuCode: item.skuCode
+                };
+              });
 		}
 		var $element = $(element),
 			multiproduct = $element.data('ref'),
