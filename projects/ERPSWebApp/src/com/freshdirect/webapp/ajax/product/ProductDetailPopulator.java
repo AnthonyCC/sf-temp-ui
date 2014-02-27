@@ -355,7 +355,7 @@ public class ProductDetailPopulator {
 		populateBursts( item, user, productModel, priceCalculator, useFavBurst );
 		populateQuantity( item, user, productModel, fdProduct, orderLine );		
 		populateScores( item, user, productModel );
-		populateLineData( item, orderLine );
+		populateLineData( item, orderLine, fdProduct, productModel, sku);
 		
 	}
 
@@ -586,7 +586,7 @@ public class ProductDetailPopulator {
 		item.setRecency(scores[1]);
 	}
 
-	private static void populateLineData( ProductData item, FDProductSelectionI lineItem ) {
+	private static void populateLineData( ProductData item, FDProductSelectionI lineItem, FDProduct product, ProductModel productModel, SkuModel sku ) {
 		
 		// orderline/cartline/productselection data
 		if ( lineItem != null ) {
@@ -599,7 +599,9 @@ public class ProductDetailPopulator {
 			}
 	
 			item.setConfigDescr( lineItem.getConfigurationDesc() );
-	
+
+			item.setSalesUnitDescrPDP( generateSalesUnitDescrPDP(product, lineItem, productModel, sku, (item.getSalesUnit() != null && item.getSalesUnit().size() > 1) ? true : false));
+
 			item.setDescription( lineItem.getDescription() );
 	
 			item.setDepartmentDesc( lineItem.getDepartmentDesc() );
@@ -609,6 +611,37 @@ public class ProductDetailPopulator {
 		}		
 	}
 	
+	private static String generateSalesUnitDescrPDP(FDProduct product, FDProductSelectionI theProduct, ProductModel productModel, SkuModel sku, boolean isMultiChoice) {
+		
+		FDSalesUnit unit = product.getSalesUnit(theProduct.getConfiguration().getSalesUnit());
+		String salesUnitDescr = unit.getDescription();
+
+		StringBuffer PDPsalesUnitDescr = new StringBuffer();
+
+		// clean sales unit description
+		if (salesUnitDescr != null) {
+			if (salesUnitDescr.indexOf("(") > -1) {
+				salesUnitDescr = salesUnitDescr.substring(0, salesUnitDescr.indexOf("("));
+			}
+			salesUnitDescr = salesUnitDescr.trim();
+			// empty descriptions, "nm" and "ea" should be ignored
+			if ((!"".equals(salesUnitDescr))
+				&& (!"nm".equalsIgnoreCase(salesUnitDescr))
+				&& (!isMultiChoice)
+				&& (!"ea".equalsIgnoreCase(salesUnitDescr))) {
+				if (!productModel.getSellBySalesunit().equals("SALES_UNIT")) {
+					PDPsalesUnitDescr.append(salesUnitDescr);
+				} else if ((productModel.getPrimarySkus().size() == 1)
+					&& (productModel.getVariationMatrix().isEmpty())
+					&& (product.getSalesUnits().length == 1)
+					&& (product.getSalesUnits()[0].getName().equalsIgnoreCase("EA"))) {
+					PDPsalesUnitDescr.append(salesUnitDescr);
+				}
+			}
+		}
+		
+		return PDPsalesUnitDescr.toString();
+	}
 	
 	public static void populatePricing( ProductData item, FDProduct fdProduct, FDProductInfo productInfo, PriceCalculator priceCalculator ) throws FDResourceException {
 	
