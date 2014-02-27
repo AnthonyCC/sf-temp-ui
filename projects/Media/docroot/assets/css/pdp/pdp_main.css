@@ -881,3 +881,8 @@ button#pdp-atc-addtolist{
 
 .pdp-atc .cssbutton[data-component="ATCButton"] {
 }
+
+.pdp-accordion-item > div > table > tbody > tr > td,
+.pdp-accordion-item > div > table > tr > td {
+  max-width: 300px;
+}
