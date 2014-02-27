@@ -14,7 +14,7 @@
 				<label for="MBRDOrder">Choose which order to modify:</label>
 				<select id="MBRDOrder">
 					{foreach $order in $orderInfos}
-						<option value="{$order.erpSalesId}">{$order.erpSalesId} - {$order.deliveryStartTime} {$order.deliveryEndTime}</option>
+						<option value="{$order.erpSalesId}">{$order.erpSalesId} - {$order.formattedDeliveryTime}</option>
 					{/foreach}
 				</select>
 			</p>
