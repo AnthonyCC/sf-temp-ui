@@ -85,8 +85,8 @@ button.cssbutton.small,
 
 
 /* Used within FF chrome to target CSS to specific URLs: being FF-specific,
-It is also useful for targeting FF-only code */
-@-moz-document url-prefix(http://) {
+It is also useful for targeting FF-only code. Targeting both http and https */
+@-moz-document url-prefix(http) {
 button.cssbutton.notext[class^="icon-"]::-moz-focus-inner,
 button.cssbutton.notext[class*=" icon-"]::-moz-focus-inner
 {
