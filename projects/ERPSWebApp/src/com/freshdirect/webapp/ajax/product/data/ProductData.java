@@ -117,6 +117,7 @@ public class ProductData extends BasicProductData implements SkuData {
 	protected boolean isConfigInvalid;
 	protected Map<String,String> configuration;
 	protected String configDescr;
+	protected String salesUnitDescrPDP;
 	protected double configuredPrice;	
 	protected String description;	
 	protected String departmentDesc;
@@ -400,6 +401,12 @@ public class ProductData extends BasicProductData implements SkuData {
 	}	
 	public String getSalesUnitDescrPopup() {
 		return salesUnitDescrPopup;
+	}
+	public String getSalesUnitDescrPDP() {
+		return salesUnitDescrPDP;
+	}
+	public void setSalesUnitDescrPDP(String salesUnitDescrPDP) {
+		this.salesUnitDescrPDP = salesUnitDescrPDP;
 	}
 	
 }
