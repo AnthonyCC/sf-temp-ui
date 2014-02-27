@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.soy;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.jsp.JspException;
@@ -12,7 +13,9 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
@@ -83,7 +86,17 @@ public class MerchantPotatoTag extends SimpleTagSupport {
 			return;
 		}
 		
-		
+		try {
+			SkuModel skuModel = PopulatorUtil.getDefSku(product);
+			if (skuModel != null && skuModel.getProduct() != null && skuModel.getProduct().isDeliveryPass()) {
+				//Ensuring that recommenders will be empty as per BRD
+				((PageContext)getJspContext()).setAttribute( upSellName, new HashMap<String, Object>() );
+				((PageContext)getJspContext()).setAttribute( crossSellName, new HashMap<String, Object>() );
+			}
+		} catch (FDException e) {
+			LOGGER.error("Error during determining DeliveryPass attribute value...");
+		}
+
 		// produce upsell list
 		if (upSellName != null) {
 			Map<String, ?> basicPotatoList = extractUpsellPotato(user, product);
