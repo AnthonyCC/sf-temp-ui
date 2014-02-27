@@ -151,65 +151,27 @@ public class ProductRecommenderUtil {
 		if (products.size() < MAX_XSELL_PRODS) {
 			// back-fill with scarab recommender
 
-//			final SessionInput si = new SessionInput(user);
-//			si.setCurrentNode(product);
-//			si.setMaxRecommendations(MAX_XSELL_PRODS*2);
-			
-			// invoke scarab recommender
-			List<ContentNodeModel> nodez = new ArrayList<ContentNodeModel>();
-			nodez.add(product);
-			
-			
-			
-			// List<ContentNodeModel> cnodes = HelperFunctions.getRelatedExternalRecommendations(nodez, "scarab1", si);
 			try {
-				final String providerName = "scarab1";
-				List<ContentNodeModel> cnodes = new ArrayList<ContentNodeModel>();
-				
-				ExternalRecommender recommender = ExternalRecommenderRegistry.getInstance(providerName, ExternalRecommenderType.RELATED);
-				List<RecommendationItem> requestItems = new ArrayList<RecommendationItem>();
-				for (ContentNodeModel node : nodez) {
-					requestItems.add(new RecommendationItem(node.getContentKey().getId()));
-				}
+				// Use YMAL_PDTL recommender
+				Recommendations r = ProductRecommenderUtil.doRecommend(
+						user, null, EnumSiteFeature.getEnum("YMAL_PDTL"),
+						MAX_XSELL_PRODS,
+						Collections.<ContentKey> emptySet(), product);
+				List<ProductModel> scarabProds = r.getAllProducts();
 
-				List<RecommendationItem> items = recommender.recommendItems(new ExternalRecommenderRequest(requestItems));
-				for (RecommendationItem item : items) {
-					ContentNodeModel node = ContentFactory.getInstance().getContentNode(item.getId());
-					if (node != null) {
-						cnodes.add(node);
-					}
-				}
+				LOGGER.debug("  [XSELL] Got " + scarabProds.size() + " recommendations ..");
+				cleanUpProducts(scarabProds, false, MAX_XSELL_PRODS);
+				LOGGER.debug("  .. " + scarabProds.size() + " are available");
 
-				// APPDEV-1633 trace nodes
-				// input.traceContentNodes(providerName, nodes);
-
-				// return nodes;
-
-			
-				// post works
-				List<ProductModel> prds2 = new ArrayList<ProductModel>();
-				for (ContentNodeModel cnode : cnodes) {
-					if (cnode instanceof ProductModel) {
-						prds2.add( (ProductModel) cnode);
-					}
-				}
-				LOGGER.debug("  [XSELL] Got " + prds2.size() + " recommendations ..");
-				cleanUpProducts(prds2, false, MAX_XSELL_PRODS);
-				LOGGER.debug("  .. " + prds2.size() + " are available");
-
-				// complement list
-				if (prds2.size() > 0) {
+				// complement static list with recomended items
+				if (scarabProds.size() > 0) {
 					int rem = MAX_XSELL_PRODS-products.size();
-					int k = Math.min(rem, prds2.size());
+					int k = Math.min(rem, scarabProds.size());
 
-					products.addAll(  prds2.subList(0, k) );
+					products.addAll(  scarabProds.subList(0, k) );
 				}
-			} catch (IllegalArgumentException e) {
-				LOGGER.error(e);
-			} catch (NoSuchExternalRecommenderException e) {
-				LOGGER.error(e);
-			} catch (ExternalRecommenderCommunicationException e) {
-				LOGGER.error(e);
+			} catch (FDResourceException e) {
+				LOGGER.error("Failed to invoke Scarab recommender", e);
 			}
 		}
 		
