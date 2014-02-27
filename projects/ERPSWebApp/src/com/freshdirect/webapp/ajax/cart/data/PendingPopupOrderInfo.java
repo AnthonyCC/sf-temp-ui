@@ -1,7 +1,10 @@
 package com.freshdirect.webapp.ajax.cart.data;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import com.freshdirect.fdstore.FDTimeslot;
 
 public class PendingPopupOrderInfo implements Serializable {
 	
@@ -34,6 +37,9 @@ public class PendingPopupOrderInfo implements Serializable {
 	}
 	public Date getDeliveryEndTime() {
 		return deliveryEndTime;
+	}
+	public String getFormattedDeliveryTime() {
+		return new SimpleDateFormat("EEEE, MM/dd/yyyy").format(requestedDate) +" "+ FDTimeslot.format(deliveryStartTime, deliveryEndTime);
 	}
 	public void setDeliveryEndTime(Date deliveryEndTime) {
 		this.deliveryEndTime = deliveryEndTime;
