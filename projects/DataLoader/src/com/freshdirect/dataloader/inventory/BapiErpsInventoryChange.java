@@ -22,6 +22,7 @@ import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.sap.SapProperties;
 import com.sap.mw.jco.JCO;
 
 public class BapiErpsInventoryChange implements BapiFunctionI {
@@ -30,17 +31,18 @@ public class BapiErpsInventoryChange implements BapiFunctionI {
 
 	public JCO.MetaData[] getStructureMetaData() {
 		JCO.MetaData metaMatList = new JCO.MetaData("MATLIST");
-		metaMatList.addInfo("MATNR", JCO.TYPE_CHAR, 18, 0, 0);
-		metaMatList.addInfo("EDATU", JCO.TYPE_DATE, 8, 18, 0);
-		metaMatList.addInfo("BMENG", JCO.TYPE_BCD, 7, 18 + 8, 3); // 13.3 BCD, length 7
-		metaMatList.addInfo("MEINS", JCO.TYPE_CHAR, 3, 18 + 8 + 7, 0);
+		metaMatList.addInfo("WERKS", JCO.TYPE_CHAR, 4, 0, 0);
+		metaMatList.addInfo("MATNR", JCO.TYPE_CHAR, 18, 4, 0);
+		metaMatList.addInfo("EDATU", JCO.TYPE_DATE, 8, 4 + 18, 0);
+		metaMatList.addInfo("BMENG", JCO.TYPE_BCD, 7, 4 + 18 + 8, 3); // 13.3 BCD, length 7
+		metaMatList.addInfo("MEINS", JCO.TYPE_CHAR, 3, 4 + 18 + 8 + 7, 0);
 
 		return new JCO.MetaData[] { metaMatList };
 	}
 
 	public JCO.MetaData getFunctionMetaData() {
 		JCO.MetaData fmeta = new JCO.MetaData("ZERPS_INVENTORY_CHANGE");
-		fmeta.addInfo("MATERIALS", JCO.TYPE_TABLE, 18 + 8 + 7 + 3, 0, 0, 0, "MATLIST");
+		fmeta.addInfo("MATERIALS", JCO.TYPE_TABLE, 4 + 18 + 8 + 7 + 3, 0, 0, 0, "MATLIST");
 		fmeta.addInfo("RETURN", JCO.TYPE_CHAR, 1, 0, 0, JCO.EXPORT_PARAMETER, null);
 		fmeta.addInfo("MESSAGE", JCO.TYPE_CHAR, 255, 0, 0, JCO.EXPORT_PARAMETER, null);
 		return fmeta;
@@ -55,19 +57,25 @@ public class BapiErpsInventoryChange implements BapiFunctionI {
 		// Map of String material -> List of entries
 		Map<String, List> matEntries = new HashMap<String, List>(materialTable.getNumRows());
 		for (int i = 0; i < materialTable.getNumRows(); i++) {
+			String plant = materialTable.getString("WERKS");
+			
 			String matNo = materialTable.getString("MATNR");
 			Date startDate = materialTable.getDate("EDATU");
 			double commitedQty = materialTable.getDouble("BMENG");
 			String salesUnit = materialTable.getString("MEINS");
-
-			LOGGER.debug(matNo + "\t" + startDate + "\t" + commitedQty + "\t" + salesUnit);
-
-			List<ErpInventoryEntryModel> entries = matEntries.get(matNo);
-			if (entries == null) {
-				entries = new ArrayList<ErpInventoryEntryModel>();
-				matEntries.put(matNo, entries);
+			
+			if(SapProperties.getPlant() != null && SapProperties.getPlant().equalsIgnoreCase(plant) ) {
+				//LOGGER.debug(plant + "\t" +  matNo + "\t" + startDate + "\t" + commitedQty + "\t" + salesUnit);
+	
+				List<ErpInventoryEntryModel> entries = matEntries.get(matNo);
+				if (entries == null) {
+					entries = new ArrayList<ErpInventoryEntryModel>();
+					matEntries.put(matNo, entries);
+				}
+				entries.add(new ErpInventoryEntryModel(startDate, commitedQty));
+			} else {
+				LOGGER.debug("Unknown Plant" + "\t" +   plant + "\t" +  matNo + "\t" + startDate + "\t" + commitedQty + "\t" + salesUnit);
 			}
-			entries.add(new ErpInventoryEntryModel(startDate, commitedQty));
 
 			materialTable.nextRow();
 		}
