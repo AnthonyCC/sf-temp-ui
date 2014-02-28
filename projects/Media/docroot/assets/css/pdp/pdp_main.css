@@ -222,7 +222,7 @@ span.cssbutton.annotation:hover {
 	color:#CB0600;
 }
 .pdp .scale-deal-text {
-	color:#360;
+	color:#333;
 }
 .pdp .scale-deal-price {
 	color:#CB0600;
@@ -300,6 +300,7 @@ span.cssbutton.annotation:hover {
 
 .pdp-ecoupon {
 	margin-bottom:5px;
+	margin-top:20px;
 	padding:5px 10px;
 	height:18px;
 }
@@ -888,4 +889,8 @@ button#pdp-atc-addtolist{
 .pdp-accordion-item > div > table > tbody > tr > td,
 .pdp-accordion-item > div > table > tr > td {
   max-width: 300px;
+}
+
+.pdp-ecoupon + .pdp-atc {
+  margin-top: 5px;
 }
