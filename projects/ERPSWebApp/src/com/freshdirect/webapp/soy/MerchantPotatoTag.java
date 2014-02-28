@@ -92,6 +92,7 @@ public class MerchantPotatoTag extends SimpleTagSupport {
 				//Ensuring that recommenders will be empty as per BRD
 				((PageContext)getJspContext()).setAttribute( upSellName, new HashMap<String, Object>() );
 				((PageContext)getJspContext()).setAttribute( crossSellName, new HashMap<String, Object>() );
+				return;
 			}
 		} catch (FDException e) {
 			LOGGER.error("Error during determining DeliveryPass attribute value...");
