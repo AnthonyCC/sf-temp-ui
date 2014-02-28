@@ -181,7 +181,7 @@ public class RoutingDataEncoder {
 		quantities.setSubtotalCategory3(null);
 		order.setQuantities(quantities);
 		
-		order.setAdditionalServiceTime(new Integer(orderModel.getServiceTime()));
+		order.setAdditionalServiceTime(orderModel.getOrderServiceTime() + orderModel.getStopServiceTime());
 				
 		return order;
 	}
