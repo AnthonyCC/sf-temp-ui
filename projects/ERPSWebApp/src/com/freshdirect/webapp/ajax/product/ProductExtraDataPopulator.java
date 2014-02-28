@@ -870,6 +870,9 @@ public class ProductExtraDataPopulator {
 
 
 	private static String fetchMedia(String mediaPath, FDUserI user, boolean quoted) throws IOException, TemplateException {
+		if (mediaPath == null)
+			return null;
+
 		Map<String,Object> parameters = new HashMap<String,Object>();
 		
 		/* pass user/sessionUser by default, so it doesn't need to be added every place this tag is used. */
