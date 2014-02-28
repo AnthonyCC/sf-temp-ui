@@ -891,6 +891,10 @@ button#pdp-atc-addtolist{
   max-width: 300px;
 }
 
+.ie8 .pdp-ecoupon{
+  margin-bottom:-25px;
+}
+
 .pdp-ecoupon + .pdp-atc {
   margin-top: 5px;
 }
