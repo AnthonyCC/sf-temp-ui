@@ -234,6 +234,10 @@ span.cssbutton.annotation:hover {
 	color:#360;
 }
 
+.pdp-info > *:last-child{
+  margin-bottom:0px;
+}
+
 .pdp .skucontrol-salesunit{
 	margin-bottom:15px;
 }
