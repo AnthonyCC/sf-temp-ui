@@ -391,7 +391,7 @@ public class ProductExtraDataPopulator {
 							.getPopupSize());
 					bi.popupWidth = popupType.getWidth();
 					bi.popupHeight = popupType.getHeight(); */
-					bi.contentPath = tm.getPath();
+					bi.contentPath = "/shared/brandpop.jsp?brandId="+bm.getContentKey().getId();
 				}
 
 				bInfo.add(bi);
