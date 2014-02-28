@@ -1024,11 +1024,11 @@ FDIdentity identity = user.getIdentity();
 <table width="100%">
 	<tr><td align="right">
 		<% /* bottom continue button */ %>
-		<form name="viewcart_bottom" id="viewcart_bottom" method="post" action="/view_cart.jsp" style="margin:0px ! important">
+		
 		<div class="right">
 			<% if(modifyOrderMode) { %><a class="imgButtonWhite cancel_updates" href="/your_account/cancel_modify_order.jsp">cancel updates</a><% } %><%@ include file="/includes/i_cart_next_step_button.jspf" %>
 		</div><div style="clear: both;"></div>
-		</form>
+		
 	</td></tr>
 	<tr><td align="right"><br /><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;<strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = State Bottle Deposit</td></tr>
 </table>
