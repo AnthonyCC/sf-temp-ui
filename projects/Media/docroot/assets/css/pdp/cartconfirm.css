@@ -1,4 +1,5 @@
-.pdp-cc {
+.pdp-cc,
+.pdp-cc h1.pdpTitle {
 	color: #333;
 }
 
@@ -29,8 +30,8 @@
 }
 
 .pdp-cc .cc-incart-info {
-	font-size: 10px;
-	margin: 0 0 10px 0;
+	font-size: 16px;
+	margin: 0 0 20px 0;
 	text-transform: uppercase;
 	font-weight: bold;
 }
