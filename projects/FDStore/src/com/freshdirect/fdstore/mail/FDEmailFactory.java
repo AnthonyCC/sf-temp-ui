@@ -152,7 +152,7 @@ public class FDEmailFactory {
 	}
 
 	public XMLEmailI createConfirmCreditEmail(FDCustomerInfo customer, String saleId, ErpComplaintModel complaint) {
-		FDConfirmCreditEmail email = new FDConfirmCreditEmail(customer, saleId, complaint);
+		FDConfirmCreditEmail email = new FDConfirmCreditEmail(customer, saleId, complaint, FDCSContactHoursUtil.getFDCSHours());
 		//email.setXslPath("h_credit_confirm_v1.xsl", "x_credit_confirm_v1.xsl");
 		
 		// get the xslpath from the email object in the complaint.
@@ -675,6 +675,7 @@ public class FDEmailFactory {
 	protected static class FDConfirmCreditEmail extends FDInfoEmail {
 		private ErpComplaintModel complaint;
 		private String saleId;
+		private List<FDCSContactHours> contactHours;
 
 		public FDConfirmCreditEmail(FDCustomerInfo customer, String saleId, ErpComplaintModel complaint) {
 			super(customer);
@@ -682,11 +683,20 @@ public class FDEmailFactory {
 			this.complaint = complaint;
 			this.getBCCList().addAll(FDStoreProperties.getIssueCreditBccAddresses());
 		}
+		
+		public FDConfirmCreditEmail(FDCustomerInfo customer, String saleId, ErpComplaintModel complaint, List<FDCSContactHours> contactHours) {
+			super(customer);
+			this.saleId = saleId;
+			this.complaint = complaint;
+			this.getBCCList().addAll(FDStoreProperties.getIssueCreditBccAddresses());
+			this.contactHours = contactHours;
+		}
 
 		protected void decorateMap(Map map) {
 			super.decorateMap(map);
 			map.put("complaint", this.complaint);
 			map.put("saleId", this.saleId);
+			map.put("contactHours", this.contactHours);
 		}
 	}
 	
