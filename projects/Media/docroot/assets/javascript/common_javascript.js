@@ -1445,8 +1445,8 @@ function checkBatch() {
 			clipPending = true;
 			/* check all other matching check boxes */
 			$jq('input[name="fdCoupon_'+couponId+'_cb"]').each(function (i, e){
-				$jq(e).prop('checked', true);
-				$jq(e).prop('disabled', true);
+				$jq(e).attr('checked', true);
+				$jq(e).attr('disabled', true);
 			});
 			$jq.ajax({
 				type: 'GET',
@@ -1462,8 +1462,8 @@ function checkBatch() {
 				error: function() {
 					/* clear check box(es) */
 					$jq('input[name="fdCoupon_'+couponId+'_cb"]:checked').each(function (i, e){
-						$jq(e).prop('checked', false);
-						$jq(e).prop('disabled', false);
+						$jq(e).attr('checked', false);
+						$jq(e).attr('disabled', false);
 					});
 				},
 				complete: function() {
