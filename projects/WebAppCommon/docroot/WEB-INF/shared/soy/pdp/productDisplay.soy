@@ -11,12 +11,16 @@
 {/template}
 
 /** 
+ * variationDisplay ensures the user can see variation configuration visually 
+ * hasVariations is weaker in terms it can contain only hidden elements
+ *
  * @param salesUnit
  * @param availMatPrices
  * @param soldBySalesUnit
  * @param salesUnitLabel
  * @param salesUnitDescrPopup
  * @param variations
+ * @param variationDisplay
  */
 {template .configWrapper}
 
@@ -32,7 +36,10 @@
 {if $salesUnitFirst or $hasVariations}
 
 <div class="pdp-atcdata">
-  <hr /> /* very importante */
+  {if $salesUnitFirst or $variationDisplay}
+    <hr /> /* very importante */
+  {/if}
+
   {if $salesUnitFirst}
      {call common.skuControlSalesunit}
       {param salesUnit:$salesUnit /}
@@ -43,7 +50,7 @@
     {/call}
   {/if}
   
-  {if not($salesUnitFirst) and $hasVariations}
+  {if not($salesUnitFirst) and $variationDisplay}
     <b style="display:block;margin-bottom:15px;font-size:12px;font-family:Verdana,sans-serif;">Please choose</b>
   {/if}
 
