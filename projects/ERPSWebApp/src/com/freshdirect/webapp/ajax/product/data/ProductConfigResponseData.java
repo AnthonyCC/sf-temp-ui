@@ -48,7 +48,8 @@ public class ProductConfigResponseData extends BasicProductData {
 		private boolean available;
 		private boolean selected;
 		private boolean defaultSku;
-		List<Variation> variations;		
+		private List<Variation> variations;		
+		private boolean variationDisplay;
 
 		// Pricing data - price basic
 		private double price;
@@ -82,6 +83,7 @@ public class ProductConfigResponseData extends BasicProductData {
 		private List<SalesUnit> salesUnit;
 		private String salesUnitLabel;
 		private boolean hasSalesUnitDescription;
+
 		
 		
 		@Override
@@ -252,6 +254,15 @@ public class ProductConfigResponseData extends BasicProductData {
 		public void setVariations( List<Variation> variations ) {
 			this.variations = variations;
 		}
+
+		@Override
+		public void setVariationDisplay(boolean variationDisplay) {
+			this.variationDisplay = variationDisplay;
+		}
+		@Override
+		public boolean isVariationDisplay() {
+			return variationDisplay;
+		}
 		@Override
 		public String getSalesUnitLabel() {
 			return salesUnitLabel;
@@ -296,7 +307,7 @@ public class ProductConfigResponseData extends BasicProductData {
 		}		
 		public void setDefaultSku( boolean defaultSku ) {
 			this.defaultSku = defaultSku;
-		}		
+		}
 		
 	}
 	

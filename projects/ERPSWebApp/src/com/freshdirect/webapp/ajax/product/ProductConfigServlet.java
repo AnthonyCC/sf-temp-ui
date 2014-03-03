@@ -210,7 +210,7 @@ public class ProductConfigServlet extends BaseJsonServlet {
 			}	        		
 		}
 		
-		skuItem.setVariations( ProductDetailPopulator.getVariations( fdProd, currentConfig ) );		
+		ProductDetailPopulator.populateSkuVariations(skuItem, ProductDetailPopulator.getVariations( fdProd, currentConfig ) );
 		skuItem.setLabel( ProductDetailPopulator.getLabel( sku ) );
 		skuItem.setPrice( fdProdInf.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice() );
 		

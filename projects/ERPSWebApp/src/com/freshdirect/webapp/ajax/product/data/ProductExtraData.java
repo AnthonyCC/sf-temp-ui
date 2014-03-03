@@ -8,7 +8,6 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.TitledMedia;
 import com.freshdirect.fdstore.content.view.WebHowToCookIt;
 import com.freshdirect.fdstore.content.view.WebProductRating;

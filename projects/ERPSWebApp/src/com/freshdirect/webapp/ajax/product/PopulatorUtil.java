@@ -27,7 +27,7 @@ public class PopulatorUtil {
 		}
 		return sku;
 	}
-	
+
 	public static final float calculateSafeMaximumQuantity( FDUserI user, ProductModel product ) {
 		float min = product.getQuantityMinimum();
 		float max = user.getQuantityMaximum( product );

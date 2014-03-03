@@ -129,6 +129,7 @@ public class ProductData extends BasicProductData implements SkuData {
 	protected boolean hasSalesUnitDescription = false;
 	protected String salesUnitDescrPopup;		
 	protected List<Variation> variations;
+	protected boolean variationDisplay;
 
 
 
@@ -366,6 +367,15 @@ public class ProductData extends BasicProductData implements SkuData {
 	public void setVariations( List<Variation> variations ) {
 		this.variations = variations;
 	}
+	@Override
+	public void setVariationDisplay(boolean variationDisplay) {
+		this.variationDisplay = variationDisplay;
+	}
+	@Override
+	public boolean isVariationDisplay() {
+		return variationDisplay;
+	}
+	
 	@Override
 	public String getSalesUnitLabel() {
 		return salesUnitLabel;

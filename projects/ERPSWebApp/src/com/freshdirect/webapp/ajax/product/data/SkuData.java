@@ -32,6 +32,10 @@ public interface SkuData {
 
 	public List<Variation> getVariations();
 
+	public boolean isVariationDisplay();
+
+	public void setVariationDisplay(boolean variationDisplay);
+
 	public void setAvailable( boolean available );
 
 	public boolean isAvailable();

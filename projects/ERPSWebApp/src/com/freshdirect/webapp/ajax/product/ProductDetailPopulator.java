@@ -61,6 +61,7 @@ import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.ajax.cart.data.CartData.Quantity;
 import com.freshdirect.webapp.ajax.cart.data.CartData.SalesUnit;
 import com.freshdirect.webapp.ajax.product.data.BasicProductData;
+import com.freshdirect.webapp.ajax.product.data.SkuData;
 import com.freshdirect.webapp.ajax.product.data.ProductConfigResponseData.VarItem;
 import com.freshdirect.webapp.ajax.product.data.ProductConfigResponseData.Variation;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
@@ -399,7 +400,7 @@ public class ProductDetailPopulator {
 
 		// Set data
 		
-		data.setVariations( getVariations( fdProduct, currentConfig ) );		
+		populateSkuVariations(data, getVariations( fdProduct, currentConfig ) );
 		data.setLabel( getLabel( sku ) );
 		
 		data.setSalesUnitLabel( product.getSalesUnitLabel() );
@@ -954,5 +955,24 @@ public class ProductDetailPopulator {
 	}
 
 
+	/**
+	 * This utility method not just populates {@link SkuData#variations} field
+	 * but also the {@link SkuData#variationDisplay} indicator
+	 *  
+	 * @param data
+	 * @param variations
+	 */
+	public static void populateSkuVariations(SkuData data, List<Variation> variations) {
+		if (data == null || variations == null)
+			return;
+
+		data.setVariations(variations);
 	
+		for (Variation v : variations) {
+			if (v.getValues() != null && v.getValues().size() > 1) {
+				data.setVariationDisplay(true);
+				break;
+			}
+		}
+	}
 }
