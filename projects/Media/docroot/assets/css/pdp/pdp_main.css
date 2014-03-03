@@ -293,6 +293,10 @@ span.cssbutton.annotation:hover {
 	margin-bottom:20px;
 }
 
+.pdp-atcdata .salesunit{
+  text-align:left;
+}
+
 
 .pdp-atc,
 .pdp-ecoupon {
