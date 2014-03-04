@@ -31,7 +31,9 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 	
 	private static final String RETURN_TRANSACTION = "06";
 	private static final String PAYMENTECH_RETURN_TX_CC = "R";
+	private static final String PAYMENTECH_RETURN_TX_CC_NEW = "RF";//Orbital reconciliation file uses RF for Credit card cashbacks.
 	private static final String PAYMENTECH_RETURN_TX_EC = "N";
+	private static final String PAYMENTECH_RETURN_TX_EC_NEW = "ER";//Orbital reconciliation file uses ER for Echeck cashbacks.
 	
 	private static final Category LOGGER = LoggerFactory.getInstance(PaymentechFINParserClient.class);
 	
@@ -133,7 +135,8 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		double chargeAmount = trans.getTransactionAmount();
 		String sequenceNumber = trans.getFDMSReferenceNumber();
 		String txCode = trans.getTransactionCode();
-		boolean refund = PAYMENTECH_RETURN_TX_CC.equals(txCode) || PAYMENTECH_RETURN_TX_EC.equals(txCode) || RETURN_TRANSACTION.equals(txCode);
+		boolean refund = PAYMENTECH_RETURN_TX_CC.equals(txCode) || PAYMENTECH_RETURN_TX_EC.equals(txCode) || 
+				RETURN_TRANSACTION.equals(txCode)||PAYMENTECH_RETURN_TX_CC_NEW.equals(txCode)|| PAYMENTECH_RETURN_TX_EC_NEW.equals(txCode);
 		ErpAffiliate aff = ErpAffiliate.getAffiliateByTxDivision(trans.getMerchantNumber());
 		
 		ErpSettlementInfo info = this.reconciliationSB.processSettlement(saleId, aff, authId, accountNumber, Math.abs(chargeAmount), sequenceNumber, ccType, refund);
