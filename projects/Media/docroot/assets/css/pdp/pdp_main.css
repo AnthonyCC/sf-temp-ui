@@ -163,6 +163,10 @@ span.cssbutton.annotation:hover {
 	margin-bottom:5px;
 }
 
+.pdp .ratings li:last-child {
+  margin-bottom:0px;
+}
+
 .pdp .heatRating li.heat,
 .pdp .ratings li.heat{
 	font-size:11px;
