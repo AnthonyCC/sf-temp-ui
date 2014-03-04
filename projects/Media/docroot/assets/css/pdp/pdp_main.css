@@ -818,12 +818,16 @@ span.cssbutton.annotation:hover {
 
 .main-image{
 	min-height:265px;
+	line-height:265px;
 	position:relative;
+  text-align:center;
 }
 
 .pdp .main-image img{
 	max-width:333px;
 	cursor:url('/media_stat/pdp/zoom.png'), auto;
+  display:inline-block;
+  vertical-align:middle;
 }
 
 /* override empty value cursor */
