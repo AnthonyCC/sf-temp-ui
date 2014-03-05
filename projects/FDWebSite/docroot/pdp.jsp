@@ -72,8 +72,7 @@ if ( productNode.isHidden() ) {
 
 %>
 
-<potato:product name="productPotato" productId='${param.productId}' categoryId='${param.catId}'/>
-<potato:productExtra  name="productExtraPotato" productId='${param.productId}' categoryId='${param.catId}'/>
+<potato:product name="productPotato" extraName="productExtraPotato" productId='${param.productId}' categoryId='${param.catId}'/>
 
 <tmpl:insert template='/common/template/pdp_template.jsp'>
 

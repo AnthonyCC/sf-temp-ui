@@ -187,7 +187,28 @@ public class DataPotatoField {
 	}
 
 
+	/**
+	 * Collect product related extra info. Mostly used by PDP accordion widgets.
+	 * @return
+	 */
+	public static Map<String, ?> digProductExtraData( FDUserI user, ProductModel product, ServletContext context ) {
+		// first get a ProductData for product level attributes
+		try {
+			ProductExtraData extraData = ProductExtraDataPopulator.createExtraData( user, product, context );
+			
+			// convert and return
+			return SoyTemplateEngine.convertToMap( extraData );
+		} catch ( FDResourceException e ) {
+			LOG.error( "Failed to get product info.", e );
+		} catch ( HttpErrorResponse e ) {
+			LOG.error( "Failed to get product info.", e );
+		} catch ( FDSkuNotFoundException e ) {
+			LOG.error( "Failed to get product info.", e );
+		}
+		return null;
+	}
 
+	
 	/**
 	 * Collect product images.
 	 * @return
@@ -232,6 +253,30 @@ public class DataPotatoField {
 		} catch ( FDSkuNotFoundException e ) {
 			LOG.error( "Failed to get product info.", e );
 		}
+		return null;
+	}
+
+
+
+
+	
+	public static Map<String, ?> digProductLight( FDUserI user, ProductModel product ) {	
+		try {
+			
+			// first get a ProductData for product level attributes
+			ProductData productData = ProductDetailPopulator.createProductDataLight( user, product );
+						
+			// convert and return
+			return SoyTemplateEngine.convertToMap( productData );
+			
+		} catch ( FDResourceException e ) {
+			LOG.error( "Failed to get product info.", e );
+		} catch ( HttpErrorResponse e ) {
+			LOG.error( "Failed to get product info.", e );
+		} catch ( FDSkuNotFoundException e ) {
+			LOG.error( "Failed to get product info.", e );
+		}
+		
 		return null;
 	}
 }

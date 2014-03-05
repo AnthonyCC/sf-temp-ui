@@ -975,4 +975,58 @@ public class ProductDetailPopulator {
 			}
 		}
 	}
+	
+	
+	/**
+	 * Produce lightweight potato data
+	 * 
+	 * @param user
+	 * @param product
+	 * 
+	 * @return
+	 * 
+	 * @throws HttpErrorResponse
+	 * @throws FDResourceException
+	 * @throws FDSkuNotFoundException
+	 */
+	public static ProductData createProductDataLight(FDUserI user, ProductModel product) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+		// Episode I - DO THE MAGIC / PREPARATIONS
+		
+		if ( !(product instanceof ProductModelPricingAdapter) ) {
+			// wrap it into a pricing adapter if naked
+			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getPricingContext() );
+		}
+
+		PriceCalculator priceCalculator = product.getPriceCalculator();		
+		if ( priceCalculator == null ) {
+			BaseJsonServlet.returnHttpError( 500, "priceCalculator does not exist for this product" );
+		}
+
+		SkuModel sku = null;
+		if (product.getSkus() != null && product.getSkus().size() > 0) {
+			// just pick the first
+			sku = product.getSku(0);
+		}
+
+		
+		// Episode II - POPULATE DATA
+		
+		// Create response data object
+		ProductData data = new ProductData();
+		
+		// Populate product basic-level data
+		populateBasicProductData( data, user, product );
+
+		// FIXME Block below is possibly ignored
+		if (sku != null) {
+			// Populate sku-level data for the default sku only
+			// populateSkuData( data, user, product, sku, null );
+
+			// Populate transient-data
+			postProcessPopulate( user, data, sku.getSkuCode() );
+		}
+		
+		return data;
+	}
+
 }

@@ -131,8 +131,20 @@ public class ProductExtraDataPopulator {
 		FDProduct fdprd = null;
 		FDProductInfo productInfo = null;
 		if (defaultSku != null) {
-			productInfo	= FDCachedFactory.getProductInfo(defaultSku.getSkuCode());
-			fdprd		= FDCachedFactory.getProduct(productInfo);
+			try {
+				productInfo	= FDCachedFactory.getProductInfo(defaultSku.getSkuCode());
+			} catch (FDResourceException e) {
+				LOG.debug(e);
+			} catch (FDSkuNotFoundException e) {
+				LOG.debug(e);
+			}
+			try {
+				fdprd		= FDCachedFactory.getProduct(productInfo);
+			} catch (FDResourceException e) {
+				LOG.debug(e);
+			} catch (FDSkuNotFoundException e) {
+				LOG.debug(e);
+			}
 		}
 
 
@@ -417,7 +429,7 @@ public class ProductExtraDataPopulator {
 			if (panel != null) {
 				// nutritionMap.put(skuCode, panel);
 				data.setNutritionPanel(panel);
-			} else if (fdprd.hasNutritionFacts()) {
+			} else if (fdprd != null && fdprd.hasNutritionFacts()) {
 				// old style
 				
 				ErpNutritionModel nutritionModel = FDNutritionCache.getInstance().getNutrition( defaultSku.getSkuCode() );

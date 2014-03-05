@@ -65,14 +65,20 @@ public class ProductAnnotationDataPopulator {
 		
 		final String skuCode = defaultSku.getSkuCode();
 		FDProductInfo productInfo	= FDCachedFactory.getProductInfo(skuCode);
-		FDProduct fdprd				= FDCachedFactory.getProduct(productInfo);
+		FDProduct fdprd				= null;
+		
+		try {
+			fdprd				= FDCachedFactory.getProduct(productInfo);	
+		} catch (FDResourceException exc) {
+		} catch (FDSkuNotFoundException exc) {
+		}
 
 		// ---- //
 		
 		Map<String,String> vdata = new HashMap<String,String>();
 		
 		vdata.put("skuCode", skuCode);
-		vdata.put("material", fdprd.getMaterial().getMaterialNumber().substring(9));
+		vdata.put("material", fdprd!=null ?fdprd.getMaterial().getMaterialNumber().substring(9) : "-");
 		vdata.put("availability", productInfo.getAvailabilityStatus().getShortDescription());
 		
 		List<DomainValue> varMtx = defaultSku.getVariationMatrix();
