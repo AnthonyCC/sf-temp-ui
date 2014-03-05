@@ -76,7 +76,9 @@ var FreshDirect = FreshDirect || {};
    * Load HD images via Image beacons
    */
   function loadHdImages(){
-    $("[data-thumbnails-trigger]").each(function(index, el){
+
+    // selects thumbnails and main image too (if they have large-images)
+    $(".pdp img[data-large-url]").each(function(index, el){
 
         var largeUrl = $(this).attr('data-large-url');
 
@@ -84,9 +86,9 @@ var FreshDirect = FreshDirect || {};
           var beacon = new Image();
           beacon.src = $(this).attr('data-large-url');
 
-          beacon.onload = function() {
-            // put it in the container
-            $("[data-thumbnails-hd]").append($(this).attr("data-hd-image", ""));
+          beacon.onload = function(){
+              // put it in the container
+              $("[data-thumbnails-hd]").append($(this).attr("data-hd-image", ""));
           };
         }
     });

@@ -7,7 +7,7 @@
 * @param images
 */
 {template .thumbnails}
-	{if $images}
+	{if $images and length($images) > 1}
 	   <p class="thumbnails" data-thumbnails>
 	    {foreach $thumb in $images}
 	      {if $thumb.url}
