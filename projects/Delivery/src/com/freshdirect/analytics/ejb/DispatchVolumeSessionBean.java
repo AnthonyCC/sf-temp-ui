@@ -107,7 +107,7 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 						if(routes!=null)
 							for(IRouteModel route:routes)
 							{
-								LOGGER.info("DPT " +schedulerId.getArea().getAreaCode()+" "+ route.getStops().size());
+								LOGGER.info("DPT " +schedulerId.getArea().getAreaCode()+" Stops: "+ route.getStops().size()+" Allocated: "+ route.getAllocatedStops().size());
 							}
 					}else{
 						LOGGER.info("Depot-"+area.getAreaCode()+" is missing active waves for delivery date ->"+deliveryDate);
@@ -281,6 +281,7 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 	private class CustomTruckScheduleInfo extends HandOffBatchDepotScheduleEx {
 		
 		List orders = null;
+		List allocatedOrder = null;
 				
 		public CustomTruckScheduleInfo(List orders, IHandOffBatchDepotScheduleEx info) {
 			super();
@@ -301,8 +302,18 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 		
 		public void addOrder(Object order) {
 			this.orders.add(order);
+		}		
+		public List getAllocatedOrder() {
+			return allocatedOrder;
 		}
-		
+
+		public void setAllocatedOrder(List allocatedOrder) {
+			this.allocatedOrder = allocatedOrder;
+		}
+
+		public void addAllocatedOrder(Object order) {
+			this.allocatedOrder.add(order);
+		}
 		public String toString() {
 			return this.getDepotArrivalTime()+ " "+this.getOriginId();
 		}
@@ -360,6 +371,19 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 				LOGGER.info("Invalid Depot Truck Schedule File : Order No:" + _order.getOrderNumber()+ " Stop D-Time->"+_order.getStopDepartureTime()+ " Schedule-> "+groupSchedule);
 				}
 			}
+			
+			Iterator itr1 = route.getAllocatedStops().iterator();
+			while(itr1.hasNext()) {
+				_order = (IRoutingStopModel)itr1.next();
+				_matchSchedule = matchSchedule(_order
+										, groupSchedule);
+				if(_matchSchedule != null) {
+					_matchSchedule.addAllocatedOrder(_order);
+				} else {
+					LOGGER.info("Invalid Depot Truck Schedule File : Allocated Order No:" + _order.getOrderNumber()+ " Allocated Stop D-Time->"+_order.getStopDepartureTime()+ " Schedule-> "+groupSchedule);
+				}
+			}
+			
 		}
 	}
 	private void doDynamicRouteAssignment(String area, List<IRouteModel> dptRoutes, List<CustomTruckScheduleInfo> groupSchedule){
@@ -412,6 +436,48 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 						LOGGER.info("Invalid Depot Truck Schedule File : Order No:" + _order.getOrderNumber()+ " Stop D-Time->"+_order.getStopDepartureTime()+ " Schedule-> "+groupSchedule);
 					}
 				}
+				
+				// Allocated orders
+				Iterator itr1 = route.getAllocatedStops().iterator();
+				while(itr1.hasNext()) {
+					_order = (IRoutingStopModel)itr1.next();
+					
+					if(currRouteId == null) {
+						currRouteId = routeID;
+					}
+				
+					if(_order.getOrderNumber() == null || _order.getOrderNumber().trim().length() == 0
+							//|| IRoutingStopModel.DEPOT_STOPNO.equalsIgnoreCase(_order.getOrderNumber())) {
+							|| _order.getOrderNumber().startsWith(IRoutingStopModel.DEPOT_STOPNO)) {
+						currDepotDeparture = _order.getStopArrivalTime();
+						continue;
+					} else if(currRouteId != null && !currRouteId.equalsIgnoreCase(routeID)) {
+						currDepotDeparture = null;
+						currRouteId = routeID;
+					}
+					if(currDepotDeparture == null) {
+						if(allowedDepartTimeDiff != 0 
+									&& RoutingDateUtil.getDiffInHours(_order.getDeliveryInfo().getDeliveryStartTime()
+																			, route.getStartTime())
+									> allowedDepartTimeDiff) {
+							_order.setStopDepartureTime(_order.getDeliveryInfo().getDeliveryStartTime());
+						} else {
+							_order.setStopDepartureTime(route.getStartTime());
+						}
+					} else {
+						_order.setStopDepartureTime(currDepotDeparture);
+					}
+					_matchSchedule = matchSchedule(_order
+													, groupSchedule
+													, route.getOriginId());
+					if(_matchSchedule != null) {
+						_order.setRoutingRouteId(routeID);
+						_matchSchedule.addAllocatedOrder(_order);
+						
+					} else {
+						LOGGER.info("Invalid Depot Truck Schedule File : Allocated Order No:" + _order.getOrderNumber()+ " Allocated Stop D-Time->"+_order.getStopDepartureTime()+ " Schedule-> "+groupSchedule);
+					}
+				}
 			}
 		
 		}
@@ -450,6 +516,19 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 						newRoute.appendRoutingRoute(_order.getRoutingRouteId());
 						newRoute.getStops().add(_order);
 						
+					}
+					
+					List allocatedOrders = route.getAllocatedOrder();
+					
+					Iterator itr1 = allocatedOrders.iterator();
+					
+					intStopCount = 0;
+					
+					while (itr1.hasNext()) {
+						_order = (IRoutingStopModel) itr1.next();
+						intStopCount++;
+						_order.setStopNo(intStopCount);
+						newRoute.getAllocatedStops().add(_order);
 					}
 				}
 			return result;
