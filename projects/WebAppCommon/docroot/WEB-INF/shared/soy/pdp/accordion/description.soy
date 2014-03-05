@@ -72,15 +72,15 @@
  */
 {template .descriptionText}
 {if $productDescription}
-	<div class="pdp-accordion-description-description">{$productDescription|noAutoescape}
+	<div class="pdp-accordion-description pdp-accordion-description-description">{$productDescription|noAutoescape}
 	</div>
 {/if}
 {if $productDescriptionNote}
-	<div class="pdp-accordion-description-note">{$productDescriptionNote|noAutoescape}</div>
+	<div class="pdp-accordion-description pdp-accordion-description-note">{$productDescriptionNote|noAutoescape}</div>
 {/if}
 {if $productAboutMedia}
-	<strong>More About This Product</strong>
-	<div class="pdp-accordion-description-about">{$productAboutMedia|noAutoescape}</div>
+	<strong class="pdp-accordion-description">More About This Product</strong>
+	<div class="pdp-accordion-description pdp-accordion-description-about">{$productAboutMedia|noAutoescape}</div>
 {/if}
 {/template}
 

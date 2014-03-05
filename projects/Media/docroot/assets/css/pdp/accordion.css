@@ -102,6 +102,13 @@
 	margin-top:0;
 }
 
+/* class used in unavailable pages too */
+.pdp-accordion-description{
+	font-size:12px;
+	color:#999;
+	font-family:Verdana,sans-serif;
+}
+
 .pdp-accordion-item td>strong,
 .pdp-accordion-item>div>strong,
 .pdp-accordion-description-media strong{
