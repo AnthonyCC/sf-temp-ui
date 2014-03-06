@@ -881,11 +881,11 @@ public class FilteringNavigator {
 
 			//category.jsp
 			if (!"".equalsIgnoreCase(catId)) {
-				buf.append("catId=" + catId);
+				buf.append("catId=" + catId + "&amp;");
 			}
 				
 			// search terms
-			buf.append("&amp;searchParams=");
+			buf.append("searchParams=");
 			// buf.append(safeURLEncode(searchTerms, "ISO-8859-1"));
 			// buf.append(StringUtil.escapeUri(searchTerms));
 			buf.append(safeURLEncode(searchTerm));
