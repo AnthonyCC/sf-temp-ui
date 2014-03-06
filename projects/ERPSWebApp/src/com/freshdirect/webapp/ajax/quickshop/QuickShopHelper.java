@@ -259,7 +259,7 @@ public class QuickShopHelper {
 		// === POPULATE ===
 		
 		ProductDetailPopulator.populateBasicProductData( item, user, productModel );
-		ProductDetailPopulator.populateProductData( item, user, productModel, skuModel, latestFdProduct, priceCalculator, productSelection, true );
+		ProductDetailPopulator.populateProductData( item, user, productModel, skuModel, latestFdProduct, priceCalculator, productSelection, true, true );
 		ProductDetailPopulator.populatePricing( item, latestFdProduct, latestFdProductInfo, priceCalculator );
 		
 		populateOrderLineData( item, productSelection );
@@ -312,7 +312,7 @@ public class QuickShopHelper {
 			PriceCalculator priceCalculator = productModel.getPriceCalculator();
 			
 			ProductDetailPopulator.populateBasicProductData( item, user, productModel );
-			ProductDetailPopulator.populateProductData( item, user, productModel, skuModel, fdProduct, priceCalculator, null, useFavBurst );
+			ProductDetailPopulator.populateProductData( item, user, productModel, skuModel, fdProduct, priceCalculator, null, useFavBurst, true );
 			ProductDetailPopulator.populatePricing( item, fdProduct, productInfo, priceCalculator );
 			
 			try {

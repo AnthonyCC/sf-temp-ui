@@ -190,7 +190,7 @@ public class ProductDetailPopulator {
 		populateBasicProductData( data, user, product );
 		
 		// Populate product level data
-		populateProductData( data, user, product, sku, fdProduct, priceCalculator, lineData, true );
+		populateProductData( data, user, product, sku, fdProduct, priceCalculator, lineData, true, false );
 		
 		// Populate pricing data
 		populatePricing( data, fdProduct, productInfo, priceCalculator );
@@ -323,6 +323,8 @@ public class ProductDetailPopulator {
 		return data;
 	}
 
+	
+	
 	/**
 	 * Populates product level data.
 	 * 
@@ -334,9 +336,10 @@ public class ProductDetailPopulator {
 	 * @param priceCalculator
 	 * @param orderLine
 	 * @param useFavBurst
+	 * @param useFavBurst
 	 */
-	public static void populateProductData( ProductData item, FDUserI user, ProductModel productModel, SkuModel sku, FDProduct fdProduct, PriceCalculator priceCalculator, FDProductSelectionI orderLine, boolean useFavBurst ) {
-		
+	public static void populateProductData( ProductData item, FDUserI user, ProductModel productModel, SkuModel sku, FDProduct fdProduct, PriceCalculator priceCalculator, FDProductSelectionI orderLine, boolean useFavBurst, boolean usePrimaryHome ) {
+
 		if ( sku.isUnavailable() ) {
 			item.setAvailable( false );
 			// if unavailable add product replacements
@@ -347,8 +350,7 @@ public class ProductDetailPopulator {
 			item.setAvailable( true );
 		}
 		
-		// FIXME: why always the primary home??
-		item.setCatId( productModel.getPrimaryHome().getContentKey().getId() );
+		item.setCatId( usePrimaryHome ? productModel.getPrimaryHome().getContentKey().getId() : productModel.getCategory().getContentName() );
 		item.setSkuCode( sku.getSkuCode() );
 		item.setCustomizePopup( !productModel.isAutoconfigurable() );
 		

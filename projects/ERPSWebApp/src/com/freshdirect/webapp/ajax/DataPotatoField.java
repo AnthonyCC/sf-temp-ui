@@ -14,6 +14,10 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.EnumTemplateType;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -61,7 +65,7 @@ public class DataPotatoField {
 			CartConfirmData confirmData = new CartConfirmData();
 			confirmData.setSubTotal( JspMethods.formatPrice( cart.getSubTotal() ) );
 			confirmData.setLineTotal( JspMethods.formatPrice( cartLine.getPrice() ) );
-			confirmData.setBackUrl( FDURLUtil.getCategoryURI( cartLine.getCategoryName(), null ) );
+			confirmData.setBackUrl( FDURLUtil.getCategoryURI( getBackUrl(cartLine.getCategoryName()), "confcatlink" ) );
 			confirmData.setEditUrl( CARTLINE_MODIFY_URL+ "?cartLine=" + cartLineId );
 			
 			confirmData.setCartLine( SoyTemplateEngine.convertToMap( productData ) );
@@ -79,6 +83,27 @@ public class DataPotatoField {
 		return null;
 	}
 
+	/** replicates logic from i_cart_confirm_bottom.jspf **/
+	private static String getBackUrl(String parentCategoryId){
+		if (parentCategoryId!=null){
+			ContentNodeModel topCategory = ContentFactory.getInstance().getContentNode(parentCategoryId);
+	
+			if (topCategory != null && topCategory instanceof CategoryModel) {
+				//wine should not go up to top level category
+				if (! EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(((CategoryModel)topCategory).getTemplateType(1)))) {
+				
+					// find top category of product
+					while (topCategory != null && topCategory.getParentNode() instanceof CategoryModel) {
+						topCategory = topCategory.getParentNode();
+					}
+				}
+				
+				return topCategory.getContentName();
+			}
+		}
+		return null;
+	}
+	
 	public static Map<String, ?> digProduct( FDUserI user, ProductModel product ) {	
 		try {
 			
