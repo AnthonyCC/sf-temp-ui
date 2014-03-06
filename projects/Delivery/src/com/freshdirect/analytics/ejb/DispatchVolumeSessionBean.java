@@ -547,7 +547,7 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 					
 					if(_schInfo.getOriginId() != null &&
 							routeOriginId != null && routeOriginId.equalsIgnoreCase(_schInfo.getOriginId())) {
-						if(_schInfo.getDepotArrivalTime().after(order.getStopDepartureTime())) {
+						if(order.getStopDepartureTime() != null && _schInfo.getDepotArrivalTime().after(order.getStopDepartureTime())) {
 							break;
 						} else {
 							_preSchInfo = _schInfo;
@@ -568,7 +568,7 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 										
 				while(_itrSchedule.hasNext()) {
 					_schInfo = (CustomTruckScheduleInfo)_itrSchedule.next();
-						if(_schInfo.getDepotArrivalTime().after(order.getStopDepartureTime())) {
+						if(order.getStopDepartureTime() != null && _schInfo.getDepotArrivalTime().after(order.getStopDepartureTime())) {
 							break;
 						} else {
 							_preSchInfo = _schInfo;
