@@ -35,7 +35,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  *
  */
 public class FDAttributeFactory {
-	
+
 	private final static Logger LOGGER = LoggerFactory.getInstance(FDAttributeFactory.class);
 
 	/**
@@ -99,6 +99,7 @@ public class FDAttributeFactory {
 		return Collections.EMPTY_LIST;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static <X> X lookup( ContentNodeModel node, String attribName, X defValue ) {
 		Object value = node.getCmsAttributeValue( attribName );
 		if ( value instanceof ContentKey ) {
@@ -124,7 +125,7 @@ public class FDAttributeFactory {
 					types.add(cKey.getType().getName());
 				}
 				if (types.isEmpty())
-					return null; // no 
+					return EMPTY_LIST_BUILDER;
 				if (types.size() > 1) {
 					// FIXME this scenario should really throw an exception
 					// for now, we'll just log the offending caller
@@ -171,5 +172,12 @@ public class FDAttributeFactory {
 		typeMap.put("Boolean", new PrimitiveBuilder());
 		typeMap.put("String", new PrimitiveBuilder());
 	}
+
+	private final static FDAttributeBuilderI EMPTY_LIST_BUILDER = new FDAttributeBuilderI() {
+		@Override
+		public Object constructValue(AttributeDefI cmsAttrDef, Object value) {
+			return Collections.EMPTY_LIST;
+		}
+	};
 
 }
