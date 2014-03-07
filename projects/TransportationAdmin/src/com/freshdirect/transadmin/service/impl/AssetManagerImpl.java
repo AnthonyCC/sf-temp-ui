@@ -229,14 +229,16 @@ public class AssetManagerImpl
 				List<AssetActivity> employeeScannedAssets = assetMapping.get(asset.getEmployeeId());
 				boolean foundScannedAsset = false;
 				if(employeeScannedAssets != null && employeeScannedAssets.size() > 0) {
-					for(AssetActivity _resAsset : employeeScannedAssets) {
+					for(Iterator<AssetActivity> itr = employeeScannedAssets.iterator();itr.hasNext();)  
+			        { 
+						AssetActivity _resAsset = itr.next();
 						if(asset.getAssetNo().equals(_resAsset.getAssetNo()) 
 								&& asset.getScannedTime().after(_resAsset.getScannedTime())) {							
 							foundScannedAsset = true;
-							assetMapping.get(asset.getEmployeeId()).remove(_resAsset);
+							itr.remove();						
 							assetMapping.get(asset.getEmployeeId()).add(asset);
 						}
-					}
+			        }
 					if(!foundScannedAsset) {
 						assetMapping.get(asset.getEmployeeId()).add(asset);
 					}
