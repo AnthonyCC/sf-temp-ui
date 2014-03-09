@@ -348,7 +348,7 @@ public class OrderController extends BaseController {
 			if(projectedList != null) {
 				for (ListIterator<OrderRateVO> i = projectedList.listIterator(); i.hasNext();) {
 					OrderRateVO _orderRate = i.next();
-					projectedOrderCnt = projectedOrderCnt + (int)_orderRate.getProjectedRate();
+					projectedOrderCnt = projectedOrderCnt + Math.round(_orderRate.getProjectedRate());
 				}
 			}
 			summary.setProjectedOrderCnt(projectedOrderCnt);		

@@ -90,6 +90,12 @@ public class PlantDispatchService implements IPlantDispatchService {
 										: Math.round((float)(data.getCumlPlannedCapacity() * pmUtilizationFactor)));
 						data.setProductionCapacity(data.getPlantCapacity() - data.getProjectedOrders());
 						data.setCumlTrucks(data.getTrucks() + cumlTrucks);
+						if(data.getPlantCapacity() > 0) {
+							data.setCurrentUtilization(Math.round((float)((double) data.getCumlOrders() / data.getPlantCapacity()) * 100));
+						} else {
+							data.setCurrentUtilization(0);
+						}
+						data.setLiveSpareCapacity(data.getPlantCapacity() - data.getCumlOrders());
 						
 						cumlPlannedCapacity += data.getPlannedCapacity();
 						cumlOrders += data.getOrders();

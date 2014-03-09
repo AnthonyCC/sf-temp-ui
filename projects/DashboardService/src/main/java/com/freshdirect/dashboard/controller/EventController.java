@@ -1,20 +1,23 @@
 package com.freshdirect.dashboard.controller;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.drools.util.codec.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,7 @@ import com.freshdirect.dashboard.model.ForecastModel;
 import com.freshdirect.dashboard.model.RollData;
 import com.freshdirect.dashboard.service.IEventService;
 import com.freshdirect.dashboard.service.IOrderService;
+import com.freshdirect.dashboard.util.Base64Decode;
 import com.freshdirect.dashboard.util.DateUtil;
 import com.freshdirect.dashboard.util.OrderRateUtil;
 
@@ -39,7 +43,7 @@ import com.freshdirect.dashboard.util.OrderRateUtil;
 @RequestMapping("/event")
 public class EventController extends BaseController {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(EventController.class);
+	private static final Logger logger = LoggerFactory.getLogger(EventController.class);
 	
 	@Autowired
 	private IEventService eventService;
@@ -147,7 +151,7 @@ public class EventController extends BaseController {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			LOGGER.error("getForecast: "+ e.getMessage());
+			logger.error("getForecast: "+ e.getMessage());
 			throw new ServiceException(ErrorCodeEventEnum.UNKNOWN_ERROR, 
 					"Failed to load event data");
 		}
@@ -188,6 +192,30 @@ public class EventController extends BaseController {
 		response.setHeader("Cache-Control", "max-age=0");
 		response.setContentLength((int)outputFile.length());
 		FileCopyUtils.copy(new FileInputStream(outputFile), response.getOutputStream());
+		response.getOutputStream().close();
+    }
+    
+    @RequestMapping(value = "/exportchart", method = RequestMethod.POST)
+    public void exportchart(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    	String dataUri = request.getParameter("data-uri");
+    	if (dataUri != null && !"".equals(dataUri)) {
+    		// string off header, and coming from the request param, + is
+    		// changed to a space, change it back (otherwise you get Illegal
+    		// character in Base64 encoded data)
+    		dataUri = dataUri.replace("data:image/png;base64,", "").replace(" ", "+");
+    		
+    		logger.info("dataUri:" + dataUri);    		
+    		InputStream input = new ByteArrayInputStream(Base64Decode.decode(dataUri));
+    		response.setContentType ("image/png");
+    		response.setHeader ("Content-Disposition", "attachment; filename=\"chart.png\"");
+    								
+    		BufferedImage img = null;
+    		img = ImageIO.read(input);
+    		ImageIO.write(img, "png", new File(System.getProperty("user.home") + "/Desktop/chart.png"));
+    		response.getOutputStream().close();
+    	} else {
+    		logger.info("Invalid datauri param.");
+    	}
     }
 
 }

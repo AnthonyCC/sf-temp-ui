@@ -22,6 +22,9 @@ public class PlantDispatchData {
 	private int projectedOrders;
 	private int productionCapacity;
 	
+	private int currentUtilization;
+	private int liveSpareCapacity;
+	
 	public Date getDispatchTime() {
 		return dispatchTime;
 	}
@@ -100,6 +103,18 @@ public class PlantDispatchData {
 	public void setShift(String shift) {
 		this.shift = shift;
 	}
+	public int getCurrentUtilization() {
+		return currentUtilization;
+	}
+	public void setCurrentUtilization(int currentUtilization) {
+		this.currentUtilization = currentUtilization;
+	}
+	public int getLiveSpareCapacity() {
+		return liveSpareCapacity;
+	}
+	public void setLiveSpareCapacity(int liveSpareCapacity) {
+		this.liveSpareCapacity = liveSpareCapacity;
+	}
 	public String getDispatchTimeEx() {
 		if(this.getDispatchTime() != null) {
 			try {
@@ -111,5 +126,4 @@ public class PlantDispatchData {
 		}
 		return null;
 	}
-	
 }
