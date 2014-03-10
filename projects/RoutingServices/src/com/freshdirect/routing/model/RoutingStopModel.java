@@ -144,8 +144,8 @@ public class RoutingStopModel extends OrderModel implements IRoutingStopModel, C
 				.append(this.getDeliveryInfo().getDeliveryLocation() != null
 						&& this.getDeliveryInfo().getDeliveryLocation().getBuilding() != null
 							? this.getDeliveryInfo().getDeliveryLocation().getBuilding().getZipCode() : "")
-				.append(" Stop A-Time: ").append(this.getStopArrivalTime())
-				.append(" Stop D-Time: ").append(this.getStopDepartureTime());
+				.append(" Stop A-Time: ").append(this.getStopArrivalTime() != null ? this.getStopArrivalTime() : "")
+				.append(" Stop D-Time: ").append(this.getStopDepartureTime() != null ? this.getStopDepartureTime() : "");
 	
 		return buf.toString();
 	}
