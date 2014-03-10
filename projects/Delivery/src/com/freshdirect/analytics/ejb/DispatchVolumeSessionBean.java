@@ -104,11 +104,6 @@ public class DispatchVolumeSessionBean extends SessionBeanSupport {
 							}
 						}
 						routes = tmpRoutes;
-						if(routes!=null)
-							for(IRouteModel route:routes)
-							{
-								LOGGER.info("DPT " +schedulerId.getArea().getAreaCode()+" Stops: "+ route.getStops().size()+" Allocated: "+ route.getAllocatedStops() != null ? route.getAllocatedStops().size() : 0);
-							}
 					}else{
 						LOGGER.info("Depot-"+area.getAreaCode()+" is missing active waves for delivery date ->"+deliveryDate);
 					}

@@ -131,12 +131,22 @@ public class RoutingStopModel extends OrderModel implements IRoutingStopModel, C
 	
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
-		buf.append("Order No: ").append(this.getOrderNumber()).append(" Sequence No: ").append(this.getStopNo())
-									.append(" Address: ").append(this.getDeliveryInfo().getDeliveryLocation().getBuilding().getSrubbedStreet())
-															.append(",").append(this.getDeliveryInfo().getDeliveryLocation().getBuilding().getZipCode())
-									.append(" Stop A-Time: ").append(this.getStopArrivalTime())
-									.append(" Stop D-Time: ").append(this.getStopDepartureTime());
-		
+		buf.append("Order No: ")
+				.append(this.getOrderNumber() != null ? this.getOrderNumber() : "")
+				.append(" Sequence No: ")
+				.append(this.getStopNo())
+				.append(" Address: ")
+				.append(this.getDeliveryInfo() != null
+						&& this.getDeliveryInfo().getDeliveryLocation() != null
+						&& this.getDeliveryInfo().getDeliveryLocation().getBuilding() != null 
+							? this.getDeliveryInfo().getDeliveryLocation().getBuilding().getSrubbedStreet()	: "")
+				.append(",")
+				.append(this.getDeliveryInfo().getDeliveryLocation() != null
+						&& this.getDeliveryInfo().getDeliveryLocation().getBuilding() != null
+							? this.getDeliveryInfo().getDeliveryLocation().getBuilding().getZipCode() : "")
+				.append(" Stop A-Time: ").append(this.getStopArrivalTime())
+				.append(" Stop D-Time: ").append(this.getStopDepartureTime());
+	
 		return buf.toString();
 	}
 
