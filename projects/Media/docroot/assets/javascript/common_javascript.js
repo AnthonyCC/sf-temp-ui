@@ -350,64 +350,6 @@ function changeColors(currentId, currentCss){
   document.getElementById(currentId).className="case_selected_header";
 }
 
- 
- 
- /*****************************************************************/
-
-/**
- * Support for document loaded event
- * @author segabor
- * 
- * This snippet is based on a part of Prototype source code
- * See: http://prototypejs.org
- */
-(function() {
-  /* Support for the DOMContentLoaded event is based on work by Dan Webb,
-     Matthias Miller, Dean Edwards and John Resig. */
-
-  var timer, fired = false;
-
-  function fireContentLoadedEvent() {
-    if (fired) return;
-    if (timer) window.clearInterval(timer);
-    /// document.fire("dom:loaded");
-	if (typeof(document.onDocumentLoaded) == "function") {
-		document.onDocumentLoaded();
-	    fired = true;
-	}
-
-  }
-
-  if (document.addEventListener) {
-    if (navigator.userAgent.indexOf('AppleWebKit/') > -1) {
-      timer = window.setInterval(function() {
-        if (/loaded|complete/.test(document.readyState))
-          fireContentLoadedEvent();
-      }, 0);
-
-      /// Event.observe(window, "load", fireContentLoadedEvent);
-      if (window.addEventListener) {
-        window.addEventListener("onload", fireContentLoadedEvent, false);
-      } else {
-        window.attachEvent("onload", fireContentLoadedEvent);
-      }
-
-    } else {
-      document.addEventListener("DOMContentLoaded",
-        fireContentLoadedEvent, false);
-    }
-
-  } else {
-    document.write("<script id=__onDOMContentLoaded defer src=//:><\/script>");
-    document.getElementById("__onDOMContentLoaded").onreadystatechange = function() {
-      if (this.readyState == "complete") {
-        this.onreadystatechange = null;
-        fireContentLoadedEvent();
-      }
-    };
-  }
-})();
-
 /* this functionality is in the popupcart.js!!! 
 function updateYourCartPanel() {}
 */

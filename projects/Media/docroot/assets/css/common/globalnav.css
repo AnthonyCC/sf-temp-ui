@@ -79,8 +79,85 @@
 }
 
 #topInputFindButton {
-	width: 35px;
-	height: 14px; 
+	width: 41px;
+	height: 17px; 
 	border: 0; 
-	padding: 3px 3px;
+	padding: 0;
+  text-transform: uppercase;
+  font-size: 10px
 }
+
+/* nav sprite */
+
+div.spritediv {
+  display: inline-block;
+  overflow: hidden;
+  text-indent: -200%;
+  text-align: left;
+}
+
+/* glue: 0.9.2 hash: 478ca93a1a */
+.sprite-nav-header_border_right,.sprite-nav-header_border_left,.sprite-nav-nav_button_search,.sprite-nav-mobile_apps,.sprite-nav-at_the_office,.sprite-nav-footer_border_right,.sprite-nav-footer_border_left{
+    background-image:url('/media_stat/images/navigation/nav.png');
+    background-repeat:no-repeat;
+}
+
+.sprite-nav-header_border_right{
+    background-position:0 0;
+    width:11px;
+    height:50px;
+}
+
+.sprite-nav-header_border_left{
+    background-position:-11px 0;
+    width:11px;
+    height:50px;
+}
+
+.sprite-nav-nav_button_search{
+    background-position:-22px 0;
+    width:46px;
+    height:11px;
+}
+
+.sprite-nav-mobile_apps{
+    background-position:-22px -11px;
+    width:25px;
+    height:36px;
+}
+
+.sprite-nav-at_the_office{
+    background-position:-68px 0;
+    width:22px;
+    height:36px;
+}
+
+.sprite-nav-footer_border_right{
+    background-position:-47px -11px;
+    width:11px;
+    height:22px;
+}
+
+.sprite-nav-footer_border_left{
+    background-position:0 -50px;
+    width:11px;
+    height:22px;
+}
+
+
+@media screen and (-webkit-min-device-pixel-ratio: 1.0), screen and (min--moz-device-pixel-ratio: 1.0),screen and (-o-min-device-pixel-ratio: 100/100),screen and (min-device-pixel-ratio: 1.0),screen and (min-resolution: 1.0dppx){
+    .sprite-nav-header_border_right, 
+    .sprite-nav-header_border_left, 
+    .sprite-nav-nav_button_search, 
+    .sprite-nav-mobile_apps, 
+    .sprite-nav-at_the_office, 
+    .sprite-nav-footer_border_right, 
+    .sprite-nav-footer_border_left
+    {
+        background-image:url('/media_stat/images/navigation/nav.png');
+        -webkit-background-size: 90px 72px;
+        -moz-background-size: 90px 72px;
+        background-size: 90px 72px;
+    }
+}
+/* end of nav sprite */

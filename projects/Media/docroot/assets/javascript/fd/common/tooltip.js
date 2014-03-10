@@ -1,7 +1,7 @@
-/*global YAHOO */
+/*global jQuery*/
 var FreshDirect = FreshDirect || {};
 
-(function (fd) {
+(function (fd, $) {
   /**
    * Tooltip for links and such with HTML content.
    *
@@ -14,40 +14,42 @@ var FreshDirect = FreshDirect || {};
    *    - offset: the gap between the element and the tooltip
    */
   var Tooltip = function (el, config) {
-    this.el = el;
+    this.el = $(el);
     this.config = fd.modules.common.utils.extend({}, Tooltip.DEFAULT_CONFIG, config);
     this.config.content = this.getContent();
     this.node = null;
 
-    YAHOO.util.Event.addListener(this.el, "mouseover", this.show, null, this);
-    YAHOO.util.Event.addListener(this.el, "mouseout", this.hide, null, this);
+    this.el.on("mouseover", this.show.bind(this));
+    this.el.on("mouseout", this.hide.bind(this));
   };
 
   Tooltip.prototype.createNode = function () {
     if (!!this.node) {
       return this.node;
     }
-    this.node = document.createElement("div");
+    this.node = $('<div>');
 
-    YAHOO.util.Dom.addClass(this.node, this.config.cssClass);
-    YAHOO.util.Dom.addClass(this.node, "tooltip_" + this.config.orientation);
+    this.node.addClass(this.config.cssClass);
+    this.node.addClass("tooltip_" + this.config.orientation);
 
-    YAHOO.util.Dom.setStyle(this.node, 'display', 'none');
-    YAHOO.util.Dom.setStyle(this.node, 'position', 'absolute');
-    YAHOO.util.Dom.setStyle(this.node, 'z-index', '1000');
+    this.node.css({
+      display: 'none',
+      position: 'absolute',
+      zIndex: 1000
+    });
 
     this.arrow = document.createElement("span");
     this.arrow.className = "arrow";
-    this.node.appendChild(this.config.content);
-    this.node.appendChild(this.arrow);
-    document.body.appendChild(this.node);
+    this.node.append(this.config.content);
+    this.node.append(this.arrow);
+    this.node.appendTo(document.body);
 
     return this.node;
   };
 
   Tooltip.prototype.reposition = function () {
-    var elregion = YAHOO.util.Dom.getRegion(this.el),
-        myregion = YAHOO.util.Dom.getRegion(this.node),
+    var elregion = this.el.first()[0].getBoundingClientRect(),
+        myregion = this.node.first()[0].getBoundingClientRect(),
         top, bottom, left, right;
 
     // Position based on orientation
@@ -56,35 +58,41 @@ var FreshDirect = FreshDirect || {};
       left = (elregion.left + (elregion.width / 2) - (myregion.width / 2)) + "px";
     } else { // top
       top = 'auto';
-      top = (elregion.top - this.config.offset - myregion.height) + "px";
-      left = (elregion.left + (elregion.width / 2) - (myregion.width / 2)) + "px";
+      top = (document.body.scrollTop + elregion.top - this.config.offset - myregion.height) + "px";
+      left = (document.body.scrollLeft + elregion.left + (elregion.width / 2) - (myregion.width / 2)) + "px";
     }
 
-    YAHOO.util.Dom.setStyle(this.node, 'top', top);
-    YAHOO.util.Dom.setStyle(this.node, 'left', left);
+    this.node.css({
+      top: top,
+      left: left
+    });
   };
 
   Tooltip.prototype.show = function () {
     this.createNode();
-    YAHOO.util.Dom.setStyle(this.node, 'display', 'block');
+    this.node.css({
+      display: 'block'
+    });
     this.reposition();
   };
 
   Tooltip.prototype.hide = function () {
     if (!!this.node) {
-      YAHOO.util.Dom.setStyle(this.node, 'display', 'none');
+      this.node.css({
+        display: 'none'
+      });
     }
   };
 
   Tooltip.prototype.getContent = function () {
-    var next = YAHOO.util.Dom.getNextSibling(this.el),
+    var next = this.el.next(),
         title;
     if (typeof(this.config.content) === "string") {
       return document.createTextNode(this.config.content);
-    } else if (YAHOO.util.Dom.hasClass(next, 'tooltipcontent')) {
-      return this.el.parentElement.removeChild(next);
-    } else if (!!(title = YAHOO.util.Dom.getAttribute(this.el, 'title'))) {
-      YAHOO.util.Dom.setAttribute(this.el, 'title', "");
+    } else if (next.hasClass('tooltipcontent')) {
+      return next.remove();
+    } else if (!!(title = this.el.attr('title'))) {
+      this.el.attr('title', "");
       return document.createTextNode(title);
     }
   };
@@ -97,14 +105,14 @@ var FreshDirect = FreshDirect || {};
 
   // register in fd namespace
   fd.modules.common.utils.register("modules.common", "Tooltip", Tooltip, fd);
-}(FreshDirect));
+}(FreshDirect, jQuery));
 
 // module initialization
-(function () {
-  var els = YAHOO.util.Dom.getElementsByClassName('hastooltip'),
+(function ($) {
+  var els = $('.hastooltip'),
       tooltip, i;
 
   for (i = 0; i < els.length; i++) {
     tooltip = new FreshDirect.modules.common.Tooltip(els[i]);
   }
-}());
+}(jQuery));

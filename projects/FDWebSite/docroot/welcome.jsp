@@ -4,6 +4,7 @@
 <fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" /><%
 
 request.setAttribute("listPos", "SystemMessage,WDelivery,WAffiliate");
+request.setAttribute("noyui", true);
 
 %><tmpl:insert template="/common/template/page_template_optimized.jsp">
 	<tmpl:put name="title">FreshDirect</tmpl:put>

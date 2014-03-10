@@ -7,56 +7,6 @@
 	box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
   	z-index: 1002;
 }
-.qs-popup-header {
-	background: #e8d7ec;
-	font-size: 15px;
-	font-weight: bold;
-	color: #764077;
-	text-shadow: 1px 1px #fff;
-	height: 30px;
-	line-height: 30px;
-	padding: 0 30px 0 10px;
-	margin: 0;
-	position: relative;
-}
-.qs-popup-help-icon,
-.qs-popup-close-icon {
-	position: absolute;
-	top: 7px;
-	right: 7px;
-	width: 15px;
-	height: 15px;
-	padding: 0;
-	border: none;
-	background: url(/media_stat/images/quickshop/button-help.png) no-repeat;
-	text-indent: 200%;
-	overflow: hidden;
-	cursor: pointer;
-}
-.qs-popup-close-icon {
-  display: none;
-	top: 5px;
-	width: 18px;
-	height: 18px;
-	background: url(/media_stat/images/quickshop/button-close.png) no-repeat;
-}
-.qs-hidehelp .qs-popup-help-icon {
-  display: none;
-}
-.qs-hasclose .qs-popup-close-icon {
-  display: block;
-}
-.qs-hasclose .qs-popup-help-icon {
-  right: 40px;
-}
-.qs-popup-content {
-	padding: 25px 15px 15px 20px;
-	position:relative;
-}
-.qs-popup-content p {
-	margin: 0;
-}
-
 .qs-popup-content #addtolist-selectList {
 	width:200px;
 }

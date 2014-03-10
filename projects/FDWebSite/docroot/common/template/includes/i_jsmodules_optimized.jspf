@@ -6,11 +6,3 @@
 <jwr:script src="/fdmodules.js"  useRandomParam="false" />
 <jwr:script src="/fdcomponents.js"  useRandomParam="false" />
 <!-- jwr:script src="/locabar.js"  useRandomParam="false" / -->
-
-	  <%-- Bazaarvoice --%>
-  
-  <% 
-  if(FDStoreProperties.isBazaarvoiceEnabled()){
-  	String bvapiUrl = FDStoreProperties.getBazaarvoiceBvapiUrl(); %>
-  	<script type="text/javascript" src="<%= bvapiUrl %>"></script>
-  <% } %>

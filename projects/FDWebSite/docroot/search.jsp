@@ -104,14 +104,10 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	<tmpl:put name="startPage"><%= nav.getSearchTerm()==null || nav.getSearchTerm().length()==0 ? "startpage" : "resultpage" %></tmpl:put>
 
 	<tmpl:put name="content-header">
-		<form class="span-17 last"><span id="searchinput-wrapper" class="middle"><input type="text" name="searchParams" id="searchinput" class="top" autocomplete="off" value="<%= nav.getSearchTerm() %>"/></span><input type="submit" value="search" id="searchbutton" class="button middle brown_bg white bold"/></form>
+		<form class="span-17 last"><span id="searchinput-wrapper" class="middle"><input type="text" name="searchParams" id="searchinput" class="top" data-component="autocomplete" autocomplete="off" value="<%= nav.getSearchTerm() %>"/></span><input type="submit" value="search" id="searchbutton" class="button middle brown_bg white bold"/></form>
 		<fd:CmPageView wrapIntoScriptTag="true" searchTerm="<%=search.getSearchTerm()%>" searchResultsSize="<%=search.getProducts().size()%>" suggestedTerm="<%=search.getSuggestedTerm()%>" recipeSearchResultsSize="<%=search.getRecipes().size()%>"/>
 		<fd:CmElement wrapIntoScriptTag="true" elementCategory="search_filter" searchNavigator="<%= nav %>" />
 		<fd:CmElement wrapIntoScriptTag="true" elementCategory="search_sort" searchNavigator="<%= nav %>" />
-		<% if (FDStoreProperties.isSearchGlobalnavAutocompleteEnabled()) { %>
-		<div id="searchTerms" class="termsStyle" style="position: absolute; background-color: white"></div>
-		<script type="text/javascript">YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory(null, "searchTerms", "searchinput"));</script>
-		<% } %>
 	</tmpl:put>
 
 

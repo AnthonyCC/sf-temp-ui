@@ -1,4 +1,3 @@
-/*global YAHOO */
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {

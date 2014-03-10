@@ -58,7 +58,7 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 
 	} else { //non-recognized user
 		String shortAddress = LocationHandlerTag.formatAddressShortText(selectedAddress);
-		%><tmpl:put name="address"><span class="text"><%="".equals(shortAddress) ?  "" : "("+shortAddress+")" %></span> <span id="newzip"><input type="text" id="newziptext" class="placeholder" placeholder="change zip code" maxlength="5"><button id="newzipgo">go</button></span></tmpl:put><%		
+		%><tmpl:put name="address"><span class="text"><%="".equals(shortAddress) ?  "" : "("+shortAddress+")" %></span> <span id="newzip"><input type="text" id="newziptext" class="placeholder" placeholder="change zip code" maxlength="5"><button id="newzipgo" class="cssbutton orange">go</button></span></tmpl:put><%		
 	}
 %>
 <tmpl:put name="zipdisplay"><tmpl:get name="zipcode" /> <tmpl:get name="address" /></tmpl:put>
@@ -72,14 +72,14 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 </tmpl:put>
 
 <tmpl:put name="loginButton">
-	<button class="loginButton" id="locabar_loginButton">login</button>
+	<button class="loginButton cssbutton green" id="locabar_loginButton">log in</button>
 </tmpl:put>
-<tmpl:put name="logoutButton"><button onclick="window.location='/logout.jsp';" class="logoutButton">logout</button></tmpl:put>
+<tmpl:put name="logoutButton"><button onclick="window.location='/logout.jsp';" class="logoutButton cssbutton khaki">logout</button></tmpl:put>
 <tmpl:put name="signupButton"><% 
 	if(FDStoreProperties.isLightSignupEnabled()) { 
-		%><button class="signUpButton" onclick="doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/signup_lite.jsp\' width=\'480px\' height=\'590px\' frameborder=\'0\' ></iframe>', '<span class=\'text12\' style=\'color: #000; margin-left: -12px;\'><strong>Already have a password? <a href=\'/login/login.jsp\' onclick=\'window.top.location=this.href;return false;\' style=\'text-decoration:none;\'>Log in now</a></strong></span>')">signup</button><% 
+  %><button class="signUpButton cssbutton khaki" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/registration/signup_lite.jsp', width: 480, height: 590}) } else { doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/signup_lite.jsp\' width=\'480px\' height=\'590px\' frameborder=\'0\' ></iframe>', '<span class=\'text12\' style=\'color: #000; margin-left: -12px;\'><strong>Already have a password? <a href=\'/login/login.jsp\' onclick=\'window.top.location=this.href;return false;\' style=\'text-decoration:none;\'>Log in now</a></strong></span>') }">sign up</button><% 
 	} else { 
-		%><button class="signUpButton" onclick="window.location='/registration/signup.jsp';">signup</button><% 
+		%><button class="signUpButton cssbutton khaki" onclick="window.location='/registration/signup.jsp';">sign up</button><% 
 	} 
 %></tmpl:put>
 <%

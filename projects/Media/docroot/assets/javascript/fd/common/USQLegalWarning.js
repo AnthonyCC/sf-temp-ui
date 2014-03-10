@@ -1,8 +1,9 @@
-if (typeof FreshDirect == "undefined" || !FreshDirect) {
+if (typeof FreshDirect === "undefined" || !FreshDirect) {
     var FreshDirect = {};
 }
 
-(function ($) {
+if (window.YAHOO) {
+(function ($, YAHOO) {
 	var USQLegalWarning = FreshDirect.USQLegalWarning || {};
 	
 	FreshDirect.USQLegalWarning = USQLegalWarning;
@@ -256,4 +257,5 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			   
 		return null;	
 	};
-})(jQuery);
+})(jQuery, window.YAHOO);
+}

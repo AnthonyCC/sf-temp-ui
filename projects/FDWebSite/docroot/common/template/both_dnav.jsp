@@ -26,6 +26,11 @@ final int W_BOTH_DNAV_RIGHT = 191;
     <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 		<%@ include file="/shared/template/includes/ccl.jspf" %>
+    <% 
+    if(FDStoreProperties.isBazaarvoiceEnabled()){
+      String bvapiUrl = FDStoreProperties.getBazaarvoiceBvapiUrl(); %>
+      <script type="text/javascript" src="<%= bvapiUrl %>"></script>
+    <% } %>
 <%
     {
        String onbeforeunload = (String)request.getAttribute("windowOnBeforeUnload");

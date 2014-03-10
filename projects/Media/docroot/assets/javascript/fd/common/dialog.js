@@ -1,4 +1,3 @@
-/*global YAHOO */
 var FreshDirect = FreshDirect || {};
 
 (function (fd, $) {
@@ -110,5 +109,23 @@ var FreshDirect = FreshDirect || {};
 		};
 	
 	fd.modules.common.utils.register("modules.common", "dialog", dialog, fd);
+
+  // partial Modalbox support
+  if (!window.Modalbox) {
+    window.Modalbox = {
+      show: function (content, options){
+        var width = (options && options.width) || 400,
+            height = (options && options.height) || 400;
+
+        dialog.open({
+          width: width,
+          height: height,
+          html: content
+        });
+      },
+      hide: function () {
+      }
+    };
+  }
 }(FreshDirect, jQuery));
 

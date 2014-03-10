@@ -87,6 +87,12 @@ if ( productNode.isHidden() ) {
 			</td>
 	    </tmpl:put>
     	<tmpl:put name="extraJs">
+        <%-- Bazaarvoice --%>
+        <% 
+        if(FDStoreProperties.isBazaarvoiceEnabled()){
+          String bvapiUrl = FDStoreProperties.getBazaarvoiceBvapiUrl(); %>
+          <script type="text/javascript" src="<%= bvapiUrl %>"></script>
+        <% } %>
     	</tmpl:put>
 	    <tmpl:put name='deptnav' direct='true'>
 		    <% try { %><%@ include file="/common/template/includes/deptnav.jspf" %><% } catch (Exception ex) {ex.printStackTrace();} %>
@@ -94,8 +100,14 @@ if ( productNode.isHidden() ) {
 	    </tmpl:put>
     <% } else { %>
     	<tmpl:put name="extraJs">
-			<fd:javascript src="/assets/javascript/wine.js"/>
-			<fd:javascript src="/assets/javascript/wine-nav.js"/>	
+        <fd:javascript src="/assets/javascript/wine.js"/>
+        <fd:javascript src="/assets/javascript/wine-nav.js"/>	
+        <%-- Bazaarvoice --%>
+        <% 
+        if(FDStoreProperties.isBazaarvoiceEnabled()){
+          String bvapiUrl = FDStoreProperties.getBazaarvoiceBvapiUrl(); %>
+          <script type="text/javascript" src="<%= bvapiUrl %>"></script>
+        <% } %>
     	</tmpl:put>
     	<tmpl:put name="deptnav" direct="true">	
     	</tmpl:put>

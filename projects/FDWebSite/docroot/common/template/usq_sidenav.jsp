@@ -27,6 +27,11 @@ final int W_WINE_SIDENAV_RIGHT = 191;
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
 	<tmpl:get name='facebookmeta'/>
+  <% 
+  if(FDStoreProperties.isBazaarvoiceEnabled()){
+    String bvapiUrl = FDStoreProperties.getBazaarvoiceBvapiUrl(); %>
+    <script type="text/javascript" src="<%= bvapiUrl %>"></script>
+  <% } %>
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">

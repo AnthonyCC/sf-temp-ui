@@ -125,12 +125,16 @@ final int W_FOOTER_TOTAL = 970;
 			<% } %>
 			<div style="float:left; width:1px; height:40px; margin: 0px 12px 0px 0px" class="dotted_separator_v"></div>
 			<div style="float:left">
-				<a href="/category.jsp?catId=mobile&trk=bnav"><img style="float: left" src="/media_stat/images/navigation/footer_parts_w/mobile_apps.gif" width="25" height="36" alt="Our Mobile Apps"/></a>
+				<a href="/category.jsp?catId=mobile&trk=bnav">
+          <div class="spritediv sprite-nav-mobile_apps" style="float: left;">Our Mobile Apps</div>
+        </a>
 				<a href="/category.jsp?catId=mobile&trk=bnav" style="padding: 10px 5px 0px 5px; float: left">Our Mobile Apps</a>
 			</div>
 			<div style="float:left; width:1px; height:40px; margin: 0px 12px" class="dotted_separator_v"></div>
 			<div style="float:left">
-				<a href="/department.jsp?deptId=COS&trk=bnav"><img style="float: left" src="/media_stat/images/navigation/footer_parts_w/at_the_office.gif" width="22" height="36" alt="At The Office"/></a>
+				<a href="/department.jsp?deptId=COS&trk=bnav">
+          <div class="spritediv sprite-nav-at_the_office" style="float: left;">At The Office</div>
+        </a>
 				<a href="/department.jsp?deptId=COS&trk=bnav" style="padding: 10px 5px 0px 5px; float: left">At The Office</a>
 			</div>
 			<div style="float:left; width:1px; height:40px; margin: 0px 10px" class="dotted_separator_v"></div>
