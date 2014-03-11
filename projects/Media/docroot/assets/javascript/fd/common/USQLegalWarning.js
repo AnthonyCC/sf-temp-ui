@@ -94,7 +94,7 @@ if (window.YAHOO) {
 				close: true, 
 				visible: true,
 				modal: true,
-				zIndex: 250,
+				zIndex: 10000,
 				draggable: false}
 			);
 			
