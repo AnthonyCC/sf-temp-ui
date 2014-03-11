@@ -11,6 +11,9 @@
       if (form) {
         form.submit();
       }
+    },
+    open: function (e, ui) {
+      $(this).autocomplete('widget').css('z-index', 100);
     }
   });
 }(jQuery));
