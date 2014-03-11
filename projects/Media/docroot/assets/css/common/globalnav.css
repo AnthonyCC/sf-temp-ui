@@ -92,7 +92,7 @@
 div.spritediv {
   display: inline-block;
   overflow: hidden;
-  text-indent: -200%;
+  text-indent: -9999em;
   text-align: left;
 }
 
