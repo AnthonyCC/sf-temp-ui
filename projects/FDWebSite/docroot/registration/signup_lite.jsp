@@ -92,6 +92,9 @@
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0" style="overflow: auto">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 	<center>
+  <div style="text-align: left; width: 450px; margin-bottom: 12px;" class="text12">
+    <b>Already have a password? <a href="javascript:(window.parent || window).location.href='/login/login.jsp'; return false;">Log in now</a></b>
+  </div>
 	<%
 		String email = NVL.apply(request.getParameter(EnumUserInfoName.EMAIL.getCode()), "");
 		String repeat_email = NVL.apply(request.getParameter(EnumUserInfoName.REPEAT_EMAIL.getCode()), "");

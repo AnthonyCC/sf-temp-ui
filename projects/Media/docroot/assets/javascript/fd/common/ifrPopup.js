@@ -49,15 +49,19 @@ var FreshDirect = FreshDirect || {};
     },
     popupConfig: {
       value: {
-      valign: 'bottom',
-      halign: 'left',
-      placeholder: false,
-      stayOnClick: false,
+        valign: 'bottom',
+        halign: 'left',
+        placeholder: false,
+        stayOnClick: false,
+        zIndex: 10001,
         overlay:true
       }
     },
     open: {
       value: function (config) {
+
+        ifrPopup.popup.$overlay.css('opacity', config.opacity || 0);
+
         if(config.url) {
             if(config.url[0]!=='/' && config.url.substr(0,4)!=='http') {
               config.url="/"+config.url;
