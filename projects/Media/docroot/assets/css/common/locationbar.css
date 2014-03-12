@@ -73,6 +73,11 @@
 	width:90px;
 }
 
+#newzipgo {
+	height:15px;
+	/*vertical-align:top;*/
+}
+
 #locationbar .address select {
 	width:225px;
 	font-size:11px;
@@ -120,18 +125,22 @@
 
 	#newzipgo {
 		width: 40px;
+		background-image:url(/media_stat/images/locationbar/button_go.png);
 	}
 	
 	#locationbar .loginButton {
 		width: 68px;
+		background-image:url(/media_stat/images/locationbar/button_login.png);
 	}
 	
 	#locationbar .logoutButton {
 		width: 70px;
+		background-image:url(/media_stat/images/locationbar/button_logout.png);
 	}
 
 	#locationbar .signUpButton {
 		width:85px;
+		background-image:url(/media_stat/images/locationbar/button_signup.png);
 	}
 
 	#locationbar .loginButton,
@@ -140,18 +149,36 @@
 	#newzipgo
 	{
 		display:inline-block;
-    line-height: 15px;
-    font-size: 10px;
+		height:15px;
 		margin-right:8px;
 		text-decoration:none;
 		overflow:hidden;
-    text-transform: uppercase;
+		text-indent:90px;
+		background-position:top left;
 		vertical-align:middle;
 		border: 0 none;
 		cursor: pointer;
-    padding: 0;
+		background-color: transparent;
 	}
 
+
+	#locationbar .logoutButton:hover,
+	#locationbar .loginButton:hover,
+	#locationbar .signUpButton:hover,
+	#newzipgo:hover
+	{
+		background-position:0 -15px;
+	}
+	
+
+	#locationbar .logoutButton:active,
+	#locationbar .loginButton:active,
+	#locationbar .signUpButton:active,
+	#newzipgo:active
+	{
+		background-position:0 top;
+	}
+	
 
 #locationbar .buttons label {
 		padding-right:8px;
@@ -323,6 +350,7 @@
 }
 #locationbar .loginButtonTab {
 	z-index: 10002;
+  		background-image: url("/media_stat/images/locationbar/button_login_tab.png");
 }
 .loginButton {
 	border: 0 none;
