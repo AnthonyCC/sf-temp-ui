@@ -12,7 +12,7 @@ var FreshDirect = FreshDirect || {};
         $content = $('#ifrPopup .qs-popup-content');
 
     try {
-      var maxHeight = $(document.body).height() * 0.8 - 50,
+      var maxHeight = $(document.body).height() * 0.95 - 50,
           $body = $($ifr[0].contentWindow.document.body);
 
       $body.css({
