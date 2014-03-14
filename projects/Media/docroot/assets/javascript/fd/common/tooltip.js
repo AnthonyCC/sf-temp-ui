@@ -51,6 +51,8 @@ var FreshDirect = FreshDirect || {};
     var elregion = this.el.first()[0].getBoundingClientRect(),
         myregion = this.node.first()[0].getBoundingClientRect(),
         top, bottom, left, right;
+    
+    var elregion_offset = $(this.el.first()[0]).offset();
 
     // Position based on orientation
     if (this.config.orientation === 'bottom') {
@@ -58,8 +60,8 @@ var FreshDirect = FreshDirect || {};
       left = (elregion.left + (elregion.width / 2) - (myregion.width / 2)) + "px";
     } else { // top
       top = 'auto';
-      top = (document.body.scrollTop + elregion.top - this.config.offset - myregion.height) + "px";
-      left = (document.body.scrollLeft + elregion.left + (elregion.width / 2) - (myregion.width / 2)) + "px";
+      top = elregion_offset.top - this.config.offset - myregion.height + "px";
+      left = elregion_offset.left + (elregion.width / 2) - (myregion.width / 2) + "px";
     }
 
     this.node.css({
