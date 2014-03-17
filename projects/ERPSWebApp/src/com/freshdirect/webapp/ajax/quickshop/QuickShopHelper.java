@@ -74,7 +74,6 @@ public class QuickShopHelper {
 		List<QuickShopLineItemWrapper> result = new ArrayList<QuickShopLineItemWrapper>();
 		
 		List<FDProductSelectionI> items = FDListManager.getQsSpecificEveryItemEverOrderedList(user.getIdentity());
-		limitOrderNumber(items);
 		
 		if(items==null || items.isEmpty()){
 			return result;
@@ -103,6 +102,8 @@ public class QuickShopHelper {
 		Collections.sort(orderDates);
 		Collections.reverse(orderDates);
 		setLastOrderFlag(result, orderDates.get(0));
+		
+		limitOrderNumber(result);
 
 		return result;
 
@@ -113,16 +114,16 @@ public class QuickShopHelper {
 	 * 
 	 * limit the displayed number of orders
 	 */
-	private static void limitOrderNumber(List<FDProductSelectionI> items){
+	private static void limitOrderNumber(List<QuickShopLineItemWrapper> items){
 		
 		Collections.sort(items, START_DATE_COMPARATOR);
 		
 		Set<String> orderIds = new HashSet<String>();
 		
-		Iterator<FDProductSelectionI> it = items.iterator();
+		Iterator<QuickShopLineItemWrapper> it = items.iterator();
 		
 		while(it.hasNext()){
-			FDProductSelectionI item = it.next();
+			QuickShopLineItemWrapper item = it.next();
 			String orderId = item.getOrderId();
 			if(!orderIds.contains(orderId)){
 				orderIds.add(orderId);
@@ -135,10 +136,10 @@ public class QuickShopHelper {
 	}
 	
 	/** Sort items by delivery start date */
-	private final static Comparator<FDProductSelectionI> START_DATE_COMPARATOR = new Comparator<FDProductSelectionI>() {
+	private final static Comparator<QuickShopLineItemWrapper> START_DATE_COMPARATOR = new Comparator<QuickShopLineItemWrapper>() {
 		@Override
-		public int compare(FDProductSelectionI o0, FDProductSelectionI o1) {
-			return o1.getDeliveryStartDate().compareTo(o0.getDeliveryStartDate());
+		public int compare(QuickShopLineItemWrapper o0, QuickShopLineItemWrapper o1) {
+			return o1.getDeliveryDate().compareTo(o0.getDeliveryDate());
 		}
 	};
 	
