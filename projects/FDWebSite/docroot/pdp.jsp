@@ -43,6 +43,15 @@ boolean isWine = EnumTemplateType.WINE.equals( productNode.getTemplateType() );
 request.setAttribute("sitePage", productNode.getPath());
 request.setAttribute("listPos", "SystemMessage,ProductNote");
 
+//[redirection] Alcohol alert -> redirect health warning page %>
+<fd:IsAlcoholic noProduct="true">
+	<%
+	if( ((CategoryModel)productNode.getParentNode()).isHavingBeer() /*&& !yser.isHealthWarningAcknowledged()*/){
+	    String redirectURL = "/health_warning.jsp?successPage=/pdp.jsp"+URLEncoder.encode("?"+request.getQueryString());
+	    response.sendRedirect(response.encodeRedirectURL(redirectURL));
+	    return;
+	}%>
+</fd:IsAlcoholic>
 
 //REDIRECT to the redirect-url IF there is any
 String redirectURL = productNode.getRedirectUrl();
