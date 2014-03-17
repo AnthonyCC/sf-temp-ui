@@ -3,9 +3,13 @@ package com.freshdirect.webapp.ajax.quickshop;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -70,6 +74,7 @@ public class QuickShopHelper {
 		List<QuickShopLineItemWrapper> result = new ArrayList<QuickShopLineItemWrapper>();
 		
 		List<FDProductSelectionI> items = FDListManager.getQsSpecificEveryItemEverOrderedList(user.getIdentity());
+		limitOrderNumber(items);
 		
 		if(items==null || items.isEmpty()){
 			return result;
@@ -102,6 +107,40 @@ public class QuickShopHelper {
 		return result;
 
 	}
+	
+	/**
+	 * @param items
+	 * 
+	 * limit the displayed number of orders
+	 */
+	private static void limitOrderNumber(List<FDProductSelectionI> items){
+		
+		Collections.sort(items, START_DATE_COMPARATOR);
+		
+		Set<String> orderIds = new HashSet<String>();
+		
+		Iterator<FDProductSelectionI> it = items.iterator();
+		
+		while(it.hasNext()){
+			FDProductSelectionI item = it.next();
+			String orderId = item.getOrderId();
+			if(!orderIds.contains(orderId)){
+				orderIds.add(orderId);
+			}
+			
+			if(orderIds.size()>FDListManager.QUICKSHOP_ORDER_LIMIT){
+				it.remove();
+			}
+		}
+	}
+	
+	/** Sort items by delivery start date */
+	private final static Comparator<FDProductSelectionI> START_DATE_COMPARATOR = new Comparator<FDProductSelectionI>() {
+		@Override
+		public int compare(FDProductSelectionI o0, FDProductSelectionI o1) {
+			return o1.getDeliveryStartDate().compareTo(o0.getDeliveryStartDate());
+		}
+	};
 	
 	private static void setLastOrderFlag(List<QuickShopLineItemWrapper> items, Date last){
 		for(QuickShopLineItemWrapper item : items){

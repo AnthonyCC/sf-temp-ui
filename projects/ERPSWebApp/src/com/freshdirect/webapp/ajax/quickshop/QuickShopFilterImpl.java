@@ -147,7 +147,7 @@ public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>
 						menu.get(filter).get(key).setCounter( counter );
 						
 						//change ALL - PAST YEAR label in case of order limitation
-						if(EnumQuickShopFilteringValue.TIME_FRAME_ALL == filter && counter==FDListManager.QUICKSHOP_ORDER_LIMIT){
+						if(EnumQuickShopFilteringValue.TIME_FRAME_ALL == filter && counter>=FDListManager.QUICKSHOP_ORDER_LIMIT){
 							menu.get(filter).get(key).setName("LAST " + FDListManager.QUICKSHOP_ORDER_LIMIT + " ORDERS");
 						}
 						
