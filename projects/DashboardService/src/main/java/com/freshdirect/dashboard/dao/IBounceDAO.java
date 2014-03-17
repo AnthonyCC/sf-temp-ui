@@ -15,6 +15,9 @@ public interface IBounceDAO {
 	
 	Map<String, Map<Date, Integer>> getCustomerSoldOutWindowCnt(final String deliveryDate) throws SQLException;	
 	
+	Map<String, Map<Date, Integer>> getSOWByZone(final String deliveryDate) throws SQLException;
+	
 	public List<BounceData> getBounceByZone(final String deliveryDate, final String zone);	
+	
 
 }

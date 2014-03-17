@@ -46,6 +46,12 @@ public class OrderService implements IOrderService {
 	  LOGGER.debug("Running projection rule logic - projection Route");
 	  try {
 		ruleRunner.executeSuggestedActionRule(projectionLst);
+		if(projectionLst != null) {
+			for(ProjectedUtilizationBase _pu : projectionLst){
+				if(_pu.getResourceCnt() <= 0)
+					_pu.setSuggestedAction(null);
+			}
+		}
 	} catch (Exception e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -98,6 +104,14 @@ public class OrderService implements IOrderService {
 		} catch(SQLException e) {
 			throw new FDServiceException(e, IIssue.ORDERRATE_DATA_ERROR);
 		}		
+	}
+	
+	public Set<Date> getExceptions() throws FDServiceException {
+		try {
+			return orderRateDAO.getExceptions();
+		} catch(SQLException e) {
+			throw new FDServiceException(e, IIssue.ORDERRATE_DATA_ERROR);
+		}
 	}
 	
 	public List<OrderRateVO> getForecast(String deliveryDate, String zone,

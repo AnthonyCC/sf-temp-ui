@@ -16,6 +16,8 @@ public interface IEventService {
 
 	Map<String, Map<Date, Integer>> getCustomerSoldOutWindowCnt(String deliveryDate) throws FDServiceException;
 	
+	Map<String, Map<Date, Integer>> getSOWByZone(String deliveryDate) throws FDServiceException;
+	
 	List<BounceData> getBounceByZone(String deliveryDate, String zone);
 
 	List<RollData> getRollByZone(String deliveryDate, String zone);	

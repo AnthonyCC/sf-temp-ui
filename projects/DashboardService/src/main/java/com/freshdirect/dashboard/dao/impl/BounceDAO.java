@@ -179,6 +179,57 @@ public class BounceDAO implements IBounceDAO  {
 	}
     
     
+    private static final String GET_SOW_SELECT = "SELECT x.zone_code zone, x.CUTOFF_TIME cutoff, (ROUND ((x.TOTAL_ALLOC / x.CAPACITY) * 100)) as totalAllocation_perc "+
+    		" FROM  ( "+
+            "  SELECT z.zone_code, TS.CUTOFF_TIME, TS.START_TIME, TS.END_TIME, TS.CAPACITY, "+
+            "   (SELECT COUNT (*) FROM dlv.reservation WHERE  timeslot_id = ts.id  AND status_code <> '15' AND status_code <> '20' AND (chefstable = ' ' OR chefstable = 'X')  AND class IS NULL) "+
+            "      AS total_alloc "+
+            "  FROM dlv.timeslot ts, dlv.zone z "+
+            " WHERE     ts.zone_id = z.id "+
+            "   AND ts.base_date = TO_DATE (?, 'mm/dd/yyyy') "+
+            "   AND ts.capacity <> 0 "+
+            "   ORDER BY z.zone_code, TS.CUTOFF_TIME "+
+            " ) X";
+	
+    public Map<String, Map<Date, Integer>> getSOWByZone(final String deliveryDate) throws SQLException {
+		
+		final Map<String, Map<Date, Integer>> result = new HashMap<String, Map<Date, Integer>>();
+	
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(
+					Connection connection) throws SQLException {
+				PreparedStatement ps = connection
+						.prepareStatement(GET_SOW_SELECT);
+				ps.setString(1, deliveryDate);
+				return ps;
+			}
+		};
+		jdbcTemplate.query(creator, new RowCallbackHandler() {
+			public void processRow(ResultSet rs) throws SQLException {
+				do {
+					String zone = rs.getString("zone");
+					Date cutoff = new Date(rs.getTimestamp("cutoff").getTime());
+					int allocationPerc = rs.getInt("totalAllocation_perc");
+					
+					if(!result.containsKey(zone)){
+						result.put(zone, new HashMap<Date, Integer>());
+					}
+					if(!result.get(zone).containsKey(cutoff)){
+						result.get(zone).put(cutoff, 0);
+					}
+					if(allocationPerc > 90) {
+						result.get(zone).put(cutoff, result.get(zone).get(cutoff).intValue() + 1);
+					}
+					
+				} while (rs.next());
+			}
+		});
+		    	
+		return result;		
+	}
+    
+    
+    
 	private static final String BOUNCE_SELECT = "  SELECT createdate, "+
 			 " zone, "+
 			 "  cutoff, "+

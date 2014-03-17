@@ -57,6 +57,15 @@ public class EventService implements IEventService {
 			throw new FDServiceException(e, IIssue.BOUNCE_DATA_ERROR);
 		}
 	}
+	
+	public Map<String, Map<Date, Integer>> getSOWByZone(String deliveryDate) throws FDServiceException {
+		
+		try {
+			return bounceDAO.getSOWByZone(deliveryDate);
+		} catch(SQLException e) {
+			throw new FDServiceException(e, IIssue.BOUNCE_DATA_ERROR);
+		}
+	}
 		
 	public List<BounceData> getBounceByZone(String deliveryDate,String zone) {
 		

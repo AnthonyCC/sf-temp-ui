@@ -2,6 +2,7 @@ package com.freshdirect.dashboard.controller;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -76,6 +78,7 @@ public class OrderController extends BaseController {
 			Map<String, Map<Date, Integer>> realtimeBounceMap = eventService.getRealTimeBounceByZone(deliveryDate);			
 			Map<String, Map<Date, Integer>> customerVisitMap = eventService.getCustomerVisitCnt(deliveryDate);
 			Map<String, Map<Date, Integer>> customerSOWMap = eventService.getCustomerSoldOutWindowCnt(deliveryDate);
+			Map<String, Map<Date, Integer>> soWindowMap = eventService.getSOWByZone(deliveryDate);
 			List<ProjectedUtilizationVO> projectedUtilizationList = orderService.getProjectedUtilization(deliveryDate);
 						
 			Map<String, Map<String, ProjectedUtilizationBase>> projectedUtilizationMap = new HashMap<String, Map<String,ProjectedUtilizationBase>>();
@@ -118,7 +121,9 @@ public class OrderController extends BaseController {
 						_projUtilization.setProjectedOPT(_projUtilization.getProjectedOPT() + Math.round((_projUtilization.getProjectedOrderCnt() / pu.getResourceCnt()) * 100));
 					else
 						_projUtilization.setProjectedOPT(_projUtilization.getProjectedOPT());
-					_projUtilization.setSoldOutWindowCnt(_projUtilization.getSoldOutWindowCnt() + 0);
+					
+					_projUtilization.setSoldOutWindowCnt(_projUtilization.getSoldOutWindowCnt() + ((soWindowMap.get(pu.getZone()) != null && soWindowMap.get(pu.getZone()).get(pu.getCutoffTime()) != null)
+							? soWindowMap.get(pu.getZone()).get(pu.getCutoffTime()) : 0));					
 					_projUtilization.setCustomerSOWCnt(_projUtilization.getCustomerSOWCnt() + ((customerSOWMap.get(pu.getZone()) != null && customerSOWMap.get(pu.getZone()).get(pu.getCutoffTime()) != null)
 							? customerSOWMap.get(pu.getZone()).get(pu.getCutoffTime()) : 0));
 					_projUtilization.setCustomerVisitCnt(_projUtilization.getCustomerVisitCnt() + ((customerVisitMap.get(pu.getZone()) != null && customerVisitMap.get(pu.getZone()).get(pu.getCutoffTime()) != null)
@@ -151,7 +156,8 @@ public class OrderController extends BaseController {
 						_projUtilization.setProjectedOPT(Math.round((_projUtilization.getProjectedOrderCnt() / pu.getResourceCnt())));
 					else
 						_projUtilization.setProjectedOPT(0);
-					_projUtilization.setSoldOutWindowCnt(0);
+					_projUtilization.setSoldOutWindowCnt((soWindowMap.get(pu.getZone()) != null && soWindowMap.get(pu.getZone()).get(pu.getCutoffTime()) != null) 
+							? soWindowMap.get(pu.getZone()).get(pu.getCutoffTime()) : 0);
 					_projUtilization.setCustomerSOWCnt((customerSOWMap.get(pu.getZone()) != null && customerSOWMap.get(pu.getZone()).get(pu.getCutoffTime()) != null) 
 							? customerSOWMap.get(pu.getZone()).get(pu.getCutoffTime()) : 0);
 					_projUtilization.setCustomerVisitCnt((customerVisitMap.get(pu.getZone()) != null && customerVisitMap.get(pu.getZone()).get(pu.getCutoffTime()) != null)
@@ -315,6 +321,67 @@ public class OrderController extends BaseController {
 			pe.printStackTrace();
 			throw new ServiceException(ErrorCodeOrderRateEnum.UNKNOWN_ERROR, 
 					"Failed to load forecast for delivery date: "+ deliveryDate);
+		}
+		return responseMessage;
+	}
+	
+
+	/**
+     * @return the Forecast volume for delivery date
+     * @throws ServiceException if the requested date is null.
+     */	
+	@RequestMapping(value="/compareforecast", method=RequestMethod.GET)	
+	public @ResponseBody ForecastResponse compareForcast(HttpServletRequest request, HttpServletResponse response) {
+		
+		ForecastResponse responseMessage = new ForecastResponse();
+		String day1 = request.getParameter("day1");
+		String day2 = request.getParameter("day2");
+		
+		try {
+			Set<Date> exceptions = orderService.getExceptions();
+			Calendar cal = Calendar.getInstance();
+			if (day1 == null || day2== null || "".equals(day2)
+					|| "".equals(day1)) {
+				day1 = DateUtil.getDate(OrderRateUtil.getSample(cal, exceptions));
+				day1 = DateUtil.getDate(OrderRateUtil.getSample(cal, exceptions));
+			} 
+			
+			List<OrderRateVO> orderRateDay1 = orderService.getCurrentOrderRateBySnapshot(DateUtil.getPreviousDate(DateUtil.getDate(day1)), day1, null);			
+			List<OrderRateVO> orderRateDay2 = orderService.getCurrentOrderRateBySnapshot(DateUtil.getPreviousDate(DateUtil.getDate(day2)), day2, null);
+			
+			ForecastModel _tempModel = null;
+			if(orderRateDay1 != null) {
+				for (ListIterator<OrderRateVO> i = orderRateDay1.listIterator(); i.hasNext();) {
+					OrderRateVO _orderRate = i.next();
+					
+					if(_orderRate.getZone() == null) {						
+						// order volume
+						_tempModel = new ForecastModel();
+						_tempModel.setSnapshotTime(DateUtil.getServerTime(_orderRate.getSnapshotTime()));
+						_tempModel.setVolume((int) _orderRate.getOrderCount());
+						responseMessage.getDay1().add(_tempModel);
+					}
+				}
+			}
+			
+			if(orderRateDay2 != null) {
+				for (ListIterator<OrderRateVO> i = orderRateDay2.listIterator(); i.hasNext();) {
+					OrderRateVO _orderRate = i.next();
+					
+					if(_orderRate.getZone() == null) {						
+						// order volume
+						_tempModel = new ForecastModel();
+						_tempModel.setSnapshotTime(DateUtil.getServerTime(_orderRate.getSnapshotTime()));
+						_tempModel.setVolume((int) _orderRate.getOrderCount());
+						responseMessage.getDay2().add(_tempModel);
+					}
+				}
+			}
+			
+		} catch (Exception pe) {
+			pe.printStackTrace();
+			throw new ServiceException(ErrorCodeOrderRateEnum.UNKNOWN_ERROR, 
+					"Failed to load forecast for day1: "+ day1 +" day2: "+ day2);
 		}
 		return responseMessage;
 	}

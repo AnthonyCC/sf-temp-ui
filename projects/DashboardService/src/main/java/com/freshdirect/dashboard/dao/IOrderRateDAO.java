@@ -31,4 +31,6 @@ public interface IOrderRateDAO {
 			final String zone) throws ParseException, SQLException;
 	
 	DashboardSummary getDashboardSummary(final String deliveryDate) throws SQLException;
+	
+	List<OrderRateVO> getPlannedCapacityByZone(final Date deliveryDate) throws SQLException;
 }

@@ -220,11 +220,11 @@ public class OrderRateDAO implements IOrderRateDAO {
 					vo.setOrders(rs.getInt("confirmed_orders"));
 					vo.setProjectedOrders(Math.round((float) projected));
 					if(vo.getCapacity() > 0)
-						vo.setCurrentUtilization(vo.getOrders() / vo.getCapacity());
+						vo.setCurrentUtilization(Math.round((float)((vo.getOrders() / (double) vo.getCapacity()) * 100.0)));
 					else
 						vo.setCurrentUtilization(0);
 					if(vo.getCapacity() > 0)
-						vo.setProjectedUtilization(vo.getProjectedOrders() / vo.getCapacity());
+						vo.setProjectedUtilization(Math.round((float)((vo.getProjectedOrders() / (double) vo.getCapacity()) * 100.0)));
 					else
 						vo.setProjectedUtilization(0);
 					} while (rs.next());
@@ -845,5 +845,46 @@ public class OrderRateDAO implements IOrderRateDAO {
 		 );		
 		return summary;
 	}
+	
+	public static final String GET_LIVE_PLANNED_CAPACITY = "SELECT o.zone, o.cutoff, "+
+          " SUM (capacity) planned_capacity "+
+			" FROM mis.order_rate o,  "+
+			" (  "+
+			"   SELECT MAX (snapshot_time) sh, O.CUTOFF cutoff FROM mis.order_rate o  "+
+			"    WHERE o.delivery_date = ? "+
+			"  GROUP BY O.CUTOFF "+
+			" ) t "+
+			" WHERE  o.delivery_date = ?  "+
+			" AND o.snapshot_time = t.sh  "+
+			" AND o.cutoff = t.cutoff  "+
+			" GROUP BY o.zone, o.cutoff "+
+			" ORDER BY zone, cutoff";
+	
+	public List<OrderRateVO> getPlannedCapacityByZone(final Date deliveryDate) throws SQLException {
+			
+		final List<OrderRateVO> result = new ArrayList<OrderRateVO>();
+		
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+				public PreparedStatement createPreparedStatement(
+						Connection connection) throws SQLException {
+					PreparedStatement ps = connection
+							.prepareStatement(GET_LIVE_PLANNED_CAPACITY);
+					ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));			
+					ps.setDate(2, new java.sql.Date(deliveryDate.getTime()));
+					return ps;
+				}
+		};
+		jdbcTemplate.query(creator, new RowCallbackHandler() {
+				public void processRow(ResultSet rs) throws SQLException {
+					do {
+						OrderRateVO data = new OrderRateVO();
+						data.setZone(rs.getString("zone"));
+						data.setCapacity(rs.getInt("planned_capacity"));
+						data.setCutoffTime(DateUtil.getNormalDate(new Date(rs.getTimestamp("cutoff").getTime())));			
+					} while (rs.next());
+				}
+			});			    	
+		return result;		
+	 }
 	
 }

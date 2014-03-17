@@ -3,6 +3,7 @@ package com.freshdirect.dashboard.service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.dashboard.exception.FDServiceException;
 import com.freshdirect.dashboard.model.DashboardSummary;
@@ -32,5 +33,7 @@ public interface IOrderService {
 			List<ProjectedUtilizationBase> projectionLst);
 	
 	DashboardSummary getDashboardSummary(String deliveryDate) throws FDServiceException;
+	
+	Set<Date> getExceptions() throws FDServiceException;
 
 }
