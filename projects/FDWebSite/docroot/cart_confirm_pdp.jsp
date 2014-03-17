@@ -27,10 +27,6 @@
 <fd:CheckLoginStatus id="user"/>
 
 <%
-
-request.setAttribute("sitePage", "www.freshdirect.com/");
-request.setAttribute("listPos", "SystemMessage,LittleRandy");
-	
 ProductModel productNode = ProductPricingFactory.getInstance().getPricingAdapter( ContentFactory.getInstance().getProductByName( request.getParameter("catId"), request.getParameter("productId") ), user.getPricingContext() );
 
 // Handle no-product case
@@ -39,6 +35,10 @@ if (productNode==null) {
 } else if (productNode.isDiscontinued()) {
     throw new JspException("Product Discontinued :"+request.getParameter("productId"));
 }
+
+//productNode should be safe to set sitePage OAS param
+request.setAttribute("sitePage", productNode.getPath());
+request.setAttribute("listPos", "SystemMessage,LittleRandy");
 
 boolean isWine = EnumTemplateType.WINE.equals( productNode.getTemplateType() );
 %>

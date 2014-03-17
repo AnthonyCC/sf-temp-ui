@@ -192,6 +192,7 @@
 					pages.put("/your_account/payment_information.jsp",
 							"payment_info");
 					pages.put("/recipe_search.jsp", "recipe_search");
+					pages.put("cart_confirm_pdp.jsp", "pdpconfirm");
 		
 					String pageType = "";
 					String uri = request.getRequestURI().toLowerCase();
