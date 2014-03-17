@@ -532,7 +532,7 @@ class FDCustomerListDAO {
 			"AND sa.action_date = s.cromod_date " + 
 			"AND s.type='REG' " + 
 			"AND s.customer_id=? " + 
-			"AND sa.requested_date>=? " + 
+			"AND di.starttime>=? " + 
 			"AND s.customer_id=sa.customer_id " + 
 			"AND NVL(ol.promotion_type,0)<> 3 " + 
 			"AND NVL(ol.delivery_grp, 0) = 0";
@@ -573,10 +573,11 @@ class FDCustomerListDAO {
 		return result;
 	}
 	
-	private String QUERY_QS_FIRST_ORDER_DATE = "select MIN(requested_date) as mindate FROM (" +
+	private String QUERY_QS_FIRST_ORDER_DATE = "select MIN(starttime) as mindate FROM (" +
 				"SELECT * FROM (" +
-				"SELECT sa.id, sa.requested_date FROM CUST.salesaction sa, CUST.sale s " +
+				"SELECT sa.id, sa.requested_date, di.starttime FROM CUST.salesaction sa, CUST.sale s, cust.deliveryinfo di " +
 				"WHERE s.id=sa.sale_id " +
+				"AND sa.id=di.salesaction_id " +
 				"AND sa.action_type IN ('CRO','MOD') " +
 				"AND sa.action_date = s.cromod_date " +
 				"AND s.type='REG' " +
