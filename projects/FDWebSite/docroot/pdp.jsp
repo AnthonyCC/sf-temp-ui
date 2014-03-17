@@ -75,8 +75,8 @@ if ( productNode.isHidden() ) {
 <fd:IsAlcoholic noProduct="true">
 	<%
 	if( ((CategoryModel)productNode.getParentNode()).isHavingBeer() /*&& !yser.isHealthWarningAcknowledged()*/){
-	    String redirectURL = "/health_warning.jsp?successPage=/pdp.jsp"+URLEncoder.encode("?"+request.getQueryString());
-	    response.sendRedirect(response.encodeRedirectURL(redirectURL));
+	    String redirectHWURL = "/health_warning.jsp?successPage=/pdp.jsp"+URLEncoder.encode("?"+request.getQueryString());
+	    response.sendRedirect(response.encodeRedirectURL(redirectHWURL));
 	    return;
 	}%>
 </fd:IsAlcoholic>
