@@ -145,10 +145,10 @@ FreshDirect.Coremetrics.populateTrackingObject('<%=coremetricsPageId%>', '<%=cor
 		<div class="text9" style="position: absolute; bottom: 1em; left: 10px; color: gray; width: 180px; text-align: right;">Wine sold by Union Square Wines &amp; Spirits.</div>
 	<% } %>
 	<% if (uid != null && !"".equals(uid)) { %>
-		<script>
-			YAHOO.util.Event.onDOMReady(function() {
+		<script type="text/javascript" language="javascript">
+			$jq(document).ready(function() {
 				var frameId = '<%= uid %>_frame';
-
+				
 				setFrameHeight(frameId, 20);
 				// re-center panel
 				window.parent.document.quickbuyPanel.center();
