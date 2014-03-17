@@ -74,22 +74,24 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 
 		try {
 			
-			List<FilteringSortingItem<QuickShopLineItemWrapper>> items = QuickShopCacheUtil.getListFromCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
+			List<QuickShopLineItemWrapper> items = QuickShopCacheUtil.getListFromCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
 			
 			if(items==null){
 				items = QuickShopHelper.getWrappedCustomerCreatedLists(user, EnumQuickShopTab.CUSTOMER_LISTS);
 				if(!items.isEmpty()){
-					QuickShopCacheUtil.putListToCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK(), new ArrayList<FilteringSortingItem<QuickShopLineItemWrapper>>(items));					
+					QuickShopCacheUtil.putListToCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK(), new ArrayList<QuickShopLineItemWrapper>(items));					
 				}
 			}else{
-				items = new ArrayList<FilteringSortingItem<QuickShopLineItemWrapper>>(items);
+				items = new ArrayList<QuickShopLineItemWrapper>(items);
 			}
 			
 			//set the default list id on the first page load OR if the current selected list is just deleted or empty
 			selectList(user, nav);
 			
-			QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, user, filters, items, QuickShopHelper.getActiveReplacements( session ));
-			result = filter.doFlow(nav, items);
+			List<FilteringSortingItem<QuickShopLineItemWrapper>> filterItems = QuickShopFilterServlet.prepareForFiltering(items);
+			
+			QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, user, filters, filterItems, QuickShopHelper.getActiveReplacements( session ));
+			result = filter.doFlow(nav, filterItems);
 			
 			// post-process
 			QuickShopHelper.postProcessPopulate( user, result, session );
@@ -201,13 +203,13 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 		returnWrapper.put("shoppingListPageRefreshNeeded", shoppingListPageRefreshNeeded);
 		if(newItem!=null){
 			//let's try to convert new item into QuickShopLineItem
-			FilteringSortingItem<QuickShopLineItemWrapper> rv;
+			QuickShopLineItemWrapper rv;
 			try {
 				rv = QuickShopHelper.createItemCore(newItem.convertToSelection(), list, null, user, EnumQuickShopTab.CUSTOMER_LISTS);
 				if(rv!=null){
-					QuickShopLineItem item = rv.getNode().getItem();
+					QuickShopLineItem item = rv.getItem();
 					ProductDetailPopulator.postProcessPopulate(user, item, item.getSkuCode());
-					returnWrapper.put("updateItem", rv.getNode().getItem());							
+					returnWrapper.put("updateItem", rv.getItem());							
 				}
 			} catch (FDException e) {
 				LOG.error("Cannot convert new item to selection. e: " + e);

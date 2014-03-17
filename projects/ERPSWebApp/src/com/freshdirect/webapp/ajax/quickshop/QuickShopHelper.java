@@ -65,9 +65,9 @@ public class QuickShopHelper {
 	private static final int TIME_LIMIT = -13;
 	private final static Logger LOG = LoggerFactory.getInstance(QuickShopHelper.class);
 
-	public static List<FilteringSortingItem<QuickShopLineItemWrapper>> getWrappedOrderHistory(FDUserI user, EnumQuickShopTab tab) throws FDResourceException {
+	public static List<QuickShopLineItemWrapper> getWrappedOrderHistory(FDUserI user, EnumQuickShopTab tab) throws FDResourceException {
 
-		List<FilteringSortingItem<QuickShopLineItemWrapper>> result = new ArrayList<FilteringSortingItem<QuickShopLineItemWrapper>>();
+		List<QuickShopLineItemWrapper> result = new ArrayList<QuickShopLineItemWrapper>();
 		
 		List<FDProductSelectionI> items = FDListManager.getQsSpecificEveryItemEverOrderedList(user.getIdentity());
 		
@@ -79,16 +79,16 @@ public class QuickShopHelper {
 		
 		for(FDProductSelectionI item : items){
 			
-			FilteringSortingItem<QuickShopLineItemWrapper> fsi = createItemCore(item, null, null, user, tab);
-			if(fsi==null){
+			QuickShopLineItemWrapper wrapper = createItemCore(item, null, null, user, tab);
+			if(wrapper==null){
 				continue;
 			}
 
-			fsi.getNode().setDeliveryDate(item.getDeliveryStartDate());
-			fsi.getNode().setOrderId(item.getOrderId());
-			fsi.getNode().setOrderStatus(item.getSaleStatus().getDisplayName());
+			wrapper.setDeliveryDate(item.getDeliveryStartDate());
+			wrapper.setOrderId(item.getOrderId());
+			wrapper.setOrderStatus(item.getSaleStatus().getDisplayName());
 
-			result.add(fsi);
+			result.add(wrapper);
 			
 			if(!orderDates.contains(item.getDeliveryStartDate())){
 				orderDates.add(item.getDeliveryStartDate());				
@@ -103,24 +103,24 @@ public class QuickShopHelper {
 
 	}
 	
-	private static void setLastOrderFlag(List<FilteringSortingItem<QuickShopLineItemWrapper>> items, Date last){
-		for(FilteringSortingItem<QuickShopLineItemWrapper> item : items){
-			if(item.getNode().getDeliveryDate().equals(last)){
-				item.getNode().setInLastOrder(true);
+	private static void setLastOrderFlag(List<QuickShopLineItemWrapper> items, Date last){
+		for(QuickShopLineItemWrapper item : items){
+			if(item.getDeliveryDate().equals(last)){
+				item.setInLastOrder(true);
 			}
 		}
 	}
 	
-	public static List<FilteringSortingItem<QuickShopLineItemWrapper>> getWrappedCustomerCreatedLists(FDUserI user, EnumQuickShopTab tab) throws FDResourceException {
+	public static List<QuickShopLineItemWrapper> getWrappedCustomerCreatedLists(FDUserI user, EnumQuickShopTab tab) throws FDResourceException {
 
-		List<FilteringSortingItem<QuickShopLineItemWrapper>> result = new ArrayList<FilteringSortingItem<QuickShopLineItemWrapper>>();
+		List<QuickShopLineItemWrapper> result = new ArrayList<QuickShopLineItemWrapper>();
 
 		for(FDCustomerCreatedList list: FDListManager.getCustomerCreatedLists(user)){
 			List<FDCustomerListItem> cclItems = list.getLineItems();
 			if(cclItems!=null){
 				for(FDProductSelectionI productSelection: OrderLineUtil.getValidProductSelectionsFromCCLItems( cclItems )){
 					
-					FilteringSortingItem<QuickShopLineItemWrapper> fsi = createItemCore(productSelection, list, null, user, tab);
+					QuickShopLineItemWrapper fsi = createItemCore(productSelection, list, null, user, tab);
 					if(fsi==null){
 						continue;
 					}
@@ -135,7 +135,7 @@ public class QuickShopHelper {
 		
 	}
 	
-	public static FilteringSortingItem<QuickShopLineItemWrapper> createItemCore(FDProductSelectionI productSelection, FDCustomerList list, StarterList starterList, FDUserI user, EnumQuickShopTab tab) throws FDResourceException{
+	public static QuickShopLineItemWrapper createItemCore(FDProductSelectionI productSelection, FDCustomerList list, StarterList starterList, FDUserI user, EnumQuickShopTab tab) throws FDResourceException{
 		
 		String idSuffix = null;
 		String compositeId = null;
@@ -284,11 +284,8 @@ public class QuickShopHelper {
 				}
 			}
 		}
-
-		// Wrap it in a FilteringSortingItem for the FilteringFlow
-		FilteringSortingItem<QuickShopLineItemWrapper> fsi = new FilteringSortingItem<QuickShopLineItemWrapper>(wrapper);
 		
-		return fsi;
+		return wrapper;
 	}
 	
 	public static QuickShopLineItem createItemFromProduct(ProductModel productModel, SkuModel skuModel, FDUserI user, boolean useFavBurst) throws FDResourceException {
@@ -491,8 +488,8 @@ public class QuickShopHelper {
 		return result;
 	}
 
-	public static List<FilteringSortingItem<QuickShopLineItemWrapper>> getWrappedProductFromStarterList(FDUserI user, List<StarterList> starterLists, List<String> activeReplacements) throws FDResourceException {
-		List<FilteringSortingItem<QuickShopLineItemWrapper>> result = new ArrayList<FilteringSortingItem<QuickShopLineItemWrapper>>();
+	public static List<QuickShopLineItemWrapper> getWrappedProductFromStarterList(FDUserI user, List<StarterList> starterLists, List<String> activeReplacements) throws FDResourceException {
+		List<QuickShopLineItemWrapper> result = new ArrayList<QuickShopLineItemWrapper>();
 
 		if(starterLists==null){
 			starterLists = getStarterLists();			
@@ -524,13 +521,13 @@ public class QuickShopHelper {
 					productSelection.refreshConfiguration();
 				    OrderLineUtil.describe(productSelection);
 				    
-				    FilteringSortingItem<QuickShopLineItemWrapper> fsi = QuickShopHelper.createItemCore(productSelection, null, starterList, user, EnumQuickShopTab.FD_LISTS);
-					if ( fsi == null )
+				    QuickShopLineItemWrapper wrapper = QuickShopHelper.createItemCore(productSelection, null, starterList, user, EnumQuickShopTab.FD_LISTS);
+					if ( wrapper == null )
 						continue;
 
-					fsi.getNode().setStarterList(starterList);
+					wrapper.setStarterList(starterList);
 					
-					result.add(fsi);
+					result.add(wrapper);
 					
 				} catch (FDSkuNotFoundException e) {
 					LOG.warn("SKU NOT FOUND: " + e);

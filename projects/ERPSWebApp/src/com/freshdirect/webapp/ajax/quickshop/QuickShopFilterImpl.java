@@ -23,6 +23,7 @@ import com.freshdirect.fdstore.content.GenericFilterDecorator;
 import com.freshdirect.fdstore.content.GenericFilteringMenuBuilder;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
@@ -144,6 +145,12 @@ public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>
 						Set<String> filterCounts = orderCounter.get(filter);
 						int counter = filterCounts == null ? 0 : filterCounts.size();
 						menu.get(filter).get(key).setCounter( counter );
+						
+						//change ALL - PAST YEAR label in case of order limitation
+						if(EnumQuickShopFilteringValue.TIME_FRAME_ALL == filter && counter==FDListManager.QUICKSHOP_ORDER_LIMIT){
+							menu.get(filter).get(key).setName("LAST " + FDListManager.QUICKSHOP_ORDER_LIMIT + " ORDERS");
+						}
+						
 					}
 				}
 			}	

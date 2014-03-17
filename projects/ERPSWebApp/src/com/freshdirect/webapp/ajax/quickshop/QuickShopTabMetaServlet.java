@@ -31,7 +31,8 @@ public class QuickShopTabMetaServlet extends BaseJsonServlet{
 		
 		//past orders tab
 		try {
-			meta.put("pastorders", QuickShopHelper.getRecentOrderHistoryInfoIds(user).size());
+			int size = QuickShopHelper.getRecentOrderHistoryInfoIds(user).size();
+			meta.put("pastorders", size<=FDListManager.QUICKSHOP_ORDER_LIMIT ? size : FDListManager.QUICKSHOP_ORDER_LIMIT);
 		} catch (FDResourceException e) {
 			LOG.error("Can't calculate past orders tab meta! e: " + e);
 		}

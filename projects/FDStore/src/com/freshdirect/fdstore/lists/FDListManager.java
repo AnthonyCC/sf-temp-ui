@@ -24,6 +24,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class FDListManager {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(FDListManager.class);
+	
+	public static final int QUICKSHOP_ORDER_LIMIT = 100;
 
 	private static FDListManagerHome managerHome = null;
 

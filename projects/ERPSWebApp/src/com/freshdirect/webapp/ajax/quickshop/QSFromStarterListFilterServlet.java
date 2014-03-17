@@ -66,19 +66,21 @@ public class QSFromStarterListFilterServlet extends QuickShopServlet {
 			FilteringNavigator nav = requestData.convertToFilteringNavigator();
 			FilteringFlowResult<QuickShopLineItemWrapper> result = null;
 			
-			List<FilteringSortingItem<QuickShopLineItemWrapper>> items = QuickShopCacheUtil.getListFromCache(QuickShopCacheUtil.STARTER_LISTS_CACHE_NAME, QuickShopCacheUtil.STARTER_LISTS_CACHE_KEY);
+			List<QuickShopLineItemWrapper> items = QuickShopCacheUtil.getListFromCache(QuickShopCacheUtil.STARTER_LISTS_CACHE_NAME, QuickShopCacheUtil.STARTER_LISTS_CACHE_KEY);
 			
 			if(items==null){
 				items = QuickShopHelper.getWrappedProductFromStarterList(user, starterLists, QuickShopHelper.getActiveReplacements( session ) );
 				if(!items.isEmpty()){
-					QuickShopCacheUtil.putListToCache(QuickShopCacheUtil.STARTER_LISTS_CACHE_NAME, QuickShopCacheUtil.STARTER_LISTS_CACHE_KEY,  new ArrayList<FilteringSortingItem<QuickShopLineItemWrapper>>(items));					
+					QuickShopCacheUtil.putListToCache(QuickShopCacheUtil.STARTER_LISTS_CACHE_NAME, QuickShopCacheUtil.STARTER_LISTS_CACHE_KEY,  new ArrayList<QuickShopLineItemWrapper>(items));					
 				}
 			}else{
-				items = new ArrayList<FilteringSortingItem<QuickShopLineItemWrapper>>(items);
+				items = new ArrayList<QuickShopLineItemWrapper>(items);
 			}
 
-			QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, user, filters, items, QuickShopHelper.getActiveReplacements( session ));
-			result = filter.doFlow(nav, items);
+			List<FilteringSortingItem<QuickShopLineItemWrapper>> filterItems = QuickShopFilterServlet.prepareForFiltering(items);
+			
+			QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, user, filters, filterItems, QuickShopHelper.getActiveReplacements( session ));
+			result = filter.doFlow(nav, filterItems);
 			
 			// post-process
 			QuickShopHelper.postProcessPopulate( user, result, session );

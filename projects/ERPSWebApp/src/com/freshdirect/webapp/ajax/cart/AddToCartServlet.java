@@ -211,15 +211,15 @@ public class AddToCartServlet extends BaseJsonServlet {
 	        	FDProductSelection mockSelection = new FDProductSelection(new FDSku(prodInfo.getSkuCode(), prodInfo.getVersion()), pm, config, pm.getPricingContext().getZoneId());
 	        	mockSelection.setCustomerListLineId(item.getLineId());
 	        	
-	        	FilteringSortingItem<QuickShopLineItemWrapper> result = QuickShopHelper.createItemCore(mockSelection, null, null, user, null);
+	        	QuickShopLineItemWrapper result = QuickShopHelper.createItemCore(mockSelection, null, null, user, null);
 	        	
 	        	if(result==null){
 	        		continue;
 	        	}
 	        	
-	        	result.getNode().getItem().setItemId(item.getAtcItemId());
+	        	result.getItem().setItemId(item.getAtcItemId());
 	        	
-				pendingItems.add(result.getNode().getItem());
+				pendingItems.add(result.getItem());
 			} catch (FDSkuNotFoundException e) {
 				continue; //skip item for now
 			} catch (FDResourceException e){
@@ -231,9 +231,9 @@ public class AddToCartServlet extends BaseJsonServlet {
 		//convert cart items
 		List<QuickShopLineItem> cartItems = new ArrayList<QuickShopLineItem>();
 		for(FDCartLineI cartLine : cart.getOrderLines()){
-			FilteringSortingItem<QuickShopLineItemWrapper> wrapper = QuickShopHelper.createItemCore(cartLine, null, null, user, null); //mock it with past orders enum
+			QuickShopLineItemWrapper wrapper = QuickShopHelper.createItemCore(cartLine, null, null, user, null); //mock it with past orders enum
 			if(wrapper!=null){
-				cartItems.add(wrapper.getNode().getItem());
+				cartItems.add(wrapper.getItem());
 			}
 		}
 		pendingData.setCartData(cartItems);

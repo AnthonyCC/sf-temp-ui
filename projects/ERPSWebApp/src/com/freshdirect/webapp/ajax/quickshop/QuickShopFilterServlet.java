@@ -62,25 +62,27 @@ public class QuickShopFilterServlet extends QuickShopServlet {
 		FilteringNavigator nav = requestData.convertToFilteringNavigator();
 		FilteringFlowResult<QuickShopLineItemWrapper> result = null;
 
-		List<FilteringSortingItem<QuickShopLineItemWrapper>> items = QuickShopCacheUtil.getListFromCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
+		List<QuickShopLineItemWrapper> items = QuickShopCacheUtil.getListFromCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
 		try {
 			if(items==null){
 				LOG.info("Wrapping products");
 				items = QuickShopHelper.getWrappedOrderHistory(user, EnumQuickShopTab.PAST_ORDERS);
 				if(!items.isEmpty()){
-					QuickShopCacheUtil.putListToCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, user.getIdentity().getErpCustomerPK(), new ArrayList<FilteringSortingItem<QuickShopLineItemWrapper>>(items));					
+					QuickShopCacheUtil.putListToCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, user.getIdentity().getErpCustomerPK(), new ArrayList<QuickShopLineItemWrapper>(items));					
 				}
 			}else{
 				LOG.info("Fetching items from cache");
-				items = new ArrayList<FilteringSortingItem<QuickShopLineItemWrapper>>(items);
+				items = new ArrayList<QuickShopLineItemWrapper>(items);
 			}
 			
 			search(nav.getSearchTerm(), items);
 			
-			QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, user, filters, items, QuickShopHelper.getActiveReplacements( session ));
+			List<FilteringSortingItem<QuickShopLineItemWrapper>> filterItems = prepareForFiltering(items);
+			
+			QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, user, filters, filterItems, QuickShopHelper.getActiveReplacements( session ));
 			
 			LOG.info("Start filtering process");			
-			result = filter.doFlow(nav, items);
+			result = filter.doFlow(nav, filterItems);
 			
 			// post-process
 			QuickShopHelper.postProcessPopulate( user, result, session );
@@ -117,13 +119,25 @@ public class QuickShopFilterServlet extends QuickShopServlet {
 		return responseData;
 	}
 	
+	public static List<FilteringSortingItem<QuickShopLineItemWrapper>> prepareForFiltering(List<QuickShopLineItemWrapper> items){
+		
+		// Wrap items in a FilteringSortingItem for the FilteringFlow
+		List<FilteringSortingItem<QuickShopLineItemWrapper>> result = new ArrayList<FilteringSortingItem<QuickShopLineItemWrapper>>();
+		for(QuickShopLineItemWrapper item : items){
+			FilteringSortingItem<QuickShopLineItemWrapper> fsi = new FilteringSortingItem<QuickShopLineItemWrapper>(item);
+			result.add(fsi);
+		}
+		
+		return result;
+	}
+	
 	/**
 	 * @param searchTerm
 	 * @param items - to be merged with the search result
 	 * 
 	 * Merge the original search result with the user's order history
 	 */
-	private static void search(String searchTerm, List<FilteringSortingItem<QuickShopLineItemWrapper>> items){
+	private static void search(String searchTerm, List<QuickShopLineItemWrapper> items){
 		
 		List<String> productIds = null;
 		if(searchTerm!=null){
@@ -134,9 +148,9 @@ public class QuickShopFilterServlet extends QuickShopServlet {
 				productIds.add(product.getNode().getContentKey().getId());
 			}
 			
-			Iterator<FilteringSortingItem<QuickShopLineItemWrapper>> it = items.iterator();
+			Iterator<QuickShopLineItemWrapper> it = items.iterator();
 			while(it.hasNext()){
-				if(!productIds.contains(it.next().getNode().getProduct().getContentKey().getId())){
+				if(!productIds.contains(it.next().getProduct().getContentKey().getId())){
 					it.remove();
 				}
 			}

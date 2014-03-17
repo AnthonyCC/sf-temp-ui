@@ -69,7 +69,7 @@ public class QSTempConfigServlet extends BaseJsonServlet {
         		tab = EnumQuickShopTab.valueOf(reqData.getTab());        		
         	}
         	
-			item = QuickShopHelper.createItemCore(mockSelection, null, null, user, tab).getNode().getItem();
+			item = QuickShopHelper.createItemCore(mockSelection, null, null, user, tab).getItem();
 			ProductDetailPopulator.postProcessPopulate(user, item, item.getSkuCode());
 			item.setListId(source.getListId());
 		} catch (FDException e) {

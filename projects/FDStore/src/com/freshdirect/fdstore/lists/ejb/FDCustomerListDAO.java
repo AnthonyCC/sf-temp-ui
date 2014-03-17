@@ -32,6 +32,7 @@ import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeList;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeListLineItem;
 import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
+import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.lists.FDQsProductListLineItem;
 import com.freshdirect.fdstore.lists.FDStandingOrderList;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -61,7 +62,7 @@ class FDCustomerListDAO {
 			ps.setTimestamp(4, ts);
 			ps.setString(5, list.getRecipeId());
 			ps.setString(6, list.getRecipeName());
-			
+
 			ps.setString(7, list.getId());
 
 			if (ps.executeUpdate() != 1) {
@@ -531,45 +532,84 @@ class FDCustomerListDAO {
 			"AND sa.action_date = s.cromod_date " + 
 			"AND s.type='REG' " + 
 			"AND s.customer_id=? " + 
-			"AND sa.requested_date>? " + 
+			"AND sa.requested_date>=? " + 
 			"AND s.customer_id=sa.customer_id " + 
 			"AND NVL(ol.promotion_type,0)<> 3 " + 
 			"AND NVL(ol.delivery_grp, 0) = 0";
 
-		public List<FDQsProductListLineItem> getQsSpecificEveryItemEverOrderedList(Connection conn, FDIdentity identity) throws SQLException {
+	public List<FDQsProductListLineItem> getQsSpecificEveryItemEverOrderedList(Connection conn, FDIdentity identity) throws SQLException {
 
-			PreparedStatement ps = conn.prepareStatement(QUERY_EVERY_ITEM_QS);
-			
-			//prepare how far we should go back in the past
-			Calendar timeLimit = Calendar.getInstance();
-			timeLimit.add(Calendar.MONTH, QUICKSHOP_MONTH_LIMIT);
-			
-			ps.setString(1, identity.getErpCustomerPK());
-			ps.setDate(2, new java.sql.Date(timeLimit.getTimeInMillis()));
-			ResultSet rs = ps.executeQuery();
-			
-			List<FDQsProductListLineItem> result = new ArrayList<FDQsProductListLineItem>();
-			while (rs.next()) {
-				
-				FDQsProductListLineItem item = new FDQsProductListLineItem(
-						rs.getString("SKU_CODE"),
-						new FDConfiguration(rs.getDouble("QUANTITY"), rs.getString("SALES_UNIT"), ErpOrderLineUtil.convertStringToHashMap(rs.getString("CONFIGURATION"))),
-						rs.getString("RECIPE_SOURCE_ID")
-				);
-				
-				item.setDeliveryStartDate(getTimestamp(rs, "STARTTIME"));
-				item.setOrderId(rs.getString("SALE_ID"));
-				item.setOrderLineId(rs.getString("ORDERLINE_ID"));
-				item.setSaleStatus(EnumSaleStatus.getSaleStatus(rs.getString("STATUS")));
-				
-				result.add(item);
-			}
-
-			rs.close();
-			ps.close();
-
+		Date minOrderDate = getQsFirstOrderDate(conn, identity);
+		List<FDQsProductListLineItem> result = new ArrayList<FDQsProductListLineItem>();
+		
+		if(minOrderDate==null){
 			return result;
 		}
+
+		PreparedStatement ps = conn.prepareStatement(QUERY_EVERY_ITEM_QS);
+
+		ps.setString(1, identity.getErpCustomerPK());
+		ps.setDate(2, new java.sql.Date(minOrderDate.getTime()));
+		ResultSet rs = ps.executeQuery();
+
+		while (rs.next()) {
+
+			FDQsProductListLineItem item = new FDQsProductListLineItem(rs.getString("SKU_CODE"), new FDConfiguration(
+					rs.getDouble("QUANTITY"),
+					rs.getString("SALES_UNIT"),
+					ErpOrderLineUtil.convertStringToHashMap(rs.getString("CONFIGURATION"))), rs.getString("RECIPE_SOURCE_ID"));
+
+			item.setDeliveryStartDate(getTimestamp(rs, "STARTTIME"));
+			item.setOrderId(rs.getString("SALE_ID"));
+			item.setOrderLineId(rs.getString("ORDERLINE_ID"));
+			item.setSaleStatus(EnumSaleStatus.getSaleStatus(rs.getString("STATUS")));
+
+			result.add(item);
+		}
+
+		rs.close();
+		ps.close();
+
+		return result;
+	}
+	
+	private String QUERY_QS_FIRST_ORDER_DATE = "select MIN(requested_date) as mindate FROM (" +
+				"SELECT * FROM (" +
+				"SELECT sa.id, sa.requested_date FROM CUST.salesaction sa, CUST.sale s " +
+				"WHERE s.id=sa.sale_id " +
+				"AND sa.action_type IN ('CRO','MOD') " +
+				"AND sa.action_date = s.cromod_date " +
+				"AND s.type='REG' " +
+				"AND s.customer_id=? " +
+				"AND sa.requested_date>? " +
+				"AND s.customer_id=sa.customer_id " +
+				"ORDER BY sa.requested_date desc) " +
+				"WHERE rownum<=?)";
+	
+	private Date getQsFirstOrderDate(Connection conn, FDIdentity identity) throws SQLException {
+		
+		PreparedStatement ps = conn.prepareStatement(QUERY_QS_FIRST_ORDER_DATE);
+		
+		//prepare how far we go back in the past
+		Calendar timeLimit = Calendar.getInstance();
+		timeLimit.add(Calendar.MONTH, QUICKSHOP_MONTH_LIMIT);
+		
+		ps.setString(1, identity.getErpCustomerPK());
+		ps.setDate(2, new java.sql.Date(timeLimit.getTimeInMillis()));
+		ps.setInt(3, FDListManager.QUICKSHOP_ORDER_LIMIT);
+		ResultSet rs = ps.executeQuery();
+		
+		Date minDate = null;
+		
+		if(rs.next()){
+			minDate = getTimestamp(rs, "mindate");
+		}
+		
+		rs.close();
+		ps.close();
+		
+		return minDate;
+	}
 
 	protected String getNextId(Connection conn) throws SQLException {
 		return SequenceGenerator.getNextId(conn, "CUST");
