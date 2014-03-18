@@ -144,9 +144,17 @@ public class QuickShopHelper {
 	};
 	
 	private static void setLastOrderFlag(List<QuickShopLineItemWrapper> items, Date last){
+		
+		String lastOrderId = null;
+		
 		for(QuickShopLineItemWrapper item : items){
 			if(item.getDeliveryDate().equals(last)){
-				item.setInLastOrder(true);
+				if(lastOrderId==null){
+					lastOrderId=item.getOrderId();
+				}
+				if(item.getOrderId().equals(lastOrderId)){
+					item.setInLastOrder(true);					
+				}
 			}
 		}
 	}
