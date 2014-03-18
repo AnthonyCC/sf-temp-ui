@@ -129,7 +129,7 @@ public class QuickShopHelper {
 				orderIds.add(orderId);
 			}
 			
-			if(orderIds.size()>FDListManager.QUICKSHOP_ORDER_LIMIT){
+			if(orderIds.size()>FDListManager.QUICKSHOP_ORDER_LIMIT && !orderIds.contains(orderId)){
 				it.remove();
 			}
 		}
