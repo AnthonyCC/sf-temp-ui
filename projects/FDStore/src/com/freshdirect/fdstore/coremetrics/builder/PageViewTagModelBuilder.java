@@ -70,7 +70,7 @@ public class PageViewTagModelBuilder  {
 				tagModel.setCategoryId(CustomCategory.SEARCH.toString());
 				decoratePageIdWithCatId();
 			
-			} else if ("department".equals(fileName) || "department_cohort_match".equals(fileName) || "category".equals(fileName) || "newsletter".equals(fileName) || "whatsgood".equals(fileName)) {
+			} else if ("department".equals(fileName) || "department_cohort_match".equals(fileName) || "category".equals(fileName) || "newsletter".equals(fileName) || "whatsgood".equals(fileName) || "ddpp".equals(fileName)) {
 				processDeptOrCat();
 			} else if ("product".equals(fileName) || "pdp".equals(fileName)) {
 				processProduct();

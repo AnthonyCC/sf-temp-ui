@@ -108,7 +108,6 @@ if (categoryModel != null) {
 	}
 	*/
 %>
-
 <%
 
 	//things needed for ddpp
@@ -175,7 +174,7 @@ if (categoryModel != null) {
 				queryString.addParam(name, value);
 			} catch (UnsupportedEncodingException e) {
 				// Not really possible, throw unchecked
-			    throw new IllegalStateException("presidents_picks_layout.jsp: No UTF-8");
+			    throw new IllegalStateException("ddpp.jsp: No UTF-8");
 			}
 		}
 	}
@@ -463,6 +462,7 @@ if (categoryModel != null) {
 	<tmpl:put name="noResult"><%= search.getProducts().isEmpty() && search.getRecipes().isEmpty() ? "noresult" : "hasresults" %></tmpl:put>
 	<tmpl:put name="startPage">resultpage</tmpl:put>
 	<tmpl:put name="productsOnly">products-only</tmpl:put>
+	<tmpl:put name="cmPageViewTag"><fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=currentFolder%>"/></tmpl:put>
 	
 	<tmpl:put name="socialMedia-header">
 		<div class="socialMedia container">

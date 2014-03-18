@@ -157,6 +157,7 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 						jspTemplate = "/common/template/blank.jsp";
 						RequestDispatcher rd = request.getRequestDispatcher("/ddpp.jsp");
 						rd.forward(request, response);
+						return; //stop processing
 					}
 				} else {
 					jspTemplate = "/common/template/top_nav_only.jsp";
