@@ -3,6 +3,7 @@ package com.freshdirect.routing.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -462,14 +463,22 @@ public static boolean updateReservation(DlvReservationModel reservation, IOrderM
 	 * @return The date ranges.
 	 */
 	private static SortedSet<DateRange> getStopETAWindows(int timeWindowInterval, DateRange deliveryWindow) {
-			SortedSet<DateRange> result = new TreeSet<DateRange>();
+			SortedSet<DateRange> result = new TreeSet<DateRange>(new Comparator<DateRange>() {
+				@Override
+				public int compare(DateRange obj1, DateRange obj2) {
+					Date d1 = ((DateRange) obj1).getStartDate();
+					Date d2 = ((DateRange) obj2).getStartDate();
+					return d1.compareTo(d2);
+				}
+			});
 			Calendar cal = Calendar.getInstance();
 			Date _tempStartDate = null;
 			if (deliveryWindow != null) {
 				Date _startWindowTime = deliveryWindow.getStartDate();
 				Date _endWindowTime = deliveryWindow.getEndDate();
 				_tempStartDate = _startWindowTime;
-				while (_tempStartDate.equals(_endWindowTime)) {
+				boolean done = false;
+				while (!done) {
 					cal.setTime(_tempStartDate);
 					cal.add(Calendar.MINUTE, timeWindowInterval);
 	
@@ -482,6 +491,8 @@ public static boolean updateReservation(DlvReservationModel reservation, IOrderM
 						result.add(new DateRange(cal.getTime(), _endWindowTime));
 						_tempStartDate = _endWindowTime;
 					}
+					if(_tempStartDate.equals(_endWindowTime))
+						done = true;
 				}
 			}
 		return result;
@@ -513,7 +524,14 @@ public static boolean updateReservation(DlvReservationModel reservation, IOrderM
 			/* 
 			 * If a Stop Arrival Time is within two or more ETA Time Windows, the order will be assigned to the ETA Time Window with the earliest start time
 			 */
-			SortedSet<DateRange> tempRange = new TreeSet<DateRange>();
+			SortedSet<DateRange> tempRange = new TreeSet<DateRange>(new Comparator<DateRange>() {
+				@Override
+				public int compare(DateRange obj1, DateRange obj2) {
+					Date d1 = ((DateRange) obj1).getStartDate();
+					Date d2 = ((DateRange) obj2).getStartDate();
+					return d1.compareTo(d2);
+				}
+			});
 			for (Iterator<DateRange> i = etaTimeWindows.iterator(); i.hasNext();) {
 				DateRange _range = i.next();
 				if(_range.containsEx(stopArrivalTime)) {
@@ -527,3 +545,5 @@ public static boolean updateReservation(DlvReservationModel reservation, IOrderM
 		return null;
 	}
 }
+
+
