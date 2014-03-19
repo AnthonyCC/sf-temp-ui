@@ -153,7 +153,6 @@
 		</div>
 	</fd:CreateStandingOrder>
 <% } %>
-
 </div>
 </tmpl:put>
 </tmpl:insert>

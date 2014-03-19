@@ -88,6 +88,7 @@ var FreshDirect = FreshDirect || {};
 	$(document).on('click','#reset',reset);
 
 	reload();
+	
 	Object.create(fd.common.signalTarget,{
 		signal:{
 			value:'main'

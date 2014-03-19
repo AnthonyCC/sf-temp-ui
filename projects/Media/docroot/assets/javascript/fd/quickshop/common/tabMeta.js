@@ -29,19 +29,25 @@ var FreshDirect = FreshDirect || {};
 						$('.qs-content').addClass('qs-no-lists');
 					}
 				});
+				this.isLoaded = true;
 			}
 		},
 		update:{
 			value:function(){
-				DISPATCHER.signal('server',{
-					url: '/api/qs/tabMeta'			
-				});					
+				if(!this.isLoaded) {
+					DISPATCHER.signal('server',{
+						url: '/api/qs/tabMeta'			
+					});					
+				}
 			}
+		},
+		isLoaded:{
+			value:false,
+			writable:true
 		}
 	});
 
 	tabMeta.listen();
-	tabMeta.update();
 
 	fd.modules.common.utils.register("quickshop.common", "tabMeta", tabMeta, fd);
 }(FreshDirect));

@@ -96,6 +96,8 @@ var FreshDirect = FreshDirect || {};
   });
 
   	reload();
+  	
+  	
 	Object.create(fd.common.signalTarget,{
 		signal:{
 			value:'main'

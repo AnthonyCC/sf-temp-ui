@@ -41,6 +41,7 @@ var FreshDirect = FreshDirect || {};
 		        $('[data-component="product"]',$(this.placeholder)).each(function(index,element){
 		        	fd.components.Subtotal.update(element);
 		        });
+		      	fd.quickshop.common.tabMeta.update();
 			}
 		}
 	});
