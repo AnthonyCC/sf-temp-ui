@@ -300,17 +300,10 @@ public class ErpGrpInfoDAO {
 		   return matList; 	
 	}
 	
-	public static final String GRP_PRICING_SKU_SELECT_SQL=
-	 "select  p.sku_code "+
-	 "from erps.product p, erps.materialproxy mpx, erps.material m "+
-	 "where p.id = mpx.product_id and  m.id= mpx.mat_id"+
-	 //"and p.version = (select max(version) from erps.product p2 where p2.sku_code = p.sku_code) ";
-	 " and m.version = (select max(version) from erps.material where sap_id=m.sap_id) ";
 	
-	 //"and m.sap_id in ('000000000200200366', '000000000200200367', '000000000200200373') "+  
-	 //"order by M.SAP_ID,P.ID";
-															
-	
+	public static final String GRP_PRICING_SKU_SELECT_SQL= "SELECT  p.sku_code FROM erps.product p, erps.materialproxy mpx, erps.material m, "+
+	 "(SELECT MAX(version) v, sap_id s FROM erps.material WHERE sap_id IN <XYZ> GROUP BY sap_id) T "+
+	" WHERE p.id = mpx.product_id AND  m.id= mpx.mat_id AND m.version=T.v AND M.SAP_ID=T.s ";
 	public static List<String> getSkuCodes(Connection conn, Set<String> matIds) throws SQLException{
 		   List<String> skuList=new ArrayList<String>();
 		   PreparedStatement ps = null;
@@ -318,8 +311,9 @@ public class ErpGrpInfoDAO {
 		   
 	       try {
 	    	   if(matIds == null || matIds.size() == 0) return skuList;
-	    	   StringBuffer buf = new StringBuffer(GRP_PRICING_SKU_SELECT_SQL);
-	    	   buf.append("and m.sap_id in (").append("'");
+	    	   String query=GRP_PRICING_SKU_SELECT_SQL;
+	    	   StringBuilder buf=new StringBuilder(50);
+	    	   buf.append("(").append("'");
 	    	   Iterator<String> it =  matIds.iterator();
 	    	   while(it.hasNext()){
 	    		   String matId = it.next();
@@ -330,7 +324,8 @@ public class ErpGrpInfoDAO {
 	    		   else
 	    			   buf.append(") ");
 	    	   }
-	    	   ps = conn.prepareStatement(buf.toString());
+	    	   query=query.replaceFirst("<XYZ>", buf.toString());
+	    	   ps = conn.prepareStatement(query);
 	    	   rs = ps.executeQuery();
 	             while (rs.next()) {
 	            	 String skuCode=rs.getString("SKU_CODE");	            
