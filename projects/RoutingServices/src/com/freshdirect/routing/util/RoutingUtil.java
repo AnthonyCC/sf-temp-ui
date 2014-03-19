@@ -2,10 +2,13 @@ package com.freshdirect.routing.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
@@ -15,6 +18,7 @@ import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.RoutingActivityType;
@@ -440,5 +444,86 @@ public static boolean updateReservation(DlvReservationModel reservation, IOrderM
 	
 	return engineProxy.schedulerUpdateOrder(order);		
 }
+
 	
+	public static DateRange getStopETAWindow(Date stopArrivalTime, int windowETAInterval, DateRange deliveryWindow) {
+		SortedSet<DateRange> _tempETAWindows = getStopETAWindows(windowETAInterval, deliveryWindow);
+		if(_tempETAWindows != null && _tempETAWindows.size() > 0) {
+			return getStopETAWindow(stopArrivalTime, _tempETAWindows, deliveryWindow);
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns a list of date ranges (sorted by start date) representing the
+	 * ETA date ranges determined for stop delivery window.
+	 * @param timeWindowInterval.
+	 * @param deliveryWindow (DateRange).
+	 * @return The date ranges.
+	 */
+	private static SortedSet<DateRange> getStopETAWindows(int timeWindowInterval, DateRange deliveryWindow) {
+			SortedSet<DateRange> result = new TreeSet<DateRange>();
+			Calendar cal = Calendar.getInstance();
+			Date _tempStartDate = null;
+			if (deliveryWindow != null) {
+				Date _startWindowTime = deliveryWindow.getStartDate();
+				Date _endWindowTime = deliveryWindow.getEndDate();
+				_tempStartDate = _startWindowTime;
+				while (_tempStartDate.equals(_endWindowTime)) {
+					cal.setTime(_tempStartDate);
+					cal.add(Calendar.MINUTE, timeWindowInterval);
+	
+					if (cal.getTime().before(_endWindowTime) || cal.getTime().equals(_endWindowTime)) {
+						result.add(new DateRange(_tempStartDate, cal.getTime()));
+						_tempStartDate = cal.getTime();
+					} else {
+						cal.setTime(_endWindowTime);
+						cal.add(Calendar.MINUTE, -timeWindowInterval);
+						result.add(new DateRange(cal.getTime(), _endWindowTime));
+						_tempStartDate = _endWindowTime;
+					}
+				}
+			}
+		return result;
+	}
+	
+	private static DateRange getStopETAWindow(Date stopArrivalTime, SortedSet<DateRange> etaTimeWindows, DateRange routingDlvWindow) {
+		
+		if(etaTimeWindows != null) {		
+			/*
+			 * Stop Arrival Time is after the end of the Routing Delivery Time Window,
+			 * then the order will be assigned to the last ETA Time Window defined for that Routing Delivery Time Window
+			*/
+			if(etaTimeWindows != null && etaTimeWindows .size() > 0 
+					&& routingDlvWindow != null && stopArrivalTime != null 
+						&& stopArrivalTime.after(routingDlvWindow.getEndDate())) {
+				return new DateRange(etaTimeWindows.last().getStartDate(), etaTimeWindows.last().getEndDate());			
+			}
+			
+			/*
+			 * Stop Arrival Time is before the beginning of the Routing Delivery Time Window,
+			 * then the order will be assigned to the first ETA Time Window defined for that Routing Delivery Time Window 
+			*/
+			if(etaTimeWindows != null && etaTimeWindows .size() > 0 
+					&& routingDlvWindow != null && stopArrivalTime != null 
+						&& stopArrivalTime.before(routingDlvWindow.getStartDate())) {
+				return new DateRange(etaTimeWindows.first().getStartDate(), etaTimeWindows.first().getEndDate());	
+			}
+			
+			/* 
+			 * If a Stop Arrival Time is within two or more ETA Time Windows, the order will be assigned to the ETA Time Window with the earliest start time
+			 */
+			SortedSet<DateRange> tempRange = new TreeSet<DateRange>();
+			for (Iterator<DateRange> i = etaTimeWindows.iterator(); i.hasNext();) {
+				DateRange _range = i.next();
+				if(_range.containsEx(stopArrivalTime)) {
+					tempRange.add(_range);
+				}
+			}
+			if(tempRange.size() > 0) {
+				return new DateRange(tempRange.first().getStartDate(), tempRange.first().getEndDate());
+			}
+		}
+		return null;
+	}
 }
