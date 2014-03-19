@@ -34,6 +34,13 @@ public class DataLoaderProperties {
 	private final static String PROP_PAYMENTECH_BIN_IP = "dataloader.paymentech.bin.ip";
 	private final static String PROP_PAYMENTECH_BIN_PORT = "dataloader.paymentech.bin.port";
 	
+	private final static String PROP_PAYMENTECH_SFTP_HOST = "dataloader.paymentech.sftp.host";
+	private final static String PROP_PAYMENTECH_SFTP_USER = "dataloader.paymentech.sftp.user";
+	private final static String PROP_PAYMENTECH_SFTP_PASSWORD = "dataloader.paymentech.sftp.password";
+	private final static String PROP_PAYMENTECH_SFTP_PRIVATE_KEY = "dataloader.paymentech.sftp.privateKey";
+	private final static String PROP_PAYMENTECH_SFTP_ENABLED="dataloader.paymentech.sftp.enabled";
+	private final static String PROP_PAYMENTECH_SFTP_DELETE_FILES="dataloader.paymentech.sftp.deleteFiles";
+	
 	private final static Properties config;
 	
 	static {
@@ -45,7 +52,7 @@ public class DataLoaderProperties {
 		defaults.put(PROP_FTP_PASSWORD, "sun1ray");
 		defaults.put(PROP_SUMMARY_FILE_NAME, "M044.txt");
 		defaults.put(PROP_TRANSACTION_FILE_NAME, "E012.txt");
-		defaults.put(PROP_WORKING_DIR, "c:/tmp/");
+		defaults.put(PROP_WORKING_DIR, "c:/temp/");
 		defaults.put(PROP_SAP_FILE_NAME_PREFIX, "sapReconciliation");
 		defaults.put(PROP_SAP_FTP_IP, "12.39.155.119");
 		defaults.put(PROP_SAP_FTP_USER, "fdweb2sap");
@@ -56,6 +63,13 @@ public class DataLoaderProperties {
 		defaults.put(PROP_PAYMENTECH_BIN_IP, "206.253.180.137");
 		defaults.put(PROP_PAYMENTECH_BIN_PORT, "8522");
 		
+		defaults.put(PROP_PAYMENTECH_SFTP_HOST, "netconnectbatchvar1.chasepaymentech.net");
+		defaults.put(PROP_PAYMENTECH_SFTP_USER, "SVSMVJK7");
+		defaults.put(PROP_PAYMENTECH_SFTP_PASSWORD, "D77BSZYG");
+		defaults.put(PROP_PAYMENTECH_SFTP_PRIVATE_KEY,"id_rsa_2048_testing_storefront_paymentech");
+		defaults.put(PROP_PAYMENTECH_SFTP_ENABLED,"true");
+		defaults.put(PROP_PAYMENTECH_SFTP_DELETE_FILES, "true");
+		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration for DataLoader: "+config);
 	}
@@ -63,6 +77,7 @@ public class DataLoaderProperties {
     public DataLoaderProperties() {
     }
 	
+   
 	public static String getProviderURL() {
 		return config.getProperty(PROP_PROVIDER_URL);
 	}
@@ -138,4 +153,27 @@ public class DataLoaderProperties {
 		return config.getProperty(PROP_PAYMENTECH_BIN_PORT);
 	}
 
+	
+	public static String getPaymentSFTPHost() {
+		return config.getProperty(PROP_PAYMENTECH_SFTP_HOST);
+	}
+	
+	public static String getPaymentSFTPUser() {
+		return config.getProperty(PROP_PAYMENTECH_SFTP_USER);
+	}
+	
+	public static String getPaymentSFTPPassword() {
+		return config.getProperty(PROP_PAYMENTECH_SFTP_PASSWORD);
+	}
+	
+	public static String getPaymentSFTPKey() {
+		return config.getProperty(PROP_PAYMENTECH_SFTP_PRIVATE_KEY);
+	}
+	
+	public static boolean isPaymentechSFTPEnabled() {
+		return Boolean.valueOf(config.getProperty(PROP_PAYMENTECH_SFTP_ENABLED)).booleanValue();
+	}
+	public static boolean isPaymentechSFTPFileDeletionEnabled() {
+		return Boolean.valueOf(config.getProperty(PROP_PAYMENTECH_SFTP_DELETE_FILES)).booleanValue();
+	}
 }
