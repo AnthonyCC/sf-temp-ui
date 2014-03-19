@@ -44,6 +44,7 @@
 --%><%
 	//OAS spots
 	request.setAttribute("listPos", "SystemMessage,WDelivery,WAffiliate");
+	request.setAttribute("noyui", true);
 
 %><tmpl:insert template="/common/template/welcome_opt/t_welcome_opt.jsp"><%--
 

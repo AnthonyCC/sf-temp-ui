@@ -501,6 +501,8 @@ public class FDStoreProperties {
     private static final String PROP_COUNTRY_INFO_REFRESH_INTERVAL = "fdstore.countryInfo.refresh.minutes";
     //APPDEV-2072 google analytics environment specific key
     private static final String PROP_GOOGLE_ANALYTICS_KEY = "fdstore.google.analytics.key";
+    //APPDEV-3522 Google Analytics: Upgrade to Universal Analytics: Updates for Page Load Times
+    private static final String PROP_GOOGLE_ANALYTICS_UNIVERSAL = "fdstore.google.analytics.universal";
     
     private static final String PROP_GOOGLE_ANALYTICS_DOMAIN = "fdstore.google.analytics.domain";
     
@@ -1143,6 +1145,8 @@ public class FDStoreProperties {
 		//APPDEV-2072 google analytics key
         defaults.put(PROP_GOOGLE_ANALYTICS_KEY, ""); //default to an empty string
         defaults.put(PROP_GOOGLE_ANALYTICS_DOMAIN, ".freshdirect.com");
+        //APPDEV-3522 Google Analytics: Upgrade to Universal Analytics: Updates for Page Load Times
+        defaults.put(PROP_GOOGLE_ANALYTICS_UNIVERSAL, "false");
 
         defaults.put(PROP_AVAILABILITY_DAYS_IN_PAST_TO_LOOKUP, "7");
         defaults.put(CUST_SERV_HOURS_DAYS, "Monday through Sunday");
@@ -2827,6 +2831,11 @@ public class FDStoreProperties {
     
     public static String getGoogleAnlayticsDomain() {
     	return get(PROP_GOOGLE_ANALYTICS_DOMAIN);
+    }
+    
+	//APPDEV-2072 google analytics key
+    public static boolean isGoogleAnalyticsUniversal() {
+        return (new Boolean(get(PROP_GOOGLE_ANALYTICS_UNIVERSAL))).booleanValue();
     }
 
 	//APPDEV-991 

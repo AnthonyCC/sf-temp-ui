@@ -1,4 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
+<%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
@@ -93,14 +96,21 @@ final int W_DNAV_TOTAL = 970;
 <fd:javascript src="/assets/javascript/ZeroClipboard.js" />
 <fd:javascript src="/assets/javascript/shadedborder.js" />
 
-<script type="text/javascript">
-	var _gaq = _gaq || [];
-	_gaq.push(['_setAccount', 'UA-20535945-1']);
-	_gaq.push(['_setDomainName', '.freshdirect.com']);
-	_gaq.push(['_trackPageview']);
-
-	(function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
-</script>
+	<%
+		/* Google Analytics Pixel */
+		SemPixelModel semPixel_GA = FDSemPixelCache.getInstance().getSemPixel("GoogleAnalytics");
+		semPixel_GA.setParam("GAKey", FDStoreProperties.getGoogleAnalyticsKey());
+		semPixel_GA.setParam("GADomain", FDStoreProperties.getGoogleAnlayticsDomain());
+		if (FDStoreProperties.isGoogleAnalyticsUniversal()) { semPixel_GA.setParam("universal", "true"); }
+	%>
+	<%
+		if(request.getRequestURI().endsWith("referee_signup.jsp") || request.getRequestURI().indexOf("invite") != -1) {
+			//add param so ftl can do different logic
+			semPixel_GA.setParam("onRaf", "true");
+		}
+	%>
+		<fd:SemPixelIncludeMedia pixelNames="GoogleAnalytics" />
+	<% /* Google Analytics Pixel */ %>
 
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>

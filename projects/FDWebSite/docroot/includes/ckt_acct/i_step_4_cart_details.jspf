@@ -13,7 +13,8 @@
 <%@ page import='java.util.*'  %>
 <%@ page import="com.freshdirect.fdstore.ecoupon.EnumCouponContext"%>
 <%@ page import="com.freshdirect.fdstore.ecoupon.FDCustomerCoupon"%>
-<%@ page import="com.freshdirect.fdstore.ecoupon.EnumCouponStatus"%> 
+<%@ page import="com.freshdirect.fdstore.ecoupon.EnumCouponStatus"%>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
@@ -444,58 +445,108 @@ int idx = 0;
 </table>
 <%
 	if (isReceiptPage) {
-		//send all info to GA
-		
-		//create a transaction
 		%>
 		<script type="text/javascript">
-			_gaq.push(['_addTrans',      
-	           '<%= sem_orderNumber %>',           // order ID - required
-	           'FreshDirect', // affiliation or store name
-	           '<%= JspMethods.formatPrice(cart.getTotal()).replace("$", "") %>',          // total - required
-	           '<%= JspMethods.formatPrice(cart.getTaxValue()).replace("$", "") %>',           // tax
-	           '<%= (cart.isDeliveryChargeWaived()) ? "0.00" : JspMethods.formatPrice(cart.getDeliverySurcharge()).replace("$", "") %>',          // shipping
-	           '<%= dlvAddress.getCity() %>',       // city
-	           '<%= dlvAddress.getState() %>',     // state or province
-	           '<%= dlvAddress.getCountry() %>'             // country
-	        ]);
-
-		<%
-		/* Google Analytics data. */
-		//add product info
-		for (Iterator gaIter = GACartProds.entrySet().iterator(); gaIter.hasNext();) {
-			Map.Entry e = (Map.Entry) gaIter.next();
-			GoogleAnalyticsCartProduct GACartProd = GACartProds.get((String) e.getKey());
-			%>
-			 _gaq.push(['_addItem',
-			            '<%= sem_orderNumber %>',         // order ID - necessary to associate item with transaction
-			            '<%= GACartProd.getSkuCode() %>',         // SKU/code - required
-			            '<%= GACartProd.getProductId() %>',      // product name - necessary to associate revenue with product
-			            '<%= GACartProd.getProductCategoryId() %>', // category or variation
-			            '<%= GACartProd.getUnitPrice() %>',        // unit price - required
-			            '<%= GACartProd.getQtyFormatted() %>'             // quantity - required
-			         ]);
-			<%
-		}
-		
-			//add the discount if there is one
-			if (cart.getTotalDiscountValue() >= 0) {
-
-				%>
-				 _gaq.push(['_addItem',
-				            '<%= sem_orderNumber %>',         // order ID - necessary to associate item with transaction
-				            '0000000000',         // SKU/code - required
-				            'DISCOUNT',      // product name - necessary to associate revenue with product
-				            'DISCOUNT', // category or variation
-				            '<%= JspMethods.formatPrice(cart.getTotalDiscountValue()).replace("$", "") %>',        // unit price - required
-				            '1'             // quantity - required
-				         ]);
+			<% if (FDStoreProperties.isGoogleAnalyticsUniversal()) { %>
+				<%-- universal script --%>
+				ga('require', 'ecommerce', 'ecommerce.js');   // Load the ecommerce plug-in.
+				
+				ga('ecommerce:addTransaction', {
+					  'id': '<%= sem_orderNumber %>',                     // Transaction ID. Required
+					  'affiliation': 'FreshDirect',   // Affiliation or store name
+					  'revenue': '<%= JspMethods.formatPrice(cart.getTotal()).replace("$", "") %>',               // Grand Total
+					  'shipping': '<%= (cart.isDeliveryChargeWaived()) ? "0.00" : JspMethods.formatPrice(cart.getDeliverySurcharge()).replace("$", "") %>',	// Shipping
+					  'tax': '<%= JspMethods.formatPrice(cart.getTaxValue()).replace("$", "") %>'                     // Tax
+				});
 				<%
-			}
-			//push transaction to google analytics
-		%>
-			_gaq.push(['_trackTrans']);
+					/* Google Analytics data. */
+					//add product info
+					for (Iterator gaIter = GACartProds.entrySet().iterator(); gaIter.hasNext();) {
+						Map.Entry e = (Map.Entry) gaIter.next();
+						GoogleAnalyticsCartProduct GACartProd = GACartProds.get((String) e.getKey());
+						%>
+						ga('ecommerce:addItem', {
+						  'id': '<%= sem_orderNumber %>',                     // Transaction ID. Required
+						  'name': '<%= GACartProd.getProductId() %>',                // Product name. Required
+						  'sku': '<%= GACartProd.getSkuCode() %>',                    // SKU/code
+						  'category': '<%= GACartProd.getProductCategoryId() %>',       // Category or variation
+						  'price': '<%= GACartProd.getUnitPrice() %>',                 // Unit price
+						  'quantity': '<%= GACartProd.getQtyFormatted() %>'                   // Quantity
+						});
+						<%
+					}
+				
+					//add the discount if there is one
+					if (cart.getTotalDiscountValue() >= 0) {
+						%>
+						ga('ecommerce:addItem', {
+						  'id': '<%= sem_orderNumber %>',                     // Transaction ID. Required
+						  'name': 'DISCOUNT',                // Product name. Required
+						  'sku': '0000000000',                    // SKU/code
+						  'category': 'DISCOUNT',       // Category or variation
+						  'price': '<%= JspMethods.formatPrice(cart.getTotalDiscountValue()).replace("$", "") %>',                 // Unit price
+						  'quantity': '1'                   // Quantity
+						});
+						<%
+					}
+					//push transaction to google analytics
+				%>
+					ga('ecommerce:send');      // Send transaction and item data to Google Analytics.
+				
+			<% } else { %>
+				<%-- old script --%>
+
+				//create a transaction
+				_gaq.push(['_addTrans',      
+			           '<%= sem_orderNumber %>',           // order ID - required
+			           'FreshDirect', // affiliation or store name
+			           '<%= JspMethods.formatPrice(cart.getTotal()).replace("$", "") %>',          // total - required
+			           '<%= JspMethods.formatPrice(cart.getTaxValue()).replace("$", "") %>',           // tax
+			           '<%= (cart.isDeliveryChargeWaived()) ? "0.00" : JspMethods.formatPrice(cart.getDeliverySurcharge()).replace("$", "") %>',          // shipping
+			           '<%= dlvAddress.getCity() %>',       // city
+			           '<%= dlvAddress.getState() %>',     // state or province
+			           '<%= dlvAddress.getCountry() %>'             // country
+			        ]);
+	
+				<%
+				/* Google Analytics data. */
+				//add product info
+				for (Iterator gaIter = GACartProds.entrySet().iterator(); gaIter.hasNext();) {
+					Map.Entry e = (Map.Entry) gaIter.next();
+					GoogleAnalyticsCartProduct GACartProd = GACartProds.get((String) e.getKey());
+					%>
+					 _gaq.push(['_addItem',
+					            '<%= sem_orderNumber %>',         // order ID - necessary to associate item with transaction
+					            '<%= GACartProd.getSkuCode() %>',         // SKU/code - required
+					            '<%= GACartProd.getProductId() %>',      // product name - necessary to associate revenue with product
+					            '<%= GACartProd.getProductCategoryId() %>', // category or variation
+					            '<%= GACartProd.getUnitPrice() %>',        // unit price - required
+					            '<%= GACartProd.getQtyFormatted() %>'             // quantity - required
+					         ]);
+					<%
+				}
+				
+					//add the discount if there is one
+					if (cart.getTotalDiscountValue() >= 0) {
+	
+						%>
+						 _gaq.push(['_addItem',
+						            '<%= sem_orderNumber %>',         // order ID - necessary to associate item with transaction
+						            '0000000000',         // SKU/code - required
+						            'DISCOUNT',      // product name - necessary to associate revenue with product
+						            'DISCOUNT', // category or variation
+						            '<%= JspMethods.formatPrice(cart.getTotalDiscountValue()).replace("$", "") %>',        // unit price - required
+						            '1'             // quantity - required
+						         ]);
+						<%
+					}
+					//push transaction to google analytics
+				%>
+					_gaq.push(['_trackTrans']);
+				<%
+			} %>
 		</script><%
+			
 	}
 %>
 </div>

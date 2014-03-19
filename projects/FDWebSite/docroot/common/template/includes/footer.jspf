@@ -177,12 +177,5 @@ final int W_FOOTER_TOTAL = 970;
 %>
 
 <br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
-<%
-	/* Publicis Pixel */
-	SemPixelModel semPixel_PUB = FDSemPixelCache.getInstance().getSemPixel("Publicis");
-
-	//add a param to the params sent to the FTL
-	semPixel_PUB.setParam("curPage", request.getRequestURI());
-%><fd:SemPixelIncludeMedia pixelNames="Publicis" />
 </center>
 <% } %>

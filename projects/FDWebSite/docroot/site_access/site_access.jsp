@@ -7,8 +7,6 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import="com.freshdirect.fdstore.myfd.blog.MyFdFeed"%>
-<%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
-<%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
 <%@ page buffer="16kb" %>
@@ -208,13 +206,6 @@ request.setAttribute("listPos", "CategoryNote,SiteAccess,DeliveryFees");
 				<% } %>
 			</script>
 
-			<%
-				/* Publicis Pixel */
-				SemPixelModel semPixel_PUB = FDSemPixelCache.getInstance().getSemPixel("Publicis");
-
-				//add a param to the params sent to the FTL
-				semPixel_PUB.setParam("curPage", request.getRequestURI());
-			%><fd:SemPixelIncludeMedia pixelNames="Publicis" />
 		</fd:SiteAccessController>
 
 		<% if ("true".equalsIgnoreCase(request.getParameter("bloglogout"))) {%>

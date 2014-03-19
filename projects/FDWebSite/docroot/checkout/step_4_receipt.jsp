@@ -271,22 +271,7 @@
 			semPixel_CM.setParam("userCounty", sem_defaultCounty);
 			semPixel_CM.setParam("totalCartItems", sem_totalCartItems);
 			%><fd:SemPixelIncludeMedia pixelNames="CheetahMail" /><%
-	
-			/* Publicis Pixel */
-			SemPixelModel semPixel_PUB = FDSemPixelCache.getInstance().getSemPixel("Publicis");
-	
-			//add a param to the params sent to the FTL
-			semPixel_PUB.setParam("orderId", sem_orderNumber);
-			semPixel_PUB.setParam("validOrders", sem_validOrderCount);
-			semPixel_PUB.setParam("isNew", ("0".equals(sem_validOrderCount))?"true":"false");
-			semPixel_PUB.setParam("subtotal", sem_cartSubtotal);
-			semPixel_PUB.setParam("isOrderModify",String.valueOf(isOrderModify));
-			semPixel_PUB.setParam("userCounty", sem_defaultCounty);
-			semPixel_PUB.setParam("totalCartItems", sem_totalCartItems);
-			semPixel_PUB.setParam("curPage", request.getRequestURI());
-			%><fd:SemPixelIncludeMedia pixelNames="Publicis" /><%
-	
-	
+		
 			/* TheSearchAgency Pixel */
 			if ( !isOrderModify ) { //do not send on order modify
 				//get ref to Pixel
@@ -307,42 +292,7 @@
 				semPixel_TSA.setParam("discountAmount", sem_totalDiscountAmount);
 				%><fd:SemPixelIncludeMedia pixelNames="TheSearchAgency" /><%
 			}
-	
-			/* LinkShare Pixel */
-			if ( !isOrderModify ) { //do not send on order modify
-			    //get ref to Pixel
-				SemPixelModel semPixel_LS = FDSemPixelCache.getInstance().getSemPixel("LinkShare");
-				
-				sem_totalDiscountAmount = sem_totalDiscountAmount.replace(".", "");
-	
-				//change triple zero ($0.00 -> 000) to single zero
-				if ("000".equals(sem_totalDiscountAmount)) { sem_totalDiscountAmount = "0"; }
-	
-				//add a param to the params sent to the FTL
-				semPixel_LS.setParam("orderId", sem_orderNumber);
-				semPixel_LS.setParam("subtotal", sem_cartSubtotal);
-				semPixel_LS.setParam("discountAmount", sem_totalDiscountAmount);
-				semPixel_LS.setParam("isNew", ("1".equals(sem_validOrderCount))?"true":"false");
-				semPixel_LS.setParam("isOrderModify",String.valueOf(isOrderModify));
-				%><fd:SemPixelIncludeMedia pixelNames="LinkShare" /><%
-			}
 			
-
-			if ( !isOrderModify ) { //do not send on order modify
-				/* ConvergeTrack Pixel */
-				SemPixelModel semPixel_CT = FDSemPixelCache.getInstance().getSemPixel("ConvergeTrack");
-			
-				//always include this
-				semPixel_CT.setParam("receipt", "true");
-				semPixel_CT.setParam("orderId", sem_orderNumber);
-				semPixel_CT.setParam("isNew", ("1".equals(sem_validOrderCount))?"true":"false");
-				semPixel_CT.setParam("subtotal", sem_cartSubtotal);
-		
-				%><fd:SemPixelIncludeMedia pixelNames="ConvergeTrack" /><%
-				
-				//kill params
-				semPixel_CT.setParam("receipt", "false");
-			}
 		}
 	%>
 

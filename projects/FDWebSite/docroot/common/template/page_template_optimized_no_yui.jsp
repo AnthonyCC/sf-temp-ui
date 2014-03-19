@@ -30,22 +30,17 @@
 			/* Google Analytics Pixel */
 			SemPixelModel semPixel_GA = FDSemPixelCache.getInstance().getSemPixel("GoogleAnalytics");
 			semPixel_GA.setParam("GAKey", FDStoreProperties.getGoogleAnalyticsKey());
+			semPixel_GA.setParam("GADomain", FDStoreProperties.getGoogleAnlayticsDomain());
+			if (FDStoreProperties.isGoogleAnalyticsUniversal()) { semPixel_GA.setParam("universal", "true"); }
 		%>
 		<%
 			if(request.getRequestURI().endsWith("referee_signup.jsp") || request.getRequestURI().indexOf("invite") != -1) {
+				//add param so ftl can do different logic
+				semPixel_GA.setParam("onRaf", "true");
+			}
 		%>
-			<script type="text/javascript">                     
-				var _gaq = _gaq || [];
-				_gaq.push(['_setAccount', 'UA-20535945-1']);
-				_gaq.push(['_setDomainName', '.freshdirect.com']);
-				_gaq.push(['_setCustomVar',1,'RAF','Responder',1]);					 
-				_gaq.push(['_trackPageview', '/registration/referee_signup.jsp']); 
-				_gaq.push(['_setReferrerOverride', '/registration/referee_signup.jsp?utm_medium=internal&utm_source=raf&utm_campaign=raf']);
-				(function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })();
-			</script>
-		<% } else { %>
 			<fd:SemPixelIncludeMedia pixelNames="GoogleAnalytics" />
-		<% } %>
+		<% /* Google Analytics Pixel */ %>
 		
 		
 		<jwr:script src="/fdlibs_opt.js" useRandomParam="false" />
@@ -80,36 +75,6 @@
 		<% } else { %>
 			<%-- jwr:script src="/composite_common.js" useRandomParam="false" / --%>
 		<% } %>
-			
-		
-		<%
-			/* ConvergeTrack Pixel */
-			SemPixelModel semPixel_CT = FDSemPixelCache.getInstance().getSemPixel("ConvergeTrack");
-		
-			//always include this
-			semPixel_CT.setParam("landing", "true");
-			
-			if(session != null && (session.getAttribute("LITESIGNUP_COMPLETE") != null || session.getAttribute("regSuccess") != null)) {
-				/* user just completed sign up lite or checkout sign up, add param */
-				semPixel_CT.setParam("signUp", "true");
-	
-				FDUserI sem_user_CT = (FDUserI)session.getAttribute(SessionName.USER);
-				if (sem_user_CT != null) {
-					semPixel_CT.setParam("custId", sem_user_CT.getIdentity().getErpCustomerPK().toString());
-				}
-				session.removeAttribute("regSuccess"); /* remove sign up marker once used, so every other page isn't logged */
-				if (request.getRequestURI().equalsIgnoreCase("/index.jsp")) {
-					//remove this session attribute
-					session.removeAttribute("LITESIGNUP_COMPLETE");
-				}
-			}
-	
-			%><fd:SemPixelIncludeMedia pixelNames="ConvergeTrack" /><%
-	
-			//kill params
-			semPixel_CT.setParam("signUp", "false");
-			semPixel_CT.setParam("landing", "false");
-		%>
 		
 		<jwr:script src="/fdccl.js"  useRandomParam="false" />
 	
