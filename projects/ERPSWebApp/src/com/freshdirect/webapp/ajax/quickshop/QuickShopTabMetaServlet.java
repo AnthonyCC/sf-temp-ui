@@ -16,6 +16,7 @@ import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
+import com.freshdirect.webapp.ajax.quickshop.data.EnumQuickShopTab;
 
 public class QuickShopTabMetaServlet extends BaseJsonServlet{
 
@@ -31,24 +32,14 @@ public class QuickShopTabMetaServlet extends BaseJsonServlet{
 		
 		//past orders tab
 		try {
-			int size = QuickShopHelper.getRecentOrderHistoryInfoIds(user).size();
-			meta.put("pastorders", size<=FDListManager.QUICKSHOP_ORDER_LIMIT ? size : FDListManager.QUICKSHOP_ORDER_LIMIT);
+			meta.put("pastorders", QuickShopHelper.getOrderCount(user));
 		} catch (FDResourceException e) {
 			LOG.error("Can't calculate past orders tab meta! e: " + e);
 		}
 	
 		//shop from lists tab
 		try {
-			List<FDCustomerCreatedList> lists = FDListManager.getCustomerCreatedLists(user);
-			int counter = 0;
-			if(lists!=null){
-				for(FDCustomerCreatedList list : lists){
-					if(list.getCount()>0){
-						++counter;
-					}
-				}				
-			}
-			meta.put("lists", counter);
+			meta.put("lists", QuickShopHelper.getListCount(user));
 		} catch (FDResourceException e) {
 			LOG.error("Can't calculate custom lists tab meta! e: " + e);
 		}

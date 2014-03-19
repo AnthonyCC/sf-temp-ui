@@ -36,6 +36,7 @@ import com.freshdirect.fdstore.content.FilteringFlowResult;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.QuickShopCacheUtil;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.StarterList;
@@ -485,6 +486,40 @@ public class QuickShopHelper {
 				}				
 			}
 		}		
+	}
+	
+	public static int getOrderCount(FDUserI user) throws FDResourceException{
+		
+		List<QuickShopLineItemWrapper> items = QuickShopCacheUtil.getListFromCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
+		
+		if(items==null){			
+			items = getWrappedOrderHistory(user, EnumQuickShopTab.PAST_ORDERS);
+		}
+				
+		Set<String> orderIds = new HashSet<String>();
+		
+		for(QuickShopLineItemWrapper item : items){
+			orderIds.add(item.getOrderId());
+		}
+		
+		return orderIds.size();
+	}
+	
+	public static int getListCount(FDUserI user) throws FDResourceException{
+		
+		List<QuickShopLineItemWrapper> items = QuickShopCacheUtil.getListFromCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
+		
+		if(items==null){			
+			items = getWrappedCustomerCreatedLists(user, EnumQuickShopTab.CUSTOMER_LISTS);
+		}
+				
+		Set<String> listIds = new HashSet<String>();
+		
+		for(QuickShopLineItemWrapper item : items){
+			listIds.add(item.getCclId());
+		}
+		
+		return listIds.size();
 	}
 	
 	public static List<String> getRecentOrderHistoryInfoIds(FDUserI user) throws FDResourceException {
