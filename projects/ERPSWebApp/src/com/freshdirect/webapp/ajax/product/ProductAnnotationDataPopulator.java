@@ -79,6 +79,9 @@ public class ProductAnnotationDataPopulator {
 		
 		vdata.put("skuCode", skuCode);
 		vdata.put("material", fdprd!=null ?fdprd.getMaterial().getMaterialNumber().substring(9) : "-");
+		if (fdprd!=null) {
+			vdata.put("materialLink", FDStoreProperties.getAnnotationErpsy() + "/attribute/material/material_view.jsp?sapId=" +fdprd.getMaterial().getMaterialNumber());
+		}
 		vdata.put("availability", productInfo.getAvailabilityStatus().getShortDescription());
 		
 		List<DomainValue> varMtx = defaultSku.getVariationMatrix();
@@ -97,6 +100,6 @@ public class ProductAnnotationDataPopulator {
 		
 		data.setData(vdata);
 		
-		data.setErpsyLink( FDStoreProperties.getAnnotationErpsy() + "/attribute/material/material_search.jsp?searchterm=" + skuCode + "&amp;searchtype=WEBID");
+		data.setErpsyLink( FDStoreProperties.getAnnotationErpsy() + "/attribute/material/material_search.jsp?searchterm=" + skuCode + "&searchtype=WEBID");
 	}
 }

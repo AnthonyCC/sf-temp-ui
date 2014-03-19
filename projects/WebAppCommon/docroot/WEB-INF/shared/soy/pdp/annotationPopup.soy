@@ -7,8 +7,18 @@
 {template .annotationPopup}
   <ul>
     <li>Availability: {$data.availability}</li>
-    <li>Material: {$data.material}</li>
+	<li>Material: {call .newTabLinkedText}{param url:$data.materialLink /}{param text:$data.material /}{/call}</li>
     <li>SKU: {$data.skuCode}</li>
-    <li><a href="{$erpsyLink}">Erpsy</a></li>
+    <li>{call .newTabLinkedText}{param url:$erpsyLink /}{param text:'Erpsy' /}{/call}</li>
   </ul>
+{/template}
+
+
+/**
+ * @param? url
+ * @param text
+ * 
+ */
+{template .newTabLinkedText autoescape="false" private="true"}
+{if $url}<a href="{$url}" target="_new">{/if}{$text}{if $url}</a>{/if}
 {/template}
