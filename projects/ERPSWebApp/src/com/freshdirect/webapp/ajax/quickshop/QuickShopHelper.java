@@ -494,6 +494,9 @@ public class QuickShopHelper {
 		
 		if(items==null){			
 			items = getWrappedOrderHistory(user, EnumQuickShopTab.PAST_ORDERS);
+			if(!items.isEmpty()){
+				QuickShopCacheUtil.putListToCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, user.getIdentity().getErpCustomerPK(), new ArrayList<QuickShopLineItemWrapper>(items));					
+			}
 		}
 				
 		Set<String> orderIds = new HashSet<String>();
@@ -511,6 +514,9 @@ public class QuickShopHelper {
 		
 		if(items==null){			
 			items = getWrappedCustomerCreatedLists(user, EnumQuickShopTab.CUSTOMER_LISTS);
+			if(!items.isEmpty()){
+				QuickShopCacheUtil.putListToCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK(), new ArrayList<QuickShopLineItemWrapper>(items));					
+			}
 		}
 				
 		Set<String> listIds = new HashSet<String>();
