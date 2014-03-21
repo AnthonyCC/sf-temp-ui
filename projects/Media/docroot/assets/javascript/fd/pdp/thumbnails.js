@@ -135,8 +135,8 @@ var FreshDirect = FreshDirect || {};
         return;
       }
 
-      // find hd img in container
-      hdImg = $("[data-thumbnails-hd]").find("img[src='" + largeUrl + "']");
+      // find hd img in container (but just ONE)
+      hdImg = $("[data-thumbnails-hd]").find("img[src='" + largeUrl + "']:first");
       hdImg.show();
 
       // get offset
