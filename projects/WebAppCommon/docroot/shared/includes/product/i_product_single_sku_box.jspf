@@ -6,7 +6,7 @@
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%
     DomainValue domainValue = null;
-    if ( domains.size() != 0 ) {
+    if ( domains.size() != 0 && !defaultSku.getVariationMatrix().isEmpty()) {
         // there should be a single domainvalue on it
         domainValue = ((DomainValue)defaultSku.getVariationMatrix().get(0));
     }
