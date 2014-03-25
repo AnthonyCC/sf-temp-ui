@@ -1,4 +1,5 @@
 package com.freshdirect.dataloader.payment.bin;
+//com.freshdirect.dataloader.payment.bin.PaymentechSFTPBinLoader
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -58,13 +59,13 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 	private static final String NO_DATA="No data to send back at this time";
 	
 	public static void main(String[] args) {
-		PaymentechSFTPBinLoader loader = new PaymentechSFTPBinLoader();
+		
 		
 		FileContext ctx=getFileContext(args);
 		
 		
 		try {
-			loader.loadBINs(ctx);
+			PaymentechSFTPBinLoader.loadBINs(ctx);
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOGGER.fatal("Failed to load bin files", e);
@@ -72,7 +73,7 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 		}
 	}
 	
-	private void loadBINs(FileContext ctx) throws UnknownHostException, IOException, CreateException, EJBException, RemoteException, SapException, FDResourceException {
+	private static void loadBINs(FileContext ctx) throws UnknownHostException, IOException, CreateException, EJBException, RemoteException, SapException, FDResourceException {
 		String timestamp = SF.format(new Date());
 		//String timestamp ="2013_05_30_10_24";
 		//make the dfr file
@@ -83,12 +84,12 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 		boolean getFileFromProcessor=ctx.downloadFiles();
 		
 		if(getFileFromProcessor) {
-			this.downloadFile(ctx,visaBinFile, mcBinFile);
+			downloadFile(ctx,visaBinFile, mcBinFile);
 		}
 		loadBinFiles(visaBinFile, mcBinFile);
 	}
 	
-	public  void parseFile(InputStream fileStream, BINContext context) {
+	public static void parseFile(InputStream fileStream, BINContext context) {
 		
 		BufferedReader lines = null;
 		boolean processedHeader=false;
@@ -156,16 +157,16 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 		
 	}
 	
-	private boolean isTrailerRecord(String line) {
+	private static boolean isTrailerRecord(String line) {
 		return line.startsWith("99999999")?true:false;
 	}
 	
-	private boolean isHeaderRecord(String line) {
+	private static boolean isHeaderRecord(String line) {
 		return (line.startsWith("00000000VIUSDBTBIN") || line.startsWith("00000000MCUSDBTBIN"))?true:false;
 	}
 	
 	
-	private void processHeader(String header, EnumCardType cardType) throws BadDataException {
+	private static void processHeader(String header, EnumCardType cardType) throws BadDataException {
 		if(EnumCardType.VISA.equals(cardType)|| EnumCardType.MC.equals(cardType)) {
 			
 		} else {
@@ -173,7 +174,7 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 		}
 		
 	}
-	private void loadBinFiles(File visaBinFile, File mcBinFile) throws CreateException,  FDResourceException, IOException {
+	public static void loadBinFiles(File visaBinFile, File mcBinFile) throws CreateException,  FDResourceException, IOException {
 		
 			
 		
@@ -189,12 +190,12 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 		BINContext context=new BINContext();
 		context.setCardType(EnumCardType.VISA);
 		
-		this.parseFile(isVisa, context);
+		parseFile(isVisa, context);
 		if(context.getExceptions().size()==0)
 			visaBINInfo=context.getBinInfos();
 		
 		context.setCardType(EnumCardType.MC);
-		this.parseFile(isMC, context);
+		parseFile(isMC, context);
 		if(context.getExceptions().size()==0)
 			mcBINInfo=context.getBinInfos();
 		
@@ -252,7 +253,7 @@ public class PaymentechSFTPBinLoader /*implements BINLoader*/ {
 		return ctx;
 		
 	}
-	private void downloadFile(FileContext ctx, File visaBinFile, File mcBinFile) throws UnknownHostException, IOException {
+	private static void downloadFile(FileContext ctx, File visaBinFile, File mcBinFile) throws UnknownHostException, IOException {
 		
 			/*FileContext ctx=new FileContext();
 			ctx.setFileType(PaymentFileType.BIN);

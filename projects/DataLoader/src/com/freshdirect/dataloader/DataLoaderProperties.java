@@ -68,7 +68,7 @@ public class DataLoaderProperties {
 		defaults.put(PROP_PAYMENTECH_SFTP_PASSWORD, "D77BSZYG");
 		defaults.put(PROP_PAYMENTECH_SFTP_PRIVATE_KEY,"id_rsa_2048_testing_storefront_paymentech");
 		defaults.put(PROP_PAYMENTECH_SFTP_ENABLED,"true");
-		defaults.put(PROP_PAYMENTECH_SFTP_DELETE_FILES, "true");
+		defaults.put(PROP_PAYMENTECH_SFTP_DELETE_FILES, "false");
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration for DataLoader: "+config);
