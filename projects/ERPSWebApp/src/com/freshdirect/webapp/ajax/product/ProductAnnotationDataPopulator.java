@@ -25,7 +25,7 @@ public class ProductAnnotationDataPopulator {
 	@SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getInstance( ProductAnnotationDataPopulator.class );
 
-	public static ProductAnnotationData createAnnotationData( FDUserI user, ProductModel product ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+	public static ProductAnnotationData createAnnotationData( FDUserI user, ProductModel product, String productId, String categoryId ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
 		
 		if ( product == null ) {
 			BaseJsonServlet.returnHttpError( 500, "product not found" );
@@ -35,7 +35,7 @@ public class ProductAnnotationDataPopulator {
 		ProductAnnotationData data = new ProductAnnotationData();
 		
 		// First populate product-level data
-		populateData( data, user, product );
+		populateData( data, user, product, productId, categoryId );
 		
 		return data;
 	}
@@ -50,13 +50,13 @@ public class ProductAnnotationDataPopulator {
 		// Get the ProductModel
 		ProductModel product = PopulatorUtil.getProduct( productId, categoryId );
 		
-		return createAnnotationData( user, product );
+		return createAnnotationData( user, product, productId, categoryId );
 	}
 
 
 	
 
-	private static void populateData(ProductAnnotationData data, FDUserI user, ProductModel productNode) throws FDSkuNotFoundException, FDResourceException {
+	private static void populateData(ProductAnnotationData data, FDUserI user, ProductModel productNode, String productId, String categoryId) throws FDSkuNotFoundException, FDResourceException {
 		
 		final SkuModel defaultSku = PopulatorUtil.getDefSku( productNode );
 		if (defaultSku == null) {
@@ -80,7 +80,16 @@ public class ProductAnnotationDataPopulator {
 		vdata.put("skuCode", skuCode);
 		vdata.put("material", fdprd!=null ?fdprd.getMaterial().getMaterialNumber().substring(9) : "-");
 		if (fdprd!=null) {
+			//add additional links
+			
+			//erpsy material
 			vdata.put("materialLink", FDStoreProperties.getAnnotationErpsy() + "/attribute/material/material_view.jsp?sapId=" +fdprd.getMaterial().getMaterialNumber());
+			
+			//info for cms link (url in soy, there's no prop like erpsy)
+			if (categoryId != null && !"".equals(categoryId) && productId != null && !"".equals(productId)) {
+				vdata.put("categoryId", categoryId);
+				vdata.put("productId", productId);
+			}
 		}
 		vdata.put("availability", productInfo.getAvailabilityStatus().getShortDescription());
 		
@@ -100,6 +109,7 @@ public class ProductAnnotationDataPopulator {
 		
 		data.setData(vdata);
 		
-		data.setErpsyLink( FDStoreProperties.getAnnotationErpsy() + "/attribute/material/material_search.jsp?searchterm=" + skuCode + "&searchtype=WEBID");
+		//changed this to BASE, set additional url target in SOY
+		data.setErpsyLink( FDStoreProperties.getAnnotationErpsy());
 	}
 }
