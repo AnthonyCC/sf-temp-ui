@@ -27,28 +27,28 @@ public class QuickShopComparatorUtil {
 		switch (sortBy) {
 			case BY_SALE:
 				collectSaleInfo(items, pricingContext);
-				comparator = ComparatorChain.create(new SortValueComparator<QuickShopLineItemWrapper>(EnumSortingValue.DEAL))
-						.chain(FilteringSortingItem.wrap(QuickShopLineItemWrapper.FULL_NAME_PRODUCT_COMPARATOR));
+				comparator = ComparatorChain.create(new SortValueComparator<QuickShopLineItemWrapper>(EnumSortingValue.DEAL));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
+				comparator.chain(FilteringSortingItem.wrap(QuickShopLineItemWrapper.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_FREQUENCY:
-				comparator = ComparatorChain.create(FilteringSortingItem.wrap(QuickShopLineItemWrapper.FREQUENCY_COMPARATOR))
-						.chain(FilteringSortingItem.wrap(QuickShopLineItemWrapper.FULL_NAME_PRODUCT_COMPARATOR));
+				comparator = ComparatorChain.create(FilteringSortingItem.wrap(QuickShopLineItemWrapper.FREQUENCY_COMPARATOR));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
+				comparator.chain(FilteringSortingItem.wrap(QuickShopLineItemWrapper.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_RECENCY:
-				comparator = ComparatorChain.create(FilteringSortingItem.wrap(QuickShopLineItemWrapper.RECENT_PURCHASE_COMPARATOR_DESC))
-					.chain(FilteringSortingItem.wrap(QuickShopLineItemWrapper.FULL_NAME_PRODUCT_COMPARATOR));
+				comparator = ComparatorChain.create(FilteringSortingItem.wrap(QuickShopLineItemWrapper.RECENT_PURCHASE_COMPARATOR_DESC));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
+				comparator.chain(FilteringSortingItem.wrap(QuickShopLineItemWrapper.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_EXPERT_RATING:
-				comparator = ComparatorChain.create(FilteringSortingItem.wrap(QuickShopLineItemWrapper.EXPERT_RATING_COMPARATOR))
-					.chain(FilteringSortingItem.wrap(QuickShopLineItemWrapper.FULL_NAME_PRODUCT_COMPARATOR));
+				comparator = ComparatorChain.create(FilteringSortingItem.wrap(QuickShopLineItemWrapper.EXPERT_RATING_COMPARATOR));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
+				comparator.chain(FilteringSortingItem.wrap(QuickShopLineItemWrapper.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_YOUR_FAVORITES:
 				comparator = ComparatorChain.create(FilteringSortingItem.wrap(QuickShopLineItemWrapper.FAVOURITES_COMPARATOR))

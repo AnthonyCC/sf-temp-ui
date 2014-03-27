@@ -133,6 +133,7 @@
 
 .productDisplay-skuconfig select {
 	margin: 5px 0 10px;
+  max-width: 180px;
 }
 
 .skucontrol-salesunit b{

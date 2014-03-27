@@ -38,6 +38,7 @@ import com.freshdirect.fdstore.content.MediaI;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.content.TagModel;
 import com.freshdirect.fdstore.content.YmalSet;
 import com.freshdirect.fdstore.content.YmalSetSource;
 import com.freshdirect.framework.util.DayOfWeekSet;
@@ -2022,6 +2023,22 @@ public class MockProductModel extends MockContentNodeModel implements
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public List<TagModel> getTags() {
+		return null;
+	}
+
+	@Override
+	public Set<TagModel> getAllTags() {
+		return null;
+	}
+
+	@Override
+	public Set<DomainValue> getAllDomainValues() {
+		return null;
+	}
+
 
 	@Override
 	public List<ProductModel> getUpSellProducts() {

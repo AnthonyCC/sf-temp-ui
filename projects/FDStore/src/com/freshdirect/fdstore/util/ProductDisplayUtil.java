@@ -4,9 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.freshdirect.common.pricing.MaterialPrice;
-import com.freshdirect.common.pricing.util.GroupScaleUtil;
-import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
@@ -29,6 +26,8 @@ public class ProductDisplayUtil {
 	public static final String CART_CONFIRM_PAGE_BASE = "/cart_confirm.jsp";
 	public static final String GR_CART_CONFIRM_PAGE_BASE = "/grocery_cart_confirm.jsp";
 
+	public static final String NEW_PRODUCT_PAGE_BASE = "/pdp.jsp";
+	
 	public final static ProductModel.RatingComparator RATING_COMP = new ProductModel.RatingComparator();
 
 

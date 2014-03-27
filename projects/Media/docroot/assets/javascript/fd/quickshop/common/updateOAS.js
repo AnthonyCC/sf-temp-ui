@@ -34,7 +34,7 @@ var FreshDirect = FreshDirect || {};
 		
 	}
 
-	updateOAS.done = function(pos,s) {	
+	var done = function(pos,s) {	
 		document.getElementById(pos).innerHTML=s;
 	};
 	
@@ -61,5 +61,6 @@ var FreshDirect = FreshDirect || {};
 	}).listen();
 	
 	
+	fd.modules.common.utils.register("updateOAS", "done", done, fd);
 	fd.modules.common.utils.register("quickshop.common", "updateOAS", updateOAS, fd);
 }(FreshDirect));

@@ -28,7 +28,7 @@
 		</label>
 		<div>{call common.rating.expert}{param ratingValue:$sku.expertRating /}{/call}</div>
 		<div>{call common.rating.wine}{param ratingValue:$sku.wineRating /}{/call}</div>
-		<div class="productDisplay-sustrating">{if $sku.sustainabilityRating}Sustainability Rating -{call common.rating.sustainability}{param ratingValue:$sku.sustainabilityRating /}{/call}{/if}</div>
+		<div class="productDisplay-sustrating">{if $sku.sustainabilityRating}<a href="javascript:pop('/shared/brandpop.jsp?brandId=bd_sustainable_ratings',400,585)">Sustainability Rating</a> -{call common.rating.sustainability}{param ratingValue:$sku.sustainabilityRating /}{/call}{/if}</div>
 	</li>
 	{/if}
 	{/foreach}
@@ -38,7 +38,8 @@
 	{if $data.ATCApply}
 		<span data-component="applyCustomization"><button class="addtocart" data-component="ATCButton">add to cart</button></span>		
 	{else}
- 	   	<button data-component="ATCButton" class="addtocart">add to cart</button>
+ 	   	<button data-component="ATCButton" class="addtocart cssbutton orange small">add to cart</button>
+ 	   	<button data-component="addToListButton" class="addtolist cssbutton purple small notext icon-file2-before">add to list</button>
 		{if $data.hasApply}<div class="applyCustomization">Save changes permanently.<br><button data-component="saveCustomization">save customization</button></div>{/if}
 	{/if}
 	{if $data.originalLineId}<input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$data.originalLineId}">{/if}

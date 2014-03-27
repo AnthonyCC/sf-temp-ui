@@ -1,75 +1,74 @@
-/*global jQuery*/
+/*global jQuery,Bacon*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
-	"use strict"
+  "use strict";
 
-	var $ = fd.libs.$;
-	var DISPATCHER = fd.common.dispatcher;
-	var errorMessages={
-			"401":'<div class="unauthorized">You have to be logged in with a FreshDirect account.<br><br><a href="/login/login.jsp">Please Log In</a></div>'
-	}
+  var $ = fd.libs.$;
+  var DISPATCHER = fd.common.dispatcher;
+  var errorMessages={
+      "401":'<div class="unauthorized">Session expired, please refresh!</div>'
+  };
 
 
-	/* helper function for successHandler
-	 * "this" means the data object
-	 * @param name property name
-	 */
-	var _signalWidgets = function( name ) {
-		DISPATCHER.signal( name, this[name] );
-	};
+  /* helper function for successHandler
+   * "this" means the data object
+   * @param name property name
+   */
+  var _signalWidgets = function( name ) {
+    DISPATCHER.signal( name, this[name] );
+  };
 
-	var successHandler = function( data ){
-		try{
-			Object.keys( data ).forEach( _signalWidgets, data );			
-		} catch(e){
-			// console.log(e);
-		}
-	};
+  var successHandler = function( data ){
+    try{
+      Object.keys( data ).forEach( _signalWidgets, data );      
+    } catch(e){
+      // console.log(e);
+    }
+  };
 
-	var errorHandler = function( e, textStatus, errorThrown ){
-		var status = e.status;
-		if(status != 0) {
-			DISPATCHER.signal('errorDialog',{
-				message:errorMessages[status]
-			});
-		}
-	};
+  var errorHandler = function( e ){
+    var status = e.status;
+    DISPATCHER.signal('errorDialog',{
+      message:errorMessages[status]
+    });
 
-	var server = Object.create(fd.common.signalTarget,{
-		signal:{
-			value:'server'
-		},
-		callback:{
-			value:function( config ) {
+  };
 
-				var ajax = Bacon.fromPromise($.ajax({
-								type:config.method || 'GET',
-								url:config.url,
-								data:config.data || {}
-							}));
+  var server = Object.create(fd.common.signalTarget,{
+    signal:{
+      value:'server'
+    },
+    callback:{
+      value:function( config ) {
 
-				ajax.onValue(successHandler);
-				ajax.onError(errorHandler);
+        var ajax = Bacon.fromPromise($.ajax({
+                type:config.method || 'GET',
+                url:config.url,
+                data:config.data || {}
+              }));
 
-				var state = ajax.map(false).toProperty(true);
+        ajax.onValue(successHandler);
+        ajax.onError(errorHandler);
 
-				if('spinner' in config) {
-					Bacon.later(config.spinner.timeout,'show').filter(state).onValue(function(v){
-						if(v==='show') $(config.spinner.element).addClass('loading');
-					});					
-				
-					state.onValue(function(show){
-						if(!show) {
-							$(config.spinner.element).removeClass('loading');
-						}
-					});
-				}
-			}
-		}
-	});
+        var state = ajax.map(false).toProperty(true);
 
-	server.listen();
+        if('spinner' in config) {
+          Bacon.later(config.spinner.timeout,'show').filter(state).onValue(function(v){
+            if(v==='show') { $(config.spinner.element).addClass('loading'); }
+          });         
+        
+          state.onValue(function(show){
+            if(!show) {
+              $(config.spinner.element).removeClass('loading');
+            }
+          });
+        }
+      }
+    }
+  });
 
-	fd.modules.common.utils.register("common", "server", server, fd);
+  server.listen();
+
+  fd.modules.common.utils.register("common", "server", server, fd);
 }(FreshDirect));

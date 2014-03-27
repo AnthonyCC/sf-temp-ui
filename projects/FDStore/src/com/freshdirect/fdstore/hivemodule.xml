@@ -45,5 +45,13 @@
  		</invoke-factory>
  	</service-point>
 
+	<!-- APPDEV-2910 Product Grabber Service -->
+ 	<service-point id="GrabberService" interface="com.freshdirect.fdstore.content.grabber.GrabberServiceI">
+ 		<invoke-factory>
+ 			<construct class="com.freshdirect.fdstore.content.browse.grabber.GrabberService">
+ 			</construct>
+ 		</invoke-factory>
+ 	</service-point>
+
 </module>
 

@@ -26,7 +26,12 @@ public enum EnumEventSource {
 	// Site Redesign - PDP
 	pdp_main("pdp_main"),
 	EB("EB"), //PDP Even Better!
-	LTYLT("LTYLT"); //PDP Like That? You'll Love This.
+	LTYLT("LTYLT"), //PDP Like That? You'll Love This.
+	DFR("DFR"), //Browse - Department Featured Products Recommender
+	DMR("DMR"), //Browse - Department Merchant Recommender
+	CSR("CSR"), //Browse - Category Scarab Recommender
+	CMR("CMR"), //Browse - Category Merchant Recommender
+	TRY("TRY"); //Browse - TRY Recommender 
 	
 	String name;
 	

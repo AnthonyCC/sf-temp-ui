@@ -32,6 +32,7 @@
 			<CmsEditor ref="productFilter"/>
 			<CmsEditor ref="productFilterGroup"/>
 			<CmsEditor ref="productFilterMultiGroup"/>
+			<CmsEditor ref="tag"/>
 		</editors>
 	</CmsFolder>
 	
@@ -130,11 +131,12 @@
 					<CmsSection>
 						<title>BROWSE SETUP</title>
 						<fields>
+							<CmsField><attribute>browseRecommenderType</attribute></CmsField>
 							<CmsField><attribute>productFilterGroups</attribute></CmsField>
 							<CmsField><attribute>sortOptions</attribute></CmsField>
 							<CmsField><attribute>noGroupingByCategory</attribute></CmsField>
 							<CmsField><attribute>popularCategories</attribute></CmsField>
-							<CmsField><attribute>browseRecommenderType</attribute></CmsField>
+							<CmsField><attribute>showAllByDefault</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -151,7 +153,7 @@
 						</fields>
 					</CmsSection>
 					<CmsSection>
-						<title>FEATURED RECOMMENDER</title>
+						<title>FEATURED RECOMMENDER (see &lt;a target="_blank" href="http://home.freshdirect.com/confluence/display/web/Featured+recommer+setup"&gt;help&lt;/a&gt;)</title>
 						<fields>
 							<CmsField><attribute>featuredRecommenderTitle</attribute></CmsField>
 							<CmsField><attribute>featuredRecommenderSourceCategory</attribute></CmsField>
@@ -421,12 +423,18 @@
 					<CmsSection>
 						<title>BROWSE SETUP</title>
 						<fields>
+							<CmsField><attribute>browseRecommenderType</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>TOP LEVEL CATEGORY FIELDS (DO NOT USE FOR SUBCATEGORIES)</title>
+						<fields>
 							<CmsField><attribute>productFilterGroups</attribute></CmsField>
 							<CmsField><attribute>hideIfFilteringIsSupported</attribute></CmsField>
 							<CmsField><attribute>sortOptions</attribute></CmsField>
 							<CmsField><attribute>noGroupingByCategory</attribute></CmsField>
 							<CmsField><attribute>preferenceCategory</attribute></CmsField>
-							<CmsField><attribute>browseRecommenderType</attribute></CmsField>
+							<CmsField><attribute>showAllByDefault</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -1653,13 +1661,13 @@
 						</fields>
 					</CmsSection>
 					<CmsSection>
-						<title>Fields for type 'ERPSy Flag'</title>
+						<title>Fields for type 'ERPSy Flag' (see &lt;a target="_blank" href="/test/migration/erps_allergen_codes.jsp"&gt;allergen&lt;/a&gt;, &lt;a target="_blank" href="/test/migration/erps_claim_codes.jsp"&gt;claim&lt;/a&gt;, &lt;a target="_blank" href="/test/migration/erps_organic_codes.jsp"&gt;organic&lt;/a&gt; codes)</title>
 						<fields>
 							<CmsField><attribute>erpsyFlagCode</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
-						<title>Fields for type 'Range'</title>
+						<title>Fields for type 'Range' (see &lt;a target="_blank" href="/test/migration/erps_nutrition_codes.jsp"&gt;nutrition&lt;/a&gt; codes)</title>
 						<fields>
 							<CmsField><attribute>fromValue</attribute></CmsField>
 							<CmsField><attribute>toValue</attribute></CmsField>
@@ -1724,6 +1732,24 @@
 							<CmsField><attribute>level2Name</attribute></CmsField>
 							<CmsField><attribute>level2Type</attribute></CmsField>
 							<CmsField><attribute>level2AllSelectedLabel</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+
+	<CmsEditor id="tag">
+		<contentType>Tag</contentType>
+		<pages>
+			<CmsPage>
+				<title>Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Click Preview link to see which products are linked to this tag or this tag's children through Product.tags, Category.productTags and Department.productTags relationships</title>
+						<fields>
+							<CmsField><attribute>name</attribute></CmsField>
+							<CmsField><attribute>children</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>

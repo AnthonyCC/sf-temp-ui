@@ -628,8 +628,9 @@ public class FDStoreProperties {
 	private final static String SHOW_DLVPASS_LINK_ON_DELINFO = "fdstore.dlvinfo.showdlvpasslink";
 
 	private final static String PROP_SOY_DEBUG = "soy.debug";
+
+	private final static String PROP_EH_CACHE_ENABLED = "ehcache.enabled";	
 	
-	private final static String PROP_QS_CACHING = "quickshop.caching";	
 	private final static String PROP_QS_IGNORE_PARTIAL_ROLLOUT = "quickshop.ignorePartialRollout";
 	private final static String PROP_QS_ENABLED = "quickshop.enabled";
 	
@@ -642,9 +643,11 @@ public class FDStoreProperties {
 	
 	private final static String PROP_SUFFOLK_ZIPS = "prop.suffolk.zips";
 	
+	private final static String PROP_BROWSE_ROLLOUT_REDIRECT_ENABLED = "fdstore.browse.rollout.redirectenabled";
 	private final static String PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE = "fdstore.media.render.utils.reallyclose";
 	private final static String PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING = "fdstore.media.render.utils.sourceencoding";
 
+	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1248,7 +1251,8 @@ public class FDStoreProperties {
 		defaults.put(CHECK_LOCAL_INVENTORY_ENABLED, "false");
 		defaults.put(PROP_FDCOUPONMGR_HOME, "freshdirect.fdstore.CouponManager");
 		
-		defaults.put(PROP_QS_CACHING, "true");		
+		defaults.put(PROP_EH_CACHE_ENABLED, "true");		
+		
 		defaults.put(PROP_QS_IGNORE_PARTIAL_ROLLOUT, "false");		
 		defaults.put(PROP_QS_ENABLED, "true");
 		
@@ -1266,8 +1270,11 @@ public class FDStoreProperties {
         
         defaults.put(PROP_PRODUCT_FEED_GENERATION_ENABLED, "false");
         
+        defaults.put(PROP_BROWSE_ROLLOUT_REDIRECT_ENABLED, "true");
+        
         defaults.put("feature.rollout.pdplayout2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.pplayout2014", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.leftnav2014", "GLOBAL:ENABLED,true;");
         
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");				
@@ -3194,9 +3201,11 @@ public class FDStoreProperties {
 	public static boolean isSoyDebugMode() {
 		return ( Boolean.valueOf( get( PROP_SOY_DEBUG ) ) ).booleanValue();
 	}
-	public static boolean isQuickshopCaching() {
-		return ( Boolean.valueOf( get( PROP_QS_CACHING ) ) ).booleanValue();
+	
+	public static boolean isEhCacheEnabled() {
+		return ( Boolean.valueOf( get( PROP_EH_CACHE_ENABLED ) ) ).booleanValue();
 	}
+
 	public static boolean isQuickshopIgnorePartialRollout() {
 		return ( Boolean.valueOf( get( PROP_QS_IGNORE_PARTIAL_ROLLOUT ) ) ).booleanValue();
 	}
@@ -3235,5 +3244,8 @@ public class FDStoreProperties {
 		return get(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING);
 	}
 
+    public static boolean isBrowseRolloutRedirectEnabled() {
+        return Boolean.valueOf(get(PROP_BROWSE_ROLLOUT_REDIRECT_ENABLED)).booleanValue();
+    }
 }
 

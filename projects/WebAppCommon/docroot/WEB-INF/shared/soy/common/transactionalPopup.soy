@@ -1,0 +1,32 @@
+{namespace common}
+
+/**
+ * @param popupId id
+ * @param customClass custom classname
+ * @param bodyContent popup content
+ * @param productId 
+ * @param catId 
+ */
+{template .transactionalPopup autoescape="false"}
+<div class="{$customClass} transactional-popup" id="{$popupId}">
+  <div class="transactional-main-item">
+    <div class="transactional-item-header transactional-popup-header"><span>
+      {call .transactionalPopupHeader data="all" /}
+    </span></div>
+    <div class="transactional-popup-body portrait-item" data-component="product">{$bodyContent}</div>
+  </div>
+  <div class="transactional-related-item hidden" data-cmeventsource="TRY">
+    <div class="transactional-item-header transactional-popup-header"><span class="try">TRY:</span></div>
+    <div class="transactional-related-body portrait-item" data-component="product">{$bodyContent}</div>
+  </div>
+</div>
+{/template}
+
+/**
+ * @param productId 
+ * @param catId 
+ */
+{template .transactionalPopupHeader autoescape="false"}
+  <a class="transactional-popup-learnmore" href="/product.jsp?productId={$productId}&catId={$catId}">learn more</a>
+{/template}
+

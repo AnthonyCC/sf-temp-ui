@@ -20,11 +20,10 @@ script.onload = script.onreadystatechange = function() {
          			this.readyState === "loaded" || this.readyState === "complete") ) {
     	done = true;
     	setTimeout(function(){    		
-			console.log("timeout");
 			if(window["OAS_RICH"] !== undefined) {
 {/literal}
 				window.OAS_RICH("{$OAS_POS}");
-				window.parent.FreshDirect.quickshop.common.updateOAS.done("{$OAS_POS}",document.body.innerHTML);
+				window.parent.FreshDirect.updateOAS.done("{$OAS_POS}",document.body.innerHTML);
 {literal}			
 			}
 	       	script.onload = script.onreadystatechange = null;

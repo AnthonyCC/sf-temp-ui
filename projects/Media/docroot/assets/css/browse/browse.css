@@ -1,0 +1,323 @@
+.browseContent {
+  margin: 40px 0 40px 49px;
+  position: relative;
+}
+
+.browseContent .browse-loading {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: url(/media_stat/images/layout/1x1_80p_trans.png);
+  background: rgba(255,255,255,0.5);
+  display: none;
+  text-align: center;
+  font-size: 32px;
+  font-family: 'EagleBook', Verdana, Arial, sans-serif;
+}
+
+.browseContent.loading .browse-loading {
+  display: block;
+}
+
+.browseContent h2 {
+  font-size: 28px;
+  text-transform: uppercase;
+  font-family: 'EagleBook', Verdana, Arial, sans-serif;
+  color: #663;
+}
+
+.browseContent h2.last{
+  font-size: 26px;
+  font-family: 'EagleBook', Verdana, Arial, sans-serif;
+  color: #a8a87f;
+}
+
+.browseContent .sectionContent ul.products {
+  margin: 0;
+  padding: 0;
+}
+
+.browseContent .sectionContent ul.products li.portrait-item {
+  width: 137px;
+  margin: 10px 10px 10px 0;
+}
+
+.browseContent .sectionContent ul.products li.portrait-item ul.relatedItem {
+  display: none;
+}
+
+.ie8 .browseContent .sectionContent ul.products li.portrait-item {
+  margin-right: 8px;
+}
+
+.browseContent .sectionContent ul.products li.portrait-item:nth-child(5n) {
+  margin-right: 0;
+}
+
+.browseContent .sectionContent ul.products li.portrait-item.unavailable {
+  color:#333;
+}
+
+.browseContent .sectionContent ul.products li.portrait-item.unavailable .portrait-item-controls,
+.browseContent .sectionContent ul.products li.portrait-item.unavailable .portrait-item-price,
+.browseContent .sectionContent ul.products li.portrait-item.unavailable .portrait-item-price-deal {
+  display:none;
+}
+
+.browseContent .sectionContent ul.products li.portrait-item.unavailable .portrait-item-header,
+.browseContent .sectionContent ul.products li.portrait-item.unavailable .portrait-item-header-name,
+.browseContent .sectionContent ul.products li.portrait-item.unavailable .portrait-item-header-configuration {
+  color:#999;
+}
+
+.browseContent .sectionContent .category{
+  width: 137px;
+  margin-right: 10px;
+  display:inline-block;
+  margin-bottom:30px;
+  text-align: center;
+}
+
+.browseContent .sectionContent .category img{
+  max-width:137px;
+}
+
+.browseContent .sectionContent .category .name{
+  text-align:center;
+  margin-top:5px;
+  font-family: Verdana, Arial, sans-serif;
+  font-size:13px;
+  line-height:15px;
+  color:#360;
+  float: left;
+  width: 100%;
+}
+
+.browseContent .sectionContent .category a:hover .name{
+  text-decoration: underline;
+}
+
+.browseContent .sectionContent .category .disabled .name{
+  color: #aaa;
+}
+
+.browseContent .sectionContent .category:nth-child(5n){
+  margin-right:0;
+}
+
+.ie8 .browseContent .sectionContent .category {
+  margin-right: 8px;
+}
+
+.browse .oas-cnt {
+  max-width: 774px;
+  clear: both;
+}
+
+.browse .oas-cnt.left {
+  float: left;
+  clear: left;
+}
+
+.browse .oas-cnt.right {
+  float: right;
+  clear: right;
+}
+
+.browse-media {
+  clear: both;
+}
+
+.browse .pager-holder {
+  clear: both;
+}
+
+.browse-filtertags ul {
+  margin: 4px 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.browse-filtertags li {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 2px 6px;
+  background: #dce7bc;
+  color: #693;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.browse-filtertags li:hover span {
+  text-decoration: underline;
+}
+
+.browse-filtertags li:before {
+  vertical-align: baseline;
+}
+
+.browse-filtertags li:hover:before {
+  color: #f93;
+}
+
+.browse .sorter-element_list {
+  white-space: normal;
+}
+
+.centerpopup-helper {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.centerpopup-helper.noscroll {
+  position: absolute;
+  bottom: auto;
+}
+
+.centerpopup-linehelper {
+  display: inline-block;
+  height: 100%;
+  width: 1px;
+  vertical-align: middle;
+}
+
+.browse-popup.centermenupopup {
+  position: static;
+  display: inline-block;
+  max-width: 70%;
+  max-height: 70%;
+  vertical-align: middle;
+  text-align: left;
+  overflow: auto;
+  border-radius: 10px;
+}
+
+.popupcontentoverlay.centerpopupoverlay {
+  background: #fff;
+  opacity: .7;
+  filter:alpha(opacity=70);
+}
+
+/**
+ * Carousels
+ */
+
+.container.browse [data-component="carousel"] {
+  padding: 0 26px;
+}
+
+/* We have to use normal image sizes if we want to use transactional popup
+.container.browse [data-component="carousel"] .portrait-item-productimage_wrapper {
+  height: 70px;
+}
+
+.container.browse [data-component="carousel"] .portrait-item-productimage {
+  max-height: 70px;
+}
+*/
+
+/* carousel table */
+.container.browse .carousels {
+  padding-top: 10px;
+  clear: both;
+}
+
+.container.browse .carousels table {
+  width: 774px;
+}
+
+.container.browse .carousels table td.spacer > div {
+  width: 10px;
+}
+
+.container.browse .carousels.top table td.c1 > div {
+  width: 574px;
+}
+
+.container.browse .carousels.top table td.c2 > div {
+  width: 186px;
+}
+
+.container.browse .carousels.bottom table td.c1 > div,
+.container.browse .carousels.bottom table td.c2 > div {
+  width: 380px;
+}
+
+.container.browse .carousels table tr.ccontent td.c1 {
+  border-left: 1px solid #dcd2dc;
+  border-right: 1px solid #dcd2dc;
+}
+
+.container.browse .carousels table tr.ccontent td.c2 {
+  border-left: 1px solid #dcd2dc;
+  border-right: 1px solid #dcd2dc;
+}
+
+.container.browse [data-component="carousel"] ul li.portrait-item {
+  width: 119px;
+  margin: 5px;
+}
+
+.container.browse .bottom [data-component="carousel"] ul li.portrait-item,
+.container.browse .bottom [data-component="carousel"] ul li.portrait-item {
+  width: 152px;
+}
+
+/* only one carousel cases */
+.container.browse .carousels table.noCarousel1 td.c1,
+.container.browse .carousels table.noCarousel1 td.spacer,
+.container.browse .carousels table.noCarousel2 td.c2,
+.container.browse .carousels table.noCarousel2 td.spacer {
+  display: none;
+}
+
+.container.browse .carousels table.noCarousel1 td.c2 > div,
+.container.browse .carousels table.noCarousel2 td.c1 > div {
+  width: 772px
+}
+
+.container.browse .noCarousel2 [data-component="carousel"] ul li.portrait-item,
+.container.browse .noCarousel1 [data-component="carousel"] ul li.portrait-item {
+  width: 133px;
+}
+
+/* end of one carousel cases */
+
+.container.browse .carousels .footer td.c1 > div,
+.container.browse .carousels .footer td.c2 > div {
+  height:10px;
+  border-bottom: 1px solid #dcd2dc;
+  border-left: 1px solid #dcd2dc;
+  border-right: 1px solid #dcd2dc;
+  border-bottom-right-radius:10px;
+  border-bottom-left-radius:10px;
+  background-color: #fff;
+}
+
+.container.browse .carousels .header td.c1 > div,
+.container.browse .carousels .header td.c2 > div {
+  height:29px;
+  line-height:29px;
+  background-color:#eee0ee;
+  border: 1px solid #d2c8d3;
+  border-top-left-radius:10px;
+  border-top-right-radius:10px;
+}
+
+.container.browse .carousels .header h2 {
+  font-family: 'EagleBook', Verdana, Arial, sans-serif;
+  color:#855885;
+  font-size:20px;
+  width:100%;
+  text-align:center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+

@@ -2,10 +2,11 @@
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
-	"use strict"
+	"use strict";
 
 	var DISPATCHER = fd.common.dispatcher;
 	var $ = fd.libs.$;
+  var cmevent = "noevent"; // noevent, page, sort, element, pageview
 
 
 	var coremetrics = Object.create(fd.common.signalTarget,{
@@ -22,14 +23,40 @@ var FreshDirect = FreshDirect || {};
 				}
 			}
 		},
+    setEvent:{
+      value: function (cme) {
+        cmevent = 
+          (cme === 'pageview' || cmevent === 'pageview') ? 'pageview' : (
+          (cme === 'element' || cmevent === 'element') ? 'element' : (
+          (cme === 'sort' || cmevent === 'sort') ? 'sort' : (
+          (cme === 'page' || cmevent === 'page') ? 'page' :
+          'noevent')));
+      }
+    },
+    serialize:{
+      value: function () {
+        return {
+          browseEvent: cmevent
+        };
+      }
+    },
 		callback:{
 			value:function( coremetricsData ) {
-				coremetricsData.each(this.playOneItem);
+        if (coremetricsData.each) {
+          coremetricsData.each(this.playOneItem);
+        } else if (coremetricsData.forEach) {
+          coremetricsData.forEach(this.playOneItem);
+        }
+        cmevent = 'noevent';
 			}
 		}
 	});
 
 	coremetrics.listen();
+
+  if (fd.coremetricsData) {
+    fd.coremetricsData.each(coremetrics.playOneItem, coremetrics);
+  }
 	
 	function addCmData(propertyName,value,event){
 		event.cmData[propertyName] = value;

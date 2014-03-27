@@ -63,9 +63,7 @@ public class PDPRedirector extends BodyTagSupport {
 				if ( productId != null && categoryId != null ) { 
 					ProductModel productNode = ContentFactory.getInstance().getProductByName( categoryId, productId );
 					EnumProductLayout prodLayout = productNode.getProductLayout(); 
-					if ( prodLayout != EnumProductLayout.COMPONENTGROUP_MEAL && prodLayout != EnumProductLayout.MULTI_ITEM_MEAL ) {
-						redirectUrl = PDP_PAGE_URL + "?catId=" + categoryId + "&productId=" + productId;
-					}
+					redirectUrl = PDP_PAGE_URL + "?catId=" + categoryId + "&productId=" + productId;
 				}
 				
 			} else if ( OLD_CATEGORY_PAGE.equalsIgnoreCase( originalUrl ) ) {

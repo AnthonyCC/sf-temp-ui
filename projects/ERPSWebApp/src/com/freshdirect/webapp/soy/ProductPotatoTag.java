@@ -11,11 +11,11 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.DataPotatoField;
-import com.freshdirect.webapp.ajax.product.PopulatorUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class ProductPotatoTag extends SimpleTagSupport {

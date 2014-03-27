@@ -1,0 +1,16 @@
+{namespace browse}
+/**
+ * @param? carousel3 carousel3
+ * @param? carousel4 carousel4
+ */
+{template .bottomCarousels autoescape="false"}
+  {if $carousel3 or $carousel4}
+  <div class="carousels bottom">
+    {call browse.carousels}
+      {param carousel1: $carousel3 /}
+      {param carousel2: $carousel4 /}
+    {/call}
+  </div>
+  {/if}
+{/template}
+

@@ -8,7 +8,7 @@
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
 
 <% //expanded page dimensions
-final int W_WINE_DETAILS_VIEW_TOTAL = 601;
+final String W_WINE_DETAILS_VIEW_TOTAL = "100%";
 %>
 
 <%--

@@ -1,4 +1,4 @@
-/*global jQuery,quickshop*/
+/*global jQuery,common*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
@@ -12,11 +12,11 @@ var FreshDirect = FreshDirect || {};
       value:common.fixedPopup
     },
     bodySelector:{
-    	value:'.qs-popup-content'
+      value:'.qs-popup-content'
     },    
     bodyTemplate: {
       value: function(){
-    	  return $('.pdp-accordion-nutrition [data-component="popupContent"]').html();
+        return $('.pdp-accordion-nutrition [data-component="popupContent"]').html();
       }
     },
     $trigger: {
@@ -30,18 +30,19 @@ var FreshDirect = FreshDirect || {};
     },
     popupConfig: {
       value: {
-	    valign: 'bottom',
-	    halign: 'left',
-	    placeholder: false,
-	    stayOnClick: false,
+        valign: 'bottom',
+        halign: 'left',
+        placeholder: false,
+        stayOnClick: false,
         overlay:true
       }
     },
     open: {
       value: function (config) {
-        	  nutritionPopup.refreshBody(config);
-        	  nutritionPopup.popup.clicked=true;
-        	  nutritionPopup.popup.show($('body'),false);
+        nutritionPopup.refreshBody(config);
+        nutritionPopup.popup.clicked=true;
+        nutritionPopup.popup.show($('body'),false);
+        nutritionPopup.noscroll();
       }
     }
   });
@@ -49,9 +50,9 @@ var FreshDirect = FreshDirect || {};
   nutritionPopup.render();
   
   $(document).on('click','.nutropen',function(e){
-	  e.preventDefault();
-	  
-	  nutritionPopup.open();
+    e.preventDefault();
+    
+    nutritionPopup.open();
   });
   
   fd.modules.common.utils.register("components", "nutritionPopup", nutritionPopup, fd);

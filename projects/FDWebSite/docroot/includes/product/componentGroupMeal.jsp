@@ -166,13 +166,20 @@ if (pgErrs.size()>0) {
 	}
 
 	String errorMsg=errMsgBuff.toString();
-%>
+	
+	if(request.getAttribute("newLeftNav")==null){
+	%>
   <table width="<%=W_COMPONENT_GROUP_MEAL_TOTAL%>" cellpadding="0" cellspacing="0" border="0" align="center">
 	<tr><td align="left">
 	<%@ include file="/includes/i_error_messages.jspf" %>
 	</td></tr>
   </table>
-<%  }   
+  <% } else { %>
+  <!-- TODO: keep the below error message if new leftNav shown -->
+  <div style="width:<%=W_COMPONENT_GROUP_MEAL_TOTAL%>px;margin-bottom:15px;margin-top:15px">
+    <div class="errormessage"><div class="errcontent"><%= errorMsg %></div></div>
+  </div>
+	<% } }   
     prodPopup = "/cg_meal_item_detail.jsp?mcatId=" 
        + parentCat  + "&mproductId=" +productNode  + "&mskuCode=" + defaultSku + "&";
 	prodPopUpSize = "large_long" ;     

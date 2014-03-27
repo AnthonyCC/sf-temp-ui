@@ -2,7 +2,7 @@
 .customerrating,
 .winerating,
 .sustrating {
-	margin-left:8px;	
+	margin-left:5px;	
 	font-weight:normal;
 	vertical-align: baseline;
 }
@@ -19,6 +19,12 @@
 }
 .smallrating {
 	height: 13px;
+}
+.expertrating:first-child,
+.customerrating:first-child,
+.winerating:first-child,
+.sustrating:first-child {
+  margin-left: 0;
 }
 
 .expertrating,

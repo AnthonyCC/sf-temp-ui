@@ -5,10 +5,8 @@
  */
 {template .expert}
 {if $ratingValue>0}
-  <a href="#explanatory" data-component="accordion-opener" data-accordion-target="pdp-explanatory">
-    <b class="expertrating smallrating rating-{$ratingValue*1}">
-     {$ratingValue}
-    </b>
-  </a>
+  <b class="expertrating smallrating rating-{$ratingValue*1}">
+   {$ratingValue}
+  </b>
 {/if}
 {/template}

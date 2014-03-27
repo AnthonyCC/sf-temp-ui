@@ -41,6 +41,7 @@ public class ProductRecommenderUtil {
 	public static final int MAX_DEPT_FEATURED_RECOMMENDER_COUNT = 20;
 	public static final int MAX_DEPT_MERCHANT_RECOMMENDER_COUNT = 5;
 	public static final int MAX_CAT_MERCHANT_RECOMMENDER_COUNT = 10;
+	public static final int MAX_CAT_SCARAB_RECOMMENDER_COUNT = 10;
 	
 	public static final int MAX_UPSELL_PRODS = 12;
 	public static final int MAX_XSELL_PRODS = 12;
@@ -83,7 +84,7 @@ public class ProductRecommenderUtil {
     }    
 
 	
-	public static List<ProductModel> getFeaturedRecommenderProducts(DepartmentModel deptModel, HttpSession session) throws FDResourceException {
+	public static List<ProductModel> getFeaturedRecommenderProducts(DepartmentModel deptModel, FDSessionUser user, HttpSession session) throws FDResourceException {
 		List<ProductModel> products = new ArrayList<ProductModel>();
 		
 		CategoryModel sourceCat = deptModel.getFeaturedRecommenderSourceCategory();
@@ -92,7 +93,6 @@ public class ProductRecommenderUtil {
 			EnumSiteFeature siteFeat = EnumSiteFeature.getEnum(deptModel.getFeaturedRecommenderSiteFeature());
 			
 			if (siteFeat!=null) {
-				FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 				Recommendations results = doRecommend(user, session, siteFeat, MAX_DEPT_FEATURED_RECOMMENDER_COUNT, new HashSet<ContentKey>(), deptModel);
 				products = results.getAllProducts(); //TODO de we need to provide site feature id for CM?
 			}
@@ -115,6 +115,46 @@ public class ProductRecommenderUtil {
 		List<ProductModel> products = catModel.getCatMerchantRecommenderProducts();
 		cleanUpProducts(products, catModel.isCatMerchantRecommenderRandomizeProducts(), MAX_CAT_MERCHANT_RECOMMENDER_COUNT);
 		return products;
+	}
+
+	public static ProductModel getBrowseRecommendation (ProductModel product){
+		List<ProductModel> browseRecommendations = null;
+		
+		String browseRecommenderType = product.getBrowseRecommenderType();
+		if ("PDP_XSELL".equals(browseRecommenderType)) {
+			browseRecommendations = product.getCrossSellProducts();
+			
+		} else if ("PDP_UPSELL".equals(browseRecommenderType)) {
+			browseRecommendations = product.getUpSellProducts();
+		}
+		
+		if (browseRecommendations !=null){
+			cleanUpProducts(browseRecommendations, false, 1);
+			if (browseRecommendations.size()>0) {
+				return browseRecommendations.get(0);
+			}
+		}
+				
+		return null;
+	}
+	
+	
+	public static Recommendations getBrowseCategoryListingPageRecommendations(FDUserI user, ContentNodeModel contentNode) throws FDResourceException{
+		Recommendations recommendations = null;
+
+		if (user.getIdentity() != null){ //try personal if user is identified
+			recommendations = doRecommend(user, null, EnumSiteFeature.getEnum("SCARAB_PERSONAL"), MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);	
+		}
+		
+		if (recommendations == null || recommendations.getAllProducts().size() == 0){ //fallback
+			recommendations = doRecommend(user, null, EnumSiteFeature.getEnum("SCR_FEAT_ITEMS"), MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, contentNode); //TODO verify site feature	
+		}
+		
+		return recommendations;
+	}
+
+	public static Recommendations getBrowseProductListingPageRecommendations(FDUserI user, Set<ContentKey> keys) throws FDResourceException{
+		return doRecommend(user, null, EnumSiteFeature.getEnum("SCARAB_CART"), MAX_CAT_SCARAB_RECOMMENDER_COUNT, keys, null);	
 	}
 	
 	/**

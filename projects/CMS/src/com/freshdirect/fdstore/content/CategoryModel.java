@@ -34,12 +34,12 @@ import com.freshdirect.fdstore.FDProductPromotionPreviewInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.ProductModelPromotionAdapter;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
+import com.freshdirect.fdstore.content.grabber.GrabberServiceI;
 import com.freshdirect.fdstore.ecoupon.FDCouponFactory;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponUPCInfo;
 import com.freshdirect.fdstore.productpromotion.FDProductAssortmentPromotionFactory;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.BalkingExpiringReference;
-import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CategoryModel extends ProductContainer {
@@ -468,8 +468,18 @@ public class CategoryModel extends ProductContainer {
 		return EnumShowChildrenType.getShowChildrenType(getAttribute("SHOWCHILDREN", EnumShowChildrenType.ALWAYS_FOLDERS.getId()));
 	}
 
-	public boolean getShowSelf() {
+	public boolean isShowSelf() {
 		return getAttribute("SHOWSELF", true);
+	}
+
+
+	/**
+	 * @deprecated use isShowSelf() instead
+	 * @return
+	 */
+	@Deprecated
+	public boolean getShowSelf() {
+		return isShowSelf();
 	}
 
 	public boolean isSecondaryCategory() {
@@ -615,6 +625,25 @@ public class CategoryModel extends ProductContainer {
 //	        String currentProductPromotionType = getProductPromotionType();
 	        prodList = getPromotionPageProducts(prodList, zoneId,currentProductPromotionType);
     	}
+
+
+    	// == [APPDEV-2910] add products picked by new product grabbers ==
+		{
+			if (getProductGrabbers() != null) { //refreshes this.productGrabbers
+				GrabberServiceI grabber = ContentFactory.getInstance()
+						.getProductGrabberService();
+				if (grabber != null) {
+					Collection<ProductModel> grabbedProducts;
+					for (ProductGrabberModel productGrabber : productGrabbers) {
+						grabbedProducts = grabber.getProducts(productGrabber);
+						addDynamicProducts(grabbedProducts, prodList, false);
+					}
+				}
+			}
+		}
+
+    	
+    	
         return prodList;
     }
 
@@ -918,16 +947,37 @@ public class CategoryModel extends ProductContainer {
 	 * a category is active, if there is at least one item in it regardless of availability. Discontinued items are already filtered out.
 	 * @return
 	 */
-	public boolean isActive() {
-	    if (!getProducts().isEmpty()) {
+	public boolean isActive() {	//legacy support
+		return isActive(false);
+	}
+	
+	private boolean isActive(boolean filterNonDisplayableProducts) {
+	    List<ProductModel> products = getProducts();
+		
+	    if (filterNonDisplayableProducts){
+	    	Iterator<ProductModel> itr = products.iterator();
+	        while(itr.hasNext()) {
+	        	ProductModel prod = itr.next();
+
+	        	if (prod.isInvisible() || prod.isHidden() || prod.isDiscontinued()) {
+	        		itr.remove();
+	        	}
+	        }
+	    }
+	    		
+		if (!products.isEmpty()) {
 	        return true;
 	    }
 	    for (CategoryModel subCat : getSubcategories()) {
-	        if (subCat.isActive()) {
+	        if (subCat.isActive(filterNonDisplayableProducts)) {
 	            return true;
 	        }
 	    }
 	    return false;
+	}
+
+	public boolean isDisplayable() {
+		return getSpecialLayout()!=null || isActive(true);
 	}
 	
 	/**
@@ -1099,13 +1149,37 @@ public class CategoryModel extends ProductContainer {
 	public final Image getNameImage() {
 		return FDAttributeFactory.constructImage(this, "nameImage");
 	}
+	
+	public EnumLayoutType getSpecialLayout() {
+		EnumLayoutType specialLayout = getLayout();
+		switch (specialLayout){
+			case HOW_TO_COOK_IT:
+			case TRANSAC_MULTI_PAIRED_ITEMS:
+			case TEMPLATE_LAYOUT:
+			case PRESIDENTS_PICKS:
+				return specialLayout;
+			default:
+				return null;
+		}
+	}
+	
+	public EnumLayoutType getFullWidthLayout() {
+		EnumLayoutType specialLayout = getLayout();
+		switch (specialLayout){
+			case TEMPLATE_LAYOUT:
+			case PRESIDENTS_PICKS:
+				return specialLayout;
+			default:
+				return null;
+		}
+	}
 
 	public String getCatMerchantRecommenderTitle() {
 		return getAttribute("catMerchantRecommenderTitle", "");
 	}
 
 	public List<ProductModel> getCatMerchantRecommenderProducts() {
-		ContentNodeModelUtil.refreshModels(this, "catMerchantRecommenderProducts", catMerchantRecommenderProducts, true, true);
+		ContentNodeModelUtil.refreshModels(this, "catMerchantRecommenderProducts", catMerchantRecommenderProducts, false, true);
 		return new ArrayList<ProductModel>(catMerchantRecommenderProducts);
 	}
 
@@ -1171,4 +1245,26 @@ public class CategoryModel extends ProductContainer {
 	private boolean isValidAssortmentPromotion(String productPromotionType, String promotionId){		
 		return (null !=FDProductAssortmentPromotionFactory.getInstance().getProductPromotion(productPromotionType,promotionId))?true:false;
 	}
+
+
+	/**
+	 * Return the level of category deepness
+	 * 
+	 * @return
+	 */
+	public int getCategoryLevel() {
+		if (isOrphan())
+			return 0;
+		
+		ContentNodeModel m = getParentNode();
+		if (m instanceof CategoryModel) {
+			return ((CategoryModel) m).getCategoryLevel() + 1;
+		}
+		return 0;
+	}
+	
+	public boolean isTopLevelCategory(){
+		return getParentNode() instanceof DepartmentModel;
+	}
+
 }

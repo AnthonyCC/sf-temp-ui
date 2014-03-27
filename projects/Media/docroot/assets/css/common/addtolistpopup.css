@@ -1,3 +1,7 @@
+.qs-popup.addtolistpopup {
+  z-index: 2003;
+}
+
 .addtolistpopup label,
 .saverecipepopup label {
   display: block;

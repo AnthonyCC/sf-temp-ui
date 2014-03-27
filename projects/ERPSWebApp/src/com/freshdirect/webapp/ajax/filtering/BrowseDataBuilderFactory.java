@@ -1,0 +1,682 @@
+package com.freshdirect.webapp.ajax.filtering;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
+
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.FilteringProductItem;
+import com.freshdirect.fdstore.content.Html;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.ProductItemFilterI;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SortOptionModel;
+import com.freshdirect.fdstore.content.browse.sorter.ProductItemSorterFactory;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.event.EnumEventSource;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.smartstore.fdstore.Recommendations;
+import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.browse.data.BasicData;
+import com.freshdirect.webapp.ajax.browse.data.BrowseData;
+import com.freshdirect.webapp.ajax.browse.data.BrowseData.SectionDataCointainer;
+import com.freshdirect.webapp.ajax.browse.data.BrowseDataContext;
+import com.freshdirect.webapp.ajax.browse.data.CarouselData;
+import com.freshdirect.webapp.ajax.browse.data.CategoryData;
+import com.freshdirect.webapp.ajax.browse.data.DescriptiveDataI;
+import com.freshdirect.webapp.ajax.browse.data.MenuBoxData;
+import com.freshdirect.webapp.ajax.browse.data.MenuItemData;
+import com.freshdirect.webapp.ajax.browse.data.NavDepth;
+import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
+import com.freshdirect.webapp.ajax.browse.data.ParentData;
+import com.freshdirect.webapp.ajax.browse.data.SectionContext;
+import com.freshdirect.webapp.ajax.browse.data.SectionData;
+import com.freshdirect.webapp.ajax.browse.data.SortOptionData;
+import com.freshdirect.webapp.ajax.data.CMSModelToSoyDataConverter;
+import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
+import com.freshdirect.webapp.ajax.product.data.ProductData;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.util.MediaUtils;
+import com.freshdirect.webapp.util.ProductRecommenderUtil;
+
+public class BrowseDataBuilderFactory {
+	
+	private static final Logger LOG = LoggerFactory.getInstance( BrowseDataBuilderFactory.class );
+	
+	private static BrowseDataBuilderFactory factory;
+	
+	public static BrowseDataBuilderFactory getInstance(){
+		if(factory==null){
+			factory = new BrowseDataBuilderFactory();
+		}
+		
+		return factory;
+	}
+	
+	public static BrowseDataBuilderI createBuilder(NavDepth navDepth){
+		
+		switch (navDepth) {
+		
+		case DEPARTMENT: {
+			return getInstance().new DepartmentDataBuilder();
+		}
+		
+		case CATEGORY: {
+			return getInstance().new CategoryDataBuilder();
+		}
+		
+		case SUB_CATEGORY: {
+			return getInstance().new SubCategoryDataBuilder();
+		}
+		
+		case SUB_SUB_CATEGORY: {
+			return getInstance().new SubSubCategoryDataBuilder();
+		}
+		
+		default: {
+			return null;
+		}		
+		}
+		
+	}
+	
+	public class DepartmentDataBuilder implements BrowseDataBuilderI {
+		
+
+		@Override
+		public BrowseDataContext buildBrowseData(NavigationModel navigationModel, FDSessionUser user, CmsFilteringNavigator nav) {
+	
+			List<CategoryData> regularSubCategories = new ArrayList<CategoryData>();
+			List<CategoryData> preferenceSubCategories = new ArrayList<CategoryData>();
+			DepartmentModel department = (DepartmentModel) navigationModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT);
+			
+			// create category lists on the department level
+			for (CategoryModel cat : department.getSubcategories()){
+				if (NavigationUtil.isCategoryHiddenInContext(user, cat)) {
+					continue;
+				}
+				if (cat.isPreferenceCategory()){
+					preferenceSubCategories.add(CMSModelToSoyDataConverter.createCategoryData(cat));
+				} else {
+					regularSubCategories.add(CMSModelToSoyDataConverter.createCategoryData(cat));
+				}
+			}
+			
+			// create static sections
+			List<SectionContext> sections = new ArrayList<SectionContext>();
+			sections.add(createSection("Shop By Type of " + navigationModel.getSelectedProductContainer().getFullName(), regularSubCategories));
+			if(preferenceSubCategories.size()>0){
+				sections.add(createSection("Shop By Preference", preferenceSubCategories));				
+			}
+
+			BrowseDataContext data = new BrowseDataContext();
+			data.setSectionContexts(checkEmpty(sections));
+			appendHtml(data.getDescriptiveContent(), department.getDepartmentBanner(), user);
+			appendTitle(data, department);
+
+			try {  //session is null because saving SMART_STORE_PREV_RECOMMENDATIONS isn't necessary here
+				data.getCarousels().setCarousel1(createCarouselData(null, department.getFeaturedRecommenderTitle(), ProductRecommenderUtil.getFeaturedRecommenderProducts(department, user, null), user, EnumEventSource.DFR.getName()));
+			} catch (FDResourceException e) {
+				LOG.error("recommendation failed", e);
+			}
+			data.getCarousels().setCarousel2(createCarouselData(null, department.getMerchantRecommenderTitle(), ProductRecommenderUtil.getMerchantRecommenderProducts(department), user, EnumEventSource.DMR.getName()));
+			
+			filterProducts(navigationModel, data);
+			
+			return data;
+		}
+				
+	}
+	
+	private SectionContext createSection(String headerText, List<CategoryData> categories){
+		SectionContext section = new SectionContext();
+		section.setHeaderText(headerText);
+		section.setCategories(categories);
+		return section;
+	}
+
+
+	
+	public class CategoryDataBuilder implements BrowseDataBuilderI {
+
+		@Override
+		public BrowseDataContext buildBrowseData(NavigationModel navigationModel, FDSessionUser user, CmsFilteringNavigator nav) {
+			
+			BrowseDataContext data = new BrowseDataContext();
+			List<SectionContext> sections = new ArrayList<SectionContext>();
+			
+			CategoryModel cat = (CategoryModel) navigationModel.getNavigationHierarchy().get(NavDepth.CATEGORY);
+			List<CategoryModel> subCats = cat.getSubcategories();
+			
+			if (subCats.size()==0 || nav.isAll()) { //show either the products of this category
+
+				if(cat.isNoGroupingByCategory()){
+					
+					sections.add(createProductSection(cat, user, navigationModel));	
+					
+				}else{
+					// or create the section tree
+					sections.add(createSectionTree(cat, navigationModel.getNavDepth().getLevel(), user));
+				}
+				//carousel3 is left null - will be populated by appendCarousels() after paging
+
+			} else { //or show the actual category list
+				
+				SectionContext catSection = createSection(cat, user);
+				catSection.setCategories(createCategoryDatas(cat, user));
+				
+				sections.add(catSection);
+				
+				if(!nav.isPdp()){
+					try { //add scarab recommender for category listing page
+						Recommendations recommendations = ProductRecommenderUtil.getBrowseCategoryListingPageRecommendations(user, cat);
+						List<ProductModel> products = recommendations.getAllProducts();
+						
+						if (products.size()>0){
+							data.getCarousels().setCarousel3(createCarouselData(null, "You May Also Like", products, user, EnumEventSource.CSR.getName()));
+						}
+					} catch (FDResourceException e) {
+						LOG.error("recommendation failed",e);
+					}					
+				}
+			}
+			
+			appendCatDepthFields(data, cat, sections, user, nav);
+			
+			if(!nav.isPdp()){			
+				filterProducts(navigationModel, data);				
+			}
+			
+			return data;
+		}		
+	}
+	
+	public class SubCategoryDataBuilder implements BrowseDataBuilderI {
+
+		@Override
+		public BrowseDataContext buildBrowseData(NavigationModel navigationModel, FDSessionUser user, CmsFilteringNavigator nav) {
+			
+			BrowseDataContext data = new BrowseDataContext();
+			List<SectionContext> sections = new ArrayList<SectionContext>();
+			
+			CategoryModel subCat = (CategoryModel) navigationModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY);
+			
+			// populate sections
+			if(subCat.isNoGroupingByCategory()){
+				
+				sections.add(createProductSection(subCat, user, navigationModel));	
+				
+			}else{
+				// or create the section tree
+				sections.add(createSectionTree(subCat, navigationModel.getNavDepth().getLevel(), user));
+			}
+
+			appendCatDepthFields(data, subCat, sections, user, nav);
+			
+			if(!nav.isPdp()){			
+				filterProducts(navigationModel, data);
+			}
+			
+			return data;
+		}		
+	}
+	
+	public class SubSubCategoryDataBuilder implements BrowseDataBuilderI {
+
+		@Override
+		public BrowseDataContext buildBrowseData(NavigationModel navigationModel, FDSessionUser user, CmsFilteringNavigator nav) {
+			
+			BrowseDataContext data = new BrowseDataContext();
+			List<SectionContext> sections = new ArrayList<SectionContext>();
+			
+			CategoryModel subCat = (CategoryModel) navigationModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY);
+			CategoryModel subSubCat = (CategoryModel) navigationModel.getNavigationHierarchy().get(NavDepth.SUB_SUB_CATEGORY);
+			
+			// create super section
+			SectionContext superSection = createSection(subCat, user);
+			
+			// create and populate subSection
+			List<SectionContext> subSections = new ArrayList<SectionContext>();		
+			SectionContext subSection = createSection(subSubCat, user);
+			appendProductItems(subSection, subSubCat);
+			subSections.add(subSection);
+			
+			// populate superSection with subsections
+			superSection.setSectionContexts(checkEmpty(subSections));
+			
+			// populate data
+			sections.add(superSection);
+			
+			appendCatDepthFields(data, subSubCat, sections, user, nav);	
+			
+			if(!nav.isPdp()){				
+				filterProducts(navigationModel, data);
+			}
+			
+			return data;
+		}		
+	}
+	
+	private List<CategoryData> createCategoryDatas(CategoryModel cat, FDUserI user){
+		List<CategoryData> categories = new ArrayList<CategoryData>();
+		for(CategoryModel subCat : cat.getSubcategories()){
+			if (NavigationUtil.isCategoryHiddenInContext(user, subCat)) {
+				continue;
+			}
+			categories.add(CMSModelToSoyDataConverter.createCategoryData(subCat));
+		}
+		return categories;
+	}
+	
+	/**
+	 * @param cat
+	 * @param level
+	 * @param user
+	 * @return
+	 * 
+	 * create section tree (product list grouped by subcategories)
+	 */
+	public SectionContext createSectionTree(CategoryModel cat, int level, FDSessionUser user){
+		
+		List<SectionContext> sections = new ArrayList<SectionContext>();
+		
+		SectionContext section = createSection(cat, user);
+		section.setSectionContexts(sections);
+		
+		if(level==NavDepth.getMaxLevel() || cat.getSubcategories().size()==0){
+			
+			// append products in case of no sub categories			
+			appendProductItems(section, cat);
+			
+		}else{
+			
+			// walk through on sub categories ...
+			List<CategoryModel> subCats = cat.getSubcategories();
+			// Products in content area needs to be in CMS order. Comment this line back if you need alphabetical order instead.
+			//Collections.sort(subCats, ProductContainer.NAME_COMPARATOR);
+			
+			for (CategoryModel subCat : subCats){
+				
+				if (NavigationUtil.isCategoryHiddenInContext(user, subCat)) {
+					continue;
+				}
+				
+				// and create sections
+				SectionContext subSection = createSectionTree(subCat, level+1, user);
+				if(subSection.isSpecial()){ 
+					section.setSpecial(true); // mark the whole structure as special
+				}
+				sections.add(subSection);
+			}	
+		}
+		
+		return section;
+	}
+	
+	public SectionContext createProductSection(CategoryModel cat, FDSessionUser user, NavigationModel navModel){
+		
+		// create the ONE section contains all products
+		SectionContext section = createSection(cat, user);
+		
+		// collect all products (make sure there are no duplicates)
+		Set<ProductModel> prods = new HashSet<ProductModel>();
+		collectAllProducts(cat, navModel.getNavDepth().getLevel(), user, prods);
+		section.setProductItems(ProductItemFilterUtil.createFilteringProductItems(new ArrayList<ProductModel>(prods)));
+		
+		return section;
+		
+	}
+	
+	public void collectAllProducts(CategoryModel cat, int level, FDSessionUser user, Set<ProductModel> prods){
+		
+		if(cat.getRedirectUrlClean()!=null){ // no products shown in case of redirect url
+			return;
+		}
+		
+		if(level==NavDepth.getMaxLevel() || cat.getSubcategories().size()==0){
+			
+			// append products in case of no sub categories			
+			prods.addAll(cat.getProducts());
+			
+		}else{
+			
+			// walk through on sub categories ...			
+			for (CategoryModel subCat : cat.getSubcategories()){
+				
+				if (NavigationUtil.isCategoryHiddenInContext(user, subCat)) {
+					continue;
+				}
+							
+				collectAllProducts(subCat, level+1, user, prods);
+			}	
+		}
+	}
+
+	
+	/**
+	 * @param cat
+	 * @return
+	 * create a simple section
+	 */
+	private SectionContext createSection(CategoryModel cat, FDSessionUser user){
+		SectionContext section = new SectionContext();
+		section.setCatId(cat.getContentName());
+		Image headerImage = cat.getNameImage();
+		
+		if (headerImage == null){
+			section.setHeaderText(cat.getFullName());
+		} else {
+			section.setHeaderImage(headerImage.getPath());
+		}
+		
+		appendHtml(section, cat.getDescription(), user);
+		
+		if(cat.getRedirectUrlClean()!=null || cat.getSpecialLayout()!=null){
+			section.setSpecial(true);
+		}
+	
+		return section;
+	}
+	
+	/**
+	 * @param section
+	 * @param cat
+	 * @param activeFilters
+	 * 
+	 * add the UNFILTERED!! product list on the section 
+	 */
+	private void appendProductItems(SectionContext section, CategoryModel cat) {
+		
+		if(cat.getRedirectUrlClean()!=null){ // no products shown in case of redirect url
+			return;
+		}
+
+		if(section.getProductItems()==null){
+			section.setProductItems(ProductItemFilterUtil.createFilteringProductItems(cat.getProducts()));
+		}else{
+			section.getProductItems().addAll(ProductItemFilterUtil.createFilteringProductItems(cat.getProducts()));				
+		}
+	}
+	
+	/**
+	 * @param sections
+	 * @param allItems
+	 * @param activeFilters
+	 * 
+	 * Apply active filters on sections. This method also populate an unfiltered product list into allItems.
+	 */
+	private void filterProducts(List<SectionContext> sections, List<FilteringProductItem> allItems, Set<ProductItemFilterI> activeFilters){
+		
+		Iterator<SectionContext> it = sections.iterator();
+		while(it.hasNext()){
+			
+			SectionContext section = it.next();
+			
+			if(section.getProductItems()!=null && section.getProductItems().size()>0){
+				// collect all items before filtering
+				allItems.addAll(section.getProductItems());
+				// apply filters
+				section.setProductItems(ProductItemFilterUtil.getFilteredProducts(section.getProductItems(), activeFilters));				
+			}
+			
+			if(section.getSectionContexts()!=null && section.getSectionContexts().size()>0){
+				filterProducts(section.getSectionContexts(), allItems, activeFilters);
+			}	
+		}	
+	}
+	
+	/**
+	 * @param sections
+	 * @param menu
+	 * 
+	 * remove empty sections from browseData. 
+	 * if a sections became empty after the productPotato population (because of no default sku exception, or any other exception) then we also need to disable the related menu item
+	 */
+	public void removeEmptySections(List<SectionData> sections, List<MenuBoxData> menu){
+		
+		Iterator<SectionData> it = sections.iterator();
+		
+		while(it.hasNext()){
+			
+			SectionData section = it.next();
+			
+			if(section.getSections()!=null && section.getSections().size()>0){
+				// go deeper
+				removeEmptySections(section.getSections(), menu);
+			}
+			
+			if((section.getSections()==null || section.getSections().size()==0) &&
+					section.getCategories()==null && 
+					(section.getProducts()==null || section.getProducts().size()==0)){
+				// no products nor sections: remove section
+				it.remove();
+				
+				//make sure there are no active menu items pointing to this section
+				for(MenuBoxData box : menu){
+					for(MenuItemData item : box.getItems()){
+						if(!item.isActive() && section.getCatId().equals(item.getId())){
+							item.setActive(false);
+						}
+					}
+				}
+			}
+		}		
+	}
+	
+	private void filterProducts(NavigationModel navigationModel, BrowseDataContext data) {
+		List<FilteringProductItem> allItems = new ArrayList<FilteringProductItem>();
+		filterProducts(data.getSectionContexts(), allItems, navigationModel.getActivelFilters());
+		data.setUnfilteredItems(allItems);
+	}
+	
+	private void appendHtml(DescriptiveDataI data, Html dataMedia, FDSessionUser user){
+		if(dataMedia!=null){
+			data.setMedia(MediaUtils.renderHtmlToString(dataMedia, user));
+		}
+	}
+
+	private void appendTitle(BrowseDataContext data, DepartmentModel department){
+		Image titleBar = department.getTitleBar();
+		if (titleBar != null){
+			data.getDescriptiveContent().setTitleBar(titleBar.getPath());
+		}
+	}
+
+	private void appendCatDepthFields(BrowseDataContext data, CategoryModel cat, List<SectionContext> sections, FDSessionUser user, CmsFilteringNavigator nav){
+		data.setSectionContexts(checkEmpty(sections));
+		appendHtml(data.getDescriptiveContent(), cat.getCategoryBanner(), user);
+		appendTitle(data, cat.getDepartment());
+		
+		if(!nav.isPdp()){
+			data.getCarousels().setCarousel4(createCarouselData(null, cat.getCatMerchantRecommenderTitle(), ProductRecommenderUtil.getMerchantRecommenderProducts(cat), user, EnumEventSource.CMR.getName()));			
+		}
+	}
+	
+	private CarouselData createCarouselData(String id, String name, List<ProductModel> products, FDSessionUser user, String cmEventSource){
+
+		if (products.size()==0){
+			return null; //should not display empty carousel
+		}
+		
+		CarouselData carousel = new CarouselData();
+		carousel.setId(id);
+		carousel.setName(name);
+		carousel.setCmEventSource(cmEventSource);
+		
+		List<ProductData> productDatas = new ArrayList<ProductData>();
+		for (ProductModel product : products){
+			try {
+				ProductData productData = ProductDetailPopulator.createProductData(user, product);
+				productData = ProductDetailPopulator.populateBrowseRecommendation(user, productData, product);
+				productDatas.add(productData);
+			} catch (FDResourceException e) {
+				LOG.error("failed to create ProductData", e);
+			} catch (FDSkuNotFoundException e) {
+				LOG.error("failed to create ProductData", e);
+			} catch (HttpErrorResponse e) {
+				LOG.error("failed to create ProductData", e);
+			}
+		}
+		carousel.setProducts(productDatas);
+		return carousel;
+	}
+	
+	private <T extends Collection<?>> T checkEmpty(T col){
+		return col.size()>0 ? col : null;
+	}
+	
+	/**
+	 * @param sorters
+	 * @param nav
+	 * @return the displayed sort options
+	 * 
+	 * Create the sort bar objects
+	 */
+	public void processSorting (BrowseDataContext data, CmsFilteringNavigator nav){
+		
+		List<SortOptionModel> sorters = data.getCurrentContainer().getSortOptions();
+		NavigationModel navigationModel = data.getNavigationModel();
+		
+		if (navigationModel.isProductListing()){
+			List<SortOptionData> options = new ArrayList<SortOptionData>();
+			Comparator<FilteringProductItem> comparator = null;
+			
+			//set default sort option from first
+			if (nav.getSortBy()==null && sorters.size()>0){
+				nav.setSortBy(sorters.get(0).getContentName());
+				nav.setOrderAscending(true);
+			}
+			
+			for(SortOptionModel sorter : sorters){
+				final String sorterId = sorter.getContentName();
+				if (sorterId != null) {
+					SortOptionData sortOptionData = new SortOptionData();
+					sortOptionData.setId(sorterId);
+					
+					if (sorterId.equals(nav.getSortBy())) {
+						 sortOptionData.setSelected(true);
+						 String selectedLabel = sorter.getSelectedLabel();
+						 String selectedLaberReverseOrder = sorter.getSelectedLabelReverseOrder();
+						 
+						 if (!nav.isOrderAscending() && selectedLaberReverseOrder != null && !"".equals(selectedLaberReverseOrder)) {
+							sortOptionData.setName(sorter.getSelectedLabelReverseOrder());
+							sortOptionData.setOrderAscending(true); //if option is clicked this will be the new order
+							comparator = ProductItemSorterFactory.createComparator(sorter.getSortStrategyType(), true);
+						 } else {
+							 sortOptionData.setName(selectedLabel == null || "".equals(selectedLabel) ? sorter.getLabel() : selectedLabel);
+							 comparator = ProductItemSorterFactory.createComparator(sorter.getSortStrategyType(), false);
+						 }
+					} else {
+						sortOptionData.setName(sorter.getLabel());
+						sortOptionData.setOrderAscending(true);  //if option is clicked this will be the new order
+					}
+						
+					options.add(sortOptionData);
+				} else {
+					// Get panicked and run around yelling "Unexpected sort type!"
+				}
+			}
+			
+			if(comparator==null){
+				comparator=ProductItemSorterFactory.AVAILABILITY_INNER;
+			}
+			
+			data.getSortOptions().setSortOptions(options); // create sort bar objects
+			
+			ProductItemComparatorUtil.sortSectionDatas(data, comparator); // sort items/section
+		}
+	}
+
+	/**
+	 * appends carousels using shown products if necessary
+	 */
+	public void appendCarousels(BrowseData browseData, FDSessionUser user){
+		
+		Set<ContentKey> showProductKeys = new HashSet<ContentKey>();
+		collectAllProductDataItems(browseData.getSections().getSections(), showProductKeys);
+		
+		//Product Listing Page Scarab
+		if (browseData.getCarousels().getCarousel3() == null && showProductKeys.size() > 0) {
+			try {
+				Recommendations recommendations = ProductRecommenderUtil.getBrowseProductListingPageRecommendations(user, showProductKeys);
+				List<ProductModel> products = recommendations.getAllProducts();
+				
+				if (products.size()>0){
+					browseData.getCarousels().setCarousel3(createCarouselData(null, "Customers Like You Also Enjoyed", products, user, EnumEventSource.CSR.getName()));
+				}
+			} catch (FDResourceException e) {
+				LOG.error("recommendation failed",e);
+			}
+		}
+	}
+	
+	public void collectAllProductDataItems(List<SectionData> sections, Set<ContentKey> showProductKeys){
+		
+		if(sections!=null){
+			for(SectionData section : sections){
+				if(section.getProducts()!=null){
+					for(ProductData data : section.getProducts()){
+						showProductKeys.add(new ContentKey(FDContentTypes.PRODUCT, data.getProductId()));
+					}
+				}
+				collectAllProductDataItems(section.getSections(), showProductKeys);
+			}			
+		}
+	}
+	
+	public void populateWithBreadCrumbAndDesciptiveContent(BrowseDataContext browseData, NavigationModel navModel){
+		
+		List<BasicData> breadCrumb = new ArrayList<BasicData>();
+		
+		for(ProductContainer container : navModel.getProductContainerPath()){
+			if (!(container instanceof CategoryModel) || !NavigationUtil.isCategoryHiddenInContext(navModel.getUser(), (CategoryModel)container)) {
+				breadCrumb.add(new BasicData(container.getContentKey().getId(), container.getFullName()));
+			}
+		}
+		
+		browseData.getBreadCrumbs().setBreadCrumbs(breadCrumb);
+		
+		BrowseData.DescripetiveDataCointainer descriptiveContent = browseData.getDescriptiveContent();
+		descriptiveContent.setPageTitle("FreshDirect - " + navModel.getSelectedProductContainer().getFullName());
+		descriptiveContent.setOasSitePage(navModel.getSelectedProductContainer().getPath());
+	}
+	
+	public void populateWithFilterLabels(BrowseDataContext browseData, NavigationModel navModel){
+		
+		List<ParentData> filterLabels = new ArrayList<ParentData>();
+		
+		for(ProductItemFilterI filter : navModel.getActivelFilters()){
+			filterLabels.add(new ParentData(filter.getParentId(), filter.getId(), filter.getName()));
+		}
+		
+		browseData.getFilterLabels().setFilterLabels(filterLabels);
+	}
+	
+	public void calculateMaxSectionLevel(SectionDataCointainer data, List<SectionData> sections, int level){
+
+		if(sections!=null){
+			
+			for(SectionData section : sections){
+				calculateMaxSectionLevel(data, section.getSections(), level+1);		
+			}
+		}
+		
+		if(data.getSectionMaxLevel()<level){
+			data.setSectionMaxLevel(level);
+		}
+			
+	}
+
+}

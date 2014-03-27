@@ -24,6 +24,8 @@ import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.browse.BrowsePopulator;
+import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
 import com.freshdirect.webapp.ajax.cart.data.CartConfirmData;
 import com.freshdirect.webapp.ajax.product.ProductAnnotationDataPopulator;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
@@ -207,6 +209,16 @@ public class DataPotatoField {
 			LOG.error( "Failed to get product info.", e );
 		} catch ( FDSkuNotFoundException e ) {
 			LOG.error( "Failed to get product info.", e );
+		}
+		return null;
+	}
+	
+	public static Map<String,?> digBrowse(CmsFilteringFlowResult result) {
+		try {
+			return SoyTemplateEngine.convertToMap(BrowsePopulator.createBrowseData(result));
+
+		} catch ( HttpErrorResponse e ) {
+			LOG.error( "Failed to get browse info.", e );
 		}
 		return null;
 	}

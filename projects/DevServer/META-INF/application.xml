@@ -49,7 +49,12 @@
       <context-root>ERPSAdmin</context-root>
     </web>
   </module>
-    <!--
+  <module>
+    <web>
+      <web-uri>../cms-gwt/target/docroot</web-uri>
+      <context-root>cms-gwt</context-root>
+    </web>
+  </module>    <!--
      <module>
         <web>
             <web-uri>../DlvAdmin/docroot</web-uri>
@@ -83,10 +88,4 @@
       <context-root>RefAdmin</context-root>
     </web>
   </module-->
-  <module>
-    <web>
-      <web-uri>../cms-gwt/target/docroot</web-uri>
-      <context-root>cms-gwt</context-root>
-    </web>
-  </module>
 </application>

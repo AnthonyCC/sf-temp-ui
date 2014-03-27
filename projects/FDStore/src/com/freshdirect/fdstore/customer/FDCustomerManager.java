@@ -106,7 +106,7 @@ import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDCompositeAvailability;
 import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
-import com.freshdirect.fdstore.content.QuickShopCacheUtil;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
@@ -1517,7 +1517,7 @@ public class FDCustomerManager {
 				);
 
 			//invalidate quickshop past orders cache
-			QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, info.getIdentity().getErpCustomerPK());
+			EhCacheUtil.removeFromCache(EhCacheUtil.QS_PAST_ORDERS_CACHE_NAME, info.getIdentity().getErpCustomerPK());
 			
 			return orderId;
 
@@ -1550,7 +1550,7 @@ public class FDCustomerManager {
 				FDReservation reservation = sb.cancelOrder(info, saleId, sendEmail, currentDPExtendDays, restoreReservation);
 				
 				//invalidate quickshop past orders cache
-				QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, info.getIdentity().getErpCustomerPK());
+				EhCacheUtil.removeFromCache(EhCacheUtil.QS_PAST_ORDERS_CACHE_NAME, info.getIdentity().getErpCustomerPK());
 				
 				return reservation;
 			}
@@ -1625,7 +1625,7 @@ public class FDCustomerManager {
 			}
 			
 			//invalidate quickshop past orders cache
-			QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, info.getIdentity().getErpCustomerPK());
+			EhCacheUtil.removeFromCache(EhCacheUtil.QS_PAST_ORDERS_CACHE_NAME, info.getIdentity().getErpCustomerPK());
 			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -2848,7 +2848,7 @@ public class FDCustomerManager {
 				sb.authorizeSale(info.getIdentity().getErpCustomerPK().toString(), orderId, EnumSaleType.SUBSCRIPTION, cra);
 				
 			//invalidate quickshop past orders cache
-			QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, info.getIdentity().getErpCustomerPK());
+			EhCacheUtil.removeFromCache(EhCacheUtil.QS_PAST_ORDERS_CACHE_NAME, info.getIdentity().getErpCustomerPK());
 				
 			return orderId;
 		} catch (CreateException ce) {
@@ -2905,7 +2905,7 @@ public class FDCustomerManager {
 					status, isBulkOrder);
 			
 			//invalidate quickshop past orders cache
-			QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, info.getIdentity().getErpCustomerPK());
+			EhCacheUtil.removeFromCache(EhCacheUtil.QS_PAST_ORDERS_CACHE_NAME, info.getIdentity().getErpCustomerPK());
 			
 			return orderId;
 		} catch (CreateException ce) {
@@ -3493,7 +3493,7 @@ public class FDCustomerManager {
 			// orderId, EnumSaleType.GIFTCARD, cra);
 			
 			//invalidate quickshop past orders cache
-			QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, info.getIdentity().getErpCustomerPK());
+			EhCacheUtil.removeFromCache(EhCacheUtil.QS_PAST_ORDERS_CACHE_NAME, info.getIdentity().getErpCustomerPK());
 			
 			return orderId;
 		} catch (CreateException ce) {

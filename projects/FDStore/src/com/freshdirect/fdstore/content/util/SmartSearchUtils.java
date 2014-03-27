@@ -224,10 +224,10 @@ public class SmartSearchUtils {
 	public static List<ProductModel> sortBySale(List<ProductModel> products, PricingContext pricingContext, boolean ascending) {
 		List<FilteringSortingItem<ProductModel>> items = FilteringSortingItem.wrap(products);
 		ComparatorChain<FilteringSortingItem<ProductModel>> comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.DEAL));
-		comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 		collectSaleInfo(items, pricingContext);
 		if (!ascending)
 			comparator = ComparatorChain.reverseOrder(comparator);
+		comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 		Collections.sort(items, comparator);
 		return FilteringSortingItem.unwrap(items);
 	}

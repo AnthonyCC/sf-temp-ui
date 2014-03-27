@@ -4,15 +4,17 @@
  * @param items some path, list of items
  * @param itemType item variant
  * @param? title optional title string
+ * @param? cmEventSource optional coremetrics event source
  */
 {template .simpleCarousel autoescape="false"}
 <div data-component="carousel" class="first">
 	{if $title}<h2>{$title}</h2>{/if}
-	<div data-component="carousel-mask">
+	<div data-component="carousel-mask" class="transactional">
 		<ul data-component="carousel-list" data-carousel-page="0">
 			{foreach $item in $items}
 			{delcall common.carouselItem variant="$itemType"}
 				{param item:$item /}
+				{param cmEventSource:$cmEventSource /}
 			{/delcall}
 			{/foreach}
 		</ul>
@@ -22,3 +24,4 @@
 </div>
 {/template}
 
+              

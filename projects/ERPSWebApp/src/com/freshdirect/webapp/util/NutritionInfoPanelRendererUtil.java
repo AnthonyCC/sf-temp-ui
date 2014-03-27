@@ -71,10 +71,10 @@ public class NutritionInfoPanelRendererUtil {
         try {
         	
         	// ServletContext srvCtx = pageContext.getServletContext();
-	        if (transformer == null) {
-	        	InputStream xslStream = srvCtx.getResourceAsStream( "/WEB-INF/shared/xml/nutrition_label.xsl" );
+        	if (transformer == null) {
+		        InputStream xslStream = srvCtx.getResourceAsStream( "/WEB-INF/shared/xml/nutrition_label.xsl" );
 				transformer = TransformerFactory.newInstance().newTransformer( new StreamSource( xslStream ) );
-	        }
+        	}
 			
 			org.dom4j.Document doc = new XMLSerializer().serializeDocument("nutrition", nutritionList);
 	        StringWriter st = new StringWriter();
@@ -86,7 +86,7 @@ public class NutritionInfoPanelRendererUtil {
 			
 			return true;
 
-        } catch ( TransformerException e) {
+        } catch ( Exception e) {
         	LOG.error( "XSL Transformer error while rendering classic nutrition panel for sku:"+nutritionModel.getSkuCode(), e );
         	return false;
 		}

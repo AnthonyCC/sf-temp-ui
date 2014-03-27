@@ -1,0 +1,21 @@
+{namespace browse}
+/**
+ * @param? sortOptions sortOptions
+ * @param? currentOrderAsc currentOrderAsc
+ */
+{template .sortBar autoescape="false"}
+	{if $sortOptions and length($sortOptions) > 0}
+    <div class="sorter">
+      <div class="sorter-element_list" data-component="sorter">
+        <strong>Sort by:</strong>
+
+        {foreach $sortOption in $sortOptions}
+          <button data-sortid="{$sortOption.id}" data-direction="{$sortOption.orderAscending}" {$sortOption.selected ? 'data-currentdirection="'+$currentOrderAsc+'"' : ''}
+              class="sorter-element {isFirst($sortOption) ? 'first' : ''} {$sortOption.selected ? 'selected' : ''}  "><span>{$sortOption.name}</span></button>
+        {/foreach}
+      </div>
+    </div>
+	{/if}
+{/template}
+
+

@@ -39,22 +39,22 @@ public class FilteringComparatorUtil {
 				break;
 			case BY_PRICE:
 				comparator = ComparatorChain.create(FilteringSortingItem.wrap(ProductModel.GENERIC_PRICE_COMPARATOR));
-				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_POPULARITY:
 				comparator = ComparatorChain.create(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createGlobalComparator(userId, pricingContext)));
-				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_SALE:
 				SmartSearchUtils.collectSaleInfo(products, pricingContext);
-				comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.DEAL))
-						.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+				comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.DEAL));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_RELEVANCY:
 				// if there's only one DYM then we display products for that DYM
@@ -68,15 +68,15 @@ public class FilteringComparatorUtil {
 				comparator.chain(new SortValueComparator<ProductModel>(EnumSortingValue.CATEGORY_RELEVANCY));
 				comparator.chain(new SortLongValueComparator<ProductModel>(EnumSortingValue.TERM_SCORE));
 				comparator.chain(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createGlobalComparator(userId, pricingContext)));
-				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_START_DATE:
 				comparator = ComparatorChain.create(FilteringSortingItem.wrap(COUPON_START_DATE_COMPARATOR));
-				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_EXPIRATION_DATE:
 				comparator = ComparatorChain.create(FilteringSortingItem.wrap(COUPON_EXP_DATE_COMPARATOR));
@@ -87,31 +87,33 @@ public class FilteringComparatorUtil {
 				
 			case BY_PERC_DISCOUNT:
 				comparator = ComparatorChain.create(FilteringSortingItem.wrap(COUPON_PERCENT_OFF_COMPARATOR));
-				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_DOLLAR_DISCOUNT:
 				comparator = ComparatorChain.create(FilteringSortingItem.wrap(COUPON_DOLLAR_OFF_COMPARATOR));
-				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_PRIORITY:
 				comparator = ComparatorChain.create(FilteringSortingItem.wrap(COUPON_POPULARITY_COMPARATOR));
-				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_RECENCY:
 			default:
 				if (showGrouped)
-					comparator = ComparatorChain.create(new NewProductsGrouping(!nav.isSortOrderingAscending()).getTimeRangeComparator()).chain(FilteringSortingItem.wrap(ProductModel.DEPTFULL_COMPARATOR))
-							.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+					comparator = ComparatorChain.create(new NewProductsGrouping(!nav.isSortOrderingAscending()).getTimeRangeComparator());
 				else
 					comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.NEWNESS));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
+				if(showGrouped)
+					comparator.chain(FilteringSortingItem.wrap(ProductModel.DEPTFULL_COMPARATOR)).chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+
 		}
 		SmartSearchUtils.collectAvailabilityInfo(products, pricingContext);
 		comparator.prepend(new SortValueComparator<ProductModel>(EnumSortingValue.AVAILABILITY));

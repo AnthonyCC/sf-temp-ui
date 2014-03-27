@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.net.URLDecoder;
 import java.util.Locale;
 
 import javax.servlet.ServletException;
@@ -22,6 +20,7 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -119,35 +118,23 @@ public abstract class BaseJsonServlet extends HttpServlet {
 	}
 	
 	
-	protected final static <T> T parseRequestData( HttpServletRequest request, Class<T> typeClass ) throws HttpErrorResponse {
+	public final static <T> T parseRequestData( HttpServletRequest request, Class<T> typeClass ) throws HttpErrorResponse {
 		return parseRequestData( request, typeClass, false );
 	}
 	
 	protected final static <T> T parseRequestData( HttpServletRequest request, Class<T> typeClass, boolean allowEmpty ) throws HttpErrorResponse {
 	
-		String reqJson = request.getParameter( "data" );
-		if(reqJson == null){
-			reqJson = (String)request.getAttribute( "data" );
-			if(reqJson != null){
-				try {
-					reqJson = URLDecoder.decode(reqJson, "UTF-8");
-				} catch (UnsupportedEncodingException e) {
-					returnHttpError( 400, "Cannot decode request string", e );	// 400 Bad Request
-				}				
-			}
-		}
-		if ( reqJson == null ) {
-			if ( allowEmpty ) {
-				return null;
-			}
-			returnHttpError( 400, "Empty request. Aborting" );	// 400 Bad Request
-		}
-		
-		//LOG.debug( "Parsing request data: " + reqJson );
-		
 		T reqData = null;
 		try {
-			reqData = new ObjectMapper().readValue(reqJson, typeClass);
+			
+			reqData = JsonHelper.parseRequestData(request, typeClass);
+			if ( reqData == null ) {
+				if ( allowEmpty ) {
+					return null;
+				}
+				returnHttpError( 400, "Empty request. Aborting" );	// 400 Bad Request
+			}
+		
 		} catch (IOException e) {
 			returnHttpError( 400, "Cannot read JSON", e );	// 400 Bad Request
 		}
@@ -172,7 +159,7 @@ public abstract class BaseJsonServlet extends HttpServlet {
 			ServletOutputStream out = response.getOutputStream();
 			String responseStr = writer.toString();
 			
-			//LOG.debug( "Generated response data: " + responseStr );
+//			LOG.debug( "Generated response data: " + responseStr );
 			
 			out.print( responseStr );
 			
@@ -237,6 +224,9 @@ public abstract class BaseJsonServlet extends HttpServlet {
         	returnHttpError( 401, "User auth level not sufficient!" ); // 401 Unauthorized
 		}
         
+		// set current pricing context
+		ContentFactory.getInstance().setCurrentPricingContext(user.getPricingContext());
+		
 		return user;		
 	}
 	

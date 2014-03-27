@@ -111,9 +111,13 @@ button.cssbutton.notext[class*=" icon-"],
     padding-top: 6px;
     padding-bottom: 7px;
     font-size: 16px;
+    overflow: hidden;
 }
 
-
+span.cssbutton.notext[class^="icon-"],
+span.cssbutton.notext[class*=" icon-"] {
+  width: 1em;
+}
 
 .cssbutton.white {	background:#f4f4f4; color:#555; text-shadow:none; }
 .cssbutton.white:focus,.cssbutton.white:hover { background:#dfdfdf; color:#555; text-shadow:none;  }
@@ -121,10 +125,10 @@ button.cssbutton.notext[class*=" icon-"],
 .cssbutton.red {	background:#c94747; }
 .cssbutton.red:focus,.cssbutton.red:hover { background:#b64242; }
 
-.cssbutton.purple {	background:#996699; }
+.cssbutton.purple {	background:#b07bb7; }
 .cssbutton.purple:focus,.cssbutton.purple:hover { background:#8a588a; }
 
-.cssbutton.orange {	background:#ff9933; }
+.cssbutton.orange {	background:#ff9900; }
 .cssbutton.orange:focus,.cssbutton.orange:hover { background:#dc862d; }
 
 .cssbutton.khaki { background:#979863; }

@@ -65,8 +65,9 @@ public class PreviewLinkProvider {
 			return "/test/content/ymal_set_preview.jsp?ymalSetId=" + id;
 		} else if (FDContentTypes.PAGE.equals(type)) {
 			return "/page.jsp?pageId=" + id;
+		} else if (FDContentTypes.TAG.equals(type)) {
+			return "/test/migration/products_tagged.jsp?tag=" + id;
 		}
-
 		return null;
 	}
 }

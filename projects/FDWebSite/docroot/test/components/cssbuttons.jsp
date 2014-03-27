@@ -59,6 +59,10 @@
 			<li><button class="cssbutton purple icon-last-before">last - before</button><button class="cssbutton purple icon-last-after">last - after</button><button class="cssbutton purple icon-last-before notext">last - notext</button> - notext</li>
 			<li><button class="cssbutton purple icon-file-before">file - before</button><button class="cssbutton purple icon-file-after">file - after</button><button class="cssbutton purple icon-file-before notext">file - notext</button> - notext</li>
 			<li><button class="cssbutton purple icon-file2-before">file2 - before</button><button class="cssbutton purple icon-file2-after">file2 - after</button><button class="cssbutton purple icon-file2-before notext">file2 - notext</button> - notext</li>
+			<li><button class="cssbutton blue icon-arrow-up2-before">arrow-up2 - before</button><button class="cssbutton blue icon-arrow-up2-after">arrow-up2 - after</button><button class="cssbutton blue icon-arrow-up2-before notext">arrow-up2 - notext</button> - notext</li>
+			<li><button class="cssbutton blue icon-arrow-left2-before">arrow-left2 - before</button><button class="cssbutton blue icon-arrow-left2-after">arrow-left2 - after</button><button class="cssbutton blue icon-arrow-left2-before notext">arrow-left2 - notext</button> - notext</li>
+			<li><button class="cssbutton blue icon-arrow-down2-before">arrow-down2 - before</button><button class="cssbutton blue icon-arrow-down2-after">arrow-down2 - after</button><button class="cssbutton blue icon-arrow-down2-before notext">arrow-down2 - notext</button> - notext</li>
+			<li><button class="cssbutton blue icon-arrow-right2-before">arrow-right2 - before</button><button class="cssbutton blue icon-arrow-right2-after">arrow-right2 - after</button><button class="cssbutton blue icon-arrow-right2-before notext">arrow-right2 - notext</button> - notext</li>
 		</ol>
 	</section>
 	</body>

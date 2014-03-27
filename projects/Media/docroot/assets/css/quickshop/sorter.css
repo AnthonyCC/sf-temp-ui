@@ -42,6 +42,15 @@
 	content: none;
 }
 
+/* IE8 */
+.sorter-element.first {
+	margin-left:0;
+}
+
+.sorter-element.first:before {
+	content: none;
+}
+
 .sorter-element.selected {
 	font-weight: bold;
 }

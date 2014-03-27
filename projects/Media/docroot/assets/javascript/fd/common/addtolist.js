@@ -57,6 +57,7 @@ var FreshDirect = FreshDirect || {};
         popupConfig: {
           value: {
             openonclick: true,
+            zIndex: 2001,
             halign: 'right'
           }
         },
@@ -158,7 +159,7 @@ var FreshDirect = FreshDirect || {};
       value:null
     },
     trigger: {
-      value: '[data-component=product] button.addtolist'
+      value: '[data-component=product] button.addtolist, [data-component=product] span.addtolist'
     },
     popupId: {
       value: 'addtolistpopup'

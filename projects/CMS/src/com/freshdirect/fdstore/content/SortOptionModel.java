@@ -25,4 +25,13 @@ public class SortOptionModel extends ContentNodeModelImpl {
 		return (String) getCmsAttributeValue("strategy");
 	}
 
+	/**
+	 * Guess exact sort type upon value obtained from {@link #getStrategy()} attribute.
+	 * It can be null if type could not be matched
+	 * 
+	 * @return
+	 */
+	public SortStrategyType getSortStrategyType() {
+		return SortStrategyType.toEnum( getStrategy() );
+	}
 }

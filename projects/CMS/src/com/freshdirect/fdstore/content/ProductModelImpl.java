@@ -119,6 +119,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 * */
 	private final List giftcardTypes=new ArrayList();
 	
+	private List<TagModel> tags = new ArrayList<TagModel>();
+	
 	/**
 	 *  [APPDEV-3179] list of merchant selected products for upsell recommender
 	 */
@@ -1829,7 +1831,49 @@ inner:
 	public boolean isDisabledRecommendations() {
 		return getAttribute("DISABLED_RECOMMENDATION", false);
 	}
+	
+	@Override
+	public List<TagModel> getTags() {
+		ContentNodeModelUtil.refreshModels(this, "tags", tags, false);
+		return Collections.unmodifiableList(tags);
+	}
 
+	@Override
+	public Set<TagModel> getAllTags() {
+		Set<TagModel> allTags = new HashSet<TagModel>();
+
+		for (TagModel tag : getTags()){
+			while (true){
+				allTags.add(tag);
+				ContentNodeModel parent = tag.getParentNode(); //TODO check this
+				
+				if (parent instanceof TagModel){
+					tag = (TagModel) parent;
+				} else {
+					break;
+				}
+			}
+		}
+		CategoryModel parent = getCategory();
+		if (parent!=null){
+			allTags.addAll(parent.getProductTags());
+		}
+		return allTags;
+	}
+
+	@Override
+	public Set<DomainValue> getAllDomainValues() {
+	    Set<DomainValue> domainValues = new HashSet<DomainValue>();
+	    domainValues.addAll(getWineClassifications()); //TODO check all (not only wine)
+	    domainValues.addAll(getRating());
+	    domainValues.add(getUnitOfMeasure());
+	    domainValues.addAll(getWineVintage());
+	    domainValues.addAll(getWineRating1());
+	    domainValues.addAll(getWineRating2());
+	    domainValues.addAll(getWineRating3());
+		return domainValues;
+	}
+	
 	
 	/**
 	 * @see {@link ProductModel#getUpSellProducts()}

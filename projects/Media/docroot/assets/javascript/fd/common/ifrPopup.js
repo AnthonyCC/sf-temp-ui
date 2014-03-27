@@ -12,20 +12,21 @@ var FreshDirect = FreshDirect || {};
         $content = $('#ifrPopup .qs-popup-content');
 
     try {
-      var maxHeight = $(document.body).height() * 0.95 - 50,
-          $body = $($ifr[0].contentWindow.document.body);
+      var $body = $($ifr[0].contentWindow.document.body),
+          bodyHeight = $body[0].scrollHeight;
 
       $body.css({
         display:'inline-block',
         margin:'0 auto'
       });
       $ifr.css({
-        width: Math.min(maxwidth || 2000, ($body.innerWidth() || $body.parent().innerWidth() || maxwidth-25) + 25),
-        height: Math.min(maxheight || 2000, maxHeight)
+        width: Math.min(maxwidth || 1000, ($body.innerWidth() || $body.parent().innerWidth() || maxwidth-25) + 25),
+        height: Math.max(maxheight || 0, bodyHeight)
       });
     } catch(e) {
       
     }
+    ifrPopup.noscroll();
   };
 
   var ifrPopup = Object.create(POPUPWIDGET,{
@@ -57,6 +58,9 @@ var FreshDirect = FreshDirect || {};
         overlay:true
       }
     },
+    reposition: {
+      value: reposition
+    },
     open: {
       value: function (config) {
 
@@ -73,7 +77,7 @@ var FreshDirect = FreshDirect || {};
             }
             ifrPopup.popup.clicked=true;
             ifrPopup.popup.show($('body'),false);
-
+            ifrPopup.noscroll();
         }
         var $ifr = $('#ifrPopup iframe');
 
@@ -81,11 +85,13 @@ var FreshDirect = FreshDirect || {};
           $ifr.css({
             width: config.width
           });
+          maxwidth = config.width;
         }
         if (config.height) {
           $ifr.css({
-            width: config.height
+            height: config.height
           });
+          maxheight = config.height;
         }
 
 

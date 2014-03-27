@@ -113,7 +113,7 @@ public class ContentNodeModelUtil {
         TYPE_MODEL_MAP.put("ProductGrabber", ProductGrabberModel.class);
         TYPE_MODEL_MAP.put("Tag", TagModel.class);
         TYPE_MODEL_MAP.put("ProductFilterMultiGroup", ProductFilterMultiGroupModel.class);
-        TYPE_MODEL_MAP.put("SortingOption", SortOptionModel.class);
+        TYPE_MODEL_MAP.put("SortOption", SortOptionModel.class);
 	}
 
 	/**

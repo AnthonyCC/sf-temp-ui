@@ -1,0 +1,19 @@
+table {
+	font-family: Verdana,sans-serif;
+}
+th {
+	color: white;
+	background-color: black;
+	padding: 2px 5px;
+}
+td {
+	padding: 2px 5px;
+	
+}
+.even_col {
+	background-color: #eee;
+}
+.warning {
+	color: red;
+	font-weight: bold;
+}

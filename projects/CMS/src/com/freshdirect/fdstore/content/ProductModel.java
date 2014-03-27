@@ -59,11 +59,28 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 		}
 	};
 	
-	public static class PriceComparator implements Comparator<SkuModel> {
+	public static abstract class SkuInfoComparator implements Comparator<SkuModel> {
+		
+		public int compare(SkuModel sku1, SkuModel sku2) {
+			
+			if(sku1==null && sku2==null) return 0;
+			
+			if(sku1!=null && sku2==null) return 1;
+			
+			if(sku1==null && sku2!=null) return -1;
+			
+			return doCompare(sku1, sku2);
+		}
+		
+		protected abstract int doCompare(SkuModel sku1, SkuModel sku2);
+	}
+	
+	public static class PriceComparator extends SkuInfoComparator {
 
 		private int flips;
 
-		public int compare(SkuModel sku1, SkuModel sku2) {
+		@Override
+		public int doCompare(SkuModel sku1, SkuModel sku2) {
 			try {
 				String zoneId1 = sku1.getPricingContext().getZoneId();
 				String zoneId2 = sku2.getPricingContext().getZoneId();
@@ -99,7 +116,7 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	}
 	
 	
-	public static class ZonePriceComparator implements Comparator<SkuModel> {
+	public static class ZonePriceComparator extends SkuInfoComparator {
 	    String zoneId;
 	    
         public ZonePriceComparator(String zoneId) {
@@ -107,7 +124,7 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
         }
 
         @Override
-        public int compare(SkuModel sku1, SkuModel sku2) {
+        public int doCompare(SkuModel sku1, SkuModel sku2) {
             try {
                 FDProductInfo pi1 = FDCachedFactory.getProductInfo(sku1.getSkuCode());
                 FDProductInfo pi2 = FDCachedFactory.getProductInfo(sku2.getSkuCode());
@@ -200,11 +217,12 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 
 	
 	
-	public static class RatingComparator implements Comparator<SkuModel> {
+	public static class RatingComparator extends SkuInfoComparator {
 
 		private int flips;
 
-		public int compare(SkuModel obj1, SkuModel obj2) {
+		@Override
+		public int doCompare(SkuModel obj1, SkuModel obj2) {
 			try {
 				FDProductInfo pi1 = FDCachedFactory.getProductInfo(obj1.getSkuCode());
 				FDProductInfo pi2 = FDCachedFactory.getProductInfo(obj2.getSkuCode());
@@ -247,12 +265,13 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 
 	}
 
-	public static class SustainabilityComparator implements Comparator<SkuModel> {
+	public static class SustainabilityComparator extends SkuInfoComparator {
 
 		private int flips;
 
-		public int compare(SkuModel obj1, SkuModel obj2) {
+		public int doCompare(SkuModel obj1, SkuModel obj2) {
 			try {
+
 				FDProductInfo pi1 = FDCachedFactory.getProductInfo(obj1.getSkuCode());
 				FDProductInfo pi2 = FDCachedFactory.getProductInfo(obj2.getSkuCode());
 				
@@ -800,7 +819,7 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	
 	public CategoryModel getPerfectPair();		
 	
-	public List getWineClassifications();
+	public List<DomainValue> getWineClassifications();
 
 	public String getProductRating() throws FDResourceException; 
 	
@@ -994,6 +1013,21 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	 * @return Value of <code>retainOriginalSkuOrder</code> flag.
 	 */
 	public boolean isRetainOriginalSkuOrder();
+	
+	/**
+	 * Return tags directly assigned to product
+	 * 
+	 * @return
+	 */
+	public List<TagModel> getTags();
+	
+	/**
+	 * Return all tags including parent tags
+	 * @return
+	 */
+	public Set<TagModel> getAllTags();
+	
+	public Set<DomainValue> getAllDomainValues();
 
 	
 	// ** APPDEV-3179 **

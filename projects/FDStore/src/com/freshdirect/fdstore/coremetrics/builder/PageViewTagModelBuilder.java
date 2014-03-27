@@ -2,6 +2,8 @@ package com.freshdirect.fdstore.coremetrics.builder;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -69,8 +71,11 @@ public class PageViewTagModelBuilder  {
 				tagModel.setPageId("search");
 				tagModel.setCategoryId(CustomCategory.SEARCH.toString());
 				decoratePageIdWithCatId();
-			
-			} else if ("department".equals(fileName) || "department_cohort_match".equals(fileName) || "category".equals(fileName) || "newsletter".equals(fileName) || "whatsgood".equals(fileName) || "ddpp".equals(fileName)) {
+
+			} else if ("department".equals(fileName) || "department_cohort_match".equals(fileName) || "category".equals(fileName) || "newsletter".equals(fileName) || "whatsgood".equals(fileName)  || "ddpp".equals(fileName) /* || "browse".equals(fileName) */){
+				processDeptOrCat();
+			} else if ("browse".equals(fileName)){
+				findCurrentFolder( request.getParameter("id") );
 				processDeptOrCat();
 			} else if ("product".equals(fileName) || "pdp".equals(fileName)) {
 				processProduct();
@@ -179,7 +184,29 @@ public class PageViewTagModelBuilder  {
 			decoratePageIdWithCatId();
 		} 
 	}
-	
+
+
+	/**
+	 * Find the current container content node (LeftNav)
+	 */
+	private static final ContentType CONTAINER_TYPES[] = { FDContentTypes.DEPARTMENT, FDContentTypes.CATEGORY };
+	private void findCurrentFolder(final String contentId) {
+		final ContentFactory f = ContentFactory.getInstance();  
+
+		if (contentId != null) {
+			for (ContentType t : CONTAINER_TYPES) {
+				currentFolder = f.getContentNode( t, contentId);
+				if (currentFolder != null) {
+					return;
+				}
+			}
+		}
+
+		// We are sitting in a deep hole wondering where the Content ID was gone.
+		// No wayout. Shoot the horses. Hope is lost to make it to the destination.
+	}
+
+
 	private void decoratePageIdWithCatId(){
 		tagModel.setPageId(tagModel.getCategoryId().replace("_", " ").toUpperCase() + TagModelUtil.PAGE_ID_DELIMITER + tagModel.getPageId());
 	}

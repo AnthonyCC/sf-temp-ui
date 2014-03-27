@@ -375,23 +375,6 @@ public class ProductExtraData implements Serializable {
 	 */
 	protected int freshness = 0;
 	
-
-	/**
-	 * Messaging - various messages
-	 */
-	protected String msgCancellation;
-	protected String msgCutoffHeader;
-	protected String msgCutoffNotice;
-	protected String msgDayOfWeek;
-	protected String msgDayOfWeekHeader;
-	protected String msgDeliveryNote;
-	protected String msgLeadTime;
-	protected String msgLeadTimeHeader;
-	protected String msgKosherRestriction;
-	
-	// Earliest availability message (optional)
-	// it contains a date in short format Fri, 02/14
-	protected String msgEarliestAvailability;
 	
 	public List<String> getAllergens() {
 		return allergens;
@@ -711,86 +694,6 @@ public class ProductExtraData implements Serializable {
 		this.storageGuideTitle = storageGuideTitle;
 	}
 
-	
-	public String getMsgCutoffNotice() {
-		return msgCutoffNotice;
-	}
-
-	
-	public void setMsgCutoffNotice( String msgCutoffNotice ) {
-		this.msgCutoffNotice = msgCutoffNotice;
-	}
-
-	
-	public String getMsgCancellation() {
-		return msgCancellation;
-	}
-
-	
-	public void setMsgCancellation( String msgCancellation ) {
-		this.msgCancellation = msgCancellation;
-	}
-
-	
-	public String getMsgDayOfWeek() {
-		return msgDayOfWeek;
-	}
-
-	
-	public void setMsgDayOfWeek( String msgDayOfWeek ) {
-		this.msgDayOfWeek = msgDayOfWeek;
-	}
-
-	
-	public String getMsgDeliveryNote() {
-		return msgDeliveryNote;
-	}
-
-	
-	public void setMsgDeliveryNote( String msgDeliveryNote ) {
-		this.msgDeliveryNote = msgDeliveryNote;
-	}
-
-	
-	public String getMsgCutoffHeader() {
-		return msgCutoffHeader;
-	}
-
-	
-	public void setMsgCutoffHeader( String msgCutoffHeader ) {
-		this.msgCutoffHeader = msgCutoffHeader;
-	}
-
-	
-	public String getMsgLeadTime() {
-		return msgLeadTime;
-	}
-
-	
-	public void setMsgLeadTime( String msgLeadTime ) {
-		this.msgLeadTime = msgLeadTime;
-	}
-
-	
-	public String getMsgDayOfWeekHeader() {
-		return msgDayOfWeekHeader;
-	}
-
-
-	public void setMsgDayOfWeekHeader( String msgDayOfWeekHeader ) {
-		this.msgDayOfWeekHeader = msgDayOfWeekHeader;
-	}
-
-	
-	public String getMsgLeadTimeHeader() {
-		return msgLeadTimeHeader;
-	}
-
-	
-	public void setMsgLeadTimeHeader( String msgLeadTimeHeader ) {
-		this.msgLeadTimeHeader = msgLeadTimeHeader;
-	}
-
 	public int getFreshness() {
 		return freshness;
 	}
@@ -799,24 +702,7 @@ public class ProductExtraData implements Serializable {
 		this.freshness = freshness;
 	}
 
-	public String getMsgKosherRestriction() {
-		return msgKosherRestriction;
-	}
 
-	
-	public void setMsgKosherRestriction( String msgKosherRestriction ) {
-		this.msgKosherRestriction = msgKosherRestriction;
-	}
-
-	public String getMsgEarliestAvailability() {
-		return msgEarliestAvailability;
-	}
-	
-	public void setMsgEarliestAvailability(String msgEarliestAvailability) {
-		this.msgEarliestAvailability = msgEarliestAvailability;
-	}
-
-	
 	public boolean isFrozen() {
 		return isFrozen;
 	}

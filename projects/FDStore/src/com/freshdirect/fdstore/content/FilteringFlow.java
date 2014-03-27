@@ -31,6 +31,7 @@ public abstract class FilteringFlow<N extends ContentNodeModel> {
 
 		// Decorate all items (filter values and menu values)
 		GenericFilterDecorator<FilteringSortingItem<N>> filterValueDecorator = createFilterValueDecorator();
+		filterValueDecorator.setNav(nav);
 		for (FilteringSortingItem<N> item : items) {
 			filterValueDecorator.decorateItem(item);
 		}

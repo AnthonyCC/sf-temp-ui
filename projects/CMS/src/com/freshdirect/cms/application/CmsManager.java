@@ -4,7 +4,6 @@
 package com.freshdirect.cms.application;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,6 +30,7 @@ public class CmsManager implements ContentServiceI {
 
 	private ContentServiceI pipeline;
 	private ContentSearchServiceI searchService;
+	private boolean readOnlyContent = true; //false if CMS is in DB mode, true if XML mode
 
 	public CmsManager() {
 	}
@@ -74,6 +74,7 @@ public class CmsManager implements ContentServiceI {
 		ContentServiceI mgr = (ContentServiceI) registry.getService("com.freshdirect.cms.CmsManager", ContentServiceI.class);
 		ContentSearchServiceI search = (ContentSearchServiceI) registry.getService(ContentSearchServiceI.class);
 		this.initialize(mgr, search);
+		readOnlyContent = !FDRegistry.getInstance().containsService("com.freshdirect.cms.ChangeTracker", ContentServiceI.class);
 	}
 
 	private void initialize(ContentServiceI pipeline, ContentSearchServiceI searchService) {
@@ -189,4 +190,12 @@ public class CmsManager implements ContentServiceI {
 		return pipeline.getRealContentNode(key);
 	}
 
+	/**
+	 * Convenience method to check if CMS Service is configured for XML use.
+	 * 
+	 * @return
+	 */
+	public boolean isReadOnlyContent() {
+		return readOnlyContent;
+	}
 }

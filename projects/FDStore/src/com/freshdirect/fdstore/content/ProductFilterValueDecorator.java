@@ -271,6 +271,18 @@ public class ProductFilterValueDecorator extends GenericFilterDecorator<Filterin
 		Collection<ContentKey> parents = node.getParentKeys();
 		if (parents != null) {
 			for (ContentKey parentKey : parents) {
+				ContentNodeModel contentNodeModel = ContentFactory.getInstance().getContentNodeByKey(parentKey);
+				boolean hideFilteringCategory = false;
+				while (contentNodeModel != null && "c".equalsIgnoreCase(contentNodeModel.getContentType()) && !hideFilteringCategory) {
+					if(((CategoryModel)contentNodeModel).isHideIfFilteringIsSupported() && nav.isFilteringSupportedForUser()) {
+						hideFilteringCategory = true;
+					} else {
+						contentNodeModel = contentNodeModel.getParentNode();
+					}
+				}
+				if(hideFilteringCategory) {
+					continue;
+				}
 				ProductModel nodeByKey = ContentFactory.getInstance().getProductByName(
 						parentKey.getId(),
 						node.getContentKey().getId());

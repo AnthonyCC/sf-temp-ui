@@ -34,7 +34,7 @@ FreshDirect.pdp.annotations=<fd:ToJSON object="${annotations}" noHeaders="true"/
 </script>
 <% ProductModel productNode = ContentFactory.getInstance().getProduct(request.getParameter("catId"), request.getParameter("productId")); %>
 <div class="pdp">
-	<div class="span-16">
+	<div>
 		<%if (FDStoreProperties.isAdServerEnabled()) {%>
 			<center><script type="text/javascript">OAS_AD('ProductNote');</script></center>
 		<%} else {%>
@@ -68,7 +68,7 @@ FreshDirect.pdp.annotations=<fd:ToJSON object="${annotations}" noHeaders="true"/
 		</div>
 		<div class="span-8 prepend-1">
 <c:if test="${productPotato.available}">			
-			<div class="pdp-availability"><soy:render template="pdp.availability" data="${productExtraPotato}" /></div>
+			<div class="pdp-availability"><soy:render template="pdp.availability" data="${productPotato}" /></div>
 			<div class="pdp-price"><soy:render template="common.price" data="${productPotato}" /><soy:render template="pdp.savestring" data="${productPotato}" /></div>
 			<div class="span-7 prepend-1 first pdp-info">
 				<soy:render template="pdp.skuInfo" data="${productPotato}" />

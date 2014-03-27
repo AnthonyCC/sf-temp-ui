@@ -22,7 +22,7 @@ import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.FilteringValue;
-import com.freshdirect.fdstore.content.QuickShopCacheUtil;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
@@ -74,12 +74,12 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 
 		try {
 			
-			List<QuickShopLineItemWrapper> items = QuickShopCacheUtil.getListFromCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
+			List<QuickShopLineItemWrapper> items = EhCacheUtil.getListFromCache(EhCacheUtil.QS_SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
 			
 			if(items==null){
 				items = QuickShopHelper.getWrappedCustomerCreatedLists(user, EnumQuickShopTab.CUSTOMER_LISTS);
 				if(!items.isEmpty()){
-					QuickShopCacheUtil.putListToCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK(), new ArrayList<QuickShopLineItemWrapper>(items));					
+					EhCacheUtil.putListToCache(EhCacheUtil.QS_SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK(), new ArrayList<QuickShopLineItemWrapper>(items));					
 				}
 			}else{
 				items = new ArrayList<QuickShopLineItemWrapper>(items);
@@ -178,6 +178,7 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 							
 							// remove temp config from session if any
 							HttpSession session = request.getSession();
+							@SuppressWarnings("unchecked")
 							Map<String, QuickShopLineItem> tempConfigs = (Map<String, QuickShopLineItem>) session.getAttribute(SessionName.SESSION_QS_CONFIG_REPLACEMENTS);
 							if(tempConfigs!=null){
 								tempConfigs.remove(reqData.getAtcItemId());								
@@ -230,7 +231,7 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 		}
 		
 		//invalidate cache entry TODO: maybe enough to reload the actual list
-		QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, userId);
+		EhCacheUtil.removeFromCache(EhCacheUtil.QS_SHOP_FROM_LISTS_CACHE_NAME, userId);
 		
 	}
 	

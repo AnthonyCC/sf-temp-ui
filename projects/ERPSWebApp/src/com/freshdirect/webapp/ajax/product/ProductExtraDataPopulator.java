@@ -2,10 +2,7 @@ package com.freshdirect.webapp.ajax.product;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,15 +20,9 @@ import com.freshdirect.content.nutrition.EnumOrganicValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
-import com.freshdirect.delivery.restriction.DlvRestrictionsList;
-import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
-import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
-import com.freshdirect.delivery.restriction.EnumDlvRestrictionType;
-import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.erp.ErpFactory;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDCachedFactory;
-import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDNutritionCache;
 import com.freshdirect.fdstore.FDNutritionPanelCache;
 import com.freshdirect.fdstore.FDProduct;
@@ -52,6 +43,7 @@ import com.freshdirect.fdstore.content.EnumProductLayout;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.MediaModel;
+import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
@@ -63,9 +55,6 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.HowToCookItUtil;
 import com.freshdirect.fdstore.util.RatingUtil;
 import com.freshdirect.framework.template.TemplateException;
-import com.freshdirect.framework.util.DateRange;
-import com.freshdirect.framework.util.DayOfWeekSet;
-import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
@@ -77,10 +66,8 @@ import com.freshdirect.webapp.ajax.product.data.ProductExtraData.SourceData;
 import com.freshdirect.webapp.ajax.product.data.ProductExtraData.WineData;
 import com.freshdirect.webapp.ajax.product.data.ProductExtraData.WineRating;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
-import com.freshdirect.webapp.util.JspMethods;
 import com.freshdirect.webapp.util.MediaUtils;
 import com.freshdirect.webapp.util.NutritionInfoPanelRendererUtil;
-import com.freshdirect.webapp.util.RestrictionUtil;
 
 public class ProductExtraDataPopulator {
 	private static final Logger LOG = LoggerFactory.getInstance( ProductExtraDataPopulator.class );
@@ -702,130 +689,6 @@ public class ProductExtraDataPopulator {
 		data.setStorageGuideTitle( parentDept.getFullName() + " Storage Guide" );
 		
 		
-		// ==============
-		//   Messaging
-		// ==============
-		
-		// Party platter cancellation notice
-		if ( productNode.isPlatter() ) {
-			data.setMsgCancellation( "* Orders for this item cancelled after 3PM the day before delivery (or Noon on Friday/Saturday/Sunday and major holidays) will be subject to a 50% fee." ); 
-		}
-
-		// Party platter cutoff notice (header+text)
-		TimeOfDay cutoffTime = RestrictionUtil.getPlatterRestrictionStartTime();
-		if ( productNode.isPlatter() && cutoffTime != null ) {
-			String headerTime;
-			String bodyTime;
-			if (new TimeOfDay("12:00 PM").equals(cutoffTime)) {
-				headerTime = "10AM";
-				bodyTime = "10AM";
-			} else {
-				SimpleDateFormat headerTimeFormat = new SimpleDateFormat("h:mm a");
-				SimpleDateFormat bodyTimeFormat = new SimpleDateFormat("ha");
-				
-				headerTime = headerTimeFormat.format(cutoffTime.getAsDate());
-				bodyTime = bodyTimeFormat.format(cutoffTime.getAsDate());
-			}
-			data.setMsgCutoffHeader( "Order by " + headerTime + " for Delivery Tomorrow" );
-			data.setMsgCutoffNotice( "Freshly made item. Please <b>complete checkout by " + bodyTime + "</b> to order for delivery tomorrow." );
-			
-		}
-
-		
-		// Limited availability messaging
-		
-		// msgDayOfWeek		- Blocked days of the week notice		
-		// msgDeliveryNote	- Another blocked days of the week notice
-		
-		DayOfWeekSet blockedDays = productNode.getBlockedDays();
-		if (!blockedDays.isEmpty()) {
-			int numOfDays=0;
-			StringBuffer daysStringBuffer = null;
-			boolean isInverted=true;
-			
-			if (blockedDays.size() > 3) {
-				numOfDays = (7-blockedDays.size() );
-			 	daysStringBuffer= new StringBuffer(blockedDays.inverted().format(true));
-			} else {
-				isInverted=false;
-			  	daysStringBuffer = new StringBuffer(blockedDays.format(true));
-				numOfDays = blockedDays.size();
-			}
-			
-			
-			if (numOfDays > 1 ) {
-				//** make sundays the last day, if more than one in the list 
-				if (daysStringBuffer.indexOf("Sundays, ")!=-1)  {
-					daysStringBuffer.delete(0,9);
-					daysStringBuffer.append(" ,Sundays");
-				}
-				
-				//replace final comma with "and" or "or"
-				int li = daysStringBuffer.lastIndexOf(",");
-				daysStringBuffer.replace(li,li+1,(isInverted ?" and ": " or ") );
-			}
-			
-			data.setMsgDayOfWeekHeader( "Limited Availability" );
-			data.setMsgDayOfWeek( "This item is <b>" + ( isInverted ? "only" : "not" ) + "</b> available for delivery on <b>" + daysStringBuffer.toString() + "</b>." );
-			
-			data.setMsgDeliveryNote( "Only available for delivery on " + blockedDays.inverted().format(true) + "." );
-		}
-		
-		
-
-		// Lead time message
-		if ( fdprd != null ) {
-			int leadTime = fdprd.getMaterial().getLeadTime();		
-			if( leadTime > 0 && FDStoreProperties.isLeadTimeOasAdTurnedOff() ) {
-				data.setMsgLeadTimeHeader( JspMethods.convertNumToWord(leadTime) + "-Day Lead Time" );
-				data.setMsgLeadTime( "Freshly made item. Please complete checkout at least two days in advance. (Order by Thursday for Saturday)." );
-			}
-		}
-		
-		// Kosher restrictions
-		if ( fdprd != null && fdprd.getKosherInfo() != null && fdprd.getKosherInfo().isKosherProduction() ) {
-			StringBuilder buf = new StringBuilder( "* Not available for delivery on Friday, Saturday, or Sunday morning." );
-			
-			DlvRestrictionsList globalRestrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
-			
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DATE, 1);
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-			Date startDate = cal.getTime();
-
-			cal.add(Calendar.DATE, 7);
-			Date endDate = cal.getTime();
-			
-			DateRange dateRange = new DateRange(startDate, endDate);
-
-			List<RestrictionI> kosherRestrictions = globalRestrictions.getRestrictions(
-					EnumDlvRestrictionCriterion.DELIVERY,
-					EnumDlvRestrictionReason.KOSHER,
-					EnumDlvRestrictionType.ONE_TIME_RESTRICTION,
-					dateRange);
-
-	    	if ( kosherRestrictions.size() > 0 ) {
-	    		buf.append( "<br/>Also unavailable during " );
-	    		int s = kosherRestrictions.size();
-				for ( int i = 0; i < s; i++ ) {
-					RestrictionI r = kosherRestrictions.get( i );
-					buf.append( "<b>" + r.getName() + "</b>, " + r.getDisplayDate() + ( ( i == s - 1 ) ? "." : "; " ) );
-				}
-	    	}
-			
-			data.setMsgKosherRestriction( buf.toString() );
-		}
-		
-		// earliest availability - product not yet available but will in the near future
-		if (defaultSku != null) {
-			data.setMsgEarliestAvailability( defaultSku.getEarliestAvailabilityMessage() );
-		}
-
-
-
 		// --- --- //
 		
 		// Perishable product - freshness warranty

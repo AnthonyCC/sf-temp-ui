@@ -6,6 +6,7 @@
  * @param? catId categoryId
  * @param? skuCode skuId
  * @param? listId listId
+ * @param? productPageUrl productPageUrl
  * @param? configuration product configuration
  * @param? isAlcoholic product configuration
  * @param? originalLineId product configuration
@@ -15,6 +16,7 @@
 {call .productDataMin}
 {param atcItemId:$atcItemId /}
 {param productId:$productId /}
+{param productPageUrl:$productPageUrl /}
 {param catId:$catId /}
 {param skuCode:$skuCode /}
 {param alcoholic:$isAlcoholic /}
@@ -37,6 +39,7 @@
  * @param? catId categoryId
  * @param? skuCode skuId
  * @param? alcoholic product configuration
+ * @param? productPageUrl productPageUrl
  * 
  */
 {template .productDataMin autoescape="false"}
@@ -47,6 +50,9 @@
 {/if}
 {if $productId}
 <input type="hidden" data-component="productData" data-productdata-name="productId" name="productId" value="{$productId}">
+{/if}
+{if $productPageUrl}
+<input type="hidden" data-productdata-name="productPageUrl" name="productPageUrl" value="{$productPageUrl}">
 {/if}
 {if $catId}
 <input type="hidden" data-component="productData" data-productdata-name="categoryId" name="categoryId" value="{$catId}">

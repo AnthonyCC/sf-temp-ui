@@ -144,7 +144,7 @@ if(user != null) {
 <%
 }
 %>
-          <input type="submit" value="find" id="topInputFindButton" class="cssbutton khaki"/>
+    <button type="submit" id="topInputFindButton" class="cssbutton khaki">Find</button>
 		</form>
 		</div>
 

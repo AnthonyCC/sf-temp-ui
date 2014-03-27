@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.coremetrics.builder;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +42,8 @@ public class ElementTagModelBuilder {
 	private static final String ID_REVIEWS_VIEWED = "viewed";
 	public static final String CAT_ECOUPON = "ecoupon";
 	
+	public static final String CAT_BROWSE = "browse";
+	
 	private ElementTagModel model = new ElementTagModel();
 	private String elementId;
 	private String elementCategory;
@@ -60,7 +63,9 @@ public class ElementTagModelBuilder {
 	private FilteringNavigator searchNavigator;
 	QueryParameterCollection queryParamCollection;
 
-
+	// required property for 'browse' category type
+	private Map<String,Object> leftNavFilters;
+	
 	public ElementTagModel buildTagModel()  throws SkipTagException {
 
 		setDefaultModelAttributes();
@@ -87,6 +92,8 @@ public class ElementTagModelBuilder {
 			processReviews();
 		} else if (CAT_ECOUPON.equals(elementCategory)) {
 			processClipCouponEvent();
+		} else if (CAT_BROWSE.equals(elementCategory)) {
+			processLeftNavEvent();
 		}
 			
 		return model;
@@ -240,6 +247,54 @@ public class ElementTagModelBuilder {
 		model.getAttributesMaps().put(3, skuCode);
 	}
 	
+	private void processLeftNavEvent() throws SkipTagException {
+		if (leftNavFilters == null) {
+			throw new SkipTagException("Missing filter parameter! Skipping tag.");
+		}
+
+
+		StringBuilder outerBuf = new StringBuilder();
+		boolean next = false;
+		for (Map.Entry<String, Object> in : leftNavFilters.entrySet()) {
+			if (next) {
+				outerBuf.append(ATTR_DELIMITER);
+			} else {
+				next = true;
+			}
+
+
+			// store key (is a ProductFilterGroup)
+			outerBuf.append(in.getKey());
+			
+			final Object obj = in.getValue();
+			if (obj instanceof Collection) {
+				@SuppressWarnings("unchecked")
+				Collection<String> coll = (Collection<String>) obj;
+				if (coll.size() > 0) {
+					// delimiter first, please!
+					outerBuf.append(ID_TYPE_DELIMITER);
+					for (String s : coll) {
+						// here go the keys, concatenated
+						outerBuf.append(s);
+					}
+				} else {
+					// this should not happen!
+				}
+			} else {
+				// store single key (is a ProductFilter)
+				outerBuf.append(String.valueOf(obj));
+			}
+		}
+		
+		// now populate the standard fields with the synthetized values
+		String result = outerBuf.toString();
+		
+		model.setElementId(result.length() > 50 ? result.substring(0, 50) : result);
+		model.setElementCategory(CAT_BROWSE);
+	}
+
+
+
 	public void setElementId(String elementId) {
 		this.elementId = elementId;
 	}
@@ -298,5 +353,15 @@ public class ElementTagModelBuilder {
 	
 	public void setCouponOfferType(String couponOfferType){
 		this.couponOfferType = couponOfferType;
+	}
+
+
+	/**
+	 * Map of LeftNav filter map where values can be a single string or collection of strings
+	 * 
+	 * @param leftNavFilters
+	 */
+	public void setLeftNavFilters(Map<String, Object> leftNavFilters) {
+		this.leftNavFilters = leftNavFilters;
 	}
 }

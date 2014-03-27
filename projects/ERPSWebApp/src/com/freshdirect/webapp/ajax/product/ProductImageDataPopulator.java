@@ -18,6 +18,7 @@ import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.EnumProductLayout;
 import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDUserI;

@@ -15,9 +15,12 @@ import com.freshdirect.fdstore.content.FilteringFlowResult;
 import com.freshdirect.fdstore.content.FilteringMenuItem;
 import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.content.SearchResults;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupportEx;
+import com.freshdirect.webapp.ajax.filtering.NavigationUtil;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class ProductsFilterTag extends BodyTagSupportEx {
 
@@ -38,6 +41,9 @@ public class ProductsFilterTag extends BodyTagSupportEx {
 			LOG.warn("FilteringFlow received null attributes, skipping...");
 			return SKIP_BODY;
 		}
+		
+		//Determine user vs (filtering roll-out and platform) context
+		nav.setFilteringSupportedForUser(NavigationUtil.isUserContextEligibleForHideFiltering((FDUserI)this.request.getSession().getAttribute(SessionName.USER)));
 		
 		FilteringFlowResult result = getProductsFilter().doFlow(nav, null);
 

@@ -47,6 +47,7 @@ h2.centerline span {
   -webkit-box-shadow: 0 0 3px #444;
   -moz-box-shadow: 0 0 3px #444;
   box-shadow: 0 0 3px #444;
+  z-index: 5000;
 }
 
 .tooltip span.arrow {
@@ -74,7 +75,7 @@ h2.centerline span {
 }
 
 .tooltip.noarrow .arrow {
-	display:none;
+  display:none;
 }
 
 
@@ -82,7 +83,7 @@ h2.centerline span {
 
 /* product transparent box height definition */
 .prod-descr-box {
-	height: auto;
+  height: auto;
 }
 
 /* {{{ plus/minus buttons */
@@ -162,7 +163,7 @@ h2.centerline span {
   white-space: nowrap;
   display: inline-block;
   font-size:0;
-	vertical-align:middle;
+  vertical-align:middle;
 }
 
 .qtyinput_grocery {
@@ -170,9 +171,9 @@ h2.centerline span {
 }
 
 #i_viewcart .quantity_col {
-	text-align:center;
-	font-size:0;
-	width:100px;
+  text-align:center;
+  font-size:0;
+  width:100px;
 }
 
 #vieworder_table select,
@@ -209,23 +210,441 @@ h2.centerline span {
 
 .qtyinput .qtymessage {
   font-weight: bold;
-	vertical-align:middle;
+  vertical-align:middle;
 }
 
 #vieworder_table select,
 #recipe_form select,
 #popupcart select,
 #i_viewcart .viewcartselect {
-	min-width:8em;
-	padding:0;
-	height:23px;
-	line-height:23px;
-	margin:2px 0;
+  min-width:8em;
+  padding:0;
+  height:23px;
+  line-height:23px;
+  margin:2px 0;
 }
 
 .lt-ie8 #i_viewcart .viewcartselect,
 .lt-ie8 #popupcart select {
-	width:8em;
+  width:8em;
+}
+
+/* }}} */
+
+/* {{{ page sections */
+section.deptnav {
+  display: block;
+  margin-top: 10px;
+}
+
+section.main {
+  display: block;
+  overflow: hidden;
+  position: relative;
+  margin: 10px 0;
+}
+
+section.main:before {
+  content: '';
+  display: block;
+  position: absolute;
+  width: 184px; /* 186 - 2 */
+  border: 1px solid #dce6bc;
+  background: #f0f5e1;
+  top: 0;
+  bottom: 0;
+  left: 0;
+}
+
+section.main .leftnav {
+  float: left;
+  position: relative;
+  background: #f0f5e1;
+  width: 178px; /* 186 - 2 - 6 */
+  border-left: 1px solid #dce6bc;
+  border-right: 1px solid #dce6bc;
+  margin: 1px 0;
+  padding: 3px;
+}
+
+section.main .leftnav *::-webkit-scrollbar {
+  width: 12px;
+}
+
+section.main .leftnav *::-webkit-scrollbar-track {
+  -webkit-border-radius: 6px;
+  border-radius: 6px;
+  background: #f0f5e1;
+  border: 1px #dce6be solid;
+}
+
+section.main .leftnav *::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 6px;
+  border-radius: 6px;
+  background: #afaf87; 
+  -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.5); 
+}
+
+section.main .content {
+  float: right;
+  width: 774px;
+  /* margin-left: 10px; */
+}
+
+section.main .breadcrumbs {
+  border: 1px solid #dce6bc;
+  background: #f0f5e1;
+  padding: 2px 10px;
+  font-size: 14px;
+  line-height: 18px;
+  list-style-type: none;
+  margin: 0 0 5px 0;
+}
+
+section.main .breadcrumbs li {
+  display: inline-block;
+}
+
+section.main .breadcrumbs li:before {
+  content: '>';
+  display: inline-block;
+  font-weight: bold;
+  color: #996;
+  margin: 0 .5em;
+}
+
+section.main .breadcrumbs li:first-child::before {
+  content: none;
+}
+
+/* IE8 */
+section.main .breadcrumbs li.first:before {
+  content: none;
+}
+
+section.main .pager {
+  display: block;
+  overflow: hidden;
+  border: 1px solid #dce6bc;
+  background: #f0f5e1;
+  padding: 5px;
+  margin: 5px 0 0;
+}
+
+section.main .pager .pagination {
+  float: right;
+}
+
+section.main .pager .pagination-pager-button {
+  width: auto;
+  height: 24px;
+  line-height: 24px;
+  font-weight: bold;
+  color: #693;
+  border: none;
+  font-size: 12px;
+  margin-left: 10px;
+}
+
+section.main .pager .pagination-pager-button:hover {
+  text-decoration: underline;
+}
+
+section.main .pager .pagination-pager-button.selected {
+  width: 33px;
+  color: #fff;
+}
+
+section.main .pager .pagination-pager-button.selected:hover {
+  text-decoration: none;
+}
+
+section.main .pager .pagination-showall-cssbutton {
+  margin-left: 20px;
+}
+
+section.main .sorter {
+  float: right;
+  font-size: 14px;
+  color: #333;
+  margin-top: 5px;
+}
+
+section.main .leftnav .menuBox {
+  position: relative;
+  margin-bottom: 20px;
+  background: #fffffa;
+  border: 1px solid #dce6be;
+  border-radius: 10px;
+  color: #333;
+  overflow: hidden;
+}
+
+section.main .leftnav .menuBox h2 {
+  font-size: 12px;
+  font-weight: bold;
+  color: #3d3d20;
+  line-height: 15px;
+  padding: 0 10px;
+  margin: 12px 0 10px;
+  text-transform: uppercase;
+}
+
+section.main .leftnav .menuBox ul {
+  font-size: 12px;
+  line-height: 14px;
+  margin: 10px;
+  padding: 0;
+  list-style-type: none;
+  max-height: 255px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+section.main .leftnav .menuBox ul:after {
+  content: '';
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 25px;
+  height: 15px;
+  background: -moz-linear-gradient(top, rgba(255,255,250,0) 0%, rgba(255,255,250,1) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,250,0)), color-stop(100%,rgba(255,255,250,1))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgba(255,255,250,0) 0%,rgba(255,255,250,1) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgba(255,255,250,0) 0%,rgba(255,255,250,1) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgba(255,255,250,0) 0%,rgba(255,255,250,1) 100%); /* IE10+ */
+  background: linear-gradient(to bottom, rgba(255,255,250,0) 0%,rgba(255,255,250,1) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00fffffa', endColorstr='#fffffa',GradientType=0 ); /* IE6-9 */
+}
+
+section.main .leftnav .menuBox ul li:last-child {
+  margin-bottom: 10px;
+}
+
+section.main .leftnav .menuBox h3 {
+  font-weight: bold;
+  font-size: 10px;
+  color: #333;
+  line-height: 14px;
+  margin-bottom: 5px; 
+}
+
+.browse-popup {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #dbcfdf;
+  border-radius: 1px;
+  box-shadow: 5px 5px 8px rgba(0,0,0,.8);
+  padding: 10px;
+}
+
+.browse-popup-content label,
+section.main .leftnav .menuBox label {
+  display: block;
+  position: relative;
+  line-height: 15px;
+  padding: 5px 0 5px 22px;
+}
+
+.browse-popup-content label {
+  padding-left: 0;
+}
+
+.browse-popup-content .disabled label,
+section.main .leftnav .menuBox .disabled label {
+  color: #aaa;
+}
+
+.browse-popup-content .disabled label input,
+section.main .leftnav .menuBox .disabled label input {
+  visibility: hidden;
+}
+
+.browse-popup-content hr,
+section.main .leftnav .menuBox hr {
+  background: #ccc;
+  height: 1px;
+}
+
+.browse-popup-content {
+  overflow: hidden;
+}
+
+.browse-popup-content ul {
+  float: left;
+  color: #333;
+  font-size: 13px;
+  line-height: 22px;
+  padding: 0;
+  margin: 10px 10px 10px 30px;
+  list-style-type: none;
+}
+
+.browse-popup-content ul:first-child {
+  margin-left: 10px;
+}
+
+.browse-popup-content h3 {
+  font-weight: bold;
+  font-size: 12px;
+  color: #3d3d20;
+  line-height: 14px;
+  margin-bottom: 5px;
+  padding-left: 5px;
+}
+
+.browse-popup-content li a {
+  display: block;
+  line-height: 22px;
+  padding: 0 5px;
+  border-radius: 5px;
+}
+
+.browse-popup-content li label:hover   {
+  text-decoration: underline;
+}
+
+.browse-popup-content li.disabled label:hover   {
+  text-decoration: none;
+}
+
+.browse-popup-content li.selected a {
+  background: #693;
+  color: #fff;
+}
+
+.browse-popup-header {
+  font-size: 15px;
+  font-family: 'EagleBook', Verdana, Arial, sans-serif;
+  color: #996;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 30px 0 10px;
+  margin: 0;
+  position: relative;
+}
+
+.browse-popup-close-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 19px;
+  height: 19px;
+  letter-spacing: 2em;
+  white-space: nowrap;
+  padding: 0;
+  text-align: center;
+  border: none;
+  background: none;
+  overflow: hidden;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.browse-popup-close-icon::-moz-focus-inner
+{
+  padding: 0;
+}
+.browse-popup-close-icon:before {
+  content: "\e60b";
+  padding-right: 0.3em;
+  font-family: 'freshdirect_icons';
+  speak: none;
+  line-height: 1;
+  vertical-align: top;
+  color: #888;
+}
+
+.browse-popup-footer {
+  border-top: 1px solid #ccc;
+  margin-top: 4px;
+  padding-top: 4px;
+}
+
+.browse-popup-footer button.cancel {
+  display: block;
+  float: right;
+  height: 27px;
+  line-height: 27px;
+  padding: 0 10px;
+  margin: 5px 0 0 5px;
+  width: auto;
+  text-align: left;
+  font-size: 11px;
+  font-weight: bold;
+  color: #fff;
+  background: #996;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 1px 1px #fff;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, .8);
+}
+section.main .leftnav .menuBox input[type="checkbox"],
+section.main .leftnav .menuBox input[type="radio"] {
+  margin: auto 0;
+  position: absolute;
+  top: 5px;
+  left: 3px;
+}
+
+section.main .leftnav .menuBox label:hover {
+  text-decoration: underline;
+}
+
+section.main .leftnav .menuBox .disabled label:hover,
+section.main .leftnav .menuBox label.disabled:hover {
+  text-decoration: none;
+}
+
+section.main .leftnav .backbutton {
+  margin-top: 40px;
+  text-align: center;
+}
+
+section.main .leftnav button.back {
+  color: #693;
+  background: #fff;
+  border: 1px solid #693;
+}
+
+section.main .leftnav button.back:hover {
+  background: #eee;
+}
+
+section.main .leftnav button.back:before {
+  font-size: 15px;
+}
+
+.leftnav-category-popup-button.cssbutton,
+section.main .leftnav .menuBox button.category {
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
+.leftnav-category-popup-button.cssbutton > span,
+section.main .leftnav .menuBox button.category > span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.leftnav-category-popup-button.cssbutton > span:before,
+section.main .leftnav .menuBox button.category > span:before {
+  font-size: 15px;
+  line-height: 13px;
+}
+
+.leftnav-category-popup-button.cssbutton.hover > span:before,
+section.main .leftnav .menuBox button.category.hover > span:before {
+	content: "\e617";
+}
+
+section.main .leftnav .menuBox button.category.emptypopup {
+  background: #999;
+  cursor: default;
 }
 
 /* }}} */

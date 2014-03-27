@@ -1,7 +1,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%{String uri = request.getRequestURI().toLowerCase();
  
-if (!uri.contains("/quickbuy/product.jsp")) {%>
+if (!uri.contains("/quickbuy/product.jsp") && !uri.contains("/pdp.jsp")) {%>
 <fd:CmPageView wrapIntoScriptTag="true"/>
 <%}
 

@@ -178,6 +178,15 @@
 		<servlet-name>QuickShopTabMetaServlet</servlet-name>
 		<url-pattern>/api/qs/tabMeta</url-pattern>
 	</servlet-mapping>
+
+  	<servlet>
+		<servlet-name>CmsFilteringServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.filtering.CmsFilteringServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CmsFilteringServlet</servlet-name>
+		<url-pattern>/api/filter</url-pattern>
+	</servlet-mapping>
 	
 	<servlet>
 		<servlet-name>LoginServlet</servlet-name>

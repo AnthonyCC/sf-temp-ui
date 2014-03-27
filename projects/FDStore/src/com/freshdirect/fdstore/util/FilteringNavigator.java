@@ -61,6 +61,9 @@ public class FilteringNavigator {
 	private boolean isSortByDefault;
 	boolean isOrderAscending;
 
+	private boolean isFilteringSupportedForUser = false;
+
+
 	private Set<FilteringValue> filters;
 	
 	{
@@ -1203,5 +1206,13 @@ public class FilteringNavigator {
 			return recipes;
 		}
 		
+	}
+
+	public boolean isFilteringSupportedForUser() {
+		return isFilteringSupportedForUser;
+	}
+
+	public void setFilteringSupportedForUser(boolean isFilteringSupportedForUser) {
+		this.isFilteringSupportedForUser = isFilteringSupportedForUser;
 	}
 }

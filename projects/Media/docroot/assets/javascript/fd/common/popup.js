@@ -62,6 +62,23 @@ var FreshDirect = FreshDirect || {};
               this.popup.hide();
             }
         },
+        noscroll: {
+          value: function () {
+            var contentBox = this.popup.$el.find(this.scrollCheck || this.bodySelector).first()[0];
+
+            // check popup size
+            this.popup.$el.removeClass('noscroll').css({
+              top: 0
+            });
+            
+            if (contentBox && (contentBox.clientHeight < contentBox.scrollHeight || 
+                navigator.userAgent.toLowerCase().indexOf("ipad") > -1)) {
+              this.popup.$el.addClass('noscroll').css({
+                top: document.body.scrollTop + 20
+              });
+            }
+          }
+        },
         initTrigger:{
             value:function(){
                 var cnt = $('#' + this.popupId);

@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDProductInfo;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
@@ -50,13 +51,13 @@ public class SaleComparator implements Comparator<ContentNodeModel> {
     	
     	try {            
             FDProductInfo i1 = prod1.getDefaultSku().getProductInfo();
-            String zoneId1 = prod1.getPricingContext().getZoneId();            
+            String zoneId1 = ContentFactory.getInstance().getCurrentPricingContext()!=null ? ContentFactory.getInstance().getCurrentPricingContext().getZoneId() : prod1.getPricingContext().getZoneId();            
             p1 = i1.getZonePriceInfo(zoneId1).getHighestDealPercentage();
         } catch (FDException e) {}
     	
     	try {
             FDProductInfo i2 = prod2.getDefaultSku().getProductInfo();
-            String zoneId2 = prod2.getPricingContext().getZoneId();
+            String zoneId2 = ContentFactory.getInstance().getCurrentPricingContext()!=null ? ContentFactory.getInstance().getCurrentPricingContext().getZoneId() : prod2.getPricingContext().getZoneId();
             p2 = i2.getZonePriceInfo(zoneId2).getHighestDealPercentage();
         } catch (FDException e) {}
     	

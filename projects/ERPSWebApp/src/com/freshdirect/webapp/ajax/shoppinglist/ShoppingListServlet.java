@@ -20,7 +20,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.QuickShopCacheUtil;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeVariant;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -155,7 +155,7 @@ public class ShoppingListServlet extends BaseJsonServlet {
 		}
 		
 		//invalidate cache entry TODO: partial invalidation?
-		QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
+		EhCacheUtil.removeFromCache(EhCacheUtil.QS_SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
 		
 		// Save user
 		saveUser( user );
@@ -254,7 +254,7 @@ public class ShoppingListServlet extends BaseJsonServlet {
 		}			
 		
 		//invalidate cache entry TODO: partial invalidation?
-		QuickShopCacheUtil.removeFromCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
+		EhCacheUtil.removeFromCache(EhCacheUtil.QS_SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
 	
 		// Save user
 		saveUser( user );

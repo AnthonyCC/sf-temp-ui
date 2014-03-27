@@ -13,6 +13,7 @@
 %>
 <fd:CheckLoginStatus id = "user"/>
 <fd:PDPRedirector user="<%=user %>"/>
+<fd:BrowsePartialRolloutRedirector user="<%=user%>" oldToNewDirection="true" id="${param.catId}"/>
 
 <%
 

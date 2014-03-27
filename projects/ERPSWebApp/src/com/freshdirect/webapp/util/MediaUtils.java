@@ -4,26 +4,30 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.framework.content.TemplateRenderer;
 import com.freshdirect.framework.template.ITemplateRenderer;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.IncludeMediaTag;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.template.TemplateContext;
 
 public class MediaUtils {
-	private static final Logger LOGGER = LoggerFactory.getInstance(MediaUtils.class);
-	
+	private static final Logger LOGGER = LoggerFactory.getInstance(MediaUtils.class);	
+
 	public static URL resolve(String rootPath, String childPath)
 			throws IOException {
 		// remove absolute path mark
@@ -107,6 +111,41 @@ public class MediaUtils {
 		boolean errorReport = withErrorReport == null ? false : withErrorReport.booleanValue();
 
 		MediaUtils.renderMedia(url, out, context, errorReport);
+	}
+	
+	//based on IncludeMediaTag
+	public static String renderHtmlToString(Html media, FDSessionUser user){
+		String htmlString = "";
+		
+		if(media!=null) {
+			Map<String,Object> parameters = new HashMap<String, Object>();
+			/* pass user/sessionUser by default, so it doesn't need to be added every place this tag is used. */
+			parameters.put("user", user);
+			parameters.put("sessionUser", user);
+			String name = media.getPath();
+
+			if (name!=null){
+				StringWriter writer = new StringWriter();
+				PricingContext pc = user != null && user.getPricingContext() != null ? user.getPricingContext() : PricingContext.DEFAULT;
+				
+				try {
+					MediaUtils.render(name, writer, parameters, false, pc);
+					htmlString = writer.toString();
+				} catch (IOException e) {
+					LOGGER.error("IOException, returning empty string",e);
+				} catch (TemplateException e) {
+					LOGGER.error("TemplateException, returning empty string",e);
+				} finally{
+					try {
+						writer.close();
+					} catch (IOException e) {
+						LOGGER.error(e);
+					}
+				}
+			}
+		}
+	
+		return htmlString;
 	}
 
 

@@ -131,10 +131,25 @@ public class ProductData extends BasicProductData implements SkuData {
 	protected List<Variation> variations;
 	protected boolean variationDisplay;
 
-
+	protected ProductData browseRecommandation;
 
 	
+	/**
+	 * Messaging - various messages
+	 */
+	protected String msgCancellation;
+	protected String msgCutoffHeader;
+	protected String msgCutoffNotice;
+	protected String msgDayOfWeek;
+	protected String msgDayOfWeekHeader;
+	protected String msgDeliveryNote;
+	protected String msgLeadTime;
+	protected String msgLeadTimeHeader;
+	protected String msgKosherRestriction;
 	
+	// Earliest availability message (optional)
+	// it contains a date in short format Fri, 02/14
+	protected String msgEarliestAvailability;
 	
 	
 	@Override
@@ -412,6 +427,75 @@ public class ProductData extends BasicProductData implements SkuData {
 	public String getSalesUnitDescrPopup() {
 		return salesUnitDescrPopup;
 	}
+
+	public ProductData getBrowseRecommandation() {
+		return browseRecommandation;
+	}
+	public void setBrowseRecommandation(ProductData browseRecommandation) {
+		this.browseRecommandation = browseRecommandation;
+	}
+
+	public String getMsgCancellation() {
+		return msgCancellation;
+	}
+	public void setMsgCancellation(String msgCancellation) {
+		this.msgCancellation = msgCancellation;
+	}
+	public String getMsgCutoffHeader() {
+		return msgCutoffHeader;
+	}
+	public void setMsgCutoffHeader(String msgCutoffHeader) {
+		this.msgCutoffHeader = msgCutoffHeader;
+	}
+	public String getMsgCutoffNotice() {
+		return msgCutoffNotice;
+	}
+	public void setMsgCutoffNotice(String msgCutoffNotice) {
+		this.msgCutoffNotice = msgCutoffNotice;
+	}
+	public String getMsgDayOfWeek() {
+		return msgDayOfWeek;
+	}
+	public void setMsgDayOfWeek(String msgDayOfWeek) {
+		this.msgDayOfWeek = msgDayOfWeek;
+	}
+	public String getMsgDayOfWeekHeader() {
+		return msgDayOfWeekHeader;
+	}
+	public void setMsgDayOfWeekHeader(String msgDayOfWeekHeader) {
+		this.msgDayOfWeekHeader = msgDayOfWeekHeader;
+	}
+	public String getMsgDeliveryNote() {
+		return msgDeliveryNote;
+	}
+	public void setMsgDeliveryNote(String msgDeliveryNote) {
+		this.msgDeliveryNote = msgDeliveryNote;
+	}
+	public String getMsgLeadTime() {
+		return msgLeadTime;
+	}
+	public void setMsgLeadTime(String msgLeadTime) {
+		this.msgLeadTime = msgLeadTime;
+	}
+	public String getMsgLeadTimeHeader() {
+		return msgLeadTimeHeader;
+	}
+	public void setMsgLeadTimeHeader(String msgLeadTimeHeader) {
+		this.msgLeadTimeHeader = msgLeadTimeHeader;
+	}
+	public String getMsgKosherRestriction() {
+		return msgKosherRestriction;
+	}
+	public void setMsgKosherRestriction(String msgKosherRestriction) {
+		this.msgKosherRestriction = msgKosherRestriction;
+	}
+	public String getMsgEarliestAvailability() {
+		return msgEarliestAvailability;
+	}
+	public void setMsgEarliestAvailability(String msgEarliestAvailability) {
+		this.msgEarliestAvailability = msgEarliestAvailability;
+	}
+
 	public String getSalesUnitDescrPDP() {
 		return salesUnitDescrPDP;
 	}

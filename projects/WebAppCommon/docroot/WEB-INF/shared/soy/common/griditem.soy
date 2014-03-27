@@ -9,37 +9,133 @@
 {isNonnull($item.atcItemId) ? $item.atcItemId : 'atc_' + ($item.productId ? $item.productId : '') + '_' + ($item.skuCode ? $item.skuCode : '') + '_' +($item.catId ? $item.catId : '' )}
 {/let}
 {call .potatoGridItem}
-	{param productId:$item.productId /}
-	{param skuCode:$item.skuCode /}
-	{param catId:$item.catId /}
-	{param available:$item.available /}
-	{param productImage:$item.productImage /}
-	{param badge:$item.badge /}
-	{param deal:$item.deal /}
-	{param customizePopup:$item.customizePopup /}
-	{param soldBySalesUnit:$item.soldBySalesUnit /}
-	{param salesUnit:$item.salesUnit /}
-	{param quantity:$item.quantity /}
-	{param availMatPrices:$item.availMatPrices /}
-	{param suRatios:$item.suRatios /}
-	{param grpPrices:$item.grpPrices /}
-	{param cvPrices:$item.cvPrices /}
-	{param configuration:$item.configuration /}
-	{param inCartAmount:$item.inCartAmount /}
-	{param customerRating:$item.customerRating /}
-	{param customerRatingReviewCount:$item.customerRatingReviewCount /}
-	{param expertRating:$item.expertRating /}
-	{param wineRating:$item.wineRating /}
-	{param productPageUrl:$item.productPageUrl /}
-	{param productName:$item.productName /}
-	{param wasPrice:$item.wasPrice /}
-	{param price:$item.price /}
-	{param scaleUnit:$item.scaleUnit /}
-	{param aboutPriceText:$item.aboutPriceText /}
-	{param dealInfo:$item.dealInfo /}
-	{param savingString:$item.savingString /}
-	{param mixNMatch:$item.mixNMatch /}
-	{param isAlcoholic:$item.isAlcoholic /}					
+  {param productId:$item.productId /}
+  {param skuCode:$item.skuCode /}
+  {param catId:$item.catId /}
+  {param available:$item.available /}
+  {param productImage:$item.productImage /}
+  {param badge:$item.badge /}
+  {param deal:$item.deal /}
+  {param customizePopup:$item.customizePopup /}
+  {param soldBySalesUnit:$item.soldBySalesUnit /}
+  {param salesUnit:$item.salesUnit /}
+  {param quantity:$item.quantity /}
+  {param availMatPrices:$item.availMatPrices /}
+  {param suRatios:$item.suRatios /}
+  {param grpPrices:$item.grpPrices /}
+  {param cvPrices:$item.cvPrices /}
+  {param configuration:$item.configuration /}
+  {param inCartAmount:$item.inCartAmount /}
+  {param customerRating:$item.customerRating /}
+  {param customerRatingReviewCount:$item.customerRatingReviewCount /}
+  {param expertRating:$item.expertRating /}
+  {param wineRating:$item.wineRating /}
+  {param productPageUrl:$item.productPageUrl /}
+  {param productName:$item.productName /}
+  {param wasPrice:$item.wasPrice /}
+  {param price:$item.price /}
+  {param scaleUnit:$item.scaleUnit /}
+  {param aboutPriceText:$item.aboutPriceText /}
+  {param dealInfo:$item.dealInfo /}
+  {param savingString:$item.savingString /}
+  {param mixNMatch:$item.mixNMatch /}
+  {param isAlcoholic:$item.isAlcoholic /}
+  {param brandName:$item.brandName /}
+  {param productNameNoBrand:$item.productNameNoBrand /}
+{/call}
+{/template}
+
+/**
+ * @param item definition of an item
+ * @param? extraClass extra css class for items
+ * @param? cmEventSource optional coremetrics event source
+ */
+{template .transactionalGridItem autoescape="false"}
+{let $atcItemId}
+{isNonnull($item.atcItemId) ? $item.atcItemId : 'atc_' + ($item.productId ? $item.productId : '') + '_' + ($item.skuCode ? $item.skuCode : '') + '_' +($item.catId ? $item.catId : '' )}
+{/let}
+{call .potatoTransactionalGridItem}
+  {param productId:$item.productId /}
+  {param skuCode:$item.skuCode /}
+  {param catId:$item.catId /}
+  {param available:$item.available /}
+  {param productImage:($item.productDetailImage ? $item.productDetailImage : $item.productImage) /}
+  {param badge:$item.badge /}
+  {param deal:$item.deal /}
+  {param customizePopup:$item.customizePopup /}
+  {param soldBySalesUnit:$item.soldBySalesUnit /}
+  {param salesUnit:$item.salesUnit /}
+  {param quantity:$item.quantity /}
+  {param availMatPrices:$item.availMatPrices /}
+  {param suRatios:$item.suRatios /}
+  {param grpPrices:$item.grpPrices /}
+  {param grpLink:$item.grpLink /}
+  {param cvPrices:$item.cvPrices /}
+  {param configuration:$item.configuration /}
+  {param inCartAmount:$item.inCartAmount /}
+  {param customerRating:$item.customerRating /}
+  {param customerRatingReviewCount:$item.customerRatingReviewCount /}
+  {param expertRating:$item.expertRating /}
+  {param wineRating:$item.wineRating /}
+  {param sustainabilityRating:$item.sustainabilityRating /}
+  {param productPageUrl:$item.productPageUrl /}
+  {param productName:$item.productName /}
+  {param wasPrice:$item.wasPrice /}
+  {param price:$item.price /}
+  {param scaleUnit:$item.scaleUnit /}
+  {param aboutPriceText:$item.aboutPriceText /}
+  {param dealInfo:$item.dealInfo /}
+  {param savingString:$item.savingString /}
+  {param mixNMatch:$item.mixNMatch /}
+  {param isAlcoholic:($item.isAlcoholic or $item.alcoholic) /}
+  {param relatedItem:$item.browseRecommandation /}
+  {param brandName:$item.brandName /}
+  {param productNameNoBrand:$item.productNameNoBrand /}
+  {param coupon:$item.coupon /}
+  {param couponDisplay:$item.couponDisplay /}
+  {param couponClipped:$item.couponClipped /}
+  {param couponStatusText:$item.couponStatusText /}
+  {param extraClass:$extraClass /}
+  {param availabilityMessage}
+    {if $item.msgCutoffHeader}
+    <div class="am-cutoffheader">
+      {$item.msgCutoffHeader}
+    </div>
+    {/if}
+    {if $item.msgCutoffNotice}
+    <div class="am-cutoffnotice">
+      {$item.msgCutoffNotice}
+    </div>
+    {/if}
+    {if $item.msgDayOfWeekHeader}
+    <div class="am-dayofweekheader">
+      {$item.msgDayOfWeekHeader}
+    </div>
+    {/if}
+    {if $item.msgDayOfWeek}
+    <div class="am-dayofweek">
+      {$item.msgDayOfWeek}
+    </div>
+    {/if}
+    /*
+    {if $item.msgDeliveryNote}
+    <div class="am-deliverynote">
+      {$item.msgDeliveryNote}
+    </div>
+    {/if}
+    */
+    {if $item.msgLeadTimeHeader}
+    <div class="am-leadtimeheader">
+      {$item.msgLeadTimeHeader}
+    </div>
+    {/if}
+    {if $item.msgLeadTime}
+    <div class="am-leadtime">
+      {$item.msgLeadTime}
+    </div>
+    {/if}
+  {/param}
+  {param cmEventSource:$cmEventSource /}
 {/call}
 {/template}
 
@@ -75,75 +171,257 @@
  * @param savingString
  * @param mixNMatch
  * @param isAlcoholic
- * @param? brandName
- * @param? productNameNoBrand
+ * @param brandName
+ * @param productNameNoBrand
  */
 {template .potatoGridItem autoescape="false"}
 {let $atcItemId: 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) /}
-<li class="portrait-item {not $available ? 'unavailable' : ''}" data-component="product">
-	<div class="portrait-item-productimage_wrapper">
-		<div class="portrait-item-burst_wrapper">
-			<img src="{$productImage}" class="portrait-item-productimage">
-			{call common.bursts}{param badge:$badge /}{param deal:$deal /}{/call}
-		</div>
-		<div class="portrait-item-controls">
-			<div class="portrait-item-controls-content">
-				{if not $customizePopup}
-					{call common.atcControls}
-						{param soldBySalesUnit:$soldBySalesUnit /}
-						{param salesUnit:$salesUnit /}
-						{param quantity:$quantity /}
-					{/call}
-				{/if}
-				<div class="portrait-item-addtocart">
-					{if $customizePopup}
-						<button class="customize" data-component="customizeButton">customize</button>
-					{else}
-						<button class="addtocart" data-component="ATCButton">add to cart</button>
-						{call common.subtotal}
-				    		{param availMatPrices:$availMatPrices /}
-				    		{param suRatios:$suRatios /}
-				        	{param grpPrices:$grpPrices /}
-				        	{param cvPrices:$cvPrices /}
-	        				{param qInc:$quantity.qInc /}
-						{/call}
-					{/if}
-				</div>
-				{call common.productData}
-					{param productId:$productId /}
-					{param catId:$catId /}
-					{param skuCode:$skuCode /}
-					{param configuration:$configuration /}
-					{param atcItemId:$atcItemId /}
-					{param isAlcoholic:$isAlcoholic /}					
-				{/call}
-			</div>
-		</div>
-	</div>
-	<div class="portrait-item-header">
-		{call common.atcInCart}
-			{param amount:$inCartAmount /}
-			{param atcItemId:$atcItemId /}
-		{/call}
-		{call common.rating.customer}{param ratingValue:$customerRating /}{param reviewCount:$customerRatingReviewCount /}{/call}
-		{call common.rating.expert}{param ratingValue:$expertRating /}{/call}
-		{call common.rating.wine}{param ratingValue:$wineRating /}{/call}
-		{if $brandName and $productNameNoBrand}
-			<a href="{$productPageUrl}" class="portrait-item-header-name"><b>{$brandName}</b> {$productNameNoBrand}</a>
-		{else}
-			<a href="{$productPageUrl}" class="portrait-item-header-name">{$productName}</a>
-		{/if}
-	</div>
-	<div class="portrait-item-price">
-	{call common.price}
-		{param wasPrice:$wasPrice /}
-		{param price:$price /}
-		{param scaleUnit:$scaleUnit /}
-		{param aboutPriceText:$aboutPriceText /}
-	{/call}
-	{if $dealInfo}<div class="portrait-item-price-deal">{$dealInfo}</div>{/if}
-	{if $savingString}<div class="portrait-item-price-deal">{$savingString}</div>{/if}
-	{if $mixNMatch}<div class="portrait-item-price-deal mixnmatch">Mix'n'Match</div>{/if}
-	</div>
+<li class="portrait-item {not $available ? 'unavailable' : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}">
+  <div class="portrait-item-productimage_wrapper">
+    <div class="portrait-item-burst_wrapper">
+      <img src="{$productImage}" class="portrait-item-productimage">
+      {call common.bursts}{param badge:$badge /}{param deal:$deal /}{/call}
+    </div>
+    {call common.potatoGridItemControls}
+      {param customizePopup:$customizePopup /}
+      {param soldBySalesUnit:$soldBySalesUnit /}
+      {param salesUnit:$salesUnit /}
+      {param quantity:$quantity /}
+      {param availMatPrices:$availMatPrices /}
+      {param suRatios:$suRatios /}
+      {param grpPrices:$grpPrices /}
+      {param cvPrices:$cvPrices /}
+      {param qInc:$quantity.qInc /}
+      {param productId:$productId /}
+      {param catId:$catId /}
+      {param productId:$productId /}
+      {param skuCode:$skuCode /}
+      {param configuration:$configuration /}
+      {param atcItemId:$atcItemId /}
+      {param isAlcoholic:$isAlcoholic /}
+      {param productPageUrl:$productPageUrl /}
+    {/call}
+  </div>
+  <div class="portrait-item-header">
+    {call common.atcInCart}
+      {param amount:$inCartAmount /}
+      {param atcItemId:$atcItemId /}
+    {/call}
+    {call common.rating.customer}{param ratingValue:$customerRating /}{param reviewCount:$customerRatingReviewCount /}{/call}
+    {call common.rating.expert}{param ratingValue:$expertRating /}{/call}
+    {call common.rating.wine}{param ratingValue:$wineRating /}{/call}
+    {if $brandName and $productNameNoBrand}
+      <a href="{$productPageUrl}" class="portrait-item-header-name"><b>{$brandName}</b> {$productNameNoBrand}</a>
+    {else}
+      <a href="{$productPageUrl}" class="portrait-item-header-name">{$productName}</a>
+    {/if}
+  </div>
+  <div class="portrait-item-price">
+  {call common.price}
+    {param wasPrice:$wasPrice /}
+    {param price:$price /}
+    {param scaleUnit:$scaleUnit /}
+    {param aboutPriceText:$aboutPriceText /}
+  {/call}
+  {if $dealInfo}<div class="portrait-item-price-deal">{$dealInfo}</div>{/if}
+  {if $savingString}<div class="portrait-item-price-deal">{$savingString}</div>{/if}
+  {if $mixNMatch}<div class="portrait-item-price-deal mixnmatch">Mix'n'Match</div>{/if}
+  </div>
 </li>
+{/template}
+
+
+/**
+ * @param productId
+ * @param skuCode
+ * @param catId
+ * @param available
+ * @param productImage
+ * @param badge
+ * @param deal
+ * @param customizePopup
+ * @param soldBySalesUnit
+ * @param salesUnit
+ * @param quantity
+ * @param availMatPrices
+ * @param suRatios
+ * @param grpPrices
+ * @param grpLink
+ * @param cvPrices
+ * @param? configuration
+ * @param inCartAmount
+ * @param customerRating
+ * @param customerRatingReviewCount
+ * @param expertRating
+ * @param wineRating
+ * @param? sustainabilityRating
+ * @param productPageUrl
+ * @param productName
+ * @param wasPrice
+ * @param price
+ * @param scaleUnit
+ * @param aboutPriceText
+ * @param dealInfo
+ * @param savingString
+ * @param mixNMatch
+ * @param isAlcoholic
+ * @param brandName
+ * @param productNameNoBrand
+ * @param? relatedItem
+ * @param? availabilityMessage
+ * @param? extraClass
+ * @param? coupon
+ * @param? couponDisplay
+ * @param? couponClipped
+ * @param? couponStatusText
+ * @param? cmEventSource optional coremetrics event source
+ */
+{template .potatoTransactionalGridItem autoescape="false"}
+{let $atcItemId: 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) /}
+<li class="portrait-item {not $available ? 'unavailable' : ''} {$extraClass ? $extraClass : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}">
+  <div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
+    <div class="portrait-item-burst_wrapper">
+      <img src="{$productImage}" class="portrait-item-productimage">
+      {call common.bursts}{param badge:$badge /}{param deal:$deal /}{/call}
+    </div>
+  </div>
+  <div class="portrait-item-header">
+    {call common.atcInCart}
+      {param amount:$inCartAmount /}
+      {param atcItemId:$atcItemId /}
+    {/call}
+    <div class="rating">
+      {call common.rating.customer}{param ratingValue:$customerRating /}{param reviewCount:$customerRatingReviewCount /}{/call}
+      {call common.rating.expert}{param ratingValue:$expertRating /}{/call}
+      {call common.rating.wine}{param ratingValue:$wineRating /}{/call}
+      {if $sustainabilityRating}
+        {call common.rating.sustainability}{param ratingValue:$sustainabilityRating /}{/call}
+      {/if}
+      {if not $customerRating and not $expertRating and not $wineRating and not $sustainabilityRating}
+        <b class="norating smallrating">Not rated</b>
+      {/if}
+    </div>
+    {if $brandName and $productNameNoBrand}
+      <a href="{$productPageUrl}" class="portrait-item-header-name"><b>{$brandName}</b> {$productNameNoBrand}</a>
+    {else}
+      <a href="{$productPageUrl}" class="portrait-item-header-name">{$productName}</a>
+    {/if}
+  </div>
+  <div class="portrait-item-price">
+  {call common.price}
+    {param wasPrice:$wasPrice /}
+    {param price:$price /}
+    {param scaleUnit:$scaleUnit /}
+    {param aboutPriceText:$aboutPriceText /}
+  {/call}
+  {if $dealInfo}
+    {if $grpLink}
+    <a href="{$grpLink}" class="portrait-item-price-deal">{$dealInfo}</a>
+    {else}
+    <div class="portrait-item-price-deal">{$dealInfo}</div>
+    {/if}
+  {/if}
+  {if $savingString}
+    {if $grpLink}
+    <a href="{$grpLink}" class="portrait-item-price-deal">{$savingString}</a>
+    {else}
+    <div class="portrait-item-price-deal">{$savingString}</div>
+    {/if}
+  {/if}
+  {if $mixNMatch}<div class="portrait-item-price-deal mixnmatch">Mix'n'Match</div>{/if}
+  {if $coupon}<div class="portrait-item-coupon">{call common.ecoupon}{param coupon:$coupon /}{param couponDisplay:$couponDisplay /}{param couponClipped:$couponClipped /}{param couponStatusText:$couponStatusText /}{/call}</div>{/if}
+  </div>
+  {call common.potatoGridItemControls}
+    {param customizePopup:$customizePopup /}
+    {param soldBySalesUnit:$soldBySalesUnit /}
+    {param salesUnit:$salesUnit /}
+    {param quantity:$quantity /}
+    {param availMatPrices:$availMatPrices /}
+    {param suRatios:$suRatios /}
+    {param grpPrices:$grpPrices /}
+    {param cvPrices:$cvPrices /}
+    {param qInc:$quantity.qInc /}
+    {param productId:$productId /}
+    {param catId:$catId /}
+    {param productId:$productId /}
+    {param skuCode:$skuCode /}
+    {param configuration:$configuration /}
+    {param atcItemId:$atcItemId /}
+    {param isAlcoholic:$isAlcoholic /}
+    {param availabilityMessage:$availabilityMessage /}
+    {param productPageUrl:$productPageUrl /}
+	{param cmEventSource:$cmEventSource /}
+  {/call}
+  {if $relatedItem}
+  <ul class="relatedItem" data-component="relateditem">
+    {call common.transactionalGridItem}
+      {param item:$relatedItem /}
+      {param extraClass:$extraClass /}
+    {/call}
+  </ul>
+  {/if}
+</li>
+{/template}
+
+
+/**
+ * @param productId
+ * @param skuCode
+ * @param catId
+ * @param customizePopup
+ * @param soldBySalesUnit
+ * @param salesUnit
+ * @param quantity
+ * @param availMatPrices
+ * @param suRatios
+ * @param grpPrices
+ * @param cvPrices
+ * @param atcItemId
+ * @param? configuration
+ * @param isAlcoholic
+ * @param? availabilityMessage
+ * @param? productPageUrl
+ * @param? cmEventSource optional coremetrics event source
+ */
+{template .potatoGridItemControls autoescape="false"}
+  <div class="portrait-item-controls">
+    <div class="portrait-item-controls-content">
+      {if $availabilityMessage}
+      <div class="portrait-item-availability-message">
+        {$availabilityMessage}
+      </div>
+      {/if}
+      {if not $customizePopup}
+        {call common.atcControls}
+          {param soldBySalesUnit:$soldBySalesUnit /}
+          {param salesUnit:$salesUnit /}
+          {param quantity:$quantity /}
+        {/call}
+      {/if}
+      <div class="portrait-item-addtocart" {if $cmEventSource}data-cmeventsource="{$cmEventSource}"{/if}>
+        {if $customizePopup}
+          <span class="customize cssbutton blue small" data-component="customizeButton">customize</span>
+        {else}
+          {call common.subtotal}
+              {param availMatPrices:$availMatPrices /}
+              {param suRatios:$suRatios /}
+                {param grpPrices:$grpPrices /}
+                {param cvPrices:$cvPrices /}
+                {param qInc:$quantity.qInc /}
+          {/call}
+          <span class="addtocart cssbutton orange small" data-component="ATCButton">add to cart</span>
+          <span class="addtolist cssbutton purple notext icon-file2-before" data-component="addToListButton">add to list</span>
+        {/if}
+      </div>
+      {call common.productData}
+        {param productId:$productId /}
+        {param catId:$catId /}
+        {param skuCode:$skuCode /}
+        {param configuration:$configuration /}
+        {param atcItemId:$atcItemId /}
+        {param isAlcoholic:$isAlcoholic /}
+        {param productPageUrl:$productPageUrl /}
+      {/call}
+    </div>
+  </div>
 {/template}

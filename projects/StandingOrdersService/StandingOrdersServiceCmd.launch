@@ -7,10 +7,6 @@
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
 </listAttribute>
-<listAttribute key="org.eclipse.debug.ui.favoriteGroups">
-<listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
-<listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
-</listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceCmd"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="orders=7736579744 createIfSoiExistsForWeek=true"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="StandingOrdersService"/>

@@ -27,9 +27,8 @@
 
 
 <% //expanded page dimensions
-final int W_WINE_CAT_DETAILS_TOTAL = 601;
+final String W_WINE_CAT_DETAILS_TOTAL = "100%";
 %>
-
 
 <%
 String trk = "cpage";
@@ -49,7 +48,7 @@ if (isFilter) {
 <jsp:include page="wine_filter.jsp"/><%
 } else {
 	%>
-	<div style="width: <%=W_WINE_CAT_DETAILS_TOTAL%>px; text-align: center; margin: 0px auto;">
+	<div style="width: <%=W_WINE_CAT_DETAILS_TOTAL%>; text-align: center; margin: 0px auto;">
 	<!-- header -->
 	<table width="<%=W_WINE_CAT_DETAILS_TOTAL%>" cellpadding="0" cellspacing="0" border="0">
 		<tr>

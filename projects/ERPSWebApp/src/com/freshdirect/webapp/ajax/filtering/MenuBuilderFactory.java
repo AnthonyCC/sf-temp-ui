@@ -1,0 +1,671 @@
+package com.freshdirect.webapp.ajax.filtering;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.FilteringProductItem;
+import com.freshdirect.fdstore.content.PopulatorUtil;
+import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.ProductFilterGroupI;
+import com.freshdirect.fdstore.content.ProductFilterGroupType;
+import com.freshdirect.fdstore.content.ProductItemFilterI;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.webapp.ajax.browse.data.BrowseDataContext;
+import com.freshdirect.webapp.ajax.browse.data.CategoryData;
+import com.freshdirect.webapp.ajax.browse.data.DataUtil;
+import com.freshdirect.webapp.ajax.browse.data.MenuBoxData;
+import com.freshdirect.webapp.ajax.browse.data.MenuBoxData.MenuBoxDisplayType;
+import com.freshdirect.webapp.ajax.browse.data.MenuBoxData.MenuBoxSelectionType;
+import com.freshdirect.webapp.ajax.browse.data.MenuBoxData.MenuBoxType;
+import com.freshdirect.webapp.ajax.browse.data.MenuItemData;
+import com.freshdirect.webapp.ajax.browse.data.NavDepth;
+import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
+import com.freshdirect.webapp.ajax.browse.data.SectionContext;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+
+public class MenuBuilderFactory {
+	
+	public static final MenuItemData SHOP_BY_TYPE_HEADER;
+	public static final MenuItemData SHOP_BY_PREFERENCE_HEADER;
+	public static final MenuItemData MARKER;
+	public static final MenuItemData ALL_PRODUCTS_ITEM;
+	static{
+		
+		SHOP_BY_TYPE_HEADER = new MenuItemData();
+		SHOP_BY_TYPE_HEADER.setName("Shop By Type");
+		
+		SHOP_BY_PREFERENCE_HEADER = new MenuItemData();
+		SHOP_BY_PREFERENCE_HEADER.setName("Shop By Preference");
+		
+		MARKER = new MenuItemData();
+		MARKER.setName("marker");
+		
+		ALL_PRODUCTS_ITEM = new MenuItemData();
+		ALL_PRODUCTS_ITEM.setActive(true);
+		ALL_PRODUCTS_ITEM.setName("ALL PRODUCTS");
+		ALL_PRODUCTS_ITEM.setSelected(false);
+		ALL_PRODUCTS_ITEM.setUrlParameter("all");
+	}
+	
+	private static MenuBuilderFactory factory;
+	
+	public static MenuBuilderFactory getInstance(){
+		if(factory == null){
+			factory = new MenuBuilderFactory();
+		}
+		return factory;
+	}
+	
+	public static MenuBuilderI createBuilderByPageType(NavDepth depth){
+		
+		switch (depth) {
+		
+		case DEPARTMENT:{
+			return getInstance().new DeptPageMenuBuilder();
+		}
+		
+		case CATEGORY:{
+			return getInstance().new CatPageMenuBuilder();
+		}
+		
+		case SUB_CATEGORY:{
+			return getInstance().new CatPageMenuBuilder();
+		}
+		
+		case SUB_SUB_CATEGORY:{
+			return getInstance().new CatPageMenuBuilder();
+		}
+
+		default:{
+			return null;			
+		}
+		}
+	}
+	
+	public class DeptPageMenuBuilder implements MenuBuilderI{
+		
+		public List<MenuBoxData> buildMenu(List<ProductFilterGroupI> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav){
+			
+			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
+			
+			String deptId = navModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT).getContentName();
+			
+				
+			// create categories and preference categories box
+			if (!navModel.getRegularCategories().isEmpty()) {
+
+				// regular categories
+
+				MenuBoxData domain = new MenuBoxData();
+				domain.setName("SHOP FOR...");
+				domain.setId(deptId + "_regular");
+				domain.setBoxType(MenuBoxType.CATEGORY);
+				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+				
+				List<MenuItemData> items = new ArrayList<MenuItemData>();
+				items.add(new MenuItemData("Shop by Type of " + navModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT).getFullName()));
+				
+				domain.setItems(createCatMenuItems(navModel.getRegularCategories(), items, navModel.getUser()));
+
+				menu.add(domain);
+			}
+
+			if (!navModel.getPreferenceCategories().isEmpty()) {
+
+				// preference categories
+
+				MenuBoxData domain = new MenuBoxData();
+				domain.setName("OR...");
+				domain.setId(deptId + "_preference");
+				domain.setBoxType(MenuBoxType.CATEGORY);
+				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+				
+				List<MenuItemData> items = new ArrayList<MenuItemData>();
+				items.add(new MenuItemData("Shop by Preference"));
+				
+				domain.setItems(createCatMenuItems(navModel.getPreferenceCategories(), items, navModel.getUser()));
+				
+				menu.add(domain);
+			}
+			
+			return menu;
+		}
+		
+	}
+	
+	public class CatPageMenuBuilder implements MenuBuilderI{
+		
+		public List<MenuBoxData> buildMenu(List<ProductFilterGroupI> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav){
+			
+			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
+			
+			String deptId = navModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT).getContentName();
+			
+			// top popup navigation box
+			if(!navModel.getRegularCategories().isEmpty() || !navModel.getPreferenceCategories().isEmpty()){
+				
+				MenuBoxData domain = new MenuBoxData();
+				domain.setName("SHOP FOR...");
+				domain.setId(deptId);
+				domain.setBoxType(MenuBoxType.CATEGORY);
+				domain.setDisplayType(MenuBoxDisplayType.POPUP);
+				domain.setSelectionType(MenuBoxSelectionType.LINK);
+				
+				List<MenuItemData> menuItems = new ArrayList<MenuItemData>();				
+				
+				//create categories and preference categories box
+				if(!navModel.getRegularCategories().isEmpty()){
+					
+					//Shop By Type header
+					menuItems.add(SHOP_BY_TYPE_HEADER);
+					
+					//regular categories
+					createCatMenuItems(navModel.getRegularCategories(), menuItems, navModel.getUser());
+				}
+				
+				if(!navModel.getPreferenceCategories().isEmpty()){
+					
+					//Shop By Preference header
+					menuItems.add(SHOP_BY_PREFERENCE_HEADER);
+					
+					//preference categories				
+					createCatMenuItems(navModel.getPreferenceCategories(), menuItems, navModel.getUser());
+				}
+				
+				domain.setItems(menuItems);
+				insertMarkersForSpecialBox(domain);
+				checkSelected(domain, navModel.getNavigationHierarchy().get(NavDepth.CATEGORY).getContentName());
+				
+				menu.add(domain);
+			}
+			
+			// sub categories box on category and sub category page
+			if(navModel.getNavigationHierarchy().get(NavDepth.CATEGORY).getSubcategories()!=null && 
+			   navModel.getNavigationHierarchy().get(NavDepth.CATEGORY).getSubcategories().size()>0){
+				
+				ProductContainer cat = navModel.getNavigationHierarchy().get(NavDepth.CATEGORY);
+				
+				if (!NavigationUtil.isCategoryHiddenInContext(navModel.getUser(), (CategoryModel)cat)) {
+					MenuBoxData domain = new MenuBoxData();
+					domain.setName(cat.getFullName());
+					domain.setId(cat.getContentName());
+					domain.setBoxType(MenuBoxType.SUB_CATEGORY);
+					if(nav.isPdp()){
+						domain.setDisplayType(MenuBoxDisplayType.POPUP);
+						domain.setSelectionType(MenuBoxSelectionType.LINK);
+					}else{
+						domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+						domain.setSelectionType(MenuBoxSelectionType.SINGLE);					
+					}
+					
+					List<MenuItemData> items = new ArrayList<MenuItemData>();
+					
+					if(!checkSpecial(cat)){
+						// add ALL PRODUCTS item in case of no special subcategory
+						MenuItemData allProductsItem = ALL_PRODUCTS_ITEM.copy();
+						if(nav.isAll()){
+							allProductsItem.setSelected(true);
+						}
+						items.add(allProductsItem);					
+					}
+					
+					domain.setItems(createCatMenuItems(cat.getSubcategories(), items, navModel.getUser()));
+					
+					if(navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY)!=null){
+						checkSelected(domain, navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY).getContentName());
+					}
+					
+					if (items.size() > 1) {
+						menu.add(domain);
+					}
+				}
+			}
+			
+			// sub sub categories box on sub and sub sub categories page (not on special layout)
+			if(navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY)!=null &&
+			   navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY).getSubcategories()!=null &&
+			   navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY).getSubcategories().size()>0 &&
+			   !nav.isSpecialPage()){
+				
+				ProductContainer subCat = navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY);
+				
+				if (!NavigationUtil.isCategoryHiddenInContext(navModel.getUser(), (CategoryModel)subCat)) {
+					MenuBoxData domain = new MenuBoxData();
+					domain.setName(subCat.getFullName());
+					domain.setId(subCat.getContentName());
+					domain.setBoxType(MenuBoxType.SUB_SUB_CATEGORY);
+					if(nav.isPdp()){
+						domain.setDisplayType(MenuBoxDisplayType.POPUP);
+						domain.setSelectionType(MenuBoxSelectionType.LINK);
+					}else{
+						domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+						domain.setSelectionType(MenuBoxSelectionType.SINGLE);					
+					}
+					
+					List<MenuItemData> items = new ArrayList<MenuItemData>();
+					// handle ALL PRODUCTS item
+					MenuItemData allProductsItem = ALL_PRODUCTS_ITEM.copy();
+					allProductsItem.setUrlParameter(subCat.getContentName());
+					items.add(allProductsItem);
+					
+					domain.setItems(createCatMenuItems(subCat.getSubcategories(), items, navModel.getUser()));
+					
+					if(domain.getItems()!=null && domain.getItems().size()>0){
+						String subCatId = navModel.getNavigationHierarchy().get(NavDepth.SUB_SUB_CATEGORY) == null ? null : navModel.getNavigationHierarchy().get(NavDepth.SUB_SUB_CATEGORY).getContentName();
+						if(!checkSelected(domain, subCatId)){
+							allProductsItem.setSelected(true); // select ALL PRODUCTS option if no menu item were selected
+						}
+					}
+					
+					if (items.size() > 1) {
+						menu.add(domain);
+					}
+				}
+			}
+			
+			if(!nav.isSpecialPage()){
+				// create filter boxes
+				createFilterMenuDomains(filterGroups, navModel.getActivelFilters(), menu, navModel.isProductListing());				
+			}
+				
+			
+			return menu;
+			
+		}
+	}
+	
+	private void insertMarkersForSpecialBox(MenuBoxData box){
+		
+		List<MenuItemData> items = new ArrayList<MenuItemData>();
+		
+		int itemCounter = 0;
+		for(MenuItemData menuItem : box.getItems()){
+			
+			if(menuItem.getUrlParameter()==null){
+				itemCounter=0;
+			}else{
+				++itemCounter;
+			}
+			
+			if(itemCounter==16){
+				itemCounter=0;
+				items.add(MARKER);
+			}
+			items.add(menuItem);
+		}
+		
+		box.setItems(items);
+	}
+	
+	/**
+	 * @param box
+	 * @param catId
+	 * check which category is selected in a box. return true if something is selected.
+	 */
+	private boolean checkSelected(MenuBoxData box, String catId){
+		
+		for(MenuItemData menuItem : box.getItems()){
+			if(catId!=null && catId.equals(menuItem.getId())){
+				menuItem.setSelected(true);
+				box.setSelectedLabel(menuItem.getName());
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private boolean checkSpecial(ProductContainer cat){
+		
+		for(CategoryModel subCat: cat.getSubcategories()){
+			if(subCat.getSpecialLayout()!=null){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private void createFilterMenuDomains(List<ProductFilterGroupI> filterGroups, Set<ProductItemFilterI> activeFilters, List<MenuBoxData> menu, boolean productListingPage){
+		
+		
+		
+		if (filterGroups != null){
+			for (ProductFilterGroupI filterGroup : filterGroups){
+				
+				if(filterGroup.isDisplayOnCategoryListingPage() || productListingPage){
+				
+					MenuBoxData domain = new MenuBoxData();
+					domain.setId(filterGroup.getId());
+					domain.setName(filterGroup.getName());
+					domain.setBoxType(MenuBoxType.FILTER);
+					
+					if(!productListingPage){
+						domain.setShouldSetAll(true);
+					}
+
+					if (ProductFilterGroupType.POPUP == filterGroup.getType()) {
+
+						domain.setDisplayType(MenuBoxDisplayType.CENTER_POPUP);
+						domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+
+					} else if (ProductFilterGroupType.SINGLE == filterGroup.getType()) {
+
+						domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+						domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+
+					} else if (ProductFilterGroupType.MULTI == filterGroup.getType()) {
+
+						domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+						domain.setSelectionType(MenuBoxSelectionType.MULTI);
+					}
+
+					List<MenuItemData> items = null;
+					
+					if (filterGroup.getAllSelectedLabel() != null &&
+						!"".equals(filterGroup.getAllSelectedLabel()) && 
+						filterGroup.getProductFilters()!=null &&
+						filterGroup.getProductFilters().size()>0) {
+						
+						items = new ArrayList<MenuItemData>();
+
+						MenuItemData item = new MenuItemData();
+						item.setActive(true);
+						item.setId("all");
+						item.setName(filterGroup.getAllSelectedLabel());
+						item.setSelected(false);
+						item.setUrlParameter("clearall");
+
+						items.add(item);
+					}
+
+					domain.setItems(createFilterMenuItems(domain, filterGroup.getProductFilters(), activeFilters, items));
+
+					menu.add(domain);
+				
+				}
+			}
+		}
+	}
+	
+	private List<MenuItemData> createFilterMenuItems(MenuBoxData box, List<ProductItemFilterI> filters, Set<ProductItemFilterI> activeFilters, List<MenuItemData> menuItems){
+		
+		if(menuItems==null){
+			menuItems = new ArrayList<MenuItemData>();			
+		}
+		
+		for(ProductItemFilterI filter : filters){
+			MenuItemData menuItem = new MenuItemData();
+			menuItem.setActive(true);
+			menuItem.setId(filter.getId());
+			menuItem.setName(filter.getName());
+			
+			if(activeFilters.contains(filter)){
+				menuItem.setSelected(true);
+				if(box.getSelectionType()!=MenuBoxSelectionType.MULTI){
+					box.setSelectedLabel(filter.getName());					
+				}
+			} else {
+				menuItem.setSelected(false);				
+			}
+			
+			menuItem.setUrlParameter(filter.getId());
+			menuItems.add(menuItem);
+		}
+		
+		return menuItems;
+	}
+	
+	private List<MenuItemData> createCatMenuItems(List<CategoryModel> categories, List<MenuItemData> menuItems, FDUserI user){
+		
+		if(menuItems==null){
+			menuItems = new ArrayList<MenuItemData>();			
+		}
+		
+		
+		List<MenuItemData> newMenuItems = new ArrayList<MenuItemData>();	
+		
+		for(CategoryModel category : categories){
+			if (NavigationUtil.isCategoryHiddenInContext(user, category)) {
+				continue;
+			}
+			
+			MenuItemData menuItem = new MenuItemData();
+			menuItem.setActive(true);
+			menuItem.setId(category.getContentName());
+			menuItem.setName(category.getFullName());
+			menuItem.setSelected(false);
+			
+			//TODO alias check
+			menuItem.setUrlParameter(category.getContentName());				
+			
+			newMenuItems.add(menuItem);
+		}
+		
+		Collections.sort(newMenuItems, DataUtil.NAME_COMPARATOR);
+		menuItems.addAll(newMenuItems);
+		
+		return menuItems;
+	}
+	
+	/**
+	 * @param filters
+	 * @param menu
+	 * @param browseData
+	 * walk through on menu items and check which one is available
+	 */
+	public void checkMenuStatus(BrowseDataContext browseData, NavigationModel navModel, FDSessionUser user){
+
+		List<MenuBoxData> menu = navModel.getLeftNav();
+		
+		Map<String, ProductItemFilterI> allFilters = ProductItemFilterUtil.prepareFilters(navModel.getAllFilters());
+		Map<String, ProductItemFilterI> activeFilters = ProductItemFilterUtil.prepareFilters(navModel.getActivelFilters());
+		List<FilteringProductItem> items = new ArrayList<FilteringProductItem>();
+		ProductItemFilterUtil.collectAllItems(browseData.getSectionContexts(), items);
+		
+		boolean clp = false;
+		if(isFilterPresentOnPage(menu) && navModel.getNavDepth()==NavDepth.CATEGORY && items.size()==0){
+			// if we are on a category page and there are no product items then it should be a CLP. Collect all items from all categories
+			
+			CategoryModel cat = (CategoryModel) navModel.getNavigationHierarchy().get(NavDepth.CATEGORY);
+			
+			if(cat!=null){
+				
+				clp=true;
+				
+				List<SectionContext> sections = new ArrayList<SectionContext>();
+				sections.add(BrowseDataBuilderFactory.getInstance().createProductSection(cat, user, navModel));
+				ProductItemFilterUtil.collectAllItems(sections, items);							
+			}
+		}
+		
+		int itemCount = 0;
+		
+		for(MenuBoxData box : menu){
+			// check if filtering has effect on this box
+			if(box.getBoxType().isHasFilterEffect()){
+
+				if (box.getBoxType() == MenuBoxType.FILTER && box.getSelectionType() == MenuBoxSelectionType.MULTI) { // MULTI SELECT FILTER GROUP
+					
+					// walk through on menu items in the box
+					for (MenuItemData item : box.getItems()) {
+						
+						if(item.getId()==null || "all".equals(item.getId())){ // marker items
+							continue;
+						}
+
+						itemCount = 0;
+
+						// apply filter if menu item is a filter and the box type is multi select
+						itemCount = ProductItemFilterUtil.countItemsForFilter(items, allFilters.get(ProductItemFilterUtil.createCompositeId(box.getId(), item.getId())));
+
+						if (itemCount == 0 && !item.isSelected()) {
+							item.setActive(false);
+						}
+					}
+
+				} else if (box.getBoxType() == MenuBoxType.FILTER) { // SINGLE SELECT FILTER GROUP
+
+					// extract current filter base from active filters
+					Set<ProductItemFilterI> currentFiltersBase = ProductItemFilterUtil.removeFiltersByParentId(box.getId(), activeFilters);
+
+					// create the pre filtered item list (filters belongs to this filtergroup will be removed)
+					List<FilteringProductItem> preFilteredItems = ProductItemFilterUtil.getFilteredProducts(!clp ? browseData.getUnfilteredItems() : items, currentFiltersBase);
+					
+					// walk through on menu items in the box
+					for(MenuItemData item : box.getItems()){
+						
+						if(item.getId()==null || "all".equals(item.getId())){ // marker items
+							continue;
+						}
+						
+						 itemCount = 0;
+						 Set<ProductItemFilterI> currentFilters = new HashSet<ProductItemFilterI>(currentFiltersBase);
+						 // add filters one by one ...
+						 String filterCompositeId = ProductItemFilterUtil.createCompositeId(box.getId(), item.getId());
+						 if(allFilters.get(filterCompositeId)!=null){
+							 currentFilters.add(allFilters.get(filterCompositeId));							 
+						 }
+						 // and check how many products passes the current status
+						 itemCount = ProductItemFilterUtil.getFilteredProducts(preFilteredItems, currentFilters).size();
+						 
+						 if (itemCount == 0 && !item.isSelected()) {
+								item.setActive(false);
+						}
+					}
+
+				} else { // NAVIGATION BOX (CATEGORIES)
+					
+					// walk through on menu items in the box
+					for (MenuItemData item : box.getItems()) {
+						
+						if(item.getId()==null || "all".equals(item.getId()) || item.isSpecial()){ // marker or special items
+							continue;
+						}
+
+						itemCount = 0;
+						
+						// if the menu item is a category then check how many products we have with the selected filters
+
+						CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode(item.getId());
+						NavDepth navDepth = determineCategoryLevel(category);
+						// create a mock section contains all products we need
+						SectionContext section = BrowseDataBuilderFactory.getInstance().createSectionTree(category, navDepth.getLevel(), user);
+						
+						if(section.isSpecial()){
+							continue;
+						}
+						
+						List<FilteringProductItem> products = new ArrayList<FilteringProductItem>();
+						if(section.getSectionContexts()==null || section.getSectionContexts().size()==0){
+							// if the category doesn't have sub categories ...
+							products = ProductItemFilterUtil.createFilteringProductItems(category.getProducts());							
+						}else{
+							// collect all products from section
+							ProductItemFilterUtil.collectAllItems(section.getSectionContexts(), products);							
+						}
+
+						products = ProductItemFilterUtil.getFilteredProducts(products, navModel.getActivelFilters());
+						
+						checkDefaultSkuAvailability(products);
+						
+						itemCount = products.size();
+
+						if (itemCount == 0 && !item.isSelected()) {
+							item.setActive(false);
+							setBrowseSectionAvailability(browseData.getSectionContexts(), item.getId());
+						}
+					}
+				}				
+			}
+		}		
+	}
+	
+	private boolean isFilterPresentOnPage(List<MenuBoxData> menu){
+		
+		for(MenuBoxData box : menu){
+			
+			if (box.getBoxType() == MenuBoxType.FILTER){
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public void checkNullSelection(List<MenuBoxData> menu){
+		
+		Iterator<MenuBoxData> it = menu.iterator();
+
+		while(it.hasNext()){
+			
+			MenuBoxData box = it.next();
+			
+			if(MenuBoxDisplayType.POPUP==box.getDisplayType() && (box.getSelectedLabel()==null || "".equals(box.getSelectedLabel()))){
+				it.remove();				
+			}
+		}
+	}
+	
+	/**
+	 * @param products
+	 * TODO verify if this is needed in production
+	 */
+	private void checkDefaultSkuAvailability(List<FilteringProductItem> products){
+		
+		Iterator<FilteringProductItem> it = products.iterator();
+		
+		while(it.hasNext()){
+			FilteringProductItem item = it.next();
+			if(PopulatorUtil.getDefSku(item.getProductModel())==null){
+				it.remove();
+			}
+		}
+	}
+	
+	private void setBrowseSectionAvailability(List<SectionContext> sections, String catId){
+		
+		for(SectionContext section : sections){
+			
+			if(section.getCategories()!=null){
+				for(CategoryData category : section.getCategories()){
+					if(category.getId().equals(catId)){
+						category.setAvailable(false);
+					}
+				}				
+			}
+			
+			if(section.getSectionContexts()!=null){
+				setBrowseSectionAvailability(section.getSectionContexts(), catId);
+			}
+		}
+	}
+	
+	private NavDepth determineCategoryLevel(ProductContainer node){
+		
+		int level = 0;
+		while (true){
+			if (node instanceof DepartmentModel){
+				break;
+			}
+			node=(ProductContainer)node.getParentNode();
+			if (node==null){
+				break;
+			}
+			level++;
+		}
+		
+		return NavDepth.getNavDepthByLevel(level);
+	}
+
+}

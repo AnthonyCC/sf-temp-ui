@@ -72,7 +72,7 @@ var FreshDirect = FreshDirect || {};
         this.$el.css('z-index', this.config.zIndex+2);
       }
 
-      if (this.config.placeholder || this.config.lateplaceholder) {
+      if ((this.config.placeholder || this.config.lateplaceholder) && !this.config.stayonghostclick) {
         this.$ghost.on("click", this.hideProxy);
       }
 
@@ -185,7 +185,9 @@ var FreshDirect = FreshDirect || {};
         
         screenOffset =  $(window).height() - (boundingRect.bottom);
         if(screenOffset<0) {
-          el.smoothScroll();
+          try {
+            el.smoothScroll();
+          } catch (e) {}
         }
       },500);
       
@@ -225,6 +227,7 @@ var FreshDirect = FreshDirect || {};
         fheight = this.$alignTo.outerHeight(true),
         contentWidth = this.$el.outerWidth(),
         contentHeight = this.$el.outerHeight(),
+        left,
         screenOffset;
 
     var align = this.config.align;
@@ -247,19 +250,33 @@ var FreshDirect = FreshDirect || {};
     
     if(align) {
       var position={};
-      if(align[0]==='t') position.top = offset.top
-      else if(align[0]==='b') position.top = offset.top + height
-      else if(align[0]==='c') position.top = offset.top + height/2;
+      if(align[0]==='t') {
+        position.top = offset.top;
+      } else if(align[0]==='b') {
+        position.top = offset.top + height;
+      } else if(align[0]==='c') {
+        position.top = offset.top + height/2;
+      }
       
-      if(align[1]==='l') position.left = offset.left
-      else if(align[1]==='r') position.left = offset.left + width
-      else if(align[1]==='c') position.left = offset.left + width/2;
+      if(align[1]==='l') {
+        position.left = offset.left;
+      } else if(align[1]==='r') {
+        position.left = offset.left + width;
+      } else if(align[1]==='c') {
+        position.left = offset.left + width/2;
+      }
       
-      if(align[3]==='c') position.top = position.top - contentHeight/2
-      else if(align[3]==='b') position.top = position.top - contentHeight;
+      if(align[3]==='c') {
+        position.top = position.top - contentHeight/2;
+      } else if(align[3]==='b') {
+        position.top = position.top - contentHeight;
+      }
       
-      if(align[4]==='c') position.left = position.left - contentWidth/2
-      else if(align[4]==='r') position.left = position.left - contentWidth;
+      if(align[4]==='c') {
+        position.left = position.left - contentWidth/2;
+      } else if(align[4]==='r') {
+        position.left = position.left - contentWidth;
+      }
             
     this.$el.css({
         top:position.top+'px',
@@ -269,17 +286,23 @@ var FreshDirect = FreshDirect || {};
       });
       
     } else if(align!==false) {
-        if (this.config.valign === 'bottom') {
-            this.$el.css({top: (offset.top + height) + 'px', bottom: 'auto'});
-        } else {
-            this.$el.css({top: offset.top + 'px', bottom: 'auto'});
+      if (this.config.valign === 'bottom') {
+          this.$el.css({top: (offset.top + height) + 'px', bottom: 'auto'});
+      } else {
+          this.$el.css({top: offset.top + 'px', bottom: 'auto'});
+      }
+
+      if (this.config.halign === 'right') {
+        left = offset.left + width - contentWidth;
+
+        if (left < 0) {
+          left = 10;
         }
 
-    if (this.config.halign === 'right') {
-      this.$el.css({left: (offset.left + width - contentWidth) + 'px', right: 'auto'});
-    } else {
+        this.$el.css({left: left + 'px', right: 'auto'});
+      } else {
         this.$el.css({left: offset.left + 'px', right: 'auto'});
-    }
+      }
     }
     
 

@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.content;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,25 @@ import com.freshdirect.fdstore.attributes.FDAttributeFactory;
  */
 public abstract class ProductContainer extends ContentNodeModelImpl implements HasRedirectUrl, HasTemplateType, YmalSetSource {
 
+	public final static Comparator<ProductContainer> NAME_COMPARATOR = new Comparator<ProductContainer>() {
+		@Override
+		public int compare(ProductContainer p1, ProductContainer p2) {
+
+			String p1Name = p1.getFullName();
+			if (p1Name==null){
+				p1Name = "";
+			}
+			String p2Name = p2.getFullName();
+			if (p2Name==null){
+				p2Name = "";
+			}
+
+			return p1Name.compareTo(p2Name);
+		}
+	};
+
+	
+	
 	private List<Domain> rating = new ArrayList<Domain>();
 
 	private Map<String, List<Domain>> ratingDomains = new HashMap<String, List<Domain>>();
@@ -29,6 +49,8 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
     public abstract List<ProductModel> getFeaturedProducts();
 
 	public abstract List<CategoryModel> getSubcategories();
+
+	public abstract List<ProductModel> getStaticProducts();
 
 	public abstract Image getPhoto();
 	
@@ -110,6 +132,14 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 
 	public String getRedirectUrl() {
 		return (String) getCmsAttributeValue("REDIRECT_URL");
+	}
+
+	public String getRedirectUrlClean() {
+		String url = getRedirectUrl();
+		if ("".equals(url) || "nm".equalsIgnoreCase(url)){
+			return null;
+		}
+		return url;
 	}
 
 	public Integer getTemplateType() {
@@ -307,6 +337,10 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 		return getAttribute("noGroupingByCategory", false);
 	}
 
+	public boolean isShowAllByDefault(){
+		return getAttribute("showAllByDefault", false);
+	}
+
     public List<TagModel> getProductTags() {
         ContentNodeModelUtil.refreshModels(this, "productTags", productTags, false, true);
         return new ArrayList<TagModel>(productTags);
@@ -316,4 +350,5 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 		return FDAttributeFactory.constructHtml(this, "categoryBanner");
 	}
 
+	public abstract boolean isTopLevelCategory();
 }

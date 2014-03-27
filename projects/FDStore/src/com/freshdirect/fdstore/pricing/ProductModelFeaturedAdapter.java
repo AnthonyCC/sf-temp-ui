@@ -36,6 +36,7 @@ import com.freshdirect.fdstore.content.PrioritizedI;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.content.TagModel;
 import com.freshdirect.fdstore.content.YmalSet;
 import com.freshdirect.fdstore.content.YmalSetSource;
 import com.freshdirect.framework.util.DayOfWeekSet;
@@ -1276,6 +1277,23 @@ public class ProductModelFeaturedAdapter implements ProductModel, Serializable,
 	public Image getPackageImage() {
 		return productModel.getPackageImage();
 	}
+	
+	@Override
+	public List<TagModel> getTags() {
+		return productModel.getTags();
+	}
+
+	@Override
+	public Set<TagModel> getAllTags() {
+		return productModel.getAllTags();
+	}
+
+	
+	@Override
+	public Set<DomainValue> getAllDomainValues() {
+		return productModel.getAllDomainValues();
+	}
+
 
 
 	/**

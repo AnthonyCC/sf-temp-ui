@@ -29,4 +29,8 @@ public class ProductFilterGroupModel extends ContentNodeModelImpl {
 	public String getAllSelectedLabel() {
 		return (String) getCmsAttributeValue("allSelectedLabel");
 	}
+	
+	public boolean isDisplayOnCategoryListingPage(){
+		return getAttribute("displayOnCategoryListingPage", false);
+	}
 }

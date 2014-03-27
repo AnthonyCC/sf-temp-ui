@@ -8,42 +8,43 @@ var FreshDirect = FreshDirect || {};
   
   function _update($subtotal){
     var pricingInfo = $subtotal.attr('data-prices') || '[]',
-      salesunitInfo = $subtotal.attr('data-suratio') || '[]',
-          gpricingInfo = $subtotal.attr('data-grpprices') || '[]',
-          cvprices = $subtotal.attr('data-cvprices') || '[]',
-          qInc = parseFloat($subtotal.attr('data-qinc')) || 1,
-      price = 0,
-      itemInfo = fd.modules.common.productSerialize($subtotal).pop(),
-      salesUnit = itemInfo.salesUnit,
-      qty = parseFloat(itemInfo.quantity),
-      origqty = qty,
-      pricingUnit = "",
-      template = $subtotal.attr('data-template') || '[]';
+        salesunitInfo = $subtotal.attr('data-suratio') || '[]',
+        gpricingInfo = $subtotal.attr('data-grpprices') || '[]',
+        cvprices = $subtotal.attr('data-cvprices') || '[]',
+        qInc = parseFloat($subtotal.attr('data-qinc')) || 1,
+        price = 0,
+        itemInfo = fd.modules.common.productSerialize($subtotal).pop(),
+        salesUnit = itemInfo.salesUnit,
+        qty = parseFloat(itemInfo.quantity),
+        origqty = qty,
+        pricingUnit = "",
+        template = $subtotal.attr('data-template') || '[]';
+
       template = FreshDirect.modules.common.utils.discover(template);
     
     
     /* Convert JSON string to JSON object */
-      try { pricingInfo = JSON.parse(pricingInfo); } catch (e) {} 
-      try { salesunitInfo = JSON.parse(salesunitInfo); } catch (e) {}
-      try { gpricingInfo = JSON.parse(gpricingInfo); } catch (e) {}
-      try { cvprices = JSON.parse(cvprices); } catch (e) {}
+    try { pricingInfo = JSON.parse(pricingInfo); } catch (e) {} 
+    try { salesunitInfo = JSON.parse(salesunitInfo); } catch (e) {}
+    try { gpricingInfo = JSON.parse(gpricingInfo); } catch (e) {}
+    try { cvprices = JSON.parse(cvprices); } catch (e) {}
       
     /* grab the pricingUnit because we will need that - first one is just fine because all are the same */    
-      try { pricingUnit = pricingInfo[0].pricingUnit; } catch (e) {}
+    try { pricingUnit = pricingInfo[0].pricingUnit; } catch (e) {}
     
     /* we may need to convert if actual salesUnit and pricingUnit is not the same - in that case multiply with the appropriate ratio */   
     try {
-        if ( salesUnit !== pricingUnit ) {
+      if ( salesUnit !== pricingUnit ) {
         salesunitInfo.forEach(function (si) {
           if ( salesUnit === si.unit ) {
             qty = qty * si.ratio;
           }
-      });
+        });
       }   
     } catch (e) {
     }
 
-      try {
+    try {
       pricingInfo.forEach(function (pi) {
         if (+qty >= +pi.lowerBound && +qty < +pi.upperBound) {
           price = Math.round(100 * +qty * +pi.price) / 100;
@@ -52,31 +53,35 @@ var FreshDirect = FreshDirect || {};
     } catch (e) {
     }
 
-      try {
-          gpricingInfo.forEach(function (pi) {
-            if (+qty >= +pi.lowerBound && +qty < +pi.upperBound) {
-              price = Math.round(100 * +qty * +pi.price) / 100;
+    try {
+        gpricingInfo.forEach(function (pi) {
+          if (+qty >= +pi.lowerBound && +qty < +pi.upperBound) {
+            price = Math.round(100 * +qty * +pi.price) / 100;
+          }
+        });
+      } catch (e) {
+      }
+
+    try {
+        if('configuration' in itemInfo){
+          cvprices.forEach(function(cvp){
+            if(itemInfo.configuration[cvp.name] == cvp.value) {
+              if( cvp.applyHow === '1' ) {
+                price += origqty * cvp.price;                 
+              } else if( cvp.applyHow === '0' ) {
+                price += qty * cvp.price;
+              }
             }
           });
-        } catch (e) {
         }
+      } catch (e) {
+    }
 
-      try {
-          if('configuration' in itemInfo){
-            cvprices.forEach(function(cvp){
-              if(itemInfo.configuration[cvp.name] == cvp.value) {
-                if( cvp.applyHow === '1' ) {
-                  price += origqty * cvp.price;                 
-                } else if( cvp.applyHow === '0' ) {
-                  price += qty * cvp.price;
-                }
-              }
-            });
-          }
-        } catch (e) {
-        }
+    price = Math.round( price * 100 ) /100;
 
-        price = Math.round( price * 100 ) /100;
+    if (qty % qInc !== 0) {
+      price = 0;
+    }
 
     if (price) {
       price = price.toFixed(2);

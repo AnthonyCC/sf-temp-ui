@@ -17,8 +17,8 @@
 <%@ taglib uri='oscache' prefix='oscache' %>
 
 <% //expanded page dimensions
-final int W_TRANSAC_MULTI_PAIRED_ITEMS_CAT = 601;
-final int W_TRANSAC_MULTI_PAIRED_ITEMS_DEP = 765;
+final String W_TRANSAC_MULTI_PAIRED_ITEMS_CAT = "100%";
+final String W_TRANSAC_MULTI_PAIRED_ITEMS_DEP = "765";
 %>
 
 <%!
@@ -51,7 +51,7 @@ if(currentFolder instanceof CategoryModel)
 Collection sortedColl = null;
 Collection subCatColl = null;
 int cols = 0;
-int maxWidth;
+String maxWidth;
 int newCategoryCount = 0;
 boolean firstProduct = true;
 
@@ -77,7 +77,7 @@ if (request.getRequestURI().toLowerCase().indexOf("department.jsp")!=-1) {
 %>   
 <fd:PendingOrderChecker/>
 <fd:FDShoppingCart id='cart' action='addMultipleToCart' result='result' successPage='<%= "/wine_cart_confirm.jsp?catId="+request.getParameter("catId") %>'>    
-    <div class="left" style="padding-top:8px; padding-bottom:5px; border-bottom: solid 5px #8C1920; margin-bottom:15px; width:<%=maxWidth%>px;">
+    <div class="left" style="padding-top:8px; padding-bottom:5px; border-bottom: solid 5px #8C1920; margin-bottom:15px; width:<%=maxWidth%>;">
 		<span class="title18" style="padding-bottom:5px;"><%=perfectTitle%></span><br>
 		<fd:IncludeMedia name="<%=perfectEditPath%>" />
 	</div>
@@ -140,7 +140,7 @@ catIndex++;
 </script>
 
 <table>
-<form name="wine_perfect_form_<%=catIndex%>" id="wine_perfect_form_<%=catIndex%>" method="POST">
+<form name="wine_perfect_form_<%=catIndex%>" id="wine_perfect_form_<%=catIndex%>" method="POST" action="/includes/layouts/intermediate_atc_page.jsp?catId=<%=request.getParameter("catId")%>">
 </table>
 <% { String _form_id = "wine_perfect_form_" + catIndex; %><fd:AddToCartPending id="<%= _form_id %>"/><fd:CmFieldDecorator/><% } %>
 

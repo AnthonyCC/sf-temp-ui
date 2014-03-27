@@ -98,22 +98,22 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 				break;
 			case BY_PRICE:
 				comparator = ComparatorChain.create(FilteringSortingItem.wrap(ProductModel.GENERIC_PRICE_COMPARATOR));
-				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_POPULARITY:
 				comparator = ComparatorChain.create(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createGlobalComparator(getUserId(), getPricingContext())));
-				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_SALE:
 				SmartSearchUtils.collectSaleInfo(products, getPricingContext());
-				comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.DEAL))
-						.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
+				comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.DEAL));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			case BY_RELEVANCY:
 				// if there's only one DYM then we display products for that DYM
@@ -130,9 +130,9 @@ public class SmartSearchTag extends AbstractProductPagerTag {
 				comparator.chain(new SortValueComparator<ProductModel>(EnumSortingValue.CATEGORY_RELEVANCY));
 				comparator.chain(new SortLongValueComparator<ProductModel>(EnumSortingValue.TERM_SCORE));
 				comparator.chain(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createGlobalComparator(getUserId(), getPricingContext())));
-				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				if (!ascending)
 					comparator = ComparatorChain.reverseOrder(comparator);
+				comparator.chain(FilteringSortingItem.wrap(ProductModel.FULL_NAME_PRODUCT_COMPARATOR));
 				break;
 			default:
 				return null;

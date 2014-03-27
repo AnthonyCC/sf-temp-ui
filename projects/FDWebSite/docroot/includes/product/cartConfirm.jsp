@@ -11,23 +11,22 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
-<potato:cartConfirm name="cartConfirmPotato" cartlineId='${param.cartlineId}'/>
-<c:if test="${cartConfirmPotato == null}">
+<potato:cartConfirm name="cartConfirmPotatoes" cartlineId='${param.cartlineId}'/>
+<c:if test="${cartConfirmPotatoes == null}">
 	<jsp:forward page="/checkout/view_cart.jsp"/>
 </c:if>
 
+<c:set var="potatoes" value='${cartConfirmPotatoes["cartConfirmPotatoes"]}'/>
 <potato:recommender siteFeature="DEALS_QS" name="deals" maxItems="25"  />
-<potato:recommender siteFeature="YMAL" name="ymal" maxItems="25" currentNodeKey="${cartConfirmPotato.cartLine.cmskey}"/>
+<potato:recommender siteFeature="YMAL" name="ymal" maxItems="25" currentNodeKey="${potatoes[0].cartLine.cmskey}"/>
 <c:set target="${deals}" property="selected" value="deals" />
 <div class="pdp pdp-cc">
-	<div class="span-16">
-		<soy:render template="pdp.cartConfirm" data="${cartConfirmPotato}" />
-		<div class="span-16 first cc-ymalCarousel">
-			<soy:render template="common.ymalCarousel" data="${ymal}" />
-		</div>
-		<div class="span-16 first cc-tabbedCarousel">
-			<soy:render template="common.tabbedCarousel" data="${deals}" />
-		</div>
+  <soy:render template="pdp.cartConfirmIterator" data="${cartConfirmPotatoes}" />
+	<div class="span-16 first cc-ymalCarousel">
+		<soy:render template="common.ymalCarousel" data="${ymal}" />
+	</div>
+	<div class="span-16 first cc-tabbedCarousel">
+		<soy:render template="common.tabbedCarousel" data="${deals}" />
 	</div>
 </div>
-<script>cartConfirm=<fd:ToJSON object="${cartConfirmPotato}" noHeaders="true"/></script>
+<script>cartConfirm=<fd:ToJSON object="${cartConfirmPotatoes}" noHeaders="true"/></script>

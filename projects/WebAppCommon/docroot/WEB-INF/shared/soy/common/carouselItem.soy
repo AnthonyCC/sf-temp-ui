@@ -1,10 +1,14 @@
 {namespace common}
 /**
  * @param item some path, list of items
+ * @param? cmEventSource optional coremetrics event source
  * 
  */
 {deltemplate common.carouselItem variant="'grid'"}
-{call common.gridItem data="all" /}
+{call common.transactionalGridItem data="all"}
+	{param extraClass:'carouselTransactionalItem' /}
+	{param cmEventSource:$cmEventSource /}
+{/call}
 {/deltemplate}
 
 /**

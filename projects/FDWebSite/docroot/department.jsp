@@ -32,6 +32,9 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 %>
 
 <fd:CheckLoginStatus guestAllowed="true" />
+<%FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);%>
+<fd:BrowsePartialRolloutRedirector user="<%=user%>" oldToNewDirection="true" id="${param.deptId}"/>
+
 <fd:Department id='department' departmentId='<%= deptId %>'/>
 <%
 
@@ -39,8 +42,7 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 	if (department instanceof RecipeDepartment) { 
 		%><jsp:forward page="/recipe_dept.jsp" /><%
 	}
-
-	FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
+	
 	
 	/* APPDEV-2723 stop gap ticket. remove this once cohort feature targetting is availeble. */
 	boolean cohortMatch = false;

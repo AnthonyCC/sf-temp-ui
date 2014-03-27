@@ -69,6 +69,23 @@ public class FDURLUtil {
 	}
 
 
+	/**
+	 * [APPDEV-2910] Return product link to the redesigned product page (a.k.a. PDP)
+	 * 
+	 * @param productNode
+	 * @return
+	 */
+	public static String getNewProductURI(ProductModel productNode) {
+		StringBuilder buf = new StringBuilder(ProductDisplayUtil.NEW_PRODUCT_PAGE_BASE);
+
+		buf.append("?");
+		buf.append("productId=").append(productNode.getContentKey().getId());
+		buf.append(ProductDisplayUtil.URL_PARAM_SEP);
+		buf.append("catId=").append(productNode.getCategory().getContentKey().getId());
+
+		return buf.toString();
+	}
+	
 	public static String getProductURI(ProductModel productNode, String trackingCode) {
 		return FDURLUtil.getProductURI(productNode, trackingCode, null);
 	}

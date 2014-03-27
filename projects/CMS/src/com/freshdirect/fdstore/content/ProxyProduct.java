@@ -700,4 +700,21 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public boolean isRetainOriginalSkuOrder() {
 		return getProduct().isRetainOriginalSkuOrder();
 	}
+
+	@Override
+	public List<TagModel> getTags() {
+		return getProduct().getTags();
+	}
+
+	@Override
+	public Set<TagModel> getAllTags() {
+		return getProduct().getAllTags();
+	}
+
+	
+	@Override
+	public Set<DomainValue> getAllDomainValues() {
+		return getProduct().getAllDomainValues();
+	}
+
 }

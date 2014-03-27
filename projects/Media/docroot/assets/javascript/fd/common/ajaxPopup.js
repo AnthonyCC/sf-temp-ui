@@ -1,4 +1,4 @@
-/*global jQuery,quickshop*/
+/*global jQuery,common*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
@@ -12,7 +12,7 @@ var FreshDirect = FreshDirect || {};
       value:common.fixedPopup
     },
     bodySelector:{
-    	value:'.qs-popup-content'
+      value:'.qs-popup-content'
     },    
     bodyTemplate: {
       value: common.ajaxPopup
@@ -28,23 +28,24 @@ var FreshDirect = FreshDirect || {};
     },
     popupConfig: {
       value: {
-	    valign: 'bottom',
-	    halign: 'left',
-	    placeholder: false,
-	    stayOnClick: false,
+        valign: 'bottom',
+        halign: 'left',
+        placeholder: false,
+        stayOnClick: false,
         overlay:true
       }
     },
     open: {
       value: function (config) {
-		var target = config.element,
-			url = target.attr('href');
-		
-		$.get(url,function(data){
-    		ajaxPopup.refreshBody({body:data});
-    		ajaxPopup.popup.show($('body'),false);			
-		});
-		
+        var target = config.element,
+            url = target.attr('href');
+        
+        $.get(url,function(data){
+          ajaxPopup.refreshBody({body:data});
+          ajaxPopup.popup.show($('body'),false);      
+          ajaxPopup.noscroll();
+        });
+        
       }
     }
   });
@@ -52,10 +53,10 @@ var FreshDirect = FreshDirect || {};
   ajaxPopup.render();
   
   $(document).on('click','[data-component="ajaxpopup"]',function(event){
-	  ajaxPopup.open({
-		  element: $(event.currentTarget)
-	  });
-	  event.preventDefault();
+    ajaxPopup.open({
+      element: $(event.currentTarget)
+    });
+    event.preventDefault();
   });
   
   fd.modules.common.utils.register("components", "ajaxPopup", ajaxPopup, fd);

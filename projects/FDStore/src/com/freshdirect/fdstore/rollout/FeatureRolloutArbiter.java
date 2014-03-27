@@ -110,4 +110,8 @@ public class FeatureRolloutArbiter implements ConfigLoadedListener {
 		refresh();
 		LOGGER.warn("ROLLOUT CONFIG RELOADED");
 	}
+	
+	public static boolean isFeatureRolledOut(EnumRolloutFeature feature, FDUserI user) {
+		 return !EnumFeatureRolloutStrategy.NONE.equals(FeatureRolloutArbiter.getFeatureRolloutStrategy(feature, user));
+	}
 }

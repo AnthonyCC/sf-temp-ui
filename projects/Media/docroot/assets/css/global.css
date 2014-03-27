@@ -2850,7 +2850,6 @@ a.imgButtonWhite:hover,
 		/* margin-right: 6px; */
 		/*margin-top: -16px;
 		top: 50%;*/
-		font-family: Verdana;
 		font-weight: bold;
 		color: #9702D7;
 		font-size: 10px !important;
@@ -2865,7 +2864,13 @@ a.imgButtonWhite:hover,
 		text-decoration: none;
 		font-family: Verdana;
 	}
-	a.fdCoupon_det:hover {
+	.portrait-item.fdCoupon_detCont, .portrait-item a.fdCoupon_det, .portrait-item a.fdCoupon_det:active, .portrait-item a.fdCoupon_det:link, .portrait-item a.fdCoupon_det:visited, .portrait-item a.fdCoupon_det:hover {
+		color: #333;
+		text-decoration: none;
+		font-family: Verdana;
+	}
+	a.fdCoupon_det:hover,
+	.portrait-item a.fdCoupon_det:hover {
 	    text-decoration: underline;
 	}
 	
@@ -2876,7 +2881,7 @@ a.imgButtonWhite:hover,
 	
 	.fdCoupon_stat {
 		font-weight: bold;
-		margin-left: 6px;
+		margin-left: 3px;
 	}
 	
 	.cStat_minQty {

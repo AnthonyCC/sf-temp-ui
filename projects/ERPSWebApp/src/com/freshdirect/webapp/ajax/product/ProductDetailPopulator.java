@@ -5,7 +5,10 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -16,10 +19,16 @@ import com.freshdirect.WineUtil;
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
+import com.freshdirect.delivery.restriction.DlvRestrictionsList;
+import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
+import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
+import com.freshdirect.delivery.restriction.EnumDlvRestrictionType;
+import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -36,6 +45,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.DomainValue;
+import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
@@ -53,6 +63,9 @@ import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.util.DYFUtil;
+import com.freshdirect.framework.util.DateRange;
+import com.freshdirect.framework.util.DayOfWeekSet;
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
@@ -71,6 +84,8 @@ import com.freshdirect.webapp.taglib.fdstore.display.ProductSavingTag;
 import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.JspMethods;
 import com.freshdirect.webapp.util.MediaUtils;
+import com.freshdirect.webapp.util.ProductRecommenderUtil;
+import com.freshdirect.webapp.util.RestrictionUtil;
 
 public class ProductDetailPopulator {
 
@@ -144,7 +159,7 @@ public class ProductDetailPopulator {
 	 * @throws FDSkuNotFoundException 
 	 */
 	public static ProductData createProductData( FDUserI user, ProductModel product, SkuModel sku, FDProductSelectionI lineData ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
-		
+
 		if ( product == null ) {
 			BaseJsonServlet.returnHttpError( 500, "product not found" );
 		}
@@ -197,7 +212,7 @@ public class ProductDetailPopulator {
 		
 		// Populate sku-level data for the default sku only
 		populateSkuData( data, user, product, sku, fdProduct );
-
+		
 		// Populate transient-data
 		postProcessPopulate( user, data, sku.getSkuCode() );
 
@@ -231,12 +246,22 @@ public class ProductDetailPopulator {
 		
 		SkuModel sku = PopulatorUtil.getDefSku( product );
 		if ( sku == null ) {
-			BaseJsonServlet.returnHttpError( 500, "default sku does not exist for this product" );
+			BaseJsonServlet.returnHttpError( 500, "default sku does not exist for this product: " + product.getContentName() );
 		}
 		
 		return createProductData( user, product, sku, null );
 	}
 
+	public static ProductData populateBrowseRecommendation(FDUserI user, ProductData data, ProductModel product) throws FDResourceException, FDSkuNotFoundException, HttpErrorResponse {
+		if ( data == null ) {
+			data = new ProductData();
+		}
+		ProductModel browseRecommendation = ProductRecommenderUtil.getBrowseRecommendation(product);
+		if(browseRecommendation!=null){
+			data.setBrowseRecommandation(createProductData(user, browseRecommendation));			
+		}
+		return data;
+	}
 
 	/**
 	 * Populates product basic-level data.
@@ -279,7 +304,7 @@ public class ProductDetailPopulator {
 		data.setProductDetailImage( product.getDetailImage().getPathWithPublishId() );
 		data.setProductZoomImage( product.getZoomImage().getPathWithPublishId() );
 		
-		data.setProductPageUrl( FDURLUtil.getProductURI( product, (String)null ) );
+		data.setProductPageUrl( FDURLUtil.getNewProductURI( product ) );
 		
 		data.setQuantityText( product.getQuantityText() );
 		data.setPackageDescription( product.getPackageDescription() );
@@ -359,7 +384,138 @@ public class ProductDetailPopulator {
 		populateQuantity( item, user, productModel, fdProduct, orderLine );		
 		populateScores( item, user, productModel );
 		populateLineData( item, orderLine, fdProduct, productModel, sku);
+		populateAvailabilityMessages(item, productModel, fdProduct, sku);
+	}
+
+
+	// ==============
+	//   Messaging
+	// ==============
+	private static void populateAvailabilityMessages(ProductData item,
+			ProductModel productModel, FDProduct fdProduct, SkuModel sku) {
+		// Party platter cancellation notice
+		if ( productModel.isPlatter() ) {
+			item.setMsgCancellation( "* Orders for this item cancelled after 3PM the day before delivery (or Noon on Friday/Saturday/Sunday and major holidays) will be subject to a 50% fee." );
+		}
+
+		// Party platter cutoff notice (header+text)
+		try {
+			TimeOfDay cutoffTime = RestrictionUtil.getPlatterRestrictionStartTime();
+			if ( productModel.isPlatter() && cutoffTime != null ) {
+				String headerTime;
+				String bodyTime;
+				if (new TimeOfDay("12:00 PM").equals(cutoffTime)) {
+					headerTime = "10AM";
+					bodyTime = "10AM";
+				} else {
+					SimpleDateFormat headerTimeFormat = new SimpleDateFormat("h:mm a");
+					SimpleDateFormat bodyTimeFormat = new SimpleDateFormat("ha");
+					
+					headerTime = headerTimeFormat.format(cutoffTime.getAsDate());
+					bodyTime = bodyTimeFormat.format(cutoffTime.getAsDate());
+				}
+				
+				item.setMsgCutoffHeader( "Order by " + headerTime + " for Delivery Tomorrow" );
+				item.setMsgCutoffNotice( "Freshly made item. Please <b>complete checkout by " + bodyTime + "</b> to order for delivery tomorrow." );
+				
+			}
+		} catch (FDResourceException e) {
+		}
+
 		
+		// Limited availability messaging
+		
+		// msgDayOfWeek		- Blocked days of the week notice		
+		// msgDeliveryNote	- Another blocked days of the week notice
+		
+		DayOfWeekSet blockedDays = productModel.getBlockedDays();
+		if (!blockedDays.isEmpty()) {
+			int numOfDays=0;
+			StringBuffer daysStringBuffer = null;
+			boolean isInverted=true;
+			
+			if (blockedDays.size() > 3) {
+				numOfDays = (7-blockedDays.size() );
+			 	daysStringBuffer= new StringBuffer(blockedDays.inverted().format(true));
+			} else {
+				isInverted=false;
+			  	daysStringBuffer = new StringBuffer(blockedDays.format(true));
+				numOfDays = blockedDays.size();
+			}
+			
+			
+			if (numOfDays > 1 ) {
+				//** make sundays the last day, if more than one in the list 
+				if (daysStringBuffer.indexOf("Sundays, ")!=-1)  {
+					daysStringBuffer.delete(0,9);
+					daysStringBuffer.append(" ,Sundays");
+				}
+				
+				//replace final comma with "and" or "or"
+				int li = daysStringBuffer.lastIndexOf(",");
+				daysStringBuffer.replace(li,li+1,(isInverted ?" and ": " or ") );
+			}
+			
+			item.setMsgDayOfWeekHeader( "Limited Availability" );
+			item.setMsgDayOfWeek( "This item is <b>" + ( isInverted ? "only" : "not" ) + "</b> available for delivery on <b>" + daysStringBuffer.toString() + "</b>" );
+			
+			item.setMsgDeliveryNote( "Only available for delivery on " + blockedDays.inverted().format(true) + "." );
+		}
+		
+		
+
+		// Lead time message
+		if ( fdProduct != null ) {
+			int leadTime = fdProduct.getMaterial().getLeadTime();		
+			if( leadTime > 0 && FDStoreProperties.isLeadTimeOasAdTurnedOff() ) {
+				item.setMsgLeadTimeHeader( JspMethods.convertNumToWord(leadTime) + "-Day Lead Time" );
+				item.setMsgLeadTime( "Freshly made item. Please complete checkout at least two days in advance. (Order by Thursday for Saturday)." );
+			}
+		}
+		
+		// Kosher restrictions
+		if ( fdProduct != null && fdProduct.getKosherInfo() != null && fdProduct.getKosherInfo().isKosherProduction() ) {
+			try {
+				DlvRestrictionsList globalRestrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
+
+				StringBuilder buf = new StringBuilder( "* Not available for delivery on Friday, Saturday, or Sunday morning." );
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.DATE, 1);
+				cal.set(Calendar.HOUR_OF_DAY, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				cal.set(Calendar.MILLISECOND, 0);
+				Date startDate = cal.getTime();
+
+				cal.add(Calendar.DATE, 7);
+				Date endDate = cal.getTime();
+				
+				DateRange dateRange = new DateRange(startDate, endDate);
+
+				List<RestrictionI> kosherRestrictions = globalRestrictions.getRestrictions(
+						EnumDlvRestrictionCriterion.DELIVERY,
+						EnumDlvRestrictionReason.KOSHER,
+						EnumDlvRestrictionType.ONE_TIME_RESTRICTION,
+						dateRange);
+
+		    	if ( kosherRestrictions.size() > 0 ) {
+		    		buf.append( "<br/>Also unavailable during " );
+		    		int s = kosherRestrictions.size();
+					for ( int i = 0; i < s; i++ ) {
+						RestrictionI r = kosherRestrictions.get( i );
+						buf.append( "<b>" + r.getName() + "</b>, " + r.getDisplayDate() + ( ( i == s - 1 ) ? "." : "; " ) );
+					}
+		    	}
+				
+		    	item.setMsgKosherRestriction( buf.toString() );
+			} catch (FDResourceException e) {
+			}
+			
+			// earliest availability - product not yet available but will in the near future
+			if (sku != null) {
+				item.setMsgEarliestAvailability( sku.getEarliestAvailabilityMessage() );
+			}
+		}
 	}
 
 	/**
@@ -544,6 +700,16 @@ public class ProductDetailPopulator {
 		}
 	}
 
+	private static final float calculateSafeMaximumQuantity( FDUserI user, ProductModel product ) {
+		float min = product.getQuantityMinimum();
+		float max = user.getQuantityMaximum( product );
+		float inc = product.getQuantityIncrement();
+
+		while ( min <= max - inc )
+			min += inc;
+		return min;
+	}
+	
 	private static void populateQuantity( ProductData item, FDUserI user, ProductModel productModel, FDProduct fdProduct, FDProductSelectionI orderLine ) {
 		
 		// Sales units
@@ -571,7 +737,7 @@ public class ProductDetailPopulator {
 		// Numeric quantity
 		Quantity quantity = new Quantity();
 		quantity.setqMin( productModel.getQuantityMinimum() );
-		quantity.setqMax( PopulatorUtil.calculateSafeMaximumQuantity( user, productModel ) );
+		quantity.setqMax( calculateSafeMaximumQuantity( user, productModel ) );
 		quantity.setqInc( productModel.getQuantityIncrement() );
 		quantity.setQuantity( orderLine != null ? orderLine.getQuantity() : quantity.getqMin() );	
 		item.setQuantity( quantity );

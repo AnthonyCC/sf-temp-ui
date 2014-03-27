@@ -1,0 +1,21 @@
+{namespace browse}
+/**
+ * @param? sections sections
+ * @param? sectionMaxLevel The max depth of sections starting by 1
+ */
+{template .content autoescape="false"}
+
+<div class="browseContent">
+  {if $sections}
+    {foreach $section in $sections}
+      {call browse.section}
+        {param section:$section /}
+        {param lastLevel:$sectionMaxLevel /}
+        {param level:1 /}
+      {/call}
+    {/foreach}
+  {/if}
+  <div class="browse-loading">Loading products</div>
+</div>
+{/template}
+

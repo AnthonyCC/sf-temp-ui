@@ -25,7 +25,7 @@ public class ProductLinkTag extends BodyTagSupportEx {
 		if (appendWineParams) {
 			url = FDURLUtil.getWineProductURI(product, trackingCode, (Map<String, String[]>) request.getParameterMap());
 		} else {
-			url = FDURLUtil.getProductURI(product, trackingCode);
+			url = FDURLUtil.getNewProductURI(product);
 		}
 
 		try {

@@ -13,6 +13,7 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
@@ -20,7 +21,6 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.webapp.ajax.DataPotatoField;
-import com.freshdirect.webapp.ajax.product.PopulatorUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
 

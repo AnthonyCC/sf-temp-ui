@@ -1,0 +1,16 @@
+{namespace browse}
+/**
+ * @param? carousel1 carousel1
+ * @param? carousel2 carousel2
+ */
+{template .topCarousels autoescape="false"}
+  {if $carousel1 or $carousel2}
+  <div class="carousels top">
+    {call browse.carousels}
+      {param carousel1: $carousel1 /}
+      {param carousel2: $carousel2 /}
+    {/call}
+  </div>
+  {/if}
+{/template}
+

@@ -32,7 +32,7 @@ var FreshDirect = FreshDirect || {};
     },
     popupConfig: {
       value: {
-        zIndex: 2000,
+        zIndex: 3000,
         openonclick: true,
         halign: 'right'
       }

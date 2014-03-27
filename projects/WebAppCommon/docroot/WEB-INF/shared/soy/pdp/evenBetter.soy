@@ -50,6 +50,7 @@
  * @param configDescr
  * @param brandName
  * @param productNameNoBrand
+ * @param? alcoholic
  * @param? coupon
  * @param? couponDisplay
  * @param? couponClipped
@@ -77,6 +78,9 @@
     <div class="pdp-evenbetter-atc" data-cmeventsource="EB">
 			<input type="hidden" name="skuCode" value="{$skuCode}" data-component="productData" data-productdata-name="skuCode">
 			<input type="hidden" data-component="productData" data-productdata-name="atcItemId" name="atcItemId" value="{$atcItemId}">
+      {if $alcoholic}
+      <input type="hidden" data-component="productData" data-productdata-name="isAlcoholic" name="isAlcoholic" value="{$alcoholic}">
+      {/if}
 			{call common.skuControlSalesunit data="all" /}
 			{call pdp.skuControlVariations data="all" /}
 			<div class="pdp-evenbetter-quantity">

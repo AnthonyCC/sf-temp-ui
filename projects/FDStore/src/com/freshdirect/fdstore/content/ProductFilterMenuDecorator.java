@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.content.nutrition.EnumClaimValue;
@@ -16,7 +18,8 @@ import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 
 public class ProductFilterMenuDecorator extends GenericFilterDecorator<FilteringSortingItem<ProductModel>> {
-
+	private static final Logger LOGGER = Logger.getLogger(ProductFilterMenuDecorator.class);
+	
 	public ProductFilterMenuDecorator(Set<FilteringValue> filters) {
 		super(filters);
 	}
@@ -199,15 +202,16 @@ public class ProductFilterMenuDecorator extends GenericFilterDecorator<Filtering
 						}
 					}
 				}
+				default:
+					LOGGER.warn("Unhandled filter " + filter );
+					break;
 				}
 			}
 
 		} catch (FDResourceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Error raised during menu decoration", e);
 		} catch (FDSkuNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Error raised during menu decoration", e);
 		}
 
 	}

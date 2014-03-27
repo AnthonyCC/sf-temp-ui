@@ -1,6 +1,8 @@
 var id= "";
 var css="";
 
+var $jq = $jq || jQuery;
+
 window.originalClose = window.close;
 
 // works in IE too
@@ -23,6 +25,13 @@ window.reallyClose = function () {
 
 // works in other browsers
 window.close = window.reallyClose;
+
+// iframe resize
+$jq(document).ready(function () {
+  if (window.parent && window.parent.FreshDirect.components.ifrPopup) {
+    window.parent.FreshDirect.components.ifrPopup.reposition();
+  }
+});
 
 function soon() { alert("Coming soon"); }
 

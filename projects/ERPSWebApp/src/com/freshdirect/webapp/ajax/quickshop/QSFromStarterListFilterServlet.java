@@ -22,7 +22,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.FilteringValue;
-import com.freshdirect.fdstore.content.QuickShopCacheUtil;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.StarterList;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
@@ -66,12 +66,12 @@ public class QSFromStarterListFilterServlet extends QuickShopServlet {
 			FilteringNavigator nav = requestData.convertToFilteringNavigator();
 			FilteringFlowResult<QuickShopLineItemWrapper> result = null;
 			
-			List<QuickShopLineItemWrapper> items = QuickShopCacheUtil.getListFromCache(QuickShopCacheUtil.STARTER_LISTS_CACHE_NAME, QuickShopCacheUtil.STARTER_LISTS_CACHE_KEY);
+			List<QuickShopLineItemWrapper> items = EhCacheUtil.getListFromCache(EhCacheUtil.QS_STARTER_LISTS_CACHE_NAME, EhCacheUtil.QS_STARTER_LISTS_CACHE_KEY);
 			
 			if(items==null){
 				items = QuickShopHelper.getWrappedProductFromStarterList(user, starterLists, QuickShopHelper.getActiveReplacements( session ) );
 				if(!items.isEmpty()){
-					QuickShopCacheUtil.putListToCache(QuickShopCacheUtil.STARTER_LISTS_CACHE_NAME, QuickShopCacheUtil.STARTER_LISTS_CACHE_KEY,  new ArrayList<QuickShopLineItemWrapper>(items));					
+					EhCacheUtil.putListToCache(EhCacheUtil.QS_STARTER_LISTS_CACHE_NAME, EhCacheUtil.QS_STARTER_LISTS_CACHE_KEY,  new ArrayList<QuickShopLineItemWrapper>(items));					
 				}
 			}else{
 				items = new ArrayList<QuickShopLineItemWrapper>(items);

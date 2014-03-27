@@ -27,6 +27,7 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ConfiguredProductGroup;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -36,7 +37,6 @@ import com.freshdirect.fdstore.content.FilteringFlowResult;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.QuickShopCacheUtil;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.StarterList;
@@ -490,12 +490,12 @@ public class QuickShopHelper {
 	
 	public static int getOrderCount(FDUserI user) throws FDResourceException{
 		
-		List<QuickShopLineItemWrapper> items = QuickShopCacheUtil.getListFromCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
+		List<QuickShopLineItemWrapper> items = EhCacheUtil.getListFromCache(EhCacheUtil.QS_PAST_ORDERS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
 		
 		if(items==null){			
 			items = getWrappedOrderHistory(user, EnumQuickShopTab.PAST_ORDERS);
 			if(!items.isEmpty()){
-				QuickShopCacheUtil.putListToCache(QuickShopCacheUtil.PAST_ORDERS_CACHE_NAME, user.getIdentity().getErpCustomerPK(), new ArrayList<QuickShopLineItemWrapper>(items));					
+				EhCacheUtil.putListToCache(EhCacheUtil.QS_PAST_ORDERS_CACHE_NAME, user.getIdentity().getErpCustomerPK(), new ArrayList<QuickShopLineItemWrapper>(items));					
 			}
 		}
 				
@@ -510,12 +510,12 @@ public class QuickShopHelper {
 	
 	public static int getListCount(FDUserI user) throws FDResourceException{
 		
-		List<QuickShopLineItemWrapper> items = QuickShopCacheUtil.getListFromCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
+		List<QuickShopLineItemWrapper> items = EhCacheUtil.getListFromCache(EhCacheUtil.QS_SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
 		
 		if(items==null){			
 			items = getWrappedCustomerCreatedLists(user, EnumQuickShopTab.CUSTOMER_LISTS);
 			if(!items.isEmpty()){
-				QuickShopCacheUtil.putListToCache(QuickShopCacheUtil.SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK(), new ArrayList<QuickShopLineItemWrapper>(items));					
+				EhCacheUtil.putListToCache(EhCacheUtil.QS_SHOP_FROM_LISTS_CACHE_NAME, user.getIdentity().getErpCustomerPK(), new ArrayList<QuickShopLineItemWrapper>(items));					
 			}
 		}
 				

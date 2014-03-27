@@ -188,6 +188,18 @@ span.cssbutton.annotation:hover {
 .pdp .winerating,
 .pdp .sustrating  {
 	margin:0;
+  margin-left: 8px;
+}
+
+#evenBetterPopup .expertrating:first-child,
+#evenBetterPopup .customerrating:first-child,
+#evenBetterPopup .winerating:first-child,
+#evenBetterPopup .sustrating:first-child,
+.pdp .expertrating:first-child,
+.pdp .customerrating:first-child,
+.pdp .winerating:first-child,
+.pdp .sustrating:first-child  {
+	margin:0;
 }
 
 #evenBetterPopup .sustrating-text,
@@ -708,7 +720,6 @@ span.cssbutton.annotation:hover {
 }
 
 .pdp .pdp-likethat .portrait-item .smallrating {
-	margin:auto;
 }
 
 .pdp .pdp-likethat [data-component="carousel"] {
@@ -840,7 +851,7 @@ span.cssbutton.annotation:hover {
 }
 
 .main-image .hd{ 
-  left:382px;
+  left:362px;
   top:0px;
 
   position:absolute;
@@ -914,4 +925,50 @@ button#pdp-atc-addtolist{
 
 .pdp-ecoupon + .pdp-atc {
   margin-top: 5px;
+}
+
+/* error message */
+.errormessage{
+  position:relative;
+  padding-left:18px;
+  margin:0 auto;
+  width:450px;
+  min-height:25px; /* max icon height is 22px */
+  
+  border:1px solid #CC3300;
+  /* rounded borders */
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px; /* future proofing */
+  -khtml-border-radius: 10px; /* for old Konqueror browsers */
+}
+
+.errormessage:before{
+  content:" ";
+  display:block;
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  width:18px;
+  
+  background: #CC3300 url('/media_stat/images/template/system_msgs/exclaim_CC3300.gif') no-repeat center center;
+  
+/* rounder borders */
+-webkit-border-top-left-radius: 6px;
+-webkit-border-bottom-left-radius: 6px;
+-moz-border-radius-topleft: 6px;
+-moz-border-radius-bottomleft: 6px;
+border-top-left-radius: 6px;
+border-bottom-left-radius: 6px;
+}
+
+.errormessage .errcontent{
+  padding:7px 1px 7px 5px;
+  font-family:Verdana,Arial,sans-serif;
+  font-size:10px;
+  font-weight:bold;
+  color:#CC0000;
+  line-height:15px;
+  overflow:hidden;
 }

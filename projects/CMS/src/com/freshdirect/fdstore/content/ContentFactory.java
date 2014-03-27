@@ -12,8 +12,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.collections.set.ListOrderedSet;
@@ -31,6 +31,8 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.grabber.GrabberServiceI;
+import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.LruCache;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -1037,5 +1039,33 @@ public class ContentFactory {
 			return wineIndex.subDomains.get(domainCat.getContentKey());
 		else
 			return null;
+	}
+
+	
+	// ----- //
+
+	private GrabberServiceI grabberService;
+
+	public synchronized GrabberServiceI getProductGrabberService() {
+		if (grabberService == null) {
+			grabberService = (GrabberServiceI) FDRegistry.getInstance().getService(GrabberServiceI.class);
+			
+			if (grabberService == null) {
+				LOGGER.warn("Product Grabber service is not available yet");
+			}
+		}
+
+		return grabberService;
+	}
+
+
+	/**
+	 * DON'T USE IT!
+	 * Retained for test purposes!
+	 * 
+	 * @param svc
+	 */
+	public synchronized void setProductGrabberService(GrabberServiceI svc) {
+		this.grabberService = svc;
 	}
 }

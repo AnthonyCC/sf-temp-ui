@@ -364,6 +364,12 @@
 		<div class="pageDesc">CMS Test Data Generator</div>
 	</div>
 
+	<div class="tag CMS migration">
+		<div class="pageName"><span>Store Migration</span></div>
+		<div class="link"><a href="/test/migration/index.jsp">/test/migration/index.jsp</a></div>
+		<div class="pageDesc">Store Migration Tools and Reports</div>
+	</div>
+
 	<div class="tag session">
 		<div class="pageName"><span>Debugger</span></div>
 		<div class="link"><a href="/test/debug/debugger.jsp">/test/debug/debugger.jsp</a></div>

@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.ajax.filtering.CmsFilteringFlow"%>
 <%@ page import='com.freshdirect.fdstore.*,com.freshdirect.webapp.util.*' %>
 <%@ page import='java.io.*'%>
 <%@ page import="java.util.*"%>
@@ -14,7 +15,10 @@
 <%@ page import='com.freshdirect.content.nutrition.*'%>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 <%@ page import='java.net.URLEncoder'%>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature'%>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter'%>
 
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -23,8 +27,9 @@
 
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
+<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 
-<fd:CheckLoginStatus id="user" />
+<fd:CheckLoginStatus id="user"/>
 <fd:PDPRedirector user="<%=user %>" />
 
 <%
@@ -43,8 +48,10 @@ boolean isWine = EnumTemplateType.WINE.equals( productNode.getTemplateType() );
 request.setAttribute("sitePage", productNode.getPath());
 request.setAttribute("listPos", "SystemMessage,ProductNote");
 
+
 //REDIRECT to the redirect-url IF there is any
 String redirectURL = productNode.getRedirectUrl();
+
 ContentNodeModel parentNode =productNode.getParentNode();
 boolean isDDPP = false;
 if(null !=parentNode && parentNode instanceof CategoryModel){
@@ -68,24 +75,73 @@ if ( productNode.isHidden() ) {
    	response.sendRedirect( buf.toString() );
    	return;
 }
-
 %>
 
 <%//[redirection] Alcohol alert -> redirect health warning page %>
 <fd:IsAlcoholic noProduct="true">
-	<%
+<%
 	if( ((CategoryModel)productNode.getParentNode()).isHavingBeer() /*&& !yser.isHealthWarningAcknowledged()*/){
-	    String redirectHWURL = "/health_warning.jsp?successPage=/pdp.jsp"+URLEncoder.encode("?"+request.getQueryString());
-	    response.sendRedirect(response.encodeRedirectURL(redirectHWURL));
-	    return;
+		String redirectHWURL = "/health_warning.jsp?successPage=/pdp.jsp"+URLEncoder.encode("?"+request.getQueryString());
+		response.sendRedirect(response.encodeRedirectURL(redirectHWURL));
+		return;
 	}%>
 </fd:IsAlcoholic>
 
+<%
+EnumProductLayout prodLayout = productNode.getProductLayout();
+
+// should we show the new leftnav
+boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user);
+%>
+
 <potato:product name="productPotato" extraName="productExtraPotato" productId='${param.productId}' categoryId='${param.catId}'/>
+<potato:browse name="browsePotato" pdp="true" nodeId='${param.catId}'/>
 
 <tmpl:insert template='/common/template/pdp_template.jsp'>
 
-    <tmpl:put name='title' direct='true'>FreshDirect - <%= productNode.getFullName() %></tmpl:put>    
+  <tmpl:put name='soypackage' direct='true'>
+    <soy:import packageName="pdp" />
+    <soy:import packageName="browse" />
+  </tmpl:put>
+
+  <tmpl:put name='containerExtraClass' direct='true'>pdp</tmpl:put>
+
+  <tmpl:put name='extraCss' direct='true'>
+    <jwr:style src="/quickshop.css"/>
+    <jwr:style src="/pdp.css"/>
+  </tmpl:put>
+  
+<% if(shouldBeOnNew) {  // new leftnav, TODO: remove this after full rollout%>
+
+  <tmpl:put name='title' direct='true'>FreshDirect - <%= productNode.getFullName() %></tmpl:put>    
+    
+  <tmpl:put name='deptnav' direct='true'>
+    <div class="browse-titlebar">
+      <soy:render template="browse.titleBar" data="${browsePotato.descriptiveContent}" />
+    </div>
+  </tmpl:put>
+
+  <tmpl:put name='leftnav' direct='true'>
+    <div id="leftnav">
+      <soy:render template="browse.menu" data="${browsePotato.menuBoxes}" />
+    </div>
+    <div class="backbutton">
+      <button class="cssbutton back white icon-arrow-left2-before">Back</button>
+    </div>
+  </tmpl:put>
+
+    <tmpl:put name="extraJs">
+	<%-- Bazaarvoice --%>
+        <% 
+        if(FDStoreProperties.isBazaarvoiceEnabled()){
+          String bvapiUrl = FDStoreProperties.getBazaarvoiceBvapiUrl(); %>
+          <script type="text/javascript" src="<%= bvapiUrl %>"></script>
+        <% } %>
+    </tmpl:put>
+    
+<% } else { //old leftnav %>
+
+ <tmpl:put name='title' direct='true'>FreshDirect - <%= productNode.getFullName() %></tmpl:put>    
     
     <% if ( !isWine ) { // Wine template has no deptnav, and special leftnav, so only put these for regular layouts %>
 	    <tmpl:put name='leftnav' direct='true'>	    	
@@ -96,12 +152,6 @@ if ( productNode.isHidden() ) {
 			</td>
 	    </tmpl:put>
     	<tmpl:put name="extraJs">
-        <%-- Bazaarvoice --%>
-        <% 
-        if(FDStoreProperties.isBazaarvoiceEnabled()){
-          String bvapiUrl = FDStoreProperties.getBazaarvoiceBvapiUrl(); %>
-          <script type="text/javascript" src="<%= bvapiUrl %>"></script>
-        <% } %>
     	</tmpl:put>
 	    <tmpl:put name='deptnav' direct='true'>
 		    <% try { %><%@ include file="/common/template/includes/deptnav.jspf" %><% } catch (Exception ex) {ex.printStackTrace();} %>
@@ -109,14 +159,8 @@ if ( productNode.isHidden() ) {
 	    </tmpl:put>
     <% } else { %>
     	<tmpl:put name="extraJs">
-        <fd:javascript src="/assets/javascript/wine.js"/>
-        <fd:javascript src="/assets/javascript/wine-nav.js"/>	
-        <%-- Bazaarvoice --%>
-        <% 
-        if(FDStoreProperties.isBazaarvoiceEnabled()){
-          String bvapiUrl = FDStoreProperties.getBazaarvoiceBvapiUrl(); %>
-          <script type="text/javascript" src="<%= bvapiUrl %>"></script>
-        <% } %>
+			<fd:javascript src="/assets/javascript/wine.js"/>
+			<fd:javascript src="/assets/javascript/wine-nav.js"/>	
     	</tmpl:put>
     	<tmpl:put name="deptnav" direct="true">	
     	</tmpl:put>
@@ -126,6 +170,8 @@ if ( productNode.isHidden() ) {
 			</td>    	
 		</tmpl:put>
     <% } %>
+
+<% } %>
     
 	<tmpl:put name='facebookmeta' direct='true'>
 		<meta property="og:title" content="FreshDirect - <%= productNode.getFullName() %>"/>
@@ -145,18 +191,57 @@ if ( productNode.isHidden() ) {
 		<meta property="og:image" content="https://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
 	</tmpl:put>
 
+<% if(prodLayout != EnumProductLayout.COMPONENTGROUP_MEAL && prodLayout != EnumProductLayout.MULTI_ITEM_MEAL) { %>
 	<c:set value="${productPotato}" scope="request" var="productPotato" />
 	<c:set value="${productExtraPotato}" scope="request" var="productExtraPotato" />
 	
 	<tmpl:put name='content' direct='true'>
 		<fd:CmPageView wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
 		<fd:CmProductView quickbuy="false" wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
-		
+	
+	<% if(shouldBeOnNew) {  // TODO: remove this after full rollout%>
+    	<div class="browse-breadcrumbs">
+      	<soy:render template="browse.breadCrumb" data="${browsePotato.breadCrumbs}" />
+    	</div>
+	<% } %>
 		<jsp:include page="/includes/product/productDetail.jsp" >
 			<jsp:param name="catId" value="${ param.catId }"/>
 			<jsp:param name="productId" value="${ param.productId }"/>
 		</jsp:include>
+    <script>
+      window.FreshDirect = window.FreshDirect || {};
+      window.FreshDirect.browse = window.FreshDirect.browse || {};
+
+      window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
+    </script>
 	</tmpl:put>
+	
+<% } else { // special layout include
+	String cartMode = ( "true".equals( request.getParameter("ignoreAction") ) ) ? CartName.IGNORE_ACTION : CartName.ADD_TO_CART;
+    String tgAction = request.getParameter("action")!=null ? request.getParameter("action") : prodLayout.canAddMultipleToCart() ? "addMultipleToCart" :  "addToCart";
+	String successPage;
+	successPage = "/cart_confirm_pdp.jsp?" + request.getQueryString();
+
+%>
+	<fd:FDShoppingCart id='cart' result='result' action='<%= tgAction %>' successPage='<%= successPage %>'>
+<%
+  //hand the action results off to the dynamic include
+	request.setAttribute("actionResult", result);
+	request.setAttribute("user", user);
+	request.setAttribute("productNode", productNode);
+	request.setAttribute("cartMode",cartMode);
+	request.setAttribute("newLeftNav",true);
+	FDCustomerCoupon custCoupon = null;
+	if (productNode != null && productNode.getDefaultSku() != null && productNode.getDefaultSku().getProductInfo() != null) {
+		custCoupon = user.getCustomerCoupon(productNode.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,productNode.getParentId(),productNode.getContentName());
+	}
+	request.setAttribute("custCoupon", custCoupon); //set coupon in to request for includes/tags to use
+%>
+	<tmpl:put name='content' direct='true'>
+		<jsp:include page="<%= prodLayout.getLayoutPath() %>" flush="false"/>
+	</tmpl:put>
+	</fd:FDShoppingCart>
+<% } %>
 
 	<% if ( productExtraPotato != null ) {
 		// dynamic css generator for different kinds of nutrition panels

@@ -18,7 +18,7 @@
 <%@ taglib uri='oscache' prefix='oscache' %>
 
 <% //expanded page dimensions
-final int W_HOW_TO_COOK_IT_TOTAL = 601;
+final String W_HOW_TO_COOK_IT_TOTAL = "100%";
 final int W_HOW_TO_COOK_IT_IMG = 123;
 %>
 

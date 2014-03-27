@@ -16,7 +16,7 @@ var FreshDirect = FreshDirect || {};
 		},
 		init:{
 			value:function() {
-				errorDialogNode = $('<div data-component="errorDialog"><div data-component="errorDialog.panel"><p data-component="errorDialog.message"></p><button>Reload</button></div></div>')
+				errorDialogNode = $('<div data-component="errorDialog"><div data-component="errorDialog.panel"><p data-component="errorDialog.message"></p><button class="cssbutton orange">Refresh</button></div></div>')
 				$(document.body).append(errorDialogNode);
 			}
 		},

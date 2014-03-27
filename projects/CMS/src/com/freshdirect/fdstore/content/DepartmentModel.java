@@ -166,8 +166,8 @@ public class DepartmentModel extends ProductContainer {
 		return new ArrayList<CategoryModel>(popularCategories);
 	}
 
-	public Image getTitle() {
-        return FDAttributeFactory.constructImage(this, "title");
+	public Image getTitleBar() {
+        return FDAttributeFactory.constructImage(this, "titleBar");
 	}
 
 	public Html getDepartmentBanner() {
@@ -195,7 +195,7 @@ public class DepartmentModel extends ProductContainer {
 	}
 
 	public List<ProductModel> getMerchantRecommenderProducts() {
-		ContentNodeModelUtil.refreshModels(this, "merchantRecommenderProducts", merchantRecommenderProducts, true);
+		ContentNodeModelUtil.refreshModels(this, "merchantRecommenderProducts", merchantRecommenderProducts, false);
 		return new ArrayList<ProductModel>(merchantRecommenderProducts);
 	}
 
@@ -203,4 +203,13 @@ public class DepartmentModel extends ProductContainer {
 	    return getAttribute("merchantRecommenderRandomizeProducts", false);
 	}
 
+
+	@Override
+	public List<ProductModel> getStaticProducts() {
+		return Collections.emptyList();
+	}
+
+	public boolean isTopLevelCategory(){
+		return false;
+	}
 }

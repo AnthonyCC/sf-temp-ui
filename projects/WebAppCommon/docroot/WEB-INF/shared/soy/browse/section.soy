@@ -1,0 +1,80 @@
+{namespace browse}
+
+/**
+* @param id
+* @param image
+* @param name
+* @param? available
+*/
+{template .category}
+  <div class="category">
+  {if $available}
+    <a href="/browse.jsp?id={$id}" data-component="categorylink" data-id="{$id}">
+      {if $image}
+        <img src="{$image}">
+      {/if}
+      {if $name}
+        <div class="name">{$name}</div>
+      {/if}
+    </a>
+  {else}
+    <span class="disabled">
+      {if $image}
+        <img src="{$image}">
+      {/if}
+      {if $name}
+        <div class="name">{$name}</div>
+      {/if}
+    </span>
+  {/if}
+  </div>
+{/template}
+
+
+/**
+ * @param? section section
+ * @param level deepness level
+ * @param lastLevel max deepness
+ */
+{template .section autoescape="false"}
+{if $section} 
+  <section {if $section.sections and length($section.sections) > 0}class="hasSubSections"{/if}>
+    {if $section.headerText}
+        <h2 {if $level == $lastLevel}class="last"{/if}>{$section.headerText}</h2>
+    {/if}
+    {if $section.headerImage}<img src="{$section.headerImage}">{/if}
+    {if $section.media}<div class="media">{$section.media}</div>{/if}
+    
+    <div class="sectionContent">
+
+      {if $section.sections}
+        {foreach $subSection in $section.sections}
+          {call browse.section}
+            {param section:$subSection /}
+            {param level:($level+1) /}
+            {param lastLevel:$lastLevel /}
+          {/call}
+        {/foreach}
+      {/if}
+
+      {if $section.products}
+      <ul class="products">
+          {foreach $product in $section.products}
+            {call common.transactionalGridItem}
+              {param item:$product /}
+              {param extraClass:'browseTransactionalProduct' /}
+            {/call}
+          {/foreach}
+      </ul>
+      {/if}
+
+      {if $section.categories and length($section.categories) > 0}
+        {foreach $category in $section.categories}
+          {call .category data="$category" /}
+        {/foreach}
+      {/if}
+    </div>
+  </section>
+{/if}
+{/template}
+
