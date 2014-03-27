@@ -51,22 +51,24 @@
            * http://jira.freshdirect.com/secure/attachment/33628/Brands_modal.pdf
            */
           {let $l: length($menuBox.items) /}
-          {let $limit: 14 /}
+          {let $limit: 7 /}
           {let $n: ($l <= $limit * 3) ? $limit : ceiling($l / 3) /}
           {for $col in range(0, 3)}
-            <ul>
-            {for $i in range($col * $n, ($col + 1) * $n)}
-              {if $l > $i}
-                {let $item: $menuBox.items[$i] /}
-                {if $item.id}
-                  {call .menuItem}
-                    {param menuBox: $menuBox /}
-                    {param item: $item /}
-                  {/call}
+            {if $col * $n < $l}
+              <ul>
+              {for $i in range($col * $n, ($col + 1) * $n)}
+                {if $l > $i}
+                  {let $item: $menuBox.items[$i] /}
+                  {if $item.id}
+                    {call .menuItem}
+                      {param menuBox: $menuBox /}
+                      {param item: $item /}
+                    {/call}
+                  {/if}
                 {/if}
-              {/if}
-            {/for}
-            </ul>
+              {/for}
+              </ul>
+            {/if}
           {/for}
         </div>
       </div>

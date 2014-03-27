@@ -79,7 +79,7 @@ var FreshDirect = FreshDirect || {};
 
     price = Math.round( price * 100 ) /100;
 
-    if (qty % qInc !== 0) {
+    if (pricingUnit.toUpperCase() === "EA" && qty % qInc !== 0) {
       price = 0;
     }
 

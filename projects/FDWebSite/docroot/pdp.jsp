@@ -99,6 +99,8 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 
 <tmpl:insert template='/common/template/pdp_template.jsp'>
 
+  <tmpl:put name='cmeventsource' direct='true'>pdp_main</tmpl:put>
+
   <tmpl:put name='soypackage' direct='true'>
     <soy:import packageName="pdp" />
     <soy:import packageName="browse" />

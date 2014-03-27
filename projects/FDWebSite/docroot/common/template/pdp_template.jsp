@@ -37,9 +37,9 @@
   
 </head>
 
-<!--[if lt IE 9]><body class="ie8" data-cmeventsource="pdp_main"><![endif]-->
-<!--[if gt IE 8]><body data-cmeventsource="pdp_main"><![endif]-->
-<!--[if !IE]><!--><body data-cmeventsource="pdp_main"><!--<![endif]-->
+<!--[if lt IE 9]><body class="ie8" data-cmeventsource="<tmpl:get name='cmeventsource'/>"><![endif]-->
+<!--[if gt IE 8]><body data-cmeventsource="<tmpl:get name='cmeventsource'/>"><![endif]-->
+<!--[if !IE]><!--><body data-cmeventsource="<tmpl:get name='cmeventsource'/>"><!--<![endif]-->
   
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
     
