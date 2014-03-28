@@ -249,7 +249,7 @@ section.main:before {
   display: block;
   position: absolute;
   width: 184px; /* 186 - 2 */
-  border: 1px solid #dce6bc;
+  border: 1px solid #dce6be;
   background: #f0f5e1;
   top: 0;
   bottom: 0;
@@ -261,8 +261,8 @@ section.main .leftnav {
   position: relative;
   background: #f0f5e1;
   width: 178px; /* 186 - 2 - 6 */
-  border-left: 1px solid #dce6bc;
-  border-right: 1px solid #dce6bc;
+  border-left: 1px solid #dce6be;
+  border-right: 1px solid #dce6be;
   margin: 1px 0;
   padding: 3px;
 }
@@ -292,7 +292,7 @@ section.main .content {
 }
 
 section.main .breadcrumbs {
-  border: 1px solid #dce6bc;
+  border: 1px solid #dce6be;
   background: #f0f5e1;
   padding: 2px 10px;
   font-size: 14px;
@@ -325,7 +325,7 @@ section.main .breadcrumbs li.first:before {
 section.main .pager {
   display: block;
   overflow: hidden;
-  border: 1px solid #dce6bc;
+  border: 1px solid #dce6be;
   background: #f0f5e1;
   padding: 5px;
   margin: 5px 0 0;
