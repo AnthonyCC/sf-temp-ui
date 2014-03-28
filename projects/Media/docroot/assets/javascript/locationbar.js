@@ -97,7 +97,7 @@
 				$form = $('#messages .nodeliver-form form'),
 				pattern=/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 		
-		if(pattern.match(email)) {
+		if(email.match(pattern)) {
 			$form.attr('class','p');
 			
 			
