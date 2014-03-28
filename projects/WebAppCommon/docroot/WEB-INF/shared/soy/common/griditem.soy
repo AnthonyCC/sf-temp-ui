@@ -97,6 +97,11 @@
   {param couponStatusText:$item.couponStatusText /}
   {param extraClass:$extraClass /}
   {param availabilityMessage}
+    {if $item.msgCancellation}
+    <div class="am-cancellation">
+      {$item.msgCancellation}
+    </div>
+    {/if}
     {if $item.msgCutoffHeader}
     <div class="am-cutoffheader">
       {$item.msgCutoffHeader}

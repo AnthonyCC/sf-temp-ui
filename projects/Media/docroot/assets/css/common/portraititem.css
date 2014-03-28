@@ -105,6 +105,10 @@
   vertical-align:middle;
 }
 
+#transactionalPopup .portrait-item-controls-content {
+  display: block;
+}
+
 .portrait-item .burst {
   position:absolute;
   top:0;
