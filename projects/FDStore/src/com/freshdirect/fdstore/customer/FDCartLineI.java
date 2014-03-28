@@ -175,4 +175,6 @@ public interface FDCartLineI extends FDProductSelectionI {
 	public void setCoremetricsPageContentHierarchy(String coremetricsPageContentHierarchy);
 	public void setAddedFrom(EnumATCContext atcContext) ;
 	public EnumATCContext getAddedFrom();
+	public String getAtcItemId();
+	public void setAtcItemId(String atcItemId);
 }

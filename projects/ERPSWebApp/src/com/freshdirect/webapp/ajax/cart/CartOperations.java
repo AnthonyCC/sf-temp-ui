@@ -56,6 +56,7 @@ import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
+import com.freshdirect.webapp.ajax.cart.data.AddToCartCouponResponse;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartRequestData;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseData;
@@ -237,7 +238,7 @@ public class CartOperations {
 			
 			FDCustomerCouponUtil.evaluateCartAndCoupons( session );
 
-			Map<String, String> coupons = responseData.getCouponStatus();
+			Map<String, AddToCartCouponResponse> coupons = responseData.getCouponStatus();
 			
 			for ( FDCartLineI cartLine : cartLinesToAdd ) {
 				
@@ -250,7 +251,7 @@ public class CartOperations {
 					// DO NOT USE the coupon status in the FDCustomerCoupon object!
 					// We need a mocked version to display for add-to-cart:
 					EnumCouponStatus couponStatus = FDUserCouponUtil.getCouponStatus(coupon, cart.getRecentlyAppliedCoupons());
-					coupons.put( couponId, generateFormattedCouponMessage( coupon, couponStatus ) );
+					coupons.put( couponId, new AddToCartCouponResponse(cartLine.getAtcItemId(), generateFormattedCouponMessage( coupon, couponStatus )));
 				}
 			}
 			
@@ -755,7 +756,10 @@ public class CartOperations {
 			responseItem.setMessage("Not available (Processing error)");
 			return null;
 		}
-
+		
+		// add to cart id tracking
+		theCartLine.setAtcItemId(item.getAtcItemId());
+		
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		//									RECIPE SOURCE
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

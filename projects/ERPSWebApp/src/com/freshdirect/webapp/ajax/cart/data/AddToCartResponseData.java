@@ -13,6 +13,7 @@ import java.util.Map;
  * @author treer
  */
 public class AddToCartResponseData implements Serializable {
+
 	
 	private static final long	serialVersionUID	= 8413382103584983050L;
 
@@ -23,7 +24,7 @@ public class AddToCartResponseData implements Serializable {
 	private List<List<String>> coremetrics = new ArrayList<List<String>>();
 
 	// map: couponId -> statusMessage 
-	private Map<String,String> couponStatus = new HashMap<String, String>();
+	private Map<String,AddToCartCouponResponse> couponStatus = new HashMap<String, AddToCartCouponResponse>();
 
 	// redirect for optional cart-confirm page
 	private String redirectUrl;
@@ -56,11 +57,11 @@ public class AddToCartResponseData implements Serializable {
 		this.coremetrics.add( cm );
 	}
 	
-	public Map<String, String> getCouponStatus() {
+	public Map<String, AddToCartCouponResponse> getCouponStatus() {
 		return couponStatus;
 	}
 	
-	public void setCouponStatus( Map<String, String> couponStatus ) {
+	public void setCouponStatus( Map<String, AddToCartCouponResponse> couponStatus ) {
 		this.couponStatus = couponStatus;
 	}
 	

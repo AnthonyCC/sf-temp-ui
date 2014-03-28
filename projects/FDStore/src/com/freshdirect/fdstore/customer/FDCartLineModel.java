@@ -37,6 +37,7 @@ public class FDCartLineModel extends AbstractCartLine {
 	private final static Category LOGGER = LoggerFactory.getInstance(FDCartLineModel.class);
 	private EnumEventSource source;
 	private String cartonNumber;
+	private String atcItemId;
 	
 	public FDCartLineModel(ErpOrderLineModel orderLine) {
 		this(orderLine, null, null, null);
@@ -199,4 +200,15 @@ public class FDCartLineModel extends AbstractCartLine {
 	public EnumATCContext getAddedFrom(){
 		return orderLine.getAddedFrom();
 	}
+
+	@Override
+	public String getAtcItemId() {
+		return atcItemId;
+	}
+
+	@Override
+	public void setAtcItemId(String atcItemId) {
+		this.atcItemId = atcItemId;
+	}
+
 }

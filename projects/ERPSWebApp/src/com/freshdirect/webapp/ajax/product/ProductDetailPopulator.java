@@ -1009,7 +1009,7 @@ public class ProductDetailPopulator {
 			EnumCouponStatus status = coupon.getStatus();
 			item.setCouponDisplay( status != EnumCouponStatus.COUPON_CLIPPED_REDEEMED && status != EnumCouponStatus.COUPON_CLIPPED_EXPIRED );
 			item.setCouponClipped( status != EnumCouponStatus.COUPON_ACTIVE );
-			item.setCouponStatusText( CartOperations.generateFormattedCouponMessage( coupon, status ) );
+			//item.setCouponStatusText( CartOperations.generateFormattedCouponMessage( coupon, status ) );
 		} else {
 			item.setCouponDisplay( false );
 			item.setCouponClipped( false );

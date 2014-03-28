@@ -53,6 +53,8 @@ public class SimpleCartLine implements FDCartLineI {
 	private boolean kosher;
 
 	private double price = 10.0;
+	
+	private String atcItemId;
 
 
 	@Override
@@ -776,6 +778,16 @@ public class SimpleCartLine implements FDCartLineI {
 	public EnumATCContext getAddedFrom() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String getAtcItemId() {
+		return atcItemId;
+	}
+
+	@Override
+	public void setAtcItemId(String atcItemId) {
+		this.atcItemId = atcItemId;		
 	}
 
 }
