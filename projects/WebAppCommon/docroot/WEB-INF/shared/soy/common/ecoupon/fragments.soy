@@ -43,5 +43,7 @@
  * @param status coupon data
  */
 {template .statusTextHtml autoescape="false"}
+{if $status}
 <span class="fdCoupon_stat">{$status}</span>
+{/if}
 {/template}
