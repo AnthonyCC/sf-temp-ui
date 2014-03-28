@@ -51,7 +51,7 @@
            * http://jira.freshdirect.com/secure/attachment/33628/Brands_modal.pdf
            */
           {let $l: length($menuBox.items) /}
-          {let $limit: 7 /}
+          {let $limit: 14 /}
           {let $n: ($l <= $limit * 3) ? $limit : ceiling($l / 3) /}
           {for $col in range(0, 3)}
             {if $col * $n < $l}
