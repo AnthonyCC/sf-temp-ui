@@ -35,7 +35,7 @@ public class PriceComparator implements Comparator<FilteringProductItem>{
         	LOGGER.error(e);
         }
     	
-       	return p1 > p2 ? -1 : (p1 < p2 ? 1 : 0);
+       	return p1 > p2 ? 1 : (p1 < p2 ? -1 : 0); //default is descending
 
 	}
 
