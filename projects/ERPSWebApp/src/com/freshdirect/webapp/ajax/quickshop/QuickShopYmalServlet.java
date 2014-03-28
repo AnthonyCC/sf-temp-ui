@@ -88,7 +88,9 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 						if (product == null) {
 							continue;
 						}
-						listContent.add(product.getContentKey());
+						if (listContent.size() < ProductRecommenderUtil.MAX_LIST_CONTENT_SIZE){
+							listContent.add(product.getContentKey());
+						}
 					}
 				}
 			} catch ( FDResourceException e ) {

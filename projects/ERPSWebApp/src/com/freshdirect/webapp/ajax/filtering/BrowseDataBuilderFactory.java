@@ -604,13 +604,13 @@ public class BrowseDataBuilderFactory {
 	 */
 	public void appendCarousels(BrowseData browseData, FDSessionUser user){
 		
-		Set<ContentKey> showProductKeys = new HashSet<ContentKey>();
-		collectAllProductDataItems(browseData.getSections().getSections(), showProductKeys);
+		Set<ContentKey> shownProductKeysForRecommender = new HashSet<ContentKey>();
+		collectAllProductKeysForRecommender(browseData.getSections().getSections(), shownProductKeysForRecommender);
 		
 		//Product Listing Page Scarab
-		if (browseData.getCarousels().getCarousel3() == null && showProductKeys.size() > 0) {
+		if (browseData.getCarousels().getCarousel3() == null && shownProductKeysForRecommender.size() > 0) {
 			try {
-				Recommendations recommendations = ProductRecommenderUtil.getBrowseProductListingPageRecommendations(user, showProductKeys);
+				Recommendations recommendations = ProductRecommenderUtil.getBrowseProductListingPageRecommendations(user, shownProductKeysForRecommender);
 				List<ProductModel> products = recommendations.getAllProducts();
 				
 				if (products.size()>0){
@@ -622,16 +622,20 @@ public class BrowseDataBuilderFactory {
 		}
 	}
 	
-	public void collectAllProductDataItems(List<SectionData> sections, Set<ContentKey> showProductKeys){
+	public void collectAllProductKeysForRecommender(List<SectionData> sections, Set<ContentKey> shownProductKeysForRecommender){
 		
 		if(sections!=null){
 			for(SectionData section : sections){
 				if(section.getProducts()!=null){
 					for(ProductData data : section.getProducts()){
-						showProductKeys.add(new ContentKey(FDContentTypes.PRODUCT, data.getProductId()));
+						if (shownProductKeysForRecommender.size() < ProductRecommenderUtil.MAX_LIST_CONTENT_SIZE){
+							shownProductKeysForRecommender.add(new ContentKey(FDContentTypes.PRODUCT, data.getProductId()));
+						} else {
+							return;
+						}
 					}
 				}
-				collectAllProductDataItems(section.getSections(), showProductKeys);
+				collectAllProductKeysForRecommender(section.getSections(), shownProductKeysForRecommender);
 			}			
 		}
 	}

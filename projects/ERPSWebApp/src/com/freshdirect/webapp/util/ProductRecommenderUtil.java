@@ -15,7 +15,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -23,13 +22,6 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.external.ExternalRecommender;
-import com.freshdirect.smartstore.external.ExternalRecommenderCommunicationException;
-import com.freshdirect.smartstore.external.ExternalRecommenderRegistry;
-import com.freshdirect.smartstore.external.ExternalRecommenderRequest;
-import com.freshdirect.smartstore.external.ExternalRecommenderType;
-import com.freshdirect.smartstore.external.NoSuchExternalRecommenderException;
-import com.freshdirect.smartstore.external.RecommendationItem;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -38,6 +30,8 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 public class ProductRecommenderUtil {
 	private static Category LOGGER = LoggerFactory.getInstance(ProductRecommenderUtil.class);
 
+	public static final int MAX_LIST_CONTENT_SIZE = 20;
+	
 	public static final int MAX_DEPT_FEATURED_RECOMMENDER_COUNT = 20;
 	public static final int MAX_DEPT_MERCHANT_RECOMMENDER_COUNT = 5;
 	public static final int MAX_CAT_MERCHANT_RECOMMENDER_COUNT = 10;
@@ -46,9 +40,12 @@ public class ProductRecommenderUtil {
 	public static final int MAX_UPSELL_PRODS = 12;
 	public static final int MAX_XSELL_PRODS = 12;
 	
+
     public static Recommendations doRecommend( FDUserI user, HttpSession session, EnumSiteFeature siteFeat, int maxItems, Set<ContentKey> listContent, ContentNodeModel currentNode ) throws FDResourceException {
     	
 		FDStoreRecommender recommender = FDStoreRecommender.getInstance();	    
+
+		//listContent should not be larger than MAX_LIST_CONTENT_SIZE for scarab to work well (limit could be larger but wouldn't make more sense)
 		Recommendations results = recommender.getRecommendations(siteFeat, user, createSessionInput( session, user, maxItems, currentNode, listContent ) );
 		persistToSession(session, results);
 		return results;
