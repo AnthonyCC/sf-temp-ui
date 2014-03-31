@@ -170,7 +170,8 @@ public class CartDataServlet extends BaseJsonServlet {
 	            }            
 	        	
 	            // Customer credit history - it may not be needed but the old sidecart had this
-				FDCustomerCreditHistoryModel creditHistory = null;
+	            // Siva: On Mar 31 we evaluated this call and found that it is not needed for the side cart implementation
+				/*FDCustomerCreditHistoryModel creditHistory = null;
 				try {
 					FDIdentity identity = user.getIdentity();
 					if ( identity != null ) {
@@ -185,10 +186,8 @@ public class CartDataServlet extends BaseJsonServlet {
 					double remaining = creditHistory.getRemainingAmount();
 		            if ( remaining > 0.00 ) {
 		    			cartData.setRemainingCredits( remaining );
-		            } else {
-	//	            	LOG.debug( "No credits remaining. ("+ JspMethods.formatPrice( creditHistory.getRemainingAmount() ) + " )" );
 		            }	            
-				}
+				}*/
 				
 				
 				// =======================================================================================================================================
