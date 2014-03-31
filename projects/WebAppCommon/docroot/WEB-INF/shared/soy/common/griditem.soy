@@ -408,11 +408,13 @@
           <span class="customize cssbutton blue small" data-component="customizeButton">customize</span>
         {else}
           {call common.subtotal}
-              {param availMatPrices:$availMatPrices /}
-              {param suRatios:$suRatios /}
-                {param grpPrices:$grpPrices /}
-                {param cvPrices:$cvPrices /}
-                {param qInc:$quantity.qInc /}
+            {param availMatPrices:$availMatPrices /}
+            {param suRatios:$suRatios /}
+            {param grpPrices:$grpPrices /}
+            {param cvPrices:$cvPrices /}
+            {param qInc:$quantity.qInc /}
+            {param qMin:$quantity.qMin /}
+            {param qMax:$quantity.qMax /}
           {/call}
           <span class="addtocart cssbutton orange small" data-component="ATCButton">add to cart</span>
           <span class="addtolist cssbutton purple notext icon-file2-before" data-component="addToListButton">add to list</span>

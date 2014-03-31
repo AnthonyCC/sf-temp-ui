@@ -6,6 +6,6 @@
  */
 {template .quantitybox}
 <div class="qtyinput" data-component="quantitybox" data-min="{$quantity.qMin}" data-max="{$quantity.qMax}" data-step="{$quantity.qInc}" {if $quantity.mayempty == true }data-mayempty="true"{/if}>
-  <button class="quantity_minus" data-component="quantitybox.dec">-</button><input class="qty" type="text" value="{call common.printNum}{param number:($quantity.quantity ? $quantity.quantity : 1)/}{/call}" maxlength="2" data-component="quantitybox.value" data-productdata-name="quantity" {if $quantity.mayempty == true }data-mayempty="true"{/if} {if isNonnull($optional) and not $optional}data-atc-required="true"{/if}><button class="quantity_plus" data-component="quantitybox.inc">+</button>
+  <button class="quantity_minus" data-component="quantitybox.dec">-</button><input class="qty" type="text" value="{call common.printNum}{param number:($quantity.quantity ? $quantity.quantity : ($quantity.qMin ? $quantity.qMin : 1))/}{/call}" maxlength="2" data-component="quantitybox.value" data-productdata-name="quantity" {if $quantity.mayempty == true }data-mayempty="true"{/if} {if isNonnull($optional) and not $optional}data-atc-required="true"{/if}><button class="quantity_plus" data-component="quantitybox.inc">+</button>
 </div>
 {/template}
