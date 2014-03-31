@@ -28,7 +28,10 @@ window.close = window.reallyClose;
 
 // iframe resize
 $jq(document).ready(function () {
-  if (window.parent && window.parent.FreshDirect.components.ifrPopup) {
+  if (window.parent &&
+      window.parent.FreshDirect &&
+      window.parent.FreshDirect.components &&
+      window.parent.FreshDirect.components.ifrPopup) {
     window.parent.FreshDirect.components.ifrPopup.reposition();
   }
 });
