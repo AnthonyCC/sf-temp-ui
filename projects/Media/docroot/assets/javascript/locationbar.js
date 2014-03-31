@@ -95,7 +95,8 @@
 	$document.on('click','#location-submit',function(e){
 		var email = $('#messages #location-email').val(),
 				$form = $('#messages .nodeliver-form form'),
-				pattern=/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+				pattern=/^[a-zA-Z0-9._-]+@([a-zA-Z0-9-_]+\.)+[a-zA-Z]{2,}$/;
+				       
 		
 		if(email.match(pattern)) {
 			$form.attr('class','p');
