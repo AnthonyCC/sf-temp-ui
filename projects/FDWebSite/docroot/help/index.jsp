@@ -242,40 +242,51 @@ final int W_HELP_INDEX_TOTAL = 970;
 					</div>
 
 					<script type="text/javascript">
-						function submitForm(){
+
+						var coremetricsGetHelpEmailFunctionMap = [
+							<logic:iterate id="subject" indexId="idx" collection="<%= ContactFdControllerTag.selections %>" type="com.freshdirect.webapp.taglib.fdstore.ContactFdControllerTag.Selection">
+								<%if (idx!=0){%>,<%}%><fd:CmConversionEvent wrapIntoFunction="true" eventId="email" firstPhase="true" subject="<%=StringUtil.escapeJavaScript(subject.getDescription())%>"/>
+							</logic:iterate>
+						];
+						<%--
+							This seems sort of useless, it only logs a single subject change?
+							Changed to work the same with new js (called once on page load (no log),
+							then on every subject change (log only the first change))
+							still... seems... weird.
+							-BA 20140401
+						--%>
+						var coremetricsGetHelpEmailStartLogged = 0; //init
+						function coremetricsGetHelpEmailStart(index) {
+							if (coremetricsGetHelpEmailStartLogged == 1) {
+								console.log(2);
+								coremetricsGetHelpEmailFunctionMap[index]();
+							}
+							coremetricsGetHelpEmailStartLogged++;
 						}
+						
 						$jq('#prodReqContent').ready(function() { $jq('#prodReqContent').hide(); });
 						$jq(document).ready(function() {
 							$jq('#contact_subject').change(function() {
-								if ( $jq('#contact_subject option').filter(':selected').text() == 'Product Request' ) {
+								var selectedOpt = $jq('#contact_subject option').filter(':selected');
+								if ( selectedOpt.text() == 'Product Request' ) {
 									$jq('#prodReqContent').show();
 									$jq('#prodReqNonContent').hide();
 								} else {
 									$jq('#prodReqContent').hide();
 									$jq('#prodReqNonContent').show();
 								}
+								if (coremetricsGetHelpEmailFunctionMap[selectedOpt.val()]) {
+									coremetricsGetHelpEmailStart(selectedOpt.val());
+								}
 							});
 							$jq('#contact_subject').change();
 						});
-	
-						var coremetricsGetHelpEmailFunctionMap = [
-						<logic:iterate id="subject" indexId="idx" collection="<%= ContactFdControllerTag.selections %>" type="com.freshdirect.webapp.taglib.fdstore.ContactFdControllerTag.Selection">
-						 <%if (idx!=0){%>,<%}%><fd:CmConversionEvent wrapIntoFunction="true" eventId="email" firstPhase="true" subject="<%=StringUtil.escapeJavaScript(subject.getDescription())%>"/>
-						</logic:iterate>
-						];
-						
-						var coremetricsGetHelpEmailStartLogged = false;
-						function coremetricsGetHelpEmailStart(index) {
-							if (!coremetricsGetHelpEmailStartLogged) {
-								coremetricsGetHelpEmailStartLogged=true;
-								coremetricsGetHelpEmailFunctionMap[index]();
-							}
-						}
+
 					</script>
 
 					<div style="margin-bottom: 16px;">
 						<div style="float: left; width: 12px;">*</div><div style="float: left; width: 55px; font-weight: bold; padding-right: 10px;">Subject:</div>
-						<select class="text12" name="subject" id="contact_subject" style="width: 246px;" onchange="coremetricsGetHelpEmailStart(this.options[this.selectedIndex].value)">
+						<select class="text12" name="subject" id="contact_subject" style="width: 246px;" onchange="">
 							<option value="">Select Subject:</option>
 							<logic:iterate id="subject" indexId="idx" collection="<%= ContactFdControllerTag.selections %>" type="com.freshdirect.webapp.taglib.fdstore.ContactFdControllerTag.Selection">
 								<option value="<%= idx %>" <%= idx.intValue() == subjectIndex ? "selected" : "" %>><%= subject.getDescription() %></option>
