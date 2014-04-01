@@ -391,7 +391,9 @@ public class MenuBuilderFactory {
 
 					domain.setItems(createFilterMenuItems(domain, filterGroup.getProductFilters(), activeFilters, items));
 
-					menu.add(domain);
+					if(domain.getItems()!=null && domain.getItems().size()>0){
+						menu.add(domain);						
+					}
 				
 				}
 			}
