@@ -291,26 +291,22 @@
     </div>
   </div>
   <div class="portrait-item-header">
-    {call common.atcInCart}
-      {param amount:$inCartAmount /}
-      {param atcItemId:$atcItemId /}
-    {/call}
-    <div class="rating">
-      {call common.rating.customer}{param ratingValue:$customerRating /}{param reviewCount:$customerRatingReviewCount /}{/call}
-      {call common.rating.expert}{param ratingValue:$expertRating /}{/call}
-      {call common.rating.wine}{param ratingValue:$wineRating /}{/call}
-      {if $sustainabilityRating}
-        {call common.rating.sustainability}{param ratingValue:$sustainabilityRating /}{/call}
-      {/if}
-      {if not $customerRating and not $expertRating and not $wineRating and not $sustainabilityRating}
-        <b class="norating smallrating">Not rated</b>
-      {/if}
-    </div>
     {if $brandName and $productNameNoBrand}
       <a href="{$productPageUrl}" class="portrait-item-header-name"><b>{$brandName}</b> {$productNameNoBrand}</a>
     {else}
       <a href="{$productPageUrl}" class="portrait-item-header-name">{$productName}</a>
     {/if}
+    <div class="rating">
+      {call common.rating.customer}{param ratingValue:$customerRating /}{param reviewCount:$customerRatingReviewCount /}{/call}
+      {call common.rating.expert}{param ratingValue:$expertRating /}{/call}
+      {call common.rating.wine}{param ratingValue:$wineRating /}{/call}
+      {if not $customerRating and not $expertRating and not $wineRating}
+        <b class="norating smallrating">Not rated</b>
+      {/if}
+      {if $sustainabilityRating}
+        {call common.rating.sustainability}{param ratingValue:$sustainabilityRating /}{/call}
+      {/if}
+    </div>
   </div>
   <div class="portrait-item-price">
   {call common.price}
@@ -355,8 +351,16 @@
     {param isAlcoholic:$isAlcoholic /}
     {param availabilityMessage:$availabilityMessage /}
     {param productPageUrl:$productPageUrl /}
-	{param cmEventSource:$cmEventSource /}
+    {param cmEventSource:$cmEventSource /}
+    {param noATLButton:true /}
   {/call}
+  {call common.atcInCart}
+    {param amount:$inCartAmount /}
+    {param atcItemId:$atcItemId /}
+  {/call}
+  <div class="portrait-item-atl">
+    <span class="addtolist cssbutton purple icon-file2-before" data-component="addToListButton">save to list</span>
+  </div>
   {if $relatedItem}
   <ul class="relatedItem" data-component="relateditem">
     {call common.transactionalGridItem}
@@ -387,6 +391,7 @@
  * @param? availabilityMessage
  * @param? productPageUrl
  * @param? cmEventSource optional coremetrics event source
+ * @param? noATLButton do not render ATL button
  */
 {template .potatoGridItemControls autoescape="false"}
   <div class="portrait-item-controls">
@@ -417,7 +422,9 @@
             {param qMax:$quantity.qMax /}
           {/call}
           <span class="addtocart cssbutton orange small" data-component="ATCButton">add to cart</span>
+          {if not $noATLButton}
           <span class="addtolist cssbutton purple notext icon-file2-before" data-component="addToListButton">add to list</span>
+          {/if}
         {/if}
       </div>
       {call common.productData}

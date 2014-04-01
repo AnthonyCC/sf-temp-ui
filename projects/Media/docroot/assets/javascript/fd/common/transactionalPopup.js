@@ -61,21 +61,20 @@ var FreshDirect = FreshDirect || {};
             learnMoreLink = $('#'+popupId+' .transactional-popup-learnmore'),
             cmEvSource = "",
             maxImageSize = 0, topPadding = 0,
-            pimg = $(target).find('.portrait-item-productimage')[0],
+            pimg = $(target).find('.portrait-item-burst_wrapper')[0],
             imgBottom = pimg ? pimg.getBoundingClientRect().bottom : null;
 
         if (imgBottom) {
-          $(target).parent().find('.portrait-item-productimage').each(function () {
-            var img = $(this),
-                h = img.height(),
-                bottom = img[0].getBoundingClientRect().bottom;
+          $(target).parent().find('.portrait-item-burst_wrapper').each(function () {
+            var h = this.getBoundingClientRect().height,
+                bottom = this.getBoundingClientRect().bottom;
 
             if (Math.abs(bottom - imgBottom) < 10 && maxImageSize < +h) {
               maxImageSize = +h;
             } 
           });
 
-          topPadding = maxImageSize - $(target).find('.portrait-item-productimage').first().height();
+          topPadding = maxImageSize - pimg.getBoundingClientRect().height;
           
           $(target).find('.portrait-item-productimage_wrapper').css('padding-top', topPadding);
         }

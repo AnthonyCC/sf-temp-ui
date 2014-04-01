@@ -58,14 +58,21 @@
       {/if}
 
       {if $section.products}
-      <ul class="products">
-          {foreach $product in $section.products}
-            {call common.transactionalGridItem}
-              {param item:$product /}
-              {param extraClass:'browseTransactionalProduct' /}
-            {/call}
-          {/foreach}
-      </ul>
+        {let $l: length($section.products) /}
+        {let $lines: ceiling($l / 5) /}
+        {for $line in range(0, $lines)}
+          <ul class="products{if $line == $lines - 1} lastLine{/if}">
+            {for $col in range(0, 5)}
+              {if $col + $line * 5 < $l}
+                {let $product: $section.products[$col + $line * 5] /}
+                {call common.transactionalGridItem}
+                  {param item:$product /}
+                  {param extraClass:(($col != 4 and $col + $line * 5 != $l - 1) ? 'browseTransactionalProduct' : 'browseTransactionalProduct lastInLine') /}
+                {/call}
+              {/if}
+            {/for}
+          </ul>
+        {/for}
       {/if}
 
       {if $section.categories and length($section.categories) > 0}
