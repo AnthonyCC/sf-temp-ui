@@ -80,48 +80,68 @@ final int W_FOOTER_TOTAL = 970;
 	</tr>
 	<tr>
 		<td align="center" class="text11bold" style="padding: 5px 0px;">
-			<% if (!new BrowserInfo(request).isIE6()) { %>
-				<div class="addthis_toolbox addthis_default_style left" style="width: 270px; padding-top: 8px; float: left;">
-					<a class="addthis_button_facebook_like" fb:like:href="http://www.facebook.com/FreshDirect" fb:like:layout="button_count" fb:like:width="95" fb:like:height="25"></a>
-					<a class="addthis_button_twitter_follow_native" tf:screen_name="freshdirect" tf:width="80px" tf:show-screen-name="false" tf:show-count="false"></a>
-					<div style="width: 81px; overflow: hidden;">
-					<a class="addthis_button_google_plusone" g:plusone:href="https://plus.google.com/107881041343024996566" g:plusone:size="medium"></a>
-					<div class="atclear"></div>
-					</div>
-					<div class="atclear"></div>
+			<% if (FDStoreProperties.isSocialFooterStatic()) { %>
+				<div id="socialFooterStatic">
+					<a href="http://www.facebook.com/FreshDirect" target="_social-facebook">
+						<div class="spritediv sprite-social-facebook"></div>
+					</a>
+					<a href="http://www.twitter.com/FreshDirect" target="_social-twitter">
+						<div class="spritediv sprite-social-twitter"></div>
+					</a>
+					<a href="http://www.pinterest.com/FreshDirect" target="_social-pinterest">
+						<div class="spritediv sprite-social-pinterest"></div>
+					</a>
+					<a href="https://plus.google.com/107881041343024996566" target="_social-googleplus">
+						<div class="spritediv sprite-social-googleplus"></div>
+					</a>
+					<a href="http://www.youtube.com/FreshDirect" target="_social-youtube">
+						<div class="spritediv sprite-social-youtube"></div>
+					</a>
 				</div>
-				<script type="text/javascript">
-					var addthis_config = {
-						data_ga_property: 'UA-20535945-1',
-						data_ga_social : true
-					};
-					if (!window['initAddThis']) {
-						window['initAddThis'] = function() {
-							if (window['addthis']) {
-								addthis.init();
-							} else {
-								setTimeout(initAddThis, 1000);
-							}
-						}
-						$jq(window).ready(function () {
-							var at = document.createElement('script'); 
-
-							at.type = 'text/javascript'; 
-				
-							at.async = true;
-							at.src = ('https:' == document.location.protocol ? 'https://' : 'http://') 
-				
-							+ 's7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d69806100449805&async=1';
-							var sat = document.getElementsByTagName('script')[0]; 
-				
-							sat.parentNode.insertBefore(at, sat);
-						
-							initAddThis();
-						});
-					}
-				</script>
 			<% } else { %>
-				<div class="left" style="width: 270px; height: 20px; margin: 0px; padding: 0px;"></div>
+				<% if (!new BrowserInfo(request).isIE6()) { %>
+					<div class="addthis_toolbox addthis_default_style left" style="width: 270px; padding-top: 8px; float: left;">
+						<a class="addthis_button_facebook_like" fb:like:href="http://www.facebook.com/FreshDirect" fb:like:layout="button_count" fb:like:width="95" fb:like:height="25"></a>
+						<a class="addthis_button_twitter_follow_native" tf:screen_name="freshdirect" tf:width="80px" tf:show-screen-name="false" tf:show-count="false"></a>
+						<div style="width: 81px; overflow: hidden;">
+						<a class="addthis_button_google_plusone" g:plusone:href="https://plus.google.com/107881041343024996566" g:plusone:size="medium"></a>
+						<div class="atclear"></div>
+						</div>
+						<div class="atclear"></div>
+					</div>
+					<script type="text/javascript">
+						var addthis_config = {
+							data_ga_property: 'UA-20535945-1',
+							data_ga_social : true
+						};
+						if (!window['initAddThis']) {
+							window['initAddThis'] = function() {
+								if (window['addthis']) {
+									addthis.init();
+								} else {
+									setTimeout(initAddThis, 1000);
+								}
+							}
+							$jq(window).ready(function () {
+								var at = document.createElement('script'); 
+	
+								at.type = 'text/javascript'; 
+					
+								at.async = true;
+								at.src = ('https:' == document.location.protocol ? 'https://' : 'http://') 
+					
+								+ 's7.addthis.com/js/250/addthis_widget.js#pubid=ra-4d69806100449805&async=1';
+								var sat = document.getElementsByTagName('script')[0]; 
+					
+								sat.parentNode.insertBefore(at, sat);
+							
+								initAddThis();
+							});
+						}
+					</script>
+				<% } else { %>
+					<div class="left" style="width: 270px; height: 20px; margin: 0px; padding: 0px;"></div>
+				<% } %>
 			<% } %>
 			<div style="float:left; width:1px; height:40px; margin: 0px 12px 0px 0px" class="dotted_separator_v"></div>
 			<div style="float:left">

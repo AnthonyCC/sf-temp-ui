@@ -646,6 +646,9 @@ public class FDStoreProperties {
 	private final static String PROP_BROWSE_ROLLOUT_REDIRECT_ENABLED = "fdstore.browse.rollout.redirectenabled";
 	private final static String PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE = "fdstore.media.render.utils.reallyclose";
 	private final static String PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING = "fdstore.media.render.utils.sourceencoding";
+	
+	//optimizing
+	private final static String PROP_OPT_SOCIAL_FOOTER_STATIC = "fdstore.optimize.social.footer.static";
 
 	
     static {
@@ -1277,7 +1280,10 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.leftnav2014", "GLOBAL:ENABLED,true;");
         
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
-        defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");				
+        defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
+        
+        //optimize
+        defaults.put(PROP_OPT_SOCIAL_FOOTER_STATIC, "true");
         refresh();
     }
 
@@ -3247,5 +3253,10 @@ public class FDStoreProperties {
     public static boolean isBrowseRolloutRedirectEnabled() {
         return Boolean.valueOf(get(PROP_BROWSE_ROLLOUT_REDIRECT_ENABLED)).booleanValue();
     }
+	//optimize
+    public static boolean isSocialFooterStatic(){
+    	return Boolean.valueOf(get(PROP_OPT_SOCIAL_FOOTER_STATIC)).booleanValue();
+    }
+    
 }
 

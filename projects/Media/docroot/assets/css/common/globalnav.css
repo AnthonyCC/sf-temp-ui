@@ -143,7 +143,54 @@ div.spritediv {
     width:11px;
     height:22px;
 }
-
+#socialFooterStatic {
+	padding-top: 4px;
+	width: 270px;
+	float: left;
+}
+#socialFooterStatic a {
+	display: inline-block;
+    margin: 0 6px;
+}
+#socialFooterStatic a div.spritediv {
+	float: left;
+}
+.sprite-social-facebook {
+	background-image: url('/media_stat/images/navigation/nav.png');
+	background-position: -0px -72px;
+	height: 32px;
+	width: 32px;
+}
+.sprite-social-instagram {
+	background-image: url('/media_stat/images/navigation/nav.png');
+	background-position: -32px -72px;
+	height: 32px;
+	width: 32px;
+}
+.sprite-social-pinterest {
+	background-image: url('/media_stat/images/navigation/nav.png');
+	background-position: -64px -72px;
+	height: 32px;
+	width: 32px;
+}
+.sprite-social-twitter {
+	background-image: url('/media_stat/images/navigation/nav.png');
+	background-position: -0px -104px;
+	height: 32px;
+	width: 32px;
+}
+.sprite-social-youtube {
+	background-image: url('/media_stat/images/navigation/nav.png');
+	background-position: -32px -104px;
+	height: 32px;
+	width: 32px;
+}
+.sprite-social-googleplus {
+	background-image: url('/media_stat/images/navigation/nav.png');
+	background-position: -64px -104px;
+	height: 32px;
+	width: 32px;
+}
 
 @media screen and (-webkit-min-device-pixel-ratio: 1.0), screen and (min--moz-device-pixel-ratio: 1.0),screen and (-o-min-device-pixel-ratio: 100/100),screen and (min-device-pixel-ratio: 1.0),screen and (min-resolution: 1.0dppx){
     .sprite-nav-header_border_right, 
@@ -155,9 +202,9 @@ div.spritediv {
     .sprite-nav-footer_border_left
     {
         background-image:url('/media_stat/images/navigation/nav.png');
-        -webkit-background-size: 90px 72px;
-        -moz-background-size: 90px 72px;
-        background-size: 90px 72px;
+        -webkit-background-size: 96px 136px;
+        -moz-background-size: 96px 136px;
+        background-size: 96px 136px;
     }
 }
 /* end of nav sprite */
