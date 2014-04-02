@@ -211,7 +211,7 @@ public class StandingOrderUtil {
 		EnumStandingOrderAlternateDeliveryType altDeliveryType = null;
 		if(null != altDateInfo){
 			altDate = altDateInfo.getAltDate();
-			altDeliveryType = altDateInfo.getActionType();
+			altDeliveryType = EnumStandingOrderAlternateDeliveryType.getEnum(altDateInfo.getActionType());
 			startTime = null != altDateInfo.getAltStartTime() ? altDateInfo.getAltStartTime() : startTime;
 			endTime = null != altDateInfo.getAltEndTime() ? altDateInfo.getAltEndTime() : endTime;			
 		}
