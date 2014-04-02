@@ -18,7 +18,8 @@ var FreshDirect = FreshDirect || {};
 		setMessage:{
 			value:function(item) {
         // the original element might be copied (like in case of transactional popup), so we have to match for multiple ids
-				var element = $('[id="'+item.itemId+'"], [id="'+item.atcItemId+'"]');
+				var element = $('[id="'+item.itemId+'"], [id="'+item.atcItemId+'"]'),
+            controls;
 				if(element) {
 					element.addClass('atc-info-message');
 					element.html(this.template({
@@ -26,6 +27,12 @@ var FreshDirect = FreshDirect || {};
 						message:'Adding to cart...',
 						type:'ADDING'
 					}));
+
+          controls = element.closest('[data-component="product"]').find('[data-component="product-controls"]');
+          if (controls.size() !== 0) {
+            controls.removeClass('subtotalShown');
+            controls.find('input.qty').val(0);
+          }
 				}
 			}
 		},
@@ -41,7 +48,8 @@ var FreshDirect = FreshDirect || {};
 		},
 		renderItem:{
 			value:function(item) {
-				var element = $('[id="'+item.itemId+'"], [id="'+item.atcItemId+'"]');
+				var element = $('[id="'+item.itemId+'"], [id="'+item.atcItemId+'"]'),
+            controls;
 				if(element) {
 					element.addClass('atc-info-message');
 					element.closest('[data-component="product"]').find('[data-component="ATCButton"],[data-component="customizeButton"]').addClass('incart');
@@ -50,6 +58,14 @@ var FreshDirect = FreshDirect || {};
 						message:item.message,
 						type:item.status
 					}));
+
+          controls = element.closest('[data-component="product"]').find('[data-component="product-controls"]');
+          if (controls.size() !== 0) {
+            controls.removeClass('subtotalShown');
+            controls.addClass('atc-info-message');
+            controls.find('input.qty').val(0);
+            setTimeout(this.removeMessage.bind(controls),3000);
+          }
 
 					setTimeout(this.removeMessage.bind(element),3000);
 

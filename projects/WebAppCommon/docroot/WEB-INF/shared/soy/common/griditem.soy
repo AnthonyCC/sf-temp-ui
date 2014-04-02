@@ -332,7 +332,7 @@
   {if $mixNMatch}<div class="portrait-item-price-deal mixnmatch">Mix'n'Match</div>{/if}
   {if $coupon}<div class="portrait-item-coupon">{call common.ecoupon}{param coupon:$coupon /}{param couponDisplay:$couponDisplay /}{param couponClipped:$couponClipped /}{param couponStatusText:$couponStatusText /}{/call}</div>{/if}
   </div>
-  {call common.potatoGridItemControls}
+  {call common.potatoTransactionalGridItemControls}
     {param customizePopup:$customizePopup /}
     {param soldBySalesUnit:$soldBySalesUnit /}
     {param salesUnit:$salesUnit /}
@@ -352,7 +352,6 @@
     {param availabilityMessage:$availabilityMessage /}
     {param productPageUrl:$productPageUrl /}
     {param cmEventSource:$cmEventSource /}
-    {param noATLButton:true /}
   {/call}
   {call common.atcInCart}
     {param amount:$inCartAmount /}
@@ -372,7 +371,6 @@
 </li>
 {/template}
 
-
 /**
  * @param productId
  * @param skuCode
@@ -391,7 +389,6 @@
  * @param? availabilityMessage
  * @param? productPageUrl
  * @param? cmEventSource optional coremetrics event source
- * @param? noATLButton do not render ATL button
  */
 {template .potatoGridItemControls autoescape="false"}
   <div class="portrait-item-controls">
@@ -421,10 +418,72 @@
             {param qMin:$quantity.qMin /}
             {param qMax:$quantity.qMax /}
           {/call}
-          <span class="addtocart cssbutton orange small" data-component="ATCButton">add to cart</span>
-          {if not $noATLButton}
-          <span class="addtolist cssbutton purple notext icon-file2-before" data-component="addToListButton">add to list</span>
-          {/if}
+          <span class="addtocart cssbutton orange small" data-component="ATCButton">Add to Cart</span>
+          <span class="addtolist cssbutton purple notext icon-file2-before" data-component="addToListButton">Add to List</span>
+        {/if}
+      </div>
+      {call common.productData}
+        {param productId:$productId /}
+        {param catId:$catId /}
+        {param skuCode:$skuCode /}
+        {param configuration:$configuration /}
+        {param atcItemId:$atcItemId /}
+        {param isAlcoholic:$isAlcoholic /}
+        {param productPageUrl:$productPageUrl /}
+      {/call}
+    </div>
+  </div>
+{/template}
+
+/**
+ * @param productId
+ * @param skuCode
+ * @param catId
+ * @param customizePopup
+ * @param soldBySalesUnit
+ * @param salesUnit
+ * @param quantity
+ * @param availMatPrices
+ * @param suRatios
+ * @param grpPrices
+ * @param cvPrices
+ * @param atcItemId
+ * @param? configuration
+ * @param isAlcoholic
+ * @param? availabilityMessage
+ * @param? productPageUrl
+ * @param? cmEventSource optional coremetrics event source
+ */
+{template .potatoTransactionalGridItemControls autoescape="false"}
+  <div class="portrait-item-controls" data-component="product-controls">
+    <div class="portrait-item-controls-content">
+      {if $availabilityMessage}
+      <div class="portrait-item-availability-message">
+        {$availabilityMessage}
+      </div>
+      {/if}
+      {if not $customizePopup}
+        {call common.atcControls}
+          {param soldBySalesUnit:$soldBySalesUnit /}
+          {param salesUnit:$salesUnit /}
+          {param quantity:$quantity /}
+        {/call}
+      {/if}
+      <div class="portrait-item-addtocart" {if $cmEventSource}data-cmeventsource="{$cmEventSource}"{/if}>
+        {if $customizePopup}
+          <span class="customize cssbutton blue small" data-component="customizeButton">customize</span>
+        {else}
+          <span class="addtocart cssbutton orange small" data-component="ATCButton">Add to Cart</span>
+          {call common.subtotal}
+            {param availMatPrices:$availMatPrices /}
+            {param suRatios:$suRatios /}
+            {param grpPrices:$grpPrices /}
+            {param cvPrices:$cvPrices /}
+            {param qInc:$quantity.qInc /}
+            {param qMin:$quantity.qMin /}
+            {param qMax:$quantity.qMax /}
+            {param customTemplate:'common.subtotalTransactionalInner' /}
+          {/call}
         {/if}
       </div>
       {call common.productData}

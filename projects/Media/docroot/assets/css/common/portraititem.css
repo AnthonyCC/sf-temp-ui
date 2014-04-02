@@ -30,7 +30,7 @@
 }
 
 .portrait-item-unavailable {
-    display:none;
+  display:none;
 }
 
 .portrait-item-header,
@@ -45,6 +45,12 @@
 
 .portrait-item-header .atc-info {
   height: 16px;
+}
+
+.portrait-item > .atc-info {
+  float: left;
+  width: 100%;
+  clear: both;
 }
 
 .portrait-item > .atc-info .incart-info {
@@ -65,7 +71,24 @@
 
 #transactionalPopup .portrait-item > .atc-info .incart-info {
   margin-top: -5px;
+  margin-bottom: 10px;
   padding-top: 5px;
+}
+
+#transactionalPopup .portrait-item .subtotalShown + .atc-info  > .incart-info {
+  margin: 0 0 10px 0;
+  color: rgb(102,153,51);
+  font-weight: normal;
+  background: none;
+  border: none;
+  height: 14px;
+  line-height: 14px;
+  font-size: 12px;
+  padding: 0;
+}
+
+#transactionalPopup .portrait-item .subtotalShown + .atc-info > .incart-info:before {
+  content: '+';
 }
 
 .portrait-item > .atc-info .incart-info[data-amount="0"] {
@@ -73,6 +96,7 @@
 }
 
 .portrait-item-atl {
+  clear: both;
   display: none;
 }
 
@@ -290,7 +314,7 @@
   width: auto;
   background:white;
   position: relative;
-  min-width: 140px;
+  min-width: 145px;
 }
 
 #transactionalPopup .transactional-related-item {
@@ -327,23 +351,17 @@
   position: static;
 }
 
-#transactionalPopup.hasRelated .portrait-item-controls {
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-  right: 0;
-}
-
-#transactionalPopup.hasRelated .transactional-popup-body .portrait-item-controls {
-  bottom: 15px;
-}
-
 #transactionalPopup.shown {
   opacity:1;
 }
 
 #transactionalPopup .subtotal {
-  padding: 8px 0;
+  display: none;
+  margin: 8px 0 5px;
+}
+
+#transactionalPopup .subtotalShown .subtotal {
+  display: block;
 }
 
 #transactionalPopup .transactional-item-header {
@@ -414,7 +432,6 @@
 
 #transactionalPopup .portrait-item-controls {
   width:100%;
-  min-width: 127px;
   position: relative;
   display: block;
   -webkit-transition: none;
@@ -426,6 +443,12 @@
   height:auto;
   z-index: 2;
   background: transparent;
+}
+
+#transactionalPopup .atc-info,
+#transactionalPopup .portrait-item-atl,
+#transactionalPopup .portrait-item-controls {
+  min-width: 127px;
 }
 
 #transactionalPopup .portrait-item-addtocart {
@@ -459,7 +482,7 @@
   font-weight: bold;
   line-height: 34px;
   height: 34px;
-  text-transform: lowercase;
+  text-transform: none;
   padding: 0;
 }
 
@@ -467,27 +490,72 @@
   margin-left: 5px;
 }
 
+#transactionalPopup .portrait-item-controls .qtyinput {
+  width: auto;
+  display: block;
+  position: relative;
+  margin: 10px 0;
+  height: 34px;
+}
+
+#transactionalPopup .portrait-item-controls .qtyinput > span.qtywrapper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 39px;
+  right: 39px;
+}
+
+#transactionalPopup .portrait-item-controls .qtyinput > span.qtywrapper input.qty {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  font-size: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+
 #transactionalPopup .portrait-item-controls .quantity_minus,
 #transactionalPopup .portrait-item-controls .quantity_plus {
+  position: absolute;
+  top: 0;
   width: 39px;
   height: 34px;
-  display: inline-block;
+  display: block;
   font-size: 24px;
   line-height: 34px;
   text-align: center;
   font-weight: bold;
   color: #fff;
-  background: rgb(102,153,51);
+  background: #669933;
   box-shadow: 1px 1px 2px 0 rgb(172,199,144) inset, -1px -1px 2px 0 rgb(82,123,41) inset;
   text-decoration: none;
   text-indent: 0;
   padding: 0;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+#transactionalPopup .portrait-item-controls .quantity_minus:focus,
+#transactionalPopup .portrait-item-controls .quantity_minus:hover,
+#transactionalPopup .portrait-item-controls .quantity_plus:focus,
+#transactionalPopup .portrait-item-controls .quantity_plus:hover {
+  background: #698625;
 }
 
 #transactionalPopup .portrait-item-controls .quantity_plus {
   border-radius: 0 50px 50px 0;
+  right: 0;
 }
 
 #transactionalPopup .portrait-item-controls .quantity_minus {
   border-radius: 50px 0 0 50px;
+  left:0;
 }

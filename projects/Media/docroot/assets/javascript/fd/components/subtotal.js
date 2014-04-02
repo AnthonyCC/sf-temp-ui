@@ -1,4 +1,4 @@
-/*global jQuery*/
+/*global jQuery,common*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
@@ -67,7 +67,7 @@ var FreshDirect = FreshDirect || {};
     try {
         if('configuration' in itemInfo){
           cvprices.forEach(function(cvp){
-            if(itemInfo.configuration[cvp.name] == cvp.value) {
+            if(itemInfo.configuration[cvp.name] === cvp.value) {
               if( cvp.applyHow === '1' ) {
                 price += origqty * cvp.price;                 
               } else if( cvp.applyHow === '0' ) {
@@ -95,7 +95,13 @@ var FreshDirect = FreshDirect || {};
       else{ // fallback
         $subtotal.html( Subtotal.innerTemplate.call(null, { 'price' : price }) );
       }
+      $subtotal.addClass('hasPrice');
+      $subtotal.closest('[data-component="product-controls"]').addClass('subtotalShown');
+      $subtotal.siblings('[data-component="product-controls"]').addClass('subtotalShown');
     } else {
+      $subtotal.removeClass('hasPrice');
+      $subtotal.closest('[data-component="product-controls"]').removeClass('subtotalShown');
+      $subtotal.siblings('[data-component="product-controls"]').removeClass('subtotalShown');
       $subtotal.html("");
     }
     
