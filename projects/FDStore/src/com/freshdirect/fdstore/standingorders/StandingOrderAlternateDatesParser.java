@@ -151,29 +151,6 @@ public class StandingOrderAlternateDatesParser {
 		return (null == this.getExceptionList() || this.getExceptionList().isEmpty());
 	}
 	
-public String buildResponse() {
-		
-		StringBuffer buffer = new StringBuffer();
-		
-		if(null !=this.exceptionList && this.exceptionList.size() > 0) {
-			buffer.append("<table class=\"summaryTable\" valign=\"top\" width=\"480\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\">");
-			if(this.exceptionList.size() > 0) {
-				buffer.append("<tr>").append("<th class=\"submenu\"  colspan=\"4\" align=\"center\">").append("EXCEPTIONS/ERRORS ").append("</th>").append("</tr>");
-				Iterator<String> itr = this.exceptionList.iterator();
-				buffer.append("<tr>");
-				buffer.append("<td class=\"first\" colspan=\"4\">");
-				while(itr.hasNext()) {
-					String exception = itr.next();
-					buffer.append(exception).append("<br/>");
-				}				
-				buffer.append("<br/></td>");
-				buffer.append("</tr>");	
-			}			
-			
-			buffer.append("</table>");	
-		}
-		
-		return buffer.toString();
-	}
+
 }
 	

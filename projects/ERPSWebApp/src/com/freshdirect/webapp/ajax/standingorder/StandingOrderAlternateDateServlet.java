@@ -33,7 +33,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.standingorders.EnumStandingOrderAlternateDeliveryType;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
-import com.freshdirect.fdstore.standingorders.FdStandingOrderAlternateDateUtil;
+import com.freshdirect.fdstore.standingorders.FDStandingOrderAlternateDateUtil;
 import com.freshdirect.fdstore.standingorders.StandingOrderAlternateDatesParser;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
@@ -109,7 +109,7 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 				}else{
 	    			response.setContentType("application/Text"); 
 	    			PrintWriter pw = response.getWriter();
-	    			pw.write(FdStandingOrderAlternateDateUtil.buildResponse(errors));
+	    			pw.write(FDStandingOrderAlternateDateUtil.buildResponse(errors));
 	    			pw.flush();
 				}
 			} catch (FDResourceException e) {
@@ -185,7 +185,7 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 		            	response.addHeader ("Content-Disposition","attachment;filename="+fileName);
 		    			response.setContentType("application/Text"); 
 		    			PrintWriter pw = response.getWriter();
-		    			pw.write(parser.buildResponse());
+		    			pw.write(FDStandingOrderAlternateDateUtil.buildResponse(parser.getExceptionList()));
 		    			pw.flush();
 		            }
 				}
