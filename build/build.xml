@@ -1617,6 +1617,7 @@
 			<pathelement location="${work.dir}/CMS.jar"/>
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/RoutingServices.jar"/>
+			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
 		</path>
 
 		<makeEjbProject
