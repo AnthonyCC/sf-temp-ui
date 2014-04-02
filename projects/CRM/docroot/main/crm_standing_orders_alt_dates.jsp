@@ -2,6 +2,7 @@
 <%@page import="java.text.DateFormat"%>
 <%@page import='com.freshdirect.fdstore.standingorders.FDStandingOrdersManager'%>
 <%@page import='com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate'%>
+<%@page import='com.freshdirect.fdstore.standingorders.EnumStandingOrderAlternateDeliveryType'%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -10,9 +11,42 @@
 <%@ taglib uri='crm' prefix='crm' %>
 
 <style type="text/css">
+div.pq-grid-toolbar-search
+{
+    text-align:left;
+}
+div.pq-grid-toolbar-search *
+{
+    margin:1px 5px 1px 0px;
+    vertical-align:middle;      
+}
+div.pq-grid-toolbar-search .pq-separator
+{
+   margin-left:10px;  
+   margin-right:10px;  
+}
+div.pq-grid-toolbar-search select
+{
+    height:18px;   
+    position:relative;
+}
+div.pq-grid-toolbar-search input.pq-filter-txt
+{
+    width:180px;border:1px solid #b5b8c8;       
+    height:16px;
+    padding:0px 5px;       
+}
+div.pq-grid-toolbar-padded
+{     height:35px;
+}
+
+.pq-grid-toolbar .createButton { float:left;margin-top:0.5em }
+.pq-grid-toolbar .deleteButton { margin-top:0.5em }
+.pq-grid-toolbar .uploadButton { float:right;margin-top:0.5em }
+
 .crm_standing_orders_alt_dates_col {
 float:left;
-width:150px;
+width:100px;
 text-align: center;
 }
 
@@ -28,163 +62,578 @@ padding: 4px 0px;
 }
 
 .crm_standing_orders_alt_dates_table {
-width:900px;
+width:1200px;
 margin-left:auto;
 margin-right:auto;
 margin-top: 20px;
 }
-</style>
 
-<script type="text/javascript"	>
-function submitAltDeliveryDate(id, operation){
-	var origDate = document.getElementById("origDate-"+id).value; 
-	var altDate = document.getElementById("altDate-"+id).value;
-	var description = document.getElementById("description-"+id).value;
-	
-	var confirmText = operation.charAt(0).toUpperCase() + operation.slice(1) + " '" + description + "' (original: " + origDate +", alternative: " + altDate + ")?"; 
-	
-	if (confirm(confirmText)){
-		document.getElementById("operation-"+id).value = "alt_delivery_date_" + operation;
-		document.getElementById("form-"+id).submit();
-	}
-}
-</script>    
+</style>
+    
     
 <tmpl:insert template='/template/top_nav.jsp'>
 	<tmpl:put name='title' direct='true'>Standing Order Alternative Delivery Dates</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 		<crm:GetCurrentAgent id="currentAgent">
 			<jsp:include page="/includes/crm_standing_orders_nav.jsp" />
-			<crm:CrmStandingOrderAltDates id="altDeliveryDates" filter="filter" intervals="intervals" result="result">
-				<div>
-					<form method='POST' action="/main/crm_standing_orders_alt_dates.jsp">
-						<div class="BG_live" width="100%" style="border-bottom:2px solid #000000;border-top:1px solid #000000; padding:3px">
-							<div class="promo_page_header_text">Manage Alternative Delivery Dates</div>
-							<div style="padding-left:20px;padding-top:5px">
-								Year:
-								<select name="filter" class="promo_filter">
-								<logic:iterate id="interval" collection="<%=intervals%>" type="java.lang.String">
-									<option value="<%=interval%>" 
-										<%if(filter.equals(interval)) {%> 
+				<table width="100%"><tr><td colspan="3"><div class="promo_page_header_text">Manage Alternative Delivery Dates</div></td></tr>
+				<tr><td><div id="resultDiv" width="500"></div></td></tr>
+				<!-- tr>
+					<td><input type="button" id="create" value="Create"/>&nbsp;<input type="button" id="delete" value="Delete"/></td>
+					<td align="right"><input  type="button" id="upload" value="Upload"/></td><td>&nbsp;</td>
+				</tr> -->
+		
+				<tr><td colspan="2"><div id="soAltGrid">&nbsp;&nbsp;</div></td><td>&nbsp;</td></tr></table>
+				
+				<div id="dialog2" title="Upload Standing Order Alternate Dates">
+					<form action="/api/soalternatedate/" enctype="multipart/form-data" method="post" id="uploadForm" name="uploadForm">
+					<div id="error" width="500"></div>
+					Please specify a xls or csv file and click 'Upload':<br/><br/><input type="file" value="Browse" id="file" name="file"/> <br/>
+						<p/><p/><p/> 
+						<input type="button" value="Upload" id="fileUpload" name="fileUpload" onclick="javascript:submitUploadForm()"/>
+					</form>
+					<div id="result" width="500"></div>
+				</div>
+				<br/>
+				
+				<div id="dialog1" title="Create/Edit Standing Order Alternate Dates">
+				<form id="form1">
+<table width="100%">
+	<tr>
+		<td class="vTop"><div style="border: 1px solid #D2691E;">
+			<table width="100%">
+						<% 
+						FDStandingOrderAltDeliveryDate altDeliveryDate = new FDStandingOrderAltDeliveryDate();
+						%>
+				<tr><input type="hidden" name="id" id="id" value=""/><input type="hidden" name="delId" id="delId" value=""/>
+					<td class="promo_detail_label"><span >ID:</span></td>
+					<td class="alignL"><div id="altIdDiv"><%= altDeliveryDate.getId() %></div></td>
+				</tr>
+						
+				<tr>
+					<td class="promo_detail_label"><span > Description:</span></td>
+					<td class="alignL"><input type="text" id="description" name="description" class="w350px" value="<%= altDeliveryDate.getDescription() %>" maxLength="255" /><span id="hidethis2" style="<%=false?"display:;color:green;":"display:none;color:green;" %>"></span></td>
+				</tr>		
+				<tr>
+					<td class="promo_detail_label"><span >* Original Date:</span></td>
+					<td class="alignL"><input type="text" id="origDate" name="origDate" class="w100px" value="<%= altDeliveryDate.getOrigDateFormatted() %>" maxlength="10" /></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><span >* Alternate Date:</span></td>
+					<td class="alignL"><input type="text" id="altDate" name="altDate" class="w100px" value="<%= altDeliveryDate.getAltDateFormatted() %>" maxlength="10" /></td>
+				</tr>
+				
+				<tr>
+					<td class="promo_detail_label">SO Id:</td>
+					<td class="alignL"><input type="text" id="soId" name="soId" class="w150px" value="<%= altDeliveryDate.getSoId() %>" maxlength="16" /> <span class="grayIta8pt"></span><span id="hidethis3" style="<%=false?"display:;color:green;":"display:none;color:green;" %>"><br/>(RedeemCode will be append with random String, eg:RedeemCode%random generated string%, RedeemCodeWEF1234)</span></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Actual Dlv Start Time:</td>
+					<td class="alignL"><input type="text" id="origStartTimeStr" name="origStartTimeStr" class="w100px" value="<%= altDeliveryDate.getOrigStartTimeStr() %>" maxlength="16" onblur="this.value=time(this.value);"/></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Actual Dlv End Time:</td>
+					<td class="alignL"><input type="text" id="origEndTimeStr" name="origEndTimeStr" class="w100px" value="<%= altDeliveryDate.getOrigEndTimeStr() %>" maxlength="16" onblur="this.value=time(this.value);"/> </td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Alternate Dlv Start Time:</td>
+					<td class="alignL"><input type="text" id="altStartTimeStr" name="altStartTimeStr" class="w100px" value="<%= altDeliveryDate.getAltStartTimeStr() %>" maxlength="16" onblur="this.value=time(this.value);"/> </td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Alternate Dlv End Time:</td>
+					<td class="alignL"><input type="text" id="altEndTimeStr" name="altEndTimeStr" class="w100px" value="<%= altDeliveryDate.getAltEndTimeStr() %>" maxlength="16" onblur="this.value=time(this.value);"/> </td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Action Type:</td>
+					<td class="alignL">
+								<select name="actionType" id="actionType" >
+								<logic:iterate id="type" collection="<%=EnumStandingOrderAlternateDeliveryType.getEnumList()%>" type="com.freshdirect.fdstore.standingorders.EnumStandingOrderAlternateDeliveryType">
+									<option value="<%=type.getName()%>" 
+										<%if(type.getName().equals(altDeliveryDate.getActionType())) {%> 
 											selected="selected"
 										<%}%>
-										><%=interval%></option>
+										><%=type.getDescription()%></option>
 								</logic:iterate>
 								</select>
-								<input type="hidden" name="operation" value="filter_change" />
-								<input type="submit" value="FILTER" class="promo_btn_grn" />
-							</div>
-						</div>
-					</form>
-				</div>
-				<div class="errContainer">
-					<fd:ErrorHandler result="<%=result%>" name="so_error" id="errorMsg">
-						<%@ include file="/includes/i_error_messages.jspf" %>   
-					</fd:ErrorHandler>					
-				</div>
-				<% if(null !=pageContext.getAttribute("successMsg")) {%>
-				<div class="case_content_field"><%= pageContext.getAttribute("successMsg") %></div>
-				<% } %>
-				
-				<div style="text-align: center">
-					<div class="crm_standing_orders_alt_dates_table">
-						<div class="list_header_text crm_standing_orders_alt_dates_col" style="background-color:#333366;">Original Date</div>				
-						<div class="list_header_text crm_standing_orders_alt_dates_col" style="background-color:#333366;">Alternative Date</div>
-						<div class="list_header_text crm_standing_orders_alt_dates_col_wide" style="background-color:#333366;">Description</div>
-						<div class="list_header_text crm_standing_orders_alt_dates_col" style="background-color:#333366;">Actions</div>
-		
-						<div class="crm_standing_orders_alt_dates_row list_odd_row">
-							<form id="form-create" method="POST" action="/main/crm_standing_orders_alt_dates.jsp">
-								<input type="hidden" name="operation" id="operation-create"/>
-								<div class="crm_standing_orders_alt_dates_col">
-									<input name="origDate" id="origDate-create" value="" size="10" maxlength="10">
-									<a href="#" onclick="return false;" class="promo_ico_cont" id="origDate-create_trigger">
-									<img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a>
-								</div>
-								<script language="javascript">
-									Calendar.setup(
-											{
-												showsTime : false,
-												electric : false,
-												inputField : "origDate-create",
-												ifFormat : "%m/%d/%Y",
-												singleClick: true,
-												button : "origDate-create_trigger"
-											}
-										);
-								</script>
 								
-								<div class="crm_standing_orders_alt_dates_col">
-									<input name="altDate" id="altDate-create" value="" size="10" maxlength="10">
-									<a href="#" onclick="return false;" class="promo_ico_cont" id="altDate-create_trigger">
-									<img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a>
-								</div>
-								<script language="javascript">
-									Calendar.setup(
-											{
-												showsTime : false,
-												electric : false,
-												inputField : "altDate-create",
-												ifFormat : "%m/%d/%Y",
-												singleClick: true,
-												button : "altDate-create_trigger"
-											}
-										);
-								</script>
-	
-								<div class="crm_standing_orders_alt_dates_col_wide">
-									<input name="description" id="description-create" value="" size="35" maxlength="35">
-								</div>
-	
-								<div class="crm_standing_orders_alt_dates_col">
-									<a href="#" onclick='submitAltDeliveryDate("create", "create")'>Create</a>
-								</div>
-							</form>
-						</div>
+					</td>
+				</tr>				
+				
+				<tr class="flatRow">
+					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>
+				
+				
+				<tr class="flatRow">
+					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>
+					
+			</table></div>
+			<table width="100%">	
+				<tr class="flatRow">
+					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>
+				
+				<tr class="flatRow">
+					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>	
+				<tr>
+					<td align="center"><input type="button" id="save" name="save" value="Save" onclick="javascript:submitForm(this.form);"/> &nbsp;&nbsp;<input type="button" id="cancel" name="cancel" value="Cancel" onclick=""/></td>
+				</tr>
+				</table>
+		</td>
 		
-						<logic:iterate id="altDeliveryDate" collection="<%= altDeliveryDates %>" type="FDStandingOrderAltDeliveryDate" indexId="idx">
-							<%String rowClass = idx.intValue() % 2 == 1 ? "list_odd_row" : "";%>
-							<div class="crm_standing_orders_alt_dates_row <%=rowClass%>">
-								<form id="form-<%=idx%>" method="POST" action="/main/crm_standing_orders_alt_dates.jsp">
-									<input type="hidden" id="operation-<%=idx%>" name="operation" value="" />
-									<div class="crm_standing_orders_alt_dates_col">
-										<%=altDeliveryDate.getOrigDateFormatted()%>
-										<input name="origDate" id="origDate-<%=idx%>" value="<%=altDeliveryDate.getOrigDateFormatted()%>" type="hidden">
-									</div>
+	</tr>
 	
-									<div class="crm_standing_orders_alt_dates_col">
-										<input name="altDate" id="altDate-<%=idx%>" value="<%=altDeliveryDate.getAltDateFormatted()%>" size="10" maxlength="10">
-										<a href="#" onclick="return false;" class="promo_ico_cont" id="altDate-<%=idx%>_trigger">
-											<img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" />
-										</a>
-									</div>
-									<script language="javascript">
-									Calendar.setup(
-											{
-												showsTime : false,
-												electric : false,
-												inputField : "altDate-<%=idx%>",
-												ifFormat : "%m/%d/%Y",
-												singleClick: true,
-												button : "altDate-<%=idx%>_trigger"
-											}
-										);
-									</script>
-	
-									<div class="crm_standing_orders_alt_dates_col_wide">
-										<input name="description" id="description-<%=idx%>" value="<%=altDeliveryDate.getDescription()%>" size="35" maxlength="35">
-									</div>
-									
-									<div class="crm_standing_orders_alt_dates_col">
-										<a href='#' onclick='submitAltDeliveryDate("<%=idx%>", "save")'>Save</a>
-										<a href='#' onclick='submitAltDeliveryDate("<%=idx%>", "delete")'>Delete</a>
-									</div>
-								</form>
-							</div>
-						</logic:iterate>
-					</div>
-				</div>
-			</crm:CrmStandingOrderAltDates>
+</table>
+</form>
+</div>
+			
 		</crm:GetCurrentAgent>	
+		
 	</tmpl:put>
 </tmpl:insert>
+
+	<link rel="stylesheet" href="/assets/javascript/paramquery-2.0.3/pqgrid.min.css" />
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/humanity/jquery-ui.css" />
+    <script src="/assets/javascript/paramquery-2.0.3/pqgrid.min.js"></script>
+ <script> 
+$jq(function() {
+	$jq( "#dialog1" ).dialog({
+		 autoOpen: false,
+		 height: 600,
+		 width: 600,
+		 modal: true
+	});
+});
+
+
+$jq('div#dialog1').bind('dialogclose', function(event) {
+	location.reload(true);
+});
+
+$jq(function() {
+	$jq( "#dialog2" ).dialog({
+		 autoOpen: false,
+		 height: 500,
+		 width: 500,
+		 modal: true
+	});
+});
+
+$jq( "[id^=dialog_]" ).dialog({
+	 autoOpen: false,
+	 height: 600,
+	 width: 600,
+	 modal: true
+});
+
+$jq( "#create" )
+.button()
+.click(function() {
+	$jq( "#dialog1" ).dialog( "open" );
+	$jq( "#form1" )[0].reset();
+});
+
+$jq( "#save" )
+.button()
+.click(function() {
+});
+
+$jq( "#delete" )
+.button()
+.click(function() {
+	deleteRow();
+});
+
+$jq( "#upload" )
+.button()
+.click(function() {
+	showUploadDialog();
+});
+
+$jq( "#cancel" )
+.button()
+.click(function() {
+	$jq( "#form1" )[0].reset();
+	$jq( "#dialog1" ).dialog( 'close' );;
+});
+
+$jq("[id^=edit_]")
+.button()
+.click(function(event) {
+	var altId =event.target.id.substr(5);
+	
+		$jq( "#dialog_"+altId ).dialog( "open" );
+});
+
+$jq("[id^=delete_]")
+.button()
+.click(function(event) {
+	var altId =event.target.id.substr(7);
+	var altIdJson =" {id="+altId+"}";
+	if(confirm("Are you sure, you want to delete this standing order alternate date setup ?")){
+		$jq.ajax({
+            type: "DELETE",
+            url: "/api/soalternatedate?id="+altId,
+            success : function(json){
+            	location.reload(true);
+            }
+        });
+	}
+		
+});
+
+
+$jq("[id^=cancel_]")
+.button()
+.click(function(event) {
+	var altId =event.target.id.substr(7);	
+		$jq( "#form_"+altId )[0].reset();
+		$jq( "#dialog_"+altId ).dialog( "close" );
+		location.reload(true);
+});
+$jq(function() {
+	$jq("[id^=origDate_]").datepicker();
+	$jq("[id^=altDate_]").datepicker();
+	$jq("[id^=startDate_]").datepicker();
+	$jq("[id^=endDate_]").datepicker();
+	$jq( "#origDate" ).datepicker();
+	$jq( "#altDate" ).datepicker();
+	$jq( "#startDate" ).datepicker();
+	$jq( "#endDate" ).datepicker();
+	});
+</script>
+
+<script type="text/javascript">
+
+var listData;
+var $grid;
+var obj = { width: 1200, height: 1000, title: "Standing Order Alternate Delivery Dates", flexHeight: true };
+var soGridColModel = 	[	{ title: "<b>Original Date</b>", width: 100, dataType: "date", dataIndx: "origDateFormatted" , align:"center", 
+								filter: { type: 'textbox', condition: 'equal', listeners: [{ change: function (evt, ui) {
+			                        filter("origDateFormatted", $jq(this).val());
+			                    } 
+			                    }] }},
+                   { title: "<b>Alternate Date</b>", width: 100, dataType: "date", dataIndx: "altDateFormatted" ,align:"center",
+									filter: { type: 'textbox', condition: 'equal', listeners: [{ change: function (evt, ui) {
+				                        filter("altDateFormatted", $jq(this).val());
+				                    } 
+				                    }] }},
+                   { title: "<b>SO Id</b>", width: 100, dataType: "integer", align: "right", dataIndx: "soId",align:"center",
+										filter: { type: 'textbox', condition: 'equal', listeners: [{ change: function (evt, ui) {
+					                        filter("soId", $jq(this).val());
+					                    } 
+					                    }] } },
+                   { title: "<b>Description</b>", width: 200, dataType: "string", align: "right", dataIndx: "description", align:"center",
+											filter: { type: 'textbox', condition: 'equal',
+												listeners: [{ change: function (evt, ui) {
+							                        filter("description", $jq(this).val());
+							                    } 
+							                    }] }},
+                   { title: "<b>Orig Dlv Start Time</b>", width: 115, dataType: "string", align: "right", dataIndx: "origStartTimeStr", align:"center",
+												filter: { type: 'textbox', condition: 'equal', listeners: [{ change: function (evt, ui) {
+							                        filter("origStartTimeStr", $jq(this).val());
+							                    } 
+							                    }] }},
+                   { title: "<b>Orig Dlv End Time</b>", width: 105, dataType: "string", align: "right", dataIndx: "origEndTimeStr", align:"center",
+													filter: { type: 'textbox', condition: 'equal', listeners: [{ change: function (evt, ui) {
+								                        filter("origEndTimeStr", $jq(this).val());
+								                    } 
+								                    }] }},
+                   { title: "<b>Alt Dlv Start Time</b>", width: 100, dataType: "string", align: "right", dataIndx: "altStartTimeStr", align:"center",
+														filter: { type: 'textbox', condition: 'equal', listeners: [{ change: function (evt, ui) {
+									                        filter("altStartTimeStr", $jq(this).val());
+									                    } 
+									                    }] }},
+                   { title: "<b>Alt Dlv End Time</b>", width: 100, dataType: "string", align: "right", dataIndx: "altEndTimeStr", align:"center",
+															filter: { type: 'textbox', condition: 'equal', listeners: [{ change: function (evt, ui) {
+										                        filter("altEndTimeStr", $jq(this).val());
+										                    } 
+										                    }] }},
+                   { title: "<b>Action Type</b>", width: 125, dataType: "string", align: "right", dataIndx: "actionType", align:"center",
+																filter: { type: 'textbox', condition: 'equal', listeners: [{ change: function (evt, ui) {
+											                        filter("actionType", $jq(this).val());
+											                    } 
+											                    }] }},
+                  
+                    {title: "<b>Last Modified By</b>", width: 100, dataType: "date", dataIndx: "modifiedBy", align:"center",
+					filter: { type: 'textbox', condition: 'equal', listeners: [{ change: function (evt, ui) {
+                        filter("modifiedBy", $jq(this).val());
+                    } 
+                    }] } },
+                    {title: "<b>Last Modified Time</b>", width: 100, dataType: "date", dataIndx: "modifiedTime", align:"center",
+    					filter: { type: 'textbox', condition: 'equal', listeners: [{ change: function (evt, ui) {
+                            filter("modifiedTime", $jq(this).val());
+                        } 
+                        }] } }
+                   
+                   ];
+                   
+                   
+var soGridDataModel = {
+        location: "local",
+        sorting: "local",
+        dataType: "JSON",
+        method: "GET",
+        curPage: 1,
+        url: "/api/soalternatedate/",
+        getData: function (dataJSON) {
+            return { data: dataJSON };
+        }
+}
+
+
+
+$soGrid = $jq("div#soAltGrid").pqGrid({ flexHeight: true,
+    width: "100%",
+    dataModel: soGridDataModel,
+    colModel: soGridColModel,
+    pageModel: { type: "local", rPP: 20, rPPOptions: [20, 50, 100, 500, 1000]},
+    title: "<b>Standing Order Alternate Delivery Dates</b>",
+    filterModel: { on: true, mode: "AND", header:true },
+    numberCell: { show: true },
+    resizable: true,
+    editable: false,
+    wrap: true,
+    hwrap: false, 
+    columnBorders: true,
+    freezeCols: 0,
+    selectionModel: { type: 'row' },
+    rowDblClick: function(event, ui) {
+        if (ui.rowData) {
+        	$jq( "#dialog1" ).dialog( "open" );
+            var rowData = ui.rowData;
+            $jq( "#id" ).val(rowData["id"]);
+            $jq( "#altIdDiv" ).html(rowData["id"]);
+            $jq( "#description" ).val(rowData["description"]);
+            $jq( "#origDate" ).val(rowData["origDateFormatted"]);
+            $jq( "#altDate" ).val(rowData["altDateFormatted"]);
+            $jq( "#soId" ).val(rowData["soId"]);
+            $jq( "#origStartTimeStr" ).val(rowData["origStartTimeStr"]);
+            $jq( "#origEndTimeStr" ).val(rowData["origEndTimeStr"]);
+            $jq( "#AltStartTimeStr" ).val(rowData["AltStartTimeStr"]);
+            $jq( "#AltEndTimeStr" ).val(rowData["AltEndTimeStr"]);
+            $jq( "#actionType" ).val(rowData["actionType"]);
+            $jq( "#startDate" ).val(rowData["startDateFormatted"]);
+            $jq( "#endDate" ).val(rowData["endDateFormatted"]);
+            
+        }
+	},
+	rowSelect: function (evt, ui) {
+        if (ui.rowData) {  
+        	 var rowData = ui.rowData;
+        	$jq( "#delId" ).val(rowData["id"]);
+        	
+        }
+	},
+	render: function(evt, ui){
+		var $toolbar = $jq("<div class='pq-grid-toolbar pq-grid-toolbar-padded'></div>").appendTo($jq(".pq-grid-top", this));
+		 
+        $jq("<span class=\"createButton\"><b>Add</b></span>").appendTo($toolbar).button({ icons: { primary: "ui-icon-plusthick"} }).click(function (evt) {
+            addRow();
+        });
+        $jq("<span class=\"createButton\">&nbsp;</span>").appendTo($toolbar);
+        $jq("<span class=\"deleteButton\"><b>Delete</b></span>").appendTo($toolbar).button({ icons: { primary: "ui-icon-circle-minus"} }).click(function (evt) {
+            deleteRow();
+        });
+        $jq("<span class=\"uploadButton\"><b>Upload</b></span>").appendTo($toolbar).button({ icons: { primary: "ui-button-icon-secondary"} }).click(function () {
+        	showUploadDialog();
+        });
+        $toolbar.disableSelection();
+	}
+});
+
+
+$soGrid.pqGrid( "showLoading" );
+$jq.ajax({
+    url: "/api/soalternatedate/",
+    cache: false,
+    async: true,
+    dataType: "JSON",
+    success: function(response){
+        $soGrid.pqGrid("option", "dataModel.data", response);
+        $soGrid.pqGrid( "refreshView" );
+        $soGrid.pqGrid( "hideLoading" );
+    }
+});
+
+function filter(dataIndx, value) {
+    $soGrid.pqGrid("filter", {
+            data: [{ dataIndx: dataIndx, value: value}]
+    });
+    $soGrid.pqGrid( "refreshDataAndView" );
+}
+
+function time(time_string) {
+
+				var ampm = 'a';
+				var hour = -1;
+				var minute = 0;
+				var temptime = '';
+				time_string = time_string.trim();
+				var ampmPatEnd = (/AM|PM$/);
+				if (time_string.length == 8 && time_string.match(ampmPatEnd)) {
+					return time_string;
+				}
+				for ( var n = 0; n < time_string.length; n++) {
+
+					var ampmPat = (/a|p|A|P/);
+					if (time_string.charAt(n).match(ampmPat)) {
+						ampm = time_string.charAt(n);
+						break;
+					} else {
+						ampm = 'a';
+					}
+
+					var digPat = (/\d/);
+					if (time_string.charAt(n).match(digPat)) {
+						temptime += time_string.charAt(n);
+					}
+				}
+				if (temptime.length > 0 && temptime.length <= 2) {
+					hour = temptime;
+					minute = 0;
+				} else if (temptime.length == 3 || temptime.length == 4) {
+					if (temptime.length == 3) {
+						hour = time_string.charAt(0);
+						minute = time_string.charAt(1);
+						minute += time_string.charAt(2);
+					} else {
+						hour = time_string.charAt(0);
+						hour += time_string.charAt(1);
+						minute = time_string.charAt(2);
+						minute += time_string.charAt(3);
+					}
+				} else {
+					return '';
+				}
+
+				if ((hour <= 12) && (minute <= 59)) {
+
+					if (hour.toString().length == 1) {
+						hour = '0' + hour;
+					}
+
+					if (minute.toString().length == 1) {
+						minute = '0' + minute;
+					}
+					if (hour == '00') {
+						ampm = 'a'
+					}
+					//if (hour == '12' ) { ampm='p' }
+					temptime = hour + ':' + minute + ' ' + ampm.toUpperCase() + 'M';
+				} else {
+					temptime = '';
+				}
+
+				return temptime
+
+			}
+
+			function hour(time) {
+
+				var result = parseFloat(time.trim());
+				if (result == null || isNaN(result))
+					return "";
+				if (result > 24)
+					return "";
+				var result1 = "" + result;
+				if (result1.indexOf(".") == -1)
+					result1 += ".00";
+				else {
+					var index = result1.indexOf(".");
+					var le = result1.trim().length;
+					if (le - index > 3)
+						result1 = result1.substring(0, index + 3);
+				}
+				if (time.trim().length == 1)
+					result1 = "0" + result1;
+				return result1;
+
+			}
+			function submitForm(form){
+				var json = ConvertFormToJSON(form);
+		        $jq.ajax({
+		            type: "POST",
+		            url: "/api/soalternatedate/",
+		            data: {data:JSON.stringify(json)},
+		            dataType: "json",
+		            success : function(json){
+		            	
+		            	$jq('#resultDiv').css("color","#006400"); 
+	                	$jq('#resultDiv').html("<b>Created/Updated successfully.</b>");
+	                	$soGrid.pqGrid( "refresh" );
+		            }
+		        });
+			}
+			
+			function submitUploadForm() {
+				 var formUrl =$jq("#uploadForm").attr("action");
+      		     var formData = new FormData($jq("#uploadForm")[0]);
+      		     $jq.ajax({
+   		         url: formUrl,
+   		         type: 'POST',
+   		         data:  formData,
+   		         mimeType:"multipart/form-data",
+   		         contentType: false,
+   		         cache: false,
+   		         processData:false,
+   		                success: function(data, textStatus, jqXHR)
+   		                {
+   		                	$jq('#result').html(data);
+   		                	if(data == '' || data == null){
+   		                		$jq('#error').css("color","#00FF00"); 
+   		                		$jq('#error').html("<b>Upload successful.</b>");
+   		                	}else{
+   		                		$jq('#error').css("color","#FF0000"); 
+   		                		$jq('#error').html("<b>Upload failed.</b>");
+   		                	}
+   		                },
+   		                error: function(jqXHR, textStatus, errorThrown) 
+   		                {
+   		                	$jq('#error').html("<b>Upload failed.</b>");
+   		                }
+   				  });  
+	                	
+               }
+                 
+			
+			function ConvertFormToJSON(form){
+			    var array = $jq(form).serializeArray();
+			    var json = {};
+			    
+			    $jq.each(array, function() {
+			        json[this.name] = this.value || '';
+			    });
+			    return json;
+			}
+			
+			function addRow(){
+				$jq( "#dialog1" ).dialog( "open" );
+				$jq( "#form1" )[0].reset();
+			}
+			
+			function deleteRow(){
+				var altId = $jq("#delId").val();
+				if(altId=="" || null == altId){
+					alert("Please select a record to delete.");
+				}
+				else if(confirm("Are you sure, you want to delete this standing order alternate date setup ?")){
+					$jq.ajax({
+			            type: "DELETE",
+			            url: "/api/soalternatedate?id="+altId,
+			            success : function(json){
+			            	$jq('#resultDiv').css("color","#006400"); 
+			            	$jq('#resultDiv').html("<b>Deleted successfully.</b>");
+			            	$soGrid.pqGrid( "refresh" );
+			            }
+			        });
+				}
+			}
+			
+			function showUploadDialog(){
+				$jq( "#dialog2" ).dialog( "open" );
+				$jq( "#form1" )[0].reset();
+			}
+</script>

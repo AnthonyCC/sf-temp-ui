@@ -10,11 +10,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.standingorders.EnumStandingOrderAlternateDeliveryType;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.framework.webapp.ActionError;
@@ -30,6 +33,7 @@ public class CrmStandingOrderAltDatesTag extends AbstractControllerTag{
 	private String filter;
 	private String intervals;
 	private DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+	private DateFormat tf = new SimpleDateFormat("hh:mm a");
 	
 	public void setFilter(String filter) {
 		this.filter = filter;
@@ -60,19 +64,19 @@ public class CrmStandingOrderAltDatesTag extends AbstractControllerTag{
 						FDStandingOrdersManager.getInstance().addStandingOrderAltDeliveryDate(altDeliveryDate);
 
 					} else if ("save".equals(altDeliveryDateOperation)){
-						FDStandingOrdersManager.getInstance().updateStandingOrderAltDeliveryDate(getAltDeliveryDateFromRequest(request));
+						FDStandingOrdersManager.getInstance().updateStandingOrderAltDeliveryDate(altDeliveryDate);
 
 					} else if ("delete".equals(altDeliveryDateOperation)){
-						FDStandingOrdersManager.getInstance().deleteStandingOrderAltDeliveryDate(getAltDeliveryDateFromRequest(request));
+						FDStandingOrdersManager.getInstance().deleteStandingOrderAltDeliveryDate(altDeliveryDate);
 					}
 					
 					pageContext.setAttribute("successMsg", Character.toUpperCase(altDeliveryDateOperation.charAt(0)) + altDeliveryDateOperation.substring(1) + " successful for " + altDeliveryDate);
 				} catch (FDResourceException e) {
 					if (e.getFDStackTrace().contains("ORA-00001")){
-						actionResult.addError(new ActionError("so_error", "Error in "+altDeliveryDateOperation+": Original Date must be unique."));
+						actionResult.addError(new ActionError("so_error", "Error in "+altDeliveryDateOperation+": Original Date & Alternate Date combination must be unique."));
 					} else {
 						throw new JspException("Failed to "+altDeliveryDateOperation+" the standing order alternative delivery dates: ",e);
-					}
+					}		
 				} catch (IllegalArgumentException e) {
 					actionResult.addError(new ActionError("so_error", "Error in "+altDeliveryDateOperation+": "+e.getMessage()));
 				}
@@ -81,7 +85,8 @@ public class CrmStandingOrderAltDatesTag extends AbstractControllerTag{
 		return performGetAction(request, actionResult);
 	}
 
-	private FDStandingOrderAltDeliveryDate getAltDeliveryDateFromRequest(HttpServletRequest request){
+	private FDStandingOrderAltDeliveryDate getAltDeliveryDateFromRequest(HttpServletRequest request) throws JspException{
+		String altId = request.getParameter("altId");
 		Date origDate;
 		try {
 			origDate = df.parse(request.getParameter("origDate"));
@@ -97,14 +102,85 @@ public class CrmStandingOrderAltDatesTag extends AbstractControllerTag{
 		
 		String desciption = request.getParameter("description");
 		if (desciption!=null && desciption.length() > DESCRIPTION_LENGTH){
-			throw new IllegalArgumentException("Description lenght too long, max "+DESCRIPTION_LENGTH+" characters allowed"); 
+			throw new IllegalArgumentException("Description length too long, max "+DESCRIPTION_LENGTH+" characters allowed"); 
 		}
 
-		FDStandingOrderAltDeliveryDate altDeliveryDate = new FDStandingOrderAltDeliveryDate();
+		String soId = request.getParameter("soId");
+		Date origDlvStartTime =null;
+		try {
+			origDlvStartTime = tf.parse(request.getParameter("origDlvStartTime"));
+		} catch (ParseException e) {
+			throw new IllegalArgumentException("origDlvStartTime - " + e.getMessage(),e); 
+		}
+		Date origDlvEndTime =null;
+		try {
+			origDlvEndTime = tf.parse(request.getParameter("origDlvEndTime"));
+		} catch (ParseException e) {
+			throw new IllegalArgumentException("origDlvEndTime - " + e.getMessage(),e); 
+		}
+		
+		Date altDlvStartTime =null;
+		try {
+			altDlvStartTime = tf.parse(request.getParameter("altDlvStartTime"));
+		} catch (ParseException e) {
+			throw new IllegalArgumentException("altDlvStartTime - " + e.getMessage(),e); 
+		}
+		
+		Date altDlvEndTime = null;
+		try {
+			altDlvEndTime = tf.parse(request.getParameter("altDlvEndTime"));
+		} catch (ParseException e) {
+			throw new IllegalArgumentException("altDlvEndTime - " + e.getMessage(),e); 
+		}
+		
+		Date startDate = null;
+		try {
+			startDate = df.parse(request.getParameter("startDate"));
+		} catch (ParseException e) {
+			throw new IllegalArgumentException("Start Date - " + e.getMessage(),e); 
+		}
+		
+		Date endDate = null;
+		try {
+			endDate = df.parse(request.getParameter("endDate"));
+		} catch (ParseException e) {
+			throw new IllegalArgumentException("End Date - " + e.getMessage(),e); 
+		}
+		
+		String actionType = request.getParameter("actionType");
+		Date currentDate = new Date();
+		HttpSession session = pageContext.getSession();
+		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
+		FDStandingOrderAltDeliveryDate altDeliveryDate = null;
+		if(null==altId){
+			altDeliveryDate = new FDStandingOrderAltDeliveryDate();
+		}else{
+			try {
+				altDeliveryDate = FDStandingOrdersManager.getInstance().getStandingOrderAltDeliveryDateById(altId);
+			} catch (FDResourceException e) {
+				throw new JspException("Failed to get the standing order alternative delivery date with id:"+altId,e);
+			}
+		}
 		altDeliveryDate.setOrigDate(origDate);
 		altDeliveryDate.setAltDate(altDate);
 		altDeliveryDate.setDescription(desciption);
 		altDeliveryDate.setDateFormat(df);
+		altDeliveryDate.setTimeFormat(tf);
+		altDeliveryDate.setStartDate(startDate);
+		altDeliveryDate.setEndDate(endDate);
+//		altDeliveryDate.setActionType(EnumStandingOrderAlternateDeliveryType.getEnum(actionType));
+		altDeliveryDate.setActionType(actionType);
+		altDeliveryDate.setOrigStartTime(origDlvStartTime);
+		altDeliveryDate.setOrigEndTime(origDlvEndTime);
+		altDeliveryDate.setAltStartTime(altDlvStartTime);
+		altDeliveryDate.setAltEndTime(altDlvEndTime);
+		if(altId== null){
+			altDeliveryDate.setCreatedBy(agent.getUserId());
+			altDeliveryDate.setCreatedTime(currentDate);
+		}else {
+			altDeliveryDate.setModifiedBy(agent.getUserId());
+			altDeliveryDate.setModifiedTime(currentDate);
+		}
 		return altDeliveryDate;
 	}
 	
@@ -117,30 +193,44 @@ public class CrmStandingOrderAltDatesTag extends AbstractControllerTag{
 			filter = yearNow;
 			request.getSession().setAttribute("CrmStandingOrderAltDatesFilter",filter);
 		}
-		
-		List<FDStandingOrderAltDeliveryDate> altDeliverDates;
-		try {
-			altDeliverDates= FDStandingOrdersManager.getInstance().getStandingOrderAltDeliveryDates();
-		} catch (FDResourceException e) {
-			throw new JspException("Failed to get the standing order alternative delivery dates: ",e);
+		String altId = request.getParameter("altId");
+		FDStandingOrderAltDeliveryDate altDate = null;
+		List<FDStandingOrderAltDeliveryDate> altDeliverDates = null;
+		if(null != altId && !"".equals(altId.trim())){
+			try {
+				altDeliverDates = new ArrayList<FDStandingOrderAltDeliveryDate>();
+				altDate =FDStandingOrdersManager.getInstance().getStandingOrderAltDeliveryDateById(altId);
+				altDeliverDates.add(altDate);
+			} catch (FDResourceException e) {
+				throw new JspException("Failed to get the standing order alternative delivery date with id:"+altId,e);
+			}
+		}
+		else{
+			try {
+				altDeliverDates= FDStandingOrdersManager.getInstance().getStandingOrderAltDeliveryDates();
+			} catch (FDResourceException e) {
+				throw new JspException("Failed to get the standing order alternative delivery dates: ",e);
+			}
 		}
 		
 		LinkedList<String> intervals = new LinkedList<String>();
 
 		List<FDStandingOrderAltDeliveryDate> altDeliverDatesFiltered = new ArrayList<FDStandingOrderAltDeliveryDate>();
-		
-		for (FDStandingOrderAltDeliveryDate altDeliverDate: altDeliverDates){
-
-			altDeliverDate.setDateFormat(df);
-			Date origDate = altDeliverDate.getOrigDate();
-			String origDateYear = yearDf.format(origDate);
-
-			if (NO_FILTER_LABEL.equals(filter) || origDateYear.equals(filter)){
-				altDeliverDatesFiltered.add(altDeliverDate);
-			}
-			
-			if (!intervals.contains(origDateYear)){
-				intervals.add(origDateYear);
+		if(null !=altDeliverDates){
+			for (FDStandingOrderAltDeliveryDate altDeliverDate: altDeliverDates){
+	
+				altDeliverDate.setDateFormat(df);
+				altDeliverDate.setTimeFormat(tf);
+				Date origDate = altDeliverDate.getOrigDate();
+				String origDateYear = yearDf.format(origDate);
+	
+				if (NO_FILTER_LABEL.equals(filter) || origDateYear.equals(filter)){
+					altDeliverDatesFiltered.add(altDeliverDate);
+				}
+				
+				if (!intervals.contains(origDateYear)){
+					intervals.add(origDateYear);
+				}
 			}
 		}
 
@@ -150,7 +240,6 @@ public class CrmStandingOrderAltDatesTag extends AbstractControllerTag{
 
 		Collections.sort(intervals, Collections.reverseOrder());
 		intervals.push(NO_FILTER_LABEL);
-		
 		pageContext.setAttribute(this.id, altDeliverDatesFiltered);
 		pageContext.setAttribute(this.filter, filter);
 		pageContext.setAttribute(this.intervals, intervals);
@@ -175,7 +264,7 @@ public class CrmStandingOrderAltDatesTag extends AbstractControllerTag{
                     new VariableInfo(data.getAttributeString("result"),
 		                            "com.freshdirect.framework.webapp.ActionResult",
 		                            true,
-		                            VariableInfo.NESTED)             
+		                            VariableInfo.NESTED)
 		        };
 
 		    }

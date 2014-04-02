@@ -45,4 +45,8 @@ public interface FDStandingOrdersSB extends EJBObject {
 	public void checkForDuplicateSOInstances(FDIdentity identity) throws FDResourceException,RemoteException;
 	public void insertIntoCoremetricsUserinfo(FDUserI fdUser, int flag) throws FDResourceException, RemoteException;
 	public boolean getCoremetricsUserinfo(FDUserI fdUser) throws FDResourceException, RemoteException;
+	public Map<Date, List<FDStandingOrderAltDeliveryDate>> getStandingOrdersGlobalAlternateDeliveryDates() throws FDResourceException, RemoteException;
+	public FDStandingOrderAltDeliveryDate getStandingOrderAltDeliveryDateById(String id) throws FDResourceException, RemoteException ;
+	public void deleteStandingOrderAltDeliveryDateById(String altId) throws FDResourceException, RemoteException;
+	public void addStandingOrderAltDeliveryDates(List<FDStandingOrderAltDeliveryDate> altDeliveryDates) throws FDResourceException, RemoteException;
 }

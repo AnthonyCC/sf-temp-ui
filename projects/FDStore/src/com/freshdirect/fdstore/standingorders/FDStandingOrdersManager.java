@@ -467,6 +467,21 @@ public class FDStandingOrdersManager {
 		}
 	}
 	
+	public Map<Date,List<FDStandingOrderAltDeliveryDate>> getStandingOrdersGlobalAlternateDeliveryDates() throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();
+			
+			return sb.getStandingOrdersGlobalAlternateDeliveryDates();
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
 	public void addStandingOrderAltDeliveryDate(FDStandingOrderAltDeliveryDate altDeliveryDate) throws FDResourceException {
 		lookupManagerHome();
 		try {
@@ -509,6 +524,19 @@ public class FDStandingOrdersManager {
 		}
 	}
 	
+	public void deleteStandingOrderAltDeliveryDateById(String altId) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();			
+			sb.deleteStandingOrderAltDeliveryDateById(altId);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
 
 	public boolean lock(FDStandingOrder so, String lockId) throws FDResourceException {
 		lookupManagerHome();
@@ -621,6 +649,34 @@ public class FDStandingOrdersManager {
 		try {
 			FDStandingOrdersSB sb = soHome.create();			
 			return sb.getCoremetricsUserinfo(fdUser);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public FDStandingOrderAltDeliveryDate getStandingOrderAltDeliveryDateById(String id) throws FDResourceException{
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();			
+			return sb.getStandingOrderAltDeliveryDateById(id);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public void addStandingOrderAltDeliveryDates(List<FDStandingOrderAltDeliveryDate> altDeliveryDates) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();			
+			sb.addStandingOrderAltDeliveryDates(altDeliveryDates);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.standingorders;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
@@ -38,13 +39,17 @@ public class SOResult implements Serializable {
 	public static Result createSkipped( FDStandingOrder so, String skipReason ) {
 		return new Result( Status.SKIPPED ).fillSOData( so ).fillInternalMessage( skipReason );
 	}
+	
+	public static Result createSkipped( FDStandingOrder so, FDIdentity cust, FDCustomerInfo custInfo, String skipReason ){
+		return createSkipped(so, cust, custInfo, skipReason, null);
+	}
 
 	/**
 	 *	Skipped Standing Orders result, with extra customer data 
 	 */
-	public static Result createSkipped( FDStandingOrder so, FDIdentity cust, FDCustomerInfo custInfo, String skipReason ) {
+	public static Result createSkipped( FDStandingOrder so, FDIdentity cust, FDCustomerInfo custInfo, String skipReason,FDStandingOrderAltDeliveryDate altDateInfo) {
 		return new Result( Status.SKIPPED ).
-				fillSOData( so ).
+				fillSOData( so, altDateInfo ).
 				fillCustomerData( cust, custInfo ).
 				fillInternalMessage( skipReason );
 	}
@@ -67,6 +72,14 @@ public class SOResult implements Serializable {
 	}
 
 
+	/**
+	 *	Technical error for a Standing Order. 
+	 */
+	public static Result createTechnicalError( FDStandingOrder so, String detail,FDStandingOrderAltDeliveryDate altDateInfo ) {
+		return new Result( Status.FAILURE ).
+				fillErrorData( ErrorCode.TECHNICAL, ErrorCode.TECHNICAL.getErrorHeader(), detail ).
+				fillSOData( so,altDateInfo );
+	}
 	/**
 	 *	User error for a Standing Order. 
 	 */
@@ -102,11 +115,21 @@ public class SOResult implements Serializable {
 		return result;
 	}
 	
+	/**
+	 *	Cancelled for a week, so skipped to next delivery date- Standing Order. 
+	 */
+	public static Result createForcedSkipped( FDStandingOrder so, FDIdentity cust, FDCustomerInfo custInfo, String skipReason ) {
+		Result result = new Result( Status.FORCED_SKIPPED ).
+				fillSOData( so ).
+				fillCustomerData( cust, custInfo ).
+				fillInternalMessage( skipReason );
+		return result;
+	}
 	
 	/**
 	 *	SO Result Status enum, represents the status of the result of processing an SO 
 	 */
-	public static enum Status { SUCCESS, FAILURE, SKIPPED };
+	public static enum Status { SUCCESS, FAILURE, SKIPPED, FORCED_SKIPPED };
 	
 	
 	/**
@@ -149,6 +172,10 @@ public class SOResult implements Serializable {
 		private String internalMessage;
 		
 		protected boolean errorOccured	= false;
+		
+		private Date deliveryDate;
+		private Date deliveryStartTime;
+		private Date deliveryEndTime;
 
 		
 		/**
@@ -172,7 +199,20 @@ public class SOResult implements Serializable {
 			this.soName = so.getCustomerListName();
 			return this;
 		}
-
+		/**
+		 *	Fills in SO basic data, private, only for internal use
+		 *
+		 *  Use the factory methods to create instances
+		 */
+		private Result fillSOData( FDStandingOrder so,FDStandingOrderAltDeliveryDate altDateInfo ) {
+			fillSOData(so);
+			if(null != altDateInfo){
+				this.deliveryDate = altDateInfo.getAltDate();
+				this.deliveryStartTime = altDateInfo.getAltStartTime();
+				this.deliveryEndTime = altDateInfo.getAltEndTime();
+			}
+			return this;
+		}
 
 		/**
 		 *	Fills in customer data, private, only for internal use
@@ -402,6 +442,9 @@ public class SOResult implements Serializable {
 					countFailed();
 					break;
 				case SKIPPED:
+					countSkipped();
+					break;
+				case FORCED_SKIPPED:
 					countSkipped();
 					break;
 				default:

@@ -78,8 +78,10 @@ import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.rules.FDRuleContextI;
 import com.freshdirect.fdstore.standingorders.DeliveryInterval;
+import com.freshdirect.fdstore.standingorders.EnumStandingOrderAlternateDeliveryType;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
+import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.ProcessActionResult;
 import com.freshdirect.fdstore.standingorders.SOResult;
@@ -130,7 +132,7 @@ public class StandingOrderUtil {
 	 * @throws FDResourceException
 	 * 
 	 */
-	public static SOResult.Result process( FDStandingOrder so, Date altDate, TimeslotEventModel event, FDActionInfo info
+	public static SOResult.Result process( FDStandingOrder so, FDStandingOrderAltDeliveryDate altDateInfo, TimeslotEventModel event, FDActionInfo info
 					, MailerGatewayHome mailerHome, boolean forceCapacity, boolean createIfSoiExistsForWeek, boolean isSendReminderNotificationEmail) throws FDResourceException {
 		
 		LOGGER.info( "Processing Standing Order : " + so );
@@ -201,10 +203,27 @@ public class StandingOrderUtil {
 		// ============================
 		
 		
-		DeliveryInterval deliveryTimes;		
+		DeliveryInterval deliveryTimes = null;	
+		altDateInfo = null != so.getAltDeliveryInfo() ? so.getAltDeliveryInfo():altDateInfo; //Priority should be given standing order level alternate delivery info.
+		Date altDate = null;
+		Date startTime = so.getStartTime();
+		Date endTime = so.getEndTime();
+		EnumStandingOrderAlternateDeliveryType altDeliveryType = null;
+		if(null != altDateInfo){
+			altDate = altDateInfo.getAltDate();
+			altDeliveryType = altDateInfo.getActionType();
+			startTime = null != altDateInfo.getAltStartTime() ? altDateInfo.getAltStartTime() : startTime;
+			endTime = null != altDateInfo.getAltEndTime() ? altDateInfo.getAltEndTime() : endTime;			
+		}
 		try {
 			if ( null != altDate ) {
-				deliveryTimes = new DeliveryInterval( altDate, so.getStartTime(), so.getEndTime() );
+				if(null == altDeliveryType || EnumStandingOrderAlternateDeliveryType.ALTERNATE_DELIVERY.equals(altDeliveryType)){
+					deliveryTimes = new DeliveryInterval( altDate, startTime, endTime );
+				}else if(EnumStandingOrderAlternateDeliveryType.SKIP_DELIVERY.equals(altDeliveryType)){
+					//skip the current delivery and move to next delivery date.
+					so.skipDeliveryDate();
+					return SOResult.createForcedSkipped( so, new FDIdentity(so.getCustomerId()), new FDCustomerInfo(so.getCustomerEmail()), "Skipping because customer has requested to cancel the next delivery." );				
+				}
 			} else {
 				deliveryTimes = new DeliveryInterval( so );
 			}			
@@ -214,7 +233,7 @@ public class StandingOrderUtil {
 		}
 
 		// check if we are within the delivery window
-		if ( !deliveryTimes.isWithinDeliveryWindow() ) {
+		if ( null == deliveryTimes || !deliveryTimes.isWithinDeliveryWindow() ) {
 			LOGGER.info( "Skipping order because delivery date falls outside of the current delivery window." );
 			return SOResult.createSkipped( so, new FDIdentity(so.getCustomerId()), new FDCustomerInfo(so.getCustomerEmail()), "Skipping because delivery date falls outside of the current delivery window." ); 
 		}		

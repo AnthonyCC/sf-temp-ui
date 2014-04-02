@@ -48,6 +48,8 @@ public class FDStandingOrder extends ModelSupport {
 	String errorDetail = null;	// detailed error message detail
 
 	String customerListName;	// Only used when standing order is not yet persisted!
+	
+	FDStandingOrderAltDeliveryDate altDeliveryInfo;
 
 	public static final String STANDING_ORDER_DETAIL_PAGE	= "/quickshop/qs_so_details.jsp";
 	
@@ -416,5 +418,13 @@ public class FDStandingOrder extends ModelSupport {
 
 	public void setCustomerEmail(String customerEmail) {
 		this.customerEmail = customerEmail;
+	}
+
+	public FDStandingOrderAltDeliveryDate getAltDeliveryInfo() {
+		return altDeliveryInfo;
+	}
+
+	public void setAltDeliveryInfo(FDStandingOrderAltDeliveryDate altDeliveryInfo) {
+		this.altDeliveryInfo = altDeliveryInfo;
 	}
 }

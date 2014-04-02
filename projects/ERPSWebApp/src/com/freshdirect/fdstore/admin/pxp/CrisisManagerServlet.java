@@ -52,6 +52,7 @@ import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.SOResult;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -204,10 +205,13 @@ public class CrisisManagerServlet extends HttpServlet {
 				FDActionInfo info = getActionInfo(initiator);
 				if(info.getIdentity() == null)info.setIdentity(so.getCustomerIdentity());
 				if(null != altDate){
+					FDStandingOrderAltDeliveryDate altDateInfo = new FDStandingOrderAltDeliveryDate();
+					altDateInfo.setOrigDate(so.getNextDeliveryDate());
+					altDateInfo.setAltDate(altDate);
 					so.setStartTime(startTime);
 					so.setEndTime(endTime);
 					so.clearLastError();
-					result = StandingOrderUtil.process( so, altDate, event, info, mailerHome, true, true, false );
+					result = StandingOrderUtil.process( so, altDateInfo, event, info, mailerHome, true, true, false );
 				}else{
 					LOGGER.info( "Alternate date for standing order # " + standingOrderId + " missing." );
 					return null;
@@ -289,6 +293,8 @@ public class CrisisManagerServlet extends HttpServlet {
 			activityRecord.setActivityType( EnumAccountActivityType.STANDINGORDER_FAILED );
 		} else if ( status == SOResult.Status.SKIPPED ) {
 			activityRecord.setActivityType( EnumAccountActivityType.STANDINGORDER_SKIPPED );					
+		} else if ( status == SOResult.Status.FORCED_SKIPPED ) {
+			activityRecord.setActivityType( EnumAccountActivityType.STANDINGORDER_FORCED_SKIPPED );					
 		}
 		
 		new ErpLogActivityCommand( activityRecord ).execute();		

@@ -5,6 +5,8 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.ejb.CreateException;
@@ -26,6 +28,7 @@ import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.SOResult;
 import com.freshdirect.fdstore.standingorders.SOResult.Result;
@@ -124,9 +127,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 		
 		// Load alternate dates - will be null if there are none. (?)
-		Map<Date, Date> altDates = null;
+		Map<Date, List<FDStandingOrderAltDeliveryDate>> altDates = null;
 		try {
-			altDates = FDStandingOrdersManager.getInstance().getStandingOrdersAlternateDeliveryDates();
+			altDates = FDStandingOrdersManager.getInstance().getStandingOrdersGlobalAlternateDeliveryDates();
 		} catch (FDResourceException e) {
 			LOGGER.error( "Getting standing order alternate delivery dates failed with FDResourceException!", e );
 		}
@@ -140,8 +143,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			Result result;
 			try {			
 				// The main processing occurs here.
-				lookupMailerHome();				
-				result = StandingOrderUtil.process( so, null != altDates ? altDates.get(so.getNextDeliveryDate()) : null, null, null, mailerHome
+				lookupMailerHome();		
+				FDStandingOrderAltDeliveryDate altDate = getStandingOrderAltDeliveryDateForSO(altDates, so);
+				result = StandingOrderUtil.process( so, altDate, null, null, mailerHome
 											, jobConfig.isForceCapacity(), jobConfig.isCreateIfSoiExistsForWeek(), jobConfig.isSendReminderNotificationEmail() );
 			} catch (FDResourceException re) {
 				LOGGER.error( "Processing standing order failed with FDResourceException!", re );
@@ -197,6 +201,30 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 		return resultCounter;			
 	}
+
+	private FDStandingOrderAltDeliveryDate getStandingOrderAltDeliveryDateForSO(
+			Map<Date, List<FDStandingOrderAltDeliveryDate>> altDates,
+			FDStandingOrder so) {
+		FDStandingOrderAltDeliveryDate altDate = null;
+		if(null != altDates){
+			List<FDStandingOrderAltDeliveryDate> altDatesList = altDates.get(so.getNextDeliveryDate());
+			if(null != altDatesList){
+				for (Iterator<FDStandingOrderAltDeliveryDate> iterator = altDatesList.iterator(); iterator.hasNext();) {
+					FDStandingOrderAltDeliveryDate fdStandingOrderAltDeliveryDate = iterator.next();
+					if(so.getStartTime().equals(fdStandingOrderAltDeliveryDate.getOrigStartTime()) &&
+							so.getEndTime().equals(fdStandingOrderAltDeliveryDate.getOrigEndTime())){
+						altDate = fdStandingOrderAltDeliveryDate;
+						break ;
+					}else if(null == altDate && null == fdStandingOrderAltDeliveryDate.getOrigStartTime() && null == fdStandingOrderAltDeliveryDate.getOrigEndTime()){
+						//Default alternate date for the delivery date
+						altDate = fdStandingOrderAltDeliveryDate;
+					}
+					
+				}
+			}
+		}
+		return altDate;
+	}
 	
 	
 	private void logActivity ( FDStandingOrder so, Result result ) {
@@ -232,6 +260,8 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			activityRecord.setActivityType( EnumAccountActivityType.STANDINGORDER_FAILED );
 		} else if ( status == Status.SKIPPED ) {
 			activityRecord.setActivityType( EnumAccountActivityType.STANDINGORDER_SKIPPED );					
+		} else if ( status == Status.FORCED_SKIPPED ) {
+			activityRecord.setActivityType( EnumAccountActivityType.STANDINGORDER_FORCED_SKIPPED );					
 		}
 		
 		new ErpLogActivityCommand( activityRecord ).execute();		
@@ -260,6 +290,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		return false;
 	}
 
+	private static boolean sendTechnicalMail ( String msg, String errorCode, String customerId, String customerName, String soId, String soName ) {
+		return sendTechnicalMail(msg,errorCode,customerId,customerName,soId,soName,null,null,null);
+	}
 	/**
 	 * Sends an error report email about a technical error to the 'so admins' (?)  (address is configurable via erpservices.properties)
 	 * 
@@ -271,7 +304,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	 * 
 	 * @param msg
 	 */
-	private static boolean sendTechnicalMail ( String msg, String errorCode, String customerId, String customerName, String soId, String soName ) {
+	private static boolean sendTechnicalMail ( String msg, String errorCode, String customerId, String customerName, String soId, String soName,Date deliveryDate, Date startTime, Date endTime ) {
 		try {
 						
 			ErpMailSender mailer = new ErpMailSender();
@@ -311,6 +344,18 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				message.append( "errorCode: " );
 				message.append( errorCode );
 				message.append( '\n' );				
+			}
+			
+			if ( deliveryDate != null ) {
+				message.append( "Next Delivery: " );
+				message.append( deliveryDate);
+				message.append( '\n' );				
+			}
+			if(null !=startTime && null != endTime){
+				message.append("Delivery Time:");
+				message.append(startTime+" - "+ endTime);
+				message.append( '\n' );			
+				
 			}
 			
 			message.append( "message: " );
