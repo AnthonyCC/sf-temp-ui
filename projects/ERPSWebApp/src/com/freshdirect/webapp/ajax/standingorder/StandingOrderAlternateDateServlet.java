@@ -33,6 +33,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.standingorders.EnumStandingOrderAlternateDeliveryType;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
+import com.freshdirect.fdstore.standingorders.FdStandingOrderAlternateDateUtil;
 import com.freshdirect.fdstore.standingorders.StandingOrderAlternateDatesParser;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
@@ -92,16 +93,24 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
 		if(null != altDeliveryDate){
 			try {
-				if(null == altDeliveryDate.getId()){
-					altDeliveryDate.setCreatedTime(currentDate);
-					altDeliveryDate.setCreatedBy(agent.getUserId());
-					altDeliveryDate.setModifiedTime(currentDate);
-					altDeliveryDate.setModifiedBy(agent.getUserId());
-					FDStandingOrdersManager.getInstance().addStandingOrderAltDeliveryDate(altDeliveryDate);
+				List<String> errors = validate(altDeliveryDate);
+				if(null == errors || errors.isEmpty()){
+					if(null == altDeliveryDate.getId()){
+						altDeliveryDate.setCreatedTime(currentDate);
+						altDeliveryDate.setCreatedBy(agent.getUserId());
+						altDeliveryDate.setModifiedTime(currentDate);
+						altDeliveryDate.setModifiedBy(agent.getUserId());
+						FDStandingOrdersManager.getInstance().addStandingOrderAltDeliveryDate(altDeliveryDate);
+					}else{
+						altDeliveryDate.setModifiedTime(currentDate);
+						altDeliveryDate.setModifiedBy(agent.getUserId());
+						FDStandingOrdersManager.getInstance().updateStandingOrderAltDeliveryDate(altDeliveryDate);
+					}
 				}else{
-					altDeliveryDate.setModifiedTime(currentDate);
-					altDeliveryDate.setModifiedBy(agent.getUserId());
-					FDStandingOrdersManager.getInstance().updateStandingOrderAltDeliveryDate(altDeliveryDate);
+	    			response.setContentType("application/Text"); 
+	    			PrintWriter pw = response.getWriter();
+	    			pw.write(FdStandingOrderAlternateDateUtil.buildResponse(errors));
+	    			pw.flush();
 				}
 			} catch (FDResourceException e) {
 				LOGGER.error("Failed to save the standing order alternate delivery date");
@@ -110,7 +119,7 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 		}
 	}
 	
-	private void validate(FDStandingOrderAltDeliveryDate altDate){
+	private List<String> validate(FDStandingOrderAltDeliveryDate altDate){
 		List<String> errors = new ArrayList<String>();
 		if(null !=altDate){
 			Date currentDate = Calendar.getInstance().getTime();
@@ -118,7 +127,7 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 				errors.add("Original delivery date can't be empty");
 			}
 			if(EnumStandingOrderAlternateDeliveryType.ALTERNATE_DELIVERY.getName().equals(altDate.getActionType()) && null == altDate.getAltDate() ){
-				errors.add("Alternate delivery date can't be empty to change the standing order delivery");				
+				errors.add("Alternate delivery date can't be empty to change the standing order delivery date");				
 			}
 			/*if(null == altDate.getStartDate()){
 				errors.add("Start Date can't be empty");
@@ -133,8 +142,8 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 			if(null != altDate.getSoId() && !StringUtils.isNumeric(altDate.getSoId())){
 				errors.add("SO Id should be an integer");
 			}
-			
 		}
+		return errors;
 	}
 	protected final static <T> T parseRequestData( HttpServletRequest request, HttpServletResponse response, Class<T> typeClass, boolean allowEmpty ) {
 		T reqData = null;
@@ -183,7 +192,7 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 			}
 		    }catch(Exception ex) {
 		       LOGGER.error("Error while uploading/parsing the standing order alternate delivery dates:", ex);
-		       //TODO: Handle it
+		       sendError( response, 400, "Empty request. Aborting" );
 			    }
 		}
 		else{

@@ -97,6 +97,8 @@ margin-top: 20px;
 				<br/>
 				
 				<div id="dialog1" title="Create/Edit Standing Order Alternate Dates">
+				<div id="formResult" width="500"></div><br/>
+				<input type="hidden" name="delId" id="delId" value=""/>
 				<form id="form1">
 <table width="100%">
 	<tr>
@@ -105,7 +107,7 @@ margin-top: 20px;
 						<% 
 						FDStandingOrderAltDeliveryDate altDeliveryDate = new FDStandingOrderAltDeliveryDate();
 						%>
-				<tr><input type="hidden" name="id" id="id" value=""/><input type="hidden" name="delId" id="delId" value=""/>
+				<tr><input type="hidden" name="id" id="id" value=""/>
 					<td class="promo_detail_label"><span >ID:</span></td>
 					<td class="alignL"><div id="altIdDiv"><%= altDeliveryDate.getId() %></div></td>
 				</tr>
@@ -559,11 +561,23 @@ function time(time_string) {
 		            url: "/api/soalternatedate/",
 		            data: {data:JSON.stringify(json)},
 		            dataType: "json",
-		            success : function(json){
-		            	
-		            	$jq('#resultDiv').css("color","#006400"); 
-	                	$jq('#resultDiv').html("<b>Created/Updated successfully.</b>");
-	                	$soGrid.pqGrid( "refresh" );
+		            success : function(data, textStatus, jqXHR){
+		            	if(data == '' || data == null){
+			            	$jq('#resultDiv').css("color","#006400"); 
+		                	$jq('#resultDiv').html("<b>Created/Updated successfully.</b>");
+		                	$soGrid.pqGrid( "refresh" );
+		            	}else{
+		            		$jq('#formResult').html(data);
+		            	}
+		            },
+		            error: function(data,textStatus,jqXHR){
+		            	if(data == '' || data == null){
+			            	$jq('#resultDiv').css("color","#006400"); 
+		                	$jq('#resultDiv').html("<b>Created/Updated successfully.</b>");
+		                	$soGrid.pqGrid( "refresh" );
+		            	}else{
+		            		$jq('#formResult').html(data.responseText);
+		            	}
 		            }
 		        });
 			}
@@ -592,6 +606,7 @@ function time(time_string) {
    		                },
    		                error: function(jqXHR, textStatus, errorThrown) 
    		                {
+   		                	$jq('#error').css("color","#FF0000");
    		                	$jq('#error').html("<b>Upload failed.</b>");
    		                }
    				  });  
