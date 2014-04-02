@@ -154,7 +154,7 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
 		       "AND p.campaign_code = 'HEADER' "+
 		       "AND p.offer_type = 'WINDOW_STEERING' "+
 		       "AND p.status = 'LIVE' "+
-		       "AND P.EXPIRATION_DATE >= sysdate "+
+		       "AND P.EXPIRATION_DATE >= SYSDATE and P.EXPIRATION_DATE >= ? "+
 		       "AND to_char(?,'D') = T.DAY_ID  "+
 		       "AND (( d.START_DATE is NULL AND d.END_DATE is NULL) OR (d.START_DATE <= ? and d.END_DATE >= ?))";
 	
@@ -169,6 +169,7 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
                 ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
                 ps.setDate(2, new java.sql.Date(deliveryDate.getTime()));
                 ps.setDate(3, new java.sql.Date(deliveryDate.getTime())); 
+                ps.setDate(4, new java.sql.Date(deliveryDate.getTime()));
                 return ps;
             }  
         };
