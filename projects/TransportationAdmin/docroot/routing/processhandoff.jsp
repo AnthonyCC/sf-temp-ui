@@ -246,17 +246,20 @@
 					elDropdown.value = '';
 					return;
 				}
-				try  {
-					var checkExceptionResult = jsonrpcClient.AsyncHandOffProvider.doHandOffCommit(currentBatchId, false, true);
-				
-      				if(checkExceptionResult != null) {
-      					if(!confirm(checkExceptionResult)) {
-      						elDropdown.value = '';
-      						return;
-      					}
-      				}
-      			} catch(rpcException) {
-      				alert("There was a problem in communication to the server. Please try to refresh the browser window!\n"+e);
+      			
+      			if(actionType != 'CAN') {
+					try  {
+						var checkExceptionResult = jsonrpcClient.AsyncHandOffProvider.doHandOffCommit(currentBatchId, false, true);
+					
+	      				if(checkExceptionResult != null) {
+	      					if(!confirm(checkExceptionResult)) {
+	      						elDropdown.value = '';
+	      						return;
+	      					}
+	      				}
+	      			} catch(rpcException) {
+	      				alert("There was a problem in communication to the server. Please try to refresh the browser window!\n"+e);
+	      			}
       			}
 				
       			if(actionType == 'HandOff Report') {
