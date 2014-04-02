@@ -120,7 +120,7 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 			if(EnumStandingOrderAlternateDeliveryType.ALTERNATE_DELIVERY.getName().equals(altDate.getActionType()) && null == altDate.getAltDate() ){
 				errors.add("Alternate delivery date can't be empty to change the standing order delivery");				
 			}
-			if(null == altDate.getStartDate()){
+			/*if(null == altDate.getStartDate()){
 				errors.add("Start Date can't be empty");
 			} else if(altDate.getStartDate().before(currentDate)){
 				errors.add("Start Date shouldn't be earlier than today");
@@ -129,7 +129,7 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 				errors.add("End Date can't be empty");
 			} else if(null != altDate.getStartDate() && altDate.getEndDate().before(altDate.getStartDate())){
 				errors.add("End Date shouldn't be earlier than Start Date");
-			}
+			}*/
 			if(null != altDate.getSoId() && !StringUtils.isNumeric(altDate.getSoId())){
 				errors.add("SO Id should be an integer");
 			}
