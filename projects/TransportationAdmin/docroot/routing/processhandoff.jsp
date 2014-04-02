@@ -247,7 +247,7 @@
 					return;
 				}
       			
-      			if(actionType != 'CAN') {
+      			if(currentStatus != 'CAN') {
 					try  {
 						var checkExceptionResult = jsonrpcClient.AsyncHandOffProvider.doHandOffCommit(currentBatchId, false, true);
 					
