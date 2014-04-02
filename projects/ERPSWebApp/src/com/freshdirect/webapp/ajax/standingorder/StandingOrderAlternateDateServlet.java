@@ -91,11 +91,12 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 		Date currentDate = Calendar.getInstance().getTime();
 		HttpSession session = request.getSession();
 		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
+		List<String> errors = new ArrayList();
 		if(null != altDeliveryDate){
 			try {
-				List<String> errors = validate(altDeliveryDate);
+				errors = FDStandingOrderAlternateDateUtil.validate(altDeliveryDate,errors);
 				if(null == errors || errors.isEmpty()){
-					if(null == altDeliveryDate.getId()){
+					if(null == altDeliveryDate.getId() || "".equals(altDeliveryDate.getId().trim())){
 						altDeliveryDate.setCreatedTime(currentDate);
 						altDeliveryDate.setCreatedBy(agent.getUserId());
 						altDeliveryDate.setModifiedTime(currentDate);
@@ -114,37 +115,16 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 				}
 			} catch (FDResourceException e) {
 				LOGGER.error("Failed to save the standing order alternate delivery date");
-				//TODO: Handle it.
+				errors.add("Failed to save it. "+((null==e.getMessage() && e.getNestedException()!=null) ?e.getNestedException().getMessage():""));
+				response.setContentType("application/Text"); 
+    			PrintWriter pw = response.getWriter();
+    			pw.write(FDStandingOrderAlternateDateUtil.buildResponse(errors));
+    			pw.flush();
 			}
 		}
 	}
 	
-	private List<String> validate(FDStandingOrderAltDeliveryDate altDate){
-		List<String> errors = new ArrayList<String>();
-		if(null !=altDate){
-			Date currentDate = Calendar.getInstance().getTime();
-			if(null ==altDate.getOrigDate()){
-				errors.add("Original delivery date can't be empty");
-			}
-			if(EnumStandingOrderAlternateDeliveryType.ALTERNATE_DELIVERY.getName().equals(altDate.getActionType()) && null == altDate.getAltDate() ){
-				errors.add("Alternate delivery date can't be empty to change the standing order delivery date");				
-			}
-			/*if(null == altDate.getStartDate()){
-				errors.add("Start Date can't be empty");
-			} else if(altDate.getStartDate().before(currentDate)){
-				errors.add("Start Date shouldn't be earlier than today");
-			}
-			if(null == altDate.getEndDate()){
-				errors.add("End Date can't be empty");
-			} else if(null != altDate.getStartDate() && altDate.getEndDate().before(altDate.getStartDate())){
-				errors.add("End Date shouldn't be earlier than Start Date");
-			}*/
-			if(null != altDate.getSoId() && !StringUtils.isNumeric(altDate.getSoId())){
-				errors.add("SO Id should be an integer");
-			}
-		}
-		return errors;
-	}
+	
 	protected final static <T> T parseRequestData( HttpServletRequest request, HttpServletResponse response, Class<T> typeClass, boolean allowEmpty ) {
 		T reqData = null;
 		boolean  isMultipart = ServletFileUpload.isMultipartContent(request);

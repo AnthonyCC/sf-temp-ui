@@ -1223,8 +1223,8 @@ public class FDStandingOrderDAO {
 		PreparedStatement ps = null;	
 		ResultSet rs = null;
 		try {
-			if(null !=altDate.getId()){
-				if(null !=altDate.getSoId()){
+			if(null !=altDate.getId() && !"".equals(altDate.getId())){
+				if(null !=altDate.getSoId() && !"".equals(altDate.getSoId())){
 					ps = conn.prepareStatement("SELECT * FROM CUST.SO_HOLIDAY_ALT_DATE WHERE CURRENT_DELIVERY_DATE =? AND SO_ID=? AND ID <> ?");
 					ps.setDate(1,new java.sql.Date(altDate.getOrigDate().getTime()));
 					ps.setString(2,altDate.getSoId());
@@ -1235,7 +1235,7 @@ public class FDStandingOrderDAO {
 					ps.setString(2,altDate.getId());
 				}
 			}else{
-				if(null !=altDate.getSoId()){
+				if(null !=altDate.getSoId() && !"".equals(altDate.getSoId())){
 					ps = conn.prepareStatement("SELECT * FROM CUST.SO_HOLIDAY_ALT_DATE WHERE CURRENT_DELIVERY_DATE =? AND SO_ID=?");
 					ps.setDate(1,new java.sql.Date(altDate.getOrigDate().getTime()));
 					ps.setString(2,altDate.getSoId());

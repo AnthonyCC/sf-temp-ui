@@ -62,7 +62,7 @@ public class StandingOrderAlternateDatesParser {
 						for (short iCurrent = firstCellNum; iCurrent < lastCellNum; iCurrent++) {
 							Cell cell = row.getCell(iCurrent);
 							if (cell == null || Cell.CELL_TYPE_BLANK ==cell.getCellType()) {
-								if(iCurrent ==0 || iCurrent == 1 || iCurrent == 9 || iCurrent == 10){
+								if(iCurrent ==0 || iCurrent == 1 || iCurrent == 8){
 									this.exceptionList.add("Empty data found at Row #"+ (row.getRowNum()+1) + ", Cell #"+ (iCurrent +1)+" . It can't be empty.");
 								}
 								cellIndex++;
@@ -101,7 +101,9 @@ public class StandingOrderAlternateDatesParser {
 						}*/
 						list.add(altDate);					}
 					
-					}	 
+					}	
+				
+					FDStandingOrderAlternateDateUtil.validate(altDate, exceptionList);
 				} 
 		}catch(Exception e){
 			LOGGER.error("Error while uploading: "+e);

@@ -388,7 +388,6 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			dao.addStandingOrderAltDeliveryDate(conn, altDeliveryDate);
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in addStandingOrderAltDeliveryDate() : " + e.getMessage(), e );
-			e.printStackTrace();
 			throw new FDResourceException(e);
 		} finally {
 			close(conn);
@@ -540,7 +539,6 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			dao.updateStandingOrderAltDeliveryDate(conn, altDeliveryDate);
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in updateStandingOrderAltDeliveryDate() : " + e.getMessage(), e );
-			e.printStackTrace();
 			throw new FDResourceException(e);
 		} finally {
 			close(conn);
@@ -630,10 +628,26 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			dao.addStandingOrderAltDeliveryDates(conn, altDeliveryDates);
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in addStandingOrderAltDeliveryDate() : " + e.getMessage(), e );
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public boolean checkIfAlreadyExists(FDStandingOrderAltDeliveryDate altDate) throws FDResourceException{
+		Connection conn = null;
+		boolean isDuplicate=false;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();			
+			isDuplicate =dao.checkIfAlreadyExists(conn, altDate);
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in addStandingOrderAltDeliveryDate() : " + e.getMessage(), e );
 			e.printStackTrace();
 			throw new FDResourceException(e);
 		} finally {
 			close(conn);
 		}
+		return isDuplicate;
 	}
 }

@@ -211,7 +211,7 @@ $jq(function() {
 
 
 $jq('div#dialog1').bind('dialogclose', function(event) {
-	location.reload(true);
+	//location.reload(true);
 });
 
 $jq(function() {
@@ -293,7 +293,7 @@ $jq("[id^=cancel_]")
 	var altId =event.target.id.substr(7);	
 		$jq( "#form_"+altId )[0].reset();
 		$jq( "#dialog_"+altId ).dialog( "close" );
-		location.reload(true);
+//		location.reload(true);
 });
 $jq(function() {
 	$jq("[id^=origDate_]").datepicker();
@@ -563,6 +563,7 @@ function time(time_string) {
 		            dataType: "json",
 		            success : function(data, textStatus, jqXHR){
 		            	if(data == '' || data == null){
+		            		location.reload(true);
 			            	$jq('#resultDiv').css("color","#006400"); 
 		                	$jq('#resultDiv').html("<b>Created/Updated successfully.</b>");
 		                	$soGrid.pqGrid( "refresh" );
@@ -601,13 +602,13 @@ function time(time_string) {
    		                		$jq('#error').html("<b>Upload successful.</b>");
    		                	}else{
    		                		$jq('#error').css("color","#FF0000"); 
-   		                		$jq('#error').html("<b>Upload failed.</b>");
+   		                		$jq('#error').html("<b>Upload failed. Please see the errors below.</b>");
    		                	}
    		                },
    		                error: function(jqXHR, textStatus, errorThrown) 
    		                {
    		                	$jq('#error').css("color","#FF0000");
-   		                	$jq('#error').html("<b>Upload failed.</b>");
+   		                	$jq('#error').html("<b>Upload failed. Please see the errors below.</b>");
    		                }
    				  });  
 	                	
@@ -638,10 +639,10 @@ function time(time_string) {
 					$jq.ajax({
 			            type: "DELETE",
 			            url: "/api/soalternatedate?id="+altId,
-			            success : function(json){
+			            success : function(json){			            	
+			            	location.reload(true);
 			            	$jq('#resultDiv').css("color","#006400"); 
 			            	$jq('#resultDiv').html("<b>Deleted successfully.</b>");
-			            	$soGrid.pqGrid( "refresh" );
 			            }
 			        });
 				}

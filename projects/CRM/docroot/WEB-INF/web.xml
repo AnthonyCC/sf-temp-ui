@@ -252,6 +252,14 @@
     <servlet-name>CrisisManagerServlet</servlet-name>
     <url-pattern>/admin_service</url-pattern>
   </servlet-mapping>
+  	<servlet>
+		<servlet-name>StandingOrderAlternateDateServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.ajax.standingorder.StandingOrderAlternateDateServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>StandingOrderAlternateDateServlet</servlet-name>
+		<url-pattern>/api/soalternatedate/*</url-pattern>
+	</servlet-mapping>
   <session-config>
     <session-timeout>15</session-timeout>
   </session-config>
