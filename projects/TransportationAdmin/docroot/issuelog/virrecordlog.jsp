@@ -97,8 +97,8 @@
 					<div style="float:left;"><br>
 						<span>&nbsp;<input id="view_button" type="image" alt="View" src="./images/icons/view.gif" onclick="javascript:doVIRRecordLink('createDate','truckNumber','virrecordlog.do');" onmousedown="this.src='./images/icons/view_ON.gif'" />
 						</span>
-						<input style="font-size:11px" type = "button" height="18" value="Add Issue Type" onclick="javascript:showIssueTypeForm();" <%= (com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request) ?  " " : " disabled=\"disabled\"") %> />
-						<input style="font-size:11px" type = "button" height="18" value="Add Issue SubType" onclick="javascript:showissueSubTypeForm();" <%= (com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request) ?  " " : " disabled=\"disabled\"") %> />
+						<input style="font-size:11px" type = "button" height="18" value="Add Issue Type" onclick="javascript:showIssueTypeForm();" <%= (com.freshdirect.transadmin.security.SecurityManager.isUserAdminOrPlanning(request) ?  " " : " disabled=\"disabled\"") %> />
+						<input style="font-size:11px" type = "button" height="18" value="Add Issue SubType" onclick="javascript:showissueSubTypeForm();" <%= (com.freshdirect.transadmin.security.SecurityManager.isUserAdminOrPlanning(request) ?  " " : " disabled=\"disabled\"") %> />
 					</div>
 					<%
 						String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(request);
