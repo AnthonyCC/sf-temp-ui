@@ -203,12 +203,11 @@ public class NavigationUtil {
 		return  isLeftNavRolledOut && isOnWeb;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public static boolean isCategoryHiddenInContext(FDUserI user, CategoryModel cat) {
-		return 	!ContentFactory.getInstance().getPreviewMode() && (
+		return 	!cat.isShowSelf() ||
+				!ContentFactory.getInstance().getPreviewMode() && (
 					cat.isHideIfFilteringIsSupported() && isUserContextEligibleForHideFiltering(user) || 
 					cat.isHidden() || 
-					!cat.getShowSelf() || 
 					!isCategoryDisplayableCached(cat)
 				);
 	}
