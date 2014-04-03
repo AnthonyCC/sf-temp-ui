@@ -23,6 +23,10 @@ var FreshDirect = FreshDirect || {};
           elements = $('[data-ecouponid="'+couponId+'"] [data-component="ecoupon-status"]');
         }
 
+        // clear old ecoupon data
+        $('[data-component="ecoupon-status"]').html('');
+
+        // set new message
         elements.html(this.template({status:message.message}));
       }
     },
