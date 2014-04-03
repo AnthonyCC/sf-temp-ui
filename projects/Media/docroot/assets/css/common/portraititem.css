@@ -54,6 +54,7 @@
 }
 
 .portrait-item > .atc-info .incart-info {
+  display: block;
   text-align: center;
   clear: both;
   color: #a35012;
@@ -73,6 +74,14 @@
   margin-top: -5px;
   margin-bottom: 10px;
   padding-top: 5px;
+}
+
+#transactionalPopup .portrait-item > .atc-info-message .incart-info {
+  display: none;
+}
+
+.portrait-item > .portrait-item-controls + .atc-info .incart-message {
+  display: none;
 }
 
 #transactionalPopup .portrait-item .subtotalShown + .atc-info  > .incart-info {
