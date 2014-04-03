@@ -2,9 +2,15 @@
 /**
  * @param? sections sections
  * @param? sectionMaxLevel The max depth of sections starting by 1
+ * @param? allSectionsEmpty all sections are empty
  */
 {template .content autoescape="false"}
 
+{if $allSectionsEmpty}
+<div class="browse-empty-section">
+  No products meet your selected preferences.
+</div>
+{/if}
 <div class="browseContent">
   {if $sections}
     {foreach $section in $sections}

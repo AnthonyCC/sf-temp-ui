@@ -3,6 +3,15 @@
   position: relative;
 }
 
+.browse-empty-section {
+  margin: 10px 0;
+  padding: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  background: #f0f5e1;
+  border: 1px solid #dce6be;
+}
+
 .browseContent .browse-loading {
   position: absolute;
   top: 0;
