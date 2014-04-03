@@ -110,7 +110,13 @@ public class CmsFilteringFlow {
 			
 			// -- PAGING --
 			BrowseDataPagerHelper.createPagerContext(browseData, nav);
-			BrowseDataBuilderFactory.getInstance().appendCarousels(browseData, user);
+			Set<ContentKey> shownProductKeysForRecommender = new HashSet<ContentKey>();
+			BrowseDataBuilderFactory.getInstance().collectAllProductKeysForRecommender(browseData.getSections().getSections(), shownProductKeysForRecommender);
+			// -- SET NO PRODUCTS MESSAGE --
+			if(shownProductKeysForRecommender.size()==0){
+				browseData.getSections().setAllSectionsEmpty(true);
+			}
+			BrowseDataBuilderFactory.getInstance().appendCarousels(browseData, user, shownProductKeysForRecommender);
 			
 			browseData.getDescriptiveContent().setUrl(URLEncoder.encode(nav.assembleQueryString()));
 			browseData.getSortOptions().setCurrentOrderAsc(nav.isOrderAscending());		

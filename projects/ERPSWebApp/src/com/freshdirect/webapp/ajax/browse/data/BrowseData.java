@@ -10,6 +10,7 @@ public class BrowseData implements Serializable {
 		private static final long serialVersionUID = -4336442837599815573L;
 		private List<SectionData> sections;
 		private int sectionMaxLevel;
+		private boolean allSectionsEmpty;
 
 		public List<SectionData> getSections() {
 			return sections;
@@ -23,6 +24,13 @@ public class BrowseData implements Serializable {
 		public void setSectionMaxLevel(int sectionMaxLevel) {
 			this.sectionMaxLevel = sectionMaxLevel;
 		}
+		public boolean isAllSectionsEmpty() {
+			return allSectionsEmpty;
+		}
+		public void setAllSectionsEmpty(boolean allSectionsEmpty) {
+			this.allSectionsEmpty = allSectionsEmpty;
+		}
+		
 	}
 	
 	public static class BreadCrumbDataCointainer implements Serializable {

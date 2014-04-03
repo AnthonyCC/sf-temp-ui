@@ -602,9 +602,9 @@ public class BrowseDataBuilderFactory {
 	/**
 	 * appends carousels using shown products if necessary
 	 */
-	public void appendCarousels(BrowseData browseData, FDSessionUser user){
+	public void appendCarousels(BrowseData browseData, FDSessionUser user, Set<ContentKey> shownProductKeysForRecommender){
 		
-		Set<ContentKey> shownProductKeysForRecommender = new HashSet<ContentKey>();
+		
 		collectAllProductKeysForRecommender(browseData.getSections().getSections(), shownProductKeysForRecommender);
 		
 		//Product Listing Page Scarab
