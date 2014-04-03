@@ -40,7 +40,8 @@ public class FDCouponProperties {
 	private final static String PROP_YT_RETAILER_ID = "fdstore.YT.retailer.id";
 	private final static String PROP_YT_SIGNATURE = "fdstore.YT.signature";
 	private final static String PROP_YT_PROVIDER_URL = "fdstore.YT.provider.url";
-	private final static String PROP_YT_TIMEOUT_PERIOD = "fdstore.YT.timeout.period";
+	private final static String PROP_YT_CONNECTION_TIMEOUT_PERIOD = "fdstore.YT.connection.timeout.period";
+	private final static String PROP_YT_READ_TIMEOUT_PERIOD = "fdstore.YT.read.timeout.period";
 	private final static String PROP_YT_PROVIDER_VERSION = "fdstore.YT.provider.version";
 	private final static String PROP_COUPONS_BLACK_HOLE = "fdstore.coupons.blackhole.enabled";
 	private final static String PROP_COUPONS_CACHE_DAYS_LIMIT_ENABLED="fdstore.coupons.cache.days.limit.enabled";
@@ -76,7 +77,8 @@ public class FDCouponProperties {
 		defaults.put(PROP_COUPONS_ENABLED, "true");
 		defaults.put(PROP_COUPONS_CMS_CATEGORY, "ecoupons");
 		defaults.put(PROP_COUPONS_CACHE_REFRESH_PERIOD, "5");//mins
-		defaults.put(PROP_YT_TIMEOUT_PERIOD, "10");//secs
+		defaults.put(PROP_YT_CONNECTION_TIMEOUT_PERIOD, "10");//secs
+		defaults.put(PROP_YT_READ_TIMEOUT_PERIOD, "10");//secs
 		defaults.put(PROP_CUSTOMER_COUPONS_USAGE_HISTORY_DAYS_LIMIT, "90");//days
 		defaults.put(PROP_COUPONS_EXPIRE_GRACE_PERIOD, "7");//days
 		refresh();
@@ -217,9 +219,17 @@ public class FDCouponProperties {
 	
 	public static Integer getYTConnectionTimeoutPeriod() {
 		try {
-			return Integer.parseInt(get(PROP_YT_TIMEOUT_PERIOD));
+			return Integer.parseInt(get(PROP_YT_CONNECTION_TIMEOUT_PERIOD));
 		} catch (NumberFormatException e) {
-			return 60;
+			return 10;
+		}
+	}
+	
+	public static Integer getYTReadTimeoutPeriod() {
+		try {
+			return Integer.parseInt(get(PROP_YT_READ_TIMEOUT_PERIOD));
+		} catch (NumberFormatException e) {
+			return 10;
 		}
 	}
 	

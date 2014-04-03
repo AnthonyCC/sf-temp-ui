@@ -70,4 +70,7 @@ public class CouponConfigProvider implements Serializable {
 		return FDCouponProperties.getYTConnectionTimeoutPeriod();
 	}
 
+	public static Integer getYTReadTimeoutPeriod() {
+		return FDCouponProperties.getYTReadTimeoutPeriod();
+	}
 }

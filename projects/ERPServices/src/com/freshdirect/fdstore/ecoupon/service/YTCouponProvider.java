@@ -100,7 +100,7 @@ public class YTCouponProvider implements CouponService {
 			connection = (HttpURLConnection) new URL(urlToCall.toString()).openConnection();
 			connection.setRequestProperty("Accept-Charset",charSet);
 			connection.setConnectTimeout(CouponConfigProvider.getYTConnectionTimeoutPeriod()*1000);
-			connection.setReadTimeout(CouponConfigProvider.getYTConnectionTimeoutPeriod()*1000);
+			connection.setReadTimeout(CouponConfigProvider.getYTReadTimeoutPeriod()*1000);
 			returnString = sendRequest(connection);
 		} catch (MalformedURLException mal) {
 			LOGGER.error("Exception while making a call to YT: "+mal);
