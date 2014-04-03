@@ -95,7 +95,10 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 %>
 
 <potato:product name="productPotato" extraName="productExtraPotato" productId='${param.productId}' categoryId='${param.catId}'/>
-<potato:browse name="browsePotato" pdp="true" nodeId='${param.catId}'/>
+
+<% if(shouldBeOnNew) {  // new leftnav, TODO: remove this after full rollout%>
+	<potato:browse name="browsePotato" pdp="true" nodeId='${param.catId}'/>
+<%}%>
 
 <tmpl:insert template='/common/template/pdp_template.jsp'>
 

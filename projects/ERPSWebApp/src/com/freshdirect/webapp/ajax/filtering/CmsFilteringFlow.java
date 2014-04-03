@@ -152,7 +152,7 @@ public class CmsFilteringFlow {
 		
 		// handle redirect url
 		String redirectUrl = ((ProductContainer) contentNodeModel).getRedirectUrlClean();
-		if(redirectUrl!=null){
+		if(!nav.isPdp() && redirectUrl!=null){
 			throw new InvalidFilteringArgumentException("Node has redirect URL: "+id, InvalidFilteringArgumentException.Type.NODE_HAS_REDIRECT_URL, redirectUrl);				
 		}
 		
