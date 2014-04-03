@@ -70,14 +70,13 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
-import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.ajax.cart.data.CartData.Quantity;
 import com.freshdirect.webapp.ajax.cart.data.CartData.SalesUnit;
 import com.freshdirect.webapp.ajax.product.data.BasicProductData;
-import com.freshdirect.webapp.ajax.product.data.SkuData;
 import com.freshdirect.webapp.ajax.product.data.ProductConfigResponseData.VarItem;
 import com.freshdirect.webapp.ajax.product.data.ProductConfigResponseData.Variation;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
+import com.freshdirect.webapp.ajax.product.data.SkuData;
 import com.freshdirect.webapp.ajax.quickshop.QuickShopHelper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.taglib.fdstore.display.ProductSavingTag;
@@ -789,22 +788,26 @@ public class ProductDetailPopulator {
 
 		// clean sales unit description
 		if (salesUnitDescr != null) {
-			if (salesUnitDescr.indexOf("(") > -1) {
-				salesUnitDescr = salesUnitDescr.substring(0, salesUnitDescr.indexOf("("));
-			}
 			salesUnitDescr = salesUnitDescr.trim();
-			// empty descriptions, "nm" and "ea" should be ignored
-			if ((!"".equals(salesUnitDescr))
-				&& (!"nm".equalsIgnoreCase(salesUnitDescr))
-				&& (!isMultiChoice)
-				&& (!"ea".equalsIgnoreCase(salesUnitDescr))) {
+			
+			String salesUnitDescrHead = salesUnitDescr; // if the part before '('
+			if (salesUnitDescr.indexOf("(") > -1) {
+				salesUnitDescrHead = salesUnitDescr.substring(0, salesUnitDescr.indexOf("("));
+				salesUnitDescrHead = salesUnitDescrHead.trim();
+			}
+			if ((!"".equals(salesUnitDescr)) //original is empty
+			
+				// if the part before '(' is "nm" and "ea", it should be ignored
+				&& (!"nm".equalsIgnoreCase(salesUnitDescrHead))
+				&& (!isMultiChoice) //this is different compared to OrderLineUtil.createConfigurationDescription()
+				&& (!"ea".equalsIgnoreCase(salesUnitDescrHead))) {
 				if (!productModel.getSellBySalesunit().equals("SALES_UNIT")) {
-					PDPsalesUnitDescr.append(salesUnitDescr);
+					PDPsalesUnitDescr.append(salesUnitDescr); //append original
 				} else if ((productModel.getPrimarySkus().size() == 1)
 					&& (productModel.getVariationMatrix().isEmpty())
 					&& (product.getSalesUnits().length == 1)
 					&& (product.getSalesUnits()[0].getName().equalsIgnoreCase("EA"))) {
-					PDPsalesUnitDescr.append(salesUnitDescr);
+					PDPsalesUnitDescr.append(salesUnitDescr); //append original
 				}
 			}
 		}
