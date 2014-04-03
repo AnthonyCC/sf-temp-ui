@@ -76,7 +76,7 @@ public class FDCouponProperties {
 		defaults.put(PROP_COUPONS_ENABLED, "true");
 		defaults.put(PROP_COUPONS_CMS_CATEGORY, "ecoupons");
 		defaults.put(PROP_COUPONS_CACHE_REFRESH_PERIOD, "5");//mins
-		defaults.put(PROP_YT_TIMEOUT_PERIOD, "60");//secs
+		defaults.put(PROP_YT_TIMEOUT_PERIOD, "10");//secs
 		defaults.put(PROP_CUSTOMER_COUPONS_USAGE_HISTORY_DAYS_LIMIT, "90");//days
 		defaults.put(PROP_COUPONS_EXPIRE_GRACE_PERIOD, "7");//days
 		refresh();
