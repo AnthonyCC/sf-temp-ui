@@ -1,7 +1,7 @@
 var id= "";
 var css="";
 
-var $jq = $jq || jQuery;
+var $jq = $jq || window.jQuery || null;
 
 window.originalClose = window.close;
 
@@ -26,15 +26,17 @@ window.reallyClose = function () {
 // works in other browsers
 window.close = window.reallyClose;
 
-// iframe resize
-$jq(document).ready(function () {
-  if (window.parent &&
-      window.parent.FreshDirect &&
-      window.parent.FreshDirect.components &&
-      window.parent.FreshDirect.components.ifrPopup) {
-    window.parent.FreshDirect.components.ifrPopup.reposition();
-  }
-});
+if ($jq) {
+  // iframe resize
+  $jq(document).ready(function () {
+    if (window.parent &&
+        window.parent.FreshDirect &&
+        window.parent.FreshDirect.components &&
+        window.parent.FreshDirect.components.ifrPopup) {
+      window.parent.FreshDirect.components.ifrPopup.reposition();
+    }
+  });
+}
 
 function soon() { alert("Coming soon"); }
 
@@ -1438,6 +1440,7 @@ function checkBatch() {
 	}
 
 /* add coupon tooltips */
+if ($jq) {
 	$jq(function() {
 		var currentlyPositionning;
 		$jq.ui.position.ttFlipCustom = {
@@ -1513,6 +1516,7 @@ function checkBatch() {
 
 		});
 	});
+}
 
 /*	auto-fix featured products row.
  *		pass in selectors:
@@ -1605,6 +1609,7 @@ function checkBatch() {
 	    }
 	}
 	
+if ($jq) {
 	/* parse value from reqParams in current window.location
 	 * usage: var value = $jq.QueryString["PARAM_TO_GETVALUE_OF"];
 	 */
@@ -1620,4 +1625,5 @@ function checkBatch() {
 			}
 			return b;
 		})(window.location.search.substr(1).split('&'))
-	})(jQuery);
+	})($jq);
+}
