@@ -94,7 +94,7 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 		List<String> errors = new ArrayList();
 		if(null != altDeliveryDate){
 			try {
-				errors = FDStandingOrderAlternateDateUtil.validate(altDeliveryDate,errors);
+				errors = FDStandingOrderAlternateDateUtil.validate(altDeliveryDate,errors,null);
 				if(null == errors || errors.isEmpty()){
 					if(null == altDeliveryDate.getId() || "".equals(altDeliveryDate.getId().trim())){
 						altDeliveryDate.setCreatedTime(currentDate);
@@ -108,20 +108,22 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 						FDStandingOrdersManager.getInstance().updateStandingOrderAltDeliveryDate(altDeliveryDate);
 					}
 				}else{
-	    			response.setContentType("application/Text"); 
-	    			PrintWriter pw = response.getWriter();
-	    			pw.write(FDStandingOrderAlternateDateUtil.buildResponse(errors));
-	    			pw.flush();
+	    			sendResponse(response, errors);
 				}
 			} catch (FDResourceException e) {
 				LOGGER.error("Failed to save the standing order alternate delivery date");
 				errors.add("Failed to save it. "+((null==e.getMessage() && e.getNestedException()!=null) ?e.getNestedException().getMessage():""));
-				response.setContentType("application/Text"); 
-    			PrintWriter pw = response.getWriter();
-    			pw.write(FDStandingOrderAlternateDateUtil.buildResponse(errors));
-    			pw.flush();
+				sendResponse(response, errors);
 			}
 		}
+	}
+
+	private void sendResponse(HttpServletResponse response, List<String> errors)
+			throws IOException {
+		response.setContentType("application/Text"); 
+		PrintWriter pw = response.getWriter();
+		pw.write(FDStandingOrderAlternateDateUtil.buildResponse(errors));
+		pw.flush();
 	}
 	
 	
@@ -129,51 +131,7 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 		T reqData = null;
 		boolean  isMultipart = ServletFileUpload.isMultipartContent(request);
 		if(isMultipart){
-			File file;
-			String filePath="";
-			DiskFileItemFactory factory = new DiskFileItemFactory();
-			ServletFileUpload uploadServlet = new ServletFileUpload(factory);
-			try{
-			List fileItems = uploadServlet.parseRequest(request);
-			
-			// Process the uploaded file items
-			Iterator i = fileItems.iterator();  
-			while ( i.hasNext () ) 
-			{
-				FileItem fi = (FileItem)i.next();
-				if ( !fi.isFormField () )	
-				{
-		            // Get the uploaded file parameters
-		            String fileName = fi.getName();
-		            String contentType = fi.getContentType();
-		            boolean isInMemory = fi.isInMemory();
-		            long sizeInBytes = fi.getSize();
-		            // Write the file
-		            if( fileName.lastIndexOf("\\") >= 0 ){
-		               file = new File( filePath + 
-		               fileName.substring( fileName.lastIndexOf("\\"))) ;
-		            }else{
-		               file = new File( filePath + 
-		               fileName.substring(fileName.lastIndexOf("\\")+1)) ;
-		            }
-		            fi.write( file ) ;
-		            StandingOrderAlternateDatesParser parser = new StandingOrderAlternateDatesParser();
-		            List<FDStandingOrderAltDeliveryDate> listAltDates =parser.parseFile(file);
-		            if(parser.isParseSuccessful()){
-		            	FDStandingOrdersManager.getInstance().addStandingOrderAltDeliveryDates(listAltDates);
-		            }else{
-		            	response.addHeader ("Content-Disposition","attachment;filename="+fileName);
-		    			response.setContentType("application/Text"); 
-		    			PrintWriter pw = response.getWriter();
-		    			pw.write(FDStandingOrderAlternateDateUtil.buildResponse(parser.getExceptionList()));
-		    			pw.flush();
-		            }
-				}
-			}
-		    }catch(Exception ex) {
-		       LOGGER.error("Error while uploading/parsing the standing order alternate delivery dates:", ex);
-		       sendError( response, 400, "Empty request. Aborting" );
-			    }
+			parseMultiPartData(request, response);
 		}
 		else{
 			String reqJson = request.getParameter( "data" );
@@ -207,8 +165,53 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 		return reqData;
 	}
 
+	private static void parseMultiPartData(HttpServletRequest request,
+			HttpServletResponse response) {
+		File file;
+		String filePath="";
+		DiskFileItemFactory factory = new DiskFileItemFactory();
+		ServletFileUpload uploadServlet = new ServletFileUpload(factory);
+			try{
+			List fileItems = uploadServlet.parseRequest(request);
+			
+			// Process the uploaded file items
+			Iterator i = fileItems.iterator();  
+			while ( i.hasNext () ) 
+			{
+				FileItem fi = (FileItem)i.next();
+				if ( !fi.isFormField () )	
+				{
+		            // Get the uploaded file parameters
+		            String fileName = fi.getName();
+		            // Write the file
+		            if( fileName.lastIndexOf("\\") >= 0 ){
+		               file = new File( filePath + 
+		               fileName.substring( fileName.lastIndexOf("\\"))) ;
+		            }else{
+		               file = new File( filePath + 
+		               fileName.substring(fileName.lastIndexOf("\\")+1)) ;
+		            }
+		            fi.write( file ) ;
+		            StandingOrderAlternateDatesParser parser = new StandingOrderAlternateDatesParser();
+		            List<FDStandingOrderAltDeliveryDate> listAltDates =parser.parseFile(file);
+		            if(parser.isParseSuccessful()){
+		            	FDStandingOrdersManager.getInstance().addStandingOrderAltDeliveryDates(listAltDates);
+		            }else{
+		            	response.addHeader ("Content-Disposition","attachment;filename="+fileName);
+		    			response.setContentType("application/Text"); 
+		    			PrintWriter pw = response.getWriter();
+		    			pw.write(FDStandingOrderAlternateDateUtil.buildResponse(parser.getExceptionList()));
+		    			pw.flush();
+		            }
+				}
+			}
+		}catch(Exception ex) {
+		   LOGGER.error("Error while uploading/parsing the standing order alternate delivery dates:", ex);
+		   sendError( response, 400, "Empty request. Aborting" );
+		}
+	}
+
 	protected static void sendError(HttpServletResponse response, int status, String message) {
-		//
 		try {
 			response.getWriter().append(message);
 			response.setStatus(status);

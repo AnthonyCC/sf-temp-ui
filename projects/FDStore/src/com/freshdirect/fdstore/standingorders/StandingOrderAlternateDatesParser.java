@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -53,16 +54,16 @@ public class StandingOrderAlternateDatesParser {
 					this.exceptionList.add("Row #"+ row.getRowNum() + " is empty");
 				} else {						
 					int cellIndex = 0;
-					int noOfCells = 9;//row.getLastCellNum();//PhysicalNumberOfCells();	
+					short noOfCells = 9;//row.getLastCellNum();//PhysicalNumberOfCells();	
 					String[] cellValues = new String[noOfCells]; 
 					short firstCellNum = row.getFirstCellNum();
-					short lastCellNum = row.getLastCellNum();
+					short lastCellNum = row.getLastCellNum()<=noOfCells?row.getLastCellNum():noOfCells;
 
 					if (firstCellNum >= 0 && lastCellNum >= 0) {
 						for (short iCurrent = firstCellNum; iCurrent < lastCellNum; iCurrent++) {
 							Cell cell = row.getCell(iCurrent);
 							if (cell == null || Cell.CELL_TYPE_BLANK ==cell.getCellType()) {
-								if(iCurrent ==0 || iCurrent == 1 || iCurrent == 8){
+								if(iCurrent ==0 || (iCurrent == 1 && cellValues[8]!=null) || iCurrent == 8){
 									this.exceptionList.add("Empty data found at Row #"+ (row.getRowNum()+1) + ", Cell #"+ (iCurrent +1)+" . It can't be empty.");
 								}
 								cellIndex++;
@@ -93,20 +94,18 @@ public class StandingOrderAlternateDatesParser {
 							altDate.setAltEndTime(HSSFDateUtil.getJavaDate(Double.parseDouble(cellValues[7])));
 						}
 						altDate.setActionType(cellValues[8]);
-						/*if(null != cellValues[9]){
-							altDate.setStartDate(HSSFDateUtil.getJavaDate(Double.parseDouble(cellValues[9])));
+						altDate.setCreatedBy("System");
+						altDate.setCreatedTime(Calendar.getInstance().getTime());
+						list.add(altDate);	
 						}
-						if(null != cellValues[10]){
-							altDate.setEndDate(HSSFDateUtil.getJavaDate(Double.parseDouble(cellValues[10])));
-						}*/
-						list.add(altDate);					}
 					
 					}	
 				
-					FDStandingOrderAlternateDateUtil.validate(altDate, exceptionList);
+				exceptionList =FDStandingOrderAlternateDateUtil.validate(altDate, exceptionList,row.getRowNum()+1);
 				} 
 		}catch(Exception e){
 			LOGGER.error("Error while uploading: "+e);
+			exceptionList.add("Error while uploading: "+e);
 		}
 		return list;
 	}
@@ -128,24 +127,22 @@ public class StandingOrderAlternateDatesParser {
 				if (HSSFDateUtil.isValidExcelDate(value)) {																		
 					stringValue = Double.toString(cell.getNumericCellValue());
 				} else {
-//					this.exceptionList.add(new BadDataException("Invalid Date value found at row # "+ cell.getRow().getRowNum()	+ " and column # "+ cell.getColumnIndex()));
+					this.exceptionList.add("Invalid Date value found at row # "+ (cell.getRow().getRowNum()+1)	+ " and column # "+ (cell.getColumnIndex()+1));
 				}
 			} else {
 				stringValue = Integer.toString((int)cell.getNumericCellValue());
 			}			
 			break;
 		case Cell.CELL_TYPE_ERROR:
-//			this.exceptionList.add(new BadDataException("XLS error in row " + cell.getRow().getRowNum() + " at cell " + cell.getColumnIndex()
-//					+ ": error type: " + Byte.toString(cell.getErrorCellValue())));
+			this.exceptionList.add("Error in row " + (cell.getRow().getRowNum()+1) + " at cell " + (cell.getColumnIndex()+1)+ ": error type: " + Byte.toString(cell.getErrorCellValue()));
 			break;
 		default:
-//			this.exceptionList.add(new BadDataException("Error in row " + cell.getRow().getRowNum() + " at cell " + cell.getColumnIndex()
-//					+ ": unknown data type: " + cell.getCellType() + ", upgrade POI"));
+			this.exceptionList.add(("Error in row " + (cell.getRow().getRowNum()+1) + " at cell " + (cell.getColumnIndex()+1)+ ": unknown data type: " + cell.getCellType() + ", upgrade POI"));
 		}
 		return stringValue;
 	}
 
-	public List getExceptionList() {
+	public List<String> getExceptionList() {
 		return exceptionList;
 	}
 	

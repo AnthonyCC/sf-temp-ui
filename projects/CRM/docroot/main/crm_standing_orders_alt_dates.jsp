@@ -210,8 +210,8 @@ $jq(function() {
 });
 
 
-$jq('div#dialog1').bind('dialogclose', function(event) {
-	//location.reload(true);
+$jq('div#dialog2').bind('dialogclose', function(event) {
+	location.reload(true);
 });
 
 $jq(function() {
