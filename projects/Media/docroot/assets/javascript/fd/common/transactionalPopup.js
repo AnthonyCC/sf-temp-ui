@@ -104,10 +104,10 @@ var FreshDirect = FreshDirect || {};
           related = $('#'+popupId+' [data-component="relateditem"] [data-component="product"]');
           if (related.length) {
             mainHolder.css({
-              height: 'auto'
+              minHeight: 0
             });
             relatedHolder.removeClass('hidden').css({
-              height: 'auto',
+              minHeight: 0,
               left: 0,
               visibility: 'hidden'
             });
@@ -116,10 +116,10 @@ var FreshDirect = FreshDirect || {};
 
           } else {
             mainHolder.css({
-              height: 'auto'
+              minHeight: 0
             });
             relatedHolder.addClass('hidden').css({
-              height: 'auto'
+              minHeight: 0
             });
             $('#'+popupId+' '+this.relatedBodySelector).html('');
           }
@@ -132,17 +132,17 @@ var FreshDirect = FreshDirect || {};
               // adjust height
               if (mainHolder.height() < relatedHolder.height()+10) {
                 mainHolder.css({
-                  height: relatedHolder.height()+15
+                  minHeight: relatedHolder.height()+15
                 });
                 relatedHolder.css({
-                  height: relatedHolder.height()+5
+                  minHeight: relatedHolder.height()+5
                 });
               } else {
                 relatedHolder.css({
-                  height: mainHolder.height()-5
+                  minHeight: mainHolder.height()-5
                 });
                 mainHolder.css({
-                  height: mainHolder.height()+5
+                  minHeight: mainHolder.height()+5
                 });
               }
               $('#'+popupId).addClass('hasRelated');

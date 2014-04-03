@@ -141,6 +141,12 @@ var FreshDirect = FreshDirect || {};
 	$(document).on('click','[data-component="ATCButton"]',function(e){
 		var items = fd.modules.common.productSerialize(e.target, true);
 		e.items = items;
+
+    // set amount on button
+    if (items.length) {
+      e.currentTarget.setAttribute('data-amount', items[0].quantity);
+    }
+
 		ATC_BUS.push(e);
 	});
 

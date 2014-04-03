@@ -51,6 +51,11 @@
   float: left;
   width: 100%;
   clear: both;
+  min-height: 29px;
+}
+
+#transactionalPopup .portrait-item > .atc-info {
+  min-height: 0;
 }
 
 .portrait-item > .atc-info .incart-info {
@@ -493,6 +498,28 @@
   height: 34px;
   text-transform: none;
   padding: 0;
+  transition-duration: .2s;
+}
+
+#transactionalPopup .portrait-item-controls .addtocart:before {
+  content: attr(data-amount) " Added";
+  width: 100%;
+  max-width: 0;
+  display: inline-block;
+  overflow: hidden;
+  text-indent: 16px;
+  vertical-align: middle;
+  background-image: url(/media_stat/images/common/added-to-cart-icon.png);
+  background-repeat: no-repeat;
+  background-position: 12px center;
+}
+
+#transactionalPopup .portrait-item-controls.atc-info-message .addtocart {
+  background-color: #693;
+}
+
+#transactionalPopup .portrait-item-controls.atc-info-message .addtocart:before {
+  max-width: 200px;
 }
 
 #transactionalPopup .portrait-item-controls .addtolist {
