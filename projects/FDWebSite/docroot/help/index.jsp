@@ -123,314 +123,315 @@ final int W_HELP_INDEX_TOTAL = 970;
 				<div style="height: 30px; background: transparent url('/media_stat/images/layout/cccccc.gif') repeat-x left center;"><!--  --></div>
 				
 				<div style="margin-bottom: 16px;">
-						<div style="margin-bottom: 8px;" class="text11bold">
-							<img src="/media_stat/images/template/help/search.gif" border="0" alt="" />
-						</div>
-						<div style="margin-bottom: 8px;">
-							<form method="post" name="contact_fd" id="contact_fd_faq">
-								<input type="text" class="search" value="" maxlength="100" style="width: 180px;" name="searchFAQ" />
-								<input type="submit" name="searchFAQButton" style="width: 42px; height: 18px; vertical-align: bottom; margin-left: 10px; background-image: url('/media_stat/images/template/search/search_find_button.gif'); border: 0; text-indent: -9999px;" onclick="$jq('#contact_fd').submit();" />
-							</form>
-						</div>
+					<div style="margin-bottom: 8px;" class="text11bold">
+						<img src="/media_stat/images/template/help/search.gif" border="0" alt="" />
 					</div>
-
-				<form method="post" name="contact_fd" id="contact_fd_contact">
-					<div style="float: left; width: 34%; border-right: 1px solid #ccc; padding-right: 6px;">
-						<div style="margin-bottom: 16px;">
-							<div style="margin-bottom: 8px;">
-								<a href="/help/faq_home.jsp?page=faqHome"><img src="/media_stat/images/template/help/hdr_quick_links.gif" width="119" height="15" border="0" alt="" /></a>
-							</div>
-							<div style="margin-bottom: 8px;">
-								Check below to find the fastest answers to our top customer concerns.
-							</div>
-							<div style="margin-bottom: 8px;" class="text11bold">
-								<ul class="orangeDot">
-									<li><a href="/your_account/order_history.jsp">Check the status of your order</a></li>
-									<li><a href="/your_account/order_history.jsp">Change or cancel your order</a></li>
-									<li><a href="/search.jsp">Find a product</a></li>
-									<li><a href="/your_account/signin_information.jsp">Change your password</a></li>
-									<li><a href="/your_account/manage_account.jsp">Change delivery info</a></li>
-									<li><a href="/your_account/payment_information.jsp">Change credit card info</a></li>
-								</ul>
-							</div>
-						</div>
-	
-						<div style="margin-bottom: 16px;">
-							<div style="margin-bottom: 8px;">
-								<a href="/help/faq_home.jsp?page=faqHome"><img src="/media_stat/images/template/help/hdr_faqs.gif" width="45" height="14" border="0" alt="FAQs" /></a>
-							</div>
-							<div style="margin-bottom: 8px;">
-								Scan our Frequently Asked Questions to get info on sign-up, delivery and everything in between.
-							</div>
-							<%
-								List savedList=(List)pageContext.getAttribute("savedFaqs");
-	
-								if (null !=savedList && savedList.size()>0 && null != savedList.get(0)) { %>
-									<div style="margin-bottom: 8px;" class="text11bold">
-										<div style="margin-bottom: 4px;">
-											<img src="/media_stat/images/template/help/top_questions.gif" border="0" alt="" />
-										</div>
-										<% if (null != faqSections) {
-											%>
-											<div style="margin-bottom: 8px;">
-												<ul class="orangeDot">
-												<%
-	
-												StringTokenizer st = new StringTokenizer(faqSections,",");
-												while (st.hasMoreTokens()) {
-													String nextToken=st.nextToken().trim();
-													%><logic:iterate id="topfaq" indexId="idx" collection="<%= savedList %>" type="com.freshdirect.fdstore.content.Faq"><%
-														if (null!=topfaq && null !=topfaq.getParentNode() && nextToken.equalsIgnoreCase((String)topfaq.getParentNode().getContentKey().getId())) { %>
-															<li><a href="/help/faq_home.jsp?page=<%= (String)topfaq.getParentNode().getContentKey().getId()%>#<%= (String)topfaq.getContentKey().getId()%>"><%= topfaq.getQuestion() %></a></li>
-														<% } %>
-													</logic:iterate><%
-												}
-												%>
-												</ul>
-											</div>
-											<%
-										} %>
-									</div>
-								<% }
-							%>
-						</div>
-	
-						<div style="margin-bottom: 16px;">
-							<div style="margin-bottom: 8px;" class="text11bold">
-								<img src="/media_stat/images/template/help/learnmore.gif"  border="0" alt="" />
-							</div>
-							<% if(null != faqSections) {
-								%>
-								<div style="margin-bottom: 8px;" class="text11bold">
-									<ul class="orangeDot">
-									<%
-									
-									StringTokenizer st = new StringTokenizer(faqSections,",");
-									
-									while (st.hasMoreTokens()) {
-										ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode(st.nextToken().trim());
-										if (null != contentNode) { %>
-											<li><a href="/help/faq_home.jsp?page=<%= contentNode.getContentKey().getId()%> "><%= contentNode.getCmsAttributeValue("name") %></a></li>
-										<% }
-									}
-									%>
-									</ul>
-								</div>
-								<%
-							} %>
-						</div>
-	
-						
-					</div>
-				</form>
-
-				<div style="float: right; width: 64%; padding-left: 6px;" class="lineItems">
-					<div style="margin-bottom: 16px;">
-						<div style="margin-bottom: 8px;">
-							<a href='index.jsp'><img src="/media_stat/images/template/help/hdr_contact_us.gif" border="0" width="204" height="14" alt="CONTACT US"></a>
-						</div>
-						<div style="margin-bottom: 8px;">
-							FreshDirect Customer Service is standing by to answer your questions, seven days a week. <span style="font-weight: bold;">The best way to get help is through email. Our dedicated service team generally responds within 1 to 3 hours during our business day.</span>
-						</div>
-					</div>
-					
-					<div style="margin-bottom: 16px;">
-						<div style="margin-bottom: 4px;">
-							<img src="/media_stat/images/template/help/enter_message.gif" width="152" height="9" border="0" alt="ENTER YOUR MESSAGE" />&nbsp;&nbsp;&nbsp;<span class="text9">* Required information</span>
-						</div>
-						<img src="/media_stat/images/layout/999966.gif" height="1" border="0" width="100%" alt="" />
-					</div>
-
-					<script type="text/javascript">
-
-						var coremetricsGetHelpEmailFunctionMap = [
-							<logic:iterate id="subject" indexId="idx" collection="<%= ContactFdControllerTag.selections %>" type="com.freshdirect.webapp.taglib.fdstore.ContactFdControllerTag.Selection">
-								<%if (idx!=0){%>,<%}%><fd:CmConversionEvent wrapIntoFunction="true" eventId="email" firstPhase="true" subject="<%=StringUtil.escapeJavaScript(subject.getDescription())%>"/>
-							</logic:iterate>
-						];
-						<%--
-							This seems sort of useless, it only logs a single subject change?
-							Changed to work the same with new js (called once on page load (no log),
-							then on every subject change (log only the first change))
-							still... seems... weird.
-							-BA 20140401
-						--%>
-						var coremetricsGetHelpEmailStartLogged = 0; //init
-						function coremetricsGetHelpEmailStart(index) {
-							if (coremetricsGetHelpEmailStartLogged == 1) {
-								console.log(2);
-								coremetricsGetHelpEmailFunctionMap[index]();
-							}
-							coremetricsGetHelpEmailStartLogged++;
-						}
-						
-						$jq('#prodReqContent').ready(function() { $jq('#prodReqContent').hide(); });
-						$jq(document).ready(function() {
-							$jq('#contact_subject').change(function() {
-								var selectedOpt = $jq('#contact_subject option').filter(':selected');
-								if ( selectedOpt.text() == 'Product Request' ) {
-									$jq('#prodReqContent').show();
-									$jq('#prodReqNonContent').hide();
-								} else {
-									$jq('#prodReqContent').hide();
-									$jq('#prodReqNonContent').show();
-								}
-								if (coremetricsGetHelpEmailFunctionMap[selectedOpt.val()]) {
-									coremetricsGetHelpEmailStart(selectedOpt.val());
-								}
-							});
-							$jq('#contact_subject').change();
-						});
-
-					</script>
-
-					<div style="margin-bottom: 16px;">
-						<div style="float: left; width: 12px;">*</div><div style="float: left; width: 55px; font-weight: bold; padding-right: 10px;">Subject:</div>
-						<select class="text12" name="subject" id="contact_subject" style="width: 246px;" onchange="">
-							<option value="">Select Subject:</option>
-							<logic:iterate id="subject" indexId="idx" collection="<%= ContactFdControllerTag.selections %>" type="com.freshdirect.webapp.taglib.fdstore.ContactFdControllerTag.Selection">
-								<option value="<%= idx %>" <%= idx.intValue() == subjectIndex ? "selected" : "" %>><%= subject.getDescription() %></option>
-							</logic:iterate>
-						</select>
-						<fd:ErrorHandler result='<%=result%>' name='subject' id='errorMsg'>
-							<%--if error occured with subject selection, tracking is needed, because subject will be changed automatically--%>
-							<script type="text/javascript">
-								var subjectSelect = document.getElementById('contact_subject');	
-								coremetricsGetHelpEmailStart(subjectSelect.options[subjectSelect.selectedIndex].value)
-							</script>
-							<div class="text11rbold">
-								<%=errorMsg%>
-							</div>
-						</fd:ErrorHandler>
-					</div>
-
-					<%
-						/* APPDEV-1744	Product Request - 2011 CS Project */
-						Map params = new HashMap();
-						params.put("baseUrl", "");
-						boolean isDefaultFtl = true;
-						String faqPage = "req_feedback"; //set as product request
-						
-						/* only add this if we have faq sections (since we need them to determine this) */
-						if (null != faqSections) {
-							params.put("faqNodes", FDFaqUtil.getFaqsByCategory(faqPage));
-
-							StringTokenizer st = new StringTokenizer(faqSections, ",");
-							while (st.hasMoreTokens()) {
-								String nextToken = st.nextToken().trim();
-								params.put(nextToken, FDFaqUtil.getFaqsByCategory(nextToken));
-								if (nextToken.equalsIgnoreCase(faqPage) && isDefaultFtl) {
-									isDefaultFtl = false;
-								}
-							}
-
-							/* add additional param special for this, so we can change the look of the included ftl */
-							params.put("faqContact", "true");
-					%>
-						<div id="prodReqContent" style="display: none;">
-							<div style="margin-bottom: 8px;">
-								<fd:IncludeMedia name="/media/editorial/faq/req_feedback.ftl" parameters="<%=params%>" withErrorReport="false"/>
-							</div>
-							<div style="height: 30px; background: transparent url('/media_stat/images/layout/999966.gif') repeat-x left center;"><!--  --></div>
-						</div>
-					<% } %>
-					
-					
-					<div id="prodReqNonContent">
-						<% if (identity != null) { %>
-							<fd:OrderHistoryInfo id='orderHistoryInfo'>
-								<%if (orderHistoryInfo.size() > 0) {%>
-									<div style="margin-bottom: 16px;">
-										<div style="float: left; width: 12px;">&nbsp;</div><div style="float: left; width: 55px; font-weight: bold; padding-right: 10px;">Order #:</div>
-										<select class="text12" name="salePK">
-											<option value="">Select Order:</option>
-											<logic:iterate id="orderInfo" indexId="idx" collection="<%= orderHistoryInfo %>" type="com.freshdirect.fdstore.customer.FDOrderInfoI">
-												<% if (idx.intValue() == 5) break; %>
-												<option value="<%= orderInfo.getErpSalesId() %>">#<%= orderInfo.getErpSalesId() %> - <%=orderInfo.getOrderStatus().getDisplayName()%> - <%= dateFormatter.format( orderInfo.getRequestedDate() ) %></option>
-											</logic:iterate>
-										</select>
-										&nbsp;(optional)
-									</div>
-								<% } %>
-							</fd:OrderHistoryInfo>
-						<% } %>
-
-						<div style="margin-bottom: 16px;">
-							<div style="margin-bottom: 8px;">
-								<div style="float: left; width: 12px; height: 30px;">&nbsp;</div><div style="float: left; width: 55px; height: 30px; padding-right: 10px;">&nbsp;</div>
-									* Please enter your message here:<br />
-									<textarea cols="40" rows="5" name="message" onKeyPress="limitText(this, 2048)" onChange="limitText(this, 2048)"><%= body%></textarea>
-									<fd:ErrorHandler result='<%=result%>' name='message' id='errorMsg'>
-										<div class="text11rbold">
-											<%=errorMsg%>
-										</div>
-									</fd:ErrorHandler>
-							</div>
-						</div>
-
-						<%-- info --%>
-						<%if (identity == null) { %>
-							<div style="margin-bottom: 16px;">
-								<div style="margin-bottom: 4px;">
-									<img src="/media_stat/images/template/help/enter_contact_info.gif" width="246" height="9" border="0" alt="ENTER YOUR CONTACT INFORMATION" />&nbsp;&nbsp;&nbsp;<span class="text9">* Required information</span>
-								</div>
-								<img src="/media_stat/images/layout/999966.gif" height="1" border="0" width="100%" alt="" />
-							</div>
-
-							<div style="margin-bottom: 32px;">
-								<div style="margin-bottom: 8px;">
-									<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">* E-mail Address/User Name:</div><input type="text" class="text11" name="email" size="34" value="<%=email%>" />&nbsp;<fd:ErrorHandler result='<%=result%>' name='email' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-								</div>
-								<div style="margin-bottom: 8px;">
-									<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">* First Name:</div><input type="text" class="text11" name="first_name" size="21" value="<%=firstName%>" />&nbsp;<fd:ErrorHandler result='<%=result%>' name='first_name' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-								</div>
-								<div style="margin-bottom: 8px;">
-									<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">* Last Name:</div><input type="text" class="text11" name="last_name" size="21" value="<%=lastName%>" />&nbsp;<fd:ErrorHandler result='<%=result%>' name='last_name' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
-								</div>
-								<div style="margin-bottom: 8px;">
-									<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">Home Phone #:</div><input type="text" class="text11" name="home_phone" size="21" value="<%=homePhone%>" maxlength="15" />&nbsp;<span class="text9">Ext.</span>&nbsp;<input type="text" class="text9" name="home_phone_ext" size="4" value="<%=homePhoneExt%>" maxlength="6" />
-								</div>
-								<div style="margin-bottom: 8px;">
-									<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">Work Phone #:</div><input type="text" class="text11" name="work_phone" size="21" value="<%=workPhone%>" maxlength="15" />&nbsp;<span class="text9">Ext.</span>&nbsp;<input type="text" class="text9" name="home_phone_ext" size="4" value="<%=workPhoneExt%>" maxlength="6" />
-								</div>
-								<div style="margin-bottom: 8px;">
-									<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">Other Phone #:</div><input type="text" class="text11" name="alt_phone" size="21" value="<%=altPhone%>" maxlength="15" />&nbsp;<font class="text9">Ext.</font>&nbsp;<input type="text" class="text9" name="alt_phone_ext" size="4" value="<%=altPhoneExt%>" maxlength="6" />
-								</div>
-							</div>
-						<% }else{ %>
-							<div style="margin-bottom: 16px;">
-								<div style="margin-bottom: 4px;">
-									<img src="/media_stat/images/template/help/review_contact_info.gif"" width="248" height="9" border="0" alt="REVIEW YOUR CONTACT INFORMATION" />
-								</div>
-								<img src="/media_stat/images/layout/999966.gif" height="1" border="0" width="100%" alt="" />
-							</div>
-
-							<div style="margin-bottom: 32px;">
-								<div style="margin-bottom: 8px;">
-									<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">E-mail Address/User Name:</div><%=email%>
-								</div>
-								<div style="margin-bottom: 8px;">
-									<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">Name:</div><%=firstName%>&nbsp;<%=lastName%>
-								</div>
-								<div style="margin-bottom: 8px; text-align: center;" class="text10">
-									(If this information is incorrect, <a href='/your_account/signin_information.jsp'>click here</a>!)
-								</div>
-							</div>
-						<% } %>
-
-						<div style="margin-bottom: 16px;">
-							<div style="width: 50%; text-align: right; float: left;"><a href="/help/index.jsp?home_phone=&home_phone_ext=&alt_phone=&alt_phone_ext=&body="><img src="/media_stat/images/template/help/clear.gif" width="46" height="16" border="0" alt="CLEAR" /></a></div>
-							<input type="image" name="sendMessage" src="/media_stat/images/template/help/send_message.gif" style="margin-left: 10px;" width="90" height="16" alt="" />
-						</div>
-					</div>
-
-					<div style="margin-bottom: 16px;">
-						<div style="margin-bottom: 16px;">
-							<%--MEDIA INCLUDE--%><fd:IncludeMedia name="/media/editorial/site_pages/help_home_hours.html" /><%--END MEDIA INCLUDE --%>
-						</div>
-						<div>You may also call <%= (user.isChefsTable()) ? "toll-free" : "us" %> at <fd:IncludeMedia name="<%= csNumberMedia %>" /></div>
+					<div style="margin-bottom: 8px;">
+						<form method="post" name="contact_fd" id="contact_fd_faq">
+							<input type="text" class="search" value="" maxlength="100" style="width: 180px;" name="searchFAQ" />
+							<input type="submit" name="searchFAQButton" style="cursor: pointer; width: 42px; height: 18px; vertical-align: bottom; margin-left: 10px; background-image: url('/media_stat/images/template/search/search_find_button.gif'); border: 0; text-indent: -9999px;" />
+						</form>
 					</div>
 				</div>
+
+				<div style="float: left; width: 34%; border-right: 1px solid #ccc; padding-right: 6px;">
+					<div style="margin-bottom: 16px;">
+						<div style="margin-bottom: 8px;">
+							<a href="/help/faq_home.jsp?page=faqHome"><img src="/media_stat/images/template/help/hdr_quick_links.gif" width="119" height="15" border="0" alt="" /></a>
+						</div>
+						<div style="margin-bottom: 8px;">
+							Check below to find the fastest answers to our top customer concerns.
+						</div>
+						<div style="margin-bottom: 8px;" class="text11bold">
+							<ul class="orangeDot">
+								<li><a href="/your_account/order_history.jsp">Check the status of your order</a></li>
+								<li><a href="/your_account/order_history.jsp">Change or cancel your order</a></li>
+								<li><a href="/search.jsp">Find a product</a></li>
+								<li><a href="/your_account/signin_information.jsp">Change your password</a></li>
+								<li><a href="/your_account/manage_account.jsp">Change delivery info</a></li>
+								<li><a href="/your_account/payment_information.jsp">Change credit card info</a></li>
+							</ul>
+						</div>
+					</div>
+
+					<div style="margin-bottom: 16px;">
+						<div style="margin-bottom: 8px;">
+							<a href="/help/faq_home.jsp?page=faqHome"><img src="/media_stat/images/template/help/hdr_faqs.gif" width="45" height="14" border="0" alt="FAQs" /></a>
+						</div>
+						<div style="margin-bottom: 8px;">
+							Scan our Frequently Asked Questions to get info on sign-up, delivery and everything in between.
+						</div>
+						<%
+							List savedList=(List)pageContext.getAttribute("savedFaqs");
+
+							if (null !=savedList && savedList.size()>0 && null != savedList.get(0)) { %>
+								<div style="margin-bottom: 8px;" class="text11bold">
+									<div style="margin-bottom: 4px;">
+										<img src="/media_stat/images/template/help/top_questions.gif" border="0" alt="" />
+									</div>
+									<% if (null != faqSections) {
+										%>
+										<div style="margin-bottom: 8px;">
+											<ul class="orangeDot">
+											<%
+
+											StringTokenizer st = new StringTokenizer(faqSections,",");
+											while (st.hasMoreTokens()) {
+												String nextToken=st.nextToken().trim();
+												%><logic:iterate id="topfaq" indexId="idx" collection="<%= savedList %>" type="com.freshdirect.fdstore.content.Faq"><%
+													if (null!=topfaq && null !=topfaq.getParentNode() && nextToken.equalsIgnoreCase((String)topfaq.getParentNode().getContentKey().getId())) { %>
+														<li><a href="/help/faq_home.jsp?page=<%= (String)topfaq.getParentNode().getContentKey().getId()%>#<%= (String)topfaq.getContentKey().getId()%>"><%= topfaq.getQuestion() %></a></li>
+													<% } %>
+												</logic:iterate><%
+											}
+											%>
+											</ul>
+										</div>
+										<%
+									} %>
+								</div>
+							<% }
+						%>
+					</div>
+
+					<div style="margin-bottom: 16px;">
+						<div style="margin-bottom: 8px;" class="text11bold">
+							<img src="/media_stat/images/template/help/learnmore.gif"  border="0" alt="" />
+						</div>
+						<% if(null != faqSections) {
+							%>
+							<div style="margin-bottom: 8px;" class="text11bold">
+								<ul class="orangeDot">
+								<%
+								
+								StringTokenizer st = new StringTokenizer(faqSections,",");
+								
+								while (st.hasMoreTokens()) {
+									ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode(st.nextToken().trim());
+									if (null != contentNode) { %>
+										<li><a href="/help/faq_home.jsp?page=<%= contentNode.getContentKey().getId()%> "><%= contentNode.getCmsAttributeValue("name") %></a></li>
+									<% }
+								}
+								%>
+								</ul>
+							</div>
+							<%
+						} %>
+					</div>
+
+					
+				</div>
+
+				<form method="post" name="contact_fd" id="contact_fd_contact">
+					<div style="float: right; width: 64%; padding-left: 6px;" class="lineItems">
+						<div style="margin-bottom: 16px;">
+							<div style="margin-bottom: 8px;">
+								<a href='index.jsp'><img src="/media_stat/images/template/help/hdr_contact_us.gif" border="0" width="204" height="14" alt="CONTACT US"></a>
+							</div>
+							<div style="margin-bottom: 8px;">
+								FreshDirect Customer Service is standing by to answer your questions, seven days a week. <span style="font-weight: bold;">The best way to get help is through email. Our dedicated service team generally responds within 1 to 3 hours during our business day.</span>
+							</div>
+						</div>
+						
+						<div style="margin-bottom: 16px;">
+							<div style="margin-bottom: 4px;">
+								<img src="/media_stat/images/template/help/enter_message.gif" width="152" height="9" border="0" alt="ENTER YOUR MESSAGE" />&nbsp;&nbsp;&nbsp;<span class="text9">* Required information</span>
+							</div>
+							<img src="/media_stat/images/layout/999966.gif" height="1" border="0" width="100%" alt="" />
+						</div>
+	
+						<script type="text/javascript">
+	
+							var coremetricsGetHelpEmailFunctionMap = [
+								<logic:iterate id="subject" indexId="idx" collection="<%= ContactFdControllerTag.selections %>" type="com.freshdirect.webapp.taglib.fdstore.ContactFdControllerTag.Selection">
+									<%if (idx!=0){%>,<%}%><fd:CmConversionEvent wrapIntoFunction="true" eventId="email" firstPhase="true" subject="<%=StringUtil.escapeJavaScript(subject.getDescription())%>"/>
+								</logic:iterate>
+							];
+							<%--
+								This seems sort of useless, it only logs a single subject change?
+								Changed to work the same with new js (called once on page load (no log),
+								then on every subject change (log only the first change))
+								still... seems... weird.
+								-BA 20140401
+							--%>
+							var coremetricsGetHelpEmailStartLogged = 0; //init
+							function coremetricsGetHelpEmailStart(index) {
+								if (coremetricsGetHelpEmailStartLogged == 1) {
+									console.log(2);
+									coremetricsGetHelpEmailFunctionMap[index]();
+								}
+								coremetricsGetHelpEmailStartLogged++;
+							}
+							
+							$jq('#prodReqContent').ready(function() { $jq('#prodReqContent').hide(); });
+							$jq(document).ready(function() {
+								$jq('#contact_subject').change(function() {
+									var selectedOpt = $jq('#contact_subject option').filter(':selected');
+									if ( selectedOpt.text() == 'Product Request' ) {
+										$jq('#prodReqContent').show();
+										$jq('#prodReqNonContent').hide();
+									} else {
+										$jq('#prodReqContent').hide();
+										$jq('#prodReqNonContent').show();
+									}
+									if (coremetricsGetHelpEmailFunctionMap[selectedOpt.val()]) {
+										coremetricsGetHelpEmailStart(selectedOpt.val());
+									}
+								});
+								$jq('#contact_subject').change();
+							});
+	
+						</script>
+	
+						<div style="margin-bottom: 16px;">
+							<div style="float: left; width: 12px;">*</div><div style="float: left; width: 55px; font-weight: bold; padding-right: 10px;">Subject:</div>
+							<select class="text12" name="subject" id="contact_subject" style="width: 246px;" onchange="">
+								<option value="">Select Subject:</option>
+								<logic:iterate id="subject" indexId="idx" collection="<%= ContactFdControllerTag.selections %>" type="com.freshdirect.webapp.taglib.fdstore.ContactFdControllerTag.Selection">
+									<option value="<%= idx %>" <%= idx.intValue() == subjectIndex ? "selected" : "" %>><%= subject.getDescription() %></option>
+								</logic:iterate>
+							</select>
+							<fd:ErrorHandler result='<%=result%>' name='subject' id='errorMsg'>
+								<%--if error occured with subject selection, tracking is needed, because subject will be changed automatically--%>
+								<script type="text/javascript">
+									var subjectSelect = document.getElementById('contact_subject');	
+									coremetricsGetHelpEmailStart(subjectSelect.options[subjectSelect.selectedIndex].value)
+								</script>
+								<div class="text11rbold">
+									<%=errorMsg%>
+								</div>
+							</fd:ErrorHandler>
+						</div>
+	
+						<%
+							/* APPDEV-1744	Product Request - 2011 CS Project */
+							Map params = new HashMap();
+							params.put("baseUrl", "");
+							boolean isDefaultFtl = true;
+							String faqPage = "req_feedback"; //set as product request
+							
+							/* only add this if we have faq sections (since we need them to determine this) */
+							if (null != faqSections) {
+								params.put("faqNodes", FDFaqUtil.getFaqsByCategory(faqPage));
+	
+								StringTokenizer st = new StringTokenizer(faqSections, ",");
+								while (st.hasMoreTokens()) {
+									String nextToken = st.nextToken().trim();
+									params.put(nextToken, FDFaqUtil.getFaqsByCategory(nextToken));
+									if (nextToken.equalsIgnoreCase(faqPage) && isDefaultFtl) {
+										isDefaultFtl = false;
+									}
+								}
+	
+								/* add additional param special for this, so we can change the look of the included ftl */
+								params.put("faqContact", "true");
+						%>
+							<div id="prodReqContent" style="display: none;">
+								<div style="margin-bottom: 8px;">
+									<fd:IncludeMedia name="/media/editorial/faq/req_feedback.ftl" parameters="<%=params%>" withErrorReport="false"/>
+								</div>
+								<div style="height: 30px; background: transparent url('/media_stat/images/layout/999966.gif') repeat-x left center;"><!--  --></div>
+							</div>
+						<% } %>
+						
+						
+						<div id="prodReqNonContent">
+							<% if (identity != null) { %>
+								<fd:OrderHistoryInfo id='orderHistoryInfo'>
+									<%if (orderHistoryInfo.size() > 0) {%>
+										<div style="margin-bottom: 16px;">
+											<div style="float: left; width: 12px;">&nbsp;</div><div style="float: left; width: 55px; font-weight: bold; padding-right: 10px;">Order #:</div>
+											<select class="text12" name="salePK">
+												<option value="">Select Order:</option>
+												<logic:iterate id="orderInfo" indexId="idx" collection="<%= orderHistoryInfo %>" type="com.freshdirect.fdstore.customer.FDOrderInfoI">
+													<% if (idx.intValue() == 5) break; %>
+													<option value="<%= orderInfo.getErpSalesId() %>">#<%= orderInfo.getErpSalesId() %> - <%=orderInfo.getOrderStatus().getDisplayName()%> - <%= dateFormatter.format( orderInfo.getRequestedDate() ) %></option>
+												</logic:iterate>
+											</select>
+											&nbsp;(optional)
+										</div>
+									<% } %>
+								</fd:OrderHistoryInfo>
+							<% } %>
+	
+							<div style="margin-bottom: 16px;">
+								<div style="margin-bottom: 8px;">
+									<div style="float: left; width: 12px; height: 30px;">&nbsp;</div><div style="float: left; width: 55px; height: 30px; padding-right: 10px;">&nbsp;</div>
+										* Please enter your message here:<br />
+										<textarea cols="40" rows="5" name="message" onKeyPress="limitText(this, 2048)" onChange="limitText(this, 2048)"><%= body%></textarea>
+										<fd:ErrorHandler result='<%=result%>' name='message' id='errorMsg'>
+											<div class="text11rbold">
+												<%=errorMsg%>
+											</div>
+										</fd:ErrorHandler>
+								</div>
+							</div>
+	
+							<%-- info --%>
+							<%if (identity == null) { %>
+								<div style="margin-bottom: 16px;">
+									<div style="margin-bottom: 4px;">
+										<img src="/media_stat/images/template/help/enter_contact_info.gif" width="246" height="9" border="0" alt="ENTER YOUR CONTACT INFORMATION" />&nbsp;&nbsp;&nbsp;<span class="text9">* Required information</span>
+									</div>
+									<img src="/media_stat/images/layout/999966.gif" height="1" border="0" width="100%" alt="" />
+								</div>
+	
+								<div style="margin-bottom: 32px;">
+									<div style="margin-bottom: 8px;">
+										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">* E-mail Address/User Name:</div><input type="text" class="text11" name="email" size="34" value="<%=email%>" />&nbsp;<fd:ErrorHandler result='<%=result%>' name='email' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+									</div>
+									<div style="margin-bottom: 8px;">
+										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">* First Name:</div><input type="text" class="text11" name="first_name" size="21" value="<%=firstName%>" />&nbsp;<fd:ErrorHandler result='<%=result%>' name='first_name' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+									</div>
+									<div style="margin-bottom: 8px;">
+										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">* Last Name:</div><input type="text" class="text11" name="last_name" size="21" value="<%=lastName%>" />&nbsp;<fd:ErrorHandler result='<%=result%>' name='last_name' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+									</div>
+									<div style="margin-bottom: 8px;">
+										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">Home Phone #:</div><input type="text" class="text11" name="home_phone" size="21" value="<%=homePhone%>" maxlength="15" />&nbsp;<span class="text9">Ext.</span>&nbsp;<input type="text" class="text9" name="home_phone_ext" size="4" value="<%=homePhoneExt%>" maxlength="6" />
+									</div>
+									<div style="margin-bottom: 8px;">
+										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">Work Phone #:</div><input type="text" class="text11" name="work_phone" size="21" value="<%=workPhone%>" maxlength="15" />&nbsp;<span class="text9">Ext.</span>&nbsp;<input type="text" class="text9" name="home_phone_ext" size="4" value="<%=workPhoneExt%>" maxlength="6" />
+									</div>
+									<div style="margin-bottom: 8px;">
+										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">Other Phone #:</div><input type="text" class="text11" name="alt_phone" size="21" value="<%=altPhone%>" maxlength="15" />&nbsp;<font class="text9">Ext.</font>&nbsp;<input type="text" class="text9" name="alt_phone_ext" size="4" value="<%=altPhoneExt%>" maxlength="6" />
+									</div>
+								</div>
+							<% }else{ %>
+								<div style="margin-bottom: 16px;">
+									<div style="margin-bottom: 4px;">
+										<img src="/media_stat/images/template/help/review_contact_info.gif"" width="248" height="9" border="0" alt="REVIEW YOUR CONTACT INFORMATION" />
+									</div>
+									<img src="/media_stat/images/layout/999966.gif" height="1" border="0" width="100%" alt="" />
+								</div>
+	
+								<div style="margin-bottom: 32px;">
+									<div style="margin-bottom: 8px;">
+										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">E-mail Address/User Name:</div><%=email%>
+									</div>
+									<div style="margin-bottom: 8px;">
+										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">Name:</div><%=firstName%>&nbsp;<%=lastName%>
+									</div>
+									<div style="margin-bottom: 8px; text-align: center;" class="text10">
+										(If this information is incorrect, <a href='/your_account/signin_information.jsp'>click here</a>!)
+									</div>
+								</div>
+							<% } %>
+	
+							<div style="margin-bottom: 16px;">
+								<div style="width: 50%; text-align: right; float: left;"><a href="/help/index.jsp?home_phone=&home_phone_ext=&alt_phone=&alt_phone_ext=&body="><img src="/media_stat/images/template/help/clear.gif" width="46" height="16" border="0" alt="CLEAR" /></a></div>
+								<input type="submit" name="sendMessage" style="cursor: pointer; width: 90px; height: 16px; vertical-align: bottom; margin-left: 10px; background-image: url('/media_stat/images/template/help/send_message.gif'); border: 0; text-indent: -9999px;" />
+							</div>
+						</div>
+	
+						<div style="margin-bottom: 16px;">
+							<div style="margin-bottom: 16px;">
+								<%--MEDIA INCLUDE--%><fd:IncludeMedia name="/media/editorial/site_pages/help_home_hours.html" /><%--END MEDIA INCLUDE --%>
+							</div>
+							<div>You may also call <%= (user.isChefsTable()) ? "toll-free" : "us" %> at <fd:IncludeMedia name="<%= csNumberMedia %>" /></div>
+						</div>
+					</div>
+				
+				</form>
 
 				<div style="height: 30px; background: transparent url('/media_stat/images/layout/cccccc.gif') repeat-x left center; clear: both;"><!--  --></div>
 				<div style="margin-bottom: 8px;">

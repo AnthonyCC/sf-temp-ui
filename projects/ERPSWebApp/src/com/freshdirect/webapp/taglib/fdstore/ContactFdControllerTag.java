@@ -48,7 +48,7 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			
 			ContactForm form = new ContactForm(identity == null);
 			form.populateForm(request);
-			if(null !=request.getParameter("sendMessage.x")){
+			if(request.getParameter("sendMessage") != null){
 				form.validateForm(actionResult);
 				
 				if (actionResult.isSuccess()) {
