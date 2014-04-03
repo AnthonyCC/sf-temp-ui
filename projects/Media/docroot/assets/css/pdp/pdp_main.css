@@ -76,6 +76,7 @@ span.cssbutton.annotation:hover {
 .pdp h1 .productDisplay-akaName {
   font-family:Verdana,sans-serif;
 	font-size:16px;
+  font-weight: normal;
 	color:#333;
 	margin:2px 0 0 0;
 }
