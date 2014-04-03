@@ -113,7 +113,7 @@ public class CmsFilteringFlow {
 			Set<ContentKey> shownProductKeysForRecommender = new HashSet<ContentKey>();
 			BrowseDataBuilderFactory.getInstance().collectAllProductKeysForRecommender(browseData.getSections().getSections(), shownProductKeysForRecommender);
 			// -- SET NO PRODUCTS MESSAGE --
-			if(shownProductKeysForRecommender.size()==0){
+			if(shownProductKeysForRecommender.size()==0 && browseDataContext.getNavigationModel().isProductListing()){
 				browseData.getSections().setAllSectionsEmpty(true);
 			}
 			BrowseDataBuilderFactory.getInstance().appendCarousels(browseData, user, shownProductKeysForRecommender);
