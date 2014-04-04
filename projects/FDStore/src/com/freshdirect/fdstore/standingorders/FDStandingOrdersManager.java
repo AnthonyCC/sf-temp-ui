@@ -524,11 +524,11 @@ public class FDStandingOrdersManager {
 		}
 	}
 	
-	public void deleteStandingOrderAltDeliveryDateById(String altId) throws FDResourceException {
+	public void deleteStandingOrderAltDeliveryDateById(String[] altIds) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDStandingOrdersSB sb = soHome.create();			
-			sb.deleteStandingOrderAltDeliveryDateById(altId);
+			sb.deleteStandingOrderAltDeliveryDateById(altIds);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

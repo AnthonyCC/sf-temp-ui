@@ -28,7 +28,7 @@ public static String buildResponse(List<String> errors) {
 		if(null !=errors && errors.size() > 0) {
 			buffer.append("<table  valign=\"top\" width=\"480\" cellpadding=\"0\" cellspacing=\"0\">");
 			if(errors.size() > 0) {
-				buffer.append("<tr>").append("<th   colspan=\"4\" align=\"center\">").append("ERRORS ").append("</th>").append("</tr>");
+				buffer.append("<tr>").append("<th   colspan=\"4\" align=\"center\">").append("<U>Errors</U> ").append("</th>").append("</tr>");
 				Iterator<String> itr = errors.iterator();
 				buffer.append("<tr>");
 				buffer.append("<td  colspan=\"4\">");
@@ -73,7 +73,7 @@ public static List<String> validate(FDStandingOrderAltDeliveryDate altDate,List<
 					
 				}
 				if(isDuplicate){
-					if(altDate.getSoId() == null){
+					if(altDate.getSoId() == null || "".equals(altDate.getSoId())){
 						errors.add(ERROR_MSG_ROW_NUM+rowNum+ERROR_MSG_ALREADY_STANDING_ORDER_ALT_DATE_FOR_DELIVERY_DATE+altDate.getOrigDateFormatted());
 					}else{
 						errors.add(ERROR_MSG_ROW_NUM+rowNum+ERROR_MSG_ALREADY_STANDING_ORDER_ALT_DATE_FOR_DELIVERY_DATE+altDate.getOrigDateFormatted()+ERROR_MSG_SO_ID+altDate.getSoId());

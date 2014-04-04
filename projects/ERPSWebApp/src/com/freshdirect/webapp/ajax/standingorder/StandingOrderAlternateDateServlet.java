@@ -224,10 +224,14 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String id = request.getParameter( "id" );
-		try {
-			FDStandingOrdersManager.getInstance().deleteStandingOrderAltDeliveryDateById(id);
-		} catch (FDResourceException e) {
-			//TODO: Handle it.
+		if(id !=null){
+			String ids[] =id.split("-");
+			try {
+				FDStandingOrdersManager.getInstance().deleteStandingOrderAltDeliveryDateById(ids);
+			} catch (FDResourceException e) {
+				//TODO: Handle it.
+			}
 		}
+		
 	}
 }

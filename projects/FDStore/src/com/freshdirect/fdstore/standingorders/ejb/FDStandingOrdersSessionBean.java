@@ -605,12 +605,12 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		} 
 	}
 	
-	public void deleteStandingOrderAltDeliveryDateById(String altId) throws FDResourceException {
+	public void deleteStandingOrderAltDeliveryDateById(String[] altIds) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDStandingOrderDAO dao = new FDStandingOrderDAO();			
-			dao.deleteStandingOrderAltDeliveryDateById(conn, altId);
+			dao.deleteStandingOrderAltDeliveryDateById(conn, altIds);
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in deleteStandingOrderAltDeliveryDate() : " + e.getMessage(), e );
 			e.printStackTrace();

@@ -825,8 +825,8 @@ public class FDStandingOrderDAO {
 		altDeliveryDateInfo.setActionType(rs.getString("ACTION_TYPE"));
 		altDeliveryDateInfo.setCreatedBy(rs.getString("CREATED_BY"));
 		altDeliveryDateInfo.setModifiedBy(rs.getString("MODIFIED_BY"));
-		altDeliveryDateInfo.setCreatedTime(rs.getTime("CREATED_TIME"));
-		altDeliveryDateInfo.setModifiedTime(rs.getTime("MODIFIED_TIME"));
+		altDeliveryDateInfo.setCreatedTime(rs.getTimestamp("CREATED_TIME"));
+		altDeliveryDateInfo.setModifiedTime(rs.getTimestamp("MODIFIED_TIME"));
 		altDeliveryDateInfo.setId(rs.getString("ID"));
 		return altDeliveryDateInfo;
 	}
@@ -1196,24 +1196,26 @@ public class FDStandingOrderDAO {
 		return false;
 	}
 	
-	private static final String DELETE_STANDINGORDER_ALTERNATE_DELIVERY_DATE_BY_ID = "DELETE FROM CUST.SO_HOLIDAY_ALT_DATE WHERE ID=?";
+	private static final String DELETE_STANDINGORDER_ALTERNATE_DELIVERY_DATE_BY_ID = "DELETE FROM CUST.SO_HOLIDAY_ALT_DATE WHERE ID =?";
 	
-	public void deleteStandingOrderAltDeliveryDateById(Connection conn, String altId) throws SQLException {
+	public void deleteStandingOrderAltDeliveryDateById(Connection conn, String[] altIds) throws SQLException {
 		
-		PreparedStatement ps = null;		
-		try {
-			ps = conn.prepareStatement(DELETE_STANDINGORDER_ALTERNATE_DELIVERY_DATE_BY_ID);
-						
-			ps.setString(1,altId);
-			
-			ps.execute();	
-			ps.close();
-		
-		} catch (SQLException exc) {
-			throw exc;
-		} finally {
-			if(ps != null) {
-				ps.close();
+		if(null != altIds && altIds.length > 0){				
+			PreparedStatement ps = null;		
+			try {
+				ps = conn.prepareStatement(DELETE_STANDINGORDER_ALTERNATE_DELIVERY_DATE_BY_ID);
+				for (int i = 0; i < altIds.length; i++) {						
+					ps.setString(1,altIds[i]);
+					ps.addBatch();
+				}			
+				ps.executeBatch();	
+				ps.close();			
+			} catch (SQLException exc) {
+				throw exc;
+			} finally {
+				if(ps != null) {
+					ps.close();
+				}
 			}
 		}
 	}

@@ -12,6 +12,7 @@ public class FDStandingOrderAltDeliveryDate extends ModelSupport{
 	private static final long serialVersionUID = -3087295029694549320L;
 	private static DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	private static DateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+	private static DateFormat dateTimeFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
 	
 	private Date origDate;
 	private Date altDate;
@@ -176,6 +177,10 @@ public class FDStandingOrderAltDeliveryDate extends ModelSupport{
 
 	public Date getModifiedTime() {
 		return modifiedTime;
+	}
+	
+	public String getModifiedTimeStr(){
+		return (null !=modifiedTime ?dateTimeFormat.format(modifiedTime):"");
 	}
 
 	public void setModifiedTime(Date modifiedTime) {

@@ -88,7 +88,7 @@ margin-top: 20px;
 				<div id="dialog2" title="Upload Standing Order Alternate Dates">
 					<form action="/api/soalternatedate/" enctype="multipart/form-data" method="post" id="uploadForm" name="uploadForm">
 					<div id="error" width="500"></div>
-					Please specify a xls or csv file and click 'Upload':<br/><br/><input type="file" value="Browse" id="file" name="file"/> <br/>
+					Please specify a csv file and click 'Upload':<br/><br/><input type="file" value="Browse" id="file" name="file"/> <br/>
 						<p/><p/><p/> 
 						<input type="button" value="Upload" id="fileUpload" name="fileUpload" onclick="javascript:submitUploadForm()"/>
 					</form>
@@ -99,6 +99,7 @@ margin-top: 20px;
 				<div id="dialog1" title="Create/Edit Standing Order Alternate Dates">
 				<div id="formResult" width="500"></div><br/>
 				<input type="hidden" name="delId" id="delId" value=""/>
+				<input type="hidden" name="actionComplete" id="actionComplete" value=""/>
 				<form id="form1">
 <table width="100%">
 	<tr>
@@ -211,7 +212,14 @@ $jq(function() {
 
 
 $jq('div#dialog2').bind('dialogclose', function(event) {
-	location.reload(true);
+	if($jq('#actionComplete').val()=="true"){
+		location.reload(true);
+	}	
+});
+$jq('div#dialog1').bind('dialogclose', function(event) {
+	if($jq('#actionComplete').val()=="true"){
+		location.reload(true);
+	}	
 });
 
 $jq(function() {
@@ -364,9 +372,9 @@ var soGridColModel = 	[	{ title: "<b>Original Date</b>", width: 100, dataType: "
                         filter("modifiedBy", $jq(this).val());
                     } 
                     }] } },
-                    {title: "<b>Last Modified Time</b>", width: 100, dataType: "date", dataIndx: "modifiedTime", align:"center",
+                    {title: "<b>Last Modified At</b>", width: 100, dataType: "date", dataIndx: "modifiedTimeStr", align:"center",
     					filter: { type: 'textbox', condition: 'equal', listeners: [{ change: function (evt, ui) {
-                            filter("modifiedTime", $jq(this).val());
+                            filter("modifiedTimeStr", $jq(this).val());
                         } 
                         }] } }
                    
@@ -394,10 +402,12 @@ $soGrid = $jq("div#soAltGrid").pqGrid({ flexHeight: true,
     pageModel: { type: "local", rPP: 20, rPPOptions: [20, 50, 100, 500, 1000]},
     title: "<b>Standing Order Alternate Delivery Dates</b>",
     filterModel: { on: true, mode: "AND", header:true },
-    numberCell: { show: true },
+    numberCell: { show: false },
     resizable: true,
     editable: false,
-    wrap: true,
+    collapsible:false,
+    stripeRows:true,
+    wrap: false,
     hwrap: false, 
     columnBorders: true,
     freezeCols: 0,
@@ -425,7 +435,11 @@ $soGrid = $jq("div#soAltGrid").pqGrid({ flexHeight: true,
 	rowSelect: function (evt, ui) {
         if (ui.rowData) {  
         	 var rowData = ui.rowData;
-        	$jq( "#delId" ).val(rowData["id"]);
+        	 if($jq( "#delId" ).val()==""){
+        		 $jq( "#delId" ).val(rowData["id"]);
+        	 }else{
+        		$jq( "#delId" ).val($jq( "#delId" ).val()+"-"+rowData["id"]);
+        	}
         	
         }
 	},
@@ -448,17 +462,7 @@ $soGrid = $jq("div#soAltGrid").pqGrid({ flexHeight: true,
 
 
 $soGrid.pqGrid( "showLoading" );
-$jq.ajax({
-    url: "/api/soalternatedate/",
-    cache: false,
-    async: true,
-    dataType: "JSON",
-    success: function(response){
-        $soGrid.pqGrid("option", "dataModel.data", response);
-        $soGrid.pqGrid( "refreshView" );
-        $soGrid.pqGrid( "hideLoading" );
-    }
-});
+getLatestData();
 
 function filter(dataIndx, value) {
     $soGrid.pqGrid("filter", {
@@ -563,20 +567,21 @@ function time(time_string) {
 		            dataType: "json",
 		            success : function(data, textStatus, jqXHR){
 		            	if(data == '' || data == null){
-		            		location.reload(true);
-			            	$jq('#resultDiv').css("color","#006400"); 
-		                	$jq('#resultDiv').html("<b>Created/Updated successfully.</b>");
+		            		$jq('#actionComplete').val("true");
+		            		setCreateOrUpdateSuccessMsg();
 		                	$soGrid.pqGrid( "refresh" );
 		            	}else{
+		            		$jq('#actionComplete').val("");
 		            		$jq('#formResult').html(data);
 		            	}
 		            },
 		            error: function(data,textStatus,jqXHR){
 		            	if(data == '' || data == null){
-			            	$jq('#resultDiv').css("color","#006400"); 
-		                	$jq('#resultDiv').html("<b>Created/Updated successfully.</b>");
+		            		$jq('#actionComplete').val("true");
+			            	setCreateOrUpdateSuccessMsg();
 		                	$soGrid.pqGrid( "refresh" );
 		            	}else{
+		            		$jq('#actionComplete').val("");
 		            		$jq('#formResult').html(data.responseText);
 		            	}
 		            }
@@ -596,17 +601,20 @@ function time(time_string) {
    		         processData:false,
    		                success: function(data, textStatus, jqXHR)
    		                {
-   		                	$jq('#result').html(data);
+   		                	$jq('#result').html(data);   		                	
    		                	if(data == '' || data == null){
+   		                		$jq('#actionComplete').val("true");
    		                		$jq('#error').css("color","#00FF00"); 
    		                		$jq('#error').html("<b>Upload successful.</b>");
    		                	}else{
+   		                		$jq('#actionComplete').val("");
    		                		$jq('#error').css("color","#FF0000"); 
    		                		$jq('#error').html("<b>Upload failed. Please see the errors below.</b>");
    		                	}
    		                },
    		                error: function(jqXHR, textStatus, errorThrown) 
    		                {
+   		                	$jq('#actionComplete').val("");
    		                	$jq('#error').css("color","#FF0000");
    		                	$jq('#error').html("<b>Upload failed. Please see the errors below.</b>");
    		                }
@@ -639,10 +647,10 @@ function time(time_string) {
 					$jq.ajax({
 			            type: "DELETE",
 			            url: "/api/soalternatedate?id="+altId,
-			            success : function(json){			            	
-			            	location.reload(true);
-			            	$jq('#resultDiv').css("color","#006400"); 
-			            	$jq('#resultDiv').html("<b>Deleted successfully.</b>");
+			            success : function(json){	
+			            	$jq( "#delId" ).val("");
+			            	getLatestData();
+			            	setDeleteSuccessMsg();
 			            }
 			        });
 				}
@@ -651,5 +659,28 @@ function time(time_string) {
 			function showUploadDialog(){
 				$jq( "#dialog2" ).dialog( "open" );
 				$jq( "#form1" )[0].reset();
+			}
+			function getLatestData(){
+				$jq.ajax({
+            	    url: "/api/soalternatedate/",
+            	    cache: false,
+            	    async: true,
+            	    dataType: "JSON",
+            	    success: function(response){
+            	        $soGrid.pqGrid("option", "dataModel.data", response);
+            	        $soGrid.pqGrid( "refreshView" );
+            	        $soGrid.pqGrid( "hideLoading" );
+            	    }
+            	});
+			}
+		
+			function setCreateOrUpdateSuccessMsg(){
+				$jq('#formResult').css("color","#006400"); 
+            	$jq('#formResult').html("<b>Created/Updated successfully.</b>");
+			}
+			
+			function setDeleteSuccessMsg(){
+				$jq('#resultDiv').css("color","#006400"); 
+            	$jq('#resultDiv').html("<b>Deleted successfully.</b>");
 			}
 </script>
