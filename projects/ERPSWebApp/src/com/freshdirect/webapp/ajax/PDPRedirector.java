@@ -62,8 +62,10 @@ public class PDPRedirector extends BodyTagSupport {
 	
 				if ( productId != null && categoryId != null ) { 
 					ProductModel productNode = ContentFactory.getInstance().getProductByName( categoryId, productId );
-					EnumProductLayout prodLayout = productNode.getProductLayout(); 
-					redirectUrl = PDP_PAGE_URL + "?catId=" + categoryId + "&productId=" + productId;
+					if(productNode!=null){
+						EnumProductLayout prodLayout = productNode.getProductLayout(); 
+						redirectUrl = PDP_PAGE_URL + "?catId=" + categoryId + "&productId=" + productId;						
+					}
 				}
 				
 			} else if ( OLD_CATEGORY_PAGE.equalsIgnoreCase( originalUrl ) ) {
@@ -73,7 +75,7 @@ public class PDPRedirector extends BodyTagSupport {
 				
 				if ( productId != null && categoryId != null ) { 
 					ProductModel productNode = ContentFactory.getInstance().getProductByName( categoryId, productId );
-					if ( productNode.getLayout().isGroceryLayout() ) {
+					if ( productNode!=null && productNode.getLayout().isGroceryLayout() ) {
 						redirectUrl = PDP_PAGE_URL + "?catId=" + categoryId + "&productId=" + productId;
 					}
 				}
@@ -86,12 +88,14 @@ public class PDPRedirector extends BodyTagSupport {
 				
 				if ( productId != null && categoryId != null ) { 
 					ProductModel productNode = ContentFactory.getInstance().getProductByName( categoryId, productId );
-					if ( productNode.getLayout().isGroceryLayout() ) {
-						// if grocery layout redirect to category page
-						redirectUrl = OLD_CATEGORY_PAGE + "?catId=" + categoryId + "&prodCatId=" + categoryId + "&productId=" + productId;
-					} else {
-						// redirect to product page
-						redirectUrl = OLD_PRODUCT_PAGE + "?catId=" + categoryId + "&productId=" + productId;
+					if(productNode!=null){
+						if ( productNode.getLayout().isGroceryLayout() ) {
+							// if grocery layout redirect to category page
+							redirectUrl = OLD_CATEGORY_PAGE + "?catId=" + categoryId + "&prodCatId=" + categoryId + "&productId=" + productId;
+						} else {
+							// redirect to product page
+							redirectUrl = OLD_PRODUCT_PAGE + "?catId=" + categoryId + "&productId=" + productId;
+						}						
 					}
 				}
 	 		}
