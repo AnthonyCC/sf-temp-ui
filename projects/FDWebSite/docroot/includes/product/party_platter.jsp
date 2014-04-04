@@ -19,6 +19,9 @@
 final int W_PARTY_PLATTER_TOTAL = 601;
 %>
 
+<% if (request.getAttribute("CCLLoaded") == null) { %>
+<%@ include file="/shared/template/includes/ccl.jspf" %>
+<% } %>
 
 <fd:CheckLoginStatus />
 <%!

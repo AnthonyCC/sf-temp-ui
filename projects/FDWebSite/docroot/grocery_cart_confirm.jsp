@@ -68,6 +68,11 @@ Recipe recipe = null;
 
     
 <tmpl:put name='content' direct='true'>
+
+<% if (request.getAttribute("CCLLoaded") == null) { %>
+<%@ include file="/shared/template/includes/ccl.jspf" %>
+<% } %>
+
 <script type="text/javascript">
 	OAS_AD('ProductNote');
 </script>

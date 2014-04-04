@@ -1,5 +1,10 @@
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
+
+<% if (request.getAttribute("CCLLoaded") == null) { %>
+<%@ include file="/shared/template/includes/ccl.jspf" %>
+<% } %>
+
 <%
 
 ContentFactory cf = ContentFactory.getInstance();

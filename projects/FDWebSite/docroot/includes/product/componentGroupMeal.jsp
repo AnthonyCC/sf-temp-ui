@@ -21,6 +21,10 @@
 final int W_COMPONENT_GROUP_MEAL_TOTAL = 601;
 %>
 
+<% if (request.getAttribute("CCLLoaded") == null) { %>
+<%@ include file="/shared/template/includes/ccl.jspf" %>
+<% } %>
+
 <fd:CheckLoginStatus />
 <fd:PendingOrderChecker/>
 <%!
