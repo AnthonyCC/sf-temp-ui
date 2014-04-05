@@ -50,4 +50,5 @@ public interface FDStandingOrdersSB extends EJBObject {
 	public void deleteStandingOrderAltDeliveryDateById(String[] altIds) throws FDResourceException, RemoteException;
 	public void addStandingOrderAltDeliveryDates(List<FDStandingOrderAltDeliveryDate> altDeliveryDates) throws FDResourceException, RemoteException;
 	public boolean checkIfAlreadyExists(FDStandingOrderAltDeliveryDate altDate) throws FDResourceException,RemoteException;
+	public boolean isValidSoId(String soId) throws FDResourceException,RemoteException;
 }

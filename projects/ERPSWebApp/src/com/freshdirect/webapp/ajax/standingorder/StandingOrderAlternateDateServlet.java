@@ -1,6 +1,10 @@
 package com.freshdirect.webapp.ajax.standingorder;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -21,19 +25,15 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
+import com.bea.core.repackaged.springframework.util.FileCopyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.crm.CrmAgentModel;
-import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.standingorders.EnumStandingOrderAlternateDeliveryType;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
-import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAlternateDateUtil;
+import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.StandingOrderAlternateDatesParser;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
@@ -47,7 +47,6 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 	private static final long serialVersionUID = -3194743558815296602L;
 	private static final Logger LOGGER = LoggerFactory.getInstance( StandingOrderAlternateDateServlet.class );
 	private static DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-	private static DateFormat tf = new SimpleDateFormat("hh:mm a");
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -71,51 +70,88 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 			}
 		}
 		
-		//Return JSON response.
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.writeValue(response.getOutputStream(), altDeliverDates);
-		} catch (Exception e) {
-			LOGGER.error("Failed to get the standing order alternate delivery dates: ",e);
+		String fileName=request.getParameter("filename");
+		if(null !=fileName){
+			export(response);
+		    
+		}else{
+			//Return JSON response.
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			try {
+				ObjectMapper mapper = new ObjectMapper();
+				mapper.writeValue(response.getOutputStream(), altDeliverDates);
+			} catch (Exception e) {
+				LOGGER.error("Failed to get the standing order alternate delivery dates: ",e);
+			}
 		}
 						
+	}
+
+	private void export(HttpServletResponse response) throws IOException,
+			FileNotFoundException {
+		File outputFile = new File("SO_Alt_Dates.xml");
+		response.setBufferSize((int) outputFile.length());			
+		response.setContentType("application/vnd.ms-excel");
+		response.setHeader("Content-Disposition", "attachment; filename="+outputFile.getName());
+		response.setCharacterEncoding("utf-8");
+		FileCopyUtils.copy(new FileInputStream(outputFile), response.getOutputStream());
+		response.getOutputStream().close();
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException{
 	
-		FDStandingOrderAltDeliveryDate altDeliveryDate =parseRequestData( request, response, FDStandingOrderAltDeliveryDate.class,true );
-		Date currentDate = Calendar.getInstance().getTime();
-		HttpSession session = request.getSession();
-		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
-		List<String> errors = new ArrayList();
-		if(null != altDeliveryDate){
-			try {
-				errors = FDStandingOrderAlternateDateUtil.validate(altDeliveryDate,errors,null);
-				if(null == errors || errors.isEmpty()){
-					if(null == altDeliveryDate.getId() || "".equals(altDeliveryDate.getId().trim())){
-						altDeliveryDate.setCreatedTime(currentDate);
-						altDeliveryDate.setCreatedBy(agent.getUserId());
-						altDeliveryDate.setModifiedTime(currentDate);
-						altDeliveryDate.setModifiedBy(agent.getUserId());
-						FDStandingOrdersManager.getInstance().addStandingOrderAltDeliveryDate(altDeliveryDate);
+		if(null !=request.getParameter("extension") && null != request.getParameter("excel")){
+			export(request);
+		}else{
+			FDStandingOrderAltDeliveryDate altDeliveryDate =parseRequestData( request, response, FDStandingOrderAltDeliveryDate.class,true );
+			Date currentDate = Calendar.getInstance().getTime();
+			HttpSession session = request.getSession();
+			CrmAgentModel agent = CrmSession.getCurrentAgent(session);
+			List<String> errors = new ArrayList();
+			if(null != altDeliveryDate){
+				try {
+					errors = FDStandingOrderAlternateDateUtil.validate(altDeliveryDate,errors,null);
+					if(null == errors || errors.isEmpty()){
+						if(null == altDeliveryDate.getId() || "".equals(altDeliveryDate.getId().trim())){
+							altDeliveryDate.setCreatedTime(currentDate);
+							altDeliveryDate.setCreatedBy(agent.getUserId());
+							altDeliveryDate.setModifiedTime(currentDate);
+							altDeliveryDate.setModifiedBy(agent.getUserId());
+							FDStandingOrdersManager.getInstance().addStandingOrderAltDeliveryDate(altDeliveryDate);
+						}else{
+							altDeliveryDate.setModifiedTime(currentDate);
+							altDeliveryDate.setModifiedBy(agent.getUserId());
+							FDStandingOrdersManager.getInstance().updateStandingOrderAltDeliveryDate(altDeliveryDate);
+						}
 					}else{
-						altDeliveryDate.setModifiedTime(currentDate);
-						altDeliveryDate.setModifiedBy(agent.getUserId());
-						FDStandingOrdersManager.getInstance().updateStandingOrderAltDeliveryDate(altDeliveryDate);
+		    			sendResponse(response, errors);
 					}
-				}else{
-	    			sendResponse(response, errors);
+				} catch (FDResourceException e) {
+					LOGGER.error("Failed to save the standing order alternate delivery date");
+					errors.add("Failed to save it. "+((null==e.getMessage() && e.getNestedException()!=null) ?e.getNestedException().getMessage():""));
+					sendResponse(response, errors);
 				}
-			} catch (FDResourceException e) {
-				LOGGER.error("Failed to save the standing order alternate delivery date");
-				errors.add("Failed to save it. "+((null==e.getMessage() && e.getNestedException()!=null) ?e.getNestedException().getMessage():""));
-				sendResponse(response, errors);
 			}
 		}
+	}
+
+	private void export(HttpServletRequest request) throws IOException {
+		String filename = "SO_Alt_Dates." + request.getParameter("extension");//xml
+		File file = new File(filename);
+
+		// If file doesn't exists, then create it
+		if (!file.exists()) {
+		    file.createNewFile();
+		}
+
+		FileWriter fw = new FileWriter(file.getAbsoluteFile());
+		BufferedWriter bw = new BufferedWriter(fw);
+		bw.write(request.getParameter("excel"));
+		bw.close();
+		request.setAttribute("export", true);
 	}
 
 	private void sendResponse(HttpServletResponse response, List<String> errors)
@@ -194,7 +230,9 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 		            fi.write( file ) ;
 		            StandingOrderAlternateDatesParser parser = new StandingOrderAlternateDatesParser();
 		            List<FDStandingOrderAltDeliveryDate> listAltDates =parser.parseFile(file);
+		            
 		            if(parser.isParseSuccessful()){
+		            	populateCreatedTime(request, listAltDates);
 		            	FDStandingOrdersManager.getInstance().addStandingOrderAltDeliveryDates(listAltDates);
 		            }else{
 		            	response.addHeader ("Content-Disposition","attachment;filename="+fileName);
@@ -208,6 +246,20 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 		}catch(Exception ex) {
 		   LOGGER.error("Error while uploading/parsing the standing order alternate delivery dates:", ex);
 		   sendError( response, 400, "Empty request. Aborting" );
+		}
+	}
+
+	private static void populateCreatedTime(HttpServletRequest request,
+			List<FDStandingOrderAltDeliveryDate> listAltDates) {
+		HttpSession session = request.getSession();
+		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
+		Date currentDate = Calendar.getInstance().getTime();
+		for (Iterator iterator = listAltDates.iterator(); iterator.hasNext();) {
+			FDStandingOrderAltDeliveryDate altDeliveryDate = (FDStandingOrderAltDeliveryDate) iterator.next();
+			altDeliveryDate.setCreatedTime(currentDate);
+			altDeliveryDate.setCreatedBy(agent.getUserId());
+			altDeliveryDate.setModifiedTime(currentDate);
+			altDeliveryDate.setModifiedBy(agent.getUserId());							
 		}
 	}
 
@@ -229,7 +281,8 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 			try {
 				FDStandingOrdersManager.getInstance().deleteStandingOrderAltDeliveryDateById(ids);
 			} catch (FDResourceException e) {
-				//TODO: Handle it.
+				LOGGER.error("Failed to standing order alternate dates: "+ids.toString());
+				sendError( response, 400, "Failed to delete standing order alternate dates" );	// 400 Bad Request
 			}
 		}
 		

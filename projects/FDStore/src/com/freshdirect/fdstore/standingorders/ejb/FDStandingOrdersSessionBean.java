@@ -650,4 +650,21 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		}
 		return isDuplicate;
 	}
+	
+	public boolean isValidSoId(String soId) throws FDResourceException{
+		Connection conn = null;
+		boolean isValid=false;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();			
+			isValid =dao.isValidSoId(conn, soId);
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in addStandingOrderAltDeliveryDate() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+		return isValid;
+	}
 }

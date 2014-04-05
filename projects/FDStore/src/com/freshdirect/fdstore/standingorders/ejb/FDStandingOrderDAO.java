@@ -83,7 +83,7 @@ public class FDStandingOrderDAO {
 	private static final String LOAD_STANDING_ORDER_ALTERNATE_DELIVERY_INFO =
 			"select * " +
 			"from CUST.SO_HOLIDAY_ALT_DATE SA " +
-			"where SA.SO_ID=? AND SA.CURRENT_DELIVERY_DATE=? AND (START_DATE IS NULL OR START_DATE >=?) AND (END_DATE IS NULL OR END_DATE <= ?)";
+			"where SA.SO_ID=? AND SA.CURRENT_DELIVERY_DATE=?";
 	
 	private static final String DELETE_STANDING_ORDER = "update CUST.STANDING_ORDER SET DELETED=1, CUSTOMERLIST_ID=NULL where ID=? and DELETED=0";
 	private static final String DELETE_CUSTOMER_LIST = "delete from CUST.CUSTOMERLIST where ID=?";
@@ -152,8 +152,9 @@ public class FDStandingOrderDAO {
 			
 			while (rs.next()) {
 				FDStandingOrder so = new FDStandingOrder();
-				
-				sorders.add( populate(rs, so) );
+				so = populate(rs, so);
+				loadStandingOrderAlternateDateForSO(conn, so);
+				sorders.add( so );
 			}
 
 			rs.close();
@@ -241,20 +242,10 @@ public class FDStandingOrderDAO {
 			rs = ps.executeQuery();
 			
 			if (rs.next()) {
-				Date date = new Date();
 				so = new FDStandingOrder();
 				
 				populate(rs, so);
-				ps = conn.prepareStatement(LOAD_STANDING_ORDER_ALTERNATE_DELIVERY_INFO);
-				ps.setString(1, pk);
-				ps.setDate(2, new java.sql.Date(so.getNextDeliveryDate().getTime()));
-				ps.setDate(3, new java.sql.Date(date.getTime()));
-				ps.setDate(4, new java.sql.Date(date.getTime()));
-				rs = ps.executeQuery();
-				if(rs.next()){
-					FDStandingOrderAltDeliveryDate soAltDeliveryInfo = populateAltDeliveryInfo(rs);
-					so.setAltDeliveryInfo(soAltDeliveryInfo);
-				}
+				loadStandingOrderAlternateDateForSO(conn, so);
 				
 			}
 
@@ -272,6 +263,32 @@ public class FDStandingOrderDAO {
 		}
 		
 		return so;
+	}
+
+
+	private void loadStandingOrderAlternateDateForSO(
+			Connection conn, FDStandingOrder so) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(LOAD_STANDING_ORDER_ALTERNATE_DELIVERY_INFO);
+			ps.setString(1, so.getId());
+			ps.setDate(2, new java.sql.Date(so.getNextDeliveryDate().getTime()));
+			rs = ps.executeQuery();
+			if(rs.next()){
+				FDStandingOrderAltDeliveryDate soAltDeliveryInfo = populateAltDeliveryInfo(rs);
+				so.setAltDeliveryInfo(soAltDeliveryInfo);
+			}
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			if(rs != null){
+				rs.close();
+			}
+			if(ps != null) {
+				ps.close();
+			}
+		}
 	}
 
 	private FDStandingOrder populate( ResultSet rs, FDStandingOrder so ) throws SQLException {
@@ -727,7 +744,7 @@ public class FDStandingOrderDAO {
 		return infoList;
 	}
 
-	private static final String GET_STANDING_ORDERS_ALTERNATE_DELIVERY_DATES =	"select * from CUST.SO_HOLIDAY_ALT_DATE ORDER BY CURRENT_DELIVERY_DATE";
+	private static final String GET_STANDING_ORDERS_ALTERNATE_DELIVERY_DATES =	"select * from CUST.SO_HOLIDAY_ALT_DATE WHERE CURRENT_DELIVERY_DATE > SYSDATE-1 ORDER BY CURRENT_DELIVERY_DATE";
 	public Map<Date,Date> getStandingOrdersAlternateDeliveryDates(Connection conn) throws SQLException{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -820,27 +837,24 @@ public class FDStandingOrderDAO {
 		altDeliveryDateInfo.setOrigEndTime(rs.getTime("DELIVERY_END_TIME"));
 		altDeliveryDateInfo.setAltStartTime(rs.getTime("ALTERNATE_DELIVERY_START_TIME"));
 		altDeliveryDateInfo.setAltEndTime(rs.getTime("ALTERNATE_DELIVERY_END_TIME"));
-		altDeliveryDateInfo.setDescription(rs.getString("DESCRIPTION"));
-		altDeliveryDateInfo.setSoId(rs.getString("SO_ID"));
+		altDeliveryDateInfo.setDescription(null==rs.getString("DESCRIPTION")?"":rs.getString("DESCRIPTION"));
+		altDeliveryDateInfo.setSoId(null==rs.getString("SO_ID")?"":rs.getString("SO_ID"));
 		altDeliveryDateInfo.setActionType(rs.getString("ACTION_TYPE"));
 		altDeliveryDateInfo.setCreatedBy(rs.getString("CREATED_BY"));
-		altDeliveryDateInfo.setModifiedBy(rs.getString("MODIFIED_BY"));
+		altDeliveryDateInfo.setModifiedBy(null==rs.getString("MODIFIED_BY")?"":rs.getString("MODIFIED_BY"));
 		altDeliveryDateInfo.setCreatedTime(rs.getTimestamp("CREATED_TIME"));
 		altDeliveryDateInfo.setModifiedTime(rs.getTimestamp("MODIFIED_TIME"));
 		altDeliveryDateInfo.setId(rs.getString("ID"));
 		return altDeliveryDateInfo;
 	}
 
-	private static final String GET_STANDING_ORDERS_GLOBAL_ALTERNATE_DELIVERY_DATES =	"select * from CUST.SO_HOLIDAY_ALT_DATE WHERE SO_ID IS NULL AND (START_DATE IS NULL OR START_DATE >=?) AND (END_DATE IS NULL OR END_DATE <= ?) ORDER BY CURRENT_DELIVERY_DATE";
+	private static final String GET_STANDING_ORDERS_GLOBAL_ALTERNATE_DELIVERY_DATES =	"select * from CUST.SO_HOLIDAY_ALT_DATE WHERE SO_ID IS NULL ORDER BY CURRENT_DELIVERY_DATE";
 	public Map<Date, List<FDStandingOrderAltDeliveryDate>> getStandingOrdersGlobalAlternateDeliveryDates(Connection conn) throws SQLException{
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Map<Date, List<FDStandingOrderAltDeliveryDate>> map = new HashMap<Date, List<FDStandingOrderAltDeliveryDate>>();
 		try {			
 			ps = conn.prepareStatement(GET_STANDING_ORDERS_GLOBAL_ALTERNATE_DELIVERY_DATES);
-			Date date = new Date();
-			ps.setDate(1, new java.sql.Date(date.getTime()));
-			ps.setDate(2, new java.sql.Date(date.getTime()));
 			rs = ps.executeQuery();			
 			while (rs.next()) {
 				Date actualDate = rs.getDate(CURRENT_DELIVERY_DATE) ;
@@ -1232,7 +1246,7 @@ public class FDStandingOrderDAO {
 					ps.setString(2,altDate.getSoId());
 					ps.setString(3,altDate.getId());
 				}else{
-					ps = conn.prepareStatement("SELECT * FROM CUST.SO_HOLIDAY_ALT_DATE WHERE CURRENT_DELIVERY_DATE =? AND SO_ID IS NULL AND ID <> ?");
+					ps = conn.prepareStatement("SELECT * FROM CUST.SO_HOLIDAY_ALT_DATE WHERE CURRENT_DELIVERY_DATE =? AND (SO_ID IS NULL OR SO_ID='') AND ID <> ?");
 					ps.setDate(1,new java.sql.Date(altDate.getOrigDate().getTime()));
 					ps.setString(2,altDate.getId());
 				}
@@ -1242,7 +1256,7 @@ public class FDStandingOrderDAO {
 					ps.setDate(1,new java.sql.Date(altDate.getOrigDate().getTime()));
 					ps.setString(2,altDate.getSoId());
 				}else{
-					ps = conn.prepareStatement("SELECT * FROM CUST.SO_HOLIDAY_ALT_DATE WHERE CURRENT_DELIVERY_DATE =? AND SO_ID IS NULL");
+					ps = conn.prepareStatement("SELECT * FROM CUST.SO_HOLIDAY_ALT_DATE WHERE CURRENT_DELIVERY_DATE =? AND (SO_ID IS NULL OR SO_ID='')");
 					ps.setDate(1,new java.sql.Date(altDate.getOrigDate().getTime()));
 				}
 			}
@@ -1264,5 +1278,33 @@ public class FDStandingOrderDAO {
 		}
 		
 		return isAlreadyExists;
+	}
+	
+	public boolean isValidSoId(Connection conn,String soId) throws SQLException{
+		boolean isValid = false;
+		PreparedStatement ps = null;	
+		ResultSet rs = null;
+		try {
+			
+			ps = conn.prepareStatement("SELECT * FROM CUST.STANDING_ORDER SO WHERE SO.DELETED<>1 AND SO.ID= ?");
+			ps.setString(1,soId);
+				
+			rs =ps.executeQuery();
+			if(rs.next()){
+				isValid = true;
+			}
+			ps.close();
+		
+		} catch (SQLException exc) {
+			throw exc;
+		} finally {
+			if(ps != null) {
+				ps.close();
+			}
+			if(rs != null) {
+				rs.close();
+			}
+		}
+		return isValid;
 	}
 }

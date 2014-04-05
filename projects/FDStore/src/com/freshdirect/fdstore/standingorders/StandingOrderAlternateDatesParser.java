@@ -94,8 +94,6 @@ public class StandingOrderAlternateDatesParser {
 							altDate.setAltEndTime(HSSFDateUtil.getJavaDate(Double.parseDouble(cellValues[7])));
 						}
 						altDate.setActionType(cellValues[8]);
-						altDate.setCreatedBy("System");
-						altDate.setCreatedTime(Calendar.getInstance().getTime());
 						list.add(altDate);	
 						}
 					

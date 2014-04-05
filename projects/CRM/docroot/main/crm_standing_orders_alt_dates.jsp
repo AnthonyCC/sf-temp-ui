@@ -88,7 +88,7 @@ margin-top: 20px;
 				<div id="dialog2" title="Upload Standing Order Alternate Dates">
 					<form action="/api/soalternatedate/" enctype="multipart/form-data" method="post" id="uploadForm" name="uploadForm">
 					<div id="error" width="500"></div>
-					Please specify a csv file and click 'Upload':<br/><br/><input type="file" value="Browse" id="file" name="file"/> <br/>
+					Please specify a xls file and click 'Upload':<br/><br/><input type="file" value="Browse" id="file" name="file"/> <br/>
 						<p/><p/><p/> 
 						<input type="button" value="Upload" id="fileUpload" name="fileUpload" onclick="javascript:submitUploadForm()"/>
 					</form>
@@ -109,8 +109,6 @@ margin-top: 20px;
 						FDStandingOrderAltDeliveryDate altDeliveryDate = new FDStandingOrderAltDeliveryDate();
 						%>
 				<tr><input type="hidden" name="id" id="id" value=""/>
-					<td class="promo_detail_label"><span >ID:</span></td>
-					<td class="alignL"><div id="altIdDiv"><%= altDeliveryDate.getId() %></div></td>
 				</tr>
 						
 				<tr>
@@ -184,6 +182,18 @@ margin-top: 20px;
 					<td align="center"><input type="button" id="save" name="save" value="Save" onclick="javascript:submitForm(this.form);"/> &nbsp;&nbsp;<input type="button" id="cancel" name="cancel" value="Cancel" onclick=""/></td>
 				</tr>
 				</table>
+				<br/>
+				<table>
+				<tr><td><b>Notes:</b></td></tr>
+				<tr><td><ul>
+				<li>Alternate delivery date should be (+/-) 7 days from the original delivery date.</li>
+				<li>Geo restrictions, delivery charges and variable minimum order total would be applied based on the alternate delivery date.</li>
+				<li>Please make sure the time slot and capacity are available for the alternate delivery date.</li>
+				<li>Alternate delivery date is not required for 'Skip the standing order next delivery date' type action.</li>
+				</ul></td></tr>
+				
+				
+				</table>
 		</td>
 		
 	</tr>
@@ -215,11 +225,14 @@ $jq('div#dialog2').bind('dialogclose', function(event) {
 	if($jq('#actionComplete').val()=="true"){
 		location.reload(true);
 	}	
+	
 });
 $jq('div#dialog1').bind('dialogclose', function(event) {
 	if($jq('#actionComplete').val()=="true"){
 		location.reload(true);
 	}	
+	$jq("#formResult").html("");
+	$jq( "#form1" )[0].reset();
 });
 
 $jq(function() {
@@ -266,6 +279,7 @@ $jq( "#cancel" )
 .button()
 .click(function() {
 	$jq( "#form1" )[0].reset();
+	$jq("#formResult").html("");
 	$jq( "#dialog1" ).dialog( 'close' );;
 });
 
@@ -417,15 +431,15 @@ $soGrid = $jq("div#soAltGrid").pqGrid({ flexHeight: true,
         	$jq( "#dialog1" ).dialog( "open" );
             var rowData = ui.rowData;
             $jq( "#id" ).val(rowData["id"]);
-            $jq( "#altIdDiv" ).html(rowData["id"]);
+            //$jq( "#altIdDiv" ).html(rowData["id"]);
             $jq( "#description" ).val(rowData["description"]);
             $jq( "#origDate" ).val(rowData["origDateFormatted"]);
             $jq( "#altDate" ).val(rowData["altDateFormatted"]);
             $jq( "#soId" ).val(rowData["soId"]);
             $jq( "#origStartTimeStr" ).val(rowData["origStartTimeStr"]);
             $jq( "#origEndTimeStr" ).val(rowData["origEndTimeStr"]);
-            $jq( "#AltStartTimeStr" ).val(rowData["AltStartTimeStr"]);
-            $jq( "#AltEndTimeStr" ).val(rowData["AltEndTimeStr"]);
+            $jq( "#altStartTimeStr" ).val(rowData["altStartTimeStr"]);
+            $jq( "#altEndTimeStr" ).val(rowData["altEndTimeStr"]);
             $jq( "#actionType" ).val(rowData["actionType"]);
             $jq( "#startDate" ).val(rowData["startDateFormatted"]);
             $jq( "#endDate" ).val(rowData["endDateFormatted"]);
@@ -453,6 +467,9 @@ $soGrid = $jq("div#soAltGrid").pqGrid({ flexHeight: true,
         $jq("<span class=\"deleteButton\"><b>Delete</b></span>").appendTo($toolbar).button({ icons: { primary: "ui-icon-circle-minus"} }).click(function (evt) {
             deleteRow();
         });
+        $jq("<span class=\"uploadButton\"><b>Export</b></span>").appendTo($toolbar).button({ icons: { primary: "ui-icon-document"} }).click(function () {
+        	 $soGrid.pqGrid("exportExcel", { url: "/api/soalternatedate", sheetName: "SO Alternate Delivery Dates" });
+        });
         $jq("<span class=\"uploadButton\"><b>Upload</b></span>").appendTo($toolbar).button({ icons: { primary: "ui-button-icon-secondary"} }).click(function () {
         	showUploadDialog();
         });
@@ -471,7 +488,7 @@ function filter(dataIndx, value) {
     $soGrid.pqGrid( "refreshDataAndView" );
 }
 
-function time(time_string) {
+		function time(time_string) {
 
 				var ampm = 'a';
 				var hour = -1;
