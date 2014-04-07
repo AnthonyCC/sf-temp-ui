@@ -237,6 +237,7 @@ public class FDCouponManagerSessionBean extends ERPSessionBeanSupport {
 					}
 				}
 			} catch (CouponServiceException e) {
+				LOGGER.info("Error in PostSubmitOrder() :"+e);
 				couponTransModel.setTranStatus(EnumCouponTransactionStatus.FAILURE);
 				couponTransModel.setTranTime(currentTime);
 				couponTransModel.setErrorMessage(e.getMessage());
@@ -304,6 +305,7 @@ public class FDCouponManagerSessionBean extends ERPSessionBeanSupport {
 				couponTransModel.setTranTime(currentTime);
 				isSuccess = true;
 			} catch (CouponServiceException e) {
+				LOGGER.info("Error in PostCancelOrder() :"+e);
 				couponTransModel.setTranStatus(EnumCouponTransactionStatus.FAILURE);
 				couponTransModel.setErrorMessage(e.getMessage());
 				couponTransModel.setErrorDetails(e.getDetails());
@@ -427,6 +429,7 @@ public class FDCouponManagerSessionBean extends ERPSessionBeanSupport {
 				}
 				isSuccess = true;
 			} catch (CouponServiceException e) {
+				LOGGER.info("Error in PostConfirmOrder() :"+e);
 				couponTransModel.setTranStatus(EnumCouponTransactionStatus.FAILURE);
 				couponTransModel.setTranTime(currentTime);
 				couponTransModel.setErrorMessage(e.getMessage());

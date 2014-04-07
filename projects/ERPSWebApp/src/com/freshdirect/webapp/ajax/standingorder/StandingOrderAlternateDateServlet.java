@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 
 import com.bea.core.repackaged.springframework.util.FileCopyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
@@ -192,7 +193,15 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 				mapper.setDateFormat(df);
 				reqData = mapper.readValue(reqJson, typeClass);
 			} catch (IOException e) {
-				sendError( response, 400, "Cannot read JSON" );	// 400 Bad Request
+				if(e instanceof InvalidFormatException){
+					if(e.getMessage().indexOf("origDate")>-1){
+						sendError( response, 400, "Original Date format is invalid. It should be 'mm/dd/yyyy' format." );	
+					}else if(e.getMessage().indexOf("altDate")>-1){
+						sendError( response, 400, "Alternate Date format is invalid. It should be 'mm/dd/yyyy' format." );	
+					}
+				}else{
+					sendError( response, 400, "Cannot read JSON" );	// 400 Bad Request
+				}
 			}
 			if ( reqData == null && !allowEmpty ) {
 				sendError( response, 400, "Cannot read JSON" );	// 400 Bad Request

@@ -64,7 +64,7 @@ public class ErpCouponTransactionModel extends ModelSupport {
 	 * @return the errorMessage
 	 */
 	public String getErrorMessage() {
-		return errorMessage;
+		return (null !=errorMessage && errorMessage.length() > 255) ? errorMessage.substring(0, 254) : errorMessage;
 	}
 	/**
 	 * @param errorMessage the errorMessage to set
