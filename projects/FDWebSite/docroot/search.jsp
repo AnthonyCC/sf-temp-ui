@@ -56,10 +56,12 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 
 	//decrease pagesize to 12 if the user is srch_promoted and got recommendations with this variant [APPDEV-3033]
 	int pageSize = 16;
-	Recommendations recomm = FDStoreRecommender.getInstance().getRecommendations(EnumSiteFeature.getEnum("SRCH"), user, new SessionInput(user));
-	boolean searchPromoted = new Boolean(recomm.getVariant().getServiceConfig().get("srch_promoted"));
-	if(searchPromoted && recomm.getProducts()!=null && recomm.getProducts().size()>0){
-		pageSize = 12;
+	if(user.getIdentity()!=null){
+		Recommendations recomm = FDStoreRecommender.getInstance().getRecommendations(EnumSiteFeature.getEnum("SRCH"), user, new SessionInput(user));
+		boolean searchPromoted = new Boolean(recomm.getVariant().getServiceConfig().get("srch_promoted"));
+		if(searchPromoted && recomm.getProducts()!=null && recomm.getProducts().size()>0){
+			pageSize = 12;
+		}		
 	}
 	// storing the view settings in the session
 	FilteringNavigator nav = new FilteringNavigator(request,pageSize);
@@ -187,6 +189,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	Recommendations rec = null;
 	boolean promote_recommendation_row = false;
 	boolean fallBack = true;
+	if(user.getIdentity()!=null){
 	%><fd:ProductGroupRecommender itemCount="16" siteFeature="SRCH" facility="default" id="recommendedProducts">
 	<%
 		fallBack = false;
@@ -195,7 +198,8 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 			Boolean.parseBoolean( rec.getVariant().getServiceConfig().get("srch_promoted") );
 	%>
 	</fd:ProductGroupRecommender>
-	<% if (fallBack) {
+	<% }
+	if (fallBack) {
 		ProductModel firstProduct = null;		
 		if ( products != null && products.size() > 0 ) {
 			FilteringSortingItem <ProductModel> firstItem = (FilteringSortingItem <ProductModel>)products.get( 0 );

@@ -128,7 +128,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	</tmpl:put>
 	
 	
-	<% if ( isDFGS ) { %>
+	<% if ( isDFGS && user.getIdentity()!=null ) { %>
 	<tmpl:put name="dfgs-container-class"> newprod-dfgs</tmpl:put>
 	
 	<tmpl:put name="your-cart">
