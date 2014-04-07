@@ -25,7 +25,7 @@ public class BrandUniquenessSorter extends WrapperRecommendationService {
 
 	public List<ContentNodeModel> recommendNodes(SessionInput input) {
 		List<ContentNodeModel> nodes = internal.recommendNodes(input);
-		LOGGER.debug("Items before brand uniqueness sorting: " + nodes);
+		//LOGGER.debug("Items before brand uniqueness sorting: " + nodes);
 		List<ContentNodeModel> newNodes = new ArrayList<ContentNodeModel>(nodes.size());
 		Set<BrandModel> brands = new HashSet<BrandModel>();
 		
@@ -44,7 +44,7 @@ public class BrandUniquenessSorter extends WrapperRecommendationService {
 			brands.clear();
 		}
 
-		LOGGER.debug("Items after brand uniqueness sorting: " + newNodes);
+		//LOGGER.debug("Items after brand uniqueness sorting: " + newNodes);
 		return newNodes;
 	}
 

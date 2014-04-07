@@ -13,8 +13,7 @@ public class SimpleConfigurationStrategy implements ConfigurationStrategy {
 
 	public ProductImpression configure(ProductModel productModel,
 			ConfigurationContext context) {
-		LOGGER.debug("configuring using simple configurer + "
-				+ productModel.getContentKey().getId());
+		//LOGGER.debug("configuring using simple configurer + "+ productModel.getContentKey().getId());
 		return new ProductImpression(productModel);
 	}
 }

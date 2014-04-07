@@ -45,7 +45,7 @@ public class SoyRendererTag extends SimpleTagSupport {
 		JspWriter out = getJspContext().getOut();
 		ServletContext servletCtx = ((PageContext)getJspContext()).getServletContext();		
 		
-		LOGGER.debug( "Rendering " + template);
+		//LOGGER.debug( "Rendering " + template);
 		
 	    SoyMapData soyData;
 	    
@@ -61,7 +61,7 @@ public class SoyRendererTag extends SimpleTagSupport {
 	    	String result = StringEscapeUtils.unescapeHtml(SoyTemplateEngine.getInstance().render( servletCtx, template, soyData ));
 	    	out.write( result );
 	    	
-			LOGGER.debug( "Rendered " + template + " successfully.");
+//			LOGGER.debug( "Rendered " + template + " successfully.");
 //			LOGGER.debug( "data = " + data );
 //			LOGGER.debug( "result = " + result );
 

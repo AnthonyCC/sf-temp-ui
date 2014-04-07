@@ -18,18 +18,18 @@ public class ActionResult {
 
 	public boolean isSuccess() {
 		boolean success = (0 == errors.size());
-		LOGGER.debug("isSuccess: " + success);
+		//LOGGER.debug("isSuccess: " + success);
 		return success;
 	}
 
 	public boolean isFailure() {
 		boolean failure = (0 < errors.size());
-		LOGGER.debug("isFailure: " + failure);
+		//LOGGER.debug("isFailure: " + failure);
 		return failure;
 	}
 
 	public void addError(ActionError error) {
-		LOGGER.debug("error added: " + error.getType() +", " + error.getDescription());
+		//LOGGER.debug("error added: " + error.getType() +", " + error.getDescription());
 		errors.put(error.getType(), error);
 	}
 
