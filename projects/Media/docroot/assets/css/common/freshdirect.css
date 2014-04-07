@@ -621,6 +621,8 @@ section.main .leftnav .menuBox button.category {
   display: block;
   width: 100%;
   text-align: left;
+  padding: 8px 11px;
+  border-radius: 10px;
 }
 
 .leftnav-category-popup-button.cssbutton > span,
@@ -629,12 +631,14 @@ section.main .leftnav .menuBox button.category > span {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  line-height: 1.3em;
 }
 
 .leftnav-category-popup-button.cssbutton > span:before,
 section.main .leftnav .menuBox button.category > span:before {
   font-size: 15px;
   line-height: 13px;
+  vertical-align: middle;
 }
 
 .leftnav-category-popup-button.cssbutton.hover > span:before,
