@@ -357,9 +357,11 @@
     {param amount:$inCartAmount /}
     {param atcItemId:$atcItemId /}
   {/call}
-  <div class="portrait-item-atl">
-    <span class="addtolist cssbutton purple icon-file2-before" data-component="addToListButton">save to list</span>
-  </div>
+  {if not $customizePopup}
+    <div class="portrait-item-atl">
+      <span class="addtolist cssbutton purple icon-file2-before" data-component="addToListButton">save to list</span>
+    </div>
+  {/if}
   {if $relatedItem}
   <ul class="relatedItem" data-component="relateditem">
     {call common.transactionalGridItem}
@@ -471,7 +473,7 @@
       {/if}
       <div class="portrait-item-addtocart" {if $cmEventSource}data-cmeventsource="{$cmEventSource}"{/if}>
         {if $customizePopup}
-          <span class="customize cssbutton blue small" data-component="customizeButton">customize</span>
+          <span class="customize cssbutton blue small" data-component="customizeButton">Customize</span>
         {else}
           <span class="addtocart cssbutton orange small" data-component="ATCButton">Add to Cart</span>
           {call common.subtotal}

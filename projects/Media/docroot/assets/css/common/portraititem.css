@@ -486,6 +486,7 @@
   vertical-align: top;
 }
 
+#transactionalPopup .portrait-item-controls .customize,
 #transactionalPopup .portrait-item-controls .addtocart {
   display: block;
   font-size: 14px;
@@ -495,6 +496,10 @@
   text-transform: none;
   padding: 0;
   transition-duration: .2s;
+}
+
+#transactionalPopup .portrait-item-controls .customize {
+  margin-top: 10px;
 }
 
 #transactionalPopup .portrait-item-controls .addtocart:before {
