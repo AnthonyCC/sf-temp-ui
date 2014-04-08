@@ -293,9 +293,9 @@ public class CrisisManagerServlet extends HttpServlet {
 			activityRecord.setActivityType( EnumAccountActivityType.STANDINGORDER_FAILED );
 		} else if ( status == SOResult.Status.SKIPPED ) {
 			activityRecord.setActivityType( EnumAccountActivityType.STANDINGORDER_SKIPPED );					
-		} else if ( status == SOResult.Status.FORCED_SKIPPED ) {
+		} /*else if ( status == SOResult.Status.FORCED_SKIPPED ) {
 			activityRecord.setActivityType( EnumAccountActivityType.STANDINGORDER_FORCED_SKIPPED );					
-		}
+		}*/
 		
 		new ErpLogActivityCommand( activityRecord ).execute();		
 	}
