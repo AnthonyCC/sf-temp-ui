@@ -54,6 +54,7 @@ var FreshDirect = FreshDirect || {};
       value: function (config) {
         var target = config.element,
             width = $(target).width(),
+            outerWidth = $(target).outerWidth(),
             popupId=this.popupId,
             related,
             relatedHolder = $('#'+popupId+' .transactional-related-item'),
@@ -100,20 +101,14 @@ var FreshDirect = FreshDirect || {};
           // fill related item content
           related = $('#'+popupId+' [data-component="relateditem"] [data-component="product"]');
           if (related.length) {
-            mainHolder.css({
-              minHeight: 0
-            });
-            relatedHolder.removeClass('hidden').css({
-              left: 0,
+            relatedHolder.css({
+              left: (-outerWidth)+'px',
               visibility: 'hidden'
-            });
+            }).removeClass('hidden');
             $('#'+popupId+' '+this.relatedBodySelector).html(related.html());
             related.remove();
 
           } else {
-            mainHolder.css({
-              minHeight: 0
-            });
             relatedHolder.addClass('hidden');
             $('#'+popupId+' '+this.relatedBodySelector).html('');
           }
@@ -134,17 +129,6 @@ var FreshDirect = FreshDirect || {};
               // adjust image wrapper size
               relatedHolder.find('.portrait-item-productimage_wrapper').css('line-height', maxImageSize+'px');
               relatedHolder.find('.portrait-item-productimage_wrapper img.portrait-item-productimage').css('max-height', (maxImageSize-4)+'px');
-
-              // adjust height
-              if (mainHolder.height() < relatedHolder.height()) {
-                mainHolder.css({
-                  minHeight: relatedHolder.height()
-                });
-              } else {
-                mainHolder.css({
-                  minHeight: mainHolder.height()
-                });
-              }
 
               // adjust controls
               mctop = mainControls.find('.portrait-item-addtocart').offset().top;
@@ -169,15 +153,15 @@ var FreshDirect = FreshDirect || {};
 
                 this.showRelated = null;
 
-                if (wwidth > ppos + 2*width + 20) {
+                if (wwidth > ppos + 2*outerWidth + 10) {
                   relatedHolder.css({
                     visibility: 'visible',
-                    left: (width+15)+'px'
+                    left: (-5)+'px'
                   });
                 } else {
                   relatedHolder.css({
                     visibility: 'visible',
-                    left: (-width-15)+'px'
+                    left: (-(2*outerWidth) + 5)+'px'
                   });
                 }
 
