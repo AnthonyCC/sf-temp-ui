@@ -105,6 +105,7 @@ public class StandingOrderAlternateDatesParser {
 			LOGGER.error("Error while uploading: "+e);
 			exceptionList.add("Error while uploading: "+e);
 		}
+		exceptionList =FDStandingOrderAlternateDateUtil.validate(list, exceptionList);
 		return list;
 	}
 	

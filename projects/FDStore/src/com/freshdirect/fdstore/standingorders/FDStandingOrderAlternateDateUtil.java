@@ -2,8 +2,10 @@ package com.freshdirect.fdstore.standingorders;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -106,6 +108,24 @@ public static String buildResponse(List<String> errors) {
 		return errors;
 	}
 
+	//To check if there are any duplicate rows in the list, uploaded through excel spread sheet.
+	public static List<String> validate(List<FDStandingOrderAltDeliveryDate> altDates,List<String> errors){
+		if(null != altDates){
+			Set<FDStandingOrderAltDeliveryDate> altDatesSet = new HashSet<FDStandingOrderAltDeliveryDate>();
+			int i =3;
+			for (Iterator<FDStandingOrderAltDeliveryDate> iterator = altDates.iterator(); iterator.hasNext();) {
+				FDStandingOrderAltDeliveryDate altDeliveryDate = (FDStandingOrderAltDeliveryDate) iterator.next();
+				if(altDatesSet.contains(altDeliveryDate)){
+					errors.add(ERROR_MSG_ROW_NUM+i+ERROR_MSG_ALREADY_STANDING_ORDER_ALT_DATE_FOR_DELIVERY_DATE);
+				}else{
+					altDatesSet.add(altDeliveryDate);
+				}
+				i++;				
+			}
+		}
+		
+		return errors;		
+	}
 	
 	
 	private static void addError(List<String> errors, String msg, Integer rowNum, Object value){

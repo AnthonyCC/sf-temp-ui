@@ -254,7 +254,7 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 			}
 		}catch(Exception ex) {
 		   LOGGER.error("Error while uploading/parsing the standing order alternate delivery dates:", ex);
-		   sendError( response, 400, "Empty request. Aborting" );
+		   sendError( response, 400, "Error in request. Aborting" );
 		}
 	}
 

@@ -20,6 +20,7 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -614,7 +615,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in deleteStandingOrderAltDeliveryDate() : " + e.getMessage(), e );
 			e.printStackTrace();
-			throw new FDResourceException(e);
+			throw new FDRuntimeException(e);
 		} finally {
 			close(conn);
 		}
@@ -628,7 +629,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			dao.addStandingOrderAltDeliveryDates(conn, altDeliveryDates);
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in addStandingOrderAltDeliveryDate() : " + e.getMessage(), e );
-			throw new FDResourceException(e);
+			throw new FDRuntimeException(e);
 		} finally {
 			close(conn);
 		}

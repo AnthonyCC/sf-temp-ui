@@ -225,6 +225,8 @@ $jq('div#dialog2').bind('dialogclose', function(event) {
 	if($jq('#actionComplete').val()=="true"){
 		location.reload(true);
 	}	
+	$jq('#error').html("");
+   	$jq('#result').html("");
 	
 });
 $jq('div#dialog1').bind('dialogclose', function(event) {

@@ -224,7 +224,11 @@ public class StandingOrderUtil {
 					so.skipDeliveryDate();
 					return SOResult.createForcedSkipped( so, new FDIdentity(so.getCustomerId()), new FDCustomerInfo(so.getCustomerEmail()), "Skipping because customer has requested to cancel the next delivery." );				
 				}
-			} else {
+			} else if(null != altDateInfo && EnumStandingOrderAlternateDeliveryType.SKIP_DELIVERY.equals(altDeliveryType) ){
+				//skip the current delivery and move to next delivery date.
+				so.skipDeliveryDate();
+				return SOResult.createForcedSkipped( so, new FDIdentity(so.getCustomerId()), new FDCustomerInfo(so.getCustomerEmail()), "Skipping because customer has requested to cancel the next delivery." );
+			} else{
 				deliveryTimes = new DeliveryInterval( so );
 			}			
 		} catch ( IllegalArgumentException ex ) {

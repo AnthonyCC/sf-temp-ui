@@ -7,7 +7,7 @@ import java.util.Date;
 
 import com.freshdirect.framework.core.ModelSupport;
 
-public class FDStandingOrderAltDeliveryDate extends ModelSupport{
+public class FDStandingOrderAltDeliveryDate extends ModelSupport {
 
 	private static final long serialVersionUID = -3087295029694549320L;
 	private static DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -74,7 +74,7 @@ public class FDStandingOrderAltDeliveryDate extends ModelSupport{
 	}
 	
 	public String toString(){
-		return String.format("'" + description + "' (original: " + getOrigDateFormatted() +", alternative: " + getAltDateFormatted() + ")");
+		return String.format("'" + description + "' (original: " + getOrigDateFormatted() +", alternative: " + getAltDateFormatted() +", soId: " + getSoId()+", actionType: " + getActionType()+ ")");
 	}
 
 	public Date getOrigStartTime() {
@@ -241,5 +241,38 @@ public class FDStandingOrderAltDeliveryDate extends ModelSupport{
 			this.altEndTime = timeFormat.parse(altEndTimeStr);
 		} catch (ParseException e) {
 		}
+	}
+
+	
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 0;
+		result = prime * result + ((SoId == null) ? 0 : SoId.hashCode());
+		result = prime * result
+				+ ((origDate == null) ? 0 : origDate.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (getClass() != obj.getClass())
+			return false;
+		FDStandingOrderAltDeliveryDate other = (FDStandingOrderAltDeliveryDate) obj;
+		if (SoId == null) {
+			if (other.SoId != null)
+				return false;
+		} else if (!SoId.equals(other.SoId))
+			return false;
+		if (origDate == null) {
+			if (other.origDate != null)
+				return false;
+		} else if (!origDate.equals(other.origDate))
+			return false;
+		return true;
 	}
 }
