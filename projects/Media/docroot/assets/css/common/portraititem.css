@@ -210,6 +210,10 @@
   display: block;
 }
 
+#transactionalPopup .portrait-item-controls-content select {
+  margin: 10px 0;
+}
+
 .portrait-item .burst {
   position:absolute;
   top:0;
