@@ -324,36 +324,40 @@
   border: 1px solid #dbcfdf;
   box-shadow: 2px 2px 8px 1px rgba(0, 0, 0, 0.4);
   border-radius:10px;
-  z-index:20;
+  z-index:21;
   overflow: hidden;
   width: auto;
   background:white;
   position: relative;
   display: table-cell;
   vertical-align: top;
-  z-index: 2;
+}
+
+#transactionalPopup .transactional-related-wrapper {
+  vertical-align: top;
+  width: auto;
+  z-index:20;
+  position: relative;
+  display: table-cell;
+  max-width: 1px;
 }
 
 #transactionalPopup .transactional-related-item {
   border: 1px solid #dbcfdf;
   box-shadow: 2px 2px 8px 1px rgba(0, 0, 0, 0.4);
   border-radius:10px;
-  z-index:20;
   overflow: hidden;
   width: auto;
   -moz-box-sizing: border-box;
   background:white;
-  position: relative;
-  display: table-cell;
   left: 0;
+  position: relative;
   visibility: hidden;
   -webkit-transition: left 0.1s ease-in-out;
   -moz-transition: left 0.1s ease-in-out;
   -ms-transition: left 0.1s ease-in-out;
   -o-transition: left 0.1s ease-in-out;
   transition: left 0.1s ease-in-out;
-  z-index: 1;
-  vertical-align: top;
 }
 
 #transactionalPopup .transactional-related-item.hidden {

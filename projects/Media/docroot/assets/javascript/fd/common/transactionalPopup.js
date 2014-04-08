@@ -126,6 +126,9 @@ var FreshDirect = FreshDirect || {};
 
             if (related.length) {
 
+              // adjust related popup size
+              relatedHolder.width(mainHolder.width());
+
               // adjust image wrapper size
               relatedHolder.find('.portrait-item-productimage_wrapper').css('line-height', maxImageSize+'px');
               relatedHolder.find('.portrait-item-productimage_wrapper img.portrait-item-productimage').css('max-height', (maxImageSize-4)+'px');
