@@ -60,7 +60,7 @@ var FreshDirect = FreshDirect || {};
             mainHolder = $('#'+popupId+' .transactional-main-item'),
             learnMoreLink = $('#'+popupId+' .transactional-popup-learnmore'),
             cmEvSource = "",
-            maxImageSize = 0, topPadding = 0,
+            maxImageSize = 0,
             pimg = $(target).find('.portrait-item-burst_wrapper')[0],
             imgBottom = pimg ? pimg.getBoundingClientRect().bottom : null;
 
@@ -74,9 +74,6 @@ var FreshDirect = FreshDirect || {};
             } 
           });
 
-          topPadding = maxImageSize - pimg.getBoundingClientRect().height;
-          
-          $(target).find('.portrait-item-productimage_wrapper').css('padding-top', topPadding);
         }
 
         // clear popup delay
@@ -107,7 +104,6 @@ var FreshDirect = FreshDirect || {};
               minHeight: 0
             });
             relatedHolder.removeClass('hidden').css({
-              minHeight: 0,
               left: 0,
               visibility: 'hidden'
             });
@@ -118,9 +114,7 @@ var FreshDirect = FreshDirect || {};
             mainHolder.css({
               minHeight: 0
             });
-            relatedHolder.addClass('hidden').css({
-              minHeight: 0
-            });
+            relatedHolder.addClass('hidden');
             $('#'+popupId+' '+this.relatedBodySelector).html('');
           }
 
@@ -128,23 +122,39 @@ var FreshDirect = FreshDirect || {};
           learnMoreLink.attr('href', mainHolder.find('[data-productdata-name="productPageUrl"]').first().val());
 
           this.popup.showWithDelay(target, null, $.proxy(function () {
+            var mctop, rctop,
+                relatedControls = relatedHolder.find('.portrait-item-controls-content'),
+                mainControls = mainHolder.find('.portrait-item-controls-content');
+
+            // adjust image wrapper size
+            mainHolder.find('.portrait-item-productimage_wrapper').css('line-height', maxImageSize+'px');
+
             if (related.length) {
+
+              // adjust image wrapper size
+              relatedHolder.find('.portrait-item-productimage_wrapper').css('line-height', maxImageSize+'px');
+              relatedHolder.find('.portrait-item-productimage_wrapper img.portrait-item-productimage').css('max-height', (maxImageSize-4)+'px');
+
               // adjust height
-              if (mainHolder.height() < relatedHolder.height()+10) {
+              if (mainHolder.height() < relatedHolder.height()) {
                 mainHolder.css({
-                  minHeight: relatedHolder.height()+15
-                });
-                relatedHolder.css({
-                  minHeight: relatedHolder.height()+5
+                  minHeight: relatedHolder.height()
                 });
               } else {
-                relatedHolder.css({
-                  minHeight: mainHolder.height()-5
-                });
                 mainHolder.css({
-                  minHeight: mainHolder.height()+5
+                  minHeight: mainHolder.height()
                 });
               }
+
+              // adjust controls
+              mctop = mainControls.find('.portrait-item-addtocart').offset().top;
+              rctop = relatedControls.find('.portrait-item-addtocart').offset().top;
+              if (mctop < rctop) {
+                mainControls.css('padding-top', rctop - mctop);
+              } else {
+                relatedControls.css('padding-top', mctop - rctop);
+              }
+
               $('#'+popupId).addClass('hasRelated');
 
               // show related later
