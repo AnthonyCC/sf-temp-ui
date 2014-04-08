@@ -91,7 +91,7 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 
 	private void export(HttpServletResponse response) throws IOException,
 			FileNotFoundException {
-		File outputFile = new File("SO_Alt_Dates.xml");
+		File outputFile = new File("SO_Alt_Dates.xls");
 		response.setBufferSize((int) outputFile.length());			
 		response.setContentType("application/vnd.ms-excel");
 		response.setHeader("Content-Disposition", "attachment; filename="+outputFile.getName());
@@ -140,7 +140,7 @@ public class StandingOrderAlternateDateServlet extends HttpServlet {
 	}
 
 	private void export(HttpServletRequest request) throws IOException {
-		String filename = "SO_Alt_Dates." + request.getParameter("extension");//xml
+		String filename = "SO_Alt_Dates.xls";// + request.getParameter("extension");//xml
 		File file = new File(filename);
 
 		// If file doesn't exists, then create it

@@ -531,6 +531,9 @@ function filter(dataIndx, value) {
 						minute += time_string.charAt(3);
 					}
 				} else {
+					if(time_string !=''){
+						alert(time_string+ " is invalid time format. Please enter in 'hh:mm am/pm' format only.");
+					}
 					return '';
 				}
 
@@ -551,13 +554,14 @@ function filter(dataIndx, value) {
 				} else {
 					temptime = '';
 				}
-
-				return temptime
+				if(time_string !='' && temptime==''){
+					alert(time_string+ " is invalid time format. Please enter in 'hh:mm am/pm' format only.");
+				}
+				return temptime;
 
 			}
 
 			function hour(time) {
-
 				var result = parseFloat(time.trim());
 				if (result == null || isNaN(result))
 					return "";
