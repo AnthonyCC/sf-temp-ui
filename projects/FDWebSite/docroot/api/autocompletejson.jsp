@@ -1,5 +1,5 @@
 <%@page import="com.freshdirect.fdstore.content.ContentSearch,com.freshdirect.cms.application.CmsManager,java.util.List,java.util.Iterator"
-	contentType="application/json"
+	contentType="application/json;charset=UTF-8"
 %>
 <%
 	/**
