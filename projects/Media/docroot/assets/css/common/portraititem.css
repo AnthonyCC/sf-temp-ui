@@ -56,6 +56,15 @@
 
 #transactionalPopup .portrait-item > .atc-info {
   min-height: 0;
+  top: 0;
+  position: relative;
+  transition-duration: .2s;
+  transition-property: top;
+}
+
+#transactionalPopup .portrait-item > .subtotalShown + .atc-info {
+  position: static;
+  top: -30px;
 }
 
 .portrait-item > .atc-info .incart-info {
