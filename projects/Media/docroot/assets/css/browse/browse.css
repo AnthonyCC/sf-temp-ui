@@ -50,6 +50,10 @@
   border-bottom: 1px dotted #ddd;
 }
 
+.ie8 .browseContent .sectionContent ul.products {
+  display: block;
+}
+
 .browseContent .sectionContent ul.products.lastLine {
   border: none;
   margin-bottom: 0;
@@ -63,13 +67,15 @@
   border-right: 1px dotted #ddd;
 }
 
+.ie8 .browseContent .sectionContent ul.products li.portrait-item {
+  display: inline-block;
+}
+
 .browseContent .sectionContent ul.products li.portrait-item ul.relatedItem {
   display: none;
 }
 
-.browseContent .sectionContent ul.products li.portrait-item.lastInLine,
-.browseContent .sectionContent ul.products li.portrait-item:last-child,
-.browseContent .sectionContent ul.products li.portrait-item:nth-child(5n) {
+.browseContent .sectionContent ul.products li.portrait-item.lastInLine {
   padding-right: 0;
   border: none;
 }
