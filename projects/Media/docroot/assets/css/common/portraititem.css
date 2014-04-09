@@ -81,10 +81,6 @@
   padding-top: 5px;
 }
 
-#transactionalPopup .portrait-item > .atc-info-message .incart-info {
-  display: none;
-}
-
 .portrait-item > .portrait-item-controls + .atc-info .incart-message {
   display: none;
 }
@@ -134,7 +130,7 @@
 }
 
 .portrait-item-productimage {
-  max-width: 100%;
+  max-width: 127px;
   max-height: 160px;
 }
 
@@ -299,6 +295,14 @@
 
 .portrait-item-coupon .fdCoupon_stat {
   display: block;
+}
+
+a.portrait-item-header-name,
+a.portrait-item-header-name:hover,
+a.portrait-item-header-name:visited,
+a.portrait-item-header-name:active,
+a.portrait-item-header-name:link {
+  color: #333;
 }
 
 .portrait-item-header-name b {

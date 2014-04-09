@@ -1,8 +1,8 @@
-/*global jQuery*/
+/*global jQuery, common*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
-	"use strict"
+	"use strict";
 
 	var $ = fd.libs.$;
 	var DISPATCHER = fd.common.dispatcher;
@@ -20,17 +20,17 @@ var FreshDirect = FreshDirect || {};
         // the original element might be copied (like in case of transactional popup), so we have to match for multiple ids
 				var element = $('[id="'+item.itemId+'"], [id="'+item.atcItemId+'"]'),
             controls;
+
 				if(element) {
 					element.addClass('atc-info-message');
 					element.html(this.template({
-						amount:item.inCartAmount,
+						amount:item.inCartAmount || element.find('.incart-info').data('amount'),
 						message:'Adding to cart...',
 						type:'ADDING'
 					}));
 
           controls = element.closest('[data-component="product"]').find('[data-component="product-controls"]');
           if (controls.size() !== 0) {
-            controls.removeClass('subtotalShown');
             controls.find('input.qty').val(0);
           }
 				}
@@ -44,6 +44,7 @@ var FreshDirect = FreshDirect || {};
 		removeMessage:{
 			value:function(){
 				this.removeClass('atc-info-message');
+				this.removeClass('subtotalShown');
 			}
 		},
 		renderItem:{
@@ -61,7 +62,6 @@ var FreshDirect = FreshDirect || {};
 
           controls = element.closest('[data-component="product"]').find('[data-component="product-controls"]');
           if (controls.size() !== 0) {
-            controls.removeClass('subtotalShown');
             controls.addClass('atc-info-message');
             controls.find('input.qty').val(0);
             setTimeout(this.removeMessage.bind(controls),3000);
