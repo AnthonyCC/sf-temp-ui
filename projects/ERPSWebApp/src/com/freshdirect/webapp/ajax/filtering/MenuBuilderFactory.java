@@ -653,7 +653,7 @@ public class MenuBuilderFactory {
 		}
 	}
 	
-	private NavDepth determineCategoryLevel(ProductContainer node){
+	public NavDepth determineCategoryLevel(ProductContainer node){
 		
 		int level = 0;
 		while (true){
