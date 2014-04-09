@@ -740,6 +740,10 @@ public class ProductDetailPopulator {
 		quantity.setqInc( productModel.getQuantityIncrement() );
 		quantity.setQuantity( orderLine != null ? orderLine.getQuantity() : quantity.getqMin() );	
 		item.setQuantity( quantity );
+		
+		// populate in cart amount    	
+		FDCartModel cart = user.getShoppingCart(); 
+		item.setInCartAmount( cart.getTotalQuantity( productModel ) );
 				
 	}
 
@@ -1019,10 +1023,11 @@ public class ProductDetailPopulator {
 			item.setCouponClipped( false );
 		}
 		
-		// populate in cart amount    	
-		FDCartModel cart = user.getShoppingCart(); 
-		item.setInCartAmount( cart.getTotalQuantity( productModel ) );
-		
+		// populate in cart amount if it hasn't been populated yet
+		if(item.getInCartAmount()==0){
+			FDCartModel cart = user.getShoppingCart(); 
+			item.setInCartAmount( cart.getTotalQuantity( productModel ) );			
+		}
 	}
 
 	
