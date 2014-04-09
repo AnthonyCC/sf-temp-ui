@@ -134,6 +134,10 @@
   max-height: 160px;
 }
 
+#transactionalPopup .portrait-item-productimage {
+  cursor: pointer;
+}
+
 .unavailable .portrait-item-productimage {
   opacity: .5;
   filter: alpha(opacity=50);

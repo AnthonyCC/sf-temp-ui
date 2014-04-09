@@ -286,7 +286,7 @@
 <li class="portrait-item {not $available ? 'unavailable' : ''} {$extraClass ? $extraClass : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}">
   <div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
     <div class="portrait-item-burst_wrapper">
-      <img src="{$productImage}" class="portrait-item-productimage">
+      <img src="{$productImage}" class="portrait-item-productimage" data-product-url="{$productPageUrl}">
       {call common.bursts}{param badge:$badge /}{param deal:$deal /}{/call}
     </div>
   </div>

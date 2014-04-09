@@ -44,7 +44,7 @@ var FreshDirect = FreshDirect || {};
         stayOnClick: false,
         overlay:true,
         zIndex: 500,
-        delay: 300,
+        delay: 10,
         hidecallback: function () { transactionalPopup.closeCB(); }
       }
     },
@@ -232,6 +232,10 @@ var FreshDirect = FreshDirect || {};
     transactionalPopup.popup.clearDelay();
   });
   $(document).on('click', '#'+transactionalPopup.popupId+' button.close', transactionalPopup.close.bind(transactionalPopup));
+
+  $(document).on('click', '#'+transactionalPopup.popupId+' [data-product-url]', function (e) {
+    window.location.href = $(e.currentTarget).data('product-url');
+  });
 
   fd.modules.common.utils.register("common", "transactionalPopup", transactionalPopup, fd);
 }(FreshDirect));

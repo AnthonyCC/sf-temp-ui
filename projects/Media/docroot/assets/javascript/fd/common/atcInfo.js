@@ -64,10 +64,10 @@ var FreshDirect = FreshDirect || {};
           if (controls.size() !== 0) {
             controls.addClass('atc-info-message');
             controls.find('input.qty').val(0);
-            setTimeout(this.removeMessage.bind(controls),3000);
+            setTimeout(this.removeMessage.bind(controls),1800);
           }
 
-					setTimeout(this.removeMessage.bind(element),3000);
+					setTimeout(this.removeMessage.bind(element),1800);
 
 				}
 			}
