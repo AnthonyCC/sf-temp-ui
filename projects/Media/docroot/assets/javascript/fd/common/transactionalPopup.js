@@ -44,11 +44,20 @@ var FreshDirect = FreshDirect || {};
         stayOnClick: false,
         overlay:true,
         zIndex: 500,
-        delay: 300
+        delay: 300,
+        hidecallback: function () { transactionalPopup.closeCB(); }
       }
     },
     adjustWidth: {
       value: true
+    },
+    closeCB: {
+      value: function () {
+        if (this.currentTarget) {
+          this.currentTarget.attr('data-currentvalue', $('#'+this.popupId+' .transactional-main-item input.qty').val());
+          this.currentTarget.attr('data-currentrelatedvalue', $('#'+this.popupId+' .transactional-related-item input.qty').val());
+        }
+      }
     },
     open: {
       value: function (config) {
@@ -64,6 +73,8 @@ var FreshDirect = FreshDirect || {};
             maxImageSize = 0,
             pimg = $(target).find('.portrait-item-burst_wrapper')[0],
             imgBottom = pimg ? pimg.getBoundingClientRect().bottom : null;
+
+        this.currentTarget = target;
 
         if (imgBottom) {
           $(target).parent().find('.portrait-item-burst_wrapper').each(function () {
@@ -98,6 +109,11 @@ var FreshDirect = FreshDirect || {};
             $('#'+popupId+' '+this.relatedBodySelector).width(width);
           }
 
+          // set current value
+          if (target.data('currentvalue')) {
+            mainHolder.find('input.qty').first().val(target.data('currentvalue'));
+          }
+
           // fill related item content
           related = $('#'+popupId+' [data-component="relateditem"] [data-component="product"]');
           if (related.length) {
@@ -109,10 +125,18 @@ var FreshDirect = FreshDirect || {};
             $('#'+popupId+' '+this.relatedBodySelector).html(related.html());
             related.remove();
 
+            // set current value
+            if (target.data('currentrelatedvalue')) {
+              relatedHolder.find('input.qty').first().val(target.data('currentrelatedvalue'));
+            }
+
           } else {
             relatedHolder.addClass('hidden');
             $('#'+popupId+' '+this.relatedBodySelector).html('');
           }
+
+          // show subtotal
+          $('#'+popupId+' input.qty').change();
 
           // set learn more url
           learnMoreLink.attr('href', mainHolder.find('[data-productdata-name="productPageUrl"]').first().val());

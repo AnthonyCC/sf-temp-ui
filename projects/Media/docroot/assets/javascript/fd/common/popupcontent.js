@@ -216,6 +216,9 @@ var FreshDirect = FreshDirect || {};
     if (this.config.overlay) {
       this.$overlay.css({display: "none"});
     }
+    if (this.config.hidecallback) {
+      this.config.hidecallback();
+    }
     this.clearHideDelay();
   };
 

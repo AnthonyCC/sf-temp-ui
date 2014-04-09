@@ -322,6 +322,7 @@
 
 #transactionalPopup .transactional-popup-wrapper {
   display: table;
+  min-width: 147px;
 }
 
 #transactionalPopup .transactional-main-item {
