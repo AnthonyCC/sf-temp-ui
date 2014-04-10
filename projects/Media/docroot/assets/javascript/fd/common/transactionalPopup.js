@@ -63,9 +63,8 @@ var FreshDirect = FreshDirect || {};
       value: function (config) {
         var target = config.element,
             width = $(target).width(),
-            outerWidth = $(target).outerWidth(),
             popupId=this.popupId,
-            related,
+            related, outerWidth = $(target).outerWidth(),
             relatedHolder = $('#'+popupId+' .transactional-related-item'),
             mainHolder = $('#'+popupId+' .transactional-main-item'),
             learnMoreLink = $('#'+popupId+' .transactional-popup-learnmore'),
@@ -187,6 +186,7 @@ var FreshDirect = FreshDirect || {};
                     ppos = $('#'+popupId).position().left;
 
                 this.showRelated = null;
+                outerWidth = mainHolder.outerWidth();
 
                 if (wwidth > ppos + 2*outerWidth + 10) {
                   relatedHolder.css({
