@@ -5,6 +5,7 @@
  * @param couponDisplay display coupon information 
  * @param couponClipped is coupon clipped (checkbox will be disabled)
  * @param couponStatusText the html formatted coupon status message
+ * @param? detailsFirst put the details link before the main message
  */
 {template .ecoupon autoescape="false"}
 {if $couponDisplay } 
@@ -12,10 +13,16 @@
 	<div name="{$couponName}_cont" class="fdCoupon_cont" data-component="ecoupon" data-ecouponid="{$coupon.couponId}">
 	{call common.ecoupon.clipBoxHtml }{param couponName:$couponName /}{param isClipped:$couponClipped /}{/call}
 	<img src="/media_stat/images/ecoupon/logo-small.png" class="fdCoupon_img">
-  <span class="fdCoupon_data">
-    {call common.ecoupon.messageHtml}{param couponName:$couponName /}{param coupon:$coupon /}{/call}
+  {if $detailsFirst}
     {call common.ecoupon.detailsHtml}{param couponName:$couponName /}{/call}
     {call common.ecoupon.detailsContentHtml}{param couponName:$couponName /}{param coupon:$coupon /}{/call}
+  {/if}
+  <span class="fdCoupon_data">
+    {call common.ecoupon.messageHtml}{param couponName:$couponName /}{param coupon:$coupon /}{/call}
+    {if not $detailsFirst}
+      {call common.ecoupon.detailsHtml}{param couponName:$couponName /}{/call}
+      {call common.ecoupon.detailsContentHtml}{param couponName:$couponName /}{param coupon:$coupon /}{/call}
+    {/if}
     <span data-component="ecoupon-status">{if $coupon.status.displayMessage}{call common.ecoupon.statusTextHtml}{param status:$couponStatusText /}{/call}{/if}</span>
   </span>
 	</div>

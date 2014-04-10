@@ -2859,6 +2859,10 @@ a.imgButtonWhite:hover,
 		font-size: 10px !important;
 	}
 	
+	.portrait-item span.fdCoupon_detCont {
+    margin-left: 5px;
+  }
+
 	.fdCoupon_detCont, a.fdCoupon_det, a.fdCoupon_det:active, a.fdCoupon_det:link, a.fdCoupon_det:visited, a.fdCoupon_det:hover {
 		color: #666;
 		text-decoration: none;
