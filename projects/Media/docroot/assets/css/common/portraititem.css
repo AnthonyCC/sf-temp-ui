@@ -413,6 +413,9 @@ a.portrait-item-header-name:link {
   position:relative;
   background:white;
   text-align: center;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  overflow: hidden;
 }
 
 #transactionalPopup .transactional-item-header .try {
