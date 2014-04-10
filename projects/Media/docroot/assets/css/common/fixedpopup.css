@@ -108,7 +108,7 @@
 	padding: 0;
 	border: none;
 	background: url(/media_stat/images/quickshop/button-help.png) no-repeat;
-	text-indent: 200%;
+	text-indent: -9999px;
 	overflow: hidden;
 	cursor: pointer;
 }
