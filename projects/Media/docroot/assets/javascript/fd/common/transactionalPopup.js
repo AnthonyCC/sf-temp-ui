@@ -110,8 +110,8 @@ var FreshDirect = FreshDirect || {};
           }
 
           // set current value
-          if (target.data('currentvalue')) {
-            mainHolder.find('input.qty').first().val(target.data('currentvalue'));
+          if (target.attr('data-currentvalue')) {
+            mainHolder.find('input.qty').first().val(target.attr('data-currentvalue'));
           }
 
           // fill related item content
@@ -126,8 +126,8 @@ var FreshDirect = FreshDirect || {};
             related.remove();
 
             // set current value
-            if (target.data('currentrelatedvalue')) {
-              relatedHolder.find('input.qty').first().val(target.data('currentrelatedvalue'));
+            if (target.attr('data-currentrelatedvalue')) {
+              relatedHolder.find('input.qty').first().val(target.attr('data-currentrelatedvalue'));
             }
 
           } else {
