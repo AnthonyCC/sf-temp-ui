@@ -167,7 +167,11 @@ var FreshDirect = FreshDirect || {};
               // adjust related popup size
               relatedHolder.css({
                 minWidth: mainHolder.width(),
-                minHeight: mainHolder.height()
+                minHeight: mainHolder.height(),
+                marginLeft: 0,
+                marginRight: 0,
+                paddingLeft: 0,
+                paddingRight: 0
               });
 
               $('#'+popupId).addClass('hasRelated');
@@ -187,12 +191,16 @@ var FreshDirect = FreshDirect || {};
                 if (wwidth > ppos + 2*outerWidth + 10) {
                   relatedHolder.css({
                     visibility: 'visible',
-                    left: (-5)+'px'
+                    left: 0,
+                    paddingLeft: '15px',
+                    marginLeft: '-15px'
                   });
                 } else {
                   relatedHolder.css({
                     visibility: 'visible',
-                    left: (-(2*outerWidth) + 5)+'px'
+                    left: -(2*outerWidth) +'px',
+                    paddingRight: '15px',
+                    marginRight: '-15px'
                   });
                 }
 

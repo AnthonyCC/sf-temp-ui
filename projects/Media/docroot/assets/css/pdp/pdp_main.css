@@ -535,13 +535,18 @@ span.cssbutton.annotation:hover {
 	position:absolute;
 	left:0;
 	top:0;
-	background:#693;
+	background:#79b14f;
 	color:white;
 	font-size:14px;
 	padding:0 40px 0 10px;
 	border-bottom-right-radius:10px;
 	font-weight:normal;
 	text-shadow:none;
+}
+
+#evenBetterPopup .pdp-evenbetter-learnmore:hover {
+  text-decoration: none;
+  background: #4f802a;
 }
 
 #evenBetterPopup .pdp-evenbetter-learnmore:after {
