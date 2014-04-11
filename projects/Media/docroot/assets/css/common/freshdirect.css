@@ -484,6 +484,16 @@ section.main .leftnav .menuBox hr {
   margin-left: 10px;
 }
 
+.browse-popup-content div[data-component="menuitemlist"] {
+  white-space: nowrap;
+}
+
+.browse-popup-content div[data-component="menuitemlist"] > ul {
+  float: none;
+  display: inline-block;
+  vertical-align: top;
+}
+
 .browse-popup-content h3 {
   font-weight: bold;
   font-size: 12px;

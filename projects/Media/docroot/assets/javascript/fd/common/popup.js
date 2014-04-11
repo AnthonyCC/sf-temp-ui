@@ -63,7 +63,7 @@ var FreshDirect = FreshDirect || {};
             }
         },
         noscroll: {
-          value: function () {
+          value: function (force) {
             var contentBox = this.popup.$el.find(this.scrollCheck || this.bodySelector).first()[0];
 
             // check popup size
@@ -72,9 +72,9 @@ var FreshDirect = FreshDirect || {};
             });
             
             if (contentBox && (contentBox.clientHeight < contentBox.scrollHeight || 
-                navigator.userAgent.toLowerCase().indexOf("ipad") > -1)) {
+                navigator.userAgent.toLowerCase().indexOf("ipad") > -1) || force) {
               this.popup.$el.addClass('noscroll').css({
-                top: document.body.scrollTop + 20
+                top: document.body.scrollTop < 200 ? 220 : document.body.scrollTop + 20
               });
             }
           }

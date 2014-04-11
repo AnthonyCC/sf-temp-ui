@@ -73,7 +73,7 @@ var FreshDirect = FreshDirect || {};
           // replace popup input names
           $('#'+this.popupId+' input').each(function (i, el) { el.name = 'popup_'+el.name; });
 
-          this.noscroll();
+          this.noscroll(true);
         }
       }
     }

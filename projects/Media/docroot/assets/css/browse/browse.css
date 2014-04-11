@@ -191,17 +191,11 @@
 }
 
 .centerpopup-helper {
-  position: fixed;
-  top: 0;
-  bottom: 0;
+  position: absolute;
+  top: 220px;
   left: 0;
   right: 0;
   text-align: center;
-}
-
-.centerpopup-helper.noscroll {
-  position: absolute;
-  bottom: auto;
 }
 
 .centerpopup-linehelper {
@@ -214,8 +208,6 @@
 .browse-popup.centermenupopup {
   position: static;
   display: inline-block;
-  max-width: 70%;
-  max-height: 70%;
   vertical-align: middle;
   text-align: left;
   overflow: auto;
