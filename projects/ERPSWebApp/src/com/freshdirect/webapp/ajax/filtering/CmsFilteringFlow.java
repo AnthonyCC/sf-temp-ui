@@ -198,33 +198,14 @@ public class CmsFilteringFlow {
 				if(NavigationUtil.isCategoryHiddenInContext(user, cat)){
 					continue;
 				}
-				
-				NavDepth navDepth = MenuBuilderFactory.getInstance().determineCategoryLevel(cat);
-				// create a mock section contains all products
-				SectionContext section = BrowseDataBuilderFactory.getInstance().createSectionTree(cat, navDepth.getLevel(), user);
-				
-				int productCounter = 0;
-				
-				if(section.getSectionContexts()==null || section.getSectionContexts().size()==0){
-					// if the category doesn't have sub categories ...
-					productCounter = cat.getProducts().size();							
-				}else{
-					// collect all products from section
-					List<FilteringProductItem> products = new ArrayList<FilteringProductItem>();
-					ProductItemFilterUtil.collectAllItems(section.getSectionContexts(), products);	
-					productCounter = products.size();
+					
+				++categoryCounter;
+					
+				if(categoryCounter>1){
+					return null;
 				}
-				
-				if(productCounter>0){
 					
-					++categoryCounter;
-					
-					if(categoryCounter>1){
-						return null;
-					}
-					
-					theOnlyOne = cat.getContentKey().getId();
-				}
+				theOnlyOne = cat.getContentKey().getId();
 			}
 			
 			if(categoryCounter==1){

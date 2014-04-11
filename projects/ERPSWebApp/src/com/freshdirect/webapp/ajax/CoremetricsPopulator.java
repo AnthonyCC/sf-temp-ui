@@ -42,13 +42,28 @@ public class CoremetricsPopulator {
 	}
 	
 
-	public static void appendElementTag(Map<String, Object> flatData,
+	public static void appendFilterElementTag(Map<String, Object> flatData,
 			Map<String, Object> filters) throws SkipTagException {
 		if (flatData == null || filters == null)
 			return;
 
-		elementBuilder.setElementCategory(ElementTagModelBuilder.CAT_BROWSE);
+		elementBuilder.setElementCategory(ElementTagModelBuilder.CAT_BROWSE_FILTER);
 		elementBuilder.setLeftNavFilters(filters);
+
+		final List<String> cmResult = elementBuilder.buildTagModel().toStringList();
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Appending element tag to payload:  " + cmResult);
+		}
+
+		appendCMData(flatData, cmResult );
+	}
+	
+	public static void appendSortElementTag(Map<String, Object> flatData, String sortId) throws SkipTagException {
+		if (flatData == null || sortId == null)
+			return;
+
+		elementBuilder.setElementCategory(ElementTagModelBuilder.CAT_BROWSE_SORT);
+		elementBuilder.setBrowseSortId(sortId);
 
 		final List<String> cmResult = elementBuilder.buildTagModel().toStringList();
 		if (LOGGER.isDebugEnabled()) {

@@ -42,7 +42,9 @@ public class ElementTagModelBuilder {
 	private static final String ID_REVIEWS_VIEWED = "viewed";
 	public static final String CAT_ECOUPON = "ecoupon";
 	
-	public static final String CAT_BROWSE = "browse";
+	public static final String CAT_BROWSE_FILTER = "browse_filter";
+	
+	public static final String CAT_BROWSE_SORT = "browse_sort";
 	
 	private ElementTagModel model = new ElementTagModel();
 	private String elementId;
@@ -65,6 +67,8 @@ public class ElementTagModelBuilder {
 
 	// required property for 'browse' category type
 	private Map<String,Object> leftNavFilters;
+	
+	private String browseSortId;
 	
 	public ElementTagModel buildTagModel()  throws SkipTagException {
 
@@ -92,8 +96,10 @@ public class ElementTagModelBuilder {
 			processReviews();
 		} else if (CAT_ECOUPON.equals(elementCategory)) {
 			processClipCouponEvent();
-		} else if (CAT_BROWSE.equals(elementCategory)) {
-			processLeftNavEvent();
+		} else if (CAT_BROWSE_FILTER.equals(elementCategory)) {
+			processLeftNavFilterEvent();
+		} else if (CAT_BROWSE_SORT.equals(elementCategory)) {
+			processLeftNavSortEvent();			
 		}
 			
 		return model;
@@ -247,7 +253,12 @@ public class ElementTagModelBuilder {
 		model.getAttributesMaps().put(3, skuCode);
 	}
 	
-	private void processLeftNavEvent() throws SkipTagException {
+	private void processLeftNavSortEvent() throws SkipTagException {
+		model.setElementId(browseSortId);
+		model.setElementCategory(CAT_BROWSE_SORT);
+	}
+	
+	private void processLeftNavFilterEvent() throws SkipTagException {
 		if (leftNavFilters == null) {
 			throw new SkipTagException("Missing filter parameter! Skipping tag.");
 		}
@@ -290,7 +301,7 @@ public class ElementTagModelBuilder {
 		String result = outerBuf.toString();
 		
 		model.setElementId(result.length() > 50 ? result.substring(0, 50) : result);
-		model.setElementCategory(CAT_BROWSE);
+		model.setElementCategory(CAT_BROWSE_FILTER);
 	}
 
 
@@ -364,4 +375,9 @@ public class ElementTagModelBuilder {
 	public void setLeftNavFilters(Map<String, Object> leftNavFilters) {
 		this.leftNavFilters = leftNavFilters;
 	}
+
+	public void setBrowseSortId(String browseSortId) {
+		this.browseSortId = browseSortId;
+	}
+
 }

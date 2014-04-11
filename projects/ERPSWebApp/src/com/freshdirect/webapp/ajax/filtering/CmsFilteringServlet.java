@@ -58,7 +58,8 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 		
 		try {
-			final CmsFilteringFlowResult flow = new CmsFilteringFlow().doFlow(CmsFilteringNavigator.createInstance(request), (FDSessionUser)user);
+			CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request);
+			final CmsFilteringFlowResult flow = new CmsFilteringFlow().doFlow(navigator, (FDSessionUser)user);
 			final Map<String, ?> payload = DataPotatoField.digBrowse(flow);
 
 
@@ -82,10 +83,12 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 						CoremetricsPopulator.appendPageViewTag( (Map<String, Object>) payload , request);
 						break;
 					case ELEMENT:
-						CoremetricsPopulator.appendElementTag((Map<String, Object>) payload , (Map<String, Object>) clientInput.get("requestFilterParams"));
+						CoremetricsPopulator.appendFilterElementTag((Map<String, Object>) payload , (Map<String, Object>) clientInput.get("requestFilterParams"));
+						break;
+					case SORT:
+						CoremetricsPopulator.appendSortElementTag((Map<String, Object>) payload, navigator.getSortBy());
 						break;
 					case PAGE:
-					case SORT:
 					case NOEVENT:
 					default:
 						// do nothing
