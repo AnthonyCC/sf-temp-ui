@@ -153,30 +153,29 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
     
     public VersionedPrimaryKey ejbFindBySkuCode(String sku) throws FinderException  {
         Connection conn = null;
+        ResultSet rs=null;
+        PreparedStatement ps =null;
         try {
             conn = getConnection();
-			//PreparedStatement ps = conn.prepareStatement("select id, p.version, sku_code, default_price, default_unit, unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating, base_price, base_pricing_unit from erps.product p, erps.history h where sku_code = ? and p.version=(select max(version) from erps.product where sku_code = ?) and h.version=p.version");
-            PreparedStatement ps = conn.prepareStatement("select id, p.version, sku_code, unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating, days_fresh, days_in_house,sustainability_rating from erps.product p, erps.history h where sku_code = ? and p.version=(select max(version) from erps.product where sku_code = ?) and h.version=p.version");
-
-	    ps.setString(1, sku);
+            ps = conn.prepareStatement("select id, p.version, sku_code, unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating, days_fresh, days_in_house,sustainability_rating from erps.product p, erps.history h where sku_code = ? and p.version=(select max(version) from erps.product where sku_code = ?) and h.version=p.version");
+            ps.setString(1, sku);
             ps.setString(2, sku);
-	    ResultSet rs = ps.executeQuery();
+            rs= ps.executeQuery();
 
             if (!rs.next()) {
                 throw new ObjectNotFoundException("Unable to find a Product for SKU " + sku);
             }
             
 			VersionedPrimaryKey vpk = this.fillPayload(conn, rs);
-
-			rs.close();
-			ps.close();
-
             return vpk;
             
         } catch (SQLException sqle) {
             throw new EJBException("Unable to find a Product by its SKU : " + sqle.getMessage());
         } finally {
             try {
+            	if(rs!=null) rs.close();
+            	if(ps!=null) ps.close();
+            	
                 if (conn != null) conn.close();
             } catch (SQLException sqle) {
                 throw new EJBException(sqle);
@@ -186,10 +185,9 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 
 	private VersionedPrimaryKey fillPayload(Connection conn, ResultSet rs) throws SQLException {
 		ErpProductPayload p = new ErpProductPayload();
+		String id = rs.getString(1);
+		int version = rs.getInt(2);
 		p.skuCode = rs.getString(3);
-
-		//p.defaultPrice = rs.getDouble(4);
-		//p.defaultPriceUnit = rs.getString(5);
 		p.unavailabilityStatus = rs.getString(4);
 		p.unavailabilityDate = rs.getTimestamp(5);
 		p.unavailabilityReason = rs.getString(6);
@@ -198,12 +196,6 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 		p.days_fresh=rs.getString(9);
 		p.days_in_house=rs.getString(10);
 		p.sustainabilityRating=rs.getString(11);
-		//p.basePrice=rs.getDouble(11);
-		//p.basePriceUnit=rs.getString(12);
-		
-		String id = rs.getString(1);
-		int version = rs.getInt(2);
-
 		this.loadChildren(conn, p, id);
 
 		VersionedPrimaryKey vpk = new VersionedPrimaryKey(id, version, p);
@@ -217,6 +209,8 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 		ResultSet rs2 = ps2.executeQuery();
 		
 		if (!rs2.next()) {
+			rs2.close();
+			ps2.close();
 			throw new SQLException("No materialProxy entry for product "+id);	
 		}
 		
@@ -236,7 +230,6 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
         Connection conn = null;
         try {
             conn = getConnection();
-	    //PreparedStatement ps = conn.prepareStatement("select id, p.version, sku_code, default_price, default_unit, unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating, base_price, base_pricing_unit  from erps.product p, erps.history h where sku_code = ? and p.version = ? and h.version=p.version");
             PreparedStatement ps = conn.prepareStatement("select id, p.version, sku_code,  unavailability_status, unavailability_date, unavailability_reason, date_created as pricing_date, rating, days_fresh, days_in_house,sustainability_rating  from erps.product p, erps.history h where sku_code = ? and p.version = ? and h.version=p.version");
 
             ps.setString(1, sku);
@@ -244,6 +237,8 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 			ResultSet rs = ps.executeQuery();
 
             if (!rs.next()) {
+            	rs.close();
+                ps.close();
                 throw new ObjectNotFoundException("Unable to find a Product for SKU " + sku + " version "+version);
             }
             
@@ -274,13 +269,12 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
     public VersionedPrimaryKey create(Connection conn, int version) throws SQLException {
     	String id = this.getNextId(conn, "ERPS");
 
-        //PreparedStatement ps = conn.prepareStatement("insert into erps.product (id, version, sku_code, default_price, default_unit, unavailability_status, unavailability_date, unavailability_reason, rating, base_price, base_pricing_unit ) values (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)");
+
     	PreparedStatement ps = conn.prepareStatement("insert into erps.product (id, version, sku_code, unavailability_status, unavailability_date, unavailability_reason, rating,days_fresh, days_in_house,sustainability_rating) values (?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
         ps.setString(1, id);
         ps.setInt(2, version);
         ps.setString(3, this.skuCode);
-        //ps.setDouble(4, this.defaultPrice );
-        //ps.setString(5, this.defaultPriceUnit);
+       
         ps.setString(4, this.unavailabilityStatus);
         ps.setTimestamp(5, new Timestamp(this.unavailabilityDate.getTime()));
         ps.setString(6, this.unavailabilityReason);
@@ -288,10 +282,10 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
         ps.setString(8, this.days_fresh);
         ps.setString(9, this.days_in_house);
         ps.setString(10,this.sustainabilityRating);
-        //ps.setDouble(10, this.basePrice);
-        //ps.setString(11, this.basePriceUnit);
+        
 
         if (ps.executeUpdate() != 1) {
+        	ps.close();
             throw new SQLException("Row not created");
         }
         ps.close();
@@ -307,6 +301,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 		ps.setString(4, this.materialId);
 
 		if (ps.executeUpdate() != 1) {
+			ps.close();
 			throw new SQLException("Row not created");
 		}
 		ps.close();
@@ -364,6 +359,8 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
         ResultSet rs = ps.executeQuery();
 
         if (!rs.next()) {
+        	 rs.close();
+             ps.close();
             return null;
         }
 
