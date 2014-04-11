@@ -580,12 +580,27 @@ a.portrait-item-header-name:link {
 }
 
 #transactionalPopup .portrait-item-controls.atc-info-message .addtocart:before {
-  max-width: 300px;
   background-position: 12px center;
 }
 
 #transactionalPopup .portrait-item-controls.atc-info-message .addtocart:after {
   visibility: visible;
+}
+
+.ie8 #transactionalPopup .portrait-item-controls .addtocart:before {
+  display: none;
+  position: static;
+  content: attr(data-amount) " Added";
+  padding: 0 5px 0 25px;
+}
+
+.ie8 #transactionalPopup .portrait-item-controls.atc-info-message .addtocart:before {
+  display: block;
+}
+
+.ie8 #transactionalPopup .portrait-item-controls .addtocart:after {
+  content: none;
+  display: none;
 }
 
 #transactionalPopup .portrait-item-controls.atc-info-message .addtocart span {
