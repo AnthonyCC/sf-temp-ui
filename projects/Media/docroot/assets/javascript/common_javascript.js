@@ -6,7 +6,7 @@ var $jq = $jq || window.jQuery || null;
 window.originalClose = window.close;
 
 // works in IE too
-window.reallyClose = function () {
+window.reallyClose = function (ev) {
   window.originalClose();
 
   try {
@@ -21,6 +21,13 @@ window.reallyClose = function () {
       window.FreshDirect.components.ajaxPopup.close();
     }
   } catch (e) {}
+
+  ev = ev || window.event;
+  if (ev && ev.stopPropagation) {
+    ev.stopPropagation();
+  }
+
+  return false;
 };
 
 // works in other browsers
