@@ -31,7 +31,11 @@ public enum EnumEventSource {
 	DMR("DMR"), //Browse - Department Merchant Recommender
 	CSR("CSR"), //Browse - Category Scarab Recommender
 	CMR("CMR"), //Browse - Category Merchant Recommender
-	TRY("TRY"); //Browse - TRY Recommender 
+	TRY("TRY"), //Browse - TRY Recommender 
+	
+	// Site Redesign - Cart Confirm
+	cc_tabbedRecommender("CC-bottom-recommender"),
+	CC_YMAL("CCYMAL");
 	
 	String name;
 	

@@ -37,6 +37,7 @@ public class RecommenderPotatoTag extends SimpleTagSupport {
 	private String siteFeature;
 	private int maxItems = 10;
 	private String currentNodeKey = null;
+	private String cmEventSource = null;
 	
 	public String getName() {
 		return name;
@@ -62,7 +63,12 @@ public class RecommenderPotatoTag extends SimpleTagSupport {
 	public void setCurrentNodeKey(String currentNodeKey) {
 		this.currentNodeKey = currentNodeKey;
 	}
-
+	public String getCmEventSource() {
+		return cmEventSource;
+	}
+	public void setCmEventSource(String cmEventSource) {
+		this.cmEventSource = cmEventSource;
+	}
 	
 	
 	@Override
@@ -85,7 +91,7 @@ public class RecommenderPotatoTag extends SimpleTagSupport {
 			}
 			
 			Recommendations results = recommender.getRecommendations(EnumSiteFeature.getEnum(siteFeature), user, ProductRecommenderUtil.createSessionInput( session, user, maxItems, currentNode , null ) );
-			
+
 			ProductRecommenderUtil.persistToSession(session, results);
 			
 			products = results.getAllProducts();
@@ -95,6 +101,10 @@ public class RecommenderPotatoTag extends SimpleTagSupport {
 		}
 		
 		Map<String,?> dataMap = DataPotatoField.digProductListFromModels( user, products );
+		
+		if(cmEventSource!=null){
+			((Map<String, Object>) dataMap).put("cmEventSource", cmEventSource);			
+		}
 
 		((PageContext)getJspContext()).setAttribute( name, dataMap );
 		

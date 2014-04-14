@@ -2,9 +2,10 @@
 
 /**
  * @param productList some path, list of items
+ * @param? cmEventSource
  */
 {template .ymalCarousel}
-<div class="ymalCarousel" data-cmSiteFeature="YMAL" data-cmeventsource="YMAL">
+<div class="ymalCarousel" data-cmSiteFeature="YMAL" data-cmeventsource="{if $cmEventSource }{$cmEventSource}{else}YMAL{/if}">
 	<h2>You May Also Like</h2>
 	{call common.simpleCarousel}
 		{param items: $productList /}

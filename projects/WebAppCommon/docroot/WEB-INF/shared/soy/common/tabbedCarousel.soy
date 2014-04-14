@@ -4,6 +4,7 @@
  * @param? hasYourFavoritesRecommendation
  * @param? productList
  * @param? selected
+ * @param? cmEventSource
  */
 {template .tabbedCarousel}
 {let $siteFeature}
@@ -15,7 +16,7 @@
     {case 'custrating'}CUSTRATED_QS
   {/switch}
 {/let}
-<div id="tabbedCarousel" class="tabbed-carousel" data-component="tabbedRecommender" data-cmeventsource="qs_tabbedRecommender">
+<div id="tabbedCarousel" class="tabbed-carousel" data-component="tabbedRecommender" data-cmeventsource="{if $cmEventSource }{$cmEventSource}{else}qs_tabbedRecommender{/if}">
     <ul class="tabs clearfix">
     	{if $hasYourFavoritesRecommendation}
         <li data-component="tabitem" class="{if $selected and $selected=='yourfav' }selected{/if}" data-tabname="yourfav" data-sitefeature="DYF">your favorites</li>
