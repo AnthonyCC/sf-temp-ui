@@ -94,8 +94,6 @@ class PaymentechHelper {
 			} else {
 				response=(ResponseImpl)setNewOrderTxResponse(transType,response,_response);
 			}
-			//System.out.println(response.getRawRequest());
-			//System.out.println(response.getRawResponse());
 			return response;
 			
 		}
@@ -146,39 +144,6 @@ class PaymentechHelper {
 						
 						
 					}
-					
-					/*if( PaymentechConstants.AccountType.CREDIT_CARD.getCode().equals
-							(_response.getValue(PaymentechFields.ProfileResponse.CustomerAccountType.name()))
-						   ) {
-							CreditCard cc=new CreditCardImpl();
-							cc.setAccountNumber(_response.getValue(PaymentechFields.ProfileResponse.CCAccountNum.name()));
-							cc.setExpirationDate(null);//Set the expiration date.
-							//How to set the credit card type??
-							
-							pm=cc;
-							
-						} else {
-							ECheck ec=new ECheckImpl();
-							ec.setAccountNumber(_response.getValue(PaymentechFields.ProfileResponse.ECPAccountDDA.name()));
-							ec.setRoutingNumber(_response.getValue(PaymentechFields.ProfileResponse.ECPAccountRT.name()));
-							val=_response.getValue(PaymentechFields.ProfileResponse.ECPAccountType.name());
-							if(PaymentechConstants.BankAccountType.CONSUMER_CHECKING.getCode().equals(val)) 
-								ec.setBankAccountType(com.freshdirect.payment.gateway.BankAccountType.CHECKING );
-							else if(PaymentechConstants.BankAccountType.CONSUMER_SAVINGS.getCode().equals(val)) 
-								ec.setBankAccountType(com.freshdirect.payment.gateway.BankAccountType.SAVINGS);
-							pm=ec;
-						}
-						pm.setBillingProfileID(_response.getValue(PaymentechFields.ProfileResponse.CustomerRefNum.name()));
-						pm.setCustomerID(response.getRequest().getBillingInfo().getPaymentMethod().getCustomerID());
-						pm.setCustomerName(_response.getValue(PaymentechFields.ProfileResponse.CustomerName.name()));
-						pm.setAddressLine1(_response.getValue(PaymentechFields.ProfileResponse.CustomerAddress1.name()));
-						pm.setAddressLine2(_response.getValue(PaymentechFields.ProfileResponse.CustomerAddress2.name()));
-						pm.setCity(_response.getValue(PaymentechFields.ProfileResponse.CustomerCity.name()));
-						pm.setState(_response.getValue(PaymentechFields.ProfileResponse.CustomerState.name()));
-						pm.setZipCode(_response.getValue(PaymentechFields.ProfileResponse.CustomerZIP.name()));
-						response.setBillingInfo(new BillingInfoImpl(response.getMerchant(),pm));*/
-					
-					
 				} else {
 					response.setRequestProcessed(false);
 				}
@@ -294,23 +259,7 @@ class PaymentechHelper {
 			return response;
 		}
 		
-		
-		/*static Response  processAuthorizeRequest(Request request) {
-			ResponseImpl response=new ResponseImpl(request);
-			RequestIF _request=getGatewayTxRequest(request,response);
-			ResponseIF _response=null;
-			try {
-				_response=processRequest(_request);
-			} catch (InitializationException e) {
-				e.printStackTrace();
-				setException(response,e.toString());
-			} catch (TransactionException e) {
-				e.printStackTrace();
-				setException(response,e.toString());
-			}
-			setResponse(request,response,_request,_response);
-			return response;
-		}*/
+
 		private static RequestIF getGatewayTxRequest(Request request,ResponseImpl response) {
 			
 			RequestIF gatewayReq=null;
@@ -455,8 +404,10 @@ class PaymentechHelper {
 				PaymentechRequestHelper.setCCInfo(RequestIF.NEW_ORDER_TRANSACTION,
 						                          _request,
 						                          creditCard);
-				if(CreditCardType.AMEX.equals(creditCard.getCreditCardType())||
-				   CreditCardType.DISCOVER.equals(creditCard.getCreditCardType())){
+				if( CreditCardType.AMEX.equals(creditCard.getCreditCardType())||
+				    CreditCardType.DISCOVER.equals(creditCard.getCreditCardType())||
+				    CreditCardType.MASTERCARD.equals(creditCard.getCreditCardType())
+				  ) {
 					amount=0.01;
 					request.getBillingInfo().setAmount(amount);
 				}
