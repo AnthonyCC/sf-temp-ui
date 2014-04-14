@@ -1499,4 +1499,10 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public Image getExtraImage() {
 		return this.prodModel.getExtraImage();
 	}
+	
+	@Override
+	public EnumProductLayout getSpecialLayout() {
+		return prodModel.getSpecialLayout();
+	}
+
 }

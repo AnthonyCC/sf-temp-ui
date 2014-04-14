@@ -2074,4 +2074,9 @@ public class MockProductModel extends MockContentNodeModel implements
 	public Image getExtraImage() {
 		return null;
 	}
+
+	@Override
+	public EnumProductLayout getSpecialLayout() {
+		return null;
+	}
 }

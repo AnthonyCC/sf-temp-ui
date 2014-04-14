@@ -503,4 +503,9 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	public Image getExtraImage() {
         return FDAttributeFactory.constructImage(this, "PROD_IMAGE_EXTRA", Image.BLANK_IMAGE);
 	}
+	
+	@Override
+	public EnumProductLayout getSpecialLayout() {
+		return getProduct().getSpecialLayout();
+	}
 }

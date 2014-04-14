@@ -196,7 +196,7 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 		<meta property="og:image" content="https://www.freshdirect.com/media_stat/images/logos/FD-logo-300.jpg"/>
 	</tmpl:put>
 
-<% if(prodLayout != EnumProductLayout.COMPONENTGROUP_MEAL && prodLayout != EnumProductLayout.MULTI_ITEM_MEAL) { %>
+<% if (productNode.getSpecialLayout()==null) { %>
 	<c:set value="${productPotato}" scope="request" var="productPotato" />
 	<c:set value="${productExtraPotato}" scope="request" var="productExtraPotato" />
 	
@@ -243,6 +243,8 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 	request.setAttribute("custCoupon", custCoupon); //set coupon in to request for includes/tags to use
 %>
 	<tmpl:put name='content' direct='true'>
+		<fd:CmPageView wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
+		<fd:CmProductView quickbuy="false" wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
 		<jsp:include page="<%= prodLayout.getLayoutPath() %>" flush="false"/>
 	</tmpl:put>
 	</fd:FDShoppingCart>

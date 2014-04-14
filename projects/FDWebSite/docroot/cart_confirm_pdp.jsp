@@ -39,6 +39,10 @@ if(productNode!=null){
 	request.setAttribute("sitePage", productNode.getPath());
 	request.setAttribute("listPos", "SystemMessage,LittleRandy");
 	isWine = EnumTemplateType.WINE.equals( productNode.getTemplateType() );
+	
+	//special layout product ATC is not done with AJAX, so it needs to be reported to Coremetrics on this page
+	pageContext.setAttribute("isSpecialLayout", productNode.getSpecialLayout()!=null);
+	
 }
 
 //should we show the new leftnav
@@ -79,7 +83,8 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
     	</div>
   	</tmpl:put>
     
-	<tmpl:put name='content' direct='true'>		
+	<tmpl:put name='content' direct='true'>
+		<c:if test="${isSpecialLayout}"><fd:GetCart id='cart'><fd:CmShop5 wrapIntoScriptTag="true" cart="<%=cart%>"/></fd:GetCart></c:if>
 		<jsp:include page="/includes/product/cartConfirm.jsp" >
 			<jsp:param name="catId" value="${ param.catId }"/>
 <%-- 			<jsp:param name="productId" value="${ param.productId }"/> --%>
@@ -118,6 +123,7 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
     <% } %>
     
 	<tmpl:put name='content' direct='true'>		
+		<c:if test="${isSpecialLayout}"><fd:GetCart id='cart'><fd:CmShop5 wrapIntoScriptTag="true" cart="<%=cart%>"/></fd:GetCart></c:if>
 		<jsp:include page="/includes/product/cartConfirm.jsp" >
 			<jsp:param name="catId" value="${ param.catId }"/>
 			<jsp:param name="productId" value="${ param.productId }"/>

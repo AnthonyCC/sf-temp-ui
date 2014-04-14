@@ -1441,4 +1441,8 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 		this.erpCatPosition = erpCatPosition;
 	}
 
+	@Override
+	public EnumProductLayout getSpecialLayout() {
+		return productModel.getSpecialLayout();
+	}
 }

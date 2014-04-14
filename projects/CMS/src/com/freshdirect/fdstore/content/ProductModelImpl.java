@@ -1930,4 +1930,18 @@ inner:
 	public Image getExtraImage() {
         return FDAttributeFactory.constructImage(this, "PROD_IMAGE_EXTRA", Image.BLANK_IMAGE);
 	}
+	
+	
+	@Override
+	public EnumProductLayout getSpecialLayout() {
+		EnumProductLayout specialLayout = getProductLayout();
+		switch (specialLayout){
+			case COMPONENTGROUP_MEAL:
+			case MULTI_ITEM_MEAL:
+				return specialLayout;
+			default:
+				return null;
+		}
+	}
+
 }

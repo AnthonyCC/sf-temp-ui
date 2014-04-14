@@ -1339,4 +1339,9 @@ public class ProductModelFeaturedAdapter implements ProductModel, Serializable,
 	public Image getExtraImage() {
 		return productModel.getExtraImage();
 	}
+
+	@Override
+	public EnumProductLayout getSpecialLayout() {
+		return productModel.getSpecialLayout();
+	}
 }
