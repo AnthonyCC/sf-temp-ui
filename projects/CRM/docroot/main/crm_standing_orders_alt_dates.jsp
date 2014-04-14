@@ -491,14 +491,17 @@ function filter(dataIndx, value) {
 }
 
 		function time(time_string) {
-
+			var orgTimeString = time_string;
+			if(""!=time_string){
+				time_string = time_string.replace(".","");
+			}
 				var ampm = 'a';
 				var hour = -1;
 				var minute = 0;
 				var temptime = '';
 				time_string = time_string.trim();
-				var ampmPatEnd = (/AM|PM$/);
-				if (time_string.length == 8 && time_string.match(ampmPatEnd)) {
+				var ampmPatEnd =/^([1-9]|0[1-9]|1[0-2]):([0-5]\d)\s(AM|PM)?$/i;// (/am|pm|AM|PM$/);
+				if (/* time_string.length == 8 &&  */time_string.match(ampmPatEnd)) {
 					return time_string;
 				}
 				for ( var n = 0; n < time_string.length; n++) {
@@ -532,11 +535,10 @@ function filter(dataIndx, value) {
 					}
 				} else {
 					if(time_string !=''){
-						alert(time_string+ " is invalid time format. Please enter in 'hh:mm am/pm' format only.");
+						alert(orgTimeString+ " is invalid time format. Please enter in 'hh:mm am/pm' format only.");
 					}
 					return '';
 				}
-
 				if ((hour <= 12) && (minute <= 59)) {
 
 					if (hour.toString().length == 1) {
@@ -547,7 +549,7 @@ function filter(dataIndx, value) {
 						minute = '0' + minute;
 					}
 					if (hour == '00') {
-						ampm = 'a'
+						ampm = 'a';
 					}
 					//if (hour == '12' ) { ampm='p' }
 					temptime = hour + ':' + minute + ' ' + ampm.toUpperCase() + 'M';
@@ -555,7 +557,7 @@ function filter(dataIndx, value) {
 					temptime = '';
 				}
 				if(time_string !='' && temptime==''){
-					alert(time_string+ " is invalid time format. Please enter in 'hh:mm am/pm' format only.");
+					alert(orgTimeString+ " is invalid time format. Please enter in 'hh:mm am/pm' format only.");
 				}
 				return temptime;
 
