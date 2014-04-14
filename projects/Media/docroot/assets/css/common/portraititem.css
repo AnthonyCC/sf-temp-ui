@@ -519,6 +519,10 @@ a.portrait-item-header-name:link {
   vertical-align: top;
 }
 
+.portrait-item-controls .addtocart .iehelper {
+  display: none;
+}
+
 #transactionalPopup .portrait-item-controls .cssbutton.notext {
   padding: 6px 7px 4px 8px;
   line-height: 18px;
@@ -587,24 +591,31 @@ a.portrait-item-header-name:link {
   visibility: visible;
 }
 
+.ie8 #transactionalPopup .portrait-item-controls .addtocart:after,
 .ie8 #transactionalPopup .portrait-item-controls .addtocart:before {
-  display: none;
-  position: static;
-  content: attr(data-amount) " Added";
-  padding: 0 5px 0 25px;
-}
-
-.ie8 #transactionalPopup .portrait-item-controls.atc-info-message .addtocart:before {
-  display: block;
-}
-
-.ie8 #transactionalPopup .portrait-item-controls .addtocart:after {
-  content: none;
   display: none;
 }
 
 #transactionalPopup .portrait-item-controls.atc-info-message .addtocart span {
   visibility: hidden;
+}
+
+.ie8 #transactionalPopup .portrait-item-controls .addtocart span {
+  display: block;
+  text-align: center;
+}
+
+.ie8 #transactionalPopup .portrait-item-controls.atc-info-message .addtocart span {
+  display: none;
+}
+
+.ie8 #transactionalPopup .portrait-item-controls.atc-info-message .addtocart .iehelper {
+  display: block;
+  text-decoration: none;
+  background-image: url(/media_stat/images/common/added-to-cart-icon.png);
+  background-repeat: no-repeat;
+  background-position: 12px center;
+  padding-left: 25px;
 }
 
 #transactionalPopup .portrait-item-controls .addtolist {

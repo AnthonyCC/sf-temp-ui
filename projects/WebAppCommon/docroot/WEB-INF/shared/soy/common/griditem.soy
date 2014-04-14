@@ -475,7 +475,7 @@
         {if $customizePopup}
           <span class="customize cssbutton blue small" data-component="customizeButton">Customize</span>
         {else}
-          <span class="addtocart cssbutton orange small" data-component="ATCButton"><span>Add to Cart</span></span>
+          <span class="addtocart cssbutton orange small" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></span>
           {call common.subtotal}
             {param availMatPrices:$availMatPrices /}
             {param suRatios:$suRatios /}

@@ -19,19 +19,23 @@ var FreshDirect = FreshDirect || {};
 			value:function(item) {
         // the original element might be copied (like in case of transactional popup), so we have to match for multiple ids
 				var element = $('[id="'+item.itemId+'"], [id="'+item.atcItemId+'"]'),
-            controls;
+            controls, amount;
 
 				if(element) {
 					element.addClass('atc-info-message');
+          amount = item.inCartAmount || element.find('.incart-info').data('amount');
 					element.html(this.template({
-						amount:item.inCartAmount || element.find('.incart-info').data('amount'),
+						amount: amount,
 						message:'Adding to cart...',
 						type:'ADDING'
 					}));
 
           controls = element.closest('[data-component="product"]').find('[data-component="product-controls"]');
           if (controls.size() !== 0) {
+            // reset qty
             controls.find('input.qty').val(0);
+            // IE 8 helper
+            controls.find('.iehelper').html(controls.find('.addtocart[data-amount]').attr('data-amount') + ' Added');
           }
 				}
 			}
