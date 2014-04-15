@@ -713,4 +713,33 @@ public class FDStandingOrdersManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+	
+	public FDStandingOrderSkuResultInfo validateSkuCode(String sourceSku, String destinationSku) throws FDResourceException{
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();			
+			return sb.validateSkuCode(sourceSku, destinationSku);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}		
+	}
+
+	public FDStandingOrderSkuResultInfo replaceSkuCode(String sourceSku,
+			String destinationSku) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();			
+			return sb.replaceSkuCode(sourceSku, destinationSku);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}		
+	}
 }

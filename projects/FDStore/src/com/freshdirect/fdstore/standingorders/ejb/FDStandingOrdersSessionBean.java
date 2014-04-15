@@ -16,6 +16,7 @@ import javax.ejb.CreateException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.EnumStandingOrderType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
@@ -35,6 +36,7 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderFilterCriteria;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
+import com.freshdirect.fdstore.standingorders.FDStandingOrderSkuResultInfo;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -667,5 +669,56 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			close(conn);
 		}
 		return isValid;
+	}
+	
+	public FDStandingOrderSkuResultInfo replaceSkuCode(String existingSku,
+			String replacementSku) throws FDResourceException {
+
+		Connection conn = null;
+		FDStandingOrderSkuResultInfo result = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();
+			result = dao.replaceSkuCode(conn,
+					existingSku, replacementSku);
+			FDStandingOrderAuditDataDAO auditDataDAO = new FDStandingOrderAuditDataDAO();
+			auditDataDAO.auditCall(conn,
+					prepareAuditInfoBean(existingSku, replacementSku,result.getProductSkuList().size()));
+			return result;
+		} catch (SQLException e) {
+			result = new FDStandingOrderSkuResultInfo();
+			LOGGER.error("SQL ERROR in replaceSkuCode() : " + e.getMessage(), e);			
+					result.setErrorMessage("Error while Auditing the User Activity.Rolling back the Trasaction");
+					getSessionContext().setRollbackOnly();
+					return result;
+			}
+			
+		 finally {
+				close(conn);
+			}
+		}
+
+	private AuditDataBeanInfo prepareAuditInfoBean(String existingSku,
+			String replacementSku, int numofStandingOrders) {
+		AuditDataBeanInfo auditDataBeanInfo = new AuditDataBeanInfo();
+		auditDataBeanInfo.setUserId(getSessionContext().getCallerPrincipal().getName());
+		auditDataBeanInfo.setType(EnumStandingOrderType.SO_SKU_REPLACEMENT.getName());
+		auditDataBeanInfo.setComment(replacementSku + " replaced " + existingSku + " in " + numofStandingOrders + " Standing Orders");
+		return auditDataBeanInfo;
+	}
+	
+	public FDStandingOrderSkuResultInfo validateSkuCode(String existingSku, String replacementSku) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();			
+			return dao.validateSkuCode(conn,existingSku,replacementSku);
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in validateSkuCode() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}			
 	}
 }

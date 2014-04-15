@@ -18,6 +18,7 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderFilterCriteria;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
+import com.freshdirect.fdstore.standingorders.FDStandingOrderSkuResultInfo;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public interface FDStandingOrdersSB extends EJBObject {
@@ -51,4 +52,6 @@ public interface FDStandingOrdersSB extends EJBObject {
 	public void addStandingOrderAltDeliveryDates(List<FDStandingOrderAltDeliveryDate> altDeliveryDates) throws FDResourceException, RemoteException;
 	public boolean checkIfAlreadyExists(FDStandingOrderAltDeliveryDate altDate) throws FDResourceException,RemoteException;
 	public boolean isValidSoId(String soId) throws FDResourceException,RemoteException;
+	public FDStandingOrderSkuResultInfo replaceSkuCode(String existingSku, String replacementSku) throws RemoteException;
+	public FDStandingOrderSkuResultInfo validateSkuCode(String existingSku, String replacementSku) throws RemoteException;
 }
