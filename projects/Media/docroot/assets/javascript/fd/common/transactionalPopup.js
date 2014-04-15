@@ -138,6 +138,7 @@ var FreshDirect = FreshDirect || {};
 
           // show subtotal
           $('#'+popupId+' input.qty').change();
+          $('#'+popupId+' select').change();
 
           // set learn more url
           learnMoreLink.attr('href', mainHolder.find('[data-productdata-name="productPageUrl"]').first().val());
