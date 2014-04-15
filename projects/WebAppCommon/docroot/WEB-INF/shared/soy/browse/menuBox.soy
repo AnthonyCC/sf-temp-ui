@@ -54,7 +54,7 @@
           {let $limit: 15 /}
           {let $maxcols: 3 /}
           {let $n: ($l <= $limit * $maxcols) ? $limit : floor($l / $maxcols) /}
-          {let $mod: $l % $maxcols /}
+          {let $mod: ($l >= $limit * $maxcols ? $l % $maxcols : 0) /}
           {for $col in range(0, $maxcols)}
             {if $col * $n + $mod < $l}
               <ul>
