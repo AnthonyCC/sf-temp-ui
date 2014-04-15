@@ -104,11 +104,12 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 	}
 	
 	public List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedList(FDIdentity identity) throws FDResourceException {
+		//long startTime=System.currentTimeMillis();
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDCustomerListDAO dao = new FDCustomerListDAO();
-			List<FDProductSelectionI> retList = new ArrayList<FDProductSelectionI>();
+			List<FDProductSelectionI> retList = new ArrayList<FDProductSelectionI>(100);
 			List<FDQsProductListLineItem> source = dao.getQsSpecificEveryItemEverOrderedList(conn, identity);
 			for(FDQsProductListLineItem item : source){
 				if(item.getDeleted()==null){
@@ -119,7 +120,7 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
 					}
 				}
 			}
-			
+			//System.out.println("Time taken in FDListManagerSB.getQsSpecificEveryItemEverOrderedList() ::"+((System.currentTimeMillis()-startTime)) );
 			return retList;
 		} catch (SQLException e) {
 			throw new FDResourceException(e);

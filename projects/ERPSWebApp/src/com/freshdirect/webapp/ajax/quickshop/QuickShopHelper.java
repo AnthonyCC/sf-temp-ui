@@ -104,7 +104,7 @@ public class QuickShopHelper {
 		Collections.reverse(orderDates);
 		setLastOrderFlag(result, orderDates.get(0));
 		
-		limitOrderNumber(result);
+		//limitOrderNumber(result);--Commented this as it is taken care in the query now.
 
 		return result;
 
