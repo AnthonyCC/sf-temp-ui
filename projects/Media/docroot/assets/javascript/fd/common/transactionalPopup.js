@@ -71,6 +71,7 @@ var FreshDirect = FreshDirect || {};
             cmEvSource = "",
             maxImageSize = 0,
             pimg = $(target).find('.portrait-item-burst_wrapper')[0],
+            $img = $(pimg).find('img'),
             imgBottom = pimg ? pimg.getBoundingClientRect().bottom : null;
 
         this.currentTarget = target;
@@ -85,6 +86,7 @@ var FreshDirect = FreshDirect || {};
             } 
           });
 
+          $img.css('marginTop', (maxImageSize-pimg.getBoundingClientRect().height+parseInt($img.css('marginTop'), 10))+'px');
         }
 
         // clear popup delay
