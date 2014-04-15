@@ -127,5 +127,9 @@ public class GeographyServiceProxy  extends BaseServiceProxy {
 
 	public Map<String, IFacilityModel> getFacilityLookup() throws RoutingServiceException {
 		return getService().getFacilityLookup();
-}
+	}
+
+	public Map<String, Integer> getZoneETAIntervalLookup()  throws RoutingServiceException {
+		return getService().getZoneETAIntervalLookup();
+	}
 }

@@ -1,5 +1,7 @@
 package com.freshdirect.routing.model;
 
+import java.math.BigInteger;
+
 public class ZoneModel extends BaseModel implements IZoneModel {
 	
 	private String zoneId;
@@ -19,6 +21,12 @@ public class ZoneModel extends BaseModel implements IZoneModel {
 	private int loadingPriority;
 	
 	private double svcAdjReductionFactor; 
+	
+	/*
+	 * ETA enabled attributes 
+	*/
+	private boolean manifestETAEnabled;
+	private int ETAInterval;
 
 	public IAreaModel getArea() {
 		return area;
@@ -96,4 +104,21 @@ public class ZoneModel extends BaseModel implements IZoneModel {
 	public void setSvcAdjReductionFactor(double svcAdjReductionFactor) {
 		this.svcAdjReductionFactor = svcAdjReductionFactor;
 	}
+
+	public boolean isManifestETAEnabled() {
+		return manifestETAEnabled;
+	}
+
+	public void setManifestETAEnabled(boolean manifestETAEnabled) {
+		this.manifestETAEnabled = manifestETAEnabled;
+	}
+
+	public int getETAInterval() {
+		return ETAInterval;
+	}
+
+	public void setETAInterval(int eTAInterval) {
+		this.ETAInterval = eTAInterval;
+	}
+	
 }

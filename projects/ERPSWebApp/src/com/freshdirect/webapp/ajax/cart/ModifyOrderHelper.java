@@ -66,7 +66,7 @@ public class ModifyOrderHelper {
 	}
 	
 	public static void handleReservation(FDOrderAdapter order, FDModifyCartModel cart) throws FDResourceException {
-		FDReservation reservation = FDDeliveryManager.getInstance().getReservation( order.getDeliveryReservationId() );
+		FDReservation reservation = FDDeliveryManager.getInstance().getReservation( order.getDeliveryReservationId(), order.getSale().getId() );
 		cart.setDeliveryReservation(reservation);
 	}
 	

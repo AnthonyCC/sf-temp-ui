@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +45,7 @@ import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.announcement.SiteAnnouncement;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
+import com.freshdirect.delivery.model.DeliveryETAModel;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
@@ -60,13 +60,9 @@ import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.TimedLruCache;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.RoutingActivityType;
-import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPackagingModel;
-import com.freshdirect.routing.model.IServiceTimeScenarioModel;
-import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
-import com.freshdirect.routing.util.ServiceTimeUtil;
 
 /**
  * @version $Revision:23$
@@ -517,6 +513,22 @@ public class FDDeliveryManager {
 			throw new FDResourceException("Cannot find timeslot for id: " + timeslotId + "\n" + fe.getMessage());
 		}
 	}
+	
+	public FDDeliveryETAModel getETAWindowBySaleId(String saleId) throws FDResourceException {
+		try {
+			DlvManagerSB sb = getDlvManagerHome().create();
+			DeliveryETAModel model = sb.getDeliveryETABySaleId(saleId);
+			return new FDDeliveryETAModel(model);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (FinderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	public FDDynamicTimeslotList getTimeslotsForDepot(Date begDate, Date endDate, String regionId,   String zoneCode,TimeslotEventModel event, ContactAddressModel address) throws FDResourceException {
 
@@ -772,7 +784,7 @@ public class FDDeliveryManager {
 	}
 	
 
-	public FDReservation getReservation(String rsvId) throws FDResourceException {
+	public FDReservation getReservation(String rsvId, String orderId) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			DlvReservationModel dlvRsv = sb.getReservation(rsvId);
@@ -783,7 +795,9 @@ public class FDDeliveryManager {
 				, dlvRsv.getOrderId(),dlvRsv.isInUPS(),dlvRsv.getUnassignedActivityType(),
 				dlvRsv.getStatusCode(),dlvRsv.getRsvClass(), dlvRsv.hasSteeringDiscount(),dlvRsv.getBuildingId(),dlvRsv.getLocationId(),
 				dlvRsv.getReservedOrdersAtBuilding(), dlvRsv.getRegionSvcType());
-
+			// lookup if ETA window available for an ORDER
+			FDDeliveryETAModel deliveryETAModel = this.getETAWindowBySaleId(orderId);
+			fdRes.setDeliveryETA(deliveryETAModel);
 			return fdRes;
 		} catch (ObjectNotFoundException ex) {
 			return null;

@@ -126,7 +126,7 @@ public class FDOrderAdapter implements FDOrderI {
 
 		ErpDeliveryInfoModel delInfo = erpOrder.getDeliveryInfo();
 		try {
-			deliveryReservation = FDDeliveryManager.getInstance().getReservation(delInfo.getDeliveryReservationId());
+			deliveryReservation = FDDeliveryManager.getInstance().getReservation(delInfo.getDeliveryReservationId(), sale.getId());
 			if (deliveryReservation == null) {
 				//!!! this is just a temporary fix until pre-reserve slots is completely implemented
 				DlvTimeslotModel t = new DlvTimeslotModel();

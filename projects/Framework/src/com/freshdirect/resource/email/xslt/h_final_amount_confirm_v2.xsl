@@ -31,7 +31,12 @@
 	<table cellpadding="0" cellspacing="0" width="90%">
 				<tr>
 					<td>
-					
+						<xsl:if test="order/deliveryReservation/deliveryETA/emailETAenabled = 0">
+							<p><font color="#00A4DE"><b>NEW! More time for you!</b> We’ve cut your wait time in half. Your order’s Estimated Time of Arrival (ETA) is between <b>
+							<xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/deliveryETA/startTime"/></xsl:call-template> 
+							to <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/deliveryETA/endTime"/></xsl:call-template></b>. We’ll meet you at the door!<br/><br/>							
+							</font></p>
+					    </xsl:if>
 						<xsl:choose>
 						<xsl:when test="count(order/shortedItems/shortedItems) > 0">
 							<p><b>Hello <xsl:value-of select="customer/firstName"/>,</b> and thank you for shopping with FreshDirect!</p>
@@ -69,6 +74,14 @@
 								on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template></b>
 								to pick up your order. You'll need to bring<xsl:if test="order/paymentMethod/paymentMethodType = 'EBT'"> your EBT card ready to complete the purchase and a valid </xsl:if>photo ID to pick up your food. Just present it to the attendant when you arrive.
 								<xsl:if test="order/paymentMethod/paymentMethodType = 'EBT'"> If you need more information on the EBT purchase process, <a href="http://www.freshdirect.com/category.jsp?catId=about_ebt">click here</a> to see our EBT Info Page. </xsl:if>We hope you find everything absolutely fresh and delicious.</p>
+							</xsl:when>
+							<xsl:when test="order/deliveryReservation/deliveryETA/emailETAenabled = 1">
+							<br/><p>The rest of the order <b>(#<xsl:value-of select="order/erpSalesId"/>)</b> is on its way to you. Its ETA is between <b><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/deliveryETA/startTime"/></xsl:call-template> 
+									and <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/deliveryETA/endTime"/></xsl:call-template></b> 
+									on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template></b>. 
+									<xsl:if test="order/paymentMethod/paymentMethodType = 'EBT'"> When your order arrives, please make sure you have your EBT card ready to complete the purchase. </xsl:if>
+									<xsl:if test="order/paymentMethod/paymentMethodType = 'EBT'"> If you need more information on the EBT purchase process, <a href="http://www.freshdirect.com/category.jsp?catId=about_ebt">click here</a> to see our EBT Info Page. </xsl:if>
+							</p>
 							</xsl:when>
 							<xsl:otherwise>
 							<br/><p>The rest of the order <b>(#<xsl:value-of select="order/erpSalesId"/>)</b> is on its way to you. It will be delivered between <b><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template> 
@@ -123,6 +136,15 @@
 								<xsl:if test="order/paymentMethod/paymentMethodType = 'EBT'"> If you need more information on the EBT purchase process, <a href="http://www.freshdirect.com/category.jsp?catId=about_ebt">click here</a> to see our EBT Info Page. </xsl:if>We hope you find everything absolutely fresh and delicious.</p>
 							</xsl:when>
 			   			
+							<xsl:when test="order/deliveryReservation/deliveryETA/emailETAenabled = 1">
+								<p>Hello again! Your order <b>(#<xsl:value-of select="order/erpSalesId"/>)</b> 
+								is on its way to you. Its ETA is between 
+								<b><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/deliveryETA/startTime"/></xsl:call-template> 
+								and <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/deliveryETA/endTime"/></xsl:call-template></b> 
+								on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template></b>. 
+								<xsl:if test="order/paymentMethod/paymentMethodType = 'EBT'">When your order arrives, please make sure you have your EBT card ready to complete the purchase. If you need more information on the EBT purchase process, <a href="http://www.freshdirect.com/category.jsp?catId=about_ebt">click here</a> to see our EBT Info Page. </xsl:if>We hope you find everything absolutely fresh and delicious.</p>
+							</xsl:when>
+							
 							<xsl:otherwise>
 								<p>Hello again! Your order <b>(#<xsl:value-of select="order/erpSalesId"/>)</b> 
 								is on its way to you. It will be delivered between 

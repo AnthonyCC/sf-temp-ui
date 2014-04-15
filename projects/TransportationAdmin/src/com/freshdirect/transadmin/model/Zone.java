@@ -40,6 +40,14 @@ public class Zone implements java.io.Serializable {
 	private BigDecimal ecoFriendly;
 	private BigDecimal steeringRadius;
 	
+	/*
+	 * ETA enabled attributes 
+	*/
+	private String manifestETAEnabled;
+	private String emailETAEnabled;
+	private String smsETAEnabled;
+	private BigInteger ETAInterval;
+	
     public Set getZoneSupervisors() {
 		return zoneSupervisors;
 	}
@@ -242,6 +250,35 @@ public class Zone implements java.io.Serializable {
 	public void setSvcAdjReductionFactor(BigDecimal svcAdjReductionFactor) {
 		this.svcAdjReductionFactor = svcAdjReductionFactor;
 	}
-	
+	public String getManifestETAEnabled() {
+		return manifestETAEnabled;
+	}
 
+	public void setManifestETAEnabled(String manifestETAEnabled) {
+		this.manifestETAEnabled = manifestETAEnabled;
+	}
+
+	public String getEmailETAEnabled() {
+		return emailETAEnabled;
+	}
+
+	public void setEmailETAEnabled(String emailETAEnabled) {
+		this.emailETAEnabled = emailETAEnabled;
+	}
+
+	public String getSmsETAEnabled() {
+		return smsETAEnabled;
+	}
+
+	public void setSmsETAEnabled(String smsETAEnabled) {
+		this.smsETAEnabled = smsETAEnabled;
+	}
+
+	public BigInteger getETAInterval() {
+		return ETAInterval;
+	}
+
+	public void setETAInterval(BigInteger eTAInterval) {
+		ETAInterval = eTAInterval;
+	}
 }

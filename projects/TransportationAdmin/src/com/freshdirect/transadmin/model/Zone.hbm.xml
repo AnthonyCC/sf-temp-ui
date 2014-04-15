@@ -54,6 +54,18 @@
         <property name="svcAdjReductionFactor" type="big_decimal">
             <column name="SVC_ADJ_REDUCTION_FACTOR" precision="22" scale="0"/>
         </property>
+        <property name="ETAInterval" type="big_integer">
+            <column name="ETA_INTERVAL" precision="5" scale="0" />
+        </property>
+        <property name="manifestETAEnabled" type="string">
+            <column name="MANIFEST_ETA_ENABLED" length="1" />
+        </property>
+        <property name="emailETAEnabled" type="string">
+            <column name="EMAIL_ETA_ENABLED" length="1" />
+        </property>
+        <property name="smsETAEnabled" type="string">
+            <column name="SMS_ETA_ENABLED" length="1" />
+        </property> 
         <many-to-one name="defaultServiceTimeType" class="com.freshdirect.transadmin.model.DlvServiceTimeType" fetch="select" lazy="false">
             <column name="SERVICETIME_TYPE" length="8" />
         </many-to-one>

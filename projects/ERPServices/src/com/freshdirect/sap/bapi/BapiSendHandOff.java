@@ -11,8 +11,6 @@ package com.freshdirect.sap.bapi;
 import java.util.Date;
 import java.util.List;
 
-import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffRouteBreakIn;
-
 /**
  *
  *
@@ -73,6 +71,8 @@ public interface BapiSendHandOff extends BapiFunctionI {
 		public String getDeliveryInstructionA();
 		public String getDeliveryInstructionB();
 		public String getDifficultReason();
+		public Date getETADlvStartTime();
+		public Date getETADlvEndTime();
 	}
 	
 	public static interface HandOffRouteBreakIn {

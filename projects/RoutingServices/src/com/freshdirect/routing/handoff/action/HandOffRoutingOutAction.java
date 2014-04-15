@@ -20,6 +20,7 @@ import java.util.TreeSet;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.delivery.model.BreakWindow;
 import com.freshdirect.delivery.model.TimeslotWindow;
+import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
@@ -61,6 +62,7 @@ import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
+import com.freshdirect.routing.util.RoutingUtil;
 
 public class HandOffRoutingOutAction extends AbstractHandOffAction {
 	
@@ -74,6 +76,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		this.dayOfWeek = dayOfWeek;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object doExecute() throws Exception {
 		
 		HandOffServiceProxy proxy = new HandOffServiceProxy();
@@ -127,6 +130,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 
 		Map<String, IAreaModel> areaLookup = geoProxy.getAreaLookup();
 		Map<String, IZoneModel> zoneLookup = geoProxy.getZoneLookup();
+		Map<String, Integer> zoneETAIntervalLookup = geoProxy.getZoneETAIntervalLookup();
 		Map<String, IFacilityModel> facilityLookup = geoProxy.getFacilityLookup();
 		Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> currDispStatus = null;
 		String lastCommittedBatchId = null;
@@ -222,9 +226,20 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 										windowsperRoute.addAll(breaks.get(_stop.getOrderNumber()).getWindows());
 									}
 									
+									//Assign ETA window to each stop
+									if(zoneETAIntervalLookup.get(areaEntry.getKey()) != null && zoneETAIntervalLookup.get(areaEntry.getKey()) > 0) {
+										DateRange dlvETAWindowRange = RoutingUtil.getStopETAWindow(_stop.getStopArrivalTime() 
+																			, zoneETAIntervalLookup.get(areaEntry.getKey())
+																			, new DateRange(_stop.getDeliveryInfo().getRoutingStartTime() != null ? _stop.getDeliveryInfo().getRoutingStartTime() : _stop.getDeliveryInfo().getDeliveryStartTime()
+																					, _stop.getDeliveryInfo().getRoutingEndTime() != null ? _stop.getDeliveryInfo().getRoutingEndTime() : _stop.getDeliveryInfo().getDeliveryEndTime()));
+										if(dlvETAWindowRange != null) {
+											_stop.getDeliveryInfo().setDeliveryETAStartTime(dlvETAWindowRange.getStartDate());
+											_stop.getDeliveryInfo().setDeliveryETAEndTime(dlvETAWindowRange.getEndDate());
+										}
+									}
+									
 									_stops.add(_stop);
 									s_stop = new HandOffBatchStop(_stop);
-									
 									
 									s_stop.setBatchId(this.getBatch().getBatchId());
 									s_stop.setRouteId(route.getRouteId());

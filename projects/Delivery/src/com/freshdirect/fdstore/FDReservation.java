@@ -2,15 +2,12 @@ package com.freshdirect.fdstore;
 
 import java.util.Date;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-
 import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.model.EnumReservationClass;
-import com.freshdirect.routing.constants.*;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.routing.constants.RoutingActivityType;
 
 
 
@@ -35,7 +32,8 @@ public class FDReservation extends ModelSupport {
 	private String locationId;
 	private int reservedOrdersAtBuilding;
 	private EnumRegionServiceType regionSvcType;
-   
+	private FDDeliveryETAModel deliveryETA;
+
 	public FDReservation(
 		PrimaryKey pk,
 		FDTimeslot timeslot,
@@ -233,6 +231,12 @@ public class FDReservation extends ModelSupport {
 	}
 	public boolean isMinOrderSlot() {
 		return this.timeslot.isMinOrderSlot();
+	}
+	public FDDeliveryETAModel getDeliveryETA() {
+		return deliveryETA;
+	}
+	public void setDeliveryETA(FDDeliveryETAModel deliveryETA) {
+		this.deliveryETA = deliveryETA;
 	}
 
 }

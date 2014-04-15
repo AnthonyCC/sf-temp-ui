@@ -2,8 +2,6 @@ package com.freshdirect.routing.model;
 
 import java.util.Date;
 
-import com.freshdirect.framework.util.TimeOfDay;
-
 public interface IDeliveryModel  {
 	
 	Date getDeliveryDate();
@@ -50,4 +48,10 @@ public interface IDeliveryModel  {
 	
 	Date getDeliveryCutoffTime();
 	void setDeliveryCutoffTime(Date deliveryCutoffTime);
+	
+	Date getDeliveryETAStartTime();
+	void setDeliveryETAStartTime(Date deliveryETAStartTime);
+	
+	Date getDeliveryETAEndTime();
+	void setDeliveryETAEndTime(Date deliveryETAEndTime);
 }

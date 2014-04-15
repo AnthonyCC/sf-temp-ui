@@ -447,10 +447,10 @@ public static boolean updateReservation(DlvReservationModel reservation, IOrderM
 }
 
 	
-	public static DateRange getStopETAWindow(Date stopArrivalTime, int windowETAInterval, DateRange deliveryWindow) {
-		SortedSet<DateRange> _tempETAWindows = getStopETAWindows(windowETAInterval, deliveryWindow);
+	public static DateRange getStopETAWindow(Date stopArrivalTime, int windowETAInterval, DateRange routingWindow) {
+		SortedSet<DateRange> _tempETAWindows = getStopETAWindows(windowETAInterval, routingWindow);
 		if(_tempETAWindows != null && _tempETAWindows.size() > 0) {
-			return getStopETAWindow(stopArrivalTime, _tempETAWindows, deliveryWindow);
+			return getStopETAWindow(stopArrivalTime, _tempETAWindows, routingWindow);
 		}
 		return null;
 	}
@@ -459,30 +459,31 @@ public static boolean updateReservation(DlvReservationModel reservation, IOrderM
 	 * Returns a list of date ranges (sorted by start date) representing the
 	 * ETA date ranges determined for stop delivery window.
 	 * @param timeWindowInterval.
-	 * @param deliveryWindow (DateRange).
+	 * @param routingWindow (DateRange).
 	 * @return The date ranges.
 	 */
-	private static SortedSet<DateRange> getStopETAWindows(int timeWindowInterval, DateRange deliveryWindow) {
-			SortedSet<DateRange> result = new TreeSet<DateRange>(new Comparator<DateRange>() {
-				@Override
-				public int compare(DateRange obj1, DateRange obj2) {
-					Date d1 = ((DateRange) obj1).getStartDate();
-					Date d2 = ((DateRange) obj2).getStartDate();
-					return d1.compareTo(d2);
-				}
-			});
-			Calendar cal = Calendar.getInstance();
-			Date _tempStartDate = null;
-			if (deliveryWindow != null) {
-				Date _startWindowTime = deliveryWindow.getStartDate();
-				Date _endWindowTime = deliveryWindow.getEndDate();
-				_tempStartDate = _startWindowTime;
-				boolean done = false;
-				while (!done) {
+	private static SortedSet<DateRange> getStopETAWindows(int timeWindowInterval, DateRange routingWindow) {
+		SortedSet<DateRange> result = new TreeSet<DateRange>(
+				new Comparator<DateRange>() {
+					@Override
+					public int compare(DateRange obj1, DateRange obj2) {
+						Date d1 = ((DateRange) obj1).getStartDate();
+						Date d2 = ((DateRange) obj2).getStartDate();
+						return d1.compareTo(d2);
+					}
+				});
+		Calendar cal = Calendar.getInstance();
+		Date _tempStartDate = null;
+		if (routingWindow != null) {
+			Date _startWindowTime = routingWindow.getStartDate();
+			Date _endWindowTime = routingWindow.getEndDate();
+			_tempStartDate = _startWindowTime;
+			boolean done = false;
+			while (!done) {
 					cal.setTime(_tempStartDate);
 					cal.add(Calendar.MINUTE, timeWindowInterval);
 	
-					if (cal.getTime().before(_endWindowTime) || cal.getTime().equals(_endWindowTime)) {
+					if (cal.getTime().before(_endWindowTime)) {
 						result.add(new DateRange(_tempStartDate, cal.getTime()));
 						_tempStartDate = cal.getTime();
 					} else {
@@ -493,8 +494,8 @@ public static boolean updateReservation(DlvReservationModel reservation, IOrderM
 					}
 					if(_tempStartDate.equals(_endWindowTime))
 						done = true;
-				}
 			}
+		}
 		return result;
 	}
 	

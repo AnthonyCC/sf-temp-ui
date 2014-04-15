@@ -47,6 +47,6 @@ public interface IGeographyDAO {
 	
 	List<ILocationModel> getLocationsForSnapshot() throws SQLException;
 
-	
+	public Map<String, Integer> getZoneETAIntervalLookup() throws SQLException;	
 
 }

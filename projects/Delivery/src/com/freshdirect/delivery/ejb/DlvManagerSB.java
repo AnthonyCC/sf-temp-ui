@@ -41,6 +41,7 @@ import com.freshdirect.delivery.ExceptionAddress;
 import com.freshdirect.delivery.InvalidAddressException;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.announcement.SiteAnnouncement;
+import com.freshdirect.delivery.model.DeliveryETAModel;
 import com.freshdirect.delivery.model.DlvRegionModel;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
@@ -242,4 +243,6 @@ public interface DlvManagerSB extends EJBObject {
 	public List<TimeslotRestriction> getTimeslotRestrictions()throws DlvResourceException, RemoteException;
 	public List<FDTimeslot> filterTimeslotsByOrderSize(List<FDTimeslot> timeslots,  IPackagingModel iPackagingModel, AddressModel address, List<FDReservation> reservations) throws DlvResourceException, RemoteException;
 	
+	public DeliveryETAModel getDeliveryETABySaleId(String orderId) throws FinderException, RemoteException;
+
 }   

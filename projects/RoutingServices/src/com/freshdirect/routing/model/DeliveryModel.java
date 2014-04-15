@@ -23,6 +23,10 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	private String reservationId;
 	// confirmed orders for the building /window
 	private int reservedOrdersAtBuilding;
+	
+	private Date deliveryETAStartTime;
+	private Date deliveryETAEndTime;
+	
 	public String getReservationId() {
 		return reservationId;
 	}
@@ -124,4 +128,16 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	public void setRoutingEndTime(Date routingEndTime) {
 		this.routingEndTime = routingEndTime;
 	}
+	public Date getDeliveryETAStartTime() {
+		return deliveryETAStartTime;
+	}
+	public void setDeliveryETAStartTime(Date deliveryETAStartTime) {
+		this.deliveryETAStartTime = deliveryETAStartTime;
+	}
+	public Date getDeliveryETAEndTime() {
+		return deliveryETAEndTime;
+	}
+	public void setDeliveryETAEndTime(Date deliveryETAEndTime) {
+		this.deliveryETAEndTime = deliveryETAEndTime;
+	}	
 }

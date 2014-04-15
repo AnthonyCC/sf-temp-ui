@@ -221,7 +221,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			"BREAK_ID, BREAK_START_TIME, BREAK_END_TIME ) VALUES ( ?,?,?,?,?,? )";
 	
 	private static final String UPDATE_HANDOFFBATCH_STOP = "UPDATE TRANSP.HANDOFF_BATCHSTOP X set X.ROUTE_NO = ?,X.ROUTING_ROUTE_NO = ?, " +
-			"X.SESSION_NAME = ?, X.STOP_SEQUENCE = ?,  X.STOP_ARRIVALDATETIME = ? ,  X.STOP_DEPARTUREDATETIME = ?, X.TRAVELTIME = ? , X.SERVICETIME = ?, X.ORDERSIZE_RT = ? " +
+			"X.SESSION_NAME = ?, X.STOP_SEQUENCE = ?,  X.STOP_ARRIVALDATETIME = ? ,  X.STOP_DEPARTUREDATETIME = ?, X.TRAVELTIME = ? , X.SERVICETIME = ?, X.ORDERSIZE_RT = ?, X.DLV_ETA_STARTTIME = ?, X.DLV_ETA_ENDTIME = ? " +
 			"WHERE X.BATCH_ID = ? and X.WEBORDER_ID = ?";
 			
 	private static final String CLEAR_HANDOFFBATCH_STOPROUTE = "UPDATE TRANSP.HANDOFF_BATCHSTOP X set X.ROUTE_NO = null,X.ROUTING_ROUTE_NO = null, " +
@@ -229,24 +229,24 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			"WHERE X.BATCH_ID = ?";
 	
 	private static final String GET_HANDOFFBATCH_STOPS = "select hb.DELIVERY_DATE, s.BATCH_ID , s.WEBORDER_ID , s.ERPORDER_ID , s.AREA, s.DELIVERY_TYPE " +
-			", s.WINDOW_STARTTIME, s.WINDOW_ENDTIME, s.ROUTING_STARTTIME, s.ROUTING_ENDTIME, s.LOCATION_ID , s.SESSION_NAME " +
+			", s.WINDOW_STARTTIME, s.WINDOW_ENDTIME, s.ROUTING_STARTTIME, s.ROUTING_ENDTIME, s.DLV_ETA_STARTTIME, s.DLV_ETA_ENDTIME, s.LOCATION_ID , s.SESSION_NAME " +
 			",s.ROUTE_NO ,s.ROUTING_ROUTE_NO ,s.STOP_SEQUENCE ,s.STOP_ARRIVALDATETIME ,s.STOP_DEPARTUREDATETIME, s.IS_EXCEPTION, s.SERVICE_ADDR2, s.ORDERSIZE_SF  " +
 			",dd.ADDR_TYPE ,dd.COMPANY_NAME ,dd.DIFFICULT_TO_DELIVER ,dd.DIFFICULT_REASON ,dd.ADDITIONAL  " +
 			",dd.IS_DOORMAN  ,dd.IS_WALKUP  ,dd.IS_ELEVATOR ,dd.IS_HOUSE  ,dd.IS_FREIGHT_ELEVATOR " +
 			",dd.SVC_ENT  ,dd.SVC_SCRUBBED_STREET  ,dd.SVC_CITY ,dd.SVC_STATE ,dd.SVC_ZIP ,dd.HAND_TRUCK_ALLOWED " +
 			",dd.WALK_UP_FLOORS ,dd.CREATED_BY ,dd.MODTIME ,dd.SVC_CROSS_STREET ,dd.CROSS_STREET ,dd.OTHER " +
 			",bo.BLDG_START_HOUR ,bo.BLDG_END_HOUR  ,bo.BLDG_COMMENTS  ,bo.SERVICE_START_HOUR " +
-			",bo.SERVICE_END_HOUR  ,bo.SERVICE_COMMENTS  ,bo.DAY_OF_WEEK, ta.DELIVERYMODEL, " +
+			",bo.SERVICE_END_HOUR  ,bo.SERVICE_COMMENTS  ,bo.DAY_OF_WEEK, ta.DELIVERYMODEL, tr.MANIFEST_ETA_ENABLED " +
 			"b.SCRUBBED_STREET bSCRUBBED_STREET ,b.ZIP bzip ,b.COUNTRY  bCOUNTRY,b.CITY bCITY, b.STATE bSTATE, " +
 			"b.LONGITUDE  BLONG,b.LATITUDE BLAT, l.APARTMENT LOCAPART " +
 			"from transp.HANDOFF_BATCH hb , transp.HANDOFF_BATCHSTOP s , DLV.DELIVERY_LOCATION l , dlv.delivery_building b" +
-			", DLV.DELIVERY_BUILDING_DETAIL dd, TRANSP.TRN_AREA ta, (select distinct xbo.* from transp.HANDOFF_BATCH xhb , transp.HANDOFF_BATCHSTOP xs " +
+			", DLV.DELIVERY_BUILDING_DETAIL dd, TRANSP.TRN_AREA ta, TRANSP.ZONE tz, (select distinct xbo.* from transp.HANDOFF_BATCH xhb , transp.HANDOFF_BATCHSTOP xs " +
 			", DLV.DELIVERY_LOCATION xl , dlv.delivery_building xb  , DLV.DELIVERY_BUILDING_DETAIL xdd, DLV.DELIVERY_BUILDING_DETAIL_OPS xbo  " +
 			"where xhb.BATCH_ID = ? and xHB.BATCH_ID = xS.BATCH_ID and xS.LOCATION_ID = xL.ID and xL.BUILDINGID = xB.ID " +
 			"and xB.ID = xDD.DELIVERY_BUILDING_ID and xB.ID = xBO.DELIVERY_BUILDING_ID  " +
 			"and to_char(xHB.DELIVERY_DATE ,'D')  = xBO.DAY_OF_WEEK) bo  " +
 			"where hb.BATCH_ID = ? and HB.BATCH_ID = S.BATCH_ID and S.LOCATION_ID = L.ID and L.BUILDINGID = B.ID " +
-			"and B.ID = DD.DELIVERY_BUILDING_ID(+) and B.ID = bo.DELIVERY_BUILDING_ID(+) and s.area = ta.code(+)"; 
+			"and B.ID = DD.DELIVERY_BUILDING_ID(+) and B.ID = bo.DELIVERY_BUILDING_ID(+) and s.area = ta.code(+) and s.area = tr.zone_code(+)"; 
 	
 	private static final String GET_HANDOFFBATCH_ROUTES = "select r.BATCH_ID, r.SESSION_NAME, r.ROUTE_NO, r.ROUTING_ROUTE_NO "+
             " ,r.AREA, r.STARTTIME, r.COMPLETETIME, r.DISTANCE, r.TRAVELTIME, r.SERVICETIME, r.DISPATCHTIME, r.DISPATCHSEQUENCE, r.TRAILER_NO, "+
@@ -259,18 +259,18 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			" from  TRANSP.HANDOFF_BATCHDISPATCHEX d where d.BATCH_ID = ? order by d.DISPATCHTIME";
 	
 	private static final String GET_HANDOFFBATCH_STOPBYROUTE = "select hb.DELIVERY_DATE, s.BATCH_ID , s.WEBORDER_ID , s.ERPORDER_ID " +
-			", s.AREA, s.DELIVERY_TYPE, s.WINDOW_STARTTIME, s.WINDOW_ENDTIME, s.ROUTING_STARTTIME, s.ROUTING_ENDTIME, s.LOCATION_ID , s.SESSION_NAME, s.ROUTE_NO " +
+			", s.AREA, s.DELIVERY_TYPE, s.WINDOW_STARTTIME, s.WINDOW_ENDTIME, s.ROUTING_STARTTIME, s.ROUTING_ENDTIME, s.DLV_ETA_STARTTIME, s.DLV_ETA_ENDTIME, s.LOCATION_ID , s.SESSION_NAME, s.ROUTE_NO " +
 			", s.ROUTING_ROUTE_NO , s.STOP_SEQUENCE , s.STOP_ARRIVALDATETIME , s.STOP_DEPARTUREDATETIME, s.IS_EXCEPTION " +
 			", b.SCRUBBED_STREET bSCRUBBED_STREET, b.ZIP bzip ,b.COUNTRY  bCOUNTRY, b.CITY bCITY, b.STATE bSTATE" +
 			", b.LONGITUDE  BLONG, b.LATITUDE BLAT, l.APARTMENT LOCAPART" +
 			", r.ROUTE_NO RROUTE_NO,r.ROUTING_ROUTE_NO RROUTING_ROUTE_NO, r.RN_ROUTE_ID RN_ROUTE_ID, r.AREA RAREA " +
-			",r.STARTTIME RSTARTTIME , r.COMPLETETIME RCOMPLETETIME  ,r.DISTANCE RDISTANCE" +
-			", r.TRAVELTIME RTRAVELTIME, r.SERVICETIME RSERVICETIME " +
+			", r.STARTTIME RSTARTTIME , r.COMPLETETIME RCOMPLETETIME  ,r.DISTANCE RDISTANCE" +
+			", r.TRAVELTIME RTRAVELTIME, r.SERVICETIME RSERVICETIME, z.MANIFEST_ETA_ENABLED " +
 			" from transp.HANDOFF_BATCH hb , TRANSP.HANDOFF_BATCHROUTE r, transp.HANDOFF_BATCHSTOP s" +
-			", DLV.DELIVERY_LOCATION l , dlv.delivery_building b" +
+			", DLV.DELIVERY_LOCATION l , dlv.delivery_building b, transp.ZONE z" +
 			" where HB.DELIVERY_DATE  = ? and HB.BATCH_STATUS IN ('CPD/ADC','CPD','CPD/ADF') and R.ROUTE_NO = ? " +
 			"and HB.BATCH_ID = R.BATCH_ID and HB.BATCH_ID = s.BATCH_ID  and R.ROUTE_NO = S.ROUTE_NO " +
-			"and S.LOCATION_ID = L.ID and L.BUILDINGID = B.ID order by s.ROUTE_NO, s.STOP_SEQUENCE";
+			"and S.LOCATION_ID = L.ID and L.BUILDINGID = B.ID and s.area = z.zone_code(+) order by s.ROUTE_NO, s.STOP_SEQUENCE";
 	
 	private static final String UPDATE_HANDOFFBATCH_STOPEXCEPTION = "UPDATE TRANSP.HANDOFF_BATCHSTOP SET IS_EXCEPTION = 'X' " +
 																		" where BATCH_ID = ? AND WEBORDER_ID in (";
@@ -463,6 +463,12 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						deliveryModel.setDeliveryEndTime(rs.getTimestamp("WINDOW_ENDTIME"));
 						deliveryModel.setRoutingStartTime(rs.getTimestamp("ROUTING_STARTTIME"));
 						deliveryModel.setRoutingEndTime(rs.getTimestamp("ROUTING_ENDTIME"));
+						
+						if("X".equalsIgnoreCase(rs.getString("MANIFEST_ETA_ENABLED"))) {
+							deliveryModel.setDeliveryETAStartTime(rs.getTimestamp("DLV_ETA_STARTTIME"));
+							deliveryModel.setDeliveryETAEndTime(rs.getTimestamp("DLV_ETA_ENDTIME"));
+						}
+						
 						deliveryModel.setServiceType(rs.getString("DELIVERY_TYPE"));
 						deliveryModel.setDeliveryModel(rs.getString("DELIVERYMODEL"));
 						deliveryModel.setCalculatedOrderSize(rs.getDouble("ORDERSIZE_SF"));						
@@ -601,6 +607,10 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						deliveryModel.setRoutingStartTime(rs.getTimestamp("ROUTING_STARTTIME"));
 						deliveryModel.setRoutingEndTime(rs.getTimestamp("ROUTING_ENDTIME"));
 						
+						if("X".equalsIgnoreCase(rs.getString("MANIFEST_ETA_ENABLED"))) {
+							deliveryModel.setDeliveryETAStartTime(rs.getTimestamp("DLV_ETA_STARTTIME"));
+							deliveryModel.setDeliveryETAEndTime(rs.getTimestamp("DLV_ETA_ENDTIME"));
+						}
 						
 						IBuildingModel bmodel = new BuildingModel();		
 						
@@ -690,6 +700,9 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			
+			batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
+			batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
 
 			batchUpdater.compile();			
 			connection = this.jdbcTemplate.getDataSource().getConnection();
@@ -707,6 +720,12 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 											, model.getOrderSize()
 											, model.getBatchId()
 											, model.getOrderNumber()
+											, model.getDeliveryInfo() != null ? model
+													.getDeliveryInfo().getDeliveryETAStartTime()
+													: null
+											, model.getDeliveryInfo() != null ? model
+													.getDeliveryInfo().getDeliveryETAEndTime()
+													: null
 									});
 			}			
 			batchUpdater.flush();

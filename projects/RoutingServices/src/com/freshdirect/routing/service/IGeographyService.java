@@ -1,6 +1,5 @@
 package com.freshdirect.routing.service;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -67,5 +66,7 @@ public interface IGeographyService {
 	Map<String, IAreaModel> getAreaLookup() throws RoutingServiceException;
 	Map<String, IZoneModel> getZoneLookup() throws RoutingServiceException;
 	Map<String, IFacilityModel> getFacilityLookup() throws RoutingServiceException;
+
+	Map<String, Integer> getZoneETAIntervalLookup() throws RoutingServiceException;
 
 }

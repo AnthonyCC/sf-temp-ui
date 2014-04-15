@@ -36,6 +36,9 @@ public class DeliverySummaryModel implements Serializable {
 	
 	private List<AirclicCartonInfo> cartonInfo = new ArrayList<AirclicCartonInfo>();
 	
+	private Date deliveryETAStart;
+	
+	private Date deliveryETAEnd;
 		
 	public DeliverySummaryModel(int deliveryAttempts, String deliveryStatus,
 			String customerContactStatus, Date estimatedDlvTime,
@@ -159,5 +162,30 @@ public class DeliverySummaryModel implements Serializable {
 	public void setDlvAccessStatus(String dlvAccessStatus) {
 		this.dlvAccessStatus = dlvAccessStatus;
 	}
+
+	public Date getDeliveryETAStart() {
+		return deliveryETAStart;
+	}
+
+	public void setDeliveryETAStart(Date deliveryETAStart) {
+		this.deliveryETAStart = deliveryETAStart;
+	}
+
+	public Date getDeliveryETAEnd() {
+		return deliveryETAEnd;
+	}
+
+	public void setDeliveryETAEnd(Date deliveryETAEnd) {
+		this.deliveryETAEnd = deliveryETAEnd;
+	}
+	
+	public String getDeliveryETAWindow(){
+		if(this.deliveryETAStart != null && this.deliveryETAEnd != null){
+			return serverTimeFormat.format(deliveryETAStart) +" - "+serverTimeFormat.format(deliveryETAEnd);
+		}
+		
+		return null;
+	}
+
 	
 }

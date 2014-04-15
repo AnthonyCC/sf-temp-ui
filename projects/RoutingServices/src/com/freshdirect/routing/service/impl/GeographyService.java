@@ -564,5 +564,16 @@ public class GeographyService extends BaseService implements IGeographyService {
 			throw new RoutingServiceException(e, IIssue.EMPTY);
 		}
 	}
+
+	@Override
+	public Map<String, Integer> getZoneETAIntervalLookup()
+			throws RoutingServiceException {
+		try {
+			return geographyDAOImpl.getZoneETAIntervalLookup();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.EMPTY);
+		}
+	}
 	
 }

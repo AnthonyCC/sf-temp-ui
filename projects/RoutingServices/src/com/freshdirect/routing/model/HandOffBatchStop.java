@@ -240,6 +240,21 @@ public class HandOffBatchStop extends RoutingStopModel implements IHandOffBatchS
 	public void setServiceAddress2(String serviceAddress2) {
 		// TODO Auto-generated method stub
 		this.serviceAddress2 = serviceAddress2;
-		
-}
+	}
+	
+	@Override
+	public Date getETADlvStartTime() {
+		if(this.getDeliveryInfo() != null) {
+			return this.getDeliveryInfo().getDeliveryETAStartTime();
+		}
+		return null;
+	}
+	
+	@Override
+	public Date getETADlvEndTime() {
+		if(this.getDeliveryInfo() != null) {
+			return this.getDeliveryInfo().getDeliveryETAEndTime();
+		}
+		return null;
+	}
 }

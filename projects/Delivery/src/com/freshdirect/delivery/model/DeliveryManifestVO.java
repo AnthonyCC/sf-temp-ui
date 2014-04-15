@@ -114,6 +114,14 @@ public class DeliveryManifestVO implements Serializable{
 		}
 		return "";
 	}
+	
+	public String getDeliveryETAWindowTime() {
+		if (this.getDeliveryInfo() != null
+				&& this.getDeliveryInfo().getDeliveryETAStartTime() != null && this.getDeliveryInfo().getDeliveryETAEndTime() != null) {			
+			return serverTimeFormat.format(this.getDeliveryInfo().getDeliveryETAStartTime())+ " - "+ serverTimeFormat.format(this.getDeliveryInfo().getDeliveryETAEndTime());
+		}
+		return "";
+	}
 
 	public String getAddress() {
 		StringBuffer buf = new StringBuffer();

@@ -74,6 +74,7 @@ import com.freshdirect.delivery.ReservationUnavailableException;
 import com.freshdirect.delivery.TimeslotCapacityContext;
 import com.freshdirect.delivery.TimeslotCapacityWrapper;
 import com.freshdirect.delivery.announcement.SiteAnnouncement;
+import com.freshdirect.delivery.model.DeliveryETAModel;
 import com.freshdirect.delivery.model.DlvRegionModel;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
@@ -99,6 +100,7 @@ import com.freshdirect.framework.core.GatewaySessionBeanSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.core.ServiceLocator;
+import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumOrderMetricsSource;
@@ -3367,7 +3369,62 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		} 
 		
 		return timeslots;
-		}
-
+	}
 	
+	public DeliveryETAModel getDeliveryETABySaleId(String orderId) throws FinderException {
+		Connection con = null;
+		try {
+			con = getConnection();
+			DeliveryETAModel model = this.getDeliveryETABySaleId(con, orderId);			
+			return model;
+
+		} catch (SQLException se) {
+			throw new FinderException(se.getMessage());
+
+		} finally {
+			try {
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException sqle2) {
+				// eat it
+			}
+		}
+	}
+
+	private final static String GET_DELIVERY_ETA_FOR_SALE = "SELECT s.id sale_id, bs.dlv_eta_starttime, bs.dlv_eta_endtime, z.EMAIL_ETA_ENABLED, z.SMS_ETA_ENABLED, z.MANIFEST_ETA_ENABLED "+
+            "	from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation rs, dlv.timeslot ts, transp.zone z, transp.handoff_batch b, transp.handoff_batchstop bs "+
+			"	where s.id = sa.sale_id  and sa.CUSTOMER_ID = s.CUSTOMER_ID  and s.cromod_date = sa.action_date and sa.action_type IN ('CRO', 'MOD')  "+
+			"	and s.type = 'REG' and s.status <> 'CAN' and sa.id = di.salesaction_id and di.zone = z.zone_code "+
+			"	and di.reservation_id = rs.ID and rs.timeslot_id = ts.id and ts.base_date = sa.requested_date "+
+			"	and b.batch_status IN ('CPD/ADC','CPD','CPD/ADF') and b.BATCH_ID = bs.BATCH_ID and s.id =bs.weborder_id "+
+			"	and sa.requested_date = b.delivery_date "+
+			"	and s.id = ?";
+	
+	
+	
+	public DeliveryETAModel getDeliveryETABySaleId(Connection con, String saleId) throws SQLException {
+		DeliveryETAModel model = new DeliveryETAModel();
+		PreparedStatement ps = con.prepareStatement(GET_DELIVERY_ETA_FOR_SALE);
+		ps.setString(1, saleId);
+
+		ResultSet rs = ps.executeQuery();
+		if (!rs.next()) {
+			rs.close();
+			ps.close();
+			return model;
+		}
+		
+		model.setOrderId(rs.getString("SALE_ID"));
+		model.setStartTime(rs.getTimestamp("DLV_ETA_STARTTIME"));
+		model.setEndTime(rs.getTimestamp("DLV_ETA_ENDTIME"));
+		model.setEmailETAenabled("X".equalsIgnoreCase(rs.getString("EMAIL_ETA_ENABLED")));
+		model.setManifestETAenabled("X".equalsIgnoreCase(rs.getString("MANIFEST_ETA_ENABLED")));
+		model.setSmsETAenabled("X".equalsIgnoreCase(rs.getString("SMS_ETA_ENABLED")));
+				
+		rs.close();
+		ps.close();
+
+		return model;
+	}
 }

@@ -8,6 +8,14 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
+<xsl:if test="order/deliveryReservation/deliveryETA/emailETAenabled = 0">
+	<xsl:text><b>NEW! More time for you!</b> We’ve cut your wait time in half. Your order’s Estimated Time of Arrival (ETA) is between </xsl:text>
+	<xsl:text><b><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/deliveryETA/startTime"/></xsl:call-template></b></xsl:text> 
+	<xsl:text> to </xsl:text>
+	<xsl:text><b><xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/deliveryETA/endTime"/></xsl:call-template></b></xsl:text><br/><br/>
+	<xsl:text>. We’ll meet you at the door!</xsl:text>
+</xsl:if>
+
 <xsl:text>Dear </xsl:text><xsl:value-of select="customer/firstName"/><xsl:text>,
 </xsl:text>
 
@@ -29,6 +37,13 @@
 	We hope you find everything absolutely fresh and delicious.
 
 	</xsl:text>
+</xsl:when>
+<xsl:when test="order/deliveryReservation/deliveryETA/emailETAenabled = 1">
+	<xsl:text>Hello again! Your order (#</xsl:text><xsl:value-of select="order/erpSalesId"/><xsl:text>) is on its way to you. </xsl:text>
+	<xsl:text>Its ETA is between </xsl:text><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/deliveryETA/startTime"/></xsl:call-template>
+	<xsl:text> and </xsl:text><xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/deliveryETA/endTime" /></xsl:call-template>
+	<xsl:text> on </xsl:text><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime" /></xsl:call-template><xsl:text>. <xsl:if test="order/paymentMethod/paymentMethodType = 'EBT'">When your order arrives, please make sure you have your EBT card ready to complete the purchase.  If you need more information on the EBT purchase process, <a href="http://www.freshdirect.com/category.jsp?catId=about_ebt">click here</a> to see our EBT Info Page. </xsl:if></xsl:text>
+	<xsl:text>We hope you find everything absolutely fresh and delicious.</xsl:text>
 </xsl:when>
 <xsl:otherwise>
 	<xsl:text>Hello again! Your order (#</xsl:text><xsl:value-of select="order/erpSalesId"/><xsl:text>) is on its way to you. </xsl:text>

@@ -1,5 +1,7 @@
 package com.freshdirect.routing.model;
 
+import java.math.BigInteger;
+
 
  public interface IZoneModel {
 	
@@ -37,4 +39,12 @@ package com.freshdirect.routing.model;
  	double getSvcAdjReductionFactor();
 
 	void setSvcAdjReductionFactor(double svcAdjReductionFactor);
+	
+	boolean isManifestETAEnabled();
+
+	void setManifestETAEnabled(boolean manifestETAEnabled);
+
+	int getETAInterval();
+
+	void setETAInterval(int eTAInterval);
 }

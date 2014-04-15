@@ -206,17 +206,36 @@
                 <td>
                   &nbsp;<form:errors path="svcAdjReductionFactor" />
                 </td>
-               </tr>
-              <tr><td colspan="3">&nbsp;</td></tr>
+               </tr>               
               <tr>
+                  <td>ETA Enabled</td>
+                  <td>
+	                  <form:checkbox path="manifestETAEnabled" value="X"/>&nbsp;Manifest
+	                  <form:checkbox path="emailETAEnabled" value="X"/>&nbsp;Email
+	                  <form:checkbox path="smsETAEnabled" value="X" disabled="true"/>&nbsp;SMS
+                  </td>
+                <td>
+                  &nbsp;<form:errors path="manifestETAEnabled" />&nbsp;<form:errors path="emailETAEnabled" />&nbsp;<form:errors path="smsETAEnabled" />
+                </td>
+               </tr>
+               <tr>
+                  <td>ETA Interval</td>
+                  <td>
+                    <form:input maxlength="50" size="30" path="ETAInterval"/>
+                  </td>
+                <td>
+                  &nbsp;<form:errors path="ETAInterval" />
+                </td>
+               </tr>
+               <tr><td colspan="3">&nbsp;</td></tr>
+               <tr>
                   <td colspan="3" align="center">
                    <input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:doBack('zone');" /> &nbsp;&nbsp;
                    <input type = "submit" value="&nbsp;Save&nbsp;"  />
 				   <input type = "button" value="&nbsp;Default Supervisor&nbsp;" onclick="javascript:showZoneSupervisorTable(document.getElementById('zoneCode').value);"/>
                 </td>     
-              </tr>
-              </table>        
-              
+               </tr>
+              </table>
             </td>
           </tr>               
         </table>

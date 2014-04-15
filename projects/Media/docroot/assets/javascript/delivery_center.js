@@ -151,7 +151,10 @@
 				result += "<tr><td colspan=\"2\"><img height=\"15\" border=\"0\" src=\"/media_stat/images/layout/clear.gif\"></td></tr>";
 				
 				result += "<tr><td width=\"210\">Stop</td><td>"+ manifestResult.stopNo +"</td></tr>";
-				result += "<tr><td>Window Time</td><td>"+ manifestResult.windowTime +"</td></tr>";
+				if(manifestResult.deliveryETAWindowTime != null) {
+					result += "<tr><td>ETA Window</td><td>"+ manifestResult.deliveryETAWindowTime +"</td></tr>";
+				}
+				result += "<tr><td>Delivery Window</td><td>"+ manifestResult.windowTime +"</td></tr>";
 				result += "<tr><td>Boxes</td><td>"+ manifestResult.cartonCnt +"</td></tr>";
 				result += "<tr><td>Order No</td><td>"+ orderNo +"</td></tr>";
 				if( manifestResult.lastName !=null && manifestResult.firstName != null ) {

@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +38,7 @@ import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
+import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.mail.EmailAddress;
 import com.freshdirect.framework.mail.EmailSupport;
@@ -51,6 +53,7 @@ public class FDEmailFactory {
 	
 	public static final SimpleDateFormat df = new SimpleDateFormat("EEEE, MMM d yyyy");
 	public static final SimpleDateFormat DT_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+	public static DateFormat serverTimeFormat = new SimpleDateFormat("hh:mm aaa");
 	public static final String GENERAL_CS_EMAIL = FDStoreProperties.getCustomerServiceEmail();
 	public static final String PRODUCT_EMAIL = FDStoreProperties.getProductEmail();
 	public static final String FEEDBACK_EMAIL = FDStoreProperties.getFeedbackEmail();
@@ -69,10 +72,10 @@ public class FDEmailFactory {
 	}
 
 
-	public XMLEmailI createFinalAmountEmail(FDCustomerInfo customer, FDOrderI order) {
+	public XMLEmailI createFinalAmountEmail(FDCustomerInfo customer, FDOrderAdapter order) {
 		FDTransactionalEmail email = new FDTransactionalEmail(customer, order);
 		email.setXslPath("h_final_amount_confirm_v2.xsl", "x_final_amount_confirm_v2.xsl");
-
+		
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
 		
 		if(order.getShortedItems().size() > 0) {
@@ -82,6 +85,11 @@ public class FDEmailFactory {
 				email.setSubject("Service Alert: Your Order is Missing " + order.getShortedItems().size() + " Items");
 		} else if (EnumDeliveryType.PICKUP.equals(order.getDeliveryType())) {
 			email.setSubject("Your order for " + df.format(order.getRequestedDate()) + " is ready to be picked up.");
+		} else if(order.getDeliveryReservation() != null && order.getDeliveryReservation().getDeliveryETA() != null
+				&& order.getDeliveryReservation().getDeliveryETA().isEmailETAenabled() && order.getDeliveryReservation().getDeliveryETA().getStartTime() != null
+				&& order.getDeliveryReservation().getDeliveryETA().getEndTime() != null) {
+			email.setSubject("Your order ETA is between " + serverTimeFormat.format(order.getDeliveryReservation().getDeliveryETA().getStartTime()) +"  to "
+					+ serverTimeFormat.format(order.getDeliveryReservation().getDeliveryETA().getEndTime()));
 		} else {
 			email.setSubject("Your order for " + df.format(order.getRequestedDate()) + " is on its way");
 		}

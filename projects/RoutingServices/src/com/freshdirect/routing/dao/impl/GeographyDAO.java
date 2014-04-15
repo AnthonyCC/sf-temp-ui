@@ -113,7 +113,7 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 		+ "order by z.zone_code";
 	
 	private static final String GET_AREAS = "select A.CODE, A.DELIVERYMODEL, A.PREFIX, tr.IS_DEPOT IS_DEPOT, tr.code REGION_CODE, tr.name REGION_NAME, tr.description REGION_DESCR   from transp.trn_area a,transp.trn_region tr where a.region_code = tr.code";
-	private static final String GET_ZONES = "select zd.ZONE_CODE, zd.LOADING_PRIORITY, tr.IS_DEPOT IS_DEPOT from transp.zone zd, transp.trn_area a,transp.trn_region tr where zd.area = a.code  and a.region_code = tr.code  ";
+	private static final String GET_ZONES = "select zd.*, tr.IS_DEPOT IS_DEPOT from transp.zone zd, transp.trn_area a,transp.trn_region tr where zd.area = a.code  and a.region_code = tr.code  ";
 	
 	private static final String GET_FACILITYS = "select f.FACILITY_CODE CODE, f.ROUTING_CODE ROUTING_CODE, f.PREFIX, f.LEAD_FROM_TIME "
 		+" ,f.LEAD_TO_TIME, f.FACILITYTYPE_CODE FACILITYTYPE, f.LONGITUDE, f.LATITUDE from transp.trn_facility f ";
@@ -917,6 +917,8 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 					IZoneModel zoneModel = new ZoneModel();
 					zoneModel.setZoneNumber(rs.getString("ZONE_CODE"));
 					zoneModel.setLoadingPriority(rs.getInt("LOADING_PRIORITY"));
+					zoneModel.setETAInterval(rs.getInt("ETA_INTERVAL"));
+					zoneModel.setManifestETAEnabled("X".equalsIgnoreCase(rs.getString("MANIFEST_ETA_ENABLED")) ? true : false);
 					IAreaModel area = new AreaModel();
 					IRegionModel region = new RegionModel();
 					region.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")) ? true : false);
@@ -1121,4 +1123,36 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 		
 		return _locModel;
 	}
+
+	private static final String GET_ZONE_ETAINTERVAL = "select zd.*, tr.IS_DEPOT IS_DEPOT from transp.zone zd, transp.trn_area a,transp.trn_region tr where zd.area = a.code  and a.region_code = tr.code  ";
+		
+	@Override
+	public Map<String, Integer> getZoneETAIntervalLookup() throws SQLException {
+		final Map<String, Integer> result = new HashMap<String, Integer>();
+		
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(
+					Connection connection) throws SQLException {
+				PreparedStatement ps = connection
+						.prepareStatement(GET_ZONE_ETAINTERVAL);
+				return ps;
+			}
+		};
+		jdbcTemplate.query(creator, new RowCallbackHandler() {
+			public void processRow(ResultSet rs) throws SQLException {
+				do {
+					String zone = rs.getString("ZONE_CODE");
+					int etaInterval = rs.getInt("ETA_INTERVAL");
+					
+					if(!result.containsKey(zone)){
+						result.put(zone, etaInterval);
+					}
+				} while (rs.next());
+			}
+		});
+		    	
+		return result;
+	}
+	
+	
 }

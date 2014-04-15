@@ -714,7 +714,7 @@ public class AirclicDAO {
 			{
 				ps = conn.prepareStatement("select di.last_name,di.first_name, di.delivery_instructions, (select count(*) from cust.carton_info where sale_id=s.id) cartonCnt, "+			            
 						" hb.DELIVERY_DATE, bs.WEBORDER_ID, bs.AREA, bs.DELIVERY_TYPE, " +
-						" bs.WINDOW_STARTTIME ,bs.WINDOW_ENDTIME, bs.LOCATION_ID, bs.STOP_SEQUENCE, bs.STOP_ARRIVALDATETIME, bs.STOP_DEPARTUREDATETIME, bs.SERVICE_ADDR2,  " +
+						" bs.WINDOW_STARTTIME ,bs.WINDOW_ENDTIME, bs.DLV_ETA_STARTTIME ,bs.DLV_ETA_ENDTIME, bs.LOCATION_ID, bs.STOP_SEQUENCE, bs.STOP_ARRIVALDATETIME, bs.STOP_DEPARTUREDATETIME, bs.SERVICE_ADDR2,  " +
 						" dd.ADDR_TYPE ,dd.COMPANY_NAME ,dd.DIFFICULT_TO_DELIVER ,dd.DIFFICULT_REASON ,dd.ADDITIONAL,  " +
 						" dd.IS_DOORMAN, dd.IS_WALKUP,dd.IS_ELEVATOR ,dd.IS_HOUSE  ,dd.IS_FREIGHT_ELEVATOR, " +
 						" dd.SVC_ENT, dd.SVC_SCRUBBED_STREET, dd.SVC_CITY, dd.SVC_STATE, dd.SVC_ZIP, dd.HAND_TRUCK_ALLOWED, " +
@@ -733,7 +733,7 @@ public class AirclicDAO {
 			            " and to_char(xHB.DELIVERY_DATE ,'D')  = xBO.DAY_OF_WEEK) bo "+
 			            " where s.id=sa.sale_id and sa.id = di.salesaction_id and s.cromod_date=sa.action_date and sa.action_type IN ('CRO', 'MOD') "+
 			            " and s.id=bs.weborder_id and hb.batch_status in ('CPD','CPD/ADC','CPD/ADF') and hb.delivery_date = ? and bs.batch_id=hb.batch_id "+
-			            " and BS.LOCATION_ID = L.ID and L.BUILDINGID = B.ID and B.ID = DD.DELIVERY_BUILDING_ID(+) and B.ID = bo.DELIVERY_BUILDING_ID(+) and bs.area = ta.code(+) "+
+			            " and BS.LOCATION_ID = L.ID and L.BUILDINGID = B.ID and B.ID = DD.DELIVERY_BUILDING_ID(+) and B.ID = bo.DELIVERY_BUILDING_ID(+) and bs.area = ta.code(+)"+
 			            " and s.id= ?");
 				
 				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
@@ -759,6 +759,8 @@ public class AirclicDAO {
 					deliveryModel.setDeliveryEndTime(rs.getTimestamp("WINDOW_ENDTIME"));
 					deliveryModel.setServiceType(rs.getString("DELIVERY_TYPE"));
 					deliveryModel.setDeliveryModel(rs.getString("DELIVERYMODEL"));
+					deliveryModel.setDeliveryETAStartTime(rs.getTimestamp("DLV_ETA_STARTTIME"));
+					deliveryModel.setDeliveryETAEndTime(rs.getTimestamp("DLV_ETA_ENDTIME"));
 					
 					IZoneModel zoneModel = new ZoneModel();
 					zoneModel.setZoneNumber(rs.getString("AREA"));
@@ -1028,6 +1030,15 @@ public class AirclicDAO {
 
 	private static String GET_DELIVERY_REQ_QUERY = " select menu_option, call_outcome, calltime from cust.ivr_calllog where ordernumber = ? and menu_option in ('EDR','DAR')  ";
 	
+	private final static String GET_DELIVERY_ETA_WINDOW_QUERY = "SELECT s.id sale_id, bs.dlv_eta_starttime, bs.dlv_eta_endtime, z.EMAIL_ETA_ENABLED, z.SMS_ETA_ENABLED, z.MANIFEST_ETA_ENABLED "+
+            "	from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation rs, dlv.timeslot ts, transp.zone z, transp.handoff_batch b, transp.handoff_batchstop bs "+
+			"	where s.id = sa.sale_id  and sa.CUSTOMER_ID = s.CUSTOMER_ID  and s.cromod_date = sa.action_date and sa.action_type IN ('CRO', 'MOD')  "+
+			"	and s.type = 'REG' and s.status <> 'CAN' and sa.id = di.salesaction_id and di.zone = z.zone_code "+
+			"	and di.reservation_id = rs.ID and rs.timeslot_id = ts.id and ts.base_date = sa.requested_date "+                 
+			"	and b.batch_status IN ('CPD/ADC','CPD','CPD/ADF') and b.BATCH_ID = bs.BATCH_ID and s.id =bs.weborder_id "+
+			"	and sa.requested_date = b.delivery_date "+
+			"	and s.id = ?";
+	
 	public static DeliverySummaryModel lookUpDeliverySummary(Connection conn, String orderId, String routeNo, Date deliveryDate) throws DlvResourceException {
 		
 		DeliverySummaryModel model = new DeliverySummaryModel();
@@ -1203,6 +1214,30 @@ public class AirclicDAO {
 				if (ps != null)
 					ps.close();
 			} catch (SQLException e) {			
+				e.printStackTrace();
+			}
+		}
+		
+		try{
+			ps = conn.prepareStatement(GET_DELIVERY_ETA_WINDOW_QUERY);
+			ps.setString(1, orderId);
+			
+			rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				model.setDeliveryETAStart(rs.getTimestamp("DLV_ETA_STARTTIME"));
+				model.setDeliveryETAEnd(rs.getTimestamp("DLV_ETA_ENDTIME"));
+			}
+			
+		} catch (SQLException e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}

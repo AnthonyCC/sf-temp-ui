@@ -55,6 +55,8 @@ public class ConnectionInfo {
 					+ "(ADDRESS=(PROTOCOL=TCP)(HOST=nyc2stdb02-vip.nyc2.freshdirect.com)(PORT = 1521))"
 					+ "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=dbsto_prod)(failover_mode=(type=session)(method=basic)(retries=20))))",
 			"APPDEV", "readn0wrt");
+	
+	public static final ConnectionInfo PROD_NEW = new ConnectionInfo("jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = db02-vip.stdb.nyc2.freshdirect.com)(PORT = 1521))  (CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = dbsto_prod) (failover_mode = (type = session) (method = basic) (retries = 20))))", "appdev", "readn0wrt");
 
 	public static final ConnectionInfo DWDEV = new ConnectionInfo(
 			"jdbc:oracle:thin:@(DESCRIPTION=("

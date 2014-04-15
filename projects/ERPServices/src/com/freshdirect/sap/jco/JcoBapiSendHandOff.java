@@ -106,6 +106,8 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 			stops.setValue(stop.getDeliveryInstructionA(), "FD_DELI_INSTA"); // Delivery InstructionA
 			stops.setValue(stop.getDeliveryInstructionB(), "FD_DELI_INSTB"); // Delivery InstructionB Other
 			stops.setValue(stop.getDifficultReason(), "REASON_FOR_DIFF"); // Reason For Diff
+			stops.setValue(formatTime1(stop.getETADlvStartTime()), "ETA_START"); // ETA start Time
+			stops.setValue(formatTime1(stop.getETADlvEndTime()), "ETA_END"); // ETA end Time
 									
 			stops.nextRow();
 		}
