@@ -96,19 +96,18 @@ var FreshDirect = FreshDirect || {};
         $subtotal.html( Subtotal.innerTemplate.call(null, { 'price' : price }) );
       }
       $subtotal.addClass('hasPrice');
-      $subtotal.closest('[data-component="product-controls"]').addClass('subtotalShown').removeClass('invalidQty');
-      $subtotal.siblings('[data-component="product-controls"]').addClass('subtotalShown').removeClass('invalidQty');
+      $subtotal.closest('[data-component="product-controls"]').addClass('subtotalShown');
+      $subtotal.siblings('[data-component="product-controls"]').addClass('subtotalShown');
+      $subtotal.closest('[data-component="product"]').removeClass('invalidQty');
     } else {
       $subtotal.removeClass('hasPrice');
-      $subtotal.closest('[data-component="product-controls"]').removeClass('subtotalShown').addClass('invalidQty');
-      $subtotal.siblings('[data-component="product-controls"]').removeClass('subtotalShown').addClass('invalidQty');
+      $subtotal.closest('[data-component="product-controls"]').removeClass('subtotalShown');
+      $subtotal.siblings('[data-component="product-controls"]').removeClass('subtotalShown');
+      $subtotal.closest('[data-component="product"]').addClass('invalidQty');
       $subtotal.html("");
     }
     
   }
-  
-  
-  
   
   var Subtotal = {
       update:function(product) {

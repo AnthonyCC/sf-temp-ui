@@ -650,7 +650,7 @@ a.portrait-item-header-name:link {
   font-weight: bold;
 }
 
-#transactionalPopup .portrait-item-controls.invalidQty .qtyinput input.qty {
+#transactionalPopup .invalidQty .qtyinput input.qty {
   outline: 2px solid red;
 }
 
