@@ -293,6 +293,7 @@
 .portrait-item-coupon {
   text-align: left;
   margin: 6px 0 0;
+  float: left;
 }
 
 .portrait-item-coupon span[data-component="ecoupon-status"] {
