@@ -39,7 +39,6 @@ public class GivexServerGateway {
 	private static final String GIVEX_SERVER_URL= ErpServicesProperties.getGivexServerURL();
 	private static final String GIVEX_SERVER_BACKUP_URL= ErpServicesProperties.getGivexServerSecondaryURL();
 	private static final int GIVEX_TRAN_TIMEOUT_SECS= ErpServicesProperties.getGivexTransactionTimeOut();
-	private static final int GIVEX_CONN_TIMEOUT_SECS= ErpServicesProperties.getGivexConnectionTimeOut();
 	
 	private static TransPortType transport_type=null ;
 	private static  Identification identification= null;
@@ -152,11 +151,7 @@ public class GivexServerGateway {
             	 rev.setId(id);
             	 rev.setReference(reference);
             	 TransPortType_Stub port= (TransPortType_Stub)(transport_type);            	 
-            	//Timeout property for webservice calls using JAX-RPC 1.0
-            	 //port._setProperty("weblogic.webservice.rpc.timeoutsecs", ""+GIVEX_TRAN_TIMEOUT_SECS /* secs */);
-            	 //Timeout property for webservice calls using JAX-RPC 1.1
-            	 port._setProperty("weblogic.wsee.transport.connection.timeout", ""+GIVEX_CONN_TIMEOUT_SECS /* secs */);
-            	 port._setProperty("weblogic.wsee.transport.read.timeout", ""+GIVEX_TRAN_TIMEOUT_SECS /* secs */);
+            	 port._setProperty("weblogic.webservice.rpc.timeoutsecs", ""+GIVEX_TRAN_TIMEOUT_SECS /* secs */);
             	 paymentService.setTransportType(port);
             	 ReversalResponse resp;
 				try {
@@ -290,11 +285,7 @@ public class GivexServerGateway {
             	 rev.setId(id);
             	 rev.setReference(reference);
             	 TransPortType_Stub port= (TransPortType_Stub)(transport_type);            	 
-            	//Timeout property for webservice calls using JAX-RPC 1.0
-            	 //port._setProperty("weblogic.webservice.rpc.timeoutsecs", ""+GIVEX_TRAN_TIMEOUT_SECS /* secs */);
-            	 //Timeout property for webservice calls using JAX-RPC 1.1
-            	 port._setProperty("weblogic.wsee.transport.connection.timeout", ""+GIVEX_CONN_TIMEOUT_SECS /* secs */);
-            	 port._setProperty("weblogic.wsee.transport.read.timeout", ""+GIVEX_TRAN_TIMEOUT_SECS /* secs */);
+            	 port._setProperty("weblogic.webservice.rpc.timeoutsecs", ""+GIVEX_TRAN_TIMEOUT_SECS /* secs */);
             	 paymentService.setTransportType(port);
             	 ReversalResponse resp;
 				try {
@@ -351,11 +342,7 @@ public class GivexServerGateway {
             	 rev.setId(id);
             	 rev.setReference(reference);
             	 TransPortType_Stub port= (TransPortType_Stub)(transport_type);            	 
-            	//Timeout property for webservice calls using JAX-RPC 1.0
-            	 //port._setProperty("weblogic.webservice.rpc.timeoutsecs", ""+GIVEX_TRAN_TIMEOUT_SECS /* secs */);
-            	 //Timeout property for webservice calls using JAX-RPC 1.1
-            	 port._setProperty("weblogic.wsee.transport.connection.timeout", ""+GIVEX_CONN_TIMEOUT_SECS /* secs */);
-            	 port._setProperty("weblogic.wsee.transport.read.timeout", ""+GIVEX_TRAN_TIMEOUT_SECS /* secs */);
+            	 port._setProperty("weblogic.webservice.rpc.timeoutsecs", ""+GIVEX_TRAN_TIMEOUT_SECS /* secs */);
             	 paymentService.setTransportType(port);
             	 ReversalResponse resp;
 				try {
@@ -400,11 +387,7 @@ public class GivexServerGateway {
 //		GapiTrans_Impl impl=new GapiTrans_Impl();
 		TransPortType_Stub port= (TransPortType_Stub)(transport_type);
 		port._setProperty(javax.xml.rpc.Stub.ENDPOINT_ADDRESS_PROPERTY, GIVEX_SERVER_URL);
-		//Timeout property for webservice calls using JAX-RPC 1.0
-	   	 //port._setProperty("weblogic.webservice.rpc.timeoutsecs", ""+GIVEX_TRAN_TIMEOUT_SECS /* secs */);
-	   	 //Timeout property for webservice calls using JAX-RPC 1.1
-	   	 port._setProperty("weblogic.wsee.transport.connection.timeout", ""+GIVEX_CONN_TIMEOUT_SECS /* secs */);
-	   	 port._setProperty("weblogic.wsee.transport.read.timeout", ""+GIVEX_TRAN_TIMEOUT_SECS /* secs */);
+		port._setProperty("weblogic.webservice.rpc.timeoutsecs", ""+GIVEX_TRAN_TIMEOUT_SECS /* secs */);
 		
 	    return port;	
 	}
