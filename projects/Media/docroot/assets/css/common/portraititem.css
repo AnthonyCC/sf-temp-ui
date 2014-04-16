@@ -652,7 +652,7 @@ a.portrait-item-header-name:link {
 }
 
 #transactionalPopup .invalidQty .qtyinput input.qty {
-  outline: 2px solid red;
+  border-color: red;
 }
 
 #transactionalPopup .portrait-item-controls .quantity_minus,

@@ -19,7 +19,7 @@
 }
 
 .invalidQty .pdp-atc .qtyinput input.qty {
-  outline: 2px solid red;
+  border-color: red;
 }
 
 .itemlist-item-salesunit .subtotal,
