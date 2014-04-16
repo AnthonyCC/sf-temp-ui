@@ -56,6 +56,8 @@ var FreshDirect = FreshDirect || {};
         if (this.currentTarget) {
           this.currentTarget.attr('data-currentvalue', $('#'+this.popupId+' .transactional-main-item input.qty').val());
           this.currentTarget.attr('data-currentrelatedvalue', $('#'+this.popupId+' .transactional-related-item input.qty').val());
+          this.currentTarget.attr('data-currentselectvalue', $('#'+this.popupId+' .transactional-main-item select.salesunit').val());
+          this.currentTarget.attr('data-currentrelatedselectvalue', $('#'+this.popupId+' .transactional-related-item select.salesunit').val());
         }
       }
     },
@@ -114,6 +116,9 @@ var FreshDirect = FreshDirect || {};
           if (target.attr('data-currentvalue')) {
             mainHolder.find('input.qty').first().val(target.attr('data-currentvalue'));
           }
+          if (target.attr('data-currentselectvalue')) {
+            mainHolder.find('select.salesunit').first().val(target.attr('data-currentselectvalue'));
+          }
 
           // fill related item content
           related = $('#'+popupId+' [data-component="relateditem"] [data-component="product"]');
@@ -129,6 +134,9 @@ var FreshDirect = FreshDirect || {};
             // set current value
             if (target.attr('data-currentrelatedvalue')) {
               relatedHolder.find('input.qty').first().val(target.attr('data-currentrelatedvalue'));
+            }
+            if (target.attr('data-currentrelatedselectvalue')) {
+              relatedHolder.find('select.salesunit').first().val(target.attr('data-currentrelatedselectvalue'));
             }
 
           } else {
