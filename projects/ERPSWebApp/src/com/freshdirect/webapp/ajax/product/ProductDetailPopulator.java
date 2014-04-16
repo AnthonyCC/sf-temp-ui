@@ -743,7 +743,7 @@ public class ProductDetailPopulator {
 		
 		// populate in cart amount    	
 		FDCartModel cart = user.getShoppingCart(); 
-		item.setInCartAmount( cart.getTotalQuantity( productModel ) );
+		item.setInCartAmount( cart.getTotalQuantity( productModel, false ) );
 				
 	}
 

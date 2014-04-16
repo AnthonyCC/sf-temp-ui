@@ -1109,21 +1109,28 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		}
 		return restrictions;
 	}
-
-	/**
-	 * Get the total quantity of all occurrences of a product in the cart.
-	 */
-	public double getTotalQuantity(ProductModel product) {
+	
+	public double getTotalQuantity(ProductModel product, boolean checkCategory){
 		String categoryName = product.getParentNode().getContentName();
 		String productName = product.getContentName();
 		double sum = 0;
 		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
 			FDCartLineI line = i.next();
-			if (productName.equals(line.getProductName()) && categoryName.equals(line.getCategoryName())) {
-				sum += line.getQuantity();
+			if (productName.equals(line.getProductName())) {
+				
+				if((!checkCategory) || (checkCategory && categoryName.equals(line.getCategoryName()))){
+					sum += line.getQuantity();					
+				}
 			}
 		}
 		return sum;
+	}
+
+	/**
+	 * Get the total quantity of all occurrences of a product in the cart.
+	 */
+	public double getTotalQuantity(ProductModel product) {		
+		return getTotalQuantity(product, true);
 	}
 
 	/**
