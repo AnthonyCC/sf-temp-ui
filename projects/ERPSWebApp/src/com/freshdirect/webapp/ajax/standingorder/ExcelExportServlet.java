@@ -21,18 +21,17 @@ public class ExcelExportServlet extends HttpServlet {
 	private final static Category LOGGER = LoggerFactory
 			.getInstance(ExcelExportServlet.class);
 
-	String filename = null;
-
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
 		String extension = request.getParameter("extension");
 		String excel = request.getParameter("excel");
-
+	
 		if (extension != null) {
 			if (extension.equals("csv") || extension.equals("xml")) {
 
-				filename = "pqGrid." + extension;
+				String filename = "pqGrid." + extension;
+				request.getSession().setAttribute("fileName", filename);
 				File file = new File(filename);
 
 				// if file doesn't exists, then create it
@@ -49,9 +48,9 @@ public class ExcelExportServlet extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+			HttpServletResponse response) throws ServletException, IOException {			
 
-		File outputFile = new File(filename);
+		File outputFile = new File(request.getSession().getAttribute("fileName").toString());
 		response.setBufferSize((int) outputFile.length());
 
 		response.setHeader("Content-Disposition", "attachment; filename=\""
