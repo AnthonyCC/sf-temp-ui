@@ -35,6 +35,16 @@ for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 			<%  
 		}%>	
 		<%= shipAddress.getCity()%>, <%=shipAddress.getState()%> <%=shipAddress.getZipCode()%><BR><BR>
+		
+				<%-- phone number --%>
+					<% if(shipAddress.getPhone() != null) { %>
+						<%= shipAddress.getPhone().getPhone() %><br />
+					<% } %>
+					<% if(shipAddress.getAltPhone() != null) { %>
+						<%= shipAddress.getAltPhone().getPhone() %><br />
+					<% } %>
+					<br />
+					
 		<%if(shipAddress.getInstructions()!= null && !shipAddress.getInstructions().equals("") && !"NONE".equalsIgnoreCase(shipAddress.getInstructions())){%>   
 			<font class="text12bold">Special delivery instructions:</font><br>              
 			<%=shipAddress.getInstructions()%><br><BR>
