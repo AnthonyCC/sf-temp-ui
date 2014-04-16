@@ -26,7 +26,7 @@ public class Depot {
 
     public static List<Depot> getPickupDepots() throws FDResourceException {
 
-        boolean theHamptonsIsOn = FDStoreProperties.getHamptons();
+        boolean theHamptonsIsOn = FDStoreProperties.isSummerServiceEnabled();
 
         Collection<DlvDepotModel> pickupDepots = FDDepotManager.getInstance().getPickupDepots();
         List<Depot> newList = new ArrayList<Depot>();

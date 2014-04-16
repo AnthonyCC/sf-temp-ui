@@ -52,8 +52,9 @@ final int W_DELIVERY_INFO_NAV_TOTAL = 970;
 		if (user.isEligibleForPreReservation()) {
 			folderMap.put("Reserve Delivery (in Your Account)","/your_account/reserve_timeslot.jsp");
 		}
-		if (FDStoreProperties.getHamptons()) {
+		if (FDStoreProperties.isSummerServiceEnabled()) {
 			folderMap.put("Hamptons Summer Service","/help/delivery_hamptons.jsp");
+			folderMap.put("LBI Summer Service","/help/delivery_lbi.jsp");
 		}
 
 		//get ref to dlv pass category

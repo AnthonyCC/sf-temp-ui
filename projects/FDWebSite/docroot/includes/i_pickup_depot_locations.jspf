@@ -12,7 +12,7 @@ final int W_PICKUP_DEPOT_LOCATIONS_TOTAL = 970;
 
 <%
 Collection pickups = FDDepotManager.getInstance().getPickupDepots();
-boolean theHamptonsIsOn = FDStoreProperties.getHamptons();
+boolean theHamptonsIsOn = FDStoreProperties.isSummerServiceEnabled();
 String  defaultDepotLocation = "";
 if (user !=null && user.getIdentity() != null){
  	defaultDepotLocation = FDCustomerManager.getDefaultDepotLocationPK(user.getIdentity() );

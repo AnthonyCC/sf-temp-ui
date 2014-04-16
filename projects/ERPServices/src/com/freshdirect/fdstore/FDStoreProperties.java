@@ -99,7 +99,7 @@ public class FDStoreProperties {
     private final static String PROP_CMS_MEDIABASEURL = "cms.mediaBaseURL";
     private final static String PROP_PAYMENT_METHOD_MANAGER_HOME = "fdstore.PaymentMethodManager.home";
     private final static String PROP_RESTRICTED_PAYMENT_METHOD_HOME = "freshdirect.payment.RestrictedPaymentMethod.home";
-    private final static String PROP_HAMPTONS = "fdstore.hamptons";
+    private final static String PROP_SUMMERSERVICE = "fdstore.summerserviceEnabled";    
     private final static String PROP_EXTERNAL_FRAUD_CHECK_PM = "fraud.check.paymentMethod.external";
     private final static String PROP_MAX_REFERRALS = "referral.maxReferrals";
     private final static String PROP_NUM_DAYS_MAX_REFERRALS = "referral.numDaysMaxReferrals";
@@ -774,7 +774,7 @@ public class FDStoreProperties {
 
         defaults.put(PROP_CMS_MEDIABASEURL, "http://www.freshdirect.com");
 
-        defaults.put(PROP_HAMPTONS, "false");
+        defaults.put(PROP_SUMMERSERVICE, "false");
 
         defaults.put(PROP_EXTERNAL_FRAUD_CHECK_PM, "true");
 
@@ -1635,8 +1635,8 @@ public class FDStoreProperties {
         return new InitialContext(env);
     }
 
-    public static boolean getHamptons() {
-    	 return (Boolean.valueOf(get(PROP_HAMPTONS))).booleanValue();
+    public static boolean isSummerServiceEnabled() {
+    	 return (Boolean.valueOf(get(PROP_SUMMERSERVICE))).booleanValue();
     }
 
     public static String getMaxReferrals() {

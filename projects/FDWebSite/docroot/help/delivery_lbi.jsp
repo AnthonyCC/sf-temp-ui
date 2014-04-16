@@ -14,10 +14,10 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <% //expanded page dimensions
-final int W_DELIVERY_HAMPTONS_TOTAL = 970;
-final int W_DELIVERY_HAMPTONS_LEFT = 724;
-final int W_DELIVERY_HAMPTONS_CENTER = 55;
-final int W_DELIVERY_HAMPTONS_RIGHT = 191;
+final int W_DELIVERY_LBI_TOTAL = 970;
+final int W_DELIVERY_LBI_LEFT = 724;
+final int W_DELIVERY_LBI_CENTER = 55;
+final int W_DELIVERY_LBI_RIGHT = 191;
 %>
 
 <fd:CheckLoginStatus id="user" />
@@ -25,13 +25,13 @@ final int W_DELIVERY_HAMPTONS_RIGHT = 191;
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
 		<tmpl:put name='content' direct='true'>
-<table width="<%=W_DELIVERY_HAMPTONS_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
+<table width="<%=W_DELIVERY_LBI_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
      <tr>
-          <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_HAMPTONS_LEFT%>" height="18"></td>
-          <td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="<%=(W_DELIVERY_HAMPTONS_CENTER-1)/2%>" height="1"></td>
+          <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_LBI_LEFT%>" height="18"></td>
+          <td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="<%=(W_DELIVERY_LBI_CENTER-1)/2%>" height="1"></td>
           <td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-          <td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="<%=(W_DELIVERY_HAMPTONS_CENTER-1)/2%>" height="1"></td>
-          <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_HAMPTONS_RIGHT%>" height="1"></td>
+          <td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="<%=(W_DELIVERY_LBI_CENTER-1)/2%>" height="1"></td>
+          <td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_LBI_RIGHT%>" height="1"></td>
     </tr>
           
     <tr valign="top">
@@ -39,10 +39,10 @@ final int W_DELIVERY_HAMPTONS_RIGHT = 191;
     boolean fromZipCheck = false;
     boolean isPopup = false;
     %>
-          <td class="text12"><fd:IncludeMedia name="/media/editorial/summer_services/hamptons/hamptons_service.html" /><br><br><br></td>
+          <td class="text12"><fd:IncludeMedia name="/media/editorial/summer_services/long_beach_island/long_beach_island_service.html" /><br><br><br></td>
           <td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
           <td align="center">
-		  <fd:IncludeMedia name="/media/editorial/summer_services/hamptons/hamptons_location.html" />
+		  <fd:IncludeMedia name="/media/editorial/summer_services/long_beach_island/long_beach_island_location.html" />
 </td></tr>
 </table>
 </tmpl:put>
