@@ -52,6 +52,6 @@ public interface FDStandingOrdersSB extends EJBObject {
 	public void addStandingOrderAltDeliveryDates(List<FDStandingOrderAltDeliveryDate> altDeliveryDates) throws FDResourceException, RemoteException;
 	public boolean checkIfAlreadyExists(FDStandingOrderAltDeliveryDate altDate) throws FDResourceException,RemoteException;
 	public boolean isValidSoId(String soId) throws FDResourceException,RemoteException;
-	public FDStandingOrderSkuResultInfo replaceSkuCode(String existingSku, String replacementSku) throws RemoteException;
-	public FDStandingOrderSkuResultInfo validateSkuCode(String existingSku, String replacementSku) throws RemoteException;
+	public FDStandingOrderSkuResultInfo replaceSkuCode(String existingSku, String replacementSku) throws FDResourceException,RemoteException;
+	public FDStandingOrderSkuResultInfo validateSkuCode(String existingSku, String replacementSku) throws FDResourceException,RemoteException;
 }
