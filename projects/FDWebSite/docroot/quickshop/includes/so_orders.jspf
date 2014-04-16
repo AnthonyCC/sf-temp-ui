@@ -54,10 +54,10 @@
 						<td><b><a href="/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>"><%= order.getErpSalesId() %></a></b></td>
 						<td><span class="text11" style="font-weight: normal;">
 							<% if(order.isModifiable()) { %>
-								<a href="/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>">View/Modify</a> |
-								<a href="/your_account/cancel_order.jsp?orderId=<%=order.getErpSalesId()%>">Cancel</a>
+								<button class="imgButtonOrange" onclick="document.location='/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>'; return false;">modify order</button>
+								<button class="imgButtonRed" onclick="/your_account/cancel_order.jsp?orderId=<%=order.getErpSalesId()%>'; return false;">cancel order</button>
 							<% } else {%>
-								<a href="/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>">View</a>
+								<button class="imgButtonOrange" onclick="/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>'; return false;">view order</button>
 							<% } %>
 						</span></td>
 					</tr>

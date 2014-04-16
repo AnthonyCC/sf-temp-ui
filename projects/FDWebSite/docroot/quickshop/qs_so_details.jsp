@@ -201,7 +201,7 @@
 					</td></tr>
 				</table>		
 				<div style="margin: 0.5em 0.5em 1.5em">
-					The next delivery of this Standing Order is displayed below. If your delivery is due within the next 7 days, you may make changes by clicking "View/Modify". <b>Changes in this section will affect only this delivery</b>.
+					The next delivery of this Standing Order is displayed below. If your delivery is due within the next 7 days, you may make changes by clicking "modify order". <b>Changes in this section will affect only this delivery</b>.
 				</div>
 				
 				<div id="so_orders" style="text-align: left; font-weight: bold; padding: 3px 5px; overflow: hidden; margin-bottom: 15px; margin-top: 15px;">
@@ -245,17 +245,13 @@
 											soName: soNameJs
 										}
 										</script>
-										<a href="/unsupported.jsp" onclick="CCL.modify_so(modifySoInfo, this); return false;">
-											<img style="margin-bottom: 1em" src="/media_stat/images/template/quickshop/update_standing_order.png" width="189" height="22" />
-										</a>
+										<button class="imgButtonOrange" onclick="CCL.modify_so(modifySoInfo, this); return false;">change standing order settings</button>
 									<%}%>
 								</fd:OrderPermissionsTag>
 							<%} %>
 			
 							<% if (!modInstanceToo) { %>
-							<a href="<%= FDURLUtil.getStandingOrderLandingPage(so, "modify",user) %>">
-							   <img style="margin-bottom: 1em" src="/media_stat/images/template/quickshop/update_standing_order.png" width="189" height="22" />
-							</a>
+								<button class="imgButtonOrange" onclick="document.location='<%= FDURLUtil.getStandingOrderLandingPage(so, "modify", user) %>'; return false;">change standing order settings</button>
 							<% } %>
 						</div>
 						
