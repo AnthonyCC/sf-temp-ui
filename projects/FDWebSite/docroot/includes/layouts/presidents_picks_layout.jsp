@@ -391,11 +391,7 @@
 		};
 		</script>
 		
-		<div class="ddpp clearfix">
-			<div class="socialMedia container">
-				<div style="float: right;"><%-- requires (CategoryModel)categoryNode --%><%@ include file="/includes/i_category_soc_buttons.jspf" %></div>
-			</div>
-			
+		<div class="ddpp clearfix">			
 			<div class="PPHeader">
 				<script type="text/javascript">
 						OAS_AD('PPHeader');

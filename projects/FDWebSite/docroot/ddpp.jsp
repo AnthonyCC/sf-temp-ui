@@ -463,12 +463,6 @@ if (categoryModel != null) {
 	<tmpl:put name="startPage">resultpage</tmpl:put>
 	<tmpl:put name="productsOnly">products-only</tmpl:put>
 	<tmpl:put name="cmPageViewTag"><fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=currentFolder%>"/></tmpl:put>
-	
-	<tmpl:put name="socialMedia-header">
-		<div class="socialMedia container">
-			<div style="float: right;"><%-- requires (CategoryModel)categoryNode --%><%@ include file="/includes/i_category_soc_buttons.jspf" %></div>
-		</div>
-	</tmpl:put>
 	<tmpl:put name="oas-header-1">
 		<div class="PPHeader">
 			<script type="text/javascript">

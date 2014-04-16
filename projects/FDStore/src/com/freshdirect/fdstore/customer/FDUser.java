@@ -2780,4 +2780,44 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setServerName(String serverName) {
 		this.serverName = serverName;
 	}
+
+	/**
+	 * Calling this function always returns false (only FDSessionUser implements it)
+	 */
+	public boolean hasJustLoggedIn() {
+		return false;
+	}
+
+	/**
+	 * Calling this function always returns false (only FDSessionUser implements it)
+	 */
+	public boolean hasJustLoggedIn(boolean clear) {
+		return false;
+	}
+
+	/**
+	 * Calling this function has no effect (only FDSessionUser implements it)
+	 */
+	public void setJustLoggedIn(boolean val) {		
+	}
+
+	/**
+	 * Calling this function always returns false (only FDSessionUser implements it)
+	 */
+	public boolean hasJustSignedUp() {
+		return false;
+	}
+
+	/**
+	 * Calling this function always returns false (only FDSessionUser implements it)
+	 */
+	public boolean hasJustSignedUp(boolean clear) {
+		return false;
+	}
+
+	/**
+	 * Calling this function always returns false (only FDSessionUser implements it)
+	 */
+	public void setJustSignedUp(boolean val) {
+	}
 }

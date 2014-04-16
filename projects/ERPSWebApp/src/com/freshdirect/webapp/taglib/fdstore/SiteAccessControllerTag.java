@@ -355,6 +355,11 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 				session.setAttribute("LITESIGNUP_COMPLETE", "true");
 				session.removeAttribute("LITEACCOUNTINFO");
 				session.removeAttribute("LITECONTACTINFO");
+
+				FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+				if (user != null) {
+					user.setJustSignedUp(true);
+				}
 				CmRegistrationTag.setPendingRegistrationEvent(session);
 			}
 		} catch (Exception ex) {

@@ -102,6 +102,10 @@ public class SemPixelModel extends ModelSupport {
 		return params.get(key);
 	}
 	
+	public void clearParams() {
+		this.params.clear();
+	}
+	
 	public String toString() {
 		StringBuffer buf = new StringBuffer("SemPixelModel[");
 			buf.append("\n\t").append(this.getName());

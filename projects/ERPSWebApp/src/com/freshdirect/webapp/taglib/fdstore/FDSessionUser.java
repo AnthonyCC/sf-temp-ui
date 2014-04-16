@@ -132,6 +132,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     
 	//APPDEV-2812 IP Detect Phase I Welcome Experience
     private boolean newUserWelcomePageShown;
+
+    /* this is set in LoginServlet see getter for notes */
+    private boolean justLoggedIn = false;
+    /* set in RegistrationControllerTag see getter for notes */
+    private boolean justSignedUp = false;
     
 	public void setLastCOSSurveySuccess(boolean lastCOSSurveySuccess) {
 		this.lastCOSSurveySuccess = lastCOSSurveySuccess;
@@ -1665,4 +1670,45 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setServerName(String serverName) {
 		this.user.setServerName(serverName);
 	}
+
+	/* cleared on first fetch if false isn't passed in to method */
+	/* fetch with no clearing */
+	public boolean hasJustLoggedIn() {
+		return hasJustLoggedIn(true);
+	}
+	/* clear after fetching value */
+	public boolean hasJustLoggedIn(boolean clear) {
+		boolean preClear = justLoggedIn;
+		
+		if (clear) {
+			this.setJustLoggedIn(false);
+		}
+		
+		return preClear;
+	}
+	public void setJustLoggedIn(boolean val) {
+		this.justLoggedIn = val;
+	}
+	
+
+	/* cleared on first fetch if false isn't passed in to method */
+	/* fetch with no clearing */
+	public boolean hasJustSignedUp() {
+		return hasJustSignedUp(true);
+	}
+	/* clear after fetching value */
+	public boolean hasJustSignedUp(boolean clear) {
+		boolean preClear = justSignedUp;
+		
+		if (clear) {
+			this.setJustSignedUp(false);
+		}
+		
+		return preClear;
+	}
+	public void setJustSignedUp(boolean val) {
+		this.justSignedUp = val;
+	}
+	
+
 }

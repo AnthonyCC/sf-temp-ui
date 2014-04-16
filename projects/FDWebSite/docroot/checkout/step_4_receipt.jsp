@@ -293,6 +293,19 @@
 				%><fd:SemPixelIncludeMedia pixelNames="TheSearchAgency" /><%
 			}
 			
+
+			/* Digo2 Pixel */
+			if ( !isOrderModify ) { //do not send on order modify
+				SemPixelModel semPixel_DIGO2 = FDSemPixelCache.getInstance().getSemPixel("DiGo2");
+				FDUserI user_DIGO2 = (FDSessionUser)session.getAttribute(SessionName.USER);
+				semPixel_DIGO2.clearParams();
+	
+				semPixel_DIGO2.setParam("checkout_receipt", "true");
+				semPixel_DIGO2.setParam("subtotal", sem_cartSubtotal);
+				semPixel_DIGO2.setParam("orderId", sem_orderNumber);
+				%><fd:SemPixelIncludeMedia pixelNames="DiGo2" /><%
+			}
+			
 		}
 	%>
 

@@ -150,7 +150,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				if((Action.SUCCESS).equals(result)) {
 					//if referral information is available, record it.
 					if(this.pageContext.getSession().getAttribute("REFERRALNAME") != null) {
-						try {						
+						try {
 							user = (FDSessionUser) session.getAttribute(USER);
 							LOGGER.debug(user.getIdentity().getErpCustomerPK());
 							LOGGER.debug(user.getUserId());
@@ -183,6 +183,11 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 							this.pageContext.getSession().setAttribute("LITESIGNUP_COMPLETE", "true");
 							CmRegistrationTag.setPendingRegistrationEvent(pageContext.getSession());
 						}
+					}
+
+					user = (FDSessionUser) session.getAttribute(USER);
+					if (user != null) {
+						user.setJustSignedUp(true);
 					}
 				}
 

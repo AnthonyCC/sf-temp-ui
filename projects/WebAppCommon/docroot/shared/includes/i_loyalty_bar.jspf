@@ -21,7 +21,7 @@ final int W_LOYALTY_BAR_LP = 400;
 	$jq(document).ready(function() {
 		$jq('.csPhoneNumber:first').each(function(i,e) {
 			$jq(e).text( ($jq(e).text().match(/[0-9\-]{14}/)||[''])[0] );
-			$(e).show();
+			$jq(e).show();
 		});
 	});
 	

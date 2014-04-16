@@ -584,4 +584,12 @@ public interface FDUserI extends java.io.Serializable {
 	public void applyOrderMinimum();
 	public boolean isAnyNewOrder();
 	public void setAnyNewOrder(boolean anyNewOrder);
+	
+	public boolean hasJustLoggedIn();
+	public boolean hasJustLoggedIn(boolean clear);
+	public void setJustLoggedIn(boolean val);
+	
+	public boolean hasJustSignedUp();
+	public boolean hasJustSignedUp(boolean clear);
+	public void setJustSignedUp(boolean val);
 }

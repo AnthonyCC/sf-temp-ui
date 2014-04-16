@@ -44,9 +44,7 @@
 					<td width="<%=W_DNAV_NO_SPACE_TOTAL%>" bgcolor="#999966" class="onePxTall"><img src="/media_stat/images/layout/999966.gif" width="1" height="1" border="0" alt="" /></td>
 				</tr>
 			</table>
-		</div>
-		<tmpl:get name="socialMedia-header"/>
-	
+		</div>	
 	    <div id="content_top" class="content-header container">
 		    <tmpl:get name="content-header"/>
 	    </div>

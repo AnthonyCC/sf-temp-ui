@@ -480,6 +480,10 @@ public class UserUtil {
         	  }
         	  session.removeAttribute("TICK_TIE_CUSTOMER");
           }
+          
+          if(user != null) {
+        	  user.setJustLoggedIn(true);
+          }
 
           CmRegistrationTag.setPendingLoginEvent(session);
           

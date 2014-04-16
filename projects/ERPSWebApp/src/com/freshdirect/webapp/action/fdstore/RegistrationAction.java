@@ -265,8 +265,10 @@ public class RegistrationAction extends WebActionSupport {
 				}
 			}
 			//set a session attribute so we know registration completed successfully
-			if(actionResult.isSuccess())
+			if (actionResult.isSuccess()) {
+				user.setJustSignedUp(true);
 				session.setAttribute("regSuccess", true);
+			}
 			
 			//Set the
 			return SUCCESS;
