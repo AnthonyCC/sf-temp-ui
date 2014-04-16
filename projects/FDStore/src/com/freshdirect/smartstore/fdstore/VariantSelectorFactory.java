@@ -65,10 +65,11 @@ public class VariantSelectorFactory {
 				return tmpSelector;
 				
 			} catch (RuntimeException e) {
+				String siteFeatureName = siteFeature !=null ? siteFeature.getName() : null;
 				if (selector == null) {
-					throw new FDRuntimeException(e,	"failed to initialize variant mappings for " + siteFeature.getName());
+					throw new FDRuntimeException(e,	"failed to initialize variant mappings for " + siteFeatureName);
 				}
-				LOGGER.warn("failed to reload variant mappings for " + siteFeature.getName() + ", returning previous mapping");
+				LOGGER.warn("failed to reload variant mappings for " + siteFeatureName + ", returning previous mapping");
 			}
         }
 		return selector;
