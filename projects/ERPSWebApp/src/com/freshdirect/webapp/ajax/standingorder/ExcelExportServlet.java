@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Category;
-import org.springframework.util.FileCopyUtils;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -60,9 +60,9 @@ public class ExcelExportServlet extends HttpServlet {
 		response.setHeader("Pragma", "public");
 		response.setHeader("Cache-Control", "max-age=0");
 		response.setContentLength((int) outputFile.length());
-		FileCopyUtils.copy(new FileInputStream(outputFile),
-				response.getOutputStream());
+		FileInputStream is = new FileInputStream(outputFile);
+		IOUtils.copyLarge(is, response.getOutputStream());
+		is.close();
 		response.getOutputStream().close();
-
 	}
 }
