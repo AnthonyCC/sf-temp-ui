@@ -12,9 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Category;
 import org.json.JSONObject;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,14 +21,14 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrderSkuResultInfo;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-public class SkuReplacementServlet extends HttpServlet{
+public class SkuReplacementServlet extends HttpServlet {
 
 	private static final String REPLACE = "Replace";
 	private static final String CHECK = "Check";
 	private static final long serialVersionUID = 1L;
 	private final static Category LOGGER = LoggerFactory
 			.getInstance(SkuReplacementServlet.class);
-	
+
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
@@ -45,53 +42,52 @@ public class SkuReplacementServlet extends HttpServlet{
 					.toUpperCase();
 			String replacementSku = request.getParameter("replacementSKU")
 					.trim().toUpperCase();
-			
-			if(!existingSku.equalsIgnoreCase("") && !replacementSku.equalsIgnoreCase("") ) {
-				
-			
-			if (!existingSku.equalsIgnoreCase(replacementSku)) {
 
-				if (buttonAction.equalsIgnoreCase(CHECK)) {
-					fDStandingOrderSkuResultInfo = FDStandingOrdersManager
-							.getInstance().validateSkuCode(existingSku,
-									replacementSku);
-				} else if (buttonAction.equalsIgnoreCase(REPLACE)) {
-					fDStandingOrderSkuResultInfo = FDStandingOrdersManager
-							.getInstance().replaceSkuCode(existingSku,
-									replacementSku);
-				}
-				
-				List<FDStandingOrderProductSku> productList = fDStandingOrderSkuResultInfo
-						.getProductSkuList();
+			if (!existingSku.equalsIgnoreCase("")
+					&& !replacementSku.equalsIgnoreCase("")) {
 
-				response.setContentType("application/json");
-				response.setCharacterEncoding("UTF-8");
+				if (!existingSku.equalsIgnoreCase(replacementSku)) {
 
-				if (fDStandingOrderSkuResultInfo.getErrorMessage() != null) {
+					if (buttonAction.equalsIgnoreCase(CHECK)) {
+						fDStandingOrderSkuResultInfo = FDStandingOrdersManager
+								.getInstance().validateSkuCode(existingSku,
+										replacementSku);
+					} else if (buttonAction.equalsIgnoreCase(REPLACE)) {
+						fDStandingOrderSkuResultInfo = FDStandingOrdersManager
+								.getInstance().replaceSkuCode(existingSku,
+										replacementSku);
+					}
+
+					List<FDStandingOrderProductSku> productList = fDStandingOrderSkuResultInfo
+							.getProductSkuList();
+
+					response.setContentType("application/json");
+					response.setCharacterEncoding("UTF-8");
+
+					if (fDStandingOrderSkuResultInfo.getErrorMessage() != null) {
+						json = new JSONObject();
+						json.put("result",
+								fDStandingOrderSkuResultInfo.getErrorMessage());
+						response.getWriter().print(json);
+					} else {
+						ObjectMapper mapper = new ObjectMapper();
+						mapper.configure(
+								DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+								false);
+						mapper.configure(
+								SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+						mapper.writeValue(response.getOutputStream(),
+								productList);
+					}
+				} else {
 					json = new JSONObject();
 					json.put("result",
-							fDStandingOrderSkuResultInfo.getErrorMessage());
+							"Existing Sku and Replacement Sku cannot be same");
 					response.getWriter().print(json);
-				} else {
-					ObjectMapper mapper = new ObjectMapper();
-					mapper.configure(
-							DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-							false);
-					mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS,
-							false);
-					mapper.writeValue(response.getOutputStream(), productList);
 				}
 			} else {
 				json = new JSONObject();
-				json.put("result",
-						"Existing Sku and Replacement Sku cannot be same");
-				response.getWriter().print(json);
-			}
-		}
-			else {
-				json = new JSONObject();
-				json.put("result",
-						"Existing Sku or Replacement SKU is Empty");
+				json.put("result", "Existing Sku or Replacement SKU is Empty");
 				response.getWriter().print(json);
 			}
 		} catch (Exception e) {
