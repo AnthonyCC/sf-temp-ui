@@ -237,6 +237,8 @@
 			</tr>		
 		</table>
 	<% } %>
+	
+<% if (session != null && session.getAttribute(SessionName.USER) != null) { %>
 	<%
 		FDUserI sem_user = (FDUserI)session.getAttribute(SessionName.USER);
 		
@@ -308,6 +310,6 @@
 			
 		}
 	%>
-
+<% } %>
 </tmpl:put>
 </tmpl:insert>
