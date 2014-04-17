@@ -55,16 +55,9 @@
 }
 
 #transactionalPopup .portrait-item > .atc-info {
-  min-height: 0;
-  top: 0;
-  position: relative;
+  margin-top: 0;
   transition-duration: .2s;
-  transition-property: top;
-}
-
-#transactionalPopup .portrait-item > .subtotalShown + .atc-info {
-  position: static;
-  top: -30px;
+  transition-property: all;
 }
 
 .portrait-item > .atc-info .incart-info {
@@ -88,29 +81,25 @@
   margin-top: -5px;
   margin-bottom: 10px;
   padding-top: 5px;
+  transition-duration: .2s;
+  transition-property: top;
+  top: 0;
 }
 
-.portrait-item > .portrait-item-controls + .atc-info .incart-message {
-  display: none;
-}
-
-#transactionalPopup .portrait-item .subtotalShown + .atc-info  > .incart-info {
-  margin: 0 0 10px 0;
-  color: rgb(102,153,51);
-  font-weight: normal;
-  background: none;
-  border: none;
-  height: 14px;
-  line-height: 14px;
-  font-size: 12px;
-  padding: 0;
-}
-
-#transactionalPopup .portrait-item .subtotalShown + .atc-info > .incart-info:before {
-  content: '+';
+#transactionalPopup .portrait-item > .atc-info .incart-info.ADDING {
+  top: -30px;
 }
 
 .portrait-item > .atc-info .incart-info[data-amount="0"] {
+  display: none;
+}
+
+#transactionalPopup .portrait-item > .atc-info[data-amount="0"] {
+  margin-top: -28px;
+  visibility: hidden;
+}
+
+.portrait-item > .portrait-item-controls + .atc-info .incart-message {
   display: none;
 }
 
@@ -400,13 +389,17 @@ a.portrait-item-header-name:link {
   opacity:1;
 }
 
-#transactionalPopup .subtotal {
-  display: none;
+#transactionalPopup .subtotal,
+#transactionalPopup .subtotalPlaceholder {
+  visibility: hidden;
   margin: 8px 0 5px;
+  line-height: 1.2em;
+  height: 1.2em;
+  min-height: 1.2em;
 }
 
 #transactionalPopup .subtotalShown .subtotal {
-  display: block;
+  visibility: visible;
 }
 
 #transactionalPopup .transactional-item-header {

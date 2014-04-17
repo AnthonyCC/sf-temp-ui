@@ -14,6 +14,7 @@ var FreshDirect = FreshDirect || {};
         qInc = parseFloat($subtotal.attr('data-qinc')) || 1,
         qMin = parseFloat($subtotal.attr('data-qmin')) || 0,
         qMax = parseFloat($subtotal.attr('data-qmax')) || 10000,
+        bySalesUnit = $subtotal.attr('data-bysalesunit') || false,
         price = 0,
         itemInfo = fd.modules.common.productSerialize($subtotal).pop(),
         salesUnit = itemInfo.salesUnit,
@@ -83,7 +84,7 @@ var FreshDirect = FreshDirect || {};
 
     if ((origqty > qMax) ||
         (origqty < qMin) ||
-        (pricingUnit.toUpperCase() === "EA" && origqty % qInc !== 0)) {
+        (!bySalesUnit && origqty % qInc !== 0)) {
       price = 0;
     }
 

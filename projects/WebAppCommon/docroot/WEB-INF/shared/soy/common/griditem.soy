@@ -419,6 +419,7 @@
             {param qInc:$quantity.qInc /}
             {param qMin:$quantity.qMin /}
             {param qMax:$quantity.qMax /}
+            {param soldBySalesUnit:$soldBySalesUnit /}
           {/call}
           <span class="addtocart cssbutton orange small" data-component="ATCButton">Add to Cart</span>
           <span class="addtolist cssbutton purple notext icon-file2-before" data-component="addToListButton">Add to List</span>
@@ -473,9 +474,9 @@
       {/if}
       <div class="portrait-item-addtocart" {if $cmEventSource}data-cmeventsource="{$cmEventSource}"{/if}>
         {if $customizePopup}
+          <div class="subtotalPlaceholder"></div>
           <span class="customize cssbutton blue small" data-component="customizeButton">Customize</span>
         {else}
-          <span class="addtocart cssbutton orange small" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></span>
           {call common.subtotal}
             {param availMatPrices:$availMatPrices /}
             {param suRatios:$suRatios /}
@@ -485,7 +486,9 @@
             {param qMin:$quantity.qMin /}
             {param qMax:$quantity.qMax /}
             {param customTemplate:'common.subtotalTransactionalInner' /}
+            {param soldBySalesUnit:$soldBySalesUnit /}
           {/call}
+          <span class="addtocart cssbutton orange small" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></span>
         {/if}
       </div>
       {call common.productData}

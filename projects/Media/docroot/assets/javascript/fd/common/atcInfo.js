@@ -29,11 +29,12 @@ var FreshDirect = FreshDirect || {};
 						message:'Adding to cart...',
 						type:'ADDING'
 					}));
+          element.attr('data-amount', amount);
 
           controls = element.closest('[data-component="product"]').find('[data-component="product-controls"]');
           if (controls.size() !== 0) {
             // reset qty
-            controls.find('input.qty').val(+controls.find('.qtyinput').data('min') || 1);
+            controls.find('input.qty').val(+controls.find('.qtyinput').data('min') || 1).change();
             // IE 8 helper
             controls.find('.iehelper').html(controls.find('.addtocart[data-amount]').attr('data-amount') + ' Added');
           }
@@ -48,7 +49,6 @@ var FreshDirect = FreshDirect || {};
 		removeMessage:{
 			value:function(){
 				this.removeClass('atc-info-message');
-				this.removeClass('subtotalShown');
 			}
 		},
 		renderItem:{
@@ -63,11 +63,12 @@ var FreshDirect = FreshDirect || {};
 						message:item.message,
 						type:item.status
 					}));
+          element.attr('data-amount', item.inCartAmount);
 
           controls = element.closest('[data-component="product"]').find('[data-component="product-controls"]');
           if (controls.size() !== 0) {
             controls.addClass('atc-info-message');
-            controls.find('input.qty').val(+controls.find('.qtyinput').data('min') || 1);
+            controls.find('input.qty').val(+controls.find('.qtyinput').data('min') || 1).change();
             setTimeout(this.removeMessage.bind(controls),1800);
           }
 

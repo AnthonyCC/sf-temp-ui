@@ -120,6 +120,9 @@ var FreshDirect = FreshDirect || {};
             mainHolder.find('select.salesunit').first().val(target.attr('data-currentselectvalue'));
           }
 
+          // remove transactional atc state
+          $('#'+popupId).find('.atc-info-message').removeClass('atc-info-message');
+
           // fill related item content
           related = $('#'+popupId+' [data-component="relateditem"] [data-component="product"]');
           if (related.length) {
