@@ -223,6 +223,10 @@ var FreshDirect = FreshDirect || {};
   };
 
   PopupContent.prototype.reposition = function () {
+    if (!this.$alignTo || !this.$el) {
+      return;
+    }
+
     var offset = this.$alignTo.offset(),
         width = this.$alignTo.outerWidth(),
         height = this.$alignTo.outerHeight(),
@@ -233,7 +237,7 @@ var FreshDirect = FreshDirect || {};
         left,
         screenOffset;
 
-    var align = this.config.align;
+    var align = this.$alignTo.attr('data-alignpopup') || this.config.align;
 
     if (this.config.placeholder || this.config.lateplaceholder) {
       this.$ghost.css({
@@ -253,6 +257,7 @@ var FreshDirect = FreshDirect || {};
     
     if(align) {
       var position={};
+      // trigger, vertical
       if(align[0]==='t') {
         position.top = offset.top;
       } else if(align[0]==='b') {
@@ -261,6 +266,7 @@ var FreshDirect = FreshDirect || {};
         position.top = offset.top + height/2;
       }
       
+      // trigger, horizontal
       if(align[1]==='l') {
         position.left = offset.left;
       } else if(align[1]==='r') {
@@ -269,19 +275,31 @@ var FreshDirect = FreshDirect || {};
         position.left = offset.left + width/2;
       }
       
+      // popup, vertical
       if(align[3]==='c') {
         position.top = position.top - contentHeight/2;
       } else if(align[3]==='b') {
         position.top = position.top - contentHeight;
       }
       
+      // popup, horizontal
       if(align[4]==='c') {
         position.left = position.left - contentWidth/2;
       } else if(align[4]==='r') {
         position.left = position.left - contentWidth;
       }
+
+      // popup, vertical viewport check
+      if (align[6] === 'c') {
+        if (position.left < $(window).scrollLeft()) {
+          position.left = $(window).scrollLeft();
+        }
+        if (position.left + contentWidth > $(window).width() + $(window).scrollLeft()) {
+          position.left = $(window).width() + $(window).scrollLeft() - contentWidth;
+        }
+      }
             
-    this.$el.css({
+      this.$el.css({
         top:position.top+'px',
         left:position.left+'px',
         right:'auto',

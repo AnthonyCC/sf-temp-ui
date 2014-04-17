@@ -58,6 +58,7 @@ var FreshDirect = FreshDirect || {};
           value: {
             openonclick: true,
             zIndex: 2001,
+            overlayExtraClass: 'atlpopupoverlay',
             halign: 'right'
           }
         },

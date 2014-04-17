@@ -113,7 +113,11 @@ var FreshDirect = FreshDirect || {};
                     this.initTrigger();
                 }else{
                     $popupBody.html(bt({data: data || {}}));
-                	
+                }
+
+                // reposition the popups
+                if (this.popup) {
+                  this.popup.reposition();
                 }
             }
         },
