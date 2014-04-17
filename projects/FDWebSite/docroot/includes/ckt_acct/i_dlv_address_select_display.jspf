@@ -116,8 +116,8 @@ if (__shipToAddresses.size() > 0) {
 					<% if(shipAddress.getPhone() != null) { %>
 						<%= shipAddress.getPhone().getPhone() %><br />
 					<% } %>
-					<% if(shipAddress.getAltPhone() != null) { %>
-						<%= shipAddress.getAltPhone().getPhone() %><br />
+					<% if(shipAddress.getAltContactPhone() != null) { %>
+						<%= shipAddress.getAltContactPhone().getPhone() %><br />
 					<% } %>
 					<br />
 				
