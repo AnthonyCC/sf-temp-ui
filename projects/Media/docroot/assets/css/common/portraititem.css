@@ -396,6 +396,8 @@ a.portrait-item-header-name:link {
   line-height: 1.2em;
   height: 1.2em;
   min-height: 1.2em;
+  color: #666;
+  font-size: 11px;
 }
 
 #transactionalPopup .subtotalShown .subtotal {
@@ -413,10 +415,11 @@ a.portrait-item-header-name:link {
 }
 
 #transactionalPopup .transactional-item-header .try {
-  font-size: 18px;
+  font-size: 15px;
+  line-height: 30px;
   display: block;
-  color: #AF7ABC;
-  font-family: 'Eagle-Light', Verdana, Arial, sans-serif;
+  color: #333;
+  font-weight: bold;
 }
 
 #transactionalPopup .transactional-item-header button {
