@@ -153,6 +153,10 @@
   float: right;
 }
 
+.productDisplay-skuconfig .error em {
+  display: none;
+}
+
 .productDisplay-skuconfig .css-help-button {
   margin: 0 8px 0 0;
 }
