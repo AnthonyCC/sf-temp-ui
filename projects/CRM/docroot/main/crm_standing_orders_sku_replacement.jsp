@@ -18,21 +18,7 @@
 
 <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/themes/hot-sneaks/jquery-ui.css" />
 <link rel="stylesheet" href="/assets/javascript/paramquery-2.0.3/pqgrid.min.css" />
-<style>
 
-input.button_add {
-    background-image: url(/images/swap_icon.gif); /* 16px x 16px */
-    background-color: transparent; /* make the button transparent */
-    background-repeat: no-repeat;  /* make the background image appear only once */
-    background-position: 0px 0px;  /* equivalent to 'top left' */
-    border: white;           /* assuming we don't want any borders */
-    cursor: pointer;        /* make the cursor like hovering over an <a> element */
-    height: 16x;           /* make this the size of your image */
-    padding-left: 16px;     /* make text start to the right of the image */
-    vertical-align: middle; /* align the text vertically centered */
-}
-
-</style>
 <script type="text/javascript" language="javascript" src="/assets/javascript/paramquery-2.0.3/pqgrid.min.js"></script>
  
 <script type="text/javascript">
@@ -176,7 +162,7 @@ input.button_add {
  					$("#validation_message").css("color","red");
  					 $('#existingSKU').attr("disabled", false);
  	 				 $('#replacementSKU').attr("disabled", false);
- 	 				 $('#validation_message').html('Replacement cannot be performed because '+ existingSKU + ' is not present in any Standing Order.Click on Clear button to clear fields');	
+ 	 				 $('#validation_message').html('Replacement cannot be performed because '+ existingSKU.toUpperCase() + ' is not present in any Standing Order.Click on Clear button to clear fields');	
  	 				 $('#loadingmessage').hide();
  				 }
  				displayGrid(response);
@@ -275,7 +261,7 @@ $('#existingSKU').val(replacementSKU1);
 					<tr>
 						<td>Existing SKU: <input type="text" id="existingSKU" name="existingSKU">  
 												
-    					<img src="/images/swap_icon.gif" id = 'swapId' class="button_add" title="Swap Input fields" onclick="mySwapFunction();"/>					
+    					<img src="/images/swap_icon.gif" id = 'swapId' title="Swap Input fields" onclick="mySwapFunction();"/>					
 											
 						Replacement SKU: <input type="text" id="replacementSKU" name="replacementSKU">
 							
