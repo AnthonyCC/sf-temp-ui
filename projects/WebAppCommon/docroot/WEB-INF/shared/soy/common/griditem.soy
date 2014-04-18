@@ -475,7 +475,7 @@
       <div class="portrait-item-addtocart" {if $cmEventSource}data-cmeventsource="{$cmEventSource}"{/if}>
         {if $customizePopup}
           <div class="subtotalPlaceholder"></div>
-          <span class="customize cssbutton blue small" data-component="customizeButton">Customize</span>
+          <span class="customize cssbutton blue small" data-component="customizeButton" data-alignpopupfunction="transactionalCustomize">Customize</span>
         {else}
           {call common.subtotal}
             {param availMatPrices:$availMatPrices /}

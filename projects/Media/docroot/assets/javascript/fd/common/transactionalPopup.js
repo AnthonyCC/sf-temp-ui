@@ -239,6 +239,55 @@ var FreshDirect = FreshDirect || {};
 
   transactionalPopup.render();
 
+  var transactionalCustomize = function () {
+    var popupBox = this.$el[0].getBoundingClientRect(),
+        trPopupBox = transactionalPopup.popup && transactionalPopup.popup.$el && transactionalPopup.popup.$el[0].getBoundingClientRect(),
+        relatedBox = transactionalPopup.popup && transactionalPopup.popup.$el && transactionalPopup.popup.$el.find('.transactional-related-item')[0].getBoundingClientRect(),
+        scLeft = $(window).scrollLeft(),
+        scTop = $(window).scrollTop(),
+        positions = {}, wwidth;
+
+    if (relatedBox && relatedBox.width !== 0) {
+      trPopupBox = {
+        top: trPopupBox.top,
+        bottom: trPopupBox.bottom,
+        height: trPopupBox.height,
+        left: trPopupBox.left < relatedBox.left ? trPopupBox.left : relatedBox.left,
+        right: trPopupBox.right > relatedBox.right ? trPopupBox.right : relatedBox.right,
+        width: trPopupBox.right - trPopupBox.left
+      };
+    }
+
+    if (trPopupBox && trPopupBox.width !== 0) {
+      positions = {
+        left: trPopupBox.left + scLeft,
+        top: trPopupBox.top + scTop
+      };
+
+      wwidth = $(".container").size() ? $(".container").first()[0].getBoundingClientRect().right : $(window).width();
+
+      if (trPopupBox.left + popupBox.width > wwidth) {
+        positions.left = trPopupBox.right - popupBox.width + scLeft;
+      }
+
+      if (positions.left < 0) {
+        positions.left = 0;
+      }
+
+      if (popupBox.width === 0) {
+        positions.visibility = "hidden";
+      } else {
+        positions.visibility = "visible";
+      }
+
+      this.$el.css(positions);
+
+    } else {
+      this.reposition(true);
+    }
+
+  };
+
   $(document).on('mouseover','.transactional [data-transactional-trigger]',function(event){
     var element = $(event.currentTarget).closest('[data-component="product"]');
     if (!element.hasClass('unavailable')) {
@@ -259,5 +308,6 @@ var FreshDirect = FreshDirect || {};
     window.location.href = $(e.currentTarget).data('product-url');
   });
 
+  fd.modules.common.utils.register("popups.alignment", "transactionalCustomize", transactionalCustomize, fd);
   fd.modules.common.utils.register("common", "transactionalPopup", transactionalPopup, fd);
 }(FreshDirect));

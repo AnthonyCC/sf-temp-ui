@@ -222,7 +222,7 @@ var FreshDirect = FreshDirect || {};
     this.clearHideDelay();
   };
 
-  PopupContent.prototype.reposition = function () {
+  PopupContent.prototype.reposition = function (ignoreCustomFunction) {
     if (!this.$alignTo || !this.$el) {
       return;
     }
@@ -236,6 +236,20 @@ var FreshDirect = FreshDirect || {};
         contentHeight = this.$el.outerHeight(),
         left,
         screenOffset;
+
+    if (this.$alignTo.attr('data-alignpopupfunction') && !ignoreCustomFunction) {
+      // call custom alignment function if exists
+      // align function should be registered under 
+      // FreshDirect.popups.alignment namespace
+      var alignFunction = fd.popups && fd.popups.alignment && 
+                          fd.popups.alignment[this.$alignTo.attr('data-alignpopupfunction')];
+
+      if (alignFunction) {
+        alignFunction.call(this);
+
+        return;
+      }
+    }
 
     var align = this.$alignTo.attr('data-alignpopup') || this.config.align;
 
