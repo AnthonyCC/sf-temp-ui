@@ -108,6 +108,7 @@
   display: none;
 }
 
+#customizePopup .buttons .addtolist,
 .portrait-item-atl span.addtolist {
   font-weight: normal;
   height: 20px;
@@ -450,6 +451,7 @@ a.portrait-item-header-name:link {
   color: #888;
 }
 
+#customizePopup .learnmore,
 #transactionalPopup .transactional-popup-learnmore {
   position:absolute;
   left:0;
@@ -462,13 +464,16 @@ a.portrait-item-header-name:link {
   border-top-left-radius:10px;
   font-weight:normal;
   text-shadow:none;
+  text-transform: lowercase;
 }
 
+#customizePopup .learnmore:hover,
 #transactionalPopup .transactional-popup-learnmore:hover {
   text-decoration: none;
   background: #698625;
 }
 
+#customizePopup .learnmore:after,
 #transactionalPopup .transactional-popup-learnmore:after {
 	background:url(/media_stat/pdp/icons.png) no-repeat;
 	position:absolute;
@@ -530,6 +535,7 @@ a.portrait-item-header-name:link {
   vertical-align: top;
 }
 
+#customizePopup .buttons .addtocart,
 #transactionalPopup .portrait-item-controls .customize,
 #transactionalPopup .portrait-item-controls .addtocart {
   display: block;

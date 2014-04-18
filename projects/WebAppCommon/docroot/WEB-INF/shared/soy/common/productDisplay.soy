@@ -35,19 +35,25 @@
 	</ol>
 	{/if}
 	<div class="productDisplay-skuconfig"></div>
+  <div class="buttons">
 	{if $data.ATCApply}
-		<span data-component="applyCustomization"><button class="addtocart" data-component="ATCButton">add to cart</button></span>		
+		<span data-component="applyCustomization">
+      <span class="addtocart cssbutton orange" data-component="ATCButton"><span class="message">Add to Cart</span></span>
+    </span>
 	{else}
- 	   	<button data-component="ATCButton" class="addtocart cssbutton orange small">add to cart</button>
- 	   	<button data-component="addToListButton" class="addtolist cssbutton purple small notext icon-file2-before" data-alignpopup="tc-bc-c">add to list</button>
-		{if $data.hasApply}<div class="applyCustomization">Save changes permanently.<br><button data-component="saveCustomization">save customization</button></div>{/if}
+      <span class="addtocart cssbutton orange" data-component="ATCButton"><span class="message">Add to Cart</span></span>
+      <span class="addtolist cssbutton purple icon-file2-before" data-component="addToListButton" data-alignpopup="tc-bc-c">save to list</span>
+		{if $data.hasApply}<div class="applyCustomization">Save changes permanently.<br>
+      <span class="cssbutton blue" data-component="saveCustomization"><span class="message">Save customization</span></span>
+    </div>{/if}
 	{/if}
+  </div>
 	{if $data.originalLineId}<input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$data.originalLineId}">{/if}
 	{if $data.listId}<input type="hidden" data-component="productData" data-productdata-name="listId" name="listId" value="{$data.listId}">{/if}
 </div>
 <div class="rightColumn">
 	/*<a href="/product.jsp?catId={$data.catId}&productId={$data.productId}" class="moreinfo">More about this product</a>*/
-	<a href="{$data.productPageUrl}" class="moreinfo">Product Details</a>
+	<a href="{$data.productPageUrl}" class="learnmore">Learn more</a>
 	<img src="{if $data.productDetailImage and $data.productDetailImage != 'undefined'}{$data.productDetailImage}{/if}">
 </div>
 {/template}
@@ -100,7 +106,7 @@
 {let $displayEstimatedQuantity: ((not $displaySalesUnitsOnly) and $isPricedByLB and (not $isSoldByLB) ) /}
 {let $salesUnitFirst: ($displayEstimatedQuantity and (length($salesUnit) > 1)) /}
 {if $salesUnitFirst}
-  <div class="skucontrol-salesunit">
+<div class="skucontrol-salesunit">
   <b>Please choose</b>
   {call common.salesunit}
     {param options:$salesUnit /}
