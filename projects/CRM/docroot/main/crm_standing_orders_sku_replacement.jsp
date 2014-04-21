@@ -261,7 +261,7 @@ $('#existingSKU').val(replacementSKU1);
 					<tr>
 						<td>Existing SKU: <input type="text" id="existingSKU" name="existingSKU">  
 												
-    					<img src="../images/swap_icon.gif" id = 'swapId' title="Swap Input fields" onclick="mySwapFunction();"/>					
+    					<img src="/media_stat/crm/images/swap_icon.gif" id = 'swapId' title="Swap Input fields" onclick="mySwapFunction();"/>					
 											
 						Replacement SKU: <input type="text" id="replacementSKU" name="replacementSKU">
 							
@@ -286,7 +286,7 @@ $('#existingSKU').val(replacementSKU1);
 					<tr>
 						<td>
 							<div align="right" id='loadingmessage' style='display:none'>
-       						<img align="center" src='../images/ajax-loader.gif'/></div>									
+       						<img align="center" src="/media_stat/crm/images/ajax-loader.gif"/></div>									
 						</td>
 					</tr>
 				</table>
