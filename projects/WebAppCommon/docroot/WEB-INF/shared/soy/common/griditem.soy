@@ -139,6 +139,12 @@
       <a href="{$item.productPageUrl}">Cancellation Rules</a>
     </div>
     {/if}
+    {if $item.msgEarliestAvailability}
+		<div class="am-earliestavailabilityheader">Earliest Available</div>
+		<div class="am-earliestavailability">
+		  {$item.msgEarliestAvailability}
+		</div>
+    {/if}
   {/param}
   {param cmEventSource:$cmEventSource /}
 {/call}
