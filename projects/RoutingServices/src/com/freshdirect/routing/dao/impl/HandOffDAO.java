@@ -236,7 +236,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			",dd.SVC_ENT  ,dd.SVC_SCRUBBED_STREET  ,dd.SVC_CITY ,dd.SVC_STATE ,dd.SVC_ZIP ,dd.HAND_TRUCK_ALLOWED " +
 			",dd.WALK_UP_FLOORS ,dd.CREATED_BY ,dd.MODTIME ,dd.SVC_CROSS_STREET ,dd.CROSS_STREET ,dd.OTHER " +
 			",bo.BLDG_START_HOUR ,bo.BLDG_END_HOUR  ,bo.BLDG_COMMENTS  ,bo.SERVICE_START_HOUR " +
-			",bo.SERVICE_END_HOUR  ,bo.SERVICE_COMMENTS  ,bo.DAY_OF_WEEK, ta.DELIVERYMODEL, tr.MANIFEST_ETA_ENABLED " +
+			",bo.SERVICE_END_HOUR  ,bo.SERVICE_COMMENTS  ,bo.DAY_OF_WEEK, ta.DELIVERYMODEL, tz.MANIFEST_ETA_ENABLED " +
 			",b.SCRUBBED_STREET bSCRUBBED_STREET ,b.ZIP bzip ,b.COUNTRY  bCOUNTRY,b.CITY bCITY, b.STATE bSTATE, " +
 			"b.LONGITUDE  BLONG,b.LATITUDE BLAT, l.APARTMENT LOCAPART " +
 			"from transp.HANDOFF_BATCH hb , transp.HANDOFF_BATCHSTOP s , DLV.DELIVERY_LOCATION l , dlv.delivery_building b" +
@@ -246,7 +246,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			"and xB.ID = xDD.DELIVERY_BUILDING_ID and xB.ID = xBO.DELIVERY_BUILDING_ID  " +
 			"and to_char(xHB.DELIVERY_DATE ,'D')  = xBO.DAY_OF_WEEK) bo  " +
 			"where hb.BATCH_ID = ? and HB.BATCH_ID = S.BATCH_ID and S.LOCATION_ID = L.ID and L.BUILDINGID = B.ID " +
-			"and B.ID = DD.DELIVERY_BUILDING_ID(+) and B.ID = bo.DELIVERY_BUILDING_ID(+) and s.area = ta.code(+) and s.area = tr.zone_code(+)"; 
+			"and B.ID = DD.DELIVERY_BUILDING_ID(+) and B.ID = bo.DELIVERY_BUILDING_ID(+) and s.area = ta.code(+) and s.area = tz.zone_code(+)"; 
 	
 	private static final String GET_HANDOFFBATCH_ROUTES = "select r.BATCH_ID, r.SESSION_NAME, r.ROUTE_NO, r.ROUTING_ROUTE_NO "+
             " ,r.AREA, r.STARTTIME, r.COMPLETETIME, r.DISTANCE, r.TRAVELTIME, r.SERVICETIME, r.DISPATCHTIME, r.DISPATCHSEQUENCE, r.TRAILER_NO, "+
