@@ -440,6 +440,8 @@ public class HandOffController extends AbstractMultiActionController  {
 		result.setStopArrivalTime(_stop.getStopArrivalTime());
 		result.setTimeWindowStart(_stop.getDeliveryInfo() != null ? _stop.getDeliveryInfo().getDeliveryStartTime() : null);
 		result.setTimeWindowStop(_stop.getDeliveryInfo() != null ? _stop.getDeliveryInfo().getDeliveryEndTime() : null);
+		result.setDlvETAWindowStart(_stop.getDeliveryInfo() != null ? _stop.getDeliveryInfo().getDeliveryETAStartTime() : null);
+		result.setDlvETAWindowStop(_stop.getDeliveryInfo() != null ? _stop.getDeliveryInfo().getDeliveryETAEndTime() : null);
 		result.setDeliveryZone(_stop.getDeliveryInfo() != null && _stop.getDeliveryInfo().getDeliveryZone() != null
 							? _stop.getDeliveryInfo().getDeliveryZone().getZoneNumber() : null);
 		result.setDeliveryArea(_stop.getDeliveryInfo() != null && _stop.getDeliveryInfo().getDeliveryZone() != null

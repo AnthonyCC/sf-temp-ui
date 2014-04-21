@@ -478,7 +478,9 @@ public class DomainController extends AbstractMultiActionController {
 			}
 			_tmpZone.setAmZoneSupervisors(amZoneSupervisors);
 			_tmpZone.setPmZoneSupervisors(pmZoneSupervisors);
-			zoneManagerService.removeEntity(clearSupervisorLst);
+			if(clearSupervisorLst.size() > 0){
+				zoneManagerService.removeEntity(clearSupervisorLst);
+			}
 		} catch (Exception e) {				
 			e.printStackTrace();
 		}

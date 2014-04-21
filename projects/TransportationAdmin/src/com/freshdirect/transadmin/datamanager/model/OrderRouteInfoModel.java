@@ -37,7 +37,8 @@ public class OrderRouteInfoModel  implements IOrderRouteInfo {
 	private Date totalTravelTime;
 	private Date totalServiceTime;
 	private Date routeCompleteTime;
-	
+	private Date dlvETAWindowStart;
+	private Date dlvETAWindowStop;
 	private boolean isDepot;
 	
 	private Date dispatchTime;
@@ -261,4 +262,17 @@ public class OrderRouteInfoModel  implements IOrderRouteInfo {
 	public void setTripNo(int tripNo) {
 		this.tripNo = tripNo;
 	}
+	public Date getDlvETAWindowStart() {
+		return dlvETAWindowStart;
+	}
+	public void setDlvETAWindowStart(Date dlvETAWindowStart) {
+		this.dlvETAWindowStart = dlvETAWindowStart;
+	}
+	public Date getDlvETAWindowStop() {
+		return dlvETAWindowStop;
+	}
+	public void setDlvETAWindowStop(Date dlvETAWindowStop) {
+		this.dlvETAWindowStop = dlvETAWindowStop;
+	}
+	
 }

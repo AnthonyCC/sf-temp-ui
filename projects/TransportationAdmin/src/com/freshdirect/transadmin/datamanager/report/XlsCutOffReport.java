@@ -557,6 +557,11 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
 	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 	        hssfCell.setCellValue(new HSSFRichTextString("Time Window"));
+	        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("ETA Window"));
 	        	        
 	        hssfCell = row.createCell(cellnum++);		        
 	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
@@ -613,7 +618,17 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 				    hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.formatTimeRange
 				    												(_model.getTimeWindowStart(), _model.getTimeWindowStop())));
-			    			    
+
+				    hssfCell = row.createCell(cellnum++);		        
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
+				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				    if(_model.getDlvETAWindowStart() != null && _model.getDlvETAWindowStop() != null) {
+				    	hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.formatTimeRange
+				    												(_model.getDlvETAWindowStart(), _model.getDlvETAWindowStop())));
+				    } else {
+				    	hssfCell.setCellValue(new HSSFRichTextString(""));
+				    }
+				    				    			    
 				    hssfCell = row.createCell(cellnum++);		        
 				    hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
 				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
@@ -922,6 +937,11 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		        hssfCell = row.createCell(cellnum++);		        
 		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
 		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("ETA Window"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 		        hssfCell.setCellValue(new HSSFRichTextString("Address"));
 		        
 		        boolean rowStyleSwitch = true;
@@ -952,6 +972,16 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 				    hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
 				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 				    hssfCell.setCellValue(new HSSFRichTextString(_model.getOrderNumber()));
+				    
+				    hssfCell = row.createCell(cellnum++);		        
+				    hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
+				    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+				    if(_model.getDlvETAWindowStart() != null && _model.getDlvETAWindowStop() != null) {
+				    	hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.formatTimeRange
+																	(_model.getDlvETAWindowStart(), _model.getDlvETAWindowStop())));
+				    } else {
+				    	hssfCell.setCellValue(new HSSFRichTextString(""));
+				    }
 				    
 				    hssfCell = row.createCell(cellnum++);		        
 				    hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyleNoWrap" : "textStyleHighlight"));

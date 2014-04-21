@@ -89,6 +89,10 @@
 							  <ec:column property="ecoFriendly" title="Eco Friendly Radius"/>
 							  <ec:column property="steeringRadius" title="Steering Radius"/>
 							  <ec:column property="svcAdjReductionFactor" title="Service Adjustment Reduction Factor"/>
+							  <ec:column property="ETAInterval" title="ETA Interval"/>
+							  <ec:column property="manifestETAEnabled" title="Manifest ETAEnabled"/>
+							  <ec:column property="emailETAEnabled" title="Email ETAEnabled"/>
+							  <ec:column property="smsETAEnabled" title="SMS ETAEnabled"/>
 							</ec:row>
 						  </ec:table>
 		<% }else{ %>
@@ -115,6 +119,10 @@
 							  <ec:column property="ecoFriendly" title="Eco Friendly Radius"/>
 							  <ec:column property="steeringRadius" title="Steering Radius"/>
 							  <ec:column property="svcAdjReductionFactor" title="Service Adjustment Reduction Factor"/>
+							  <ec:column property="ETAInterval" title="ETA Interval"/>							  
+							  <ec:column property="manifestETAEnabled" title="Manifest ETAEnabled"/>
+							  <ec:column property="emailETAEnabled" title="Email ETAEnabled"/>
+							  <ec:column property="smsETAEnabled" title="SMS ETAEnabled"/>
 							</ec:row>
 						  </ec:table>
 		<% } %>
