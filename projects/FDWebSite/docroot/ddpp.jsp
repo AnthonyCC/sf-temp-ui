@@ -230,8 +230,11 @@ if (categoryModel != null) {
 	}
 	SearchResults search = new SearchResults(searchProductResults, Collections.<FilteringSortingItem<Recipe>> emptyList(), Collections.<FilteringSortingItem<CategoryModel>> emptyList(), "", true);
 	
+
 	// storing the view settings in the session
 	FilteringNavigator nav = new FilteringNavigator(request,16);
+	nav.setSortBy(SearchSortType.NATURAL_SORT);
+	nav.saveState();
 
   	request.setAttribute("filternav", nav);
   	

@@ -510,10 +510,10 @@ public class ProductDetailPopulator {
 			} catch (FDResourceException e) {
 			}
 			
-			// earliest availability - product not yet available but will in the near future
-			if (sku != null) {
-				item.setMsgEarliestAvailability( sku.getEarliestAvailabilityMessage() );
-			}
+		}
+		// earliest availability - product not yet available but will in the near future
+		if (sku != null) {
+			item.setMsgEarliestAvailability( sku.getEarliestAvailabilityMessage() );
 		}
 	}
 
