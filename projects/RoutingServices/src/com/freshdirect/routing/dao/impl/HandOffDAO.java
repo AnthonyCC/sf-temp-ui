@@ -693,16 +693,14 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			batchUpdater.declareParameter(new SqlParameter(Types.INTEGER));
 			batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
 			batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
-			
 			batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
 			batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
 			batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
+			batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
+			batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
 			
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
-			
-			batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
-			batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
 
 			batchUpdater.compile();			
 			connection = this.jdbcTemplate.getDataSource().getConnection();
@@ -718,14 +716,10 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 											, model.getTravelTime()
 											, model.getServiceTime()
 											, model.getOrderSize()
+											, model.getDeliveryInfo() != null ? model.getDeliveryInfo().getDeliveryETAStartTime() : null
+											, model.getDeliveryInfo() != null ? model.getDeliveryInfo().getDeliveryETAEndTime() : null
 											, model.getBatchId()
 											, model.getOrderNumber()
-											, model.getDeliveryInfo() != null ? model
-													.getDeliveryInfo().getDeliveryETAStartTime()
-													: null
-											, model.getDeliveryInfo() != null ? model
-													.getDeliveryInfo().getDeliveryETAEndTime()
-													: null
 									});
 			}			
 			batchUpdater.flush();
