@@ -13,6 +13,8 @@ public class PendingPopupData implements Serializable {
 	private List<QuickShopLineItem> pendingItems;
 	private List<QuickShopLineItem> cartData;
 	
+	private String eventSource;
+	
 	
 	public List<PendingPopupOrderInfo> getOrderInfos() {
 		return orderInfos;
@@ -31,6 +33,12 @@ public class PendingPopupData implements Serializable {
 	}
 	public void setCartData(List<QuickShopLineItem> cartData) {
 		this.cartData = cartData;
-	}	
+	}
+	public String getEventSource() {
+		return eventSource;
+	}
+	public void setEventSource(String eventSource) {
+		this.eventSource = eventSource;
+	}
 
 }

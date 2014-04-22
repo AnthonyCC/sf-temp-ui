@@ -77,7 +77,7 @@ public class AddToCartServlet extends BaseJsonServlet {
 			if(user.getShowPendingOrderOverlay() && user.hasPendingOrder() && reqData.getOrderId()==null && !reqData.isNewOrder()){
 				//user has pending orders, show the popup first
 				
-				returnWithModifyPopup(response, user, cart, items);
+				returnWithModifyPopup(response, user, cart, items, reqData.getEventSource());
 				return;
 			}
 			
@@ -184,7 +184,7 @@ public class AddToCartServlet extends BaseJsonServlet {
 		return cart;
 	}
 
-	public static void returnWithModifyPopup(HttpServletResponse response, FDUserI user, FDCartModel cart, List<AddToCartItem> items) throws FDResourceException, HttpErrorResponse {
+	public static void returnWithModifyPopup(HttpServletResponse response, FDUserI user, FDCartModel cart, List<AddToCartItem> items, String eventSource) throws FDResourceException, HttpErrorResponse {
 		
 		// Create response data object
 		AddToCartResponseData responseData = new AddToCartResponseData();
@@ -192,6 +192,9 @@ public class AddToCartServlet extends BaseJsonServlet {
 		
 		//create order infos
 		pendingData.setOrderInfos(getPendingOrderInfos(user));
+		
+		//event source
+		pendingData.setEventSource(eventSource);
 		
 		//convert pending items
 		List<QuickShopLineItem> pendingItems = new ArrayList<QuickShopLineItem>();
