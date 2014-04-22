@@ -153,6 +153,10 @@
   float: right;
 }
 
+.productDisplay-skuconfig .skucontrol-variations-item label {
+  float: right;
+}
+
 .productDisplay-skuconfig .error em {
   display: none;
 }
