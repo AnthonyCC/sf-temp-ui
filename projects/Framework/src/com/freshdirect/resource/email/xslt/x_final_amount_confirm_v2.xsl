@@ -8,7 +8,7 @@
 	<xsl:decimal-format name="USD" decimal-separator="." grouping-separator=","/>
 <xsl:template match="fdemail">
 
-<xsl:if test="order/deliveryReservation/deliveryETA/emailETAenabled = 0">
+<xsl:if test="order/deliveryReservation/deliveryETA/emailETAenabled = 'true'">
 	<xsl:text><b>NEW! More time for you!</b> We’ve cut your wait time in half. Your order’s Estimated Time of Arrival (ETA) is between </xsl:text>
 	<xsl:text><b><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/deliveryETA/startTime"/></xsl:call-template></b></xsl:text> 
 	<xsl:text> to </xsl:text>
@@ -38,7 +38,7 @@
 
 	</xsl:text>
 </xsl:when>
-<xsl:when test="order/deliveryReservation/deliveryETA/emailETAenabled = 1">
+<xsl:when test="order/deliveryReservation/deliveryETA/emailETAenabled = 'true'">
 	<xsl:text>Hello again! Your order (#</xsl:text><xsl:value-of select="order/erpSalesId"/><xsl:text>) is on its way to you. </xsl:text>
 	<xsl:text>Its ETA is between </xsl:text><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/deliveryETA/startTime"/></xsl:call-template>
 	<xsl:text> and </xsl:text><xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/deliveryETA/endTime" /></xsl:call-template>
