@@ -203,6 +203,7 @@ var FreshDirect = FreshDirect || {};
     this.$el.removeClass('shown');
     this.clicked = false;
     this.shown = false;
+    this.placeholderActive = false;
     this.$el.removeClass('clicked');
     if (this.config.placeholder || this.config.lateplaceholder) {
       this.$ghost.css({display: "none"});
@@ -223,7 +224,7 @@ var FreshDirect = FreshDirect || {};
   };
 
   PopupContent.prototype.reposition = function (ignoreCustomFunction) {
-    if (!this.$alignTo || !this.$el) {
+    if (!this.$alignTo || !this.$el || !this.shown) {
       return;
     }
 
@@ -267,6 +268,7 @@ var FreshDirect = FreshDirect || {};
         float: this.$alignTo.css('float')
       });
       this.$alignTo.appendTo(this.$ghost);
+      this.placeholderActive = true;
     }
     
     if(align) {

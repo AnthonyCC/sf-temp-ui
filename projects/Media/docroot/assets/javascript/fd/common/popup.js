@@ -116,7 +116,7 @@ var FreshDirect = FreshDirect || {};
                 }
 
                 // reposition the popups
-                if (this.popup) {
+                if (this.popup && !this.popup.placeholderActive && this.popup.shown) {
                   this.popup.reposition();
                 }
             }
