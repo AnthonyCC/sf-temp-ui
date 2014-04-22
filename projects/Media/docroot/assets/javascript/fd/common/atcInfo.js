@@ -35,6 +35,7 @@ var FreshDirect = FreshDirect || {};
           if (controls.size() !== 0) {
             // reset qty
             controls.find('input.qty').val(+controls.find('.qtyinput').data('min') || 1).change();
+            controls.find('select.salesunit').val('');
             // IE 8 helper
             controls.find('.iehelper').html(controls.find('.addtocart[data-amount]').attr('data-amount') + ' Added');
           }
@@ -69,6 +70,7 @@ var FreshDirect = FreshDirect || {};
           if (controls.size() !== 0) {
             controls.addClass('atc-info-message');
             controls.find('input.qty').val(+controls.find('.qtyinput').data('min') || 1).change();
+            controls.find('select.salesunit').val('');
             setTimeout(this.removeMessage.bind(controls),1800);
           }
 
