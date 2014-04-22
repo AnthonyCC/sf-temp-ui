@@ -4,12 +4,13 @@
  * @param cartData pending popup cart data
  * @param orderInfos pending popup order data
  * @param pendingItems pending popup items to add
+ * @param? eventSource coremetrics eventsource
  */
 {template .modifyBRDPopup2}
 <div id="MBRDPopup2" class="BRD-popup-container">
 	<div class="BRD-popup qs-popup">
 		<h2 class="qs-popup-header"><span>You are modifying a pending order.</span><button class="MBRD-close">close</button></h2>
-		<div class="qs-popup-content">
+		<div class="qs-popup-content" {if $eventSource}data-cmeventsource="{$eventSource}"{/if}>
 			<p class="MBRD-order">
 				<label for="MBRDOrder">Choose which order to modify:</label>
 				<select id="MBRDOrder">

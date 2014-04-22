@@ -122,13 +122,13 @@ var FreshDirect = FreshDirect || {};
 	});
 
 	
-	function triggerATC(items,meta,triggerElement){
+	function triggerATC(items,meta,triggerElement,eventSource){
 		$(triggerElement || document.body).trigger({
 			type:'addToCart',
 			atcList:items,
 			ATCMeta:(meta || {}),
 			valid:true,
-			cmData:{}
+			cmData:eventSource ? {eventSource: eventSource} : {}
 		});		
 	}
 	
@@ -154,10 +154,10 @@ var FreshDirect = FreshDirect || {};
 
 	
   fd.modules.common.utils.register("components", "AddToCart", {
-	  addToCart:addToCart,
-	  requiredValidator:requiredValidator,
-	  atcFilter:atcFilter,
-	  triggerATC:triggerATC
+    addToCart:addToCart,
+    requiredValidator:requiredValidator,
+    atcFilter:atcFilter,
+    triggerATC:triggerATC
   } , fd);
 
 }(FreshDirect));
