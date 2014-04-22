@@ -363,11 +363,9 @@
     {param amount:$inCartAmount /}
     {param atcItemId:$atcItemId /}
   {/call}
-  {if not $customizePopup}
-    <div class="portrait-item-atl">
-      <span class="addtolist cssbutton purple icon-file2-before" data-component="addToListButton" data-alignpopup="tc-bc-c">save to list</span>
-    </div>
-  {/if}
+  <div class="portrait-item-atl">
+    <span class="{if $customizePopup}fake{/if}addtolist cssbutton purple icon-file2-before" {if not $customizePopup}data-component="addToListButton" data-alignpopup="tc-bc-c"{else}data-component="customizeButton" data-alignpopupfunction="transactionalCustomize"{/if}>save to list</span>
+  </div>
   {if $relatedItem}
   <ul class="relatedItem" data-component="relateditem" data-cmeventsource="TRY">
     {call common.transactionalGridItem}

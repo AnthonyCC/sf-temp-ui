@@ -109,6 +109,7 @@
 }
 
 #customizePopup .buttons .addtolist,
+.portrait-item-atl span.fakeaddtolist,
 .portrait-item-atl span.addtolist {
   font-weight: normal;
   height: 20px;
