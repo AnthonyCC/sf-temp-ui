@@ -288,7 +288,7 @@ var FreshDirect = FreshDirect || {};
 
   };
 
-  $(document).on('mouseover','.transactional [data-transactional-trigger]',function(event){
+  $(document).on('mouseover','.transactional [data-transactional-trigger] *',function(event){
     var element = $(event.currentTarget).closest('[data-component="product"]');
     if (!element.hasClass('unavailable')) {
       transactionalPopup.open({
