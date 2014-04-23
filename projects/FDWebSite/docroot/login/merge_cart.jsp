@@ -59,18 +59,40 @@ templateToUse = "/common/template/checkout_nav.jsp"; //EXPANDED_PAGE_VERIFY - sh
 <table width="<%=W_MERGE_CART_TOTAL%>" cellspacing="0" cellpadding="0" border="0">
 <tr valign="top">
 
-<td width="<%=W_MERGE_CART_RADIO%>" align="center"><input type="radio" name="chosen_cart" value="current" checked></td>
+<td width="<%=W_MERGE_CART_RADIO%>" align="center"><input type="radio" name="chosen_cart" value="merge" checked></td>
 <td width="<%=W_MERGE_CART_COL%>" class="text11bold">
 
 	<table width="<%=W_MERGE_CART_COL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>
-		<td width="<%=W_MERGE_CART_COL%>"><img src="/media_stat/images/template/site_access/option_a.gif" width="147" height="41" alt="" border="0"><BR>
+		<td width="<%=W_MERGE_CART_COL%>"><img src="/media_stat/images/template/site_access/option_a.gif" width="128" height="41" alt="" border="0"><BR>
 		<font class="space4pix"><br></font>
 		</td>
 	</tr>
 	<tr>
 		<td width="<%=W_MERGE_CART_COL%>">
-		<% FDCartModel cart = cartCurrent; %>
+		<% FDCartModel cart = cartMerged; %>
+		<%@ include file="/includes/i_viewcart_merge.jspf" %>
+		</td>
+	</tr>
+	</table>
+	
+</td>
+<td width="<%=W_MERGE_CART_PADDING%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_MERGE_CART_PADDING%>" HEIGHT="15" BORDER="0"></td>
+
+
+
+<td width="<%=W_MERGE_CART_RADIO%>" align="center"><input type="radio" name="chosen_cart" value="current"></td>
+<td width="<%=W_MERGE_CART_COL%>" class="text11bold">
+
+	<table width="<%=W_MERGE_CART_COL%>" cellspacing="0" cellpadding="0" border="0">
+	<tr>
+		<td width="<%=W_MERGE_CART_COL%>"><img src="/media_stat/images/template/site_access/option_b.gif" width="147" height="41" alt="" border="0"><BR>
+		<font class="space4pix"><br></font>
+		</td>
+	</tr>
+	<tr>
+		<td width="<%=W_MERGE_CART_COL%>">
+		<% cart = cartCurrent; %>
 		<%@ include file="/includes/i_viewcart_merge.jspf" %>
 		</td>
 	</tr>
@@ -85,7 +107,7 @@ templateToUse = "/common/template/checkout_nav.jsp"; //EXPANDED_PAGE_VERIFY - sh
 
 	<table width="<%=W_MERGE_CART_COL%>" cellspacing="0" cellpadding="0" border="0">
 	<tr>
-		<td width="<%=W_MERGE_CART_COL%>"><img src="/media_stat/images/template/site_access/option_b.gif" width="142" height="41" alt="" border="0"><BR>
+		<td width="<%=W_MERGE_CART_COL%>"><img src="/media_stat/images/template/site_access/option_c.gif" width="142" height="41" alt="" border="0"><BR>
 		<font class="space4pix"><br></font>
 		</td>
 	</tr>
@@ -100,26 +122,7 @@ templateToUse = "/common/template/checkout_nav.jsp"; //EXPANDED_PAGE_VERIFY - sh
 
 
 </td>
-<td width="<%=W_MERGE_CART_PADDING%>"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="<%=W_MERGE_CART_PADDING%>" HEIGHT="15" BORDER="0"></td>
 
-<td width="<%=W_MERGE_CART_RADIO%>" align="center"><input type="radio" name="chosen_cart" value="merge"></td>
-<td width="<%=W_MERGE_CART_COL%>" class="text11bold">
-
-	<table width="<%=W_MERGE_CART_COL%>" cellspacing="0" cellpadding="0" border="0">
-	<tr>
-		<td width="<%=W_MERGE_CART_COL%>"><img src="/media_stat/images/template/site_access/option_c.gif" width="128" height="41" alt="" border="0"><BR>
-		<font class="space4pix"><br></font>
-		</td>
-	</tr>
-	<tr>
-		<td width="<%=W_MERGE_CART_COL%>">
-		<% cart = cartMerged; %>
-		<%@ include file="/includes/i_viewcart_merge.jspf" %>
-		</td>
-	</tr>
-	</table>
-	
-</td>
 <td width="<%=W_MERGE_CART_PADDING_RIGHT%>">&nbsp;</td>
 
 </tr>
