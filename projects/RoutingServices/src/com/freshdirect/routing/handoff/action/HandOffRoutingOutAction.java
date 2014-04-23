@@ -228,7 +228,8 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 									
 									//Assign ETA window to each stop
 									if(zoneETAIntervalLookup.get(areaEntry.getKey()) != null && zoneETAIntervalLookup.get(areaEntry.getKey()) > 0) {
-										DateRange dlvETAWindowRange = RoutingUtil.getStopETAWindow(_stop.getStopArrivalTime() 
+										DateRange dlvETAWindowRange = RoutingUtil.getStopETAWindow(this.getBatch().getDeliveryDate()
+																			, _stop.getStopArrivalTime() 
 																			, zoneETAIntervalLookup.get(areaEntry.getKey())
 																			, new DateRange(_stop.getDeliveryInfo().getRoutingStartTime() != null ? _stop.getDeliveryInfo().getRoutingStartTime() : _stop.getDeliveryInfo().getDeliveryStartTime()
 																					, _stop.getDeliveryInfo().getRoutingEndTime() != null ? _stop.getDeliveryInfo().getRoutingEndTime() : _stop.getDeliveryInfo().getDeliveryEndTime()));

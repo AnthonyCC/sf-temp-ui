@@ -447,7 +447,9 @@ public static boolean updateReservation(DlvReservationModel reservation, IOrderM
 }
 
 	
-	public static DateRange getStopETAWindow(Date stopArrivalTime, int windowETAInterval, DateRange routingWindow) {
+	public static DateRange getStopETAWindow(Date deliveryDate, Date stopArrivalTime, int windowETAInterval, DateRange routingWindow) {
+		routingWindow = new DateRange(RoutingDateUtil.getNormalDate(deliveryDate, routingWindow.getStartDate()), 
+				RoutingDateUtil.getNormalDate(deliveryDate, routingWindow.getEndDate()));
 		SortedSet<DateRange> _tempETAWindows = getStopETAWindows(windowETAInterval, routingWindow);
 		if(_tempETAWindows != null && _tempETAWindows.size() > 0) {
 			return getStopETAWindow(stopArrivalTime, _tempETAWindows, routingWindow);
