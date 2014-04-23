@@ -34,6 +34,7 @@ import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.TrnFacilityType;
+import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 
@@ -41,8 +42,7 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(CapacityControllerCronRunner.class);
 
-	private static final int DEFAULT_DAYS = 7;
-
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
 
 		if (!FDStoreProperties.isDynamicRoutingEnabled()) {
@@ -53,7 +53,6 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 		Context ctx = null;
 
 		boolean isTrialRun = false;
-		boolean isPurgeEnabled = false;
 		boolean isReverse = false;
 		boolean isSendEmail = false;
 		List<Date> jobDate = new ArrayList<Date>();
@@ -63,7 +62,7 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 			ctx = cron.getInitialContext();
 			DlvManagerHome dlh =(DlvManagerHome) ctx.lookup("freshdirect.delivery.DeliveryManager");
 			DlvManagerSB dsb = dlh.create();
-
+			RoutingInfoServiceProxy routingProxy = new RoutingInfoServiceProxy();
 			if (args.length >= 1) {
 				for (String arg : args) {
 					try { 
@@ -72,11 +71,9 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 																(DateUtil.parse(arg.substring("jobDate=".length())))).getTime());
 						} else if (arg.startsWith("trail=")) {
 							isTrialRun =  Boolean.valueOf(arg.substring("trail=".length())).booleanValue(); 
-						} else if (arg.startsWith("purge=")) {								
-							isPurgeEnabled = Boolean.valueOf(arg.substring("purge=".length())).booleanValue(); 
-						}  else if (arg.startsWith("reverse=")) {								
+						} else if (arg.startsWith("reverse=")) {								
 							isReverse = Boolean.valueOf(arg.substring("reverse=".length())).booleanValue(); 
-						}  else if (arg.startsWith("sendEmail=")) {								
+						} else if (arg.startsWith("sendEmail=")) {								
 							isSendEmail = Boolean.valueOf(arg.substring("sendEmail=".length())).booleanValue(); 
 						}
 					} catch (Exception e) {
@@ -86,39 +83,26 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 				}
 			}
 			
-			LOGGER.info("##### CapacityControllerCronRunner Start: isTrialRun="+isTrialRun+"->isPurgeEnabled="+isPurgeEnabled+"->isSendEmail="+isSendEmail+"->isReverse="+isReverse+" ########");
-			if(jobDate.size() == 0) {
-				
-				jobDate.addAll(dsb.getFutureTimeslotDates());
-				/*int incrementBy = isReverse ? -1 : 1;
-				Calendar baseDate = DateUtil.truncate(Calendar.getInstance());					
-				baseDate.add(Calendar.DATE, isReverse ? 7 : 1);
-				for(int i=0; i < DEFAULT_DAYS; i++) {
-					jobDate.add(baseDate.getTime());
-					baseDate.add(Calendar.DATE, incrementBy);
-				}*/
+			LOGGER.info("##### CapacityControllerCronRunner Start: isTrialRun="+isTrialRun+"->isSendEmail="+isSendEmail+"->isReverse="+isReverse+" ########");
+			if(jobDate.size() == 0) {				
+				jobDate.addAll(dsb.getFutureTimeslotDates());				
 			}
 
-			boolean isDynaSyncEnabled = RoutingServicesProperties.getRoutingDynaSyncEnabled();
-			isPurgeEnabled =  isPurgeEnabled && !isDynaSyncEnabled;
-			
+			boolean isWaveSyncLocked = routingProxy.isWaveSyncronizationLocked() != null;
+						
 			Iterator<Date> _dateItr = jobDate.iterator();
 			Date processDate = null;
 					
 			while(_dateItr.hasNext()) {
 				processDate = _dateItr.next();
 				try {
-					Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree = dsb.retrieveWaveInstanceTree
-																															(processDate, EnumWaveInstanceStatus.NOTSYNCHRONIZED);
 					
-					Set inSyncRoutingWaveInstIds = dsb.retrieveRoutingWaveInstIds
-							(processDate);
+					Set inSyncRoutingWaveInstIds = dsb.retrieveRoutingWaveInstIds(processDate);
 
 					Set<String> inSyncZones = dsb.getInSyncWaveInstanceZones(processDate);
 					
 					List<DlvTimeslotModel> slots = dsb.getTimeslotsForDate(processDate);
-					
-					
+										
 					Map<String, TrnFacilityType> routingLocationMap = dsb.retrieveTrnFacilitys();
 
 					LOGGER.info("CapacityControllerCronRunner beginning to synchronize "+slots.size()
@@ -126,7 +110,9 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 					TimeslotGroup group = groupDeliverySlotByZone(slots);
 					Map<String, List<DlvTimeslotModel>> slotsByZone = group.getGroupByZone();
 					
-					if(isDynaSyncEnabled) {
+					if(isWaveSyncLocked) {
+						Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree = dsb.retrieveWaveInstanceTree
+																																			(processDate, EnumWaveInstanceStatus.NOTSYNCHRONIZED);
 						if(group.getSchedulerIds() != null && waveInstanceTree != null) {
 							for(IRoutingSchedulerIdentity schedulerId : group.getSchedulerIds()) {
 								if(waveInstanceTree.containsKey(schedulerId.getDeliveryDate())) {
@@ -155,7 +141,7 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 
 						if(_routingSlots.size() > 0) {
 							_schId = _routingSlots.get(0).getSchedulerId();
-							metrics = dsb.retrieveCapacityMetrics(_schId, _routingSlots, (isPurgeEnabled && !_dateItr.hasNext()));
+							metrics = dsb.retrieveCapacityMetrics(_schId, _routingSlots);
 							attachWindowMetrics(_dlvSlots, metrics);
 						}									
 					}
@@ -185,7 +171,7 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 					}
 				}
 			}
-			if(isPurgeEnabled){
+			if(isWaveSyncLocked){
 				LOGGER.debug("Fixing disassociated timeslots: START");
 				dsb.fixDisassociatedTimeslots();
 				LOGGER.debug("Fixing disassociated timeslots: STOP");

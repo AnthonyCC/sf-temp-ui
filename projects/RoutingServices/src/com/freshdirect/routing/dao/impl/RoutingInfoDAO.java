@@ -1225,4 +1225,76 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 						);
 						return result;
 				}	
+
+	/* Wave Sync lock/unlock*/
+	private static final String GET_WAVESYNCLOCKNEXTSEQ_QRY = "SELECT TRANSP.SYSTEM_SEQ.nextval FROM DUAL";
+	
+	public String getNewWaveSyncLockId() throws SQLException {
+		return ""+jdbcTemplate.queryForLong(GET_WAVESYNCLOCKNEXTSEQ_QRY);
+	}
+	
+	private static final String INSERT_WAVESYNC_LOCK_QRY = "insert into transp.WAVE_INSTANCE_LOCKACTIVITY (LOCK_ID, INITIATOR, LOCK_DATETIME) VALUES (?,?,?) ";
+	
+	public int addWaveSyncLockActivity(final String userId) throws SQLException {
+
+		Connection connection = null;
+		String waveSyncLockId = null;
+		try {
+			waveSyncLockId = this.getNewWaveSyncLockId();
+			connection = this.jdbcTemplate.getDataSource().getConnection();
+			return this.jdbcTemplate.update(INSERT_WAVESYNC_LOCK_QRY,
+													new Object[] { waveSyncLockId, userId, new Timestamp(new Date().getTime()) });
+
+		} finally {
+			if (connection != null)
+				connection.close();
+		}
+	}
+	
+	private static final String RELEASE_WAVESYNC_LOCK_QRY = "update transp.WAVE_INSTANCE_LOCKACTIVITY set RELEASELOCK_DATETIME = SYSDATE, LOCK_RELEASEDBY = ? " +
+			" where RELEASELOCK_DATETIME IS NULL";
+	
+	public int releaseWaveSyncLock(final String userId) throws SQLException {
+
+		Connection connection = null;
+
+		try {
+			connection = this.jdbcTemplate.getDataSource().getConnection();
+
+			return this.jdbcTemplate.update(RELEASE_WAVESYNC_LOCK_QRY,
+					new Object[] { userId });
+
+		} finally {
+			if (connection != null)
+				connection.close();
+		}
+	}
+	
+	private static final String GET_WAVESYNC_LOCK_QRY = "select * from transp.WAVE_INSTANCE_LOCKACTIVITY where RELEASELOCK_DATETIME IS NULL";
+	
+	public String isWaveSyncronizationLocked() throws SQLException {
+		
+		final List<String> waveSynclockedUserId = new ArrayList<String>();
+		
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+				PreparedStatement ps = null;
+				ps = connection.prepareStatement(GET_WAVESYNC_LOCK_QRY);
+				return ps;
+			}  
+		};
+		
+		jdbcTemplate.query(creator, 
+				new RowCallbackHandler() { 
+				public void processRow(ResultSet rs) throws SQLException {				    	
+					do { 
+						waveSynclockedUserId.add(rs.getString("INITIATOR"));
+					} while(rs.next());		        		    	
+				}
+		});
+		
+		return waveSynclockedUserId.size() > 0 ? waveSynclockedUserId.get(0) : null;
+	}
+	
+	
 }

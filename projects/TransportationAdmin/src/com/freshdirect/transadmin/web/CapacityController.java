@@ -7,8 +7,10 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -169,7 +171,9 @@ public class CapacityController extends AbstractMultiActionController {
 				srvScenario = new RoutingInfoServiceProxy().getRoutingScenarioByDate(reportDate);
 				discountMapping = this.getZoneManagerService().getWindowSteeringDiscounts(reportDate);
 				
-			}			
+			} else if(TransStringUtil.isEmpty(rDate)) {
+				rDate = TransStringUtil.getNextDate();
+			}
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -179,15 +183,15 @@ public class CapacityController extends AbstractMultiActionController {
 		if("T".equalsIgnoreCase(rType)) {			
 			processEarlyWarning(mav, new TimeEarlyWarningFormatter()
 												, executeEarlyWarningTime(mav, rDate, cutOff, rType, EnumLogicalOperator.getEnum(condition), EnumEarlyWarningViewContext.TIME)
-												, discountMapping, EnumEarlyWarningViewContext.TIME);
+												, discountMapping, EnumEarlyWarningViewContext.TIME, rDate);
 		} else if("O".equalsIgnoreCase(rType)) {
 			processEarlyWarning(mav, new OrderEarlyWarningFormatter()
 												, executeEarlyWarningOrder(mav, rDate, cutOff, rType, EnumLogicalOperator.getEnum(condition), EnumEarlyWarningViewContext.ORDER)
-												, discountMapping, EnumEarlyWarningViewContext.ORDER);
+												, discountMapping, EnumEarlyWarningViewContext.ORDER, rDate);
 		}else{
 			processEarlyWarning(mav, new OrderEarlyWarningFormatter()
 												, executeEarlyWarningOrder(mav, rDate, cutOff, rType, EnumLogicalOperator.getEnum(condition), EnumEarlyWarningViewContext.DISPLAY)
-												, discountMapping, EnumEarlyWarningViewContext.DISPLAY);
+												, discountMapping, EnumEarlyWarningViewContext.DISPLAY, rDate);
 		
 		}
 		
@@ -635,15 +639,47 @@ public class CapacityController extends AbstractMultiActionController {
 		return capacityMapping;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void processEarlyWarning(ModelAndView mav, EarlyWarningFormatter formatter
 										, Map<String, List<Capacity>> capacityMapping
-										, Map<String, List<TimeRange>> discountMapping, EnumEarlyWarningViewContext context)  {
+										, Map<String, List<TimeRange>> discountMapping, EnumEarlyWarningViewContext context, String rDate)  {
 		
 		List<EarlyWarningCommand> capacity = new ArrayList<EarlyWarningCommand>();
 		Map<Region, Capacity> regionCapacity = new HashMap<Region, Capacity>();
 		List<EarlyWarningCommand> regCapacity = new ArrayList<EarlyWarningCommand>();
+		Map<String, Integer> unassignedZoneMap = new HashMap<String, Integer>();
+		Map<String, Integer> mismatchedZoneMap = new HashMap<String, Integer>();
+		Set<String> unassignedZonesByWindow = new HashSet<String>();
+		Set<String> mismatchZonesByWindow = new HashSet<String>();		
+		List<UnassignedCommand> unassigneds = new ArrayList<UnassignedCommand>();
+		int mismatchCnt = 0;
+		Date deliveryDate = null;
+		try {
+			deliveryDate = TransStringUtil.getDate(rDate);
+			unassigneds = getUnassignedOrders(deliveryDate);
+			for (ListIterator<UnassignedCommand> i = unassigneds.listIterator(); i.hasNext();) {
+				UnassignedCommand _uc = i.next();
+				if(_uc.getUnassignedTime() != null) {
+					if(!unassignedZoneMap.containsKey(_uc.getZone())) {
+						unassignedZoneMap.put(_uc.getZone(), 0);
+					}
+					unassignedZoneMap.put(_uc.getZone(), unassignedZoneMap.get(_uc.getZone()).intValue() + 1);
+					unassignedZonesByWindow.add(_uc.getZone()+"_"+_uc.getTimeWindow());
+				} else {
+					mismatchCnt++;
+					if(!mismatchedZoneMap.containsKey(_uc.getZone())) {
+						mismatchedZoneMap.put(_uc.getZone(), 0);
+					}
+					mismatchedZoneMap.put(_uc.getZone(), mismatchedZoneMap.get(_uc.getZone()).intValue() + 1);
+					mismatchZonesByWindow.add(_uc.getZone()+"_"+_uc.getTimeWindow());
+				}
+			}
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		
 		Map<String, Zone> zoneMapping = getZoneMapping();
+
 		Iterator<String> _capItr = capacityMapping.keySet().iterator();
 		String _zoneCode = null;
 		Capacity _capacity = null;
@@ -680,6 +716,9 @@ public class CapacityController extends AbstractMultiActionController {
 				_displayCommand.setTimeslotDetails(timeslotDetails);
 				_displayCommand.setCode(_refZone.getArea().getCode());
 				_displayCommand.setName(_refZone.getArea().getName());
+				if(unassignedZoneMap != null && unassignedZoneMap.get(_zoneCode) != null) {
+					_displayCommand.setUnassignedCount(unassignedZoneMap.get(_zoneCode));
+				}
 				
 				int openCount = 0;
 				int closedCount = 0;
@@ -842,6 +881,12 @@ public class CapacityController extends AbstractMultiActionController {
 		
 		mav.getModel().put("earlywarnings", capacity );
 		mav.getModel().put("earlywarnings_region", regCapacity );
+		mav.getModel().put("unassignedOrderCnt", unassigneds.size() - mismatchCnt);
+		mav.getModel().put("mismatchOrderCnt", mismatchCnt);
+		mav.getModel().put("unassignedZoneCnt", unassignedZoneMap.size() );
+		mav.getModel().put("mismatchZoneCnt", mismatchedZoneMap.size() );
+		mav.getModel().put("unassignedZonesByWindowCnt", unassignedZonesByWindow.size() );
+		mav.getModel().put("mismatchZonesByWindowCnt", mismatchZonesByWindow.size() );
 	}
 	
 	private boolean isDiscounted(List<TimeRange> discountSlots, String zoneCode, Date startTime, Date endTime) {		
@@ -887,64 +932,87 @@ public class CapacityController extends AbstractMultiActionController {
 			try {
 				Date deliveryDate = TransStringUtil.getDate(rDate);
 				
-				DeliveryServiceProxy deliveryProxy = new DeliveryServiceProxy();
-						
-				List<IUnassignedModel> orders = deliveryProxy.getUnassigned(deliveryDate, null, null);
-				
-				Iterator<IUnassignedModel> _itr = orders.iterator();
-				IUnassignedModel _order = null;
-				UnassignedCommand _unassigned = null;
-				
-				while(_itr.hasNext()) {
-					_order = _itr.next();
-					
-					_unassigned = new UnassignedCommand();
-					
-					_unassigned.setCreateModTime(_order.getOrder().getCreateModifyTime());
-					_unassigned.setCustomerId(_order.getOrder().getCustomerNumber());
-					_unassigned.setOrderId(_order.getOrder().getOrderNumber());
-					_unassigned.setTimeWindow(RoutingDateUtil.formatDateTime(_order.getOrder().getDeliveryInfo().getDeliveryStartTime()
-								, _order.getOrder().getDeliveryInfo().getDeliveryEndTime()));
-					_unassigned.setUnassignedTime(_order.getOrder().getUnassignedTime());
-					_unassigned.setUnassignedAction(_order.getOrder().getUnassignedAction());
-					
-					_unassigned.setReservationId(_order.getOrder().getDeliveryInfo().getReservationId());
-					_unassigned.setZone(_order.getOrder().getDeliveryInfo().getDeliveryZone().getZoneNumber());
-					
-					_unassigned.setOrderSize(_order.getOrder().getReservedOrderSize());
-					_unassigned.setServiceTime(_order.getOrder().getReservedServiceTime());
-					
-					_unassigned.setOverrideOrderSize(_order.getOrder().getOverrideOrderSize());
-					_unassigned.setOverrideServiceTime(_order.getOrder().getOverrideServiceTime());
-					
-					if(_order.getOrder() != null && _order.getOrder().getDeliveryInfo() != null
-														&& _order.getOrder().getDeliveryInfo().getPackagingDetail() != null) {
-						_unassigned.setPackageInfo(_order.getOrder().getDeliveryInfo().getPackagingDetail().getNoOfCartons()
-														+","+_order.getOrder().getDeliveryInfo().getPackagingDetail().getNoOfCases()
-														+","+_order.getOrder().getDeliveryInfo().getPackagingDetail().getNoOfFreezers());
-					}
-										
-					_unassigned.setUpdateStatus(_order.getOrder().getUpdateStatus());
-					
-					_unassigned.setManuallyClosed(_order.getSlot().isManuallyClosed());
-					_unassigned.setDynamicActive(_order.getSlot().isDynamicActive());
-					
-					_unassigned.setIsChefsTable(_order.getIsChefsTable());
-					_unassigned.setIsForced(_order.getIsForced());
-					unassigneds.add(_unassigned);
-				}
+				unassigneds = getUnassignedOrders(deliveryDate);
 				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		
+		Collection activeZones = domainManagerService.getZones();
+        Collection activeZoneCodes = zoneManagerService.getActiveZoneCodes();
+        if(activeZones != null && activeZoneCodes != null) {
+        		Iterator _iterator = activeZones.iterator();
+        		Zone _tmpZone = null;
+        		while(_iterator.hasNext()) {
+        			_tmpZone = (Zone)_iterator.next();        			
+        			if(!activeZoneCodes.contains(_tmpZone.getZoneCode())) {
+        				_iterator.remove();
+        			}
+        		}
+        }
+		
 		mav.getModel().put("rDate", rDate);
+		mav.getModel().put("cutoffs", getDomainManagerService().getCutOffs());
+		mav.getModel().put("zones", activeZones);
 		mav.getModel().put("reRouteDate", reRouteDate);
 		mav.getModel().put("autorefresh", request.getParameter("autorefresh"));
 		mav.getModel().put("unassigneds", unassigneds );
 		mav.getModel().put("zones", domainManagerService.getZones());
 		return mav;
+	}
+
+	private List<UnassignedCommand> getUnassignedOrders(Date deliveryDate) throws ParseException {
+		
+		List<UnassignedCommand> unassigneds = new ArrayList<UnassignedCommand>();
+		
+		DeliveryServiceProxy deliveryProxy = new DeliveryServiceProxy();
+				
+		List<IUnassignedModel> orders = deliveryProxy.getUnassigned(deliveryDate, null, null);
+		
+		Iterator<IUnassignedModel> _itr = orders.iterator();
+		IUnassignedModel _order = null;
+		UnassignedCommand _unassigned = null;
+		
+		while(_itr.hasNext()) {
+			_order = _itr.next();
+			
+			_unassigned = new UnassignedCommand();
+			
+			_unassigned.setCreateModTime(_order.getOrder().getCreateModifyTime());
+			_unassigned.setCustomerId(_order.getOrder().getCustomerNumber());
+			_unassigned.setOrderId(_order.getOrder().getOrderNumber());
+			_unassigned.setTimeWindow(RoutingDateUtil.formatDateTime(_order.getOrder().getDeliveryInfo().getDeliveryStartTime()
+						, _order.getOrder().getDeliveryInfo().getDeliveryEndTime()));
+			_unassigned.setUnassignedTime(_order.getOrder().getUnassignedTime());
+			_unassigned.setUnassignedAction(_order.getOrder().getUnassignedAction());
+			
+			_unassigned.setReservationId(_order.getOrder().getDeliveryInfo().getReservationId());
+			_unassigned.setZone(_order.getOrder().getDeliveryInfo().getDeliveryZone().getZoneNumber());
+			
+			_unassigned.setOrderSize(_order.getOrder().getReservedOrderSize());
+			_unassigned.setServiceTime(_order.getOrder().getReservedServiceTime());
+			
+			_unassigned.setOverrideOrderSize(_order.getOrder().getOverrideOrderSize());
+			_unassigned.setOverrideServiceTime(_order.getOrder().getOverrideServiceTime());
+			
+			if(_order.getOrder() != null && _order.getOrder().getDeliveryInfo() != null
+												&& _order.getOrder().getDeliveryInfo().getPackagingDetail() != null) {
+				_unassigned.setPackageInfo(_order.getOrder().getDeliveryInfo().getPackagingDetail().getNoOfCartons()
+												+","+_order.getOrder().getDeliveryInfo().getPackagingDetail().getNoOfCases()
+												+","+_order.getOrder().getDeliveryInfo().getPackagingDetail().getNoOfFreezers());
+			}
+								
+			_unassigned.setUpdateStatus(_order.getOrder().getUpdateStatus());
+			
+			_unassigned.setManuallyClosed(_order.getSlot().isManuallyClosed());
+			_unassigned.setDynamicActive(_order.getSlot().isDynamicActive());
+			
+			_unassigned.setIsChefsTable(_order.getIsChefsTable());
+			_unassigned.setIsForced(_order.getIsForced());
+			unassigneds.add(_unassigned);
+		}
+		return unassigneds;
 	}
 	
 	/**

@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.notification;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -33,11 +34,14 @@ public class NotificationManager {
 	      return instance;
 	}
 	
-	public String getWaveNotification(ServletRequest request) {		
-		RoutingInfoServiceProxy proxy = new RoutingInfoServiceProxy();
+	public List<String> getNotification(ServletRequest request) {		
+		
+		List<String> messages = new ArrayList<String>();
+		RoutingInfoServiceProxy routingProxy = new RoutingInfoServiceProxy();
 		try {
-			List<IWaveInstance> waveInstances = proxy.getWaveInstanceWithErrors();
-			Map<Date, List<String>> dynamicEnabledZoneMpp = proxy.getDynamicEnabledZoneMapping();
+			// wave(s) status notification message
+			List<IWaveInstance> waveInstances = routingProxy.getWaveInstanceWithErrors();
+			Map<Date, List<String>> dynamicEnabledZoneMpp = routingProxy.getDynamicEnabledZoneMapping();
 			if(waveInstances != null && dynamicEnabledZoneMpp != null) {			
 				int notSyncCount = 0;
 				int errorCount = 0;
@@ -53,38 +57,39 @@ public class NotificationManager {
 					}
 				}
 				if(notSyncCount > 0 || errorCount > 0) {
-					return notSyncCount+" Waves not in Sync / "+errorCount+" Wave Sync Errors";
+					messages.add(notSyncCount+" Waves not in Sync / "+errorCount+" Wave Sync Errors");
 				}
+			}
+			
+			// handoff status notification message
+			HandOffServiceProxy handoffProxy = new HandOffServiceProxy();
+			
+			HandOffCommand bean = new HandOffCommand();
+			String currentTime = TransStringUtil.getCurrentTime();
+			Date routingDate = null;
+			if(currentTime != null && currentTime.endsWith("AM")) {
+				routingDate = RoutingDateUtil.getCurrentDate();
+			} else {
+				routingDate = RoutingDateUtil.getNextDate();
+			}
+			bean.setDeliveryDate(routingDate);
+			
+			Set<IHandOffBatch> batches = handoffProxy.getHandOffBatch(bean.getDeliveryDate());			
+			for(IHandOffBatch batch : batches) {
+				if(batch != null && batch.getStatus().equals(EnumHandOffBatchStatus.COMPLETED)) {
+					messages.add("Handoff committed - No Auto dispatch");
+				}
+			}
+						
+			// wave sync lock notification message
+			String waveSyncLockUserId = routingProxy.isWaveSyncronizationLocked();
+			if(waveSyncLockUserId != null) {
+				messages.add("Wave Syncronization locked by User: "+waveSyncLockUserId);
 			}
 		} catch (RoutingServiceException exp) {
 			exp.printStackTrace();
 		}
-		return  null;
+		return  messages;
     }
 	
-	public String getHandoffNotification(ServletRequest request) {
-		
-		HandOffServiceProxy proxy = new HandOffServiceProxy();
-		
-		HandOffCommand bean = new HandOffCommand();
-		String currentTime = TransStringUtil.getCurrentTime();
-		Date routingDate = null;
-		if(currentTime != null && currentTime.endsWith("AM")) {
-			routingDate = RoutingDateUtil.getCurrentDate();
-		} else {
-			routingDate = RoutingDateUtil.getNextDate();
-		}
-		bean.setDeliveryDate(routingDate);
-		try {
-			Set<IHandOffBatch> batches = proxy.getHandOffBatch(bean.getDeliveryDate());			
-			for(IHandOffBatch batch : batches) {
-				if(batch != null && batch.getStatus().equals(EnumHandOffBatchStatus.COMPLETED)) {
-					return "Handoff committed - No Auto dispatch";
-				}
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
 }

@@ -36,6 +36,10 @@ public class ZoneValidator extends AbstractValidator {
 		if(model != null && model.getSvcAdjReductionFactor()!=null && model.getSvcAdjReductionFactor().doubleValue()>1) {
 			errors.rejectValue("svcAdjReductionFactor", "app.error.121", new Object[]{"Service Adjustment Reduction Factor"},"Req cannot be greater than Max.");
 		}
+		
+		if(model != null && model.getETAInterval()!=null && model.getETAInterval().intValue() <= 0) {
+			errors.rejectValue("ETAInterval", "app.error.156", new Object[]{"ETAInterval"},"");
+		}
 	}
 	
 

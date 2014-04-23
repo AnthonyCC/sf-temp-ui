@@ -16,4 +16,7 @@ public interface ICapacityProvider {
 	
 	int forceWaveInstance(String waveInstanceId);
 	
+	String doLockWaveSyncActivity();
+	
+	boolean isWaveSyncronizationLocked();	
 }

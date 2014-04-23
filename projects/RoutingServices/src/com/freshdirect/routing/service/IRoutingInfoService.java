@@ -70,4 +70,10 @@ public interface IRoutingInfoService {
 	Set retrieveRoutingWaveInstIds(Date deliveryDate) throws RoutingServiceException;
 
 	IServiceTimeScenarioModel getRoutingScenarioEx(final Date deliveryDate, final Date cutoff, final Date startTime, final Date endTime) throws RoutingServiceException;
+	
+	String isWaveSyncronizationLocked() throws RoutingServiceException;
+	
+    int addWaveSyncLockActivity(String userId) throws RoutingServiceException;
+	
+    int releaseWaveSyncLock(String userId) throws RoutingServiceException;
 }

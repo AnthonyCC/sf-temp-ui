@@ -148,7 +148,8 @@
                 </td>
                    
                 <td>
-                     <input type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doCompositeLink('rDate','cutOff','waveStatus','wavemonitor.do')" />
+                     <input style="font-size:11px" type = "button" height="18" value="&nbsp;View&nbsp;" onclick="javascript:doCompositeLink('rDate','cutOff','waveStatus','wavemonitor.do')" />
+                     <span> <input style="font-size:11px" type = "button" height="18" id="lockWaveSyncBtn" value="Lock WaveSync" /></span>
                   </td>  
                   
               </tr>
@@ -199,7 +200,8 @@
 	</div>	          
 	   	  <script>
 		      addTSRowHandlers('ec_table', 'rowMouseOver');
-		   </script>   
+		   </script>
+		   <%@ include file='/common/i_wavesynclock.jspf'%>
   </tmpl:put>
   
 </tmpl:insert>

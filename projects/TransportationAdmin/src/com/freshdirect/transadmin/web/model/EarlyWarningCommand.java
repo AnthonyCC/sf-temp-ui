@@ -29,6 +29,7 @@ public class EarlyWarningCommand extends BaseCommand {
 	private int closedCount = 0;
 	private int dynamicActiveCount = 0;
 	private int dynamicInActiveCount = 0;
+	private int unassignedCount = 0;
 	
 	private int noOfResources;
 		
@@ -170,6 +171,14 @@ public class EarlyWarningCommand extends BaseCommand {
 
 	public void setWaveCode(String waveCode) {
 		this.waveCode = waveCode;
+	}
+
+	public int getUnassignedCount() {
+		return unassignedCount;
+	}
+
+	public void setUnassignedCount(int unassignedCount) {
+		this.unassignedCount = unassignedCount;
 	}
 	
 }

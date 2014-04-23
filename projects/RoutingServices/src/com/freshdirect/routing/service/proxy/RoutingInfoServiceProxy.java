@@ -121,5 +121,17 @@ public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
 
 	public Set retrieveRoutingWaveInstIds(Date deliveryDate) {
 		return getService().retrieveRoutingWaveInstIds(deliveryDate);
-		} 
+	}
+	
+	public String isWaveSyncronizationLocked() {
+		return getService().isWaveSyncronizationLocked();
+	}
+	
+    public int addWaveSyncLockActivity(String userId) {
+    	return getService().addWaveSyncLockActivity(userId);
+    }
+	
+    public int releaseWaveSyncLock(String userId) {
+    	return getService().releaseWaveSyncLock(userId);
+    }
 }

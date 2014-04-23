@@ -14,6 +14,7 @@
 	<link rel="stylesheet" href="css/transportation.css" type="text/css" />		
 	<link rel="stylesheet" href="css/extremecomponents.css" type="text/css" />
 	<link rel="stylesheet" href="css/jscalendar-1.0/calendar-system.css" type="text/css" />
+    <link rel="stylesheet" href="css/notificationbar.css" type="text/css" />
 
 	<script src="js/RowHandlers.js" language="javascript" type="text/javascript"></script>
 	<script src="js/action.js" language="javascript" type="text/javascript"></script>
@@ -41,7 +42,7 @@
 	</script>
 	
 	<script src="js/jsonrpc.js" language="javascript" type="text/javascript"></script>
-	<script src="js/SelectionHandlers.js" language="javascript" type="text/javascript"></script>
+	<script src="js/SelectionHandlers.js" language="javascript" type="text/javascript"></script> 
 	
 	
 	<!-- jQuery Scripts & StyleSheets -->
@@ -49,8 +50,6 @@
 	<link rel="stylesheet" href="jquery/css/jquery-theme/smoothness/jquery-ui-1.8.16.custom.css" type="text/css"/>
 	<link rel="stylesheet" href="jquery/plugins/simplemodel/css/simplemodel-basic.css" type="text/css"/>
 	<link rel="stylesheet" href="jquery/css/form-overlay.css" type="text/css"/>
-
-	
 	
 	<script type="text/javascript" src="jquery/firebugx.js"></script>
 
@@ -74,6 +73,13 @@
 	<script type="text/javascript" src="jquery/util/json2.js"></script>
 	<script type="text/javascript" src="jquery/util/json2form.js"></script>
 	
+	<!-- JS dependencies -->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script> -->
+
+	<link rel="stylesheet" href="jquery/plugins/toastmessage/css/jquery.toastmessage.css" type="text/css" />
+	<script type="text/javascript" src="jquery/plugins/toastmessage/jquery.toastmessage.js"></script>
+
+
 	<tmpl:get name='yui-lib'/>
 	<tmpl:get name='gmap-lib'/>
 	<tmpl:get name='slickgrid-lib'/>
@@ -103,9 +109,45 @@
 				String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(request);
 				String userRole = com.freshdirect.transadmin.security.SecurityManager.getUserRole(request);
 				%>
+				<center>
+				<% 
+					List<String> messages = NotificationManager.getInstance().getNotification(request);			
+				%>
+				<div id="messages" class="hashandler <% if(messages != null && messages.size() > 0) { %>open <% } %>">
+						<ul class="content">
+							<li class="SystemMessage">
+							<div class="alert-box">
+						<% 						 						 
+						 	if(messages != null && messages.size() > 0) {
+						 		for(String _msg : messages) {
+						 %>							  
+							  	<span>warning: </span><%= _msg %>&nbsp;&nbsp;							
+						<% } %>	
+						<% } else { %>
+							 &nbsp;
+						<% } %>
+							</div>
+						  </li>
+						</ul>
+						<hr class="shadow">
+						<div class="handler open-handler">show messages</div>
+						<div class="handler close-handler">hide messages</div>
+				</div>
+				<script>
+						$(document).on('click','#messages .handler',function(e){
+						  var $messages = $(document.getElementById('messages'));
+						  if($messages.hasClass('open')) {
+							  $messages.removeClass('open');							 
+						  } else {
+							  $('#messages').addClass('open');
+						  }
+					   });						
+				</script>
+						
 				<div class="Tlogo">
 					<img src="./images/TransAppLogo.gif" width="189" height="75" border="0" alt="" title="">
 				</div>
+				</center>
 				<div class="t_tab Tspacer" >
 					
 				</div>
@@ -121,29 +163,8 @@
 				</div>
 				
 				<div>
-					<div class="t_tab_hspacer" style="padding:0 450px;">
-						<div style="display:none;position:absolute;top:400px;left:600px" id="ajaxBusy"><img src="./images/ajaxload.gif"></div>
-						<div style="position:absolute;top:6px;text-align:center;">
-						<% 
-						 String waveNotification = NotificationManager.getInstance().getWaveNotification(request);						 
-						 if(waveNotification != null && RoutingServicesProperties.getRoutingDynaSyncEnabled()) { %>
-							<span style="border:2px dotted red;padding:3px;background-color:#F2F2F2;font-size: 12px;font-style: italic;text-align:center;font-weight: bold;text-decoration: blink;margin-right:3px;">
-								<%= waveNotification %> 
-							</span>
-						<% } else { %>
-							 &nbsp;
-						<% } %>
-						<% 
-						 String handoffNotification = NotificationManager.getInstance().getHandoffNotification(request);						 
-						 if(handoffNotification != null) { %>
-							<span style="border:2px dotted blue;padding:3px;background-color:#F2F2F2;font-size: 12px;font-style: italic;text-align:center;font-weight: bold;text-decoration: blink;">
-								<%= handoffNotification %> 
-							</span>
-						<% } else { %>
-							 &nbsp;
-						<% } %>
-						</div>
-					</div>
+				    <div class="t_tab_hspacer" style="">											
+					</div>	
 														
 					<div class="<%= currentRootMenuId %>">
 							

@@ -180,7 +180,7 @@ public interface DlvManagerSB extends EJBObject {
 	
 	List getTimeslotsForDate(java.util.Date startDate) throws DlvResourceException, RemoteException;
 	
-	List<IDeliveryWindowMetrics> retrieveCapacityMetrics(IRoutingSchedulerIdentity schedulerId, List<IDeliverySlot> slots, boolean purge) 
+	List<IDeliveryWindowMetrics> retrieveCapacityMetrics(IRoutingSchedulerIdentity schedulerId, List<IDeliverySlot> slots) 
 																throws DlvResourceException, RemoteException;
 	
 	int updateTimeslotsCapacity(List<DlvTimeslotModel> dlvTimeSlots ) throws DlvResourceException, RemoteException;

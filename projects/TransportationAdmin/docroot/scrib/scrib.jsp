@@ -34,7 +34,7 @@
 	<tmpl:put name='title' direct='true'> Routing : <%=pageTitle%></tmpl:put>
 
   <tmpl:put name='content' direct='true'> 
-	<script type="text/javascript" language="javascript" src="js/SelectionHandlers.js"></script>
+	
 	<c:if test="${not empty messages}">
 		<div class="err_messages">
 			<jsp:include page='/common/messages.jsp'/>
@@ -65,6 +65,7 @@
 							<span> <input style="font-size:11px" type = "button" height="18"  value="Add Label" onclick="javascript:showLabelForm();" /></span>
 							<span> <input style="font-size:11px" type = "button" height="18"  value="View Labels" onclick="javascript:showViewLabelsForm();" /></span>
 							<span> <input style="font-size:11px" type = "button" height="18"  value="Publish" onclick="javascript:doPublish();" /></span>
+							<span> <input style="font-size:11px" type = "button" height="18"  id="lockWaveSyncBtn" value="Lock WaveSync" /></span>
 							<span> <input style="font-size:11px" type = "button" height="18"  value="Upload" onclick="javascript:uploadScribs();" /></span>							
 							<% } %>
 						</div>
@@ -239,6 +240,7 @@
   	  }
     </script>
      <%@ include file='i_generateplan.jspf'%>
-     <%@ include file='i_addlabel.jspf'%>            
+     <%@ include file='i_addlabel.jspf'%>
+     <%@ include file='/common/i_wavesynclock.jspf'%>
   </tmpl:put>
 </tmpl:insert>

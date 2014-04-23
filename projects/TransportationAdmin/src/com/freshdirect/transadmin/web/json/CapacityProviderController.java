@@ -4,7 +4,10 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.framework.util.MD5Hasher;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
@@ -16,6 +19,8 @@ import com.freshdirect.transadmin.util.TransportationAdminProperties;
 
 public class CapacityProviderController extends JsonRpcController implements
 		ICapacityProvider  {
+
+	private static Logger LOGGER = LoggerFactory.getInstance(CapacityProviderController.class);
 	
 	private DispatchManagerI dispatchManagerService;
 	
@@ -125,6 +130,40 @@ public class CapacityProviderController extends JsonRpcController implements
 		}
 		
 		return 0;
+	}
+	
+	public String doLockWaveSyncActivity() {
+		String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(getHttpServletRequest());
+		RoutingInfoServiceProxy proxy = new RoutingInfoServiceProxy();
+		String waveSynLockUserId = null;
+		try {
+			waveSynLockUserId = proxy.isWaveSyncronizationLocked();
+			
+			if(waveSynLockUserId != null) {
+				LOGGER.debug("WaveSync lock released by: "+ userId );
+				proxy.releaseWaveSyncLock(userId); // release lock for wave sync to routing system
+				return "LOCK_RELEASED";
+			} else {
+				proxy.addWaveSyncLockActivity(userId); // lock wave sync to routing system 
+				return "WAVESYNC_LOCKED";
+			}			
+		} catch (RoutingServiceException e) {
+			LOGGER.error("routing service exception", e);
+		}
+		return null;
+	}
+	
+	public boolean isWaveSyncronizationLocked() {
+		
+		RoutingInfoServiceProxy proxy = new RoutingInfoServiceProxy();
+		String waveSynLockUserId = null;
+		try {
+			waveSynLockUserId = proxy.isWaveSyncronizationLocked();
+			return waveSynLockUserId != null ? true : false;
+		} catch (RoutingServiceException e) {
+			LOGGER.error("routing service exception", e);
+		}
+		return false;
 	}
 	
 }

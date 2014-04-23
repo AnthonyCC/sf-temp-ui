@@ -70,6 +70,7 @@
 	                      <input style="font-size:11px" type = "button" height="18" value="Kronos" onclick="javascript:doKronos('plan.do','weekdate','daterange','y','1')" />                  
 	                      <% if(com.freshdirect.transadmin.security.SecurityManager.isUserAdminOrPlanning(request)) { %>							
 	                      	<input style="font-size:11px" type = "button" height="18" value="Publish" onclick="javascript:doPublish();" />
+	                      	<span> <input style="font-size:11px" type = "button" height="18"  id="lockWaveSyncBtn" value="Lock WaveSync" /></span>	                      	
 	                      <%} %>
 	                      <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request)){%> 
 		                    <input style="font-size:11px" type = "button" value="Activity Log" onclick="javascript:doActivityLog('daterange')" />		                  
@@ -299,5 +300,6 @@
 
     </script>   
     <%@ include file='i_activityLog.jspf'%> 
+    <%@ include file='/common/i_wavesynclock.jspf'%>
   </tmpl:put>
 </tmpl:insert>

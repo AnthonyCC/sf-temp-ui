@@ -389,6 +389,7 @@
 	              <ec:column property="percentageConfirmed" title="% Confirmed" />
 	              <ec:column property="allocatedCapacity" title="Allocated" />
 				  <ec:column property="percentageAllocated" title="% Allocated" />
+				  <ec:column property="unassignedCount" title="Unassigned" />				  
 				  <ec:column title=" " width="5px" 
 									filterable="false" sortable="false" cell="capacityCloseButtonCell" property="referenceId" />
 					
@@ -428,9 +429,35 @@
 									filterable="false" sortable="false" cell="discount" property="isDiscounted" />															  	                           
 	            </ec:row>
 	          </ec:table>
+	          
+	          <br/>
+					<table
+						style="font-size: 9pt; font-family: Verdana, Arial, Helvetica, sans-serif; background-color: #e7e7d6;">
+						<tr>
+							<td><b>Unassigned Summary</b></td>
+							<td><b>Unassigned</b></td>
+							<td><b>Mismatched</b></td>
+						</tr>
+						<tr>
+							<td>Orders:</td>
+							<td align="center"><%= ((Integer) request.getAttribute("unassignedOrderCnt")).intValue() %></td>
+							<td align="center"><%= ((Integer) request.getAttribute("mismatchOrderCnt")).intValue() %></td>
+						</tr>
+						<tr>
+							<td># of Zones Affected:</td>
+							<td align="center"><%= ((Integer) request.getAttribute("unassignedZoneCnt")).intValue()%></td>
+							<td align="center"><%= ((Integer) request.getAttribute("mismatchZoneCnt")).intValue()%></td>
+						</tr>
+						<tr>
+							<td># of Zone and Time Windows Affected:</td>
+							<td align="center"><%= ((Integer) request.getAttribute("unassignedZonesByWindowCnt")).intValue() %></td>
+							<td align="center"><%= ((Integer) request.getAttribute("mismatchZonesByWindowCnt")).intValue() %></td>
+						</tr>
+					</table>
+	  	</td>
+	  	
+	    </tr>
 	    
-	  	</td> 
-	    </tr> 
     </table>
 	    <div id="timeslot_container" style="display:none;">
 	    <%

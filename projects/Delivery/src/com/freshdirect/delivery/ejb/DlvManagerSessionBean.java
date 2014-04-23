@@ -2848,24 +2848,10 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		}
 	}
 	
-	public List<IDeliveryWindowMetrics> retrieveCapacityMetrics(IRoutingSchedulerIdentity schedulerId, List<IDeliverySlot> slots
-																, boolean purge) 
+	public List<IDeliveryWindowMetrics> retrieveCapacityMetrics(IRoutingSchedulerIdentity schedulerId, List<IDeliverySlot> slots) 
 																throws DlvResourceException, RemoteException {
 		RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
 		try {
-			if(purge) {
-				DeliveryServiceProxy dlvProxy = new DeliveryServiceProxy();
-				List<IOrderModel> reservationForSchedulerId = dlvProxy.getRoutingOrderByDate(schedulerId.getDeliveryDate()
-																								, schedulerId.getArea().getAreaCode()
-																								, true);
-				
-				if(reservationForSchedulerId == null || reservationForSchedulerId.size() == 0) {
-					LOGGER.info("DlvManagerSB retrieveCapacityMetrics(): Purge: " + schedulerId);
-					proxy.purgeOrders(schedulerId, true);
-				} else {
-					LOGGER.info("DlvManagerSB retrieveCapacityMetrics(): Unable to Purge: "+schedulerId+"-->" + reservationForSchedulerId);
-				}
-			}
 			return proxy.retrieveCapacityMetrics(schedulerId, slots);
 		} catch (RoutingServiceException e) {
 			// TODO Auto-generated catch block

@@ -69,5 +69,11 @@ public interface IRoutingInfoDAO {
 	Set retrieveRoutingWaveInstIds(Date deliveryDate) throws SQLException;
 
 	IServiceTimeScenarioModel getRoutingScenarioEx(final Date deliveryDate, final Date cutoff,final Date startTime,final Date endTime) throws SQLException;
+	
+	String isWaveSyncronizationLocked() throws SQLException;
+	
+	int addWaveSyncLockActivity(final String userId) throws SQLException;
+	
+	int releaseWaveSyncLock(String userId) throws SQLException;
 		
 }

@@ -259,4 +259,33 @@ public class RoutingInfoService extends BaseService implements IRoutingInfoServi
 		}
 	}
 	
+	@Override
+	public String isWaveSyncronizationLocked() throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.isWaveSyncronizationLocked();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_SCENARIO_NOTFOUND);
+		}
+	}
+	
+	@Override
+	public int addWaveSyncLockActivity(String userId) throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.addWaveSyncLockActivity(userId);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_SCENARIO_NOTFOUND);
+		}
+	}
+	
+	@Override
+	public int releaseWaveSyncLock(String userId) throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.releaseWaveSyncLock(userId);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_SCENARIO_NOTFOUND);
+		}
+	}
 }
