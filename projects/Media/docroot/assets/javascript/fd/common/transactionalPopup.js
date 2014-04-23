@@ -290,7 +290,7 @@ var FreshDirect = FreshDirect || {};
 
   $(document).on('mouseover','.transactional [data-transactional-trigger] *',function(event){
     var element = $(event.currentTarget).closest('[data-component="product"]');
-    if (!element.hasClass('unavailable')) {
+    if (!element.hasClass('unavailable') && element.closest('.stepping[data-component="carousel"]').size() === 0) {
       transactionalPopup.open({
         element: element,
         productId:element.data('productId'),
