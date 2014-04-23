@@ -652,10 +652,12 @@ a.portrait-item-header-name:link {
   font-size: 20px;
   text-align: center;
   font-weight: bold;
+  position: relative;
+  z-index: 1;
 }
 
 #transactionalPopup .invalidQty .qtyinput input.qty {
-  border-color: red;
+  outline: 2px solid red;
 }
 
 #transactionalPopup .portrait-item-controls .quantity_minus,
