@@ -52,6 +52,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 	//private String failureCorporatePage = "/survey/cos_site_access_survey.jsp";
 	private String failureCorporatePage = "/site_access/site_access.jsp?ol=corpSurvey";
 	
+	private String failureCorporatePageCRM = null;
+	
 	private String resultName = null;
 
 	private EnumServiceType serviceType = null;
@@ -116,6 +118,14 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		this.requestedServiceTypeDlvStatus = requestedServiceTypeDlvStatus;
 	}
 	
+	public String getFailureCorporatePageCRM() {
+		return failureCorporatePageCRM;
+	}
+
+	public void setFailureCorporatePageCRM(String failureCorporatePageCRM) {
+		this.failureCorporatePageCRM = failureCorporatePageCRM;
+	}
+	
 	
 	private void newSession() {
 		HttpSession session = pageContext.getSession();
@@ -130,6 +140,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 	public int doStartTag() throws JspException {
 		ActionResult result = new ActionResult();
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+		String application1 = (String) this.pageContext.getSession().getAttribute(SessionName.APPLICATION);
+		
 		this.pageContext.getSession().removeAttribute("morepage");
 
 		if ("POST".equalsIgnoreCase(request.getMethod()) || "modalboxpost".equals(request.getParameter("actionName"))) {
@@ -213,8 +225,15 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 										doRedirect(altDeliveryHomePage);
 									}
 									else if(EnumDeliveryStatus.DONOT_DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))){
-										// forward to site_access/cos_site_access_survey.jsp
-										doRedirect(failureCorporatePage);
+										
+										String application = (String) this.pageContext.getSession().getAttribute(SessionName.APPLICATION);
+										boolean inCallCenter = "callcenter".equalsIgnoreCase(application);
+										if(!inCallCenter) {
+											doRedirect(failureCorporatePage);
+										}
+										else {
+											doRedirect(failureCorporatePageCRM);
+										}
 									}
 									else if(EnumDeliveryStatus.PARTIALLY_DELIVER.equals(serviceResult.getServiceStatus(EnumServiceType.HOME))){
 										// forward to more address page									
@@ -642,7 +661,6 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		return EVAL_BODY_BUFFERED;
 	}
 
-	
 	private final static int AV_REQUESTED = 0;
 	private final static int AV_ALTERNATE = 1;
 	private final static int AV_UNAVAIL = 2;

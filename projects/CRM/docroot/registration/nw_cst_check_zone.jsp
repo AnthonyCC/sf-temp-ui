@@ -19,6 +19,7 @@
 		String moreInfoPage = "more_info.jsp?successPage=nw_cst_enter_details.jsp";
 		String failurePage = "delivery.jsp?successPage=nw_cst_enter_details.jsp&serviceType="+serviceType;
 		String successPage = "nw_cst_enter_details.jsp?serviceType="+serviceType;
+		String failureCorporatePageCRM = "corporateFailurePage.jsp?successPage=nw_cst_enter_details.jsp&serviceType="+serviceType;
 
 		//check for new serviceType, and if either GC or RH is enabled
 			if ( EnumServiceType.WEB.getName().equalsIgnoreCase(serviceType) ) {
@@ -28,7 +29,7 @@
 			}
 	%>
 
-	<fd:SiteAccessController action='<%= request.getParameter("action") %>' successPage='<%=successPage%>' moreInfoPage='<%=moreInfoPage%>' failureHomePage='<%=failurePage%>' result='zipResult'>
+	<fd:SiteAccessController action='<%= request.getParameter("action") %>' successPage='<%=successPage%>' moreInfoPage='<%=moreInfoPage%>' failureHomePage='<%=failurePage%>' result='zipResult' failureCorporatePageCRM='<%=failureCorporatePageCRM%>'>
 
 		<table width="100%" cellpadding="0" cellspacing="2" border="0" align="center" class="sub_nav">
 			<tr valign="middle">
