@@ -63,7 +63,7 @@ h1.pdpTitle,
 .pdp h1 {
 	font-weight:bold;
 	font-size:30px;
-	color:#666;
+	color:#333;
 	margin:15px 0 20px 0;
 }
 
@@ -378,12 +378,11 @@ span.cssbutton.annotation:hover {
 	margin-top: 6px;
 	font-size: 14px;
 	font-weight:bold;
-	color:#979976;
+	color:#797965;
 }
 
 .pdp .pdp-atc .subtotal b {
 	font-size: 21px;
-	color:#797965;
 }
 
 .pdp .pdp-atc .subtotal .qty{
