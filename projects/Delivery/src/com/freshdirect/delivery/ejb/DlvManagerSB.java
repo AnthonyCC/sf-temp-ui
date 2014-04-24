@@ -244,5 +244,7 @@ public interface DlvManagerSB extends EJBObject {
 	public List<FDTimeslot> filterTimeslotsByOrderSize(List<FDTimeslot> timeslots,  IPackagingModel iPackagingModel, AddressModel address, List<FDReservation> reservations) throws DlvResourceException, RemoteException;
 	
 	public DeliveryETAModel getDeliveryETABySaleId(String orderId) throws FinderException, RemoteException;
+	
+	public String isWaveSyncronizationLocked()  throws RemoteException;
 
 }   

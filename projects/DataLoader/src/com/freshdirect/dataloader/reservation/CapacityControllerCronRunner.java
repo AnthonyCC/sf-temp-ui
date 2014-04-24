@@ -34,7 +34,6 @@ import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.TrnFacilityType;
-import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 
@@ -62,7 +61,6 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 			ctx = cron.getInitialContext();
 			DlvManagerHome dlh =(DlvManagerHome) ctx.lookup("freshdirect.delivery.DeliveryManager");
 			DlvManagerSB dsb = dlh.create();
-			RoutingInfoServiceProxy routingProxy = new RoutingInfoServiceProxy();
 			if (args.length >= 1) {
 				for (String arg : args) {
 					try { 
@@ -88,7 +86,7 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 				jobDate.addAll(dsb.getFutureTimeslotDates());				
 			}
 
-			boolean isWaveSyncLocked = routingProxy.isWaveSyncronizationLocked() != null;
+			boolean isWaveSyncLocked = dsb.isWaveSyncronizationLocked() != null;
 						
 			Iterator<Date> _dateItr = jobDate.iterator();
 			Date processDate = null;

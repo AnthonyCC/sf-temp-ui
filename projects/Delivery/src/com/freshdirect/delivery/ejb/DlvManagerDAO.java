@@ -2230,5 +2230,21 @@ public class DlvManagerDAO {
 				ps.close();
 			   
 				return reservations;
+		}
+		
+		private static final String GET_WAVESYNC_LOCK_QRY = "select * from transp.WAVE_INSTANCE_LOCKACTIVITY where RELEASELOCK_DATETIME IS NULL";
+		
+		public static String isWaveSyncronizationLocked(Connection conn) throws SQLException {
+			
+			PreparedStatement ps = conn.prepareStatement(GET_WAVESYNC_LOCK_QRY);
+			ResultSet rs = ps.executeQuery();
+			List<String> waveSynclockedUserId = new ArrayList<String>();
+			while (rs.next()) {
+				waveSynclockedUserId.add(rs.getString("INITIATOR"));
 			}
+			rs.close();
+			ps.close();
+			
+			return waveSynclockedUserId.size() > 0 ? waveSynclockedUserId.get(0) : null;
+		}
 }

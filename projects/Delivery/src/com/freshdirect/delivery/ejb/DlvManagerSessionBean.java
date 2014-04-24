@@ -3413,4 +3413,24 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 
 		return model;
 	}
+	
+	public String isWaveSyncronizationLocked() {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return DlvManagerDAO.isWaveSyncronizationLocked(conn);
+		} catch (SQLException sqle) {
+			LOGGER.warn("Difficulty locating WaveSyncronizationLock: " + sqle.getMessage());
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+					conn = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("DlvManagerSB isWaveSyncronizationLocked: Exception: ", se);
+			}
+		}
+		return null;
+	}
 }
