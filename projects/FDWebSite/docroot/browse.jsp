@@ -22,6 +22,7 @@
 <c:set var="listPos" scope="request" value="SystemMessage,CategoryNote,BrowseTop1,BrowseTop2,BrowseTop3,BrowseBottom1,BrowseBottom2" />
 
 <tmpl:insert template='/common/template/browse_template.jsp'>
+  <tmpl:put name='cmeventsource' direct='true'>BROWSE</tmpl:put>
 
   <tmpl:put name='soypackage' direct='true'>
     <soy:import packageName="browse" />
