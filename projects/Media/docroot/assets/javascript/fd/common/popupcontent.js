@@ -139,7 +139,7 @@ var FreshDirect = FreshDirect || {};
   };
 
   PopupContent.prototype.hideDelayed = function (e) {
-    if (this.hidedelay === null && !this.clicked) {
+    if (this.hidedelay === null && !this.clicked && !this.config.noCloseOnOverlay) {
       this.hidedelay = setTimeout($.proxy(this.hide, this), this.config.delay);
     }
   };

@@ -32,6 +32,7 @@ var FreshDirect = FreshDirect || {};
         halign: 'left',
         placeholder: false,
         stayOnClick: false,
+        noCloseOnOverlay: true,
         overlay:true
       }
     },
@@ -51,6 +52,10 @@ var FreshDirect = FreshDirect || {};
   });
 
   ajaxPopup.render();
+
+  $(window).on("resize", function (e) {
+    ajaxPopup.noscroll();
+  });
   
   $(document).on('click','[data-component="ajaxpopup"]',function(event){
     ajaxPopup.open({
