@@ -261,7 +261,8 @@ var FreshDirect = FreshDirect || {};
     if (trPopupBox && trPopupBox.width !== 0) {
       positions = {
         left: trPopupBox.left + scLeft,
-        top: trPopupBox.top + scTop
+        top: trPopupBox.top + scTop,
+        minHeight: trPopupBox.height
       };
 
       wwidth = $(".container").size() ? $(".container").first()[0].getBoundingClientRect().right : $(window).width();
@@ -283,6 +284,7 @@ var FreshDirect = FreshDirect || {};
       this.$el.css(positions);
 
     } else {
+      this.$el.css("min-height", 0);
       this.reposition(true);
     }
 

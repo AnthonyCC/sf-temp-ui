@@ -6,6 +6,8 @@
 	background:white;
 	padding:10px 10px 20px;
 	z-index: 2000;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .customizePopup:after {
