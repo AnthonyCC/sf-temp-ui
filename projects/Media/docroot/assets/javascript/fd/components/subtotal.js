@@ -11,6 +11,7 @@ var FreshDirect = FreshDirect || {};
         salesunitInfo = $subtotal.attr('data-suratio') || '[]',
         gpricingInfo = $subtotal.attr('data-grpprices') || '[]',
         cvprices = $subtotal.attr('data-cvprices') || '[]',
+        cartdata = fd.modules.common.getCartData($subtotal),
         qInc = parseFloat($subtotal.attr('data-qinc')) || 1,
         qMin = parseFloat($subtotal.attr('data-qmin')) || 0,
         qMax = parseFloat($subtotal.attr('data-qmax')) || 10000,
@@ -82,7 +83,7 @@ var FreshDirect = FreshDirect || {};
 
     price = Math.round( price * 100 ) /100;
 
-    if ((origqty > qMax) ||
+    if ((origqty > qMax-(cartdata.incart||0)) ||
         (origqty < qMin) ||
         (!bySalesUnit && origqty % qInc !== 0)) {
       price = 0;

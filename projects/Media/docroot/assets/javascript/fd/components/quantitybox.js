@@ -26,13 +26,15 @@ var FreshDirect = FreshDirect || {};
     }
   }
 
-  function chgQty(value, min, max, inc) {
+  function chgQty(value, min, max, inc, incart) {
     var qty = parseFloat(value) + 0;
+
+    incart = incart || 0;
 
     if (isNaN(qty) || qty < min) {
       qty = min;
-    } else if (qty >= max) {
-      qty = max;
+    } else if (qty >= max-incart) {
+      qty = Math.max(max-incart, min);
     }
     qty = Math.floor( (qty-min)/inc )*inc  + min;
 
@@ -41,12 +43,10 @@ var FreshDirect = FreshDirect || {};
 
   var getValue = function($quantitybox){
     var $qtybox = $($quantitybox),
-        min = $qtybox.data('min'),
-        max = $qtybox.data('max'),
-        inc = $qtybox.data('step');
+        cartdata = fd.modules.common.getCartData($qtybox);
     
     if($quantitybox) {
-      return chgQty( getInput($quantitybox).val(), parseFloat(min), parseFloat(max), parseFloat(inc) )+'';
+      return chgQty( getInput($quantitybox).val(), parseFloat(cartdata.min), parseFloat(cartdata.max), parseFloat(cartdata.step), cartdata.incart )+'';
     } else {
       return '0';
     }
@@ -54,9 +54,10 @@ var FreshDirect = FreshDirect || {};
 
 
   $(document).on('click','[data-component="quantitybox"]',function(e){
-    var $input,$this,mul,increment, newVal, oldVal, min, button;
+    var $input,$this,mul,increment, newVal, oldVal, min, button, cartdata;
 
     $this=$(this);
+    cartdata = fd.modules.common.getCartData($this);
     $input=getInput($this);
     button = $(e.target).data("component");
 
@@ -76,7 +77,7 @@ var FreshDirect = FreshDirect || {};
       if($this.data("mayempty") && newVal < min  && increment < 0) {
         newVal = 0;
       } else {
-        newVal=Math.max(min,Math.min(+$this.data("max"),newVal));
+        newVal=Math.max(min,Math.min(+$this.data("max")-(cartdata.incart||0),newVal));
       }
 
       $input.val(newVal);
@@ -97,11 +98,9 @@ var FreshDirect = FreshDirect || {};
 
     var $qtyinput = $(this),
         $qtybox = $qtyinput.closest('[data-component="quantitybox"]'),
-        min = $qtybox.data('min'),
-        max = $qtybox.data('max'),
-        inc = $qtybox.data('step');
+        cartdata = fd.modules.common.getCartData($qtybox);
     
-    $(this).val(chgQty($qtyinput.val(), parseFloat(min), parseFloat(max), parseFloat(inc)));
+    $(this).val(chgQty($qtyinput.val(), parseFloat(cartdata.min), parseFloat(cartdata.max), parseFloat(cartdata.step), cartdata.incart));
     triggerEvent($qtybox,$qtyinput.val());
   });
 

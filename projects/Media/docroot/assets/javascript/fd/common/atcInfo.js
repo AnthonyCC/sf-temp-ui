@@ -19,7 +19,7 @@ var FreshDirect = FreshDirect || {};
 			value:function(item) {
         // the original element might be copied (like in case of transactional popup), so we have to match for multiple ids
 				var element = $('[id="'+item.itemId+'"], [id="'+item.atcItemId+'"]'),
-            controls, amount;
+            controls, amount, product;
 
 				if(element) {
 					element.addClass('atc-info-message');
@@ -31,7 +31,9 @@ var FreshDirect = FreshDirect || {};
 					}));
           element.attr('data-amount', amount);
 
-          controls = element.closest('[data-component="product"]').find('[data-component="product-controls"]');
+          product = element.closest('[data-component="product"]');
+          controls = product.find('[data-component="product-controls"]');
+
           if (controls.size() !== 0) {
             // reset qty
             controls.find('input.qty').val(+controls.find('.qtyinput').data('min') || 1).change();

@@ -79,6 +79,27 @@ var FreshDirect = FreshDirect || {};
 		}
 	}
 
+  function getCartData(element) {
+    var product = $(element).closest('[data-component="product"]'), qtybox, incart,
+        cartdata = {};
+
+    if (product) {
+      incart = product.find('.incart-info').first();
+      qtybox = product.find('[data-component="quantitybox"]').first();
+
+      if (incart.size() > 0) {
+        cartdata.incart = +incart.attr('data-amount') || parseInt(incart.html(), 10) || 0;
+      }
+
+      if (qtybox.size() > 0) {
+        cartdata.min = +qtybox.attr('data-min') || 1;
+        cartdata.max = +qtybox.attr('data-max') || 99;
+        cartdata.step = +qtybox.attr('data-step') || 1;
+      }
+    }
+
+    return cartdata;
+  }
 
 	function serialize(element, collectRequired) {
 		if ($.isArray(element)) { // serialize array of quickshopitems directly instead of dom element
@@ -114,5 +135,6 @@ var FreshDirect = FreshDirect || {};
 	}
 	
 	fd.modules.common.utils.register("modules.common", "productSerialize", serialize, fd);
+	fd.modules.common.utils.register("modules.common", "getCartData", getCartData, fd);
 
 }(FreshDirect));

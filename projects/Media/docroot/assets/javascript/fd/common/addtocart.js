@@ -139,12 +139,21 @@ var FreshDirect = FreshDirect || {};
 
 	
 	$(document).on('click','[data-component="ATCButton"]',function(e){
-		var items = fd.modules.common.productSerialize(e.target, true);
+		var items = fd.modules.common.productSerialize(e.target, true),
+        cartdata = fd.modules.common.getCartData(e.target),
+        amount;
+
 		e.items = items;
 
     // set amount on button
     if (items.length) {
-      e.currentTarget.setAttribute('data-amount', items[0].quantity);
+      amount = +items[0].quantity;
+      
+      if (cartdata.max && (cartdata.max < amount + (cartdata.incart || 0))) {
+        amount = cartdata.max - (cartdata.incart || 0);
+      }
+      
+      e.currentTarget.setAttribute('data-amount', amount);
     }
 
 		ATC_BUS.push(e);
