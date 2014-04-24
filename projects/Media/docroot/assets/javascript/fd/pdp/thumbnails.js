@@ -97,22 +97,40 @@ var FreshDirect = FreshDirect || {};
   //
   // - EVENT HANDLERS -
   //
+  var ongoing = null;
+  var DELAY = 1000;
+
   $(document).on('mouseover','[data-thumbnails-trigger]',function(event){
-      fd.pdp.replaceImage(defaultImage[0], $(event.currentTarget).attr('src'));
+    var $target = $(event.currentTarget);
+    clearTimeout(ongoing);
+    ongoing = setTimeout(function () {
+      ongoing = null;
+      fd.pdp.replaceImage(defaultImage[0], $target.attr('src'));
+    }, DELAY);
   });
 
   $(document).on('click','[data-thumbnails-trigger]',function(event){
-      defaultSrc = $(event.currentTarget).attr('src');
+    var $target = $(event.currentTarget);
 
-      defaultImage.attr('data-large-url', $(event.currentTarget).attr('data-large-url') || '' );
+    clearTimeout(ongoing);
+    ongoing = null;
+
+    fd.pdp.replaceImage(defaultImage[0], $target.attr('src'));
+    defaultSrc = $target.attr('src');
+    defaultImage.attr('data-large-url', $target.attr('data-large-url') || '' );
   });
 
   $(document).on('mouseleave','[data-thumbnails]',function(event){
-      fd.pdp.replaceImage(defaultImage[0], defaultSrc);
+    clearTimeout(ongoing);
+    ongoing = null;
+    fd.pdp.replaceImage(defaultImage[0], defaultSrc);
   });
 
   
   $('[data-thumbnails-main]').on('mouseleave', function(event){
+
+    clearTimeout(ongoing);
+    ongoing = null;
 
     // zoom window hide
     $("[data-thumbnails-hd]").hide();
@@ -159,9 +177,20 @@ var FreshDirect = FreshDirect || {};
       offsetEl(hdImg, offset.x, offset.y);
 
       // show zoom window
-      if(!$("[data-thumbnails-hd]").is(":visible")){
-        $("[data-thumbnails-hd]").show();
+      if(!$("[data-thumbnails-hd]").is(":visible") && !ongoing){
+        ongoing = setTimeout(function () {
+          ongoing = null;
+          $("[data-thumbnails-hd]").show();
+        }, DELAY);
       } 
+  });
+
+  $('[data-thumbnails-main]').on('click', function(event){
+    if(!$("[data-thumbnails-hd]").is(":visible")){
+      clearTimeout(ongoing);
+      ongoing = null;
+      $("[data-thumbnails-hd]").show();
+    } 
   });
 
   loadHdImages();
