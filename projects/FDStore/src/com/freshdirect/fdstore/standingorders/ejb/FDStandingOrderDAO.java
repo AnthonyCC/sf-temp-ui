@@ -15,6 +15,12 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.crm.ejb.CriteriaBuilder;
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDProduct;
+import com.freshdirect.fdstore.FDProductInfo;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSalesUnit;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -29,7 +35,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDStandingOrderDAO {
 	
-	private static final String ALTERNATE_DELIVERY_DATE = "ALTERNATE_DELIVERY_DATE";
+		private static final String ALTERNATE_DELIVERY_DATE = "ALTERNATE_DELIVERY_DATE";
 
 	private static final String CURRENT_DELIVERY_DATE = "current_delivery_date";
 
@@ -96,27 +102,21 @@ public class FDStandingOrderDAO {
 	
 	private static final String DELETED_LIST_NAME = "Deleted Standing Order";
 	
-	private static final String SKU_CODE_REPLACE_SQL = "update cust.customerlist_details set sku_code = ? where sku_code = ? and list_id in (select clist.id from cust.customerlist clist join cust.standing_order so on CLIST.ID = SO.CUSTOMERLIST_ID)";
+	private static final String SKU_CODE_REPLACE_SQL = "update cust.customerlist_details set sku_code = ? where sku_code = ? and list_id in (select clist.id from cust.customerlist clist join cust.standing_order so on CLIST.ID = SO.CUSTOMERLIST_ID and SO.DELETED <> 1)";
 
-	private static final String SKU_CODE_GRID_DISPLAY_SQL = "select * from cust.customerlist_details where sku_code = ? and list_id in (select clist.id from cust.customerlist clist join cust.standing_order so on CLIST.ID = SO.CUSTOMERLIST_ID)";
+	private static final String SKU_CODE_GRID_DISPLAY_SQL = "select * from cust.customerlist_details where sku_code = ? and list_id in (select clist.id from cust.customerlist clist join cust.standing_order so on CLIST.ID = SO.CUSTOMERLIST_ID and SO.DELETED <> 1)";
 
-	private static final String SKU_CODE_VALIDATION_AND_AVAILABILITY_CHECK_SQL = "select p.unavailability_status from erps.product p, erps.material m, erps.materialproxy mp where MP.PRODUCT_ID=p.id and MP.MAT_ID=m.id and p.VERSION =(select max(p1.version) from erps.product p1 where p1.sku_code= ? ) and p.sku_code= ?";
-
-	private static final String SKU_CODE_VALIDATION_SQL = "select sku_code from erps.product where sku_code = ?";
-
-	private Boolean isReplacementSkuValid;
-
-	private static final String DISC = "DISC";
-
-	private static final String UNAV = "UNAV";
-
-	private static final String UNAVAILABILITY_STATUS = "unavailability_status";
+	private boolean isSkuValidButDiscontinued;
 
 	private static final String EXISTING_SKU_NOT_EXIST = "Existing SKU does not exist";
 
 	private static final String REPLACEMENT_SKU_NOT_EXIST = "Replacement SKU does not exist";
 
 	private static final String REPLACEMENT_SKU_DISC_OR_UNAVAILABLE = "Replacement SKU is either Disc or Unavailable";
+	
+	private static final String BASE_UNIT = "base_unit";
+
+	private static final String CONFIGURATION = "CONFIGURATION";
 	
 	protected String getNextId(Connection conn) throws SQLException {
 		return SequenceGenerator.getNextId(conn, "CUST");
@@ -1303,28 +1303,30 @@ public class FDStandingOrderDAO {
 		return isAlreadyExists;
 	}
 	
-	public boolean isValidSoId(Connection conn,String soId) throws SQLException{
+	public boolean isValidSoId(Connection conn, String soId)
+			throws SQLException {
 		boolean isValid = false;
-		PreparedStatement ps = null;	
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			
-			ps = conn.prepareStatement("SELECT * FROM CUST.STANDING_ORDER SO WHERE SO.DELETED<>1 AND SO.ID= ?");
-			ps.setString(1,soId);
-				
-			rs =ps.executeQuery();
-			if(rs.next()){
+
+			ps = conn
+					.prepareStatement("SELECT * FROM CUST.STANDING_ORDER SO WHERE SO.DELETED<>1 AND SO.ID= ?");
+			ps.setString(1, soId);
+
+			rs = ps.executeQuery();
+			if (rs.next()) {
 				isValid = true;
 			}
 			ps.close();
-		
+
 		} catch (SQLException exc) {
 			throw exc;
 		} finally {
-			if(ps != null) {
+			if (ps != null) {
 				ps.close();
 			}
-			if(rs != null) {
+			if (rs != null) {
 				rs.close();
 			}
 		}
@@ -1374,7 +1376,7 @@ public class FDStandingOrderDAO {
 				product.setSkuCode(rs.getString("SKU_CODE"));
 				product.setQuantity(rs.getString("QUANTITY"));
 				product.setSalesUnit(rs.getString("SALES_UNIT"));
-				product.setConfiguration(rs.getString("CONFIGURATION"));
+				product.setConfiguration(rs.getString(CONFIGURATION));
 				product.setFrequency(rs.getInt("FREQUENCY"));
 				product.setRecipeSourceId(rs.getString("RECIPE_SOURCE_ID"));
 				productList.add(product);
@@ -1395,18 +1397,16 @@ public class FDStandingOrderDAO {
 	public FDStandingOrderSkuResultInfo validateSkuCode(Connection conn,
 			String existingSku, String replacementSku) throws SQLException {
 
-		isReplacementSkuValid = false;
-
 		FDStandingOrderSkuResultInfo fdStandingOrderSkuResultInfo = new FDStandingOrderSkuResultInfo();
 
-		if (!validateExistingSkuCode(conn, existingSku)) {
+		if (!validateExistingSkuCode(existingSku)) {
 			fdStandingOrderSkuResultInfo.setErrorMessage(existingSku + " "
 					+ EXISTING_SKU_NOT_EXIST);
 			return fdStandingOrderSkuResultInfo;
 		}
 
-		else if (!validateReplacementSkuCode(conn, replacementSku)) {
-			if (isReplacementSkuValid) {
+		else if (!validateReplacementSkuCode(replacementSku)) {
+			if (isSkuValidButDiscontinued) {
 				fdStandingOrderSkuResultInfo
 						.setErrorMessage(REPLACEMENT_SKU_DISC_OR_UNAVAILABLE);
 			} else {
@@ -1415,75 +1415,136 @@ public class FDStandingOrderDAO {
 			}
 			return fdStandingOrderSkuResultInfo;
 		}
+
+		// Check for salesUnit of the existing and replacement SKUs
+		else if (!validateSalesUnit(existingSku, replacementSku)) {
+			fdStandingOrderSkuResultInfo
+					.setErrorMessage("Replacement cannot be performed because Sales Unit does not match");
+			return fdStandingOrderSkuResultInfo;
+		}
+		// Check for configuration of the existing and replacement SKUs
+		else if (!validateConfigurationDetails(existingSku, replacementSku)) {
+			fdStandingOrderSkuResultInfo
+					.setErrorMessage("Replacement cannot be performed because Configuration does not matches");
+			return fdStandingOrderSkuResultInfo;
+		}
 		fdStandingOrderSkuResultInfo.setProductSkuList(displayGridForExport(
 				conn, existingSku));
 		return fdStandingOrderSkuResultInfo;
 	}
+	
+	private boolean validateConfigurationDetails(String existingSku, String replacementSku) throws SQLException {
 
-	private boolean validateReplacementSkuCode(Connection conn, String sourceSku)
-			throws SQLException {
-
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			ps = conn
-					.prepareStatement(SKU_CODE_VALIDATION_AND_AVAILABILITY_CHECK_SQL);
-
-			ps.setString(1, sourceSku);
-			ps.setString(2, sourceSku);
-
-			rs = ps.executeQuery();
-
-			while (rs.next()) {
-				isReplacementSkuValid = true;
-				if (rs.getString(UNAVAILABILITY_STATUS) != null
-						&& (rs.getString(UNAVAILABILITY_STATUS)
-								.equalsIgnoreCase(UNAV) || rs.getString(
-								UNAVAILABILITY_STATUS).equalsIgnoreCase(DISC))) {
-					return false;
-				} else {
-					return true;
-				}
-			}
-
-			rs.close();
-			ps.close();
-		} finally {
-			if (rs != null) {
-				rs.close();
-			}
-			if (ps != null) {
-				ps.close();
-			}
+		if (isSkuConfigurable(existingSku) == isSkuConfigurable(replacementSku)) {
+			return true;
 		}
 		return false;
 	}
 
-	private boolean validateExistingSkuCode(Connection conn, String existingSku)
+
+	private boolean isSkuConfigurable(String skuCode) {
+
+		FDProduct product = null;
+		try {
+			product = FDCachedFactory.getProduct(FDCachedFactory
+					.getProductInfo(skuCode));
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+		} catch (FDSkuNotFoundException e) {
+			e.printStackTrace();
+		}
+		return product.getVariations().length > 0 ? true : false;
+	}
+	
+	private boolean validateSalesUnit(String existingSku, String replacementSku) throws SQLException {
+
+		try {
+			boolean isSalesUnitExist = false;
+			FDSalesUnit[] existingSkuSalesUnitArray = getSkuSalesUnit(existingSku);
+			FDSalesUnit[] replacementSkuSalesUnitArray = getSkuSalesUnit(replacementSku);
+			
+			if(validateBaseUnitAndLenght(existingSkuSalesUnitArray,replacementSkuSalesUnitArray)){		
+					
+				for (FDSalesUnit replacementSkuSalesUnit : replacementSkuSalesUnitArray) {
+	
+					for (FDSalesUnit existingSkuSalesUnit : existingSkuSalesUnitArray) {						
+						if(replacementSkuSalesUnit.getName().equalsIgnoreCase(existingSkuSalesUnit.getName())){
+							isSalesUnitExist = true;
+							break;
+						}						
+					}
+					if(!isSalesUnitExist){
+						return false;
+					}
+				}
+			}
+			else{
+				 return false;
+			}
+			
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+		} catch (FDSkuNotFoundException e) {
+			e.printStackTrace();
+		}			
+		return true;
+	}
+
+
+	private boolean validateBaseUnitAndLenght(
+			FDSalesUnit[] existingSkuSalesUnitArray,
+			FDSalesUnit[] replacementSkuSalesUnitArray) {
+		return existingSkuSalesUnitArray[0].getBaseUnit().equalsIgnoreCase(
+				replacementSkuSalesUnitArray[0].getBaseUnit())
+				&& replacementSkuSalesUnitArray.length >= existingSkuSalesUnitArray.length;
+	}
+	
+	private FDSalesUnit[] getSkuSalesUnit(String skuCode)
+			throws FDResourceException, FDSkuNotFoundException {
+
+		FDProduct product = FDCachedFactory.getProduct(FDCachedFactory
+				.getProductInfo(skuCode));
+
+		return product.getSalesUnits();
+	}
+		
+	private boolean validateReplacementSkuCode(String sourceSku)
+			throws SQLException {
+		
+		boolean isSkuValid = false;
+		
+		try {
+			FDCachedFactory.getProductInfo(sourceSku).getVersion();
+			FDProductInfo fdProductInfo = FDCachedFactory.getProductInfo(sourceSku);			
+			if (fdProductInfo.isDiscontinued() == true) {
+				isSkuValidButDiscontinued = true;
+			}
+			else{
+				isSkuValid = true;
+			}
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+		} catch (FDSkuNotFoundException e) {
+			e.printStackTrace();
+		}
+		return isSkuValid;
+
+	}
+
+	private boolean validateExistingSkuCode(String existingSku)
 			throws SQLException {
 
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+		boolean isSkuValid = false;
+
 		try {
-			ps = conn.prepareStatement(SKU_CODE_VALIDATION_SQL);
-
-			ps.setString(1, existingSku);
-
-			rs = ps.executeQuery();
-
-			while (rs.next()) {
-				return true;
-			}
-			rs.close();
-			ps.close();
-		} finally {
-			if (rs != null) {
-				rs.close();
-			}
-			if (ps != null) {
-				ps.close();
-			}
+			FDCachedFactory.getProductInfo(existingSku).getVersion();
+			isSkuValid = true;
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+		} catch (FDSkuNotFoundException e) {
+			e.printStackTrace();
 		}
-		return false;
+		return isSkuValid;
+
 	}
 }
