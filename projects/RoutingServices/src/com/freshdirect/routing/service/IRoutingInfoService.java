@@ -76,4 +76,6 @@ public interface IRoutingInfoService {
     int addWaveSyncLockActivity(String userId) throws RoutingServiceException;
 	
     int releaseWaveSyncLock(String userId) throws RoutingServiceException;
+
+	int flagReservationStatus(Date date, Date cutoff, String startTime, String endTime, String[] zoneArray) throws RoutingServiceException;
 }

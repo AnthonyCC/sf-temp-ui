@@ -52,7 +52,7 @@
       	}
 
 
-        function $(element) {
+        function getElement(element) {
     	   if (arguments.length > 1) {
     	     for (var i = 0, elements = [], length = arguments.length; i < length; i++)
     	       elements.push($(arguments[i]));
@@ -63,7 +63,7 @@
     	}
         
         function getValues(elemId) {
-            var elem = $(elemId);
+            var elem = getElement(elemId);
             var csv = '';
             for (var i = 0; i < elem.options.length; i++) {
                 if (elem.options[i].value!='') {

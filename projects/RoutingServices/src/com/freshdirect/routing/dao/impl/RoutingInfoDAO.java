@@ -21,6 +21,7 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.routing.constants.EnumArithmeticOperator;
+import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.routing.dao.IRoutingInfoDAO;
@@ -1294,6 +1295,61 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 		});
 		
 		return waveSynclockedUserId.size() > 0 ? waveSynclockedUserId.get(0) : null;
+	}
+
+	private static final String UPDATE_RESERVATION_ROUTINGSTATUS_BY_CRITERIA = "update dlv.reservation r set r.UPDATE_STATUS = ? where r.ID in "+ 
+				" ( " +
+				" 	select R.ID  "+
+                " 	from dlv.reservation r, dlv.timeslot t, dlv.zone z  "+
+                " 	where t.zone_id = z.id and R.TIMESLOT_ID = T.ID and R.STATUS_CODE in ('5','10') and t.is_dynamic = 'X' "+
+                " 	and t.base_date = ? ";	
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public int flagReservationStatus(final Date deliveryDate, final Date cutoff, final String startTime,
+			final String endTime, final String[] area) throws SQLException {
+		
+		int result = 0;
+		final StringBuffer updateQ = new StringBuffer();
+		updateQ.append(UPDATE_RESERVATION_ROUTINGSTATUS_BY_CRITERIA);
+		List inputParamLst = new ArrayList();
+		inputParamLst.add(EnumRoutingUpdateStatus.OVERRIDDEN.value());
+		inputParamLst.add(deliveryDate);
+		if(cutoff != null){
+			updateQ.append(" and to_char(t.cutoff_time, 'HH:MI AM') = to_char(?, 'HH:MI AM')");
+			inputParamLst.add(cutoff);
+		}
+		if(startTime != null){
+			updateQ.append(" and to_date(to_char(t.start_time, 'HH:MI AM'), 'HH:MI AM') >= to_date(?, 'HH:MI AM')");
+			inputParamLst.add(startTime);
+		}
+		if(endTime != null){
+			updateQ.append(" and to_date(to_char(t.start_time, 'HH:MI AM'), 'HH:MI AM') < to_date(?, 'HH:MI AM')");
+			inputParamLst.add(endTime);
+		}		
+		if(area != null && area.length > 0){
+			updateQ.append(" and z.zone_code in (");
+			for(int intCount = 0; intCount < area.length; intCount++ ) {
+				updateQ.append("'").append(area[intCount]).append("'");				
+				if(intCount < area.length-1) {
+					updateQ.append(",");
+				}
+			}
+			updateQ.append(")");
+		}
+				
+		updateQ.append(")");
+		Connection connection = null;
+		try {
+			connection = this.jdbcTemplate.getDataSource().getConnection();
+			
+			result = this.jdbcTemplate.update(updateQ.toString(), new Object[] {"OVD", deliveryDate});
+		
+		} finally {
+			if (connection != null)
+				connection.close();
+		}
+		
+		return result;
 	}
 	
 	

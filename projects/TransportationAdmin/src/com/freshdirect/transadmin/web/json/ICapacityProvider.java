@@ -18,5 +18,7 @@ public interface ICapacityProvider {
 	
 	String doLockWaveSyncActivity();
 	
-	boolean isWaveSyncronizationLocked();	
+	boolean isWaveSyncronizationLocked();
+	
+	int flagReservationStatus(String deliveryDate, String cutOff, String windowStartTime, String windowEndTime, String zone);
 }

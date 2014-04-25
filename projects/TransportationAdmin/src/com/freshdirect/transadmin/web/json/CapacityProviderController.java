@@ -2,11 +2,13 @@ package com.freshdirect.transadmin.web.json;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import com.freshdirect.framework.util.MD5Hasher;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
@@ -130,6 +132,30 @@ public class CapacityProviderController extends JsonRpcController implements
 		}
 		
 		return 0;
+	}
+	
+	public int flagReservationStatus(String deliveryDate, String cutOff, String windowStartTime, String windowEndTime, String zone) {
+		Date cutoff = null; String startTime = null, endTime = null;
+		String[] zoneArray = null;
+		try {
+			if(cutOff != null && !TransStringUtil.isEmpty(cutOff)) {				
+				cutoff = TransStringUtil.getServerTime(cutOff);
+			}
+			
+			if(zone != null && !TransStringUtil.isEmpty(zone)) {
+				zoneArray = StringUtil.decodeStrings(zone);
+			}
+			return new RoutingInfoServiceProxy().flagReservationStatus(TransStringUtil.getDate(deliveryDate)
+																			, cutoff, startTime, endTime, zoneArray);
+		} catch (RoutingServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return -1;
 	}
 	
 	public String doLockWaveSyncActivity() {

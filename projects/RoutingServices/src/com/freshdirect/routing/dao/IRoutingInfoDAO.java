@@ -75,5 +75,7 @@ public interface IRoutingInfoDAO {
 	int addWaveSyncLockActivity(final String userId) throws SQLException;
 	
 	int releaseWaveSyncLock(String userId) throws SQLException;
+
+	int flagReservationStatus(Date date, Date cutoff, String startTime, String endTime, String[] zoneArray) throws SQLException;
 		
 }

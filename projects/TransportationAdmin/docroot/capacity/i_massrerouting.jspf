@@ -57,7 +57,7 @@
       				&nbsp;&nbsp;&nbsp;Mass ReRouting Console</div>
       <div class="bd">
       	<div id="errContainer-reroute" style="color:#00FF00;"></div>
-      	<div style="background-color:#D7C8FF">
+      	<div>
 	      	<table class="forms1">           		
 				<tr>
 				<td>Delivery Date </td>

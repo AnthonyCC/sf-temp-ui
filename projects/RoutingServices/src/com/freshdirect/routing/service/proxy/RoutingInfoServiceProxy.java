@@ -134,4 +134,9 @@ public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
     public int releaseWaveSyncLock(String userId) {
     	return getService().releaseWaveSyncLock(userId);
     }
+
+	public int flagReservationStatus(Date date, Date cutoff, String startTime,
+			String endTime, String[] zoneArray) {		
+		return  getService().flagReservationStatus(date, cutoff, startTime, endTime, zoneArray);
+	}
 }

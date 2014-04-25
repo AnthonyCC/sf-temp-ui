@@ -288,4 +288,13 @@ public class RoutingInfoService extends BaseService implements IRoutingInfoServi
 			throw new RoutingServiceException(e, IIssue.PROCESS_SCENARIO_NOTFOUND);
 		}
 	}
+	
+	public int flagReservationStatus(Date date, Date cutoff, String startTime, String endTime, String[] zoneArray) throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.flagReservationStatus(date, cutoff, startTime, endTime, zoneArray);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_SCENARIO_NOTFOUND);
+		}
+	}
 }

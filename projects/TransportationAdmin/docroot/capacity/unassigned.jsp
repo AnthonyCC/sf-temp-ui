@@ -64,11 +64,12 @@
                 </td>
                 <td><span style="font-size: 12px">Auto Refresh :</span><input type="checkbox" name="autorefresh" id="autorefresh" <%= ("true".equalsIgnoreCase(request.getParameter("autorefresh")) ? "checked=\"true\"" : "false") %>  /></td>
                  <td>
-                     <input type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doCompositeLink('rDate','unassigned.do', 'autorefresh')" />
+                     <input style="font-size:11px" type = "button" height="18" value="&nbsp;View&nbsp;" onclick="javascript:doCompositeLink('rDate','unassigned.do', 'autorefresh')" />
                   </td> 
                   <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request)){%> 
                   <td>
-                     <input type = "button" value="&nbsp;Mass ReRoute&nbsp;" onclick="javascript:showReRouteForm()" />
+                     <input style="font-size:11px" type = "button" height="18" value="&nbsp;Mass ReRoute&nbsp;" onclick="javascript:showReRouteForm()" />
+                     <input style="font-size:11px" type = "button" height="18" value="&nbsp;Re-Calculate&nbsp;" onclick="javascript:showRouteUpdateStatusForm()" />
                   </td>
                   <% } %>
               </tr>
@@ -95,7 +96,7 @@
           	  		}
           	  	}
           	  %>
-	          <table style="font-size: 12pt;font-family: Verdana, Arial, Helvetica,sans-serif;background-color:#e7e7d6;">
+	          <table style="font-size: 10pt;font-family: Verdana, Arial, Helvetica,sans-serif;background-color:#e7e7d6;">
 	          
 	          <tr><td>Unassigned Orders:</td><td><%= ucount %></td></tr>
 	          <tr><td># of Zones Affected:</td><td><%= zones.size() %></td></tr>
@@ -150,6 +151,7 @@
           </ec:table>
            <%@ include file='i_unassignededitor.jspf'%>
            <%@ include file='i_massrerouting.jspf'%>
+           <%@ include file='i_massroutingupdatestaus.jspf'%>
     </div>
    
     <script>
@@ -195,8 +197,7 @@
 		 		addAsyncHandler('ec_table', 'rowMouseOver', 0);
 		 <% } %>
 	<% } %>	
-    </script>
+    </script>    
+	
   </tmpl:put>
-  
-  
 </tmpl:insert>
