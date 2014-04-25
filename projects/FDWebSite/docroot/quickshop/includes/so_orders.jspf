@@ -55,9 +55,9 @@
 						<td><span class="text11" style="font-weight: normal;">
 							<% if(order.isModifiable()) { %>
 								<button class="imgButtonOrange" onclick="document.location='/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>'; return false;">modify order</button>
-								<button class="imgButtonRed" onclick="/your_account/cancel_order.jsp?orderId=<%=order.getErpSalesId()%>'; return false;">cancel order</button>
+								<button class="imgButtonRed" onclick="document.location='/your_account/cancel_order.jsp?orderId=<%=order.getErpSalesId()%>'; return false;">cancel order</button>
 							<% } else {%>
-								<button class="imgButtonOrange" onclick="/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>'; return false;">view order</button>
+								<button class="imgButtonOrange" onclick="document.location='/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>'; return false;">view order</button>
 							<% } %>
 						</span></td>
 					</tr>
