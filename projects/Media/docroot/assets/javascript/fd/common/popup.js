@@ -64,17 +64,31 @@ var FreshDirect = FreshDirect || {};
         },
         noscroll: {
           value: function (force) {
-            var contentBox = this.popup.$el.find(this.scrollCheck || this.bodySelector).first()[0];
+            var tooHigh = false, boxes = [];
+            
+            if (this.scrollCheck) {
+              boxes = [].concat(this.scrollCheck);
+            } else {
+              boxes = [this.bodySelector];
+            }
 
             // check popup size
             this.popup.$el.removeClass('noscroll').css({
               top: 0
             });
             
-            if (contentBox && (contentBox.clientHeight < contentBox.scrollHeight || 
+            boxes.forEach(function (box) {
+              var contentBox = this.popup.$el.find(box).first()[0];
+              
+              if (contentBox) {
+                tooHigh = tooHigh || contentBox.clientHeight < contentBox.scrollHeight;
+              }
+            }, this);
+
+            if ((tooHigh || 
                 navigator.userAgent.toLowerCase().indexOf("ipad") > -1) || force) {
               this.popup.$el.addClass('noscroll').css({
-                top: document.body.scrollTop < 200 ? 220 : document.body.scrollTop + 20
+                top: $(window).scrollTop() < 200 ? 220 : $(window).scrollTop() + 20
               });
             }
           }

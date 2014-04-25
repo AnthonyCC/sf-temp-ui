@@ -13,9 +13,12 @@ var FreshDirect = FreshDirect || {};
     },
     bodySelector:{
       value:'.qs-popup-content'
-    },    
+    },
     bodyTemplate: {
       value: common.ajaxPopup
+    },
+    scrollCheck: {
+        value:['.fixedPopupContent','.qs-popup-content']
     },
     $trigger: {
       value: null
