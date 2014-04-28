@@ -142,10 +142,32 @@ var FreshDirect = FreshDirect || {};
     });
   });
   
+  var doZoom = function ($img, $hdImg, targetBox) {
+    // get offset
+    var imgWidth = $img.width(),
+        imgHeight = $img.height(),
+        hdWidth = $hdImg.width(),
+        hdHeight = $hdImg.height(),
+        zoomBoxWidthHeight = 400,
+        maxYoffset = hdHeight - zoomBoxWidthHeight,
+        maxXoffset = hdWidth - zoomBoxWidthHeight,
+        zoomCenter = zoomBoxWidthHeight / 2,
+        offsetX = $img.data('mouseX') - targetBox.left,
+        offsetY = $img.data('mouseY') - targetBox.top;
+
+    var offset = getOffset(offsetX, offsetY, 
+      imgHeight, imgWidth, hdHeight, hdWidth,
+      zoomCenter, maxYoffset, maxXoffset);
+
+    // move bg with HD offsets
+    offsetEl($hdImg, offset.x, offset.y);
+  };
+
   $('[data-thumbnails-main]').on('mousemove', function(event){
 
       // calculate which hd image to show
-      var largeUrl = $(this).attr('data-large-url'),
+      var $img = $(this),
+          largeUrl = $img.attr('data-large-url'),
           hdImg,
           targetBox = event.currentTarget.getBoundingClientRect();
 
@@ -153,34 +175,22 @@ var FreshDirect = FreshDirect || {};
         return;
       }
 
+      $img.data('mouseX', event.clientX);
+      $img.data('mouseY', event.clientY);
+
       // find hd img in container (but just ONE)
       hdImg = $("[data-thumbnails-hd]").find("img[src='" + largeUrl + "']:first");
       hdImg.show();
 
-      // get offset
-      var imgWidth = $(this).width(),
-          imgHeight = $(this).height(),
-          hdWidth = hdImg.width(),
-          hdHeight = hdImg.height(),
-          zoomBoxWidthHeight = 400,
-          maxYoffset = hdHeight - zoomBoxWidthHeight,
-          maxXoffset = hdWidth - zoomBoxWidthHeight,
-          zoomCenter = zoomBoxWidthHeight / 2,
-          offsetX = event.clientX - targetBox.left,
-          offsetY = event.clientY - targetBox.top;
-
-      var offset = getOffset(offsetX, offsetY, 
-        imgHeight, imgWidth, hdHeight, hdWidth,
-        zoomCenter, maxYoffset, maxXoffset);
-
-      // move bg with HD offsets
-      offsetEl(hdImg, offset.x, offset.y);
+      doZoom($img, hdImg, targetBox);
 
       // show zoom window
       if(!$("[data-thumbnails-hd]").is(":visible") && !ongoing){
         ongoing = setTimeout(function () {
           ongoing = null;
           $("[data-thumbnails-hd]").show();
+
+          doZoom($img, hdImg, targetBox);
         }, DELAY);
       } 
   });
