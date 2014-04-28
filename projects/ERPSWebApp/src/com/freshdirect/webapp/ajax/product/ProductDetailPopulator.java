@@ -70,6 +70,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.ajax.cart.data.CartData.Quantity;
 import com.freshdirect.webapp.ajax.cart.data.CartData.SalesUnit;
 import com.freshdirect.webapp.ajax.product.data.BasicProductData;
@@ -128,7 +129,7 @@ public class ProductDetailPopulator {
 	 * @throws FDResourceException
 	 * @throws FDSkuNotFoundException 
 	 */
-	public static ProductData createProductData( FDUserI user, FDCartLineI cartLine ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+	public static ProductData createProductData( FDUserI user, FDCartLineI cartLine, boolean showCouponStatus ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
 		
 		if ( cartLine == null ) {
 			BaseJsonServlet.returnHttpError( 400, "missing cartline" );	// 400 Bad Request
@@ -142,7 +143,7 @@ public class ProductDetailPopulator {
 		ProductModel product = PopulatorUtil.getProduct( productId, categoryId );
 		SkuModel sku = product.getSku( cartLine.getSkuCode() );
 		
-		return createProductData( user, product, sku, cartLine );
+		return createProductData( user, product, sku, cartLine, showCouponStatus );
 	}
 	
 	/**
@@ -157,7 +158,7 @@ public class ProductDetailPopulator {
 	 * @throws FDResourceException
 	 * @throws FDSkuNotFoundException 
 	 */
-	public static ProductData createProductData( FDUserI user, ProductModel product, SkuModel sku, FDProductSelectionI lineData ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+	public static ProductData createProductData( FDUserI user, ProductModel product, SkuModel sku, FDProductSelectionI lineData, boolean showCouponStatus ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
 
 		if ( product == null ) {
 			BaseJsonServlet.returnHttpError( 500, "product not found" );
@@ -213,7 +214,7 @@ public class ProductDetailPopulator {
 		populateSkuData( data, user, product, sku, fdProduct );
 		
 		// Populate transient-data
-		postProcessPopulate( user, data, sku.getSkuCode() );
+		postProcessPopulate( user, data, sku.getSkuCode(), showCouponStatus, lineData );
 
 		return data;
 	}
@@ -248,7 +249,7 @@ public class ProductDetailPopulator {
 			BaseJsonServlet.returnHttpError( 500, "default sku does not exist for this product: " + product.getContentName() );
 		}
 		
-		return createProductData( user, product, sku, null );
+		return createProductData( user, product, sku, null, false );
 	}
 
 	public static ProductData populateBrowseRecommendation(FDUserI user, ProductData data, ProductModel product) throws FDResourceException, FDSkuNotFoundException, HttpErrorResponse {
@@ -977,8 +978,12 @@ public class ProductDetailPopulator {
 		item.setSavingString( buf.toString() );
 		
 	}
-
+	
 	public static void postProcessPopulate( FDUserI user, BasicProductData item, String skuCode ) {
+		postProcessPopulate(user, item, skuCode, false, null);
+	}
+
+	public static void postProcessPopulate( FDUserI user, BasicProductData item, String skuCode, boolean showCouponStatus, FDProductSelectionI lineData ) {
 		
 		// lookup product data
 		ProductModel productModel;
@@ -994,30 +999,38 @@ public class ProductDetailPopulator {
 			return;
 		}
 		
-		postProcessPopulate( user, item, productModel, productInfo );
+		postProcessPopulate( user, item, productModel, productInfo, showCouponStatus, lineData );
 		
 		// post-process replacement item too, if any
 		if ( item instanceof QuickShopLineItem ) {
 	    	QuickShopLineItem replItem = ((QuickShopLineItem)item).getReplacement();
 	    	if ( replItem != null ) {
-	    		postProcessPopulate( user, replItem, replItem.getSkuCode() );
+	    		postProcessPopulate( user, replItem, replItem.getSkuCode(), showCouponStatus, lineData );
 	    	}
 		}
 		
 	}
 		
-	public static void postProcessPopulate( FDUserI user, BasicProductData item, ProductModel productModel, FDProductInfo productInfo ) {
+	public static void postProcessPopulate( FDUserI user, BasicProductData item, ProductModel productModel, FDProductInfo productInfo, boolean showCouponStatus, FDProductSelectionI lineData ) {
 		
 		// populate Ecoupons data
-		FDCustomerCoupon coupon = user.getCustomerCoupon(productInfo, EnumCouponContext.PRODUCT, productModel.getParentId(), productModel.getContentName());
+		FDCustomerCoupon coupon = null;
+		if(!showCouponStatus){
+			coupon = user.getCustomerCoupon(productInfo, EnumCouponContext.PRODUCT, productModel.getParentId(), productModel.getContentName());			
+		}else if (lineData instanceof FDCartLineI){
+			coupon = user.getCustomerCoupon((FDCartLineI)lineData, EnumCouponContext.VIEWCART);
+		}
 		item.setCoupon(coupon);
 		
 		if ( coupon != null ) {
 			EnumCouponStatus status = coupon.getStatus();
 			item.setCouponDisplay( status != EnumCouponStatus.COUPON_CLIPPED_REDEEMED && status != EnumCouponStatus.COUPON_CLIPPED_EXPIRED );
 			item.setCouponClipped( status != EnumCouponStatus.COUPON_ACTIVE );
-			//item.setCouponStatusText( CartOperations.generateFormattedCouponMessage( coupon, status ) );
-			item.setCouponStatusText( "" );
+			if(showCouponStatus){
+				item.setCouponStatusText( CartOperations.generateFormattedCouponMessage( coupon, status ) );				
+			}else{
+				item.setCouponStatusText( "" );				
+			}
 		} else {
 			item.setCouponDisplay( false );
 			item.setCouponClipped( false );

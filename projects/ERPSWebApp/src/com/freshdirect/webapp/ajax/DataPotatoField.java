@@ -62,7 +62,7 @@ public class DataPotatoField {
 				return null;
 			}
 			
-			ProductData productData = ProductDetailPopulator.createProductData( user, cartLine );
+			ProductData productData = ProductDetailPopulator.createProductData( user, cartLine, true );
 			
 			CartConfirmData confirmData = new CartConfirmData();
 			confirmData.setSubTotal( JspMethods.formatPrice( cart.getSubTotal() ) );
