@@ -44,7 +44,7 @@ var FreshDirect = FreshDirect || {};
         stayOnClick: false,
         overlay:true,
         zIndex: 500,
-        delay: 10,
+        delay: 100,
         hidecallback: function () { transactionalPopup.closeCB(); }
       }
     },
@@ -88,7 +88,11 @@ var FreshDirect = FreshDirect || {};
             } 
           });
 
-          $img.css('marginTop', (maxImageSize-pimg.getBoundingClientRect().height+parseInt($img.css('marginTop'), 10))+'px');
+          $img.css({
+            marginTop: (maxImageSize-pimg.getBoundingClientRect().height+parseInt($img.css('marginTop'), 10))+'px',
+            height: $img[0].getBoundingClientRect().height,
+            width: $img[0].getBoundingClientRect().width
+          });
         }
 
         // clear popup delay
