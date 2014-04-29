@@ -163,7 +163,8 @@
 				</div>
 				
 				<div>
-				    <div class="t_tab_hspacer" style="">											
+				    <div class="t_tab_hspacer">
+				   		<div style="display:none;position:absolute;top:400px;left:600px" id="ajaxBusy"><img src="./images/ajaxload.gif"></div>
 					</div>	
 														
 					<div class="<%= currentRootMenuId %>">

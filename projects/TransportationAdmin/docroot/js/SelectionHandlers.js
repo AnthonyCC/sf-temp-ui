@@ -52,10 +52,10 @@
       	}
 
 
-        function getElement(element) {
+        function X(element) {
     	   if (arguments.length > 1) {
     	     for (var i = 0, elements = [], length = arguments.length; i < length; i++)
-    	       elements.push($(arguments[i]));
+    	       elements.push(X(arguments[i]));
     	     return elements;
     	   }
     	   element = document.getElementById(element);
@@ -63,7 +63,7 @@
     	}
         
         function getValues(elemId) {
-            var elem = getElement(elemId);
+            var elem = X(elemId);
             var csv = '';
             for (var i = 0; i < elem.options.length; i++) {
                 if (elem.options[i].value!='') {
@@ -81,7 +81,7 @@
         *            Note: passing true to sort by numbers on mixed (String/Int) options, will NOT sort properly
         */
          function sortByText(sortId, asIntVar, selElement) {
-                var specId = '#'+sortId || '';
+                var specId = sortId || '';
                 var asInt = asIntVar || false;
                 var selElemId = selElement || '';
 			
@@ -89,7 +89,7 @@
       			var selectArr = new Array();
 
       			if (specId!='') {
-      				selectArr[0] = $(specId);
+      				selectArr[0] = X(specId);
       			} else {
       				selectArr = document.getElementsByTagName('select'); 
       			}
