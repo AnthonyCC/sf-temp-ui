@@ -163,8 +163,9 @@
 
   {if $hasNewPanel or $oldNutritionPanel}
     <li class="pdp-accordion-nutrition-default pdp-accordion-nutrition pdp-accordion-item">
-      <input type="checkbox" id="pdp-nutrition">
-      <label for="pdp-nutrition">
+      /* nutrition accondion should open the panel immediately
+       * <input type="checkbox" id="pdp-nutrition"> */
+      <label for="pdp-nutrition" class="nutropen">
         <span class="pdp-accordion-item-carrot"></span>
         Nutrition
       </label>
