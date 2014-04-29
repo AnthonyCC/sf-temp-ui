@@ -277,6 +277,8 @@ var FreshDirect = FreshDirect || {};
 
       if (popupBox.width === 0) {
         positions.visibility = "hidden";
+        positions.top = 0;
+        positions.left = 0;
       } else {
         positions.visibility = "visible";
       }
