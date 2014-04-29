@@ -38,7 +38,12 @@ public class ZoneValidator extends AbstractValidator {
 		}
 		
 		if(model != null && model.getETAInterval()!=null && model.getETAInterval().intValue() <= 0) {
-			errors.rejectValue("ETAInterval", "app.error.156", new Object[]{"ETAInterval"},"ETA interval can't be less than 1 min(s) ");
+			errors.rejectValue("ETAInterval", "app.error.156", new Object[]{"ETAInterval"},"ETA interval can't be less than 1 min(s)");
+		}
+		
+		if(model != null && model.getETAInterval() == null 
+				&& ("X".equals(model.getEmailETAEnabled()) || "X".equals(model.getManifestETAEnabled()) || "X".equals(model.getSmsETAEnabled()))) {
+			errors.rejectValue("ETAInterval", "app.error.112", new Object[]{"ETAInterval"},"required field");
 		}
 	}
 	
