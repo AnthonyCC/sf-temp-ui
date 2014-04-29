@@ -677,6 +677,9 @@ public class CartOperations {
 		//									QUANTITY & SALESUNIT
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		
+		// set in cart amount in case of error message as well
+		responseItem.setInCartAmount( cart.getTotalQuantity( prodNode ) );
+		
 		FDSalesUnit salesUnit = null;
 		double quantity = 0.0;
 
