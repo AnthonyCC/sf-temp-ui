@@ -102,13 +102,13 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 					List<DlvTimeslotModel> slots = dsb.getTimeslotsForDate(processDate);
 										
 					Map<String, TrnFacilityType> routingLocationMap = dsb.retrieveTrnFacilitys();
-
-					LOGGER.info("CapacityControllerCronRunner beginning to synchronize "+slots.size()
-										+" timeslots for date "+processDate+ (isTrialRun ? " and is a trail run" : ""));
+					
 					TimeslotGroup group = groupDeliverySlotByZone(slots);
 					Map<String, List<DlvTimeslotModel>> slotsByZone = group.getGroupByZone();
 					
-					if(isWaveSyncLocked) {
+					if(!isWaveSyncLocked) {
+						LOGGER.info("CapacityControllerCronRunner beginning to synchronize "+slots.size()
+								+" timeslots for date "+processDate+ (isTrialRun ? " and is a trail run" : ""));
 						Map<Date, Map<String, Map<RoutingTimeOfDay, Map<RoutingTimeOfDay, List<IWaveInstance>>>>> waveInstanceTree = dsb.retrieveWaveInstanceTree
 																																			(processDate, EnumWaveInstanceStatus.NOTSYNCHRONIZED);
 						if(group.getSchedulerIds() != null && waveInstanceTree != null) {
@@ -169,7 +169,7 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 					}
 				}
 			}
-			if(isWaveSyncLocked){
+			if(!isWaveSyncLocked){
 				LOGGER.debug("Fixing disassociated timeslots: START");
 				dsb.fixDisassociatedTimeslots();
 				LOGGER.debug("Fixing disassociated timeslots: STOP");
