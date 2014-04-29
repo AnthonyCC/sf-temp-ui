@@ -16,7 +16,7 @@
                           visible: true,
                           effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
 
-        initCustomCalendar("trigger_reRouteDate","reRouteDate","calContainer");	
+        initCustomCalendar("trigger_massReRouteDate","reRouteDate","calContainer");	
     	routeStatusUpdatePanel.render(document.body);
     	routeStatusUpdatePanel.show();
     	
@@ -79,8 +79,8 @@
 		            <span>
 		            	<input maxlength="10" size="10" name="reRouteDate" id="reRouteDate" value='<c:out value="${reRouteDate}"/>' />
 		            </span>
-                    <span>
-                    	<a id="trigger_reRouteDate" style="font-size: 9px;">
+		            <span>
+                    	<a id="trigger_massReRouteDate" style="font-size: 9px;">
                         	<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date" />
                        	 </a>
                      </span>
