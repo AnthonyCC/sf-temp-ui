@@ -135,7 +135,7 @@ public class CapacityProviderController extends JsonRpcController implements
 	}
 	
 	public int flagReservationStatus(String deliveryDate, String cutOff, String windowStartTime, String windowEndTime, String zone) {
-		Date cutoff = null; String startTime = null, endTime = null;
+		Date cutoff = null;
 		String[] zoneArray = null;
 		try {
 			if(cutOff != null && !TransStringUtil.isEmpty(cutOff)) {				
@@ -146,7 +146,7 @@ public class CapacityProviderController extends JsonRpcController implements
 				zoneArray = StringUtil.decodeStrings(zone);
 			}
 			return new RoutingInfoServiceProxy().flagReservationStatus(TransStringUtil.getDate(deliveryDate)
-																			, cutoff, startTime, endTime, zoneArray);
+																			, cutoff, windowStartTime, windowEndTime, zoneArray);
 		} catch (RoutingServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
