@@ -19,6 +19,9 @@ var FreshDirect = FreshDirect || {};
         return $('.pdp-accordion-nutrition [data-component="popupContent"]').html();
       }
     },
+    scrollCheck: {
+        value:['.fixedPopupContent','.qs-popup-content']
+    },
     $trigger: {
       value: null
     },
