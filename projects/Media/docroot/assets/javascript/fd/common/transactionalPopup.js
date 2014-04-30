@@ -73,7 +73,7 @@ var FreshDirect = FreshDirect || {};
             cmEvSource = "",
             maxImageSize = 0,
             pimg = $(target).find('.portrait-item-burst_wrapper')[0],
-            $img = $(pimg).find('img'),
+            $img = $(pimg).find('img.portrait-item-productimage'),
             imgBottom = pimg ? pimg.getBoundingClientRect().bottom : null;
 
         this.currentTarget = target;
