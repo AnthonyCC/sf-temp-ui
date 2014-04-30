@@ -257,20 +257,20 @@ public class ProductRecommenderUtil {
 	public static void cleanUpProducts (List<ProductModel> products, boolean randomize, int maxCnt){
 		if (products == null || products.size() == 0)
 			return;
-		
-		Iterator<ProductModel> it = products.iterator();
-		while (it.hasNext()) {
-		    if (!it.next().isFullyAvailable()) {
-		        it.remove();
-		    }
-		}
-		
+
 		if (randomize){
 			Collections.shuffle(products);
 		}
-		
-		if (products.size() > maxCnt){
-			products = products.subList(0, maxCnt-1);
+
+		int keptItemCount=0;
+		Iterator<ProductModel> it = products.iterator();
+		while (it.hasNext()) {
+			ProductModel product = it.next();
+		    if (keptItemCount >= maxCnt || !product.isFullyAvailable()) {
+		        it.remove();
+		    } else {
+		    	keptItemCount++;
+		    }
 		}
 	}
 }
