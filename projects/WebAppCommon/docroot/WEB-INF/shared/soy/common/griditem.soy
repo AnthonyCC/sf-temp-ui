@@ -12,6 +12,7 @@
   {param productId:$item.productId /}
   {param skuCode:$item.skuCode /}
   {param catId:$item.catId /}
+  {param variantId:$item.variantId /}
   {param available:$item.available /}
   {param productImage:$item.productImage /}
   {param badge:$item.badge /}
@@ -58,6 +59,7 @@
   {param productId:$item.productId /}
   {param skuCode:$item.skuCode /}
   {param catId:$item.catId /}
+  {param variantId:$item.variantId /}
   {param available:$item.available /}
   {param productImage:($item.productDetailImage ? $item.productDetailImage : $item.productImage) /}
   {param badge:$item.badge /}
@@ -154,6 +156,7 @@
  * @param productId
  * @param skuCode
  * @param catId
+ * @param variantId
  * @param available
  * @param productImage
  * @param badge
@@ -205,6 +208,7 @@
       {param qInc:$quantity.qInc /}
       {param productId:$productId /}
       {param catId:$catId /}
+      {param variantId:$variantId /}
       {param productId:$productId /}
       {param skuCode:$skuCode /}
       {param configuration:$configuration /}
@@ -246,6 +250,7 @@
  * @param productId
  * @param skuCode
  * @param catId
+ * @param variantId
  * @param available
  * @param productImage
  * @param badge
@@ -350,6 +355,7 @@
     {param qInc:$quantity.qInc /}
     {param productId:$productId /}
     {param catId:$catId /}
+    {param variantId:$variantId /}
     {param productId:$productId /}
     {param skuCode:$skuCode /}
     {param configuration:$configuration /}
@@ -381,6 +387,7 @@
  * @param productId
  * @param skuCode
  * @param catId
+ * @param variantId
  * @param customizePopup
  * @param soldBySalesUnit
  * @param salesUnit
@@ -432,6 +439,7 @@
       {call common.productData}
         {param productId:$productId /}
         {param catId:$catId /}
+        {param variantId:$variantId /}
         {param skuCode:$skuCode /}
         {param configuration:$configuration /}
         {param atcItemId:$atcItemId /}
@@ -446,6 +454,7 @@
  * @param productId
  * @param skuCode
  * @param catId
+ * @param variantId
  * @param customizePopup
  * @param soldBySalesUnit
  * @param salesUnit
@@ -498,6 +507,7 @@
       {call common.productData}
         {param productId:$productId /}
         {param catId:$catId /}
+        {param variantId:$variantId /}
         {param skuCode:$skuCode /}
         {param configuration:$configuration /}
         {param atcItemId:$atcItemId /}

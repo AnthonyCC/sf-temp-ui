@@ -190,6 +190,25 @@ public class DataPotatoField {
 		return SoyTemplateEngine.convertToMap( resultMap );
 	}
 	
+	public static Map<String, ?> digProductListFromData( FDUserI user, List<ProductData> productDatas ) {
+		
+		Map<String,Object> resultMap = new HashMap<String,Object>(1);
+		List<Map<String,?>> result = new ArrayList<Map<String,?>>( productDatas != null ? productDatas.size() : 0 );
+		resultMap.put( PRODUCT_LIST_KEY, result );
+		
+		if ( productDatas != null ) {
+			for ( ProductData productData : productDatas ) {
+				Map<String, ?> productDataMap = SoyTemplateEngine.convertToMap( productData );
+				if ( productData != null ) {
+					result.add( productDataMap );
+				}
+			}
+		}
+		
+		// convert and return
+		return SoyTemplateEngine.convertToMap( resultMap );
+	}
+	
 
 
 	/**

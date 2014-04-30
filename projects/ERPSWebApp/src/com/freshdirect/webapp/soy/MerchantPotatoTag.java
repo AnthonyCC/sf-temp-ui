@@ -118,7 +118,7 @@ public class MerchantPotatoTag extends SimpleTagSupport {
 	 * @return
 	 */
 	private Map<String, ?> extractCrossSellPotato(FDUserI user, ProductModel product) {
-		return DataPotatoField.digProductListFromModels(user, ProductRecommenderUtil.getCrossSellProducts(product, user));
+		return DataPotatoField.digProductListFromData(user, ProductRecommenderUtil.getCrossSellProducts(product, user));
 	}
 
 

@@ -13,6 +13,7 @@ public class AddToCartItem implements Serializable {
 	private String lineId = null;
 	private String productId = null;
 	private String categoryId = null;
+	private String variantId = null;
 	private String recipeId = null;
 	private String skuCode = null;
 	private String quantity = null;
@@ -93,6 +94,12 @@ public class AddToCartItem implements Serializable {
 	}
 	public void setAtcItemId(String atcItemId) {
 		this.atcItemId = atcItemId;
+	}	
+	public String getVariantId() {
+		return variantId;
+	}
+	public void setVariantId(String variantId) {
+		this.variantId = variantId;
 	}
 	
 	@Override

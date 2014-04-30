@@ -45,6 +45,8 @@ public abstract class AbstractShopTagModelBuilder {
 		tagModel.setOrderSubtotal(Double.toString(price)); 
 		
 				
+		EnumEventSource source = cartLine.getSource();
+		
 		if (isStandingOrder) {
 			tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.SO_TEMPLATE.toString());
 		}  else 	if (null != cartLine.getAddedFrom()){
@@ -58,17 +60,20 @@ public abstract class AbstractShopTagModelBuilder {
 				tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.NEW_PRODUCTS_DEPARTMENT.toString());
 			}
 			
-		}else if ( variantId == null || variantId.trim().length() == 0 ){
+		} else if(source==EnumEventSource.LTYLT) {  //in case of LTYLT variantId and categoryId needs to be set separately
 			
-			EnumEventSource source = cartLine.getSource();
+			tagModel.setCategoryId(source.getName());
+			
+		} else if ( variantId == null || variantId.trim().length() == 0 ){ //in case of no variant category or event source will be set as categoryId
+			
 			if (source == null || EnumEventSource.BROWSE.equals(source) || EnumEventSource.pdp_main.equals( source )){
 				tagModel.setCategoryId(productRef.getCategoryId());
 
-			} else {
+			} else { // special event source
 				tagModel.setCategoryId(source.getName());
 			}
-		
-		} else {
+			
+		} else { //variant exist
 			try {
 				tagModel.setCategoryId(VariantRegistry.getInstance().getService(variantId).getSiteFeature().getName());
 			} catch (NullPointerException e){

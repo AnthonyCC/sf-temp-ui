@@ -139,6 +139,7 @@ public class CartOperations {
 				}
 			}
 			
+			
 			// Create cartlines and collect them in a list 
 			List<FDCartLineI> cartLinesToAdd = new ArrayList<FDCartLineI>(items.size());
 
@@ -148,6 +149,11 @@ public class CartOperations {
 				
 				responseItem.setCategoryId( item.getCategoryId() );
 				responseItem.setProductId( item.getProductId() );
+				
+				if(variantId == null){
+					// try the item specific variant
+					variantId = item.getVariantId();
+				}
 				
 				// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 				FDCartLineI cartLine = processCartLine(user,cart,item,cartLinesToAdd,responseItem, variantId);

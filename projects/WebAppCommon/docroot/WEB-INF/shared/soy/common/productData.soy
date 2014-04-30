@@ -4,6 +4,7 @@
  * @param? atcItemId atcItemId
  * @param productId productId
  * @param? catId categoryId
+ * @param? variantId variantId
  * @param? skuCode skuId
  * @param? listId listId
  * @param? productPageUrl productPageUrl
@@ -18,6 +19,7 @@
 {param productId:$productId /}
 {param productPageUrl:$productPageUrl /}
 {param catId:$catId /}
+{param variantId:$variantId /}
 {param skuCode:$skuCode /}
 {param alcoholic:$isAlcoholic /}
 {/call}
@@ -37,6 +39,7 @@
  * @param? atcItemId atcItemId
  * @param productId productId
  * @param? catId categoryId
+ * @param? variantId variantId
  * @param? skuCode skuId
  * @param? alcoholic product configuration
  * @param? productPageUrl productPageUrl
@@ -56,6 +59,9 @@
 {/if}
 {if $catId}
 <input type="hidden" data-component="productData" data-productdata-name="categoryId" name="categoryId" value="{$catId}">
+{/if}
+{if $variantId}
+<input type="hidden" data-component="productData" data-productdata-name="variantId" name="variantId" value="{$variantId}">
 {/if}
 {if $skuCode}
 <input type="hidden" data-component="productData" data-productdata-name="skuCode" name="skuCode" value="{$skuCode}">

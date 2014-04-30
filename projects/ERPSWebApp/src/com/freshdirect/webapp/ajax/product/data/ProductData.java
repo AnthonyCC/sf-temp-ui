@@ -151,6 +151,9 @@ public class ProductData extends BasicProductData implements SkuData {
 	// it contains a date in short format Fri, 02/14
 	protected String msgEarliestAvailability;
 	
+	// CM related
+	private String variantId;
+	
 	
 	@Override
 	public double getPrice() {
@@ -501,6 +504,12 @@ public class ProductData extends BasicProductData implements SkuData {
 	}
 	public void setSalesUnitDescrPDP(String salesUnitDescrPDP) {
 		this.salesUnitDescrPDP = salesUnitDescrPDP;
+	}
+	public String getVariantId() {
+		return variantId;
+	}
+	public void setVariantId(String variantId) {
+		this.variantId = variantId;
 	}
 	
 }

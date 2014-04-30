@@ -14,6 +14,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
@@ -24,10 +25,16 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
+import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
+import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class ProductRecommenderUtil {
+	
+	private static final String MERCHANT_RECOMMENDATION_VARIANT = "merch";
+
 	private static Category LOGGER = LoggerFactory.getInstance(ProductRecommenderUtil.class);
 
 	public static final int MAX_LIST_CONTENT_SIZE = 20;
@@ -178,12 +185,16 @@ public class ProductRecommenderUtil {
 	 * @param product
 	 * @return
 	 */
-	public static List<ProductModel> getCrossSellProducts(ProductModel product, FDUserI user) {
+	public static List<ProductData> getCrossSellProducts(ProductModel product, FDUserI user) {
+		
+		List<ProductData> result = new ArrayList<ProductData>();
 		// pick list from CMS
 		List<ProductModel> products = product.getCrossSellProducts();
 		LOGGER.debug("  [XSELL] Found " + products.size() + " cross-sell products in CMS ..");
 		cleanUpProducts(products, false, MAX_XSELL_PRODS);
 		LOGGER.debug("  .. " + products.size() + " are available");
+		
+		result.addAll(createData(products, MERCHANT_RECOMMENDATION_VARIANT, user));
 		
 		if (products.size() < MAX_XSELL_PRODS) {
 			// back-fill with scarab recommender
@@ -194,6 +205,7 @@ public class ProductRecommenderUtil {
 						user, null, EnumSiteFeature.getEnum("YMAL_PDTL"),
 						MAX_XSELL_PRODS,
 						Collections.<ContentKey> emptySet(), product);
+
 				List<ProductModel> scarabProds = r.getAllProducts();
 
 				LOGGER.debug("  [XSELL] Got " + scarabProds.size() + " recommendations ..");
@@ -204,15 +216,41 @@ public class ProductRecommenderUtil {
 				if (scarabProds.size() > 0) {
 					int rem = MAX_XSELL_PRODS-products.size();
 					int k = Math.min(rem, scarabProds.size());
-
-					products.addAll(  scarabProds.subList(0, k) );
+					
+					//transform into product data and set the source
+					result.addAll(createData(scarabProds.subList(0, k), r.getVariant().getId(), user));
 				}
+				
 			} catch (FDResourceException e) {
 				LOGGER.error("Failed to invoke Scarab recommender", e);
 			}
 		}
 		
-		return products;
+		return result;
+	}
+	
+	private static List<ProductData> createData(List<ProductModel> products, String variantId, FDUserI user){
+		
+		List<ProductData> data = new ArrayList<ProductData>();
+		
+		for(ProductModel p : products){
+			try{
+				ProductData productData = ProductDetailPopulator.createProductData( user, p );
+				productData.setVariantId(variantId);
+				data.add(productData);					
+			} catch ( FDResourceException e ) {
+				LOGGER.error( "Failed to get product info.", e );
+				continue;
+			} catch ( HttpErrorResponse e ) {
+				LOGGER.error( "Failed to get product info.", e );
+				continue;
+			} catch ( FDSkuNotFoundException e ) {
+				LOGGER.error( "Failed to get product info.", e );
+				continue;
+			}
+		}
+		
+		return data;
 	}
 
 
