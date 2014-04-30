@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.coremetrics.builder.ElementTagModelBuilder;
+import com.freshdirect.fdstore.coremetrics.builder.PageViewTagInput;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -29,8 +30,18 @@ public class CoremetricsPopulator {
 
 	public static final String CM_KEY = "coremetrics";
 
+	/**
+	 * This method is deprecated.
+	 * 
+	 * Use {@link CoremetricsPopulator#appendPageViewTag(Map, PageViewTagInput)} instead.
+	 * 
+	 * @param flatData
+	 * @param request
+	 * @throws SkipTagException
+	 */
+	@Deprecated
 	public static void appendPageViewTag(Map<String,Object> flatData, HttpServletRequest request) throws SkipTagException {
-		tagModelBuilder.setRequest(request);
+		tagModelBuilder.setInput( PageViewTagInput.populateFromRequest(request));
 
 		final List<String> cmResult = tagModelBuilder.buildTagModel().toStringList();
 		
@@ -41,7 +52,19 @@ public class CoremetricsPopulator {
 		appendCMData(flatData, cmResult );
 	}
 	
+	public static void appendPageViewTag(Map<String,Object> flatData, final PageViewTagInput input) throws SkipTagException {
+		tagModelBuilder.setInput( input );
 
+		final List<String> cmResult = tagModelBuilder.buildTagModel().toStringList();
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Appending page view tag to payload:  " + cmResult);
+		}
+		
+		appendCMData(flatData, cmResult );
+	}
+
+	
 	public static void appendFilterElementTag(Map<String, Object> flatData,
 			Map<String, Object> filters) throws SkipTagException {
 		if (flatData == null || filters == null)

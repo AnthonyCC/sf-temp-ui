@@ -4,14 +4,16 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.content.WineFilterValue;
+import com.freshdirect.fdstore.coremetrics.builder.PageViewTagInput;
+import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.coremetrics.tagmodel.AbstractTagModel;
 import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CmPageViewTag extends AbstractCmTag {
+	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LoggerFactory.getInstance(CmPageViewTag.class);
 	private static final String INIT_TRACKING_JS_PBJECT = "FreshDirect.Coremetrics.populateTrackingObject";
 	
@@ -26,8 +28,7 @@ public class CmPageViewTag extends AbstractCmTag {
 	
 	@Override
 	public String getTagJs() throws SkipTagException {
-
-		tagModelBuilder.setRequest(getRequest());
+		tagModelBuilder.setInput(PageViewTagInput.populateFromRequest(getRequest()));
 		PageViewTagModel tagModel = tagModelBuilder.buildTagModel();
 
 		StringBuilder sb = new StringBuilder();

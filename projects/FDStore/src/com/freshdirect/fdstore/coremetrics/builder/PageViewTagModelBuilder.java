@@ -1,7 +1,5 @@
 package com.freshdirect.fdstore.coremetrics.builder;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -23,7 +21,8 @@ public class PageViewTagModelBuilder  {
 	private static final int INDEX_FILE_SUFFIX_LENGTH = INDEX_FILE.length();
 	
 
-	private HttpServletRequest request;
+	private PageViewTagInput input;
+	
 	private Integer searchResultsSize;
 	private String searchTerm;
 	private String suggestedTerm;
@@ -36,15 +35,50 @@ public class PageViewTagModelBuilder  {
 	private PageViewTagModel tagModel = new PageViewTagModel();
 	
 	public PageViewTagModel buildTagModel() throws SkipTagException {
+		if (input == null) {
+			throw new SkipTagException("Failed to build CM PageViewTag",
+					new NullPointerException(
+							"No input specified, abort now!"));
+		}
+		
 		
 		identifyPageAndCategoryId();
 		identifyAttributes();
 		return tagModel;
 	}
 	
-	private void identifyPageAndCategoryId() throws SkipTagException{
+	private void identifyPageAndCategoryId() throws SkipTagException {
+		if (input.uri == null) {
+			// CRASH NOW!
+			throw new SkipTagException("Failed to build CM PageViewTag",
+					new NullPointerException(
+							"Missing / NULL 'uri' property"));
+		}
+
+
+
+		if (PageViewTagInput.SRC_JSON == input.source) {
+			// SPECIAL TREATMENT FOR AJAX REQUESTS
+
+
+			
+			if (input.uri.contains("filter")) {
+				// "/api/filter" branch:
+				findCurrentFolder( input.id );
+				processDeptOrCat();
+			} else {
+				// UNKNOWN CASE
+			}
+			
+			
+			return;
+		}
+
+
+		// Go the standard way
+		
 		//uri always starts with a slash	
-		String uriAfterSlash = request.getRequestURI().substring(1);
+		String uriAfterSlash = input.uri.substring(1);
 		int slashAfterDirNamePos = uriAfterSlash.indexOf("/");
 
 		//uri has a directory name
@@ -75,7 +109,7 @@ public class PageViewTagModelBuilder  {
 			} else if ("department".equals(fileName) || "department_cohort_match".equals(fileName) || "category".equals(fileName) || "newsletter".equals(fileName) || "whatsgood".equals(fileName)  || "ddpp".equals(fileName) /* || "browse".equals(fileName) */){
 				processDeptOrCat();
 			} else if ("browse".equals(fileName)){
-				findCurrentFolder( request.getParameter("id") );
+				findCurrentFolder( input.id );
 				processDeptOrCat();
 			} else if ("product".equals(fileName) || "pdp".equals(fileName)) {
 				processProduct();
@@ -213,7 +247,7 @@ public class PageViewTagModelBuilder  {
 	
 	private void processHelpDir() throws SkipTagException{
 		if ("help".equals(tagModel.getCategoryId())){
-			String pageParam = request.getParameter("page");
+			String pageParam = input.page;
 			if (pageParam != null){
 				tagModel.setPageId(pageParam);
 
@@ -305,10 +339,14 @@ public class PageViewTagModelBuilder  {
 		
 	}
 
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
+	/**
+	 * Sets context object (mandatory)
+	 * @param input
+	 */
+	public void setInput(PageViewTagInput input) {
+		this.input = input;
 	}
-
+	
 	public void setSearchResultsSize(Integer searchResultsSize) {
 		this.searchResultsSize = searchResultsSize;
 	}

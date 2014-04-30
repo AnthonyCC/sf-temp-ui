@@ -11,8 +11,8 @@ try {
 	List<List<String>> cmData = new ArrayList<List<String>>();
 	
 	PageViewTagModelBuilder pvTagModelBuilder = new PageViewTagModelBuilder();
-	pvTagModelBuilder.setRequest( request );
-	
+	pvTagModelBuilder.setInput( PageViewTagInput.populateFromRequest(request) );
+
 	PageViewTagModel pvTagModel = pvTagModelBuilder.buildTagModel();
 	cmData.add( pvTagModel.toStringList() );
 	

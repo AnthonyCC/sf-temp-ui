@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.coremetrics.builder.PageViewTagInput;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -80,7 +81,7 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 					// handle event
 					switch(cmEvent) {
 					case PAGEVIEW:
-						CoremetricsPopulator.appendPageViewTag( (Map<String, Object>) payload , request);
+						CoremetricsPopulator.appendPageViewTag( (Map<String, Object>) payload , PageViewTagInput.populateFromJSONInput(request.getRequestURI(), clientInput) );
 						break;
 					case ELEMENT:
 						CoremetricsPopulator.appendFilterElementTag((Map<String, Object>) payload , (Map<String, Object>) clientInput.get("requestFilterParams"));
