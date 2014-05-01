@@ -21,11 +21,13 @@
            	    $().toastmessage('showErrorToast', "Unable to connect to host system. Please refresh your browser!");
                 return;
             }
-            if(result) {
-            	document.getElementById("lockWaveSyncBtn").value = 'Unlock WaveSync';            	
-			} else {
-				document.getElementById("lockWaveSyncBtn").value = 'Lock WaveSync';				
-			}                        
+            if(document.getElementById("lockWaveSyncBtn")) {
+	            if(result) {
+	            	document.getElementById("lockWaveSyncBtn").value = 'Unlock WaveSync';            	
+				} else {
+					document.getElementById("lockWaveSyncBtn").value = 'Lock WaveSync';				
+				}
+            }
      }
      
      function waveSyncLockActivityCallback(result, exception) {         	  
