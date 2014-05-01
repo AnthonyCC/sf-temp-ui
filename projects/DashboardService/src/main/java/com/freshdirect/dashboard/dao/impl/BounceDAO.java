@@ -69,7 +69,7 @@ public class BounceDAO implements IBounceDAO  {
 			public void processRow(ResultSet rs) throws SQLException {
 				do {
 					String zone = rs.getString("zone");
-					Date cutoff = new Date(rs.getTimestamp("cutoff").getTime());
+					Date cutoff = DateUtil.getNormalDate(new Date(rs.getTimestamp("cutoff").getTime()));
 					int ccount = rs.getInt("ccount");
 					
 					if(!result.containsKey(zone)){

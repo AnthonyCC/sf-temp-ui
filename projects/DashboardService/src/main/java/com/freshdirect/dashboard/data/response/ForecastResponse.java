@@ -17,12 +17,18 @@ public class ForecastResponse {
 	
 	private List<ForecastModel> roll;
 	
+	private List<ForecastModel> day1;
+	
+	private List<ForecastModel> day2;
+	
 	public ForecastResponse() {
 		order = new ArrayList<ForecastModel>();
 		capacity = new ArrayList<ForecastModel>();
 		projection = new ArrayList<ForecastModel>();
 		bounce = new ArrayList<ForecastModel>();
 		roll = new ArrayList<ForecastModel>();
+		day1 = new ArrayList<ForecastModel>();
+		day2 = new ArrayList<ForecastModel>();
 	}
 
 	public List<ForecastModel> getOrder() {
@@ -63,6 +69,22 @@ public class ForecastResponse {
 
 	public void setRoll(List<ForecastModel> roll) {
 		this.roll = roll;
+	}
+
+	public List<ForecastModel> getDay1() {
+		return day1;
+	}
+
+	public void setDay1(List<ForecastModel> day1) {
+		this.day1 = day1;
+	}
+
+	public List<ForecastModel> getDay2() {
+		return day2;
+	}
+
+	public void setDay2(List<ForecastModel> day2) {
+		this.day2 = day2;
 	}	
 	
 	
