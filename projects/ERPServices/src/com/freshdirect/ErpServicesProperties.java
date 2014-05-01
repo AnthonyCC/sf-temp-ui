@@ -165,6 +165,7 @@ public class ErpServicesProperties {
 	private final static String PROP_GIVEX_SERVER_URL  = "payment.givex.url";
 	private final static String PROP_GIVEX_SERVER_SEC_URL  = "payment.givex.backup.url";
 	private final static String PROP_GIVEX_TRAN_TIMEOUT  = "payment.givex.transaction.timeout";
+	private final static String PROP_GIVEX_CONN_TIMEOUT  = "payment.givex.connection.timeout";
 	private final static String PROP_GIVEX_NUM_ENCRYPTION_KEY = "givex.num.encryption.key";
 	private final static String PROP_GIFT_CARD_STRICT_ORDER_MAX = "giftcard.strict.order.max";
 	
@@ -332,7 +333,8 @@ public class ErpServicesProperties {
 		defaults.put(PROP_GIVEX_SERVER_SEC_URL, "https://149.99.39.146:50081/1.0/trans/");
 		//defaults.put(PROP_GIVEX_SERVER_URL, "https://www.freshdirect.com/login/login.jsp");
 		//defaults.put(PROP_GIVEX_SERVER_SEC_URL, "https://www.freshdirect.com/");		
-		defaults.put(PROP_GIVEX_TRAN_TIMEOUT, "15");
+		defaults.put(PROP_GIVEX_TRAN_TIMEOUT, "15000");
+		defaults.put(PROP_GIVEX_CONN_TIMEOUT, "15000");
 		defaults.put(PROP_GIVEX_NUM_ENCRYPTION_KEY, "5f4dcc3b5aa765d61d8327deb882cf99");
 		defaults.put(PROP_GIFT_CARD_STRICT_ORDER_MAX, "5000.00");
 		defaults.put(PROP_GIFT_CARD_ORDER_MAX, "750.00");
@@ -784,6 +786,10 @@ public class ErpServicesProperties {
 
 	public static int getGivexTransactionTimeOut() {
 		return Integer.parseInt(config.getProperty(PROP_GIVEX_TRAN_TIMEOUT));
+	}
+	
+	public static int getGivexConnectionTimeOut() {
+		return Integer.parseInt(config.getProperty(PROP_GIVEX_CONN_TIMEOUT));
 	}
 	
 	public static String getGivexNumEncryptionKey(){

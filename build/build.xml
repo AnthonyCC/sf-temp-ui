@@ -1510,7 +1510,7 @@
 			<pathelement location="${work.dir}/Framework.jar"/>
 			<pathelement location="${thirdparty.home}/sapjco.jar"/>
 			<pathelement location="${thirdparty.home}/lcc.jar"/>
-            <pathelement location="${thirdparty.home}/givexclient.jar"/>
+            <pathelement location="${thirdparty.home}/givexclientnew.jar"/>
 			<pathelement location="${thirdparty.home}/antlr.jar"/>
 			<pathelement location="${thirdparty.home}/antlr-runtime.jar"/>
 			<pathelement location="${thirdparty.home}/drools-api.jar"/>
@@ -2360,7 +2360,7 @@
 			<lib>
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
-                <include name="givexclient.jar"/>
+                <include name="givexclientnew.jar"/>
                 <include name="${scarab.jar}"/>
 			<!-- scarab runtime dependencies -->
 				<include name="lucene-core-${lucene.version}.jar"/>
@@ -2395,7 +2395,7 @@
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
 				<include name="lucene-core-${lucene.version}.jar"/>
-                <include name="givexclient.jar"/> 
+                <include name="givexclientnew.jar"/> 
                 <include name="${scarab.jar}"/>
 			<!-- scarab runtime dependencies -->
 				<include name="lucene-queries-${lucene.version}.jar"/>
@@ -2470,7 +2470,7 @@
 				<include name="sapjco.jar"/>
 				<include name="jstl-api-1.2.jar"/>
 				<include name="jstl-impl-1.2.jar"/>
-                <include name="givexclient.jar"/>
+                <include name="givexclientnew.jar"/>
                 <include name="${scarab.jar}"/>
 		<!-- scarab runtime dependencies -->
 				<include name="httpclient-4.0.1.jar"/>
@@ -2626,7 +2626,7 @@
 				<include name="struts.jar"/>
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
-				<include name="givexclient.jar"/>                
+				<include name="givexclientnew.jar"/>                
 				<include name="poi-3.5-FINAL-20090928.jar"/>
 
 				<include name="lucene-core-${lucene.version}.jar"/>
@@ -2726,7 +2726,7 @@
 			<zipfileset src="${thirdparty.home}/jakarta-oro-2.0.5.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/${log4j.jar}" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/sapjco.jar" excludes="META-INF/*"/>
-            <zipfileset src="${thirdparty.home}/givexclient.jar" excludes="META-INF/*"/>
+            <zipfileset src="${thirdparty.home}/givexclientnew.jar" excludes="META-INF/*"/>
 			<!-- hivemind -->
 			<zipfileset src="${thirdparty.home}/hivemind-1.1.1.jar"/>
 			<zipfileset src="${thirdparty.home}/hivemind-lib-1.1.1.jar" excludes="META-INF/*"/>
