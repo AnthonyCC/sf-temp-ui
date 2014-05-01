@@ -18,6 +18,7 @@ public class EnumChargeType extends Enum {
 	public final static EnumChargeType WBL_RESTOCKING_FEE = new EnumChargeType("RWB", null, "WBL Restocking Fee");
 	public final static EnumChargeType BC_RESTOCKING_FEE = new EnumChargeType("RBC", null, "BC Restocking Fee");
 	public final static EnumChargeType USQ_RESTOCKING_FEE = new EnumChargeType("RUQ", null, "USQ Restocking Fee");
+	public final static EnumChargeType FDW_RESTOCKING_FEE = new EnumChargeType("RUW", null, "FDW Restocking Fee");
 	public final static EnumChargeType BOUNCED_CHECK = new EnumChargeType("BCF", null, "Bounced Check Fee");
 	public final static EnumChargeType DLVPREMIUM = new EnumChargeType("DPR", "000000000000008888", "Premium Fee");
 

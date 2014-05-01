@@ -601,7 +601,7 @@ public class ContentFactory {
 	}
 	
 	public void setCurrentPricingContext(PricingContext pricingContext) {
-		LOGGER.debug("setting pricing context to " + pricingContext + " in thread " + Thread.currentThread().getId());
+		//LOGGER.debug("setting pricing context to " + pricingContext + " in thread " + Thread.currentThread().getId());
 		currentPricingContext.set(pricingContext);
 	}
 	
@@ -610,7 +610,7 @@ public class ContentFactory {
 	}
 	
 	public void setEligibleForDDPP(Boolean isEligible) {
-		LOGGER.debug("setting DDPP flag to " + isEligible + " in thread " + Thread.currentThread().getId());
+		//LOGGER.debug("setting DDPP flag to " + isEligible + " in thread " + Thread.currentThread().getId());
 		eligibleForDDPP.set(isEligible);
 	}
 	

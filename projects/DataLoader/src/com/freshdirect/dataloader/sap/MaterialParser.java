@@ -146,8 +146,10 @@ public class MaterialParser extends SAPParser {
         	material.setAlcoholicContent(EnumAlcoholicContent.BEER);
         } else if (matGroup.startsWith("W")) {
         	material.setAlcoholicContent(EnumAlcoholicContent.BC_WINE);
-        }else if (matGroup.startsWith("U")) {
+        } else if (matGroup.startsWith("U")) {
         	material.setAlcoholicContent(EnumAlcoholicContent.USQ_WINE);
+        } else if (matGroup.startsWith("V")) {
+        	material.setAlcoholicContent(EnumAlcoholicContent.FD_WINE);
         } else {
         	//
         	// fall back to the old method of deriving alcoholic content

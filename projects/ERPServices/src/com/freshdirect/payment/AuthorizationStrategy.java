@@ -28,6 +28,7 @@ public class AuthorizationStrategy extends PaymentStrategy {
 	private final AuthInfo fdAuthInfo;
 	private final AuthInfo bcAuthInfo;
 	private final AuthInfo usqAuthInfo;
+	private final AuthInfo fdwAuthInfo;
 
 	public AuthorizationStrategy(ErpSaleModel sale) {
 		super(sale);
@@ -44,6 +45,10 @@ public class AuthorizationStrategy extends PaymentStrategy {
 				sale.getPK().getId(),
 				sale.getCustomerPk().getId(),
 				ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ),perishableBuffer);
+		this.fdwAuthInfo = new AuthInfo(
+				sale.getPK().getId(),
+				sale.getCustomerPk().getId(),
+				ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW),perishableBuffer);
 	}
 
 	public List<AuthorizationInfo> getOutstandingAuthorizations() {
@@ -51,6 +56,7 @@ public class AuthorizationStrategy extends PaymentStrategy {
 		ErpInvoiceModel inv = this.sale.getLastInvoice();
 		final ErpAffiliate bc = ErpAffiliate.getEnum(ErpAffiliate.CODE_BC);
 		final ErpAffiliate usq = ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ);
+		final ErpAffiliate fdw = ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW);
 
 		for ( ErpOrderLineModel line : order.getOrderLines() ) {
 			if (usq.equals(line.getAffiliate())) {
@@ -59,7 +65,13 @@ public class AuthorizationStrategy extends PaymentStrategy {
 				} else {
 					usqAuthInfo.addOrderline(line);
 				}
-			}else if (bc.equals(line.getAffiliate())) {
+			} else if (fdw.equals(line.getAffiliate())) {
+				if (inv != null) {
+					fdwAuthInfo.addInvoiceLine(inv.getInvoiceLine(line.getOrderLineNumber()));
+				} else {
+					fdwAuthInfo.addOrderline(line);
+				}
+			} else if (bc.equals(line.getAffiliate())) {
 				if (inv != null) {
 					bcAuthInfo.addInvoiceLine(inv.getInvoiceLine(line.getOrderLineNumber()));
 				} else {
@@ -94,6 +106,8 @@ public class AuthorizationStrategy extends PaymentStrategy {
 		for ( ErpAppliedGiftCardModel agc : order.getAppliedGiftcards() ) {
 			if(usq.equals(agc.getAffiliate())) {
 				usqAuthInfo.addGCPayment(agc.getAmount());
+			} else if(fdw.equals(agc.getAffiliate())) {
+				fdwAuthInfo.addGCPayment(agc.getAmount());
 			} else {
 				fdAuthInfo.addGCPayment(agc.getAmount());
 			}
@@ -106,6 +120,7 @@ public class AuthorizationStrategy extends PaymentStrategy {
 		double remainder = fdAuthInfo.addDeduction(amount);
 		remainder = bcAuthInfo.addDeduction(remainder);
 		remainder = usqAuthInfo.addDeduction(remainder);
+		remainder = fdwAuthInfo.addDeduction(remainder);
 		
 		if (remainder > 0) {
 			throw new FDRuntimeException("Applied more discount than order pre deduction total");
@@ -117,6 +132,7 @@ public class AuthorizationStrategy extends PaymentStrategy {
 		this.fdAuthInfo.setAuthorizations(this.sale.getApprovedAuthorizations(this.fdAuthInfo.affiliate, pm));
 		this.bcAuthInfo.setAuthorizations(this.sale.getApprovedAuthorizations(this.bcAuthInfo.affiliate, pm));
 		this.usqAuthInfo.setAuthorizations(this.sale.getApprovedAuthorizations(this.usqAuthInfo.affiliate, pm));
+		this.fdwAuthInfo.setAuthorizations(this.sale.getApprovedAuthorizations(this.fdwAuthInfo.affiliate, pm));
 		
 		List<AuthorizationInfo> auths = new ArrayList<AuthorizationInfo>();
 		
@@ -130,6 +146,12 @@ public class AuthorizationStrategy extends PaymentStrategy {
 		if(usqInfo.getAmount() > 0) {
 			auths.add(usqInfo);
 		}
+		
+		AuthorizationInfo fdwInfo = fdwAuthInfo.getAuthInfo(pm);		
+		if(fdwInfo.getAmount() > 0) {
+			auths.add(fdwInfo);
+		}
+		
 		/** Move fdAuth to the end to prevent auth holds when usq auths fail */
 		AuthorizationInfo fdInfo = fdAuthInfo.getAuthInfo(pm);				
 		if(fdInfo.getAmount() > 0) {

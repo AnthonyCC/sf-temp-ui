@@ -845,6 +845,9 @@ public class FDOrderAdapter implements FDOrderI {
 		if (ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ).equals(affiliate)) {
 			charge = getChargeAmount(EnumChargeType.USQ_RESTOCKING_FEE);
 		}
+		if (ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW).equals(affiliate)) {
+			charge = getChargeAmount(EnumChargeType.FDW_RESTOCKING_FEE);
+		}
 		return charge;
 	}
 

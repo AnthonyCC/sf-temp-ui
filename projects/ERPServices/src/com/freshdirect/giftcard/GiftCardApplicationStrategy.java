@@ -24,6 +24,7 @@ public class GiftCardApplicationStrategy extends PaymentStrategy {
 
 	private final ApplicationInfo fdAppInfo;
 	private final ApplicationInfo usqAppInfo;
+	private final ApplicationInfo fdwAppInfo;
 	private final ErpAbstractOrderModel order;
 	private final ErpInvoiceModel inv;
 	private List appGiftCardInfo = new ArrayList();
@@ -41,11 +42,16 @@ public class GiftCardApplicationStrategy extends PaymentStrategy {
 				null,
 				null,
 				ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ),perishableBuffer);
+		this.fdwAppInfo = new ApplicationInfo(
+				null,
+				null,
+				ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW),perishableBuffer);
 	}
 
 	public void generateAppliedGiftCardsInfo() {
 		final ErpAffiliate bc = ErpAffiliate.getEnum(ErpAffiliate.CODE_BC);
 		final ErpAffiliate usq = ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ);
+		final ErpAffiliate fdw = ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW);
 
 		for (Iterator i = order.getOrderLines().iterator(); i.hasNext();) {
 			ErpOrderLineModel line = (ErpOrderLineModel) i.next();
@@ -54,6 +60,12 @@ public class GiftCardApplicationStrategy extends PaymentStrategy {
 					usqAppInfo.addInvoiceLine(inv.getInvoiceLine(line.getOrderLineNumber()));
 				} else {
 					usqAppInfo.addOrderline(line);
+				}
+			} else if (fdw.equals(line.getAffiliate())) {
+				if (inv != null) {
+					fdwAppInfo.addInvoiceLine(inv.getInvoiceLine(line.getOrderLineNumber()));
+				} else {
+					fdwAppInfo.addOrderline(line);
 				}
 			} else {
 				if (inv != null) {
@@ -115,16 +127,17 @@ public class GiftCardApplicationStrategy extends PaymentStrategy {
 	}
 	
 	public double getRemainingBalance() {
-		return (fdAppInfo.getAmount() + usqAppInfo.getAmount());
+		return (fdAppInfo.getAmount() + usqAppInfo.getAmount() + fdwAppInfo.getAmount());
 	}
 	
 	public double getPerishableBufferAmount(){
-		return (fdAppInfo.getPerishableBufferAmount() + usqAppInfo.getPerishableBufferAmount());
+		return (fdAppInfo.getPerishableBufferAmount() + usqAppInfo.getPerishableBufferAmount() + fdwAppInfo.getPerishableBufferAmount());
 	}
 	
 	private void addDeduction(double amount) {
 		double remainder = fdAppInfo.addDeduction(amount);
 		remainder = usqAppInfo.addDeduction(remainder);
+		remainder = fdwAppInfo.addDeduction(remainder);
 		
 		if (remainder > 0) {
 			throw new FDRuntimeException("Applied more discount than order pre deduction total");
@@ -144,6 +157,12 @@ public class GiftCardApplicationStrategy extends PaymentStrategy {
 		ErpAppliedGiftCardModel usqAppModel = usqAppInfo.getApplicationInfo(pm, gcBalance);		
 		if(usqAppModel != null && usqAppModel.getAmount() > 0) {
 			appList.add(usqAppModel);
+		}
+		
+		if(gcBalance == 0) return appList;
+		ErpAppliedGiftCardModel fdwAppModel = fdwAppInfo.getApplicationInfo(pm, gcBalance);		
+		if(fdwAppModel != null && fdwAppModel.getAmount() > 0) {
+			appList.add(fdwAppModel);
 		}
 
 		return appList;

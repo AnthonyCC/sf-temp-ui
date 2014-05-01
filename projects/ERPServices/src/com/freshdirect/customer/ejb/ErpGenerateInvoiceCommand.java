@@ -57,6 +57,7 @@ public class ErpGenerateInvoiceCommand {
 	private double wblRestocking = 0;
 	private double bcRestocking = 0;
 	private double usqRestocking = 0;
+	private double fdwRestocking = 0;
 
 	public ErpInvoiceModel generateNewInvoice(ErpAbstractOrderModel order, ErpInvoiceModel invoice, ErpReturnOrderModel returnOrder) {
 
@@ -103,8 +104,10 @@ public class ErpGenerateInvoiceCommand {
 				wblRestocking += returnPrice * ALCOHOL_RESTOCKING_PERC;
 			} else if(ErpAffiliate.getEnum(ErpAffiliate.CODE_BC).equals(orderLine.getAffiliate())){
 				bcRestocking += returnPrice * ALCOHOL_RESTOCKING_PERC;
-			}else if(ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ).equals(orderLine.getAffiliate())){
+			} else if(ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ).equals(orderLine.getAffiliate())){
 				usqRestocking += returnPrice * ALCOHOL_RESTOCKING_PERC;
+			} else if(ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW).equals(orderLine.getAffiliate())){
+				fdwRestocking += returnPrice * ALCOHOL_RESTOCKING_PERC;
 			} else {
 				double restockingPerc = orderLine.isPerishable() ? PERISHABLE_RESTOCKING_PERC : DRY_GOODS_RESTOCKING_PERC;
 				fdRestocking += returnPrice * restockingPerc;
@@ -265,6 +268,10 @@ public class ErpGenerateInvoiceCommand {
 		if(this.usqRestocking > 0) {
 			newCharges.add(new ErpChargeLineModel(EnumChargeType.USQ_RESTOCKING_FEE, "", this.usqRestocking, null, 0.0, null));
 			total += this.usqRestocking;
+		}
+		if(this.fdwRestocking > 0) {
+			newCharges.add(new ErpChargeLineModel(EnumChargeType.FDW_RESTOCKING_FEE, "", this.fdwRestocking, null, 0.0, null));
+			total += this.fdwRestocking;
 		}
 
 		invoice.setInvoiceLines(invoiceLines);

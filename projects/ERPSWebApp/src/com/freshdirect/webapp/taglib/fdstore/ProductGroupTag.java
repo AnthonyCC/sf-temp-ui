@@ -52,7 +52,7 @@ public class ProductGroupTag extends AbstractGetterTag<ProductModel> {
 			} catch (FDSkuNotFoundException e) {				
 			}
 		}
-		if(pm != null)
+		if(pm != null && user != null)
 			return ProductPricingFactory.getInstance().getPricingAdapter(pm, user.getPricingContext());
 		else
 			return null;

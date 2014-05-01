@@ -157,6 +157,9 @@ public abstract class ErpAbstractInvoiceModel extends ErpTransactionModel {
 		if(ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ).equals(affiliate)){
 			charge = this.getCharge(EnumChargeType.USQ_RESTOCKING_FEE);
 		}
+		if(ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW).equals(affiliate)){
+			charge = this.getCharge(EnumChargeType.FDW_RESTOCKING_FEE);
+		}
 
 		return charge == null ? 0.0 : charge.getAmount();
 	}

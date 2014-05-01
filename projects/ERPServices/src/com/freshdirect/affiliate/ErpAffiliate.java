@@ -23,6 +23,7 @@ public class ErpAffiliate extends EnumModel {
 	public static final String CODE_WBL = "WBL";
 	public static final String CODE_BC = "BC";
 	public static final String CODE_USQ = "USQ";
+	public static final String CODE_FDW = "FDW";
 
 	private final String depositConditionType;
 	private final String taxConditionType;

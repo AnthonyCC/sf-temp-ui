@@ -1658,10 +1658,12 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 		boolean fd = false;
 		boolean bc = false;
 		boolean usq = false;
+		boolean fdw = false;
 		
 		final ErpAffiliate fdAff = ErpAffiliate.getPrimaryAffiliate();
 		final ErpAffiliate bcAff = ErpAffiliate.getEnum(ErpAffiliate.CODE_BC);
 		final ErpAffiliate usqAff = ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ);
+		final ErpAffiliate fdwAff = ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW);
 		
 		for ( ErpCaptureModel c : getGoodCaptures() ) {
 			if(fdAff.equals(c.getAffiliate())) {
@@ -1671,13 +1673,17 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 			if(bcAff.equals(c.getAffiliate())) {
 				bc = true;
 			}
+			
 			if(usqAff.equals(c.getAffiliate())) {
 				usq = true;
 			}
-
+			
+			if(fdwAff.equals(c.getAffiliate())) {
+				fdw = true;
+			}
 		}
 
-		return fd && (bc || usq);
+		return fd && (bc || usq || fdw);
 	}
 
 	public String getPreviousSettlementId(ErpAbstractSettlementModel settlement, boolean stlForStf) {

@@ -404,7 +404,9 @@ public class FDProduct extends FDSku implements AttributesI {
 	}
 
 	public boolean isWine() {
-		return EnumAlcoholicContent.BC_WINE.equals(this.material.getAlcoholicContent()) || EnumAlcoholicContent.USQ_WINE.equals(this.material.getAlcoholicContent());
+		return EnumAlcoholicContent.BC_WINE.equals(this.material.getAlcoholicContent()) 
+					|| EnumAlcoholicContent.USQ_WINE.equals(this.material.getAlcoholicContent())
+						|| EnumAlcoholicContent.FD_WINE.equals(this.material.getAlcoholicContent());
 	}
 
 	public boolean isDeliveryPass() {
@@ -421,6 +423,8 @@ public class FDProduct extends FDSku implements AttributesI {
 				return ErpAffiliate.getEnum(ErpAffiliate.CODE_BC);
 			if(EnumAlcoholicContent.USQ_WINE.equals(this.material.getAlcoholicContent()))
 				return ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ);
+			if(EnumAlcoholicContent.FD_WINE.equals(this.material.getAlcoholicContent()))
+				return ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW);
 		}
 		return ErpAffiliate.getEnum(ErpAffiliate.CODE_FD);
 	}

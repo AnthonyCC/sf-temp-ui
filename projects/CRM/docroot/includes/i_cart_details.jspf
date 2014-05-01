@@ -436,6 +436,18 @@
             <%  }   %>
 		</tr>
 		<%  } %>
+		
+		<%  if (order.getRestockingCharges(ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW)) > 0.0) { %>
+		<tr>
+            <td colspan="3"></td>
+			<td colspan="2">Restocking Charge FD Wines:</td>
+			<td colspan="2" align="right"><%=JspMethods.formatPrice(order.getRestockingCharges(ErpAffiliate.getEnum(ErpAffiliate.CODE_FDW)))%></td>
+		    <td colspan="4"></td>
+            <%  if (hasInvoice) { %>
+            <td colspan="3"></td>
+            <%  }   %>
+		</tr>
+		<%  } %>
 
 		<tr>
             <td colspan="3"></td>
