@@ -147,7 +147,7 @@ public class CapacityProviderController extends JsonRpcController implements
 			if(windowStartTime == null || TransStringUtil.isEmpty(windowStartTime)) {
 				windowStartTime = null;
 			}
-			if(windowEndTime != null || TransStringUtil.isEmpty(windowEndTime)) {
+			if(windowEndTime == null || TransStringUtil.isEmpty(windowEndTime)) {
 				windowEndTime = null;
 			}
 			return new RoutingInfoServiceProxy().flagReservationStatus(TransStringUtil.getDate(deliveryDate)

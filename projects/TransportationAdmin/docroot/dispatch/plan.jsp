@@ -300,6 +300,8 @@
 
     </script>   
     <%@ include file='i_activityLog.jspf'%> 
-    <%@ include file='/common/i_wavesynclock.jspf'%>
+    <% if(com.freshdirect.transadmin.security.SecurityManager.isUserAdminOrPlanning(request)) { %>
+    	<%@ include file='/common/i_wavesynclock.jspf'%>
+    <% } %>>
   </tmpl:put>
 </tmpl:insert>
