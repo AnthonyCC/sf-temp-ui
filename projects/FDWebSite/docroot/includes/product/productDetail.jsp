@@ -36,7 +36,7 @@ FreshDirect.pdp.annotations=<fd:ToJSON object="${annotations}" noHeaders="true"/
 <div class="pdp">
 	<div>
 		<%if (FDStoreProperties.isAdServerEnabled()) {%>
-			<center><script type="text/javascript">OAS_AD('ProductNote');</script></center>
+			<center class="oas-cnt"><script type="text/javascript">OAS_AD('ProductNote');</script></center>
 		<%} else {%>
     		<center><%@ include file="/shared/includes/product/i_product_quality_note.jspf" %></center>
 		<%}%>

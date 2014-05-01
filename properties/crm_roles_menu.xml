@@ -366,7 +366,7 @@ delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_
 		<links name="cases">summary_case_actions.jsp,new_case.jsp,case_summary.jsp,case.jsp,unlock.jsp</links>
 		<links name="giftcards">giftcard_summary.jsp,gc_balance.jsp,add_giftcard.jsp,receipt.jsp,purchase_giftcard.jsp,purchase_history.jsp,giftcard_addused.jsp,giftcard_usedorders.jsp,generate_new_giftcard.jsp,bt_giftcard.jsp</links>
 		<links name="customer">account_details.jsp,depot_info.jsp,vip_info.jsp,customer_search_results.jsp,company_search_results.jsp,summary.jsp,case_history.jsp,order_history.jsp,order_cases.jsp,credit_history.jsp,promotion_history.jsp,
-			promotion_popup.jsp,place_order_build.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,delivery_pass.jsp,customer_profile_summary.jsp,customer_profile.jsp,giftcard_summary.jsp,coupon_history.jsp</links>
+			promotion_popup.jsp,place_order_build.jsp,delivery_available_slots.jsp,delivery_check_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,delivery_pass.jsp,customer_profile_summary.jsp,customer_profile.jsp,giftcard_summary.jsp,coupon_history.jsp,masquerade.jsp</links>
 		<links name="returns">approve_credit.jsp,reverse_credit.jsp,issue_credit.jsp,issue_credit_confirm.jsp,return_order.jsp</links>
 		<links name="promotions">promo_view.jsp,promo_home.jsp,promo_details.jsp,promotion_popup.jsp,export_promo_list.jsp,export_ws_promo_list.jsp</links>		
 		<links name="deliverypass">place_auto_renew_order.jsp,place_auto_renew_order_review.jsp</links>
