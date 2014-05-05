@@ -827,6 +827,7 @@ public class FDOrderAdapter implements FDOrderI {
 		charge += getChargeAmount(EnumChargeType.WBL_RESTOCKING_FEE);
 		charge += getChargeAmount(EnumChargeType.BC_RESTOCKING_FEE);
 		charge += getChargeAmount(EnumChargeType.USQ_RESTOCKING_FEE);
+		charge += getChargeAmount(EnumChargeType.FDW_RESTOCKING_FEE);
 		return charge;
 	}
 
