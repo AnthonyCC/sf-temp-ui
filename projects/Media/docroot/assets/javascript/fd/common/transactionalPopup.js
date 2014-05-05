@@ -88,8 +88,11 @@ var FreshDirect = FreshDirect || {};
             } 
           });
 
+          $(pimg).css({
+            marginTop: (maxImageSize-pimg.getBoundingClientRect().height+parseInt($img.css('marginTop'), 10))+'px'
+          });
+
           $img.css({
-            marginTop: (maxImageSize-pimg.getBoundingClientRect().height+parseInt($img.css('marginTop'), 10))+'px',
             height: $img[0].getBoundingClientRect().height,
             width: $img[0].getBoundingClientRect().width
           });
