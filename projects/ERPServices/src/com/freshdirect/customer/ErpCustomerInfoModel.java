@@ -76,6 +76,11 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	/* APPDEV-2475 DP T&C */
 	private int dpTcViewCount;
 	private Date dpTcAgreeDate;
+	
+	private String industry;
+	private int numOfEmployees;
+	private String secondEmailAddress;
+	
 
 	public PhoneNumber getMobileNumber() {
 		return mobileNumber;
@@ -328,5 +333,29 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	public void setDpTcViewCount(int dpTcViewCount) { this.dpTcViewCount = dpTcViewCount; }
 	public Date getDpTcAgreeDate() { return dpTcAgreeDate; }
 	public void setDpTcAgreeDate(Date dpTcAgreeDate) { this.dpTcAgreeDate = dpTcAgreeDate; }
+
+	public String getIndustry() {
+		return industry;
+	}
+
+	public void setIndustry(String industry) {
+		this.industry = industry;
+	}
+
+	public int getNumOfEmployees() {
+		return numOfEmployees;
+	}
+
+	public void setNumOfEmployees(int numOfEmployees) {
+		this.numOfEmployees = numOfEmployees;
+	}
+
+	public String getSecondEmailAddress() {
+		return secondEmailAddress;
+	}
+
+	public void setSecondEmailAddress(String secondEmailAddress) {
+		this.secondEmailAddress = secondEmailAddress;
+	}
 
 }

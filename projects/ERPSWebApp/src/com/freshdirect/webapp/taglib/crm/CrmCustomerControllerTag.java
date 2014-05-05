@@ -78,6 +78,10 @@ public class CrmCustomerControllerTag extends AbstractControllerTag {
 		this.customerInfo.setWorkDepartment(NVL.apply(request.getParameter("workDepartment"), "").trim());
 		this.customerInfo.setEmployeeId(NVL.apply(request.getParameter("employeeId"), "").trim());
 		this.customerInfo.setDisplayName(NVL.apply(request.getParameter("displayName"), "").trim());
+		this.customerInfo.setIndustry(request.getParameter("industry").trim());
+		this.customerInfo.setNumOfEmployees(Integer.parseInt(request.getParameter("numOfEmployees").trim()));
+		this.customerInfo.setSecondEmailAddress(request.getParameter("secondEmailAddress").trim());
+		
 	}
 
 	private void validateCustomerInfo(ActionResult actionResult) {

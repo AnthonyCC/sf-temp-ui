@@ -112,6 +112,24 @@
 						<td align="right">* Employee Id:&nbsp;&nbsp;</td>
 						<td colspan="3"><input type="text" class="input_text" style="width: 150px;" name="employeeId" value="<%=customerInfo.getEmployeeId() %>"></td>
 					</tr>
+					
+					<tr>
+						<td align="right">Industry:&nbsp;&nbsp;</td>
+						<td colspan="3"><input type="text" class="input_text" style="width: 150px;" name="industry" value="<%=customerInfo.getIndustry() %>"></td>
+					</tr>
+					
+					<tr>
+						<td align="right"># of Employees:&nbsp;&nbsp;</td>
+						<td colspan="3"><input type="text" class="input_text" style="width: 150px;" name="numOfEmployees" value="<%=customerInfo.getNumOfEmployees() %>"></td>
+					</tr>
+					
+					<tr>
+						<td align="right">2nd Email Address:&nbsp;&nbsp;</td>
+						<td colspan="3"><input type="text" class="input_text" style="width: 150px;" name="secondEmailAddress" value="<%=customerInfo.getSecondEmailAddress() %>"></td>
+					</tr>
+					
+					
+					
 					<tr>
 						<td align="right">Display Name:&nbsp;&nbsp;</td>
 						<td colspan="3"><input type="text" maxlength="30" class="input_text" style="width: 150px;" name="displayName" id="displayName" value="<%=customerInfo.getDisplayName() %>">

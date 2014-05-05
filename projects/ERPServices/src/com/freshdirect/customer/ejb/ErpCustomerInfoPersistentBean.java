@@ -85,6 +85,11 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 	private java.util.Date dpTcAgreeDate;
 	private int dpTcViewCount;
 	
+	private String industry;
+	private int numOfEmployees;
+	private String secondEmailAddress;
+	
+	
 
 	/**
 	 * Default constructor.
@@ -223,6 +228,11 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		/* APPDEV-2475 DP T&C */
 		model.setDpTcViewCount(this.dpTcViewCount);
 		model.setDpTcAgreeDate(this.dpTcAgreeDate);
+		
+		
+		model.setIndustry(this.industry);
+		model.setNumOfEmployees(this.numOfEmployees);
+		model.setSecondEmailAddress(this.secondEmailAddress);
 
 		return model;
 	}
@@ -284,6 +294,10 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		/* APPDEV-2475 DP T&C */
 		this.dpTcViewCount = m.getDpTcViewCount();
 		this.dpTcAgreeDate = m.getDpTcAgreeDate();
+		
+		this.setIndustry(m.getIndustry());
+		this.setNumOfEmployees(m.getNumOfEmployees());
+		this.setSecondEmailAddress(m.getSecondEmailAddress());
 
 		this.setModified();
 	}
@@ -334,8 +348,8 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 				+ " RECEIVE_NEWS, HOME_PHONE, HOME_EXT, BUSINESS_PHONE, BUSINESS_EXT, CELL_PHONE, CELL_EXT, OTHER_PHONE, OTHER_EXT, FAX, "
 				+ " FAX_EXT, WORK_DEPARTMENT, EMPLOYEE_ID, REMINDER_LAST_SEND, REMINDER_FREQUENCY, REMINDER_DAY_OF_WEEK, REMINDER_ALT_EMAIL, "
 				+ " RSV_DAY_OF_WEEK, RSV_START_TIME, RSV_END_TIME, RSV_ADDRESS_ID, UNSUBSCRIBE_DATE, REG_REF_TRACKING_CODE, REG_REF_PROG_ID, "
-				+ " REF_PROG_INVT_ID, RECEIVE_OPTINNEWSLETTER, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE, DISPLAY_NAME, DP_TC_VIEWS, DP_TC_AGREE_DATE) "
-					+ " values (?,?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(?,'('),')'),' '),'-'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				+ " REF_PROG_INVT_ID, RECEIVE_OPTINNEWSLETTER, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE, DISPLAY_NAME, DP_TC_VIEWS, DP_TC_AGREE_DATE,INDUSTRY,NUM_OF_EMPLOYEE,SECOND_EMAIL_ADDRESS) "
+					+ " values (?,?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(?,'('),')'),' '),'-'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		ps.setString(1, this.getParentPK().getId());
 		ps.setString(2, this.title);
@@ -424,6 +438,10 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 			ps.setTimestamp(40, new Timestamp(this.dpTcAgreeDate.getTime()));
 		}
 		
+		ps.setString(41, this.industry);
+		ps.setInt(42, this.numOfEmployees);
+		ps.setString(43, this.secondEmailAddress);
+		
 		
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("Row not created");
@@ -449,7 +467,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 					+ " RSV_END_TIME, RSV_ADDRESS_ID, UNSUBSCRIBE_DATE, REG_REF_TRACKING_CODE, REG_REF_PROG_ID, REF_PROG_INVT_ID, "
 					+ " RECEIVE_OPTINNEWSLETTER, HAS_AUTORENEW_DP, AUTORENEW_DP_TYPE, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE, "
 					+ " mobile_number, mobile_preference_flag, delivery_notification, offers_notification, go_green, display_name, "
-					+ " DP_TC_VIEWS, DP_TC_AGREE_DATE"
+					+ " DP_TC_VIEWS, DP_TC_AGREE_DATE,INDUSTRY,NUM_OF_EMPLOYEES,SECOND_EMAIL_ADDRESS"
 					+ " FROM CUST.CUSTOMERINFO WHERE CUSTOMER_ID = ?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
@@ -507,6 +525,11 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 			/* APPDEV-2475 DP T&C */
 			this.dpTcViewCount = rs.getInt("DP_TC_VIEWS");
 			this.dpTcAgreeDate = rs.getDate("DP_TC_AGREE_DATE");
+			
+			this.industry = NVL.apply(rs.getString("INDUSTRY"), "");
+			this.numOfEmployees = rs.getInt("NUM_OF_EMPLOYEES");
+			this.secondEmailAddress = rs.getString("SECOND_EMAIL_ADDRESS");
+			
 		} else {
 			throw new SQLException("No such ErpCustomerInfo PK: " + this.getPK());
 		}
@@ -530,7 +553,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 				+ " REF_PROG_INVT_ID=?, RECEIVE_OPTINNEWSLETTER=?, HAS_AUTORENEW_DP=?, AUTORENEW_DP_TYPE=?, "
 				+ " EMAIL_LEVEL=?, NO_CONTACT_MAIL=?, NO_CONTACT_PHONE=?,"
 				+ " mobile_number=?, delivery_notification=?, offers_notification=?, go_green=?, display_name=?,"
-				+ " DP_TC_VIEWS=?, DP_TC_AGREE_DATE=?"
+				+ " DP_TC_VIEWS=?, DP_TC_AGREE_DATE=?,INDUSTRY=?,NUM_OF_EMPLOYEES=?,SECOND_EMAIL_ADDRESS=?"
 				+" WHERE CUSTOMER_ID=?");
 		//ps.setString(, this.getPK().getId() );
 
@@ -651,7 +674,11 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 			ps.setDate(45, new java.sql.Date(this.dpTcAgreeDate.getTime()));
 		}
 		
-		ps.setString(46, this.getPK().getId());
+		ps.setString(46, this.industry);
+		ps.setInt(47, this.numOfEmployees);
+		ps.setString(48, this.secondEmailAddress);
+		
+		ps.setString(49, this.getPK().getId());
 
 		
         if (ps.executeUpdate() != 1) {
@@ -691,6 +718,30 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 
 	public void setNoContactPhone(boolean noContactPhone) {
 		this.noContactPhone = noContactPhone;
+	}
+
+	public String getIndustry() {
+		return industry;
+	}
+
+	public void setIndustry(String industry) {
+		this.industry = industry;
+	}
+
+	public int getNumOfEmployees() {
+		return numOfEmployees;
+	}
+
+	public void setNumOfEmployees(int numOfEmployees) {
+		this.numOfEmployees = numOfEmployees;
+	}
+
+	public String getSecondEmailAddress() {
+		return secondEmailAddress;
+	}
+
+	public void setSecondEmailAddress(String secondEmailAddress) {
+		this.secondEmailAddress = secondEmailAddress;
 	}
 
 }

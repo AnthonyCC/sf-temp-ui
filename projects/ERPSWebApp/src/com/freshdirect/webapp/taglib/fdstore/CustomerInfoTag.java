@@ -58,6 +58,10 @@ public class CustomerInfoTag extends com.freshdirect.framework.webapp.BodyTagSup
     boolean htmlEmail = false;
     String depotCode = null;
     String depotAccessCode = null;
+    
+    String industry = null;
+    String numOfEmployees = null;
+    String secondEmailAddress = null;
 
     //
     // Delivery address data variable from the form
@@ -213,6 +217,9 @@ public class CustomerInfoTag extends com.freshdirect.framework.webapp.BodyTagSup
         htmlEmail = request.getParameter("isSendHTMLEmail")==null?false:true;
         depotCode = request.getParameter("depotCode");
         depotAccessCode = request.getParameter("depotAccessCode");
+        industry = request.getParameter("industry");
+        numOfEmployees = request.getParameter("numOfEmployees");
+        secondEmailAddress = request.getParameter("secondEmailAddress");
         //
         // Get delivery address data
         //
@@ -307,7 +314,7 @@ public class CustomerInfoTag extends com.freshdirect.framework.webapp.BodyTagSup
             if ((businessphone == null) || businessphone.length() <10) {
                 result.addError(new ActionError("busphone", "Invalid or missing work phone number."));
             }
-        }
+        }      
 
     } // method validateCustomerInfo
     
@@ -419,6 +426,9 @@ public class CustomerInfoTag extends com.freshdirect.framework.webapp.BodyTagSup
         erpCustomerInfo.setAlternateEmail(altEmail);
         erpCustomerInfo.setWorkDepartment(workdept);
         erpCustomerInfo.setEmployeeId(employeeId);
+        erpCustomerInfo.setIndustry(industry);
+        erpCustomerInfo.setNumOfEmployees(Integer.parseInt(numOfEmployees));
+        erpCustomerInfo.setSecondEmailAddress(secondEmailAddress);
         //
         // set depot status
         //

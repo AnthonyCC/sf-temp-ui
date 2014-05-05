@@ -120,7 +120,7 @@ if(null != orderId){
 --%>
 <table id="contain-er" style="x-width: 100%">
 	<tr>
-		<td style="width: 200px">
+		<td style="width: 300px">
 			<%-- NAME AND CONTACT INFO --%>
 			<% ErpCustomerInfoModel custInfo = util.getCustomerInfo(); %>
 			<h2>Name &amp; Contact Info</h2>
@@ -153,6 +153,21 @@ if(null != orderId){
 					<td align="right" class="cust_module_content_note">Employee Id:&nbsp;&nbsp;</td>
 					<td><%=custInfo.getEmployeeId()%></td>
 				</tr>
+				<tr>
+					<td align="right" class="cust_module_content_note">Industry:&nbsp;&nbsp;</td>
+					<td><%=custInfo.getIndustry()%></td>
+				</tr>
+				
+				<tr>
+					<td align="right" width="40%" class="cust_module_content_note"># of Employees:&nbsp;&nbsp;</td>
+					<td><%=custInfo.getNumOfEmployees()%></td>
+				</tr>
+				
+				<tr>
+					<td align="right" width="50%" class="cust_module_content_note">2nd Email Address:&nbsp;&nbsp;</td>
+					<td><%=custInfo.getSecondEmailAddress()%></td>
+				</tr>
+				
 				<%if(custInfo.getDisplayName()!=null && !"".equals(custInfo.getDisplayName())){ %>
 				<tr>
 					<td align="right" class="cust_module_content_note">Display Name:&nbsp;&nbsp;</td>
