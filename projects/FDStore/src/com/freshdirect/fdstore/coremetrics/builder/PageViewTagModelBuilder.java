@@ -108,7 +108,7 @@ public class PageViewTagModelBuilder  {
 
 			} else if ("department".equals(fileName) || "department_cohort_match".equals(fileName) || "category".equals(fileName) || "newsletter".equals(fileName) || "whatsgood".equals(fileName)  || "ddpp".equals(fileName) /* || "browse".equals(fileName) */){
 				processDeptOrCat();
-			} else if ("browse".equals(fileName)){
+			} else if ("browse".equals(fileName) || "browse_special".equals(fileName)) {
 				findCurrentFolder( input.id );
 				processDeptOrCat();
 			} else if ("product".equals(fileName) || "pdp".equals(fileName)) {
