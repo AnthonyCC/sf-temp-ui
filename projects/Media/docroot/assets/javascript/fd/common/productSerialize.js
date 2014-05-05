@@ -81,7 +81,11 @@ var FreshDirect = FreshDirect || {};
 
   function getCartData(element) {
     var product = $(element).closest('[data-component="product"]'), qtybox, incart,
-        cartdata = {};
+        cartdata = {
+          min: 1,
+          max: 99,
+          step: 1
+        };
 
     if (product) {
       incart = product.find('.incart-info').first();
