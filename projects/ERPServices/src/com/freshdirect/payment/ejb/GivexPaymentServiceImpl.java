@@ -1,21 +1,25 @@
 package com.freshdirect.payment.ejb;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
 
+import lcc.japi.trans;
+
+import com.freshdirect.client.TransPortType;
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.givex.gapi.x10.gapiwsdl.TransPortType;
-import com.givex.gapi.x10.types_common.Identification;
-import com.givex.gapi.x10.types_trans.Balance;
-import com.givex.gapi.x10.types_trans.BalanceTransfer;
-import com.givex.gapi.x10.types_trans.BalanceTransferResponse;
-import com.givex.gapi.x10.types_trans.GetBalance;
-import com.givex.gapi.x10.types_trans.PostAuth;
-import com.givex.gapi.x10.types_trans.PostAuthResponse;
-import com.givex.gapi.x10.types_trans.PreAuth;
-import com.givex.gapi.x10.types_trans.PreAuthResponse;
-import com.givex.gapi.x10.types_trans.Register;
-import com.givex.gapi.x10.types_trans.RegisterResponse;
+import com.freshdirect.payment.GivexResponseModel;
+import com.givex.gapi.x1.x0.types_common.Identification;
+import com.givex.gapi.x1.x0.types_trans.Balance;
+import com.givex.gapi.x1.x0.types_trans.BalanceTransfer;
+import com.givex.gapi.x1.x0.types_trans.BalanceTransferResponse;
+import com.givex.gapi.x1.x0.types_trans.GetBalance;
+import com.givex.gapi.x1.x0.types_trans.PostAuth;
+import com.givex.gapi.x1.x0.types_trans.PostAuthResponse;
+import com.givex.gapi.x1.x0.types_trans.PreAuth;
+import com.givex.gapi.x1.x0.types_trans.PreAuthResponse;
+import com.givex.gapi.x1.x0.types_trans.Register;
+import com.givex.gapi.x1.x0.types_trans.RegisterResponse;
 
 public final class GivexPaymentServiceImpl implements GivexPaymentService {
 	
@@ -114,6 +118,7 @@ public final class GivexPaymentServiceImpl implements GivexPaymentService {
 
 
 
+	@Override
 	public BalanceTransferResponse transferBalance(
 			Identification identification, ErpPaymentMethodI paymentMethodFrom,
 			ErpPaymentMethodI paymentMethodTo, double amount, String reference)

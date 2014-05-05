@@ -2,14 +2,14 @@ package com.freshdirect.payment.ejb;
 
 import java.rmi.RemoteException;
 
+import com.freshdirect.client.TransPortType;
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.givex.gapi.x10.gapiwsdl.TransPortType;
-import com.givex.gapi.x10.types_common.Identification;
-import com.givex.gapi.x10.types_trans.Balance;
-import com.givex.gapi.x10.types_trans.BalanceTransferResponse;
-import com.givex.gapi.x10.types_trans.PostAuthResponse;
-import com.givex.gapi.x10.types_trans.PreAuthResponse;
-import com.givex.gapi.x10.types_trans.RegisterResponse;
+import com.givex.gapi.x1.x0.types_common.Identification;
+import com.givex.gapi.x1.x0.types_trans.Balance;
+import com.givex.gapi.x1.x0.types_trans.BalanceTransferResponse;
+import com.givex.gapi.x1.x0.types_trans.PostAuthResponse;
+import com.givex.gapi.x1.x0.types_trans.PreAuthResponse;
+import com.givex.gapi.x1.x0.types_trans.RegisterResponse;
 
 
 
