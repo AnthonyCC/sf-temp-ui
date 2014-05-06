@@ -68,6 +68,9 @@ var FreshDirect = FreshDirect || {};
     reposition: {
       value: reposition
     },
+    scrollCheck: {
+        value:['.fixedPopupContent','.qs-popup-content']
+    },
     open: {
       value: function (config) {
 
