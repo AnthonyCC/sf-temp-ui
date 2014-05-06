@@ -196,10 +196,14 @@ var FreshDirect = FreshDirect || {};
   });
 
   $('[data-thumbnails-main]').on('click', function(event){
-    if(!$("[data-thumbnails-hd]").is(":visible")){
+    var largeUrl = $(this).attr('data-large-url');
+
+    if(largeUrl && !$("[data-thumbnails-hd]").is(":visible")){
       clearTimeout(ongoing);
       ongoing = null;
       $("[data-thumbnails-hd]").show();
+
+      doZoom($(this), $("[data-thumbnails-hd]").find("img[src='" + largeUrl + "']:first"), event.currentTarget.getBoundingClientRect());
     } 
   });
 
