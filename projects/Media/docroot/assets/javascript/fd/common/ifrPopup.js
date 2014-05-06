@@ -12,8 +12,15 @@ var FreshDirect = FreshDirect || {};
         $content = $('#ifrPopup .qs-popup-content');
 
     try {
-      var $body = $($ifr[0].contentWindow.document.body),
-          bodyHeight = $body[0].scrollHeight;
+      var $body, bodyHeight;
+
+      $ifr.css({
+        height: 'auto',
+        width: 'auto'
+      });
+      
+      $body = $($ifr[0].contentWindow.document.body);
+      bodyHeight = $body[0].scrollHeight;
 
       $body.css({
         display:'inline-block',
