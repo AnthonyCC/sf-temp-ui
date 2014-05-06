@@ -6,7 +6,7 @@
 * @param name
 * @param? available
 */
-{template .category}
+{template .category autoescape="false"}
   <div class="category">
   {if $available}
     <a href="/browse.jsp?id={$id}" data-component="categorylink" data-id="{$id}">
