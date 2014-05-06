@@ -22,7 +22,9 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
-<%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %><% 
+<%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %>
+<%@ taglib uri="fd-data-potatoes" prefix="potato" %>
+<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %><% 
 //expanded page dimension
 final int W_INDEX_TOTAL = 970;
 final int W_INDEX_CENTER_PADDING = 20;
@@ -130,7 +132,8 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 	   			if (validOrderCount<=2){
 %>
 		   			<div id="most-popular" class="grid-carousel grid-view">
-						<comp:recommenderCarousel siteFeature="FAVORITES" user="<%= user %>" trkCode="dpage" facility="default" id="fav_carousel" maxItems="24" numItems="6" width="910" />
+		   				<potato:recommender siteFeature="FAVORITES" name="deals" maxItems="24" cmEventSource="BROWSE"  sendVariant="true" />
+		   				<soy:render template="common.ymalCarousel" data="${deals}" />
 		   			</div>
 <%
 	   			}
