@@ -614,7 +614,7 @@ public class BrowseDataBuilderFactory {
 				List<ProductModel> products = recommendations.getAllProducts();
 				
 				if (products.size()>0){
-					browseData.getCarousels().setCarousel3(createCarouselData(null, "Customers Like You Also Enjoyed", products, user, EnumEventSource.CSR.getName()));
+					browseData.getCarousels().setCarousel3(createCarouselData(null, "You Might Also Like", products, user, EnumEventSource.CSR.getName()));
 				}
 			} catch (FDResourceException e) {
 				LOG.error("recommendation failed",e);

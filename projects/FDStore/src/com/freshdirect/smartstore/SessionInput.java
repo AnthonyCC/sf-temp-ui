@@ -488,4 +488,111 @@ public class SessionInput implements Cloneable {
 		
 		return cloned;
 	}
+
+
+
+
+
+	public static class Builder {
+		private int maxRecommendations = Integer.MAX_VALUE;
+		private int windowSize = 0;
+		
+		private FDUserI user = null;
+		
+		private ContentNodeModel currentNode;
+		
+		private Set<ContentKey> cartContents = null;
+		private boolean excludeCartContent = false;
+		private boolean excludeAlcoholicContent = false;
+
+		
+		private YmalSource ymalSource = null;
+
+
+		private Map<String, List<ContentKey>> previousRecommendations;
+
+
+		
+		public Builder setMaxRecommendations(int maxRecommendations) {
+			this.maxRecommendations = maxRecommendations; return this;
+		}
+		
+		public Builder setWindowSize(int windowSize) {
+			this.windowSize = windowSize; return this;
+		}
+
+		public Builder setUser(FDUserI user) {
+			this.user = user; return this;
+		}
+		
+		
+		public Builder setCurrentNode(ContentNodeModel currentNode) {
+			this.currentNode = currentNode; return this;
+		}
+
+		public Builder setCartContents(Set<ContentKey> cartContent) {
+			this.cartContents = cartContent; return this;
+		}
+		
+		public Builder setExcludeCartContent(boolean excludeCartContent) {
+			this.excludeCartContent = excludeCartContent; return this;
+		}
+		
+		public Builder setExcludeAlcoholicContent(boolean excludeAlcoholicContent) {
+			this.excludeAlcoholicContent = excludeAlcoholicContent; return this;
+		}
+		
+		
+		public Builder setYmalSource(YmalSource ymalSource) {
+			this.ymalSource = ymalSource; return this;
+		}
+
+
+		
+		public Builder setPreviousRecommendations(
+				Map<String, List<ContentKey>> previousRecommendations) {
+			this.previousRecommendations = previousRecommendations;
+			return this;
+		}
+
+
+		public SessionInput build() {
+			SessionInput si;
+			
+			if (user != null) {
+				si = new SessionInput(user);
+			} else {
+				si = new SessionInput();
+			}
+
+			if (maxRecommendations < Integer.MAX_VALUE) {
+				si.setMaxRecommendations(maxRecommendations);
+			}
+			if (windowSize > 0) {
+				si.setWindowSize(windowSize);
+			}
+
+			
+			if (currentNode != null) {
+				si.setCurrentNode(currentNode);
+			}
+			
+			if (cartContents != null) {
+				si.setCartContents(cartContents);
+				si.setIncludeCartItems(!excludeCartContent);
+			}
+			si.setExcludeAlcoholicContent(excludeAlcoholicContent);
+
+			if (ymalSource != null) {
+				si.setYmalSource(ymalSource);
+			}
+			
+			
+			if (previousRecommendations != null) {
+				si.setPreviousRecommendations(previousRecommendations);
+			}
+
+			return si;
+		}
+	}
 }

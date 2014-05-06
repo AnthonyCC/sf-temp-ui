@@ -16,6 +16,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -47,17 +48,55 @@ public class ProductRecommenderUtil {
 	public static final int MAX_UPSELL_PRODS = 12;
 	public static final int MAX_XSELL_PRODS = 12;
 	
-
+	/**
+	 * 
+	 * @param user Actual user
+	 * @param session HTTP session (optional). Currently used to cache previous result.
+	 * @param siteFeat Smart Store Site Feature
+	 * @param maxItems Maximum number of recommended items
+	 * @param listContent List of content keys. They are required for certain type of recommenders such as ones offering items for cart content.
+	 * @param currentNode Triggering content node (optional)
+	 * 
+	 * @return 
+	 * 
+	 * @throws FDResourceException
+	 */
     public static Recommendations doRecommend( FDUserI user, HttpSession session, EnumSiteFeature siteFeat, int maxItems, Set<ContentKey> listContent, ContentNodeModel currentNode ) throws FDResourceException {
     	
 		FDStoreRecommender recommender = FDStoreRecommender.getInstance();	    
 
 		//listContent should not be larger than MAX_LIST_CONTENT_SIZE for scarab to work well (limit could be larger but wouldn't make more sense)
 		Recommendations results = recommender.getRecommendations(siteFeat, user, createSessionInput( session, user, maxItems, currentNode, listContent ) );
+		
+		// FIXME is this required to do?
 		persistToSession(session, results);
 		return results;
     }
 
+
+    /**
+     * Streamlined method for custom SessionInput object.
+     * Note, this method does not persist result in session (as it is not needed in most cases).
+     * 
+     * @param user
+     * @param siteFeat
+     * @param si
+     * 
+     * @return Recommended items
+     * 
+     * @throws FDResourceException
+     */
+    public static Recommendations doRecommend( FDUserI user, EnumSiteFeature siteFeat, SessionInput si ) throws FDResourceException {
+    	
+		FDStoreRecommender recommender = FDStoreRecommender.getInstance();	    
+
+		//listContent should not be larger than MAX_LIST_CONTENT_SIZE for scarab to work well (limit could be larger but wouldn't make more sense)
+		Recommendations results = recommender.getRecommendations(siteFeat, user, si );
+		
+		return results;
+    }
+
+    
     @SuppressWarnings("unchecked")
 	public static SessionInput createSessionInput(HttpSession session, FDUserI user, int maxItems, ContentNodeModel currentNode, Set<ContentKey> listContent ) {
     	
@@ -151,14 +190,43 @@ public class ProductRecommenderUtil {
 		}
 		
 		if (recommendations == null || recommendations.getAllProducts().size() == 0){ //fallback
-			recommendations = doRecommend(user, null, EnumSiteFeature.getEnum("SCR_FEAT_ITEMS"), MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, contentNode); //TODO verify site feature	
+			recommendations = doRecommend(user, null, EnumSiteFeature.getEnum("SCR_FEAT_ITEMS"), MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, contentNode);	
 		}
 		
 		return recommendations;
 	}
 
-	public static Recommendations getBrowseProductListingPageRecommendations(FDUserI user, Set<ContentKey> keys) throws FDResourceException{
-		return doRecommend(user, null, EnumSiteFeature.getEnum("SCARAB_CART"), MAX_CAT_SCARAB_RECOMMENDER_COUNT, keys, null);	
+	public static Recommendations getBrowseProductListingPageRecommendations(FDUserI user, Set<ContentKey> keys) throws FDResourceException {
+		// Round #1 - Get personalized recommendations (Scarab 'Personalized Items')
+		Recommendations recommendations = doRecommend(user, null,
+				EnumSiteFeature.getEnum("SRCH"),
+				MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);
+
+		if (recommendations == null || recommendations.getAllProducts().size() == 0) {
+			// Round #2 - Get YMAL recommendations triggered by the first product from the selection
+			//   (Scarab 'Also Viewed' recommender backfilled with local SmartYMAL)
+			ContentNodeModel currentNode = null;
+			if (keys.size() > 0) {
+				currentNode = ContentFactory.getInstance().getContentNodeByKey(keys.iterator().next());
+			}
+
+			SessionInput si = new SessionInput.Builder()
+					.setUser(user)
+					.setExcludeAlcoholicContent(false)
+					.setMaxRecommendations(MAX_CAT_SCARAB_RECOMMENDER_COUNT)
+					.setCurrentNode(currentNode)
+					.setCartContents(keys)
+					.setExcludeCartContent(true)
+					.build();
+
+			/* recommendations = doRecommend(user, null,
+					EnumSiteFeature.getEnum("SRCH_RLTD"),
+					MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, currentNode); */
+			recommendations = doRecommend(user,
+					EnumSiteFeature.getEnum("SRCH_RLTD"), si);
+		}
+
+		return recommendations;
 	}
 	
 	/**
