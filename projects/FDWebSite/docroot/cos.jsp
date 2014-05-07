@@ -18,6 +18,9 @@ final int W_INDEX_TOTAL = 970;
 final int W_INDEX_CENTER_PADDING = 20;
 final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 
+// YUI is not required for cos.jsp
+request.setAttribute("noyui", true);
+
 %><fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" /><%
 
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
@@ -37,12 +40,6 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	</tmpl:put>
 	
 	<tmpl:put name='content' direct='true'>
-<script>
-FD_QuickBuy.style = {
-		closeButton:'quickbuy-noheader-close',
-		header:'quickbuy-noheader'
-};
-</script>
 
 <fd:GetSegmentMessage id='segmentMessage' user="<%=user%>">
 
