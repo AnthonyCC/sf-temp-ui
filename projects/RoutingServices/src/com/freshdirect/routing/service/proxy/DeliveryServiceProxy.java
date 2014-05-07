@@ -82,8 +82,8 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 		return getService().getTimeslotsByDateEx(deliveryDate, cutOffTime, zoneCode, condition, filterTimeslots);
 	}
 	
-	public List<IUnassignedModel> getUnassigned(Date deliveryDate, Date cutOffTime, String zoneCode) throws RoutingServiceException {
-		return getService().getUnassigned(deliveryDate, cutOffTime, zoneCode);
+	public List<IUnassignedModel> getUnassigned(Date deliveryDate, Date cutOffTime, String zoneCode, EnumLogicalOperator condition) throws RoutingServiceException {
+		return getService().getUnassigned(deliveryDate, cutOffTime, zoneCode, condition);
 	}
 	
 	public IOrderModel getRoutingOrderByReservation(String reservationId) throws RoutingServiceException {

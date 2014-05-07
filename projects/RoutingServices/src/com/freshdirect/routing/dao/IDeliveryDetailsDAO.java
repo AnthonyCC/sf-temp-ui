@@ -34,7 +34,7 @@ public interface IDeliveryDetailsDAO {
 	
 	Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(Date deliveryDate, Date cutOffTime, String zoneCode, EnumLogicalOperator condition, boolean filterTimeslots) throws SQLException;
 	
-	List<IUnassignedModel> getUnassigned(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws SQLException;
+	List<IUnassignedModel> getUnassigned(final Date deliveryDate, final Date cutOffTime, final String zoneCode, final EnumLogicalOperator condition) throws SQLException;
 	
 	IPackagingModel getHistoricOrderSize(final String customerId, final int range) throws SQLException;
 	

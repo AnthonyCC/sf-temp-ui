@@ -282,10 +282,10 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		}
 	}
 	
-	public List<IUnassignedModel> getUnassigned(Date deliveryDate, Date cutOffTime, String zoneCode) throws RoutingServiceException {
+	public List<IUnassignedModel> getUnassigned(Date deliveryDate, Date cutOffTime, String zoneCode, EnumLogicalOperator condition) throws RoutingServiceException {
 		
 		try {
-			return deliveryDAOImpl.getUnassigned(deliveryDate, cutOffTime, zoneCode);
+			return deliveryDAOImpl.getUnassigned(deliveryDate, cutOffTime, zoneCode, condition);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			throw new RoutingServiceException(e, IIssue.PROCESS_UNASSIGNED_UNSUCCESSFUL);

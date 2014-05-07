@@ -183,15 +183,15 @@ public class CapacityController extends AbstractMultiActionController {
 		if("T".equalsIgnoreCase(rType)) {			
 			processEarlyWarning(mav, new TimeEarlyWarningFormatter()
 												, executeEarlyWarningTime(mav, rDate, cutOff, rType, EnumLogicalOperator.getEnum(condition), EnumEarlyWarningViewContext.TIME)
-												, discountMapping, EnumEarlyWarningViewContext.TIME, rDate);
+												, discountMapping, EnumEarlyWarningViewContext.TIME, rDate, getCutOffTime(cutOff), EnumLogicalOperator.getEnum(condition));
 		} else if("O".equalsIgnoreCase(rType)) {
 			processEarlyWarning(mav, new OrderEarlyWarningFormatter()
 												, executeEarlyWarningOrder(mav, rDate, cutOff, rType, EnumLogicalOperator.getEnum(condition), EnumEarlyWarningViewContext.ORDER)
-												, discountMapping, EnumEarlyWarningViewContext.ORDER, rDate);
+												, discountMapping, EnumEarlyWarningViewContext.ORDER, rDate, getCutOffTime(cutOff), EnumLogicalOperator.getEnum(condition));
 		}else{
 			processEarlyWarning(mav, new OrderEarlyWarningFormatter()
 												, executeEarlyWarningOrder(mav, rDate, cutOff, rType, EnumLogicalOperator.getEnum(condition), EnumEarlyWarningViewContext.DISPLAY)
-												, discountMapping, EnumEarlyWarningViewContext.DISPLAY, rDate);
+												, discountMapping, EnumEarlyWarningViewContext.DISPLAY, rDate, getCutOffTime(cutOff), EnumLogicalOperator.getEnum(condition));
 		
 		}
 		
@@ -642,7 +642,7 @@ public class CapacityController extends AbstractMultiActionController {
 	@SuppressWarnings("unchecked")
 	private void processEarlyWarning(ModelAndView mav, EarlyWarningFormatter formatter
 										, Map<String, List<Capacity>> capacityMapping
-										, Map<String, List<TimeRange>> discountMapping, EnumEarlyWarningViewContext context, String rDate)  {
+										, Map<String, List<TimeRange>> discountMapping, EnumEarlyWarningViewContext context, String rDate, Date cutOff, EnumLogicalOperator condition)  {
 		
 		List<EarlyWarningCommand> capacity = new ArrayList<EarlyWarningCommand>();
 		Map<Region, Capacity> regionCapacity = new HashMap<Region, Capacity>();
@@ -656,7 +656,7 @@ public class CapacityController extends AbstractMultiActionController {
 		Date deliveryDate = null;
 		try {
 			deliveryDate = TransStringUtil.getDate(rDate);
-			unassigneds = getUnassignedOrders(deliveryDate);
+			unassigneds = getUnassignedOrders(deliveryDate, cutOff, condition);
 			for (ListIterator<UnassignedCommand> i = unassigneds.listIterator(); i.hasNext();) {
 				UnassignedCommand _uc = i.next();
 				if(_uc.getUnassignedTime() != null) {
@@ -932,7 +932,7 @@ public class CapacityController extends AbstractMultiActionController {
 			try {
 				Date deliveryDate = TransStringUtil.getDate(rDate);
 				
-				unassigneds = getUnassignedOrders(deliveryDate);
+				unassigneds = getUnassignedOrders(deliveryDate, null, null);
 				
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -962,13 +962,13 @@ public class CapacityController extends AbstractMultiActionController {
 		return mav;
 	}
 
-	private List<UnassignedCommand> getUnassignedOrders(Date deliveryDate) throws ParseException {
+	private List<UnassignedCommand> getUnassignedOrders(Date deliveryDate, Date cutOff, EnumLogicalOperator condition) throws ParseException {
 		
 		List<UnassignedCommand> unassigneds = new ArrayList<UnassignedCommand>();
 		
 		DeliveryServiceProxy deliveryProxy = new DeliveryServiceProxy();
 				
-		List<IUnassignedModel> orders = deliveryProxy.getUnassigned(deliveryDate, null, null);
+		List<IUnassignedModel> orders = deliveryProxy.getUnassigned(deliveryDate, cutOff, null, condition);
 		
 		Iterator<IUnassignedModel> _itr = orders.iterator();
 		IUnassignedModel _order = null;

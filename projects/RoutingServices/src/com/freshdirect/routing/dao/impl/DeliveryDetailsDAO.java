@@ -96,12 +96,12 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			" and t.base_date = ?";
 	
 	private static final String GET_UNASSIGNED_QRY = "select r.ID RID, r.STATUS_CODE STATUS, r.CUSTOMER_ID CID, r.TYPE RTYPE, r.ORDER_ID OID," +
-			" r.UNASSIGNED_DATETIME UDATETIME, r.UNASSIGNED_ACTION UACTION, r.IS_FORCED FORCEFLAG, r.CHEFSTABLE CTFLAG, t.BASE_DATE BDATE, t.START_TIME STIME, " +
+			" r.UNASSIGNED_DATETIME UDATETIME, r.UNASSIGNED_ACTION UACTION, r.IS_FORCED FORCEFLAG, r.CHEFSTABLE CTFLAG, t.BASE_DATE BDATE, t.START_TIME STIME, t.CUTOFF_TIME, " +
 			"t.END_TIME ETIME, s.CROMOD_DATE SCROMODDATE, z.ZONE_CODE ZCODE," +
 			"R.NUM_CARTONS NCARTONS, R.NUM_FREEZERS NFREEZERS, R.NUM_CASES NCASES, " +
 			" r.ORDER_SIZE OSIZE, r.SERVICE_TIME SRTIME, R.RESERVED_ORDER_SIZE ROSIZE, R.RESERVED_SERVICE_TIME RSRTIME, r.UPDATE_STATUS UPDSTATUS, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED " +
 			"from dlv.reservation r, dlv.timeslot t, cust.sale s, dlv.zone z " +
-			"where t.BASE_DATE = ?  AND (unassigned_datetime IS NOT NULL OR (UPDATE_STATUS IS NOT NULL AND UPDATE_STATUS in ('FLD','OVD'))) and r.TIMESLOT_ID = t.ID and r.ORDER_ID = s.ID(+) and t.ZONE_ID = z.ID ORDER BY z.ZONE_CODE, t.START_TIME";
+			"where t.BASE_DATE = ?  AND (unassigned_datetime IS NOT NULL OR (UPDATE_STATUS IS NOT NULL AND UPDATE_STATUS in ('FLD','OVD'))) and r.TIMESLOT_ID = t.ID and r.ORDER_ID = s.ID(+) and t.ZONE_ID = z.ID";
 	
 	private static final String GET_UNASSIGNEDRESERVATION_QRY = "select r.ID RID, r.STATUS_CODE STATUS, r.CUSTOMER_ID CID, r.TYPE RTYPE, r.ORDER_ID OID," +
 			" r.UNASSIGNED_DATETIME UDATETIME, r.UNASSIGNED_ACTION UACTION, r.IS_FORCED FORCEFLAG, r.CHEFSTABLE CTFLAG, t.BASE_DATE BDATE, t.START_TIME STIME, " +
@@ -606,19 +606,38 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	}
 	
 	public List<IUnassignedModel> getUnassigned(final Date deliveryDate, final Date cutOffTime
-													, final String zoneCode) throws SQLException {
+													, final String zoneCode, final EnumLogicalOperator condition) throws SQLException {
 		
 		final List<IUnassignedModel> orders = new ArrayList<IUnassignedModel>();
-				
+
+		final StringBuffer updateQ = new StringBuffer();
+		updateQ.append(GET_UNASSIGNED_QRY);
+		
+		String conditionValue = "=";
+		if(condition != null) {
+			conditionValue = condition.getName();
+		}
+		if(cutOffTime != null) {
+			updateQ.append(" and t.CUTOFF_TIME "+conditionValue+" ? ");
+		}		
+		
+		updateQ.append(" ORDER BY z.ZONE_CODE, t.START_TIME ");		
+		
+
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
                 PreparedStatement ps =
-                    connection.prepareStatement(GET_UNASSIGNED_QRY);
+                    connection.prepareStatement(updateQ.toString());
                 ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
-                               
+                
+                if(cutOffTime != null) {
+                	ps.setTimestamp(2, new java.sql.Timestamp(cutOffTime.getTime()));
+                }
+                
                 return ps;
             }  
         };
+		
         
 		jdbcTemplate.query(creator, 
 				  new RowCallbackHandler() { 
@@ -646,6 +665,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		dModel.setDeliveryDate(rs.getDate("BDATE"));
 				    		dModel.setDeliveryStartTime(rs.getTimestamp("STIME"));
 				    		dModel.setDeliveryEndTime(rs.getTimestamp("ETIME"));
+				    		dModel.setDeliveryCutoffTime(rs.getTimestamp("CUTOFF_TIME"));
 				    		dModel.setReservationId(rs.getString("RID"));
 				    						    		
 				    		IPackagingModel pModel = new PackagingModel();

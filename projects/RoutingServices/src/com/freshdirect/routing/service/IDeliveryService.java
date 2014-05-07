@@ -55,7 +55,7 @@ public interface IDeliveryService {
 	
 	Map<String, List<IDeliveryWindowMetrics>> getTimeslotsByDateEx(Date deliveryDate, Date cutOffTime, String zoneCode, EnumLogicalOperator condition, boolean filterTimeslots) throws RoutingServiceException;
 	
-	List<IUnassignedModel> getUnassigned(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws RoutingServiceException;
+	List<IUnassignedModel> getUnassigned(Date deliveryDate, Date cutOffTime, String zoneCode, EnumLogicalOperator condition) throws RoutingServiceException;
 	
 	IOrderModel getRoutingOrderByReservation(String reservationId) throws RoutingServiceException;
 	
