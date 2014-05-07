@@ -10,9 +10,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
-<%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %>
-<%@ taglib uri="fd-data-potatoes" prefix="potato" %>
-<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %><% 
+<%@ taglib uri="/WEB-INF/shared/tld/components.tld" prefix='comp' %><% 
 //expanded page dimension
 final int W_INDEX_TOTAL = 970;
 final int W_INDEX_CENTER_PADDING = 20;
@@ -89,8 +87,7 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 			hpBottomRight="HPRightBottom"
 		/>
 		<div id="most-popular" class="grid-carousel grid-view">
-			<potato:recommender siteFeature="COS_HOME" name="deals" maxItems="24" cmEventSource="BROWSE" sendVariant="true" />
-			<soy:render template="common.ymalCarousel" data="${deals}" />
+			<comp:recommenderCarousel siteFeature="COS_HOME" user="<%= user %>" trkCode="<%= trkCode %>" facility="default" id="cos_carousel" maxItems="24" numItems="6" width="910" />
 		</div>
 		<div id="categories">
 			<logic:iterate collection="<%= dept.getDeptNav() %>" id="cat" type="com.freshdirect.fdstore.content.CategoryModel">

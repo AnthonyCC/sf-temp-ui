@@ -38,7 +38,6 @@ public class RecommenderPotatoTag extends SimpleTagSupport {
 	private int maxItems = 10;
 	private String currentNodeKey = null;
 	private String cmEventSource = null;
-	private boolean sendVariant = false;
 	
 	public String getName() {
 		return name;
@@ -70,13 +69,7 @@ public class RecommenderPotatoTag extends SimpleTagSupport {
 	public void setCmEventSource(String cmEventSource) {
 		this.cmEventSource = cmEventSource;
 	}
-		
-	public boolean isSendVariant() {
-		return sendVariant;
-	}
-	public void setSendVariant(boolean sendVariant) {
-		this.sendVariant = sendVariant;
-	}
+	
 	
 	@Override
 	public void doTag() throws JspException {
@@ -88,7 +81,6 @@ public class RecommenderPotatoTag extends SimpleTagSupport {
 		
 		// get recommended items
 		List<ProductModel> products = new ArrayList<ProductModel>();
-		Recommendations results = null;
 		
 		try {
 			FDStoreRecommender recommender = FDStoreRecommender.getInstance();	  
@@ -98,7 +90,7 @@ public class RecommenderPotatoTag extends SimpleTagSupport {
 				currentNode = ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode( currentNodeKey ));
 			}
 			
-			results = recommender.getRecommendations(EnumSiteFeature.getEnum(siteFeature), user, ProductRecommenderUtil.createSessionInput( session, user, maxItems, currentNode , null ) );
+			Recommendations results = recommender.getRecommendations(EnumSiteFeature.getEnum(siteFeature), user, ProductRecommenderUtil.createSessionInput( session, user, maxItems, currentNode , null ) );
 
 			ProductRecommenderUtil.persistToSession(session, results);
 			
@@ -108,13 +100,7 @@ public class RecommenderPotatoTag extends SimpleTagSupport {
 			LOGGER.warn( "Failed to get recommendations for siteFeature:"+siteFeature, e );
 		}
 		
-		Map<String,?> dataMap = null;
-		
-		if(sendVariant && results!=null){
-			dataMap = DataPotatoField.digProductListFromModels( user, products, results.getVariant().getId() );			
-		}else{
-			dataMap = DataPotatoField.digProductListFromModels( user, products );	
-		}
+		Map<String,?> dataMap = DataPotatoField.digProductListFromModels( user, products );
 		
 		if(cmEventSource!=null){
 			((Map<String, Object>) dataMap).put("cmEventSource", cmEventSource);			

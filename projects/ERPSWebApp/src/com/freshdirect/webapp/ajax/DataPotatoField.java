@@ -106,16 +106,11 @@ public class DataPotatoField {
 		return null;
 	}
 	
-	public static Map<String, ?> digProduct( FDUserI user, ProductModel product ) {
-		return digProduct(user, product, null);
-	}
-	
-	public static Map<String, ?> digProduct( FDUserI user, ProductModel product, String variantId ) {	
+	public static Map<String, ?> digProduct( FDUserI user, ProductModel product ) {	
 		try {
 			
 			// first get a ProductData for product level attributes
 			ProductData productData = ProductDetailPopulator.createProductData( user, product );
-			productData.setVariantId(variantId);
 						
 			// convert and return
 			return SoyTemplateEngine.convertToMap( productData );
@@ -162,8 +157,7 @@ public class DataPotatoField {
 		if ( keys != null ) {
 			for ( ContentKey key : keys ) {
 				if ( key.getType().equals( ContentType.get( "Product" ) ) ) {
-					String catId = null;
-					Map<String, ?> productData = digProduct( user, catId, key.getId() );
+					Map<String, ?> productData = digProduct( user, null, key.getId() );
 					if ( productData != null ) {
 						result.add( productData );
 					}
@@ -176,12 +170,8 @@ public class DataPotatoField {
 		// convert and return
 		return SoyTemplateEngine.convertToMap( resultMap );
 	}
-	
-	public static Map<String, ?> digProductListFromModels( FDUserI user, List<ProductModel> products ) {
-		return digProductListFromModels(user, products, null);
-	}
 
-	public static Map<String, ?> digProductListFromModels( FDUserI user, List<ProductModel> products, String variantId ) {
+	public static Map<String, ?> digProductListFromModels( FDUserI user, List<ProductModel> products ) {
 		
 		Map<String,Object> resultMap = new HashMap<String,Object>(1);
 		List<Map<String,?>> result = new ArrayList<Map<String,?>>( products != null ? products.size() : 0 );
@@ -189,7 +179,7 @@ public class DataPotatoField {
 		
 		if ( products != null ) {
 			for ( ProductModel product : products ) {
-				Map<String, ?> productData = digProduct( user, product, variantId );
+				Map<String, ?> productData = digProduct( user, product );
 				if ( productData != null ) {
 					result.add( productData );
 				}
