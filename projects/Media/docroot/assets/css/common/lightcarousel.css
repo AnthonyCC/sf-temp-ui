@@ -23,10 +23,42 @@
 	position:relative;
 }
 
-
 [data-component="carousel"] ul li {
 	text-indent:0;
 	width: 153px;
+}
+
+[data-component="carousel"] ul.pager {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  line-height: 14px;
+  height: 14px;
+  background: transparent;
+}
+
+[data-component="carousel"] ul.pager li {
+  display: inline-block;
+  padding: 0 4px;
+  width: auto;
+}
+
+[data-component="carousel"] ul.pager li span {
+  cursor: pointer;
+  display: inline-block;
+  text-indent: -9999px;
+  width: 5px;
+  height: 5px;
+  background: white;
+  border: 1px solid #888;
+  border-radius: 5px;
+}
+
+[data-component="carousel"] ul.pager li.current span {
+  background-color: #aaa;
 }
 
 [data-component="carousel-prev"],
