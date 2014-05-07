@@ -182,7 +182,7 @@
 							<td colspan="3" align="center">
 								 <input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:doBack('employee');" />
 								 <input type = "submit" value="&nbsp;Save Changes&nbsp;"  />
-							 <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request)){%>
+							 <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdminOrPlanning(request)){%>
 							
                              <input type = "submit" value="&nbsp;Change Status&nbsp;"  onclick="javascript:setStatus()"/>         
                              

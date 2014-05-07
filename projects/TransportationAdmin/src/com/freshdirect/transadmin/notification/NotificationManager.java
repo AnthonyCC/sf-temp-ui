@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.notification;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -84,7 +85,12 @@ public class NotificationManager {
 			// wave sync lock notification message
 			String waveSyncLockUserId = routingProxy.isWaveSyncronizationLocked();
 			if(waveSyncLockUserId != null) {
-				messages.add("Wave Syncronization locked by User: "+waveSyncLockUserId);
+				Date _lockTime = routingProxy.lookupWaveSyncronizationLockTime();
+				try {
+					messages.add("Wave Syncronization locked by User: "+waveSyncLockUserId+" at "+ TransStringUtil.getDatewithTime(_lockTime));
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
 			}
 		} catch (RoutingServiceException exp) {
 			exp.printStackTrace();

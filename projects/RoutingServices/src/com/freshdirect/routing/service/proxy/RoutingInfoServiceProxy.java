@@ -139,4 +139,8 @@ public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
 			String endTime, String[] zoneArray) {		
 		return  getService().flagReservationStatus(date, cutoff, startTime, endTime, zoneArray);
 	}
+	
+	public Date lookupWaveSyncronizationLockTime() throws RoutingServiceException {
+		return getService().lookupWaveSyncronizationLockTime();
+	}
 }

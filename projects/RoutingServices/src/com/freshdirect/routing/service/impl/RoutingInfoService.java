@@ -297,4 +297,14 @@ public class RoutingInfoService extends BaseService implements IRoutingInfoServi
 			throw new RoutingServiceException(e, IIssue.PROCESS_SCENARIO_NOTFOUND);
 		}
 	}
+	
+	@Override
+	public Date lookupWaveSyncronizationLockTime() throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.lookupWaveSyncronizationLockTime();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_SCENARIO_NOTFOUND);
+		}
+	}
 }
