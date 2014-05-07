@@ -38,6 +38,8 @@
   line-height: 14px;
   height: 14px;
   background: transparent;
+  text-align: center;
+  border: none;
 }
 
 [data-component="carousel"] ul.pager li {
