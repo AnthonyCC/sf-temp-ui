@@ -117,14 +117,31 @@
 	<defaultZoneCapacityValue>0</defaultZoneCapacityValue>
 	<zones>
         <zone><code>680</code></zone>
-		<zone><code>682</code></zone>
-		<zone><code>690</code></zone>
+	<zone><code>690</code></zone>
+       
+	</zones>
+	<min>0</min>
+	<max>9999</max>
+	<startDate>10/01/2012</startDate>
+	<endDate>01/01/2020</endDate>
+	<priority>3</priority>
+	</campaign>
+	
+	<campaign>
+	<name>Promo for New COS customers</name>
+	<code>COSPR002</code>
+	<defaultZoneCapacityCondition><![CDATA[>=]]></defaultZoneCapacityCondition>
+	<defaultZoneCapacityValue>0</defaultZoneCapacityValue>
+	<zones>
+	<zone><code>680</code></zone>
+	<zone><code>690</code></zone>
+	<zone><code>682</code></zone>
 	</zones>
 	<min>0</min>
 	<max>1</max>
 	<startDate>10/01/2012</startDate>
 	<endDate>01/01/2020</endDate>
-	<priority>3</priority>
+	<priority>4</priority>
 	</campaign>
 
 </campaigns>
