@@ -15,6 +15,7 @@ import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneScenarioModel;
 import com.freshdirect.routing.model.TrnFacility;
 import com.freshdirect.routing.model.TrnFacilityType;
+import com.freshdirect.routing.model.WaveSyncLockActivity;
 import com.freshdirect.routing.service.IRoutingInfoService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
@@ -123,7 +124,7 @@ public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
 		return getService().retrieveRoutingWaveInstIds(deliveryDate);
 	}
 	
-	public String isWaveSyncronizationLocked() {
+	public WaveSyncLockActivity isWaveSyncronizationLocked() {
 		return getService().isWaveSyncronizationLocked();
 	}
 	
@@ -138,9 +139,5 @@ public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
 	public int flagReservationStatus(Date date, Date cutoff, String startTime,
 			String endTime, String[] zoneArray) {		
 		return  getService().flagReservationStatus(date, cutoff, startTime, endTime, zoneArray);
-	}
-	
-	public Date lookupWaveSyncronizationLockTime() throws RoutingServiceException {
-		return getService().lookupWaveSyncronizationLockTime();
 	}
 }

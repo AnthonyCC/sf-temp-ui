@@ -44,6 +44,7 @@ import com.freshdirect.routing.model.ServiceTimeTypeModel;
 import com.freshdirect.routing.model.TrnFacility;
 import com.freshdirect.routing.model.TrnFacilityType;
 import com.freshdirect.routing.model.WaveInstance;
+import com.freshdirect.routing.model.WaveSyncLockActivity;
 import com.freshdirect.routing.model.ZoneScenarioModel;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
@@ -1273,9 +1274,9 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 	
 	private static final String GET_WAVESYNC_LOCK_QRY = "select * from transp.WAVE_INSTANCE_LOCKACTIVITY where RELEASELOCK_DATETIME IS NULL";
 	
-	public String isWaveSyncronizationLocked() throws SQLException {
+	public WaveSyncLockActivity isWaveSyncronizationLocked() throws SQLException {
 		
-		final List<String> waveSynclockedUserId = new ArrayList<String>();
+		final WaveSyncLockActivity lockActivity = new WaveSyncLockActivity();
 		
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
@@ -1289,38 +1290,16 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 				new RowCallbackHandler() { 
 				public void processRow(ResultSet rs) throws SQLException {				    	
 					do { 
-						waveSynclockedUserId.add(rs.getString("INITIATOR"));
+						lockActivity.setLockId(rs.getString("LOCK_ID"));
+						lockActivity.setInitiator(rs.getString("INITIATOR"));
+						lockActivity.setLockDateTime(rs.getTimestamp("LOCK_DATETIME"));
+						lockActivity.setUnLockedBy(rs.getString("LOCK_RELEASEDBY"));
+						lockActivity.setReleaselockDateTime(rs.getTimestamp("RELEASELOCK_DATETIME"));
 					} while(rs.next());		        		    	
 				}
 		});
 		
-		return waveSynclockedUserId.size() > 0 ? waveSynclockedUserId.get(0) : null;
-	}
-	
-	private static final String GET_WAVESYNC_LOCKDATETIME_QRY = "select LOCK_DATETIME from transp.WAVE_INSTANCE_LOCKACTIVITY where RELEASELOCK_DATETIME IS NULL";
-	
-	public Date lookupWaveSyncronizationLockTime() throws SQLException {
-		
-		final List<Date> _lockDateTime = new ArrayList<Date>();
-		
-		PreparedStatementCreator creator = new PreparedStatementCreator() {
-			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
-				PreparedStatement ps = null;
-				ps = connection.prepareStatement(GET_WAVESYNC_LOCKDATETIME_QRY);
-				return ps;
-			}  
-		};
-		
-		jdbcTemplate.query(creator, 
-				new RowCallbackHandler() { 
-				public void processRow(ResultSet rs) throws SQLException {				    	
-					do { 
-						_lockDateTime.add(rs.getTimestamp("LOCK_DATETIME"));
-					} while(rs.next());		        		    	
-				}
-		});
-		
-		return _lockDateTime.size() > 0 ? _lockDateTime.get(0) : null;
+		return lockActivity;
 	}
 
 	private static final String UPDATE_RESERVATION_ROUTINGSTATUS_BY_CRITERIA = "update dlv.reservation r set r.UPDATE_STATUS = ? where r.ID in "+ 

@@ -13,6 +13,7 @@ import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.constants.EnumWaveInstanceStatus;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IWaveInstance;
+import com.freshdirect.routing.model.WaveSyncLockActivity;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
@@ -83,11 +84,10 @@ public class NotificationManager {
 			}
 						
 			// wave sync lock notification message
-			String waveSyncLockUserId = routingProxy.isWaveSyncronizationLocked();
-			if(waveSyncLockUserId != null) {
-				Date _lockTime = routingProxy.lookupWaveSyncronizationLockTime();
+			WaveSyncLockActivity waveSyncLockActivity = routingProxy.isWaveSyncronizationLocked();
+			if(waveSyncLockActivity != null && waveSyncLockActivity.getLockDateTime() != null) {
 				try {
-					messages.add("Wave Syncronization locked by User: "+waveSyncLockUserId+" at "+ TransStringUtil.getDatewithTime(_lockTime));
+					messages.add("Wave Syncronization locked by User: "+waveSyncLockActivity.getInitiator()+" at "+ TransStringUtil.getDatewithTime(waveSyncLockActivity.getLockDateTime()));
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}

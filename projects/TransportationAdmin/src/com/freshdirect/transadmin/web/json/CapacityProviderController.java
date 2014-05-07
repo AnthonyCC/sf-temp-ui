@@ -11,6 +11,7 @@ import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.WaveSyncLockActivity;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
@@ -166,11 +167,11 @@ public class CapacityProviderController extends JsonRpcController implements
 	public String doLockWaveSyncActivity() {
 		String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(getHttpServletRequest());
 		RoutingInfoServiceProxy proxy = new RoutingInfoServiceProxy();
-		String waveSynLockUserId = null;
+		WaveSyncLockActivity waveSyncLockActivity = null;
 		try {
-			waveSynLockUserId = proxy.isWaveSyncronizationLocked();
+			waveSyncLockActivity = proxy.isWaveSyncronizationLocked();
 			
-			if(waveSynLockUserId != null) {
+			if(waveSyncLockActivity != null && waveSyncLockActivity.getInitiator() != null) {
 				LOGGER.debug("WaveSync lock released by: "+ userId );
 				proxy.releaseWaveSyncLock(userId); // release lock for wave sync to routing system
 				return "LOCK_RELEASED";
@@ -187,10 +188,10 @@ public class CapacityProviderController extends JsonRpcController implements
 	public boolean isWaveSyncronizationLocked() {
 		
 		RoutingInfoServiceProxy proxy = new RoutingInfoServiceProxy();
-		String waveSynLockUserId = null;
+		WaveSyncLockActivity waveSyncLockActivity = null;
 		try {
-			waveSynLockUserId = proxy.isWaveSyncronizationLocked();
-			return waveSynLockUserId != null ? true : false;
+			waveSyncLockActivity = proxy.isWaveSyncronizationLocked();
+			return (waveSyncLockActivity != null && waveSyncLockActivity.getInitiator() != null) ? true : false;
 		} catch (RoutingServiceException e) {
 			LOGGER.error("routing service exception", e);
 		}

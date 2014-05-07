@@ -16,6 +16,7 @@ import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneScenarioModel;
 import com.freshdirect.routing.model.TrnFacility;
 import com.freshdirect.routing.model.TrnFacilityType;
+import com.freshdirect.routing.model.WaveSyncLockActivity;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public interface IRoutingInfoDAO {
@@ -70,14 +71,12 @@ public interface IRoutingInfoDAO {
 
 	IServiceTimeScenarioModel getRoutingScenarioEx(final Date deliveryDate, final Date cutoff,final Date startTime,final Date endTime) throws SQLException;
 	
-	String isWaveSyncronizationLocked() throws SQLException;
+	WaveSyncLockActivity isWaveSyncronizationLocked() throws SQLException;
 	
 	int addWaveSyncLockActivity(final String userId) throws SQLException;
 	
 	int releaseWaveSyncLock(String userId) throws SQLException;
 
 	int flagReservationStatus(Date date, Date cutoff, String startTime, String endTime, String[] zoneArray) throws SQLException;
-	
-	Date lookupWaveSyncronizationLockTime() throws SQLException;
 		
 }

@@ -15,6 +15,7 @@ import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneScenarioModel;
 import com.freshdirect.routing.model.TrnFacility;
 import com.freshdirect.routing.model.TrnFacilityType;
+import com.freshdirect.routing.model.WaveSyncLockActivity;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.util.RoutingTimeOfDay;
 
@@ -71,13 +72,11 @@ public interface IRoutingInfoService {
 
 	IServiceTimeScenarioModel getRoutingScenarioEx(final Date deliveryDate, final Date cutoff, final Date startTime, final Date endTime) throws RoutingServiceException;
 	
-	String isWaveSyncronizationLocked() throws RoutingServiceException;
+	WaveSyncLockActivity isWaveSyncronizationLocked() throws RoutingServiceException;
 	
     int addWaveSyncLockActivity(String userId) throws RoutingServiceException;
 	
     int releaseWaveSyncLock(String userId) throws RoutingServiceException;
 
 	int flagReservationStatus(Date date, Date cutoff, String startTime, String endTime, String[] zoneArray) throws RoutingServiceException;
-	
-	Date lookupWaveSyncronizationLockTime() throws RoutingServiceException;
 }

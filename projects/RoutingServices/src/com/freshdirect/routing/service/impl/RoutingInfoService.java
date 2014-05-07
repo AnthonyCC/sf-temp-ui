@@ -17,6 +17,7 @@ import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneScenarioModel;
 import com.freshdirect.routing.model.TrnFacility;
 import com.freshdirect.routing.model.TrnFacilityType;
+import com.freshdirect.routing.model.WaveSyncLockActivity;
 import com.freshdirect.routing.service.IRoutingInfoService;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
@@ -260,7 +261,7 @@ public class RoutingInfoService extends BaseService implements IRoutingInfoServi
 	}
 	
 	@Override
-	public String isWaveSyncronizationLocked() throws RoutingServiceException {
+	public WaveSyncLockActivity isWaveSyncronizationLocked() throws RoutingServiceException {
 		try {
 			return routingInfoDAOImpl.isWaveSyncronizationLocked();
 		} catch (SQLException e) {
@@ -292,16 +293,6 @@ public class RoutingInfoService extends BaseService implements IRoutingInfoServi
 	public int flagReservationStatus(Date date, Date cutoff, String startTime, String endTime, String[] zoneArray) throws RoutingServiceException {
 		try {
 			return routingInfoDAOImpl.flagReservationStatus(date, cutoff, startTime, endTime, zoneArray);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			throw new RoutingServiceException(e, IIssue.PROCESS_SCENARIO_NOTFOUND);
-		}
-	}
-	
-	@Override
-	public Date lookupWaveSyncronizationLockTime() throws RoutingServiceException {
-		try {
-			return routingInfoDAOImpl.lookupWaveSyncronizationLockTime();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			throw new RoutingServiceException(e, IIssue.PROCESS_SCENARIO_NOTFOUND);
