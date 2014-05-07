@@ -348,7 +348,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 				+ " RECEIVE_NEWS, HOME_PHONE, HOME_EXT, BUSINESS_PHONE, BUSINESS_EXT, CELL_PHONE, CELL_EXT, OTHER_PHONE, OTHER_EXT, FAX, "
 				+ " FAX_EXT, WORK_DEPARTMENT, EMPLOYEE_ID, REMINDER_LAST_SEND, REMINDER_FREQUENCY, REMINDER_DAY_OF_WEEK, REMINDER_ALT_EMAIL, "
 				+ " RSV_DAY_OF_WEEK, RSV_START_TIME, RSV_END_TIME, RSV_ADDRESS_ID, UNSUBSCRIBE_DATE, REG_REF_TRACKING_CODE, REG_REF_PROG_ID, "
-				+ " REF_PROG_INVT_ID, RECEIVE_OPTINNEWSLETTER, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE, DISPLAY_NAME, DP_TC_VIEWS, DP_TC_AGREE_DATE,INDUSTRY,NUM_OF_EMPLOYEE,SECOND_EMAIL_ADDRESS) "
+				+ " REF_PROG_INVT_ID, RECEIVE_OPTINNEWSLETTER, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE, DISPLAY_NAME, DP_TC_VIEWS, DP_TC_AGREE_DATE,INDUSTRY,NUM_OF_EMPLOYEES,SECOND_EMAIL_ADDRESS) "
 					+ " values (?,?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(?,'('),')'),' '),'-'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		ps.setString(1, this.getParentPK().getId());
