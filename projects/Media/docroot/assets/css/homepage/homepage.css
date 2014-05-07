@@ -39,6 +39,14 @@ html,body {
 	
 }
 
+#most-popular .ymalCarousel .portrait-item {
+  width: 130px;
+}
+
+#most-popular .ymalCarousel h2 {
+  visibility: hidden;
+}
+
 #carousel-cos_carousel,
 #carousel-fav_carousel {
 	padding-top:21px;
