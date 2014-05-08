@@ -104,8 +104,10 @@ var FreshDirect = FreshDirect || {};
         $('#'+popupId).removeClass('hasRelated');
 
         if(target.length){
-          this.bodyValue = target[0].innerHTML;
+          this.bodyValue = '';
           this.refreshBody({},this.bodyTemplate,common.transactionalPopupHeader(config));
+
+          $('#'+popupId+' '+this.bodySelector).html('').append(target.clone());
 
           $('#'+popupId).attr('data-cmeventsource', null);
           cmEvSource = $(target).closest('[data-cmeventsource]').data('cmeventsource');
