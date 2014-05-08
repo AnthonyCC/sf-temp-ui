@@ -186,6 +186,7 @@
 
 .skucontrol-quantity .itemlist-item-salesunit {
 	width:100px;
+  display: inline-block;
 }
 
 .skucontrol-quantity .itemlist-item-salesunit .subtotal,
@@ -194,6 +195,9 @@
 	width:100%;
 }
 
+.customizePopup .skucontrol-quantity .subtotal {
+  margin-bottom: 4px;
+}
 
 .customizePopup hr {
 	height:1px;
