@@ -26,7 +26,8 @@ printMethod="javax.xml.bind.DatatypeConverter.printDate"/></jaxb:globalBindings>
 
 			<xs:attribute name="skuCode" type="xs:string" use="required"/> 
 			<xs:attribute name="upc" type="xs:string" use="required" /> 
-			<xs:attribute name="materialNum" type="xs:string" use="required" /> 
+			<xs:attribute name="materialNum" type="xs:string" use="required" />			  
+			<xs:attribute name="prodId" type="xs:string" use="required"/>
 			<xs:attribute name="prodName" type="xs:string" use="required"/> 
 			<xs:attribute name="prodUrl" type="xs:string" /> 
 			<xs:attribute name="catId" type="xs:string" /> 

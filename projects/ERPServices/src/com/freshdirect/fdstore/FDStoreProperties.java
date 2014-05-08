@@ -639,7 +639,7 @@ public class FDStoreProperties {
 	//APPDEV-3100 2013 Wine Transition
 	private final static String PROP_WINE_ASSID="fdstore.wine.assid";
 	
-	private final static String PROP_PRODUCT_FEED_GENERATION_ENABLED = "prop.product.feed.gen.enabled";
+	private final static String PROP_PRODUCT_FEED_UPLOAD_ENABLED = "prop.product.feed.upload.enabled";
 	
 	private final static String PROP_SUFFOLK_ZIPS = "prop.suffolk.zips";
 	
@@ -1271,7 +1271,7 @@ public class FDStoreProperties {
         //APPDEV-3100 2013 Wine Transition
         defaults.put(PROP_WINE_ASSID, "USQ");
         
-        defaults.put(PROP_PRODUCT_FEED_GENERATION_ENABLED, "false");
+        defaults.put(PROP_PRODUCT_FEED_UPLOAD_ENABLED, "false");
         
         defaults.put(PROP_BROWSE_ROLLOUT_REDIRECT_ENABLED, "true");
         
@@ -3238,8 +3238,8 @@ public class FDStoreProperties {
     	return get(PROP_WINE_ASSID);
     }
     
-    public static boolean isProductFeedGenerationEnabled() {
-        return Boolean.valueOf(get(PROP_PRODUCT_FEED_GENERATION_ENABLED)).booleanValue();
+    public static boolean isProductFeedUploadEnabled() {
+        return Boolean.valueOf(get(PROP_PRODUCT_FEED_UPLOAD_ENABLED)).booleanValue();
     }
     
     public static boolean isMediaUtilsReallyClose(){

@@ -87,7 +87,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 	private static final String PRODUCT_DETAIL_IMAGE = "PRODUCT_DETAIL_IMAGE";
 	private static final String PRODUCT_ZOOM_IMAGE = "PRODUCT_ZOOM_IMAGE";
 	private static final String PRODUCT_IMAGE = "PRODUCT_IMAGE";
-	private static final String URL_DOMAIN ="http://www.freshdirect.com";
+	private static final String URL_DOMAIN ="https://www.freshdirect.com";
 	private final static JSch jsch=new JSch();
 	private static final String sftpHost = ErpServicesProperties.getProperty(ErpServicesProperties.PROP_PRODUCT_FEED_UPLOADER_FTP_HOST);
 	private static final String sftpUser = ErpServicesProperties.getProperty(ErpServicesProperties.PROP_PRODUCT_FEED_UPLOADER_FTP_USER);
@@ -118,14 +118,14 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
     public boolean uploadProductFeed() throws FDResourceException, RemoteException {
     	
     	try {
-			if(FDStoreProperties.isProductFeedGenerationEnabled()){
-				LOGGER.info("Inside uploadProductFeed()..");
-				Products xmlProducts = new Products();
-				JAXBContext jaxbCtx = JAXBContext.newInstance(Products.class);
-				populateProducts(xmlProducts);								
-				uploadProductFeedFile(xmlProducts, jaxbCtx);
-				LOGGER.info("Available products fetched & uploaded: "+xmlProducts.getProduct().size());
-			}
+
+			LOGGER.info("Inside uploadProductFeed()..");
+			Products xmlProducts = new Products();
+			JAXBContext jaxbCtx = JAXBContext.newInstance(Products.class);
+			populateProducts(xmlProducts);								
+			uploadProductFeedFile(xmlProducts, jaxbCtx);
+			LOGGER.info("Available products fetched & uploaded: "+xmlProducts.getProduct().size());
+
 		} catch (Exception e) {
 			LOGGER.error("Exception :"+e.getMessage());
 			throw new FDResourceException(e);
@@ -228,18 +228,20 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 				LOGGER.info("SFTP: connecting to host " + sftpHost);
 				Properties config = new Properties();
 				config.put("StrictHostKeyChecking", "no");
-				
-				session = getSftpSession(config);
-				session.connect();
-				channel = session.openChannel("sftp");
-				sftp = (ChannelSftp) channel;
-				LOGGER.info("SFTP: Connecting..");
-				FileInputStream fis = new FileInputStream(zipFileName);
-				sftp.connect();
-				sftp.put(fis,sftpDirectory+zipFileName);
-				fis.close();
-				file = new File(zipFileName);
-				file.delete();
+				if(FDStoreProperties.isProductFeedUploadEnabled()){
+					session = getSftpSession(config);
+					session.connect();
+					channel = session.openChannel("sftp");
+					sftp = (ChannelSftp) channel;
+					LOGGER.info("SFTP: Connecting..");
+					FileInputStream fis = new FileInputStream(zipFileName);
+					sftp.connect();
+					sftp.put(fis,sftpDirectory+zipFileName);
+					fis.close();
+					//To delete the local file after the uploading is completed.
+					file = new File(zipFileName);
+					file.delete();
+				}
  
 			}else{
 				LOGGER.info("No file generated. ");
@@ -263,11 +265,12 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 		product.setSkuCode(fdProduct.getSkuCode());
 		product.setUpc(fdProductInfo.getUpc());
 		product.setMaterialNum(fdProduct.getMaterial().getMaterialNumber());
-		product.setProdName(productModel.getContentName());
+		product.setProdId(productModel.getContentName());
+		product.setProdName(productModel.getFullName());
 		product.setProdUrl(URL_DOMAIN+PreviewLinkProvider.getLink(productModel.getContentKey()));
 		product.setCatId(productModel.getCategory().getContentName());
 		product.setSubCatId(productModel.getParentId());
-		product.setDeptId(productModel.getDepartment().getContentName());					
+		product.setDeptId(productModel.getDepartment().getContentName());
 		
 	}
 
