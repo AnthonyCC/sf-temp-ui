@@ -1,6 +1,8 @@
 package com.freshdirect.webapp.ajax.product;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -9,15 +11,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 
 import com.freshdirect.WineUtil;
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
@@ -63,6 +68,7 @@ import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.util.DYFUtil;
+import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.TimeOfDay;
@@ -80,6 +86,7 @@ import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.product.data.SkuData;
 import com.freshdirect.webapp.ajax.quickshop.QuickShopHelper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.display.ProductSavingTag;
 import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.JspMethods;
@@ -666,6 +673,16 @@ public class ProductDetailPopulator {
 		
 		// 5. heat rating
 		item.setHeatRating(product.getHeatRating());
+		if (item.getHeatRating() > 0) {
+			String heatRatingMediaPath = "/media/editorial/brands/fd_heatscale/fd_heatscale.html";
+			try {
+				item.setHeatRatingScale(fetchMedia(heatRatingMediaPath, user, false));
+			} catch (IOException e) {
+				LOG.error("Failed to fetch Heat Scale Legend Media " + heatRatingMediaPath, e);
+			} catch (TemplateException e) {
+				LOG.error("Failed to fetch Heat Scale Legend Media " + heatRatingMediaPath, e);
+			}
+		}
 	}
 
 	private static void populateBursts( ProductData item, FDUserI user, ProductModel product, PriceCalculator priceCalculator, boolean useFavBurst ) {
@@ -1219,4 +1236,26 @@ public class ProductDetailPopulator {
 		return data;
 	}
 
+	private static String fetchMedia(String mediaPath, FDUserI user, boolean quoted) throws IOException, TemplateException {
+		if (mediaPath == null)
+			return null;
+
+		Map<String,Object> parameters = new HashMap<String,Object>();
+		
+		/* pass user/sessionUser by default, so it doesn't need to be added every place this tag is used. */
+		parameters.put("user", (FDUserI)user);
+		parameters.put("sessionUser", (FDSessionUser)user);
+		
+		StringWriter out = new StringWriter();
+				
+		MediaUtils.render(mediaPath, out, parameters, false, 
+				user != null && user.getPricingContext() != null ? user.getPricingContext() : PricingContext.DEFAULT);
+
+		String outString = out.toString();
+		
+		//fix media if needed
+		outString = MediaUtils.fixMedia(outString);
+		
+		return quoted ? JSONObject.quote( outString ) : outString;
+	}
 }

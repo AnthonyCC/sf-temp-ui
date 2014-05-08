@@ -77,6 +77,12 @@ public class ProductData extends BasicProductData implements SkuData {
 	 */
 	protected int heatRating = -1;
 
+	/**
+	 * Heat Scale Legend media include:
+	 *	"/media/editorial/brands/fd_heatscale/fd_heatscale.html"
+	 */
+	protected String heatRatingScale = "";
+
 	
 	
 	
@@ -271,6 +277,14 @@ public class ProductData extends BasicProductData implements SkuData {
 	public void setHeatRating(int heatRating) {
 		this.heatRating = heatRating;
 	}
+
+	public String getHeatRatingScale() {
+		return heatRatingScale;
+	}
+	public void setHeatRatingScale(String heatRatingScale) {
+		this.heatRatingScale = heatRatingScale;
+	}
+	
 	@Override
 	public int getDeal() {
 		return deal;

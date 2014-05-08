@@ -3,6 +3,7 @@
 /**
 * @param expertRating
 * @param heatRating
+* @param heatRatingScale
 */
 {template .explanatory}
   {if $expertRating or (isNonnull($heatRating) and $heatRating > -1)}
@@ -23,7 +24,9 @@
         {call pdp.accordion.explancontent.expertRating /}
       {/if}
       {if isNonnull($heatRating) and $heatRating > -1}
-        {call pdp.accordion.explancontent.heatRating /}
+        {call pdp.accordion.explancontent.heatRating}
+			{param heatRatingScale:$heatRatingScale /}
+		{/call}
       {/if}
       /*
        * table element is added to ensure that broken media don't break the site
