@@ -117,7 +117,7 @@ var FreshDirect = FreshDirect || {};
           }
 
           if (this.adjustWidth) {
-            $('#'+popupId+' '+this.bodySelector).width(width);
+            $('#'+popupId+' '+this.bodySelector+' .portrait-item').width(width);
             $('#'+popupId+' '+this.relatedBodySelector).width(width);
           }
 
