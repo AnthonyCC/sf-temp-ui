@@ -1,5 +1,5 @@
 <script src="<?php bloginfo('template_url'); ?>/assets/javascript/prototype.js" type="text/javascript" language="javascript"></script>
-<script src="<?php bloginfo('template_url'); ?>/assets/javascript/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
+<script src="<?php bloginfo('template_url'); ?>/assets/javascript/1.9.0/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
 <script src="<?php bloginfo('template_url'); ?>/assets/javascript/modalbox.js" type="text/javascript" language="javascript"></script>
 <script src="<?php bloginfo('template_url'); ?>/assets/javascript/common_javascript.js" type="text/javascript" language="javascript"></script>
 <script type="text/javascript" language="javascript" src="<?php bloginfo('template_url'); ?>/assets/javascript/cufon-yui.js"></script>
@@ -14,7 +14,7 @@
 var a2a_config = {};
 a2a_config.color_link_text = "336600";
 </script>
-<link rel='stylesheet' id='A2A_SHARE_SAVE-css'  href='<?php echo home_url()?>/wp-content/plugins/add-to-any/addtoany.min.css?ver=1.3' type='text/css' media='all' /> 
+
 <!--[if IE]>
 <style type="text/css">
 .addtoany_list a img{filter:alpha(opacity=70)}
@@ -52,4 +52,4 @@ var OasConfig = {
 <script src="<?php bloginfo('template_url'); ?>/js/oas.js" type="text/javascript" language="javascript"></script>
 <link href="<?php bloginfo('template_url'); ?>/assets/css/common/globalnav_and_footer.css" rel="stylesheet" type="text/css" />
 <link href="<?php bloginfo('template_url'); ?>/assets/css/common/typography.css" rel="stylesheet" type="text/css" />
-<link href="<?php bloginfo('template_url'); ?>/assets/css/global.css" rel="stylesheet" type="text/css" />
+<link href="<?php bloginfo('template_url'); ?>/assets/css/global.css" rel="stylesheet" type="text/css" />
