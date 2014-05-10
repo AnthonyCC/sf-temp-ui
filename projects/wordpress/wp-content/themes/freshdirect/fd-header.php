@@ -37,6 +37,17 @@ cmSetClientID("<?php echo COREMETRICS_CLIENT_ID?>", <?php echo COREMETRICS_DATA_
 cmCreatePageviewTag("<?php echo $page?>", "blog", <?php echo $searchTermJsVar ?>, <?php echo $searchCountJsVar ?>);
 </script>
 
+<style type="text/css">
+#globalnavitem-flo { background-position: -292px -28px; width: 64px; }
+#globalnavitem-pet { background-position: -358px -28px; width: 60px; }
+#globalnavitem-cat { background-position: -877px 0px; width: 72px; }
+#globalnavitem-bak { background-position: -814px 0px; width: 58px; }
+#globalnavitem-hmr { background-position: -726px 0px; width: 83px; }
+#globalnavitem-rtc { background-position: -610px 0px; width: 111px; }
+#globalnavitem-fdi { background-position: -488px 0px; width: 117px; }
+.globalnavitem { background: url('//freshdirect.com/media/layout/nav/images/topnav.png') no-repeat scroll 0 0 transparent; display: block; font-size: 13px; height: 23px; line-height: 23px; overflow: hidden; text-align: left; text-indent: -9999em; white-space: nowrap; }
+</style>
+
 <table width="970" border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<td width="182" ROWSPAN="3" valign="BOTTOM" style="height: 80px">
@@ -100,38 +111,39 @@ cmCreatePageviewTag("<?php echo $page?>", "blog", <?php echo $searchTermJsVar ?>
 	<div class="globalnav-top">
 		<div class="left">
 			<span class="nodot" id="globalnavitem-fru-pad"><a class="globalnavitem" id="globalnavitem-fru" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=fru&trk=gnav">Fruit</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-veg" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=veg&trk=gnav">Vegetables</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-mea" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=mea&trk=gnav">Meat</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-sea" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=sea&trk=gnav">Seafood</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-del" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=del&trk=gnav">Deli</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-che" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=che&trk=gnav">Cheese</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-dai" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=dai&trk=gnav">Dairy</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-veg" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=veg&trk=gnav">Vegetables</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-mea" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=mea&trk=gnav">Meat</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-sea" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=sea&trk=gnav">Seafood</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-del" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=del&trk=gnav">Deli</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-che" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=che&trk=gnav">Cheese</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-dai" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=dai&trk=gnav">Dairy</a></span>
 		</div>
 		<div class="right">
 			<span class="nodot"><a class="globalnavitem" id="globalnavitem-fdi" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=fdi&trk=gnav">4-Minute Meals</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-rtc" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=rtc&trk=gnav">Ready To Cook</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-hmr" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=hmr&trk=gnav">Heat &amp; Eat</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-bak" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=bak&trk=gnav">Bakery</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-cat" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=cat&trk=gnav">Catering</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-rtc" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=rtc&trk=gnav">Ready To Cook</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-hmr" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=hmr&trk=gnav">Heat &amp; Eat</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-bak" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=bak&trk=gnav">Bakery</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-cat" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=cat&trk=gnav">Catering</a></span>
 		</div>
 	</div>
 	<div class="globalnav-middle"></div>
 	<div class="globalnav-bottom">
 		<div class="left">
 			<span class="nodot" id="globalnavitem-wgd-pad"><a class="globalnavitem" id="globalnavitem-wgd" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=wgd&trk=gnav">What's Good</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-orgnat" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=orgnat&trk=gnav">Organic</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-local" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=local&trk=gnav">Local</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-kos" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=kos&trk=gnav">Kosher</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-rec" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=rec&trk=gnav">Recipes</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-orgnat" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=orgnat&trk=gnav">Organic</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-local" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=local&trk=gnav">Local</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-kos" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=kos&trk=gnav">Kosher</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-flo" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=flo&trk=gnav">Flowers</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-pet" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=pet&trk=gnav">Pet</a></span>
 		</div>
 		<div class="right">
 			<span class="nodot"><a class="globalnavitem" id="globalnavitem-pas" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=pas&trk=gnav">Pasta</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-cof" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=cof&trk=gnav">Coffee</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-gro" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=gro&trk=gnav">Grocery</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-hba" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=hba&trk=gnav">Health &amp; Beauty</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-big" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=big&trk=gnav">Buy Big</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-fro" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=fro&trk=gnav">Frozen</a></span>
-			<span><a class="globalnavitem" id="globalnavitem-usq" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=usq&trk=gnav">Wine</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-cof" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=cof&trk=gnav">Coffee</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-gro" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=gro&trk=gnav">Grocery</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-hba" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=hba&trk=gnav">Health &amp; Beauty</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-big" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=big&trk=gnav">Buy Big</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-fro" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=fro&trk=gnav">Frozen</a></span>
+			<span class="dot"><a class="globalnavitem" id="globalnavitem-usq" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=usq&trk=gnav">Wine</a></span>
 		</div>
 	</div>
 	<div class="globalnav-right">

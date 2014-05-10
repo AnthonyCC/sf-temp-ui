@@ -7,6 +7,22 @@
 </script>
 */?>
 
+<style>
+/* Text-based footer styles */
+.globalnav-footer ul {margin: 0;padding: 0;padding-top: 1px; }
+.globalnav-footer ul li {float: left;list-style: none;background: url("/media_stat/images/navigation/globalnav_and_footer/headernav_b.png") no-repeat scroll 0px -2px transparent;background-color: rgb(102, 153, 51);}
+.globalnav-footer ul li:first-child {background: none;}
+.globalnavcontainer li a {font: 13px/22px "Century Gothic", CenturyGothic, AppleGothic, sans-serif;letter-spacing: 0.08em;color: #fff;margin: 0 0 0 5px;display: inline-block;padding: 0 10px;}
+.globalnavcontainer li:first-child a {margin: 0;}
+.globalnavcontainer li a:hover{text-shadow: 0 0 1px #fff; }
+#globalnavitem-selected {background-color: #336600 !important;}
+
+/* Override global styles */
+.globalnavcontainer {color: #fff;width: 968px;position: relative;border-radius: 5px;background: rgb(51, 102, 0);}
+#globalfooteritem-office, #globalfooteritem-aboutus, #globalnavitem-rec, #globalfooteritem-myfd, #globalfooteritem-giftcards, #globalfooteritem-newprod  {width: auto;}
+.globalnav-footer .globalnavitem {text-indent: 0; background: none; line-height: 22px;}
+    </style>
+
 <table width="970" cellpadding="0" cellspacing="0" border="0">
 	<tbody><tr>
 		<td class="vgap">
@@ -17,25 +33,23 @@
 <div class="ie6">
 <![endif]-->
 <div class="globalnavcontainer" style="margin-top:5px">
-	<div class="globalnav-left">
-		<img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/globalnav_and_footer/footer_border_left.gif" width="11" height="22"/>
-	</div>
-
 	<div class="globalnav-footer">
 		<div class="left">
-			<span class="nodot" id="globalfooteritem-aboutus-pad"><a class="globalnavitem" id="globalfooteritem-aboutus" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=about&trk=bnav">About us</a></span>
-			<span><a class="globalnavitem" id="globalfooteritem-careers" href="http://jobs-freshdirect.icims.com">Careers</a></span>
-			<span><a class="globalnavitem" id="globalfooteritem-billorrights" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/category.jsp?catId=about_billrights&trk=bnav">Your Bill Of Rights</a></span>
-		</div>
+                <ul>
+                    <li><a id="globalfooteritem-aboutus" class="globalnavitem" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=about&trk=bnav">About Us</a></li>
+					<li><a id="globalfooteritem-foodsafety" class="globalnavitem" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/category.jsp?catId=food_safety_freshdirect&trk=bnav">Food Safety</a></li>
+                    <li><a id ="globalfooteritem-careers" class="globalnavitem" href="http://jobs-freshdirect.icims.com">Careers</a></li>
+                </ul>
+            </div>
 		<div class="right">
-			<span class="nodot"><a class="globalnavitem globalnavitem-selected" id="globalfooteritem-myfd" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/myfd/index.jsp?trk=bnav">MYFD</a></span>
-			<span><a class="globalnavitem" id="globalfooteritem-office" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=COS&trk=bnav">At The Office</a></span>
-			<span><a class="globalnavitem" id="globalfooteritem-giftcards" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/gift_card/purchase/landing.jsp?trk=bnav">Gift Card</a></span>
-			<span><a class="globalnavitem" id="globalfooteritem-newprod" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/newproducts.jsp?trk=bnav">New Products</a></span>
-		</div>		
-	</div>
-	<div class="globalnav-right">
-		<img src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/globalnav_and_footer/footer_border_right.gif" width="11" height="22"/>
+                <ul>
+                    <li><a id="globalfooteritem-office" class="globalnavitem" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=COS&trk=bnav">At The Office</a></li>
+                    <li><a id="globalfooteritem-rec" class="globalnavitem" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/department.jsp?deptId=rec&trk=gna">Recipes</a></li>
+					<li><a id="globalfooteritem-myfd" class="globalnavitem globalnavitem-selected" href="http://blog.freshdirect.com/">MYFD</a></li>
+					<li><a id="globalfooteritem-giftcards"  class="globalnavitem" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/gift_card/purchase/landing.jsp?trk=bnav">Gift Cards</a></li>
+                    <li><a id="globalfooteritem-newprod" class="globalnavitem" href="<?php echo get_option('fdc_fd_storefront_base', 'http://www.freshdirect.com'); ?>/newproducts.jsp?trk=bnav">New Products</a></li>
+                </ul>
+        </div>
 	</div>
 </div>
 <!--[if IE 6]>
