@@ -87,50 +87,57 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		if (data.atc == "true") {
 			uri += '&atc=true';
 		} 
-		if (!data.panel) {
-			data.panel = new YAHOO.widget.Panel('wine_legal_warning_choice_' + id, {
-				fixedcenter: true, 
-				constraintoviewport: true, 
-				underlay: "matte", 
-				close: true, 
-				visible: true,
-				modal: true,
-				zIndex: 250,
-				draggable: false}
-			);
-			
-			data.panel.setHeader( "&nbsp;" );
-			
-			data.panel.hideEvent.subscribe(function() {
-				if (data.reload) {
-					FreshDirect.USQLegalWarning.rootWindow.location.reload();
-					return;
-				}
-				// during hide we delete iframe to avoid nasty flicker
-				data.panel.setBody('');
-			});
+    if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) {
+      FreshDirect.components.ifrPopup.open({
+        url: uri,
+        borderRadius: "10px",
+        opacity: 0.5
+      });
+    } else {
+      if (!data.panel) {
+        data.panel = new YAHOO.widget.Panel('wine_legal_warning_choice_' + id, {
+          fixedcenter: true, 
+          constraintoviewport: true, 
+          underlay: "matte", 
+          close: true, 
+          visible: true,
+          modal: true,
+          zIndex: 250,
+          draggable: false}
+        );
+        
+        data.panel.setHeader( "&nbsp;" );
+        
+        data.panel.hideEvent.subscribe(function() {
+          if (data.reload) {
+            FreshDirect.USQLegalWarning.rootWindow.location.reload();
+            return;
+          }
+          // during hide we delete iframe to avoid nasty flicker
+          data.panel.setBody('');
+        });
 
-			// we always stick the modal overlay to the root window
-			var body = rootWindow.document.body;
-			data.panel.render(body);
+        // we always stick the modal overlay to the root window
+        var body = rootWindow.document.body;
+        data.panel.render(body);
 
-			YAHOO.util.Dom.addClass('wine_legal_warning_choice_' + id + '_c', 'wine_legal_warning_choice_c');
-			YAHOO.util.Dom.addClass('wine_legal_warning_choice_' + id, 'wine_legal_warning_choice');
-		}
+        YAHOO.util.Dom.addClass('wine_legal_warning_choice_' + id + '_c', 'wine_legal_warning_choice_c');
+        YAHOO.util.Dom.addClass('wine_legal_warning_choice_' + id, 'wine_legal_warning_choice');
+      }
 
-		var content = "";
-		content += '<div id="wine_legal_warning_choice_content_' + id + '" class="wine_legal_warning_choice_content">\n';
-		content += '<div id="wine_legal_warning_choice_progress_' + id + '" class="wine_legal_warning_choice_progress">\n';
-		content += 'Please wait... <img src="/media_stat/images/navigation/spinner.gif" width="50" height="50">\n';
-		content += '</div>\n';
-		content += '  <iframe id="wine_legal_warning_choice_frame_' + id + '" class="wine_legal_warning_choice_frame" style="z-index:150" frameborder="0" src="' + uri + '"></iframe>';
-		content += '</div>\n';
-		
-		data.panel.setBody(content);
-		
-		data.panel.center();
-		data.panel.show();	
-
+      var content = "";
+      content += '<div id="wine_legal_warning_choice_content_' + id + '" class="wine_legal_warning_choice_content">\n';
+      content += '<div id="wine_legal_warning_choice_progress_' + id + '" class="wine_legal_warning_choice_progress">\n';
+      content += 'Please wait... <img src="/media_stat/images/navigation/spinner.gif" width="50" height="50">\n';
+      content += '</div>\n';
+      content += '  <iframe id="wine_legal_warning_choice_frame_' + id + '" class="wine_legal_warning_choice_frame" style="z-index:150" frameborder="0" src="' + uri + '"></iframe>';
+      content += '</div>\n';
+      
+      data.panel.setBody(content);
+      
+      data.panel.center();
+      data.panel.show();	
+    }
 	};	
 	
 	USQLegalWarning.refreshPanelInner = function(query) {

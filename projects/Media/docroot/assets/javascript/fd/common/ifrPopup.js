@@ -73,8 +73,14 @@ var FreshDirect = FreshDirect || {};
     },
     open: {
       value: function (config) {
+        var fpc = $('#ifrPopup .fixedPopupContent');  
 
         ifrPopup.popup.$overlay.css('opacity', config.opacity || 0);
+
+        fpc.css('border-radius', "");
+        if (config.borderRadius) {
+          fpc.css('border-radius', config.borderRadius);
+        }
 
         if(config.url) {
             if(config.url[0]!=='/' && config.url.substr(0,4)!=='http') {
@@ -96,14 +102,17 @@ var FreshDirect = FreshDirect || {};
             width: config.width
           });
           maxwidth = config.width;
+        } else {
+          maxwidth = null;
         }
         if (config.height) {
           $ifr.css({
             height: config.height
           });
           maxheight = config.height;
+        } else {
+          maxheight = null;
         }
-
 
         try {
             $ifr[0].contentWindow.close = function(){

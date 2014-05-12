@@ -1,11 +1,11 @@
-/*global jQuery,common*/
+/*global jQuery,common,Bacon*/
 var FreshDirect = FreshDirect || {};
 
 
 // module initialization
 (function (fd) {
 
-	var $=fd.libs.$;
+  var $=fd.libs.$;
 
   var USQPopup = Object.create({}, {
     container: {
@@ -13,8 +13,8 @@ var FreshDirect = FreshDirect || {};
       writable: true
     },
     opened:{
-    	value:false,
-    	writable:true
+      value:false,
+      writable:true
     },
 
     closeSelector: {
@@ -38,15 +38,15 @@ var FreshDirect = FreshDirect || {};
     },
 
     isOpen: {
-    	value:function(){
-    		return this.opened;
-    	}
+      value:function(){
+        return this.opened;
+      }
     },
     
     isClosed: {
-    	value:function(){
-    		return !this.opened;
-    	}
+      value:function(){
+        return !this.opened;
+      }
     },
     
     open: {
@@ -57,6 +57,14 @@ var FreshDirect = FreshDirect || {};
         }
         this.opened = true;
         this.container.show();
+      }
+    },
+
+    check: {
+      value: function () {
+        if (!FreshDirect.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1')) {
+          this.open();
+        }
       }
     },
 
@@ -76,9 +84,9 @@ var FreshDirect = FreshDirect || {};
                                  $(document).asEventStream('click','#USQCancelButton').map(false)]).toProperty(FreshDirect.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1'));
 
   USQPopup.state.onValue(function(accepted){
-	  if(accepted) {
-		  fd.modules.common.utils.createCookie('freshdirect.healthwarning','1@'+FreshDirect.USQLegalWarning.getJSessionId());
-	  }
+    if(accepted) {
+      fd.modules.common.utils.createCookie('freshdirect.healthwarning','1@'+FreshDirect.USQLegalWarning.getJSessionId());
+    }
   });
   
   fd.modules.common.utils.register("USQWarning", "Popup", USQPopup , fd);
