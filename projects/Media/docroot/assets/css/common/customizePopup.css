@@ -196,7 +196,11 @@
 }
 
 .customizePopup .skucontrol-quantity .subtotal {
-  margin-bottom: 4px;
+  margin: 4px 0;
+}
+
+.customizePopup .invalidQty input.qty {
+  outline: 2px solid red;
 }
 
 .customizePopup hr {

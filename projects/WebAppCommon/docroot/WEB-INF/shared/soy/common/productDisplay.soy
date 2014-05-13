@@ -34,7 +34,7 @@
 	{/foreach}
 	</ol>
 	{/if}
-	<div class="productDisplay-skuconfig"></div>
+	<div class="productDisplay-skuconfig" {if $data.cartData and $data.cartData.incart}data-component="incartinfo" data-amount="{$data.cartData.incart}"{/if}></div>
   <div class="buttons">
 	{if $data.ATCApply}
 		<span data-component="applyCustomization">

@@ -88,7 +88,7 @@ var FreshDirect = FreshDirect || {};
         };
 
     if (product) {
-      incart = product.find('.incart-info').first();
+      incart = product.find('.incart-info,[data-component="incartinfo"]').first();
       qtybox = product.find('[data-component="quantitybox"]').first();
 
       if (incart.size() > 0) {
