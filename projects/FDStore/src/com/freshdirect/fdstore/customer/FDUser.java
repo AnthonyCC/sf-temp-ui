@@ -1893,7 +1893,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 			isSOEligible = Boolean.FALSE;
 
 			if (isSOEnabled()) {
-				isSOEligible = hasCorporateOrder();
+				isSOEligible = hasCorporateOrder() || isCorporateUser();
 			}
 		}
 

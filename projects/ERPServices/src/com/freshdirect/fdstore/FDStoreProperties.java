@@ -988,7 +988,7 @@ public class FDStoreProperties {
         defaults.put(WINDOW_STEERING_PROMOTION_PREFIX, "WS_");
 
         //Standing Orders
-        defaults.put(SO_GLOBAL_ENABLER, "false");
+        defaults.put(SO_GLOBAL_ENABLER, "true");
         defaults.put(SO_OVERLAP_WINDOWS, "true");
 
         //Client Codes
