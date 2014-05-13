@@ -130,7 +130,7 @@
 #didyoumean {
 	color:#999999;
 	font-size:13px;
-	line-height:1.3em
+	line-height:1.3em;
 }
 
 #didyoumean a {
@@ -144,7 +144,7 @@
 }
 
 .noresult .tab-header {
-	display:none
+	display:none;
 }
 
 #tabs {
@@ -508,7 +508,7 @@ a.sortitem:visited  {
 .recipes-active .grid-item-description {
 	color:#aaaaaa;
 	font-style:italic;
-	height:4.5em
+	height:4.5em;
 }
 
 .recipes-active .pager,
@@ -695,7 +695,7 @@ a.sortitem:visited  {
 	position: absolute;
 	top: 51px;
 	left: 0;
-	clip: rect(0 801px 520px 0);
+	/* IE7 only clip: rect(0 801px 520px 0); */
 	clip: rect(0, 801px, 550px, 0);
 }
 .items .search-recommender {
@@ -704,7 +704,7 @@ a.sortitem:visited  {
 }
 .items .search-recommender .fd-carousel { 
 	left: -5px;
-	clip: rect(0 798px 520px 5px);
+	/*  IE7 only clip: rect(0 798px 520px 5px); */
 	clip: rect(0, 798px, 520px, 5px);
 }
 .items .search-recommender .yui-carousel-first-button {
@@ -776,5 +776,5 @@ a.sortitem:visited  {
 
 
 .search-recommender .yui-carousel-nav ul { 
-	display:none 
+	display:none;
 }
