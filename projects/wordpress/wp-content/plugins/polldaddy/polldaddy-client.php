@@ -91,7 +91,7 @@ class api_client {
 
 		$parser = new Polldaddy_XML_Parser( $this->response_xml );
 		
-		$this->response =& $parser->objects[0];
+		$this->response = $parser->objects[0];
 		if ( isset( $this->response->errors->error ) ) {
 			if ( !is_array( $this->response->errors->error ) )
 				$this->response->errors->error = array( $this->response->errors->error );
@@ -130,7 +130,7 @@ class api_client {
 		if ( is_a( $object, 'Ghetto_XML_Object' ) )
 			$args = array( $object->___name => &$object );
 		elseif ( is_array( $object ) )
-			$args =& $object;
+			$args = $object;
 		else
 			$args = null;
 
@@ -905,9 +905,12 @@ function sync_rating( ){
 	 * @return array|false Polldaddy Media or false on failure
 	 */
 
-    function upload_image( $name, $url, $type, $id = 0 ){
+    function upload_image( $name, $url, $type, $id = 0, $data = '' ){
 
-	    $pos = $this->add_request( 'uploadimageurl', new Polldaddy_Media( compact( 'name', 'type', 'url'  ) , compact( 'id' ) ) );
+		if ( !empty( $data ) )
+			$pos = $this->add_request( 'uploadimagebinary', new Polldaddy_Media( compact( 'name', 'type', 'data'  ) , compact( 'id' ) ) );
+		else
+	    	$pos = $this->add_request( 'uploadimageurl', new Polldaddy_Media( compact( 'name', 'type', 'url' ) , compact( 'id' ) ) );
 
 	    $this->send_request(30);
 
@@ -1166,9 +1169,7 @@ function &polldaddy_poll( $args = null, $id = null, $_require_data = true ) {
 				$args[$bool] = $defaults[$bool];
 		}
 		
-		global $wpdb;		
-		$public = (int) $wpdb->get_var( $wpdb->prepare( "SELECT public FROM wp_blogs WHERE blog_id = %d", $wpdb->blogid ) );
-		if( $public == -1 )
+		if ( '0' == get_option( 'blog_public' ) )
 			$args['makePublic'] = 'no';
 
 		foreach ( array( 'styleID', 'packID', 'folderID', 'languageID', 'choices', 'blockExpiration' ) as $int )
@@ -1312,7 +1313,7 @@ function wp_parse_args( $args, $defaults = '' ) {
 	if ( is_object( $args ) )
 		$r = get_object_vars( $args );
 	elseif ( is_array( $args ) )
-		$r =& $args;
+		$r = $args;
 	else
 		wp_parse_str( $args, $r );
 

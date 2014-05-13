@@ -2,7 +2,7 @@
 /*
 Plugin Name: WebPurify Profanity Filter
 Plugin URI: http://www.webpurify.com/wp-plugin.php
-Version: 2.5
+Version: 2.7
 Author: WebPurify
 Author URI: http://www.webpurify.com
 Description: Uses the powerful WebPurify Profanity Filter API to stop profanity in comments.
@@ -129,8 +129,12 @@ function webpurify_bp_init() {
         'bp_activity_post_comment_content',
         'group_forum_post_text_before_save',
         'bp_get_activity_latest_update',
-        'bp_get_member_latest_update'
+        'bp_get_member_latest_update',
+		'bbp_get_reply_content',
+        'bbp_get_topic_content',
+		'bbp_get_topic_title'
     );
+
 
     foreach( $tags as $tag ) {
         add_filter( $tag, $filter );
@@ -170,11 +174,20 @@ function webpurify_get_options() {
 function webpurify_get_languages() {
     $languages = array(
         'en' => 'English',
-        'sp' => 'Spanish',
         'ar' => 'Arabic',
+        'zh' => 'Chinese',
+        'fr' => 'French',
+        'de' => 'German',
+        'hi' => 'Hindi',
         'it' => 'Italian',
-        'pt' => 'Portuguese BETA',
-        'cn' => 'Chinese BETA'
+        'jp' => 'Japanese',
+        'kr' => 'Korean',
+        'pt' => 'Portuguese',
+        'pa' => 'Punjabi',	   
+        'ru' => 'Russian',
+        'sp' => 'Spanish',        
+        'th' => 'Thai',
+        'tr' => 'Turkish'        
     );
     
     return $languages;

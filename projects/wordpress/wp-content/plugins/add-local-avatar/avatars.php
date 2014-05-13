@@ -4,60 +4,24 @@
 	Plugin URI:		http://www.sterling-adventures.co.uk/blog/2008/03/01/avatars-plugin/
 	Description:	A plugin to manage public and private avatars.
 	Author:			Peter Sterling
-	Version:		10.5
-	Changes:		0.1 -	Initial release.
-					1.0 -	Added pagination of users list.
-					2.0 -	Added pagination of the commenters list too.
-					2.1 -	Added example formatting information.
-					3.0 -	Added ability to place avatars in written post content (plus other tweaks).
-					3.1 -	Minor tweaks to usage text and options.
-					3.2 -	Added check for administration pages to stop user URL wrapping breaking comment editing.
-					3.3 -	Spelling fixes!
-					4.0 -	Wavatar, Monster ID and Identicon can be used.
-					4.1 -	Author credit.
-					4.2 -	Fix for credit option un-setting.
-					5.0 -	Avatar options should only be managed by Administrators.
-					5.1 -	Minor fix to repetition of show avatars WordPress setting.
-					5.2 -	Cope with WP 2.6 avatar default.
-					6.0 -	Added feature to allow users to upload their own avatar.
-					6.1 -	Explanation of directory structure and 'chmod' fix, thanks to Tobias Schwarz.
-					6.2 -	Improved unique file name creation, optional avatar upload resizing/cropping, and PHP 4 fix. Thanks to Gioele Agostinelli.
-					6.3 -	Oops, a bug (mistake) with the scaling size fixed.
-					6.4 -	Error in file naming fixed, with some help from "noyz319".
-					6.5 -	Upload file type check (thanks to SumoSulsi) and internationalisation preparation.
-					6.6 -	Fix to scaling when upgrading from old version of plugin without scaling option.
-					6.7 -	Fix for uppercase extensions.
-					6.8 -	Option for nickname / first name & surname.
-					7.0 -	Support for user profile widget plug-in.
-					7.1 -	Update for Marc Adrian to provide support for option for showing text in the optional widget.
-					7.2 -	Class added to help with styling widget.
-					7.3 -	Fix for user avatar upload that doesn't need re-sizing and a Russian translation.
-					7.4 -	Root directory no longer DOCUMENT_ROOT.
-					7.5 -	Use DOCUMENT_ROOT option for legacy users.
-					7.6 -	Check for required core WP upload functions, only required for themes that expose the user profile pages.
-					8.0 -	Added option to try to use a Twitter avatar.
-					8.1 -	Simplified Twitter image URL logic.
-					8.2 -	Control anchor wrapping of Avatars.
-					8.3 -	Allow Twitter ID for optional widget.
-					9.0 -	WPMU/Network re-work.  Thanks to Michael D Tran for his efforts!
-					9.1 -	Update for Admin Bar in WordPress v3.1
-					9.2 -	Fix for local avatar upload to cope with the ever changing WP!
-					10.0 -	New option to upsize local avatar images that are smaller than the set size.  Thanks to Nicholas Craig.
-					10.1 -	Update for networked WP.  Thanks to Michael D Tran.
-					10.2 -	alt tag for avatar img.
-					10.3 -	Compress the paging header for Avatar tables, plus tidy up of table output code.
-					10.4 -	Add 'retro' dynamic automatic Avatar type.
-					10.5 -	Small change to hack for new (WP 3.3) Admin Bar style.
+	Version:		12.1
 	Author URI:		http://www.sterling-adventures.co.uk/blog/
 */
 
-define('AVATAR_VER', '10.5');															// Plug-in version.
 define('UNKNOWN', 'unknown@gravatar.com');												// Unknown e-mail.
 define('BLANK', 'blank');																// Blank e-mail.
 define('FALLBACK', 'http://www.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536');	// Fallback Gravatar URL (blank man).
 define('SCALED_SIZE', '80');															// Default size to scale uploads to.
-define('TWITTER_URL', 'http://api.twitter.com/1/users/show.xml?id=');					// Twitter's XML URL.
-define('TWITTER_STATIC', 'static.twitter.com');											// URL tell-tale for default Twitter avatar.
+define('PRESENTATION_SIZE', '140');														// Avatar size for management.
+define('TWITTER_STATIC', 'static.twitter.com');											// URL-part for default Twitter avatar.
+define('AVATAR_SUFFIX', 'avatar');														// Suffix for cropped avatar files.
+define('AVATAR_CROPPED', 'cropped');													// Suffix for cropped avatar files.
+define('AVATARS_NONCE_KEY', 'avatars_nonce');											// Number-Once checking key.
+define('UPLOAD_TRIES', 4);																// Number of attempts to create a unique file name.
+
+define('BASE_FILE', 0);																	// Local avatar files.
+define('AVTR_FILE', 1);
+define('CROP_FILE', 2);
 
 define('TYPE_TWITTER',	'T');															// Avatar types.
 define('TYPE_GLOBAL',	'G');
@@ -97,6 +61,10 @@ class add_local_avatars {
 				'in_posts' => 'on',
 				'credit' => 'on',
 				'twitter' => 'off',
+				'consumer_key' => '',
+				'consumer_secret' => '',
+				'access_token' => '',
+				'access_token_secret' => '',
 				'default' => '',
 				'upload_dir' => '',
 				'name' => 'on',
@@ -126,8 +94,8 @@ class add_local_avatars {
 
 	
 		// User profile widget included?
-		if(file_exists(ABSPATH . '/wp-content/plugins/add-local-avatar/avatars-widget.php')) {
-			include(ABSPATH . '/wp-content/plugins/add-local-avatar/avatars-widget.php');
+		if(file_exists(WP_PLUGIN_DIR . '/add-local-avatar/avatars-widget.php')) {
+			include(WP_PLUGIN_DIR . '/add-local-avatar/avatars-widget.php');
 			if(function_exists('avatars_logged_in_user_widget_init')) {
 				if($this->avatar_options['widget_enabled'] == 'on') {
 					add_action('plugins_loaded', 'avatars_logged_in_user_widget_init');
@@ -136,23 +104,25 @@ class add_local_avatars {
 		}
 		
 		// Hooks...
-		add_action('admin_menu', array(&$this, 'avatar_menu'));
-		add_action('network_admin_menu', array(&$this, 'network_admin_menu'));
-		add_filter('the_content', array(&$this, 'generate_avatar_in_posts'));
-		add_action('get_footer', array(&$this, 'avatar_footer'));
-		add_action('show_user_profile', array(&$this, 'avatar_uploader_option'));
-		add_action('edit_user_profile', array(&$this, 'avatar_uploader_option'));
-		add_action('profile_update', array(&$this, 'avatar_upload'));
-		add_action('init', array(&$this, 'set_avatars_textdomain'));
-	
+		add_action('admin_menu', array(&$this, 'avatar_menu'));														// Plugin menu addition.
+		add_action('network_admin_menu', array(&$this, 'network_admin_menu'));										// Multi-site menu.	
+		add_filter('the_content', array(&$this, 'generate_avatar_in_posts'));										// Insert avatar in to post content.
+		add_action('get_footer', array(&$this, 'avatar_footer'));													// Footer; for plugin credit etc.
+//		add_action('profile_personal_options', array(&$this, 'avatar_uploader_option'));
+		add_action('show_user_profile', array(&$this, 'avatar_uploader_option'));									// Show user's profile.
+		add_action('edit_user_profile', array(&$this, 'avatar_uploader_option'));									// Edit user's profile.
+//		add_action('profile_update', array(&$this, 'avatar_upload'));												// Perform avatar image upload.
+		add_action('init', array(&$this, 'avatars_initialise'));													// Setup plugin.
+		add_filter('plugin_row_meta', array(&$this, 'avatar_links'), 10, 2);										// Links on plugins admin area.
+		add_action('plugin_action_links_' . plugin_basename(__FILE__), array(&$this, 'avatar_shortcuts'), 10, 2);	// Action links.
+		add_action('wp_ajax_avatars_manage', array(&$this, 'avatars_manage'));										// Ajax handler for avatar uploads.
 	} // end constructor
 
-		
 		
 	// Helper function to find root directory.
 	function avatar_root()
 	{
-		if ($this->avatar_options['legacy'] == 'on') {
+		if($this->avatar_options['legacy'] == 'on') {
 			return $_SERVER['DOCUMENT_ROOT'];
 		}
 		else {
@@ -161,47 +131,53 @@ class add_local_avatars {
 	}
 
 
-
-
-	// Set up the required text domain for the chosen language.
-	function set_avatars_textdomain()
+	// Avatars initialise.
+	function avatars_initialise()
 	{
+		// Avatars admin styles.
+		if(is_admin()) {
+			wp_enqueue_style('avatars', plugins_url('/add-local-avatar/avatars-admin.css'), 'css');
+		}
+		else {
+			wp_enqueue_style('avatars', plugins_url('/add-local-avatar/avatars.css'), 'css');
+		}
+
+		// Image area select jQuery library.
+		wp_enqueue_style('imgareaselect');
+		wp_enqueue_script('imgareaselect');
+
+		// Thickbox styling for avatar upload faux-popup.
+		wp_enqueue_style('thickbox');
+		wp_enqueue_script('thickbox', null, array('jquery'));
+
+		// Text domain setup.
 		$test = WPLANG;
 		if(!empty($test)) {
-			load_plugin_textdomain('avatars', 'wp-content/plugins/add-local-avatar');
+			load_plugin_textdomain('avatars', false, dirname(plugin_basename(__FILE__)));
 		}
 	}
 
 
 	// Try to get a Twitter avatar.
-	function get_twitter_avatar($email)
+	function get_twitter_avatar($id)
 	{
-		// CURL will be used to open the URL and retrieve the user info based on the email.
-		$ch = curl_init(TWITTER_URL . urlencode($email));
+		require_once('TwitterAPIExchange.php');
 
-		curl_setopt($ch, CURLOPT_VERBOSE, 1);
-		curl_setopt($ch, CURLOPT_NOBODY, 0);
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		$settings = array(
+			'oauth_access_token' => $this->avatar_options['access_token'],
+			'oauth_access_token_secret' => $this->avatar_options['access_token_secret'],
+			'consumer_key' => $this->avatar_options['consumer_key'],
+			'consumer_secret' => $this->avatar_options['consumer_secret']
+		);
 
-		$response = curl_exec($ch);
-		$response_info = curl_getinfo($ch);
-		curl_close($ch);
+		$twitter = new TwitterAPIExchange($settings);
 
-		$data = false;
+		$dat = json_decode($twitter->setGetfield(sprintf('?screen_name=%s', $id)) ->buildOauth('https://api.twitter.com/1.1/users/show.json', 'GET') ->performRequest(), true);
 
-		if(intval($response_info['http_code']) == 200) {
-			$data = new SimpleXMLElement($response);
-		}
+		// Check Twitter URI for default Twitter (little birdie) icon use.
+		if(strpos($dat['profile_image_url'], TWITTER_STATIC) !== false) return '';
 
-		if($data === false) return "";
-
-		// Check Twitter URI for default tell-tale.
-		if(strpos($data->profile_image_url, TWITTER_STATIC) !== false) return "";
-
-		// Complete image url...
-		return $data->profile_image_url;
+		return $dat['profile_image_url'];
 	}
 
 
@@ -260,6 +236,10 @@ class add_local_avatars {
 				'in_posts' => $_POST['in_posts'],
 				'credit' => $_POST['credit'],
 				'twitter' => $_POST['twitter'],
+				'consumer_key' => $_POST['consumer_key'],
+				'consumer_secret' => $_POST['consumer_secret'],
+				'access_token' => $_POST['access_token'],
+				'access_token_secret' => $_POST['access_token_secret'],
 				'default' => $_POST['default'],
 				'upload_dir' => $_POST['upload_dir'],
 				'url_wrap' => $_POST['url_wrap'],
@@ -307,73 +287,80 @@ class add_local_avatars {
 		</script>
 
 		<div class="wrap">
-			<h2><?php echo __('Avatar Settings', 'avatars'); ?> (v<?php echo AVATAR_VER; ?>)</h2>
+			<span id='icon-users' class='icon32'></span><h2><?php
+				$plugin_data = get_plugin_data(__FILE__);
+				printf('%s (v%s)', _e('Avatar Settings', 'avatars'), $plugin_data['Version']);
+			?></h2>
 			<p>
-				<?php echo __("Please visit the author's site,", 'avatars'); ?> <a href='http://www.sterling-adventures.co.uk/blog/' title='Sterling Adventures'>Sterling Adventures</a>, <?php echo __('and say "Hi"', 'avatars'); ?>...<br />
-				<?php echo __('Control the behaviour of the avatar plug-in.', 'avatars'); ?>
+				<?php _e("Please visit the author's site,", 'avatars'); ?> <a href='http://www.sterling-adventures.co.uk/blog/' title='Sterling Adventures'>Sterling Adventures</a>, <?php _e('and say "Hi"', 'avatars'); ?>...<br />
+				<?php _e('Control the behaviour of the avatar plug-in.', 'avatars'); ?>
 			</p>
 			
-			<h3><?php echo __('User Avatars', 'avatars'); ?></h3>
+			<h3><?php _e('User Avatars', 'avatars'); ?></h3>
 			<?php
 				// Do not show the table of this site's users/commentors if Avatars are disabled, instead place a hyperlink for them to enable it.
 				if(!get_option('show_avatars')) {
-					echo __('Avatars have been disabled for this site.  Enable avatars under <a href="/wp-admin/options-discussion.php">Settings &gt; Discussion</a>', "avatars");
+					_e('Avatars have been disabled for this site.  Enable avatars under <a href="/wp-admin/options-discussion.php">Settings &gt; Discussion</a>', "avatars");
 				}
 				else {
-					$user_search = new WP_User_Search('', $_GET['userspage'], '');
+					$paged = (isset($_GET['userspage'])) ? $_GET['userspage'] : 1;
+					$paged -= 1;
+					$per_page = 20;
+					$offset = $paged * $per_page;
+
+					$args  = array(
+						'number' => $per_page,
+						'offset' => $offset,
+					);
+					$user_search = new WP_User_Query($args);
 
 					// Do we have to page the results?
-					if($user_search->total_users_for_query > $user_search->users_per_page) {
+					if($user_search->get_total() > $per_page) {
 						if ($this->networked) {
 							$paging_base = basename($this->requestURI) . '&amp;%_%';
 						}
 						else {
 							$paging_base = 'users.php?page=avatars.php&amp;%_%';
 						}
-						
-						$user_search->paging_text = paginate_links(array(
-							'total' => ceil($user_search->total_users_for_query / $user_search->users_per_page),
-							'current' => $user_search->page,
+
+						$paginating = paginate_links(array(
+							'total' => ceil($user_search->get_total() / $per_page),
+							'current' => $paged + 1,
 							'base' => $paging_base,
 							'format' => 'userspage=%#%'
-						));
-					}
+						)); ?>
 
-					// How many per page (for commenters, if shown)?
-					$per_page = $user_search->users_per_page;
-
-					if($user_search->results_are_paged()) : ?>
 						<div class="tablenav">
-							<div class="tablenav-pages"><?php $user_search->page_links(); ?></div>
+							<div class="tablenav-pages"><?php echo $paginating; ?></div>
 						</div>
-					<?php endif; ?>
+					<?php } ?>
 
 					<table class='widefat'>
 						<thead>
 							<tr>
-								<th><?php echo __('Username', 'avatars'); ?></th>
-								<th><?php echo __('Name (Nickname)', 'avatars'); ?></th>
-								<th><?php echo __('e-Mail', 'avatars'); ?></th>
-								<th><?php echo __('Twitter ID', 'avatars'); ?></th>
-								<th><?php echo __('Local', 'avatars'); ?></th>
-								<th style="text-align: center;"><?php echo __('Avatar', 'avatars'); ?></th>
-								<th><?php echo __('Type', 'avatars'); ?></th><th><?php echo __('Action', 'avatars'); ?></th>
+								<th><?php _e('Username', 'avatars'); ?></th>
+								<th><?php _e('Name (Nickname)', 'avatars'); ?></th>
+								<th><?php _e('e-Mail', 'avatars'); ?></th>
+								<th><?php _e('Twitter ID', 'avatars'); ?></th>
+								<th><?php _e('Local', 'avatars'); ?></th>
+								<th style="text-align: center;"><?php _e('Avatar', 'avatars'); ?></th>
+								<th><?php _e('Type', 'avatars'); ?></th>
+								<th><?php _e('Action', 'avatars'); ?></th>
 							</tr>
 						</thead>
 						<tbody>
 							<?php
 								$i = 0;
-								foreach($user_search->get_results() as $id) {
-									$user = new WP_User($id);
+								foreach($user_search->get_results() as $user) {
 									printf('<tr%s>', ($i % 2 == 0 ? " class='alternate'" : ""));
-									printf('<td><a href="user-edit.php?user_id=%s">%s</a></td>', $id, $user->user_login);
+									printf('<td><a href="user-edit.php?user_id=%s">%s</a></td>', $user->ID, $user->user_login);
 									printf('<td>%s %s%s</td>', $user->first_name, $user->last_name, (empty($user->nickname) ? '' : ' (' . $user->nickname . ')'));
 									printf('<td><a href="mailto:%1$s">%1$s</a></td>', $user->user_email);
 									printf('<td><input type="text" value="%s" id="twitter_id-%d" /></td>', $user->twitter_id, $i);
 									printf('<td><input type="text" value="%s" size="35" id="avatar-%d" /></td>', $user->avatar, $i);
-									printf('<td style="text-align: center;">%s</td>', get_avatar($id));
+									printf('<td style="text-align: center;">%s</td>', get_avatar($user->ID));
 									printf('<td>%s</td>', $this->get_avatar_type());
-									printf('<td><a href="%1$s&amp;user_id=%2$s" class="edit" onclick="set_input_values(%3$d);" id="href-%3$d">%4$s</a></td>', $this->requestURI, $id, $i, __('Update', 'avatars'));
+									printf('<td><a href="%1$s&amp;user_id=%2$s" class="edit" onclick="set_input_values(%3$d);" id="href-%3$d">%4$s</a></td>', $this->requestURI, $user->ID, $i, __('Update', 'avatars'));
 									echo "</tr>\n";
 									$i++;
 								}
@@ -381,9 +368,9 @@ class add_local_avatars {
 						</tbody>
 					</table>
 
-					<?php if($user_search->results_are_paged()) : ?>
+					<?php if($user_search->get_total() > $per_page) : ?>
 						<div class="tablenav">
-							<div class="tablenav-pages"><?php $user_search->page_links(); ?></div>
+							<div class="tablenav-pages"><?php echo $paginating; ?></div>
 						</div>
 					<?php endif; ?>
 
@@ -410,7 +397,7 @@ class add_local_avatars {
 							}
 
 							if($coms) { ?>
-								<h3><?php echo __('Commenter Avatars', 'avatars'); ?></h3>
+								<h3><?php _e('Commenter Avatars', 'avatars'); ?></h3>
 
 								<?php if($paging_text) : ?>
 									<div class="tablenav">
@@ -420,7 +407,7 @@ class add_local_avatars {
 
 								<table class='widefat'>
 									<thead>
-										<tr><th><?php echo __('Name', 'avatars'); ?></th><th><?php echo __('e-Mail', 'avatars'); ?></th><th style="text-align: center;"><?php echo __('Comments', 'avatars'); ?></th><th style="text-align: center;"><?php echo __('Avatar', 'avatars'); ?></th></tr>
+										<tr><th><?php _e('Name', 'avatars'); ?></th><th><?php _e('e-Mail', 'avatars'); ?></th><th style="text-align: center;"><?php _e('Comments', 'avatars'); ?></th><th style="text-align: center;"><?php _e('Avatar', 'avatars'); ?></th></tr>
 									</thead>
 									<tbody> <?php
 									$i = 0;
@@ -448,7 +435,7 @@ class add_local_avatars {
 				<?php } // end if
 			?>
 
-			<h3><?php echo __('Avatar Options', 'avatars'); ?></h3>
+			<h3><?php _e('Avatar Options', 'avatars'); ?></h3>
 			<form method="post" action="<?php echo $form_action; ?>">
 				<table class='form-table'>
 					<?php
@@ -456,12 +443,12 @@ class add_local_avatars {
 						if (!$this->networked) :
 					?>
 					<tr>
-						<td><label for="show_avatars"><?php echo __('Show avatars:', 'avatars'); ?></label><br /><small><?php echo __('Repeated from <i>Settings  &raquo;  Discussion</i>', 'avatars'); ?></small></td>
+						<td><label for="show_avatars"><?php _e('Show avatars:', 'avatars'); ?></label><br /><small><?php _e('Repeated from <i>Settings  &raquo;  Discussion</i>', 'avatars'); ?></small></td>
 						<td><input type="checkbox" name="show_avatars" <?php echo (get_option('show_avatars') ? 'checked' : ''); ?> /></td>
-						<td><small><?php echo __('Enable Avatars.', 'avatars'); ?></small></td>
+						<td><small><?php _e('Enable Avatars.', 'avatars'); ?></small></td>
 					</tr>
 					<tr>
-						<td><?php echo __('Avatar rating:', 'avatars'); ?><br /><small><?php echo __('Repeated from <i>Settings  &raquo;  Discussion</i>', 'avatars'); ?></small></td>
+						<td><?php _e('Avatar rating:', 'avatars'); ?><br /><small><?php _e('Repeated from <i>Settings  &raquo;  Discussion</i>', 'avatars'); ?></small></td>
 						<td>
 							<input type='radio' name='avatar_rating' value='G'  <?php echo (get_option('avatar_rating') == 'G'  ? 'checked="checked"' : ''); ?> /> G <br />
 							<input type='radio' name='avatar_rating' value='PG' <?php echo (get_option('avatar_rating') == 'PG' ? 'checked="checked"' : ''); ?> /> PG<br />
@@ -469,17 +456,17 @@ class add_local_avatars {
 							<input type='radio' name='avatar_rating' value='X'  <?php echo (get_option('avatar_rating') == 'X'  ? 'checked="checked"' : ''); ?> /> X
 						</td>
 						<td>
-							<small>- <?php echo __('Suitable for all audiences', 'avatars'); ?></small><br />
-							<small>- <?php echo __('Possibly offensive, usually for audiences 13 and above', 'avatars'); ?></small><br />
-							<small>- <?php echo __('Intended for adult audiences above 17', 'avatars'); ?></small><br />
-							<small>- <?php echo __('Even more mature than above', 'avatars'); ?></small>
+							<small>- <?php _e('Suitable for all audiences', 'avatars'); ?></small><br />
+							<small>- <?php _e('Possibly offensive, usually for audiences 13 and above', 'avatars'); ?></small><br />
+							<small>- <?php _e('Intended for adult audiences above 17', 'avatars'); ?></small><br />
+							<small>- <?php _e('Even more mature than above', 'avatars'); ?></small>
 						</td>
 					</tr>
 
 					<?php endif; ?>
 
 					<tr>
-						<td><label for="idAvatarSize"><?php echo __('Size:', 'avatars'); ?></label></td>
+						<td><label for="idAvatarSize"><?php _e('Size:', 'avatars'); ?></label></td>
 						<td style="width: 70px;"><select id="idAvatarSize" name='size'><?php
 							for ($i = 10; $i <= 80; $i = $i + 10) {
 								echo "<option value='$i'";
@@ -491,20 +478,51 @@ class add_local_avatars {
 					</tr>
 					<?php if(class_exists('SimpleXMLElement')) { ?>
 						<tr>
-							<td><label for="idTwitter"><?php echo __('Twitter Avatar:', 'avatars'); ?></label></td>
+							<td><label for="idTwitter"><?php _e('Twitter Avatar:', 'avatars'); ?></label></td>
 							<td><input type="checkbox" id="idTwitter" name="twitter" <?php echo $this->avatar_options['twitter'] == 'on' ? 'checked' : ''; ?> /></td>
-							<td><small><label for="idTwitter">
-								<?php
-									echo __('Try to use <a href="http://twitter.com/" target="_blank">Twitter</a> avatar if no local is avatar defined.', 'avatars');
-									echo ' ', __('Order of precedence is; <i>Local</i>, <i>Twitter</i>, <i>Global</i>.', 'avatars');
-								?>
-							</label></small></td>
+							<td>
+								<small><label for="idTwitter">
+									<?php
+										_e('Try to use <a href="http://twitter.com/" target="_blank">Twitter</a> avatar if no local is avatar defined.', 'avatars');
+										echo ' ', __('Order of precedence is; <i>Local</i>, <i>Twitter</i>, <i>Global</i>.', 'avatars');
+									?>
+								</label></small>
+
+								<?php if($this->avatar_options['twitter'] == 'on') { ?>
+									<p><em>To use Twitter Avatars you must register an application with <a href="http://twitter.com/" target="_blank">Twitter</a>.</em> The steps are...</p>
+									<ol>
+										<li>
+											<a href="http://dev.twitter.com/apps/new" target="_blank">Click here</a> to open the form in a new window and fill out the application as follows:<br />
+											<span style='display: inline-block; width: 150px;'>Application name:</span><i><?php echo get_bloginfo('name'); ?></i><br />
+											<span style='display: inline-block; width: 150px;'>Description:</span><i><?php echo get_bloginfo('description'); ?></i><br />
+											<span style='display: inline-block; width: 150px;'>Application website:</span><i><?php echo get_bloginfo('url'); ?>/</i><br />
+											<span style='display: inline-block; width: 150px;'>Application type:</span><i>Browser</i><br />
+											<span style='display: inline-block; width: 150px;'>Callback URL:</span><i><?php echo get_bloginfo('url'); ?>/</i><br />
+											<span style='display: inline-block; width: 150px;'>Default access type:</span><i>Read &amp; Write</i>
+										</li>
+										<li>Enter the <i>CAPTCHA</i>, click <i>Register</i>, and agree to the terms.</li>
+										<li>
+											Copy and paste <b>Consumer key</b> and <b>Consumer secret</b> below.<br />
+											<span style='display: inline-block; width: 150px;'>Consumer key:</span><input size="70" type="text" autocomplete="off" name="consumer_key" value="<?php echo $this->avatar_options['consumer_key']; ?>" /><br />
+											<span style='display: inline-block; width: 150px;'>Consumer secret:</span><input size="70" type="text" autocomplete="off" name="consumer_secret" value="<?php echo $this->avatar_options['consumer_secret']; ?>" />
+										</li>
+										<li>
+											Click <i>My Access Token</i> then copy and paste <b>Access Token</b> and <b>Access Token Secret</b> below.<br />
+											<span style='display: inline-block; width: 150px;'>Access token:</span><input size="70" type="text" autocomplete="off" name="access_token" value="<?php echo $this->avatar_options['access_token']; ?>" /><br />
+											<span style='display: inline-block; width: 150px;'>Access token secret:</span><input size="70" type="text" autocomplete="off" name="access_token_secret" value="<?php echo $this->avatar_options['access_token_secret']; ?>" />
+										</li>
+									</ol>
+								<?php }
+								else { 
+									echo '<br />', __('Twitter application setup instructions are shown here when enabled.', 'avatars');
+								} ?>
+							</td>
 						</tr>
 					<?php }
 
 					if (!$this->networked) { ?>
 						<tr>
-							<td><?php echo __('Gravatar default:', 'avatars'); ?><br /><small><?php echo __('Enhanced repeat from <i>Settings &raquo; Discussion</i>', 'avatars'); ?></small></td>
+							<td><?php _e('Gravatar default:', 'avatars'); ?><br /><small><?php _e('Enhanced repeat from <i>Settings &raquo; Discussion</i>', 'avatars'); ?></small></td>
 							<td><?php echo get_avatar($wavatar, $this->avatar_options['size'], $wavatar); ?></td>
 							<td>
 								<select name='wavatar'>
@@ -530,52 +548,52 @@ class add_local_avatars {
 									?>
 								</select>
 								<br />
-								<small><?php echo __('Give users without Global or Local avatars a unique avatar.', 'avatars'); ?></small>
+								<small><?php _e('Give users without Global or Local avatars a unique avatar.', 'avatars'); ?></small>
 							</td>
 						</tr>
 					<?php } ?>
 
 					<tr>
-						<td><label for="idAvatarDefault"><?php echo __('Default image:', 'avatars'); ?></label></td>
+						<td><label for="idAvatarDefault"><?php _e('Default image:', 'avatars'); ?></label></td>
 						<td><?php echo get_avatar('', '', $this->avatar_options['default']); ?></td>
 						<td>
 							<input type='text' name='default' id="idAvatarDefault" value='<?php echo $this->avatar_options['default']; ?>' size='70' />
 							<br />
-							<small><?php echo __('The default avatar (a working URI) for users without Global or Local avatars.  Used for trackbacks.', 'avatars'); ?></small>
+							<small><?php _e('The default avatar (a working URI) for users without Global or Local avatars.  Used for trackbacks.', 'avatars'); ?></small>
 						</td>
 					</tr>
 					<tr>
-						<td><label for="idAvatarSnapshots"><?php echo __('Use Snapshots:', 'avatars'); ?></label></td>
+						<td><label for="idAvatarSnapshots"><?php _e('Use Snapshots:', 'avatars'); ?></label></td>
 						<td><input type="checkbox" id="idAvatarSnapshots" name="snapshots" <?php echo $this->avatar_options['snapshots'] == 'on' ? 'checked' : ''; ?> /></td>
-						<td><label for="idAvatarSnapshots"><small><?php echo __('If you have enabled', 'avatars'); ?> <a href="http://www.snap.com">snapshots</a>, <?php echo __('clearing this will disable them for avatar links.', 'avatars'); ?></small></label></td>
+						<td><label for="idAvatarSnapshots"><small><?php _e('If you have enabled', 'avatars'); ?> <a href="http://www.snap.com">snapshots</a>, <?php _e('clearing this will disable them for avatar links.', 'avatars'); ?></small></label></td>
 					</tr>
 					<tr>
-						<td><label for="idAvatarInPosts"><?php echo __('Avatars in posts:', 'avatars'); ?></label></td>
+						<td><label for="idAvatarInPosts"><?php _e('Avatars in posts:', 'avatars'); ?></label></td>
 						<td><input type="checkbox" name="in_posts" id="idAvatarInPosts" <?php echo $this->avatar_options['in_posts'] == 'on' ? 'checked' : ''; ?> /></td>
-						<td><label for="idAvatarInPosts"><small><?php echo __('Replaces', 'avatars'); ?> </small><code>&lt;!-- avatar <b>e-mail</b> --&gt;</code><small> <?php echo __('with an avatar for that email address in post content.', 'avatars'); ?></small></label></td>
+						<td><label for="idAvatarInPosts"><small><?php _e('Replaces', 'avatars'); ?> </small><code>&lt;!-- avatar <b>e-mail</b> --&gt;</code><small> <?php _e('with an avatar for that email address in post content.', 'avatars'); ?></small></label></td>
 					</tr>
 					<tr>
-						<td><label for="idAvatarUploadAllowed"><?php echo __('User uploads:', 'avatars'); ?></label></td>
+						<td><label for="idAvatarUploadAllowed"><?php _e('User uploads:', 'avatars'); ?></label></td>
 						<td><input type="checkbox" id="idAvatarUploadAllowed" name="upload_allowed" <?php echo $this->avatar_options['upload_allowed'] == 'on' ? 'checked' : ''; ?> /></td>
 						<td>
 							<input type='text' id="idAvatarUploadDir" name='upload_dir' value='<?php echo $this->avatar_options['upload_dir']; ?>' size='70' />
 							<br />
-							<small><label for="idAvatarUploadDir"><?php echo __('If allowed, use this directory for user avatar uploads, e.g.', 'avatars'); ?> <code>/avatars</code>. <?php echo __('Must have write access and is relative to ', 'avatars'); ?><code><?php echo $this->avatar_root(); ?></code>.</label></small>
+							<small><label for="idAvatarUploadDir"><?php _e('If allowed, use this directory for user avatar uploads, e.g.', 'avatars'); ?> <code>/avatars</code>. <?php _e('Must have write access and is relative to ', 'avatars'); ?><code><?php echo $this->avatar_root(); ?></code>.</label></small>
 							<br />
-							<label for="idAvatarLegacy">Or, use legacy (v7.3 and lower) <code>$_SERVER['DOCUMENT_ROOT']</code> method </label><input type="checkbox" id="idAvatarLegacy" name="legacy" <?php echo $this->avatar_options['legacy'] == 'on' ? 'checked' : ''; ?> />, <?php echo __('this option often helps when using sub-domains.', 'avatars'); ?>
+							<label for="idAvatarLegacy">Or, use legacy (v7.3 and lower) <code>$_SERVER['DOCUMENT_ROOT']</code> method </label><input type="checkbox" id="idAvatarLegacy" name="legacy" <?php echo $this->avatar_options['legacy'] == 'on' ? 'checked' : ''; ?> />, <?php _e('this option often helps when using sub-domains.', 'avatars'); ?>
 						</td>
 					</tr>
 					<tr>
-						<td><label for="idAvatarResize"><?php echo __('Resize uploads:', 'avatars'); ?></label></td>
+						<td><label for="idAvatarResize"><?php _e('Resize uploads:', 'avatars'); ?></label></td>
 						<td><input type="checkbox" id="idAvatarResize" name="resize" <?php if($this->avatar_options['upload_allowed'] != 'on') echo 'disabled="true"'; ?> <?php echo $this->avatar_options['resize'] == 'on' ? 'checked' : ''; ?> /></td>
 						<td>
-							<label for="idAvatarResize"><small><?php echo __('Non-square uploads will be cropped.', 'avatars'); ?></small></label>
+							<label for="idAvatarResize"><small><?php _e('Non-square uploads will be cropped.', 'avatars'); ?></small></label>
 							<br />
-							<input type="checkbox" id="idAvatarUpsize" name="upsize" <?php echo $this->avatar_options['upsize'] == 'on' ? 'checked' : ''; ?> /> <label for="idAvatarUpsize"><?php echo __('pad images smaller than <i>resize</i> set below with a white background?  This option stops small images becoming pixelated.'); ?></label>
+							<input type="checkbox" id="idAvatarUpsize" name="upsize" <?php echo $this->avatar_options['upsize'] == 'on' ? 'checked' : ''; ?> /> <label for="idAvatarUpsize"><?php _e('pad images smaller than <i>resize</i> set below with a white background?  This option stops small images becoming pixelated.'); ?></label>
 						</td>
 					</tr>
 					<tr>
-						<td><label for="idAvatarResizeSize"><?php echo __('Resize uploads size:', 'avatars'); ?></label></td>
+						<td><label for="idAvatarResizeSize"><?php _e('Resize uploads size:', 'avatars'); ?></label></td>
 						<td><select name='scale' id="idAvatarResize" <?php if($this->avatar_options['resize'] != 'on' || $this->avatar_options['upload_allowed'] != 'on') echo 'disabled="true"'; ?>><?php
 							if(empty($this->avatar_options['scale'])) $def = true;
 							else $def = false;
@@ -588,65 +606,65 @@ class add_local_avatars {
 						<td><label for="idAvatarResize">px</label></td>
 					</tr>
 					<tr>
-						<?php if(file_exists(ABSPATH . '/wp-content/plugins/add-local-avatar/avatars-widget.php')) { ?>
-							<td><?php echo __('Enable user profile widget:', 'avatars'); ?></td>
+						<?php if(file_exists(WP_PLUGIN_DIR . '/add-local-avatar/avatars-widget.php')) { ?>
+							<td><?php _e('Enable user profile widget:', 'avatars'); ?></td>
 							<td><input type="checkbox" name="widget_enabled" <?php echo $this->avatar_options['widget_enabled'] == 'on' ? 'checked' : ''; ?> /></td>
-							<td><small><?php echo __('Enable the user profile widget; configure the widget at <i>Appearance &raquo; Widgets</i>.', 'avatars'); ?></small></td>
+							<td><small><?php _e('Enable the user profile widget; configure the widget at <i>Appearance &raquo; Widgets</i>.', 'avatars'); ?></small></td>
 						<?php }
 						else { ?>
-							<td colspan="3"><?php echo __('Get the user profile widget at the <a href="http://www.sterling-adventures.co.uk/blog/2008/03/01/avatars-plugin/">Avatars Home Page</a>, and enable avatar upload from your blog sidebar.', 'avatars'); ?></td>
+							<td colspan="3"><?php _e('Get the user profile widget at the <a href="http://www.sterling-adventures.co.uk/blog/2008/03/01/avatars-plugin/">Avatars Home Page</a>, and enable avatar upload from your blog sidebar.', 'avatars'); ?></td>
 						<?php } ?>
 					</tr>
 					<tr>
-						<td><label for="idWrapAvatar"><?php echo __('Wrap Avatars with URL:', 'avatars'); ?></label></td>
+						<td><label for="idWrapAvatar"><?php _e('Wrap Avatars with URL:', 'avatars'); ?></label></td>
 						<td><input type="checkbox" id="idWrapAvatar" name="url_wrap" <?php echo $this->avatar_options['url_wrap'] == 'on' ? 'checked' : ''; ?> /></td>
-						<td><small><label for="idWrapAvatar"><?php echo __("Wrap Avatar with URL (from User's profile or Comment form data).", 'avatars'); ?></label></small></td>
+						<td><small><label for="idWrapAvatar"><?php _e("Wrap Avatar with URL (from User's profile or Comment form data).", 'avatars'); ?></label></small></td>
 					</tr>
 					<tr>
-						<td><label for="idNickName"><?php echo __('Nickname:', 'avatars'); ?></label></td>
+						<td><label for="idNickName"><?php _e('Nickname:', 'avatars'); ?></label></td>
 						<td><input type="checkbox" name="name" <?php echo $this->avatar_options['name'] == 'on' ? 'checked' : ''; ?> id="idNickName" /></td>
 						<td>
 							<input type='text' name='location' value='<?php echo empty($this->avatar_options['location']) ? 'website' : $this->avatar_options['location']; ?>' size='10' id="idNickLocation" />
 							<br />
-							<small><label for="idNickLocation"><?php echo __("User's nickname used for avatar titles (tooltip).", 'avatars'); ?></label></small>
+							<small><label for="idNickLocation"><?php _e("User's nickname used for avatar titles (tooltip).", 'avatars'); ?></label></small>
 						</td>
 					</tr>
 					<tr>
-						<td><?php echo __('Credit:', 'avatars'); ?><br /><small><?php echo __("Link to the author if you value the plugin.", 'avatars'); ?></small></td>
+						<td><?php _e('Credit:', 'avatars'); ?><br /><small><?php _e("Link to the author if you value the plugin.", 'avatars'); ?></small></td>
 						<td>
-							<input type='radio' name='credit' value='vis' <?php echo ($this->avatar_options['credit'] == 'vis' ? 'checked="checked"' : ''); ?> id='idCreditVis' /><label for="idCreditVis">&nbsp;<?php echo __('Visible', 'avatars'); ?></label><br />
-							<input type='radio' name='credit' value='on'  <?php echo ($this->avatar_options['credit'] == 'on'  ? 'checked="checked"' : ''); ?> id='idCreditOn'  /><label for="idCreditOn">&nbsp;<?php echo __('Hidden', 'avatars'); ?></label><br />
-							<input type='radio' name='credit' value='off' <?php echo ($this->avatar_options['credit'] == 'off' ? 'checked="checked"' : ''); ?> id='idCreditOff' /><label for="idCreditOff">&nbsp;<?php echo __('None', 'avatars'); ?></label><br />
+							<input type='radio' name='credit' value='vis' <?php echo ($this->avatar_options['credit'] == 'vis' ? 'checked="checked"' : ''); ?> id='idCreditVis' /><label for="idCreditVis">&nbsp;<?php _e('Visible', 'avatars'); ?></label><br />
+							<input type='radio' name='credit' value='on'  <?php echo ($this->avatar_options['credit'] == 'on'  ? 'checked="checked"' : ''); ?> id='idCreditOn'  /><label for="idCreditOn">&nbsp;<?php _e('Hidden', 'avatars'); ?></label><br />
+							<input type='radio' name='credit' value='off' <?php echo ($this->avatar_options['credit'] == 'off' ? 'checked="checked"' : ''); ?> id='idCreditOff' /><label for="idCreditOff">&nbsp;<?php _e('None', 'avatars'); ?></label><br />
 						</td>
 						<td>
 							<small>- <?php echo __('Includes a visible credit. Customise the style in', 'avatars'), ' <code>', dirname(__FILE__); ?>/avatars.css</code>.</small><br />
-							<small>- <?php echo __('Includes an invisible credit. Invisibile to preserve the <i>look</i> of your WP theme.', 'avatars'); ?></small><br />
-							<small>- <?php echo __('No credit.', 'avatars'); ?></small>
+							<small>- <?php _e('Includes an invisible credit. Invisibile to preserve the <i>look</i> of your WP theme.', 'avatars'); ?></small><br />
+							<small>- <?php _e('No credit.', 'avatars'); ?></small>
 						</td>
 					</tr>
 				</table>
-				<p class="submit"><input type="submit" name="submit" class="button-primary" value="<?php echo __('Update Avatar Options', 'avatars'); ?>" /></p>
+				<p class="submit"><input type="submit" name="submit" class="button-primary" value="<?php _e('Update Avatar Options', 'avatars'); ?>" /></p>
 			</form>
 
-			<h3><?php echo __('Avatars Usage', 'avatars'); ?></h3>
-			<p><?php echo __('Make sure you have read the ', 'avatars'); ?><a href='http://wordpress.org/extend/plugins/add-local-avatar/faq/'>FAQ</a> &amp; <a href='http://wordpress.org/extend/plugins/add-local-avatar/installation/'>Installation</a> <?php echo __('notes.', 'avatars'); ?></p>
-			<p><?php echo __('If your WP Theme does not support Avatars (almost all Themes do now-a-days) follow these hints.', 'avatars'); ?><br />
-			<?php echo __('Put this code in your template files where you want avatars to appear:', 'avatars'); ?><br />
+			<h3><?php _e('Avatars Usage', 'avatars'); ?></h3>
+			<p><?php _e('Make sure you have read the ', 'avatars'); ?><a href='http://wordpress.org/extend/plugins/add-local-avatar/faq/'>FAQ</a> &amp; <a href='http://wordpress.org/extend/plugins/add-local-avatar/installation/'>Installation</a> <?php _e('notes.', 'avatars'); ?></p>
+			<p><?php _e('If your WP Theme does not support Avatars (almost all Themes do now-a-days) follow these hints.', 'avatars'); ?><br />
+			<?php _e('Put this code in your template files where you want avatars to appear:', 'avatars'); ?><br />
 			<code>&lt;?php $avtr = get_avatar(id [, size [, default-image-url]]); echo $avtr; ?&gt;</code></p>
-			<p><?php echo __('The function takes the following parameters:', 'avatars'); ?><br />
+			<p><?php _e('The function takes the following parameters:', 'avatars'); ?><br />
 			<ol>
-				<li><code>id</code>: <?php echo __('Identifier; required, a blog user ID, an e-mail address, or a comment object from a WordPress comment loop (for comments).', 'avatars'); ?></li>
-				<li><code>size</code>: <?php echo __('Size (pixels); optional, defaulted to value set above.', 'avatars'); ?></li>
-				<li><code>default-image-url</code>: <?php echo __('Default image if no Global (public) or Local (private) avatar found; optional, defaulted to value set above.', 'avatars'); ?></li>
+				<li><code>id</code>: <?php _e('Identifier; required, a blog user ID, an e-mail address, or a comment object from a WordPress comment loop (for comments).', 'avatars'); ?></li>
+				<li><code>size</code>: <?php _e('Size (pixels); optional, defaulted to value set above.', 'avatars'); ?></li>
+				<li><code>default-image-url</code>: <?php _e('Default image if no Global (public) or Local (private) avatar found; optional, defaulted to value set above.', 'avatars'); ?></li>
 			</ol></p>
-			<p><?php echo __('Apply format to the avatars with something like the following in your', 'avatars'); ?> <code>style.css</code> <?php echo __('theme file:', 'avatars'); ?><br /><ul>
-				<li><?php echo __('For comment avatars,', 'avatars'); ?> <code>.avatar { float: left; padding: 2px; margin: 0; border: 1px solid #ddd; background: white; }</code></li>
-				<li><?php echo __('For avatars in post content,', 'avatars'); ?> <code>.post_avatar { padding: 2px; margin: 0; border: 1px solid #ddd; background: white; }</code></li>
+			<p><?php _e('Apply format to the avatars with something like the following in your', 'avatars'); ?> <code>style.css</code> <?php _e('theme file:', 'avatars'); ?><br /><ul>
+				<li><?php _e('For comment avatars,', 'avatars'); ?> <code>.avatar { float: left; padding: 2px; margin: 0; border: 1px solid #ddd; background: white; }</code></li>
+				<li><?php _e('For avatars in post content,', 'avatars'); ?> <code>.post_avatar { padding: 2px; margin: 0; border: 1px solid #ddd; background: white; }</code></li>
 			</ul></p>
-			<p><?php echo __("Examples for your theme's template files:", 'avatars'); ?><br />
+			<p><?php _e("Examples for your theme's template files:", 'avatars'); ?><br />
 			<ul>
-				<li><?php echo __('In', 'avatars'); ?> <code>single.php</code> <?php echo __('declare', 'avatars'); ?> <code>&lt;?php global $post; ?&gt;</code> <?php echo __('if not already declared and then use', 'avatars'); ?> <code>&lt;?php echo get_avatar($post->post_author); ?&gt;</code> <?php echo __("to show the post author's avatar.", 'avatars'); ?></li>
-				<li><?php echo __('Inside the comment loop of', 'avatars'); ?> <code>comments.php</code> <?php echo __('use', 'avatars'); ?> <code>&lt;?php echo get_avatar($comment); ?&gt;</code> <?php echo __("to show the comment author's avatar.", 'avatars'); ?></li>
+				<li><?php _e('In', 'avatars'); ?> <code>single.php</code> <?php _e('declare', 'avatars'); ?> <code>&lt;?php global $post; ?&gt;</code> <?php _e('if not already declared and then use', 'avatars'); ?> <code>&lt;?php echo get_avatar($post->post_author); ?&gt;</code> <?php _e("to show the post author's avatar.", 'avatars'); ?></li>
+				<li><?php _e('Inside the comment loop of', 'avatars'); ?> <code>comments.php</code> <?php _e('use', 'avatars'); ?> <code>&lt;?php echo get_avatar($comment); ?&gt;</code> <?php _e("to show the comment author's avatar.", 'avatars'); ?></li>
 			</ul></p>
 		</div>
 
@@ -660,18 +678,31 @@ class add_local_avatars {
 	<?php }
 
 
+	// Add link to Avatar settings on plugin list.
+	function avatar_links($links, $file)
+	{
+		if($file == plugin_basename(__FILE__)) {
+			$links[] = '<a href="http://www.sterling-adventures.co.uk/blog/2008/03/01/avatars-plugin/" title="Please consider donating to ongoing development.">Donate</a>';
+		}
+		return $links;
+	}
+
+
+	// Add link to Avatar settings on plugin list.
+	function avatar_shortcuts($links, $file)
+	{
+		if($file == plugin_basename(__FILE__)) {
+			$links[] = '<a href="users.php?page=avatars">' . __('Settings', 'avatars') . '</a>';
+		}
+		return $links;
+	}
+
+
 	// Add credit.
 	function avatar_footer()
 	{
 		if($this->avatar_options['credit'] != 'off') {
-			if($this->avatar_options['credit'] == 'vis') {
-			//TODO
-				printf("<link rel='stylesheet' media='screen' type='text/css' href='%s/wp-content/plugins/add-local-avatar/avatars.css' />\n", get_settings('home'));
-			}
-			else {
-				echo '<style type="text/css" media="all">#avatar_footer { display: none; } /* Change this in Users > Avatars. */ </style>';
-			}
-			echo '<div id="avatar_footer">Avatars by <a href="http://www.sterling-adventures.co.uk/blog/">Sterling Adventures</a></div>';
+			printf("<div id='avatar_footer_credit' %s>Avatars by <a href='http://www.sterling-adventures.co.uk/blog/'>Sterling Adventures</a></div>\n", ($this->avatar_options['credit'] == 'vis' ? '' : "style='display: none;'"));
 		}
 	}
 
@@ -688,9 +719,9 @@ class add_local_avatars {
 				}
 			}
 		}
-		else			
-			if(current_user_can('manage_options')) 
-				add_users_page(__('Avatars', 'avatars'), __('Avatars', 'avatars'), 1, basename(__FILE__), array(&$this, 'manage_avatar_cache') );
+		else {
+			add_users_page(__('Avatars', 'avatars'), __('Avatars', 'avatars'), 'manage_options', basename(__FILE__), array(&$this, 'manage_avatar_cache') );
+		}
 	}
 	
 	
@@ -723,7 +754,9 @@ class add_local_avatars {
 
 			// Replace...
 			for($i = 0; $i <= $counter; $i++) {
-				$content = str_replace($matches[0][$i], $replacement[$i], $content);
+				if(isset($replacement[$i])) {
+					$content = str_replace($matches[0][$i], $replacement[$i], $content);
+				}
 			}
 		}
 
@@ -731,10 +764,22 @@ class add_local_avatars {
 	}
 
 
+	// Display any error text.
+	function output_avatar_error_message($usr)
+	{
+		if($usr->avatar_error) {
+			printf("<div id='message' class='error fade' style='width: 100%%;'><strong>%s</strong> %s</div>", __('Upload error:', 'avatars'), $usr->avatar_error);
+		}
+		delete_user_meta($usr->ID, 'avatar_error');
+	}
+
+
 	// Add upload option to user profile page.
 	function avatar_uploader_option($profileuser)
 	{ ?>
-		<h3><?php echo __('Avatar Upload', 'avatars'); ?></h3>
+		<div id='avatar_profile_box'>
+
+		<?php printf("<h3>%s</h3>", __('Avatar', 'avatars')); ?>
 
 		<script type="text/javascript">
 			var form = document.getElementById('your-profile');
@@ -742,77 +787,362 @@ class add_local_avatars {
 			form.setAttribute('enctype', 'multipart/form-data');
 		</script>
 
-	<?php
-		// Display any error text.
-		if($profileuser->avatar_error) { ?>
-			<div id='message' class='error fade'><b><?php echo __('Upload error:', 'avatars'); ?></b> <?php echo $profileuser->avatar_error; ?></div>
-		<?php }
-		delete_usermeta($profileuser->ID, "avatar_error");
-		?>
+		<?php $this->avatar_uploader_table($profileuser, PRESENTATION_SIZE); ?>
 
-		<table class="form-table"><tr>
-			<th><?php echo __('Current Avatar', 'avatars'); ?></th>
-			<td>
-				<?php $this->avatar_uploader_table($profileuser, PROFILE_SIZE); ?>
-			</td>
-		</tr></table>
+		</div>
 	<?php
 	}
 
 
 	// Generic table for avatar upload form.
-	function avatar_uploader_table($user, $size, $widget = false, $show_text = true)
-	{
-		echo ($widget ? '<span class="avatar_avatar">' : '<table><tr><td>');
-			// Display the profile's avatar.
-			echo get_avatar($user->ID, $size);
-		echo ($widget ? '</span>' : '</td>');
-		echo ($widget ? '<span class="avatar_text">' : '<td>');
-			if($this->avatar_options['upload_allowed'] == 'on' || current_user_can('edit_users')) {
-				if(empty($user->avatar)) {
-					if(!$widget || ($widget && $show_text)) {
-						echo $this->get_avatar_type(), __(' avatar, override with a local avatar...', 'avatars'); ?>
-						<br />
-					<?php } ?>
-					<input type="file" name="avatar_file" id="avatar_file" />
-					<br />
-					<?php if(!$widget) { ?>
-						<span class='field-hint'>
-							<?php echo __('Hints: Square images make better avatars.', 'avatars'); ?>
-							<br />
-							<?php echo __('Small image files are best for avatars, e.g. approx. 10K or smaller.', 'avatars'); ?>
-						</span>
-					<?php }
-					if($this->avatar_options['twitter'] == 'on') {
-						echo '<p><label for="idAvatarTwitter">Twitter ID:</label>';
-						printf('<input type="text" value="%s" size="%d" id="idAvatarTwitter" name="twitter_id" /></p>', $user->twitter_id, $widget ? 20 : 35);
+	function avatar_uploader_table($user, $size, $widget = false)
+	{ ?>
+		<script type="text/javascript">
+			function avatar_refresh(src) {
+				var a = jQuery('.avatar_avatar img.avatar').attr('src').split('?');
+				var b = src.split('?');
+
+				if(b[0] != a[0]) {
+					var q;
+					if(typeof b[1] == 'undefined') {
+						q = a[1];
 					}
+					else {
+						q = b[1].replace(/s=\d+/, 's=' + <?php echo $size; ?>);
+					}
+					jQuery('.avatar_avatar img.avatar').attr('src', b[0] + '?' + q);
 				}
-				else {
-					if(!$widget || ($widget && $show_text)) {
-						echo __('Local avatar, delete to revert to global avatar.', 'avatars'); ?>
-						<br />
-					<?php } ?>
-					<input type="checkbox" name="avatar_delete" id="avatar_delete" /> <?php echo __('delete local avatar.', 'avatars');
-				}
+			}
+		</script>
+
+		<span class="avatar_avatar">
+			<?php echo get_avatar($user->ID, $size); ?>
+		</span>
+
+		<span class="avatar_text">
+		<?php
+			if(!$widget) {
+				printf("<p><strong>%s</strong> %s.</p>",
+					$this->get_avatar_type(),
+					__('avatar', 'avatars')
+				);
+			}
+			if($this->avatar_options['upload_allowed'] == 'on' || current_user_can('edit_users')) {
+				printf('<a id="avatars_manage_button" class="button thickbox" href="%s?action=avatars_manage&act=INIT&uid=%s&TB_iframe=true&width=715&height=605" title="%s" >%s</a>',
+					admin_url('admin-ajax.php'),
+					$user->ID,
+					__('Avatar Management', 'avatars'),
+					__('Manage', 'avatars')
+				);
 			}
 			else {
-				if($widget && $show_text) echo __('Current avatar, contact blog administrator to change.', 'avatars');
-				else if(!$widget) echo __('Avatar uploads not allowed (Administrator may set on <i>Users &raquo; Avatars</i> page).', 'avatars');
-				echo '<p style="clear: both;"> </p>';
+				if($widget) _e('Current avatar, Administrator may change.', 'avatars');
+				else _e('Avatar uploads not allowed (Administrator may set on <i>Users &raquo; Avatars</i> page).', 'avatars');
 			}
-		echo ($widget ? '</span>' : '</td></tr></table>');
+		echo '</span>';
+	}
+
+
+	// Figure out the (possible) three local avatar files.
+	function avatar_strip_suffix($file)
+	{
+		$parts = pathinfo($file);
+		$base = basename($file, '.' . $parts['extension']);
+
+		if(substr($base, -(strlen(AVATAR_SUFFIX) + 1)) == ('-' . AVATAR_SUFFIX)) {
+			$base = substr($base, 0, strlen($base) - (strlen(AVATAR_SUFFIX) + 1));
+		}
+		if(substr($base, -(strlen(AVATAR_CROPPED) + 1)) == ('-' . AVATAR_CROPPED)) {
+			$base = substr($base, 0, strlen($base) - (strlen(AVATAR_CROPPED) + 1));
+		}
+
+		$f[BASE_FILE] = $parts['dirname'] . '/' . $base . '.' . $parts['extension'];
+		$f[AVTR_FILE] = $parts['dirname'] . '/' . $base . '-' . AVATAR_SUFFIX . '.' . $parts['extension'];
+		$f[CROP_FILE] = $parts['dirname'] . '/' . $base . '-' . AVATAR_CROPPED . '.' . $parts['extension'];
+
+		return $f;
+	}
+
+
+	// AJAX function for thickbox faux-popup to manage avatar upload.
+	function avatars_manage()
+	{
+		global $current_user;
+
+		$uid = $_GET['uid'];
+		$user = get_userdata($uid);
+
+		$img_insert = "<div style='width: 489px; height: 260px; -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; border: 3px dashed gray;'></div>";
+
+		if(($uid == $current_user->ID || current_user_can('edit_users')) &&  is_numeric($_GET['uid'])) { ?>
+			<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+			<html xmlns="http://www.w3.org/1999/xhtml" <?php do_action('admin_xml_ns'); ?> <?php language_attributes(); ?>>
+			<head>
+				<meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php echo get_option('blog_charset'); ?>" />
+				<title>Avatar Management</title>
+				<?php
+					wp_enqueue_style('global');
+					wp_enqueue_style('wp-admin');
+					wp_enqueue_style('colors');
+					wp_enqueue_style('ie');
+
+					$this->avatars_initialise();
+
+					do_action('admin_print_styles');
+					do_action('admin_print_scripts');
+					do_action('admin_head');
+				?>
+			</head>
+			<body>
+				<?php
+					$files = $this->avatar_strip_suffix($user->avatar);
+					$root = $this->avatar_root();
+
+					switch($_REQUEST['act']) {
+						case 'DEL':
+							// Check NONCE...
+							if(!wp_verify_nonce($_REQUEST['n'], AVATARS_NONCE_KEY)) die('(1) Security check.');
+
+							// Remove local avatar files.
+							foreach($files as $f) {
+								if(file_exists($root . $f)) @unlink($root . $f);
+							}
+
+							delete_usermeta($uid, 'avatar');
+						break;
+
+						case 'TWIT':
+							// Check NONCE...
+							if(!wp_verify_nonce($_REQUEST['n'], AVATARS_NONCE_KEY)) die('(2) Security check.');
+
+							// Save Twitter ID.
+							update_usermeta($uid, 'twitter_id', $_REQUEST['twitter_id']);
+						break;
+
+						case 'SAVE':
+							// Check NONCE...
+							if(!wp_verify_nonce($_REQUEST[AVATARS_NONCE_KEY], AVATARS_NONCE_KEY)) die('(3) Security check.');
+
+							if($_POST['x1'] != '') {
+								$files = $this->avatar_strip_suffix($user->avatar);
+								$this->avatar_crop($user, $files[BASE_FILE]);
+							}
+							else {
+								$this->avatar_upload($uid);
+								$files = $this->avatar_strip_suffix($user->avatar);
+							}
+						break;
+					}
+
+					$this->output_avatar_error_message($user);
+
+					printf("<form enctype='multipart/form-data' action='%s?action=avatars_manage&act=SAVE&uid=%s' method='post'>",
+						admin_url('admin-ajax.php'),
+						$uid
+					);
+
+					$nonce = wp_create_nonce(AVATARS_NONCE_KEY);
+					printf("<input type='hidden' name='%s' value='%s' />", AVATARS_NONCE_KEY, $nonce);
+				?>
+
+				<span style='width: 200px; float: left; padding: 8px;'>
+					<h3>Current Avatar</h3>
+					<?php
+						printf("<p><small>%s</small></p>", __('Current Avatar image and type.', 'avatars'));
+						printf("<p><span class='avatar_avatar'>%s</span>", get_avatar($uid, $this->avatar_options['size']));
+						printf("<span class='avatar_text'><strong>%s</strong> %s.</span></p>",
+							$this->get_avatar_type(),
+							__('avatar', 'avatars')
+						);
+
+						global $avatar_type;
+
+						if($avatar_type == TYPE_LOCAL) {
+							printf("<p><a id='avatars_local_button' class='button' href='%s?action=avatars_manage&act=DEL&uid=%s&n=%s'>%s</a></p>",
+								admin_url('admin-ajax.php'),
+								$uid,
+								$nonce,
+								__('Delete local Avatar', 'avatars')
+							);
+
+							list($w, $h, $type, $attr) = getimagesize($root . $files[BASE_FILE]);
+
+							$img_insert = sprintf("<div style='width: 489px; height: 260px;'><img id='avatar_upload' src='%s' /></div>", $files[BASE_FILE]);
+						}
+					?>
+
+					<script type="text/javascript">
+						parent.avatar_refresh(jQuery('.avatar_avatar img.avatar').attr('src'));
+					</script>
+
+					<h3 style='margin-top: 80px;'>New Avatar</h3>
+					<?php
+						printf("<p><small>%s</small></p>", __('How the uploaded image will look after manual cropping.', 'avatars'));
+
+						if($avatar_type == TYPE_LOCAL) {
+							$scaled_size = (empty($this->avatar_options['scale']) ? SCALED_SIZE : $this->avatar_options['scale']);
+							printf("<div id='avatar_preview_div' style='width: %spx; height: %spx;'><img id='avatar_preview_img' src='%s' style='position: relative;' /></div>", $scaled_size, $scaled_size, $files[BASE_FILE]);
+						}
+					?>
+				</span>
+
+				<span style='width: 495px; padding: 8px; float: right;'>
+					<h3>Avatar Upload</h3>
+					<?php printf("<p><small>%s</small></p>", __('Upload an image to use as an Avatar.', 'avatars')); ?>
+					<input type='file' name='avatar_file' id='avatar_file' style='width: 486px;' />
+					<p>
+						<span class='field-hint '><small>
+							<?php _e('Hints: Square images make better avatars.', 'avatars'); ?>
+							<br />
+							<?php _e('Small image files are best for avatars, e.g. approx. 10K or smaller.', 'avatars'); ?>
+						</small></span>
+					</p>
+					<?php
+						printf("<p>%s</p>", $img_insert);
+						printf("<p><input type='submit' value='Update Avatar' class='button' /></p>");
+					?>
+
+					<input type="hidden" name="x1" value="" />
+					<input type="hidden" name="y1" value="" />
+					<input type="hidden" name="x2" value="" />
+					<input type="hidden" name="y2" value="" />
+					<input type="hidden" name="w" value="" />
+					<input type="hidden" name="h" value="" />
+
+					<script type="text/javascript">
+						function avatar_preview(img, selection) {
+							var scaleX = 100 / (selection.width || 1);
+							var scaleY = 100 / (selection.height || 1);
+
+							jQuery('#avatar_preview_img').css({
+								width: Math.round(scaleX * <?php echo $w; ?>) + 'px',
+								height: Math.round(scaleY * <?php echo $h; ?>) + 'px',
+								marginLeft: '-' + (Math.round(scaleX * selection.x1) + 0) + 'px',
+								marginTop: '-' + (Math.round(scaleY * selection.y1) + 0) + 'px'
+							});
+						}
+
+						function avatar_update_sel(img, selection) {
+							jQuery('input[name="x1"]').val(selection.x1);
+							jQuery('input[name="y1"]').val(selection.y1);
+							jQuery('input[name="x2"]').val(selection.x2);
+							jQuery('input[name="y2"]').val(selection.y2);
+							jQuery('input[name="w"]').val(selection.width);
+							jQuery('input[name="h"]').val(selection.height);
+						}
+
+						function avatar_init_view(img, selection) {
+							avatar_preview(img, selection);
+							avatar_update_sel(img, selection);
+						}
+
+						jQuery(document).ready(function () {
+							jQuery('#avatar_upload').imgAreaSelect({
+								aspectRatio: '1:1',
+								handles: true,
+								x1: <?php echo ($w / 2) - 50; ?>, y1: <?php echo ($h / 2) - 50; ?>, x2: <?php echo ($w / 2) + 30; ?>, y2: <?php echo ($h / 2) + 30; ?>,
+								imageWidth: <?php echo $w; ?>,
+								imageHeight: <?php echo $h; ?>,
+								onInit: avatar_init_view,
+								onSelectChange: avatar_preview,
+								onSelectEnd: avatar_update_sel
+							});
+						});
+					</script>
+
+					<h3>Twitter ID</h3>
+					<?php
+						printf("<p><small>%s</small></p>", __('Set the Twitter ID to use a Twitter Avatar image.', 'avatars'));
+						if($this->avatar_options['twitter'] == 'on') {
+							printf("<p><label for='twitter_id'>%s </label><input type='text' value='%s' style='width: 60%%' id='twitter_id' name='twitter_id' /></p>",
+								'Twitter ID:',
+								$user->twitter_id
+							);
+						}
+
+						printf("<p><a id='avatars_twitter_button' class='button' href='%s?action=avatars_manage&act=TWIT&uid=%s&n=%s'>%s</a></p>",
+							admin_url('admin-ajax.php'),
+							$uid,
+							$nonce,
+							__('Update Twitter ID', 'avatars')
+						);
+					?>
+					<script type="text/javascript">
+						jQuery('#avatars_twitter_button').click(function() {
+							jQuery(this).attr('href', this.href + '&twitter_id=' + jQuery('#twitter_id').val());
+							return true;
+						});
+					</script>
+				</span>
+
+				</form>
+
+				<?php do_action('admin_print_footer_scripts'); ?>
+			</body>
+			</html>
+		<?php } else {
+			wp_die(__("(1) You are not allowed to do that.", 'avatars'));
+		}
+		die();
+	}
+
+
+	// Crop uploaded image.
+	function avatar_crop($user, $file)
+	{
+		list($w, $h, $type, $attr) = getimagesize($this->avatar_root() . $file);
+
+		$image_functions = array(
+			IMAGETYPE_GIF => 'imagecreatefromgif',
+			IMAGETYPE_JPEG => 'imagecreatefromjpeg',
+			IMAGETYPE_PNG => 'imagecreatefrompng',
+			IMAGETYPE_WBMP => 'imagecreatefromwbmp',
+			IMAGETYPE_XBM => 'imagecreatefromxbm'
+		);
+
+		$src = $image_functions[$type]($this->avatar_root() . $file);
+
+		if($src) {
+			$dst = imagecreatetruecolor($this->avatar_options['size'], $this->avatar_options['size']);
+			imagesavealpha($dst, true);
+			$trans = imagecolorallocatealpha($dst, 0, 0, 0, 127);
+			imagefill($dst, 0, 0, $trans);
+			$chk = imagecopyresampled($dst, $src, 0, 0, $_POST['x1'], $_POST['y1'], $this->avatar_options['size'], $this->avatar_options['size'], $_POST['w'], $_POST['h']);
+
+			if($chk) {
+				$parts = pathinfo($file);
+				$base = basename($parts['basename'], '.' . $parts['extension']);
+				$file = $parts['dirname'] . '/' . $base . '-' . AVATAR_CROPPED . '.' . $parts['extension'];
+
+				$image_functions = array(
+					IMAGETYPE_GIF => 'imagegif',
+					IMAGETYPE_JPEG => 'imagejpeg',
+					IMAGETYPE_PNG => 'imagepng',
+					IMAGETYPE_WBMP => 'imagewbmp',
+					IMAGETYPE_XBM => 'imagexbm'
+				);
+
+				$image_functions[$type]($dst, $this->avatar_root() . $file);
+
+				// Save the new local avatar for this user.
+				update_usermeta($user->ID, 'avatar', $file);
+
+				imagedestroy($dst);
+			}
+		}
 	}
 
 
 	// Save the uploaded avatar.
 	function avatar_upload($user_id)
 	{
-		if(!function_exists('wp_load_image')) include_once(ABSPATH . '/wp-admin/includes/image.php');
-		if(!function_exists('image_resize')) include_once(ABSPATH . '/wp-admin/includes/media.php');
+		$info = '';
 
-		define('TRIES', 4);			// Number of attempts to create a unique file name.
-		define('SUFFIX', 'avatar');	// Suffix for cropped avatar files.
+		// Make sure WP's media library is available.
+		if(!function_exists('image_resize')) include_once(ABSPATH . '/wp-includes/media.php');
+
+		// Make sure WP's filename sanitizer is available.
+		if(!function_exists('sanitize_file_name')) include_once(ABSPATH . '/wp-includes/formatting.php');
 
 		// Valid file types for upload.
 		$valid_file_types = array(
@@ -823,35 +1153,15 @@ class add_local_avatars {
 			"image/x-png" => true
 		);
 
-		// Save Twitter ID.
-		update_usermeta($user_id, 'twitter_id', $_POST['twitter_id']);
-
 		// The web-server root directory.  Used to create absolute paths.
 		$root = $this->avatar_root();
-
-		// Remove local avatar data and file.
-		if($_POST['avatar_delete'] == 'on') {
-			$user = get_userdata($user_id);
-
-			// Remove uploaded file.
-			$file = $root . $user->avatar;
-			if(file_exists($file)) @unlink($file);
-
-			// Remove cropped upload file.
-			$parts = pathinfo($file);
-			$base = basename($parts['basename'], '.' . $parts['extension']);
-			$file = $parts['dirname'] . '/' . substr($base, 0, strlen($base) - (strlen(SUFFIX) + 1)) . '.' . $parts['extension'];
-			if(file_exists($file)) @unlink($file);
-
-			update_usermeta($user_id, 'avatar', '');
-		}
 
 		// Upload a local avatar.
 		if(isset($_FILES['avatar_file']) && @$_FILES['avatar_file']['name']) {	// Something uploaded?
 			if($_FILES['avatar_file']['error']) $error = 'Upload error.';		// Any errors?
 			else if(@$valid_file_types[$_FILES['avatar_file']['type']]) {		// Valid types?
 				$path = trailingslashit($this->avatar_options['upload_dir']);
-				$file = $_FILES['avatar_file']['name'];
+				$file = sanitize_file_name($_FILES['avatar_file']['name']);
 
 				// Directory exists?
 				if(!file_exists($root . $path) && @!mkdir($root . $path, 0777)) $error = __("Upload directory doesn't exist.", 'avatars');
@@ -865,12 +1175,12 @@ class add_local_avatars {
 
 					// Second, if required loop to create a unique file name.
 					$i = 0;
-					while(file_exists($root . $path . $file) && $i < TRIES) {
+					while(file_exists($root . $path . $file) && $i < UPLOAD_TRIES) {
 						$i++;
 						$parts = pathinfo($file);
 						$file = substr(basename($parts['basename'], '.' . $parts['extension']), 0, strlen(basename($parts['basename'], '.' . $parts['extension'])) - ($i > 1 ? 2 : 0)) . '-' . $i . '.' . $parts['extension'];
 					}
-					if($i >= TRIES) $error = __('Too many tries to find non-existent file.', 'avatars');
+					if($i >= UPLOAD_TRIES) $error = __('Too many tries to find non-existent file.', 'avatars');
 
 					$file = strtolower($file);
 
@@ -878,16 +1188,18 @@ class add_local_avatars {
 					if(!move_uploaded_file($_FILES['avatar_file']['tmp_name'], $root . $path . $file)) $error = __('File upload failed.', 'avatars');
 					else chmod($root . $path . $file, 0644);
 
+					// Remember uploaded file information.
+					$info = getimagesize($root . $path . $file);
+					$info[4] = $path . $file;
+
 					// Resize required?
 					if($this->avatar_options['resize'] == 'on') {
 						$scaled_size = (empty($this->avatar_options['scale']) ? SCALED_SIZE : $this->avatar_options['scale']);
 
-						// Required, but is it needed?
-						$info = getimagesize($root . $path . $file);
 						if($info[0] > $scaled_size || $info[1] > $scaled_size) {
 							// Resize required and needed...
-							$resized_file = image_resize($root . $path . $file, $scaled_size, $scaled_size, true, SUFFIX);
-							if(!is_wp_error($resized_file) && $resized_file && $info = getimagesize($resized_file)) {
+							$resized_file = image_resize($root . $path . $file, $scaled_size, $scaled_size, true, AVATAR_SUFFIX);
+							if(!is_wp_error($resized_file) && $resized_file) {
 								$parts = pathinfo($file);
 								$file = basename($resized_file, '.' . $parts['extension']) . '.' . $parts['extension'];
 							}
@@ -895,8 +1207,8 @@ class add_local_avatars {
 						}
 						// Image is too small, and upscale turned on...
 						else if($this->avatar_options['upsize'] == 'on') {
-							$resized_file = $this->image_upsize($root . $path . $file, $scaled_size, $scaled_size, "FFFFFF", SUFFIX);
-							if(!is_wp_error($resized_file) && $resized_file && $info = getimagesize($resized_file)) {
+							$resized_file = $this->image_upsize($root . $path . $file, $scaled_size, $scaled_size, "FFFFFF", AVATAR_SUFFIX);
+							if(!is_wp_error($resized_file) && $resized_file) {
 								$parts = pathinfo($file);
 								$file = basename($resized_file, '.' . $parts['extension']) . '.' . $parts['extension'];
 							}
@@ -914,6 +1226,8 @@ class add_local_avatars {
 
 		// If there was an an error, record the text for display.
 		if(!empty($error)) update_usermeta($user_id, 'avatar_error', $error);
+
+		return $info;
 	}
 
 
@@ -1038,26 +1352,26 @@ function get_avatar($id_or_email, $size = '', $default = '', $post = false)
 			$name = $id_or_email->comment_author;
 
 			switch($id_or_email->comment_type) {
-			case 'trackback':												// Trackback...
-			case 'pingback':
-				if(!empty($add_local_avatars->avatar_options['default'])) $src = $add_local_avatars->avatar_options['default'];
-				$url_array = parse_url($id_or_email->comment_author_url);
-				$url = "http://" . $url_array['host'];
+				case 'trackback':											// Trackback...
+				case 'pingback':
+					if(!empty($add_local_avatars->avatar_options['default'])) $src = $add_local_avatars->avatar_options['default'];
+					$url_array = parse_url($id_or_email->comment_author_url);
+					$url = "http://" . $url_array['host'];
 				break;
 
-			case 'comment':													// Comment...
-			case '':
-				if(!empty($id_or_email->comment_author_email)) $email = $id_or_email->comment_author_email;
-				$user = get_user_by_email($email);
-				if($user) $id = $user->ID;									// Set ID if we can to check for local avatar.
-				$url = $id_or_email->comment_author_url;
+				case 'comment':												// Comment...
+				case '':
+					if(!empty($id_or_email->comment_author_email)) $email = $id_or_email->comment_author_email;
+					$user = get_user_by('email', $email);
+					if($user) $id = $user->ID;								// Set ID if we can to check for local avatar.
+					$url = $id_or_email->comment_author_url;
 				break;
 			}
 		}
 	}
 	else {																	// Assume we have been passed an e-mail address...
 		if(!empty($id_or_email)) $email = $id_or_email;
-		$user = get_user_by_email($email);
+		$user = get_user_by('email', $email);
 		if($user) $id = $user->ID;											// Set ID if we can to check for local avatar.
 	}
 
@@ -1066,7 +1380,7 @@ function get_avatar($id_or_email, $size = '', $default = '', $post = false)
 
 	// Try to use local avatar.
 	if($id) {
-		$local = get_usermeta($id, 'avatar');
+		$local = get_user_meta($id, 'avatar', true);
 		if(!empty($local)) {
 			$src = $local;
 			$avatar_type = TYPE_LOCAL;
@@ -1121,10 +1435,10 @@ function get_avatar($id_or_email, $size = '', $default = '', $post = false)
 
 	// Hack to stop URL wrapping if the caller is the 'Admin Bar'.
 	$backtrace = debug_backtrace();
-	if($backtrace[1]['function'] != 'wp_admin_bar_my_account_item' && $backtrace[1]['function'] != 'wp_admin_bar_my_account_menu') {
+	if(!isset($backtrace[1]['function']) || ($backtrace[1]['function'] != 'wp_admin_bar_my_account_item' && $backtrace[1]['function'] != 'wp_admin_bar_my_account_menu')) {
 		// If not in admin pages and there is a URL, wrap the avatar markup with an anchor.
 		if(!empty($url) && $url != 'http://' && !is_admin() && $add_local_avatars->avatar_options['url_wrap'] == 'on') {
-			$avatar = sprintf("<a href='%s' rel='external nofollow' %s title='%s' %s>%s</a>", attribute_escape($url), ($user ? "" : "target='_blank'"), (empty($name) ? '' : __('Visit', 'avatars') . " $name&rsquo;" . (substr($name, -1) == 's' ? "" : "s") . " " . (empty($add_local_avatars->avatar_options['location']) ? 'website' : $add_local_avatars->avatar_options['location'])), ($add_local_avatars->avatar_options['snapshots'] == 'on' ? '' : "class='snap_noshots'"), $avatar);
+			$avatar = sprintf("<a href='%s' rel='external nofollow' %s title='%s' %s>%s</a>", esc_attr($url), ($user ? "" : "target='_blank'"), (empty($name) ? '' : __('Visit', 'avatars') . " $name&rsquo;" . (substr($name, -1) == 's' ? "" : "s") . " " . (empty($add_local_avatars->avatar_options['location']) ? 'website' : $add_local_avatars->avatar_options['location'])), ($add_local_avatars->avatar_options['snapshots'] == 'on' ? '' : "class='snap_noshots'"), $avatar);
 		}
 	}
 
@@ -1132,5 +1446,5 @@ function get_avatar($id_or_email, $size = '', $default = '', $post = false)
 	return apply_filters('get_avatar', $avatar, $id_or_email, $size, $default);
 }
 endif;
-	
+
 ?>

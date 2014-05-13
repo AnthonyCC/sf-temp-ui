@@ -8,14 +8,10 @@ class WPORG_Polldaddy extends WP_Polldaddy {
 	var $use_ssl;
 	var $inline;
 
-	function WPORG_Polldaddy() {
-		$this->__construct();
-	}
-
 	function __construct() {
 		parent::__construct();
 		$this->log( 'Created WPORG_Polldaddy Object: constructor' );
-		$this->version                = '2.0.10';
+		$this->version                = '2.0.22';
 		$this->base_url               = plugins_url() . '/' . dirname( plugin_basename( __FILE__ ) ) . '/';
 		$this->polldaddy_client_class = 'WPORG_Polldaddy_Client';
 		$this->use_ssl                = (int) get_option( 'polldaddy_use_ssl' );
@@ -57,6 +53,21 @@ class WPORG_Polldaddy extends WP_Polldaddy {
 			}
 		}
 		parent::set_api_user_code();
+	}
+	
+	function admin_title( $admin_title ) {
+		global $page;
+		
+		if ( $page == 'ratings' )
+			return (stripos( $admin_title, $page ) === false ? __( "Ratings", "polldaddy" ) : '' ).$admin_title;
+		elseif ( $page == 'polls' )
+			return (stripos( $admin_title, $page ) === false ? __( "Polls", "polldaddy" ) : '' ).$admin_title;
+		
+		return $admin_title;
+	}
+	
+	function admin_menu() {				
+		parent::admin_menu();
 	}
 
 	function management_page_load() {
@@ -113,6 +124,17 @@ class WPORG_Polldaddy extends WP_Polldaddy {
 				}
 				break;
 			} //end switch
+		}
+		
+		global $parent_file, $submenu_file, $typenow;
+		
+		//need to set this to make sure that menus behave properly
+		if ( in_array( $action, array( 'options', 'update-rating' ) ) ) {
+			$parent_file  = 'options-general.php';
+			$submenu_file = $page.'&action=options';
+		} else {					
+			add_filter( 'admin_title', array( &$this, 'admin_title' ) );	
+			$submenu_file = $page;
 		}
 
 		parent::management_page_load();
@@ -209,8 +231,7 @@ class WPORG_Polldaddy extends WP_Polldaddy {
 
 		if ( isset( $polldaddy_api_key ) && strlen( $polldaddy_api_key ) > 0 ) {
 			update_option( 'polldaddy_api_key', $polldaddy_api_key );
-		}
-		else {
+		} else {
 			$this->log( 'management_page_load: login to Polldaddy failed' );
 			$this->errors->add( 'polldaddy_api_key', __( 'Login to Polldaddy failed.  Double check your email address and password.', 'polldaddy' ) );
 			if ( 1 !== $this->use_ssl ) {
@@ -253,7 +274,7 @@ class WPORG_Polldaddy extends WP_Polldaddy {
 						<label for="polldaddy-email"><?php _e( 'Polldaddy Email Address', 'polldaddy' ); ?></label>
 					</th>
 					<td>
-						<input type="text" name="polldaddy_email" id="polldaddy-email" aria-required="true" size="40" value="<?php if ( isset( $_POST['polldaddy_email'] ) ) echo attribute_escape( $_POST['polldaddy_email'] ); ?>" />
+						<input type="text" name="polldaddy_email" id="polldaddy-email" aria-required="true" size="40" value="<?php if ( isset( $_POST['polldaddy_email'] ) ) echo esc_attr( $_POST['polldaddy_email'] ); ?>" />
 					</td>
 				</tr>
 				<tr class="form-field form-required">
@@ -285,7 +306,7 @@ class WPORG_Polldaddy extends WP_Polldaddy {
 			<?php wp_nonce_field( 'polldaddy-account' ); ?>
 			<input type="hidden" name="action" value="account" />
 			<input type="hidden" name="account" value="import" />
-			<input type="submit" value="<?php echo attribute_escape( __( 'Submit', 'polldaddy' ) ); ?>" />
+			<input class="button-secondary" type="submit" value="<?php echo esc_attr( __( 'Submit', 'polldaddy' ) ); ?>" />
 		</p>
 	</form>
 </div>
@@ -446,47 +467,38 @@ function polldaddy_loader() {
 	add_action( 'admin_menu', array( &$polldaddy_object, 'admin_menu' ) );
 }
 
+
 if ( !function_exists( 'polldaddy_shortcode_handler' ) ) {
-	/*
-	 polldaddy.com
-	 [polldaddy poll="139742"]
+function polldaddy_shortcode_handler() {}
+}
+
+if ( !class_exists( 'PolldaddyShortcode' ) ) {
+	/**
+* Class wrapper for polldaddy shortcodes
+*/
+class PolldaddyShortcode {
+
+	static $add_script = false;
+	static $scripts = false;
+	
+	/**
+	 * Add all the actions & resgister the shortcode
 	 */
-
-	function polldaddy_add_rating_js() {
-		wp_print_scripts( 'polldaddy-rating-js' );
+	function __construct() {
+		if ( defined( 'GLOBAL_TAGS' ) == false )
+			add_shortcode( 'polldaddy', array( $this, 'polldaddy_shortcode' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'check_infinite' ) );
+		add_action( 'infinite_scroll_render', array( $this, 'polldaddy_shortcode_infinite' ), 11 );
 	}
 
-	class pd_poll_shortcodes {
-		private $poll_id;
-		
-		public function pd_poll_shortcodes( $poll_id ){
-			$this->poll_id = (int) $poll_id;
-		}
-		
-		public function polldaddy_add_poll_js() {
-			wp_print_scripts( 'polldaddy-poll-js-'. $this->poll_id );
-		}
-	}
-
-	function polldaddy_add_survey_js() {
-		wp_print_scripts( 'polldaddy-survey-js' );
-	}
-
-	function polldaddy_shortcode_handler( $atts, $content = null ) {
+	/**
+	 * Shortcode for polldadddy
+	 * [polldaddy poll|survey|rating="123456"]
+	 *
+	 * */
+	function polldaddy_shortcode( $atts ) {
 		global $post;
 		global $content_width;
-		
-		$inline = false;
-		$no_script   = false;
-			
-		if ( defined( 'PADPRESS_LOADED' ) )
-			$inline = true;
-			
-		if ( function_exists( 'get_option' ) && get_option( 'polldaddy_load_poll_inline' ) )
-			$inline = true;
-		
-		if ( is_feed() || defined( 'DOING_AJAX' ) )
-			$no_script = true;
 	
 		extract( shortcode_atts( array(
 			'survey'     => null,
@@ -512,9 +524,165 @@ if ( !function_exists( 'polldaddy_shortcode_handler' ) ) {
 			'domain'     => '',
 			'id'         => ''
 		), $atts ) );
+		
+		if ( ! is_array( $atts ) ) {
+			return '<!-- Polldaddy shortcode passed invalid attributes -->';
+		}
+		
+		$inline          = !in_the_loop();
+		$no_script       = false;
+		$infinite_scroll = false;
+		
+		if ( is_home() && current_theme_supports( 'infinite-scroll' ) )
+			$infinite_scroll = true;
 	
-		if ( !empty( $survey ) ) { //survey embed
+		if ( defined( 'PADPRESS_LOADED' ) )
+			$inline = true;
+	
+		if ( function_exists( 'get_option' ) && get_option( 'polldaddy_load_poll_inline' ) )
+			$inline = true;
+	
+		if ( is_feed() || ( defined( 'DOING_AJAX' ) && !$infinite_scroll ) )
+			$no_script = false;
+		
+		self::$add_script = $infinite_scroll;
+		
+		if ( intval( $rating ) > 0 && !$no_script ) { //rating embed		
+		
+			if ( empty( $unique_id ) )
+				$unique_id = is_page() ? 'wp-page-'.$post->ID : 'wp-post-'.$post->ID;
+			
+			if ( empty( $item_id ) )
+				$item_id = is_page() ? '_page_'.$post->ID : '_post_'.$post->ID;
+	
+			if ( empty( $title ) )
+				$title = apply_filters( 'the_title', $post->post_title );
+	
+			if ( empty( $permalink ) )
+				$permalink = get_permalink( $post->ID );
 				
+			$rating    = intval( $rating );
+			$unique_id = wp_strip_all_tags( $unique_id );
+			$item_id   = wp_strip_all_tags( $item_id );
+			$item_id   = preg_replace( '/[^_a-z0-9]/i', '', $item_id );
+			
+			$settings = json_encode( array(
+				'id'        => $rating,
+				'unique_id' => $unique_id,
+				'title'     => rawurlencode( trim( $title ) ),
+				'permalink' => esc_url( $permalink ),
+				'item_id'   => $item_id
+			) );
+			
+			$item_id = esc_js( $item_id );
+			
+			if ( $inline ) {		
+				return <<<SCRIPT
+<div class="pd-rating" id="pd_rating_holder_{$rating}{$item_id}"></div>
+<script type="text/javascript" charset="UTF-8"><!--//--><![CDATA[//><!--
+PDRTJS_settings_{$rating}{$item_id}={$settings};
+//--><!]]></script>
+<script type="text/javascript" charset="UTF-8" src="http://i0.poll.fm/js/rating/rating.js"></script>
+SCRIPT;
+			} else {				
+				if ( self::$scripts === false )
+					self::$scripts = array();
+					
+				$data = array( 'id' => $rating, 'item_id' => $item_id, 'settings' => $settings );
+					
+				self::$scripts['rating'][] = $data;
+				
+				add_action( 'wp_footer', array( $this, 'generate_scripts' ) );
+				
+				$data = esc_attr( json_encode( $data ) );
+				
+				if ( $infinite_scroll )
+					return <<<CONTAINER
+<div class="pd-rating" id="pd_rating_holder_{$rating}{$item_id}" data-settings="{$data}"></div>
+CONTAINER;
+				else
+					return <<<CONTAINER
+<div class="pd-rating" id="pd_rating_holder_{$rating}{$item_id}"></div>
+CONTAINER;
+			}
+		} elseif ( intval( $poll ) > 0 ) { //poll embed
+		
+			$poll      = intval( $poll );
+			$poll_url  = sprintf( 'http://polldaddy.com/poll/%d', $poll );
+			$poll_js   = sprintf( '%s.polldaddy.com/p/%d.js', ( is_ssl() ? 'https://secure' : 'http://static' ), $poll );
+			$poll_link = sprintf( '<a href="%s">Take Our Poll</a>', $poll_url );
+	
+			if ( $no_script ) {
+				return $poll_link;
+			} else {
+				if ( $type == 'slider' && !$inline ) {
+				
+					if( !in_array( $visit, array( 'single', 'multiple' ) ) )
+						$visit = 'single';
+						
+					$settings = json_encode( array(
+						'type'  => 'slider',
+						'embed' => 'poll',
+						'delay' => intval( $delay ),
+						'visit' => $visit,
+						'id'    => intval( $poll )
+					) );
+					
+					return <<<SCRIPT
+<script type="text/javascript" charset="UTF-8" src="http://i0.poll.fm/survey.js"></script>
+<script type="text/javascript" charset="UTF-8"><!--//--><![CDATA[//><!--
+polldaddy.add( {$settings} );
+//--><!]]></script>
+<noscript>{$poll_link}</noscript>
+SCRIPT;
+				} else {
+					$cb      = ( $cb == 1 ? '?cb='.mktime() : false );
+					$margins = '';
+					$float   = '';
+					
+					if ( in_array( $align, array( 'right', 'left' ) ) ) {
+						$float = sprintf( 'float: %s;', $align );					
+						
+						if ( $align == 'left')
+							$margins = 'margin: 0px 10px 0px 0px;';
+						elseif ( $align == 'right' )
+							$margins = 'margin: 0px 0px 0px 10px';
+					}									
+			
+					if ( $cb === false && !$inline ) {
+						if ( self::$scripts === false )
+							self::$scripts = array();
+							
+						$data = array( 'url' => $poll_js );
+							
+						self::$scripts['poll'][] = $data;
+						
+						add_action( 'wp_footer', array( $this, 'generate_scripts' ) );
+						
+						$data = esc_attr( json_encode( $data ) );
+						
+						return <<<CONTAINER
+<a name="pd_a_{$poll}"></a>
+<div class="PDS_Poll" id="PDI_container{$poll}" data-settings="{$data}" style="display:inline-block;{$float}{$margins}"></div>
+<div id="PD_superContainer"></div>
+<noscript>{$poll_link}</noscript>
+CONTAINER;
+					} else {
+						if ( $inline )
+							$cb = '';
+							
+						return <<<CONTAINER
+<a name="pd_a_{$poll}"></a>
+<div class="PDS_Poll" id="PDI_container{$poll}" style="display:inline-block;{$float}{$margins}"></div>
+<div id="PD_superContainer"></div>
+<script type="text/javascript" charset="UTF-8" src="{$poll_js}{$cb}"></script>
+<noscript>{$poll_link}</noscript>
+CONTAINER;
+					}				
+				}		
+			}
+		} elseif ( !empty( $survey ) ) { //survey embed
+	
 			if ( in_array( $type, array( 'iframe', 'button', 'banner', 'slider' ) ) ) {
 				
 				if ( empty( $title ) ) {
@@ -527,7 +695,7 @@ if ( !function_exists( 'polldaddy_shortcode_handler' ) ) {
 				$survey_url  = esc_url( "http://polldaddy.com/s/{$survey}" );			
 				$survey_link = sprintf( '<a href="%s">%s</a>', $survey_url, esc_html( $title ) );	
 				
-				if ( $no_script || $inline )
+				if ( $no_script || $inline || $infinite_scroll )
 					return $survey_link;			
 							
 				if ( $type == 'iframe' ) {	
@@ -545,20 +713,19 @@ if ( !function_exists( 'polldaddy_shortcode_handler' ) ) {
 						else
 							$height = (int) $height;		
 										
-						return <<<EOD
+						return <<<CONTAINER
 <iframe src="{$survey_url}?iframe=1" frameborder="0" width="{$width}" height="{$height}" scrolling="auto" allowtransparency="true" marginheight="0" marginwidth="0">{$survey_link}</iframe> 
-EOD;
-					}	
-					else if ( !empty( $domain ) && !empty( $id ) ) {
+CONTAINER;
+					} elseif ( !empty( $domain ) && !empty( $id ) ) {
 					
 						$auto_src = esc_url( "http://{$domain}.polldaddy.com/s/{$id}" );					
 						$auto_src = parse_url( $auto_src );
 						
 						if ( !is_array( $auto_src ) || count( $auto_src ) == 0 )
-							return '<!-- no poll daddy output -->';
+							return '<!-- no polldaddy output -->';
 							
 						if ( !isset( $auto_src['host'] ) || !isset( $auto_src['path'] ) )
-							return '<!-- no poll daddy output -->';
+							return '<!-- no polldaddy output -->';
 						
 						$domain   = $auto_src['host'].'/s/';
 						$id       = str_ireplace( '/s/', '', $auto_src['path'] );
@@ -570,8 +737,7 @@ EOD;
 							'id'         => $id
 						) );
 					}
-				}			
-				else {				
+				} else {				
 					$text_color = preg_replace( '/[^a-f0-9]/i', '', $text_color );
 					$back_color = preg_replace( '/[^a-f0-9]/i', '', $back_color );
 					
@@ -597,145 +763,102 @@ EOD;
 						'id'         => $survey
 					) ) );	
 				}
-				return <<<EOD
+				return <<<CONTAINER
 <script type="text/javascript" charset="UTF-8" src="http://i0.poll.fm/survey.js"></script>
 <script type="text/javascript" charset="UTF-8"><!--//--><![CDATA[//><!--
 polldaddy.add( {$settings} );
 //--><!]]></script>
 <noscript>{$survey_link}</noscript>
-EOD;
+CONTAINER;
 			} 
+		} else {
+			return '<!-- no polldaddy output -->';
 		}
-		elseif ( intval( $rating ) > 0 && !$no_script ) { //rating embed		
+	}
+	
+	function generate_scripts() {
+		$script = '';
 		
-			if ( empty( $unique_id ) )
-				$unique_id = is_page() ? 'wp-page-'.$post->ID : 'wp-post-'.$post->ID;
-			
-			if ( empty( $item_id ) )
-				$item_id = is_page() ? '_page_'.$post->ID : '_post_'.$post->ID;
-	
-			if ( empty( $title ) )
-				$title = apply_filters( 'wp_title', $post->post_title, '', '' );			
-	
-			if ( empty( $permalink ) )
-				$permalink = get_permalink( $post->ID );
-				
-			$rating    = intval( $rating );
-			$unique_id = wp_strip_all_tags( $unique_id );
-			$item_id   = wp_strip_all_tags( $item_id );
-			$item_id   = preg_replace( '/[^_a-z0-9]/i', '', $item_id );
-			
-			$settings = json_encode( array(
-				'id'        => $rating,
-				'unique_id' => $unique_id,
-				'title'     => rawurlencode( trim( $title ) ),
-				'permalink' => esc_url( $permalink ),
-				'item_id'   => $item_id
-			) );
-			
-			$item_id = esc_js( $item_id );
-			
-			if ( $inline ) {		
-				return <<<EOD
-<div class="pd-rating" id="pd_rating_holder_{$rating}{$item_id}"></div>
-<script type="text/javascript" charset="UTF-8"><!--//--><![CDATA[//><!--
-PDRTJS_settings_{$rating}{$item_id}={$settings};
-//--><!]]></script>
-<script type="text/javascript" charset="UTF-8" src="http://i.polldaddy.com/ratings/rating.js"></script>
-EOD;
-			}
-			else {
-				wp_register_script( 'polldaddy-rating-js', 'http://i.polldaddy.com/ratings/rating.js' );
-				add_filter( 'wp_footer', 'polldaddy_add_rating_js' );
-				
-				return <<<EOD
-<div class="pd-rating" id="pd_rating_holder_{$rating}{$item_id}"></div>
-<script type="text/javascript" charset="UTF-8"><!--//--><![CDATA[//><!--
-PDRTJS_settings_{$rating}{$item_id}={$settings};
-//--><!]]></script>
-EOD;
-			}
-		} 
-		elseif ( intval( $poll ) > 0 ) { //poll embed
-			
-			$poll      = intval( $poll );
-			$poll_url  = sprintf( 'http://polldaddy.com/poll/%d', $poll );
-			$poll_js   = sprintf( 'http://static.polldaddy.com/p/%d.js', $poll );
-			$poll_link = sprintf( '<a href="%s">Take Our Poll</a>', $poll_url );
-	
-			if ( $no_script )
-				return $poll_link;
-			else {
-				if ( $type == 'slider' && !$inline ) {
-				
-					if( !in_array( $visit, array( 'single', 'multiple' ) ) )
-						$visit = 'single';
-						
-					$settings = json_encode( array(
-						'type'  => 'slider',
-						'embed' => 'poll',
-						'delay' => intval( $delay ),
-						'visit' => $visit,
-						'id'    => intval( $poll )
-					) );
-					
-					return <<<EOD
-<script type="text/javascript" charset="UTF-8" src="http://i0.poll.fm/survey.js"></script>
-<script type="text/javascript" charset="UTF-8"><!--//--><![CDATA[//><!--
-polldaddy.add( {$settings} );
-//--><!]]></script><noscript>{$poll_link}</noscript>
-EOD;
+		if ( is_array( self::$scripts ) ) {
+			if ( isset( self::$scripts['rating'] ) ) {
+				$script = "<script type='text/javascript' charset='UTF-8' id='polldaddyRatings'><!--//--><![CDATA[//><!--\n";
+				foreach( self::$scripts['rating'] as $rating ) {
+					$script .= "PDRTJS_settings_{$rating['id']}{$rating['item_id']}={$rating['settings']}; if ( typeof PDRTJS_RATING !== 'undefined' ){if ( typeof PDRTJS_{$rating['id']}{$rating['item_id']} == 'undefined' ){PDRTJS_{$rating['id']}{$rating['item_id']} = new PDRTJS_RATING( PDRTJS_settings_{$rating['id']}{$rating['item_id']} );}}";
 				}
-				else {
-					$cb      = ( $cb == 1 ? '?cb='.mktime() : false );
-					$margins = '';
-					$float   = '';
-					
-					if ( in_array( $align, array( 'right', 'left' ) ) ) {
-						$float = sprintf( 'float: %s;', $align );					
-						
-						if ( $align == 'left')
-							$margins = 'margin: 0px 10px 0px 0px;';
-						else if ( $align == 'right' )
-							$margins = 'margin: 0px 0px 0px 10px';
-					}									
+				$script .= "\n//--><!]]></script><script type='text/javascript' charset='UTF-8' src='http://i0.poll.fm/js/rating/rating.js'></script>";
 			
-					if ( $cb === false && !$inline ) {
-						$pd_poll_shortcodes = new pd_poll_shortcodes( $poll );
-						wp_register_script( "polldaddy-poll-js-{$poll}", $poll_js );
-						add_filter( 'wp_footer', array( &$pd_poll_shortcodes, 'polldaddy_add_poll_js' ) );
-						
-						return <<<EOD
-<a name="pd_a_{$poll}"></a><div class="PDS_Poll" id="PDI_container{$poll}" style="display:inline-block;{$float}{$margins}"></div><div id="PD_superContainer"></div><noscript>{$poll_link}</noscript>
-EOD;
-					}
-					else {
-						if ( $inline )
-							$cb = '';
-							
-						return <<<EOD
-<a name="pd_a_{$poll}"></a><div class="PDS_Poll" id="PDI_container{$poll}" style="display:inline-block;{$float}{$margins}"></div><div id="PD_superContainer"></div>
-<script type="text/javascript" charset="UTF-8" src="{$poll_js}{$cb}"></script><noscript>{$poll_link}</noscript>
-EOD;
-					}				
-				}		
+			}
+			
+			if ( isset( self::$scripts['poll'] ) ) {
+				foreach( self::$scripts['poll'] as $poll ) {
+					$script .= "<script type='text/javascript' charset='UTF-8' src='{$poll['url']}'></script>";
+				}
 			}
 		}
-	
-		return '<!-- no poll daddy output -->';
+			
+		self::$scripts = false;
+		echo $script;
 	}
 
+	/**
+	 * If the theme uses infinite scroll, include jquery at the start
+	 */
+	function check_infinite() {
+		if ( current_theme_supports( 'infinite-scroll' ) && class_exists( 'The_Neverending_Home_Page' ) && The_Neverending_Home_Page::archive_supports_infinity() )
+			wp_enqueue_script( 'jquery' );
+	}
+
+	/**
+	 * Dynamically load the .js, if needed
+	 *
+	 * This hooks in late (priority 11) to infinite_scroll_render to determine
+	 * a posteriori if a shortcode has been called.
+	 */
+	function polldaddy_shortcode_infinite() {
+		// only try to load if a shortcode has been called and theme supports infinite scroll
+		if( self::$add_script ) {
+			$script_url = json_encode( esc_url_raw( plugins_url( 'js/polldaddy-shortcode.js', __FILE__ ) ) );
+
+			// if the script hasn't been loaded, load it
+			// if the script loads successfully, fire an 'pd-script-load' event
+			echo <<<SCRIPT
+				<script type='text/javascript'>
+				//<![CDATA[
+				if ( typeof window.polldaddyshortcode === 'undefined' ) {
+					var wp_pd_js = document.createElement( 'script' );
+					wp_pd_js.type = 'text/javascript';
+					wp_pd_js.src = $script_url;
+					wp_pd_js.async = true;
+					wp_pd_js.onload = function() { 
+						jQuery( document.body ).trigger( 'pd-script-load' ); 
+					};
+					document.getElementsByTagName( 'head' )[0].appendChild( wp_pd_js );
+				} else {
+					jQuery( document.body ).trigger( 'pd-script-load' );
+				}
+				//]]>
+				</script>
+SCRIPT;
+	
+		}
+	}
+}
+
+// kick it all off
+new PolldaddyShortcode();
+
+if ( !function_exists( 'polldaddy_link' ) ) {
 	// http://polldaddy.com/poll/1562975/?view=results&msg=voted
 	function polldaddy_link( $content ) {
 		return preg_replace( '!(?:\n|\A)http://polldaddy.com/poll/([0-9]+?)/(.+)?(?:\n|\Z)!i', "\n<script type='text/javascript' language='javascript' charset='utf-8' src='http://static.polldaddy.com/p/$1.js'></script><noscript> <a href='http://polldaddy.com/poll/$1/'>View Poll</a></noscript>\n", $content );
 	}
-
+	
 	// higher priority because we need it before auto-link and autop get to it
 	add_filter( 'the_content', 'polldaddy_link', 1 );
 	add_filter( 'the_content_rss', 'polldaddy_link', 1 );
 	add_filter( 'comment_text', 'polldaddy_link', 1 );
+}
 
-	add_shortcode( 'polldaddy', 'polldaddy_shortcode_handler' );
 }
 
 add_action( 'init', 'polldaddy_loader' );
@@ -764,12 +887,50 @@ if ( class_exists( 'WP_Widget' ) ) {
 			$comments_rating_id = (int) get_option( 'pd-rating-comments-id' );
 			$rating_seq         = $instance['show_posts'] . $instance['show_pages'] . $instance['show_comments'];
 			
+			$filter = '';
+			if ( $instance['show_posts'] == 1 && $instance['filter_by_category'] == 1 ) {
+				if ( is_single() ) { //get all posts in current category					
+					global $post;
+					if( !empty( $post ) )
+						$current_category = get_the_category( $post->ID );
+				}
+				
+				if ( is_category() ) { //get all posts in category archive page					
+					global $posts;
+					if( !empty( $posts ) )
+						$current_category = get_the_category( $posts[0]->ID );
+				}					
+				
+				if ( is_array( $current_category ) && (int) $current_category[0]->cat_ID > 0 ) {
+					$args = array( 'category' => $current_category[0]->cat_ID );
+					$post_ids = '';
+					foreach( get_posts( $args ) as $p )
+						$post_ids .= $p->ID . ',';
+					$post_ids = substr( $post_ids, 0, -1 ); 
+				}
+
+				if ( !empty( $post_ids ) ) //set variable
+					$filter = 'PDRTJS_TOP.filters = [' . $post_ids . '];';
+			}
+			
+			$show = "PDRTJS_TOP.get_top( 'posts', '0' );";
+			$widget_class = 'posts';
+			if ( $instance['show_pages'] == 1 ) {
+				$show = "PDRTJS_TOP.get_top( 'pages', '0' );";
+				$widget_class = 'pages';
+			} elseif ( $instance['show_comments'] == 1 ) {
+				$show = "PDRTJS_TOP.get_top( 'comments', '0' );";
+				$widget_class = 'comments';
+			}
+
+        	echo '</script>';
+			
 			$widget = <<<EOD
 {$before_title}{$title}{$after_title}
-<div id="pd_top_rated_holder"></div>
-<script language="javascript" charset="UTF-8" src="http://i.polldaddy.com/ratings/rating-top.js"></script>
+<div id="pd_top_rated_holder" class="pd_top_rated_holder_{$widget_class}"></div>
+<script language="javascript" charset="UTF-8" src="http://i0.poll.fm/js/rating/rating-top.js"></script>
 <script type="text/javascript" charset="UTF-8"><!--//--><![CDATA[//><!--
-PDRTJS_TOP = new PDRTJS_RATING_TOP( {$posts_rating_id}, {$pages_rating_id}, {$comments_rating_id}, '{$rating_seq}', {$instance['item_count']} );
+PDRTJS_TOP = new PDRTJS_RATING_TOP( {$posts_rating_id}, {$pages_rating_id}, {$comments_rating_id}, '{$rating_seq}', {$instance['item_count']} );{$filter}{$show}
 //--><!]]></script>
 EOD;
 			echo $before_widget;
@@ -784,66 +945,149 @@ EOD;
 			$instance['show_posts']    = (int) $new_instance['show_posts'];
 			$instance['show_pages']    = (int) $new_instance['show_pages'];
 			$instance['show_comments'] = (int) $new_instance['show_comments'];
+	        $instance['filter_by_category'] = (int) $new_instance['filter_by_category'];
 			$instance['item_count']    = (int) $new_instance['item_count'];
 			return $instance;
 		}
 
 		function form( $instance ) {
 
-			$instance      = wp_parse_args( (array) $instance, array( 'title' => '', 'show_posts' => '1', 'show_pages' => '1', 'show_comments' => '1', 'item_count' => '5' ) );
+			$instance      = wp_parse_args( (array) $instance, array( 'title' => '', 'show_posts' => '1', 'show_pages' => '1', 'show_comments' => '1', 'item_count' => '5', 'filter_by_category' => '', ) );
 			$title         = strip_tags( $instance['title'] );
 			$show_posts    = (int) $instance['show_posts'];
 			$show_pages    = (int) $instance['show_pages'];
 			$show_comments = (int) $instance['show_comments'];
+	        $filter_by_category = (int) $instance['filter_by_category'];
 			$item_count    = (int) $instance['item_count'];
 ?>
-				<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e( 'Title', 'polldaddy' ); ?>: <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo attribute_escape( $title ); ?>" /></label></p>
+				<p>
+					<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e( 'Title', 'polldaddy' ); ?>: <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" /></label></p>
 				<p>
 					<label for="<?php echo $this->get_field_id( 'show_posts' ); ?>">
-						<?php
-			$checked = '';
-			if ( $show_posts == 1 )
-				$checked = 'checked="checked"';
-?>
-					<input type="checkbox" class="checkbox"  id="<?php echo $this->get_field_id( 'show_posts' ); ?>" name="<?php echo $this->get_field_name( 'show_posts' ); ?>" value="1" <?php echo $checked; ?> />
+						<input type="checkbox" class="checkbox"  id="<?php echo $this->get_field_id( 'show_posts' ); ?>" name="<?php echo $this->get_field_name( 'show_posts' ); ?>" value="1" <?php echo $show_posts == 1 ? 'checked="checked"' : ''; ?> />
 						 <?php _e( 'Show for posts', 'polldaddy' ); ?>
 					</label>
 				</p>
-						<p>
-							<label for="<?php echo $this->get_field_id( 'show_pages' ); ?>">
-								<?php
-			$checked = '';
-			if ( $show_pages == 1 )
-				$checked = 'checked="checked"';
+				<p>
+					<label for="<?php echo $this->get_field_id( 'show_pages' ); ?>">
+						<input type="checkbox" class="checkbox"  id="<?php echo $this->get_field_id( 'show_pages' ); ?>" name="<?php echo $this->get_field_name( 'show_pages' ); ?>" value="1" <?php echo $show_pages == 1 ? 'checked="checked"' : ''; ?> />
+						 <?php _e( 'Show for pages', 'polldaddy' ); ?>
+					</label>
+				</p>
+				<p>
+					<label for="<?php echo $this->get_field_id( 'show_comments' ); ?>">
+						<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id( 'show_comments' ); ?>" name="<?php echo $this->get_field_name( 'show_comments' ); ?>" value="1" <?php echo $show_comments == 1 ? 'checked="checked"' : ''; ?> />
+						 <?php _e( 'Show for comments', 'polldaddy' ); ?>
+					</label>
+				</p>
+        		<p>
+            		<label for="<?php echo $this->get_field_id( 'filter_by_category' ); ?>">
+                    	<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id( 'filter_by_category' ); ?>" name="<?php echo $this->get_field_name( 'filter_by_category' ); ?>" value="1" <?php echo $filter_by_category == 1 ? 'checked="checked"':''; ?>/>
+                 		<?php _e('Filter by category'); ?>
+        			</label>
+    			</p>
+				<p>
+					<label for="rss-items-<?php echo $number; ?>"><?php _e( 'How many items would you like to display?', 'polldaddy' ); ?>
+							<select id="<?php echo $this->get_field_id( 'item_count' ); ?>" name="<?php echo $this->get_field_name( 'item_count' ); ?>">
+						<?php
+	for ( $i = 1; $i <= 20; ++$i )
+		echo "<option value='$i' " . ( $item_count == $i ? "selected='selected'" : '' ) . ">$i</option>";
 ?>
-							<input type="checkbox" class="checkbox"  id="<?php echo $this->get_field_id( 'show_pages' ); ?>" name="<?php echo $this->get_field_name( 'show_pages' ); ?>" value="1" <?php echo $checked; ?> />
-								 <?php _e( 'Show for pages', 'polldaddy' ); ?>
-							</label>
-						</p>
-						<p>
-							<label for="<?php echo $this->get_field_id( 'show_comments' ); ?>">
-								<?php
-			$checked = '';
-			if ( $show_comments == 1 )
-				$checked = 'checked="checked"';
-?>
-									<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id( 'show_comments' ); ?>" name="<?php echo $this->get_field_name( 'show_comments' ); ?>" value="1" <?php echo $checked; ?>/>
-								 <?php _e( 'Show for comments', 'polldaddy' ); ?>
-							</label>
-						</p>
-						<p>
-							<label for="rss-items-<?php echo $number; ?>"><?php _e( 'How many items would you like to display?', 'polldaddy' ); ?>
-									<select id="<?php echo $this->get_field_id( 'item_count' ); ?>" name="<?php echo $this->get_field_name( 'item_count' ); ?>">
-								<?php
-			for ( $i = 1; $i <= 20; ++$i )
-				echo "<option value='$i' " . ( $item_count == $i ? "selected='selected'" : '' ) . ">$i</option>";
-?>
-							</select>
-						</label>
-					</p>
+					</select>
+				</label>
+			</p>
 	<?php
 		}
 	}
 	add_action('widgets_init', create_function('', 'return register_widget("PD_Top_Rated");'));
 }
+
+function polldaddy_login_warning() {
+	global $cache_enabled;
+	$page = isset( $_GET[ 'page' ] ) ? $_GET[ 'page' ] : '';
+	if ( false == get_option( 'polldaddy_api_key' ) && function_exists( "admin_url" ) )
+		echo '<div class="updated"><p><strong>' . sprintf( __( 'Warning! The Polldaddy plugin must be linked to your Polldaddy.com account. Please visit the <a href="%s">plugin settings page</a> to login.', 'polldaddy' ), admin_url( 'options-general.php?page=polls&action=options' ) ) . '</strong></p></div>';
+}
+add_action( 'admin_notices', 'polldaddy_login_warning' );
+
+/**
+ * check if the hook is scheduled - if not, schedule it.
+ */
+function polldaddy_setup_schedule() {
+	if ( false == wp_next_scheduled( 'polldaddy_rating_update_job' ) ) {
+		wp_schedule_event( time(), 'twicedaily', 'polldaddy_rating_update_job');
+	}
+}
+add_action( 'init', 'polldaddy_setup_schedule' );
+
+/**
+ * On deactivation, remove all functions from the scheduled action hook.
+ */
+function polldaddy_deactivation() {
+	wp_clear_scheduled_hook( 'polldaddy_rating_update_job' );
+}
+register_deactivation_hook( __FILE__, 'polldaddy_deactivation' );
+
+/**
+ * On the scheduled action hook, run a function.
+ */
+function polldaddy_rating_update() {
+	if ( false == get_option( 'pd-rich-snippets', 1 ) )
+		return false;
+
+	global $polldaddy_object;
+	$polldaddy = $polldaddy_object->get_client( WP_POLLDADDY__PARTNERGUID, get_option( 'pd-rating-usercode' ) );
+	$rating_id = get_option( 'pd-rating-posts-id' );
+	$finished = false;
+	$c = 0;
+	while ( !$finished ) {
+		$response = $polldaddy->get_rating_results( $rating_id, 2, $c, 50 );
+		$ratings = $response->rating;
+		if ( false == is_array( $ratings ) )
+			$finished = true;
+		else
+			polldaddy_update_ratings_cache( $ratings );
+		$c += 50;
+		if ( $c > 1000 ) // gotta stop somewhere
+			$finished = true;
+	}
+	return true;
+}
+
+add_action( 'polldaddy_rating_update_job', 'polldaddy_rating_update' );
+
+function polldaddy_update_ratings_cache( $ratings ) {
+	foreach( $ratings as $rating ) {
+		$post_id = str_replace( 'wp-post-', '', $rating->uid );
+		update_post_meta( $post_id, 'pd_rating', array( 'type' => $rating->_type, 'votes' => $rating->_votes, 
+			'total1' => $rating->total1,
+			'total2' => $rating->total2,
+			'total3' => $rating->total3,
+			'total4' => $rating->total4,
+			'total5' => $rating->total5, 
+			'average' => $rating->average_rating ) );
+	}
+}
+
+function polldaddy_post_rating( $content ) {
+	if ( false == get_option( 'pd-rich-snippets', 1 ) )
+		return $content;
+	if ( false == is_singular() )
+		return $content;
+	if ( false == get_option( 'pd-rating-usercode' ) )
+		return $content;
+	$rating = get_post_meta( $GLOBALS[ 'post' ]->ID, 'pd_rating' );
+	if ( false == $rating )
+		return $content;
+	// convert to 5 star rating
+	if ( $rating[0][ 'type' ] == 1 )
+		$average = ceil( ( $rating[0][ 'average' ] / $rating[0][ 'votes' ] ) * 5 );
+	else
+		$average = $rating[ 'average' ];
+	if ( $average < 0 )
+		return $content;
+	global $post;
+	return $content . '<span class="hreview-aggregate"><span class="item"><span class="fn">"' . $post->post_title . '"</span></span>, <span class="rating"><span class="average">' . $average . '</span> out of <span class="best">5</span> based on <span class="votes">' . $rating[0][ 'votes' ] . '</span> ratings.</span></span>';
+}
+add_filter( 'the_content', 'polldaddy_post_rating' );
 ?>

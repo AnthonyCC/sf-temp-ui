@@ -1,132 +1,144 @@
-# Copyright (C) 2012 Authors Widget
+# Copyright (C) 2013 Authors Widget
 # This file is distributed under the same license as the Authors Widget package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Authors Widget 2.2\n"
+"Project-Id-Version: Authors Widget 2.4.1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/authors\n"
-"POT-Creation-Date: 2012-05-03 07:30:38+00:00\n"
+"POT-Creation-Date: 2013-12-10 23:41:05+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2012-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2013-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: authors.php:151
+#: authors.php:159
 msgid "Select Author..."
 msgstr ""
 
-#: authors.php:255
+#: authors.php:248
 msgid "Posts by %s"
 msgstr ""
 
-#: authors.php:315 authors.php:528
+#: authors.php:308 authors.php:562
 msgid "Authors"
 msgstr ""
 
-#: authors.php:350
+#: authors.php:347
 msgid "Powered by %s"
 msgstr ""
 
-#: authors.php:350
+#: authors.php:347
 msgid "Authors Widget Plugin for Wordpress"
 msgstr ""
 
-#. #-#-#-#-#  plugin.pot (Authors Widget 2.2)  #-#-#-#-#
+#. #-#-#-#-#  authors.pot (Authors Widget 2.4.1)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: authors.php:350
+#: authors.php:347
 msgid "Authors Widget"
 msgstr ""
 
-#: authors.php:461
+#: authors.php:449
 msgid "Title"
 msgstr ""
 
-#: authors.php:463
+#: authors.php:451
 msgid "Format"
 msgstr ""
 
-#: authors.php:464
+#: authors.php:452
 msgid "List"
 msgstr ""
 
-#: authors.php:466
+#: authors.php:454
 msgid "Cloud"
 msgstr ""
 
-#: authors.php:468
+#: authors.php:455
+msgid "Ball"
+msgstr ""
+
+#: authors.php:457
 msgid "Dropdown"
 msgstr ""
 
-#: authors.php:471
+#: authors.php:460
 msgid "Order by"
 msgstr ""
 
-#: authors.php:472
+#: authors.php:461
 msgid "Display name"
 msgstr ""
 
-#: authors.php:473
+#: authors.php:462
 msgid "First name"
 msgstr ""
 
-#: authors.php:474
+#: authors.php:463
 msgid "Last name"
 msgstr ""
 
-#: authors.php:475
+#: authors.php:464
 msgid "Post count"
 msgstr ""
 
-#: authors.php:477
+#: authors.php:465
+msgid "ID"
+msgstr ""
+
+#: authors.php:467
 msgid "Number of authors to show"
 msgstr ""
 
-#: authors.php:478
+#: authors.php:468
 msgid "Show full name"
 msgstr ""
 
-#: authors.php:479
+#: authors.php:469
 msgid "Show avatar"
 msgstr ""
 
-#: authors.php:480
+#: authors.php:470
 msgid "Avatar size"
 msgstr ""
 
-#: authors.php:481
+#: authors.php:471
 msgid "Show RSS links"
 msgstr ""
 
-#: authors.php:482
+#: authors.php:472
 msgid "Show post counts"
 msgstr ""
 
-#: authors.php:483
+#: authors.php:473
 msgid "Hide empty"
 msgstr ""
 
-#: authors.php:484
+#: authors.php:474
 msgid "Exclude admin"
 msgstr ""
 
-#: authors.php:485
+#: authors.php:475
 msgid "Exclude"
 msgstr ""
 
-#: authors.php:486
+#: authors.php:476
 msgid "Include"
 msgstr ""
 
-#: authors.php:487
-msgid "Hide credit"
+#: authors.php:478
+msgid "How satisfied you are with the plugin?"
 msgstr ""
 
-#: authors.php:488
+#: authors.php:480
 msgid "Donate"
 msgstr ""
 
-#: authors.php:526
+#: authors.php:481
+msgid "Show credit"
+msgstr ""
+
+#: authors.php:560
 msgid "A list of the authors"
 msgstr ""
 

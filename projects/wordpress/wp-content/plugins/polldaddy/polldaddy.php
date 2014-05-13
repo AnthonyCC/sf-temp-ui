@@ -5,12 +5,12 @@ Plugin Name: Polldaddy Polls & Ratings
 Plugin URI: http://wordpress.org/extend/plugins/polldaddy/
 Description: Create and manage Polldaddy polls and ratings in WordPress
 Author: Automattic, Inc.
-Author URL: http://automattic.com/
-Version: 2.0.13
+Author URL: http://polldaddy.com/
+Version: 2.0.23
 */
 
 // You can hardcode your Polldaddy PartnerGUID (API Key) here
-//define( 'WP_POLLDADDY__PARTNERGUID', '12345...' );
+//define( 'WP_POLLDADDY__PARTNERGUID', '12345…' );
 
 class WP_Polldaddy {
 	var $errors;
@@ -25,26 +25,32 @@ class WP_Polldaddy {
 	var $multiple_accounts;
 	var $user_code;
 	var $rating_user_code;
-
-	function WP_Polldaddy() {
-		$this->__construct();
-	}
-
+	var $has_feedback_menu;
+	
 	function __construct() {
 		global $current_user;
 		$this->log( 'Created WP_Polldaddy Object: constructor' );
 		$this->errors                 = new WP_Error;
 		$this->scheme                 = 'https';
-		$this->version                = '2.0.12';
+		$this->version                = '2.0.22';
 		$this->multiple_accounts      = true;
 		$this->polldaddy_client_class = 'api_client';
 		$this->polldaddy_clients      = array();
 		$this->is_admin               = (bool) current_user_can( 'manage_options' );
-		$this->is_author              = true;
-		$this->id                     = (int) $current_user->ID;
+		$this->is_author              = (bool) current_user_can( 'edit_posts' );
+		$this->is_editor              = (bool) current_user_can( 'delete_others_pages' );
 		$this->user_code              = null;
 		$this->rating_user_code       = null;
-
+		$this->id                     = ($current_user instanceof WP_User) ? intval( $current_user->ID ): 0;
+		$this->has_feedback_menu      = false;
+		
+		if ( class_exists( 'Jetpack' ) ) {
+			if ( method_exists( 'Jetpack', 'is_active' ) && Jetpack::is_active() ) {
+				$jetpack_active_modules = get_option('jetpack_active_modules');
+				if ( $jetpack_active_modules && in_array( 'contact-form', $jetpack_active_modules ) )
+					$this->has_feedback_menu = true;
+			}
+		}
 	}
 
 	function &get_client( $api_key, $userCode = null ) {
@@ -63,8 +69,10 @@ class WP_Polldaddy {
 		return $client;
 	}
 
-	function admin_menu() {
+	function admin_menu() {	
+		add_action( 'wp_enqueue_scripts', array( &$this, 'register_polldaddy_styles' ) );
 		add_action( 'admin_head', array( &$this, 'do_admin_css' ) );
+		add_action( 'admin_enqueue_scripts', array( &$this, 'menu_alter' ) );
 
 		if ( !defined( 'WP_POLLDADDY__PARTNERGUID' ) ) {
 			$guid = get_option( 'polldaddy_api_key' );
@@ -73,74 +81,83 @@ class WP_Polldaddy {
 			define( 'WP_POLLDADDY__PARTNERGUID', $guid );
 
 		}
+		
+		$capability = 'edit_posts';
+		$function   = array( &$this, 'management_page' );
 
-		if ( !WP_POLLDADDY__PARTNERGUID ) {
-
-			if ( function_exists( 'add_object_page' ) ) // WP 2.7+
-				$hook = add_object_page( __( 'Polls', 'polldaddy' ), __( 'Polls', 'polldaddy' ), 'edit_posts', 'polls', array( &$this, 'api_key_page' ), "{$this->base_url}img/pd-wp-icon-gray.png" );
-			else
-				$hook = add_management_page( __( 'Polls', 'polldaddy' ), __( 'Polls', 'polldaddy' ), 'edit_posts', 'polls', array( &$this, 'api_key_page' ) );
-
-			add_action( "load-$hook", array( &$this, 'api_key_page_load' ) );
-
-			if ( function_exists( 'add_object_page' ) ) // WP 2.7+
-				$hook = add_object_page( __( 'Ratings', 'polldaddy' ), __( 'Ratings', 'polldaddy' ), 'edit_posts', 'ratings', array( &$this, 'api_key_page' ), "{$this->base_url}img/pd-wp-icon-gray.png" );
-			else
-				$hook = add_management_page( __( 'Ratings', 'polldaddy' ), __( 'Ratings', 'polldaddy' ), 'edit_posts', 'ratings', array( &$this, 'api_key_page' ) );
-
-			add_action( "load-$hook", array( &$this, 'api_key_page_load' ) );
-
-			return false;
-
-		}
-
-
-		if ( function_exists( 'add_object_page' ) ) // WP 2.7+
-			$hook = add_object_page( __( 'Polls', 'polldaddy' ), __( 'Polls', 'polldaddy' ), 'edit_posts', 'polls', array( &$this, 'management_page' ), "{$this->base_url}img/pd-wp-icon-gray.png" );
-		else
-			$hook = add_management_page( __( 'Polls', 'polldaddy' ), __( 'Polls', 'polldaddy' ), 'edit_posts', 'polls', array( &$this, 'management_page' ) );
-
+		$hook = add_object_page( __( 'Feedback', 'polldaddy' ), __( 'Feedback', 'polldaddy' ), $capability, 'feedback', $function, 'div' );
 		add_action( "load-$hook", array( &$this, 'management_page_load' ) );
-
-		if ( function_exists( 'add_object_page' ) ) // WP 2.7+
-			$hook = add_object_page( __( 'Ratings', 'polldaddy' ), __( 'Ratings', 'polldaddy' ), 'edit_posts', 'ratings', array( &$this, 'management_page' ), "{$this->base_url}img/pd-wp-icon-gray.png" );
-		else
-			$hook = add_management_page( __( 'Ratings', 'polldaddy' ), __( 'Ratings', 'polldaddy' ), 'edit_posts', 'ratings', array( &$this, 'management_page' ) );
-
-		add_action( "load-$hook", array( &$this, 'management_page_load' ) );
-
-
-		if ( $this->is_admin ) {
-			add_submenu_page( 'ratings', __( 'Ratings &ndash; Settings', 'polldaddy' ), __( 'All Ratings', 'polldaddy' ), 'edit_posts', 'ratings', array( &$this, 'management_page' ) );
-			add_submenu_page( 'ratings', __( 'Ratings &ndash; Reports', 'polldaddy' ), __( 'Reports', 'polldaddy' ), 'edit_posts', 'ratings&amp;action=reports', array( &$this, 'management_page' ) );
+		
+		foreach( array( 'polls' => __( 'Polls', 'polldaddy' ), 'ratings' => __( 'Ratings', 'polldaddy' ) ) as $menu_slug => $page_title ) {
+			$menu_title  = $page_title;
+			
+			$hook = add_object_page( $menu_title, $menu_title, $capability, $menu_slug, $function, 'div' );
+			add_action( "load-$hook", array( &$this, 'management_page_load' ) );
+			
+			add_submenu_page( 'feedback', $page_title, $page_title, $capability, $menu_slug, $function );			
+			add_options_page( $page_title, $page_title, $menu_slug == 'ratings' ? 'manage_options' : $capability, $menu_slug.'&action=options', $function );
 		}
-		else {
-			add_submenu_page( 'ratings', __( 'Ratings &ndash; Reports', 'polldaddy' ), __( 'Reports', 'polldaddy' ), 'edit_posts', 'ratings', array( &$this, 'management_page' ) );
+		
+		remove_submenu_page( 'feedback', 'feedback' );
+		remove_menu_page( 'polls' );
+		remove_menu_page( 'ratings' );
+		
+		if ( $this->has_feedback_menu ) {		
+			add_submenu_page( 'feedback', __( 'Feedback', 'polldaddy' ), __( 'Feedback', 'polldaddy' ), 'edit_posts', 'edit.php?post_type=feedback' );			
+			remove_menu_page( 'edit.php?post_type=feedback' );		
 		}
-
-		add_submenu_page( 'polls', __( 'Polls', 'polldaddy' ), __( 'All Polls', 'polldaddy' ), 'edit_posts', 'polls', array( &$this, 'management_page' ) );
-
-		if ( $this->is_author ) {
-			add_submenu_page( 'polls', __( 'Add New Poll', 'polldaddy' ), __( 'Add New', 'polldaddy' ), 'edit_posts', 'polls&amp;action=create-poll', array( &$this, 'management_page' ) );
-			add_submenu_page( 'polls', __( 'Custom Styles', 'polldaddy' ), __( 'Custom Styles', 'polldaddy' ), 'edit_posts', 'polls&amp;action=list-styles', array( &$this, 'management_page' ) );
-			add_options_page(  __( 'Polls &amp; Ratings', 'polldaddy' ), __( 'Polls &amp; Ratings', 'polldaddy' ), 'edit_posts', 'polls&amp;action=options', array( &$this, 'management_page' ) );
-		}
-
-		add_action( 'media_buttons', array( &$this, 'media_buttons' ) );
+		
+		add_action( 'media_buttons', array( &$this, 'media_buttons' ) );		
 	}
 
-
 	function do_admin_css() {
-
-		$scheme =  get_user_option( 'admin_color' );
-
-		if ( $scheme == 'classic' ) {
-			$color = "blue";
+		wp_register_style( 'polldaddy-icons', plugins_url( 'css/polldaddy-icons.css', __FILE__ ) );
+		wp_enqueue_style( 'polldaddy-icons' );
+	}
+	
+	function menu_alter() {
+		// Make sure we're working off a clean version.
+		include( ABSPATH . WPINC . '/version.php' );
+		if ( version_compare( $wp_version, '3.8', '>=' ) ) {
+			wp_enqueue_style( 'polldaddy-icons' );
+			$css = "
+				#toplevel_page_feedback .wp-menu-image:before {
+					font-family: 'polldaddy' !important;
+					content: '\\0061';
+				}
+				#toplevel_page_feedback .wp-menu-image {
+					background-repeat: no-repeat;
+				}
+				#menu-posts-feedback .wp-menu-image:before {
+					font-family: dashicons !important;
+					content: '\\f175';
+				}
+				#adminmenu #menu-posts-feedback div.wp-menu-image {
+					background: none !important;
+					background-repeat: no-repeat;
+				}";
 		} else {
-			$color = "gray";
+			$css = "
+				#toplevel_page_polldaddy .wp-menu-image {
+					background: url( " . plugins_url( 'img/polldaddy.png', __FILE__ ) . " ) 0 90% no-repeat;
+				}
+				/* Retina Polldaddy Menu Icon */
+				@media  only screen and (-moz-min-device-pixel-ratio: 1.5),
+						only screen and (-o-min-device-pixel-ratio: 3/2),
+						only screen and (-webkit-min-device-pixel-ratio: 1.5),
+						only screen and (min-device-pixel-ratio: 1.5) {
+					#toplevel_page_polldaddy .wp-menu-image {
+						background: url( " . plugins_url( 'polldaddy@2x.png', __FILE__ ) . " ) 0 90% no-repeat;
+						background-size:30px 64px;
+					}
+				}
+				#toplevel_page_polldaddy.current .wp-menu-image,
+				#toplevel_page_polldaddy.wp-has-current-submenu .wp-menu-image,
+				#toplevel_page_polldaddy:hover .wp-menu-image {
+					background-position: top left;
+				}";
 		}
-
-		include 'admin-style.php';
+		wp_add_inline_style( 'wp-admin', $css );
 	}
 
 	function api_key_page_load() {
@@ -235,9 +252,11 @@ class WP_Polldaddy {
 		if ( $polldaddy->errors )
 			foreach ( $polldaddy->errors as $code => $error )
 				$this->errors->add( $code, $error );
+				
 			if ( isset( $this->errors->errors[4] ) ) {
-				$this->errors->errors[4] = array( sprintf( __( 'Obsolete Polldaddy User API Key:  <a href="%s">Sign in again to re-authenticate</a>', 'polldaddy' ), add_query_arg( array( 'action' => 'signup', 'reaction' => empty( $_GET['action'] ) ? false : $_GET['action'] ) ) ) );
-				$this->errors->add_data( true, 4 );
+				//need to get latest usercode
+				update_option( 'pd-usercode-'.$this->id, '' );
+				$this->set_api_user_code();
 			}
 	}
 
@@ -303,7 +322,7 @@ class WP_Polldaddy {
 			<?php wp_nonce_field( 'polldaddy-account' ); ?>
 			<input type="hidden" name="action" value="account" />
 			<input type="hidden" name="account" value="import" />
-			<input type="submit" value="<?php echo esc_attr( __( 'Submit', 'polldaddy' ) ); ?>" />
+			<input class="button-secondary" type="submit" value="<?php echo esc_attr( __( 'Submit', 'polldaddy' ) ); ?>" />
 		</p>
 	</form>
 </div>
@@ -313,7 +332,7 @@ class WP_Polldaddy {
 
 	function media_buttons() {
 		$title = __( 'Add Poll', 'polldaddy' );
-		echo "<a href='admin.php?page=polls&amp;iframe&amp;TB_iframe=true' onclick='return false;' id='add_poll' class='thickbox' title='$title'><img src='{$this->base_url}polldaddy.png' alt='$title' /></a>";
+		echo " <a href='admin.php?page=polls&iframe&TB_iframe=true' onclick='return false;' id='add_poll' class='button thickbox' title='" . esc_attr( $title ) . "'><img src='{$this->base_url}img/polldaddy@2x.png' width='15' height='15' alt='" . esc_attr( $title ) . "' style='margin: -2px 0 0 -1px; padding: 0 2px 0 0; vertical-align: middle;' /> " . esc_html( $title ) . "</a>";
 	}
 
 	function set_api_user_code() {
@@ -333,20 +352,23 @@ class WP_Polldaddy {
 	}
 
 	function management_page_load() {
-
+	
 		wp_reset_vars( array( 'page', 'action', 'poll', 'style', 'rating', 'id' ) );
 		global $plugin_page, $page, $action, $poll, $style, $rating, $id, $wp_locale;
 
 		$this->set_api_user_code();
 
 		if ( empty( $this->user_code ) && $page == 'polls' ) {
-			$action = 'signup';
+			// one last try to get the user code automatically if possible
+			$this->user_code = apply_filters_ref_array( 'polldaddy_get_user_code', array( $this->user_code, &$this ) );
+			if ( false == $this->user_code )
+				$action = 'signup';
 		}
 
 		require_once WP_POLLDADDY__POLLDADDY_CLIENT_PATH;
 
-		wp_enqueue_script( 'polls', "{$this->base_url}polldaddy.js", array( 'jquery', 'jquery-ui-sortable', 'jquery-form' ), $this->version );
-		wp_enqueue_script( 'polls-common', "{$this->base_url}common.js", array(), $this->version );
+		wp_enqueue_script( 'polls', "{$this->base_url}js/polldaddy.js", array( 'jquery', 'jquery-ui-sortable', 'jquery-form' ), $this->version );
+		wp_enqueue_script( 'polls-common', "{$this->base_url}js/common.js", array(), $this->version );
 
 		if ( $page == 'polls' ) {
 			if ( !$this->is_author && in_array( $action, array( 'edit', 'edit-poll', 'create-poll', 'edit-style', 'create-style', 'list-styles', 'options', 'update-options', 'import-account' ) ) ) {//check user privileges has access to action
@@ -359,54 +381,56 @@ class WP_Polldaddy {
 			case 'create-poll' :
 			case 'add-media' :
 				wp_enqueue_script( 'media-upload', array(), $this->version );
-				wp_enqueue_script( 'polls-style', "http://i.polldaddy.com/js/poll-style-picker.js", array(), $this->version );
+				wp_enqueue_script( 'polls-style', "{$this->base_url}js/poll-style-picker.js", array( 'polls', 'polls-common' ), $this->version );
 
 				if ( $action == 'create-poll' )
-					$plugin_page = 'polls&amp;action=create-poll';
+					$plugin_page = 'polls&action=create-poll';
 
 				break;
 			case 'edit-style' :
 			case 'create-style' :
-				wp_enqueue_script( 'polls-style', "http://i.polldaddy.com/js/style-editor.js", array(), $this->version );
-				wp_enqueue_script( 'polls-style-color', "http://i.polldaddy.com/js/jquery/jscolor.js", array(), $this->version );
-				wp_enqueue_style( 'polls', "{$this->base_url}style-editor.css", array(), $this->version );
-				$plugin_page = 'polls&amp;action=list-styles';
+				wp_enqueue_script( 'polls-style', "{$this->base_url}js/style-editor.js", array( 'polls', 'polls-common' ), $this->version );
+				wp_enqueue_script( 'polls-style-color', "{$this->base_url}js/jscolor.js", array(), $this->version );
+				wp_enqueue_style( 'polls', "{$this->base_url}css/style-editor.css", array(), $this->version );
+				$plugin_page = 'polls&action=list-styles';
 				break;
 			case 'list-styles' :
-				$plugin_page = 'polls&amp;action=list-styles';
+				$plugin_page = 'polls&action=list-styles';
 				break;
 			case 'options' :
 			case 'update-options' :
 			case 'import-account' :
-				$plugin_page = 'polls&amp;action=options';
+				$plugin_page = 'polls&action=options';
 				break;
 			}//end switch
 		} elseif ( $page == 'ratings' ) {
-			if ( !$this->is_admin && !in_array( $action, array( 'reports', 'delete' ) ) ) {//check user privileges has access to action
-				$action = 'reports';
-			}
-			switch ( $action ) {
-			case 'delete' :
-			case 'reports' :
-				$plugin_page = 'ratings&amp;action=reports';
-				break;
-			default :
-				wp_enqueue_script( 'rating-text-color', "http://i.polldaddy.com/js/jquery/jscolor.js", array(), $this->version );
-				wp_enqueue_script( 'ratings', 'http://i.polldaddy.com/ratings/rating.js', array(), $this->version );
+			switch ( $action ) {	
+			case 'update-rating' :			
+			case 'options':
+				$plugin_page = 'ratings&action=options';
+				wp_enqueue_script( 'rating-text-color', "{$this->base_url}js/jscolor.js", array(), $this->version );
+				wp_enqueue_script( 'ratings', "{$this->base_url}js/rating.js", array(), $this->version );
 				wp_localize_script( 'polls-common', 'adminRatingsL10n', array(
 						'star_colors' => __( 'Star Colors', 'polldaddy' ), 'star_size' =>  __( 'Star Size', 'polldaddy' ),
 						'nero_type' => __( 'Nero Type', 'polldaddy' ), 'nero_size' => __( 'Nero Size', 'polldaddy' ), ) );
+				break;			
+			default :
+				if ( empty( $action ) )
+					$action = 'reports';
+				$plugin_page = 'ratings&action=reports';
 			}//end switch
 		}
 		
-		wp_enqueue_style( 'polldaddy', "{$this->base_url}polldaddy.css", array(), $this->version );
+		wp_enqueue_style( 'polldaddy', "{$this->base_url}css/polldaddy.css", array(), $this->version );
 		wp_enqueue_script( 'admin-forms' );
 		add_thickbox();
-
-
+		
+		if ( isset( $_GET['iframe'] ) ) {
+			add_action( 'admin_head', array( &$this, 'hide_admin_menu' ) );
+		}
 
 		if ( isset( $wp_locale->text_direction ) && 'rtl' == $wp_locale->text_direction )
-			wp_enqueue_style( 'polls-rtl', "{$this->base_url}polldaddy-rtl.css", array( 'global', 'wp-admin' ), $this->version );
+			wp_enqueue_style( 'polls-rtl', "{$this->base_url}css/polldaddy-rtl.css", array( 'global', 'wp-admin' ), $this->version );
 		add_action( 'admin_body_class', array( &$this, 'admin_body_class' ) );
 
 		add_action( 'admin_notices', array( &$this, 'management_page_notices' ) );
@@ -453,12 +477,13 @@ class WP_Polldaddy {
 					return;
 
 				check_admin_referer( 'polldaddy-account' );
-				
+
 				$this->user_code = '';
 				update_option( 'pd-usercode-'.$this->id, '' );
 
 				if ( $new_args = $this->management_page_load_signup() )
 					$query_args = array_merge( $query_args, $new_args );
+
 				if ( $this->errors->get_error_codes() )
 					return false;
 
@@ -471,6 +496,8 @@ class WP_Polldaddy {
 					$query_args['action'] = $_GET['action'];
 				else
 					$query_args['action'] = false;
+				if ( $action == 'import-account' )
+					$query_args[ 'action' ] = 'options'; // make sure we redirect back to the right page.
 				break;
 
 			case 'delete' :
@@ -486,7 +513,7 @@ class WP_Polldaddy {
 
 				foreach ( (array) $_REQUEST['poll'] as $poll_id ) {
 					$polldaddy->reset();
-					$poll_object = $polldaddy->get_poll( $poll );
+					$poll_object = $polldaddy->get_poll( $poll_id );
 
 					if ( !$this->can_edit( $poll_object ) ) {
 						$this->errors->add( 'permission', __( 'You are not allowed to delete this poll.', 'polldaddy' ) );
@@ -522,7 +549,7 @@ class WP_Polldaddy {
 
 				foreach ( (array) $_REQUEST['poll'] as $poll_id ) {
 					$polldaddy->reset();
-					$poll_object = $polldaddy->get_poll( $poll );
+					$poll_object = $polldaddy->get_poll( $poll_id );
 
 					if ( !$this->can_edit( $poll_object ) ) {
 						$this->errors->add( 'permission', __( 'You are not allowed to open this poll.', 'polldaddy' ) );
@@ -558,7 +585,7 @@ class WP_Polldaddy {
 
 				foreach ( (array) $_REQUEST['poll'] as $poll_id ) {
 					$polldaddy->reset();
-					$poll_object = $polldaddy->get_poll( $poll );
+					$poll_object = $polldaddy->get_poll( $poll_id );
 
 					if ( !$this->can_edit( $poll_object ) ) {
 						$this->errors->add( 'permission', __( 'You are not allowed to close this poll.', 'polldaddy' ) );
@@ -757,7 +784,7 @@ class WP_Polldaddy {
 				}
 
 				$answers = array();
-				foreach ( $_POST['answer'] as $answer ) {
+				foreach ( $_POST['answer'] as $answer_id => $answer ) {
 					$answer = stripslashes( trim( $answer ) );
 
 					if ( strlen( $answer ) > 0 ) {
@@ -765,7 +792,7 @@ class WP_Polldaddy {
 
 						$args['text'] = (string) $answer;
 
-						$answer_id = (int) str_replace('new', '', $answer );
+						$answer_id = (int) str_replace('new', '', $answer_id );
 						$mc = '';
 						$mt = 0;
 
@@ -836,7 +863,7 @@ class WP_Polldaddy {
 
 				if ( isset( $mediaType[999999999] ) )
 					$poll_data['mediaType'] = intval( $mediaType[999999999] );
-
+				
 				$poll = $polldaddy->create_poll( $poll_data );
 				$this->parse_errors( $polldaddy );
 
@@ -1027,12 +1054,16 @@ class WP_Polldaddy {
 		wp_safe_redirect( add_query_arg( $query_args, wp_get_referer() ) );
 		exit;
 	}
+	
+	function hide_admin_menu() {
+		echo '<style>#adminmenuback,#adminmenuwrap,#screen-meta-links,#footer{display:none;visibility:hidden;}#wpcontent{margin-left:10px;}</style>';
+	}
 
 	function management_page_load_signup() {
 
 		switch ( $_POST['account'] ) {
 		case 'import' :
-			return $this->import_account();
+			return array( $this->import_account() );
 			break;
 		default :
 			return;
@@ -1040,27 +1071,19 @@ class WP_Polldaddy {
 	}
 
 	function import_account() {
-
-
-		$polldaddy = $this->get_client( WP_POLLDADDY__PARTNERGUID );
-		$polldaddy->reset();
-		$email = trim( stripslashes( $_POST['polldaddy_email'] ) );
-		$password = trim( stripslashes( $_POST['polldaddy_password'] ) );
-
-		if ( !is_email( $email ) )
-			$this->errors->add( 'polldaddy_email', __( 'Email address required', 'polldaddy' ) );
-
-		if ( !$password )
-			$this->errors->add( 'polldaddy_password', __( 'Password required', 'polldaddy' ) );
-
-		if ( $this->errors->get_error_codes() )
-			return false;
-
-		if ( $usercode = $polldaddy->initiate( $email, $password, $this->id ) ) {
-			$this->user_code = $usercode;
+		if ( isset( $_POST[ 'polldaddy_key' ] ) ) {
+			$polldaddy_api_key = trim( stripslashes( $_POST[ 'polldaddy_key' ] ) );
+			$polldaddy = $this->get_client( $polldaddy_api_key );
+			$polldaddy->reset();
+			if ( !$polldaddy->get_usercode( $this->id ) ) {
+				$this->parse_errors( $polldaddy );
+				$this->errors->add( 'GetUserCode', __( 'Account could not be accessed.  Is your API code correct?', 'polldaddy' ) );
+				return false;
+			}
+			update_option( 'polldaddy_api_key', $polldaddy_api_key );
 		} else {
-			$this->parse_errors( $polldaddy );
-			$this->errors->add( 'import-account', __( 'Account could not be imported.  Are your email address and password correct?', 'polldaddy' ) );
+			$this->user_code = false;
+			$this->errors->add( 'import-account', __( 'Account could not be imported. Did you enter the correct API key?', 'polldaddy' ) );
 			return false;
 		}
 	}
@@ -1119,7 +1142,7 @@ class WP_Polldaddy {
 				$message = sprintf( _n( '%s Style Deleted.', '%s Custom Styles Deleted.', $deleted, 'polldaddy' ), number_format_i18n( $deleted ) );
 			break;
 		case 'imported-account' :
-			$message = __( 'Account Imported.', 'polldaddy' );
+			$message = __( 'Account Linked.', 'polldaddy' );
 			break;
 		case 'updated-options' :
 			$message = __( 'Options Updated.', 'polldaddy' );
@@ -1176,17 +1199,13 @@ class WP_Polldaddy {
 				$action = '';
 			}
 			switch ( $action ) {
-			case 'signup' :
-			case 'account' :
-				$this->signup();
-				break;
 			case 'preview' :
 				if ( isset( $_GET['iframe'] ) ):
 					if ( !isset( $_GET['popup'] ) ) { ?>
 				<h2 id="poll-list-header"><?php _e( 'Polldaddy Polls', 'polldaddy' ); ?></h2>	
 <?php 
 					} else { ?>
-				<h2 id="poll-list-header"><?php printf( __( 'Preview Poll <a href="%s" class="button add-new-h2">All Polls</a>', 'polldaddy' ), esc_url( add_query_arg( array( 'action' => 'polls', 'poll' => false, 'message' => false ) ) ) ); ?></h2>
+				<h2 id="poll-list-header"><?php printf( __( 'Preview Poll <a href="%s" class="add-new-h2">All Polls</a>', 'polldaddy' ), esc_url( add_query_arg( array( 'action' => 'polls', 'poll' => false, 'message' => false ) ) ) ); ?></h2>
 <?php
 					}
 				endif;
@@ -1198,11 +1217,7 @@ class WP_Polldaddy {
 			case 'results' :
 ?>
 
-		<h2 id="polldaddy-header"><?php
-				if ( $this->is_author )
-					_e( 'Poll Results', 'polldaddy');
-				else
-					_e( 'Poll Results', 'polldaddy'); ?></h2>
+				<h2 id="poll-list-header"><?php printf( __( 'Poll Results <a href="%s" class="add-new-h2">All Polls</a> <a href="%s" class="add-new-h2">Edit Poll</a>', 'polldaddy' ), esc_url( add_query_arg( array( 'action' => 'polls', 'poll' => false, 'message' => false ) ) ), esc_url( add_query_arg( array( 'action' => 'edit-poll', 'poll' => $poll, 'message' => false ) ) ) ); ?></h2>
 
 <?php
 				$this->poll_results_page( $poll );
@@ -1211,7 +1226,7 @@ class WP_Polldaddy {
 			case 'edit-poll' :
 ?>
 
-		<h2 id="poll-list-header"><?php printf( __( 'Edit Poll <a href="%s" class="button add-new-h2">All Polls</a>', 'polldaddy' ), esc_url( add_query_arg( array( 'action' => 'polls', 'poll' => false, 'message' => false ) ) ) ); ?></h2>
+		<h2 id="poll-list-header"><?php printf( __( 'Edit Poll <a href="%s" class="add-new-h2">All Polls</a> <a href="%s" class="add-new-h2">View Results</a>', 'polldaddy' ), esc_url( add_query_arg( array( 'action' => 'polls', 'poll' => false, 'message' => false ) ) ), esc_url( add_query_arg( array( 'action' => 'results', 'poll' => $poll, 'message' => false ) ) ) ); ?></h2>
 
 <?php
 
@@ -1220,7 +1235,7 @@ class WP_Polldaddy {
 			case 'create-poll' :
 ?>
 
-		<h2 id="poll-list-header"><?php printf( __( 'Add New Poll <a href="%s" class="button add-new-h2">All Polls</a>', 'polldaddy' ), esc_url( add_query_arg( array( 'action' => 'polls', 'poll' => false, 'message' => false ) ) ) ); ?></h2>
+		<h2 id="poll-list-header"><?php printf( __( 'Add New Poll <a href="%s" class="add-new-h2">All Polls</a>', 'polldaddy' ), esc_url( add_query_arg( array( 'action' => 'polls', 'poll' => false, 'message' => false ) ) ) ); ?></h2>
 
 <?php
 				$this->poll_edit_form();
@@ -1230,7 +1245,7 @@ class WP_Polldaddy {
 
 		<h2 id="polldaddy-header"><?php
 				if ( $this->is_author )
-					printf( __( 'Custom Styles <a href="%s" class="button add-new-h2">Add New</a>', 'polldaddy' ), esc_url( add_query_arg( array( 'action' => 'create-style', 'poll' => false, 'message' => false ) ) ) );
+					printf( __( 'Custom Styles <a href="%s" class="add-new-h2">Add New</a>', 'polldaddy' ), esc_url( add_query_arg( array( 'action' => 'create-style', 'poll' => false, 'message' => false ) ) ) );
 				else
 					_e( 'Custom Styles', 'polldaddy' ); ?></h2>
 
@@ -1240,7 +1255,7 @@ class WP_Polldaddy {
 			case 'edit-style' :
 ?>
 
-		<h2 id="polldaddy-header"><?php printf( __( 'Edit Style <a href="%s" class="button add-new-h2">List Styles</a>', 'polldaddy' ), esc_url( add_query_arg( array( 'action' => 'list-styles', 'style' => false, 'message' => false, 'preload' => false ) ) ) ); ?></h2>
+		<h2 id="polldaddy-header"><?php printf( __( 'Edit Style <a href="%s" class="add-new-h2">List Styles</a>', 'polldaddy' ), esc_url( add_query_arg( array( 'action' => 'list-styles', 'style' => false, 'message' => false, 'preload' => false ) ) ) ); ?></h2>
 
 <?php
 
@@ -1249,7 +1264,7 @@ class WP_Polldaddy {
 			case 'create-style' :
 ?>
 
-		<h2 id="polldaddy-header"><?php printf( __( 'Create Style <a href="%s" class="button add-new-h2">List Styles</a>', 'polldaddy' ), esc_url( add_query_arg( array( 'action' => 'list-styles', 'style' => false, 'message' => false, 'preload' => false ) ) ) ); ?></h2>
+		<h2 id="polldaddy-header"><?php printf( __( 'Create Style <a href="%s" class="add-new-h2">List Styles</a>', 'polldaddy' ), esc_url( add_query_arg( array( 'action' => 'list-styles', 'style' => false, 'message' => false, 'preload' => false ) ) ) ); ?></h2>
 
 <?php
 				$this->style_edit_form();
@@ -1265,11 +1280,17 @@ class WP_Polldaddy {
 
 		<h2 id="poll-list-header"><?php
 				if ( $this->is_author )
-					printf( __( 'Polldaddy Polls <a href="%s" class="button add-new-h2">Add New</a>', 'polldaddy' ), esc_url( add_query_arg( array( 'action' => 'create-poll', 'poll' => false, 'message' => false ) ) ) );
+					printf( __( 'Polldaddy Polls <a href="%s" class="add-new-h2">Add New</a>', 'polldaddy' ), esc_url( add_query_arg( array( 'action' => 'create-poll', 'poll' => false, 'message' => false ) ) ) );
 				else
-					_e( 'Polldaddy Polls ', 'polldaddy' ); ?></h2>
-
-				<?php
+					_e( 'Polldaddy Polls ', 'polldaddy' );
+		?></h2><?php
+				$polldaddy = $this->get_client( WP_POLLDADDY__PARTNERGUID, $this->user_code );
+				$account = $polldaddy->get_account();
+				if ( !empty( $account ) )
+					$account_email = esc_attr( $account->email );
+				if ( isset( $account_email ) && current_user_can( 'manage_options' ) ) {
+					echo "<p>" . sprintf( __( 'Linked to WordPress.com Account: <strong>%s</strong> (<a target="_blank" href="options-general.php?page=polls&action=options">Settings</a> / <a target="_blank" href="http://polldaddy.com/dashboard/">Polldaddy.com</a>)', 'polldaddy' ), $account_email ) . "</p>";
+				}
 
 				if ( !isset( $_GET['view'] ) )
 					$this->polls_table( 'user' );
@@ -1289,7 +1310,7 @@ class WP_Polldaddy {
 				break;
 			case 'update-rating' :
 				$this->update_rating();
-				$this->rating_settings( $action );
+				$this->rating_settings();
 				break;
 			default :
 				$this->rating_settings();
@@ -1316,6 +1337,8 @@ class WP_Polldaddy {
 			$polls_object = $polldaddy->get_polls_by_parent_id( ( $page - 1 ) * 10 + 1, $page * 10 );
 
 		$this->parse_errors( $polldaddy );
+        if ( in_array( 'API Key Not Found, 890', $polldaddy->errors ) )
+            return false;
 		$this->print_errors();
 		$polls = & $polls_object->poll;
 		if ( isset( $polls_object->_total ) )
@@ -1334,6 +1357,7 @@ class WP_Polldaddy {
 
 ?>
 		<form method="post" action="">
+		<input type="hidden" name="iframe" id="iframe1" value="<?php echo isset( $_GET['iframe'] ) ? 1: 0;?>">
 		<div class="tablenav">
 
 <?php if ( $this->is_author ) { ?>
@@ -1515,14 +1539,14 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 					<td colspan="4" id="empty-set"><?php
 			if ( $this->is_author ) { ?>
 
-				<h3 style="margin-bottom:0px;"><?php _e( 'You haven\'t used our fancy plugin to create any polls for this blog!', 'polldaddy');?> </h3>
+				<h3 style="margin-bottom:0px;"><?php _e( 'You haven\'t created any polls for this blog.', 'polldaddy');?> </h3>
 				<p style="margin-bottom:20px;"><?php _e( 'Why don\'t you go ahead and get started on that?', 'polldaddy' ); ?></p>
 				<a href="<?php echo esc_url( add_query_arg( array( 'action' => 'create-poll' ) ) ); ?>" class="button-primary"><?php _e( 'Create a Poll Now', 'polldaddy' ); ?></a>
 
 			<?php
 			} else { ?>
 
-				<p id="no-polls"><?php _e( 'No one has created any polls for this blog via our fancy plugin!', 'polldaddy' ); ?></p>
+				<p id="no-polls"><?php _e( 'No one has created any polls for this blog.', 'polldaddy' ); ?></p>
 
 			<?php }
 		?></td>
@@ -1625,10 +1649,10 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 
 			if ( isset( $_POST['answer'] ) )
 				foreach ( $_POST['answer'] as $answer_id => $answer )
-					$answers[attribute_escape($answer_id)] = attribute_escape( stripslashes($answer) );
+					$answers[esc_attr($answer_id)] = esc_attr( stripslashes($answer) );
 		} elseif ( isset( $poll->answers->answer ) ) {
 			foreach ( $poll->answers->answer as $answer ) {
-				$answers[(int) $answer->_id] = attribute_escape( $answer->text );
+				$answers[(int) $answer->_id] = esc_attr( $answer->text );
 
 				if ( $answer->mediaType == 1 && !empty( $answer->mediaCode ) ) {
 					$polldaddy->reset();
@@ -1652,6 +1676,8 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 			}
 		}
 		$this->print_errors();
+		
+		$delete_media_link = '<a href="#" class="delete-media delete hidden" title="' . esc_attr( __( 'delete this image' ) ) . '"><img src="' . $this->base_url . 'img/icon-clear-search.png" width="16" height="16" /></a>';
 ?>
 
 <form enctype="multipart/form-data" name="send-media" action="admin-ajax.php" method="post">
@@ -1659,6 +1685,7 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 	<input type="hidden" value="" name="action">
 	<input type="hidden" value="<?php echo $this->user_code; ?>" name="uc">
 	<input type="hidden" value="" name="attach-id">
+	<input type="hidden" value="" name="media-id">
 	<input type="hidden" value="" name="url">
 </form>
 
@@ -1682,7 +1709,7 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 						<ul id="answer-options">
 
 <?php
-		foreach ( array(  'randomiseAnswers' => __( 'Randomize answer order', 'polldaddy' ), 'otherAnswer' => __( 'Allow other answers', 'polldaddy' ), 'sharing' => __( "'Share This' link", 'polldaddy' ), 'multipleChoice' => __( 'Multiple choice', 'polldaddy' ) ) as $option => $label ) :
+		foreach ( array(  'randomiseAnswers' => __( 'Randomize answer order', 'polldaddy' ), 'otherAnswer' => __( 'Allow other answers', 'polldaddy' ), 'multipleChoice' => __( 'Multiple choice', 'polldaddy' ), 'sharing' => __( 'Sharing', 'polldaddy' ) ) as $option => $label ) :
 			if ( $is_POST )
 				$checked = 'yes' === $_POST[$option] ? ' checked="checked"' : '';
 			else
@@ -1798,16 +1825,18 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 
 			</ul>
 
+<?php 
+		if ( $poll->blockExpiration == 0 || $poll->blockExpiration > 604800 )
+			$poll->blockExpiration = 604800;
+?>
 			<span style="margin:6px 6px 8px;<?php echo $poll->blockRepeatVotersType == 'off' ? 'display:none;' : ''; ?>" id="cookieip_expiration_label"><label><?php _e( 'Expires: ', 'polldaddy' ); ?></label></span>
 			<select id="cookieip_expiration" name="cookieip_expiration" style="width: auto;<?php echo $poll->blockRepeatVotersType == 'off' ? 'display:none;' : ''; ?>">
-				<option value="0" <?php echo (int) $poll->blockExpiration == 0 ? 'selected' : ''; ?>><?php _e( 'Never', 'polldaddy' ); ?></option>
 				<option value="3600" <?php echo (int) $poll->blockExpiration == 3600 ? 'selected' : ''; ?>><?php printf( __( '%d hour', 'polldaddy' ), 1 ); ?></option>
 				<option value="10800" <?php echo (int) $poll->blockExpiration == 10800 ? 'selected' : ''; ?>><?php printf( __( '%d hours', 'polldaddy' ), 3 ); ?></option>
 				<option value="21600" <?php echo (int) $poll->blockExpiration == 21600 ? 'selected' : ''; ?>><?php printf( __( '%d hours', 'polldaddy' ), 6 ); ?></option>
 				<option value="43200" <?php echo (int) $poll->blockExpiration == 43200 ? 'selected' : ''; ?>><?php printf( __( '%d hours', 'polldaddy' ), 12 ); ?></option>
 				<option value="86400" <?php echo (int) $poll->blockExpiration == 86400 ? 'selected' : ''; ?>><?php printf( __( '%d day', 'polldaddy' ), 1 ); ?></option>
 				<option value="604800" <?php echo (int) $poll->blockExpiration == 604800 ? 'selected' : ''; ?>><?php printf( __( '%d week', 'polldaddy' ), 1 ); ?></option>
-				<option value="2419200" <?php echo (int) $poll->blockExpiration == 2419200 ? 'selected' : ''; ?>><?php printf( __( '%d month', 'polldaddy' ), 1 ); ?></option>
 			</select>
 			<p><?php _e( 'Note: Blocking by cookie and IP address can be problematic for some voters.', 'polldaddy' ); ?></p>
 		</div>
@@ -1851,10 +1880,17 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 					</td>
 					<td class="answer-media-icons" <?php echo isset( $_GET['iframe'] ) ? 'style="width: 55px !important;"' : '';?>>
 					<ul class="answer-media" <?php echo isset( $_GET['iframe'] ) ? 'style="min-width: 30px;"' : '';?>>
-<?php  if ( $mediaType[999999999] == 2 ) { ?>
-				<li class="media-preview" style="width: 20px; height: 16px; padding-left: 5px;"><img height="16" width="16" src="http://i0.poll.fm/images/icon-report-ip-analysis.png" alt="Video Embed"></li>
-<?php   } else { ?>
-				<li class="media-preview" style="width: 20px; height: 16px; padding-left: 5px;"><?php echo isset($media[999999999])?urldecode($media[999999999]->img_small):''; ?></li>
+<?php  if ( isset( $mediaType[999999999] ) && $mediaType[999999999] == 2 ) { ?>
+				<li class="media-preview image-added" style="width: 20px; height: 16px; padding-left: 5px;"><img height="16" width="16" src="<?php echo $this->base_url; ?>img/icon-report-ip-analysis.png" alt="Video Embed"><?php echo $delete_media_link;?></li>
+<?php   } else {
+			$url = '';
+			if ( isset($media[999999999]) ) {
+				$url = urldecode( $media[999999999]->img_small );
+				
+				if ( is_ssl() )
+					$url = preg_replace( '/http\:/', 'https:', $url );
+			}?>
+			<li class="media-preview <?php echo !empty( $url ) ? 'image-added' : ''; ?>" style="width: 20px; height: 16px; padding-left: 5px;"><?php echo $url; ?><?php echo $delete_media_link;?></li>				
 <?php   }
 
 		if ( !isset( $_GET['iframe'] ) ) : ?>
@@ -1911,9 +1947,16 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 							<td class="answer-media-icons" <?php echo isset( $_GET['iframe'] ) ? 'style="width: 55px !important;"' : '';?>>
 							<ul class="answer-media" <?php echo isset( $_GET['iframe'] ) ? 'style="min-width: 30px;"' : '';?>>
 <?php  if ( isset( $mediaType[$answer_id] ) && $mediaType[$answer_id] == 2 ) { ?>
-						<li class="media-preview" style="width: 20px; height: 16px; padding-left: 5px;"><img height="16" width="16" src="http://i0.poll.fm/images/icon-report-ip-analysis.png" alt="Video Embed"></li>
-<?php   } else { ?>
-						<li class="media-preview" style="width: 20px; height: 16px; padding-left: 5px;"><?php echo isset($media[$answer_id])?urldecode($media[$answer_id]->img_small):''; ?></li>
+						<li class="media-preview image-added" style="width: 20px; height: 16px; padding-left: 5px;"><img height="16" width="16" src="<?php echo $this->base_url; ?>img/icon-report-ip-analysis.png" alt="Video Embed"><?php echo $delete_media_link;?></li>
+<?php   } else {
+			$url = '';
+			if ( isset($media[$answer_id]) ) {
+				$url = urldecode( $media[$answer_id]->img_small );
+					
+				if ( is_ssl() )
+					$url = preg_replace( '/http\:/', 'https:', $url );
+			}?>
+						<li class="media-preview <?php echo !empty( $url ) ? 'image-added' : ''; ?>" style="width: 20px; height: 16px; padding-left: 5px;"><?php echo $url; ?><?php echo $delete_media_link;?></li>
 <?php   }
 
 		if ( !isset( $_GET['iframe'] ) ) : ?>
@@ -1991,6 +2034,8 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 
 		</div>
 	</div>
+	
+	<div class="hidden-links"><div class="delete-media-link"><?php echo $delete_media_link;?></div></div>
 
 	<div id="design" class="postbox">
 
@@ -2250,18 +2295,21 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 
 			<div class="pd-tab-panel" id="pd-custom-styles-panel">
 				<div  style="padding:20px;">
+					<?php  if ( $show_custom ) : ?>
+					<p><a href="<?php echo esc_url( add_query_arg( array( 'action' => 'list-styles', 'poll' => false, 'style' => false, 'message' => false, 'preload' => false ) ) );?>" class="add-new-h2">All Styles</a></p>
 					<select id="customSelect" name="customSelect" onchange="javascript:pd_change_style(this.value);">
 						<?php  $selected = $custom_style_ID == 0 ? ' selected="selected"' : ''; ?>
-								<option value="x"<?php echo $selected; ?>><?php _e( 'Please choose a custom style...', 'polldaddy' ); ?></option>
-						<?php  if ( $show_custom ) : foreach ( (array)$styles->style as $style ) :
+								<option value="x"<?php echo $selected; ?>><?php _e( 'Please choose a custom style…', 'polldaddy' ); ?></option>
+						<?php  foreach ( (array)$styles->style as $style ) :
 				$selected = $style->_id == $custom_style_ID ? ' selected="selected"' : ''; ?>
 								<option value="<?php echo (int) $style->_id; ?>"<?php echo $selected; ?>><?php echo esc_html( $style->title ); ?></option>
-						<?php endforeach; endif; ?>
+						<?php endforeach; ?>
 					</select>
 					<div id="styleIDErr" class="formErr" style="display:none;"><?php _e( 'Please choose a style.', 'polldaddy' ); ?></div>
-					<?php $extra = $show_custom == false ? __( 'You currently have no custom styles created.', 'polldaddy' ) : ''; ?>
-					<p><?php echo $extra ?></p>
+					<?php else : ?>
+					<p><?php _e( 'You currently have no custom styles created.', 'polldaddy' ); ?> <a href="/wp-admin/edit.php?page=polls&amp;action=create-style" class="add-new-h2"><?php _e( 'New Style', 'polldaddy');?></a></p>
 					<p><?php printf( __( 'Did you know we have a new editor for building your own custom poll styles? Find out more <a href="%s" target="_blank">here</a>.', 'polldaddy' ), 'http://support.polldaddy.com/custom-poll-styles/' ); ?></p>
+					<?php endif; ?>
 				</div>
 
 
@@ -2285,7 +2333,8 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 		            add_audio_title: '<?php echo esc_attr( __( 'Add Audio', 'polldaddy' ) ); ?>',
 		            add_video_title: '<?php echo esc_attr( __( 'Add Video', 'polldaddy' ) ); ?>',
 		            standard_styles: '<?php echo esc_attr( __( 'Standard Styles', 'polldaddy' ) ); ?>',
-		            custom_styles: '<?php echo esc_attr( __( 'Custom Styles', 'polldaddy' ) ); ?>'
+		            custom_styles: '<?php echo esc_attr( __( 'Custom Styles', 'polldaddy' ) ); ?>',
+		            base_url: '<?php echo esc_attr( $this->base_url ); ?>'
 				} );
 			});
 			</script>
@@ -2366,7 +2415,8 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 				style_desc_wide : '<?php echo esc_attr( __( 'Width: 630px, the wide style is good for blog posts.', 'polldaddy' ) ); ?>',
 				style_desc_medium : '<?php echo esc_attr( __( 'Width: 300px, the medium style is good for general use.', 'polldaddy' ) ); ?>',
 				style_desc_narrow : '<?php echo esc_attr( __( 'Width 150px, the narrow style is good for sidebars etc.', 'polldaddy' ) ); ?>',
-				style_desc_micro : '<?php echo esc_attr( __( 'Width 150px, the micro style is useful when space is tight.', 'polldaddy' ) ); ?>'
+				style_desc_micro : '<?php echo esc_attr( __( 'Width 150px, the micro style is useful when space is tight.', 'polldaddy' ) ); ?>',
+				image_path : '<?php echo plugins_url( 'img', __FILE__ );?>'
 			}
 			pd_build_styles( current_pos );
 			<?php if ( $style_ID > 0 && $style_ID <= 1000 ) { ?>
@@ -2416,7 +2466,7 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 		}
 
 		$class = $class ? '' : ' class="alternate"';
-		$content = $results->others && 'Other answer...' === $answer->text ? sprintf( __( 'Other (<a href="%s">see below</a>)', 'polldaddy' ), '#other-answers-results' ) : esc_html( $answer->text );
+		$content = $results->others && 'Other answer…' === $answer->text ? sprintf( __( 'Other (<a href="%s">see below</a>)', 'polldaddy' ), '#other-answers-results' ) : esc_html( $answer->text );
 
 ?>
 
@@ -2664,7 +2714,7 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 								<option value="117"><?php _e( 'Skull Light', 'polldaddy' ); ?></option>
 								<option value="157"><?php _e( 'Micro', 'polldaddy' ); ?></option>
 							</select>
-							<a tabindex="4" id="style-preload" href="javascript:preload_pd_style();" class="button"><?php echo esc_attr( __( 'Load Style', 'polldaddy' ) ); ?></a>								
+							<a tabindex="4" id="style-preload" href="javascript:preload_style();" class="button"><?php echo esc_attr( __( 'Load Style', 'polldaddy' ) ); ?></a>								
 						</div>
 					</td>
 				</tr>
@@ -3552,7 +3602,7 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 
 	function rating_settings() {
 		global $action, $rating;
-		$show_posts = $show_posts_index = $show_pages = $show_comments = $pos_posts = $pos_posts_index = $pos_pages = $pos_comments = 0;
+		$rich_snippets = $show_posts = $show_posts_index = $show_pages = $show_comments = $pos_posts = $pos_posts_index = $pos_pages = $pos_comments = 0;
 		$show_settings = $rating_updated = ( $action == 'update-rating' ? true : false );
 		$error = false;
 
@@ -3591,6 +3641,8 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 			$blog_name = 'WordPress Blog';
 		$blog_name .= ' - ' . $report_type;
 
+		if ( !defined( 'WP_POLLDADDY__PARTNERGUID' ) )
+			return false;
 		$polldaddy = $this->get_client( WP_POLLDADDY__PARTNERGUID, $this->rating_user_code );
 		$polldaddy->reset();
 
@@ -3649,9 +3701,15 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 		}
 
 		if ( isset( $_POST[ 'pd_rating_action_type' ] ) ) {
+			check_admin_referer( 'action-rating_settings_' . $_POST[ 'pd_rating_action_type' ] );
 
 			switch ( $_POST[ 'pd_rating_action_type' ]  ) {
 			case 'posts' :
+				if ( isset( $_POST[ 'pd_rich_snippets' ] ) && (int) $_POST[ 'pd_rich_snippets' ] == 1 )
+					$rich_snippets = 1;
+
+				update_option( 'pd-rich-snippets', $rich_snippets );
+
 				if ( isset( $_POST[ 'pd_show_posts' ] ) && (int) $_POST[ 'pd_show_posts' ] == 1 )
 					$show_posts = get_option( 'pd-rating-posts-id' );
 
@@ -3703,6 +3761,7 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 			}//end switch
 		}
 
+		$rich_snippets    = (int) get_option( 'pd-rich-snippets', 1 );
 		$show_posts       = (int) get_option( 'pd-rating-posts' );
 		$show_pages       = (int) get_option( 'pd-rating-pages' );
 		$show_comments    = (int) get_option( 'pd-rating-comments' );
@@ -3730,8 +3789,11 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 				$settings->font_color = '#000000';
 		}?>
 		<div class="wrap">
-		  <h2 id="poll-list-header"><?php _e( 'Ratings Setup', 'polldaddy' ); ?></h2><?php
-		if ( $rating_updated )
+		  <div class="icon32" id="icon-options-general"><br/></div>
+		  <h2>
+		    <?php _e( 'Rating Settings', 'polldaddy' ); ?>
+		  </h2>
+		<?php if ( $rating_updated )
 			echo '<div class="updated"><p>'.__( 'Rating updated', 'polldaddy' ).'</p></div>';
 
 		if ( !$error ) { ?>
@@ -3754,94 +3816,109 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 				$this_class = ' class="tabs"';  ?>
             <li <?php echo $this_class; ?>><a href="<?php echo $comments_link; ?>"><?php _e( 'Comments', 'polldaddy' );?></a></li>
           </ul>
-          <div class="tabs-panel" id="categories-all" style="background: #FFFFFF;height: auto; overflow: visible;">
+          <div class="tabs-panel" id="categories-all" style="background: #FFFFFF;height: auto; overflow: visible;max-height:500px;">
             <form action="" method="post">
             <input type="hidden" name="pd_rating_action_type" value="<?php echo $report_type; ?>" />
+<?php wp_nonce_field( 'action-rating_settings_' . $report_type ); ?>
             <table class="form-table" style="width: normal;">
-              <tbody><?php
-			if ( $report_type == 'posts' ) { ?>
+              <tbody>
+			<?php if ( $report_type == 'posts' ) { ?>
                 <tr valign="top">
-                  <td style="padding-left: 0px; padding-right: 0px; padding-top: 7px;">
-                    <label for="pd_show_posts">
-                      <input type="checkbox" name="pd_show_posts" id="pd_show_posts" <?php if ( $show_posts > 0 ) echo ' checked="checked" '; ?> value="1" /> <?php _e( 'Enable for blog posts', 'polldaddy' );?>
-                    </label>
-                    <span id="span_posts">
-                      <select name="posts_pos"><?php
-				$select = array( __( 'Above each blog post', 'polldaddy' ) => '0', __( 'Below each blog post', 'polldaddy' ) => '1' );
-				foreach ( $select as $option => $value ) :
-					$selected = '';
-				if ( $value == $pos_posts )
-					$selected = ' selected="selected"';
-				echo '<option value="' . $value . '" ' . $selected . '>' . $option . '</option>';
-				endforeach;?>
-                      </select>
-                    </span>
-                  </td>
-                </tr>
+					<th scope="row"><label><?php _e( 'Rich Snippets in Search Results', 'polldaddy' );?></label></th>
+					<td>
+						<label><input type="checkbox" name="pd_rich_snippets" id="pd_rich_snippets" <?php if ( $rich_snippets == 1 ) echo ' checked="checked" '; ?> value="1" /> <?php printf( __( 'Display rich snippets in search results using post and page ratings (<a href="%s">documentation</a> and <a href="">page tester</a>)', 'polldaddy' ), 'https://support.google.com/webmasters/answer/99170', 'http://www.google.com/webmasters/tools/richsnippets' );?></label>
+						<p><?php _e( 'Once activated, it may take several weeks before the snippets show up in Google search results.', 'polldaddy' );?></p>
+					</td>
+				</tr>
                 <tr valign="top">
-                  <td style="padding-left: 0px; padding-right: 0px; padding-top: 7px;">
-                    <label for="pd_show_posts_index">
-                      <input type="checkbox" name="pd_show_posts_index" id="pd_show_posts_index" <?php if ( $show_posts_index > 0 ) echo ' checked="checked" '; ?> value="1" /> <?php _e( 'Enable for front page', 'polldaddy' );?>
-                    </label>
-                    <span id="span_posts">
-                      <select name="posts_index_pos"><?php
-				$select = array( __( 'Above each blog post', 'polldaddy' ) => '0', __( 'Below each blog post', 'polldaddy' ) => '1' );
-				foreach ( $select as $option => $value ) :
-					$selected = '';
-				if ( $value == $pos_posts_index )
-					$selected = ' selected="selected"';
-				echo '<option value="' . $value . '" ' . $selected . '>' . $option . '</option>';
-				endforeach;?>
-                      </select>
-                    </span>
-                  </td>
-                </tr><?php
+					<th scope="row"><label><?php _e( 'Show Ratings on', 'polldaddy' );?></label></th>
+					<td>
+						<label><input type="checkbox" name="pd_show_posts_index" id="pd_show_posts_index" <?php if ( $show_posts_index > 0 ) echo ' checked="checked" '; ?> value="1" /> <?php _e( 'Front Page, Archive Pages, and Search Results', 'polldaddy' );?></label>
+						<br><label><input type="checkbox" name="pd_show_posts" id="pd_show_posts" <?php if ( $show_posts > 0 ) echo ' checked="checked" '; ?> value="1" /> <?php _e( 'Posts', 'polldaddy' );?></label>
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row"><label><?php _e( 'Position Front Page, Archive Pages, and Search Results Ratings', 'polldaddy' );?></label></th>
+					<td>
+						<select name="posts_index_pos"><?php
+						$select = array( __( 'Above each blog post', 'polldaddy' ) => '0', __( 'Below each blog post', 'polldaddy' ) => '1' );
+						foreach ( $select as $option => $value ) :
+							$selected = '';
+						if ( $value == $pos_posts_index )
+							$selected = ' selected="selected"';
+						echo '<option value="' . $value . '" ' . $selected . '>' . $option . '</option>';
+						endforeach;?>
+		                </select>
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row"><label><?php _e( 'Position Post Ratings', 'polldaddy' );?></label></th>
+					<td>
+						<select name="posts_pos"><?php
+						$select = array( __( 'Above each blog post', 'polldaddy' ) => '0', __( 'Below each blog post', 'polldaddy' ) => '1' );
+						foreach ( $select as $option => $value ) :
+							$selected = '';
+						if ( $value == $pos_posts )
+							$selected = ' selected="selected"';
+						echo '<option value="' . $value . '" ' . $selected . '>' . $option . '</option>';
+						endforeach;?>
+		                </select>
+					</td>
+				</tr><?php
 			}
 			if ( $report_type == 'pages' ) {?>
-                <tr valign="top">
-                  <td style="padding-left: 0px; padding-right: 0px;  padding-top: 7px;">
-                    <label for="pd_show_pages">
-                      <input type="checkbox" name="pd_show_pages" id="pd_show_pages" <?php if ( $show_pages > 0 ) echo ' checked="checked" '; ?> value="1" /> <?php _e( 'Enable for pages', 'polldaddy' );?>
-                    </label>
-                    <span id="span_pages">
-                      <select name="pages_pos"><?php
-				$select = array( __( 'Above each page', 'polldaddy' ) => '0', __( 'Below each page', 'polldaddy' ) => '1' );
-				foreach ( $select as $option => $value ) :
-					$selected = '';
-				if ( $value == $pos_pages )
-					$selected = ' selected="selected"';
-				echo '<option value="' . $value . '" ' . $selected . '>' . $option . '</option>';
-				endforeach; ?>
-                      </select>
-                    </span>
-                  </td>
-                </tr><?php
+				<tr valign="top">
+					<th scope="row"><label><?php _e( 'Show Ratings on', 'polldaddy' );?></label></th>
+					<td>
+						<label><input type="checkbox" name="pd_show_pages" id="pd_show_pages" <?php if ( $show_pages > 0 ) echo ' checked="checked" '; ?> value="1" /> <?php _e( 'Pages', 'polldaddy' );?></label>
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row"><label><?php _e( 'Position Page Ratings', 'polldaddy' );?></label></th>
+					<td>
+						<select name="pages_pos"><?php
+						$select = array( __( 'Above each blog page', 'polldaddy' ) => '0', __( 'Below each blog page', 'polldaddy' ) => '1' );
+						foreach ( $select as $option => $value ) :
+							$selected = '';
+						if ( $value == $pos_pages )
+							$selected = ' selected="selected"';
+						echo '<option value="' . $value . '" ' . $selected . '>' . $option . '</option>';
+						endforeach;?>
+		                </select>
+					</td>
+				</tr><?php
 			}
 			if ( $report_type == 'comments' ) {?>
-                <tr valign="top">
-                  <td style="padding-left: 0px; padding-right: 0px; padding-top: 7px;">
-                    <label for="pd_show_comments">
-                      <input type="checkbox" name="pd_show_comments" id="pd_show_comments" <?php if (    $show_comments > 0 ) echo ' checked="checked" '; ?> value="1" /> <?php _e( 'Enable for comments', 'polldaddy' );?>
-                    </label>
-                    <span id="span_comments">
-                      <select name="comments_pos"><?php
-				$select = array( __( 'Above each comment', 'polldaddy' ) => '0', __( 'Below each comment', 'polldaddy' ) => '1' );
-				foreach ( $select as $option => $value ) :
-					$selected = '';
-				if ( $value == $pos_comments )
-					$selected = ' selected="selected"';
-				echo '<option value="' . $value . '" ' . $selected . '>' . $option . '</option>';
-				endforeach; ?>
-                      </select>
-                    </span>
-                  </td>
-                </tr><?php
+				<tr valign="top">
+					<th scope="row"><label><?php _e( 'Show Ratings on', 'polldaddy' );?></label></th>
+					<td>
+						<label><input type="checkbox" name="pd_show_comments" id="pd_show_comments" <?php if ( $show_comments > 0 ) echo ' checked="checked" '; ?> value="1" /> <?php _e( 'Comments', 'polldaddy' );?></label>
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row"><label><?php _e( 'Position Comment Ratings', 'polldaddy' );?></label></th>
+					<td>
+						<select name="comments_pos"><?php
+						$select = array( __( 'Above each comment', 'polldaddy' ) => '0', __( 'Below each comment', 'polldaddy' ) => '1' );
+						foreach ( $select as $option => $value ) :
+							$selected = '';
+						if ( $value == $pos_comments )
+							$selected = ' selected="selected"';
+						echo '<option value="' . $value . '" ' . $selected . '>' . $option . '</option>';
+						endforeach;?>
+		                </select>
+					</td>
+				</tr><?php
 			} ?>
+				<tr valign="top">
+					<td height="30"><input class="button-primary" type="submit" value="<?php esc_attr_e( 'Save Changes', 'polldaddy' );?>" name="Submit" /></td>
+				</tr>
               </tbody>
             </table>
-            <p class="submit">
-              <input class="button-primary" type="submit" value="<?php esc_attr_e( 'Save Changes', 'polldaddy' );?>" name="Submit" />
-            </p><?php
+          </form>
+        </div>
+        
+          <div style="padding:20px 0px 0px 0px"><?php
 			if ( $report_type == 'posts' ) {
 				if ( $show_posts > 0 || $show_posts_index > 0 )
 					$show_settings = true;
@@ -3851,9 +3928,7 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 			if ( $report_type == 'comments' && $show_comments > 0 )
 				$show_settings = true;
 			if ( $show_settings == true )
-				echo '<a href="javascript:" onclick="show_settings();">'.__( 'Advanced Settings', 'polldaddy' ).'</a>';?>
-          </form>
-        </div>
+				echo '<a href="javascript:" onclick="show_settings();">'.__( 'Advanced Settings', 'polldaddy' ).'</a>';?></div>
       </div>
     </div>
 
@@ -3863,20 +3938,20 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
       <div id="poststuff" style="<?php echo $settings_style; ?>">
         <div  class="has-sidebar has-right-sidebar">
           <div class="inner-sidebar-ratings">
-            <div class="postbox" id="submitdiv">
-              <h3><?php _e( 'Save', 'polldaddy' );?></h3>
-              <div class="inside">
-                <div id="major-	-actions">
-                  <input type="hidden" name="type" value="<?php echo $report_type; ?>" />
-                  <input type="hidden" name="rating_id" value="<?php echo $rating_id; ?>" />
-                  <input type="hidden" name="action" value="update-rating" />
-                  <p id="publishing-action">
-                    <input type="submit" value="<?php _e( 'Save Changes', 'polldaddy' );?>" class="button-primary"/>
-                  </p>
-                  <br class="clear"/>
-                </div>
-              </div>
-            </div>
+           <div id="submitdiv" class="postbox ">
+			    <h3 class="hndle"><span><?php _e( 'Save Advanced Settings', 'polldaddy' );?></span></h3>
+			
+			    <div class="inside">
+			        <div class="submitbox" id="submitpost">
+			            <div id="minor-publishing" style="padding:10px;">
+			                <input type="submit" name="save_menu" id="save_menu_header" class="button button-primary menu-save" value="<?php echo esc_attr( __( 'Save Changes', 'polldaddy' ) );?>">
+			                <input type="hidden" name="type" value="<?php echo $report_type; ?>" />
+							<input type="hidden" name="rating_id" value="<?php echo $rating_id; ?>" />
+							<input type="hidden" name="action" value="update-rating" />
+			            </div>
+			        </div>
+			    </div>
+			</div>
             <div class="postbox">
               <h3><?php _e( 'Preview', 'polldaddy' );?></h3>
               <div class="inside">
@@ -4277,6 +4352,7 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 			custom_styles: '<?php echo esc_attr( __( 'Custom Styles', 'polldaddy' ) ); ?>'
 		} );
 	});
+	pd_map = { image_path : '<?php echo plugins_url( 'img', __FILE__ );?>' };
 	</script>
     <script type="text/javascript">
     PDRTJS_settings = <?php echo $settings_text; ?>;
@@ -4444,6 +4520,9 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 		}
 	}
 	function rating_reports() {
+		if ( !defined( 'WP_POLLDADDY__PARTNERGUID' ) || WP_POLLDADDY__PARTNERGUID == false )
+			return false;
+
 		$polldaddy = $this->get_client( WP_POLLDADDY__PARTNERGUID, $this->rating_user_code );
 		$rating_id = get_option( 'pd-rating-posts-id' );
 
@@ -4535,11 +4614,16 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 			) );
 ?>
 		<div class="wrap">
-			<h2 id="polldaddy-header"><?php _e( 'Rating Reports', 'polldaddy' );?> </h2>
+			<?php if ( $this->is_admin ) : ?>
+			<h2 id="polldaddy-header"><?php printf( __( 'Rating Results <a href="%s" class="add-new-h2">Settings</a>', 'polldaddy' ), esc_url( 'options-general.php?page=ratings&action=options' ) ); ?></h2>
+			<?php else : ?>
+			<h2 id="polldaddy-header"><?php _e( 'Rating Results', 'polldaddy' ); ?></h2>
+			<?php endif; ?>
 			<div class="clear"></div>
-			<form method="post" action="admin.php?page=ratings&action=reports">
+			<form method="post" action="">
 				<div class="tablenav">
 					<div class="alignleft actions">
+						<?php if ( $this->is_editor ) { ?>
 						<select name="action">
 							<option selected="selected" value=""><?php _e( 'Actions', 'polldaddy' ); ?></option>
 							<option value="delete"><?php _e( 'Delete', 'polldaddy' ); ?></option>
@@ -4547,6 +4631,7 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 						<input type="hidden" name="id" id="id" value="<?php echo (int) $rating_id; ?>" />
 						<input class="button-secondary action" type="submit" name="doaction" value="<?php _e( 'Apply', 'polldaddy' ); ?>" />
 						<?php wp_nonce_field( 'action-rating_bulk' ); ?>
+						<?php } ?>
 						<select name="change-report-to"><?php
 		$select = array( __( 'Posts', 'polldaddy' ) => "posts", __( 'Pages', 'polldaddy' ) => "pages", __( 'Comments', 'polldaddy' ) => "comments" );
 		foreach ( $select as $option => $value ) :
@@ -4588,10 +4673,16 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 						<td colspan="4"><?php printf( __( 'No ratings have been collected for your %s yet.', 'polldaddy' ), $report_type ); ?></td>
 					</tr>
 				</tbody><?php
-		} else {  ?>
+		} else {  
+			polldaddy_update_ratings_cache( $ratings );
+			?>
 				<thead>
 					<tr>
+						<?php if ( $this->is_editor ) { ?>
 			 	 		<th scope="col" class="manage-column column-cb check-column" id="cb"><input type="checkbox"></th>
+						<?php } else { ?>
+			 	 		<th scope="col" class="manage-column column-cb check-column" id="cb"></th>
+						<?php } ?>
 						<th scope="col" class="manage-column column-title" id="title"><?php _e( 'Title', 'polldaddy' );?></th>
 						<th scope="col" class="manage-column column-id" id="id"><?php _e( 'Unique ID', 'polldaddy' );?></th>
 						<th scope="col" class="manage-column column-date" id="date"><?php _e( 'Start Date', 'polldaddy' );?></th>
@@ -4611,7 +4702,7 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 						<td class="post-title column-title">
 							<strong><a href="<?php echo esc_url( $rating->permalink ); ?>"><?php echo strlen( esc_html( $rating->title ) ) > 75 ? substr( esc_html( $rating->title ), 0, 72 ) . '&hellip' : esc_html( $rating->title ); ?></a></strong>
 							<div class="row-actions">
-							<?php if ( $delete_link ) { ?>
+							<?php if ( $this->is_editor && $delete_link ) { ?>
 								<span class="delete"><a class="delete-rating delete" href="<?php echo $delete_link; ?>"><?php _e( 'Delete', 'polldaddy' ); ?></a></span>
 							<?php } ?>
 							</div>
@@ -4636,15 +4727,15 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 						if ( $avg_rating == ( $c - 1 + 0.5 ) )
 							$image_pos = 'center left';
 					} ?>
-								<div style="width: 20px; height: 20px; background: url(http://i.polldaddy.com/ratings/images/star-yellow-med.png) <?php echo $image_pos; ?>; float: left;"></div><?php
+								<div style="width: 20px; height: 20px; background: url(<?php echo plugins_url( 'img/star-yellow-med.png', __FILE__ ); ?>) <?php echo $image_pos; ?>; float: left;"></div><?php
 				endfor; ?>
 								<br class="clear" />
 							</div><?php
 			} else { ?>
 							<div>
-								<div style="margin: 0px 0px 0px 20px; background: transparent url(http://i.polldaddy.com/images/rate-graph-up.png); width: 20px; height: 20px; float: left;"></div>
+								<div style="margin: 0px 0px 0px 20px; background: transparent url(<?php echo plugins_url( 'img/rate-graph-up.png', __FILE__ ); ?>); width: 20px; height: 20px; float: left;"></div>
 								<div style="float:left; line-height: 20px; padding: 0px 10px 0px 5px;"><?php echo number_format( $rating->total1 );?></div>
-								<div style="margin: 0px; background: transparent url(http://i.polldaddy.com/images/rate-graph-dn.png); width: 20px; height: 20px; float: left;"></div>
+								<div style="margin: 0px; background: transparent url(<?php echo plugins_url( 'img/rate-graph-dn.png', __FILE__ ); ?>); width: 20px; height: 20px; float: left;"></div>
 								<div style="float:left; line-height: 20px; padding: 0px 10px 0px 5px;"><?php echo number_format( $rating->total2 );?></div>
 								<br class="clear" />
 							</div><?php
@@ -4683,9 +4774,8 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 
 	function plugin_options() {
 		if ( isset( $_POST['polldaddy_email'] ) ) {
-			$account_email = esc_attr( $_POST['polldaddy_email'] );
-		}
-		else {
+			$account_email = false;
+		} else {
 			$polldaddy = $this->get_client( WP_POLLDADDY__PARTNERGUID, $this->user_code );
 			$account = $polldaddy->get_account();
 
@@ -4769,36 +4859,33 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 <div id="options-page" class="wrap">
   <div class="icon32" id="icon-options-general"><br/></div>
   <h2>
-    <?php _e( 'Options', 'polldaddy' ); ?>
+    <?php _e( 'Poll Settings', 'polldaddy' ); ?>
   </h2>
-    <?php if ( $this->is_admin || $this->multiple_accounts ) {?>
-  <h3>
-    <?php _e( 'Polldaddy Account Info', 'polldaddy' ); ?>
-  </h3>
-  <p>
-  <?php _e( 'This is the Polldaddy account you currently have imported into your WordPress account', 'polldaddy' ); ?>.
-  </p>
+	<?php if ( $this->is_admin || $this->multiple_accounts ) { ?>
+		<h3>
+			<?php _e( 'Polldaddy Account Info', 'polldaddy' ); ?>
+		</h3>
+		<p><?php _e( '<em>Polldaddy</em> and <em>WordPress.com</em> are now connected using <a href="http://en.support.wordpress.com/wpcc-faq/">WordPress.com Connect</a>. If you have a WordPress.com account you can use it to login to <a href="http://polldaddy.com/">Polldaddy.com</a>. Click on the Polldaddy "sign in" button, authorize the connection and create your new Polldaddy account.', 'polldaddy' ); ?></p>
+		<p><?php _e( 'Login to the Polldaddy website and scroll to the end of your <a href="http://polldaddy.com/account/#apikey">account page</a> to create or retrieve an API key.', 'polldaddy' ); ?></p>
+		<?php if ( $account_email != false ) { ?>
+			<p><?php printf( __( 'Your account is currently linked to this API key: <strong>%s</strong>', 'polldaddy' ), WP_POLLDADDY__PARTNERGUID ); ?></p>
+			<br />
+			<h3><?php _e( 'Link to a different Polldaddy account', 'polldaddy' ); ?></h3>
+		<?php } else { ?>
+			<br />
+			<h3><?php _e( 'Link to your Polldaddy account', 'polldaddy' ); ?></h3>
+		<?php } ?>
   <form action="" method="post">
     <table class="form-table">
       <tbody>
         <tr class="form-field form-required">
           <th valign="top" scope="row">
             <label for="polldaddy-email">
-              <?php _e( 'Polldaddy Email Address', 'polldaddy' ); ?>
+              <?php _e( 'Polldaddy.com API Key', 'polldaddy' ); ?>
             </label>
           </th>
           <td>
-            <input type="text" name="polldaddy_email" id="polldaddy-email" aria-required="true" size="40" value="<?php echo $account_email; ?>" />
-          </td>
-        </tr>
-        <tr class="form-field form-required">
-          <th valign="top" scope="row">
-            <label for="polldaddy-password">
-              <?php _e( 'Polldaddy Password', 'polldaddy' ); ?>
-            </label>
-          </th>
-          <td>
-            <input type="password" name="polldaddy_password" id="polldaddy-password" aria-required="true" size="40" />
+		  <input type="text" name="polldaddy_key" id="polldaddy-key" aria-required="true" size="20" value="<?php if ( isset( $_POST[ 'polldaddy_key' ] ) ) echo esc_attr( $_POST[ 'polldaddy_key' ] ); ?>" />
           </td>
         </tr>
       </tbody>
@@ -4807,7 +4894,7 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
       <?php wp_nonce_field( 'polldaddy-account' ); ?>
       <input type="hidden" name="action" value="import-account" />
       <input type="hidden" name="account" value="import" />
-      <input type="submit" class="button-primary" style="padding:3px 8px;" value="<?php echo esc_attr( __( 'Import Account', 'polldaddy' ) ); ?>" />
+      <input type="submit" class="button-primary" value="<?php echo esc_attr( __( 'Link Account', 'polldaddy' ) ); ?>" />
     </p>
   </form>
   <br />
@@ -4827,25 +4914,13 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
           <td>
             <fieldset>
               <legend class="screen-reader-text"><span>poll-defaults</span></legend><?php
-		$selected = '';
-		if ( $poll->multipleChoice == 'yes' )
-			$selected = 'checked="checked"';?>
-              <label for="multipleChoice"><input type="checkbox" <?php echo $selected; ?> value="1" id="multipleChoice" name="multipleChoice"> <?php _e( 'Multiple Choice', 'polldaddy' ); ?></label>
-              <br /><?php
-		$selected = '';
-		if ( $poll->randomiseAnswers == 'yes' )
-			$selected = 'checked="checked"';?>
-              <label for="randomiseAnswers"><input type="checkbox" <?php echo $selected; ?> value="1" id="randomiseAnswers" name="randomiseAnswers"> <?php _e( 'Randomise Answers', 'polldaddy' ); ?></label>
-              <br /><?php
-		$selected = '';
-		if ( $poll->otherAnswer == 'yes' )
-			$selected = 'checked="checked"';?>
-              <label for="otherAnswer"><input type="checkbox" <?php echo $selected; ?> value="1" id="otherAnswer" name="otherAnswer"> <?php _e( 'Other Answer', 'polldaddy' ); ?></label>
-              <br /><?php
-		$selected = '';
-		if ( $poll->sharing == 'yes' )
-			$selected = 'checked="checked"';?>
-              <label for="sharing"><input type="checkbox" <?php echo $selected; ?> value="1" id="sharing" name="sharing"> <?php _e( 'Sharing', 'polldaddy' ); ?></label>
+		foreach ( array(  'randomiseAnswers' => __( 'Randomize answer order', 'polldaddy' ), 'otherAnswer' => __( 'Allow other answers', 'polldaddy' ), 'multipleChoice' => __( 'Multiple choice', 'polldaddy' ), 'sharing' => __( 'Sharing', 'polldaddy' ) ) as $option => $label ) :
+			$checked = 'yes' === $poll->$option ? ' checked="checked"' : '';
+?>
+			<label for="<?php echo $option; ?>"><input type="checkbox"<?php echo $checked; ?> value="1" id="<?php echo $option; ?>" name="<?php echo $option; ?>" /> <?php echo esc_html( $label ); ?></label><br />
+
+<?php  endforeach; ?>
+              <br class="clear" />
               <br class="clear" />
               <div class="field">
               <label for="resultsType" class="pd-label">
@@ -4885,14 +4960,12 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 
 
                 <select id="blockExpiration" name="blockExpiration">
-                  <option value="0" <?php echo $poll->blockExpiration == 0 ? 'selected="selected"':''; ?>><?php _e( 'Never', 'polldaddy' ); ?></option>
                   <option value="3600" <?php echo $poll->blockExpiration == 3600 ? 'selected="selected"':''; ?>><?php printf( __( '%d hour', 'polldaddy' ), 1 ); ?></option>
                   <option value="10800" <?php echo (int) $poll->blockExpiration == 10800 ? 'selected="selected"' : ''; ?>><?php printf( __( '%d hours', 'polldaddy' ), 3 ); ?></option>
 	  				<option value="21600" <?php echo (int) $poll->blockExpiration == 21600 ? 'selected="selected"' : ''; ?>><?php printf( __( '%d hours', 'polldaddy' ), 6 ); ?></option>
 	  				<option value="43200" <?php echo (int) $poll->blockExpiration == 43200 ? 'selected="selected"' : ''; ?>><?php printf( __( '%d hours', 'polldaddy' ), 12 ); ?></option>
 	  				<option value="86400" <?php echo (int) $poll->blockExpiration == 86400 ? 'selected="selected"' : ''; ?>><?php printf( __( '%d day', 'polldaddy' ), 1 ); ?></option>
 	  				<option value="604800" <?php echo (int) $poll->blockExpiration == 604800 ? 'selected="selected"' : ''; ?>><?php printf( __( '%d week', 'polldaddy' ), 1 ); ?></option>
-	  				<option value="2419200" <?php echo (int) $poll->blockExpiration == 2419200 ? 'selected="selected"' : ''; ?>><?php printf( __( '%d month', 'polldaddy' ), 1 ); ?></option>
 	        	</select>
              </div>
              </div>
@@ -4906,7 +4979,7 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
     <p class="submit">
       <?php wp_nonce_field( 'polldaddy-account' ); ?>
       <input type="hidden" name="action" value="update-options" />
-      <input type="submit" class="button-primary" style="padding:3px 8px;" value="<?php echo esc_attr( __( 'Save Options', 'polldaddy' ) ); ?>" />
+      <input type="submit" class="button-primary" value="<?php echo esc_attr( __( 'Save Options', 'polldaddy' ) ); ?>" />
     </p>
   </form>
 </div>
@@ -4932,6 +5005,11 @@ src="http://static.polldaddy.com/p/<?php echo (int) $poll_id; ?>.js"&gt;&lt;/scr
 
 		if ( $this->id == $poll->_owner ) {
 			$this->log( 'can_edit: poll owner equals id.' );
+			return true;
+		}
+		
+		if ( $poll->parentID == (int) $GLOBALS['blog_id'] && current_user_can( 'edit_others_posts' ) ) {
+			$this->log( 'can_edit: poll was created on this blog and current user can edit_others_posts' );
 			return true;
 		}
 

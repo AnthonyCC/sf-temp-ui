@@ -51,7 +51,7 @@ $languages = webpurify_get_languages();
     <form name="form1" method="post" action="">
 
         <p>
-            <?php _e( 'In order to use this plugin you must enter your "WebPurify API Key."<br/><br/><br/>Purchase a WebPurify License at: <a href="https://www.webpurify.com/newkey.php?utm_source=wp_pluginlink&utm_medium=plugin&utm_campaign=wp_pluginlink"  target=_blank >www.webpurify.com</a>', 'WebPurifyTextReplace' ) ?>
+            <?php _e( 'In order to use this plugin you must enter your "WebPurify API Key."<br/><br/><br/>Purchase a WebPurify License at: <a href="https://www.webpurify.com/?utm_source=wp_pluginlink&utm_medium=plugin&utm_campaign=wp_pluginlink"  target=_blank >www.webpurify.com</a>', 'WebPurifyTextReplace' ) ?>
         </p>
 
         <table class="form-table">

@@ -5,13 +5,13 @@ Author URI: http://www.sterling-adventures.co.uk/
 Plugin URI: http://www.sterling-adventures.co.uk/blog/2008/03/01/avatars-plugin/
 Tags: avatar, gravatar, images, user, pictures, photos, global, local
 Requires at least: 2.5
-Tested up to: 3.3
+Tested up to: 3.8
 Stable tag: trunk
 
-This plugin adds the ability to have local avatars in WordPress 2.5+
+This plugin adds the ability to manage global, local, and use twitter avatars.
 
 == Description ==
-Adds local (private) avatars for your users.  Maybe your users don't want a global avatar, aren't IT savvy enough to set a Gravatar up, simply want a private avatar for your blog, or any other reason too...
+Adds local (private) avatars for your users.  Maybe your users don't want a global avatar, aren't IT savvy enough to set a Gravatar up, simply want a private avatar for your blog, or any other reason too...  Well, from WordPress 2.5 onwards, you can manage local and global avatars with this plugin.  Plus you can use your Twitter avatar too!
 
 <b>From v9.0 Avatars requires PHP version 5.1.3 or greater.</b>
 
@@ -87,13 +87,24 @@ Changes and feature additions for the Local Avatar plugin:<ul>
 <li>10.3 - Compress the paging header for Avatar tables, plus tidy up of table output code.</li>
 <li>10.4 - Add 'retro' dynamic automatic Avatar type.</li>
 <li>10.5 - Small change to hack for new (WP 3.3) Admin Bar style.</li>
+<li>10.6 - Avatar settings link.</li>
+<li>10.7 - Accidental removal of user editing avatar uploading section, now back where it should be!</li>
+<li>11.0 - Crop user upload image for use as avatar.  Thanks to Barry Israel for the inspiration.</li>
+<li>11.1 - Sanitize upload filenames.</li>
+<li>11.2 - Fix for WP_PLUGIN_DIR (and updates for deprecated WP function calls).</li>
+<li>11.3 - Fixes and removal of deprecated functions thanks to <strong>Ponç J.</strong>  Thanks!</li>
+<li>12.0 - Use new Twitter OAuth API v1.1.</li>
+<li>12.1 - Thanks to Per for pointing out that the Profile display needed moving down a bit...</li>
 </ul>
 
 
 == Screenshots ==
-1. An example of the main avatars page.  Manage users global and local avatars etc.
-2. The avatars options configuration section of the main avatars page.
-3. From the WordPress profile page, the new section allows users to upload their own local avatar.
+1. An example of the main avatars administration page.  Manage users global and local avatars etc.
+2. The avatars options configuration section of the main avatars administration page.
+3. The WordPress profile page shows the new floating section showing the current avatar.  Click manage to change.
+4. Avatar Management popup.  Allowing upload of local avatars, with crop option, and setting of a Twitter ID.
+5. Sample avatars: local, global, retro, gravatar, blank, wavatar, identicon, monsters, twitter - the lot!
+6. Example of the optional simple sidebar widget allowing users to manage their own avatar.  Available from the plugin's homepage.
 
 
 == Thanks ==
@@ -137,14 +148,14 @@ If you are trying to show, say somewhere in a sidebar, the Avatar of the user wh
 &lt;/div&gt;
 </code>
 
-= Get the Avatar setting content higher up the User Profile page =
-I've not tested this extensively, but it is possible to move the Avatar setting section higher up the User Profile page by making these changes to the plugin (alter the code at your own risk!).
-Find the two lines with <code>show_user_profile</code> and <code>edit_user_profile</code>, comment them out, and add the <code>profile_personal_options</code> line - the code now looks like this:
-<code>
-		add_action('profile_personal_options', array(&$this, 'avatar_uploader_option'));
-//		add_action('show_user_profile', array(&$this, 'avatar_uploader_option'));
-//		add_action('edit_user_profile', array(&$this, 'avatar_uploader_option'));
-</code>
+= Optional Widget =
+If you are considering purchasing the optional user profile widget, please make sure that this free Avatars plugin is configured properly and functioning correctly first.  The widget <strong>cannot</strong> work until the <strong>plugin</strong> is setup correctly.  The widget is not required in any way to make full use of all the plugin's features.
+
+= Styling =
+Got problems with you layout?  Take a look at adjusting the <code>avatars.css</code> file.  Perhaps removing <code>clear: both;</code> if alignment is being disrupted.
+
+= New Ideas? =
+Got your own great idea for addition in to the Avatars plugin's capabilities?  Let me know about it and I'll consider if it's possible to include in the next release...
 
 
 == Internationalisation ==
