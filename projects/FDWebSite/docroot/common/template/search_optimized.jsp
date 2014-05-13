@@ -11,8 +11,11 @@
 		<%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
 		<%@ include file="/common/template/includes/ga_custom_vars.jspf" %>
 		<%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
-	    <tmpl:get name='customCss'/>
-	    <tmpl:get name='customJs'/>
+    <!--[if lt IE 10]>
+      <jwr:style src="/search_opt.css"/>
+    <![endif]-->
+    <tmpl:get name='customCss'/>
+    <tmpl:get name='customJs'/>
 		<script>
 		FD_QuickBuy.style = {
 				closeButton:'quickbuy-noheader-close',
