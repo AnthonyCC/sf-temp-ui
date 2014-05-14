@@ -6,6 +6,7 @@
 
 <tmpl:insert template='/template/top_nav.jsp'>
 	<tmpl:put name='content' direct='true'>
+	
 
 		<!--jQuery dependencies-->
  
@@ -21,7 +22,7 @@
 <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/humanity/jquery-ui.css" />
 
 <script type="text/javascript" language="javascript" src="/assets/javascript/paramquery-2.0.3/pqgrid.min.js"></script>
- 
+
 <script type="text/javascript">
 	function displayGrid(response) {
 		
@@ -30,52 +31,60 @@
 		obj.width = 1000;
 		obj.height = 400;
 
-		obj.colModel = [ {
-			title : "ID",
-			width : 80,
-			dataType : "string",
-			dataIndx : "customerDetailsId"
-		}, {
-			title : "SO_TEMPLATE_ID",
+		obj.colModel = [  {
+			title : "CUSTOMER_ID",
+			width : 110,
+			dataType : "integer",
+			align : "left",
+			dataIndx : "customerId"
+		},
+	                 
+		{
+			title : "EMAIL_ID",
 			width : 150,
+			align : "left",
+			dataType : "string",
+			dataIndx : "customerEmailId"
+		}, 
+		{
+			title : "SO_TEMPLATE_ID",
+			width : 110,
+			dataType : "string",
+			dataIndx : "soTemplateId"
+		},
+		{
+			title : "CUSTOMER_LIST_ID",
+			width : 110,
 			dataType : "string",
 			dataIndx : "listId"
-		}, {
+		}, 	
+		{
 			title : "SKU_CODE",
-			width : 200,
+			width : 110,
 			dataType : "string",
 			align : "center",
 			dataIndx : "skuCode"
-		}, {
+		}, 
+		{
 			title : "QUANTITY",
 			width : 80,
 			dataType : "integer",
 			align : "right",
 			dataIndx : "quantity"
-		}, {
+		}, 
+		{
 			title : "SALES_UNIT",
 			width : 80,
 			dataType : "string",
 			align : "right",
 			dataIndx : "salesUnit"
-		}, {
-			title : "CONFIGURATION",
-			width : 100,
-			dataType : "string",
-			align : "right",
-			dataIndx : "configuration"
-		}, {
+		},  
+		{
 			title : "FREQUENCY",
-			width : 100,
+			width : 80,
 			dataType : "integer",
 			align : "right",
 			dataIndx : "frequency"
-		}, {
-			title : "RECIPE_SOURCE_ID",
-			width : 110,
-			dataType : "integer",
-			align : "right",
-			dataIndx : "recipeSourceId"
 		} ];
 
 		obj.dataModel = {
@@ -279,7 +288,7 @@ $('#existingSKU').val(replacementSKU1);
 					</tr>
 					<tr>
 						<td>
-							<div id="grid_array"></div>
+							<div id="grid_array"/>
 										
 						</td>
 					</tr>

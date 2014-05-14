@@ -100,12 +100,10 @@ public class FDStandingOrderDAO {
 
 	private static final String MARK_SALE_HOLIDAYMOVEMENT = "UPDATE CUST.SALE SET SO_HOLIDAY_MOVEMENT='Y' WHERE ID=?";
 	
-	private static final String DELETED_LIST_NAME = "Deleted Standing Order";
+	private static final String SKU_CODE_REPLACE_SQL = "UPDATE CUST.CUSTOMERLIST_DETAILS SET SKU_CODE = ? WHERE SKU_CODE = ? AND LIST_ID IN (SELECT CLIST.ID FROM CUST.CUSTOMERLIST CLIST JOIN CUST.STANDING_ORDER SO ON CLIST.ID = SO.CUSTOMERLIST_ID AND SO.DELETED <> 1)";
+
+	private static final String SKU_CODE_GRID_DISPLAY_SQL = "SELECT CU.USER_ID ,CU.ID AS CUSTOMER_ID,SO.ID AS SO_TEMPLATE_ID,CCLD.LIST_ID,CCLD.SKU_CODE,CCLD.QUANTITY,CCLD.SALES_UNIT,CCLD.FREQUENCY FROM CUST.CUSTOMER CU , CUST.CUSTOMERLIST CCL, CUST.CUSTOMERLIST_DETAILS CCLD,CUST.STANDING_ORDER SO " +"WHERE CU.ID = CCL.CUSTOMER_ID AND CCL.ID = SO.CUSTOMERLIST_ID AND CCLD.LIST_ID = CCL.ID AND SO.DELETED <> 1 AND CCLD.SKU_CODE = ?";
 	
-	private static final String SKU_CODE_REPLACE_SQL = "update cust.customerlist_details set sku_code = ? where sku_code = ? and list_id in (select clist.id from cust.customerlist clist join cust.standing_order so on CLIST.ID = SO.CUSTOMERLIST_ID and SO.DELETED <> 1)";
-
-	private static final String SKU_CODE_GRID_DISPLAY_SQL = "select * from cust.customerlist_details where sku_code = ? and list_id in (select clist.id from cust.customerlist clist join cust.standing_order so on CLIST.ID = SO.CUSTOMERLIST_ID and SO.DELETED <> 1)";
-
 	private boolean isSkuValidButDiscontinued;
 
 	private static final String EXISTING_SKU_NOT_EXIST = "Existing SKU does not exist";
@@ -117,6 +115,8 @@ public class FDStandingOrderDAO {
 	private static final String BASE_UNIT = "base_unit";
 
 	private static final String CONFIGURATION = "CONFIGURATION";
+	
+	private static final String DELETED_LIST_NAME = "Deleted Standing Order";
 	
 	protected String getNextId(Connection conn) throws SQLException {
 		return SequenceGenerator.getNextId(conn, "CUST");
@@ -1371,14 +1371,14 @@ public class FDStandingOrderDAO {
 
 			while (rs.next()) {
 				product = new FDStandingOrderProductSku();
-				product.setCustomerDetailsId(rs.getString("ID"));
+				product.setCustomerEmailId(rs.getString("USER_ID"));
 				product.setListId(rs.getString("LIST_ID"));
+				product.setSoTemplateId(rs.getString("SO_TEMPLATE_ID"));
 				product.setSkuCode(rs.getString("SKU_CODE"));
 				product.setQuantity(rs.getString("QUANTITY"));
 				product.setSalesUnit(rs.getString("SALES_UNIT"));
-				product.setConfiguration(rs.getString(CONFIGURATION));
 				product.setFrequency(rs.getInt("FREQUENCY"));
-				product.setRecipeSourceId(rs.getString("RECIPE_SOURCE_ID"));
+				product.setCustomerId(rs.getString("CUSTOMER_ID"));
 				productList.add(product);
 			}
 			rs.close();
@@ -1419,7 +1419,7 @@ public class FDStandingOrderDAO {
 		// Check for salesUnit of the existing and replacement SKUs
 		else if (!validateSalesUnit(existingSku, replacementSku)) {
 			fdStandingOrderSkuResultInfo
-					.setErrorMessage("Replacement cannot be performed because Sales Unit does not match");
+					.setErrorMessage("Replacement cannot be performed because Base/Sales unit does not match");
 			return fdStandingOrderSkuResultInfo;
 		}
 		// Check for configuration of the existing and replacement SKUs

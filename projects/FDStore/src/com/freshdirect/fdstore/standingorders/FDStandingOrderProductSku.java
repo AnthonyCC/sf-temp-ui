@@ -14,24 +14,17 @@ public class FDStandingOrderProductSku extends ModelSupport{
 	
 	private static DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	
-	private String customerDetailsId;
+	private String customerEmailId;
 	private String listId;
 	private String skuCode;
 	private String quantity;
 	private String salesUnit;
 	private String configuration;
 	private Integer frequency;
-	//private Date createDate;
-	//private Date recentDate;
-	//private Date deleteDate;
-	private String recipeSourceId;
+	private String customerId;
+	private String soTemplateId;
 	
-	public String getCustomerDetailsId() {
-		return customerDetailsId;
-	}
-	public void setCustomerDetailsId(String customerDetailsId) {
-		this.customerDetailsId = customerDetailsId;
-	}
+	
 	public String getListId() {
 		return listId;
 	}
@@ -68,28 +61,22 @@ public class FDStandingOrderProductSku extends ModelSupport{
 	public void setFrequency(Integer frequency) {
 		this.frequency = frequency;
 	}
-	/*public Date getCreateDate() {
-		return createDate;
+	public String getCustomerEmailId() {
+		return customerEmailId;
 	}
-	public void setCreateDate(Date cretaeDate) {
-		this.createDate = createDate;
+	public void setCustomerEmailId(String customerEmailId) {
+		this.customerEmailId = customerEmailId;
 	}
-	public Date getRecentDate() {
-		return recentDate;
+	public String getCustomerId() {
+		return customerId;
 	}
-	public void setRecentDate(Date recentDate) {
-		this.recentDate = recentDate;
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
 	}
-	public Date getDeleteDate() {
-		return deleteDate;
+	public String getSoTemplateId() {
+		return soTemplateId;
 	}
-	public void setDeleteDate(Date deleteDate) {
-		this.deleteDate = deleteDate;
-	}*/
-	public String getRecipeSourceId() {
-		return recipeSourceId;
-	}
-	public void setRecipeSourceId(String recipeSourceId) {
-		this.recipeSourceId = recipeSourceId;
+	public void setSoTemplateId(String soTemplateId) {
+		this.soTemplateId = soTemplateId;
 	}
 }
