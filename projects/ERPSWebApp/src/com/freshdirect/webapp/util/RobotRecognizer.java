@@ -161,6 +161,11 @@ public class RobotRecognizer {
 		friendlyRobotPatternSet.add(Pattern.compile(".*?sogou web spider.*"));
 		friendlyRobotPatternSet.add(Pattern.compile(".*?http://www.proximic.com/info/spider.php.*"));
 		friendlyRobotPatternSet.add(Pattern.compile(".*?http://www\\.youdao\\.com/help/webmaster/spider.*"));
+		friendlyRobotPatternSet.add(Pattern.compile("rogerbot.*"));
+		friendlyRobotPatternSet.add(Pattern.compile("Halebot.*"));
+		friendlyRobotPatternSet.add(Pattern.compile("Pinterest.*"));
+		friendlyRobotPatternSet.add(Pattern.compile("adidxbot.*"));
+		
     }
     
     
