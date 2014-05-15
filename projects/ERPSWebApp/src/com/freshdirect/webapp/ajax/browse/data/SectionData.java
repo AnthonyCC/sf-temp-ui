@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.freshdirect.webapp.ajax.product.data.ProductData;
+import com.freshdirect.webapp.globalnav.data.DepartmentData;
 
 public class SectionData implements Serializable, DescriptiveDataI {
 
@@ -12,8 +13,10 @@ public class SectionData implements Serializable, DescriptiveDataI {
 	private String headerText;
 	private String headerImage;
 	private String media;
+	private String superDepartmentName;
 	private List<ProductData> products;
 	private List<CategoryData> categories;
+	private List<DepartmentData> departments;
 	private List<SectionData> sections;
 
 	public String getHeaderText() {
@@ -57,6 +60,18 @@ public class SectionData implements Serializable, DescriptiveDataI {
 	}
 	public void setCatId(String catId) {
 		this.catId = catId;
+	}
+	public List<DepartmentData> getDepartments() {
+		return departments;
+	}
+	public void setDepartments(List<DepartmentData> departments) {
+		this.departments = departments;
+	}
+	public String getSuperDepartmentName() {
+		return superDepartmentName;
+	}
+	public void setSuperDepartmentName(String superDepartmentName) {
+		this.superDepartmentName = superDepartmentName;
 	}
 	
 }

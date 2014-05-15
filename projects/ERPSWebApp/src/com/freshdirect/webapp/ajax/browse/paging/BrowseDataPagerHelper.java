@@ -5,12 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData;
-import com.freshdirect.webapp.ajax.browse.data.CategoryData;
 import com.freshdirect.webapp.ajax.browse.data.PagerData;
 import com.freshdirect.webapp.ajax.browse.data.SectionData;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;

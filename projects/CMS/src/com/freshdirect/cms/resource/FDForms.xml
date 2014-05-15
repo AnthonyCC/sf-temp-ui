@@ -173,6 +173,18 @@
 						<title>CATEGORY CONTENT</title>
 						<fields>
 							<CmsField><attribute>categoryBanner</attribute></CmsField>
+							<CmsField><attribute>categorySections</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>GLOBAL NAV</title>
+						<fields>
+							<CmsField><attribute>globalNavFeaturedCategory</attribute></CmsField>
+							<CmsField><attribute>globalNavFeaturedPreferenceCategory</attribute></CmsField>
+							<CmsField><attribute>globalNavShopAllText</attribute></CmsField>
+							<CmsField><attribute>globalNavName</attribute></CmsField>
+							<CmsField><attribute>heroImage</attribute></CmsField>
+							<CmsField><attribute>seasonalMedia</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>
@@ -458,6 +470,13 @@
 							<CmsField><attribute>catMerchantRecommenderTitle</attribute></CmsField>
 							<CmsField><attribute>catMerchantRecommenderProducts</attribute></CmsField>
 							<CmsField><attribute>catMerchantRecommenderRandomizeProducts</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>GLOBAL NAV</title>
+						<fields>
+							<CmsField><attribute>globalNavIcon</attribute></CmsField>
+							<CmsField><attribute>globalNavPostNameImage</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>
@@ -1756,5 +1775,80 @@
 			</CmsPage>
 		</pages>
 	</CmsEditor>
+
+	<CmsEditor id="superDepartment">
+		<contentType>SuperDepartment</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>CORE</title>
+						<fields>
+							<CmsField><attribute>name</attribute></CmsField>
+							<CmsField><attribute>browseName</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>IMAGES</title>
+						<fields>
+							<CmsField><attribute>titleBar</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>EDITORIAL</title>
+						<fields>
+							<CmsField><attribute>superDepartmentBanner</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>FEATURED RECOMMENDER</title>
+						<fields>
+							<CmsField><attribute>sdFeaturedRecommenderTitle</attribute></CmsField>
+							<CmsField><attribute>sdFeaturedRecommenderSourceCategory</attribute></CmsField>
+							<CmsField><attribute>sdFeaturedRecommenderRandomizeProducts</attribute></CmsField>
+							<CmsField><attribute>sdFeaturedRecommenderSiteFeature</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>MERCHANT RECOMMENDER</title>
+						<fields>
+							<CmsField><attribute>sdMerchantRecommenderTitle</attribute></CmsField>
+							<CmsField><attribute>sdMerchantRecommenderProducts</attribute></CmsField>
+							<CmsField><attribute>sdMerchantRecommenderRandomizeProducts</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+			<CmsPage>
+				<title>Relationships</title>
+				<sections>
+					<CmsSection>
+						<title>RELATIONSHIPS</title>
+						<fields>
+							<CmsField><attribute>departments</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
 	
+	<CmsEditor id="globalNavigation">
+		<contentType>GlobalNavigation</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>CORE</title>
+						<fields>
+							<CmsField><attribute>media</attribute></CmsField>
+							<CmsField><attribute>items</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
 </Content>

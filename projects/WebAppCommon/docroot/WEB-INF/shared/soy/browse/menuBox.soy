@@ -25,19 +25,10 @@
       <button class="category popup leftnav-category-popup-button cssbutton green"><span class="icon-arrow-right2-before">{$menuBox.selectedLabel}</span></button>
       <div class="popupMenuContent" style="display: none;">
         <div data-component="menuitemlist" data-menuitemlist="{$menuBox.id}">
-          <ul>
-          {foreach $item in $menuBox.items}
-            {if $item.urlParameter}
-              {call .menuItem}
-                {param menuBox: $menuBox /}
-                {param item: $item /}
-              {/call}
-            {else}
-              {if index($item) > 0}</ul><ul>{/if}
-              <li><h3>{$item.name != 'marker' ? $item.name : '&nbsp;'}</h3></li>
-            {/if}
-          {/foreach}
-          </ul>
+          {call .layoutBreak}
+            {param menuBox: $menuBox /}
+            {param bodyVariant: 'POPUP' /}
+          {/call}
         </div>
       </div>
     {elseif $menuBox.displayType == 'CENTER_POPUP'}
@@ -45,40 +36,79 @@
       <button class="category centerpopup cssbutton green" data-header="Choose a {$menuBox.name}"><span class="icon-arrow-right2-before">{if $menuBox.selectedLabel}{$menuBox.selectedLabel}{else}Choose a {$menuBox.name}{/if}</span></button>
       <div class="popupMenuContent" style="display: none;">
         <div data-component="menuitemlist" data-menuitemlist="{$menuBox.id}">
-          /* 
-           * Population algorithm based on Travis' request
-           * APPDEV-3543
-           * http://jira.freshdirect.com/secure/attachment/33628/Brands_modal.pdf
-           */
-          {let $l: length($menuBox.items) /}
-          {let $limit: 15 /}
-          {let $maxcols: 3 /}
-          {let $n: ($l <= $limit * $maxcols) ? $limit : floor($l / $maxcols) /}
-          {let $mod: ($l >= $limit * $maxcols ? $l % $maxcols : 0) /}
-          {for $col in range(0, $maxcols)}
-            {if $col * $n + $mod < $l}
-              <ul>
-              {for $i in range($col * $n + ($col < $mod ? $col : $mod), ($col + 1) * $n + ($col+1 < $mod ? $col+1 : $mod ))}
-
-                {if $l > $i}
-                  {let $item: $menuBox.items[$i] /}
-                  {if $item.id}
-                    {call .menuItem}
-                      {param menuBox: $menuBox /}
-                      {param item: $item /}
-                    {/call}
-                  {/if}
-                {/if}
-              {/for}
-              </ul>
-            {/if}
-          {/for}
+          {call .layoutBreak}
+            {param menuBox: $menuBox /}
+            {param bodyVariant: 'CENTER_POPUP' /}
+          {/call}
         </div>
       </div>
     {/if}
   {/if}
 </div>
 {/template}
+
+/**
+* @param menuBox list of menu items
+* @param bodyVariant which body template to use
+*/
+{template .layoutBreak autoescape="false"}
+  /* 
+   * Population algorithm based on Travis' request
+   * APPDEV-3543
+   * http://jira.freshdirect.com/secure/attachment/33628/Brands_modal.pdf
+   */
+  {let $l: length($menuBox.items) /}
+  {let $limit: 15 /}
+  {let $maxcols: 3 /}
+  {let $n: ($l <= $limit * $maxcols) ? $limit : floor($l / $maxcols) /}
+  {let $mod: ($l >= $limit * $maxcols ? $l % $maxcols : 0) /}
+  {for $col in range(0, $maxcols)}
+    {if $col * $n + $mod < $l}
+      <ul>
+      {for $i in range($col * $n + ($col < $mod ? $col : $mod), ($col + 1) * $n + ($col+1 < $mod ? $col+1 : $mod ))}
+        {if $l > $i}
+          {delcall browse.layoutBody variant="$bodyVariant"} 
+            {param menuBox: $menuBox /}
+            {param i: $i /}
+          {/delcall}
+        {/if}
+      {/for}
+      </ul>
+    {/if}
+  {/for}
+{/template}
+
+/**
+* @param menuBox list of menuitems
+* @param i current item index
+*/
+{deltemplate browse.layoutBody autoescape="false" variant="'CENTER_POPUP'"}
+  {let $item: $menuBox.items[$i] /}
+  {if $item.id}
+    {call .menuItem}
+      {param menuBox: $menuBox /}
+      {param item: $item /}
+    {/call}
+  {/if}
+{/deltemplate}
+
+/**
+* @param menuBox list of menuitems
+* @param i current item index
+*/
+{deltemplate browse.layoutBody autoescape="false" variant="'POPUP'"}
+  {let $item: $menuBox.items[$i] /}
+  {if $item.name != 'marker'}
+    {if $item.urlParameter}
+      {call .menuItem}
+        {param menuBox: $menuBox /}
+        {param item: $item /}
+      {/call}
+    {else}
+      <li><h3 class="section-big">{$item.name}</h3></li>
+    {/if}
+  {/if}
+{/deltemplate}
 
 /**
  * @param? menuBox menuBox

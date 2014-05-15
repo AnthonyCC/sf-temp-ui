@@ -67,7 +67,10 @@ public class PreviewLinkProvider {
 			return "/page.jsp?pageId=" + id;
 		} else if (FDContentTypes.TAG.equals(type)) {
 			return "/test/migration/products_tagged.jsp?tag=" + id;
+		} else if (FDContentTypes.SUPER_DEPARTMENT.equals(type)) {
+			return "/browse.jsp?id=" + id;
 		}
+		
 		return null;
 	}
 }

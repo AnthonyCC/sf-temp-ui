@@ -33,9 +33,37 @@ var FreshDirect = FreshDirect || {};
     }
   });
 
-  sections.listen();
+  var superSections = Object.create(WIDGET,{
+    signal:{
+      value:'sections'
+    },
+    template:{
+      value:browse.superDepartment
+    },
+    placeholder:{
+      value:'.superDepartment'
+    },
+    handleClick:{
+      value:function(clickEvent){
+        var clicked = $(clickEvent.currentTarget),
+            parent = clicked.parents(this.placeholder),
+            menu = fd.browse.menu;
 
-  $(document).on('click',sections.placeholder+' [data-component="categorylink"]',sections.handleClick.bind(sections));
+        if (menu) {
+          clickEvent.preventDefault();
+          menu.setId(clicked.data('id'));
+          parent.trigger('menu-change');
+        }
+
+      }
+    }
+  });
+
+  sections.listen();
+  superSections.listen();
+
+  $(document).on('click', '.browse-sections [data-component="categorylink"]', sections.handleClick.bind(sections));
+  $(document).on('click', '.superDepartment [data-component="categorylink"]', superSections.handleClick.bind(superSections));
 
   fd.modules.common.utils.register("browse", "sections", sections, fd);
 }(FreshDirect));

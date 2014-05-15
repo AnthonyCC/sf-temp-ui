@@ -9,12 +9,15 @@
 %><%@ page import='com.freshdirect.webapp.util.*'
 %><%@ page import='com.freshdirect.fdstore.*'
 %><%@ page import='java.net.*'
-%><%@ taglib uri='oscache' prefix='oscache' %>
+%>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature' %>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter' %>
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); %>
 
-<% if(FDStoreProperties.isNewGlobalNav()) { %>
-	<%@ include file="/common/template/includes/globalnav_grid24.jspf" %>
+<% if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { %>
+	<%@ include file="/common/template/includes/globalnav_sr.jspf" %>
 <% } else { %>
 	
 	<% //expanded page dimensions

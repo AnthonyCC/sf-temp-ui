@@ -20,6 +20,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -126,6 +127,32 @@ public class ProductRecommenderUtil {
 		}
     }    
 
+	public static List<ProductModel> getAggregatedSuperDepartmentFeaturedRecommenderProducts(SuperDepartmentModel superDeptModel, HttpSession session) throws FDResourceException {
+		List<ProductModel> products = new ArrayList<ProductModel>();
+		
+		CategoryModel sourceCat = superDeptModel.getSdFeaturedRecommenderSourceCategory();
+		
+		if (sourceCat == null){
+			EnumSiteFeature siteFeat = EnumSiteFeature.getEnum(superDeptModel.getSdFeaturedRecommenderSiteFeature());
+			
+			if (siteFeat!=null) {
+				for (DepartmentModel deptModel : superDeptModel.getDepartments()) {
+
+					//TODO: hide department from this functionality
+					FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+					Recommendations results = doRecommend(user, session, siteFeat, MAX_DEPT_FEATURED_RECOMMENDER_COUNT, new HashSet<ContentKey>(), deptModel);
+					products.addAll(results.getAllProducts()); //TODO de we need to provide site feature id for CM?
+					cleanUpProducts(products, superDeptModel.isSdFeaturedRecommenderRandomizeProducts(), MAX_DEPT_FEATURED_RECOMMENDER_COUNT);
+				}
+			}
+			
+		} else {
+			products = sourceCat.getAllChildProductsAsList();
+			cleanUpProducts(products, superDeptModel.isSdFeaturedRecommenderRandomizeProducts(), MAX_DEPT_FEATURED_RECOMMENDER_COUNT);
+		}
+		
+		return products;
+	}
 	
 	public static List<ProductModel> getFeaturedRecommenderProducts(DepartmentModel deptModel, FDSessionUser user, HttpSession session) throws FDResourceException {
 		List<ProductModel> products = new ArrayList<ProductModel>();
@@ -145,6 +172,12 @@ public class ProductRecommenderUtil {
 			cleanUpProducts(products, deptModel.isFeaturedRecommenderRandomizeProducts(), MAX_DEPT_FEATURED_RECOMMENDER_COUNT);
 		}
 		
+		return products;
+	}
+
+	public static List<ProductModel> getSuperDepartmentMerchantRecommenderProducts (SuperDepartmentModel superDeptModel){
+		List<ProductModel> products = superDeptModel.getSdMerchantRecommenderProducts();
+		cleanUpProducts(products, superDeptModel.isSdMerchantRecommenderRandomizeProducts(), MAX_DEPT_MERCHANT_RECOMMENDER_COUNT);
 		return products;
 	}
 

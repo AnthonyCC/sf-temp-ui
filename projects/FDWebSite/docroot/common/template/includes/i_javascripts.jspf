@@ -19,6 +19,11 @@
 	<fd:javascript src="/assets/javascript/coremetrics.js"/>
 	<fd:javascript src="/assets/javascript/USQLegalWarning.js"/>
 	
+  <%-- HTML5 support for IE8 --%>
+  <!--[if lt IE 9]>
+    <fd:javascript src="/assets/javascript/html5.js"/>
+  <![endif]-->
+	
 	<script type="text/javascript" language="javascript">
 
 		var FreshDirect = FreshDirect || {};
@@ -83,3 +88,11 @@
 	    	<%
 		}
 	%>
+	
+	  <%-- Bazaarvoice --%>
+  
+  <% 
+  if(FDStoreProperties.isBazaarvoiceEnabled()){
+  	String bvapiUrl = FDStoreProperties.getBazaarvoiceBvapiUrl(); %>
+  	<script type="text/javascript" src="<%= bvapiUrl %>"></script>
+  <% } %>

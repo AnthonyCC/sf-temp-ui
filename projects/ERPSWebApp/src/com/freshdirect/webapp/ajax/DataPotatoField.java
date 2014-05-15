@@ -35,6 +35,7 @@ import com.freshdirect.webapp.ajax.product.data.ProductAnnotationData;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.product.data.ProductExtraData;
 import com.freshdirect.webapp.ajax.product.data.ProductImageData;
+import com.freshdirect.webapp.globalnav.data.GlobalNavData;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.JspMethods;
@@ -252,6 +253,10 @@ public class DataPotatoField {
 		return null;
 	}
 
+	public static Map<String,?> digGlobalNav(GlobalNavData globalNavData) {
+		return SoyTemplateEngine.convertToMap(globalNavData);
+
+	}
 
 	/**
 	 * Collect product related extra info. Mostly used by PDP accordion widgets.

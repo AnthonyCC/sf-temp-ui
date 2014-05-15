@@ -19,6 +19,7 @@ import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.ProductFilterGroupI;
 import com.freshdirect.fdstore.content.ProductFilterMultiGroupModel;
 import com.freshdirect.fdstore.content.ProductItemFilterI;
+import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.content.TagModel;
 import com.freshdirect.fdstore.content.browse.filter.ProductItemFilterFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -26,28 +27,32 @@ import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.webapp.ajax.browse.data.NavDepth;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
+import com.freshdirect.webapp.ajax.data.CMSModelToSoyDataConverter;
 
 public class NavigationUtil {
 	
-	public static NavigationModel createNavigationModel(ProductContainer node, CmsFilteringNavigator navigator, FDUserI user) throws InvalidFilteringArgumentException{
+	public static NavigationModel createNavigationModel(ContentNodeModel node, CmsFilteringNavigator navigator, FDUserI user) throws InvalidFilteringArgumentException{
 		
 		NavigationModel model = new NavigationModel();
 		
 		model.setUser(user);
 
-		LinkedList<ProductContainer> productContainerPath = new LinkedList<ProductContainer>();
+		LinkedList<ContentNodeModel> contentNodeModelPath = new LinkedList<ContentNodeModel>();
 		
-		model.setSelectedProductContainer(node);
-		model.setProductContainerPath(productContainerPath);
+		model.setSelectedContentNodeModel(node);
+		model.setContentNodeModelPath(contentNodeModelPath);
 		
 		// get parents and breadcrumb
-		ProductContainer tempNode = node;
+		ContentNodeModel tempNode = node;
 		while (true){
-			productContainerPath.push((ProductContainer)tempNode);
+			contentNodeModelPath.push((ContentNodeModel)tempNode);
+			if (tempNode instanceof SuperDepartmentModel){
+				break;
+			}
 			if (tempNode instanceof DepartmentModel){
 				break;
 			}
-			tempNode=(ProductContainer)tempNode.getParentNode();
+			tempNode=(ContentNodeModel)tempNode.getParentNode();
 			if (tempNode==null){
 				break;
 			}
@@ -56,68 +61,86 @@ public class NavigationUtil {
 		String id = navigator.getId();
 		
 		// validation for orphan categories
-		if(!(productContainerPath.get(0) instanceof DepartmentModel)){
+		if(!(contentNodeModelPath.get(0) instanceof DepartmentModel) && !model.hasSuperDepartment()){
 			throw new InvalidFilteringArgumentException("Orphan category: "+id, InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE, id);
 		}
 		
-		int productContainerPathSize = productContainerPath.size();
+		int contentNodeModelPathSize = contentNodeModelPath.size();
 		if(!navigator.isPdp()){
-			if (productContainerPathSize > NavDepth.getMaxLevel()+1){ //validate if level not too deep
+			if (contentNodeModelPathSize > NavDepth.getMaxLevel()+1){ //validate if level not too deep
 				throw new InvalidFilteringArgumentException("Category is too deep in hierarchy: "+ id, InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE, id);
 			}			
 		}
 		
 		// determine the depth of the navigation
-		Map<NavDepth, ProductContainer> navigationHierarchy = new HashMap<NavDepth, ProductContainer>();
+		Map<NavDepth, ContentNodeModel> navigationHierarchy = new HashMap<NavDepth, ContentNodeModel>();
 		for(NavDepth navDepth : NavDepth.values()){
-			if (productContainerPathSize > navDepth.getLevel()){
+			if (contentNodeModelPath.size()>navDepth.getLevel()){
 				model.setNavDepth(navDepth);
-				navigationHierarchy.put(navDepth, productContainerPath.get(navDepth.getLevel()));
-			}
-		}		
-		model.setNavigationHierarchy(navigationHierarchy);
-
-		// search for categories and preference categories - prepare for menu building
-		List<CategoryModel> regularCategories = new ArrayList<CategoryModel>();
-		List<CategoryModel> prefCategories = new ArrayList<CategoryModel>();
-		DepartmentModel department = (DepartmentModel) model.getNavigationHierarchy().get(NavDepth.DEPARTMENT);
-
-		for (CategoryModel cat : department.getCategories()){
-			if (cat instanceof CategoryModel) {
-				if (NavigationUtil.isCategoryHiddenInContext(user, cat)) {
-					continue;
-				}
-				if (cat.isPreferenceCategory()){
-					prefCategories.add(cat);
-				} else {
-					regularCategories.add(cat);
-				}
+				navigationHierarchy.put(navDepth, contentNodeModelPath.get(navDepth.getLevel()));
 			}
 		}
-		model.setRegularCategories(regularCategories);
-		model.setPreferenceCategories(prefCategories);
+		model.setNavigationHierarchy(navigationHierarchy);
+
+		if (!model.hasSuperDepartment()) {
+			// search for categories and preference categories - prepare for menu building
+			List<CategoryModel> regularCategories = new ArrayList<CategoryModel>();
+			List<CategoryModel> prefCategories = new ArrayList<CategoryModel>();
+			DepartmentModel department = (DepartmentModel) model.getNavigationHierarchy().get(NavDepth.DEPARTMENT);
+	
+			for (CategoryModel cat : department.getCategories()){
+				if (cat instanceof CategoryModel) {
+					if (NavigationUtil.isCategoryHiddenInContext(user, cat)) {
+						continue;
+					}
+					if (cat.isPreferenceCategory()){
+						prefCategories.add(cat);
+					} else {
+						regularCategories.add(cat);
+					}
+				}
+			}
+			model.setRegularCategories(regularCategories);
+			model.setPreferenceCategories(prefCategories);
+			model.setCategorySections(department.getCategorySections());
+			
+			if(!navigator.isPdp()) {
+				//-- CREATE FILTERS --
+			
+				// create actual filters
+				model.setAllFilters(createFilterGroups((ProductContainer)node, navigator, user));
+				
+				// select active filters
+				model.setActiveFilters(selectActiveFilters(model.getAllFilters(), navigator));
+			}
 		
-		// filters not needed on product page
-		if(!navigator.isPdp()){
+		} else {
 			
-			//-- CREATE FILTERS --
+			model.setDepartments(((SuperDepartmentModel)model.getSelectedContentNodeModel()).getDepartments());
 			
-			// create actual filters
-			model.setAllFilters(createFilterGroups(node, navigator, user));
-			
-			// select active filters
-			model.setActivelFilters(selectActiveFilters(model.getAllFilters(), navigator));
+			List<CategoryModel> popularCategories = new ArrayList<CategoryModel>();
+			for (DepartmentModel deptModel : ((SuperDepartmentModel)model.getSelectedContentNodeModel()).getDepartments()){
+				for (CategoryModel cat : deptModel.getPopularCategories()) {
+					if (cat.isHideIfFilteringIsSupported() && NavigationUtil.isUserContextEligibleForHideFiltering(user)) {
+						continue;
+					}
+					popularCategories.add(cat);
+				}
+			}
+			model.setPopularCategories(popularCategories);
+			//no filters in case of super department
+			model.setAllFilters(new ArrayList<ProductFilterGroupI>());
+			model.setActiveFilters(new HashSet<ProductItemFilterI>());
 		}
 		
 		// -- CREATE MENU --
-		
 		// create menuBuilder based on page type
-		MenuBuilderI menuBuilder = MenuBuilderFactory.createBuilderByPageType(model.getNavDepth());
+		MenuBuilderI menuBuilder = MenuBuilderFactory.createBuilderByPageType(model.getNavDepth(), model.hasSuperDepartment());
 
 		// are we showing products?
-		model.setProductListing( model.getNavDepth()!=NavDepth.DEPARTMENT && (
+		model.setProductListing( !model.hasSuperDepartment() && model.getNavDepth()!=NavDepth.DEPARTMENT && (
 				model.getNavDepth()!=NavDepth.CATEGORY || 
-				model.getNavigationHierarchy().get(NavDepth.CATEGORY).getSubcategories().size()==0 || 
+				((CategoryModel)model.getNavigationHierarchy().get(NavDepth.CATEGORY)).getSubcategories().size()==0 || 
 				navigator.isAll()));
 		
 		// create menu

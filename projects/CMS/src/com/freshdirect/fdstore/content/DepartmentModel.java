@@ -25,6 +25,8 @@ public class DepartmentModel extends ProductContainer {
     private final List<TileList> tileList = new ArrayList<TileList> ();
     
     private final List<ProductModel> merchantRecommenderProducts = new ArrayList<ProductModel>();
+    
+    private final List<CategorySectionModel> categorySections = new ArrayList<CategorySectionModel>();
 	
 	
 	public DepartmentModel(ContentKey cKey) {
@@ -62,6 +64,10 @@ public class DepartmentModel extends ProductContainer {
 	
 	public boolean isHidddenInQuickshop() {
 	    return getAttribute("HIDE_IN_QUICKSHOP", false);
+	}
+	
+	public String getGlobalNavName() {
+	    return getAttribute("globalNavName", "");
 	}
 	
    /**
@@ -203,13 +209,25 @@ public class DepartmentModel extends ProductContainer {
 	    return getAttribute("merchantRecommenderRandomizeProducts", false);
 	}
 
-
 	@Override
 	public List<ProductModel> getStaticProducts() {
 		return Collections.emptyList();
 	}
 
+	public Image getHeroImage() {
+        return FDAttributeFactory.constructImage(this, "heroImage");
+	}
+
+	public Html getSeasonalMedia() {
+        return FDAttributeFactory.constructHtml(this, "seasonalMedia");
+	}
+
 	public boolean isTopLevelCategory(){
 		return false;
 	}
+
+    public List<CategorySectionModel> getCategorySections() {
+        ContentNodeModelUtil.refreshModels(this, "categorySections", categorySections, false);
+        return new ArrayList<CategorySectionModel>(categorySections);
+    }
 }

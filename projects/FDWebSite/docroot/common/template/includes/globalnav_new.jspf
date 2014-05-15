@@ -1,0 +1,335 @@
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+
+<!-- GlobalNav fallback JSPF -->
+<style>
+/*
+
+................................................
+GLOBAL NAV MENU STYLE
+................................................
+
+Here you can override styles for menuitems as
+well as custom widths, paddings and margins
+................................................
+
+*/
+
+@font-face {
+ font-family: 'TradeGothic';
+ src: url('/media/editorial/global_nav/fonts/TradeGotConEig.eot');
+ src: url('/media/editorial/global_nav/fonts/TradeGotConEig.eot?#iefix') format('embedded-opentype'),
+      url('/media/editorial/global_nav/fonts/TradeGotConEig.woff') format('woff'),
+	  url('/media/editorial/global_nav/fonts/TradeGotConEig.ttf') format('truetype'),
+      url('/media/editorial/global_nav/fonts/TradeGotConEig.svg#TradeGothic') format('svg');
+ font-weight: normal;
+ font-style: normal;
+}
+
+/*
+................................................
+BASIC PAGE STYLES
+................................................
+*/
+
+.nav-container{
+	font-family: Verdana, 'Trebuchet MS', Trebuchet, 'Lucida Grande', sans-serif ;
+}
+
+.nav-container a:link {text-decoration: none;}
+.nav-container a:visited {}
+.nav-container a:hover {}
+.nav-container a:active {}
+
+.nav-container strong {
+	font-weight: bold;
+}
+
+
+/* 
+................................................
+GLOBAL NAVIGATION STYLES
+................................................
+*/
+
+.nav-container {
+	width: 968px;
+	position: relative;
+	margin: 0 auto;
+	overflow: visible;
+    height:84px;
+}
+
+.top-nav {
+	width: 968px;
+	height: 50px;
+	background-color: #88a75c;
+	position: absolute;
+	z-index: 40;
+	-moz-box-shadow: 0 2px 3px rgba(79,79,79,.68);
+	-webkit-box-shadow: 0 2px 3px rgba(79,79,79,.68);
+	box-shadow: 0 2px 3px rgba(79,79,79,.68);
+	font: 18px/54px 'TradeGothic', 'Trebuchet MS', Trebuchet, 'Lucida Grande', sans-serif;
+	color: #fff;
+	text-shadow: 1px 1px 0 rgb(116,145,76);
+	text-transform: uppercase;
+	overflow: visible;
+}
+
+.bottom-nav {
+	width: 966px;
+	height: 34px;
+	background-color: #f0f5e1;
+	border: 1px solid #dce7bc;
+	border-top: none;
+	position: absolute;
+	z-index: 10;
+	top: 51px;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+}
+
+
+.top-nav-items {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	position: relative;
+}
+
+.top-nav-items a{
+  text-decoration:none;
+}
+
+.top-item, .top-item-w-sub {
+	height: 32px;
+	float: left;
+	
+}
+
+.amp {
+	font-size: 14px;
+	display: inline;
+}
+
+.top-item-link {
+	height: 50px;
+	display: block;
+	overflow: hidden;
+}
+
+
+.top-item-link a:link {
+	color: #fff;
+	display: block;
+	height: 50px;
+	padding-left: 9px;
+	padding-right: 9px;
+	width: auto;
+  font-size:18px;
+}
+.top-item-link:hover {background-color: #728d4b; color: #fff;}
+.top-item-link a:visited {background-color: transparent;	color: #fff;}
+.top-item-link a:hover {background-color: #728d4b; color: #fff;}
+.top-item-link a:active {
+	background-color: #728d4b;
+	-moz-box-shadow: inset 0 0 6px 0 #576e35; /* Android 2.3+, iOS 4.0.2-4.2, Safari 3-4 */
+	-webkit-box-shadow: inset 0 0 6px 0 #576e35; /* Android 2.3+, iOS 4.0.2-4.2, Safari 3-4 */
+    box-shadow: inset 0 0 6px 0 #576e35;
+    color: #fff;
+}
+
+/* 
+................................................
+GLOBAL BOTTOM NAV STRIP STYLES
+................................................
+*/
+
+.bottom-nav {
+	text-align: center;
+	overflow: hidden;
+	margin: 0;
+}
+
+.bottom-nav-items {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+
+.bottom-nav-items li {
+	display: block;
+	float: left;
+}
+
+.bottom-nav .bottom-nav-items .bottom-item {
+	height: 34px;
+	line-height: 38px;
+	color: #8e9c79;
+	font-weight: bold;
+	margin: 0;
+	float: left;
+	display: block;
+	overflow: hidden;
+}
+
+
+.bottom-nav .bottom-nav-items .bottom-item a:link {
+	height: 34px;
+	display: block;
+	color: #8e9c79;
+	font-size: 10px;
+	text-transform: uppercase;
+	letter-spacing: 1.3px;
+	padding: 0;
+  font-weight:bold;
+}
+
+.bottom-nav .bottom-nav-items .pres-picks a:link { width: 169px; }
+.bottom-nav .bottom-nav-items .top-products a:link { width: 179px; }
+.bottom-nav .bottom-nav-items .top-seafood a:link { width: 180px; }
+.bottom-nav .bottom-nav-items .meat-deals a:link { width: 119px; }
+.bottom-nav .bottom-nav-items .kitchen-deals a:link { width: 142px; }
+.bottom-nav .bottom-nav-items .brand-deals a:link { width: 177px; }
+
+
+.bottom-nav .bottom-nav-items .bottom-item a:visited {
+	color: #8e9c79;
+}
+
+.bottom-nav .bottom-nav-items .bottom-item a:hover {
+	background-color: #d8e2bc;
+	color: #748658;
+}
+
+.bottom-nav .bottom-nav-items .bottom-item a:active {
+	-moz-box-shadow: inset 0 0 6px 0 #aeba8b; /* Android 2.3+, iOS 4.0.2-4.2, Safari 3-4 */
+	-webkit-box-shadow: inset 0 0 6px 0 #aeba8b; /* Android 2.3+, iOS 4.0.2-4.2, Safari 3-4 */
+    box-shadow: inset 0 0 6px 0 #aeba8b;
+}
+
+
+/* 
+................................................
+SPECIFIC NAV BUTTON CLASSES
+................................................
+*/
+	
+.fruit .top-item-link a { margin-left: 5px; }
+
+
+li.dairy { margin-right: 5px; }
+
+.kitchen .top-item-link{
+padding-left:8px;
+}
+
+.kitchen .top-item-link a,
+.kitchen .top-item-link img {
+  display:inline-block;
+}
+
+.bakery .top-item-link, .health .top-item-link, .wine .top-item-link {
+  line-height: 17px;
+  padding-top:0;
+}
+
+.bakery a.top-item-link, .health a.top-item-link, .wine a.top-item-link {
+  padding-top:8px;
+}
+
+.deli .top-item-link {
+	line-height: 18px;
+	padding-top: 8px;
+	height: 43px;	
+}
+</style>
+
+<!-- GlobalNav HTML -->
+<div class="nav-container">
+	<div class="top-nav" data-component="globalnav-menu">
+		<ul class="top-nav-items">
+			<!-- dropdown for this globalnav menu item should be linked with 'fru' cms node -->
+			<li class="top-item fruit" data-component="globalnav-item" data-id="fru">
+				<span class="top-item-link"><a href="/browse.jsp?id=fru&amp;trk=gnav">Fruit</a></span>
+			</li>
+			
+			<!-- dropdown for this globalnav menu item should be linked with 'veg' cms node -->
+			<li class="top-item vegetables" data-component="globalnav-item" data-id="veg">
+				<span class="top-item-link"><a href="/browse.jsp?id=veg&amp;trk=gnav">Vegetables</a></span>
+			</li>
+			
+			<!-- dropdown for this globalnav menu item should be linked with 'mea' cms node -->
+			<li class="top-item meat" data-component="globalnav-item" data-id="mea">
+				<span class="top-item-link"><a href="/browse.jsp?id=mea&amp;trk=gnav">Meat</a></span>
+			</li>
+			
+			<!-- dropdown for this globalnav menu item should be linked with 'sea' cms node -->
+			<li class="top-item seafood" data-component="globalnav-item" data-id="sea">
+				<span class="top-item-link"><a href="/browse.jsp?id=sea&amp;trk=gnav">Seafood</a></span>
+				
+			</li>
+			
+			<!-- dropdown for this globalnav menu item should be linked with 'dai' cms node -->
+			<li class="top-item dairy" data-component="globalnav-item" data-id="dai">
+				<span class="top-item-link"><a href="/browse.jsp?id=dai&amp;trk=gnav">Dairy</a></span>
+			</li>
+			
+			
+			<!-- dropdown for this globalnav menu item should be linked with 'delincheese' cms node -->
+			<li class="top-item-w-sub deli" data-component="globalnav-item" data-id="delincheese">
+				<span class="top-item-link"><a href="/browse.jsp?id=delincheese&amp;trk=gnav">Deli <span class="amp">&amp;</span><br /><span>Cheese</span></a></span>
+			</li>
+			
+			<!-- dropdown for this globalnav menu item should be linked with 'kitchen' cms node -->
+			<li class="top-item-w-sub kitchen" data-component="globalnav-item" data-id="kitchen">
+				<span class="top-item-link">
+				    <img src="/media/editorial/global_nav/kitchen-logo.png" alt="Kitchen logo" />
+				    <a href="/browse.jsp?id=kitchen&amp;trk=gnav">Kitchen</a>
+				</span>
+			</li>
+			
+			<!-- dropdown for this globalnav menu item should be linked with 'bakerynpastry' cms node -->
+			<li class="top-item bakery" data-component="globalnav-item" data-id="bakerynpastry">
+				<span class="top-item-link"><a href="/browse.jsp?id=bakerynpastry&amp;trk=gnav" class="top-item-link">Bakery <span class="amp">&amp;</span><br /> <span>Pastry</span></a></span>
+			</li>
+			
+			<!-- dropdown for this globalnav menu item should be linked with 'gro' cms node -->
+			<li class="top-item-w-sub grocery" data-component="globalnav-item" data-id="gro">
+				<span class="top-item-link"><a href="/browse.jsp?id=gro&amp;trk=gnav">Grocery</a></span>
+			</li>
+			
+			<!-- dropdown for this globalnav menu item should be linked with 'fro' cms node -->
+			<li class="top-item frozen" data-component="globalnav-item" data-id="fro">
+				<span class="top-item-link"><a href="/browse.jsp?id=fro&amp;trk=gnav" class="top-item-link">Frozen</a></span>
+			</li>
+			
+			<!-- dropdown for this globalnav menu item should be linked with 'hba' cms node -->
+			<li class="top-item health"  data-component="globalnav-item" data-id="hba">
+				<span class="top-item-link"><a href="/browse.jsp?id=hba&amp;trk=gnav" class="top-item-link">Health <span class="amp">&amp;</span><br /> <span>Beauty</span></a></span>
+			</li>
+			
+			<!-- dropdown for this globalnav menu item should be linked with 'flo' cms node -->
+			<li class="top-item flowers" data-component="globalnav-item" data-id="flo">
+				<span class="top-item-link"><a href="/browse.jsp?id=flo&amp;trk=gnav">Flowers</a></span>
+			</li>
+			
+			<!-- dropdown for this globalnav menu item should be linked with 'usq' cms node -->
+			<li class="top-item wine"  data-component="globalnav-item" data-id="usq">
+				<span class="top-item-link last-top-nav-item"><a href="/browse.jsp?id=usq&amp;trk=gnav" class="top-item-link">Wine <span class="amp">&amp;</span><br /> <span>Spirits</span></a></span>
+			</li>
+		</ul>
+	</div>
+	<div class="bottom-nav">
+		<ul class="bottom-nav-items">
+			<li class="bottom-item pres-picks"><a href="#">President's Picks</a></li>
+			<li class="bottom-item top-products"><a href="#">Top Rated Produce</a></li>
+			<li class="bottom-item top-seafood"><a href="#">Top Rated Seafood</a></li>
+			<li class="bottom-item meat-deals"><a href="#">Meat Deals</a></li>
+			<li class="bottom-item kitchen-deals"><a href="#">Kitchen Deals</a></li>
+			<li class="bottom-item brand-deals"><a href="#">Brand Name Deals</a></li>
+		</ul>
+	</div>
+</div>
+<!-- GlobalNav fallback JSPF ends -->

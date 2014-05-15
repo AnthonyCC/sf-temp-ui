@@ -7,9 +7,12 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.fdstore.content.CategoryModel;
-import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.CategorySectionModel;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductFilterGroupI;
 import com.freshdirect.fdstore.content.ProductItemFilterI;
+import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 
 public class NavigationModel {
@@ -32,17 +35,17 @@ public class NavigationModel {
 	/**
 	 * The actual product container
 	 */
-	private ProductContainer selectedProductContainer;
+	private ContentNodeModel selectedContentNodeModel;
 	
 	/**
 	 * Breadcumb
 	 */
-	private List<ProductContainer> productContainerPath;
+	private List<ContentNodeModel> contentNodeModelPath;
 	
 	/**
-	 * Navigation tree, store productContainer for each level
+	 * Navigation tree, store contentNodeModel for each level
 	 */
-	private Map<NavDepth, ProductContainer> navigationHierarchy;
+	private Map<NavDepth, ContentNodeModel> navigationHierarchy;
 	
 	/**
 	 * All filters
@@ -60,6 +63,9 @@ public class NavigationModel {
 	
 	private List<CategoryModel> regularCategories;
 	private List<CategoryModel> preferenceCategories;
+	private List<CategoryModel> popularCategories;
+	private List<CategorySectionModel> categorySections;
+	private List<DepartmentModel> departments;
 	private boolean productListing;
 	
 	public NavDepth getNavDepth() {
@@ -74,22 +80,22 @@ public class NavigationModel {
 	public void setLeftNav(List<MenuBoxData> leftNav) {
 		this.leftNav = leftNav;
 	}
-	public ProductContainer getSelectedProductContainer() {
-		return selectedProductContainer;
+	public ContentNodeModel getSelectedContentNodeModel() {
+		return selectedContentNodeModel;
 	}
-	public void setSelectedProductContainer(ProductContainer selectedProductContainer) {
-		this.selectedProductContainer = selectedProductContainer;
+	public void setSelectedContentNodeModel(ContentNodeModel selectedContentNodeModel) {
+		this.selectedContentNodeModel = selectedContentNodeModel;
 	}
-	public List<ProductContainer> getProductContainerPath() {
-		return productContainerPath;
+	public List<ContentNodeModel> getContentNodeModelPath() {
+		return contentNodeModelPath;
 	}
-	public void setProductContainerPath(List<ProductContainer> productContainerPath) {
-		this.productContainerPath = productContainerPath;
+	public void setContentNodeModelPath(List<ContentNodeModel> ContentNodeModelPath) {
+		this.contentNodeModelPath = ContentNodeModelPath;
 	}
-	public Map<NavDepth, ProductContainer> getNavigationHierarchy() {
+	public Map<NavDepth, ContentNodeModel> getNavigationHierarchy() {
 		return navigationHierarchy;
 	}
-	public void setNavigationHierarchy(Map<NavDepth, ProductContainer> navigationHierarchy) {
+	public void setNavigationHierarchy(Map<NavDepth, ContentNodeModel> navigationHierarchy) {
 		this.navigationHierarchy = navigationHierarchy;
 	}
 	public List<CategoryModel> getRegularCategories() {
@@ -104,10 +110,10 @@ public class NavigationModel {
 	public void setPreferenceCategories(List<CategoryModel> preferenceCategories) {
 		this.preferenceCategories = preferenceCategories;
 	}
-	public Set<ProductItemFilterI> getActivelFilters() {
+	public Set<ProductItemFilterI> getActiveFilters() {
 		return activelFilters;
 	}
-	public void setActivelFilters(Set<ProductItemFilterI> activelFilters) {
+	public void setActiveFilters(Set<ProductItemFilterI> activelFilters) {
 		this.activelFilters = activelFilters;
 	}
 	public FDUserI getUser() {
@@ -127,5 +133,26 @@ public class NavigationModel {
 	}
 	public void setProductListing(boolean productListing) {
 		this.productListing = productListing;
+	}
+	public boolean hasSuperDepartment() {
+		return (selectedContentNodeModel instanceof SuperDepartmentModel);
+	}
+	public List<CategoryModel> getPopularCategories() {
+		return popularCategories;
+	}
+	public void setPopularCategories(List<CategoryModel> popularCategories) {
+		this.popularCategories = popularCategories;
+	}
+	public List<DepartmentModel> getDepartments() {
+		return departments;
+	}
+	public void setDepartments(List<DepartmentModel> departments) {
+		this.departments = departments;
+	}
+	public List<CategorySectionModel> getCategorySections() {
+		return categorySections;
+	}
+	public void setCategorySections(List<CategorySectionModel> categorySections) {
+		this.categorySections = categorySections;
 	}
 }

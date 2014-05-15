@@ -8,10 +8,13 @@
 <%@ page import="com.freshdirect.fdstore.content.MyFD"%>
 <%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
 <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature' %>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter' %>
+
 <%@ page import='java.util.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<% if (com.freshdirect.fdstore.FDStoreProperties.isNewGlobalNav()) { /* new globalnav, please change when we no longer need the old one */ %>
+<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
   <%@ include file="/common/template/includes/footer_grid24.jspf" %>
 <% } else { %>
 	<%

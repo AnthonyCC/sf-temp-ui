@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.FilteringProductItem;
-import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.customer.FDUserI;
 
 public class BrowseDataContext extends BrowseData {
@@ -22,7 +22,7 @@ public class BrowseDataContext extends BrowseData {
 	private List<FilteringProductItem> unfilteredItems = new ArrayList<FilteringProductItem>();
 	
 	@JsonIgnore
-	private ProductContainer currentContainer;
+	private ContentNodeModel currentContainer;
 	
 	@JsonIgnore
 	private NavigationModel navigationModel;
@@ -56,11 +56,11 @@ public class BrowseDataContext extends BrowseData {
 		this.unfilteredItems = unfilteredItems;
 	}
 
-	public ProductContainer getCurrentContainer() {
+	public ContentNodeModel getCurrentContainer() {
 		return currentContainer;
 	}
 
-	public void setCurrentContainer(ProductContainer currentContainer) {
+	public void setCurrentContainer(ContentNodeModel currentContainer) {
 		this.currentContainer = currentContainer;
 	}
 

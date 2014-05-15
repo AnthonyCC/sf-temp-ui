@@ -78,6 +78,9 @@ public class FDContentTypes {
 	
 	public final static ContentType TAG = ContentType.get("Tag");
 	public final static ContentType PRODUCT_FILTER = ContentType.get("ProductFilter");
+	public final static ContentType SUPER_DEPARTMENT = ContentType.get("SuperDepartment");
+	public final static ContentType CATEGORY_SECTION = ContentType.get("CategorySection");
+	public final static ContentType GLOBAL_NAVIGATION = ContentType.get("GlobalNavigation");
 	
 	private FDContentTypes() {
 	}

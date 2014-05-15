@@ -4,6 +4,7 @@ public enum NavDepth {
 	
 	DEPARTMENT(0), CATEGORY(1), SUB_CATEGORY(2), SUB_SUB_CATEGORY(3);
 	
+	
 	private int level;
 	
 	NavDepth(int level){

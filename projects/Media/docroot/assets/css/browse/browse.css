@@ -337,3 +337,120 @@
   overflow: hidden;
 }
 
+/* ---------------------------- */
+/* SUPER DEPARTMENT PAGE STYLES */
+/* ---------------------------- */
+
+
+/* SUPER DEPT CONTAINER GENERAL */
+.superdept{
+  width:725px;
+}
+
+.superdept h1{
+  font-family:'EagleBook', Verdana, Arial, sans-serif;
+  color:#663;
+  font-size: 28px;
+}
+
+.superdept h1,
+.superdept .department h2,
+.superdept .popular h3{
+  text-transform: uppercase;
+}
+
+.superdept a:link, 
+.superdept a:visited,
+.superdept a:hover,
+.superdept a:active {
+  color:#360;
+  cursor:pointer;
+  text-decoration:none;
+}
+
+.superdept .popular a:hover{
+  text-decoration:underline;
+}
+
+.superdept ul{
+  list-style-type: none;
+}
+
+.superdept ul,
+.superdept li{
+  margin:0;
+  padding:0;
+}
+
+.superdept .clear{
+  clear:both;
+  width:100%;
+  height:1px;
+}
+
+/* DEPARTMENT BOX */
+.superdept .department{
+  margin-bottom:20px;
+  padding-left:150px; 
+}
+
+.superdept .department h1,
+.superdept .department p{
+  margin:0;
+  padding:0;
+}
+
+.superdept .department p{
+  font-size:13px;
+}
+
+.superdept .department h2{
+  color:#74914C;
+  font-size:24px;
+  margin-top:10px;
+  margin-bottom:0px;
+  padding:0;
+}
+
+/* DEPARTMENT PIC */
+.superdept .pic{
+  float:left;
+  margin-left:-150px;
+  text-align:center;
+  width:150px;
+  margin-top:10px;
+}
+
+.superdept .pic img{
+  max-width:140px;
+  max-height:140px;
+}
+
+/* POPULAR CATEGORIES */
+.superdept .popular{
+  margin-top:10px;
+}
+
+.superdept .popular a{
+  font-size:12px;
+}
+
+.superdept .popular h3{
+  color:#a8a87f;
+  font-size:11px;
+  margin-bottom:5px;
+  font-weight:bold;
+}
+
+.superdept .popular .col{
+  border-top:1px solid #a8a87f;
+  display:inline-block;
+  vertical-align:top;
+  width:30%;
+  padding-top:5px;  
+  margin-right:10px;
+}
+
+/* -------------------------------- */
+/* SUPER DEPARTMENT PAGE STYLES END */
+/* -------------------------------- */

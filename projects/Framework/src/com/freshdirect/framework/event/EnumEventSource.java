@@ -27,6 +27,10 @@ public enum EnumEventSource {
 	pdp_main("pdp_main"),
 	EB("EB"), //PDP Even Better!
 	LTYLT("LTYLT"), //PDP Like That? You'll Love This.
+
+	SDFR("SDFR"), //GlobalNav - SuperDepartment Featured Products Recommender
+	SDMR("SDMR"), //GlobalNav - SuperDepartment Merchant Recommender
+	
 	DFR("DFR"), //Browse - Department Featured Products Recommender
 	DMR("DMR"), //Browse - Department Merchant Recommender
 	CSR("CSR"), //Browse - Category Scarab Recommender

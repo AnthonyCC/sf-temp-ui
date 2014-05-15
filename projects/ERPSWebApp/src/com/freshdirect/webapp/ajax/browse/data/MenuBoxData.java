@@ -14,6 +14,7 @@ public class MenuBoxData extends BasicData {
 	}
 	
 	public enum MenuBoxType{
+		SUPERDEPARTMENT(false),
 		DEPARTMENT(false),
 		CATEGORY(false),
 		SUB_CATEGORY(true),
@@ -54,6 +55,13 @@ public class MenuBoxData extends BasicData {
 	}
 	public void setItems(List<MenuItemData> items) {
 		this.items = items;
+	}
+	public void addItems(List<MenuItemData> items) {
+		if (this.items == null) {
+			this.items = items;
+		} else {
+			this.items.addAll(items);
+		}
 	}
 	public MenuBoxDisplayType getDisplayType() {
 		return displayType;

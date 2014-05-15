@@ -208,4 +208,14 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	<tag>
+		<name>globalnav</name>
+		<tagclass>com.freshdirect.webapp.globalnav.GlobalNavTag</tagclass>
+		<info> </info>
+		<attribute>
+			<name>name</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 </taglib>

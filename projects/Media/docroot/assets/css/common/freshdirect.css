@@ -508,6 +508,11 @@ section.main .leftnav .menuBox hr {
   padding-left: 5px;
 }
 
+.browse-popup-content h3.section-big{
+  font-size:14px;
+  line-height:26px;
+}
+
 .browse-popup-content li a {
   display: block;
   line-height: 22px;

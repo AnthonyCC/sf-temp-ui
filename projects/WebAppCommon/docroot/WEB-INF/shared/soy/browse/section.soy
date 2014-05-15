@@ -37,7 +37,10 @@
  * @param lastLevel max deepness
  */
 {template .section autoescape="false"}
-{if $section} 
+{let $isSuperDeptPage : $section.departments and length($section.departments) > 0 /}
+
+{if $section and (not $isSuperDeptPage) } 
+
   <section {if $section.sections and length($section.sections) > 0}class="hasSubSections"{/if}>
     {if $section.headerText}
         <h2 {if $level == $lastLevel}class="last"{/if}>{$section.headerText}</h2>
@@ -84,4 +87,3 @@
   </section>
 {/if}
 {/template}
-

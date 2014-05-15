@@ -473,7 +473,6 @@ public class FDStoreProperties {
 	private final static String PROP_TIMESLOT_GRID = "fdstore.isNewFDTimeslotGridEnabled";
 	
 	private final static String WS_PROMOTION_PRODUCTION_MODE = "fdstore.ws.promotion.production.mode";
-    private final static String PROP_NEW_GLOBAL_NAV = "fdstore.newglobalnav";	
 	private static final String PROP_PAYMENT_METHOD_VERIFICATION_ENABLED="fdstore.paymentmethod.verify";
 	private static final String PROP_PAYMENT_METHOD_VERIFICATION_LIMIT="fdstore.paymentmethod.verify.limit";
 	
@@ -1137,8 +1136,6 @@ public class FDStoreProperties {
 
         defaults.put(SMARTSTORE_QUICKBUY_NEWALERT_ENABLED, "false");
 
-        defaults.put(PROP_NEW_GLOBAL_NAV, "false");
-		
 		defaults.put(IPHONE_SEARCH_FILTER_DISCONTINUED_ONLY, "false");
 
         defaults.put(SESSION_LOGGING_ENABLED, "true");
@@ -1278,6 +1275,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.pdplayout2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.pplayout2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.leftnav2014", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.globalnav2014", "GLOBAL:ENABLED,true;");
         
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
@@ -2783,10 +2781,6 @@ public class FDStoreProperties {
 
     public static String getTwoMonthTrailDPrice() {
         return get(PROP_TWO_MONTH_TRIAL_PASS_PRICE);
-    }
-
-    public static boolean isNewGlobalNav() {
-        return Boolean.valueOf(get(PROP_NEW_GLOBAL_NAV));
     }
 
     public static boolean isPaymentMethodVerificationEnabled() {

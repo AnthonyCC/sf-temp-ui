@@ -1242,6 +1242,10 @@ public class CategoryModel extends ProductContainer {
         }
 	}
 	
+	public Image getGlobalNavPostNameImage() {
+        return FDAttributeFactory.constructImage(this, "globalNavPostNameImage");
+	}
+
 	private boolean isValidAssortmentPromotion(String productPromotionType, String promotionId){		
 		return (null !=FDProductAssortmentPromotionFactory.getInstance().getProductPromotion(productPromotionType,promotionId))?true:false;
 	}

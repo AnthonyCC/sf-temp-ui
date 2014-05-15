@@ -1817,6 +1817,12 @@ div.control, div.slotRow, div.time {
         z-index:10000;
 	}
 
+  #toptoolbar #unrecognized,
+  #toptoolbar #location-messages{
+      width:970px;
+      margin:0 auto;
+  }
+
 	.orange {
         color:#F93;
 	}

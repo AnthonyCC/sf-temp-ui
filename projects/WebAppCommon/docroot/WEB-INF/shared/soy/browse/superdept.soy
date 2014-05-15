@@ -1,0 +1,65 @@
+{namespace browse}
+
+/**
+* @param sections list of departments
+*/
+{template .superDepartment autoescape="false"}
+  {if $sections and length($sections) > 0}
+    {foreach $section in $sections}
+       {call browse.deptWrapper data="$section" /}
+    {/foreach}
+  {/if}
+{/template}
+
+/**
+* @param? superDepartmentName super department name
+* @param? departments list of departments in super dept
+*/
+{template .deptWrapper autoescape="false"}
+  {if $departments and length($departments) > 0}
+    <div class="superDepartment">
+      <div class="browseContent">
+        <div class="browse-loading">Loading products</div>
+        <div class="superdept">
+          {if $superDepartmentName}<h1>{$superDepartmentName}</h1>{/if}
+          {foreach $department in $departments}
+            {call browse.department data="$department"}{/call}
+          {/foreach}
+        </div>
+      </div>
+    </div>
+  {/if}
+{/template}
+
+/**
+* @param id department id
+* @param name department name
+* @param deptPhoto department image
+* @param popularCategoryColumns list of popular categories
+* @param altText description of department
+*/
+{template .department autoescape="false"}
+  <div class="department">
+    {if $deptPhoto}
+      <div class="pic"><img src="{$deptPhoto}" alt="Department {$name}" /></div>
+    {/if}
+    <a href="browse.jsp?id={$id}" data-component="categorylink" data-id="{$id}"><h2>{$name}</h2></a>
+    {if $altText}
+      <p>{$altText}</p>
+    {/if}
+    {if length($popularCategoryColumns) > 0}
+      <div class="popular">
+        <h3>Popular categories</h3>
+        {foreach $column in $popularCategoryColumns}
+          <ul class="col">
+            {foreach $category in $column}
+              <li><a href="browse.jsp?id={$category.id}" data-component="categorylink" data-id="{$category.id}">{$category.name}</a></li>
+            {/foreach}
+          </ul>
+        {/foreach}
+      </div>
+    {/if}
+    <div class="clear">&nbsp;</div>
+  </div>
+{/template}
+

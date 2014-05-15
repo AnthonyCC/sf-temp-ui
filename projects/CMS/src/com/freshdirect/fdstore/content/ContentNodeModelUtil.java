@@ -62,6 +62,9 @@ public class ContentNodeModelUtil {
 		CONTENT_TO_TYPE_MAP.put("RecommenderStrategy", ContentNodeModel.TYPE_RECOMMENDER_STRATEGY);
 		CONTENT_TO_TYPE_MAP.put("FAQ", ContentNodeModel.TYPE_FAQ);
 		CONTENT_TO_TYPE_MAP.put("Page", ContentNodeModel.TYPE_PAGE);
+		CONTENT_TO_TYPE_MAP.put("SuperDepartment", ContentNodeModel.TYPE_SUPERDEPARTMENT);
+		CONTENT_TO_TYPE_MAP.put("CategorySection", ContentNodeModel.TYPE_CATEGORY_SECTION);
+		CONTENT_TO_TYPE_MAP.put("GlobalNavigation", ContentNodeModel.TYPE_GLOBAL_NAVIGATINO);
 	}
 
 	public static LinkedHashMap<String,Class<?>> TYPE_MODEL_MAP = new LinkedHashMap<String,Class<?>>();
@@ -114,6 +117,9 @@ public class ContentNodeModelUtil {
         TYPE_MODEL_MAP.put("Tag", TagModel.class);
         TYPE_MODEL_MAP.put("ProductFilterMultiGroup", ProductFilterMultiGroupModel.class);
         TYPE_MODEL_MAP.put("SortOption", SortOptionModel.class);
+        TYPE_MODEL_MAP.put("SuperDepartment", SuperDepartmentModel.class);
+        TYPE_MODEL_MAP.put("GlobalNavigation", GlobalNavigationModel.class);
+        TYPE_MODEL_MAP.put("CategorySection", CategorySectionModel.class);
 	}
 
 	/**

@@ -1,16 +1,19 @@
-<%@ page import='java.util.*'
-%><%@ page import='com.freshdirect.fdstore.content.*'
-%><%@ page import='com.freshdirect.fdstore.customer.*'
-%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
-%><%@ page import='com.freshdirect.webapp.util.*'
-%><%@ page import='com.freshdirect.fdstore.*'
-%><%@ page import='java.net.*'
-%><%@ taglib uri='oscache' prefix='oscache' %>
+<%@ page import='java.util.*'%>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import='com.freshdirect.fdstore.customer.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.webapp.util.*'%>
+<%@ page import='com.freshdirect.fdstore.*'%>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature' %>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter' %>
+<%@ page import='java.net.*'%>
+<%@ taglib uri='oscache' prefix='oscache' %>
 
 <% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); %>
 
-<% if(FDStoreProperties.isNewGlobalNav()) { %>
-	<%@ include file="/common/template/includes/globalnav_grid24.jspf" %>
+<% if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, user)) { %>
+    <jwr:script src="/fdlibsyui.js"  useRandomParam="false" />
+	<%@ include file="/common/template/includes/globalnav_sr.jspf" %>
 <% } else { %>
 
 <% //expanded page dimensions

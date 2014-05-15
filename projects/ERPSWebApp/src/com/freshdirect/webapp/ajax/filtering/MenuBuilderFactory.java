@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.CategorySectionModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.FilteringProductItem;
@@ -18,6 +19,8 @@ import com.freshdirect.fdstore.content.ProductFilterGroupI;
 import com.freshdirect.fdstore.content.ProductFilterGroupType;
 import com.freshdirect.fdstore.content.ProductItemFilterI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.webapp.ajax.browse.data.BrowseDataContext;
 import com.freshdirect.webapp.ajax.browse.data.CategoryData;
 import com.freshdirect.webapp.ajax.browse.data.DataUtil;
@@ -64,8 +67,12 @@ public class MenuBuilderFactory {
 		return factory;
 	}
 	
-	public static MenuBuilderI createBuilderByPageType(NavDepth depth){
+	public static MenuBuilderI createBuilderByPageType(NavDepth depth, boolean hasSuperDepartment){
 		
+		if (hasSuperDepartment) {
+			return getInstance().new SuperDeptPageMenuBuilder();
+		}
+
 		switch (depth) {
 		
 		case DEPARTMENT:{
@@ -90,6 +97,53 @@ public class MenuBuilderFactory {
 		}
 	}
 	
+	public class SuperDeptPageMenuBuilder implements MenuBuilderI{
+		
+		public List<MenuBoxData> buildMenu(List<ProductFilterGroupI> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav){
+			
+			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
+			
+			String superDeptId = navModel.getSelectedContentNodeModel().getContentName();
+			
+			// create superdepartment box
+			if (navModel.hasSuperDepartment()) {
+				MenuBoxData domain = new MenuBoxData();
+				domain.setName(navModel.getSelectedContentNodeModel().getFullName());
+				domain.setId(superDeptId + "_superdepartment");
+				domain.setBoxType(MenuBoxType.SUPERDEPARTMENT);
+				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+				
+				List<MenuItemData> items = new ArrayList<MenuItemData>();
+//				items.add(new MenuItemData(((SuperDepartmentModel)navModel.getSelectedContentNodeModel()).getBrowseName()));
+				
+				domain.setItems(createDeptMenuItems(navModel.getDepartments(), items, navModel.getUser()));
+
+				menu.add(domain);
+			}
+
+			// create popular categories box
+			if (!navModel.getPopularCategories().isEmpty()) {
+				MenuBoxData domain = new MenuBoxData();
+				domain.setName("Popular Categories");
+				domain.setId(superDeptId + "_popular");
+				domain.setBoxType(MenuBoxType.CATEGORY);
+				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+				
+				List<MenuItemData> items = new ArrayList<MenuItemData>();
+//				items.add(new MenuItemData(((SuperDepartmentModel)navModel.getSelectedContentNodeModel()).getBrowseName()));
+				
+				domain.setItems(createCatMenuItems(navModel.getPopularCategories(), items, navModel.getUser()));
+
+				menu.add(domain);
+			}
+
+			return menu;
+		}
+		
+	}
+
 	public class DeptPageMenuBuilder implements MenuBuilderI{
 		
 		public List<MenuBoxData> buildMenu(List<ProductFilterGroupI> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav){
@@ -98,9 +152,27 @@ public class MenuBuilderFactory {
 			
 			String deptId = navModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT).getContentName();
 			
-				
 			// create categories and preference categories box
-			if (!navModel.getRegularCategories().isEmpty()) {
+			if (!navModel.getCategorySections().isEmpty() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, navModel.getUser())) {
+				
+				MenuBoxData domain = new MenuBoxData();
+				domain.setName("SHOP FOR...");
+				domain.setId(deptId + "_regular");
+				domain.setBoxType(MenuBoxType.CATEGORY);
+				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+
+				for (CategorySectionModel categorySection : navModel.getCategorySections()) {
+
+					List<MenuItemData> items = new ArrayList<MenuItemData>();
+					items.add(new MenuItemData(categorySection.getHeadline()));
+					domain.addItems(createCatMenuItems(categorySection.getSelectedCategories(), items, navModel.getUser()));
+
+				}
+
+				menu.add(domain);
+
+			} else if (!navModel.getRegularCategories().isEmpty()) {
 
 				// regular categories
 
@@ -164,7 +236,16 @@ public class MenuBuilderFactory {
 				List<MenuItemData> menuItems = new ArrayList<MenuItemData>();				
 				
 				//create categories and preference categories box
-				if(!navModel.getRegularCategories().isEmpty()){
+				if (!navModel.getCategorySections().isEmpty() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, navModel.getUser())) {
+					
+					for (CategorySectionModel categorySection : navModel.getCategorySections()) {
+						MenuItemData sectionTitle = new MenuItemData();
+						sectionTitle.setName(categorySection.getHeadline());
+						menuItems.add(sectionTitle);
+						createCatMenuItems(categorySection.getSelectedCategories(), menuItems, navModel.getUser());
+					}
+					
+				} else if(!navModel.getRegularCategories().isEmpty()){
 					
 					//Shop By Type header
 					menuItems.add(SHOP_BY_TYPE_HEADER);
@@ -190,10 +271,10 @@ public class MenuBuilderFactory {
 			}
 			
 			// sub categories box on category and sub category page
-			if(navModel.getNavigationHierarchy().get(NavDepth.CATEGORY).getSubcategories()!=null && 
-			   navModel.getNavigationHierarchy().get(NavDepth.CATEGORY).getSubcategories().size()>0){
+			if(((CategoryModel)navModel.getNavigationHierarchy().get(NavDepth.CATEGORY)).getSubcategories()!=null && 
+			   ((CategoryModel)navModel.getNavigationHierarchy().get(NavDepth.CATEGORY)).getSubcategories().size()>0){
 				
-				ProductContainer cat = navModel.getNavigationHierarchy().get(NavDepth.CATEGORY);
+				CategoryModel cat = (CategoryModel)navModel.getNavigationHierarchy().get(NavDepth.CATEGORY);
 				
 				if (!NavigationUtil.isCategoryHiddenInContext(navModel.getUser(), (CategoryModel)cat)) {
 					MenuBoxData domain = new MenuBoxData();
@@ -219,7 +300,7 @@ public class MenuBuilderFactory {
 						items.add(allProductsItem);					
 					}
 					
-					domain.setItems(createCatMenuItems(cat.getSubcategories(), items, navModel.getUser()));
+					domain.setItems(createCatMenuItems(((CategoryModel)navModel.getNavigationHierarchy().get(NavDepth.CATEGORY)).getSubcategories(), items, navModel.getUser()));
 					
 					if(navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY)!=null){
 						checkSelected(domain, navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY).getContentName());
@@ -233,11 +314,11 @@ public class MenuBuilderFactory {
 			
 			// sub sub categories box on sub and sub sub categories page (not on special layout)
 			if(navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY)!=null &&
-			   navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY).getSubcategories()!=null &&
-			   navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY).getSubcategories().size()>0 &&
+			   ((CategoryModel)navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY)).getSubcategories()!=null &&
+			   ((CategoryModel)navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY)).getSubcategories().size()>0 &&
 			   !nav.isSpecialPage()){
 				
-				ProductContainer subCat = navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY);
+				CategoryModel subCat = (CategoryModel)navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY);
 				
 				if (!NavigationUtil.isCategoryHiddenInContext(navModel.getUser(), (CategoryModel)subCat)) {
 					MenuBoxData domain = new MenuBoxData();
@@ -275,9 +356,8 @@ public class MenuBuilderFactory {
 			
 			if(!nav.isSpecialPage()){
 				// create filter boxes
-				createFilterMenuDomains(filterGroups, navModel.getActivelFilters(), menu, navModel.isProductListing());				
+				createFilterMenuDomains(filterGroups, navModel.getActiveFilters(), menu, navModel.isProductListing());				
 			}
-				
 			
 			return menu;
 			
@@ -428,6 +508,35 @@ public class MenuBuilderFactory {
 		return menuItems;
 	}
 	
+	private List<MenuItemData> createDeptMenuItems(List<DepartmentModel> departments, List<MenuItemData> menuItems, FDUserI user){
+		
+		if(menuItems==null){
+			menuItems = new ArrayList<MenuItemData>();			
+		}
+		
+		
+		List<MenuItemData> newMenuItems = new ArrayList<MenuItemData>();	
+		
+		for(DepartmentModel department : departments){
+//TODO: needed for departments?
+//			if (NavigationUtil.hideCategory(user, category)) {
+//				continue;
+//			}
+			MenuItemData menuItem = new MenuItemData();
+			menuItem.setActive(true);
+			menuItem.setId(department.getContentName());
+			menuItem.setName(department.getFullName());
+			menuItem.setSelected(false);
+			menuItem.setUrlParameter(department.getContentName());
+			newMenuItems.add(menuItem);
+		}
+		
+		Collections.sort(newMenuItems, DataUtil.NAME_COMPARATOR);
+		menuItems.addAll(newMenuItems);
+		
+		return menuItems;
+	}
+	
 	private List<MenuItemData> createCatMenuItems(List<CategoryModel> categories, List<MenuItemData> menuItems, FDUserI user){
 		
 		if(menuItems==null){
@@ -471,7 +580,7 @@ public class MenuBuilderFactory {
 		List<MenuBoxData> menu = navModel.getLeftNav();
 		
 		Map<String, ProductItemFilterI> allFilters = ProductItemFilterUtil.prepareFilters(navModel.getAllFilters());
-		Map<String, ProductItemFilterI> activeFilters = ProductItemFilterUtil.prepareFilters(navModel.getActivelFilters());
+		Map<String, ProductItemFilterI> activeFilters = ProductItemFilterUtil.prepareFilters(navModel.getActiveFilters());
 		List<FilteringProductItem> items = new ArrayList<FilteringProductItem>();
 		ProductItemFilterUtil.collectAllItems(browseData.getSectionContexts(), items);
 		
@@ -577,7 +686,7 @@ public class MenuBuilderFactory {
 							ProductItemFilterUtil.collectAllItems(section.getSectionContexts(), products);							
 						}
 
-						products = ProductItemFilterUtil.getFilteredProducts(products, navModel.getActivelFilters());
+						products = ProductItemFilterUtil.getFilteredProducts(products, navModel.getActiveFilters());
 						
 						checkDefaultSkuAvailability(products);
 						

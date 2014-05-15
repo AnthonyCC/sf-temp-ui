@@ -62,6 +62,9 @@ public class UniqueContentKeyValidator implements ContentValidatorI {
 		UNIQUE_TYPES.add(FDContentTypes.RECIPE_SEARCH_CRITERIA);		
 		UNIQUE_TYPES.add(FDContentTypes.YMAL_SET);
 		UNIQUE_TYPES.add(FDContentTypes.STARTER_LIST);
+		UNIQUE_TYPES.add(FDContentTypes.SUPER_DEPARTMENT);
+		UNIQUE_TYPES.add(FDContentTypes.CATEGORY_SECTION);
+		UNIQUE_TYPES.add(FDContentTypes.GLOBAL_NAVIGATION);
 		
 	}
 

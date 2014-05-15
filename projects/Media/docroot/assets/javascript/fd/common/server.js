@@ -55,12 +55,12 @@ var FreshDirect = FreshDirect || {};
 
         if('spinner' in config) {
           Bacon.later(config.spinner.timeout,'show').filter(state).onValue(function(v){
-            if(v==='show') { $(config.spinner.element).addClass('loading'); }
+            if(v==='show') { $(config.spinner.element).first().addClass('loading'); }
           });         
         
           state.onValue(function(show){
             if(!show) {
-              $(config.spinner.element).removeClass('loading');
+              $(config.spinner.element).first().removeClass('loading');
             }
           });
         }

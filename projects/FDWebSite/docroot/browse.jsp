@@ -15,6 +15,8 @@
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
 <fd:BrowsePartialRolloutRedirector user="<%=user%>" id="${param.id}"/>
 
+<%--Might be useless
+ <potato:globalnav/> --%> 
 <potato:browse/>
 
 <%-- OAS variables --%>
@@ -62,6 +64,8 @@
       <soy:render template="browse.sortBar" data="${browsePotato.sortOptions}" />
     </div>
 
+    <soy:render template="browse.superDepartment" data="${browsePotato.sections}" />
+
     <div class="browse-media">
       <soy:render template="browse.media" data="${browsePotato.descriptiveContent}" />
     </div>
@@ -97,8 +101,10 @@
     <script>
       window.FreshDirect = window.FreshDirect || {};
       window.FreshDirect.browse = window.FreshDirect.browse || {};
+      window.FreshDirect.globalnav = window.FreshDirect.globalnav || {};
 
       window.FreshDirect.browse.data = <fd:ToJSON object="${browsePotato}" noHeaders="true"/>
+      window.FreshDirect.globalnav.data = <fd:ToJSON object="${globalnav}" noHeaders="true"/>
       window.FreshDirect.coremetricsData = window.FreshDirect.browse.data.coremetrics;
     </script>
   </tmpl:put>
