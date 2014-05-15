@@ -1275,7 +1275,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.pdplayout2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.pplayout2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.leftnav2014", "GLOBAL:ENABLED,true;");
-        defaults.put("feature.rollout.globalnav2014", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.globalnav2014", "GLOBAL:ENABLED,false;");
         
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
