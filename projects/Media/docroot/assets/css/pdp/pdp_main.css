@@ -359,6 +359,10 @@ span.cssbutton.annotation:hover {
 	margin-top:20px;
 }
 
+.pdp-atc-buttons {
+  white-space: nowrap;
+}
+
 .pdp-atc-button-wrapper {
 	display:inline-block;
 	position:relative;

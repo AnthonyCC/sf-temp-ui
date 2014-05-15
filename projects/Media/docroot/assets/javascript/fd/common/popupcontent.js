@@ -113,6 +113,14 @@ var FreshDirect = FreshDirect || {};
       } else {
         this.$trigger.on("mouseover", $.proxy(this.showDelayed, this));
         this.$trigger.on("mouseout", $.proxy(this.clearDelay, this));
+        // kill click event on touch devices
+        this.$trigger.on("touchstart", $.proxy(function (e) {
+          if (!this.shown) {
+            e.preventDefault();
+            console.log('click prevented?');
+            this.showDelayed();
+          }
+        }, this));
       }
       if (!this.config.overlay && !this.config.openonclick) {
         this.$trigger.on("mouseout", $.proxy(this.hideDelayed, this));
