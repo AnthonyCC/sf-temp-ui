@@ -674,7 +674,7 @@ public class ProductDetailPopulator {
 		// 5. heat rating
 		item.setHeatRating(product.getHeatRating());
 		if (item.getHeatRating() > 0) {
-			String heatRatingMediaPath = "/media/editorial/brands/fd_heatscale/fd_heatscale.html";
+			String heatRatingMediaPath = "/media/brands/fd_heatscale/fd_heatscale.html";
 			try {
 				item.setHeatRatingScale(fetchMedia(heatRatingMediaPath, user, false));
 			} catch (IOException e) {
