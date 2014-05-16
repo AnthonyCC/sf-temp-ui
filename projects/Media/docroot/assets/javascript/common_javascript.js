@@ -242,6 +242,13 @@ function popup(URL, type, name) {
 
 /* send a url back to the opener */
 function backtoWin(url) {
+	try {
+		if (window.top.FreshDirect.components.ifrPopup.popup.shown) {
+			window.top.location=url;
+		}
+	} catch(e) {
+		
+	}
 	if (window.opener && !window.opener.closed){
 		parent.window.opener.location = url ;
 		parent.window.opener.focus();

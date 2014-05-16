@@ -140,6 +140,17 @@ var FreshDirect = FreshDirect || {};
         } catch(e) {
           
         }
+
+        //re-size overlay based on contents loaded
+        $($ifr[0].contentWindow).load(function() {
+        	var $ifr = $('#ifrPopup iframe'), $body = $($ifr[0].contentWindow.document.body);
+
+            try {
+            	$ifr[0].contentWindow.resizeTo(Math.min(1000, Math.max(config.width, $body.innerWidth()+$('.qs-popup-close-icon').width())), config.height+$('.qs-popup-close-icon').height());
+            } catch(e) {
+            	
+            }
+        });
         
       }
     }
