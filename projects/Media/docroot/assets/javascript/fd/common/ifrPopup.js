@@ -143,10 +143,13 @@ var FreshDirect = FreshDirect || {};
 
         //re-size overlay based on contents loaded
         $($ifr[0].contentWindow).load(function() {
-        	var $ifr = $('#ifrPopup iframe'), $body = $($ifr[0].contentWindow.document.body);
+        	var $ifr = $('#ifrPopup iframe'), $body = $($ifr[0].contentWindow.document.body), height, width;
 
             try {
-            	$ifr[0].contentWindow.resizeTo(Math.min(1000, Math.max(config.width, $body.innerWidth()+$('.qs-popup-close-icon').width())), config.height+$('.qs-popup-close-icon').height());
+            	var configH = config.height||400, configW = config.width||400;
+            	height = configH+$('.qs-popup-close-icon').height();
+            	width = Math.min(1000, Math.max(configW, $body.innerWidth()+$('.qs-popup-close-icon').width()));
+            	$ifr[0].contentWindow.resizeTo(width, height);
             } catch(e) {
             	
             }
