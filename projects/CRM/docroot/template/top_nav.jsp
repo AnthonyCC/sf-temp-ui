@@ -10,7 +10,7 @@
 
 	<jsp:include page="/shared/template/includes/server_info.jsp"/>
         
-	<meta http-equiv="X-UA-Compatible" content="IE=8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   	<fd:css href="/assets/css/common/jquery-ui_base/jquery-ui.css" /><%-- jQuery UI base, override in global.css --%>
 	<link rel="stylesheet" type="text/css" href="/ccassets/javascript/timepicker/picker.css" >
 	<link rel="stylesheet" type="text/css" href="/assets/css/giftcards.css" />
