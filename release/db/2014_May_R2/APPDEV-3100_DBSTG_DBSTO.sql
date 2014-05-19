@@ -6,20 +6,20 @@ Insert into CUST.AFFILIATE
 Insert into CUST.AFFILIATE_MERCHANT
    (AFFILIATE_CODE, PAYMENT_TYPE, MERCHANT)
  Values
-   ('FDW', 'VISA', 'Bestcellar');
+   ('FDW', 'VISA', 'FreshdirectWines');
 Insert into CUST.AFFILIATE_MERCHANT
    (AFFILIATE_CODE, PAYMENT_TYPE, MERCHANT)
  Values
-   ('FDW', 'MC', 'Bestcellar');
+   ('FDW', 'MC', 'FreshdirectWines');
 Insert into CUST.AFFILIATE_MERCHANT
    (AFFILIATE_CODE, PAYMENT_TYPE, MERCHANT)
  Values
-   ('FDW', 'ECP', 'Bestcellar');
+   ('FDW', 'ECP', 'FreshdirectWines');
 Insert into CUST.AFFILIATE_MERCHANT
    (AFFILIATE_CODE, PAYMENT_TYPE, MERCHANT)
  Values
-   ('FDW', 'DISC', 'Bestcellar');
+   ('FDW', 'DISC', 'FreshdirectWines');
 Insert into CUST.AFFILIATE_MERCHANT
    (AFFILIATE_CODE, PAYMENT_TYPE, MERCHANT)
  Values
-   ('FDW', 'AMEX', 'Bestcellar');
+   ('FDW', 'AMEX', 'FreshdirectWines');
