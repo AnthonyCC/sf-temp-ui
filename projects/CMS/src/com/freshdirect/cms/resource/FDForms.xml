@@ -671,6 +671,7 @@
 							<CmsField><attribute>RELATED_RECIPES</attribute></CmsField>                            
 							<CmsField><attribute>ymalSets</attribute></CmsField>
 							<CmsField><attribute>RECOMMENDED_ALTERNATIVES</attribute></CmsField>
+							<CmsField><attribute>disableAtpFailureRecommendation</attribute></CmsField>
 							<CmsField><attribute>PRODUCT_BUNDLE</attribute></CmsField>
 							<CmsField><attribute>PREFERRED_SKU</attribute></CmsField>
 							<CmsField><attribute>PDP_UPSELL</attribute></CmsField>
@@ -888,6 +889,7 @@
 					<CmsField><attribute>RELATED_RECIPES</attribute></CmsField>
 					<CmsField><attribute>ymalSets</attribute></CmsField>
 					<CmsField><attribute>retainOriginalSkuOrder</attribute></CmsField>
+					<CmsField><attribute>disableAtpFailureRecommendation</attribute></CmsField>
 				</fields>
 			</CmsSection>
 			<CmsSection>

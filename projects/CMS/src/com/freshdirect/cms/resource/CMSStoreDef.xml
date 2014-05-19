@@ -262,6 +262,7 @@
             <AttributeDef type="S" name="GLOBAL_MENU_LINK_LABEL" label="Global Menu Link Label"/>
 			<AttributeDef type="B" name="noGroupingByCategory" label="Disable Product Grouping By Category" inheritable="true"/>
 			<AttributeDef type="B" name="showAllByDefault" label="Show All By Default" inheritable="true"/>
+			<AttributeDef type="B" name="disableAtpFailureRecommendation" label="Disable ATP Failure Recommendation" inheritable="true"/>
 			<EnumDef type="S" name="browseRecommenderType" label="Browse Recommender Type" inheritable="true">
 				<EnumValue value="NONE" label="None"/>
 				<EnumValue value="PDP_XSELL" label="Cross-sell (first item)"/>
@@ -398,6 +399,7 @@
 			<AttributeDef type="B" name="FAVORITE_ALL_SHOW_PRICE"  label="Favorite All Show Price" inheritable="true" />
 			<AttributeDef type="B" name="noGroupingByCategory" label="Disable Product Grouping By Category" inheritable="true"/>
 			<AttributeDef type="B" name="showAllByDefault" label="Show All By Default" inheritable="true"/>
+			<AttributeDef type="B" name="disableAtpFailureRecommendation" label="Disable ATP Failure Recommendation" inheritable="true"/>
 			
 			<EnumDef type="S" name="LIST_AS"   label="List As Name" inheritable="true">
 				<EnumValue value="full" label="Full Name"/>
@@ -801,6 +803,7 @@
             <!--  SmartStore  -->
 			<AttributeDef type="B" name="EXCLUDED_RECOMMENDATION" label="Excluded Recommendation" inheritable="true"/>
 			<AttributeDef type="B" name="DISABLED_RECOMMENDATION" label="Disabled Recommendation" inheritable="true"/>
+			<AttributeDef type="B" name="disableAtpFailureRecommendation" label="Disable ATP Failure Recommendation" inheritable="true"/>
 			<EnumDef type="I" name="SS_EXPERT_WEIGHTING" label="Expert Weighting" inheritable="true">
 				<EnumValue value="-5" label="-5"/>
 				<EnumValue value="-4" label="-4"/>

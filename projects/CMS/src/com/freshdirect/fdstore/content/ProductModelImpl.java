@@ -1931,6 +1931,12 @@ inner:
         return FDAttributeFactory.constructImage(this, "PROD_IMAGE_EXTRA", Image.BLANK_IMAGE);
 	}
 	
+	@Override
+	public boolean isDisableAtpFailureRecommendation(){
+		return getAttribute("disableAtpFailureRecommendation", false);
+	}
+
+	
 	
 	@Override
 	public EnumProductLayout getSpecialLayout() {

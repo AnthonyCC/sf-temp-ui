@@ -37,6 +37,7 @@ import com.freshdirect.webapp.util.FDEventUtil;
 public class AdjustAvailabilityTag extends
 		com.freshdirect.framework.webapp.BodyTagSupport {
 
+	private static final long serialVersionUID = -6057195399225195071L;
 	private String sourcePage = null;
 	
 	
@@ -65,7 +66,9 @@ public class AdjustAvailabilityTag extends
 				FDEventUtil.logRemoveCartEvent(cartLine, request);
 			}
 		}else{
-			Map<String,FDAvailabilityInfo> unavMap = cart.getUnavailabilityMap();
+			//unavMap will be empty if ATC happened on step_2_unavail.jsp, but amounts are already set to deliverable amounts
+			//see ShoppingCartUtil.getSubTotal(clonedCart) in UnavailabilityPopulator 
+			Map<String,FDAvailabilityInfo> unavMap = cart.getUnavailabilityMap(); 
 			for (Iterator<Entry<String,FDAvailabilityInfo>> i = unavMap.entrySet().iterator(); i.hasNext();) {
 				Entry<String,FDAvailabilityInfo> entry = i.next();
 				String key = entry.getKey();
@@ -105,6 +108,21 @@ public class AdjustAvailabilityTag extends
 					FDEventUtil.logRemoveCartEvent(cartline, request);
 				}
 				unavailPasses.clear();
+			}
+			
+			//remove those which were explicitly selected for removal and the ones that are not available
+			//(if unavMap is empty because of ATC this will remove unavailable items)
+			String [] removeCartLineIds = request.getParameterValues("remove");
+			if (removeCartLineIds != null) {
+				for (String removeCartLineId : removeCartLineIds){
+					int cartLineIdInt = Integer.parseInt(removeCartLineId);
+					int cartIndex = cart.getOrderLineIndex(cartLineIdInt);
+					if (cartIndex > -1){
+						FDCartLineI cartline = cart.getOrderLineById(cartLineIdInt);
+						cart.removeOrderLine(cartIndex);
+						FDEventUtil.logRemoveCartEvent(cartline, request);
+					}
+				}
 			}
 		}
 		try {

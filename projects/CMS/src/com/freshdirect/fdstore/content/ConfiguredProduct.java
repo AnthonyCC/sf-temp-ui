@@ -505,6 +505,12 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	}
 	
 	@Override
+	public boolean isDisableAtpFailureRecommendation(){
+		return getProduct().isDisableAtpFailureRecommendation();
+	}
+
+	
+	@Override
 	public EnumProductLayout getSpecialLayout() {
 		return getProduct().getSpecialLayout();
 	}

@@ -138,6 +138,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     /* set in RegistrationControllerTag see getter for notes */
     private boolean justSignedUp = false;
     
+    private Set<ProductModel> checkoutUnavailableProducts; //set of items which failed the ATP test
+    
 	public void setLastCOSSurveySuccess(boolean lastCOSSurveySuccess) {
 		this.lastCOSSurveySuccess = lastCOSSurveySuccess;
 	}
@@ -1669,6 +1671,14 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 	public void setServerName(String serverName) {
 		this.user.setServerName(serverName);
+	}
+
+	public Set<ProductModel> getCheckoutUnavailableProducts() {
+		return checkoutUnavailableProducts;
+	}
+
+	public void setCheckoutUnavailableProducts(Set<ProductModel> checkoutUnavailableProducts) {
+		this.checkoutUnavailableProducts = checkoutUnavailableProducts;
 	}
 
 	/* cleared on first fetch if false isn't passed in to method */

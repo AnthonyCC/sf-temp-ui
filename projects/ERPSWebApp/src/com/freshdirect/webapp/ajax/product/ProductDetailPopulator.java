@@ -47,6 +47,7 @@ import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.DomainValue;
@@ -80,6 +81,7 @@ import com.freshdirect.webapp.ajax.cart.CartOperations;
 import com.freshdirect.webapp.ajax.cart.data.CartData.Quantity;
 import com.freshdirect.webapp.ajax.cart.data.CartData.SalesUnit;
 import com.freshdirect.webapp.ajax.product.data.BasicProductData;
+import com.freshdirect.webapp.ajax.product.data.CartLineData;
 import com.freshdirect.webapp.ajax.product.data.ProductConfigResponseData.VarItem;
 import com.freshdirect.webapp.ajax.product.data.ProductConfigResponseData.Variation;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
@@ -123,6 +125,33 @@ public class ProductDetailPopulator {
 		
 		return createProductData( user, product );
 	}
+	
+	public static CartLineData createCartLineData (FDUserI user, FDCartLineI cartLine) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+
+		if ( cartLine == null ) {
+			BaseJsonServlet.returnHttpError( 400, "missing cartline" );	// 400 Bad Request
+		}
+
+		CartLineData cartLineData = new CartLineData();
+		cartLineData.setRandomId(cartLine.getRandomId());
+		cartLineData.setProduct(createProductData(user, cartLine, false));
+		cartLineData.setPrice(JspMethods.formatPrice(cartLine.getPrice()));
+		String label = cartLine.getLabel();
+		if (!"".equals(label)){
+			label = " " + label;
+		}
+		cartLineData.setQuantity(new DecimalFormat("0.##").format(cartLine.getQuantity()) + label);
+		cartLineData.setDescription(cartLine.getDescription());
+		cartLineData.setConfigurationDescription(cartLine.getConfigurationDesc());
+		
+		ContentNodeModel recipe = ContentFactory.getInstance().getContentNode(cartLine.getRecipeSourceId());
+		if (recipe != null) {
+			cartLineData.setRecipeName(recipe.getFullName());
+		}
+			
+		return cartLineData;
+	}
+
 	
 	/**
 	 * Create generic product data from a cartline object

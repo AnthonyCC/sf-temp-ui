@@ -21,6 +21,7 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SuperDepartmentModel;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -45,6 +46,7 @@ public class ProductRecommenderUtil {
 	public static final int MAX_DEPT_MERCHANT_RECOMMENDER_COUNT = 5;
 	public static final int MAX_CAT_MERCHANT_RECOMMENDER_COUNT = 10;
 	public static final int MAX_CAT_SCARAB_RECOMMENDER_COUNT = 10;
+	public static final int MAX_UNAVAILABLE_REPLACEMENTS_COUNT = 9;
 	
 	public static final int MAX_UPSELL_PRODS = 12;
 	public static final int MAX_XSELL_PRODS = 12;
@@ -374,4 +376,48 @@ public class ProductRecommenderUtil {
 		    }
 		}
 	}
+	
+
+	public static List<ProductModel> getUnavailableReplacementProducts (ProductModel originalProduct, Set<ProductModel> excludedProducts){
+		List<ProductModel> replacementProducts = new ArrayList<ProductModel>();
+		if (originalProduct!=null && !originalProduct.isDisableAtpFailureRecommendation()) {
+
+			//based on QuickShopHelper.populateReplacements()
+			for (ContentNodeModel node : originalProduct.getRecommendedAlternatives()) {
+				if (node instanceof ProductModel) {
+					replacementProducts.add((ProductModel)node);
+				} else if (node instanceof SkuModel) {
+					replacementProducts.add(((SkuModel)node).getProductModel());
+				}
+			}
+			replacementProducts.removeAll(excludedProducts);
+			cleanUpProducts(replacementProducts, false, MAX_UNAVAILABLE_REPLACEMENTS_COUNT);
+			
+			
+			//append list with products in same category
+			CategoryModel parentCategory = originalProduct.getCategory();
+			if (replacementProducts.size() < MAX_UNAVAILABLE_REPLACEMENTS_COUNT){
+				List<ProductModel> siblingProducts = parentCategory.getProducts();
+				siblingProducts.removeAll(replacementProducts);
+				siblingProducts.removeAll(excludedProducts);
+				
+				cleanUpProducts(siblingProducts, true, MAX_UNAVAILABLE_REPLACEMENTS_COUNT-replacementProducts.size());
+				replacementProducts.addAll(siblingProducts);
+			}
+			
+			//append list with products under the category's parent category
+			ContentNodeModel grandpaNode = parentCategory.getParentNode(); 
+			if (replacementProducts.size() < MAX_UNAVAILABLE_REPLACEMENTS_COUNT && grandpaNode instanceof CategoryModel){
+				List<ProductModel> productsUnderGrandpa = ((CategoryModel) grandpaNode).getAllChildProductsAsList();
+				productsUnderGrandpa.removeAll(replacementProducts);
+				productsUnderGrandpa.removeAll(excludedProducts);
+				
+				cleanUpProducts(productsUnderGrandpa, true, MAX_UNAVAILABLE_REPLACEMENTS_COUNT-replacementProducts.size());
+				replacementProducts.addAll(productsUnderGrandpa);
+			}
+		}
+		return replacementProducts;
+	}
+	
+
 }

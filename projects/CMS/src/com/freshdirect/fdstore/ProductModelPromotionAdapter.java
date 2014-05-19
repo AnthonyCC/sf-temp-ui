@@ -1442,6 +1442,11 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	}
 
 	@Override
+	public boolean isDisableAtpFailureRecommendation(){
+		return productModel.isDisableAtpFailureRecommendation();
+	}
+
+	@Override
 	public EnumProductLayout getSpecialLayout() {
 		return productModel.getSpecialLayout();
 	}

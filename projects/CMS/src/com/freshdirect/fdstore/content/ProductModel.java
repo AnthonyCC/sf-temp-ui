@@ -1064,6 +1064,9 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	/* PROD_IMAGE_EXTRA */
 	public Image getExtraImage();
 	
+	public boolean isDisableAtpFailureRecommendation();
+
+	
 	public EnumProductLayout getSpecialLayout();
 
 }

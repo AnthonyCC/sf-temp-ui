@@ -2074,6 +2074,12 @@ public class MockProductModel extends MockContentNodeModel implements
 	public Image getExtraImage() {
 		return null;
 	}
+	
+	@Override
+	public boolean isDisableAtpFailureRecommendation(){
+		return false;
+	}
+
 
 	@Override
 	public EnumProductLayout getSpecialLayout() {

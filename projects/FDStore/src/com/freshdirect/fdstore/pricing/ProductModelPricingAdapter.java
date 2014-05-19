@@ -1501,6 +1501,13 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	}
 	
 	@Override
+	public boolean isDisableAtpFailureRecommendation(){
+		return prodModel.isDisableAtpFailureRecommendation();
+	}
+
+
+	
+	@Override
 	public EnumProductLayout getSpecialLayout() {
 		return prodModel.getSpecialLayout();
 	}

@@ -1339,6 +1339,12 @@ public class ProductModelFeaturedAdapter implements ProductModel, Serializable,
 	public Image getExtraImage() {
 		return productModel.getExtraImage();
 	}
+	
+	@Override
+	public boolean isDisableAtpFailureRecommendation(){
+		return productModel.isDisableAtpFailureRecommendation();
+	}
+
 
 	@Override
 	public EnumProductLayout getSpecialLayout() {

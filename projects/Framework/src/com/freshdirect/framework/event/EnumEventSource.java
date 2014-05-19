@@ -36,6 +36,7 @@ public enum EnumEventSource {
 	CSR("CSR"), //Browse - Category Scarab Recommender
 	CMR("CMR"), //Browse - Category Merchant Recommender
 	TRY("TRY"), //Browse - TRY Recommender 
+	ATP("ATP"), //ATP Failure Recommender
 	
 	// Site Redesign - Cart Confirm
 	cc_tabbedRecommender("CC-bottom-recommender"),

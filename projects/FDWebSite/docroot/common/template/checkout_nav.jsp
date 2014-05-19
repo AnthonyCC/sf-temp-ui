@@ -5,6 +5,8 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+
 
 <% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); %>
 
@@ -24,9 +26,13 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 		<fd:css href="/assets/css/timeslots.css"/>
 		<%@ include file="/shared/template/includes/ccl.jspf" %>
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+	
+		<jwr:style src="/atp.css"/>
 </head>
 	
-	<body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" class="text10">
+	<!--[if lt IE 9]><body class="ie8"><![endif]-->
+	<!--[if gt IE 8]><body class="ie9"><![endif]-->
+	<!--[if !IE]><!--><body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#FF9900" text="#333333" class="text10"><!--<![endif]-->
 	
 	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
 	
@@ -82,6 +88,12 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 			</table>
 			
 			<%@ include file="/common/template/includes/footer.jspf" %>
+			
+			<%-- JavaScript modules including carousel logic --%>
+			<tmpl:get name='soypackage'/>
+			<%@ include file="/common/template/includes/i_jsmodules.jspf" %>
+			<jwr:script src="/fdmodules.js"  useRandomParam="false" />
+			<jwr:script src="/fdcomponents.js"  useRandomParam="false" />
 
 		</center>
 	</body>
