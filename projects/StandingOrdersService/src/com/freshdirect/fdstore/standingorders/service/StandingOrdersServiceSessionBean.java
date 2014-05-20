@@ -260,9 +260,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			activityRecord.setActivityType( EnumAccountActivityType.STANDINGORDER_FAILED );
 		} else if ( status == Status.SKIPPED ) {
 			activityRecord.setActivityType( EnumAccountActivityType.STANDINGORDER_SKIPPED );					
-		} /*else if ( status == Status.FORCED_SKIPPED ) {
+		} else if ( status == Status.FORCED_SKIPPED ) {
 			activityRecord.setActivityType( EnumAccountActivityType.STANDINGORDER_FORCED_SKIPPED );					
-		}*/
+		}
 		
 		new ErpLogActivityCommand( activityRecord ).execute();		
 	}

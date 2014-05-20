@@ -88,7 +88,7 @@ public class EnumAccountActivityType implements java.io.Serializable {
 	public final static EnumAccountActivityType		STANDINGORDER_FAILED				= new EnumAccountActivityType( "SO-Failed", "Failed to make Standing Order" );
 	public final static EnumAccountActivityType		STANDINGORDER_PLACED				= new EnumAccountActivityType( "SO-Placed", "Standing Order placed successfully." );
 	public final static EnumAccountActivityType		STANDINGORDER_SKIPPED				= new EnumAccountActivityType( "SO-Skipped", "Standing Order skipped." );
-	public final static EnumAccountActivityType		STANDINGORDER_FORCED_SKIPPED		= new EnumAccountActivityType( "SO-Forced-Skipped", "Standing Order delivery cancelled for the current week as per customer request." );
+	public final static EnumAccountActivityType		STANDINGORDER_FORCED_SKIPPED		= new EnumAccountActivityType( "SO-ForcedSkip", "Standing Order skipped as requested. " );
 
 	// Masquerade
 	public final static EnumAccountActivityType		MASQUERADE_LOGIN					= new EnumAccountActivityType( "MasqueradeLogin", "Masquerade agent logged in." );
