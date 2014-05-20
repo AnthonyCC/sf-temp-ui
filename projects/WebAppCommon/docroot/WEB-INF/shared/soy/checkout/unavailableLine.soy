@@ -57,7 +57,7 @@
         {else} //send unavailable cart line id back to server as ATC disrupts server side state
                 <input style="display:none" type="radio" name="line{$cartLine.randomId}" id="{$cartLine.randomId}" value="remove" data-component="atpremove" checked>
         {/if}
-        {if $recommendedProducts and length($recommendedProducts) > 1}
+        {if $recommendedProducts and length($recommendedProducts) > 0}
           <div class="replacements" data-cmeventsource="ATP">
             {call common.simpleCarousel}
               {param items:$recommendedProducts /}
