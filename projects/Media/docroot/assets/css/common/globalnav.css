@@ -255,6 +255,15 @@ nav.globalnav {
   font-weight:normal;
 }
 
+.popupcontentghost .opened{
+  background-color: #728d4b; 
+  color: #fff;
+}
+
+.globalnav-popup .subopened{
+ background-color: #e3ecd5; 
+}
+
 /*
 .popupcontentghost [data-component="globalnav-item"],
 nav.globalnav li {

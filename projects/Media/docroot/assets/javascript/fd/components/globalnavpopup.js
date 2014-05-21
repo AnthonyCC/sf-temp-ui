@@ -37,8 +37,7 @@ var FreshDirect = FreshDirect || {};
         $content = $("[data-component='globalnav-popup-body'][data-id='"+ $t.data('id') +"']").children().first();
 
     if($popupBody.length && $content.length){
-      // hide sticky hover colour from superdepartment level menu items
-      $popupBody.find("[data-component='globalnav-submenu-item']").css('background-color', '');
+      removeSubItemHighlights();
 
       // fancy: hide down arrows from superdepartment level menu items
       $popupBody.find(".arrow-down").hide();
@@ -72,7 +71,7 @@ var FreshDirect = FreshDirect || {};
     }
 
     // stick with hover color on supdept level item
-    $(this).css("background-color", "#e3ecd5");
+    addSubItemHighlight($(this).find("a"));
 
     // fancy: show related down arrow on supdept level item
     $(this).find(".arrow-down").show();
@@ -86,6 +85,7 @@ var FreshDirect = FreshDirect || {};
 
     $(overlay).hide();
     $(ghost).hide();
+    removeTopItemHighlights();
     
     $(popup).find(".globalnav-popup-content").html("");
 
@@ -118,6 +118,9 @@ var FreshDirect = FreshDirect || {};
     // fill popup with proper content
     $popupBody.html("");
     $("[data-component='globalnav-popup-body'][data-id='"+ $t.data('id') +"']").children().first().clone().appendTo($popupBody);
+
+    removeTopItemHighlights();
+    addTopItemHighlight($t.find("a"));
 
     // show items
     $overlay.show();
@@ -193,6 +196,22 @@ var FreshDirect = FreshDirect || {};
         top: $topnav.offset().top + $topnav.height(),
         left: $topnav.offset().left,
     });
+  }
+
+  function removeTopItemHighlights(){
+    $(ghost).find("a.opened").removeClass("opened");
+  }
+
+  function addTopItemHighlight(elem){
+    $(elem).addClass("opened");
+  }
+
+  function removeSubItemHighlights(){
+    $(popup).find("a.subopened").removeClass("subopened");
+  }
+  
+  function addSubItemHighlight(elem){
+    $(elem).addClass("subopened");
   }
 
   // load up only if we find new global nav and trigger elements in DOM
