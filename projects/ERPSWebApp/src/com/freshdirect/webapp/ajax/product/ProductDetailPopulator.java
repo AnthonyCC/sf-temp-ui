@@ -353,7 +353,7 @@ public class ProductDetailPopulator {
 			data.setAlcoholic( isAlcoholic( product, fdProduct ) );
 			data.setUsq( isUsq( product, fdProduct ) );
 		} catch (Exception ignore) {
-			LOG.info( "Failed to set alcoholic and usq flags", ignore );
+			LOG.info( "Failed to set alcoholic and usq flags" + ignore.getMessage() );
 			// ignore any errors
 		}
 		
