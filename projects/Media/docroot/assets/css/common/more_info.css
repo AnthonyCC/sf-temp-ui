@@ -5,6 +5,7 @@ body {
 	font-family:arial,sans-serif;
 	font-size:12px;
 	background:url(/media_stat/images/locationbar/more_info_bg.png) no-repeat right 16px;
+	overflow: hidden;
 }
 
 body.cos {
@@ -74,6 +75,7 @@ input {
 	height:33px;
 }
 
+#footer_text, #login { float: left; }
 #login,#continue {
 	display:inline-block;
 	vertical-align:middle;

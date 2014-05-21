@@ -7,7 +7,7 @@
 	};
 
 	var resetHeight = function() {
-		window.top.FDModalDialog.resizeY(parseInt($('body').css('height'),10)+25,'.partial-delivery-moreinfo');
+		window.top.FDModalDialog.resizeY(Math.max($('body').innerHeight()+$('.partial-delivery-moreinfo .ui-dialog-titlebar').innerHeight(),$('.partial-delivery-moreinfo').innerHeight()),'.partial-delivery-moreinfo');
 	};
 
 	var errorHandler = function(xhr){
@@ -47,7 +47,9 @@
 	});
 
 	$(document).on('change','input',function(){
-		$('.errorlabel').html("");
-		resetHeight();
+		if ($('.errorlabel').length > 0 && $('.errorlabel').html() != '') {
+			$('.errorlabel').html("");
+			resetHeight();
+		}
 	});
 })(jQuery)

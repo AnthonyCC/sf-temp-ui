@@ -4,6 +4,7 @@
 <%@ page import='com.freshdirect.common.address.AddressModel' %>
 <%@ page import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <fd:LocationHandler/>
 <%
 AddressModel selectedAddress = (AddressModel)pageContext.getAttribute(LocationHandlerTag.SELECTED_ADDRESS_ATTR);
@@ -11,7 +12,8 @@ FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 %>
 <html>
 	<head>
-		<fd:css href="/assets/css/common/more_info.css" />
+		<%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
+		<jwr:style src="/assets/css/common/more_info.css" />
 	</head>
 <% if(user.isCorporateUser()){  %>
 	<body class="cos">
@@ -37,8 +39,9 @@ FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 				</fieldset>
 			</div>
 		</form>
-		<div id="footer"><span>Already have an account with FreshDirect?</span><a href="/login/login.jsp" target="_top" id="login"></a><a href="#" target="_top" id="continue"><img src="/media_stat/images/locationbar/more_info_continue.png"></a></div>
-		<fd:javascript src="/assets/javascript/jquery/1.7.2/jquery.js" />
-		<fd:javascript src="/assets/javascript/more_info.js" />
+		<div id="footer"><div id="footer_text">Already have an account with FreshDirect?</div><a href="/login/login.jsp" target="_top" id="login"></a><a href="#" target="_top" id="continue"><img src="/media_stat/images/locationbar/more_info_continue.png"></a></div>
+		<jwr:script src="/fdlibs_opt.js" useRandomParam="false" />
+		<jwr:script src="/commonjavascript.js" useRandomParam="false" />
+		<jwr:script src="/assets/javascript/more_info.js" useRandomParam="false" />
 	</body>
 </html>
