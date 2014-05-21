@@ -232,11 +232,15 @@ public class ProductRecommenderUtil {
 	}
 
 	public static Recommendations getBrowseProductListingPageRecommendations(FDUserI user, Set<ContentKey> keys) throws FDResourceException {
-		// Round #1 - Get personalized recommendations (Scarab 'Personalized Items')
-		Recommendations recommendations = doRecommend(user, null,
+
+		Recommendations recommendations = null;
+		if (user.getIdentity() != null){ //try personal if user is identified
+			// Round #1 - Get personalized recommendations (Scarab 'Personalized Items')
+			recommendations = doRecommend(user, null,
 				EnumSiteFeature.getEnum("SRCH"),
 				MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);
-
+		}
+		
 		if (recommendations == null || recommendations.getAllProducts().size() == 0) {
 			// Round #2 - Get YMAL recommendations triggered by the first product from the selection
 			//   (Scarab 'Also Viewed' recommender backfilled with local SmartYMAL)
