@@ -229,7 +229,7 @@ public class ProductDetailPopulator {
 			try {
 				lineData.refreshConfiguration();
 			} catch (FDInvalidConfigurationException e) {
-				LOG.warn( "Invalid configuration", e );
+				LOG.warn( "Invalid configuration" + e.getMessage() );
 			}
 		}
 
@@ -707,9 +707,9 @@ public class ProductDetailPopulator {
 			try {
 				item.setHeatRatingScale(fetchMedia(heatRatingMediaPath, user, false));
 			} catch (IOException e) {
-				LOG.error("Failed to fetch Heat Scale Legend Media " + heatRatingMediaPath, e);
+				LOG.error("Failed to fetch Heat Scale Legend Media " + heatRatingMediaPath + " " + e.getMessage());
 			} catch (TemplateException e) {
-				LOG.error("Failed to fetch Heat Scale Legend Media " + heatRatingMediaPath, e);
+				LOG.error("Failed to fetch Heat Scale Legend Media " + heatRatingMediaPath + " " + e.getMessage());
 			}
 		}
 	}
