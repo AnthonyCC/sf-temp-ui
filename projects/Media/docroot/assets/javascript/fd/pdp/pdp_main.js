@@ -21,6 +21,13 @@ var FreshDirect = FreshDirect || {};
         url:url
       });
     };
+    
+  $('[data-component="customercm"]').on('click', function(e){
+    e.stopPropagation();
+
+    $(this).is(":checked") && FreshDirect.pdp.coremetrics && FreshDirect.pdp.coremetrics();
+  });
+  
   
   fd.modules.common.utils.register("components", "pdp", {}, fd);
 }(FreshDirect));

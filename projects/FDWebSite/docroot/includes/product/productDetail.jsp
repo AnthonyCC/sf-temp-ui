@@ -20,6 +20,7 @@
 <potato:images images="imagePotato" productId='${param.productId}' categoryId='${param.catId}'/>
 <potato:annotations annotations="annotations" productId='${param.productId}' categoryId='${param.catId}'/>
 
+<% ProductModel productNode = ContentFactory.getInstance().getProduct(request.getParameter("catId"), request.getParameter("productId")); %>
 <script>
 var FreshDirect = FreshDirect || {};
 FreshDirect.pdp = FreshDirect.pdp || {};
@@ -31,8 +32,8 @@ evenBetter=<fd:ToJSON object="${evenBetter}" noHeaders="true"/>
 xsell=<fd:ToJSON object="${xsell}" noHeaders="true"/>
 
 FreshDirect.pdp.annotations=<fd:ToJSON object="${annotations}" noHeaders="true"/>
+FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<%=productNode.getContentKey().getId()%>" wrapIntoFunction="true" />;
 </script>
-<% ProductModel productNode = ContentFactory.getInstance().getProduct(request.getParameter("catId"), request.getParameter("productId")); %>
 <div class="pdp">
 	<div>
 		<%if (FDStoreProperties.isAdServerEnabled()) {%>
