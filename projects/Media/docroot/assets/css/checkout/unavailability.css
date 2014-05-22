@@ -86,6 +86,10 @@
   -ms-filter:"progid:DXImageTransform.Microsoft.Alpha"(Opacity=50);
 }
 
+.lineDetails .strong{
+  font-weight:bold;
+}
+
 .lineRight {
   display: inline-block;
   width: 480px;
