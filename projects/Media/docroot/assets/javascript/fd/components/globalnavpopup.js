@@ -105,6 +105,7 @@ var FreshDirect = FreshDirect || {};
         $overlay = $(overlay),
         $popup = $(popup),
         $t = $(e.currentTarget),
+        $ghostMenuItem = $ghost.find("[data-id='" + $t.data('id') + "']"),
         $popupBody = $popup.find(".globalnav-popup-content");
 
     // precautions
@@ -120,7 +121,7 @@ var FreshDirect = FreshDirect || {};
     $("[data-component='globalnav-popup-body'][data-id='"+ $t.data('id') +"']").children().first().clone().appendTo($popupBody);
 
     removeTopItemHighlights();
-    addTopItemHighlight($t.find("a"));
+    addTopItemHighlight($ghostMenuItem.find("a"));
 
     // show items
     $overlay.show();
@@ -199,7 +200,7 @@ var FreshDirect = FreshDirect || {};
   }
 
   function removeTopItemHighlights(){
-    $(ghost).find("a.opened").removeClass("opened");
+    $("[data-component='globalnav-item']").find("a.opened").removeClass("opened");
   }
 
   function addTopItemHighlight(elem){
