@@ -2,11 +2,13 @@
 
 /**
 * @param nonReplaceableLines
+* @param deliveryDate
+* @param deliveryTimeSlot
 */
 {template .unavailableNonReplaceableLines}
 	{if $nonReplaceableLines and length($nonReplaceableLines) > 0}
 	<div class="warningBox">
-		<div class="warningTitle">Delivery Restriction</div>
+		<div class="warningTitle">Delivery Restriction for {$deliveryDate} {$deliveryTimeSlot}</div>
 		{if length($nonReplaceableLines) > 1}
 			<div>These items are unavailable and they will be automatically removed from your cart:</div>
   		{else}

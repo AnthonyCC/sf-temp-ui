@@ -73,11 +73,12 @@
 /**
 * @param replaceableLines
 * @param deliveryDate
+* @param deliveryTimeSlot
 */
 {template .replaceableWrapper}
   {if $replaceableLines and length($replaceableLines) > 0}
     <div class="warningBox"> 
-        <div class="warningTitle">Items in your order are not available for delivery {$deliveryDate}</div>
+        <div class="warningTitle">Items in your order are not available for delivery {$deliveryDate} {$deliveryTimeSlot}</div>
         <div>Items will be adjusted to the quantity we can deliver.</div>
         <div>Shop for optional replacement(s) below, or continue checkout.</div>
     </div>
