@@ -5,15 +5,17 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 (function () {
 	Coremetrics = {
 			pageId : "",
-			pageContentHierarchy : ""
+			pageContentHierarchy : "",
+			virtualCategory : ""
 	};
 	
 	FreshDirect.Coremetrics = Coremetrics;
 	
-	Coremetrics.populateTrackingObject = function(pageId, pageContentHierarchy) {
+	Coremetrics.populateTrackingObject = function(pageId, pageContentHierarchy, virtualCategory) {
 		
 		Coremetrics.pageId = pageId;
 		Coremetrics.pageContentHierarchy = pageContentHierarchy;
+		Coremetrics.virtualCategory = virtualCategory;
 		
 	};
 	

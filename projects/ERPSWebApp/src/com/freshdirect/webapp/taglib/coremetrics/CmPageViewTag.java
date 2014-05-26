@@ -31,6 +31,8 @@ public class CmPageViewTag extends AbstractCmTag {
 		tagModelBuilder.setInput(PageViewTagInput.populateFromRequest(getRequest()));
 		PageViewTagModel tagModel = tagModelBuilder.buildTagModel();
 
+		Object CM_VC = this.getRequest().getParameter("cm_vc");
+
 		StringBuilder sb = new StringBuilder();
 		sb.append(getFormattedTag( 
 				toJsVar(tagModel.getPageId()), 
@@ -40,7 +42,7 @@ public class CmPageViewTag extends AbstractCmTag {
 				toJsVar(mapToAttrString(tagModel.getAttributesMaps()))));
 		
 		sb.append(getTagDelimiter());				
-		sb.append(getFormattedTag(INIT_TRACKING_JS_PBJECT, new String[]{toJsVar(tagModel.getPageId()), toJsVar(getPackedPageLocationSubset(tagModel))}));
+		sb.append(getFormattedTag(INIT_TRACKING_JS_PBJECT, new String[]{toJsVar(tagModel.getPageId()), toJsVar(getPackedPageLocationSubset(tagModel)), toJsVar(CM_VC == null ? "" : CM_VC)}));
 		
 		//LOGGER.debug(sb.toString());
 		return sb.toString();

@@ -36,6 +36,7 @@ FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<
 </script>
 <div class="pdp">
 	<div>
+	<fd:CmFieldDecorator/>
 		<%if (FDStoreProperties.isAdServerEnabled()) {%>
 			<center class="oas-cnt"><script type="text/javascript">OAS_AD('ProductNote');</script></center>
 		<%} else {%>

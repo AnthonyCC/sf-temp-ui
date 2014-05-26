@@ -78,6 +78,7 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     
     private String coremetricsPageId;
     private String coremetricsPageContentHierarchy;
+    private String coremetricsVirtualCategory;
     
     public FDGroup getFDGroup() {
 		return group;
@@ -433,6 +434,14 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 
 	public void setAddedFrom(EnumATCContext addedFrom) {
 		this.addedFrom = addedFrom;
+	}
+
+	public String getCoremetricsVirtualCategory() {
+		return coremetricsVirtualCategory;
+	}
+
+	public void setCoremetricsVirtualCategory(String coremetricsVirtualCategory) {
+		this.coremetricsVirtualCategory = coremetricsVirtualCategory;
 	}
 
 	

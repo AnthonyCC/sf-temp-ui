@@ -24,6 +24,7 @@ public class AddToCartRequestData implements Serializable {
 	// coremetrics extra fields
 	private String coremetricsPageContentHierarchy;
 	private String coremetricsPageId;
+	private String coremetricsVirtualCategory;
 
 	
 	public List<AddToCartItem> getItems() {
@@ -79,5 +80,11 @@ public class AddToCartRequestData implements Serializable {
 	}	
 	public void setCoremetricsPageId( String coremetricsPageId ) {
 		this.coremetricsPageId = coremetricsPageId;
+	}
+	public String getCoremetricsVirtualCategory() {
+		return coremetricsVirtualCategory;
+	}
+	public void setCoremetricsVirtualCategory(String coremetricsVirtualCategory) {
+		this.coremetricsVirtualCategory = coremetricsVirtualCategory;
 	}
 }

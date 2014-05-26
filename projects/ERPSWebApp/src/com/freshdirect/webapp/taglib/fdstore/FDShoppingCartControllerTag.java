@@ -1344,6 +1344,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		if (theCartLine != null) {
 			theCartLine.setCoremetricsPageId(request.getParameter("coremetricsPageId"));
 			theCartLine.setCoremetricsPageContentHierarchy(request.getParameter("coremetricsPageContentHierarchy"));
+			theCartLine.setCoremetricsVirtualCategory(request.getParameter("coremetricsVirtualCategory"));
 		}
 		
 		

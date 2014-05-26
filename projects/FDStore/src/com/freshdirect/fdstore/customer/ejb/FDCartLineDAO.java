@@ -27,7 +27,7 @@ public class FDCartLineDAO {
 	}
 
 	private final static String QUERY_CARTLINES =
-		"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, ADDED_FROM_SEARCH, DISCOUNT_APPLIED, SAVINGS_ID, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM "
+		"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, ADDED_FROM_SEARCH, DISCOUNT_APPLIED, SAVINGS_ID, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY "
 			+ " FROM CUST.FDCARTLINE WHERE FDUSER_ID = ?";
 	
 	private final static String QUERY_CARTLINE_CLIENTCODES =
@@ -76,6 +76,7 @@ public class FDCartLineDAO {
 			line.setCoremetricsPageId(rs.getString("CM_PAGE_ID"));
 			line.setCoremetricsPageContentHierarchy(rs.getString("CM_PAGE_CONTENT_HIERARCHY"));
 			line.setAddedFrom(EnumATCContext.getEnum(rs.getString("ADDED_FROM")));
+			line.setCoremetricsVirtualCategory(rs.getString("CM_VIRTUAL_CATEGORY"));
 			}
 			lst.add(line);
 		}
@@ -115,7 +116,7 @@ public class FDCartLineDAO {
 
 		ps =
 			conn.prepareStatement(
-				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM_SEARCH, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID, ADDED_FROM_SEARCH, CM_PAGE_ID, CM_PAGE_CONTENT_HIERARCHY, ADDED_FROM, CM_VIRTUAL_CATEGORY) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		for ( ErpOrderLineModel line : erpOrderlines ) {
 			ps.setString(1, line.getCartlineId());
@@ -134,6 +135,7 @@ public class FDCartLineDAO {
 			ps.setString(14, line.getCoremetricsPageId());
 			ps.setString(15, line.getCoremetricsPageContentHierarchy());
 			ps.setString(16, null !=line.getAddedFrom()?line.getAddedFrom().getName():null);
+			ps.setString(17, line.getCoremetricsVirtualCategory());
 
 			ps.addBatch();
 		}

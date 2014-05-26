@@ -169,6 +169,7 @@ public class CartOperations {
 				
 				cartLine.setCoremetricsPageContentHierarchy( reqData.getCoremetricsPageContentHierarchy() );
 				cartLine.setCoremetricsPageId( reqData.getCoremetricsPageId() );
+				cartLine.setCoremetricsVirtualCategory( reqData.getCoremetricsVirtualCategory() );
 
 				cartLinesToAdd.add(cartLine);
 				

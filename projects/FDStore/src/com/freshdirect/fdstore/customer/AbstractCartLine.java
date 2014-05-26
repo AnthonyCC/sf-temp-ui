@@ -360,4 +360,12 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 			String coremetricsPageContentHierarchy) {
 		this.orderLine.setCoremetricsPageContentHierarchy(coremetricsPageContentHierarchy);
 	}
+
+	public String getCoremetricsVirtualCategory() {
+		return this.orderLine.getCoremetricsVirtualCategory();
+	}
+
+	public void setCoremetricsVirtualCategory(String coremetricsVirtualCategory) {
+		this.orderLine.setCoremetricsVirtualCategory(coremetricsVirtualCategory);
+	}
 }

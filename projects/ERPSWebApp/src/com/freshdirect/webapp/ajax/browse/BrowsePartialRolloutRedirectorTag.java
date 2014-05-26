@@ -60,6 +60,9 @@ public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport{
 			if (redirectUrl != null) {
 				PageContext ctx = (PageContext) getJspContext();
 				String originalUrl = ((HttpServletRequest) ctx.getRequest()).getRequestURI();
+				if (ctx.getRequest().getParameter("cm_vc") != null) {
+					redirectUrl = redirectUrl + "&cm_vc=" + ctx.getRequest().getParameter("cm_vc");  
+				}
 	        	LOGGER.debug("Redirecting from " +originalUrl+ " to " +redirectUrl);
 				((HttpServletResponse)ctx.getResponse()).sendRedirect(redirectUrl);
 			}

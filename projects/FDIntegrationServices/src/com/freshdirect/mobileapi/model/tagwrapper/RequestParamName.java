@@ -293,4 +293,6 @@ public interface RequestParamName {
     public static final String SMART_STORE_IMPRESSION = SessionName.IMPRESSION;
     
     public static final String REQ_PARAM_TABLE_WIDTH = "tableWidth";
+    
+    public static final String REQ_PARAM_CM_VIRTUAL_CATEGORY = "coremetricsVirtualCategory";  
 }

@@ -60,6 +60,10 @@ public abstract class AbstractShopTagModelBuilder {
 				tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.NEW_PRODUCTS_DEPARTMENT.toString());
 			}
 			
+		} else if (cartLine.getCoremetricsVirtualCategory() != null && !"".equals(cartLine.getCoremetricsVirtualCategory())) { 
+			
+			tagModel.setCategoryId(cartLine.getCoremetricsVirtualCategory());
+			
 		} else if(source==EnumEventSource.LTYLT) {  //in case of LTYLT variantId and categoryId needs to be set separately
 			
 			tagModel.setCategoryId(source.getName());
@@ -135,6 +139,7 @@ public abstract class AbstractShopTagModelBuilder {
 		}
 		
 		attributesMap.put(12, cartLine.getCoremetricsPageId());
+		attributesMap.put(13, cartLine.getCoremetricsVirtualCategory());
 
 		return tagModel;
 	}

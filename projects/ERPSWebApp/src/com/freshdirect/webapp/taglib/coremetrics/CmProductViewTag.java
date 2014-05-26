@@ -25,11 +25,11 @@ public class CmProductViewTag extends AbstractCmTag {
 
 		builder.setVirtualCategoryId(extractVirtualCategoryId());
 		ProductViewTagModel model = builder.buildTagModel();
-		
+		Object CM_VC = this.getRequest().getParameter("cm_vc");
 		String tagJs = getFormattedTag(
 				toJsVar(model.getProductId()),
 				toJsVar(model.getProductName()),
-				toJsVar(model.getCategoryId()),
+				toJsVar(CM_VC == null ? model.getCategoryId() : CM_VC),
 				toJsVar(mapToAttrString(model.getAttributesMaps())) + decorateFromCoremetricsTrackingObject(),
 				toJsVar(model.getVirtualCategoryId()));
 		

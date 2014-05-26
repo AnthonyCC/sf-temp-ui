@@ -22,6 +22,7 @@
 	final String iatcNamespace = request.getParameter("iatcNamespace");
 	final String coremetricsPageId = request.getParameter("coremetrics.pageid");
 	final String coremetricsPageContentHierarchy = request.getParameter("coremetrics.pagecontenthierarchy");
+	final String coremetricsVirtualCategory = request.getParameter("coremetrics.virtualcategory");
 	
 	String protocol;
 	String host;
@@ -99,7 +100,7 @@
 <body class="qbBody">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <script type="text/javascript">
-FreshDirect.Coremetrics.populateTrackingObject('<%=coremetricsPageId%>', '<%=coremetricsPageContentHierarchy%>');
+FreshDirect.Coremetrics.populateTrackingObject('<%=coremetricsPageId%>', '<%=coremetricsPageContentHierarchy%>', '');
 </script>
 <fd:CmProductView quickbuy="true" wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
 <div id="qbContainer">

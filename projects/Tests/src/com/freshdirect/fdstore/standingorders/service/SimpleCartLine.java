@@ -790,4 +790,16 @@ public class SimpleCartLine implements FDCartLineI {
 		this.atcItemId = atcItemId;		
 	}
 
+	@Override
+	public String getCoremetricsVirtualCategory() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setCoremetricsVirtualCategory(String coremetricsVirtualCategory) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

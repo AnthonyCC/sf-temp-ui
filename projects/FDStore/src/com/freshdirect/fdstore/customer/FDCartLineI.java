@@ -177,4 +177,6 @@ public interface FDCartLineI extends FDProductSelectionI {
 	public EnumATCContext getAddedFrom();
 	public String getAtcItemId();
 	public void setAtcItemId(String atcItemId);
+	public String getCoremetricsVirtualCategory();
+	public void setCoremetricsVirtualCategory(String coremetricsVirtualCategory);
 }
