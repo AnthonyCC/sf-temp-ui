@@ -264,6 +264,20 @@ nav.globalnav {
  background-color: #e3ecd5; 
 }
 
+[data-component="globalnav"] [data-highlight="on"]{
+  background-color: #728d4b; 
+  color: #fff;
+}
+
+.bottom-nav [data-highlight="on"]{
+  background-color: #d8e2bc;
+    color: #748658;
+}
+
+.gnav-footer [data-highlight="on"]{
+  background-color:#728d4b;
+}
+
 /*
 .popupcontentghost [data-component="globalnav-item"],
 nav.globalnav li {
