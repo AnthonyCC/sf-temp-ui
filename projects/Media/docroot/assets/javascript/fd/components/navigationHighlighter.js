@@ -19,13 +19,11 @@ var FreshDirect = FreshDirect || {};
     },
     setHighlightById : function(componentFn){
         var locId = this.substractIdFromLocationString();
-        console.log("location id: " + locId);
         
         return componentFn.call(navigationHighlighter, "[data-id=" + locId + "]");
     },
     setHighlightByFullUrl : function(componentFn){
         var locId = this.getFullUrl();
-        console.log("location id: " + locId);
 
         return componentFn.call(navigationHighlighter, "a[href='" + locId + "']");
     },
