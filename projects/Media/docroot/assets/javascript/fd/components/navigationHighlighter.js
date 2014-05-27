@@ -9,30 +9,43 @@ var FreshDirect = FreshDirect || {};
   
   var navigationHighlighter = {
     globalComponent: "[data-component='globalnav']",
+    footerComponent: "[data-component='footer']",
     highlightNavItem : function(){
-      var isTopNavLink = this.setHighlightById(this.onGlobalNavItem).length || this.setHighlightByFullUrl(this.onGlobalNavItem).length;
+      this.setHighlightById(this.onGlobalNavItem).length || this.setHighlightByFullUrl(this.onGlobalNavItem).length;
 
-      if(!isTopNavLink){
-        this.setHighlightById(this.onFooterItem).length || this.setHighlightByFullUrl(this.onFooterItem).length;
+      if(!this.isHighlighted()){
+        this.setHighlightOnFooter();
       }
     },
     setHighlightById : function(componentFn){
         var locId = this.substractIdFromLocationString();
         console.log("location id: " + locId);
         
-        return componentFn.bind(navigationHighlighter)("[data-id=" + locId + "]");
+        return componentFn.call(navigationHighlighter, "[data-id=" + locId + "]");
     },
     setHighlightByFullUrl : function(componentFn){
         var locId = this.getFullUrl();
         console.log("location id: " + locId);
 
-        return componentFn.bind(navigationHighlighter)("a[href='" + locId + "']");
+        return componentFn.call(navigationHighlighter, "a[href='" + locId + "']");
+    },
+    setHighlightOnFooter : function(){
+      var locId = this.getFullUrl();
+
+      if(!locId || locId === "/"){
+        return;
+      }
+
+      $(this.footerComponent).find("a").each(function(e){
+        var exp = $(this).data('hlregex'); 
+
+        if(exp && locId.match(exp)){
+         $(this).attr('data-highlight', 'on'); 
+        }
+      });
     },
     onGlobalNavItem : function(location){
       return $(this.globalComponent).find(location).find("a").attr("data-highlight", "on");
-    },
-    onFooterItem : function(location){
-      return $(".gnav-footer").find(location).attr("data-highlight", "on");
     },
     substractIdFromLocationString : function(){
       return utils.getParameterByName("id") || utils.getParameterByName("deptId") || utils.getParameterByName("catId");
@@ -40,8 +53,8 @@ var FreshDirect = FreshDirect || {};
     getFullUrl : function(){
       return window.location.pathname + window.location.search;
     },
-    getCurrentNavigationPoint : function(){
-      return "veg";
+    isHighlighted : function(){
+      return $(document.body).find("[data-highlight='on']").length > 0;
     }
   };
 

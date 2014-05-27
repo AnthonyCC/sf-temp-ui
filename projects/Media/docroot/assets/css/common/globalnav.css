@@ -278,6 +278,14 @@ nav.globalnav {
   background-color:#728d4b;
 }
 
+.top-item-link a:link[data-highlight="on"], 
+.top-item-link a:visited[data-highlight="on"],
+.top-item-link a:hover[data-highlight="on"], 
+.top-item-link a:active[data-highlight="on"]{
+  background-color: #728d4b; 
+  color: #fff;
+}
+
 /*
 .popupcontentghost [data-component="globalnav-item"],
 nav.globalnav li {
