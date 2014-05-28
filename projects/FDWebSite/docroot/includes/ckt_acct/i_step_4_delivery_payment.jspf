@@ -273,7 +273,7 @@
 				if(views != null) {
 					for (Iterator i = views.iterator(); i.hasNext();) {
 						com.freshdirect.fdstore.customer.WebOrderViewI temp = (com.freshdirect.fdstore.customer.WebOrderViewI) i.next();
-						if(temp.getAffiliate().getCode().equals(JspMethods.getWineAssociateId())) {
+						if(temp.getAffiliate().getCode().equals(JspMethods.getWineAssociateId()) && "USQ".equalsIgnoreCase(JspMethods.getWineAssociateId())) {
 							usq_message = true;
 							break;
 						}
