@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
@@ -104,11 +106,11 @@ public class SOResult implements Serializable {
 	/**
 	 *	Successful Standing Order. 
 	 */
-	public static Result createSuccess( FDStandingOrder so, FDIdentity cust, FDCustomerInfo custInfo, boolean hasInvalidItems, List<String> unavItems, String orderId, String internalMessage, boolean errorOccured ) {
+	public static Result createSuccess( FDStandingOrder so, FDIdentity cust, FDCustomerInfo custInfo, boolean hasInvalidItems, List<String> unavItems, String orderId, String internalMessage, boolean errorOccured, Map<FDCartLineI, UnAvailabilityDetails> availabilityDetails ) {
 		Result result = new Result( Status.SUCCESS ).
 				fillSOData( so ).
 				fillCustomerData( cust, custInfo ).
-				fillSuccessData( hasInvalidItems, unavItems, orderId, internalMessage );
+				fillSuccessData( hasInvalidItems, unavItems, orderId, internalMessage, availabilityDetails );
 		if (errorOccured) {
 			result.setErrorOccured();
 		}
@@ -163,6 +165,8 @@ public class SOResult implements Serializable {
 
 		// list of unavailable items
 		private List<String> unavailableItems;
+		
+		private Map<FDCartLineI, UnAvailabilityDetails> availabilityDetails;
 
 		// error mail flags
 		private boolean				errorEmailSentToAdmins	= false;
@@ -244,9 +248,10 @@ public class SOResult implements Serializable {
 		 *	
 		 *  Use the factory methods to create instances
 		 */
-		private Result fillSuccessData(boolean hasInvalidItems, List<String> unavItems, String orderId, String internalMessage ) {
+		private Result fillSuccessData(boolean hasInvalidItems, List<String> unavItems, String orderId, String internalMessage,  Map<FDCartLineI, UnAvailabilityDetails> availabilityDetails) {
 			this.hasInvalidItems = hasInvalidItems;
 			this.unavailableItems = unavItems;
+			this.availabilityDetails = availabilityDetails;
 			this.saleId = orderId;
 			this.internalMessage = internalMessage;
 			return this;
@@ -321,6 +326,10 @@ public class SOResult implements Serializable {
 		}
 		
 		
+		public Map<FDCartLineI, UnAvailabilityDetails> getAvailabilityDetails() {
+			return availabilityDetails;
+		}
+
 		/**
 		 * Flag that signals that an error email was sent to the administrators
 		 */

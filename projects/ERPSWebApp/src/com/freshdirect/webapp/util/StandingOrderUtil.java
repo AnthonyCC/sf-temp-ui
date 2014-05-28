@@ -33,7 +33,6 @@ import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.ReservationException;
-import com.freshdirect.delivery.ReservationUnavailableException;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.FDRestrictedAvailabilityInfo;
@@ -85,6 +84,7 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.ProcessActionResult;
 import com.freshdirect.fdstore.standingorders.SOResult;
+import com.freshdirect.fdstore.standingorders.UnavailabilityReason;
 import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateRange;
@@ -650,7 +650,7 @@ public class StandingOrderUtil {
 			//check possible duplicate order instances in delivery window
 			FDStandingOrdersManager.getInstance().checkForDuplicateSOInstances(customer);
 			
-			return SOResult.createSuccess( so, customer, customerInfo, hasInvalidItems, unavailableItems, orderId, internalMessage, errorOccured );
+			return SOResult.createSuccess( so, customer, customerInfo, hasInvalidItems, unavailableItems, orderId, internalMessage, errorOccured, vr.getUnavItemsMap() );
 			
 		} catch ( DeliveryPassException e ) {
 			LOGGER.info( "DeliveryPassException while placing order.", e );
@@ -776,7 +776,7 @@ public class StandingOrderUtil {
 				if ( !cartLine.isInvalidConfig() ) {
 					cart.addOrderLine( cartLine );
 				} else {
-					vr.addUnavailableItem(cartLine, ProcessActionResult.Reason.INVALID_CONFIG, null);
+					vr.addUnavailableItem(cartLine, UnavailabilityReason.INVALID_CONFIG, null, cartLine.getQuantity());
 				}
 			}
 			cart.refreshAll(true);			
@@ -814,7 +814,7 @@ public class StandingOrderUtil {
 			if (!prodInfo.isAvailable()) {
 				final String err = "Item " + randomId + " / '" + cartLine.getProductName() + "' - SKU is unavailable/discontinued and therefore item was removed.";
 				unavailableItems.add(prodInfo.getSkuCode() + " " + cartLine.getProductName());
-				vr.addUnavailableItem(cartLine, ProcessActionResult.Reason.UNAV, err);
+				vr.addUnavailableItem(cartLine, UnavailabilityReason.UNAV, err, cartLine.getQuantity());
 				cart.removeOrderLineById(randomId);
 				LOGGER.debug("[AVAILABILITY CHECK] " + err);
 			}
@@ -860,8 +860,10 @@ public class StandingOrderUtil {
 				LOGGER.debug("[ATP CHECK/1] Item '" + lineId + "' has restriction: " + ((FDRestrictedAvailabilityInfo)info).getRestriction().getReason());
 				
 
-				vr.addUnavailableItem(cartLine, ProcessActionResult.Reason.ATP, "Restricted availabity");
-				cart.removeOrderLineById(randomId);
+				vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Restricted availabity", cartLine.getQuantity());
+				if(!FDStoreProperties.isIgnoreATPFailureForSO()) {
+					cart.removeOrderLineById(randomId);
+				}
 			} else if (info instanceof FDStockAvailabilityInfo) {
 				/**
 				 * Cause:  less or zero amount is available
@@ -875,9 +877,14 @@ public class StandingOrderUtil {
 				if (availQty > 0) {
 					// adjust quantity to amount of available
 					cart.getOrderLineById(randomId).setQuantity(availQty);
+					if(cartLine.getQuantity() - availQty <= 0) {
+						vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Partial quantity", (cartLine.getQuantity() - availQty));
+					}
 				} else {
-					vr.addUnavailableItem(cartLine, ProcessActionResult.Reason.ATP, "Zero quantity");
-					cart.removeOrderLineById(randomId);
+					vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Zero quantity", cartLine.getQuantity());
+					if(!FDStoreProperties.isIgnoreATPFailureForSO()) {
+						cart.removeOrderLineById(randomId);
+					}
 				}
 			} else if (info instanceof FDCompositeAvailabilityInfo) {
 				/**
@@ -886,8 +893,10 @@ public class StandingOrderUtil {
 				 */
 				LOGGER.debug("[ATP CHECK/3] Item '" + lineId + "' has problem with its options.");
 
-				vr.addUnavailableItem(cartLine, ProcessActionResult.Reason.ATP, "Some options are unavailable");
-				cart.removeOrderLineById(randomId);
+				vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Some options are unavailable", cartLine.getQuantity());
+				if(!FDStoreProperties.isIgnoreATPFailureForSO()) {
+					cart.removeOrderLineById(randomId);
+				}
 			} else if (info instanceof FDMuniAvailabilityInfo) {
 				/**
 				 * Cause:  'FreshDirect does not deliver alcohol outside NY'
@@ -897,8 +906,10 @@ public class StandingOrderUtil {
 
 				/// final MunicipalityInfo muni = ((FDMuniAvailabilityInfo)info).getMunicipalityInfo();
 				//
-				vr.addUnavailableItem(cartLine, ProcessActionResult.Reason.ATP, "FreshDirect does not deliver alcohol outside NY");
-				cart.removeOrderLineById(randomId);
+				vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "FreshDirect does not deliver alcohol outside NY", cartLine.getQuantity());
+				if(!FDStoreProperties.isIgnoreATPFailureForSO()) {
+					cart.removeOrderLineById(randomId);
+				}
 			} else { /* info.isa? {@link FDStatusAvailabilityInfo} */
 				/**
 				 * Cause:  OUT OF STOCK
@@ -906,8 +917,10 @@ public class StandingOrderUtil {
 				 */
 				LOGGER.debug("[ATP CHECK/5] Item '" + lineId + "' OUT OF STOCK");
 
-				vr.addUnavailableItem(cartLine, ProcessActionResult.Reason.ATP, "Out of stock");
-				cart.removeOrderLineById(randomId);
+				vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Out of stock", cartLine.getQuantity());
+				if(!FDStoreProperties.isIgnoreATPFailureForSO()) {
+					cart.removeOrderLineById(randomId);
+				}
 			}
 		}
 

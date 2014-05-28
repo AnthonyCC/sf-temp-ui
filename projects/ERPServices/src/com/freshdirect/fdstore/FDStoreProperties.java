@@ -648,6 +648,9 @@ public class FDStoreProperties {
 	
 	//optimizing
 	private final static String PROP_OPT_SOCIAL_FOOTER_STATIC = "fdstore.optimize.social.footer.static";
+	
+	//New ATP Strategy to handle flip
+	private static final String PROP_STANDING_ORDER_IGNOREATPFAILURE = "fdstore.standingorder.ignoreatpfailure";
 
 	
     static {
@@ -1282,6 +1285,7 @@ public class FDStoreProperties {
         
         //optimize
         defaults.put(PROP_OPT_SOCIAL_FOOTER_STATIC, "true");
+        defaults.put(PROP_STANDING_ORDER_IGNOREATPFAILURE, "true");
         refresh();
     }
 
@@ -3250,6 +3254,10 @@ public class FDStoreProperties {
 	//optimize
     public static boolean isSocialFooterStatic(){
     	return Boolean.valueOf(get(PROP_OPT_SOCIAL_FOOTER_STATIC)).booleanValue();
+    }
+    
+    public static boolean isIgnoreATPFailureForSO() {
+    	return Boolean.valueOf(get(PROP_STANDING_ORDER_IGNOREATPFAILURE)).booleanValue();
     }
     
 }

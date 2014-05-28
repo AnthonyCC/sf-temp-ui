@@ -5,26 +5,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import sun.security.provider.certpath.OCSP.RevocationStatus.Reason;
+
 import com.freshdirect.fdstore.customer.FDCartLineI;
 
 
 public class ProcessActionResult implements Serializable {
 	private static final long serialVersionUID = -8086313206892349807L;
-
-	public static enum Reason {
-		INVALID_CONFIG, /* a line item has invalid configuration */
-		ATP, /* ATP check failed on an item */
-		UNAV, /* item is unavailable */
-		GENERAL /* general issue raised */
-	};
 	
 	private boolean generalIssue = false;
-	private Map<FDCartLineI, Reason> unavItemsMap = new HashMap<FDCartLineI, Reason>();
+	private Map<FDCartLineI, UnAvailabilityDetails> unavItemsMap = new HashMap<FDCartLineI, UnAvailabilityDetails>();
 	private Map<FDCartLineI, String> messages = new HashMap<FDCartLineI, String>();
 	
 
-	public void addUnavailableItem(FDCartLineI item, Reason reason, String message) {
-		unavItemsMap.put(item, reason);
+	public void addUnavailableItem(FDCartLineI item, UnavailabilityReason reason, String message, double availQty) {
+		unavItemsMap.put(item, new UnAvailabilityDetails(availQty, reason));
 		if (message != null) {
 			messages.put(item, message);
 		}
@@ -34,8 +29,9 @@ public class ProcessActionResult implements Serializable {
 		return unavItemsMap.keySet();
 	}
 	
-	public Reason getReason(FDCartLineI item) {
-		return unavItemsMap.get(item);
+	public UnavailabilityReason getReason(FDCartLineI item) {
+		UnAvailabilityDetails unAvailDtl = unavItemsMap.get(item);
+		return unAvailDtl != null ? unAvailDtl.getReason() : null;
 	}
 	
 	public String getMessage(FDCartLineI item) {
@@ -43,6 +39,10 @@ public class ProcessActionResult implements Serializable {
 	}
 
 	
+	public Map<FDCartLineI, UnAvailabilityDetails> getUnavItemsMap() {
+		return unavItemsMap;
+	}
+
 	/**
 	 * Returns true if an issue raised during item list process without
 	 * knowing what was broken
