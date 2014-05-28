@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -34,10 +35,11 @@ public class FDInventoryCache extends FDAbstractCache {
 	
 	protected Map loadData(Date since) {
 		try {
-			LOGGER.info("REFRESHING");
+			LOGGER.info("REFRESHING entries newer than "+ new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.S").format(since));
 			ErpInfoSB sb = this.lookupInfoHome().create();
 			Map data = sb.loadInventoryInfo(since);
 			LOGGER.info("REFRESHED: " + data.size());
+			LOGGER.debug("REFRESHED ENTRIES: " + data);
 			return data;
 		} catch (RemoteException e) {
 			throw new FDRuntimeException(e);

@@ -194,7 +194,7 @@ public class FDProductInfo extends FDSku  {
                 + (this.materialNumbers != null ? StringUtil.encodeString(this.materialNumbers) : null) + "\n\tavailStatus" + this.availStatus.getShortDescription() 
                 + "\n\tavailDate:" + this.availDate + "\n\trating:" + this.rating +"\n\tsustainabilityRating:" + this.sustainabilityRating+"\n\tUPC:" + this.upc + "\n\tatpRule:" + this.atpRule 
                 + "\n\tfreshness:" + this.freshness + "\n\tdefaultPriceUnit:" + this.getDefaultPriceUnit() + "\n\tavailDate:"+this.availDate 
-                + "\n\t" + this.zonePriceInfoList +"\n\t"+this.group + "\n]";
+                + "\n\t" + this.zonePriceInfoList +"\n\t"+this.group + "\n\tinventory:" +this.getInventory()+ "\n]";
     }
     	public List<String> getCountryOfOrigin() {
 		if(materialNumbers==null) 
