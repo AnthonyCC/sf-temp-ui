@@ -669,9 +669,6 @@ public class BrowseDataBuilderFactory {
 	 */
 	public void appendCarousels(BrowseData browseData, FDSessionUser user, Set<ContentKey> shownProductKeysForRecommender){
 		
-		
-		collectAllProductKeysForRecommender(browseData.getSections().getSections(), shownProductKeysForRecommender);
-		
 		//Product Listing Page Scarab
 		if (browseData.getCarousels().getCarousel3() == null && shownProductKeysForRecommender.size() > 0) {
 			try {

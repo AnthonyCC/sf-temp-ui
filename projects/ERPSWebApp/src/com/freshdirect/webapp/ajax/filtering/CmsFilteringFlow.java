@@ -1,9 +1,7 @@
 package com.freshdirect.webapp.ajax.filtering;
 
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -15,7 +13,6 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.RecipeDepartment;
 import com.freshdirect.fdstore.content.SuperDepartmentModel;
@@ -23,11 +20,11 @@ import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData;
+import com.freshdirect.webapp.ajax.browse.data.BrowseData.CarouselDataCointainer;
 import com.freshdirect.webapp.ajax.browse.data.BrowseDataContext;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
-import com.freshdirect.webapp.ajax.browse.data.NavDepth;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
-import com.freshdirect.webapp.ajax.browse.data.SectionContext;
+import com.freshdirect.webapp.ajax.browse.data.PagerData;
 import com.freshdirect.webapp.ajax.browse.paging.BrowseDataPagerHelper;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringServlet.BrowseEvent;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -133,7 +130,16 @@ public class CmsFilteringFlow {
 			if(shownProductKeysForRecommender.size()==0 && browseDataContext.getNavigationModel().isProductListing()){
 				browseData.getSections().setAllSectionsEmpty(true);
 			}
-			BrowseDataBuilderFactory.getInstance().appendCarousels(browseData, user, shownProductKeysForRecommender);
+
+			//only display recommenders if on last page
+			PagerData pagerData = browseData.getPager();
+			if (pagerData.isAll() || pagerData.getActivePage() == pagerData.getPageCount()){
+				BrowseDataBuilderFactory.getInstance().appendCarousels(browseData, user, shownProductKeysForRecommender);
+			} else { //remove if already added
+				CarouselDataCointainer carousels = browseData.getCarousels();
+				carousels.setCarousel3(null);
+				carousels.setCarousel4(null);
+			}
 			
 			browseData.getDescriptiveContent().setUrl(URLEncoder.encode(nav.assembleQueryString()));
 			browseData.getSortOptions().setCurrentOrderAsc(nav.isOrderAscending());		
