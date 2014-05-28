@@ -69,7 +69,7 @@
 .qs-footer {
 	position: relative;
 	clear: both;
-	padding: 15px;
+	padding: 10px 15px;
 	border: 1px solid #c1b5c1;
 	background: #eedfee;
 	font-size: 12px;
@@ -82,6 +82,8 @@
 }
 .qs-header .pagination {
 	float: right;
+  height: 26px;
+  line-height: 26px;
 }
 .qs-container {
 	margin-bottom: 30px;
