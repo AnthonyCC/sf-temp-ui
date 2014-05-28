@@ -99,43 +99,7 @@
   {param couponStatusText:$item.couponStatusText /}
   {param extraClass:$extraClass /}
   {param availabilityMessage}
-    {if $item.msgCutoffHeader}
-    <div class="am-cutoffheader">
-      {$item.msgCutoffHeader}
-    </div>
-    {/if}
-    {if $item.msgCutoffNotice}
-    <div class="am-cutoffnotice">
-      {$item.msgCutoffNotice}
-    </div>
-    {/if}
-    {if $item.msgDayOfWeekHeader}
-    <div class="am-dayofweekheader">
-      {$item.msgDayOfWeekHeader}
-    </div>
-    {/if}
-    {if $item.msgDayOfWeek}
-    <div class="am-dayofweek">
-      {$item.msgDayOfWeek}
-    </div>
-    {/if}
-    /*
-    {if $item.msgDeliveryNote}
-    <div class="am-deliverynote">
-      {$item.msgDeliveryNote}
-    </div>
-    {/if}
-    */
-    {if $item.msgLeadTimeHeader}
-    <div class="am-leadtimeheader">
-      {$item.msgLeadTimeHeader}
-    </div>
-    {/if}
-    {if $item.msgLeadTime}
-    <div class="am-leadtime">
-      {$item.msgLeadTime}
-    </div>
-    {/if}
+    {call common.availabilityMessage}{param item:$item /}{/call}
     {if $item.msgCancellation}
     <div class="am-cancellation">
       <a href="{$item.productPageUrl}">Cancellation Rules</a>
@@ -516,4 +480,47 @@
       {/call}
     </div>
   </div>
+{/template}
+
+/**
+ * @param item product 
+ */
+{template .availabilityMessage}
+    {if $item.msgCutoffHeader}
+    <div class="am-cutoffheader amheader">
+      {$item.msgCutoffHeader}
+    </div>
+    {/if}
+    {if $item.msgCutoffNotice}
+    <div class="am-cutoffnotice">
+      {$item.msgCutoffNotice}
+    </div>
+    {/if}
+    {if $item.msgDayOfWeekHeader}
+    <div class="am-dayofweekheader amheader">
+      {$item.msgDayOfWeekHeader}
+    </div>
+    {/if}
+    {if $item.msgDayOfWeek}
+    <div class="am-dayofweek">
+      {$item.msgDayOfWeek}
+    </div>
+    {/if}
+    /*
+    {if $item.msgDeliveryNote}
+    <div class="am-deliverynote">
+      {$item.msgDeliveryNote}
+    </div>
+    {/if}
+    */
+    {if $item.msgLeadTimeHeader}
+    <div class="am-leadtimeheader amheader">
+      {$item.msgLeadTimeHeader}
+    </div>
+    {/if}
+    {if $item.msgLeadTime}
+    <div class="am-leadtime">
+      {$item.msgLeadTime}
+    </div>
+    {/if}
 {/template}

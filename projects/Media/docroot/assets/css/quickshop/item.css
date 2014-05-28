@@ -103,6 +103,17 @@ button[data-component="addToListButton"]:focus {
 	color:#666;
 }
 
+.itemlist-item-header .availability div:first-child {
+  margin-top: .8em;
+}
+
+.itemlist-item-header .availability .amheader {
+  color: #c00;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-top: .8em;
+}
+
 .itemlist-item-productimage_wrapper {
 	text-align: center;
 	width:100px;
@@ -119,7 +130,6 @@ button[data-component="addToListButton"]:focus {
 .itemlist-item-productimage {
 	max-width:100%;
 }
-
 .itemlist-item-controls {
 	margin-bottom: 10px;
 	position:relative;
