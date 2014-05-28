@@ -17,7 +17,8 @@
 }
 
 .checkboxlist.shoppinglists-list {
-  overflow-x: hidden;
+  overflow: auto;
+  max-height: 375px;
 }
 
 .checkboxlist.shoppinglists-list li {
