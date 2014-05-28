@@ -26,10 +26,11 @@
 * @param recommendedProducts
 */
 {template .unavailableLine}
+  {let $hasRecommendations: $recommendedProducts and length($recommendedProducts) > 0 /}
   <div class="line">
     <div class="lineHeader">
       <span class="lineHeaderLeft">{$description} <div class="arrow_box"></div></span>
-      <span class="lineHeaderRight">Purchase Replacement Items. (Optional)</span>
+      <span class="lineHeaderRight">{if $hasRecommendations}Purchase Replacement Items. (Optional){else}&nbsp;{/if}</span>
     </div>
     <div class="lineContents">
       <div class="lineDetails text-left">
@@ -57,7 +58,7 @@
         {else} //send unavailable cart line id back to server as ATC disrupts server side state
                 <input style="display:none" type="radio" name="line{$cartLine.randomId}" id="{$cartLine.randomId}" value="remove" data-component="atpremove" checked>
         {/if}
-        {if $recommendedProducts and length($recommendedProducts) > 0}
+        {if $hasRecommendations}
           <div class="replacements" data-cmeventsource="ATP">
             {call common.simpleCarousel}
               {param items:$recommendedProducts /}
