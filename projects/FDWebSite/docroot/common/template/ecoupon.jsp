@@ -38,7 +38,7 @@
 <!--<![endif]-->
 		<%@ include file="/shared/template/includes/i_body_start.jspf" %>      
 		<%@ include file="/common/template/includes/globalnav.jspf" %> 
-	    <div id="content_top" class="content-header container">
+	    <div id="content_top" class="content-header container" style="margin-top:10px">
 	    	<div class="orange eagle top content-header-height-coupons result-text">
 	    		<span>Coupon Savings with </span><img src="/media/images/ecoupon/logo_fd_coups_56h.png" alt="FDCoupons" style="margin-bottom: -10px" /><span class="result-helper"></span>
 		    	<tmpl:get name="content-header"/>
