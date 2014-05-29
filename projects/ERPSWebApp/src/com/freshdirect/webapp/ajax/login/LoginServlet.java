@@ -90,7 +90,7 @@ public class LoginServlet extends HttpServlet {
 			}
 		}
 				
-		LOGGER.debug( "Parsing request data: " + reqJson );		
+		//LOGGER.debug( "Parsing request data: " + reqJson );		
 		T reqData = null;
 		try {
 			reqData = getMapper().readValue(reqJson, typeClass);
