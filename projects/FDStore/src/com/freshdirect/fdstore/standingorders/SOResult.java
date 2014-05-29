@@ -166,7 +166,7 @@ public class SOResult implements Serializable {
 		// list of unavailable items
 		private List<String> unavailableItems;
 		
-		private Map<FDCartLineI, UnAvailabilityDetails> availabilityDetails;
+		private Map<FDCartLineI, UnAvailabilityDetails> unavailabilityDetails;
 
 		// error mail flags
 		private boolean				errorEmailSentToAdmins	= false;
@@ -248,10 +248,10 @@ public class SOResult implements Serializable {
 		 *	
 		 *  Use the factory methods to create instances
 		 */
-		private Result fillSuccessData(boolean hasInvalidItems, List<String> unavItems, String orderId, String internalMessage,  Map<FDCartLineI, UnAvailabilityDetails> availabilityDetails) {
+		private Result fillSuccessData(boolean hasInvalidItems, List<String> unavItems, String orderId, String internalMessage,  Map<FDCartLineI, UnAvailabilityDetails> unavailabilityDetails) {
 			this.hasInvalidItems = hasInvalidItems;
 			this.unavailableItems = unavItems;
-			this.availabilityDetails = availabilityDetails;
+			this.unavailabilityDetails = unavailabilityDetails;
 			this.saleId = orderId;
 			this.internalMessage = internalMessage;
 			return this;
@@ -325,9 +325,8 @@ public class SOResult implements Serializable {
 			return unavailableItems;
 		}
 		
-		
-		public Map<FDCartLineI, UnAvailabilityDetails> getAvailabilityDetails() {
-			return availabilityDetails;
+		public Map<FDCartLineI, UnAvailabilityDetails> getUnavailabilityDetails() {
+			return unavailabilityDetails;
 		}
 
 		/**

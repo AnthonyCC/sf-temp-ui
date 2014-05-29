@@ -12,7 +12,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.ejb.CreateException;
 import javax.mail.MessagingException;
@@ -25,12 +27,15 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfo;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.SOResult;
-import com.freshdirect.fdstore.standingorders.SOResult.ResultList;
+import com.freshdirect.fdstore.standingorders.UnavailabilityReason;
 import com.freshdirect.fdstore.standingorders.SOResult.Result;
+import com.freshdirect.fdstore.standingorders.SOResult.ResultList;
+import com.freshdirect.fdstore.standingorders.UnAvailabilityDetails;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
@@ -117,6 +122,10 @@ public class StandingOrdersServiceCmd {
 				sendReportMail(result);
 			}
 			
+			if (FDStoreProperties.isIgnoreATPFailureForSO()) {
+				sendATPReportMail(result);
+			}
+			
 		} catch (Exception e) {
 			LOGGER.error("StandingOrdersServiceCmd failed with Exception...",e);
 			sendExceptionMail(Calendar.getInstance().getTime(), e);
@@ -153,7 +162,71 @@ public class StandingOrdersServiceCmd {
 		return null;
 	}
 
+	private static void sendATPReportMail(ResultList result) {
+		try {
+			LOGGER.info( "Cron ATP report enabled" );
+			final List<Result> resultList = result.getResultsList();
+			Map<String, Double> unavailableDetails = new TreeMap<String, Double>();
+			if(resultList != null) {
+				for(Result res : resultList) {
+					Map<FDCartLineI, UnAvailabilityDetails> details = res.getUnavailabilityDetails();
+					if(details != null) {
+						for (Map.Entry<FDCartLineI, UnAvailabilityDetails> entry : details.entrySet()) {
+							if(entry.getValue().getReason().equals(UnavailabilityReason.ATP)) {
+								if(!unavailableDetails.containsKey(entry.getKey().getMaterialNumber())) {
+									unavailableDetails.put(entry.getKey().getMaterialNumber(), new Double(0.0));
+								}
+								unavailableDetails.put(entry.getKey().getMaterialNumber()
+											, unavailableDetails.get(entry.getKey().getMaterialNumber()) + entry.getValue().getUnavailQty());
+							}
+						}
+					}
+					
+				}
+				final String atpFailureReportMailTo = ErpServicesProperties.getStandingOrdersATPFailureReportRecipientAddress();
+				
+				SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
+				Date date = Calendar.getInstance().getTime();
+				String subject=FDStoreProperties.getStandingOrderReportEmailSubject()+ (date != null ? " "+dateFormatter.format(date) : " date error");
+				
+				StringBuffer buffer = new StringBuffer();
+				buffer.append("<html>").append("<body>");
+
+				
+				buffer.append( "<h2>Consolidated ATP failure report:</h2>" );
+				
+				buffer.append("<table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"float:none;\">");
+				buffer.append("<tr>")
+				.append("<th nowrap=\"nowrap\">").append("Material ID").append("</th>")				
+				.append("<th nowrap=\"nowrap\">").append("Unavailable Qty").append("</th>")	
+				.append("</tr>");
+				for (Map.Entry<String, Double> entry : unavailableDetails.entrySet()) {
+					buffer.append("<tr>")
+					.append("<td nowrap=\"nowrap\">").append(entry.getKey()).append("</td>")					
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue()).append("</td>")
+					.append("</tr>");	
+				}
+				buffer.append("</table>");
+			
+			
+				buffer.append("</table>");
+				buffer.append("<br/><br/><br/>");
+				
+				buffer.append("</body>").append("</html>");
 	
+				
+				ErpMailSender mailer = new ErpMailSender();
+				mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
+						atpFailureReportMailTo,ErpServicesProperties.getCronFailureMailCC(),
+						"Standing Order ATP Failure Report", buffer.toString(), true, "");
+				LOGGER.info( "SO ATP failure  report sent to "+ atpFailureReportMailTo );
+			}
+			
+		} catch (MessagingException e) {
+			LOGGER.warn("Error Sending Standing Order cron report email: ", e);
+		}
+		
+	}
 	
 	
 	private static void sendReportMail(ResultList result) {

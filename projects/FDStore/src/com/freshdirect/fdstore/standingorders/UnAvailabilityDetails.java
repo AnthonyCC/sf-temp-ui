@@ -4,17 +4,19 @@ import java.io.Serializable;
 
 public class UnAvailabilityDetails implements Serializable {
 		
-	double availQty;
+	double unavailQty;
 	UnavailabilityReason reason;
 	
-	public UnAvailabilityDetails(double availQty, UnavailabilityReason reason) {
+	public UnAvailabilityDetails(double unavailQty, UnavailabilityReason reason) {
 		super();
-		this.availQty = availQty;
+		this.unavailQty = unavailQty;
 		this.reason = reason;
 	}
-	public double getAvailQty() {
-		return availQty;
+	
+	public double getUnavailQty() {
+		return unavailQty;
 	}
+
 	public UnavailabilityReason getReason() {
 		return reason;
 	}

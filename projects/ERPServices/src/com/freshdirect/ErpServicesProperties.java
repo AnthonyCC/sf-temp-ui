@@ -177,6 +177,7 @@ public class ErpServicesProperties {
 	private final static String PROP_SIGNUP_PROMO_DUPLICATE_ADDR_DELV_DAYS = "signup.promo.duplicate.addr.delivery.days";
 	
 	private final static String SO_TECH_RECIPIENT = "standingorders.technical.error.recipient.address";
+	private final static String SO_ATPREPORT_RECIPIENT = "standingorders.atp.failurereport.recipient.address";
 	private final static String SO_TECH_FROM = "standingorders.technical.error.from.address";
 	
 	private final static String MASQUERADE_STOREFRONT_BASEURL = "masquerade.storefront.baseurl";
@@ -349,6 +350,8 @@ public class ErpServicesProperties {
 		defaults.put(PROP_AVS_ADDRESS_CHECK, "false");
 		
 		defaults.put( SO_TECH_RECIPIENT, "SOIssues@freshdirect.com" );
+		defaults.put( SO_ATPREPORT_RECIPIENT, "SOIssues@freshdirect.com" );
+		
 		defaults.put( SO_TECH_FROM, "no-reply@freshdirect.com" );
 		
 		defaults.put( MASQUERADE_STOREFRONT_BASEURL, "http://www.freshdirect.com/" );
@@ -827,6 +830,11 @@ public class ErpServicesProperties {
 	public static String getStandingOrdersTechnicalErrorRecipientAddress() {
 		return config.getProperty(SO_TECH_RECIPIENT);
 	}
+	
+	public static String getStandingOrdersATPFailureReportRecipientAddress() {
+		return config.getProperty(SO_ATPREPORT_RECIPIENT);
+	}
+	
 	public static String getStandingOrdersTechnicalErrorFromAddress() {
 		return config.getProperty(SO_TECH_FROM);
 	}

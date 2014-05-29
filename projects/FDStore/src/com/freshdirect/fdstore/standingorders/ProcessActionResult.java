@@ -18,8 +18,8 @@ public class ProcessActionResult implements Serializable {
 	private Map<FDCartLineI, String> messages = new HashMap<FDCartLineI, String>();
 	
 
-	public void addUnavailableItem(FDCartLineI item, UnavailabilityReason reason, String message, double availQty) {
-		unavItemsMap.put(item, new UnAvailabilityDetails(availQty, reason));
+	public void addUnavailableItem(FDCartLineI item, UnavailabilityReason reason, String message, double unavailQty) {
+		unavItemsMap.put(item, new UnAvailabilityDetails(unavailQty, reason));
 		if (message != null) {
 			messages.put(item, message);
 		}
