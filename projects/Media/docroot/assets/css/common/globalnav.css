@@ -379,7 +379,7 @@ ul.globalnavPopups li {
 }
 
 .globalnav-popup-content .department{
-  padding:0px;
+  padding:0 0 40px 0;
 }
 
 .globalnav-popup-content .department a,
@@ -468,7 +468,7 @@ ul.globalnavPopups li {
   display:none;
   overflow:auto;
   clear:both;
-  padding:20px;
+  padding:20px 20px 0 20px;
   max-width:500px;
 }
 
