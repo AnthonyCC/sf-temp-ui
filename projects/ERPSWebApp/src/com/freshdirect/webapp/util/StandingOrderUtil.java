@@ -876,9 +876,10 @@ public class StandingOrderUtil {
 				LOGGER.debug("[ATP CHECK/2] Item '" + lineId + "' has only " + availQty + " items available.");
 				if (availQty > 0) {
 					// adjust quantity to amount of available
+					double requestedQuantity = cart.getOrderLineById(randomId).getQuantity();
 					cart.getOrderLineById(randomId).setQuantity(availQty);
-					if(cartLine.getQuantity() - availQty <= 0) {
-						vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Partial quantity", (cartLine.getQuantity() - availQty));
+					if(requestedQuantity - availQty > 0) {
+						vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Partial quantity", (requestedQuantity - availQty));
 					}
 				} else {
 					vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Zero quantity", cartLine.getQuantity());
