@@ -164,20 +164,27 @@ public class StandingOrdersServiceCmd {
 
 	private static void sendATPReportMail(ResultList result) {
 		try {
+			InventoryMapInfoBean newInventoryMapInfoBean = null;
 			LOGGER.info( "Cron ATP report enabled" );
 			final List<Result> resultList = result.getResultsList();
-			Map<String, Double> unavailableDetails = new TreeMap<String, Double>();
+			Map<String, InventoryMapInfoBean> unavailableDetails = new TreeMap<String, InventoryMapInfoBean>();
 			if(resultList != null) {
 				for(Result res : resultList) {
 					Map<FDCartLineI, UnAvailabilityDetails> details = res.getUnavailabilityDetails();
 					if(details != null) {
 						for (Map.Entry<FDCartLineI, UnAvailabilityDetails> entry : details.entrySet()) {
 							if(entry.getValue().getReason().equals(UnavailabilityReason.ATP)) {
-								if(!unavailableDetails.containsKey(entry.getKey().getMaterialNumber())) {
-									unavailableDetails.put(entry.getKey().getMaterialNumber(), new Double(0.0));
+								if(!unavailableDetails.containsKey(entry.getKey().getSkuCode())) {
+									newInventoryMapInfoBean = new InventoryMapInfoBean();
+									newInventoryMapInfoBean.setProductName(entry.getKey().getDescription());
+									newInventoryMapInfoBean.setSkuCode(entry.getKey().getSkuCode());
+									newInventoryMapInfoBean.setMaterialNum(entry.getKey().getMaterialNumber());
+									unavailableDetails.put(entry.getKey().getSkuCode(), newInventoryMapInfoBean);
 								}
-								unavailableDetails.put(entry.getKey().getMaterialNumber()
-											, unavailableDetails.get(entry.getKey().getMaterialNumber()) + entry.getValue().getUnavailQty());
+								
+								InventoryMapInfoBean existInventoryMapInfoBean = unavailableDetails.get(entry.getKey().getSkuCode());
+								existInventoryMapInfoBean.setUnavailQnty(existInventoryMapInfoBean.getUnavailQnty() + entry.getValue().getUnavailQty() );
+								unavailableDetails.put(entry.getKey().getSkuCode(), existInventoryMapInfoBean);
 							}
 						}
 					}
@@ -197,13 +204,17 @@ public class StandingOrdersServiceCmd {
 				
 				buffer.append("<table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"float:none;\">");
 				buffer.append("<tr>")
-				.append("<th nowrap=\"nowrap\">").append("Material ID").append("</th>")				
+				.append("<th nowrap=\"nowrap\">").append("Product Name").append("</th>")	
+				.append("<th nowrap=\"nowrap\">").append("Material ID").append("</th>")	
+				.append("<th nowrap=\"nowrap\">").append("SKU Code").append("</th>")				
 				.append("<th nowrap=\"nowrap\">").append("Unavailable Qty").append("</th>")	
 				.append("</tr>");
-				for (Map.Entry<String, Double> entry : unavailableDetails.entrySet()) {
+				for (Map.Entry<String, InventoryMapInfoBean> entry : unavailableDetails.entrySet()) {
 					buffer.append("<tr>")
-					.append("<td nowrap=\"nowrap\">").append(entry.getKey()).append("</td>")					
-					.append("<td nowrap=\"nowrap\">").append(entry.getValue()).append("</td>")
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getProductName()).append("</td>")	
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getMaterialNum()).append("</td>")		
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getSkuCode()).append("</td>")		
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getUnavailQnty()).append("</td>")		
 					.append("</tr>");	
 				}
 				buffer.append("</table>");
