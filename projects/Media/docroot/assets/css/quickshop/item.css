@@ -26,9 +26,12 @@
 .itemlist-item.changed .itemlist-item-header:after {
 }
 
-.itemlist-item-header,
 .itemlist-item-controls {
 	margin-left:100px;	
+}
+
+.itemlist-item-header { 
+	margin-left:110px;	
 }
 
 .itemlist-item-header-buttons {
@@ -103,6 +106,36 @@ button[data-component="addToListButton"]:focus {
 	color:#666;
 }
 
+.itemlist-item-header-changecustomization {
+  margin: 10px 0 15px;
+}
+
+.itemlist-item-header-changecustomization button {
+  padding: 0;
+  margin: 0;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: #360;
+  text-decoration: none;
+  font-style: italic;
+  font-weight: bold;
+  font-size: 10px;
+}
+
+.itemlist-item-header-changecustomization button:before {
+  content: '';
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  margin: 0 5px -1px 0;
+  background: url(/media_stat/images/quickshop/bullet-orange.png) no-repeat;
+}
+
+.itemlist-item-header-changecustomization button span:hover {
+  text-decoration: underline;
+}
+
 .itemlist-item-header .availability div:first-child {
   margin-top: .8em;
 }
@@ -118,7 +151,7 @@ button[data-component="addToListButton"]:focus {
 	text-align: center;
 	width:100px;
 	float:left;
-	margin:10px 10px 10px 0;
+	margin:20px 10px 10px 0;
 }
 
 .itemlist-item-burst_wrapper {

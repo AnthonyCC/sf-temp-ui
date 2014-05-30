@@ -105,12 +105,6 @@
       <a href="{$item.productPageUrl}">Cancellation Rules</a>
     </div>
     {/if}
-    {if $item.msgEarliestAvailability}
-		<div class="am-earliestavailabilityheader">Earliest Available</div>
-		<div class="am-earliestavailability">
-		  {$item.msgEarliestAvailability}
-		</div>
-    {/if}
   {/param}
   {param cmEventSource:$cmEventSource /}
 {/call}
@@ -485,7 +479,7 @@
 /**
  * @param item product 
  */
-{template .availabilityMessage}
+{template .availabilityMessage autoescape="false"}
     {if $item.msgCutoffHeader}
     <div class="am-cutoffheader amheader">
       {$item.msgCutoffHeader}
@@ -522,5 +516,11 @@
     <div class="am-leadtime">
       {$item.msgLeadTime}
     </div>
+    {/if}
+    {if $item.msgEarliestAvailability}
+		<div class="am-earliestavailabilityheader amheader">Earliest Available</div>
+		<div class="am-earliestavailability">
+		  {$item.msgEarliestAvailability}
+		</div>
     {/if}
 {/template}
