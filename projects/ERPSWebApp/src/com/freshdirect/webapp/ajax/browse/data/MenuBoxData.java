@@ -2,7 +2,6 @@ package com.freshdirect.webapp.ajax.browse.data;
 
 import java.util.List;
 
-//TODO verify structure
 public class MenuBoxData extends BasicData {
 	
 	public enum MenuBoxDisplayType{

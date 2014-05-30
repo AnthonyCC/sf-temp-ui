@@ -31,51 +31,48 @@ public class BrowseDataPagerHelper {
 	 */
 	public static void createPagerContext(BrowseData browseData, CmsFilteringNavigator cmsFilteringNavigator) {
 		
-		synchronized (browseData) { //TODO see if this is necessary after optimization
-			
-			PagerData pagerData = new PagerData();
-			pagerData.setPageSize(cmsFilteringNavigator.getPageSize());
-			pagerData.setActivePage(cmsFilteringNavigator.getActivePage());
-			pagerData.setAll(cmsFilteringNavigator.getActivePage()==0);
-			
-			Map<String, Integer> fetchResults = new HashMap<String, Integer>();
-			
-			//fragmented lines count as full lines at section changes so this value is a multiple of PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD  
-			fetchResults.put(LOGICAL_ITEM_COUNT, 0);
-			fetchResults.put(ITEM_COUNT, 0);
-			
-			fetchResults.put(CURRENT_PAGE_FIRST_ITEM_INDEX, (pagerData.getActivePage() - 1) * pagerData.getPageSize() + 1); 
-			fetchResults.put(CURRENT_PAGE_LAST_ITEM_INDEX, pagerData.getActivePage() * pagerData.getPageSize());
-			
-			//here we keep track of the actual item indexes throughout the fetching, accumulating them by each cycle
-			fetchResults.put(FIRST_ITEM_INDEX, 1); 
-			fetchResults.put(LAST_ITEM_INDEX, 0);
-	
-			Iterator<SectionData> sectionDataIterator = browseData.getSections().getSections().iterator();
-			
-			while (sectionDataIterator.hasNext()) {
-				fetchResults = fetchSectionData(sectionDataIterator.next(), fetchResults, pagerData.isAll());
-			}
-			
-			pagerData.setItemCount(fetchResults.get(ITEM_COUNT));
-			
-			if (pagerData.isAll()) {
-				pagerData.setPageCount(0);
-				pagerData.setFirstItemIndex(1);
-				pagerData.setLastItemIndex(pagerData.getItemCount());
-			} else {
-				pagerData.setPageCount(Math.max(0, fetchResults.get(LOGICAL_ITEM_COUNT) - 1) / pagerData.getPageSize() + 1);
-				pagerData.setLastItemIndex(fetchResults.get(LAST_ITEM_INDEX));
-				pagerData.setFirstItemIndex(fetchResults.get(FIRST_ITEM_INDEX));
-			}
-			
-			if (pagerData.getLastItemIndex() == 0) { //No item to display, remove offset
-				pagerData.setFirstItemIndex(0);
-			} 
-			
-			browseData.setPager(pagerData);
+		PagerData pagerData = new PagerData();
+		pagerData.setPageSize(cmsFilteringNavigator.getPageSize());
+		pagerData.setActivePage(cmsFilteringNavigator.getActivePage());
+		pagerData.setAll(cmsFilteringNavigator.getActivePage()==0);
+		
+		Map<String, Integer> fetchResults = new HashMap<String, Integer>();
+		
+		//fragmented lines count as full lines at section changes so this value is a multiple of PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD  
+		fetchResults.put(LOGICAL_ITEM_COUNT, 0);
+		fetchResults.put(ITEM_COUNT, 0);
+		
+		fetchResults.put(CURRENT_PAGE_FIRST_ITEM_INDEX, (pagerData.getActivePage() - 1) * pagerData.getPageSize() + 1); 
+		fetchResults.put(CURRENT_PAGE_LAST_ITEM_INDEX, pagerData.getActivePage() * pagerData.getPageSize());
+		
+		//here we keep track of the actual item indexes throughout the fetching, accumulating them by each cycle
+		fetchResults.put(FIRST_ITEM_INDEX, 1); 
+		fetchResults.put(LAST_ITEM_INDEX, 0);
 
+		Iterator<SectionData> sectionDataIterator = browseData.getSections().getSections().iterator();
+		
+		while (sectionDataIterator.hasNext()) {
+			fetchResults = fetchSectionData(sectionDataIterator.next(), fetchResults, pagerData.isAll());
 		}
+		
+		pagerData.setItemCount(fetchResults.get(ITEM_COUNT));
+		
+		if (pagerData.isAll()) {
+			pagerData.setPageCount(0);
+			pagerData.setFirstItemIndex(1);
+			pagerData.setLastItemIndex(pagerData.getItemCount());
+		} else {
+			pagerData.setPageCount(Math.max(0, fetchResults.get(LOGICAL_ITEM_COUNT) - 1) / pagerData.getPageSize() + 1);
+			pagerData.setLastItemIndex(fetchResults.get(LAST_ITEM_INDEX));
+			pagerData.setFirstItemIndex(fetchResults.get(FIRST_ITEM_INDEX));
+		}
+		
+		if (pagerData.getLastItemIndex() == 0) { //No item to display, remove offset
+			pagerData.setFirstItemIndex(0);
+		} 
+		
+		browseData.setPager(pagerData);
+
 	}
 	
 	/**

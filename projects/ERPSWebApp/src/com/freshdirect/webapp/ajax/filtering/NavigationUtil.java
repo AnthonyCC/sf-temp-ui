@@ -27,7 +27,6 @@ import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.webapp.ajax.browse.data.NavDepth;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
-import com.freshdirect.webapp.ajax.data.CMSModelToSoyDataConverter;
 
 public class NavigationUtil {
 	
@@ -159,7 +158,7 @@ public class NavigationUtil {
 		
 		// construct selectionMap from filter parameters
 		// check what filters are selected from a multigroup (multigroups can contain tagmodels only)
-		Map<String,List<TagModel>> selectionMap = new HashMap<String, List<TagModel>>(); // TODO do we need list of tagmodels here? do we want to support more than two level multi group structure
+		Map<String,List<TagModel>> selectionMap = new HashMap<String, List<TagModel>>();
 
 		for (ContentNodeModel multiGroup : productContainer.getProductFilterGroups()){
 			if (multiGroup instanceof ProductFilterMultiGroupModel){

@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.ajax.browse.data;
 
 
-//TODO verify structure
 public class MenuItemData extends SelectableData {
 
 	private static final long serialVersionUID = -5000076157128296031L;

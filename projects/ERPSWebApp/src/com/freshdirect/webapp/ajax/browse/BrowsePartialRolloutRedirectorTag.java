@@ -20,7 +20,6 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.webapp.ajax.filtering.NavigationUtil;
 
 public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport{
 	
@@ -46,7 +45,7 @@ public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport{
 			} else if (!shouldBeOnNew && !oldToNewDirection){
 				ContentNodeModel node = ContentFactory.getInstance().getContentNode(id);
 				
-				if (node instanceof DepartmentModel || node instanceof RecipeDepartment){ //TODO check this if forward to recipe_dept is ready in browse.jsp
+				if (node instanceof DepartmentModel || node instanceof RecipeDepartment){
 					redirectUrl = String.format(OLD_DEPARTMENT_PAGE_FS, id);
 				
 				} else if (node instanceof CategoryModel){
