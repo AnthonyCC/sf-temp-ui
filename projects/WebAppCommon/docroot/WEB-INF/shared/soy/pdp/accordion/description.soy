@@ -120,7 +120,7 @@
 {template .heating}
 {if $heatingInstructions}
 <strong>Heating Instructions</strong>
-<p class="pdp-accordion-description-heating">{$heatingInstructions}</p>
+<p class="pdp-accordion-description-heating">{$heatingInstructions|noAutoescape}</p>
 {/if}
 {/template}
 
