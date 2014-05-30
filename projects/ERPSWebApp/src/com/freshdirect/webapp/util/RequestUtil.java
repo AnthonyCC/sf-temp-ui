@@ -109,7 +109,7 @@ public class RequestUtil {
 		
 		if (xffHeader != null){
 			ip = xffHeader.substring(xffHeader.lastIndexOf(",")+1).trim();
-			LOGGER.debug("Resolved IP ("+ip+") from X-Forwarded-For header (" + xffHeader +")");
+			//LOGGER.debug("Resolved IP ("+ip+") from X-Forwarded-For header (" + xffHeader +")");
 		}
 		
 		if (ip==null || ip.length()==0){

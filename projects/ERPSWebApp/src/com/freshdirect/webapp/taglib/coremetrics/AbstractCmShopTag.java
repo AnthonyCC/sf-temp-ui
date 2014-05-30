@@ -32,7 +32,7 @@ public abstract class AbstractCmShopTag <X extends AbstractShopTagModelBuilder> 
 		}
 		
 		String shopScript = shopScriptSb.toString();
-		LOGGER.debug(shopScript);
+		//LOGGER.debug(shopScript);
 		return shopScript;
 	}
 	

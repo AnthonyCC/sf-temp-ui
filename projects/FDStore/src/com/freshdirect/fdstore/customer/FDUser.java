@@ -1897,7 +1897,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 			}
 		}
 
-		LOGGER.debug("Customer eligible for SO: " + isSOEligible);
+		//LOGGER.debug("Customer eligible for SO: " + isSOEligible);
 
 		return isSOEligible.booleanValue();
 	}
@@ -1925,7 +1925,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		if (cliCodeEligible == null)
 			cliCodeEligible = FDStoreProperties.isClientCodesEnabled() && hasCorporateOrder();
 
-		LOGGER.debug("Customer eligible for Client Codes: " + cliCodeEligible);
+		//LOGGER.debug("Customer eligible for Client Codes: " + cliCodeEligible);
 		
 		return cliCodeEligible != null ? cliCodeEligible : false;
 	}

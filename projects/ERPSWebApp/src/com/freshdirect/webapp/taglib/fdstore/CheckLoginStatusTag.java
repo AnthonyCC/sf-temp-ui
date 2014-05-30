@@ -143,7 +143,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         if (user == null) {
             // try to figure out user identity based on persistent cookie
             try {
-                LOGGER.debug("attempting to load user from cookie");
+                //LOGGER.debug("attempting to load user from cookie");
                 user = CookieMonster.loadCookie((HttpServletRequest) pageContext.getRequest());
             } catch (FDResourceException ex) {
                 LOGGER.warn(ex);
@@ -165,7 +165,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
                 FDCustomerCouponUtil.initCustomerCoupons(session);
             }
             
-            LOGGER.debug("request.getRequestURI() :" + request.getRequestURI());
+            //LOGGER.debug("request.getRequestURI() :" + request.getRequestURI());
 
             if ((user != null) &&
                     EnumServiceType.CORPORATE.equals(user.getUserServiceType())) {

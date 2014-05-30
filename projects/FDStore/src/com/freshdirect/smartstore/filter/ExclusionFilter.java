@@ -25,9 +25,7 @@ public final class ExclusionFilter extends ContentFilter {
 
     public <X extends ContentNodeModel> X filter(X model) {
     	boolean exclude = model == null || cartItems.contains(model.getContentKey());
-    	if (exclude) {
-    	    LOGGER.debug("excluded: " + model);
-    	}
-	return exclude ? null : model;
+    	
+    	return exclude ? null : model;
     }
 }

@@ -599,7 +599,7 @@ public class CategoryModel extends ProductContainer {
 	        		LOGGER.warn( this.getContentKey().getEncoded() + ": recommender changed!" );
 	        	}
 	        	
-	            LOGGER.info("Category[id=\"" + this.getContentKey().getId() + "\"].getSmartProducts(\"" + zoneId + "\")");
+	            //LOGGER.info("Category[id=\"" + this.getContentKey().getId() + "\"].getSmartProducts(\"" + zoneId + "\")");
 	            synchronized (CategoryModel.class) {
 	                if (globalSmartCategoryVersion > smartCategoryVersion) {
 	                    LOGGER.info("forced smart category recalculation : " + smartCategoryVersion + " -> " + globalSmartCategoryVersion + " for category : "
