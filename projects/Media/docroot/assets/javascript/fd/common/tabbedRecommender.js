@@ -21,6 +21,7 @@ var FreshDirect = FreshDirect || {};
 				if(isTabbedSitefeature) {
 					value.itemType = 'grid';
 					$('[data-component="tabbedRecommender"] [data-component="tabpanel"]').css('min-height',0).html(this.template(value));
+					fd.components.carousel.changePage($('[data-component="tabbedRecommender"] [data-component="tabpanel"] [data-component="carousel"]'));
 				}
 			}
 		},

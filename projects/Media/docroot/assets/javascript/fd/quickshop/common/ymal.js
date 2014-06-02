@@ -1,4 +1,4 @@
-/*global jQuery,quickshop*/
+/*global jQuery,common*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
@@ -35,6 +35,7 @@ var FreshDirect = FreshDirect || {};
 						item.itemId = 'atc_'+item.productId+'_'+item.skuCode+'_'+(Math.random()*10000).toString(24);
 					});
 					WIDGET.callback.call(this, value );					
+          fd.components.carousel.changePage($(this.placeholder).find('[data-component="carousel"]'));
 				}
 			}
 		},
@@ -45,18 +46,18 @@ var FreshDirect = FreshDirect || {};
 					url:'/api/qs/ymal',
 					method:'GET',
 					data: {
-			            data: JSON.stringify({ feature: FEATURE, deptId: deptId })
-			    }});
-			}
-		}
-	});
-	
-	Object.create(fd.common.signalTarget,{
-		allowNull:{
-			value:true
-		},
-		signal:{
-			value:'departmentChanged'
+            data: JSON.stringify({ feature: FEATURE, deptId: deptId })
+          }});
+      }
+    }
+  });
+  
+  Object.create(fd.common.signalTarget,{
+    allowNull:{
+      value:true
+    },
+    signal:{
+      value:'departmentChanged'
 		},
 		callback:{
 			value:ymal.update.bind(ymal)

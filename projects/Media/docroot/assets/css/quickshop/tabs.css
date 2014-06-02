@@ -127,6 +127,12 @@
 
 #quickshop .tabbed-carousel [data-component="carousel"] {
 	background:white;
+  margin: 0;
+  padding-bottom: 15px;
+}
+
+#quickshop .tabbed-carousel [data-component="carousel"] .pager {
+  display: block;
 }
 
 #quickshop .tabbed-carousel [data-component="carousel-mask"] {
@@ -142,7 +148,7 @@
 	border: 1px solid #c2c292;
 	border-top: none;
 	background: #e2e2cf;
-	padding: 11px 0;
+	padding: 15px 0 0;
 }
 .tabbed-carousel .tab-container .light-carousel {
 	background: #fff;

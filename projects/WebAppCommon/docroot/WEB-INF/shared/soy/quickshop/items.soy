@@ -78,14 +78,13 @@
 		</div>
 	</div>
   <div class="itemlist-item-header-buttons">
-	{if $item.customizePopup and not $replaced}<button class="customize {$inCart}" data-component="customizeButton" data-hasApply="true">customize</button>{/if}
     {if $type == 'shopfromlists' and not $replaced}
   		<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="editinlist save">save changes</button>
   		<button data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist">delete from list</button>
     {/if}
     <button class="addtolist">add to list</button>
   </div>
-	<div class="itemlist-item-header">{call .itemHeader}{param itemTitle:$itemTitle /}{param item:$item /}{param tempConfig:$tempConfig /}{/call}</div>
+	<div class="itemlist-item-header">{call .itemHeader}{param itemTitle:$itemTitle /}{param item:$item /}{param tempConfig:$tempConfig /}{param replaced:$replaced /}{/call}</div>
 	<div class="itemlist-item-controls">
 		<div class="itemlist-item-controls-subtotal">
 		{foreach $salesUnit in $item.salesUnit}{if $salesUnit.selected}
@@ -311,6 +310,7 @@
  * @param item definition of an item
  * @param? itemTitle type of an item
  * @param? tempConfig type of an item
+ * @param? replaced is replaced
  */
 {template .itemHeader private="true" autoescape="false"}
 		{if $itemTitle}<b class="itemlist-item-header-title">{$itemTitle}</b>{/if}
@@ -326,6 +326,11 @@
 				{$item.configDescr}</i>
 			{/if}
 		{/if}
+    {if $item.customizePopup and not $replaced}
+    <div class="itemlist-item-header-changecustomization">
+      <button data-component="customizeButton" data-hasApply="true"><span>Change Customization</span></button>
+    </div>
+    {/if}
     <div class="availability">
       {call common.availabilityMessage}{param item:$item /}{/call}
     </div>

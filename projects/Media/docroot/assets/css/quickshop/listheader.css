@@ -1,7 +1,7 @@
 .qs-list-header {
 	width: 470px;
 	float: left;
-	margin: 10px 0 10px 18px;
+	margin: 10px 0 5px 18px;
 }
 .qs-list-header h2 {
 	line-height: 20px;
@@ -26,4 +26,7 @@
 	font-weight: bold;
 	background:  url(/media_stat/images/quickshop/bullet-orange.png) no-repeat 0 3px;
 	padding-left: 15px;
+}
+.qs-list-header + .qs-actions {
+  margin-bottom: 5px;
 }
