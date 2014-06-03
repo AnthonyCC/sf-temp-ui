@@ -249,19 +249,16 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 								}
 								List<BreakWindow> consolidatedBreaks = combineBreaks(breaksperRoute);
 								
-								//int numBreaksToShow = computeNumBreaksToShow();
 								int breakCount = 0;
 								IHandOffBatchRouteBreak s_break = null;
 								for(BreakWindow breakWindow : consolidatedBreaks){
-									//if(breakCount++ < numBreaksToShow){
 										s_break = new HandOffBatchRouteBreak(this.getBatch().getBatchId(), 
 																			sesEntry.getKey().getSessionName(), 
 																			route.getRouteId(),
-																			String.format("%03d", breakCount),
+																			String.format("%03d", ++breakCount),
 																			breakWindow.getStartTime(),
 																			breakWindow.getEndTime());
 										s_breaks.add(s_break);
-									//}
 								}
 								route.setStops(_stops);
 								
