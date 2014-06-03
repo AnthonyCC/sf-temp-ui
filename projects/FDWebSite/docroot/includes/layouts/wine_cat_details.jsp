@@ -104,7 +104,7 @@ if (isFilter) {
 	%>
 	<%@include file="/includes/wine/i_wine_details_view.jspf" %>	
 	
-	<% if (!groups.get(0).getProducts().isEmpty()) { %>
+	<% if (!groups.get(0).getProducts().isEmpty() && !category.isHideWineRatingPricing()) { %>
 	<%@ include file="/shared/includes/wine/i_wine_expert_ratings_key.jspf" %>
 	<% } %>
 	<% if (wineHasOtherRatings) {

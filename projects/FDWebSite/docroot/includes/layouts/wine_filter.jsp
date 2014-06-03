@@ -72,7 +72,9 @@ Per page:
 <% } else { // wineView %>
 <%@include file="/includes/wine/i_wine_details_view.jspf" %>
 <% } %>
-<%@ include file="/shared/includes/wine/i_wine_expert_ratings_key.jspf" %>
+<% if (category != null  && !category.isHideWineRatingPricing()) { %>
+	<%@ include file="/shared/includes/wine/i_wine_expert_ratings_key.jspf" %>
+<% } %>
 <% if (wineView == EnumWineViewType.DETAILS && wineHasOtherRatings) { %>
 <fd:IncludeMedia name="/media/editorial/win_<%= JspMethods.getWineAssociateId().toLowerCase() %>/other_ratings_key.html"/>
 <% } %>

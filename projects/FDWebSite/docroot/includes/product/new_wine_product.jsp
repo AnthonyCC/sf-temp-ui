@@ -112,7 +112,7 @@ final int W_NEW_WINE_PRODUCT_RIGHT = 165;
 	} catch (FDResourceException e) {
 	}
 	
-	if (__rating != EnumWineRating.NOT_RATED) {
+	if (__rating != EnumWineRating.NOT_RATED && (parentCat != null && !parentCat.isHideWineRatingPricing()) ) {
 	%>
 	<tr>
 		<td colspan="2">

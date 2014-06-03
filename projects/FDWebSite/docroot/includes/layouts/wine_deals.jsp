@@ -291,7 +291,7 @@ if (rest != null) {
 }
 %>
 
-<% if (isProductShown) { %>
+<% if (isProductShown && !category.isHideWineRatingPricing()) { %>
 <%@ include file="/shared/includes/wine/i_wine_expert_ratings_key.jspf" %>
 <% } %>
 </div>
