@@ -804,6 +804,10 @@ public class ContentFactory {
 	
 	private void buildWineIndex() {
 		Set<Domain> wineDomains = new HashSet<Domain>(100);
+		String winePrefix = FDStoreProperties.getWineAssid().toLowerCase();
+		if ("fdw".equalsIgnoreCase(winePrefix)) {
+			winePrefix = "vin"; //make it match CMS setup
+		}
 		
 		WineIndex newIndex = new WineIndex();
 		// fetch wine domains
@@ -819,13 +823,13 @@ public class ContentFactory {
 		LOGGER.info("WINE INDEX: collected " + wineDomains.size() + " domains.");
 
 		LOGGER.info("WINE INDEX: collecting all wine products...");
-		CategoryModel byRegion = (CategoryModel) getContentNodeByKey(new ContentKey(FDContentTypes.CATEGORY, "usq_region"));
+		CategoryModel byRegion = (CategoryModel) getContentNodeByKey(new ContentKey(FDContentTypes.CATEGORY, winePrefix+"_region"));
 		if (byRegion != null)
 			newIndex.all.addAll(byRegion.getAllChildProductKeys());
-		CategoryModel byType = (CategoryModel) getContentNodeByKey(new ContentKey(FDContentTypes.CATEGORY, "usq_type"));
+		CategoryModel byType = (CategoryModel) getContentNodeByKey(new ContentKey(FDContentTypes.CATEGORY, winePrefix+"_type"));
 		if (byType != null)
 			newIndex.all.addAll(byType.getAllChildProductKeys());
-		CategoryModel more = (CategoryModel) getContentNodeByKey(new ContentKey(FDContentTypes.CATEGORY, "usq_more"));
+		CategoryModel more = (CategoryModel) getContentNodeByKey(new ContentKey(FDContentTypes.CATEGORY, winePrefix+"_more"));
 		if (more != null)
 			newIndex.all.addAll(more.getAllChildProductKeys());
 		LOGGER.info("WINE INDEX: collected all " + newIndex.all.size() + " wine products");
