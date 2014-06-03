@@ -7,11 +7,9 @@ import static com.freshdirect.routing.manager.IProcessMessage.INFO_MESSAGE_ROUTI
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.delivery.model.TimeslotWindow;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.manager.DeliveryManager;

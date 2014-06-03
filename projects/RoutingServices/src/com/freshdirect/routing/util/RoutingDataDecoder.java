@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
+import com.freshdirect.delivery.model.BreakWindow;
+import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.routing.constants.EnumRoutingNotification;
 import com.freshdirect.routing.model.AreaModel;
 import com.freshdirect.routing.model.BuildingModel;
@@ -182,12 +184,16 @@ public class RoutingDataDecoder {
 			
 			result.setStops(new TreeSet());
 			
+			result.setBreaks(new TreeSet());
+			
+			
 			IRoutingStopModel _stop = null;
 			ILocationModel _locModel = null;
 			IBuildingModel building = null;
 			IGeographicLocation _geoLocModel = null;
 			IDeliveryModel deliveryInfo = null;
 			
+			BreakWindow _break = null;
 			RoutingStop _refStop = null;
 			int lastSequence = 0;
 			
@@ -196,9 +202,19 @@ public class RoutingDataDecoder {
 				for(int intCount=0;intCount<route.getStops().length ;intCount++) {
 					_refStop = route.getStops()[intCount];
 					
-					if(_refStop.getSequenceNumber() >= 0 || (retrieveBlankStops && _refStop.getStopType()!=null && StopType._stpDepot.equals(_refStop.getStopType().getValue()))) {
-						//System.out.println("\t"+_refStop.getSequenceNumber()+" "+_refStop.getLocationIdentity().getLocationID()+" "+_refStop.getOrders()+" "+_refStop.getStopType());
-										
+					System.out.println("\t"+_refStop.getSequenceNumber()+" "+_refStop.getLocationIdentity().getLocationID()+" "+_refStop.getOrders()+" "+_refStop.getStopType()+" "+_refStop.getLocationIdentity().getLocationType());
+					
+					/** We are ignoring breaks for depots as we dont know how to handle them currently. Discussed this with Rod and he is ok with ignoring breaks for Depots.  */
+					if(!retrieveBlankStops && _refStop.getStopType()!=null && (StopType._stpPaidBreak.equals(_refStop.getStopType().getValue())
+													|| StopType._stpUnpaidBreak.equals(_refStop.getStopType().getValue()))){
+						_break = new BreakWindow(_refStop.getArrival() != null ? _refStop.getArrival().getTime() : null,
+								_refStop.getArrival() != null ? RoutingDateUtil.addSeconds(_refStop.getArrival().getTime()
+										, _refStop.getServiceTime()) : null);
+						result.getBreaks().add(_break);
+					}else if(_refStop.getSequenceNumber() >= 0 ||
+							(retrieveBlankStops && _refStop.getStopType()!=null && StopType._stpDepot.equals(_refStop.getStopType().getValue()))) {
+						
+						
 						_stop = new RoutingStopModel(_refStop.getSequenceNumber() >= 0 ? _refStop.getSequenceNumber() : lastSequence);
 						lastSequence =  _refStop.getSequenceNumber();
 							

@@ -106,6 +106,36 @@
                             
 
                         /**
+                        * field for ActualRouteCount
+                        */
+
+                        
+                                    protected int localActualRouteCount ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getActualRouteCount(){
+                               return localActualRouteCount;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param ActualRouteCount
+                               */
+                               public void setActualRouteCount(int param){
+                            
+                                            this.localActualRouteCount=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for TotalPlannedServiceTime
                         */
 
@@ -1178,6 +1208,314 @@
                             
 
                         /**
+                        * field for TotalPlannedDeliveryQuantity
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.Quantities localTotalPlannedDeliveryQuantity ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localTotalPlannedDeliveryQuantityTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.Quantities
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.Quantities getTotalPlannedDeliveryQuantity(){
+                               return localTotalPlannedDeliveryQuantity;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param TotalPlannedDeliveryQuantity
+                               */
+                               public void setTotalPlannedDeliveryQuantity(com.freshdirect.routing.proxy.stub.transportation.Quantities param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localTotalPlannedDeliveryQuantityTracker = true;
+                                       } else {
+                                          localTotalPlannedDeliveryQuantityTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localTotalPlannedDeliveryQuantity=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for TotalActualDeliveryQuantity
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.Quantities localTotalActualDeliveryQuantity ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localTotalActualDeliveryQuantityTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.Quantities
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.Quantities getTotalActualDeliveryQuantity(){
+                               return localTotalActualDeliveryQuantity;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param TotalActualDeliveryQuantity
+                               */
+                               public void setTotalActualDeliveryQuantity(com.freshdirect.routing.proxy.stub.transportation.Quantities param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localTotalActualDeliveryQuantityTracker = true;
+                                       } else {
+                                          localTotalActualDeliveryQuantityTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localTotalActualDeliveryQuantity=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for TotalPlannedPickupQuantity
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.Quantities localTotalPlannedPickupQuantity ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localTotalPlannedPickupQuantityTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.Quantities
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.Quantities getTotalPlannedPickupQuantity(){
+                               return localTotalPlannedPickupQuantity;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param TotalPlannedPickupQuantity
+                               */
+                               public void setTotalPlannedPickupQuantity(com.freshdirect.routing.proxy.stub.transportation.Quantities param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localTotalPlannedPickupQuantityTracker = true;
+                                       } else {
+                                          localTotalPlannedPickupQuantityTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localTotalPlannedPickupQuantity=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for TotalActualPickupQuantity
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.Quantities localTotalActualPickupQuantity ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localTotalActualPickupQuantityTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.Quantities
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.Quantities getTotalActualPickupQuantity(){
+                               return localTotalActualPickupQuantity;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param TotalActualPickupQuantity
+                               */
+                               public void setTotalActualPickupQuantity(com.freshdirect.routing.proxy.stub.transportation.Quantities param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localTotalActualPickupQuantityTracker = true;
+                                       } else {
+                                          localTotalActualPickupQuantityTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localTotalActualPickupQuantity=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for TotalOverageQuantity
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.Quantities localTotalOverageQuantity ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localTotalOverageQuantityTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.Quantities
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.Quantities getTotalOverageQuantity(){
+                               return localTotalOverageQuantity;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param TotalOverageQuantity
+                               */
+                               public void setTotalOverageQuantity(com.freshdirect.routing.proxy.stub.transportation.Quantities param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localTotalOverageQuantityTracker = true;
+                                       } else {
+                                          localTotalOverageQuantityTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localTotalOverageQuantity=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for TotalShortageQuantity
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.Quantities localTotalShortageQuantity ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localTotalShortageQuantityTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.Quantities
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.Quantities getTotalShortageQuantity(){
+                               return localTotalShortageQuantity;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param TotalShortageQuantity
+                               */
+                               public void setTotalShortageQuantity(com.freshdirect.routing.proxy.stub.transportation.Quantities param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localTotalShortageQuantityTracker = true;
+                                       } else {
+                                          localTotalShortageQuantityTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localTotalShortageQuantity=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for TotalDamageQuantity
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.Quantities localTotalDamageQuantity ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localTotalDamageQuantityTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.Quantities
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.Quantities getTotalDamageQuantity(){
+                               return localTotalDamageQuantity;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param TotalDamageQuantity
+                               */
+                               public void setTotalDamageQuantity(com.freshdirect.routing.proxy.stub.transportation.Quantities param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localTotalDamageQuantityTracker = true;
+                                       } else {
+                                          localTotalDamageQuantityTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localTotalDamageQuantity=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for TotalPlannedStopCount
                         */
 
@@ -1810,6 +2148,35 @@
                                                       
                                                } else {
                                                     xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRouteCount));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"actualRouteCount", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"actualRouteCount");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("actualRouteCount");
+                                    }
+                                
+                                               if (localActualRouteCount==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("actualRouteCount cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActualRouteCount));
                                                }
                                     
                                    xmlWriter.writeEndElement();
@@ -2757,6 +3124,223 @@
                                      localAvgActualQuantity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","avgActualQuantity"),
                                         factory,xmlWriter);
                                     }
+                                } if (localTotalPlannedDeliveryQuantityTracker){
+                                    if (localTotalPlannedDeliveryQuantity==null){
+
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"totalPlannedDeliveryQuantity", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"totalPlannedDeliveryQuantity");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("totalPlannedDeliveryQuantity");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localTotalPlannedDeliveryQuantity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","totalPlannedDeliveryQuantity"),
+                                        factory,xmlWriter);
+                                    }
+                                } if (localTotalActualDeliveryQuantityTracker){
+                                    if (localTotalActualDeliveryQuantity==null){
+
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"totalActualDeliveryQuantity", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"totalActualDeliveryQuantity");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("totalActualDeliveryQuantity");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localTotalActualDeliveryQuantity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","totalActualDeliveryQuantity"),
+                                        factory,xmlWriter);
+                                    }
+                                } if (localTotalPlannedPickupQuantityTracker){
+                                    if (localTotalPlannedPickupQuantity==null){
+
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"totalPlannedPickupQuantity", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"totalPlannedPickupQuantity");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("totalPlannedPickupQuantity");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localTotalPlannedPickupQuantity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","totalPlannedPickupQuantity"),
+                                        factory,xmlWriter);
+                                    }
+                                } if (localTotalActualPickupQuantityTracker){
+                                    if (localTotalActualPickupQuantity==null){
+
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"totalActualPickupQuantity", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"totalActualPickupQuantity");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("totalActualPickupQuantity");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localTotalActualPickupQuantity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","totalActualPickupQuantity"),
+                                        factory,xmlWriter);
+                                    }
+                                } if (localTotalOverageQuantityTracker){
+                                    if (localTotalOverageQuantity==null){
+
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"totalOverageQuantity", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"totalOverageQuantity");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("totalOverageQuantity");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localTotalOverageQuantity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","totalOverageQuantity"),
+                                        factory,xmlWriter);
+                                    }
+                                } if (localTotalShortageQuantityTracker){
+                                    if (localTotalShortageQuantity==null){
+
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"totalShortageQuantity", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"totalShortageQuantity");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("totalShortageQuantity");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localTotalShortageQuantity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","totalShortageQuantity"),
+                                        factory,xmlWriter);
+                                    }
+                                } if (localTotalDamageQuantityTracker){
+                                    if (localTotalDamageQuantity==null){
+
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"totalDamageQuantity", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"totalDamageQuantity");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("totalDamageQuantity");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localTotalDamageQuantity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","totalDamageQuantity"),
+                                        factory,xmlWriter);
+                                    }
                                 }
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
@@ -3398,6 +3982,12 @@
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRouteCount));
                             
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "actualRouteCount"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActualRouteCount));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "totalPlannedServiceTime"));
                                  
                                 elementList.add(
@@ -3596,6 +4186,55 @@
                             
                                     elementList.add(localAvgActualQuantity==null?null:
                                     localAvgActualQuantity);
+                                } if (localTotalPlannedDeliveryQuantityTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "totalPlannedDeliveryQuantity"));
+                            
+                            
+                                    elementList.add(localTotalPlannedDeliveryQuantity==null?null:
+                                    localTotalPlannedDeliveryQuantity);
+                                } if (localTotalActualDeliveryQuantityTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "totalActualDeliveryQuantity"));
+                            
+                            
+                                    elementList.add(localTotalActualDeliveryQuantity==null?null:
+                                    localTotalActualDeliveryQuantity);
+                                } if (localTotalPlannedPickupQuantityTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "totalPlannedPickupQuantity"));
+                            
+                            
+                                    elementList.add(localTotalPlannedPickupQuantity==null?null:
+                                    localTotalPlannedPickupQuantity);
+                                } if (localTotalActualPickupQuantityTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "totalActualPickupQuantity"));
+                            
+                            
+                                    elementList.add(localTotalActualPickupQuantity==null?null:
+                                    localTotalActualPickupQuantity);
+                                } if (localTotalOverageQuantityTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "totalOverageQuantity"));
+                            
+                            
+                                    elementList.add(localTotalOverageQuantity==null?null:
+                                    localTotalOverageQuantity);
+                                } if (localTotalShortageQuantityTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "totalShortageQuantity"));
+                            
+                            
+                                    elementList.add(localTotalShortageQuantity==null?null:
+                                    localTotalShortageQuantity);
+                                } if (localTotalDamageQuantityTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "totalDamageQuantity"));
+                            
+                            
+                                    elementList.add(localTotalDamageQuantity==null?null:
+                                    localTotalDamageQuantity);
                                 }
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "totalPlannedStopCount"));
@@ -3800,6 +4439,25 @@
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setRouteCount(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","actualRouteCount").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setActualRouteCount(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
                                               
                                         reader.next();
@@ -4450,6 +5108,174 @@
                                       }else{
                                     
                                                 object.setAvgActualQuantity(com.freshdirect.routing.proxy.stub.transportation.Quantities.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","totalPlannedDeliveryQuantity").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setTotalPlannedDeliveryQuantity(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setTotalPlannedDeliveryQuantity(com.freshdirect.routing.proxy.stub.transportation.Quantities.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","totalActualDeliveryQuantity").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setTotalActualDeliveryQuantity(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setTotalActualDeliveryQuantity(com.freshdirect.routing.proxy.stub.transportation.Quantities.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","totalPlannedPickupQuantity").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setTotalPlannedPickupQuantity(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setTotalPlannedPickupQuantity(com.freshdirect.routing.proxy.stub.transportation.Quantities.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","totalActualPickupQuantity").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setTotalActualPickupQuantity(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setTotalActualPickupQuantity(com.freshdirect.routing.proxy.stub.transportation.Quantities.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","totalOverageQuantity").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setTotalOverageQuantity(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setTotalOverageQuantity(com.freshdirect.routing.proxy.stub.transportation.Quantities.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","totalShortageQuantity").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setTotalShortageQuantity(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setTotalShortageQuantity(com.freshdirect.routing.proxy.stub.transportation.Quantities.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","totalDamageQuantity").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setTotalDamageQuantity(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setTotalDamageQuantity(com.freshdirect.routing.proxy.stub.transportation.Quantities.Factory.parse(reader));
                                               
                                         reader.next();
                                     }

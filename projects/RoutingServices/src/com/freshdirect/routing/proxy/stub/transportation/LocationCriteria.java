@@ -296,6 +296,94 @@
                             
 
                         /**
+                        * field for LastOrderDateFrom
+                        */
+
+                        
+                                    protected java.util.Date localLastOrderDateFrom ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localLastOrderDateFromTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.util.Date
+                           */
+                           public  java.util.Date getLastOrderDateFrom(){
+                               return localLastOrderDateFrom;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param LastOrderDateFrom
+                               */
+                               public void setLastOrderDateFrom(java.util.Date param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localLastOrderDateFromTracker = true;
+                                       } else {
+                                          localLastOrderDateFromTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localLastOrderDateFrom=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for LastOrderDateTo
+                        */
+
+                        
+                                    protected java.util.Date localLastOrderDateTo ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localLastOrderDateToTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.util.Date
+                           */
+                           public  java.util.Date getLastOrderDateTo(){
+                               return localLastOrderDateTo;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param LastOrderDateTo
+                               */
+                               public void setLastOrderDateTo(java.util.Date param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localLastOrderDateToTracker = true;
+                                       } else {
+                                          localLastOrderDateToTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localLastOrderDateTo=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for MaximumLocationsRetrieved
                         */
 
@@ -626,6 +714,74 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
+                             } if (localLastOrderDateFromTracker){
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"lastOrderDateFrom", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"lastOrderDateFrom");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("lastOrderDateFrom");
+                                    }
+                                
+
+                                          if (localLastOrderDateFrom==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("lastOrderDateFrom cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLastOrderDateFrom));
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localLastOrderDateToTracker){
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"lastOrderDateTo", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"lastOrderDateTo");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("lastOrderDateTo");
+                                    }
+                                
+
+                                          if (localLastOrderDateTo==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("lastOrderDateTo cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLastOrderDateTo));
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
                              }
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
@@ -871,6 +1027,24 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("modifiedSince cannot be null!!");
                                         }
+                                    } if (localLastOrderDateFromTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "lastOrderDateFrom"));
+                                 
+                                        if (localLastOrderDateFrom != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLastOrderDateFrom));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("lastOrderDateFrom cannot be null!!");
+                                        }
+                                    } if (localLastOrderDateToTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "lastOrderDateTo"));
+                                 
+                                        if (localLastOrderDateTo != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLastOrderDateTo));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("lastOrderDateTo cannot be null!!");
+                                        }
                                     }
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "maximumLocationsRetrieved"));
@@ -1051,6 +1225,42 @@
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setModifiedSince(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDate(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","lastOrderDateFrom").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setLastOrderDateFrom(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDate(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","lastOrderDateTo").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setLastOrderDateTo(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToDate(content));
                                               
                                         reader.next();

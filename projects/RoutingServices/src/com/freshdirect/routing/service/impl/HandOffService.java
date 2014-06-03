@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.customer.EnumSaleStatus;
-import com.freshdirect.delivery.model.TimeslotWindow;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;

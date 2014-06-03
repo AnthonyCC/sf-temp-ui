@@ -627,6 +627,66 @@
                             
 
                         /**
+                        * field for BreakTime
+                        */
+
+                        
+                                    protected int localBreakTime ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getBreakTime(){
+                               return localBreakTime;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param BreakTime
+                               */
+                               public void setBreakTime(int param){
+                            
+                                            this.localBreakTime=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for PaidBreakTime
+                        */
+
+                        
+                                    protected int localPaidBreakTime ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getPaidBreakTime(){
+                               return localPaidBreakTime;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param PaidBreakTime
+                               */
+                               public void setPaidBreakTime(int param){
+                            
+                                            this.localPaidBreakTime=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for Activities
                         * This was an Array!
                         */
@@ -1744,6 +1804,64 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"breakTime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"breakTime");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("breakTime");
+                                    }
+                                
+                                               if (localBreakTime==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("breakTime cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localBreakTime));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"paidBreakTime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"paidBreakTime");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("paidBreakTime");
+                                    }
+                                
+                                               if (localPaidBreakTime==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("paidBreakTime cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPaidBreakTime));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
                               if (localActivitiesTracker){
                                        if (localActivities!=null){
                                             for (int i = 0;i < localActivities.length;i++){
@@ -2353,7 +2471,19 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("description cannot be null!!");
                                         }
-                                     if (localActivitiesTracker){
+                                    
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "breakTime"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localBreakTime));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "paidBreakTime"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPaidBreakTime));
+                             if (localActivitiesTracker){
                              if (localActivities!=null) {
                                  for (int i = 0;i < localActivities.length;i++){
 
@@ -2520,7 +2650,7 @@
                     
                     reader.next();
                 
-                        java.util.ArrayList list18 = new java.util.ArrayList();
+                        java.util.ArrayList list20 = new java.util.ArrayList();
                     
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
@@ -2869,16 +2999,54 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","breakTime").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setBreakTime(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","paidBreakTime").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setPaidBreakTime(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","activities").equals(reader.getName())){
                                 
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list18.add(com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderActivity.Factory.parse(reader));
+                                    list20.add(com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderActivity.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
-                                                        boolean loopDone18 = false;
-                                                        while(!loopDone18){
+                                                        boolean loopDone20 = false;
+                                                        while(!loopDone20){
                                                             // We should be at the end element, but make sure
                                                             while (!reader.isEndElement())
                                                                 reader.next();
@@ -2889,13 +3057,13 @@
                                                                 reader.next();
                                                             if (reader.isEndElement()){
                                                                 //two continuous end elements means we are exiting the xml structure
-                                                                loopDone18 = true;
+                                                                loopDone20 = true;
                                                             } else {
                                                                 if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","activities").equals(reader.getName())){
-                                                                    list18.add(com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderActivity.Factory.parse(reader));
+                                                                    list20.add(com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderActivity.Factory.parse(reader));
                                                                         
                                                                 }else{
-                                                                    loopDone18 = true;
+                                                                    loopDone20 = true;
                                                                 }
                                                             }
                                                         }
@@ -2904,7 +3072,7 @@
                                                         object.setActivities((com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderActivity[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
                                                                 com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderActivity.class,
-                                                                list18));
+                                                                list20));
                                                             
                               }  // End of if for expected property start element
                                 

@@ -65,6 +65,9 @@
                                     public static final java.lang.String _satNumeric =
                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString("satNumeric");
                                 
+                                    public static final java.lang.String _satInspection =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("satInspection");
+                                
                                 public static final SurveyAnswerType satText =
                                     new SurveyAnswerType(_satText,true);
                             
@@ -76,6 +79,9 @@
                             
                                 public static final SurveyAnswerType satNumeric =
                                     new SurveyAnswerType(_satNumeric,true);
+                            
+                                public static final SurveyAnswerType satInspection =
+                                    new SurveyAnswerType(_satInspection,true);
                             
 
                                 public java.lang.String getValue() { return localSurveyAnswerType;}

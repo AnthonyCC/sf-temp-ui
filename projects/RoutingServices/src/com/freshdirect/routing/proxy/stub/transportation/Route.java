@@ -1229,6 +1229,50 @@
                             
 
                         /**
+                        * field for WirelessID
+                        */
+
+                        
+                                    protected java.lang.String localWirelessID ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localWirelessIDTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getWirelessID(){
+                               return localWirelessID;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param WirelessID
+                               */
+                               public void setWirelessID(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localWirelessIDTracker = true;
+                                       } else {
+                                          localWirelessIDTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localWirelessID=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for InProgress
                         */
 
@@ -2281,92 +2325,168 @@
                             
 
                         /**
-                        * field for PreRouteSurveyIdentity
+                        * field for PreRouteSurveyIdentities
+                        * This was an Array!
                         */
 
                         
-                                    protected com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity localPreRouteSurveyIdentity ;
+                                    protected com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity[] localPreRouteSurveyIdentities ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
                            *   in the serialized XML
                            */
-                           protected boolean localPreRouteSurveyIdentityTracker = false ;
+                           protected boolean localPreRouteSurveyIdentitiesTracker = false ;
                            
 
                            /**
                            * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity
+                           * @return com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity[]
                            */
-                           public  com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity getPreRouteSurveyIdentity(){
-                               return localPreRouteSurveyIdentity;
+                           public  com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity[] getPreRouteSurveyIdentities(){
+                               return localPreRouteSurveyIdentities;
                            }
 
                            
                         
-                            /**
-                               * Auto generated setter method
-                               * @param param PreRouteSurveyIdentity
-                               */
-                               public void setPreRouteSurveyIdentity(com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localPreRouteSurveyIdentityTracker = true;
-                                       } else {
-                                          localPreRouteSurveyIdentityTracker = true;
-                                              
-                                       }
-                                   
-                                            this.localPreRouteSurveyIdentity=param;
-                                    
 
-                               }
+
+                               
+                              /**
+                               * validate the array for PreRouteSurveyIdentities
+                               */
+                              protected void validatePreRouteSurveyIdentities(com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity[] param){
+                             
+                              }
+
+
+                             /**
+                              * Auto generated setter method
+                              * @param param PreRouteSurveyIdentities
+                              */
+                              public void setPreRouteSurveyIdentities(com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity[] param){
+                              
+                                   validatePreRouteSurveyIdentities(param);
+
+                               
+                                          if (param != null){
+                                             //update the setting tracker
+                                             localPreRouteSurveyIdentitiesTracker = true;
+                                          } else {
+                                             localPreRouteSurveyIdentitiesTracker = false;
+                                                 
+                                          }
+                                      
+                                      this.localPreRouteSurveyIdentities=param;
+                              }
+
+                               
+                             
+                             /**
+                             * Auto generated add method for the array for convenience
+                             * @param param com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity
+                             */
+                             public void addPreRouteSurveyIdentities(com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity param){
+                                   if (localPreRouteSurveyIdentities == null){
+                                   localPreRouteSurveyIdentities = new com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity[]{};
+                                   }
+
                             
+                                 //update the setting tracker
+                                localPreRouteSurveyIdentitiesTracker = true;
+                            
+
+                               java.util.List list =
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localPreRouteSurveyIdentities);
+                               list.add(param);
+                               this.localPreRouteSurveyIdentities =
+                             (com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity[])list.toArray(
+                            new com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity[list.size()]);
+
+                             }
+                             
 
                         /**
-                        * field for PostRouteSurveyIdentity
+                        * field for PostRouteSurveyIdentities
+                        * This was an Array!
                         */
 
                         
-                                    protected com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity localPostRouteSurveyIdentity ;
+                                    protected com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity[] localPostRouteSurveyIdentities ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
                            *   in the serialized XML
                            */
-                           protected boolean localPostRouteSurveyIdentityTracker = false ;
+                           protected boolean localPostRouteSurveyIdentitiesTracker = false ;
                            
 
                            /**
                            * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity
+                           * @return com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity[]
                            */
-                           public  com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity getPostRouteSurveyIdentity(){
-                               return localPostRouteSurveyIdentity;
+                           public  com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity[] getPostRouteSurveyIdentities(){
+                               return localPostRouteSurveyIdentities;
                            }
 
                            
                         
-                            /**
-                               * Auto generated setter method
-                               * @param param PostRouteSurveyIdentity
-                               */
-                               public void setPostRouteSurveyIdentity(com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localPostRouteSurveyIdentityTracker = true;
-                                       } else {
-                                          localPostRouteSurveyIdentityTracker = true;
-                                              
-                                       }
-                                   
-                                            this.localPostRouteSurveyIdentity=param;
-                                    
 
-                               }
+
+                               
+                              /**
+                               * validate the array for PostRouteSurveyIdentities
+                               */
+                              protected void validatePostRouteSurveyIdentities(com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity[] param){
+                             
+                              }
+
+
+                             /**
+                              * Auto generated setter method
+                              * @param param PostRouteSurveyIdentities
+                              */
+                              public void setPostRouteSurveyIdentities(com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity[] param){
+                              
+                                   validatePostRouteSurveyIdentities(param);
+
+                               
+                                          if (param != null){
+                                             //update the setting tracker
+                                             localPostRouteSurveyIdentitiesTracker = true;
+                                          } else {
+                                             localPostRouteSurveyIdentitiesTracker = false;
+                                                 
+                                          }
+                                      
+                                      this.localPostRouteSurveyIdentities=param;
+                              }
+
+                               
+                             
+                             /**
+                             * Auto generated add method for the array for convenience
+                             * @param param com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity
+                             */
+                             public void addPostRouteSurveyIdentities(com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity param){
+                                   if (localPostRouteSurveyIdentities == null){
+                                   localPostRouteSurveyIdentities = new com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity[]{};
+                                   }
+
                             
+                                 //update the setting tracker
+                                localPostRouteSurveyIdentitiesTracker = true;
+                            
+
+                               java.util.List list =
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localPostRouteSurveyIdentities);
+                               list.add(param);
+                               this.localPostRouteSurveyIdentities =
+                             (com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity[])list.toArray(
+                            new com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity[list.size()]);
+
+                             }
+                             
 
                         /**
                         * field for ReportedDistance
@@ -2524,6 +2644,94 @@
 
                              }
                              
+
+                        /**
+                        * field for PreRouteSurveyIdentity
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity localPreRouteSurveyIdentity ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localPreRouteSurveyIdentityTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity getPreRouteSurveyIdentity(){
+                               return localPreRouteSurveyIdentity;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param PreRouteSurveyIdentity
+                               */
+                               public void setPreRouteSurveyIdentity(com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localPreRouteSurveyIdentityTracker = true;
+                                       } else {
+                                          localPreRouteSurveyIdentityTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localPreRouteSurveyIdentity=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for PostRouteSurveyIdentity
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity localPostRouteSurveyIdentity ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localPostRouteSurveyIdentityTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity getPostRouteSurveyIdentity(){
+                               return localPostRouteSurveyIdentity;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param PostRouteSurveyIdentity
+                               */
+                               public void setPostRouteSurveyIdentity(com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localPostRouteSurveyIdentityTracker = true;
+                                       } else {
+                                          localPostRouteSurveyIdentityTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localPostRouteSurveyIdentity=param;
+                                    
+
+                               }
+                            
 
      /**
      * isReaderMTOMAware
@@ -3487,7 +3695,41 @@
                                             }
                                            localWirelessProvider.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","wirelessProvider"),
                                                factory,xmlWriter);
+                                        } if (localWirelessIDTracker){
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"wirelessID", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"wirelessID");
                                         }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("wirelessID");
+                                    }
+                                
+
+                                          if (localWirelessID==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("wirelessID cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localWirelessID);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             }
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -4318,69 +4560,43 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             } if (localPreRouteSurveyIdentityTracker){
-                                    if (localPreRouteSurveyIdentity==null){
+                             } if (localPreRouteSurveyIdentitiesTracker){
+                                       if (localPreRouteSurveyIdentities!=null){
+                                            for (int i = 0;i < localPreRouteSurveyIdentities.length;i++){
+                                                if (localPreRouteSurveyIdentities[i] != null){
+                                                 localPreRouteSurveyIdentities[i].serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","preRouteSurveyIdentities"),
+                                                           factory,xmlWriter);
+                                                } else {
+                                                   
+                                                        // we don't have to do any thing since minOccures is zero
+                                                    
+                                                }
 
-                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-
-                                        if (! namespace2.equals("")) {
-                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
-
-                                            if (prefix2 == null) {
-                                                prefix2 = generatePrefix(namespace2);
-
-                                                xmlWriter.writeStartElement(prefix2,"preRouteSurveyIdentity", namespace2);
-                                                xmlWriter.writeNamespace(prefix2, namespace2);
-                                                xmlWriter.setPrefix(prefix2, namespace2);
-
-                                            } else {
-                                                xmlWriter.writeStartElement(namespace2,"preRouteSurveyIdentity");
                                             }
-
-                                        } else {
-                                            xmlWriter.writeStartElement("preRouteSurveyIdentity");
-                                        }
-
-
-                                       // write the nil attribute
-                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
-                                      xmlWriter.writeEndElement();
-                                    }else{
-                                     localPreRouteSurveyIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","preRouteSurveyIdentity"),
-                                        factory,xmlWriter);
+                                     } else {
+                                        
+                                               throw new org.apache.axis2.databinding.ADBException("preRouteSurveyIdentities cannot be null!!");
+                                        
                                     }
-                                } if (localPostRouteSurveyIdentityTracker){
-                                    if (localPostRouteSurveyIdentity==null){
+                                 } if (localPostRouteSurveyIdentitiesTracker){
+                                       if (localPostRouteSurveyIdentities!=null){
+                                            for (int i = 0;i < localPostRouteSurveyIdentities.length;i++){
+                                                if (localPostRouteSurveyIdentities[i] != null){
+                                                 localPostRouteSurveyIdentities[i].serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","postRouteSurveyIdentities"),
+                                                           factory,xmlWriter);
+                                                } else {
+                                                   
+                                                        // we don't have to do any thing since minOccures is zero
+                                                    
+                                                }
 
-                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-
-                                        if (! namespace2.equals("")) {
-                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
-
-                                            if (prefix2 == null) {
-                                                prefix2 = generatePrefix(namespace2);
-
-                                                xmlWriter.writeStartElement(prefix2,"postRouteSurveyIdentity", namespace2);
-                                                xmlWriter.writeNamespace(prefix2, namespace2);
-                                                xmlWriter.setPrefix(prefix2, namespace2);
-
-                                            } else {
-                                                xmlWriter.writeStartElement(namespace2,"postRouteSurveyIdentity");
                                             }
-
-                                        } else {
-                                            xmlWriter.writeStartElement("postRouteSurveyIdentity");
-                                        }
-
-
-                                       // write the nil attribute
-                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
-                                      xmlWriter.writeEndElement();
-                                    }else{
-                                     localPostRouteSurveyIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","postRouteSurveyIdentity"),
-                                        factory,xmlWriter);
+                                     } else {
+                                        
+                                               throw new org.apache.axis2.databinding.ADBException("postRouteSurveyIdentities cannot be null!!");
+                                        
                                     }
-                                }
+                                 }
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -4461,7 +4677,69 @@
                                                throw new org.apache.axis2.databinding.ADBException("stops cannot be null!!");
                                         
                                     }
-                                 }
+                                 } if (localPreRouteSurveyIdentityTracker){
+                                    if (localPreRouteSurveyIdentity==null){
+
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"preRouteSurveyIdentity", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"preRouteSurveyIdentity");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("preRouteSurveyIdentity");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localPreRouteSurveyIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","preRouteSurveyIdentity"),
+                                        factory,xmlWriter);
+                                    }
+                                } if (localPostRouteSurveyIdentityTracker){
+                                    if (localPostRouteSurveyIdentity==null){
+
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"postRouteSurveyIdentity", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"postRouteSurveyIdentity");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("postRouteSurveyIdentity");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localPostRouteSurveyIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","postRouteSurveyIdentity"),
+                                        factory,xmlWriter);
+                                    }
+                                }
                     xmlWriter.writeEndElement();
                
 
@@ -4873,7 +5151,16 @@
                                          throw new org.apache.axis2.databinding.ADBException("wirelessProvider cannot be null!!");
                                     }
                                     elementList.add(localWirelessProvider);
-                                }
+                                } if (localWirelessIDTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "wirelessID"));
+                                 
+                                        if (localWirelessID != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localWirelessID));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("wirelessID cannot be null!!");
+                                        }
+                                    }
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "inProgress"));
                                  
@@ -5091,21 +5378,49 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("driver2Name cannot be null!!");
                                         }
-                                    } if (localPreRouteSurveyIdentityTracker){
-                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "preRouteSurveyIdentity"));
-                            
-                            
-                                    elementList.add(localPreRouteSurveyIdentity==null?null:
-                                    localPreRouteSurveyIdentity);
-                                } if (localPostRouteSurveyIdentityTracker){
-                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "postRouteSurveyIdentity"));
-                            
-                            
-                                    elementList.add(localPostRouteSurveyIdentity==null?null:
-                                    localPostRouteSurveyIdentity);
-                                }
+                                    } if (localPreRouteSurveyIdentitiesTracker){
+                             if (localPreRouteSurveyIdentities!=null) {
+                                 for (int i = 0;i < localPreRouteSurveyIdentities.length;i++){
+
+                                    if (localPreRouteSurveyIdentities[i] != null){
+                                         elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                          "preRouteSurveyIdentities"));
+                                         elementList.add(localPreRouteSurveyIdentities[i]);
+                                    } else {
+                                        
+                                                // nothing to do
+                                            
+                                    }
+
+                                 }
+                             } else {
+                                 
+                                        throw new org.apache.axis2.databinding.ADBException("preRouteSurveyIdentities cannot be null!!");
+                                    
+                             }
+
+                        } if (localPostRouteSurveyIdentitiesTracker){
+                             if (localPostRouteSurveyIdentities!=null) {
+                                 for (int i = 0;i < localPostRouteSurveyIdentities.length;i++){
+
+                                    if (localPostRouteSurveyIdentities[i] != null){
+                                         elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                          "postRouteSurveyIdentities"));
+                                         elementList.add(localPostRouteSurveyIdentities[i]);
+                                    } else {
+                                        
+                                                // nothing to do
+                                            
+                                    }
+
+                                 }
+                             } else {
+                                 
+                                        throw new org.apache.axis2.databinding.ADBException("postRouteSurveyIdentities cannot be null!!");
+                                    
+                             }
+
+                        }
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "reportedDistance"));
                                  
@@ -5141,7 +5456,21 @@
                                     
                              }
 
-                        }
+                        } if (localPreRouteSurveyIdentityTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "preRouteSurveyIdentity"));
+                            
+                            
+                                    elementList.add(localPreRouteSurveyIdentity==null?null:
+                                    localPreRouteSurveyIdentity);
+                                } if (localPostRouteSurveyIdentityTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "postRouteSurveyIdentity"));
+                            
+                            
+                                    elementList.add(localPostRouteSurveyIdentity==null?null:
+                                    localPostRouteSurveyIdentity);
+                                }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -5217,7 +5546,11 @@
                     
                     reader.next();
                 
-                        java.util.ArrayList list65 = new java.util.ArrayList();
+                        java.util.ArrayList list62 = new java.util.ArrayList();
+                    
+                        java.util.ArrayList list63 = new java.util.ArrayList();
+                    
+                        java.util.ArrayList list66 = new java.util.ArrayList();
                     
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
@@ -5783,6 +6116,24 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","wirelessID").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setWirelessID(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","inProgress").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
@@ -6324,21 +6675,43 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","preRouteSurveyIdentity").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","preRouteSurveyIdentities").equals(reader.getName())){
                                 
-                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
-                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                          object.setPreRouteSurveyIdentity(null);
-                                          reader.next();
-                                            
-                                            reader.next();
-                                          
-                                      }else{
                                     
-                                                object.setPreRouteSurveyIdentity(com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity.Factory.parse(reader));
-                                              
-                                        reader.next();
-                                    }
+                                    
+                                    // Process the array and step past its final element's end.
+                                    list62.add(com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity.Factory.parse(reader));
+                                                                
+                                                        //loop until we find a start element that is not part of this array
+                                                        boolean loopDone62 = false;
+                                                        while(!loopDone62){
+                                                            // We should be at the end element, but make sure
+                                                            while (!reader.isEndElement())
+                                                                reader.next();
+                                                            // Step out of this element
+                                                            reader.next();
+                                                            // Step to next element event.
+                                                            while (!reader.isStartElement() && !reader.isEndElement())
+                                                                reader.next();
+                                                            if (reader.isEndElement()){
+                                                                //two continuous end elements means we are exiting the xml structure
+                                                                loopDone62 = true;
+                                                            } else {
+                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","preRouteSurveyIdentities").equals(reader.getName())){
+                                                                    list62.add(com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity.Factory.parse(reader));
+                                                                        
+                                                                }else{
+                                                                    loopDone62 = true;
+                                                                }
+                                                            }
+                                                        }
+                                                        // call the converter utility  to convert and set the array
+                                                        
+                                                        object.setPreRouteSurveyIdentities((com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity[])
+                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                                                                com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity.class,
+                                                                list62));
+                                                            
                               }  // End of if for expected property start element
                                 
                                     else {
@@ -6348,21 +6721,43 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","postRouteSurveyIdentity").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","postRouteSurveyIdentities").equals(reader.getName())){
                                 
-                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
-                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                          object.setPostRouteSurveyIdentity(null);
-                                          reader.next();
-                                            
-                                            reader.next();
-                                          
-                                      }else{
                                     
-                                                object.setPostRouteSurveyIdentity(com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity.Factory.parse(reader));
-                                              
-                                        reader.next();
-                                    }
+                                    
+                                    // Process the array and step past its final element's end.
+                                    list63.add(com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity.Factory.parse(reader));
+                                                                
+                                                        //loop until we find a start element that is not part of this array
+                                                        boolean loopDone63 = false;
+                                                        while(!loopDone63){
+                                                            // We should be at the end element, but make sure
+                                                            while (!reader.isEndElement())
+                                                                reader.next();
+                                                            // Step out of this element
+                                                            reader.next();
+                                                            // Step to next element event.
+                                                            while (!reader.isStartElement() && !reader.isEndElement())
+                                                                reader.next();
+                                                            if (reader.isEndElement()){
+                                                                //two continuous end elements means we are exiting the xml structure
+                                                                loopDone63 = true;
+                                                            } else {
+                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","postRouteSurveyIdentities").equals(reader.getName())){
+                                                                    list63.add(com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity.Factory.parse(reader));
+                                                                        
+                                                                }else{
+                                                                    loopDone63 = true;
+                                                                }
+                                                            }
+                                                        }
+                                                        // call the converter utility  to convert and set the array
+                                                        
+                                                        object.setPostRouteSurveyIdentities((com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity[])
+                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                                                                com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity.class,
+                                                                list63));
+                                                            
                               }  // End of if for expected property start element
                                 
                                     else {
@@ -6414,11 +6809,11 @@
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list65.add(com.freshdirect.routing.proxy.stub.transportation.Stop.Factory.parse(reader));
+                                    list66.add(com.freshdirect.routing.proxy.stub.transportation.Stop.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
-                                                        boolean loopDone65 = false;
-                                                        while(!loopDone65){
+                                                        boolean loopDone66 = false;
+                                                        while(!loopDone66){
                                                             // We should be at the end element, but make sure
                                                             while (!reader.isEndElement())
                                                                 reader.next();
@@ -6429,13 +6824,13 @@
                                                                 reader.next();
                                                             if (reader.isEndElement()){
                                                                 //two continuous end elements means we are exiting the xml structure
-                                                                loopDone65 = true;
+                                                                loopDone66 = true;
                                                             } else {
                                                                 if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","stops").equals(reader.getName())){
-                                                                    list65.add(com.freshdirect.routing.proxy.stub.transportation.Stop.Factory.parse(reader));
+                                                                    list66.add(com.freshdirect.routing.proxy.stub.transportation.Stop.Factory.parse(reader));
                                                                         
                                                                 }else{
-                                                                    loopDone65 = true;
+                                                                    loopDone66 = true;
                                                                 }
                                                             }
                                                         }
@@ -6444,8 +6839,56 @@
                                                         object.setStops((com.freshdirect.routing.proxy.stub.transportation.Stop[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
                                                                 com.freshdirect.routing.proxy.stub.transportation.Stop.class,
-                                                                list65));
+                                                                list66));
                                                             
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","preRouteSurveyIdentity").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setPreRouteSurveyIdentity(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setPreRouteSurveyIdentity(com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","postRouteSurveyIdentity").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setPostRouteSurveyIdentity(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setPostRouteSurveyIdentity(com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
                               }  // End of if for expected property start element
                                 
                                     else {

@@ -186,6 +186,68 @@
                                }
                             
 
+                        /**
+                        * field for RetrieveLocationEquipmentTypes
+                        */
+
+                        
+                                    protected boolean localRetrieveLocationEquipmentTypes =
+                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean("false");
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getRetrieveLocationEquipmentTypes(){
+                               return localRetrieveLocationEquipmentTypes;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param RetrieveLocationEquipmentTypes
+                               */
+                               public void setRetrieveLocationEquipmentTypes(boolean param){
+                            
+                                            this.localRetrieveLocationEquipmentTypes=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for RetrieveEmployeeAssignments
+                        */
+
+                        
+                                    protected boolean localRetrieveEmployeeAssignments =
+                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean("false");
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getRetrieveEmployeeAssignments(){
+                               return localRetrieveEmployeeAssignments;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param RetrieveEmployeeAssignments
+                               */
+                               public void setRetrieveEmployeeAssignments(boolean param){
+                            
+                                            this.localRetrieveEmployeeAssignments=param;
+                                    
+
+                               }
+                            
+
      /**
      * isReaderMTOMAware
      * @return true if the reader supports MTOM
@@ -428,6 +490,64 @@
                                     
                                    xmlWriter.writeEndElement();
                              
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"retrieveLocationEquipmentTypes", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"retrieveLocationEquipmentTypes");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("retrieveLocationEquipmentTypes");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("retrieveLocationEquipmentTypes cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRetrieveLocationEquipmentTypes));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"retrieveEmployeeAssignments", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"retrieveEmployeeAssignments");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("retrieveEmployeeAssignments");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("retrieveEmployeeAssignments cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRetrieveEmployeeAssignments));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
                     xmlWriter.writeEndElement();
                
 
@@ -620,6 +740,18 @@
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRetrieveActiveAlerts));
                             
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "retrieveLocationEquipmentTypes"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRetrieveLocationEquipmentTypes));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "retrieveEmployeeAssignments"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRetrieveEmployeeAssignments));
+                            
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -779,6 +911,44 @@
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setRetrieveActiveAlerts(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","retrieveLocationEquipmentTypes").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setRetrieveLocationEquipmentTypes(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","retrieveEmployeeAssignments").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setRetrieveEmployeeAssignments(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
                                               
                                         reader.next();

@@ -286,6 +286,36 @@
                             
 
                         /**
+                        * field for MissedTimeWindow
+                        */
+
+                        
+                                    protected boolean localMissedTimeWindow ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getMissedTimeWindow(){
+                               return localMissedTimeWindow;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param MissedTimeWindow
+                               */
+                               public void setMissedTimeWindow(boolean param){
+                            
+                                            this.localMissedTimeWindow=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for MinutesBeforeDelivery
                         */
 
@@ -670,6 +700,35 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
+                                            xmlWriter.writeStartElement(prefix,"missedTimeWindow", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"missedTimeWindow");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("missedTimeWindow");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("missedTimeWindow cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMissedTimeWindow));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
                                             xmlWriter.writeStartElement(prefix,"minutesBeforeDelivery", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
@@ -942,6 +1001,12 @@
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDelivered));
                             
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "missedTimeWindow"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMissedTimeWindow));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "minutesBeforeDelivery"));
                                  
                                 elementList.add(
@@ -1171,6 +1236,25 @@
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setDelivered(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","missedTimeWindow").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setMissedTimeWindow(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
                                               
                                         reader.next();

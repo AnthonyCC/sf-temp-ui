@@ -217,6 +217,37 @@
                             
 
                         /**
+                        * field for RetrieveSurveyAssignments
+                        */
+
+                        
+                                    protected boolean localRetrieveSurveyAssignments =
+                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean("true");
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getRetrieveSurveyAssignments(){
+                               return localRetrieveSurveyAssignments;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param RetrieveSurveyAssignments
+                               */
+                               public void setRetrieveSurveyAssignments(boolean param){
+                            
+                                            this.localRetrieveSurveyAssignments=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for TimeZoneOptions
                         */
 
@@ -494,6 +525,35 @@
                                     
                                    xmlWriter.writeEndElement();
                              
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"retrieveSurveyAssignments", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"retrieveSurveyAssignments");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("retrieveSurveyAssignments");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("retrieveSurveyAssignments cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRetrieveSurveyAssignments));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
                                             if (localTimeZoneOptions==null){
                                                  throw new org.apache.axis2.databinding.ADBException("timeZoneOptions cannot be null!!");
                                             }
@@ -701,6 +761,12 @@
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRetrieveRolledUpQuantities));
                             
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "retrieveSurveyAssignments"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRetrieveSurveyAssignments));
+                            
                             elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "timeZoneOptions"));
                             
@@ -885,6 +951,25 @@
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setRetrieveRolledUpQuantities(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","retrieveSurveyAssignments").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setRetrieveSurveyAssignments(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
                                               
                                         reader.next();

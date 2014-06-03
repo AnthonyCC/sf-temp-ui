@@ -72,4 +72,8 @@ public interface IRouteModel {
 	
 	String getDepotParkingLocation();
 	void setDepotParkingLocation(String depotParkingLocation);
+	
+	TreeSet getBreaks();
+	void setBreaks(TreeSet breaks);
+	
 }

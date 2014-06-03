@@ -13,6 +13,8 @@ public class RouteModel extends BaseModel implements IRouteModel {
 	
 	private TreeSet stops;
 	
+	private TreeSet breaks;
+	
 	private TreeSet allocatedStops;
 	
 	private Date firstDeliveryTime;
@@ -265,5 +267,11 @@ public class RouteModel extends BaseModel implements IRouteModel {
 		this.allocatedStops = allocatedStops;
 	}
 	
-	
+	public TreeSet getBreaks() {
+		return this.breaks;
+	}
+
+	public void setBreaks(TreeSet breaks) {
+		this.breaks = breaks;
+	}
 }
