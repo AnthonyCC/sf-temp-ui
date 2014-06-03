@@ -247,12 +247,13 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 									}
 									s_stops.add(s_stop);
 								}
+								List<BreakWindow> consolidatedBreaks = combineBreaks(breaksperRoute);
 								
-								int numBreaksToShow = computeNumBreaksToShow();
+								//int numBreaksToShow = computeNumBreaksToShow();
 								int breakCount = 0;
 								IHandOffBatchRouteBreak s_break = null;
-								for(BreakWindow breakWindow : breaksperRoute){
-									if(breakCount++ < numBreaksToShow){
+								for(BreakWindow breakWindow : consolidatedBreaks){
+									//if(breakCount++ < numBreaksToShow){
 										s_break = new HandOffBatchRouteBreak(this.getBatch().getBatchId(), 
 																			sesEntry.getKey().getSessionName(), 
 																			route.getRouteId(),
@@ -260,7 +261,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 																			breakWindow.getStartTime(),
 																			breakWindow.getEndTime());
 										s_breaks.add(s_break);
-									}
+									//}
 								}
 								route.setStops(_stops);
 								
@@ -366,8 +367,25 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		return null;		
 	}
 	
-	private int computeNumBreaksToShow() {
-			return 3;
+	private List<BreakWindow> combineBreaks(Set<BreakWindow> breaksperRoute) {
+		List<BreakWindow> consolidatedBreaks = new ArrayList<BreakWindow>();
+		for(BreakWindow window : breaksperRoute){
+			boolean addToList = true;
+			for(BreakWindow consolidatedWindow: consolidatedBreaks){
+				if(window.isWithinRange(consolidatedWindow)){
+					addToList = false;
+					break;
+				}					
+				else if(window.overlaps(consolidatedWindow)){
+					consolidatedWindow.setEndTime(window.getEndTime());
+					addToList = false;
+					break;
+				}	
+			}
+			if(addToList)
+				consolidatedBreaks.add(window);
+		}
+		return consolidatedBreaks;
 	}
 
 	private void assignDispatchSequence(List<IHandOffBatchRoute> routes, Map<String, IZoneModel> zoneLookup
