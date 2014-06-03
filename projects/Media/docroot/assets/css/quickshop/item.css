@@ -8,6 +8,10 @@
 	border-bottom:1px solid #ccc;
 }
 
+.itemlist-item button {
+	font-family: Verdana,sans-serif;
+}
+
 .itemlist-item-header {
 	width:360px;
 	margin-top: 20px;
