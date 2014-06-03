@@ -350,7 +350,7 @@ public class ErpServicesProperties {
 		defaults.put(PROP_AVS_ADDRESS_CHECK, "false");
 		
 		defaults.put( SO_TECH_RECIPIENT, "SOIssues@freshdirect.com" );
-		defaults.put( SO_ATPREPORT_RECIPIENT, "SOIssues@freshdirect.com" );
+		defaults.put( SO_ATPREPORT_RECIPIENT, "SO-ATPWouldbefailures@freshdirect.com" );
 		
 		defaults.put( SO_TECH_FROM, "no-reply@freshdirect.com" );
 		
