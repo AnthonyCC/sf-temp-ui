@@ -860,10 +860,8 @@ public class StandingOrderUtil {
 				LOGGER.debug("[ATP CHECK/1] Item '" + lineId + "' has restriction: " + ((FDRestrictedAvailabilityInfo)info).getRestriction().getReason());
 				
 
-				vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Restricted availabity", cartLine.getQuantity());
-				if(!FDStoreProperties.isIgnoreATPFailureForSO()) {
-					cart.removeOrderLineById(randomId);
-				}
+				vr.addUnavailableItem(cartLine, UnavailabilityReason.GENERAL, "Restricted availabity", cartLine.getQuantity());
+				cart.removeOrderLineById(randomId);
 			} else if (info instanceof FDStockAvailabilityInfo) {
 				/**
 				 * Cause:  less or zero amount is available
@@ -877,13 +875,15 @@ public class StandingOrderUtil {
 				if (availQty > 0) {
 					// adjust quantity to amount of available
 					double requestedQuantity = cart.getOrderLineById(randomId).getQuantity();
-					cart.getOrderLineById(randomId).setQuantity(availQty);
+					if(!FDStoreProperties.isIgnoreATPFailureForSO()) {
+						cart.getOrderLineById(randomId).setQuantity(availQty);
+					}
 					if(requestedQuantity - availQty > 0) {
 						vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Partial quantity", (requestedQuantity - availQty));
 					}
 				} else {
 					vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Zero quantity", cartLine.getQuantity());
-					if(!FDStoreProperties.isIgnoreATPFailureForSO()) {
+					if(!FDStoreProperties.isIgnoreATPFailureForSO()) { // If the available qty is less than the minimum required qty for the item, we ignore this.
 						cart.removeOrderLineById(randomId);
 					}
 				}
@@ -907,10 +907,8 @@ public class StandingOrderUtil {
 
 				/// final MunicipalityInfo muni = ((FDMuniAvailabilityInfo)info).getMunicipalityInfo();
 				//
-				vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "FreshDirect does not deliver alcohol outside NY", cartLine.getQuantity());
-				if(!FDStoreProperties.isIgnoreATPFailureForSO()) {
-					cart.removeOrderLineById(randomId);
-				}
+				vr.addUnavailableItem(cartLine, UnavailabilityReason.GENERAL, "FreshDirect does not deliver alcohol outside NY", cartLine.getQuantity());
+				cart.removeOrderLineById(randomId);
 			} else { /* info.isa? {@link FDStatusAvailabilityInfo} */
 				/**
 				 * Cause:  OUT OF STOCK
