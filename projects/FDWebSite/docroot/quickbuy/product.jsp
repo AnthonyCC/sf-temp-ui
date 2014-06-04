@@ -73,6 +73,7 @@
 	if (productNode != null && productNode.getDefaultSku() != null && productNode.getDefaultSku().getProductInfo() != null) {
 		custCoupon = user.getCustomerCoupon(productNode.getDefaultSku().getProductInfo(), EnumCouponContext.PRODUCT,productNode.getParentId(),productNode.getContentName());
 	}
+
 	request.setAttribute("custCoupon", custCoupon); //set coupon in to request for includes/tags to use
 
 	// tell i_product.jspf it's quickbuy
@@ -100,7 +101,7 @@
 <body class="qbBody">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
 <script type="text/javascript">
-FreshDirect.Coremetrics.populateTrackingObject('<%=coremetricsPageId%>', '<%=coremetricsPageContentHierarchy%>', '');
+FreshDirect.Coremetrics.populateTrackingObject('<%=coremetricsPageId%>', '<%=coremetricsPageContentHierarchy%>', '<%=coremetricsVirtualCategory%>');
 </script>
 <fd:CmProductView quickbuy="true" wrapIntoScriptTag="true" productModel="<%=productNode%>"/>
 <div id="qbContainer">

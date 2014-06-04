@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.WineFilterValue;
+import com.freshdirect.fdstore.content.util.QueryParameterCollection;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagInput;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
@@ -32,6 +33,9 @@ public class CmPageViewTag extends AbstractCmTag {
 		PageViewTagModel tagModel = tagModelBuilder.buildTagModel();
 
 		Object CM_VC = this.getRequest().getParameter("cm_vc");
+		if (CM_VC == null || "".equals(CM_VC)) {
+			CM_VC = QueryParameterCollection.decode(getRequest().getHeader("referer")).getParameterValue("cm_vc");
+		}
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(getFormattedTag( 
