@@ -48,11 +48,11 @@
           <div class="amountOptions">
             <div>
               <input type="radio" name="line{$cartLine.randomId}" id="{$cartLine.randomId}" value="remove" data-component="atpremove">
-              <label for="remove{$cartLine.randomId}">Remove All Items - Replace <span class="amountOptionsNote">(optional)</span></label>
+              <label for="remove{$cartLine.randomId}">Remove All Items {if $hasRecommendations} - Replace <span class="amountOptionsNote">(optional)</span>{/if}</label>
             </div>
             <div>
                 <input type="radio" name="line{$cartLine.randomId}" id="keep{$cartLine.randomId}" value="keep" checked>
-                <label for="keep{$cartLine.randomId}">Keep Available Items ({$availableQuantity}) - Add More <span class="amountOptionsNote">(optional)</span></label>
+                <label for="keep{$cartLine.randomId}">Keep Available Items ({$availableQuantity}) {if $hasRecommendations} - Add More <span class="amountOptionsNote">(optional)</span>{/if}</label>
             </div>
           </div>
         {else} //send unavailable cart line id back to server as ATC disrupts server side state
