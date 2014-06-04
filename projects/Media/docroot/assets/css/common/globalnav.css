@@ -649,40 +649,41 @@ ul.globalnavPopups li {
 .globalNavigation .co-item{
   display:inline-block;
   line-height:1.2em;
-  vertical-align:middle;
 }
 
 .globalNavigation .co-item1{
   width:144px;
   text-align:center;
   display:inline-block;
-  line-height:52px;
-  vertical-align:middle;
+  padding-top:20px;
 }
 
 .globalNavigation .co-item2{
   text-align:left;
   width:139px;
   padding-left:5px;
-
+  padding-top:10px;
 }
 
 .globalNavigation .co-item3{
   text-align:left;
   width:124px;
   padding-left:20px;
+  padding-top:10px;
 }
 
 .globalNavigation .co-item4{
   text-align:left;
   width:124px;
   padding-left:20px;
+  padding-top:10px;
 }
 
 .globalNavigation .co-item5{
   text-align:left;
   width:134px;
   padding-left:10px;
+  padding-top:10px;
 }
 
 .globalNavigation .co-item-skin{
