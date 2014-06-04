@@ -73,6 +73,11 @@
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /><br />
 			
 			<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
+				<script type="text/javascript">
+					FreshDirect = FreshDirect || {};
+					FreshDirect.globalnav = FreshDirect.globalnav || {};
+					FreshDirect.globalnav.botNav = '<%=botNav%>';
+				</script>
 			
 			  <fd:IncludeMedia name="/media/layout/nav/globalnav/footer/bottom_global_nav.ftl" parameters="<%= params %>">
 			  </fd:IncludeMedia>
