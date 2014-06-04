@@ -10,6 +10,7 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.WineUtil;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.EnumWineFilterValueType;
@@ -75,7 +76,8 @@ public class WineSorterTag extends BodyTagSupportEx {
 					sortByPrice = false;
 					break;
 				}
-			defaultSortBy = sortByPrice ? Type.PRICE : Type.EXPERT_RATING;
+			//defaultSortBy = sortByPrice ? Type.PRICE : Type.EXPERT_RATING;
+			defaultSortBy = sortByPrice ? Type.PRICE : ("USQ".equals(WineUtil.getWineAssociateId())) ? Type.EXPERT_RATING : Type.ABC;
 		}
 		Type sortBy;
 		try {

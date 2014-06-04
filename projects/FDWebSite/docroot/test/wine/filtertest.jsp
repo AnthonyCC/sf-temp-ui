@@ -24,7 +24,7 @@
 <%
 WineFilter filter = new WineFilter(user.getPricingContext());
 filter.addFilterValue(EnumWineRating.FIVE);
-filter.addFilterValue(ContentFactory.getInstance().getDomainValueForWineCategory((CategoryModel) ContentFactory.getInstance().getContentNode("Category", "usq_aus")));
+filter.addFilterValue(ContentFactory.getInstance().getDomainValueForWineCategory((CategoryModel) ContentFactory.getInstance().getContentNode("Category", "vin_all")));
 %>
 		<table cellpadding="0" cellspacing="0" width="550" border="0">
 			<tr valign="top">
