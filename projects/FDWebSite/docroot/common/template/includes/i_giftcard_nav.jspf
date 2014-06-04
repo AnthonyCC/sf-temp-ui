@@ -6,6 +6,9 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.webapp.util.*'%>
 <%@ page import='com.freshdirect.fdstore.*'%>
+<%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature' %>
+<%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter' %>
+
 <%@ taglib prefix="fd" uri="freshdirect"%>
 <%@ taglib prefix="logic" uri="logic" %>
 
@@ -167,39 +170,75 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 	}
 
 %>
-<img width="1" height="6" alt="" src="/media_stat/images/layout/clear.gif" />
 
-<table class="GC_nav_table">
-	<tr>
-		<% if (step == 0) {	%>
-			<td class="GC_nav_corner"><img src="/media_stat/images/giftcards/nav/nav_corner_top_lf_on.gif" alt="" name="gc_nav_topLf" id="gc_nav_topLf" /></td>
-		<% } else { %>
-			<td class="GC_nav_corner"><img src="/media_stat/images/giftcards/nav/nav_corner_top_lf_off.gif" alt="" name="gc_nav_topLf" id="gc_nav_topLf" /></td>
-		<% } %>
-			<td rowspan="3" class="GC_nav_item GC_nav_item_xtraPad<% if (step == 0) {%> GC_nav_on<%} %>" id="td_step0_2"><%= step0_disp %></td>
-			<td rowspan="3"><img src="/media_stat/images/giftcards/nav/nav_vert_line.gif" /></td>
-			<td rowspan="3" class="GC_nav_item<% if (step == 1) {%> GC_nav_on<%} %>" id="td_step1"><%= step1_disp %></td>
-			<td rowspan="3"><img src="/media_stat/images/giftcards/nav/nav_vert_line.gif" /></td>
-			<td rowspan="3" class="GC_nav_item<% if (step == 2) {%> GC_nav_on<%} %>" id="td_step2"><%= step2_disp %></td>
-			<td rowspan="3"><img src="/media_stat/images/giftcards/nav/nav_vert_line.gif" /></td>
-			<td rowspan="3" class="GC_nav_item<% if (step == 3) {%> GC_nav_on<%} %>" id="td_step3"><%= step3_disp %></td>
-			<td rowspan="3"><img src="/media_stat/images/giftcards/nav/nav_vert_line.gif" /></td>
-		<td rowspan="3" class="GC_nav_spring_spacer"><img width="1" height="1" alt="" src="/media_stat/images/layout/clear.gif" /></td>
-		<td class="GC_nav_corner"><img src="/media_stat/images/giftcards/nav/nav_corner_top_rt_off.gif" /></td>
-	</tr>
-	<tr>
-		<td class="GC_nav_corner_spacer<% if (step == 0) {%> GC_nav_on<%} %>" id="td_step0_1"><img width="1" height="1" alt="" src="/media_stat/images/layout/clear.gif" /></td>		
-		<td class="GC_nav_corner_spacer"><img width="1" height="1" alt="" src="/media_stat/images/layout/clear.gif" /></td>
-	</tr>
-	<tr>
-		<% if (step == 0) {	%>
-			<td class="GC_nav_corner" id="td2"><img src="/media_stat/images/giftcards/nav/nav_corner_bot_lf_on.gif" alt="" name="gc_nav_topLf" id="gc_nav_botLf" /></td>
-		<% } else { %>
-			<td class="GC_nav_corner" id="td2"><img src="/media_stat/images/giftcards/nav/nav_corner_bot_lf_off.gif" alt="" name="gc_nav_topLf" id="gc_nav_botLf" /></td>
-		<% } %>
-		<td class="GC_nav_corner"><img src="/media_stat/images/giftcards/nav/nav_corner_bot_rt_off.gif" /></td>
-	</tr>
-</table>
+<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
+  <div class="globalNavigation">
+    <ul class="menu green-skin">
+      <li class="menu-header <% if (step == 0) { %> item-skin-hovered <% } %> <% if (step > 0) { %> item-skin-hover <% } %>">
+      
+        <% if (step > 0) { %>
+          <a class="menu-header header-skin reset-link" href="<%= step0_link %>">gift cards</a>
+        <%} else {%>
+          <span class="header-skin">gift cards</span>
+        <%}%>
+      </li><!--
+    --><li class="menu-item item-skin <% if (step == 1) { %> item-skin-hovered <% } %> <% if (step > 1) { %> item-skin-hover <% } %>">      
+        
+        <% if (step > 1) { %>
+          <a class="gf-item reset-link" href="<%= step1_link %>">gift & reciepient options</a>
+        <%} else {%>
+          <span class="gf-item">gift & reciepient options</span>
+        <%}%>
+      </li><!--
+      --><li class="menu-item item-skin <% if (step == 2) { %> item-skin-hovered <% } %> <% if (step > 2) { %> item-skin-hover <% } %>">
+        
+        <% if (step > 2) { %>
+          <a class="gf-item reset-link" href="<%= step2_link %>">payment info</a>
+        <%} else {%>
+          <span class="gf-item">payment info</span>
+        <%}%>
+      </li><!--
+      --><li class="menu-item item-skin <% if (step == 3) { %> item-skin-hovered <% } %>">
+        <span class="gf-item">confirmation</span>
+      </li>
+    </ul>
+  </div>
+<%} else {%>
+  <img width="1" height="6" alt="" src="/media_stat/images/layout/clear.gif" />
+  
+  <table class="GC_nav_table">
+    <tr>
+      <% if (step == 0) { %>
+        <td class="GC_nav_corner"><img src="/media_stat/images/giftcards/nav/nav_corner_top_lf_on.gif" alt="" name="gc_nav_topLf" id="gc_nav_topLf" /></td>
+      <% } else { %>
+        <td class="GC_nav_corner"><img src="/media_stat/images/giftcards/nav/nav_corner_top_lf_off.gif" alt="" name="gc_nav_topLf" id="gc_nav_topLf" /></td>
+      <% } %>
+        <td rowspan="3" class="GC_nav_item GC_nav_item_xtraPad<% if (step == 0) {%> GC_nav_on<%} %>" id="td_step0_2"><%= step0_disp %></td>
+        <td rowspan="3"><img src="/media_stat/images/giftcards/nav/nav_vert_line.gif" /></td>
+        <td rowspan="3" class="GC_nav_item<% if (step == 1) {%> GC_nav_on<%} %>" id="td_step1"><%= step1_disp %></td>
+        <td rowspan="3"><img src="/media_stat/images/giftcards/nav/nav_vert_line.gif" /></td>
+        <td rowspan="3" class="GC_nav_item<% if (step == 2) {%> GC_nav_on<%} %>" id="td_step2"><%= step2_disp %></td>
+        <td rowspan="3"><img src="/media_stat/images/giftcards/nav/nav_vert_line.gif" /></td>
+        <td rowspan="3" class="GC_nav_item<% if (step == 3) {%> GC_nav_on<%} %>" id="td_step3"><%= step3_disp %></td>
+        <td rowspan="3"><img src="/media_stat/images/giftcards/nav/nav_vert_line.gif" /></td>
+      <td rowspan="3" class="GC_nav_spring_spacer"><img width="1" height="1" alt="" src="/media_stat/images/layout/clear.gif" /></td>
+      <td class="GC_nav_corner"><img src="/media_stat/images/giftcards/nav/nav_corner_top_rt_off.gif" /></td>
+    </tr>
+    <tr>
+      <td class="GC_nav_corner_spacer<% if (step == 0) {%> GC_nav_on<%} %>" id="td_step0_1"><img width="1" height="1" alt="" src="/media_stat/images/layout/clear.gif" /></td>    
+      <td class="GC_nav_corner_spacer"><img width="1" height="1" alt="" src="/media_stat/images/layout/clear.gif" /></td>
+    </tr>
+    <tr>
+      <% if (step == 0) { %>
+        <td class="GC_nav_corner" id="td2"><img src="/media_stat/images/giftcards/nav/nav_corner_bot_lf_on.gif" alt="" name="gc_nav_topLf" id="gc_nav_botLf" /></td>
+      <% } else { %>
+        <td class="GC_nav_corner" id="td2"><img src="/media_stat/images/giftcards/nav/nav_corner_bot_lf_off.gif" alt="" name="gc_nav_topLf" id="gc_nav_botLf" /></td>
+      <% } %>
+      <td class="GC_nav_corner"><img src="/media_stat/images/giftcards/nav/nav_corner_bot_rt_off.gif" /></td>
+    </tr>
+  </table>
+<%}%>
+
 	<script>(function($){ $('.message').messages('add'); })(jQuery)</script>
 
 <img width="1" height="3" alt="" src="/media_stat/images/layout/clear.gif" />
