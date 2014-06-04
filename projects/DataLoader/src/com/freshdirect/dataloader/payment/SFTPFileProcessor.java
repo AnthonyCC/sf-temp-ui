@@ -2,7 +2,9 @@ package com.freshdirect.dataloader.payment;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import net.lingala.zip4j.core.ZipFile;
@@ -90,14 +92,24 @@ public class SFTPFileProcessor {
 		        for(int i=0;i<children.length;i++) {
 					ZipFile zipFile = new ZipFile(context.getLocalHost()+children[i].getName().getBaseName());
 					if (zipFile.isEncrypted()) {
-						
 						zipFile.setPassword(context.getPassword());
 					}
-					downloadedFiles.add(children[i].getName().getBaseName().substring(0, children[i].getName().getBaseName().length()-9));
-					zipFile.extractFile(children[i].getName().getBaseName().substring(0, children[i].getName().getBaseName().length()-9), context.getLocalHost());
+					
+					if(PaymentFileType.SETTLEMENT_FAILURE.equals(context.getFileType())) {
+						String STFfileName=DataLoaderProperties.getSettlementFailureFileName()+PaymentFileType.SETTLEMENT_FAILURE.getExtension();
+						zipFile.extractFile(STFfileName, context.getLocalHost());
+						File f=new File(context.getLocalHost()+STFfileName);
+						File f1=new File (context.getLocalHost()+DataLoaderProperties.getSettlementFailureFileName()+ new SimpleDateFormat("yyyy_MM_dd_HH_mm").format(new Date())+PaymentFileType.SETTLEMENT_FAILURE.getExtension());
+						f.renameTo(f1);
+						downloadedFiles.add(f1.getName());
+						
+					} else {
+						downloadedFiles.add(children[i].getName().getBaseName().substring(0, children[i].getName().getBaseName().length()-9));
+						zipFile.extractFile(children[i].getName().getBaseName().substring(0, children[i].getName().getBaseName().length()-9), context.getLocalHost());
+					}
 		        }
 		        boolean deleteFiles=DataLoaderProperties.isPaymentechSFTPFileDeletionEnabled();
-		        if(!deleteFiles)
+		        if(deleteFiles)
 		        	deleteFiles(children);
 		        
 		       return  downloadedFiles;

@@ -40,7 +40,10 @@ public class DataLoaderProperties {
 	private final static String PROP_PAYMENTECH_SFTP_PRIVATE_KEY = "dataloader.paymentech.sftp.privateKey";
 	private final static String PROP_PAYMENTECH_SFTP_ENABLED="dataloader.paymentech.sftp.enabled";
 	private final static String PROP_PAYMENTECH_SFTP_DELETE_FILES="dataloader.paymentech.sftp.deleteFiles";
-	
+	private static final String PROP_SETTLEMENT_FAILURE_FILE_NAME="dataloader.paymentech.stf.fileName";
+	private final static String PROP_PAYMENTECH_STF_SFTP_HOST = "dataloader.paymentech.stf.sftp.host";
+	private final static String PROP_PAYMENTECH_STF_SFTP_USER = "dataloader.paymentech.stf.sftp.user";
+	private final static String PROP_PAYMENTECH_STF_SFTP_PASSWORD = "dataloader.paymentech.stf.sftp.password";
 	private final static Properties config;
 	
 	static {
@@ -69,6 +72,10 @@ public class DataLoaderProperties {
 		defaults.put(PROP_PAYMENTECH_SFTP_PRIVATE_KEY,"id_rsa_2048_testing_storefront_paymentech");
 		defaults.put(PROP_PAYMENTECH_SFTP_ENABLED,"true");
 		defaults.put(PROP_PAYMENTECH_SFTP_DELETE_FILES, "false");
+		defaults.put(PROP_SETTLEMENT_FAILURE_FILE_NAME,"RejectedDetailRpt");
+		defaults.put(PROP_PAYMENTECH_STF_SFTP_HOST, "netconnectbatchvar1.chasepaymentech.net");
+		defaults.put(PROP_PAYMENTECH_STF_SFTP_USER, "SVSMVJK7");
+		defaults.put(PROP_PAYMENTECH_STF_SFTP_PASSWORD, "D77BSZYG");
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration for DataLoader: "+config);
@@ -175,5 +182,20 @@ public class DataLoaderProperties {
 	}
 	public static boolean isPaymentechSFTPFileDeletionEnabled() {
 		return Boolean.valueOf(config.getProperty(PROP_PAYMENTECH_SFTP_DELETE_FILES)).booleanValue();
+	}
+	public static String getSettlementFailureFileName(){
+    	return config.getProperty(PROP_SETTLEMENT_FAILURE_FILE_NAME);
+    }
+	
+	public static String getPaymentStfSFTPHost() {
+		return config.getProperty(PROP_PAYMENTECH_STF_SFTP_HOST);
+	}
+	
+	public static String getPaymentStfSFTPUser() {
+		return config.getProperty(PROP_PAYMENTECH_STF_SFTP_USER);
+	}
+	
+	public static String getPaymentStfSFTPPassword() {
+		return config.getProperty(PROP_PAYMENTECH_STF_SFTP_PASSWORD);
 	}
 }

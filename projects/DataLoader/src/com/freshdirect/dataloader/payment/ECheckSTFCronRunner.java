@@ -88,11 +88,11 @@ private static FileContext getFileContext(String[] args) {
 		if(StringUtils.isEmpty(ctx.getOpenSSHPrivateKey()))
 			ctx.setOpenSSHPrivateKey(DataLoaderProperties.getWorkingDir()+DataLoaderProperties.getPaymentSFTPKey());
 		if(StringUtils.isEmpty(ctx.getRemoteHost()))
-			ctx.setRemoteHost(DataLoaderProperties.getPaymentSFTPHost());
+			ctx.setRemoteHost(DataLoaderProperties.getPaymentStfSFTPHost());
 		if(StringUtils.isEmpty(ctx.getUserName()))
-			ctx.setUserName(DataLoaderProperties.getPaymentSFTPUser());
+			ctx.setUserName(DataLoaderProperties.getPaymentStfSFTPUser());
 		if(StringUtils.isEmpty(ctx.getPassword()))
-			ctx.setPassword(DataLoaderProperties.getPaymentSFTPPassword());
+			ctx.setPassword(DataLoaderProperties.getPaymentStfSFTPPassword());
 		LOGGER.info( "FileContext: "+ ctx );
 		return ctx;
 		
