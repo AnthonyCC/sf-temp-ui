@@ -11,12 +11,31 @@
 
 <% 
     String bottomUri = request.getRequestURI();
-    String deptId = request.getParameter("deptId") != null ? request.getParameter("deptId") : "";
+	String deptId = request.getParameter("deptId") != null ? request.getParameter("deptId") : "";
     String catId = request.getParameter("catId") != null ? request.getParameter("catId") : "";
 
     String botNav = "off";
     boolean hasMyFD = FDStoreProperties.isMyfdEnabled() && MyFD.getMyFDInstance() != null;
 
+if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, (FDUserI)session.getAttribute(SessionName.USER))) {
+    if (!"".equals(deptId)) {
+    	botNav = deptId;
+    } else if (!"".equals(catId)) {
+        botNav = catId;
+    } else if (bottomUri.indexOf("/myfd") > -1 || request.getParameter("successPage") != null && request.getParameter("successPage").indexOf("/myfd") > -1) {
+        botNav = "myfd";
+    } else if (bottomUri.indexOf("/jobs/intro") > -1) {
+        botNav = "careers";
+    } else if (bottomUri.indexOf("/gift_card/purchase/landing.jsp") > -1) {
+        botNav = "giftcards";
+    } else if (bottomUri.indexOf("/newproducts.jsp") > -1 || bottomUri.indexOf("/newproducts_dfgs.jsp") > -1) {
+        botNav = "newprod";
+    } else if(bottomUri.indexOf("/cos.jsp") > -1) {
+        botNav = "office";
+    } else {
+        botNav = "off";
+    }
+} else {
     if (bottomUri.indexOf("/about/index.jsp") > -1) {
         botNav = "aboutus";
     } else if (bottomUri.indexOf("/myfd") > -1) {
@@ -36,6 +55,7 @@
     } else {
         botNav = "off";
     }
+}
     //since the gift card url is dynamic, check for other query values before adding the trk attribute
     boolean gcUrlHasOtherQueryVals = FDStoreProperties.getGiftCardLandingUrl().indexOf("?") > -1;
     String giftPath = FDStoreProperties.getGiftCardLandingUrl() + (gcUrlHasOtherQueryVals?"&":"?")+"trk=bnav";
