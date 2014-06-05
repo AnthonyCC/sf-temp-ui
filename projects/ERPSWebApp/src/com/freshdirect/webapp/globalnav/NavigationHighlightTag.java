@@ -21,6 +21,8 @@ import com.freshdirect.fdstore.content.GlobalNavigationModel;
 import com.freshdirect.fdstore.content.RecipeCategory;
 import com.freshdirect.fdstore.content.RecipeDepartment;
 import com.freshdirect.fdstore.content.SuperDepartmentModel;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -68,66 +70,93 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 	
 			String thisDept = "";
 	
-			List<String> bottomTopNavCategories = new ArrayList<String>(Arrays.asList("picks_love", "wgd_produce", "wgd_seafood", "wgd_butchers", "wgd_kitchendeals", "wgd_deals"));
-			if (browseId != null) {
-				ContentNodeModel thisObj = findContentNode(browseId);
-				if (bottomTopNavCategories.contains(browseId)) {
-						thisDept = browseId;
-					
-				} else if (thisObj instanceof SuperDepartmentModel) {
-					thisDept = thisObj.getContentName();
-				} else if (thisObj instanceof DepartmentModel) {
-					String sdRelation = "";
-					if (!"".equals(sdRelation = checkSuperDepartmentRelation(thisObj, relatedDepartmentIds))) {
-						thisDept = sdRelation;
-					} else {
+			if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, user)) {
+				List<String> bottomTopNavCategories = new ArrayList<String>(Arrays.asList("picks_love", "wgd_produce", "wgd_seafood", "wgd_butchers", "wgd_kitchendeals", "wgd_deals"));
+	
+				if (browseId != null) {
+					ContentNodeModel thisObj = findContentNode(browseId);
+					if (bottomTopNavCategories.contains(browseId)) {
+							thisDept = browseId;
+						
+					} else if (thisObj instanceof SuperDepartmentModel) {
 						thisDept = thisObj.getContentName();
+					} else if (thisObj instanceof DepartmentModel) {
+						String sdRelation = "";
+						if (!"".equals(sdRelation = checkSuperDepartmentRelation(thisObj, relatedDepartmentIds))) {
+							thisDept = sdRelation;
+						} else {
+							thisDept = thisObj.getContentName();
+						}
+					} else if (thisObj instanceof CategoryModel) {
+						String sdRelation = "";
+						thisObj = findParentOfCategory(browseId);
+						if (bottomTopNavCategories.contains(thisObj.getParentNode().getContentName())) {
+							thisDept = thisObj.getParentNode().getContentName();
+						} else if (thisObj!= null && !"".equals(sdRelation = checkSuperDepartmentRelation(thisObj, relatedDepartmentIds))) {
+							thisDept = sdRelation;
+						} else {
+							thisDept = thisObj.getContentName();
+						}
 					}
-				} else if (thisObj instanceof CategoryModel) {
+				} else if (catId != null){
+					ContentNodeModel thisObj = findContentNode(catId);
+					ContentNodeModel thisDeptObj = findParentOfCategory (catId);
 					String sdRelation = "";
-					thisObj = findParentOfCategory(browseId);
 					if (bottomTopNavCategories.contains(thisObj.getParentNode().getContentName())) {
 						thisDept = thisObj.getParentNode().getContentName();
-					} else if (thisObj!= null && !"".equals(sdRelation = checkSuperDepartmentRelation(thisObj, relatedDepartmentIds))) {
-						thisDept = sdRelation;
-					} else {
-						thisDept = thisObj.getContentName();
-					}
-				}
-			} else if (catId != null){
-				ContentNodeModel thisObj = findContentNode(catId);
-				ContentNodeModel thisDeptObj = findParentOfCategory (catId);
-				String sdRelation = "";
-				if (bottomTopNavCategories.contains(thisObj.getParentNode().getContentName())) {
-					thisDept = thisObj.getParentNode().getContentName();
-				} else if (thisDeptObj!= null && !"".equals(sdRelation = checkSuperDepartmentRelation(thisDeptObj, relatedDepartmentIds))) {
-					thisDept = sdRelation;
-				} else {
-					thisDept = thisDeptObj.getContentName();
-				}
-			} else if (deptId != null) {
-				if ("kosher_temp".equalsIgnoreCase(deptId)){
-					thisDept = "kos";
-				} else {
-					ContentNodeModel thisDeptObj = findContentNode(deptId);
-					String sdRelation = "";
-					if (thisDeptObj!= null && !"".equals(sdRelation = checkSuperDepartmentRelation(thisDeptObj, relatedDepartmentIds))) {
+					} else if (thisDeptObj!= null && !"".equals(sdRelation = checkSuperDepartmentRelation(thisDeptObj, relatedDepartmentIds))) {
 						thisDept = sdRelation;
 					} else {
 						thisDept = thisDeptObj.getContentName();
 					}
+				} else if (deptId != null) {
+					if ("kosher_temp".equalsIgnoreCase(deptId)){
+						thisDept = "kos";
+					} else {
+						ContentNodeModel thisDeptObj = findContentNode(deptId);
+						String sdRelation = "";
+						if (thisDeptObj!= null && !"".equals(sdRelation = checkSuperDepartmentRelation(thisDeptObj, relatedDepartmentIds))) {
+							thisDept = sdRelation;
+						} else {
+							thisDept = thisDeptObj.getContentName();
+						}
+					}
+		
+					
+				} else {
+					//hmmm..if this url contains recipe%.jsp then assume the department is Recipe, since no cat or deptId specified
+					if (globalUri.startsWith("/recipe_dept.jsp") || 
+					    globalUri.startsWith("/recipe_cat.jsp") || 
+					    globalUri.startsWith("/recipe_subcat.jsp") || 
+					    globalUri.startsWith("/recipe.jsp") || 
+					    globalUri.startsWith("/recipe_search.jsp") ) {
+					  thisDept = RecipeDepartment.getDefault().getContentName();
+					}
 				}
-	
-				
 			} else {
-				//hmmm..if this url contains recipe%.jsp then assume the department is Recipe, since no cat or deptId specified
-				if (globalUri.startsWith("/recipe_dept.jsp") || 
-				    globalUri.startsWith("/recipe_cat.jsp") || 
-				    globalUri.startsWith("/recipe_subcat.jsp") || 
-				    globalUri.startsWith("/recipe.jsp") || 
-				    globalUri.startsWith("/recipe_search.jsp") ) {
-				  thisDept = RecipeDepartment.getDefault().getContentName();
+				if (catId != null){
+					ContentNodeModel thisDeptObj = findParentOfCategory (catId);
+					thisDept = thisDeptObj.getContentName();
+				} else if (deptId != null) {
+					if ("kosher_temp".equalsIgnoreCase(deptId)){
+						thisDept = "kos";
+					} else {
+						ContentNodeModel thisDeptObj = findContentNode(deptId);
+						thisDept = thisDeptObj.getContentName();
+					}
+		
+					
+				} else {
+					//hmmm..if this url contains recipe%.jsp then assume the department is Recipe, since no cat or deptId specified
+					if (globalUri.startsWith("/recipe_dept.jsp") || 
+					    globalUri.startsWith("/recipe_cat.jsp") || 
+					    globalUri.startsWith("/recipe_subcat.jsp") || 
+					    globalUri.startsWith("/recipe.jsp") || 
+					    globalUri.startsWith("/recipe_search.jsp") ) {
+					  thisDept = RecipeDepartment.getDefault().getContentName();
+					}
 				}
+				
 			}
 	
 			boolean isAtHome = true;
