@@ -1285,7 +1285,7 @@ public class FDStoreProperties {
         
         //optimize
         defaults.put(PROP_OPT_SOCIAL_FOOTER_STATIC, "true");
-        defaults.put(PROP_STANDING_ORDER_IGNOREATPFAILURE, "false");
+        defaults.put(PROP_STANDING_ORDER_IGNOREATPFAILURE, "true");
         refresh();
     }
 
