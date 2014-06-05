@@ -3,7 +3,9 @@ package com.freshdirect.webapp.globalnav;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -34,10 +36,12 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 		try {
 		
 			GlobalNavigationModel globalNavigationModel = GlobalNavContextUtil.getGlobalNavigationModel(user);
-			List<String> relatedDepartmentIds = new ArrayList<String>(); 
+			HashMap<String, String> relatedDepartmentIds = new HashMap<String, String>(); 
 			for (ContentNodeModel contentNode : globalNavigationModel.getItems()) {
 				if (contentNode instanceof SuperDepartmentModel) {
-					relatedDepartmentIds.add(contentNode.getContentName());
+					for (DepartmentModel dept : ((SuperDepartmentModel) contentNode).getDepartments()) {
+						relatedDepartmentIds.put(dept.getContentName(), contentNode.getContentName());
+					}
 				}
 			}
 			
@@ -173,11 +177,11 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 		return dept;
 	}
 
-	private String checkSuperDepartmentRelation(ContentNodeModel thisDeptObj, List<String> relatedDepartmentIds) {
+	private String checkSuperDepartmentRelation(ContentNodeModel thisDeptObj, Map<String, String> relatedDepartmentIds) {
 	
-		for (String id : relatedDepartmentIds) {
+		for (String id : relatedDepartmentIds.keySet()) {
 			if (id.equals(thisDeptObj.getContentName())) {
-				return id;
+				return relatedDepartmentIds.get(id);
 			}
 		}
 		return "";
