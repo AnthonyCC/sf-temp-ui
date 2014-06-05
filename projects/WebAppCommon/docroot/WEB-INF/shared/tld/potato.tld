@@ -227,4 +227,14 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	<tag>
+		<name>navigationhighlight</name>
+		<tagclass>com.freshdirect.webapp.globalnav.NavigationHighlightTag</tagclass>
+		<info> </info>
+		<attribute>
+			<name>name</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 </taglib>

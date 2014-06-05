@@ -9,117 +9,14 @@
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature' %>
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
+<%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 
-<% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); %>
-<%!
-public ContentNodeModel findContentNode (String deptId) throws FDResourceException {
-		return ContentFactory.getInstance().getContentNode(deptId);
-}
-
-public ContentNodeModel findParentOfCategory (String catId) throws FDResourceException {
-		ContentNodeModel categoryNode = (ContentNodeModel)ContentFactory.getInstance().getContentNode(catId);
-		ContentNodeModel dept = null;
-		if (categoryNode instanceof RecipeCategory) {
-			dept = RecipeDepartment.getDefault();
-		} else {
-		   dept= ((CategoryModel)categoryNode).getDepartment();
-		}
-		return dept;
-}%>
-<%
-try {
-
-String deptId = request.getParameter("deptId");
-String catId = request.getParameter("catId");
-String browseId = request.getParameter("id");
-String globalUri = request.getRequestURI();
-
-//fallback and check attributes on param fail
-	if (deptId == null || "".equals(deptId)) {
-		deptId = (request.getAttribute("deptId")!=null)?request.getAttribute("deptId").toString():"";
-		if ("".equals(deptId.toString())) { deptId = null; }
-	}
-	if (catId == null || "".equals(catId)) {
-		catId = (request.getAttribute("catId")!=null)?request.getAttribute("catId").toString():"";
-		if ("".equals(catId.toString())) { catId = null; }
-	}
-	if (browseId == null || "".equals(browseId)) {
-		browseId = (request.getAttribute("browseId")!=null)?request.getAttribute("browseId").toString():"";
-		if ("".equals(browseId.toString())) { browseId = null; }
-	}
-
-
-String thisDept = "";
-
-if (browseId != null) {
-	ContentNodeModel thisObj = findContentNode(browseId);
-	if ("picks_love".equalsIgnoreCase(browseId) ||
-		"wgd_produce".equalsIgnoreCase(browseId) ||
-		"wgd_seafood".equalsIgnoreCase(browseId) ||
-		"wgd_butchers".equalsIgnoreCase(browseId) ||
-		"wgd_kitchendeals".equalsIgnoreCase(browseId) ||
-		"wgd_deals".equalsIgnoreCase(browseId)) {
-			thisDept = browseId;
-		
-	} else if (thisObj instanceof DepartmentModel) {
-		thisDept = thisObj.getContentName();
-	} else if (thisObj instanceof CategoryModel) {
-		thisObj = findParentOfCategory(browseId);
-		thisDept = thisObj.getContentName();
-	}
-} else if (catId != null){
-	ContentNodeModel thisDeptObj = findParentOfCategory (catId);
-	thisDept = thisDeptObj.getContentName();
-} else if (deptId != null) {
-	if ("kosher_temp".equalsIgnoreCase(deptId)){
-		thisDept = "kos";
-	} else {
-		ContentNodeModel thisDeptObj = findContentNode(deptId);
-		thisDept = thisDeptObj.getContentName();
-	}
-
-} else {
-	//hmmm..if this url contains recipe%.jsp then assume the department is Recipe, since no cat or deptId specified
-	if (globalUri.startsWith("/recipe_dept.jsp") || 
-	    globalUri.startsWith("/recipe_cat.jsp") || 
-	    globalUri.startsWith("/recipe_subcat.jsp") || 
-	    globalUri.startsWith("/recipe.jsp") || 
-	    globalUri.startsWith("/recipe_search.jsp") ) {
-	  thisDept = RecipeDepartment.getDefault().getContentName();
-	}
-}
-
-boolean isAtHome = true;
-if(	globalUri.indexOf("login")> -1 ||
-	globalUri.indexOf("promotion")> -1 ||
-	globalUri.indexOf("newproducts")> -1 ||
-	globalUri.indexOf("quickshop")> -1 || 
-	globalUri.indexOf("checkout")> -1 || 
-	globalUri.indexOf("help")> -1 || 
-	globalUri.indexOf("site_access")> -1 || 
-	globalUri.indexOf("about")> -1  || 
-	globalUri.indexOf("registration")> -1  ||
-	globalUri.indexOf("your_account")> -1 ||
-	globalUri.indexOf("search")> -1 ||
-	globalUri.indexOf("survey")> -1 ||
-	globalUri.indexOf("/department.jsp")> -1 ||
-	globalUri.indexOf("/whatsgood.jsp")> -1 ||
-	globalUri.indexOf("view_cart")> -1 ||
-	globalUri.indexOf("myfd")> -1 ||
-	globalUri.indexOf("health_warning")> -1 ||
-	globalUri.indexOf("product_modify")> -1	) {
-	isAtHome = false;
-}
- 
-	String navigation = isAtHome ? "home" : "off";
-if(!thisDept.equals("") && !thisDept.equalsIgnoreCase("about") && !thisDept.equalsIgnoreCase("cmty")){
-	navigation = thisDept;
-}
+<potato:navigationhighlight/>
+<% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); 
 /* move global nav to media
  *	this may need code support from time to time (when new items are added)
  */
-	Map<String, String> params = new HashMap<String, String>();
-	params.put("curNav", navigation);
+ String navigation = pageContext.getAttribute("navigation").toString();
 	
 %>
 <% if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { %>
@@ -138,7 +35,10 @@ final int W_GLOBAL_NAV_TOTAL = 970;
 <%@ include file="/common/template/includes/globalnav_top_optimized.jspf" %>
 
 <oscache:cache key='<%= "globalNav_"+request.getQueryString() %>' time='0'>
-<% try { %>
+<% try { 
+	Map<String, String> params = new HashMap<String, String>();
+	params.put("curNav", navigation);
+%>
 <table width="<%=W_GLOBAL_NAV_TOTAL %>" border="0" cellpadding="0" cellspacing="0">
 <tr><td>
 <fd:IncludeMedia name="/media/layout/nav/top_nav.ftl" parameters="<%= params %>">
@@ -152,7 +52,4 @@ final int W_GLOBAL_NAV_TOTAL = 970;
 <% } %></oscache:cache>
 </center>
 <% }
- } catch (Exception ex) {
-		ex.printStackTrace();
- }
 %>

@@ -7,7 +7,6 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.GlobalNavigationModel;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
@@ -26,16 +25,9 @@ public class GlobalNavTag extends SimpleTagSupport {
 		PageContext ctx = (PageContext) getJspContext();
 		FDSessionUser user = (FDSessionUser) ((PageContext) getJspContext()).getSession().getAttribute(SessionName.USER);
 		if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, user)) {
-			String globalNavId = "";
 	
 			//Current global nav decision logic... Might be changed in the future.
-			if (user == null || user.getPricingContext() == null || user.getPricingContext().getUserContext() == null || !user.getPricingContext().getUserContext().isAlcoholRestricted()) {
-				globalNavId = "GlobalNavWithWine"; //with wine
-			} else {
-				globalNavId = "GlobalNavWithoutWine"; //w/o wine
-			}
-			
-			GlobalNavigationModel globalNavigationModel = (GlobalNavigationModel)ContentFactory.getInstance().getContentNode("GlobalNavigation", globalNavId);
+			GlobalNavigationModel globalNavigationModel = GlobalNavContextUtil.getGlobalNavigationModel(user);
 			
 			try {
 				ctx.setAttribute(name, DataPotatoField.digGlobalNav(CMSModelToSoyDataConverter.createGlobalNavData(globalNavigationModel, user)));
