@@ -39,7 +39,10 @@ final int W_WINE_FILTER_TOTAL = 601;
 <tr>
 <td valign="middle" align="right">
 Sort by:<%
-   for (WineSorter.Type sortBy : WineSorter.Type.values()) { 
+   for (WineSorter.Type sortBy : WineSorter.Type.values()) {
+	   if (sortBy.equals(WineSorter.Type.EXPERT_RATING) && !"USQ".equalsIgnoreCase(JspMethods.getWineAssociateId()) ) {
+		   continue;
+	   }
       %><fd:WineSortByLink sortBy="<%= sortBy %>" className="wine-sortby"><span class="wine-sortby-<%= sortBy.name().toLowerCase() %><%= selected ? "-selected" : "" %>"></span></fd:WineSortByLink><%
    } %>
 </td>
@@ -72,11 +75,10 @@ Per page:
 <% } else { // wineView %>
 <%@include file="/includes/wine/i_wine_details_view.jspf" %>
 <% } %>
-<% if (category != null  && !category.isHideWineRatingPricing()) { %>
-	<%@ include file="/shared/includes/wine/i_wine_expert_ratings_key.jspf" %>
-<% } %>
+<%@ include file="/shared/includes/wine/i_wine_expert_ratings_key.jspf" %>
 <% if (wineView == EnumWineViewType.DETAILS && wineHasOtherRatings) { %>
-<fd:IncludeMedia name="/media/editorial/win_<%= JspMethods.getWineAssociateId().toLowerCase() %>/other_ratings_key.html"/>
+	<% String oRatingKeyMedia = "/media/editorial/win_"+JspMethods.getWineAssociateId().toLowerCase()+"/other_ratings_key.html";  %>
+	<fd:IncludeMedia name="<%= oRatingKeyMedia %>" />
 <% } %>
 </fd:WineSorter>
 </fd:WineFilter>
