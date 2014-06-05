@@ -89,7 +89,11 @@ GLOBAL NAV DROPDOWNS
 	height: 41px;
 }
 
-.dropdown-column li a:link {
+.dropdown-column li a:link,
+.dropdown-column li a:visited,
+.dropdown-column li a:hover,
+.dropdown-column li a:active
+{
 	color:#000;
 	display: block;
 	padding-left: 30px;
