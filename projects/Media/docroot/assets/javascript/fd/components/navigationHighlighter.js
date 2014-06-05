@@ -8,48 +8,26 @@ var FreshDirect = FreshDirect || {};
       utils = FreshDirect.modules.common.utils;
   
   var navigationHighlighter = {
+    currentLocation: FreshDirect.globalnav && FreshDirect.globalnav.botNav ? FreshDirect.globalnav.botNav : "",
     globalComponent: "[data-component='globalnav']",
     footerComponent: "[data-component='footer']",
     highlightNavItem : function(){
-      this.setHighlightById(this.onGlobalNavItem).length || this.setHighlightByFullUrl(this.onGlobalNavItem).length;
+      // console.log("cur loc: " + this.currentLocation);
+
+      this.setHighlightById(this.onGlobalNavItem);
 
       if(!this.isHighlighted()){
-        this.setHighlightOnFooter();
+        this.setHighlightById(this.onFooterNavItem);
       }
     },
     setHighlightById : function(componentFn){
-        var locId = this.substractIdFromLocationString();
-        
-        return componentFn.call(navigationHighlighter, "[data-id=" + locId + "]");
-    },
-    setHighlightByFullUrl : function(componentFn){
-        var locId = this.getFullUrl();
-
-        return componentFn.call(navigationHighlighter, "a[href='" + locId + "']");
-    },
-    setHighlightOnFooter : function(){
-      var locId = this.getFullUrl();
-
-      if(!locId || locId === "/"){
-        return;
-      }
-
-      $(this.footerComponent).find("a").each(function(e){
-        var exp = $(this).data('hlregex'); 
-
-        if(exp && locId.match(exp)){
-         $(this).attr('data-highlight', 'on'); 
-        }
-      });
+        return componentFn.call(navigationHighlighter, "[data-id='" + this.currentLocation + "']");
     },
     onGlobalNavItem : function(location){
       return $(this.globalComponent).find(location).find("a").attr("data-highlight", "on");
     },
-    substractIdFromLocationString : function(){
-      return utils.getParameterByName("id") || utils.getParameterByName("deptId") || utils.getParameterByName("catId");
-    },
-    getFullUrl : function(){
-      return window.location.pathname + window.location.search;
+    onFooterNavItem : function(location){
+      return $(this.footerComponent).find(location).attr("data-highlight", "on");
     },
     isHighlighted : function(){
       return $(document.body).find("[data-highlight='on']").length > 0;
