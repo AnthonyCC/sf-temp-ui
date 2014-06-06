@@ -891,7 +891,7 @@ public class ContentFactory {
 					newIndex.catReverse.put(values.get(0).getKey(), c.getContentKey());
 					LOGGER.info("WINE INDEX: -- matching domain value found for category " + c.getFullName() + ": " + values.get(0).getKey().getLabel());
 				} else
-					LOGGER.warn("WINE INDEX: -- no matching domain value found for category " + c.getFullName());
+					LOGGER.warn("WINE INDEX: -- no matching domain value found for category " + c.toString() + ": " + c.getFullName());
 			}
 		}
 		LOGGER.info("WINE INDEX: resolved " + newIndex.categories.size() + " TLC - domain value pairs (By Region).");
@@ -930,6 +930,7 @@ public class ContentFactory {
 					newIndex.categories.put(c.getContentKey(), overridden);
 					newIndex.catReverse.put(overridden, c.getContentKey());
 					newIndex.encodedDomains.put(overridden, "_Domain:usq_type");
+					newIndex.encodedDomains.put(overridden, "_Domain:vin_type");
 					domainValues.add(overridden);
 					LOGGER.info("WINE INDEX: -- overridden domain value found for category " + c.getFullName() + ": " + overridden.getLabel());
 				} else if (values.size() > 0) {
@@ -937,10 +938,11 @@ public class ContentFactory {
 					newIndex.categories.put(c.getContentKey(), overridden != null ? overridden : dv);
 					newIndex.catReverse.put(overridden != null ? overridden : dv, c.getContentKey());
 					newIndex.encodedDomains.put(dv, "_Domain:usq_type");
+					newIndex.encodedDomains.put(dv, "_Domain:vin_type");
 					domainValues.add(dv);
 					LOGGER.info("WINE INDEX: -- matching domain value found for category " + c.getFullName() + ": " + dv.getLabel());
 				} else
-					LOGGER.warn("WINE INDEX: -- no matching domain value found for category " + c.getFullName());
+					LOGGER.warn("WINE INDEX: -- no matching domain value found for category " + c.toString() + ": " + c.getFullName());
 			}
 		}
 		LOGGER.info("WINE INDEX: resolved " + (newIndex.categories.size() - soFar) + " TLC - domain value pairs (By Type).");
@@ -975,6 +977,7 @@ public class ContentFactory {
 					newIndex.categories.put(c.getContentKey(), overridden);
 					newIndex.catReverse.put(overridden, c.getContentKey());
 					newIndex.encodedDomains.put(overridden, "_Domain:usq_more");
+					newIndex.encodedDomains.put(overridden, "_Domain:vin_more");
 					domainValues.add(overridden);
 					LOGGER.info("WINE INDEX: -- overridden domain value found for category " + c.getFullName() + ": " + overridden.getLabel());
 				} else if (values.size() > 0) {
@@ -982,10 +985,11 @@ public class ContentFactory {
 					newIndex.categories.put(c.getContentKey(), dv);
 					newIndex.catReverse.put(dv, c.getContentKey());
 					newIndex.encodedDomains.put(dv, "_Domain:usq_more");
+					newIndex.encodedDomains.put(dv, "_Domain:vin_more");
 					domainValues.add(dv);
 					LOGGER.info("WINE INDEX: -- matching domain value found for category " + c.getFullName() + ": " + dv.getLabel());
 				} else
-					LOGGER.warn("WINE INDEX: -- no matching domain value found for category " + c.getFullName());
+					LOGGER.warn("WINE INDEX: -- no matching domain value found for category " + c.toString() + ": " + c.getFullName());
 			}
 		}
 		LOGGER.info("WINE INDEX: resolved " + (newIndex.categories.size() - soFar) + " TLC - domain value pairs (More...).");

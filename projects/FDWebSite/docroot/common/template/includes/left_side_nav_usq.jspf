@@ -68,7 +68,7 @@ if (selected == null || wineFilter.isFiltering()) {
 	}
 	for (EnumWineFilterDomain domain : EnumWineFilterDomain.values()) {
 		boolean isOnlyOneFilter = wineFilter.getFilterValuesForDomain(domain.getDomainEncoded()).size() == 1 && domain.getSubcategoryLabel() != null;
-		boolean isOpened = lastClicked !=null && domain.getDomainEncoded().equals(lastClicked.getDomainEncoded()) && !isOnlyOneFilter;
+		boolean isOpened = lastClicked !=null && domain.getDomainEncoded() != null && domain.getDomainEncoded().equals(lastClicked.getDomainEncoded()) && !isOnlyOneFilter;
 		Set<WineFilterValue> selectedFilters = wineFilter.getFilterValuesForDomain(domain.getDomainEncoded());
 		boolean hasSubList = domain.getSubcategoryLabel() != null && selectedFilters.size() > 0;
 		String carrot = isOpened ? "-open" : "";

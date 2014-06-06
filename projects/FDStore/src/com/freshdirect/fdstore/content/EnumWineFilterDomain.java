@@ -7,6 +7,7 @@ import java.util.Comparator;
 
 import org.apache.commons.collections.set.ListOrderedSet;
 
+import com.freshdirect.WineUtil;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 
 public enum EnumWineFilterDomain {
@@ -34,6 +35,21 @@ public enum EnumWineFilterDomain {
 		else if (categoryId != null) {
 			CategoryModel category = getCategory();
 			if (category != null) {
+				String categoryId = category.toString();
+				String wineAssId = WineUtil.getWineAssociateId().toLowerCase();
+
+				if ("fdw".equalsIgnoreCase(wineAssId)) {
+					wineAssId = "vin"; //make it match CMS setup
+				}
+				
+				if (categoryId.startsWith("usq", 0) && !"usq".equalsIgnoreCase(wineAssId) ) {
+					//flip to vin
+					categoryId = categoryId.replace("usq", wineAssId);
+					category = (CategoryModel) ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY, categoryId);
+					if (category == null) {
+						return Collections.emptyList();
+					}
+				}
 				Collection<WineFilterValue> values = ContentFactory.getInstance().getDomainValuesForWineDomainCategory(category);
 				return values != null ? values : Collections.<WineFilterValue> emptyList();
 			} else
