@@ -13,7 +13,8 @@ import com.freshdirect.fdstore.FDStoreProperties;
 
 public class CORSFilter extends AbstractFilter {
 	
-  private String header = "Access-Control-Allow-Origin";
+  private String header_origin = "Access-Control-Allow-Origin";
+  private String header_credentials = "Access-Control-Allow-Credentials";
 
 	private final String filterName = this.getClass().getName();
 
@@ -21,7 +22,8 @@ public class CORSFilter extends AbstractFilter {
 		HttpServletResponse response = (HttpServletResponse) res;
 		HttpServletRequest request = (HttpServletRequest) req;
 		
-    response.setHeader(header, FDStoreProperties.getCORSDomain());
+    response.setHeader(header_origin, FDStoreProperties.getCORSDomain());
+    response.setHeader(header_credentials, "true");
 		
 		filterChain.doFilter(request, response);
 	}
