@@ -36,7 +36,9 @@ if (brandId!=null) {
 			} else {
 				mediaPath = ((Html)tm.getMedia()).getPath() ;
 			}
-            widthValue = popupType.getWidth();
+            if (popupType != null) {
+            	widthValue = popupType.getWidth();
+            }
         }
         // Build the featured item list, if any
         List<ProductModel> favorites = brandNode.getFeaturedProducts();
