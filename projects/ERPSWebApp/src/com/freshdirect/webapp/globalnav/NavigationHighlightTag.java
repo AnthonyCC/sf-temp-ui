@@ -37,21 +37,10 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 		
 		try {
 		
-			GlobalNavigationModel globalNavigationModel = GlobalNavContextUtil.getGlobalNavigationModel(user);
-			HashMap<String, String> relatedDepartmentIds = new HashMap<String, String>(); 
-			for (ContentNodeModel contentNode : globalNavigationModel.getItems()) {
-				if (contentNode instanceof SuperDepartmentModel) {
-					for (DepartmentModel dept : ((SuperDepartmentModel) contentNode).getDepartments()) {
-						relatedDepartmentIds.put(dept.getContentName(), contentNode.getContentName());
-					}
-				}
-			}
-			
 			String deptId = request.getParameter("deptId");
 			String catId = request.getParameter("catId");
 			String browseId = request.getParameter("id");
 			String globalUri = request.getRequestURI();
-	
 	
 			//fallback and check attributes on param fail
 				if (deptId == null || "".equals(deptId)) {
@@ -67,10 +56,19 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 					if ("".equals(browseId.toString())) { browseId = null; }
 				}
 	
-	
 			String thisDept = "";
 	
 			if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, user)) {
+				GlobalNavigationModel globalNavigationModel = GlobalNavContextUtil.getGlobalNavigationModel(user);
+				HashMap<String, String> relatedDepartmentIds = new HashMap<String, String>(); 
+				for (ContentNodeModel contentNode : globalNavigationModel.getItems()) {
+					if (contentNode instanceof SuperDepartmentModel) {
+						for (DepartmentModel dept : ((SuperDepartmentModel) contentNode).getDepartments()) {
+							relatedDepartmentIds.put(dept.getContentName(), contentNode.getContentName());
+						}
+					}
+				}
+
 				List<String> bottomTopNavCategories = new ArrayList<String>(Arrays.asList("picks_love", "wgd_produce", "wgd_seafood", "wgd_butchers", "wgd_kitchendeals", "wgd_deals"));
 	
 				if (browseId != null) {
