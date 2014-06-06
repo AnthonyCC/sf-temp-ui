@@ -26,6 +26,12 @@
     <filter-name>OncePerRequestDateFilter</filter-name>
     <filter-class>com.freshdirect.webapp.filters.OncePerRequestDateFilter</filter-class>
   </filter>
+  <filter>
+    <description>This filter adds the "Access-Control-Allow-Origin" header to the response, enabling CORS</description>
+    <display-name>CORSFilter</display-name>
+    <filter-name>CORSFilter</filter-name>
+    <filter-class>com.freshdirect.webapp.filters.CORSFilter</filter-class>
+  </filter>
   <filter-mapping>
     <filter-name>FDWebSiteMonitor</filter-name>
     <url-pattern>/*</url-pattern>
@@ -41,6 +47,10 @@
   <filter-mapping>
     <filter-name>OncePerRequestDateFilter</filter-name>
     <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>CORSFilter</filter-name>
+    <url-pattern>/api/*</url-pattern>
   </filter-mapping>
   <servlet>
     <servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>

@@ -260,6 +260,9 @@ public class FDStoreProperties {
     
     private static final String PROP_UPS_BLACKHOLE_ENABLED = "fdstore.ups.blackhole.enabled";
 
+    // CORS domain settings
+    private static final String CORS_DOMAIN = "fdstore.CORS.domain";
+
     // Smart Search
     /**
      * @deprecated
@@ -928,6 +931,9 @@ public class FDStoreProperties {
         defaults.put(SMART_SAVINGS_FEATURE_ENABLED, "true");
 
         defaults.put(PROP_LIMITED_AVAILABILITY_ENABLED, "true");
+
+        // CORS
+        defaults.put(CORS_DOMAIN, "*");
 
         //		What's Good Department
         defaults.put(PROP_FDWHATSGOOD_ENABLED, "false");
@@ -1913,6 +1919,11 @@ public class FDStoreProperties {
 
     public static String getTemporaryDirectory() {
         return get(TEMP_DIR);
+    }
+
+    // CORS
+    public static String getCORSDomain() {
+        return get(CORS_DOMAIN);
     }
 
     // iphone email template non-customer
