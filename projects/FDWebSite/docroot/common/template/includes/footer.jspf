@@ -87,7 +87,7 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, (F
 </script>
 --%>
 <center>
-<table width="<%=W_FOOTER_TOTAL %>" cellpadding="0" cellspacing="0" border="0" >
+<table data-component="footer-cont" width="<%=W_FOOTER_TOTAL %>" cellpadding="0" cellspacing="0" border="0" >
 	<tr>
 		<td>
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /><br />
