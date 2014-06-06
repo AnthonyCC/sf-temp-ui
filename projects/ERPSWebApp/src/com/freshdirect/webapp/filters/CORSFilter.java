@@ -21,9 +21,14 @@ public class CORSFilter extends AbstractFilter {
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain) throws IOException, ServletException {
 		HttpServletResponse response = (HttpServletResponse) res;
 		HttpServletRequest request = (HttpServletRequest) req;
+
+    String origin = request.getHeader("Origin");
+    String allowedOrigins = FDStoreProperties.getCORSDomain();
 		
-    response.setHeader(header_origin, FDStoreProperties.getCORSDomain());
-    response.setHeader(header_credentials, "true");
+    if (origin != null && (allowedOrigins.equals("*") || allowedOrigins.contains(origin))) {
+      response.setHeader(header_origin, origin);
+      response.setHeader(header_credentials, "true");
+    }
 		
 		filterChain.doFilter(request, response);
 	}

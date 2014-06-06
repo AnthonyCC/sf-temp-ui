@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>CORS test page</title>
+    <style>
+      #result {
+        margin: 10px;
+        padding:10px;
+        background: #eee;
+        color: #000;
+        border: 1px solid #888;
+      }
+    </style>
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  </head>
+  <body>
+    <h1>FreshDirect CORS test page</h1>
+    <label>Domain: <input name="domain" value="http://freshdirect.com" /></label>
+    <hr/>
+    <div class="apitest" id="loginTest" data-endpoint="/api/login">
+      <p>
+        <label>UserId: <input name="userId" /></label>
+      </p>
+      <p>
+        <label>Password: <input type="password" name="password" /></label>
+      </p>
+      <p>
+        <label>successPage: <input name="successPage" /></label>
+      </p>
+      <p>
+        <button>Go!</button>
+      </p>
+    </div>
+    <hr/>
+    <div class="apitest" id="loginTest" data-endpoint="/api/addtocart" data-wrapper="items">
+      <p>
+        <label>atcItemId: <input name="atcItemId" /></label>
+      </p>
+      <p>
+        <label>categoryId: <input name="categoryId" /></label>
+      </p>
+      <p>
+        <label>productId: <input name="productId" /></label>
+      </p>
+      <p>
+        <label>skuCode: <input name="skuCode" /></label>
+      </p>
+      <p>
+        <label>quantity: <input name="quantity" /></label>
+      </p>
+      <p>
+        <label>salesUnit: <input name="salesUnit" /></label>
+      </p>
+      <p>
+        <label>configuration: <input name="configuration" /></label>
+      </p>
+      <p>
+        <button>Go!</button>
+      </p>
+    </div>
+    <pre id="result">
+    </pre>
+    <script>
+(function () {
+  $(document).on('click', '.apitest button', function () {
+    var data = {},
+        box = $(this).closest('.apitest'),
+        domain = $('input[name="domain"]').val(),
+        endpoint = box.attr('data-endpoint'),
+        wrapper = box.attr('data-wrapper'),
+        result = $('#result');
+
+    box.find('input').each(function () {
+      var el = $(this);
+
+      data[el.attr('name')] = el.val();
+    });
+
+    if (wrapper) {
+      var subdata = data;
+      data = {};
+      data[wrapper] = [subdata];
+    }
+
+    $.ajax({
+      type: 'POST',
+      url: domain+endpoint,
+      crossDomain: true,
+      xhrFields: {
+        withCredentials: true
+      },
+      data: {
+        data: JSON.stringify(data)
+      },
+      success: function (res) {
+        result.html(res);
+      },
+      error: function (res, status, error) {
+        result.html('ERROR! see console for details');
+        console.log(res, status, error);
+      }
+    });
+
+  });
+}());
+    </script>
+  </body>
+</html>
