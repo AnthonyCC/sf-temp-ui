@@ -67,6 +67,9 @@ if (selected == null || wineFilter.isFiltering()) {
 <%
 	}
 	for (EnumWineFilterDomain domain : EnumWineFilterDomain.values()) {
+		if (domain.toString().equalsIgnoreCase(EnumWineFilterDomain.RATING.toString()) && !"usq".equalsIgnoreCase(JspMethods.getWineAssociateId())) {
+			continue;
+		}
 		boolean isOnlyOneFilter = wineFilter.getFilterValuesForDomain(domain.getDomainEncoded()).size() == 1 && domain.getSubcategoryLabel() != null;
 		boolean isOpened = lastClicked !=null && domain.getDomainEncoded() != null && domain.getDomainEncoded().equals(lastClicked.getDomainEncoded()) && !isOnlyOneFilter;
 		Set<WineFilterValue> selectedFilters = wineFilter.getFilterValuesForDomain(domain.getDomainEncoded());
@@ -581,6 +584,10 @@ else {
 		
 		<%
 		for (EnumWineFilterDomain domain : EnumWineFilterDomain.values()) {
+			if (domain.toString().equalsIgnoreCase(EnumWineFilterDomain.RATING.toString()) && !"usq".equalsIgnoreCase(JspMethods.getWineAssociateId())) {
+				continue;
+			}
+			
 		%>
 		<div id="wine-left-side-nav-closed-<%= domain.name() %>" class="nav-filter-name nav-filter-name-<%=domain.name() %> title16 wine-narrow"
 				onmouseover="FreshDirect.WineNav.catMenuIn('sidenav-domain-submenu-<%=domain.name() %>')"
