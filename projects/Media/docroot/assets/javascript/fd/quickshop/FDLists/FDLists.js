@@ -24,7 +24,7 @@ var FreshDirect = FreshDirect || {};
 				data: {
 					data: jsondata
 		          },spinner:{
-		              timeout:500,
+		              timeout:1500,
 		              element:'.qs-loader'
 			}});
 	}

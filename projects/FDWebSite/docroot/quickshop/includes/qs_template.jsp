@@ -76,7 +76,7 @@
                         <tmpl:get name="pagination" />
                     </div>
                 </div>
-                <div class="qs-loading">loading products</div>
+                <div class="qs-loading"><div class="spinner-container"></div></div>
             </div>
             <%
                 Map<String,Object> soyData = new HashMap<String,Object>();

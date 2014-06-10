@@ -9,7 +9,9 @@ var FreshDirect = FreshDirect || {};
   var errorMessages={
       "401":'<div class="unauthorized">Session expired, please refresh!</div>'
   };
-
+  var DEFAULT_SPINNER_CONFIG = {
+    top: "20%"
+  };
 
   /* helper function for successHandler
    * "this" means the data object
@@ -55,12 +57,24 @@ var FreshDirect = FreshDirect || {};
 
         if('spinner' in config) {
           Bacon.later(config.spinner.timeout,'show').filter(state).onValue(function(v){
-            if(v==='show') { $(config.spinner.element).first().addClass('loading'); }
+            var $el = $(config.spinner.element), spinner, sp;
+            if(v==='show') { 
+              $el.first().addClass('loading');
+              spinner = $el.find('.spinner-container');
+              if (spinner.size() > 0) {
+                sp = new window.Spinner(config.spinner.config || DEFAULT_SPINNER_CONFIG).spin(spinner[0]); // TODO spinner config
+              }
+            }
           });         
         
           state.onValue(function(show){
+            var $el = $(config.spinner.element), spinner;
             if(!show) {
-              $(config.spinner.element).first().removeClass('loading');
+              $el.first().removeClass('loading');
+              spinner = $el.find('.spinner-container');
+              if (spinner.size() > 0) {
+                spinner.html('');
+              }
             }
           });
         }
