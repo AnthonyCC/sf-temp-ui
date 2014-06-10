@@ -148,7 +148,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 					FDProduct fdProduct = null;
 					try {
 						productModel =ContentFactory.getInstance().getProduct(skucode);
-						if(null != productModel && !productModel.isOrphan()){
+						if(null != productModel && !productModel.isOrphan() && !"Archive".equalsIgnoreCase(productModel.getDepartment().getContentName())){
 							fdProductInfo = FDCachedFactory.getProductInfo(skucode);
 							fdProduct = FDCachedFactory.getProduct(fdProductInfo);		
 							
@@ -157,9 +157,9 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 						//Ignore
 					}
 					if(null != fdProductInfo && null !=fdProduct){						
-						if(!fdProductInfo.isAvailable()){
+						/*if(!fdProductInfo.isAvailable()){
 							continue;
-						}				
+						}*/				
 						Product product = new Product();			
 						xmlProducts.getProduct().add(product);
 						
@@ -271,6 +271,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 		product.setCatId(productModel.getCategory().getContentName());
 		product.setSubCatId(productModel.getParentId());
 		product.setDeptId(productModel.getDepartment().getContentName());
+		product.setProdStatus(null !=fdProductInfo.getAvailabilityStatus()?fdProductInfo.getAvailabilityStatus().getStatusCode():"");
 		
 	}
 
