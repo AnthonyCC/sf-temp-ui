@@ -123,7 +123,7 @@ private static FileContext getFileContext(String[] args) {
 			ReconciliationSB reconciliationSB = reconciliationCronHome.create();
 			//ErpSaleEB erpSaleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			// process bad transactions
-			List<ECheckRejectedTxDetail> badTxnList = /*reconciliationSB.loadBadTransactions(startDate, endDate);*/new RejectedTxParser().parseFile(files.get(0));
+			List<ECheckRejectedTxDetail> badTxnList = /*reconciliationSB.loadBadTransactions(startDate, endDate);*/new RejectedTxParser().parseFile(DataLoaderProperties.getWorkingDir() +files.get(0));
 			processBadTransactions(badTxnList, reconciliationSB,saleHome);
 			LOGGER.info("ECheckSTFCronRunner finished");
 
