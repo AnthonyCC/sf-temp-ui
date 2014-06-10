@@ -116,7 +116,8 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
     	<tmpl:put name="deptnav" direct="true">	
     	</tmpl:put>
     	<tmpl:put name="leftnav">
-			<td class="wine-sidenav" bgcolor="#e2dfcc" style="z-index: 0;" width="150"><div align="center" style="background: #272324"><a href="/department.jsp?deptId=usq&trk=snav"><img src="/media/editorial/win_usq/usq_logo_sidenav_bottom.gif" width="150" height="109" border="0"></a><br></div>
+    		<% String wineAssId = JspMethods.getWineAssociateId().toLowerCase(); %>
+			<td class="wine-sidenav" bgcolor="#e2dfcc" style="z-index: 0;" width="150"><div align="center" style="background: #272324"><a href="/department.jsp?deptId=<%= wineAssId %>&trk=snav"><img src="/media/editorial/win_<%= wineAssId %>/usq_logo_sidenav_bottom.gif" width="150" height="109" border="0"></a><br></div>
 			<% try { %><%@ include file="/common/template/includes/left_side_nav_usq.jspf" %><% } catch (Exception ex) {ex.printStackTrace();} %>
 			</td>    	
 		</tmpl:put>
