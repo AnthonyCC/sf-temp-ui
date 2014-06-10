@@ -382,7 +382,7 @@ public class ProductRecommenderUtil {
 	}
 	
 
-	public static List<ProductModel> getUnavailableReplacementProducts (ProductModel originalProduct, Set<ProductModel> excludedProducts){
+	public static List<ProductModel> getUnavailableReplacementProducts (ProductModel originalProduct, Set<ContentKey> excludedProductKeys){
 		List<ProductModel> replacementProducts = new ArrayList<ProductModel>();
 		if (originalProduct!=null && !originalProduct.isDisableAtpFailureRecommendation()) {
 
@@ -394,7 +394,7 @@ public class ProductRecommenderUtil {
 					replacementProducts.add(((SkuModel)node).getProductModel());
 				}
 			}
-			replacementProducts.removeAll(excludedProducts);
+			removeProductsByKeys(replacementProducts, excludedProductKeys);
 			cleanUpProducts(replacementProducts, false, MAX_UNAVAILABLE_REPLACEMENTS_COUNT);
 			
 			
@@ -403,7 +403,7 @@ public class ProductRecommenderUtil {
 			if (replacementProducts.size() < MAX_UNAVAILABLE_REPLACEMENTS_COUNT){
 				List<ProductModel> siblingProducts = parentCategory.getProducts();
 				siblingProducts.removeAll(replacementProducts);
-				siblingProducts.removeAll(excludedProducts);
+				removeProductsByKeys(siblingProducts, excludedProductKeys);
 				
 				cleanUpProducts(siblingProducts, true, MAX_UNAVAILABLE_REPLACEMENTS_COUNT-replacementProducts.size());
 				replacementProducts.addAll(siblingProducts);
@@ -414,7 +414,7 @@ public class ProductRecommenderUtil {
 			if (replacementProducts.size() < MAX_UNAVAILABLE_REPLACEMENTS_COUNT && grandpaNode instanceof CategoryModel){
 				List<ProductModel> productsUnderGrandpa = ((CategoryModel) grandpaNode).getAllChildProductsAsList();
 				productsUnderGrandpa.removeAll(replacementProducts);
-				productsUnderGrandpa.removeAll(excludedProducts);
+				removeProductsByKeys(productsUnderGrandpa, excludedProductKeys);
 				
 				cleanUpProducts(productsUnderGrandpa, true, MAX_UNAVAILABLE_REPLACEMENTS_COUNT-replacementProducts.size());
 				replacementProducts.addAll(productsUnderGrandpa);
@@ -423,5 +423,13 @@ public class ProductRecommenderUtil {
 		return replacementProducts;
 	}
 	
+	private static void removeProductsByKeys(List<ProductModel> products,  Set<ContentKey> excludedProducts){
+	    for (Iterator<ProductModel> productIt = products.iterator(); productIt.hasNext();){
+	        ProductModel product = productIt.next();
+	    	if (product!=null && excludedProducts.contains(product.getContentKey())){
+	        	productIt.remove();
+	        }
+	    }
+	}
 
 }

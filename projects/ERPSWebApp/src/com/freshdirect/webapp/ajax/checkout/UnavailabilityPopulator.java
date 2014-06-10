@@ -12,6 +12,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.FDRestrictedAvailabilityInfo;
 import com.freshdirect.delivery.restriction.RestrictionI;
@@ -95,11 +96,11 @@ public class UnavailabilityPopulator {
 	
 	private static void collectUnavailableProducts(FDSessionUser user, Set<String> unavaibleKeys){
 		FDCartModel cart = user.getShoppingCart();
-		Set<ProductModel> unavailableProducts = user.getCheckoutUnavailableProducts();
+		Set<ContentKey> unavailableProductKeys = user.getCheckoutUnavailableProductKeys();
 		
-		if (unavailableProducts == null){
-			unavailableProducts = new HashSet<ProductModel>();
-			user.setCheckoutUnavailableProducts(unavailableProducts);
+		if (unavailableProductKeys == null){
+			unavailableProductKeys = new HashSet<ContentKey>();
+			user.setCheckoutUnavailableProductKeys(unavailableProductKeys);
 		}
 		
 		for (String key : unavaibleKeys) {
@@ -107,7 +108,7 @@ public class UnavailabilityPopulator {
 			if (productReference != null){
 				ProductModel product = productReference.lookupProductModel();
 				if (product!=null){
-					unavailableProducts.add(product);
+					unavailableProductKeys.add(product.getContentKey());
 				}
 			}
 		}
@@ -239,7 +240,7 @@ public class UnavailabilityPopulator {
 		
 		ProductReference productReference = cartLine.getProductRef(); 
 		if (productReference != null){
-			for (ProductModel replacementProduct : ProductRecommenderUtil.getUnavailableReplacementProducts(productReference.lookupProductModel(), user.getCheckoutUnavailableProducts())){
+			for (ProductModel replacementProduct : ProductRecommenderUtil.getUnavailableReplacementProducts(productReference.lookupProductModel(), user.getCheckoutUnavailableProductKeys())){
 				try {
 					replacements.add(ProductDetailPopulator.createProductData(user, replacementProduct));
 				

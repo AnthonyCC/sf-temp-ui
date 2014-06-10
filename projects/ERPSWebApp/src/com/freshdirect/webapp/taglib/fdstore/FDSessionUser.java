@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.analytics.EventLog;
 import com.freshdirect.analytics.SessionEvent;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
@@ -138,7 +139,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     /* set in RegistrationControllerTag see getter for notes */
     private boolean justSignedUp = false;
     
-    private Set<ProductModel> checkoutUnavailableProducts; //set of items which failed the ATP test
+    private Set<ContentKey> checkoutUnavailableProductKeys; //set of items which failed the ATP test
     
 	public void setLastCOSSurveySuccess(boolean lastCOSSurveySuccess) {
 		this.lastCOSSurveySuccess = lastCOSSurveySuccess;
@@ -1673,12 +1674,12 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		this.user.setServerName(serverName);
 	}
 
-	public Set<ProductModel> getCheckoutUnavailableProducts() {
-		return checkoutUnavailableProducts;
+	public Set<ContentKey> getCheckoutUnavailableProductKeys() {
+		return checkoutUnavailableProductKeys;
 	}
 
-	public void setCheckoutUnavailableProducts(Set<ProductModel> checkoutUnavailableProducts) {
-		this.checkoutUnavailableProducts = checkoutUnavailableProducts;
+	public void setCheckoutUnavailableProductKeys(Set<ContentKey> checkoutUnavailableProductKeys) {
+		this.checkoutUnavailableProductKeys = checkoutUnavailableProductKeys;
 	}
 
 	/* cleared on first fetch if false isn't passed in to method */
