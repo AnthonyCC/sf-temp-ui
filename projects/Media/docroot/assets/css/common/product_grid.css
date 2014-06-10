@@ -210,6 +210,12 @@
 	overflow: hidden;
 }
 
+.yui-carousel .grid-item-name {
+  max-width: 126px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .grid-item-name a:hover {
 	color: #360;
 }
