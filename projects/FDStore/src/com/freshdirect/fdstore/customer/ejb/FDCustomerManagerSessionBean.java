@@ -1358,7 +1358,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
         //
         // Check external negative file for E-Checks, Credit Cards will alway return APPROVED
         //
-        boolean foundFraud = false;
+        /*boolean foundFraud = false;
         try {
         	PaymentFraudManager paymentFraudManager = new PaymentFraudManager();
         	if (!paymentFraudManager.verifyAccountExternal(paymentMethod)) {
@@ -1370,7 +1370,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
         if (foundFraud) {
         	this.getSessionContext().setRollbackOnly();
         	throw new ErpPaymentMethodException("Account is not valid");
-        }
+        }*/
         return erpCustomerEB;
     }
 
@@ -2944,7 +2944,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			// authorize the sale with new payment method
 			List<ErpAuthorizationModel> auths = paymentManager.authorizeSaleRealtime(saleId);
-
 			// capture the sale authorization
 			paymentManager.captureAuthorizations(saleId, auths);
 
