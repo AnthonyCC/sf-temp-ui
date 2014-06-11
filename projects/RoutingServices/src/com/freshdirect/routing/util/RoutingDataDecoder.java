@@ -202,7 +202,7 @@ public class RoutingDataDecoder {
 				for(int intCount=0;intCount<route.getStops().length ;intCount++) {
 					_refStop = route.getStops()[intCount];
 					
-					System.out.println("\t"+_refStop.getSequenceNumber()+" "+_refStop.getLocationIdentity().getLocationID()+" "+_refStop.getOrders()+" "+_refStop.getStopType()+" "+_refStop.getLocationIdentity().getLocationType());
+					//System.out.println("\t"+_refStop.getSequenceNumber()+" "+_refStop.getLocationIdentity().getLocationID()+" "+_refStop.getOrders()+" "+_refStop.getStopType()+" "+_refStop.getLocationIdentity().getLocationType());
 					
 					/** We are ignoring breaks for depots as we dont know how to handle them currently. Discussed this with Rod and he is ok with ignoring breaks for Depots.  */
 					if(!retrieveBlankStops && _refStop.getStopType()!=null && (StopType._stpPaidBreak.equals(_refStop.getStopType().getValue())
