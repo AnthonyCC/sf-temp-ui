@@ -22,6 +22,7 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.transadmin.constants.EnumUploadSource;
 import com.freshdirect.transadmin.datamanager.ScheduleUploadDataManager;
 import com.freshdirect.transadmin.model.Region;
@@ -154,13 +155,19 @@ public class ScheduleUploadFormController extends BaseFormController {
 										scrib.setZoneS(strBuf.toString() + scrib.getZoneS());
 									}
 									zone = zoneMapping.get(scrib.getZoneS());
+									if(zone != null) {
+										scrib.setZone(zone);
+										scrib.setRegion(zone.getRegion());
+									}
+
 									originFacility = facilityMapping.get(scrib.getOriginFacility() != null ? scrib.getOriginFacility().getName() : "");
 									destFacility = facilityMapping.get(scrib.getDestinationFacility() != null ? scrib.getDestinationFacility().getName() : "");
 									scrib.setOriginFacility(originFacility);
 									scrib.setDestinationFacility(destFacility);
-									if(zone != null) {
-										scrib.setZone(zone);
-										scrib.setRegion(zone.getRegion());
+									if(destFacility != null && destFacility.getTrnFacilityType() != null &&
+											EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(destFacility.getTrnFacilityType().getName())){
+										scrib.setZone(null);
+										scrib.setEquipmentTypeS(null);
 									}
 									scribDates.add(scrib.getScribDate());
 									

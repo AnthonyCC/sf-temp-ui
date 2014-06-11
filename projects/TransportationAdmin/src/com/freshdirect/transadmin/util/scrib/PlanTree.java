@@ -510,7 +510,10 @@ class TimeNode extends PlanTreeNode  {
 			p.setOriginFacility(s.getOriginFacility());
 			p.setDestinationFacility(s.getDestinationFacility());
 			p.setEquipmentTypeS(s.getEquipmentTypeS());
-			p.setZone(s.getZone());
+			if(p.getDestinationFacility() != null && p.getDestinationFacility().getTrnFacilityType() != null &&
+					!EnumTransportationFacilitySrc.CROSSDOCK.getName().equalsIgnoreCase(p.getDestinationFacility().getTrnFacilityType().getName())){
+				p.setZone(s.getZone());
+			}
 			p.setRegion(s.getRegion());
 			p.setStartTime(s.getStartTime());
 			p.setEndTime(s.getEndTime());
