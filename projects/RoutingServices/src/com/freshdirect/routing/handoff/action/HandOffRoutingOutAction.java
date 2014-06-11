@@ -366,6 +366,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 	
 	private List<BreakWindow> combineBreaks(Set<BreakWindow> breaksperRoute) {
 		List<BreakWindow> consolidatedBreaks = new ArrayList<BreakWindow>();
+		if(breaksperRoute!=null){
 		for(BreakWindow window : breaksperRoute){
 			boolean addToList = true;
 			for(BreakWindow consolidatedWindow: consolidatedBreaks){
@@ -381,6 +382,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 			}
 			if(addToList)
 				consolidatedBreaks.add(window);
+		}
 		}
 		return consolidatedBreaks;
 	}
@@ -643,6 +645,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 				newRoute.setCompletionTime(route.getDepotArrivalTime());
 				newRoute.setOriginId(route.getOriginId());
 				newRoute.setStops(new TreeSet());
+				newRoute.setBreaks(new TreeSet());
 				
 				result.get(areaEntry.getKey()).add(newRoute);
 				
