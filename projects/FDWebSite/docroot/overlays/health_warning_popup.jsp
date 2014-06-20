@@ -1,14 +1,51 @@
 <%@ page import="java.util.Map"%>
 <%@ page import="java.util.HashMap"%>
+<%@ page import="java.io.IOException"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@ page import="com.freshdirect.webapp.util.MediaUtils"%>
+<%@ page import="com.freshdirect.common.pricing.PricingContext"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@ page import="java.io.StringWriter"%>
+<%@ page import="org.json.JSONObject"%>
+<%@ page import="com.freshdirect.framework.template.TemplateException"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.FDSessionUser"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
+<%!
+	private static String fetchMedia(String mediaPath, FDUserI user, boolean quoted) throws IOException, TemplateException {
+		if (mediaPath == null)
+			return null;
+	
+		Map<String,Object> parameters = new HashMap<String,Object>();
+		
+		/* pass user/sessionUser by default, so it doesn't need to be added every place this tag is used. */
+		parameters.put("user", (FDUserI)user);
+		parameters.put("sessionUser", (FDSessionUser)user);
+		
+		StringWriter out = new StringWriter();
+				
+		MediaUtils.render(mediaPath, out, parameters, false, 
+				user != null && user.getPricingContext() != null ? user.getPricingContext() : PricingContext.DEFAULT);
+	
+		String outString = out.toString();
+		
+		//fix media if needed
+		outString = MediaUtils.fixMedia(outString);
+		
+		return quoted ? JSONObject.quote( outString ) : outString;
+	}
+%>
 <fd:CheckLoginStatus/>
 <tmpl:insert template='<%="/common/template/blank.jsp" %>'>
 <tmpl:put name='title' direct='true'>FreshDirect - Alcohol Information</tmpl:put>
 <tmpl:put name='content' direct='true'>
 	<soy:import packageName="common"/>
-	<% String successPage = request.getParameter("successPage");
+	<% 
+
+		FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+		String successPage = request.getParameter("successPage");
 		String instant = request.getParameter("instant");
 		String decorate = request.getParameter("decorate");
 		String atc = request.getParameter("atc");
@@ -33,7 +70,7 @@
 
 		Map<String,String> dataMap = new HashMap<String,String>();
 		dataMap.put( "onclickValue", onclickValue );
-
+		dataMap.put( "mediaContent", fetchMedia("/media/editorial/site_pages/health_warning_overlay.html", user, false));
 		%>
 
 		<soy:render template="common.healthwarningpopup" data="<%=dataMap%>" />
