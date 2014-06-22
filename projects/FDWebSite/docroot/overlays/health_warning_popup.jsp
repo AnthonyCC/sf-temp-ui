@@ -43,7 +43,9 @@
 <tmpl:put name='content' direct='true'>
 	<soy:import packageName="common"/>
 	<% 
-
+		/* I'm not sure what these params could be, but it's not a good idea
+			to take them and put them straight into the js like this...
+		*/
 		FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 		String successPage = request.getParameter("successPage");
 		String instant = request.getParameter("instant");
@@ -52,10 +54,7 @@
 	    request.setAttribute("listPos", "SystemMessage,SideCartBottom");
 	%>
 	<fd:HealthWarningController successPage="<%=successPage%>" result="result">
-
-
-	    <%
-
+    <%
 	    String onclickValue = "if(window.parent.FreshDirect.USQLegalWarning.checkHealthCondition('freshdirect.healthwarning','1')==false) {window.parent.FreshDirect.USQLegalWarning.setCookie('freshdirect.healthwarning','1')};";
  		onclickValue += decorate;
      	if (instant != null && !"".equals(instant)) {
@@ -69,11 +68,25 @@
      	onclickValue += "return false;";
 
 		Map<String,String> dataMap = new HashMap<String,String>();
-		dataMap.put( "onclickValue", onclickValue );
 		dataMap.put( "mediaContent", fetchMedia("/media/editorial/site_pages/health_warning_overlay.html", user, false));
-		%>
+		
+		/* render js to page so onclick has a method to call */
+	%>
+	<script>
+		function healthWarningOnClick(accept) {
+			if (window.parent.FreshDirect.components.ifrPopup) {
+				window.parent.FreshDirect.components.ifrPopup.close();
+			}
+			if (accept) {
+				<%= onclickValue %>
+			} else {
+				window.parent.FreshDirect.USQLegalWarning.blockSubmit(location.search,false);
+			}
+		}
+	</script>
+	
 
-		<soy:render template="common.healthwarningpopup" data="<%=dataMap%>" />
+	<soy:render template="common.healthwarningpopup" data="<%=dataMap%>" />
 
 
 	</fd:HealthWarningController>
