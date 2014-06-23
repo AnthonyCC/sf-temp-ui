@@ -11,6 +11,7 @@ import java.util.List;
 import javax.ejb.EJBException;
 
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.EnumTaxationType;
@@ -27,6 +28,7 @@ import com.freshdirect.framework.collection.DependentPersistentBeanList;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.StringUtil;
 
 
 /**
@@ -114,8 +116,8 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		"INSERT INTO CUST.ORDERLINE (ID, SALESACTION_ID, ORDERLINE_NUMBER, SKU_CODE, VERSION,"
 		+ " QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN,"
 		+ " DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE,"
-		+ " TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION,RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT,VARIANT_ID,SAVINGS_ID,PRICING_ZONE_ID,GROUP_ID,GROUP_VERSION,GROUP_QTY,SUSTAINABILITY_RATING, SKU_LIMIT,UPC,TAXATION_TYPE)"
-		+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		+ " TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION,RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT,VARIANT_ID,SAVINGS_ID,PRICING_ZONE_ID,GROUP_ID,GROUP_VERSION,GROUP_QTY,SUSTAINABILITY_RATING, SKU_LIMIT,UPC,TAXATION_TYPE, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP)"
+		+ " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String id = this.getNextId(conn, "CUST");
@@ -212,6 +214,11 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 				ps.setNull(35, Types.NULL);	
 		ps.setString(37, this.model.getUpc());
 		ps.setString(38, null !=this.model.getTaxationType()?this.model.getTaxationType().getName():null);
+		
+		ps.setString(39, StringUtil.crop(model.getExternalAgency(), 30));
+		ps.setString(40, StringUtil.crop(model.getExternalSource(), 30));
+		ps.setString(41, StringUtil.crop(model.getExternalGroup(), 256));
+		
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
@@ -233,7 +240,7 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 
 	public void load(Connection conn) throws SQLException {
 				
-		PreparedStatement ps = conn.prepareStatement("SELECT ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT,VARIANT_ID,SAVINGS_ID,PRICING_ZONE_ID,GROUP_ID,GROUP_VERSION,GROUP_QTY,SUSTAINABILITY_RATING,SKU_LIMIT,UPC,TAXATION_TYPE FROM CUST.ORDERLINE WHERE ID=?");
+		PreparedStatement ps = conn.prepareStatement("SELECT ORDERLINE_NUMBER, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, DESCRIPTION, CONFIGURATION_DESC, DEPARTMENT_DESC, MATERIAL_NUMBER, PRICE, PERISHABLE, TAX_RATE, DEPOSIT_VALUE, ALCOHOL, AFFILIATE, CARTLINE_ID, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, RATING,BASE_PRICE,BASE_PRICE_UNIT,DISCOUNT_AMT,VARIANT_ID,SAVINGS_ID,PRICING_ZONE_ID,GROUP_ID,GROUP_VERSION,GROUP_QTY,SUSTAINABILITY_RATING,SKU_LIMIT,UPC,TAXATION_TYPE, EXTERNAL_AGENCY, EXTERNAL_SOURCE, EXTERNAL_GROUP FROM CUST.ORDERLINE WHERE ID=?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
@@ -319,7 +326,10 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 		if(null !=this.model.getCouponDiscount()){
 			this.model.setPrice(this.model.getPrice()-this.model.getCouponDiscount().getDiscountAmt());
 		}
-		
+
+		this.model.setExternalAgency(ExternalAgency.safeValueOf(rs.getString("EXTERNAL_AGENCY")));
+        this.model.setExternalSource(rs.getString("EXTERNAL_SOURCE"));
+        this.model.setExternalGroup(rs.getString("EXTERNAL_GROUP"));
 		
 		this.unsetModified();
 	}
