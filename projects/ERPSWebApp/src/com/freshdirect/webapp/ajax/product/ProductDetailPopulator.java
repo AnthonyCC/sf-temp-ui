@@ -440,16 +440,12 @@ public class ProductDetailPopulator {
 			if ( productModel.isPlatter() && cutoffTime != null ) {
 				String headerTime;
 				String bodyTime;
-				if (new TimeOfDay("12:00 PM").equals(cutoffTime)) {
-					headerTime = "10AM";
-					bodyTime = "10AM";
-				} else {
-					SimpleDateFormat headerTimeFormat = new SimpleDateFormat("h:mm a");
-					SimpleDateFormat bodyTimeFormat = new SimpleDateFormat("ha");
-					
-					headerTime = headerTimeFormat.format(cutoffTime.getAsDate());
-					bodyTime = bodyTimeFormat.format(cutoffTime.getAsDate());
-				}
+				
+				SimpleDateFormat headerTimeFormat = new SimpleDateFormat("h:mm a");
+				SimpleDateFormat bodyTimeFormat = new SimpleDateFormat("ha");
+				
+				headerTime = headerTimeFormat.format(cutoffTime.getAsDate());
+				bodyTime = bodyTimeFormat.format(cutoffTime.getAsDate());
 				
 				item.setMsgCutoffHeader( "Order by " + headerTime + " for Delivery Tomorrow" );
 				item.setMsgCutoffNotice( "Freshly made item. Please <b>complete checkout by " + bodyTime + "</b> to order for delivery tomorrow." );
