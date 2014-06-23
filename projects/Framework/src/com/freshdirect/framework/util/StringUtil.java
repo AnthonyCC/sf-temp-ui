@@ -809,4 +809,18 @@ public class StringUtil {
 		
 		return sb.toString();
     }
+	
+	public static String crop(Object object, int maxSize){
+		if (object == null){
+			return null;
+		} else {
+			String string = object.toString();
+			
+			if (string!=null && string.length() > maxSize) {
+				return string.substring(0, maxSize);
+			} else {
+				return string;
+			} 
+		}
+	}
 }

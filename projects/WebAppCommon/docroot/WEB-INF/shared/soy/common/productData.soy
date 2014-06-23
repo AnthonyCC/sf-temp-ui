@@ -2,6 +2,9 @@
 
 /**
  * @param? atcItemId atcItemId
+ * @param? externalGroup external group (like foodily recipe name)
+ * @param? externalAgency external agency (like FOODILY)
+ * @param? externalSource external source (like an url)
  * @param productId productId
  * @param? catId categoryId
  * @param? variantId variantId
@@ -25,6 +28,15 @@
 {/call}
 {if $listId}
 <input type="hidden" data-component="productData" data-productdata-name="listId" name="listId" value="{$listId}">
+{/if}
+{if $externalGroup}
+<input type="hidden" data-component="productData" data-productdata-name="externalGroup" name="externalGroup" value="{$externalGroup}">
+{/if}
+{if $externalAgency}
+<input type="hidden" data-component="productData" data-productdata-name="externalAgency" name="externalAgency" value="{$externalAgency}">
+{/if}
+{if $externalSource}
+<input type="hidden" data-component="productData" data-productdata-name="externalSource" name="externalSource" value="{$externalSource}">
 {/if}
 {if $originalLineId}
 <input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$originalLineId}">

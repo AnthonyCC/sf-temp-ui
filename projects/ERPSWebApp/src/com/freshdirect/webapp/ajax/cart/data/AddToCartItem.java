@@ -22,6 +22,10 @@ public class AddToCartItem implements Serializable {
 	private Map<String,String> configuration = new HashMap<String, String>();
 	
 	private boolean deleteItem = false;
+
+	private String externalAgency; //e.g. Foodily
+	private String externalSource; //e.g. Recipe source
+	private String externalGroup; //e.g. Recipe name
 	
 	public String getProductId() {
 		return productId;
@@ -101,7 +105,24 @@ public class AddToCartItem implements Serializable {
 	public void setVariantId(String variantId) {
 		this.variantId = variantId;
 	}
-	
+	public String getExternalAgency() {
+		return externalAgency;
+	}
+	public void setExternalAgency(String externalAgency) {
+		this.externalAgency = externalAgency;
+	}
+	public String getExternalSource() {
+		return externalSource;
+	}
+	public void setExternalSource(String externalSource) {
+		this.externalSource = externalSource;
+	}
+	public String getExternalGroup() {
+		return externalGroup;
+	}
+	public void setExternalGroup(String externalGroup) {
+		this.externalGroup = externalGroup;
+	}
 	@Override
 	public String toString() {
 		return "ATCi{" + skuCode + "}";

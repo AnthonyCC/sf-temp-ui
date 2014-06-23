@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.Set;
 
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.PricingContext;
@@ -643,140 +644,106 @@ public class SimpleCartLine implements FDCartLineI {
 
 	@Override
 	public String getUpc() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public ErpCouponDiscountLineModel getCouponDiscount() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setCouponDiscount(ErpCouponDiscountLineModel discount) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public EnumCouponStatus getCouponStatus() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setCouponStatus(EnumCouponStatus couponStatus) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void clearCouponDiscount() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public EnumTaxationType getTaxationType() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setTaxationType(EnumTaxationType taxationType) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override @Deprecated
 	public boolean hasCouponApplied() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override @Deprecated
 	public void setCouponApplied(boolean applied) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public String getCoremetricsPageId() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setCoremetricsPageId(String coremetricsPageId) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public String getCoremetricsPageContentHierarchy() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setCoremetricsPageContentHierarchy(
 			String coremetricsPageContentHierarchy) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public Date getDeliveryStartDate() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setDeliveryStartDate(Date deliveryStartDate) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public String getOrderId() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setOrderId(String orderId) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public EnumSaleStatus getSaleStatus() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setSaleStatus(EnumSaleStatus saleStatus) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public double getConfiguredPrice() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public void setAddedFrom(EnumATCContext atcContext) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public EnumATCContext getAddedFrom() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -792,14 +759,38 @@ public class SimpleCartLine implements FDCartLineI {
 
 	@Override
 	public String getCoremetricsVirtualCategory() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void setCoremetricsVirtualCategory(String coremetricsVirtualCategory) {
-		// TODO Auto-generated method stub
-		
+	}
+
+	@Override
+	public String getExternalGroup() {
+		return null;
+	}
+
+	@Override
+	public void setExternalGroup(String externalGroup) {
+	}
+
+	@Override
+	public ExternalAgency getExternalAgency() {
+		return null;
+	}
+
+	@Override
+	public void setExternalAgency(ExternalAgency externalAgency) {
+	}
+
+	@Override
+	public String getExternalSource() {
+		return null;
+	}
+
+	@Override
+	public void setExternalSource(String externalSource) {
 	}
 
 }

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpClientCode;
@@ -96,7 +97,7 @@ public class CartOperations {
 	// Epsilon value for comparing floating point values - as we use that for quantities a very high value is used - quantities should have a granularity of about two decimal points only.
 	private static final double	EPSILON	= 5E-3;	//0.005
 	
-	public static boolean addToCart( FDUserI user, FDCartModel cart, List<AddToCartItem> items, String serverName, AddToCartRequestData reqData, AddToCartResponseData responseData, HttpSession session ) {
+	public static boolean addToCart( FDUserI user, FDCartModel cart, List<AddToCartItem> items, String serverName, AddToCartRequestData reqData, AddToCartResponseData responseData, HttpSession session, EnumEventSource evtSrc ) {
 		
 		// parameter validation
 		if ( user == null ) {
@@ -113,17 +114,6 @@ public class CartOperations {
 		}
 		
 		synchronized ( cart ) {
-
-			// Get event source
-			EnumEventSource evtSrc = EnumEventSource.UNKNOWN;
-			try {
-				if(reqData.getEventSource() != null) {
-					evtSrc = EnumEventSource.valueOf( reqData.getEventSource() );
-				}
-			} catch (Exception ignore) {
-				LOG.warn( "Invalid event source, ignoring", ignore );
-			}
-			
 			// Get variant id
 			String variantId = reqData.getVariantId();			
 			if ( variantId == null ) {
@@ -160,7 +150,7 @@ public class CartOperations {
 				// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 				
 				if (cartLine == null) {
-					// skip
+					processPendingAtcFailure(user, reqData, item, evtSrc);
 					continue;
 				}
 				
@@ -195,6 +185,32 @@ public class CartOperations {
 
 	}
 
+	private static void processPendingAtcFailure(FDUserI user, AddToCartRequestData reqData, AddToCartItem item, EnumEventSource evtSrc){
+		if ((EnumEventSource.ExternalPage.equals(evtSrc) || EnumEventSource.FinalizingExternal.equals(evtSrc)) && user instanceof FDSessionUser) {
+			FDSessionUser sessionUser = (FDSessionUser) user;
+			
+			Map<String, List<AddToCartItem>> pendingAtcFailures = sessionUser.getPendingAtcFailures();
+			if (pendingAtcFailures == null){
+				pendingAtcFailures = new HashMap<String, List<AddToCartItem>>();
+				sessionUser.setPendingAtcFailures(pendingAtcFailures);
+			}
+			
+			String externalGroupLabel = item.getExternalGroup();
+			if (externalGroupLabel==null) {
+				externalGroupLabel = "";
+			} else {
+				externalGroupLabel = OrderLineUtil.createExternalDescription(externalGroupLabel, item.getExternalSource());
+			}
+			
+			List<AddToCartItem> pendingAtcGroup = pendingAtcFailures.get(externalGroupLabel);
+			if (pendingAtcGroup == null){
+				pendingAtcGroup = new ArrayList<AddToCartItem>();
+				pendingAtcFailures.put(externalGroupLabel, pendingAtcGroup);
+			}
+			
+			pendingAtcGroup.add(item);
+		}
+	}
 
 	private static void populateCoremetricsShopTag( AddToCartResponseData responseData, FDCartLineI cartLine ) {
 		// 		COREMETRICS SHOP5
@@ -785,7 +801,10 @@ public class CartOperations {
 			theCartLine.setRequestNotification(requestNotification);
 		}		
 		
-		
+		theCartLine.setExternalAgency(ExternalAgency.safeValueOf(item.getExternalAgency()));
+		theCartLine.setExternalSource(item.getExternalSource());
+		theCartLine.setExternalGroup(item.getExternalGroup());
+
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		//									POST-PROCESSING
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

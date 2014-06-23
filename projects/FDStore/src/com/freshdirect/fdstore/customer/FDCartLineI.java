@@ -179,4 +179,5 @@ public interface FDCartLineI extends FDProductSelectionI {
 	public void setAtcItemId(String atcItemId);
 	public String getCoremetricsVirtualCategory();
 	public void setCoremetricsVirtualCategory(String coremetricsVirtualCategory);
+
 }

@@ -13,6 +13,8 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+<%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 
 <% //expanded page dimensions
 final int W_VIEWCART_TOTAL = 970;
@@ -27,6 +29,7 @@ final int W_VIEWCART_LP = 215;
 <%! final java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##"); %>
 
 <fd:CheckLoginStatus id="user" />
+<potato:pendingAtcFailure/>
 <%
 //--------OAS Page Variables-----------------------
 request.setAttribute("sitePage", "www.freshdirect.com/view_cart.jsp");
@@ -38,6 +41,10 @@ if (user.isEligibleForClientCodes()) {
 }
 %>
 <tmpl:insert template='/common/template/no_nav.jsp'>
+<tmpl:put name='extraCss' direct='true'>
+  <jwr:style src="/viewcart.css"/>
+  <jwr:style src="/quickshop.css"/>
+</tmpl:put>
 <%
 	// first try to figure out FDShoppingCart controller parameters dynamically
 
@@ -220,5 +227,11 @@ StringBuffer buffer = new StringBuffer(
 
 </fd:RedemptionCodeController>
 </fd:FDShoppingCart>
+
+<script>
+  window.FreshDirect = window.FreshDirect || {};
+  window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingAtcFailurePotato}" noHeaders="true"/>
+</script>
+
 </tmpl:put>
 </tmpl:insert>

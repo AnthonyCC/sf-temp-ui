@@ -134,7 +134,7 @@ var FreshDirect = FreshDirect || {};
 	
 	function addToCart(element) {
 		var items = fd.modules.common.productSerialize(element, true);
-		ATC_BUS.push(items);
+		ATC_BUS.push({items: items});
 	}
 
 	

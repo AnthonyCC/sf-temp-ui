@@ -368,4 +368,5 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	public void setCoremetricsVirtualCategory(String coremetricsVirtualCategory) {
 		this.orderLine.setCoremetricsVirtualCategory(coremetricsVirtualCategory);
 	}
+
 }

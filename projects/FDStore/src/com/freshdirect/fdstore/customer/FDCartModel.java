@@ -141,6 +141,27 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		}
 	};
 
+	public final static Comparator<FDCartLineI> EXTERNAL_GROUPS_IN_FRONT_COMPARATOR = new Comparator<FDCartLineI>() {
+		public int compare(FDCartLineI cartLine1, FDCartLineI cartLine2) {
+			String externalGroup1 = cartLine1.getExternalGroup();
+			String externalGroup2 = cartLine2.getExternalGroup();
+			
+			if (externalGroup1==null){
+				if (externalGroup2==null){
+					return 0;
+				} else {
+					return 1;
+				}
+			} else {
+				if (externalGroup2==null){
+					return -1;
+				} else {
+					return externalGroup1.compareTo(externalGroup2);
+				}
+			}
+		}
+	};
+	
 	/**
 	 * @associates <{com.freshdirect.fdstore.customer.FDCartLineI}>
 	 * @link aggregationByValue

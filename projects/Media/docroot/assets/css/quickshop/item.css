@@ -56,6 +56,7 @@ button[data-component="addToListButton"] {
 
 .itemlist-item-header-buttons button.save,
 .itemlist-item-header-buttons button.deletefromlist,
+.itemlist-item-header-buttons button.deletefromrecipe,
 .itemlist-item-header-buttons button.addtolist,
 button[data-component="addToListButton"] {
 	background:url(/media_stat/images/quickshop/buttons-sprite.png) no-repeat;
@@ -77,11 +78,14 @@ button[data-component="addToListButton"] {
 .itemlist-item.changed .itemlist-item-header-buttons button.save:focus {
     background-position: -342px -235px;
 }
+.itemlist-item-header-buttons button.deletefromrecipe,
 .itemlist-item-header-buttons button.deletefromlist {
     width: 22px;
     height: 22px;
     background-position: -189px -5px;
 }
+.itemlist-item-header-buttons button.deletefromrecipe:hover,
+.itemlist-item-header-buttons button.deletefromrecipe:focus,
 .itemlist-item-header-buttons button.deletefromlist:hover,
 .itemlist-item-header-buttons button.deletefromlist:focus {
     background-position: -221px -5px;

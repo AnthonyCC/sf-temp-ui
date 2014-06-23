@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ErpClientCode;
@@ -22,6 +23,7 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
 
 public interface FDProductSelectionI extends FDConfigurableI {
+	
 	public final static Comparator<FDProductSelectionI> FREQUENCY_COMPARATOR = new Comparator<FDProductSelectionI>() {
 
 		public int compare(FDProductSelectionI h1, FDProductSelectionI h2) {
@@ -281,5 +283,17 @@ public interface FDProductSelectionI extends FDConfigurableI {
 	public void setSaleStatus(EnumSaleStatus saleStatus);
 	
 	public double getConfiguredPrice();
+	
+	public String getExternalGroup();
+
+	public void setExternalGroup(String externalGroup);
+
+	public ExternalAgency getExternalAgency();
+
+	public void setExternalAgency(ExternalAgency ExternalAgency);
+
+	public String getExternalSource();
+	
+	public void setExternalSource(String externalSource);
 	
 }

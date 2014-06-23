@@ -19,6 +19,7 @@
     <label>Domain: <input name="domain" value="http://freshdirect.com" /></label>
     <hr/>
     <div class="apitest" id="loginTest" data-endpoint="/api/login">
+      <h2>Login</h2>
       <p>
         <label>UserId: <input name="userId" /></label>
       </p>
@@ -33,7 +34,15 @@
       </p>
     </div>
     <hr/>
+    <div class="apitest" id="checkLoginStatus" data-endpoint="/api/checkloginstatus.jsp">
+      <h2>checkloginstatus</h2>
+      <p>
+        <button>Go!</button>
+      </p>
+    </div>
+    <hr/>
     <div class="apitest" id="loginTest" data-endpoint="/api/addtocart" data-wrapper="items">
+      <h2>ATC</h2>
       <p>
         <label>atcItemId: <input name="atcItemId" /></label>
       </p>
@@ -59,16 +68,164 @@
         <button>Go!</button>
       </p>
     </div>
+    <hr/>
+    <div class="apitest" id="customATCTest" data-endpoint="/api/addtocart" data-datafunc="customATC">
+      <h2>Custom ATC - non-external, configured</h2>
+      <p>
+        <ul>
+          <li>Hass Avocado (non-configurable, 2pcs)</li>
+          <li>Copper River Wild Salmon - configured, sales unit selected</li>
+          <li>FD Pepper Jack Cheese - configured, sales unit selected</li>
+        </ul>
+      </p>
+      <p>
+        <button>Go!</button>
+      </p>
+    </div>
+    <hr/>
+    <div class="apitest" id="customATCNonConfigTest" data-endpoint="/api/addtocart" data-datafunc="customATCNC">
+      <h2>Custom ATC - external, unconfigured</h2>
+      <p>
+        <label>externalAgency: <input name="externalAgency" value="FOODILY"/></label>
+      </p>
+      <p>
+        <label>externalSource: <input name="externalSource" value="Recipe soucre, http://reci.pes/idk/"/></label>
+      </p>
+      <p>
+        <label>externalGroup: <input name="externalGroup" value="Fish and cheese and avocado"/></label>
+      </p>
+      <p>
+        <ul>
+          <li>Hass Avocado (non-configurable, 2pcs)</li>
+          <li>Copper River Wild Salmon - sales unit not selected</li>
+          <li>FD Pepper Jack Cheese - sales unit not selected</li>
+          <li>FD Pepper Jack Cheese - variation not selected</li>
+        </ul>
+      </p>
+      <p>
+        <button>Go!</button>
+      </p>
+    </div>
     <pre id="result">
     </pre>
     <script>
 (function () {
+
+  $('input[name="domain"]').val(window.location.origin);
+
+  window.sendCORSRequest = function (data, url) {
+    var result = $('#result');
+
+    $.ajax({
+      type: 'POST',
+      url: url,
+      crossDomain: true,
+      xhrFields: {
+        withCredentials: true
+      },
+      data: {
+        data: JSON.stringify(data)
+      },
+      success: function (res) {
+        result.html(typeof res === "string" ? res : JSON.stringify(res, null, 2));
+      },
+      error: function (res, status, error) {
+        result.html('ERROR! see console for details');
+        console.log(res, status, error);
+      }
+    });
+  };
+
+  window.customATC = function (data) {
+    return {
+      items: [
+        {
+          salesUnit: "EA",
+          quantity: 2,
+          atcItemId: "atc_avc_has_VEG0010952_avocados_fruit",
+          productId: "avc_has",
+          categoryId: "avocados_fruit",
+          skuCode:"VEG0010952"
+        },
+        {
+          atcItemId: "atc_fflt_crs_cohoslmn_frzn_SEA1075998_salm_wild",
+          skuCode: "SEA1075998",
+          salesUnit: "G01",
+          quantity: 1
+        },
+        {
+          atcItemId: "atc_dcjk_pepjk_DEL0008167_che_our_favorite_cheese_cheddar_jack",
+          skuCode: "DEL0008167",
+          quantity: 1,
+          salesUnit: "A02",
+          configuration: {
+            C_DA_CHEESE_CUT_OPTION_08: "D02"
+          }
+        }
+      ]
+    };
+  };
+
+  window.customATCNC = function (data) {
+    var externalGroup = $('#customATCNonConfigTest input[name="externalGroup"]').val(),
+        externalSource = $('#customATCNonConfigTest input[name="externalSource"]').val(),
+        externalAgency = $('#customATCNonConfigTest input[name="externalAgency"]').val();
+
+    return {
+      eventSource: "ExternalPage",
+      items: [
+        {
+          salesUnit: "EA",
+          quantity: 2,
+          atcItemId: "atc_avc_has_VEG0010952_avocados_fruit",
+          externalGroup: externalGroup,
+          externalSource: externalSource,
+          externalAgency: externalAgency,
+          productId: "avc_has",
+          categoryId: "avocados_fruit",
+          skuCode:"VEG0010952"
+        },
+        {
+          atcItemId: "atc_fflt_crs_cohoslmn_frzn_SEA1075998_salm_wild",
+          externalGroup: externalGroup,
+          externalSource: externalSource,
+          externalAgency: externalAgency,
+          skuCode: "SEA1075998",
+          salesUnit: "",
+          quantity: 1
+        },
+        {
+          atcItemId: "atc_dcjk_pepjk_DEL0008167_che_our_favorite_cheese_cheddar_jack",
+          externalGroup: externalGroup,
+          externalSource: externalSource,
+          externalAgency: externalAgency,
+          skuCode: "DEL0008167",
+          quantity: 1,
+          salesUnit: "",
+          configuration: {
+            C_DA_CHEESE_CUT_OPTION_08: "D02"
+          }
+        },
+        {
+          atcItemId: "atc_dcjk_pepjk_DEL0008167_che_our_favorite_cheese_cheddar_jack",
+          externalGroup: externalGroup,
+          externalSource: externalSource,
+          externalAgency: externalAgency,
+          skuCode: "DEL0008167",
+          quantity: 1,
+          salesUnit: "A06"
+        }
+      ]
+    };
+  };
+
   $(document).on('click', '.apitest button', function () {
     var data = {},
         box = $(this).closest('.apitest'),
         domain = $('input[name="domain"]').val(),
         endpoint = box.attr('data-endpoint'),
         wrapper = box.attr('data-wrapper'),
+        datafunc = box.attr('data-datafunc'),
         result = $('#result');
 
     box.find('input').each(function () {
@@ -83,25 +240,11 @@
       data[wrapper] = [subdata];
     }
 
-    $.ajax({
-      type: 'POST',
-      url: domain+endpoint,
-      crossDomain: true,
-      xhrFields: {
-        withCredentials: true
-      },
-      data: {
-        data: JSON.stringify(data)
-      },
-      success: function (res) {
-        result.html(res);
-      },
-      error: function (res, status, error) {
-        result.html('ERROR! see console for details');
-        console.log(res, status, error);
-      }
-    });
+    if (datafunc && window[datafunc]) {
+      data = window[datafunc](data);
+    }
 
+    sendCORSRequest(data, domain+endpoint);
   });
 }());
     </script>

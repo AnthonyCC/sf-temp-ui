@@ -40,7 +40,10 @@ public enum EnumEventSource {
 	
 	// Site Redesign - Cart Confirm
 	cc_tabbedRecommender("CC-bottom-recommender"),
-	CC_YMAL("CCYMAL");
+	CC_YMAL("CCYMAL"),
+
+	ExternalPage("ExternalPage"), //External Page
+	FinalizingExternal("FinalizingExternal"); //Finalizing External Atc failures
 	
 	String name;
 	

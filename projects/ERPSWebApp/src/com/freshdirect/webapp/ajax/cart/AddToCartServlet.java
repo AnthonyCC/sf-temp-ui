@@ -18,7 +18,6 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -28,15 +27,16 @@ import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDProductSelection;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
+import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartRequestData;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseData;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem;
+import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem.Status;
 import com.freshdirect.webapp.ajax.cart.data.PendingPopupData;
 import com.freshdirect.webapp.ajax.cart.data.PendingPopupOrderInfo;
-import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem.Status;
 import com.freshdirect.webapp.ajax.quickshop.QuickShopHelper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
@@ -66,15 +66,31 @@ public class AddToCartServlet extends BaseJsonServlet {
         
 		// Parse request data
         AddToCartRequestData reqData = parseRequestData( request, AddToCartRequestData.class );
-        		
-		List<AddToCartItem> items = reqData.getItems(); 
-		if ( items == null ) {
-			returnHttpError( 400, "Bad JSON - items is missing" );	// 400 Bad Request
+
+        
+		// Get event source
+		EnumEventSource evtSrc = EnumEventSource.UNKNOWN;
+		try {
+			if(reqData.getEventSource() != null) {
+				evtSrc = EnumEventSource.valueOf( reqData.getEventSource() );
+			}
+		} catch (Exception ignore) {
+			LOG.warn( "Invalid event source, ignoring", ignore );
 		}
 
+		//clear pending failures if in finalizing pending popup
+		if (EnumEventSource.FinalizingExternal.equals(evtSrc) && user instanceof FDSessionUser){
+      		((FDSessionUser)user).setPendingAtcFailures(null); //TODO what if modify popup needed?
+		}
+		
+		List<AddToCartItem> items = reqData.getItems(); 
+		if ( items == null ) {
+       		returnHttpError( 400, "Bad JSON - items is missing" );	// 400 Bad Request
+		}
+		
 		try {
-			
-			if(user.getShowPendingOrderOverlay() && user.hasPendingOrder() && reqData.getOrderId()==null && !reqData.isNewOrder()){
+			//TODO reqData.isStoreFailuresAsPending() should trigger a modify popup if all ATCs are successful and if all customizable lines are deleted
+			if(user.getShowPendingOrderOverlay() && user.hasPendingOrder() && reqData.getOrderId()==null && !reqData.isNewOrder() && !EnumEventSource.ExternalPage.equals(evtSrc)){
 				//user has pending orders, show the popup first
 				
 				returnWithModifyPopup(response, user, cart, items, reqData.getEventSource());
@@ -93,8 +109,10 @@ public class AddToCartServlet extends BaseJsonServlet {
 		
 		LOG.debug( "add to cart for user: " + user.getUserId() + ", items:" + items );
 
-		//set user as having seen the overlay and used it
-		user.setSuspendShowPendingOrderOverlay(true);
+		if (!EnumEventSource.ExternalPage.equals(evtSrc)) {
+			//set user as having seen the overlay and used it
+			user.setSuspendShowPendingOrderOverlay(true);
+		}
 		
        	try {
            	// Create response data object
@@ -103,7 +121,7 @@ public class AddToCartServlet extends BaseJsonServlet {
        		
            	synchronized ( cart ) {
         		
-				result = CartOperations.addToCart( user, cart, items, request.getServerName(), reqData, responseData, request.getSession() );
+				result = CartOperations.addToCart( user, cart, items, request.getServerName(), reqData, responseData, request.getSession(), evtSrc );
 				
             }
            	

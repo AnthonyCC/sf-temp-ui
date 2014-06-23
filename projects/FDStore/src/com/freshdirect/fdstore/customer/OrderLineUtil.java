@@ -36,6 +36,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class OrderLineUtil {
 	
+	@SuppressWarnings("unused")
 	private final static Category LOGGER = LoggerFactory.getInstance(OrderLineUtil.class);
 
 	private OrderLineUtil() {
@@ -169,7 +170,11 @@ public class OrderLineUtil {
 		
 		String recipeId = theProduct.getRecipeSourceId();
 		Recipe recipe = recipeId==null ? null : (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
-		if (recipe!=null) {
+		String externalGroup = theProduct.getExternalGroup();
+
+		if (externalGroup!=null){
+			theProduct.setDepartmentDesc(createExternalDescription(externalGroup, theProduct.getExternalSource()));
+		} else if (recipe!=null) {
 			theProduct.setDepartmentDesc("Recipe: " + recipe.getName());
 		} else {
 			DepartmentModel dept = prodNode.getDepartment();
@@ -184,6 +189,14 @@ public class OrderLineUtil {
 
 	}
 
+	public static String createExternalDescription(String externalGroup, String externalSource){
+		if (externalSource!=null && !"".equals(externalSource)){
+			return externalGroup +  " | " + externalSource;
+		} else {
+			return externalGroup;
+		}
+	}
+	
 	private static String createConfigurationDescription(FDProductSelectionI theProduct) throws FDSkuNotFoundException {
 
 		FDProduct product = theProduct.lookupFDProduct();

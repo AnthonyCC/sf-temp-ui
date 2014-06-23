@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,6 +75,7 @@ import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.smartstore.SessionImpressionLogEntry;
 import com.freshdirect.smartstore.fdstore.SessionImpressionLog;
+import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
 import com.freshdirect.webapp.listeners.FDEventProcessor;
 import com.freshdirect.webapp.listeners.FDEventProcessorI;
 
@@ -149,6 +151,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 	private EnumCheckoutMode checkoutMode = EnumCheckoutMode.NORMAL;
 	private boolean couponWarningAcknowledged = false;
+	
+	private Map<String, List<AddToCartItem>> pendingAtcFailures;
 	
 	public boolean getLastCOSSurveySuccess() {
     	return this.lastCOSSurveySuccess;
@@ -1719,6 +1723,14 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
 	public void setJustSignedUp(boolean val) {
 		this.justSignedUp = val;
+	}
+
+	public Map<String, List<AddToCartItem>> getPendingAtcFailures() {
+		return pendingAtcFailures;
+	}
+
+	public void setPendingAtcFailures(Map<String, List<AddToCartItem>> pendingAtcFailures) {
+		this.pendingAtcFailures = pendingAtcFailures;
 	}
 	
 

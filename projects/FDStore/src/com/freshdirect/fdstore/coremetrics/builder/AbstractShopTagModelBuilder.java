@@ -44,7 +44,7 @@ public abstract class AbstractShopTagModelBuilder {
 		tagModel.setUnitPrice(new DecimalFormat("#.##").format((unitPrice)));
 		tagModel.setOrderSubtotal(Double.toString(price)); 
 		
-				
+		//TODO handle external sources+cdf file
 		EnumEventSource source = cartLine.getSource();
 		
 		if (isStandingOrder) {

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.EnumTaxationType;
@@ -705,6 +706,36 @@ public class FDProductSelection implements FDProductSelectionI {
 	
 	public String getOrderLineId(){
 		return this.orderLine.getOrderLineId();
+	}
+
+	@Override
+	public String getExternalGroup() {
+		return this.orderLine.getExternalGroup();
+	}
+
+	@Override
+	public void setExternalGroup(String externalGroup) {
+		this.orderLine.setExternalGroup(externalGroup);
+	}
+
+	@Override
+	public ExternalAgency getExternalAgency() {
+		return this.orderLine.getExternalAgency();
+	}
+
+	@Override
+	public void setExternalAgency(ExternalAgency externalAgency) {
+		this.orderLine.setExternalAgency(externalAgency);
+	}
+
+	@Override
+	public String getExternalSource() {
+		return this.orderLine.getExternalSource();
+	}
+
+	@Override
+	public void setExternalSource(String externalSource) {
+		this.orderLine.setExternalSource(externalSource);
 	}
 	
 }

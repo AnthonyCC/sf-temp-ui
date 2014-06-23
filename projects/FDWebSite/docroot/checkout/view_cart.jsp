@@ -12,6 +12,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 
 <% //expanded page dimensions
 final int W_CHECKOUT_VIEW_CART_TOTAL = 970;
@@ -33,6 +34,10 @@ if (user.isEligibleForClientCodes()) {
 boolean showMinError = true;
 %>
 <tmpl:insert template='/common/template/no_nav.jsp'>
+<tmpl:put name='extraCss' direct='true'>
+  <jwr:style src="/viewcart.css"/>
+  <jwr:style src="/quickshop.css"/>
+</tmpl:put>
 <%
 	// first try to figure out FDShoppingCart controller parameters dynamically
 

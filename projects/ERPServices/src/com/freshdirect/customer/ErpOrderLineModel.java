@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.PricingContext;
@@ -79,6 +80,10 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     private String coremetricsPageId;
     private String coremetricsPageContentHierarchy;
     private String coremetricsVirtualCategory;
+
+    private ExternalAgency externalAgency; //e.g. Foodily
+	private String externalSource; //e.g. Recipe source
+	private String externalGroup; //e.g. Recipe name
     
     public FDGroup getFDGroup() {
 		return group;
@@ -444,7 +449,30 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 		this.coremetricsVirtualCategory = coremetricsVirtualCategory;
 	}
 
-	
+	public String getExternalGroup() {
+		return externalGroup;
+	}
+
+	public void setExternalGroup(String externalGroup) {
+		this.externalGroup = externalGroup;
+	}
+
+	public ExternalAgency getExternalAgency() {
+		return externalAgency;
+	}
+
+	public void setExternalAgency(ExternalAgency externalAgency) {
+		this.externalAgency = externalAgency;
+	}
+
+	public String getExternalSource() {
+		return externalSource;
+	}
+
+	public void setExternalSource(String externalSource) {
+		this.externalSource = externalSource;
+	}
 }
+	
 
 

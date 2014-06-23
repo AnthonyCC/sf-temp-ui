@@ -25,7 +25,6 @@ public class AddToCartRequestData implements Serializable {
 	private String coremetricsPageContentHierarchy;
 	private String coremetricsPageId;
 	private String coremetricsVirtualCategory;
-
 	
 	public List<AddToCartItem> getItems() {
 		return items;

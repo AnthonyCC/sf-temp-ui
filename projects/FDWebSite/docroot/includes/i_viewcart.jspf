@@ -161,6 +161,10 @@ FDIdentity identity = user.getIdentity();
 	boolean firstRecipe = true;
 	boolean hadKosherRestriction = false;
 	boolean hadPlatterRestriction = false;
+  	boolean lastWasRecipe = false;
+  
+ 	Collections.sort(orderLines, FDCartModel.EXTERNAL_GROUPS_IN_FRONT_COMPARATOR);
+  
 	%>
 	<logic:iterate id="cartLine" collection="<%= orderLines %>" type="com.freshdirect.fdstore.customer.FDCartLineI" indexId="viewIndex">
 		<%
@@ -181,7 +185,33 @@ FDIdentity identity = user.getIdentity();
 				//This gets the first item's department, does not apply to Recipe
 				String lastDeptImgName = cartLine.getProductRef().lookupProductModel().getDepartment().getContentName() + "_cart.gif";
 				
-				if (lastDept.startsWith("Recipe: ")) {
+        if (cartLine.getExternalGroup()!=null) { // new (Foodily) recipes
+          if (!lastWasRecipe) {
+            // start recipe box
+            %>
+            </table>
+            <div class="recipes">
+            <h2><span>Recipe Ingredients</span></h2>
+            <div class="recipes_box">
+              <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <%
+          }
+
+					%>
+					<tr class="recipe_box_header">
+						<td colspan="5"><span class="recipe_name"><%= lastDept%></span></td>
+						<td colspan="5" align="right"></td>
+						<td width="20" align="right"></td>
+						</td>
+					</tr>
+					<tr><td colspan="11"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
+					
+					<%
+
+          lastWasRecipe = true;
+
+				} else if (lastDept.startsWith("Recipe: ")) { // old FD Recipes
+
 					if (firstRecipe) {
 						%>
 						<tr>
@@ -209,6 +239,17 @@ FDIdentity identity = user.getIdentity();
 					<%
 					firstRecipe = false;
 				} else {
+          if (lastWasRecipe) {
+            // close recipe box 
+            %>
+              </table>
+            </div>
+            </div>
+            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+            <%
+          }
+          lastWasRecipe = false;
+
 					ProductModel prodMdl=ContentFactory.getInstance().getProductByName( cartLine.getCategoryName(), cartLine.getProductName() );
 					String deptId = null !=prodMdl?prodMdl.getDepartment().getContentName():"";
 					%>
@@ -570,6 +611,18 @@ FDIdentity identity = user.getIdentity();
 		
 		%>
 	</logic:iterate>
+  <%
+    if (lastWasRecipe) {
+      // close recipe box 
+      %>
+        </table>
+      </div>
+      </div>
+      <table width="100%" cellspacing="0" cellpadding="0" border="0">
+      <%
+    }
+    lastWasRecipe = false;
+  %>
 
 	<tr>
 		<td width="84">&nbsp;</td>
