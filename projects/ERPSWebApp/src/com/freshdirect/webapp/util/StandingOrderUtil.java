@@ -805,21 +805,23 @@ public class StandingOrderUtil {
 	 * @throws FDResourceException
 	 */
 	public static boolean doAvailabilityCheck(FDIdentity customer, FDCartModel cart, ProcessActionResult vr, List<String> unavailableItems)
-			throws FDResourceException {
+			throws FDResourceException {	
 		List<FDCartLineI> list = cart.getOrderLines();
-		for (int i = 0; i < list.size(); i++) {
-			FDCartLineI cartLine = list.get(i);
+		List<FDCartLineI> detachedList = new ArrayList<FDCartLineI>(list.size());
+		detachedList.addAll(list);	
+		for (int i = 0; i < detachedList.size(); i++) {
+			FDCartLineI cartLine = detachedList.get(i);
 			int randomId = cartLine.getRandomId();
 			FDProductInfo prodInfo = cartLine.lookupFDProductInfo();
 			if (!prodInfo.isAvailable()) {
 				final String err = "Item " + randomId + " / '" + cartLine.getProductName() + "' - SKU is unavailable/discontinued and therefore item was removed.";
 				unavailableItems.add(prodInfo.getSkuCode() + " " + cartLine.getProductName());
 				vr.addUnavailableItem(cartLine, UnavailabilityReason.UNAV, err, cartLine.getQuantity());
-				cart.removeOrderLineById(randomId);
+				cart.removeOrderLineById(randomId);				
 				LOGGER.debug("[AVAILABILITY CHECK] " + err);
 			}
 		}
-
+						
 		return vr.isFail();
 	}
 
@@ -857,9 +859,9 @@ public class StandingOrderUtil {
 			final String lineId = cartLine.getRandomId() + " / '" + cartLine.getProductName();
 
 			if (info instanceof FDRestrictedAvailabilityInfo) {
-				LOGGER.debug("[ATP CHECK/1] Item '" + lineId + "' has restriction: " + ((FDRestrictedAvailabilityInfo)info).getRestriction().getReason());
+				LOGGER.debug("[ATP CHECK/1] Item '" + lineId + "' has restriction: " + ((FDRestrictedAvailabilityInfo)info).getRestriction().getReason());			
 				
-
+				
 				vr.addUnavailableItem(cartLine, UnavailabilityReason.GENERAL, "Restricted availabity", cartLine.getQuantity());
 				cart.removeOrderLineById(randomId);
 			} else if (info instanceof FDStockAvailabilityInfo) {
@@ -874,7 +876,7 @@ public class StandingOrderUtil {
 				LOGGER.debug("[ATP CHECK/2] Item '" + lineId + "' has only " + availQty + " items available.");
 				if (availQty > 0) {
 					// adjust quantity to amount of available
-					double requestedQuantity = cart.getOrderLineById(randomId).getQuantity();
+					double requestedQuantity = cart.getOrderLineById(randomId).getQuantity();				
 					if(!FDStoreProperties.isIgnoreATPFailureForSO()) {
 						cart.getOrderLineById(randomId).setQuantity(availQty);
 					}
