@@ -34,6 +34,7 @@ import com.freshdirect.sap.PosexUtil;
 public class FDCartLineModel extends AbstractCartLine {
 
 	private static final long	serialVersionUID	= 6554964787371568944L;
+	@SuppressWarnings("unused")
 	private final static Category LOGGER = LoggerFactory.getInstance(FDCartLineModel.class);
 	private EnumEventSource source;
 	private String cartonNumber;
@@ -117,6 +118,9 @@ public class FDCartLineModel extends AbstractCartLine {
 		newLine.setRecipeSourceId(this.getRecipeSourceId());
 		newLine.setRequestNotification(this.isRequestNotification());
 		newLine.setSource(this.source);
+		newLine.setExternalAgency(getExternalAgency());
+		newLine.setExternalSource(getExternalSource());
+		newLine.setExternalGroup(getExternalGroup());
 		return newLine;
 	}
 	

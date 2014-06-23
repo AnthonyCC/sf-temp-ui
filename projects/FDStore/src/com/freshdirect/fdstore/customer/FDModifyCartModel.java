@@ -25,11 +25,6 @@ import com.freshdirect.delivery.EnumZipCheckResponses;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
-import com.freshdirect.fdstore.promotion.EnumOfferType;
-import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
-import com.freshdirect.fdstore.promotion.Promotion;
-import com.freshdirect.fdstore.promotion.PromotionFactory;
-import com.freshdirect.fdstore.promotion.PromotionI;
 
 /**
  *
@@ -89,6 +84,10 @@ public class FDModifyCartModel extends FDCartModel {
 			cartLine.setCouponDiscount(couponDiscount);
 			originalOrderCoupons.add(origCouponDiscount.getCouponId());
 		}
+		
+		cartLine.setExternalAgency(origLine.getExternalAgency());
+		cartLine.setExternalSource(origLine.getExternalSource());
+		cartLine.setExternalGroup(origLine.getExternalGroup());
 		this.addOrderLine(cartLine);
 	}
 	

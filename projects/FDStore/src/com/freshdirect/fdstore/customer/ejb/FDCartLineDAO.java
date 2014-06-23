@@ -73,8 +73,9 @@ public class FDCartLineDAO {
 			line.setVariantId(rs.getString("VARIANT_ID"));
 			line.setAddedFromSearch("X".equals(rs.getString("ADDED_FROM_SEARCH")));
 			if(rs.getString("DISCOUNT_APPLIED")!=null && rs.getString("DISCOUNT_APPLIED").equalsIgnoreCase("X")){
-			line.setDiscountFlag(true);
-			line.setSavingsId(rs.getString("SAVINGS_ID"));
+				line.setDiscountFlag(true);
+				line.setSavingsId(rs.getString("SAVINGS_ID"));
+			}
 			line.setCoremetricsPageId(rs.getString("CM_PAGE_ID"));
 			line.setCoremetricsPageContentHierarchy(rs.getString("CM_PAGE_CONTENT_HIERARCHY"));
 			line.setAddedFrom(EnumATCContext.getEnum(rs.getString("ADDED_FROM")));
@@ -82,7 +83,6 @@ public class FDCartLineDAO {
 			line.setExternalAgency(ExternalAgency.safeValueOf(rs.getString("EXTERNAL_AGENCY")));
 			line.setExternalSource(rs.getString("EXTERNAL_SOURCE"));
 			line.setExternalGroup(rs.getString("EXTERNAL_GROUP"));
-			}
 			lst.add(line);
 		}
 		rs.close();
