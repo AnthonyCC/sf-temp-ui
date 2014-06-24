@@ -13,7 +13,7 @@ public enum ExternalAgency {
 		try {
 			return ExternalAgency.valueOf(externalAgencyStr);
 		} catch (Exception e){
-			LOGGER.error("ExternalAgency does not exist: " + externalAgencyStr);
+			LOGGER.error("ExternalAgency does not exist: " + externalAgencyStr, e);
 		}
 		return null;
 	}
