@@ -538,11 +538,12 @@ class FDCustomerListDAO {
 			"AND NVL(ol.delivery_grp, 0) = 0";
 	
 	
-	private String QUERY_EVERY_ITEM_QS_1 =" SELECT ol.sku_code, ol.sales_unit, ol.configuration, ol.quantity, starttime, s.id AS sale_id, s.status, ol.recipe_source_id, ol.id AS orderline_id  FROM "+
-	" (SELECT s.id s, sa.id sa, di.starttime FROM cust.sale s, cust.salesaction sa,cust.deliveryinfo di  WHERE s.type='REG' AND "+
-	"   s.customer_id= ? AND s.cromod_date=sa.action_date  AND sa.action_type IN ('CRO','MOD') AND sa.sale_id=s.id AND SA.REQUESTED_DATE>? "+
-	 " AND s.customer_id=sa.customer_id and sa.id=DI.SALESACTION_ID  AND rownum<=100 ) T, cust.sale s, cust.salesaction sa,cust.orderline ol WHERE s.id=sa.sale_id AND sa.id=ol.salesaction_id " +
-	 " AND NVL(ol.promotion_type,0)<> 3 AND NVL(ol.delivery_grp, 0) = 0 and s.id=T.s and  sa.id=T.sa "; 
+	private String QUERY_EVERY_ITEM_QS_1 =
+	"SELECT ol.sku_code, ol.sales_unit, ol.configuration, ol.quantity, starttime, s.id AS sale_id, s.status, ol.recipe_source_id, ol.id AS orderline_id  FROM "+
+    " (select  s,  sa, starttime from (SELECT s.id s, sa.id sa, di.starttime FROM cust.sale s, cust.salesaction sa,cust.deliveryinfo di  WHERE s.type='REG' AND "+ 
+    " s.customer_id= ? AND s.cromod_date=sa.action_date  AND sa.action_type IN ('CRO','MOD') AND sa.sale_id=s.id AND SA.REQUESTED_DATE>? "+
+    " AND s.customer_id=sa.customer_id and sa.id=DI.SALESACTION_ID order by di.starttime desc ) where rownum<=100 ) T, cust.sale s, cust.salesaction sa,cust.orderline ol WHERE s.id=sa.sale_id AND sa.id=ol.salesaction_id "+ 
+     " AND NVL(ol.promotion_type,0)<> 3 AND NVL(ol.delivery_grp, 0) = 0 and s.id=T.s and  sa.id=T.sa "; 
 	
 		public List<FDQsProductListLineItem> getQsSpecificEveryItemEverOrderedList(Connection conn, FDIdentity identity) throws SQLException {
 			//long startTime=System.currentTimeMillis();
