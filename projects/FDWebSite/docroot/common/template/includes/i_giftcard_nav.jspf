@@ -173,7 +173,7 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 
 <% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
   <div class="globalNavigation">
-    <ul class="menu green-skin">
+    <ul class="menu basic-skin green-skin">
       <li class="menu-header <% if (step == 0) { %> item-skin-hovered <% } %> <% if (step > 0) { %> item-skin-hover <% } %>">
       
         <% if (step > 0) { %>

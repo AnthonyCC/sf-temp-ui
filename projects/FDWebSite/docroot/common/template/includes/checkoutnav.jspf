@@ -177,7 +177,7 @@ String step3link = response.encodeURL("/checkout/step_3_choose.jsp");
 %>
 <% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
   <div class="globalNavigation">
-   <ul class="menu green-skin">
+   <ul class="menu basic-skin <% if (modOrder){ %>blue-skin <% }else if(standingOrder){ %>purple-skin <%} else{ %>green-skin <% } %>">
       <li class="menu-header">
         <span class="header-skin">checkout</span>
       </li><!--

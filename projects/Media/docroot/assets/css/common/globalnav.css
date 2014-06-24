@@ -616,12 +616,23 @@ ul.globalnavPopups li {
   text-decoration:none;
 }
 
-.globalNavigation .green-skin{
+.globalNavigation .basic-skin{
   font: 18px 'EagleBook', 'TradeGothic', 'Trebuchet MS', Trebuchet, 'Lucida Grande', sans-serif;
   color:#FFF;
-  background-color:#88a75c;
   box-shadow: 0 2px 3px rgba(79,79,79,.68);
   text-shadow: 1px 1px 0 rgb(116,145,76);
+}
+
+.globalNavigation .green-skin{
+  background-color:#88a75c;
+}
+
+.globalNavigation .blue-skin{
+  background-color:#6699CC;
+}
+
+.globalNavigation .purple-skin{
+  background-color:#996699;
 }
 
 .globalNavigation .header-skin{
@@ -640,6 +651,16 @@ ul.globalnavPopups li {
 .globalNavigation .item-skin-hovered,
 .globalNavigation .item-skin-hover:hover{
   background-color:#728d4b;
+}
+
+.globalNavigation .blue-skin .item-skin-hovered,
+.globalNavigation .blue-skin .item-skin-hover:hover{
+  background-color:#336699;
+}
+
+.globalNavigation .purple-skin .item-skin-hovered,
+.globalNavigation .purple-skin .item-skin-hover:hover{
+  background-color:#663366;
 }
 
 /* -------- */

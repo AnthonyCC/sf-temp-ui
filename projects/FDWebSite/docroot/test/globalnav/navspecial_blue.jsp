@@ -11,7 +11,7 @@
       
     <p>GF Without links</p>
     
-    <ul class="menu basic-skin green-skin">
+    <ul class="menu basic-skin blue-skin">
       <li class="menu-header item-skin-hovered">
         <span class="header-skin">gift cards</span>
       </li><!--
@@ -28,7 +28,7 @@
     
     <p>GF Second item</p>
     
-    <ul class="menu basic-skin green-skin">
+    <ul class="menu basic-skin blue-skin">
       <li class="menu-header item-skin-hover">
         <a class="menu-header header-skin reset-link" href="/gift_cards">gift cards</a>
       </li><!--
@@ -45,7 +45,7 @@
       
     <p>GF Third item</p>
     
-    <ul class="menu basic-skin green-skin">
+    <ul class="menu basic-skin blue-skin">
       <li class="menu-header item-skin-hover">
         <a class="menu-header header-skin reset-link" href="/gift_cards">gift cards</a>
       </li><!--
@@ -62,7 +62,7 @@
     
     <p>GF Fourth item</p>
     
-    <ul class="menu basic-skin green-skin">
+    <ul class="menu basic-skin blue-skin">
       <li class="menu-header item-skin-hover">
         <a class="menu-header header-skin reset-link" href="/gift_cards">gift cards</a>
       </li><!--
@@ -79,7 +79,7 @@
   
   <h1>Checkout Main</h1>
   
-  <ul class="menu basic-skin green-skin">
+  <ul class="menu basic-skin blue-skin">
     <li class="menu-header item-skin-hovered">
       <span class="header-skin">checkout</span>
     </li><!--
@@ -112,7 +112,7 @@
   <p>Checkout 2</p>
   
   
-  <ul class="menu basic-skin green-skin">
+  <ul class="menu basic-skin blue-skin">
     <li class="menu-header item-skin-hover">
         <a class="menu-header header-skin reset-link" href="./checkout">checkout</a>
     </l><!--
@@ -137,7 +137,7 @@
   <p>Checkout 3</p>
   
   
-  <ul class="menu basic-skin green-skin">
+  <ul class="menu basic-skin blue-skin">
     <li class="menu-header item-skin-hover">
           <a class="menu-header header-skin reset-link" href="./checkout">checkout</a>
     </li><!--
@@ -161,7 +161,7 @@
       
   <p>Checkout 4</p>
   
-  <ul class="menu basic-skin green-skin">
+  <ul class="menu basic-skin blue-skin">
     <li class="menu-header item-skin-hover">
           <a class="menu-header header-skin reset-link" href="./checkout">checkout</a>
     </li><!--
@@ -185,7 +185,7 @@
         
   <p>Checkout 5</p>
   
-  <ul class="menu basic-skin green-skin">
+  <ul class="menu basic-skin blue-skin">
     <li class="menu-header item-skin-hover">
           <a class="menu-header header-skin reset-link" href="./checkout">checkout</a>
     </li><!--
@@ -208,7 +208,7 @@
   
   <p>Checkout 6</p>
   
-  <ul class="menu basic-skin green-skin">
+  <ul class="menu basic-skin blue-skin">
     <li class="menu-header item-skin-hover">
           <a class="menu-header header-skin reset-link" href="./checkout">checkout</a>
     </li><!--
