@@ -28,7 +28,7 @@ public class PDPRedirector extends BodyTagSupport {
 	public static final String	PDP_PAGE_URL		= "/pdp.jsp";
 	public static final String	OLD_CATEGORY_PAGE	= "/category.jsp";
 	public static final String	OLD_PRODUCT_PAGE	= "/product.jsp";
-	
+	private boolean redirected = false;
 	private FDUserI user;
 	
 	public FDUserI getUser() {
@@ -127,10 +127,20 @@ public class PDPRedirector extends BodyTagSupport {
         	HttpServletResponse response = ((HttpServletResponse)pageContext.getResponse());
             response.sendRedirect( response.encodeRedirectURL( redirectUrl ) );
             pageContext.getOut().close();
+            this.redirected = true;
             
         } catch (IOException ioe) {
             throw new JspException(ioe.getMessage());
         }
+    }
+    
+    public int doEndTag() throws JspException {
+    	 if (this.redirected) {
+             return SKIP_PAGE;
+         } else {
+        	 return super.doEndTag();
+         }
+       
     }
 	
 }

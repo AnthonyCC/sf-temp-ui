@@ -43,7 +43,9 @@ public class QuickShopRedirector extends BodyTagSupport {
 	private FDUserI user;
 	private FROM from = FROM.OLD_INDEX;
 	
-    private boolean isNewQs = false;    
+    private boolean isNewQs = false;  
+    private boolean redirected = false;
+	
 	
 	public FROM getFrom() {
 		return from;
@@ -361,10 +363,20 @@ public class QuickShopRedirector extends BodyTagSupport {
         	HttpServletResponse response = ((HttpServletResponse)pageContext.getResponse());
             response.sendRedirect( response.encodeRedirectURL( redirectUrl ) );
             pageContext.getOut().close();
-            
+            this.redirected = true;
         } catch (IOException ioe) {
             throw new JspException(ioe.getMessage());
         }
+    }
+    
+
+    public int doEndTag() throws JspException {
+    	 if (this.redirected) {
+             return SKIP_PAGE;
+         } else {
+        	 return super.doEndTag();
+         }
+       
     }
 	
 }
