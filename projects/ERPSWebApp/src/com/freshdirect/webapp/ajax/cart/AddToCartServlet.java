@@ -80,7 +80,7 @@ public class AddToCartServlet extends BaseJsonServlet {
 
 		//clear pending failures if in finalizing pending popup
 		if (EnumEventSource.FinalizingExternal.equals(evtSrc) && user instanceof FDSessionUser){
-      		((FDSessionUser)user).setPendingAtcFailures(null); //TODO what if modify popup needed?
+      		((FDSessionUser)user).setPendingAtcFailures(null);
 		}
 		
 		List<AddToCartItem> items = reqData.getItems(); 
@@ -89,8 +89,8 @@ public class AddToCartServlet extends BaseJsonServlet {
 		}
 		
 		try {
-			//TODO reqData.isStoreFailuresAsPending() should trigger a modify popup if all ATCs are successful and if all customizable lines are deleted
-			if(user.getShowPendingOrderOverlay() && user.hasPendingOrder() && reqData.getOrderId()==null && !reqData.isNewOrder() && !EnumEventSource.ExternalPage.equals(evtSrc)){
+			if(user.getShowPendingOrderOverlay() && user.hasPendingOrder() && reqData.getOrderId()==null && !reqData.isNewOrder()
+					&& !EnumEventSource.ExternalPage.equals(evtSrc) && !EnumEventSource.FinalizingExternal.equals(evtSrc)){
 				//user has pending orders, show the popup first
 				
 				returnWithModifyPopup(response, user, cart, items, reqData.getEventSource());
@@ -109,7 +109,7 @@ public class AddToCartServlet extends BaseJsonServlet {
 		
 		LOG.debug( "add to cart for user: " + user.getUserId() + ", items:" + items );
 
-		if (!EnumEventSource.ExternalPage.equals(evtSrc)) {
+		if (!EnumEventSource.ExternalPage.equals(evtSrc) && !EnumEventSource.FinalizingExternal.equals(evtSrc)) {
 			//set user as having seen the overlay and used it
 			user.setSuspendShowPendingOrderOverlay(true);
 		}
