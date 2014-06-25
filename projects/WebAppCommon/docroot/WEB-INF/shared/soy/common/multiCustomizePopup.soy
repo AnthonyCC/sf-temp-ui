@@ -49,9 +49,7 @@
 {template .multiItem}
 <div class="itemlist-item-productimage_wrapper">
   <div class="itemlist-item-burst_wrapper">
-    <a href="/pdp.jsp?productId=fflt_gsmans_flound&amp;catId=fflt">
       <img src="{$item.productImage}" class="itemlist-item-productimage">
-    </a>
     {call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
   </div>
 </div>
@@ -59,7 +57,7 @@
   <button data-itemname="{$item.productName}" data-itemid="{$item.itemId}" class="deletefromrecipe">delete from recipe</button>
 </div>
 <div class="itemlist-item-header">    
-    <a href="{$item.productPageUrl}" class="itemlist-item-header-name">{$item.productName}</a>{sp}
+    <span data-url="{$item.productPageUrl}" class="itemlist-item-header-name">{$item.productName}</span>{sp}
     {call common.rating.customer}{param ratingValue:$item.customerRating /}{param reviewCount:$item.customerRatingReviewCount /}{/call}
     {call common.rating.expert}{param ratingValue:$item.expertRating /}{/call}
     {call common.rating.wine}{param ratingValue:$item.wineRating /}{/call}
