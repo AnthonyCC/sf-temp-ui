@@ -14,6 +14,7 @@ import java.util.Set;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.log4j.Logger;
 
+import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -78,6 +79,11 @@ public class CdfProcessTask {
 		//site feature used in shop tags as category
 		for (EnumSiteFeature siteFeatureEnum: EnumSiteFeature.getEnumList()){
 			addCmPageViewTagCategory(siteFeatureEnum.getName(), categoryKeys);
+		}
+
+		//external agency, e.g. Foodily
+		for (ExternalAgency externalAgency : ExternalAgency.values()){
+			addCmPageViewTagCategory(externalAgency.toString(), categoryKeys);
 		}
 		
 		for (DepartmentModel dept : ContentFactory.getInstance().getStore().getDepartments()) {

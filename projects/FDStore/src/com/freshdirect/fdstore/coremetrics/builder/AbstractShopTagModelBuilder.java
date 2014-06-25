@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
@@ -44,12 +45,16 @@ public abstract class AbstractShopTagModelBuilder {
 		tagModel.setUnitPrice(new DecimalFormat("#.##").format((unitPrice)));
 		tagModel.setOrderSubtotal(Double.toString(price)); 
 		
-		//TODO handle external sources+cdf file
 		EnumEventSource source = cartLine.getSource();
+		ExternalAgency externalAgency = cartLine.getExternalAgency();
 		
 		if (isStandingOrder) {
 			tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.SO_TEMPLATE.toString());
-		}  else 	if (null != cartLine.getAddedFrom()){
+
+		} else if (externalAgency!=null){
+			tagModel.setCategoryId(externalAgency.toString());
+			
+		} else if (null != cartLine.getAddedFrom()){
 			if(EnumATCContext.DDPP.equals(cartLine.getAddedFrom())){
 				tagModel.setCategoryId(PageViewTagModelBuilder.CustomCategory.DDPP.toString());
 			}else if(EnumATCContext.SEARCH.equals(cartLine.getAddedFrom())){
