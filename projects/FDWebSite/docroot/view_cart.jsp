@@ -29,7 +29,7 @@ final int W_VIEWCART_LP = 215;
 <%! final java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##"); %>
 
 <fd:CheckLoginStatus id="user" />
-<potato:pendingAtcFailure/>
+<potato:pendingExternalAtcItem/>
 <%
 //--------OAS Page Variables-----------------------
 request.setAttribute("sitePage", "www.freshdirect.com/view_cart.jsp");

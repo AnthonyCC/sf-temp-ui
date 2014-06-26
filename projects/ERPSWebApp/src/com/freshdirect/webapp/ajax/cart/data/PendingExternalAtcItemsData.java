@@ -3,7 +3,7 @@ package com.freshdirect.webapp.ajax.cart.data;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 
 
-public class PendingAtcFailureData {
+public class PendingExternalAtcItemsData {
 	private ProductData productData;
 	private AddToCartItem addToCartItem;
 	

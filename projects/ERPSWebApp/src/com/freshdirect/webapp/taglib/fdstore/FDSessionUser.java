@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -152,7 +151,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	private EnumCheckoutMode checkoutMode = EnumCheckoutMode.NORMAL;
 	private boolean couponWarningAcknowledged = false;
 	
-	private Map<String, List<AddToCartItem>> pendingAtcFailures;
+	private Map<String, List<AddToCartItem>> pendingExternalAtcItems;
 	
 	public boolean getLastCOSSurveySuccess() {
     	return this.lastCOSSurveySuccess;
@@ -1725,12 +1724,12 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		this.justSignedUp = val;
 	}
 
-	public Map<String, List<AddToCartItem>> getPendingAtcFailures() {
-		return pendingAtcFailures;
+	public Map<String, List<AddToCartItem>> getPendingExternalAtcItems() {
+		return pendingExternalAtcItems;
 	}
 
-	public void setPendingAtcFailures(Map<String, List<AddToCartItem>> pendingAtcFailures) {
-		this.pendingAtcFailures = pendingAtcFailures;
+	public void setPendingExternalAtcItems(Map<String, List<AddToCartItem>> pendingExternalAtcItems) {
+		this.pendingExternalAtcItems = pendingExternalAtcItems;
 	}
 	
 

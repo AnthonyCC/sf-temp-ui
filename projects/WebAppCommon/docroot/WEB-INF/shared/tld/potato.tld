@@ -238,8 +238,8 @@
 		</attribute>
 	</tag>
 	<tag>
-		<name>pendingAtcFailure</name>
-		<tagclass>com.freshdirect.webapp.ajax.cart.PendingAtcFailurePotatoTag</tagclass>
+		<name>pendingExternalAtcItem</name>
+		<tagclass>com.freshdirect.webapp.ajax.cart.PendingExternalAtcItemPotatoTag</tagclass>
 		<attribute>
 			<name>name</name>
 			<required>false</required>

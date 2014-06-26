@@ -1,7 +1,9 @@
 package com.freshdirect.webapp.ajax.cart;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +15,7 @@ import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
@@ -26,6 +29,7 @@ import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDProductSelection;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -48,6 +52,7 @@ public class AddToCartServlet extends BaseJsonServlet {
 	private static final long	serialVersionUID	= 4376343201345823580L;
 	
 	private static final Logger LOG = LoggerFactory.getInstance( AddToCartServlet.class );
+	private static final String SIMPLE_PENDING_ATC_ITEM_GROUP = "_simple_";
 	
 	
 	@Override
@@ -78,19 +83,38 @@ public class AddToCartServlet extends BaseJsonServlet {
 			LOG.warn( "Invalid event source, ignoring", ignore );
 		}
 
-		//clear pending failures if in finalizing pending popup
-		if (EnumEventSource.FinalizingExternal.equals(evtSrc) && user instanceof FDSessionUser){
-      		((FDSessionUser)user).setPendingAtcFailures(null);
-		}
-		
 		List<AddToCartItem> items = reqData.getItems(); 
 		if ( items == null ) {
        		returnHttpError( 400, "Bad JSON - items is missing" );	// 400 Bad Request
 		}
 		
+		
+		//validate items coming from external call - failures must be stored so they can be finalized
+		if (EnumEventSource.ExternalPage.equals(evtSrc)){
+			for (AddToCartItem item: items){
+				FDProduct product = null;
+				try {
+					product = FDCachedFactory.getProduct(FDCachedFactory.getProductInfo(item.getSkuCode()));
+				} catch (FDResourceException fdre) {
+					LOG.error(fdre);
+					continue;
+				} catch (FDSkuNotFoundException fdsnfe) {
+					LOG.error(fdsnfe);
+					continue;
+				}
+				
+				boolean simpleAtcItem = CartOperations.validateConfiguration(product,item.getConfiguration())==null; 
+				processPendingExternAtcItem(user, item, evtSrc, simpleAtcItem);
+				return; //returns external ATC with OK - TODO simple validation, e.g. error for unavailable items
+			}
+	 	
+		//clear pending failures if in finalizing pending popup
+		} else if (EnumEventSource.FinalizingExternal.equals(evtSrc) && user instanceof FDSessionUser){
+	    	((FDSessionUser)user).setPendingExternalAtcItems(null);
+		}
+		
 		try {
-			if(user.getShowPendingOrderOverlay() && user.hasPendingOrder() && reqData.getOrderId()==null && !reqData.isNewOrder()
-					&& !EnumEventSource.ExternalPage.equals(evtSrc) && !EnumEventSource.FinalizingExternal.equals(evtSrc)){
+			if(user.getShowPendingOrderOverlay() && user.hasPendingOrder() && reqData.getOrderId()==null && !reqData.isNewOrder() && !EnumEventSource.ExternalPage.equals(evtSrc)){
 				//user has pending orders, show the popup first
 				
 				returnWithModifyPopup(response, user, cart, items, reqData.getEventSource());
@@ -109,10 +133,8 @@ public class AddToCartServlet extends BaseJsonServlet {
 		
 		LOG.debug( "add to cart for user: " + user.getUserId() + ", items:" + items );
 
-		if (!EnumEventSource.ExternalPage.equals(evtSrc) && !EnumEventSource.FinalizingExternal.equals(evtSrc)) {
-			//set user as having seen the overlay and used it
-			user.setSuspendShowPendingOrderOverlay(true);
-		}
+		//set user as having seen the overlay and used it
+		user.setSuspendShowPendingOrderOverlay(true);
 		
        	try {
            	// Create response data object
@@ -282,4 +304,32 @@ public class AddToCartServlet extends BaseJsonServlet {
 		return result;
 	}
 
+	private static void processPendingExternAtcItem(FDUserI user, AddToCartItem item, EnumEventSource evtSrc, boolean simplePendingItem){
+		if (user instanceof FDSessionUser) {
+			FDSessionUser sessionUser = (FDSessionUser) user;
+			
+			Map<String, List<AddToCartItem>> pendingExternalAtcItems = sessionUser.getPendingExternalAtcItems();
+			if (pendingExternalAtcItems == null){
+				pendingExternalAtcItems = new HashMap<String, List<AddToCartItem>>();
+				sessionUser.setPendingExternalAtcItems(pendingExternalAtcItems);
+			}
+
+			String externalGroupLabel = item.getExternalGroup();
+			if (simplePendingItem){
+				externalGroupLabel = SIMPLE_PENDING_ATC_ITEM_GROUP;
+			} else if (externalGroupLabel==null) {
+				externalGroupLabel = "";
+			} else {
+				externalGroupLabel = OrderLineUtil.createExternalDescription(externalGroupLabel, item.getExternalSource());
+			}
+			
+			List<AddToCartItem> pendingAtcGroup = pendingExternalAtcItems.get(externalGroupLabel);
+			if (pendingAtcGroup == null){
+				pendingAtcGroup = new ArrayList<AddToCartItem>();
+				pendingExternalAtcItems.put(externalGroupLabel, pendingAtcGroup);
+			}
+			
+			pendingAtcGroup.add(item);
+		}
+	}
 }

@@ -13,18 +13,18 @@ import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
-public class PendingAtcFailurePotatoTag extends SimpleTagSupport{
+public class PendingExternalAtcItemPotatoTag extends SimpleTagSupport{
 	
 	@SuppressWarnings("unused")
-	private static final Logger LOGGER = LoggerFactory.getInstance( PendingAtcFailurePotatoTag.class );
+	private static final Logger LOGGER = LoggerFactory.getInstance( PendingExternalAtcItemPotatoTag.class );
 
-	private String name = "pendingAtcFailurePotato";
+	private String name = "pendingExternalAtcItemPotato";
 	
 	@Override
 	public void doTag() throws JspException, IOException {
 		PageContext ctx = (PageContext) getJspContext();
 		FDSessionUser user = (FDSessionUser) ctx.getSession().getAttribute(SessionName.USER);
-		ctx.setAttribute(name, SoyTemplateEngine.convertToMap(PendingAtcFailurePopulator.createPendingAtcFailureData(user)));
+		ctx.setAttribute(name, SoyTemplateEngine.convertToMap(PendingExternalAtcItemsPopulator.createPendingExternalAtcItemsData(user)));
 	}
 
 	public String getName() {

@@ -150,7 +150,6 @@ public class CartOperations {
 				// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 				
 				if (cartLine == null) {
-					processPendingAtcFailure(user, reqData, item, evtSrc);
 					continue;
 				}
 				
@@ -183,33 +182,6 @@ public class CartOperations {
 		
 		return true;
 
-	}
-
-	private static void processPendingAtcFailure(FDUserI user, AddToCartRequestData reqData, AddToCartItem item, EnumEventSource evtSrc){
-		if ((EnumEventSource.ExternalPage.equals(evtSrc) || EnumEventSource.FinalizingExternal.equals(evtSrc)) && user instanceof FDSessionUser) {
-			FDSessionUser sessionUser = (FDSessionUser) user;
-			
-			Map<String, List<AddToCartItem>> pendingAtcFailures = sessionUser.getPendingAtcFailures();
-			if (pendingAtcFailures == null){
-				pendingAtcFailures = new HashMap<String, List<AddToCartItem>>();
-				sessionUser.setPendingAtcFailures(pendingAtcFailures);
-			}
-			
-			String externalGroupLabel = item.getExternalGroup();
-			if (externalGroupLabel==null) {
-				externalGroupLabel = "";
-			} else {
-				externalGroupLabel = OrderLineUtil.createExternalDescription(externalGroupLabel, item.getExternalSource());
-			}
-			
-			List<AddToCartItem> pendingAtcGroup = pendingAtcFailures.get(externalGroupLabel);
-			if (pendingAtcGroup == null){
-				pendingAtcGroup = new ArrayList<AddToCartItem>();
-				pendingAtcFailures.put(externalGroupLabel, pendingAtcGroup);
-			}
-			
-			pendingAtcGroup.add(item);
-		}
 	}
 
 	private static void populateCoremetricsShopTag( AddToCartResponseData responseData, FDCartLineI cartLine ) {
@@ -957,7 +929,7 @@ public class CartOperations {
 	 * Salvaged from FDShoppingCartControllerTag.
 	 * 
 	 */
-	private static String validateConfiguration( FDProduct product, Map<String,String> varMap ) {
+	public static String validateConfiguration( FDProduct product, Map<String,String> varMap ) {
 		//
 		// walk through the variations to see what's been set and try to build a
 		// variation map

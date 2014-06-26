@@ -14,27 +14,27 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
-import com.freshdirect.webapp.ajax.cart.data.PendingAtcFailureData;
+import com.freshdirect.webapp.ajax.cart.data.PendingExternalAtcItemsData;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
-public class PendingAtcFailurePopulator {
+public class PendingExternalAtcItemsPopulator {
 
-	private static final Logger LOG = LoggerFactory.getInstance(PendingAtcFailurePopulator.class);
+	private static final Logger LOG = LoggerFactory.getInstance(PendingExternalAtcItemsPopulator.class);
 	
-	public static Map<String, List<PendingAtcFailureData>> createPendingAtcFailureData(FDSessionUser user) {
+	public static Map<String, List<PendingExternalAtcItemsData>> createPendingExternalAtcItemsData(FDSessionUser user) {
 
-		Map<String, List<AddToCartItem>> pendingAtcFailureMap = user.getPendingAtcFailures();
-		Map<String, List<PendingAtcFailureData>> pendingAtcFailureDataMap = new HashMap<String, List<PendingAtcFailureData>>();
+		Map<String, List<AddToCartItem>> pendingExternalAtcItemsMap = user.getPendingExternalAtcItems();
+		Map<String, List<PendingExternalAtcItemsData>> pendingExternalAtcItemDataMap = new HashMap<String, List<PendingExternalAtcItemsData>>();
 		
-		if (pendingAtcFailureMap != null){
-			for (String groupName : pendingAtcFailureMap.keySet()){
-				List<PendingAtcFailureData> pendingAtcFailureDatas = new ArrayList<PendingAtcFailureData>();
+		if (pendingExternalAtcItemsMap != null){
+			for (String groupName : pendingExternalAtcItemsMap.keySet()){
+				List<PendingExternalAtcItemsData> pendingAtcFailureDatas = new ArrayList<PendingExternalAtcItemsData>();
 				
-				for (AddToCartItem addToCartItem : pendingAtcFailureMap.get(groupName)) {
-					PendingAtcFailureData pendingAtcFailureData = new PendingAtcFailureData();
-					pendingAtcFailureData.setAddToCartItem(addToCartItem);
+				for (AddToCartItem addToCartItem : pendingExternalAtcItemsMap.get(groupName)) {
+					PendingExternalAtcItemsData pendingExternalAtcItemData = new PendingExternalAtcItemsData();
+					pendingExternalAtcItemData.setAddToCartItem(addToCartItem);
 					
 					try {
 						ProductModel prodNode = null;		
@@ -49,8 +49,8 @@ public class PendingAtcFailurePopulator {
 						}			
 
 						ProductData productData = ProductDetailPopulator.createProductData(user, prodNode);
-						pendingAtcFailureData.setProductData(productData);
-						pendingAtcFailureDatas.add(pendingAtcFailureData);
+						pendingExternalAtcItemData.setProductData(productData);
+						pendingAtcFailureDatas.add(pendingExternalAtcItemData);
 					} catch (FDResourceException e) {
 						LOG.error( "Failed to get product info.", e );
 					} catch (FDSkuNotFoundException e) {
@@ -59,10 +59,10 @@ public class PendingAtcFailurePopulator {
 						LOG.error( "Failed to get product info.", e );
 					}
 				}
-				pendingAtcFailureDataMap.put(groupName, pendingAtcFailureDatas);
+				pendingExternalAtcItemDataMap.put(groupName, pendingAtcFailureDatas);
 			}
 		}
-		return pendingAtcFailureDataMap;
+		return pendingExternalAtcItemDataMap;
 	}
 
 }
