@@ -105,8 +105,8 @@ public class AddToCartServlet extends BaseJsonServlet {
 				
 				boolean simpleAtcItem = CartOperations.validateConfiguration(product,item.getConfiguration())==null; 
 				processPendingExternAtcItem(user, item, evtSrc, simpleAtcItem);
-				return; //returns external ATC with OK - TODO simple validation, e.g. error for unavailable items
 			}
+			return; //returns external ATC with OK - TODO simple validation, e.g. error for unavailable items
 	 	
 		//clear pending failures if in finalizing pending popup
 		} else if (EnumEventSource.FinalizingExternal.equals(evtSrc) && user instanceof FDSessionUser){
