@@ -230,7 +230,7 @@ StringBuffer buffer = new StringBuffer(
 
 <script>
   window.FreshDirect = window.FreshDirect || {};
-  window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingAtcFailurePotato}" noHeaders="true"/>
+  window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
 </script>
 
 </tmpl:put>

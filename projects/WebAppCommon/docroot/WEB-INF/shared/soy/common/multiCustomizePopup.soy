@@ -12,10 +12,11 @@
         <span class="sign"></span>
         <div class="warning-content">Without customization, these items will be deleted from your cart.</div>
       </h1>
+      <h1 class="header" data-multi-step="3">Adding Recipe Ingredients to Cart...</h1>
       <div class="body">      
-        <ol class="shopfromlists">
         {if $data and $data.itemGroups}
           {foreach $group in $data.itemGroups}
+          <ol class="shopfromlists" data-name="{$group.externalGroup}">
             {foreach $lineData in $group.groupData}
               {let $item:$lineData.productData /}
               <li class="itemlist-item {not $item.available ? 'unavailable' : ''}" 
@@ -25,9 +26,9 @@
                 {/call}
               </li>
             {/foreach}
+          </ol>
           {/foreach}
         {/if}
-        </ol>
       </div>
       <div class="footer">
         <div data-multi-step="1">
@@ -83,9 +84,11 @@
       {param label:$item.salesUnitLabel /}
       {param optional:false /}
     {/call}
-   {if $item.salesUnitDescrPopup}
-     <button class="cssbutton green css-help-button" onclick="pop('{$item.salesUnitDescrPopup}',335,375)">?</button>
-   {/if}
+    {if $item.salesUnitDescrPopup}
+      <button class="cssbutton green css-help-button" onclick="pop('{$item.salesUnitDescrPopup}',335,375)">?</button>
+    {/if}
+  {else}
+    <input type="hidden" class="salesunit" data-component="salesunit" data-productdata-name="salesUnit" value="{$item.salesUnit[0].id}"/>
   {/if}
 
   {call common.skuControlVariations}{param variations:$item.variations /}{/call}

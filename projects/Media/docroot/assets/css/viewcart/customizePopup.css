@@ -139,7 +139,8 @@
 }
 
 .customize-popup[data-current-step='1'] [data-multi-step='1'],
-.customize-popup[data-current-step='2'] [data-multi-step='2']{
+.customize-popup[data-current-step='2'] [data-multi-step='2'],
+.customize-popup[data-current-step='3'] [data-multi-step='3']{
   display:block;  
 }
 
@@ -155,4 +156,8 @@
 .customize-popup .atc-info .incart-message.ERROR {
   display: block;
   text-align: left;
+}
+
+.customize-popup .shopfromlists[data-name="_simple_"] {
+  display: none;
 }

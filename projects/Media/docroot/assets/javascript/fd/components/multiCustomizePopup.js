@@ -53,6 +53,8 @@ var FreshDirect = FreshDirect || {};
     },
     emptyAtc: {
       value: function () {
+        var items = fd.modules.common.productSerialize($('#'+this.popupId+' [data-name="_simple_"] [data-component="product"]'));
+
         $('#'+this.popupId+' [data-component="product"]').remove();
 
         fd.common.dispatcher.signal('server', {
@@ -60,7 +62,7 @@ var FreshDirect = FreshDirect || {};
           data: {
             data: JSON.stringify({
               eventSource: 'FinalizingExternal',
-              items: []
+              items: items
             })
           },
           method: 'POST'
@@ -84,15 +86,17 @@ var FreshDirect = FreshDirect || {};
     processPendingCustomizations: {
       value: function (pendingCustomizations) {
 
-        return Object.keys(pendingCustomizations).map(function (k) {
+        return Object.keys(pendingCustomizations).map(function (k, gi) {
           return {
             externalGroup: k,
-            groupData: pendingCustomizations[k].map(function (data, i) {
+            groupData: pendingCustomizations[k].filter(function (data) {
+              return data.productData.available;
+            }).map(function (data, i) {
               var atcinfo = data.addToCartItem,
                   product = data.productData;
 
               // atcItemId
-              product.itemId = 'mulcust_'+atcinfo.atcItemId+'_'+i;
+              product.itemId = 'mulcust_'+atcinfo.atcItemId+'_'+gi+'_'+i;
 
               // external group, agency and source
               product.externalGroup = atcinfo.externalGroup;
@@ -187,7 +191,7 @@ var FreshDirect = FreshDirect || {};
   $('#'+multiCustomizePopup.popupId).on('click', 'button.deletefromrecipe', function (e) {
     $(this).closest('[data-component="product"]').remove();
 
-    if ($('#'+multiCustomizePopup.popupId).find('[data-component="product"]').size() === 0) {
+    if ($('#'+multiCustomizePopup.popupId).find('[data-component="product"]').size() === $('#'+multiCustomizePopup.popupId).find('[data-name="_simple_"] [data-component="product"]').size()) {
       multiCustomizePopup.changeStep("3");
     }
   });
