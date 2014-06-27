@@ -178,7 +178,8 @@ var FreshDirect = FreshDirect || {};
 
         if (multiCustomizePopup.popup && multiCustomizePopup.popup.shown) {
           success = atcResultList.every(function (ar) { return ar.status === "SUCCESS"; });
-          if (success) {
+          // hide errors from "_simple_" items
+          if (success || $('#'+multiCustomizePopup.popupId).find('[data-component="product"]').size() === $('#'+multiCustomizePopup.popupId).find('[data-name="_simple_"] [data-component="product"]').size()) {
             if (atcResultList.length) {
               // all item got into cart, cart changed, reloading
               multiCustomizePopup.popup.$el.find("[data-current-step]").attr("data-current-step", 3);
