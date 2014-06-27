@@ -158,6 +158,10 @@
   text-align: left;
 }
 
-.customize-popup .shopfromlists[data-name="_simple_"] {
+.customize-popup .shopfromlists[data-name="_simple_"] [data-component="product"] {
   display: none;
+}
+
+.customize-popup .shopfromlists[data-name="_simple_"] .hasErrors[data-component="product"] {
+  display: block;
 }

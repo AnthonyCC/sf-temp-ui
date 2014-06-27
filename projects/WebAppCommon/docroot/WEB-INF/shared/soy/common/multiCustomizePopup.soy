@@ -5,7 +5,7 @@
  */
 {template .multiCustomizePopup autoescape="false"}
   <div id="multi-customize-popup" data-cmeventsource="FinalizingExternal">
-    <div class="qs-popup-content customize-popup" data-current-step="1">
+    <div class="qs-popup-content customize-popup" data-current-step="{$data.state ? $data.state : 1}">
       <h1 class="header" data-multi-step="1">Customize Your Items</h1>
       <p class="description" data-multi-step="1">We cut meat, cheese and seafood to order. Tell us how you want it <strong>(*required)</strong></p>
       <h1 class="warning" data-multi-step="2">
@@ -32,7 +32,7 @@
       </div>
       <div class="footer">
         <div data-multi-step="1">
-          <button class="cssbutton orange large fixwidth" data-component="ATCButton" data-ref="#multi-customize-popup">Done</button>
+          <button class="cssbutton orange large fixwidth" data-atc-blocking="true" data-component="ATCButton" data-ref="#multi-customize-popup">Done</button>
         </div>
         <div data-multi-step="2">
           <button class="cssbutton red large" data-component="delete-and-close">Delete Items & Close</button>{sp}

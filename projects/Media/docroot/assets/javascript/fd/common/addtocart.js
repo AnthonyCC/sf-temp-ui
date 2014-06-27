@@ -38,6 +38,8 @@ var FreshDirect = FreshDirect || {};
       request.eventSource = eventSource;
     }
 
+    $('[data-component="ATCButton"]').addClass('ATCinProgress');
+
 		fd.common.dispatcher.signal('server',{
 			url:'/api/addtocart',
 			data:{data:JSON.stringify(request)},
@@ -141,7 +143,13 @@ var FreshDirect = FreshDirect || {};
 	$(document).on('click','[data-component="ATCButton"]',function(e){
 		var items = fd.modules.common.productSerialize(e.target, true),
         cartdata = fd.modules.common.getCartData(e.target),
-        amount;
+        amount,
+        $t = $(e.target);
+
+    // if button is blocking and ATC in progress, then do nothing
+    if ($t.hasClass('ATCinProgress') && $t.attr('data-atc-blocking')) {
+      return;
+    }
 
 		e.items = items;
 

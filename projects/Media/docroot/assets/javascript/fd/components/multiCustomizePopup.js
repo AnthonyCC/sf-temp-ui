@@ -86,7 +86,7 @@ var FreshDirect = FreshDirect || {};
     processPendingCustomizations: {
       value: function (pendingCustomizations) {
 
-        return Object.keys(pendingCustomizations).map(function (k, gi) {
+        var data = Object.keys(pendingCustomizations).map(function (k, gi) {
           return {
             externalGroup: k,
             groupData: pendingCustomizations[k].filter(function (data) {
@@ -102,6 +102,9 @@ var FreshDirect = FreshDirect || {};
               product.externalGroup = atcinfo.externalGroup;
               product.externalAgency = atcinfo.externalAgency;
               product.externalSource = atcinfo.externalSource;
+
+              // quantity
+              product.quantity.quantity = atcinfo.quantity;
 
               // salesunit
               if (atcinfo.salesUnit && product.salesUnit && product.salesUnit.length) {
@@ -142,14 +145,24 @@ var FreshDirect = FreshDirect || {};
           };
         });
 
+        if (Object.keys(pendingCustomizations).length === 1 && pendingCustomizations._simple_) {
+          data.state = 3;
+        }
+
+        return data;
       }
     },
     open: {
       value: function (pendingCustomizations) {
-        multiCustomizePopup.refreshBody({itemGroups: this.processPendingCustomizations(pendingCustomizations)});
+        var data = this.processPendingCustomizations(pendingCustomizations);
+        multiCustomizePopup.refreshBody({itemGroups: data, state: data.state});
         if (this.popup) {
           multiCustomizePopup.popup.show($('body'), false);
           multiCustomizePopup.noscroll();
+        }
+
+        if (data.state) {
+          this.changeStep(data.state);
         }
       }
     }
@@ -165,10 +178,15 @@ var FreshDirect = FreshDirect || {};
 
         if (multiCustomizePopup.popup && multiCustomizePopup.popup.shown) {
           success = atcResultList.every(function (ar) { return ar.status === "SUCCESS"; });
-          // reload page if all succeeded
           if (success) {
-            POPUPWIDGET.close.call(multiCustomizePopup);
-            window.location.reload();
+            if (atcResultList.length) {
+              // all item got into cart, cart changed, reloading
+              multiCustomizePopup.popup.$el.find("[data-current-step]").attr("data-current-step", 3);
+              window.location.reload();
+            } else {
+              // no cart change (or modifybrd popup), close popup and don't reload
+              POPUPWIDGET.close.call(multiCustomizePopup);
+            }
           }
         }
       }
@@ -182,7 +200,7 @@ var FreshDirect = FreshDirect || {};
     multiCustomizePopup.noscroll();
   });
 
-  $(document).ready(function(){  
+  $(document).ready(function(){
     if (FreshDirect.pendingCustomizations && Object.keys(FreshDirect.pendingCustomizations).length) {
       multiCustomizePopup.open(FreshDirect.pendingCustomizations);
     }

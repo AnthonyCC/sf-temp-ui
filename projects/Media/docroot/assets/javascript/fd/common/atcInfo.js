@@ -65,6 +65,12 @@ var FreshDirect = FreshDirect || {};
           product = element.closest('[data-component="product"]');
           product.find('[data-component="ATCButton"],[data-component="customizeButton"]').addClass('incart');
 
+          if (item.status === "ERROR") {
+            product.addClass("hasErrors");
+          } else {
+            product.removeClass("hasErrors");
+          }
+
           if (item.status === "SUCCESS" && product.attr('data-atcRemoveOnSuccess')) {
             product.remove();
             return;
@@ -94,6 +100,7 @@ var FreshDirect = FreshDirect || {};
     callback:{
       value:function( atcResultList ) {
         atcResultList.forEach(this.renderItem,this);
+        $('[data-component="ATCButton"]').removeClass('ATCinProgress');
         fd.modules.header.Cart.update();
       }
     }

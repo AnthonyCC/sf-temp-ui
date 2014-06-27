@@ -70,7 +70,16 @@
     </div>
     <hr/>
     <div class="apitest" id="customATCTest" data-endpoint="/api/addtocart" data-datafunc="customATC">
-      <h2>Custom ATC - non-external, configured</h2>
+      <h2>Custom ATC - external, configured</h2>
+      <p>
+        <label>externalAgency: <input name="externalAgency" value="FOODILY"/></label>
+      </p>
+      <p>
+        <label>externalSource: <input name="externalSource" value="Recipe soucre, http://reci.pes/idk/"/></label>
+      </p>
+      <p>
+        <label>externalGroup: <input name="externalGroup" value="Fish and cheese and avocado"/></label>
+      </p>
       <p>
         <ul>
           <li>Hass Avocado (non-configurable, 2pcs)</li>
@@ -139,9 +148,17 @@
   };
 
   window.customATC = function (data) {
+    var externalGroup = $('#customATCTest input[name="externalGroup"]').val(),
+        externalSource = $('#customATCTest input[name="externalSource"]').val(),
+        externalAgency = $('#customATCTest input[name="externalAgency"]').val();
+
     return {
+      eventSource: "ExternalPage",
       items: [
         {
+          externalGroup: externalGroup,
+          externalSource: externalSource,
+          externalAgency: externalAgency,
           salesUnit: "EA",
           quantity: 2,
           atcItemId: "atc_avc_has_VEG0010952_avocados_fruit",
@@ -150,12 +167,18 @@
           skuCode:"VEG0010952"
         },
         {
+          externalGroup: externalGroup,
+          externalSource: externalSource,
+          externalAgency: externalAgency,
           atcItemId: "atc_fflt_crs_cohoslmn_frzn_SEA1075998_salm_wild",
           skuCode: "SEA1075998",
           salesUnit: "G01",
           quantity: 1
         },
         {
+          externalGroup: externalGroup,
+          externalSource: externalSource,
+          externalAgency: externalAgency,
           atcItemId: "atc_dcjk_pepjk_DEL0008167_che_our_favorite_cheese_cheddar_jack",
           skuCode: "DEL0008167",
           quantity: 1,
