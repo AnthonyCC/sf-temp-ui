@@ -29,6 +29,7 @@ public class FDProductFeedGeneratorCron {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
 		Context ctx = null;
 		try {
 			LOGGER.info("FDProductFeedGeneratorCron Started.");
@@ -42,8 +43,9 @@ public class FDProductFeedGeneratorCron {
 			String _msg=sw.getBuffer().toString();
 			LOGGER.info(new StringBuilder("FDProductFeedGeneratorCron failed with Exception...").append(_msg).toString());
 			LOGGER.error(_msg);
-			if(_msg!=null && _msg.indexOf("timed out while waiting to get an instance from the free pool")==-1)
+			if(_msg!=null && _msg.indexOf("timed out while waiting to get an instance from the free pool")==-1) {
 				email(Calendar.getInstance().getTime(), _msg);		
+			}
 		} 
 		LOGGER.info("FDProductFeedGeneratorCron Stopped.");
 	}

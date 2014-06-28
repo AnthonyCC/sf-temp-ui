@@ -2,31 +2,27 @@ package com.freshdirect.fdstore.content.productfeed;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.rmi.RemoteException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.ejb.EJBException;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
@@ -45,7 +41,6 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.GroupScalePricing;
@@ -66,12 +61,6 @@ import com.freshdirect.fdstore.content.productfeed.Ratings.Rating;
 import com.freshdirect.fdstore.content.productfeed.SaleUnits.SaleUnit;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
 
 
 public class FDProductFeedSessionBean extends SessionBeanSupport {
@@ -88,12 +77,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 	private static final String PRODUCT_ZOOM_IMAGE = "PRODUCT_ZOOM_IMAGE";
 	private static final String PRODUCT_IMAGE = "PRODUCT_IMAGE";
 	private static final String URL_DOMAIN ="https://www.freshdirect.com";
-	private final static JSch jsch=new JSch();
-	private static final String sftpHost = ErpServicesProperties.getProperty(ErpServicesProperties.PROP_PRODUCT_FEED_UPLOADER_FTP_HOST);
-	private static final String sftpUser = ErpServicesProperties.getProperty(ErpServicesProperties.PROP_PRODUCT_FEED_UPLOADER_FTP_USER);
-	private static final String sftpPasswd = ErpServicesProperties.getProperty(ErpServicesProperties.PROP_PRODUCT_FEED_UPLOADER_FTP_PASSWD);
-	private static final String sftpDirectory = ErpServicesProperties.getProperty(ErpServicesProperties.PROP_PRODUCT_FEED_UPLOADER_FTP_WORKDIR);
-    
+		    
     /** Constructor
      */
     public FDProductFeedSessionBean() {
@@ -134,7 +118,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
     }
     
     
-    private static void populateProducts(Products xmlProducts)
+    private void populateProducts(Products xmlProducts)
 			throws FDResourceException {
 		Set<ContentKey> skuContentKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.SKU);
 		if(null !=skuContentKeys){
@@ -142,7 +126,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 			for (Iterator<ContentKey> i = skuContentKeys.iterator(); i.hasNext();) {
 				ContentKey key = (ContentKey) i.next();
 				String skucode = key.getId();
-//						if(skucode.equals("MEA0004687") || skucode.equals("FRU0005151")||skucode.equals("DAI0069651") ||skucode.equals("MEA1075865")){
+			    //if(skucode.equals("MEA0004687") || skucode.equals("FRU0005151")|| skucode.equals("DAI0069651") || skucode.equals("MEA1075865")) {
 					ProductModel productModel =null;
 					FDProductInfo fdProductInfo = null;
 					FDProduct fdProduct = null;
@@ -156,10 +140,8 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 					} catch (FDSkuNotFoundException e) {
 						//Ignore
 					}
-					if(null != fdProductInfo && null !=fdProduct){						
-						/*if(!fdProductInfo.isAvailable()){
-							continue;
-						}*/				
+					if(null != fdProductInfo && null != fdProduct){						
+										
 						Product product = new Product();			
 						xmlProducts.getProduct().add(product);
 						
@@ -183,85 +165,119 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 						
 						populateImages(productModel, product);	
 					}
-						
-//						}
+				//}
 			}
 		}
 	}
 
-	private static void uploadProductFeedFile(Products xmlProducts,
-			JAXBContext jaxbCtx) throws JAXBException, PropertyException,
-			FileNotFoundException, IOException, JSchException, SftpException {
-
-		ChannelSftp sftp = null;
-		Session session = null;
-		Channel channel = null;
+	private void uploadProductFeedFile(Products xmlProducts,
+			JAXBContext jaxbCtx) throws FDResourceException {
+		
+		File rawProductFile = null;
+		String zipFileName = null;
 		try {
-			if(!xmlProducts.getProduct().isEmpty()){
-				byte[] buffer = new byte[1024];
-				Marshaller mar =jaxbCtx.createMarshaller();
-				mar.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-				SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
-				Date date = new Date();
-				String filePath = "";//"C://Project Documents//ProductDataFeed//";
-				String fileName = "FDProductFeed_"+df.format(date);
-				File file = new File(filePath+fileName+".xml");
-				StreamResult result = new StreamResult(file);				
-				mar.marshal(xmlProducts, result);
-				String zipFileName=filePath+fileName+".zip";
-				FileOutputStream fos = new FileOutputStream(zipFileName);
-				ZipOutputStream zos = new ZipOutputStream(fos);
-				ZipEntry ze= new ZipEntry(file.getName());
-				zos.putNextEntry(ze);
-				int len;
-				FileInputStream in = new FileInputStream(file);
-				while ((len = in.read(buffer)) > 0) {
-					zos.write(buffer, 0, len);
+			if(!xmlProducts.getProduct().isEmpty()) {
+				FileInputStream in = null;
+				ZipOutputStream zos = null;
+				try {
+					byte[] buffer = new byte[1024];
+					Marshaller mar =jaxbCtx.createMarshaller();
+					mar.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+					
+					SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");
+					String fileName = "FDProductFeed_" + df.format(new Date());
+					
+					//Serialize to a Xml file!
+					rawProductFile = new File(fileName + ".xml");
+					StreamResult result = new StreamResult(rawProductFile);				
+					mar.marshal(xmlProducts, result);
+					
+					//Zip it!
+					zipFileName = fileName + ".zip";
+					FileOutputStream fos = new FileOutputStream(zipFileName);
+					zos = new ZipOutputStream(fos);
+					ZipEntry ze = new ZipEntry(rawProductFile.getName());
+					zos.putNextEntry(ze);
+					
+					int len;
+					in = new FileInputStream(rawProductFile);
+					while ((len = in.read(buffer)) > 0) {
+						zos.write(buffer, 0, len);
+					}
+				} catch (Exception e) {
+					 throw new FDResourceException("feed serialization failed: " + e.getMessage(), e);
+				} finally {
+					try {
+						if (in != null) {
+							in.close();
+						}
+						if (zos != null) {
+							zos.closeEntry();
+							zos.close();
+						}
+					} catch (Exception e2) {
+						// Ignore Me
+					}
 				}
- 
-				in.close();
-				file.delete();
-				zos.closeEntry();
- 
-				zos.close();
+	
 				
-				LOGGER.info("SFTP: connecting to host " + sftpHost);
-				Properties config = new Properties();
-				config.put("StrictHostKeyChecking", "no");
-				if(FDStoreProperties.isProductFeedUploadEnabled()){
-					session = getSftpSession(config);
-					session.connect();
-					channel = session.openChannel("sftp");
-					sftp = (ChannelSftp) channel;
-					LOGGER.info("SFTP: Connecting..");
-					FileInputStream fis = new FileInputStream(zipFileName);
-					sftp.connect();
-					sftp.put(fis,sftpDirectory+zipFileName);
-					fis.close();
-					//To delete the local file after the uploading is completed.
-					file = new File(zipFileName);
-					file.delete();
-				}
- 
-			}else{
-				LOGGER.info("No file generated. ");
+				
+				//Upload it to subscribers!
+				Connection conn = null;
+				try {
+					conn = getConnection();
+					List<ProductFeedSubscriber> productFeedSubscribers = ProductFeedDAO.getAllProductFeedSubscribers(conn);	
+					
+					if(productFeedSubscribers != null) {
+						for(ProductFeedSubscriber subscriber : productFeedSubscribers) {
+							if(ProductFeedSubscriberType.FTP.equals(subscriber.getType())) {
+								FeedUploader.uploadToFtp(subscriber.getUrl(), subscriber.getUserid(), subscriber.getPassword()
+																, subscriber.getDefaultUploadPath(), zipFileName);
+							} else if(ProductFeedSubscriberType.SFTP.equals(subscriber.getType())) {
+								FeedUploader.uploadToSftp(subscriber.getUrl(), subscriber.getUserid(), subscriber.getPassword()
+																, subscriber.getDefaultUploadPath(), zipFileName);
+							} else if (ProductFeedSubscriberType.S3.equals(subscriber.getType())) {
+								FeedUploader.uploadToS3(subscriber.getUserid(), subscriber.getPassword()
+															, subscriber.getUrl(), zipFileName);
+							} else {
+								LOGGER.warn( "unKnown product feed subscriber:" + subscriber);
+							}
+						}
+					}
+				} catch (SQLException e) {
+					LOGGER.error( "FeedSubscriber DaO CONNECTION failed with SQLException: ", e );
+					throw new FDResourceException("FeedSubscriber DAO CONNECTION failed with SQLException: " + e.getMessage(), e);
+				} finally {
+					if ( conn != null ) {
+						try { 
+							conn.close();
+						} catch (SQLException e) {
+							LOGGER.error( "connection close failed with SQLException: ", e );
+						}
+					}
+				}				
+	
+			} else {
+				throw new FDResourceException("No feed file generated please check the log for error");
 			}
-		} finally{
-			LOGGER.info("SFTP: Disconnecting..");
-			if(null !=sftp){
-				sftp.disconnect();
+		} finally {
+			//Cleanup!
+			if(rawProductFile != null) {
+				LOGGER.info("raw product file about to be deleted :"+rawProductFile.getAbsolutePath());
+				rawProductFile.delete();
 			}
-			if(null != session){
-				session.disconnect();
+			if(zipFileName != null) {
+				//Remove the generated product feed zip file
+				File dfile = new File(zipFileName);
+				LOGGER.info("zipped product file about to be deleted :"+dfile.getAbsolutePath());
+				dfile.delete();
 			}			
-			if(null != channel){
-				channel.disconnect();
-			}
-		}
+		}		
 	}
 
-	private static void populateProductBasicInfo(ProductModel productModel,
+	private void populateProductBasicInfo(ProductModel productModel,
 			FDProductInfo fdProductInfo, FDProduct fdProduct, Product product) {
+		
 		product.setSkuCode(fdProduct.getSkuCode());
 		product.setUpc(fdProductInfo.getUpc());
 		product.setMaterialNum(fdProduct.getMaterial().getMaterialNumber());
@@ -271,12 +287,12 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 		product.setCatId(productModel.getCategory().getContentName());
 		product.setSubCatId(productModel.getParentId());
 		product.setDeptId(productModel.getDepartment().getContentName());
-		product.setProdStatus(null !=fdProductInfo.getAvailabilityStatus()?fdProductInfo.getAvailabilityStatus().getStatusCode():"");
-		
+		product.setProdStatus(null !=fdProductInfo.getAvailabilityStatus()?fdProductInfo.getAvailabilityStatus().getStatusCode():"");		
 	}
 
-	private static void populateImages(ProductModel productModel,
+	private void populateImages(ProductModel productModel,
 			Product product) {
+		
 		Images images = new Images();
 		product.setImages(images);								
 		Image image = null;
@@ -312,7 +328,8 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private static void populateAttributes(FDProductInfo fdProductInfo, FDProduct fdProduct, Product product,ProductModel productModel) {
+	private void populateAttributes(FDProductInfo fdProductInfo, FDProduct fdProduct, Product product,ProductModel productModel) {
+		
 		Attributes attributes = new Attributes();
 		product.setAttributes(attributes);		
 		
@@ -339,12 +356,12 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 			}
 			
 			
-		}	
-		
+		}		
 	}
 
-	private static void populateConfigurationsInfo(
+	private void populateConfigurationsInfo(
 			FDProduct fdProduct, Product product) {
+		
 		Configurations configurations = new Configurations();
 		product.setConfigurations(configurations);			
 		
@@ -383,13 +400,12 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 						configuration.getVariationOption().add(variationOption);
 						
 					}
-				}
-				
+				}				
 			}
 		}
 	}
 
-	private static void populateInventoryInfo(FDProductInfo fdProductInfo,
+	private void populateInventoryInfo(FDProductInfo fdProductInfo,
 			 Product product) {
 				
 		ErpInventoryModel inventoryModel = fdProductInfo.getInventory();
@@ -405,8 +421,9 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private static void populateRatingInfo(FDProductInfo fdProductInfo,
+	private void populateRatingInfo(FDProductInfo fdProductInfo,
 			 Product product) {
+		
 		Ratings ratings = new Ratings();
 		product.setRatings(ratings);
 		Rating rating = null;
@@ -428,15 +445,18 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private static void populateGroupScalePriceInfo(String skucode,
-			 Product product) throws FDResourceException{
+	private void populateGroupScalePriceInfo(String skucode,
+			 Product product) throws FDResourceException {
+		
 		GroupScalePricing gsp = null;
 		GroupPrices groupPrices;
 		try {
 			FDGroup fdGroup =FDCachedFactory.getProductInfo(skucode).getGroup();			
 			gsp = null !=fdGroup?FDCachedFactory.getGrpInfo(fdGroup):null;
 		} catch (FDSkuNotFoundException e) {
+			// DO Nothing
 		} catch (FDGroupNotFoundException e) {
+			// DO Nothing
 		}
 		if(null != gsp){
 			groupPrices = new GroupPrices();
@@ -456,7 +476,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private static void populatePricingInfo(FDProduct fdProduct, 
+	private void populatePricingInfo(FDProduct fdProduct, 
 			Product product) {
 		Prices prices = new Prices();
 		product.setPrices(prices);
@@ -481,7 +501,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private static void populateSalesUnitInfo(FDProduct fdProduct,
+	private void populateSalesUnitInfo(FDProduct fdProduct,
 			 Product product) {
 		FDSalesUnit[] salesUnits = fdProduct.getSalesUnits();
 		SaleUnits saleUnits = new SaleUnits();
@@ -497,7 +517,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private static void populateNutritionInfo(FDProduct fdProduct,
+	private void populateNutritionInfo(FDProduct fdProduct,
 			 Product product) {
 		NutritionInfo nutritionInfo = new NutritionInfo();
 		product.setNutritionInfo(nutritionInfo);			
@@ -513,15 +533,5 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 			nutrition.setValue(BigDecimal.valueOf(fdNutrition.getValue()));
 			
 		}
-	}
-
-	
-	private static Session getSftpSession(Properties config)
-			throws JSchException {
-		Session session=jsch.getSession(sftpUser, sftpHost, 22);
-		session.setPassword(sftpPasswd);				
-		session.setConfig(config);
-		return session;
-	}
-   
+	}   
 }
