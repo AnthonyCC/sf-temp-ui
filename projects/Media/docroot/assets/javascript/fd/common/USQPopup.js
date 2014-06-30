@@ -27,8 +27,16 @@ var FreshDirect = FreshDirect || {};
         var popupContent;
         if ( ! (this.container = $('#USQPopup')).length ) {
 
-          popupContent = $('<div class="USQPopupContent"></div>').html(common.healthwarningpopup()).prepend('<a class="container-close USQ-close">Close</a>');
-          this.container = $('<div id="USQPopup"></div>').hide().append(popupContent).appendTo($('body'));
+        	$.ajax({
+        		url: '/media/editorial/site_pages/health_warning_overlay.html',
+        		context: this
+        	}).done(function(data) {
+        		popupContent = $('<div class="USQPopupContent"></div>').html(common.healthwarningpopup({ "mediaContent": data } )).prepend('<a class="container-close USQ-close">Close</a>');
+        		this.container = $('<div id="USQPopup"></div>').hide().append(popupContent).appendTo($('body'));
+        		this.opened = true;
+        		this.container.show();
+        	});
+          
 
           $(document).on('click', this.closeSelector, $.proxy(function(){
             this.close();
@@ -54,9 +62,10 @@ var FreshDirect = FreshDirect || {};
 
         if (!this.container) {
           this.initPopup();
+        } else {
+            this.opened = true;
+            this.container.show();
         }
-        this.opened = true;
-        this.container.show();
       }
     },
 
