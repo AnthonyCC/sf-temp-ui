@@ -71,7 +71,6 @@ public class AddToCartServlet extends BaseJsonServlet {
         
 		// Parse request data
         AddToCartRequestData reqData = parseRequestData( request, AddToCartRequestData.class );
-
         
 		// Get event source
 		EnumEventSource evtSrc = EnumEventSource.UNKNOWN;
@@ -82,12 +81,16 @@ public class AddToCartServlet extends BaseJsonServlet {
 		} catch (Exception ignore) {
 			LOG.warn( "Invalid event source, ignoring", ignore );
 		}
-
+		
+		//clear pending failures if in finalizing pending popup
+		if (EnumEventSource.FinalizingExternal.equals(evtSrc) && user instanceof FDSessionUser){
+		   	((FDSessionUser)user).setPendingExternalAtcItems(null);
+		}
+		
 		List<AddToCartItem> items = reqData.getItems(); 
 		if ( items == null ) {
        		returnHttpError( 400, "Bad JSON - items is missing" );	// 400 Bad Request
 		}
-		
 		
 		//validate items coming from external call - failures must be stored so they can be finalized
 		if (EnumEventSource.ExternalPage.equals(evtSrc)){
@@ -107,10 +110,6 @@ public class AddToCartServlet extends BaseJsonServlet {
 				processPendingExternAtcItem(user, item, evtSrc, simpleAtcItem);
 			}
 			return; //returns external ATC with OK - TODO simple validation, e.g. error for unavailable items
-	 	
-		//clear pending failures if in finalizing pending popup
-		} else if (EnumEventSource.FinalizingExternal.equals(evtSrc) && user instanceof FDSessionUser){
-	    	((FDSessionUser)user).setPendingExternalAtcItems(null);
 		}
 		
 		try {
