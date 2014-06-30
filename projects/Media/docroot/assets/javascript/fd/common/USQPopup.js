@@ -31,7 +31,7 @@ var FreshDirect = FreshDirect || {};
         		url: '/media/editorial/site_pages/health_warning_overlay.html',
         		context: this
         	}).done(function(data) {
-        		popupContent = $('<div class="USQPopupContent"></div>').html(common.healthwarningpopup({ "mediaContent": data } )).prepend('<a class="container-close USQ-close">Close</a>');
+        		popupContent = $('<div class="USQPopupContent"></div>').html(data).prepend('<a class="container-close USQ-close">Close</a>');
         		this.container = $('<div id="USQPopup"></div>').hide().append(popupContent).appendTo($('body'));
         		this.opened = true;
         		this.container.show();
