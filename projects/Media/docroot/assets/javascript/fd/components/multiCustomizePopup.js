@@ -194,8 +194,10 @@ var FreshDirect = FreshDirect || {};
     }
   });
 
-  multiCustomizePopup.render();
-  atcResultParser.listen();
+  if (FreshDirect.pendingCustomizations && Object.keys(FreshDirect.pendingCustomizations).length) {
+    multiCustomizePopup.render();
+    atcResultParser.listen();
+  }
 
   $(window).on("resize", function (e) {
     multiCustomizePopup.noscroll();
