@@ -183,7 +183,10 @@ var FreshDirect = FreshDirect || {};
             if (atcResultList.length) {
               // all item got into cart, cart changed, reloading
               multiCustomizePopup.popup.$el.find("[data-current-step]").attr("data-current-step", 3);
-              window.location.reload();
+              setTimeout(function () {
+                window.location.reload();
+              }, (fd.tests && fd.tests.waitBeforeReload) || 0);
+
             } else {
               // no cart change (or modifybrd popup), close popup and don't reload
               POPUPWIDGET.close.call(multiCustomizePopup);
