@@ -10,10 +10,12 @@ public enum ExternalAgency {
 	private static final Category LOGGER = LoggerFactory.getInstance(ExternalAgency.class);
 
 	public static ExternalAgency safeValueOf(String externalAgencyStr){
-		try {
-			return ExternalAgency.valueOf(externalAgencyStr);
-		} catch (Exception e){
-			LOGGER.error("ExternalAgency does not exist: " + externalAgencyStr, e);
+		if (externalAgencyStr!=null){
+			try {
+				return ExternalAgency.valueOf(externalAgencyStr);
+			} catch (Exception e){
+				LOGGER.error("ExternalAgency does not exist: " + externalAgencyStr, e);
+			}
 		}
 		return null;
 	}
