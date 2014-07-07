@@ -16,6 +16,8 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import org.apache.commons.lang.StringUtils;
+
 import weblogic.security.SimpleCallbackHandler;
 import weblogic.security.services.Authentication;
 
@@ -29,6 +31,8 @@ import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpCreditCardModel;
 import com.freshdirect.customer.ErpECheckModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpCreateCaseCommand;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -40,6 +44,19 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.payment.gateway.BillingInfo;
+import com.freshdirect.payment.gateway.CreditCard;
+import com.freshdirect.payment.gateway.Gateway;
+import com.freshdirect.payment.gateway.GatewayType;
+import com.freshdirect.payment.gateway.Merchant;
+import com.freshdirect.payment.gateway.PaymentMethod;
+import com.freshdirect.payment.gateway.Request;
+import com.freshdirect.payment.gateway.Response;
+import com.freshdirect.payment.gateway.TransactionType;
+import com.freshdirect.payment.gateway.impl.BillingInfoFactory;
+import com.freshdirect.payment.gateway.impl.GatewayFactory;
+import com.freshdirect.payment.gateway.impl.PaymentMethodFactory;
+import com.freshdirect.payment.gateway.impl.RequestFactory;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
@@ -80,7 +97,14 @@ public class CrmCCNumberControllerTag extends AbstractControllerTag {
 			Subject subject = Authentication.login(new SimpleCallbackHandler(agent.getUserId(), password));
 			FDOrderI order = FDCustomerManager.getOrder(this.orderId);
 			List ccList = new ArrayList();
-			ccList.add(order.getPaymentMethod());
+			ErpPaymentMethodI pm=order.getPaymentMethod();
+			if(StringUtils.isEmpty(pm.getProfileID())) {
+				ccList.add(pm);
+			} else {
+				String accNum=getAccountNumber(pm.getProfileID());
+				pm.setAccountNumber(accNum);
+				ccList.add(pm);
+			}
 			pageContext.setAttribute(this.id, ccList);
 //			CrmManager.getInstance().logViewAccount(agentId, order.getCustomerId());
 			if(order.getPaymentMethod()!= null /*&& (order.getPaymentMethod() instanceof ErpECheckModel || order.getPaymentMethod() instanceof ErpCreditCardModel )*/){
@@ -104,6 +128,25 @@ public class CrmCCNumberControllerTag extends AbstractControllerTag {
 		return true;
 	}
 
+	private String getAccountNumber(String profileId) {
+		String accNum="";
+		Request _request=RequestFactory.getRequest(TransactionType.GET_PROFILE);
+		CreditCard cc=PaymentMethodFactory.getCreditCard();
+		cc.setBillingProfileID(profileId);
+		BillingInfo billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FRESHDIRECT,cc);
+		_request.setBillingInfo(billinginfo);
+		Gateway gateway=GatewayFactory.getGateway(GatewayType.PAYMENTECH);
+		try {
+			Response _response=gateway.getProfile(_request);
+			PaymentMethod pm=_response.getBillingInfo()!=null?_response.getBillingInfo().getPaymentMethod():null;
+			if(pm!=null) {
+				accNum=pm.getAccountNumber();
+			}
+		} catch (ErpTransactionException e) {
+				
+		}
+		return accNum;
+	}
 	private void checkCCViewsLimit() throws FDResourceException {
 		Date date= new Date();
 		Integer ccLimit = FDStoreProperties.getCrmCCDetailsLookupLimit();
