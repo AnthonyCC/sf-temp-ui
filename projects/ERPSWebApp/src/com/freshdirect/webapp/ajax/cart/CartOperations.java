@@ -581,27 +581,11 @@ public class CartOperations {
 	
 	// =========================================== Methods for add to cart processing =========================================== 
 	
-	/**
-	 * 	Cartline processing: lookups, validation, post-processing. 
-	 * 
-	 * Salvaged from FDShoppingCartControllerTag.
-	 * 
-	 * No support for 'original cartline scenario'.
-	 * 
-	 * Inputs (AddToCartItem) : 
-	 * 	sku code is always required.
-	 *  productId, categoryId, recipeId are optional to provide context. 
-	 *   
-	 * @param user
-	 * @param cart
-	 * @param item
-	 * @param cartLinesToAdd
-	 * @param messages
-	 * @return the created cartline or null on error.
-	 */
-	private static FDCartLineI processCartLine(FDUserI user, FDCartModel cart, AddToCartItem item, List<FDCartLineI> cartLinesToAdd, AddToCartResponseDataItem responseItem, String variantId ) {
-
-		String skuCode = item.getSkuCode();
+	
+	
+	public static ProductModel getProductModelFromAddToCartItem (AddToCartItem item, AddToCartResponseDataItem responseItem){
+		
+		String skuCode =  item.getSkuCode();
 		responseItem.setItemId(item.getAtcItemId());
 		if ( skuCode == null || "".equals(skuCode)) {
 			// Missing skuCode
@@ -619,10 +603,6 @@ public class CartOperations {
 		//		else
 		//			catName = request.getParameter(paramCatId);
 		
-		
-		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-		//									PRODUCTMODEL
-		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		
 		ProductModel prodNode = null;		
 		try {
@@ -650,10 +630,12 @@ public class CartOperations {
 			return null;
 		}
 		
-		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-		//									FDPRODUCT
-		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		return prodNode;
+	}
+	
+	public static FDProduct getFDProductFromAddToCartItem(AddToCartItem item, AddToCartResponseDataItem responseItem){
 		
+		String skuCode = item.getSkuCode();
 		FDProduct product = null;
 		try {
 			product = FDCachedFactory.getProduct(FDCachedFactory.getProductInfo(skuCode));
@@ -666,7 +648,44 @@ public class CartOperations {
 			responseItem.setMessage("Not available (SKU not found)");
 			return null;
 		}
-		
+		return product;
+	}
+	
+	/**
+	 * 	Cartline processing: lookups, validation, post-processing. 
+	 * 
+	 * Salvaged from FDShoppingCartControllerTag.
+	 * 
+	 * No support for 'original cartline scenario'.
+	 * 
+	 * Inputs (AddToCartItem) : 
+	 * 	sku code is always required.
+	 *  productId, categoryId, recipeId are optional to provide context. 
+	 *   
+	 * @param user
+	 * @param cart
+	 * @param item
+	 * @param cartLinesToAdd
+	 * @param messages
+	 * @return the created cartline or null on error.
+	 */
+	private static FDCartLineI processCartLine(FDUserI user, FDCartModel cart, AddToCartItem item, List<FDCartLineI> cartLinesToAdd, AddToCartResponseDataItem responseItem, String variantId ) {
+
+		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		//									PRODUCTMODEL
+		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		ProductModel prodNode = getProductModelFromAddToCartItem(item, responseItem);
+		if (prodNode == null){
+			return null;
+		}
+
+		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		//									FDPRODUCT
+		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		FDProduct product = getFDProductFromAddToCartItem(item, responseItem);
+		if (product == null){
+			return null;
+		}
 		
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		//									QUANTITY & SALESUNIT
