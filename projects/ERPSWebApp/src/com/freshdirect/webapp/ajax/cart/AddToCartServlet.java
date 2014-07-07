@@ -94,6 +94,7 @@ public class AddToCartServlet extends BaseJsonServlet {
 		
 		//validate items coming from external call - failures must be stored so they can be finalized
 		if (EnumEventSource.ExternalPage.equals(evtSrc)){
+			AddToCartResponseData responseData = new AddToCartResponseData();
 			for (AddToCartItem item: items){
 				FDProduct product = null;
 				try {
@@ -107,9 +108,14 @@ public class AddToCartServlet extends BaseJsonServlet {
 				}
 				
 				boolean simpleAtcItem = CartOperations.validateConfiguration(product,item.getConfiguration())==null; 
-				processPendingExternAtcItem(user, item, evtSrc, simpleAtcItem);
+				
+				AddToCartResponseDataItem responseItem = processPendingExternAtcItem(user, item, evtSrc, simpleAtcItem);
+				if (responseItem.getStatus()!=AddToCartResponseDataItem.Status.SUCCESS){ //only return errors
+					responseData.getAtcResult().add(responseItem);
+				}
 			}
-			return; //returns external ATC with OK - TODO simple validation, e.g. error for unavailable items
+			writeResponseData(response, responseData);
+			return;
 		}
 		
 		try {
@@ -303,7 +309,17 @@ public class AddToCartServlet extends BaseJsonServlet {
 		return result;
 	}
 
-	private static void processPendingExternAtcItem(FDUserI user, AddToCartItem item, EnumEventSource evtSrc, boolean simplePendingItem){
+	private static AddToCartResponseDataItem processPendingExternAtcItem(FDUserI user, AddToCartItem item, EnumEventSource evtSrc, boolean simplePendingItem){
+		
+		//validation
+		AddToCartResponseDataItem responseItem = new AddToCartResponseDataItem();
+		responseItem.setCategoryId(item.getCategoryId());
+		responseItem.setProductId(item.getProductId());
+		
+		if (CartOperations.getProductModelFromAddToCartItem(item, responseItem) == null || CartOperations.getFDProductFromAddToCartItem(item, responseItem) == null){
+			return responseItem;
+		}
+		
 		if (user instanceof FDSessionUser) {
 			FDSessionUser sessionUser = (FDSessionUser) user;
 			
@@ -330,5 +346,8 @@ public class AddToCartServlet extends BaseJsonServlet {
 			
 			pendingAtcGroup.add(item);
 		}
+		
+		responseItem.setStatus(AddToCartResponseDataItem.Status.SUCCESS);
+		return responseItem; //validation is OK
 	}
 }
