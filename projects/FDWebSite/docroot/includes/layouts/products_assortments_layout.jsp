@@ -182,7 +182,6 @@
 		globalUniqueProducts.addAll(promotionProducts);
 		
 		%>
-	<fd:javascript src="/assets/yui-2.9.0/selector/selector-min.js" />
 		<script type="text/javascript">
 			<%--
 				Override the QB show panel function to make it look and act like how we want for ddpp
@@ -381,7 +380,7 @@
 		<style>
 			.product-grid { width: 967px; }
 			.items { width: 971px; }
-			.ddpa_erpCat { font-size:30px; color:green; height:1em !important}
+			.ddpa_erpCat { font-size:30px; color:green; height: auto !important}
 			.ddpa_erpCat_Center { width: 250px; background-color:#F3E2A9; border-style:solid;border-width:1px; border-color:green;}
 			.grid-view .grid-item-container { width: 242px; }
 		</style>
@@ -422,7 +421,7 @@
 				</fd:ErrorHandler>
 				<% //END error messaging %>
 				<div style="text-align: left;"><%-- this fixes chrome, don't remove --%>
-					<div class="ddpp_feat_prod_cont grid-view" id="ddpp_feat_prod_cont">
+					<div class="grid-view" id="ddpp_feat_prod_cont">
 				
 					<%
 						int curLeftPos = 0;
@@ -583,5 +582,3 @@
 		}
 	}
 %>
-<fd:javascript src="/assets/javascript/fd/common/utils.js" />
-<fd:javascript src="/assets/javascript/fd/modules/search/statusupdate.js" />

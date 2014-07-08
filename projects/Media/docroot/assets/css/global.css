@@ -34,10 +34,10 @@ img { border:none }
 
 /* "common" spacer row sizes */
 .onePxTall { font-size: 1px; line-height: 0px; }
-.threePxTall { font-size: 1px; line-height: 3px; }
-.fourPxTall { font-size: 1px; line-height: 4px; }
-.fivePxTall { font-size: 1px; line-height: 5px; }
-.sixPxTall { font-size: 1px; line-height: 6px; }
+.threePxTall { font-size: 1px; line-height: 0px; }
+.fourPxTall { font-size: 1px; line-height: 0px; }
+.fivePxTall { font-size: 1px; line-height: 0px; }
+.sixPxTall { font-size: 1px; line-height: 0px; }
 
 .space2pix { font-size: 2px; }
 .space4pix { font-size: 4px; }
