@@ -65,13 +65,13 @@
         <label>configuration: <input name="configuration" /></label>
       </p>
       <p>
-        <label>externalAgency: <input name="externalAgency" /></label>
+        <label>externalAgency: <input name="externalAgency" value="FOODILY"/></label>
       </p>
       <p>
-        <label>externalSource: <input name="externalSource" /></label>
+        <label>externalSource: <input name="externalSource" value="Recipe soucre, http://reci.pes/idk/"/></label>
       </p>
       <p>
-        <label>externalGroup: <input name="externalGroup" /></label>
+        <label>externalGroup: <input name="externalGroup" value="Fish and cheese and avocado"/></label>
       </p>
       <p>
         <button>Go!</button>
@@ -276,13 +276,16 @@
     box.find('input').each(function () {
       var el = $(this);
 
-      data[el.attr('name')] = el.val();
+      if(el.val()){
+        data[el.attr('name')] = el.val();
+      }
     });
 
     if (wrapper) {
       var subdata = data;
       data = {};
       data[wrapper] = [subdata];
+      data.eventSource = "ExternalPage";
     }
 
     if (datafunc && window[datafunc]) {
