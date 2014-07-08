@@ -152,6 +152,11 @@ var FreshDirect = FreshDirect || {};
         return data;
       }
     },
+    showSubtotalEstimationByDefault : {
+      value : function(){
+        this.popup.$el.find("input").change();
+      }
+    },
     open: {
       value: function (pendingCustomizations) {
         var data = this.processPendingCustomizations(pendingCustomizations);
@@ -164,6 +169,8 @@ var FreshDirect = FreshDirect || {};
         if (data.state) {
           this.changeStep(data.state);
         }
+
+        this.showSubtotalEstimationByDefault();
       }
     }
   });
