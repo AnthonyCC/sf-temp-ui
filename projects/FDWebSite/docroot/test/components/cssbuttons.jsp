@@ -26,6 +26,7 @@
 			<li><button class="cssbutton white">white</button></li>
 			<li><button class="cssbutton white transparent">white + transparent</button> - for icon use</li>
             <li><button class="cssbutton black">black</li>
+            <li><button class="cssbutton grey">grey</li>
 		</ol>
 		<h2>sizes</h2>
 		<ol>

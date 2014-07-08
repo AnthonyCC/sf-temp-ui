@@ -146,6 +146,9 @@ span.cssbutton.notext[class*=" icon-"] {
 .cssbutton.black {	background:#000; }
 .cssbutton.black:focus,.cssbutton.black:hover { background:#333; }
 
+.cssbutton.grey {	background:#AAA; }
+.cssbutton.grey:focus,.cssbutton.grey:hover { background:#AAA; }
+
 .cssbutton.white,
 .cssbutton.white:focus,.cssbutton.white:hover,
 .cssbutton.red,
@@ -163,7 +166,9 @@ span.cssbutton.notext[class*=" icon-"] {
 .cssbutton.transparent,
 .cssbutton.transparent:focus,.cssbutton.transparent:hover,
 .cssbutton.black,
-.cssbutton.black:focus,.cssbutton.black:hover  {
+.cssbutton.black:focus,.cssbutton.black:hover,
+.cssbutton.grey,
+.cssbutton.grey:focus,.cssbutton.grey:hover{
 	color:white;
 }
 

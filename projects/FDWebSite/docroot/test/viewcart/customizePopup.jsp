@@ -104,7 +104,7 @@
                     <option value="E06">3" THICK</option>
              </select>
           
-             <button class="cssbutton green css-help-button" 
+             <button class="cssbutton grey css-help-button" 
              onclick="pop('/shared/popup.jsp?catId=mt_b_lcl_1&amp;prodId=bstk_flet_dfat_local&amp;attrib=SALES_UNIT_DESCRIPTION&amp;tmpl=large',335,375)">?</button>
           
             <select name="C_MT_BF_PAK" data-component="productDataConfiguration" data-productdata-name="C_MT_BF_PAK" data-atl-required="true" data-atc-required="true" class="missing-data">
@@ -112,12 +112,12 @@
               <option value="ST">Standard Pack - no charge</option>
               <option value="VP">Vacuum Pack - 0.50$ - no charge</option>
             </select>
-            <button class="cssbutton green css-help-button" onclick="pop('/shared/fd_def_popup.jsp?charName=C_MT_BF_PAK&amp;tmpl=small_pop&amp;title=Packaging',335,375)">?</button>
+            <button class="cssbutton grey css-help-button" onclick="pop('/shared/fd_def_popup.jsp?charName=C_MT_BF_PAK&amp;tmpl=small_pop&amp;title=Packaging',335,375)">?</button>
             
             <label>
               <input type="checkbox" name="C_MT_BF_TW4" data-unchecked-value="N" value="TO" data-component="productDataConfiguration" data-productdata-name="C_MT_BF_TW4">Tie This for Me
             </label>
-            <button class="cssbutton green css-help-button" onclick="pop('/shared/fd_def_popup.jsp?charName=C_MT_BF_TW4&amp;tmpl=small_pop&amp;title=Tie This for Me',335,375)">?</button>
+            <button class="cssbutton grey css-help-button" onclick="pop('/shared/fd_def_popup.jsp?charName=C_MT_BF_TW4&amp;tmpl=small_pop&amp;title=Tie This for Me',335,375)">?</button>
         </div>
         <div class="itemlist-item-controls">
           <div class="itemlist-item-controls-subtotal">
@@ -235,7 +235,7 @@
                     <option value="E06">3" THICK</option>
              </select>
           
-             <button class="cssbutton green css-help-button" 
+             <button class="cssbutton grey css-help-button" 
              onclick="pop('/shared/popup.jsp?catId=mt_b_lcl_1&amp;prodId=bstk_flet_dfat_local&amp;attrib=SALES_UNIT_DESCRIPTION&amp;tmpl=large',335,375)">?</button>
           
             <select name="C_MT_BF_PAK" data-component="productDataConfiguration" data-productdata-name="C_MT_BF_PAK" data-atl-required="true" data-atc-required="true" class="missing-data">
@@ -243,12 +243,12 @@
               <option value="ST">Standard Pack - no charge</option>
               <option value="VP">Vacuum Pack - 0.50$ - no charge</option>
             </select>
-            <button class="cssbutton green css-help-button" onclick="pop('/shared/fd_def_popup.jsp?charName=C_MT_BF_PAK&amp;tmpl=small_pop&amp;title=Packaging',335,375)">?</button>
+            <button class="cssbutton grey css-help-button" onclick="pop('/shared/fd_def_popup.jsp?charName=C_MT_BF_PAK&amp;tmpl=small_pop&amp;title=Packaging',335,375)">?</button>
             
             <label>
               <input type="checkbox" name="C_MT_BF_TW4" data-unchecked-value="N" value="TO" data-component="productDataConfiguration" data-productdata-name="C_MT_BF_TW4">Tie This for Me
             </label>
-            <button class="cssbutton green css-help-button" onclick="pop('/shared/fd_def_popup.jsp?charName=C_MT_BF_TW4&amp;tmpl=small_pop&amp;title=Tie This for Me',335,375)">?</button>
+            <button class="cssbutton grey css-help-button" onclick="pop('/shared/fd_def_popup.jsp?charName=C_MT_BF_TW4&amp;tmpl=small_pop&amp;title=Tie This for Me',335,375)">?</button>
         </div>
         <div class="itemlist-item-controls">
           <div class="itemlist-item-controls-subtotal">
