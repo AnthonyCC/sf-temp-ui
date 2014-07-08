@@ -157,6 +157,25 @@ var FreshDirect = FreshDirect || {};
         this.popup.$el.find("input").change();
       }
     },
+    validate : {
+      value : function(){
+          var self = this,
+              isValid = true;
+
+          $.each(this.popup.$el.find("[data-atc-required='true']"), function(e){
+              if(!$(this).val()){
+                isValid = false;
+              }
+          });
+
+          if(isValid){
+            self.popup.$el.find(self.bodySelector).removeClass("invalid");
+          }
+          else{
+            self.popup.$el.find(self.bodySelector).addClass("invalid");
+          }
+      }
+    },
     open: {
       value: function (pendingCustomizations) {
         var data = this.processPendingCustomizations(pendingCustomizations);
@@ -171,6 +190,7 @@ var FreshDirect = FreshDirect || {};
         }
 
         this.showSubtotalEstimationByDefault();
+        this.validate();
       }
     }
   });
@@ -234,6 +254,15 @@ var FreshDirect = FreshDirect || {};
   $('#'+multiCustomizePopup.popupId).on('click', '[data-component="delete-and-close"]', function (e) {
       multiCustomizePopup.changeStep("3");
   });
+
+  $('#'+multiCustomizePopup.popupId).on('click', '[data-atc-required="true"]', function (e) {
+      multiCustomizePopup.validate();
+  });
+
+  $('#'+multiCustomizePopup.popupId).on('click', '.deletefromrecipe', function (e) {
+      multiCustomizePopup.validate();
+  });
+
 
   fd.modules.common.utils.register("components", "multiCustomizePopup", multiCustomizePopup, fd);
 }(FreshDirect));

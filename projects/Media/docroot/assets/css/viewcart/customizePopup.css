@@ -144,6 +144,10 @@
   display:block;  
 }
 
+.customize-popup.invalid .footer button.cssbutton[data-atc-blocking]{
+  display:none;
+}
+
 .customize-popup .itemlist-item-controls-subtotal {
   padding-bottom: .5em;
 }
