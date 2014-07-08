@@ -166,6 +166,8 @@ public class AddToCartServlet extends BaseJsonServlet {
            				break;
            			}
            		}
+           	} else if (EnumEventSource.FinalizingExternal.toString().equals(reqData.getEventSource())){
+   				responseData.setRedirectUrl("/view_cart.jsp");
            	}
            	
 			writeResponseData( response, responseData );
