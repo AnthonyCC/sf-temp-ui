@@ -963,6 +963,9 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 				}
 				cart.setOrderLine(cartIndex, newCartLine);
 				newCartLine.setSource(getEventSource());
+				newCartLine.setExternalAgency(originalLine.getExternalAgency());
+				newCartLine.setExternalSource(originalLine.getExternalSource());
+				newCartLine.setExternalGroup(originalLine.getExternalGroup());
 				FDEventUtil.logEditCartEvent(newCartLine, request);
 				return true;
 			}
