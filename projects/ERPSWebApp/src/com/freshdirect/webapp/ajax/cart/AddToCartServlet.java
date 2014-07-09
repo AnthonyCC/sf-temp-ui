@@ -89,7 +89,11 @@ public class AddToCartServlet extends BaseJsonServlet {
 		
 		List<AddToCartItem> items = reqData.getItems(); 
 		if ( items == null ) {
-       		returnHttpError( 400, "Bad JSON - items is missing" );	// 400 Bad Request
+			if (EnumEventSource.FinalizingExternal.equals(evtSrc)) {
+				return; //200 OK - finalizing pending popup may send an empty atc just to delete pending items
+			} else {
+				returnHttpError( 400, "Bad JSON - items is missing" );	// 400 Bad Request
+			}
 		}
 		
 		//validate items coming from external call - failures must be stored so they can be finalized
