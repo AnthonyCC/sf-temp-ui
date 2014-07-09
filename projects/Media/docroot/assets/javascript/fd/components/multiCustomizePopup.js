@@ -44,11 +44,11 @@ var FreshDirect = FreshDirect || {};
     },
     changeStep : {
         value : function(step){
-          this.popup.$el.find("[data-current-step]").attr("data-current-step", step);
           if (+step === 3) {
             // issue empty atc call
             this.emptyAtc();
           }
+          this.popup.$el.find("[data-current-step]").attr("data-current-step", step);
         }
     },
     emptyAtc: {
@@ -57,12 +57,16 @@ var FreshDirect = FreshDirect || {};
 
         $('#'+this.popupId+' [data-component="product"]').remove();
 
+        if(!items.length){
+          POPUPWIDGET.close.call(multiCustomizePopup);
+        }
+
         fd.common.dispatcher.signal('server', {
           url: '/api/addtocart',
           data: {
             data: JSON.stringify({
               eventSource: 'FinalizingExternal',
-              items: items
+              items: items.length ? items : null
             })
           },
           method: 'POST'
