@@ -2,8 +2,10 @@ package com.freshdirect.webapp.ajax.cart;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
@@ -22,6 +25,8 @@ import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.coremetrics.builder.ConversionEventTagModelBuilder;
+import com.freshdirect.fdstore.coremetrics.tagmodel.ConversionEventTagModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -54,7 +59,63 @@ public class AddToCartServlet extends BaseJsonServlet {
 	private static final Logger LOG = LoggerFactory.getInstance( AddToCartServlet.class );
 	private static final String SIMPLE_PENDING_ATC_ITEM_GROUP = "_simple_";
 	
+	private static class ExtSource {
+		ExternalAgency agency;
+		String externalGroup;
+		String externalSource;
+
+		public ExtSource(ExternalAgency agency, String externalGroup,
+				String externalSource) {
+			this.agency = agency;
+			this.externalGroup = externalGroup;
+			this.externalSource = externalSource;
+		}
+
+		public ExtSource(FDCartLineI item) {
+			this( item.getExternalAgency(), item.getExternalGroup(), item.getExternalSource() );			
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((agency == null) ? 0 : agency.hashCode());
+			result = prime * result
+					+ ((externalGroup == null) ? 0 : externalGroup.hashCode());
+			result = prime
+					* result
+					+ ((externalSource == null) ? 0 : externalSource.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			ExtSource other = (ExtSource) obj;
+			if (agency != other.agency)
+				return false;
+			if (externalGroup == null) {
+				if (other.externalGroup != null)
+					return false;
+			} else if (!externalGroup.equals(other.externalGroup))
+				return false;
+			if (externalSource == null) {
+				if (other.externalSource != null)
+					return false;
+			} else if (!externalSource.equals(other.externalSource))
+				return false;
+			return true;
+		}
+	}
+
 	
+
 	@Override
 	protected int getRequiredUserLevel() {
 		return FDUserI.GUEST;
@@ -171,7 +232,42 @@ public class AddToCartServlet extends BaseJsonServlet {
            			}
            		}
            	} else if (EnumEventSource.FinalizingExternal.toString().equals(reqData.getEventSource())){
-   				responseData.setRedirectUrl("/view_cart.jsp");
+           		// as a bonus, append conversion event
+           		
+           		// collect all possible external sources of recipes
+                Set<ExtSource> extSources = new HashSet<ExtSource>();
+           		for (FDCartLineI item : cart.getOrderLines()) {
+           			if (item.getExternalAgency() != null) {
+           				ExtSource esrc = new ExtSource( item );
+           				extSources.add(esrc);
+           			}
+           		}
+
+           		for (ExtSource esrc : extSources) {
+	           		ConversionEventTagModel model = new ConversionEventTagModel();
+
+	           		// setup model
+	           		model.setEventId( esrc.agency.name() );
+	           		model.setActionType(ConversionEventTagModelBuilder.ACTION_END);	// = '2'
+	           		model.setEventCategoryId("Recipe");								// = 'Recipe'
+	           		model.setPoints(ConversionEventTagModelBuilder.DEFAULT_POINTS);	// = '1'
+	           		model.getAttributesMaps().put(5, esrc.externalGroup );
+	          		model.getAttributesMaps().put(8, esrc.externalSource );
+
+	          		// serialize model
+	        		List<String> elementData = new ArrayList<String>();
+	        		elementData.add( "cmCreateConversionEventTag" );
+	        		elementData.add( model.getEventId() );
+	        		elementData.add( model.getActionType() );
+	        		elementData.add( model.getEventCategoryId() );
+	        		elementData.add( model.getPoints() );
+	        		elementData.add( ConversionEventTagModel.mapToAttrString( model.getAttributesMaps() ) );
+	   
+	        		// add to response data
+	          		responseData.addCoremetrics(elementData);
+           		}
+
+           		responseData.setRedirectUrl("/view_cart.jsp");
            	}
            	
 			writeResponseData( response, responseData );

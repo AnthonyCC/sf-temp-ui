@@ -32,9 +32,9 @@ public class ConversionEventTagModelBuilder  {
 	public static String EVENT_BECAME_A_CUSTOMER = "became_a_customer";
 	public static String EVENT_SO_HELP = "so_help";
 	public static String EVENT_EMAIL = "email";
-	private static String ACTION_START = "1";
-	private static String ACTION_END = "2";
-	private static String DEFAULT_POINTS = "1";
+	public static String ACTION_START = "1";
+	public static String ACTION_END = "2";
+	public static String DEFAULT_POINTS = "1";
 
 	private ConversionEventTagModel tagModel = new ConversionEventTagModel();
 	
