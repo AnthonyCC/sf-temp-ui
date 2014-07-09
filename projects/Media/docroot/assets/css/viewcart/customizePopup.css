@@ -170,3 +170,7 @@
 .customize-popup .qty strong{
   text-transform:lowercase;
 }
+
+.customize-popup .errorcontainer span.error{
+  display:none;
+}
