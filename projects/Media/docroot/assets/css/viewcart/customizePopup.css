@@ -166,3 +166,7 @@
 .customize-popup .shopfromlists[data-name="_simple_"] [data-component="product"] {
   display: none;
 }
+
+.customize-popup .qty strong{
+  text-transform:lowercase;
+}
