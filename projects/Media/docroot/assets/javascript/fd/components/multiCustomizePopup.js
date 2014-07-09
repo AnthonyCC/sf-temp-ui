@@ -160,20 +160,21 @@ var FreshDirect = FreshDirect || {};
     validate : {
       value : function(){
           var self = this,
-              isValid = true;
+              isValid = true,
+              $pop = self.popup.$el;
 
           $.each(this.popup.$el.find("[data-atc-required='true']"), function(e){
               if(!$(this).val()){
+                $(this).addClass("missing-data");
                 isValid = false;
+              }
+              else{
+                $(this).removeClass("missing-data");
               }
           });
 
-          if(isValid){
-            self.popup.$el.find(self.bodySelector).removeClass("invalid");
-          }
-          else{
-            self.popup.$el.find(self.bodySelector).addClass("invalid");
-          }
+          $pop.toggleClass("valid", isValid);
+          $pop.toggleClass("invalid", !isValid);
       }
     },
     open: {

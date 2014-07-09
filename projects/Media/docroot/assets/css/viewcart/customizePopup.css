@@ -144,7 +144,8 @@
   display:block;  
 }
 
-.customize-popup.invalid .footer button.cssbutton[data-atc-blocking]{
+#multi-customize-popup.invalid .footer button.cssbutton[data-atc-blocking],
+#multi-customize-popup.valid .qs-popup-close-icon{
   display:none;
 }
 
