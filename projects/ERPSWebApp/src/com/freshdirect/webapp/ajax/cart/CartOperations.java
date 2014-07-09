@@ -571,6 +571,13 @@ public class CartOperations {
 			
 			event.setVariantId( cartLine.getVariantId() );
 			
+			// [APPDEV-3683] Duplicate value of external agency field (e.g. Foodily) into tracking code
+			if (FDEventFactory.FD_ADD_TO_CART_EVENT.equals(event.getEventType())
+					&& event.getTrackingCode() == null
+					&& cartLine.getExternalAgency() != null) {
+				event.setTrackingCode( cartLine.getExternalAgency().toString() );
+			}
+
 			EventLogger.getInstance().logEvent(event);
 		
 		} catch (Exception e) {
