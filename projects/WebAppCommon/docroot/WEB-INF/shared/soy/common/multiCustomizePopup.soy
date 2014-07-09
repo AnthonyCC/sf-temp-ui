@@ -79,14 +79,16 @@
 
   {let $hasSingleSalesUnit:(length($item.salesUnit)==1) /}
   {if not $hasSingleSalesUnit}
-    {call common.rawSalesunit}
-      {param options:$item.salesUnit /}
-      {param label:$item.salesUnitLabel /}
-      {param optional:false /}
-    {/call}
-    {if $item.salesUnitDescrPopup}
-      <button class="cssbutton grey css-help-button" onclick="pop('{$item.salesUnitDescrPopup}',335,375)">?</button>
-    {/if}
+    <div class="vertical-top">
+      {call common.rawSalesunit}
+        {param options:$item.salesUnit /}
+        {param label:$item.salesUnitLabel /}
+        {param optional:false /}
+      {/call}
+      {if $item.salesUnitDescrPopup}
+        <button class="cssbutton grey css-help-button" onclick="pop('{$item.salesUnitDescrPopup}',335,375)">?</button>
+      {/if}
+    </div>
   {else}
     <input type="hidden" class="salesunit" data-component="salesunit" data-productdata-name="salesUnit" value="{$item.salesUnit[0].id}"/>
   {/if}

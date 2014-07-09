@@ -29,6 +29,11 @@
   margin-bottom:15px;
 }
 
+.customize-popup .vertical-top{
+  display:inline-block;
+  vertical-align:top;
+}
+
 .customize-popup .strong{
   font-weight:bold;
 }
