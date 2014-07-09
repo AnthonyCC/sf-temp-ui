@@ -42,7 +42,10 @@ public class QuickShopLineItem extends ProductData {
 	private boolean useReplacement = false;
 	private QuickShopLineItem tempConfig;
 	
-	
+	//for modify popup to respect externalXXX fields
+	private String externalAgency; //e.g. Foodily
+	private String externalSource; //e.g. Recipe source
+	private String externalGroup; //e.g. Recipe name
 
 	
 
@@ -120,5 +123,23 @@ public class QuickShopLineItem extends ProductData {
 	}
 	public void setTempConfig(QuickShopLineItem tempConfig) {
 		this.tempConfig = tempConfig;
+	}
+	public String getExternalAgency() {
+		return externalAgency;
+	}
+	public void setExternalAgency(String externalAgency) {
+		this.externalAgency = externalAgency;
+	}
+	public String getExternalSource() {
+		return externalSource;
+	}
+	public void setExternalSource(String externalSource) {
+		this.externalSource = externalSource;
+	}
+	public String getExternalGroup() {
+		return externalGroup;
+	}
+	public void setExternalGroup(String externalGroup) {
+		this.externalGroup = externalGroup;
 	}
 }

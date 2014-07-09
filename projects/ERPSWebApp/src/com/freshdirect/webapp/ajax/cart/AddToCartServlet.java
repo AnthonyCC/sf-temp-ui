@@ -271,9 +271,13 @@ public class AddToCartServlet extends BaseJsonServlet {
 	        		continue;
 	        	}
 	        	
-	        	result.getItem().setItemId(item.getAtcItemId());
+	        	QuickShopLineItem quickShopLineItem = result.getItem();
+	        	quickShopLineItem.setItemId(item.getAtcItemId());
+	        	quickShopLineItem.setExternalAgency(item.getExternalAgency());
+	        	quickShopLineItem.setExternalGroup(item.getExternalGroup());
+	        	quickShopLineItem.setExternalSource(item.getExternalSource());
 	        	
-				pendingItems.add(result.getItem());
+				pendingItems.add(quickShopLineItem);
 			} catch (FDSkuNotFoundException e) {
 				continue; //skip item for now
 			} catch (FDResourceException e){
