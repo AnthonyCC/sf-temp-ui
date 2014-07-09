@@ -50,12 +50,12 @@
 }
 
 .customize-popup .itemlist-item{
-  border:none;
+  border-top:1px solid #CCC;
+  border-bottom:none;
 }
 
-.customize-popup .itemlist-separator{
-  border-top:1px solid #CCC;
-  height:0px;
+.customize-popup .itemlist-item:first-child{
+  border:none;
 }
 
 .customize-popup .cust-title{
