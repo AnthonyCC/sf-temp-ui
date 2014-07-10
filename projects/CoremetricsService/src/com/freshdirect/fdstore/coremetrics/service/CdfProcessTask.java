@@ -60,7 +60,10 @@ public class CdfProcessTask {
 	private void generateCdfModel(){
 
 		Set<String> categoryKeys = new HashSet<String>(); 
-		
+
+		// [APPDEV-2907] Add mobile keys
+		addMobileKeys();
+
 		for (String catIdDir : FDStoreProperties.getCoremetricsCatIdDirs().split(",")) {
 			addCmPageViewTagCategory(catIdDir, categoryKeys);
 		}
@@ -77,7 +80,7 @@ public class CdfProcessTask {
 			addCmPageViewTagCategory(((EnumEventSource) eventEnum).toString(), categoryKeys);
 		}
 		
-		//site feature used in shop tags as category
+		// [APPDEV-2907] site feature used in shop tags as category
 		addSiteFeatureKeys(EnumSiteFeature.getEnumList());
 
 		//external agency, e.g. Foodily
@@ -104,6 +107,15 @@ public class CdfProcessTask {
 		}
 	}
 	
+	private void addMobileKeys() {
+		// [id],MOBILE,"MOBILE",      <---- there is no parent MOBILE category today
+		// [id],MOBILE_OTHER,"MOBILE OTHER",MOBILE
+		// [id],MOBILE_ALL,"MOBILE ALL",MOBILE
+
+		cdfRowModels.add(new CdfRowModel("MOBILE", "Category: MOBILE", null));
+		cdfRowModels.add(new CdfRowModel("MOBILE_OTHER", "Category: MOBILE_OTHER", "MOBILE"));
+		cdfRowModels.add(new CdfRowModel("MOBILE_ALL", "Category: MOBILE ALL", "MOBILE"));
+	}
 	
 	private void processCmsCategory(ProductContainer cat, String parentCatId) {
 		
