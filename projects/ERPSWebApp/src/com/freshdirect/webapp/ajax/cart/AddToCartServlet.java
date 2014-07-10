@@ -387,7 +387,13 @@ public class AddToCartServlet extends BaseJsonServlet {
 		for(FDCartLineI cartLine : cart.getOrderLines()){
 			QuickShopLineItemWrapper wrapper = QuickShopHelper.createItemCore(cartLine, null, null, user, null); //mock it with past orders enum
 			if(wrapper!=null){
-				cartItems.add(wrapper.getItem());
+	        	QuickShopLineItem quickShopLineItem = wrapper.getItem();
+	        	if (cartLine.getExternalAgency()!=null){
+	        		quickShopLineItem.setExternalAgency(cartLine.getExternalAgency().toString());
+	        	}
+	        	quickShopLineItem.setExternalGroup(cartLine.getExternalGroup());
+	        	quickShopLineItem.setExternalSource(cartLine.getExternalSource());
+				cartItems.add(quickShopLineItem);
 			}
 		}
 		pendingData.setCartData(cartItems);
