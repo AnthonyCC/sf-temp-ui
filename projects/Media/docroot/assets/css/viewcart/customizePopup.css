@@ -84,6 +84,17 @@
   margin-right:15px;
 }
 
+/* override help button's color */
+.customize-popup button.cssbutton.green.css-help-button{
+  background-color:#AAA;
+}
+
+.customize-popup button.cssbutton.green.css-help-button:focus,
+.customize-popup button.cssbutton.green.css-help-button:hover{
+  background-color:#dfdfdf;
+}
+/* overriding ends */
+
 .customize-popup .warning{
   position:relative;
   color:#333;
