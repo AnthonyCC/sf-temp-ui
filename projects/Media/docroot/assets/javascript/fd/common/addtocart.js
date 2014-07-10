@@ -120,7 +120,7 @@ var FreshDirect = FreshDirect || {};
 	}).filter(function(event){
 		return event.items.length > 0;
 	}).onValue(function(event){
-		triggerATC(event.items,{},event.target);
+		triggerATC(event.items,{},event.target,event.eventSource);
 	});
 
 	
@@ -136,7 +136,7 @@ var FreshDirect = FreshDirect || {};
 	
 	function addToCart(element, extraData) {
 		var items = fd.modules.common.productSerialize(element, true);
-    ATC_BUS.push($.extend({items: items, target: element, currentTarget: element}, extraData));
+    ATC_BUS.push($.extend({items: items}, extraData));
 	}
 	
 	$(document).on('click','[data-component="ATCButton"]',function(e){

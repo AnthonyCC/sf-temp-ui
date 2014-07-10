@@ -56,7 +56,7 @@ var FreshDirect = FreshDirect || {};
         var $els = $('#'+this.popupId+' [data-name="_simple_"] [data-component="product"]'),
             items = fd.modules.common.productSerialize($els);
 
-        $('#'+this.popupId+' [data-component="product"]').remove();
+        $('#'+this.popupId+' [data-name~="_simple_"] [data-component="product"]').remove();
 
         if(!items.length){
           POPUPWIDGET.close.call(multiCustomizePopup);
@@ -73,6 +73,8 @@ var FreshDirect = FreshDirect || {};
         } else {
           fd.components.AddToCart.addToCart($els, {eventSource: 'FinalizingExternal'});
         }
+
+        $('#'+this.popupId+' [data-component="product"]').remove();
 
       }
     },
