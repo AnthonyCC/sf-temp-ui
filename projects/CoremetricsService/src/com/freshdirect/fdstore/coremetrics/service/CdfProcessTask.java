@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -77,9 +78,7 @@ public class CdfProcessTask {
 		}
 		
 		//site feature used in shop tags as category
-		for (EnumSiteFeature siteFeatureEnum: EnumSiteFeature.getEnumList()){
-			addCmPageViewTagCategory(siteFeatureEnum.getName(), categoryKeys);
-		}
+		addSiteFeatureKeys(EnumSiteFeature.getEnumList());
 
 		//external agency, e.g. Foodily
 		for (ExternalAgency externalAgency : ExternalAgency.values()){
@@ -97,6 +96,14 @@ public class CdfProcessTask {
 			cdfRowModels.add(new CdfRowModel(catId, "Category: " + catId, null));
 		}
 	}
+
+	private void addSiteFeatureKeys(Collection<EnumSiteFeature> siteFeatures) {
+		for (EnumSiteFeature f : siteFeatures) {
+			final String key = f.getName();
+			cdfRowModels.add(new CdfRowModel(key, "SmartStore: " + key, null));
+		}
+	}
+	
 	
 	private void processCmsCategory(ProductContainer cat, String parentCatId) {
 		
