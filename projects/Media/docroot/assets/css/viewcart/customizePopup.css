@@ -39,6 +39,10 @@
   font-weight:bold;
 }
 
+.customize-popup .itemlist-item-header{
+  width:530px;
+}
+
 .customize-popup .itemlist-item-header-name{
   font-weight:bold;
   color:#000;
