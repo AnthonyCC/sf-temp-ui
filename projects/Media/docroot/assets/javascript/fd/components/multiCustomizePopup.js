@@ -53,24 +53,27 @@ var FreshDirect = FreshDirect || {};
     },
     emptyAtc: {
       value: function () {
-        var items = fd.modules.common.productSerialize($('#'+this.popupId+' [data-name="_simple_"] [data-component="product"]'));
+        var $els = $('#'+this.popupId+' [data-name="_simple_"] [data-component="product"]'),
+            items = fd.modules.common.productSerialize($els);
 
         $('#'+this.popupId+' [data-component="product"]').remove();
 
         if(!items.length){
           POPUPWIDGET.close.call(multiCustomizePopup);
+          fd.common.dispatcher.signal('server', {
+            url: '/api/addtocart',
+            data: {
+              data: JSON.stringify({
+                eventSource: 'FinalizingExternal',
+                items: null
+              })
+            },
+            method: 'POST'
+          });
+        } else {
+          fd.components.AddToCart.addToCart($els, {eventSource: 'FinalizingExternal'});
         }
 
-        fd.common.dispatcher.signal('server', {
-          url: '/api/addtocart',
-          data: {
-            data: JSON.stringify({
-              eventSource: 'FinalizingExternal',
-              items: items.length ? items : null
-            })
-          },
-          method: 'POST'
-        });
       }
     },
     popupId: {
