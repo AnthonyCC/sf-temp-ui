@@ -59,6 +59,13 @@ public class AddToCartServlet extends BaseJsonServlet {
 	private static final Logger LOG = LoggerFactory.getInstance( AddToCartServlet.class );
 	private static final String SIMPLE_PENDING_ATC_ITEM_GROUP = "_simple_";
 	
+	/**
+	 * A simple tuple implementation of the following triple
+	 * external agency, external group, external source
+	 * 
+	 * @author segabor
+	 *
+	 */
 	private static class ExtSource {
 		ExternalAgency agency;
 		String externalGroup;
@@ -244,27 +251,20 @@ public class AddToCartServlet extends BaseJsonServlet {
            		}
 
            		for (ExtSource esrc : extSources) {
-	           		ConversionEventTagModel model = new ConversionEventTagModel();
+	           		// ConversionEventTagModel model = new ConversionEventTagModel();
 
+	           		ConversionEventTagModelBuilder builder = new ConversionEventTagModelBuilder();
+	           		builder.setEventId( esrc.agency.name() );
+	           		builder.setFirstPhase(false); // --> it makes action type have set 2
+	           		builder.setCategoryId("Recipe");
+	           		
 	           		// setup model
-	           		model.setEventId( esrc.agency.name() );
-	           		model.setActionType(ConversionEventTagModelBuilder.ACTION_END);	// = '2'
-	           		model.setEventCategoryId("Recipe");								// = 'Recipe'
-	           		model.setPoints(ConversionEventTagModelBuilder.DEFAULT_POINTS);	// = '1'
+	           		ConversionEventTagModel model = builder.buildTagModel();
 	           		model.getAttributesMaps().put(5, esrc.externalGroup );
 	          		model.getAttributesMaps().put(8, esrc.externalSource );
 
-	          		// serialize model
-	        		List<String> elementData = new ArrayList<String>();
-	        		elementData.add( "cmCreateConversionEventTag" );
-	        		elementData.add( model.getEventId() );
-	        		elementData.add( model.getActionType() );
-	        		elementData.add( model.getEventCategoryId() );
-	        		elementData.add( model.getPoints() );
-	        		elementData.add( ConversionEventTagModel.mapToAttrString( model.getAttributesMaps() ) );
-	   
 	        		// add to response data
-	          		responseData.addCoremetrics(elementData);
+	          		responseData.addCoremetrics( model.toStringList() );
            		}
 
            		responseData.setRedirectUrl("/view_cart.jsp");
