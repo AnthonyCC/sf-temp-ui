@@ -232,42 +232,42 @@ var FreshDirect = FreshDirect || {};
   if (FreshDirect.pendingCustomizations && Object.keys(FreshDirect.pendingCustomizations).length) {
     multiCustomizePopup.render();
     atcResultParser.listen();
+
+    $(window).on("resize", function (e) {
+      multiCustomizePopup.noscroll();
+    });
+
+    $(document).ready(function(){
+      if (FreshDirect.pendingCustomizations && Object.keys(FreshDirect.pendingCustomizations).length) {
+        multiCustomizePopup.open(FreshDirect.pendingCustomizations);
+      }
+    });
+
+    $('#'+multiCustomizePopup.popupId).on('click', 'button.deletefromrecipe', function (e) {
+      $(this).closest('[data-component="product"]').remove();
+
+      if ($('#'+multiCustomizePopup.popupId).find('[data-component="product"]').size() === $('#'+multiCustomizePopup.popupId).find('[data-name="_simple_"] [data-component="product"]').size()) {
+        multiCustomizePopup.changeStep("3");
+      }
+    });
+
+    $('#'+multiCustomizePopup.popupId).on('click', '[data-component="cancel"]', function (e) {
+        multiCustomizePopup.changeStep("1");
+    });
+
+    $('#'+multiCustomizePopup.popupId).on('click', '[data-component="delete-and-close"]', function (e) {
+        multiCustomizePopup.changeStep("3");
+    });
+
+    $('#'+multiCustomizePopup.popupId).on('click', '[data-atc-required="true"]', function (e) {
+        multiCustomizePopup.validate();
+    });
+
+    $('#'+multiCustomizePopup.popupId).on('click', '.deletefromrecipe', function (e) {
+        multiCustomizePopup.validate();
+    });
+
   }
-
-  $(window).on("resize", function (e) {
-    multiCustomizePopup.noscroll();
-  });
-
-  $(document).ready(function(){
-    if (FreshDirect.pendingCustomizations && Object.keys(FreshDirect.pendingCustomizations).length) {
-      multiCustomizePopup.open(FreshDirect.pendingCustomizations);
-    }
-  });
-
-  $('#'+multiCustomizePopup.popupId).on('click', 'button.deletefromrecipe', function (e) {
-    $(this).closest('[data-component="product"]').remove();
-
-    if ($('#'+multiCustomizePopup.popupId).find('[data-component="product"]').size() === $('#'+multiCustomizePopup.popupId).find('[data-name="_simple_"] [data-component="product"]').size()) {
-      multiCustomizePopup.changeStep("3");
-    }
-  });
-
-  $('#'+multiCustomizePopup.popupId).on('click', '[data-component="cancel"]', function (e) {
-      multiCustomizePopup.changeStep("1");
-  });
-
-  $('#'+multiCustomizePopup.popupId).on('click', '[data-component="delete-and-close"]', function (e) {
-      multiCustomizePopup.changeStep("3");
-  });
-
-  $('#'+multiCustomizePopup.popupId).on('click', '[data-atc-required="true"]', function (e) {
-      multiCustomizePopup.validate();
-  });
-
-  $('#'+multiCustomizePopup.popupId).on('click', '.deletefromrecipe', function (e) {
-      multiCustomizePopup.validate();
-  });
-
 
   fd.modules.common.utils.register("components", "multiCustomizePopup", multiCustomizePopup, fd);
 }(FreshDirect));
