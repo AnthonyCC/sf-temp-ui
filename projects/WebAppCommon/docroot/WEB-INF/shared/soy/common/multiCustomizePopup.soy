@@ -79,7 +79,7 @@
 
   {let $hasSingleSalesUnit:(length($item.salesUnit)==1) /}
   {if not $hasSingleSalesUnit}
-    <div class="vertical-top">
+    <div class="vertical-top sku-margin">
       {call common.rawSalesunit}
         {param options:$item.salesUnit /}
         {param label:$item.salesUnitLabel /}
@@ -93,7 +93,7 @@
     <input type="hidden" class="salesunit" data-component="salesunit" data-productdata-name="salesUnit" value="{$item.salesUnit[0].id}"/>
   {/if}
 
-  {call common.skuControlVariations}{param variations:$item.variations /}{/call}
+  {call common.multiSkuControlVariations}{param variations:$item.variations /}{/call}
 </div>
 <div class="itemlist-item-controls">
   <div class="itemlist-item-controls-subtotal">
@@ -175,3 +175,79 @@
 {template .multiCustomizeSubtotalInner}
 | Subtotal: <b>${$price}</b>
 {/template}
+
+
+/**
+ * @param variations
+ * @param? align
+ */
+{template .multiSkuControlVariations autoescape="false"}
+{if $variations}
+  <div class="skucontrol-variations">
+    {foreach $variation in $variations}
+        {delcall multi.variation variant="$variation.display"}
+          {param label:$variation.label /}
+          {param name:$variation.name /}
+          {param values:$variation.values /}
+          {param underlabel:$variation.underLabel/}
+          {param optional:$variation.optional /}
+          {param popupUrl:$variation.descrPopup /}
+          {param align:$align /}
+        {/delcall}
+    {/foreach}
+  </div>
+{/if}
+{/template}
+
+/**
+ * @param label
+ * @param name
+ * @param values 
+ * @param underlabel 
+ * @param? optional
+ * @param popupUrl 
+ */
+{deltemplate multi.variation variant="'dropdown'" autoescape="false"}
+{if length($values)>1}
+  <div class="skucontrol-variations-item sku-margin">
+    <select name="{$name}" data-component="productDataConfiguration" data-productdata-name="{$name}" {if isNonnull($optional) and not $optional}data-atl-required="true" data-atc-required="true"{/if}>
+      <option value="">{$label}</option>
+    {foreach $option in $values}
+        <option value="{$option.name}" {if $option.selected}selected{/if}>{$option.label}{if $option.cvp == '0'} - no charge{else} - {$option.cvp} {/if}</option>
+    {/foreach}
+    </select>
+    {if $popupUrl}
+     <button class="cssbutton green css-help-button" onclick="pop('{$popupUrl}',335,375)">?</button>
+    {/if}
+  </div>
+{/if}
+{/deltemplate}
+
+/**
+ * @param label
+ * @param name
+ * @param values 
+ * @param underlabel 
+ * @param popupUrl 
+ * @param? align
+ */
+{deltemplate multi.variation variant="'checkbox'" autoescape="false"}
+<div class="skucontrol-variations-item sku-margin">
+  <label>
+  {if $align!='left'}{$label}{/if}
+  <input type="checkbox" name="{$name}" 
+  {foreach $value in $values}
+    {if $value.labelValue}
+      value="{$value.name}"
+    {else}
+      data-unchecked-value="{$value.name}"
+    {/if}
+  {/foreach}
+    data-component="productDataConfiguration" data-productdata-name="{$name}">
+  {if $align=='left'}{$label}{/if}
+  </label>
+  {if $popupUrl}
+   <button class="cssbutton green css-help-button" onclick="pop('{$popupUrl}',335,375)">?</button>
+  {/if}
+</div>
+{/deltemplate}

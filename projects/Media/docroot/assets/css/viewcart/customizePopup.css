@@ -34,6 +34,7 @@
   vertical-align:top;
 }
 
+
 .customize-popup .strong{
   font-weight:bold;
 }
@@ -135,11 +136,6 @@
   color:white;
 }
 
-.customize-popup .skucontrol-variations{
-  display:inline-block;
-  margin-left:7px;
-}
-
 .customize-popup .itemlist-item-total{
   margin-left:10px;
   font-size:13px;
@@ -190,3 +186,14 @@
 .customize-popup .errorcontainer span.error{
   display:none;
 }
+
+/* variations redesign */
+.customize-popup .skucontrol-variations,
+.customize-popup .skucontrol-variations-item{
+  display:inline-block;
+}
+
+.sku-margin{
+  margin-right:15px;
+}
+/* variations redesign ends */
