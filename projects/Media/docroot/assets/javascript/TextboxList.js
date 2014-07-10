@@ -20,7 +20,6 @@ $.TextboxList = function(element, _options){
     max: null,
 		unique: false,
 		uniqueInsensitive: true,
-    endEditableBit: true,
 		startEditableBit: true,
 		hideEditableBits: true,
     inBetweenEditableBits: true,
@@ -57,7 +56,7 @@ $.TextboxList = function(element, _options){
 	};
 	
 	var afterInit = function(){
-		if (options.endEditableBit) create('editable', null, {tabIndex: original.tabIndex}).inject(list);
+		create('editable', null, {tabIndex: original.tabIndex}).inject(list);
 		addEvent('bitAdd', update, true);
 		addEvent('bitRemove', update, true);
 		$(document).click(function(e){
@@ -273,7 +272,9 @@ $.TextboxList = function(element, _options){
 
 $.TextboxListBit = function(type, value, textboxlist, _options){
 	
-	var element, bit, prefix, typeprefix, close, hidden, focused = false, name = capitalize(type); 
+	var element, bit, growing, close, hidden, focused = false, name = capitalize(type);
+	var prefix = textboxlist.getOptions().prefix + '-bit';
+	var typeprefix = prefix + '-' + type;
 	var options = $.extend(true, type == 'box' ? {
 		deleteButton: true
   } : {
@@ -290,8 +291,6 @@ $.TextboxListBit = function(type, value, textboxlist, _options){
 	
 	var self = this;
 	var init = function(){
-		prefix = textboxlist.getOptions().prefix + '-bit';
-		typeprefix = prefix + '-' + type;
 		bit = $('<li />').addClass(prefix).addClass(typeprefix)
 			.data('textboxlist:bit', self)
 			.hover(function(){ 
@@ -309,11 +308,10 @@ $.TextboxListBit = function(type, value, textboxlist, _options){
 		} else {
 			element = $('<input type="text" class="'+ typeprefix +'-input" autocomplete="off" />').val(self.value ? self.value[1] : '').appendTo(bit);
 			if (chk(options.tabIndex)) element.tabIndex = options.tabIndex;
-			if (options.growing) new $.GrowingInput(element, options.growingOptions);		
+			if (options.growing) growing = new $.GrowingInput(element, options.growingOptions);		
 			element.focus(function(){ focus(true); }).blur(function(){
 				blur(true);
-				/*if (options.addOnBlur) toBox(); */
-				if (options.addOnBlur && element.val() != '') { toBox(); }
+				if (options.addOnBlur) toBox(); 
 			});				
 			if (options.addKeys || options.stopEnter){
 				element.keydown(function(ev){
@@ -322,13 +320,11 @@ $.TextboxListBit = function(type, value, textboxlist, _options){
 					if (options.stopEnter && ev.which === 13) evStop();
 					if ($.inArray(ev.which, splat(options.addKeys)) != -1){
 						evStop();
-						//toBox();
-						if (element.val() != '') { toBox(); }
+						toBox();
 					}
 				});
 			}
-		}		
-		
+		}
 	};
 	
 	var inject = function(el, where){
@@ -446,6 +442,14 @@ $.TextboxListBit = function(type, value, textboxlist, _options){
 	
 	this.toElement = function(){
 		return bit;
+	};
+	
+	this.getInput = function(){
+	  if(type == "editable") return element;
+	};
+	
+	this.getGrowingHandler = function() {
+	  return growing;
 	};
 	
 	this.focus = focus;

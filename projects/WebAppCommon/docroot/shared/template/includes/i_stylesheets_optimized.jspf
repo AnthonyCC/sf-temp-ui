@@ -56,4 +56,7 @@
 			/globalOpt.css			: PC, Non-IE
 	 */
 %>
-<jwr:style src="<%= compBundleName %>"/>
+<jwr:style src="<%= compBundleName %>" />
+
+<%-- Keep the media include last, so it can always override any css auto-loaded --%>
+<fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html" />

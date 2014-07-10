@@ -53,11 +53,11 @@
 	
 	<jwr:script src="/fdmisc.js" useRandomParam="false" />
 	
-	<% if (request.getRequestURI().indexOf("brownie_points.jsp") == -1)  { %>
+	<%-- if (request.getRequestURI().indexOf("brownie_points.jsp") == -1)  { --%>
 		<jwr:script src="/commonjavascript.js" useRandomParam="false" />
-	<% } else { %>
+	<%-- } else { --%>
 		<%-- jwr:script src="/composite_common.js" useRandomParam="false" / --%>
-	<% } %>
+	<%-- } --%>
 	
 
 	<fd:IncludeMedia name="/media/editorial/site_pages/javascript.html" />

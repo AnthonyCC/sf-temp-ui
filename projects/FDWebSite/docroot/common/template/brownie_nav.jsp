@@ -15,34 +15,28 @@ final int W_DNAV_TOTAL = 970;
     <title><tmpl:get name='title'/></title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<%@ include file="/common/template/includes/metatags.jspf" %>
-	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
-	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<fd:css href="/assets/css/brownie_points.css"/>
+	<%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
 	
-	<fd:css href="/assets/css/TextboxList.css"/>
-	
-		<fd:javascript src="/assets/javascript/jquery-1.7.1.js" />
 	<% if(!"fb".equals(request.getParameter("current"))) { %>	
 	
 		<script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 
 		<!-- required for TextboxList -->
-		<fd:javascript src="/assets/javascript/GrowingInput.js" />
-					
-		<fd:javascript src="/assets/javascript/TextboxList.js" />
-	
+		<jwr:script src="/assets/javascript/GrowingInput.js" useRandomParam="false" />
+		<jwr:script src="/assets/javascript/TextboxList.js" useRandomParam="false" />
 		
-		<script type="text/javascript"><!--
+		<script type="text/javascript">
 			var t2;
-			$(function(){
+			$jq(document).ready(function () {
+				if ($jq('#form_tags_input').length === 0) { return; }
 				// With custom adding keys 
-				t2 = new $.TextboxList('#form_tags_input', {bitsOptions:{editable:{addKeys: [188,13],addOnBlur: true}}});
+				t2 = new $jq.TextboxList('#form_tags_input', {bitsOptions:{editable:{addKeys: [188,13],addOnBlur: true}}});
 				<%
 					if("sendmails".equals(request.getParameter("action"))) {
 						//check the emails
 						String recipient_list = request.getParameter("form_tags_input");
 						StringTokenizer stokens = new StringTokenizer(recipient_list, ",");		
-						if(stokens.countTokens() > 0) {
+						if (stokens.countTokens() > 0) {
 							while(stokens.hasMoreTokens()) {
 								String recipient = stokens.nextToken();
 								%>
@@ -57,7 +51,7 @@ final int W_DNAV_TOTAL = 970;
 			function onABCommComplete() {
 			  // OPTIONAL: do something here after the new data has been populated in your text area
 			  var eCount = 0;
-			  var element = document.getElementById("recipient_list")
+			  var element = document.getElementById("recipient_list");
 			  if(element != null) {
 				  var data = element.value;  
 				  //window.alert("data:" + data);			  
@@ -75,7 +69,7 @@ final int W_DNAV_TOTAL = 970;
 			   }
 			   //document.getElementById("emailnumber").innerHTML=eCount;
 			}
-		//--></script>	
+		</script>	
 		
 		<% if("true".equals(FDStoreProperties.getCouldSpongeAddressImports())) { %>
 			<script type="text/javascript" src="https://api.cloudsponge.com/address_books.js"></script>
@@ -91,64 +85,49 @@ final int W_DNAV_TOTAL = 970;
             <script type="text/javascript" src="https://www.plaxo.com/css/m/js/basic.js"></script>
             <script type="text/javascript" src="https://www.plaxo.com/css/m/js/abc_launcher.js"></script>
 		<% } %>
-<% } %>
+	<% } %>
+	
+	<jwr:script src="/assets/javascript/ZeroClipboard.js" useRandomParam="false" />
+	<jwr:script src="/assets/javascript/shadedborder.js" useRandomParam="false" />
 
-<fd:javascript src="/assets/javascript/ZeroClipboard.js" />
-<fd:javascript src="/assets/javascript/shadedborder.js" />
+	<%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
+	
+	<jwr:style src="/assets/css/brownie_points.css" />
+	<jwr:style src="/assets/css/TextboxList.css" />
 
-	<%
-		/* Google Analytics Pixel */
-		SemPixelModel semPixel_GA = FDSemPixelCache.getInstance().getSemPixel("GoogleAnalytics");
-		semPixel_GA.setParam("GAKey", FDStoreProperties.getGoogleAnalyticsKey());
-		semPixel_GA.setParam("GADomain", FDStoreProperties.getGoogleAnlayticsDomain());
-		if (FDStoreProperties.isGoogleAnalyticsUniversal()) { semPixel_GA.setParam("universal", "true"); }
-	%>
-	<%
-		if(request.getRequestURI().endsWith("referee_signup.jsp") || request.getRequestURI().indexOf("invite") != -1) {
-			//add param so ftl can do different logic
-			semPixel_GA.setParam("onRaf", "true");
-		}
-	%>
-		<fd:SemPixelIncludeMedia pixelNames="GoogleAnalytics" />
-	<% /* Google Analytics Pixel */ %>
-
-<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
 <body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#ff9900" text="#333333">
-<%@ include file="/shared/template/includes/i_body_start.jspf" %>
-<%@ include file="/common/template/includes/globalnav.jspf" %> 		
-<CENTER class="text10">
-<TABLE WIDTH="<%=W_DNAV_TOTAL%>" BORDER="0" CELLPADDING="0" CELLSPACING="0">
-<TR>
-<td width="<%=W_DNAV_TOTAL%>" valign="top"><img src="/media_stat/images/layout/clear.gif" width="<%=W_DNAV_TOTAL%>" height="5" border="0"></td>
-</TR>
-
-<TR>
-<TD WIDTH="<%=W_DNAV_TOTAL%>">
-<%@ include file="/common/template/includes/deptnav.jspf" %></TD>
-</TR>
-<TR>
-<TD WIDTH="<%=W_DNAV_TOTAL%>" BGCOLOR="#999966" COLSPAN="7"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
-</TR>
-
-<TR VALIGN="TOP">
-<TD width="<%=W_DNAV_TOTAL%>" align="center">
-<img src="/media_stat/images/layout/clear.gif" height="20" width="<%=W_DNAV_TOTAL%>"><br>
-<!-- content lands here -->
-<tmpl:get name='content'/>
-<!-- content ends above here-->
-<br><br></TD>
-</TR>
-
-<%-- spacers --%>
-<tr valign="top">
-	<td><img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_DNAV_TOTAL%>"></td>
-</tr>
-
-<TR VALIGN="BOTTOM">
-<td width="<%=W_DNAV_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_DNAV_TOTAL%>" height="5" border="0"></td>
-</TR>
-</TABLE>
-</CENTER>
-<%@ include file="/common/template/includes/footer.jspf" %>
-</HTML>
+	<%@ include file="/shared/template/includes/i_body_start.jspf" %>
+	<%@ include file="/common/template/includes/globalnav_optimized.jspf" %> 		
+	<center class="text10">
+		<table width="<%=W_DNAV_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
+			<tr>
+				<td width="<%=W_DNAV_TOTAL%>" valign="top"><img src="/media_stat/images/layout/clear.gif" width="<%=W_DNAV_TOTAL%>" height="5" border="0"></td>
+			</tr>
+			<tr>
+				<td width="<%=W_DNAV_TOTAL%>"><%@ include file="/common/template/includes/deptnav.jspf" %></td>
+			</tr>
+			<tr>
+				<td width="<%=W_DNAV_TOTAL%>" bgcolor="#999966" colspan="7"><img src="/media_stat/images/layout/999966.gif" width="1" height="1" alt="" /></TD>
+			</tr>
+			<tr valign="top">
+				<td width="<%=W_DNAV_TOTAL%>" align="center">
+					<img src="/media_stat/images/layout/clear.gif" height="20" width="<%=W_DNAV_TOTAL%>" alt="" /><br />
+					<!-- content lands here -->
+					<tmpl:get name='content'/>
+					<!-- content ends above here-->
+					<br /><br /></TD>
+			</tr>
+			<%-- spacers --%>
+			<tr valign="top">
+				<td><img src="/media_stat/images/layout/clear.gif" height="1" width="<%=W_DNAV_TOTAL%>"></td>
+			</tr>
+			<tr valign="bottom">
+				<td width="<%=W_DNAV_TOTAL%>"><img src="/media_stat/images/layout/clear.gif" width="<%=W_DNAV_TOTAL%>" height="5" border="0"></td>
+			</tr>
+		</table>
+	</center>
+	<%@ include file="/common/template/includes/footer.jspf" %>
+	<%@ include file="/common/template/includes/i_jsmodules_optimized.jspf" %>
+</html>
