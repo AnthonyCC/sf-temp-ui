@@ -273,7 +273,7 @@
 				if(views != null) {
 					for (Iterator i = views.iterator(); i.hasNext();) {
 						com.freshdirect.fdstore.customer.WebOrderViewI temp = (com.freshdirect.fdstore.customer.WebOrderViewI) i.next();
-						if(temp.getAffiliate().getCode().equals(JspMethods.getWineAssociateId()) && "USQ".equalsIgnoreCase(JspMethods.getWineAssociateId())) {
+						if( temp.getAffiliate().getCode().equals(JspMethods.getWineAssociateId()) ) {
 							usq_message = true;
 							break;
 						}
@@ -283,9 +283,9 @@
 			<% if(!isSOTMPL && usq_message) { 
 				 if("true".equals(receipt)) {
 			%>
-				<span class="text12">I acknowledge that I have purchased alcohol from Union Square Wines & Spirits and that my credit card or checking account will be charged separately by UNION SQUARE WINE.</span>
+				<span class="text12">I acknowledge that I have purchased alcohol from <%= JspMethods.getWineLongText() %> and that my credit card or checking account will be charged separately by "<%= JspMethods.getWineAssText() %>".</span>
 			<% } else { %>             
-				<span class="text12"><b>Please note:</b> By clicking "Submit Order" you acknowledge that you are purchasing alcohol from Union Square Wines & Spirits and that your credit card or checking account will be charged separately by UNION SQUARE WINE.</span>
+				<span class="text12"><b>Please note:</b> By clicking "Submit Order" you acknowledge that you are purchasing alcohol from <%= JspMethods.getWineLongText() %> and that your credit card or checking account will be charged separately by ""<%= JspMethods.getWineAssText() %>"".</span>
 			<% } 
 			} %>             
 		<br><br>

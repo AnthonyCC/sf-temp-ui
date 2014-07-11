@@ -979,8 +979,38 @@ public class JspMethods {
 		return idx +"";
 	}
 	
-	/* Convenience method  */
+	/* Convenience methods  */
 	public static String getWineAssociateId() {
 		return WineUtil.getWineAssociateId();
+	}
+	public static String getWineLongText() {
+		return WineUtil.getWineLongText();
+	}
+	public static String getWineAssText() {
+		return WineUtil.getWineAssText();
+	}
+	public static String getWineLongText(String assId) {
+		return WineUtil.getWineLongTextByAssId(assId);
+	}
+	public static String getWineAssText(String assId) {
+		return WineUtil.getWineAssTextByAssId(assId);
+	}
+
+	/* this is not meant to prevent xss, this will just lessen the vectors. */
+	public static String sanitizeTextForDisplay(String text) {
+		if (text == null || "".equals(text)) {
+			return text;
+		}
+		String saniStr = text;
+
+		//ampersands
+		saniStr = saniStr.replaceAll("&", "&amp;");
+		//brackets
+		saniStr = saniStr.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+		//quotes
+		saniStr = saniStr.replaceAll("'", "&#039;").replaceAll("\"", "&#034;")
+			.replaceAll("`", "&#96;").replaceAll("´", "&#180;");
+		
+		return saniStr;
 	}
 }

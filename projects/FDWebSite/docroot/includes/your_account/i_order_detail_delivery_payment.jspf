@@ -156,20 +156,31 @@ final int W_YA_OD_DELIVERY_PAYMENT_DELIMITER = 150;
             }%>
 			<%
 				List<com.freshdirect.fdstore.customer.WebOrderViewI> views = cart.getOrderViews();
+				//this is one of the few places where the USQ msg would continue to show
 				boolean usq_message = false;
+				boolean fdw_message = false;
 				if(views != null) {
 					for (Iterator i = views.iterator(); i.hasNext();) {
 						com.freshdirect.fdstore.customer.WebOrderViewI temp = (com.freshdirect.fdstore.customer.WebOrderViewI) i.next();
-						if(temp.getAffiliate().getCode().equals(JspMethods.getWineAssociateId()) && "USQ".equalsIgnoreCase(JspMethods.getWineAssociateId())) {
+						if(temp.getAffiliate().getCode().equalsIgnoreCase("USQ")) {
 							usq_message = true;
-							break;
 						}
+						if(temp.getAffiliate().getCode().equalsIgnoreCase("FDW")) {
+							fdw_message = true;
+						}
+						if (usq_message && fdw_message) { break; }
 					}
 				}
 			%>
+			<%
+				/* we should never have both usq AND fdw, but just in case. */
+			%>
 			<% if(usq_message) { %>
-			<span class="text12">I acknowledge that I have purchased alcohol from Union Square Wines & Spirits and that my credit card or checking account will be charged separately by UNION SQUARE WINE.</span>
-			<% } %>           
+				<span class="text12">I acknowledge that I have purchased alcohol from <%= JspMethods.getWineLongText("USQ") %> and that my credit card or checking account will be charged separately by "<%= JspMethods.getWineAssText("USQ") %>".</span>
+			<% } %>
+			<% if (fdw_message) { %>
+				<span class="text12">I acknowledge that I have purchased alcohol from <%= JspMethods.getWineLongText("FDW") %> and that my credit card or checking account will be charged separately by "<%= JspMethods.getWineAssText("FDW") %>".</span>
+			<% } %>
             </FONT>
 			<% } %>           
             </FONT>

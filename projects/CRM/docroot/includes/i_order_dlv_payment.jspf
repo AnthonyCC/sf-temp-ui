@@ -276,16 +276,16 @@ function loadSignature(order)
 					}
 				%>
 				
-				<% if(usq_message) { 
+				<% if(usq_message) {
 				%>
 					<tr><td colspan="2">&nbsp;</td></tr>
 					<tr>
 					<td colspan="2">
 				<%	if("true".equals(receipt)) {
 				%>					
-					I acknowledge that I have purchased alcohol from Union Square Wines & Spirits and that my credit card or checking account will be charged separately by UNION SQUARE WINE.
+					I acknowledge that I have purchased alcohol from <%= JspMethods.getWineLongText() %> and that my credit card or checking account will be charged separately by "<%= JspMethods.getWineAssText() %>".
 				<% } else { %>             
-					<b>Please note:</b> By clicking "Submit Order" you acknowledge that you are purchasing alcohol from Union Square Wines & Spirits and that your credit card or checking account will be charged separately by UNION SQUARE WINE.
+					<b>Please note:</b> By clicking "Submit Order" you acknowledge that you are purchasing alcohol from <%= JspMethods.getWineLongText() %> and that your credit card or checking account will be charged separately by "<%= JspMethods.getWineAssText() %>".
 				<% } %>
 				</td></tr>
 				<% } %>             

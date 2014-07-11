@@ -143,8 +143,8 @@ FreshDirect.Coremetrics.populateTrackingObject('<%=coremetricsPageId%>', '<%=cor
 	}
 	%>
 	</div>
-	<% if (__isWineLayout && JspMethods.getWineAssociateId().equals("USQ")) { %>
-		<div class="text9" style="position: absolute; bottom: 1em; left: 10px; color: gray; width: 180px; text-align: right;">Wine sold by Union Square Wines &amp; Spirits.</div>
+	<% if (__isWineLayout) { %>
+		<div class="text9" style="position: absolute; bottom: 1em; left: 10px; color: gray; width: 180px; text-align: right;">Wine sold by <%= JspMethods.getWineLongText().replace("&", "&amp;") %></div>
 	<% } %>
 	<% if (uid != null && !"".equals(uid)) { %>
 		<script type="text/javascript" language="javascript">
