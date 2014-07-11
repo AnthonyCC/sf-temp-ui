@@ -995,4 +995,4 @@ public class JspMethods {
 	public static String getWineAssText(String assId) {
 		return WineUtil.getWineAssTextByAssId(assId);
 	}
-
+}
