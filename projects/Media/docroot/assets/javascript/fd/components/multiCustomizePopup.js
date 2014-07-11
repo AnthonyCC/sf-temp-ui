@@ -154,6 +154,16 @@ var FreshDirect = FreshDirect || {};
           data.state = 3;
         }
 
+        // making sure that __name__ is the first item
+        data.sort(function (a, b) {
+            if (a.externalGroup < b.externalGroup)
+              return 1;
+            if (a.externalGroup > b.externalGroup)
+              return -1;
+            // a must be equal to b
+            return 0;
+        });
+
         return data;
       }
     },
