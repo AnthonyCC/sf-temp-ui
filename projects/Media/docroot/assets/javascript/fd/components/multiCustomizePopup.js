@@ -28,13 +28,7 @@ var FreshDirect = FreshDirect || {};
     },
     close: {
         value: function (e) {
-
-          if(this.getStep() !== "1"){
-            this.changeStep("3");
-          }
-          else{
-            this.changeStep("2");
-          }
+          this.changeStep("2");
         }
     },
     getStep : {
@@ -44,6 +38,8 @@ var FreshDirect = FreshDirect || {};
     },
     changeStep : {
         value : function(step){
+          this.popup.$el.toggleClass("qs-hasclose", +step !== 2);
+
           if (+step === 3) {
             // issue empty atc call
             this.emptyAtc();
