@@ -245,7 +245,13 @@ var FreshDirect = FreshDirect || {};
     });
 
     $('#'+multiCustomizePopup.popupId).on('click', 'button.deletefromrecipe', function (e) {
+      var shoplist = $(this).closest(".shopfromlists");
+
       $(this).closest('[data-component="product"]').remove();
+
+      if(!shoplist.children().length){
+          shoplist.remove();
+      }
 
       if ($('#'+multiCustomizePopup.popupId).find('[data-component="product"]').size() === $('#'+multiCustomizePopup.popupId).find('[data-name="_simple_"] [data-component="product"]').size()) {
         multiCustomizePopup.changeStep("3");
