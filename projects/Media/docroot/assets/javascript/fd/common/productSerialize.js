@@ -115,6 +115,9 @@ var FreshDirect = FreshDirect || {};
                   productId: item.productId,
                   quantity: item.quantity.quantity,
                   salesUnit: item.salesUnit.filter(function(su){return su.selected;})[0].id,
+                  externalAgency: item.externalAgency,
+                  externalSource: item.externalSource,
+                  externalGroup: item.externalGroup,
                   skuCode: item.skuCode
                 };
               });
