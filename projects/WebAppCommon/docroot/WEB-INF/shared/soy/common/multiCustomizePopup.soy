@@ -62,7 +62,10 @@
     {call common.rating.customer}{param ratingValue:$item.customerRating /}{param reviewCount:$item.customerRatingReviewCount /}{/call}
     {call common.rating.expert}{param ratingValue:$item.expertRating /}{/call}
     {call common.rating.wine}{param ratingValue:$item.wineRating /}{/call}
-    {call common.rating.sustainability}{param ratingValue:$item.sustainabilityRating /}{/call}    
+    {if $item.sustainabilityRating}
+      {call common.rating.sustainability}{param ratingValue:$item.sustainabilityRating /}{/call}    
+      {sp}<label class="sustrating-text"><a href="javascript:pop('/shared/brandpop.jsp?brandId=bd_sustainable_ratings',800,585)">Sustainability Rating</a>
+    {/if}
     {if $item.configDescr}<br><i class="itemlist-item-header-configuration">
       {if $tempConfig}
         Temporary customization:</i><br>{$item.configDescr}
@@ -166,7 +169,7 @@
  * @param pricingUnit
  */
 {template .multiCustomizeSubtotalLbInner}
-| Subtotal: <b>${$price}</b>{sp}Price{sp}<span class="qty"><strong>{round($quantity,2)}{$pricingUnit}</strong></span>{sp}estimated</a>
+| Subtotal: <b>${$price}</b>{sp}Price{sp}<span class="qty"><strong>{round($quantity,2)}{$pricingUnit}</strong></span>{sp}<a onclick="pop('/help/estimated_price.jsp','small')">estimated</a>
 {/template}
 
 /**
