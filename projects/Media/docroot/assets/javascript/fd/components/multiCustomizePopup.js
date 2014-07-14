@@ -228,7 +228,7 @@ var FreshDirect = FreshDirect || {};
               multiCustomizePopup.popup.$el.find("[data-current-step]").attr("data-current-step", 3);
               setTimeout(function () {
                 window.location.reload();
-              }, (fd.tests && fd.tests.waitBeforeReload) || 0);
+              }, (fd.tests && fd.tests.waitBeforeReload) || 100);
 
             } else {
               // no cart change (or modifybrd popup), close popup and don't reload
