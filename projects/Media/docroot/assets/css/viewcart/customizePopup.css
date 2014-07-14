@@ -228,3 +228,7 @@
   margin:2px;
   font-size:13px;
 }
+
+.customize-popup .itemlist-item-customization input[type=checkbox]{
+  vertical-align:middle;
+}
