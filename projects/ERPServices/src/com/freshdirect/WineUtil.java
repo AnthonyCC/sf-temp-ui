@@ -30,9 +30,9 @@ public class WineUtil {
 	/* get correct long text based on prop */
 	public static String getWineLongText() {
 		if ("USQ".equalsIgnoreCase(getWineAssociateId())) {
-			getUsqLongText();
+			return getUsqLongText();
 		} else if ("FDW".equalsIgnoreCase(getWineAssociateId())) {
-			getFdwLongText();
+			return getFdwLongText();
 		}
 		return "";
 	}
@@ -40,9 +40,9 @@ public class WineUtil {
 	/* get correct associate text based on prop */
 	public static String getWineAssText() {
 		if ("USQ".equalsIgnoreCase(getWineAssociateId())) {
-			getUsqAssText();
+			return getUsqAssText();
 		} else if ("FDW".equalsIgnoreCase(getWineAssociateId())) {
-			getFdwAssText();
+			return getFdwAssText();
 		}
 		return "";
 	}
@@ -65,18 +65,18 @@ public class WineUtil {
 
 	public static String getWineLongTextByAssId(String assId) {
 		if ("USQ".equalsIgnoreCase(assId)) {
-			getUsqAssText();
+			return getUsqAssText();
 		} else if ("FDW".equalsIgnoreCase(assId)) {
-			getFdwAssText();
+			return getFdwAssText();
 		}
 		return "";
 	}
 
 	public static String getWineAssTextByAssId(String assId) {
 		if ("USQ".equalsIgnoreCase(assId)) {
-			getUsqLongText();
+			return getUsqLongText();
 		} else if ("FDW".equalsIgnoreCase(assId)) {
-			getFdwLongText();
+			return getFdwLongText();
 		}
 		return "";
 	}
