@@ -218,3 +218,13 @@
 .customize-popup a:hover{
   text-decoration:underline;
 }
+
+.customize-popup .salesunit{
+  font-size:13px;
+  vertical-align:top;
+}
+
+.customize-popup .itemlist-item-customization select{
+  margin:2px;
+  font-size:13px;
+}
