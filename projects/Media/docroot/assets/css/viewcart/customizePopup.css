@@ -39,6 +39,10 @@
   font-weight:bold;
 }
 
+.customize-popup .italic{
+  font-style:italic;
+}
+
 .customize-popup .itemlist-item-header{
   width:530px;
 }
@@ -201,3 +205,16 @@
   margin-right:15px;
 }
 /* variations redesign ends */
+
+.customize-popup a,
+.customize-popup a:link,
+.customize-popup a:visited,
+.customize-popup a:hover,
+.customize-popup a:active{
+  cursor:pointer;
+  color:#AAA;
+}
+
+.customize-popup a:hover{
+  text-decoration:underline;
+}
