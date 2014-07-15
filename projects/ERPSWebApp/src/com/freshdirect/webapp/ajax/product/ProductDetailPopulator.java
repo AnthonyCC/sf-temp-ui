@@ -306,24 +306,26 @@ public class ProductDetailPopulator {
 		if ( data == null ) {
 			data = new ProductData();
 		}
-		
+
 		if (erpsNutritionTypeType!=null){
+
+			//format nutrition title based on i_grocery_product_separator.jspf
+			String nutritionSortTitle = StringUtils.replace( erpsNutritionTypeType.getDisplayName(), " quantity", "");
+	        
+			if("Total Carbohydrate".equalsIgnoreCase(nutritionSortTitle)){ 
+	            nutritionSortTitle = "Total Carbs";
+	        }
+	        if("%".equals(erpsNutritionTypeType.getUom())){
+	            nutritionSortTitle += ", %DV";
+	        }
+			data.setNutritionSortTitle(nutritionSortTitle);
+			data.setNutritionSortValue("no data"); //fallback
+			
 			FDNutrition selectedNutrition = fdProduct.getNutritionItemByType(erpsNutritionTypeType);
 			ErpNutritionType.Type servingSizeType = ErpNutritionType.getType(ErpNutritionType.SERVING_SIZE);
 			NumberFormat nf = NumberFormat.getNumberInstance();
 			
 			if (selectedNutrition!=null){
-				//format nutrition title based on i_grocery_product_separator.jspf
-				String nutritionSortTitle = StringUtils.replace( selectedNutrition.getName(), " quantity", "");
-                
-				if("Total Carbohydrate".equalsIgnoreCase(nutritionSortTitle)){ 
-                    nutritionSortTitle = "Total Carbs";
-                }
-                if("%".equals(erpsNutritionTypeType.getUom())){
-                    nutritionSortTitle += ", %DV";
-                }
-				data.setNutritionSortTitle(nutritionSortTitle);
-				
 				
 				//format nutrition value based on i_grocery_product_line.jspf
 				double nurtitionSortValue = selectedNutrition.getValue();
@@ -343,10 +345,7 @@ public class ProductDetailPopulator {
 					}
 				}
 
-				if (servingSizeValue == 0){
-					nutritionSortValueText = "no data";
-
-				} else {
+				if (servingSizeValue != 0){
 					FDNutrition servingWeightNutrition = fdProduct.getNutritionItemByType(ErpNutritionType.getType(ErpNutritionType.SERVING_WEIGHT));
 					if (servingWeightNutrition!=null){
 						nutritionSortValueText += " (" + nf.format(servingWeightNutrition.getValue()) + "g)";
