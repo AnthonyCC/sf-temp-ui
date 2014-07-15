@@ -32,6 +32,7 @@
 .customize-popup .vertical-top{
   display:inline-block;
   vertical-align:top;
+  line-height:19px;
 }
 
 
@@ -203,6 +204,7 @@
 
 .sku-margin{
   margin-right:15px;
+  display:inline-block;
 }
 /* variations redesign ends */
 
@@ -220,13 +222,11 @@
 }
 
 .customize-popup .salesunit{
-  font-size:13px;
-  vertical-align:top;
+  vertical-align:baseline;
 }
 
 .customize-popup .itemlist-item-customization select{
-  margin:2px;
-  font-size:13px;
+  font-size:11px;
 }
 
 .customize-popup .itemlist-item-customization input[type=checkbox]{
