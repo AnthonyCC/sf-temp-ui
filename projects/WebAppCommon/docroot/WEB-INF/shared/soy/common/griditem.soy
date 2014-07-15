@@ -98,6 +98,8 @@
   {param couponClipped:$item.couponClipped /}
   {param couponStatusText:$item.couponStatusText /}
   {param extraClass:$extraClass /}
+  {param nutritionSortTitle:$item.nutritionSortTitle /}
+  {param nutritionSortValue:$item.nutritionSortValue /}
   {param availabilityMessage}
     {call common.availabilityMessage}{param item:$item /}{/call}
     {if $item.msgCancellation}
@@ -248,6 +250,8 @@
  * @param? couponDisplay
  * @param? couponClipped
  * @param? couponStatusText
+ * @param? nutritionSortTitle
+ * @param? nutritionSortValue
  * @param? cmEventSource optional coremetrics event source
  */
 {template .potatoTransactionalGridItem autoescape="false"}
@@ -301,6 +305,12 @@
   {if $mixNMatch}<div class="portrait-item-price-deal mixnmatch">Mix'n'Match</div>{/if}
   </div>
   {if $coupon}<div class="portrait-item-coupon">{call common.ecoupon}{param coupon:$coupon /}{param couponDisplay:$couponDisplay /}{param couponClipped:$couponClipped /}{param couponStatusText:$couponStatusText /}{param detailsFirst:true /}{/call}</div>{/if}
+  {if $nutritionSortValue}
+  <div class="nutritionSortInfo">
+    {if $nutritionSortTitle}<div class="nutritionSortTitle">{$nutritionSortTitle}</div>{/if}
+    <div class="nutritionSortValue">{$nutritionSortValue}</div>
+  </div>
+  {/if}
   {call common.potatoTransactionalGridItemControls}
     {param customizePopup:$customizePopup /}
     {param soldBySalesUnit:$soldBySalesUnit /}

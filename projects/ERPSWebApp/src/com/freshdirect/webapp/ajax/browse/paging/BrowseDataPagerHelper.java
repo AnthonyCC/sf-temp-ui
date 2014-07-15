@@ -114,7 +114,8 @@ public class BrowseDataPagerHelper {
 			//fetching already passed by the current page
 			if (fetchResults.get(LOGICAL_ITEM_COUNT).compareTo(fetchResults.get(CURRENT_PAGE_LAST_ITEM_INDEX)) > -1) { 
 				//accumulating logical item index by '(int)rounding' to the next PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD multiple
-				fetchResults.put(LOGICAL_ITEM_COUNT, (Math.max(0, entityList.size() - 1) / PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD + 1) * PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD + fetchResults.get(LOGICAL_ITEM_COUNT)); 
+//				fetchResults.put(LOGICAL_ITEM_COUNT, (Math.max(0, entityList.size() - 1) / PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD + 1) * PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD + fetchResults.get(LOGICAL_ITEM_COUNT)); 
+				fetchResults.put(LOGICAL_ITEM_COUNT, entityList.size() + fetchResults.get(LOGICAL_ITEM_COUNT)); 
 				fetchResults.put(MARKED_FOR_REMOVAL, 1);
 				return fetchResults; 
 			}
@@ -122,7 +123,8 @@ public class BrowseDataPagerHelper {
 			//fetching still hasn't reached the current page
 			if (fetchResults.get(CURRENT_PAGE_FIRST_ITEM_INDEX).compareTo(entityList.size() + fetchResults.get(LOGICAL_ITEM_COUNT)) == 1) { 
 				//accumulating logical item index by '(int)rounding' to the next PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD multiple
-				fetchResults.put(LOGICAL_ITEM_COUNT, (Math.max(0, entityList.size() - 1) / PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD + 1) * PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD + fetchResults.get(LOGICAL_ITEM_COUNT)); 
+//				fetchResults.put(LOGICAL_ITEM_COUNT, (Math.max(0, entityList.size() - 1) / PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD + 1) * PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD + fetchResults.get(LOGICAL_ITEM_COUNT)); 
+				fetchResults.put(LOGICAL_ITEM_COUNT, entityList.size() + fetchResults.get(LOGICAL_ITEM_COUNT)); 
 				fetchResults.put(FIRST_ITEM_INDEX, fetchResults.get(FIRST_ITEM_INDEX) + entityList.size());
 				fetchResults.put(LAST_ITEM_INDEX, fetchResults.get(LAST_ITEM_INDEX) + entityList.size());
 				fetchResults.put(MARKED_FOR_REMOVAL, 1);
@@ -157,7 +159,8 @@ public class BrowseDataPagerHelper {
 			
 			//accumulating logical item index by '(int)rounding' to the next PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD multiple
 			if (entityListSize > 0) {
-				fetchResults.put(LOGICAL_ITEM_COUNT, (Math.max(0, entityListSize - 1) / PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD + 1) * PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD + fetchResults.get(LOGICAL_ITEM_COUNT)); 
+//				fetchResults.put(LOGICAL_ITEM_COUNT, (Math.max(0, entityListSize - 1) / PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD + 1) * PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD + fetchResults.get(LOGICAL_ITEM_COUNT)); 
+				fetchResults.put(LOGICAL_ITEM_COUNT, entityListSize + fetchResults.get(LOGICAL_ITEM_COUNT)); 
 			}
 			
 		} 

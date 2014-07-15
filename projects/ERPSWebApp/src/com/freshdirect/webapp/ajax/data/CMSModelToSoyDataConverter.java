@@ -26,14 +26,25 @@ import com.freshdirect.webapp.util.MediaUtils;
 
 public class CMSModelToSoyDataConverter {
 
-	public static CategoryData createCategoryData(CategoryModel cat){
+	public static CategoryData createCategoryData(CategoryModel cat, FDSessionUser user, boolean extractPopularCategories){
 		
 		if (cat == null) return null;
 		
 		Image catImage = cat.getCategoryPhoto();
 		Image globalNavPostNameImage = cat.getGlobalNavPostNameImage();
 		
-		return new CategoryData(catImage == null ? null : catImage.getPath(), cat.getContentKey().getId(), cat.getFullName(), globalNavPostNameImage == null ? null : globalNavPostNameImage.getPath());
+		List<CategoryData> popularCategories = null;
+		if(extractPopularCategories){
+			popularCategories = new ArrayList<CategoryData>();
+			for (CategoryModel categoryModel : cat.getPopularCategories()) {
+				if (NavigationUtil.isCategoryHiddenInContext(user, categoryModel)) {
+					continue;
+				}
+				popularCategories.add(createCategoryData(categoryModel, user, false));
+			}
+		}
+		
+		return new CategoryData(catImage == null ? null : catImage.getPath(), cat.getContentKey().getId(), cat.getFullName(), globalNavPostNameImage == null ? null : globalNavPostNameImage.getPath(), popularCategories);
 	}
 	
 	private static void extractCategorySections(DepartmentData departmentData, List<CategorySectionModel> categorySectionList, FDSessionUser user) {
@@ -49,7 +60,7 @@ public class CMSModelToSoyDataConverter {
 				if (NavigationUtil.isCategoryHiddenInContext(user, categoryModel)) {
 					continue;
 				}
-				sectionCategories.add(createCategoryData(categoryModel));
+				sectionCategories.add(createCategoryData(categoryModel, user, true));
 			}
 			categorySection.put("categories", sectionCategories);
 			
@@ -74,9 +85,9 @@ public class CMSModelToSoyDataConverter {
 				continue;
 			}
 			if (categoryModel.isPreferenceCategory()) {
-				departmentData.addPreferenceCategoryData(createCategoryData(categoryModel));
+				departmentData.addPreferenceCategoryData(createCategoryData(categoryModel, user, false));
 			} else {
-				departmentData.addCategoryData(createCategoryData(categoryModel));
+				departmentData.addCategoryData(createCategoryData(categoryModel, user, false));
 			}
 		}
 		
@@ -129,7 +140,7 @@ public class CMSModelToSoyDataConverter {
 			if (NavigationUtil.isCategoryHiddenInContext(user, categoryModel)) {
 				continue;
 			}
-			departmentData.addPopularCategoryData(createCategoryData(categoryModel));
+			departmentData.addPopularCategoryData(createCategoryData(categoryModel, user, false));
 		}
 
 		if(departmentData.getPopularCategories().size() > 0){

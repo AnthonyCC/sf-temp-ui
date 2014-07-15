@@ -12,6 +12,7 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductFilterGroupI;
 import com.freshdirect.fdstore.content.ProductItemFilterI;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 
@@ -65,6 +66,7 @@ public class NavigationModel {
 	private List<CategoryModel> preferenceCategories;
 	private List<CategoryModel> popularCategories;
 	private List<CategorySectionModel> categorySections;
+	private List<ProductModel> searchResults = new ArrayList<ProductModel>();
 	private List<DepartmentModel> departments;
 	private boolean productListing;
 	
@@ -154,5 +156,8 @@ public class NavigationModel {
 	}
 	public void setCategorySections(List<CategorySectionModel> categorySections) {
 		this.categorySections = categorySections;
+	}
+	public List<ProductModel> getSearchResults() {
+		return searchResults;
 	}
 }

@@ -2,6 +2,22 @@
 /**
  * @param? carousel1 carousel1
  * @param? carousel2 carousel2
+ * @param? cssclass css class v22 - 2+2 products, v31 - 3+1 products
+ */
+{template .classedCarousels autoescape="false"}
+  {if $carousel1 or $carousel2}
+  <div class="carousels {$cssclass}">
+    {call browse.carousels}
+      {param carousel1: $carousel1 /}
+      {param carousel2: $carousel2 /}
+    {/call}
+  </div>
+  {/if}
+{/template}
+
+/**
+ * @param? carousel1 carousel1
+ * @param? carousel2 carousel2
  */
 {template .carousels autoescape="false"}
   {if $carousel1 or $carousel2}

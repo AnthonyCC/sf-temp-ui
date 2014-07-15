@@ -16,8 +16,6 @@ public class DepartmentModel extends ProductContainer {
 
 	private final List<CategoryModel> categoryModels = new ArrayList<CategoryModel>();
 	
-	private final List<CategoryModel> popularCategories = new ArrayList<CategoryModel>();
-	
 	private final List<CategoryModel> deptNav = new ArrayList<CategoryModel>();
 	
 	private final List<CategoryModel> featuredCategories = new ArrayList<CategoryModel> ();
@@ -166,11 +164,6 @@ public class DepartmentModel extends ProductContainer {
 		ContentNodeModelUtil.refreshModels(this, "tile_list", tileList, false);
 		return Collections.unmodifiableList(tileList);
 	}
-	
-	public List<CategoryModel> getPopularCategories() {
-		ContentNodeModelUtil.refreshModels(this, "popularCategories", popularCategories, false);
-		return new ArrayList<CategoryModel>(popularCategories);
-	}
 
 	public Image getTitleBar() {
         return FDAttributeFactory.constructImage(this, "titleBar");
@@ -179,6 +172,7 @@ public class DepartmentModel extends ProductContainer {
 	public Html getDepartmentBanner() {
 		return FDAttributeFactory.constructHtml(this, "departmentBanner");
 	}
+
 
 	public String getFeaturedRecommenderTitle() {
 		return getAttribute("featuredRecommenderTitle", "");
@@ -230,4 +224,16 @@ public class DepartmentModel extends ProductContainer {
         ContentNodeModelUtil.refreshModels(this, "categorySections", categorySections, false);
         return new ArrayList<CategorySectionModel>(categorySections);
     }
+    
+    public EnumBrowseEditorialLocation getBannerLocation(String defaultValue) {
+		return EnumBrowseEditorialLocation.valueOf(getAttribute("bannerLocation", defaultValue));
+	}
+    
+    public EnumBrowseEditorialLocation getCarouselPosition(String defaultValue) {
+		return EnumBrowseEditorialLocation.valueOf(getAttribute("carouselPosition", defaultValue));
+	}
+    
+    public EnumBrowseCarouselRatio getCarouselRatio(String defaultValue) {
+		return EnumBrowseCarouselRatio.valueOf(getAttribute("carouselRatio", defaultValue));
+	}
 }

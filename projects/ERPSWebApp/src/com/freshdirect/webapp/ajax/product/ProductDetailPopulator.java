@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
 import com.freshdirect.WineUtil;
@@ -24,6 +25,7 @@ import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
+import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
@@ -35,6 +37,7 @@ import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDNutrition;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -299,6 +302,81 @@ public class ProductDetailPopulator {
 		return data;
 	}
 
+	public static ProductData populateSelectedNutritionFields(FDUserI user, ProductData data, FDProduct fdProduct, ErpNutritionType.Type erpsNutritionTypeType) {
+		if ( data == null ) {
+			data = new ProductData();
+		}
+		
+		if (erpsNutritionTypeType!=null){
+			FDNutrition selectedNutrition = fdProduct.getNutritionItemByType(erpsNutritionTypeType);
+			ErpNutritionType.Type servingSizeType = ErpNutritionType.getType(ErpNutritionType.SERVING_SIZE);
+			NumberFormat nf = NumberFormat.getNumberInstance();
+			
+			if (selectedNutrition!=null){
+				//format nutrition title based on i_grocery_product_separator.jspf
+				String nutritionSortTitle = StringUtils.replace( selectedNutrition.getName(), " quantity", "");
+                
+				if("Total Carbohydrate".equalsIgnoreCase(nutritionSortTitle)){ 
+                    nutritionSortTitle = "Total Carbs";
+                }
+                if("%".equals(erpsNutritionTypeType.getUom())){
+                    nutritionSortTitle += ", %DV";
+                }
+				data.setNutritionSortTitle(nutritionSortTitle);
+				
+				
+				//format nutrition value based on i_grocery_product_line.jspf
+				double nurtitionSortValue = selectedNutrition.getValue();
+				String nurtitionSortUom = selectedNutrition.getUnitOfMeasure();
+				String nutritionSortValueText = (nurtitionSortValue < 0 ? "<1":nf.format(nurtitionSortValue)) + ("%".equals(nurtitionSortUom)?"":" ") + nurtitionSortUom;
+				
+				double servingSizeValue = 0;
+				if (servingSizeType == erpsNutritionTypeType) { 
+					servingSizeValue = nurtitionSortValue;
+							
+				} else {
+					//add serving size info
+					FDNutrition servingSizeNutrition = fdProduct.getNutritionItemByType(servingSizeType);
+					if (servingSizeNutrition!=null){
+						servingSizeValue = servingSizeNutrition.getValue();
+						nutritionSortValueText += "/" + nf.format(servingSizeValue) + " " + servingSizeNutrition.getUnitOfMeasure();
+					}
+				}
+
+				if (servingSizeValue == 0){
+					nutritionSortValueText = "no data";
+
+				} else {
+					FDNutrition servingWeightNutrition = fdProduct.getNutritionItemByType(ErpNutritionType.getType(ErpNutritionType.SERVING_WEIGHT));
+					if (servingWeightNutrition!=null){
+						nutritionSortValueText += " (" + nf.format(servingWeightNutrition.getValue()) + "g)";
+					}
+					
+				}
+				
+				data.setNutritionSortValue(nutritionSortValueText);
+			}
+		}
+		
+		
+		//add nutrition fields to try recommendation as well
+		ProductData browseRecommendationData = data.getBrowseRecommandation();
+		if (browseRecommendationData!=null)	{
+			try {
+				FDProduct browseRecommendationFDProduct = FDCachedFactory.getProduct(FDCachedFactory.getProductInfo(browseRecommendationData.getSkuCode()));;
+				data.setBrowseRecommandation(populateSelectedNutritionFields(user, browseRecommendationData, browseRecommendationFDProduct, erpsNutritionTypeType));
+			
+			} catch (FDSkuNotFoundException e){
+				LOG.error ("Couldnt't add nutrion fields to browseRecommendationData",e);
+			} catch (FDResourceException e){
+				LOG.error ("Couldnt't add nutrion fields to browseRecommendationData",e);
+			}
+		}
+		
+		return data;
+	}
+	
+	
 	/**
 	 * Populates product basic-level data.
 	 * Does not populate any sku level attributes.

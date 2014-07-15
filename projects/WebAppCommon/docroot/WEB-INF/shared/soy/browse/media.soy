@@ -6,3 +6,26 @@
 	{if $media}<div class="browse-media">{$media}</div>{/if}
 {/template}
 
+/**
+ * @param? media media
+ * @param? mediaLocation media location
+ */
+{template .topMedia autoescape="false"}
+	{if $media and $mediaLocation == 'TOP'}<div class="browse-media">{$media}</div>{/if}
+{/template}
+
+/**
+ * @param? media media
+ * @param? mediaLocation media location
+ */
+{template .bottomMedia autoescape="false"}
+	{if $media and $mediaLocation == 'BOTTOM'}<div class="browse-media">{$media}</div>{/if}
+{/template}
+
+/**
+ * @param? middleMedia middle media
+ */
+{template .middleMedia autoescape="false"}
+	{if $middleMedia}<div class="browse-media">{$middleMedia}</div>{/if}
+{/template}
+

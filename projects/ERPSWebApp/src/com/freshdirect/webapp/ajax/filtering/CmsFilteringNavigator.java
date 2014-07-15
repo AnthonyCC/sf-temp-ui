@@ -14,10 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.JsonHelper;
-import com.freshdirect.webapp.ajax.browse.data.PagerData;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CmsFilteringNavigator {
@@ -29,7 +30,7 @@ public class CmsFilteringNavigator {
 	private String catId;
 	
 	//paging
-	private int pageSize = PagerData.GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD * PagerData.GRID_ITEM_ROW_PER_PAGE_THRESHOLD;
+	private int pageSize = FDStoreProperties.getBrowsePageSize();
 	private int activePage = 1;
 
 	//sorting
@@ -50,6 +51,12 @@ public class CmsFilteringNavigator {
 	
 	//use cmevent param in order to determine the action (navigation/filtering/paging/sorting)
 	private String browseEvent;
+	
+	//if nutrition sort is selected this field stores the selected nutrition type
+	private ErpNutritionType.Type erpNutritionTypeType;
+	
+	//search query param
+	private String searchParams;
 	
 	/**
 	 * Creates a CmsFilteringNavigator instance out of request parameter map.
@@ -109,13 +116,17 @@ public class CmsFilteringNavigator {
 						
 						cmsFilteringNavigator.setOrderAscending(Boolean.parseBoolean(paramValue.toLowerCase()));
 						
-					} else if("id".equalsIgnoreCase(param)) { //case sensitive
+					} else if("id".equalsIgnoreCase(param)) {
 		
 						cmsFilteringNavigator.setId(paramValue);
 					
-					} else if("catId".equalsIgnoreCase(param)) { //case sensitive
+					} else if("catId".equalsIgnoreCase(param)) {
 		
 						cmsFilteringNavigator.setId(paramValue);
+					
+					} else if("searchParams".equalsIgnoreCase(param)) {
+						
+						cmsFilteringNavigator.setSearchParams(paramValue);
 					
 					} else { //No match for any other CmsFilteringNavigator property => must be a filtering domain
 						
@@ -133,7 +144,8 @@ public class CmsFilteringNavigator {
 		}
 
 		String id = cmsFilteringNavigator.getId();
-		if (id == null || id.equals("")){
+		String searchParams = cmsFilteringNavigator.getSearchParams();
+		if ((id == null || id.equals("")) && (searchParams == null || "".equals(searchParams))) {
 			throw new InvalidFilteringArgumentException("ID parameter is null", InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE);
 		}
 		
@@ -147,7 +159,11 @@ public class CmsFilteringNavigator {
 		
 		StringBuffer queryString = new StringBuffer();
 		
-		queryString.append("id=").append(id);
+		if (id != null && !"".equals(id)) {
+			queryString.append("id=").append(id);
+		} else if (searchParams != null && !"".equals(searchParams)) {
+			queryString.append("searchParams=").append(searchParams);
+		} 
 		queryString.append("&");
 		queryString.append("pageSize=").append(pageSize);
 		queryString.append("&");
@@ -262,6 +278,37 @@ public class CmsFilteringNavigator {
 
 	public void setCatId(String catId) {
 		this.catId = catId;
+	}
+
+	public ErpNutritionType.Type getErpNutritionTypeType() {
+		return erpNutritionTypeType;
+	}
+
+	public void setErpNutritionTypeType(ErpNutritionType.Type erpNutritionTypeType) {
+		this.erpNutritionTypeType = erpNutritionTypeType;
+	}
+
+	public String getSearchParams() {
+		return searchParams;
+	}
+
+	public void setSearchParams(String searchParams) {
+		this.searchParams = searchParams;
 	}	
 	
+	public boolean isBrowseRequest() {
+		if (id != null && !"".equals(id)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean isSearchRequest() {
+		if (searchParams != null && !"".equals(searchParams)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

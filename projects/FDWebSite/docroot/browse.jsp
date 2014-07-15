@@ -56,7 +56,20 @@
       <soy:render template="browse.breadCrumb" data="${browsePotato.breadCrumbs}" />
     </div>
 
-    <div class="pager-holder">
+    <div class="oas-cnt" id="oas_b_CategoryNote"><script type="text/javascript">OAS_AD('CategoryNote');</script></div>
+    <div class="oas-cnt" id="oas_b_BrowseTop1"><script type="text/javascript">OAS_AD('BrowseTop1');</script></div>
+    <div class="oas-cnt left" id="oas_b_BrowseTop2"><script type="text/javascript">OAS_AD('BrowseTop2');</script></div>
+    <div class="oas-cnt right" id="oas_b_BrowseTop3"><script type="text/javascript">OAS_AD('BrowseTop3');</script></div>
+
+    <div class="browse-media-top">
+      <soy:render template="browse.topMedia" data="${browsePotato.descriptiveContent}" />
+    </div>
+
+    <div class="browse-carousels-top">
+      <soy:render template="browse.topCarousels" data="${browsePotato.carousels}" />
+    </div>
+
+    <div class="pager-holder top">
       <soy:render template="browse.pager" data="${browsePotato.pager}" />
     </div>
 
@@ -64,23 +77,16 @@
       <soy:render template="browse.sortBar" data="${browsePotato.sortOptions}" />
     </div>
 
-    <soy:render template="browse.superDepartment" data="${browsePotato.sections}" />
-
-    <div class="browse-media">
-      <soy:render template="browse.media" data="${browsePotato.descriptiveContent}" />
+    <div class="browse-media-middle">
+      <soy:render template="browse.middleMedia" data="${browsePotato.descriptiveContent}" />
     </div>
-
-    <div class="browse-carousels-top">
-      <soy:render template="browse.topCarousels" data="${browsePotato.carousels}" />
-    </div>
-
-    <div class="oas-cnt" id="oas_b_CategoryNote"><script type="text/javascript">OAS_AD('CategoryNote');</script></div>
-    <div class="oas-cnt" id="oas_b_BrowseTop1"><script type="text/javascript">OAS_AD('BrowseTop1');</script></div>
-    <div class="oas-cnt left" id="oas_b_BrowseTop2"><script type="text/javascript">OAS_AD('BrowseTop2');</script></div>
-    <div class="oas-cnt right" id="oas_b_BrowseTop3"><script type="text/javascript">OAS_AD('BrowseTop3');</script></div>
 
     <div class="browse-filtertags">
       <soy:render template="browse.filterTags" data="${browsePotato.filterLabels}" />
+    </div>
+
+    <div class="browse-superdepartment">
+      <soy:render template="browse.superDepartment" data="${browsePotato.sections}" />
     </div>
 
     <div class="browse-sections transactional">
@@ -90,11 +96,15 @@
     <div class="oas-cnt left" id="oas_b_BrowseBottom1"><script type="text/javascript">OAS_AD('BrowseBottom1');</script></div>
     <div class="oas-cnt right" id="oas_b_BrowseBottom2"><script type="text/javascript">OAS_AD('BrowseBottom2');</script></div>
 
+    <div class="browse-media-bottom">
+      <soy:render template="browse.bottomMedia" data="${browsePotato.descriptiveContent}" />
+    </div>
+
     <div class="browse-carousels-bottom">
       <soy:render template="browse.bottomCarousels" data="${browsePotato.carousels}" />
     </div>
 
-    <div class="pager-holder">
+    <div class="pager-holder bottom">
       <soy:render template="browse.pager" data="${browsePotato.pager}" />
     </div>
     
@@ -109,4 +119,7 @@
     </script>
   </tmpl:put>
 
+  <tmpl:put name='extraJsModules'>
+    <jwr:script src="/browse.js"  useRandomParam="false" />
+  </tmpl:put>
 </tmpl:insert>

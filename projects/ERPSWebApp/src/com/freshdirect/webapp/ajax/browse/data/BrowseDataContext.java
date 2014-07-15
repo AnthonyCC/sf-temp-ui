@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 
 public class BrowseDataContext extends BrowseData {
 
@@ -27,11 +28,11 @@ public class BrowseDataContext extends BrowseData {
 	@JsonIgnore
 	private NavigationModel navigationModel;
 	
-	public BrowseData extractBrowseDataPrototype(FDUserI user){
+	public BrowseData extractBrowseDataPrototype(FDUserI user, CmsFilteringNavigator nav){
 		
 		List<SectionData> sections = new ArrayList<SectionData>();
 		for(SectionContext context : sectionContexts){
-			sections.add(context.extractDataFromContext(user));
+			sections.add(context.extractDataFromContext(user, nav));
 		}
 
 		this.getSections().setSections(sections);

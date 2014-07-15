@@ -1,16 +1,19 @@
 {namespace browse}
+
 /**
- * @param? carousel3 carousel3
- * @param? carousel4 carousel4
+ * @param? carousel1 carousel1
+ * @param? carousel2 carousel2
+ * @param? carouselPosition position
+ * @param? carouselRatio ratio
  */
 {template .bottomCarousels autoescape="false"}
-  {if $carousel3 or $carousel4}
-  <div class="carousels bottom">
-    {call browse.carousels}
-      {param carousel1: $carousel3 /}
-      {param carousel2: $carousel4 /}
+  {if $carouselPosition == 'BOTTOM'}
+    {call browse.classedCarousels}
+      {param carousel1:$carousel1 /}
+      {param carousel2:$carousel2 /}
+      {param cssclass:$carouselRatio?$carouselRatio:'bottom' /}
     {/call}
-  </div>
   {/if}
 {/template}
+
 

@@ -20,8 +20,8 @@
     <div class="superDepartment">
       <div class="browseContent">
         <div class="browse-loading">Loading products</div>
-        <div class="superdept">
-          {if $superDepartmentName}<h1>{$superDepartmentName}</h1>{/if}
+        <div class="large-visual">
+          {if $superDepartmentName}<h1 class="lv-title">{$superDepartmentName}</h1>{/if}
           {foreach $department in $departments}
             {call browse.department data="$department"}{/call}
           {/foreach}
@@ -36,30 +36,86 @@
 * @param name department name
 * @param deptPhoto department image
 * @param popularCategoryColumns list of popular categories
-* @param altText description of department
 */
 {template .department autoescape="false"}
-  <div class="department">
-    {if $deptPhoto}
-      <div class="pic"><img src="{$deptPhoto}" alt="Department {$name}" /></div>
-    {/if}
-    <a href="browse.jsp?id={$id}" data-component="categorylink" data-id="{$id}"><h2>{$name}</h2></a>
-    {if $altText}
-      <p>{$altText}</p>
-    {/if}
+{let $maxItems: 5 /}
+  <div class="lv-item">
+    <div class="pic-container">
+      {if $deptPhoto}
+        <img class="pic" src="{$deptPhoto}" alt="Department {$name}" />
+      {/if}
+    </div>    
+
+    <a class="lv-link" href="browse.jsp?id={$id}" data-component="categorylink" data-id="{$id}">
+      <h2 class="lv-item-title">{$name}</h2>
+    </a>
+
+    <hr class="lv-sep" />
+
+    <ul class="lv-sub-items">
     {if length($popularCategoryColumns) > 0}
-      <div class="popular">
-        <h3>Popular categories</h3>
-        {foreach $column in $popularCategoryColumns}
-          <ul class="col">
-            {foreach $category in $column}
-              <li><a href="browse.jsp?id={$category.id}" data-component="categorylink" data-id="{$category.id}">{$category.name}</a></li>
-            {/foreach}
-          </ul>
+      {foreach $column in $popularCategoryColumns}
+        {foreach $category in $column}
+          {if index($category) < $maxItems}
+          <li class="lv-sub-item">
+            <a class="lv-sub-link" href="browse.jsp?id={$category.id}" 
+               data-component="categorylink" 
+               data-id="{$category.id}">{$category.name}</a>
+          </li>
+          {/if}
         {/foreach}
-      </div>
+      {/foreach}
+    {else}
+      <li class="lv-sub-item">
+        <a class="lv-sub-link" href="browse.jsp?id={$id}" 
+           data-component="categorylink" 
+           data-id="{$id}">{$name}</a>
+      </li>
     {/if}
-    <div class="clear">&nbsp;</div>
+    </ul>
+  </div>
+{/template}
+
+/**
+* @param id category id
+* @param name category name
+* @param image category image
+* @param popularCategories list of popular categories
+*/
+{template .lvCategory autoescape="false"}
+{let $maxItems: 5 /}
+  <div class="lv-item">
+    <div class="pic-container">
+      {if $image}
+        <img class="pic" src="{$image}" alt="Category {$name}" />
+      {/if}
+    </div>    
+
+    <a class="lv-link" href="browse.jsp?id={$id}" data-component="categorylink" data-id="{$id}">
+      <h2 class="lv-item-title">{$name}</h2>
+    </a>
+
+    <hr class="lv-sep" />
+
+    <ul class="lv-sub-items">
+    {if $popularCategories and length($popularCategories) > 0}
+      {foreach $category in $popularCategories}
+        {if index($category) < $maxItems}
+        <li class="lv-sub-item">
+          <a class="lv-sub-link" href="browse.jsp?id={$category.id}" 
+             data-component="categorylink" 
+             data-id="{$category.id}">{$category.name}</a>
+        </li>
+        {/if}
+      {/foreach}
+    {else}
+      <li class="lv-sub-item">
+        <a class="lv-sub-link" href="browse.jsp?id={$id}" 
+           data-component="categorylink" 
+           data-id="{$id}">{$name}</a>
+      </li>
+    {/if}
+    </ul>
   </div>
 {/template}
 

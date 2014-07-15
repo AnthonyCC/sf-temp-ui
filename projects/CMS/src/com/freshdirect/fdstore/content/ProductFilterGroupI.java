@@ -10,5 +10,6 @@ public interface ProductFilterGroupI {
 	String getAllSelectedLabel();
 	List<ProductItemFilterI> getProductFilters();
 	boolean isDisplayOnCategoryListingPage();
+	boolean isMultiGroupModel();
 
 }

@@ -13,6 +13,8 @@ public class SectionData implements Serializable, DescriptiveDataI {
 	private String headerText;
 	private String headerImage;
 	private String media;
+	private String mediaLocation;
+	private String middleMedia;
 	private String superDepartmentName;
 	private List<ProductData> products;
 	private List<CategoryData> categories;
@@ -73,5 +75,22 @@ public class SectionData implements Serializable, DescriptiveDataI {
 	public void setSuperDepartmentName(String superDepartmentName) {
 		this.superDepartmentName = superDepartmentName;
 	}
+	@Override
+	public String getMediaLocation() {
+		return mediaLocation;
+	}
+	@Override
+	public void setMediaLocation(String mediaLocation) {
+		this.mediaLocation=mediaLocation;
+	}
+	@Override
+	public String getMiddleMedia() {
+		return middleMedia;
+	}
+	@Override
+	public void setMiddleMedia(String middleMedia) {
+		this.middleMedia=middleMedia;
+	}
+	
 	
 }

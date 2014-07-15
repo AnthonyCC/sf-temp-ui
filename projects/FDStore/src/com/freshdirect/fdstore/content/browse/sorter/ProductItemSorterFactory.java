@@ -91,4 +91,9 @@ public class ProductItemSorterFactory {
 		}
 		return null;
 	}
+	
+	
+	public static Comparator<FilteringProductItem> wrapComparator(Comparator<FilteringProductItem> comparator){
+		return ComparatorChain.create(ProductItemSorterFactory.AVAILABILITY_INNER).chain(comparator).chain(ProductItemSorterFactory.NAME_INNER); 
+	}
 }

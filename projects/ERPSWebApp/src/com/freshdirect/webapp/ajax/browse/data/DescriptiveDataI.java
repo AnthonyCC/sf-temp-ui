@@ -14,4 +14,10 @@ public interface DescriptiveDataI{
 	
 	String getMedia();
 	void setMedia(String media);
+	
+	String getMediaLocation();
+	void setMediaLocation(String mediaLocation);
+	
+	String getMiddleMedia();
+	void setMiddleMedia(String middleMedia);
 }

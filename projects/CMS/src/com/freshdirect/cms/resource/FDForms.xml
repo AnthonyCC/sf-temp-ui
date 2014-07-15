@@ -136,6 +136,7 @@
 							<CmsField><attribute>sortOptions</attribute></CmsField>
 							<CmsField><attribute>noGroupingByCategory</attribute></CmsField>
 							<CmsField><attribute>popularCategories</attribute></CmsField>
+							<CmsField><attribute>showPopularCategories</attribute></CmsField>
 							<CmsField><attribute>showAllByDefault</attribute></CmsField>
 						</fields>
 					</CmsSection>
@@ -150,6 +151,8 @@
 						<fields>
 							<CmsField><attribute>titleBar</attribute></CmsField>
 							<CmsField><attribute>departmentBanner</attribute></CmsField>
+							<CmsField><attribute>bannerLocation</attribute></CmsField>
+							<CmsField><attribute>middleMedia</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -167,6 +170,13 @@
 							<CmsField><attribute>merchantRecommenderTitle</attribute></CmsField>
 							<CmsField><attribute>merchantRecommenderProducts</attribute></CmsField>
 							<CmsField><attribute>merchantRecommenderRandomizeProducts</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>CAROUSEL SETUP</title>
+						<fields>
+							<CmsField><attribute>carouselPosition</attribute></CmsField>
+							<CmsField><attribute>carouselRatio</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -446,6 +456,8 @@
 							<CmsField><attribute>sortOptions</attribute></CmsField>
 							<CmsField><attribute>noGroupingByCategory</attribute></CmsField>
 							<CmsField><attribute>preferenceCategory</attribute></CmsField>
+							<CmsField><attribute>popularCategories</attribute></CmsField>
+							<CmsField><attribute>showPopularCategories</attribute></CmsField>							
 							<CmsField><attribute>showAllByDefault</attribute></CmsField>
 						</fields>
 					</CmsSection>
@@ -462,6 +474,9 @@
 							<CmsField><attribute>nameImage</attribute></CmsField>
 							<CmsField><attribute>description</attribute></CmsField>
 							<CmsField><attribute>categoryBanner</attribute></CmsField>
+							<CmsField><attribute>bannerLocationCLP</attribute></CmsField>
+							<CmsField><attribute>bannerLocationPLP</attribute></CmsField>
+							<CmsField><attribute>middleMedia</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -470,6 +485,15 @@
 							<CmsField><attribute>catMerchantRecommenderTitle</attribute></CmsField>
 							<CmsField><attribute>catMerchantRecommenderProducts</attribute></CmsField>
 							<CmsField><attribute>catMerchantRecommenderRandomizeProducts</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>CAROUSEL SETUP</title>
+						<fields>
+							<CmsField><attribute>carouselPositionCLP</attribute></CmsField>
+							<CmsField><attribute>carouselRatioCLP</attribute></CmsField>
+							<CmsField><attribute>carouselPositionPLP</attribute></CmsField>
+							<CmsField><attribute>carouselRatioPLP</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -1801,6 +1825,8 @@
 						<title>EDITORIAL</title>
 						<fields>
 							<CmsField><attribute>superDepartmentBanner</attribute></CmsField>
+							<CmsField><attribute>bannerLocation</attribute></CmsField>
+							<CmsField><attribute>middleMedia</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -1818,6 +1844,13 @@
 							<CmsField><attribute>sdMerchantRecommenderTitle</attribute></CmsField>
 							<CmsField><attribute>sdMerchantRecommenderProducts</attribute></CmsField>
 							<CmsField><attribute>sdMerchantRecommenderRandomizeProducts</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>CAROUSEL SETUP</title>
+						<fields>
+							<CmsField><attribute>carouselPosition</attribute></CmsField>
+							<CmsField><attribute>carouselRatio</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>

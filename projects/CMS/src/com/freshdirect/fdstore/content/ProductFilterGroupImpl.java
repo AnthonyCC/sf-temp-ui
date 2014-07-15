@@ -10,6 +10,7 @@ public class ProductFilterGroupImpl implements ProductFilterGroupI {
 	private String allSelectedLabel;
 	private List<ProductItemFilterI> productFilters;
 	private boolean displayOnCategoryListingPage;
+	private boolean multiGroupModel;
 
 	public String getId() {
 		return id;
@@ -61,6 +62,14 @@ public class ProductFilterGroupImpl implements ProductFilterGroupI {
 
 	public void setDisplayOnCategoryListingPage(boolean displayOnCategoryListingPage) {
 		this.displayOnCategoryListingPage = displayOnCategoryListingPage;
+	}
+
+	public boolean isMultiGroupModel() {
+		return multiGroupModel;
+	}
+
+	public void setMultiGroupModel(boolean multiGroupModel) {
+		this.multiGroupModel = multiGroupModel;
 	}
 
 }

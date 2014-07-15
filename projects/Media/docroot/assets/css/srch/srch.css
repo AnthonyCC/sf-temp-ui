@@ -1,0 +1,185 @@
+.srch-header {
+  clear: both;
+  overflow: hidden;
+}
+
+.srch-header h1 {
+  float: left;
+  height: 46px;
+  line-height: 46px;
+  color: #979863;
+  font-family: 'EagleRegular';
+} 
+
+.srch-header .oas-cnt {
+  float: right;
+}
+
+.srch section.main {
+  margin: 0;
+}
+
+.srch section.main .content {
+  width: 784px;
+  margin-left: 0;
+}
+
+.srch .pager-holder .pager {
+  display: block;
+  clear: right;
+  float: right;
+  overflow: hidden;
+  padding: 5px;
+  margin: 8px;
+}
+
+.srch .pager-holder {
+  overflow: hidden;
+}
+
+.srch section.tabs .pager-holder {
+  float: right;
+}
+
+.srch section.bottom .pager-holder {
+  background: #f0f5e1;
+  border: 1px solid #dce6be;
+}
+
+.srch section.main:before {
+  border-top: none;
+  border-bottom: none;
+}
+
+.srch section.main .sorter {
+  margin: 0;
+  padding: 5px;
+  background: #f0f5e1;
+  border-right: 1px solid #dce6be;
+  border-bottom: 1px solid #dce6be;
+  float: none;
+  overflow: hidden;
+}
+
+.srch section.main .sorter-element_list {
+  white-space: normal;
+  float: right;
+}
+
+.srch section.tabs nav.tabs {
+  display: block;
+  overflow: hidden;
+  padding: 8px 0 0;
+  margin-bottom: -1px;
+}
+
+.srch section.tabs nav.tabs li {
+  float: left;
+  height: 35px;
+  line-height: 35px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+  background: #669933;
+  box-shadow: -1px -1px 2px 0 rgba(128, 128, 128, 0.3) inset,1px 1px 2px 0 rgba(240, 240, 240, 0.8) inset;
+  cursor: pointer;
+  border-radius: 8px 8px 0 0;
+  padding: 0 10px;
+  list-style-type: none;
+}
+
+.srch section.tabs nav.tabs li.active {
+  width: auto;
+  padding: 0 15px;
+  height: 42px;
+  line-height: 42px;
+  position: relative;
+  text-shadow: none;
+  margin: -7px 0 0;
+  color: #669933;
+  background: #f0f5e1;
+  font-size: 21px;
+  box-shadow: 1px 1px 2px 0 rgba(240, 240, 240, 0.8) inset;
+  border: 1px solid #dce6be;
+  border-bottom: none;
+}
+
+.srch section.tabs nav.tabs li span i {
+  font-style: normal;
+  font-weight: normal;
+}
+
+.srch section.tabs .tabcontent {
+  clear: both;
+  overflow: hidden;
+  background: #f0f5e1;
+  border: 1px solid #dce6be;
+}
+
+.srch .search-input {
+  float: left;
+  margin: 10px;
+  height: 30px;
+  line-height: 30px;
+}
+
+.srch .search-input .cssbutton {
+  height: 24px;
+  line-height: 22px;
+  padding: 0 10px;
+  margin-left: 10px;
+}
+
+.srch .search-input input {
+  height: 24px;
+  line-height: 24px;
+  width: 200px;
+  padding: 0 0 0 10px;
+}
+
+.srch .search-input ::-ms-input-placeholder {
+  font-weight: bold;
+  color: #979863;
+}
+.srch .search-input ::-moz-placeholder {
+  font-weight: bold;
+  color: #979863;
+}
+.srch .search-input ::-webkit-input-placeholder {
+  font-weight: bold;
+  color: #979863;
+}
+
+.srch .tabs .itemcount {
+  float: right;
+  font-size: 16px;
+  margin-top: 5px;
+}
+
+.srch .srch-carousel .carousel {
+  border: 1px solid #dcd2dc;
+  border-radius: 10px 10px 0 0;
+  margin: 10px 0;
+}
+
+.srch .srch-carousel .carousel .carousel-header {
+  height: 29px;
+  line-height: 29px;
+  background-color: #eee0ee;
+  border-bottom: 1px solid #dcd2dc;
+  border-radius: 10px 10px 0 0;
+  text-align: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.srch .srch-carousel .carousel .carousel-header h2 {
+  font-family: 'EagleBook', Verdana, Arial, sans-serif;
+  color: #855885;
+  font-size: 20px;
+}
+
+.srch .srch-carousel .carousel ul li {
+  width: 159px;
+}

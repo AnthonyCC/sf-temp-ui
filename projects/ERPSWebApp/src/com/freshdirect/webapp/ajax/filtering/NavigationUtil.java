@@ -112,18 +112,34 @@ public class NavigationUtil {
 				// select active filters
 				model.setActiveFilters(selectActiveFilters(model.getAllFilters(), navigator));
 			}
+			
+			if(((ProductContainer)node).isShowPopularCategories()){
+				
+				List<CategoryModel> popularCategories = new ArrayList<CategoryModel>();
+				
+				for(CategoryModel cat : ((ProductContainer)node).getPopularCategories()){
+					if (cat.isHideIfFilteringIsSupported() && NavigationUtil.isUserContextEligibleForHideFiltering(user)) {
+						continue;
+					}
+					popularCategories.add(cat);
+				}
+				
+				model.setPopularCategories(popularCategories);
+			}
 		
-		} else {
+		} else if(model.hasSuperDepartment()) {
 			
 			model.setDepartments(((SuperDepartmentModel)model.getSelectedContentNodeModel()).getDepartments());
 			
 			List<CategoryModel> popularCategories = new ArrayList<CategoryModel>();
 			for (DepartmentModel deptModel : ((SuperDepartmentModel)model.getSelectedContentNodeModel()).getDepartments()){
-				for (CategoryModel cat : deptModel.getPopularCategories()) {
-					if (cat.isHideIfFilteringIsSupported() && NavigationUtil.isUserContextEligibleForHideFiltering(user)) {
-						continue;
-					}
-					popularCategories.add(cat);
+				if(deptModel.isShowPopularCategories()){
+					for (CategoryModel cat : deptModel.getPopularCategories()) {
+						if (cat.isHideIfFilteringIsSupported() && NavigationUtil.isUserContextEligibleForHideFiltering(user)) {
+							continue;
+						}
+						popularCategories.add(cat);
+					}					
 				}
 			}
 			model.setPopularCategories(popularCategories);
@@ -134,7 +150,7 @@ public class NavigationUtil {
 		
 		// -- CREATE MENU --
 		// create menuBuilder based on page type
-		MenuBuilderI menuBuilder = MenuBuilderFactory.createBuilderByPageType(model.getNavDepth(), model.hasSuperDepartment());
+		MenuBuilderI menuBuilder = MenuBuilderFactory.createBuilderByPageType(model.getNavDepth(), model.hasSuperDepartment(), navigator.isSearchRequest());
 
 		// are we showing products?
 		model.setProductListing( !model.hasSuperDepartment() && model.getNavDepth()!=NavDepth.DEPARTMENT && (

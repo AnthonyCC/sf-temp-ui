@@ -2,12 +2,13 @@
 	white-space:nowrap;
 	overflow:hidden;
 	position:relative;
-	margin:15px 0;
-	padding:0 40px;
+	margin:0;
+	padding:0 36px;
 	list-style-type:none;
 }
 [data-component="carousel-mask"] {
 	overflow:hidden;	
+  margin: 0 4px 34px;
 }
 
 [data-component="carousel"] ul {
@@ -25,17 +26,17 @@
 [data-component="carousel"] ul li {
 	text-indent:0;
 	width: 153px;
+  margin-bottom: 0;
 }
 
 [data-component="carousel"] ul.pager {
-  display: none;
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: 26px;
   margin: auto;
-  line-height: 14px;
-  height: 14px;
+  line-height: 8px;
+  height: 8px;
   background: transparent;
   text-align: center;
   border: none;
@@ -51,15 +52,14 @@
   cursor: pointer;
   display: inline-block;
   text-indent: -9999px;
-  width: 5px;
-  height: 5px;
-  background: white;
-  border: 1px solid #888;
-  border-radius: 5px;
+  width: 8px;
+  height: 8px;
+  background: #ccc;
+  border-radius: 8px;
 }
 
 [data-component="carousel"] ul.pager li.current span {
-  background-color: #aaa;
+  background-color: #82817a;
 }
 
 [data-component="carousel-prev"],
@@ -102,3 +102,10 @@
 [data-component="carousel"].first [data-component="carousel-prev"] {
 	cursor: default;
 }
+
+.hide-carousel-incartinfo [data-component="carousel"] ul li .atc-info {
+  visibility: hidden;
+  max-height: 15px;
+  min-height: 0;
+}
+

@@ -149,6 +149,10 @@
   max-height: 70px;
 }
 
+.transactional-popup .carouselTransactionalItem-image_wrapper .portrait-item-productimage {
+  max-height: none;
+}
+
 .portrait-item-burst_wrapper {
   display:inline-block;
   position:relative;
@@ -314,6 +318,12 @@ a.portrait-item-header-name:link {
 
 .portrait-item-header-name b {
   display: inline;
+}
+
+.portrait-item .nutritionSortInfo {
+  clear: both;
+  line-height: 1.2em;
+  padding: 8px 0;
 }
 
 /* transactional popup */

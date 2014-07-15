@@ -169,6 +169,7 @@ public class ProductItemFilterFactory {
 		l1.setType(multiGroupModel.getLevel1Type());
 		l1.setAllSelectedLabel(multiGroupModel.getLevel1AllSelectedLabel());
 		l1.setId(multiGroupModel.getContentName()+"_l1");
+		l1.setMultiGroupModel(true);
 		
 		l1.setProductFilters(getProductFilters(multiGroupModel.getRootTag(), l1.getId()));
 		list.add(l1);
@@ -182,6 +183,7 @@ public class ProductItemFilterFactory {
 			l2.setType(multiGroupModel.getLevel2Type());
 			l2.setAllSelectedLabel(multiGroupModel.getLevel2AllSelectedLabel());
 			l2.setId(multiGroupModel.getContentName()+"_l2");
+			l2.setMultiGroupModel(true);
 			
 			if (selection==null || selection.size()<1){
 				l2.setProductFilters(Collections.<ProductItemFilterI>emptyList());

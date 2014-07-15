@@ -12,15 +12,28 @@ var FreshDirect = FreshDirect || {};
       value:'descriptiveContent'
     },
     template:{
-      value:browse.media
+      value: {
+        general: browse.media,
+        top: browse.topMedia,
+        middle: browse.middleMedia,
+        bottom: browse.bottomMedia
+      }
     },
     placeholder:{
-      value:'.browse-media'
+      value: {
+        general: '.browse-media',
+        top: '.browse-media-top',
+        middle: '.browse-media-middle',
+        bottom: '.browse-media-bottom'
+      }
     },
     render:{
       value: function(data) {
+        var pos;
         // render media
-				$(this.placeholder).html(this.template(data));
+        ['top', 'middle', 'bottom'].forEach(function (pos) {
+          $(this.placeholder[pos]).html(this.template[pos](data));
+        }, this);
         
         // render department header
         $('.browse-titlebar').html(browse.titleBar(data));

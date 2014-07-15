@@ -2,15 +2,16 @@
 /**
  * @param? carousel1 carousel1
  * @param? carousel2 carousel2
+ * @param? carouselPosition position
+ * @param? carouselRatio ratio
  */
 {template .topCarousels autoescape="false"}
-  {if $carousel1 or $carousel2}
-  <div class="carousels top">
-    {call browse.carousels}
-      {param carousel1: $carousel1 /}
-      {param carousel2: $carousel2 /}
+  {if $carouselPosition == 'TOP'}
+    {call browse.classedCarousels}
+      {param carousel1:$carousel1 /}
+      {param carousel2:$carousel2 /}
+      {param cssclass:$carouselRatio?$carouselRatio:'top' /}
     {/call}
-  </div>
   {/if}
 {/template}
 

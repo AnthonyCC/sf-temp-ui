@@ -11,6 +11,7 @@ public class BrowseData implements Serializable {
 		private List<SectionData> sections;
 		private int sectionMaxLevel;
 		private boolean allSectionsEmpty;
+		private boolean usePopularCategoriesLayout;
 
 		public List<SectionData> getSections() {
 			return sections;
@@ -29,6 +30,12 @@ public class BrowseData implements Serializable {
 		}
 		public void setAllSectionsEmpty(boolean allSectionsEmpty) {
 			this.allSectionsEmpty = allSectionsEmpty;
+		}
+		public boolean isUsePopularCategoriesLayout() {
+			return usePopularCategoriesLayout;
+		}
+		public void setUsePopularCategoriesLayout(boolean usePopularCategoriesLayout) {
+			this.usePopularCategoriesLayout = usePopularCategoriesLayout;
 		}
 		
 	}
@@ -61,8 +68,8 @@ public class BrowseData implements Serializable {
 		private static final long serialVersionUID = 4610591383180714799L;
 		private CarouselData carousel1;
 		private CarouselData carousel2;
-		private CarouselData carousel3;
-		private CarouselData carousel4;
+		private String carouselPosition;
+		private String carouselRatio;
 		
 		public CarouselData getCarousel1() {
 			return carousel1;
@@ -76,18 +83,19 @@ public class BrowseData implements Serializable {
 		public void setCarousel2(CarouselData carousel2) {
 			this.carousel2 = carousel2;
 		}
-		public CarouselData getCarousel3() {
-			return carousel3;
+		public String getCarouselPosition() {
+			return carouselPosition;
 		}
-		public void setCarousel3(CarouselData carousel3) {
-			this.carousel3 = carousel3;
+		public void setCarouselPosition(String carouselPosition) {
+			this.carouselPosition = carouselPosition;
 		}
-		public CarouselData getCarousel4() {
-			return carousel4;
+		public String getCarouselRatio() {
+			return carouselRatio;
 		}
-		public void setCarousel4(CarouselData carousel4) {
-			this.carousel4 = carousel4;
+		public void setCarouselRatio(String carouselRatio) {
+			this.carouselRatio = carouselRatio;
 		}
+		
 	}	
 	
 	public static class DescripetiveDataCointainer implements Serializable, DescriptiveDataI {
@@ -95,6 +103,8 @@ public class BrowseData implements Serializable {
 		private String url;
 		private String titleBar;
 		private String media;
+		private String mediaLocation;
+		private String middleMedia;
 		private String pageTitle;
 		private String oasSitePage;
 
@@ -103,6 +113,18 @@ public class BrowseData implements Serializable {
 		}
 		public void setMedia(String media) {
 			this.media = media;
+		}
+		public String getMediaLocation() {
+			return mediaLocation;
+		}
+		public void setMediaLocation(String mediaLocation) {
+			this.mediaLocation = mediaLocation;
+		}
+		public String getMiddleMedia() {
+			return middleMedia;
+		}
+		public void setMiddleMedia(String middleMedia) {
+			this.middleMedia = middleMedia;
 		}
 		public String getTitleBar() {
 			return titleBar;
@@ -128,6 +150,7 @@ public class BrowseData implements Serializable {
 		public void setOasSitePage(String oasSitePage) {
 			this.oasSitePage = oasSitePage;
 		}
+		
 	}
 
 	public static class MenuDataCointainer implements Serializable {
@@ -146,6 +169,7 @@ public class BrowseData implements Serializable {
 		private static final long serialVersionUID = 2253861947116960072L;
 		private List<SortOptionData> sortOptions;
 		private boolean currentOrderAsc;
+		private List<SortDropDownData> sortDropDowns;
 		
 		public List<SortOptionData> getSortOptions() {
 			return sortOptions;
@@ -159,7 +183,12 @@ public class BrowseData implements Serializable {
 		public void setCurrentOrderAsc(boolean currentOrderAsc) {
 			this.currentOrderAsc = currentOrderAsc;
 		}
-		
+		public List<SortDropDownData> getSortDropDowns() {
+			return sortDropDowns;
+		}
+		public void setSortDropDowns(List<SortDropDownData> sortDropDowns) {
+			this.sortDropDowns = sortDropDowns;
+		}
 	}
 	
 	//end of inner class definitions

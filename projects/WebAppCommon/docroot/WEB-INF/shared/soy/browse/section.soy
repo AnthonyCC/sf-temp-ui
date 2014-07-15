@@ -33,15 +33,43 @@
 
 /**
  * @param? section section
+ * @param? usePopularCategoriesLayout
  * @param level deepness level
  * @param lastLevel max deepness
  */
 {template .section autoescape="false"}
 {let $isSuperDeptPage : $section.departments and length($section.departments) > 0 /}
 
-{if $section and (not $isSuperDeptPage) } 
 
-  <section {if $section.sections and length($section.sections) > 0}class="hasSubSections"{/if}>
+{if $section and (not $isSuperDeptPage) }
+  {if $usePopularCategoriesLayout}
+    {if $section.sections}
+      {foreach $subSection in $section.sections}
+        {call browse.section}
+          {param section:$subSection /}
+          {param level:($level+1) /}
+          {param lastLevel:$lastLevel /}
+          {param usePopularCategoriesLayout:true /}
+        {/call}
+      {/foreach}
+    {/if}
+
+    {if $section.categories and length($section.categories) > 0}
+      {if $section.headerText}
+          <h2 {if $level == $lastLevel}class="last"{/if}>{$section.headerText}</h2>
+      {/if}
+      {if $section.headerImage}<img src="{$section.headerImage}">{/if}
+      {if $section.media}<div class="media">{$section.media}</div>{/if}
+
+      <div class="large-visual">
+      {foreach $category in $section.categories}
+        {call .lvCategory data="$category" /}
+      {/foreach}
+      </div>
+    {/if}
+
+  {else}
+  <section class="{if $section.sections and length($section.sections) > 0}hasSubSections{else}noSubSections{/if}">
     {if $section.headerText}
         <h2 {if $level == $lastLevel}class="last"{/if}>{$section.headerText}</h2>
     {/if}
@@ -85,5 +113,6 @@
       {/if}
     </div>
   </section>
+  {/if}
 {/if}
 {/template}

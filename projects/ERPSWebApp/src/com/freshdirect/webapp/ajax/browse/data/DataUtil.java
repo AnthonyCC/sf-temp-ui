@@ -15,6 +15,18 @@ public class DataUtil {
 			}
 		}
 	};
+	
+	public static final Comparator<MenuBoxData> MENUBOX_POSITION_COMPARATOR = new Comparator<MenuBoxData>(){
+		@Override
+		public int compare(MenuBoxData data1, MenuBoxData data2) {
+			
+			if(data1==null){
+				return -1;
+			} else {
+				return data1.getPosition().compareTo(data2.getPosition());				
+			}
+		}
+	};
 
 	
 }

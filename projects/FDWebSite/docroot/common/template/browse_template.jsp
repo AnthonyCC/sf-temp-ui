@@ -45,13 +45,18 @@
     
 <%@ include file="/common/template/includes/globalnav.jspf" %> 
 
-<%-- TODO --%>
 <section class="container <tmpl:get name='containerExtraClass'/>">
 
   <section class="deptnav">
     <!-- start : deptnav -->
     <tmpl:get name='deptnav'/>
     <!-- end : deptnav -->    
+  </section>
+
+  <section class="tabs">
+    <!-- start : tabs -->
+    <tmpl:get name='tabs'/>
+    <!-- end : tabs -->      
   </section>
 
   <section class="main">
@@ -68,6 +73,11 @@
     </section>
   </section>
 
+  <section class="bottom">
+    <!-- start : bottom -->
+    <tmpl:get name='bottom'/>
+    <!-- end : bottom -->    
+  </section>
 </section>
 
 
@@ -76,11 +86,6 @@
 <tmpl:get name='soypackage'/>
 
 <%@ include file="/common/template/includes/i_jsmodules.jspf" %>
-<jwr:script src="/fdmodules.js"  useRandomParam="false" />
-<jwr:script src="/fdcomponents.js"  useRandomParam="false" />
-
-<jwr:script src="/browse.js"  useRandomParam="false" />
-
 <tmpl:get name='extraJsModules'/>
 
 </body>

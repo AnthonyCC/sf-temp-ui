@@ -1,0 +1,33 @@
+{namespace srch}
+/**
+ * @param? carousel carousel
+ * @param? carousel1 carousel1
+ */
+{template .carouselWrapper autoescape="false"}
+  {if $carousel or $carousel1}
+  <div class="carousel">
+    {call .carousel}
+      {param carousel: $carousel ? $carousel : $carousel1 /}
+    {/call}
+  </div>
+  {/if}
+{/template}
+
+/**
+ * @param? carousel carousel
+ */
+{template .carousel autoescape="false"}
+  {if $carousel}
+  <div class="carousel-header">
+    <h2>{$carousel.name}</h2>
+  </div>
+  <div class="carousel-content" data-cmeventsource="{$carousel.cmEventSource}">
+    {call common.simpleCarousel}
+      {param items: $carousel.products /}
+      {param itemType:'grid' /}
+      {param cmEventSource:$carousel.cmEventSource /}
+    {/call}
+  </div>
+  {/if}
+{/template}
+

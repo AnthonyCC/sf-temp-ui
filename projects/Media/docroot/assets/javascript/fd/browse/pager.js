@@ -58,7 +58,6 @@ var FreshDirect = FreshDirect || {};
           activePage = parent.data('activepage')*1;
           newPage=Math.min(activePage+1,pageCount);
         } else if(component === 'showall'){
-          newPageSize=parseInt(clicked.data('showall'),10);
           newPage = activePage ? 0 : 1;
         } else {
           newPage = clicked.data('page');

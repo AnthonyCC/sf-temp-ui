@@ -1270,5 +1270,29 @@ public class CategoryModel extends ProductContainer {
 	public boolean isTopLevelCategory(){
 		return getParentNode() instanceof DepartmentModel;
 	}
+	
+	public EnumBrowseEditorialLocation getBannerLocationCLP(String defaultValue) {
+		return EnumBrowseEditorialLocation.valueOf(getAttribute("bannerLocationCLP", defaultValue));
+	}
+	
+	public EnumBrowseEditorialLocation getBannerLocationPLP(String defaultValue) {
+		return EnumBrowseEditorialLocation.valueOf(getAttribute("bannerLocationPLP", defaultValue));
+	}
+	
+	public EnumBrowseEditorialLocation getCarouselPositionCLP(String defaultValue) {
+		return EnumBrowseEditorialLocation.valueOf(getAttribute("carouselPositionCLP", defaultValue));
+	}
+	
+	public EnumBrowseEditorialLocation getCarouselPositionPLP(String defaultValue) {
+		return EnumBrowseEditorialLocation.valueOf(getAttribute("carouselPositionPLP", defaultValue));
+	}
+    
+    public EnumBrowseCarouselRatio getCarouselRatioCLP(String defaultValue) {
+		return EnumBrowseCarouselRatio.valueOf(getAttribute("carouselRatioCLP", defaultValue));
+	}
+    
+    public EnumBrowseCarouselRatio getCarouselRatioPLP(String defaultValue) {
+		return EnumBrowseCarouselRatio.valueOf(getAttribute("carouselRatioPLP", defaultValue));
+	}
 
 }

@@ -160,6 +160,9 @@ public class ProductData extends BasicProductData implements SkuData {
 	// CM related
 	private String variantId;
 	
+	private String nutritionSortTitle;
+	private String nutritionSortValue;
+	
 	
 	@Override
 	public double getPrice() {
@@ -525,5 +528,16 @@ public class ProductData extends BasicProductData implements SkuData {
 	public void setVariantId(String variantId) {
 		this.variantId = variantId;
 	}
-	
+	public String getNutritionSortTitle() {
+		return nutritionSortTitle;
+	}
+	public void setNutritionSortTitle(String nutritionSortTitle) {
+		this.nutritionSortTitle = nutritionSortTitle;
+	}
+	public String getNutritionSortValue() {
+		return nutritionSortValue;
+	}
+	public void setNutritionSortValue(String nutritionSortValue) {
+		this.nutritionSortValue = nutritionSortValue;
+	}	
 }

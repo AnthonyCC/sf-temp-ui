@@ -15,6 +15,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -298,7 +299,11 @@ public class ProductRecommenderUtil {
 		// pick list from CMS
 		List<ProductModel> products = product.getCrossSellProducts();
 		LOGGER.debug("  [XSELL] Found " + products.size() + " cross-sell products in CMS ..");
-		cleanUpProducts(products, false, MAX_XSELL_PRODS);
+		
+		final int MERCHANT_PROD_NUMBER = FDStoreProperties.getMaxXsellProds();
+		
+		
+		cleanUpProducts(products, false, MAX_XSELL_PRODS > MERCHANT_PROD_NUMBER ? MERCHANT_PROD_NUMBER : MAX_XSELL_PRODS);
 		LOGGER.debug("  .. " + products.size() + " are available");
 		
 		result.addAll(createData(products, MERCHANT_RECOMMENDATION_VARIANT, user));

@@ -15,6 +15,7 @@ import com.freshdirect.content.nutrition.EnumClaimValue;
 import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.content.nutrition.EnumKosherTypeValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
+import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.erp.EnumAlcoholicContent;
 import com.freshdirect.fdstore.ecoupon.FDCouponFactory;
@@ -345,6 +346,19 @@ public class FDProduct extends FDSku implements AttributesI {
 		return this.nutrition;
 	}
 
+	public FDNutrition getNutritionItemByType(ErpNutritionType.Type erpsNutritionTypeType){
+		if (erpsNutritionTypeType!=null){
+			String displayName = erpsNutritionTypeType.getDisplayName();
+			
+			for (FDNutrition nutritionItem : nutrition) {
+				if (displayName.equalsIgnoreCase(nutritionItem.getName())) {
+					return nutritionItem;
+				}
+			}
+		}
+		return null;
+	}
+	
 	public boolean hasNutritionFacts() {
 		if (nutrition.size() == 0)
 			return false;

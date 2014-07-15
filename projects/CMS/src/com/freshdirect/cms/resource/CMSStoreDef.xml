@@ -153,6 +153,19 @@
 			<AttributeDef type="S" name="sdFeaturedRecommenderSiteFeature" label="Site Feature (ignored if Source Category is set)"/>
 			<AttributeDef type="S" name="sdMerchantRecommenderTitle" label="Title"/>
 			<AttributeDef type="B" name="sdMerchantRecommenderRandomizeProducts" label="Randomize Products"/>
+			<EnumDef type="S" name="bannerLocation"  label="SuperDepartment Banner Location">
+				<EnumValue value="TOP" label="TOP"/>
+				<EnumValue value="BOTTOM" label="BOTTOM"/>
+			</EnumDef>
+			<EnumDef type="S" name="carouselPosition"  label="Carousel Position">
+				<EnumValue value="TOP" label="TOP"/>
+				<EnumValue value="BOTTOM" label="BOTTOM"/>
+			</EnumDef>
+			<EnumDef type="S" name="carouselRatio"  label="Carousel Ratio">
+				<EnumValue value="FULL_WIDTH" label="FULL WIDTH"/>
+				<EnumValue value="TWO_TWO" label="2/2"/>
+				<EnumValue value="THREE_ONE" label="3/1"/>
+			</EnumDef>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="departments" label="Departments" cardinality="Many">
@@ -162,6 +175,9 @@
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
 			<RelationshipDef name="superDepartmentBanner" label="Super Department Banner">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="middleMedia" label="Middle Media" cardinality="One">
 				<DestinationDef contentType="Html" />
 			</RelationshipDef>
 			<RelationshipDef name="sdFeaturedRecommenderSourceCategory" label="Source Category" cardinality="One">
@@ -268,11 +284,25 @@
 				<EnumValue value="PDP_XSELL" label="Cross-sell (first item)"/>
 				<EnumValue value="PDP_UPSELL" label="Upsell (first item)"/>
 			</EnumDef>
+			<EnumDef type="S" name="carouselPosition"  label="Carousel Position">
+				<EnumValue value="TOP" label="TOP"/>
+				<EnumValue value="BOTTOM" label="BOTTOM"/>
+			</EnumDef>
+			<EnumDef type="S" name="carouselRatio"  label="Carousel Ratio">
+				<EnumValue value="FULL_WIDTH" label="FULL WIDTH"/>
+				<EnumValue value="TWO_TWO" label="2/2"/>
+				<EnumValue value="THREE_ONE" label="3/1"/>
+			</EnumDef>
 			<AttributeDef type="S" name="featuredRecommenderTitle" label="Title"/>
 			<AttributeDef type="B" name="featuredRecommenderRandomizeProducts" label="Randomize Products (only if Source Category is set)"/>
 			<AttributeDef type="S" name="featuredRecommenderSiteFeature" label="Site Feature (ignored if Source Category is set)"/>
 			<AttributeDef type="S" name="merchantRecommenderTitle" label="Title"/>
 			<AttributeDef type="B" name="merchantRecommenderRandomizeProducts" label="Randomize Products"/>
+			<AttributeDef type="B" name="showPopularCategories" label="Show Popular Categories"/>
+			<EnumDef type="S" name="bannerLocation"  label="Department Banner Location">
+				<EnumValue value="TOP" label="TOP"/>
+				<EnumValue value="BOTTOM" label="BOTTOM"/>
+			</EnumDef>
 			<AttributeDef type="S" name="globalNavShopAllText" label="Global Nav Shop All Text"/>
 			<AttributeDef type="S" name="globalNavName" label="Global Nav Name"/>
 		</AttributeDefs>
@@ -352,6 +382,9 @@
 				<DestinationDef contentType="Html" />
 			</RelationshipDef>
 			<RelationshipDef name="departmentBanner" label="Department Banner" cardinality="One">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="middleMedia" label="Middle Media" cardinality="One">
 				<DestinationDef contentType="Html" />
 			</RelationshipDef>
 			<RelationshipDef name="featuredRecommenderSourceCategory" label="Source Category" cardinality="One">
@@ -486,6 +519,33 @@
 			<AttributeDef type="S" name="catMerchantRecommenderTitle" label="Title" inheritable="true"/>
 			<AttributeDef type="B" name="catMerchantRecommenderRandomizeProducts" label="Randomize Products" inheritable="true"/>
 			<AttributeDef type="B" name="hideIfFilteringIsSupported"  label="Hide If Filtering Is Supported"/>
+			<AttributeDef type="B" name="showPopularCategories" label="Show Popular Categories"/>
+			<EnumDef type="S" name="bannerLocationCLP"  label="Category Banner Location CLP">
+				<EnumValue value="TOP" label="TOP"/>
+				<EnumValue value="BOTTOM" label="BOTTOM"/>
+			</EnumDef>
+			<EnumDef type="S" name="bannerLocationPLP"  label="Category Banner Location PLP">
+				<EnumValue value="TOP" label="TOP"/>
+				<EnumValue value="BOTTOM" label="BOTTOM"/>
+			</EnumDef>
+			<EnumDef type="S" name="carouselPositionPLP"  label="Carousel Position PLP">
+				<EnumValue value="TOP" label="TOP"/>
+				<EnumValue value="BOTTOM" label="BOTTOM"/>
+			</EnumDef>
+			<EnumDef type="S" name="carouselRatioPLP"  label="Carousel Ratio PLP">
+				<EnumValue value="FULL_WIDTH" label="FULL WIDTH"/>
+				<EnumValue value="TWO_TWO" label="2/2"/>
+				<EnumValue value="THREE_ONE" label="3/1"/>
+			</EnumDef>
+			<EnumDef type="S" name="carouselPositionCLP"  label="Carousel Position CLP">
+				<EnumValue value="TOP" label="TOP"/>
+				<EnumValue value="BOTTOM" label="BOTTOM"/>
+			</EnumDef>
+			<EnumDef type="S" name="carouselRatioCLP"  label="Carousel Ratio CLP">
+				<EnumValue value="FULL_WIDTH" label="FULL WIDTH"/>
+				<EnumValue value="TWO_TWO" label="2/2"/>
+				<EnumValue value="THREE_ONE" label="3/1"/>
+			</EnumDef>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="ALTERNATE_CONTENT" label="Alternate Content">
@@ -657,6 +717,9 @@
 			<RelationshipDef name="categoryBanner" label="Category Banner" cardinality="One" inheritable="true">
 				<DestinationDef contentType="Html" />
 			</RelationshipDef>
+			<RelationshipDef name="middleMedia" label="Middle Media" cardinality="One">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
 			<RelationshipDef name="catMerchantRecommenderProducts" label="Products" cardinality="Many" inheritable="true">
 				<DestinationDef contentType="Product" />
 			</RelationshipDef>
@@ -665,6 +728,9 @@
 			</RelationshipDef>
 			<RelationshipDef name="globalNavPostNameImage" label="Global Nav Post Image" cardinality="One">
 				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="popularCategories" cardinality="Many" label="Popular Categories">
+				<DestinationDef contentType="Category" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>

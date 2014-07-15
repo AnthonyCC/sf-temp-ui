@@ -654,6 +654,10 @@ public class FDStoreProperties {
 	
 	//New ATP Strategy to handle flip
 	private static final String PROP_STANDING_ORDER_IGNOREATPFAILURE = "fdstore.standingorder.ignoreatpfailure";
+	
+	//template redesign
+	private static final String PROP_MAX_XSELL_PRODS = "fdstore.xsell.max";
+	private static final String PROP_BROWSE_PAGESIZE = "fdstore.browse.pagesize";
 
 	
     static {
@@ -1292,6 +1296,11 @@ public class FDStoreProperties {
         //optimize
         defaults.put(PROP_OPT_SOCIAL_FOOTER_STATIC, "true");
         defaults.put(PROP_STANDING_ORDER_IGNOREATPFAILURE, "true");
+        
+        //template redesign
+        defaults.put(PROP_MAX_XSELL_PRODS, "3");
+        defaults.put(PROP_BROWSE_PAGESIZE, "30");
+        
         refresh();
     }
 
@@ -3269,6 +3278,15 @@ public class FDStoreProperties {
     
     public static boolean isIgnoreATPFailureForSO() {
     	return Boolean.valueOf(get(PROP_STANDING_ORDER_IGNOREATPFAILURE)).booleanValue();
+    }
+    
+    //template redesign
+    public static int getMaxXsellProds() {
+        return Integer.parseInt(get(PROP_MAX_XSELL_PRODS));
+    }
+    
+    public static int getBrowsePageSize() {
+        return Integer.parseInt(get(PROP_BROWSE_PAGESIZE));
     }
     
 }

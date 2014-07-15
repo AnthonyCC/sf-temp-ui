@@ -45,7 +45,7 @@ var FreshDirect = FreshDirect || {};
           result.requestFilterParams = filters;
         }
 
-        if ($('[data-component="menuitem"][data-urlparameter="all"] input').attr('checked')) {
+        if ($('[data-component="menuitem"][data-urlparameter="all"] input').attr('checked') || $('[data-component="menubox"][data-allselected]').size() > 0) {
           result.all = true;
         }
 
@@ -59,6 +59,7 @@ var FreshDirect = FreshDirect || {};
 
         // reset 'all' setting
         $('[data-component="menuitem"][data-urlparameter="all"] input').attr('checked', null);
+        $('[data-component="menubox"][data-allselected]').attr('data-allselected', null);
 
         if (cm) {
           cm.setEvent('pageview');
@@ -144,7 +145,12 @@ var FreshDirect = FreshDirect || {};
         clicked.addClass('selected');
 
         if (menubox.data('filter') === 'id') {
-          this.setId(id);
+          if (id === "all") {
+            this.setId(menubox.data('id'));
+            menubox.attr('data-allselected', true);
+          } else {  
+            this.setId(id);
+          } 
         }
 
         if (menubox.data('boxtype') === 'FILTER') {

@@ -3,6 +3,7 @@
  * @param? sections sections
  * @param? sectionMaxLevel The max depth of sections starting by 1
  * @param? allSectionsEmpty all sections are empty
+ * @param? usePopularCategoriesLayout
  */
 {template .content autoescape="false"}
 
@@ -18,6 +19,7 @@
         {param section:$section /}
         {param lastLevel:$sectionMaxLevel /}
         {param level:1 /}
+        {param usePopularCategoriesLayout:$usePopularCategoriesLayout /}
       {/call}
     {/foreach}
   {/if}

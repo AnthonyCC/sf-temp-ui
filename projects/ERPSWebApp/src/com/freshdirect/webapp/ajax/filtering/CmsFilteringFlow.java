@@ -12,9 +12,13 @@ import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.RecipeDepartment;
+import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
@@ -53,72 +57,33 @@ public class CmsFilteringFlow {
 		} else {
 			browseDataContext = EhCacheUtil.getObjectFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, user.getUser().getPrimaryKey());							
 		}
-		
-		if(browseDataContext==null){
-			
-			String id = nav.getId();
-			ContentNodeModel contentNodeModel = ContentFactory.getInstance().getContentNode(id);
-			
-			// validation
-			validateNode(nav, contentNodeModel, id, user);
-			
-			
-			//override show all
-			if (contentNodeModel instanceof SuperDepartmentModel || ((ProductContainer) contentNodeModel).isTopLevelCategory() && ((ProductContainer) contentNodeModel).isShowAllByDefault()){
-				nav.setAll(true);
-			}
-			
-			// create filters and building menu
-			NavigationModel navigationModel = NavigationUtil.createNavigationModel(contentNodeModel, nav, user);
-			
-			// filtering and grouping
-			browseDataContext = BrowseDataBuilderFactory.createBuilder(navigationModel.getNavDepth(), navigationModel.hasSuperDepartment()).buildBrowseData(navigationModel, user, nav);
 
-			// inject references
-			browseDataContext.setNavigationModel(navigationModel);
-			browseDataContext.setCurrentContainer(contentNodeModel);
-
-			if (!navigationModel.hasSuperDepartment()) { //don't do these in case of super department page
-				// menu availability check
-				MenuBuilderFactory.getInstance().checkMenuStatus(browseDataContext, navigationModel, user);
-				
-				// -- SORTING --
-				
-				// process sort options
-				BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav);
-			}
-			
-			// populate browseData with the menu
-			browseDataContext.getMenuBoxes().setMenuBoxes(navigationModel.getLeftNav());
-			
-			// -- POPULATE EXTRA DATA --
-			
-			// populate browseData with breadcrumbs
-			BrowseDataBuilderFactory.getInstance().populateWithBreadCrumbAndDesciptiveContent(browseDataContext, navigationModel);
-			
-			// populate browseData with filterLabels
-			BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
-			
-			if(!nav.isPdp()){
-				EhCacheUtil.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, user.getUser().getPrimaryKey(), browseDataContext);				
+		if (browseDataContext == null) {
+			if (nav.isBrowseRequest()) {
+				browseDataContext = doBrowseFlow(nav, user);
+			} else if (nav.isSearchRequest()) {
+				browseDataContext = doSearchFlow(nav, user);
 			}
 		}
 		
-		// -- SORTING --
-		if(!nav.isPdp()){
+		// -- SORTING -- (not on pdp or super department page)
+		if(!nav.isPdp() && !(browseDataContext.getCurrentContainer() instanceof SuperDepartmentModel)){
 			// process sort options
 			BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav);			
 		}
 			
 		// -- REMOVE EMPTY SECTIONS --
 		
-		BrowseData browseData = browseDataContext.extractBrowseDataPrototype(user);
+		BrowseData browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
 		if (!browseDataContext.getNavigationModel().hasSuperDepartment() && !FDStoreProperties.getPreviewMode()) {
 			BrowseDataBuilderFactory.getInstance().removeEmptySections(browseData.getSections().getSections(), browseDataContext.getMenuBoxes().getMenuBoxes());
 		}
 		
 		// -- REMOVE MENU BOXES WITH NULL SELECTION --
 		MenuBuilderFactory.getInstance().checkNullSelection(browseDataContext.getMenuBoxes().getMenuBoxes());
+		
+		// -- REORDER MENU BOXES, PLACE POPUP TYPE FILTERS BELOW TOP CATEGORIES
+		MenuBuilderFactory.getInstance().reorderMenuBoxes(browseDataContext.getMenuBoxes().getMenuBoxes());
 			
 		if(!nav.isPdp()){
 			
@@ -137,8 +102,8 @@ public class CmsFilteringFlow {
 				BrowseDataBuilderFactory.getInstance().appendCarousels(browseData, user, shownProductKeysForRecommender);
 			} else { //remove if already added
 				CarouselDataCointainer carousels = browseData.getCarousels();
-				carousels.setCarousel3(null);
-				carousels.setCarousel4(null);
+				carousels.setCarousel1(null);
+				carousels.setCarousel2(null);
 			}
 			
 			browseData.getDescriptiveContent().setUrl(URLEncoder.encode(nav.assembleQueryString()));
@@ -150,7 +115,90 @@ public class CmsFilteringFlow {
 		
 			
 		return new CmsFilteringFlowResult(browseData, browseDataContext.getNavigationModel());
+	}		
+
+	public BrowseDataContext doSearchFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException{
 		
+		BrowseDataContext browseDataContext = null;
+		
+		SearchResults results = ContentSearch.getInstance().searchProducts(nav.getSearchParams());
+		
+		//TODO: mocked navigation model...
+		NavigationModel navigationModel = new NavigationModel();
+		navigationModel.setProductListing(true);
+
+		for (FilteringSortingItem<ProductModel> searchResult : results.getProducts()) {
+			navigationModel.getSearchResults().add(searchResult.getModel());
+		}
+		
+		browseDataContext = BrowseDataBuilderFactory.createBuilder(null, navigationModel.hasSuperDepartment(), nav.isSearchRequest()).buildBrowseData(navigationModel, user, nav);
+
+		browseDataContext.setNavigationModel(navigationModel);
+
+		MenuBuilderI menuBuilder = MenuBuilderFactory.createBuilderByPageType(null, navigationModel.hasSuperDepartment(), nav.isSearchRequest());
+
+		// create menu
+		navigationModel.setLeftNav(menuBuilder.buildMenu(navigationModel.getAllFilters(), navigationModel, nav));
+
+		BrowseData.DescripetiveDataCointainer descriptiveContent = browseDataContext.getDescriptiveContent();
+		descriptiveContent.setPageTitle("FreshDirect - Search - " + nav.getSearchParams());
+
+		
+		if(!nav.isPdp()){
+			EhCacheUtil.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, user.getUser().getPrimaryKey(), browseDataContext);				
+		}
+		
+
+		return browseDataContext;
+
+	}
+
+	public BrowseDataContext doBrowseFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException{
+		
+		BrowseDataContext browseDataContext = null;
+		
+		String id = nav.getId();
+		ContentNodeModel contentNodeModel = ContentFactory.getInstance().getContentNode(id);
+		
+		// validation
+		validateNode(nav, contentNodeModel, id, user);
+		
+		//override show all
+		if (contentNodeModel instanceof SuperDepartmentModel || ((ProductContainer) contentNodeModel).isTopLevelCategory() && ((ProductContainer) contentNodeModel).isShowAllByDefault()){
+			nav.setAll(true);
+		}
+		
+		// create filters and building menu
+		NavigationModel navigationModel = NavigationUtil.createNavigationModel(contentNodeModel, nav, user);
+		
+		// filtering and grouping
+		browseDataContext = BrowseDataBuilderFactory.createBuilder(navigationModel.getNavDepth(), navigationModel.hasSuperDepartment(), nav.isSearchRequest()).buildBrowseData(navigationModel, user, nav);
+
+		// inject references
+		browseDataContext.setNavigationModel(navigationModel);
+		browseDataContext.setCurrentContainer(contentNodeModel);
+
+		if (!navigationModel.hasSuperDepartment()) { //don't do these in case of super department page
+			// menu availability check
+			MenuBuilderFactory.getInstance().checkMenuStatus(browseDataContext, navigationModel, user);
+		}
+		
+		// populate browseData with the menu
+		browseDataContext.getMenuBoxes().setMenuBoxes(navigationModel.getLeftNav());
+		
+		// -- POPULATE EXTRA DATA --
+		
+		// populate browseData with breadcrumbs
+		BrowseDataBuilderFactory.getInstance().populateWithBreadCrumbAndDesciptiveContent(browseDataContext, navigationModel);
+		
+		// populate browseData with filterLabels
+		BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
+		
+		if(!nav.isPdp()){
+			EhCacheUtil.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, user.getUser().getPrimaryKey(), browseDataContext);				
+		}
+		
+		return browseDataContext;
 	}
 
 	

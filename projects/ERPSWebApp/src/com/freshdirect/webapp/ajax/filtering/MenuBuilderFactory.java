@@ -67,8 +67,12 @@ public class MenuBuilderFactory {
 		return factory;
 	}
 	
-	public static MenuBuilderI createBuilderByPageType(NavDepth depth, boolean hasSuperDepartment){
+	public static MenuBuilderI createBuilderByPageType(NavDepth depth, boolean hasSuperDepartment, boolean isSearchPage){
 		
+		if (isSearchPage) {
+			return getInstance().new SearchPageMenuBuilder();
+		}
+
 		if (hasSuperDepartment) {
 			return getInstance().new SuperDeptPageMenuBuilder();
 		}
@@ -95,6 +99,52 @@ public class MenuBuilderFactory {
 			return null;			
 		}
 		}
+	}
+	
+	public class SearchPageMenuBuilder implements MenuBuilderI{
+		
+		public List<MenuBoxData> buildMenu(List<ProductFilterGroupI> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav){
+			
+			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
+			
+			
+//			// create superdepartment box
+//			if (navModel.hasSuperDepartment()) {
+//				MenuBoxData domain = new MenuBoxData();
+//				domain.setName(navModel.getSelectedContentNodeModel().getFullName());
+//				domain.setId(superDeptId + "_superdepartment");
+//				domain.setBoxType(MenuBoxType.SUPERDEPARTMENT);
+//				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+//				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+//				
+//				List<MenuItemData> items = new ArrayList<MenuItemData>();
+////				items.add(new MenuItemData(((SuperDepartmentModel)navModel.getSelectedContentNodeModel()).getBrowseName()));
+//				
+//				domain.setItems(createDeptMenuItems(navModel.getDepartments(), items, navModel.getUser()));
+//
+//				menu.add(domain);
+//			}
+//
+//			// create popular categories box
+//			if (!navModel.getPopularCategories().isEmpty()) {
+//				MenuBoxData domain = new MenuBoxData();
+//				domain.setName("Popular Categories");
+//				domain.setId(superDeptId + "_popular");
+//				domain.setBoxType(MenuBoxType.CATEGORY);
+//				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+//				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+//				
+//				List<MenuItemData> items = new ArrayList<MenuItemData>();
+////				items.add(new MenuItemData(((SuperDepartmentModel)navModel.getSelectedContentNodeModel()).getBrowseName()));
+//				
+//				domain.setItems(createCatMenuItems(navModel.getPopularCategories(), items, navModel.getUser()));
+//
+//				menu.add(domain);
+//			}
+
+			return menu;
+		}
+		
 	}
 	
 	public class SuperDeptPageMenuBuilder implements MenuBuilderI{
@@ -281,7 +331,7 @@ public class MenuBuilderFactory {
 					domain.setName(cat.getFullName());
 					domain.setId(cat.getContentName());
 					domain.setBoxType(MenuBoxType.SUB_CATEGORY);
-					if(nav.isPdp()){
+					if(nav.isPdp() || navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY)!=null){
 						domain.setDisplayType(MenuBoxDisplayType.POPUP);
 						domain.setSelectionType(MenuBoxSelectionType.LINK);
 					}else{
@@ -429,6 +479,7 @@ public class MenuBuilderFactory {
 					domain.setId(filterGroup.getId());
 					domain.setName(filterGroup.getName());
 					domain.setBoxType(MenuBoxType.FILTER);
+					domain.setMultiGroupBox(filterGroup.isMultiGroupModel());
 					
 					if(!productListingPage){
 						domain.setShouldSetAll(true);
@@ -726,6 +777,36 @@ public class MenuBuilderFactory {
 				it.remove();				
 			}
 		}
+	}
+	
+	/**
+	 * put popup type filter boxes just below top level category
+	 */
+	public void reorderMenuBoxes(List<MenuBoxData> menu){
+		
+		Iterator<MenuBoxData> it = menu.iterator();
+
+		boolean topCategoryFound = false;
+		int position=0;
+		while(it.hasNext()){
+			
+			MenuBoxData box = it.next();
+			
+			if(!topCategoryFound){
+				box.setPosition(position++);				
+			}
+			
+			if(box.getBoxType()==MenuBoxType.CATEGORY){
+				topCategoryFound=true;
+			}
+				
+			if(box.getBoxType()==MenuBoxType.FILTER && (box.getDisplayType()==MenuBoxDisplayType.POPUP || box.getDisplayType()==MenuBoxDisplayType.CENTER_POPUP)
+					&& !box.isMultiGroupBox()){				
+				box.setPosition(position++);
+			}
+		}
+		
+		Collections.sort(menu, DataUtil.MENUBOX_POSITION_COMPARATOR);
 	}
 	
 	/**

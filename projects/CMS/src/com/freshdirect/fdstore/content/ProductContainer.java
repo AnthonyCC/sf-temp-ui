@@ -46,6 +46,8 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 
     private final List<TagModel> productTags = new ArrayList<TagModel>();
     
+    protected final List<CategoryModel> popularCategories = new ArrayList<CategoryModel>();
+    
     public abstract List<ProductModel> getFeaturedProducts();
 
 	public abstract List<CategoryModel> getSubcategories();
@@ -349,6 +351,19 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 	public Html getCategoryBanner() {
 		return FDAttributeFactory.constructHtml(this, "categoryBanner");
 	}
+	
+	public Html getBrowseMiddleMedia() {
+		return FDAttributeFactory.constructHtml(this, "middleMedia");
+	}
 
 	public abstract boolean isTopLevelCategory();
+	
+	public List<CategoryModel> getPopularCategories() {
+		ContentNodeModelUtil.refreshModels(this, "popularCategories", popularCategories, false);
+		return new ArrayList<CategoryModel>(popularCategories);
+	}
+	
+	public boolean isShowPopularCategories(){
+		return getAttribute("showPopularCategories", false);
+	}
 }

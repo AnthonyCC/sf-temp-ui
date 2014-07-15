@@ -246,14 +246,14 @@ section.main {
   display: block;
   overflow: hidden;
   position: relative;
-  margin: 10px 0;
+  margin: 10px 0 25px;
 }
 
 section.main:before {
   content: '';
   display: block;
   position: absolute;
-  width: 184px; /* 186 - 2 */
+  width: 173px; /* 175 - 2 */
   border: 1px solid #dce6be;
   background: #f0f5e1;
   top: 0;
@@ -265,7 +265,7 @@ section.main .leftnav {
   float: left;
   position: relative;
   background: #f0f5e1;
-  width: 178px; /* 186 - 2 - 6 */
+  width: 167px; /* 175 - 2 - 6 */
   border-left: 1px solid #dce6be;
   border-right: 1px solid #dce6be;
   margin: 1px 0;
@@ -292,8 +292,8 @@ section.main .leftnav *::-webkit-scrollbar-thumb {
 
 section.main .content {
   float: right;
-  width: 774px;
-  /* margin-left: 10px; */
+  width: 775px;
+  /* margin-left: 20px; */
 }
 
 section.main .breadcrumbs {
@@ -330,10 +330,8 @@ section.main .breadcrumbs li.first:before {
 section.main .pager {
   display: block;
   overflow: hidden;
-  border: 1px solid #dce6be;
-  background: #f0f5e1;
   padding: 5px;
-  margin: 5px 0 0;
+  margin: 5px 0 5px;
 }
 
 section.main .pager .pagination {
@@ -348,7 +346,7 @@ section.main .pager .pagination-pager-button {
   color: #693;
   border: none;
   font-size: 12px;
-  margin-left: 10px;
+  margin-left: 12px;
 }
 
 section.main .pager .pagination-pager-button:hover {
@@ -365,7 +363,7 @@ section.main .pager .pagination-pager-button.selected:hover {
 }
 
 section.main .pager .pagination-showall-cssbutton {
-  margin-left: 20px;
+  margin-left: 12px;
 }
 
 section.main .sorter {
@@ -393,45 +391,26 @@ section.main .leftnav .menuBox h2 {
   padding: 0 10px;
   margin: 12px 0 10px;
   text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 section.main .leftnav .menuBox ul {
   font-size: 12px;
   line-height: 14px;
-  margin: 10px 8px;
+  margin: 10px 6px;
   padding: 0;
   list-style-type: none;
-  max-height: 255px;
   overflow: hidden;
-  overflow-y: auto;
-}
-
-section.main .leftnav .menuBox ul:after {
-  content: '';
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  right: 25px;
-  height: 15px;
-  background: -moz-linear-gradient(top, rgba(255,255,250,0) 0%, rgba(255,255,250,1) 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,250,0)), color-stop(100%,rgba(255,255,250,1))); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top, rgba(255,255,250,0) 0%,rgba(255,255,250,1) 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, rgba(255,255,250,0) 0%,rgba(255,255,250,1) 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top, rgba(255,255,250,0) 0%,rgba(255,255,250,1) 100%); /* IE10+ */
-  background: linear-gradient(to bottom, rgba(255,255,250,0) 0%,rgba(255,255,250,1) 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00fffffa', endColorstr='#fffffa',GradientType=0 ); /* IE6-9 */
-}
-
-section.main .leftnav .menuBox ul li:last-child {
-  margin-bottom: 10px;
 }
 
 section.main .leftnav .menuBox h3 {
   font-weight: bold;
-  font-size: 10px;
+  font-size: 12px;
   color: #333;
   line-height: 14px;
   margin-bottom: 5px; 
+  padding: 0 4px;
 }
 
 .browse-popup {
@@ -449,6 +428,11 @@ section.main .leftnav .menuBox label {
   position: relative;
   line-height: 15px;
   padding: 5px 0 5px 22px;
+  cursor: pointer;
+}
+
+section.main .leftnav .menuBox[data-selectionType="SINGLE"] label {
+  padding: 0;
 }
 
 .browse-popup-content label {
@@ -600,18 +584,36 @@ section.main .leftnav .menuBox hr {
   box-shadow: 0 1px 1px #fff;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, .8);
 }
-section.main .leftnav .menuBox input[type="checkbox"],
-section.main .leftnav .menuBox input[type="radio"] {
+
+section.main .leftnav .menuBox input[type="checkbox"] {
   margin: auto 0;
   position: absolute;
   top: 5px;
   left: 1px;
 }
 
+section.main .leftnav .menuBox input[type="radio"] {
+  display: none;
+}
+
+section.main .leftnav .menuBox input[type="radio"] + span {
+  display: block;
+  padding: 5px;
+  border-radius: 6px;
+}
+
+section.main .leftnav .menuBox input[type="radio"]:checked + span,
+.ie8 section.main .leftnav .menuBox input[type="radio"][checked] + span {
+  background: #693;
+  color: #fff;
+  font-weight: bold;
+}
+
 section.main .leftnav .menuBox label:hover {
   text-decoration: underline;
 }
 
+section.main .leftnav .menuBox .selected label:hover,
 section.main .leftnav .menuBox .disabled label:hover,
 section.main .leftnav .menuBox label.disabled:hover {
   text-decoration: none;
@@ -643,6 +645,10 @@ section.main .leftnav .menuBox button.category {
   text-align: left;
   padding: 8px 11px;
   border-radius: 10px;
+}
+
+section.main .leftnav .menuBox button.category.orange {
+  background: #e07300;
 }
 
 .leftnav-category-popup-button.cssbutton > span,

@@ -2,13 +2,16 @@ package com.freshdirect.webapp.ajax.browse.data;
 
 import java.io.Serializable;
 
+import com.freshdirect.fdstore.FDStoreProperties;
+
 
 public class PagerData implements Serializable {
 
 	private static final long serialVersionUID = -6775517691271591424L;
 	
 	public static int GRID_ITEM_COLUMN_PER_PAGE_THRESHOLD = 5;
-	public static int GRID_ITEM_ROW_PER_PAGE_THRESHOLD = 5;
+//	public static int GRID_ITEM_ROW_PER_PAGE_THRESHOLD = 5;
+	public static int GRID_ITEM_PER_PAGE_THRESHOLD = 30;
 
 	private int pageCount;
 	private boolean all;
@@ -16,7 +19,7 @@ public class PagerData implements Serializable {
 	private int itemCount;
 	private int firstItemIndex;
 	private int lastItemIndex;
-	private int pageSize = GRID_ITEM_ROW_PER_PAGE_THRESHOLD * GRID_ITEM_ROW_PER_PAGE_THRESHOLD;
+	private int pageSize = FDStoreProperties.getBrowsePageSize();
 
 	public int getPageSize() {
 		return pageSize;

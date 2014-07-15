@@ -42,6 +42,8 @@ public class MenuBoxData extends BasicData {
 	private MenuBoxSelectionType selectionType;
 	private MenuBoxType boxType;
 	private String selectedLabel;
+	private Integer position=Integer.MAX_VALUE;
+	private boolean multiGroupBox;
 	
 	
 	/**
@@ -91,6 +93,18 @@ public class MenuBoxData extends BasicData {
 	}
 	public void setShouldSetAll(boolean shouldSetAll) {
 		this.shouldSetAll = shouldSetAll;
+	}
+	public Integer getPosition() {
+		return position;
+	}
+	public void setPosition(Integer position) {
+		this.position = position;
+	}
+	public boolean isMultiGroupBox() {
+		return multiGroupBox;
+	}
+	public void setMultiGroupBox(boolean multiGroupBox) {
+		this.multiGroupBox = multiGroupBox;
 	}
 	
 }

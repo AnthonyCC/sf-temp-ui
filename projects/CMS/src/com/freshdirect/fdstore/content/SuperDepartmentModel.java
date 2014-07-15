@@ -67,5 +67,21 @@ public class SuperDepartmentModel extends ContentNodeModelImpl {
 		ContentNodeModelUtil.refreshModels(this, "sdMerchantRecommenderProducts", sdMerchantRecommenderProducts, false);
 		return new ArrayList<ProductModel>(sdMerchantRecommenderProducts);
 	}
+	
+	public EnumBrowseEditorialLocation getBannerLocation(String defaultValue) {
+		return EnumBrowseEditorialLocation.valueOf(getAttribute("bannerLocation", defaultValue));
+	}
+	
+	public Html getBrowseMiddleMedia() {
+		return FDAttributeFactory.constructHtml(this, "middleMedia");
+	}
+	
+	public EnumBrowseEditorialLocation getCarouselPosition(String defaultValue) {
+		return EnumBrowseEditorialLocation.valueOf(getAttribute("carouselPosition", defaultValue));
+	}
+    
+    public EnumBrowseCarouselRatio getCarouselRatio(String defaultValue) {
+		return EnumBrowseCarouselRatio.valueOf(getAttribute("carouselRatio", defaultValue));
+	}
 
 }
