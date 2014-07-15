@@ -641,8 +641,6 @@ public class FDStoreProperties {
 	//APPDEV-3100 2013 Wine Transition
 	private final static String PROP_WINE_ASSID="fdstore.wine.assid";
 	
-	private final static String PROP_PRODUCT_FEED_UPLOAD_ENABLED = "prop.product.feed.upload.enabled";
-	
 	private final static String PROP_SUFFOLK_ZIPS = "prop.suffolk.zips";
 	
 	private final static String PROP_BROWSE_ROLLOUT_REDIRECT_ENABLED = "fdstore.browse.rollout.redirectenabled";
@@ -658,6 +656,9 @@ public class FDStoreProperties {
 	//template redesign
 	private static final String PROP_MAX_XSELL_PRODS = "fdstore.xsell.max";
 	private static final String PROP_BROWSE_PAGESIZE = "fdstore.browse.pagesize";
+	
+	//Ignore Foodily P3P Policy(similar to facebook and google) 
+	private static final String PROP_3RDPARTY_P3PENABLED = "fdstore.3rdparty.p3penabled";
 
 	
     static {
@@ -1281,8 +1282,6 @@ public class FDStoreProperties {
         //APPDEV-3100 2013 Wine Transition
         defaults.put(PROP_WINE_ASSID, "USQ");
         
-        defaults.put(PROP_PRODUCT_FEED_UPLOAD_ENABLED, "false");
-        
         defaults.put(PROP_BROWSE_ROLLOUT_REDIRECT_ENABLED, "true");
         
         defaults.put("feature.rollout.pdplayout2014", "GLOBAL:ENABLED,true;");
@@ -1301,6 +1300,7 @@ public class FDStoreProperties {
         defaults.put(PROP_MAX_XSELL_PRODS, "3");
         defaults.put(PROP_BROWSE_PAGESIZE, "30");
         
+        defaults.put(PROP_3RDPARTY_P3PENABLED, "true");
         refresh();
     }
 
@@ -3255,10 +3255,7 @@ public class FDStoreProperties {
     public static String getWineAssid() {
     	return get(PROP_WINE_ASSID);
     }
-    
-    public static boolean isProductFeedUploadEnabled() {
-        return Boolean.valueOf(get(PROP_PRODUCT_FEED_UPLOAD_ENABLED)).booleanValue();
-    }
+   
     
     public static boolean isMediaUtilsReallyClose(){
     	return Boolean.valueOf(get(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE)).booleanValue();
@@ -3287,6 +3284,10 @@ public class FDStoreProperties {
     
     public static int getBrowsePageSize() {
         return Integer.parseInt(get(PROP_BROWSE_PAGESIZE));
+    }
+    
+    public static boolean isP3PPolicyEnabled() {
+    	return Boolean.valueOf(get(PROP_3RDPARTY_P3PENABLED)).booleanValue();
     }
     
 }
