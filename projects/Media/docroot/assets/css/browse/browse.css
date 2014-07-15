@@ -253,81 +253,98 @@
  */
 
 .container.browse [data-component="carousel"] {
+  margin: 0 8px;
 }
 
-/* We have to use normal image sizes if we want to use transactional popup
-.container.browse [data-component="carousel"] .portrait-item-productimage_wrapper {
-  height: 70px;
+.container.browse .noCarousel1 [data-component="carousel"],
+.container.browse .noCarousel2 [data-component="carousel"] {
+  margin: 0 16px;
 }
 
-.container.browse [data-component="carousel"] .portrait-item-productimage {
-  max-height: 70px;
+.container.browse [data-component="carousel-mask"] {
+  margin: 0 11px 36px;
 }
-*/
+
+.container.browse .noCarousel1 [data-component="carousel-mask"],
+.container.browse .noCarousel2 [data-component="carousel-mask"] {
+  margin: 0 0 36px;
+}
 
 /* carousel table */
 .container.browse .carousels {
-  padding-top: 10px;
+  margin-top: 10px;
   clear: both;
 }
 
 .container.browse .carousels table {
-  width: 774px;
+  width: 775px;
 }
 
 .container.browse .carousels table td.spacer > div {
-  width: 10px;
+  width: 1px;
 }
 
+/* don't merge top/bottom class definitions with the below ones, it is for fallback */
 .container.browse .carousels.top table td.c1 > div {
-  width: 544px;
+  width: 523px;
 }
 
 .container.browse .carousels.top table td.c2 > div {
-  width: 216px;
+  width: 251px;
 }
 
 .container.browse .carousels.bottom table td.c1 > div,
 .container.browse .carousels.bottom table td.c2 > div {
-  width: 380px;
+  width: 387px;
 }
 
 .container.browse .carousels.THREE_ONE table td.c1 > div,
 .container.browse .carousels.v31 table td.c1 > div {
-  width: 544px;
+  width: 523px;
 }
 
 .container.browse .carousels.THREE_ONE table td.c2 > div,
 .container.browse .carousels.v31 table td.c2 > div {
-  width: 216px;
+  width: 251px;
 }
 
 .container.browse .carousels.TWO_TWO table td.c1 > div,
 .container.browse .carousels.TWO_TWO table td.c2 > div,
 .container.browse .carousels.v22 table td.c1 > div,
 .container.browse .carousels.v22 table td.c2 > div {
-  width: 380px;
+  width: 387px;
 }
 
 .container.browse .carousels table tr.ccontent td.c1 {
-  border-left: 1px solid #dcd2dc;
-  border-right: 1px solid #dcd2dc;
 }
 
 .container.browse .carousels table tr.ccontent td.c2 {
-  border-left: 1px solid #dcd2dc;
-  border-right: 1px solid #dcd2dc;
 }
 
 .container.browse [data-component="carousel"] ul li.portrait-item {
-  width: 146px;
+  width: 118px;
+  margin: 0;
 }
 
 .container.browse .carouselTransactionalItem-image_wrapper .portrait-item-productimage {
-  max-height: 160px;
+  max-height: 111px;
+}
+
+.container.browse .carousels table td.spacer {
+  width: 1px;
+  /* gradient */
+  background: -moz-linear-gradient(top, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.15)), color-stop(100%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%); /* IE10+ */
+  background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#26000000', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
 }
 
 /* only one carousel cases */
+.container.browse .carousels.FULL_WIDTH table.hasCarousel1.hasCarousel2 td.c2,
+.container.browse .carousels.FULL_WIDTH table.hasCarousel1.hasCarousel2 td.spacer,
 .container.browse .carousels table.noCarousel1 td.c1,
 .container.browse .carousels table.noCarousel1 td.spacer,
 .container.browse .carousels table.noCarousel2 td.c2,
@@ -337,46 +354,36 @@
 
 .container.browse .carousels table.noCarousel1 td.c2 > div,
 .container.browse .carousels table.noCarousel2 td.c1 > div {
-  width: 772px
+  width: 775px
 }
 
 .container.browse .noCarousel2 [data-component="carousel"] ul li.portrait-item,
 .container.browse .noCarousel1 [data-component="carousel"] ul li.portrait-item {
-  width: 160px;
+  width: 139px;
+  margin: 0 5px;
 }
 
 /* end of one carousel cases */
 
-.container.browse .carousels .footer td.c1 > div,
-.container.browse .carousels .footer td.c2 > div {
-  height:10px;
-  border-bottom: 1px solid #dcd2dc;
-  border-left: 1px solid #dcd2dc;
-  border-right: 1px solid #dcd2dc;
-  border-bottom-right-radius:10px;
-  border-bottom-left-radius:10px;
-  background-color: #fff;
-}
-
-.container.browse .carousels .header td.c1 > div,
-.container.browse .carousels .header td.c2 > div {
-  height:29px;
-  line-height:29px;
-  background-color:#eee0ee;
-  border: 1px solid #d2c8d3;
-  border-top-left-radius:10px;
-  border-top-right-radius:10px;
-}
-
 .container.browse .carousels .header h2 {
-  font-family: 'EagleBook', Verdana, Arial, sans-serif;
-  color:#855885;
+  font-family: Verdana, Arial, sans-serif;
+  color:#333;
   font-size:20px;
-  width:100%;
-  text-align:center;
+  font-weight: bold;
+  padding: 28px 28px 0;
+  margin: 0;
+  text-align:left;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  /* gradient */
+  background: -moz-linear-gradient(top, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.15)), color-stop(100%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%); /* IE10+ */
+  background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#26000000', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
 }
 
 /* ---------------------------- */
