@@ -167,11 +167,14 @@
   clear: both;
 }
 
-.browse .pager-holder.top{
+.browse .pager-holder.top .pager{
   border-bottom:1px solid #CCC;
+  padding-bottom:10px;
 }
 
-.browse .pager-holder.bottom{
+.browse .pager-holder.bottom .pager{
+  margin-top:40px;
+  padding-top:10px;
   border-top:1px solid #CCC;
 }
 
@@ -205,11 +208,14 @@
 
 .browse #sorter {
   overflow: hidden;
-  margin-bottom:40px;
 }
 
 .browse .sorter-element_list {
   white-space: normal;
+}
+
+.browse .sorter{
+  margin-bottom:40px;
 }
 
 .centerpopup-helper {

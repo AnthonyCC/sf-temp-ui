@@ -347,6 +347,7 @@ section.main .pager .pagination-pager-button {
   border: none;
   font-size: 12px;
   margin-left: 12px;
+  width:36px;
 }
 
 section.main .pager .pagination-pager-button:hover {
