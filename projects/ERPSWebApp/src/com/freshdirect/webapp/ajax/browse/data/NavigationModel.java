@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.ajax.browse.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +73,10 @@ public class NavigationModel {
 	private List<CategoryModel> popularCategories;
 	private List<CategorySectionModel> categorySections;
 	private List<ProductModel> searchResults = new ArrayList<ProductModel>();
-	private List<DepartmentModel> departments;
+	private Map<String, DepartmentModel> departmentsOfSearchResults = new HashMap<String, DepartmentModel>();
+	private Map<String, CategoryModel> categoriesOfSearchResults = new HashMap<String, CategoryModel>();
+	private Map<String, CategoryModel> subCategoriesOfSearchResults = new HashMap<String, CategoryModel>();
+	private List<DepartmentModel> departmentsOfSuperDepartment;
 	private boolean productListing;
 	
 	public NavDepth getNavDepth() {
@@ -156,11 +160,11 @@ public class NavigationModel {
 	public void setPopularCategories(List<CategoryModel> popularCategories) {
 		this.popularCategories = popularCategories;
 	}
-	public List<DepartmentModel> getDepartments() {
-		return departments;
+	public List<DepartmentModel> getDepartmentsOfSuperDepartment() {
+		return departmentsOfSuperDepartment;
 	}
-	public void setDepartments(List<DepartmentModel> departments) {
-		this.departments = departments;
+	public void setDepartmentsOfSuperDepartment(List<DepartmentModel> departmentsOfSuperDepartment) {
+		this.departmentsOfSuperDepartment = departmentsOfSuperDepartment;
 	}
 	public List<CategorySectionModel> getCategorySections() {
 		return categorySections;
@@ -170,5 +174,26 @@ public class NavigationModel {
 	}
 	public List<ProductModel> getSearchResults() {
 		return searchResults;
+	}
+	public Map<String, DepartmentModel> getDepartmentsOfSearchResults() {
+		return departmentsOfSearchResults;
+	}
+	public void setDepartmentsOfSearchResults(Map<String, DepartmentModel> departmentsOfSearchResults) {
+		this.departmentsOfSearchResults = departmentsOfSearchResults;
+	}
+	public Map<String, CategoryModel> getCategoriesOfSearchResults() {
+		return categoriesOfSearchResults;
+	}
+	public void setCategoriesOfSearchResults(Map<String, CategoryModel> categoriesOfSearchResults) {
+		this.categoriesOfSearchResults = categoriesOfSearchResults;
+	}
+	public Map<String, CategoryModel> getSubCategoriesOfSearchResults() {
+		return subCategoriesOfSearchResults;
+	}
+	public void setSubCategoriesOfSearchResults(Map<String, CategoryModel> subCategoriesOfSearchResults) {
+		this.subCategoriesOfSearchResults = subCategoriesOfSearchResults;
+	}
+	public void setSearchResults(List<ProductModel> searchResults) {
+		this.searchResults = searchResults;
 	}
 }

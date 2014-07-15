@@ -41,6 +41,9 @@ public class MenuBuilderFactory {
 	public static final MenuItemData SHOP_BY_PREFERENCE_HEADER;
 	public static final MenuItemData MARKER;
 	public static final MenuItemData ALL_PRODUCTS_ITEM;
+	public static final MenuItemData ALL_DEPARTMENTS_ITEM;
+	public static final MenuItemData ALL_CATEGORIES_ITEM;
+	public static final MenuItemData ALL_SUBCATEGORIES_ITEM;
 	static{
 		
 		SHOP_BY_TYPE_HEADER = new MenuItemData();
@@ -57,6 +60,25 @@ public class MenuBuilderFactory {
 		ALL_PRODUCTS_ITEM.setName("ALL PRODUCTS");
 		ALL_PRODUCTS_ITEM.setSelected(false);
 		ALL_PRODUCTS_ITEM.setUrlParameter("all");
+
+		ALL_DEPARTMENTS_ITEM = new MenuItemData();
+		ALL_DEPARTMENTS_ITEM.setActive(true);
+		ALL_DEPARTMENTS_ITEM.setName("ALL DEPARTMENTS");
+		ALL_DEPARTMENTS_ITEM.setSelected(false);
+		ALL_DEPARTMENTS_ITEM.setUrlParameter("allDepartments");
+		
+		ALL_CATEGORIES_ITEM = new MenuItemData();
+		ALL_CATEGORIES_ITEM.setActive(true);
+		ALL_CATEGORIES_ITEM.setName("ALL CATEGORIES");
+		ALL_CATEGORIES_ITEM.setSelected(false);
+		ALL_CATEGORIES_ITEM.setUrlParameter("allCategories");
+
+		ALL_SUBCATEGORIES_ITEM = new MenuItemData();
+		ALL_SUBCATEGORIES_ITEM.setActive(true);
+		ALL_SUBCATEGORIES_ITEM.setName("ALL SUBCATEGORIES");
+		ALL_SUBCATEGORIES_ITEM.setSelected(false);
+		ALL_SUBCATEGORIES_ITEM.setUrlParameter("allSubCategories");
+
 	}
 	
 	private static MenuBuilderFactory factory;
@@ -108,40 +130,78 @@ public class MenuBuilderFactory {
 			
 			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
 			
-			
-//			// create superdepartment box
-//			if (navModel.hasSuperDepartment()) {
-//				MenuBoxData domain = new MenuBoxData();
-//				domain.setName(navModel.getSelectedContentNodeModel().getFullName());
-//				domain.setId(superDeptId + "_superdepartment");
-//				domain.setBoxType(MenuBoxType.SUPERDEPARTMENT);
-//				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
-//				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
-//				
-//				List<MenuItemData> items = new ArrayList<MenuItemData>();
-////				items.add(new MenuItemData(((SuperDepartmentModel)navModel.getSelectedContentNodeModel()).getBrowseName()));
-//				
-//				domain.setItems(createDeptMenuItems(navModel.getDepartments(), items, navModel.getUser()));
-//
-//				menu.add(domain);
-//			}
-//
-//			// create popular categories box
-//			if (!navModel.getPopularCategories().isEmpty()) {
-//				MenuBoxData domain = new MenuBoxData();
-//				domain.setName("Popular Categories");
-//				domain.setId(superDeptId + "_popular");
-//				domain.setBoxType(MenuBoxType.CATEGORY);
-//				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
-//				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
-//				
-//				List<MenuItemData> items = new ArrayList<MenuItemData>();
-////				items.add(new MenuItemData(((SuperDepartmentModel)navModel.getSelectedContentNodeModel()).getBrowseName()));
-//				
-//				domain.setItems(createCatMenuItems(navModel.getPopularCategories(), items, navModel.getUser()));
-//
-//				menu.add(domain);
-//			}
+			if (nav.isSearchRequest()) {
+				if (!navModel.getDepartmentsOfSearchResults().isEmpty()) {
+					MenuBoxData domain = new MenuBoxData();
+					domain.setName("DEPARTMENT");
+					domain.setId("search_departments");
+					domain.setBoxType(MenuBoxType.DEPARTMENT);
+					domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+					domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+					
+					List<MenuItemData> items = new ArrayList<MenuItemData>();
+					
+					List<DepartmentModel> departments = new ArrayList<DepartmentModel>();
+					departments.addAll(navModel.getDepartmentsOfSearchResults().values());
+					MenuItemData allDepartmentsItem = ALL_DEPARTMENTS_ITEM.copy();
+					if(nav.isAll()){
+						allDepartmentsItem.setSelected(true);
+					}
+					items.add(allDepartmentsItem);					
+
+					domain.setItems(createDeptMenuItems(departments, items, navModel.getUser()));
+	
+					menu.add(domain);
+				}
+				
+				if (!navModel.getCategoriesOfSearchResults().isEmpty()) {
+					MenuBoxData domain = new MenuBoxData();
+					domain.setName("CATEGORY");
+					domain.setId("search_categories");
+					domain.setBoxType(MenuBoxType.CATEGORY);
+					domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+					domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+					
+					List<MenuItemData> items = new ArrayList<MenuItemData>();
+					
+					List<CategoryModel> categories = new ArrayList<CategoryModel>();
+					categories.addAll(navModel.getCategoriesOfSearchResults().values());
+					MenuItemData allCategoriesItem = ALL_CATEGORIES_ITEM.copy();
+					if(nav.isAll()){
+						allCategoriesItem.setSelected(true);
+					}
+					items.add(allCategoriesItem);					
+					
+					domain.setItems(createCatMenuItems(categories, items, navModel.getUser()));
+	
+					menu.add(domain);
+				}
+				
+				if (!navModel.getSubCategoriesOfSearchResults().isEmpty()) {
+					MenuBoxData domain = new MenuBoxData();
+					domain.setName("SUBCATEGORY");
+					domain.setId("search_subcategories");
+					domain.setBoxType(MenuBoxType.SUB_CATEGORY);
+					domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+					domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+					
+					List<MenuItemData> items = new ArrayList<MenuItemData>();
+					
+					List<CategoryModel> subCategories = new ArrayList<CategoryModel>();
+					subCategories.addAll(navModel.getSubCategoriesOfSearchResults().values());
+					MenuItemData allSubCategoriesItem = ALL_SUBCATEGORIES_ITEM.copy();
+					if(nav.isAll()){
+						allSubCategoriesItem.setSelected(true);
+					}
+					items.add(allSubCategoriesItem);					
+					
+					domain.setItems(createCatMenuItems(subCategories, items, navModel.getUser()));
+	
+					menu.add(domain);
+				}
+				
+				createFilterMenuDomains(filterGroups, navModel.getActiveFilters(), menu, navModel.isProductListing());				
+			}
 
 			return menu;
 		}
@@ -157,6 +217,7 @@ public class MenuBuilderFactory {
 			String superDeptId = navModel.getSelectedContentNodeModel().getContentName();
 			
 			// create superdepartment box
+
 			if (navModel.isSuperDepartment()) {
 				menu.add(createSuperDepartmentMenuBox((SuperDepartmentModel)navModel.getSelectedContentNodeModel(), navModel));
 			}
@@ -171,8 +232,6 @@ public class MenuBuilderFactory {
 				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
 				
 				List<MenuItemData> items = new ArrayList<MenuItemData>();
-//				items.add(new MenuItemData(((SuperDepartmentModel)navModel.getSelectedContentNodeModel()).getBrowseName()));
-				
 				domain.setItems(createCatMenuItems(navModel.getPopularCategories(), items, navModel.getUser()));
 
 				menu.add(domain);

@@ -1,7 +1,9 @@
 package com.freshdirect.webapp.ajax.filtering;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -16,6 +18,7 @@ import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.ProductFilterGroupI;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.RecipeDepartment;
 import com.freshdirect.fdstore.content.SearchResults;
@@ -66,6 +69,10 @@ public class CmsFilteringFlow {
 			}
 		}
 		
+		if(!nav.isPdp()){
+			EhCacheUtil.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, user.getUser().getPrimaryKey(), browseDataContext);				
+		}
+		
 		// -- SORTING -- (not on pdp or super department page)
 		if(!nav.isPdp() && !(browseDataContext.getCurrentContainer() instanceof SuperDepartmentModel)){
 			// process sort options
@@ -112,7 +119,6 @@ public class CmsFilteringFlow {
 			// -- CALCULATE SECTION MAX LEVEL --
 			BrowseDataBuilderFactory.getInstance().calculateMaxSectionLevel(browseData.getSections(), browseData.getSections().getSections(), 0);
 		}
-		
 			
 		return new CmsFilteringFlowResult(browseData, browseDataContext.getNavigationModel());
 	}		
@@ -128,8 +134,27 @@ public class CmsFilteringFlow {
 		navigationModel.setProductListing(true);
 
 		for (FilteringSortingItem<ProductModel> searchResult : results.getProducts()) {
-			navigationModel.getSearchResults().add(searchResult.getModel());
+			ProductModel product = searchResult.getModel();
+			navigationModel.getSearchResults().add(product);
+			navigationModel.getDepartmentsOfSearchResults().put(product.getDepartment().getContentName(), product.getDepartment());
+			CategoryModel categoryModel = product.getCategory();
+			if (categoryModel.getParentNode() instanceof DepartmentModel) { //Category
+				navigationModel.getCategoriesOfSearchResults().put(categoryModel.getContentName(), categoryModel);
+			} else {
+				if (categoryModel.getParentNode().getParentNode() instanceof DepartmentModel) { //Subcategory
+					navigationModel.getSubCategoriesOfSearchResults().put(categoryModel.getContentName(), categoryModel);
+					navigationModel.getCategoriesOfSearchResults().put(categoryModel.getParentNode().getContentName(), (CategoryModel)categoryModel.getParentNode());
+				} else { //Subsubcategory
+					navigationModel.getSubCategoriesOfSearchResults().put(categoryModel.getParentNode().getContentName(), (CategoryModel)categoryModel.getParentNode());
+					navigationModel.getCategoriesOfSearchResults().put(categoryModel.getParentNode().getParentNode().getContentName(), (CategoryModel)categoryModel.getParentNode().getParentNode());
+				}
+			}
 		}
+		
+		navigationModel.setAllFilters(NavigationUtil.createSearchFilterGroups(navigationModel, nav, user));
+
+		// select active filters
+		navigationModel.setActiveFilters(NavigationUtil.selectActiveFilters(navigationModel.getAllFilters(), nav));
 		
 		browseDataContext = BrowseDataBuilderFactory.createBuilder(null, navigationModel.isSuperDepartment(), nav.isSearchRequest()).buildBrowseData(navigationModel, user, nav);
 
@@ -140,14 +165,10 @@ public class CmsFilteringFlow {
 		// create menu
 		navigationModel.setLeftNav(menuBuilder.buildMenu(navigationModel.getAllFilters(), navigationModel, nav));
 
+		browseDataContext.getMenuBoxes().setMenuBoxes(navigationModel.getLeftNav());
+		
 		BrowseData.DescripetiveDataCointainer descriptiveContent = browseDataContext.getDescriptiveContent();
 		descriptiveContent.setPageTitle("FreshDirect - Search - " + nav.getSearchParams());
-
-		
-		if(!nav.isPdp()){
-			EhCacheUtil.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, user.getUser().getPrimaryKey(), browseDataContext);				
-		}
-		
 
 		return browseDataContext;
 
@@ -193,10 +214,6 @@ public class CmsFilteringFlow {
 		
 		// populate browseData with filterLabels
 		BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
-		
-		if(!nav.isPdp()){
-			EhCacheUtil.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, user.getUser().getPrimaryKey(), browseDataContext);				
-		}
 		
 		return browseDataContext;
 	}

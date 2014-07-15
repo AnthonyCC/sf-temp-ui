@@ -134,7 +134,7 @@ public class NavigationUtil {
 		
 		} else if(model.isSuperDepartment()) {
 			
-			model.setDepartments(((SuperDepartmentModel)model.getSelectedContentNodeModel()).getDepartments());
+			model.setDepartmentsOfSuperDepartment(((SuperDepartmentModel)model.getSelectedContentNodeModel()).getDepartments());
 			
 			List<CategoryModel> popularCategories = new ArrayList<CategoryModel>();
 			for (DepartmentModel deptModel : ((SuperDepartmentModel)model.getSelectedContentNodeModel()).getDepartments()){
@@ -175,7 +175,7 @@ public class NavigationUtil {
 	 * @return
 	 * create the flat filter group structure
 	 */
-	private static List<ProductFilterGroupI> createFilterGroups(ProductContainer productContainer, CmsFilteringNavigator navigator, FDUserI user){
+	public static List<ProductFilterGroupI> createFilterGroups(ProductContainer productContainer, CmsFilteringNavigator navigator, FDUserI user){
 		
 		// construct selectionMap from filter parameters
 		// check what filters are selected from a multigroup (multigroups can contain tagmodels only)
@@ -208,13 +208,46 @@ public class NavigationUtil {
 		
 	}
 	
+	public static List<ProductFilterGroupI> createSearchFilterGroups(NavigationModel navigationModel, CmsFilteringNavigator navigator, FDUserI user){
+		
+		// construct selectionMap from filter parameters
+		// check what filters are selected from a multigroup (multigroups can contain tagmodels only)
+//		Map<String,List<TagModel>> selectionMap = new HashMap<String, List<TagModel>>();
+//
+//		for (ContentNodeModel multiGroup : productContainer.getProductFilterGroups()){
+//			if (multiGroup instanceof ProductFilterMultiGroupModel){
+//				
+//				for (String param : navigator.getRequestFilterParams().keySet()){
+//					String multiGroupId = multiGroup.getContentName(); 
+//					
+//					if(param.startsWith(multiGroupId)){
+//						List<TagModel> selection = selectionMap.get(multiGroupId);
+//						if (selection == null){
+//							selection = new ArrayList<TagModel>();
+//							selectionMap.put(multiGroupId, selection);
+//						}
+//						
+//						List<String> paramValues = navigator.getRequestFilterParams().get(param);
+//						for(String paramValue : paramValues){
+//							selection.add((TagModel) ContentFactory.getInstance().getContentNode(paramValue));							
+//						}
+//					}
+//				}
+//			}
+//		}
+//		
+//		// create a flat group hierarchy, create simple groups from the multigroups and create the x level for the selected multigroup filters (selectionMap)
+//		return ProductItemFilterFactory.getInstance().getDefaultProductFilterGroups(productContainer, selectionMap, user);
+		return new ArrayList<ProductFilterGroupI>();
+	}
+
 	/**
 	 * @param filterGroups
 	 * @param navigator
 	 * @return
 	 * select active filters
 	 */
-	private static Set<ProductItemFilterI> selectActiveFilters(List<ProductFilterGroupI> filterGroups, CmsFilteringNavigator navigator){
+	public static Set<ProductItemFilterI> selectActiveFilters(List<ProductFilterGroupI> filterGroups, CmsFilteringNavigator navigator){
 		
 		Set<ProductItemFilterI> activeFilters = new HashSet<ProductItemFilterI>();
 		
