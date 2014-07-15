@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -194,6 +195,32 @@ public class FDCouponManagerSessionBean extends ERPSessionBeanSupport {
 		}
 	}
 
+	public void postSubmitPendingCouponTransactions(String saleId) throws FDResourceException {
+		Connection conn =null;
+		ErpCouponTransactionModel couponTransModel= null;
+		if(FDCouponProperties.isCouponsBlackHoleEnabled()){
+			LOGGER.debug("Coupons blackhole enabled.");
+			return;
+		}
+		try {
+			conn = getConnection();
+			couponTransModel = FDCouponTransactionDAO.getSubmitPendingCouponTransaction(conn, saleId);
+			FDCouponActivityContext couponActivityContext = new FDCouponActivityContext(EnumTransactionSource.SYSTEM, "SYSTEM", null);
+			if(null !=couponTransModel){
+				boolean isSuccess =postSubmitOrder(conn, couponTransModel,couponActivityContext);
+				//Mark all other 'Submit Pending' coupon transactions for the sale, if any, as 'Cancelled'.
+				if(isSuccess){
+					FDCouponTransactionDAO.cancelSubmitPendingCouponTransactions(conn, couponTransModel.getSaleId());
+				}
+			}
+		} catch (SQLException e) {
+			LOGGER.info("Exception in postSubmitPendingCouponTransactions(): "+e);
+			throw new FDResourceException(e);
+		}  finally {
+            close(conn);
+		}
+	}
+	
 	private boolean postSubmitOrder(Connection conn, ErpCouponTransactionModel couponTransModel,FDCouponActivityContext couponActivityContext) throws FDResourceException{
 
 		boolean isSuccess= false;
@@ -344,6 +371,25 @@ public class FDCouponManagerSessionBean extends ERPSessionBeanSupport {
 		} finally {
             close(conn);
 		}
+	}
+	
+	public List<String> getConfirmPendingCouponSales() throws FDResourceException {
+		Connection conn =null;
+		List<String> couponSales= null;
+		if(FDCouponProperties.isCouponsBlackHoleEnabled()){
+			LOGGER.debug("Coupons blackhole enabled.");
+			return Collections.EMPTY_LIST;
+		}
+		try {
+			conn = getConnection();
+			couponSales = FDCouponTransactionDAO.getConfirmPendingCouponSales(conn);
+		} catch (SQLException e) {
+			LOGGER.info("Exception in getConfirmPendingCouponSales(): "+e);
+			throw new FDResourceException(e);
+		} finally {
+            close(conn);
+		}
+		return couponSales;
 	}
 	
 	public void postConfirmPendingCouponTransactions(String saleId) throws FDResourceException {
@@ -526,5 +572,24 @@ public class FDCouponManagerSessionBean extends ERPSessionBeanSupport {
 		} finally {
             close(conn);
 		}
+	}
+	
+	public List<String> getSubmitPendingCouponSales() throws FDResourceException {
+		Connection conn =null;
+		List<String> couponSales= null;
+		if(FDCouponProperties.isCouponsBlackHoleEnabled()){
+			LOGGER.debug("Coupons blackhole enabled.");
+			return Collections.EMPTY_LIST;
+		}
+		try {
+			conn = getConnection();
+			couponSales = FDCouponTransactionDAO.getSubmitPendingCouponSales(conn);
+		} catch (SQLException e) {
+			LOGGER.info("Exception in getSubmitPendingCouponSales(): "+e);
+			throw new FDResourceException(e);
+		} finally {
+            close(conn);
+		}
+		return couponSales;
 	}
 }

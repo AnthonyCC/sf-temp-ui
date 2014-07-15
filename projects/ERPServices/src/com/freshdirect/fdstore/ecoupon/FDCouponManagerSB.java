@@ -42,4 +42,7 @@ public interface FDCouponManagerSB extends EJBObject{
 	public ErpCouponTransactionModel getConfirmPendingCouponTransaction(String saleId) throws FDResourceException,RemoteException;
 	public void updateCouponTransaction(ErpCouponTransactionModel transModel) throws FDResourceException,RemoteException;
 	public void postConfirmPendingCouponTransactions(String saleId) throws FDResourceException,RemoteException;
+	public List<String> getConfirmPendingCouponSales() throws FDResourceException, RemoteException;
+	public List<String> getSubmitPendingCouponSales() throws FDResourceException, RemoteException;
+	public void postSubmitPendingCouponTransactions(String saleId) throws FDResourceException,RemoteException;
 }

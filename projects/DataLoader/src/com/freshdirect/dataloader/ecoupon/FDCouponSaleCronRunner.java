@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.ejb.CreateException;
 import javax.mail.MessagingException;
@@ -45,9 +47,34 @@ public class FDCouponSaleCronRunner {
 			ctx = getInitialContext();
 			FDCouponManagerHome home = (FDCouponManagerHome) ctx.lookup(FDStoreProperties.getFDCouponManagerHome());
 			FDCouponManagerSB sb = home.create();
+			//Cancel Pending coupon transactions
 			sb.postCancelPendingCouponTransactions();
-			sb.postSubmitPendingCouponTransactions();			
-			sb.postConfirmPendingCouponTransactions();
+			
+			//Submit Pending coupon transactions
+			List<String> submitSales = sb.getSubmitPendingCouponSales();	
+			if(null !=submitSales){
+				for (Iterator<String> iterator = submitSales.iterator(); iterator.hasNext();) {
+					String saleId =iterator.next();
+					try {
+						sb.postSubmitPendingCouponTransactions(saleId);
+					} catch (Exception e) {
+						LOGGER.info(e);
+					}
+				}
+			}
+			
+			//Confirm Pending coupon transactions
+			List<String> confirmSales = sb.getConfirmPendingCouponSales();
+			if(null !=confirmSales){
+				for (Iterator<String> iterator = confirmSales.iterator(); iterator.hasNext();) {
+					String saleId =iterator.next();
+					try {
+						sb.postConfirmPendingCouponTransactions(saleId);
+					} catch (Exception e) {
+						LOGGER.info(e);
+					}
+				}
+			}
 			LOGGER.info("FDCouponSaleCronRunner stopped.");
 		} catch (Exception e){
 			StringWriter sw = new StringWriter();
