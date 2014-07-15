@@ -75,7 +75,7 @@ public class CmsFilteringFlow {
 		// -- REMOVE EMPTY SECTIONS --
 		
 		BrowseData browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
-		if (!browseDataContext.getNavigationModel().hasSuperDepartment() && !FDStoreProperties.getPreviewMode()) {
+		if (!browseDataContext.getNavigationModel().isSuperDepartment() && !FDStoreProperties.getPreviewMode()) {
 			BrowseDataBuilderFactory.getInstance().removeEmptySections(browseData.getSections().getSections(), browseDataContext.getMenuBoxes().getMenuBoxes());
 		}
 		
@@ -131,11 +131,11 @@ public class CmsFilteringFlow {
 			navigationModel.getSearchResults().add(searchResult.getModel());
 		}
 		
-		browseDataContext = BrowseDataBuilderFactory.createBuilder(null, navigationModel.hasSuperDepartment(), nav.isSearchRequest()).buildBrowseData(navigationModel, user, nav);
+		browseDataContext = BrowseDataBuilderFactory.createBuilder(null, navigationModel.isSuperDepartment(), nav.isSearchRequest()).buildBrowseData(navigationModel, user, nav);
 
 		browseDataContext.setNavigationModel(navigationModel);
 
-		MenuBuilderI menuBuilder = MenuBuilderFactory.createBuilderByPageType(null, navigationModel.hasSuperDepartment(), nav.isSearchRequest());
+		MenuBuilderI menuBuilder = MenuBuilderFactory.createBuilderByPageType(null, navigationModel.isSuperDepartment(), nav.isSearchRequest());
 
 		// create menu
 		navigationModel.setLeftNav(menuBuilder.buildMenu(navigationModel.getAllFilters(), navigationModel, nav));
@@ -172,13 +172,13 @@ public class CmsFilteringFlow {
 		NavigationModel navigationModel = NavigationUtil.createNavigationModel(contentNodeModel, nav, user);
 		
 		// filtering and grouping
-		browseDataContext = BrowseDataBuilderFactory.createBuilder(navigationModel.getNavDepth(), navigationModel.hasSuperDepartment(), nav.isSearchRequest()).buildBrowseData(navigationModel, user, nav);
+		browseDataContext = BrowseDataBuilderFactory.createBuilder(navigationModel.getNavDepth(), navigationModel.isSuperDepartment(), nav.isSearchRequest()).buildBrowseData(navigationModel, user, nav);
 
 		// inject references
 		browseDataContext.setNavigationModel(navigationModel);
 		browseDataContext.setCurrentContainer(contentNodeModel);
 
-		if (!navigationModel.hasSuperDepartment()) { //don't do these in case of super department page
+		if (!navigationModel.isSuperDepartment()) { //don't do these in case of super department page
 			// menu availability check
 			MenuBuilderFactory.getInstance().checkMenuStatus(browseDataContext, navigationModel, user);
 		}

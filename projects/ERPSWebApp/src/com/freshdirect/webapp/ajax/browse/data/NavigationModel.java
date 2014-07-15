@@ -49,6 +49,11 @@ public class NavigationModel {
 	private Map<NavDepth, ContentNodeModel> navigationHierarchy;
 	
 	/**
+	* The super department of the hierarchy if any
+	*/
+	private SuperDepartmentModel superDepartmentModel;
+	
+	/**
 	 * All filters
 	 */
 	private List<ProductFilterGroupI> allFilters = new ArrayList<ProductFilterGroupI>();
@@ -136,8 +141,14 @@ public class NavigationModel {
 	public void setProductListing(boolean productListing) {
 		this.productListing = productListing;
 	}
-	public boolean hasSuperDepartment() {
+	public boolean isSuperDepartment() {
 		return (selectedContentNodeModel instanceof SuperDepartmentModel);
+	}
+	public SuperDepartmentModel getSuperDepartmentModel() {
+		return superDepartmentModel;
+	}
+	public void setSuperDepartmentModel(SuperDepartmentModel superDepartmentModel) {
+		this.superDepartmentModel = superDepartmentModel;
 	}
 	public List<CategoryModel> getPopularCategories() {
 		return popularCategories;

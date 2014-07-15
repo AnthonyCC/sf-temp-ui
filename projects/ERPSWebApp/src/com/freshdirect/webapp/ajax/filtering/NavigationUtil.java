@@ -15,6 +15,7 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.GlobalNavigationModel;
 import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.ProductFilterGroupI;
 import com.freshdirect.fdstore.content.ProductFilterMultiGroupModel;
@@ -27,6 +28,7 @@ import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.webapp.ajax.browse.data.NavDepth;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
+import com.freshdirect.webapp.globalnav.GlobalNavContextUtil;
 
 public class NavigationUtil {
 	
@@ -60,7 +62,7 @@ public class NavigationUtil {
 		String id = navigator.getId();
 		
 		// validation for orphan categories
-		if(!(contentNodeModelPath.get(0) instanceof DepartmentModel) && !model.hasSuperDepartment()){
+		if(!(contentNodeModelPath.get(0) instanceof DepartmentModel) && !model.isSuperDepartment()){
 			throw new InvalidFilteringArgumentException("Orphan category: "+id, InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE, id);
 		}
 		
@@ -80,8 +82,11 @@ public class NavigationUtil {
 			}
 		}
 		model.setNavigationHierarchy(navigationHierarchy);
+		
+		// find superdepartment in hierarchy if any
+		model.setSuperDepartmentModel(getSuperDepartment(user, navigationHierarchy.get(NavDepth.DEPARTMENT).getContentName()));
 
-		if (!model.hasSuperDepartment()) {
+		if (!model.isSuperDepartment()) {
 			// search for categories and preference categories - prepare for menu building
 			List<CategoryModel> regularCategories = new ArrayList<CategoryModel>();
 			List<CategoryModel> prefCategories = new ArrayList<CategoryModel>();
@@ -127,7 +132,7 @@ public class NavigationUtil {
 				model.setPopularCategories(popularCategories);
 			}
 		
-		} else if(model.hasSuperDepartment()) {
+		} else if(model.isSuperDepartment()) {
 			
 			model.setDepartments(((SuperDepartmentModel)model.getSelectedContentNodeModel()).getDepartments());
 			
@@ -150,10 +155,10 @@ public class NavigationUtil {
 		
 		// -- CREATE MENU --
 		// create menuBuilder based on page type
-		MenuBuilderI menuBuilder = MenuBuilderFactory.createBuilderByPageType(model.getNavDepth(), model.hasSuperDepartment(), navigator.isSearchRequest());
+		MenuBuilderI menuBuilder = MenuBuilderFactory.createBuilderByPageType(model.getNavDepth(), model.isSuperDepartment(), navigator.isSearchRequest());
 
 		// are we showing products?
-		model.setProductListing( !model.hasSuperDepartment() && model.getNavDepth()!=NavDepth.DEPARTMENT && (
+		model.setProductListing( !model.isSuperDepartment() && model.getNavDepth()!=NavDepth.DEPARTMENT && (
 				model.getNavDepth()!=NavDepth.CATEGORY || 
 				((CategoryModel)model.getNavigationHierarchy().get(NavDepth.CATEGORY)).getSubcategories().size()==0 || 
 				navigator.isAll()));
@@ -265,5 +270,23 @@ public class NavigationUtil {
 			//CMS DB mode
 			return cat.isDisplayable();
 		}
+	}
+	
+	public static SuperDepartmentModel getSuperDepartment(FDUserI user, String departmentId){
+				
+		GlobalNavigationModel globalNavigationModel = GlobalNavContextUtil.getGlobalNavigationModel(user);
+
+		for (ContentNodeModel contentNode : globalNavigationModel.getItems()) {
+			if (contentNode instanceof SuperDepartmentModel) {
+				for (DepartmentModel dept : ((SuperDepartmentModel) contentNode)
+						.getDepartments()) {
+					if (departmentId.equals(dept.getContentName())) {
+						return (SuperDepartmentModel) contentNode;
+					}
+				}
+			}
+		}
+
+		return null;
 	}
 }

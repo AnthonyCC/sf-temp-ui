@@ -18,6 +18,7 @@ import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.ProductFilterGroupI;
 import com.freshdirect.fdstore.content.ProductFilterGroupType;
 import com.freshdirect.fdstore.content.ProductItemFilterI;
+import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
@@ -156,20 +157,8 @@ public class MenuBuilderFactory {
 			String superDeptId = navModel.getSelectedContentNodeModel().getContentName();
 			
 			// create superdepartment box
-			if (navModel.hasSuperDepartment()) {
-				MenuBoxData domain = new MenuBoxData();
-				domain.setName(navModel.getSelectedContentNodeModel().getFullName());
-				domain.setId(superDeptId + "_superdepartment");
-				domain.setBoxType(MenuBoxType.SUPERDEPARTMENT);
-				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
-				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
-				
-				List<MenuItemData> items = new ArrayList<MenuItemData>();
-//				items.add(new MenuItemData(((SuperDepartmentModel)navModel.getSelectedContentNodeModel()).getBrowseName()));
-				
-				domain.setItems(createDeptMenuItems(navModel.getDepartments(), items, navModel.getUser()));
-
-				menu.add(domain);
+			if (navModel.isSuperDepartment()) {
+				menu.add(createSuperDepartmentMenuBox((SuperDepartmentModel)navModel.getSelectedContentNodeModel(), navModel));
 			}
 
 			// create popular categories box
@@ -201,6 +190,14 @@ public class MenuBuilderFactory {
 			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
 			
 			String deptId = navModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT).getContentName();
+			
+			// create superdepartment box
+			if (navModel.getSuperDepartmentModel() != null) {
+				MenuBoxData domain = createSuperDepartmentMenuBox(navModel.getSuperDepartmentModel(), navModel);
+				// check which department is selected
+				checkSelected(domain, navModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT).getContentName());
+				menu.add(domain);
+			}
 			
 			// create categories and preference categories box
 			if (!navModel.getCategorySections().isEmpty() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, navModel.getUser())) {
@@ -272,6 +269,14 @@ public class MenuBuilderFactory {
 			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
 			
 			String deptId = navModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT).getContentName();
+			
+			// create superdepartment box
+			if (navModel.getSuperDepartmentModel() != null) {
+				MenuBoxData domain = createSuperDepartmentMenuBox(navModel.getSuperDepartmentModel(), navModel);
+				// check which department is selected
+				checkSelected(domain,navModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT).getContentName());
+				menu.add(domain);
+			}
 			
 			// top popup navigation box
 			if(!navModel.getRegularCategories().isEmpty() || !navModel.getPreferenceCategories().isEmpty()){
@@ -439,13 +444,13 @@ public class MenuBuilderFactory {
 	
 	/**
 	 * @param box
-	 * @param catId
-	 * check which category is selected in a box. return true if something is selected.
+	 * @param nodeId
+	 * check which node is selected in a box. return true if something is selected.
 	 */
-	private boolean checkSelected(MenuBoxData box, String catId){
+	private boolean checkSelected(MenuBoxData box, String nodeId){
 		
 		for(MenuItemData menuItem : box.getItems()){
-			if(catId!=null && catId.equals(menuItem.getId())){
+			if(nodeId!=null && nodeId.equals(menuItem.getId())){
 				menuItem.setSelected(true);
 				box.setSelectedLabel(menuItem.getName());
 				return true;
@@ -557,6 +562,24 @@ public class MenuBuilderFactory {
 		}
 		
 		return menuItems;
+	}
+	
+	private MenuBoxData createSuperDepartmentMenuBox(SuperDepartmentModel model, NavigationModel navModel){
+				
+		MenuBoxData domain = new MenuBoxData();
+		domain.setName(model.getFullName());
+		domain.setId(model.getContentName() + "_superdepartment");
+		domain.setBoxType(MenuBoxType.SUPERDEPARTMENT);
+		domain.setDisplayType(MenuBoxDisplayType.POPUP);
+		domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+
+		List<MenuItemData> items = new ArrayList<MenuItemData>();
+
+		domain.setItems(createDeptMenuItems(model.getDepartments(), items,
+				navModel.getUser()));
+
+		return domain;
+		
 	}
 	
 	private List<MenuItemData> createDeptMenuItems(List<DepartmentModel> departments, List<MenuItemData> menuItems, FDUserI user){

@@ -814,6 +814,10 @@ public class BrowseDataBuilderFactory {
 		
 		List<BasicData> breadCrumb = new ArrayList<BasicData>();
 		
+		if(navModel.getSuperDepartmentModel()!=null){ // add superdepartment info to breadcrumb
+			breadCrumb.add(new BasicData(navModel.getSuperDepartmentModel().getContentName(),navModel.getSuperDepartmentModel().getFullName()));			
+		}
+		
 		for(ContentNodeModel contentNodeModel : navModel.getContentNodeModelPath()){
 			if (!(contentNodeModel instanceof SuperDepartmentModel) && (!(contentNodeModel instanceof CategoryModel) || !NavigationUtil.isCategoryHiddenInContext(navModel.getUser(), (CategoryModel)contentNodeModel))) {
 				breadCrumb.add(new BasicData(contentNodeModel.getContentKey().getId(), contentNodeModel.getFullName()));
