@@ -168,14 +168,15 @@
 }
 
 .browse .pager-holder.top .pager{
-  border-bottom:1px solid #CCC;
-  padding-bottom:10px;
+  border-bottom:1px solid #e0e3d0;
+  padding: 0 0 10px;
+  margin: 0 0 10px;
 }
 
 .browse .pager-holder.bottom .pager{
   margin-top:40px;
   padding-top:10px;
-  border-top:1px solid #CCC;
+  border-top:1px solid #e0e3d0;
 }
 
 .browse-filtertags ul {
