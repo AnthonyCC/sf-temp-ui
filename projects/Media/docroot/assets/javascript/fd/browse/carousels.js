@@ -17,6 +17,23 @@ var FreshDirect = FreshDirect || {};
     placeholder:{
       value:'.browse-carousels'
     },
+    alignPairs: {
+      value: function () {
+        var crls = $('[data-component="carousel"]'),
+            maxHeight = 0;
+
+        if (crls.size() > 1) {
+          crls.each(function () {  
+            maxHeight = Math.max(maxHeight, $(this).height()); 
+          });
+          crls.each(function () {
+            $(this).css({
+              paddingBottom: maxHeight - $(this).height()
+            });
+          });
+        }
+      }
+    },
     render:{
       value: function(data) {
         // render department header
@@ -27,11 +44,13 @@ var FreshDirect = FreshDirect || {};
           fd.components.carousel.changePage($(el), null);
         });
 
+        this.alignPairs();
 			}
     }
   });
 
   carousels.listen();
+  carousels.alignPairs();
 
   fd.modules.common.utils.register("browse", "carousels", carousels, fd);
 }(FreshDirect));
