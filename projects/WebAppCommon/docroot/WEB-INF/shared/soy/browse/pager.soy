@@ -78,7 +78,7 @@
  */
 {template .pagerText private="true" autoescape="false"}
 {let $last:($itemCount < $last) ? $itemCount : $last /}
-<p class="pagination-text">Results: <strong>{if $itemCount > 0}{$first}-{$last}</strong> of <strong>{$itemCount}{else}No Results{/if}</strong></p>
+<p class="pagination-text">{if $itemCount > 0}{$first}-{$last} of {$itemCount}{else}No Results{/if}</p>
 {/template}
 
 /**
@@ -91,23 +91,33 @@
  */
 {template .pager autoescape="false"}
 {let $defaultPageSize: $pageSize ? $pageSize : 30 /}
+{let $hasBackButton: $activePage > 1 /}
+{let $hasNextButton: $activePage < $pageCount /}
 
 {if $itemCount and $itemCount > 0}
 <div class="pager">
 <div class="pagination">
 
-{call .pagerText}
-  {param first:$firstItemIndex /}
-  {param last:$lastItemIndex /}
-  {param itemCount:$itemCount /}
-{/call}
-
 <div class="pagination-pager" data-component="pager" data-activepage="{$activePage}" data-itemcount="{$itemCount}" data-pagesize="{$pageSize}" data-pagecount="{$pageCount}" data-firstitemindex="{$firstItemIndex}" data-lastItemIndex="{$lastItemIndex}">
+
+  {if $pageCount > 1}
+    <button class="cssbutton {if $hasBackButton}green{else}gray{/if}" data-component="pager-prev" class="pagination-pager-prev" {if not $hasBackButton}disabled{/if}>&lt;</button>
+  {/if}
 
   {call .pagerNumbers}
     {param pageSize:$defaultPageSize /}
     {param pageCount:$pageCount /}
     {param activePage:$activePage /}
+  {/call}
+
+  {if $pageCount > 1 }
+    <button class="cssbutton {if $hasNextButton}green{else}gray{/if}" data-component="pager-next" class="pagination-pager-next" {if not $hasNextButton}disabled{/if}>&gt;</button>
+  {/if}
+
+  {call .pagerText}
+    {param first:$firstItemIndex /}
+    {param last:$lastItemIndex /}
+    {param itemCount:$itemCount /}
   {/call}
 
   {if $activePage > 0}

@@ -337,33 +337,67 @@ section.main .pager .pagination {
   float: right;
 }
 
+section.main .pager button{
+  vertical-align:top;
+}
+
 section.main .pager .pagination-pager-button {
   width: auto;
-  height: 24px;
-  line-height: 24px;
+  height: 27px;
+  line-height: 27px;
   font-weight: bold;
   color: #693;
   border: none;
   font-size: 12px;
   margin-left: 12px;
   width:36px;
+  border:1px solid #693;
+  border-radius:5px;
+  box-sizing:border-box;
 }
 
 section.main .pager .pagination-pager-button:hover {
-  text-decoration: underline;
+  border-color:#666;
+  background-color: #fff;
+  color:#000;
 }
 
 section.main .pager .pagination-pager-button.selected {
-  width: 33px;
-  color: #fff;
+  border-color:#666;
+  background-color: #fff;
+  color:#000;
 }
 
 section.main .pager .pagination-pager-button.selected:hover {
   text-decoration: none;
 }
 
-section.main .pager .pagination-showall-cssbutton {
-  margin-left: 12px;
+section.main .pager [data-component="pager-next"],
+section.main .pager [data-component="pager-prev"]{
+  text-shadow:none;
+  width:36px;
+  height:27px;
+  padding:0;
+}
+
+section.main .pager [data-component="pager-next"]{
+  margin-left:12px;
+}
+
+section.main .pager .cssbutton.gray{
+  cursor:auto;
+}
+
+section.main .pager .pagination-pager-separator{
+  width:12px;
+  margin-left:12px;
+}
+
+section.main .pager .pagination-text{
+  width:auto;
+  margin:0 12px;
+  line-height:27px;
+  vertical-align:middle;
 }
 
 section.main .sorter {
