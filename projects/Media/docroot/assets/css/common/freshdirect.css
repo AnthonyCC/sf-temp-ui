@@ -303,6 +303,7 @@ section.main .breadcrumbs {
   list-style-type: none;
   margin: 0 0 20px;
   border-bottom: 1px solid #e0e3d0;
+  color: #666;
 }
 
 section.main .breadcrumbs li {
@@ -313,7 +314,7 @@ section.main .breadcrumbs li:before {
   content: '>';
   display: inline-block;
   font-weight: bold;
-  color: #996;
+  color: #ddd;
   margin: 0 13px;
 }
 
