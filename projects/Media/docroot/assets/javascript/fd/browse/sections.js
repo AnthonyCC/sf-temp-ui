@@ -41,7 +41,7 @@ var FreshDirect = FreshDirect || {};
       value:browse.superDepartment
     },
     placeholder:{
-      value:'.superDepartment'
+      value:'.browse-superdepartment'
     },
     handleClick:{
       value:function(clickEvent){
