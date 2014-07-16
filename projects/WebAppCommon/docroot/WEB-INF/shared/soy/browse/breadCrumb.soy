@@ -6,7 +6,13 @@
 	{if $breadCrumbs and length($breadCrumbs) > 0}
     <ul class="breadcrumbs" data-component="breadcrumbs">
       {foreach $breadCrumb in $breadCrumbs}
-        <li {isFirst($breadCrumb) ? 'class="first"' : ''}><a data-component="breadcrumb" data-id="{$breadCrumb.id}" href="/browse.jsp?id={$breadCrumb.id}">{$breadCrumb.name}</a></li>
+        <li {isFirst($breadCrumb) ? 'class="first"' : ''}>
+          {if not isLast($breadCrumb)}
+          <a data-component="breadcrumb" data-id="{$breadCrumb.id}" href="/browse.jsp?id={$breadCrumb.id}">{$breadCrumb.name}</a>
+          {else}
+            {$breadCrumb.name}
+          {/if}
+        </li>
       {/foreach}
     </ul>
 	{/if}
