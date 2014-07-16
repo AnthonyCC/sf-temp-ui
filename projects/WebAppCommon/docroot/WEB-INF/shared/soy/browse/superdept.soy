@@ -35,45 +35,15 @@
 * @param id department id
 * @param name department name
 * @param deptPhoto department image
-* @param popularCategoryColumns list of popular categories
+* @param popularCategories list of popular categories
 */
 {template .department autoescape="false"}
-{let $maxItems: 5 /}
-  <div class="lv-item">
-    <div class="pic-container">
-      {if $deptPhoto}
-        <img class="pic" src="{$deptPhoto}" alt="Department {$name}" />
-      {/if}
-    </div>    
-
-    <a class="lv-link" href="browse.jsp?id={$id}" data-component="categorylink" data-id="{$id}">
-      <h2 class="lv-item-title">{$name}</h2>
-    </a>
-
-    <hr class="lv-sep" />
-
-    <ul class="lv-sub-items">
-    {if length($popularCategoryColumns) > 0}
-      {foreach $column in $popularCategoryColumns}
-        {foreach $category in $column}
-          {if index($category) < $maxItems}
-          <li class="lv-sub-item">
-            <a class="lv-sub-link" href="browse.jsp?id={$category.id}" 
-               data-component="categorylink" 
-               data-id="{$category.id}">{$category.name}</a>
-          </li>
-          {/if}
-        {/foreach}
-      {/foreach}
-    {else}
-      <li class="lv-sub-item">
-        <a class="lv-sub-link" href="browse.jsp?id={$id}" 
-           data-component="categorylink" 
-           data-id="{$id}">{$name}</a>
-      </li>
-    {/if}
-    </ul>
-  </div>
+{call .lvCategory}
+  {param id:$id /}
+  {param name:$name /}
+  {param image:$deptPhoto /}
+  {param popularCategories:$popularCategories /}
+{/call}
 {/template}
 
 /**
