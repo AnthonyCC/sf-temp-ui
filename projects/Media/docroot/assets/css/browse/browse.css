@@ -47,7 +47,7 @@
 }
 
 .browseContent .sectionContent ul.products {
-  margin: 40px 0 58px;
+  margin: 32px 0 29px;
   padding: 0;
 }
 
@@ -56,14 +56,14 @@
 }
 
 .browseContent .sectionContent ul.products.lastLine {
-  margin-bottom: 40px;
+  margin-bottom: 11px;
 }
 
 .browseContent .sectionContent ul.products li.portrait-item {
   width: 131px;
   max-width: 131px;
   padding: 0 10px 0 9px;
-  margin-right: 6px;
+  margin: 0 6px 0 0;
   display: inline-block;
 }
 
