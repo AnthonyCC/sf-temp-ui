@@ -41,6 +41,10 @@
   width:100%;
 }
 
+.portrait-item-header {
+  margin-top: 16px;
+}
+
 .portrait-item-price {
   font-weight: bold;
 }
@@ -132,8 +136,8 @@
 }
 
 .portrait-item-productimage {
-  max-width: 127px;
-  max-height: 160px;
+  max-width: 131px;
+  max-height: 131px;
 }
 
 #transactionalPopup .portrait-item-productimage {
