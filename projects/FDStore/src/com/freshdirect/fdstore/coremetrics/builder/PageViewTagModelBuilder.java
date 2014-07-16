@@ -223,7 +223,7 @@ public class PageViewTagModelBuilder  {
 	/**
 	 * Find the current container content node (LeftNav)
 	 */
-	private static final ContentType CONTAINER_TYPES[] = { FDContentTypes.DEPARTMENT, FDContentTypes.CATEGORY };
+	private static final ContentType CONTAINER_TYPES[] = { FDContentTypes.DEPARTMENT, FDContentTypes.CATEGORY, FDContentTypes.SUPER_DEPARTMENT };
 	private void findCurrentFolder(final String contentId) {
 		final ContentFactory f = ContentFactory.getInstance();  
 
