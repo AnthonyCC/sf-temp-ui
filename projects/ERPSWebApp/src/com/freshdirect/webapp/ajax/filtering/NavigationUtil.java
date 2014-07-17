@@ -85,7 +85,9 @@ public class NavigationUtil {
 		model.setNavigationHierarchy(navigationHierarchy);
 		
 		// find superdepartment in hierarchy if any
-		model.setSuperDepartmentModel(getSuperDepartment(user, navigationHierarchy.get(NavDepth.DEPARTMENT).getContentName()));
+		if(navigationHierarchy.get(NavDepth.DEPARTMENT)!=null){
+			model.setSuperDepartmentModel(getSuperDepartment(user, navigationHierarchy.get(NavDepth.DEPARTMENT).getContentName()));			
+		}
 
 		if (!model.isSuperDepartment()) {
 			// search for categories and preference categories - prepare for menu building
@@ -316,15 +318,16 @@ public class NavigationUtil {
 				
 		GlobalNavigationModel globalNavigationModel = GlobalNavContextUtil.getGlobalNavigationModel(user);
 
-		for (ContentNodeModel contentNode : globalNavigationModel.getItems()) {
-			if (contentNode instanceof SuperDepartmentModel) {
-				for (DepartmentModel dept : ((SuperDepartmentModel) contentNode)
-						.getDepartments()) {
-					if (departmentId.equals(dept.getContentName())) {
-						return (SuperDepartmentModel) contentNode;
+		if(globalNavigationModel!=null){
+			for (ContentNodeModel contentNode : globalNavigationModel.getItems()) {
+				if (contentNode instanceof SuperDepartmentModel) {
+					for (DepartmentModel dept : ((SuperDepartmentModel) contentNode).getDepartments()) {
+						if (departmentId.equals(dept.getContentName())) {
+							return (SuperDepartmentModel) contentNode;
+						}
 					}
 				}
-			}
+			}			
 		}
 
 		return null;
