@@ -182,7 +182,7 @@ public class BrowseDataBuilderFactory {
 			
 			// create static sections
 			List<SectionContext> sections = new ArrayList<SectionContext>();
-			if (!navigationModel.getCategorySections().isEmpty() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, user)) {
+			if (!navigationModel.getCategorySections().isEmpty() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user)) {
 				
 				for (CategorySectionModel categorySection : navigationModel.getCategorySections()) {
 					List<CategoryData> selectedSectionCategories = new ArrayList<CategoryData>();

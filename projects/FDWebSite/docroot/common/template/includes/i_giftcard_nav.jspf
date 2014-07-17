@@ -170,7 +170,7 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 	}
 %>
 
-<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
+<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
   <div class="globalNavigation">
     <ul class="menu basic-skin green-skin">
       <% if(step == 3) {%>

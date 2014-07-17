@@ -24,7 +24,7 @@ public class GlobalNavTag extends SimpleTagSupport {
 
 		PageContext ctx = (PageContext) getJspContext();
 		FDSessionUser user = (FDSessionUser) ((PageContext) getJspContext()).getSession().getAttribute(SessionName.USER);
-		if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, user)) {
+		if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user)) {
 	
 			//Current global nav decision logic... Might be changed in the future.
 			GlobalNavigationModel globalNavigationModel = GlobalNavContextUtil.getGlobalNavigationModel(user);

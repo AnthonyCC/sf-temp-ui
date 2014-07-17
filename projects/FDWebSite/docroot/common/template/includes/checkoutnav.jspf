@@ -175,7 +175,7 @@ String step1link = response.encodeURL("/checkout/step_1_choose.jsp");
 String step2link = response.encodeURL("/checkout/step_2_select.jsp");
 String step3link = response.encodeURL("/checkout/step_3_choose.jsp");
 %>
-<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
+<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
   <div class="globalNavigation">
    <ul class="menu basic-skin <% if (modOrder){ %>blue-skin <% }else if(standingOrder){ %>purple-skin <%} else{ %>green-skin <% } %>">
       <li class="co-menu-header">

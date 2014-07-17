@@ -3,7 +3,7 @@
 		imports: FDStoreProperties
 		taglibs: fd
 		
---%><% if (!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { %>
+--%><% if (!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { %>
 	<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
 	<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 	

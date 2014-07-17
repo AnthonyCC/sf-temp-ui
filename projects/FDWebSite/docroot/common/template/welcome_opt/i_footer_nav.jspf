@@ -14,7 +14,7 @@
 <%@ page import='java.util.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
+<% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
   <%@ include file="/common/template/includes/footer_grid24.jspf" %>
 <% } else { %>
 	<%

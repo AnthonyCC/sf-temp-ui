@@ -20,7 +20,7 @@
  	String navigation = pageContext.getAttribute("navigation").toString();
 	
 %>
-<% if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, user)) { %>
+<% if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user)) { %>
 	<script type="text/javascript">
 		FreshDirect = FreshDirect || {};
 		FreshDirect.globalnav = FreshDirect.globalnav || {};

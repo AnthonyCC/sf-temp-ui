@@ -58,7 +58,7 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 	
 			String thisDept = "";
 	
-			if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, user)) {
+			if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user)) {
 				GlobalNavigationModel globalNavigationModel = GlobalNavContextUtil.getGlobalNavigationModel(user);
 				HashMap<String, String> relatedDepartmentIds = new HashMap<String, String>(); 
 				for (ContentNodeModel contentNode : globalNavigationModel.getItems()) {

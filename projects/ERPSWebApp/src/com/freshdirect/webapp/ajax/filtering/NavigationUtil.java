@@ -10,6 +10,7 @@ import java.util.Set;
 
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -137,15 +138,21 @@ public class NavigationUtil {
 			model.setDepartmentsOfSuperDepartment(((SuperDepartmentModel)model.getSelectedContentNodeModel()).getDepartments());
 			
 			List<CategoryModel> popularCategories = new ArrayList<CategoryModel>();
+			final int max = FDStoreProperties.getPopularCategoriesMax();
+			int counter=0;
 			for (DepartmentModel deptModel : ((SuperDepartmentModel)model.getSelectedContentNodeModel()).getDepartments()){
-				if(deptModel.isShowPopularCategories()){
-					for (CategoryModel cat : deptModel.getPopularCategories()) {
-						if (cat.isHideIfFilteringIsSupported() && NavigationUtil.isUserContextEligibleForHideFiltering(user)) {
-							continue;
-						}
-						popularCategories.add(cat);
-					}					
-				}
+				counter = 0;
+				for (CategoryModel cat : deptModel.getPopularCategories()) {
+					if (NavigationUtil.isCategoryHiddenInContext(user, cat)) {
+						continue;
+					}
+					counter++;
+					if(counter<=max){
+						popularCategories.add(cat);						
+					}else{
+						break;
+					}
+				}					
 			}
 			model.setPopularCategories(popularCategories);
 			//no filters in case of super department

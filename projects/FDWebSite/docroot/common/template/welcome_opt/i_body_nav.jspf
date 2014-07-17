@@ -16,7 +16,7 @@
 
 <% FDUserI user = (FDUserI)session.getAttribute(SessionName.USER); %>
 
-<% if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { %>
+<% if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { %>
 	<%@ include file="/common/template/includes/globalnav_sr.jspf" %>
 <% } else { %>
 	

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.CategorySectionModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -136,11 +137,19 @@ public class CMSModelToSoyDataConverter {
 				departmentData.addDropDownCategory(columnSection);
 			}
 		}
+		
+		final int max = FDStoreProperties.getPopularCategoriesMax();
+		int counter=0;
 		for (CategoryModel categoryModel : departmentModel.getPopularCategories()) {
 			if (NavigationUtil.isCategoryHiddenInContext(user, categoryModel)) {
 				continue;
 			}
-			departmentData.addPopularCategoryData(createCategoryData(categoryModel, user, false));
+			counter++;
+			if(counter<=max){
+				departmentData.addPopularCategoryData(createCategoryData(categoryModel, user, false));				
+			}else{
+				break;
+			}
 		}
 
 		if(departmentData.getPopularCategories().size() > 0){

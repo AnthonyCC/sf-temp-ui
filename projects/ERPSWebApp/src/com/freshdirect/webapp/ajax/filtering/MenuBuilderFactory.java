@@ -219,7 +219,7 @@ public class MenuBuilderFactory {
 			// create superdepartment box
 
 			if (navModel.isSuperDepartment()) {
-				menu.add(createSuperDepartmentMenuBox((SuperDepartmentModel)navModel.getSelectedContentNodeModel(), navModel));
+				menu.add(createSuperDepartmentMenuBox((SuperDepartmentModel)navModel.getSelectedContentNodeModel(), navModel, true));
 			}
 
 			// create popular categories box
@@ -252,14 +252,14 @@ public class MenuBuilderFactory {
 			
 			// create superdepartment box
 			if (navModel.getSuperDepartmentModel() != null) {
-				MenuBoxData domain = createSuperDepartmentMenuBox(navModel.getSuperDepartmentModel(), navModel);
+				MenuBoxData domain = createSuperDepartmentMenuBox(navModel.getSuperDepartmentModel(), navModel, false);
 				// check which department is selected
 				checkSelected(domain, navModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT).getContentName());
 				menu.add(domain);
 			}
 			
 			// create categories and preference categories box
-			if (!navModel.getCategorySections().isEmpty() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, navModel.getUser())) {
+			if (!navModel.getCategorySections().isEmpty() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, navModel.getUser())) {
 				
 				MenuBoxData domain = new MenuBoxData();
 				domain.setName("SHOP FOR...");
@@ -331,7 +331,7 @@ public class MenuBuilderFactory {
 			
 			// create superdepartment box
 			if (navModel.getSuperDepartmentModel() != null) {
-				MenuBoxData domain = createSuperDepartmentMenuBox(navModel.getSuperDepartmentModel(), navModel);
+				MenuBoxData domain = createSuperDepartmentMenuBox(navModel.getSuperDepartmentModel(), navModel, false);
 				// check which department is selected
 				checkSelected(domain,navModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT).getContentName());
 				menu.add(domain);
@@ -350,7 +350,7 @@ public class MenuBuilderFactory {
 				List<MenuItemData> menuItems = new ArrayList<MenuItemData>();				
 				
 				//create categories and preference categories box
-				if (!navModel.getCategorySections().isEmpty() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, navModel.getUser())) {
+				if (!navModel.getCategorySections().isEmpty() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, navModel.getUser())) {
 					
 					for (CategorySectionModel categorySection : navModel.getCategorySections()) {
 						MenuItemData sectionTitle = new MenuItemData();
@@ -623,14 +623,19 @@ public class MenuBuilderFactory {
 		return menuItems;
 	}
 	
-	private MenuBoxData createSuperDepartmentMenuBox(SuperDepartmentModel model, NavigationModel navModel){
+	private MenuBoxData createSuperDepartmentMenuBox(SuperDepartmentModel model, NavigationModel navModel, boolean simpleBox){
 				
 		MenuBoxData domain = new MenuBoxData();
 		domain.setName(model.getFullName());
 		domain.setId(model.getContentName() + "_superdepartment");
 		domain.setBoxType(MenuBoxType.SUPERDEPARTMENT);
-		domain.setDisplayType(MenuBoxDisplayType.POPUP);
-		domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+		if(simpleBox){
+			domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+			domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+		}else{
+			domain.setDisplayType(MenuBoxDisplayType.POPUP);
+			domain.setSelectionType(MenuBoxSelectionType.LINK);			
+		}
 
 		List<MenuItemData> items = new ArrayList<MenuItemData>();
 

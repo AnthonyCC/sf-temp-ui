@@ -656,6 +656,7 @@ public class FDStoreProperties {
 	//template redesign
 	private static final String PROP_MAX_XSELL_PRODS = "fdstore.xsell.max";
 	private static final String PROP_BROWSE_PAGESIZE = "fdstore.browse.pagesize";
+	private static final String PROP_BROWSE_POPULAR_CATEGORIES_MAX = "fdstore.browse.popularcategories.max";
 	
 	//Ignore Foodily P3P Policy(similar to facebook and google) 
 	private static final String PROP_3RDPARTY_P3PENABLED = "fdstore.3rdparty.p3penabled";
@@ -1287,7 +1288,6 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.pdplayout2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.pplayout2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.leftnav2014", "GLOBAL:ENABLED,true;");
-        defaults.put("feature.rollout.globalnav2014", "GLOBAL:ENABLED,false;");
         
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
@@ -1299,6 +1299,7 @@ public class FDStoreProperties {
         //template redesign
         defaults.put(PROP_MAX_XSELL_PRODS, "3");
         defaults.put(PROP_BROWSE_PAGESIZE, "30");
+        defaults.put(PROP_BROWSE_POPULAR_CATEGORIES_MAX, "5");
         
         defaults.put(PROP_3RDPARTY_P3PENABLED, "true");
         refresh();
@@ -3284,6 +3285,10 @@ public class FDStoreProperties {
     
     public static int getBrowsePageSize() {
         return Integer.parseInt(get(PROP_BROWSE_PAGESIZE));
+    }
+    
+    public static int getPopularCategoriesMax() {
+        return Integer.parseInt(get(PROP_BROWSE_POPULAR_CATEGORIES_MAX));
     }
     
     public static boolean isP3PPolicyEnabled() {

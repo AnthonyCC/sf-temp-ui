@@ -221,7 +221,7 @@ public class CmsFilteringFlow {
 	
 	private void validateNode(CmsFilteringNavigator nav, ContentNodeModel contentNodeModel, String id, FDSessionUser user) throws InvalidFilteringArgumentException {
 
-		if (!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, user) && contentNodeModel instanceof SuperDepartmentModel) {
+		if (!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user) && contentNodeModel instanceof SuperDepartmentModel) {
 			throw new InvalidFilteringArgumentException("Following SuperDepartment page is referred without globalNav rolled out: " +id, InvalidFilteringArgumentException.Type.SUPER_DEPARTMENT_WITHOUT_GLOBALNAV, SUPER_DEPARTMENT_WITHOUT_GLOBALNAV_URL);
 		}
 		
