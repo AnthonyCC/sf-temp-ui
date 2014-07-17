@@ -144,7 +144,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 		Request _request=RequestFactory.getRequest(TransactionType.GET_PROFILE);
 		CreditCard cc=PaymentMethodFactory.getCreditCard();
 		cc.setBillingProfileID(profileId);
-		BillingInfo billinginfo=BillingInfoFactory.getBillingInfo(Merchant.USQ,cc);
+		BillingInfo billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FRESHDIRECT,cc);
 		_request.setBillingInfo(billinginfo);
 		Gateway gateway=GatewayFactory.getGateway(GatewayType.PAYMENTECH);
 		try {

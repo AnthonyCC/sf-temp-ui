@@ -47,7 +47,7 @@ public class PaymentechTestData {
 		  Request request=RequestFactory.getRequest(TransactionType.GET_PROFILE);
 		  CreditCard cc=getDummy();
 		  cc.setBillingProfileID(profileID);
-		  BillingInfo billinginfo=BillingInfoFactory.getBillingInfo(Merchant.USQ,cc);
+		  BillingInfo billinginfo=BillingInfoFactory.getBillingInfo(Merchant.FRESHDIRECT,cc);
 		  request.setBillingInfo(billinginfo);
 		  return request;
 	  }

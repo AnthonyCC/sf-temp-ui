@@ -39,7 +39,7 @@ public class FDInventoryCache extends FDAbstractCache {
 			ErpInfoSB sb = this.lookupInfoHome().create();
 			Map data = sb.loadInventoryInfo(since);
 			LOGGER.info("REFRESHED: " + data.size());
-			LOGGER.debug("REFRESHED ENTRIES: " + data);
+			//LOGGER.debug("REFRESHED ENTRIES: " + data);
 			return data;
 		} catch (RemoteException e) {
 			throw new FDRuntimeException(e);
