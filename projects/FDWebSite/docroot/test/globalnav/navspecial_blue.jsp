@@ -80,7 +80,7 @@
   <h1>Checkout Main</h1>
   
   <ul class="menu basic-skin blue-skin">
-    <li class="menu-header item-skin-hovered">
+    <li class="co-menu-header item-skin-hovered">
       <span class="header-skin">checkout</span>
     </li><!--
     --><li class="menu-item co-item-skin">
@@ -106,6 +106,9 @@
         
           <span class="co-item co-item5">step 4:<br/> review & submit</span>
         
+    </li><!--
+  --><li class="menu-item co-item-skin">
+          <span class="co-item co-item6">Modify Order</span>
     </li>
   </ul>  
   
@@ -113,9 +116,9 @@
   
   
   <ul class="menu basic-skin blue-skin">
-    <li class="menu-header item-skin-hover">
-        <a class="menu-header header-skin reset-link" href="./checkout">checkout</a>
-    </l><!--
+    <li class="co-menu-header item-skin-hover">
+      <span class="header-skin">checkout</span>
+    </li><!--
     --><li class="menu-item co-item-skin item-skin-hovered">
         <span class="co-item co-item1">view cart</span>
     </li><!--
@@ -130,6 +133,9 @@
     </li><!--
   --><li class="menu-item co-item-skin">
           <span class="co-item co-item5">step 4:<br/> review & submit</span>
+    </li><!--
+  --><li class="menu-item co-item-skin">
+          <span class="co-item co-item6">Modify Order</span>
     </li>
   </ul>   
   
@@ -138,8 +144,8 @@
   
   
   <ul class="menu basic-skin blue-skin">
-    <li class="menu-header item-skin-hover">
-          <a class="menu-header header-skin reset-link" href="./checkout">checkout</a>
+    <li class="co-menu-header item-skin-hover">
+      <span class="header-skin">checkout</span>
     </li><!--
     --><li class="menu-item co-item-skin item-skin-hover">
           <a class="co-item co-item1 reset-link" href="./viewcart">view cart</a>
@@ -155,6 +161,9 @@
     </li><!--
   --><li class="menu-item co-item-skin">
           <span class="co-item co-item5">step 4:<br/> review & submit</span>
+    </li><!--
+  --><li class="menu-item co-item-skin">
+          <span class="co-item co-item6">Modify Order</span>
     </li>
   </ul>   
   
@@ -162,8 +171,8 @@
   <p>Checkout 4</p>
   
   <ul class="menu basic-skin blue-skin">
-    <li class="menu-header item-skin-hover">
-          <a class="menu-header header-skin reset-link" href="./checkout">checkout</a>
+    <li class="co-menu-header item-skin-hover">
+      <span class="header-skin">checkout</span>
     </li><!--
     --><li class="menu-item co-item-skin item-skin-hover">
           <a class="co-item co-item1 reset-link" href="./viewcart">view cart</a>
@@ -179,6 +188,9 @@
     </li><!--
   --><li class="menu-item co-item-skin">
           <span class="co-item co-item5">step 4:<br/> review & submit</span>
+    </li><!--
+  --><li class="menu-item co-item-skin">
+          <span class="co-item co-item6">Modify Order</span>
     </li>
   </ul>   
   
@@ -186,8 +198,8 @@
   <p>Checkout 5</p>
   
   <ul class="menu basic-skin blue-skin">
-    <li class="menu-header item-skin-hover">
-          <a class="menu-header header-skin reset-link" href="./checkout">checkout</a>
+    <li class="co-menu-header item-skin-hover">
+      <span class="header-skin">checkout</span>
     </li><!--
     --><li class="menu-item co-item-skin item-skin-hover">
           <a class="co-item co-item1 reset-link" href="./viewcart">view cart</a>
@@ -203,14 +215,17 @@
     </li><!--
   --><li class="menu-item co-item-skin">
           <span class="co-item co-item5">step 4:<br/> review & submit</span>
+    </li><!--
+  --><li class="menu-item co-item-skin">
+          <span class="co-item co-item6">Modify Order</span>
     </li>
   </ul>  
   
   <p>Checkout 6</p>
   
   <ul class="menu basic-skin blue-skin">
-    <li class="menu-header item-skin-hover">
-          <a class="menu-header header-skin reset-link" href="./checkout">checkout</a>
+    <li class="co-menu-header item-skin-hover">
+      <span class="header-skin">checkout</span>
     </li><!--
     --><li class="menu-item co-item-skin item-skin-hover">
           <a class="co-item co-item1 reset-link" href="./viewcart">view cart</a>
@@ -226,6 +241,9 @@
     </li><!--
   --><li class="menu-item co-item-skin item-skin-hovered">
           <span class="co-item co-item5">step 4:<br/> review & submit</span>
+    </li><!--
+  --><li class="menu-item co-item-skin">
+          <span class="co-item co-item6">Modify Order</span>
     </li>
   </ul>
     
