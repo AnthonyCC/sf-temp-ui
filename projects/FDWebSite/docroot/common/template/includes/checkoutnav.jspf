@@ -178,7 +178,7 @@ String step3link = response.encodeURL("/checkout/step_3_choose.jsp");
 <% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
   <div class="globalNavigation">
    <ul class="menu basic-skin <% if (modOrder){ %>blue-skin <% }else if(standingOrder){ %>purple-skin <%} else{ %>green-skin <% } %>">
-      <li class="menu-header">
+      <li class="co-menu-header">
         <span class="header-skin">checkout</span>
       </li><!--
       --><li class="menu-item co-item-skin <% if (step == 0) { %> item-skin-hovered <% } %>  <% if (step > 0) { %> item-skin-hover <% } %>">
@@ -216,6 +216,13 @@ String step3link = response.encodeURL("/checkout/step_3_choose.jsp");
     --><li class="menu-item co-item-skin <% if (step == 4) { %> item-skin-hovered <% } %>  <% if (step > 4) { %> item-skin-hover <% } %>">
           
           <span class="co-item co-item5">step 4:<br/> review & submit</span>
+      </li><!--
+    --><li class="menu-item co-item-skin">
+          
+          <span class="co-item co-item6">
+                  <% if(modOrder){ %>Modify Order<% } %>
+                  <% if(standingOrder){ %>Standing Order<% } %>
+          </span>
       </li>
     </ul>
   </div>
