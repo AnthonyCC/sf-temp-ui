@@ -23,7 +23,7 @@
   display: block;
   color:#c00;
   font-weight:bold;
-  font-size: 11px;
+  font-size: 10px;
   line-height: 15px;
 }
 
@@ -42,7 +42,7 @@
 }
 
 .portrait-item-header {
-  margin-top: 16px;
+  margin-top: 12px;
 }
 
 .portrait-item-price {
@@ -176,7 +176,7 @@
 
 .portrait-item .save-price {
   color: #c00;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: bold;
 }
 
@@ -321,7 +321,7 @@ a.portrait-item-header-name:link {
 }
 
 .portrait-item-header-name b {
-  display: inline;
+  display: block;
 }
 
 .portrait-item .nutritionSortInfo {

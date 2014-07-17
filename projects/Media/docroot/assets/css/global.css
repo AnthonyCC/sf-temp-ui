@@ -2874,7 +2874,7 @@ a.imgButtonWhite:hover,
 		text-decoration: none;
 		font-family: Verdana;
 	}
-	.portrait-item.fdCoupon_detCont, .portrait-item a.fdCoupon_det, .portrait-item a.fdCoupon_det:active, .portrait-item a.fdCoupon_det:link, .portrait-item a.fdCoupon_det:visited, .portrait-item a.fdCoupon_det:hover {
+	.portrait-item .fdCoupon_detCont, .portrait-item a.fdCoupon_det, .portrait-item a.fdCoupon_det:active, .portrait-item a.fdCoupon_det:link, .portrait-item a.fdCoupon_det:visited, .portrait-item a.fdCoupon_det:hover {
 		color: #888;
 		text-decoration: none;
 		font-family: Verdana;

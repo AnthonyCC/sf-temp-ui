@@ -326,6 +326,7 @@
 
 .container.browse .carouselTransactionalItem-image_wrapper .portrait-item-productimage {
   max-height: 111px;
+  max-width: 111px;
 }
 
 .container.browse .carousels table td.spacer {
@@ -350,11 +351,13 @@
   display: none;
 }
 
+.container.browse .carousels.FULL_WIDTH table.hasCarousel1.hasCarousel2 td.c1 > div,
 .container.browse .carousels table.noCarousel1 td.c2 > div,
 .container.browse .carousels table.noCarousel2 td.c1 > div {
   width: 775px
 }
 
+.container.browse .carousels.FULL_WIDTH table.hasCarousel1.hasCarousel2 [data-component="carousel"] ul li.portrait-item,
 .container.browse .noCarousel2 [data-component="carousel"] ul li.portrait-item,
 .container.browse .noCarousel1 [data-component="carousel"] ul li.portrait-item {
   width: 139px;
