@@ -168,12 +168,25 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
 		step1_disp = "<img src=\""+step1_img+"\" "+step1_attribs+" />";
 		step2_disp = "<img src=\""+step2_img+"\" "+step2_attribs+" />";
 	}
-
 %>
 
 <% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.globalnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
   <div class="globalNavigation">
     <ul class="menu basic-skin green-skin">
+      <% if(step == 3) {%>
+      <li class="menu-header">
+          <span class="header-skin">gift cards</span>
+      </li><!--
+    --><li class="menu-item item-skin">      
+          <span class="gf-item">gift & reciepient options</span>
+      </li><!--
+      --><li class="menu-item item-skin">
+          <span class="gf-item">payment info</span>
+      </li><!--
+      --><li class="menu-item item-skin item-skin-hovered">
+        <span class="gf-item">confirmation</span>
+      </li>
+      <%} else {%>
       <li class="menu-header <% if (step == 0) { %> item-skin-hovered <% } %> <% if (step > 0) { %> item-skin-hover <% } %>">
       
         <% if (step > 0) { %>
@@ -198,9 +211,10 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
           <span class="gf-item">payment info</span>
         <%}%>
       </li><!--
-      --><li class="menu-item item-skin <% if (step == 3) { %> item-skin-hovered <% } %>">
+      --><li class="menu-item item-skin">
         <span class="gf-item">confirmation</span>
       </li>
+      <%}%>
     </ul>
   </div>
 <%} else {%>
