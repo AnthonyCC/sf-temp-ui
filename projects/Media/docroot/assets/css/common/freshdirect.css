@@ -373,6 +373,10 @@ section.main .pager .pagination-pager-button.selected:hover {
   text-decoration: none;
 }
 
+section.main button.pagination-showall-cssbutton.cssbutton {
+    margin:0;
+}
+
 section.main .pager [data-component="pager-next"],
 section.main .pager [data-component="pager-prev"]{
   text-shadow:none;
