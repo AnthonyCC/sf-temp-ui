@@ -138,7 +138,7 @@ public class ProductImageDataPopulator {
 		
 		// wine region
 		/* first check if product is a wine */
-		if (department != null && "usq".equalsIgnoreCase( department.getContentKey().getId() )) {
+		if (department != null && (FDStoreProperties.getWineAssid()).equalsIgnoreCase( department.getContentKey().getId() )) {
 			List<DomainValue> wineRegion = productNode.getNewWineRegion();
 
 			if (!wineRegion.isEmpty()) {
