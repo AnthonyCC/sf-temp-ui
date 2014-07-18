@@ -13,6 +13,7 @@ import javax.servlet.ServletContext;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
+import com.freshdirect.WineUtil;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.EnumAllergenValue;
 import com.freshdirect.content.nutrition.EnumClaimValue;
@@ -587,7 +588,7 @@ public class ProductExtraDataPopulator {
 		// *** wine info ***
 		
 		/* first check if product is a wine */
-		if (department != null && "usq".equalsIgnoreCase( department.getContentKey().getId() )) {
+		if (department != null && (WineUtil.getWineAssociateId()).equalsIgnoreCase( department.getContentKey().getId() )) {
 			WineData wd = new WineData();
 
 			/** code snipped from  WineRegionLabel#doStart method */
@@ -608,7 +609,7 @@ public class ProductExtraDataPopulator {
 			for (DomainValue wtv : wTypes) {
 				final String type = wtv.getValue();
 				typesList.add(type);
-				wTypeIconPaths.add("/media/editorial/win_usq/icons/"+wtv.getContentName().toLowerCase()+".gif");
+				wTypeIconPaths.add("/media/editorial/win_"+WineUtil.getWineAssociateId().toLowerCase()+"/icons/"+wtv.getContentName().toLowerCase()+".gif");
 			}
 			wd.types = typesList;
 			wd.typeIconPaths = wTypeIconPaths;
@@ -710,7 +711,7 @@ public class ProductExtraDataPopulator {
 		r.reviewer = dv.getDomainName();
 		r.rating = dv.getValue();
 		r.ratingKey = dv.getContentName();
-		r.iconPath = "/media/editorial/win_usq/icons/rating_small/" + dv.getContentName() + ".gif";
+		r.iconPath = "/media/editorial/win_"+WineUtil.getWineAssociateId().toLowerCase()+"/icons/rating_small/" + dv.getContentName() + ".gif";
 
 		if (reviewMedia != null) {
 			TitledMedia tm = (TitledMedia)reviewMedia;
