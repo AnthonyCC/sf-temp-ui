@@ -32,6 +32,7 @@
 	width:2.5em;
 	font-weight: normal;
 	text-align: center;
+  color:#666;
 }
 
 .sorter-element:first-child {
