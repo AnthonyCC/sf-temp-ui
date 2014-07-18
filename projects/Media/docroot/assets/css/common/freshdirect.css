@@ -364,7 +364,7 @@ section.main .pager .pagination-pager-button:hover {
 }
 
 section.main .pager .pagination-pager-button.selected {
-  border-color:#666;
+  border-color:#333;
   background-color: #fff;
   color:#000;
 }
