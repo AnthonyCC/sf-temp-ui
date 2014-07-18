@@ -23,12 +23,13 @@
   display: block;
   color:#c00;
   font-weight:bold;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 15px;
 }
 
 .portrait-item-price-deal.mixnmatch {
   color:#f7ad5f;
+  font-size:10px;
 }
 
 .portrait-item-unavailable {
