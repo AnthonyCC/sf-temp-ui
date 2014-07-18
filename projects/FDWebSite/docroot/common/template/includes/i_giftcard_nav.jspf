@@ -174,8 +174,8 @@ final int W_GIFTCARD_NAV_TOTAL = 970;
   <div class="globalNavigation">
     <ul class="menu basic-skin green-skin">
       <% if(step == 3) {%>
-      <li class="menu-header">
-          <span class="header-skin">gift cards</span>
+      <li class="menu-header item-skin-hover">
+          <a class="menu-header header-skin reset-link" href="<%= step0_link %>">gift cards</a>
       </li><!--
     --><li class="menu-item item-skin">      
           <span class="gf-item">gift & reciepient options</span>
