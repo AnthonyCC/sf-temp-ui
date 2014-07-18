@@ -346,7 +346,6 @@ section.main .pager .pagination-pager-button {
   width: auto;
   height: 27px;
   line-height: 27px;
-  font-weight: bold;
   color: #693;
   border: none;
   font-size: 12px;
@@ -367,6 +366,7 @@ section.main .pager .pagination-pager-button.selected {
   border-color:#333;
   background-color: #fff;
   color:#333;
+  font-weight: bold;
 }
 
 section.main .pager .pagination-pager-button.selected:hover {
