@@ -297,7 +297,7 @@ section.main .content {
 }
 
 section.main .breadcrumbs {
-  padding: 0 0 10px 0;
+  padding: 0 0 5px 0;
   font-size: 14px;
   line-height: 14px;
   list-style-type: none;
@@ -308,6 +308,7 @@ section.main .breadcrumbs {
 
 section.main .breadcrumbs li {
   display: inline-block;
+  line-height: 24px;
 }
 
 section.main .breadcrumbs li:before {
