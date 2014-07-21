@@ -254,7 +254,6 @@ public class BrowseDataBuilderFactory {
 			List<CategoryModel> subCats = cat.getSubcategories();
 			
 			boolean showPopularCatsGlobal=cat.isShowPopularCategories();
-			data.getSections().setUsePopularCategoriesLayout(showPopularCatsGlobal);
 			
 			if (subCats.size()==0 || nav.isAll()) { //show either the products of this category
 
@@ -270,6 +269,7 @@ public class BrowseDataBuilderFactory {
 
 			} else { //or show the actual category list
 				
+				data.getSections().setUsePopularCategoriesLayout(showPopularCatsGlobal);
 				SectionContext catSection = createSection(cat, user);
 				catSection.setCategories(createCategoryDatas(cat, user, showPopularCatsGlobal));
 				
