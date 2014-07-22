@@ -326,6 +326,7 @@ a.portrait-item-header-name:link {
 }
 
 .portrait-item .nutritionSortInfo {
+  float:left;
   clear: both;
   line-height: 1.2em;
   padding: 8px 0;
