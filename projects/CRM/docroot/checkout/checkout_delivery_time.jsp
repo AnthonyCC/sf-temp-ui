@@ -394,7 +394,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 <TABLE>
 <TR VALIGN="TOP">
     <TD WIDTH="70%" style="padding-left: 10px;">
-		<b>Delivery Charge:</b> 
+		<b>Delivery Fee:</b> 
 		<%
 	String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge());
 	if (cart.isDlvPassApplied()) {
@@ -403,7 +403,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 	<%
 	} else if (cart.isDeliveryChargeWaived()) {
 	%>
-		Free! We've waived the standard <%= dlvCharge %> delivery charge for this order.
+		Free! We've waived the standard <%= dlvCharge %> delivery fee for this order.
 	<%}else {%>
 		<%= JspMethods.formatPrice(cart.getDeliveryCharge()) %>
 		<%}%><br>(Our delivery personnel are allowed to accept tips if exceptional service is provided).

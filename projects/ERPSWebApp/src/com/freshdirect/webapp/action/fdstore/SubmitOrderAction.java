@@ -503,7 +503,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			// Check for delivery surcharge waiver (CALLCENTER)
 			//
 			boolean csrWaivedDeliveryCharge = "true".equalsIgnoreCase(request.getParameter("waive_delivery_fee")); 
-			LOGGER.debug("Delivery charge waive requested by CSR: "+ csrWaivedDeliveryCharge);
+			LOGGER.debug("Delivery fee waive requested by CSR: "+ csrWaivedDeliveryCharge);
 			cart.setCsrWaivedDeliveryCharge(csrWaivedDeliveryCharge);
 				
 			// Check for delviery premium waiver (CALLCENTER)

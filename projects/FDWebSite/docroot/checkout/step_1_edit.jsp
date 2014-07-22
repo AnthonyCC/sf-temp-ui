@@ -100,7 +100,7 @@ final int W_CHECKOUT_STEP_1_EDIT_TOTAL = 970;
 				  <FONT CLASS="space2pix"><BR></FONT>
 					<table>
 						<tr>
-							<td align="left">Delivery Charge:</td>
+							<td align="left">Delivery Fee:</td>
 							<td align="right">
 								<%	
 									FDCartModel cart = user.getShoppingCart();

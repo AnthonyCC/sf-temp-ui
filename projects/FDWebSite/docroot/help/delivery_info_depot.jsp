@@ -44,7 +44,7 @@ final int W_DELIVERY_INFO_DEPOT_RIGHT = 191;
 
 				<img src="/media_stat/images/template/depot/depot_delivery_charge.gif" width="155" height="9" alt="" border="0"><br>
 				<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"><br>
-				The minimum order is $40. There is a fee of $3.95 for depot delivery. You are under no obligation to tip but have the option of providing a nominal tip if you feel that you've received exceptional service.
+				The minimum order is $40. There is a fee of $3.95 for depot delivery. You are under no obligation to tip but have the option of providing a tip if you feel that you've received exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances. The delivery fee is not a gratuity for any FreshDirect employee who delivers or is otherwise involved with the delivery of your order and will not be given to such any employee as a gratuity.
 
 <br><img src="/media_stat/images/layout/clear.gif" width="1" height="16"><br>
 

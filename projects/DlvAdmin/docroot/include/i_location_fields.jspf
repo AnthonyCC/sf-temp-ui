@@ -86,7 +86,7 @@
 					</td>
 				</tr>
                 <tr>
-                    <td align="right"><b>Delivery Charge Waived</b></td>
+                    <td align="right"><b>Delivery Fee Waived</b></td>
                     <td><input type="checkbox" name="deliveryChargeWaived" <%= location.getDeliveryChargeWaived()?"checked":"" %>></td>
                 </tr>
 			</table>

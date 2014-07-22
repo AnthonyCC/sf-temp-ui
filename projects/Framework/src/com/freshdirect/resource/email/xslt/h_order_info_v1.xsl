@@ -277,7 +277,7 @@
 	<xsl:if test="number(order/deliverySurcharge) &gt; 0">
 		<tr valign="top" class="orderSummary">
 		<td colspan="4">&nbsp;</td>
-		<td colspan="2" align="right"  style="font-family: Verdana, Arial, sans-serif;font-size:12px;background-color: #e0e3d0;">Delivery Charge<xsl:if test="order/deliveryChargeWaived = 'true'"> (waived)</xsl:if>:</td>
+		<td colspan="2" align="right"  style="font-family: Verdana, Arial, sans-serif;font-size:12px;background-color: #e0e3d0;">Delivery Fee<xsl:if test="order/deliveryChargeWaived = 'true'"> (waived)</xsl:if>:</td>
 			<td colspan="1" align="right" width="60"  style="font-family: Verdana, Arial, sans-serif;font-size:12px;background-color: #e0e3d0;">
 				<xsl:choose>
 					<xsl:when test="order/deliveryChargeWaived = 'true'">$0.00</xsl:when>

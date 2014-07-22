@@ -710,7 +710,7 @@ FDIdentity identity = user.getIdentity();
 	if (cart.isDlvPassApplied()) {
 	%>
 		<tr valign="top" class="orderSummary">
-			<td colspan="3" align="right">Delivery Charge:</td>
+			<td colspan="3" align="right">Delivery Fee:</td>
 			<td colspan="1" align="right"><%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %></td>
 			<td colspan="2">&nbsp;</td>
 		</tr>
@@ -718,14 +718,14 @@ FDIdentity identity = user.getIdentity();
 	} else if ((int)cart.getChargeAmount(EnumChargeType.DELIVERY) > 0) {
 		%>
 		<tr valign="top" class="orderSummary">
-			<td colspan="3" align="right">Delivery Charge<% if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%> (waived)<%}%>:</td>
+			<td colspan="3" align="right">Delivery Fee<% if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%> (waived)<%}%>:</td>
 			<td colspan="1" align="right"><%if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%>$0.00<%}else{%><%=JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DELIVERY))%><%}%></td>
 			<td><b><%=cart.isChargeTaxable(EnumChargeType.DELIVERY) && !cart.isChargeWaived(EnumChargeType.DELIVERY) ? "&nbsp;T" : "" %></b></td>
 			<td></td>
 		</tr>
 		<%	} else if((int)cart.getChargeAmount(EnumChargeType.DELIVERY) == 0 ) { %>   
 			<tr valign="top" class="orderSummary">
-			<td colspan="3" align="right">Delivery Charge<% if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%> (waived)<%}%>:</td>
+			<td colspan="3" align="right">Delivery Fee<% if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%> (waived)<%}%>:</td>
 			<td colspan="1" align="right"><%if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%>$0.00<%}else{%>&nbsp;&nbsp;&nbsp;<b>check</b>&nbsp;<A HREF="javascript:popup('/help/delivery_info.jsp','large_long')"><b>delivery fee</b></A><%}%></td>
 			<td></td>
 			<td></td>
@@ -787,7 +787,7 @@ FDIdentity identity = user.getIdentity();
 		</tr>
 		<% } %>
 		<tr valign="top" class="orderSummary">
-			<td colspan="3" align="right">Delivery Charge (waived):</td>
+			<td colspan="3" align="right">Delivery Fee (waived):</td>
 			<td colspan="1" align="right">$0.00</td>
 			<td colspan="2">&nbsp;</td>
 		</tr>

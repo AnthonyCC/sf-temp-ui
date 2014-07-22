@@ -61,7 +61,7 @@ double cartTotal = user.getShoppingCart().getTotal();
 				  <FONT CLASS="space2pix"><BR></FONT>
 					<table>
 <tr>
-							<td align="left">Delivery Charge:</td>
+							<td align="left">Delivery Fee:</td>
 							<td align="right">
 								<%	
 									String dlvCharge = JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DELIVERY));

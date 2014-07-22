@@ -289,10 +289,10 @@
 		<tr>
             <td colspan="4"></td>
 		<% if(order.isChargeWaived(EnumChargeType.DELIVERY) && !isSubmitOrderStep) {%>
-			<td colspan="2">Delivery Charge (waived): </td>
+			<td colspan="2">Delivery Fee (waived): </td>
 			<td align="right">$0.00</td>
 		<%}else{%>
-			<td colspan="2">Delivery Charge: &nbsp;&nbsp; 
+			<td colspan="2">Delivery Fee: &nbsp;&nbsp; 
 			<%if (isSubmitOrderStep ) {%>
             	Force Waive <input type="checkbox" value="true" <%=((FDCartModel)order).isCsrWaivedDeliveryCharge()?"checked":"" %> name="waive_delivery_fee">
 			<%}%>

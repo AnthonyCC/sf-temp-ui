@@ -639,7 +639,7 @@
 				if (cart.isDlvPassApplied()) {
 			%>
 					<tr valign="top" class="orderSummary">
-						<td colspan="3" align="right">Delivery Charge:</td>
+						<td colspan="3" align="right">Delivery Fee:</td>
 						<td colspan="1" align="right"><%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %></td>
 						<td colspan="3">&nbsp;</td>
 					</tr>
@@ -647,7 +647,7 @@
 				} else if (cart.getChargeAmount(EnumChargeType.DELIVERY) > 0) {
 			%>
 					<tr valign="top" class="orderSummary">
-						<td colspan="3" align="right">Delivery Charge<%if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%> (waived)<%}%>:</td>
+						<td colspan="3" align="right">Delivery Fee<%if(cart.isChargeWaived(EnumChargeType.DELIVERY)){%> (waived)<%}%>:</td>
 						<td colspan="1" align="right"><%= (cart.isChargeWaived(EnumChargeType.DELIVERY))?0.0:JspMethods.formatPrice(cart.getChargeAmountDiscountApplied(EnumChargeType.DELIVERY)) %></td>
 						<td><%= cart.isChargeTaxable(EnumChargeType.DELIVERY) && !cart.isChargeWaived(EnumChargeType.DELIVERY) ? "&nbsp;<strong>T</strong>":""%></td>
 						<td colspan="2"></td>

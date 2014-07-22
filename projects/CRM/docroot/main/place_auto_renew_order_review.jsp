@@ -151,7 +151,7 @@
 	    StringBuffer returnValue = new StringBuffer();
          
          
-		displayString = "Delivery Charge:";
+		displayString = "Delivery Fee:";
 		value.append(JspMethods.formatPrice(order.getDeliverySurcharge()));
 		value.append(order.isDeliveryChargeTaxable() ? "&nbsp;T" : "");
 	    

@@ -147,14 +147,14 @@ final int W_YA_ORDER_DETAILS_TOTAL = 970;
 					</tr>
 					<% if (cart.isDlvPassApplied()) { %>
 					<tr>
-						<td class="aleft text12 leftPad rightPad" colspan="3">Delivery Charge:
+						<td class="aleft text12 leftPad rightPad" colspan="3">Delivery Fee:
 							<div class="fright text12"><%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %></div>
 							<div class="fclear"></div>
 						</td>
 					</tr>
 					<% } else if (cart.getChargeAmount(EnumChargeType.DELIVERY) > 0) { %>
 					<tr>
-						<td class="aleft text12 label leftPad">Delivery Charge<% if (cart.isChargeWaived(EnumChargeType.DELIVERY)) { %> (waived)<% } %>:</td>
+						<td class="aleft text12 label leftPad">Delivery Fee<% if (cart.isChargeWaived(EnumChargeType.DELIVERY)) { %> (waived)<% } %>:</td>
 						<td class="aright text12"><% if (cart.isChargeWaived(EnumChargeType.DELIVERY)) { %>$0.00<% }else{ %><%= JspMethods.formatPrice(cart.getChargeAmount(EnumChargeType.DELIVERY)) %><% } %></td>
 						<td class="aleft text12 rightPad"><%= cart.isChargeTaxable(EnumChargeType.DELIVERY) && !cart.isChargeWaived(EnumChargeType.DELIVERY) ? "&nbsp;T" : "" %></td>
 					</tr>
@@ -380,8 +380,11 @@ final int W_YA_ORDER_DETAILS_TOTAL = 970;
 			</div>
 			<%-- default (tipping) message --%>
 			<div class="text12" style="margin-top: 10px;">
-				<b>Tipping policy:</b> You are under no obligation to tip but have the option of providing a nominal tip if you feel that you've received 
-				exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances.<br />
+				<b>Tipping policy:</b> You are under no obligation to tip but have the option of providing 
+				a tip if you feel that you've received exceptional service. 
+				FreshDirect delivery personnel are not permitted to solicit tips under any circumstances. 
+				The delivery fee is not a gratuity for any FreshDirect employee who delivers or is otherwise 
+				involved with the delivery of your order and will not be given to such any employee as a gratuity.<br />
 				<font class="space8px"><br /></font>
 			</div>
 			

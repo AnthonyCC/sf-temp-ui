@@ -169,7 +169,7 @@ function linkTo(url){
 					<TD WIDTH="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></TD>
 					<TD WIDTH="<%=tableWidth-15%>" class="bodyCopy">
 						<b>Should I tip the driver?</b><br>
-						You are under no obligation to tip but have the option of providing a nominal tip if you feel that you've received exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances. If you have a comment or compliment please e-mail us. We'd love to hear from you!<br>
+						You are under no obligation to tip but have the option of providing a tip if you feel that you've received exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances. The delivery fee is not a gratuity for any FreshDirect employee who delivers or is otherwise involved with the delivery of your order and will not be given to such any employee as a gratuity. If you have a comment or compliment please e-mail us. We'd love to hear from you!<br>
 
 				   </TD>
 				</TR>

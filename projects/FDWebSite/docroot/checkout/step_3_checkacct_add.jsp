@@ -55,7 +55,7 @@ double cartTotal = ((FDUserI)session.getAttribute(SessionName.USER)).getShopping
 				  <FONT CLASS="space2pix"><BR></FONT>
 					<table>
 <tr>
-							<td align="left" style="color:#666666;font-weight:bold;">Delivery Charge:</td>
+							<td align="left" style="color:#666666;font-weight:bold;">Delivery Fee:</td>
 							<td align="right" style="color:#666666;font-weight:bold;">
 								<%	
 									FDCartModel cart = user.getShoppingCart();

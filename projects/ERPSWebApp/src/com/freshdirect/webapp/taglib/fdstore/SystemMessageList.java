@@ -24,6 +24,7 @@ public interface SystemMessageList {
 
 	public final static String MSG_EMAIL_FORMAT 		= "Please make sure your email address is in the format \"you@isp.com\"";
 	public final static String MSG_EMAIL_REPEAT			= "Please enter your email again - it doesn't match what you entered above.";
+	public final static String MSG_EMAIL_NOMATCH_REG	= "Email confirmation does not match, please re-enter";
 	public final static String MSG_PHONE_FORMAT 		= "Please make sure the phone number you entered contains exactly 10 digits (3 digits area code, 7 digits local number), e.g. (212) 123-4567";
 
 	// Depot
@@ -130,7 +131,7 @@ public interface SystemMessageList {
 	public final static String MSG_CONTAINS_DLV_PASS		= "We''re sorry! Your cart already contains a delivery pass. Please remove it to add a different one.";
 	public final static String MSG_INVALID_DLV_PASS = "The delivery pass is invalid. Please contact customer service at {0} to process the order.";
 	public final static String MSG_1_UNLIMITED_PASS_EXPIRED = "We''re sorry! Your unlimited delivery pass expired on ";
-	public final static String MSG_2_UNLIMITED_PASS_EXPIRED = ". Delivery charges will apply if you resubmit the order.";
+	public final static String MSG_2_UNLIMITED_PASS_EXPIRED = ". Delivery fees will apply if you resubmit the order.";
 	public final static String MSG_DLV_PASS_ADDED = "One Delivery was added successfully.";
 	public final static String MSG_DLV_PASS_EXTENDED = "Delivery pass was extended successfully by one week.";
 	public final static String MSG_DLV_PASS_SINGLE_CREDIT = "One credit added to your Delivery pass.";
@@ -140,7 +141,7 @@ public interface SystemMessageList {
 	public final static String MSG_DLV_PASS_CANCELLED = "Delivery pass was cancelled successfully.";
 	public final static String MSG_DLV_PASS_NOT_CANCELLED="Delivery pass could not be cancelled";
 	public final static String MSG_CONTAINS_DLV_PASS_ONLY = "We're sorry, you need to have one or more deliverable item(s) in the cart to buy a DeliveryPass.";
-	public final static String MSG_UNLIMITED_PASS_CANCELLED = "We''re sorry! Your unlimited delivery pass is already cancelled. Delivery charges will apply if you resubmit the order.";
+	public final static String MSG_UNLIMITED_PASS_CANCELLED = "We''re sorry! Your unlimited delivery pass is already cancelled. Delivery fees will apply if you resubmit the order.";
 	public final static String MSG_PASS_DISCONTINUED = "We're sorry! this product is no longer available.";
 	// SORI MESSGAES
 	public final static String MSG_PROMOTION_APPLIED_VARY1 = "PLEASE NOTE: You are currently eligible for multiple promotional offers which cannot be combined. <BR>When you check out, we will automatically choose the offer that gives you the greatest discount";

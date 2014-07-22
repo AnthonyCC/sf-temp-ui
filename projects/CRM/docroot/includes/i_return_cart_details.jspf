@@ -67,7 +67,7 @@ function processReturn(formName){
 		}
 	}
 	if(qty > 0){
-		var doReturn = confirm ("Are you sure you want to return the delivery pass as well?. If yes delivery charges may apply.");
+		var doReturn = confirm ("Are you sure you want to return the delivery pass as well?. If yes delivery fees may apply.");
 		if(doReturn == false){
 			return false;
 		} 		
@@ -177,13 +177,13 @@ function processReturn(formName){
 	    StringBuffer returnValue = new StringBuffer();
          
             if(order.isDlvPassApplied()) {
-            	displayString = "Delivery Charge:";
+            	displayString = "Delivery Fee:";
 		value.append(order.getDeliveryCharge()>0?JspMethods.formatPrice(order.getDeliveryCharge()):DeliveryPassUtil.getDlvPassAppliedMessage(user));
 	    } else if(order.isDeliveryChargeWaived()) {
-		displayString = "Delivery Charge (waived):";
+		displayString = "Delivery Fee (waived):";
 		value.append("$0.00");
 	    } else {
-		displayString = "Delivery Charge:";
+		displayString = "Delivery Fee:";
 		value.append(JspMethods.formatPrice(order.hasInvoice() ? order.getInvoicedDeliveryCharge() : order.getDeliveryCharge()));
 		value.append(order.isDeliveryChargeTaxable() ? "&nbsp;T" : "");
 	    }

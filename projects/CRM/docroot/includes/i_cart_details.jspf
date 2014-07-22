@@ -262,13 +262,13 @@
 	    StringBuffer returnValue = new StringBuffer();
          
             if(order.isDlvPassApplied()) {
-            	displayString = "Delivery Charge:";
+            	displayString = "Delivery Fee:";
 		value.append(DeliveryPassUtil.getDlvPassAppliedMessage(user));
 	    } else if(order.isChargeWaived(EnumChargeType.DELIVERY)) {
-		displayString = "Delivery Charge (waived):";
+		displayString = "Delivery Fee (waived):";
 		value.append("$0.00");
 	    } else {
-		displayString = "Delivery Charge:";
+		displayString = "Delivery Fee:";
 		value.append(JspMethods.formatPrice(order.hasInvoice() ? order.getInvoicedDeliveryCharge() : order.getDeliveryCharge()));
 		value.append(order.isDeliveryChargeTaxable() ? "&nbsp;T" : "");
 	    }

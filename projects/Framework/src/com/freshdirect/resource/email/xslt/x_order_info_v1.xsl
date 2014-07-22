@@ -131,7 +131,7 @@ Credits: ($<xsl:value-of select='format-number(sum(order/appliedCredits/appliedC
 </xsl:if>
 
 <xsl:if test="number(order/deliverySurcharge) &gt; 0">
-Delivery Charge<xsl:if test="order/deliveryChargeWaived = 'true'"> (waived)</xsl:if>: <xsl:choose><xsl:when test="order/deliveryChargeWaived = 'true'">$0.00</xsl:when><xsl:otherwise><xsl:value-of select="format-number(order/deliveryCharge, '$###,##0.00', 'USD')"/></xsl:otherwise></xsl:choose> <xsl:if test="order/deliveryChargeWaived = 'false'"><xsl:if test="order/deliveryChargeTaxable = 'true'"> T</xsl:if></xsl:if>
+Delivery Fee<xsl:if test="order/deliveryChargeWaived = 'true'"> (waived)</xsl:if>: <xsl:choose><xsl:when test="order/deliveryChargeWaived = 'true'">$0.00</xsl:when><xsl:otherwise><xsl:value-of select="format-number(order/deliveryCharge, '$###,##0.00', 'USD')"/></xsl:otherwise></xsl:choose> <xsl:if test="order/deliveryChargeWaived = 'false'"><xsl:if test="order/deliveryChargeTaxable = 'true'"> T</xsl:if></xsl:if>
 </xsl:if>
 
 <xsl:if test="number(order/miscellaneousCharge) &gt; 0">

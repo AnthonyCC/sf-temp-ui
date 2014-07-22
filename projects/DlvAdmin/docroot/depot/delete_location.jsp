@@ -80,7 +80,7 @@
 						<td colspan="4"><%=location.getInstructions()%></td>
 					</tr>
                     <tr>
-                        <td align="right"><b>Delivery Charge Waived</b></td>
+                        <td align="right"><b>Delivery Fee Waived</b></td>
                         <td colspan="4"><%= location.getDeliveryChargeWaived()?"YES":"NO" %></td>
                     </tr>
 				</table>

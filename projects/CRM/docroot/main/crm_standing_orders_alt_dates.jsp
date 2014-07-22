@@ -187,7 +187,7 @@ margin-top: 20px;
 				<tr><td><b>Notes:</b></td></tr>
 				<tr><td><ul>
 				<li>Alternate delivery date should be (+/-) 7 days from the original delivery date.</li>
-				<li>Geo restrictions, delivery charges and variable minimum order total would be applied based on the alternate delivery date.</li>
+				<li>Geo restrictions, delivery fees and variable minimum order total would be applied based on the alternate delivery date.</li>
 				<li>Please make sure the time slot and capacity are available for the alternate delivery date.</li>
 				<li>Alternate delivery date is not required for 'Skip the standing order next delivery date' type action.</li>
 				</ul></td></tr>
