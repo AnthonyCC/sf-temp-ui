@@ -2,6 +2,8 @@ package com.freshdirect.webapp.ajax.browse.data;
 
 import java.util.List;
 
+import com.freshdirect.fdstore.content.ProductFilterGroupType;
+
 public class MenuBoxData extends BasicData {
 	
 	public enum MenuBoxDisplayType{
@@ -44,6 +46,7 @@ public class MenuBoxData extends BasicData {
 	private String selectedLabel;
 	private Integer position=Integer.MAX_VALUE;
 	private boolean multiGroupBox;
+	private boolean brandFilter;
 	
 	
 	/**
@@ -105,6 +108,12 @@ public class MenuBoxData extends BasicData {
 	}
 	public void setMultiGroupBox(boolean multiGroupBox) {
 		this.multiGroupBox = multiGroupBox;
+	}
+	public boolean isBrandFilter() {
+		return brandFilter;
+	}
+	public void setBrandFilter(boolean brandFilter) {
+		this.brandFilter = brandFilter;
 	}
 	
 }

@@ -16,6 +16,7 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.EnumBrandFilterLocation;
 import com.freshdirect.fdstore.content.GlobalNavigationModel;
 import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.ProductFilterGroupI;
@@ -160,6 +161,12 @@ public class NavigationUtil {
 			//no filters in case of super department
 			model.setAllFilters(new ArrayList<ProductFilterGroupI>());
 			model.setActiveFilters(new HashSet<ProductItemFilterI>());
+			
+		}
+		
+		// set brand filter location
+		if(node instanceof CategoryModel){
+			model.setBrandFilterLocation(((CategoryModel)node).getBrandFilterLocation(EnumBrandFilterLocation.BELOW_DEPARTMENT.toString()));
 		}
 		
 		// -- CREATE MENU --

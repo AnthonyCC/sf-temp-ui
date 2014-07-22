@@ -12,6 +12,7 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.CategorySectionModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.EnumBrandFilterLocation;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.ProductContainer;
@@ -19,6 +20,7 @@ import com.freshdirect.fdstore.content.ProductFilterGroupI;
 import com.freshdirect.fdstore.content.ProductFilterGroupType;
 import com.freshdirect.fdstore.content.ProductItemFilterI;
 import com.freshdirect.fdstore.content.SuperDepartmentModel;
+import com.freshdirect.fdstore.content.browse.filter.BrandFilter;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
@@ -544,7 +546,7 @@ public class MenuBuilderFactory {
 					domain.setName(filterGroup.getName());
 					domain.setBoxType(MenuBoxType.FILTER);
 					domain.setMultiGroupBox(filterGroup.isMultiGroupModel());
-					
+					domain.setBrandFilter(filterGroup.getProductFilters().get(0) instanceof BrandFilter);
 					if(!productListingPage){
 						domain.setShouldSetAll(true);
 					}
@@ -873,25 +875,78 @@ public class MenuBuilderFactory {
 		
 		Iterator<MenuBoxData> it = menu.iterator();
 
-		boolean topCategoryFound = false;
-		int position=0;
-		while(it.hasNext()){
 			
+		boolean topCategoryFound = false;
+		int position = 0;
+		while (it.hasNext()) {
+
 			MenuBoxData box = it.next();
 			
-			if(!topCategoryFound){
-				box.setPosition(position++);				
-			}
+			box.setPosition(Integer.MAX_VALUE);
 			
-			if(box.getBoxType()==MenuBoxType.CATEGORY){
-				topCategoryFound=true;
+			if (!topCategoryFound) {
+				box.setPosition(position++);
 			}
+
+			if (box.getBoxType() == MenuBoxType.CATEGORY) {
+				topCategoryFound = true;
+			}
+
+			if (box.getBoxType() == MenuBoxType.FILTER && (box.getDisplayType() == MenuBoxDisplayType.POPUP || box.getDisplayType() == MenuBoxDisplayType.CENTER_POPUP)
+					&& !box.isMultiGroupBox() && !box.isBrandFilter()) {
 				
-			if(box.getBoxType()==MenuBoxType.FILTER && (box.getDisplayType()==MenuBoxDisplayType.POPUP || box.getDisplayType()==MenuBoxDisplayType.CENTER_POPUP)
-					&& !box.isMultiGroupBox()){				
 				box.setPosition(position++);
 			}
 		}
+		
+		Collections.sort(menu, DataUtil.MENUBOX_POSITION_COMPARATOR);
+	}
+	
+	public void relocateBrandFilter(List<MenuBoxData> menu, EnumBrandFilterLocation brandFilterLocation){
+		
+		Iterator<MenuBoxData> it = menu.iterator();
+		
+		boolean beforeFilterBoxFound = false;
+		MenuBoxType brandFilterPosition = null;
+		
+		if(brandFilterLocation == EnumBrandFilterLocation.BELOW_DEPARTMENT){
+			brandFilterPosition = MenuBoxType.CATEGORY;
+		}else if(brandFilterLocation == EnumBrandFilterLocation.BELOW_LOWEST_LEVEL_CATEGROY){
+			brandFilterPosition = MenuBoxType.FILTER;
+		}
+		
+		if(brandFilterPosition==null){ // remove brand filter
+			while (it.hasNext()) {
+
+				MenuBoxData box = it.next();
+				
+				if(box.isBrandFilter()){
+					it.remove();
+				}
+			}
+				
+		}else{
+			
+			int position = 0;
+			while (it.hasNext()) {
+				
+				MenuBoxData box = it.next();
+				
+				if (!beforeFilterBoxFound) {
+					box.setPosition(position++);
+				}
+				
+				if (box.getBoxType() == brandFilterPosition) {
+					beforeFilterBoxFound = true;
+				}
+				
+				if (box.isBrandFilter()) {
+					
+					box.setPosition(position++);
+				}
+			}
+		}
+		
 		
 		Collections.sort(menu, DataUtil.MENUBOX_POSITION_COMPARATOR);
 	}

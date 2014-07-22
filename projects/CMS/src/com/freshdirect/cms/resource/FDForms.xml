@@ -452,6 +452,7 @@
 						<title>TOP LEVEL CATEGORY FIELDS (DO NOT USE FOR SUBCATEGORIES)</title>
 						<fields>
 							<CmsField><attribute>productFilterGroups</attribute></CmsField>
+							<CmsField><attribute>brandFilterLocation</attribute></CmsField>
 							<CmsField><attribute>hideIfFilteringIsSupported</attribute></CmsField>
 							<CmsField><attribute>sortOptions</attribute></CmsField>
 							<CmsField><attribute>noGroupingByCategory</attribute></CmsField>

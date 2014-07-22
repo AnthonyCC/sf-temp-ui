@@ -89,8 +89,14 @@ public class CmsFilteringFlow {
 		// -- REMOVE MENU BOXES WITH NULL SELECTION --
 		MenuBuilderFactory.getInstance().checkNullSelection(browseDataContext.getMenuBoxes().getMenuBoxes());
 		
+		// -- RELOCATE BRAND FILTER BASED ON CMS SETTING
+		if(browseDataContext.getNavigationModel().getBrandFilterLocation()!=null){
+			MenuBuilderFactory.getInstance().relocateBrandFilter(browseDataContext.getMenuBoxes().getMenuBoxes(),  browseDataContext.getNavigationModel().getBrandFilterLocation());			
+		}
+		
 		// -- REORDER MENU BOXES, PLACE POPUP TYPE FILTERS BELOW TOP CATEGORIES
 		MenuBuilderFactory.getInstance().reorderMenuBoxes(browseDataContext.getMenuBoxes().getMenuBoxes());
+		
 			
 		if(!nav.isPdp()){
 			

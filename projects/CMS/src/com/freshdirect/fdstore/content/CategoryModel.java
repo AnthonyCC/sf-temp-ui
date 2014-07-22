@@ -1294,5 +1294,9 @@ public class CategoryModel extends ProductContainer {
     public EnumBrowseCarouselRatio getCarouselRatioPLP(String defaultValue) {
 		return EnumBrowseCarouselRatio.valueOf(getAttribute("carouselRatioPLP", defaultValue));
 	}
+    
+    public EnumBrandFilterLocation getBrandFilterLocation(String defaultValue) {
+		return EnumBrandFilterLocation.valueOf(getAttribute("brandFilterLocation", defaultValue));
+	}
 
 }

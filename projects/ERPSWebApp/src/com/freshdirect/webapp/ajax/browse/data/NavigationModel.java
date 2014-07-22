@@ -11,6 +11,7 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.CategorySectionModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.EnumBrandFilterLocation;
 import com.freshdirect.fdstore.content.ProductFilterGroupI;
 import com.freshdirect.fdstore.content.ProductItemFilterI;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -78,6 +79,7 @@ public class NavigationModel {
 	private Map<String, CategoryModel> subCategoriesOfSearchResults = new HashMap<String, CategoryModel>();
 	private List<DepartmentModel> departmentsOfSuperDepartment;
 	private boolean productListing;
+	private EnumBrandFilterLocation brandFilterLocation;
 	
 	public NavDepth getNavDepth() {
 		return navDepth;
@@ -196,4 +198,11 @@ public class NavigationModel {
 	public void setSearchResults(List<ProductModel> searchResults) {
 		this.searchResults = searchResults;
 	}
+	public EnumBrandFilterLocation getBrandFilterLocation() {
+		return brandFilterLocation;
+	}
+	public void setBrandFilterLocation(EnumBrandFilterLocation brandFilterLocation) {
+		this.brandFilterLocation = brandFilterLocation;
+	}
+	
 }
