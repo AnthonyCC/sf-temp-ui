@@ -67,6 +67,7 @@
   {param customizePopup:$item.customizePopup /}
   {param soldBySalesUnit:$item.soldBySalesUnit /}
   {param salesUnit:$item.salesUnit /}
+  {param salesUnitDescrPDP:$item.salesUnitDescrPDP /}
   {param quantity:$item.quantity /}
   {param availMatPrices:$item.availMatPrices /}
   {param suRatios:$item.suRatios /}
@@ -218,6 +219,7 @@
  * @param customizePopup
  * @param soldBySalesUnit
  * @param salesUnit
+ * @param? salesUnitDescrPDP
  * @param quantity
  * @param availMatPrices
  * @param suRatios
@@ -280,6 +282,11 @@
         {call common.rating.sustainability}{param ratingValue:$sustainabilityRating /}{/call}
       {/if}
     </div>
+    {if $salesUnitDescrPDP}
+    <div class="configDescr">
+        {$salesUnitDescrPDP}
+    </div>
+    {/if}
   </div>
   <div class="portrait-item-price">
   {call common.price}
