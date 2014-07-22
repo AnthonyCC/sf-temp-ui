@@ -8,7 +8,7 @@
 	{if $sortOptions and length($sortOptions) > 0}
     <div class="sorter">
       <div class="sorter-element_list" data-component="sorter">
-        <strong>Sort by:</strong>
+        <strong>Sort:</strong>
 
         {foreach $sortOption in $sortOptions}
           <button data-sortid="{$sortOption.id}" data-direction="{$sortOption.orderAscending}" {$sortOption.selected ? 'data-currentdirection="'+$currentOrderAsc+'"' : ''}
