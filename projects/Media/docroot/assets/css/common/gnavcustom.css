@@ -99,8 +99,8 @@ GLOBAL NAV DROPDOWNS
 	padding-left: 30px;
 	padding-right: 32px;
 	margin: 0;
-	height: 30px;
-	line-height: 30px;
+	height: 20px;
+	line-height: 20px;
 }
 
 .dropdown-column li a:visited {color:#000;}
