@@ -140,24 +140,6 @@ public class NavigationUtil {
 			
 			model.setDepartmentsOfSuperDepartment(((SuperDepartmentModel)model.getSelectedContentNodeModel()).getDepartments());
 			
-			List<CategoryModel> popularCategories = new ArrayList<CategoryModel>();
-			final int max = FDStoreProperties.getPopularCategoriesMax();
-			int counter=0;
-			for (DepartmentModel deptModel : ((SuperDepartmentModel)model.getSelectedContentNodeModel()).getDepartments()){
-				counter = 0;
-				for (CategoryModel cat : deptModel.getPopularCategories()) {
-					if (NavigationUtil.isCategoryHiddenInContext(user, cat)) {
-						continue;
-					}
-					counter++;
-					if(counter<=max){
-						popularCategories.add(cat);						
-					}else{
-						break;
-					}
-				}					
-			}
-			model.setPopularCategories(popularCategories);
 			//no filters in case of super department
 			model.setAllFilters(new ArrayList<ProductFilterGroupI>());
 			model.setActiveFilters(new HashSet<ProductItemFilterI>());

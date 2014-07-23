@@ -22,7 +22,11 @@
       </ul>
     {elseif $menuBox.displayType == 'POPUP'}
       <h2>{$menuBox.name}</h2>
-      <button class="category popup leftnav-category-popup-button cssbutton green"><span class="icon-arrow-right2-before">{$menuBox.selectedLabel}</span></button>
+      {if $menuBox.boxType == 'FILTER'}
+      	<button class="category popup leftnav-category-popup-button cssbutton green"><span class="icon-arrow-right2-before">{$menuBox.name}</span></button>
+      {else}
+      	<button class="category popup leftnav-category-popup-button cssbutton green"><span class="icon-arrow-right2-before">{$menuBox.selectedLabel}</span></button>      
+      {/if}
       <div class="popupMenuContent" style="display: none;">
         <div data-component="menuitemlist" data-menuitemlist="{$menuBox.id}">
           {call .layoutBreak}

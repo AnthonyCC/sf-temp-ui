@@ -224,21 +224,6 @@ public class MenuBuilderFactory {
 				menu.add(createSuperDepartmentMenuBox((SuperDepartmentModel)navModel.getSelectedContentNodeModel(), navModel, true));
 			}
 
-			// create popular categories box
-			if (!navModel.getPopularCategories().isEmpty()) {
-				MenuBoxData domain = new MenuBoxData();
-				domain.setName("Popular Categories");
-				domain.setId(superDeptId + "_popular");
-				domain.setBoxType(MenuBoxType.CATEGORY);
-				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
-				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
-				
-				List<MenuItemData> items = new ArrayList<MenuItemData>();
-				domain.setItems(createCatMenuItems(navModel.getPopularCategories(), items, navModel.getUser()));
-
-				menu.add(domain);
-			}
-
 			return menu;
 		}
 		
@@ -546,14 +531,15 @@ public class MenuBuilderFactory {
 					domain.setName(filterGroup.getName());
 					domain.setBoxType(MenuBoxType.FILTER);
 					domain.setMultiGroupBox(filterGroup.isMultiGroupModel());
-					domain.setBrandFilter(filterGroup.getProductFilters().get(0) instanceof BrandFilter);
+					boolean brandFilter = filterGroup.getProductFilters()==null || filterGroup.getProductFilters().size() < 1 ? false : filterGroup.getProductFilters().get(0) instanceof BrandFilter;
+					domain.setBrandFilter(brandFilter);
 					if(!productListingPage){
 						domain.setShouldSetAll(true);
 					}
 
 					if (ProductFilterGroupType.POPUP == filterGroup.getType()) {
 
-						domain.setDisplayType(MenuBoxDisplayType.CENTER_POPUP);
+						domain.setDisplayType(MenuBoxDisplayType.POPUP);
 						domain.setSelectionType(MenuBoxSelectionType.SINGLE);
 
 					} else if (ProductFilterGroupType.SINGLE == filterGroup.getType()) {
@@ -862,7 +848,7 @@ public class MenuBuilderFactory {
 			
 			MenuBoxData box = it.next();
 			
-			if(MenuBoxDisplayType.POPUP==box.getDisplayType() && (box.getSelectedLabel()==null || "".equals(box.getSelectedLabel()))){
+			if(MenuBoxDisplayType.POPUP==box.getDisplayType() && box.getBoxType()!=MenuBoxType.FILTER && (box.getSelectedLabel()==null || "".equals(box.getSelectedLabel()))){
 				it.remove();				
 			}
 		}
