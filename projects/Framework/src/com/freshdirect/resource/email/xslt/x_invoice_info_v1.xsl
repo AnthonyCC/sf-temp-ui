@@ -55,7 +55,7 @@ $<xsl:value-of select='format-number((order/invoicedTotal)-(order/totalAppliedGC
 </xsl:if>
 ---
 FRESHDIRECT TIPPING POLICY
-You are under no obligation to tip but have the option of providing a nominal tip if you feel that you've received exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances.
+You are under no obligation to tip but have the option of providing a tip if you feel that you've received exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances. The delivery fee is not a gratuity for any FreshDirect employee who delivers or is otherwise involved with the delivery of your order and will not be given to such any employee as a gratuity.
 
 ----------------------------------------
 CART DETAILS

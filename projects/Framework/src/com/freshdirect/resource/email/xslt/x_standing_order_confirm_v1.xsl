@@ -32,8 +32,8 @@ Please check the contents of your order below to make sure you're getting everyt
 As soon as we select and weigh your items, we'll send you an e-mail with the final order total. We'll also include an itemized, printed receipt with your delivery.
 
 <xsl:choose>
-<xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'"> You'll need to bring photo ID to pick up your food. Just present it to the attendant when you arrive. You are under no obligation to tip but have the option of providing a nominal tip if you feel that you've received exceptional service.</xsl:when>
-<xsl:otherwise>You'll know your order has arrived when a uniformed FreshDirect delivery person appears at your door bearing boxes of fresh food. You are under no obligation to tip but have the option of providing a nominal tip if you feel that you've received exceptional service.</xsl:otherwise>
+<xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'"> You'll need to bring photo ID to pick up your food. Just present it to the attendant when you arrive. You are under no obligation to tip but have the option of providing a tip if you feel that you've received exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances.</xsl:when>
+<xsl:otherwise>You'll know your order has arrived when a uniformed FreshDirect delivery person appears at your door bearing boxes of fresh food. You are under no obligation to tip but have the option of providing a tip if you feel that you've received exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances. The delivery fee is not a gratuity for any FreshDirect employee who delivers or is otherwise involved with the delivery of your order and will not be given to such any employee as a gratuity.</xsl:otherwise>
 </xsl:choose>
 
 <xsl:if test="order/deliveryAddress/unattendedDeliveryFlag = 'OPT_IN'">
