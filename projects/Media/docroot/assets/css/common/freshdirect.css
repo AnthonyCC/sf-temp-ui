@@ -421,6 +421,9 @@ section.main .leftnav .menuBox {
   color: #333;
   overflow: hidden;
 }
+section.main .leftnav .menuBoxPadded {
+	padding-top: 30px !important;
+}
 
 section.main .leftnav .menuBox h2 {
   font-size: 12px;

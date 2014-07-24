@@ -55,15 +55,15 @@
 {template .lvCategory autoescape="false"}
 {let $maxItems: 5 /}
   <div class="lv-item">
-    <div class="pic-container">
-      {if $image}
-        <img class="pic" src="{$image}" alt="Category {$name}" />
-      {/if}
-    </div>    
 
-    <a class="lv-link" href="browse.jsp?id={$id}" data-component="categorylink" data-id="{$id}">
-      <h2 class="lv-item-title">{$name}</h2>
-    </a>
+	<a class="lv-link" href="browse.jsp?id={$id}" data-component="categorylink" data-id="{$id}">
+		<div class="pic-container">
+		  {if $image}
+		    <img class="pic" src="{$image}" alt="Category {$name}" />
+		  {/if}
+		</div>
+		<h2 class="lv-item-title">{$name}</h2>
+	</a>
 
     <hr class="lv-sep" />
 
@@ -71,11 +71,12 @@
     {if $popularCategories and length($popularCategories) > 0}
       {foreach $category in $popularCategories}
         {if index($category) < $maxItems}
-        <li class="lv-sub-item">
-          <a class="lv-sub-link" href="browse.jsp?id={$category.id}" 
-             data-component="categorylink" 
-             data-id="{$category.id}">{$category.name}</a>
-        </li>
+        
+	        <li class="lv-sub-item{if index($category) < length($popularCategories)-1} lv-sub-link-padded{/if}">
+	          <a class="lv-sub-link" href="browse.jsp?id={$category.id}" 
+	             data-component="categorylink" 
+	             data-id="{$category.id}">{$category.name}</a>
+	        </li>
         {/if}
       {/foreach}
     {else}

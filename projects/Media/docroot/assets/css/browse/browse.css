@@ -413,7 +413,6 @@
 .large-visual .lv-link:active {
   color:#360;
   cursor:pointer;
-  text-decoration:none;
 }
 
 .large-visual ul,
@@ -489,10 +488,15 @@
   padding-right: 16px;
 }
 
+.large-visual .lv-sub-link-padded {
+	padding-bottom: 18px;
+}
+
 .large-visual .lv-sub-link:hover{
   text-decoration:underline;
 }
 
+/*
 .large-visual .lv-sub-link:after{
   content:">";
   display: inline-block;
@@ -500,6 +504,7 @@
   top: 0;
   right: 0;
 }
+*/
 
 /* -------------------------------- */
 /* LARGE VISUAL END                 */
