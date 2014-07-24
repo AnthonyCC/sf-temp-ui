@@ -98,10 +98,24 @@
 	background-position: 0 -137px;
 }
 
-
-[data-component="carousel"].last [data-component="carousel-next"],
-[data-component="carousel"].first [data-component="carousel-prev"] {
+[data-component="carousel"].last [data-component="carousel-next"]{
 	cursor: default;
+	background-position: -40px -177px;
+}
+
+[data-component="carousel"].first [data-component="carousel-prev"]{
+	cursor: default;
+	background-position: 0px -177px;
+}
+
+[data-component="carousel"].last [data-component="carousel-next"]:hover{
+	cursor: default;
+	background-position: -40px -177px;
+}
+
+[data-component="carousel"].first [data-component="carousel-prev"]:hover{
+	cursor: default;
+	background-position: 0px -177px;
 }
 
 .hide-carousel-incartinfo [data-component="carousel"] ul li .atc-info {
