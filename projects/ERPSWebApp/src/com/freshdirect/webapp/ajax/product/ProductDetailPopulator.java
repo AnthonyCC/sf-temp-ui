@@ -331,29 +331,35 @@ public class ProductDetailPopulator {
 				double nurtitionSortValue = selectedNutrition.getValue();
 				String nurtitionSortUom = selectedNutrition.getUnitOfMeasure();
 				String nutritionSortValueText = (nurtitionSortValue < 0 ? "<1":nf.format(nurtitionSortValue)) + ("%".equals(nurtitionSortUom)?"":" ") + nurtitionSortUom;
-				
+				String nutritionServingSizeValueText = null; //this field is only populated if nutritionSortValueText does not contain serving size info
+
 				double servingSizeValue = 0;
 				if (servingSizeType == erpsNutritionTypeType) { 
 					servingSizeValue = nurtitionSortValue;
 							
-				} else {
-					//add serving size info
+				} else { //add serving size info
 					FDNutrition servingSizeNutrition = fdProduct.getNutritionItemByType(servingSizeType);
 					if (servingSizeNutrition!=null){
 						servingSizeValue = servingSizeNutrition.getValue();
-						nutritionSortValueText += "/" + nf.format(servingSizeValue) + " " + servingSizeNutrition.getUnitOfMeasure();
+						nutritionServingSizeValueText = nf.format(servingSizeValue) + " " + servingSizeNutrition.getUnitOfMeasure();
 					}
 				}
 
 				if (servingSizeValue != 0){
 					FDNutrition servingWeightNutrition = fdProduct.getNutritionItemByType(ErpNutritionType.getType(ErpNutritionType.SERVING_WEIGHT));
 					if (servingWeightNutrition!=null){
-						nutritionSortValueText += " (" + nf.format(servingWeightNutrition.getValue()) + "g)";
+						String servingWeightText = " (" + nf.format(servingWeightNutrition.getValue()) + "g)";
+						if (nutritionServingSizeValueText == null){
+							nutritionSortValueText += servingWeightText;							
+						} else {
+							nutritionServingSizeValueText += servingWeightText;
+						}
 					}
 					
 				}
-				
+
 				data.setNutritionSortValue(nutritionSortValueText);
+				data.setNutritionServingSizeValue(nutritionServingSizeValueText);
 			}
 		}
 		

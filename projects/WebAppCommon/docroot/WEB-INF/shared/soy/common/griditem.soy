@@ -101,6 +101,7 @@
   {param extraClass:$extraClass /}
   {param nutritionSortTitle:$item.nutritionSortTitle /}
   {param nutritionSortValue:$item.nutritionSortValue /}
+  {param nutritionServingSizeValue:$item.nutritionServingSizeValue /}
   {param availabilityMessage}
     {call common.availabilityMessage}{param item:$item /}{/call}
     {if $item.msgCancellation}
@@ -254,6 +255,7 @@
  * @param? couponStatusText
  * @param? nutritionSortTitle
  * @param? nutritionSortValue
+ * @param? nutritionServingSizeValue
  * @param? cmEventSource optional coremetrics event source
  */
 {template .potatoTransactionalGridItem autoescape="false"}
@@ -315,7 +317,7 @@
   {if $nutritionSortValue}
   <div class="nutritionSortInfo">
     {if $nutritionSortTitle}<div class="nutritionSortTitle">{$nutritionSortTitle}</div>{/if}
-    <div class="nutritionSortValue">{$nutritionSortValue}</div>
+    <div class="nutritionSortValue"><strong>{$nutritionSortValue}</strong>{if $nutritionServingSizeValue} / {$nutritionServingSizeValue}{/if}</div>
   </div>
   {/if}
   {call common.potatoTransactionalGridItemControls}

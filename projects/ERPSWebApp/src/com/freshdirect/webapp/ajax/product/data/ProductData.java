@@ -162,6 +162,7 @@ public class ProductData extends BasicProductData implements SkuData {
 	
 	private String nutritionSortTitle;
 	private String nutritionSortValue;
+	private String nutritionServingSizeValue;
 	
 	
 	@Override
@@ -539,5 +540,11 @@ public class ProductData extends BasicProductData implements SkuData {
 	}
 	public void setNutritionSortValue(String nutritionSortValue) {
 		this.nutritionSortValue = nutritionSortValue;
-	}	
+	}
+	public String getNutritionServingSizeValue() {
+		return nutritionServingSizeValue;
+	}
+	public void setNutritionServingSizeValue(String nutritionServingSizeValue) {
+		this.nutritionServingSizeValue = nutritionServingSizeValue;
+	}
 }
