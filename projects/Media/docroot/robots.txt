@@ -7,4 +7,4 @@ Disallow: /your_account/
 Disallow: /login/
 Disallow: /view_cart.jsp
 Disallow: /cart_confirm.jsp
-
+Disallow: /group.jsp
