@@ -839,7 +839,7 @@ public class BrowseDataBuilderFactory {
 			filterLabels.add(new ParentData(filter.getParentId(), filter.getId(), filter.getName()));
 		}
 		
-		browseData.getFilterLabels().setFilterLabels(filterLabels);
+		browseData.getSections().getFilterLabels().setFilterLabels(filterLabels);
 	}
 	
 	public void calculateMaxSectionLevel(SectionDataCointainer data, List<SectionData> sections, int level){

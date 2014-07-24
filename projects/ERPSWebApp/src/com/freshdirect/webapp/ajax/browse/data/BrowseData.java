@@ -12,6 +12,7 @@ public class BrowseData implements Serializable {
 		private int sectionMaxLevel;
 		private boolean allSectionsEmpty;
 		private boolean usePopularCategoriesLayout;
+		private FilterLabelDataCointainer filterLabels = new FilterLabelDataCointainer();
 
 		public List<SectionData> getSections() {
 			return sections;
@@ -36,6 +37,9 @@ public class BrowseData implements Serializable {
 		}
 		public void setUsePopularCategoriesLayout(boolean usePopularCategoriesLayout) {
 			this.usePopularCategoriesLayout = usePopularCategoriesLayout;
+		}
+		public FilterLabelDataCointainer getFilterLabels() {
+			return filterLabels;
 		}
 		
 	}
@@ -197,7 +201,6 @@ public class BrowseData implements Serializable {
 	
 	private SectionDataCointainer sections = new SectionDataCointainer();
 	private BreadCrumbDataCointainer breadCrumbs = new BreadCrumbDataCointainer();
-	private FilterLabelDataCointainer filterLabels = new FilterLabelDataCointainer();
 	private CarouselDataCointainer carousels = new CarouselDataCointainer();
 	private DescripetiveDataCointainer descriptiveContent = new DescripetiveDataCointainer();
 	private MenuDataCointainer menuBoxes = new MenuDataCointainer();
@@ -216,9 +219,6 @@ public class BrowseData implements Serializable {
 	}
 	public BreadCrumbDataCointainer getBreadCrumbs() {
 		return breadCrumbs;
-	}
-	public FilterLabelDataCointainer getFilterLabels() {
-		return filterLabels;
 	}
 	public CarouselDataCointainer getCarousels() {
 		return carousels;
