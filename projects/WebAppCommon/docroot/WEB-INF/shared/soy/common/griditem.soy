@@ -316,7 +316,7 @@
   {if $coupon}<div class="portrait-item-coupon">{call common.ecoupon}{param coupon:$coupon /}{param couponDisplay:$couponDisplay /}{param couponClipped:$couponClipped /}{param couponStatusText:$couponStatusText /}{param detailsFirst:true /}{/call}</div>{/if}
   {if $nutritionSortValue}
   <div class="nutritionSortInfo">
-    {if $nutritionSortTitle}<div class="nutritionSortTitle">{$nutritionSortTitle}</div>{/if}
+    {if $nutritionSortTitle}<div class="nutritionSortTitle"><strong>{$nutritionSortTitle}</strong></div>{/if}
     <div class="nutritionSortValue"><strong>{$nutritionSortValue}</strong>{if $nutritionServingSizeValue} / {$nutritionServingSizeValue}{/if}</div>
   </div>
   {/if}
