@@ -40,6 +40,9 @@
 	<li>
 		<a href="category_photos.jsp">List</a> of category photos
 	</li>
+	<li>
+		<a href="cats_wide.jsp">Report</a> of category displays
+	</li>
 </ul>
 </body>
 </html>
