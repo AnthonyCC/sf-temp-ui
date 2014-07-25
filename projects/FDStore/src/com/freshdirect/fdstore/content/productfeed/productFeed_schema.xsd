@@ -102,6 +102,7 @@ printMethod="javax.xml.bind.DatatypeConverter.printDate"/></jaxb:globalBindings>
 		<xs:sequence>	
 			<xs:element type="xs:string" name="name" maxOccurs="1" minOccurs="1" />
 			<xs:element type="xs:string" name="baseUnit" maxOccurs="1" minOccurs="1" />
+			<xs:element type="xs:string" name="estimatedWeight" maxOccurs="1" minOccurs="0" />
 			<xs:element type="xs:string" name="description" maxOccurs="1" minOccurs="1" />									
 		</xs:sequence>
 	</xs:complexType>

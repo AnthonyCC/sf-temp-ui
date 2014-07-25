@@ -513,7 +513,10 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 			
 			saleUnit.setName(fdSalesUnit.getName());			
 			saleUnit.setBaseUnit(fdSalesUnit.getBaseUnit());
-			saleUnit.setDescription(fdSalesUnit.getDescription());						
+			saleUnit.setDescription(fdSalesUnit.getDescription());
+			if("LB".equalsIgnoreCase(fdSalesUnit.getBaseUnit()) && "EA".equalsIgnoreCase(fdSalesUnit.getName()) ){
+				saleUnit.setEstimatedWeight(""+(fdSalesUnit.getNumerator()/fdSalesUnit.getDenominator()));
+			}
 		}
 	}
 
