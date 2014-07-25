@@ -502,7 +502,7 @@ public class ProductImageTag extends BodyTagSupport {
             		+ "productId: '" + prdId + "', "
             		+ "wineDeptId: '" + WineUtil.getWineAssociateId() + "'"
             		);
-            buf.append("}");
+            buf.append("}, 'QUICKBUY'");
             if (t.isValid()) {
             	buf.append(", ");
             	t.appendQuickBuyParamsTo(buf);

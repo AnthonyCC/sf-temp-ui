@@ -136,7 +136,7 @@ if (variant!=null){%>
 		} else {
 			String deptId = pm.getDepartment().getContentKey().getId();
 %>
-<button class="customize" onclick="FD_QuickBuy.showPanel('<%= deptId %>', '<%= pm.getCategory().getContentKey().getId() %>', '<%= pm.getContentKey().getId() %>', '<%= namespaceName %>')();"></button>
+<button class="customize" onclick="FD_QuickBuy.showPanel('<%= deptId %>', '<%= pm.getCategory().getContentKey().getId() %>', '<%= pm.getContentKey().getId() %>', 'CUSTOMIZE', '<%= namespaceName %>')();"></button>
 <%
 		}
 	} else {

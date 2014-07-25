@@ -36,7 +36,7 @@
 													categoryId: '<%=  tileProduct.getParentNode().getContentName() %>',
 													productId: '<%= tileProduct.getContentName() %>',
 													wineDeptId: '<%= JspMethods.getWineAssociateId() %>'
-											});
+											}, 'QUICKBUY');
 										</script>
 									</div>
 									<div class="productname">

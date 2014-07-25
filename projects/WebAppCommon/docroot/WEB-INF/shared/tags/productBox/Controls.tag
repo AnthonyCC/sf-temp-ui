@@ -34,7 +34,7 @@
 		} else {
 			String deptId = product.getDepartment().getContentKey().getId();
 %>
-<button class="customize" onclick="FD_QuickBuy.showPanel('<%= deptId %>', '<%= product.getCategory().getContentKey().getId() %>', '<%= product.getContentKey().getId() %>', '<%= namespaceName %>')();"></button>
+<button class="customize" onclick="FD_QuickBuy.showPanel('<%= deptId %>', '<%= product.getCategory().getContentKey().getId() %>', '<%= product.getContentKey().getId() %>', 'CUSTOMIZE', '<%= namespaceName %>')();"></button>
 <%
 		}
 	} else {

@@ -23,6 +23,7 @@
 	final String coremetricsPageId = request.getParameter("coremetrics.pageid");
 	final String coremetricsPageContentHierarchy = request.getParameter("coremetrics.pagecontenthierarchy");
 	final String coremetricsVirtualCategory = request.getParameter("coremetrics.virtualcategory");
+	final String certonaPopUpType = request.getParameter("certona.popUpType");
 	
 	String protocol;
 	String host;
@@ -158,6 +159,8 @@ FreshDirect.Coremetrics.populateTrackingObject('<%=coremetricsPageId%>', '<%=cor
 		</script>
 	<% } %>
 </div>
+<script type="text/javascript" src="//edge1.certona.net/cd/4234f569/freshdirect.com/scripts/resonance.js"></script>
+<certona:resonanceJSObject action="create" urlOverride="<%=certonaPopUpType%>"/>
 </body>
 </html>
 </fd:FDShoppingCart>

@@ -187,7 +187,7 @@ if (bigs.size() > 0) {
 								categoryId: '<%=  bigPrd.getParentNode().getContentName() %>',
 								productId: '<%= bigPrd.getContentName() %>',
 								wineDeptId: '<%= JspMethods.getWineAssociateId() %>'
-						});
+						}, 'QUICKBUY');
 					</script>
 					<%-- QUICK BUY SECTION END --%>
 				</div>
@@ -252,7 +252,7 @@ if (rest != null) {
 									categoryId: '<%=  product.getParentNode().getContentName() %>',
 									productId: '<%= product.getContentName() %>',
 									wineDeptId: '<%= JspMethods.getWineAssociateId() %>'
-							});
+							}, 'QUICKBUY');
 						</script>
 						<%-- QUICK BUY SECTION END --%>
 					</div>

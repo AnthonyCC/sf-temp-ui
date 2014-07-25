@@ -13,6 +13,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='fd-certona-tag' prefix='certona' %>
 
 <% 
 	//expanded page dimensions
@@ -311,5 +312,7 @@
 		}
 	%>
 <% } %>
+<script type="text/javascript" src="//edge1.certona.net/cd/4234f569/freshdirect.com/scripts/resonance.js"></script>
+<certona:resonanceJSObject action="create"/>
 </tmpl:put>
 </tmpl:insert>

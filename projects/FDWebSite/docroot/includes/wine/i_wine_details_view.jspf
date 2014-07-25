@@ -107,7 +107,7 @@ final String W_WINE_DETAILS_VIEW_TOTAL = "100%";
 						categoryId: '<%= __c.getContentName() %>',
 						productId: '<%= product.getContentName() %>',
 						wineDeptId: '<%= JspMethods.getWineAssociateId() %>'
-				}, '<%= webId %>');
+				}, 'QUICKBUY', '<%= webId %>');
 			});
 		</script>
 		<%-- QUICK BUY SECTION END --%>

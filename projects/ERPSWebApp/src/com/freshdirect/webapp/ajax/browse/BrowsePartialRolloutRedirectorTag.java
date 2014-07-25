@@ -2,6 +2,7 @@ package com.freshdirect.webapp.ajax.browse;
 
 import java.io.IOException;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
@@ -63,6 +64,9 @@ public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport{
 					redirectUrl = redirectUrl + "&cm_vc=" + ctx.getRequest().getParameter("cm_vc");  
 				}
 	        	LOGGER.debug("Redirecting from " +originalUrl+ " to " +redirectUrl);
+	        	ServletRequest request = ctx.getRequest();
+	        	//To ensure that https requests get redirect to https correctly
+	        	redirectUrl = request.getScheme() + "://" + request.getServerName() + redirectUrl;
 				((HttpServletResponse)ctx.getResponse()).sendRedirect(redirectUrl);
 			}
 		}

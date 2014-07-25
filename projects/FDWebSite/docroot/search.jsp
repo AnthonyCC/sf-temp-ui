@@ -35,6 +35,7 @@
 <%@ taglib uri='logic' prefix='logic'%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri='oscache' prefix='oscache'%>
+<%@ taglib uri='fd-certona-tag' prefix='certona' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <% //expanded page dimension
 final int W_INDEX_TOTAL = 970;
@@ -44,6 +45,8 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 
 <fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" id="user" />
 <fd:PendingOrderChecker/>
+<certona:resonanceJSObject action="init"/>
+
 <%  
 
 	// copied from the old search.jsp:
@@ -85,6 +88,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 %>
 
 <fd:SimpleSearch id="search" nav="<%= nav %>"/>
+<% request.setAttribute("searchInputForCertona", search); %>
 <bean:define id="activeTabVal" value='<%= (!search.getProducts().isEmpty() && request.getParameter("recipes")==null) || (search.getProducts().isEmpty() && search.getRecipes().isEmpty()) ? "products" : "recipes" %>' />
 
 <tmpl:insert template='/common/template/search_optimized.jsp'>

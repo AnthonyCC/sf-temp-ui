@@ -120,6 +120,8 @@ public class CmsFilteringFlow {
 			}
 			
 			browseData.getDescriptiveContent().setUrl(URLEncoder.encode(nav.assembleQueryString()));
+			browseData.getDescriptiveContent().setNavDepth(browseDataContext.getNavigationModel().getNavDepth().name());
+			browseData.getDescriptiveContent().setContentId(nav.getId());
 			browseData.getSortOptions().setCurrentOrderAsc(nav.isOrderAscending());		
 			
 			// -- CALCULATE SECTION MAX LEVEL --

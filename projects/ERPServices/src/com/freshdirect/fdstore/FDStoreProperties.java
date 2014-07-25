@@ -652,7 +652,7 @@ public class FDStoreProperties {
 	
 	//New ATP Strategy to handle flip
 	private static final String PROP_STANDING_ORDER_IGNOREATPFAILURE = "fdstore.standingorder.ignoreatpfailure";
-	
+
 	//template redesign
 	private static final String PROP_MAX_XSELL_PRODS = "fdstore.xsell.max";
 	private static final String PROP_BROWSE_PAGESIZE = "fdstore.browse.pagesize";
@@ -661,6 +661,8 @@ public class FDStoreProperties {
 	//Ignore Foodily P3P Policy(similar to facebook and google) 
 	private static final String PROP_3RDPARTY_P3PENABLED = "fdstore.3rdparty.p3penabled";
 
+	private static final String PROP_CERTONA_SERVICE = "fdstore.certona.service";
+	private static final String PROP_CERTONA_APP_ID = "fdstore.certona.app_id";
 	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1295,6 +1297,9 @@ public class FDStoreProperties {
         //optimize
         defaults.put(PROP_OPT_SOCIAL_FOOTER_STATIC, "true");
         defaults.put(PROP_STANDING_ORDER_IGNOREATPFAILURE, "true");
+        
+        defaults.put(PROP_CERTONA_SERVICE, "http://www.res-x.com/ws/r2/resonance.aspx");
+        defaults.put(PROP_CERTONA_APP_ID, "FreshDirect01");
         
         //template redesign
         defaults.put(PROP_MAX_XSELL_PRODS, "3");
@@ -3278,6 +3283,14 @@ public class FDStoreProperties {
     	return Boolean.valueOf(get(PROP_STANDING_ORDER_IGNOREATPFAILURE)).booleanValue();
     }
     
+    public static String getCertonaService() {
+    	return get(PROP_CERTONA_SERVICE);
+    }
+
+    public static String getCertonaAppId() {
+    	return get(PROP_CERTONA_APP_ID);
+    }
+
     //template redesign
     public static int getMaxXsellProds() {
         return Integer.parseInt(get(PROP_MAX_XSELL_PRODS));
@@ -3294,6 +3307,5 @@ public class FDStoreProperties {
     public static boolean isP3PPolicyEnabled() {
     	return Boolean.valueOf(get(PROP_3RDPARTY_P3PENABLED)).booleanValue();
     }
-    
 }
 

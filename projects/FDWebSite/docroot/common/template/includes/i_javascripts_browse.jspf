@@ -5,6 +5,7 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+<%@ taglib uri='fd-certona-tag' prefix='certona' %>
 <%-- this file will be included in the <head> tag --%>
 	<%--
 		using the same /directory/version/ system as scriptaculous for jquery
@@ -18,6 +19,8 @@
   <!--[if lt IE 9]>
     <fd:javascript src="/assets/javascript/html5.js"/>
   <![endif]-->
+	
+	<certona:resonanceJSObject action="init"/>
 	
 	<script type="text/javascript" language="javascript">
 

@@ -103,6 +103,7 @@ public class BrowseData implements Serializable {
 	}	
 	
 	public static class DescripetiveDataCointainer implements Serializable, DescriptiveDataI {
+		
 		private static final long serialVersionUID = 4991670021932771599L;
 		private String url;
 		private String titleBar;
@@ -111,7 +112,9 @@ public class BrowseData implements Serializable {
 		private String middleMedia;
 		private String pageTitle;
 		private String oasSitePage;
-
+		private String navDepth;
+		private String contentId; //workaround for ajax response listening...
+		
 		public String getMedia() {
 			return media;
 		}
@@ -154,7 +157,18 @@ public class BrowseData implements Serializable {
 		public void setOasSitePage(String oasSitePage) {
 			this.oasSitePage = oasSitePage;
 		}
-		
+		public String getNavDepth() {
+			return navDepth;
+		}
+		public void setNavDepth(String navDepth) {
+			this.navDepth = navDepth;
+		}
+		public String getContentId() {
+			return contentId;
+		}
+		public void setContentId(String contentId) {
+			this.contentId = contentId;
+		}
 	}
 
 	public static class MenuDataCointainer implements Serializable {

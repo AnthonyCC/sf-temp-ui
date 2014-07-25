@@ -32,8 +32,12 @@ var FreshDirect = FreshDirect || {};
 		render:{
 			value:function(data) {
 				data.itemType = fd.quickshop.itemType || 'general';
+				certona.itemid = '';
+				$.each(data.data, function(i) {
+					certona.itemid = certona.itemid.concat(data.data[i].productId).concat(';');					
+				});
+				certona.itemid = certona.itemid.substring(0, certona.itemid.length - 1).toUpperCase();
 				data.data=data.data.map(setAdditionalInfos);
-
 				$('.qs-content').attr('data-items', data.data.length);
 
 				WIDGET.render.call(this,data);

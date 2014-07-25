@@ -59,6 +59,24 @@ var FreshDirect = FreshDirect || {};
     }
   });
 
+  var certonaResonaceTagPopulate = Object.create(fd.common.signalTarget,{
+    signal:{
+      value:'descriptiveContent'
+    },
+    callback:{
+      value:function(data){
+        if (data) {
+          window.certona = window.certona || {};
+          window.certona.category = data.contentId;
+          window.certona.pagetype = data.navDepth;
+          delete window.certona.department;
+          delete window.certona.superdepartment;
+        }
+      } 
+    }
+  });
+  
+  certonaResonaceTagPopulate.listen();
   sections.listen();
   superSections.listen();
 
