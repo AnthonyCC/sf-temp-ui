@@ -355,8 +355,9 @@ ul.globalnavPopups li {
 #globalnavpopup {
   position: absolute;
   z-index:1001;
-  width:968px;
+  width:970px;
   overflow:hidden;
+  margin: 0 -1px;
 }
 
 .globalnav-popup-content .department{
