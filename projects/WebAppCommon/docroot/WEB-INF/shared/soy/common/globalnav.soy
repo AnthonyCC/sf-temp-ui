@@ -117,7 +117,7 @@
                       </li>
                     {/foreach}
                     {if isLast($column) and isLast($elem)}
-                      <li><a href="browse.jsp?id={$department.id}">VIEW ALL</a></li> 
+                      <li><a href="/browse.jsp?id={$department.id}">VIEW ALL</a></li> 
                     {/if}
                   </ul>
                 {/foreach}
@@ -153,7 +153,7 @@
 */
 {template .categoryLink autoescape="false"}
   {if $available}
-    <a href="browse.jsp?id={$id}">
+    <a href="/browse.jsp?id={$id}">
       {$globalNavShortName}
       {if $globalNavPostNameImage}
         <img src="{$globalNavPostNameImage}" alt="category icon" class="smallicon" />
