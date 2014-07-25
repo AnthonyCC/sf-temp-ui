@@ -36,6 +36,7 @@
  * @param? usePopularCategoriesLayout
  * @param level deepness level
  * @param lastLevel max deepness
+ * @param? filterLabels list of content filter labels
  */
 {template .section autoescape="false"}
 {let $isSuperDeptPage : $section.departments and length($section.departments) > 0 /}
@@ -69,10 +70,17 @@
     {/if}
 
   {else}
-  <section class="{if $section.sections and length($section.sections) > 0}hasSubSections{else}noSubSections{/if}">
+  <section class="{if not($section.sections and length($section.sections) > 0) and $level > 1}noSubSections{/if}">
     {if $section.headerText}
-        <h2 {if $level == $lastLevel}class="last"{/if}>{$section.headerText}</h2>
+        <h2 class="{if $level == $lastLevel}last{elseif $level == 1}first{/if}">{$section.headerText}</h2>
     {/if}
+    <div class="browse-filtertags">
+    {if $filterLabels and $level == 1}
+        {call browse.filterTags}
+          {param filterLabels:$filterLabels /}
+        {/call}
+    {/if}
+    </div>
     {if $section.headerImage}<img src="{$section.headerImage}">{/if}
     {if $section.media}<div class="media">{$section.media}</div>{/if}
     

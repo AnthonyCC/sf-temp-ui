@@ -81,10 +81,6 @@
       <soy:render template="browse.middleMedia" data="${browsePotato.descriptiveContent}" />
     </div>
 
-    <div class="browse-filtertags">
-      <soy:render template="browse.filterTags" data="${browsePotato.filterLabels}" />
-    </div>
-
     <div class="browse-superdepartment">
       <soy:render template="browse.superDepartment" data="${browsePotato.sections}" />
     </div>

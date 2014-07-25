@@ -4,6 +4,7 @@
  * @param? sectionMaxLevel The max depth of sections starting by 1
  * @param? allSectionsEmpty all sections are empty
  * @param? usePopularCategoriesLayout
+ * @param? filterLabels
  */
 {template .content autoescape="false"}
 
@@ -20,6 +21,7 @@
         {param lastLevel:$sectionMaxLevel /}
         {param level:1 /}
         {param usePopularCategoriesLayout:$usePopularCategoriesLayout /}
+        {param filterLabels:$filterLabels.filterLabels /}
       {/call}
     {/foreach}
   {/if}
