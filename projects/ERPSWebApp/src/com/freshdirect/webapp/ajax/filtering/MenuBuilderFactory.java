@@ -382,7 +382,10 @@ public class MenuBuilderFactory {
 					domain.setName(cat.getFullName());
 					domain.setId(cat.getContentName());
 					domain.setBoxType(MenuBoxType.SUB_CATEGORY);
-					if(nav.isPdp() || navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY)!=null){
+					if(nav.isPdp() || (navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY)!=null &&
+							   ((CategoryModel)navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY)).getSubcategories()!=null &&
+							   ((CategoryModel)navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY)).getSubcategories().size()>0)){
+						
 						domain.setDisplayType(MenuBoxDisplayType.POPUP);
 						domain.setSelectionType(MenuBoxSelectionType.LINK);
 					}else{
@@ -735,7 +738,10 @@ public class MenuBuilderFactory {
 				if (box.getBoxType() == MenuBoxType.FILTER && box.getSelectionType() == MenuBoxSelectionType.MULTI) { // MULTI SELECT FILTER GROUP
 					
 					// walk through on menu items in the box
-					for (MenuItemData item : box.getItems()) {
+					Iterator<MenuItemData> it = box.getItems().iterator();
+					while (it.hasNext()) {
+						
+						MenuItemData item = it.next();
 						
 						if(item.getId()==null || "all".equals(item.getId())){ // marker items
 							continue;
@@ -747,7 +753,11 @@ public class MenuBuilderFactory {
 						itemCount = ProductItemFilterUtil.countItemsForFilter(items, allFilters.get(ProductItemFilterUtil.createCompositeId(box.getId(), item.getId())));
 
 						if (itemCount == 0 && !item.isSelected()) {
-							item.setActive(false);
+							if(box.isBrandFilter()){
+								it.remove();
+							}else{
+								item.setActive(false);								
+							}
 						}
 					}
 
@@ -760,7 +770,10 @@ public class MenuBuilderFactory {
 					List<FilteringProductItem> preFilteredItems = ProductItemFilterUtil.getFilteredProducts(!clp ? browseData.getUnfilteredItems() : items, currentFiltersBase);
 					
 					// walk through on menu items in the box
-					for(MenuItemData item : box.getItems()){
+					Iterator<MenuItemData> it = box.getItems().iterator();
+					while (it.hasNext()) {
+						
+						MenuItemData item = it.next();
 						
 						if(item.getId()==null || "all".equals(item.getId())){ // marker items
 							continue;
@@ -777,7 +790,11 @@ public class MenuBuilderFactory {
 						 itemCount = ProductItemFilterUtil.getFilteredProducts(preFilteredItems, currentFilters).size();
 						 
 						 if (itemCount == 0 && !item.isSelected()) {
-								item.setActive(false);
+							 if(box.isBrandFilter()){
+									it.remove();
+								}else{
+									item.setActive(false);								
+								}
 						}
 					}
 
