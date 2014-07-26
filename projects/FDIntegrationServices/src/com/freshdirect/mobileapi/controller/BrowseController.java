@@ -120,25 +120,21 @@ public class BrowseController extends BaseController {
 	        			}
 	        		}
 	        	}
+	        	if(currentFolder instanceof CategoryModel && ((CategoryModel)currentFolder).isShowAllByDefault()) { // To Support new left nav flow[APPDEV-3251 : mobile API to utilize showAllByDefault]
+	            	action = ACTION_GET_CATEGORYCONTENT_PRODUCTONLY;
+	            }
+	        	
 	        	List contents = new ArrayList();
-	        	/* if(requestMessage.getCategory() != null && requestMessage.getCategory().startsWith("gro_")) {
-	        		request.setAttribute("groceryVirtual", "All");
-	        	}
-	        	request.setAttribute("sortBy", "name");
-	            request.setAttribute("sortBy", requestMessage.getSortBy());
-	            request.setAttribute("nutritionName", requestMessage.getNutritionName()); */
-	            
+	        		            
 	            LayoutManagerWrapper layoutManagerTagWrapper = new LayoutManagerWrapper(user);   
 	            Settings layoutManagerSetting = layoutManagerTagWrapper.getLayoutManagerSettings(currentFolder);
-
+	                        
 	            //We have layout manager
 	            if (layoutManagerSetting != null) {
 	            	if(layoutManagerSetting.getGrabberDepth() < 0) { // Overridding the hardcoded values done for new 4mm and wine layout
 	            		layoutManagerSetting.setGrabberDepth(0);
 	            	}
-	            	/*if(contentId.equals("fro_fd")) { // Hardcoded in website this code was just a test for it
-	            		layoutManagerSetting.setIgnoreShowChildren(true);
-	            	}*/
+	            		            	
 	            	layoutManagerSetting.setReturnSecondaryFolders(true);//Hardcoded for mobile api
 	                ItemGrabberTagWrapper itemGrabberTagWrapper = new ItemGrabberTagWrapper(user.getFDSessionUser());
 	                contents = itemGrabberTagWrapper.getProducts(layoutManagerSetting, currentFolder);

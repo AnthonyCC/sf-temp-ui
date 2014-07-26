@@ -141,21 +141,25 @@ public class ProductController extends BaseController {
         com.freshdirect.mobileapi.model.Product product = getProduct(request, response);
 
         ProductConfiguration productConf = parseRequestObject(request, response, ProductConfiguration.class);
-        Sku sku = product.getSkyByCode(productConf.getProduct().getSku().getCode());
-        if(productConf.getSalesUnit() != null) {
-            
-            SalesUnit su = product.getSalesUnitByName(productConf.getSalesUnit().getName());
-            Price price = new Price();
-
-            try {
-                price.setPrice(product.getPrice(sku, su, productConf.getQuantity(), productConf.getOptions()));
-                if (product.isDisplayEstimatedQuantity()) {
-                    price.setEstimatedQuantity(product.getEstimatedQuantity(sku, su, productConf.getQuantity()));
-                }
-            } catch (PricingException e) {
-                LOGGER.error("PricingException encountered on " + productConf.toString(), e);
-            }
-            setResponseMessage(model, price, user);
+        if(productConf != null && productConf.getProduct() != null && productConf.getProduct().getSku() != null) {
+	        Sku sku = product.getSkyByCode(productConf.getProduct().getSku().getCode());
+	        if(productConf.getSalesUnit() != null) {
+	            
+	            SalesUnit su = product.getSalesUnitByName(productConf.getSalesUnit().getName());
+	            Price price = new Price();
+	
+	            try {
+	                price.setPrice(product.getPrice(sku, su, productConf.getQuantity(), productConf.getOptions()));
+	                if (product.isDisplayEstimatedQuantity()) {
+	                    price.setEstimatedQuantity(product.getEstimatedQuantity(sku, su, productConf.getQuantity()));
+	                }
+	            } catch (PricingException e) {
+	                LOGGER.error("PricingException encountered on " + productConf.toString(), e);
+	            }
+	            setResponseMessage(model, price, user);
+	        }
+        } else {
+        	LOGGER.debug("getPrice_failed:" + (productConf != null ? productConf.toString() : "NONE"));
         }
         return model;
 
