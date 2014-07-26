@@ -178,7 +178,8 @@ public class BrowseController extends BaseController {
 	                					|| (((CategoryModel)content).getRedirectUrl() != null 
 	                								&& ((CategoryModel)content).getRedirectUrl().trim().length() > 0))	                			
 	                				&& !((CategoryModel)content).isHideIphone()
-	                				&& !categoryIDs.contains(((CategoryModel)content).getParentId())) {	// Show only one level of category
+	                				&& !categoryIDs.contains(((CategoryModel)content).getParentId()) 
+	                				&& !isEmptyProductGrabberCategory((CategoryModel)content)) {	// Show only one level of category
 	                		categories.add(Category.wrap((CategoryModel)content));
 	                		categoryIDs.add(((CategoryModel)content).getContentKey().getId());
 	                	}
@@ -209,6 +210,16 @@ public class BrowseController extends BaseController {
         
         setResponseMessage(model, result, user);
         return model;
+    }
+    
+    private boolean isEmptyProductGrabberCategory(CategoryModel category) { //APPDEV-3659 : Treat empty Product Grabber categories the same on mobile and site
+    	if(category.getProductGrabbers() != null && category.getProductGrabbers().size() > 0 ) {
+    		List<ProductModel> tmpProducts = category.getProducts();
+    		if(tmpProducts == null || tmpProducts.size() == 0) {
+    			return true;
+    		}
+    	}
+    	return false;
     }
     
     private List<Category> getCategories(List<CategoryModel> storeCategories) {
