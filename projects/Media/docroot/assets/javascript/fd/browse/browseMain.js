@@ -18,6 +18,11 @@ var FreshDirect = FreshDirect || {};
     };
   }
 
+  function pauseAllTransactionalPopupsTillContentChange(){
+    fd.common.transactionalPopup && fd.common.transactionalPopup.close();
+    $('.browseContent').addClass('no-transactional');
+  }
+
   function update(data) {
 
     var jsondata = JSON.stringify(data || {
@@ -25,6 +30,8 @@ var FreshDirect = FreshDirect || {};
           sortId:'freq',
           searchTerm:null
         });
+
+    pauseAllTransactionalPopupsTillContentChange();
 
     DISPATCHER.signal('server',{
       url: '/api/filter',

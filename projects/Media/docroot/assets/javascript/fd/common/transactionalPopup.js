@@ -302,6 +302,13 @@ var FreshDirect = FreshDirect || {};
   };
 
   $(document).on('mouseover','.transactional [data-transactional-trigger] *',function(event){
+   
+    // block popup open if we force it in browseMain 
+    if($('.browseContent').hasClass('no-transactional')){
+      event.stopPropagation();
+      return false;
+    }
+
     var element = $(event.currentTarget).closest('[data-component="product"]');
     if (!element.hasClass('unavailable') && element.closest('.stepping[data-component="carousel"]').size() === 0) {
       transactionalPopup.open({
