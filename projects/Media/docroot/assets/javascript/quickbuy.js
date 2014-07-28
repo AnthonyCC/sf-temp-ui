@@ -112,7 +112,7 @@ FD_QuickBuy.showPanel = function(deptId, catId, prdId, certonaPopUpType, iatcNam
 			close: true, 
 			visible: false,
 			modal: true,
-			zIndex: 11000,
+			zIndex: 9900,
 			draggable: false}
 		);
 		var wineDeptId = (FD_QuickBuy._wineDeptId==null) ? '' : FD_QuickBuy._wineDeptId;
