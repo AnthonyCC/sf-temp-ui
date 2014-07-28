@@ -104,7 +104,7 @@
       <img class="heroimg" src="{$department.heroImage}" alt="Department background" />
     {/if}
     {if $hasCategories or $hasPrefCategories}
-      <div class="department">
+      <div class="department {if not $department.headerTextUsed}noheadertext{/if}">
         {if $hasCategories}
             {foreach $column in $department.dropDownCategories}
               <div class="dropdown-column">
@@ -126,7 +126,7 @@
         {/if}
         {if $hasPrefCategories}
           <div class="dropdown-column">
-            <h3 class="column-heading">Preference</h3>
+            <h3 class="column-heading">{$department.preferenceCategoriesNavHeader}</h3>
             <ul>
               {foreach $category in $department.preferenceCategories}
                 <li>

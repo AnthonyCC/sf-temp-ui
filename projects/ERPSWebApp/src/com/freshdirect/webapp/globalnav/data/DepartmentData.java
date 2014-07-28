@@ -17,10 +17,11 @@ public class DepartmentData extends BasicData {
 	private List<CategoryData> popularCategories = new ArrayList<CategoryData>();
     private String heroImage;
     private String seasonalMedia;
-    private String globalNavName;
     private String altText;
     private String deptPhoto;
 	private List<List<CategoryData>> popularCategoryColumns = new ArrayList<List<CategoryData>>();
+	private String preferenceCategoriesNavHeader;
+	private boolean headerTextUsed;
 	
 	public List<CategoryData> getCategories() {
 		return categories;
@@ -56,14 +57,6 @@ public class DepartmentData extends BasicData {
 
 	public void addPreferenceCategoryData(CategoryData categoryData) {
 		this.preferenceCategories.add(categoryData);
-	}
-
-	public String getGlobalNavName() {
-		return globalNavName;
-	}
-
-	public void setGlobalNavName(String globalNavName) {
-		this.globalNavName = globalNavName;
 	}
 
 	public void setDropDownCategories(ArrayList<List<Map<String, Object>>> dropDownCategories) {
@@ -123,4 +116,19 @@ public class DepartmentData extends BasicData {
 		this.deptPhoto = deptPhoto;
 	}
 
+	public String getPreferenceCategoriesNavHeader() {
+		return preferenceCategoriesNavHeader;
+	}
+
+	public void setPreferenceCategoriesNavHeader(String preferenceCategoriesNavHeader) {
+		this.preferenceCategoriesNavHeader = preferenceCategoriesNavHeader;
+	}
+
+	public boolean isHeaderTextUsed() {
+		return headerTextUsed;
+	}
+
+	public void setHeaderTextUsed(boolean headerTextUsed) {
+		this.headerTextUsed = headerTextUsed;
+	}
 }

@@ -187,12 +187,20 @@
 						</fields>
 					</CmsSection>
 					<CmsSection>
+						<title>NAVIGATION SETUP</title>
+						<fields>
+							<CmsField><attribute>regularCategoriesNavHeader</attribute></CmsField>
+							<CmsField><attribute>preferenceCategoriesNavHeader</attribute></CmsField>
+							<CmsField><attribute>regularCategoriesLeftNavBoxHeader</attribute></CmsField>
+							<CmsField><attribute>preferenceCategoriesLeftNavBoxHeader</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
 						<title>GLOBAL NAV</title>
 						<fields>
 							<CmsField><attribute>globalNavFeaturedCategory</attribute></CmsField>
 							<CmsField><attribute>globalNavFeaturedPreferenceCategory</attribute></CmsField>
 							<CmsField><attribute>globalNavShopAllText</attribute></CmsField>
-							<CmsField><attribute>globalNavName</attribute></CmsField>
 							<CmsField><attribute>heroImage</attribute></CmsField>
 							<CmsField><attribute>seasonalMedia</attribute></CmsField>
 						</fields>

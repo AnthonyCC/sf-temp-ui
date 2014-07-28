@@ -39,20 +39,12 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
 public class MenuBuilderFactory {
 	
-	public static final MenuItemData SHOP_BY_TYPE_HEADER;
-	public static final MenuItemData SHOP_BY_PREFERENCE_HEADER;
 	public static final MenuItemData MARKER;
 	public static final MenuItemData ALL_PRODUCTS_ITEM;
 	public static final MenuItemData ALL_DEPARTMENTS_ITEM;
 	public static final MenuItemData ALL_CATEGORIES_ITEM;
 	public static final MenuItemData ALL_SUBCATEGORIES_ITEM;
 	static{
-		
-		SHOP_BY_TYPE_HEADER = new MenuItemData();
-		SHOP_BY_TYPE_HEADER.setName("Shop By Type");
-		
-		SHOP_BY_PREFERENCE_HEADER = new MenuItemData();
-		SHOP_BY_PREFERENCE_HEADER.setName("Shop By Preference");
 		
 		MARKER = new MenuItemData();
 		MARKER.setName("marker");
@@ -216,8 +208,6 @@ public class MenuBuilderFactory {
 			
 			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
 			
-			String superDeptId = navModel.getSelectedContentNodeModel().getContentName();
-			
 			// create superdepartment box
 
 			if (navModel.isSuperDepartment()) {
@@ -235,7 +225,8 @@ public class MenuBuilderFactory {
 			
 			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
 			
-			String deptId = navModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT).getContentName();
+			DepartmentModel dept = (DepartmentModel) navModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT); 
+			String deptId = dept.getContentName();
 			
 			// create superdepartment box
 			if (navModel.getSuperDepartmentModel() != null) {
@@ -249,7 +240,7 @@ public class MenuBuilderFactory {
 			if (!navModel.getCategorySections().isEmpty() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, navModel.getUser())) {
 				
 				MenuBoxData domain = new MenuBoxData();
-				domain.setName("SHOP FOR...");
+				domain.setName(dept.getRegularCategoriesLeftNavBoxHeader());
 				domain.setId(deptId + "_regular");
 				domain.setBoxType(MenuBoxType.CATEGORY);
 				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
@@ -270,14 +261,14 @@ public class MenuBuilderFactory {
 				// regular categories
 
 				MenuBoxData domain = new MenuBoxData();
-				domain.setName("SHOP FOR...");
+				domain.setName(dept.getRegularCategoriesLeftNavBoxHeader());
 				domain.setId(deptId + "_regular");
 				domain.setBoxType(MenuBoxType.CATEGORY);
 				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
 				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
 				
 				List<MenuItemData> items = new ArrayList<MenuItemData>();
-				items.add(new MenuItemData("Shop by Type of " + navModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT).getFullName()));
+				items.add(new MenuItemData(dept.getRegularCategoriesNavHeader()));
 				
 				domain.setItems(createCatMenuItems(navModel.getRegularCategories(), items, navModel.getUser()));
 
@@ -289,14 +280,14 @@ public class MenuBuilderFactory {
 				// preference categories
 
 				MenuBoxData domain = new MenuBoxData();
-				domain.setName("OR...");
+				domain.setName(dept.getPreferenceCategoriesLeftNavBoxHeader());
 				domain.setId(deptId + "_preference");
 				domain.setBoxType(MenuBoxType.CATEGORY);
 				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
 				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
 				
 				List<MenuItemData> items = new ArrayList<MenuItemData>();
-				items.add(new MenuItemData("Shop by Preference"));
+				items.add(new MenuItemData(dept.getPreferenceCategoriesNavHeader()));
 				
 				domain.setItems(createCatMenuItems(navModel.getPreferenceCategories(), items, navModel.getUser()));
 				
@@ -314,7 +305,8 @@ public class MenuBuilderFactory {
 			
 			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
 			
-			String deptId = navModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT).getContentName();
+			DepartmentModel dept = (DepartmentModel) navModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT); 
+			String deptId = dept.getContentName();
 			
 			// create superdepartment box
 			if (navModel.getSuperDepartmentModel() != null) {
@@ -328,7 +320,7 @@ public class MenuBuilderFactory {
 			if(!navModel.getRegularCategories().isEmpty() || !navModel.getPreferenceCategories().isEmpty()){
 				
 				MenuBoxData domain = new MenuBoxData();
-				domain.setName("SHOP FOR...");
+				domain.setName(dept.getRegularCategoriesLeftNavBoxHeader());
 				domain.setId(deptId);
 				domain.setBoxType(MenuBoxType.CATEGORY);
 				domain.setDisplayType(MenuBoxDisplayType.POPUP);
@@ -349,7 +341,7 @@ public class MenuBuilderFactory {
 				} else if(!navModel.getRegularCategories().isEmpty()){
 					
 					//Shop By Type header
-					menuItems.add(SHOP_BY_TYPE_HEADER);
+					menuItems.add(new MenuItemData(dept.getRegularCategoriesNavHeader()));
 					
 					//regular categories
 					createCatMenuItems(navModel.getRegularCategories(), menuItems, navModel.getUser());
@@ -358,7 +350,7 @@ public class MenuBuilderFactory {
 				if(!navModel.getPreferenceCategories().isEmpty()){
 					
 					//Shop By Preference header
-					menuItems.add(SHOP_BY_PREFERENCE_HEADER);
+					menuItems.add(new MenuItemData(dept.getPreferenceCategoriesNavHeader()));
 					
 					//preference categories				
 					createCatMenuItems(navModel.getPreferenceCategories(), menuItems, navModel.getUser());

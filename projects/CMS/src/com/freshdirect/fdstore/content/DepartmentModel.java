@@ -64,10 +64,6 @@ public class DepartmentModel extends ProductContainer {
 	    return getAttribute("HIDE_IN_QUICKSHOP", false);
 	}
 	
-	public String getGlobalNavName() {
-	    return getAttribute("globalNavName", "");
-	}
-	
    /**
      * this is a Department level attribute, ASSOC_EDITORIAL
      */
@@ -236,4 +232,21 @@ public class DepartmentModel extends ProductContainer {
     public EnumBrowseCarouselRatio getCarouselRatio(String defaultValue) {
 		return EnumBrowseCarouselRatio.valueOf(getAttribute("carouselRatio", defaultValue));
 	}
+
+	public String getRegularCategoriesNavHeader() {
+		return getAttribute("regularCategoriesNavHeader", "");
+	}
+
+	public String getPreferenceCategoriesNavHeader() {
+		return getAttribute("preferenceCategoriesNavHeader", "");
+	}
+
+	public String getRegularCategoriesLeftNavBoxHeader() {
+		return getAttribute("regularCategoriesLeftNavBoxHeader", "");
+	}
+
+	public String getPreferenceCategoriesLeftNavBoxHeader() {
+		return getAttribute("preferenceCategoriesLeftNavBoxHeader", "");
+	}
+
 }

@@ -8,6 +8,7 @@ import com.freshdirect.webapp.ajax.browse.data.BasicData;
 
 public class GlobalNavData extends BasicData {
 
+	private static final long serialVersionUID = -3912423911696491345L;
 	private List<BasicData> abstractDepartments = new ArrayList<BasicData>();
 	private String media;
 	

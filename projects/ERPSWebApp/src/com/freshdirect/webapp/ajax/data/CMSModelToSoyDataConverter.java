@@ -54,7 +54,7 @@ public class CMSModelToSoyDataConverter {
 		for (CategorySectionModel globalNavCategorySectionModel : categorySectionList) {
 		
 			Map<String, Object> categorySection = new HashMap<String, Object>();
-			categorySection.put("headline", globalNavCategorySectionModel.getHeadline());
+			addHeadLineToCategorySection(globalNavCategorySectionModel.getHeadline(), categorySection, departmentData);
 			
 			List<CategoryData> sectionCategories = new ArrayList<CategoryData>();
 			for (CategoryModel categoryModel : globalNavCategorySectionModel.getSelectedCategories()) {
@@ -126,9 +126,9 @@ public class CMSModelToSoyDataConverter {
 				
 				Map<String, Object> categorySection = new HashMap<String, Object>();
 				if (departmentData.getDropDownCategories().size() == 0) {
-					categorySection.put("headline", departmentModel.getGlobalNavName());
+					addHeadLineToCategorySection(departmentModel.getRegularCategoriesNavHeader(), categorySection, departmentData);
 				} else {
-					categorySection.put("headline", "");
+					addHeadLineToCategorySection("", categorySection, departmentData);
 				}
 				categorySection.put("categories", categoryColumn);
 				
@@ -176,10 +176,17 @@ public class CMSModelToSoyDataConverter {
 		departmentData.setDeptPhoto(deptPhoto == null ? "" : deptPhoto.getPath());
 //		departmentData.setSeasonalMedia(seasonalMedia == null ? "" : MediaUtils.renderHtmlToString(seasonalMedia, user));
 		departmentData.setSeasonalMedia((seasonalMedia== null || seasonalMedia.getPath() == null || "".equals(seasonalMedia.getPath())) ? "" : MediaUtils.renderHtmlToString(seasonalMedia, user));
-		departmentData.setGlobalNavName(departmentModel.getGlobalNavName());
-
+		departmentData.setPreferenceCategoriesNavHeader(departmentModel.getPreferenceCategoriesNavHeader());
+		
 		return departmentData;
 		
+	}
+	
+	private static void addHeadLineToCategorySection(String headLine, Map<String, Object> categorySection, DepartmentData departmentData){
+		if (headLine !=null && !"".equals(headLine)){
+			departmentData.setHeaderTextUsed(true);
+		}
+		categorySection.put("headline", headLine);
 	}
 	
 	private static Integer[][] generateRanges(int numberOfCategories) {

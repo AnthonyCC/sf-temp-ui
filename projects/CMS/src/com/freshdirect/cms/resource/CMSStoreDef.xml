@@ -304,7 +304,10 @@
 				<EnumValue value="BOTTOM" label="BOTTOM"/>
 			</EnumDef>
 			<AttributeDef type="S" name="globalNavShopAllText" label="Global Nav Shop All Text"/>
-			<AttributeDef type="S" name="globalNavName" label="Global Nav Name"/>
+			<AttributeDef type="S" name="regularCategoriesNavHeader" label="Regular Categories Nav Header"/>
+			<AttributeDef type="S" name="preferenceCategoriesNavHeader" label="Preference Categories Nav Header"/>
+			<AttributeDef type="S" name="regularCategoriesLeftNavBoxHeader" label="Regular Categories Left Nav Box Header"/>
+			<AttributeDef type="S" name="preferenceCategoriesLeftNavBoxHeader" label="Preference Categories Left Nav Box Header"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="categories" navigable="true" cardinality="Many">

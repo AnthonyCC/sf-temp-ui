@@ -30,7 +30,6 @@ import com.freshdirect.fdstore.content.SortOptionModel;
 import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.content.browse.sorter.NutritionComparator;
 import com.freshdirect.fdstore.content.browse.sorter.ProductItemSorterFactory;
-import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.event.EnumEventSource;
@@ -197,10 +196,10 @@ public class BrowseDataBuilderFactory {
 				}
 				
 			} else {
-				sections.add(createSection("Shop By Type of " + navigationModel.getSelectedContentNodeModel().getFullName(), regularSubCategories));
+				sections.add(createSection(department.getRegularCategoriesNavHeader(), regularSubCategories));
 			}
 			if(preferenceSubCategories.size()>0){
-				sections.add(createSection("Shop By Preference", preferenceSubCategories));				
+				sections.add(createSection(department.getPreferenceCategoriesNavHeader(), preferenceSubCategories));				
 			}
 
 			BrowseDataContext data = new BrowseDataContext();
