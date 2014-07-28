@@ -291,12 +291,8 @@
   width: 523px;
 }
 
-.container.browse .carousels.top table td.c2 > div {
-  width: 251px;
-}
-
-.container.browse .carousels.bottom table td.c1 > div,
-.container.browse .carousels.bottom table td.c2 > div {
+.container.browse .carousels table td.c1 > div,
+.container.browse .carousels table td.c2 > div {
   width: 387px;
 }
 
@@ -310,6 +306,8 @@
   width: 251px;
 }
 
+.container.browse .carousels.FULL_WIDTH table td.c1 > div,
+.container.browse .carousels.FULL_WIDTH table td.c2 > div,
 .container.browse .carousels.TWO_TWO table td.c1 > div,
 .container.browse .carousels.TWO_TWO table td.c2 > div,
 .container.browse .carousels.v22 table td.c1 > div,
@@ -346,8 +344,6 @@
 }
 
 /* only one carousel cases */
-.container.browse .carousels.FULL_WIDTH table.hasCarousel1.hasCarousel2 td.c2,
-.container.browse .carousels.FULL_WIDTH table.hasCarousel1.hasCarousel2 td.spacer,
 .container.browse .carousels table.noCarousel1 td.c1,
 .container.browse .carousels table.noCarousel1 td.spacer,
 .container.browse .carousels table.noCarousel2 td.c2,
@@ -355,13 +351,11 @@
   display: none;
 }
 
-.container.browse .carousels.FULL_WIDTH table.hasCarousel1.hasCarousel2 td.c1 > div,
 .container.browse .carousels table.noCarousel1 td.c2 > div,
 .container.browse .carousels table.noCarousel2 td.c1 > div {
   width: 775px
 }
 
-.container.browse .carousels.FULL_WIDTH table.hasCarousel1.hasCarousel2 [data-component="carousel"] ul li.portrait-item,
 .container.browse .noCarousel2 [data-component="carousel"] ul li.portrait-item,
 .container.browse .noCarousel1 [data-component="carousel"] ul li.portrait-item {
   width: 139px;
