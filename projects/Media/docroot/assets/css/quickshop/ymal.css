@@ -31,43 +31,7 @@
 }
 
 #qs-ymal .portrait-item {
-	width:152px;
-}
-
-#qs-ymal [data-component="carousel-prev"],
-#qs-ymal [data-component="carousel-next"] {
-    width: 35px;
-    height: 73px;
-	top: -15px;
-	background: url(/media_stat/images/quickshop/buttons-sprite.png) no-repeat;
-}
-
-#qs-ymal [data-component="carousel-prev"],
-#qs-ymal [data-component="carousel"].first [data-component="carousel-prev"]:hover,
-#qs-ymal [data-component="carousel"].first [data-component="carousel-prev"]:focus {
-    background-position: -235px -253px;
-}
-
-#qs-ymal [data-component="carousel-prev"]:hover,
-#qs-ymal [data-component="carousel-prev"]:focus {
-    background-position: -280px -253px;
-}
-
-#qs-ymal [data-component="carousel-next"],
-#qs-ymal [data-component="carousel"].last [data-component="carousel-next"]:hover,
-#qs-ymal [data-component="carousel"].last [data-component="carousel-next"]:focus  {
-    background-position: -317px -5px;
-}
-
-#qs-ymal [data-component="carousel-next"]:hover,
-#qs-ymal [data-component="carousel-next"]:focus  {
-    background-position: -332px -88px;
-}
-
-
-#qs-ymal [data-component="carousel"].first [data-component="carousel-prev"],
-#qs-ymal [data-component="carousel"].last [data-component="carousel-next"] {
-	cursor: default;
+	width:154px;
 }
 
 #qs-ymal .itemlist-item-header {
