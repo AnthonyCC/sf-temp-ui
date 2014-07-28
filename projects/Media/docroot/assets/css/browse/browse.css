@@ -49,6 +49,7 @@
 .browseContent .sectionContent ul.products {
   margin: 32px 0 29px;
   padding: 0;
+  display: table;
 }
 
 .ie8 .browseContent .sectionContent ul.products {
@@ -60,14 +61,16 @@
 }
 
 .browseContent .sectionContent ul.products li.portrait-item {
-  width: 131px;
-  max-width: 131px;
-  padding: 0 10px 0 9px;
-  margin: 0 6px 0 0;
-  display: inline-block;
+  width: 136px;
+  max-width: 136px;
+  padding: 0 9px 0 9px;
+  margin: 0;
+  border-right: 1px solid #ddd;
+  display: table-cell;
 }
 
 .ie8 .browseContent .sectionContent ul.products li.portrait-item {
+  display: inline-block;
 }
 
 .browseContent .sectionContent ul.products li.portrait-item ul.relatedItem {
