@@ -34,6 +34,9 @@ printMethod="javax.xml.bind.DatatypeConverter.printDate"/></jaxb:globalBindings>
 			<xs:attribute name="subCatId" type="xs:string" /> 
 			<xs:attribute name="deptId" type="xs:string" /> 
 			<xs:attribute name="prodStatus" type="xs:string" />
+			<xs:attribute name="minQuantity" type="xs:string" />
+			<xs:attribute name="maxQuantity" type="xs:string" />
+			<xs:attribute name="qtyIncrement" type="xs:string" />
 			
 
 			

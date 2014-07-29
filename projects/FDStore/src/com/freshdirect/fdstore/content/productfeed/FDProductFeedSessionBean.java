@@ -287,7 +287,10 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 		product.setCatId(productModel.getCategory().getContentName());
 		product.setSubCatId(productModel.getParentId());
 		product.setDeptId(productModel.getDepartment().getContentName());
-		product.setProdStatus(null !=fdProductInfo.getAvailabilityStatus()?fdProductInfo.getAvailabilityStatus().getStatusCode():"");		
+		product.setProdStatus(null !=fdProductInfo.getAvailabilityStatus()?fdProductInfo.getAvailabilityStatus().getStatusCode():"");
+		product.setMinQuantity(""+productModel.getQuantityMinimum());
+		product.setMaxQuantity(""+productModel.getQuantityMaximum());
+		product.setQtyIncrement(""+productModel.getQuantityIncrement());
 	}
 
 	private void populateImages(ProductModel productModel,
