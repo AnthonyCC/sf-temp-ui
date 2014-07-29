@@ -260,9 +260,16 @@ public class BrowseDataBuilderFactory {
 					
 					sections.add(createProductSection(cat, user, navigationModel));	
 					
-				}else{
-					// or create the section tree
-					sections.add(createSectionTree(cat, navigationModel.getNavDepth().getLevel(), user));
+				} else { // or create the section tree
+
+					SectionContext sectionTree = createSectionTree(cat, navigationModel.getNavDepth().getLevel(), user);
+					if (subCats.size()!=0 && nav.isAll()) { //hide category section header if Show All 
+						sections.addAll(sectionTree.getSectionContexts());
+					
+					} else {
+						sections.add(sectionTree);
+					}
+					
 				}
 				//carousel3 is left null - will be populated by appendCarousels() after paging
 
