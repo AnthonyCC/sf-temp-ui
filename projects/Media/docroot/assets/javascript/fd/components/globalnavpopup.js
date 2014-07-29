@@ -55,17 +55,20 @@ var FreshDirect = FreshDirect || {};
 
       // stop animations before
       $content.stop();
+      $("#globalnavpopup").removeClass("shadow-for-superdepart");
 
       if(subDown === false){
          $content.animate({
-          top: "-2px"
+          top: "0px"
           }, 350, "easeOutQuad", function(){
+        	 $("#globalnavpopup").addClass("shadow-for-superdepart");
              subDown = true;
             $(".seasonal-media").fadeIn(200);
           });
       }
       else{
-        $content.css('top', '-2px');
+    	$("#globalnavpopup").addClass("shadow-for-superdepart");
+        $content.css('top', '0px');
         $(".seasonal-media").show();
       }
     }
@@ -133,17 +136,20 @@ var FreshDirect = FreshDirect || {};
 
       // stop animations before
       $popupBody.stop();
-
+      $("#globalnavpopup").removeClass("shadow-for-superdepart");
+      
       if(down === false){
         $popupBody.animate({
-          top: "-2px"
+          top: "0px"
           }, 350, "easeOutQuad", function(){
+          	$("#globalnavpopup").addClass("shadow-for-superdepart");
              down = true;
             $(".seasonal-media").fadeIn(200);
           });
       }
       else{
-        $popupBody.css('top', '-2px');
+    	$("#globalnavpopup").addClass("shadow-for-superdepart");
+        $popupBody.css('top', '0px');
         $(".seasonal-media").show();
       }
     }

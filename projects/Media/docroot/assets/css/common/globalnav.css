@@ -355,9 +355,14 @@ ul.globalnavPopups li {
 #globalnavpopup {
   position: absolute;
   z-index:1001;
-  width:970px;
+  width:968px;
   overflow:hidden;
-  margin: 0 -1px;
+}
+
+.shadow-for-superdepart{
+  box-shadow: 		  0 2px 3px rgba(79, 79, 79, 0.68);
+  -moz-box-shadow:    0 2px 3px rgba(79, 79, 79, 0.68);
+  -webkit-box-shadow: 0 2px 3px rgba(79, 79, 79, 0.68);
 }
 
 .globalnav-popup-content .department{
@@ -436,11 +441,7 @@ ul.globalnavPopups li {
   background-color: #fff;
 
   border: 1px solid #CCC;
-  border-bottom: 3px solid #CCC;
-   
-  -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.4)inset, 0 2px 3px rgba(79,79,79,.68);
-  -moz-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.4)inset, 0 2px 3px rgba(79,79,79,.68);
-  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.4)inset, 0 2px 3px rgba(79,79,79,.68);
+  border-bottom:0px;
   overflow:hidden;
 }
 
