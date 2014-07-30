@@ -356,10 +356,9 @@ public class ProductDetailPopulator {
 						}
 					}
 					
+					data.setNutritionSortValue(nutritionSortValueText);
+					data.setNutritionServingSizeValue(nutritionServingSizeValueText);
 				}
-
-				data.setNutritionSortValue(nutritionSortValueText);
-				data.setNutritionServingSizeValue(nutritionServingSizeValueText);
 			}
 		}
 		
