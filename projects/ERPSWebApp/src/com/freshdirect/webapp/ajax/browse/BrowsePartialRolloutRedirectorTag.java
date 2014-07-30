@@ -66,7 +66,7 @@ public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport{
 	        	LOGGER.debug("Redirecting from " +originalUrl+ " to " +redirectUrl);
 	        	ServletRequest request = ctx.getRequest();
 	        	//To ensure that https requests get redirect to https correctly
-	        	redirectUrl = request.getScheme() + "://" + request.getServerName() + redirectUrl;
+	        	redirectUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
 				((HttpServletResponse)ctx.getResponse()).sendRedirect(redirectUrl);
 			}
 		}
