@@ -499,9 +499,6 @@ ul.globalnavPopups li {
 
   position:relative;
   z-index:5;
-  -moz-box-shadow: 0 1px 1px rgba(79,79,79,.68);
-  -webkit-box-shadow: 0 2px 3px rgba(79,79,79,.68);
-  box-shadow: 0 2px 1px rgba(79,79,79,.68);
 
   border:1px solid #CCC;
 
