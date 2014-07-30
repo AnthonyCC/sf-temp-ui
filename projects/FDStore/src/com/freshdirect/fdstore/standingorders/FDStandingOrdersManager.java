@@ -30,6 +30,7 @@ import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.lists.FDStandingOrderList;
+import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.fdstore.standingorders.ejb.FDStandingOrdersHome;
 import com.freshdirect.fdstore.standingorders.ejb.FDStandingOrdersSB;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -156,15 +157,15 @@ public class FDStandingOrdersManager {
 	
 	public String save(FDActionInfo info, FDStandingOrder so) throws FDResourceException {
 		return save(info, so, null);
-	}	
+	}
 
 	public String save(FDActionInfo info, FDStandingOrder so, String saleId) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDStandingOrdersSB sb = soHome.create();
-			
+	
 			return sb.save(info, so, saleId);
-			
+		
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -281,6 +282,7 @@ public class FDStandingOrdersManager {
 	 * @param ident
 	 * @param cart
 	 * @param standingOrder
+	 * @param isUpdateSO 
 	 * @return primary key of the standing order created
 	 * @throws FDResourceException
 	 */
@@ -734,6 +736,34 @@ public class FDStandingOrdersManager {
 		try {
 			FDStandingOrdersSB sb = soHome.create();			
 			return sb.replaceSkuCode(sourceSku, destinationSku);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}		
+	}
+
+	public void persistUnavailableDetailsToDB(List<Result> resultsList)  throws FDResourceException{
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();			
+			sb.persistUnavailableDetailsToDB(resultsList);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}		
+	}
+
+	public UnavDetailsReportingBean getDetailsForReportGeneration() throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();			
+			return sb.getDetailsForReportGeneration();
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

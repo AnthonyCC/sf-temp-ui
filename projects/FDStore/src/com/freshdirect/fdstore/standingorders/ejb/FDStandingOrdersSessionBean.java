@@ -1,5 +1,7 @@
 package com.freshdirect.fdstore.standingorders.ejb;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -37,6 +39,8 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderFilterCriteria;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderSkuResultInfo;
+import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
+import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -187,7 +191,7 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 				rec.setStandingOrderId(primaryKey);
 				this.logActivity(rec);
 			}
-			
+							
 			return primaryKey;
 			
 		} catch (SQLException e) {
@@ -713,6 +717,37 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			conn = getConnection();
 			FDStandingOrderDAO dao = new FDStandingOrderDAO();			
 			return dao.validateSkuCode(conn,existingSku,replacementSku);
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in validateSkuCode() : " + e.getMessage(), e );
+			e.printStackTrace();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}			
+	}
+	
+	public void persistUnavailableDetailsToDB(List<Result> resultsList) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();
+			dao.persistUnavailableDetailsToDB(conn,resultsList);
+		} catch (SQLException e) {
+			LOGGER.error( "SQL ERROR in validateSkuCode() : " + e.getMessage(), e );
+			e.printStackTrace();
+			getSessionContext().setRollbackOnly();
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}			
+	}
+	
+	public UnavDetailsReportingBean getDetailsForReportGeneration() throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDStandingOrderDAO dao = new FDStandingOrderDAO();
+			return dao.getDetailsForReportGeneration(conn);
 		} catch (SQLException e) {
 			LOGGER.error( "SQL ERROR in validateSkuCode() : " + e.getMessage(), e );
 			e.printStackTrace();

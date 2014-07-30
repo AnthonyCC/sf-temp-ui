@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -27,15 +28,15 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
-import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfo;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
+import com.freshdirect.fdstore.standingorders.InventoryMapInfoBean;
 import com.freshdirect.fdstore.standingorders.SOResult;
-import com.freshdirect.fdstore.standingorders.UnavailabilityReason;
 import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.fdstore.standingorders.SOResult.ResultList;
-import com.freshdirect.fdstore.standingorders.UnAvailabilityDetails;
+import com.freshdirect.fdstore.standingorders.SOResult.Status;
+import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
@@ -87,7 +88,7 @@ public class StandingOrdersServiceCmd {
 	
 	public static void main( String[] args ) {	
 		StandingOrdersJobConfig jobConfig = new StandingOrdersJobConfig();
-		
+	
 		List<String> soIdList = null;
 		try{
 			if (args.length >= 1) {
@@ -116,20 +117,38 @@ public class StandingOrdersServiceCmd {
 			}
 			LOGGER.info( "jobConfig: "+ jobConfig );
 						
-			SOResult.ResultList result = placeStandingOrders(soIdList, jobConfig);
+			SOResult.ResultList result = placeStandingOrders(soIdList, jobConfig);			
 				
 			if (jobConfig.isSendReportEmail()) {
 				sendReportMail(result);
 			}
 			
-			if (FDStoreProperties.isIgnoreATPFailureForSO()) {
-				sendATPReportMail(result);
+		    boolean hasData = isResultHasData(result);
+		    
+			if (FDStoreProperties.isIgnoreATPFailureForSO()) {				
+				sendATPReportMail(hasData);
 			}
 			
 		} catch (Exception e) {
 			LOGGER.error("StandingOrdersServiceCmd failed with Exception...",e);
 			sendExceptionMail(Calendar.getInstance().getTime(), e);
 		}
+	}
+
+	private static boolean isResultHasData(SOResult.ResultList result) {
+		
+		boolean hasData = true;
+		if(result.getResultsList().size() > 0){
+			if(result.getResultsList().size() == 1){
+				if(result.getResultsList().get(0).isError() || result.getResultsList().get(0).getStatus() == Status.SKIPPED || result.getResultsList().get(0).getInternalMessage() != null){
+					hasData = false;
+				}
+			}
+		}
+		else{
+			hasData = false;
+		}
+		return hasData;
 	}
 
 	private static SOResult.ResultList placeStandingOrders(Collection<String> soList, StandingOrdersJobConfig jobConfig) {
@@ -140,6 +159,10 @@ public class StandingOrdersServiceCmd {
 			LOGGER.info( "Starting to place orders..." );
 			
 			SOResult.ResultList result = sb.placeStandingOrders(soList, jobConfig);
+			
+			if(isResultHasData(result)){
+			sb.persistUnavDetailsToDB(result);
+			}
 			
 			LOGGER.info( "Finished placing orders." );
 			LOGGER.info( "  success : " + result.getSuccessCount() );
@@ -161,46 +184,77 @@ public class StandingOrdersServiceCmd {
 		}
 		return null;
 	}
-
-	private static void sendATPReportMail(ResultList result) {
-		try {
-			InventoryMapInfoBean newInventoryMapInfoBean = null;
-			LOGGER.info( "Cron ATP report enabled" );
-			final List<Result> resultList = result.getResultsList();
-			Map<String, InventoryMapInfoBean> unavailableDetails = new TreeMap<String, InventoryMapInfoBean>();
-			if(resultList != null) {
-				for(Result res : resultList) {
-					Map<FDCartLineI, UnAvailabilityDetails> details = res.getUnavailabilityDetails();
-					if(details != null) {
-						for (Map.Entry<FDCartLineI, UnAvailabilityDetails> entry : details.entrySet()) {
-							if(entry.getValue().getReason().equals(UnavailabilityReason.ATP)) {
-								if(!unavailableDetails.containsKey(entry.getKey().getSkuCode())) {
-									newInventoryMapInfoBean = new InventoryMapInfoBean();
-									newInventoryMapInfoBean.setProductName(entry.getKey().getDescription());
-									newInventoryMapInfoBean.setSkuCode(entry.getKey().getSkuCode());
-									newInventoryMapInfoBean.setMaterialNum(entry.getKey().getMaterialNumber());
-									unavailableDetails.put(entry.getKey().getSkuCode(), newInventoryMapInfoBean);
-								}
-								
-								InventoryMapInfoBean existInventoryMapInfoBean = unavailableDetails.get(entry.getKey().getSkuCode());
-								existInventoryMapInfoBean.setUnavailQnty(existInventoryMapInfoBean.getUnavailQnty() + entry.getValue().getUnavailQty() );
-								unavailableDetails.put(entry.getKey().getSkuCode(), existInventoryMapInfoBean);
-							}
-						}
-					}
-					
-				}
-				final String atpFailureReportMailTo = ErpServicesProperties.getStandingOrdersATPFailureReportRecipientAddress();
+	
+	
+	private static void sendATPReportMail(boolean hasData) {
+		try{
+		
+			lookupSOSHome();
+			StandingOrdersServiceSB sb = sosHome.get().create();
+		
+			LOGGER.info( "Starting to place orders..." );
+			
+			UnavDetailsReportingBean unavDetailsReportingBean = new UnavDetailsReportingBean() ;
+			
+			if(hasData){	
+					unavDetailsReportingBean = sb.getDetailsForReportGeneration();
+			}		
+			final String atpFailureReportMailTo = ErpServicesProperties.getStandingOrdersATPFailureReportRecipientAddress();
 				
 				SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
 				Date date = Calendar.getInstance().getTime();
 				String subject=FDStoreProperties.getStandingOrderReportEmailSubject()+ (date != null ? " "+dateFormatter.format(date) : " date error");
 				
+				Map<String, InventoryMapInfoBean> discItemDetails = groupErrorItemsBySkuCode(unavDetailsReportingBean.getDiscProductInfoBeanList());
+				Map<String, InventoryMapInfoBean> unavItemDetails = groupErrorItemsBySkuCode(unavDetailsReportingBean.getUnavProductInfoBeanList());
+				Map<String, InventoryMapInfoBean> restrictedItemDetails = groupErrorItemsBySkuCode(unavDetailsReportingBean.getRestrictedProductInfoBeanList());
+				Map<String, InventoryMapInfoBean> atpItemDetails = groupErrorItemsBySkuCode(unavDetailsReportingBean.getAtpFailureProductInfoBeanList());
+				
+		
 				StringBuffer buffer = new StringBuffer();
 				buffer.append("<html>").append("<body>");
-
 				
-				buffer.append( "<h2>Consolidated ATP failure report:</h2>" );
+				buffer.append( "<h2 align=\"center\">Consolidated ATP failure Report</h2><br/><br/>" );
+				
+				buffer.append( "<h2 align=\"center\">DISCONTINUED PRODUCTS</h2>" );
+				buffer.append( "<div align=\"center\">");
+				buffer.append("<table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"float:none;\">");
+				buffer.append("<tr>")
+				.append("<th nowrap=\"nowrap\">").append("Product Name").append("</th>")	
+				.append("<th nowrap=\"nowrap\">").append("Material ID").append("</th>")	
+				.append("<th nowrap=\"nowrap\">").append("SKU Code").append("</th>")				
+				.append("<th nowrap=\"nowrap\">").append("Unavailable Qty").append("</th>")	
+				.append("</tr>");
+				for (Map.Entry<String, InventoryMapInfoBean> entry : discItemDetails.entrySet()) {		
+					buffer.append("<tr>")
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getProductName()).append("</td>")	
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getMaterialNum()).append("</td>")		
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getSkuCode()).append("</td>")		
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getQnty()).append("</td>")		
+					.append("</tr>");	
+				}
+				buffer.append("</table>");
+				
+				buffer.append( "<h2 align=\"center\">UNAVAILABLE PRODUCTS</h2>" );
+				buffer.append( "<div align=\"center\">");
+				buffer.append("<table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"float:none;\">");
+				buffer.append("<tr>")
+				.append("<th nowrap=\"nowrap\">").append("Product Name").append("</th>")	
+				.append("<th nowrap=\"nowrap\">").append("Material ID").append("</th>")	
+				.append("<th nowrap=\"nowrap\">").append("SKU Code").append("</th>")				
+				.append("<th nowrap=\"nowrap\">").append("Unavailable Qty").append("</th>")	
+				.append("</tr>");
+				for (Map.Entry<String, InventoryMapInfoBean> entry : unavItemDetails.entrySet()) {	
+					buffer.append("<tr>")
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getProductName()).append("</td>")	
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getMaterialNum()).append("</td>")		
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getSkuCode()).append("</td>")		
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getQnty()).append("</td>")		
+					.append("</tr>");	
+				}
+				buffer.append("</table>");
+				
+				buffer.append( "<h2>RESTRICTED PRODUCTS</h2>" );
 				
 				buffer.append("<table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"float:none;\">");
 				buffer.append("<tr>")
@@ -209,22 +263,38 @@ public class StandingOrdersServiceCmd {
 				.append("<th nowrap=\"nowrap\">").append("SKU Code").append("</th>")				
 				.append("<th nowrap=\"nowrap\">").append("Unavailable Qty").append("</th>")	
 				.append("</tr>");
-				for (Map.Entry<String, InventoryMapInfoBean> entry : unavailableDetails.entrySet()) {
+				for (Map.Entry<String, InventoryMapInfoBean> entry : restrictedItemDetails.entrySet()) {
 					buffer.append("<tr>")
 					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getProductName()).append("</td>")	
 					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getMaterialNum()).append("</td>")		
 					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getSkuCode()).append("</td>")		
-					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getUnavailQnty()).append("</td>")		
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getQnty()).append("</td>")		
 					.append("</tr>");	
 				}
 				buffer.append("</table>");
-			
-			
+				
+				buffer.append( "<h2>ATP FAILED PRODUCTS</h2>" );
+				
+				buffer.append("<table border=\"1\" cellpadding=\"0\" cellspacing=\"0\" style=\"float:none;\">");
+				buffer.append("<tr>")
+				.append("<th nowrap=\"nowrap\">").append("Product Name").append("</th>")	
+				.append("<th nowrap=\"nowrap\">").append("Material ID").append("</th>")	
+				.append("<th nowrap=\"nowrap\">").append("SKU Code").append("</th>")				
+				.append("<th nowrap=\"nowrap\">").append("Unavailable Qty").append("</th>")	
+				.append("</tr>");
+				for (Map.Entry<String, InventoryMapInfoBean> entry : atpItemDetails.entrySet()) {
+					buffer.append("<tr>")
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getProductName()).append("</td>")	
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getMaterialNum()).append("</td>")		
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getSkuCode()).append("</td>")		
+					.append("<td nowrap=\"nowrap\">").append(entry.getValue().getQnty()).append("</td>")		
+					.append("</tr>");	
+				}
 				buffer.append("</table>");
+				buffer.append( "</div>");
 				buffer.append("<br/><br/><br/>");
 				
 				buffer.append("</body>").append("</html>");
-	
 				
 				ErpMailSender mailer = new ErpMailSender();
 				mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
@@ -233,10 +303,47 @@ public class StandingOrdersServiceCmd {
 				LOGGER.info( "SO ATP failure  report sent to "+ atpFailureReportMailTo );
 			}
 			
-		} catch (MessagingException e) {
+		 catch (MessagingException e) {
 			LOGGER.warn("Error Sending Standing Order cron report email: ", e);
 		}
+		catch ( CreateException e ) {
+			invalidateSOSHome();
+			LOGGER.error("CreateException",e);
+		} catch ( RemoteException e ) {
+			invalidateSOSHome();
+			LOGGER.error("RemoteException",e);
+		} catch ( FDResourceException e ) {
+			invalidateSOSHome();
+			LOGGER.error("FDResourceException",e);
+		}
 		
+	}
+
+	private static Map<String, InventoryMapInfoBean> groupErrorItemsBySkuCode(
+			List<InventoryMapInfoBean> inventoryMapInfoBeanList) {
+		
+		Map<String, InventoryMapInfoBean> unavItemDetails = new HashMap<String, InventoryMapInfoBean>();
+	
+		
+		if(inventoryMapInfoBeanList != null){
+			
+			for(InventoryMapInfoBean inventoryMapInfoBean : inventoryMapInfoBeanList ){
+				
+				if(!unavItemDetails.containsKey(inventoryMapInfoBean.getSkuCode())){
+					InventoryMapInfoBean newInventoryMapInfoBean = new InventoryMapInfoBean();
+					newInventoryMapInfoBean.setProductName(inventoryMapInfoBean.getProductName());
+					newInventoryMapInfoBean.setSkuCode(inventoryMapInfoBean.getSkuCode());
+					newInventoryMapInfoBean.setMaterialNum(inventoryMapInfoBean.getMaterialNum());
+					unavItemDetails.put(inventoryMapInfoBean.getSkuCode(), newInventoryMapInfoBean);				
+				}				
+				InventoryMapInfoBean inventoryMapDiscInfoBean = unavItemDetails.get(inventoryMapInfoBean.getSkuCode());
+				inventoryMapDiscInfoBean.setQnty(inventoryMapDiscInfoBean.getQnty() + inventoryMapInfoBean.getQnty());
+				unavItemDetails.put(inventoryMapInfoBean.getSkuCode(), inventoryMapDiscInfoBean);
+				
+			}
+		
+		}
+		return unavItemDetails;
 	}
 	
 	

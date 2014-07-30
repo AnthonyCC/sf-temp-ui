@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -21,6 +22,8 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -30,10 +33,17 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrderInfo;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderProductSku;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderSkuResultInfo;
+import com.freshdirect.fdstore.standingorders.InventoryMapInfoBean;
+import com.freshdirect.fdstore.standingorders.UnAvailabilityDetails;
+import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
+import com.freshdirect.fdstore.standingorders.UnavailabilityReason;
+import com.freshdirect.fdstore.standingorders.SOResult.Result;
+import com.freshdirect.fdstore.standingorders.SOResult.Status;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDStandingOrderDAO {
+	
 	
 		private static final String ALTERNATE_DELIVERY_DATE = "ALTERNATE_DELIVERY_DATE";
 
@@ -117,6 +127,12 @@ public class FDStandingOrderDAO {
 	private static final String CONFIGURATION = "CONFIGURATION";
 	
 	private static final String DELETED_LIST_NAME = "Deleted Standing Order";
+	
+	private static final String UNAV_ITEM_SQL = "insert into mis.unav_items_inv values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	
+	private static final String UNAV_ITEM_DETAILS_SQL = "select PRODUCT_NAME,SKU_CODE,MATERIAL_NUM,QUANTITY from mis.unav_items_inv where run_instance = ? and reason = ? ";
+
+	private static final String GET_RUNINSTANCE_SQL = "select max(RUN_INSTANCE) as maxInstance from mis.UNAV_ITEMS_INV where run_date > SYSDATE - 1";
 	
 	protected String getNextId(Connection conn) throws SQLException {
 		return SequenceGenerator.getNextId(conn, "CUST");
@@ -1515,7 +1531,7 @@ public class FDStandingOrderDAO {
 		
 		try {
 			FDCachedFactory.getProductInfo(sourceSku).getVersion();
-			FDProductInfo fdProductInfo = FDCachedFactory.getProductInfo(sourceSku);			
+			FDProductInfo fdProductInfo = FDCachedFactory.getProductInfo(sourceSku);
 			if (fdProductInfo.isDiscontinued() == true) {
 				isSkuValidButDiscontinued = true;
 			}
@@ -1547,4 +1563,159 @@ public class FDStandingOrderDAO {
 		return isSkuValid;
 
 	}
+
+
+	public void persistUnavailableDetailsToDB(Connection conn,
+			List<Result> resultsList) throws SQLException {
+
+		PreparedStatement pstmt = null;
+		try {
+			
+			double run_instance = calculateRunInstance(conn);
+			
+			run_instance = run_instance == 0 ? 1 : run_instance + 1;
+			
+			pstmt = conn.prepareStatement(UNAV_ITEM_SQL);
+
+			for (Result result : resultsList) {
+
+				//If the standing order is skipped or in error state skip it.
+				if (result.getStatus() != Status.SKIPPED && !result.isError()) {
+
+					Map<FDCartLineI, UnAvailabilityDetails> details = result
+							.getUnavailabilityDetails();
+					if (details != null) {
+						for (Map.Entry<FDCartLineI, UnAvailabilityDetails> entry : details
+								.entrySet()) {
+							pstmt.setDate(1, new java.sql.Date(new Date().getTime()));
+							pstmt.setDouble(2, run_instance);	
+							pstmt.setDate(3, new java.sql.Date(result.getRequestedDate().getTime()));					
+							pstmt.setString(4, result.getSoId());
+							pstmt.setString(5, result.getSaleId());
+							pstmt.setString(6, result.getCustId());
+							pstmt.setString(7, entry.getKey().getSkuCode());
+							pstmt.setString(8, entry.getKey()
+									.getMaterialNumber());
+							pstmt.setDouble(9, entry.getValue().getUnavailQty());
+							pstmt.setString(10, entry.getKey().getSalesUnit());
+							pstmt.setTimestamp(11, new java.sql.Timestamp(
+									new Date().getTime()));
+							pstmt.setString(12, entry.getValue().getReason()
+									.toString());
+							pstmt.setString(13, entry.getValue().getAltSkucode());
+							pstmt.setString(14, entry.getKey().getDescription());
+							pstmt.addBatch();
+						}
+					}
+				}
+
+			}
+			pstmt.executeBatch();
+			
+		} 
+		catch (SQLException exc) {
+			throw exc;
+		} 	
+		finally {
+			if(pstmt != null)
+			pstmt.close();
+		}
+	}
+
+	private double calculateRunInstance(Connection conn) throws SQLException {
+
+		double run_instance = 0;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(GET_RUNINSTANCE_SQL);		
+			if (rs.next()) {
+				run_instance = rs.getInt("maxInstance");
+			}
+		} 		
+		catch (SQLException exc) {
+			throw exc;
+		} 
+		finally {
+			if(rs != null)
+			rs.close();
+			if(stmt != null)
+			stmt.close();
+		}
+		return run_instance;
+	}
+
+
+	public UnavDetailsReportingBean getDetailsForReportGeneration(
+			Connection conn) throws SQLException {
+
+		PreparedStatement pstmt = null;
+		UnavDetailsReportingBean reportingBean = new UnavDetailsReportingBean();
+		String[] errorTypeList = new String[] {"DISC","UNAV","GENERAL","ATP"};
+		
+		try {
+
+			double run_instance = calculateRunInstance(conn);
+			pstmt = conn.prepareStatement(UNAV_ITEM_DETAILS_SQL);
+			for (String str : errorTypeList) {
+				getNotAvailableProductsByErrorType(pstmt, reportingBean,
+						run_instance, str);
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			if(pstmt != null)
+			pstmt.close();
+		}
+		return reportingBean;
+	}
+
+
+	private void getNotAvailableProductsByErrorType(PreparedStatement pstmt,
+			UnavDetailsReportingBean reportingBean, double run_instance,String errorType)
+			throws SQLException {
+		
+		InventoryMapInfoBean inventoryMapInfoBean;
+		List<InventoryMapInfoBean> inventoryMapInfoBeanList = new ArrayList<InventoryMapInfoBean>();
+		ResultSet rs = null;
+		
+			try{
+			pstmt.setDouble(1, run_instance);
+			pstmt.setString(2,errorType);	
+			
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()){
+				inventoryMapInfoBean = new InventoryMapInfoBean();
+				inventoryMapInfoBean.setProductName(rs.getString("PRODUCT_NAME"));
+				inventoryMapInfoBean.setMaterialNum(rs.getString("MATERIAL_NUM"));
+				inventoryMapInfoBean.setSkuCode(rs.getString("SKU_CODE"));
+				inventoryMapInfoBean.setQnty(rs.getDouble("QUANTITY"));
+				inventoryMapInfoBeanList.add(inventoryMapInfoBean);
+			}
+			
+			if(errorType.equalsIgnoreCase("DISC")){
+				reportingBean.getDiscProductInfoBeanList().addAll(inventoryMapInfoBeanList);
+			}
+			else if(errorType.equalsIgnoreCase("UNAV")){
+				reportingBean.getUnavProductInfoBeanList().addAll(inventoryMapInfoBeanList);
+			}
+			else if(errorType.equalsIgnoreCase("GENERAL")){
+				reportingBean.getRestrictedProductInfoBeanList().addAll(inventoryMapInfoBeanList);
+			}
+			else if(errorType.equalsIgnoreCase("ATP")){
+				reportingBean.getAtpFailureProductInfoBeanList().addAll(inventoryMapInfoBeanList);
+			}
+		}
+		catch (SQLException exc) {
+			throw exc;
+		} 
+		finally{
+			rs.close();
+		}		
+	}
+
 }

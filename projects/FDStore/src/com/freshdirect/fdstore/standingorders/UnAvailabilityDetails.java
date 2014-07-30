@@ -6,11 +6,13 @@ public class UnAvailabilityDetails implements Serializable {
 		
 	double unavailQty;
 	UnavailabilityReason reason;
+	String altSkucode;
 	
-	public UnAvailabilityDetails(double unavailQty, UnavailabilityReason reason) {
+	public UnAvailabilityDetails(double unavailQty, UnavailabilityReason reason,String altSkucode) {
 		super();
 		this.unavailQty = unavailQty;
 		this.reason = reason;
+		this.altSkucode = altSkucode;
 	}
 	
 	public double getUnavailQty() {
@@ -19,5 +21,9 @@ public class UnAvailabilityDetails implements Serializable {
 
 	public UnavailabilityReason getReason() {
 		return reason;
+	}
+	
+	public String getAltSkucode() {
+		return altSkucode;
 	}
 }

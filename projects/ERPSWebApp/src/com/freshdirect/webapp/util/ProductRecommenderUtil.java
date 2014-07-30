@@ -394,8 +394,8 @@ public class ProductRecommenderUtil {
 			//based on QuickShopHelper.populateReplacements()
 			for (ContentNodeModel node : originalProduct.getRecommendedAlternatives()) {
 				if (node instanceof ProductModel) {
-					replacementProducts.add((ProductModel)node);
-				} else if (node instanceof SkuModel) {
+					replacementProducts.add((ProductModel)node);				
+				} else if (node instanceof SkuModel) {			
 					replacementProducts.add(((SkuModel)node).getProductModel());
 				}
 			}
@@ -428,7 +428,7 @@ public class ProductRecommenderUtil {
 		return replacementProducts;
 	}
 	
-	private static void removeProductsByKeys(List<ProductModel> products,  Set<ContentKey> excludedProducts){
+	public static void removeProductsByKeys(List<ProductModel> products,  Set<ContentKey> excludedProducts){
 	    for (Iterator<ProductModel> productIt = products.iterator(); productIt.hasNext();){
 	        ProductModel product = productIt.next();
 	    	if (product!=null && excludedProducts.contains(product.getContentKey())){

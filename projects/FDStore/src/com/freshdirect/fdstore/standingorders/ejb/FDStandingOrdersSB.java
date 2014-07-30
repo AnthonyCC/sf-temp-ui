@@ -19,6 +19,8 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrderAltDeliveryDate;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderFilterCriteria;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderInfoList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrderSkuResultInfo;
+import com.freshdirect.fdstore.standingorders.SOResult.Result;
+import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public interface FDStandingOrdersSB extends EJBObject {
@@ -54,4 +56,6 @@ public interface FDStandingOrdersSB extends EJBObject {
 	public boolean isValidSoId(String soId) throws FDResourceException,RemoteException;
 	public FDStandingOrderSkuResultInfo replaceSkuCode(String existingSku, String replacementSku) throws FDResourceException,RemoteException;
 	public FDStandingOrderSkuResultInfo validateSkuCode(String existingSku, String replacementSku) throws FDResourceException,RemoteException;
+	public void persistUnavailableDetailsToDB(List<Result> resultsList) throws FDResourceException,RemoteException;
+	public UnavDetailsReportingBean getDetailsForReportGeneration() throws FDResourceException,RemoteException;
 }

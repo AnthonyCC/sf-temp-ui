@@ -105,12 +105,13 @@ public class SOResult implements Serializable {
 
 	/**
 	 *	Successful Standing Order. 
+	 * @param requestedDate 
 	 */
-	public static Result createSuccess( FDStandingOrder so, FDIdentity cust, FDCustomerInfo custInfo, boolean hasInvalidItems, List<String> unavItems, String orderId, String internalMessage, boolean errorOccured, Map<FDCartLineI, UnAvailabilityDetails> availabilityDetails ) {
+	public static Result createSuccess( FDStandingOrder so, FDIdentity cust, FDCustomerInfo custInfo, boolean hasInvalidItems, List<String> unavItems, String orderId, String internalMessage, boolean errorOccured, Map<FDCartLineI, UnAvailabilityDetails> availabilityDetails, Date requestedDate ) {
 		Result result = new Result( Status.SUCCESS ).
 				fillSOData( so ).
 				fillCustomerData( cust, custInfo ).
-				fillSuccessData( hasInvalidItems, unavItems, orderId, internalMessage, availabilityDetails );
+				fillSuccessData( hasInvalidItems, unavItems, orderId, internalMessage, availabilityDetails,requestedDate );
 		if (errorOccured) {
 			result.setErrorOccured();
 		}
@@ -180,6 +181,7 @@ public class SOResult implements Serializable {
 		private Date deliveryDate;
 		private Date deliveryStartTime;
 		private Date deliveryEndTime;
+		private Date requestedDate;
 
 		
 		/**
@@ -247,13 +249,15 @@ public class SOResult implements Serializable {
 		 *	Sets the additional data for successful SOs, private, only for internal use
 		 *	
 		 *  Use the factory methods to create instances
+		 * @param requestedDate 
 		 */
-		private Result fillSuccessData(boolean hasInvalidItems, List<String> unavItems, String orderId, String internalMessage,  Map<FDCartLineI, UnAvailabilityDetails> unavailabilityDetails) {
+		private Result fillSuccessData(boolean hasInvalidItems, List<String> unavItems, String orderId, String internalMessage,  Map<FDCartLineI, UnAvailabilityDetails> unavailabilityDetails,Date requestedDate) {
 			this.hasInvalidItems = hasInvalidItems;
 			this.unavailableItems = unavItems;
 			this.unavailabilityDetails = unavailabilityDetails;
 			this.saleId = orderId;
 			this.internalMessage = internalMessage;
+			this.requestedDate = requestedDate;
 			return this;
 		}
 
@@ -268,6 +272,9 @@ public class SOResult implements Serializable {
 			return this;
 		}
 
+		public Date getRequestedDate() {
+			return requestedDate;
+		}
 		
 		public boolean isError() {
 			return errorCode != null;

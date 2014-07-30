@@ -6,9 +6,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.servlet.http.HttpSession;
@@ -17,6 +21,7 @@ import javax.servlet.jsp.JspException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.analytics.TimeslotEventModel;
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.CustomerRatingI;
@@ -50,6 +55,10 @@ import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDCompositeAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDMuniAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.coremetrics.mobileanalytics.CJVFContextHolder;
 import com.freshdirect.fdstore.coremetrics.mobileanalytics.CreateCMRequest;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -518,8 +527,11 @@ public class StandingOrderUtil {
 		//      (SKU availability)
 		// ============================
 		List<String> unavailableItems = new ArrayList<String>();
+		
+		Set<ContentKey> excludedProductKeys = prepareExcludedProduct(cart);
+		
 		// vr = new ProcessActionResult();
-		doAvailabilityCheck(customer, cart, vr, unavailableItems);
+		doAvailabilityCheck(customer, cart, vr, unavailableItems,excludedProductKeys);
 
 		// Note: unavailableItems will be added to the result if the order creation succeeds 
 		LOGGER.info( "SKU availability check passed." );
@@ -529,7 +541,7 @@ public class StandingOrderUtil {
 		//            (ATP Check)
 		// ==================================
 		// vr = new ProcessActionResult();
-		doATPCheck(customer, cart, vr);
+		doATPCheck(customer, cart, vr,excludedProductKeys);
 
 		// Note: hasInvalidItems will be added to the result if the order creation succeeds 
 		LOGGER.info( "ATP check passed." );
@@ -650,7 +662,7 @@ public class StandingOrderUtil {
 			//check possible duplicate order instances in delivery window
 			FDStandingOrdersManager.getInstance().checkForDuplicateSOInstances(customer);
 			
-			return SOResult.createSuccess( so, customer, customerInfo, hasInvalidItems, unavailableItems, orderId, internalMessage, errorOccured, vr.getUnavItemsMap() );
+			return SOResult.createSuccess( so, customer, customerInfo, hasInvalidItems, unavailableItems, orderId, internalMessage, errorOccured, vr.getUnavItemsMap(),cart.getDeliveryReservation().getStartTime() );
 			
 		} catch ( DeliveryPassException e ) {
 			LOGGER.info( "DeliveryPassException while placing order.", e );
@@ -776,7 +788,7 @@ public class StandingOrderUtil {
 				if ( !cartLine.isInvalidConfig() ) {
 					cart.addOrderLine( cartLine );
 				} else {
-					vr.addUnavailableItem(cartLine, UnavailabilityReason.INVALID_CONFIG, null, cartLine.getQuantity());
+					vr.addUnavailableItem(cartLine, UnavailabilityReason.INVALID_CONFIG, null, cartLine.getQuantity(),null);
 				}
 			}
 			cart.refreshAll(true);			
@@ -801,31 +813,40 @@ public class StandingOrderUtil {
 	 * @param customer
 	 * @param cart
 	 * @param unavailableItems List where unavailable item info should have been put.
+	 * @param excludedProductKeys 
 	 * @return <code>true</code> if there was at least one unavailable item.
 	 * @throws FDResourceException
 	 */
-	public static boolean doAvailabilityCheck(FDIdentity customer, FDCartModel cart, ProcessActionResult vr, List<String> unavailableItems)
-			throws FDResourceException {	
+	public static boolean doAvailabilityCheck(FDIdentity customer, FDCartModel cart, ProcessActionResult vr, List<String> unavailableItems, Set<ContentKey> excludedProductKeys)
+			throws FDResourceException {
 		List<FDCartLineI> list = cart.getOrderLines();
 		List<FDCartLineI> detachedList = new ArrayList<FDCartLineI>(list.size());
 		detachedList.addAll(list);	
 		for (int i = 0; i < detachedList.size(); i++) {
 			FDCartLineI cartLine = detachedList.get(i);
 			int randomId = cartLine.getRandomId();
-			FDProductInfo prodInfo = cartLine.lookupFDProductInfo();
+			FDProductInfo prodInfo = cartLine.lookupFDProductInfo();		
 			if (!prodInfo.isAvailable()) {
+				String altSkuCode = getAlternateSkuCode(cartLine,excludedProductKeys);
 				final String err = "Item " + randomId + " / '" + cartLine.getProductName() + "' - SKU is unavailable/discontinued and therefore item was removed.";
 				unavailableItems.add(prodInfo.getSkuCode() + " " + cartLine.getProductName());
-				vr.addUnavailableItem(cartLine, UnavailabilityReason.UNAV, err, cartLine.getQuantity());
+					
+				if(prodInfo.isDiscontinued()){
+					vr.addUnavailableItem(cartLine, UnavailabilityReason.DISC, err, cartLine.getQuantity(),altSkuCode);
+				}
+				else if(prodInfo.isTempUnavailable() || !prodInfo.isAvailable()){
+				vr.addUnavailableItem(cartLine, UnavailabilityReason.UNAV, err, cartLine.getQuantity(),altSkuCode);
+				}
 				cart.removeOrderLineById(randomId);				
 				LOGGER.debug("[AVAILABILITY CHECK] " + err);
 			}
+			
 		}
 						
 		return vr.isFail();
 	}
-
-
+	
+	
 	/**
 	 * Perform ATP check on cart items
 	 * ===============================
@@ -840,29 +861,27 @@ public class StandingOrderUtil {
 	 * 
 	 * @param customer
 	 * @param cart
+	 * @param excludedProductKeys2 
+	 * @param so 
 	 * @return
 	 * @throws FDResourceException
 	 */
-	public static boolean doATPCheck(FDIdentity customer, FDCartModel cart, ProcessActionResult vr)
+	public static boolean doATPCheck(FDIdentity customer, FDCartModel cart, ProcessActionResult vr, Set<ContentKey> excludedProductKeys)
 			throws FDResourceException {
 		// Cart ATP check ...
-		//
 		cart = checkAvailability( customer, cart, 30000 );
 		Map<String,FDAvailabilityInfo> invsInfoMap = cart.getUnavailabilityMap();
-		
 		
 		// Iterate through troubled items by their cartLineID
 		for (String key : invsInfoMap.keySet()) {
 			FDAvailabilityInfo info = invsInfoMap.get(key);
 			final Integer randomId = new Integer(key);
 			FDCartLineI cartLine = cart.getOrderLineById(randomId);
+			String altSkuCode = getAlternateSkuCode(cartLine,excludedProductKeys);
 			final String lineId = cartLine.getRandomId() + " / '" + cartLine.getProductName();
-
 			if (info instanceof FDRestrictedAvailabilityInfo) {
-				LOGGER.debug("[ATP CHECK/1] Item '" + lineId + "' has restriction: " + ((FDRestrictedAvailabilityInfo)info).getRestriction().getReason());			
-				
-				
-				vr.addUnavailableItem(cartLine, UnavailabilityReason.GENERAL, "Restricted availabity", cartLine.getQuantity());
+				LOGGER.debug("[ATP CHECK/1] Item '" + lineId + "' has restriction: " + ((FDRestrictedAvailabilityInfo)info).getRestriction().getReason());								
+				vr.addUnavailableItem(cartLine, UnavailabilityReason.GENERAL, "Restricted availabity", cartLine.getQuantity(),altSkuCode);
 				cart.removeOrderLineById(randomId);
 			} else if (info instanceof FDStockAvailabilityInfo) {
 				/**
@@ -881,10 +900,10 @@ public class StandingOrderUtil {
 						cart.getOrderLineById(randomId).setQuantity(availQty);
 					}
 					if(requestedQuantity - availQty > 0) {
-						vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Partial quantity", (requestedQuantity - availQty));
+						vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Partial quantity", (requestedQuantity - availQty),altSkuCode);
 					}
 				} else {
-					vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Zero quantity", cartLine.getQuantity());
+					vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Zero quantity", cartLine.getQuantity(),altSkuCode);
 					if(!FDStoreProperties.isIgnoreATPFailureForSO()) { // If the available qty is less than the minimum required qty for the item, we ignore this.
 						cart.removeOrderLineById(randomId);
 					}
@@ -896,7 +915,7 @@ public class StandingOrderUtil {
 				 */
 				LOGGER.debug("[ATP CHECK/3] Item '" + lineId + "' has problem with its options.");
 
-				vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Some options are unavailable", cartLine.getQuantity());
+				vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Some options are unavailable", cartLine.getQuantity(),altSkuCode);
 				if(!FDStoreProperties.isIgnoreATPFailureForSO()) {
 					cart.removeOrderLineById(randomId);
 				}
@@ -909,7 +928,7 @@ public class StandingOrderUtil {
 
 				/// final MunicipalityInfo muni = ((FDMuniAvailabilityInfo)info).getMunicipalityInfo();
 				//
-				vr.addUnavailableItem(cartLine, UnavailabilityReason.GENERAL, "FreshDirect does not deliver alcohol outside NY", cartLine.getQuantity());
+				vr.addUnavailableItem(cartLine, UnavailabilityReason.GENERAL, "FreshDirect does not deliver alcohol outside NY", cartLine.getQuantity(),altSkuCode);
 				cart.removeOrderLineById(randomId);
 			} else { /* info.isa? {@link FDStatusAvailabilityInfo} */
 				/**
@@ -918,7 +937,7 @@ public class StandingOrderUtil {
 				 */
 				LOGGER.debug("[ATP CHECK/5] Item '" + lineId + "' OUT OF STOCK");
 
-				vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Out of stock", cartLine.getQuantity());
+				vr.addUnavailableItem(cartLine, UnavailabilityReason.ATP, "Out of stock", cartLine.getQuantity(),altSkuCode);
 				if(!FDStoreProperties.isIgnoreATPFailureForSO()) {
 					cart.removeOrderLineById(randomId);
 				}
@@ -927,7 +946,49 @@ public class StandingOrderUtil {
 
 		return vr.isFail();
 	}
+		
+	private static String getAlternateSkuCode(FDCartLineI cartLine,
+			Set<ContentKey> excludedProductKeys) {
+		
+		String altSkuCode = null;
+		
+		ProductReference prodRef = cartLine.getProductRef();
+		ProductModel originalProduct = prodRef.lookupProductModel();
+		
+		List<ProductModel> replacementProducts = ProductRecommenderUtil.getUnavailableReplacementProducts(originalProduct, excludedProductKeys);
+
+		for (ProductModel productModel : replacementProducts) {
+
+				if (productModel != null) {
+
+					for (String skuCode : productModel.getSkuCodes()) {
+						if (skuCode != null) {
+							altSkuCode = skuCode;
+							break;
+						}
+					}
+				}
+				
+				if(altSkuCode != null){
+					break;
+				}
+			}
+		
+		return altSkuCode;
+	}
+			
 	
+	private static Set<ContentKey> prepareExcludedProduct(FDCartModel cart) {
+		
+		Set<ContentKey> contentKey = new HashSet<ContentKey>();
+	
+		List<FDCartLineI> list = cart.getOrderLines();
+		for (FDCartLineI cartLine : list){		
+			contentKey.add(cartLine.getProductRef().getContentKey());		
+		}
+		return contentKey;
+	}
+
 	private static void sendNotification( FDStandingOrder so, MailerGatewayHome mailerHome ) throws FDResourceException {		
 		try {
 			List<FDOrderInfoI> orders = so.getAllOrders();
@@ -1044,6 +1105,7 @@ public class StandingOrderUtil {
 	 * @param cart Cart content object [mandatory]
 	 * @param so Standing order object [mandatory]
 	 * @param saleId SALE ID (optional, MODIFY_SO_TMPL does not require sale object reference)
+	 * @param isUpdateSO 
 	 * 
 	 * @throws FDResourceException
 	 */
@@ -1074,7 +1136,6 @@ public class StandingOrderUtil {
 				// establish link between SO and Sale
 				FDStandingOrdersManager.getInstance().assignStandingOrderToSale(saleId, so);
 			}
-
 
 			// perform cache cleanup
 			QuickCartCache.invalidateOnChange(session, QuickCart.PRODUCT_TYPE_SO, so.getCustomerListId(), null);

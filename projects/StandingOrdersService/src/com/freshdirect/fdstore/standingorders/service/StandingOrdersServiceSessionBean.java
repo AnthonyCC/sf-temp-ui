@@ -33,6 +33,7 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.SOResult;
 import com.freshdirect.fdstore.standingorders.SOResult.Result;
 import com.freshdirect.fdstore.standingorders.SOResult.Status;
+import com.freshdirect.fdstore.standingorders.UnavDetailsReportingBean;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.mail.XMLEmailI;
@@ -83,7 +84,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 
 	public SOResult.ResultList placeStandingOrders(Collection<String> soIdList, StandingOrdersJobConfig jobConfig) {
 		Collection<FDStandingOrder> soList;
-		
+
 		if ( soIdList == null ) {
 			// We got no list at all, which means we need to process everything
 			LOGGER.info( "Null list passed, processing all standing orders." );
@@ -189,13 +190,13 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				try {
 					FDActionInfo info = new FDActionInfo(EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(), INITIATOR_NAME, "Updating Standing Order Status", null, null);
 					LOGGER.info( "Saving SO " + so.getId() );
-					soManager.save( info, so );
+					soManager.save( info, so);
 				} catch (FDResourceException re) {
 					invalidateMailerHome();
 					LOGGER.error( "Saving standing order failed! (FDResourceException)", re );
 				}
-				
-				logActivity( so, result );
+								
+				logActivity( so, result );				
 			}			
 		}
 		
@@ -391,5 +392,13 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 
 	private static boolean sendTechnicalMail ( String msg ) {
 		return sendTechnicalMail( msg, null, null, null, null, null );
+	}
+	
+	public void persistUnavDetailsToDB(SOResult.ResultList resultList) throws FDResourceException{
+			soManager.persistUnavailableDetailsToDB(resultList.getResultsList());	
+	}
+	
+	public UnavDetailsReportingBean getDetailsForReportGeneration() throws FDResourceException {		
+			return soManager.getDetailsForReportGeneration();	
 	}
 }

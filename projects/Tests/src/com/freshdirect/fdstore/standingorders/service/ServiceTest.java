@@ -8,14 +8,17 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit3.MockObjectTestCase;
 import org.mockejb.interceptor.InvocationContext;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.EnumAddressType;
@@ -463,9 +466,21 @@ public class ServiceTest extends MockObjectTestCase {
 		cart.setAvailability(new FDCompositeAvailability(map1));
 
 		ProcessActionResult vr = new ProcessActionResult();
-		StandingOrderUtil.doATPCheck(identity, cart, vr);
+		
+		StandingOrderUtil.doATPCheck(identity, cart, vr,prepareExcludedProduct(cart));
 
 		return vr.isFail();
+	}
+	
+	private static Set<ContentKey> prepareExcludedProduct(FDCartModel cart) {
+		
+		Set<ContentKey> contentKey = new HashSet<ContentKey>();
+	
+		List<FDCartLineI> list = cart.getOrderLines();
+		for (FDCartLineI cartLine : list){		
+			contentKey.add(cartLine.getProductRef().getContentKey());		
+		}
+		return contentKey;
 	}
 }
 
