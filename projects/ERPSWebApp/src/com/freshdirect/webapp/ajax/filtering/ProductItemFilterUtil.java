@@ -63,7 +63,7 @@ public class ProductItemFilterUtil {
 		int count = 0;
 		for(FilteringProductItem item : items){
 			try {
-				if(filter.apply(item)){
+				if(filter.apply(item) && item.getProductModel() != null && item.getProductModel().isFullyAvailable()){
 					++count;
 				}
 			} catch (FDResourceException e) {

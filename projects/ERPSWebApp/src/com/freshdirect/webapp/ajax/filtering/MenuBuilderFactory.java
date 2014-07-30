@@ -729,6 +729,8 @@ public class MenuBuilderFactory {
 
 				if (box.getBoxType() == MenuBoxType.FILTER && box.getSelectionType() == MenuBoxSelectionType.MULTI) { // MULTI SELECT FILTER GROUP
 					
+					boolean popupType = box.getDisplayType() == MenuBoxDisplayType.CENTER_POPUP || box.getDisplayType() == MenuBoxDisplayType.POPUP;
+					
 					// walk through on menu items in the box
 					Iterator<MenuItemData> it = box.getItems().iterator();
 					while (it.hasNext()) {
@@ -745,10 +747,10 @@ public class MenuBuilderFactory {
 						itemCount = ProductItemFilterUtil.countItemsForFilter(items, allFilters.get(ProductItemFilterUtil.createCompositeId(box.getId(), item.getId())));
 
 						if (itemCount == 0 && !item.isSelected()) {
-							if(box.isBrandFilter()){
-								it.remove();
+							if(popupType){
+								it.remove();								
 							}else{
-								item.setActive(false);								
+								item.setActive(false);
 							}
 						}
 					}
@@ -757,6 +759,8 @@ public class MenuBuilderFactory {
 
 					// extract current filter base from active filters
 					Set<ProductItemFilterI> currentFiltersBase = ProductItemFilterUtil.removeFiltersByParentId(box.getId(), activeFilters);
+					
+					boolean popupType = box.getDisplayType() == MenuBoxDisplayType.CENTER_POPUP || box.getDisplayType() == MenuBoxDisplayType.POPUP;
 
 					// create the pre filtered item list (filters belongs to this filtergroup will be removed)
 					List<FilteringProductItem> preFilteredItems = ProductItemFilterUtil.getFilteredProducts(!clp ? browseData.getUnfilteredItems() : items, currentFiltersBase);
@@ -782,11 +786,11 @@ public class MenuBuilderFactory {
 						 itemCount = ProductItemFilterUtil.getFilteredProducts(preFilteredItems, currentFilters).size();
 						 
 						 if (itemCount == 0 && !item.isSelected()) {
-							 if(box.isBrandFilter()){
-									it.remove();
-								}else{
-									item.setActive(false);								
-								}
+							if(popupType){
+								it.remove();								
+							}else{
+								item.setActive(false);
+							}
 						}
 					}
 
