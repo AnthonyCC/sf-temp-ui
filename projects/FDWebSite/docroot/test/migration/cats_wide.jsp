@@ -121,7 +121,7 @@ for (CategoryModel cat : cats) {
 			path.push(cat);
 		}
 		int k = maxDepth;
-		Iterator<CategoryModel> it = path.descendingIterator();
+		Iterator<CategoryModel> it = path.iterator();
     %><tr>
     	<td><%= dep.getContentKey().getId() %></td>
     	<td><%= dep.getFullName() %></td>
