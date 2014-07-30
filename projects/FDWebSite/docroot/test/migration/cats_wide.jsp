@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<%@page import="java.util.Iterator"%>
+<%@page import="java.util.LinkedList"%>
+<%@page import="java.math.BigDecimal"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
 <%@page import="java.util.Map"%>
@@ -45,16 +48,21 @@
 		}
 	</style>
 </head>
-<%
-class Filler {
-	public void fill(CategoryModel cat, List<String> row) {
-		row.add(cat.getContentKey().getId());
-		row.add(cat.getFullName());
-		row.add(Boolean.valueOf(cat.isNoGroupingByCategory()).toString());
-		row.add(Boolean.valueOf(cat.isShowAllByDefault()).toString());
+<%!
+void processCategory(CategoryModel cat, List<CategoryModel> out) {
+	if (cat == null || cat.isOrphan() || cat.isHidden()) {
+		return;
+	}
+	
+	out.add(cat);
+	
+	// process subcats
+	for (CategoryModel subCat : cat.getSubcategories()) {
+		processCategory(subCat, out);
 	}
 }
-
+%>
+<%
 List<DepartmentModel> deps = new ArrayList<DepartmentModel>();
 List<DepartmentModel> skippedDeps = new ArrayList<DepartmentModel>();
 for (ContentKey key : CmsManager.getInstance().getContentKeysByType(FDContentTypes.DEPARTMENT)) {
@@ -75,25 +83,17 @@ for (ContentKey key : CmsManager.getInstance().getContentKeysByType(FDContentTyp
 	deps.add(dep);
 }
 
-List<List<String>> result = new ArrayList<List<String>>(deps.size());
-int maxSize = 0;
-Filler f = new Filler();
+// -- new part -- //
+List<CategoryModel> cats = new ArrayList<CategoryModel>();
 for (DepartmentModel dep : deps) {
-	List<String> row = new ArrayList<String>();
-
-	row.add(dep.getContentKey().getId());
-	row.add(dep.getFullName());
-	
-	for (CategoryModel topCat : dep.getCategories()) {
-		f.fill(topCat, row);
-
-		for (CategoryModel subCat : topCat.getSubcategories()) {
-			f.fill(subCat, row);
-		}
+	for (CategoryModel c : dep.getCategories()) {
+		processCategory(c, cats);
 	}
+}
 
-	maxSize = Math.max(maxSize, row.size());
-	result.add(row);
+int maxDepth = 0;
+for (CategoryModel cat : cats) {
+	maxDepth = Math.max(maxDepth, cat.getCategoryLevel());
 }
 
 %>
@@ -103,20 +103,42 @@ for (DepartmentModel dep : deps) {
 	<tr>
 		<th>D ID</th>
 		<th>DEPT</th>
-		<% for (int i=0; i<(maxSize-2)/4; i++) {%>
-		<th>C ID</th>
-		<th>CAT</th>
-		<th>NO GRP</th>
-		<th>SHOW ALL</th>
+		<% for (int i=1; i<=maxDepth; i++) {%>
+		<th>C ID<%= i %></th>
+		<th>CAT<%= i %></th>
+		<th>NO GRP<%= i %></th>
+		<th>SHOW ALL<%= i %></th>
 		<% } %>
 	</tr>
 
-	<% for (List<String> row : result) {
+	<% for (CategoryModel cat : cats) {
+		DepartmentModel dep = cat.getDepartment();
+		
+		LinkedList<CategoryModel> path = new LinkedList<CategoryModel>();
+		path.push(cat);
+		while (cat.getParentNode() instanceof CategoryModel) {
+			cat = (CategoryModel) cat.getParentNode();
+			path.push(cat);
+		}
+		int k = maxDepth;
+		Iterator<CategoryModel> it = path.descendingIterator();
     %><tr>
-    	<td><%= row.get(0) %></td>
-    	<td><%= row.get(1) %></td>
-    <% for (int k=2; k<row.size(); k++) { %>
-    	<td class="<%= ( ((k-2)/4)%2 == 0 ? "even" : "odd")  %>"><%= row.get(k) %></td>
+    	<td><%= dep.getContentKey().getId() %></td>
+    	<td><%= dep.getFullName() %></td>
+    <% while (it.hasNext()) {
+    	CategoryModel c = it.next();
+    	%>
+    	<td><%= c.getContentKey().getId() %></td>
+    	<td><%= c.getFullName() %></td>
+    	<td><%= Boolean.valueOf(c.isNoGroupingByCategory()).toString().toUpperCase() %></td>
+    	<td><%= Boolean.valueOf(c.isShowAllByDefault()).toString().toUpperCase() %></td>
+	<% k--;
+	} %>
+	<% for (int i=0; i<k; i++) { %>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
 	<% } %>
     </tr>
 	<% } %>
