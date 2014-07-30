@@ -110,6 +110,9 @@ var FreshDirect = FreshDirect || {};
         $t = $(e.currentTarget),
         $ghostMenuItem = $ghost.find("[data-id='" + $t.data('id') + "']"),
         $popupBody = $popup.find(".globalnav-popup-content");
+    
+    // close all autocomplete popups
+    $('[data-component="autocomplete"]').autocomplete("close");
 
     // precautions
     if(!$popupBody.length){ return; }
