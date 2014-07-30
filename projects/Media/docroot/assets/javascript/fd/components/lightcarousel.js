@@ -35,22 +35,24 @@ var FreshDirect = FreshDirect || {};
         nrPages = Math.ceil($list.children().size() / itemPerPage),
         newPage, result, targetElem;
 
-    if (direction === "next") {
-      carousel.removeClass('first');
+    carousel.removeClass('first').removeClass('last');
 
+    if (direction === "next") {
       newPage = nrPages - 1 > currentPage ? currentPage + 1 : nrPages - 1;
     } else if (direction === "prev") {
-      carousel.removeClass('last');
-
       newPage = currentPage > 0 ? currentPage - 1 : 0;
     } else {
       newPage = toPage || toPage === 0 ? toPage : currentPage;
     }
+    // str/int => int
+    newPage = +newPage;
 
     try {
       targetElem = $(elements[newPage * itemPerPage]);
       result = $list.offset().left - targetElem.offset().left + parseInt(targetElem.css('margin-left'), 10);
     } catch (e) {}
+
+    console.log(nrPages, newPage);
 
     if (newPage === 0) {
       carousel.addClass('first');             
