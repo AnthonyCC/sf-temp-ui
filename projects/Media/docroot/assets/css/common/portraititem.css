@@ -365,6 +365,10 @@ a.portrait-item-header-name:link {
   vertical-align: top;
 }
 
+.ie8 #transactionalPopup .transactional-main-item {
+  min-width: 150px;
+}
+
 #transactionalPopup .transactional-related-wrapper {
   vertical-align: top;
   width: auto;
