@@ -647,16 +647,20 @@ section.main .leftnav .menuBox input[type="checkbox"] {
   left: 1px;
 }
 
+#menupopup input[type="radio"],
 section.main .leftnav .menuBox input[type="radio"] {
   display: none;
 }
 
+#menupopup input[type="radio"] + span,
 section.main .leftnav .menuBox input[type="radio"] + span {
   display: block;
   padding: 5px;
   border-radius: 6px;
 }
 
+#menupopup input[type="radio"]:checked + span,
+#menupopup input[type="radio"][checked] + span,
 section.main .leftnav .menuBox input[type="radio"]:checked + span,
 .ie8 section.main .leftnav .menuBox input[type="radio"][checked] + span {
   background-color:#728d4b;
@@ -668,6 +672,7 @@ section.main .leftnav .menuBox label:hover {
   text-decoration: underline;
 }
 
+#menupopup .selected label:hover,
 section.main .leftnav .menuBox .selected label:hover,
 section.main .leftnav .menuBox .disabled label:hover,
 section.main .leftnav .menuBox label.disabled:hover {
