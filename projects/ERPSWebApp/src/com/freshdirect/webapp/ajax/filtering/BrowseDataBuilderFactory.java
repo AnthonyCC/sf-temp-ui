@@ -263,11 +263,11 @@ public class BrowseDataBuilderFactory {
 				} else { // or create the section tree
 
 					SectionContext sectionTree = createSectionTree(cat, navigationModel.getNavDepth().getLevel(), user);
+					sections.add(sectionTree);
 					if (subCats.size()!=0 && nav.isAll()) { //hide category section header if Show All 
-						sections.addAll(sectionTree.getSectionContexts());
-					
-					} else {
-						sections.add(sectionTree);
+						sectionTree.setHeaderText(null);
+						sectionTree.setHeaderImage(null);
+						sectionTree.setMedia(null);
 					}
 					
 				}
