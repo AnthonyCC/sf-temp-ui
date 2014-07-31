@@ -176,6 +176,12 @@ var FreshDirect = FreshDirect || {};
       this.config.align=align;
     }
     if (this.$trigger && !this.shown && !this.disabled) {
+
+      // close autocomplete
+      try {
+        $('[data-component="autocomplete"]').autocomplete("close");
+      } catch (e) {}
+
       this.shown = true;
       this.$trigger.addClass("hover");
       this.reposition();

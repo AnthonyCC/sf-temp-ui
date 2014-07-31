@@ -13,7 +13,7 @@
       }
     },
     open: function (e, ui) {
-      $(this).autocomplete('widget').css('z-index', 100);
+      $(this).autocomplete('widget').css('z-index', 1010);
     }
   });
 }(jQuery));
