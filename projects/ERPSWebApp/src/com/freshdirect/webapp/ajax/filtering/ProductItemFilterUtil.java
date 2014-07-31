@@ -23,7 +23,7 @@ public class ProductItemFilterUtil {
 	private static final Logger LOG = LoggerFactory.getInstance( ProductItemFilterUtil.class );
 	
 	
-	public static List<FilteringProductItem> getFilteredProducts(List<FilteringProductItem> items, Set<ProductItemFilterI> activeFilters) {
+	public static List<FilteringProductItem> getFilteredProducts(List<FilteringProductItem> items, Set<ProductItemFilterI> activeFilters, boolean showUnavProducts) {
 		
 		if(items==null){
 			return null;
@@ -32,10 +32,17 @@ public class ProductItemFilterUtil {
 		List<FilteringProductItem> shownProducts = new ArrayList<FilteringProductItem>();
 		
 		for (FilteringProductItem productItem : items){
-				
+			
+			// don't count unavailable items
+			if(!showUnavProducts && (productItem.getProductModel() == null || !productItem.getProductModel().isFullyAvailable())){
+				continue;
+			}
+			
 			boolean passedFilters = true;
 			for (ProductItemFilterI filter : activeFilters) {
 				try {
+					
+					
 					if (!filter.apply(productItem)) {
 						passedFilters = false;
 						break;

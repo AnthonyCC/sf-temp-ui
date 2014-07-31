@@ -763,7 +763,7 @@ public class MenuBuilderFactory {
 					boolean popupType = box.getDisplayType() == MenuBoxDisplayType.CENTER_POPUP || box.getDisplayType() == MenuBoxDisplayType.POPUP;
 
 					// create the pre filtered item list (filters belongs to this filtergroup will be removed)
-					List<FilteringProductItem> preFilteredItems = ProductItemFilterUtil.getFilteredProducts(!clp ? browseData.getUnfilteredItems() : items, currentFiltersBase);
+					List<FilteringProductItem> preFilteredItems = ProductItemFilterUtil.getFilteredProducts(!clp ? browseData.getUnfilteredItems() : items, currentFiltersBase, false);
 					
 					// walk through on menu items in the box
 					Iterator<MenuItemData> it = box.getItems().iterator();
@@ -783,7 +783,7 @@ public class MenuBuilderFactory {
 							 currentFilters.add(allFilters.get(filterCompositeId));							 
 						 }
 						 // and check how many products passes the current status
-						 itemCount = ProductItemFilterUtil.getFilteredProducts(preFilteredItems, currentFilters).size();
+						 itemCount = ProductItemFilterUtil.getFilteredProducts(preFilteredItems, currentFilters, false).size();
 						 
 						 if (itemCount == 0 && !item.isSelected()) {
 							if(popupType){
@@ -825,7 +825,7 @@ public class MenuBuilderFactory {
 							ProductItemFilterUtil.collectAllItems(section.getSectionContexts(), products);							
 						}
 
-						products = ProductItemFilterUtil.getFilteredProducts(products, navModel.getActiveFilters());
+						products = ProductItemFilterUtil.getFilteredProducts(products, navModel.getActiveFilters(), false);
 						
 						checkDefaultSkuAvailability(products);
 						

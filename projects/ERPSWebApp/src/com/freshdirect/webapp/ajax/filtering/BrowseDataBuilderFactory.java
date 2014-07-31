@@ -553,7 +553,7 @@ public class BrowseDataBuilderFactory {
 				// collect all items before filtering
 				allItems.addAll(section.getProductItems());
 				// apply filters
-				section.setProductItems(ProductItemFilterUtil.getFilteredProducts(section.getProductItems(), activeFilters));				
+				section.setProductItems(ProductItemFilterUtil.getFilteredProducts(section.getProductItems(), activeFilters, true));				
 			}
 			
 			if(section.getSectionContexts()!=null && section.getSectionContexts().size()>0){
