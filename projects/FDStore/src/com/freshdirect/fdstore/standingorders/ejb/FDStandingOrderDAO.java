@@ -130,7 +130,7 @@ public class FDStandingOrderDAO {
 	
 	private static final String UNAV_ITEM_SQL = "insert into mis.unav_items_inv values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
-	private static final String UNAV_ITEM_DETAILS_SQL = "select PRODUCT_NAME,SKU_CODE,MATERIAL_NUM,QUANTITY from mis.unav_items_inv where run_instance = ? and reason = ? ";
+	private static final String UNAV_ITEM_DETAILS_SQL = "select PRODUCT_NAME,SKU_CODE,MATERIAL_NUM,QUANTITY from mis.unav_items_inv where run_instance = ? and reason = ? and run_date > SYSDATE - 1";
 
 	private static final String GET_RUNINSTANCE_SQL = "select max(RUN_INSTANCE) as maxInstance from mis.UNAV_ITEMS_INV where run_date > SYSDATE - 1";
 	
