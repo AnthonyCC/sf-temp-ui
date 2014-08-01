@@ -27,9 +27,9 @@
     {elseif $menuBox.displayType == 'POPUP'}
       {if $menuBox.name}<h2>{$menuBox.name}</h2>{/if}
       {if $menuBox.boxType == 'FILTER'}
-      	<button class="category popup leftnav-category-popup-button cssbutton green"><span class="icon-arrow-right2-before">{$menuBox.name}</span></button>
+      	<button class="category popup leftnav-category-popup-button cssbutton green"><span class="icon-arrow-down2-after">{$menuBox.name}</span></button>
       {else}
-      	<button class="category popup leftnav-category-popup-button cssbutton green"><span class="icon-arrow-right2-before">{$menuBox.selectedLabel}</span></button>      
+      	<button class="category popup leftnav-category-popup-button cssbutton green"><span class="icon-arrow-down2-after">{$menuBox.selectedLabel}</span></button>      
       {/if}
       <div class="popupMenuContent" style="display: none;">
         <div data-component="menuitemlist" data-menuitemlist="{$menuBox.id}">
@@ -41,7 +41,7 @@
       </div>
     {elseif $menuBox.displayType == 'CENTER_POPUP'}
       <h2>{$menuBox.name}</h2>
-      <button class="category centerpopup cssbutton green" data-header="Choose a {$menuBox.name}"><span class="icon-arrow-right2-before">{if $menuBox.selectedLabel}{$menuBox.selectedLabel}{else}Choose a {$menuBox.name}{/if}</span></button>
+      <button class="category centerpopup cssbutton green" data-header="Choose a {$menuBox.name}"><span class="icon-arrow-down2-after">{if $menuBox.selectedLabel}{$menuBox.selectedLabel}{else}Choose a {$menuBox.name}{/if}</span></button>
       <div class="popupMenuContent" style="display: none;">
         <div data-component="menuitemlist" data-menuitemlist="{$menuBox.id}">
           {call .layoutBreak}

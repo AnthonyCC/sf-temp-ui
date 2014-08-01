@@ -412,6 +412,10 @@ section.main .sorter {
   color: #333;
 }
 
+section.main .leftnav {
+  padding-top: 10px;
+}
+
 section.main .leftnav .menuBox {
   position: relative;
   margin-bottom: 20px;
@@ -435,6 +439,10 @@ section.main .leftnav .menuBox h2 {
   text-transform: uppercase;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+section.main .leftnav .menuBox[data-selectiontype="LINK"] h2 {
+  display: none;
 }
 
 section.main .leftnav .menuBox ul {
@@ -718,18 +726,17 @@ section.main .leftnav .menuBox button.category > span {
   text-overflow: ellipsis;
   white-space: nowrap;
   line-height: 1.3em;
+  position: relative;
 }
 
-.leftnav-category-popup-button.cssbutton > span:before,
-section.main .leftnav .menuBox button.category > span:before {
+.leftnav-category-popup-button.cssbutton > span:after,
+section.main .leftnav .menuBox button.category > span:after {
+  position: absolute;
   font-size: 15px;
   line-height: 13px;
   vertical-align: middle;
-}
-
-.leftnav-category-popup-button.cssbutton.hover > span:before,
-section.main .leftnav .menuBox button.category.hover > span:before {
-	content: "\e617";
+  top: 1px;
+  right: 0;
 }
 
 section.main .leftnav .menuBox button.category.emptypopup {
