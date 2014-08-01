@@ -148,7 +148,7 @@ public class ResonanceJSObjectTag extends SimpleTagSupport {
 			}
 
 			out.println("	\"pagetype\" : \"" + certonaPageId + "\",");
-			out.println("	\"itemid\" : \"" + inCartProductIds.toString().substring(0, inCartProductIds.toString().length() - 1) + "\",");
+			out.println("	\"itemid\" : \"" + (inCartProductIds.length() > 0 ? inCartProductIds.toString().substring(0, inCartProductIds.toString().length() - 1) : "") + "\",");
 
 		} else 	if ("VIEW_CART".equals(certonaPageId)) {
 			
@@ -163,7 +163,7 @@ public class ResonanceJSObjectTag extends SimpleTagSupport {
 
 			out.println("	\"pagetype\" : \"CART\",");
 			//Omitting last semicolon
-			out.println("	\"itemid\" : \"" + inCartProductIds.toString().substring(0, inCartProductIds.toString().length() - 1) + "\",");
+			out.println("	\"itemid\" : \"" + (inCartProductIds.length() > 0 ? inCartProductIds.toString().substring(0, inCartProductIds.toString().length() - 1) : "") + "\",");
 
 		} else 	if ("QUICKSHOP/QS_FD_LISTS".equals(certonaPageId)) {
 			
@@ -203,9 +203,9 @@ public class ResonanceJSObjectTag extends SimpleTagSupport {
 			}
 		
 			out.println("	\"pagetype\" : \"PURCHASE\",");
-			out.println("	\"itemid\" : \"" + inCartProductIds.toString().substring(0, inCartProductIds.toString().length() - 1) + "\",");
-			out.println("	\"qty\" : \"" + inCartProductPrices.toString().toUpperCase().substring(0, inCartProductPrices.toString().length() - 1) + "\",");
-			out.println("	\"price\" : \"" + inCartProductQuantities.toString().toUpperCase().substring(0, inCartProductQuantities.toString().length() - 1) + "\",");
+			out.println("	\"itemid\" : \"" + (inCartProductIds.length() > 0 ? inCartProductIds.toString().substring(0, inCartProductIds.toString().length() - 1) : "") + "\",");
+			out.println("	\"qty\" : \"" + (inCartProductIds.length() > 0 ? inCartProductPrices.toString().toUpperCase().substring(0, inCartProductPrices.toString().length() - 1) : "") + "\",");
+			out.println("	\"price\" : \"" + (inCartProductIds.length() > 0 ? inCartProductQuantities.toString().toUpperCase().substring(0, inCartProductQuantities.toString().length() - 1) : "") + "\",");
 			out.println("	\"total\" : \"" + order.getSubTotal() + "\",");
 			out.println("	\"transactionid\" : \"" + saleId + "\",");
 
@@ -229,7 +229,7 @@ public class ResonanceJSObjectTag extends SimpleTagSupport {
 			for (String productId : recommendedProductIds) {
 				products.append(productId).append(";");
 			}
-			out.println("	\"recitems\" : \"" + products.toString().substring(0, products.toString().length() - 1) + "\"");
+			out.println("	\"recitems\" : \"" + (products.length() > 0 ? products.toString().substring(0, products.toString().length() - 1) : "") + "\"");
 
 		}
 		
