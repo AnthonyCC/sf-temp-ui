@@ -507,7 +507,7 @@ section.main .leftnav .menuBox hr {
 
 section.main .category.cssbutton.green,
 .popupcontentghost .category.cssbutton.green{
-  background-color:#88a75c;
+  background-color:#728d4b;
 }
 
 section.main .category.cssbutton.green:focus,
@@ -671,7 +671,7 @@ section.main .leftnav .menuBox input[type="radio"] + span {
 #menupopup input[type="radio"][checked] + span,
 section.main .leftnav .menuBox input[type="radio"]:checked + span,
 .ie8 section.main .leftnav .menuBox input[type="radio"][checked] + span {
-  background-color:#728d4b;
+  background-color:#88a75c;
   color: #fff;
   font-weight: bold;
 }
