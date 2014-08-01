@@ -40,8 +40,11 @@
   margin-bottom: 10px;
 }
 
-.browseContent .noSubSections h2 {
+.browseContent .noSubSections h2.last {
   font-size: 22px;
+}
+
+.browseContent .noSubSections h2 {
   padding-bottom: 16px;
   border-bottom: 1px solid #e0e3d0;
 }
