@@ -472,13 +472,17 @@ section.main .leftnav .menuBox h3 {
   padding: 10px;
 }
 
+section.main .leftnav .menuBox li.selected label {
+  	line-height: 15px;
+}
+
 .browse-popup-content label,
 section.main .leftnav .menuBox label {
-  display: block;
-  position: relative;
-  line-height: 15px;
-  padding: 5px 0 5px 22px;
-  cursor: pointer;
+  	display: block;
+  	position: relative;
+  	line-height: 20px;
+	padding: 0 0 0 22px;
+  	cursor: pointer;
 }
 
 section.main .leftnav .menuBox[data-selectionType="SINGLE"] label {
@@ -651,8 +655,9 @@ section.main .category.cssbutton.green:hover,
 section.main .leftnav .menuBox input[type="checkbox"] {
   margin: auto 0;
   position: absolute;
-  top: 5px;
   left: 1px;
+  height: 20px;
+	vertical-align: middle;
 }
 
 #menupopup input[type="radio"],
@@ -660,8 +665,14 @@ section.main .leftnav .menuBox input[type="radio"] {
   display: none;
 }
 
+section.main .leftnav .menuBox li input[type="radio"] + span {
+  display: block;
+  padding: 0 0 0 5px;
+  border-radius: 6px;
+}
+
 #menupopup input[type="radio"] + span,
-section.main .leftnav .menuBox input[type="radio"] + span {
+section.main .leftnav .menuBox li.selected input[type="radio"] + span {
   display: block;
   padding: 5px;
   border-radius: 6px;
