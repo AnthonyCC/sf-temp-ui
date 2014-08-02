@@ -99,6 +99,8 @@ FDIdentity identity = user.getIdentity();
 <div style="width: <%= W_VIEWCART_FULL %>px;">
 <style type="text/css">
  .promotionError { font-size: 10px; font-weight: bold; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
+ .dept-name-cart a{color:#FF9933; font-weight:bold; font-size: 10px;}
+ .dept-name-cart a:hover{text-decoration:none;}
 </style>
 
 <table width="100%" cellspacing="0" cellpadding="0">
@@ -257,7 +259,7 @@ FDIdentity identity = user.getIdentity();
 						<td width="84">&nbsp;</td>
 						<td width="16">&nbsp;</td>
 						<td width="22">&nbsp;</td>
-						<td colspan="8"><br><a href="/department.jsp?deptId=<%= deptId %>&trk=cart"><img src="/media_stat/images/layout/department_headers/<%=lastDeptImgName%>" alt="<%= lastDept.toUpperCase() %>" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
+						<td colspan="8"><br><span class="dept-name-cart"><a href="/department.jsp?deptId=<%= deptId %>&trk=cart"><%= lastDept.toUpperCase() %></a></span><br><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
 					</tr>
 					<%
 				}
