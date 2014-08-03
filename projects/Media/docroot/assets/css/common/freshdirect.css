@@ -246,7 +246,7 @@ section.main {
   display: block;
   overflow: hidden;
   position: relative;
-  margin: 10px 0 25px;
+  margin: 10px 0 0;
 }
 
 section.main:before {
