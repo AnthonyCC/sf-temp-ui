@@ -11,6 +11,7 @@ import java.util.Set;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.CategorySectionModel;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.EnumBrandFilterLocation;
 import com.freshdirect.fdstore.content.FilteringProductItem;
@@ -305,14 +306,16 @@ public class MenuBuilderFactory {
 			
 			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
 			
-			DepartmentModel dept = (DepartmentModel) navModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT); 
+			final Map<NavDepth, ContentNodeModel> thePath = navModel.getNavigationHierarchy();
+
+			DepartmentModel dept = (DepartmentModel) thePath.get(NavDepth.DEPARTMENT); 
 			String deptId = dept.getContentName();
 			
 			// create superdepartment box
 			if (navModel.getSuperDepartmentModel() != null) {
 				MenuBoxData domain = createSuperDepartmentMenuBox(navModel.getSuperDepartmentModel(), navModel, false);
 				// check which department is selected
-				checkSelected(domain,navModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT).getContentName());
+				checkSelected(domain,thePath.get(NavDepth.DEPARTMENT).getContentName());
 				menu.add(domain);
 			}
 			
@@ -358,25 +361,25 @@ public class MenuBuilderFactory {
 				
 				domain.setItems(menuItems);
 				insertMarkersForSpecialBox(domain);
-				checkSelected(domain, navModel.getNavigationHierarchy().get(NavDepth.CATEGORY).getContentName());
+				checkSelectedEx(domain, thePath.get(NavDepth.CATEGORY).getContentName(), dept.getFullName());
 				
 				menu.add(domain);
 			}
 			
 			// sub categories box on category and sub category page
-			if(((CategoryModel)navModel.getNavigationHierarchy().get(NavDepth.CATEGORY)).getSubcategories()!=null && 
-			   ((CategoryModel)navModel.getNavigationHierarchy().get(NavDepth.CATEGORY)).getSubcategories().size()>0){
+			if(((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories()!=null && 
+			   ((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories().size()>0){
 				
-				CategoryModel cat = (CategoryModel)navModel.getNavigationHierarchy().get(NavDepth.CATEGORY);
+				CategoryModel cat = (CategoryModel)thePath.get(NavDepth.CATEGORY);
 				
 				if (!NavigationUtil.isCategoryHiddenInContext(navModel.getUser(), (CategoryModel)cat)) {
 					MenuBoxData domain = new MenuBoxData();
 					domain.setName(cat.getFullName());
 					domain.setId(cat.getContentName());
 					domain.setBoxType(MenuBoxType.SUB_CATEGORY);
-					if(nav.isPdp() || (navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY)!=null &&
-							   ((CategoryModel)navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY)).getSubcategories()!=null &&
-							   ((CategoryModel)navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY)).getSubcategories().size()>0)){
+					if(nav.isPdp() || (thePath.get(NavDepth.SUB_CATEGORY)!=null &&
+							   ((CategoryModel)thePath.get(NavDepth.SUB_CATEGORY)).getSubcategories()!=null &&
+							   ((CategoryModel)thePath.get(NavDepth.SUB_CATEGORY)).getSubcategories().size()>0)){
 						
 						domain.setDisplayType(MenuBoxDisplayType.POPUP);
 						domain.setSelectionType(MenuBoxSelectionType.LINK);
@@ -396,10 +399,10 @@ public class MenuBuilderFactory {
 						items.add(allProductsItem);					
 					}
 					
-					domain.setItems(createCatMenuItems(((CategoryModel)navModel.getNavigationHierarchy().get(NavDepth.CATEGORY)).getSubcategories(), items, navModel.getUser()));
+					domain.setItems(createCatMenuItems(((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories(), items, navModel.getUser()));
 					
-					if(navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY)!=null){
-						checkSelected(domain, navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY).getContentName());
+					if(thePath.get(NavDepth.SUB_CATEGORY)!=null){
+						checkSelectedEx(domain, thePath.get(NavDepth.SUB_CATEGORY).getContentName(), cat.getFullName());
 					}
 					
 					if (items.size() > 1) {
@@ -409,12 +412,12 @@ public class MenuBuilderFactory {
 			}
 			
 			// sub sub categories box on sub and sub sub categories page (not on special layout)
-			if(navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY)!=null &&
-			   ((CategoryModel)navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY)).getSubcategories()!=null &&
-			   ((CategoryModel)navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY)).getSubcategories().size()>0 &&
+			if(thePath.get(NavDepth.SUB_CATEGORY)!=null &&
+			   ((CategoryModel)thePath.get(NavDepth.SUB_CATEGORY)).getSubcategories()!=null &&
+			   ((CategoryModel)thePath.get(NavDepth.SUB_CATEGORY)).getSubcategories().size()>0 &&
 			   !nav.isSpecialPage()){
 				
-				CategoryModel subCat = (CategoryModel)navModel.getNavigationHierarchy().get(NavDepth.SUB_CATEGORY);
+				CategoryModel subCat = (CategoryModel)thePath.get(NavDepth.SUB_CATEGORY);
 				
 				if (!NavigationUtil.isCategoryHiddenInContext(navModel.getUser(), (CategoryModel)subCat)) {
 					MenuBoxData domain = new MenuBoxData();
@@ -438,7 +441,7 @@ public class MenuBuilderFactory {
 					domain.setItems(createCatMenuItems(subCat.getSubcategories(), items, navModel.getUser()));
 					
 					if(domain.getItems()!=null && domain.getItems().size()>0){
-						String subCatId = navModel.getNavigationHierarchy().get(NavDepth.SUB_SUB_CATEGORY) == null ? null : navModel.getNavigationHierarchy().get(NavDepth.SUB_SUB_CATEGORY).getContentName();
+						String subCatId = thePath.get(NavDepth.SUB_SUB_CATEGORY) == null ? null : thePath.get(NavDepth.SUB_SUB_CATEGORY).getContentName();
 						if(!checkSelected(domain, subCatId)){
 							allProductsItem.setSelected(true); // select ALL PRODUCTS option if no menu item were selected
 						}
@@ -500,7 +503,29 @@ public class MenuBuilderFactory {
 		
 		return false;
 	}
-	
+
+	/**
+	 * Check selected menu item and set explicit label name (instead of the name of particular menu item)
+	 * See {@link #checkSelected(MenuBoxData, String)
+	 * 
+	 * @param box menu box
+	 * @param nodeId
+	 * @param selectedLabelName
+	 * @return
+	 */
+	private boolean checkSelectedEx(MenuBoxData box, String nodeId, String selectedLabelName){
+		
+		for(MenuItemData menuItem : box.getItems()){
+			if(nodeId!=null && nodeId.equals(menuItem.getId())){
+				menuItem.setSelected(true);
+				box.setSelectedLabel(selectedLabelName);
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
 	private boolean checkSpecial(ProductContainer cat){
 		
 		for(CategoryModel subCat: cat.getSubcategories()){
