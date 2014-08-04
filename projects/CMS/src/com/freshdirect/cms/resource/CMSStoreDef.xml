@@ -308,6 +308,9 @@
 			<AttributeDef type="S" name="preferenceCategoriesNavHeader" label="Preference Categories Nav Header"/>
 			<AttributeDef type="S" name="regularCategoriesLeftNavBoxHeader" label="Regular Categories Left Nav Box Header"/>
 			<AttributeDef type="S" name="preferenceCategoriesLeftNavBoxHeader" label="Preference Categories Left Nav Box Header"/>
+
+			<!-- APPDEV-3773 -->
+			<AttributeDef type="B" name="showCatSectionHeaders" label="Show Category Section Headers" inheritable="false"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="categories" navigable="true" cardinality="Many">

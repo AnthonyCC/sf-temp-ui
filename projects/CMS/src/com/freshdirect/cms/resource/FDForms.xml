@@ -184,6 +184,8 @@
 						<fields>
 							<CmsField><attribute>categoryBanner</attribute></CmsField>
 							<CmsField><attribute>categorySections</attribute></CmsField>
+							<!-- APPDEV-3773 -->
+							<CmsField><attribute>showCatSectionHeaders</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>

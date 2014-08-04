@@ -164,8 +164,9 @@ public class BrowseDataBuilderFactory {
 			List<CategoryData> preferenceSubCategories = new ArrayList<CategoryData>();
 			DepartmentModel department = (DepartmentModel) navigationModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT);
 			
-			boolean showPopularCatsGlobal=department.isShowPopularCategories();
-			
+			final boolean showPopularCatsGlobal=department.isShowPopularCategories();
+			final boolean showCatSectionHeaders = department.isShowCatSectionHeaders();
+
 			// create category lists on the department level
 			for (CategoryModel cat : department.getSubcategories()){
 				if (NavigationUtil.isCategoryHiddenInContext(user, cat)) {
@@ -192,7 +193,7 @@ public class BrowseDataBuilderFactory {
 						
 						selectedSectionCategories.add(CMSModelToSoyDataConverter.createCategoryData(categoryModel, user, showPopularCatsGlobal));
 					}
-					sections.add(createSection(categorySection.getHeadline(), selectedSectionCategories));
+					sections.add(createSection(showCatSectionHeaders ? categorySection.getHeadline() : null, selectedSectionCategories));
 				}
 				
 			} else {

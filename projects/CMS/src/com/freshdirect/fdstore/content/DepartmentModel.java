@@ -249,4 +249,12 @@ public class DepartmentModel extends ProductContainer {
 		return getAttribute("preferenceCategoriesLeftNavBoxHeader", "");
 	}
 
+	/**
+	 * Show Category Section Headers
+	 * 
+	 * APPDEV-3773
+	 */
+	public boolean isShowCatSectionHeaders() {
+		return getAttribute( "showCatSectionHeaders", false );
+	}
 }
