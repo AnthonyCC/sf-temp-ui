@@ -12,6 +12,8 @@ import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 public class DepartmentModel extends ProductContainer {
 
+	private static final int MAX_ITEMS_PER_COLUMN_DEFAULT = 15;
+
 	private final List<ProductModel> featuredProductModels = new ArrayList<ProductModel>();
 
 	private final List<CategoryModel> categoryModels = new ArrayList<CategoryModel>();
@@ -247,6 +249,10 @@ public class DepartmentModel extends ProductContainer {
 
 	public String getPreferenceCategoriesLeftNavBoxHeader() {
 		return getAttribute("preferenceCategoriesLeftNavBoxHeader", "");
+	}
+	
+	public int getMaxItemsPerColumn() {
+		return getAttribute("maxItemsPerColumn", MAX_ITEMS_PER_COLUMN_DEFAULT);
 	}
 
 	/**

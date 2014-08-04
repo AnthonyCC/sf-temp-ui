@@ -360,7 +360,7 @@ public class MenuBuilderFactory {
 				}
 				
 				domain.setItems(menuItems);
-				insertMarkersForSpecialBox(domain);
+				insertMarkersForSpecialBox(domain, dept.getMaxItemsPerColumn());
 				checkSelectedEx(domain, thePath.get(NavDepth.CATEGORY).getContentName(), dept.getFullName());
 				
 				menu.add(domain);
@@ -463,7 +463,7 @@ public class MenuBuilderFactory {
 		}
 	}
 	
-	private void insertMarkersForSpecialBox(MenuBoxData box){
+	private void insertMarkersForSpecialBox(MenuBoxData box, int maxItemsPerColumn){
 		
 		List<MenuItemData> items = new ArrayList<MenuItemData>();
 		
@@ -476,7 +476,7 @@ public class MenuBuilderFactory {
 				++itemCounter;
 			}
 			
-			if(itemCounter==16){
+			if(itemCounter==maxItemsPerColumn || menuItem.getId()==null){
 				itemCounter=0;
 				items.add(MARKER);
 			}

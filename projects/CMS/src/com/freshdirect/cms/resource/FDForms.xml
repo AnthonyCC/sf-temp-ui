@@ -138,6 +138,7 @@
 							<CmsField><attribute>popularCategories</attribute></CmsField>
 							<CmsField><attribute>showPopularCategories</attribute></CmsField>
 							<CmsField><attribute>showAllByDefault</attribute></CmsField>
+							<CmsField><attribute>maxItemsPerColumn</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
