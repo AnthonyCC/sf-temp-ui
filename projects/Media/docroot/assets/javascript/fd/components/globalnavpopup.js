@@ -165,9 +165,13 @@ var FreshDirect = FreshDirect || {};
     // close all autocomplete popups
     $('[data-component="autocomplete"]').autocomplete("close");
 
+    // close all select dropdowns
+    $('select').blur();
+
+
     // precautions
     if(!$popupBody.length){ return; }
-	if ($popupBody.is(':animated')) { return; }
+    if ($popupBody.is(':animated')) { return; }
 
     //repos($topnav, $ghost, $popup);
 
