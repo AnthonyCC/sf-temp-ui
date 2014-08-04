@@ -33,9 +33,8 @@
       {/if}
       <div class="popupMenuContent" style="display: none;">
         <div data-component="menuitemlist" data-menuitemlist="{$menuBox.id}">
-          {call .layoutBreak}
+          {call .popupLayout}
             {param menuBox: $menuBox /}
-            {param bodyVariant: 'POPUP' /}
           {/call}
         </div>
       </div>
@@ -117,6 +116,28 @@
     {/if}
   {/if}
 {/deltemplate}
+
+/**
+* @param menuBox list of menuitems
+*/
+{template .popupLayout autoescape="false"}
+  <ul>
+  {foreach $item in $menuBox.items}
+    {if $item.name != 'marker'}
+      {if $item.urlParameter}
+        {call .menuItem}
+          {param menuBox: $menuBox /}
+          {param item: $item /}
+        {/call}
+      {else}
+        <li><h3 class="section-big">{$item.name}</h3></li>
+      {/if}
+    {else}
+      </ul><ul>
+    {/if}
+  {/foreach}
+  </ul>
+{/template}
 
 /**
  * @param? menuBox menuBox
