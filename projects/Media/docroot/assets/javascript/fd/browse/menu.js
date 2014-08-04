@@ -127,7 +127,6 @@ var FreshDirect = FreshDirect || {};
             menubox = $('[data-component="menubox"][data-id="'+itemlist.data('menuitemlist')+'"]'),
             menu = menubox.parents('[data-component="menu"]'),
             id = clicked.data('urlparameter');
-
         if (clicked.hasClass('disabled')) {
           return;
         }
@@ -203,6 +202,7 @@ var FreshDirect = FreshDirect || {};
     render:{
       value:function(data){
         $(this.placeholder).html(this.template(data));
+        
 
         // close popups
         if (fd.common.transactionalPopup) { fd.common.transactionalPopup.close(); }
@@ -212,6 +212,14 @@ var FreshDirect = FreshDirect || {};
           this.restoreScrolls(this.savedScrolls);
           this.savedScrolls = {};
         }
+        
+        $(".menuBox").each(function() {
+            if($(this).find($(".selected")).length==0){
+                $(this).find(".cssbutton.green").css("background-color", "#88a75c");
+            }else{
+                $(this).find(".cssbutton.green").css("background-color", "#728d4b");
+            }
+        });
       }
     },
     initMenu:{
@@ -222,6 +230,14 @@ var FreshDirect = FreshDirect || {};
         this.listen();
       }
     }
+  });
+  
+  $(".menuBox").each(function() {
+      if($(this).find($(".selected")).length==0){
+          $(this).find(".cssbutton.green").css("background-color", "#88a75c");
+      }else{
+          $(this).find(".cssbutton.green").css("background-color", "#728d4b");
+      }
   });
 
   menu.initMenu();
