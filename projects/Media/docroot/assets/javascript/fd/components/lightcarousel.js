@@ -52,8 +52,6 @@ var FreshDirect = FreshDirect || {};
       result = $list.offset().left - targetElem.offset().left + parseInt(targetElem.css('margin-left'), 10);
     } catch (e) {}
 
-    console.log(nrPages, newPage);
-
     if (newPage === 0) {
       carousel.addClass('first');             
     }

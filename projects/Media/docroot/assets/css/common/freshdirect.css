@@ -665,6 +665,15 @@ section.main .leftnav .menuBox input[type="radio"] {
   display: none;
 }
 
+.ie8 section.main .leftnav .menuBox input[type="radio"] {
+  display: block;
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  float: left;
+}
+
 section.main .leftnav .menuBox li input[type="radio"] + span {
   display: block;
   padding: 0 0 0 5px;
@@ -680,7 +689,13 @@ section.main .leftnav .menuBox li.selected input[type="radio"] + span {
 
 #menupopup input[type="radio"]:checked + span,
 #menupopup input[type="radio"][checked] + span,
-section.main .leftnav .menuBox input[type="radio"]:checked + span,
+section.main .leftnav .menuBox input[type="radio"]:checked + span {
+  background-color:#88a75c;
+  color: #fff;
+  font-weight: bold;
+}
+
+.ie8 section.main .leftnav .menuBox .selected input[type="radio"] + span,
 .ie8 section.main .leftnav .menuBox input[type="radio"][checked] + span {
   background-color:#88a75c;
   color: #fff;
