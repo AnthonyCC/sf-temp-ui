@@ -302,7 +302,8 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
 	public String getPath() {
 		if (!this.getContentType().equals(ContentNodeModel.TYPE_DEPARTMENT)
 			&& !this.getContentType().equals(ContentNodeModel.TYPE_CATEGORY)
-			&& !this.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)) {
+			&& !this.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)
+			&& !this.getContentType().equals(ContentNodeModel.TYPE_SUPERDEPARTMENT)) {
 			return null;
 		}
 		ContentNodeModel p = this.getParentNode();
