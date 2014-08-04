@@ -175,8 +175,8 @@ public class ComplaintUtil {
     
     private static String standardizeDepartment(String dept) {
         String r = "none";
-             if ( "bakery".equalsIgnoreCase(dept) ) { r = "BAK"; }
-		else if ( "cheese".equalsIgnoreCase(dept) ) { r = "CHE"; }
+             if ( "bakery".equalsIgnoreCase(dept) || (dept != null && dept.toLowerCase().contains("bakery")) ) { r = "BAK"; }
+		else if ( "cheese".equalsIgnoreCase(dept)  || (dept != null && dept.toLowerCase().contains("cheese")) ) { r = "CHE"; }
 		else if ( "coffee".equalsIgnoreCase(dept) ) { r = "COF"; }
 		else if ( "dairy".equalsIgnoreCase(dept) ) { r = "DAI"; }
 		else if ( "deli".equalsIgnoreCase(dept) ) { r = "DEL"; }
