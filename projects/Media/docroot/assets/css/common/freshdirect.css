@@ -738,6 +738,8 @@ section.main .leftnav .menuBox button.category > span {
   white-space: nowrap;
   line-height: 1.3em;
   position: relative;
+  padding-right: 14px;
+  max-width: 127px;
 }
 
 .leftnav-category-popup-button.cssbutton > span:after,
