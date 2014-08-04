@@ -526,8 +526,7 @@ public class MenuBuilderFactory {
 					domain.setName(filterGroup.getName());
 					domain.setBoxType(MenuBoxType.FILTER);
 					domain.setMultiGroupBox(filterGroup.isMultiGroupModel());
-					boolean brandFilter = filterGroup.getProductFilters()==null || filterGroup.getProductFilters().size() < 1 ? false : filterGroup.getProductFilters().get(0) instanceof BrandFilter;
-					domain.setBrandFilter(brandFilter);
+					domain.setBrandFilter(isBrandFilterBox(filterGroup));
 					if(!productListingPage){
 						domain.setShouldSetAll(true);
 					}
@@ -576,6 +575,21 @@ public class MenuBuilderFactory {
 				}
 			}
 		}
+	}
+	
+	private boolean isBrandFilterBox(ProductFilterGroupI filterGroup){
+		
+		if(filterGroup.getProductFilters()==null){
+			return false;
+		}
+		
+		for(ProductItemFilterI filter : filterGroup.getProductFilters()){
+			if(!(filter instanceof BrandFilter)){
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	private List<MenuItemData> createFilterMenuItems(MenuBoxData box, List<ProductItemFilterI> filters, Set<ProductItemFilterI> activeFilters, List<MenuItemData> menuItems){
