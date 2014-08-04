@@ -210,7 +210,7 @@ var FreshDirect = FreshDirect || {};
         if (fd.modules.browse.centermenupopup) { fd.modules.browse.centermenupopup.close(); }
         if (this.savedScrolls) {
           this.restoreScrolls(this.savedScrolls);
-          this.savedScrolls = {};
+          this.savedScrolls = {}; 
         }
         
         $(".menuBox").each(function() {
