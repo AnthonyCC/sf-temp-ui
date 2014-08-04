@@ -1731,6 +1731,13 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setPendingExternalAtcItems(Map<String, List<AddToCartItem>> pendingExternalAtcItems) {
 		this.pendingExternalAtcItems = pendingExternalAtcItems;
 	}
-	
+
+	public boolean isGlobalNavTutorialSeen() {
+		return user.isGlobalNavTutorialSeen();
+	}
+
+	public void setGlobalNavTutorialSeen(boolean isGlobalNavTutorialSeen) {
+		user.setGlobalNavTutorialSeen(isGlobalNavTutorialSeen);
+	}
 
 }

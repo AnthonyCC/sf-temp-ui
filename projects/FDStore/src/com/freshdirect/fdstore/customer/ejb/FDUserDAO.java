@@ -186,7 +186,7 @@ public class FDUserDAO {
 	}
 	
 	private static final String LOAD_FROM_IDENTITY_QUERY =
-		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE,fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
+		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE,fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdu.GLOBALNAVTUT_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
 		"erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE " +
 		",fdc.referer_customer_id, fdu.default_list_id " +
 		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci " +
@@ -220,7 +220,7 @@ public class FDUserDAO {
 	}
 
 	private static final String LOAD_FROM_EMAIL_QUERY =
-		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE,fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
+		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE,fdu.HPLETTER_VISITED, fdu.GLOBALNAVTUT_VIEWED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
 		"erpc.active, ci.receive_news,fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE  " +
 		",fdc.referer_customer_id, fdu.default_list_id " +
 		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci " +
@@ -271,7 +271,7 @@ public class FDUserDAO {
 	}
 
 	private static final String LOAD_FROM_COOKIE_QUERY =
-		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE, fdu.HPLETTER_VISITED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
+		"SELECT fdu.ID as fduser_id, fdu.COOKIE, fdu.ADDRESS1, fdu.APARTMENT, fdu.ZIPCODE, fdu.DEPOT_CODE, fdu.SERVICE_TYPE, fdu.HPLETTER_VISITED, fdu.GLOBALNAVTUT_VIEWED, fdu.CAMPAIGN_VIEWED, fdc.id as fdcust_id, erpc.id as erpcust_id, fdu.ref_tracking_code, " +
 		"erpc.active, ci.receive_news, fdu.last_ref_prog_id, fdu.ref_prog_invt_id, fdu.ref_trk_key_dtls, fdu.COHORT_ID, fdu.ZP_SERVICE_TYPE " +
 		",rl.referral_link, fdc.referer_customer_id, fdu.default_list_id " +
 		"FROM CUST.FDUSER fdu, CUST.fdcustomer fdc, CUST.customer erpc, CUST.customerinfo ci, CUST.REFERRAL_LINK rl  " +
@@ -343,6 +343,7 @@ public class FDUserDAO {
 			user.setReceiveFDEmails("X".equals(rs.getString("RECEIVE_NEWS")));
 			user.setHomePageLetterVisited(NVL.apply(rs.getString("HPLETTER_VISITED"), "").equalsIgnoreCase("X")?true:false);
 			user.setCampaignMsgViewed(rs.getInt("CAMPAIGN_VIEWED"));
+			user.setGlobalNavTutorialSeen(NVL.apply(rs.getString("GLOBALNAVTUT_VIEWED"), "").equalsIgnoreCase("X")?true:false);
 
 			// Smart Store - Cohort ID
 			user.setCohortName(rs.getString("COHORT_ID"));
@@ -379,7 +380,7 @@ public class FDUserDAO {
 	private static final String STORE_USER_SQL =
 		"UPDATE CUST.FDUSER " +
 		"SET COOKIE=?, ZIPCODE=?, FDCUSTOMER_ID=?, DEPOT_CODE=?, SERVICE_TYPE=?, ADDRESS1=?, APARTMENT=?, " +
-		"LAST_REF_PROG_ID=?, REF_PROG_INVT_ID=?, REF_TRK_KEY_DTLS=?, HPLETTER_VISITED=?, CAMPAIGN_VIEWED=?, COHORT_ID=?, ZP_SERVICE_TYPE=?, DEFAULT_LIST_ID=? " + 
+		"LAST_REF_PROG_ID=?, REF_PROG_INVT_ID=?, REF_TRK_KEY_DTLS=?, HPLETTER_VISITED=?, CAMPAIGN_VIEWED=?, COHORT_ID=?, ZP_SERVICE_TYPE=?, DEFAULT_LIST_ID=?, GLOBALNAVTUT_VIEWED=? " + 
 		"WHERE ID=?";
 
 
@@ -441,6 +442,13 @@ public class FDUserDAO {
 			ps.setNull(index++, Types.VARCHAR);
 
 		if(user.isHomePageLetterVisited())
+		{
+			ps.setString(index++, "X" );	
+		}else{
+			ps.setNull(index++, Types.VARCHAR);
+		}
+		
+		if(user.isGlobalNavTutorialSeen())
 		{
 			ps.setString(index++, "X" );	
 		}else{

@@ -39,17 +39,19 @@
  */
 {template .globalnavMenuItem autoescape="false"}
 {if $menuitem.departments}
-  <li data-component="globalnav-popup-body" data-id="{$menuitem.id}">
-//      {call .globalnavSuperDepartment data="$menuitem" /} 
-      <!-- SUPERDEPARTMENT - {$menuitem.id} -->
-      <ul class="subdepartments">
-      {foreach $department in $menuitem.departments}
-        <li class="submenuitem" data-component="globalnav-submenu-item" data-id="{$department.id}">
-          <a href="/browse.jsp?id={$department.id}">{$department.name ? $department.name : $department.id}</a>
-          <div class="arrow-down"></div>
-        </li> 
-      {/foreach}
-    </ul>
+	<li data-component="globalnav-popup-body" data-id="{$menuitem.id}">
+		//{call .globalnavSuperDepartment data="$menuitem" /} 
+      	<!-- SUPERDEPARTMENT - {$menuitem.id} -->
+      	<div class="subdepartments_cont">
+	    	<ul class="subdepartments">
+			{foreach $department in $menuitem.departments}
+	        	<li class="submenuitem" data-component="globalnav-submenu-item" data-id="{$department.id}">
+	          		<a href="/browse.jsp?id={$department.id}">{$department.name ? $department.name : $department.id}</a>
+	          		<div class="arrow-down"></div>
+	        	</li> 
+	      	{/foreach}
+	    	</ul>
+	    </div>
   </li>
   {foreach $department in $menuitem.departments}
     {call .globalnavDepartment} 
@@ -101,7 +103,7 @@
 <li class="department" data-component="globalnav-popup-body" data-id="{$department.id}">
   <div class="deptcontainer">
     {if $department.heroImage} 
-      <img class="heroimg" src="{$department.heroImage}" alt="Department background" />
+      <div class="heroimg_cont"><img class="heroimg" src="{$department.heroImage}" alt="Department background" /></div>
     {/if}
     {if $hasCategories or $hasPrefCategories}
       <div class="department {if not $department.headerTextUsed}noheadertext{/if}">

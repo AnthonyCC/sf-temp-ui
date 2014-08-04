@@ -280,6 +280,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private String clientIp;
 	private String serverName;
 	
+	/* APPDEV-3756 */
+	private boolean isGlobalNavTutorialSeen = false;
 
 	public String getTsaPromoCode() {
 		return tsaPromoCode;
@@ -2819,5 +2821,14 @@ public class FDUser extends ModelSupport implements FDUserI {
 	 * Calling this function always returns false (only FDSessionUser implements it)
 	 */
 	public void setJustSignedUp(boolean val) {
+	}
+	
+
+	public boolean isGlobalNavTutorialSeen() {
+		return isGlobalNavTutorialSeen;
+	}
+
+	public void setGlobalNavTutorialSeen(boolean isGlobalNavTutorialSeen) {
+		this.isGlobalNavTutorialSeen = isGlobalNavTutorialSeen;
 	}
 }
