@@ -130,7 +130,7 @@
 			<RelationshipDef name="pages" label="Media pages" navigable="true" cardinality="Many">
 				<DestinationDef contentType="Page" />
 			</RelationshipDef>
-			<RelationshipDef name="superdepartments" label="Super Departments" navigable="true" cardinality="Many">
+			<RelationshipDef name="superDepartments" label="Super Departments" navigable="true" cardinality="Many">
 				<DestinationDef contentType="SuperDepartment" />
 			</RelationshipDef>
 			<RelationshipDef name="globalNavigations" label="Global Navigations" navigable="true" cardinality="Many">
@@ -310,6 +310,7 @@
 			<AttributeDef type="S" name="preferenceCategoriesLeftNavBoxHeader" label="Preference Categories Left Nav Box Header"/>
 			<AttributeDef type="I" name="maxItemsPerColumn"  label="Preference Categories Max Items In Column In Flyout" />
 			<AttributeDef type="B" name="showCatSectionHeaders" label="Show Category Section Headers" inheritable="false"/>
+			<AttributeDef type="S" name="globalNavName" label="Global Nav Name" inheritable="false"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="categories" navigable="true" cardinality="Many">
