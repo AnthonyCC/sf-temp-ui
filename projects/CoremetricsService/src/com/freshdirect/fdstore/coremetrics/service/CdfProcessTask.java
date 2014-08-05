@@ -16,12 +16,17 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.affiliate.ExternalAgency;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder.CustomCategory;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -88,8 +93,31 @@ public class CdfProcessTask {
 			addCmPageViewTagCategory(externalAgency.toString(), categoryKeys);
 		}
 		
+		
+		//super department flow
+		Set<DepartmentModel> processedDepartments = new HashSet<DepartmentModel>();
+		
+		for (ContentKey superDeptKey : CmsManager.getInstance().getContentKeysByType(ContentType.get("SuperDepartment"))) {
+			ContentNodeModel superDeptNode = ContentFactory.getInstance().getContentNodeByKey(superDeptKey);
+			
+			if (superDeptNode instanceof SuperDepartmentModel) {
+				SuperDepartmentModel superDept = (SuperDepartmentModel) superDeptNode;
+				String superDeptId = superDept.getContentName();
+				cdfRowModels.add(new CdfRowModel(superDeptId, superDept.getFullName(), null));
+
+				for (DepartmentModel dept : superDept.getDepartments()){
+					if (processedDepartments.add(dept)){
+						processCmsCategory(dept, superDeptId);
+					}
+				}
+			}
+		}
+		
+		//remaining departments
 		for (DepartmentModel dept : ContentFactory.getInstance().getStore().getDepartments()) {
-			processCmsCategory(dept, null);
+			if (!processedDepartments.contains(dept)) {
+				processCmsCategory(dept, null);
+			}
 		}
 	}
 	
