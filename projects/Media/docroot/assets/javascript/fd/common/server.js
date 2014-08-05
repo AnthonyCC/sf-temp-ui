@@ -62,7 +62,7 @@ var FreshDirect = FreshDirect || {};
               $el.first().addClass('loading');
               spinner = $el.find('.spinner-container');
               if (spinner.size() > 0) {
-                sp = new window.Spinner(config.spinner.config || DEFAULT_SPINNER_CONFIG).spin(spinner[0]); // TODO spinner config
+                sp = new window.Spinner(config.spinner.config || DEFAULT_SPINNER_CONFIG).spin(spinner[0]);
               }
             }
           });         

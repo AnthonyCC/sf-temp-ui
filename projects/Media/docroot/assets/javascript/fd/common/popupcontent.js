@@ -37,8 +37,6 @@ var FreshDirect = FreshDirect || {};
     // wait for domready event
     $($.proxy(function(){
 
-      // TODO move the trigger element to the ghost, replace it with a placeholder
-
       // check overlay and ghost
       if (this.config.overlay) {
         this.$overlay = $('<div class="popupcontentoverlay"></div>').appendTo(document.body);

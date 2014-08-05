@@ -235,7 +235,6 @@ var FreshDirect = FreshDirect || {};
 
     var popupTriggers = $('[data-popup]');
 
-    // TODO removed temporarily
     popupTriggers.each(function(i,trigger){
         initPopup($(trigger));
     });
