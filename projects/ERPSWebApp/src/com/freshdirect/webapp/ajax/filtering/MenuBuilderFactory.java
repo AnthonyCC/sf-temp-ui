@@ -470,13 +470,9 @@ public class MenuBuilderFactory {
 		int itemCounter = 0;
 		for(MenuItemData menuItem : box.getItems()){
 			
-			if(menuItem.getUrlParameter()==null){
-				itemCounter=0;
-			}else{
-				++itemCounter;
-			}
+			++itemCounter;
 			
-			if(itemCounter==maxItemsPerColumn || menuItem.getId()==null){
+			if(itemCounter>maxItemsPerColumn || (itemCounter==maxItemsPerColumn && menuItem.getId()==null)){
 				itemCounter=0;
 				items.add(MARKER);
 			}
