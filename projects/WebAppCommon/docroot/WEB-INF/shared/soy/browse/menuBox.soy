@@ -4,8 +4,8 @@
  */
 {template .menuBox autoescape="false"}
 
-<div class="menuBox" data-component="menubox" data-type="{$menuBox.displayType}" data-id="{$menuBox.id}" data-selectiontype="{$menuBox.selectionType}" data-filter="{if $menuBox.boxType == 'FILTER'}{$menuBox.id}{else}id{/if}" data-boxtype="{$menuBox.boxType}" {if $menuBox.shouldSetAll}data-shouldsetall="true"{/if}>
-  {if $menuBox.items and length($menuBox.items) > 0}
+{if $menuBox.items and length($menuBox.items) > 0}
+  <div class="menuBox" data-component="menubox" data-type="{$menuBox.displayType}" data-id="{$menuBox.id}" data-selectiontype="{$menuBox.selectionType}" data-filter="{if $menuBox.boxType == 'FILTER'}{$menuBox.id}{else}id{/if}" data-boxtype="{$menuBox.boxType}" {if $menuBox.shouldSetAll}data-shouldsetall="true"{/if}>
     {if $menuBox.displayType == 'SIMPLE'}
       {if $menuBox.name}<h2>{$menuBox.name}</h2>{/if}
       <ul>
@@ -50,8 +50,8 @@
         </div>
       </div>
     {/if}
-  {/if}
-</div>
+  </div>
+{/if}
 {/template}
 
 /**
