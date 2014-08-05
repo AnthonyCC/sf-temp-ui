@@ -679,10 +679,15 @@ section.main .leftnav .menuBox li input[type="radio"] + span {
   border-radius: 6px;
 }
 
-#menupopup input[type="radio"] + span,
 section.main .leftnav .menuBox li.selected input[type="radio"] + span {
   display: block;
   padding: 5px;
+  border-radius: 6px;
+}
+
+#menupopup input[type="radio"] + span {
+  display: block;
+  padding: 1px 5px;
   border-radius: 6px;
 }
 
