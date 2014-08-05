@@ -628,7 +628,13 @@
 			%><iframe name="oasif" id="OAS_IF" width="1" height="1" src="about:blank" style="visibility: hidden; border: 0; position: absolute; top: 1px; left: 1px;"></iframe>
 			<script type="text/javascript">
 			OAD_POS = OAS_listpos.split(/,/);
-			
+
+			function OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query) {
+					return OAS_url + 'adstream_mjx.ads/' +
+							OAS_sitepage + '/1' + OAS_rns + '@' +
+							OAS_listpos + '?' + OAS_query;
+			}
+
 			function createOASFrame() {
 				// write static content to iframe
 				var ifr = document.getElementById('OAS_IF');
