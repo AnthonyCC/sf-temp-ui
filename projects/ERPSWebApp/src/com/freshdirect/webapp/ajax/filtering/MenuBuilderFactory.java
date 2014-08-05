@@ -758,7 +758,11 @@ public class MenuBuilderFactory {
 		
 		int itemCount = 0;
 		
-		for(MenuBoxData box : menu){
+		Iterator<MenuBoxData> boxIterator = menu.iterator();
+		while(boxIterator.hasNext()){
+			
+			MenuBoxData box = boxIterator.next();
+			boolean emptyBox = true;
 			// check if filtering has effect on this box
 			if(box.getBoxType().isHasFilterEffect()){
 
@@ -786,7 +790,10 @@ public class MenuBuilderFactory {
 								it.remove();								
 							}else{
 								item.setActive(false);
+								emptyBox = false;
 							}
+						}else{
+							emptyBox=false;
 						}
 					}
 
@@ -825,7 +832,10 @@ public class MenuBuilderFactory {
 								it.remove();								
 							}else{
 								item.setActive(false);
+								emptyBox=false;
 							}
+						}else{
+							emptyBox=false;
 						}
 					}
 
@@ -869,9 +879,15 @@ public class MenuBuilderFactory {
 						if (itemCount == 0 && !item.isSelected()) {
 							item.setActive(false);
 							setBrowseSectionAvailability(browseData.getSectionContexts(), item.getId());
+						}else{
+							emptyBox=false;
 						}
 					}
-				}				
+				}
+				
+				if(emptyBox){
+					boxIterator.remove();
+				}
 			}
 		}		
 	}
