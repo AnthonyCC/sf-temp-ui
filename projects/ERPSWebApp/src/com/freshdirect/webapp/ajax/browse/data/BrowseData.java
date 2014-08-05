@@ -102,7 +102,7 @@ public class BrowseData implements Serializable {
 		
 	}	
 	
-	public static class DescripetiveDataCointainer implements Serializable, DescriptiveDataI {
+	public static class DescriptiveDataCointainer implements Serializable, DescriptiveDataI {
 		
 		private static final long serialVersionUID = 4991670021932771599L;
 		private String url;
@@ -216,7 +216,7 @@ public class BrowseData implements Serializable {
 	private SectionDataCointainer sections = new SectionDataCointainer();
 	private BreadCrumbDataCointainer breadCrumbs = new BreadCrumbDataCointainer();
 	private CarouselDataCointainer carousels = new CarouselDataCointainer();
-	private DescripetiveDataCointainer descriptiveContent = new DescripetiveDataCointainer();
+	private DescriptiveDataCointainer descriptiveContent = new DescriptiveDataCointainer();
 	private MenuDataCointainer menuBoxes = new MenuDataCointainer();
 	private SortDataCointainer sortOptions = new SortDataCointainer();
 	private PagerData pager; //not a *DataContainer inner class which only encapsulates lists and primitives
@@ -237,7 +237,7 @@ public class BrowseData implements Serializable {
 	public CarouselDataCointainer getCarousels() {
 		return carousels;
 	}
-	public DescripetiveDataCointainer getDescriptiveContent() {
+	public DescriptiveDataCointainer getDescriptiveContent() {
 		return descriptiveContent;
 	}
 	public MenuDataCointainer getMenuBoxes() {

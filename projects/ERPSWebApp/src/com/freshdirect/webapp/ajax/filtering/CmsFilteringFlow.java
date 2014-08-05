@@ -175,7 +175,7 @@ public class CmsFilteringFlow {
 
 		browseDataContext.getMenuBoxes().setMenuBoxes(navigationModel.getLeftNav());
 		
-		BrowseData.DescripetiveDataCointainer descriptiveContent = browseDataContext.getDescriptiveContent();
+		BrowseData.DescriptiveDataCointainer descriptiveContent = browseDataContext.getDescriptiveContent();
 		descriptiveContent.setPageTitle("FreshDirect - Search - " + nav.getSearchParams());
 
 		return browseDataContext;

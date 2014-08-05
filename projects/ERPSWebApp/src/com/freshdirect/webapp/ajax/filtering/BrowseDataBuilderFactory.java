@@ -833,7 +833,7 @@ public class BrowseDataBuilderFactory {
 		
 		browseData.getBreadCrumbs().setBreadCrumbs(breadCrumb);
 		
-		BrowseData.DescripetiveDataCointainer descriptiveContent = browseData.getDescriptiveContent();
+		BrowseData.DescriptiveDataCointainer descriptiveContent = browseData.getDescriptiveContent();
 		descriptiveContent.setPageTitle("FreshDirect - " + navModel.getSelectedContentNodeModel().getFullName());
 		descriptiveContent.setOasSitePage(navModel.getSelectedContentNodeModel().getPath());
 	}
