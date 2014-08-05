@@ -2,6 +2,7 @@ package com.freshdirect.webapp.ajax.filtering;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -184,16 +185,49 @@ public class BrowseDataBuilderFactory {
 			List<SectionContext> sections = new ArrayList<SectionContext>();
 			if (!navigationModel.getCategorySections().isEmpty() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user)) {
 				
-				for (CategorySectionModel categorySection : navigationModel.getCategorySections()) {
-					List<CategoryData> selectedSectionCategories = new ArrayList<CategoryData>();
-					for (CategoryModel categoryModel : categorySection.getSelectedCategories()) {
-						if (NavigationUtil.isCategoryHiddenInContext(user, categoryModel)) {
-							continue;
+				if (!showCatSectionHeaders) {
+					// Option 1 : one section without headers [default]
+
+					// Step #1 - collect categories from sections
+					List<CategoryModel> flatCats = new ArrayList<CategoryModel>();
+					for (CategorySectionModel categorySection : navigationModel.getCategorySections()) {
+						for (CategoryModel categoryModel : categorySection.getSelectedCategories()) {
+							if (!NavigationUtil.isCategoryHiddenInContext(user, categoryModel)) {
+								flatCats.add(categoryModel);
+							}
 						}
-						
-						selectedSectionCategories.add(CMSModelToSoyDataConverter.createCategoryData(categoryModel, user, showPopularCatsGlobal));
 					}
-					sections.add(createSection(showCatSectionHeaders ? categorySection.getHeadline() : null, selectedSectionCategories));
+
+					// Step #2 - reorder categories by their names
+					Collections.sort(flatCats, new Comparator<CategoryModel>() {
+						@Override
+						public int compare(CategoryModel o1, CategoryModel o2) {
+							return o1.getFullName().compareToIgnoreCase(o2.getFullName());
+						}
+					});
+
+					// Step #3 - transform cats to soy data
+					List<CategoryData> selectedSectionCategories = new ArrayList<CategoryData>();
+					for (CategoryModel cat : flatCats) {
+						selectedSectionCategories.add(CMSModelToSoyDataConverter.createCategoryData(cat, user, showPopularCatsGlobal));
+					}
+
+					// Step #4 - create common section
+					sections.add(createSection(null, selectedSectionCategories));
+
+				} else {
+					// Option 2 : category sections + headers
+					for (CategorySectionModel categorySection : navigationModel.getCategorySections()) {
+						List<CategoryData> selectedSectionCategories = new ArrayList<CategoryData>();
+						for (CategoryModel categoryModel : categorySection.getSelectedCategories()) {
+							if (NavigationUtil.isCategoryHiddenInContext(user, categoryModel)) {
+								continue;
+							}
+							
+							selectedSectionCategories.add(CMSModelToSoyDataConverter.createCategoryData(categoryModel, user, showPopularCatsGlobal));
+						}
+						sections.add(createSection(categorySection.getHeadline(), selectedSectionCategories));
+					}
 				}
 				
 			} else {
