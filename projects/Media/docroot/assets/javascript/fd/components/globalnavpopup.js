@@ -7,6 +7,9 @@ var FreshDirect = FreshDirect || {};
 
   var console = console || window.top.console || { log:function(){} };
   var $=fd.libs.$;
+  
+  var delayPopup = 300;
+  var popupTimeout;
   var POPUPWIDGET = fd.modules.common.popupWidget;
 	  $.fn.getHiddenDimensions = function(includeMargin) {
 		  var $item = this,
@@ -199,21 +202,34 @@ var FreshDirect = FreshDirect || {};
     
     if($t.hasClass("top-item")){
         // bring up popup content to animate later
-        $popupBody.css('top', '-' + $popupBody.outerHeight() + "px");
+        $popupBody.css("top", "-" + $popupBody.outerHeight() + "px");
 
         // stop animations before
         $popupBody.stop();
         //$("#globalnavpopup").removeClass("shadow-for-superdepart");
         
         if(down === false){
-          $popupBody.animate({
-            top: "0px"
-            }, 350, "easeOutQuad", function(){
-            	//$("#globalnavpopup").addClass("shadow-for-superdepart");
-               down = true;
-              $(".seasonal-media").fadeIn(200);
-              //$popupBody.css('overflow', 'visible');
-            });
+        	$t.bind({
+              mouseenter:function(){
+                  clearTimeout(popupTimeout);
+                  popupTimeout = setTimeout(function(){
+                	  $popupBody.animate({
+                          top: "0px"
+                      }, 350, "easeOutQuad", function(){
+                      	//alert("Rabotay suka" + i);
+                      	//$("#globalnavpopup").addClass("shadow-for-superdepart");
+                         down = true;
+                        $(".seasonal-media").fadeIn(200);
+                        //$popupBody.css('overflow', 'visible');
+                      });
+                  },delayPopup);
+              },
+              mouseleave:function(){
+                  clearTimeout(popupTimeout);
+                  $(popup).find(".deptcontainer").remove();
+              }
+          });
+        	   
         } else {
         	//$("#globalnavpopup").addClass("shadow-for-superdepart");
           $popupBody.css('top', '0px');
@@ -226,7 +242,7 @@ var FreshDirect = FreshDirect || {};
   /**
   * appends globalnav popup elements to DOM
   */
-  function render(){
+  function render(){	  
     var $topnav = $(topnav),
         $ghost = $("<div class='popupcontentghost' data-component='globalnav-ghost'></div>"),
         $popup = $("<div data-component='globalnav-popup' id='globalnavpopup' class='globalnav-popup'><div class='globalnav-popup-content'></div></div>"),
