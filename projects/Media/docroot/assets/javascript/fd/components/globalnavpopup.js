@@ -91,8 +91,7 @@ var FreshDirect = FreshDirect || {};
       $content.clone().appendTo($popup);
       $content = $popup.children(".deptcontainer");
       
-
-      repos($t.parent('.subdepartments_cont'), null, $content, $t);
+      repos($t.closest('.subdepartments_cont'), null, $content, $t);
 
       // bring up popup content to animate later
       $content.css('top', '-' + ($content.outerHeight() + $popupBody.outerHeight()) + "px");
@@ -102,11 +101,12 @@ var FreshDirect = FreshDirect || {};
       $content.stop();
       //$("#globalnavpopup").removeClass("shadow-for-superdepart");
 
+      $popupBody.css('overflow', 'visible');
+	  $content.css('margin', '');
+	  $content.css('margin-bottom', '3px');
+	  $popupBody.css('padding-bottom', '');
+	  
       if(subDown === false){
-          $popupBody.css('overflow', 'visible');
-    	  $content.css('margin', '');
-    	  $content.css('margin-bottom', '3px');
-    	  $popupBody.css('padding-bottom', '');
          $content.animate({
           top: "0px"
           }, 350, "easeOutQuad", function(){
@@ -275,41 +275,63 @@ function getElemDim($elem){
 
 /* adjust left/right positioning of popup elements and their children */
 function realigner($topnav, $popup, $t) {
-	if ($t === undefined || $t === null) { return $topnav.offset().left; }
 	//console.log('realignerA', $topnav, $popup, $t);
+	
+	if ($t === undefined || $t === null) { return $topnav.offset().left; }
   
 	var navDim = getElemDim($topnav);
 	var tarDim = getElemDim($t);
 	
 	var $popupContRef = $('#globalnavpopup');
-	var $imgRef = $popupContRef.find('.heroimg_cont').first();
+	var $imgContRef = $popupContRef.find('.heroimg_cont').first();
+	var $imgRef = $popupContRef.find('.heroimg').first();
 	var $deptContRef = $popupContRef.find('.department').first();
 	var $subDeptsRef = $popupContRef.find('.subdepartments').first();
 	var isRightOfNavCenter = false;
 	var possibleOffset = -1;
+	var topNavIsSubnav = $topnav.hasClass('subdepartments_cont');
 	
 	//check alignments
 	if (tarDim.center < navDim.center) { //left of center
 		//adjust img to right in contents
-		if ($imgRef.length !== 0) {
-			$imgRef.css('float', 'right');
+		if ($imgContRef.length !== 0) {
+			$imgContRef.css('float', 'right');
 		}
 	} else { //right of center
 		isRightOfNavCenter = true;
 		//return $topnav.offset().left;
 	}
   
-	if ($imgRef.length !== 0) { //img & dept
+	if ($imgContRef.length !== 0) { //img & dept
 		
 		//check if image can and needs to shrink to accomidate space
 		if ($popupContRef.outerWidth() > navDim.width) {
 			var imgWidthAdjust = navDim.width - $deptContRef.outerWidth();
 			if (imgWidthAdjust < 0) { imgWidthAdjust = 0; }
 			
-			$imgRef.css('width', imgWidthAdjust);
+			$imgContRef.css('width', imgWidthAdjust);
+		}
+		
+		//show more image if deptCont is taller (be sure to include seasonal media's height
+		var seasonalMediaHeight = $deptContRef.find('.seasonal-media').outerHeight() || 0;
+		if (($deptContRef.outerHeight() + seasonalMediaHeight) > $imgContRef.outerHeight()) {
+			$imgContRef.css('height', $deptContRef.outerHeight() + seasonalMediaHeight);
+		}
+		
+		//adjust image alignment based on container, image size, and alignment
+		var imgContRefDim = getElemDim($imgContRef);
+		var imgRefDim = getElemDim($imgRef);
+		if (imgRefDim.width > imgContRefDim.width) { //image is wider than container
+			if (isRightOfNavCenter) { //image is on left
+				//leave as is
+			} else { //image is on right
+				//re-align
+				$imgRef.css('margin-left', (0-imgRefDim.width) + imgContRefDim.width);				
+			}
 		}
 
 		//now re-align the popup to the nav item if possible
+		//console.log('realigner', isRightOfNavCenter);
 		if (isRightOfNavCenter) {
 			//attempt to align popout to RIGHT side of selected nav item
 			possibleOffset = (tarDim.offset.left + tarDim.width) - $popupContRef.outerWidth();
@@ -326,16 +348,85 @@ function realigner($topnav, $popup, $t) {
 			}
 		}
 	}
-	if ($subDeptsRef.length !== 0) { //superdept, subdept popup
+	if ($subDeptsRef.length !== 0 && !topNavIsSubnav) { //superdept, subdept popup. don't realign when opening a subnav
 		//console.log('subdepts');
-		$subDeptsRef.parent('.subdepartments_cont').css('width', $topnav.outerWidth());
+		$subDeptsRef.closest('.subdepartments_cont').css('width', $topnav.outerWidth());
 		var subDeptsDim = getElemDim($subDeptsRef);
 		//see if we can center under selected nav item
 		possibleOffset = (tarDim.center - navDim.offset.left) - (subDeptsDim.width / 2);
 		//console.log(possibleOffset);
 		if (possibleOffset > 0) {
 			//we have space
-			$subDeptsRef.css('left', possibleOffset-(tarDim.width/2));
+			possibleOffset = possibleOffset-(tarDim.width/2); //set to actual value so we can re-use in gradient
+			$subDeptsRef.css('left', possibleOffset);
+			
+			//create gradient css
+			var gradDim = {
+				left: {
+					active: false,
+					start: 0,
+					end: 0
+				},
+				right: {
+					active: false,
+					start: 0,
+					end: 0
+				}
+			};
+			var spaceLeft = false, spaceRight = false;
+			if (possibleOffset >= 60) { //space on left
+				gradDim.left.active = true;
+				//calc left setup
+				gradDim.left.start = possibleOffset-60;
+				gradDim.left.end = possibleOffset;
+			}
+			var rightSpacing = $topnav.outerWidth() - (possibleOffset + subDeptsDim.width);
+			if (rightSpacing > 60) { //space on right
+				gradDim.right.active = true;
+				//calc right setup
+				gradDim.right.start = possibleOffset + subDeptsDim.width+(tarDim.width/2);
+				gradDim.right.end = possibleOffset + subDeptsDim.width+(tarDim.width/2) + 60;
+			}
+
+			if (gradDim.left.active && gradDim.right.active) { //both sides
+				$subDeptsRef.closest('.subdepartments_cont').css({
+					"background": "rgba(237,237,237,1)",
+					"background": "-moz-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(237,237,237,1) "+gradDim.right.end+"px)",
+					"background": "-webkit-gradient(left top, right top, color-stop("+gradDim.left.start+"px, rgba(237,237,237,1)), color-stop("+gradDim.left.end+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.start+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.end+"px, rgba(237,237,237,1)))",
+					"background": "-webkit-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(237,237,237,1) "+gradDim.right.end+"px)",
+					"background": "-o-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(237,237,237,1) "+gradDim.right.end+"px)",
+					"background": "-ms-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(237,237,237,1) "+gradDim.right.end+"px)",
+					"background": "linear-gradient(to right, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(237,237,237,1) "+gradDim.right.end+"px)",
+					"filter": "progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ededed', GradientType=1 )",
+					"filter": "none"
+				});
+			} else if (gradDim.left.active && !gradDim.right.active) { //only left, right side is all white
+				$subDeptsRef.closest('.subdepartments_cont').css({
+					"background": "rgba(237,237,237,1)",
+					"background": "-moz-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"background": "-webkit-gradient(left top, right top, color-stop("+gradDim.left.start+"px, rgba(237,237,237,1)), color-stop("+gradDim.left.end+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.start+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.end+"px, rgba(255,255,255,1)))",
+					"background": "-webkit-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"background": "-o-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"background": "-ms-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"background": "linear-gradient(to right, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"filter": "progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ededed', GradientType=1 )",
+					"filter": "none"
+				});
+			} else if (!gradDim.left.active && gradDim.right.active) { //only right, left side is all white
+				$subDeptsRef.closest('.subdepartments_cont').css({
+					"background": "rgba(237,237,237,1)",
+					"background": "-moz-linear-gradient(left, rgba(255,255,255,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"background": "-webkit-gradient(left top, right top, color-stop("+gradDim.left.start+"px, rgba(255,255,255,1)), color-stop("+gradDim.left.end+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.start+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.end+"px, rgba(255,255,255,1)))",
+					"background": "-webkit-linear-gradient(left, rgba(255,255,255,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"background": "-o-linear-gradient(left, rgba(255,255,255,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"background": "-ms-linear-gradient(left, rgba(255,255,255,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"background": "linear-gradient(to right, rgba(255,255,255,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"filter": "progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ededed', GradientType=1 )",
+					"filter": "none"
+				});
+			} else {
+				//neither
+			}
 		}
 	}
 	
@@ -344,11 +435,13 @@ function realigner($topnav, $popup, $t) {
 	
 	//console.log('realignerB', ($topnav.offset().left+$topnav.outerWidth()), navCenter, $t);  
 }
-  
+
+ 
   /**
    * repositioning content ghost and popup according to topnav
    */
   function repos($topnav, $ghost, $popup, $t){
+	  //console.log('repos', $topnav.length, $popup.length);
 
     if(!$topnav.length || !$popup.length){
       return;

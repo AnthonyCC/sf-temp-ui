@@ -431,7 +431,7 @@ ul.globalnavPopups li {
 }
 
 .globalnavPopups .heroimg_cont, .globalnav-popup .heroimg_cont {
-	max-height: 290px;
+	height: 290px;
 	max-width: 250px;
 }
 
