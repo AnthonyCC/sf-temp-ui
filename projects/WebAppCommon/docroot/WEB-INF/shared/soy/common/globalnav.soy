@@ -39,6 +39,7 @@
  */
 {template .globalnavMenuItem autoescape="false"}
 {if $menuitem.departments}
+  {if not $menuitem.hideDropDown}
 	<li data-component="globalnav-popup-body" data-id="{$menuitem.id}">
 		//{call .globalnavSuperDepartment data="$menuitem" /} 
       	<!-- SUPERDEPARTMENT - {$menuitem.id} -->
@@ -53,6 +54,7 @@
 	    	</ul>
 	    </div>
   </li>
+  {/if}
   {foreach $department in $menuitem.departments}
     {call .globalnavDepartment} 
      {param department: $department/}
@@ -100,6 +102,7 @@
 {let $hasCategories:$department.dropDownCategories and length($department.dropDownCategories) > 0 /}
 {let $hasPrefCategories:$department.preferenceCategories and length($department.preferenceCategories) > 0 /}
 
+{if not $department.hideDropDown}
 <li class="department" data-component="globalnav-popup-body" data-id="{$department.id}">
   <div class="deptcontainer">
     {if $department.heroImage} 
@@ -145,6 +148,7 @@
     {/if}
   </div>
 </li>
+{/if}
 {/template}
 
 /**

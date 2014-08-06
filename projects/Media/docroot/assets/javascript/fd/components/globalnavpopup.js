@@ -72,18 +72,18 @@ var FreshDirect = FreshDirect || {};
     e.stopPropagation();
 
     var $t = $(e.currentTarget),
-    	$topnav = $(topnav),
+        $topnav = $(topnav),
         $popup = $(popup),
         $popupBody = $(popup).find(".globalnav-popup-content"),
         $content = $("[data-component='globalnav-popup-body'][data-id='"+ $t.data('id') +"']").children().first();
 
 	if ($content.is(':animated')) { return; }
 
-    if($popupBody.length && $content.length){
-      removeSubItemHighlights();
+    removeSubItemHighlights();
+    // fancy: hide down arrows from superdepartment level menu items
+    $popupBody.find(".arrow-down").hide();
 
-      // fancy: hide down arrows from superdepartment level menu items
-      $popupBody.find(".arrow-down").hide();
+    if($popupBody.length && $content.length){
 
       // remove previously shown departments
       //$popupBody.children(".animcontainer").remove();
@@ -105,10 +105,13 @@ var FreshDirect = FreshDirect || {};
       //$("#globalnavpopup").removeClass("shadow-for-superdepart");
 
       $popupBody.css('overflow', 'visible');
-	  $content.css('margin', '');
-	  $content.css('margin-bottom', '3px');
-	  $popupBody.css('padding-bottom', '');
+      $content.css('margin', '');
+      $content.css('margin-bottom', '3px');
+      $popupBody.css('padding-bottom', '');
 	  
+      // fancy: show related down arrow on supdept level item
+      $(this).find(".arrow-down").show();
+
       if(subDown === false){
          $content.animate({
           top: "0px"
@@ -128,8 +131,6 @@ var FreshDirect = FreshDirect || {};
     // stick with hover color on supdept level item
     addSubItemHighlight($(this).find("a"));
 
-    // fancy: show related down arrow on supdept level item
-    $(this).find(".arrow-down").show();
   }
  
   /**
