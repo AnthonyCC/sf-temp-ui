@@ -174,7 +174,7 @@ var FreshDirect = FreshDirect || {};
 
     // precautions
     if(!$popupBody.length){ return; }
-    if ($popupBody.is(':animated')) { return; }
+    if ($popupBody.is(':animated') && popupTimeout === null) { return; }
 
     //repos($topnav, $ghost, $popup);
 
@@ -209,27 +209,7 @@ var FreshDirect = FreshDirect || {};
         //$("#globalnavpopup").removeClass("shadow-for-superdepart");
         
         if(down === false){
-        	$t.bind({
-              mouseenter:function(){
-                  clearTimeout(popupTimeout);
-                  popupTimeout = setTimeout(function(){
-                	  $popupBody.animate({
-                          top: "0px"
-                      }, 350, "easeOutQuad", function(){
-                      	//alert("Rabotay suka" + i);
-                      	//$("#globalnavpopup").addClass("shadow-for-superdepart");
-                         down = true;
-                        $(".seasonal-media").fadeIn(200);
-                        //$popupBody.css('overflow', 'visible');
-                      });
-                  },delayPopup);
-              },
-              mouseleave:function(){
-                  clearTimeout(popupTimeout);
-                  $(popup).find(".deptcontainer").remove();
-              }
-          });
-        	   
+        	tMouseEventBinder($t, $popupBody);  	   
         } else {
         	//$("#globalnavpopup").addClass("shadow-for-superdepart");
           $popupBody.css('top', '0px');
@@ -237,6 +217,37 @@ var FreshDirect = FreshDirect || {};
         }
       }
     
+  }
+  
+  function tMouseEvent_Over($popupBody) {
+	  (function($popupBody) {
+	      clearTimeout(popupTimeout);
+	      popupTimeout = setTimeout(function(){
+	    	  $popupBody.animate({
+	              top: "0px"
+	          }, 350, "easeOutQuad", function(){
+	          	//alert("Rabotay suka" + i);
+	          	//$("#globalnavpopup").addClass("shadow-for-superdepart");
+	             down = true;
+	            $(".seasonal-media").fadeIn(200);
+	            //$popupBody.css('overflow', 'visible');
+	          });
+	      }, delayPopup);
+	  })($popupBody);
+  }
+  
+  function tMouseEvent_Leave() {
+	  return function() {
+		  clearTimeout(popupTimeout);
+		  $(popup).find(".deptcontainer").remove();
+	  }
+  }
+  
+  function tMouseEventBinder($t, $popupBody) {
+	  $t.bind({
+          mouseenter: tMouseEvent_Over($popupBody),
+          mouseleave: tMouseEvent_Leave
+      });
   }
   
   /**
@@ -290,9 +301,7 @@ function getElemDim($elem){
 }
 
 /* adjust left/right positioning of popup elements and their children */
-function realigner($topnav, $popup, $t) {
-	//console.log('realignerA', $topnav, $popup, $t);
-	
+function realigner($topnav, $popup, $t) {	
 	if ($t === undefined || $t === null) { return $topnav.offset().left; }
   
 	var navDim = getElemDim($topnav);
@@ -306,6 +315,10 @@ function realigner($topnav, $popup, $t) {
 	var isRightOfNavCenter = false;
 	var possibleOffset = -1;
 	var topNavIsSubnav = $topnav.hasClass('subdepartments_cont');
+	
+	if (topNavIsSubnav) {
+		$popupContRef = $popupContRef.find('.deptcontainer').first();
+	}
 	
 	//check alignments
 	if (tarDim.center < navDim.center) { //left of center
@@ -347,30 +360,50 @@ function realigner($topnav, $popup, $t) {
 		}
 
 		//now re-align the popup to the nav item if possible
-		//console.log('realigner', isRightOfNavCenter);
 		if (isRightOfNavCenter) {
 			//attempt to align popout to RIGHT side of selected nav item
-			possibleOffset = (tarDim.offset.left + tarDim.width) - $popupContRef.outerWidth();
-			if (possibleOffset > navDim.offset.left) {
-				//we have space
-				return possibleOffset;
+			if (topNavIsSubnav) {
+				//this is a little tricky...
+				possibleOffset = tarDim.offset.left + tarDim.width + parseInt($t.css('padding-right')) - $popupContRef.outerWidth() - navDim.offset.left;
+
+				if (possibleOffset < $popupContRef.outerWidth() && possibleOffset > 0) {
+					//we have space
+					return possibleOffset;
+				} else {
+					return navDim.width-$popupContRef.outerWidth();
+				}
+			} else {
+				possibleOffset = (tarDim.offset.left + tarDim.width) - $popupContRef.outerWidth();
+				if (possibleOffset > navDim.offset.left) {
+					//we have space
+					return possibleOffset;
+				}
 			}
 		} else {
 			//attempt to align popout to LEFT side of selected nav item
-			possibleOffset = (navDim.offset.left + navDim.width) - tarDim.offset.left;
-			if ($popupContRef.outerWidth() < possibleOffset) {
-				//we have space
-				return tarDim.offset.left;
+			if (topNavIsSubnav) {
+				possibleOffset = navDim.width - (navDim.offset.left + tarDim.offset.left);
+				if (possibleOffset > $popupContRef.outerWidth()) {
+					//we have space
+					return tarDim.offset.left-navDim.offset.left;
+				} else {
+					return 0;
+				}
+			
+			} else {
+				possibleOffset = (navDim.offset.left + navDim.width) - tarDim.offset.left;
+				if ($popupContRef.outerWidth() < possibleOffset) {
+					//we have space
+					return tarDim.offset.left;
+				}
 			}
 		}
 	}
 	if ($subDeptsRef.length !== 0 && !topNavIsSubnav) { //superdept, subdept popup. don't realign when opening a subnav
-		//console.log('subdepts');
 		$subDeptsRef.closest('.subdepartments_cont').css('width', $topnav.outerWidth());
 		var subDeptsDim = getElemDim($subDeptsRef);
 		//see if we can center under selected nav item
 		possibleOffset = (tarDim.center - navDim.offset.left) - (subDeptsDim.width / 2);
-		//console.log(possibleOffset);
 		if (possibleOffset > 0) {
 			//we have space
 			possibleOffset = possibleOffset-(tarDim.width/2); //set to actual value so we can re-use in gradient
@@ -393,20 +426,20 @@ function realigner($topnav, $popup, $t) {
 			if (possibleOffset >= 60) { //space on left
 				gradDim.left.active = true;
 				//calc left setup
-				gradDim.left.start = possibleOffset-60;
+				gradDim.left.start = Math.round(possibleOffset-60);
 				gradDim.left.end = possibleOffset;
 			}
 			var rightSpacing = $topnav.outerWidth() - (possibleOffset + subDeptsDim.width);
 			if (rightSpacing > 60) { //space on right
 				gradDim.right.active = true;
 				//calc right setup
-				gradDim.right.start = possibleOffset + subDeptsDim.width+(tarDim.width/2);
+				gradDim.right.start = Math.floor(possibleOffset + subDeptsDim.width+(tarDim.width/2));
 				gradDim.right.end = possibleOffset + subDeptsDim.width+(tarDim.width/2) + 60;
 			}
 
 			if (gradDim.left.active && gradDim.right.active) { //both sides
 				$subDeptsRef.closest('.subdepartments_cont').css({
-					"background": "rgba(237,237,237,1)",
+					"background-color": "rgba(237,237,237,1)",
 					"background": "-moz-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(237,237,237,1) "+gradDim.right.end+"px)",
 					"background": "-webkit-gradient(left top, right top, color-stop("+gradDim.left.start+"px, rgba(237,237,237,1)), color-stop("+gradDim.left.end+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.start+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.end+"px, rgba(237,237,237,1)))",
 					"background": "-webkit-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(237,237,237,1) "+gradDim.right.end+"px)",
@@ -414,11 +447,14 @@ function realigner($topnav, $popup, $t) {
 					"background": "-ms-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(237,237,237,1) "+gradDim.right.end+"px)",
 					"background": "linear-gradient(to right, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(237,237,237,1) "+gradDim.right.end+"px)",
 					"filter": "progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ededed', GradientType=1 )",
-					"filter": "none"
+					"filter": "none",
+					"background-image": "url('/media/images/navigation/global_nav/newglobal/SD_submenu_gradient_left.png'), url('/media/images/navigation/global_nav/newglobal/SD_submenu_gradient_right.png')",
+					"background-position": ""+gradDim.left.start+"px 0, "+(gradDim.right.start-20)+"px 0",
+					"background-repeat": "no-repeat, no-repeat"
 				});
 			} else if (gradDim.left.active && !gradDim.right.active) { //only left, right side is all white
 				$subDeptsRef.closest('.subdepartments_cont').css({
-					"background": "rgba(237,237,237,1)",
+					"background-color": "rgba(237,237,237,1)",
 					"background": "-moz-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
 					"background": "-webkit-gradient(left top, right top, color-stop("+gradDim.left.start+"px, rgba(237,237,237,1)), color-stop("+gradDim.left.end+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.start+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.end+"px, rgba(255,255,255,1)))",
 					"background": "-webkit-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
@@ -426,11 +462,14 @@ function realigner($topnav, $popup, $t) {
 					"background": "-ms-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
 					"background": "linear-gradient(to right, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
 					"filter": "progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ededed', GradientType=1 )",
-					"filter": "none"
+					"filter": "none",
+					"background-image": "url('/media/images/navigation/global_nav/newglobal/SD_submenu_gradient_left.png'), url('/media/images/navigation/global_nav/newglobal/SD_submenu_white.png')",
+					"background-position": ""+gradDim.left.start+"px 0, "+(gradDim.right.start-20)+"px 0",
+					"background-repeat": "no-repeat, no-repeat"
 				});
 			} else if (!gradDim.left.active && gradDim.right.active) { //only right, left side is all white
 				$subDeptsRef.closest('.subdepartments_cont').css({
-					"background": "rgba(237,237,237,1)",
+					"background-color": "rgba(237,237,237,1)",
 					"background": "-moz-linear-gradient(left, rgba(255,255,255,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
 					"background": "-webkit-gradient(left top, right top, color-stop("+gradDim.left.start+"px, rgba(255,255,255,1)), color-stop("+gradDim.left.end+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.start+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.end+"px, rgba(255,255,255,1)))",
 					"background": "-webkit-linear-gradient(left, rgba(255,255,255,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
@@ -438,7 +477,10 @@ function realigner($topnav, $popup, $t) {
 					"background": "-ms-linear-gradient(left, rgba(255,255,255,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
 					"background": "linear-gradient(to right, rgba(255,255,255,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
 					"filter": "progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ededed', GradientType=1 )",
-					"filter": "none"
+					"filter": "none",
+					"background-image": "url(url('/media/images/navigation/global_nav/newglobal/SD_submenu_white.png', '/media/images/navigation/global_nav/newglobal/SD_submenu_gradient_right.png'))",
+					"background-position": ""+gradDim.left.start+"px 0, "+(gradDim.right.start-20)+"px 0",
+					"background-repeat": "no-repeat, no-repeat"
 				});
 			} else {
 				//neither
@@ -448,8 +490,6 @@ function realigner($topnav, $popup, $t) {
 	
 	//no space
 	return navDim.offset.left;
-	
-	//console.log('realignerB', ($topnav.offset().left+$topnav.outerWidth()), navCenter, $t);  
 }
 
  
@@ -457,8 +497,6 @@ function realigner($topnav, $popup, $t) {
    * repositioning content ghost and popup according to topnav
    */
   function repos($topnav, $ghost, $popup, $t){
-	  //console.log('repos', $topnav.length, $popup.length);
-
     if(!$topnav.length || !$popup.length){
       return;
     }
@@ -498,7 +536,7 @@ function realigner($topnav, $popup, $t) {
   }
   
   function showTutorial() {
-	  FDModalDialog.openUrl('/media/layout/nav/globalnav/tutorial/slide_01.html',' ', 970,600, 'globalnav-tutorial');
+	  FreshDirect.globalnav.tutorialOverlay = doOverlayDialog('/media/layout/nav/globalnav/tutorial/slide_01.html');
   }
 
   // load up only if we find new global nav and trigger elements in DOM

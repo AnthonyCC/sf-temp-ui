@@ -451,6 +451,7 @@ ul.globalnavPopups li {
   
   border-top: 0px;
   border-bottom: 0px;
+  position: relative;
   
   box-shadow: 		  0 2px 3px rgba(79, 79, 79, 0.68);
   -moz-box-shadow:    0 2px 3px rgba(79, 79, 79, 0.68);
