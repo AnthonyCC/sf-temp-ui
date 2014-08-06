@@ -25,6 +25,14 @@
 		FreshDirect = FreshDirect || {};
 		FreshDirect.globalnav = FreshDirect.globalnav || {};
 		FreshDirect.globalnav.curNav = '<%=navigation%>';
+		<% if (user != null) {
+			if (user.isGlobalNavTutorialSeen()) {
+				%>FreshDirect.globalnav.showTutorial = false;<%	
+			} else {
+				%>FreshDirect.globalnav.showTutorial = true;<%
+				user.setGlobalNavTutorialSeen(true);
+			}
+		} %>
 	</script>
     <jwr:script src="/fdlibsyui.js"  useRandomParam="false" />
 	<%@ include file="/common/template/includes/globalnav_sr.jspf" %>
