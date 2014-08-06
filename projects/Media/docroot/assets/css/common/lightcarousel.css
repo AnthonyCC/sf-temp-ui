@@ -63,6 +63,10 @@
   background-color: #82817a;
 }
 
+.browse .carousels [data-component="carousel"] ul.pager {
+ 	display: none;
+}
+
 [data-component="carousel-prev"],
 [data-component="carousel-next"] {
 	position:absolute;

@@ -270,12 +270,11 @@
 }
 
 .container.browse [data-component="carousel-mask"] {
-  margin: 0 11px 36px;
+  margin: 0 11px 0px;
 }
 
 .container.browse .noCarousel1 [data-component="carousel-mask"],
 .container.browse .noCarousel2 [data-component="carousel-mask"] {
-  margin: 0 0 36px;
 }
 
 /* carousel table */
