@@ -84,4 +84,7 @@ public class SuperDepartmentModel extends ContentNodeModelImpl {
 		return EnumBrowseCarouselRatio.valueOf(getAttribute("carouselRatio", defaultValue));
 	}
 
+    public boolean isHideGlobalNavDropDown() {
+		return getAttribute("hideGlobalNavDropDown", false);
+	}
 }

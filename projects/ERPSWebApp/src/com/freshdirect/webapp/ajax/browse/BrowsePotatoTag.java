@@ -78,7 +78,7 @@ public class BrowsePotatoTag extends SimpleTagSupport{
 				}
 					
 				default:
-					LOGGER.error("Invalig arguments on page " + request.getRequestURL() + " redirecting to " + e.getRedirectUrl(), e);
+					LOGGER.error("Invalig arguments on page " + request.getRequestURL() + " redirecting to " + e.getRedirectUrl() + ". Message: " +e.getMessage());
 					((HttpServletResponse)ctx.getResponse()).sendRedirect(e.getRedirectUrl());
 					break;
 			}

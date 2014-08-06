@@ -22,6 +22,7 @@ public class DepartmentData extends BasicData {
 	private List<List<CategoryData>> popularCategoryColumns = new ArrayList<List<CategoryData>>();
 	private String preferenceCategoriesNavHeader;
 	private boolean headerTextUsed;
+	private boolean hideDropDown;
 	
 	public List<CategoryData> getCategories() {
 		return categories;
@@ -130,5 +131,13 @@ public class DepartmentData extends BasicData {
 
 	public void setHeaderTextUsed(boolean headerTextUsed) {
 		this.headerTextUsed = headerTextUsed;
+	}
+
+	public boolean isHideDropDown() {
+		return hideDropDown;
+	}
+
+	public void setHideDropDown(boolean hideDropDown) {
+		this.hideDropDown = hideDropDown;
 	}
 }

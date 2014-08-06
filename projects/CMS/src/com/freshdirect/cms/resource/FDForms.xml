@@ -201,6 +201,7 @@
 					<CmsSection>
 						<title>GLOBAL NAV</title>
 						<fields>
+							<CmsField><attribute>hideGlobalNavDropDown</attribute></CmsField>
 							<CmsField><attribute>globalNavFeaturedCategory</attribute></CmsField>
 							<CmsField><attribute>globalNavFeaturedPreferenceCategory</attribute></CmsField>
 							<CmsField><attribute>globalNavShopAllText</attribute></CmsField>
@@ -1865,6 +1866,12 @@
 							<CmsField><attribute>carouselRatio</attribute></CmsField>
 						</fields>
 					</CmsSection>
+					<CmsSection>
+						<title>GLOBAL NAV</title>
+						<fields>
+							<CmsField><attribute>hideGlobalNavDropDown</attribute></CmsField>
+						</fields>
+					</CmsSection>				
 				</sections>
 			</CmsPage>
 			<CmsPage>

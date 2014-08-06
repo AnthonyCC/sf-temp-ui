@@ -263,4 +263,8 @@ public class DepartmentModel extends ProductContainer {
 	public boolean isShowCatSectionHeaders() {
 		return getAttribute( "showCatSectionHeaders", false );
 	}
+	
+	public boolean isHideGlobalNavDropDown() {
+		return getAttribute("hideGlobalNavDropDown", false);
+	}
 }

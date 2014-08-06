@@ -80,6 +80,7 @@ public class CMSModelToSoyDataConverter {
 		
 		departmentData.setId(departmentModel.getContentKey().getId());
 		departmentData.setAltText(departmentModel.getAltText());
+		departmentData.setHideDropDown(departmentModel.isHideGlobalNavDropDown());
 		
 		for (CategoryModel categoryModel : departmentModel.getCategories()) {
 			if (NavigationUtil.isCategoryHiddenInContext(user, categoryModel)) {
@@ -240,7 +241,8 @@ public class CMSModelToSoyDataConverter {
 		}
 		superDepartmentData.setName(superDepartmentModel.getName());
 		superDepartmentData.setBrowseName(superDepartmentModel.getBrowseName());
-
+		superDepartmentData.setHideDropDown(superDepartmentModel.isHideGlobalNavDropDown());
+		
 		return superDepartmentData;
 		
 	}

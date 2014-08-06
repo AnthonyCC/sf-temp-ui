@@ -153,6 +153,7 @@
 			<AttributeDef type="S" name="sdFeaturedRecommenderSiteFeature" label="Site Feature (ignored if Source Category is set)"/>
 			<AttributeDef type="S" name="sdMerchantRecommenderTitle" label="Title"/>
 			<AttributeDef type="B" name="sdMerchantRecommenderRandomizeProducts" label="Randomize Products"/>
+			<AttributeDef type="B" name="hideGlobalNavDropDown" label="Hide Global Nav Drop Down"/>
 			<EnumDef type="S" name="bannerLocation"  label="SuperDepartment Banner Location">
 				<EnumValue value="TOP" label="TOP"/>
 				<EnumValue value="BOTTOM" label="BOTTOM"/>
@@ -311,6 +312,7 @@
 			<AttributeDef type="I" name="maxItemsPerColumn"  label="Preference Categories Max Items In Column In Flyout" />
 			<AttributeDef type="B" name="showCatSectionHeaders" label="Show Category Section Headers" inheritable="false"/>
 			<AttributeDef type="S" name="globalNavName" label="Global Nav Name" inheritable="false"/>
+			<AttributeDef type="B" name="hideGlobalNavDropDown" label="Hide Global Nav Drop Down"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="categories" navigable="true" cardinality="Many">

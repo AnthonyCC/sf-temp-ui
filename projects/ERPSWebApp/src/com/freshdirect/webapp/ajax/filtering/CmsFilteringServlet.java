@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Logger;
 
@@ -28,9 +26,6 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 public class CmsFilteringServlet extends BaseJsonServlet {
 
 	private static final long serialVersionUID = -3643980667721343751L;
-
-	
-	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LoggerFactory.getInstance( CmsFilteringServlet.class );
 
 	/**
