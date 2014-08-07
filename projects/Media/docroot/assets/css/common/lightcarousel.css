@@ -82,6 +82,11 @@
 	cursor:pointer;
 }
 
+.browse .carousels [data-component="carousel-prev"],
+.browse .carousels 	[data-component="carousel-next"] {
+	margin-top: 82px;
+}
+
 [data-component="carousel-next"],
 [data-component="carousel"].last [data-component="carousel-next"]:hover {
 	right:0;

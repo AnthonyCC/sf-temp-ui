@@ -275,6 +275,7 @@
 
 .container.browse .noCarousel1 [data-component="carousel-mask"],
 .container.browse .noCarousel2 [data-component="carousel-mask"] {
+	margin: 0 8px 0 7px;
 }
 
 /* carousel table */
@@ -364,7 +365,7 @@
 .container.browse .noCarousel2 [data-component="carousel"] ul li.portrait-item,
 .container.browse .noCarousel1 [data-component="carousel"] ul li.portrait-item {
   width: 139px;
-  margin: 0 5px;
+  margin: 0 3px 0 4px;
 }
 
 /* end of one carousel cases */
@@ -374,7 +375,8 @@
   color:#333;
   font-size:20px;
   font-weight: bold;
-  padding: 8px 28px 20px;
+  padding: 10px 28px 16px;
+  line-height:20px;
   margin: 0;
   text-align:left;
   white-space: nowrap;
