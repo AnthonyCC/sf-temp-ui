@@ -127,6 +127,7 @@ var FreshDirect = FreshDirect || {};
             menubox = $('[data-component="menubox"][data-id="'+itemlist.data('menuitemlist')+'"]'),
             menu = menubox.parents('[data-component="menu"]'),
             id = clicked.data('urlparameter');
+
         if (clicked.hasClass('disabled')) {
           return;
         }

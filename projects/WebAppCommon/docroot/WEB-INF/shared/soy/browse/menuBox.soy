@@ -33,9 +33,11 @@
       {/if}
       <div class="popupMenuContent" style="display: none;">
         <div data-component="menuitemlist" data-menuitemlist="{$menuBox.id}">
+          <form>
           {call .popupLayout}
             {param menuBox: $menuBox /}
           {/call}
+          </form>
         </div>
       </div>
     {elseif $menuBox.displayType == 'CENTER_POPUP'}
@@ -43,10 +45,12 @@
       <button class="category centerpopup cssbutton green" data-header="Choose a {$menuBox.name}"><span class="icon-arrow-down2-after">{if $menuBox.selectedLabel}{$menuBox.selectedLabel}{else}Choose a {$menuBox.name}{/if}</span></button>
       <div class="popupMenuContent" style="display: none;">
         <div data-component="menuitemlist" data-menuitemlist="{$menuBox.id}">
+          <form>
           {call .layoutBreak}
             {param menuBox: $menuBox /}
             {param bodyVariant: 'CENTER_POPUP' /}
           {/call}
+          </form>
         </div>
       </div>
     {/if}
