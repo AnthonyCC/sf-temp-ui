@@ -3,10 +3,10 @@ package com.freshdirect.webapp.ajax.filtering;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +38,7 @@ public class CmsFilteringNavigator {
 	private boolean isOrderAscending;
 	
 	//filtering
-	private Map<String, List<String>> requestFilterParams = new HashMap<String, List<String>>();
+	private Map<String, List<String>> requestFilterParams = new TreeMap<String, List<String>>();
 	
 	//show all product on the actual page
 	private boolean all = false;
