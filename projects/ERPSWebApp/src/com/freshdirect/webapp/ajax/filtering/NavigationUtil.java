@@ -276,9 +276,14 @@ public class NavigationUtil {
 		return  isLeftNavRolledOut && isOnWeb;
 	}
 	
+	/** if true category does not show up in any navigation **/
 	public static boolean isCategoryHiddenInContext(FDUserI user, CategoryModel cat) {
-		return 	!cat.isShowSelf() ||
-				!ContentFactory.getInstance().getPreviewMode() && (
+		return 	!cat.isShowSelf() || isCategoryForbiddenInContext(user, cat);
+	}
+	
+	/** if true category page cannot be displayed **/
+	public static boolean isCategoryForbiddenInContext(FDUserI user, CategoryModel cat) {
+		return 	!ContentFactory.getInstance().getPreviewMode() && (
 					cat.isHideIfFilteringIsSupported() && isUserContextEligibleForHideFiltering(user) || 
 					cat.isHidden() || 
 					!isCategoryDisplayableCached(cat)

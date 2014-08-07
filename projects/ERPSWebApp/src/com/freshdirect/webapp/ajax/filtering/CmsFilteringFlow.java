@@ -238,8 +238,8 @@ public class CmsFilteringFlow {
 			throw new InvalidFilteringArgumentException("Node is not a product container or null: "+id, InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE, String.format(FALLBACK_URL, id));
 		}
 
-		if (contentNodeModel instanceof CategoryModel && (NavigationUtil.isCategoryHiddenInContext(user, (CategoryModel)contentNodeModel)) && !nav.isPdp()) {
-			throw new InvalidFilteringArgumentException("Category is hidden: "+id, InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE, String.format(FALLBACK_URL, id));				
+		if (contentNodeModel instanceof CategoryModel && (NavigationUtil.isCategoryForbiddenInContext(user, (CategoryModel)contentNodeModel)) && !nav.isPdp()) {
+			throw new InvalidFilteringArgumentException("Category is forbidden: "+id, InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE, String.format(FALLBACK_URL, id));				
 		}
 		
 		// throw exception if we have special layout and we are not on the browse_special.jsp or pdp.jsp
