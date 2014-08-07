@@ -4,10 +4,11 @@
  */
 {template .menuBox autoescape="false"}
 
-{if $menuBox.items and length($menuBox.items) > 0}
+{if ($menuBox.items and length($menuBox.items) > 0) or $menuBox.name}
   <div class="menuBox" data-component="menubox" data-type="{$menuBox.displayType}" data-id="{$menuBox.id}" data-selectiontype="{$menuBox.selectionType}" data-filter="{if $menuBox.boxType == 'FILTER'}{$menuBox.id}{else}id{/if}" data-boxtype="{$menuBox.boxType}" {if $menuBox.shouldSetAll}data-shouldsetall="true"{/if}>
     {if $menuBox.displayType == 'SIMPLE'}
       {if $menuBox.name}<h2>{$menuBox.name}</h2>{/if}
+      {if $menuBox.items and length($menuBox.items) > 0}
       <ul>
       {foreach $item in $menuBox.items}
         {if $item.urlParameter}
@@ -24,6 +25,7 @@
         {/if}
       {/foreach}
       </ul>
+     {/if} 
     {elseif $menuBox.displayType == 'POPUP'}
       {if $menuBox.name}<h2>{$menuBox.name}</h2>{/if}
       {if $menuBox.boxType == 'FILTER'}

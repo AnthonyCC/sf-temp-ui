@@ -411,6 +411,16 @@ public class MenuBuilderFactory {
 						menu.add(domain);
 					}
 				}
+			} else if(thePath.get(NavDepth.SUB_CATEGORY)==null){
+				// in case of no subcategories display category header text only
+				CategoryModel cat = (CategoryModel)thePath.get(NavDepth.CATEGORY);
+				MenuBoxData domain = new MenuBoxData();
+				domain.setName(cat.getFullName());
+				domain.setId(cat.getContentName());
+				domain.setBoxType(MenuBoxType.CATEGORY);
+				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+				menu.add(domain);
 			}
 			
 			// sub sub categories box on sub and sub sub categories page (not on special layout)
@@ -453,6 +463,16 @@ public class MenuBuilderFactory {
 						menu.add(domain);
 					}
 				}
+			} else if(thePath.get(NavDepth.SUB_CATEGORY)!=null) {
+				// in case of no subcategories display category header text only
+				CategoryModel subCat = (CategoryModel)thePath.get(NavDepth.SUB_CATEGORY);
+				MenuBoxData domain = new MenuBoxData();
+				domain.setName(subCat.getFullName());
+				domain.setId(subCat.getContentName());
+				domain.setBoxType(MenuBoxType.SUB_CATEGORY);
+				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+				menu.add(domain);
 			}
 			
 			if(!nav.isSpecialPage()){
@@ -843,47 +863,56 @@ public class MenuBuilderFactory {
 
 				} else { // NAVIGATION BOX (CATEGORIES)
 					
-					// walk through on menu items in the box
-					for (MenuItemData item : box.getItems()) {
-						
-						if(item.getId()==null || "all".equals(item.getId()) || item.isSpecial()){ // marker or special items
-							continue;
-						}
+					if(box.getItems()!=null) {
+					
+						// walk through on menu items in the box
+						for (MenuItemData item : box.getItems()) {
 
-						itemCount = 0;
-						
-						// if the menu item is a category then check how many products we have with the selected filters
+							if (item.getId() == null || "all".equals(item.getId()) || item.isSpecial()) { // marker or special items
+								continue;
+							}
 
-						CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode(item.getId());
-						NavDepth navDepth = determineCategoryLevel(category);
-						// create a mock section contains all products we need
-						SectionContext section = BrowseDataBuilderFactory.getInstance().createSectionTree(category, navDepth.getLevel(), user);
-						
-						if(section.isSpecial()){
-							continue;
-						}
-						
-						List<FilteringProductItem> products = new ArrayList<FilteringProductItem>();
-						if(section.getSectionContexts()==null || section.getSectionContexts().size()==0){
-							// if the category doesn't have sub categories ...
-							products = ProductItemFilterUtil.createFilteringProductItems(category.getProducts());							
-						}else{
-							// collect all products from section
-							ProductItemFilterUtil.collectAllItems(section.getSectionContexts(), products);							
-						}
+							itemCount = 0;
 
-						products = ProductItemFilterUtil.getFilteredProducts(products, navModel.getActiveFilters(), false);
-						
-						checkDefaultSkuAvailability(products);
-						
-						itemCount = products.size();
+							// if the menu item is a category then check how
+							// many products we have with the selected filters
 
-						if (itemCount == 0 && !item.isSelected()) {
-							item.setActive(false);
-							setBrowseSectionAvailability(browseData.getSectionContexts(), item.getId());
-						}else{
-							emptyBox=false;
+							CategoryModel category = (CategoryModel) ContentFactory.getInstance().getContentNode(item.getId());
+							NavDepth navDepth = determineCategoryLevel(category);
+							// create a mock section contains all products we
+							// need
+							SectionContext section = BrowseDataBuilderFactory.getInstance().createSectionTree(category, navDepth.getLevel(), user);
+
+							if (section.isSpecial()) {
+								continue;
+							}
+
+							List<FilteringProductItem> products = new ArrayList<FilteringProductItem>();
+							if (section.getSectionContexts() == null || section.getSectionContexts().size() == 0) {
+								// if the category doesn't have sub categories
+								// ...
+								products = ProductItemFilterUtil.createFilteringProductItems(category.getProducts());
+							} else {
+								// collect all products from section
+								ProductItemFilterUtil.collectAllItems(section.getSectionContexts(), products);
+							}
+
+							products = ProductItemFilterUtil.getFilteredProducts(products, navModel.getActiveFilters(), false);
+
+							checkDefaultSkuAvailability(products);
+
+							itemCount = products.size();
+
+							if (itemCount == 0 && !item.isSelected()) {
+								item.setActive(false);
+								setBrowseSectionAvailability(browseData.getSectionContexts(), item.getId());
+							} else {
+								emptyBox = false;
+							}
 						}
+					}else{
+						//special header only case
+						emptyBox=false;
 					}
 				}
 				
