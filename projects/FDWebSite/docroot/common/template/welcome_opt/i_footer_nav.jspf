@@ -5,7 +5,6 @@
 --%><%@ page import="java.net.URLEncoder" %>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
-<%@ page import="com.freshdirect.fdstore.content.MyFD"%>
 <%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
 <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature' %>
@@ -42,7 +41,6 @@
 			String catId = request.getParameter("catId") != null ? request.getParameter("catId") : "";
 			
 			String botNav = "off";
-			boolean hasMyFD = FDStoreProperties.isMyfdEnabled() && MyFD.getMyFDInstance() != null;
 			
 			if (bottomUri.indexOf("/about/index.jsp") > -1) {
 			    botNav = "aboutus";
@@ -74,7 +72,6 @@
 			Map<String, String> params = new HashMap<String, String>();
 			
 			params.put("botNav", botNav);
-			params.put("hasMyFD", Boolean.toString(hasMyFD));
 			params.put("careerLink", FDStoreProperties.getCareerLink());
 			params.put("giftPath", giftPath);
 			params.put("bottomUri", bottomUri);

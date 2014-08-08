@@ -1,7 +1,6 @@
 <%@ page import="java.net.URLEncoder" %>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
-<%@page import="com.freshdirect.fdstore.content.MyFD"%>
 <%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
 <%@ page import='com.freshdirect.fdstore.sempixel.SemPixelModel' %>
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature' %>
@@ -19,8 +18,7 @@
     String catId = request.getParameter("catId") != null ? request.getParameter("catId") : "";
 
     String botNav = "off";
-    boolean hasMyFD = FDStoreProperties.isMyfdEnabled() && MyFD.getMyFDInstance() != null;
-
+   
 if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDUserI)session.getAttribute(SessionName.USER))) {
     if (!"".equals(deptId)) {
     	botNav = deptId;
@@ -71,7 +69,6 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
     Map<String, String> params = new HashMap<String, String>();
     
 	params.put("botNav", botNav);
-	params.put("hasMyFD", Boolean.toString(hasMyFD));
 	params.put("careerLink", FDStoreProperties.getCareerLink());
 	params.put("giftPath", giftPath);
 	params.put("bottomUri", bottomUri);
