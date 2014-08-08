@@ -486,18 +486,21 @@
 }
 
 /* SUB-LINK */
-.large-visual .lv-sub-link{
+.large-visual .lv-sub-link-bold {
+	font-weight: bold;
+}
+.large-visual .lv-sub-link {
   font-size:14px;
   font-family: Verdana, Arial, sans-serif;
-  color:#360;
-  line-height:18px;
+  color: #360;
+  line-height: 21px;
   position: relative;
   display: inline-block;
   padding-right: 16px;
 }
 
 .large-visual .lv-sub-link-padded {
-	padding-bottom: 18px;
+	padding-bottom: 13px;
 }
 
 .large-visual .lv-sub-link:hover{

@@ -68,7 +68,7 @@
     	
 		<ul class="lv-sub-items">
 			<li class="lv-sub-item">
-    			<span class="lv-sub-link lv-sub-link-padded">{$name}</span>
+    			<span class="lv-sub-link lv-sub-link-padded lv-sub-link-bold">View All {$name}</span>
        		</li>
        	</ul>
 	</a>
@@ -78,7 +78,7 @@
       {foreach $category in $popularCategories}
         {if index($category) < $maxItems}
         
-	        <li class="lv-sub-item{if index($category) < length($popularCategories)-1} lv-sub-link-padded{/if}">
+	        <li class="lv-sub-item">
 	          <a class="lv-sub-link" href="browse.jsp?id={$category.id}" 
 	             data-component="categorylink" 
 	             data-id="{$category.id}">{$category.name}</a>
