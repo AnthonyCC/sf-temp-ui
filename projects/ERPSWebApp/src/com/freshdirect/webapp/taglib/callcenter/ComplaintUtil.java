@@ -185,7 +185,7 @@ public class ComplaintUtil {
 		else if ( "grocery".equalsIgnoreCase(dept) || "baby".equalsIgnoreCase(dept) || "beverages".equalsIgnoreCase(dept) || "household".equalsIgnoreCase(dept) || "pantry".equalsIgnoreCase(dept) ) { r = "GRO"; }
 		else if ( "meals".equalsIgnoreCase(dept) || "kitchen".equalsIgnoreCase(dept) || "Heat & Eat".equalsIgnoreCase(dept)) { r = "HMR"; }
 		else if ( "meat".equalsIgnoreCase(dept) ) { r = "MEA"; }
-		else if ( "pasta".equalsIgnoreCase(dept) ) { r = "PAS"; }
+		else if ( "pasta".equalsIgnoreCase(dept) || (dept != null && dept.toLowerCase().contains("pasta")) ) { r = "PAS"; }
 		else if ( "seafood".equalsIgnoreCase(dept) ) { r = "SEA"; }
 		else if ( "specialty".equalsIgnoreCase(dept) ) { r = "GRO"; }
 		else if ( "tea".equalsIgnoreCase(dept) ) { r = "TEA"; }
