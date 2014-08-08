@@ -51,13 +51,19 @@ public class CmsFilteringFlow {
 		
 		BrowseEvent event = nav.getBrowseEvent()!=null ? BrowseEvent.valueOf(nav.getBrowseEvent().toUpperCase()) : BrowseEvent.NOEVENT;
 
-		// invalidate cache entry in every other case than paging or sorting
-		if(event!=BrowseEvent.PAGE && event!=BrowseEvent.SORT) {		
-			EhCacheUtil.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, user.getUser().getPrimaryKey());
+		//use userRefinementCache
+		String userPrimaryKey = user.getUser().getPrimaryKey();
+		if(event!=BrowseEvent.PAGE && event!=BrowseEvent.SORT) { // invalidate cache entry in every other case than paging or sorting		
+			EhCacheUtil.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey);
+		
 		} else {
-			browseDataContext = EhCacheUtil.getObjectFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, user.getUser().getPrimaryKey());							
+			browseDataContext = EhCacheUtil.getObjectFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey);
+			if (browseDataContext!=null && browseDataContext.getCurrentContainer()!=null && !browseDataContext.getCurrentContainer().getContentName().equalsIgnoreCase(nav.getId())){
+				EhCacheUtil.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey); //if cached id is not the same as url id 
+				browseDataContext = null;
+			}
 		}
-
+		
 		if (browseDataContext == null) {
 			if (nav.isBrowseRequest()) {
 				browseDataContext = doBrowseFlow(nav, user);
