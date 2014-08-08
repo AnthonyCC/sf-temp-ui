@@ -3,7 +3,7 @@
 		imports: FDStoreProperties
 		taglibs: fd, jwr
 		
---%><%@ page import="com.freshdirect.fdstore.myfd.blog.MyFdFeed" %><%-- required for blog logout --%>
+--%>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <%-- this file will be included just before the closing </body> tag --%>
 
@@ -26,13 +26,6 @@ if (FDStoreProperties.isBazaarvoiceEnabled()) {
   	%><script type="text/javascript" src="<%= bvapiUrl %>" defer="defer" async="async"></script><%
 } %>
   
-<%-- changed iframe include to a simple ajax get so page isn't loaded
-	<iframe src="<%=MyFdFeed.getInstance().getBlogUrl()%>/?autologout" width="0" height="0" frameBorder="0"></iframe>
---%>
-	<script type="text/javascript">
-		$jq(window).ready(function() { $jq.get('<%= MyFdFeed.getInstance().getBlogUrl() %>/?autologout'); });
-	</script>
-
 <%-- DP old T&C overlay check --%>
 	<%
 		FDUserI dpTcCheckUser = (FDUserI)session.getAttribute(SessionName.USER);

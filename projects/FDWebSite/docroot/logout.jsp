@@ -2,7 +2,6 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import="java.util.Enumeration"%>
-<%@ page import="com.freshdirect.fdstore.myfd.blog.MyFdFeed"%>
 <%@ page import="java.net.URLEncoder"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -100,6 +99,3 @@ response.sendRedirect("/welcome.jsp");
 </TABLE><BR><BR><BR>
 </tmpl:put>
 </tmpl:insert>
-
-
-<iframe src="<%=MyFdFeed.getInstance().getBlogUrl()%>/?autologout" width="0" height="0" frameBorder="0"/>

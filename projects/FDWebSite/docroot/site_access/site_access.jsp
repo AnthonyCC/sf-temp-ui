@@ -6,7 +6,6 @@
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-<%@ page import="com.freshdirect.fdstore.myfd.blog.MyFdFeed"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
 <%@ page buffer="16kb" %>
@@ -208,8 +207,5 @@ request.setAttribute("listPos", "CategoryNote,SiteAccess,DeliveryFees");
 
 		</fd:SiteAccessController>
 
-		<% if ("true".equalsIgnoreCase(request.getParameter("bloglogout"))) {%>
-			<iframe src="<%=MyFdFeed.getInstance().getBlogUrl()%>/?autologout" width="0" height="0" frameBorder="0"/>
-		<%} %>
 	</body>
 </html>

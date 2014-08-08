@@ -425,11 +425,7 @@ public class FDStoreProperties {
     private final static String PROP_CRM_SECURITY_SKIP_FILE_TYPES = "crm.security.skip.filetypes";
     private final static String PROP_CRM_SECURITY_SKIP_FOLDERS = "crm.security.skip.folders";
 	private final static String PROP_CRM_AGENTS_CACHE_REFRESH_PERIOD="crm.agents.cache.refresh.period";
-	
-	private final static String MYFD_ENABLED = "myfd.enabled";
-	private final static String MYFD_BLOG_URL = "myfd.blogUrl";
-	private static final String MYFD_POLLDADDY_API_KEY = "myfd.pollDaddy.apiKey";
-	
+		
     private static final String PROP_CLICK2CALL_CALL_BACL_URL = "fdstore.c2c.callback.url";
 	
     //APPDEV-1215 Sustainable Seafood
@@ -1096,7 +1092,6 @@ public class FDStoreProperties {
         defaults.put(PROP_CLICK2CALL_CALL_BACL_URL,
             "https://cim1.custserv.ca/system/web/view/live/templates/freshdirect/callbackICMFrame.html");
 		
-		defaults.put(MYFD_ENABLED, "true");		
 		//APPDEV-1215 Sustainable Seafood
 		defaults.put(PROP_SEAFOODSUSTAIN_ENABLED, "false");
 		
@@ -1283,7 +1278,7 @@ public class FDStoreProperties {
         defaults.put(GMAPS_API_KEY, "AIzaSyAALx7g2uVEDP46IaGU_zxYT5gBSKac2ks");        
         
         //APPDEV-3100 2013 Wine Transition
-        defaults.put(PROP_WINE_ASSID, "USQ");
+        defaults.put(PROP_WINE_ASSID, "FDW");
         
         defaults.put(PROP_BROWSE_ROLLOUT_REDIRECT_ENABLED, "true");
         
@@ -2628,19 +2623,6 @@ public class FDStoreProperties {
     public static String getCrmSecuritySkippedFolders() {
         return get(PROP_CRM_SECURITY_SKIP_FOLDERS);
     }
-	
-
-	public static boolean isMyfdEnabled() {
-        return Boolean.parseBoolean(get(MYFD_ENABLED));
-	}
-
-	public static String getMyfdBlogUrl() {
-		return get(MYFD_BLOG_URL);
-    }
-    
-	public static String getMyFdPollDaddyApiKey() {
-		return get(MYFD_POLLDADDY_API_KEY);
-	}
 	
 	public static String getC2CCallBackUrl(){
         return get(PROP_CLICK2CALL_CALL_BACL_URL);

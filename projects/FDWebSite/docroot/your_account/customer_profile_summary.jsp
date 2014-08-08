@@ -9,7 +9,6 @@
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType"%>
-<%@ page import="com.freshdirect.fdstore.myfd.blog.MyFdFeed"%>
 <%@ page import="java.net.URLEncoder" %>
 <%@ page import='java.text.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -285,4 +284,3 @@ response.setHeader("Cache-Control", "no-cache");
 
 	</tmpl:put>
 </tmpl:insert>
-<iframe src="<%=MyFdFeed.getInstance().getBlogUrl()%>/?autologout" width="0" height="0" frameBorder="0"/>

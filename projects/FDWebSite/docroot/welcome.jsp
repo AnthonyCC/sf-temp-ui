@@ -1,4 +1,3 @@
-<%@ page import="com.freshdirect.fdstore.myfd.blog.MyFdFeed"%>
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" /><%
@@ -28,8 +27,6 @@ request.setAttribute("noyui", true);
 	</tmpl:put>
 
 	<tmpl:put name='extraBody' direct='true'>
-		<% /* add this here since there's no log out page now */ %>
-		<iframe src="<%=MyFdFeed.getInstance().getBlogUrl()%>/?autologout" width="0" height="0" frameBorder="0"/>
 	</tmpl:put>
 
 	<tmpl:put name='nav' direct='true'>
