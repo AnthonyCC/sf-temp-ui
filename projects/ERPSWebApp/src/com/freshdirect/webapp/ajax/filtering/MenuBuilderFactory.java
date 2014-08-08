@@ -314,10 +314,11 @@ public class MenuBuilderFactory {
 			String deptId = dept.getContentName();
 			
 			// create superdepartment box
-			if (navModel.getSuperDepartmentModel() != null) {
-				MenuBoxData domain = createSuperDepartmentMenuBox(navModel.getSuperDepartmentModel(), navModel, false);
+			final SuperDepartmentModel superDept = navModel.getSuperDepartmentModel();
+			if (superDept != null) {
+				MenuBoxData domain = createSuperDepartmentMenuBox(superDept, navModel, false);
 				// check which department is selected
-				checkSelected(domain,thePath.get(NavDepth.DEPARTMENT).getContentName());
+				checkSelectedEx(domain, thePath.get(NavDepth.DEPARTMENT).getContentName(), superDept.getFullName());
 				menu.add(domain);
 			}
 			
