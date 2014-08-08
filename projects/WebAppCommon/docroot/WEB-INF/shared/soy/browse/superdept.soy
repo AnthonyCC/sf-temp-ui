@@ -63,15 +63,8 @@
 		  {/if}
 		</div>
 		<h2 class="lv-item-title">{$name}</h2>
-
-    	<hr class="lv-sep" />
-    	
-		<ul class="lv-sub-items">
-			<li class="lv-sub-item">
-    			<span class="lv-sub-link lv-sub-link-padded lv-sub-link-bold">View All {$name}</span>
-       		</li>
-       	</ul>
 	</a>
+    <hr class="lv-sep" />
 
     <ul class="lv-sub-items">
     {if $popularCategories and length($popularCategories) > 0}
@@ -87,6 +80,14 @@
       {/foreach}
     {/if}
     </ul>
+    
+	<a class="lv-link" href="browse.jsp?id={$id}" data-component="categorylink" data-id="{$id}">
+		<ul class="lv-sub-items">
+			<li class="lv-sub-item">
+    			<span class="lv-sub-link lv-sub-link-padded lv-sub-link-bold">View All {$name}</span>
+       		</li>
+       	</ul>
+	</a>
   </div>
 {/template}
 
