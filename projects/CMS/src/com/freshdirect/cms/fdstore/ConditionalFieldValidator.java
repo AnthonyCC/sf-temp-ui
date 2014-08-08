@@ -82,53 +82,57 @@ public class ConditionalFieldValidator implements ContentValidatorI {
 		if (FDContentTypes.PRODUCT_FILTER.equals(t)) {
 
 			String type = (String) node.getAttributeValue("type");
-			switch (ProductFilterType.toEnum(type)){
-				case AND:
-				case OR:	
-					validateFields(PRODUCT_FILTER_COMBINATION, delegate, node);
-					break;
+			if (type==null){
+				delegate.record( node.getKey(), "Type is empty" );
+			} else {
+				switch (ProductFilterType.toEnum(type)){
+					case AND:
+					case OR:	
+						validateFields(PRODUCT_FILTER_COMBINATION, delegate, node);
+						break;
+						
+					case BACK_IN_STOCK:
+					case NEW:
+					case KOSHER:
+					case ON_SALE:
+						validateFields(PRODUCT_FILTER_BINARY, delegate, node);
+						break;
+						
+					case ALLERGEN:
+					case CLAIM:
+					case ORGANIC:
+						validateFields(PRODUCT_FILTER_ERPSY_FLAG, delegate, node);
+						break;
+						
+					case BRAND:
+						validateFields(PRODUCT_FILTER_BRAND, delegate, node);
+						break;
+						
+					case DOMAIN_VALUE:
+						validateFields(PRODUCT_FILTER_DOMAIN_VALUE, delegate, node);
+						break;
+		
+					case TAG:
+						validateFields(PRODUCT_FILTER_TAG, delegate, node);
+						break;
+		
+					case CUSTOMER_RATING:
+					case EXPERT_RATING:
+					case FRESHNESS:
+					case SUSTAINABILITY_RATING:
+					case PRICE:
+						validateFields(PRODUCT_FILTER_RANGE, delegate, node);
+						break;
+		
+					case NUTRITION:
+						validateFields(PRODUCT_FILTER_RANGE_NUTRITION, delegate, node);
+						break;
 					
-				case BACK_IN_STOCK:
-				case NEW:
-				case KOSHER:
-				case ON_SALE:
-					validateFields(PRODUCT_FILTER_BINARY, delegate, node);
-					break;
-					
-				case ALLERGEN:
-				case CLAIM:
-				case ORGANIC:
-					validateFields(PRODUCT_FILTER_ERPSY_FLAG, delegate, node);
-					break;
-					
-				case BRAND:
-					validateFields(PRODUCT_FILTER_BRAND, delegate, node);
-					break;
-					
-				case DOMAIN_VALUE:
-					validateFields(PRODUCT_FILTER_DOMAIN_VALUE, delegate, node);
-					break;
-	
-				case TAG:
-					validateFields(PRODUCT_FILTER_TAG, delegate, node);
-					break;
-	
-				case CUSTOMER_RATING:
-				case EXPERT_RATING:
-				case FRESHNESS:
-				case SUSTAINABILITY_RATING:
-				case PRICE:
-					validateFields(PRODUCT_FILTER_RANGE, delegate, node);
-					break;
-	
-				case NUTRITION:
-					validateFields(PRODUCT_FILTER_RANGE_NUTRITION, delegate, node);
-					break;
+					default:
+						delegate.record( node.getKey(), "Type '"+type+"' is invalid" );
+						break;
 				
-				default:
-					delegate.record( node.getKey(), "Type '"+type+"' is invalid" );
-					break;
-			
+				}
 			}
 
 		}
