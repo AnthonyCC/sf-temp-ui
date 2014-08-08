@@ -7,7 +7,6 @@ import com.freshdirect.fdstore.content.FilteringProductItem;
 
 /**
  * Product Availability Filter
- * TODO preview mode
  * 
  * @author segabor
  *

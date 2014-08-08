@@ -22,7 +22,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  *
  */
 public class PriceFilter extends AbstractRangeFilter {
-	@SuppressWarnings("unused")
+
 	private static final Logger LOGGER = LoggerFactory.getInstance( PriceFilter.class );
 	
 	private FDUserI user;

@@ -697,10 +697,7 @@ public class MenuBuilderFactory {
 		List<MenuItemData> newMenuItems = new ArrayList<MenuItemData>();	
 		
 		for(DepartmentModel department : departments){
-//TODO: needed for departments?
-//			if (NavigationUtil.hideCategory(user, category)) {
-//				continue;
-//			}
+
 			MenuItemData menuItem = new MenuItemData();
 			menuItem.setActive(true);
 			menuItem.setId(department.getContentName());

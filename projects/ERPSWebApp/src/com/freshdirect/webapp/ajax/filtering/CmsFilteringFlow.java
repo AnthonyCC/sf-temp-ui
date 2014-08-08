@@ -97,7 +97,7 @@ public class CmsFilteringFlow {
 			MenuBuilderFactory.getInstance().relocateBrandFilter(browseDataContext.getMenuBoxes().getMenuBoxes(),  browseDataContext.getNavigationModel().getBrandFilterLocation());			
 		}
 		
-		// -- REORDER MENU BOXES, PLACE POPUP TYPE FILTERS BELOW TOP CATEGORIES (TODO remove this??)
+		// -- REORDER MENU BOXES, PLACE POPUP TYPE FILTERS BELOW TOP CATEGORIES
 		MenuBuilderFactory.getInstance().reorderMenuBoxes(browseDataContext.getMenuBoxes().getMenuBoxes());
 		
 			
