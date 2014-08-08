@@ -415,13 +415,7 @@ public class MenuBuilderFactory {
 			} else if(thePath.get(NavDepth.SUB_CATEGORY)==null){
 				// in case of no subcategories display category header text only
 				CategoryModel cat = (CategoryModel)thePath.get(NavDepth.CATEGORY);
-				MenuBoxData domain = new MenuBoxData();
-				domain.setName(cat.getFullName());
-				domain.setId(cat.getContentName());
-				domain.setBoxType(MenuBoxType.CATEGORY);
-				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
-				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
-				menu.add(domain);
+				menu.add(createHeaderOnlyBox(cat, MenuBoxType.CATEGORY));
 			}
 			
 			// sub sub categories box on sub and sub sub categories page (not on special layout)
@@ -467,13 +461,7 @@ public class MenuBuilderFactory {
 			} else if(thePath.get(NavDepth.SUB_CATEGORY)!=null) {
 				// in case of no subcategories display category header text only
 				CategoryModel subCat = (CategoryModel)thePath.get(NavDepth.SUB_CATEGORY);
-				MenuBoxData domain = new MenuBoxData();
-				domain.setName(subCat.getFullName());
-				domain.setId(subCat.getContentName());
-				domain.setBoxType(MenuBoxType.SUB_CATEGORY);
-				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
-				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
-				menu.add(domain);
+				menu.add(createHeaderOnlyBox(subCat, MenuBoxType.SUB_CATEGORY));
 			}
 			
 			if(!nav.isSpecialPage()){
@@ -484,6 +472,18 @@ public class MenuBuilderFactory {
 			return menu;
 			
 		}
+	}
+	
+	private MenuBoxData createHeaderOnlyBox(CategoryModel node, MenuBoxType type){
+		
+		MenuBoxData domain = new MenuBoxData();
+		domain.setName(node.getFullName());
+		domain.setId(node.getContentName());
+		domain.setBoxType(type);
+		domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+		domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+		
+		return domain;
 	}
 	
 	private void insertMarkersForSpecialBox(MenuBoxData box, int maxItemsPerColumn){
