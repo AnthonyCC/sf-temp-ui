@@ -164,7 +164,6 @@ var FreshDirect = FreshDirect || {};
         $t = $(e.currentTarget),
         $ghostMenuItem = $ghost.find("[data-id='" + $t.data('id') + "']"),
         $popupBody = $popup.find(".globalnav-popup-content");
-
     
     // close all autocomplete popups
     $('[data-component="autocomplete"]').autocomplete("close");
@@ -177,8 +176,6 @@ var FreshDirect = FreshDirect || {};
     if(!$popupBody.length){ return; }
     if ($popupBody.is(':animated') && popupTimeout === null) { return; }
 
-    //repos($topnav, $ghost, $popup);
-
     // re-init subdown animation logic
     subDown = false;
 
@@ -189,7 +186,6 @@ var FreshDirect = FreshDirect || {};
 
 
     repos($topnav, $ghost, $popup, $t);
-    //realigner($topnav, $popup, $t);
 
     removeTopItemHighlights();
     addTopItemHighlight($ghostMenuItem.find("a"));
@@ -264,9 +260,6 @@ var FreshDirect = FreshDirect || {};
     $(document.body).append($ghost);
     $(document.body).append($popup);
 
-    //dynamically adjust contents and their alignments
-    //realigner();
-
     // attach event handlers
     $overlay.on('mouseover', close); // attach works only this way in iPad/Safari
     $(document).on('mouseover', trigger, open);
@@ -302,8 +295,10 @@ function getElemDim($elem){
 }
 
 /* adjust left/right positioning of popup elements and their children */
-function realigner($topnav, $popup, $t) {	
+function realigner($topnav, $popup, $t) {
 	if ($t === undefined || $t === null) { return $topnav.offset().left; }
+	
+    $popup.css('left', ''); //reset popup so realign works properly
   
 	var navDim = getElemDim($topnav);
 	var tarDim = getElemDim($t);
