@@ -28,11 +28,7 @@
      {/if} 
     {elseif $menuBox.displayType == 'POPUP'}
       {if $menuBox.name}<h2>{$menuBox.name}</h2>{/if}
-      {if $menuBox.boxType == 'FILTER'}
-      	<button class="category popup leftnav-category-popup-button cssbutton green"><span class="icon-arrow-down2-after">{$menuBox.name}</span></button>
-      {else}
-      	<button class="category popup leftnav-category-popup-button cssbutton green"><span class="icon-arrow-down2-after">{$menuBox.selectedLabel}</span></button>      
-      {/if}
+      <button class="category popup leftnav-category-popup-button cssbutton green"><span class="icon-arrow-down2-after">{$menuBox.selectedLabel ? $menuBox.selectedLabel : $menuBox.name}</span></button>      
       <div class="popupMenuContent" style="display: none;">
         <div data-component="menuitemlist" data-menuitemlist="{$menuBox.id}">
           <form>
