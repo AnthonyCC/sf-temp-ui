@@ -78,6 +78,7 @@ public class RecommenderPotatoTag extends SimpleTagSupport {
 		this.sendVariant = sendVariant;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void doTag() throws JspException {
 		
@@ -103,7 +104,11 @@ public class RecommenderPotatoTag extends SimpleTagSupport {
 			ProductRecommenderUtil.persistToSession(session, results);
 			
 			products = results.getAllProducts();
-
+			
+			if (products.size()>maxItems){
+				products = products.subList(0, maxItems);
+			}
+			
 		} catch ( FDResourceException e ) {
 			LOGGER.warn( "Failed to get recommendations for siteFeature:"+siteFeature, e );
 		}

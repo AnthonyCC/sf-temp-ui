@@ -18,7 +18,7 @@
 </c:if>
 
 <c:set var="potatoes" value='${cartConfirmPotatoes["cartConfirmPotatoes"]}'/>
-<potato:recommender siteFeature="DEALS_QS" name="deals" maxItems="25"  cmEventSource="cc_tabbedRecommender" />
+<potato:recommender siteFeature="DEALS_QS" name="deals" maxItems="15"  cmEventSource="cc_tabbedRecommender" />
 <potato:recommender siteFeature="YMAL" name="ymal" maxItems="25" currentNodeKey="${potatoes[0].cartLine.cmskey}" cmEventSource="CC_YMAL"/>
 <c:set target="${deals}" property="selected" value="deals" />
 <div class="pdp pdp-cc">
