@@ -432,6 +432,9 @@ function realigner($topnav, $popup, $t) {
 				gradDim.right.start = Math.floor(possibleOffset + subDeptsDim.width+(tarDim.width/2));
 				gradDim.right.end = possibleOffset + subDeptsDim.width+(tarDim.width/2) + 60;
 			}
+			
+			//offet right side to quick-fix gradient being off in IE sometimes
+			gradDim.right.start = gradDim.right.start - 7;
 
 			if (gradDim.left.active && gradDim.right.active) { //both sides
 				$subDeptsRef.closest('.subdepartments_cont').css({
