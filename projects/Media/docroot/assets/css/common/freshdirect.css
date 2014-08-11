@@ -768,6 +768,11 @@ section.main .leftnav .menuBox button.category > span:after {
   vertical-align: middle;
   top: 1px;
   right: 0;
+  content: "\e616";
+}
+
+.popupcontentghost .leftnav-category-popup-button.cssbutton > span:after {
+  content: "\e617";
 }
 
 section.main .leftnav .menuBox button.category.emptypopup {
