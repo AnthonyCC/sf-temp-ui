@@ -175,7 +175,7 @@ public class ComplaintUtil {
     
     private static String standardizeDepartment(String dept) {
         String r = "none";
-             if ( "bakery".equalsIgnoreCase(dept) || (dept != null && dept.toLowerCase().contains("bakery")) ) { r = "BAK"; }
+        if ( "bakery".equalsIgnoreCase(dept) || (dept != null && dept.toLowerCase().contains("bakery")) ) { r = "BAK"; }
 		else if ( "cheese".equalsIgnoreCase(dept)  || (dept != null && dept.toLowerCase().contains("cheese")) ) { r = "CHE"; }
 		else if ( "coffee".equalsIgnoreCase(dept) ) { r = "COF"; }
 		else if ( "dairy".equalsIgnoreCase(dept) ) { r = "DAI"; }
@@ -198,13 +198,11 @@ public class ComplaintUtil {
         else if ( "kosher".equalsIgnoreCase(dept) ) { r = "KOS"; }
         else if ( "wine".equalsIgnoreCase(dept) || "wines".equalsIgnoreCase(dept) || (dept!=null && dept.toLowerCase().contains("usq")) || (dept!=null && dept.toLowerCase().startsWith(WineUtil.getWineAssociateId().toLowerCase())) ){ r = "WIN"; }
         else if ( "Easy Meals".equalsIgnoreCase(dept) ){ r = "EZM"; }
-        else if ( "Ready to Cook".equalsIgnoreCase(dept) ){ r = "RTC"; }
-//        else if ( dept.toLowerCase().indexOf("health") != -1 ) { r = "HBA"; }
+        else if ( dept != null && dept.toLowerCase().contains("cook")) { r = "RTC"; }
         else if ( "Healthy Living".equalsIgnoreCase(dept) || "Our Picks".equalsIgnoreCase(dept) ){ r = "OURPICKS"; }
         else if ( dept.toLowerCase().indexOf("health") != -1 ) { r = "HBA"; }
         else if ( "4-Minute Meals".equalsIgnoreCase(dept) ){ r = "FDI"; }
         else if ( "Makegood".equalsIgnoreCase(dept) ){ r = "MGD"; }
-
         else if ( "at the office".equalsIgnoreCase(dept) ){ r = "COS"; }
         else if ( "buy big".equalsIgnoreCase(dept) ){ r = "BIG"; }
         else if ( "local".equalsIgnoreCase(dept) ){ r = "LOC"; }
@@ -212,7 +210,6 @@ public class ComplaintUtil {
         else if ( "RAF".equalsIgnoreCase(dept) ){ r = "RAF"; }
         else if ( "Flowers".equalsIgnoreCase(dept) ){ r = "FLO"; }
         else if ( "Pet".equalsIgnoreCase(dept) ){ r = "PET"; }
-      /*  else if ( "Gift Cards Test Department".equalsIgnoreCase(dept)){r = "GCD";}*/
 
         return r;
     }
