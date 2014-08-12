@@ -421,31 +421,23 @@ function realigner($topnav, $popup, $t) {
 			var spaceLeft = false, spaceRight = false;
 			if (possibleOffset >= 60) { //space on left
 				gradDim.left.active = true;
+			}
 				//calc left setup
 				gradDim.left.start = Math.round(possibleOffset-60);
 				gradDim.left.end = possibleOffset;
-			}
 			var rightSpacing = $topnav.outerWidth() - (possibleOffset + subDeptsDim.width);
 			if (rightSpacing > 60) { //space on right
 				gradDim.right.active = true;
-				//calc right setup
-				gradDim.right.start = Math.floor(possibleOffset + subDeptsDim.width+(tarDim.width/2));
-				gradDim.right.end = possibleOffset + subDeptsDim.width+(tarDim.width/2) + 60;
 			}
+			//calc right setup
+			gradDim.right.start = Math.floor(possibleOffset + subDeptsDim.width+(tarDim.width/2));
+			gradDim.right.end = possibleOffset + subDeptsDim.width+(tarDim.width/2) + 60;
 			
 			//offet right side to quick-fix gradient being off in IE sometimes
 			gradDim.right.start = gradDim.right.start - 7;
 
 			if (gradDim.left.active && gradDim.right.active) { //both sides
 				$subDeptsRef.closest('.subdepartments_cont').css({
-					"background": "-moz-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(237,237,237,1) "+gradDim.right.end+"px)",
-					"background": "-webkit-gradient(left top, right top, color-stop("+gradDim.left.start+"px, rgba(237,237,237,1)), color-stop("+gradDim.left.end+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.start+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.end+"px, rgba(237,237,237,1)))",
-					"background": "-webkit-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(237,237,237,1) "+gradDim.right.end+"px)",
-					"background": "-o-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(237,237,237,1) "+gradDim.right.end+"px)",
-					"background": "-ms-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(237,237,237,1) "+gradDim.right.end+"px)",
-					"background": "linear-gradient(to right, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(237,237,237,1) "+gradDim.right.end+"px)",
-					"filter": "progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ededed', GradientType=1 )",
-					"filter": "none",
 					"background-color": "rgba(237,237,237,1)",
 					"background-image": "url('/media/images/navigation/global_nav/newglobal/SD_submenu_gradient_left.png'), url('/media/images/navigation/global_nav/newglobal/SD_submenu_gradient_right.png')",
 					"background-position": ""+gradDim.left.start+"px 0, "+(gradDim.right.start-20)+"px 0",
@@ -453,14 +445,6 @@ function realigner($topnav, $popup, $t) {
 				});
 			} else if (gradDim.left.active && !gradDim.right.active) { //only left, right side is all white
 				$subDeptsRef.closest('.subdepartments_cont').css({
-					"background": "-moz-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
-					"background": "-webkit-gradient(left top, right top, color-stop("+gradDim.left.start+"px, rgba(237,237,237,1)), color-stop("+gradDim.left.end+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.start+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.end+"px, rgba(255,255,255,1)))",
-					"background": "-webkit-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
-					"background": "-o-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
-					"background": "-ms-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
-					"background": "linear-gradient(to right, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
-					"filter": "progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ededed', GradientType=1 )",
-					"filter": "none",
 					"background-color": "rgba(237,237,237,1)",
 					"background-image": "url('/media/images/navigation/global_nav/newglobal/SD_submenu_gradient_left.png'), url('/media/images/navigation/global_nav/newglobal/SD_submenu_white.png')",
 					"background-position": ""+gradDim.left.start+"px 0, "+(gradDim.right.start-20)+"px 0",
@@ -468,14 +452,6 @@ function realigner($topnav, $popup, $t) {
 				});
 			} else if (!gradDim.left.active && gradDim.right.active) { //only right, left side is all white
 				$subDeptsRef.closest('.subdepartments_cont').css({
-					"background": "-moz-linear-gradient(left, rgba(255,255,255,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
-					"background": "-webkit-gradient(left top, right top, color-stop("+gradDim.left.start+"px, rgba(255,255,255,1)), color-stop("+gradDim.left.end+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.start+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.end+"px, rgba(255,255,255,1)))",
-					"background": "-webkit-linear-gradient(left, rgba(255,255,255,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
-					"background": "-o-linear-gradient(left, rgba(255,255,255,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
-					"background": "-ms-linear-gradient(left, rgba(255,255,255,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
-					"background": "linear-gradient(to right, rgba(255,255,255,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
-					"filter": "progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ededed', GradientType=1 )",
-					"filter": "none",
 					"background-color": "rgba(237,237,237,1)",
 					"background-image": "url(url('/media/images/navigation/global_nav/newglobal/SD_submenu_white.png', '/media/images/navigation/global_nav/newglobal/SD_submenu_gradient_right.png'))",
 					"background-position": ""+gradDim.left.start+"px 0, "+(gradDim.right.start-20)+"px 0",
