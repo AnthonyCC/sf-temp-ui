@@ -32,9 +32,16 @@
       <div class="popupMenuContent" style="display: none;">
         <div data-component="menuitemlist" data-menuitemlist="{$menuBox.id}">
           <form>
-          {call .popupLayout}
-            {param menuBox: $menuBox /}
-          {/call}
+          {if $menuBox.selectionType == 'LINK'}
+            {call .popupLayout}
+              {param menuBox: $menuBox /}
+            {/call}
+          {else}
+            {call .layoutBreak}
+              {param menuBox: $menuBox /}
+              {param bodyVariant: 'POPUP' /}
+            {/call}
+          {/if}
           </form>
         </div>
       </div>
