@@ -461,6 +461,9 @@ public class MenuBuilderFactory {
 			} else if(thePath.get(NavDepth.SUB_CATEGORY)!=null) {
 				// in case of no subcategories display category header text only
 				CategoryModel subCat = (CategoryModel)thePath.get(NavDepth.SUB_CATEGORY);
+				//collapse the last nevi box
+				menu.get(menu.size()-1).setDisplayType(MenuBoxDisplayType.POPUP);
+				//create the new header only box
 				menu.add(createHeaderOnlyBox(subCat, MenuBoxType.SUB_CATEGORY));
 			}
 			
