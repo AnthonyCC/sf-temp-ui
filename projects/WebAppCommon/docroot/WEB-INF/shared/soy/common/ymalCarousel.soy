@@ -5,6 +5,7 @@
  * @param? cmEventSource
  */
 {template .ymalCarousel}
+{if $productList and length($productList) > 0}
 <div class="ymalCarousel" data-cmSiteFeature="YMAL" data-cmeventsource="{if $cmEventSource }{$cmEventSource}{else}YMAL{/if}">
 	<h2>You May Also Like</h2>
 	{call common.simpleCarousel}
@@ -12,5 +13,5 @@
 		{param itemType:'grid' /}
 	{/call}
 </div>
-
+{/if}
 {/template}
