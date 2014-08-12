@@ -59,14 +59,24 @@ public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport{
 	
 			if (redirectUrl != null) {
 				PageContext ctx = (PageContext) getJspContext();
-				String originalUrl = ((HttpServletRequest) ctx.getRequest()).getRequestURI();
-				if (ctx.getRequest().getParameter("cm_vc") != null) {
-					redirectUrl = redirectUrl + "&cm_vc=" + ctx.getRequest().getParameter("cm_vc");  
+				final HttpServletRequest req = (HttpServletRequest) ctx.getRequest();
+				String originalUrl = req.getRequestURI();
+
+				StringBuilder redirBuilder = new StringBuilder(redirectUrl);
+				for (final String pName : new String[]{ "cm_vc", "ppPreviewId", "redirected" }) {
+					if (req.getParameter(pName) != null) {
+						redirBuilder.append("&")
+							.append(pName)
+							.append("=")
+							.append(req.getParameter(pName));
+					}
 				}
+				redirectUrl = redirBuilder.toString();
+
 	        	LOGGER.debug("Redirecting from " +originalUrl+ " to " +redirectUrl);
-	        	ServletRequest request = ctx.getRequest();
+
 	        	//To ensure that https requests get redirect to https correctly
-	        	redirectUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
+	        	redirectUrl = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + redirectUrl;
 				((HttpServletResponse)ctx.getResponse()).sendRedirect(redirectUrl);
 			}
 		}

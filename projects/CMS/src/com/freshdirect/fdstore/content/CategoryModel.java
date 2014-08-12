@@ -1157,6 +1157,7 @@ public class CategoryModel extends ProductContainer {
 			case TRANSAC_MULTI_PAIRED_ITEMS:
 			case TEMPLATE_LAYOUT:
 			case PRESIDENTS_PICKS:
+			case PRODUCTS_ASSORTMENTS:
 				return specialLayout;
 			default:
 				return null;
@@ -1168,6 +1169,7 @@ public class CategoryModel extends ProductContainer {
 		switch (specialLayout){
 			case TEMPLATE_LAYOUT:
 			case PRESIDENTS_PICKS:
+			case PRODUCTS_ASSORTMENTS:
 				return specialLayout;
 			default:
 				return null;
