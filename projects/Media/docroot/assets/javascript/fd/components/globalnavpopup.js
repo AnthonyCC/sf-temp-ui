@@ -10,6 +10,7 @@ var FreshDirect = FreshDirect || {};
   
   var delayPopup = 300;
   var popupTimeout;
+  var animFinished = false;
   var POPUPWIDGET = fd.modules.common.popupWidget;
 	  $.fn.getHiddenDimensions = function(includeMargin) {
 		  var $item = this,
@@ -164,6 +165,8 @@ var FreshDirect = FreshDirect || {};
         $t = $(e.currentTarget),
         $ghostMenuItem = $ghost.find("[data-id='" + $t.data('id') + "']"),
         $popupBody = $popup.find(".globalnav-popup-content");
+    	animFinished = false;
+
     
     // close all autocomplete popups
     $('[data-component="autocomplete"]').autocomplete("close");
@@ -204,14 +207,7 @@ var FreshDirect = FreshDirect || {};
         // stop animations before
         $popupBody.stop();
         //$("#globalnavpopup").removeClass("shadow-for-superdepart");
-        
-        if(down === false){
-        	tMouseEventBinder($t, $popupBody);  	   
-        } else {
-        	//$("#globalnavpopup").addClass("shadow-for-superdepart");
-          $popupBody.css('top', '0px');
-          $(".seasonal-media").show();
-        }
+        tMouseEventBinder($t, $popupBody, $popup);  	   
       }
     
   }
@@ -220,30 +216,42 @@ var FreshDirect = FreshDirect || {};
 	  (function($popupBody) {
 	      clearTimeout(popupTimeout);
 	      popupTimeout = setTimeout(function(){
-	    	  $popupBody.animate({
-	              top: "0px"
-	          }, 350, "easeOutQuad", function(){
-	          	//alert("Rabotay suka" + i);
+	    	  if(down === false){
+		    	  $popupBody.animate({
+		              top: "0px"
+		          }, 350, "easeOutQuad", function(){
+		          	//alert("Rabotay suka" + i);
+		          	//$("#globalnavpopup").addClass("shadow-for-superdepart");
+		        	 animFinished = true; 
+		             down = true;
+		            $(".seasonal-media").fadeIn(200);
+		            //$popupBody.css('overflow', 'visible');
+		          });
+	    	  } else {
 	          	//$("#globalnavpopup").addClass("shadow-for-superdepart");
-	             down = true;
-	            $(".seasonal-media").fadeIn(200);
-	            //$popupBody.css('overflow', 'visible');
-	          });
+	    		animFinished = true;
+	            $popupBody.css('top', '0px');
+	            $(".seasonal-media").show();
+	          }  
+		    	 
 	      }, delayPopup);
 	  })($popupBody);
   }
   
-  function tMouseEvent_Leave() {
+  function tMouseEvent_Leave($popup) {
 	  return function() {
-		  clearTimeout(popupTimeout);
-		  $(popup).find(".deptcontainer").remove();
+		  if(!animFinished){
+			  $(popup).find(".deptcontainer").remove();
+		  };		  
+		  //$(popup).find(".deptcontainer").css("display", "none");
+		  clearTimeout(popupTimeout);		  
 	  }
   }
   
-  function tMouseEventBinder($t, $popupBody) {
-	  $t.bind({
+  function tMouseEventBinder(target, $popupBody, $popup) {
+	  target.bind({
           mouseenter: tMouseEvent_Over($popupBody),
-          mouseleave: tMouseEvent_Leave
+          mouseleave: tMouseEvent_Leave($popup)
       });
   }
   
