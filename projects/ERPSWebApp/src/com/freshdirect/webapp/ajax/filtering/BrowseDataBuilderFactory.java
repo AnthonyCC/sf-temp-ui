@@ -198,13 +198,7 @@ public class BrowseDataBuilderFactory {
 						}
 					}
 
-					// Step #2 - reorder categories by their names
-					Collections.sort(flatCats, new Comparator<CategoryModel>() {
-						@Override
-						public int compare(CategoryModel o1, CategoryModel o2) {
-							return o1.getFullName().compareToIgnoreCase(o2.getFullName());
-						}
-					});
+					// Step #2 - there is no step #2 (there was awhile ago)
 
 					// Step #3 - transform cats to soy data
 					List<CategoryData> selectedSectionCategories = new ArrayList<CategoryData>();
