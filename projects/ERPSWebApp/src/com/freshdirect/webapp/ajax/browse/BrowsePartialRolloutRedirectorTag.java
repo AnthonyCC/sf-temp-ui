@@ -20,7 +20,9 @@ import com.freshdirect.fdstore.content.RecipeDepartment;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
+import com.freshdirect.fdstore.util.ProductDisplayUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.util.FDURLUtil;
 
 public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport{
 	
@@ -40,6 +42,7 @@ public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport{
 			String redirectUrl = null;
 			boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user);
 	
+			// figure out the redirect url
 			if (shouldBeOnNew && oldToNewDirection) {
 				redirectUrl = String.format(BROWSE_PAGE_FS, id);
 	
@@ -57,21 +60,13 @@ public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport{
 				}
 			}
 	
-			if (redirectUrl != null) {
-				PageContext ctx = (PageContext) getJspContext();
-				final HttpServletRequest req = (HttpServletRequest) ctx.getRequest();
-				String originalUrl = req.getRequestURI();
 
-				StringBuilder redirBuilder = new StringBuilder(redirectUrl);
-				for (final String pName : new String[]{ "cm_vc", "ppPreviewId", "redirected" }) {
-					if (req.getParameter(pName) != null) {
-						redirBuilder.append("&")
-							.append(pName)
-							.append("=")
-							.append(req.getParameter(pName));
-					}
-				}
-				redirectUrl = redirBuilder.toString();
+			if (redirectUrl != null) {
+				final PageContext ctx = (PageContext) getJspContext();
+				final HttpServletRequest req = (HttpServletRequest) ctx.getRequest();
+				final String originalUrl = req.getRequestURI();
+
+				redirectUrl = decorateRedirectUrl(redirectUrl, req);
 
 	        	LOGGER.debug("Redirecting from " +originalUrl+ " to " +redirectUrl);
 
@@ -81,6 +76,39 @@ public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport{
 			}
 		}
 	}
+
+
+	/**
+	 * Pick and append select parameters to the redirect URL
+	 * 
+	 * @param redirectUrl
+	 * @param req
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private String decorateRedirectUrl(final String redirectUrl,
+			final HttpServletRequest req) {
+
+		StringBuilder redirBuilder = new StringBuilder();
+		
+		// pick and pass fixed parameters first
+		for (final String pName : new String[]{ "cm_vc", "ppPreviewId", "redirected" }) {
+			final String val = req.getParameter(pName);
+			if (val != null) {
+				redirBuilder.append(ProductDisplayUtil.URL_PARAM_SEP)
+					.append(pName)
+					.append("=")
+					.append(val);
+			}
+		}
+
+		// pass tracking parameters too
+		FDURLUtil.appendCommonParameters(redirBuilder, req.getParameterMap());
+
+		// unescape query param separators before appending params to redirect uerl
+		return redirectUrl + redirBuilder.toString().replaceAll(ProductDisplayUtil.URL_PARAM_SEP, "&");
+	}
+
 
 	public String getId() {
 		return id;
