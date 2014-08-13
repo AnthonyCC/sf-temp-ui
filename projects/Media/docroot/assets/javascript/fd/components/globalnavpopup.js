@@ -11,6 +11,8 @@ var FreshDirect = FreshDirect || {};
   var delayPopup = 250;
   var popupTimeout;
   var animFinished = false;
+  var $target;
+  var first = true;
   var POPUPWIDGET = fd.modules.common.popupWidget;
 	  $.fn.getHiddenDimensions = function(includeMargin) {
 		  var $item = this,
@@ -77,6 +79,8 @@ var FreshDirect = FreshDirect || {};
         $popup = $(popup),
         $popupBody = $(popup).find(".globalnav-popup-content"),
         $content = $("[data-component='globalnav-popup-body'][data-id='"+ $t.data('id') +"']").children().first();
+    
+    animFinished = false;
 
 	if ($content.is(':animated')) { return; }
 
@@ -113,20 +117,7 @@ var FreshDirect = FreshDirect || {};
       // fancy: show related down arrow on supdept level item
       $(this).find(".arrow-down").show();
 
-      if(subDown === false){
-         $content.animate({
-          top: "0px"
-          }, 250, "easeOutQuad", function(){
-        	 //$("#globalnavpopup").addClass("shadow-for-superdepart");
-             subDown = true;
-            $(".seasonal-media").fadeIn(200);
-          });
-      }
-      else{
-    	//$("#globalnavpopup").addClass("shadow-for-superdepart");
-        $content.css('top', '0px');
-        $(".seasonal-media").show();
-      }
+      tsubMouseEventBinder($t, $popupBody, $popup, $content);
     }
 
     // stick with hover color on supdept level item
@@ -140,6 +131,8 @@ var FreshDirect = FreshDirect || {};
   function close(e){
     e.stopPropagation();
 
+    console.log("close");
+    
     $(overlay).hide();
     $(ghost).hide();
     removeTopItemHighlights();
@@ -150,14 +143,14 @@ var FreshDirect = FreshDirect || {};
     // init animation logic for both levels
     down = false;
     subDown = false;
+    
   }
 
   /**
    * open first department level popup with animations
    */
   function open(e){
-    e.stopPropagation();
-
+	  
     var $topnav = $(topnav),
         $ghost = $(ghost),
         $overlay = $(overlay),
@@ -167,6 +160,7 @@ var FreshDirect = FreshDirect || {};
         $popupBody = $popup.find(".globalnav-popup-content");
     
     animFinished = false;
+    //console.log($t);
 
     // close all autocomplete popups
     $('[data-component="autocomplete"]').autocomplete("close");
@@ -212,6 +206,47 @@ var FreshDirect = FreshDirect || {};
       }
 
   }
+  
+  function tsubMouseEvent_Over($popupBody, $content) {
+	  (function($popupBody) {
+	      clearTimeout(popupTimeout);
+	      popupTimeout = setTimeout(function(){
+	    	  if(subDown === false){
+	    		  $content.animate({
+		              top: "0px"
+		          }, 250, "easeOutQuad", function(){
+		          	//$("#globalnavpopup").addClass("shadow-for-superdepart");
+		        	 animFinished = true; 
+		        	 subDown = true;
+		  	          $(".seasonal-media").fadeIn(200);
+		            //$popupBody.css('overflow', 'visible');
+		          });
+	    	  } else {
+	          	//$("#globalnavpopup").addClass("shadow-for-superdepart");
+	    		animFinished = true;
+	    		$content.css('top', '0px');
+	            $(".seasonal-media").show();
+	          }  
+	      }, delayPopup); 
+	  })($popupBody);
+  }
+
+  function tsubMouseEvent_Leave($popup) {
+	  return function() {
+		  if(!animFinished){
+			  $popup.find(".deptcontainer").remove();
+		  };
+		  clearTimeout(popupTimeout);
+		 
+	  }
+  }
+
+  function tsubMouseEventBinder($t, $popupBody, $popup, $content) {
+	  $t.bind({
+          mouseenter: tsubMouseEvent_Over($popupBody, $content),
+          mouseleave: tsubMouseEvent_Leave($popup)
+      });
+  }
 
   function tMouseEvent_Over($popupBody) {
 	  (function($popupBody) {
@@ -224,7 +259,7 @@ var FreshDirect = FreshDirect || {};
 		          	//$("#globalnavpopup").addClass("shadow-for-superdepart");
 		        	 animFinished = true; 
 		             down = true;
-		            $(".seasonal-media").fadeIn(200);
+		  	          $(".seasonal-media").fadeIn(200);
 		            //$popupBody.css('overflow', 'visible');
 		          });
 	    	  } else {
@@ -233,7 +268,7 @@ var FreshDirect = FreshDirect || {};
 	            $popupBody.css('top', '0px');
 	            $(".seasonal-media").show();
 	          }  
-	      }, delayPopup);
+	      }, delayPopup); 
 	  })($popupBody);
   }
 
