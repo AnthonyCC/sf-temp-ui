@@ -8,7 +8,7 @@ var FreshDirect = FreshDirect || {};
   var console = console || window.top.console || { log:function(){} };
   var $=fd.libs.$;
   
-  var delayPopup = 300;
+  var delayPopup = 250;
   var popupTimeout;
   var animFinished = false;
   var POPUPWIDGET = fd.modules.common.popupWidget;
@@ -116,7 +116,7 @@ var FreshDirect = FreshDirect || {};
       if(subDown === false){
          $content.animate({
           top: "0px"
-          }, 350, "easeOutQuad", function(){
+          }, 250, "easeOutQuad", function(){
         	 //$("#globalnavpopup").addClass("shadow-for-superdepart");
              subDown = true;
             $(".seasonal-media").fadeIn(200);
@@ -179,6 +179,8 @@ var FreshDirect = FreshDirect || {};
     if(!$popupBody.length){ return; }
     if ($popupBody.is(':animated') && popupTimeout === null) { return; }
 
+    //repos($topnav, $ghost, $popup);
+
     // re-init subdown animation logic
     subDown = false;
 
@@ -189,6 +191,7 @@ var FreshDirect = FreshDirect || {};
 
 
     repos($topnav, $ghost, $popup, $t);
+    //realigner($topnav, $popup, $t);
 
     removeTopItemHighlights();
     addTopItemHighlight($ghostMenuItem.find("a"));
@@ -200,7 +203,7 @@ var FreshDirect = FreshDirect || {};
     $popupBody.css('padding-bottom', '3px');
     //$popupBody.css({'padding-bottom': '3px', 'margin-top': '-3px'});
     
-    if($t.hasClass("top-item")){
+    if($t.hasClass("top-item") || $t.hasClass("top-item-w-sub")){
         // bring up popup content to animate later
         $popupBody.css("top", "-" + $popupBody.outerHeight() + "px");
 
@@ -219,8 +222,7 @@ var FreshDirect = FreshDirect || {};
 	    	  if(down === false){
 		    	  $popupBody.animate({
 		              top: "0px"
-		          }, 350, "easeOutQuad", function(){
-		          	//alert("Rabotay suka" + i);
+		          }, 250, "easeOutQuad", function(){
 		          	//$("#globalnavpopup").addClass("shadow-for-superdepart");
 		        	 animFinished = true; 
 		             down = true;
@@ -242,6 +244,7 @@ var FreshDirect = FreshDirect || {};
 	  return function() {
 		  if(!animFinished){
 			  $(popup).find(".deptcontainer").remove();
+			  $(popup).find(".subdepartments_cont").remove();
 		  };		  
 		  //$(popup).find(".deptcontainer").css("display", "none");
 		  clearTimeout(popupTimeout);		  
@@ -267,6 +270,9 @@ var FreshDirect = FreshDirect || {};
     $(document.body).append($overlay);
     $(document.body).append($ghost);
     $(document.body).append($popup);
+
+    //dynamically adjust contents and their alignments
+    //realigner();
 
     // attach event handlers
     $overlay.on('mouseover', close); // attach works only this way in iPad/Safari
@@ -303,10 +309,8 @@ function getElemDim($elem){
 }
 
 /* adjust left/right positioning of popup elements and their children */
-function realigner($topnav, $popup, $t) {
+function realigner($topnav, $popup, $t) {	
 	if ($t === undefined || $t === null) { return $topnav.offset().left; }
-	
-    $popup.css('left', ''); //reset popup so realign works properly
   
 	var navDim = getElemDim($topnav);
 	var tarDim = getElemDim($t);
@@ -429,23 +433,28 @@ function realigner($topnav, $popup, $t) {
 			var spaceLeft = false, spaceRight = false;
 			if (possibleOffset >= 60) { //space on left
 				gradDim.left.active = true;
-			}
 				//calc left setup
 				gradDim.left.start = Math.round(possibleOffset-60);
 				gradDim.left.end = possibleOffset;
+			}
 			var rightSpacing = $topnav.outerWidth() - (possibleOffset + subDeptsDim.width);
 			if (rightSpacing > 60) { //space on right
 				gradDim.right.active = true;
+				//calc right setup
+				gradDim.right.start = Math.floor(possibleOffset + subDeptsDim.width+(tarDim.width/2));
+				gradDim.right.end = possibleOffset + subDeptsDim.width+(tarDim.width/2) + 60;
 			}
-			//calc right setup
-			gradDim.right.start = Math.floor(possibleOffset + subDeptsDim.width+(tarDim.width/2));
-			gradDim.right.end = possibleOffset + subDeptsDim.width+(tarDim.width/2) + 60;
-			
-			//offet right side to quick-fix gradient being off in IE sometimes
-			gradDim.right.start = gradDim.right.start - 7;
 
 			if (gradDim.left.active && gradDim.right.active) { //both sides
 				$subDeptsRef.closest('.subdepartments_cont').css({
+					"background": "-moz-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(237,237,237,1) "+gradDim.right.end+"px)",
+					"background": "-webkit-gradient(left top, right top, color-stop("+gradDim.left.start+"px, rgba(237,237,237,1)), color-stop("+gradDim.left.end+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.start+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.end+"px, rgba(237,237,237,1)))",
+					"background": "-webkit-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(237,237,237,1) "+gradDim.right.end+"px)",
+					"background": "-o-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(237,237,237,1) "+gradDim.right.end+"px)",
+					"background": "-ms-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(237,237,237,1) "+gradDim.right.end+"px)",
+					"background": "linear-gradient(to right, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(237,237,237,1) "+gradDim.right.end+"px)",
+					"filter": "progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ededed', GradientType=1 )",
+					"filter": "none",
 					"background-color": "rgba(237,237,237,1)",
 					"background-image": "url('/media/images/navigation/global_nav/newglobal/SD_submenu_gradient_left.png'), url('/media/images/navigation/global_nav/newglobal/SD_submenu_gradient_right.png')",
 					"background-position": ""+gradDim.left.start+"px 0, "+(gradDim.right.start-20)+"px 0",
@@ -453,6 +462,14 @@ function realigner($topnav, $popup, $t) {
 				});
 			} else if (gradDim.left.active && !gradDim.right.active) { //only left, right side is all white
 				$subDeptsRef.closest('.subdepartments_cont').css({
+					"background": "-moz-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"background": "-webkit-gradient(left top, right top, color-stop("+gradDim.left.start+"px, rgba(237,237,237,1)), color-stop("+gradDim.left.end+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.start+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.end+"px, rgba(255,255,255,1)))",
+					"background": "-webkit-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"background": "-o-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"background": "-ms-linear-gradient(left, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"background": "linear-gradient(to right, rgba(237,237,237,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"filter": "progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ededed', GradientType=1 )",
+					"filter": "none",
 					"background-color": "rgba(237,237,237,1)",
 					"background-image": "url('/media/images/navigation/global_nav/newglobal/SD_submenu_gradient_left.png'), url('/media/images/navigation/global_nav/newglobal/SD_submenu_white.png')",
 					"background-position": ""+gradDim.left.start+"px 0, "+(gradDim.right.start-20)+"px 0",
@@ -460,6 +477,14 @@ function realigner($topnav, $popup, $t) {
 				});
 			} else if (!gradDim.left.active && gradDim.right.active) { //only right, left side is all white
 				$subDeptsRef.closest('.subdepartments_cont').css({
+					"background": "-moz-linear-gradient(left, rgba(255,255,255,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"background": "-webkit-gradient(left top, right top, color-stop("+gradDim.left.start+"px, rgba(255,255,255,1)), color-stop("+gradDim.left.end+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.start+"px, rgba(255,255,255,1)), color-stop("+gradDim.right.end+"px, rgba(255,255,255,1)))",
+					"background": "-webkit-linear-gradient(left, rgba(255,255,255,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"background": "-o-linear-gradient(left, rgba(255,255,255,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"background": "-ms-linear-gradient(left, rgba(255,255,255,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"background": "linear-gradient(to right, rgba(255,255,255,1) "+gradDim.left.start+"px, rgba(255,255,255,1) "+gradDim.left.end+"px, rgba(255,255,255,1) "+gradDim.right.start+"px, rgba(255,255,255,1) "+gradDim.right.end+"px)",
+					"filter": "progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ededed', GradientType=1 )",
+					"filter": "none",
 					"background-color": "rgba(237,237,237,1)",
 					"background-image": "url(url('/media/images/navigation/global_nav/newglobal/SD_submenu_white.png', '/media/images/navigation/global_nav/newglobal/SD_submenu_gradient_right.png'))",
 					"background-position": ""+gradDim.left.start+"px 0, "+(gradDim.right.start-20)+"px 0",
