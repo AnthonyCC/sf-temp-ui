@@ -8,6 +8,7 @@
  * @param kosherSymbol
  * @param kosherIconPath
  * @param heatingInstructions
+ * @param originTitle
  * @param origin
  * @param brands
  * @param seasonText
@@ -40,6 +41,7 @@
 	{param frozenMedia:$partiallyFrozenMedia /}
 {/call}
 {call .origin}
+	{param originTitle:$originTitle /}
 	{param origin:$origin /}
 {/call}
 {call .season}
@@ -156,11 +158,12 @@
 {/template}
 
 /**
+ * @param originTitle
  * @param origin
  */
 {template .origin}
 {if $origin}
-<strong>Origin</strong>
+<strong>{$originTitle}</strong>
 <p class="pdp-accordion-description-origin">{$origin}</p>
 {/if}
 {/template}

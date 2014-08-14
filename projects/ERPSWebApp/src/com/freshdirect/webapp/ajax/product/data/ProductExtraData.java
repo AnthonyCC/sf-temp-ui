@@ -120,6 +120,7 @@ public class ProductExtraData implements Serializable {
 	/**
 	 * Origin aka COOL (USA, Ireland, USA, Chile and/or Argentina, etc.)
 	 */
+	 protected String originTitle;
 	 protected String origin;
 	
 	/**
@@ -487,11 +488,19 @@ public class ProductExtraData implements Serializable {
 	public void setPartiallyFrozenMedia(String partiallyFrozenMedia) {
 		this.partiallyFrozenMedia = partiallyFrozenMedia;
 	}
+	
+	public String getOriginTitle() {
+		return originTitle;
+	}
 
 	public String getOrigin() {
 		return origin;
 	}
 
+	public void setOriginTitle(String originTitle) {
+		this.originTitle = originTitle;
+	}
+	
 	public void setOrigin(String origin) {
 		this.origin = origin;
 	}

@@ -295,6 +295,17 @@ public class ProductExtraDataPopulator {
 
 		// origin (or Country of Origin Label, a.k.a. COOL)
 		if (productInfo != null) {
+			final String skuCode = productInfo.getSkuCode();
+			final List<String> coolList = productInfo.getCountryOfOrigin();
+			if (coolList != null && !coolList.isEmpty()) {
+				if (skuCode != null && (skuCode).startsWith("MEA")) {
+					data.setOriginTitle("Born, Raised and Harvested in");
+				} else {
+					data.setOriginTitle("Origin");
+				}
+			}
+		}
+		if (productInfo != null) {
 			final List<String> coolList = productInfo.getCountryOfOrigin();
 			if (coolList != null && !coolList.isEmpty()) {
 				data.setOrigin( AbstractProductModelImpl.getCOOLText(coolList) );
