@@ -413,10 +413,9 @@ function realigner($topnav, $popup, $t) {
 
 	if ($subDeptsRef.length !== 0 && !topNavIsSubnav) { //superdept, subdept popup (first level)
 		realigner_superdept($topnav, tarDim, navDim, $subDeptsRef, isRightOfNavCenter);
-		return navDim.offset.left;
 	}
-	
-	return possibleOffset;
+
+	return navDim.offset.left;
 }
 
 function realigner_superdept($topnav, tarDim, navDim, $subDeptsRef, isRightOfNavCenter) {
