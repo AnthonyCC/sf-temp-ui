@@ -547,6 +547,7 @@ public class FDStoreProperties {
 	private final static String PROP_MODIFY_ORDER_TOTAL_MAX = "fdstore.modify.order.maxtotal";
 	
 	private final static String PROP_LIGHT_SIGNUP_ENABLED = "fdstore.signuplight.enabled";
+	private final static String PROP_AJAX_SIGNUP_ENABLED = "fdstore.ajaxsignup.enabled";
 
 	//APPDEV-2394 Coremetrics Implementation 
 	private final static String PROP_COREMETRICS_ENABLED = "fdstore.coremetrics.enabled";
@@ -1203,6 +1204,8 @@ public class FDStoreProperties {
 		defaults.put(PENDING_ORDER_POPUP_MOCKED, "false");
 		
 		defaults.put(PROP_LIGHT_SIGNUP_ENABLED, "true");
+		defaults.put(PROP_AJAX_SIGNUP_ENABLED, "true");
+		
 		
 		//defaults for test environment
 		defaults.put(PROP_COREMETRICS_ENABLED, "true");
@@ -1285,6 +1288,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.pdplayout2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.pplayout2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.leftnav2014", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.leftnavtut2014", "GLOBAL:ENABLED,true;");
         
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
         defaults.put(PROP_MEDIA_RENDER_UTILS_SOURCE_ENCODING, "ISO-8859-1");
@@ -3019,6 +3023,10 @@ public class FDStoreProperties {
         return (Boolean.valueOf(get(PROP_LIGHT_SIGNUP_ENABLED))).booleanValue();
     }
  
+    public static boolean isAjaxSignupEnabled() {
+        return (Boolean.valueOf(get(PROP_AJAX_SIGNUP_ENABLED))).booleanValue();
+    }
+    
 	public static boolean isCoremetricsEnabled() {
         return (Boolean.valueOf(get(PROP_COREMETRICS_ENABLED))).booleanValue();
     }
