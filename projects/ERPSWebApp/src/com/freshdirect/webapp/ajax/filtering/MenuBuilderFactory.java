@@ -411,6 +411,9 @@ public class MenuBuilderFactory {
 					if (items.size() > 1) {
 						menu.add(domain);
 					}
+				} else if(thePath.get(NavDepth.SUB_CATEGORY)==null){
+					// in case of hidden category create a header text only box ...
+					menu.add(createHeaderOnlyBox(cat, MenuBoxType.CATEGORY));
 				}
 			} else if(thePath.get(NavDepth.SUB_CATEGORY)==null){
 				// in case of no subcategories display category header text only
@@ -457,6 +460,9 @@ public class MenuBuilderFactory {
 					if (items.size() > 1) {
 						menu.add(domain);
 					}
+				} else if(thePath.get(NavDepth.SUB_CATEGORY)!=null) {
+					// in case of hidden category create a header text only box ...
+					menu.add(createHeaderOnlyBox(subCat, MenuBoxType.SUB_CATEGORY));
 				}
 			} else if(thePath.get(NavDepth.SUB_CATEGORY)!=null) {
 				// in case of no subcategories display category header text only
