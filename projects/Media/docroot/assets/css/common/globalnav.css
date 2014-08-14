@@ -274,6 +274,11 @@ nav.globalnav {
     color: #748658;
 }
 
+.bottom-nav .bottom-nav-items .bottom-item {
+	height: 41px;
+	line-height: 41px;
+}
+
 .gnav-footer [data-highlight="on"]{
   background-color:#728d4b;
 }
