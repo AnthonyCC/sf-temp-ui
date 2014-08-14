@@ -11,8 +11,8 @@ var FreshDirect = FreshDirect || {};
   var delayPopup = 250;
   var popupTimeout;
   var animFinished = false;
-  var $target;
-  var first = true;
+  var subDept = " ";
+  var dept = " ";
   var POPUPWIDGET = fd.modules.common.popupWidget;
 	  $.fn.getHiddenDimensions = function(includeMargin) {
 		  var $item = this,
@@ -80,6 +80,10 @@ var FreshDirect = FreshDirect || {};
         $popupBody = $(popup).find(".globalnav-popup-content"),
         $content = $("[data-component='globalnav-popup-body'][data-id='"+ $t.data('id') +"']").children().first();
     
+    // check in order to not reload function if hovered over elements inside same department
+    if($t.find(".arrow-down").is(":visible") && $t.find("a").html()==subDept){ return; }    
+    subDept = $t.find("a").html();
+    
     animFinished = false;
 
 	if ($content.is(':animated')) { return; }
@@ -130,8 +134,6 @@ var FreshDirect = FreshDirect || {};
    */
   function close(e){
     e.stopPropagation();
-
-    console.log("close");
     
     $(overlay).hide();
     $(ghost).hide();
@@ -159,8 +161,11 @@ var FreshDirect = FreshDirect || {};
         $ghostMenuItem = $ghost.find("[data-id='" + $t.data('id') + "']"),
         $popupBody = $popup.find(".globalnav-popup-content");
     
+    // check in order to not reload function if hovered over elements inside same department
+    if($t.find("a").hasClass("opened") && $t.html()==dept){ return; }    
+    dept = $t.html();
+    
     animFinished = false;
-    //console.log($t);
 
     // close all autocomplete popups
     $('[data-component="autocomplete"]').autocomplete("close");
