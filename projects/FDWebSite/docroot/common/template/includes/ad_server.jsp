@@ -166,6 +166,8 @@
 						pageId = request.getParameter("productId");
 					if (request.getParameter("recipeId") != null)
 						pageId = request.getParameter("recipeId");
+					if (request.getParameter("id") != null)
+						pageId = request.getParameter("id");
 		
 					String brand = "";
 					if (request.getParameter("brandValue") != null)
