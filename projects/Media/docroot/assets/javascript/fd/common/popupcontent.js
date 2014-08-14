@@ -279,6 +279,7 @@ var FreshDirect = FreshDirect || {};
         height: fheight + 'px',
         float: this.$alignTo.css('float')
       });
+      this.$ghost.html('');
       this.$alignTo.appendTo(this.$ghost);
       this.placeholderActive = true;
     }
