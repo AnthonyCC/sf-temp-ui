@@ -12,6 +12,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -72,14 +73,21 @@ public class ResonanceJSObjectTag extends SimpleTagSupport {
 		} else if ("DEPARTMENT".equals(certonaPageId)) {
 			
 			String deptId = request.getParameter("deptId");
-			String deptName = "";
+
 			out.println("	\"pagetype\" : \"" + certonaPageId + "\",");
 			out.println("	\"department\" : \"" + deptId + "\",");
 
 		} else 	if ("CATEGORY".equals(certonaPageId)) {
 			
-			String catId = request.getParameter("catId");
-			out.println("	\"pagetype\" : \"" + certonaPageId + "\",");
+			final String catId = request.getParameter("catId");
+			
+			CategoryModel cat = (CategoryModel) ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY, catId);
+			if (cat != null && !cat.isTopLevelCategory() ) {
+				out.println("	\"pagetype\" : \"SUBCATEGORY\",");
+			} else {
+				out.println("	\"pagetype\" : \"CATEGORY\",");
+			}
+
 			out.println("	\"category\" : \"" + catId + "\",");
 
 		} else 	if ("BROWSE".equals(certonaPageId)) {
