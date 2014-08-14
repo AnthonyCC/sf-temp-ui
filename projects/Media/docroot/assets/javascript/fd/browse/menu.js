@@ -49,6 +49,10 @@ var FreshDirect = FreshDirect || {};
           result.all = true;
         }
 
+        if (!result.id && idboxes.size()) {
+          result.id = idboxes.last().data('id');
+        }
+
         return result;
       }
     },
