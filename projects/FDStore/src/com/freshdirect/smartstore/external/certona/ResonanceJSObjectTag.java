@@ -210,12 +210,25 @@ public class ResonanceJSObjectTag extends SimpleTagSupport {
 				throw new JspException(fdre);
 			}
 		
+			final String prdIds = inCartProductIds.toString();
+			final String prdQtys = inCartProductQuantities.toString();
+			final String prdPrices = inCartProductPrices.toString();
+
+			final boolean isEmptyLine = prdIds.length() == 0 || prdQtys.length() == 0 || prdPrices.length() == 0;
+			
 			out.println("	\"pagetype\" : \"PURCHASE\",");
-			out.println("	\"itemid\" : \"" + (inCartProductIds.length() > 0 ? inCartProductIds.toString().substring(0, inCartProductIds.toString().length() - 1) : "") + "\",");
-			out.println("	\"qty\" : \"" + (inCartProductIds.length() > 0 ? inCartProductPrices.toString().toUpperCase().substring(0, inCartProductPrices.toString().length() - 1) : "") + "\",");
-			out.println("	\"price\" : \"" + (inCartProductIds.length() > 0 ? inCartProductQuantities.toString().toUpperCase().substring(0, inCartProductQuantities.toString().length() - 1) : "") + "\",");
 			out.println("	\"total\" : \"" + order.getSubTotal() + "\",");
 			out.println("	\"transactionid\" : \"" + saleId + "\",");
+
+			if (isEmptyLine) {
+				out.println("	\"itemid\" : \"\",");
+				out.println("	\"qty\" : \"\",");
+				out.println("	\"price\" : \"\",");
+			} else {
+				out.println("	\"itemid\" : \"" + prdIds.substring(0, prdIds.length() - 1) + "\",");
+				out.println("	\"qty\" : \"" + prdQtys.substring(0, prdQtys.length() - 1) + "\",");
+				out.println("	\"price\" : \"" + prdPrices.substring(0, prdPrices.length() - 1) + "\",");
+			}
 
 		} else {
 			out.println("	\"pagetype\" : \"" + certonaPageId + "\",");
