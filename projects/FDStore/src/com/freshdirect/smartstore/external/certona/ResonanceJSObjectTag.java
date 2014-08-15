@@ -158,6 +158,19 @@ public class ResonanceJSObjectTag extends SimpleTagSupport {
 			out.println("	\"pagetype\" : \"" + certonaPageId + "\",");
 			out.println("	\"itemid\" : \"" + (inCartProductIds.length() > 0 ? inCartProductIds.toString().substring(0, inCartProductIds.toString().length() - 1) : "") + "\",");
 
+		} else 	if ("QUICKBUY/CONFIRM".equals(certonaPageId)) {
+
+			out.println("	\"pagetype\" : \"CARTCONFIRMIFRAME\",");
+
+			FDCartModel cart = user.getShoppingCart();
+			List<FDCartLineI> items = cart.getRecentOrderLines();
+			if (items != null && items.size() > 0) {
+				// quickbuy should add only one item to cart
+				FDCartLineI cartLine = items.get(0);
+
+				out.println("	\"itemid\" : \""+cartLine.getProductRef().getProductId()+"\",");
+			}			
+			
 		} else 	if ("VIEW_CART".equals(certonaPageId)) {
 			
 			StringBuffer inCartProductIds = new StringBuffer("");
