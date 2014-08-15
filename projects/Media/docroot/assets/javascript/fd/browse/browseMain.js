@@ -32,6 +32,7 @@ var FreshDirect = FreshDirect || {};
         });
 
     pauseAllTransactionalPopupsTillContentChange();
+    setTimeout(scrollToTop, 500);
 
     DISPATCHER.signal('server',{
       url: '/api/filter',
@@ -45,15 +46,14 @@ var FreshDirect = FreshDirect || {};
     });
   }
 
-  function scrollToTopPager() {
-    var ph = $('.pager-holder').first()[0],
-        crect;
+  function scrollToTop() {
+    var main = $('section.main').first(), crect;
 
-    if (ph) {
-      crect = ph.getBoundingClientRect();
+    if (main && main.size()) {
+      crect = main[0].getBoundingClientRect();
 
       if (crect.top < 0) {
-        $(document).scrollTop($(document).scrollTop() + crect.top);
+        $.smoothScroll(crect.top + $('body').scrollTop());
       }
     }
   }
@@ -66,10 +66,6 @@ var FreshDirect = FreshDirect || {};
           fd.components.coremetrics ? fd.components.coremetrics.serialize() : {},
           fd.browse.menu.serialize()
         );
-
-    if (pagerRelated) {
-      setTimeout(scrollToTopPager, 500);
-    }
 
     return data;
   }
