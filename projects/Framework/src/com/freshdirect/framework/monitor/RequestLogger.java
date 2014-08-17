@@ -19,7 +19,7 @@ public class RequestLogger {
 	private static final String EMPTY = "";
 	private static final String SEPARATOR = "|";
 	private static final String FDCOOKIE = "FDUser";
-	private static final String NSCOOKIE = "NSC_xfcmphjd_gpsdfTTM";
+	private static final String NSCOOKIE = "NSC_";
 	private static final String IPHEADER = "X-Forwarded-For";
 	
 	public static void logRequest(ServletRequest request) {
@@ -63,10 +63,14 @@ public class RequestLogger {
 		if (cookies != null) {			
 			
 			for (int i = 0; i < cookies.length; i++) {
-				if (FDCOOKIE.equals(cookies[i].getName())) {
-					_fdUser = cookies[i].getValue();
-				} else if (NSCOOKIE.equals(cookies[i].getName())) {
-					_nsUser = cookies[i].getValue();
+				
+				if(cookies[i] != null && cookies[i].getName() != null) {
+					
+					if (FDCOOKIE.equals(cookies[i].getName())) {
+						_fdUser = cookies[i].getValue();
+					} else if (cookies[i].getName().startsWith(NSCOOKIE)) {
+						_nsUser = cookies[i].getValue();
+					}
 				}
 			}
 		}
