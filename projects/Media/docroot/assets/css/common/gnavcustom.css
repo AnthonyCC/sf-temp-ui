@@ -83,10 +83,11 @@ GLOBAL NAV DROPDOWNS
 .column-heading  {
 	font-size: 14px;
 	font-weight: bold;
-	line-height: 45px;
-	padding: 10px 42px 0 30px;
+	padding: 28px 42px 0 25px;
 	display: block;
-	height: 41px;
+	min-height: 33px;
+	text-indent: -10px;
+	margin-left: 10px;
 }
 
 .department.noheadertext .column-heading{
@@ -100,8 +101,8 @@ GLOBAL NAV DROPDOWNS
 {
 	color:#000;
 	display: block;
-	padding-left: 30px;
-	padding-right: 32px;
+	padding-left: 26px;
+	padding-right: 28px;
 	margin: 0;
 	height: 20px;
 	line-height: 20px;

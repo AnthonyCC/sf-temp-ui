@@ -376,34 +376,42 @@ function realigner($topnav, $popup, $t) {
 		//return $topnav.offset().left;
 	}
 	
-	if ($imgContRef.length !== 0) { //img & dept	
+	if ($deptContRef.length !== 0) { //dept popup
+		var catColumns = $deptContRef.find('.dropdown-column'), catColumnsMaxWidth = 0, catColumnsSetMaxWidth = false;
+
 		//adhere to min content >= 50% of globalnav
 		if ($popupContRef.outerWidth() < (navDim.width/2)) {
 			//figure out how wide to make deptCont
-			var addToDeptContWidth = (navDim.width/2) - $popupContRef.outerWidth();
+			var addToDeptContWidth = (navDim.width/2) - $popupContRef.outerWidth(true);
 			if (addToDeptContWidth > 0) {
 				$deptContRef.css('width', $deptContRef.outerWidth() + addToDeptContWidth);
 			}
-		} else {
-			//check if image can and needs to shrink to accomidate space
-			if ($popupContRef.outerWidth() > navDim.width) {
-				var imgWidthAdjust = navDim.width - $deptContRef.outerWidth();
-				if (imgWidthAdjust < 0) { imgWidthAdjust = 0; }
-				
-				$imgContRef.css('width', imgWidthAdjust);
+		} else if ($popupContRef.outerWidth() > navDim.width) { //also keep it inside maxWidth
+			catColumnsSetMaxWidth = true;
+			if ($imgContRef.length !== 0) {
+				$deptContRef.css('width', navDim.width-$imgContRef.outerWidth(true));
+			} else {
+				$deptContRef.css('width', navDim.width);
 			}
 		}
 		
-		//show more image if deptCont is taller (be sure to include seasonal media's height
-		var seasonalMediaHeight = $deptContRef.find('.seasonal-media').outerHeight() || 0;
-		if (($deptContRef.outerHeight() + seasonalMediaHeight) > $imgContRef.outerHeight()) {
-			$imgContRef.css('height', $deptContRef.outerHeight() + seasonalMediaHeight);
+		if ($imgContRef.length !== 0) { //img & dept
+			//show more image if deptCont is taller
+			if (($deptContRef.outerHeight()-navDim.offset.top) > $imgContRef.outerHeight()) {
+				$imgContRef.css('height', $deptContRef.outerHeight()-navDim.offset.top);
+			}
+		} else { //just dept
+			
 		}
 		
-		//adjust image alignment based on container, image size, and alignment
-		var imgContRefDim = getElemDim($imgContRef);
-		var imgRefDim = getElemDim($imgRef);
-
+		//add max catColumns widths
+		if (catColumnsSetMaxWidth) {
+			$(catColumns).each(function(i,e) {
+				$(e).css('max-width',  Math.floor($deptContRef.outerWidth() / catColumns.length));
+			});
+		}
+		
+		
 		//now re-align the popup to the nav item if possible
 		if (isRightOfNavCenter) {
 			possibleOffset = (navDim.offset.left + navDim.width) - $popupContRef.outerWidth();
@@ -554,7 +562,7 @@ function realigner_superdept($topnav, tarDim, navDim, $subDeptsRef, isRightOfNav
 
     if (fd.globalnav.hasOwnProperty('showTutorial') && fd.globalnav.showTutorial === true) {
     	showTutorial();
-  }
+    }
   }
 
 }(FreshDirect));
