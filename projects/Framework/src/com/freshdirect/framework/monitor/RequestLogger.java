@@ -1,6 +1,10 @@
 package com.freshdirect.framework.monitor;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import javax.servlet.ServletRequest;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -9,24 +13,87 @@ import org.apache.log4j.Logger;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class RequestLogger {
+	
 	private static final Logger LOGGER = LoggerFactory.getInstance(RequestLogger.class);
-
+	
+	private static final String EMPTY = "";
+	private static final String SEPARATOR = "|";
+	private static final String FDCOOKIE = "FDUser";
+	private static final String NSCOOKIE = "NSC_xfcmphjd_gpsdfTTM";
+	private static final String IPHEADER = "X-Forwarded-For";
+	
 	public static void logRequest(ServletRequest request) {
+		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		StringBuilder buf = new StringBuilder();
-		buf.append('"');
+		StringBuffer buf = new StringBuffer();
+		buf.append(SEPARATOR);//Start
 		buf.append(httpRequest.getRequestURI());
+	
 		String query = httpRequest.getQueryString();
 		if (query != null) {
 			buf.append('?');
 			buf.append(query);
 		}
-		buf.append("\" \"");
+		
+		buf.append(SEPARATOR);
 		HttpSession session = httpRequest.getSession(false);
 		if (session != null) {
 			buf.append(session.getId());
 		}
-		buf.append('"');
+		
+		buf.append(SEPARATOR);
+		buf.append(getServerName());
+				
+		buf.append(SEPARATOR);
+		buf.append(getClientIp(httpRequest));
+				
+		buf.append(SEPARATOR);
+		buf.append(getCookies(httpRequest));
+		
+		buf.append(SEPARATOR); //End
 		LOGGER.info(buf.toString());
+	}
+	
+	public static String getCookies(HttpServletRequest request) {
+		
+		String _fdUser = null;
+		String _nsUser = null;
+		
+		Cookie[] cookies = request.getCookies();
+		if (cookies != null) {			
+			
+			for (int i = 0; i < cookies.length; i++) {
+				if (FDCOOKIE.equals(cookies[i].getName())) {
+					_fdUser = cookies[i].getValue();
+				} else if (NSCOOKIE.equals(cookies[i].getName())) {
+					_nsUser = cookies[i].getValue();
+				}
+			}
+		}
+		return (_fdUser != null ? _fdUser : EMPTY) + SEPARATOR + (_nsUser != null ? _nsUser : EMPTY);
+	}
+	
+	public static String getClientIp(HttpServletRequest request) {
+		
+		String ip = null;
+		String xffHeader = request.getHeader(IPHEADER);
+		
+		if (xffHeader != null){
+			ip = xffHeader.substring(xffHeader.lastIndexOf(",")+1).trim();
+		}
+		
+		if (ip==null || ip.length()==0){
+			ip = request.getRemoteAddr();
+		}
+		return ip;
+	}
+	
+	public static String getServerName() {
+		
+		try {
+			return InetAddress.getLocalHost().getHostName();
+		} catch (UnknownHostException e) {
+		}
+		return EMPTY;
 	}
 }
