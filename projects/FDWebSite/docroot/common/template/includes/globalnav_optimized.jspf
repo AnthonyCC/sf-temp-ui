@@ -28,8 +28,11 @@
 			if (user.isGlobalNavTutorialSeen()) {
 				%>FreshDirect.globalnav.showTutorial = false;<%	
 			} else {
-				%>FreshDirect.globalnav.showTutorial = true;<%
-				user.setGlobalNavTutorialSeen(true);
+				//only turn on if it's avail to user
+				if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnavtut2014, (FDUserI)session.getAttribute(SessionName.USER))) {
+					%>FreshDirect.globalnav.showTutorial = true;<%
+					user.setGlobalNavTutorialSeen(true);
+				}
 			}
 		} %>
 		
