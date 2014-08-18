@@ -92,10 +92,12 @@ var FreshDirect = FreshDirect || {};
             marginTop: (maxImageSize-pimg.getBoundingClientRect().height+parseInt($img.css('marginTop'), 10))+'px'
           });
 
-          $img.css({
-            height: $img[0].getBoundingClientRect().height,
-            width: $img[0].getBoundingClientRect().width
-          });
+          if ($img[0].getBoundingClientRect().height > 30) {
+            $img.css({
+              height: $img[0].getBoundingClientRect().height,
+              width: $img[0].getBoundingClientRect().width
+            });
+          }
         }
 
         // clear popup delay
