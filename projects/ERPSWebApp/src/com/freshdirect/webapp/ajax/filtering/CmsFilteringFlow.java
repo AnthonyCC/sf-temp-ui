@@ -27,6 +27,7 @@ import com.freshdirect.webapp.ajax.browse.data.BrowseData;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.CarouselDataCointainer;
 import com.freshdirect.webapp.ajax.browse.data.BrowseDataContext;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
+import com.freshdirect.webapp.ajax.browse.data.NavDepth;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
 import com.freshdirect.webapp.ajax.browse.data.PagerData;
 import com.freshdirect.webapp.ajax.browse.paging.BrowseDataPagerHelper;
@@ -217,7 +218,8 @@ public class CmsFilteringFlow {
 		
 		// populate browseData with the menu
 		browseDataContext.getMenuBoxes().setMenuBoxes(navigationModel.getLeftNav());
-        browseDataContext.getMenuBoxes().setMenuName(contentNodeModel.getFullName());
+		final String departmentorSuperDepartmentName = getDepartmentOrSuperDepartment(contentNodeModel, navigationModel);
+        browseDataContext.getMenuBoxes().setMenuName(departmentorSuperDepartmentName);
 		
 		// -- POPULATE EXTRA DATA --
 		
@@ -228,6 +230,28 @@ public class CmsFilteringFlow {
 		BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
 		
 		return browseDataContext;
+	}
+
+	private String getDepartmentOrSuperDepartment(ContentNodeModel contentNodeModel, NavigationModel navigationModel) {
+		final String departmentorSuperDepartmentName;
+		if (contentNodeModel instanceof SuperDepartmentModel) {
+			departmentorSuperDepartmentName = contentNodeModel.getFullName();
+		} else if (contentNodeModel instanceof DepartmentModel) {
+			SuperDepartmentModel superDepartmentModel = navigationModel.getSuperDepartmentModel();
+			if (superDepartmentModel != null) {
+				departmentorSuperDepartmentName = superDepartmentModel.getFullName();
+			} else {
+				departmentorSuperDepartmentName = contentNodeModel.getFullName();
+			}
+		} else {
+			SuperDepartmentModel superDepartmentModel = navigationModel.getSuperDepartmentModel();
+			if (superDepartmentModel != null) {
+				departmentorSuperDepartmentName = superDepartmentModel.getFullName();
+			} else {
+				departmentorSuperDepartmentName = navigationModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT).getFullName();
+			}
+		}
+		return departmentorSuperDepartmentName;
 	}
 
 	
