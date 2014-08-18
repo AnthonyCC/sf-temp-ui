@@ -235,7 +235,7 @@ public class MenuBuilderFactory {
 			if (superDept != null) {
 				MenuBoxData domain = createSuperDepartmentMenuBox(superDept, navModel, false);
 				// check which department is selected
-				checkSelectedEx(domain, thePath.get(NavDepth.DEPARTMENT).getContentName(), superDept.getFullName());
+				checkSelected(domain, thePath.get(NavDepth.DEPARTMENT).getContentName());
 				menu.add(domain);
 			}
 			
@@ -318,7 +318,7 @@ public class MenuBuilderFactory {
 			if (superDept != null) {
 				MenuBoxData domain = createSuperDepartmentMenuBox(superDept, navModel, false);
 				// check which department is selected
-				checkSelectedEx(domain, thePath.get(NavDepth.DEPARTMENT).getContentName(), superDept.getFullName());
+				checkSelected(domain, thePath.get(NavDepth.DEPARTMENT).getContentName());
 				menu.add(domain);
 			}
 			
@@ -364,7 +364,7 @@ public class MenuBuilderFactory {
 				
 				domain.setItems(menuItems);
 				insertMarkersForSpecialBox(domain, dept.getMaxItemsPerColumn());
-				checkSelectedEx(domain, thePath.get(NavDepth.CATEGORY).getContentName(), dept.getFullName());
+				checkSelected(domain, thePath.get(NavDepth.CATEGORY).getContentName());
 				
 				menu.add(domain);
 			}
@@ -405,7 +405,7 @@ public class MenuBuilderFactory {
 					domain.setItems(createCatMenuItems(((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories(), items, navModel.getUser()));
 					
 					if(thePath.get(NavDepth.SUB_CATEGORY)!=null){
-						checkSelectedEx(domain, thePath.get(NavDepth.SUB_CATEGORY).getContentName(), cat.getFullName());
+						checkSelected(domain, thePath.get(NavDepth.SUB_CATEGORY).getContentName());
 					}
 					
 					if (items.size() > 1) {
@@ -469,6 +469,7 @@ public class MenuBuilderFactory {
 				CategoryModel subCat = (CategoryModel)thePath.get(NavDepth.SUB_CATEGORY);
 				//collapse the last nevi box
 				menu.get(menu.size()-1).setDisplayType(MenuBoxDisplayType.POPUP);
+                menu.get(menu.size()-1).setSelectionType(MenuBoxSelectionType.LINK);
 				//create the new header only box
 				menu.add(createHeaderOnlyBox(subCat, MenuBoxType.SUB_CATEGORY));
 			}
@@ -815,12 +816,7 @@ public class MenuBuilderFactory {
 						itemCount = ProductItemFilterUtil.countItemsForFilter(items, allFilters.get(ProductItemFilterUtil.createCompositeId(box.getId(), item.getId())));
 
 						if (itemCount == 0 && !item.isSelected()) {
-							if(popupType){
-								it.remove();								
-							}else{
-								item.setActive(false);
-								emptyBox = false;
-							}
+								it.remove();
 						}else{
 							emptyBox=false;
 						}

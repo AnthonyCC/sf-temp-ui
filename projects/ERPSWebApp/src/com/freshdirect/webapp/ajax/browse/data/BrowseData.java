@@ -174,12 +174,20 @@ public class BrowseData implements Serializable {
 	public static class MenuDataCointainer implements Serializable {
 		private static final long serialVersionUID = 4341041465949744118L;
 		private List<MenuBoxData> menuBoxes;
+		private String menuName;
 
 		public List<MenuBoxData> getMenuBoxes() {
 			return menuBoxes;
 		}
 		public void setMenuBoxes(List<MenuBoxData> menuBoxes) {
 			this.menuBoxes = menuBoxes;
+		}
+
+		public String getMenuName() {
+			return menuName;
+		}
+		public void setMenuName(String menuName) {
+			this.menuName = menuName;
 		}
 	}
 

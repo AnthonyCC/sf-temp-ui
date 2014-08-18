@@ -217,6 +217,7 @@ public class CmsFilteringFlow {
 		
 		// populate browseData with the menu
 		browseDataContext.getMenuBoxes().setMenuBoxes(navigationModel.getLeftNav());
+        browseDataContext.getMenuBoxes().setMenuName(contentNodeModel.getFullName());
 		
 		// -- POPULATE EXTRA DATA --
 		
