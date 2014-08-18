@@ -296,11 +296,10 @@ public class BrowseDataBuilderFactory {
 					if (subCats.size()!=0 && nav.isAll()) { //hide category section header if Show All 
 						sectionTree.setHeaderText(null);
 						sectionTree.setHeaderImage(null);
-						sectionTree.setMedia(null);
+						//sectionTree.setMedia(null); // show header media based on APPDEV-3792
 					}
 					
 				}
-				//carousel3 is left null - will be populated by appendCarousels() after paging
 
 			} else { //or show the actual category list
 				
