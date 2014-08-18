@@ -1,10 +1,14 @@
 {namespace browse}
 /**
  * @param? menuBoxes menuBoxes
+ * @param? menuName menuName
  */
 {template .menu autoescape="false"}
 {if $menuBoxes}
   <div data-component="menu">
+  {if $menuName}
+  <h2 class="menuName">{$menuName}</h2>
+  {/if}
   {foreach $menuBox in $menuBoxes}
     {call browse.menuBox}
       {param menuBox:$menuBox /}

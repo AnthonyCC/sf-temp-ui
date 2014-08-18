@@ -57,8 +57,8 @@ var FreshDirect = FreshDirect || {};
         this.$ghost = $('<div class="popupcontentghost"></div>').appendTo(document.body);
         this.$placeholder = $('<div class="popupcontentplaceholder"></div>').appendTo(document.body);
 
-        if (this.config.zIndex) {
-          this.$ghost.css('z-index', this.config.zIndex+1);
+        if (this.config.zIndex || this.config.ghostZIndex) {
+          this.$ghost.css('z-index', this.config.ghostZIndex || this.config.zIndex+1);
         }
 
       }

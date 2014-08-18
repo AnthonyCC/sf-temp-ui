@@ -416,15 +416,40 @@ section.main .leftnav {
   padding-top: 10px;
 }
 
+section.main .leftnav h2.menuName {
+  font-size: 12px;
+  color: #333;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: bold;
+}
+
 section.main .leftnav .menuBox {
   position: relative;
-  margin-bottom: 20px;
+  margin-top: 16px;
   background: #fffffa;
   border: 1px solid #dce6be;
   border-radius: 10px;
   color: #333;
   overflow: hidden;
 }
+
+section.main .leftnav h2 + .menuBox {
+  margin-top: 10px;
+}
+
+section.main .leftnav .menuBox[data-selectiontype="LINK"] + .menuBox {
+  margin-top: 12px;
+}
+
+section.main .leftnav .menuBox + .menuBox[data-selectiontype="LINK"] {
+  margin-top: 12px;
+}
+
+section.main .leftnav .menuBox[data-selectiontype="LINK"] + .menuBox[data-selectiontype="LINK"] {
+  margin-top: 4px;
+}
+
 section.main .leftnav .menuBoxPadded {
 	padding-top: 30px !important;
 }
@@ -664,6 +689,12 @@ section.main .leftnav .menuBox input[type="checkbox"] {
 	vertical-align: middle;
 }
 
+#menupopup {
+  margin-top: -7px;
+  border-color: #dce6be;
+  min-width: 143px;
+}
+
 #menupopup input[type="radio"],
 section.main .leftnav .menuBox input[type="radio"] {
   display: none;
@@ -773,7 +804,7 @@ section.main .leftnav .menuBox button.category > span:after {
   vertical-align: middle;
   top: 1px;
   right: 0;
-  content: "\e616";
+  content: "\e619";
 }
 
 .popupcontentghost .leftnav-category-popup-button.cssbutton > span:after {

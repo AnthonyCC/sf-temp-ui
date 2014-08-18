@@ -39,6 +39,7 @@ var FreshDirect = FreshDirect || {};
     popupConfig: {
       value: {
         zIndex: 2000,
+        ghostZIndex: 2010,
         halign: 'left',
         delay: 300,
         stayonghostclick: true,
