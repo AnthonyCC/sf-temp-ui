@@ -177,7 +177,7 @@
 }
 
 .browse .pager-holder.bottom .pager{
-  margin-top:40px;
+  margin-top:35px;
   padding-top:10px;
   border-top:1px solid #e0e3d0;
 }
@@ -280,7 +280,8 @@
 
 /* carousel table */
 .container.browse .carousels {
-  margin-top: 10px;
+  // margin-top: 10px;
+  padding-top: 24px;
   clear: both;
 }
 
