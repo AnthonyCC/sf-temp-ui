@@ -450,8 +450,10 @@ public class MenuBuilderFactory {
 					
 					domain.setItems(createCatMenuItems(subCat.getSubcategories(), items, navModel.getUser()));
 					
+					CategoryModel subSubCat = (CategoryModel) thePath.get(NavDepth.SUB_SUB_CATEGORY);
+					
 					if(domain.getItems()!=null && domain.getItems().size()>0){
-						String subCatId = thePath.get(NavDepth.SUB_SUB_CATEGORY) == null ? null : thePath.get(NavDepth.SUB_SUB_CATEGORY).getContentName();
+						String subCatId = subSubCat == null ? null : subSubCat.getContentName();
 						if(!checkSelected(domain, subCatId)){
 							allProductsItem.setSelected(true); // select ALL PRODUCTS option if no menu item were selected
 						}
@@ -459,6 +461,9 @@ public class MenuBuilderFactory {
 					
 					if (items.size() > 1) {
 						menu.add(domain);
+						if(subSubCat!=null){
+							menu.add(createHeaderOnlyBox(subSubCat, MenuBoxType.SUB_SUB_CATEGORY));							
+						}
 					}
 				} else if(thePath.get(NavDepth.SUB_CATEGORY)!=null) {
 					// in case of hidden category create a header text only box ...
@@ -467,7 +472,7 @@ public class MenuBuilderFactory {
 			} else if(thePath.get(NavDepth.SUB_CATEGORY)!=null) {
 				// in case of no subcategories display category header text only
 				CategoryModel subCat = (CategoryModel)thePath.get(NavDepth.SUB_CATEGORY);
-				//collapse the last nevi box
+				//collapse the last navigation box
 				menu.get(menu.size()-1).setDisplayType(MenuBoxDisplayType.POPUP);
                 menu.get(menu.size()-1).setSelectionType(MenuBoxSelectionType.LINK);
 				//create the new header only box
