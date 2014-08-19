@@ -196,7 +196,7 @@ public class ComplaintUtil {
 		else if ( "transportation".equalsIgnoreCase(dept) ) { r = "TRN"; }
         else if ( "extraitem".equalsIgnoreCase(dept) ) { r = "XTR"; }
         else if ( "kosher".equalsIgnoreCase(dept) ) { r = "KOS"; }
-        else if ( "wine".equalsIgnoreCase(dept) || "wines".equalsIgnoreCase(dept) || (dept!=null && dept.toLowerCase().contains("usq")) || (dept!=null && dept.toLowerCase().startsWith(WineUtil.getWineAssociateId().toLowerCase())) ){ r = "WIN"; }
+        else if ( (dept != null && dept.toLowerCase().contains("wine") ) || (dept!=null && dept.toLowerCase().contains("usq")) || (dept!=null && dept.toLowerCase().startsWith(WineUtil.getWineAssociateId().toLowerCase())) ){ r = "WIN"; }
         else if ( "Easy Meals".equalsIgnoreCase(dept) ){ r = "EZM"; }
         else if ( dept != null && dept.toLowerCase().contains("cook")) { r = "RTC"; }
         else if ( "Healthy Living".equalsIgnoreCase(dept) || "Our Picks".equalsIgnoreCase(dept) ){ r = "OURPICKS"; }
