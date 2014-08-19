@@ -329,8 +329,16 @@ public class MenuBuilderFactory {
 				domain.setName(dept.getRegularCategoriesLeftNavBoxHeader());
 				domain.setId(deptId);
 				domain.setBoxType(MenuBoxType.CATEGORY);
-				domain.setDisplayType(MenuBoxDisplayType.POPUP);
-				domain.setSelectionType(MenuBoxSelectionType.LINK);
+				// determine the box dipslay and selection type (lowest level of navigation should always remain expanded [APPDEV-3814])
+				if(((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories()!=null && 
+						   ((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories().size()>0){
+					
+					domain.setDisplayType(MenuBoxDisplayType.POPUP);
+					domain.setSelectionType(MenuBoxSelectionType.LINK);					
+				}else{
+					domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+					domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+				}
 				
 				List<MenuItemData> menuItems = new ArrayList<MenuItemData>();				
 				
@@ -377,7 +385,7 @@ public class MenuBuilderFactory {
 				
 				if (!NavigationUtil.isCategoryHiddenInContext(navModel.getUser(), (CategoryModel)cat)) {
 					MenuBoxData domain = new MenuBoxData();
-					domain.setName(cat.getFullName());
+					domain.setName(""); // leave it empty
 					domain.setId(cat.getContentName());
 					domain.setBoxType(MenuBoxType.SUB_CATEGORY);
 					if(nav.isPdp() || (thePath.get(NavDepth.SUB_CATEGORY)!=null &&
@@ -415,10 +423,6 @@ public class MenuBuilderFactory {
 					// in case of hidden category create a header text only box ...
 					menu.add(createHeaderOnlyBox(cat, MenuBoxType.CATEGORY));
 				}
-			} else if(thePath.get(NavDepth.SUB_CATEGORY)==null){
-				// in case of no subcategories display category header text only
-				CategoryModel cat = (CategoryModel)thePath.get(NavDepth.CATEGORY);
-				menu.add(createHeaderOnlyBox(cat, MenuBoxType.CATEGORY));
 			}
 			
 			// sub sub categories box on sub and sub sub categories page (not on special layout)
@@ -431,7 +435,7 @@ public class MenuBuilderFactory {
 				
 				if (!NavigationUtil.isCategoryHiddenInContext(navModel.getUser(), (CategoryModel)subCat)) {
 					MenuBoxData domain = new MenuBoxData();
-					domain.setName(subCat.getFullName());
+					domain.setName(""); //leave it empty
 					domain.setId(subCat.getContentName());
 					domain.setBoxType(MenuBoxType.SUB_SUB_CATEGORY);
 					if(nav.isPdp()){
@@ -461,22 +465,11 @@ public class MenuBuilderFactory {
 					
 					if (items.size() > 1) {
 						menu.add(domain);
-						if(subSubCat!=null){
-							menu.add(createHeaderOnlyBox(subSubCat, MenuBoxType.SUB_SUB_CATEGORY));							
-						}
 					}
 				} else if(thePath.get(NavDepth.SUB_CATEGORY)!=null) {
 					// in case of hidden category create a header text only box ...
 					menu.add(createHeaderOnlyBox(subCat, MenuBoxType.SUB_CATEGORY));
 				}
-			} else if(thePath.get(NavDepth.SUB_CATEGORY)!=null) {
-				// in case of no subcategories display category header text only
-				CategoryModel subCat = (CategoryModel)thePath.get(NavDepth.SUB_CATEGORY);
-				//collapse the last navigation box
-				menu.get(menu.size()-1).setDisplayType(MenuBoxDisplayType.POPUP);
-                menu.get(menu.size()-1).setSelectionType(MenuBoxSelectionType.LINK);
-				//create the new header only box
-				menu.add(createHeaderOnlyBox(subCat, MenuBoxType.SUB_CATEGORY));
 			}
 			
 			if(!nav.isSpecialPage()){
@@ -682,7 +675,7 @@ public class MenuBuilderFactory {
 	private MenuBoxData createSuperDepartmentMenuBox(SuperDepartmentModel model, NavigationModel navModel, boolean simpleBox){
 				
 		MenuBoxData domain = new MenuBoxData();
-		domain.setName(model.getFullName());
+		domain.setName("Departments");
 		domain.setId(model.getContentName() + "_superdepartment");
 		domain.setBoxType(MenuBoxType.SUPERDEPARTMENT);
 		if(simpleBox){
