@@ -554,7 +554,7 @@
 				<EnumValue value="TWO_TWO" label="2/2"/>
 				<EnumValue value="THREE_ONE" label="3/1"/>
 			</EnumDef>
-			<EnumDef type="S" name="brandFilterLocation"  label="Brand Filter Location">
+			<EnumDef type="S" name="brandFilterLocation"  label="Brand Filter Location" inheritable="true">
 				<EnumValue value="BELOW_DEPARTMENT" label="On/Appearing below depratment"/>
 				<EnumValue value="BELOW_LOWEST_LEVEL_CATEGROY" label="On/Appearing below lowest level category"/>
 				<EnumValue value="OFF" label="Turned off"/>
