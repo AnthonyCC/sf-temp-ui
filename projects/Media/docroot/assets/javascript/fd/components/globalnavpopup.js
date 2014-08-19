@@ -396,9 +396,10 @@ function realigner($topnav, $popup, $t) {
 		}
 		
 		if ($imgContRef.length !== 0) { //img & dept
-			//show more image if deptCont is taller
-			if (($deptContRef.outerHeight()-navDim.offset.top) > $imgContRef.outerHeight()) {
-				$imgContRef.css('height', $deptContRef.outerHeight()-navDim.offset.top);
+			//show more image if deptCont is taller (be sure to include seasonal media's height
+			var seasonalMediaHeight = $deptContRef.find('.seasonal-media').outerHeight() || 0;
+			if (($deptContRef.outerHeight() + seasonalMediaHeight) > $imgContRef.outerHeight()) {
+				$imgContRef.css('height', ($deptContRef.outerHeight() + seasonalMediaHeight));
 			}
 		} else { //just dept
 			
