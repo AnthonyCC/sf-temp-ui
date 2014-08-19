@@ -1011,12 +1011,12 @@ public class ScoreProvider implements DataAccess {
 
 		storeLookups.put(
 			"TieredDealsPercentage", 
-			FactorUtil.getDealsPercentageLookup()
+			FactorUtil.getTieredDealsPercentageLookup()
 		);
 		
 		storeLookups.put(
 			"TieredDealsPercentage_Discretized",
-			FactorUtil.getDealsPercentageDiscretized()
+			FactorUtil.getTieredDealsPercentageDiscretized()
 		);
 		
 		storeLookups.put(
