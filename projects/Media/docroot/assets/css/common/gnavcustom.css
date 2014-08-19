@@ -83,9 +83,8 @@ GLOBAL NAV DROPDOWNS
 .column-heading  {
 	font-size: 14px;
 	font-weight: bold;
-	padding: 28px 42px 0 25px;
+	padding: 23px 42px 10px 25px;
 	display: block;
-	min-height: 33px;
 	text-indent: -10px;
 	margin-left: 10px;
 }

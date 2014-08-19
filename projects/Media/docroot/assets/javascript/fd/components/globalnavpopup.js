@@ -519,6 +519,7 @@ function realigner_superdept($topnav, tarDim, navDim, $subDeptsRef, isRightOfNav
     }
 
     var alignAt = realigner($topnav, $popup, $t);
+    if (alignAt < 0) { alignAt = 0; } //safety
 
     if ($ghost !== null && $ghost.length) {
 	    // cloning topnav menu to ghost
