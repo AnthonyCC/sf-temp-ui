@@ -581,7 +581,9 @@ public class DataGeneratorCompiler extends CompilerBase {
             }
         });
 
-        parser.getContext().addFunctionDef(FN_SMART_CATEGORY, new Context.SimpleFunctionDef() {
+        // NOTE: actually, getSmartCategoryRecommendation() uses sessionInput instead of
+        // explicit parameters
+        parser.getContext().addFunctionDef(FN_SMART_CATEGORY, new Context.FunctionDef(0, Integer.MAX_VALUE, Expression.RET_SET) {
         	@Override
         	public String toJavaCode(String name, List<Expression> parameters)
         			throws CompileException {

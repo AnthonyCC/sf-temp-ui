@@ -76,7 +76,7 @@
 	<RecommenderStrategy id="testStrat">
 		<FULL_NAME>Test Strategy</FULL_NAME>
 		<sampling>deterministic</sampling>
-		<generator>SmartCategory(explicitList)</generator>
+		<generator>SmartCategory()</generator>
 	</RecommenderStrategy>
 
 

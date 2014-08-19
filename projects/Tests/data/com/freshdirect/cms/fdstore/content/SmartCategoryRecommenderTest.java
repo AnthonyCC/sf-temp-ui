@@ -4,16 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mockejb.interceptor.AspectSystem;
-import org.mockejb.interceptor.InvocationContext;
 
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.fdstore.aspects.BaseAspect;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.Recommender;
-import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.RecommendationServiceTestBase;
 import com.freshdirect.smartstore.filter.FilterFactory;
