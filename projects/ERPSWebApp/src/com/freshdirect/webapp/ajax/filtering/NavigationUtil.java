@@ -79,7 +79,8 @@ public class NavigationUtil {
 		for(NavDepth navDepth : NavDepth.values()){
 			if (contentNodeModelPath.size()>navDepth.getLevel()){
 				model.setNavDepth(navDepth);
-				if (NavDepth.DEPARTMENT.equals(navDepth) && contentNodeModelPath.get(navDepth.getLevel()) instanceof DepartmentModel) {
+				// skip if superdepartment page
+				if (!(NavDepth.DEPARTMENT.equals(navDepth) && !(contentNodeModelPath.get(navDepth.getLevel()) instanceof DepartmentModel))) {
 					navigationHierarchy.put(navDepth, contentNodeModelPath.get(navDepth.getLevel()));
 				}
 			}
