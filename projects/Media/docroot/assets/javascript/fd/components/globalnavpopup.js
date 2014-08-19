@@ -395,6 +395,15 @@ function realigner($topnav, $popup, $t) {
 			}
 		}
 		
+		
+		//add max catColumns widths
+		if (catColumnsSetMaxWidth) {
+			$(catColumns).each(function(i,e) {
+				$(e).css('max-width',  Math.floor($deptContRef.outerWidth() / catColumns.length));
+			});
+		}
+		
+		//do this AFTER the columns are styled
 		if ($imgContRef.length !== 0) { //img & dept
 			//show more image if deptCont is taller (be sure to include seasonal media's height
 			var seasonalMediaHeight = $deptContRef.find('.seasonal-media').outerHeight() || 0;
@@ -404,14 +413,6 @@ function realigner($topnav, $popup, $t) {
 		} else { //just dept
 			
 		}
-		
-		//add max catColumns widths
-		if (catColumnsSetMaxWidth) {
-			$(catColumns).each(function(i,e) {
-				$(e).css('max-width',  Math.floor($deptContRef.outerWidth() / catColumns.length));
-			});
-		}
-		
 		
 		//now re-align the popup to the nav item if possible
 		if (isRightOfNavCenter) {
