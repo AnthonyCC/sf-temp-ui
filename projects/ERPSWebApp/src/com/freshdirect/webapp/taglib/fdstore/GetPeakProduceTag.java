@@ -34,6 +34,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -328,7 +329,7 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 				} catch (FDSkuNotFoundException e) {
 					throw new FDResourceException(e);
 				}
-				if(isProduce(sku.getSkuCode())&&isPeakProduce(rating)) {
+				if(PopulatorUtil.isShowRatings(sku.getSkuCode())&&isPeakProduce(rating)) {
 					peakProduce.add(sku);
 					break;
 				}
@@ -337,45 +338,6 @@ public class GetPeakProduceTag extends AbstractGetterTag {
 		return peakProduce;
 	}
 	
-	private boolean isProduce(String skuCode) {
-		/*
-		 * There is a similar setup in the JspMethods.java file
-		 */
-		
-		//System.out.println("===== in PProdTag isProduceg :"+skuCode);
-
-		boolean matchFound = false; //default to false
-		
-		// grab sku prefixes that should show ratings
-		String _skuPrefixes=FDStoreProperties.getRatingsSkuPrefixes();
-		//System.out.println("* getRatingsSkuPrefixes :"+_skuPrefixes);
-	   
-		//if we have prefixes then check them
-		if (_skuPrefixes!=null && !"".equals(_skuPrefixes)) {
-			StringTokenizer st=new StringTokenizer(_skuPrefixes, ","); //setup for splitting property
-			String curPrefix = ""; //holds prefix to check against
-			//String spacer="* "; //spacing for sysOut calls
-			
-			//loop and check each prefix
-			while(st.hasMoreElements()) {
-				
-				curPrefix=st.nextToken();
-				//System.out.println(spacer+"Rating _skuPrefixes checking :"+curPrefix);
-				
-				//if prefix matches get product info
-				if(skuCode.startsWith(curPrefix)) {
-					matchFound=true;
-                }
-				//exit on matched sku prefix
-				//System.out.println(spacer+"Rating matchFound :"+matchFound);
-				if (matchFound) { break; }
-				//spacer=spacer+"   ";
-            }
-        }
-		//System.out.println("Rating matchFound :"+matchFound);
-		return matchFound;
-	}
-
 	private boolean isPeakProduce(EnumOrderLineRating rating) {
 		
 		if ( EnumOrderLineRating.PEAK_PRODUCE_10.equals(rating)||

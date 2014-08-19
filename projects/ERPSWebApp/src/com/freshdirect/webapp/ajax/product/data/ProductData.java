@@ -71,6 +71,7 @@ public class ProductData extends BasicProductData implements SkuData {
 	protected int customerRatingReviewCount;
 	protected int expertRating;
 	protected String sustainabilityRating;
+	protected boolean showRatings;
 	/**
 	 * Heat rating value between 0 and 5.
 	 * -1 means invalid value.
@@ -546,5 +547,11 @@ public class ProductData extends BasicProductData implements SkuData {
 	}
 	public void setNutritionServingSizeValue(String nutritionServingSizeValue) {
 		this.nutritionServingSizeValue = nutritionServingSizeValue;
+	}
+	public boolean isShowRatings() {
+		return showRatings;
+	}
+	public void setShowRatings(boolean showRatings) {
+		this.showRatings = showRatings;
 	}
 }

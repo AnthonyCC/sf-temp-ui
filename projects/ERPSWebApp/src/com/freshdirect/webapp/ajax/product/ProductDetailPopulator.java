@@ -754,6 +754,8 @@ public class ProductDetailPopulator {
 			}
 		}
 	
+		//check if sku should show ratings at all
+		item.setShowRatings(PopulatorUtil.isShowRatings(skuCode));
 		
 		// Now set only(!) the appropriate values on the item
 		

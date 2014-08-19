@@ -1,5 +1,7 @@
 package com.freshdirect.fdstore.content;
 
+import java.util.StringTokenizer;
+
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -70,5 +72,30 @@ public class PopulatorUtil {
 		// LOGGER.debug("SKU Version" + pInfo.getVersion());
 		
 		return pInfo == null || pInfo.getVersion() == 0;
+	}
+	
+	
+	/** originally in GetPeakProduceTag.isProduce() **/
+	public static boolean isShowRatings(String skuCode) {
+		boolean matchFound = false;
+		
+		String _skuPrefixes=FDStoreProperties.getRatingsSkuPrefixes(); // grab sku prefixes that should show ratings
+		if (_skuPrefixes!=null && !"".equals(_skuPrefixes)) { //if we have prefixes then check them
+
+			StringTokenizer st=new StringTokenizer(_skuPrefixes, ","); //setup for splitting property
+			String curPrefix = ""; //holds prefix to check against
+			
+			while(st.hasMoreElements()) { //loop and check each prefix
+				curPrefix=st.nextToken();
+				if(skuCode.startsWith(curPrefix)) { //if prefix matches get product info
+					matchFound=true;
+                }
+				
+				if (matchFound) { //exit on matched sku prefix
+					break;
+				}
+            }
+        }
+		return matchFound;
 	}
 }
