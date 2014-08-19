@@ -102,6 +102,7 @@
   {param nutritionSortTitle:$item.nutritionSortTitle /}
   {param nutritionSortValue:$item.nutritionSortValue /}
   {param nutritionServingSizeValue:$item.nutritionServingSizeValue /}
+  {param showRatings:$item.showRatings /}
   {param availabilityMessage}
     {call common.availabilityMessage}{param item:$item /}{/call}
     {if $item.msgCancellation}
@@ -256,6 +257,7 @@
  * @param? nutritionSortTitle
  * @param? nutritionSortValue
  * @param? nutritionServingSizeValue
+ * @param? showRatings
  * @param? cmEventSource optional coremetrics event source
  */
 {template .potatoTransactionalGridItem autoescape="false"}
@@ -277,7 +279,7 @@
       {call common.rating.customer}{param ratingValue:$customerRating /}{param reviewCount:$customerRatingReviewCount /}{/call}
       {call common.rating.expert}{param ratingValue:$expertRating /}{/call}
       {call common.rating.wine}{param ratingValue:$wineRating /}{/call}
-      {if not $customerRating and not $expertRating and not $wineRating}
+      {if not $customerRating and not $expertRating and not $wineRating and $showRatings}
         <b class="norating smallrating">Not rated</b>
       {/if}
       {if $sustainabilityRating}
