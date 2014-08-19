@@ -70,8 +70,10 @@ public class SessionInput implements Cloneable {
 	 */
 	private int windowSize = 0;
 	
+	@Deprecated
 	private boolean checkForEnoughSavingsMode = false;
 
+	@Deprecated
 	private String savingsVariantId;
 
 	private boolean includeCartItems = false;
@@ -80,8 +82,6 @@ public class SessionInput implements Cloneable {
 	
 	private boolean showTemporaryUnavailable = false;
 
-	// private Set eligiblePromotions = null;
-	
 	private Set<ContentKey> recentItems;
 
 	//Added for Zone Pricing.
@@ -100,6 +100,11 @@ public class SessionInput implements Cloneable {
 	 */
 	private boolean excludeAlcoholicContent = false;
 
+	/**
+	 * This variable keeps track of previously invoked CMS recommenders in order to avoid infinite loop.
+	 */
+	private Set<ContentKey> cmsRecommenderKeys = new HashSet<ContentKey>();
+	
 
 	protected SessionInput() {
 	}
@@ -108,7 +113,7 @@ public class SessionInput implements Cloneable {
 	 * Constructor.
 	 * 
 	 * @param customerId
-	 *            the custumer to recommend for (as ERP id)
+	 *            the customer to recommend for (as ERP id)
 	 * @param customerServiceType
 	 * 
 	 *            the customer's service type (Home, Corporate, etc.)
@@ -351,10 +356,12 @@ public class SessionInput implements Cloneable {
 		this.windowSize = windowSize;
 	}
 
+	@Deprecated
 	public boolean isCheckForEnoughSavingsMode() {
 		return checkForEnoughSavingsMode;
 	}
 
+	@Deprecated
 	public void setCheckForEnoughSavingsMode(boolean checkForSavings) {
 		this.checkForEnoughSavingsMode = checkForSavings;
 	}
@@ -364,10 +371,12 @@ public class SessionInput implements Cloneable {
 	}
 
 	// clone support
+	@Deprecated
 	protected void setSavingsVariantId(String savingsVariantId) {
 		this.savingsVariantId = savingsVariantId;
 	}
 
+	@Deprecated
 	public String getSavingsVariantId() {
 		return savingsVariantId;
 	}
@@ -460,6 +469,22 @@ public class SessionInput implements Cloneable {
 	}
 	
 	
+	/**
+	 * Only for clone support!
+	 * 
+	 * @param cmsRecommenderKeys
+	 */
+	public void setCmsRecommenderKeys(Set<ContentKey> cmsRecommenderKeys) {
+		this.cmsRecommenderKeys = cmsRecommenderKeys;
+	}
+	
+	public Set<ContentKey> getCmsRecommenderKeys() {
+		return cmsRecommenderKeys;
+	}
+
+	
+	/* User builder function instead */
+	@Deprecated
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		SessionInput cloned = new SessionInput(this.customerId, this.customerServiceType, this.pricingCtx);
@@ -499,6 +524,11 @@ public class SessionInput implements Cloneable {
 		
 		private FDUserI user = null;
 		
+		private String customerId = null;
+		private EnumServiceType customerServiceType;
+		
+		private PricingContext pricingContext;
+		
 		private ContentNodeModel currentNode;
 		
 		private Set<ContentKey> cartContents = null;
@@ -511,7 +541,14 @@ public class SessionInput implements Cloneable {
 
 		private Map<String, List<ContentKey>> previousRecommendations;
 
+		private boolean noShuffle;
+		private boolean traceMode;
+		private Map<ContentKey, Set<String>> dataSourcesMap;
 
+		private List<? extends ContentNodeModel> explicitList;
+
+		private Set<ContentKey> cmsRecommenderKeys;
+		
 		
 		public Builder setMaxRecommendations(int maxRecommendations) {
 			this.maxRecommendations = maxRecommendations; return this;
@@ -523,6 +560,18 @@ public class SessionInput implements Cloneable {
 
 		public Builder setUser(FDUserI user) {
 			this.user = user; return this;
+		}
+		
+		public Builder setCustomerId(String customerId) {
+			this.customerId = customerId; return this;
+		}
+		
+		public Builder setServiceType(EnumServiceType serviceType) {
+			this.customerServiceType = serviceType; return this;
+		}
+		
+		public Builder setPricingContext(PricingContext pricingContext) {
+			this.pricingContext = pricingContext; return this;
 		}
 		
 		
@@ -555,12 +604,34 @@ public class SessionInput implements Cloneable {
 			return this;
 		}
 
+		public Builder setNoShuffle(boolean noShuffle) {
+			this.noShuffle = noShuffle;
+			return this;
+		}
+
+		public Builder setTraceMode(boolean traceMode) {
+			this.traceMode = traceMode;
+			return this;
+		}
+
+		public Builder setExplicitList(
+				List<? extends ContentNodeModel> explicitList) {
+			this.explicitList = explicitList;
+			return this;
+		}
+
+		public Builder setCmsRecommenderKeys(Set<ContentKey> cmsRecommenderKeys) {
+			this.cmsRecommenderKeys = cmsRecommenderKeys; return this;
+		}
+
 
 		public SessionInput build() {
 			SessionInput si;
 			
 			if (user != null) {
 				si = new SessionInput(user);
+			} else if (customerId != null) {
+				si = new SessionInput(customerId, customerServiceType, pricingContext);
 			} else {
 				si = new SessionInput();
 			}
@@ -577,6 +648,12 @@ public class SessionInput implements Cloneable {
 				si.setCurrentNode(currentNode);
 			}
 			
+			si.setNoShuffle(this.noShuffle);
+			si.setTraceMode(traceMode);
+			if (traceMode && dataSourcesMap != null) {
+				si.setDataSourcesMap(dataSourcesMap);
+			}
+
 			if (cartContents != null) {
 				si.setCartContents(cartContents);
 				si.setIncludeCartItems(!excludeCartContent);
@@ -592,7 +669,22 @@ public class SessionInput implements Cloneable {
 				si.setPreviousRecommendations(previousRecommendations);
 			}
 
+			if (explicitList != null) {
+				si.setExplicitList(explicitList);
+			}
+
+			if (cmsRecommenderKeys != null) {
+				si.setCmsRecommenderKeys(this.cmsRecommenderKeys);
+			}
+
 			return si;
 		}
+
+		public Builder setDataSourceMap(
+				Map<ContentKey, Set<String>> dataSourcesMap) {
+			this.dataSourcesMap = dataSourcesMap;
+			return this;
+		}
+
 	}
 }

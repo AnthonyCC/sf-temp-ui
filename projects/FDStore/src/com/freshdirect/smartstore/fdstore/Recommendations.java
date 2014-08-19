@@ -52,6 +52,8 @@ public class Recommendations implements Serializable {
 	ContentNodeModelReference<YmalSource> ymalSource;
 	
 	private boolean isRefreshable = true;
+	
+	@Deprecated
 	private boolean isSmartSavings = false;
 
 	// products window
@@ -86,7 +88,7 @@ public class Recommendations implements Serializable {
 
 
 		this.isRefreshable = isRefreshable;
-		this.isSmartSavings = isSmartSavings;
+		this.isSmartSavings = false;
 
 		if (AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get() != null) {
 			prd2recommender = AbstractRecommendationService.RECOMMENDER_SERVICE_AUDIT.get();	        

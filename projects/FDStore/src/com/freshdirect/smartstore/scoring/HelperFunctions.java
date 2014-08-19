@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.PricingContext;
@@ -20,10 +22,13 @@ import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.FavoriteList;
 import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recommender;
+import com.freshdirect.fdstore.content.RecommenderStrategy;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO;
+import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.external.ExternalRecommender;
 import com.freshdirect.smartstore.external.ExternalRecommenderCommunicationException;
@@ -39,6 +44,7 @@ import com.freshdirect.smartstore.filter.FilterFactory;
 import com.freshdirect.smartstore.impl.SmartYMALRecommendationService;
 import com.freshdirect.smartstore.sampling.RankedContent;
 import com.freshdirect.smartstore.sampling.RankedContent.Single;
+import com.freshdirect.smartstore.service.CmsRecommenderRegistry;
 
 /**
  * This class contains functions which used by the generated code.
@@ -46,6 +52,7 @@ import com.freshdirect.smartstore.sampling.RankedContent.Single;
  *
  */
 public class HelperFunctions {
+	private static final Logger LOGGER = Logger.getLogger(HelperFunctions.class.getCanonicalName());
 	
     private HelperFunctions() {}    
     
@@ -709,5 +716,115 @@ public class HelperFunctions {
     	}
 
     	return prds;
+    }
+
+
+   
+    /**
+     * Pull recommended items from a CMS Recommender
+     * This method feeds data for 'SmartCategory' expression
+     */
+	public static List<? extends ContentNodeModel> getSmartCategoryRecommendation(
+			SessionInput input) {
+		if (input == null) {
+			return Collections.emptyList();
+		}
+
+		Recommender rec = lookupCMSRecommenderInSessionInput(input);
+		if (rec == null) {
+			LOGGER.error("No recommender attached to target category !");
+			return Collections.emptyList();
+		}
+		LOGGER.debug(".. Recommender: " + rec.getContentName());
+
+		
+		if (input.getCmsRecommenderKeys().contains(rec.getContentKey())) {
+			LOGGER.warn("CMS Recommender call loop detected, abort!");
+			return Collections.emptyList();
+		}
+
+
+
+		// prepare new context, build a new session input
+		List<ContentNodeModel> scope = rec.getScope();
+		if (scope == null || scope.size() == 0) {
+			LOGGER.error("Recommender scope is not set!");
+			return Collections.emptyList();
+		}
+
+		SessionInput subInput = cloneInput(input);
+		// override explicit list
+		subInput.setExplicitList(scope);
+		// add recommender to call list
+		subInput.getCmsRecommenderKeys().add(rec.getContentKey());
+
+
+
+		// Fetch recommended items
+		RecommendationService svc = CmsRecommenderRegistry.getInstance()
+				.getService(rec.getStrategy().getContentName());
+
+		return svc.recommendNodes(subInput);
+	}
+
+
+
+
+	private static Recommender lookupCMSRecommenderInSessionInput(SessionInput input) {
+		ContentNodeModel target = null;
+
+		final List<? extends ContentNodeModel> explicitList = input
+				.getExplicitList();
+		
+		// Method #1 - Lookup explicit list
+		if (explicitList != null && explicitList.size() > 0) {
+			target = explicitList.get(0);
+			LOGGER.debug("Picked first node from explicitList");
+		} else {
+			// Method #2 - See current node
+			ContentNodeModel node = input.getCurrentNode();
+			if (!(node instanceof CategoryModel)) {
+				LOGGER.warn("current node is not a category!");
+				LOGGER.warn(".. node = " + node);
+
+				return null;
+			}
+			LOGGER.debug("Picked currentNode (fallback)");
+			target = node;
+		}
+
+		// Grab CMS Recommender from target category
+		CategoryModel cat = (CategoryModel) target;
+		LOGGER.debug(".. Category: " + cat.getContentName());
+
+		final Recommender rec = cat.getRecommender();
+		if (rec == null) {
+			LOGGER.warn("No recommender attached to category !");
+		}
+
+		return rec;
+	}
+
+	
+    /**
+     * Cloned session input for subsequent recommenders
+     * 
+     * @param input
+     * @param expList
+     * @return
+     */
+    private static SessionInput cloneInput(SessionInput input) {
+		SessionInput smartInput = new SessionInput.Builder()
+		.setCustomerId(input.getCustomerId())
+		.setServiceType(input.getCustomerServiceType())
+		.setPricingContext(input.getPricingContext())
+		.setCurrentNode(input.getCurrentNode())
+		.setNoShuffle(input.isNoShuffle())
+		.setTraceMode(input.isTraceMode())
+		.setDataSourceMap(input.getDataSourcesMap())
+		.setCmsRecommenderKeys(input.getCmsRecommenderKeys())
+		.build();
+
+		return smartInput;
     }
 }

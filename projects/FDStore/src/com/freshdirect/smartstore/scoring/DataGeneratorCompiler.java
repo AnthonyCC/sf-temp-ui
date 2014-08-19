@@ -14,6 +14,7 @@ import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.NotFoundException;
 
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.dsl.BinaryExpression;
 import com.freshdirect.smartstore.dsl.BlockExpression;
 import com.freshdirect.smartstore.dsl.ClassCompileException;
@@ -46,6 +47,8 @@ public class DataGeneratorCompiler extends CompilerBase {
     static final String FN_TO_LIST = "toList";
     private static final String FN_PRODUCT_RECOMMENDATION = "ProductRecommendation";
     private static final String FN_USER_RECOMMENDATION = "PersonalRecommendation";
+    // [APPDEV-3776]
+    private static final String FN_SMART_CATEGORY = "SmartCategory";
     
     private static final String EXPLICIT_LIST = "explicitList";
     private static final String CURRENT_PRODUCT = "currentProduct";
@@ -64,7 +67,7 @@ public class DataGeneratorCompiler extends CompilerBase {
     
     private static final String ITERATION_VARIABLE = "obj";
     
-    final static String NODE_TYPE="com.freshdirect.fdstore.content.ContentNodeModel";
+    final static String NODE_TYPE=ContentNodeModel.class.getCanonicalName();
     final static String SET_TYPE="List";
     
     boolean optimize = false;
@@ -577,6 +580,14 @@ public class DataGeneratorCompiler extends CompilerBase {
                 return "HelperFunctions.getSmartYMALRecommendation(sessionInput)";
             }
         });
+
+        parser.getContext().addFunctionDef(FN_SMART_CATEGORY, new Context.SimpleFunctionDef() {
+        	@Override
+        	public String toJavaCode(String name, List<Expression> parameters)
+        			throws CompileException {
+        		return "HelperFunctions.getSmartCategoryRecommendation(sessionInput)";
+        	}
+        });
     }
 
     public synchronized DataGenerator createDataGenerator(String name, String expression) throws CompileException {
@@ -675,6 +686,7 @@ public class DataGeneratorCompiler extends CompilerBase {
     				|| function.startsWith(FN_RELATED_ITEMS_PREFIX)
     				|| function.equals(FN_USER_RECOMMENDATION)
     				|| function.equals(FN_SMART_YMAL))
+    			// FIXME APPDEV-3776 is smart cat recommender cacheable?
     			return false;
         return true;
     }

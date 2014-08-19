@@ -21,8 +21,8 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -436,5 +436,4 @@ public class ProductRecommenderUtil {
 	        }
 	    }
 	}
-
 }
