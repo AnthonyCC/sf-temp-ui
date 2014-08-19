@@ -29,13 +29,6 @@ import com.mockrunner.mock.web.MockPageContext;
 public class ScriptedRecommendationServiceTest extends RecommendationServiceTestBase {
 
 
-    public ScriptedRecommendationServiceTest() {
-    }
-
-    public ScriptedRecommendationServiceTest(String name) {
-        super(name);
-    }
-
     public void setUp() throws Exception {
         super.setUp();
         aspectSystem.add(new ScoreFactorGlobalNameAspect(Collections.singleton("globalPopularity")));

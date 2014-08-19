@@ -37,14 +37,6 @@ public abstract class RecommendationServiceTestBase extends TestCase {
     XmlContentService service;
     protected AspectSystem aspectSystem ;
     
-    public RecommendationServiceTestBase(String name) {
-        super(name);
-    }
-    
-    public RecommendationServiceTestBase() {
-        super();
-    }
-    
     public void setUp() throws Exception {
         super.setUp();
         EnumSiteFeature.mock();

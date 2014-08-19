@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.naming.NamingException;
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.TestUtils;
@@ -56,11 +55,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
     private YourFavoritesInCategoryRecommendationService yfrs;
 
-    
-    public FeaturedItemsTest(String name) throws NamingException {
-        super(name);
-    } 
-    
+
     RecommendationService getFeaturedItemsService() {
         if (firs == null) {
             firs = new FeaturedItemsRecommendationService(new Variant("fi", EnumSiteFeature.FEATURED_ITEMS, new RecommendationServiceConfig("fi_config",
