@@ -79,7 +79,9 @@ public class NavigationUtil {
 		for(NavDepth navDepth : NavDepth.values()){
 			if (contentNodeModelPath.size()>navDepth.getLevel()){
 				model.setNavDepth(navDepth);
-				navigationHierarchy.put(navDepth, contentNodeModelPath.get(navDepth.getLevel()));
+				if (NavDepth.DEPARTMENT.equals(navDepth) && contentNodeModelPath.get(navDepth.getLevel()) instanceof DepartmentModel) {
+					navigationHierarchy.put(navDepth, contentNodeModelPath.get(navDepth.getLevel()));
+				}
 			}
 		}
 		model.setNavigationHierarchy(navigationHierarchy);
@@ -87,6 +89,8 @@ public class NavigationUtil {
 		// find superdepartment in hierarchy if any
 		if(navigationHierarchy.get(NavDepth.DEPARTMENT)!=null){
 			model.setSuperDepartmentModel(getSuperDepartment(user, navigationHierarchy.get(NavDepth.DEPARTMENT).getContentName()));			
+		} else if (node instanceof SuperDepartmentModel) {
+			model.setSuperDepartmentModel((SuperDepartmentModel) node);
 		}
 
 		if (!model.isSuperDepartment()) {
