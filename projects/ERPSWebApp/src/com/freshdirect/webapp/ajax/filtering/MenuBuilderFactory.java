@@ -858,12 +858,7 @@ public class MenuBuilderFactory {
 						 itemCount = ProductItemFilterUtil.getFilteredProducts(preFilteredItems, currentFilters, false).size();
 						 
 						 if (itemCount == 0 && !item.isSelected()) {
-							if(popupType){
-								it.remove();								
-							}else{
-								item.setActive(false);
-								emptyBox=false;
-							}
+								it.remove();
 						}else{
 							emptyBox=false;
 						}
