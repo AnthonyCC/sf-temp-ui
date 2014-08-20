@@ -21,6 +21,8 @@ public class RequestLogger {
 	private static final String FDCOOKIE = "FDUser";
 	private static final String NSCOOKIE = "NSC_";
 	private static final String IPHEADER = "X-Forwarded-For";
+	private static final String AKAMAI_IPHEADER = "True-Client-IP";
+	private static final String USER_AGENT = "User-Agent";
 	
 	public static void logRequest(ServletRequest request) {
 		
@@ -46,6 +48,12 @@ public class RequestLogger {
 				
 		buf.append(SEPARATOR);
 		buf.append(getClientIp(httpRequest));
+		
+		buf.append(SEPARATOR);
+		buf.append(getHttpHeader(httpRequest, AKAMAI_IPHEADER));
+		
+		buf.append(SEPARATOR);
+		buf.append(getHttpHeader(httpRequest, USER_AGENT));
 				
 		buf.append(SEPARATOR);
 		buf.append(getCookies(httpRequest));
@@ -75,6 +83,10 @@ public class RequestLogger {
 			}
 		}
 		return (_fdUser != null ? _fdUser : EMPTY) + SEPARATOR + (_nsUser != null ? _nsUser : EMPTY);
+	}
+	
+	public static String getHttpHeader(HttpServletRequest request, String headerName) {
+		return request.getHeader(headerName) != null ? request.getHeader(headerName) : EMPTY;
 	}
 	
 	public static String getClientIp(HttpServletRequest request) {
