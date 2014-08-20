@@ -30,7 +30,7 @@
 				%>FreshDirect.globalnav.showTutorial = false;<%	
 			} else {
 				//only turn on if it's avail to user
-				if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnavtut2014, (FDUserI)session.getAttribute(SessionName.USER))) {
+				if ( ( user.RECOGNIZED == user.getLevel() || user.SIGNED_IN == user.getLevel() ) && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnavtut2014, (FDUserI)session.getAttribute(SessionName.USER))) {
 					%>FreshDirect.globalnav.showTutorial = true;<%
 					user.setGlobalNavTutorialSeen(true);
 				}
