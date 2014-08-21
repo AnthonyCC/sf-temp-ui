@@ -278,16 +278,27 @@ public class MenuBuilderFactory {
 					List<MenuItemData> menuItems = new ArrayList<MenuItemData>();				
 					
 					//create categories and preference categories box
-					if (!navModel.getCategorySections().isEmpty() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, navModel.getUser())) {
+					if (!navModel.getCategorySections().isEmpty()) {
 						
-						for (CategorySectionModel categorySection : navModel.getCategorySections()) {
+						CATEGORY_SECTION_LOOP: for (CategorySectionModel categorySection : navModel.getCategorySections()) {
+							
+							List<CategoryModel> selectedCategories = categorySection.getSelectedCategories();
+							for (CategoryModel selectedCategory : selectedCategories){
+								if (determineCategoryLevel(selectedCategory)!=NavDepth.CATEGORY){ //fallback to regular categories box if non-top-level category included in categorySection
+									menuItems = new ArrayList<MenuItemData>();	
+									break CATEGORY_SECTION_LOOP;
+								}
+							}
+							
 							MenuItemData sectionTitle = new MenuItemData();
 							sectionTitle.setName(categorySection.getHeadline());
 							menuItems.add(sectionTitle);
-							createCatMenuItems(categorySection.getSelectedCategories(), menuItems, navModel.getUser());
+							createCatMenuItems(selectedCategories, menuItems, navModel.getUser());
 						}
 						
-					} else if(!navModel.getRegularCategories().isEmpty()){
+					}
+					
+					if(menuItems.isEmpty() && !navModel.getRegularCategories().isEmpty()){
 						
 						//Shop By Type header
 						menuItems.add(new MenuItemData(dept.getRegularCategoriesNavHeader()));
@@ -437,7 +448,7 @@ public class MenuBuilderFactory {
 		}
 		
 		// create categories and preference categories box
-		if (!navModel.getCategorySections().isEmpty() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, navModel.getUser())) {
+		if (!navModel.getCategorySections().isEmpty()) {
 
 			MenuBoxData domain = new MenuBoxData();
 			domain.setName(dept.getRegularCategoriesLeftNavBoxHeader());
