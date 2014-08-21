@@ -162,8 +162,7 @@ var FreshDirect = FreshDirect || {};
         $popupBody = $popup.find(".globalnav-popup-content");
     
     // check in order to not reload function if hovered over elements inside same department
-    if($t.find("a").hasClass("opened") && $t.html()==dept){ return; }    
-    dept = $t.html();
+    if($t.find("a").hasClass("opened") && $t.html()==dept){ return; }
     
     animFinished = false;
 
@@ -200,6 +199,9 @@ var FreshDirect = FreshDirect || {};
     //$popupBody.css({'padding-bottom': '3px', 'margin-top': '-3px'});
 
     if($t.hasClass("top-item") || $t.hasClass("top-item-w-sub")){
+    	//sets dept variable in order to check for repeat action
+    	dept = $t.html();
+    	
         // bring up popup content to animate later
         $popupBody.css("top", "-" + $popupBody.outerHeight() + "px");
 
