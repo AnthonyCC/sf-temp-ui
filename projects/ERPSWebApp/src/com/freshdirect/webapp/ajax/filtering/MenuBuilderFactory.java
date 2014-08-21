@@ -225,78 +225,9 @@ public class MenuBuilderFactory {
 		public List<MenuBoxData> buildMenu(List<ProductFilterGroupI> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav){
 			
 			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
-			final Map<NavDepth, ContentNodeModel> thePath = navModel.getNavigationHierarchy();
 			
-			DepartmentModel dept = (DepartmentModel) thePath.get(NavDepth.DEPARTMENT); 
-			String deptId = dept.getContentName();
-			
-			// create superdepartment box
-			final SuperDepartmentModel superDept = navModel.getSuperDepartmentModel();
-			if (superDept != null) {
-				MenuBoxData domain = createSuperDepartmentMenuBox(superDept, navModel, false);
-				// check which department is selected
-				checkSelected(domain, thePath.get(NavDepth.DEPARTMENT).getContentName());
-				menu.add(domain);
-			}
-			
-			// create categories and preference categories box
-			if (!navModel.getCategorySections().isEmpty() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, navModel.getUser())) {
-				
-				MenuBoxData domain = new MenuBoxData();
-				domain.setName(dept.getRegularCategoriesLeftNavBoxHeader());
-				domain.setId(deptId + "_regular");
-				domain.setBoxType(MenuBoxType.CATEGORY);
-				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
-				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
-
-				for (CategorySectionModel categorySection : navModel.getCategorySections()) {
-
-					List<MenuItemData> items = new ArrayList<MenuItemData>();
-					items.add(new MenuItemData(categorySection.getHeadline()));
-					domain.addItems(createCatMenuItems(categorySection.getSelectedCategories(), items, navModel.getUser()));
-
-				}
-
-				menu.add(domain);
-
-			} else if (!navModel.getRegularCategories().isEmpty()) {
-
-				// regular categories
-
-				MenuBoxData domain = new MenuBoxData();
-				domain.setName(dept.getRegularCategoriesLeftNavBoxHeader());
-				domain.setId(deptId + "_regular");
-				domain.setBoxType(MenuBoxType.CATEGORY);
-				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
-				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
-				
-				List<MenuItemData> items = new ArrayList<MenuItemData>();
-				items.add(new MenuItemData(dept.getRegularCategoriesNavHeader()));
-				
-				domain.setItems(createCatMenuItems(navModel.getRegularCategories(), items, navModel.getUser()));
-
-				menu.add(domain);
-			}
-
-			if (!navModel.getPreferenceCategories().isEmpty()) {
-
-				// preference categories
-
-				MenuBoxData domain = new MenuBoxData();
-				domain.setName(dept.getPreferenceCategoriesLeftNavBoxHeader());
-				domain.setId(deptId + "_preference");
-				domain.setBoxType(MenuBoxType.CATEGORY);
-				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
-				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
-				
-				List<MenuItemData> items = new ArrayList<MenuItemData>();
-				items.add(new MenuItemData(dept.getPreferenceCategoriesNavHeader()));
-				
-				domain.setItems(createCatMenuItems(navModel.getPreferenceCategories(), items, navModel.getUser()));
-				
-				menu.add(domain);
-			}
-			
+			createTopLevelBoxes(menu, navModel);
+		
 			return menu;
 		}
 		
@@ -313,61 +244,75 @@ public class MenuBuilderFactory {
 			DepartmentModel dept = (DepartmentModel) thePath.get(NavDepth.DEPARTMENT); 
 			String deptId = dept.getContentName();
 			
-			// create superdepartment box
-			final SuperDepartmentModel superDept = navModel.getSuperDepartmentModel();
-			if (superDept != null) {
-				MenuBoxData domain = createSuperDepartmentMenuBox(superDept, navModel, false);
-				// check which department is selected
-				checkSelected(domain, thePath.get(NavDepth.DEPARTMENT).getContentName());
-				menu.add(domain);
-			}
-			
-			// top popup navigation box
-			if(!navModel.getRegularCategories().isEmpty() || !navModel.getPreferenceCategories().isEmpty()){
+			// determine the box dipslay and selection type (lowest level of navigation should always remain expanded [APPDEV-3814])
+			if(((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories()==null || 
+					   ((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories().size()==0){
 				
-				MenuBoxData domain = new MenuBoxData();
-				domain.setName(dept.getRegularCategoriesLeftNavBoxHeader());
-				domain.setId(deptId);
-				domain.setBoxType(MenuBoxType.CATEGORY);
-				domain.setDisplayType(MenuBoxDisplayType.POPUP);
-				domain.setSelectionType(MenuBoxSelectionType.LINK);
+				createTopLevelBoxes(menu, navModel);
 				
-				List<MenuItemData> menuItems = new ArrayList<MenuItemData>();				
+				for(MenuBoxData domain : menu){
+					checkSelected(domain, thePath.get(NavDepth.CATEGORY).getContentName());				
+				}
 				
-				//create categories and preference categories box
-				if (!navModel.getCategorySections().isEmpty() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, navModel.getUser())) {
+			} else {
+				
+				// create superdepartment box
+				final SuperDepartmentModel superDept = navModel.getSuperDepartmentModel();
+				if (superDept != null) {
+					MenuBoxData domain = createSuperDepartmentMenuBox(superDept, navModel, false);
+					// check which department is selected
+					checkSelected(domain, thePath.get(NavDepth.DEPARTMENT).getContentName());
+					menu.add(domain);
+				}
+				
+				// top popup navigation box
+				if(!navModel.getRegularCategories().isEmpty() || !navModel.getPreferenceCategories().isEmpty()){
 					
-					for (CategorySectionModel categorySection : navModel.getCategorySections()) {
-						MenuItemData sectionTitle = new MenuItemData();
-						sectionTitle.setName(categorySection.getHeadline());
-						menuItems.add(sectionTitle);
-						createCatMenuItems(categorySection.getSelectedCategories(), menuItems, navModel.getUser());
+					MenuBoxData domain = new MenuBoxData();
+					domain.setName(dept.getRegularCategoriesLeftNavBoxHeader());
+					domain.setId(deptId);
+					domain.setBoxType(MenuBoxType.CATEGORY);
+					domain.setDisplayType(MenuBoxDisplayType.POPUP);
+					domain.setSelectionType(MenuBoxSelectionType.LINK);					
+					
+					List<MenuItemData> menuItems = new ArrayList<MenuItemData>();				
+					
+					//create categories and preference categories box
+					if (!navModel.getCategorySections().isEmpty() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, navModel.getUser())) {
+						
+						for (CategorySectionModel categorySection : navModel.getCategorySections()) {
+							MenuItemData sectionTitle = new MenuItemData();
+							sectionTitle.setName(categorySection.getHeadline());
+							menuItems.add(sectionTitle);
+							createCatMenuItems(categorySection.getSelectedCategories(), menuItems, navModel.getUser());
+						}
+						
+					} else if(!navModel.getRegularCategories().isEmpty()){
+						
+						//Shop By Type header
+						menuItems.add(new MenuItemData(dept.getRegularCategoriesNavHeader()));
+						
+						//regular categories
+						createCatMenuItems(navModel.getRegularCategories(), menuItems, navModel.getUser());
 					}
 					
-				} else if(!navModel.getRegularCategories().isEmpty()){
+					if(!navModel.getPreferenceCategories().isEmpty()){
+						
+						//Shop By Preference header
+						menuItems.add(new MenuItemData(dept.getPreferenceCategoriesNavHeader()));
+						
+						//preference categories				
+						createCatMenuItems(navModel.getPreferenceCategories(), menuItems, navModel.getUser());
+					}
 					
-					//Shop By Type header
-					menuItems.add(new MenuItemData(dept.getRegularCategoriesNavHeader()));
+					domain.setItems(menuItems);
+					insertMarkersForSpecialBox(domain, dept.getMaxItemsPerColumn());
+					checkSelected(domain, thePath.get(NavDepth.CATEGORY).getContentName());
 					
-					//regular categories
-					createCatMenuItems(navModel.getRegularCategories(), menuItems, navModel.getUser());
+					menu.add(domain);
 				}
-				
-				if(!navModel.getPreferenceCategories().isEmpty()){
-					
-					//Shop By Preference header
-					menuItems.add(new MenuItemData(dept.getPreferenceCategoriesNavHeader()));
-					
-					//preference categories				
-					createCatMenuItems(navModel.getPreferenceCategories(), menuItems, navModel.getUser());
-				}
-				
-				domain.setItems(menuItems);
-				insertMarkersForSpecialBox(domain, dept.getMaxItemsPerColumn());
-				checkSelected(domain, thePath.get(NavDepth.CATEGORY).getContentName());
-				
-				menu.add(domain);
 			}
+			
 			
 			// sub categories box on category and sub category page
 			if(((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories()!=null && 
@@ -415,10 +360,6 @@ public class MenuBuilderFactory {
 					// in case of hidden category create a header text only box ...
 					menu.add(createHeaderOnlyBox(cat, MenuBoxType.CATEGORY));
 				}
-			} else if(thePath.get(NavDepth.SUB_CATEGORY)==null){
-				// in case of no subcategories display category header text only
-				CategoryModel cat = (CategoryModel)thePath.get(NavDepth.CATEGORY);
-				menu.add(createHeaderOnlyBox(cat, MenuBoxType.CATEGORY));
 			}
 			
 			// sub sub categories box on sub and sub sub categories page (not on special layout)
@@ -461,22 +402,11 @@ public class MenuBuilderFactory {
 					
 					if (items.size() > 1) {
 						menu.add(domain);
-						if(subSubCat!=null){
-							menu.add(createHeaderOnlyBox(subSubCat, MenuBoxType.SUB_SUB_CATEGORY));							
-						}
 					}
 				} else if(thePath.get(NavDepth.SUB_CATEGORY)!=null) {
 					// in case of hidden category create a header text only box ...
 					menu.add(createHeaderOnlyBox(subCat, MenuBoxType.SUB_CATEGORY));
 				}
-			} else if(thePath.get(NavDepth.SUB_CATEGORY)!=null) {
-				// in case of no subcategories display category header text only
-				CategoryModel subCat = (CategoryModel)thePath.get(NavDepth.SUB_CATEGORY);
-				//collapse the last navigation box
-				menu.get(menu.size()-1).setDisplayType(MenuBoxDisplayType.POPUP);
-                menu.get(menu.size()-1).setSelectionType(MenuBoxSelectionType.LINK);
-				//create the new header only box
-				menu.add(createHeaderOnlyBox(subCat, MenuBoxType.SUB_CATEGORY));
 			}
 			
 			if(!nav.isSpecialPage()){
@@ -486,6 +416,87 @@ public class MenuBuilderFactory {
 			
 			return menu;
 			
+		}
+	}
+	
+	private void createTopLevelBoxes(List<MenuBoxData> menu, NavigationModel navModel){
+		
+
+		final Map<NavDepth, ContentNodeModel> thePath = navModel.getNavigationHierarchy();
+		
+		DepartmentModel dept = (DepartmentModel) thePath.get(NavDepth.DEPARTMENT); 
+		String deptId = dept.getContentName();
+		
+		// create superdepartment box
+		final SuperDepartmentModel superDept = navModel.getSuperDepartmentModel();
+		if (superDept != null) {
+			MenuBoxData domain = createSuperDepartmentMenuBox(superDept, navModel, false);
+			// check which department is selected
+			checkSelected(domain, thePath.get(NavDepth.DEPARTMENT).getContentName());
+			menu.add(domain);
+		}
+		
+		// create categories and preference categories box
+		if (!navModel.getCategorySections().isEmpty() && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, navModel.getUser())) {
+
+			MenuBoxData domain = new MenuBoxData();
+			domain.setName(dept.getRegularCategoriesLeftNavBoxHeader());
+			domain.setId(deptId + "_regular");
+			domain.setBoxType(MenuBoxType.CATEGORY);
+			domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+			domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+
+			for (CategorySectionModel categorySection : navModel.getCategorySections()) {
+
+				List<MenuItemData> items = new ArrayList<MenuItemData>();
+				items.add(new MenuItemData(categorySection.getHeadline()));
+				domain.addItems(createCatMenuItems(categorySection.getSelectedCategories(), items, navModel.getUser()));
+
+			}
+
+			menu.add(domain);
+
+		} else if (!navModel.getRegularCategories().isEmpty()) {
+			
+			// regular categories
+
+			MenuBoxData domain = new MenuBoxData();
+			domain.setName(dept.getRegularCategoriesLeftNavBoxHeader());
+			domain.setId(deptId + "_regular");
+			if(!navModel.getPreferenceCategories().isEmpty()){
+				// mimic the regular categories box type in case of preference categories based on requirement [APPDEV-3814]
+				domain.setBoxType(MenuBoxType.DEPARTMENT);
+			}else{
+				domain.setBoxType(MenuBoxType.CATEGORY);				
+			}
+			domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+			domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+
+			List<MenuItemData> items = new ArrayList<MenuItemData>();
+			items.add(new MenuItemData(dept.getRegularCategoriesNavHeader()));
+
+			domain.setItems(createCatMenuItems(navModel.getRegularCategories(), items, navModel.getUser()));
+
+			menu.add(domain);
+		}
+
+		if (!navModel.getPreferenceCategories().isEmpty()) {
+
+			// preference categories
+
+			MenuBoxData domain = new MenuBoxData();
+			domain.setName(dept.getPreferenceCategoriesLeftNavBoxHeader());
+			domain.setId(deptId + "_preference");
+			domain.setBoxType(MenuBoxType.CATEGORY);
+			domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+			domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+
+			List<MenuItemData> items = new ArrayList<MenuItemData>();
+			items.add(new MenuItemData(dept.getPreferenceCategoriesNavHeader()));
+
+			domain.setItems(createCatMenuItems(navModel.getPreferenceCategories(), items, navModel.getUser()));
+
+			menu.add(domain);
 		}
 	}
 	
