@@ -22,7 +22,7 @@ var FreshDirect = FreshDirect || {};
   
   function updateOAS(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query, OAS_POS) {
     var ifr = getIfr(OAS_POS),
-      scriptUrl = OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query);
+        scriptUrl = OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query);
     
 
     if(ifr.contentDocument) {
@@ -61,6 +61,7 @@ var FreshDirect = FreshDirect || {};
     callback:{
       value:function(data) {
         var sitePage;
+
         if (data && data.oasSitePage) {
           sitePage = data.oasSitePage;
         } else {
@@ -71,6 +72,10 @@ var FreshDirect = FreshDirect || {};
           return;
         } else {
           lastSitePage = sitePage;
+        }
+
+        if (data.contentId) {
+          OAS_query = OAS_query.replace(/id=.*?&/, "id="+data.contentId+"&");
         }
 
         listPos.forEach(function (lp) {
