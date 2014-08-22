@@ -23,8 +23,6 @@ import com.freshdirect.fdstore.content.ProductItemFilterI;
 import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.content.browse.filter.BrandFilter;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
-import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.webapp.ajax.browse.data.BrowseDataContext;
 import com.freshdirect.webapp.ajax.browse.data.CategoryData;
 import com.freshdirect.webapp.ajax.browse.data.DataUtil;
@@ -333,7 +331,7 @@ public class MenuBuilderFactory {
 				
 				if (!NavigationUtil.isCategoryHiddenInContext(navModel.getUser(), (CategoryModel)cat)) {
 					MenuBoxData domain = new MenuBoxData();
-					domain.setName(cat.getFullName());
+					domain.setName("");//leave empty
 					domain.setId(cat.getContentName());
 					domain.setBoxType(MenuBoxType.SUB_CATEGORY);
 					if(nav.isPdp() || (thePath.get(NavDepth.SUB_CATEGORY)!=null &&
@@ -383,7 +381,7 @@ public class MenuBuilderFactory {
 				
 				if (!NavigationUtil.isCategoryHiddenInContext(navModel.getUser(), (CategoryModel)subCat)) {
 					MenuBoxData domain = new MenuBoxData();
-					domain.setName(subCat.getFullName());
+					domain.setName("");//leave empty
 					domain.setId(subCat.getContentName());
 					domain.setBoxType(MenuBoxType.SUB_SUB_CATEGORY);
 					if(nav.isPdp()){
