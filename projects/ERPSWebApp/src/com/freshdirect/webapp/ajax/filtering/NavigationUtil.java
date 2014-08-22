@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
@@ -198,7 +199,7 @@ public class NavigationUtil {
 						
 						List<String> paramValues = navigator.getRequestFilterParams().get(param);
 						for(String paramValue : paramValues){
-							selection.add((TagModel) ContentFactory.getInstance().getContentNode(paramValue));							
+							selection.add((TagModel) ContentFactory.getInstance().getContentNode(ContentType.get("Tag"), paramValue));							
 						}
 					}
 				}

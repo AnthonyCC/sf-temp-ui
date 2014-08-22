@@ -101,7 +101,9 @@ public class CmsFilteringFlow {
 		// -- REORDER MENU BOXES, PLACE POPUP TYPE FILTERS BELOW TOP CATEGORIES
 		MenuBuilderFactory.getInstance().reorderMenuBoxes(browseDataContext.getMenuBoxes().getMenuBoxes());
 		
-			
+		// populate browseData with filterLabels
+		BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, browseDataContext.getNavigationModel());
+
 		if(!nav.isPdp()){
 			
 			// -- PAGING --
@@ -225,9 +227,6 @@ public class CmsFilteringFlow {
 		
 		// populate browseData with breadcrumbs
 		BrowseDataBuilderFactory.getInstance().populateWithBreadCrumbAndDesciptiveContent(browseDataContext, navigationModel);
-		
-		// populate browseData with filterLabels
-		BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
 		
 		return browseDataContext;
 	}

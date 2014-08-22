@@ -2,7 +2,6 @@ package com.freshdirect.webapp.ajax.filtering;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -45,6 +44,7 @@ import com.freshdirect.webapp.ajax.browse.data.CarouselData;
 import com.freshdirect.webapp.ajax.browse.data.CategoryData;
 import com.freshdirect.webapp.ajax.browse.data.DescriptiveDataI;
 import com.freshdirect.webapp.ajax.browse.data.MenuBoxData;
+import com.freshdirect.webapp.ajax.browse.data.MenuBoxData.MenuBoxType;
 import com.freshdirect.webapp.ajax.browse.data.MenuItemData;
 import com.freshdirect.webapp.ajax.browse.data.NavDepth;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
@@ -868,11 +868,15 @@ public class BrowseDataBuilderFactory {
 	public void populateWithFilterLabels(BrowseDataContext browseData, NavigationModel navModel){
 		
 		List<ParentData> filterLabels = new ArrayList<ParentData>();
-		
-		for(ProductItemFilterI filter : navModel.getActiveFilters()){
-			filterLabels.add(new ParentData(filter.getParentId(), filter.getId(), filter.getName()));
+		for (MenuBoxData menuBox : navModel.getLeftNav()){
+			if (menuBox!=null && menuBox.getBoxType()==MenuBoxType.FILTER){
+				for (MenuItemData menuItem : menuBox.getItems()){
+					if (menuItem.isSelected()){
+						filterLabels.add(new ParentData(menuBox.getId(), menuItem.getId(), menuItem.getName()));
+					}
+				}
+			}
 		}
-		
 		browseData.getSections().getFilterLabels().setFilterLabels(filterLabels);
 	}
 	
