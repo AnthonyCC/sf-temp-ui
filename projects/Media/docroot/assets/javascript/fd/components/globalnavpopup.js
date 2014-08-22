@@ -161,7 +161,7 @@ var FreshDirect = FreshDirect || {};
         $ghostMenuItem = $ghost.find("[data-id='" + $t.data('id') + "']"),
         $popupBody = $popup.find(".globalnav-popup-content");
     
-    if (!fd.modules.common.mouse.isSlow()) { return; }
+    //if (!fd.modules.common.mouse.isSlow()) { return; }
 
     // check in order to not reload function if hovered over elements inside same department
     if($t.find("a").hasClass("opened") && $t.html()==dept){ return; }
@@ -243,7 +243,8 @@ var FreshDirect = FreshDirect || {};
   function tsubMouseEvent_Leave($popup) {
 	  return function() {
 		  if(!animFinished){
-			  $popup.find(".deptcontainer").remove();
+			  $popup.find(".deptcontainer").html("");
+			  $popup.find(".arrow-down").hide();
 		  };
 		  clearTimeout(popupTimeout);
     
@@ -315,7 +316,7 @@ var FreshDirect = FreshDirect || {};
     // attach event handlers
     $overlay.on('mouseover', close); // attach works only this way in iPad/Safari
     $(document).on('mouseover', trigger, open);
-    $(document).on('mousemove', trigger, open);
+    //$(document).on('mousemove', trigger, open);
     $(document).on('mouseover', subTrigger, openSub);
     $(window).on('resize', function(){ repos($(topnav), $(ghost), $(popup)); });
 
