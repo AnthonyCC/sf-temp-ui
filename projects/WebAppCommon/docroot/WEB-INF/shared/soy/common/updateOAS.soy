@@ -15,6 +15,8 @@ script.src = '{$scriptUrl}';
 script.async = false;
 {literal}
 var done = false;
+var $jq = window.parent.$jq;
+
 script.onload = script.onreadystatechange = function() {
 	if ( !done && (!this.readyState ||
          			this.readyState === "loaded" || this.readyState === "complete") ) {
@@ -24,7 +26,7 @@ script.onload = script.onreadystatechange = function() {
 {/literal}
 				window.OAS_RICH("{$OAS_POS}");
 				window.parent.FreshDirect.updateOAS.done("{$OAS_POS}",document.body.innerHTML);
-{literal}			
+{literal}
 			}
 	       	script.onload = script.onreadystatechange = null;
 		   	if ( head && script.parentNode ) {

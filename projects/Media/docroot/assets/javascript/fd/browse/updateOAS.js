@@ -48,7 +48,9 @@ var FreshDirect = FreshDirect || {};
     // to prevent the cancellation of image downloading, add the content later
     setTimeout(function () {
       node.innerHTML = s;
+      $jq('.oas-cnt:hidden').filter(function() { return !($jq(this).children().is('.emptyOAS')); }).show();
     }, 10);
+    
   };
   
   Object.create(fd.common.signalTarget,{
