@@ -972,40 +972,6 @@ public class MenuBuilderFactory {
 		}
 	}
 	
-	/**
-	 * put popup type filter boxes just below top level category
-	 */
-	public void reorderMenuBoxes(List<MenuBoxData> menu){
-		
-		Iterator<MenuBoxData> it = menu.iterator();
-
-			
-		boolean topCategoryFound = false;
-		int position = 0;
-		while (it.hasNext()) {
-
-			MenuBoxData box = it.next();
-			
-			box.setPosition(Integer.MAX_VALUE);
-			
-			if (!topCategoryFound) {
-				box.setPosition(position++);
-			}
-
-			if (box.getBoxType() == MenuBoxType.CATEGORY) {
-				topCategoryFound = true;
-			}
-
-			if (box.getBoxType() == MenuBoxType.FILTER && (box.getDisplayType() == MenuBoxDisplayType.POPUP || box.getDisplayType() == MenuBoxDisplayType.CENTER_POPUP)
-					&& !box.isMultiGroupBox() && !box.isBrandFilter()) {
-				
-				box.setPosition(position++);
-			}
-		}
-		
-		Collections.sort(menu, DataUtil.MENUBOX_POSITION_COMPARATOR);
-	}
-	
 	public void relocateBrandFilter(List<MenuBoxData> menu, EnumBrandFilterLocation brandFilterLocation){
 		
 		Iterator<MenuBoxData> it = menu.iterator();

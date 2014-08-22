@@ -98,9 +98,6 @@ public class CmsFilteringFlow {
 			MenuBuilderFactory.getInstance().relocateBrandFilter(browseDataContext.getMenuBoxes().getMenuBoxes(),  browseDataContext.getNavigationModel().getBrandFilterLocation());			
 		}
 		
-		// -- REORDER MENU BOXES, PLACE POPUP TYPE FILTERS BELOW TOP CATEGORIES
-		MenuBuilderFactory.getInstance().reorderMenuBoxes(browseDataContext.getMenuBoxes().getMenuBoxes());
-		
 		// populate browseData with filterLabels
 		BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, browseDataContext.getNavigationModel());
 
