@@ -38,7 +38,6 @@
     <div id="content">
       <center class="text10">
       <!-- content lands here -->
-		<script type="text/cjs" data-cjssrc="http://devpromo.freshdirect.com/RealMedia/ads/adstream_mjx.ads/www.freshdirect.com/kitchen/1657369449@SystemMessage,CategoryNote,BrowseTop1,BrowseTop2,BrowseTop3,BrowseBottom1,BrowseBottom2?CosFreeDelTest=&baf=0&brand=&camp=fallcamp2&cart=veg&cohort=C1&county=KINGS&ct=1&cti=&cts=WeeklyTest&depot=&do=346&dp=MKT0072950&dpar=n&dpas=&dpcamp=&ecp=1&ecpoc=29&ecppromo=&enteredCampn=OasDefault%2FHPFeatureTop_SweepStakes%2COasDefault%2FSpecialTopbar_SweepStakes_Week1&expd=0&hv=1&id=kitchen&lotype=h&lozn=560&lu=2&mktpro=&mzid=0000100000&nod=2014-07-24&og=&oim=0&pt=&recipe=true&ref_prog_id=&ret=&state=NY&sub=1.99&sv=1988&szid=0000200201&test=false&tofurkey=&type=home&v=4&win=2&wnbk=&zid=0000200201&zip=11231&zonelevel=true"></script>
 		<div style="margin-bottom: 10px; border-bottom: 1px solid #ccc;">This is some other content</div>
 		
 		<div id="oas_contents">
