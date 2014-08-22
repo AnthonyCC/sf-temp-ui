@@ -700,6 +700,7 @@ section.main .leftnav .menuBox input[type="radio"] {
   display: none;
 }
 
+.ie8 #menupopup input[type="radio"],
 .ie8 section.main .leftnav .menuBox input[type="radio"] {
   display: block;
   width: 0;
