@@ -314,7 +314,7 @@ public class BrowseDataBuilderFactory {
 						Recommendations recommendations = ProductRecommenderUtil.getBrowseCategoryListingPageRecommendations(user, cat);
 						List<ProductModel> products = recommendations.getAllProducts();
 						
-						if (products.size()>0){
+						if (products.size()>0 && !cat.isDisableCategoryYmalRecommender()){
 							data.getCarousels().setCarousel1(createCarouselData(null, "You May Also Like", products, user, EnumEventSource.CSR.getName()));
 						}
 					} catch (FDResourceException e) {
