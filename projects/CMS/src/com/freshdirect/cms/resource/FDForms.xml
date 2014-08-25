@@ -187,6 +187,7 @@
 							<CmsField><attribute>categorySections</attribute></CmsField>
 							<!-- APPDEV-3773 -->
 							<CmsField><attribute>showCatSectionHeaders</attribute></CmsField>
+					        <CmsField><attribute>disableCategoryYmalRecommender</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -492,6 +493,12 @@
 							<CmsField><attribute>middleMedia</attribute></CmsField>
 						</fields>
 					</CmsSection>
+                    <CmsSection>
+                       <title>YMAL RECOMMENDER</title>
+                       <fields>
+                           <CmsField><attribute>disableCategoryYmalRecommender</attribute></CmsField>
+                       </fields>
+                    </CmsSection>
 					<CmsSection>
 						<title>MERCHANT RECOMMENDER</title>
 						<fields>

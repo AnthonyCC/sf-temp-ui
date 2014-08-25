@@ -809,7 +809,7 @@ public class BrowseDataBuilderFactory {
 	/**
 	 * appends carousels using shown products if necessary
 	 */
-	public void appendCarousels(BrowseData browseData, FDSessionUser user, Set<ContentKey> shownProductKeysForRecommender){
+	public void appendCarousels(BrowseData browseData, FDSessionUser user, Set<ContentKey> shownProductKeysForRecommender, boolean disableCategoryYmalRecommender){
 		
 		//Product Listing Page Scarab
 		if (browseData.getCarousels().getCarousel1() == null && shownProductKeysForRecommender.size() > 0) {
@@ -817,7 +817,7 @@ public class BrowseDataBuilderFactory {
 				Recommendations recommendations = ProductRecommenderUtil.getBrowseProductListingPageRecommendations(user, shownProductKeysForRecommender);
 				List<ProductModel> products = recommendations.getAllProducts();
 				
-				if (products.size()>0){
+				if (products.size()>0 && !disableCategoryYmalRecommender){
 					browseData.getCarousels().setCarousel1(createCarouselData(null, "You Might Also Like", products, user, EnumEventSource.CSR.getName()));
 				}
 			} catch (FDResourceException e) {

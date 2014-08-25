@@ -366,4 +366,8 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 	public boolean isShowPopularCategories(){
 		return getAttribute("showPopularCategories", false);
 	}
+	
+	public boolean isDisableCategoryYmalRecommender() {
+		return getAttribute("disableCategoryYmalRecommender", false);
+	}
 }
