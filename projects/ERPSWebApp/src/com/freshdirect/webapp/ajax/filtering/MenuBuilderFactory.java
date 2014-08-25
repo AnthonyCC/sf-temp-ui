@@ -242,6 +242,8 @@ public class MenuBuilderFactory {
 			DepartmentModel dept = (DepartmentModel) thePath.get(NavDepth.DEPARTMENT); 
 			String deptId = dept.getContentName();
 			
+			boolean expandSecondLowestNavBox = ((CategoryModel)navModel.getSelectedContentNodeModel()).isExpandSecondLowestNavigationBox();
+			
 			// determine the box dipslay and selection type (lowest level of navigation should always remain expanded [APPDEV-3814])
 			if(((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories()==null || 
 					   ((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories().size()==0){
@@ -342,7 +344,16 @@ public class MenuBuilderFactory {
 						domain.setSelectionType(MenuBoxSelectionType.LINK);
 					}else{
 						domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
-						domain.setSelectionType(MenuBoxSelectionType.SINGLE);					
+						domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+						
+						if(expandSecondLowestNavBox){ // create expanded top level boxes
+							menu.clear();
+							createTopLevelBoxes(menu, navModel);
+							
+							for(MenuBoxData box : menu){
+								checkSelected(box, thePath.get(NavDepth.CATEGORY).getContentName());				
+							}
+						}
 					}
 					
 					List<MenuItemData> items = new ArrayList<MenuItemData>();
@@ -389,7 +400,16 @@ public class MenuBuilderFactory {
 						domain.setSelectionType(MenuBoxSelectionType.LINK);
 					}else{
 						domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
-						domain.setSelectionType(MenuBoxSelectionType.SINGLE);					
+						domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+						
+						if(expandSecondLowestNavBox){
+							MenuBoxData secondLowestBox = null;
+ 							if(menu.get(menu.size()-1)!=null){
+								secondLowestBox=menu.get(menu.size()-1);
+								secondLowestBox.setDisplayType(MenuBoxDisplayType.SIMPLE);
+								secondLowestBox.setSelectionType(MenuBoxSelectionType.SINGLE);
+							}
+						}
 					}
 					
 					List<MenuItemData> items = new ArrayList<MenuItemData>();
@@ -425,6 +445,20 @@ public class MenuBuilderFactory {
 			
 			return menu;
 			
+		}
+	}
+	
+	public void setSecondLowestLevelBoxType(List<MenuBoxData> menu, CategoryModel cat){
+		
+		boolean expand = cat.isExpandSecondLowestNavigationBox();
+		
+		int catCounter=0;
+		for(MenuBoxData box : menu){
+			if(box.getBoxType()!=MenuBoxType.FILTER){
+				catCounter++;
+			}else if(catCounter > 1){
+				
+			}
 		}
 	}
 	

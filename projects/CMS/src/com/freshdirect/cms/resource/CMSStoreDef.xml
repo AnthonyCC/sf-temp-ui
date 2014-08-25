@@ -279,6 +279,7 @@
             <AttributeDef type="S" name="GLOBAL_MENU_LINK_LABEL" label="Global Menu Link Label"/>
 			<AttributeDef type="B" name="noGroupingByCategory" label="Disable Product Grouping By Category" inheritable="true"/>
 			<AttributeDef type="B" name="showAllByDefault" label="Show All By Default" inheritable="true"/>
+			<AttributeDef type="B" name="expand2ndLowestNavigationBox" label="Show All By Default" inheritable="true"/>
 			<AttributeDef type="B" name="disableAtpFailureRecommendation" label="Disable ATP Failure Recommendation" inheritable="true"/>
 			<EnumDef type="S" name="browseRecommenderType" label="Browse Recommender Type" inheritable="true">
 				<EnumValue value="NONE" label="None"/>
@@ -441,6 +442,7 @@
 			<AttributeDef type="B" name="FAVORITE_ALL_SHOW_PRICE"  label="Favorite All Show Price" inheritable="true" />
 			<AttributeDef type="B" name="noGroupingByCategory" label="Disable Product Grouping By Category" inheritable="true"/>
 			<AttributeDef type="B" name="showAllByDefault" label="Show All By Default" inheritable="true"/>
+			<AttributeDef type="B" name="expand2ndLowestNavigationBox" label="Show All By Default" inheritable="true"/>
 			<AttributeDef type="B" name="disableAtpFailureRecommendation" label="Disable ATP Failure Recommendation" inheritable="true"/>
 			
 			<EnumDef type="S" name="LIST_AS"   label="List As Name" inheritable="true">

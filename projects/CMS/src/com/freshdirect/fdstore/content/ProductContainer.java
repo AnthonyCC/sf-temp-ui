@@ -342,6 +342,10 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 	public boolean isShowAllByDefault(){
 		return getAttribute("showAllByDefault", false);
 	}
+	
+	public boolean isExpandSecondLowestNavigationBox(){
+		return getAttribute("expand2ndLowestNavigationBox", false);
+	}
 
     public List<TagModel> getProductTags() {
         ContentNodeModelUtil.refreshModels(this, "productTags", productTags, false, true);
