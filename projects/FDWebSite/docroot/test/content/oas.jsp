@@ -18,39 +18,80 @@
 		<script type="text/javascript" src="/assets/javascript/postscribe.min.js"></script>
 		<script type="text/javascript">
 		// jQuery used as an example of delaying until load.
+		function oas_loader(afterLoad) {
+			var oasTestSpots = 'SystemMessage,CategoryNote,BrowseTop1,BrowseTop2,BrowseTop3,BrowseBottom1,BrowseBottom2';
+			var oasTestScript = '<script src="http://devpromo.freshdirect.com/RealMedia/ads/adstream_mjx.ads/www.freshdirect.com/kitchen/1657369449@'+oasTestSpots+'?CosFreeDelTest=&baf=0&brand=&camp=fallcamp2&cart=veg&cohort=C1&county=KINGS&ct=1&cti=&cts=WeeklyTest&depot=&do=346&dp=MKT0072950&dpar=n&dpas=&dpcamp=&ecp=1&ecpoc=29&ecppromo=&enteredCampn=OasDefault%2FHPFeatureTop_SweepStakes%2COasDefault%2FSpecialTopbar_SweepStakes_Week1&expd=0&hv=1&id=kitchen&lotype=h&lozn=560&lu=2&mktpro=&mzid=0000100000&nod=2014-07-24&og=&oim=0&pt=&recipe=true&ref_prog_id=&ret=&state=NY&sub=1.99&sv=1988&szid=0000200201&test=false&tofurkey=&type=home&v=4&win=2&wnbk=&zid=0000200201&zip=11231&zonelevel=true"><\/script>';
+			if (afterLoad) {
+				//dynamic id and spots
+				oasTestSpots = $jq('#oasTestSpots').val();
+				oasTestScript = '<script src="http://devpromo.freshdirect.com/RealMedia/ads/adstream_mjx.ads/www.freshdirect.com/'+$jq('#oasTest_dept').val()+'/1498860699@'+oasTestSpots+'?CosFreeDelTest=&baf=0&brand=&camp=fallcamp2&cart=veg&cohort=C1&county=KINGS&ct=1&cti=&cts=WeeklyTest&depot=&do=346&dp=MKT0072950&dpar=n&dpas=&dpcamp=&ecp=1&ecpoc=29&ecppromo=&enteredCampn=OasDefault%2FHPFeatureTop_SweepStakes%2COasDefault%2FSpecialTopbar_SweepStakes_Week1&expd=0&hv=1&id=fro&lotype=h&lozn=560&lu=2&mktpro=&mzid=0000100000&nod=2014-07-24&og=&oim=0&pt=&recipe=true&ref_prog_id=&ret=&state=NY&sub=1.99&sv=1988&szid=0000200201&test=false&tofurkey=&type=home&v=4&win=2&wnbk=&zid=0000200201&zip=11231&zonelevel=true"><\/script>';
+			}
+			postscribe('#oas_contents', oasTestScript, 
+					{
+						done: function() {
+							//empty pre-existing spots (it appends)
+							$jq('#oas_contents').empty();
+							$jq(oasTestSpots.split(',')).each(function(i,e) {
+								var cur = e.trim();
+								if (cur !== '') {
+									$jq('#oas_contents').append('<div style="text-align: left;">'+cur+':</div><div id="oas_'+cur+'"></div>');
+									postscribe('#oas_'+cur, '<script>OAS_RICH("'+cur+'")<\/script>');
+								}
+							});
+						}
+					});
+			
+		}
+		
 		$jq(function() {
-			postscribe('#oas_contents', '<script src="http://devpromo.freshdirect.com/RealMedia/ads/adstream_mjx.ads/www.freshdirect.com/kitchen/1657369449@SystemMessage,CategoryNote,BrowseTop1,BrowseTop2,BrowseTop3,BrowseBottom1,BrowseBottom2?CosFreeDelTest=&baf=0&brand=&camp=fallcamp2&cart=veg&cohort=C1&county=KINGS&ct=1&cti=&cts=WeeklyTest&depot=&do=346&dp=MKT0072950&dpar=n&dpas=&dpcamp=&ecp=1&ecpoc=29&ecppromo=&enteredCampn=OasDefault%2FHPFeatureTop_SweepStakes%2COasDefault%2FSpecialTopbar_SweepStakes_Week1&expd=0&hv=1&id=kitchen&lotype=h&lozn=560&lu=2&mktpro=&mzid=0000100000&nod=2014-07-24&og=&oim=0&pt=&recipe=true&ref_prog_id=&ret=&state=NY&sub=1.99&sv=1988&szid=0000200201&test=false&tofurkey=&type=home&v=4&win=2&wnbk=&zid=0000200201&zip=11231&zonelevel=true"><\/script>', 
-			{
-				done: function() {
-					postscribe('#oas_SystemMessage', '<script>OAS_RICH("SystemMessage")<\/script>');
-					postscribe('#oas_CategoryNote', '<script>OAS_RICH("CategoryNote")<\/script>');
-					postscribe('#oas_CategoryNote', '<script>OAS_RICH("BrowseTop1")<\/script>');
-					postscribe('#oas_CategoryNote', '<script>OAS_RICH("BrowseTop2")<\/script>');
-					postscribe('#oas_CategoryNote', '<script>OAS_RICH("BrowseTop3")<\/script>');
-					postscribe('#oas_CategoryNote', '<script>OAS_RICH("BrowseBottom1")<\/script>');
-					postscribe('#oas_CategoryNote', '<script>OAS_RICH("BrowseBottom2")<\/script>');
-				}
-			});
+			oas_loader();
 		});
 		</script>
+		<style>
+			.testOasCont td, .testOasCont th {
+				font-size: 14px;
+			}
+			.testOasCont th {
+				padding-right: 20px;
+			}
+		</style>
 </head>
 	<body>
     <div id="content">
-      <center class="text10">
+    <center>
       <!-- content lands here -->
-		<div style="margin-bottom: 10px; border-bottom: 1px solid #ccc;">This is some other content</div>
-		
-		<div id="oas_contents">
-			<div id="oas_SystemMessage"></div>
-			<div id="oas_CategoryNote"></div>
-			<div id="oas_BrowseTop1"></div>
-			<div id="oas_BrowseTop2"></div>
-			<div id="oas_BrowseTop3"></div>
-			<div id="oas_BrowseBottom1"></div>
-			<div id="oas_BrowseBottom2"></div>
-		</div>
 		<hr />
-		<div style="margin-top: 10px; border-top: 1px solid #ccc;">This is also some other content</div>
+		<div style="margin-top: 10px; border-top: 1px solid #ccc;" class="testOasCont">
+			<table>
+				<tr>
+					<th rowspan="2" style="font-weight: bold;" width="150px;">Test After Page Has Loaded</th>
+					<td>Fetch OAS from this Id : </td>
+					<td><input id="oasTest_dept" value="fro" style="text-align: center; font-weight: bold;" /></td>
+					<td rowspan="2" valign="middle" style="padding: 10px;">
+						<button id="oasAjaxtest" style="padding: 10px;">Test</button>
+					</td>
+				</tr>
+				<tr>
+					<td>Use these spots : </td>
+					<td><textarea id="oasTestSpots" style="font-weight: bold; font-size: 12px; width: 400px; height: 32px; word-wrap: break-word;">SystemMessage,CategoryNote,BrowseTop1,BrowseTop2,BrowseTop3,BrowseBottom1,BrowseBottom2</textarea></td>
+				</tr>
+			</table>
+			
+			
+		</div>
+		<div style="margin-bottom: 10px; border-bottom: 1px solid #ccc;">This is some other static content</div>
+		
+		<div id="oas_contents"></div>
+		<hr />
+		<div style="margin-top: 10px; border-top: 1px solid #ccc;">This is also some other static content</div>
+		
+		
+		<script type="text/javascript">
+			$jq('#oasAjaxtest').click(function(event) {
+				oas_loader(true);
+			});
+			
+		</script>
 
 
       <!-- content ends above here-->
