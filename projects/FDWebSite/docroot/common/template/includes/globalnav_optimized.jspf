@@ -29,7 +29,7 @@
 				%>FreshDirect.globalnav.showTutorial = false;<%	
 			} else {
 				//only turn on if it's avail to user
-				boolean onNonShowPage = (request.getRequestURI().indexOf("login") != -1);
+				boolean onNonShowPage = (request.getRequestURI().indexOf("login") != -1 || request.getRequestURI().indexOf("quickshop/index_guest.jsp") != -1);
 				if ( ( user.RECOGNIZED == user.getLevel() || user.SIGNED_IN == user.getLevel() ) && !onNonShowPage  && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnavtut2014, (FDUserI)session.getAttribute(SessionName.USER))) {
 					%>FreshDirect.globalnav.showTutorial = true;<%
 					user.setGlobalNavTutorialSeen(true);
