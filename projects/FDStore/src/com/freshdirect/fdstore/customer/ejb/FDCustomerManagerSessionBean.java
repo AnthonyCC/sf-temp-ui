@@ -1116,8 +1116,16 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					if(authModel.isApproved()) {
 						Request request = GatewayAdapter.getAddProfileRequest(paymentMethod);
 						Response response = gateway.addProfile(request);
-						if(response!=null&& response.isRequestProcessed()){
-							paymentMethod.setProfileID(response.getBillingInfo().getPaymentMethod().getBillingProfileID());
+						if(response!=null&& response.isRequestProcessed() && !response.isError()){
+							
+							if(!StringUtil.isEmpty(response.getBillingInfo().getPaymentMethod().getBillingProfileID())) {
+								paymentMethod.setProfileID(response.getBillingInfo().getPaymentMethod().getBillingProfileID());
+							} else {
+								throw new ErpTransactionException(response.getStatusMessage());
+							}
+						} else {
+							
+							throw new ErpTransactionException(response.getStatusMessage());
 						}
 					}else{
 						
