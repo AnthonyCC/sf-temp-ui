@@ -16,6 +16,7 @@ import com.freshdirect.fdstore.coremetrics.builder.PageViewTagInput;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.smartstore.external.certona.CertonaUserContextHolder;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.CoremetricsPopulator;
 import com.freshdirect.webapp.ajax.DataPotatoField;
@@ -55,6 +56,9 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 		
 		try {
 			CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request);
+			CertonaUserContextHolder.initCertonaContextFromCookies(request);
+			CertonaUserContextHolder.setId(navigator.getId());
+			CertonaUserContextHolder.setSearchParam(navigator.getSearchParams());
 			final CmsFilteringFlowResult flow = new CmsFilteringFlow().doFlow(navigator, (FDSessionUser)user);
 			final Map<String, ?> payload = DataPotatoField.digBrowse(flow);
 

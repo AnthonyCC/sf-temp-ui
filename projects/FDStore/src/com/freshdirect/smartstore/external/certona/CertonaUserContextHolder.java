@@ -3,6 +3,9 @@ package com.freshdirect.smartstore.external.certona;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+
 public class CertonaUserContextHolder {
 
 	private static ThreadLocal<CertonaUserContext> certonaUserContext = new ThreadLocal<CertonaUserContextHolder.CertonaUserContext>();
@@ -10,20 +13,20 @@ public class CertonaUserContextHolder {
 	//Hide actual user context object to prevent accidental access "behind ThreadLocal's back"...
 	private static class CertonaUserContext {
 		
-		private String customerId;
-		private String cohort;
+		private String id;
+		private String searchParam;
 		private String trackingId;
 		private String sessionId;
 		private String pageId;
 		private List<String> excludeProductIds;
 		private List<String> recommendedProductIds;
 		
-		public CertonaUserContext(String customerId, String cohort, String trackingId, String sessionId, List<String> excludeProductIds) {
+		public CertonaUserContext(String id, String searchParam, String trackingId, String sessionId, List<String> excludeProductIds) {
 			
-			this.customerId = customerId;
-			this.cohort = cohort;
 			this.trackingId = trackingId;
 			this.sessionId = sessionId;
+			this.id = id;
+			this.searchParam = searchParam;
 			if (excludeProductIds == null) {
 				this.excludeProductIds = new ArrayList<String>();
 			} else{
@@ -33,13 +36,6 @@ public class CertonaUserContextHolder {
 			
 		}
 
-		public String getCustomerId() {
-			return customerId;
-		}
-
-		public void setCustomerId(String customerId) {
-			this.customerId = customerId;
-		}
 
 		public String getTrackingId() {
 			return trackingId;
@@ -81,35 +77,58 @@ public class CertonaUserContextHolder {
 			this.recommendedProductIds = recommendedProductIds;
 		}
 
-		public String getCohort() {
-			return cohort;
+
+		public String getId() {
+			return id;
 		}
 
-		public void setCohort(String cohort) {
-			this.cohort = cohort;
+
+		public void setId(String id) {
+			this.id = id;
 		}
+
+
+		public String getSearchParam() {
+			return searchParam;
+		}
+
+
+		public void setSearchParam(String searchParam) {
+			this.searchParam = searchParam;
+		}
+
 	}
 
-	public static void createContextObject(String customerId, String cohort, String trackingId, String sessionId, List<String> excludeProductIds) {
-		certonaUserContext.set(new CertonaUserContext(customerId, cohort, trackingId, sessionId, excludeProductIds));
+	public static void initCertonaContextFromCookies(HttpServletRequest request) {
+		String trackingId = "";
+		String sessionId = "";
+		Cookie cookies[] = request.getCookies();
+		if (cookies != null && cookies.length > 0) {
+			for (Cookie cookie : cookies) {
+				if ("RES_TRACKINGID".equals(cookie.getName())) {
+					trackingId = cookie.getValue();
+				} else if ("RES_SESSIONID".equals(cookie.getName())) {
+					sessionId = cookie.getValue();
+				}
+			}
+		}
+		CertonaUserContextHolder.createContextObject("", "", trackingId, sessionId, null);
+
 	}
 	
-	public static String getCustomerId() {
-		return getCertonaUserContext().getCustomerId();
+	public static void createContextObject(String id, String searchParam, String trackingId, String sessionId, List<String> excludeProductIds) {
+		
+		if (certonaUserContext.get() == null) {
+			certonaUserContext.set(new CertonaUserContext(id, searchParam, trackingId, sessionId, excludeProductIds));
+		} else {
+			certonaUserContext.get().setTrackingId(trackingId);
+			certonaUserContext.get().setSessionId(sessionId);
+			certonaUserContext.get().setId(id);
+			certonaUserContext.get().setSearchParam(searchParam);
+			certonaUserContext.get().setExcludeProductIds(excludeProductIds);
+		}
 	}
-
-	public static void setCustomerId(String customerId) {
-		getCertonaUserContext().setCustomerId(customerId);
-	}
-
-	public static String getCohort() {
-		return getCertonaUserContext().getCohort();
-	}
-
-	public static void setCohort(String cohort) {
-		getCertonaUserContext().setCohort(cohort);
-	}
-
+	
 	public static String getTrackingId() {
 		return getCertonaUserContext().getTrackingId();
 	}
@@ -150,6 +169,22 @@ public class CertonaUserContextHolder {
 		getCertonaUserContext().setRecommendedProductIds(recommendedProductIds);
 	}
 
+	public static String getId() {
+		return getCertonaUserContext().getId();
+	}
+
+	public static void setId(String id) {
+		getCertonaUserContext().setId(id);
+	}
+
+	public static String getSearchParam() {
+		return getCertonaUserContext().getSearchParam();
+	}
+
+	public static void setSearchParam(String searchParam) {
+		getCertonaUserContext().setSearchParam(searchParam);
+	}
+
 	private static CertonaUserContext getCertonaUserContext() {
 		if (certonaUserContext.get() == null) {
 			certonaUserContext.set(new CertonaUserContext("", "", "", "", null));
@@ -157,5 +192,8 @@ public class CertonaUserContextHolder {
 		} 
 		return certonaUserContext.get();
 	}
-	
+
+	public static void invalidateCertonaUserContext() {
+		certonaUserContext.remove();
+	}
 }

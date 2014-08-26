@@ -48,7 +48,7 @@ public class CmsRecommenderRegistry {
 
 	private void load(boolean forceReload) {
 		ScarabInfrastructure.reload();
-//		CertonaInfrastructure.reload();
+		CertonaInfrastructure.reload();
 		Map<String, RecommendationService> tmpSmartCatVariants = new HashMap<String, RecommendationService>();
 		Set<ContentKey> rss = CmsManager.getInstance().getContentKeysByType(FDContentTypes.RECOMMENDER_STRATEGY);
 		if (smartCatVariants == null) {

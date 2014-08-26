@@ -30,6 +30,7 @@
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@ page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"%>
 <%@ page import="com.freshdirect.smartstore.SessionInput"%>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='bean' prefix='bean'%>
 <%@ taglib uri='logic' prefix='logic'%>
@@ -59,13 +60,13 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 
 	//decrease pagesize to 12 if the user is srch_promoted and got recommendations with this variant [APPDEV-3033]
 	int pageSize = 16;
-	if(user.getIdentity()!=null){
-		Recommendations recomm = FDStoreRecommender.getInstance().getRecommendations(EnumSiteFeature.getEnum("SRCH"), user, new SessionInput(user));
-		boolean searchPromoted = new Boolean(recomm.getVariant().getServiceConfig().get("srch_promoted"));
-		if(searchPromoted && recomm.getProducts()!=null && recomm.getProducts().size()>0){
-			pageSize = 12;
-		}		
-	}
+// 	if(user.getIdentity()!=null){
+// 		Recommendations recomm = FDStoreRecommender.getInstance().getRecommendations(EnumSiteFeature.getEnum("SRCH"), user, new SessionInput(user));
+// 		boolean searchPromoted = new Boolean(recomm.getVariant().getServiceConfig().get("srch_promoted"));
+// 		if(searchPromoted && recomm.getProducts()!=null && recomm.getProducts().size()>0){
+// 			pageSize = 12;
+// 		}		
+// 	}
 	// storing the view settings in the session
 	FilteringNavigator nav = new FilteringNavigator(request,pageSize);
 
@@ -203,7 +204,8 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	%>
 	</fd:ProductGroupRecommender>
 	<% }
-	if (fallBack) {
+	List<String> certonaCohorts = Arrays.asList(FDStoreProperties.getCertonaCohorts().split(";"));
+	if (fallBack && !certonaCohorts.contains(user.getCohortName())) {
 		ProductModel firstProduct = null;		
 		if ( products != null && products.size() > 0 ) {
 			FilteringSortingItem <ProductModel> firstItem = (FilteringSortingItem <ProductModel>)products.get( 0 );

@@ -78,7 +78,7 @@ final public class VariantRegistry {
 	private void load() {
 		try {
 			ScarabInfrastructure.reload();
-//			CertonaInfrastructure.reload();
+			CertonaInfrastructure.reload();
 			EnumSiteFeature.refresh();
 			SmartStoreServiceConfigurationSB sb;
 

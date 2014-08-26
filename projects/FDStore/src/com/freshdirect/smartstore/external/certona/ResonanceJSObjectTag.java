@@ -42,7 +42,7 @@ public class ResonanceJSObjectTag extends SimpleTagSupport {
 		request = (HttpServletRequest)((PageContext) getJspContext()).getRequest();
 
 		if ("init".equals(action)) {
-			assemblyUserCertonaContext();
+			assemblyUserCertonaContext(request);
 		} else {
 			assemblyResonanceTag();
 		}
@@ -251,13 +251,13 @@ public class ResonanceJSObjectTag extends SimpleTagSupport {
 		 * The end...
 		 */
 		
-		out.println("	\"customerid\" : \"" + CertonaUserContextHolder.getCustomerId() + "\",");
-		out.println("	\"cohort\" : \"" + CertonaUserContextHolder.getCohort() + "\",");
-		out.println("	\"segment\" : \"1\"");
+		out.println("	\"customerid\" : \"" + ((user != null && user.getIdentity() != null) ? user.getIdentity().getErpCustomerPK() : "") + "\",");
+		out.println("	\"cohort\" : \"" + (user != null ? user.getCohortName() : "") + "\",");
 
 		if (CertonaUserContextHolder.getPageId() != null && CertonaUserContextHolder.getPageId().length() > 0) {
 			
-			out.println("	\"pageid\" : \"" + CertonaUserContextHolder.getPageId() + "\"");
+			out.println("	\"segment\" : \"1\",");
+			out.println("	\"pageid\" : \"" + CertonaUserContextHolder.getPageId() + "\",");
 			List<String> recommendedProductIds = CertonaUserContextHolder.getRecommendedProductIds();
 			StringBuffer products = new StringBuffer();
 			for (String productId : recommendedProductIds) {
@@ -265,43 +265,23 @@ public class ResonanceJSObjectTag extends SimpleTagSupport {
 			}
 			out.println("	\"recitems\" : \"" + (products.length() > 0 ? products.toString().substring(0, products.toString().length() - 1) : "") + "\"");
 
+		} else {
+			out.println("	\"segment\" : \"1\"");
 		}
 		
 		out.println("};");
 		out.println("</script>");
+		CertonaUserContextHolder.invalidateCertonaUserContext();
 
 	}
 	
-	private void assemblyUserCertonaContext() throws JspException {
+	public static void assemblyUserCertonaContext(HttpServletRequest request) throws JspException {
 		
-		String trackingId = "dummyTrackingId";
-		String sessionId = "dummySessionId";
-		String userId = "";
-		String cohort = "";
-		Cookie cookies[] = request.getCookies();
-		if (cookies != null && cookies.length > 0) {
-			for (Cookie cookie : cookies) {
-				if ("RES_TRACKINGID".equals(cookie.getName())) {
-					trackingId = cookie.getValue();
-				} else if ("RES_SESSIONID".equals(cookie.getName())) {
-					sessionId = cookie.getValue();
-				} else if ("FDUser".equals(cookie.getName())) {
-					
-					try {
-						FDUserI user = FDCustomerManager.recognize(cookie.getValue());
-						if (user != null && user.getIdentity() != null) {
-							userId = user.getIdentity().getErpCustomerPK();
-							cohort = user.getCohortName();
-						}
-					} catch (FDAuthenticationException e) {
-						throw new JspException();
-					} catch (FDResourceException e) {
-						throw new JspException();
-					}
-				}
-			}
-		}
-		CertonaUserContextHolder.createContextObject(userId, cohort, trackingId, sessionId, null);
+		CertonaUserContextHolder.initCertonaContextFromCookies(request);
+		String id = request.getParameter("id") == null ? "" : request.getParameter("id").toString();
+		String searchParam = request.getParameter("searchParams") == null ? "" : request.getParameter("searchParams").toString();
+		CertonaUserContextHolder.setId(id);
+		CertonaUserContextHolder.setSearchParam(searchParam);
 		
 	}
 

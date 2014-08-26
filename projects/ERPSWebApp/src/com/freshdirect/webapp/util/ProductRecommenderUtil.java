@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -222,10 +223,10 @@ public class ProductRecommenderUtil {
 		Recommendations recommendations = null;
 
 		if (user.getIdentity() != null){ //try personal if user is identified
-			recommendations = doRecommend(user, null, EnumSiteFeature.getEnum("SCARAB_PERSONAL"), MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);	
+			recommendations = doRecommend(user, null, EnumSiteFeature.getEnum("BRWS_CAT_LST"), MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);	
 		}
-		
-		if (recommendations == null || recommendations.getAllProducts().size() == 0){ //fallback
+		List<String> certonaCohorts = Arrays.asList(FDStoreProperties.getCertonaCohorts().split(";"));
+		if ((recommendations == null || recommendations.getAllProducts().size() == 0) && !certonaCohorts.contains(user.getCohortName())){ //fallback
 			recommendations = doRecommend(user, null, EnumSiteFeature.getEnum("SCR_FEAT_ITEMS"), MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, contentNode);	
 		}
 		
@@ -238,11 +239,11 @@ public class ProductRecommenderUtil {
 		if (user.getIdentity() != null){ //try personal if user is identified
 			// Round #1 - Get personalized recommendations (Scarab 'Personalized Items')
 			recommendations = doRecommend(user, null,
-				EnumSiteFeature.getEnum("SRCH"),
+				EnumSiteFeature.getEnum("BRWS_PRD_LST"),
 				MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);
 		}
-		
-		if (recommendations == null || recommendations.getAllProducts().size() == 0) {
+		List<String> certonaCohorts = Arrays.asList(FDStoreProperties.getCertonaCohorts().split(";"));
+		if ((recommendations == null || recommendations.getAllProducts().size() == 0) && !certonaCohorts.contains(user.getCohortName())) {
 			// Round #2 - Get YMAL recommendations triggered by the first product from the selection
 			//   (Scarab 'Also Viewed' recommender backfilled with local SmartYMAL)
 			ContentNodeModel currentNode = null;

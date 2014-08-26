@@ -192,13 +192,13 @@ if(weRecommendImgProds.size() > 0) {
 <% if ( isCatPage || isCartConfirmPage ) { %>
 	<%-- display nothing --%>
 <% } else if ( isWineOrRecipe ) { %>
-	<comp:recommenderBox siteFeature="SCR_PERSONAL" />
+	<comp:recommenderBox siteFeature="RIGHT_NAV_PERS" />
 <% } else if ( isDeptPage ) { %>
-	<comp:recommenderBox siteFeature="SCR_FEAT_ITEMS" currentNode="<%= (DepartmentModel)cnm %>" />
+	<comp:recommenderBox siteFeature="RIGHT_NAV_RLTD" currentNode="<%= (DepartmentModel)cnm %>" />
 <% } else if ( isProdPage ) { %>
-	<comp:recommenderBox siteFeature="YMAL_PDTL" currentNode="<%= (ProductModel)cnm %>" />
+	<comp:recommenderBox siteFeature="BRWS_PRD_LST" currentNode="<%= (ProductModel)cnm %>" />
 <% } else { %>
-	<comp:recommenderBox siteFeature="SCR_PERSONAL" />
+	<comp:recommenderBox siteFeature="RIGHT_NAV_PERS" />
 <% } %>
 	
 <p class="product-request"><a href="javascript:pop('/request_product.jsp?department=<%= deptName %>', 400, 585);">Product Request? Click here.</a></p>
