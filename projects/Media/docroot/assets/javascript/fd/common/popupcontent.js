@@ -52,6 +52,14 @@ var FreshDirect = FreshDirect || {};
         this.$overlay.on("mouseover", $.proxy(this.hideDelayed, this));
         this.$overlay.on("mouseout", $.proxy(this.clearHideDelay, this));
         this.$overlay.on("click", this.hideProxy);
+        // kill click event on touch devices
+        this.$overlay.on("touchstart", $.proxy(function (e) {
+          if (this.shown) {
+            e.preventDefault();
+            console.log('click prevented?');
+            this.hideProxy();
+          }
+        }, this));
       }
       if (this.config.placeholder || this.config.lateplaceholder) {
         this.$ghost = $('<div class="popupcontentghost"></div>').appendTo(document.body);
@@ -116,7 +124,7 @@ var FreshDirect = FreshDirect || {};
           if (!this.shown) {
             e.preventDefault();
             console.log('click prevented?');
-            this.showDelayed();
+            this.show();
           }
         }, this));
       }
