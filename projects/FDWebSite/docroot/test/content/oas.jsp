@@ -19,13 +19,20 @@
 		<script type="text/javascript">
 		// jQuery used as an example of delaying until load.
 		function oas_loader(afterLoad) {
+			var OAS_rn = '001234567890', OAS_rns = '1234567890';
+			OAS_rn = new String (Math.random()); OAS_rns = OAS_rn.substring (2, 11);
+			var oasTestParams = 'CosFreeDelTest=&baf=0&brand=&camp=fallcamp2&cart=veg&cohort=C1&county=KINGS&ct=1&cti=&cts=WeeklyTest&depot=&do=346&dp=MKT0072950&dpar=n&dpas=&dpcamp=&ecp=1&ecpoc=29&ecppromo=&enteredCampn=OasDefault%2FHPFeatureTop_SweepStakes%2COasDefault%2FSpecialTopbar_SweepStakes_Week1&expd=0&hv=1&id=kitchen&lotype=h&lozn=560&lu=2&mktpro=&mzid=0000100000&nod=2014-07-24&og=&oim=0&pt=&recipe=true&ref_prog_id=&ret=&state=NY&sub=1.99&sv=1988&szid=0000200201&test=false&tofurkey=&type=home&v=4&win=2&wnbk=&zid=0000200201&zip=11231&zonelevel=true';
+			var oasTestId = 'kitchen';
 			var oasTestSpots = 'SystemMessage,CategoryNote,BrowseTop1,BrowseTop2,BrowseTop3,BrowseBottom1,BrowseBottom2';
-			var oasTestScript = '<script src="http://devpromo.freshdirect.com/RealMedia/ads/adstream_mjx.ads/www.freshdirect.com/kitchen/1657369449@'+oasTestSpots+'?CosFreeDelTest=&baf=0&brand=&camp=fallcamp2&cart=veg&cohort=C1&county=KINGS&ct=1&cti=&cts=WeeklyTest&depot=&do=346&dp=MKT0072950&dpar=n&dpas=&dpcamp=&ecp=1&ecpoc=29&ecppromo=&enteredCampn=OasDefault%2FHPFeatureTop_SweepStakes%2COasDefault%2FSpecialTopbar_SweepStakes_Week1&expd=0&hv=1&id=kitchen&lotype=h&lozn=560&lu=2&mktpro=&mzid=0000100000&nod=2014-07-24&og=&oim=0&pt=&recipe=true&ref_prog_id=&ret=&state=NY&sub=1.99&sv=1988&szid=0000200201&test=false&tofurkey=&type=home&v=4&win=2&wnbk=&zid=0000200201&zip=11231&zonelevel=true"><\/script>';
+			var oasTestURL = 'http://devpromo.freshdirect.com';
 			if (afterLoad) {
 				//dynamic id and spots
+				oasTestURL = $jq('#oasTestURL').val();
+				oasTestId = $jq('#oasTestId').val();
 				oasTestSpots = $jq('#oasTestSpots').val();
-				oasTestScript = '<script src="http://devpromo.freshdirect.com/RealMedia/ads/adstream_mjx.ads/www.freshdirect.com/'+$jq('#oasTest_dept').val()+'/1498860699@'+oasTestSpots+'?CosFreeDelTest=&baf=0&brand=&camp=fallcamp2&cart=veg&cohort=C1&county=KINGS&ct=1&cti=&cts=WeeklyTest&depot=&do=346&dp=MKT0072950&dpar=n&dpas=&dpcamp=&ecp=1&ecpoc=29&ecppromo=&enteredCampn=OasDefault%2FHPFeatureTop_SweepStakes%2COasDefault%2FSpecialTopbar_SweepStakes_Week1&expd=0&hv=1&id=fro&lotype=h&lozn=560&lu=2&mktpro=&mzid=0000100000&nod=2014-07-24&og=&oim=0&pt=&recipe=true&ref_prog_id=&ret=&state=NY&sub=1.99&sv=1988&szid=0000200201&test=false&tofurkey=&type=home&v=4&win=2&wnbk=&zid=0000200201&zip=11231&zonelevel=true"><\/script>';
+				oasTestParams = $jq('#oasTestParams').val();
 			}
+			var oasTestScript = '<script src="'+oasTestURL+'/RealMedia/ads/adstream_mjx.ads/www.freshdirect.com/'+oasTestId+'/1'+OAS_rns+'@'+oasTestSpots+'?'+oasTestParams+'"><\/script>';
 			postscribe('#oas_contents', oasTestScript, 
 					{
 						done: function() {
@@ -60,31 +67,37 @@
     <div id="content">
     <center>
       <!-- content lands here -->
-		<hr />
-		<div style="margin-top: 10px; border-top: 1px solid #ccc;" class="testOasCont">
+		<div style="margin-bottom: 10px;" class="testOasCont">
 			<table>
 				<tr>
-					<th rowspan="2" style="font-weight: bold;" width="150px;">Test After Page Has Loaded</th>
-					<td>Fetch OAS from this Id : </td>
-					<td><input id="oasTest_dept" value="fro" style="text-align: center; font-weight: bold;" /></td>
-					<td rowspan="2" valign="middle" style="padding: 10px;">
-						<button id="oasAjaxtest" style="padding: 10px;">Test</button>
-					</td>
+					<th rowspan="3" style="font-weight: bold;" width="150px;" align="center" valign="top">
+						Test After Page Has Loaded<br /><br />
+						<button id="oasAjaxtest" style="padding: 10px 20px;">Test</button>
+					</th>
+					<td>Use this URL : </td>
+					<td><input id="oasTestURL" value="http://devpromo.freshdirect.com" style="text-align: center; font-weight: bold; width: 250px; font-size: 12px;" /> And this id: <input id="oasTestId" value="fro" style="font-size: 12px; text-align: center; font-weight: bold;" /></td>
 				</tr>
 				<tr>
 					<td>Use these spots : </td>
-					<td><textarea id="oasTestSpots" style="font-weight: bold; font-size: 12px; width: 400px; height: 32px; word-wrap: break-word;">SystemMessage,CategoryNote,BrowseTop1,BrowseTop2,BrowseTop3,BrowseBottom1,BrowseBottom2</textarea></td>
+					<td><textarea id="oasTestSpots" style="font-weight: bold; font-size: 12px; width: 840px; height: 16px; word-wrap: break-word;">SystemMessage,CategoryNote,BrowseTop1,BrowseTop2,BrowseTop3,BrowseBottom1,BrowseBottom2</textarea></td>
+				</tr>
+				<tr>
+					<td>And the params : </td>
+					<td><textarea id="oasTestParams" style="font-weight: bold; font-size: 12px; width: 840px; height: 80px; word-wrap: break-word;">CosFreeDelTest=&baf=0&brand=&camp=fallcamp2&cart=veg&cohort=C1&county=KINGS&ct=1&cti=&cts=WeeklyTest&depot=&do=346&dp=MKT0072950&dpar=n&dpas=&dpcamp=&ecp=1&ecpoc=29&ecppromo=&enteredCampn=OasDefault%2FHPFeatureTop_SweepStakes%2COasDefault%2FSpecialTopbar_SweepStakes_Week1&expd=0&hv=1&id=kitchen&lotype=h&lozn=560&lu=2&mktpro=&mzid=0000100000&nod=2014-07-24&og=&oim=0&pt=&recipe=true&ref_prog_id=&ret=&state=NY&sub=1.99&sv=1988&szid=0000200201&test=false&tofurkey=&type=home&v=4&win=2&wnbk=&zid=0000200201&zip=11231&zonelevel=true</textarea></td>
 				</tr>
 			</table>
 			
 			
 		</div>
-		<div style="margin-bottom: 10px; border-bottom: 1px solid #ccc;">This is some other static content</div>
+		<hr />
+		<div style="margin-bottom: 10px;">This is some other static content</div>
+		<hr />
 		
 		<div id="oas_contents"></div>
-		<hr />
-		<div style="margin-top: 10px; border-top: 1px solid #ccc;">This is also some other static content</div>
 		
+		<hr />
+		<div style="margin-top: 10px;">This is also some other static content</div>
+		<hr />
 		
 		<script type="text/javascript">
 			$jq('#oasAjaxtest').click(function(event) {
