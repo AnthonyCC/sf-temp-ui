@@ -2234,7 +2234,7 @@
 				<DestinationDef contentType="Brand"/>
 			</RelationshipDef>
 			<!-- filter combination-->
-			<RelationshipDef name="filter" cardinality="Many" label="Filters">
+			<RelationshipDef name="filters" cardinality="Many" label="Filters">
 				<DestinationDef contentType="ProductFilter"/>
 			</RelationshipDef>
 		</RelationshipDefs>
