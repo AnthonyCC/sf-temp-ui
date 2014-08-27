@@ -489,7 +489,8 @@ function realigner_superdept($topnav, tarDim, navDim, $subDeptsRef, isRightOfNav
 	gradDim.right.start = Math.floor(possibleOffset + subDeptsDimNoSpacing.width+rightGradientStartOffset);
 	gradDim.right.end = possibleOffset + subDeptsDimNoSpacing.width+rightGradientStartOffset + 60;
 		
-	//offet right side to quick-fix gradient being off in IE sometimes
+	//offet to quick-fix gradient being off in IE sometimes (or zoomed in chrome)
+	gradDim.left.start = gradDim.left.start + 7;
 	gradDim.right.start = gradDim.right.start - 7;
 
 	if (gradDim.left.active && gradDim.right.active) { //both sides
