@@ -115,7 +115,8 @@ public class CmsFilteringFlow {
 			//only display recommenders if on last page
 			PagerData pagerData = browseData.getPager();
 			if (pagerData.isAll() || pagerData.getActivePage() == pagerData.getPageCount()){
-				BrowseDataBuilderFactory.getInstance().appendCarousels(browseData, user, shownProductKeysForRecommender, ((ProductContainer) browseDataContext.getCurrentContainer()).isDisableCategoryYmalRecommender());
+                boolean disableCategoryYmalRecommender = browseDataContext.getCurrentContainer() instanceof ProductContainer && ((ProductContainer) browseDataContext.getCurrentContainer()).isDisableCategoryYmalRecommender();
+				BrowseDataBuilderFactory.getInstance().appendCarousels(browseData, user, shownProductKeysForRecommender, disableCategoryYmalRecommender);
 			} else { //remove if already added
 				CarouselDataCointainer carousels = browseData.getCarousels();
 				carousels.setCarousel1(null);
