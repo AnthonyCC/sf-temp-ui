@@ -1330,12 +1330,14 @@ public class Product {
     public boolean isAlcoholProduct() {
         boolean result = false;
         CategoryModel cat = (CategoryModel) product.getProductModel().getParentNode();
-        if (cat != null) {
-            result = cat.isHavingBeer();
+        FDProduct fdProd = product.getFDProduct();
+        if (cat != null && fdProd != null) {
+            result = cat.isHavingBeer() ||  fdProd.isAlcohol(); // Either CMS Flag or SAP Flag is enabled for alcohol indicator
         }
         return result;
     }
-
+    
+    
     public boolean isAvailable() {
         return !product.getProductModel().isUnavailable();
     }
