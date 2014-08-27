@@ -1,4 +1,4 @@
-/*global jQuery,common*/
+/*global jQuery,common,postscribe*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
@@ -7,52 +7,26 @@ var FreshDirect = FreshDirect || {};
   var listPos = ['CategoryNote', 'BrowseTop1', 'BrowseTop2', 'BrowseTop3', 'BrowseBottom1', 'BrowseBottom2'];
   var lastSitePage = null;
   
-  function getIfr(listPos){
-    var ifr = document.getElementById(OAS_UPDATER+listPos);
-    if(!ifr) {
-      ifr = document.createElement('IFRAME');
-      ifr.id=OAS_UPDATER+listPos;
-      ifr.src="about:blank";
-      ifr.style.display="none";
-      document.body.appendChild(ifr);
-    }
-
-    return ifr;
-  }
-  
-  function updateOAS(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query, OAS_POS) {
-    var ifr = getIfr(OAS_POS),
-        scriptUrl = OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query);
+  function updateOAS(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query) {
+    var scriptUrl = OAS_SCRIPT_URL(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos.join(','), OAS_query);
     
-
-    if(ifr.contentDocument) {
-      var html = common.updateOAS({
-        scriptUrl:scriptUrl,
-        OAS_POS:OAS_POS
-      });
-      ifr.contentDocument.write(html);
-      ifr.contentDocument.close();
-    }
-    
+    postscribe(document.body, '<script src="'+scriptUrl+'"></script>', {
+        done: function () {
+          done(OAS_listpos);
+        }
+    });
   }
 
-  var done = function(pos,s) {  
-    var node = document.getElementById(pos) || document.getElementById('oas_b_'+pos);
+  function done(listPos) {
+    listPos.forEach(function (pos) {
+      var cnt = $jq("#oas_b_"+pos);
+      if (cnt.size()) {
+        cnt.html('');
+        postscribe(cnt[0], '<script>OAS_RICH("'+pos+'");</script>');
+      }
+    });
+  }
 
-    // remove iframe
-    var ifr = document.getElementById(OAS_UPDATER+pos);
-    if (ifr) {
-      ifr.parentNode.removeChild(ifr);
-    }
-
-    // to prevent the cancellation of image downloading, add the content later
-    setTimeout(function () {
-      node.innerHTML = s;
-      $jq('.oas-cnt:hidden').filter(function() { return !($jq(this).children().is('.emptyOAS')); }).show();
-    }, 10);
-    
-  };
-  
   Object.create(fd.common.signalTarget,{
     allowNull:{
       value:true
@@ -80,13 +54,7 @@ var FreshDirect = FreshDirect || {};
           OAS_query = OAS_query.replace(/id=.*?&/, "id="+data.contentId+"&");
         }
 
-        listPos.forEach(function (lp) {
-          try {
-            updateOAS(OAS_url, sitePage, OAS_rns, lp, OAS_query, lp);
-          } catch (e) {
-            // console.log('OAS update failed: '+e);
-          }
-        });
+        updateOAS(OAS_url, sitePage, OAS_rns, listPos, OAS_query);
       }
     }
   }).listen();
