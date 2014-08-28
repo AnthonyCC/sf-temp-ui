@@ -79,10 +79,17 @@ var FreshDirect = FreshDirect || {};
         $popup = $(popup),
         $popupBody = $(popup).find(".globalnav-popup-content"),
         $content = $("[data-component='globalnav-popup-body'][data-id='"+ $t.data('id') +"']").children().first();
+        
+    //closes popup when cursor is taken away on Sub Dept
+    $(".globalnav-popup").mouseover(function(event) {
+    	var target = $( event.target );
+    	if(target.hasClass("globalnav-popup")){ close(e); }
+    });
     
     // check in order to not reload function if hovered over elements inside same department
     if($t.find(".arrow-down").is(":visible") && $t.find("a").html()==subDept){ return; }    
     subDept = $t.find("a").html();
+    
     
     animFinished = false;
 
