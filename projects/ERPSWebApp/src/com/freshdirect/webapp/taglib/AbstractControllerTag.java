@@ -75,7 +75,7 @@ public abstract class AbstractControllerTag extends com.freshdirect.framework.we
 		ActionResult actionResult = new ActionResult();
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		
-		if ("POST".equalsIgnoreCase(request.getMethod()) || "ordermobilepref".equals(request.getParameter("actionName"))) {
+		if ("POST".equalsIgnoreCase(request.getMethod()) || "ordermobilepref".equals(request.getParameter("actionName"))|| "ordersmsalerts".equals(request.getParameter("actionName"))) {
 			boolean proceed = this.performAction(request, actionResult);
 			if (!proceed) {
 				return SKIP_BODY;

@@ -238,6 +238,7 @@ import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.sap.command.SapCartonInfoForSale;
 import com.freshdirect.sap.ejb.SapException;
+import com.freshdirect.sms.SmsPrefereceFlag;
 import com.freshdirect.temails.TEmailRuntimeException;
 
 import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
@@ -6734,11 +6735,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}	
 	
-	public void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery) throws FDResourceException {
+	public void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery,
+			String orderNotices, String orderExceptions, String offers, String partnerMessages) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			FDUserDAO.storeMobilePreferences(conn, customerId, mobileNumber, textOffers, textDelivery);
+			FDUserDAO.storeMobilePreferences(conn, customerId, mobileNumber, textOffers, textDelivery,orderNotices, orderExceptions, offers, partnerMessages);
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
@@ -6763,6 +6765,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			conn = getConnection();
 			FDUserDAO.storeMobilePreferencesNoThanks(conn, customerId);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public void storeSmsPreferencesNoThanks(String customerId) throws FDResourceException{
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDUserDAO.storeSmsPreferences(conn, customerId,SmsPrefereceFlag.NO_THANKS.getName());
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
@@ -7397,6 +7411,20 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(e);
 		}
 		return _packageModel;
+	}
+	
+	public void storeSmsPrefereceFlag(String CustomerId, String flag)throws FDResourceException{
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDUserDAO.storeSmsPreferences(conn,CustomerId,flag);
+		}catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+		
+		
 	}
 		
 }

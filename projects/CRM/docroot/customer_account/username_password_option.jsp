@@ -1,3 +1,4 @@
+<%@ page import='com.freshdirect.common.customer.*,com.freshdirect.fdstore.*,com.freshdirect.delivery.sms.*,com.freshdirect.sms.*' %>
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="crm" prefix="crm" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
@@ -59,11 +60,23 @@
                         <td align="right">Mobile number:&nbsp;&nbsp;</td>
                         <td><input type="text" class="input_text" style="width: 200px;" name="mobile_number" value="<%= customerInfo.getMobileNumber() != null?customerInfo.getMobileNumber().getPhone():"" %>"><fd:ErrorHandler result="<%=result%>" name="mobile_number" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
                     </tr>
-					<tr>
+					<%-- <tr>
                         <td colspan="2"><input class="radio" type="checkbox" name="text_delivery" value="Y" <%=customerInfo.isDelNotification() ? "checked":""%>> Yes please notify me via text message with important information about my delivery.</td>
                     </tr>
 					<tr valign="top">
 						<td colspan="2"><input class="radio" type="checkbox" name="text_offers" value="Y" <%=customerInfo.isOffNotification() ? "checked":""%>/>Yes please notiofy me about <b>offers, discounts</b> and <b>promotions</b> from time to time.</td>
+					</tr> --%>
+					<tr>
+                        <td colspan="2"><input class="radio" type="checkbox" name="order_notices" value="Y" <%=customerInfo.getOrderNotices().equals(EnumSMSAlertStatus.NONE.value()) ? "" : "checked"%>/>&nbsp;Order Notices</td>
+                    </tr>
+					<tr valign="top">
+						<td colspan="2"><input class="radio" type="checkbox" name="order_exceptions" value="Y" <%=customerInfo.getOrderExceptions().equals(EnumSMSAlertStatus.NONE.value()) ? "" : "checked"%>/>&nbsp;Order Exceptions</td>
+					</tr>
+					<tr valign="top">
+						<td colspan="2"><input class="radio" type="checkbox" name="offers" value="Y" <%=customerInfo.getOffers().equals(EnumSMSAlertStatus.NONE.value()) ? "" : "checked"%>/>&nbsp;Offers</td>
+					</tr>
+					<tr valign="top">
+						<td colspan="2"><input class="radio" type="checkbox" name="partner_nessages" value="Y" <%=customerInfo.getPartnerMessages().equals(EnumSMSAlertStatus.NONE.value()) ? "" : "checked"%>/>&nbsp;Partner Messages</td>
 					</tr>
 					<tr>
                         <td colspan="2"><br><b>Go Green:</b><hr class="black1px"></td>

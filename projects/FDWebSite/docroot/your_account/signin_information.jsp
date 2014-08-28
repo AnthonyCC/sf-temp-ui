@@ -1,5 +1,5 @@
 <%@ page import="java.text.MessageFormat" %>
-<%@ page import='com.freshdirect.common.customer.*,com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.common.customer.*,com.freshdirect.fdstore.*,com.freshdirect.delivery.sms.*,com.freshdirect.sms.*' %>
 <%@ page import ='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -46,6 +46,55 @@ final int W_YA_SIGNIN_INFO = 970;
 			}
 		}	
 		</script>
+		
+		<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
+					<script language="javascript">
+						function curvyCornersHelper(elemId, settingsObj) {
+							if (document.getElementById(elemId)) {
+								var temp = new curvyCorners(settingsObj, document.getElementById(elemId)).applyCornersToAll();
+							}
+						}
+						
+						var ccSettings = {
+							tl: { radius: 6 },
+							tr: { radius: 6 },
+							bl: { radius: 6 },
+							br: { radius: 6 },
+							topColour: "#FFFFFF",
+							bottomColour: "#FFFFFF",
+							antiAlias: true,
+							autoPad: true
+						};
+	
+						/* display an overlay containing a remote page */
+						function doRemoteOverlay(olURL) {
+							var olURL = olURL || '';
+							if (olURL == '') { return false; }
+					
+							 Modalbox.show(olURL, {
+		                        loadingString: 'Loading Preview...',
+		                        title: ' ',
+		                        overlayOpacity: .80,
+		                        width: 750,
+		                        centered: true,
+		                        method: 'post',
+		                        closeValue: '<img src="/media/editorial/site_access/images/round_x.gif" />',
+		                        afterLoad: function() {
+                                       $('MB_frame').style.border = '1px solid #CCCCCC';
+                                       $('MB_header').style.border = '0px solid #CCCCCC';
+                                       $('MB_header').style.display = 'block';
+                                       window.scrollTo(0,0);
+                                       $('MB_window').style.width = '750';
+                                       $('MB_window').style.height = 'auto';
+                                       $('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
+                                       $('MB_content').style.padding = '0px';
+
+                                       curvyCornersHelper('MB_frame', ccSettings);
+		                        },
+		                        afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
+			                });
+						}
+				</script>
 		
 <fd:RegistrationController actionName='<%=request.getParameter("actionName")%>' result='result'>
 
@@ -207,6 +256,19 @@ if (request.getParameter("employeeId") != null) {
 	boolean text_delivery = cm.isDeliveryNotification();
 	if(request.getParameter("text_delivery") != null)
 		text_delivery = "Y".equals(request.getParameter("text_delivery"))?true:false;
+	
+	boolean order_notices=cm.getOrderNotices().equals(EnumSMSAlertStatus.NONE)?false:true;
+	if(request.getParameter("order_notices") != null)
+		order_notices = "Y".equals(request.getParameter("order_notices"))?true:false;
+	boolean order_exceptions=cm.getOrderExceptions().equals(EnumSMSAlertStatus.NONE)?false:true;
+	if(request.getParameter("order_exceptions") != null)
+		order_exceptions = "Y".equals(request.getParameter("order_exceptions"))?true:false;
+	boolean offers=cm.getOffers().equals(EnumSMSAlertStatus.NONE)?false:true;
+	if(request.getParameter("offers") != null)
+		offers = "Y".equals(request.getParameter("offers"))?true:false;
+	boolean partner_messages=cm.getPartnerMessages().equals(EnumSMSAlertStatus.NONE)?false:true;
+	if(request.getParameter("partner_messages") != null)
+		partner_messages = "Y".equals(request.getParameter("partner_messages"))?true:false;
 	if(request.getParameter("mobile_number") != null)
 		mobile_number = request.getParameter("mobile_number");
 	boolean go_green = cm.isGoGreen();
@@ -525,12 +587,27 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 
 <!-- mobile preferences-->
 <form name="update_email_preference" method="post">
-	<input type="hidden" name="actionName" value="mobilepreferences">	
+	<input type="hidden" name="actionName" value="mobilepreferences">
+	<input type="hidden" name="order_notice_existing" value="<%=order_notices%>">
+	<input type="hidden" name="order_exception_existing" value="<%=order_exceptions%>">
+	<input type="hidden" name="offer_existing" value="<%=offers%>">
+	<input type="hidden" name="partner_existing" value="<%=partner_messages%>">	
 	<tr>
 		<td colspan="6"><br><br>
 			<img src="/media_stat/images/navigation/mobile_preferences.gif" border="0" alt="MOBILE PREFERENCES"><br>
 			<img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"><br>
 		</td>
+	</tr>
+	<tr>
+	<td colspan="4" align="left" style="padding-right:5px;" class="text12"><b>Want to know <i>EXACTLY</i> when we&#146;re coming?</b> Sign up for SMS text messages updates now and get notified of all relevant information about your delivery or even get exclusive offers from us. 
+		You may opt-out at any time by sending STOP to 37374 or simply unchecking all the alert types below.</td>
+	</tr>
+	<tr><td colspan="6">&nbsp;</td></tr>
+	<tr>
+	<td colspan="4" align="left" style="padding-right:5px;" class="text12">Messages will be sent to the following mobile number:</td>
+	</tr>
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="left" colspan="6"><FONT class="text10" style="color:gray;font-style:italic;">By signing up you agree to the <a href="#" onclick="doRemoteOverlay('terms.jsp');"> Terms and Conditions </a></FONT></td>
 	</tr>
 	<tr>	
 	<td align="right" valign="top" colspan="6"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_email_preference" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></td>
@@ -542,7 +619,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 </tr> 
 	<tr><td colspan="6">&nbsp;</td></tr>
 	<tr><td colspan="6"><fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
-	<tr valign="top">
+	<%-- <tr valign="top">
 		<td align="right" style="padding-top:5px; padding-right:5px;"><input class="radio" type="checkbox" name="text_delivery" value="Y" <%=text_delivery ? "checked":""%>></td>
 		<td colspan="4" style="padding-top:5px;" class="text12">Yes please notify me via text message with important information about my delivery.<br><br/>
 		</td>
@@ -552,6 +629,94 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="text_offers" value="Y" <%=text_offers ? "checked":""%>></td>
 		<td colspan="4" class="text12">Yes please notify me about <b>offers, discounts</b> and <b>promotions</b> from time to time.<br/><br/><br/></td>
 		<td></td>
+	</tr>--%>
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="order_notices" value="Y" <%=order_notices ? "checked":""%>></td>
+		<td colspan="4" class="text12bold">FreshDirect Order Notices</td>
+		<td></td>
+	</tr> 
+	<tr valign="top">
+		<td  align="right" colspan="5" style="padding-left: 90px;">
+		<table  border="0" cellpadding="0" cellspacing="0" >
+			<tr valign="top" ><td  align="left" style="width: 100%">
+			<div class="accordion"><input type="checkbox" id="order_notices"> 
+				<label for="order_notices" class="text12bold">Examples</label>
+				<div class="text12"   id="article" align="left">
+					<strong>Estimated Time of Delivery </strong> On the day your order is delivered have your 2-hour delivery window narrowed down to 1 hour. Less time waiting! 
+					<br/><br/><strong>You&#146;re Next! </strong>Receive an alert when you are the next customer on our driver&#146;s route. Your food is on the way! 
+				<br/><br/><br/>
+				</div>
+			</div>
+			</td></tr>
+			</table>
+		</td>
+	</tr>
+
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="order_exceptions" value="Y" <%=order_exceptions ? "checked":""%>></td>
+		<td colspan="4" class="text12bold">FreshDirect Order Exceptions</td>
+		<td></td>
+	</tr>
+	<tr valign="top">
+		<td  align="right" colspan="5" style="padding-left: 90px;">
+		<table  border="0" cellpadding="0" cellspacing="0" >
+			<tr valign="top" ><td  align="left" style="width: 100%">
+			<div class="accordion"><input type="checkbox" id="order_exceptions"> 
+				<label for="order_exceptions" class="text12bold">Examples</label>
+				<div class="text12"   id="article1" align="left">
+					<strong>Late</strong> Know right away if your order will be late.
+					<br/><br/>
+					<strong>Cancellation</strong> Be alerted when your order has to be cancelled because of unforeseen circumstances. 
+					<br/><br/>
+					<strong>Delivery Attempt </strong> Receive an alert when an unsuccessful delivery attempt is made. 
+					<br/><br/>
+					<strong>Unattended/Doorman</strong> Know when your order has been left for you at your preferred location (suburban areas only) or with your doorman
+					<br/><br/><br/>
+				</div>
+			</div>
+			</td></tr>
+			</table>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="offers" value="Y" <%=offers ? "checked":""%>></td>
+		<td colspan="4" class="text12bold">FreshDirect Offers</td>
+		<td></td>
+	</tr>
+	<tr valign="top">
+		<td  align="right" colspan="3" style="padding-left: 90px;">
+		<table  border="0" cellpadding="0" cellspacing="0" >
+			<tr valign="top" ><td  align="left" style="width: 100%">
+			<div class="accordion"><input type="checkbox" id="offers"> 
+				<label for="offers" class="text12bold">Description</label>
+				<div class="text12"   id="article2" align="left">
+					Get exclusive discounts, free delivery promotions, advance notices on sales and more! 
+				<br/><br/><br/>
+				</div>
+			</div>
+			</td></tr>
+			</table>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="partner_messages" value="Y" <%=partner_messages ? "checked":""%>></td>
+		<td colspan="4" class="text12bold">FreshDirect Partner Messages</td>
+		<td></td>
+	</tr>
+	<tr valign="top">
+		<td  align="right" colspan="3" style="padding-left: 90px;">
+		<table  border="0" cellpadding="0" cellspacing="0" >
+			<tr valign="top" ><td  align="left" style="width: 100%">
+			<div class="accordion"><input type="checkbox" id="partner_messages"> 
+				<label for="partner_messages" class="text12bold">Description</label>
+				<div class="text12"   id="article3" align="left">
+					Get relevant exclusive promotions, news, discounts and information from FreshDirect trusted partners
+				<br/><br/><br/>
+				</div>
+			</div>
+			</td></tr>
+			</table>
+		</td>
 	</tr>
 	<tr valign="top">
 		<td style="padding-right: 5px;" align="left" colspan="6"><FONT class="text9" style="color:gray;font-style:italic;">* Standard text messaging rate apply</FONT></td>
@@ -605,6 +770,7 @@ FreshDirect.PhoneValidator.register(document.getElementById("uci_cellPhone"));
 	</td>
 </tr>
 </table>
+
 </fd:RegistrationController>
 </tmpl:put>
 </tmpl:insert>

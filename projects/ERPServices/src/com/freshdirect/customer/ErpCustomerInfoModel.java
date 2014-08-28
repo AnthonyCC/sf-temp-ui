@@ -12,6 +12,7 @@ package com.freshdirect.customer;
 import java.util.Date;
 
 import com.freshdirect.framework.core.*;
+import com.freshdirect.sms.EnumSMSAlertStatus;
 import com.freshdirect.common.address.*;
 
 /**
@@ -72,7 +73,6 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	private boolean deliveryNotification;
 	private boolean offersNotification;
 	private boolean goGreen;
-	
 	/* APPDEV-2475 DP T&C */
 	private int dpTcViewCount;
 	private Date dpTcAgreeDate;
@@ -81,6 +81,12 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	private int numOfEmployees;
 	private String secondEmailAddress;
 	
+	// SMS Alerts 
+	private EnumSMSAlertStatus orderNotices;
+	private EnumSMSAlertStatus orderExceptions;
+	private EnumSMSAlertStatus offers;
+	private EnumSMSAlertStatus partnerMessages;
+	private String smsPreferenceflag;
 
 	public PhoneNumber getMobileNumber() {
 		return mobileNumber;
@@ -356,6 +362,46 @@ public class ErpCustomerInfoModel extends ModelSupport {
 
 	public void setSecondEmailAddress(String secondEmailAddress) {
 		this.secondEmailAddress = secondEmailAddress;
+	}
+
+	public String getSmsPreferenceflag() {
+		return smsPreferenceflag;
+	}
+
+	public void setSmsPreferenceflag(String smsPreferenceflag) {
+		this.smsPreferenceflag = smsPreferenceflag;
+	}
+
+	public EnumSMSAlertStatus getOrderNotices() {
+		return orderNotices;
+	}
+
+	public void setOrderNotices(EnumSMSAlertStatus orderNotices) {
+		this.orderNotices = orderNotices;
+	}
+
+	public EnumSMSAlertStatus getOrderExceptions() {
+		return orderExceptions;
+	}
+
+	public void setOrderExceptions(EnumSMSAlertStatus orderExceptions) {
+		this.orderExceptions = orderExceptions;
+	}
+
+	public EnumSMSAlertStatus getOffers() {
+		return offers;
+	}
+
+	public void setOffers(EnumSMSAlertStatus offers) {
+		this.offers = offers;
+	}
+
+	public EnumSMSAlertStatus getPartnerMessages() {
+		return partnerMessages;
+	}
+
+	public void setPartnerMessages(EnumSMSAlertStatus partnerMessages) {
+		this.partnerMessages = partnerMessages;
 	}
 
 }

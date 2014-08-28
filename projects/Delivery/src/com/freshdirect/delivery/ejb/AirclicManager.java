@@ -17,6 +17,8 @@ import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.naming.NamingException;
 
+import org.apache.log.Logger;
+
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.delivery.DlvResourceException;
@@ -34,6 +36,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.sms.CrmSmsDisplayInfo;
 
 public class AirclicManager {
 	private final ServiceLocator serviceLocator;
@@ -322,5 +325,22 @@ public class AirclicManager {
 			} catch (DlvResourceException e) {				
 				throw new FDResourceException(e, "Cannot talk to the database");
 			} 
+		}
+		
+		//Add a method to get the smsMessage data
+		public List<CrmSmsDisplayInfo> getSmsMessages(String orderId) throws FDResourceException{
+			List<CrmSmsDisplayInfo> smsInfo=null;
+			try {
+				AirclicManagerSB sb = getAirclicManagerHome().create();
+				smsInfo=sb.getSmsInfo(orderId);
+			} catch (CreateException e) {
+				throw new FDResourceException(e, "Cannot create SessionBean");
+			} catch (RemoteException e) {
+				throw new FDResourceException(e, "Cannot talk to the SessionBean");
+			} catch (DlvResourceException e) {				
+				throw new FDResourceException(e, "Cannot talk to the database");
+			}
+			
+			return smsInfo;
 		}
 	}

@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.delivery.constants.EnumDeliveryMenuOption;
+import com.freshdirect.delivery.sms.SMSAlertManager;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
@@ -45,7 +46,9 @@ public class ExternalInterfaceController extends BaseController {
     
     private static final String ACTION_SEND_IVREMAIL = "sendIVREmail";
 
-    private static final String ACTION_GET_IVR_CALLLOG = "getIVRCallLog";        
+    private static final String ACTION_GET_IVR_CALLLOG = "getIVRCallLog";
+    
+    private static final String ACTION_GET_SMS_MESSAGE_RELAY="smsMessageRelay";
  
         
     protected boolean validateUser() {
@@ -122,6 +125,27 @@ public class ExternalInterfaceController extends BaseController {
 	  	        	responseMessage = new Message();
 	  	        	responseMessage.addErrorMessage("T002 Failed.");
 	     	    }   
+    		} else if(ACTION_GET_SMS_MESSAGE_RELAY.equals(action)){
+    			
+    			try{
+    				// Call SmsAlertsManager with the parameters of the request.
+    				String mobileNumber=request.getParameter("sender");
+    				String shortCode= request.getParameter("code");
+    				String carrierName=request.getParameter("carrier");
+    				String receivedDate=request.getParameter("received");
+    				String message = request.getParameter("text");
+    				SMSAlertManager smsAlertManager = SMSAlertManager.getInstance();
+    				smsAlertManager.captureMessageRelayed(mobileNumber, shortCode, carrierName, receivedDate, message);
+    				responseMessage = Message.createSuccessMessage("T003 Successfull.");
+    			} catch(Exception e) {
+	        		e.printStackTrace();
+	        		LOGGER.info("T003_EXP: Unable to save SMS Message Relay received ");
+	        	}
+    			if(responseMessage == null) {
+	  	        	LOGGER.info("T003: Failed SMS Message Relay ");
+	  	        	responseMessage = new Message();
+	  	        	responseMessage.addErrorMessage("T003 Failed.");
+	     	    }  
     		}
     		
 	        setResponseMessage(model, responseMessage, user);

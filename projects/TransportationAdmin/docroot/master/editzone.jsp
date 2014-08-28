@@ -208,16 +208,28 @@
                 </td>
                </tr>               
               <tr>
-                  <td>ETA Enabled</td>
+                  <td>ETA Window Enabled</td>
                   <td>
 	                  <form:checkbox path="manifestETAEnabled" value="X"/>&nbsp;Manifest
 	                  <form:checkbox path="emailETAEnabled" value="X"/>&nbsp;Email
-	                  <form:checkbox path="smsETAEnabled" value="X" disabled="true"/>&nbsp;SMS
-                  </td>
+	               </td>
                 <td>
-                  &nbsp;<form:errors path="manifestETAEnabled" />&nbsp;<form:errors path="emailETAEnabled" />&nbsp;<form:errors path="smsETAEnabled" />
+                  &nbsp;<form:errors path="manifestETAEnabled" />&nbsp;<form:errors path="emailETAEnabled" />&nbsp;
                 </td>
                </tr>
+               <tr>
+               	<td>SMS Alerts Enabled</td>
+               	<td>
+               		<form:checkbox path="nextStopSmsEnabled" value="X" />&nbsp;NextStop SMS Alerts
+               		<form:checkbox path="smsETAEnabled" value="X" />&nbsp;SMS ETA Window
+               		<form:checkbox path="unattendedSmsEnabled" value="X" />&nbsp;Unattended/Doorman Delivery SMS Alerts
+               		<form:checkbox path="dlvAttemptedSmsEnabled" value="X" />&nbsp;Delivery Attempted SMS Alerts
+               	</td>
+               	<td>
+               		&nbsp;<form:errors path="nextStopSmsEnabled" />&nbsp;&nbsp;<form:errors path="smsETAEnabled" />&nbsp;&nbsp;<form:errors path="unattendedSmsEnabled" />&nbsp;&nbsp;<form:errors path="dlvAttemptedSmsEnabled" />
+               	</td>
+               </tr>
+               
                <tr>
                   <td>ETA Interval</td>
                   <td>

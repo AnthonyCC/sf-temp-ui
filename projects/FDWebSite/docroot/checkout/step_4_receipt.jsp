@@ -51,15 +51,104 @@
 			FDUserI curruser = (FDUserI)session.getAttribute(SessionName.USER);
 			FDIdentity curridentity  = curruser.getIdentity();
 			ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(curridentity);
-			
-			if(cm.getMobilePreference() == null || (com.freshdirect.fdstore.customer.ejb.EnumMobilePreferenceType.SAW_MOBILE_PREF.getName()).equals(cm.getMobilePreference())) {		
+			// if atleast one of the smsAlerts is none -- Will have to change this
+			if(cm.getSmsPreferenceflag()==null ){
+				if(session.getAttribute("SMSAlert" + _ordNum) == null){
+					%>
+		<script type="text/javascript"
+			src="/assets/javascript/rounded_corners.inc.js"></script>
+		<script language="javascript">
+						function curvyCornersHelper(elemId, settingsObj) {
+							if (document.getElementById(elemId)) {
+								var temp = new curvyCorners(settingsObj, document.getElementById(elemId)).applyCornersToAll();
+							}
+						}
+						
+						var ccSettings = {
+							tl: { radius: 6 },
+							tr: { radius: 6 },
+							bl: { radius: 6 },
+							br: { radius: 6 },
+							topColour: "#FFFFFF",
+							bottomColour: "#FFFFFF",
+							antiAlias: true,
+							autoPad: true
+						};
+	
+						/* display an overlay containing a remote page */
+						function doSmsRemoteOverlay(olURL) {
+							var olURL = olURL || '';
+							if (olURL == '') { return false; }
+					
+							 Modalbox.show(olURL, {
+		                        loadingString: 'Loading Preview...',
+		                        title: ' ',
+		                        overlayOpacity: .80,
+		                        width: 750,
+		                        centered: true,
+		                        method: 'post',
+		                        closeValue: '<img src="/media/editorial/site_access/images/round_x.gif" />',
+		                        afterLoad: function() {
+                                       $('MB_frame').style.border = '1px solid #CCCCCC';
+                                       $('MB_header').style.border = '0px solid #CCCCCC';
+                                       $('MB_header').style.display = 'block';
+                                       window.scrollTo(0,0);
+                                       $('MB_window').style.width = '750';
+                                       $('MB_window').style.height = 'auto';
+                                       $('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
+                                       $('MB_content').style.padding = '0px';
+
+                                       curvyCornersHelper('MB_frame', ccSettings);
+		                        },
+		                        afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
+			                });
+						}
+						
+						function doSmsRemoteOverlay1(olURL) {
+							var olURL = olURL || '',
+								paramsVar;
+							if (olURL == '') { return false; }
+							paramsVar = Form.serialize('smsalertform');
+							Modalbox.hide();
+							 Modalbox.show(olURL, {
+		                        loadingString: 'Loading Preview...',
+		                        title: ' ',
+		                        overlayOpacity: .80,
+		                        width: 750, 
+		                        centered: true,
+		                        method: 'post',
+		                        params: paramsVar,
+		                        closeValue: '<img src="/media/editorial/site_access/images/round_x.gif" />',
+		                        afterLoad: function() {
+			                        
+                                    	$('MB_frame').style.border = '1px solid #CCCCCC';
+										$('MB_header').style.border = '0px solid #CCCCCC';
+										$('MB_header').style.display = 'block';
+										window.scrollTo(0,0);
+										$('MB_window').style.width = '750';
+										$('MB_window').style.height = 'auto';
+										$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
+										$('MB_content').style.padding = '0px';
+
+                                       curvyCornersHelper('MB_frame', ccSettings);
+		                        },
+		                        afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
+			                });
+						}
+						
+						doSmsRemoteOverlay('sms_alerts.jsp');
+					</script>
+		<% }
+				
+			}else if(cm.getMobilePreference() == null || (com.freshdirect.fdstore.customer.ejb.EnumMobilePreferenceType.SAW_MOBILE_PREF.getName()).equals(cm.getMobilePreference())) {		
 				//session.removeAttribute("SMSSubmission"+ _ordNum);
 				if(session.getAttribute("SMSSubmission" + _ordNum) == null) { 
 					//Store the flag to capture the user has seen the window atleast once event
 					FDCustomerManager.storeSMSWindowDisplayedFlag(curridentity.getErpCustomerPK());
 					%>
-					<script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>
-					<script language="javascript">
+		<script type="text/javascript"
+			src="/assets/javascript/rounded_corners.inc.js"></script>
+		<script language="javascript">
 						function curvyCornersHelper(elemId, settingsObj) {
 							if (document.getElementById(elemId)) {
 								var temp = new curvyCorners(settingsObj, document.getElementById(elemId)).applyCornersToAll();
@@ -140,7 +229,7 @@
 						
 						doRemoteOverlay('sms_capture.jsp');
 					</script>
-				<% }
+		<% }
 			}
 		}
 	%>

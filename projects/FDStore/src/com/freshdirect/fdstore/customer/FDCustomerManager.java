@@ -3957,14 +3957,29 @@ public class FDCustomerManager {
 		}
 	}
 	
-	public static void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery) throws FDResourceException {
+	public static void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery,
+			String orderNotices, String orderExceptions, String offers, String partnerMessages) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			sb.storeMobilePreferences(customerId, mobileNumber, textOffers, textDelivery);
+			sb.storeMobilePreferences(customerId, mobileNumber, textOffers, textDelivery, orderNotices, orderExceptions, offers, partnerMessages);
 			logGoGreenActivity(customerId, "Y".equals(textOffers)?"Y":"N", EnumAccountActivityType.OFFER_NOTIFICATION);
 			logGoGreenActivity(customerId, "Y".equals(textDelivery)?"Y":"N", EnumAccountActivityType.DELIVERY_NOTIFICATION);
 		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}
+	}
+	
+	public static void storeSmsPreferenceFlag(String customerId, String flag)throws FDResourceException{
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			 sb.storeSmsPrefereceFlag(customerId,flag);
+		}catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		} catch (CreateException e) {
@@ -3994,6 +4009,20 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			sb.storeMobilePreferencesNoThanks(customerId);
 			logGoGreenActivity(customerId, "Y", EnumAccountActivityType.NO_THANKS);
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}
+	}
+	
+	public static void storeSmsPreferencesNoThanks(String customerId) throws FDResourceException{
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			sb.storeSmsPreferencesNoThanks(customerId);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");

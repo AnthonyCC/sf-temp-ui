@@ -197,6 +197,8 @@ public interface SystemMessageList {
 	
 	public final static String MSG_COUPONS_SYSTEM_NOT_AVAILABLE ="We apologize, but our coupon system is currently unavailable. Please check back soon. Sorry for any inconvenience.";
 	public final static String MSG_COUPONS_EXP_DELIVERY_DATE ="Some of your coupons are not valid on your chosen delivery date. All of your coupons will be valid if your delivery date is on or before the following date: ";
-	
+	public final static String MSG_SMS_ERROR = "Sorry, There was an error sending the SMS Message. Please check your number or try again later.";
+	public final static String MSG_OPTIN_REQ = "Select at least one SMS alert to subscribe or if you are opting out please remove the mobile number.";
+	public final static String MSG_TIMEOUT_ERROR = "We apologise for the inconvenience, There was a problem with the gateway, Please try again later.";
 	
 }

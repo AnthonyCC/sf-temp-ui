@@ -786,11 +786,12 @@ public interface FDCustomerManagerSB extends EJBObject {
 	
 	public String dupeEmailAddress(String email) throws FDResourceException, RemoteException;
 	
-	public void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery) throws FDResourceException, RemoteException;
+	public void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery, String orderNotices, String orderExceptions, String offers, String partnerMessages) throws FDResourceException, RemoteException;
 	
 	public void storeGoGreenPreferences(String customerId, String goGreen) throws FDResourceException, RemoteException;
 	
 	public void storeMobilePreferencesNoThanks(String customerId) throws FDResourceException, RemoteException;
+	public void storeSmsPreferencesNoThanks(String customerId) throws FDResourceException, RemoteException;
 	
 	public void storeAllMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery, String goGreen, String phone, String ext, boolean isCorpUser) throws FDResourceException, RemoteException;
 	
@@ -826,6 +827,8 @@ public interface FDCustomerManagerSB extends EJBObject {
 
 	public IPackagingModel getHistoricOrderSize(IOrderModel order) throws FDResourceException, RemoteException;
 	public FDUser getFDUserWithCart(FDIdentity identity) throws FDAuthenticationException, FDResourceException, RemoteException;
+	
+	public void storeSmsPrefereceFlag(String CustomerId, String flag) throws FDResourceException, RemoteException;
 	
 }
 

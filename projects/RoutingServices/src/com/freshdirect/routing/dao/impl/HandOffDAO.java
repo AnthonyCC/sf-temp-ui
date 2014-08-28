@@ -103,13 +103,13 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 																	"WEBORDER_ID, ERPORDER_ID, " +
 																	"AREA, DELIVERY_TYPE, WINDOW_STARTTIME, WINDOW_ENDTIME, ROUTING_STARTTIME, ROUTING_ENDTIME, LOCATION_ID, " +
 																	"SESSION_NAME, ROUTE_NO, ROUTING_ROUTE_NO, " +
-																	"STOP_ARRIVALDATETIME,  STOP_DEPARTUREDATETIME, TRAVELTIME , SERVICETIME, SERVICE_ADDR2, ORDERSIZE_SF ) " +
-																	"VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
+																	"STOP_ARRIVALDATETIME,  STOP_DEPARTUREDATETIME, TRAVELTIME , SERVICETIME, SERVICE_ADDR2, ORDERSIZE_SF, MOBILE_NUMBER ) " +
+																	"VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
 	
 	private static final String GET_HANDOFFBATCHNEXTSEQ_QRY = "SELECT TRANSP.HANDOFFBATCHSEQ.nextval FROM DUAL";
 	
 	private static String GET_ORDERSBY_DATE_CUTOFF = "SELECT /*+ USE_NL(s, sa) */ c.id customer_id, fdc.id fdc_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
-		+ "ci.cell_phone, s.id weborder_id, s.sap_number erporder_id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
+		+ "ci.cell_phone, ci.mobile_number, s.id weborder_id, s.sap_number erporder_id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
 		+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, rs.type, rs.NUM_CARTONS ,rs.NUM_FREEZERS, rs.NUM_CASES, rs.id, ts.routing_start_time, ts.routing_end_time "
 		+ "from cust.customer c, cust.fdcustomer fdc " 
 		+ ", cust.customerinfo ci " 
@@ -122,7 +122,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		+ "and sa.id = di.salesaction_id and rs.id = di.reservation_id and rs.timeslot_id = ts.id and ts.base_date = sa.requested_date ";
 		
 	private static String GET_ORDERSBY_DATE_CUTOFFSTANDBY = "SELECT /*+ USE_NL(s, sa) */ c.id customer_id, fdc.id fdc_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
-		+ "ci.cell_phone, s.id weborder_id, s.sap_number erporder_id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
+		+ "ci.cell_phone, ci.mobile_number, s.id weborder_id, s.sap_number erporder_id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
 		+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, rs.type, rs.NUM_CARTONS , rs.NUM_FREEZERS , rs.NUM_CASES. rs.id, ts.routing_start_time, ts.routing_end_time "
 		+ "from cust.customer@DBSTOSBY.NYC.FRESHDIRECT.COM c, cust.fdcustomer@DBSTOSBY.NYC.FRESHDIRECT.COM fdc " 
 		+ ", cust.customerinfo@DBSTOSBY.NYC.FRESHDIRECT.COM ci " 
@@ -1126,6 +1126,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 				batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.compile();
 	
 				
@@ -1151,6 +1152,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 												, model.getServiceTime()
 												, model.getDeliveryInfo().getDeliveryLocation().getBuilding().getStreetAddress2()
 												, model.getDeliveryInfo().getCalculatedOrderSize()
+												, model.getMobileNumber()
 										});
 				}			
 				batchUpdater.flush();
@@ -1360,6 +1362,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						infoModel.setErpOrderNumber(rs.getString("erporder_id"));
 						infoModel.setCustomerNumber(rs.getString("customer_id"));
 						infoModel.setStatus(EnumSaleStatus.getSaleStatus(rs.getString("status")));
+						infoModel.setMobileNumber(rs.getString("mobile_number"));
 						//infoModel.setCustomerName(rs.getString("customer_id"));
 						
 						IDeliveryModel deliveryModel = new DeliveryModel();

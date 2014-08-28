@@ -13,6 +13,7 @@ import java.sql.*;
 
 import com.freshdirect.framework.core.*;
 import com.freshdirect.framework.util.*;
+import com.freshdirect.sms.EnumSMSAlertStatus;
 
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.customer.ErpCustomerInfoModel;
@@ -80,6 +81,12 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 	private boolean deliveryNotification;
 	private boolean offersNotification;
 	private boolean goGreen;
+	// New Alerts
+	private EnumSMSAlertStatus orderNotices;
+	private EnumSMSAlertStatus orderExceptions;
+	private EnumSMSAlertStatus offers;
+	private EnumSMSAlertStatus partnerMessages;
+	private String smsNoThanksflag;
 	
 	/* APPDEV-2475 DP T&C */
 	private java.util.Date dpTcAgreeDate;
@@ -140,6 +147,12 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		this.deliveryNotification = false;
 		this.offersNotification = false;
 		this.goGreen = false;
+		// New alerts
+		this.orderNotices = EnumSMSAlertStatus.NONE;
+		this.orderExceptions = EnumSMSAlertStatus.NONE;
+		this.offers = EnumSMSAlertStatus.NONE;
+		this.partnerMessages = EnumSMSAlertStatus.NONE;
+		this.smsNoThanksflag = null;
 		
 		/* APPDEV-2475 DP T&C */
 		this.dpTcViewCount = 0;
@@ -223,6 +236,13 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		model.setMobilePreference(this.mobilePrefs);
 		model.setDeliveryNotification(this.deliveryNotification);
 		model.setOffersNotification(this.offersNotification);
+		// add the new alerts
+		model.setOrderNotices(this.orderNotices);
+		model.setOrderExceptions(this.orderExceptions);
+		model.setOffers(this.offers);
+		model.setPartnerMessages(this.partnerMessages);
+		model.setSmsPreferenceflag(this.smsNoThanksflag);
+		
 		model.setGoGreen(this.goGreen);
 		
 		/* APPDEV-2475 DP T&C */
@@ -289,6 +309,13 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		this.mobilePrefs = m.getMobilePreference();
 		this.deliveryNotification = m.isDeliveryNotification();
 		this.offersNotification = m.isOffersNotification();
+		//Add New Alerts
+		this.orderNotices=m.getOrderNotices();
+		this.orderExceptions=m.getOrderExceptions();
+		this.offers=m.getOffers();
+		this.partnerMessages=m.getPartnerMessages();
+		this.smsNoThanksflag=m.getSmsPreferenceflag();
+		
 		this.goGreen = m.isGoGreen();
 
 		/* APPDEV-2475 DP T&C */
@@ -455,6 +482,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 	}
 
 	public void load(Connection conn) throws SQLException {
+		//Change the SQL...
 		PreparedStatement ps =
 			conn.prepareStatement(
 				"SELECT TITLE, FIRST_NAME, MIDDLE_NAME, LAST_NAME, EMAIL, ALT_EMAIL, EMAIL_PLAIN_TEXT, RECEIVE_NEWS, "
@@ -466,7 +494,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 					+ " REMINDER_LAST_SEND, REMINDER_FREQUENCY, REMINDER_DAY_OF_WEEK, REMINDER_ALT_EMAIL, RSV_DAY_OF_WEEK, RSV_START_TIME, "
 					+ " RSV_END_TIME, RSV_ADDRESS_ID, UNSUBSCRIBE_DATE, REG_REF_TRACKING_CODE, REG_REF_PROG_ID, REF_PROG_INVT_ID, "
 					+ " RECEIVE_OPTINNEWSLETTER, HAS_AUTORENEW_DP, AUTORENEW_DP_TYPE, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE, "
-					+ " mobile_number, mobile_preference_flag, delivery_notification, offers_notification, go_green, display_name, "
+					+ " mobile_number, mobile_preference_flag, delivery_notification, offers_notification, ORDER_NOTIFICATION, ORDEREXCEPTION_NOTIFICATION, SMS_OFFERS_ALERT, PARTNERMESSAGE_NOTIFICATION,SMS_PREFERENCE_FLAG, go_green, display_name, "
 					+ " DP_TC_VIEWS, DP_TC_AGREE_DATE,INDUSTRY,NUM_OF_EMPLOYEES,SECOND_EMAIL_ADDRESS"
 					+ " FROM CUST.CUSTOMERINFO WHERE CUSTOMER_ID = ?");
 		ps.setString(1, this.getPK().getId());
@@ -519,6 +547,50 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 			this.mobilePrefs = rs.getString("mobile_preference_flag");
 			this.deliveryNotification = "Y".equals(rs.getString("delivery_notification"))?true:false;
 			this.offersNotification = "Y".equals(rs.getString("offers_notification"))?true:false;
+			
+			//New Alerts
+			//this.orderNotices="Y".equals(rs.getString("ORDER_NOTIFICATION"))?true:false;
+			if(rs.getString("ORDER_NOTIFICATION")!=null){
+				try {
+					this.orderNotices=EnumSMSAlertStatus.getEnum(rs.getString("ORDER_NOTIFICATION"));
+				} catch (IllegalArgumentException e) {
+					this.orderNotices=EnumSMSAlertStatus.NONE;
+				}
+			} else{
+				this.orderNotices=EnumSMSAlertStatus.NONE;
+			}
+			//this.orderExceptions="Y".equals(rs.getString("ORDEREXCEPTION_NOTIFICATION"))?true:false;
+			if(rs.getString("ORDEREXCEPTION_NOTIFICATION")!=null){
+				try {
+					this.orderExceptions=EnumSMSAlertStatus.getEnum(rs.getString("ORDEREXCEPTION_NOTIFICATION"));
+				} catch (IllegalArgumentException e) {
+					this.orderExceptions=EnumSMSAlertStatus.NONE;
+				}
+			} else{
+				this.orderExceptions=EnumSMSAlertStatus.NONE;
+			}
+			//this.offers="Y".equals(rs.getString("offers"))?true:false;
+			if(rs.getString("SMS_OFFERS_ALERT")!=null){
+				try {
+					this.offers=EnumSMSAlertStatus.getEnum(rs.getString("SMS_OFFERS_ALERT"));
+				} catch (IllegalArgumentException e) {
+					this.offers=EnumSMSAlertStatus.NONE;
+				}
+			} else{
+				this.offers=EnumSMSAlertStatus.NONE;
+			}
+			//this.partnerMessages="Y".equals(rs.getString("PARTNERMESSAGE_NOTIFICATION"))?true:false;
+			if(rs.getString("PARTNERMESSAGE_NOTIFICATION")!=null){
+				try {
+					this.partnerMessages=EnumSMSAlertStatus.getEnum(rs.getString("PARTNERMESSAGE_NOTIFICATION"));
+				} catch (IllegalArgumentException e) {
+					this.partnerMessages=EnumSMSAlertStatus.NONE;
+				}
+			} else{
+				this.partnerMessages=EnumSMSAlertStatus.NONE;
+			}
+			this.smsNoThanksflag=rs.getString("SMS_PREFERENCE_FLAG");
+			
 			this.goGreen = "Y".equals(rs.getString("go_green"))?true:false;
 			this.displayName = rs.getString("display_name");
 			
@@ -552,7 +624,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 				+ " RSV_START_TIME=?, RSV_END_TIME=?, RSV_ADDRESS_ID=?, UNSUBSCRIBE_DATE=?, REG_REF_TRACKING_CODE=?, REG_REF_PROG_ID=?, "
 				+ " REF_PROG_INVT_ID=?, RECEIVE_OPTINNEWSLETTER=?, HAS_AUTORENEW_DP=?, AUTORENEW_DP_TYPE=?, "
 				+ " EMAIL_LEVEL=?, NO_CONTACT_MAIL=?, NO_CONTACT_PHONE=?,"
-				+ " mobile_number=?, delivery_notification=?, offers_notification=?, go_green=?, display_name=?,"
+				+ " mobile_number=?, delivery_notification=?, offers_notification=?, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?,SMS_PREFERENCE_FLAG=?, go_green=?, display_name=?,"
 				+ " DP_TC_VIEWS=?, DP_TC_AGREE_DATE=?,INDUSTRY=?,NUM_OF_EMPLOYEES=?,SECOND_EMAIL_ADDRESS=?"
 				+" WHERE CUSTOMER_ID=?");
 		//ps.setString(, this.getPK().getId() );
@@ -661,24 +733,31 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		
 		ps.setString(41, this.offersNotification?"Y":"N");
 		
-		ps.setString(42, this.goGreen?"Y":"N");
+		//Change this
+		ps.setString(42, this.orderNotices.value());
+		ps.setString(43, this.orderExceptions.value());
+		ps.setString(44, this.offers.value());
+		ps.setString(45, this.partnerMessages.value());
+		ps.setString(46, this.smsNoThanksflag);
 		
-		ps.setString(43, this.displayName);
+		ps.setString(47, this.goGreen?"Y":"N");
+		
+		ps.setString(48, this.displayName);
 		
 		/* APPDEV-2475 DP T&C */
-		ps.setInt(44, this.dpTcViewCount);
+		ps.setInt(49, this.dpTcViewCount);
 		
 		if (this.dpTcAgreeDate == null) {
-			ps.setNull(45, Types.TIMESTAMP);
+			ps.setNull(50, Types.TIMESTAMP);
 		} else {
-			ps.setDate(45, new java.sql.Date(this.dpTcAgreeDate.getTime()));
+			ps.setDate(50, new java.sql.Date(this.dpTcAgreeDate.getTime()));
 		}
 		
-		ps.setString(46, this.industry);
-		ps.setInt(47, this.numOfEmployees);
-		ps.setString(48, this.secondEmailAddress);
+		ps.setString(51, this.industry);
+		ps.setInt(52, this.numOfEmployees);
+		ps.setString(53, this.secondEmailAddress);
 		
-		ps.setString(49, this.getPK().getId());
+		ps.setString(54, this.getPK().getId());
 
 		
         if (ps.executeUpdate() != 1) {

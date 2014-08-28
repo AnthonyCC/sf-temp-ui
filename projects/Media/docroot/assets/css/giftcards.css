@@ -489,10 +489,10 @@ div.clear,p.clear,span.clear { clear: both; display: none; }
 	text-align: center;
 }
 
-.gc_table1 th, .gc_table2 th, .gc_table3 th {
+.gc_table1 th, .gc_table2 th, .gc_table3, .gc_table4 th {
 	text-align: left;
 }
-.gc_table1 td, .gc_table2 td, .gc_table3 td {
+.gc_table1 td, .gc_table2 td, .gc_table3, .gc_table4 td {
 	vertical-align: top;
 }
 .gc_table_footer table {
@@ -547,6 +547,26 @@ div.clear,p.clear,span.clear { clear: both; display: none; }
 	background-color: #939;
 }
 
+.gc_table4 th {
+	background-color: red;
+}
+.gc_table4_i .gc_colHeader {
+	color: #333;
+	background-color: #c9c;
+}
+.gc_table4footer {
+	border: 1px dashed red;
+}
+.gc_table4footer .button {
+	background-color: #939;
+}
+.gc_sms_not_present{
+	color: red;
+	font-weight: bold;
+	font-size: 15pt;
+	border-width: 0px;
+	padding-left: 40px;
+}
 
 .gc_caseStatus {
 	font-size: 13pt;

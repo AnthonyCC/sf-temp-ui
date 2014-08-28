@@ -30,6 +30,18 @@ public interface CrmCustomerInfoI {
 
 	public boolean isOffNotification();
 	public void setOffNotification(boolean offNotification);
+	
+	public String getOrderNotices();
+	public void setOrderNotices(String orderNotices);
+	
+	public String getOrderExceptions();
+	public void setOrderExceptions(String orderExceptions);
+	
+	public String getOffers();
+	public void setOffers(String offers);
+	
+	public String getPartnerMessages();
+	public void setPartnerMessages(String partnerMessages);
 
 	public boolean isGoGreen();
 	public void setGoGreen(boolean goGreen);

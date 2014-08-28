@@ -48,6 +48,7 @@ import com.freshdirect.delivery.model.SignatureVO;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.sms.CrmSmsDisplayInfo;
 
 public class AirclicManagerSessionBean extends SessionBeanSupport {
 
@@ -556,6 +557,30 @@ public class AirclicManagerSessionBean extends SessionBeanSupport {
 				LOGGER.warn("AirclicManagerSB getCartonScanInfo: Exception while cleaning: " + se);
 			}
 		}
+	}
+	
+	
+	public List<CrmSmsDisplayInfo> getSmsInfo(String orderId) throws DlvResourceException{
+		List<CrmSmsDisplayInfo> smsInfo=null;
+		Connection conn = null; 
+		try{
+			conn = getConnection();
+			
+			smsInfo=AirclicDAO.getSmsInfo(conn,orderId);
+			
+		}catch(SQLException e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("AirclicManagerSB getSmsInfo: Exception while cleaning: " + se);
+			}
+		}
+		LOGGER.debug("smsInfo is "+smsInfo);
+		return smsInfo;
 	}
 	
 }

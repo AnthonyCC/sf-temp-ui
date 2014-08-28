@@ -43,10 +43,12 @@ import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.LocationModel;
 import com.freshdirect.routing.model.ZoneModel;
+import com.freshdirect.sms.CrmSmsDisplayInfo;
+import com.freshdirect.sms.EnumSMSAlertStatus;
+import com.freshdirect.sms.SmsPrefereceFlag;
 
 
 public class AirclicDAO {
-
 	
 	public static List<AirclicMessageVO> getMessages(Connection conn)
 			throws DlvResourceException {
@@ -1385,6 +1387,41 @@ public class AirclicDAO {
 		}
 		
 		return result;
+	}
+	
+	public static List<CrmSmsDisplayInfo> getSmsInfo(Connection con, String orderId) throws SQLException{
+		List<CrmSmsDisplayInfo> smsInfo = new ArrayList<CrmSmsDisplayInfo>();
+		PreparedStatement ps=null;
+		ResultSet rs=null;
+		try {
+			String getSmsInfo ="select s.create_date, s.alert_type, s.message, s.status from mis.sms_alert_capture s,transp.handoff_batchstop bs  where "
+					+"where s.mobile_number=bs.mobile_number and bs.weborder_id=s.order_id and bs.weborder_id =?";
+			ps= con.prepareStatement(getSmsInfo);
+			ps.setString(1,orderId);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				CrmSmsDisplayInfo tempSmsInfo= new CrmSmsDisplayInfo();
+				tempSmsInfo.setTimeSent(rs.getTimestamp("create_date"));
+				tempSmsInfo.setAlertType(rs.getString("alert_type"));
+				tempSmsInfo.setMessage(rs.getString("alert_type"));
+				tempSmsInfo.setStatus(rs.getString("status").equalsIgnoreCase("SUCCESS")?"Delivered":"Failed");
+				smsInfo.add(tempSmsInfo);
+			}
+		} catch (SQLException e) {
+			throw new SQLException();
+		} finally{
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(ps!=null){
+					ps.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return smsInfo;
 	}
    
 }

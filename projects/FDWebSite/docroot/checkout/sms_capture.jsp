@@ -126,7 +126,7 @@
 				</table>
 			</td>
 		</tr>
-		<tr><td><div class="smshline" id=""><!-- --></div></td></tr>
+		<%-- <tr><td><div class="smshline" id=""><!-- --></div></td></tr>
 		<tr>
 			<td>		
 				<table width="100%" border="0">
@@ -157,13 +157,13 @@
 					<tr><td colspan="2" class="text11rbold trpad" style="width:500px; text-align: left;padding-left: 15px;height:25px;">&nbsp;<fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></td></tr>
 				</table>
 			</td>
-		</tr>
+		</tr> --%>
 		<tr><td><div class="smshline" id=""><!-- --></div></td></tr>
 		<tr>
 			<td>
 				<table width="100%" border="0">
 					<tr><td colspan="2" >&nbsp;</td></tr>
-					<tr><td colspan="2" ><span class="title18or trpad">3.&nbsp;</span><span class="title18">Go green!</span>&nbsp;<img src="/media_stat/images/navigation/go_green_leaf.gif" border="0" alt="GO GREEN" /></td></tr>
+					<tr><td colspan="2" ><span class="title18or trpad">2.&nbsp;</span><span class="title18">Go green!</span>&nbsp;<img src="/media_stat/images/navigation/go_green_leaf.gif" border="0" alt="GO GREEN" /></td></tr>
 					<tr><td colspan="2" >&nbsp;</td></tr>
 					<tr valign="middle">
 						<td class="text12 trpad" style="width: 30px;"><input class="radio" type="checkbox" name="go_green" value="Y" <%=go_green ? "checked":""%> /></td>

@@ -9,6 +9,9 @@ public interface IOrderModel {
 	String getOrderNumber();
 	void setOrderNumber(String orderNumber);
 	
+	String getMobileNumber();
+	void setMobileNumber(String mobileNumber);
+	
 	String getErpOrderNumber();
 	void setErpOrderNumber(String erpOrderNumber);
 	

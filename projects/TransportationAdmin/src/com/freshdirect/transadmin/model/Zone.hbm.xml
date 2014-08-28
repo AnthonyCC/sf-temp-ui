@@ -66,6 +66,15 @@
         <property name="smsETAEnabled" type="string">
             <column name="SMS_ETA_ENABLED" length="1" />
         </property> 
+        <property name="nextStopSmsEnabled" type="string">
+            <column name="NEXTSTOP_SMS_ENABLED" length="1" />
+        </property>
+        <property name="unattendedSmsEnabled" type="string">
+            <column name="DLV_UNATTENDED_SMS_ENABLED" length="1" />
+        </property>
+        <property name="dlvAttemptedSmsEnabled" type="string">
+            <column name="DLV_ATTEMPTED_SMS_ENABLED" length="1" />
+        </property>
         <many-to-one name="defaultServiceTimeType" class="com.freshdirect.transadmin.model.DlvServiceTimeType" fetch="select" lazy="false">
             <column name="SERVICETIME_TYPE" length="8" />
         </many-to-one>

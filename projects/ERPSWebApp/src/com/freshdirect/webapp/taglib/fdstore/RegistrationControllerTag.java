@@ -30,7 +30,9 @@ import com.freshdirect.customer.ErpDuplicateDisplayNameException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
+import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
+import com.freshdirect.delivery.sms.SMSAlertManager;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDepotManager;
 import com.freshdirect.fdstore.FDReservation;
@@ -241,6 +243,10 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				//coming from order receipt screen. store all of them together.
 				this.performChangeDisplayName(request, actionResult);
 			}
+			else if("ordersmsalerts".equals(actionName)) {
+				//coming from order receipt screen. store all of them together.
+				this.addAllSmsAlerts(request, actionResult);
+			}
 			
 
 		} catch (Exception ex) {
@@ -318,8 +324,38 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		String text_offers = request.getParameter("text_offers");
 		String text_delivery = request.getParameter("text_delivery");		
 		String mobile_number = request.getParameter("mobile_number");
+		String order_notices=request.getParameter("order_notices");
+		String order_exceptions=request.getParameter("order_exceptions");
+		String offers=request.getParameter("offers");
+		String partner_messages=request.getParameter("partner_messages");
+		boolean order_notice_existing = Boolean.getBoolean(request.getParameter("order_notice_existing"));
+		boolean order_exception_existing = Boolean.getBoolean(request.getParameter("order_exception_existing"));
+		boolean offer_existing = Boolean.getBoolean(request.getParameter("offer_existing"));
+		boolean partner_existing = Boolean.getBoolean(request.getParameter("partner_existing"));
+		boolean orderNoticeOptin=false;
+		boolean orderExceptionOptin=false;
+		boolean offersOptin=false;
+		boolean partnerMessagesOptin=false;
+		HttpSession session = (HttpSession) pageContext.getSession();
+		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+		FDIdentity identity = user.getIdentity();
+		boolean optOut=false;
 		
-		if("Y".equals(text_offers) || "Y".equals(text_delivery)) {			
+		if(!order_notice_existing && "Y".equalsIgnoreCase(order_notices)){
+			orderNoticeOptin=true;
+		}
+		if(!order_exception_existing && "Y".equalsIgnoreCase(order_exceptions)){
+			orderExceptionOptin=true;
+		}
+		if(!offer_existing && "Y".equalsIgnoreCase(offers)){
+			offersOptin=true;
+		}
+		if(!partner_existing && "Y".equalsIgnoreCase(partner_messages)){
+			partnerMessagesOptin=true;
+		}
+		
+		if("Y".equalsIgnoreCase(order_notices)||"Y".equalsIgnoreCase(order_exceptions) ||
+				"Y".equalsIgnoreCase(offers)|| "Y".equalsIgnoreCase(partner_messages)){
 			if(mobile_number == null || mobile_number.length() == 0) {
 				actionResult.addError(true, "mobile_number", SystemMessageList.MSG_REQUIRED);
 				return;
@@ -330,22 +366,55 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				return;
 			}
 		} else if(mobile_number != null && mobile_number.length() != 0) {
-			if(!"Y".equals(text_offers) && !"Y".equals(text_delivery)) {
-				actionResult.addError(true, "text_option", "Please select your text messaging preferences below.");
+			if("Y".equalsIgnoreCase(order_notices)||"Y".equalsIgnoreCase(order_exceptions) ||
+					"Y".equalsIgnoreCase(offers)|| "Y".equalsIgnoreCase(partner_messages)){
+				PhoneNumber phone = new PhoneNumber(mobile_number);
+				if(!phone.isValid()){
+					actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
+					return;
+				}
+			}else{
+				actionResult.addError(true, "mobile_number", SystemMessageList.MSG_OPTIN_REQ);
 				return;
 			}
-		}		
-		
-		//save it to DB
-		HttpSession session = (HttpSession) pageContext.getSession();
-		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);		
-		try {
-			FDIdentity identity = user.getIdentity();
-			ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
-			FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), mobile_number, text_offers, text_delivery);			
-		} catch (FDResourceException e) {
-			LOGGER.error("Error from mobile preferences", e);
+		} else if(!"Y".equalsIgnoreCase(order_notices)&&!"Y".equalsIgnoreCase(order_exceptions) &&
+				!"Y".equalsIgnoreCase(offers)&& !"Y".equalsIgnoreCase(partner_messages) && (mobile_number == null || mobile_number.length() == 0)){
+			optOut=true;
 		}
+		else{
+			actionResult.addError(true, "mobile_number", SystemMessageList.MSG_REQUIRED);
+			return;
+		}
+		
+		 boolean isSent=false;
+		try {
+			if(orderNoticeOptin || orderExceptionOptin||offersOptin||partnerMessagesOptin){
+				isSent = SMSAlertManager.getInstance().smsOptIn(identity.getErpCustomerPK(),mobile_number);
+			} else{
+				optOut=true;
+			}
+		} catch (DlvResourceException e) {
+			LOGGER.error("Error from mobile preferences", e);
+			actionResult.addError(true, "mobile_number", SystemMessageList.MSG_TIMEOUT_ERROR);
+			return;
+		}
+		
+		if(isSent || optOut){
+			try {
+				
+				ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
+				FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), mobile_number, text_offers, text_delivery,
+						order_notices, order_exceptions, offers, partner_messages);
+				if(isSent)
+					FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),"Y");
+				else 
+					FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),null);
+			} catch (FDResourceException e) {
+				LOGGER.error("Error from mobile preferences", e);
+			}
+		 } else{
+			 actionResult.addError(new ActionError("send_sms_failure", SystemMessageList.MSG_SMS_ERROR));
+		 }
 	}
 	
 	private void changeOtherPreferences(HttpServletRequest request, ActionResult actionResult) {
@@ -819,6 +888,62 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		LOGGER.debug("Updating customer mail/phone preferences");
 		FDCustomerManager.updateCustomerInfo(AccountActivityUtil.getActionInfo(pageContext.getSession()), cim);
 		LOGGER.debug("Customer mail/phone preferences updated");
+	}
+	
+	protected void addAllSmsAlerts(HttpServletRequest request, ActionResult actionResult){
+		String mobile_number = request.getParameter("mobile_number");
+		
+		HttpSession session = (HttpSession) pageContext.getSession();
+		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
+		FDIdentity identity = user.getIdentity();
+		String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
+		session.removeAttribute("SMSAlert" + orderNumber);
+		String submitbutton = request.getParameter("submitbutton");
+		if("update".equals(submitbutton)){
+			if(mobile_number == null || mobile_number.length() == 0) {
+				actionResult.addError(true, "mobile_number", SystemMessageList.MSG_REQUIRED);
+				return;
+			} else if(mobile_number != null && mobile_number.length() != 0) {
+				PhoneNumber phone = new PhoneNumber(mobile_number);
+				if(!phone.isValid()){
+					actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
+					return;
+				}
+			}
+			
+			boolean isSent=false;
+				try {
+					isSent = SMSAlertManager.getInstance().smsOptIn(identity.getErpCustomerPK(),mobile_number);
+				} catch (DlvResourceException e) {
+					LOGGER.error("Error from mobile preferences", e);
+					actionResult.addError(true, "mobile_number", SystemMessageList.MSG_TIMEOUT_ERROR);
+					return;
+				}
+				 if(isSent){
+							
+					try {
+						FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), mobile_number, "N", "N",
+								"Y", "Y", "Y", "Y");
+						FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),"Y");
+						session.setAttribute("SMSAlert" + orderNumber, "done");
+					} catch (FDResourceException e) {
+						LOGGER.error("Error from mobile preferences", e);
+					}
+				 } else{
+					 actionResult.addError(new ActionError("send_sms_failure", SystemMessageList.MSG_SMS_ERROR));
+				 }
+		} else if ("remind".equals(submitbutton)) {
+			
+		} else {
+			//no thanks
+			try {
+				FDCustomerManager.storeSmsPreferenceFlag(user.getIdentity().getErpCustomerPK(),"N");
+			} catch (FDResourceException e) {
+				LOGGER.error("Error from mobile preferences", e);
+			}
+			session.setAttribute("SMSAlert" + orderNumber, "done");
+			session.setAttribute("noThanksFlag", "noThanks");
+		}
 	}
 	
 	protected FDIdentity getIdentity() {

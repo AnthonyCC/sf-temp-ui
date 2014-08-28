@@ -240,6 +240,34 @@
 							
 					</tbody>
 				</table>
+				<table width="100%" cellspacing="0" cellpadding="0" border="0" class="gc_table4">
+					<tbody>
+							
+							<tr>
+								<th style="text-align:center;">SMS MESSAGES</th>
+							</tr>
+							<tr>
+								<td width="10"><img width="10" height="5" border="0" src="/media_stat/images/layout/clear.gif"></td>
+							</tr>
+							<tr>
+								<td class="gc_table_footer " >
+									<div align="right"><input type="button" onclick="lookupSmsMessages();" class="button" value="Refresh" name="Refresh Manifest"></div>
+									<table width="99%" cellspacing="0" cellpadding="0" border="0" class="gc_table4footer">
+									<tr class="gc_colHeader">
+											<td>Time Sent</td>
+											<td>Type</td>
+											<td>Message</td>
+											<td>Result</td>
+										</tr>
+										<tr>
+											<td colspan="4"><div id="smsInfo" style="overflow-y:auto;height:200px;"></div></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							
+					</tbody>
+				</table>
 			</td>
 		</tr>
 	</tbody>

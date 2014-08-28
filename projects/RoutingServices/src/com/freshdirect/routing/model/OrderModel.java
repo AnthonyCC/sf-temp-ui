@@ -10,6 +10,7 @@ public class OrderModel extends BaseModel implements IOrderModel {
 	private String erpOrderNumber;	
 	private String customerNumber;
 	private String customerName;
+	private String mobileNumber;
 	
 	private Date createModifyTime;
 	
@@ -29,6 +30,16 @@ public class OrderModel extends BaseModel implements IOrderModel {
 	private double reservedServiceTime;
 	private double reservedOrderSize;
 	
+	
+	
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+
 	public String getErpOrderNumber() {
 		return erpOrderNumber;
 	}

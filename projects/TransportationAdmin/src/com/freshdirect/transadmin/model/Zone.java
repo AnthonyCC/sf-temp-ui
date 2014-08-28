@@ -45,10 +45,17 @@ public class Zone implements java.io.Serializable {
 	*/
 	private String manifestETAEnabled;
 	private String emailETAEnabled;
-	private String smsETAEnabled;
-	private BigInteger ETAInterval;
 	
-    public Set getZoneSupervisors() {
+	/**
+	 * SMS enabled Attributes.
+	 */
+	private String smsETAEnabled;
+	private String nextStopSmsEnabled;
+	private String unattendedSmsEnabled;
+	private String dlvAttemptedSmsEnabled;
+	private BigInteger ETAInterval;
+
+	public Set getZoneSupervisors() {
 		return zoneSupervisors;
 	}
 
@@ -280,5 +287,30 @@ public class Zone implements java.io.Serializable {
 
 	public void setETAInterval(BigInteger eTAInterval) {
 		ETAInterval = eTAInterval;
+	}
+	public String getNextStopSmsEnabled() {
+		return nextStopSmsEnabled;
+	}
+
+	public void setNextStopSmsEnabled(String nextStopSmsEnabled) {
+		this.nextStopSmsEnabled = nextStopSmsEnabled;
+	}
+
+	
+
+	public String getUnattendedSmsEnabled() {
+		return unattendedSmsEnabled;
+	}
+
+	public void setUnattendedSmsEnabled(String unattendedSmsEnabled) {
+		this.unattendedSmsEnabled = unattendedSmsEnabled;
+	}
+
+	public String getDlvAttemptedSmsEnabled() {
+		return dlvAttemptedSmsEnabled;
+	}
+
+	public void setDlvAttemptedSmsEnabled(String dlvAttemptedSmsEnabled) {
+		this.dlvAttemptedSmsEnabled = dlvAttemptedSmsEnabled;
 	}
 }

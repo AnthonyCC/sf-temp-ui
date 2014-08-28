@@ -602,6 +602,11 @@ function loadStuff() {
 	var postdata = '1,9174068937,11540278667,10/04/2012 06:05:00,2,CallComplete,51,571-730-5796,delivery access';
   	$("#payload").val(postdata);
   	$("#result").val("");
+  }else if (loaddata == "smsMessageRelay") {
+  	$("#url").val("/ext/t003/");
+	var postdata = '3472634065,45444,sprint,2014-08-11 22:12:44,external interface test';
+  	$("#payload").val(postdata);
+  	$("#result").val("");
   } else if (loaddata == "GetCountries") {
   	$("#url").val("/lookup/countries/");  
   	$("#payload").val("");	
@@ -660,7 +665,25 @@ function doStuff() {
   	 		postData = postData + "&menuOption=" + $.URLEncode(temp[8]);
   	 	}
   	 } 
-  } else {
+  }else if($("#loaddata").val() == "smsMessageRelay"){
+  		var temp = payload.split(",");
+  	 if(temp != null && temp.length > 0) {
+  	 	postData = postData + "sender=" + $.URLEncode(temp[0]);
+  	 	if(temp.length > 1) {
+  	 		postData = postData + "&code=" + $.URLEncode(temp[1]);
+  	 	}
+		if(temp.length > 2) {
+  	 		postData = postData + "&carrier=" + $.URLEncode(temp[2]);
+  	 	}
+		if(temp.length > 3) {
+  	 		postData = postData + "&received=" + $.URLEncode(temp[3]);
+  	 	}
+		if(temp.length > 4) {
+  	 		postData = postData + "&text=" + $.URLEncode(temp[4]);
+  	 	}
+  	 }
+		
+  }   else {
 	  postData = "data=" + $.URLEncode(payload);
   }
   
@@ -810,7 +833,7 @@ function doStuff() {
   <option value=""> ========== External Interface ========== </option>
   <option value="IvrEmail">Send - IVR Delivery Email</option>
   <option value="IvrCallLog">Lookup - IVR Delivery Call Log</option>
-  
+  <option value="smsMessageRelay">Send - sms Alert</option>
   <option value=""> ========== Lookup ========== </option>
   <option value="GetCountries">Lookup - Get Countries</option>
   <option value="GetRegions">Lookup - Get Regions</option>

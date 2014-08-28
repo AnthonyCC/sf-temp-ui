@@ -662,6 +662,14 @@ public class FDStoreProperties {
 	private static final String PROP_CERTONA_APP_ID = "fdstore.certona.app_id";
 	private static final String PROP_CERTONA_COHORTS = "fdstore.certona.cohorts";
 	
+	//sms
+	private final static String PROP_ST_PROVIDER_URL = "fdstore.ST.provider.url";
+	private final static String PROP_ST_USERNAME = "fdstore.ST.username";
+	private final static String PROP_ST_PASSWORD = "fdstore.ST.password";
+	private final static String PROP_ST_CONNECTION_TIMEOUT_PERIOD = "fdstore.ST.connection.timeout.period";
+	private static final String PROP_ST_READ_TIMEOUT_PERIOD = "fdstore.ST.read.timeout.period";
+	
+	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1308,6 +1316,14 @@ public class FDStoreProperties {
         defaults.put(PROP_BROWSE_POPULAR_CATEGORIES_MAX, "5");
         
         defaults.put(PROP_3RDPARTY_P3PENABLED, "true");
+        
+        //SMS notification
+        defaults.put(PROP_ST_PROVIDER_URL, "http://api.rtdl.us/API2/Messaging/SendSMS/submit");
+        defaults.put(PROP_ST_USERNAME, "fresh_direct");
+        defaults.put(PROP_ST_PASSWORD, "6zDqxrz7Qa");        
+        defaults.put(PROP_ST_CONNECTION_TIMEOUT_PERIOD, "5");
+        defaults.put(PROP_ST_READ_TIMEOUT_PERIOD, "5");
+        
         refresh();
     }
 
@@ -3303,5 +3319,26 @@ public class FDStoreProperties {
     public static boolean isP3PPolicyEnabled() {
     	return Boolean.valueOf(get(PROP_3RDPARTY_P3PENABLED)).booleanValue();
     }
+    
+    //SMS notification
+    public static String getSingleTouchServiceURL() {
+    	return get(PROP_ST_PROVIDER_URL);
+    }
+
+    public static String getSTUsername() {
+    	return get(PROP_ST_USERNAME);
+    }
+    
+    public static String getSTPassword() {
+    	return get(PROP_ST_PASSWORD);
+    }
+    
+    public static Integer getSTConnectionTimeoutPeriod() {
+		return Integer.parseInt(get(PROP_ST_CONNECTION_TIMEOUT_PERIOD));
+	}
+
+	public static int getRTConnectionTimeoutPeriod() {
+		return Integer.parseInt(get(PROP_ST_READ_TIMEOUT_PERIOD));
+	}
 }
 

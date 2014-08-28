@@ -30,6 +30,10 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag {
 			customer.getCustomerInfo().getMobileNumber(),
 			customer.getCustomerInfo().isDeliveryNotification(),
 			customer.getCustomerInfo().isOffersNotification(),
+			customer.getCustomerInfo().getOrderNotices().value(),
+			customer.getCustomerInfo().getOrderExceptions().value(),
+			customer.getCustomerInfo().getOffers().value(),
+			customer.getCustomerInfo().getPartnerMessages().value(),
 			customer.getCustomerInfo().isGoGreen(),
 			customer.getCustomerInfo().getMobilePreference());
 	}
@@ -50,6 +54,12 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag {
 		private PhoneNumber mobileNumber;
 		private boolean delNotification;
 		private boolean offNotification;
+		//SMS Alerts
+		private String orderNotices;
+		private String orderExceptions;
+		private String offers;
+		private String partnerMessages;
+		
 		private boolean goGreen;
 		private String mobilePrefs;
 		
@@ -58,7 +68,8 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag {
 		
 
 		public CrmCustomerInfo(String userId, String passwordHint, boolean recieveNews, boolean textOnlyEmail, boolean receiveOptinNewsletter,
-					PhoneNumber mobileNumber, boolean delNotification, boolean offNotification, boolean goGreen, String mobilePrefs ) {
+					PhoneNumber mobileNumber, boolean delNotification, boolean offNotification, String orderNotices, String orderExceptions,
+					String offers, String partnerMessages, boolean goGreen, String mobilePrefs ) {
 			this.userId = userId;
 			this.passwordHint = passwordHint;
 			this.recieveNews = recieveNews;
@@ -67,10 +78,40 @@ public class CrmGetCustomerInfoTag extends AbstractGetterTag {
 			this.mobileNumber = mobileNumber;
 			this.delNotification = delNotification;
 			this.offNotification = offNotification;
+ 			//sms Alerts
+			this.orderNotices = orderNotices;
+			this.orderExceptions = orderExceptions;
+			this.offers = offers;
+			this.partnerMessages = partnerMessages;
+
 			this.goGreen = goGreen;
 			this.mobilePrefs = mobilePrefs;
 		}
 
+		public String getOrderNotices() {
+			return orderNotices;
+		}
+		public void setOrderNotices(String orderNotices) {
+			this.orderNotices = orderNotices;
+		}
+		public String getOrderExceptions() {
+			return orderExceptions;
+		}
+		public void setOrderExceptions(String orderExceptions) {
+			this.orderExceptions = orderExceptions;
+		}
+		public String getOffers() {
+			return offers;
+		}
+		public void setOffers(String offers) {
+			this.offers = offers;
+		}
+		public String getPartnerMessages() {
+			return partnerMessages;
+		}
+		public void setPartnerMessages(String partnerMessages) {
+			this.partnerMessages = partnerMessages;
+		}
 		public String getUserId() {
 			return this.userId;
 		}

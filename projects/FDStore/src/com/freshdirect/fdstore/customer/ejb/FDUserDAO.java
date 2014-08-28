@@ -7,8 +7,11 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,10 +43,13 @@ import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.SqlUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.sms.EnumSMSAlertStatus;
+import com.freshdirect.sms.SmsPrefereceFlag;
 
 public class FDUserDAO {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(FDUserDAO.class);
+
 
 	private static java.util.Random rand = new java.util.Random();
 
@@ -529,16 +535,72 @@ public class FDUserDAO {
 		ps.close();
 	}
 	
-	public static void storeMobilePreferences(Connection conn, String customerId, String mobileNumber, String textOffers, String textDelivery) {
+	public static void storeMobilePreferences(Connection conn, String customerId, String mobileNumber, String textOffers, String textDelivery,
+			String orderNotices, String orderExceptions, String offers, String partnerMessages ) {
 		PreparedStatement ps = null;
+		PreparedStatement selectAlertStatus=null;
+		String notice="N";
+		String exceptions="N";
+		String offer="N";
+		String pMessage="N";
 		PhoneNumber phone = new PhoneNumber(mobileNumber);
 		
 		try {
-			ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=? where customer_id=?");				
+			try {
+				selectAlertStatus= conn.prepareStatement("select ORDER_NOTIFICATION, ORDEREXCEPTION_NOTIFICATION, SMS_OFFERS_ALERT, PARTNERMESSAGE_NOTIFICATION from CUST.CUSTOMERINFO where customer_id=?");
+				selectAlertStatus.setString(1,customerId);
+				ResultSet rs=selectAlertStatus.executeQuery();
+				if(rs.next()){
+					if(rs.getString("ORDER_NOTIFICATION")!=null || !(rs.getString("ORDER_NOTIFICATION").equals("")) ){
+						notice=rs.getString("ORDER_NOTIFICATION");
+					}
+					if(rs.getString("ORDEREXCEPTION_NOTIFICATION")!=null || !(rs.getString("ORDEREXCEPTION_NOTIFICATION").equals("")) ){
+						exceptions=rs.getString("ORDEREXCEPTION_NOTIFICATION");
+					}
+					if(rs.getString("SMS_OFFERS_ALERT")!=null || !(rs.getString("SMS_OFFERS_ALERT").equals("")) ){
+						offer=rs.getString("SMS_OFFERS_ALERT");
+					}
+					if(rs.getString("PARTNERMESSAGE_NOTIFICATION")!=null || !(rs.getString("PARTNERMESSAGE_NOTIFICATION").equals("")) ){
+						pMessage=rs.getString("PARTNERMESSAGE_NOTIFICATION");
+					}
+				}
+			} catch (Exception e) {
+				LOGGER.error("Error updating mobile preferences", e);
+			}finally {
+				try {
+					if(selectAlertStatus != null)
+						selectAlertStatus.close();
+				} catch (Exception e1) {}
+			}
+			
+			Date optinDate=new Date();
+			ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?, SMS_OPTIN_DATE=? where customer_id=?");				
 			ps.setString(1, phone.getPhone());
 			ps.setString(2, "Y".equals(textOffers)?"Y":"N");
 			ps.setString(3, "Y".equals(textDelivery)?"Y":"N");
-			ps.setString(4, customerId);
+			//New Alerts
+			if(notice.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(orderNotices)){
+				ps.setString(4, EnumSMSAlertStatus.SUBSCRIBED.value());
+			} else{
+				ps.setString(4, "Y".equals(orderNotices)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+			}
+			if(exceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(orderExceptions)){
+				ps.setString(5, EnumSMSAlertStatus.SUBSCRIBED.value());
+			} else{
+				ps.setString(5, "Y".equals(orderExceptions)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+			}
+			if(offer.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(offers)){
+				ps.setString(6, EnumSMSAlertStatus.SUBSCRIBED.value());
+			} else{
+				ps.setString(6, "Y".equals(offers)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+			}
+			if(pMessage.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(partnerMessages)){
+				ps.setString(7, EnumSMSAlertStatus.SUBSCRIBED.value());
+			} else{
+				ps.setString(7, "Y".equals(partnerMessages)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+			}
+			ps.setTimestamp(8, new java.sql.Timestamp(optinDate.getTime()));
+			ps.setString(9, customerId);
 			ps.execute();
 		} catch (Exception e) {
 			LOGGER.error("Error updating mobile preferences", e);
@@ -583,6 +645,25 @@ public class FDUserDAO {
 			} catch (Exception e1) {}
 		}
 	}
+	
+	public static void storeSmsPreferences(Connection conn, String customerId, String flag){
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement("update CUST.CUSTOMERINFO set SMS_PREFERENCE_FLAG=? where customer_id=?");
+			ps.setString(1, flag!=null?flag:null);
+			ps.setString(2, customerId);
+			ps.execute();
+		} catch (Exception e) {
+			LOGGER.error("Error updating sms preferences", e);
+		} finally {
+			try {
+				if(ps != null)
+					ps.close();
+			} catch (Exception e1) {}
+		}
+	}
+	
+	
 	
 	public static void storeAllMobilePreferences(Connection conn, String customerId, String mobileNumber, String textOffers, String textDelivery, String goGreen, String phone, String ext, boolean isCorpUser) {
 		PreparedStatement ps = null;

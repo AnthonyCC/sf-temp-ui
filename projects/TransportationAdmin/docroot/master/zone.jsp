@@ -93,6 +93,9 @@
 							  <ec:column property="manifestETAEnabled" title="Manifest ETAEnabled"/>
 							  <ec:column property="emailETAEnabled" title="Email ETAEnabled"/>
 							  <ec:column property="smsETAEnabled" title="SMS ETAEnabled"/>
+							  <ec:column property="nextStopSmsEnabled" title="Next Stop SMS"/>
+							  <ec:column property="unattendedSmsEnabled" title="Unatteded/Doorman delivery SMS"/>
+							  <ec:column property="dlvAttemptedSmsEnabled" title="Delivery Attempted SMS"/>
 							</ec:row>
 						  </ec:table>
 		<% }else{ %>
@@ -123,6 +126,9 @@
 							  <ec:column property="manifestETAEnabled" title="Manifest ETAEnabled"/>
 							  <ec:column property="emailETAEnabled" title="Email ETAEnabled"/>
 							  <ec:column property="smsETAEnabled" title="SMS ETAEnabled"/>
+							  <ec:column property="nextStopSmsEnabled" title="Next Stop SMS Enabled"/>
+							  <ec:column property="unattendedSmsEnabled" title="Unatteded/Doorman delivery SMS Enabled"/>
+							  <ec:column property="dlvAttemptedSmsEnabled" title="Delivery Attempted SMS Enabled"/>
 							</ec:row>
 						  </ec:table>
 		<% } %>

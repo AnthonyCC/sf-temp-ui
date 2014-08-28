@@ -25,6 +25,7 @@ import com.freshdirect.delivery.model.DispatchNextTelVO;
 import com.freshdirect.delivery.model.RouteNextelVO;
 import com.freshdirect.delivery.model.SignatureVO;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.sms.CrmSmsDisplayInfo;
 
 public interface AirclicManagerSB extends EJBObject {
 
@@ -59,4 +60,6 @@ public interface AirclicManagerSB extends EJBObject {
 	public DeliverySummaryModel lookUpDeliverySummary(String orderId, String routeNo, Date deliveryDate) throws DlvResourceException, RemoteException;
 
 	public Map<String, DeliveryExceptionModel> getCartonScanInfo() throws DlvResourceException, RemoteException;
+	
+	public List<CrmSmsDisplayInfo> getSmsInfo(String orderId) throws DlvResourceException, RemoteException;
 }   

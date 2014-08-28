@@ -11,6 +11,7 @@
 			lookupAirclicMessages();
 			lookupDeliveryManifest();
 			lookupOrderCallLog();
+			lookupSmsMessages();
 
     });	
 
@@ -38,6 +39,34 @@
 				$jq("#callLogInfo").html('');
 				$jq("#callLogInfo").append(loadingStr).find('div:first').css({height:"200px"});
 				jsonrpcClient.manager.getOrderCallLog(callLogCallBack, orderNo);
+			}
+			function lookupSmsMessages(){
+				$jq("#smsInfo").html('');
+				$jq("#smsInfo").append(loadingStr).find('div:first').css({height:"450px"});
+				jsonrpcClient.manager.getSmsMessages(smsCallBack, orderNo);
+			}
+			
+			function smsCallBack(smsResult){
+				console.log(smsResult);
+				var result='';
+				if  (smsResult !== null) { 
+					var smsrows=smsResult.list;
+					for(var i=0;i < smsrows.length;i++){
+						if( i % 2 != 0){
+							result += "<tr class=\"list_odd_row\">"; 
+						} else {
+							result += "<tr>";
+						}
+						result += "<td width=\"115\">"+ smsrows[i].timeSent + "</td>";
+						result += "<td width=\"115\">"+ smsrows[i].alertType + "</td>";
+						result += "<td width=\"115\">"+ smsrows[i].message + "</td>";
+						result += "<td width=\"115\">"+ smsrows[i].status + "</td>";
+						result += "</tr>";
+					}
+				} else {
+					result += '<tr><td colspan=\"4\" class=\"gc_sms_not_present\">Sorry, There are no SMS Messages</td></tr>';
+				}
+				$jq('#smsInfo').html("<table>"  + result + "</table>");
 			}
 
 			function callLogCallBack(callLogResult){

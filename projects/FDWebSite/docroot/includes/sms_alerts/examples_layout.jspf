@@ -1,0 +1,5 @@
+<%--
+	this file will be included in the <head> tag
+--%>
+<%@ taglib uri='freshdirect' prefix='fd'%>
+<fd:css href="/assets/css/alerts_examples.css"/>

@@ -48,12 +48,14 @@ public class DlvProperties {
 	private final static String PROP_MAPPER_HOME 				= "mapper.home";
 	private final static String PROP_REPORT_HOME 				= "report.home";
 	private final static String PROP_FREE_SPATIAL_ONLY		= "delivery.free.spatial.only";
+	private final static String PROP_SMS_ALERTS_HOME        = "smsalerts.home";
+	private final static String PROP_SMS_EXPIRE_IN_MINS		=	"smsalerts.expire";
 	
 	private final static Properties config;
 	static {
 		Properties defaults = new Properties();
 
-		defaults.put(PROP_PROVIDER_URL, 	"t3://127.0.0.1:8080");
+		defaults.put(PROP_PROVIDER_URL, 	"t3://127.0.0.1:7001");
 		defaults.put(PROP_MAPMARKER_CONNECTION_TYPE, "TCPIP");
 		defaults.put(PROP_MAPMARKER_IP, "localhost");
 		defaults.put(PROP_MAPMARKER_PORT, "4141");
@@ -75,6 +77,8 @@ public class DlvProperties {
 		defaults.put(PROP_MAPPER_HOME, "freshdirect.delivery.Mapper");
 		defaults.put(PROP_REPORT_HOME, "freshdirect.delivery.Report");
 		defaults.put(PROP_FREE_SPATIAL_ONLY, "true");
+		defaults.put(PROP_SMS_ALERTS_HOME, "freshdirect.SmsAlerts");
+		defaults.put(PROP_SMS_EXPIRE_IN_MINS, "60");
 				
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration for Delivery: "+config);
@@ -165,6 +169,13 @@ public class DlvProperties {
 	
 	public static boolean useFreeSpatialOnly(){
 		return Boolean.valueOf(config.getProperty(PROP_FREE_SPATIAL_ONLY)).booleanValue();
+	}
+	
+	public static String getSmsAlertsHome(){
+		return config.getProperty(PROP_SMS_ALERTS_HOME);
+	}
+	public static String getSmsExpireInMins(){
+		return config.getProperty(PROP_SMS_EXPIRE_IN_MINS);
 	}
 
 	public static Context getInitialContext() throws NamingException {

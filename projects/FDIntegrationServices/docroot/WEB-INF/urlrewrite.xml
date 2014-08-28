@@ -630,6 +630,11 @@
 		<to last="true">/fdinterface.do?action=getIVRCallLog&amp;ver=$1</to>
 	</rule>
 	
+	<rule>
+		<from>^/v/([0-9]+)/ext/t003(.*)</from>
+		<to last="true">/fdinterface.do?action=smsMessageRelay&amp;ver=$1</to>
+	</rule>
+	
 	<!-- Lookup -->
 	<rule>
 		<from>^/v/([0-9]+)/lookup/countries/(.*)</from>
