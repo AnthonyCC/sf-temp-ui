@@ -116,16 +116,19 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		Date currentTime = new Date();
 		Connection con = null;
 		DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+		PreparedStatement ps=null;
+		PreparedStatement ps1=null;
+		ResultSet rs=null;
 		try {
 			con = this.getConnection();
 			String getExpiredOptin = "select customer_id, mobile_number, ORDER_NOTIFICATION, ORDEREXCEPTION_NOTIFICATION, SMS_OFFERS_ALERT, PARTNERMESSAGE_NOTIFICATION "
 					+ " from cust.customerinfo where ORDER_NOTIFICATION='P' or ORDEREXCEPTION_NOTIFICATION='P' or SMS_OFFERS_ALERT='P' or PARTNERMESSAGE_NOTIFICATION='P' and  1440*(to_date(?,'MM/DD/YYYY HH:MI:SS AM')-SMS_OPTIN_DATE) >?";
-			PreparedStatement ps = con.prepareStatement(getExpiredOptin);
+			ps = con.prepareStatement(getExpiredOptin);
 			ps.setString(1, sdf.format(currentTime));
 			ps.setInt(2, getExpiryTime());
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			String updateCustomerInfo = "update cust.customerinfo set ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=? where customer_id=?";
-			PreparedStatement ps1 = con.prepareStatement(updateCustomerInfo);
+			ps1 = con.prepareStatement(updateCustomerInfo);
 			int batchCount = 0;
 			while (rs.next()) {
 				if (rs.getString("ORDER_NOTIFICATION") != null
@@ -164,8 +167,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			if (batchCount > 0) {
 				ps1.executeBatch();
 			}
-			ps1.close();
-			ps.close();
+			
 
 		} catch (Exception e) {
 			LOGGER.warn(e);
@@ -173,6 +175,15 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			throw new EJBException(e);
 		} finally {
 			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(ps1!=null){
+					ps1.close();
+				}
+				if(ps!=null){
+					ps.close();
+				}
 				if (con != null) {
 					con.close();
 					con = null;
@@ -233,10 +244,12 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	private void updateSmsMessagesReceived(String mobileNumber, String shortCode,
 			String carrierName, Date receivedDate, String message, SmsCustInfo customerInfo, Connection con, String confirmed) throws SQLException, SmsServiceException {
 		
+		PreparedStatement ps=null, ps1 = null;
+		try{
 		String customerId = customerInfo.getCustomerId();
 		String updateSmsReceived = "insert into MIS.SMS_RECEIVED (SMS_ID, CUSTOMER_ID, MOBILE_NUMBER, SHORT_CODE, CARRIER_NAME, RECEIVED_DATE, MESSAGE)"
 				+ " VALUES(?, ?, ?, ?, ?, ?, ?)";
-		PreparedStatement ps = con.prepareStatement(updateSmsReceived);
+		ps = con.prepareStatement(updateSmsReceived);
 		ps.setInt(1, Integer.parseInt(SequenceGenerator.getNextIdFromSequence(con, "MIS.SMS_RECEIVED_SEQ")));
 		ps.setString(2, customerId);
 		ps.setString(3, mobileNumber);
@@ -246,7 +259,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		ps.setString(7, message);
 
 		ps.executeUpdate();
-		ps.close();
+		
 		
 		LOGGER.debug("confirmed : " + confirmed);
 		String notice = customerInfo.getSmsOrderNotice()!=null?customerInfo.getSmsOrderNotice():EnumSMSAlertStatus.NONE.value();
@@ -255,7 +268,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		String pMessage = customerInfo.getSmsPartnerMessage()!=null?customerInfo.getSmsPartnerMessage():EnumSMSAlertStatus.NONE.value();
 
 		
-		PreparedStatement ps1 = null;
+		
 		if (confirmed.equalsIgnoreCase("YES")) {
 			String updateConfirmed = "update cust.customerinfo set ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?, SMS_OPTIN_DATE=? where customer_id=? ";
 			ps1 = con.prepareStatement(updateConfirmed);
@@ -295,9 +308,16 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			smsResponseModel.setDate(new Date());
 			updateSmsAlertCaptured(con, smsResponseModel, WRONG_RESPONSE_ALERT_TYPE, customerId);
 		}
+		} finally{
+			if (ps1 != null){
+				ps1.close();
+			}
+			if(ps!=null){
+				ps.close();
+			}
+		}
 
-		if (ps1 != null)
-			ps1.close();
+		
 		
 	}
 
@@ -478,7 +498,9 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		LOGGER.debug("Started updateSMSAlertCaptuerd ");
 		
 		PhoneNumber phone = new PhoneNumber(String.valueOf(smsResponseModel.getSms_to()));
-		PreparedStatement ps = con
+		PreparedStatement ps = null;
+		try{
+		ps = con
 				.prepareStatement("INSERT INTO MIS.SMS_ALERT_CAPTURE "
 						+ "(ID, USER_ID, ALERT_TYPE,CREATE_DATE,INSERT_DATE,STATUS,ERROR,ERROR_DESC,MOBILE_NUMBER,MESSAGE,STI_SMS_ID,ORDER_ID)"
 						+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -500,19 +522,27 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		ps.setString(12, smsResponseModel.getOrderId() != null ? smsResponseModel.getOrderId() : null);
 		
 		ps.executeUpdate();
-		ps.close();
+		}catch(SQLException e){
+			
+		}finally{
+			if(ps!=null){
+				ps.close();
+			}
+		}
 
 	}
 
 	private List<SmsCustInfo> getCustomerInfoList(Connection con, String mobileNumber)
 			throws SQLException {
 		List<SmsCustInfo> customerInfoList = new ArrayList<SmsCustInfo>();
-	
-		PreparedStatement ps = con
+		PreparedStatement ps = null;
+		ResultSet rs=null;
+		try{
+		ps = con
 				.prepareStatement("select customer_id, ORDER_NOTIFICATION, ORDEREXCEPTION_NOTIFICATION, SMS_OFFERS_ALERT, PARTNERMESSAGE_NOTIFICATION from cust.customerinfo where mobile_number = ? ");
 		ps.setString(1, mobileNumber);
 		
-		ResultSet rs = ps.executeQuery();
+		rs = ps.executeQuery();
 		while (rs.next()) {
 			SmsCustInfo smsCustInfo = new SmsCustInfo();
 			smsCustInfo.setCustomerId(rs.getString("customer_id"));
@@ -522,8 +552,9 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			smsCustInfo.setSmsPartnerMessage(rs.getString("PARTNERMESSAGE_NOTIFICATION"));
 			customerInfoList.add(smsCustInfo);
 		}
-		rs.close();
-		ps.close();
+		}finally{
+			close(rs,ps);
+		}
 
 		return customerInfoList;
 	}
@@ -546,39 +577,47 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	private String getDlvManagerName(Connection con, String employeeId)
 			throws SQLException {
 		String dlvManagerName = "";
+		PreparedStatement ps=null; ResultSet rs  = null;
+		try{
 		String dlvnameQuery = "select FIRSTNM  from TRANSP.KRONOS_EMPLOYEE where personnum=?";
-		PreparedStatement ps = con.prepareStatement(dlvnameQuery);
+		ps = con.prepareStatement(dlvnameQuery);
 		ps.setString(1, employeeId);
-		ResultSet rs = ps.executeQuery();
+		rs = ps.executeQuery();
 		if (rs.next()) {
 			dlvManagerName = rs.getString("FIRSTNM");
 		}
-		rs.close();
-		ps.close();
+		}finally{
+			close(rs,ps);
+		}
 		
 		return dlvManagerName;
 	}
 
 	private boolean isSubscribed(Connection con, String alertType,
 			String customerId) throws SQLException {
+		
+		
 		boolean isSubscribed = false;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try{
 		if (alertType.equals(NEXT_STOP_ALERT_TYPE)
 				|| alertType.equals(ETA_ALERT_TYPE)
 				|| alertType.equals(DLV_ATTEMPTED_ALERT_TYPE)
 				|| alertType.equals(UNATTENDED_OR_DOORMAN_ALERT_TYPE)) {
 			
-			PreparedStatement ps = con
-					.prepareStatement("select ORDER_NOTIFICATION from cust.customerinfo where customer_id = ? ");
+			ps = con.prepareStatement("select ORDER_NOTIFICATION from cust.customerinfo where customer_id = ? ");
 			ps.setString(1, customerId);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			if (rs.next()) {
 				if (rs.getString("ORDER_NOTIFICATION").equals(EnumSMSAlertStatus.SUBSCRIBED.value())) {
 					isSubscribed = true;
 				}
 			}
-			rs.close();
-			ps.close();
 		} 
+		}finally{
+			close(rs,ps);
+		}
 		return isSubscribed;
 	}
 
@@ -613,4 +652,11 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 				Calendar.AM_PM, Calendar.SHORT, Locale.US));
 	}
 
+	private void close(ResultSet rs, PreparedStatement ps) throws SQLException{
+		if(rs!=null){
+			rs.close();
+		}if(ps!=null){
+			ps.close();
+		}
+	}
 }
