@@ -405,7 +405,7 @@ public class ProductRecommenderUtil {
 			
 			
 			//append list with products in same category
-			CategoryModel parentCategory = originalProduct.getCategory();
+			CategoryModel parentCategory = originalProduct.getPrimaryHome();
 			if (replacementProducts.size() < MAX_UNAVAILABLE_REPLACEMENTS_COUNT){
 				List<ProductModel> siblingProducts = parentCategory.getProducts();
 				siblingProducts.removeAll(replacementProducts);
@@ -428,6 +428,7 @@ public class ProductRecommenderUtil {
 		}
 		return replacementProducts;
 	}
+	
 	
 	public static void removeProductsByKeys(List<ProductModel> products,  Set<ContentKey> excludedProducts){
 	    for (Iterator<ProductModel> productIt = products.iterator(); productIt.hasNext();){
