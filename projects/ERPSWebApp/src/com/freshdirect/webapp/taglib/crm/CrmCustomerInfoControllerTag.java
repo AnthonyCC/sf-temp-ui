@@ -193,9 +193,9 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 				|| (info.getMobileNumber() != null && this.customerInfo.getMobileNumber().getPhone() != info.getMobileNumber().getPhone())){
 			SMSAlertManager smsAlertManager=SMSAlertManager.getInstance();
 			boolean isSent=false;
-			if(!info.getOrderNotices().value().equals(EnumSMSAlertStatus.NONE.value())&&
-					!info.getOrderExceptions().value().equals(EnumSMSAlertStatus.NONE.value())&&
-					!info.getOffers().value().equals(EnumSMSAlertStatus.NONE.value())&&
+			if(!info.getOrderNotices().value().equals(EnumSMSAlertStatus.NONE.value())||
+					!info.getOrderExceptions().value().equals(EnumSMSAlertStatus.NONE.value())||
+					!info.getOffers().value().equals(EnumSMSAlertStatus.NONE.value())||
 					!info.getPartnerMessages().value().equals(EnumSMSAlertStatus.NONE.value())){
 				isSent=smsAlertManager.smsOptIn(customer.getId(),info.getMobileNumber().getPhone());
 			}
