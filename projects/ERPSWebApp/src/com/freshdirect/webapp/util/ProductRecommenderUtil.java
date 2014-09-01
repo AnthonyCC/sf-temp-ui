@@ -218,15 +218,29 @@ public class ProductRecommenderUtil {
 		return null;
 	}
 	
-	
-	public static Recommendations getBrowseCategoryListingPageRecommendations(FDUserI user, ContentNodeModel contentNode) throws FDResourceException{
-		Recommendations recommendations = null;
+	// figure out customer belongs to Certona cohort
+	public static boolean isEligibleForCertona(FDUserI user) {
+		if (user == null) {
+			return false;
+		}
 
+		List<String> certonaCohorts = Arrays.asList(FDStoreProperties.getCertonaCohorts().split(";"));
+		return certonaCohorts.contains(user.getCohortName());
+	}
+
+	public static Recommendations getBrowseCategoryListingPageRecommendations(FDUserI user, ContentNodeModel contentNode) throws FDResourceException{
+
+		if (isEligibleForCertona(user)) {
+			// single-step recommender for Certona customers
+			return doRecommend(user, null, EnumSiteFeature.getEnum("BRWS_CAT_LST"), MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);	
+		}
+
+		// two-phase recommenders for Scarab customers
+		Recommendations recommendations = null;
 		if (user.getIdentity() != null){ //try personal if user is identified
 			recommendations = doRecommend(user, null, EnumSiteFeature.getEnum("BRWS_CAT_LST"), MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);	
 		}
-		List<String> certonaCohorts = Arrays.asList(FDStoreProperties.getCertonaCohorts().split(";"));
-		if ((recommendations == null || recommendations.getAllProducts().size() == 0) && !certonaCohorts.contains(user.getCohortName())){ //fallback
+		if ((recommendations == null || recommendations.getAllProducts().size() == 0)){ //fallback
 			recommendations = doRecommend(user, null, EnumSiteFeature.getEnum("SCR_FEAT_ITEMS"), MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, contentNode);	
 		}
 		
@@ -235,6 +249,14 @@ public class ProductRecommenderUtil {
 
 	public static Recommendations getBrowseProductListingPageRecommendations(FDUserI user, Set<ContentKey> keys) throws FDResourceException {
 
+		if (isEligibleForCertona(user)) {
+			// single-step recommender for Certona customers
+			return doRecommend(user, null,
+				EnumSiteFeature.getEnum("BRWS_PRD_LST"),
+				MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);
+		}
+
+
 		Recommendations recommendations = null;
 		if (user.getIdentity() != null){ //try personal if user is identified
 			// Round #1 - Get personalized recommendations (Scarab 'Personalized Items')
@@ -242,8 +264,7 @@ public class ProductRecommenderUtil {
 				EnumSiteFeature.getEnum("BRWS_PRD_LST"),
 				MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);
 		}
-		List<String> certonaCohorts = Arrays.asList(FDStoreProperties.getCertonaCohorts().split(";"));
-		if ((recommendations == null || recommendations.getAllProducts().size() == 0) && !certonaCohorts.contains(user.getCohortName())) {
+		if (recommendations == null || recommendations.getAllProducts().size() == 0) {
 			// Round #2 - Get YMAL recommendations triggered by the first product from the selection
 			//   (Scarab 'Also Viewed' recommender backfilled with local SmartYMAL)
 			ContentNodeModel currentNode = null;
@@ -269,6 +290,7 @@ public class ProductRecommenderUtil {
 
 		return recommendations;
 	}
+	
 	
 	/**
 	 * Provide upsell product list for a given products.

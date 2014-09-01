@@ -194,7 +194,9 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	Recommendations rec = null;
 	boolean promote_recommendation_row = false;
 	boolean fallBack = true;
-	if(user.getIdentity()!=null){
+	// APPBUG-2401 NOTE: once Certona is introduced to all cohorts, fall-back option can be eliminated
+	final boolean isCertona = ProductRecommenderUtil.isEligibleForCertona(user);
+	if(isCertona || user.getIdentity()!=null){
 	%><fd:ProductGroupRecommender itemCount="16" siteFeature="SRCH" facility="default" id="recommendedProducts">
 	<%
 		fallBack = false;
@@ -204,8 +206,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	%>
 	</fd:ProductGroupRecommender>
 	<% }
-	List<String> certonaCohorts = Arrays.asList(FDStoreProperties.getCertonaCohorts().split(";"));
-	if (fallBack && !certonaCohorts.contains(user.getCohortName())) {
+	if (!isCertona && fallBack) {
 		ProductModel firstProduct = null;		
 		if ( products != null && products.size() > 0 ) {
 			FilteringSortingItem <ProductModel> firstItem = (FilteringSortingItem <ProductModel>)products.get( 0 );
