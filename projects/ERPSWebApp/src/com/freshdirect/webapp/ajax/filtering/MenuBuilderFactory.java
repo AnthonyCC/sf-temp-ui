@@ -736,7 +736,7 @@ public class MenuBuilderFactory {
 	private MenuBoxData createSuperDepartmentMenuBox(SuperDepartmentModel model, NavigationModel navModel, boolean simpleBox){
 				
 		MenuBoxData domain = new MenuBoxData();
-		domain.setName(model.getFullName());
+		domain.setName("");
 		domain.setId(model.getContentName() + "_superdepartment");
 		domain.setBoxType(MenuBoxType.SUPERDEPARTMENT);
 		if(simpleBox){
