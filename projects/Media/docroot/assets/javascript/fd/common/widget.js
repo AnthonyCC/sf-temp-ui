@@ -18,6 +18,7 @@ var FreshDirect = FreshDirect || {};
 		render:{
 			value:function(data){
 				$(this.placeholder).html(this.template(data));
+        fd.modules.common.Select.selectize($(this.placeholder));
 			}
 		},
 		callback:{

@@ -56,7 +56,7 @@
 	font-weight: bold;
 }
 
-.sorter-element:hover span,
-.sorter-element:focus span {
+.sorter-element:hover > span,
+.sorter-element:focus > span {
 	text-decoration: underline;
 }

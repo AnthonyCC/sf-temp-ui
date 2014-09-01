@@ -329,7 +329,10 @@ a.portrait-item-header-name:link {
   float:left;
   clear: both;
   line-height: 1.2em;
-  padding: 8px 0;
+  padding: 2px 0;
+  margin: 6px 0;
+  background: #f0f5e1;
+  width: 100%;
 }
 
 /* transactional popup */

@@ -326,13 +326,26 @@ var FreshDirect = FreshDirect || {};
         position.left = position.left - contentWidth;
       }
 
-      // popup, vertical viewport check
+      // popup, vertical window/page viewport check
       if (align[6] === 'c') {
         if (position.left < $(window).scrollLeft()) {
           position.left = $(window).scrollLeft();
         }
         if (position.left + contentWidth > $(window).width() + $(window).scrollLeft()) {
           position.left = $(window).width() + $(window).scrollLeft() - contentWidth;
+        }
+      } else if (align[6] === 'p') {
+        var viewContainer = $('.content').first();
+        if (position.left < $(window).scrollLeft()) {
+          position.left = $(window).scrollLeft();
+        } else if (position.left < viewContainer.offset().left) {
+          position.left = viewContainer.offset().left;
+        }
+         
+        if (position.left + contentWidth > $(window).width() + $(window).scrollLeft()) {
+          position.left = $(window).width() + $(window).scrollLeft() - contentWidth;
+        } else if (position.left + contentWidth > viewContainer.width() + viewContainer.offset().left) {
+          position.left = viewContainer.width() + viewContainer.offset().left - contentWidth;
         }
       }
             

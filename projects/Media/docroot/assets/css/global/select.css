@@ -1,0 +1,47 @@
+.fdselect .selectButton {
+  padding-right: 5px;
+}
+
+.fdselect .selectButton > span {
+  display: inline-block;
+  text-align: left;
+}
+
+.fdselect .selectButton span.popupcontent {
+  visibility: hidden;
+  display: block;
+  max-height: 1px;
+  height: 1px;
+  overflow: hidden;
+  margin-bottom: -1px;
+}
+
+select.customselect {
+  visibility: hidden;
+}
+
+ul.customselect,
+.browse-popup-content ul.customselect {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+#FDCustomSelect li {
+  cursor: pointer;
+  padding: 0 5px;
+  white-space: nowrap;
+}
+
+#FDCustomSelect li:hover span {
+  text-decoration: underline;
+}
+
+#FDCustomSelect li.default {
+  font-weight: bold;
+}
+
+#FDCustomSelect li.selected {
+  background: #f0f5e1;
+  border-radius: 6px;
+}

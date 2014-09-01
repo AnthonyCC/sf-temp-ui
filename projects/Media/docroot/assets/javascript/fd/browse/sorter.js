@@ -86,7 +86,7 @@ var FreshDirect = FreshDirect || {};
 
   sorter.listen();
 
-  $(document).on('click',sorter.placeholder+' button',sorter.handleClick.bind(sorter));
+  $(document).on('click',sorter.placeholder+' button.sorter-element',sorter.handleClick.bind(sorter));
   $(document).on('change',sorter.placeholder+' select',sorter.handleSelect.bind(sorter));
 
   fd.modules.common.utils.register("browse", "sorter", sorter, fd);
