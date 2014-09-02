@@ -777,7 +777,7 @@ section.main .leftnav .menuBox button.category {
   display: block;
   width: 100%;
   text-align: left;
-  padding: 8px 11px;
+  padding: 8px 5px 8px 11px;
   border-radius: 10px;
 }
 
@@ -794,7 +794,7 @@ section.main .leftnav .menuBox button.category > span {
   line-height: 1.3em;
   position: relative;
   padding-right: 14px;
-  max-width: 127px;
+  max-width: 133px;
 }
 
 .leftnav-category-popup-button.cssbutton > span:after,
