@@ -239,6 +239,7 @@ $.smoothScroll = function(options, px) {
 
 $.smoothScroll.version = version;
 $.smoothScroll.filterPath = function(string) {
+  if(typeof string === 'undefined'){ return string; }
   return string
     .replace(/^\//,'')
     .replace(/(?:index|default).[a-zA-Z]{3,4}$/,'')
@@ -249,6 +250,7 @@ $.smoothScroll.filterPath = function(string) {
 $.fn.smoothScroll.defaults = defaults;
 
 function escapeSelector (str) {
+  if(typeof string === 'undefined'){ return str; }
   return str.replace(/(:|\.)/g,'\\$1');
 }
 
