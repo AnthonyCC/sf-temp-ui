@@ -1394,7 +1394,7 @@ public class AirclicDAO {
 		PreparedStatement ps=null;
 		ResultSet rs=null;
 		try {
-			String getSmsInfo ="select s.create_date, s.alert_type, s.message, s.status from mis.sms_alert_capture s,transp.handoff_batchstop bs  where "
+			String getSmsInfo ="select s.create_date, s.alert_type, s.message, s.status from mis.sms_alert_capture s,transp.handoff_batchstop bs"
 					+"where s.mobile_number=bs.mobile_number and bs.weborder_id=s.order_id and bs.weborder_id =?";
 			ps= con.prepareStatement(getSmsInfo);
 			ps.setString(1,orderId);
