@@ -289,6 +289,10 @@
   margin-bottom: 4px;
 }
 
+.portrait-item-availability-message .am-cutoffheader {
+  font-weight: bold;
+}
+
 .portrait-item-availability-message > div:last-child {
   margin-bottom: 0;
 }
