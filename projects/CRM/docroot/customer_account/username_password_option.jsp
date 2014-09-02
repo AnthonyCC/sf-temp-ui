@@ -75,9 +75,9 @@
 					<tr valign="top">
 						<td colspan="2"><input class="radio" type="checkbox" name="offers" value="Y" <%=customerInfo.getOffers().equals(EnumSMSAlertStatus.NONE.value()) ? "" : "checked"%>/>&nbsp;Offers</td>
 					</tr>
-					<tr valign="top">
+					<%-- <tr valign="top">
 						<td colspan="2"><input class="radio" type="checkbox" name="partner_nessages" value="Y" <%=customerInfo.getPartnerMessages().equals(EnumSMSAlertStatus.NONE.value()) ? "" : "checked"%>/>&nbsp;Partner Messages</td>
-					</tr>
+					</tr> --%>
 					<tr>
                         <td colspan="2"><br><b>Go Green:</b><hr class="black1px"></td>
                     </tr>

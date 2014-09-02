@@ -65,10 +65,10 @@
 						}
 						
 						var ccSettings = {
-							tl: { radius: 6 },
-							tr: { radius: 6 },
-							bl: { radius: 6 },
-							br: { radius: 6 },
+							tl: { radius: 18 },
+							tr: { radius: 18 },
+							bl: { radius: 18 },
+							br: { radius: 18 },
 							topColour: "#FFFFFF",
 							bottomColour: "#FFFFFF",
 							antiAlias: true,
@@ -93,7 +93,7 @@
                                        $('MB_header').style.border = '0px solid #CCCCCC';
                                        $('MB_header').style.display = 'block';
                                        window.scrollTo(0,0);
-                                       $('MB_window').style.width = '750';
+                                       $('MB_window').style.width = 'auto';
                                        $('MB_window').style.height = 'auto';
                                        $('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
                                        $('MB_content').style.padding = '0px';
@@ -125,7 +125,7 @@
 										$('MB_header').style.border = '0px solid #CCCCCC';
 										$('MB_header').style.display = 'block';
 										window.scrollTo(0,0);
-										$('MB_window').style.width = '750';
+										$('MB_window').style.width = 'auto';
 										$('MB_window').style.height = 'auto';
 										$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
 										$('MB_content').style.padding = '0px';

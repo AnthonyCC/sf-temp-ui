@@ -49,7 +49,7 @@
 			function smsCallBack(smsResult){
 				console.log(smsResult);
 				var result='';
-				if  (smsResult !== null) { 
+				if  (smsResult != null) { 
 					var smsrows=smsResult.list;
 					for(var i=0;i < smsrows.length;i++){
 						if( i % 2 != 0){
@@ -61,6 +61,7 @@
 						result += "<td width=\"115\">"+ smsrows[i].alertType + "</td>";
 						result += "<td width=\"115\">"+ smsrows[i].message + "</td>";
 						result += "<td width=\"115\">"+ smsrows[i].status + "</td>";
+						result += "<td width=\"115\">"+ smsrows[i].mobileNumber + "</td>";
 						result += "</tr>";
 					}
 				} else {

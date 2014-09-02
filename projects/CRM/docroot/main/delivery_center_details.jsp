@@ -258,6 +258,7 @@
 											<td>Type</td>
 											<td>Message</td>
 											<td>Result</td>
+											<td>Mobile Number</td>
 										</tr>
 										<tr>
 											<td colspan="4"><div id="smsInfo" style="overflow-y:auto;height:200px;"></div></td>

@@ -614,7 +614,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	</tr>
 	<tr>
 	<td colspan="2" align="right" style="padding-right:5px;" class="text12">* Mobile Number</td>
-    <td><input type="text" size="28" maxlength="45" class="text9" name="mobile_number" value="<%=mobile_number%>" style="width:150px; padding:1px;"></td>
+    <td><input type="text" size="28" maxlength="16" class="text9" name="mobile_number" value="<%=mobile_number%>" style="width:150px; padding:1px;"></td>
 	<td colspan="3"><fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr> 
 	<tr><td colspan="6">&nbsp;</td></tr>
@@ -698,7 +698,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 			</table>
 		</td>
 	</tr>
-	<tr valign="top">
+	 <%-- <tr valign="top">
 		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="partner_messages" value="Y" <%=partner_messages ? "checked":""%>></td>
 		<td colspan="4" class="text12bold">FreshDirect Partner Messages</td>
 		<td></td>
@@ -717,7 +717,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 			</td></tr>
 			</table>
 		</td>
-	</tr>
+	</tr>  --%>
 	<tr valign="top">
 		<td style="padding-right: 5px;" align="left" colspan="6"><FONT class="text9" style="color:gray;font-style:italic;">* Standard text messaging rate apply</FONT></td>
 	</tr>	

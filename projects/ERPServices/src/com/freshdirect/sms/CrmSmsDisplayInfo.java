@@ -8,6 +8,15 @@ public class CrmSmsDisplayInfo {
 	private String alertType;
 	private String message;
 	private String status;
+	private String mobileNumber;
+	
+	
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
 	public Date getTimeSent() {
 		return timeSent;
 	}
