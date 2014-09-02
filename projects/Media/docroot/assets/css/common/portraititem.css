@@ -262,12 +262,13 @@
   background: #ffe7cf;
   border: 1px solid #f2c69b;
   margin: 4px 0;
-  padding: 4px 4px 4px 30px;
+  padding: 4px 4px 4px 4px;
   text-align: left;
   font-size: 9px;
   line-height: 12px;
 }
 
+/*
 .portrait-item-availability-message:before {
   content: '!';
   display: block;
@@ -282,7 +283,7 @@
   border-radius: 50px;
   background: #f93;
   color: #fff;
-}
+}*/
 
 .portrait-item-availability-message > div {
   margin-bottom: 4px;
