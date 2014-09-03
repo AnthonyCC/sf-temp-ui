@@ -584,8 +584,13 @@ section.main .category.cssbutton.green:hover,
   font-size: 12px;
   color: #3d3d20;
   line-height: 14px;
-  margin-bottom: 5px;
+  margin-bottom: 0px;
+  margin-top: 5px;
   padding-left: 5px;
+}
+
+.browse-popup-content ul:first-child li:first-child h3 {
+  margin-top: 0px;
 }
 
 .browse-popup-content h3.section-big{
