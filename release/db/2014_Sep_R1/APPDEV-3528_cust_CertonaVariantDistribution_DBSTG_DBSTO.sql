@@ -15,15 +15,15 @@ INSERT INTO CUST.SS_VARIANT_ASSIGNMENT VALUES ('C15', sysdate, 'srch_pers');
 INSERT INTO CUST.SS_VARIANT_ASSIGNMENT VALUES ('C16', sysdate, 'srch_pers');
 INSERT INTO CUST.SS_VARIANT_ASSIGNMENT VALUES ('C17', sysdate, 'srch_ctrl');
 
-insert into cust.ss_variant_assignment values ('C2', sysdate, 'srch_certona');
-insert into cust.ss_variant_assignment values ('C6', sysdate, 'srch_certona');
-insert into cust.ss_variant_assignment values ('C9', sysdate, 'srch_certona');
-insert into cust.ss_variant_assignment values ('C10', sysdate, 'srch_certona');
-insert into cust.ss_variant_assignment values ('C11', sysdate, 'srch_certona');
-insert into cust.ss_variant_assignment values ('C12', sysdate, 'srch_certona');
-insert into cust.ss_variant_assignment values ('C18', sysdate, 'srch_certona');
-insert into cust.ss_variant_assignment values ('C19', sysdate, 'srch_certona');
-insert into cust.ss_variant_assignment values ('C20', sysdate, 'srch_certona');
+insert into cust.ss_variant_assignment values ('C2', sysdate, 'srch_pers');
+insert into cust.ss_variant_assignment values ('C6', sysdate, 'srch_pers');
+insert into cust.ss_variant_assignment values ('C9', sysdate, 'srch_pers');
+insert into cust.ss_variant_assignment values ('C10', sysdate, 'srch_pers');
+insert into cust.ss_variant_assignment values ('C11', sysdate, 'srch_pers');
+insert into cust.ss_variant_assignment values ('C12', sysdate, 'srch_pers');
+insert into cust.ss_variant_assignment values ('C18', sysdate, 'srch_pers');
+insert into cust.ss_variant_assignment values ('C19', sysdate, 'srch_pers');
+insert into cust.ss_variant_assignment values ('C20', sysdate, 'srch_pers');
 
 
 -------------------------------------------------------------------------------
@@ -43,15 +43,15 @@ INSERT INTO CUST.SS_VARIANT_ASSIGNMENT VALUES ('C15', sysdate, 'sc_related2');
 INSERT INTO CUST.SS_VARIANT_ASSIGNMENT VALUES ('C16', sysdate, 'sc_related2');
 INSERT INTO CUST.SS_VARIANT_ASSIGNMENT VALUES ('C17', sysdate, 'sc_related2');
 
-insert into cust.ss_variant_assignment values ('C2', sysdate, 'ymal_certona');
-insert into cust.ss_variant_assignment values ('C6', sysdate, 'ymal_certona');
-insert into cust.ss_variant_assignment values ('C9', sysdate, 'ymal_certona');
-insert into cust.ss_variant_assignment values ('C10', sysdate, 'ymal_certona');
-insert into cust.ss_variant_assignment values ('C11', sysdate, 'ymal_certona');
-insert into cust.ss_variant_assignment values ('C12', sysdate, 'ymal_certona');
-insert into cust.ss_variant_assignment values ('C18', sysdate, 'ymal_certona');
-insert into cust.ss_variant_assignment values ('C19', sysdate, 'ymal_certona');
-insert into cust.ss_variant_assignment values ('C20', sysdate, 'ymal_certona');
+insert into cust.ss_variant_assignment values ('C2', sysdate, 'sc_related2');
+insert into cust.ss_variant_assignment values ('C6', sysdate, 'sc_related2');
+insert into cust.ss_variant_assignment values ('C9', sysdate, 'sc_related2');
+insert into cust.ss_variant_assignment values ('C10', sysdate, 'sc_related2');
+insert into cust.ss_variant_assignment values ('C11', sysdate, 'sc_related2');
+insert into cust.ss_variant_assignment values ('C12', sysdate, 'sc_related2');
+insert into cust.ss_variant_assignment values ('C18', sysdate, 'sc_related2');
+insert into cust.ss_variant_assignment values ('C19', sysdate, 'sc_related2');
+insert into cust.ss_variant_assignment values ('C20', sysdate, 'sc_related2');
 
 
 -------------------------------------------------------------------------------
@@ -71,15 +71,15 @@ INSERT INTO CUST.SS_VARIANT_ASSIGNMENT values ('C15', sysdate, 'ymal_pdtl');
 INSERT INTO CUST.SS_VARIANT_ASSIGNMENT values ('C16', sysdate, 'ymal_pdtl');
 INSERT INTO CUST.SS_VARIANT_ASSIGNMENT values ('C17', sysdate, 'ymal_pdtl');
 
-insert into cust.ss_variant_assignment values ('C2', sysdate, 'ymal_pdtl_certona');
-insert into cust.ss_variant_assignment values ('C6', sysdate, 'ymal_pdtl_certona');
-insert into cust.ss_variant_assignment values ('C9', sysdate, 'ymal_pdtl_certona');
-insert into cust.ss_variant_assignment values ('C10', sysdate, 'ymal_pdtl_certona');
-insert into cust.ss_variant_assignment values ('C11', sysdate, 'ymal_pdtl_certona');
-insert into cust.ss_variant_assignment values ('C12', sysdate, 'ymal_pdtl_certona');
-insert into cust.ss_variant_assignment values ('C18', sysdate, 'ymal_pdtl_certona');
-insert into cust.ss_variant_assignment values ('C19', sysdate, 'ymal_pdtl_certona');
-insert into cust.ss_variant_assignment values ('C20', sysdate, 'ymal_pdtl_certona');
+insert into cust.ss_variant_assignment values ('C2', sysdate, 'ymal_pdtl');
+insert into cust.ss_variant_assignment values ('C6', sysdate, 'ymal_pdtl');
+insert into cust.ss_variant_assignment values ('C9', sysdate, 'ymal_pdtl');
+insert into cust.ss_variant_assignment values ('C10', sysdate, 'ymal_pdtl');
+insert into cust.ss_variant_assignment values ('C11', sysdate, 'ymal_pdtl');
+insert into cust.ss_variant_assignment values ('C12', sysdate, 'ymal_pdtl');
+insert into cust.ss_variant_assignment values ('C18', sysdate, 'ymal_pdtl');
+insert into cust.ss_variant_assignment values ('C19', sysdate, 'ymal_pdtl');
+insert into cust.ss_variant_assignment values ('C20', sysdate, 'ymal_pdtl');
 
 
 -------------------------------------------------------------------------------
@@ -99,15 +99,15 @@ insert into cust.ss_variant_assignment values ('C15', sysdate, 'right_nav_scarab
 insert into cust.ss_variant_assignment values ('C16', sysdate, 'right_nav_scarab');
 insert into cust.ss_variant_assignment values ('C17', sysdate, 'right_nav_scarab');
 
-insert into cust.ss_variant_assignment values ('C2', sysdate, 'right_nav_certona');
-insert into cust.ss_variant_assignment values ('C6', sysdate, 'right_nav_certona');
-insert into cust.ss_variant_assignment values ('C9', sysdate, 'right_nav_certona');
-insert into cust.ss_variant_assignment values ('C10', sysdate, 'right_nav_certona');
-insert into cust.ss_variant_assignment values ('C11', sysdate, 'right_nav_certona');
-insert into cust.ss_variant_assignment values ('C12', sysdate, 'right_nav_certona');
-insert into cust.ss_variant_assignment values ('C18', sysdate, 'right_nav_certona');
-insert into cust.ss_variant_assignment values ('C19', sysdate, 'right_nav_certona');
-insert into cust.ss_variant_assignment values ('C20', sysdate, 'right_nav_certona');
+insert into cust.ss_variant_assignment values ('C2', sysdate, 'right_nav_scarab');
+insert into cust.ss_variant_assignment values ('C6', sysdate, 'right_nav_scarab');
+insert into cust.ss_variant_assignment values ('C9', sysdate, 'right_nav_scarab');
+insert into cust.ss_variant_assignment values ('C10', sysdate, 'right_nav_scarab');
+insert into cust.ss_variant_assignment values ('C11', sysdate, 'right_nav_scarab');
+insert into cust.ss_variant_assignment values ('C12', sysdate, 'right_nav_scarab');
+insert into cust.ss_variant_assignment values ('C18', sysdate, 'right_nav_scarab');
+insert into cust.ss_variant_assignment values ('C19', sysdate, 'right_nav_scarab');
+insert into cust.ss_variant_assignment values ('C20', sysdate, 'right_nav_scarab');
 
 -------------------------------------------------------------------------------
 --
@@ -126,15 +126,15 @@ insert into cust.ss_variant_assignment values ('C15', sysdate, 'right_nav_scarab
 insert into cust.ss_variant_assignment values ('C16', sysdate, 'right_nav_scarab_pop');
 insert into cust.ss_variant_assignment values ('C17', sysdate, 'right_nav_scarab_pop');
 
-insert into cust.ss_variant_assignment values ('C2', sysdate, 'right_nav_certona_rltd');
-insert into cust.ss_variant_assignment values ('C6', sysdate, 'right_nav_certona_rltd');
-insert into cust.ss_variant_assignment values ('C9', sysdate, 'right_nav_certona_rltd');
-insert into cust.ss_variant_assignment values ('C10', sysdate, 'right_nav_certona_rltd');
-insert into cust.ss_variant_assignment values ('C11', sysdate, 'right_nav_certona_rltd');
-insert into cust.ss_variant_assignment values ('C12', sysdate, 'right_nav_certona_rltd');
-insert into cust.ss_variant_assignment values ('C18', sysdate, 'right_nav_certona_rltd');
-insert into cust.ss_variant_assignment values ('C19', sysdate, 'right_nav_certona_rltd');
-insert into cust.ss_variant_assignment values ('C20', sysdate, 'right_nav_certona_rltd');
+insert into cust.ss_variant_assignment values ('C2', sysdate, 'right_nav_scarab_pop');
+insert into cust.ss_variant_assignment values ('C6', sysdate, 'right_nav_scarab_pop');
+insert into cust.ss_variant_assignment values ('C9', sysdate, 'right_nav_scarab_pop');
+insert into cust.ss_variant_assignment values ('C10', sysdate, 'right_nav_scarab_pop');
+insert into cust.ss_variant_assignment values ('C11', sysdate, 'right_nav_scarab_pop');
+insert into cust.ss_variant_assignment values ('C12', sysdate, 'right_nav_scarab_pop');
+insert into cust.ss_variant_assignment values ('C18', sysdate, 'right_nav_scarab_pop');
+insert into cust.ss_variant_assignment values ('C19', sysdate, 'right_nav_scarab_pop');
+insert into cust.ss_variant_assignment values ('C20', sysdate, 'right_nav_scarab_pop');
 
 
 -------------------------------------------------------------------------------
@@ -154,15 +154,15 @@ insert into cust.ss_variant_assignment values ('C15', sysdate, 'brws_cat_list_sc
 insert into cust.ss_variant_assignment values ('C16', sysdate, 'brws_cat_list_scr_pers');
 insert into cust.ss_variant_assignment values ('C17', sysdate, 'brws_cat_list_scr_pers');
 
-insert into cust.ss_variant_assignment values ('C2', sysdate, 'brws_cat_list_certona');
-insert into cust.ss_variant_assignment values ('C6', sysdate, 'brws_cat_list_certona');
-insert into cust.ss_variant_assignment values ('C9', sysdate, 'brws_cat_list_certona');
-insert into cust.ss_variant_assignment values ('C10', sysdate, 'brws_cat_list_certona');
-insert into cust.ss_variant_assignment values ('C11', sysdate, 'brws_cat_list_certona');
-insert into cust.ss_variant_assignment values ('C12', sysdate, 'brws_cat_list_certona');
-insert into cust.ss_variant_assignment values ('C18', sysdate, 'brws_cat_list_certona');
-insert into cust.ss_variant_assignment values ('C19', sysdate, 'brws_cat_list_certona');
-insert into cust.ss_variant_assignment values ('C20', sysdate, 'brws_cat_list_certona');
+insert into cust.ss_variant_assignment values ('C2', sysdate, 'brws_cat_list_scr_pers');
+insert into cust.ss_variant_assignment values ('C6', sysdate, 'brws_cat_list_scr_pers');
+insert into cust.ss_variant_assignment values ('C9', sysdate, 'brws_cat_list_scr_pers');
+insert into cust.ss_variant_assignment values ('C10', sysdate, 'brws_cat_list_scr_pers');
+insert into cust.ss_variant_assignment values ('C11', sysdate, 'brws_cat_list_scr_pers');
+insert into cust.ss_variant_assignment values ('C12', sysdate, 'brws_cat_list_scr_pers');
+insert into cust.ss_variant_assignment values ('C18', sysdate, 'brws_cat_list_scr_pers');
+insert into cust.ss_variant_assignment values ('C19', sysdate, 'brws_cat_list_scr_pers');
+insert into cust.ss_variant_assignment values ('C20', sysdate, 'brws_cat_list_scr_pers');
 
 
 -------------------------------------------------------------------------------
@@ -182,12 +182,12 @@ insert into cust.ss_variant_assignment values ('C15', sysdate, 'brws_prd_list_sc
 insert into cust.ss_variant_assignment values ('C16', sysdate, 'brws_prd_list_scr_pers');
 insert into cust.ss_variant_assignment values ('C17', sysdate, 'brws_prd_list_scr_pers');
 
-insert into cust.ss_variant_assignment values ('C2', sysdate, 'brws_prd_list_certona');
-insert into cust.ss_variant_assignment values ('C6', sysdate, 'brws_prd_list_certona');
-insert into cust.ss_variant_assignment values ('C9', sysdate, 'brws_prd_list_certona');
-insert into cust.ss_variant_assignment values ('C10', sysdate, 'brws_prd_list_certona');
-insert into cust.ss_variant_assignment values ('C11', sysdate, 'brws_prd_list_certona');
-insert into cust.ss_variant_assignment values ('C12', sysdate, 'brws_prd_list_certona');
-insert into cust.ss_variant_assignment values ('C18', sysdate, 'brws_prd_list_certona');
-insert into cust.ss_variant_assignment values ('C19', sysdate, 'brws_prd_list_certona');
-insert into cust.ss_variant_assignment values ('C20', sysdate, 'brws_prd_list_certona');
+insert into cust.ss_variant_assignment values ('C2', sysdate, 'brws_prd_list_scr_pers');
+insert into cust.ss_variant_assignment values ('C6', sysdate, 'brws_prd_list_scr_pers');
+insert into cust.ss_variant_assignment values ('C9', sysdate, 'brws_prd_list_scr_pers');
+insert into cust.ss_variant_assignment values ('C10', sysdate, 'brws_prd_list_scr_pers');
+insert into cust.ss_variant_assignment values ('C11', sysdate, 'brws_prd_list_scr_pers');
+insert into cust.ss_variant_assignment values ('C12', sysdate, 'brws_prd_list_scr_pers');
+insert into cust.ss_variant_assignment values ('C18', sysdate, 'brws_prd_list_scr_pers');
+insert into cust.ss_variant_assignment values ('C19', sysdate, 'brws_prd_list_scr_pers');
+insert into cust.ss_variant_assignment values ('C20', sysdate, 'brws_prd_list_scr_pers');

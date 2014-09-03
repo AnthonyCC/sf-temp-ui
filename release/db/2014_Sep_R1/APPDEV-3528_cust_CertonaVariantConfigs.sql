@@ -12,7 +12,7 @@ insert into ss_variants (id, config_id, feature, type, alias_id, archived) value
 insert into ss_variant_params (id, key, value) values ('right_nav_certona', 'prez_desc', 'People who bought the same items as you enjoyed...');
 insert into ss_variant_params (id, key, value) values ('right_nav_certona', 'cat_aggr', 'false');
 insert into ss_variant_params (id, key, value) values ('right_nav_certona', 'hide_bursts', '');
-insert into ss_variant_params (id, key, value) values ('right_nav_certona', 'prez_title', 'You MAy Also Like');
+insert into ss_variant_params (id, key, value) values ('right_nav_certona', 'prez_title', 'You May Also Like');
 insert into ss_variant_params (id, key, value) values ('right_nav_certona', 'include_cart_items', 'false');
 insert into ss_variant_params (id, key, value) values ('right_nav_certona', 'generator', 'PersonalizedItems_certonaDepartment1rr()');
 insert into ss_variant_params (id, key, value) values ('right_nav_certona', 'use_alternatives', 'true');
@@ -23,7 +23,7 @@ insert into ss_variant_params (id, key, value) values ('right_nav_scarab', 'expo
 insert into ss_variant_params (id, key, value) values ('right_nav_scarab', 'prez_desc', 'People who bought the same items as you enjoyed...');
 insert into ss_variant_params (id, key, value) values ('right_nav_scarab', 'cat_aggr', 'false');
 insert into ss_variant_params (id, key, value) values ('right_nav_scarab', 'hide_bursts', '');
-insert into ss_variant_params (id, key, value) values ('right_nav_scarab', 'prez_title', 'You MAy Also Like');
+insert into ss_variant_params (id, key, value) values ('right_nav_scarab', 'prez_title', 'You May Also Like');
 insert into ss_variant_params (id, key, value) values ('right_nav_scarab', 'include_cart_items', 'false');
 insert into ss_variant_params (id, key, value) values ('right_nav_scarab', 'generator', 'PersonalizedItems_scarab1()');
 insert into ss_variant_params (id, key, value) values ('right_nav_scarab', 'use_alternatives', 'true');
@@ -34,7 +34,7 @@ insert into ss_variant_params (id, key, value) values ('right_nav_scarab_rltd', 
 insert into ss_variant_params (id, key, value) values ('right_nav_scarab_rltd', 'prez_desc', 'People who bought the same items as you enjoyed...');
 insert into ss_variant_params (id, key, value) values ('right_nav_scarab_rltd', 'cat_aggr', 'false');
 insert into ss_variant_params (id, key, value) values ('right_nav_scarab_rltd', 'hide_bursts', '');
-insert into ss_variant_params (id, key, value) values ('right_nav_scarab_rltd', 'prez_title', 'You MAy Also Like');
+insert into ss_variant_params (id, key, value) values ('right_nav_scarab_rltd', 'prez_title', 'You May Also Like');
 insert into ss_variant_params (id, key, value) values ('right_nav_scarab_rltd', 'include_cart_items', 'false');
 insert into ss_variant_params (id, key, value) values ('right_nav_scarab_rltd', 'generator', 'RelatedItems_scarabAlsoViewed(currentNode)+SmartYMAL():deprioritize()');
 insert into ss_variant_params (id, key, value) values ('right_nav_scarab_rltd', 'use_alternatives', 'true');
@@ -46,7 +46,7 @@ insert into ss_variant_params(id, key, value) values('right_nav_scarab_pop', 'pr
 insert into ss_variant_params (id, key, value) values ('right_nav_certona_rltd', 'prez_desc', 'People who bought the same items as you enjoyed...');
 insert into ss_variant_params (id, key, value) values ('right_nav_certona_rltd', 'cat_aggr', 'false');
 insert into ss_variant_params (id, key, value) values ('right_nav_certona_rltd', 'hide_bursts', '');
-insert into ss_variant_params (id, key, value) values ('right_nav_certona_rltd', 'prez_title', 'You MAy Also Like');
+insert into ss_variant_params (id, key, value) values ('right_nav_certona_rltd', 'prez_title', 'You May Also Like');
 insert into ss_variant_params (id, key, value) values ('right_nav_certona_rltd', 'include_cart_items', 'false');
 insert into ss_variant_params (id, key, value) values ('right_nav_certona_rltd', 'generator', 'RelatedItems_certonaRelatedDepartment1rr(currentNode)');
 insert into ss_variant_params (id, key, value) values ('right_nav_certona_rltd', 'use_alternatives', 'true');
@@ -135,4 +135,4 @@ insert into ss_variant_params (id, key, value) values ('srch_certona', 'generato
 insert into ss_variant_params (id, key, value) values ('srch_certona', 'use_alternatives', 'true');
 insert into ss_variant_params (id, key, value) values ('srch_certona', 'brand_uniq_sort', 'false');
 insert into ss_variant_params (id, key, value) values ('srch_certona', 'sampling_strat', 'deterministic');
-commit;
+
