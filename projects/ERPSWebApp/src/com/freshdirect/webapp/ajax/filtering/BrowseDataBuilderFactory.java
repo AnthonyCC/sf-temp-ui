@@ -783,7 +783,7 @@ public class BrowseDataBuilderFactory {
 							comparator = ProductItemSorterFactory.wrapComparator(comparator);
 
 							dropDownOption.setSelected(true);
-							defaultNutritionDropDownOption.setName("Default");
+							defaultNutritionDropDownOption.setName("Default View");
 							nav.setErpNutritionTypeType(erpNutritionTypeType); //will be used by ProductDetailPopulator.populateSelectedNutritionFields()
 						}
 					}
