@@ -235,14 +235,8 @@ public class ProductRecommenderUtil {
 			return doRecommend(user, null, EnumSiteFeature.getEnum("BRWS_CAT_LST"), MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);	
 		}
 
-		// two-phase recommenders for Scarab customers
-		Recommendations recommendations = null;
-		if (user.getIdentity() != null){ //try personal if user is identified
-			recommendations = doRecommend(user, null, EnumSiteFeature.getEnum("BRWS_CAT_LST"), MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);	
-		}
-		if ((recommendations == null || recommendations.getAllProducts().size() == 0)){ //fallback
-			recommendations = doRecommend(user, null, EnumSiteFeature.getEnum("SCR_FEAT_ITEMS"), MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, contentNode);	
-		}
+		// recommenders for Scarab customers
+		Recommendations recommendations = doRecommend(user, null, EnumSiteFeature.getEnum("SCR_FEAT_ITEMS"), MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, contentNode);	
 		
 		return recommendations;
 	}
@@ -257,36 +251,26 @@ public class ProductRecommenderUtil {
 		}
 
 
-		Recommendations recommendations = null;
-		if (user.getIdentity() != null){ //try personal if user is identified
-			// Round #1 - Get personalized recommendations (Scarab 'Personalized Items')
-			recommendations = doRecommend(user, null,
-				EnumSiteFeature.getEnum("BRWS_PRD_LST"),
-				MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);
+		//   Get YMAL recommendations triggered by the first product from the selection
+		//   (Scarab 'Also Viewed' recommender backfilled with local SmartYMAL)
+		ContentNodeModel currentNode = null;
+		if (keys.size() > 0) {
+			currentNode = ContentFactory.getInstance().getContentNodeByKey(keys.iterator().next());
 		}
-		if (recommendations == null || recommendations.getAllProducts().size() == 0) {
-			// Round #2 - Get YMAL recommendations triggered by the first product from the selection
-			//   (Scarab 'Also Viewed' recommender backfilled with local SmartYMAL)
-			ContentNodeModel currentNode = null;
-			if (keys.size() > 0) {
-				currentNode = ContentFactory.getInstance().getContentNodeByKey(keys.iterator().next());
-			}
 
-			SessionInput si = new SessionInput.Builder()
-					.setUser(user)
-					.setExcludeAlcoholicContent(false)
-					.setMaxRecommendations(MAX_CAT_SCARAB_RECOMMENDER_COUNT)
-					.setCurrentNode(currentNode)
-					.setCartContents(keys)
-					.setExcludeCartContent(true)
-					.build();
+		SessionInput si = new SessionInput.Builder()
+				.setUser(user)
+				.setExcludeAlcoholicContent(false)
+				.setMaxRecommendations(MAX_CAT_SCARAB_RECOMMENDER_COUNT)
+				.setCurrentNode(currentNode)
+				.setCartContents(keys)
+				.setExcludeCartContent(true)
+				.build();
 
-			/* recommendations = doRecommend(user, null,
-					EnumSiteFeature.getEnum("SRCH_RLTD"),
-					MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, currentNode); */
-			recommendations = doRecommend(user,
-					EnumSiteFeature.getEnum("SRCH_RLTD"), si);
-		}
+		/* recommendations = doRecommend(user, null,
+				EnumSiteFeature.getEnum("SRCH_RLTD"),
+				MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, currentNode); */
+		Recommendations recommendations = doRecommend(user, EnumSiteFeature.getEnum("SRCH_RLTD"), si);
 
 		return recommendations;
 	}
