@@ -113,8 +113,8 @@ insert into cust.ss_variant_assignment values ('C17', sysdate, 'right_nav_scarab
 -- Site Feature: RIGHT_NAV_RLTD
 -- C1 and C4 cohorts fall back to scarab
 --
-insert into cust.ss_variant_assignment values ('C1', sysdate, 'right_nav_scarab_rltd');
-insert into cust.ss_variant_assignment values ('C4', sysdate, 'right_nav_scarab_rltd');
+insert into cust.ss_variant_assignment values ('C1', sysdate, 'right_nav_scarab_pop');
+insert into cust.ss_variant_assignment values ('C4', sysdate, 'right_nav_scarab_pop');
 
 insert into cust.ss_variant_assignment values ('C2', sysdate, 'right_nav_certona_rltd');
 insert into cust.ss_variant_assignment values ('C6', sysdate, 'right_nav_certona_rltd');
@@ -126,15 +126,15 @@ insert into cust.ss_variant_assignment values ('C18', sysdate, 'right_nav_certon
 insert into cust.ss_variant_assignment values ('C19', sysdate, 'right_nav_certona_rltd');
 insert into cust.ss_variant_assignment values ('C20', sysdate, 'right_nav_certona_rltd');
 
-insert into cust.ss_variant_assignment values ('C3', sysdate, 'right_nav_scarab_rltd');
-insert into cust.ss_variant_assignment values ('C5', sysdate, 'right_nav_scarab_rltd');
-insert into cust.ss_variant_assignment values ('C7', sysdate, 'right_nav_scarab_rltd');
-insert into cust.ss_variant_assignment values ('C8', sysdate, 'right_nav_scarab_rltd');
-insert into cust.ss_variant_assignment values ('C13', sysdate, 'right_nav_scarab_rltd');
-insert into cust.ss_variant_assignment values ('C14', sysdate, 'right_nav_scarab_rltd');
-insert into cust.ss_variant_assignment values ('C15', sysdate, 'right_nav_scarab_rltd');
-insert into cust.ss_variant_assignment values ('C16', sysdate, 'right_nav_scarab_rltd');
-insert into cust.ss_variant_assignment values ('C17', sysdate, 'right_nav_scarab_rltd');
+insert into cust.ss_variant_assignment values ('C3', sysdate, 'right_nav_scarab_pop');
+insert into cust.ss_variant_assignment values ('C5', sysdate, 'right_nav_scarab_pop');
+insert into cust.ss_variant_assignment values ('C7', sysdate, 'right_nav_scarab_pop');
+insert into cust.ss_variant_assignment values ('C8', sysdate, 'right_nav_scarab_pop');
+insert into cust.ss_variant_assignment values ('C13', sysdate, 'right_nav_scarab_pop');
+insert into cust.ss_variant_assignment values ('C14', sysdate, 'right_nav_scarab_pop');
+insert into cust.ss_variant_assignment values ('C15', sysdate, 'right_nav_scarab_pop');
+insert into cust.ss_variant_assignment values ('C16', sysdate, 'right_nav_scarab_pop');
+insert into cust.ss_variant_assignment values ('C17', sysdate, 'right_nav_scarab_pop');
 
 
 -------------------------------------------------------------------------------

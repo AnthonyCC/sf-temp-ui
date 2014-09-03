@@ -7,6 +7,7 @@ insert into ss_variants (id, config_id, feature, type, alias_id, archived) value
 insert into ss_variants (id, config_id, feature, type, alias_id, archived) values ('right_nav_scarab', null, 'RIGHT_NAV_PERS', 'scripted', '', 'N');
 insert into ss_variants (id, config_id, feature, type, alias_id, archived) values ('right_nav_certona_rltd', null, 'RIGHT_NAV_RLTD', 'scripted', '', 'N');
 insert into ss_variants (id, config_id, feature, type, alias_id, archived) values ('right_nav_scarab_rltd', null, 'RIGHT_NAV_RLTD', 'scripted', '', 'N');
+insert into ss_variants (id, config_id, feature, type, alias_id, archived) values ('right_nav_scarab_pop', null, 'RIGHT_NAV_RLTD', 'alias', 'prod-grp-pop-1', 'N');
 
 insert into ss_variant_params (id, key, value) values ('right_nav_certona', 'prez_desc', 'People who bought the same items as you enjoyed...');
 insert into ss_variant_params (id, key, value) values ('right_nav_certona', 'cat_aggr', 'false');
@@ -39,6 +40,8 @@ insert into ss_variant_params (id, key, value) values ('right_nav_scarab_rltd', 
 insert into ss_variant_params (id, key, value) values ('right_nav_scarab_rltd', 'use_alternatives', 'true');
 insert into ss_variant_params (id, key, value) values ('right_nav_scarab_rltd', 'brand_uniq_sort', 'false');
 insert into ss_variant_params (id, key, value) values ('right_nav_scarab_rltd', 'sampling_strat', 'power');
+
+insert into ss_variant_params(id, key, value) values('right_nav_scarab_pop', 'prez_title', 'Customer Favorites');
 
 insert into ss_variant_params (id, key, value) values ('right_nav_certona_rltd', 'prez_desc', 'People who bought the same items as you enjoyed...');
 insert into ss_variant_params (id, key, value) values ('right_nav_certona_rltd', 'cat_aggr', 'false');
