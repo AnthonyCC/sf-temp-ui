@@ -13,6 +13,7 @@
 	margin:0 0 10px;
 }
 
+/*
 .pdp .availability-dialog h1:before {
 	content:"!";
 	background:#f93;
@@ -23,7 +24,7 @@
 	height:16px;
 	color:white;
 	text-align:center;
-}
+}*/
 
 .pdp .availability-dialog h2 {
 	font-family:Verdana,sans-serif;
