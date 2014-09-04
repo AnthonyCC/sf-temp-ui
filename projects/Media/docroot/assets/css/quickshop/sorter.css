@@ -44,19 +44,25 @@
 }
 
 /* custom select in sorter */
-.sorter-element .fdselect .selectButton {
+.sorter-element .fdselect {
+  display: inline-block;
+  overflow: hidden;
+  height: 30px;
+}
+
+.sortSelectButton {
   height: 30px;
   line-height: 16px;
 }
 
-.sorter-element .fdselect .selectButton:after {
+.sortSelectButton:after {
   vertical-align: top;
   font-size: 15px;
   display: inline-block;
   width: 15px;
 }
 
-.sorter-element .fdselect .selectButton .title {
+.sortSelectButton .title {
   width: 129px;
   line-height: 13px;
   display: inline-block;
@@ -65,7 +71,7 @@
   text-overflow: ellipsis;
 }
 
-.sorter-element .fdselect .selectButton .popupcontent {
+.sortSelectButton span > span.popupcontent {
   display: none;
 }
 

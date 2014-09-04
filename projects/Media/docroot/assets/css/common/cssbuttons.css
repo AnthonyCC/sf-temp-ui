@@ -138,7 +138,7 @@ span.cssbutton.notext[class*=" icon-"] {
 .cssbutton.blue:focus,.cssbutton.blue:hover { background:#708fbd; }
 
 .cssbutton.green {	background:#669933; }
-.cssbutton.green:focus,.cssbutton.green:hover { background:#698625; }
+.cssbutton.green:focus,.cssbutton.green:hover { background:#728d4b; }
 
 .cssbutton.transparent {	background:none; box-shadow: none }
 .cssbutton.transparent:focus,.cssbutton.transparent:hover { background:none; box-shadow: none  }

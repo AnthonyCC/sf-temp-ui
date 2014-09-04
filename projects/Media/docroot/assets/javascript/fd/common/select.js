@@ -10,7 +10,8 @@ var FreshDirect = FreshDirect || {};
     this.popup = Select.getPopup();
     this.update();
 
-    this.widget.on('click', '.selectButton', this.open.bind(this));
+    this.widget.on('mouseover', '.selectButton', this.open.bind(this));
+    this.widget.on('mouseout', '.selectButton', function (e) { this.popup.clearDelay(); }.bind(this));
     this.bindClick();
 
     this.el.on('change', this.update.bind(this));
@@ -23,7 +24,7 @@ var FreshDirect = FreshDirect || {};
     if (this.el.next() && this.el.next().hasClass(this.config.cssClass)) {
       return this.el.next();
     } else {
-      widgetNode = $('<span class="'+this.config.cssClass+'"><button class="selectButton cssbutton '+this.config.buttonClass+'"><span><span class="popupcontent"></span><b class="title"></b></span></button></span>');
+      widgetNode = $('<span class="'+(this.config.cssClass || '')+' '+(this.el.attr('data-custom-select-class') || '')+'"><button class="selectButton cssbutton '+(this.config.buttonClass || '')+' '+(this.el.attr('data-custom-select-button-class') || '')+'"><span><span class="popupcontent"></span><b class="title"></b></span></button></span>');
       this.el.after(widgetNode);
       return widgetNode;
     }
@@ -48,8 +49,7 @@ var FreshDirect = FreshDirect || {};
 
   Select.prototype.open = function () {
     this.popup.$el.find('.browse-popup-content').html('').append(this.widget.find('.popupcontent').clone());
-    this.popup.show(this.widget.find('.selectButton'), 'bl-tl-p');
-    this.popup.clicked = true;
+    this.popup.showWithDelay(this.widget.find('.selectButton'), 'bl-tl-p');
     this.bindClick(this.popup.$el.find('.popupcontent'));
   };
 
@@ -101,8 +101,11 @@ var FreshDirect = FreshDirect || {};
   };
 
   Select.POPUP_CONFIG = {
-    placeholder: false,
-    zIndex: 2000
+    // placeholder: false,
+    zIndex: 2000,
+    placeholderDisplay: 'inline-block',
+    stayonghostclick: true,
+    delay: 200
   };
 
   Select.DEFAULT_CONFIG = {

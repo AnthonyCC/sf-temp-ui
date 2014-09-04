@@ -1,13 +1,13 @@
-.fdselect .selectButton {
+.selectButton {
   padding-right: 5px;
 }
 
-.fdselect .selectButton > span {
+.selectButton > span {
   display: inline-block;
   text-align: left;
 }
 
-.fdselect .selectButton span.popupcontent {
+.selectButton span.popupcontent {
   visibility: hidden;
   display: block;
   max-height: 1px;
@@ -46,6 +46,7 @@ ul.customselect,
   border-radius: 6px;
 }
 
-select.selected + .fdselect > button {
-  background-color: rgb(105, 134, 37);
+.popupcontentghost > .selectButton,
+select.selected + .fdselect > .selectButton {
+  background-color: #728d4b;
 }
