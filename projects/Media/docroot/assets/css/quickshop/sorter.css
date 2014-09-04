@@ -43,6 +43,32 @@
 	content: none;
 }
 
+/* custom select in sorter */
+.sorter-element .fdselect .selectButton {
+  height: 30px;
+  line-height: 16px;
+}
+
+.sorter-element .fdselect .selectButton:after {
+  vertical-align: top;
+  font-size: 15px;
+  display: inline-block;
+  width: 15px;
+}
+
+.sorter-element .fdselect .selectButton .title {
+  width: 129px;
+  line-height: 13px;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.sorter-element .fdselect .selectButton .popupcontent {
+  display: none;
+}
+
 /* IE8 */
 .sorter-element.first {
 	margin-left:0;
