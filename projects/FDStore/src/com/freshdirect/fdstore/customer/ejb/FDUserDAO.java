@@ -574,6 +574,14 @@ public class FDUserDAO {
 			}
 			
 			Date optinDate=new Date();
+			boolean alreadyOptedIn=false;
+			if((notice!=null && notice.equals(EnumSMSAlertStatus.SUBSCRIBED.value()))||
+					(exceptions!=null && exceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value()))||
+					(offer!=null && offer.equals(EnumSMSAlertStatus.SUBSCRIBED.value()))||
+					(pMessage!=null && pMessage.equals(EnumSMSAlertStatus.SUBSCRIBED.value()))){
+				
+				alreadyOptedIn=true;
+			}
 			ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?, SMS_OPTIN_DATE=? where customer_id=?");				
 			ps.setString(1, phone.getPhone());
 			ps.setString(2, "Y".equals(textOffers)?"Y":"N");
@@ -582,22 +590,38 @@ public class FDUserDAO {
 			if(notice.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(orderNotices)){
 				ps.setString(4, EnumSMSAlertStatus.SUBSCRIBED.value());
 			} else{
-				ps.setString(4, "Y".equals(orderNotices)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+				if(alreadyOptedIn && "Y".equals(orderNotices)){
+					ps.setString(4,EnumSMSAlertStatus.SUBSCRIBED.value());
+				}else{
+					ps.setString(4, "Y".equals(orderNotices)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+				}
 			}
 			if(exceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(orderExceptions)){
 				ps.setString(5, EnumSMSAlertStatus.SUBSCRIBED.value());
 			} else{
-				ps.setString(5, "Y".equals(orderExceptions)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+				if(alreadyOptedIn && "Y".equals(orderExceptions)){
+					ps.setString(5,EnumSMSAlertStatus.SUBSCRIBED.value());
+				}else{
+					ps.setString(5, "Y".equals(orderExceptions)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+				}
 			}
 			if(offer.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(offers)){
 				ps.setString(6, EnumSMSAlertStatus.SUBSCRIBED.value());
 			} else{
-				ps.setString(6, "Y".equals(offers)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+				if(alreadyOptedIn && "Y".equals(offers)){
+					ps.setString(6, EnumSMSAlertStatus.SUBSCRIBED.value());
+				}else{
+					ps.setString(6, "Y".equals(offers)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+				}
 			}
 			if(pMessage.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(partnerMessages)){
 				ps.setString(7, EnumSMSAlertStatus.SUBSCRIBED.value());
 			} else{
-				ps.setString(7, "Y".equals(partnerMessages)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+				if(alreadyOptedIn && "Y".equals(partnerMessages)){
+					ps.setString(7, EnumSMSAlertStatus.SUBSCRIBED.value());
+				} else{
+					ps.setString(7, "Y".equals(partnerMessages)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+				}
 			}
 			ps.setTimestamp(8, new java.sql.Timestamp(optinDate.getTime()));
 			ps.setString(9, customerId);

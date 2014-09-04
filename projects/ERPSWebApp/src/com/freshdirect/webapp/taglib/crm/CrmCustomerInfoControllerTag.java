@@ -105,7 +105,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 					actionResult.addError(true, "password", "Please enter a password that is at least four characters long.");
 					return true;
 				} catch (DlvResourceException e) {
-					actionResult.addError(true, "mobile_number", "Error While SMS Registration please verify the mobile Number");
+					actionResult.addError(true, "mobile_number", "Error with SMS Registration please verify the mobile Number");
 					return true;
 				}
 			}
@@ -177,27 +177,46 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		boolean orderExceptionOptin=false;
 		boolean offersOptin=false;
 		boolean partnerMessagesOptin=false;
-		if(this.customerInfo.getOrderExceptions().equals(EnumSMSAlertStatus.NONE.value())&& info.getOrderExceptions().value().equals(EnumSMSAlertStatus.PENDING.value())){
+		if(this.customerInfo.getOrderExceptions().equals(EnumSMSAlertStatus.PENDING.value())&& info.getOrderExceptions().value().equals(EnumSMSAlertStatus.NONE.value())){
 			orderExceptionOptin=true;
 		}
-		if(this.customerInfo.getOrderNotices().equals(EnumSMSAlertStatus.NONE.value())&& info.getOrderNotices().value().equals(EnumSMSAlertStatus.PENDING.value())){
+		if(this.customerInfo.getOrderNotices().equals(EnumSMSAlertStatus.PENDING.value())&& info.getOrderNotices().value().equals(EnumSMSAlertStatus.NONE.value())){
 			orderNoticeOptin=true;
 		}
-		if(this.customerInfo.getOffers().equals(EnumSMSAlertStatus.NONE.value())&& info.getOffers().value().equals(EnumSMSAlertStatus.PENDING.value())){
+		if(this.customerInfo.getOffers().equals(EnumSMSAlertStatus.PENDING.value())&& info.getOffers().value().equals(EnumSMSAlertStatus.NONE.value())){
 			offersOptin=true;
 		}
-		if(this.customerInfo.getPartnerMessages().equals(EnumSMSAlertStatus.NONE.value())&& info.getPartnerMessages().value().equals(EnumSMSAlertStatus.PENDING.value())){
+		if(this.customerInfo.getPartnerMessages().equals(EnumSMSAlertStatus.PENDING.value())&& info.getPartnerMessages().value().equals(EnumSMSAlertStatus.NONE.value())){
 			partnerMessagesOptin=true;
 		}
 		if(orderNoticeOptin|| orderExceptionOptin|| offersOptin|| partnerMessagesOptin
 				|| (info.getMobileNumber() != null && this.customerInfo.getMobileNumber().getPhone() != info.getMobileNumber().getPhone())){
 			SMSAlertManager smsAlertManager=SMSAlertManager.getInstance();
 			boolean isSent=false;
-			if(!info.getOrderNotices().value().equals(EnumSMSAlertStatus.NONE.value())||
-					!info.getOrderExceptions().value().equals(EnumSMSAlertStatus.NONE.value())||
-					!info.getOffers().value().equals(EnumSMSAlertStatus.NONE.value())||
-					!info.getPartnerMessages().value().equals(EnumSMSAlertStatus.NONE.value())){
-				isSent=smsAlertManager.smsOptIn(customer.getId(),info.getMobileNumber().getPhone());
+			if(!this.customerInfo.getOrderNotices().equals(EnumSMSAlertStatus.NONE.value())||
+					!this.customerInfo.getOrderExceptions().equals(EnumSMSAlertStatus.NONE.value())||
+					!this.customerInfo.getOffers().equals(EnumSMSAlertStatus.NONE.value())||
+					!this.customerInfo.getPartnerMessages().equals(EnumSMSAlertStatus.NONE.value())){
+				if(EnumSMSAlertStatus.SUBSCRIBED.value().equals(info.getOrderNotices().value()) ||
+						EnumSMSAlertStatus.SUBSCRIBED.value().equals(info.getOrderExceptions().value()) ||
+						EnumSMSAlertStatus.SUBSCRIBED.value().equals(info.getOffers().value()) ||
+						EnumSMSAlertStatus.SUBSCRIBED.value().equals(info.getPartnerMessages().value())){
+					isSent=true;
+					if(orderExceptionOptin){
+						this.customerInfo.setOrderExceptions(EnumSMSAlertStatus.SUBSCRIBED.value());
+					}
+					if(orderNoticeOptin){
+						this.customerInfo.setOrderNotices(EnumSMSAlertStatus.SUBSCRIBED.value());
+					}
+					if(offersOptin){
+						this.customerInfo.setOffers(EnumSMSAlertStatus.SUBSCRIBED.value());
+					}
+					if(partnerMessagesOptin){
+						this.customerInfo.setPartnerMessages(EnumSMSAlertStatus.SUBSCRIBED.value());
+					}
+				} else{
+					isSent=smsAlertManager.smsOptIn(customer.getId(),this.customerInfo.getMobileNumber().getPhone());
+				}
 			}
 			if(!isSent){
 				throw new DlvResourceException();
@@ -225,6 +244,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			info.setOrderExceptions(EnumSMSAlertStatus.getEnum(this.customerInfo.getOrderExceptions()));
 			info.setOffers(EnumSMSAlertStatus.getEnum(this.customerInfo.getOffers()));
 			info.setPartnerMessages(EnumSMSAlertStatus.getEnum(this.customerInfo.getPartnerMessages()));
+			
 			info.setGoGreen(this.customerInfo.isGoGreen());
 			FDCustomerManager.updateCustomerInfo(aInfo, info);
 		}

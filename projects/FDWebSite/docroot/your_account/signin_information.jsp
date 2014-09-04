@@ -607,14 +607,14 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<td colspan="4" align="left" style="padding-right:5px;" class="text12">Messages will be sent to the following mobile number:</td>
 	</tr>
 	<tr valign="top">
-		<td style="padding-right: 5px;" align="left" colspan="6"><FONT class="text10" style="color:gray;font-style:italic;">By signing up you agree to the <a href="#" onclick="doRemoteOverlay('terms.jsp');"> Terms and Conditions </a></FONT></td>
+		<td style="padding-right: 5px;" align="left" colspan="6"><FONT class="text10" style="color:gray;font-style:italic;">By signing up you agree to the <a href="javascript:popup('/your_account/terms.jsp', 'large')">Terms and Conditions</a></FONT></td>
 	</tr>
 	<tr>	
 	<td align="right" valign="top" colspan="6"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_email_preference" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></td>
 	</tr>
 	<tr>
 	<td colspan="2" align="right" style="padding-right:5px;" class="text12">* Mobile Number</td>
-    <td><input type="text" size="28" maxlength="16" class="text9" name="mobile_number" value="<%=mobile_number%>" style="width:150px; padding:1px;"></td>
+    <td><input type="text" size="28" maxlength="20" class="text9" name="mobile_number" value="<%=mobile_number%>" style="width:150px; padding:1px;"></td>
 	<td colspan="3"><fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr> 
 	<tr><td colspan="6">&nbsp;</td></tr>
@@ -643,7 +643,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 				<label for="order_notices" class="text12bold">Examples</label>
 				<div class="text12"   id="article" align="left">
 					<strong>Estimated Time of Delivery </strong> On the day your order is delivered have your 2-hour delivery window narrowed down to 1 hour. Less time waiting! 
-					<br/><br/><strong>You&#146;re Next! </strong>Receive an alert when you are the next customer on our driver&#146;s route. Your food is on the way! 
+					<br/><br/><strong>You're Next! </strong>Receive an alert when you are the next customer on our driver's route. Your food is on the way! 
 				<br/><br/><br/>
 				</div>
 			</div>
@@ -664,8 +664,6 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 			<div class="accordion"><input type="checkbox" id="order_exceptions"> 
 				<label for="order_exceptions" class="text12bold">Examples</label>
 				<div class="text12"   id="article1" align="left">
-					<strong>Late</strong> Know right away if your order will be late.
-					<br/><br/>
 					<strong>Cancellation</strong> Be alerted when your order has to be cancelled because of unforeseen circumstances. 
 					<br/><br/>
 					<strong>Delivery Attempt </strong> Receive an alert when an unsuccessful delivery attempt is made. 

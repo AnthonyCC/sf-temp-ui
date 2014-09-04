@@ -602,19 +602,27 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		ResultSet rs = null;
 		try{
 		if (alertType.equals(NEXT_STOP_ALERT_TYPE)
-				|| alertType.equals(ETA_ALERT_TYPE)
-				|| alertType.equals(DLV_ATTEMPTED_ALERT_TYPE)
-				|| alertType.equals(UNATTENDED_OR_DOORMAN_ALERT_TYPE)) {
+				|| alertType.equals(ETA_ALERT_TYPE)) {
 			
 			ps = con.prepareStatement("select ORDER_NOTIFICATION from cust.customerinfo where customer_id = ? ");
 			ps.setString(1, customerId);
 			rs = ps.executeQuery();
 			if (rs.next()) {
-				if (rs.getString("ORDER_NOTIFICATION").equals(EnumSMSAlertStatus.SUBSCRIBED.value())) {
+				if (EnumSMSAlertStatus.SUBSCRIBED.value().equals(rs.getString("ORDER_NOTIFICATION"))) {
 					isSubscribed = true;
 				}
 			}
-		} 
+		} else if(alertType.equals(DLV_ATTEMPTED_ALERT_TYPE)
+				|| alertType.equals(UNATTENDED_OR_DOORMAN_ALERT_TYPE)){
+			ps = con.prepareStatement("select ORDEREXCEPTION_NOTIFICATION from cust.customerinfo where customer_id = ? ");
+			ps.setString(1, customerId);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				if (EnumSMSAlertStatus.SUBSCRIBED.value().equals(rs.getString("ORDEREXCEPTION_NOTIFICATION"))) {
+					isSubscribed = true;
+				}
+			}
+		}
 		}finally{
 			close(rs,ps);
 		}

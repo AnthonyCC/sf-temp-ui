@@ -132,9 +132,7 @@
 <div style=" overflow-y: auto; overflow-x: hide;">
 <form id="smsalertform" name="smsalertform" method="post" action="">
 	<input type="hidden" name="actionName" value="ordersmsalerts" />	
-
 	<table border="0" cellpadding="0" cellspacing="0" style="padding-right: 30px;">
-		<tr><td>&nbsp;</td></tr>
 		<tr>
 			<td class="title18or" style="text-align: left;"><span class="title18or trpad">&nbsp;</span>THANK YOU FOR YOUR ORDER! </td>
 		</tr>
@@ -154,7 +152,7 @@
 							<table>						
 								<tr>						
 								<td style="padding-right:5px;font-weight:bold;" class="text12"><span class="title18or trpad">&nbsp;</span>Enter mobile phone number*<br /><br />
-									<span class="title18or trpad">&nbsp;</span><input type="text" size="28" maxlength="20" class="text9" name="mobile_number" value="<%=mobile_number%>" style="width:175px; padding:1px; height:30px;font-size:13px" /></td>
+									<span class="title18or trpad">&nbsp;</span><input type="text" size="28" maxlength="20" class="text9" name="mobile_number" value="<%=mobile_number%>" style="width:175px; padding:1px; height:20px;font-size:13px" /></td>
 									<td class="text12" style="color:gray;  text-indent: -10px; padding: 0 5px;" align="left" colspan="2" valign="bottom">* standard text messaging rates apply. You can unsubscribe anytime - <br /> simply go to "My Account" section and update your preferences.</td>
 								</tr>						
 							</table>

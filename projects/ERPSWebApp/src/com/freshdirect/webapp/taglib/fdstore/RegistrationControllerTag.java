@@ -389,7 +389,11 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		 boolean isSent=false;
 		try {
 			if(orderNoticeOptin || orderExceptionOptin||offersOptin||partnerMessagesOptin){
-				isSent = SMSAlertManager.getInstance().smsOptIn(identity.getErpCustomerPK(),mobile_number);
+				if(order_notice_existing ||order_exception_existing || offer_existing ||partner_existing){
+					isSent=true;
+				} else{
+					isSent = SMSAlertManager.getInstance().smsOptIn(identity.getErpCustomerPK(),mobile_number);
+				}
 			} else{
 				optOut=true;
 			}
