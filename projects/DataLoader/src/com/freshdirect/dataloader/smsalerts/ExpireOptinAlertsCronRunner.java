@@ -18,7 +18,6 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.delivery.DlvProperties;
 import com.freshdirect.delivery.sms.ejb.SmsAlertsHome;
 import com.freshdirect.delivery.sms.ejb.SmsAlertsSB;
-import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
@@ -35,18 +34,10 @@ public class ExpireOptinAlertsCronRunner {
 		Context ctx = null;
 		try 
 		{
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DATE, 1);
-			cal = DateUtil.truncate(cal);
-			Date startDate = cal.getTime();
-			cal.add(Calendar.DATE, 7);
-			Date endDate = cal.getTime();
-			
-			
 			ctx = getInitialContext();
+		
 			SmsAlertsHome smsAlertsHome = (SmsAlertsHome) ctx.lookup( DlvProperties.getSmsAlertsHome());
 			SmsAlertsSB smsAlertSB = smsAlertsHome.create();
-			
 			smsAlertSB.expireOptin();
 			
 		} catch (Exception e) {
