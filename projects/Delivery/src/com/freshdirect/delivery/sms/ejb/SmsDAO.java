@@ -10,11 +10,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.model.TransitInfo;
 import com.freshdirect.delivery.sms.NextStopSmsInfo;
 import com.freshdirect.delivery.sms.OrderDlvInfo;
 import com.freshdirect.delivery.sms.SmsAlertETAInfo;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class SmsDAO {
 	
@@ -41,9 +44,7 @@ public class SmsDAO {
 
 				if (rs.next()) {
 					if (rs.getString("MOBILE_NUMBER") != null
-							|| (!"".equals(rs.getString("MOBILE_NUMBER")))
-							|| rs.getString("NEXTSTOP_SMS_ENABLED") != null
-							|| (!"".equals(rs.getString("NEXTSTOP_SMS_ENABLED")))) {
+							&& rs.getString("NEXTSTOP_SMS_ENABLED") != null) {
 						
 						NextStopSmsInfo _nextStopSmsModel = new NextStopSmsInfo();
 						result.add(_nextStopSmsModel);
@@ -157,8 +158,7 @@ public class SmsDAO {
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				if (rs.getString("MOBILE_NUMBER") != null
-						|| (!rs.getString("MOBILE_NUMBER").equals(""))
-						|| rs.getString("SMS_ETA_ENABLED")!=null || !rs.getString("SMS_ETA_ENABLED").equals("") ) {
+						&& rs.getString("SMS_ETA_ENABLED")!=null ) {
 					
 					SmsAlertETAInfo smsAlertETAInfo=new SmsAlertETAInfo();
 					smsAlertETAInfo.setCustomerId(rs.getString("CUSTOMER_ID"));
@@ -223,8 +223,8 @@ public class SmsDAO {
 			ps.setString(2, sdf.format(toTime));
 			rs = ps.executeQuery();
 			while(rs.next()){
-				if(rs.getString("MOBILE_NUMBER")!=null || (!rs.getString("MOBILE_NUMBER").equals(""))
-						||rs.getString("DLV_UNATTENDED_SMS_ENABLED")!=null || (!rs.getString("DLV_UNATTENDED_SMS_ENABLED").equals(""))){
+				if(rs.getString("MOBILE_NUMBER")!=null 
+						&& rs.getString("DLV_UNATTENDED_SMS_ENABLED")!=null ){
 					
 					OrderDlvInfo _orderInfo = new OrderDlvInfo();
 					result.add(_orderInfo);
@@ -277,8 +277,7 @@ public class SmsDAO {
 			ps.setString(2, sdf.format(toTime));
 			rs = ps.executeQuery();
 			while(rs.next()){
-				if(rs.getString("MOBILE_NUMBER")!=null || (!rs.getString("MOBILE_NUMBER").equals(""))
-						||rs.getString("DLV_ATTEMPTED_SMS_ENABLED")!=null || (!rs.getString("DLV_ATTEMPTED_SMS_ENABLED").equals(""))){
+				if(null!=rs.getString("MOBILE_NUMBER") && null!=rs.getString("DLV_ATTEMPTED_SMS_ENABLED") ){
 					
 					OrderDlvInfo tempInfo = new OrderDlvInfo();
 					tempInfo.setCustomerId(rs.getString("CUSTOMER_ID"));
@@ -286,6 +285,7 @@ public class SmsDAO {
 					tempInfo.setOrderId(rs.getString("WEBORDER_ID"));
 					dlvAttemptedInfo.add(tempInfo);
 				}
+				
 			}
 			updateLastExport(con, DLV_ATTEMPTED_ALERT_TYPE);
 			
