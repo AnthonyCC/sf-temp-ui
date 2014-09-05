@@ -732,16 +732,16 @@ a.portrait-item-header-name:link {
   left:0;
 }
 
-/* Changes in order to decrease height of carousels*/
-.carouselTransactionalItem .configDescr {
+/* Changes in order to decrease heights*/
+.configDescr {
     font-size: 10px;
 	line-height: 10px;
 }
 
-.carouselTransactionalItem .portrait-item-header{
+.portrait-item-header{
 	margin-top: 8px;
 }
 
-.carouselTransactionalItem .portrait-item-burst_wrapper{
+.portrait-item-burst_wrapper{
 	padding-bottom: 0px;
 }
