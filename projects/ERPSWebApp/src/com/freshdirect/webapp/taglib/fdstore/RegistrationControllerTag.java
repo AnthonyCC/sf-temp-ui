@@ -328,10 +328,11 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		String order_exceptions=request.getParameter("order_exceptions");
 		String offers=request.getParameter("offers");
 		String partner_messages=request.getParameter("partner_messages");
-		boolean order_notice_existing = Boolean.getBoolean(request.getParameter("order_notice_existing"));
-		boolean order_exception_existing = Boolean.getBoolean(request.getParameter("order_exception_existing"));
-		boolean offer_existing = Boolean.getBoolean(request.getParameter("offer_existing"));
-		boolean partner_existing = Boolean.getBoolean(request.getParameter("partner_existing"));
+		boolean order_notice_existing = Boolean.parseBoolean(request.getParameter("order_notice_existing"));
+		boolean order_exception_existing = Boolean.parseBoolean(request.getParameter("order_exception_existing"));
+		boolean offer_existing = Boolean.parseBoolean(request.getParameter("offer_existing"));
+		boolean partner_existing = Boolean.parseBoolean(request.getParameter("partner_existing"));
+		String existingMobileNumber= request.getParameter("mobile_existing");
 		boolean orderNoticeOptin=false;
 		boolean orderExceptionOptin=false;
 		boolean offersOptin=false;
@@ -340,6 +341,10 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
 		FDIdentity identity = user.getIdentity();
 		boolean optOut=false;
+		
+		LOGGER.debug("Boolean value got for order Notices : " + order_notice_existing);
+		
+		LOGGER.debug("Value of order Notice existing in reqyest : "+request.getParameter("order_notice_existing"));
 		
 		if(!order_notice_existing && "Y".equalsIgnoreCase(order_notices)){
 			orderNoticeOptin=true;
@@ -388,8 +393,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		
 		 boolean isSent=false;
 		try {
-			if(orderNoticeOptin || orderExceptionOptin||offersOptin||partnerMessagesOptin){
-				if(order_notice_existing ||order_exception_existing || offer_existing ||partner_existing){
+			if(orderNoticeOptin || orderExceptionOptin||offersOptin||partnerMessagesOptin || !existingMobileNumber.equals(new PhoneNumber(mobile_number).getPhone())){
+				if((order_notice_existing ||order_exception_existing || offer_existing ||partner_existing) && existingMobileNumber.equals(new PhoneNumber(mobile_number).getPhone())){
 					isSent=true;
 				} else{
 					isSent = SMSAlertManager.getInstance().smsOptIn(identity.getErpCustomerPK(),mobile_number);
@@ -909,6 +914,16 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				return;
 			} else if(mobile_number != null && mobile_number.length() != 0) {
 				PhoneNumber phone = new PhoneNumber(mobile_number);
+				try {
+					long _phone=Integer.parseInt(retainDigits(phone.getPhone()));
+					if(_phone==0){
+						actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
+						return;
+					}
+				} catch (NumberFormatException e) {
+					actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
+					return;
+				}
 				if(!phone.isValid()){
 					actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
 					return;
@@ -964,6 +979,17 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(USER);
 		return user;
+	}
+	private static String retainDigits(String string) {
+		StringBuffer clean = new StringBuffer();
+		if (string == null)
+			return "";
+		for (int i = 0; i < string.length(); i++) {
+			if (Character.isDigit(string.charAt(i))) {
+				clean.append(string.charAt(i));
+			}
+		}
+		return clean.toString();
 	}
 }
 

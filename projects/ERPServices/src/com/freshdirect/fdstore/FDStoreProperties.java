@@ -668,6 +668,7 @@ public class FDStoreProperties {
 	private final static String PROP_ST_PASSWORD = "fdstore.ST.password";
 	private final static String PROP_ST_CONNECTION_TIMEOUT_PERIOD = "fdstore.ST.connection.timeout.period";
 	private static final String PROP_ST_READ_TIMEOUT_PERIOD = "fdstore.ST.read.timeout.period";
+	private static final String PROP_SMS_OVERLAY_FLAG="fdstore.SMS.overlay.flag";
 	
 	
     static {
@@ -1323,6 +1324,7 @@ public class FDStoreProperties {
         defaults.put(PROP_ST_PASSWORD, "6zDqxrz7Qa");        
         defaults.put(PROP_ST_CONNECTION_TIMEOUT_PERIOD, "5");
         defaults.put(PROP_ST_READ_TIMEOUT_PERIOD, "5");
+        defaults.put(PROP_SMS_OVERLAY_FLAG, "false");
         
         refresh();
     }
@@ -3339,6 +3341,9 @@ public class FDStoreProperties {
 
 	public static int getRTConnectionTimeoutPeriod() {
 		return Integer.parseInt(get(PROP_ST_READ_TIMEOUT_PERIOD));
+	}
+	public static String getSMSOverlayFlag(){
+		return get(PROP_SMS_OVERLAY_FLAG);
 	}
 }
 

@@ -101,7 +101,7 @@ public class SmsDAO {
 				ps1.setInt(4, rs.getInt("LOCATION_SOURCE"));
 				ps1.setInt(5, rs.getInt("LOCATION_DESTINATION"));
 				ps1.setString(6, rs.getString("TRANSACTIONID"));
-				ps.setTimestamp(7, rs.getTimestamp("INSERT_TIMESTAMP"));
+				ps1.setTimestamp(7, rs.getTimestamp("INSERT_TIMESTAMP"));
 				
 				ps1.addBatch();
 				batchCount++;
@@ -145,17 +145,20 @@ public class SmsDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			String GET_ETA_WINDOW = "SELECT BS.WEBORDER_ID, bs.DLV_ETA_STARTTIME ,bs.DLV_ETA_ENDTIME, BS.MOBILE_NUMBER, z.SMS_ETA_ENABLED,S.CUSTOMER_ID" + 
-					"  from transp.handoff_batch b, transp.handoff_batchstop bs, TRANSP.TRN_AREA ta, TRANSP.ZONE z, cust.sale s" + 
-					"  where  b.batch_status IN ('CPD/ADC','CPD','CPD/ADF') and b.BATCH_ID = bs.BATCH_ID" +
-					"  and   BS.AREA = TA.CODE and Z.AREA = ta.code and bs.weborder_id=S.ID"+
-					"  and b.delivery_date = trunc(sysdate) and bs.DLV_ETA_STARTTIME is not null and mobile_number is not null";
+			String GET_ETA_WINDOW = "select BS.WEBORDER_ID, bs.DLV_ETA_STARTTIME ,bs.DLV_ETA_ENDTIME, BS.MOBILE_NUMBER, z.SMS_ETA_ENABLED,S.CUSTOMER_ID " + 
+					"from TRANSP.HANDOFF_BATCH b, TRANSP.HANDOFF_BATCHACTION ba, transp.handoff_batchstop bs, cust.sale s, TRANSP.TRN_AREA ta, TRANSP.ZONE z " + 
+					"where B.BATCH_ID = BA.BATCH_ID and b.BATCH_ID = bs.BATCH_ID " + 
+					"and BS.AREA = TA.CODE and Z.AREA = ta.code  and bs.DLV_ETA_STARTTIME is not null and mobile_number is not null and s.id = BS.WEBORDER_ID " + 
+					"and B.BATCH_STATUS in ('CPD/ADC','CPD','CPD/ADF') and action_type = 'COM' and " + 
+					"BA.ACTION_DATETIME > (select NVL(MAX(LAST_EXPORT),SYSDATE-1/24) from DLV.SMS_TRANSIT_EXPORT st where ST.SMS_ALERT_TYPE = 'SMS_ETA' " + 
+					"and ST.SUCCESS = 'Y')";
 
 			ps = con.prepareStatement(GET_ETA_WINDOW);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				if (rs.getString("MOBILE_NUMBER") != null
-						|| (!rs.getString("MOBILE_NUMBER").equals(""))) {
+						|| (!rs.getString("MOBILE_NUMBER").equals(""))
+						|| rs.getString("SMS_ETA_ENABLED")!=null || !rs.getString("SMS_ETA_ENABLED").equals("") ) {
 					
 					SmsAlertETAInfo smsAlertETAInfo=new SmsAlertETAInfo();
 					smsAlertETAInfo.setCustomerId(rs.getString("CUSTOMER_ID"));

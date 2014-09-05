@@ -129,6 +129,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		this.customerInfo.setOffers("Y".equals(request.getParameter("offers"))?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
 		this.customerInfo.setPartnerMessages("Y".equals(request.getParameter("partner_messages"))?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
 		this.customerInfo.setGoGreen("Y".equals(request.getParameter("go_green")));
+		
 	}
 	
 	private void validateInfo(ActionResult result) {
@@ -154,6 +155,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		ErpCustomerInfoModel info = customer.getCustomerInfo();
 		boolean beforeUpdateDelNotif = info.isDeliveryNotification();
 		boolean beforeUpdateOfferNotif = info.isOffersNotification();
+		String existingMobNum=info.getMobileNumber().getPhone();
 		String beforeUpdateOrderNotices=info.getOrderNotices().value();
 		String beforeUpdateOrderExceptions=info.getOrderExceptions().value();
 		String beforeUpdateOffers=info.getOffers().value();
@@ -190,33 +192,55 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			partnerMessagesOptin=true;
 		}
 		if(orderNoticeOptin|| orderExceptionOptin|| offersOptin|| partnerMessagesOptin
-				|| (info.getMobileNumber() != null && this.customerInfo.getMobileNumber().getPhone() != info.getMobileNumber().getPhone())){
+				|| (info.getMobileNumber() != null && !this.customerInfo.getMobileNumber().getPhone().equals(info.getMobileNumber().getPhone()))){
 			SMSAlertManager smsAlertManager=SMSAlertManager.getInstance();
+			info.setSmsPreferenceflag("Y");
 			boolean isSent=false;
 			if(!this.customerInfo.getOrderNotices().equals(EnumSMSAlertStatus.NONE.value())||
 					!this.customerInfo.getOrderExceptions().equals(EnumSMSAlertStatus.NONE.value())||
 					!this.customerInfo.getOffers().equals(EnumSMSAlertStatus.NONE.value())||
 					!this.customerInfo.getPartnerMessages().equals(EnumSMSAlertStatus.NONE.value())){
-				if(EnumSMSAlertStatus.SUBSCRIBED.value().equals(info.getOrderNotices().value()) ||
-						EnumSMSAlertStatus.SUBSCRIBED.value().equals(info.getOrderExceptions().value()) ||
-						EnumSMSAlertStatus.SUBSCRIBED.value().equals(info.getOffers().value()) ||
-						EnumSMSAlertStatus.SUBSCRIBED.value().equals(info.getPartnerMessages().value())){
-					isSent=true;
-					if(orderExceptionOptin){
-						this.customerInfo.setOrderExceptions(EnumSMSAlertStatus.SUBSCRIBED.value());
+				
+					if((EnumSMSAlertStatus.SUBSCRIBED.value().equals(info.getOrderNotices().value()) ||
+							EnumSMSAlertStatus.SUBSCRIBED.value().equals(info.getOrderExceptions().value()) ||
+							EnumSMSAlertStatus.SUBSCRIBED.value().equals(info.getOffers().value()) ||
+							EnumSMSAlertStatus.SUBSCRIBED.value().equals(info.getPartnerMessages().value()))&&
+							(this.customerInfo.getMobileNumber().getPhone().equals(info.getMobileNumber().getPhone()))){
+						isSent=true;
+						if(orderExceptionOptin){
+							this.customerInfo.setOrderExceptions(EnumSMSAlertStatus.SUBSCRIBED.value());
+						}
+						if(orderNoticeOptin){
+							this.customerInfo.setOrderNotices(EnumSMSAlertStatus.SUBSCRIBED.value());
+						}
+						if(offersOptin){
+							this.customerInfo.setOffers(EnumSMSAlertStatus.SUBSCRIBED.value());
+						}
+						if(partnerMessagesOptin){
+							this.customerInfo.setPartnerMessages(EnumSMSAlertStatus.SUBSCRIBED.value());
+						}
+					} else{
+						isSent=smsAlertManager.smsOptIn(customer.getId(),this.customerInfo.getMobileNumber().getPhone());
+						if(!this.customerInfo.getMobileNumber().getPhone().equals(info.getMobileNumber().getPhone())){
+							
+							if(info.getOrderNotices().value().equals(EnumSMSAlertStatus.SUBSCRIBED.value())||
+									info.getOrderNotices().value().equals(EnumSMSAlertStatus.PENDING.value())){
+								this.customerInfo.setOrderNotices(EnumSMSAlertStatus.PENDING.value());
+							}
+							if(info.getOrderExceptions().value().equals(EnumSMSAlertStatus.SUBSCRIBED.value())||
+									info.getOrderExceptions().value().equals(EnumSMSAlertStatus.PENDING.value())){
+								this.customerInfo.setOrderExceptions(EnumSMSAlertStatus.PENDING.value());
+							}
+							if(info.getOffers().value().equals(EnumSMSAlertStatus.SUBSCRIBED.value())||
+									info.getOffers().value().equals(EnumSMSAlertStatus.PENDING.value())){
+								this.customerInfo.setOffers(EnumSMSAlertStatus.PENDING.value());
+							}
+							if(info.getPartnerMessages().value().equals(EnumSMSAlertStatus.SUBSCRIBED.value())||
+									info.getPartnerMessages().value().equals(EnumSMSAlertStatus.PENDING.value())){
+								this.customerInfo.setPartnerMessages(EnumSMSAlertStatus.PENDING.value());
+							}
+						}
 					}
-					if(orderNoticeOptin){
-						this.customerInfo.setOrderNotices(EnumSMSAlertStatus.SUBSCRIBED.value());
-					}
-					if(offersOptin){
-						this.customerInfo.setOffers(EnumSMSAlertStatus.SUBSCRIBED.value());
-					}
-					if(partnerMessagesOptin){
-						this.customerInfo.setPartnerMessages(EnumSMSAlertStatus.SUBSCRIBED.value());
-					}
-				} else{
-					isSent=smsAlertManager.smsOptIn(customer.getId(),this.customerInfo.getMobileNumber().getPhone());
-				}
 			}
 			if(!isSent){
 				throw new DlvResourceException();

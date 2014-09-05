@@ -57,9 +57,9 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	private static final String HELP_MESSAGE = "FreshTexts Messages: For more Help call 866-283-7374. Up to 5msgs/order. Msg&Data rates may apply. Reply STOP to cancel.";
 	private static final String WRONG_RESPONSE_MESSAGE = "FreshTexts Messages: Sorry we didn't understand your response. Reply HELP for help, STOP to cancel.";
 	private static final String ETA_MESSAGE_TEXT_1 = "Hello! Your FreshDirect order is getting a few finishing touches, and will be delivered today between ";
-	private static final String ETA_MESSAGE_TEXT_2 = ". Reply HELP for help, STOP to cancel";
-	private static final String UATTENDED_OR_DOORMAN_DELIVERY_TEXT = "Special delivery! Your order was just left at your home at your preferred location. We hope you love it! Reply HELP for help, STOP to cancel ";
-	private static final String DLV_ATTEMPTED_TEXT = "We just missed you! A 1st delivery attempt was made to deliver your order. We'll do our best to redeliver your order later. Reply HELP for help, STOP to cancel";
+	private static final String ETA_MESSAGE_TEXT_2 = ". Reply HELP for help.";
+	private static final String UATTENDED_OR_DOORMAN_DELIVERY_TEXT = "Special delivery! Your order was just left at your home at your preferred location. We hope you love it! Reply HELP for help. ";
+	private static final String DLV_ATTEMPTED_TEXT = "We just missed you! A 1st delivery attempt was made to deliver your order. We'll do our best to redeliver your order later. Reply HELP for help.";
 
 	/**
 	 * This method sends the optin sms message to customer when he enrolls
@@ -648,15 +648,22 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		Hashtable<String, String> h = new Hashtable<String, String>();
 		h.put(Context.INITIAL_CONTEXT_FACTORY,
 				"weblogic.jndi.WLInitialContextFactory");
-		h.put(Context.PROVIDER_URL, "t3://127.0.0.1:7001");
+		h.put(Context.PROVIDER_URL,DlvProperties.getProviderURL());
 		return new InitialContext(h);
 	}
 
 	private String getTime(Date date) {
 		Calendar calendar = GregorianCalendar.getInstance();
 		calendar.setTime(date);
-		return ((calendar.get(Calendar.HOUR) == 12 ? "12" : calendar
-				.get(Calendar.HOUR)) + "  " + calendar.getDisplayName(
+		String hour="";
+		String mins="";
+		if(calendar.get(Calendar.HOUR) == 12 || calendar.get(Calendar.HOUR) == 0 || calendar.get(Calendar.HOUR) == 24){
+			hour = "12";
+		}else{
+			hour = String.valueOf(calendar.get(Calendar.HOUR));
+		}
+		mins=String.valueOf(calendar.get(Calendar.MINUTE));
+		return (hour+":"+mins + "  " + calendar.getDisplayName(
 				Calendar.AM_PM, Calendar.SHORT, Locale.US));
 	}
 

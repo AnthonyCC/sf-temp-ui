@@ -1,3 +1,4 @@
+<%@page import="javax.naming.Context"%>
 <%@ page import='com.freshdirect.common.customer.*,com.freshdirect.fdstore.*' %>
 <%@ page import ='com.freshdirect.fdstore.customer.*'%>
 <%@ page import ='com.freshdirect.fdstore.survey.*'%>
@@ -29,6 +30,8 @@
 	<%
 		boolean _modifyOrderMode = false; 	
 		String _ordNum = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
+		
+		boolean isSmsOverlayEnabled=SmsOverlayHelper.getSmsOverlayFlag();
 		if(session.getAttribute("MODIFIED" + _ordNum) != null && session.getAttribute("MODIFIED" + _ordNum).equals(_ordNum)) {
 			_modifyOrderMode = true;
 		}
@@ -52,7 +55,7 @@
 			FDIdentity curridentity  = curruser.getIdentity();
 			ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(curridentity);
 			// if atleast one of the smsAlerts is none -- Will have to change this
-			if(cm.getSmsPreferenceflag()==null ){
+			if(isSmsOverlayEnabled && cm.getSmsPreferenceflag()==null ){
 				if(session.getAttribute("SMSAlert" + _ordNum) == null){
 					%>
 		<script type="text/javascript"

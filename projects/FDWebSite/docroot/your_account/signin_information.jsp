@@ -588,6 +588,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 <!-- mobile preferences-->
 <form name="update_email_preference" method="post">
 	<input type="hidden" name="actionName" value="mobilepreferences">
+	<input type="hidden" name="mobile_existing" value="<%=mobile_number%>">
 	<input type="hidden" name="order_notice_existing" value="<%=order_notices%>">
 	<input type="hidden" name="order_exception_existing" value="<%=order_exceptions%>">
 	<input type="hidden" name="offer_existing" value="<%=offers%>">

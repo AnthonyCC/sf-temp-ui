@@ -543,11 +543,12 @@ public class FDUserDAO {
 		String exceptions="N";
 		String offer="N";
 		String pMessage="N";
+		String existingMobNum=null;
 		PhoneNumber phone = new PhoneNumber(mobileNumber);
 		
 		try {
 			try {
-				selectAlertStatus= conn.prepareStatement("select ORDER_NOTIFICATION, ORDEREXCEPTION_NOTIFICATION, SMS_OFFERS_ALERT, PARTNERMESSAGE_NOTIFICATION from CUST.CUSTOMERINFO where customer_id=?");
+				selectAlertStatus= conn.prepareStatement("select ORDER_NOTIFICATION, ORDEREXCEPTION_NOTIFICATION, SMS_OFFERS_ALERT, PARTNERMESSAGE_NOTIFICATION, MOBILE_NUMBER from CUST.CUSTOMERINFO where customer_id=?");
 				selectAlertStatus.setString(1,customerId);
 				ResultSet rs=selectAlertStatus.executeQuery();
 				if(rs.next()){
@@ -563,6 +564,9 @@ public class FDUserDAO {
 					if(rs.getString("PARTNERMESSAGE_NOTIFICATION")!=null || !(rs.getString("PARTNERMESSAGE_NOTIFICATION").equals("")) ){
 						pMessage=rs.getString("PARTNERMESSAGE_NOTIFICATION");
 					}
+					if(rs.getString("MOBILE_NUMBER")!=null || !(rs.getString("MOBILE_NUMBER").equals("")) ){
+						existingMobNum=rs.getString("MOBILE_NUMBER");
+					}
 				}
 			} catch (Exception e) {
 				LOGGER.error("Error updating mobile preferences", e);
@@ -574,58 +578,89 @@ public class FDUserDAO {
 			}
 			
 			Date optinDate=new Date();
-			boolean alreadyOptedIn=false;
-			if((notice!=null && notice.equals(EnumSMSAlertStatus.SUBSCRIBED.value()))||
-					(exceptions!=null && exceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value()))||
-					(offer!=null && offer.equals(EnumSMSAlertStatus.SUBSCRIBED.value()))||
-					(pMessage!=null && pMessage.equals(EnumSMSAlertStatus.SUBSCRIBED.value()))){
-				
-				alreadyOptedIn=true;
-			}
-			ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?, SMS_OPTIN_DATE=? where customer_id=?");				
-			ps.setString(1, phone.getPhone());
-			ps.setString(2, "Y".equals(textOffers)?"Y":"N");
-			ps.setString(3, "Y".equals(textDelivery)?"Y":"N");
-			//New Alerts
-			if(notice.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(orderNotices)){
-				ps.setString(4, EnumSMSAlertStatus.SUBSCRIBED.value());
-			} else{
-				if(alreadyOptedIn && "Y".equals(orderNotices)){
-					ps.setString(4,EnumSMSAlertStatus.SUBSCRIBED.value());
-				}else{
-					ps.setString(4, "Y".equals(orderNotices)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+			if(!existingMobNum.equals(phone.getPhone())){
+				//Mobile Number change put all subscribed and pending alerts to pending
+				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?, SMS_OPTIN_DATE=? where customer_id=?");				
+				ps.setString(1, phone.getPhone());
+				ps.setString(2, "Y".equals(textOffers)?"Y":"N");
+				ps.setString(3, "Y".equals(textDelivery)?"Y":"N");
+				if(notice.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||notice.equals(EnumSMSAlertStatus.PENDING.value())){
+					ps.setString(4,EnumSMSAlertStatus.PENDING.value());
+				} else {
+					ps.setString(4,EnumSMSAlertStatus.NONE.value());
 				}
-			}
-			if(exceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(orderExceptions)){
-				ps.setString(5, EnumSMSAlertStatus.SUBSCRIBED.value());
-			} else{
-				if(alreadyOptedIn && "Y".equals(orderExceptions)){
-					ps.setString(5,EnumSMSAlertStatus.SUBSCRIBED.value());
-				}else{
-					ps.setString(5, "Y".equals(orderExceptions)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+				if(exceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||exceptions.equals(EnumSMSAlertStatus.PENDING.value())){
+					ps.setString(5, EnumSMSAlertStatus.PENDING.value());
+				} else{
+					ps.setString(5, EnumSMSAlertStatus.NONE.value());
 				}
-			}
-			if(offer.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(offers)){
-				ps.setString(6, EnumSMSAlertStatus.SUBSCRIBED.value());
-			} else{
-				if(alreadyOptedIn && "Y".equals(offers)){
+				if(offer.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||offer.equals(EnumSMSAlertStatus.PENDING.value())){
+					ps.setString(6, EnumSMSAlertStatus.PENDING.value());
+				} else {
+					ps.setString(6, EnumSMSAlertStatus.NONE.value());
+				}
+				if(pMessage.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||pMessage.equals(EnumSMSAlertStatus.PENDING.value())){
+					ps.setString(7, EnumSMSAlertStatus.PENDING.value());
+				} else{
+					ps.setString(7, EnumSMSAlertStatus.NONE.value());
+				}
+				ps.setTimestamp(8, new java.sql.Timestamp(optinDate.getTime()));
+				ps.setString(9, customerId);
+				ps.execute();
+			} else {
+				boolean alreadyOptedIn=false;
+				if((notice!=null && notice.equals(EnumSMSAlertStatus.SUBSCRIBED.value()))||
+						(exceptions!=null && exceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value()))||
+						(offer!=null && offer.equals(EnumSMSAlertStatus.SUBSCRIBED.value()))||
+						(pMessage!=null && pMessage.equals(EnumSMSAlertStatus.SUBSCRIBED.value()))){
+					
+					alreadyOptedIn=true;
+				}
+				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?, SMS_OPTIN_DATE=? where customer_id=?");				
+				ps.setString(1, phone.getPhone());
+				ps.setString(2, "Y".equals(textOffers)?"Y":"N");
+				ps.setString(3, "Y".equals(textDelivery)?"Y":"N");
+				//New Alerts
+				if(notice.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(orderNotices)){
+					ps.setString(4, EnumSMSAlertStatus.SUBSCRIBED.value());
+				} else{
+					if(alreadyOptedIn && "Y".equals(orderNotices)){
+						ps.setString(4,EnumSMSAlertStatus.SUBSCRIBED.value());
+					}else{
+						ps.setString(4, "Y".equals(orderNotices)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+					}
+				}
+				if(exceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(orderExceptions)){
+					ps.setString(5, EnumSMSAlertStatus.SUBSCRIBED.value());
+				} else{
+					if(alreadyOptedIn && "Y".equals(orderExceptions)){
+						ps.setString(5,EnumSMSAlertStatus.SUBSCRIBED.value());
+					}else{
+						ps.setString(5, "Y".equals(orderExceptions)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+					}
+				}
+				if(offer.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(offers)){
 					ps.setString(6, EnumSMSAlertStatus.SUBSCRIBED.value());
-				}else{
-					ps.setString(6, "Y".equals(offers)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+				} else{
+					if(alreadyOptedIn && "Y".equals(offers)){
+						ps.setString(6, EnumSMSAlertStatus.SUBSCRIBED.value());
+					}else{
+						ps.setString(6, "Y".equals(offers)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+					}
 				}
-			}
-			if(pMessage.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(partnerMessages)){
-				ps.setString(7, EnumSMSAlertStatus.SUBSCRIBED.value());
-			} else{
-				if(alreadyOptedIn && "Y".equals(partnerMessages)){
+				if(pMessage.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) && "Y".equals(partnerMessages)){
 					ps.setString(7, EnumSMSAlertStatus.SUBSCRIBED.value());
 				} else{
-					ps.setString(7, "Y".equals(partnerMessages)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+					if(alreadyOptedIn && "Y".equals(partnerMessages)){
+						ps.setString(7, EnumSMSAlertStatus.SUBSCRIBED.value());
+					} else{
+						ps.setString(7, "Y".equals(partnerMessages)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
+					}
 				}
+				ps.setTimestamp(8, new java.sql.Timestamp(optinDate.getTime()));
+				ps.setString(9, customerId);
+				ps.execute();
 			}
-			ps.setTimestamp(8, new java.sql.Timestamp(optinDate.getTime()));
-			ps.setString(9, customerId);
-			ps.execute();
 		} catch (Exception e) {
 			LOGGER.error("Error updating mobile preferences", e);
 		} finally {
