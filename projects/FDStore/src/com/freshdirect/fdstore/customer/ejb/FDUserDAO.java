@@ -553,19 +553,19 @@ public class FDUserDAO {
 				ResultSet rs=selectAlertStatus.executeQuery();
 				if(rs.next()){
 					if(rs.getString("ORDER_NOTIFICATION")!=null || !(rs.getString("ORDER_NOTIFICATION").equals("")) ){
-						notice=rs.getString("ORDER_NOTIFICATION");
+						notice=rs.getString("ORDER_NOTIFICATION")!=null?rs.getString("ORDER_NOTIFICATION"):EnumSMSAlertStatus.NONE.value();
 					}
 					if(rs.getString("ORDEREXCEPTION_NOTIFICATION")!=null || !(rs.getString("ORDEREXCEPTION_NOTIFICATION").equals("")) ){
-						exceptions=rs.getString("ORDEREXCEPTION_NOTIFICATION");
+						exceptions=rs.getString("ORDEREXCEPTION_NOTIFICATION")!=null? rs.getString("ORDEREXCEPTION_NOTIFICATION"): EnumSMSAlertStatus.NONE.value() ;
 					}
 					if(rs.getString("SMS_OFFERS_ALERT")!=null || !(rs.getString("SMS_OFFERS_ALERT").equals("")) ){
-						offer=rs.getString("SMS_OFFERS_ALERT");
+						offer=rs.getString("SMS_OFFERS_ALERT")!=null?rs.getString("SMS_OFFERS_ALERT"):EnumSMSAlertStatus.NONE.value() ;
 					}
 					if(rs.getString("PARTNERMESSAGE_NOTIFICATION")!=null || !(rs.getString("PARTNERMESSAGE_NOTIFICATION").equals("")) ){
-						pMessage=rs.getString("PARTNERMESSAGE_NOTIFICATION");
+						pMessage=rs.getString("PARTNERMESSAGE_NOTIFICATION")!=null?rs.getString("PARTNERMESSAGE_NOTIFICATION"):EnumSMSAlertStatus.NONE.value();
 					}
 					if(rs.getString("MOBILE_NUMBER")!=null || !(rs.getString("MOBILE_NUMBER").equals("")) ){
-						existingMobNum=rs.getString("MOBILE_NUMBER");
+						existingMobNum=rs.getString("MOBILE_NUMBER")!=null?rs.getString("MOBILE_NUMBER"):null;
 					}
 				}
 			} catch (Exception e) {
@@ -578,7 +578,7 @@ public class FDUserDAO {
 			}
 			
 			Date optinDate=new Date();
-			if(!existingMobNum.equals(phone.getPhone())){
+			if(existingMobNum!=null && !phone.getPhone().equals(existingMobNum)){
 				//Mobile Number change put all subscribed and pending alerts to pending
 				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?, SMS_OPTIN_DATE=? where customer_id=?");				
 				ps.setString(1, phone.getPhone());
@@ -587,22 +587,22 @@ public class FDUserDAO {
 				if(notice.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||notice.equals(EnumSMSAlertStatus.PENDING.value())){
 					ps.setString(4,EnumSMSAlertStatus.PENDING.value());
 				} else {
-					ps.setString(4,EnumSMSAlertStatus.NONE.value());
+					ps.setString(4, "Y".equals(orderNotices)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
 				}
 				if(exceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||exceptions.equals(EnumSMSAlertStatus.PENDING.value())){
 					ps.setString(5, EnumSMSAlertStatus.PENDING.value());
 				} else{
-					ps.setString(5, EnumSMSAlertStatus.NONE.value());
+					ps.setString(5, "Y".equals(orderExceptions)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
 				}
 				if(offer.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||offer.equals(EnumSMSAlertStatus.PENDING.value())){
 					ps.setString(6, EnumSMSAlertStatus.PENDING.value());
 				} else {
-					ps.setString(6, EnumSMSAlertStatus.NONE.value());
+					ps.setString(6, "Y".equals(offers)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
 				}
 				if(pMessage.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||pMessage.equals(EnumSMSAlertStatus.PENDING.value())){
 					ps.setString(7, EnumSMSAlertStatus.PENDING.value());
 				} else{
-					ps.setString(7, EnumSMSAlertStatus.NONE.value());
+					ps.setString(7, "Y".equals(partnerMessages)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value());
 				}
 				ps.setTimestamp(8, new java.sql.Timestamp(optinDate.getTime()));
 				ps.setString(9, customerId);

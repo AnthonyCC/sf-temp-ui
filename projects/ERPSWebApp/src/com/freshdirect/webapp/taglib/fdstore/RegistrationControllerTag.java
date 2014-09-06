@@ -393,8 +393,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		
 		 boolean isSent=false;
 		try {
-			if(orderNoticeOptin || orderExceptionOptin||offersOptin||partnerMessagesOptin || !existingMobileNumber.equals(new PhoneNumber(mobile_number).getPhone())){
-				if((order_notice_existing ||order_exception_existing || offer_existing ||partner_existing) && existingMobileNumber.equals(new PhoneNumber(mobile_number).getPhone())){
+			if(orderNoticeOptin || orderExceptionOptin||offersOptin||partnerMessagesOptin || !new PhoneNumber(mobile_number).getPhone().equals(existingMobileNumber)){
+				if((order_notice_existing ||order_exception_existing || offer_existing ||partner_existing) && new PhoneNumber(mobile_number).getPhone().equals(existingMobileNumber)){
 					isSent=true;
 				} else{
 					isSent = SMSAlertManager.getInstance().smsOptIn(identity.getErpCustomerPK(),mobile_number);
@@ -418,7 +418,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 					FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),"Y");
 				else 
 					FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),null);
-			} catch (FDResourceException e) {
+			} catch (Exception e) {
 				LOGGER.error("Error from mobile preferences", e);
 			}
 		 } else{

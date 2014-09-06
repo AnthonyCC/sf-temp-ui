@@ -155,11 +155,11 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		ErpCustomerInfoModel info = customer.getCustomerInfo();
 		boolean beforeUpdateDelNotif = info.isDeliveryNotification();
 		boolean beforeUpdateOfferNotif = info.isOffersNotification();
-		String existingMobNum=info.getMobileNumber().getPhone();
-		String beforeUpdateOrderNotices=info.getOrderNotices().value();
-		String beforeUpdateOrderExceptions=info.getOrderExceptions().value();
-		String beforeUpdateOffers=info.getOffers().value();
-		String beforeUpdatePartnerMessages=info.getPartnerMessages().value();
+		String existingMobNum= info.getMobileNumber()!=null?info.getMobileNumber().getPhone():"N/A";
+		String beforeUpdateOrderNotices=info.getOrderNotices()!=null ? info.getOrderNotices().value() : EnumSMSAlertStatus.NONE.value();
+		String beforeUpdateOrderExceptions=info.getOrderExceptions()!=null? info.getOrderExceptions().value() : EnumSMSAlertStatus.NONE.value();
+		String beforeUpdateOffers=info.getOffers()!=null ? info.getOffers().value():EnumSMSAlertStatus.NONE.value();
+		String beforeUpdatePartnerMessages=info.getPartnerMessages()!=null?info.getPartnerMessages().value():EnumSMSAlertStatus.NONE.value();
 		boolean beforeUpdateGoGreen = info.isGoGreen();
 		FDActionInfo aInfo = AccountActivityUtil.getActionInfo(pageContext.getSession());
 		
@@ -179,20 +179,18 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		boolean orderExceptionOptin=false;
 		boolean offersOptin=false;
 		boolean partnerMessagesOptin=false;
-		if(this.customerInfo.getOrderExceptions().equals(EnumSMSAlertStatus.PENDING.value())&& info.getOrderExceptions().value().equals(EnumSMSAlertStatus.NONE.value())){
+		if(this.customerInfo.getOrderExceptions().equals(EnumSMSAlertStatus.PENDING.value())&&beforeUpdateOrderExceptions.equals(EnumSMSAlertStatus.NONE.value())){
 			orderExceptionOptin=true;
 		}
-		if(this.customerInfo.getOrderNotices().equals(EnumSMSAlertStatus.PENDING.value())&& info.getOrderNotices().value().equals(EnumSMSAlertStatus.NONE.value())){
+		if(this.customerInfo.getOrderNotices().equals(EnumSMSAlertStatus.PENDING.value())&& beforeUpdateOrderNotices.equals(EnumSMSAlertStatus.NONE.value())){
 			orderNoticeOptin=true;
 		}
-		if(this.customerInfo.getOffers().equals(EnumSMSAlertStatus.PENDING.value())&& info.getOffers().value().equals(EnumSMSAlertStatus.NONE.value())){
+		if(this.customerInfo.getOffers().equals(EnumSMSAlertStatus.PENDING.value())&& beforeUpdateOffers.equals(EnumSMSAlertStatus.NONE.value())){
 			offersOptin=true;
 		}
-		if(this.customerInfo.getPartnerMessages().equals(EnumSMSAlertStatus.PENDING.value())&& info.getPartnerMessages().value().equals(EnumSMSAlertStatus.NONE.value())){
-			partnerMessagesOptin=true;
-		}
+		
 		if(orderNoticeOptin|| orderExceptionOptin|| offersOptin|| partnerMessagesOptin
-				|| (info.getMobileNumber() != null && !this.customerInfo.getMobileNumber().getPhone().equals(info.getMobileNumber().getPhone()))){
+				|| ( !this.customerInfo.getMobileNumber().getPhone().equals(existingMobNum))){
 			SMSAlertManager smsAlertManager=SMSAlertManager.getInstance();
 			info.setSmsPreferenceflag("Y");
 			boolean isSent=false;
@@ -201,11 +199,10 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 					!this.customerInfo.getOffers().equals(EnumSMSAlertStatus.NONE.value())||
 					!this.customerInfo.getPartnerMessages().equals(EnumSMSAlertStatus.NONE.value())){
 				
-					if((EnumSMSAlertStatus.SUBSCRIBED.value().equals(info.getOrderNotices().value()) ||
-							EnumSMSAlertStatus.SUBSCRIBED.value().equals(info.getOrderExceptions().value()) ||
-							EnumSMSAlertStatus.SUBSCRIBED.value().equals(info.getOffers().value()) ||
-							EnumSMSAlertStatus.SUBSCRIBED.value().equals(info.getPartnerMessages().value()))&&
-							(this.customerInfo.getMobileNumber().getPhone().equals(info.getMobileNumber().getPhone()))){
+					if((EnumSMSAlertStatus.SUBSCRIBED.value().equals(beforeUpdateOrderNotices) ||
+							EnumSMSAlertStatus.SUBSCRIBED.value().equals(beforeUpdateOrderExceptions) ||
+							EnumSMSAlertStatus.SUBSCRIBED.value().equals(beforeUpdateOffers))&&
+							(this.customerInfo.getMobileNumber().getPhone().equals(existingMobNum))){
 						isSent=true;
 						if(orderExceptionOptin){
 							this.customerInfo.setOrderExceptions(EnumSMSAlertStatus.SUBSCRIBED.value());
@@ -216,29 +213,24 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 						if(offersOptin){
 							this.customerInfo.setOffers(EnumSMSAlertStatus.SUBSCRIBED.value());
 						}
-						if(partnerMessagesOptin){
-							this.customerInfo.setPartnerMessages(EnumSMSAlertStatus.SUBSCRIBED.value());
-						}
+						
 					} else{
 						isSent=smsAlertManager.smsOptIn(customer.getId(),this.customerInfo.getMobileNumber().getPhone());
-						if(!this.customerInfo.getMobileNumber().getPhone().equals(info.getMobileNumber().getPhone())){
+						if(info.getMobileNumber()!=null && !this.customerInfo.getMobileNumber().getPhone().equals(existingMobNum)){
 							
-							if(info.getOrderNotices().value().equals(EnumSMSAlertStatus.SUBSCRIBED.value())||
-									info.getOrderNotices().value().equals(EnumSMSAlertStatus.PENDING.value())){
+							if( beforeUpdateOrderNotices.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||
+									beforeUpdateOrderNotices.equals(EnumSMSAlertStatus.PENDING.value())){
 								this.customerInfo.setOrderNotices(EnumSMSAlertStatus.PENDING.value());
 							}
-							if(info.getOrderExceptions().value().equals(EnumSMSAlertStatus.SUBSCRIBED.value())||
-									info.getOrderExceptions().value().equals(EnumSMSAlertStatus.PENDING.value())){
+							if(beforeUpdateOrderExceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||
+									beforeUpdateOrderExceptions.equals(EnumSMSAlertStatus.PENDING.value())){
 								this.customerInfo.setOrderExceptions(EnumSMSAlertStatus.PENDING.value());
 							}
-							if(info.getOffers().value().equals(EnumSMSAlertStatus.SUBSCRIBED.value())||
-									info.getOffers().value().equals(EnumSMSAlertStatus.PENDING.value())){
+							if(beforeUpdateOffers.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||
+									beforeUpdateOffers.equals(EnumSMSAlertStatus.PENDING.value())){
 								this.customerInfo.setOffers(EnumSMSAlertStatus.PENDING.value());
 							}
-							if(info.getPartnerMessages().value().equals(EnumSMSAlertStatus.SUBSCRIBED.value())||
-									info.getPartnerMessages().value().equals(EnumSMSAlertStatus.PENDING.value())){
-								this.customerInfo.setPartnerMessages(EnumSMSAlertStatus.PENDING.value());
-							}
+							
 						}
 					}
 			}
@@ -250,13 +242,12 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 				|| customerInfo.isTextOnlyEmail() != info.isEmailPlaintext()
 				|| customerInfo.isReceiveOptinNewsletter() != info.isReceiveOptinNewsletter()
 				|| this.customerInfo.getMobileNumber() != null 
-				|| (info.getMobileNumber() != null && this.customerInfo.getMobileNumber().getPhone() != info.getMobileNumber().getPhone()) 
+				|| !this.customerInfo.getMobileNumber().getPhone().equals(existingMobNum)
 				|| this.customerInfo.isDelNotification() != info.isDeliveryNotification()
 				|| this.customerInfo.isOffNotification() != info.isOffersNotification()
-				|| (! this.customerInfo.getOrderNotices().equals(info.getOrderNotices().value()))
-				|| (! this.customerInfo.getOrderExceptions().equals(info.getOrderExceptions().value()))
-				|| (! this.customerInfo.getOffers().equals(info.getOffers().value()))
-				|| (! this.customerInfo.getPartnerMessages().equals(info.getPartnerMessages().value()))
+				|| ! this.customerInfo.getOrderNotices().equals(beforeUpdateOrderNotices)
+				|| ! this.customerInfo.getOrderExceptions().equals(beforeUpdateOrderExceptions)
+				|| !this.customerInfo.getOffers().equals(beforeUpdateOffers)
 				|| this.customerInfo.isGoGreen() != info.isGoGreen()) {
 			info.setReceiveNewsletter(this.customerInfo.isRecieveFdNews());
 			info.setEmailPlaintext(this.customerInfo.isTextOnlyEmail()); 
@@ -267,7 +258,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			info.setOrderNotices(EnumSMSAlertStatus.getEnum(this.customerInfo.getOrderNotices()));
 			info.setOrderExceptions(EnumSMSAlertStatus.getEnum(this.customerInfo.getOrderExceptions()));
 			info.setOffers(EnumSMSAlertStatus.getEnum(this.customerInfo.getOffers()));
-			info.setPartnerMessages(EnumSMSAlertStatus.getEnum(this.customerInfo.getPartnerMessages()));
+			info.setPartnerMessages(EnumSMSAlertStatus.NONE);
 			
 			info.setGoGreen(this.customerInfo.isGoGreen());
 			FDCustomerManager.updateCustomerInfo(aInfo, info);
