@@ -578,7 +578,7 @@ public class FDUserDAO {
 			}
 			
 			Date optinDate=new Date();
-			if(existingMobNum!=null && !phone.getPhone().equals(existingMobNum)){
+			if(existingMobNum!=null && phone.getPhone()!=null && !phone.getPhone().isEmpty() && phone.getPhone().length()!=0 && !phone.getPhone().equals(existingMobNum)){
 				//Mobile Number change put all subscribed and pending alerts to pending
 				ps = conn.prepareStatement("update CUST.CUSTOMERINFO set mobile_number=?, offers_notification=?,delivery_notification=?, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?, SMS_OPTIN_DATE=? where customer_id=?");				
 				ps.setString(1, phone.getPhone());

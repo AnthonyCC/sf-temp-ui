@@ -79,7 +79,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 					return true;
 				}
 			} else if(!"Y".equalsIgnoreCase(order_notices)&&!"Y".equalsIgnoreCase(order_exceptions) &&
-					!"Y".equalsIgnoreCase(offers)&& !"Y".equalsIgnoreCase(partner_messages) && (mobile_number == null || mobile_number.length() == 0)){
+					!"Y".equalsIgnoreCase(offers)&& (mobile_number == null || mobile_number.length() == 0)){
 				optOut=true;
 			}
 			else{
@@ -189,8 +189,11 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			offersOptin=true;
 		}
 		
-		if(orderNoticeOptin|| orderExceptionOptin|| offersOptin|| partnerMessagesOptin
-				|| ( !this.customerInfo.getMobileNumber().getPhone().equals(existingMobNum))){
+		if(orderNoticeOptin|| orderExceptionOptin|| offersOptin
+				|| (this.customerInfo.getMobileNumber().getPhone()!=null&&
+						!this.customerInfo.getMobileNumber().getPhone().isEmpty() &&
+						this.customerInfo.getMobileNumber().getPhone().length()!=0 &&
+						!this.customerInfo.getMobileNumber().getPhone().equals(existingMobNum))){
 			SMSAlertManager smsAlertManager=SMSAlertManager.getInstance();
 			info.setSmsPreferenceflag("Y");
 			boolean isSent=false;

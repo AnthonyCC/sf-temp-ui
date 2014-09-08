@@ -286,7 +286,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			updateSmsAlertCaptured(con, smsResponseModel, OPTIN_ALERT_TYPE, customerId);
 
 		}  else if (confirmed.equalsIgnoreCase("STOP")) {
-			String updateStop = "update cust.customerinfo set ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?, SMS_OPTIN_DATE=? where customer_id=?";
+			String updateStop = "update cust.customerinfo set mobile_number=null ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?, SMS_OPTIN_DATE=? where customer_id=?";
 			ps1 = con.prepareStatement(updateStop);
 			ps1.setString(1, EnumSMSAlertStatus.NONE.value());
 			ps1.setString(2, EnumSMSAlertStatus.NONE.value());
