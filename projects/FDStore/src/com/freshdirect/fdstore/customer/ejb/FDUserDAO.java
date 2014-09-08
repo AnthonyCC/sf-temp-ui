@@ -552,21 +552,11 @@ public class FDUserDAO {
 				selectAlertStatus.setString(1,customerId);
 				ResultSet rs=selectAlertStatus.executeQuery();
 				if(rs.next()){
-					if(rs.getString("ORDER_NOTIFICATION")!=null || !(rs.getString("ORDER_NOTIFICATION").equals("")) ){
-						notice=rs.getString("ORDER_NOTIFICATION")!=null?rs.getString("ORDER_NOTIFICATION"):EnumSMSAlertStatus.NONE.value();
-					}
-					if(rs.getString("ORDEREXCEPTION_NOTIFICATION")!=null || !(rs.getString("ORDEREXCEPTION_NOTIFICATION").equals("")) ){
-						exceptions=rs.getString("ORDEREXCEPTION_NOTIFICATION")!=null? rs.getString("ORDEREXCEPTION_NOTIFICATION"): EnumSMSAlertStatus.NONE.value() ;
-					}
-					if(rs.getString("SMS_OFFERS_ALERT")!=null || !(rs.getString("SMS_OFFERS_ALERT").equals("")) ){
-						offer=rs.getString("SMS_OFFERS_ALERT")!=null?rs.getString("SMS_OFFERS_ALERT"):EnumSMSAlertStatus.NONE.value() ;
-					}
-					if(rs.getString("PARTNERMESSAGE_NOTIFICATION")!=null || !(rs.getString("PARTNERMESSAGE_NOTIFICATION").equals("")) ){
-						pMessage=rs.getString("PARTNERMESSAGE_NOTIFICATION")!=null?rs.getString("PARTNERMESSAGE_NOTIFICATION"):EnumSMSAlertStatus.NONE.value();
-					}
-					if(rs.getString("MOBILE_NUMBER")!=null || !(rs.getString("MOBILE_NUMBER").equals("")) ){
-						existingMobNum=rs.getString("MOBILE_NUMBER")!=null?rs.getString("MOBILE_NUMBER"):null;
-					}
+					notice = rs.getString("ORDER_NOTIFICATION") !=null ? rs.getString("ORDER_NOTIFICATION") : EnumSMSAlertStatus.NONE.value();
+					exceptions = rs.getString("ORDEREXCEPTION_NOTIFICATION") != null? rs.getString("ORDEREXCEPTION_NOTIFICATION"): EnumSMSAlertStatus.NONE.value();
+					offer = rs.getString("SMS_OFFERS_ALERT")!= null ? rs.getString("SMS_OFFERS_ALERT") : EnumSMSAlertStatus.NONE.value() ;
+					pMessage = rs.getString("PARTNERMESSAGE_NOTIFICATION") != null ? rs.getString("PARTNERMESSAGE_NOTIFICATION") : EnumSMSAlertStatus.NONE.value();
+					existingMobNum = rs.getString("MOBILE_NUMBER") != null ? rs.getString("MOBILE_NUMBER") : null;
 				}
 			} catch (Exception e) {
 				LOGGER.error("Error updating mobile preferences", e);

@@ -341,23 +341,21 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
 		FDIdentity identity = user.getIdentity();
 		boolean optOut=false;
+			
 		
 		LOGGER.debug("Boolean value got for order Notices : " + order_notice_existing);
 		
 		LOGGER.debug("Value of order Notice existing in reqyest : "+request.getParameter("order_notice_existing"));
 		
-		if(!order_notice_existing && "Y".equalsIgnoreCase(order_notices)){
-			orderNoticeOptin=true;
-		}
-		if(!order_exception_existing && "Y".equalsIgnoreCase(order_exceptions)){
-			orderExceptionOptin=true;
-		}
-		if(!offer_existing && "Y".equalsIgnoreCase(offers)){
-			offersOptin=true;
-		}
-		if(!partner_existing && "Y".equalsIgnoreCase(partner_messages)){
-			partnerMessagesOptin=true;
-		}
+		orderNoticeOptin = "Y".equalsIgnoreCase(order_notices);
+		orderExceptionOptin = "Y".equalsIgnoreCase(order_exceptions);
+		offersOptin = "Y".equalsIgnoreCase(offers);
+		partnerMessagesOptin = "Y".equalsIgnoreCase(partner_messages);
+		
+		boolean subscribedBefore = order_notice_existing || order_exception_existing || offer_existing || partner_existing;
+		boolean subscribedNow = orderNoticeOptin || orderExceptionOptin || offersOptin || partnerMessagesOptin;
+		
+		PhoneNumber phone = new PhoneNumber(mobile_number);
 		
 		if("Y".equalsIgnoreCase(order_notices)||"Y".equalsIgnoreCase(order_exceptions) ||
 				"Y".equalsIgnoreCase(offers)|| "Y".equalsIgnoreCase(partner_messages)){
@@ -365,7 +363,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				actionResult.addError(true, "mobile_number", SystemMessageList.MSG_REQUIRED);
 				return;
 			}
-			PhoneNumber phone = new PhoneNumber(mobile_number);
+			
 			if(!phone.isValid()) {
 				actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
 				return;
@@ -373,7 +371,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		} else if(mobile_number != null && mobile_number.length() != 0) {
 			if("Y".equalsIgnoreCase(order_notices)||"Y".equalsIgnoreCase(order_exceptions) ||
 					"Y".equalsIgnoreCase(offers)|| "Y".equalsIgnoreCase(partner_messages)){
-				PhoneNumber phone = new PhoneNumber(mobile_number);
+				
 				if(!phone.isValid()){
 					actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
 					return;
@@ -392,9 +390,12 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		}
 		
 		 boolean isSent=false;
+		 PhoneNumber _tmpNo = new PhoneNumber(mobile_number);
+		 PhoneNumber _tmpExistingNo = new PhoneNumber(existingMobileNumber);
+		 
 		try {
-			if(orderNoticeOptin || orderExceptionOptin||offersOptin||partnerMessagesOptin || !new PhoneNumber(mobile_number).getPhone().equals(existingMobileNumber)){
-				if((order_notice_existing ||order_exception_existing || offer_existing) && new PhoneNumber(mobile_number).getPhone().equals(existingMobileNumber)){
+			if(subscribedNow || !_tmpNo.getPhone().equals(_tmpExistingNo.getPhone())){
+				if(subscribedBefore && _tmpNo.getPhone().equals(_tmpExistingNo.getPhone())){
 					isSent=true;
 				} else{
 					
@@ -415,10 +416,11 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
 				FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), mobile_number, text_offers, text_delivery,
 						order_notices, order_exceptions, offers, partner_messages);
-				if(isSent)
+				if(subscribedNow) {
 					FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),"Y");
-				else 
+				} else {
 					FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),null);
+				}
 			} catch (Exception e) {
 				LOGGER.error("Error from mobile preferences", e);
 			}
@@ -914,17 +916,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				actionResult.addError(true, "mobile_number", SystemMessageList.MSG_REQUIRED);
 				return;
 			} else if(mobile_number != null && mobile_number.length() != 0) {
-				PhoneNumber phone = new PhoneNumber(mobile_number);
-				try {
-					long _phone=Integer.parseInt(retainDigits(phone.getPhone()));
-					if(_phone==0){
-						actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
-						return;
-					}
-				} catch (NumberFormatException e) {
-					actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
-					return;
-				}
+				PhoneNumber phone = new PhoneNumber(mobile_number);				
 				if(!phone.isValid()){
 					actionResult.addError(true, "mobile_number", SystemMessageList.MSG_PHONE_FORMAT);
 					return;
