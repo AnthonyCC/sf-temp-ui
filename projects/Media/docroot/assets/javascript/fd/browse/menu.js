@@ -218,13 +218,6 @@ var FreshDirect = FreshDirect || {};
           this.savedScrolls = {}; 
         }
         
-        $(".menuBox").each(function() {
-            if($(this).find($(".selected")).length==0){
-                $(this).find(".cssbutton.green").css("background-color", "#88a75c");
-            }else{
-                $(this).find(".cssbutton.green").css("background-color", "#728d4b");
-            }
-        });
       }
     },
     initMenu:{
@@ -237,14 +230,6 @@ var FreshDirect = FreshDirect || {};
     }
   });
   
-  $(".menuBox").each(function() {
-      if($(this).find($(".selected")).length==0){
-          $(this).find(".cssbutton.green").css("background-color", "#88a75c");
-      }else{
-          $(this).find(".cssbutton.green").css("background-color", "#728d4b");
-      }
-  });
-
   menu.initMenu();
   $(document).on('click',menu.placeholder+' [data-component="menuitem"]', menu.handleClick.bind(menu));
   $(document).on('click','.menupopup [data-component="menuitem"] a, .centermenupopup [data-component="menuitem"] a', menu.handlePopupClick.bind(menu));

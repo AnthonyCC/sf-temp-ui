@@ -539,15 +539,20 @@ section.main .leftnav .menuBox hr {
   height: 1px;
 }
 
-section.main .category.cssbutton.green,
-.popupcontentghost .category.cssbutton.green{
+section.main .category.cssbutton.green {
   background-color:#728d4b;
 }
 
+section.main [data-boxtype="FILTER"] .category.cssbutton.green {
+  background-color:#88a75c;
+}
+
+section.main [data-menu-selected] .category.cssbutton.green,
 section.main .category.cssbutton.green:focus,
 section.main .category.cssbutton.green:hover,
+.popupcontentghost .category.cssbutton.green,
 .popupcontentghost .cssbutton.green:focus,
-.popupcontentghost .cssbutton.green:hover{
+.popupcontentghost .cssbutton.green:hover {
   background-color:#728d4b;
 }
 
