@@ -5,6 +5,7 @@
  * @param? productList
  * @param? selected
  * @param? cmEventSource
+ * @param? showCustRated
  */
 {template .tabbedCarousel}
 {let $siteFeature}
@@ -24,7 +25,9 @@
         <li data-component="tabitem" class="{if $selected and $selected=='deals' }selected{/if}" data-tabname="deals" data-sitefeature="DEALS_QS">don't miss deals</li>
         <li data-component="tabitem" class="{if $selected and $selected=='fdfav' }selected{/if}" data-tabname="fdfav"  data-sitefeature="FAVORITES_QS">FD favorites</li>
         <li data-component="tabitem" class="{if $selected and $selected=='expert' }selected{/if}" data-tabname="expert" data-sitefeature="EXPRATED_QS">expert rated</li>
-        <li data-component="tabitem" class="{if $selected and $selected=='custrating' }selected{/if}" data-tabname="custrating" data-sitefeature="CUSTRATED_QS">customer rated</li>
+        {if $showCustRated}
+			<li data-component="tabitem" class="{if $selected and $selected=='custrating' }selected{/if}" data-tabname="custrating" data-sitefeature="CUSTRATED_QS">customer rated</li>
+		{/if}
     </ul>
 
     <div class="tab-container light-carousel" data-component="tabpanel" data-cmSiteFeature="{$siteFeature}">

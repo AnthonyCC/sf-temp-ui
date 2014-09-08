@@ -46,7 +46,7 @@ public class CustomerRatingsContext extends BalkingExpiringReference<Map<String,
 		
 		
 		Map<String,CustomerRatingsDTO> ratedProducts = getCustomerRatings();
-		if(ratedProducts!=null){
+		if(ratedProducts!=null && !ratedProducts.isEmpty()){
 			return ratedProducts.get(productId);
 		}
 		return null;

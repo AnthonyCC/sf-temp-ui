@@ -1,6 +1,7 @@
 <%@ page import='java.util.*' %>
 <%@ page import="com.freshdirect.fdstore.util.FilteringNavigator"%>
 <%@ page import="com.freshdirect.fdstore.content.*"%>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='bean' prefix='bean'%>
 <%@ taglib uri='logic' prefix='logic'%>
@@ -231,46 +232,48 @@ if (menus != null && nav != null) {
 </tmpl:put>
 
 <tmpl:put name='customerRatingFilter'>
-<fd:FilterList domainName="<%=EnumSearchFilteringValue.CUSTOMER_RATING%>" filters='<%=menus%>' id="filterItems">
-<%
-	nav.resetState(); nav.setPageOffset(0);
-%>
-  <div id="customerrating" class="filterbox sidebar-content">
-    <h3>CUSTOMER RATING</h3>
-    <ul>
-		<logic:iterate id="menu" collection="<%=filterItems%>" type='FilteringMenuItem'>
-			<%
-				String name = menu.getName(); int idx = Integer.parseInt( name ); int count = menu.getCounter(); String countStr = Integer.toString( count );
-				if( nav.isSetCustRatingFilter(name) ) {
-			%>
-				<%
-					nav.removeCustRatingFilter(name);
-				%>
-				<li class="selected"><a href="<%=nav.getLink()%>" class="remove-selection"></a><a href="<%=nav.getLink()%>"><span class="bv-customerrating-stars"><span class="bv-customerrating-stars-content bv-customerrating-stars-content-<%=idx%>"></span></span></a></li>
-				<%
-					nav.addCustRatingFilter(name);
-				%>
-			<%
-				} else if ( menu.getCounter() == 0 ) {
-			%>
-				<li><span class="bv-customerrating-stars"><span class="bv-customerrating-stars-content bv-customerrating-stars-content-<%=idx%>"></span></span><span class="count">(<%=countStr%>)</span></li>
-			<%
-				} else {
-			%>
-				<%
-					nav.addCustRatingFilter(name);
-				%>
-				<li><a href="<%=nav.getLink()%>"><span class="bv-customerrating-stars"><span class="bv-customerrating-stars-content bv-customerrating-stars-content-<%=idx%>"></span></span></a><span class="count">(<%=countStr%>)</span></li>
-				<%
-					nav.removeCustRatingFilter(name);
-				%>
-			<%
-				}
-			%>
-		</logic:iterate>				
-    </ul>
-  </div>
-</fd:FilterList>
+	<% if (FDStoreProperties.isBazaarvoiceEnabled()) { %>
+		<fd:FilterList domainName="<%=EnumSearchFilteringValue.CUSTOMER_RATING%>" filters='<%=menus%>' id="filterItems">
+		<%
+			nav.resetState(); nav.setPageOffset(0);
+		%>
+		  <div id="customerrating" class="filterbox sidebar-content">
+		    <h3>CUSTOMER RATING</h3>
+		    <ul>
+				<logic:iterate id="menu" collection="<%=filterItems%>" type='FilteringMenuItem'>
+					<%
+						String name = menu.getName(); int idx = Integer.parseInt( name ); int count = menu.getCounter(); String countStr = Integer.toString( count );
+						if( nav.isSetCustRatingFilter(name) ) {
+					%>
+						<%
+							nav.removeCustRatingFilter(name);
+						%>
+						<li class="selected"><a href="<%=nav.getLink()%>" class="remove-selection"></a><a href="<%=nav.getLink()%>"><span class="bv-customerrating-stars"><span class="bv-customerrating-stars-content bv-customerrating-stars-content-<%=idx%>"></span></span></a></li>
+						<%
+							nav.addCustRatingFilter(name);
+						%>
+					<%
+						} else if ( menu.getCounter() == 0 ) {
+					%>
+						<li><span class="bv-customerrating-stars"><span class="bv-customerrating-stars-content bv-customerrating-stars-content-<%=idx%>"></span></span><span class="count">(<%=countStr%>)</span></li>
+					<%
+						} else {
+					%>
+						<%
+							nav.addCustRatingFilter(name);
+						%>
+						<li><a href="<%=nav.getLink()%>"><span class="bv-customerrating-stars"><span class="bv-customerrating-stars-content bv-customerrating-stars-content-<%=idx%>"></span></span></a><span class="count">(<%=countStr%>)</span></li>
+						<%
+							nav.removeCustRatingFilter(name);
+						%>
+					<%
+						}
+					%>
+				</logic:iterate>				
+		    </ul>
+		  </div>
+		</fd:FilterList>
+	<% } %>
 </tmpl:put>
 
 <tmpl:put name="otherKosherFilter">
