@@ -218,8 +218,9 @@ public class CmsFilteringFlow {
 		
 		// populate browseData with the menu
 		browseDataContext.getMenuBoxes().setMenuBoxes(navigationModel.getLeftNav());
-		final String departmentorSuperDepartmentName = getDepartmentOrSuperDepartment(contentNodeModel, navigationModel);
-        browseDataContext.getMenuBoxes().setMenuName(departmentorSuperDepartmentName);
+		final ContentNodeModel departmentorSuperDepartment = getDepartmentOrSuperDepartment(contentNodeModel, navigationModel);
+		browseDataContext.getMenuBoxes().setMenuName(departmentorSuperDepartment.getFullName());
+		browseDataContext.getMenuBoxes().setMenuId(departmentorSuperDepartment.getContentKey().getId());
 		
 		// -- POPULATE EXTRA DATA --
 		
@@ -229,29 +230,29 @@ public class CmsFilteringFlow {
 		return browseDataContext;
 	}
 
-	private String getDepartmentOrSuperDepartment(ContentNodeModel contentNodeModel, NavigationModel navigationModel) {
-		final String departmentorSuperDepartmentName;
+	private ContentNodeModel getDepartmentOrSuperDepartment(ContentNodeModel contentNodeModel,
+			NavigationModel navigationModel) {
+		final ContentNodeModel departmentorSuperDepartment;
 		if (contentNodeModel instanceof SuperDepartmentModel) {
-			departmentorSuperDepartmentName = contentNodeModel.getFullName();
+			departmentorSuperDepartment = contentNodeModel;
 		} else if (contentNodeModel instanceof DepartmentModel) {
 			SuperDepartmentModel superDepartmentModel = navigationModel.getSuperDepartmentModel();
 			if (superDepartmentModel != null) {
-				departmentorSuperDepartmentName = superDepartmentModel.getFullName();
+				departmentorSuperDepartment = superDepartmentModel;
 			} else {
-				departmentorSuperDepartmentName = contentNodeModel.getFullName();
+				departmentorSuperDepartment = contentNodeModel;
 			}
 		} else {
 			SuperDepartmentModel superDepartmentModel = navigationModel.getSuperDepartmentModel();
 			if (superDepartmentModel != null) {
-				departmentorSuperDepartmentName = superDepartmentModel.getFullName();
+				departmentorSuperDepartment = superDepartmentModel;
 			} else {
-				departmentorSuperDepartmentName = navigationModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT).getFullName();
+				departmentorSuperDepartment = navigationModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT);
 			}
 		}
-		return departmentorSuperDepartmentName;
+		return departmentorSuperDepartment;
 	}
 
-	
 	private void validateNode(CmsFilteringNavigator nav, ContentNodeModel contentNodeModel, String id, FDSessionUser user) throws InvalidFilteringArgumentException {
 
 		if (!FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user) && contentNodeModel instanceof SuperDepartmentModel) {

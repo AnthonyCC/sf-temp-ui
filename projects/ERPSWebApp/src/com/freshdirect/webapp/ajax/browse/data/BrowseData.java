@@ -175,6 +175,8 @@ public class BrowseData implements Serializable {
 		private static final long serialVersionUID = 4341041465949744118L;
 		private List<MenuBoxData> menuBoxes;
 		private String menuName;
+		private String menuId = null;
+		private String menuUrl = null;
 
 		public List<MenuBoxData> getMenuBoxes() {
 			return menuBoxes;
@@ -188,6 +190,22 @@ public class BrowseData implements Serializable {
 		}
 		public void setMenuName(String menuName) {
 			this.menuName = menuName;
+		}
+
+		public String getMenuId() {
+			return menuId;
+		}
+
+		public void setMenuId(String menuId) {
+			this.menuId = menuId;
+		}
+
+		public String getMenuUrl() {
+			return menuUrl;
+		}
+
+		public void setMenuUrl(String menuUrl) {
+			this.menuUrl = menuUrl;
 		}
 	}
 
