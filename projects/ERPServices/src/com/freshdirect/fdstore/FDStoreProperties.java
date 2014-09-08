@@ -3342,8 +3342,8 @@ public class FDStoreProperties {
 	public static int getRTConnectionTimeoutPeriod() {
 		return Integer.parseInt(get(PROP_ST_READ_TIMEOUT_PERIOD));
 	}
-	public static String getSMSOverlayFlag(){
-		return get(PROP_SMS_OVERLAY_FLAG);
+	public static boolean getSMSOverlayFlag() {
+		return Boolean.valueOf(get(PROP_SMS_OVERLAY_FLAG)).booleanValue();
 	}
 }
 

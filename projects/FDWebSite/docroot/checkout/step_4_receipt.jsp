@@ -31,7 +31,6 @@
 		boolean _modifyOrderMode = false; 	
 		String _ordNum = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 		
-		boolean isSmsOverlayEnabled=SmsOverlayHelper.getSmsOverlayFlag();
 		if(session.getAttribute("MODIFIED" + _ordNum) != null && session.getAttribute("MODIFIED" + _ordNum).equals(_ordNum)) {
 			_modifyOrderMode = true;
 		}
@@ -55,7 +54,7 @@
 			FDIdentity curridentity  = curruser.getIdentity();
 			ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(curridentity);
 			// if atleast one of the smsAlerts is none -- Will have to change this
-			if(isSmsOverlayEnabled && cm.getSmsPreferenceflag()==null ){
+			if(FDStoreProperties.getSMSOverlayFlag() && cm.getSmsPreferenceflag()==null ){
 				if(session.getAttribute("SMSAlert" + _ordNum) == null){
 					%>
 		<script type="text/javascript"
