@@ -2,12 +2,20 @@
 /**
  * @param? menuBoxes menuBoxes
  * @param? menuName menuName
+ * @param? menuUrl menuUrl
+ * @param? menuId menuId
  */
 {template .menu autoescape="false"}
 {if $menuBoxes}
   <div data-component="menu">
   {if $menuName}
-  <h2 class="menuName">{$menuName}</h2>
+  <h2 class="menuName">
+    {if $menuUrl or $menuId}
+      <a href="{$menuUrl ? $menuUrl : '/browse.jsp?id='+$menuId}">{$menuName}</a>
+    {else}
+      {$menuName}
+    {/if}
+  </h2>
   {/if}
   {foreach $menuBox in $menuBoxes}
     {call browse.menuBox}
