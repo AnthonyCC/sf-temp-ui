@@ -1,11 +1,17 @@
 package com.freshdirect.fdstore.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.log4j.Logger;
 
+import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.smartstore.external.certona.CertonaInfrastructure;
 import com.freshdirect.smartstore.external.certona.CertonaRecommender;
 import com.freshdirect.smartstore.fdstore.VariantSelector;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
+import com.freshdirect.smartstore.impl.ScriptedRecommendationService;
 
 
 /**
@@ -118,7 +124,25 @@ public class CertonaTransitionUtil {
 			return false;
 		}
 
-		final boolean isCertonaBased = v.getRecommender() instanceof CertonaRecommender;
+
+		// final boolean isCertonaBased = v.getRecommender() instanceof CertonaRecommender;
+		boolean isCertonaBased = false;
+		RecommendationService r = v.getRecommender();
+		if (r instanceof ScriptedRecommendationService) {
+			ScriptedRecommendationService srs = (ScriptedRecommendationService) r;
+			final String gen = srs.getGenerator().toString();
+			
+			// extract certona recommender from generator name
+			Pattern p = Pattern.compile("\\w+_(\\w+)\\(\\)");
+			Matcher m = p.matcher(gen);
+			if (m.matches() && m.groupCount() > 0) {
+				String n = m.group(1);
+				// String n should match one of certona recommender names
+				// stored in {@link CertonaInfrastructure} class
+				isCertonaBased = n != null && n.startsWith("certona");
+			}
+		}
+
 		if (isCertonaBased) {
 			LOGGER.debug("Cohort " + cohortName + " gets Certona recommendations for site feature " + siteFeature.getName());
 		} else {
