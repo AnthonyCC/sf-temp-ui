@@ -1,0 +1,129 @@
+package com.freshdirect.fdstore.util;
+
+import org.apache.log4j.Logger;
+
+import com.freshdirect.smartstore.Variant;
+import com.freshdirect.smartstore.external.certona.CertonaRecommender;
+import com.freshdirect.smartstore.fdstore.VariantSelector;
+import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
+
+
+/**
+ * Utility class created for the transitional period of
+ * switching SmartStore to Certona service.
+ * 
+ * It helps deciding whether a variant assigned to certain site features
+ * may serve Certona recommendations or stay with Scarab
+ * 
+ * NOTE: this class may be removed in the future when
+ * transitional period ends
+ * 
+ * @author segabor
+ *
+ * @ticket APPDEV-3863
+ *
+ */
+public class CertonaTransitionUtil {
+	private static final Logger LOGGER = Logger.getLogger(CertonaTransitionUtil.class.getName());
+
+	/**
+	 * Global flag indicating that transitional period is live
+	 * False value means that period is over and this class
+	 * should not be used anymore
+	 * 
+	 * FIXME: is it useful?
+	 */
+	public static final boolean TRANSITIONAL_PERIOD = true;
+
+	static {
+		if (TRANSITIONAL_PERIOD) {
+			LOGGER.info("Certona transition period is active");
+		} else {
+			LOGGER.warn("Certona transition period is over. This logic is no longer used.");
+		}
+	}
+
+
+	/**
+	 * Predefined list of site features that may contain
+	 * mixed scarab/certona variants
+	 * 
+	 * @ticket APPDEV-3863
+	 * NOTE: this featuer may be removed in the future
+	 * 
+	 */
+	public static final String[] CERTONA_SF = new String[] {
+		"RIGHT_NAV_PERS", "RIGHT_NAV_RLTD",
+		"BRWS_CAT_LST", "BRWS_PRD_LST",
+		"YMAL", "YMAL_PDTL",
+		"SRCH"
+	};
+
+
+
+	/**
+	 * Helper method to decide if particular site feature
+	 * is affected in serving mixed certona/scarab variants
+	 * 
+	 * @param feature
+	 * @return
+	 */
+	@SuppressWarnings("unused")
+	public static boolean isCertonaRelated(EnumSiteFeature feature) {
+		if (TRANSITIONAL_PERIOD == false) {
+			LOGGER.warn("Method invoked after transitionl period is over.");
+		}
+
+
+		if (feature == null) {
+			return false;
+		}
+		
+		final String featName = feature.getName();
+		for (String sfName : CERTONA_SF) {
+			if (sfName.equalsIgnoreCase( featName)) {
+				LOGGER.debug(featName + " is identified as Certona SF");
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+
+
+	@SuppressWarnings("unused")
+	public static boolean isCertonaBasedCohort(final String cohortName, final EnumSiteFeature siteFeature) {
+		if (TRANSITIONAL_PERIOD == false) {
+			LOGGER.warn("Method invoked after transitionl period is over.");
+		}
+
+		
+		if (cohortName == null || siteFeature == null) {
+			return false;
+		}
+
+		// only certain site features are set to contain certona variants
+		if (!isCertonaRelated(siteFeature) ) {
+			return false;
+		}
+
+		// pick variant set for the given site feature
+		final VariantSelector selector = VariantSelectorFactory.getSelector(siteFeature);
+		
+		LOGGER.debug("Pick variant for cohort " + cohortName);
+		final Variant v = selector.getVariant(cohortName);
+		if (v == null || v.getRecommender() == null) {
+			LOGGER.error("Incomplete/bogus variant returned, fall back to legacy");
+			return false;
+		}
+
+		final boolean isCertonaBased = v.getRecommender() instanceof CertonaRecommender;
+		if (isCertonaBased) {
+			LOGGER.debug("Cohort " + cohortName + " gets Certona recommendations for site feature " + siteFeature.getName());
+		} else {
+			LOGGER.debug("Cohort " + cohortName + " gets legacy recommendations for site feature " + siteFeature.getName());
+		}
+		return isCertonaBased;
+	}
+}

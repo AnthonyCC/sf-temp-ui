@@ -25,6 +25,7 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.util.CertonaTransitionUtil;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
@@ -219,20 +220,27 @@ public class ProductRecommenderUtil {
 	}
 	
 	// figure out customer belongs to Certona cohort
-	public static boolean isEligibleForCertona(FDUserI user) {
-		if (user == null) {
+	public static boolean isEligibleForCertona(final FDUserI user, final EnumSiteFeature sf) {
+		if (user == null || sf == null) {
 			return false;
 		}
 
-		List<String> certonaCohorts = Arrays.asList(FDStoreProperties.getCertonaCohorts().split(";"));
-		return certonaCohorts.contains(user.getCohortName());
+		final String cohortName = user.getCohortName();
+
+		if (CertonaTransitionUtil.TRANSITIONAL_PERIOD) {
+			return CertonaTransitionUtil.isCertonaBasedCohort(cohortName, sf);
+		}
+
+		// transition period is over, only certona should serve
+		return true;
 	}
 
 	public static Recommendations getBrowseCategoryListingPageRecommendations(FDUserI user, ContentNodeModel contentNode) throws FDResourceException{
+		final EnumSiteFeature siteFeature = EnumSiteFeature.getEnum("BRWS_CAT_LST");
 
-		if (isEligibleForCertona(user)) {
+		if (isEligibleForCertona(user, siteFeature)) {
 			// single-step recommender for Certona customers
-			return doRecommend(user, null, EnumSiteFeature.getEnum("BRWS_CAT_LST"), MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);	
+			return doRecommend(user, null, siteFeature, MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);	
 		}
 
 		// recommenders for Scarab customers
@@ -242,11 +250,12 @@ public class ProductRecommenderUtil {
 	}
 
 	public static Recommendations getBrowseProductListingPageRecommendations(FDUserI user, Set<ContentKey> keys) throws FDResourceException {
+		final EnumSiteFeature siteFeature = EnumSiteFeature.getEnum("BRWS_PRD_LST");
 
-		if (isEligibleForCertona(user)) {
+		if (isEligibleForCertona(user, siteFeature)) {
 			// single-step recommender for Certona customers
 			return doRecommend(user, null,
-				EnumSiteFeature.getEnum("BRWS_PRD_LST"),
+				siteFeature,
 				MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);
 		}
 

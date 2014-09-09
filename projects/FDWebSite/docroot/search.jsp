@@ -195,7 +195,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 	boolean promote_recommendation_row = false;
 	boolean fallBack = true;
 	// APPBUG-2401 NOTE: once Certona is introduced to all cohorts, fall-back option can be eliminated
-	final boolean isCertona = ProductRecommenderUtil.isEligibleForCertona(user);
+	final boolean isCertona = ProductRecommenderUtil.isEligibleForCertona(user, EnumSiteFeature.getEnum("SRCH"));
 	if(isCertona || user.getIdentity()!=null){
 	%><fd:ProductGroupRecommender itemCount="16" siteFeature="SRCH" facility="default" id="recommendedProducts">
 	<%

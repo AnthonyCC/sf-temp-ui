@@ -660,6 +660,9 @@ public class FDStoreProperties {
 	
 	private static final String PROP_CERTONA_SERVICE = "fdstore.certona.service";
 	private static final String PROP_CERTONA_APP_ID = "fdstore.certona.app_id";
+
+    /* APPDEV-3863 */
+	@Deprecated
 	private static final String PROP_CERTONA_COHORTS = "fdstore.certona.cohorts";
 	
 	//sms
@@ -1309,6 +1312,8 @@ public class FDStoreProperties {
         
         defaults.put(PROP_CERTONA_SERVICE, "http://www.res-x.com/ws/r2/resonance.aspx");
         defaults.put(PROP_CERTONA_APP_ID, "FreshDirect01");
+        
+        // APPDEV-3863 line below is subject of removal
         defaults.put(PROP_CERTONA_COHORTS, "C2;C6;C9;C10;C11;C12;C18;C19;C20");
 
         //template redesign
@@ -3301,6 +3306,8 @@ public class FDStoreProperties {
     	return get(PROP_CERTONA_APP_ID);
     }
 
+    /* APPDEV-3863 */
+    @Deprecated
     public static String getCertonaCohorts() {
     	return get(PROP_CERTONA_COHORTS);
     }
