@@ -600,8 +600,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		</td>
 	</tr>
 	<tr>
-	<td colspan="4" align="left" style="padding-right:5px;" class="text12"><b>Want to know <i>EXACTLY</i> when we&#146;re coming?</b> Sign up for SMS text messages updates now and get notified of all relevant information about your delivery or even get exclusive offers from us. 
-		You may opt-out at any time by sending STOP to 37374 or simply unchecking all the alert types below.</td>
+	<td colspan="4" align="left" style="padding-right:5px;" class="text12"><b>Want to get SMS text notifications about your order? </b> Sign up now, and we'll text you important (and delicious!) information about your delivery. You may opt out at any time by sending STOP to 37374 or simply unchecking all the alert types below.</td>
 	</tr>
 	<tr><td colspan="6">&nbsp;</td></tr>
 	<tr>
@@ -641,7 +640,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<table  border="0" cellpadding="0" cellspacing="0" >
 			<tr valign="top" ><td  align="left" style="width: 100%">
 			<div class="accordion"><input type="checkbox" id="order_notices"> 
-				<label for="order_notices" class="text12bold">Examples</label>
+				<label for="order_notices" class="text12bold"><pre class="text12bold">Examples of messages (depending on your area)</pre></label>
 				<div class="text12"   id="article" align="left">
 					<strong>Estimated Time of Delivery </strong> On the day your order is delivered have your 2-hour delivery window narrowed down to 1 hour. Less time waiting! 
 					<br/><br/><strong>You're Next! </strong>Receive an alert when you are the next customer on our driver's route. Your food is on the way! 
@@ -655,7 +654,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 
 	<tr valign="top">
 		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="order_exceptions" value="Y" <%=order_exceptions ? "checked":""%>></td>
-		<td colspan="4" class="text12bold">FreshDirect Order Exceptions</td>
+		<td colspan="4" class="text12bold">FreshDirect Order Alerts</td>
 		<td></td>
 	</tr>
 	<tr valign="top">
@@ -663,7 +662,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<table  border="0" cellpadding="0" cellspacing="0" >
 			<tr valign="top" ><td  align="left" style="width: 100%">
 			<div class="accordion"><input type="checkbox" id="order_exceptions"> 
-				<label for="order_exceptions" class="text12bold">Examples</label>
+				<label for="order_exceptions" class="text12bold"><pre class="text12bold">Examples of messages (depending on your area)</pre></label>
 				<div class="text12"   id="article1" align="left">
 					<strong>Cancellation</strong> Be alerted when your order has to be cancelled because of unforeseen circumstances. 
 					<br/><br/>
@@ -679,7 +678,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	</tr>
 	<tr valign="top">
 		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="offers" value="Y" <%=offers ? "checked":""%>></td>
-		<td colspan="4" class="text12bold">FreshDirect Offers</td>
+		<td colspan="4" class="text12bold">FreshDirect Perks</td>
 		<td></td>
 	</tr>
 	<tr valign="top">
@@ -687,10 +686,10 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<table  border="0" cellpadding="0" cellspacing="0" >
 			<tr valign="top" ><td  align="left" style="width: 100%">
 			<div class="accordion"><input type="checkbox" id="offers"> 
-				<label for="offers" class="text12bold">Description</label>
+				<label for="offers" class="text12bold"><pre class="text12bold">Description </pre></label>
 				<div class="text12"   id="article2" align="left">
 					Get exclusive discounts, free delivery promotions, advance notices on sales and more! 
-				<br/><br/><br/>
+				<br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>
 				</div>
 			</div>
 			</td></tr>
@@ -718,7 +717,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		</td>
 	</tr>  --%>
 	<tr valign="top">
-		<td style="padding-right: 5px;" align="left" colspan="6"><FONT class="text9" style="color:gray;font-style:italic;">* Standard text messaging rate apply</FONT></td>
+		<td style="padding-right: 5px;" align="left" colspan="5"><FONT class="text9" style="color:gray;font-style:italic;">* Standard text messaging rate apply</FONT></td>
 	</tr>	
 	</form>
 	

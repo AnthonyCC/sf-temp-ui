@@ -163,6 +163,13 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		boolean beforeUpdateGoGreen = info.isGoGreen();
 		FDActionInfo aInfo = AccountActivityUtil.getActionInfo(pageContext.getSession());
 		
+		boolean optedInBefore=false;
+		if(beforeUpdateOrderNotices.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||beforeUpdateOrderNotices.equals(EnumSMSAlertStatus.PENDING.value())
+			||	beforeUpdateOrderExceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())|| beforeUpdateOrderExceptions.equals(EnumSMSAlertStatus.PENDING.value())
+			|| beforeUpdateOffers.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) ||beforeUpdateOffers.equals(EnumSMSAlertStatus.PENDING.value()) ){
+			optedInBefore=true;
+		}
+		
 		if(beforeUpdateOrderNotices.equals(EnumSMSAlertStatus.SUBSCRIBED.value())&& this.customerInfo.getOrderNotices().equals(EnumSMSAlertStatus.PENDING.value())){
 			customerInfo.setOrderNotices(beforeUpdateOrderNotices);
 		}
@@ -178,7 +185,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		boolean orderNoticeOptin=false;
 		boolean orderExceptionOptin=false;
 		boolean offersOptin=false;
-		boolean partnerMessagesOptin=false;
+		
 		if(this.customerInfo.getOrderExceptions().equals(EnumSMSAlertStatus.PENDING.value())&&beforeUpdateOrderExceptions.equals(EnumSMSAlertStatus.NONE.value())){
 			orderExceptionOptin=true;
 		}
@@ -187,6 +194,13 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		}
 		if(this.customerInfo.getOffers().equals(EnumSMSAlertStatus.PENDING.value())&& beforeUpdateOffers.equals(EnumSMSAlertStatus.NONE.value())){
 			offersOptin=true;
+		}
+		
+		boolean isAlreadySubscribed=false;
+		if(beforeUpdateOrderExceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||
+				beforeUpdateOrderNotices.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||
+				beforeUpdateOffers.equals(EnumSMSAlertStatus.SUBSCRIBED.value())){
+			isAlreadySubscribed=true;
 		}
 		
 		if(orderNoticeOptin|| orderExceptionOptin|| offersOptin
@@ -202,19 +216,22 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 					!this.customerInfo.getOffers().equals(EnumSMSAlertStatus.NONE.value())||
 					!this.customerInfo.getPartnerMessages().equals(EnumSMSAlertStatus.NONE.value())){
 				
-					if((EnumSMSAlertStatus.SUBSCRIBED.value().equals(beforeUpdateOrderNotices) ||
-							EnumSMSAlertStatus.SUBSCRIBED.value().equals(beforeUpdateOrderExceptions) ||
-							EnumSMSAlertStatus.SUBSCRIBED.value().equals(beforeUpdateOffers))&&
-							(this.customerInfo.getMobileNumber().getPhone().equals(existingMobNum))){
+					if(optedInBefore && (this.customerInfo.getMobileNumber().getPhone().equals(existingMobNum))){
 						isSent=true;
-						if(orderExceptionOptin){
+						if(orderExceptionOptin && isAlreadySubscribed){
 							this.customerInfo.setOrderExceptions(EnumSMSAlertStatus.SUBSCRIBED.value());
+						} else if(orderExceptionOptin){
+							this.customerInfo.setOrderExceptions(EnumSMSAlertStatus.PENDING.value());
 						}
-						if(orderNoticeOptin){
+						if(orderNoticeOptin && isAlreadySubscribed){
 							this.customerInfo.setOrderNotices(EnumSMSAlertStatus.SUBSCRIBED.value());
+						} else if(orderNoticeOptin){
+							this.customerInfo.setOrderNotices(EnumSMSAlertStatus.PENDING.value());
 						}
-						if(offersOptin){
+						if(offersOptin && isAlreadySubscribed){
 							this.customerInfo.setOffers(EnumSMSAlertStatus.SUBSCRIBED.value());
+						} else if(offersOptin){
+							this.customerInfo.setOffers(EnumSMSAlertStatus.PENDING.value());
 						}
 						
 					} else{

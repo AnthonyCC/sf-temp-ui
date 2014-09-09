@@ -92,7 +92,7 @@
 				<img src="/media_stat/images/navigation/tickmark.gif" border="0" />&nbsp;&nbsp;&nbsp;&nbsp;
 			</td>
 			<td class="title19">Your preferences have been updated.
-			<br /><span class="text13gr" style="font-weight:normal;color:gray;">You can update your preferences any time - simply go to <a href="/your_account/signin_information.jsp">My Account</a> section and change your preferences.</span>
+			<br /><span class="text13gr" style="font-weight:normal;color:gray;">You can update your preferences or change your mobile phone number any time - simply go to  <a href="/your_account/signin_information.jsp">My Account</a></span>
 			</td>
 		</tr>
 		<tr><td colspan="2">&nbsp;</td></tr>
@@ -114,7 +114,7 @@
 			</td>
 			<td class="title19">YOU'RE ALMOST DONE...
 			<br /><span class="text14bold">We've just sent a text to<%=mobile_number%>.Please check your messages to complete the sign up process! </span>
-			<br /><span class="text13gr" style="font-weight:normal;color:gray;">You can update your preferences any time - simply go to <a href="/your_account/signin_information.jsp">My Account</a> section and change your preferences.</span>
+			<br /><span class="text13gr" style="font-weight:normal;color:gray;">You can update your preferences any time by heading to  <a href="/your_account/signin_information.jsp">My Account</a></span>
 			</td>
 		</tr>
 		<tr><td colspan="2">&nbsp;</td></tr>
@@ -141,9 +141,9 @@
 			<td>		
 				<table width="100%" border="0">
 					<tr><td colspan="2" >&nbsp;</td></tr>
-					<tr><td colspan="2" ><span class="title18or trpad">&nbsp;</span><span class="title18">Want to know <i>EXACTLY</i> when we're coming? </span></td></tr>
-					<tr><td colspan="2" ><span class="title18or trpad">&nbsp;</span><span class="title18">SIGN UP FOR OUR NEW TEXT MESSAGE UPDATES </span></td></tr>
-					<tr><td colspan="2" ><span class="title18or trpad">&nbsp;</span><span class="text12">Sign up for our enhanced text message* updates now and get notified when your delivery is next on the <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; driver's route...plus, much more! </span></td></tr>
+					<tr><td colspan="2" ><span class="title18or trpad">&nbsp;</span><span class="title18"><strong>Want to get text notifications about your order?</strong></span></td></tr>
+					<tr><td colspan="2" ><span class="title18or trpad">&nbsp;</span><span class="title18">SIGN UP FOR OUR NEW TEXT MESSAGE UPDATES! </span></td></tr>
+					<tr><td colspan="2" ><span class="title18or trpad">&nbsp;</span><span class="text12">Sign up now and you could get a notification when your delivery is next on the driver's<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; route...plus, much more! </span></td></tr>
 					<tr><td colspan="2" class="text11rbold trpad" style="text-align: left;">&nbsp;<fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'>&nbsp;<%=errorMsg%></fd:ErrorHandler></td></tr>
 					<!-- <tr><td><div class="smshline" id=""></div></td></tr> -->
 					<tr><td>&nbsp;</td></tr>
@@ -153,7 +153,7 @@
 								<tr>						
 								<td style="padding-right:5px;font-weight:bold;" class="text12"><span class="title18or trpad">&nbsp;</span>Enter mobile phone number*<br /><br />
 									<span class="title18or trpad">&nbsp;</span><input type="text" size="28" maxlength="20" class="text9" name="mobile_number" value="<%=mobile_number%>" style="width:175px; padding:1px; height:20px;font-size:13px" /></td>
-									<td class="text12" style="color:gray;  text-indent: -10px; padding: 0 5px;" align="left" colspan="2" valign="bottom">* standard text messaging rates apply. You can unsubscribe anytime - <br /> simply go to "My Account" section and update your preferences.</td>
+									<td class="text12" style="color:gray;  text-indent: -10px; padding: 0 5px;" align="left" colspan="2" valign="bottom">* standard text messaging rates apply. You can unsubscribe anytime<br /> by heading to  "My Account" and updating your preferences.</td>
 								</tr>						
 							</table>
 						</td>

@@ -25,7 +25,7 @@ public interface SystemMessageList {
 	public final static String MSG_EMAIL_FORMAT 		= "Please make sure your email address is in the format \"you@isp.com\"";
 	public final static String MSG_EMAIL_REPEAT			= "Please enter your email again - it doesn't match what you entered above.";
 	public final static String MSG_EMAIL_NOMATCH_REG	= "Email confirmation does not match, please re-enter";
-	public final static String MSG_PHONE_FORMAT 		= "Please make sure the phone number you entered contains exactly 10 digits (3 digits area code, 7 digits local number), e.g. (212) 123-4567";
+	public final static String MSG_PHONE_FORMAT 		= "Please make sure the phone number you entered contains exactly 10 digits (3-digit area code, 7-digit local number). Example: (212) 123-4567";
 
 	// Depot
 	public final static String MSG_DEPOT_WRONGCODE		= "We''re unable to recognize this code. Try entering it again, or for assistance, contact us at {0}.";
@@ -198,7 +198,7 @@ public interface SystemMessageList {
 	public final static String MSG_COUPONS_SYSTEM_NOT_AVAILABLE ="We apologize, but our coupon system is currently unavailable. Please check back soon. Sorry for any inconvenience.";
 	public final static String MSG_COUPONS_EXP_DELIVERY_DATE ="Some of your coupons are not valid on your chosen delivery date. All of your coupons will be valid if your delivery date is on or before the following date: ";
 	public final static String MSG_SMS_ERROR = "Sorry, There was an error sending the SMS Message. Please check your number or try again later.";
-	public final static String MSG_OPTIN_REQ = "Select at least one SMS alert to subscribe or if you are opting out please remove the mobile number.";
+	public final static String MSG_OPTIN_REQ = "To subscribe, select at least one SMS alert. If you're opting out, please remove the mobile number.";
 	public final static String MSG_TIMEOUT_ERROR = "We apologise for the inconvenience, There was a problem with the gateway, Please try again later.";
 	
 }

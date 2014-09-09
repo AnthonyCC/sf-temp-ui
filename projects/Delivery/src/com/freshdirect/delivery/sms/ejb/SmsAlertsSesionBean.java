@@ -41,9 +41,9 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 
 	private static Category LOGGER = LoggerFactory.getInstance(SmsAlertsSesionBean.class);
 
-	private static final String OPT_IN_MESSAGE = "Reply YES to get automated FreshTexts msgs. Consent not required to purchase. Up to 5msgs/order. Msg&Data rates may apply. Reply HELP for help, STOP to cancel.";
-	private static final String NEXT_STOP_TEXT_1 = "Your FreshDirect delivery is next! Delivery Service Representative ";
-	private static final String NEXT_STOP_TEXT_2 = " will be there soon.";
+	private static final String OPT_IN_MESSAGE = "Reply YES to get automated FreshDirect marketing msgs. Consent not required 2 purchase. Up to 5msgs/order.Msg&Data rates apply. Reply HELP 4 help, STOP 2 cancel";
+	private static final String NEXT_STOP_TEXT = "Good news! Your FreshDirect order is scheduled to be delivered next. Can't wait to see you! Questions? www.freshdirect.com/help";
+	//private static final String NEXT_STOP_TEXT_2 = " will be there soon.";
 	private static final String OPTIN_ALERT_TYPE = "OPTIN";
 	private static final String OPTOUT_ALERT_TYPE = "OPTOUT";
 	private static final String HELP_ALERT_TYPE = "HELP";
@@ -52,14 +52,15 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	private static final String UNATTENDED_OR_DOORMAN_ALERT_TYPE = "UNATTENDED_DOORMAN";
 	private static final String WRONG_RESPONSE_ALERT_TYPE = "WRONG RESPONSE";
 	private static final String NEXT_STOP_ALERT_TYPE = "NEXT_STOP";
-	private static final String OPTIN_CONFIRMATION_SUCCESS_MESSAGE = "You are now enrolled and consent to receive FreshTexts Messages. 5msgs/order & more. Msg&Data rates may apply. Reply HELP for help, STOP to cancel.";
-	private static final String OPTOUT_SUCCESS_MESSAG = "FreshTexts Messages: You are unsubscribed and will not receive additional FreshTexts messages. Reply HELP for help.";
-	private static final String HELP_MESSAGE = "FreshTexts Messages: For more Help call 866-283-7374. Up to 5msgs/order. Msg&Data rates may apply. Reply STOP to cancel.";
-	private static final String WRONG_RESPONSE_MESSAGE = "FreshTexts Messages: Sorry we didn't understand your response. Reply HELP for help, STOP to cancel.";
-	private static final String ETA_MESSAGE_TEXT_1 = "Hello! Your FreshDirect order is getting a few finishing touches, and will be delivered today between ";
-	private static final String ETA_MESSAGE_TEXT_2 = ". Reply HELP for help.";
-	private static final String UATTENDED_OR_DOORMAN_DELIVERY_TEXT = "Special delivery! Your order was just left at your home at your preferred location. We hope you love it! Reply HELP for help. ";
-	private static final String DLV_ATTEMPTED_TEXT = "We just missed you! A 1st delivery attempt was made to deliver your order. We'll do our best to redeliver your order later. Reply HELP for help.";
+	private static final String ETA_MIN_DEFAULT="00";
+	private static final String OPTIN_CONFIRMATION_SUCCESS_MESSAGE = "Thanks! You are now enrolled and consent to receive FreshDirect msgs. Up to 5msgs/order & more. Msg&Data rates may apply. Reply HELP for help, STOP to cancel.";
+	private static final String OPTOUT_SUCCESS_MESSAG = "FreshDirect: You are unsubscribed and will not receive additional messages from FreshDirect. Reply HELP for help.";
+	private static final String HELP_MESSAGE = "FreshDirect: For more Help call 866-283-7374 or visit www.freshdirect.com/help. Up to 5msgs/order. Msg&Data rates may apply. Reply STOP to cancel.";
+	private static final String WRONG_RESPONSE_MESSAGE = "FreshDirect: Sorry, we didn't understand your response. Reply HELP for help, STOP to cancel.";
+	private static final String ETA_MESSAGE_TEXT_1 = "Hello! Your FreshDirect order is getting a few finishing touches, and will be delivered between ";
+	private static final String ETA_MESSAGE_TEXT_2 = ". Questions? www.freshdirect.com/help";
+	private static final String UATTENDED_OR_DOORMAN_DELIVERY_TEXT = "Special delivery! Your FreshDirect order is waiting for you at home. We hope you love it! Questions? www.freshdirect.com/help";
+	private static final String DLV_ATTEMPTED_TEXT = "We just missed you! An attempt was made to deliver your FreshDirect order. Questions? www.freshdirect.com/help";
 
 	/**
 	 * This method sends the optin sms message to customer when he enrolls
@@ -340,9 +341,8 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 				String customerId=entry.getCustomerId();
 				boolean isSubscribedForOrderNotices = isSubscribed(con, NEXT_STOP_ALERT_TYPE, customerId);
 				if (isSubscribedForOrderNotices) {
-					String dlvManagerName = getDlvManagerName(con, entry.getDlvManager()).toUpperCase();
-					STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(entry.getMobileNumber(),
-									NEXT_STOP_TEXT_1 + dlvManagerName + NEXT_STOP_TEXT_2);
+					//String dlvManagerName = getDlvManagerName(con, entry.getDlvManager()).toUpperCase();
+					STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(entry.getMobileNumber(),NEXT_STOP_TEXT);
 					smsResponseModel.setDate(new Date());
 					smsResponseModel.setOrderId(entry.getOrderId());
 
@@ -382,15 +382,17 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 				boolean isSubscribed = isSubscribed(con, ETA_ALERT_TYPE,
 						etaInfoList.get(i).getCustomerId());
 				if (isSubscribed) {
-					STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(etaInfoList.get(i)
-									.getMobileNumber(), ETA_MESSAGE_TEXT_1
-									+ getTime(etaInfoList.get(i).getEtaStartTime())+ " and "
-									+ getTime(etaInfoList.get(i).getEtaEndTime())
-									+ ETA_MESSAGE_TEXT_2);
-					
-					smsResponseModel.setDate(new Date());
-					smsResponseModel.setOrderId(etaInfoList.get(i).getOrderId());
-					updateSmsAlertCaptured(con, smsResponseModel, ETA_ALERT_TYPE, etaInfoList.get(i).getCustomerId());
+					if(etaInfoList.get(i).getEtaStartTime()!=null && etaInfoList.get(i).getEtaEndTime()!=null){
+						STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(etaInfoList.get(i)
+										.getMobileNumber(), ETA_MESSAGE_TEXT_1
+										+ getTime(etaInfoList.get(i).getEtaStartTime())+ " and "
+										+ getTime(etaInfoList.get(i).getEtaEndTime())
+										+ ETA_MESSAGE_TEXT_2);
+						
+						smsResponseModel.setDate(new Date());
+						smsResponseModel.setOrderId(etaInfoList.get(i).getOrderId());
+						updateSmsAlertCaptured(con, smsResponseModel, ETA_ALERT_TYPE, etaInfoList.get(i).getCustomerId());
+					}
 				}
 			}
 
@@ -574,24 +576,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		return confirmed;
 	}
 
-	private String getDlvManagerName(Connection con, String employeeId)
-			throws SQLException {
-		String dlvManagerName = "";
-		PreparedStatement ps=null; ResultSet rs  = null;
-		try{
-		String dlvnameQuery = "select FIRSTNM  from TRANSP.KRONOS_EMPLOYEE where personnum=?";
-		ps = con.prepareStatement(dlvnameQuery);
-		ps.setString(1, employeeId);
-		rs = ps.executeQuery();
-		if (rs.next()) {
-			dlvManagerName = rs.getString("FIRSTNM");
-		}
-		}finally{
-			close(rs,ps);
-		}
-		
-		return dlvManagerName;
-	}
+	
 
 	private boolean isSubscribed(Connection con, String alertType,
 			String customerId) throws SQLException {
@@ -662,7 +647,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		}else{
 			hour = String.valueOf(calendar.get(Calendar.HOUR));
 		}
-		mins=String.valueOf(calendar.get(Calendar.MINUTE));
+		mins=String.valueOf(calendar.get(Calendar.MINUTE)).equals("0") ? ETA_MIN_DEFAULT:String.valueOf(calendar.get(Calendar.MINUTE));
 		return (hour+":"+mins + "  " + calendar.getDisplayName(
 				Calendar.AM_PM, Calendar.SHORT, Locale.US));
 	}
