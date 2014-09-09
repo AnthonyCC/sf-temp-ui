@@ -100,7 +100,7 @@ public class SmsDAO {
 			while (rs.next()) {
 				Date _transitDate=rs.getTimestamp("TRANSIT_DATE");
 				Date _insertTimeStamp= rs.getTimestamp("INSERT_TIMESTAMP");
-				long _diffInMins=(_insertTimeStamp.getTime()-_transitDate.getTime())/(60 * 1000) % 60;
+				long _diffInMins=(_insertTimeStamp.getTime()-_transitDate.getTime())/(60 * 1000);
 				try {
 					limit=DlvProperties.getNextStopSmsNoSend();
 				} catch (NumberFormatException e) {

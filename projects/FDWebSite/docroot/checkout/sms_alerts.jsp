@@ -114,7 +114,7 @@
 			</td>
 			<td class="title19">YOU'RE ALMOST DONE...
 			<br /><span class="text14bold">We've just sent a text to<%=mobile_number%>.Please check your messages to complete the sign up process! </span>
-			<br /><span class="text13gr" style="font-weight:normal;color:gray;">You can update your preferences any time by heading to  <a href="/your_account/signin_information.jsp">My Account</a></span>
+			<br /><span class="text13gr" style="font-weight:normal;color:gray;">Your preferences have been updated. <br />You can update your preferences or change your mobile phone number any time - simply go to <a href="/your_account/signin_information.jsp">My Account</a></span>
 			</td>
 		</tr>
 		<tr><td colspan="2">&nbsp;</td></tr>
