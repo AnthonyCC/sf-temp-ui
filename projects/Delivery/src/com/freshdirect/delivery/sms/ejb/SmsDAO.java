@@ -24,7 +24,7 @@ public class SmsDAO {
 	
 	private static final String NEXT_STOP_ALERT_TYPE = "NEXT_STOP";
 	private static final String ETA_ALERT_TYPE = "SMS_ETA";
-	private static final String UNATTENDED_OR_DOORMAN_ALERT_TYPE = "UNATTENDED_DOORMAN";
+	private static final String UNATTENDED_OR_DOORMAN_ALERT_TYPE = "DLV_UNATTENDED";
 	private static final String DLV_ATTEMPTED_ALERT_TYPE = "DLV_ATTEMPTED";
 	
 	public List<NextStopSmsInfo> getNextStopSmsInfo(Connection con) throws DlvResourceException{
@@ -212,24 +212,16 @@ public class SmsDAO {
 		try{
 			Date fromTime = getLastExport(con, UNATTENDED_OR_DOORMAN_ALERT_TYPE);
 			String sql = "select CI.CUSTOMER_ID, BS.MOBILE_NUMBER, z.DLV_UNATTENDED_SMS_ENABLED, BS.WEBORDER_ID " + 
-					"from DLV.CARTONTRACKING cs, transp.handoff_Batch b, transp.handoff_batchstop bs, cust.customerinfo ci, TRANSP.TRN_AREA ta, TRANSP.ZONE z " + 
+					"from DLV.CARTONTRACKING cs, transp.handoff_Batch b, transp.handoff_batchstop bs,cust.sale s, cust.customerinfo ci, TRANSP.TRN_AREA ta, TRANSP.ZONE z " + 
 					"where  b.batch_id = bs.batch_id and B.DELIVERY_DATE = TRUNC(SYSDATE) and B.BATCH_STATUS in ('CPD/ADC','CPD','CPD/ADF') " + 
 					"and BS.WEBORDER_ID = CS.WEBORDERNUM   " + 
 					"AND CARTONSTATUS =  'DELIVERED'   " + 
-					"AND CS.DELIVEREDTO IN ('Doorman','Unattended Delivery')" + 
-					"AND CS.USERID=CI.EMAIL" + 
-					"AND   BS.AREA = TA.CODE and Z.AREA = ta.code" + 
+					"AND CS.DELIVEREDTO IN ('Doorman','Unattended Delivery') " + 
+					"AND BS.WEBORDER_ID = S.ID and S.CUSTOMER_ID = CI.CUSTOMER_ID " + 
+					"AND   BS.AREA = TA.CODE and Z.AREA = ta.code " + 
 					"AND CS.INSERT_TIMESTAMP BETWEEN to_date(?,'MM/DD/YYYY HH:MI:SS AM') AND to_date(?,'MM/DD/YYYY HH:MI:SS AM')";
 			
-			/*ps = con.prepareStatement("select CI.CUSTOMER_ID, BS.MOBILE_NUMBER, z.DLV_UNATTENDED_SMS_ENABLED, BS.WEBORDER_ID   " +
-					"from DLV.CARTONTRACKING cs, transp.handoff_Batch b, transp.handoff_batchstop bs, cust.customerinfo ci, TRANSP.TRN_AREA ta, TRANSP.ZONE z " + 
-					"where  b.batch_id = bs.batch_id and B.DELIVERY_DATE = TRUNC(SYSDATE) and B.BATCH_STATUS in ('CPD/ADC','CPD','CPD/ADF') " + 
-					"and BS.WEBORDER_ID = CS.WEBORDERNUM   " + 
-					"AND CARTONSTATUS =  'DELIVERED'   " + 
-					"AND CS.DELIVEREDTO IN ('Doorman','Unattended Delivery') " +
-					"AND CS.USERID=CI.EMAIL"+
-					"AND   BS.AREA = TA.CODE and Z.AREA = ta.code"+
-					"AND CS.INSERT_TIMESTAMP BETWEEN to_date(?,'MM/DD/YYYY HH:MI:SS AM') AND to_date(?,'MM/DD/YYYY HH:MI:SS AM')");*/
+			
 			ps = con.prepareStatement(sql);
 			ps.setString(1, sdf.format(fromTime));
 			ps.setString(2, sdf.format(toTime));
