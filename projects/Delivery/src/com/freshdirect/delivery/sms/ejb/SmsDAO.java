@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.delivery.DlvProperties;
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.model.TransitInfo;
 import com.freshdirect.delivery.sms.NextStopSmsInfo;
@@ -86,7 +87,7 @@ public class SmsDAO {
 
 			fromTime = getLastExport(con, NEXT_STOP_ALERT_TYPE);
 
-			ps = con.prepareStatement("select TRANSIT_DATE, ROUTE, EMPLOYEE, LOCATION_SOURCE, LOCATION_DESTINATION, TRANSACTIONID, INSERT_TIMESTAMP from dlv.transit where INSERT_TIMESTAMP between to_date(?,'MM/DD/YYYY HH:MI:SS AM') and " +
+			ps = con.prepareStatement("select TRANSIT_DATE, ROUTE, EMPLOYEE, LOCATION_SOURCE, LOCATION_DESTINATION, TRANSACTIONID, INSERT_TIMESTAMP from dlv.transit where INSERT_TIMESTAMP is not null and TRANSIT_DATE is not null and INSERT_TIMESTAMP between to_date(?,'MM/DD/YYYY HH:MI:SS AM') and " +
 								"to_date(?,'MM/DD/YYYY HH:MI:SS AM')");
 			ps.setString(1, sdf.format(fromTime));
 			ps.setString(2, sdf.format(toTime));
@@ -95,7 +96,17 @@ public class SmsDAO {
 			ps1 = con.prepareStatement("INSERT INTO DLV.NEXTSTOP_SMS(TRANSIT_DATE, ROUTE, EMPLOYEE, LOCATION_SOURCE, LOCATION_DESTINATION, TRANSACTIONID, INSERT_TIMESTAMP)"+
 								" VALUES (?, ?, ?, ?, ?, ?, ?)");
 			int batchCount = 0;
+			int limit=30;
 			while (rs.next()) {
+				Date _transitDate=rs.getTimestamp("TRANSIT_DATE");
+				Date _insertTimeStamp= rs.getTimestamp("INSERT_TIMESTAMP");
+				long _diffInMins=(_insertTimeStamp.getTime()-_transitDate.getTime())/(60 * 1000) % 60;
+				try {
+					limit=DlvProperties.getNextStopSmsNoSend();
+				} catch (NumberFormatException e) {
+					limit=30;
+				}
+				if(_diffInMins<limit){
 				ps1.setTimestamp(1, rs.getTimestamp("TRANSIT_DATE"));
 				ps1.setString(2, rs.getString("ROUTE"));
 				ps1.setString(3, rs.getString("EMPLOYEE"));
@@ -114,6 +125,7 @@ public class SmsDAO {
 				_transitModel.setInsertTimeStamp(rs.getTimestamp("INSERT_TIMESTAMP"));
 				_transitModel.setEnployeeId(rs.getString("EMPLOYEE"));
 				transitList.add(_transitModel);
+				}
 			}
 			
 			if (batchCount > 0)

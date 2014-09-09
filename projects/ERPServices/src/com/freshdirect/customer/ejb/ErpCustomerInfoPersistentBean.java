@@ -10,6 +10,8 @@
 package com.freshdirect.customer.ejb;
 
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import com.freshdirect.framework.core.*;
 import com.freshdirect.framework.util.*;
@@ -87,6 +89,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 	private EnumSMSAlertStatus offers;
 	private EnumSMSAlertStatus partnerMessages;
 	private String smsNoThanksflag;
+	private java.util.Date smsOptinDate;
 	
 	/* APPDEV-2475 DP T&C */
 	private java.util.Date dpTcAgreeDate;
@@ -153,6 +156,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		this.offers = EnumSMSAlertStatus.NONE;
 		this.partnerMessages = EnumSMSAlertStatus.NONE;
 		this.smsNoThanksflag = null;
+		this.smsOptinDate=null;
 		
 		/* APPDEV-2475 DP T&C */
 		this.dpTcViewCount = 0;
@@ -242,6 +246,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		model.setOffers(this.offers);
 		model.setPartnerMessages(this.partnerMessages);
 		model.setSmsPreferenceflag(this.smsNoThanksflag);
+		model.setSmsOptinDate(this.smsOptinDate);
 		
 		model.setGoGreen(this.goGreen);
 		
@@ -315,6 +320,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		this.offers=m.getOffers();
 		this.partnerMessages=m.getPartnerMessages();
 		this.smsNoThanksflag=m.getSmsPreferenceflag();
+		this.smsOptinDate=m.getSmsOptinDate();
 		
 		this.goGreen = m.isGoGreen();
 
@@ -495,7 +501,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 					+ " RSV_END_TIME, RSV_ADDRESS_ID, UNSUBSCRIBE_DATE, REG_REF_TRACKING_CODE, REG_REF_PROG_ID, REF_PROG_INVT_ID, "
 					+ " RECEIVE_OPTINNEWSLETTER, HAS_AUTORENEW_DP, AUTORENEW_DP_TYPE, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE, "
 					+ " mobile_number, mobile_preference_flag, delivery_notification, offers_notification, ORDER_NOTIFICATION, ORDEREXCEPTION_NOTIFICATION, SMS_OFFERS_ALERT, PARTNERMESSAGE_NOTIFICATION,SMS_PREFERENCE_FLAG, go_green, display_name, "
-					+ " DP_TC_VIEWS, DP_TC_AGREE_DATE,INDUSTRY,NUM_OF_EMPLOYEES,SECOND_EMAIL_ADDRESS"
+					+ " DP_TC_VIEWS, DP_TC_AGREE_DATE,INDUSTRY,NUM_OF_EMPLOYEES,SECOND_EMAIL_ADDRESS, SMS_OPTIN_DATE"
 					+ " FROM CUST.CUSTOMERINFO WHERE CUSTOMER_ID = ?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
@@ -590,6 +596,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 				this.partnerMessages=EnumSMSAlertStatus.NONE;
 			}
 			this.smsNoThanksflag=rs.getString("SMS_PREFERENCE_FLAG");
+			this.smsOptinDate=rs.getTimestamp("SMS_OPTIN_DATE");
 			
 			this.goGreen = "Y".equals(rs.getString("go_green"))?true:false;
 			this.displayName = rs.getString("display_name");
@@ -625,7 +632,7 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 				+ " REF_PROG_INVT_ID=?, RECEIVE_OPTINNEWSLETTER=?, HAS_AUTORENEW_DP=?, AUTORENEW_DP_TYPE=?, "
 				+ " EMAIL_LEVEL=?, NO_CONTACT_MAIL=?, NO_CONTACT_PHONE=?,"
 				+ " mobile_number=?, delivery_notification=?, offers_notification=?, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=?,SMS_PREFERENCE_FLAG=?, go_green=?, display_name=?,"
-				+ " DP_TC_VIEWS=?, DP_TC_AGREE_DATE=?,INDUSTRY=?,NUM_OF_EMPLOYEES=?,SECOND_EMAIL_ADDRESS=?"
+				+ " DP_TC_VIEWS=?, DP_TC_AGREE_DATE=?,INDUSTRY=?,NUM_OF_EMPLOYEES=?,SECOND_EMAIL_ADDRESS=?, SMS_OPTIN_DATE=?"
 				+" WHERE CUSTOMER_ID=?");
 		//ps.setString(, this.getPK().getId() );
 
@@ -757,7 +764,8 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		ps.setInt(52, this.numOfEmployees);
 		ps.setString(53, this.secondEmailAddress);
 		
-		ps.setString(54, this.getPK().getId());
+		ps.setTimestamp(54, this.smsOptinDate!=null?new Timestamp(this.smsOptinDate.getTime()):null);
+		ps.setString(55, this.getPK().getId());
 
 		
         if (ps.executeUpdate() != 1) {

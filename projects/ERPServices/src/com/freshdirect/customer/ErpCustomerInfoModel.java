@@ -87,6 +87,17 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	private EnumSMSAlertStatus offers;
 	private EnumSMSAlertStatus partnerMessages;
 	private String smsPreferenceflag;
+	private Date smsOptinDate;
+	
+	
+
+	public Date getSmsOptinDate() {
+		return smsOptinDate;
+	}
+
+	public void setSmsOptinDate(Date smsOptinDate) {
+		this.smsOptinDate = smsOptinDate;
+	}
 
 	public PhoneNumber getMobileNumber() {
 		return mobileNumber;

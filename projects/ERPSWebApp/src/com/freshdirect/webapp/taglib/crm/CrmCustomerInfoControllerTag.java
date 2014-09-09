@@ -279,6 +279,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			info.setOrderExceptions(EnumSMSAlertStatus.getEnum(this.customerInfo.getOrderExceptions()));
 			info.setOffers(EnumSMSAlertStatus.getEnum(this.customerInfo.getOffers()));
 			info.setPartnerMessages(EnumSMSAlertStatus.NONE);
+			info.setSmsOptinDate(new java.util.Date());
 			
 			info.setGoGreen(this.customerInfo.isGoGreen());
 			FDCustomerManager.updateCustomerInfo(aInfo, info);
