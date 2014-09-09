@@ -289,7 +289,7 @@
   margin-bottom: 4px;
 }
 
-.portrait-item-availability-message .am-cutoffheader {
+.portrait-item-availability-message div:not(.am-cancellation) {
   font-weight: bold;
 }
 

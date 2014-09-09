@@ -521,16 +521,17 @@ public class ProductDetailPopulator {
 			TimeOfDay cutoffTime = RestrictionUtil.getPlatterRestrictionStartTime();
 			if ( productModel.isPlatter() && cutoffTime != null ) {
 				String headerTime;
-				String bodyTime;
+				//String bodyTime;
 				
 				SimpleDateFormat headerTimeFormat = new SimpleDateFormat("h:mm a");
-				SimpleDateFormat bodyTimeFormat = new SimpleDateFormat("ha");
+				//SimpleDateFormat bodyTimeFormat = new SimpleDateFormat("ha");
 				
 				headerTime = headerTimeFormat.format(cutoffTime.getAsDate());
-				bodyTime = bodyTimeFormat.format(cutoffTime.getAsDate());
+				//bodyTime = bodyTimeFormat.format(cutoffTime.getAsDate());
 				
-				item.setMsgCutoffHeader( "Order by " + headerTime + " for Delivery Tomorrow" );
-				item.setMsgCutoffNotice( "Freshly made item. Please <b>complete checkout by " + bodyTime + "</b> to order for delivery tomorrow." );
+				item.setMsgCutoffHeader("Order by " + headerTime + " for Delivery Tomorrow");
+				item.setMsgCutoffNotice( "" );				
+				//item.setMsgCutoffHeader( "Please <b>complete checkout by " + bodyTime + "</b> to order for delivery tomorrow." );
 				
 			}
 		} catch (FDResourceException e) {
@@ -570,8 +571,9 @@ public class ProductDetailPopulator {
 				daysStringBuffer.replace(li,li+1,(isInverted ?" and ": " or ") );
 			}
 			
-			item.setMsgDayOfWeekHeader( "Limited Availability" );
-			item.setMsgDayOfWeek( "This item is <b>" + ( isInverted ? "only" : "not" ) + "</b> available for delivery on <b>" + daysStringBuffer.toString() + "</b>" );
+			//item.setMsgDayOfWeekHeader( "Limited Availability" );
+			item.setMsgDayOfWeekHeader( "<b>" + ( isInverted ? "Only" : "Not" ) + "</b> available for delivery on <b>" + daysStringBuffer.toString() + "</b>" );
+			item.setMsgDayOfWeek( "" );
 			
 			item.setMsgDeliveryNote( "Only available for delivery on " + blockedDays.inverted().format(true) + "." );
 		}
@@ -582,8 +584,9 @@ public class ProductDetailPopulator {
 		if ( fdProduct != null ) {
 			int leadTime = fdProduct.getMaterial().getLeadTime();		
 			if( leadTime > 0 && FDStoreProperties.isLeadTimeOasAdTurnedOff() ) {
-				item.setMsgLeadTimeHeader( JspMethods.convertNumToWord(leadTime) + "-Day Lead Time" );
-				item.setMsgLeadTime( "Freshly made item. Please complete checkout at least two days in advance. (Order by Thursday for Saturday)." );
+				//item.setMsgLeadTimeHeader( JspMethods.convertNumToWord(leadTime) + "-Day Lead Time" );
+				item.setMsgLeadTimeHeader("Please complete checkout at least two days in advance. (Order by Thursday for Saturday).");
+				item.setMsgLeadTime( "" );
 			}
 		}
 		

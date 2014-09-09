@@ -506,18 +506,18 @@
       {$item.msgCutoffHeader}
     </div>
     {/if}
-    /*
     {if $item.msgCutoffNotice}
     <div class="am-cutoffnotice">
       {$item.msgCutoffNotice}
     </div>
     {/if}
-    */
+
     {if $item.msgDayOfWeekHeader}
     <div class="am-dayofweekheader amheader">
       {$item.msgDayOfWeekHeader}
     </div>
     {/if}
+
     {if $item.msgDayOfWeek}
     <div class="am-dayofweek">
       {$item.msgDayOfWeek}
@@ -535,15 +535,18 @@
       {$item.msgLeadTimeHeader}
     </div>
     {/if}
+    
     {if $item.msgLeadTime}
     <div class="am-leadtime">
       {$item.msgLeadTime}
     </div>
     {/if}
+    /*
+    	<div class="am-earliestavailabilityheader amheader">Earliest Available</div>
+    */
     {if $item.msgEarliestAvailability}
-		<div class="am-earliestavailabilityheader amheader">Earliest Available</div>
 		<div class="am-earliestavailability">
-		  {$item.msgEarliestAvailability}
+		  Earliest delivery {$item.msgEarliestAvailability}
 		</div>
     {/if}
 {/template}
