@@ -211,7 +211,7 @@ public class SmsDAO {
 		DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
 		try{
 			Date fromTime = getLastExport(con, UNATTENDED_OR_DOORMAN_ALERT_TYPE);
-			String sql = "select CI.CUSTOMER_ID, BS.MOBILE_NUMBER, z.DLV_UNATTENDED_SMS_ENABLED, BS.WEBORDER_ID " + 
+			String sql = "select  DISTINCT CI.CUSTOMER_ID, BS.MOBILE_NUMBER, z.DLV_UNATTENDED_SMS_ENABLED, BS.WEBORDER_ID " + 
 					"from DLV.CARTONTRACKING cs, transp.handoff_Batch b, transp.handoff_batchstop bs,cust.sale s, cust.customerinfo ci, TRANSP.TRN_AREA ta, TRANSP.ZONE z " + 
 					"where  b.batch_id = bs.batch_id and B.DELIVERY_DATE = TRUNC(SYSDATE) and B.BATCH_STATUS in ('CPD/ADC','CPD','CPD/ADF') " + 
 					"and BS.WEBORDER_ID = CS.WEBORDERNUM   " + 
@@ -267,7 +267,7 @@ public class SmsDAO {
 		try{
 			Date fromTime = getLastExport(con, DLV_ATTEMPTED_ALERT_TYPE);
 			
-			ps = con.prepareStatement("select BS.MOBILE_NUMBER, S.CUSTOMER_ID, z.DLV_ATTEMPTED_SMS_ENABLED, BS.WEBORDER_ID "
+			ps = con.prepareStatement("select DISTINCT BS.MOBILE_NUMBER, S.CUSTOMER_ID, z.DLV_ATTEMPTED_SMS_ENABLED, BS.WEBORDER_ID "
 					+ " from DLV.CARTONTRACKING cs, transp.handoff_Batch b, transp.handoff_batchstop bs,  cust.sale s, TRANSP.TRN_AREA ta, TRANSP.ZONE z "
 					+ " where  b.batch_id = bs.batch_id and B.DELIVERY_DATE =trunc(sysdate)  "
 					+ " and B.BATCH_STATUS in ('CPD/ADC','CPD','CPD/ADF') "
