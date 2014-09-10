@@ -95,7 +95,11 @@ final int W_YA_SIGNIN_INFO = 970;
 			                });
 						}
 				</script>
-		
+	<style>
+		.accordion > input[type="checkbox"] {
+			display: none;
+		}
+	</style>
 <fd:RegistrationController actionName='<%=request.getParameter("actionName")%>' result='result'>
 
 <%
@@ -410,7 +414,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<img src="/media_stat/images/buttons/save_changes.gif"  width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></a></td>
 	
 </tr>
-<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td><td><br><br></td></tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"><br><br></td></tr>
 </form>
 
 <form method="post" name="updateContactInformation">
@@ -600,99 +604,104 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		</td>
 	</tr>
 	<tr>
-	<td colspan="4" align="left" style="padding-right:5px;" class="text12"><b>Want to get SMS text notifications about your order? </b> Sign up now, and we'll text you important (and delicious!) information about your delivery. You may opt out at any time by sending STOP to 37374 or simply unchecking all the alert types below.</td>
+		<td colspan="6" align="left" style="padding-right:5px;" class="text12"><b>Want to get SMS text notifications about your order? </b> Sign up now, and we'll text you important (and delicious!) information about your delivery. You may opt out at any time by sending STOP to 37374 or simply unchecking all the alert types below.</td>
 	</tr>
 	<tr><td colspan="6">&nbsp;</td></tr>
 	<tr>
-	<td colspan="4" align="left" style="padding-right:5px;" class="text12">Messages will be sent to the following mobile number:</td>
+		<td colspan="6" align="left" style="padding-right:5px;" class="text12">Messages will be sent to the following mobile number:</td>
 	</tr>
 	<tr valign="top">
 		<td style="padding-right: 5px;" align="left" colspan="6"><FONT class="text10" style="color:gray;font-style:italic;">By signing up you agree to the <a href="javascript:popup('/your_account/terms.jsp', 'large')">Terms and Conditions</a></FONT></td>
 	</tr>
-	<tr>	
-	<td align="right" valign="top" colspan="6"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_email_preference" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></td>
-	</tr>
+	<tr><td colspan="6">&nbsp;</td></tr>
 	<tr>
-	<td colspan="2" align="right" style="padding-right:5px;" class="text12">* Mobile Number</td>
-    <td><input type="text" size="28" maxlength="20" class="text9" name="mobile_number" value="<%=mobile_number%>" style="width:150px; padding:1px;"></td>
-	<td colspan="3"><fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
-</tr> 
+		<td colspan="2" align="right" style="padding-right:5px;" class="text12">* Mobile Number</td>
+    	<td><input type="text" size="28" maxlength="20" class="text9" name="mobile_number" value="<%=mobile_number%>" style="width:150px; padding:1px;"></td>
+		<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+		<td align="right" valign="top" colspan="6"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_email_preference" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></td>
+	</tr> 
 	<tr><td colspan="6">&nbsp;</td></tr>
 	<tr><td colspan="6"><fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td></tr>
 	<%-- <tr valign="top">
 		<td align="right" style="padding-top:5px; padding-right:5px;"><input class="radio" type="checkbox" name="text_delivery" value="Y" <%=text_delivery ? "checked":""%>></td>
-		<td colspan="4" style="padding-top:5px;" class="text12">Yes please notify me via text message with important information about my delivery.<br><br/>
+		<td colspan="4" style="padding-top:5px;" class="text12">Yes please notify me via text message with important information about my delivery.<br><br />
 		</td>
 		<td align="right"></td>
 	</tr>
 	<tr valign="top">
 		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="text_offers" value="Y" <%=text_offers ? "checked":""%>></td>
-		<td colspan="4" class="text12">Yes please notify me about <b>offers, discounts</b> and <b>promotions</b> from time to time.<br/><br/><br/></td>
+		<td colspan="4" class="text12">Yes please notify me about <b>offers, discounts</b> and <b>promotions</b> from time to time.<br /><br /><br /></td>
 		<td></td>
 	</tr>--%>
 	<tr valign="top">
 		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="order_notices" value="Y" <%=order_notices ? "checked":""%>></td>
-		<td colspan="4" class="text12bold">FreshDirect Order Notices</td>
-		<td></td>
+		<td colspan="5" class="text12bold">FreshDirect Order Notices</td>
 	</tr> 
 	<tr valign="top">
-		<td  align="center" colspan="3" style="padding-left: 90px;">
-		<table  border="0" cellpadding="0" cellspacing="0" >
-			<tr valign="top" ><td  align="left" style="width: 100%">
-			<div class="accordion"><input type="checkbox" id="order_notices"> 
-				<label for="order_notices" class="text12bold"><pre class="text12bold">Examples of messages (depending on your area)</pre></label>
-				<div class="text12"   id="article" align="left">
-					<strong>Estimated Time of Delivery: </strong> We'll narrow down your two-hour window to just one hour on the day of delivery.  
-					<br/><br/><strong>You're Next! </strong>Receive an alert when you are the next customer on our driver's route. Your food is on the way! 
-				<br/><br/><br/>
-				</div>
-			</div>
-			</td></tr>
+		<td>&nbsp;</td>
+		<td colspan="5">
+			<table border="0" cellpadding="0" cellspacing="0" style="width: 100%">
+				<tr valign="top">
+					<td align="left">
+						<div class="accordion"><input type="checkbox" id="order_notices" />
+							<label for="order_notices" class="text12bold" style="margin-left: 0;"><pre class="text12bold">Examples of messages (depending on your area)</pre></label>
+							<div class="text12" id="article" align="left">
+								<strong>Estimated Time of Delivery: </strong> We'll narrow down your two-hour window to just one hour on the day of delivery.  
+								<br /><br /><strong>You're Next! </strong>Receive an alert when you are the next customer on our driver's route. Your food is on the way! 
+							<br /><br /><br />
+							</div>
+						</div>
+					</td>
+				</tr>
 			</table>
 		</td>
 	</tr>
 
 	<tr valign="top">
 		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="order_exceptions" value="Y" <%=order_exceptions ? "checked":""%>></td>
-		<td colspan="4" class="text12bold">FreshDirect Order Alerts</td>
-		<td></td>
+		<td colspan="5" class="text12bold">FreshDirect Order Alerts</td>
 	</tr>
 	<tr valign="top">
-		<td  align="center" colspan="3" style="padding-left: 90px;">
-		<table  border="0" cellpadding="0" cellspacing="0" >
-			<tr valign="top" ><td  align="left" style="width: 100%">
-			<div class="accordion"><input type="checkbox" id="order_exceptions"> 
-				<label for="order_exceptions" class="text12bold"><pre class="text12bold">Examples of messages (depending on your area)</pre></label>
-				<div class="text12"   id="article1" align="left">
-					<strong>Cancellation</strong> Get an alert when your order has to be cancelled because of unforeseen circumstances. 
-					<br/><br/>
-					<strong>Delivery Attempt: </strong> Uh oh, did we just miss you? We'll text you after an unsuccessful delivery attempt to your place.  
-					<br/><br/>
-					<strong>Unattended/Doorman: </strong> Know when your order has been left for you at your preferred location or with your doorman.
-					<br/><br/><br/>
-				</div>
-			</div>
-			</td></tr>
+		<td>&nbsp;</td>
+		<td colspan="5">
+			<table border="0" cellpadding="0" cellspacing="0" style="width: 100%">
+				<tr valign="top" >
+					<td align="left">
+						<div class="accordion"><input type="checkbox" id="order_exceptions"> 
+							<label for="order_exceptions" class="text12bold" style="margin-left: 0;"><pre class="text12bold">Examples of messages (depending on your area)</pre></label>
+							<div class="text12"   id="article1" align="left">
+								<strong>Cancellation</strong> Get an alert when your order has to be cancelled because of unforeseen circumstances. 
+								<br /><br />
+								<strong>Delivery Attempt: </strong> Uh oh, did we just miss you? We'll text you after an unsuccessful delivery attempt to your place.  
+								<br /><br />
+								<strong>Unattended/Doorman: </strong> Know when your order has been left for you at your preferred location or with your doorman.
+								<br /><br /><br />
+							</div>
+						</div>
+					</td>
+				</tr>
 			</table>
 		</td>
 	</tr>
 	<tr valign="top">
 		<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="offers" value="Y" <%=offers ? "checked":""%>></td>
-		<td colspan="4" class="text12bold">FreshDirect Perks</td>
-		<td></td>
+		<td colspan="5" class="text12bold">FreshDirect Perks</td>
 	</tr>
 	<tr valign="top">
-		<td  align="left" colspan="3" style="padding-left: 90px;">
-		<table  border="0" cellpadding="0" cellspacing="0" >
-			<tr valign="top" ><td  align="left" style="width: 100%">
-			<div class="accordion"><input type="checkbox" id="offers"> 
-				<label for="offers" class="text12bold"><pre class="text12bold">Description</pre></label>
-				<div class="text12"   id="article2" align="left">
-					Get the inside scoop on exciting new features, exclusive promotions, and more!
-				<br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>
-				</div>
-			</div>
-			</td></tr>
+		<td>&nbsp;</td>
+		<td colspan="5">
+			<table border="0" cellpadding="0" cellspacing="0" style="width: 100%">
+				<tr valign="top" >
+					<td align="left">
+						<div class="accordion"><input type="checkbox" id="offers"> 
+							<label for="offers" class="text12bold" style="margin-left: 0;"><pre class="text12bold">Description</pre></label>
+							<div class="text12" id="article2" align="left">
+								Get the inside scoop on exciting new features, exclusive promotions, and more!
+							<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />
+							</div>
+						</div>
+					</td>
+				</tr>
 			</table>
 		</td>
 	</tr>
@@ -709,7 +718,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 				<label for="partner_messages" class="text12bold">Description</label>
 				<div class="text12"   id="article3" align="left">
 					Get relevant exclusive promotions, news, discounts and information from FreshDirect trusted partners
-				<br/><br/><br/>
+				<br /><br /><br />
 				</div>
 			</div>
 			</td></tr>
@@ -717,7 +726,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		</td>
 	</tr>  --%>
 	<tr valign="top">
-		<td style="padding-right: 5px;" align="left" colspan="5"><FONT class="text9" style="color:gray;font-style:italic;">* Standard text messaging rate apply</FONT></td>
+		<td style="padding-right: 5px;" align="left" colspan="6"><FONT class="text9" style="color:gray;font-style:italic;">* Standard text messaging rate apply</FONT></td>
 	</tr>	
 	</form>
 	
@@ -740,7 +749,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<tr valign="top">
 		<td align="right" style="padding-top:5px; padding-right:5px;">
 		<input class="radio" type="checkbox" name="go_green" value="Y" <%=go_green ? "checked":""%>></td>
-		<td colspan="4" style="padding-top:5px;" class="text12">I want to turn off paper statement delivery and receive my statements online.<br><br/>
+		<td colspan="4" style="padding-top:5px;" class="text12">I want to turn off paper statement delivery and receive my statements online.<br><br />
 		</td>
 		<td></td>
 	</tr>
