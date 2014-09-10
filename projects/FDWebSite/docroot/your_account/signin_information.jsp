@@ -636,13 +636,13 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<td></td>
 	</tr> 
 	<tr valign="top">
-		<td  align="right" colspan="5" style="padding-left: 90px;">
+		<td  align="center" colspan="4" style="padding-left: 90px;">
 		<table  border="0" cellpadding="0" cellspacing="0" >
 			<tr valign="top" ><td  align="left" style="width: 100%">
 			<div class="accordion"><input type="checkbox" id="order_notices"> 
 				<label for="order_notices" class="text12bold"><pre class="text12bold">Examples of messages (depending on your area)</pre></label>
 				<div class="text12"   id="article" align="left">
-					<strong>Estimated Time of Delivery </strong> On the day your order is delivered have your 2-hour delivery window narrowed down to 1 hour. Less time waiting! 
+					<strong>Estimated Time of Delivery: </strong> We'll narrow down your two-hour window to just one hour on the day of delivery.  
 					<br/><br/><strong>You're Next! </strong>Receive an alert when you are the next customer on our driver's route. Your food is on the way! 
 				<br/><br/><br/>
 				</div>
@@ -658,7 +658,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<td></td>
 	</tr>
 	<tr valign="top">
-		<td  align="right" colspan="5" style="padding-left: 90px;">
+		<td  align="center" colspan="3" style="padding-left: 90px;">
 		<table  border="0" cellpadding="0" cellspacing="0" >
 			<tr valign="top" ><td  align="left" style="width: 100%">
 			<div class="accordion"><input type="checkbox" id="order_exceptions"> 
@@ -666,9 +666,9 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 				<div class="text12"   id="article1" align="left">
 					<strong>Cancellation</strong> Be alerted when your order has to be cancelled because of unforeseen circumstances. 
 					<br/><br/>
-					<strong>Delivery Attempt </strong> Receive an alert when an unsuccessful delivery attempt is made. 
+					<strong>Delivery Attempt: </strong> Uh oh, did we just miss you? We'll text you after an unsuccessful delivery attempt to your place.  
 					<br/><br/>
-					<strong>Unattended/Doorman</strong> Know when your order has been left for you at your preferred location (suburban areas only) or with your doorman
+					<strong>Unattended/Doorman: </strong> Know when your order has been left for you at your preferred location or with your doorman.
 					<br/><br/><br/>
 				</div>
 			</div>
@@ -682,13 +682,13 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<td></td>
 	</tr>
 	<tr valign="top">
-		<td  align="right" colspan="3" style="padding-left: 90px;">
+		<td  align="left" colspan="3" style="padding-left: 90px;">
 		<table  border="0" cellpadding="0" cellspacing="0" >
 			<tr valign="top" ><td  align="left" style="width: 100%">
 			<div class="accordion"><input type="checkbox" id="offers"> 
-				<label for="offers" class="text12bold"><pre class="text12bold">Description </pre></label>
+				<label for="offers" class="text12bold"><pre class="text12bold">Description</pre></label>
 				<div class="text12"   id="article2" align="left">
-					Get exclusive discounts, free delivery promotions, advance notices on sales and more! 
+					Get the inside scoop on exciting new features, exclusive promotions, and more!
 				<br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;<br/>
 				</div>
 			</div>
