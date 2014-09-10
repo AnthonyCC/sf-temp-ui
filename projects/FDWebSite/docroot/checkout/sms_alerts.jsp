@@ -143,7 +143,7 @@
 					<tr><td colspan="2" >&nbsp;</td></tr>
 					<tr><td colspan="2" ><span class="title18or trpad">&nbsp;</span><span class="title18"><strong>Want to get text notifications about your order?</strong></span></td></tr>
 					<tr><td colspan="2" ><span class="title18or trpad">&nbsp;</span><span class="title18">SIGN UP FOR OUR NEW TEXT MESSAGE UPDATES! </span></td></tr>
-					<tr><td colspan="2" ><span class="title18or trpad">&nbsp;</span><span class="text12">Sign up now and you could get a notification when your delivery is next on the driver's<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; route...plus, much more! </span></td></tr>
+					<tr><td colspan="2" ><span class="title18or trpad">&nbsp;</span><span class="text12">Sign up now and you could get a notification when your delivery is next on the driver's<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; route and much more! </span></td></tr>
 					<tr><td colspan="2" class="text11rbold trpad" style="text-align: left;">&nbsp;<fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'>&nbsp;<%=errorMsg%></fd:ErrorHandler></td></tr>
 					<!-- <tr><td><div class="smshline" id=""></div></td></tr> -->
 					<tr><td>&nbsp;</td></tr>

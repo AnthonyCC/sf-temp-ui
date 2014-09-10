@@ -636,7 +636,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<td></td>
 	</tr> 
 	<tr valign="top">
-		<td  align="center" colspan="4" style="padding-left: 90px;">
+		<td  align="center" colspan="3" style="padding-left: 90px;">
 		<table  border="0" cellpadding="0" cellspacing="0" >
 			<tr valign="top" ><td  align="left" style="width: 100%">
 			<div class="accordion"><input type="checkbox" id="order_notices"> 
@@ -664,7 +664,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 			<div class="accordion"><input type="checkbox" id="order_exceptions"> 
 				<label for="order_exceptions" class="text12bold"><pre class="text12bold">Examples of messages (depending on your area)</pre></label>
 				<div class="text12"   id="article1" align="left">
-					<strong>Cancellation</strong> Be alerted when your order has to be cancelled because of unforeseen circumstances. 
+					<strong>Cancellation</strong> Get an alert when your order has to be cancelled because of unforeseen circumstances. 
 					<br/><br/>
 					<strong>Delivery Attempt: </strong> Uh oh, did we just miss you? We'll text you after an unsuccessful delivery attempt to your place.  
 					<br/><br/>
