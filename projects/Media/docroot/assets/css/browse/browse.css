@@ -182,14 +182,14 @@
   border-top:1px solid #e0e3d0;
 }
 
-.browse-filtertags{
-  margin-bottom:20px;
-}
-
 .browse-filtertags ul {
   margin: 4px 0;
   padding: 0;
   list-style-type: none;
+}
+
+.browse-filtertags .filterTags{
+  margin-bottom:24px;
 }
 
 .browse-filtertags li {
@@ -281,7 +281,7 @@
 /* carousel table */
 .container.browse .carousels {
   // margin-top: 10px;
-  padding-top: 24px;
+  // padding-top: 24px;
   clear: both;
 }
 

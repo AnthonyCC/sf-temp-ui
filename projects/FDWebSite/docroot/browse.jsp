@@ -117,6 +117,18 @@
       window.FreshDirect.globalnav.data = <fd:ToJSON object="${globalnav}" noHeaders="true"/>
       window.FreshDirect.coremetricsData = window.FreshDirect.browse.data.coremetrics;
     </script>
+    <script type="text/javascript">
+	    $jq(document).ready(function() {
+	    	if($jq("#oas_b_BrowseTop1").height()>0 || $jq("#oas_b_BrowseTop2").height()>0 || $jq("#oas_b_BrowseTop3").height()>0){
+	    		if ($jq(".browse .browse-oas-top").css("margin-bottom")!= "14px"){
+	    			$jq(".browse .browse-oas-top").css("display", "inline-block");
+	    			$jq(".browse .browse-oas-top").css("width", "100%");
+	    			$jq(".browse .browse-oas-top").css("margin-bottom", "14px");
+	    		}
+	    	}
+	    });
+    </script>
+    
   </tmpl:put>
 
   <tmpl:put name='extraJsModules'>
