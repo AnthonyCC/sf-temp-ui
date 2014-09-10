@@ -128,7 +128,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			ps.setString(1, sdf.format(currentTime));
 			ps.setInt(2, getExpiryTime());
 			rs = ps.executeQuery();
-			String updateCustomerInfo = "update cust.customerinfo set ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=? where customer_id=?";
+			String updateCustomerInfo = "update cust.customerinfo set MOBILE_NUMBER=null, SMS_OPTIN_DATE=null, SMS_PREFERENCE_FLAG=null, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=? where customer_id=?";
 			ps1 = con.prepareStatement(updateCustomerInfo);
 			int batchCount = 0;
 			while (rs.next()) {
@@ -616,13 +616,11 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 
 	private int getExpiryTime() {
 		int expiryTime = 60;
-		Context ctx = null;
+		
 		try {
-			ctx = getInitialContext();
-			expiryTime = Integer.parseInt((String) ctx.lookup(DlvProperties.getSmsExpireInMins()));
-		} catch (NamingException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
+			
+			expiryTime = Integer.parseInt(DlvProperties.getSmsExpireInMins());
+		}  catch (Exception e) {
 			e.printStackTrace();
 		}
 
