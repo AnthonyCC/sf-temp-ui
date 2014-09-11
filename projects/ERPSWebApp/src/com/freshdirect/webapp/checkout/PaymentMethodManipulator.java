@@ -244,8 +244,16 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 					//paymentId = ( (ErpPaymentMethodModel)payMethods.get( payMethods.size()-1 ) ).getPK().getId();
 					for(Iterator<ErpPaymentMethodI> it = payMethods.iterator(); it.hasNext();){
 						ErpPaymentMethodI payMethod = it.next();
-						if(paymentMethod.getAccountNumber().equals(payMethod.getAccountNumber()))
-							paymentId = payMethod.getPK().getId();
+						if(!EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType()) &&
+								!EnumPaymentMethodType.DEBITCARD.equals(paymentMethod.getPaymentMethodType()) &&
+								!EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType()) 
+								) {
+							if(paymentMethod.getAccountNumber().equals(payMethod.getAccountNumber()))
+								paymentId = payMethod.getPK().getId();
+						} else {
+							if(paymentMethod.getProfileID().equals(payMethod.getProfileID()))
+								paymentId = payMethod.getPK().getId();
+						}
 					}
 				}
 				if(paymentId != null) {
