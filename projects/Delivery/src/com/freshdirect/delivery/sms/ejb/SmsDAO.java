@@ -131,7 +131,7 @@ public class SmsDAO {
 			if (batchCount > 0)
 				ps1.executeBatch();
 			
-			updateLastExport(con, NEXT_STOP_ALERT_TYPE);
+			updateLastExport(con, NEXT_STOP_ALERT_TYPE,toTime);
 			
 		}catch(SQLException e)
 		{
@@ -157,6 +157,7 @@ public class SmsDAO {
 		List<SmsAlertETAInfo> etaInfoList = new ArrayList<SmsAlertETAInfo>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		Date toTime=new Date();
 		try {
 			String GET_ETA_WINDOW = "select BS.WEBORDER_ID, bs.DLV_ETA_STARTTIME ,bs.DLV_ETA_ENDTIME, BS.MOBILE_NUMBER, z.SMS_ETA_ENABLED,S.CUSTOMER_ID " + 
 					"from TRANSP.HANDOFF_BATCH b, TRANSP.HANDOFF_BATCHACTION ba, transp.handoff_batchstop bs, cust.sale s, TRANSP.TRN_AREA ta, TRANSP.ZONE z " + 
@@ -182,7 +183,7 @@ public class SmsDAO {
 					etaInfoList.add(smsAlertETAInfo);
 				}
 			}
-			updateLastExport(con, ETA_ALERT_TYPE);
+			updateLastExport(con, ETA_ALERT_TYPE,toTime);
 		}catch(SQLException e)
 		{
 			throw new DlvResourceException(e);
@@ -239,7 +240,7 @@ public class SmsDAO {
 				}
 				
 			}
-			updateLastExport(con, UNATTENDED_OR_DOORMAN_ALERT_TYPE);
+			updateLastExport(con, UNATTENDED_OR_DOORMAN_ALERT_TYPE,toTime);
 		}catch(SQLException e)
 		{
 			throw new DlvResourceException(e);
@@ -291,7 +292,7 @@ public class SmsDAO {
 				}
 				
 			}
-			updateLastExport(con, DLV_ATTEMPTED_ALERT_TYPE);
+			updateLastExport(con, DLV_ATTEMPTED_ALERT_TYPE,toTime);
 			
 		}catch(SQLException e)
 		{
@@ -346,11 +347,11 @@ public class SmsDAO {
 	 * updated the SMS_transit_export table for COrresponding alert type.
 	 * @throws DlvResourceException 
 	 */
-	private void updateLastExport(Connection con, String alertType) throws DlvResourceException {
+	private void updateLastExport(Connection con, String alertType, Date toTime) throws DlvResourceException {
 		PreparedStatement ps = null;
 		try {
 			ps = con.prepareStatement("INSERT INTO DLV.SMS_TRANSIT_EXPORT(LAST_EXPORT, SUCCESS, SMS_ALERT_TYPE) VALUES (?,'Y',?)");
-			ps.setTimestamp(1, new java.sql.Timestamp(new Date().getTime()));
+			ps.setTimestamp(1, new java.sql.Timestamp(toTime.getTime()));
 			ps.setString(2, alertType);
 			ps.execute();
 		} catch(SQLException e) {
