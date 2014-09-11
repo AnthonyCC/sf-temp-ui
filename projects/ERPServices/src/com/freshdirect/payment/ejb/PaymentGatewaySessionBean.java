@@ -29,6 +29,8 @@ import com.freshdirect.framework.core.*;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import org.apache.log4j.*;
 
+
+
 public class PaymentGatewaySessionBean extends GatewaySessionBeanSupport {
 	
 	private static Category LOGGER = LoggerFactory.getInstance( PaymentGatewaySessionBean.class );
@@ -104,9 +106,9 @@ public class PaymentGatewaySessionBean extends GatewaySessionBeanSupport {
 			logModel.setTxRefNum(billingInfo.getTransactionRef());
 			logModel.setTxRefIdx(billingInfo.getTransactionRefIndex());
 			if(pm!=null) {
-				int l=pm.getAccountNumber().length();
+				int l=pm.getMaskedAccountNumber().length();
 				logModel.setAccountNumLast4(l>4?
-						pm.getAccountNumber().substring(l-4,l):pm.getAccountNumber());
+						pm.getMaskedAccountNumber().substring(l-4,l):pm.getMaskedAccountNumber());
 				logModel.setCustomerId(pm.getCustomerID());
 				logModel.setProfileId(pm.getBillingProfileID());
 				logModel.setCustomerName(pm.getCustomerName());
@@ -133,3 +135,5 @@ public class PaymentGatewaySessionBean extends GatewaySessionBeanSupport {
 	}
 
 }
+
+	

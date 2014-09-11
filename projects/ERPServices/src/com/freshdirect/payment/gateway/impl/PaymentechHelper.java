@@ -397,6 +397,7 @@ class PaymentechHelper {
 			PaymentechRequestHelper.setOrderID(RequestIF.NEW_ORDER_TRANSACTION,billingInfo.getTransactionID(),_request);
 			PaymentechRequestHelper.setCurrencyCode(RequestIF.NEW_ORDER_TRANSACTION,paymentMethod.getCurrency(),_request);
 			PaymentechRequestHelper.setCurrencyExponent(_request);
+			PaymentechRequestHelper.setProfileID(request.getTransactionType(), _request, paymentMethod.getBillingProfileID());
             double amount=0;
 			if (PaymentMethodType.CREDIT_CARD.equals(paymentMethod.getType())) {
 				

@@ -20,6 +20,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
@@ -70,6 +71,7 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 
@@ -163,15 +165,31 @@ public class DeliveryPassRenewalCron {
 		Iterator<ErpPaymentMethodI> it=pymtMethods.iterator();
 		ErpPaymentMethodI _pymtMethod=null;
 		boolean exists=false;
+		List<ErpPaymentMethodI> matchedPymtMethods=new ArrayList<ErpPaymentMethodI>(pymtMethods.size());
 		while (it.hasNext()&& !exists) {
 			_pymtMethod=(ErpPaymentMethodI)it.next();
-			if(    pymtMethod.getAccountNumber().equals(_pymtMethod.getAccountNumber())&&
-				pymtMethod.getPaymentMethodType().equals(_pymtMethod.getPaymentMethodType())	
-			   ) {
+			if( !StringUtil.isEmpty(pymtMethod.getProfileID()) && pymtMethod.getProfileID().equals(_pymtMethod.getProfileID()))	
+			    {
 				exists=true;
+			} else if(pymtMethod.getCardType().equals(_pymtMethod.getCardType()) ) {
+				
+				if(!StringUtils.isEmpty(pymtMethod.getMaskedAccountNumber()) && !StringUtils.isEmpty(_pymtMethod.getMaskedAccountNumber())&& _pymtMethod.getMaskedAccountNumber().length()>=4) {
+					if(pymtMethod.getMaskedAccountNumber().endsWith(_pymtMethod.getMaskedAccountNumber().substring(_pymtMethod.getMaskedAccountNumber().length()-4))) {
+						matchedPymtMethods.add(_pymtMethod);
+					}
+				}
 			}
 		}
-		return exists?_pymtMethod:null;	
+		if(matchedPymtMethods.size()==0)
+			return exists?_pymtMethod:null;	
+		else {
+			for (ErpPaymentMethodI temp : matchedPymtMethods) {
+				if(!isExpiredCC(temp)) {
+					return temp;
+				}
+			}
+			return null;
+		}
 	}
 	private static String placeOrder(String erpCustomerID, String arSKU) throws FDResourceException {
 
@@ -326,29 +344,7 @@ public class DeliveryPassRenewalCron {
 		return zInfo;
 	}
 
-	private static boolean exists(ErpPaymentMethodI pymtMethod, Collection<ErpPaymentMethodI> pymtMethods) {
-		if(pymtMethods==null ||pymtMethods.isEmpty())
-			return false;
-		Iterator<ErpPaymentMethodI> it=pymtMethods.iterator();
-		ErpPaymentMethodI _pymtMethod=null;
-		boolean exists=false;
-		while (it.hasNext()&& !exists) {
-			_pymtMethod=(ErpPaymentMethodI)it.next();
-			if( pymtMethod.getCardType().equals(_pymtMethod.getCardType()) &&
-				pymtMethod.getAccountNumber().equals(_pymtMethod.getAccountNumber())&&
-				pymtMethod.getAddress1().equals(_pymtMethod.getAddress1())&&
-				pymtMethod.getCity().equals(_pymtMethod.getCity())&&
-				pymtMethod.getCountry().equals(_pymtMethod.getCountry())&&
-				pymtMethod.getState().equals(_pymtMethod.getState())&&
-				pymtMethod.getZipCode().equals(_pymtMethod.getZipCode())&&
-				pymtMethod.getExpirationDate().equals(_pymtMethod.getExpirationDate())&&
-				pymtMethod.getName().equals(_pymtMethod.getName())
-			  ) {
-				exists=true;
-			}
-		}
-		return exists;
-	}
+	
 	
 	
 

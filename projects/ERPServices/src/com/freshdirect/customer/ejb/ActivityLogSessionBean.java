@@ -116,26 +116,6 @@ public class ActivityLogSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public void logDupeCCActivity(String erpCustomerId, ErpPaymentMethodI card, String source, String initiator, String currentUserId) {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			
-			new ActivityDAO().logDupeCCActivity(conn, card.getAccountNumber(), erpCustomerId, source, card.getMaskedAccountNumber(), initiator, currentUserId);
-			
-		} catch (SQLException ex) {
-			LOGGER.error("SQLException occured", ex);
-			throw new EJBException(ex.getMessage());
-		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException ex) {
-				LOGGER.warn("Unable to close Connection", ex);
-				throw new EJBException(ex.getMessage());
-			}
-		}
-	}
+	
 
 }

@@ -25,16 +25,16 @@ import com.freshdirect.payment.PaymentManager;
  * @stereotype fd-persistent
  */
 public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
-	
+
 	private static final long	serialVersionUID	= 1064369139597619759L;
-	
+
 	private ErpPaymentMethodModel model;
-	
+
 	/** Default constructor. */
 	public ErpPaymentInfoPersistentBean() {
 		super();
 		// credit model as default
-		this.model = (ErpPaymentMethodModel)PaymentManager.createInstance(); // default to ErpCreditCardModel for now 
+		this.model = (ErpPaymentMethodModel)PaymentManager.createInstance(); // default to ErpCreditCardModel for now
 	}
 
 	/** Load constructor. */
@@ -103,10 +103,17 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 	public PrimaryKey create(Connection conn) throws SQLException {
 		//String id = this.getNextId(conn);
 		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTINFO (SALESACTION_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, BILLING_REF, ON_FD_ACCOUNT, REFERENCED_ORDER, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_ACCOUNT_TYPE, BANK_NAME, PROFILE_ID,ACCOUNT_NUM_MASKED) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-		int index = 1; 
+		int index = 1;
 		ps.setString(index++, this.getParentPK().getId());
 		ps.setString(index++, this.model.getName());
-		ps.setString(index++, this.model.getAccountNumber());
+		if( EnumPaymentMethodType.EBT.equals(model.getPaymentMethodType())||
+			EnumPaymentMethodType.GIFTCARD.equals(model.getPaymentMethodType())
+		   ) {
+			ps.setString(index++, this.model.getAccountNumber());
+		} else {
+			ps.setString(index++, ErpPaymentMethodModel.DEFAULT_ACCOUNT_NUMBER);
+		}
+
 		if (model.getExpirationDate() != null) {
 			ps.setDate(index++, new java.sql.Date(this.model.getExpirationDate().getTime()));
 		} else {
@@ -115,7 +122,7 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		if (model.getCardType() != null) {
 			ps.setString(index++, this.model.getCardType().getFdName());
 		} else {
-			ps.setNull(index++, Types.VARCHAR);			
+			ps.setNull(index++, Types.VARCHAR);
 		}
 		ps.setString(index++, this.model.getAddress1());
 		ps.setString(index++, this.model.getAddress2());
@@ -130,30 +137,30 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		if (model.getPaymentMethodType() != null) {
 			ps.setString(index++, this.model.getPaymentMethodType().getName());
 		} else {
-			ps.setNull(index++, Types.VARCHAR);			
+			ps.setNull(index++, Types.VARCHAR);
 		}
 		if (model.getAbaRouteNumber() != null) {
 			ps.setString(index++, this.model.getAbaRouteNumber());
 		} else {
-			ps.setNull(index++, Types.VARCHAR);			
+			ps.setNull(index++, Types.VARCHAR);
 		}
 		if (model.getBankAccountType() != null) {
 			ps.setString(index++, this.model.getBankAccountType().getName());
 		} else {
-			ps.setNull(index++, Types.VARCHAR);			
+			ps.setNull(index++, Types.VARCHAR);
 		}
 		if (model.getBankName() != null) {
 			ps.setString(index++, this.model.getBankName());
 		} else {
-			ps.setNull(index++, Types.VARCHAR);			
-		}	
+			ps.setNull(index++, Types.VARCHAR);
+		}
 		if(model.getProfileID()!=null) {
-			ps.setString(index++, model.getProfileID() );	
+			ps.setString(index++, model.getProfileID() );
 		}else{
 			ps.setNull(index++, Types.VARCHAR);
 		}
 		if(model.getMaskedAccountNumber()!=null) {
-			ps.setString(index++, model.getMaskedAccountNumber() );	
+			ps.setString(index++, model.getMaskedAccountNumber() );
 		}else{
 			ps.setNull(index++, Types.VARCHAR);
 		}
@@ -168,7 +175,7 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 			ps.close();
 			ps = null;
 		}
-		
+
 		this.unsetModified();
 		return this.getPK();
 	}
@@ -190,9 +197,9 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 			if (ps != null) ps.close();
 			ps = null;
 		}
-		
+
 	}
-	
+
 	private void loadFromResultSet(ResultSet rs) throws SQLException {
 		EnumPaymentMethodType paymentMethodType = EnumPaymentMethodType.getEnum(rs.getString("PAYMENT_METHOD_TYPE"));
 		this.model = (ErpPaymentMethodModel)PaymentManager.createInstance(paymentMethodType);
@@ -209,7 +216,7 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		this.model.setZipCode(rs.getString("ZIP_CODE"));
 		this.model.setCountry(rs.getString("COUNTRY"));
 		this.model.setBillingRef(rs.getString("BILLING_REF"));
-		EnumPaymentType pt = EnumPaymentType.getEnum(rs.getString("ON_FD_ACCOUNT")); 
+		EnumPaymentType pt = EnumPaymentType.getEnum(rs.getString("ON_FD_ACCOUNT"));
 		this.model.setPaymentType(pt != null ? pt : EnumPaymentType.REGULAR);
 		this.model.setReferencedOrder(rs.getString("REFERENCED_ORDER"));
 		this.model.setAbaRouteNumber(rs.getString("ABA_ROUTE_NUMBER"));
@@ -217,17 +224,17 @@ public class ErpPaymentInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		this.model.setBankName(rs.getString("BANK_NAME"));
 		this.model.setProfileID(rs.getString("PROFILE_ID"));
 		this.model.setAccountNumLast4(rs.getString("ACCOUNT_NUM_MASKED"));
-		//if(paymentMethodType.equals(EnumPaymentMethodType.GIFTCARD)) {
-			//Set the certification number for gift card.
-			//model.setCertificateNumber(ErpGiftCardUtil.getCertificateNumber(rs.getString("ACCOUNT_NUMBER")));
-		//}
+		if( paymentMethodType != null && (paymentMethodType.equals(EnumPaymentMethodType.CREDITCARD)||paymentMethodType.equals(EnumPaymentMethodType.DEBITCARD)||paymentMethodType.equals(EnumPaymentMethodType.ECHECK))){
+			this.model.setAccountNumber(rs.getString("ACCOUNT_NUM_MASKED"));
+		}
+
 		this.unsetModified();
 	}
-	
+
 	public PrimaryKey getPK(){
 		return this.getParentPK();
 	}
-	
+
 	public void setPK(PrimaryKey pk) {
 		this.model.setPK(pk);
 	}

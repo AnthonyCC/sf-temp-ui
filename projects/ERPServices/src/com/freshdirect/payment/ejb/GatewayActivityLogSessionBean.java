@@ -25,8 +25,11 @@ import com.freshdirect.payment.gateway.ejb.FDGatewayActivityLogModel;
 
 import com.freshdirect.framework.core.*;
 
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import org.apache.log4j.*;
+
+
 
 public class GatewayActivityLogSessionBean extends GatewaySessionBeanSupport {
 	
@@ -77,10 +80,13 @@ public class GatewayActivityLogSessionBean extends GatewaySessionBeanSupport {
 			logModel.setGatewayOrderID(billingInfo.getTransactionID());
 			logModel.setTxRefNum(billingInfo.getTransactionRef());
 			logModel.setTxRefIdx(billingInfo.getTransactionRefIndex());
-			if(pm!=null && pm.getAccountNumber()!=null) {
-				int l=pm.getAccountNumber().length();
+			if(StringUtil.isEmpty(pm.getMaskedAccountNumber())){
+				pm=response.getRequest().getBillingInfo().getPaymentMethod();
+			}
+			if(pm!=null && !StringUtil.isEmpty(pm.getMaskedAccountNumber())) {
+				int l=pm.getMaskedAccountNumber().length();
 				logModel.setAccountNumLast4(l>4?
-						pm.getAccountNumber().substring(l-4,l):pm.getAccountNumber());
+						pm.getMaskedAccountNumber().substring(l-4,l):pm.getMaskedAccountNumber());
 				logModel.setCustomerId(pm.getCustomerID());
 				logModel.setProfileId(pm.getBillingProfileID());
 				logModel.setCustomerName(pm.getCustomerName());

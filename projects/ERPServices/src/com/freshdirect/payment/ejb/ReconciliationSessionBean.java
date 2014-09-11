@@ -557,7 +557,7 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 	private void removeBadCustomerPaymentMethod(String saleId, EnumPaymentMethodType paymentMethodType, String accountNumber) {
 		try{
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			sb.removeBadCustomerPaymentMethod(saleId, paymentMethodType, accountNumber);
+			sb.removeBadCustomerPaymentMethod(saleId, paymentMethodType,accountNumber);
 		}catch(CreateException e){
 			LOGGER.warn("Cannot create CustomerManager Session bean: "+saleId, e);
 			throw new EJBException(e);
@@ -570,7 +570,7 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 	private void updateBadCustomerPaymentMethod(String saleId, EnumPaymentMethodType paymentMethodType, EnumPaymentResponse paymentResponse, String accountNumber) {
 		try{
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			sb.updateBadCustomerPaymentMethod(saleId, paymentMethodType, paymentResponse, accountNumber);
+			sb.updateBadCustomerPaymentMethod(saleId, paymentMethodType, paymentResponse,accountNumber);
 		}catch(CreateException e){
 			LOGGER.warn("Cannot create CustomerManager Session bean: "+saleId, e);
 			throw new EJBException(e);

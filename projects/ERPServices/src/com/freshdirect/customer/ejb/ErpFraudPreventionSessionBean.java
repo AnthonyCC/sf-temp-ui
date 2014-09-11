@@ -220,40 +220,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		return retval;
 	}
 
-	public boolean checkDuplicatePaymentMethodFraud(String erpCustomerId, ErpPaymentMethodI card) {
-
-		if (!"true".equals(ErpServicesProperties.getCheckForFraud())) {
-			// no check, no problem :)
-			return false;
-		}
-
-		LOGGER.info("Fraud check, payment method. customerId=" + erpCustomerId);
-
-		Connection conn = null;
-		boolean retval = false;
-		try {
-			conn = getConnection();
-			if (card.getAbaRouteNumber() != null && !"".equals(card.getAbaRouteNumber())) {
-				retval = dao.isDuplicateAbaRouteAccountNumber(conn, card.getAccountNumber(), card.getAbaRouteNumber(), erpCustomerId);				
-			} else {
-				retval = dao.isDuplicateAccountNumber(conn, card.getAccountNumber(), erpCustomerId);
-			}
-		} catch (SQLException ex) {
-			LOGGER.error("SQLException occurred", ex);
-			throw new EJBException(ex.getMessage());
-
-		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException ex) {
-				LOGGER.warn("Unable to close Connection", ex);
-				throw new EJBException(ex.getMessage());
-			}
-		}
-		return retval;
-
-	}
+	
 
 	/**
 	 * @return null, or fraud reason
@@ -657,21 +624,6 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 			// no check, no problem :)
 			LOGGER.info("Returning Null at start of preCheckOrderFraud");
 			return null;
-		}
-
-		LOGGER.info("Fraud check, order. customerPK=" + erpCustomerPk);
-
-		//
-		// CHECK DUPLICATE ACCOUNT #
-		// 
-		if ("true".equalsIgnoreCase(ErpServicesProperties.getCheckForPaymentMethodFraud())) {
-
-			ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) order.getPaymentMethod();
-			boolean dupCC = this.checkDuplicatePaymentMethodFraud(erpCustomerPk.getId(), paymentMethod);
-
-			if (dupCC) {
-				return EnumFraudReason.DUP_ACCOUNT_NUMBER;
-			}
 		}
 		return null;
 		

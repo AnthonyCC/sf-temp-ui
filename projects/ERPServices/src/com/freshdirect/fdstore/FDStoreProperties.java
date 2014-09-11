@@ -1284,7 +1284,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_QS_IGNORE_PARTIAL_ROLLOUT, "false");		
 		defaults.put(PROP_QS_ENABLED, "true");
 		
-		defaults.put(PROP_PAYMENTECH_GATEWAY_ENABLED, "false");
+		defaults.put(PROP_PAYMENTECH_GATEWAY_ENABLED, "true");
 		
 		//APPDEV-2817 Link to DeliveryPass category from top nav of Delivery Info page
         defaults.put(SHOW_DLVPASS_LINK_ON_DELINFO, "false");

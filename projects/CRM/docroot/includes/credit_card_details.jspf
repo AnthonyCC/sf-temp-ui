@@ -181,7 +181,7 @@ Collection addresses = FDCustomerManager.getShipToAddresses(user.getIdentity());
 			<tr>
 				<% String[] checkCcNumber = {PaymentMethodName.ACCOUNT_NUMBER, "payment_method_fraud"}; %>
 				<td align="right">Card Number:</td>
-				<td><input type="text" maxLength="25" class="input_text" style="width: 150px;" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>" value="<% if (isNew) {%><%=paymentMethod.getAccountNumber()%><% } else { %><%=paymentMethod.getAccountNumber()!=null?((ErpPaymentMethodModel)paymentMethod).getDisplayableAccountNumber():""%><% } %>">
+				<td><input type="text" maxLength="25" class="input_text" style="width: 150px;" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>" value="<% if (isNew) {%><%=paymentMethod.getAccountNumber()%><% } else { %><%=((ErpPaymentMethodModel)paymentMethod).getDisplayableAccountNumber()%><% } %>">
 <fd:ErrorHandler result="<%=result%>" field="<%= checkCcNumber %>" id='errorMsg'> <span class="error_detail"><%=errorMsg%></span></fd:ErrorHandler></td>
 			</tr>
 			<tr>

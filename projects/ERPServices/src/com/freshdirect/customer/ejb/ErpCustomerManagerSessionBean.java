@@ -1635,8 +1635,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				
 				a:for(int j=0;j<paymentList.size();j++){
 					ErpPaymentMethodI custPayment=paymentList.get(j);
-					if(paymentMethod.getAccountNumber().equalsIgnoreCase(custPayment.getAccountNumber())||
-					  ( !StringUtil.isEmpty(paymentMethod.getProfileID())&& paymentMethod.getProfileID().equals(custPayment.getProfileID()))	){
+					if(!StringUtil.isEmpty(paymentMethod.getProfileID())&& paymentMethod.getProfileID().equals(custPayment.getProfileID())){
 						paymentMethod=custPayment;
 						break a;
 					}
@@ -2478,15 +2477,15 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			
 	}
 	
-	public void removeBadCustomerPaymentMethod(String saleId, EnumPaymentMethodType paymentMethodType, String accountNumber) {
-		ErpPaymentMethodI paymentMethod = getPaymentMethod(saleId, paymentMethodType, accountNumber);
+	public void removeBadCustomerPaymentMethod(String saleId, EnumPaymentMethodType paymentMethodType,String maskedAccountNumber) {
+		ErpPaymentMethodI paymentMethod = getPaymentMethod(saleId, paymentMethodType,maskedAccountNumber);
 		if (paymentMethod != null) { 
 			PaymentFraudManager.removeRestrictedPaymentMethod(paymentMethod, true);
 		}
 		updateECheckAlertForSale(saleId);
 	}
 	
-	private ErpPaymentMethodI getPaymentMethod(String saleId, EnumPaymentMethodType paymentMethodType, String accountNumber) {
+	private ErpPaymentMethodI getPaymentMethod(String saleId, EnumPaymentMethodType paymentMethodType,String maskedAccountNumber) {
 		
 		try{
 			ErpSaleEB erpSaleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
@@ -2496,8 +2495,8 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			if (paymentMethodList != null && paymentMethodList.size() > 0) {
 				for (Iterator<ErpPaymentMethodI> iter = paymentMethodList.iterator(); iter.hasNext();) {
 					ErpPaymentMethodI pm = iter.next();
-					if (paymentMethodType != null && paymentMethodType.equals(pm.getPaymentMethodType()) &&
-							accountNumber != null && accountNumber.equals(pm.getAccountNumber()) ) {
+					if (paymentMethodType != null && paymentMethodType.equals(pm.getPaymentMethodType()) && 
+							maskedAccountNumber != null && pm.getMaskedAccountNumber().endsWith(maskedAccountNumber) ) {
 						return pm;
 					}
 				}

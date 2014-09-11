@@ -15,8 +15,10 @@ import javax.ejb.FinderException;
 import javax.ejb.SessionContext;
 import javax.naming.NamingException;
 
-import org.apache.commons.lang.StringUtils;
+
 import org.apache.log4j.Category;
+
+
 
 
 import com.freshdirect.ErpServicesProperties;
@@ -48,6 +50,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.AuthorizationCommand;
 import com.freshdirect.payment.AuthorizationStrategy;
@@ -112,8 +115,16 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 		
 		if(custPymt==null || salePymt==null)
 			 return false;
-		if(StringUtils.isEmpty(salePymt.getProfileID()))
-			 return salePymt.getAccountNumber().equalsIgnoreCase(custPymt.getAccountNumber());
+		if(StringUtil.isEmpty(salePymt.getProfileID())) {
+			if(EnumPaymentMethodType.GIFTCARD.equals(salePymt.getPaymentMethodType()) || EnumPaymentMethodType.EBT.equals(salePymt.getPaymentMethodType())) {
+			    
+				if(salePymt.getPaymentMethodType().equals(custPymt.getPaymentMethodType()))
+					return salePymt.getAccountNumber().equalsIgnoreCase(custPymt.getAccountNumber());
+				else
+					return false;
+			}
+			return false;
+		}
 		else return salePymt.getProfileID().equals(custPymt.getProfileID());
 		
 	}
@@ -231,9 +242,10 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			auth.setAmount(amount);
 			auth.setTax(tax);
 			auth.setCardType(pm.getCardType());
-			String accountNumber = pm.getAccountNumber();
-			if(accountNumber != null && accountNumber.length() >= 4){
-				auth.setCcNumLast4(accountNumber.substring(accountNumber.length()-4));
+			
+			String maskedAccountNumber = pm.getMaskedAccountNumber();
+			if(maskedAccountNumber != null && maskedAccountNumber.length() >= 4){
+				auth.setCcNumLast4(maskedAccountNumber.substring(maskedAccountNumber.length()-4));
 			}
 			
 			return auth;				
@@ -503,7 +515,7 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 				int captureCount = (captures != null) ? captures.size() : 0;
 				orderNumber = saleId + "X" + captureCount;
 			} 
-			PaymentGatewayContext context = new PaymentGatewayContext(StringUtils.isEmpty(paymentMethod.getProfileID())?GatewayType.CYBERSOURCE:GatewayType.PAYMENTECH, null);
+			PaymentGatewayContext context = new PaymentGatewayContext(StringUtil.isEmpty(paymentMethod.getProfileID())?GatewayType.CYBERSOURCE:GatewayType.PAYMENTECH, null);
 			Gateway gateway = GatewayFactory.getGateway(context);	
 			capture=gateway.capture(auth, paymentMethod, auth.getAmount(),  auth.getTax(), orderNumber);
 			saleEB.addCapture(capture);
@@ -550,7 +562,8 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 				
 				a:for(int j=0;j<paymentList.size();j++){
 					ErpPaymentMethodI custPayment=paymentList.get(j);
-					if(payment.getAccountNumber().equalsIgnoreCase(custPayment.getAccountNumber())){
+					
+					if(!StringUtil.isEmpty(payment.getProfileID())&& payment.getProfileID().equals(custPayment.getProfileID())) {
 						payment=custPayment;
 						break a;
 					}

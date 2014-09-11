@@ -11,6 +11,7 @@ import javax.servlet.jsp.PageContext;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -127,7 +128,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		//
 		// set payment in cart and store cart if valid payment found
 		//
-		PaymentMethodUtil.validatePaymentMethod( request, paymentMethod, result, getUser(),false );
+		//PaymentMethodUtil.validatePaymentMethod( request, paymentMethod, result, getUser(),false );
 
 		//Checking for CC a/c's or at least one valid CC. If NO, restricting the customer to place order using E-check
 		String app = (String) session.getAttribute( SessionName.APPLICATION);
@@ -138,7 +139,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
         		if (EnumPaymentMethodType.CREDITCARD.equals(paymentM.getPaymentMethodType())) {
         			numCreditCards++;
 	        	  	ActionResult tempResult=new ActionResult();
-					PaymentMethodUtil.validatePaymentMethod(request, paymentM, tempResult, getUser(),false);
+					PaymentMethodUtil.validatePaymentMethod(request, paymentM, tempResult, getUser(),false,EnumAccountActivityType.UNKNOWN);
 					if(null == tempResult.getError("expiration") || "".equals(tempResult.getError("expiration"))){
 						isValidCreditCardAvailable = true;
 						break;
@@ -224,7 +225,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 
 		ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm( request, result, identity );
 		if ( result.isSuccess() ) {
-			PaymentMethodUtil.validatePaymentMethod( request, paymentMethod, result, getUser(),true );
+			PaymentMethodUtil.validatePaymentMethod( request, paymentMethod, result, getUser(),true,EnumAccountActivityType.ADD_PAYMENT_METHOD );
 			if ( EnumPaymentMethodType.ECHECK.equals( paymentMethod.getPaymentMethodType() ) ) {
 				String terms = request.getParameter( PaymentMethodName.TERMS );
 				result.addError( terms == null || terms.length() <= 0, PaymentMethodName.TERMS, SystemMessageList.MSG_REQUIRED );
@@ -268,7 +269,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm( request, result, getIdentity() );
 
 		if ( result.isSuccess() ) {
-			PaymentMethodUtil.validatePaymentMethod( request, paymentMethod, result, getUser(),true );
+			PaymentMethodUtil.validatePaymentMethod( request, paymentMethod, result, getUser(),true,EnumAccountActivityType.ADD_PAYMENT_METHOD );
 			if ( EnumPaymentMethodType.ECHECK.equals( paymentMethod.getPaymentMethodType() ) ) {
 				String terms = request.getParameter( PaymentMethodName.TERMS );
 				result.addError( terms == null || terms.length() <= 0, PaymentMethodName.TERMS, SystemMessageList.MSG_REQUIRED );
@@ -286,7 +287,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 	public void performEditPaymentMethod() throws FDResourceException {
     	ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processEditForm(request, result, getIdentity());	            	
         if(result.isSuccess()){
-            PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, result, getUser(),true);
+            PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, result, getUser(),true, EnumAccountActivityType.UPDATE_PAYMENT_METHOD);
             if(result.isSuccess()){
             	paymentMethod.setAvsCkeckFailed(false);
                 PaymentMethodUtil.editPaymentMethod(request, result, paymentMethod);

@@ -13,6 +13,7 @@ import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.PaymentManager;
+import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -30,6 +31,9 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 
 	private ErpPaymentMethodI paymentMethod;
 
+	private static final String ADD_PAYMENT_METHOD="addPaymentMethod";
+	private static final String EDIT_PAYMENT_METHOD="editPaymentMethod";
+	private static final String DELETE_PAYMENT_METHOD="deletePaymentMethod";
 	public void setPaymentMethod(ErpPaymentMethodI paymentMethod) {
 		this.paymentMethod = paymentMethod;
 	}
@@ -37,13 +41,13 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		try {
 			String actionName =this.getActionName();
-			if ("deletePaymentMethod".equalsIgnoreCase(actionName)) {
+			if (DELETE_PAYMENT_METHOD.equalsIgnoreCase(actionName)) {
 				this.deletePaymentMethod(request, actionResult);
 			}
-			if ("addPaymentMethod".equalsIgnoreCase(actionName)) {
+			if (ADD_PAYMENT_METHOD.equalsIgnoreCase(actionName)) {
 				this.addPaymentMethod(request, actionResult);
 			}
-			if ("editPaymentMethod".equalsIgnoreCase(actionName)) {
+			if (EDIT_PAYMENT_METHOD.equalsIgnoreCase(actionName)) {
 				this.editPaymentMethod(request, actionResult);
 			}
 		} catch (FDResourceException e) {
@@ -55,9 +59,9 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 
 	private void editPaymentMethod(HttpServletRequest request, ActionResult actionResult) throws FDResourceException {
 		FDUserI user = CrmSession.getUser(pageContext.getSession());
-		this.populatePaymentMethod(request, actionResult, user);
+		this.populatePaymentMethod(request, actionResult, user,EDIT_PAYMENT_METHOD);
 		
-		PaymentMethodUtil.validatePaymentMethod(request, this.paymentMethod, actionResult, user,true);
+		PaymentMethodUtil.validatePaymentMethod(request, this.paymentMethod, actionResult, user,true,EnumAccountActivityType.UPDATE_PAYMENT_METHOD);
 		if (actionResult.isSuccess()) {
 			if (CrmSession.verifyCaseAttachment(pageContext.getSession(), actionResult)) {
 				PaymentMethodUtil.editPaymentMethod(request, actionResult, this.paymentMethod);
@@ -67,12 +71,12 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 
 	private void addPaymentMethod(HttpServletRequest request, ActionResult actionResult) throws FDResourceException {
 		FDUserI user = CrmSession.getUser(pageContext.getSession());
-		this.populatePaymentMethod(request, actionResult, user);
+		this.populatePaymentMethod(request, actionResult, user,ADD_PAYMENT_METHOD);
 		if(this.paymentMethod.getCustomerId()==null) {
 			this.paymentMethod.setCustomerId(user.getIdentity().getErpCustomerPK());
 		}
 
-		PaymentMethodUtil.validatePaymentMethod(request, this.paymentMethod, actionResult, user,true);
+		PaymentMethodUtil.validatePaymentMethod(request, this.paymentMethod, actionResult, user,true,EnumAccountActivityType.ADD_PAYMENT_METHOD);
 		if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
 	        String terms = request.getParameter(PaymentMethodName.TERMS);
 	        actionResult.addError(
@@ -105,7 +109,7 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 		}
 	}
 
-	private void populatePaymentMethod(HttpServletRequest request, ActionResult actionResult, FDUserI user) {
+	private void populatePaymentMethod(HttpServletRequest request, ActionResult actionResult, FDUserI user,String actionName) {
 
 		EnumPaymentMethodType paymentMethodType = EnumPaymentMethodType.getEnum(request.getParameter(PaymentMethodName.PAYMENT_METHOD_TYPE));
 		if (paymentMethod == null) {
@@ -127,7 +131,7 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 		
         boolean verifyBankAccountNumber = (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType()));
 
-		if(accountNumber.startsWith("xxx")){
+		if(EDIT_PAYMENT_METHOD.equalsIgnoreCase(actionName)){
 			accountNumber = paymentMethod.getAccountNumber();
 			verifyBankAccountNumber = false;
 		}

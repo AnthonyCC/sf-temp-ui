@@ -42,6 +42,8 @@ public class RestrictedPaymentMethodModel extends ModelSupport {
 	private EnumRestrictionReason reason;
 	private String note;
 	
+	private String profileID;
+	
 	public RestrictedPaymentMethodModel () {
 		super();
 	}
@@ -74,6 +76,7 @@ public class RestrictedPaymentMethodModel extends ModelSupport {
 		setCreateDate(model.getCreateDate());
 		setLastModifyDate(model.getLastModifyDate());
 		setCaseId(model.getCaseId());
+		setProfileID(model.getProfileID());
 	}
 
 	public String getId() {
@@ -258,5 +261,13 @@ public class RestrictedPaymentMethodModel extends ModelSupport {
 
 	public void setNote(String note) {
 		this.note = note;
+	}
+
+	public String getProfileID() {
+		return profileID;
+	}
+
+	public void setProfileID(String profileID) {
+		this.profileID = profileID;
 	}
 }

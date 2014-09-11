@@ -240,45 +240,4 @@ public class ActivityDAO implements java.io.Serializable {
 		return list;
 	}
 	
-	private final static String QUERY_DUPLICATE_ACCOUNT =
-		"SELECT PM.CUSTOMER_ID, CI.email FROM CUST.PAYMENTMETHOD pm, CUST.CUSTOMERINFO CI"
-			+ " WHERE PM.ACCOUNT_NUMBER = ?"
-			+ " AND PM.CUSTOMER_ID <> ?"
-			+ " AND CI.CUSTOMER_ID=PM.CUSTOMER_ID"
-			+ " AND 'X'<>CI.CORP_CUSTOMER";
-	
-	public void logDupeCCActivity(Connection conn, String accountNumber, String erpCustomerId, String source, String maskedAccountNumber, String initiator, String currentUserId) throws SQLException {
-		
-		PreparedStatement ps = conn.prepareStatement(QUERY_DUPLICATE_ACCOUNT);
-
-		ps.setString(1, accountNumber);
-		ps.setString(2, erpCustomerId);
-
-		ResultSet rs = ps.executeQuery();
-		String customer_id = null;
-		String email = null;
-
-		if (rs.next()) {
-			customer_id = rs.getString("customer_id");
-			email = rs.getString("email");
-			recordDupeActivity(customer_id, "Duplicate credit card entered - " + maskedAccountNumber + ", entered by <a href=\"/main/summary.jsp?erpCustId=" + erpCustomerId + "\">" + currentUserId + "</a>", conn, source, initiator);
-			recordDupeActivity(erpCustomerId, "Duplicate credit card entered - " + maskedAccountNumber + ", credit card currently exists under <a href=\"/main/summary.jsp?erpCustId=" + customer_id + "\">" + email + "</a>", conn, source, initiator);
-		}		
-		
-		rs.close();
-		ps.close();
-	} 
-	
-	public void recordDupeActivity(String customerId, String note, Connection conn, String source, String initiator) throws SQLException {
-		LOGGER.debug("\n\n*************Recording dupe cc adding event source*********:" + source);
-		ErpActivityRecord rec = new ErpActivityRecord();
-		rec.setActivityType(EnumAccountActivityType.DUPLICATE_PAYMENT_METHOD);
-		rec.setSource(EnumTransactionSource.getTransactionSource(source));
-		rec.setInitiator(initiator);
-		rec.setCustomerId(customerId);
-		rec.setNote(note);
-		logActivity(conn, rec);
-	}
-
-
 }

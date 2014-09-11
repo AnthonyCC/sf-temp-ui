@@ -55,6 +55,7 @@ final class PaymentechRequestHelper {
 			} else if(RequestIF.NEW_ORDER_TRANSACTION.equals(transaction)) {
 				request.setFieldValue(PaymentechFields.NewOrderRequest.MerchantID.name(),
 						              PaymentechConstants.MerchantID.get(merchant).getValue());
+						//"700000000413");
 			}
 		}
 	 }
@@ -74,7 +75,7 @@ final class PaymentechRequestHelper {
 		if(RequestIF.PROFILE_TRANSACTION.equals(transaction)) {
 			request.setFieldValue(PaymentechFields.ProfileRequest.CustomerAccountType.name(),
 					PaymentechConstants.AccountType.CREDIT_CARD.getCode());
-			if(!StringUtil.isEmpty(creditCard.getAccountNumber())) {
+			if(!StringUtil.isEmpty(creditCard.getAccountNumber()) && StringUtil.isEmpty(creditCard.getBillingProfileID())) {
 				request.setFieldValue(PaymentechFields.ProfileRequest.CCAccountNum.name(),
 						              creditCard.getAccountNumber());
 			}
@@ -84,7 +85,7 @@ final class PaymentechRequestHelper {
 								df.get().format(creditCard.getExpirationDate()));
 			}
 		} else if(RequestIF.NEW_ORDER_TRANSACTION.equals(transaction)) {
-			if(!StringUtil.isEmpty(creditCard.getAccountNumber())) {
+			if(!StringUtil.isEmpty(creditCard.getAccountNumber()) && StringUtil.isEmpty(creditCard.getBillingProfileID())) {
 				request.setFieldValue(PaymentechFields.NewOrderRequest.AccountNum.name(),
 						              creditCard.getAccountNumber());
 				request.setFieldValue(PaymentechFields.NewOrderRequest.CardBrand.name(),
@@ -111,7 +112,7 @@ final class PaymentechRequestHelper {
 		if(RequestIF.PROFILE_TRANSACTION.equals(transaction)) {
 			request.setFieldValue(PaymentechFields.ProfileRequest.CustomerAccountType.name(),
 					  PaymentechConstants.AccountType.ECHECK.getCode());
-			if(!StringUtil.isEmpty(echeck.getAccountNumber())) {
+			if(!StringUtil.isEmpty(echeck.getAccountNumber()) && StringUtil.isEmpty(echeck.getBillingProfileID())) {
 				request.setFieldValue(PaymentechFields.ProfileRequest.ECPAccountDDA.name(),
 								  	  echeck.getAccountNumber());
 			}
@@ -130,7 +131,7 @@ final class PaymentechRequestHelper {
 
 			request.setFieldValue(PaymentechFields.NewOrderRequest.CardBrand.name(),
 					  PaymentechConstants.AccountType.ECHECK.getCode());
-			if(!StringUtil.isEmpty(echeck.getAccountNumber())) {
+			if(!StringUtil.isEmpty(echeck.getAccountNumber()) && StringUtil.isEmpty(echeck.getBillingProfileID())) {
 				request.setFieldValue(PaymentechFields.NewOrderRequest.CheckDDA.name(),
 								  	  echeck.getAccountNumber());
 			}
@@ -262,7 +263,7 @@ final class PaymentechRequestHelper {
 	}
 
 	static void setProfileID(TransactionType transType, RequestIF request,String profileID) throws FieldNotFoundException {
-		if(profileID!=null) {
+		if(!StringUtil.isEmpty( profileID)) {
 			request.setFieldValue(PaymentechFields.NewOrderRequest.CustomerRefNum.name(),
 					              profileID);
 		}
@@ -281,6 +282,7 @@ final class PaymentechRequestHelper {
 			
 				request.setFieldValue(PaymentechFields.NewOrderRequest.MessageType.name(),
 				                      PaymentechConstants.MessageType.AUTH.getCode());
+				//request.setFieldValue("ECPActionCode", "VD"); 
 		} else if(TransactionType.CASHBACK.equals(transactionType)) {
 			request.setFieldValue(PaymentechFields.NewOrderRequest.MessageType.name(),
                     PaymentechConstants.MessageType.REFUND.getCode());

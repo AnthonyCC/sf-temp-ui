@@ -122,6 +122,11 @@ public interface ErpPaymentMethodI extends AddressI {
 	public String getCVV();
 	
 	public String getProfileID();
+	
 	public void setProfileID(String profileID);
+	
+	public String DEFAULT_ACCOUNT_NUMBER="1111111111111111";
+	
+
 }
 

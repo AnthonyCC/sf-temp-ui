@@ -123,7 +123,8 @@ public class EFTTransactionCronRunner {
 					String saleId = (index > -1) ? orderNumber.substring(0, index) : orderNumber;
 					//String accountNumber = paymentTransaction.getBankAccountNumber();
 					ErpSaleEB erpSaleEB = saleHome.findByPrimaryKey(new PrimaryKey(saleId));
-					String accountNumber =erpSaleEB.getCurrentOrder().getPaymentMethod().getAccountNumber();
+					String accountNumber =erpSaleEB.getCurrentOrder().getPaymentMethod().getMaskedAccountNumber();
+					
 					double amount = paymentTransaction.getAmount();
 					String sequenceNumber = paymentTransaction.getSequenceNumber();
 					EnumPaymentResponse paymentResponse = getPaymentResponse(paymentTransaction);
@@ -153,7 +154,7 @@ public class EFTTransactionCronRunner {
 		model.setResponseCode(paymentResponse);
 		model.setTransactionSource(EnumTransactionSource.SYSTEM);			
 		model.setDescription(description);
-		model.setCcNumLast4(accountNumber.substring(accountNumber.length()-4));
+		model.setCcNumLast4(accountNumber);
 		model.setAffiliate(aff);
 		return model;
 	}

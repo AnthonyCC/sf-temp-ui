@@ -25,6 +25,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.CustomerRatingI;
+import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
@@ -361,7 +362,7 @@ public class StandingOrderUtil {
 
 		ActionResult paymentValidatorResult = new ActionResult();
 		try {
-			PaymentMethodUtil.validatePaymentMethod(null,paymentMethod, paymentValidatorResult, customerUser, false, false, false,false,null );
+			PaymentMethodUtil.validatePaymentMethod(null,paymentMethod, paymentValidatorResult, customerUser, false, false, false,false,null,EnumAccountActivityType.UNKNOWN );
 		} catch (FDResourceException e) {
 			LOGGER.warn( "FDResourceException while validating payment method", e );
 			return SOResult.createTechnicalError( so, "FDResourceException while validating payment method." );

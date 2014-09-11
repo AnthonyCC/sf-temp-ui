@@ -213,8 +213,11 @@ public class PaymentFraudManager {
 				criteria.setAbaRouteNumber(paymentMethod.getAbaRouteNumber());
 			}
 			criteria.setAccountNumber(paymentMethod.getAccountNumber());
+			criteria.setCustomerID(paymentMethod.getCustomerId());
 			criteria.setStatus(EnumRestrictedPaymentMethodStatus.BAD);
-			List<RestrictedPaymentMethodModel> list = PaymentFraudManager.getRestrictedPaymentMethods(criteria);
+			
+			List<RestrictedPaymentMethodModel> list =PaymentFraudManager.getRestrictedPaymentMethodsByCustomerId(paymentMethod.getCustomerId(), EnumRestrictedPaymentMethodStatus.BAD);
+			//PaymentFraudManager.getRestrictedPaymentMethods(criteria);
 
 			// add only if it's not already in there
 			if (list == null || list.size() == 0) {
@@ -226,8 +229,12 @@ public class PaymentFraudManager {
 				if (paymentMethod.getAbaRouteNumber() != null) {
 					model.setAbaRouteNumber(paymentMethod.getAbaRouteNumber());
 				}
-				model.setAccountNumber(paymentMethod.getAccountNumber());
+				model.setAccountNumber(paymentMethod.getAccountNumber().substring(paymentMethod.getAccountNumber().length()-4) );
+				model.setCustomerId(paymentMethod.getCustomerId());
+				//model.setProfileID(paymentMethod.getProfileID());
+				
 				// set the customer related information of the payment method
+				
 				ErpPaymentMethodModel pm = (ErpPaymentMethodModel)PaymentFraudManager.getPaymentMethodByAccountInfo(model);			
 				if (pm != null) { 					
 					if (pm.getPK() != null) {
@@ -252,7 +259,7 @@ public class PaymentFraudManager {
 				createRestrictedPaymentMethod(model);
 			}			
 		} catch (FDResourceException e) {
-			LOGGER.error("addRestrictedPaymentMethod: Account Number = " + StringUtil.maskCreditCard(paymentMethod.getAccountNumber()) + 
+			LOGGER.error("addRestrictedPaymentMethod: profileID  = " + paymentMethod.getProfileID() + 
 					" Aba Route Number" + paymentMethod.getAbaRouteNumber() + "-"+ e.getMessage());
 			throw new EJBException(e);
 		}
@@ -270,6 +277,8 @@ public class PaymentFraudManager {
 				criteria.setAbaRouteNumber(paymentMethod.getAbaRouteNumber());
 			}
 			criteria.setAccountNumber(paymentMethod.getAccountNumber());
+			
+			criteria.setCustomerID(paymentMethod.getCustomerId());
 			criteria.setStatus(EnumRestrictedPaymentMethodStatus.BAD);
 			List<RestrictedPaymentMethodModel> list = PaymentFraudManager.getRestrictedPaymentMethods(criteria);
 
@@ -283,7 +292,7 @@ public class PaymentFraudManager {
 				}
 			}			
 		} catch (FDResourceException e) {
-			LOGGER.error("removeRestrictedPaymentMethod: Account Number = " + StringUtil.maskCreditCard(paymentMethod.getAccountNumber()) + 
+			LOGGER.error("removeRestrictedPaymentMethod: Profile ID  = " + paymentMethod.getProfileID() + 
 					" Aba Route Number" + paymentMethod.getAbaRouteNumber() + "-"+ e.getMessage());
 			throw new EJBException(e);
 		}

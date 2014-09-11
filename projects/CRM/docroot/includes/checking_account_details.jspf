@@ -63,7 +63,7 @@ if(PaymentMethodUtil.hasECheckAccount(user.getIdentity())) {
 	isDisplayTerms = false;
 }
 
-String ccAccountNumber = (paymentMethod.getAccountNumber() != null && !"".equals(paymentMethod.getAccountNumber())) ? paymentMethod.getMaskedAccountNumber() : "";
+String ccAccountNumber = paymentMethod.getMaskedAccountNumber() ;
 if (request.getParameter(PaymentMethodName.ACCOUNT_NUMBER) != null) {
 	ccAccountNumber = request.getParameter(PaymentMethodName.ACCOUNT_NUMBER);
 }

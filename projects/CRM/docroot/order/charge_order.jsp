@@ -319,10 +319,9 @@ if(order.hasInvoice()) {
      	} else if (txModel.getTransactionType().equals(EnumTransactionType.CREATE_ORDER) ||
      		txModel.getTransactionType().equals(EnumTransactionType.MODIFY_ORDER)) {
                 ErpPaymentMethodI payment = ((ErpAbstractOrderModel) txModel).getPaymentMethod();
-                String accountNumber = payment.getAccountNumber();
-                if (payment.getPaymentMethodType() != null && accountNumber != null && accountNumber.length() > 4) {
-                	paymentMethodStr += payment.getPaymentMethodType().getDescription() +  "#: XXXXXXXX" 
-                					+ accountNumber.substring(accountNumber.length()-4);
+                 if (payment.getPaymentMethodType() != null && payment.getMaskedAccountNumber() !=null) {
+                	paymentMethodStr += payment.getPaymentMethodType().getDescription() +  "#: " 
+                					+ payment.getMaskedAccountNumber();
                 }
      	}
     	

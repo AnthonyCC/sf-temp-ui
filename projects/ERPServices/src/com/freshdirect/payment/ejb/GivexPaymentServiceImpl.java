@@ -50,7 +50,8 @@ public final class GivexPaymentServiceImpl implements GivexPaymentService {
 	public Balance getBalance(Identification identification,
 			ErpPaymentMethodI paymentMethod) throws RemoteException{
 		// TODO Auto-generated method stub
-		
+		if(!paymentMethod.isGiftCard())
+			throw new IllegalAccessError(" Payment method type"+paymentMethod.getPaymentMethodType()+" is not supported.");
 		GetBalance balance=new GetBalance();
 		balance.setGivexNumber(paymentMethod.getAccountNumber());
 		balance.setCurrency("USD");
@@ -65,6 +66,9 @@ public final class GivexPaymentServiceImpl implements GivexPaymentService {
 	public PostAuthResponse postAuthGiftCard(Identification identification,
 			ErpPaymentMethodI paymentMethod, double amount, long authCode,String reference)
 	throws RemoteException {
+		if(!paymentMethod.isGiftCard())
+			throw new IllegalAccessError(" Payment method type"+paymentMethod.getPaymentMethodType()+" is not supported.");
+		
 		// TODO Auto-generated method stub
 		PostAuth pAuth=new PostAuth();
 		//pAuth.setAmount(new BigDecimal(10.00));
@@ -80,6 +84,9 @@ public final class GivexPaymentServiceImpl implements GivexPaymentService {
 	
 	public PreAuthResponse preAuthGiftCard(Identification identification,
 			ErpPaymentMethodI paymentMethod, double amount,String reference) throws RemoteException {
+		if(!paymentMethod.isGiftCard())
+			throw new IllegalAccessError(" Payment method type"+paymentMethod.getPaymentMethodType()+" is not supported.");
+		
 		// TODO Auto-generated method stub
 		PreAuth auth=new PreAuth();
 		auth.setAmount(new BigDecimal(amount));
@@ -123,6 +130,8 @@ public final class GivexPaymentServiceImpl implements GivexPaymentService {
 			Identification identification, ErpPaymentMethodI paymentMethodFrom,
 			ErpPaymentMethodI paymentMethodTo, double amount, String reference)
 			throws RemoteException {
+		if(!paymentMethodFrom.isGiftCard()||paymentMethodTo.isGiftCard())
+			throw new IllegalAccessError(" Only GiftCard transfers are supported.");
 		// TODO Auto-generated method stub
 		BalanceTransfer transfer=new BalanceTransfer();
 		transfer.setGivexNumberFrom(paymentMethodFrom.getAccountNumber());

@@ -537,7 +537,7 @@ public class FDCustomerManager {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public static void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled)
-		throws FDResourceException, ErpDuplicatePaymentMethodException, ErpPaymentMethodException {
+		throws FDResourceException, ErpPaymentMethodException {
 		lookupManagerHome();
 
 		try {
@@ -561,7 +561,7 @@ public class FDCustomerManager {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public static void updatePaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod)
-		throws FDResourceException, ErpDuplicatePaymentMethodException, ErpPaymentMethodException {
+		throws FDResourceException,  ErpPaymentMethodException {
 		lookupManagerHome();
 
 		try {
@@ -3881,17 +3881,7 @@ public class FDCustomerManager {
 		}	
 	}
 	
-	public static void logDupeCCActivity(FDActionInfo info, ErpPaymentMethodI paymentMethod, String currentUserId) {
-		ActivityLogHome home = getActivityLogHome();
-		try {
-			ActivityLogSB logSB = home.create();
-			logSB.logDupeCCActivity(info.getIdentity().getErpCustomerPK(), paymentMethod, info.getSource().getCode(), info.getInitiator(), currentUserId);
-		} catch (RemoteException e) {
-			throw new EJBException(e);
-		} catch (CreateException e) {
-			throw new EJBException(e);
-		}
-	}
+	
 	
 	public static void logMassCancelActivity(ErpActivityRecord record) {
 		ActivityLogHome home = getActivityLogHome();

@@ -31,7 +31,7 @@
 	%>
     <crm:CrmGetPaymentMethod id="paymentMethod" paymentId="<%=paymentId%>" user="<%=user%>">
         <crm:CrmPaymentMethodController paymentMethod="<%=paymentMethod%>" result="result" actionName="<%=actionName%>" successPage="/checkout/checkout_select_payment.jsp">
-            <%@ include file="/includes/credit_card_details.jspf" %>
+            <%@ include file="/includes/edit_credit_card_details.jspf" %>
         </crm:CrmPaymentMethodController>
     </crm:CrmGetPaymentMethod>
 	<br clear="all">

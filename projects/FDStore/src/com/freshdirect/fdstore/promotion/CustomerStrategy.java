@@ -104,10 +104,11 @@ public class CustomerStrategy implements PromotionStrategyI {
 						String accNum="";
 						if(!StringUtil.isEmpty(profileId) /*&& StringUtil.isEmpty(cart.getPaymentMethod().getAccountNumber())*/) {
 							accNum=getAccountNumber(profileId);
+							if(!binCache.isDebitCard(accNum, currentCardType)) {
+								context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_PAYMENT_SELECTED.getErrorCode());
+								return DENY;
+							}
 						} else {
-							accNum=cart.getPaymentMethod().getAccountNumber();
-						}
-						if(!binCache.isDebitCard(accNum, currentCardType)) {
 							context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_PAYMENT_SELECTED.getErrorCode());
 							return DENY;
 						}
@@ -338,15 +339,16 @@ public class CustomerStrategy implements PromotionStrategyI {
 						String profileId=paymentMethod.getProfileID();
 						String accNum="";
 								
-						if(!StringUtil.isEmpty(profileId) /*&& StringUtil.isEmpty(paymentMethod.getAccountNumber())*/) {
+						if(!StringUtil.isEmpty(profileId)) {
 							accNum=getAccountNumber(profileId);
+							BINCache binCache=BINCache.getInstance();
+							if(!binCache.isDebitCard(accNum, cardType)) {
+								isEligible = false;
+						    }
 						} else {
-							accNum=paymentMethod.getAccountNumber();
-						}
-						BINCache binCache=BINCache.getInstance();
-						if(!binCache.isDebitCard(accNum, cardType)) {
 							isEligible = false;
-					    }
+						}
+						
 					} else {
 						isEligible = false;
 					}

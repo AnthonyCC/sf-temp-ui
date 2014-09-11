@@ -8,7 +8,6 @@
  */
 package com.freshdirect.webapp.taglib.fdstore;
 
-import java.text.MessageFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -23,17 +22,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.customer.ErpAuthorizationException;
-import com.freshdirect.customer.ErpAuthorizationModel;
-import com.freshdirect.customer.ErpDuplicatePaymentMethodException;
+import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
-import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.delivery.DlvAddressVerificationResponse;
 import com.freshdirect.delivery.EnumAddressVerificationResult;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -49,11 +43,10 @@ import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.payment.BillingCountryInfo;
 import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.PaymentManager;
-import com.freshdirect.payment.BillingCountryInfo;
-import com.freshdirect.payment.BillingRegionInfo;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
 import com.freshdirect.webapp.util.RequestUtil;
 
@@ -74,6 +67,10 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     private final static int DISCOVER			= 3;
     private final static String NAME_REGEX      ="^[^\\n]*[A-Za-z]+[^\\n]*$";//"^[\\w.-_@(){}/?#$&!+%*<>=,\\s:;'|\"\\\\/`~]*[A-Za-z]+[\\w.-_@(){}/?#$&!+%*<>=,\\s:;'|\"\\\\/`~]*$"; 
     
+    private static final String ADD_PAYMENT_METHOD="addPaymentMethod";
+	private static final String EDIT_PAYMENT_METHOD="editPaymentMethod";
+	private static final String DELETE_PAYMENT_METHOD="deletePaymentMethod";
+	
     private PaymentMethodUtil() {
     }
     
@@ -83,11 +80,6 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         try {
         	sessionuser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
             FDCustomerManager.addPaymentMethod(info, paymentMethod, sessionuser.isPaymentechEnabled());
-        } catch (ErpDuplicatePaymentMethodException ex) {
-            LOGGER.debug(ex);
-            result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
-            sessionuser.setInvalidPaymentMethod(paymentMethod);
-            FDCustomerManager.logDupeCCActivity(info, paymentMethod, sessionuser.getUserId());
         } catch (ErpPaymentMethodException ex) {
             /*LOGGER.debug(ex);
             result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
@@ -106,12 +98,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     	FDActionInfo info = AccountActivityUtil.getActionInfo(request.getSession());
         try {
             FDCustomerManager.updatePaymentMethod(info, paymentMethod);
-        } catch (ErpDuplicatePaymentMethodException ex) {
-            LOGGER.info(ex);
-            result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER));
-            FDSessionUser sessionuser = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);            
-            FDCustomerManager.logDupeCCActivity(info, paymentMethod, sessionuser.getUserId());
-        } catch (ErpPaymentMethodException ex) {
+        }  catch (ErpPaymentMethodException ex) {
             LOGGER.debug(ex);
             if("AVS".equals(ex.getMessage()))
 	        	result.addError(true,EnumUserInfoName.BIL_ZIPCODE.getCode(),SystemMessageList.MSG_ZIP_CODE);
@@ -143,7 +130,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             throw new FDResourceException("Payment method not found");
         }
         
-        processForm(request, result, identity, paymentMethod);
+        processForm(request, result, identity, paymentMethod,EDIT_PAYMENT_METHOD);
         return paymentMethod;
     }
     
@@ -152,11 +139,11 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     	ErpPaymentMethodI paymentMethod = null;
 		EnumPaymentMethodType paymentMethodType = EnumPaymentMethodType.getEnum(RequestUtil.getRequestParameter(request,PaymentMethodName.PAYMENT_METHOD_TYPE));
 		paymentMethod = PaymentManager.createInstance(paymentMethodType);
-        processForm(request, result, identity, paymentMethod);
+        processForm(request, result, identity, paymentMethod,ADD_PAYMENT_METHOD);
         return paymentMethod;
     }
     
-    private static void processForm(HttpServletRequest request, ActionResult result, FDIdentity identity, ErpPaymentMethodI paymentMethod) throws FDResourceException {
+    private static void processForm(HttpServletRequest request, ActionResult result, FDIdentity identity, ErpPaymentMethodI paymentMethod,String actionName) throws FDResourceException {
         String month = RequestUtil.getRequestParameter(request,PaymentMethodName.CARD_EXP_MONTH);
         String year = RequestUtil.getRequestParameter(request,PaymentMethodName.CARD_EXP_YEAR);
         String cardType = RequestUtil.getRequestParameter(request,PaymentMethodName.CARD_BRAND);
@@ -179,10 +166,11 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	             PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_REQUIRED
 	             );
 	     //Fix END 
-        if((accountNumber != null && accountNumber.startsWith("xxx"))){
-        	accountNumber = paymentMethod.getAccountNumber();
-        	verifyBankAccountNumber = false;
-        }
+        
+        if(EDIT_PAYMENT_METHOD.equalsIgnoreCase(actionName)){
+			accountNumber = paymentMethod.getAccountNumber();
+			verifyBankAccountNumber = false;
+		}
         
         CharSequence inputStr = name;   
         Pattern pattern = Pattern.compile(NAME_REGEX,Pattern.CASE_INSENSITIVE);  
@@ -304,6 +292,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             paymentMethod.setExpirationDate(expCal.getTime());
             paymentMethod.setName(RequestUtil.getRequestParameter(request,PaymentMethodName.ACCOUNT_HOLDER));
             paymentMethod.setAccountNumber(scrubAccountNumber(accountNumber));
+            
             paymentMethod.setCardType(EnumCardType.getCardType(cardType));
             paymentMethod.setBankAccountType(EnumBankAccountType.getEnum(bankAccountType));
             paymentMethod.setAbaRouteNumber(abaRouteNumber);
@@ -376,14 +365,20 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     	return ((ErpPaymentMethodModel)paymentMethod).getMaskedAccountNumber();
     }
     
-    public static void validatePaymentMethod(HttpServletRequest request, ErpPaymentMethodI paymentMethod, ActionResult result, FDUserI user,boolean verifyCC) throws FDResourceException {
+    public static void validatePaymentMethod(HttpServletRequest request, ErpPaymentMethodI paymentMethod, ActionResult result, FDUserI user,boolean verifyCC, EnumAccountActivityType activityType) throws FDResourceException {
 		String bypassBadAccountCheck = RequestUtil.getRequestParameter(request,PaymentMethodName.BYPASS_BAD_ACCOUNT_CHECK);
 		FDActionInfo action= AccountActivityUtil.getActionInfo(request.getSession(), "");
 		
-    	validatePaymentMethod(action, paymentMethod, result, user, request.getAttribute("gift_card") != null, request.getAttribute("donation") != null, bypassBadAccountCheck != null && !bypassBadAccountCheck.trim().equals(""),verifyCC,request );
+    	validatePaymentMethod(action, paymentMethod, result, user, request.getAttribute("gift_card") != null, request.getAttribute("donation") != null, bypassBadAccountCheck != null && !bypassBadAccountCheck.trim().equals(""),verifyCC,request,activityType );
     }
     
-    public static void validatePaymentMethod ( FDActionInfo action, ErpPaymentMethodI paymentMethod, ActionResult result, FDUserI user, boolean gift_card, boolean donation, boolean bypassBadAccountCheck, boolean verifyCC,HttpServletRequest request ) throws FDResourceException {
+    private static boolean checkAccountNumber(EnumAccountActivityType activityType) {
+    	
+    	if(EnumAccountActivityType.ADD_PAYMENT_METHOD.equals(activityType) ) 
+    		return true;
+    	return false;
+    }
+    public static void validatePaymentMethod ( FDActionInfo action, ErpPaymentMethodI paymentMethod, ActionResult result, FDUserI user, boolean gift_card, boolean donation, boolean bypassBadAccountCheck, boolean verifyCC,HttpServletRequest request,EnumAccountActivityType activityType  ) throws FDResourceException {
     	
     	
     	boolean isFiftyStateValidationReqd=true;
@@ -394,16 +389,20 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
         );
        
         
-        if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())||EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())){
-        	 result.addError(
-             		paymentMethod.getAccountNumber() == null || "".equals(paymentMethod.getAccountNumber()),
-     				PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_REQUIRED
-     		);
-        	 if(EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType()) && paymentMethod.getAccountNumber() != null && !"".equals(paymentMethod.getAccountNumber())){
+        if((EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())||EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) && checkAccountNumber(activityType)){
+        	 result.addError( StringUtil.isEmpty(paymentMethod.getAccountNumber()),PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_REQUIRED );
+        	 if( EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())) {
+	        	 result.addError(
+	        		        paymentMethod.getCardType() == null || ( !validateCreditCardNumber(paymentMethod.getAccountNumber(), paymentMethod.getCardType().getFdName())),
+	        		        PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER
+	        		        );
+        	 }
+        	 if(EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType()) && !StringUtil.isEmpty(paymentMethod.getAccountNumber())){
             	 result.addError(paymentMethod.getAccountNumber().length()<=5,
             		        PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER
             		        );
         	 } 
+        }
         if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())){        	
 	        //check brand
 	        result.addError(
@@ -412,10 +411,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        );
 	        
 	        // Check card number
-	        result.addError(
-	        paymentMethod.getCardType() == null || (paymentMethod.getAccountNumber() == null || "".equals(paymentMethod.getAccountNumber()) || !validateCreditCardNumber(paymentMethod.getAccountNumber(), paymentMethod.getCardType().getFdName())),
-	        PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER
-	        );
+	        
 	        String csv=paymentMethod.getCVV();
             if(FDStoreProperties.isPaymentMethodVerificationEnabled()/*&& !paymentMethod.isBypassAVSCheck()*/&& verifyCC) {
 	        	result.addError(
@@ -468,7 +464,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        );
 	        
         }
-         
+        if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())||EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) { 
 	        result.addError(
 	        		paymentMethod.getAddress1()==null || paymentMethod.getAddress1().trim().length() < 1,
 					EnumUserInfoName.BIL_ADDRESS_1.getCode(),SystemMessageList.MSG_REQUIRED
@@ -509,75 +505,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        }
         
 	        
-        /*if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())){
-	        if(!result.isFailure() && FDStoreProperties.isPaymentMethodVerificationEnabled()&& !paymentMethod.isBypassAVSCheck()&& verifyCC) {
-	        	
-	        	
-	        	try {
-	        		
-	        		ErpAuthorizationModel auth=FDCustomerManager.verify(action, paymentMethod);
-	        		if(auth==null) {
-	        			result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_TECHNICAL_ERROR));
-	        		}
-	        		
-	        		else {
-	        			EnumTransactionSource source=action.getSource();
-	        			if(EnumTransactionSource.CUSTOMER_REP.equals(source)) {
-	        				
-	        				if(!auth.isApproved()||
-	        					(auth.isApproved() && (!auth.isCVVMatch()||!auth.hasAvsMatched()))
-	        				   )
-	        				result.addError(new ActionError(auth.isApproved()?"auth_failure":"payment_method_fraud", 
-	        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_CRM, 
-	        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
-	        			}
-	        			else {
-		        		
-	        				int verifyFailCnt=auth.getVerifyFailCount();
-	        				if(verifyFailCnt<0)
-	        					verifyFailCnt=0;
-	        				if(verifyFailCnt>0 && verifyFailCnt< FDStoreProperties.getPaymentMethodVerificationLimit() ) {
-	        					result.addError(new ActionError(auth.isApproved()?"auth_failure":"payment_method_fraud", 
-		        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL, 
-		        	            		new Object[] { String.valueOf(FDStoreProperties.getPaymentMethodVerificationLimit()),
-		        	            				       String.valueOf(FDStoreProperties.getPaymentMethodVerificationLimit()- verifyFailCnt),
-		        	            				       UserUtil.getCustomerServiceContact(request)
-		        	            				      })));
-	        				} else if(FDStoreProperties.getPaymentMethodVerificationLimit()<=verifyFailCnt) {
-		        				request.getSession().setAttribute("verifyFail", MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_3, 
-		        	            		new Object[] { UserUtil.getCustomerServiceContact(request)}));
-	
-		        				result.addError(new ActionError("auth_failure", 
-		        	            		MessageFormat.format(SystemMessageList.MSG_PYMT_VERIFY_FAIL_3, 
-		        	            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
-		        			}
-	        			}
-	        			if(auth.isApproved()) {
-		        			result.addError(
-		        					!auth.isCVVMatch(),
-					    	        PaymentMethodName.CSV,SystemMessageList.MSG_CVV_INCORRECT
-					    	        );
-		        			//result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_INVALID_ADDRESS));
-		        			result.addError(
-		        					!ErpServicesProperties.isAvsAddressMatchReqd() && !auth.hasAvsMatched(),
-		        					EnumUserInfoName.BIL_ZIPCODE.getCode(),SystemMessageList.MSG_ZIP_CODE
-					    	        );
-		        			result.addError(
-		        					ErpServicesProperties.isAvsAddressMatchReqd() & !auth.hasAvsMatched(),
-		        					EnumUserInfoName.BIL_ADDRESS_1.getCode(),SystemMessageList.MSG_INVALID_ADDRESS
-					    	        );
-		        			
-	        			} 
-	        			if(result.isSuccess())
-	        				paymentMethod.setAvsCkeckFailed(false);
-	        		}
-	        	} catch(ErpAuthorizationException e) {
-	        		result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_TECHNICAL_ERROR+" "+e.toString()));
-	        	}catch (ErpTransactionException e) {
-	        		result.addError(new ActionError("payment_method_fraud", SystemMessageList.MSG_TECHNICAL_ERROR+" "+e.toString()));
-				}
-	        }
-        }*/ 
+        
         }else if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
         	        	
 	        if (paymentMethod.getAbaRouteNumber() != null && !"".equals(paymentMethod.getAbaRouteNumber())) {
@@ -585,29 +513,28 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        }
 	        
             paymentMethod.setCountry("US");
+            if( checkAccountNumber(activityType)) {
             
-	        // Check account number	        
-            String accountNumber = paymentMethod.getAccountNumber();
-            
-	        /*result.addError(
-	        		accountNumber == null || "".equals(accountNumber),
-					PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_REQUIRED
-			);*/
-	        result.addError(
-	        		accountNumber != null && accountNumber.length()>17,
-					PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER
-			);
-	        
-	        // Check aba route number number
-	        result.addError(
-	        !validateAbaRouteNumber(paymentMethod.getAbaRouteNumber()),
-			PaymentMethodName.ABA_ROUTE_NUMBER, SystemMessageList.MSG_INVALID_ABA_ROUTE_NUMBER
-			);
-	        // Check aba route number number
-	        result.addError(
-	        paymentMethod.getAbaRouteNumber() == null || "".equals(paymentMethod.getAbaRouteNumber()),
-			PaymentMethodName.ABA_ROUTE_NUMBER, SystemMessageList.MSG_REQUIRED
-			);
+		        // Check account number	        
+	            String accountNumber = paymentMethod.getAccountNumber();
+	            
+		        
+		        result.addError(
+		        		accountNumber != null && accountNumber.length()>17,
+						PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER
+				);
+		        
+		        // Check aba route number number
+		        result.addError(
+		        !validateAbaRouteNumber(paymentMethod.getAbaRouteNumber()),
+				PaymentMethodName.ABA_ROUTE_NUMBER, SystemMessageList.MSG_INVALID_ABA_ROUTE_NUMBER
+				);
+		        // Check aba route number number
+		        result.addError(
+		        paymentMethod.getAbaRouteNumber() == null || "".equals(paymentMethod.getAbaRouteNumber()),
+				PaymentMethodName.ABA_ROUTE_NUMBER, SystemMessageList.MSG_REQUIRED
+				);
+            }
 	        // Check bank account type
 	        result.addError(
 	        paymentMethod.getBankAccountType() == null,
@@ -625,10 +552,10 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 			result.addError("".equals(paymentMethod.getZipCode()), EnumUserInfoName.BIL_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED);
 			
 			if(result.isSuccess()){
-				result.addError(
+				/*result.addError(
 		        	PaymentFraudManager.checkBadAccount(paymentMethod, false) && !bypassBadAccountCheck, 
 					PaymentMethodName.BYPASS_BAD_ACCOUNT_CHECK,SystemMessageList.MSG_REQUIRED
-		        ); 
+		        ); */
 			}
         }
         
@@ -891,5 +818,8 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     	}
     	return msg;
     	
+    }
+    public static void main(String[] a) {
+    	//PaymentMethodUtil.validateCreditCardNumber(number, brand)
     }
 }

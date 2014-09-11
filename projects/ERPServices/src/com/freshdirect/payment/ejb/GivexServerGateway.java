@@ -261,6 +261,9 @@ public class GivexServerGateway {
 	
 	public static GivexResponseModel preAuthGiftCard(ErpPaymentMethodI paymentMethod,double amount,String reference) throws GivexException{
 		
+		if(!paymentMethod.isGiftCard())
+			throw new IllegalAccessError(" Payment method type"+paymentMethod.getPaymentMethodType()+" is not supported.");
+		
 		Identification id=getIdentification();						
 		PreAuthResponse res=null;
 		try {
@@ -317,6 +320,9 @@ public class GivexServerGateway {
 	
 	
 	public static GivexResponseModel postAuthGiftCard(ErpPaymentMethodI paymentMethod,double amount,long authCode,String reference) throws GivexException{
+		
+		if(!paymentMethod.isGiftCard())
+			throw new IllegalAccessError(" Payment method type"+paymentMethod.getPaymentMethodType()+" is not supported.");
 		
 		Identification id=getIdentification();								
 		PostAuthResponse res=null;

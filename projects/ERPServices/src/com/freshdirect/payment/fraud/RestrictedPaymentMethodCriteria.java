@@ -15,13 +15,14 @@ public class RestrictedPaymentMethodCriteria implements Serializable {
 	private Date createDate;
 	private EnumRestrictionReason reason;
 	private EnumRestrictedPaymentMethodStatus status;
+	private String customerID;
 	
 	public RestrictedPaymentMethodCriteria () {
 		super();
 	}
 		
 	public RestrictedPaymentMethodCriteria (EnumBankAccountType bankAccountType, String abaRouteNumber, String accountNumber, String firstName, String lastName, Date createDate,
-			EnumRestrictionReason reason, EnumRestrictedPaymentMethodStatus status){
+			EnumRestrictionReason reason, EnumRestrictedPaymentMethodStatus status, String customerID){
 		this();
 		setAbaRouteNumber(abaRouteNumber);
 		setAccountNumber(accountNumber);
@@ -30,11 +31,12 @@ public class RestrictedPaymentMethodCriteria implements Serializable {
 		setCreateDate(createDate);
 		setStatus(status);
 		setReason(reason);
+		setCustomerID(customerID);
 	}
 	
 	public RestrictedPaymentMethodCriteria(RestrictedPaymentMethodCriteria criteria){
 		this(criteria.bankAccountType, criteria.abaRouteNumber, criteria.getAccountNumber(), criteria.getFirstName(), criteria.getLastName(), criteria.getCreateDate(),
-			criteria.getReason(), criteria.getStatus());
+			criteria.getReason(), criteria.getStatus(), criteria.getCustomerID());
 	}
 
 	public String getFirstName() {
@@ -100,6 +102,14 @@ public class RestrictedPaymentMethodCriteria implements Serializable {
 		
 	public void setReason(EnumRestrictionReason reason) {
 		this.reason = reason;
+	}
+
+	public String getCustomerID() {
+		return customerID;
+	}
+
+	public void setCustomerID(String customerID) {
+		this.customerID = customerID;
 	}
 	
 }

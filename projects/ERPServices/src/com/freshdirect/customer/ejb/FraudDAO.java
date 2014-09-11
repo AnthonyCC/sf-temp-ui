@@ -37,69 +37,6 @@ public class FraudDAO implements java.io.Serializable {
 
 	private static Category LOGGER = LoggerFactory.getInstance(FraudDAO.class);
 
-	private final static String QUERY_DUPLICATE_ACCOUNT =
-		"SELECT COUNT(PM.ID) FROM CUST.PAYMENTMETHOD pm, CUST.CUSTOMERINFO CI"
-			+ " WHERE PM.ACCOUNT_NUMBER = ?"
-			+ " AND PM.CUSTOMER_ID <> ?"
-			+ " AND CI.CUSTOMER_ID=PM.CUSTOMER_ID"
-			+ " AND 'X'<>CI.CORP_CUSTOMER";
-
-	public boolean isDuplicateAccountNumber(Connection conn, String accountNumber, String erpCustomerId) throws SQLException {
-
-		PreparedStatement ps = conn.prepareStatement(QUERY_DUPLICATE_ACCOUNT);
-
-		ps.setString(1, accountNumber);
-		ps.setString(2, erpCustomerId);
-
-		ResultSet rs = ps.executeQuery();
-
-		int count = 0;
-		if (rs.next()) {
-			count = rs.getInt(1);
-		}
-		rs.close();
-		ps.close();
-
-		if (count > 0) {
-			LOGGER.debug("FRAUD RULE TRIPPED: Duplicate Payment Method Account Number");
-			return true;
-		} else {
-			return false;
-		}
-	} 
-
-	private final static String QUERY_DUPLICATE_ABA_ROUTE_ACCOUNT =
-		"SELECT COUNT(PM.ID) FROM CUST.PAYMENTMETHOD pm, CUST.CUSTOMERINFO CI"
-			+ " WHERE PM.ACCOUNT_NUMBER = ?"
-			+ " AND PM.ABA_ROUTE_NUMBER = ?"
-			+ " AND PM.CUSTOMER_ID <> ?"
-			+ " AND CI.CUSTOMER_ID=PM.CUSTOMER_ID"
-			+ " AND 'X'<>CI.CORP_CUSTOMER";
-
-	public boolean isDuplicateAbaRouteAccountNumber(Connection conn, String accountNumber, String abaRouteNumber, String erpCustomerId) throws SQLException {
-
-		PreparedStatement ps = conn.prepareStatement(QUERY_DUPLICATE_ABA_ROUTE_ACCOUNT);
-
-		ps.setString(1, accountNumber);
-		ps.setString(2, abaRouteNumber);
-		ps.setString(3, erpCustomerId);
-
-		ResultSet rs = ps.executeQuery();
-
-		int count = 0;
-		if (rs.next()) {
-			count = rs.getInt(1);
-		}
-		rs.close();
-		ps.close();
-
-		if (count > 0) {
-			LOGGER.debug("FRAUD RULE TRIPPED: Duplicate Payment Method ABA Route/Account Number");
-			return true;
-		} else {
-			return false;
-		}
-	} 
 
 	public boolean isDuplicateShipToAddress(Connection conn, ErpAddressModel address, String erpCustomerId) throws SQLException {
 		//

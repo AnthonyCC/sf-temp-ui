@@ -494,7 +494,7 @@ public class RestrictedPaymentMethodDAO {
 		}
 	}
 
-	private static String findPaymentMethodByAccountInfoQuery = "SELECT ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, CUSTOMER_ID FROM CUST.PAYMENTMETHOD";
+	private static String findPaymentMethodByAccountInfoQuery = "SELECT ID, NAME, ACCOUNT_NUMBER_MASKED, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, CUSTOMER_ID FROM CUST.PAYMENTMETHOD";
 	
 	public static ErpPaymentMethodI findPaymentMethodByAccountInfo(Connection conn, RestrictedPaymentMethodModel m) throws SQLException {
 		PreparedStatement ps = null;
@@ -506,7 +506,7 @@ public class RestrictedPaymentMethodDAO {
 
 			String sql = findPaymentMethodByAccountInfoQuery;
 			
-			builder.addString("ACCOUNT_NUMBER", m.getAccountNumber());
+			//builder.addString("ACCOUNT_NUM_MASKED", m.getAccountNumber());
 
 			if (m.getPaymentMethodType() != null) {
 				builder.addString("PAYMENT_METHOD_TYPE", m.getPaymentMethodType().getName());
@@ -528,7 +528,7 @@ public class RestrictedPaymentMethodDAO {
 				return model;	// don't return all payment methods if there are no criterias
 			}
 			if (criteriaStr != null && !"".equals(criteriaStr)) {
-				sql +=  " WHERE " + criteriaStr;
+				sql +=  " WHERE " + "ACCOUNT_NUM_MASKED LIKE '%"+m.getAccountNumber()+"' AND "+criteriaStr;
 			}
 			ps = conn.prepareStatement(sql);
 			Object[] par = builder.getParams();
@@ -543,7 +543,7 @@ public class RestrictedPaymentMethodDAO {
 				model = (ErpPaymentMethodModel)PaymentManager.createInstance(paymentMethodType);
 				model.setPK(new PrimaryKey(rs.getString("ID")));
 				model.setName(rs.getString("NAME"));
-				model.setAccountNumber(rs.getString("ACCOUNT_NUMBER"));
+				//model.setAccountNumber(rs.getString("ACCOUNT_NUM_MASKED"));
 				model.setExpirationDate(rs.getDate("EXPIRATION_DATE"));
 				model.setCardType(EnumCardType.getCardType(rs.getString("CARD_TYPE")));
 				model.setAbaRouteNumber(rs.getString("ABA_ROUTE_NUMBER"));

@@ -495,8 +495,12 @@ public class PaymentSessionBean extends SessionBeanSupport{
 				combinedAuth.setPaymentMethodType(paymentMethod.getPaymentMethodType());
 				combinedAuth.setAbaRouteNumber(paymentMethod.getAbaRouteNumber());
 				combinedAuth.setBankAccountType(paymentMethod.getBankAccountType());
-				String accountNumber = paymentMethod.getAccountNumber();
-				combinedAuth.setCcNumLast4(accountNumber.substring(accountNumber.length()-4));
+				if(!StringUtil.isEmpty(paymentMethod.getMaskedAccountNumber())) {
+					int l=paymentMethod.getMaskedAccountNumber().length();
+					combinedAuth.setCcNumLast4(l>4?
+							paymentMethod.getMaskedAccountNumber().substring(l-4,l):paymentMethod.getMaskedAccountNumber());
+				}
+				
 				combinedAuth.setAuthCode(a.getAuthCode());
 				combinedAuth.setAvs(a.getAvs());
 				combinedAuth.setDescription(a.getDescription());

@@ -10,6 +10,7 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.EnumAddressType;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
@@ -229,7 +230,7 @@ public class RegistrationAction extends WebActionSupport {
 				if (!"".equals(request.getParameter(PaymentMethodName.ACCOUNT_NUMBER))) {
 					LOGGER.debug("CREATING PAYMENT METHOD");
 					ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm(request, actionResult, user.getIdentity());
-					PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, actionResult, user,true);
+					PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, actionResult, user,true,EnumAccountActivityType.ADD_PAYMENT_METHOD);
 					if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
 				        String terms = request.getParameter(PaymentMethodName.TERMS);
 				        actionResult.addError(

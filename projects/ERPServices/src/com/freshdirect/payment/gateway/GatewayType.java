@@ -67,7 +67,7 @@ public enum GatewayType  implements java.io.Serializable {
     }
  
     public static void main(String[] args) {
-        System.out.println(GatewayType.CYBERSOURCE);
+        System.out.println(GatewayType.CYBERSOURCE.equals(GatewayType.CYBERSOURCE));
         System.out.println(GatewayType.get(-1));
     }
 }

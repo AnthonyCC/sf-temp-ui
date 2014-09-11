@@ -12,6 +12,7 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class AuthorizationCommand {
@@ -99,9 +100,8 @@ public class AuthorizationCommand {
 		auth.setAmount(amount);
 		auth.setTax(tax);
 		auth.setCardType(pm.getCardType());
-		String accountNumber = pm.getAccountNumber();
-		if(accountNumber != null && accountNumber.length() >= 4){
-			auth.setCcNumLast4(accountNumber.substring(accountNumber.length()-4));
+		if((!StringUtil.isEmpty(pm.getMaskedAccountNumber())) &&(4>=pm.getMaskedAccountNumber().length()) ) {
+			auth.setCcNumLast4(pm.getMaskedAccountNumber().substring(pm.getMaskedAccountNumber().length()-4));
 		}
 		return auth;
 	}

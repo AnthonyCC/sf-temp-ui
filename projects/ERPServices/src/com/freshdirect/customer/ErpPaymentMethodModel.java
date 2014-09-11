@@ -6,30 +6,31 @@ import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.framework.core.ModelSupport;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpPaymentMethodI {
 
 	private static final long	serialVersionUID	= -3496284200065106331L;
-	
-	private String customerId;	
+
+	private String customerId;
 	private String name;
 	private String accountNumber;
-	
+
 
 	private ContactAddressModel address;
-	
+
 	//!!! these donot belong here this is a side effect of not having a ErpPaymentInfoModel should be refactored (kn).
 	private String billingRef;
 	private EnumPaymentType paymentType = EnumPaymentType.REGULAR;
 	private String referencedOrder;
-	
+
 	private String csv;
-	
+
 	private String profileID="";
 	private String accountNumLast4;
-	
+
 	public String getAccountNumLast4() {
 		return accountNumLast4;
 	}
@@ -69,17 +70,17 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	 * @param String type
 	 */
 	public void setCardType(EnumCardType cardType){}
-	
-	
+
+
 	public AddressInfo getAddressInfo(){
 		return this.address.getAddressInfo();
 	}
-	
 
-	public ContactAddressModel getAddress() { 
-		return this.address; 
+
+	public ContactAddressModel getAddress() {
+		return this.address;
 	}
-	
+
 	public void setAddress(ContactAddressModel address) {
 		this.address = address;
 	}
@@ -227,11 +228,17 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	}
 
 	public String getMaskedAccountNumber() {
-    	int numDisplayedDigits = Math.min(accountNumber.length(), 4); 
-    	int numMaskedDigits = 10 - numDisplayedDigits;
-    	return  "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx".substring(0, numMaskedDigits) + accountNumber.substring(accountNumber.length()-numDisplayedDigits);  
-		//int pmLen = this.accountNumber.length()-4;
-		//return "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx".substring(0,pmLen) + this.accountNumber.substring(pmLen);
+		if(StringUtil.isEmpty(accountNumLast4) && !StringUtil.isEmpty(accountNumber)) {
+			int hideLength = this.accountNumber.length() - 4;
+			StringBuffer buf = new StringBuffer(this.accountNumber);
+			if (hideLength > 0) {
+				for (int i = 0; i < hideLength; i++) {
+					buf.setCharAt(i, 'X');
+				}
+			}
+			accountNumLast4=buf.toString();
+		}
+    	return accountNumLast4;
 	}
 
 	/**
@@ -240,15 +247,10 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	 * @return String number
 	 */
 	public String getDisplayableAccountNumber() {
-		int hideLength = this.accountNumber.length() - 5;
-		StringBuffer buf = new StringBuffer(this.accountNumber);
-		if (hideLength > 0) {
-			for (int i = 0; i < hideLength; i++) {
-				buf.setCharAt(i, 'x');
-			}
-		}
-		return buf.toString();
-	}	
+
+		
+		return accountNumLast4;
+	}
 
 	public String getBillingRef() {
 		return billingRef;
@@ -257,25 +259,25 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	public void setBillingRef(String billingRef) {
 		this.billingRef = billingRef;
 	}
-	
+
 	public EnumPaymentType getPaymentType() {
 		return paymentType;
 	}
-	
+
 	public void setPaymentType(EnumPaymentType paymentType) {
 		this.paymentType = paymentType;
 	}
-	
+
 	public void setReferencedOrder(String referencedOrder){
 		this.referencedOrder = referencedOrder;
 	}
-	
+
 	public String getReferencedOrder(){
 		return this.referencedOrder;
 	}
-	
+
 	public String getBankName() {return null;}
-	
+
 	public void setBankName(String bankName) {}
 
 	public String getAbaRouteNumber() {return null;}
@@ -289,16 +291,16 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	public EnumPaymentMethodType getPaymentMethodType() {return null;}
 
 	public void setIsTermsAccepted(boolean isTermsAccepted) {}
-	
+
 	public boolean getIsTermsAccepted() { return false; }
-	
+
 	public boolean isGiftCard() {
-		return this.getPaymentMethodType().equals(EnumPaymentMethodType.GIFTCARD);
+		return EnumPaymentMethodType.GIFTCARD.equals(getPaymentMethodType());
 	}
     public void setCVV(String val) {
     	this.csv=val;
     }
-	
+
 	public String getCVV() {
 		return csv;
 	}

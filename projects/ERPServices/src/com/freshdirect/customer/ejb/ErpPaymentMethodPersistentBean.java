@@ -61,7 +61,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 	 * Copy from model.
 	 */
 	public void setFromModel(ModelI model) {
-		this.model = (ErpPaymentMethodModel)model;		
+		this.model = (ErpPaymentMethodModel)model;
 		this.setModified();
 	}
 
@@ -99,53 +99,59 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 
 
 	public PrimaryKey create(Connection conn) throws SQLException {
-		System.out.println("Inside calling create ******************* ");
+
 		String id = this.getNextId(conn, "CUST");
 		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTMETHOD (ID, CUSTOMER_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS2, APARTMENT,  ADDRESS1, CITY, STATE, ZIP_CODE, COUNTRY, AVS_FAILED,BYPASS_AVS_CHECK, PROFILE_ID,ACCOUNT_NUM_MASKED) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		int index = 1;
 			ps.setString(index++, id);
 			ps.setString(index++, this.getParentPK().getId());
 			ps.setString(index++, model.getName());
-			ps.setString(index++, model.getAccountNumber());
+			if( EnumPaymentMethodType.EBT.equals(model.getPaymentMethodType())||
+				EnumPaymentMethodType.GIFTCARD.equals(model.getPaymentMethodType())
+			   ) {
+					ps.setString(index++, this.model.getAccountNumber());
+			} else {
+					ps.setString(index++, ErpPaymentMethodModel.DEFAULT_ACCOUNT_NUMBER);
+			}
 			if (model.getExpirationDate() != null) {
 				ps.setDate(index++, new java.sql.Date(model.getExpirationDate().getTime()));
 			} else {
-				ps.setNull(index++, Types.DATE);			
+				ps.setNull(index++, Types.DATE);
 			}
 			if (model.getCardType() != null) {
 				ps.setString(index++, model.getCardType().getFdName());
 			} else {
-				ps.setNull(index++, Types.VARCHAR);			
+				ps.setNull(index++, Types.VARCHAR);
 			}
 			if (model.getPaymentMethodType() != null) {
 				ps.setString(index++, model.getPaymentMethodType().getName());
 			} else {
-				ps.setNull(index++, Types.VARCHAR);			
+				ps.setNull(index++, Types.VARCHAR);
 			}
 			if (model.getAbaRouteNumber() != null) {
 				ps.setString(index++, model.getAbaRouteNumber());
 			} else {
-				ps.setNull(index++, Types.VARCHAR);			
+				ps.setNull(index++, Types.VARCHAR);
 			}
 			if (model.getBankName() != null) {
 				ps.setString(index++, model.getBankName());
 			} else {
-				ps.setNull(index++, Types.VARCHAR);			
+				ps.setNull(index++, Types.VARCHAR);
 			}
 			if (model.getBankAccountType() != null) {
 				ps.setString(index++, model.getBankAccountType().getName());
 			} else {
-				ps.setNull(index++, Types.VARCHAR);			
+				ps.setNull(index++, Types.VARCHAR);
 			}
 			if (model.getAddress2() != null) {
 				ps.setString(index++, model.getAddress2());
 			} else {
-				ps.setNull(index++, Types.VARCHAR);			
+				ps.setNull(index++, Types.VARCHAR);
 			}
 			if (model.getApartment() != null) {
 				ps.setString(index++, model.getApartment());
 			} else {
-				ps.setNull(index++, Types.VARCHAR);			
+				ps.setNull(index++, Types.VARCHAR);
 			}
 			if(this.model.getPaymentMethodType().equals(EnumPaymentMethodType.GIFTCARD)) {
 				ps.setString(index++, "NA");
@@ -153,38 +159,38 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 				ps.setString(index++, "NA");
 				ps.setString(index++, "NA");
 				ps.setString(index++, "NA");
-				
+
 			} else {
 				ps.setString(index++, model.getAddress1());
 				ps.setString(index++, model.getCity());
 				ps.setString(index++, model.getState());
 				ps.setString(index++, model.getZipCode());
 				ps.setString(index++, model.getCountry());
-				
-			}			
+
+			}
 			if(this.model.isAvsCkeckFailed())
 			{
-				ps.setString(index++, "X" );	
+				ps.setString(index++, "X" );
 			}else{
 				ps.setNull(index++, Types.VARCHAR);
 			}
 			if(this.model.isBypassAVSCheck())
 			{
-				ps.setString(index++, "X" );	
+				ps.setString(index++, "X" );
 			}else{
 				ps.setNull(index++, Types.VARCHAR);
 			}
 			if(model.getProfileID()!=null) {
-				ps.setString(index++, model.getProfileID() );	
+				ps.setString(index++, model.getProfileID() );
 			}else{
 				ps.setNull(index++, Types.VARCHAR);
 			}
 			if(model.getMaskedAccountNumber()!=null) {
-				ps.setString(index++, model.getMaskedAccountNumber() );	
+				ps.setString(index++, model.getMaskedAccountNumber() );
 			}else{
 				ps.setNull(index++, Types.VARCHAR);
 			}
-			
+
 		//}
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -197,7 +203,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 			ps.close();
 			ps = null;
 		}
-		
+
 		this.unsetModified();
 		return this.getPK();
 	}
@@ -226,19 +232,21 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 				model.setZipCode(rs.getString("ZIP_CODE"));
 				model.setCountry(rs.getString("COUNTRY"));
 				model.setAvsCkeckFailed("X".equalsIgnoreCase(rs.getString("AVS_FAILED")));
-				model.setBypassAVSCheck("X".equalsIgnoreCase(rs.getString("BYPASS_AVS_CHECK")));								
+				model.setBypassAVSCheck("X".equalsIgnoreCase(rs.getString("BYPASS_AVS_CHECK")));
 				model.setCustomerId(rs.getString("CUSTOMER_ID"));
 				setParentPK(new PrimaryKey(model.getCustomerId()));
 				model.setPK(getPK());
 				if(paymentMethodType != null && paymentMethodType.equals(EnumPaymentMethodType.GIFTCARD)) {
 					//Set the certification number for gift card.
 					model.setCertificateNumber(ErpGiftCardUtil.getCertificateNumber(rs.getString("ACCOUNT_NUMBER")));
+				}else if( paymentMethodType != null && (paymentMethodType.equals(EnumPaymentMethodType.CREDITCARD)||paymentMethodType.equals(EnumPaymentMethodType.DEBITCARD)||paymentMethodType.equals(EnumPaymentMethodType.ECHECK))){
+					model.setAccountNumber(rs.getString("ACCOUNT_NUM_MASKED"));
 				}
 				model.setProfileID(rs.getString("PROFILE_ID"));
 				model.setAccountNumLast4(rs.getString("ACCOUNT_NUM_MASKED"));
 				/*model.setProfileID("36280971");
 				model.setAccountNumLast4("7978");*/
-				
+
 			} else {
 				throw new SQLException("No such ErpPaymentMethod PK: " + this.getPK());
 			}
@@ -248,7 +256,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 			if (ps != null) ps.close();
 			ps = null;
 		}
-		
+
 		this.unsetModified();
 	}
 
@@ -257,76 +265,80 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 			//Do Nothing. As There will not be any update to this model.
 			return;
 		}
-		
+
 		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.PAYMENTMETHOD SET CUSTOMER_ID = ?, NAME = ?, ACCOUNT_NUMBER = ?, EXPIRATION_DATE = ?, CARD_TYPE = ?, PAYMENT_METHOD_TYPE=?, ABA_ROUTE_NUMBER=?, BANK_NAME=?, BANK_ACCOUNT_TYPE=?, ADDRESS1 = ?, ADDRESS2 = ?, APARTMENT = ?, CITY = ?, STATE = ?, ZIP_CODE = ?, COUNTRY = ?,  AVS_FAILED=?, BYPASS_AVS_CHECK=? WHERE ID=?");
-		
+
 		try {
 			int index = 1;
 			ps.setString(index++, this.getParentPK().getId());
 			ps.setString(index++, model.getName());
-			ps.setString(index++, model.getAccountNumber());
+			if( EnumPaymentMethodType.EBT.equals(model.getPaymentMethodType())) {
+					ps.setString(index++, this.model.getAccountNumber());
+			} else {
+					ps.setString(index++, ErpPaymentMethodModel.DEFAULT_ACCOUNT_NUMBER);
+			}
 			if (model.getExpirationDate() != null) {
 				ps.setDate(index++, new java.sql.Date(model.getExpirationDate().getTime()));
 			} else {
-				ps.setNull(index++, Types.DATE);				
+				ps.setNull(index++, Types.DATE);
 			}
 			if (model.getCardType() != null) {
 				ps.setString(index++, model.getCardType().getFdName());
 			} else {
-				ps.setNull(index++, Types.VARCHAR);				
+				ps.setNull(index++, Types.VARCHAR);
 			}
 			if (model.getPaymentMethodType() != null) {
 				ps.setString(index++, model.getPaymentMethodType().getName());
 			} else {
-				ps.setNull(index++, Types.VARCHAR);				
+				ps.setNull(index++, Types.VARCHAR);
 			}
 			if (model.getAbaRouteNumber() != null) {
 				ps.setString(index++, model.getAbaRouteNumber());
 			} else {
-				ps.setNull(index++, Types.VARCHAR);				
+				ps.setNull(index++, Types.VARCHAR);
 			}
 			if (model.getBankName() != null) {
 				ps.setString(index++, model.getBankName());
 			} else {
-				ps.setNull(index++, Types.VARCHAR);				
+				ps.setNull(index++, Types.VARCHAR);
 			}
 			if (model.getBankAccountType() != null) {
 				ps.setString(index++, model.getBankAccountType().getName());
 			} else {
-				ps.setNull(index++, Types.VARCHAR);				
+				ps.setNull(index++, Types.VARCHAR);
 			}
 			ps.setString(index++, model.getAddress1());
 			if (model.getAddress2() != null) {
 				ps.setString(index++, model.getAddress2());
 			} else {
-				ps.setNull(index++, Types.VARCHAR);				
+				ps.setNull(index++, Types.VARCHAR);
 			}
 			if (model.getApartment() != null) {
 				ps.setString(index++, model.getApartment());
 			} else {
-				ps.setNull(index++, Types.VARCHAR);				
+				ps.setNull(index++, Types.VARCHAR);
 			}
 			ps.setString(index++, model.getCity());
 			ps.setString(index++, model.getState());
 			ps.setString(index++, model.getZipCode());
 			ps.setString(index++, model.getCountry());
-			
-			
+
+
 			if(this.model.isAvsCkeckFailed())
 			{
-				ps.setString(index++, "X" );	
+				ps.setString(index++, "X" );
 			}else{
 				ps.setNull(index++, Types.VARCHAR);
 			}
 			if(this.model.isBypassAVSCheck())
 			{
-				ps.setString(index++, "X" );	
+				ps.setString(index++, "X" );
 			}else{
 				ps.setNull(index++, Types.VARCHAR);
 			}
-			
+
 			ps.setString(index++, this.getPK().getId());
-			
+
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not updated");
 			}
@@ -336,11 +348,11 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 		}
 		this.unsetModified();
 
-		
+
 	}
 
 	public void remove(Connection conn) throws SQLException {
-		
+
 		// remove self
 		PreparedStatement ps = conn.prepareStatement("DELETE FROM CUST.PAYMENTMETHOD WHERE ID=?");
 		try {
@@ -352,7 +364,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 			if (ps != null) ps.close();
 			ps = null;
 		}
-		
+
 		this.setPK(null); // make it anonymous
 	}
 

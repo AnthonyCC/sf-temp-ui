@@ -1099,7 +1099,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 *             if an error occured using remote resources
 	 */
 	public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) 
-		throws FDResourceException, ErpDuplicatePaymentMethodException, ErpPaymentMethodException {
+		throws FDResourceException, ErpPaymentMethodException {
 		try {
 			
 			ErpCustomerEB erpCustomerEB = checkPaymentMethodModification(info, paymentMethod);
@@ -1301,7 +1301,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 */
 	public void updatePaymentMethod(FDActionInfo info,
 			ErpPaymentMethodI paymentMethod) throws FDResourceException,
-			ErpDuplicatePaymentMethodException, ErpPaymentMethodException {
+			 ErpPaymentMethodException {
 		try {
 			ErpCustomerEB erpCustomerEB = checkPaymentMethodModification(info, paymentMethod);
 
@@ -1349,7 +1349,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 	
     private ErpCustomerEB checkPaymentMethodModification(FDActionInfo info, ErpPaymentMethodI paymentMethod) throws FinderException, RemoteException,
-            CreateException, ErpDuplicatePaymentMethodException, ErpPaymentMethodException {
+            CreateException, ErpPaymentMethodException {
         ErpCustomerEB erpCustomerEB = this.getErpCustomerHome().findByPrimaryKey(
         	new PrimaryKey(info.getIdentity().getErpCustomerPK()));
 

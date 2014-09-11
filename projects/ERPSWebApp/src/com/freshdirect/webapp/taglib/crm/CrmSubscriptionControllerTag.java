@@ -23,6 +23,7 @@ import javax.servlet.jsp.JspWriter;
 
 
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumPaymentType;
@@ -266,7 +267,7 @@ public class CrmSubscriptionControllerTag extends AbstractControllerTag {
 	private void editPaymentMethod(HttpServletRequest request, ActionResult actionResult) throws FDResourceException {
 		this.populatePaymentMethod(request, actionResult);
 		FDUserI user = CrmSession.getUser(pageContext.getSession());
-		PaymentMethodUtil.validatePaymentMethod(request, this.paymentMethod, actionResult, user,true);
+		PaymentMethodUtil.validatePaymentMethod(request, this.paymentMethod, actionResult, user,true,EnumAccountActivityType.UPDATE_PAYMENT_METHOD);
 		if (actionResult.isSuccess()) {
 			if (CrmSession.verifyCaseAttachment(pageContext.getSession(), actionResult)) {
 				PaymentMethodUtil.editPaymentMethod(request, actionResult, this.paymentMethod);
@@ -278,7 +279,7 @@ public class CrmSubscriptionControllerTag extends AbstractControllerTag {
 		FDUserI user = CrmSession.getUser(pageContext.getSession());
 		this.populatePaymentMethod(request, actionResult);
 
-		PaymentMethodUtil.validatePaymentMethod(request, this.paymentMethod, actionResult, user,true);
+		PaymentMethodUtil.validatePaymentMethod(request, this.paymentMethod, actionResult, user,true,EnumAccountActivityType.ADD_PAYMENT_METHOD);
 		if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
 	        String terms = request.getParameter(PaymentMethodName.TERMS);
 	        actionResult.addError(

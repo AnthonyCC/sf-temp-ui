@@ -62,7 +62,7 @@ public class PaymentManager {
 		if(EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
 			return authorizeECheck(paymentMethod,authorizationAmount,tax,merchantId,orderNumber);
 		}
-		PaymentGatewayContext context = new PaymentGatewayContext(StringUtil.isEmpty(paymentMethod.getProfileID())?GatewayType.CYBERSOURCE:GatewayType.PAYMENTECH, null);
+		PaymentGatewayContext context = new PaymentGatewayContext(GatewayType.PAYMENTECH, null);
 		Gateway gateway = GatewayFactory.getGateway(context);
 		ErpAuthorizationModel auth = gateway.authorize(
 				 paymentMethod,
@@ -79,7 +79,7 @@ public class PaymentManager {
 		throws ErpTransactionException {
 		
 		
-		PaymentGatewayContext context = new PaymentGatewayContext(StringUtil.isEmpty(paymentMethod.getProfileID())?GatewayType.CYBERSOURCE:GatewayType.PAYMENTECH, null);
+		PaymentGatewayContext context = new PaymentGatewayContext(GatewayType.PAYMENTECH, null);
 		Gateway gateway = GatewayFactory.getGateway(context);
 		ErpCashbackModel cashback = gateway.issueCashback(orderNumber, paymentMethod, amount, tax, affiliate);
 		return cashback;
@@ -194,12 +194,14 @@ public class PaymentManager {
 			auth.setAvs("Y");
 			auth.setAmount(authorizationAmount);
 			auth.setTax(tax);
-			String accountNumber = paymentMethod.getAccountNumber();
-			auth.setCcNumLast4(accountNumber.substring(accountNumber.length() - 4));
+			String maskedAccountNumber = paymentMethod.getMaskedAccountNumber();
+			if(!StringUtil.isEmpty(maskedAccountNumber))
+				auth.setCcNumLast4(maskedAccountNumber.substring(maskedAccountNumber.length() - 4));
+			
 			auth.setAbaRouteNumber(paymentMethod.getAbaRouteNumber());
 			auth.setBankAccountType(paymentMethod.getBankAccountType());
 			auth.setCardType(paymentMethod.getCardType());
-			GatewayType gType=StringUtil.isEmpty(paymentMethod.getProfileID())?GatewayType.CYBERSOURCE:GatewayType.PAYMENTECH;
+			GatewayType gType=GatewayType.PAYMENTECH;
 					
 			if(GatewayType.PAYMENTECH.equals(gType)) {
 				auth.setProfileID(paymentMethod.getProfileID());

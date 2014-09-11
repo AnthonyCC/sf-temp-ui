@@ -236,9 +236,9 @@ public interface ErpCustomerManagerSB extends EJBObject {
     
     public void updateCartonInfo(String saleId, List<ErpCartonInfo> cartonList) throws RemoteException, FinderException;
 
-	public void updateBadCustomerPaymentMethod(String saleId, EnumPaymentMethodType paymentMethodType, EnumPaymentResponse paymentResponse, String accountNumber) throws RemoteException; 
+	public void updateBadCustomerPaymentMethod(String saleId, EnumPaymentMethodType paymentMethodType, EnumPaymentResponse paymentResponse, String maskedAccountNumber) throws RemoteException; 
 
-	public void removeBadCustomerPaymentMethod(String saleId, EnumPaymentMethodType paymentMethodType, String accountNumber) throws RemoteException;
+	public void removeBadCustomerPaymentMethod(String saleId, EnumPaymentMethodType paymentMethodType, String maskedAccountNumber) throws RemoteException;
 	
 	public void addChargeInvoice(String saleId, double charge) throws RemoteException;
 	

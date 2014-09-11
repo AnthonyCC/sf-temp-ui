@@ -196,7 +196,7 @@ public interface FDCustomerManagerSB extends EJBObject {
      *
      * @throws FDResourceException if an error occured using remote resources
      */
-    public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) throws FDResourceException, RemoteException, ErpDuplicatePaymentMethodException, ErpPaymentMethodException;
+    public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod, boolean paymentechEnabled) throws FDResourceException, RemoteException, ErpPaymentMethodException;
    
     public void setDefaultPaymentMethod(FDActionInfo info, PrimaryKey paymentMethodPK) throws FDResourceException,RemoteException;
     
@@ -216,7 +216,7 @@ public interface FDCustomerManagerSB extends EJBObject {
      *
      * @throws FDResourceException if an error occured using remote resources
      */
-    public void updatePaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod) throws FDResourceException, RemoteException, ErpDuplicatePaymentMethodException, ErpPaymentMethodException;
+    public void updatePaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod) throws FDResourceException, RemoteException,  ErpPaymentMethodException;
     
     
     /**

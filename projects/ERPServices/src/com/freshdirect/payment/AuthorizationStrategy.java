@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.ErpAbstractOrderModel;
@@ -19,6 +20,7 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.framework.util.MathUtil;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
 
 public class AuthorizationStrategy extends PaymentStrategy {
@@ -187,16 +189,20 @@ public class AuthorizationStrategy extends PaymentStrategy {
 					|| EnumPaymentType.ON_FD_ACCOUNT.equals(pm.getPaymentType()) ||(EnumPaymentMethodType.EBT.equals(pm.getPaymentMethodType()) && pm.getPaymentMethodType().equals(auth.getPaymentMethodType()))) {
 					amount = MathUtil.roundDecimal(amount - auth.getAmount());
 				} else {
-					if (EnumPaymentMethodType.ECHECK.equals(pm.getPaymentMethodType())
-						&& pm.getPaymentMethodType().equals(auth.getPaymentMethodType())) {
+					
+					if(!StringUtil.isEmpty(pm.getProfileID())) {
 						
-						if (pm.getAbaRouteNumber().equalsIgnoreCase(auth.getAbaRouteNumber())
-							&& pm.getAccountNumber().endsWith(auth.getCcNumLast4())
-							&& pm.getBankAccountType().equals(auth.getBankAccountType())) {
+						if(pm.getProfileID().equals(auth.getProfileID())) {
 							amount = MathUtil.roundDecimal(amount - auth.getAmount());
 						}
-					} else {
-						if (pm.getCardType().equals(auth.getCardType()) && pm.getAccountNumber().endsWith(auth.getCcNumLast4())) {
+						
+					}
+				 else {
+						if ( (EnumCardType.GCP.equals(pm.getCardType())||EnumCardType.EBT.equals(pm.getCardType())) &&
+							 pm.getCardType().equals(auth.getCardType()) && 
+							 pm.getAccountNumber().endsWith(auth.getCcNumLast4())
+							 ) {
+							
 							amount = MathUtil.roundDecimal(amount - auth.getAmount());
 						}
 					}

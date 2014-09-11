@@ -29,12 +29,14 @@ public class GatewayFactory {
 		if(GatewayType.PAYMENTECH.equals(gatewayType)) {
 			return paymentech; 
 		} else if(GatewayType.CYBERSOURCE.equals(gatewayType)) {
-			return cybersource; 
+			//return cybersource;
+			throw new IllegalAccessError(gatewayType.getName()+" is not supported.");
 		} else if(gatewayType==null) {
 			if(FDStoreProperties.isPaymentechGatewayEnabled()) {
 				return paymentech;
 			} else {
-				return cybersource;
+				//return cybersource;
+				throw new IllegalAccessError(gatewayType.getName()+" is not supported.");
 			}
 		}
 		else {

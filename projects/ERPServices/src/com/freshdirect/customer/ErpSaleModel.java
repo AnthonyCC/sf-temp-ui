@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.affiliate.ErpAffiliate;
+import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -225,8 +226,15 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 
 		for(ErpAuthorizationModel auth : getApprovedAuthorizations()) {
 			// ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();
+			
 			if(affiliate.equals(auth.getAffiliate())) {
-				if(auth.getCardType().equals(pm.getCardType()) && pm.getAccountNumber().endsWith(auth.getCcNumLast4())){
+				if((EnumPaymentMethodType.EBT.equals(auth.getPaymentMethodType())||EnumPaymentMethodType.GIFTCARD .equals(auth.getPaymentMethodType())
+					|| EnumCardType.EBT.equals(auth.getCardType())||EnumCardType.GCP .equals(auth.getCardType())	) &&
+					 pm.getAccountNumber().endsWith(auth.getCcNumLast4())	
+				  ) {
+					auths.add(auth);
+					
+				} else 	if(auth.getCardType().equals(pm.getCardType()) && pm.getProfileID().endsWith(auth.getProfileID())){
 					auths.add(auth);
 				}
 			}
