@@ -1238,7 +1238,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_BAZAARVOICE_FTP_URL, "ftp.bazaarvoice.com");
 		defaults.put(PROP_BAZAARVOICE_FTP_PASSWORD, "1hOGyoFPLYo");
 		defaults.put(PROP_BAZAARVOICE_BVAPI_URL, "//display-stg.ugc.bazaarvoice.com/static/freshdirect/bvapi.js");
-		defaults.put(PROP_BAZAARVOICE_ENABLED, "true");
+		defaults.put(PROP_BAZAARVOICE_ENABLED, "false");
 		defaults.put(PROP_BAZAARVOICE_DOWNLOAD_FEED_SOURCEPATH, "feeds");
 		defaults.put(PROP_BAZAARVOICE_DOWNLOAD_FEED_FILE, "bv_freshdirect_standard_client_feed.xml.gz");
 		defaults.put(PROP_BAZAARVOICE_DOWNLOAD_FEED_TARGETPATH, "/opt/fdlog/bv_feed/");
