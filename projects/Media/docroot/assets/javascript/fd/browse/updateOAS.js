@@ -13,7 +13,7 @@ var FreshDirect = FreshDirect || {};
     postscribe(document.body, '<script src="'+scriptUrl+'"></script>', {
         done: function () {
           done(OAS_listpos);
-        }
+        }, error: function () {}
     });
   }
 
@@ -22,7 +22,8 @@ var FreshDirect = FreshDirect || {};
       var cnt = $jq("#oas_b_"+pos);
       if (cnt.size()) {
         cnt.html('');
-        postscribe(cnt[0], '<script>OAS_RICH("'+pos+'");</script>');
+        postscribe(cnt[0], '<script>OAS_RICH("'+pos+'");</script>',{ error: function () {}
+          });
       }
     });
   }
