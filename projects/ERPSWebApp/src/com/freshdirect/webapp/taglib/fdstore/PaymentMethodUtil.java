@@ -291,7 +291,8 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             
             paymentMethod.setExpirationDate(expCal.getTime());
             paymentMethod.setName(RequestUtil.getRequestParameter(request,PaymentMethodName.ACCOUNT_HOLDER));
-            paymentMethod.setAccountNumber(scrubAccountNumber(accountNumber));
+            if(!accountNumber.equals(paymentMethod.getMaskedAccountNumber()))
+            	paymentMethod.setAccountNumber(scrubAccountNumber(accountNumber));
             
             paymentMethod.setCardType(EnumCardType.getCardType(cardType));
             paymentMethod.setBankAccountType(EnumBankAccountType.getEnum(bankAccountType));
@@ -397,12 +398,15 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        		        PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER
 	        		        );
         	 }
-        	 if(EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType()) && !StringUtil.isEmpty(paymentMethod.getAccountNumber())){
-            	 result.addError(paymentMethod.getAccountNumber().length()<=5,
-            		        PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER
-            		        );
-        	 } 
+        	 
         }
+        if(EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())){
+        	result.addError( StringUtil.isEmpty(paymentMethod.getAccountNumber()),PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_REQUIRED );
+        	if(!StringUtil.isEmpty(paymentMethod.getAccountNumber()))
+	       	    result.addError(paymentMethod.getAccountNumber().length()<=5,
+	       		        PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER
+	       		        );
+   	    } 
         if(EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType())){        	
 	        //check brand
 	        result.addError(

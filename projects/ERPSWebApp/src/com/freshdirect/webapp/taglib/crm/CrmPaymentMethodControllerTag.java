@@ -18,6 +18,7 @@ import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
@@ -111,7 +112,8 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 
 	private void populatePaymentMethod(HttpServletRequest request, ActionResult actionResult, FDUserI user,String actionName) {
 
-		EnumPaymentMethodType paymentMethodType = EnumPaymentMethodType.getEnum(request.getParameter(PaymentMethodName.PAYMENT_METHOD_TYPE));
+	
+    	EnumPaymentMethodType paymentMethodType = EnumPaymentMethodType.getEnum(request.getParameter(PaymentMethodName.PAYMENT_METHOD_TYPE));
 		if (paymentMethod == null) {
 			paymentMethod = PaymentManager.createInstance(paymentMethodType);
 		}
@@ -131,7 +133,7 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
 		
         boolean verifyBankAccountNumber = (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType()));
 
-		if(EDIT_PAYMENT_METHOD.equalsIgnoreCase(actionName)){
+		if(EDIT_PAYMENT_METHOD.equalsIgnoreCase(actionName)&& (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType()))){
 			accountNumber = paymentMethod.getAccountNumber();
 			verifyBankAccountNumber = false;
 		}
@@ -161,7 +163,8 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
     	
 	
 		this.paymentMethod.setName(request.getParameter(PaymentMethodName.ACCOUNT_HOLDER));
-		this.paymentMethod.setAccountNumber(PaymentMethodUtil.scrubAccountNumber(accountNumber));
+		if(!StringUtil.isEmpty(accountNumber) && !accountNumber.equals(paymentMethod.getMaskedAccountNumber()))
+			this.paymentMethod.setAccountNumber(PaymentMethodUtil.scrubAccountNumber(accountNumber));
 		this.paymentMethod.setAbaRouteNumber(request.getParameter(PaymentMethodName.ABA_ROUTE_NUMBER));
 		this.paymentMethod.setBankAccountType(EnumBankAccountType.getEnum(request.getParameter(PaymentMethodName.BANK_ACCOUNT_TYPE)));
 		this.paymentMethod.setBankName(request.getParameter(PaymentMethodName.BANK_NAME));
