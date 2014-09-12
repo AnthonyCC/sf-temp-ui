@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.CategorySectionModel;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -23,6 +25,7 @@ import com.freshdirect.fdstore.content.ProductItemFilterI;
 import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.content.browse.filter.BrandFilter;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.browse.data.BrowseDataContext;
 import com.freshdirect.webapp.ajax.browse.data.CategoryData;
 import com.freshdirect.webapp.ajax.browse.data.DataUtil;
@@ -37,7 +40,8 @@ import com.freshdirect.webapp.ajax.browse.data.SectionContext;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
 public class MenuBuilderFactory {
-	
+	private static final Logger LOGGER = LoggerFactory.getInstance( MenuBuilderFactory.class );
+
 	public static final MenuItemData MARKER;
 	public static final MenuItemData ALL_PRODUCTS_ITEM;
 	public static final MenuItemData ALL_DEPARTMENTS_ITEM;
@@ -885,38 +889,46 @@ public class MenuBuilderFactory {
 
 					// extract current filter base from active filters
 					Set<ProductItemFilterI> currentFiltersBase = ProductItemFilterUtil.removeFiltersByParentId(box.getId(), activeFilters);
-					
-					boolean popupType = box.getDisplayType() == MenuBoxDisplayType.CENTER_POPUP || box.getDisplayType() == MenuBoxDisplayType.POPUP;
 
 					// create the pre filtered item list (filters belongs to this filtergroup will be removed)
 					List<FilteringProductItem> preFilteredItems = ProductItemFilterUtil.getFilteredProducts(!clp ? browseData.getUnfilteredItems() : items, currentFiltersBase, false);
 					
+
+					final long t0 = System.currentTimeMillis();
+					
 					// walk through on menu items in the box
 					Iterator<MenuItemData> it = box.getItems().iterator();
 					while (it.hasNext()) {
-						
+
 						MenuItemData item = it.next();
-						
-						if(item.getId()==null || "all".equals(item.getId())){ // marker items
+
+						if (item.getId() == null || "all".equals(item.getId())) { // marker items
 							continue;
 						}
-						
-						 itemCount = 0;
-						 Set<ProductItemFilterI> currentFilters = new HashSet<ProductItemFilterI>(currentFiltersBase);
-						 // add filters one by one ...
-						 String filterCompositeId = ProductItemFilterUtil.createCompositeId(box.getId(), item.getId());
-						 if(allFilters.get(filterCompositeId)!=null){
-							 currentFilters.add(allFilters.get(filterCompositeId));							 
-						 }
-						 // and check how many products passes the current status
-						 itemCount = ProductItemFilterUtil.getFilteredProducts(preFilteredItems, currentFilters, false).size();
-						 
-						 if (itemCount == 0 && !item.isSelected()) {
-								it.remove();
-						}else{
-							emptyBox=false;
+
+						itemCount = 0;
+
+						String filterCompositeId = ProductItemFilterUtil.createCompositeId(box.getId(), item.getId());
+						// add filters one by one ...
+						final ProductItemFilterI filter = allFilters.get(filterCompositeId);
+						if (filter != null) {
+							Set<ProductItemFilterI> currentFilters = new HashSet<ProductItemFilterI>();
+							currentFilters.add(filter);
+							itemCount = ProductItemFilterUtil.getFilteredProducts(preFilteredItems, currentFilters, true).size();
+						} else {
+							itemCount = preFilteredItems.size();
+						}
+
+						// and check how many products passes the current status
+						if (itemCount == 0 && !item.isSelected()) {
+							it.remove();
+						} else {
+							emptyBox = false;
 						}
 					}
+
+					final long t1 = System.currentTimeMillis();
+					LOGGER.debug("Filtered " + preFilteredItems.size() + " products for each " + box.getItems().size() + " menu itmes in " + ((t1-t0)/1000) + " secs");
 
 				} else { // NAVIGATION BOX (CATEGORIES)
 					
