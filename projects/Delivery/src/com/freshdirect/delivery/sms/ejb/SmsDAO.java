@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -86,8 +87,9 @@ public class SmsDAO {
 			toTime = new Date();
 
 			fromTime = getLastExport(con, NEXT_STOP_ALERT_TYPE);
+			
 
-			ps = con.prepareStatement("select TRANSIT_DATE, ROUTE, EMPLOYEE, LOCATION_SOURCE, LOCATION_DESTINATION, TRANSACTIONID, INSERT_TIMESTAMP from dlv.transit where INSERT_TIMESTAMP is not null and TRANSIT_DATE is not null and INSERT_TIMESTAMP between to_date(?,'MM/DD/YYYY HH:MI:SS AM') and " +
+			ps = con.prepareStatement("select TRANSIT_DATE, ROUTE, EMPLOYEE, LOCATION_SOURCE, LOCATION_DESTINATION, TRANSACTIONID, INSERT_TIMESTAMP from dlv.transit@DBSTO.NYC.FRESHDIRECT.COM where INSERT_TIMESTAMP is not null and TRANSIT_DATE is not null and INSERT_TIMESTAMP between to_date(?,'MM/DD/YYYY HH:MI:SS AM') and " +
 								"to_date(?,'MM/DD/YYYY HH:MI:SS AM')");
 			ps.setString(1, sdf.format(fromTime));
 			ps.setString(2, sdf.format(toTime));
@@ -110,8 +112,8 @@ public class SmsDAO {
 				ps1.setTimestamp(1, rs.getTimestamp("TRANSIT_DATE"));
 				ps1.setString(2, rs.getString("ROUTE"));
 				ps1.setString(3, rs.getString("EMPLOYEE"));
-				ps1.setInt(4, rs.getInt("LOCATION_SOURCE"));
-				ps1.setInt(5, rs.getInt("LOCATION_DESTINATION"));
+				ps1.setString(4, rs.getString("LOCATION_SOURCE"));
+				ps1.setString(5, rs.getString("LOCATION_DESTINATION"));
 				ps1.setString(6, rs.getString("TRANSACTIONID"));
 				ps1.setTimestamp(7, rs.getTimestamp("INSERT_TIMESTAMP"));
 				
@@ -121,7 +123,7 @@ public class SmsDAO {
 				TransitInfo _transitModel = new TransitInfo();
 				_transitModel.setTransitDate(rs.getTimestamp("TRANSIT_DATE"));
 				_transitModel.setRoute(rs.getString("ROUTE"));
-				_transitModel.setNextStop(rs.getInt("LOCATION_DESTINATION"));
+				_transitModel.setNextStop(Integer.parseInt(rs.getString("LOCATION_DESTINATION")));
 				_transitModel.setInsertTimeStamp(rs.getTimestamp("INSERT_TIMESTAMP"));
 				_transitModel.setEnployeeId(rs.getString("EMPLOYEE"));
 				transitList.add(_transitModel);
@@ -321,7 +323,7 @@ public class SmsDAO {
 		ResultSet rs = null;
 		try {
 			
-			ps = con.prepareStatement("SELECT NVL(MAX(LAST_EXPORT),SYSDATE-1/24) LAST_EXPORT FROM DLV.SMS_TRANSIT_EXPORT "
+			ps = con.prepareStatement("SELECT NVL(MAX(LAST_EXPORT),SYSDATE-1/24) LAST_EXPORT FROM DLV.SMS_TRANSIT_EXPORT@DBSTO.NYC.FRESHDIRECT.COM "
 					+ "WHERE SUCCESS= 'Y' and SMS_ALERT_TYPE=?");
 			ps.setString(1, alertType);
 			rs = ps.executeQuery();
