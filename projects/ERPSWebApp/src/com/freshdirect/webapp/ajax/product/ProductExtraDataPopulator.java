@@ -250,9 +250,10 @@ public class ProductExtraDataPopulator {
 			final String kosherType = _pc.getKosherType();
 			final String kosherSymbol = _pc.getKosherSymbol();
 
-			if (!"".equalsIgnoreCase(kosherType)
-					&& !"".equalsIgnoreCase(kosherSymbol)) {
+			if(!"".equalsIgnoreCase(kosherType)) {
 				data.setKosherType(kosherType);
+			}
+			if (!"".equalsIgnoreCase(kosherSymbol)) {
 				data.setKosherSymbol(kosherSymbol);
 
 				data.setKosherIconPath("/media/editorial/kosher/symbols/"+kosherSymbol.toLowerCase()+"_s.gif");
