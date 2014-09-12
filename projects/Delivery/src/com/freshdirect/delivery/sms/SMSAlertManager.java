@@ -11,7 +11,9 @@ import javax.ejb.CreateException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
+
 
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.delivery.DlvProperties;
@@ -101,12 +103,11 @@ public class SMSAlertManager {
 	}
 	
 	private String formatMobileNumber(String mobileNumber){
-		String formattedMobileNumber="";
-		long tempMobileNoHolder = Long.parseLong(mobileNumber) %10000000000L;
 		
-		formattedMobileNumber = String.valueOf(tempMobileNoHolder);
-		return formattedMobileNumber;
-		
+		if(StringUtils.isNotEmpty(mobileNumber) && mobileNumber.length() > 10){
+			return String.valueOf(mobileNumber.toCharArray(), mobileNumber.length()-10, 10);
+		}
+		return mobileNumber;
 	}
 	
 	protected void lookupSmsAlertsHome() throws NamingException {
