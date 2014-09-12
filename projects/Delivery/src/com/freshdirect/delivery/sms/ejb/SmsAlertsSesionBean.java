@@ -114,7 +114,6 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	 * 
 	 */
 	public void expireOptin() {
-		Date currentTime = new Date();
 		Connection con = null;
 		DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
 		PreparedStatement ps=null;
@@ -123,10 +122,9 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		try {
 			con = this.getConnection();
 			String getExpiredOptin = "select customer_id, mobile_number, ORDER_NOTIFICATION, ORDEREXCEPTION_NOTIFICATION, SMS_OFFERS_ALERT, PARTNERMESSAGE_NOTIFICATION "
-					+ " from cust.customerinfo where ORDER_NOTIFICATION='P' or ORDEREXCEPTION_NOTIFICATION='P' or SMS_OFFERS_ALERT='P' or PARTNERMESSAGE_NOTIFICATION='P' and  1440*(to_date(?,'MM/DD/YYYY HH:MI:SS AM')-SMS_OPTIN_DATE) >?";
+					+ " from cust.customerinfo where (ORDER_NOTIFICATION='P' or ORDEREXCEPTION_NOTIFICATION='P' or SMS_OFFERS_ALERT='P' or PARTNERMESSAGE_NOTIFICATION='P') and  1440*(SYSDATE-SMS_OPTIN_DATE) >?";
 			ps = con.prepareStatement(getExpiredOptin);
-			ps.setString(1, sdf.format(currentTime));
-			ps.setInt(2, getExpiryTime());
+			ps.setInt(1, getExpiryTime());
 			rs = ps.executeQuery();
 			String updateCustomerInfo = "update cust.customerinfo set MOBILE_NUMBER=null, SMS_OPTIN_DATE=null, SMS_PREFERENCE_FLAG=null, ORDER_NOTIFICATION=?, ORDEREXCEPTION_NOTIFICATION=?, SMS_OFFERS_ALERT=?, PARTNERMESSAGE_NOTIFICATION=? where customer_id=?";
 			ps1 = con.prepareStatement(updateCustomerInfo);
