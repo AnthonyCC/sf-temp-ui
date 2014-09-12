@@ -7,11 +7,8 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import org.apache.log4j.Category;
 
 import com.freshdirect.delivery.DlvProperties;
 import com.freshdirect.delivery.DlvResourceException;
@@ -19,7 +16,6 @@ import com.freshdirect.delivery.model.TransitInfo;
 import com.freshdirect.delivery.sms.NextStopSmsInfo;
 import com.freshdirect.delivery.sms.OrderDlvInfo;
 import com.freshdirect.delivery.sms.SmsAlertETAInfo;
-import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class SmsDAO {
 	
@@ -88,8 +84,7 @@ public class SmsDAO {
 
 			fromTime = getLastExport(con, NEXT_STOP_ALERT_TYPE);
 			
-
-			ps = con.prepareStatement("select TRANSIT_DATE, ROUTE, EMPLOYEE, LOCATION_SOURCE, LOCATION_DESTINATION, TRANSACTIONID, INSERT_TIMESTAMP from dlv.transit@DBSTO.NYC.FRESHDIRECT.COM where INSERT_TIMESTAMP is not null and TRANSIT_DATE is not null and INSERT_TIMESTAMP between to_date(?,'MM/DD/YYYY HH:MI:SS AM') and " +
+			ps = con.prepareStatement("select TRANSIT_DATE, ROUTE, EMPLOYEE, LOCATION_SOURCE, LOCATION_DESTINATION, TRANSACTIONID, INSERT_TIMESTAMP from dlv.transit where INSERT_TIMESTAMP is not null and TRANSIT_DATE is not null and INSERT_TIMESTAMP between to_date(?,'MM/DD/YYYY HH:MI:SS AM') and " +
 								"to_date(?,'MM/DD/YYYY HH:MI:SS AM')");
 			ps.setString(1, sdf.format(fromTime));
 			ps.setString(2, sdf.format(toTime));
@@ -323,7 +318,7 @@ public class SmsDAO {
 		ResultSet rs = null;
 		try {
 			
-			ps = con.prepareStatement("SELECT NVL(MAX(LAST_EXPORT),SYSDATE-1/24) LAST_EXPORT FROM DLV.SMS_TRANSIT_EXPORT@DBSTO.NYC.FRESHDIRECT.COM "
+			ps = con.prepareStatement("SELECT NVL(MAX(LAST_EXPORT),SYSDATE-1/24) LAST_EXPORT FROM DLV.SMS_TRANSIT_EXPORT "
 					+ "WHERE SUCCESS= 'Y' and SMS_ALERT_TYPE=?");
 			ps.setString(1, alertType);
 			rs = ps.executeQuery();
