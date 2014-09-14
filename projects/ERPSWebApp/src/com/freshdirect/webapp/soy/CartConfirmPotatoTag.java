@@ -62,7 +62,7 @@ public class CartConfirmPotatoTag extends SimpleTagSupport {
 			
 			for(FDCartLineI line : recentLines){
 				Map<String, ?> potato = DataPotatoField.digCartConfirm( user, line.getRandomId()+"");
-				subTotal += cart.getSubTotal();
+				subTotal = cart.getSubTotal();
 				dataList.add(potato);
 				
 				//TODO check back url with business
