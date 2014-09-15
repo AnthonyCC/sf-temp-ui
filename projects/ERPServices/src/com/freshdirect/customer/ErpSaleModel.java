@@ -234,7 +234,7 @@ public class ErpSaleModel extends ModelSupport implements ErpSaleI {
 				  ) {
 					auths.add(auth);
 					
-				} else 	if(auth.getCardType().equals(pm.getCardType()) && pm.getProfileID().endsWith(auth.getProfileID())){
+				} else 	if(auth.getCardType().equals(pm.getCardType()) && pm.getProfileID().equals(auth.getProfileID())){
 					auths.add(auth);
 				}
 			}
