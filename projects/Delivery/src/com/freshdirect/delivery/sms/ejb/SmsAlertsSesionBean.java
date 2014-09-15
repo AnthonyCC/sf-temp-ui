@@ -115,7 +115,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	 */
 	public void expireOptin() {
 		Connection con = null;
-		DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+		
 		PreparedStatement ps=null;
 		PreparedStatement ps1=null;
 		ResultSet rs=null;

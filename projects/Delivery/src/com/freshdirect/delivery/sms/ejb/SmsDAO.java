@@ -16,6 +16,7 @@ import com.freshdirect.delivery.model.TransitInfo;
 import com.freshdirect.delivery.sms.NextStopSmsInfo;
 import com.freshdirect.delivery.sms.OrderDlvInfo;
 import com.freshdirect.delivery.sms.SmsAlertETAInfo;
+import com.freshdirect.framework.util.StringUtil;
 
 public class SmsDAO {
 	
@@ -97,31 +98,33 @@ public class SmsDAO {
 			while (rs.next()) {
 				Date _transitDate=rs.getTimestamp("TRANSIT_DATE");
 				Date _insertTimeStamp= rs.getTimestamp("INSERT_TIMESTAMP");
+				String _locationDestination = rs.getString("LOCATION_DESTINATION");
+				
 				long _diffInMins=(_insertTimeStamp.getTime()-_transitDate.getTime())/(60 * 1000);
 				try {
 					limit=DlvProperties.getNextStopSmsNoSend();
 				} catch (NumberFormatException e) {
 					limit=30;
 				}
-				if(_diffInMins<limit){
-				ps1.setTimestamp(1, rs.getTimestamp("TRANSIT_DATE"));
-				ps1.setString(2, rs.getString("ROUTE"));
-				ps1.setString(3, rs.getString("EMPLOYEE"));
-				ps1.setString(4, rs.getString("LOCATION_SOURCE"));
-				ps1.setString(5, rs.getString("LOCATION_DESTINATION"));
-				ps1.setString(6, rs.getString("TRANSACTIONID"));
-				ps1.setTimestamp(7, rs.getTimestamp("INSERT_TIMESTAMP"));
-				
-				ps1.addBatch();
-				batchCount++;
-			    
-				TransitInfo _transitModel = new TransitInfo();
-				_transitModel.setTransitDate(rs.getTimestamp("TRANSIT_DATE"));
-				_transitModel.setRoute(rs.getString("ROUTE"));
-				_transitModel.setNextStop(Integer.parseInt(rs.getString("LOCATION_DESTINATION")));
-				_transitModel.setInsertTimeStamp(rs.getTimestamp("INSERT_TIMESTAMP"));
-				_transitModel.setEnployeeId(rs.getString("EMPLOYEE"));
-				transitList.add(_transitModel);
+				if(_diffInMins < limit && StringUtil.isNumeric(_locationDestination)) {
+					ps1.setTimestamp(1, rs.getTimestamp("TRANSIT_DATE"));
+					ps1.setString(2, rs.getString("ROUTE"));
+					ps1.setString(3, rs.getString("EMPLOYEE"));
+					ps1.setString(4, rs.getString("LOCATION_SOURCE"));
+					ps1.setString(5, _locationDestination);
+					ps1.setString(6, rs.getString("TRANSACTIONID"));
+					ps1.setTimestamp(7, rs.getTimestamp("INSERT_TIMESTAMP"));
+					
+					ps1.addBatch();
+					batchCount++;
+				    
+					TransitInfo _transitModel = new TransitInfo();
+					_transitModel.setTransitDate(rs.getTimestamp("TRANSIT_DATE"));
+					_transitModel.setRoute(rs.getString("ROUTE"));
+					_transitModel.setNextStop(Integer.parseInt(_locationDestination));
+					_transitModel.setInsertTimeStamp(rs.getTimestamp("INSERT_TIMESTAMP"));
+					_transitModel.setEnployeeId(rs.getString("EMPLOYEE"));
+					transitList.add(_transitModel);
 				}
 			}
 			
