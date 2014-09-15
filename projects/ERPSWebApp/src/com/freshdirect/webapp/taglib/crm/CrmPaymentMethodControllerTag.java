@@ -163,8 +163,9 @@ public class CrmPaymentMethodControllerTag extends AbstractControllerTag {
     	
 	
 		this.paymentMethod.setName(request.getParameter(PaymentMethodName.ACCOUNT_HOLDER));
-		if(!StringUtil.isEmpty(accountNumber) && !accountNumber.equals(paymentMethod.getMaskedAccountNumber()))
+		if(!StringUtil.isEmpty(accountNumber) && !accountNumber.equals(paymentMethod.getMaskedAccountNumber())) {
 			this.paymentMethod.setAccountNumber(PaymentMethodUtil.scrubAccountNumber(accountNumber));
+		}
 		this.paymentMethod.setAbaRouteNumber(request.getParameter(PaymentMethodName.ABA_ROUTE_NUMBER));
 		this.paymentMethod.setBankAccountType(EnumBankAccountType.getEnum(request.getParameter(PaymentMethodName.BANK_ACCOUNT_TYPE)));
 		this.paymentMethod.setBankName(request.getParameter(PaymentMethodName.BANK_NAME));

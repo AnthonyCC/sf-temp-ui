@@ -215,7 +215,6 @@ public class PaymentFraudManager {
 			criteria.setAccountNumber(paymentMethod.getAccountNumber());
 			criteria.setCustomerID(paymentMethod.getCustomerId());
 			criteria.setStatus(EnumRestrictedPaymentMethodStatus.BAD);
-			
 			List<RestrictedPaymentMethodModel> list =PaymentFraudManager.getRestrictedPaymentMethodsByCustomerId(paymentMethod.getCustomerId(), EnumRestrictedPaymentMethodStatus.BAD);
 			//PaymentFraudManager.getRestrictedPaymentMethods(criteria);
 
@@ -336,7 +335,7 @@ public class PaymentFraudManager {
 		
 	}
 
-	public boolean verifyAccountExternal(ErpPaymentMethodI paymentMethod) throws ErpTransactionException {
+	/*public boolean verifyAccountExternal(ErpPaymentMethodI paymentMethod) throws ErpTransactionException {
 		try {			
 			if ("true".equalsIgnoreCase(FDStoreProperties.getCheckExternalForPaymentMethodFraud())) {	
 		        if(EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())){
@@ -353,7 +352,7 @@ public class PaymentFraudManager {
 		} catch (Exception e) {
 			throw new ErpTransactionException(e.getMessage());
 		}
-	}
+	}*/
 	
 	private static void invalidateRestrictedPaymentMethodHome() {
 		restrictedPaymentMethodHome = null;

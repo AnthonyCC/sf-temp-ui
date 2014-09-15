@@ -5,6 +5,7 @@ import java.sql.*;
 import com.freshdirect.framework.core.*;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.customer.EnumTransactionSource;
@@ -20,6 +21,8 @@ import com.freshdirect.payment.fraud.RestrictedPaymentMethodCriteria;
 import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
 import java.util.List;
 import java.util.ArrayList;
+
+
 
 
 /**
@@ -72,7 +75,7 @@ public class RestrictedPaymentMethodDAO {
 		} else {
 			ps.setNull(index++, Types.VARCHAR);			
 		}
-		ps.setString(index++, m.getAccountNumber());
+		ps.setString(index++, m.getAccountNumber().length()<4?m.getAccountNumber():m.getAccountNumber().substring(m.getAccountNumber().length()-4));
 		ps.setString(index++, m.getStatus().getName());		
 		ps.setString(index++, m.getSource().getCode());
 		ps.setString(index++, m.getCreateUser());
@@ -209,8 +212,12 @@ public class RestrictedPaymentMethodDAO {
 		
 		try {
 			String sql = loadSQL;
-			
-			builder.addString("ACCOUNT_NUMBER", criteria.getAccountNumber());
+			if(!StringUtil.isEmpty(criteria.getAccountNumber())) {
+				builder.addString("ACCOUNT_NUMBER", criteria.getAccountNumber().length()<4?criteria.getAccountNumber():criteria.getAccountNumber().substring(criteria.getAccountNumber().length()-4));
+			}
+			if(!StringUtil.isEmpty(criteria.getCustomerID())) {
+				builder.addString("CUSTOMER_ID", criteria.getCustomerID());
+			}
 			if (criteria.getAbaRouteNumber() != null) {
 				builder.addString("ABA_ROUTE_NUMBER", criteria.getAbaRouteNumber());				
 			}
@@ -494,7 +501,7 @@ public class RestrictedPaymentMethodDAO {
 		}
 	}
 
-	private static String findPaymentMethodByAccountInfoQuery = "SELECT ID, NAME, ACCOUNT_NUMBER_MASKED, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, CUSTOMER_ID FROM CUST.PAYMENTMETHOD";
+	private static String findPaymentMethodByAccountInfoQuery = "SELECT ID, NAME, ACCOUNT_NUM_MASKED, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, CUSTOMER_ID FROM CUST.PAYMENTMETHOD";
 	
 	public static ErpPaymentMethodI findPaymentMethodByAccountInfo(Connection conn, RestrictedPaymentMethodModel m) throws SQLException {
 		PreparedStatement ps = null;

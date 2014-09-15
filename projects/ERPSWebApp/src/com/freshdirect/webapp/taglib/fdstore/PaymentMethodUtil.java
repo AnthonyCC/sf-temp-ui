@@ -167,7 +167,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	             );
 	     //Fix END 
         
-        if(EDIT_PAYMENT_METHOD.equalsIgnoreCase(actionName)){
+        if(EDIT_PAYMENT_METHOD.equalsIgnoreCase(actionName)&& EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())){
 			accountNumber = paymentMethod.getAccountNumber();
 			verifyBankAccountNumber = false;
 		}
@@ -556,10 +556,10 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 			result.addError("".equals(paymentMethod.getZipCode()), EnumUserInfoName.BIL_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED);
 			
 			if(result.isSuccess()){
-				/*result.addError(
+				result.addError(
 		        	PaymentFraudManager.checkBadAccount(paymentMethod, false) && !bypassBadAccountCheck, 
 					PaymentMethodName.BYPASS_BAD_ACCOUNT_CHECK,SystemMessageList.MSG_REQUIRED
-		        ); */
+		        );
 			}
         }
         

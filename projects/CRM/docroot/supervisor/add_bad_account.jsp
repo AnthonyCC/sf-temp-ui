@@ -39,10 +39,7 @@
 			            okToSubmit = false;
 			        }
 			
-			        if(isNaN(accountNumber)) {
-			            alert('The ACCOUNT NUMBER field is invalid. Please correct and try again.');
-			            okToSubmit = false;
-			        }                        
+			                              
 			        if (okToSubmit) {
 			            thisForm.submit();
 			        }

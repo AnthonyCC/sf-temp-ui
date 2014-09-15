@@ -266,7 +266,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 			return;
 		}
 
-		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.PAYMENTMETHOD SET CUSTOMER_ID = ?, NAME = ?, ACCOUNT_NUMBER = ?, EXPIRATION_DATE = ?, CARD_TYPE = ?, PAYMENT_METHOD_TYPE=?, ABA_ROUTE_NUMBER=?, BANK_NAME=?, BANK_ACCOUNT_TYPE=?, ADDRESS1 = ?, ADDRESS2 = ?, APARTMENT = ?, CITY = ?, STATE = ?, ZIP_CODE = ?, COUNTRY = ?,  AVS_FAILED=?, BYPASS_AVS_CHECK=? WHERE ID=?");
+		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.PAYMENTMETHOD SET CUSTOMER_ID = ?, NAME = ?, ACCOUNT_NUMBER = ?, EXPIRATION_DATE = ?, CARD_TYPE = ?, PAYMENT_METHOD_TYPE=?, ABA_ROUTE_NUMBER=?, BANK_NAME=?, BANK_ACCOUNT_TYPE=?, ADDRESS1 = ?, ADDRESS2 = ?, APARTMENT = ?, CITY = ?, STATE = ?, ZIP_CODE = ?, COUNTRY = ?,  AVS_FAILED=?, BYPASS_AVS_CHECK=?,ACCOUNT_NUM_MASKED=? WHERE ID=?");
 
 		try {
 			int index = 1;
@@ -337,6 +337,11 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 				ps.setNull(index++, Types.VARCHAR);
 			}
 
+			if(model.getMaskedAccountNumber()!=null) {
+				ps.setString(index++, model.getMaskedAccountNumber() );
+			}else{
+				ps.setNull(index++, Types.VARCHAR);
+			}
 			ps.setString(index++, this.getPK().getId());
 
 			if (ps.executeUpdate() != 1) {

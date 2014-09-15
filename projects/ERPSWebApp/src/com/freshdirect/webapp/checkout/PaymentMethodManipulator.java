@@ -240,21 +240,8 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 				//
 				List<ErpPaymentMethodI> payMethods = FDCustomerFactory.getErpCustomer( identity ).getPaymentMethods();
 				String paymentId = null;
-				if( payMethods.size() > 0 ) {
-					//paymentId = ( (ErpPaymentMethodModel)payMethods.get( payMethods.size()-1 ) ).getPK().getId();
-					for(Iterator<ErpPaymentMethodI> it = payMethods.iterator(); it.hasNext();){
-						ErpPaymentMethodI payMethod = it.next();
-						if(!EnumPaymentMethodType.CREDITCARD.equals(paymentMethod.getPaymentMethodType()) &&
-								!EnumPaymentMethodType.DEBITCARD.equals(paymentMethod.getPaymentMethodType()) &&
-								!EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType()) 
-								) {
-							if(paymentMethod.getAccountNumber().equals(payMethod.getAccountNumber()))
-								paymentId = payMethod.getPK().getId();
-						} else {
-							if(paymentMethod.getProfileID().equals(payMethod.getProfileID()))
-								paymentId = payMethod.getPK().getId();
-						}
-					}
+				if( payMethods.size() ==1 ) {
+					paymentId = payMethods.get(0).getPK().getId();
 				}
 				if(paymentId != null) {
 					setPaymentMethod( request, result, paymentId, request.getParameter( "billingRef" ), false, "" );

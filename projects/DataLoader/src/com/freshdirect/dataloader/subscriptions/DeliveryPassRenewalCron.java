@@ -170,7 +170,7 @@ public class DeliveryPassRenewalCron {
 			_pymtMethod=(ErpPaymentMethodI)it.next();
 			if( !StringUtil.isEmpty(pymtMethod.getProfileID()) && pymtMethod.getProfileID().equals(_pymtMethod.getProfileID()))	
 			    {
-				exists=true;
+				matchedPymtMethods.add(_pymtMethod);
 			} else if(pymtMethod.getCardType().equals(_pymtMethod.getCardType()) ) {
 				
 				if(!StringUtils.isEmpty(pymtMethod.getMaskedAccountNumber()) && !StringUtils.isEmpty(_pymtMethod.getMaskedAccountNumber())&& _pymtMethod.getMaskedAccountNumber().length()>=4) {
@@ -360,11 +360,11 @@ public class DeliveryPassRenewalCron {
 		
 		/* Object[] obj=new Object[2];
 		ArrayList<String> customers=new ArrayList<String>(2);
-		customers.add("145530113");
-		customers.add("145636033");
+		customers.add("10255972995");
+		//customers.add("145636033");
 		ArrayList<String> skus=new ArrayList<String>(2);
 		skus.add("MKT0072733");
-		skus.add("MKT0072733");
+		//skus.add("MKT0072733");
 		obj[0]=customers;
 		obj[1]=skus;
 		return obj;*/

@@ -239,32 +239,13 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 				" Account Number = " + StringUtil.maskCreditCard(erpPaymentMethod.getAccountNumber())
 				);
 
-		if (checkBadPatterns(erpPaymentMethod)) {
-			LOGGER.info("check Bad Account Pattern return true. " +
-					"Payment Method = " + erpPaymentMethod.getPaymentMethodType() +
-					" Account Number = " + StringUtil.maskCreditCard(erpPaymentMethod.getAccountNumber())
-					);
-			return true;
-		}
-		
-		if (useBadAccountCache) {
-			if (checkBadAccountInCache(erpPaymentMethod)) {
-				LOGGER.info("check Bad Account In Cache returned true. " +
-						"Payment Method = " + erpPaymentMethod.getPaymentMethodType() +
-						" Account Number = " + StringUtil.maskCreditCard(erpPaymentMethod.getAccountNumber())
-						);
-				return true;				
-			}
-		} else {
-			if (checkBadAccountInDB(erpPaymentMethod)) {
+		if (checkBadAccountInDB(erpPaymentMethod)) {
 				LOGGER.info("check Bad Account In Database returned true. " +
 						"Payment Method = " + erpPaymentMethod.getPaymentMethodType() +
 						" Account Number = " + StringUtil.maskCreditCard(erpPaymentMethod.getAccountNumber())
 						);
 				return true;				
-			}			
-		}
-
+		}			
 		return false;
 		
 	}
@@ -393,6 +374,10 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 				criteria.setAbaRouteNumber(erpPaymentMethod.getAbaRouteNumber());
 			}
 			criteria.setAccountNumber(erpPaymentMethod.getAccountNumber());
+			
+			if(!StringUtil.isEmpty(erpPaymentMethod.getCustomerId()))
+				criteria.setCustomerID(erpPaymentMethod.getCustomerId());
+			
 			criteria.setStatus(EnumRestrictedPaymentMethodStatus.BAD);
 
 			List<RestrictedPaymentMethodModel> list = RestrictedPaymentMethodDAO.findRestrictedPaymentMethods(conn, criteria);
@@ -481,6 +466,7 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 	
 	public ErpPaymentMethodI findPaymentMethodByAccountInfo(RestrictedPaymentMethodModel m) throws EJBException {
 		Connection conn = null;
+		
 		try {
 			conn = getConnection();
 			return RestrictedPaymentMethodDAO.findPaymentMethodByAccountInfo(conn, m);
