@@ -93,7 +93,7 @@ cart.setEbtIneligibleOrderLines(ebtIneligibleOrderLines);
 		</td>
 		
 		<td width="350" align="RIGHT" valign="MIDDLE">
-			<font class="space2pix"><br></font><a href="/checkout/checkout_ATP_adjust.jsp?successPage=<%=request.getParameter("successPage")%>"><img src="/media_stat/images/navigation/ebt_check_forward.jpg" WIDTH="254" HEIGHT="32" border="0" alt="CONTINUE CHECKOUT" vspace="0"></a>
+			<font class="space2pix"><br></font><a href="/checkout/checkout_ATP_adjust.jsp?successPage=<%=request.getParameter("successPage")%>&ebt=true"><img src="/media_stat/images/navigation/ebt_check_forward.jpg" WIDTH="254" HEIGHT="32" border="0" alt="CONTINUE CHECKOUT" vspace="0"></a>
 		</td>
 	</tr>
 </table>
