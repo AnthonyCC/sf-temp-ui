@@ -47,7 +47,6 @@
 			}
 			
 			function smsCallBack(smsResult){
-				console.log(smsResult);
 				var result='';
 				if  (smsResult != null) { 
 					var smsrows=smsResult.list;
