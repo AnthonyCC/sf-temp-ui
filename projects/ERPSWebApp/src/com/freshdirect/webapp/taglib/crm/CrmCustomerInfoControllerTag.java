@@ -307,19 +307,31 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		FDCustomerManager.updatePasswordHint(user.getIdentity(), this.customerInfo.getPasswordHint());
 		
 		//Record activity info for new gogreen and notification flags
-		boolean delNotifChanged = false;
+		/*boolean delNotifChanged = false;
 		if(beforeUpdateDelNotif != this.customerInfo.isDelNotification()) {
 			delNotifChanged = true;
 		}
 		boolean offerNotifChanged = false;
 		if(beforeUpdateOfferNotif != this.customerInfo.isOffNotification()) {
 			offerNotifChanged = true;
-		}
+		}*/
 		boolean goGreenChanged = false;
 		if(beforeUpdateGoGreen != this.customerInfo.isGoGreen()) {
 			goGreenChanged = true;
 		}
-		if(delNotifChanged || offerNotifChanged || goGreenChanged ) {
+		boolean orderNotificationChanged=false;
+		if(! beforeUpdateOrderNotices.equals(this.customerInfo.getOrderNotices())){
+			orderNotificationChanged=true;
+		}
+		boolean orderExceptionsChanged=false;
+		if(! beforeUpdateOrderExceptions.equals(this.customerInfo.getOrderExceptions())){
+			orderExceptionsChanged=true;
+		}
+		boolean offersChanged=false;
+		if(! beforeUpdateOffers.equals(this.customerInfo.getOffers())){
+			offersChanged=true;
+		}
+		if(goGreenChanged || orderNotificationChanged || orderExceptionsChanged || offersChanged ) {
 			ErpActivityRecord rec = new ErpActivityRecord();
 			rec.setSource(aInfo.getSource());
 			rec.setInitiator(aInfo.getInitiator());
@@ -332,7 +344,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 				command.execute();
 			}
 			
-			if(delNotifChanged) {
+			/*if(delNotifChanged) {
 				rec.setActivityType( EnumAccountActivityType.DELIVERY_NOTIFICATION );
 				rec.setNote("Flag updated to " + (this.customerInfo.isDelNotification()?"Y":"N"));
 				ErpLogActivityCommand command = new ErpLogActivityCommand(rec);
@@ -342,6 +354,13 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			if(offerNotifChanged) {
 				rec.setActivityType( EnumAccountActivityType.OFFER_NOTIFICATION );
 				rec.setNote("Flag updated to " + (this.customerInfo.isOffNotification()?"Y":"N"));
+				ErpLogActivityCommand command = new ErpLogActivityCommand(rec);
+				command.execute();
+			}*/
+			
+			if(orderNotificationChanged || orderExceptionsChanged || offersChanged){
+				rec.setActivityType( EnumAccountActivityType.SMS_ALERT);
+				rec.setNote("Updated SMS Flags- Order Notif:" + this.customerInfo.getOrderNotices() + ", OrderExp Notif:"+ this.customerInfo.getOrderExceptions()+ ", MrkOffers:"+this.customerInfo.getOffers());
 				ErpLogActivityCommand command = new ErpLogActivityCommand(rec);
 				command.execute();
 			}

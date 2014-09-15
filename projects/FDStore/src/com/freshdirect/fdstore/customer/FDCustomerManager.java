@@ -148,6 +148,7 @@ import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
+import com.freshdirect.sms.EnumSMSAlertStatus;
 
 
 /**
@@ -3948,13 +3949,12 @@ public class FDCustomerManager {
 	}
 	
 	public static void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery,
-			String orderNotices, String orderExceptions, String offers, String partnerMessages) throws FDResourceException {
+			String orderNotices, String orderExceptions, String offers, String partnerMessages, boolean subscribedBefore) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			sb.storeMobilePreferences(customerId, mobileNumber, textOffers, textDelivery, orderNotices, orderExceptions, offers, partnerMessages);
-			logGoGreenActivity(customerId, "Y".equals(textOffers)?"Y":"N", EnumAccountActivityType.OFFER_NOTIFICATION);
-			logGoGreenActivity(customerId, "Y".equals(textDelivery)?"Y":"N", EnumAccountActivityType.DELIVERY_NOTIFICATION);
+			logSmsActivity(customerId, orderNotices, orderExceptions, offers, subscribedBefore);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -3962,6 +3962,28 @@ public class FDCustomerManager {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
 		}
+	}
+	
+	public static void logSmsActivity(String customerId, String orderNotices, String orderExceptions, String offers, boolean subscribedBefore){
+		//Temp variables for sms Alerts:
+		String _orderNotices, _orderExceptions, _offers;
+		if(subscribedBefore){
+			_orderNotices= "Y".equals(orderNotices)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value();
+			_orderExceptions="Y".equals(orderExceptions)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value();
+			_offers="Y".equals(offers)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value();
+		} else{
+			_orderNotices= "Y".equals(orderNotices)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value();
+			_orderExceptions="Y".equals(orderExceptions)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value();
+			_offers="Y".equals(offers)?EnumSMSAlertStatus.PENDING.value():EnumSMSAlertStatus.NONE.value();
+		}
+		ErpActivityRecord rec = new ErpActivityRecord();
+		rec.setActivityType(EnumAccountActivityType.SMS_ALERT);
+		rec.setSource(EnumTransactionSource.WEBSITE);
+		rec.setInitiator("CUSTOMER");
+		rec.setCustomerId(customerId);
+		rec.setDate(new Date());
+		rec.setNote("Updated SMS Flags- Order Notif:" + _orderNotices + ", OrderExp Notif:"+ _orderExceptions +", MrkOffers:"+_offers);
+		logActivity(rec);
 	}
 	
 	public static void storeSmsPreferenceFlag(String customerId, String flag)throws FDResourceException{
@@ -4028,8 +4050,6 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			sb.storeAllMobilePreferences(customerId, mobileNumber, textOffers, textDelivery, goGreen, phone, ext, isCorpUser);
 			logGoGreenActivity(customerId, "Y".equals(goGreen)?"Y":"N", EnumAccountActivityType.GO_GREEN);
-			logGoGreenActivity(customerId, "Y".equals(textOffers)?"Y":"N", EnumAccountActivityType.OFFER_NOTIFICATION);
-			logGoGreenActivity(customerId, "Y".equals(textDelivery)?"Y":"N", EnumAccountActivityType.DELIVERY_NOTIFICATION);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
