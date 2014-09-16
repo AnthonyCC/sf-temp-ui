@@ -25,6 +25,7 @@ import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.fraud.EnumRestrictedPatternType;
 import com.freshdirect.payment.fraud.EnumRestrictedPaymentMethodStatus;
 import com.freshdirect.payment.fraud.PaymentFraudFactory;
@@ -229,7 +230,7 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 
 	public boolean checkBadAccount(ErpPaymentMethodI erpPaymentMethod, boolean useBadAccountCache) {
 
-		if ("false".equals(ErpServicesProperties.getCheckForFraud())) {
+		if ("false".equals(ErpServicesProperties.getCheckForFraud())|| !EnumPaymentMethodType.ECHECK.equals( erpPaymentMethod.getPaymentMethodType())) {
 			// no check, no problem :)
 			return false;
 		}
@@ -373,6 +374,8 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 			if (erpPaymentMethod.getAbaRouteNumber() != null) {
 				criteria.setAbaRouteNumber(erpPaymentMethod.getAbaRouteNumber());
 			}
+			
+			
 			criteria.setAccountNumber(erpPaymentMethod.getAccountNumber());
 			
 			if(!StringUtil.isEmpty(erpPaymentMethod.getCustomerId()))
