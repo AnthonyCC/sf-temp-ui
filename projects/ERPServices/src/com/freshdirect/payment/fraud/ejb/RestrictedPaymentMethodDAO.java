@@ -447,7 +447,7 @@ public class RestrictedPaymentMethodDAO {
 		} else {
 			ps.setNull(index++, Types.VARCHAR);			
 		}
-		ps.setString(index++, m.getAccountNumber());
+		ps.setString(index++,  m.getAccountNumber().length()<4?m.getAccountNumber():m.getAccountNumber().substring(m.getAccountNumber().length()-4));
 		if (m.getBankAccountType() != null) {
 			ps.setString(index++, m.getBankAccountType().getName());
 		} else {
