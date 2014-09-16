@@ -415,7 +415,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				
 				ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
 				FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), mobile_number, text_offers, text_delivery,
-						order_notices, order_exceptions, offers, partner_messages,subscribedBefore);
+						order_notices, order_exceptions, offers, partner_messages,cm);
 				if(subscribedNow) {
 					FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),"Y");
 				} else {
@@ -934,8 +934,9 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				 if(isSent){
 							
 					try {
+						ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
 						FDCustomerManager.storeMobilePreferences(identity.getErpCustomerPK(), mobile_number, "N", "N",
-								"Y", "Y", "Y", "Y",false);
+								"Y", "Y", "Y", "Y",cm);
 						FDCustomerManager.storeSmsPreferenceFlag(identity.getErpCustomerPK(),"Y");
 						session.setAttribute("SMSAlert" + orderNumber, "done");
 					} catch (FDResourceException e) {

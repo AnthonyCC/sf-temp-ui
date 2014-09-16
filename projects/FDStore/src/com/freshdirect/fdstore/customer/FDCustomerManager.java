@@ -3949,12 +3949,12 @@ public class FDCustomerManager {
 	}
 	
 	public static void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery,
-			String orderNotices, String orderExceptions, String offers, String partnerMessages, boolean subscribedBefore) throws FDResourceException {
+			String orderNotices, String orderExceptions, String offers, String partnerMessages, ErpCustomerInfoModel cm) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			sb.storeMobilePreferences(customerId, mobileNumber, textOffers, textDelivery, orderNotices, orderExceptions, offers, partnerMessages);
-			logSmsActivity(customerId, orderNotices, orderExceptions, offers, subscribedBefore);
+			logSmsActivity(customerId, orderNotices, orderExceptions, offers, cm);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error creating session bean");
@@ -3964,10 +3964,13 @@ public class FDCustomerManager {
 		}
 	}
 	
-	public static void logSmsActivity(String customerId, String orderNotices, String orderExceptions, String offers, boolean subscribedBefore){
+	public static void logSmsActivity(String customerId, String orderNotices, String orderExceptions, String offers, ErpCustomerInfoModel cm){
 		//Temp variables for sms Alerts:
-		String _orderNotices, _orderExceptions, _offers;
-		if(subscribedBefore){
+		String _orderNotices = cm.getOrderNotices()!=null?cm.getOrderNotices().value():EnumSMSAlertStatus.NONE.value();
+		String _orderExceptions = cm.getOrderExceptions()!=null?cm.getOrderExceptions().value():EnumSMSAlertStatus.NONE.value();
+		String _offers = cm.getOffers()!=null?cm.getOffers().value():EnumSMSAlertStatus.NONE.value();
+		if(_orderNotices.equals(EnumSMSAlertStatus.SUBSCRIBED.value()) || _orderExceptions.equals(EnumSMSAlertStatus.SUBSCRIBED.value())||
+				_offers.equals(EnumSMSAlertStatus.SUBSCRIBED.value())){
 			_orderNotices= "Y".equals(orderNotices)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value();
 			_orderExceptions="Y".equals(orderExceptions)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value();
 			_offers="Y".equals(offers)?EnumSMSAlertStatus.SUBSCRIBED.value():EnumSMSAlertStatus.NONE.value();
