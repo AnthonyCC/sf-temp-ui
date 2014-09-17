@@ -81,6 +81,7 @@
             <%
                 Map<String,Object> soyData = new HashMap<String,Object>();
                 soyData.put("hasYourFavoritesRecommendation", QuickShopHelper.hasYourFavoritesRecommendation( user ));
+                soyData.put("showCustRated", FDStoreProperties.isBazaarvoiceEnabled());
             %>
             <soy:render template="common.tabbedCarousel" data="<%= soyData %>" />
           <!-- content ends above here-->
