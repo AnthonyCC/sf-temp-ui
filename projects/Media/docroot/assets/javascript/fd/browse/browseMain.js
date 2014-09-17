@@ -62,10 +62,22 @@ var FreshDirect = FreshDirect || {};
     var pager = fd.browse.pager.serialize(),
         data = $.extend({},
           (pagerRelated || (pager && pager.activePage === 0)) ? pager : {},
-          fd.browse.sorter.serialize(),
+          fd.browse.sorter && fd.browse.sorter.serialize(),
           fd.components.coremetrics ? fd.components.coremetrics.serialize() : {},
-          fd.browse.menu.serialize()
+          fd.browse.menu && fd.browse.menu.serialize(),
+          fd.browse.searchParams && fd.browse.searchParams.serialize(),
+          fd.browse.searchTabs && fd.browse.searchTabs.serialize(),
+          fd.browse.pageType && fd.browse.pageType.serialize()
         );
+
+    // remove id if searchParams are provided
+    if (data.searchParams && data.id) {
+      delete data.id;
+    }
+
+    if (pagerRelated) {
+      setTimeout(scrollToTop, 500);
+    }
 
     return data;
   }
@@ -110,7 +122,8 @@ var FreshDirect = FreshDirect || {};
       ]),
       immediateUIChanges = Bacon.mergeAll([
         $(document).asEventStream('sorter-change').map('sorter'),
-        $(document).asEventStream('breadcrumbs-change').map('breadcrumbs')
+        $(document).asEventStream('breadcrumbs-change').map('breadcrumbs'),
+        $(document).asEventStream('searchParams-change').map('searchParams')
       ]),
       pagerRelatedChanges = Bacon.mergeAll([
         $(document).asEventStream('page-change').map('pager')

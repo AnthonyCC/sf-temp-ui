@@ -7,6 +7,7 @@ import com.freshdirect.fdstore.FDKosherInfo;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.AbstractProductItemFilter;
+import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.FilterCacheStrategy;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.ProductFilterModel;
@@ -19,6 +20,10 @@ public class KosherFilter extends AbstractProductItemFilter {
 		super(model, parentId);
 	}
 
+	public KosherFilter(String id, String parentId, String name) { //'virtual' kosherFilter for search page 
+		super(id, parentId, name);
+	}
+	
 	/**
 	 * This value is used when product is not given valid kosher info
 	 * 

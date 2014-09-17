@@ -26,6 +26,8 @@ import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.content.browse.filter.BrandFilter;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
+import com.freshdirect.webapp.ajax.browse.SearchPageType;
 import com.freshdirect.webapp.ajax.browse.data.BrowseDataContext;
 import com.freshdirect.webapp.ajax.browse.data.CategoryData;
 import com.freshdirect.webapp.ajax.browse.data.DataUtil;
@@ -44,9 +46,7 @@ public class MenuBuilderFactory {
 
 	public static final MenuItemData MARKER;
 	public static final MenuItemData ALL_PRODUCTS_ITEM;
-	public static final MenuItemData ALL_DEPARTMENTS_ITEM;
-	public static final MenuItemData ALL_CATEGORIES_ITEM;
-	public static final MenuItemData ALL_SUBCATEGORIES_ITEM;
+
 	static{
 		
 		MARKER = new MenuItemData();
@@ -57,24 +57,6 @@ public class MenuBuilderFactory {
 		ALL_PRODUCTS_ITEM.setName("ALL PRODUCTS");
 		ALL_PRODUCTS_ITEM.setSelected(false);
 		ALL_PRODUCTS_ITEM.setUrlParameter("all");
-
-		ALL_DEPARTMENTS_ITEM = new MenuItemData();
-		ALL_DEPARTMENTS_ITEM.setActive(true);
-		ALL_DEPARTMENTS_ITEM.setName("ALL DEPARTMENTS");
-		ALL_DEPARTMENTS_ITEM.setSelected(false);
-		ALL_DEPARTMENTS_ITEM.setUrlParameter("allDepartments");
-		
-		ALL_CATEGORIES_ITEM = new MenuItemData();
-		ALL_CATEGORIES_ITEM.setActive(true);
-		ALL_CATEGORIES_ITEM.setName("ALL CATEGORIES");
-		ALL_CATEGORIES_ITEM.setSelected(false);
-		ALL_CATEGORIES_ITEM.setUrlParameter("allCategories");
-
-		ALL_SUBCATEGORIES_ITEM = new MenuItemData();
-		ALL_SUBCATEGORIES_ITEM.setActive(true);
-		ALL_SUBCATEGORIES_ITEM.setName("ALL SUBCATEGORIES");
-		ALL_SUBCATEGORIES_ITEM.setSelected(false);
-		ALL_SUBCATEGORIES_ITEM.setUrlParameter("allSubCategories");
 
 	}
 	
@@ -87,10 +69,14 @@ public class MenuBuilderFactory {
 		return factory;
 	}
 	
-	public static MenuBuilderI createBuilderByPageType(NavDepth depth, boolean hasSuperDepartment, boolean isSearchPage){
+	public static MenuBuilderI createBuilderByPageType(NavDepth depth, boolean hasSuperDepartment, SearchPageType searchPageType){
 		
-		if (isSearchPage) {
-			return getInstance().new SearchPageMenuBuilder();
+		if (searchPageType != null) {
+			if (SearchPageType.PRODUCT == searchPageType) {
+				return getInstance().new SearchLikePageMenuBuilder();
+			} else if (SearchPageType.RECIPE == searchPageType) {
+				return getInstance().new RecipePageMenuBuilder();
+			}
 		}
 
 		if (hasSuperDepartment) {
@@ -121,85 +107,47 @@ public class MenuBuilderFactory {
 		}
 	}
 	
-	public class SearchPageMenuBuilder implements MenuBuilderI{
+	public class SearchLikePageMenuBuilder implements MenuBuilderI{
 		
 		public List<MenuBoxData> buildMenu(List<ProductFilterGroupI> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav){
 			
 			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
-			
-			if (nav.isSearchRequest()) {
-				if (!navModel.getDepartmentsOfSearchResults().isEmpty()) {
-					MenuBoxData domain = new MenuBoxData();
-					domain.setName("DEPARTMENT");
-					domain.setId("search_departments");
-					domain.setBoxType(MenuBoxType.DEPARTMENT);
-					domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
-					domain.setSelectionType(MenuBoxSelectionType.SINGLE);
-					
-					List<MenuItemData> items = new ArrayList<MenuItemData>();
-					
-					List<DepartmentModel> departments = new ArrayList<DepartmentModel>();
-					departments.addAll(navModel.getDepartmentsOfSearchResults().values());
-					MenuItemData allDepartmentsItem = ALL_DEPARTMENTS_ITEM.copy();
-					if(nav.isAll()){
-						allDepartmentsItem.setSelected(true);
-					}
-					items.add(allDepartmentsItem);					
-
-					domain.setItems(createDeptMenuItems(departments, items, navModel.getUser()));
-	
-					menu.add(domain);
-				}
+			if (nav.getPageType() == FilteringFlowType.PRES_PICKS) { //workaround in favor of frontend........
+				MenuBoxData domain = new MenuBoxData();
+				domain.setName("pres_picks_id");
+				domain.setId("pres_picks_id");
+				domain.setBoxType(MenuBoxType.CATEGORY);
+				domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+				domain.setSelectionType(MenuBoxSelectionType.SINGLE);
 				
-				if (!navModel.getCategoriesOfSearchResults().isEmpty()) {
-					MenuBoxData domain = new MenuBoxData();
-					domain.setName("CATEGORY");
-					domain.setId("search_categories");
-					domain.setBoxType(MenuBoxType.CATEGORY);
-					domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
-					domain.setSelectionType(MenuBoxSelectionType.SINGLE);
-					
-					List<MenuItemData> items = new ArrayList<MenuItemData>();
-					
-					List<CategoryModel> categories = new ArrayList<CategoryModel>();
-					categories.addAll(navModel.getCategoriesOfSearchResults().values());
-					MenuItemData allCategoriesItem = ALL_CATEGORIES_ITEM.copy();
-					if(nav.isAll()){
-						allCategoriesItem.setSelected(true);
-					}
-					items.add(allCategoriesItem);					
-					
-					domain.setItems(createCatMenuItems(categories, items, navModel.getUser()));
-	
-					menu.add(domain);
-				}
+				MenuItemData menuItem = new MenuItemData();
+				menuItem.setActive(true);
+				menuItem.setId(nav.getId());
+				menuItem.setFilterId(nav.getId());
+				menuItem.setName(nav.getId());
+				menuItem.setSelected(true);
+				menuItem.setUrlParameter(nav.getId());
 				
-				if (!navModel.getSubCategoriesOfSearchResults().isEmpty()) {
-					MenuBoxData domain = new MenuBoxData();
-					domain.setName("SUBCATEGORY");
-					domain.setId("search_subcategories");
-					domain.setBoxType(MenuBoxType.SUB_CATEGORY);
-					domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
-					domain.setSelectionType(MenuBoxSelectionType.SINGLE);
-					
-					List<MenuItemData> items = new ArrayList<MenuItemData>();
-					
-					List<CategoryModel> subCategories = new ArrayList<CategoryModel>();
-					subCategories.addAll(navModel.getSubCategoriesOfSearchResults().values());
-					MenuItemData allSubCategoriesItem = ALL_SUBCATEGORIES_ITEM.copy();
-					if(nav.isAll()){
-						allSubCategoriesItem.setSelected(true);
-					}
-					items.add(allSubCategoriesItem);					
-					
-					domain.setItems(createCatMenuItems(subCategories, items, navModel.getUser()));
-	
-					menu.add(domain);
-				}
+				List<MenuItemData> menuItems = new ArrayList<MenuItemData>();
+				menuItems.add(menuItem);
+				domain.addItems(menuItems);
+				menu.add(domain);
 				
-				createFilterMenuDomains(filterGroups, navModel.getActiveFilters(), menu, navModel.isProductListing());				
 			}
+			
+			createFilterMenuDomains(filterGroups, navModel.getActiveFilters(), menu, navModel.isProductListing());
 
+			return menu;
+		}
+		
+	}
+	
+	public class RecipePageMenuBuilder implements MenuBuilderI {
+
+		@Override
+		public List<MenuBoxData> buildMenu(List<ProductFilterGroupI> filterGroups, NavigationModel navModel, CmsFilteringNavigator nav) {
+			List<MenuBoxData> menu = new ArrayList<MenuBoxData>();
+			createRecipeFilterMenuDomains(filterGroups, navModel.getActiveFilters(), menu);
 			return menu;
 		}
 		
@@ -677,7 +625,18 @@ public class MenuBuilderFactory {
 						item.setActive(true);
 						item.setId("all");
 						item.setName(filterGroup.getAllSelectedLabel());
-						item.setSelected(false);
+						if (productListingPage) {
+							boolean containFilterForFilterGroup = false;
+							for (ProductItemFilterI activeFilter : activeFilters) {
+								if (filterGroup.getId().equals(activeFilter.getParentId())) {
+									containFilterForFilterGroup = true;
+									break;
+								}
+							}
+							item.setSelected(!containFilterForFilterGroup);
+						} else {
+							item.setSelected(false);
+						}
 						item.setUrlParameter("clearall");
 
 						items.add(item);
@@ -689,6 +648,56 @@ public class MenuBuilderFactory {
 						menu.add(domain);						
 					}
 				
+				}
+			}
+		}
+	}
+
+
+
+	private void createRecipeFilterMenuDomains(List<ProductFilterGroupI> filterGroups, Set<ProductItemFilterI> activeFilters, List<MenuBoxData> menu){
+		if (filterGroups != null){
+			for (ProductFilterGroupI filterGroup : filterGroups){
+				MenuBoxData domain = new MenuBoxData();
+				domain.setId(filterGroup.getId());
+				domain.setName(filterGroup.getName());
+				domain.setBoxType(MenuBoxType.FILTER);
+				domain.setMultiGroupBox(filterGroup.isMultiGroupModel());
+				domain.setShouldSetAll(true);
+				if (ProductFilterGroupType.POPUP == filterGroup.getType()) {
+					domain.setDisplayType(MenuBoxDisplayType.POPUP);
+					domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+				} else if (ProductFilterGroupType.SINGLE == filterGroup.getType()) {
+					domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+					domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+				} else if (ProductFilterGroupType.MULTI == filterGroup.getType()) {
+					domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+					domain.setSelectionType(MenuBoxSelectionType.MULTI);
+				}
+				List<MenuItemData> items = null;
+				if (filterGroup.getAllSelectedLabel() != null &&
+						!"".equals(filterGroup.getAllSelectedLabel()) && 
+						filterGroup.getProductFilters()!=null &&
+						filterGroup.getProductFilters().size()>0) {
+					items = new ArrayList<MenuItemData>();
+					MenuItemData item = new MenuItemData();
+					item.setActive(true);
+					item.setId("all");
+					item.setName(filterGroup.getAllSelectedLabel());
+					boolean containFilterForFilterGroup = false;
+					for (ProductItemFilterI activeFilter : activeFilters) {
+						if (filterGroup.getId().equals(activeFilter.getParentId())) {
+							containFilterForFilterGroup = true;
+							break;
+						}
+					}
+					item.setSelected(!containFilterForFilterGroup);
+					item.setUrlParameter("clearall");
+					items.add(item);
+				}
+				domain.setItems(createFilterMenuItems(domain, filterGroup.getProductFilters(), activeFilters, items));
+				if(domain.getItems()!=null && domain.getItems().size()>0){
+					menu.add(domain);
 				}
 			}
 		}
@@ -774,6 +783,7 @@ public class MenuBuilderFactory {
 			MenuItemData menuItem = new MenuItemData();
 			menuItem.setActive(true);
 			menuItem.setId(department.getContentName());
+			menuItem.setFilterId(department.getContentName());
 			menuItem.setName(department.getFullName());
 			menuItem.setSelected(false);
 			menuItem.setUrlParameter(department.getContentName());
@@ -803,6 +813,7 @@ public class MenuBuilderFactory {
 			MenuItemData menuItem = new MenuItemData();
 			menuItem.setActive(true);
 			menuItem.setId(category.getContentName());
+			menuItem.setFilterId(category.getContentName());
 			menuItem.setName(category.getFullName());
 			menuItem.setSelected(false);
 			
@@ -831,7 +842,7 @@ public class MenuBuilderFactory {
 		Map<String, ProductItemFilterI> allFilters = ProductItemFilterUtil.prepareFilters(navModel.getAllFilters());
 		Map<String, ProductItemFilterI> activeFilters = ProductItemFilterUtil.prepareFilters(navModel.getActiveFilters());
 		List<FilteringProductItem> items = new ArrayList<FilteringProductItem>();
-		ProductItemFilterUtil.collectAllItems(browseData.getSectionContexts(), items);
+		ProductItemFilterUtil.collectAllItems(browseData.getSectionContexts(), items, navModel);
 		
 		boolean clp = false;
 		if(isFilterPresentOnPage(menu) && navModel.getNavDepth()==NavDepth.CATEGORY && items.size()==0){
@@ -845,7 +856,7 @@ public class MenuBuilderFactory {
 				
 				List<SectionContext> sections = new ArrayList<SectionContext>();
 				sections.add(BrowseDataBuilderFactory.getInstance().createProductSection(cat, user, navModel));
-				ProductItemFilterUtil.collectAllItems(sections, items);							
+				ProductItemFilterUtil.collectAllItems(sections, items, navModel);
 			}
 		}
 		
@@ -853,20 +864,15 @@ public class MenuBuilderFactory {
 		
 		Iterator<MenuBoxData> boxIterator = menu.iterator();
 		while(boxIterator.hasNext()){
-			
 			MenuBoxData box = boxIterator.next();
 			boolean emptyBox = true;
 			// check if filtering has effect on this box
 			if(box.getBoxType().isHasFilterEffect()){
-
+				final String boxId = box.getId();
 				if (box.getBoxType() == MenuBoxType.FILTER && box.getSelectionType() == MenuBoxSelectionType.MULTI) { // MULTI SELECT FILTER GROUP
-					
-					boolean popupType = box.getDisplayType() == MenuBoxDisplayType.CENTER_POPUP || box.getDisplayType() == MenuBoxDisplayType.POPUP;
-					
 					// walk through on menu items in the box
 					Iterator<MenuItemData> it = box.getItems().iterator();
 					while (it.hasNext()) {
-						
 						MenuItemData item = it.next();
 						
 						if(item.getId()==null || "all".equals(item.getId())){ // marker items
@@ -876,9 +882,9 @@ public class MenuBuilderFactory {
 						itemCount = 0;
 
 						// apply filter if menu item is a filter and the box type is multi select
-						itemCount = ProductItemFilterUtil.countItemsForFilter(items, allFilters.get(ProductItemFilterUtil.createCompositeId(box.getId(), item.getId())));
+						itemCount = ProductItemFilterUtil.countItemsForFilter(items, allFilters.get(ProductItemFilterUtil.createCompositeId(boxId, item.getId())));
 
-						if (itemCount == 0 && !item.isSelected()) {
+						if (!item.isSelected() && (itemCount == 0 || itemCount == items.size())) {
 								it.remove();
 						}else{
 							emptyBox=false;
@@ -886,63 +892,57 @@ public class MenuBuilderFactory {
 					}
 
 				} else if (box.getBoxType() == MenuBoxType.FILTER) { // SINGLE SELECT FILTER GROUP
+					final boolean isProductListing = navModel.isProductListing();
 
 					// extract current filter base from active filters
-					Set<ProductItemFilterI> currentFiltersBase = ProductItemFilterUtil.removeFiltersByParentId(box.getId(), activeFilters);
-
+					Set<ProductItemFilterI> currentFiltersBase = ProductItemFilterUtil.removeFiltersByParentId(boxId, activeFilters);
+					
 					// create the pre filtered item list (filters belongs to this filtergroup will be removed)
-					List<FilteringProductItem> preFilteredItems = ProductItemFilterUtil.getFilteredProducts(!clp ? browseData.getUnfilteredItems() : items, currentFiltersBase, false);
+					List<FilteringProductItem> preFilteredItems = ProductItemFilterUtil.getFilteredProducts(!clp ? browseData.getUnfilteredItems() : items, currentFiltersBase, false, isProductListing);
+					final int pfSize = preFilteredItems.size();
 					
-
 					final long t0 = System.currentTimeMillis();
-					
+
 					// walk through on menu items in the box
 					Iterator<MenuItemData> it = box.getItems().iterator();
 					while (it.hasNext()) {
-
+						
 						MenuItemData item = it.next();
-
-						if (item.getId() == null || "all".equals(item.getId())) { // marker items
+						
+						if(item.getId()==null || "all".equals(item.getId())){ // marker items
 							continue;
 						}
-
-						itemCount = 0;
-
-						String filterCompositeId = ProductItemFilterUtil.createCompositeId(box.getId(), item.getId());
+						
+						String filterCompositeId = ProductItemFilterUtil.createCompositeId(boxId, item.getId());
 						// add filters one by one ...
 						final ProductItemFilterI filter = allFilters.get(filterCompositeId);
 						if (filter != null) {
 							Set<ProductItemFilterI> currentFilters = new HashSet<ProductItemFilterI>();
 							currentFilters.add(filter);
-							itemCount = ProductItemFilterUtil.getFilteredProducts(preFilteredItems, currentFilters, true).size();
+							itemCount = ProductItemFilterUtil.getFilteredProducts(preFilteredItems, currentFilters, true, isProductListing).size();
 						} else {
-							itemCount = preFilteredItems.size();
+							itemCount = pfSize;
+ 						}
+						 
+						 if (!item.isSelected() && (itemCount == 0 || (box.isBrandFilter() && !box.isMultiGroupBox() && itemCount == pfSize ))) {
+								it.remove();
+						}else{
+							emptyBox=false;
 						}
 
-						// and check how many products passes the current status
-						if (itemCount == 0 && !item.isSelected()) {
-							it.remove();
-						} else {
-							emptyBox = false;
-						}
+						final long t1 = System.currentTimeMillis();
+						LOGGER.debug("Filtered " + pfSize + " products for each " + box.getItems().size() + " menu itmes in " + ((t1-t0)/1000) + " secs");
 					}
 
-					final long t1 = System.currentTimeMillis();
-					LOGGER.debug("Filtered " + preFilteredItems.size() + " products for each " + box.getItems().size() + " menu itmes in " + ((t1-t0)/1000) + " secs");
-
 				} else { // NAVIGATION BOX (CATEGORIES)
-					
 					if(box.getItems()!=null) {
-					
 						// walk through on menu items in the box
 						for (MenuItemData item : box.getItems()) {
-
 							if (item.getId() == null || "all".equals(item.getId()) || item.isSpecial()) { // marker or special items
 								continue;
 							}
 
 							itemCount = 0;
-
 							// if the menu item is a category then check how
 							// many products we have with the selected filters
 
@@ -963,10 +963,10 @@ public class MenuBuilderFactory {
 								products = ProductItemFilterUtil.createFilteringProductItems(category.getProducts());
 							} else {
 								// collect all products from section
-								ProductItemFilterUtil.collectAllItems(section.getSectionContexts(), products);
+								ProductItemFilterUtil.collectAllItems(section.getSectionContexts(), products, navModel);
 							}
 
-							products = ProductItemFilterUtil.getFilteredProducts(products, navModel.getActiveFilters(), false);
+							products = ProductItemFilterUtil.getFilteredProducts(products, navModel.getActiveFilters(), false, navModel.isProductListing());
 
 							checkDefaultSkuAvailability(products);
 
@@ -1027,7 +1027,7 @@ public class MenuBuilderFactory {
 		
 		if(brandFilterLocation == EnumBrandFilterLocation.BELOW_DEPARTMENT){
 			brandFilterPosition = MenuBoxType.CATEGORY;
-		}else if(brandFilterLocation == EnumBrandFilterLocation.BELOW_LOWEST_LEVEL_CATEGROY){
+		}else if(brandFilterLocation == EnumBrandFilterLocation.BELOW_LOWEST_LEVEL_CATEGORY){
 			brandFilterPosition = MenuBoxType.FILTER;
 		}
 		

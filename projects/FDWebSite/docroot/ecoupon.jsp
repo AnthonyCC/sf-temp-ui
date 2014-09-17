@@ -25,12 +25,14 @@
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@ page import="com.freshdirect.FDCouponProperties"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil"%>
+<%@ page import='com.freshdirect.webapp.ajax.browse.FilteringFlowType' %>
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='bean' prefix='bean'%>
 <%@ taglib uri='logic' prefix='logic'%>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib uri='oscache' prefix='oscache'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+
 <% //expanded page dimension
 final int W_INDEX_TOTAL = 970;
 final int W_INDEX_CENTER_PADDING = 20;
@@ -38,6 +40,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 %>
 
 <fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" id="user" />
+<fd:SearchRedesignRedirector user="<%=user%>" pageType="<%=FilteringFlowType.ECOUPON%>"/>
 <%  
 
 	// copied from the search.jsp:

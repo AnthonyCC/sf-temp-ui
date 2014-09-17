@@ -131,7 +131,6 @@ var FreshDirect = FreshDirect || {};
             menubox = $('[data-component="menubox"][data-id="'+itemlist.data('menuitemlist')+'"]'),
             menu = menubox.parents('[data-component="menu"]'),
             id = clicked.data('urlparameter');
-
         if (clicked.hasClass('disabled')) {
           return;
         }
@@ -208,6 +207,11 @@ var FreshDirect = FreshDirect || {};
       value:function(data){
         $(this.placeholder).html(this.template(data));
         
+        if (data.menuBoxes.length > 0) {
+          $("section.container").removeClass("emptymenu");
+        } else {
+          $("section.container").addClass("emptymenu");
+        }
 
         // close popups
         if (fd.common.transactionalPopup) { fd.common.transactionalPopup.close(); }

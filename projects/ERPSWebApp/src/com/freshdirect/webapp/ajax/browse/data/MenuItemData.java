@@ -5,6 +5,7 @@ public class MenuItemData extends SelectableData {
 
 	private static final long serialVersionUID = -5000076157128296031L;
 	private String urlParameter;
+	private String filterId;
 	private boolean active;
 	private boolean special;
 	
@@ -48,6 +49,14 @@ public class MenuItemData extends SelectableData {
 		copy.setSpecial(isSpecial());
 		
 		return copy;
+	}
+
+	public String getFilterId() {
+		return filterId;
+	}
+
+	public void setFilterId(String filterId) {
+		this.filterId = filterId;
 	}
 	
 	

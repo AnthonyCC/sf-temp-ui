@@ -247,6 +247,11 @@ section.main {
   overflow: hidden;
   position: relative;
   margin: 10px 0 0;
+  clear: both;
+}
+
+.emptymenu section.main {
+  display: none;
 }
 
 section.main:before {
@@ -339,11 +344,13 @@ section.main .pager .pagination {
   float: right;
 }
 
-section.main .pager button{
+section.main .pager button,
+.srch .pager button{
   vertical-align:top;
 }
 
-section.main .pager .pagination-pager-button {
+section.main .pager .pagination-pager-button,
+.srch .pager .pagination-pager-button{
   width: auto;
   height: 27px;
   line-height: 27px;
@@ -357,49 +364,59 @@ section.main .pager .pagination-pager-button {
   box-sizing:border-box;
 }
 
-section.main .pager .pagination-pager-button:hover {
+section.main .pager .pagination-pager-button:hover,
+.srch .pager .pagination-pager-button:hover{
   border-color:#666;
   background-color: #fff;
   color:#000;
 }
 
-section.main .pager .pagination-pager-button.selected {
+section.main .pager .pagination-pager-button.selected,
+.srch .pager .pagination-pager-button.selected{
   border-color:#333;
   background-color: #fff;
   color:#333;
   font-weight: bold;
 }
 
-section.main .pager .pagination-pager-button.selected:hover {
+section.main .pager .pagination-pager-button.selected:hover,
+.srch .pager .pagination-pager-button.selected:hover{
   text-decoration: none;
 }
 
-section.main button.pagination-showall-cssbutton.cssbutton {
+section.main button.pagination-showall-cssbutton.cssbutton,
+.srch button.pagination-showall-cssbutton.cssbutton{
     margin:0;
 }
 
 section.main .pager [data-component="pager-next"],
-section.main .pager [data-component="pager-prev"]{
+section.main .pager [data-component="pager-prev"],
+.srch .pager [data-component="pager-next"],
+.srch .pager [data-component="pager-prev"]{
   text-shadow:none;
   width:36px;
   height:27px;
   padding:0;
 }
 
-section.main .pager [data-component="pager-next"]{
+section.main .pager [data-component="pager-next"],
+.srch .pager [data-component="pager-next"]{
   margin-left:12px;
 }
 
-section.main .pager .cssbutton.gray{
+section.main .pager .cssbutton.gray,
+.srch .pager .cssbutton.gray{
   cursor:auto;
 }
 
-section.main .pager .pagination-pager-separator{
+section.main .pager .pagination-pager-separator,
+.srch .pager .pagination-pager-separator{
   width:12px;
   margin-left:12px;
 }
 
-section.main .pager .pagination-text{
+section.main .pager .pagination-text,
+.srch .pager .pagination-text{
   width:auto;
   margin:0 12px;
   line-height:27px;

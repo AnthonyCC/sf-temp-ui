@@ -10,6 +10,10 @@ public class OrganicFilter extends NutritionInfoFilter {
 		super(model, parentId);
 	}
 
+	public OrganicFilter(String id, String parentId, String claimCode, String name) { //'virtual' organicFilter for search page 
+		super(id, parentId, claimCode, name);
+	}
+
 	@Override
 	protected ErpNutritionInfoType getType() {
 		return ErpNutritionInfoType.ORGANIC;

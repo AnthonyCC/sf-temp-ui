@@ -74,12 +74,18 @@ var FreshDirect = FreshDirect || {};
             maxImageSize = 0,
             pimg = $(target).find('.portrait-item-burst_wrapper')[0],
             $img = $(pimg).find('img.portrait-item-productimage'),
-            imgBottom = pimg ? pimg.getBoundingClientRect().bottom : null;
+            imgBottom = pimg ? pimg.getBoundingClientRect().bottom : null,
+            parentContainer = $(target).closest('[data-transactional-align="true"]');
 
         this.currentTarget = target;
 
         if (imgBottom) {
-          $(target).parent().find('.portrait-item-burst_wrapper').each(function () {
+
+          if(!parentContainer.length){
+            parentContainer = $(target).parent();
+          }
+
+          parentContainer.find('.portrait-item-burst_wrapper').each(function () {
             var h = this.getBoundingClientRect().height,
                 bottom = this.getBoundingClientRect().bottom;
 

@@ -9,6 +9,7 @@ import java.util.TreeSet;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 public class StoreModel extends ContentNodeModelImpl {
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = -7256497583339960753L;
 
 	private List<DepartmentModel> departments = new ArrayList<DepartmentModel>();
@@ -16,7 +17,11 @@ public class StoreModel extends ContentNodeModelImpl {
 	private List<Domain> domains;
 	private List<MyFD> myfds = new ArrayList<MyFD>();
 	private List<PageModel> pages = new ArrayList<PageModel>();
-
+	private List<SortOptionModel> searchPageSortOptions =  new ArrayList<SortOptionModel>();
+	private List<SortOptionModel> newProductsPageSortOptions =  new ArrayList<SortOptionModel>();	
+	private List<SortOptionModel> presidentsPicksPageSortOptions =  new ArrayList<SortOptionModel>();
+	private List<SortOptionModel> eCouponsPageSortOptions =  new ArrayList<SortOptionModel>();
+	
 	public StoreModel(com.freshdirect.cms.ContentKey cKey) {
 		super(cKey);
 	}
@@ -74,4 +79,39 @@ public class StoreModel extends ContentNodeModelImpl {
 		return new ArrayList<PageModel>( pages );
 	}
 	
+    public List<SortOptionModel> getSearchPageSortOptions() {
+        ContentNodeModelUtil.refreshModels(this, "searchPageSortOptions", searchPageSortOptions, false);
+        return new ArrayList<SortOptionModel>(searchPageSortOptions);
+    }
+
+    public List<SortOptionModel> getNewProductsPageSortOptions() {
+        ContentNodeModelUtil.refreshModels(this, "newProductsPageSortOptions", newProductsPageSortOptions, false);
+        return new ArrayList<SortOptionModel>(newProductsPageSortOptions);
+    }
+
+    public List<SortOptionModel> getPresidentsPicksPageSortOptions() {
+        ContentNodeModelUtil.refreshModels(this, "presidentsPicksPageSortOptions", presidentsPicksPageSortOptions, false);
+        return new ArrayList<SortOptionModel>(presidentsPicksPageSortOptions);
+    }
+
+    public List<SortOptionModel> getECouponsPageSortOptions() {
+        ContentNodeModelUtil.refreshModels(this, "eCouponsPageSortOptions", eCouponsPageSortOptions, false);
+        return new ArrayList<SortOptionModel>(eCouponsPageSortOptions);
+    }
+    
+	public Html getEcouponsPageTopMediaBanner() {
+		return FDAttributeFactory.constructHtml(this, "eCouponsPageTopMediaBanner");
+	}
+	
+	public Html getSearchPageTopMediaBanner() {
+		return FDAttributeFactory.constructHtml(this, "searchPageTopMediaBanner");
+	}
+	
+	public Html getNewProductsPageTopMediaBanner() {
+		return FDAttributeFactory.constructHtml(this, "newProductsPageTopMediaBanner");
+	}
+	
+	public Html getPresidentPicksPageTopMediaBanner() {
+		return FDAttributeFactory.constructHtml(this, "presPicksPageTopMediaBanner");
+	}
 }

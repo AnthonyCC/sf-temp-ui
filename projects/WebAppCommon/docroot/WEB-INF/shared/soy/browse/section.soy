@@ -37,6 +37,9 @@
  * @param level deepness level
  * @param lastLevel max deepness
  * @param? filterLabels list of content filter labels
+ * @param? numProducts
+ * @param? fromProducts
+ * @param? noFilterTags
  */
 {template .section autoescape="false"}
 {let $isSuperDeptPage : $section.departments and length($section.departments) > 0 /}
@@ -74,13 +77,15 @@
     {if $section.headerText}
         <h2 class="{if $level == $lastLevel}last{elseif $level == 1}first{/if}">{$section.headerText}</h2>
     {/if}
-    <div class="browse-filtertags">
-    {if $filterLabels and $level == 1}
+    {if not $noFilterTags}
+      <div class="browse-filtertags">
+      {if $filterLabels and $level == 1}
         {call browse.filterTags}
           {param filterLabels:$filterLabels /}
         {/call}
+      {/if}
+      </div>
     {/if}
-    </div>
     {if $section.headerImage}<img src="{$section.headerImage}">{/if}
     {if $section.media}<div class="media">{$section.media}</div>{/if}
     
@@ -97,16 +102,38 @@
       {/if}
 
       {if $section.products}
-        {let $l: length($section.products) /}
+        {let $len: length($section.products) /}
+        {let $nProducts: $numProducts ? ($numProducts < $len ? $numProducts : $len) : $len /}
+        {let $fProducts: $fromProducts ? $fromProducts : 0 /}
+        {let $l: $nProducts - $fProducts /}
         {let $lines: ceiling($l / 5) /}
         {for $line in range(0, $lines)}
           <ul class="products{if $line == $lines - 1} lastLine{/if}">
             {for $col in range(0, 5)}
-              {if $col + $line * 5 < $l}
-                {let $product: $section.products[$col + $line * 5] /}
+              {if $fProducts + $col + $line * 5 < $nProducts}
+                {let $product: $section.products[$fProducts + $col + $line * 5] /}
                 {call common.transactionalGridItem}
                   {param item:$product /}
-                  {param extraClass:(($col != 4 and $col + $line * 5 != $l - 1) ? 'browseTransactionalProduct' : 'browseTransactionalProduct lastInLine') /}
+                  {param extraClass:(($col != 4 and $fProducts + $col + $line * 5 != $nProducts - 1) ? 'browseTransactionalProduct' : 'browseTransactionalProduct lastInLine') /}
+                {/call}
+              {/if}
+            {/for}
+          </ul>
+        {/for}
+      {elseif $section.recipes}
+        {let $len: length($section.recipes) /}
+        {let $nProducts: $numProducts ? ($numProducts < $len ? $numProducts : $len) : $len /}
+        {let $fProducts: $fromProducts ? $fromProducts : 0 /}
+        {let $l: $nProducts - $fProducts /}
+        {let $lines: ceiling($l / 5) /}
+        {for $line in range(0, $lines)}
+          <ul class="products{if $line == $lines - 1} lastLine{/if}">
+            {for $col in range(0, 5)}
+              {if $fProducts + $col + $line * 5 < $nProducts}
+                {let $recipe: $section.recipes[$fProducts + $col + $line * 5] /}
+                {call common.recipeItem}
+                  {param item:$recipe /}
+                  {param extraClass:(($col != 4 and $col + $line * 5 != $nProducts - 1) ? 'browseTransactionalProduct' : 'browseTransactionalProduct lastInLine') /}
                 {/call}
               {/if}
             {/for}

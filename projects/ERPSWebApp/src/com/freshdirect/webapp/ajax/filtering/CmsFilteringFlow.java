@@ -2,27 +2,55 @@ package com.freshdirect.webapp.ajax.filtering;
 
 import java.net.URLEncoder;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
+import com.freshdirect.content.nutrition.ErpNutritionInfoType;
+import com.freshdirect.content.nutrition.NutritionValueEnum;
+import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDKosherInfo;
+import com.freshdirect.fdstore.FDProduct;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ProductModelPromotionAdapter;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
+import com.freshdirect.fdstore.content.AbstractProductItemFilter;
+import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.Html;
+import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.PopulatorUtil;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductContainer;
+import com.freshdirect.fdstore.content.ProductItemFilterI;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeDepartment;
 import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SuperDepartmentModel;
+import com.freshdirect.fdstore.content.browse.filter.BrandFilter;
+import com.freshdirect.fdstore.content.browse.filter.ContentNodeFilter;
+import com.freshdirect.fdstore.content.util.SmartSearchUtils;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
+import com.freshdirect.webapp.ajax.browse.SearchPageType;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.CarouselDataCointainer;
 import com.freshdirect.webapp.ajax.browse.data.BrowseDataContext;
@@ -32,11 +60,13 @@ import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
 import com.freshdirect.webapp.ajax.browse.data.PagerData;
 import com.freshdirect.webapp.ajax.browse.paging.BrowseDataPagerHelper;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringServlet.BrowseEvent;
+import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
+import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.util.MediaUtils;
 
 public class CmsFilteringFlow {
 	
-	@SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getInstance( CmsFilteringFlow.class );
 	
 	private static String FALLBACK_URL = "/";
@@ -49,6 +79,7 @@ public class CmsFilteringFlow {
 	public CmsFilteringFlowResult doFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException{
 		
 		BrowseDataContext browseDataContext = null;
+		BrowseData browseData = null;
 		
 		BrowseEvent event = nav.getBrowseEvent()!=null ? BrowseEvent.valueOf(nav.getBrowseEvent().toUpperCase()) : BrowseEvent.NOEVENT;
 
@@ -65,127 +96,410 @@ public class CmsFilteringFlow {
 			}
 		}
 		
-		if (browseDataContext == null) {
-			if (nav.isBrowseRequest()) {
+		if (nav.getPageType() == FilteringFlowType.BROWSE) {
+			
+			if (browseDataContext == null) {
 				browseDataContext = doBrowseFlow(nav, user);
-			} else if (nav.isSearchRequest()) {
-				browseDataContext = doSearchFlow(nav, user);
+			}
+			
+			if(!nav.isPdp()){
+				EhCacheUtil.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, user.getUser().getPrimaryKey(), browseDataContext);				
+			}
+			
+			// -- SORTING -- (not on pdp or super department page)
+			if(!nav.isPdp() && !(browseDataContext.getCurrentContainer() instanceof SuperDepartmentModel)){
+				// process sort options
+				BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav, user);			
+			}
+				
+			// -- REMOVE EMPTY SECTIONS --
+			
+			browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
+			if (!browseDataContext.getNavigationModel().isSuperDepartment() && !FDStoreProperties.getPreviewMode()) {
+				BrowseDataBuilderFactory.getInstance().removeEmptySections(browseData.getSections().getSections(), browseDataContext.getMenuBoxes().getMenuBoxes());
+			}
+			
+			// -- REMOVE MENU BOXES WITH NULL SELECTION --
+			MenuBuilderFactory.getInstance().checkNullSelection(browseDataContext.getMenuBoxes().getMenuBoxes());
+			
+							
+			if(!nav.isPdp()){
+				
+				// -- PAGING --
+				BrowseDataPagerHelper.createPagerContext(browseData, nav);
+				Set<ContentKey> shownProductKeysForRecommender = new HashSet<ContentKey>();
+				BrowseDataBuilderFactory.getInstance().collectAllProductKeysForRecommender(browseData.getSections().getSections(), shownProductKeysForRecommender);
+				// -- SET NO PRODUCTS MESSAGE --
+				if(shownProductKeysForRecommender.size()==0 && browseDataContext.getNavigationModel().isProductListing()){
+					browseData.getSections().setAllSectionsEmpty(true);
+				}
+
+				//only display recommenders if on last page
+				PagerData pagerData = browseData.getPager();
+				if (pagerData.isAll() || pagerData.getActivePage() == pagerData.getPageCount()){
+					boolean disableCategoryYmalRecommender = browseDataContext.getCurrentContainer() instanceof ProductContainer && ((ProductContainer) browseDataContext.getCurrentContainer()).isDisableCategoryYmalRecommender();
+					BrowseDataBuilderFactory.getInstance().appendCarousels(browseData, user, shownProductKeysForRecommender, disableCategoryYmalRecommender);
+				} else { //remove if already added
+					CarouselDataCointainer carousels = browseData.getCarousels();
+					carousels.setCarousel1(null);
+					carousels.setCarousel2(null);
+				}
+				
+				browseData.getDescriptiveContent().setUrl(URLEncoder.encode(nav.assembleQueryString()));
+				browseData.getDescriptiveContent().setNavDepth(browseDataContext.getNavigationModel().getNavDepth().name());
+				browseData.getDescriptiveContent().setContentId(nav.getId());
+				browseData.getSortOptions().setCurrentOrderAsc(nav.isOrderAscending());		
+				
+				// -- CALCULATE SECTION MAX LEVEL --
+				BrowseDataBuilderFactory.getInstance().calculateMaxSectionLevel(browseData.getSections(), browseData.getSections().getSections(), 0);
+			}
+
+		} else if (nav.getPageType() != FilteringFlowType.BROWSE) {
+			
+			if (browseDataContext == null) {
+				browseDataContext = doSearchLikeFlow(nav, user);
+			}
+			EhCacheUtil.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, user.getUser().getPrimaryKey(), browseDataContext);				
+			
+			BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav, user);			
+				
+			browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
+			
+				
+			// -- PAGING --
+			BrowseDataPagerHelper.createPagerContext(browseData, nav);
+	
+			//Update product hit counts
+//			for (BrowseData.SearchParams.Tab tab : browseData.getSearchParams().getTabs()) {
+//				if ("product".equalsIgnoreCase(nav.getActiveTab())) {
+//					int hits = browseData.getPager().getItemCount();
+//					tab.setHits(hits);
+//					tab.setFilteredHits(filteredHits);
+//				}
+//			}
+			
+			BrowseDataBuilderFactory.getInstance().appendSearchLikeCarousel(browseData, user, nav.getPageType(), nav.getActiveTab());
+			
+			browseData.getDescriptiveContent().setUrl(URLEncoder.encode(nav.assembleQueryString()));
+			browseData.getSortOptions().setCurrentOrderAsc(nav.isOrderAscending());
+			
+			populateSearchCarouselProductLimit(nav.getActivePage(), browseDataContext);
+		}
+
+		return new CmsFilteringFlowResult(browseData, browseDataContext.getNavigationModel());
+	}
+
+	private void populateSearchCarouselProductLimit(int activePage,
+			BrowseDataContext browseDataContext) {
+		final int searchCarouselProductLimit;
+		if (activePage == 0) {
+			searchCarouselProductLimit = 0;
+		} else {
+			searchCarouselProductLimit = FDStoreProperties.getSearchCarouselProductLimit();
+		}
+		browseDataContext.getSections().setLimit(searchCarouselProductLimit);
+	}		
+
+	public BrowseDataContext doSearchLikeFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException{
+		NavigationModel navigationModel = new NavigationModel();
+		SearchResults searchResults = ContentSearch.getInstance().searchProducts(nav.getSearchParams() == null ? "" : nav.getSearchParams()); //TODO this shouldn't be done when not on search page
+
+		switch (nav.getPageType()) { //TODO warning
+			case SEARCH:
+				collectSearchRelevancyScores(searchResults);
+				break;
+			case NEWPRODUCTS:
+				searchResults = SearchResultsUtil.getNewProducts(nav, user);
+				break;
+			case ECOUPON:
+				searchResults = SearchResultsUtil.getProductsWithCoupons(user);
+				break;
+			case PRES_PICKS:
+				searchResults = SearchResultsUtil.getPresidentsPicksProducts(nav);
+				break;
+		}
+		
+		SearchPageType searchPageType = SearchPageType.PRODUCT; //default behavior
+		if ("recipe".equalsIgnoreCase(nav.getActiveTab())) {
+			processRecipes(navigationModel, searchResults);
+			searchPageType = SearchPageType.RECIPE;
+		} else {
+			processProducts(navigationModel, searchResults);
+			searchPageType = SearchPageType.PRODUCT; //TODO why is this set again?
+		}
+
+		setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
+
+		BrowseDataContext browseDataContext = BrowseDataBuilderFactory.createBuilder(null, navigationModel.isSuperDepartment(), searchPageType).buildBrowseData(navigationModel, user, nav);
+		
+		// if we are on recipe tab but there is no search result, it should fallback to products
+		if ("recipe".equalsIgnoreCase(nav.getActiveTab()) && 0 == nav.getRecipeHits()) {
+			nav.setActiveTab("product");
+			navigationModel.setRecipeListing(false);
+			navigationModel.getRecipeResults().clear();
+			processProducts(navigationModel, searchResults);
+			searchPageType = SearchPageType.PRODUCT;
+			setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
+			browseDataContext = BrowseDataBuilderFactory.createBuilder(null, navigationModel.isSuperDepartment(), searchPageType).buildBrowseData(navigationModel, user, nav);
+		}
+		
+		//refresh context sensitive filters
+		if (navigationModel.getActiveFilters().size() > 0 && searchPageType == SearchPageType.PRODUCT && browseDataContext.getSectionContexts().size() > 0) {
+			refreshResultDependantFilters(navigationModel, browseDataContext.getSectionContexts().get(0).getProductItems());
+			setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
+		}
+		
+		browseDataContext.setNavigationModel(navigationModel);
+		MenuBuilderI menuBuilder = MenuBuilderFactory.createBuilderByPageType(null, navigationModel.isSuperDepartment(), searchPageType);
+		// create menu
+		navigationModel.setLeftNav(menuBuilder.buildMenu(navigationModel.getAllFilters(), navigationModel, nav));
+		if (!navigationModel.isSuperDepartment()) { //don't do these in case of super department page
+			// menu availability check
+			MenuBuilderFactory.getInstance().checkMenuStatus(browseDataContext, navigationModel, user);
+		}
+		browseDataContext.getMenuBoxes().setMenuBoxes(navigationModel.getLeftNav());
+		BrowseData.DescriptiveDataCointainer descriptiveContent = browseDataContext.getDescriptiveContent();
+		switch (nav.getPageType()) { //TODO warning
+			case SEARCH:
+				String pageTitle = nav.getSearchParams() == null ? "" : " - " + nav.getSearchParams();
+				descriptiveContent.setPageTitle("FreshDirect - Search" + pageTitle);
+				descriptiveContent.setOasSitePage("www.freshdirect.com/search");
+				Html searchPageTopMediaBanner = ContentFactory.getInstance().getStore().getSearchPageTopMediaBanner();
+				if (searchPageTopMediaBanner != null) {
+					descriptiveContent.setMedia(MediaUtils.renderHtmlToString(searchPageTopMediaBanner, user));
+					descriptiveContent.setMediaLocation("TOP");
+				}
+				break;
+			case ECOUPON:
+				descriptiveContent.setPageTitle("FreshDirect - Coupon Circular Page");
+				descriptiveContent.setOasSitePage("www.freshdirect.com/ecoupon");
+				Html ecouponsPageTopMediaBanner = ContentFactory.getInstance().getStore().getEcouponsPageTopMediaBanner();
+				if (ecouponsPageTopMediaBanner != null) {
+					descriptiveContent.setMedia(MediaUtils.renderHtmlToString(ecouponsPageTopMediaBanner, user));
+					descriptiveContent.setMediaLocation("TOP");
+				}
+				break;
+			case PRES_PICKS:
+				descriptiveContent.setPageTitle("FreshDirect - President's Picks");
+				descriptiveContent.setOasSitePage(ContentFactory.getInstance().getContentNode(nav.getId()).getPath());
+				Html presidentPicksPageTopMediaBanner = ContentFactory.getInstance().getStore().getPresidentPicksPageTopMediaBanner();
+				if (presidentPicksPageTopMediaBanner != null) {
+					descriptiveContent.setMedia(MediaUtils.renderHtmlToString(presidentPicksPageTopMediaBanner, user));
+					descriptiveContent.setMediaLocation("TOP");
+				}
+				break;
+			case NEWPRODUCTS:
+				descriptiveContent.setPageTitle("FreshDirect - New products");
+				descriptiveContent.setOasSitePage("www.freshdirect.com/newproducts");
+				Html newProductsPageTopMediaBanner = ContentFactory.getInstance().getStore().getNewProductsPageTopMediaBanner();
+				if (newProductsPageTopMediaBanner != null) {
+					descriptiveContent.setMedia(MediaUtils.renderHtmlToString(newProductsPageTopMediaBanner, user));
+					descriptiveContent.setMediaLocation("TOP");
+				}
+				break;
+		}
+		browseDataContext.getSearchParams().setSearchParams(nav.getSearchParams());
+		browseDataContext.getSearchParams().setSuggestions((List<String>)searchResults.getSpellingSuggestions());
+		browseDataContext.getSearchParams().setSearchTerm(searchResults.getSuggestedTerm());
+		buildTabs(browseDataContext, searchResults, nav);
+		browseDataContext.getSearchParams().setPageType(nav.getPageType());
+		if (FilteringFlowType.NEWPRODUCTS.equals(nav.getPageType())) {
+			browseDataContext.getSearchParams().setNumberOfNewProducts(searchResults.getProducts().size());
+		}
+
+		//set ddpp products for 'search like' pages
+		for (ProductModel product : searchResults.getDDPPProducts()) {
+			try {
+				ProductData productData = ProductDetailPopulator.createProductData(user, product);
+				productData.setFeatured(((ProductModelPromotionAdapter)product).isFeatured());
+				productData.setFeaturedHeader(((ProductModelPromotionAdapter)product).getFeaturedHeader());
+				browseDataContext.getDDPPProducts().getProducts().add(productData);
+			} catch (FDResourceException e) {
+				LOG.warn("Getting DDPP products failed!", e);
+			} catch (FDSkuNotFoundException e) {
+				LOG.warn("Getting DDPP products failed!", e);
+			} catch (HttpErrorResponse e) {
+				LOG.warn("Getting DDPP products failed!", e);
 			}
 		}
-		
-		if(!nav.isPdp()){
-			EhCacheUtil.putObjectToCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, user.getUser().getPrimaryKey(), browseDataContext);				
-		}
-		
-		// -- SORTING -- (not on pdp or super department page)
-		if(!nav.isPdp() && !(browseDataContext.getCurrentContainer() instanceof SuperDepartmentModel)){
-			// process sort options
-			BrowseDataBuilderFactory.getInstance().processSorting(browseDataContext, nav);			
-		}
-			
-		// -- REMOVE EMPTY SECTIONS --
-		
-		BrowseData browseData = browseDataContext.extractBrowseDataPrototype(user, nav);
-		if (!browseDataContext.getNavigationModel().isSuperDepartment() && !FDStoreProperties.getPreviewMode()) {
-			BrowseDataBuilderFactory.getInstance().removeEmptySections(browseData.getSections().getSections(), browseDataContext.getMenuBoxes().getMenuBoxes());
-		}
-		
-		// -- REMOVE MENU BOXES WITH NULL SELECTION --
-		MenuBuilderFactory.getInstance().checkNullSelection(browseDataContext.getMenuBoxes().getMenuBoxes());
-		
+
 		// -- RELOCATE BRAND FILTER BASED ON CMS SETTING
 		if(browseDataContext.getNavigationModel().getBrandFilterLocation()!=null){
 			MenuBuilderFactory.getInstance().relocateBrandFilter(browseDataContext.getMenuBoxes().getMenuBoxes(),  browseDataContext.getNavigationModel().getBrandFilterLocation());			
 		}
 		
 		// populate browseData with filterLabels
-		BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, browseDataContext.getNavigationModel());
+		BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
+		
+		return browseDataContext;
+	}
 
-		if(!nav.isPdp()){
-			
-			// -- PAGING --
-			BrowseDataPagerHelper.createPagerContext(browseData, nav);
-			Set<ContentKey> shownProductKeysForRecommender = new HashSet<ContentKey>();
-			BrowseDataBuilderFactory.getInstance().collectAllProductKeysForRecommender(browseData.getSections().getSections(), shownProductKeysForRecommender);
-			// -- SET NO PRODUCTS MESSAGE --
-			if(shownProductKeysForRecommender.size()==0 && browseDataContext.getNavigationModel().isProductListing()){
-				browseData.getSections().setAllSectionsEmpty(true);
-			}
+	private void setupAllAndActiveFiltersForNavigationModel(CmsFilteringNavigator nav, FDSessionUser user, NavigationModel navigationModel) {
+		navigationModel.setAllFilters(NavigationUtil.createSearchFilterGroups(navigationModel, nav, user));
+		navigationModel.setActiveFilters(NavigationUtil.selectActiveFilters(navigationModel.getAllFilters(), nav));
+	}
 
-			//only display recommenders if on last page
-			PagerData pagerData = browseData.getPager();
-			if (pagerData.isAll() || pagerData.getActivePage() == pagerData.getPageCount()){
-                boolean disableCategoryYmalRecommender = browseDataContext.getCurrentContainer() instanceof ProductContainer && ((ProductContainer) browseDataContext.getCurrentContainer()).isDisableCategoryYmalRecommender();
-				BrowseDataBuilderFactory.getInstance().appendCarousels(browseData, user, shownProductKeysForRecommender, disableCategoryYmalRecommender);
-			} else { //remove if already added
-				CarouselDataCointainer carousels = browseData.getCarousels();
-				carousels.setCarousel1(null);
-				carousels.setCarousel2(null);
-			}
-			
-			browseData.getDescriptiveContent().setUrl(URLEncoder.encode(nav.assembleQueryString()));
-			browseData.getDescriptiveContent().setNavDepth(browseDataContext.getNavigationModel().getNavDepth().name());
-			browseData.getDescriptiveContent().setContentId(nav.getId());
-			browseData.getSortOptions().setCurrentOrderAsc(nav.isOrderAscending());		
-			
-			// -- CALCULATE SECTION MAX LEVEL --
-			BrowseDataBuilderFactory.getInstance().calculateMaxSectionLevel(browseData.getSections(), browseData.getSections().getSections(), 0);
+	private void processRecipes(NavigationModel navigationModel, SearchResults recipeResults) {
+		navigationModel.setRecipeListing(true);
+		for (FilteringSortingItem<Recipe> recipe : recipeResults.getRecipes()) {
+			Recipe recipeModel = recipe.getModel();
+			navigationModel.getRecipeResults().add(recipeModel);
 		}
-			
-		return new CmsFilteringFlowResult(browseData, browseDataContext.getNavigationModel());
-	}		
-
-	public BrowseDataContext doSearchFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException{
-		
-		BrowseDataContext browseDataContext = null;
-		
-		SearchResults results = ContentSearch.getInstance().searchProducts(nav.getSearchParams());
-		
-		//TODO: mocked navigation model...
-		NavigationModel navigationModel = new NavigationModel();
-		navigationModel.setProductListing(true);
-
-		for (FilteringSortingItem<ProductModel> searchResult : results.getProducts()) {
-			ProductModel product = searchResult.getModel();
-			navigationModel.getSearchResults().add(product);
-			navigationModel.getDepartmentsOfSearchResults().put(product.getDepartment().getContentName(), product.getDepartment());
-			CategoryModel categoryModel = product.getCategory();
-			if (categoryModel.getParentNode() instanceof DepartmentModel) { //Category
-				navigationModel.getCategoriesOfSearchResults().put(categoryModel.getContentName(), categoryModel);
+	}
+	
+	private void buildTabs(BrowseDataContext browseDataContext, SearchResults results, CmsFilteringNavigator cmsFilteringNavigator) {
+		switch (cmsFilteringNavigator.getPageType()) {
+		case SEARCH:
+			if ("recipe".equalsIgnoreCase(cmsFilteringNavigator.getActiveTab())) {
+				browseDataContext.getSearchParams().buildTabs("Products", "product", results.getProducts().size(), results.getProducts().size(), false);
+				browseDataContext.getSearchParams().buildTabs("Recipes", "recipe", results.getRecipes().size(), cmsFilteringNavigator.getRecipeHits(), true);
 			} else {
-				if (categoryModel.getParentNode().getParentNode() instanceof DepartmentModel) { //Subcategory
-					navigationModel.getSubCategoriesOfSearchResults().put(categoryModel.getContentName(), categoryModel);
-					navigationModel.getCategoriesOfSearchResults().put(categoryModel.getParentNode().getContentName(), (CategoryModel)categoryModel.getParentNode());
-				} else { //Subsubcategory
-					navigationModel.getSubCategoriesOfSearchResults().put(categoryModel.getParentNode().getContentName(), (CategoryModel)categoryModel.getParentNode());
-					navigationModel.getCategoriesOfSearchResults().put(categoryModel.getParentNode().getParentNode().getContentName(), (CategoryModel)categoryModel.getParentNode().getParentNode());
+				browseDataContext.getSearchParams().buildTabs("Products", "product", results.getProducts().size(), Math.min(results.getProducts().size(), cmsFilteringNavigator.getProductHits()), true); //Math.min ~ workaround for product losses because of non existent default sku
+				if (0 < results.getRecipes().size()) {
+					browseDataContext.getSearchParams().buildTabs("Recipes", "recipe", results.getRecipes().size(), results.getRecipes().size(), false);
+				}
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
+	/**Collecting search results, filtering info and sort options for search results*/
+	private void processActiveFilters(NavigationModel navigationModel) {
+		BrandFilter selectedBrandFilter = null;
+		AbstractProductItemFilter selectedShowMeOnlyFilter = null;
+		
+		for (ProductItemFilterI productFilter : navigationModel.getActiveFilters()) {
+			if (productFilter instanceof BrandFilter) {
+				selectedBrandFilter = (BrandFilter)productFilter;
+			}
+			if (!(productFilter instanceof BrandFilter) && !(productFilter instanceof ContentNodeFilter)) { //aka showMeOnlyFilter
+				selectedShowMeOnlyFilter = (AbstractProductItemFilter)productFilter; //TODO what more than one show me only filter is selected?
+			}
+		}
+		navigationModel.getShowMeOnlyOfSearchResults().clear();
+		navigationModel.getBrandsOfSearchResults().clear();
+		if (selectedBrandFilter != null) {
+			navigationModel.getBrandsOfSearchResults().put(selectedBrandFilter.getBrand().getContentName(), selectedBrandFilter.getBrand());
+		}
+		if (selectedShowMeOnlyFilter != null) {
+			navigationModel.getShowMeOnlyOfSearchResults().add(selectedShowMeOnlyFilter.getId());
+		}
+	}
+	
+	/**based on ProductsFilterImpl.createComparator() and FilteringComparatorUtil.createProductComparator()*/
+	private void collectSearchRelevancyScores(SearchResults searchResults){
+		String suggestedTerm = NVL.apply(searchResults.getSuggestedTerm(), searchResults.getSearchTerm());
+		List<FilteringSortingItem<ProductModel>> products = searchResults.getProducts();
+		
+		// if there's only one DYM then we display products for that DYM
+		// but for those products we have to use the suggested term to produce the following scores
+		SmartSearchUtils.collectOriginalTermInfo(products, suggestedTerm);
+		SmartSearchUtils.collectRelevancyCategoryScores(products, suggestedTerm);
+		SmartSearchUtils.collectTermScores(products, suggestedTerm);
+	}
+	
+	private void processProducts(NavigationModel navigationModel, SearchResults searchResults) {
+		navigationModel.setProductListing(true);
+				
+		Iterator<FilteringSortingItem<ProductModel>> iterator = searchResults.getProducts().iterator();
+		while (iterator.hasNext()) {
+			FilteringSortingItem<ProductModel> result = iterator.next();
+			ProductModel product = result.getModel();
+			
+			try {
+				collectBrandAndShowMeOnlyFilters(navigationModel, product);  //TODO is this necessary when refreshResultDependantFilters() will run as well?
+			} catch (FDException e) {
+				LOG.error("Filtering setup failed: " + e.getMessage());
+				iterator.remove();
+			}
+
+			navigationModel.getSearchResults().add(result);
+			collectDepartmentAndCategoryFilters(navigationModel, product);
+		}
+	}
+
+	private void refreshResultDependantFilters(NavigationModel navigationModel, List<FilteringProductItem> results) {
+		processActiveFilters(navigationModel);
+		
+		Iterator<FilteringProductItem> iterator = results.iterator();
+		while (iterator.hasNext()) {
+			ProductModel product = iterator.next().getProductModel();
+			
+			try {
+				collectBrandAndShowMeOnlyFilters(navigationModel, product);
+			} catch (FDException e) {
+				LOG.error("Filtering setup failed: " + e.getMessage());
+				iterator.remove();
+			}
+		}
+	}
+	
+	private void collectBrandAndShowMeOnlyFilters(NavigationModel navigationModel, ProductModel product) throws FDResourceException, FDSkuNotFoundException {
+		for (BrandModel brandModel : product.getBrands()) {
+			navigationModel.getBrandsOfSearchResults().put(brandModel.getContentName(), brandModel);
+		}
+		if (product.isNew()) {
+			navigationModel.getShowMeOnlyOfSearchResults().add("new");
+		}
+		FDProduct fdProduct = PopulatorUtil.getDefSku(product).getProduct();
+		
+		int NON_KOSHER_PRI = 999;
+		FDKosherInfo kInfo = fdProduct.getKosherInfo();
+		int kosherPriority = kInfo != null ? kInfo.getPriority() : NON_KOSHER_PRI;
+		if (EnumKosherSymbolValue.NONE.getPriority() < kosherPriority && kosherPriority < NON_KOSHER_PRI) {
+			navigationModel.getShowMeOnlyOfSearchResults().add("kosher");
+		}
+		List<? extends NutritionValueEnum> nutritionInfo = fdProduct.getNutritionInfoList(ErpNutritionInfoType.ORGANIC);
+		if (nutritionInfo != null) {
+			for (NutritionValueEnum nutritionValueEnum : nutritionInfo) {
+				if (nutritionValueEnum.getCode().equals(ErpNutritionInfoType.ORGANIC)) {
+					navigationModel.getShowMeOnlyOfSearchResults().add("organic");
 				}
 			}
 		}
 		
-		navigationModel.setAllFilters(NavigationUtil.createSearchFilterGroups(navigationModel, nav, user));
+		final PriceCalculator pricing = product.getPriceCalculator(ContentFactory.getInstance().getCurrentPricingContext());
+		if (pricing.getDealPercentage() > 0 || pricing.getTieredDealPercentage() > 0 || pricing.getGroupPrice() != 0.0) {
+			navigationModel.getShowMeOnlyOfSearchResults().add("onsale");
+		}
+	}
+	
+	private void collectDepartmentAndCategoryFilters(NavigationModel navigationModel, ProductModel product) {
 
-		// select active filters
-		navigationModel.setActiveFilters(NavigationUtil.selectActiveFilters(navigationModel.getAllFilters(), nav));
-		
-		browseDataContext = BrowseDataBuilderFactory.createBuilder(null, navigationModel.isSuperDepartment(), nav.isSearchRequest()).buildBrowseData(navigationModel, user, nav);
+		Set<ContentKey> parentKeys = ContentNodeModelUtil.getAllParentKeys(product.getContentKey(), true);
 
-		browseDataContext.setNavigationModel(navigationModel);
-
-		MenuBuilderI menuBuilder = MenuBuilderFactory.createBuilderByPageType(null, navigationModel.isSuperDepartment(), nav.isSearchRequest());
-
-		// create menu
-		navigationModel.setLeftNav(menuBuilder.buildMenu(navigationModel.getAllFilters(), navigationModel, nav));
-
-		browseDataContext.getMenuBoxes().setMenuBoxes(navigationModel.getLeftNav());
-		
-		BrowseData.DescriptiveDataCointainer descriptiveContent = browseDataContext.getDescriptiveContent();
-		descriptiveContent.setPageTitle("FreshDirect - Search - " + nav.getSearchParams());
-
-		return browseDataContext;
-
+		for (ContentKey contentKey : parentKeys) {
+			if ("Department".equals(contentKey.getType().getName())) {
+				DepartmentModel departmentModel = (DepartmentModel) ContentFactory.getInstance().getContentNode(contentKey.getId());
+				if (departmentModel.isSearchable()) {
+					navigationModel.getDepartmentsOfSearchResults().put(departmentModel.getContentName(), departmentModel);
+				}
+			} else if ("Category".equals(contentKey.getType().getName())) {
+				CategoryModel categoryModel = (CategoryModel) ContentFactory.getInstance().getContentNode(contentKey.getId());
+				if (categoryModel.getParentNode() instanceof DepartmentModel) { //Category
+					if (categoryModel.isSearchable()) {
+						navigationModel.getCategoriesOfSearchResults().put(categoryModel.getContentName(), categoryModel);
+					}
+				} else {
+					if (categoryModel.getParentNode() != null && categoryModel.getParentNode().getParentNode() instanceof DepartmentModel) { //Subcategory
+						if (categoryModel.isSearchable()) {
+							navigationModel.getSubCategoriesOfSearchResults().put(categoryModel.getContentName(), categoryModel);
+							navigationModel.getCategoriesOfSearchResults().put(categoryModel.getParentNode().getContentName(), (CategoryModel)categoryModel.getParentNode());
+						}
+					} else if (categoryModel.getParentNode() != null && categoryModel.getParentNode().getParentNode() != null) { //Subsubcategory
+						if (categoryModel.isSearchable()) {
+							navigationModel.getSubCategoriesOfSearchResults().put(categoryModel.getParentNode().getContentName(), (CategoryModel)categoryModel.getParentNode());
+							navigationModel.getCategoriesOfSearchResults().put(categoryModel.getParentNode().getParentNode().getContentName(), (CategoryModel)categoryModel.getParentNode().getParentNode());
+						}
+					}
+				}
+			}
+		}
 	}
 
+	
 	public BrowseDataContext doBrowseFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException{
 		
 		BrowseDataContext browseDataContext = null;
@@ -205,7 +519,7 @@ public class CmsFilteringFlow {
 		NavigationModel navigationModel = NavigationUtil.createNavigationModel(contentNodeModel, nav, user);
 		
 		// filtering and grouping
-		browseDataContext = BrowseDataBuilderFactory.createBuilder(navigationModel.getNavDepth(), navigationModel.isSuperDepartment(), nav.isSearchRequest()).buildBrowseData(navigationModel, user, nav);
+		browseDataContext = BrowseDataBuilderFactory.createBuilder(navigationModel.getNavDepth(), navigationModel.isSuperDepartment(), null).buildBrowseData(navigationModel, user, nav);
 
 		// inject references
 		browseDataContext.setNavigationModel(navigationModel);
@@ -221,11 +535,19 @@ public class CmsFilteringFlow {
 		final ContentNodeModel departmentorSuperDepartment = getDepartmentOrSuperDepartment(contentNodeModel, navigationModel);
 		browseDataContext.getMenuBoxes().setMenuName(departmentorSuperDepartment.getFullName());
 		browseDataContext.getMenuBoxes().setMenuId(departmentorSuperDepartment.getContentKey().getId());
-		
+
 		// -- POPULATE EXTRA DATA --
 		
 		// populate browseData with breadcrumbs
 		BrowseDataBuilderFactory.getInstance().populateWithBreadCrumbAndDesciptiveContent(browseDataContext, navigationModel);
+		
+		// -- RELOCATE BRAND FILTER BASED ON CMS SETTING
+		if(browseDataContext.getNavigationModel().getBrandFilterLocation()!=null){
+			MenuBuilderFactory.getInstance().relocateBrandFilter(browseDataContext.getMenuBoxes().getMenuBoxes(),  browseDataContext.getNavigationModel().getBrandFilterLocation());			
+		}
+
+		// populate browseData with filterLabels
+		BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
 		
 		return browseDataContext;
 	}

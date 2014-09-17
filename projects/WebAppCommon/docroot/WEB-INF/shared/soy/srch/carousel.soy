@@ -1,15 +1,24 @@
 {namespace srch}
 /**
- * @param? carousel carousel
  * @param? carousel1 carousel1
+ * @param? carousel2 carousel2
+ * @param? carousel3 carousel3
  */
 {template .carouselWrapper autoescape="false"}
-  {if $carousel or $carousel1}
-  <div class="carousel">
+  {if $carousel1}
     {call .carousel}
-      {param carousel: $carousel ? $carousel : $carousel1 /}
+      {param carousel: $carousel1 /}
     {/call}
-  </div>
+  {/if}
+  {if $carousel2}
+    {call .carousel}
+      {param carousel: $carousel2 /}
+    {/call}
+  {/if}
+  {if $carousel3}
+    {call .carousel}
+      {param carousel: $carousel3 /}
+    {/call}
   {/if}
 {/template}
 
@@ -18,6 +27,7 @@
  */
 {template .carousel autoescape="false"}
   {if $carousel}
+  <div class="carousel">
   <div class="carousel-header">
     <h2>{$carousel.name}</h2>
   </div>
@@ -27,6 +37,7 @@
       {param itemType:'grid' /}
       {param cmEventSource:$carousel.cmEventSource /}
     {/call}
+  </div>
   </div>
   {/if}
 {/template}

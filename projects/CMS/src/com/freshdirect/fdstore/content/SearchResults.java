@@ -49,6 +49,7 @@ public class SearchResults implements Serializable, Cloneable {
 	}
 	
 	private final List<FilteringSortingItem<ProductModel>> products;
+	private List<ProductModel> ddppProducts = new ArrayList<ProductModel>(); //ddpp products on 'search like' pages
 	private final List<FilteringSortingItem<Recipe>> recipes;
 	private final List<FilteringSortingItem<CategoryModel>> categories;
 	private boolean phrase; // tells whether the original search was quoted or not
@@ -173,5 +174,13 @@ public class SearchResults implements Serializable, Cloneable {
 				return false;
 
 		return true;
+	}
+
+	public List<ProductModel> getDDPPProducts() {
+		return ddppProducts;
+	}
+
+	public void setDDPPProducts(List<ProductModel> ddppProducts) {
+		this.ddppProducts = ddppProducts;
 	}
 }

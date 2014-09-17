@@ -1,0 +1,43 @@
+{namespace srch}
+/**
+ * @param? sections sections
+ * @param? sectionMaxLevel The max depth of sections starting by 1
+ * @param? allSectionsEmpty all sections are empty
+ * @param? usePopularCategoriesLayout
+ * @param? filterLabels
+ * @param? limit
+ */
+{template .topContent autoescape="false"}
+{let $l: $limit or $limit == 0 ? $limit : 25 /}
+{call browse.content}
+  {param sections:$sections /}
+  {param sectionMaxLevel:$sectionMaxLevel /}
+  {param allSectionsEmpty:$allSectionsEmpty /}
+  {param usePopularCategoriesLayout:$usePopularCategoriesLayout /}
+  {param filterLabels:$filterLabels /}
+  {param numProducts:$l /}
+{/call}
+{/template}
+
+/**
+ * @param? sections sections
+ * @param? sectionMaxLevel The max depth of sections starting by 1
+ * @param? limit
+ */
+{template .bottomContent autoescape="false"}
+{let $l: $limit or $limit == 0 ? $limit : 25 /}
+{if $sections and $l != 0}
+  <div class="browseContent">
+    {foreach $section in $sections}
+      {call browse.section}
+        {param section:$section /}
+        {param lastLevel:$sectionMaxLevel /}
+        {param level:1 /}
+        {param fromProducts:$l /}
+        {param noFilterTags:true /}
+      {/call}
+    {/foreach}
+  </div>
+{/if}
+{/template}
+

@@ -1,5 +1,4 @@
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 
@@ -19,8 +18,8 @@
 <potato:browse/>
 
 <%-- OAS variables --%>
-<c:set var="sitePage" scope="request" value="www.freshdirect.com/search.jsp" />
-<c:set var="listPos" scope="request" value="SystemMessage,LittleRandy,CategoryNote" />
+<c:set var="sitePage" scope="request" value="${empty browsePotato.descriptiveContent.oasSitePage ? 'www.freshdirect.com/search.jsp' : browsePotato.descriptiveContent.oasSitePage }" />
+<c:set var="listPos" scope="request" value="SystemMessage,LittleRandy,CategoryNote,PPHeader,PPHeader2,PPSuperBuy,PPLeftBottom,PPMidBottom,PPRightBottom" />
 
 <tmpl:insert template='/common/template/browse_template.jsp'>
   <tmpl:put name='cmeventsource' direct='true'>SEARCH</tmpl:put>
@@ -36,34 +35,42 @@
     <jwr:style src="/srch.css"/>
   </tmpl:put>
 
-  <tmpl:put name='containerExtraClass' direct='true'>srch</tmpl:put>
+  <tmpl:put name='containerExtraClass' direct='true'>srch ${empty browsePotato.menuBoxes.menuBoxes ? 'emptymenu' : ''}</tmpl:put>
 
   <tmpl:put name='title'>${browsePotato.descriptiveContent.pageTitle}</tmpl:put>
+  
+  <tmpl:put name='pageType'>${browsePotato.searchParams.pageType}</tmpl:put>
 
   <tmpl:put name='deptnav' direct='true'>
     <div class="srch-header">
-      <h1>Search Results</h1>
-      <div class="oas-cnt" id="oas_b_CategoryNote"><script type="text/javascript">OAS_AD('CategoryNote');</script></div>
+      <soy:render template="browse.topMedia" data="${browsePotato.descriptiveContent}" />
+      <soy:render template="srch.header" data="${browsePotato.searchParams}" />
     </div>
   </tmpl:put>
 
   <tmpl:put name='tabs' direct='true'>
-    <section class="itemcount">
-      <b>321</b> products found for <b>apple</b>
+    <section class="page-type">
+        <soy:render template="browse.pageType" data="${browsePotato.searchParams}" />
+    </section>
+    <section class="srch-ddpp">
+        <soy:render template="srch.ddppWrapper" data="${browsePotato.ddppproducts}" />
+    </section>
+    <section class="ddpp-oas">
+      <div class="oas-cnt PPSuperBuy" id="oas_b_PPSuperBuy">
+        <script type="text/javascript">
+            OAS_AD('PPSuperBuy');
+        </script>
+      </div>
     </section>
     <nav class="tabs">
-      <li class="active" data-type="products"><span>Products <i>(12)</i></span></li>
-      <li data-type="recipes"><span>Recipes <i>(4)</i></span></li>
+      <soy:render template="srch.searchTabs" data="${browsePotato.searchParams}" />
     </nav>
-    <section class="tabcontent">
-      <div class="search-input">
-        <input type="search" placeholder="Search the store" data-component="autocomplete" autocomplete="off"/>
-        <button class="cssbutton khaki">search</button>
-      </div>
-      <div class="pager-holder">
-        <soy:render template="browse.pager" data="${browsePotato.pager}" />
-      </div>
+    <section class="itemcount">
+      <soy:render template="srch.searchSuggestions" data="${browsePotato.searchParams}" />
     </section>
+    <div class="search-input">
+      <soy:render template="srch.searchParams" data="${browsePotato.searchParams}" />
+    </div>
   </tmpl:put>
 
   <tmpl:put name='leftnav' direct='true'>
@@ -73,6 +80,10 @@
   </tmpl:put>
 
   <tmpl:put name='content' direct='true'>
+    <div class="pager-holder top">
+      <soy:render template="browse.pager" data="${browsePotato.pager}" />
+    </div>
+
     <div id="sorter">
       <soy:render template="browse.sortBar" data="${browsePotato.sortOptions}" />
     </div>
@@ -81,8 +92,20 @@
       <soy:render template="browse.filterTags" data="${browsePotato.filterLabels}" />
     </div>
 
-    <div class="browse-sections transactional">
-      <soy:render template="browse.content" data="${browsePotato.sections}" />
+    <div class="browse-sections-top transactional">
+      <soy:render template="srch.topContent" data="${browsePotato.sections}" />
+    </div>
+
+    <div class="srch-carousel">
+      <soy:render template="srch.carouselWrapper" data="${browsePotato.carousels}" />
+    </div>
+    
+    <div class="browse-sections-bottom transactional">
+      <soy:render template="srch.bottomContent" data="${browsePotato.sections}" />
+    </div>
+
+    <div class="pager-holder bottom">
+      <soy:render template="browse.pager" data="${browsePotato.pager}" />
     </div>
     
     <script>
@@ -97,12 +120,42 @@
   </tmpl:put>
 
   <tmpl:put name='bottom' direct='true'>
-    <div class="pager-holder">
-      <soy:render template="browse.pager" data="${browsePotato.pager}" />
-    </div>
-    
-    <div class="srch-carousel">
-      <soy:render template="srch.carouselWrapper" data="${browsePotato.carousels}" />
+    <div class="ddpp-bottom">
+            <hr class="ddpp-hr top" />
+            <table class="ddppBotAds">
+                <tr>
+                    <td align="center" colspan="3" class='ddppBotAd-width'>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center">
+                        <div class="oas-cnt PPLeftBottom" id="oas_b_PPLeftBottom">
+                            <script type="text/javascript">
+                                    OAS_AD('PPLeftBottom');
+                            </script>
+                        </div>
+                    </td>
+                    <td align="center" class="ddppBotAd-sep">
+                        <div class="PPMidBottom" id="oas_b_PPMidBottom">
+                            <script type="text/javascript">
+                                    OAS_AD('PPMidBottom');
+                            </script>
+                        </div>
+                    </td>
+                    <td align="center">
+                        <div class="PPRightBottom" id="oas_b_PPRightBottom">
+                            <script type="text/javascript">
+                                    OAS_AD('PPRightBottom');
+                            </script>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <hr class="ddpp-hr bottom" />
+            <center class="legaltext">
+            New President's Picks items are available weekly. Prices and the selection of items are subject to change without notice. Sorry, no rain checks. Offers expire each Wednesday at 11:59 p.m. and promotional pricing will be removed from orders after that time. Offer is nontransferable.<br><br>
+            Wines and spirits sold by FreshDirect Wines &amp; Spirits. Alcohol cannot be delivered outside of New York state. Beer, wine and spirits will be removed from your cart during checkout if an out of state address is selected for delivery. The person receiving your delivery must have identification proving they are over the age of 21 and will be asked for their signature.
+            </center>
     </div>
   </tmpl:put>
 

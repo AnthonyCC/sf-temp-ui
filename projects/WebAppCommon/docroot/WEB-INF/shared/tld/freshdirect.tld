@@ -5631,4 +5631,18 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	<tag>
+		<name>SearchRedesignRedirector</name>
+		<tagclass>com.freshdirect.webapp.search.SearchRedesignRedirectorTag</tagclass>
+		<attribute>
+			<name>user</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>pageType</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 </taglib>

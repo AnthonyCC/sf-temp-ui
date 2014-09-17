@@ -8,11 +8,13 @@ import org.apache.log4j.Logger;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
+import com.freshdirect.webapp.ajax.product.data.RecipeData;
 
 public class SectionContext extends SectionData {
 
@@ -24,6 +26,9 @@ public class SectionContext extends SectionData {
 	
 	@JsonIgnore
 	private List<FilteringProductItem> productItems;
+	
+	@JsonIgnore
+	private List<FilteringProductItem> recipeItems;
 	
 	@JsonIgnore
 	private List<SectionContext> sectionContexts;
@@ -66,8 +71,28 @@ public class SectionContext extends SectionData {
 			this.setProducts(productDatas);			
 		}
 		
+		if (recipeItems != null) {
+			List<RecipeData> recipesData = new ArrayList<RecipeData>();
+			for (FilteringProductItem recipeItem : recipeItems) {
+				Recipe recipe = recipeItem.getRecipe();
+				RecipeData recipeData = createRecipeData(recipe);
+				recipesData.add(recipeData);
+			}
+			this.setRecipes(recipesData);
+		}
+		
 		return this;
 		
+	}
+
+	private RecipeData createRecipeData(Recipe recipe) {
+		RecipeData result = new RecipeData();
+		result.setContentName(recipe.getContentName());
+		result.setImagePath(recipe.getPhoto());
+		result.setFullName(recipe.getFullName());
+		result.setRecipeSourceName(recipe.getSource());
+		result.setRecipeAuthors(recipe.getSource());
+		return result;
 	}
 
 	public List<FilteringProductItem> getProductItems() {
@@ -92,6 +117,14 @@ public class SectionContext extends SectionData {
 
 	public void setSpecial(boolean special) {
 		this.special = special;
+	}
+
+	public List<FilteringProductItem> getRecipeItems() {
+		return recipeItems;
+	}
+
+	public void setRecipeItems(List<FilteringProductItem> recipeItems) {
+		this.recipeItems = recipeItems;
 	}
 
 }

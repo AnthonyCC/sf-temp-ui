@@ -13,13 +13,15 @@
 /media_stat/images/bursts/brst_sm_fave.png
 {case 'new'}
 /media_stat/images/bursts/brst_sm_new.png
+{case 'back'}
+/media_stat/images/bursts/brst_sm_bis.png
 {/switch}
 {elseif $deal > 0}
 /media_stat/images/deals/brst_sm_{$deal}.png
 {/if}
 {/let}
 {if $burst}
-<img class="burst" src="{$burst}">
+<img class="burst {if $badge}{$badge}{/if}" src="{$burst}">
 {/if}
 {if $usq}<span id="burst-wine-" name="burst-wine" class="burst-wine"></span>{/if}
 {/template}

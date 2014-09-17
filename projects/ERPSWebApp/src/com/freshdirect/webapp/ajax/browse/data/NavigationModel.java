@@ -7,14 +7,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.CategorySectionModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.EnumBrandFilterLocation;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.ProductFilterGroupI;
 import com.freshdirect.fdstore.content.ProductItemFilterI;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 
@@ -73,12 +76,16 @@ public class NavigationModel {
 	private List<CategoryModel> preferenceCategories;
 	private List<CategoryModel> popularCategories;
 	private List<CategorySectionModel> categorySections;
-	private List<ProductModel> searchResults = new ArrayList<ProductModel>();
+	private List<FilteringSortingItem<ProductModel>> searchResults = new ArrayList<FilteringSortingItem<ProductModel>>();
+	private List<Recipe> recipeResults = new ArrayList<Recipe>();
 	private Map<String, DepartmentModel> departmentsOfSearchResults = new HashMap<String, DepartmentModel>();
 	private Map<String, CategoryModel> categoriesOfSearchResults = new HashMap<String, CategoryModel>();
 	private Map<String, CategoryModel> subCategoriesOfSearchResults = new HashMap<String, CategoryModel>();
+	private Map<String, BrandModel> brandsOfSearchResults = new HashMap<String, BrandModel>();
+	private Set<String> showMeOnlyOfSearchResults = new HashSet<String>();
 	private List<DepartmentModel> departmentsOfSuperDepartment;
 	private boolean productListing;
+	private boolean recipeListing;
 	private EnumBrandFilterLocation brandFilterLocation;
 	
 	public NavDepth getNavDepth() {
@@ -174,7 +181,7 @@ public class NavigationModel {
 	public void setCategorySections(List<CategorySectionModel> categorySections) {
 		this.categorySections = categorySections;
 	}
-	public List<ProductModel> getSearchResults() {
+	public List<FilteringSortingItem<ProductModel>> getSearchResults() {
 		return searchResults;
 	}
 	public Map<String, DepartmentModel> getDepartmentsOfSearchResults() {
@@ -195,8 +202,34 @@ public class NavigationModel {
 	public void setSubCategoriesOfSearchResults(Map<String, CategoryModel> subCategoriesOfSearchResults) {
 		this.subCategoriesOfSearchResults = subCategoriesOfSearchResults;
 	}
-	public void setSearchResults(List<ProductModel> searchResults) {
+	public void setSearchResults(List<FilteringSortingItem<ProductModel>> searchResults) {
 		this.searchResults = searchResults;
+	}
+	public Map<String, BrandModel> getBrandsOfSearchResults() {
+		return brandsOfSearchResults;
+	}
+	public void setBrandsOfSearchResults(Map<String, BrandModel> brandsOfSearchResults) {
+		this.brandsOfSearchResults = brandsOfSearchResults;
+	}
+	public Set<String> getShowMeOnlyOfSearchResults() {
+		return showMeOnlyOfSearchResults;
+	}
+	public void setShowMeOnlyOfSearchResults(Set<String> showMeOnlyOfSearchResults) {
+		this.showMeOnlyOfSearchResults = showMeOnlyOfSearchResults;
+	}
+	
+	public boolean isRecipeListing() {
+		return recipeListing;
+	}
+	
+	public void setRecipeListing(boolean recipeListing) {
+		this.recipeListing = recipeListing;
+	}
+	public List<Recipe> getRecipeResults() {
+		return recipeResults;
+	}
+	public void setRecipeResults(List<Recipe> recipeResults) {
+		this.recipeResults = recipeResults;
 	}
 	public EnumBrandFilterLocation getBrandFilterLocation() {
 		return brandFilterLocation;
@@ -204,5 +237,4 @@ public class NavigationModel {
 	public void setBrandFilterLocation(EnumBrandFilterLocation brandFilterLocation) {
 		this.brandFilterLocation = brandFilterLocation;
 	}
-	
 }

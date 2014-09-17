@@ -11,7 +11,11 @@ public class NewProductFilter extends AbstractProductItemFilter {
 	public NewProductFilter(ProductFilterModel model, String parentId) {
 		super(model, parentId);
 	}
-
+	
+	public NewProductFilter(String id, String parentId, String name) { //'virtual' newProductFilter for search page 
+		super(id, parentId, name);
+	}
+	
 	@Override
 	public boolean apply(FilteringProductItem ctx) throws FDResourceException {
 		if (ctx == null || ctx.getProductModel() == null) {

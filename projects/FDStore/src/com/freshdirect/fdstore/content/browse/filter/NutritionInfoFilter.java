@@ -35,6 +35,11 @@ public abstract class NutritionInfoFilter extends AbstractProductItemFilter {
 		this.claimCode = claimCode;
 	}
 
+	public NutritionInfoFilter(String id, String parentId, String claimCode, String name) { //'virtual' nutritionFilter for search page 
+		super(id, parentId, name);
+		this.claimCode = claimCode;
+	}
+
 	protected abstract ErpNutritionInfoType getType();
 	
 	protected Collection<? extends NutritionValueEnum> getValues(FDProduct prd) {

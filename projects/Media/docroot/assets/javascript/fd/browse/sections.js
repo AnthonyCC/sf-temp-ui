@@ -1,4 +1,4 @@
-/*global jQuery,browse*/
+/*global jQuery,browse,srch*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
@@ -76,6 +76,35 @@ var FreshDirect = FreshDirect || {};
     }
   });
   
+  if (window.srch) {
+    var topSections = Object.create(WIDGET,{
+      signal:{
+        value:'sections'
+      },
+      template:{
+        value:srch.topContent
+      },
+      placeholder:{
+        value:'.browse-sections-top'
+      }
+    });
+
+    var bottomSections = Object.create(WIDGET,{
+      signal:{
+        value:'sections'
+      },
+      template:{
+        value:srch.bottomContent
+      },
+      placeholder:{
+        value:'.browse-sections-bottom'
+      }
+    });
+
+    topSections.listen();
+    bottomSections.listen();
+  }
+
   certonaResonaceTagPopulate.listen();
   sections.listen();
   superSections.listen();

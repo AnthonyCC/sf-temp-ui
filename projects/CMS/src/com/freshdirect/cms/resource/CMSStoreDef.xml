@@ -136,6 +136,30 @@
 			<RelationshipDef name="globalNavigations" label="Global Navigations" navigable="true" cardinality="Many">
 				<DestinationDef contentType="GlobalNavigation" />
 			</RelationshipDef>
+			<RelationshipDef name="searchPageSortOptions" cardinality="Many" label="Search Page Sort Options">
+				<DestinationDef contentType="SortOption" />
+			</RelationshipDef>
+			<RelationshipDef name="newProductsPageSortOptions" cardinality="Many" label="New Products Page Sort Options">
+				<DestinationDef contentType="SortOption" />
+			</RelationshipDef>
+			<RelationshipDef name="presidentsPicksPageSortOptions" cardinality="Many" label="President's Picks Page Sort Options">
+				<DestinationDef contentType="SortOption" />
+			</RelationshipDef>
+			<RelationshipDef name="eCouponsPageSortOptions" cardinality="Many" label="e-Coupons Page Sort Options">
+				<DestinationDef contentType="SortOption" />
+			</RelationshipDef>
+			<RelationshipDef name="eCouponsPageTopMediaBanner" cardinality="One" label="e-Coupons Page Top Media Banner">
+			    <DestinationDef contentType="Html"/>
+			</RelationshipDef>
+			<RelationshipDef name="searchPageTopMediaBanner" cardinality="One" label="Search Page Top Media Banner">
+                <DestinationDef contentType="Html"/>
+            </RelationshipDef>
+            <RelationshipDef name="newProductsPageTopMediaBanner" cardinality="One" label="New Products Page Top Media Banner">
+                <DestinationDef contentType="Html"/>
+            </RelationshipDef>
+            <RelationshipDef name="presPicksPageTopMediaBanner" cardinality="One" label="President Picks Page Top Media Banner">
+                <DestinationDef contentType="Html"/>
+            </RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
 
@@ -2286,6 +2310,14 @@
 				<EnumValue value="PRICE" label="Price"/>
 				<EnumValue value="SALE" label="Sale"/>
 				<EnumValue value="SUSTAINABILITY_RATING" label="Sustainability Rating"/>
+				<EnumValue value="DEPARTMENT" label="Department"/>
+				<EnumValue value="E_COUPON_DOLLAR_DISCOUNT" label="e-Coupon Dollar Discount"/>
+				<EnumValue value="E_COUPON_EXPIRATION_DATE" label="e-Coupon Expiration Date"/>
+				<EnumValue value="E_COUPON_PERCENT_DISCOUNT" label="e-Coupon Percent Discount"/>
+				<EnumValue value="E_COUPON_POPULARITY" label="e-Coupon Popularity"/>
+				<EnumValue value="E_COUPON_START_DATE" label="e-Coupon Start Date"/>
+				<EnumValue value="RECENCY" label="Recency"/>
+				<EnumValue value="SEARCH_RELEVANCY" label="Search Relevancy"/>				
 			</EnumDef>
 		</AttributeDefs>
 	</ContentTypeDef>

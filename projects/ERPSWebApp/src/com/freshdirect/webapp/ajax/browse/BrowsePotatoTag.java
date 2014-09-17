@@ -53,6 +53,7 @@ public class BrowsePotatoTag extends SimpleTagSupport{
 					nav.setSpecialPage(true);
 				}
 				nav.setId(nodeId);
+				nav.parseFilteringFlowType(request);
 			}
 			FDSessionUser user = (FDSessionUser) ((PageContext) getJspContext()).getSession().getAttribute(SessionName.USER);
 			
@@ -78,7 +79,7 @@ public class BrowsePotatoTag extends SimpleTagSupport{
 				}
 					
 				default:
-					LOGGER.error("Invalid arguments on page " + request.getRequestURL() + " redirecting to " + e.getRedirectUrl() + ". Message: " +e.getMessage());
+					LOGGER.error("Invalig arguments on page " + request.getRequestURL() + " redirecting to " + e.getRedirectUrl() + ". Message: " +e.getMessage());
 					((HttpServletResponse)ctx.getResponse()).sendRedirect(e.getRedirectUrl());
 					break;
 			}
@@ -115,5 +116,5 @@ public class BrowsePotatoTag extends SimpleTagSupport{
 	public void setSpecialLayout(boolean specialLayout) {
 		this.specialLayout = specialLayout;
 	}
-	
+
 }

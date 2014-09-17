@@ -165,7 +165,22 @@ public class ProductData extends BasicProductData implements SkuData {
 	private String nutritionSortValue;
 	private String nutritionServingSizeValue;
 	
+	private boolean isFeatured;
+	private String featuredHeader;
 	
+	public boolean isFeatured() {
+		return isFeatured;
+	}
+	public void setFeatured(boolean isFeatured) {
+		this.isFeatured = isFeatured;
+	}
+	public String getFeaturedHeader() {
+		return featuredHeader;
+	}
+	public void setFeaturedHeader(String featuredHeader) {
+		this.featuredHeader = featuredHeader;
+	}
+
 	@Override
 	public double getPrice() {
 		return price;

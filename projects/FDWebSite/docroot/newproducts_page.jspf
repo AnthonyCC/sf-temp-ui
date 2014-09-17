@@ -24,6 +24,7 @@
 <%@ page import="com.freshdirect.fdstore.util.NewProductsGrouping"%>
 <%@ page import="com.freshdirect.fdstore.util.TimeRange"%>
 <%@ page import="com.freshdirect.fdstore.content.util.QueryParameterCollection"%>
+<%@ page import='com.freshdirect.webapp.ajax.browse.FilteringFlowType' %>
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='bean' prefix='bean'%>
 <%@ taglib uri='logic' prefix='logic'%>
@@ -37,6 +38,8 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 %>
 
 <fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" id="user" />
+<fd:SearchRedesignRedirector user="<%=user%>" pageType="<%=FilteringFlowType.NEWPRODUCTS%>"/>
+
 <%  
 
 	// copied from the old search.jsp:

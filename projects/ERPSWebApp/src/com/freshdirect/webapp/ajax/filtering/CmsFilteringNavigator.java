@@ -19,6 +19,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.JsonHelper;
+import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CmsFilteringNavigator {
@@ -56,8 +57,16 @@ public class CmsFilteringNavigator {
 	private ErpNutritionType.Type erpNutritionTypeType;
 	
 	//search query param
-	private String searchParams;
+	private String searchParams = null;
 	
+	private String activeTab = "product";
+	
+	private FilteringFlowType pageType = null;
+	
+	private String ppPreviewId = null;
+	
+	private int productHits = 0;
+	private int recipeHits = 0;
 	/**
 	 * Creates a CmsFilteringNavigator instance out of request parameter map.
 	 * 
@@ -76,6 +85,7 @@ public class CmsFilteringNavigator {
 		Map<String, String[]> paramMap = request.getParameterMap();
 		Set<String> paramNames = new TreeSet<String>(paramMap.keySet()); 
 		CmsFilteringNavigator cmsFilteringNavigator = null;
+		Integer parsedPageSize = null;
 		if (paramMap.get("data") != null && !"".equals(paramMap.get("data"))) {
 
 			try {
@@ -97,9 +107,7 @@ public class CmsFilteringNavigator {
 				for (String paramValue : paramValues) {
 				
 					if("pageSize".equalsIgnoreCase(param)) {
-		
-						cmsFilteringNavigator.setPageSize(Integer.parseInt(paramValue));
-					
+						parsedPageSize = Integer.parseInt(paramValue);
 					} else if("all".equalsIgnoreCase(param)) {
 		
 						cmsFilteringNavigator.setAll(Boolean.parseBoolean(paramValue.toLowerCase()));
@@ -127,7 +135,19 @@ public class CmsFilteringNavigator {
 					} else if("searchParams".equalsIgnoreCase(param)) {
 						
 						cmsFilteringNavigator.setSearchParams(paramValue);
-					
+						
+					} else if("ppPreviewId".equalsIgnoreCase(param)) {
+						
+						cmsFilteringNavigator.setPpPreviewId(paramValue);
+						
+					} else if("activeTab".equalsIgnoreCase(param)) {
+						
+						cmsFilteringNavigator.setActiveTab(paramValue.toLowerCase());
+						
+					} else if("pageType".equalsIgnoreCase(param)) {
+
+						//Do nothing but exclude from 'filtering params'
+
 					} else { //No match for any other CmsFilteringNavigator property => must be a filtering domain
 						
 						String filteringDomainId = param;
@@ -144,8 +164,33 @@ public class CmsFilteringNavigator {
 		}
 
 		String id = cmsFilteringNavigator.getId();
-		String searchParams = cmsFilteringNavigator.getSearchParams();
-		if ((id == null || id.equals("")) && (searchParams == null || "".equals(searchParams))) {
+
+		cmsFilteringNavigator.parseFilteringFlowType(request);
+		final int pageSpecificPageSize;
+		if (parsedPageSize != null) {
+			pageSpecificPageSize = parsedPageSize;
+		} else {
+			switch (cmsFilteringNavigator.pageType) {
+			case NEWPRODUCTS:
+				pageSpecificPageSize = FDStoreProperties.getNewProductsPageSize();
+				break;
+			case ECOUPON:
+				pageSpecificPageSize = FDStoreProperties.getEcouponPageSize();
+				break;
+			case PRES_PICKS:
+				pageSpecificPageSize = FDStoreProperties.getPresPicksPageSize();
+				break;
+			case SEARCH:
+				pageSpecificPageSize = FDStoreProperties.getSearchPageSize();
+				break;
+			default:
+				pageSpecificPageSize = FDStoreProperties.getBrowsePageSize();
+				break;
+			}
+		}
+		cmsFilteringNavigator.setPageSize(pageSpecificPageSize);
+		
+		if ((id == null || id.equals("")) && (cmsFilteringNavigator.getPageType().equals(FilteringFlowType.BROWSE) || cmsFilteringNavigator.getPageType().equals(FilteringFlowType.PRES_PICKS))) {
 			throw new InvalidFilteringArgumentException("ID parameter is null", InvalidFilteringArgumentException.Type.CANNOT_DISPLAY_NODE);
 		}
 		
@@ -159,12 +204,22 @@ public class CmsFilteringNavigator {
 		
 		StringBuffer queryString = new StringBuffer();
 		
-		if (id != null && !"".equals(id)) {
-			queryString.append("id=").append(id);
-		} else if (searchParams != null && !"".equals(searchParams)) {
-			queryString.append("searchParams=").append(searchParams);
-		} 
+		queryString.append("pageType=").append(pageType.toString().toLowerCase());
 		queryString.append("&");
+		switch (pageType)  {
+			case BROWSE:
+				queryString.append("id=").append(id);
+				queryString.append("&");
+				break;
+			case PRES_PICKS:
+				queryString.append("id=").append(id);
+				queryString.append("&");
+				break;
+			case SEARCH:
+				queryString.append("searchParams=").append(searchParams);
+				queryString.append("&");
+				break;
+		}
 		queryString.append("pageSize=").append(pageSize);
 		queryString.append("&");
 		queryString.append("all=").append(all);
@@ -175,6 +230,13 @@ public class CmsFilteringNavigator {
 		queryString.append("&");
 		queryString.append("orderAsc=").append(isOrderAscending);
 		queryString.append("&");
+		queryString.append("activeTab=").append(activeTab);
+		queryString.append("&");
+		
+		if (ppPreviewId != null && ppPreviewId.length() > 0) {
+			queryString.append("ppPreviewId=").append(ppPreviewId);
+			queryString.append("&");
+		}
 		for (String filteringDomainId : requestFilterParams.keySet()) {
 			
 			StringBuffer filteringIds = new StringBuffer();
@@ -294,21 +356,64 @@ public class CmsFilteringNavigator {
 
 	public void setSearchParams(String searchParams) {
 		this.searchParams = searchParams;
-	}	
+	}
 	
-	public boolean isBrowseRequest() {
-		if (id != null && !"".equals(id)) {
-			return true;
-		} else {
-			return false;
+	public void setActiveTab(String activeTab) {
+		this.activeTab = activeTab;
+	}
+	
+	public String getActiveTab() {
+		return activeTab;
+	}
+
+	public FilteringFlowType getPageType() {
+		return pageType;
+	}
+
+
+	public void setPageTypeType(FilteringFlowType pageType) {
+		this.pageType = pageType;
+	}
+	
+	public void parseFilteringFlowType(HttpServletRequest request) {
+		String pageTypeReqParam = request.getParameter("pageType");
+		if (pageTypeReqParam == null && pageType != null) {
+			pageTypeReqParam = pageType.toString().toLowerCase();
+		}
+		if (FilteringFlowType.PRES_PICKS.toString().equalsIgnoreCase(pageTypeReqParam)) {
+			pageType = FilteringFlowType.PRES_PICKS;
+		} else if (id != null && !"".equals(id) || FilteringFlowType.BROWSE.toString().equalsIgnoreCase(pageTypeReqParam)) {
+			pageType = FilteringFlowType.BROWSE;
+		} else if (FilteringFlowType.NEWPRODUCTS.toString().equalsIgnoreCase(pageTypeReqParam)) {
+			pageType = FilteringFlowType.NEWPRODUCTS;
+		} else if (FilteringFlowType.ECOUPON.toString().equalsIgnoreCase(pageTypeReqParam)) {
+			pageType = FilteringFlowType.ECOUPON;
+		} else if (request.getRequestURI().equals("/srch.jsp") || searchParams != null || FilteringFlowType.SEARCH.toString().equalsIgnoreCase(pageTypeReqParam)) {
+			pageType = FilteringFlowType.SEARCH;
 		}
 	}
 
-	public boolean isSearchRequest() {
-		if (searchParams != null && !"".equals(searchParams)) {
-			return true;
-		} else {
-			return false;
-		}
+	public void setProductHits(int productHits) {
+		this.productHits = productHits;
+	}
+	
+	public int getProductHits() {
+		return productHits;
+	}
+	
+	public void setRecipeHits(int recipeHits) {
+		this.recipeHits = recipeHits;
+	}
+	
+	public int getRecipeHits() {
+		return recipeHits;
+	}
+
+	public String getPpPreviewId() {
+		return ppPreviewId;
+	}
+
+	public void setPpPreviewId(String ppPreviewId) {
+		this.ppPreviewId = ppPreviewId;
 	}
 }

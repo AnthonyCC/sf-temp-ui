@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.freshdirect.webapp.ajax.product.data.ProductData;
+import com.freshdirect.webapp.ajax.product.data.RecipeData;
 import com.freshdirect.webapp.globalnav.data.DepartmentData;
 
 public class SectionData implements Serializable, DescriptiveDataI {
@@ -20,6 +21,7 @@ public class SectionData implements Serializable, DescriptiveDataI {
 	private List<CategoryData> categories;
 	private List<DepartmentData> departments;
 	private List<SectionData> sections;
+	private List<RecipeData> recipes;
 
 	public String getHeaderText() {
 		return headerText;
@@ -91,6 +93,11 @@ public class SectionData implements Serializable, DescriptiveDataI {
 	public void setMiddleMedia(String middleMedia) {
 		this.middleMedia=middleMedia;
 	}
-	
+	public List<RecipeData> getRecipes() {
+		return recipes;
+	}
+	public void setRecipes(List<RecipeData> recipes) {
+		this.recipes = recipes;
+	}
 	
 }

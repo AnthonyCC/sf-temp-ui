@@ -36,6 +36,7 @@ import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
+import com.freshdirect.webapp.taglib.smartstore.Impression;
 
 public class ProductRecommenderUtil {
 	
@@ -284,7 +285,31 @@ public class ProductRecommenderUtil {
 		return recommendations;
 	}
 	
-	
+	public static Recommendations getSearchPageRecommendations(FDUserI user, ProductData product) throws FDResourceException {
+
+		Recommendations recommendations = null;
+		if (user.getIdentity() != null){ //try personal if user is identified
+			// Round #1 - Get personalized recommendations (Scarab 'Personalized Items')
+			recommendations = doRecommend(user, null, EnumSiteFeature.getEnum("SRCH"), 16, null, null);
+		}
+		
+		if ((recommendations == null || recommendations.getAllProducts().size() == 0) && product != null) {
+			// Round #2 - Get YMAL recommendations triggered by the first product from the selection
+			//   (Scarab 'Also Viewed' recommender backfilled with local SmartYMAL)
+
+			SessionInput si = new SessionInput.Builder()
+					.setUser(user)
+					.setExcludeAlcoholicContent(false)
+					.setMaxRecommendations(16)
+					.setCurrentNode(ContentFactory.getInstance().getContentNode(product.getProductId()))
+					.build();
+
+			recommendations = doRecommend(user, EnumSiteFeature.getEnum("SRCH_RLTD"), si);
+		}
+
+		return recommendations;
+	}
+
 	/**
 	 * Provide upsell product list for a given products.
 	 * It also ensures no invalid or unavailable product is yielded.

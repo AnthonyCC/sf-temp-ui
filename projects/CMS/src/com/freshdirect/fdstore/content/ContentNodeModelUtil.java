@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.content;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -421,19 +422,23 @@ public class ContentNodeModelUtil {
 	}
 	
 	public static Set<ContentKey> getAllParentKeys(ContentKey key) {
+		return getAllParentKeys(key, false);
+	}
+	
+	public static Set<ContentKey> getAllParentKeys(ContentKey key, boolean excludeNotSearchable) {
 		Set<ContentKey> allParents = new HashSet<ContentKey>();
-		loadAllParentKeys(key, allParents);
+		loadAllParentKeys(key, allParents, excludeNotSearchable);
 		return Collections.unmodifiableSet(allParents);
 	}
 	
-	private static void loadAllParentKeys(ContentKey key, Set<ContentKey> allParents) {
+	private static void loadAllParentKeys(ContentKey key, Set<ContentKey> allParents, boolean excludeNotSearchable) {
 		Set<ContentKey> s = ContentFactory.getInstance().getParentKeys(key);
 		if ( s != null && !s.isEmpty() ) {
 			for ( ContentKey nextKey : s ) {
-				loadAllParentKeys(nextKey, allParents);
 				ContentNodeModel cn = ContentFactory.getInstance().getContentNodeByKey(nextKey);
-				//Remove the parent nodes that are hidden.
-				if(!cn.isHidden()){
+				if(!cn.isHidden() && !(excludeNotSearchable && !cn.isSearchable())){
+					loadAllParentKeys(nextKey, allParents, excludeNotSearchable);
+					//Remove the parent nodes that are hidden.
 					allParents.add(nextKey);
 				}
 			}

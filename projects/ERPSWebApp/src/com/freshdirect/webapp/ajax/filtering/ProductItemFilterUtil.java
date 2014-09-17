@@ -11,10 +11,13 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.FilteringProductItem;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.ProductFilterGroupI;
 import com.freshdirect.fdstore.content.ProductItemFilterI;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
 import com.freshdirect.webapp.ajax.browse.data.SectionContext;
 
 public class ProductItemFilterUtil {
@@ -23,7 +26,7 @@ public class ProductItemFilterUtil {
 	private static final Logger LOG = LoggerFactory.getInstance( ProductItemFilterUtil.class );
 	
 	
-	public static List<FilteringProductItem> getFilteredProducts(List<FilteringProductItem> items, Set<ProductItemFilterI> activeFilters, boolean showUnavProducts) {
+	public static List<FilteringProductItem> getFilteredProducts(List<FilteringProductItem> items, Set<ProductItemFilterI> activeFilters, boolean showUnavProducts, boolean isProductListing) {
 		
 		if(items==null){
 			return null;
@@ -34,7 +37,7 @@ public class ProductItemFilterUtil {
 		for (FilteringProductItem productItem : items){
 			
 			// don't count unavailable items
-			if(!showUnavProducts && (productItem.getProductModel() == null || !productItem.getProductModel().isFullyAvailable())){
+			if(isProductListing && !showUnavProducts && (productItem.getProductModel() == null || !productItem.getProductModel().isFullyAvailable())){
 				continue;
 			}
 			
@@ -105,8 +108,8 @@ public class ProductItemFilterUtil {
 		return result;
 	}
 	
-	public static List<FilteringProductItem> createFilteringProductItems(List<ProductModel> products){
 		
+	public static List<FilteringProductItem> createFilteringProductItems(List<ProductModel> products){
 		List<FilteringProductItem> items = new ArrayList<FilteringProductItem>();
 		
 		for(ProductModel prod : products){
@@ -114,8 +117,27 @@ public class ProductItemFilterUtil {
 				items.add(new FilteringProductItem(prod));
 			}
 		}
-		
 		return items;
+	}
+
+	public static List<FilteringProductItem> createFilteringProductItemsFromSearchResults(List<FilteringSortingItem<ProductModel>> searchResults){
+		List<FilteringProductItem> items = new ArrayList<FilteringProductItem>();
+		
+		for(FilteringSortingItem<ProductModel> searchResult : searchResults){
+			ProductModel prod = searchResult.getModel();
+			if (!prod.isHidden() && !prod.isInvisible()){ //remove those which never should be displayed
+				items.add(new FilteringProductItem(searchResult));
+			}
+		}
+		return items;
+	}
+	
+	public static List<FilteringProductItem> createFilteringRecipeItems(List<Recipe> recipes) {
+		List<FilteringProductItem> results = new ArrayList<FilteringProductItem>();
+		for (Recipe recipe : recipes) {
+			results.add(new FilteringProductItem(recipe));
+		}
+		return results;
 	}
 	
 	/**
@@ -123,15 +145,20 @@ public class ProductItemFilterUtil {
 	 * @param items
 	 * collect all product items from section tree
 	 */
-	public static void collectAllItems(List<SectionContext> sections, List<FilteringProductItem> items){
-		
+	public static void collectAllItems(List<SectionContext> sections, List<FilteringProductItem> items, NavigationModel navigationModel){
 		if(sections!=null){
 			for(SectionContext section : sections){
-				if(section.getProductItems()!=null){
-					items.addAll(section.getProductItems());					
+				if (navigationModel.isProductListing()) {
+					if(section.getProductItems()!=null){
+						items.addAll(section.getProductItems());
+					}
+				} else if (navigationModel.isRecipeListing()) {
+					if(section.getRecipeItems()!=null){
+						items.addAll(section.getRecipeItems());
+					}
 				}
-				collectAllItems(section.getSectionContexts(), items);
-			}			
+				collectAllItems(section.getSectionContexts(), items, navigationModel);
+			}
 		}
 	}
 	

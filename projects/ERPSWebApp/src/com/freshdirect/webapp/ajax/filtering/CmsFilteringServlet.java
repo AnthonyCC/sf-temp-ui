@@ -12,6 +12,8 @@ import org.apache.log4j.Logger;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagInput;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -56,6 +58,7 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 		
 		try {
 			CmsFilteringNavigator navigator = CmsFilteringNavigator.createInstance(request);
+			ContentFactory.getInstance().setEligibleForDDPP(FDStoreProperties.isDDPPEnabled() || ((FDSessionUser)user).isEligibleForDDPP());
 			CertonaUserContextHolder.initCertonaContextFromCookies(request);
 			CertonaUserContextHolder.setId(navigator.getId());
 			CertonaUserContextHolder.setSearchParam(navigator.getSearchParams());

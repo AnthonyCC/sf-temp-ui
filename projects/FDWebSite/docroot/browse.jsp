@@ -1,5 +1,5 @@
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
+<%@ page import='com.freshdirect.webapp.ajax.browse.FilteringFlowType' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 
@@ -14,7 +14,9 @@
 <%@ taglib uri='fd-certona-tag' prefix='certona' %>
 
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
+<fd:SearchRedesignRedirector user="<%=user%>" pageType="<%=FilteringFlowType.PRES_PICKS%>"/>
 <fd:BrowsePartialRolloutRedirector user="<%=user%>" id="${param.id}"/>
+
 
 <certona:resonanceJSObject action="init"/>
 <%--Might be useless
@@ -54,6 +56,10 @@
   </tmpl:put>
 
   <tmpl:put name='content' direct='true'>
+    <div class="page-type">
+        <soy:render template="browse.pageType" data="${browsePotato.searchParams}" />
+    </div>
+
     <div class="browse-breadcrumbs">
       <soy:render template="browse.breadCrumb" data="${browsePotato.breadCrumbs}" />
     </div>
@@ -84,7 +90,11 @@
     <div class="browse-media-middle">
       <soy:render template="browse.middleMedia" data="${browsePotato.descriptiveContent}" />
     </div>
-
+    
+    <div class="pagetype-header">
+      <soy:render template="srch.header" data="${browsePotato.searchParams}" />
+    </div>
+    
     <div class="browse-superdepartment">
       <soy:render template="browse.superDepartment" data="${browsePotato.sections}" />
     </div>

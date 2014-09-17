@@ -3,8 +3,9 @@ var FreshDirect = FreshDirect || {};
 
 (function (fd) {
 
+  var $ = fd.libs.$;
   var OAS_UPDATER = "OAS_UPDATER";
-  var listPos = ['CategoryNote', 'BrowseTop1', 'BrowseTop2', 'BrowseTop3', 'BrowseBottom1', 'BrowseBottom2'];
+  var listPos = [];
   var lastSitePage = null;
   
   function updateOAS(OAS_url, OAS_sitepage, OAS_rns, OAS_listpos, OAS_query) {
@@ -60,6 +61,16 @@ var FreshDirect = FreshDirect || {};
     }
   }).listen();
 
+  function initListPoses(){
+    $("[id^='oas_b_']").each(function(){ 
+      var prefix = 'oas_b_',
+          oasName = $(this).attr('id').slice(prefix.length);
+
+      if(oasName){ listPos.push(oasName); }
+    });
+  }
+
+  initListPoses();
 
   fd.modules.common.utils.register("updateOAS", "done", done, fd);
   fd.modules.common.utils.register("quickshop.common", "updateOAS", updateOAS, fd);

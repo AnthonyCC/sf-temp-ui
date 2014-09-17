@@ -13,6 +13,10 @@ public class OnSaleFilter extends AbstractProductItemFilter {
 		super(model, parentId);
 	}
 
+	public OnSaleFilter(String id, String parentId, String name) { //'virtual' onsaleFilter for search page 
+		super(id, parentId, name);
+	}
+	
 	@Override
 	public boolean apply(FilteringProductItem ctx) throws FDResourceException {
 		if (ctx == null || ctx.getProductModel() == null) {

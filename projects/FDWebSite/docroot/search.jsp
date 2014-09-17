@@ -30,6 +30,7 @@
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@ page import="com.freshdirect.smartstore.fdstore.FDStoreRecommender"%>
 <%@ page import="com.freshdirect.smartstore.SessionInput"%>
+<%@ page import='com.freshdirect.webapp.ajax.browse.FilteringFlowType' %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='bean' prefix='bean'%>
@@ -45,6 +46,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 %>
 
 <fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" id="user" />
+<fd:SearchRedesignRedirector user="<%=user%>" pageType="<%=FilteringFlowType.SEARCH%>"/>
 <fd:PendingOrderChecker/>
 <certona:resonanceJSObject action="init"/>
 

@@ -14,6 +14,8 @@ public class FilteringProductItem {
 	 * Mandatory parameter
 	 */
 	private ProductModel productModel;
+	
+	private Recipe recipe;
 
 
 	/**
@@ -21,9 +23,22 @@ public class FilteringProductItem {
 	 */
 	private FDProductResource fdPrdResource = new FDProductResource();
 	private FDProductInfoResource fdPrdInfoResource = new FDProductInfoResource();
+	private FilteringSortingItem<ProductModel> searchResult; //backward compatibility with old search framework
 	
 	public FilteringProductItem(ProductModel productModel) {
 		this.productModel = productModel;
+		this.recipe=null;
+	}
+	
+	public FilteringProductItem(FilteringSortingItem<ProductModel> searchResult) {
+		this.productModel = searchResult.getModel();
+		this.searchResult = searchResult;
+		this.recipe=null;
+	}
+	
+	public FilteringProductItem(Recipe recipe) {
+		this.recipe = recipe;
+		this.productModel = null;
 	}
 	
 	public ProductModel getProductModel() {
@@ -38,6 +53,13 @@ public class FilteringProductItem {
 		return fdPrdInfoResource.getResource();
 	}
 	
+	public Recipe getRecipe() {
+		return recipe;
+	}
+
+	public FilteringSortingItem<ProductModel> getSearchResult() {
+		return searchResult;
+	}
 
 	private class FDProductResource extends FilterResource<FDProduct> {
 

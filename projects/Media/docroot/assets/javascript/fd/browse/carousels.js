@@ -1,4 +1,4 @@
-/*global jQuery,browse*/
+/*global jQuery,browse,srch*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
@@ -39,6 +39,9 @@ var FreshDirect = FreshDirect || {};
         // render department header
         $('.browse-carousels-top').html(browse.topCarousels(data));
         $('.browse-carousels-bottom').html(browse.bottomCarousels(data));
+        if (srch) {
+          $('.srch-carousel').html(srch.carouselWrapper(data));
+        }
 
         $('[data-component="carousel"]').each(function (i, el) {
           fd.components.carousel.changePage($(el), null);

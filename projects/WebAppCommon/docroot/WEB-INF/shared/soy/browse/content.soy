@@ -5,6 +5,8 @@
  * @param? allSectionsEmpty all sections are empty
  * @param? usePopularCategoriesLayout
  * @param? filterLabels
+ * @param? numProducts
+ * @param? fromProducts
  */
 {template .content autoescape="false"}
 
@@ -22,6 +24,8 @@
         {param level:1 /}
         {param usePopularCategoriesLayout:$usePopularCategoriesLayout /}
         {param filterLabels:$filterLabels.filterLabels /}
+        {param numProducts:$numProducts /}
+        {param fromProducts:$fromProducts /}
       {/call}
     {/foreach}
   {/if}

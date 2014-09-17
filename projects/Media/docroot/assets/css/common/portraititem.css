@@ -660,8 +660,9 @@ a.portrait-item-header-name:link {
   width: auto;
   display: block;
   position: relative;
-  margin: 10px 0;
+  margin: 10px auto;
   height: 34px;
+  max-width: 140px;
 }
 
 #transactionalPopup .portrait-item-controls .qtyinput > span.qtywrapper {

@@ -653,6 +653,10 @@ public class FDStoreProperties {
 	//template redesign
 	private static final String PROP_MAX_XSELL_PRODS = "fdstore.xsell.max";
 	private static final String PROP_BROWSE_PAGESIZE = "fdstore.browse.pagesize";
+	private static final String PROP_PRES_PICKS_PAGESIZE = "fdstore.prespicks.pagesize";
+	private static final String PROP_NEWPRODUCTS_PAGESIZE = "fdstore.newproducts.pagesize";
+	private static final String PROP_ECOUPON_PAGESIZE = "fdstore.ecoupon.pagesize";
+	private static final String PROP_SEARCH_PAGESIZE = "fdstore.search.pagesize";
 	private static final String PROP_BROWSE_POPULAR_CATEGORIES_MAX = "fdstore.browse.popularcategories.max";
 	
 	//Ignore Foodily P3P Policy(similar to facebook and google) 
@@ -672,6 +676,8 @@ public class FDStoreProperties {
 	private final static String PROP_ST_CONNECTION_TIMEOUT_PERIOD = "fdstore.ST.connection.timeout.period";
 	private static final String PROP_ST_READ_TIMEOUT_PERIOD = "fdstore.ST.read.timeout.period";
 	private static final String PROP_SMS_OVERLAY_FLAG="fdstore.SMS.overlay.flag";
+	
+	private static final String PROP_SEARCH_CAROUSEL_PRODUCT_LIMIT = "fdstore.search.carousel.product.limit";
 	
 	
     static {
@@ -1301,6 +1307,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.pdplayout2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.pplayout2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.leftnav2014", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.searchredesign2014", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.leftnavtut2014", "GLOBAL:ENABLED,true;");
         
         defaults.put(PROP_MEDIA_RENDER_UTILS_REALLY_CLOSE, "true");
@@ -1319,6 +1326,10 @@ public class FDStoreProperties {
         //template redesign
         defaults.put(PROP_MAX_XSELL_PRODS, "3");
         defaults.put(PROP_BROWSE_PAGESIZE, "30");
+        defaults.put(PROP_PRES_PICKS_PAGESIZE, "30");
+        defaults.put(PROP_NEWPRODUCTS_PAGESIZE, "30");
+        defaults.put(PROP_ECOUPON_PAGESIZE, "30");
+        defaults.put(PROP_SEARCH_PAGESIZE, "30");
         defaults.put(PROP_BROWSE_POPULAR_CATEGORIES_MAX, "5");
         
         defaults.put(PROP_3RDPARTY_P3PENABLED, "true");
@@ -1330,7 +1341,9 @@ public class FDStoreProperties {
         defaults.put(PROP_ST_CONNECTION_TIMEOUT_PERIOD, "5");
         defaults.put(PROP_ST_READ_TIMEOUT_PERIOD, "5");
         defaults.put(PROP_SMS_OVERLAY_FLAG, "false");
-        
+
+        defaults.put(PROP_SEARCH_CAROUSEL_PRODUCT_LIMIT, "25");
+
         refresh();
     }
 
@@ -3321,6 +3334,22 @@ public class FDStoreProperties {
         return Integer.parseInt(get(PROP_BROWSE_PAGESIZE));
     }
     
+    public static int getPresPicksPageSize() {
+        return Integer.parseInt(get(PROP_PRES_PICKS_PAGESIZE));
+    }
+    
+    public static int getNewProductsPageSize() {
+        return Integer.parseInt(get(PROP_NEWPRODUCTS_PAGESIZE));
+    }
+    
+    public static int getEcouponPageSize() {
+        return Integer.parseInt(get(PROP_ECOUPON_PAGESIZE));
+    }
+    
+    public static int getSearchPageSize() {
+    	return Integer.parseInt(get(PROP_SEARCH_PAGESIZE));
+    }
+    
     public static int getPopularCategoriesMax() {
         return Integer.parseInt(get(PROP_BROWSE_POPULAR_CATEGORIES_MAX));
     }
@@ -3349,6 +3378,11 @@ public class FDStoreProperties {
 	public static int getRTConnectionTimeoutPeriod() {
 		return Integer.parseInt(get(PROP_ST_READ_TIMEOUT_PERIOD));
 	}
+	
+	public static int getSearchCarouselProductLimit() {
+		return Integer.parseInt(get(PROP_SEARCH_CAROUSEL_PRODUCT_LIMIT));
+	}
+
 	public static boolean getSMSOverlayFlag() {
 		return Boolean.valueOf(get(PROP_SMS_OVERLAY_FLAG)).booleanValue();
 	}

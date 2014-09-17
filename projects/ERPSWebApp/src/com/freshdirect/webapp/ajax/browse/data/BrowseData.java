@@ -1,7 +1,12 @@
 package com.freshdirect.webapp.ajax.browse.data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.freshdirect.webapp.ajax.product.data.ProductData;
+
+import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 
 public class BrowseData implements Serializable {
 
@@ -13,6 +18,7 @@ public class BrowseData implements Serializable {
 		private boolean allSectionsEmpty;
 		private boolean usePopularCategoriesLayout;
 		private FilterLabelDataCointainer filterLabels = new FilterLabelDataCointainer();
+		private int limit;
 
 		public List<SectionData> getSections() {
 			return sections;
@@ -40,6 +46,14 @@ public class BrowseData implements Serializable {
 		}
 		public FilterLabelDataCointainer getFilterLabels() {
 			return filterLabels;
+		}
+
+		public int getLimit() {
+			return limit;
+		}
+
+		public void setLimit(int limit) {
+			this.limit = limit;
 		}
 		
 	}
@@ -72,6 +86,7 @@ public class BrowseData implements Serializable {
 		private static final long serialVersionUID = 4610591383180714799L;
 		private CarouselData carousel1;
 		private CarouselData carousel2;
+		private CarouselData carousel3;
 		private String carouselPosition;
 		private String carouselRatio;
 		
@@ -98,6 +113,12 @@ public class BrowseData implements Serializable {
 		}
 		public void setCarouselRatio(String carouselRatio) {
 			this.carouselRatio = carouselRatio;
+		}
+		public CarouselData getCarousel3() {
+			return carousel3;
+		}
+		public void setCarousel3(CarouselData carousel3) {
+			this.carousel3 = carousel3;
 		}
 		
 	}	
@@ -235,6 +256,129 @@ public class BrowseData implements Serializable {
 		}
 	}
 	
+	public static class DDPPProducts implements Serializable {
+	
+		private static final long serialVersionUID = -5076065046727187803L;
+		private List<ProductData> products = new ArrayList<ProductData>();
+
+		public List<ProductData> getProducts() {
+			return products;
+		}
+
+		public void setProducts(List<ProductData> products) {
+			this.products = products;
+		}
+		
+	}
+		
+	public static class SearchParams implements Serializable {
+
+		private static final long serialVersionUID = 7747507856218538577L;
+		private String searchParams;
+		private String searchTerm;
+		private List<String> suggestions;
+		private List<Tab> tabs = null;
+		private FilteringFlowType pageType;
+		private Integer numberOfNewProducts = null;
+		
+		public void buildTabs(String label, String type, int hits, int filteredHits, boolean active) {
+			initTabs();
+			Tab tab = new Tab(label, type, hits, filteredHits, active);
+			tabs.add(tab);
+		}
+		
+		private void initTabs() {
+			if (tabs == null) {
+				tabs = new ArrayList<Tab>();
+			}
+		}
+
+		public String getSearchParams() {
+			return searchParams;
+		}
+		public void setSearchParams(String searchParams) {
+			this.searchParams = searchParams;
+		}
+		public List<String> getSuggestions() {
+			return suggestions;
+		}
+		public void setSuggestions(List<String> suggestions) {
+			this.suggestions = suggestions;
+		}
+		public String getSearchTerm() {
+			return searchTerm;
+		}
+		public void setSearchTerm(String searchTerm) {
+			this.searchTerm = searchTerm;
+		}
+		
+		public static class Tab implements Serializable {
+			private static final long serialVersionUID = 2196644205140925786L;
+			private String label;
+			private String type;
+			private int hits;
+			private int filteredHits;
+			private boolean active;
+			
+			public Tab(String label, String type, int hits, int filteredHits, boolean active) {
+				this.label = label;
+				this.type = type;
+				this.hits = hits;
+				this.filteredHits = filteredHits;
+				this.active = active;
+			}
+			
+			public String getLabel() {
+				return label;
+			}
+			public void setLabel(String label) {
+				this.label = label;
+			}
+			public String getType() {
+				return type;
+			}
+			public void setType(String type) {
+				this.type = type;
+			}
+			public int getHits() {
+				return hits;
+			}
+			public void setHits(int hits) {
+				this.hits = hits;
+			}
+			public int getFilteredHits() {
+				return filteredHits;
+			}
+			public void setFilteredHits(int filteredHits) {
+				this.filteredHits = filteredHits;
+			}
+			public boolean isActive() {
+				return active;
+			}
+			public void setActive(boolean active) {
+				this.active = active;
+			}
+		}
+		public FilteringFlowType getPageType() {
+			return pageType;
+		}
+		public void setPageType(FilteringFlowType pageType) {
+			this.pageType = pageType;
+		}
+
+		public List<Tab> getTabs() {
+			return tabs;
+		}
+
+		public Integer getNumberOfNewProducts() {
+			return numberOfNewProducts;
+		}
+
+		public void setNumberOfNewProducts(Integer numberOfNewProducts) {
+			this.numberOfNewProducts = numberOfNewProducts;
+		}
+	}
+	
 	//end of inner class definitions
 
 	private static final long serialVersionUID = -1057711757351364777L;
@@ -246,7 +390,8 @@ public class BrowseData implements Serializable {
 	private MenuDataCointainer menuBoxes = new MenuDataCointainer();
 	private SortDataCointainer sortOptions = new SortDataCointainer();
 	private PagerData pager; //not a *DataContainer inner class which only encapsulates lists and primitives
-	
+	private SearchParams searchParams = new SearchParams();
+	private DDPPProducts ddppProducts = new DDPPProducts();
 	
 	public PagerData getPager() {
 		return pager;
@@ -271,5 +416,17 @@ public class BrowseData implements Serializable {
 	}
 	public SortDataCointainer getSortOptions() {
 		return sortOptions;
+	}
+	public SearchParams getSearchParams() {
+		return searchParams;
+	}
+	public void setSearchParams(SearchParams searchParams) {
+		this.searchParams = searchParams;
+	}	
+	public DDPPProducts getDDPPProducts() {
+		return ddppProducts;
+	}
+	public void setDDPPProducts(DDPPProducts ddppProducts) {
+		this.ddppProducts = ddppProducts;
 	}	
 }
