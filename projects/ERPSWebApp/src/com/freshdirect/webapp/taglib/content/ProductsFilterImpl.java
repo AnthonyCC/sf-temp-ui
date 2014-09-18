@@ -111,7 +111,7 @@ public class ProductsFilterImpl extends FilteringFlow<ProductModel> {
 	
 	@Override
 	protected void postProcess(List<FilteringSortingItem<ProductModel>> items, GenericFilteringMenuBuilder<FilteringSortingItem<ProductModel>> menuBuilder) {
-			
+		FilteringComparatorUtil.logSortResult(items, getFDUser());
 	}
 
 	public void setResults(SearchResults results) {

@@ -21,7 +21,9 @@ import com.freshdirect.fdstore.content.CategorySectionModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.FilteringComparatorUtil;
 import com.freshdirect.fdstore.content.FilteringProductItem;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductContainer;
@@ -848,9 +850,18 @@ public class BrowseDataBuilderFactory {
 			
 			ProductItemComparatorUtil.sortSectionDatas(data, comparator); // sort items/section
 			ProductItemComparatorUtil.postProcess(data, usedSortStrategy, user);
+			logSortResult(data, user);
 		}
 	}
 
+	private static void logSortResult(BrowseDataContext data, FDUserI user){
+		List<FilteringSortingItem<ProductModel>> items = new ArrayList<FilteringSortingItem<ProductModel>>();
+		for (FilteringProductItem p : data.getSectionContexts().get(0).getProductItems()){
+			items.add(p.getSearchResult());
+		}
+		FilteringComparatorUtil.logSortResult(items, user);
+	}
+	
 	private List<SortOptionModel> getSortersForCurrentFlow(BrowseDataContext data, CmsFilteringNavigator nav){
 		List<SortOptionModel> sorters = null;
 		
