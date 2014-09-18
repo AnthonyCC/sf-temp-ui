@@ -92,17 +92,26 @@
       <soy:render template="browse.filterTags" data="${browsePotato.filterLabels}" />
     </div>
 
-    <div class="browse-sections-top transactional">
-      <soy:render template="srch.topContent" data="${browsePotato.sections}" />
-    </div>
+    <c:choose>
+      <c:when test="${browsePotato.searchParams.pageType == 'SEARCH'}">
+        <div class="browse-sections-top transactional">
+          <soy:render template="srch.topContent" data="${browsePotato.sections}" />
+        </div>
 
-    <div class="srch-carousel">
-      <soy:render template="srch.carouselWrapper" data="${browsePotato.carousels}" />
-    </div>
-    
-    <div class="browse-sections-bottom transactional">
-      <soy:render template="srch.bottomContent" data="${browsePotato.sections}" />
-    </div>
+        <div class="srch-carousel">
+          <soy:render template="srch.carouselWrapper" data="${browsePotato.carousels}" />
+        </div>
+        
+        <div class="browse-sections-bottom transactional">
+          <soy:render template="srch.bottomContent" data="${browsePotato.sections}" />
+        </div>
+      </c:when>
+      <c:otherwise>
+        <div class="browse-sections transactional">
+          <soy:render template="browse.content" data="${browsePotato.sections}" />
+        </div>
+      </c:otherwise>
+    </c:choose>
 
     <div class="pager-holder bottom">
       <soy:render template="browse.pager" data="${browsePotato.pager}" />
@@ -120,6 +129,12 @@
   </tmpl:put>
 
   <tmpl:put name='bottom' direct='true'>
+
+    <c:if test="${browsePotato.searchParams.pageType != 'SEARCH'}">
+      <div class="srch-carousel">
+        <soy:render template="srch.carouselWrapper" data="${browsePotato.carousels}" />
+      </div>
+    </c:if>
     <div class="ddpp-bottom">
             <hr class="ddpp-hr top" />
             <table class="ddppBotAds">

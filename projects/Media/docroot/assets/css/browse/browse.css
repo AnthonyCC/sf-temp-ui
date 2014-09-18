@@ -290,6 +290,7 @@ ul.products .description-skin{
   margin: 0 8px;
 }
 
+.container.srch [data-component="carousel"],
 .container.browse .noCarousel1 [data-component="carousel"],
 .container.browse .noCarousel2 [data-component="carousel"] {
   margin: 0 16px;
@@ -389,6 +390,7 @@ ul.products .description-skin{
   width: 775px
 }
 
+.container.srch [data-component="carousel"] ul li.portrait-item,
 .container.browse .noCarousel2 [data-component="carousel"] ul li.portrait-item,
 .container.browse .noCarousel1 [data-component="carousel"] ul li.portrait-item {
   width: 139px;
@@ -397,6 +399,7 @@ ul.products .description-skin{
 
 /* end of one carousel cases */
 
+.container.srch .carousel-header h2,
 .container.browse .carousels .header h2 {
   font-family: Verdana, Arial, sans-serif;
   color:#333;

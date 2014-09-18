@@ -112,30 +112,11 @@
 }
 
 .srch .srch-carousel .carousel {
-  border: 1px solid #dcd2dc;
-  border-radius: 10px 10px 0 0;
   margin: 10px 0;
 }
 
-.srch .srch-carousel .carousel .carousel-header {
-  height: 29px;
-  line-height: 29px;
-  background-color: #eee0ee;
-  border-bottom: 1px solid #dcd2dc;
-  border-radius: 10px 10px 0 0;
-  text-align: center;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
-.srch .srch-carousel .carousel .carousel-header h2 {
-  font-family: 'EagleBook', Verdana, Arial, sans-serif;
-  color: #855885;
-  font-size: 20px;
-}
-
-.srch .srch-carousel .carousel .portrait-item {
-  width: 156px;
+.srch .bottom .srch-carousel .carousel [data-component="carousel"] ul li.portrait-item {
+  width: 147px;
 }
 
 .srch .ddpp-list{
