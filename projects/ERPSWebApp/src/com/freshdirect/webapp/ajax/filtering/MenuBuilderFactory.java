@@ -1027,7 +1027,7 @@ public class MenuBuilderFactory {
 		
 		if(brandFilterLocation == EnumBrandFilterLocation.BELOW_DEPARTMENT){
 			brandFilterPosition = MenuBoxType.CATEGORY;
-		}else if(brandFilterLocation == EnumBrandFilterLocation.BELOW_LOWEST_LEVEL_CATEGORY){
+		}else if(brandFilterLocation == EnumBrandFilterLocation.BELOW_LOWEST_LEVEL_CATEGROY){
 			brandFilterPosition = MenuBoxType.FILTER;
 		}
 		

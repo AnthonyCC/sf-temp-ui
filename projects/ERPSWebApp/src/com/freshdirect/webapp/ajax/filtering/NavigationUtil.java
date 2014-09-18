@@ -173,7 +173,7 @@ public class NavigationUtil {
 		
 		// set brand filter location
 		if(node instanceof CategoryModel){
-			model.setBrandFilterLocation(((CategoryModel)node).getBrandFilterLocation(EnumBrandFilterLocation.BELOW_LOWEST_LEVEL_CATEGORY.toString()));
+			model.setBrandFilterLocation(((CategoryModel)node).getBrandFilterLocation(EnumBrandFilterLocation.BELOW_LOWEST_LEVEL_CATEGROY.toString()));
 		}
 		
 		// -- CREATE MENU --
