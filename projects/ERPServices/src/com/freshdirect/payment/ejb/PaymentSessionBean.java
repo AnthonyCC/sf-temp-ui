@@ -250,7 +250,7 @@ public class PaymentSessionBean extends SessionBeanSupport{
 		
 		capture.setGatewayOrderID(auth.getGatewayOrderID());
 		capture.setProfileID(auth.getProfileID());
-			
+		capture.setCcNumLast4(auth.getCcNumLast4())	;
 		return capture;
 	}
 	

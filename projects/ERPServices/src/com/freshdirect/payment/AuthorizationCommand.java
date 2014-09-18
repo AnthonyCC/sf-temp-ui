@@ -100,9 +100,10 @@ public class AuthorizationCommand {
 		auth.setAmount(amount);
 		auth.setTax(tax);
 		auth.setCardType(pm.getCardType());
-		if((!StringUtil.isEmpty(pm.getMaskedAccountNumber())) &&(4>=pm.getMaskedAccountNumber().length()) ) {
+		if((!StringUtil.isEmpty(pm.getMaskedAccountNumber())) &&(4<=pm.getMaskedAccountNumber().length()) ) {
 			auth.setCcNumLast4(pm.getMaskedAccountNumber().substring(pm.getMaskedAccountNumber().length()-4));
 		}
+		auth.setProfileID(pm.getProfileID());
 		return auth;
 	}
 	
