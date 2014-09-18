@@ -850,10 +850,11 @@ public class BrowseDataBuilderFactory {
 			
 			ProductItemComparatorUtil.sortSectionDatas(data, comparator); // sort items/section
 			ProductItemComparatorUtil.postProcess(data, usedSortStrategy, user);
-			logSortResult(data, user);
+			//logSortResult(data, user);
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private static void logSortResult(BrowseDataContext data, FDUserI user){
 		List<FilteringSortingItem<ProductModel>> items = new ArrayList<FilteringSortingItem<ProductModel>>();
 		for (FilteringProductItem p : data.getSectionContexts().get(0).getProductItems()){

@@ -24,7 +24,7 @@ import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
 public class ProductItemSorterFactory {
 
 	private static final Comparator<FilteringProductItem> AVAILABILITY_COMPARATOR = new AvailabilityComparator();
-	private static final Comparator<FilteringProductItem> NAME_COMPARATOR = new NameComparator();
+	private static final Comparator<FilteringProductItem> NAME_COMPARATOR = adapterForProductModel(ProductModel.FULL_NAME_PRODUCT_COMPARATOR);
 	private static final Map<SortStrategyType, Comparator<FilteringProductItem>> comparatorMap = new HashMap<SortStrategyType, Comparator<FilteringProductItem>>();
 	private static final Map<SortStrategyType, Comparator<FilteringProductItem>> reverseComparatorMap = new HashMap<SortStrategyType, Comparator<FilteringProductItem>>();
 	

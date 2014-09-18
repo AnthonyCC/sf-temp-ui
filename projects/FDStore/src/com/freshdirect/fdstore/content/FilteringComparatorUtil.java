@@ -6,20 +6,26 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.util.SmartSearchUtils;
+import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ecoupon.EnumCouponOfferType;
 import com.freshdirect.fdstore.ecoupon.FDCouponFactory;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponInfo;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.fdstore.util.NewProductsGrouping;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
 
 public class FilteringComparatorUtil {
 
+	private static final Logger LOGGER = LoggerFactory.getInstance(FilteringComparatorUtil.class);
 	
 	public static Comparator<FilteringSortingItem<ProductModel>> createProductComparator(List<FilteringSortingItem<ProductModel>> products,
 			String userId, PricingContext pricingContext, String suggestedTerm, FilteringNavigator nav, boolean showGrouped) {
@@ -314,4 +320,36 @@ public class FilteringComparatorUtil {
 			return 0;			
 		}
 	};
+	
+	
+
+	public static void logSortResult(List<FilteringSortingItem<ProductModel>> products, FDUserI user){
+		try {
+			FDIdentity identity = user.getIdentity();
+			ScriptedContentNodeComparator c = ScriptedContentNodeComparator.createGlobalComparator(identity == null ? null : identity.getErpCustomerPK(), user.getPricingContext());
+			StringBuilder sb = new StringBuilder("\n");
+			
+			for (FilteringSortingItem<ProductModel> s : products){
+				if (s==null || s==null){
+					continue;
+				}
+				sb.append(s.getSortingValue(EnumSortingValue.PHRASE));
+				sb.append("\t");
+				sb.append(s.getSortingValue(EnumSortingValue.ORIGINAL_TERM));
+				sb.append("\t");
+				sb.append(s.getSortingValue(EnumSortingValue.CATEGORY_RELEVANCY));
+				sb.append("\t");
+				sb.append(s.getSortingValue(EnumSortingValue.TERM_SCORE));
+				sb.append("\t");
+				sb.append(c.getScore(s.getModel()));
+				sb.append("\t");
+				sb.append(s.getModel().getFullName());
+				sb.append("\n");
+			}
+			LOGGER.debug(sb);
+		
+		} catch (Exception e){
+			LOGGER.debug("Log failed", e);
+		}
+	}
 }
