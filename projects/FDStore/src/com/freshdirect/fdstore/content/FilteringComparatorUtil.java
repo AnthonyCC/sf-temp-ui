@@ -349,6 +349,8 @@ public class FilteringComparatorUtil {
 				sb.append(c.getScore(s.getModel()));
 				sb.append("\t");
 				sb.append(s.getModel().getFullName());
+				sb.append("\t");
+				sb.append(s.getModel().getPrimaryHome().getDepartment().getFullName());
 				sb.append("\n");
 			}
 			LOGGER.debug(sb);

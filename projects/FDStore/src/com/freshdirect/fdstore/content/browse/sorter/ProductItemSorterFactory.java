@@ -40,7 +40,7 @@ public class ProductItemSorterFactory {
 		initAvailName(SortStrategyType.PRICE, 						new PriceComparator());
 		initAvailName(SortStrategyType.SALE, 						new SaleComparator());
 		initAvailName(SortStrategyType.SUSTAINABILITY_RATING, 		new SustainabilityRatingComparator());
-		initAvailName(SortStrategyType.DEPARTMENT, 					new DepartmentComparator());
+		initAvailName(SortStrategyType.DEPARTMENT, 					new PrimaryDepartmentComparator());
 		initAvailName(SortStrategyType.E_COUPON_POPULARITY, 		adapterForProductModel(FilteringComparatorUtil.COUPON_POPULARITY_COMPARATOR));
 		initAvailName(SortStrategyType.E_COUPON_START_DATE, 		adapterForProductModel(FilteringComparatorUtil.COUPON_START_DATE_COMPARATOR));
 		initAvailName(SortStrategyType.E_COUPON_EXPIRATION_DATE,	adapterForProductModel(FilteringComparatorUtil.COUPON_EXP_DATE_COMPARATOR));
