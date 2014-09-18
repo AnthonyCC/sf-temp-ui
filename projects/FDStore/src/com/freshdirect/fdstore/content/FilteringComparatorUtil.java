@@ -16,6 +16,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.ecoupon.EnumCouponOfferType;
 import com.freshdirect.fdstore.ecoupon.FDCouponFactory;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponInfo;
+import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.fdstore.util.NewProductsGrouping;
 import com.freshdirect.framework.util.DateUtil;
@@ -24,7 +25,6 @@ import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
 
 public class FilteringComparatorUtil {
-
 	private static final Logger LOGGER = LoggerFactory.getInstance(FilteringComparatorUtil.class);
 	
 	public static Comparator<FilteringSortingItem<ProductModel>> createProductComparator(List<FilteringSortingItem<ProductModel>> products,
@@ -231,10 +231,11 @@ public class FilteringComparatorUtil {
 					if(EnumCouponOfferType.DOLLAR_OFF.equals(cp1.getOfferType())){
 						disc1=Double.parseDouble(cp1.getValue());
 					}else{
-						if(EnumCouponOfferType.PERCENT_OFF.equals(cp1.getOfferType())){
+						if(EnumCouponOfferType.PERCENT_OFF.equals(cp1.getOfferType()) && p1 instanceof ProductModelPricingAdapter){
+							ProductModelPricingAdapter pricing1 = (ProductModelPricingAdapter)p1;
 							disc1=Double.parseDouble(cp1.getValue());
 							//Calculate the dollar discount based on the % discount value and the price
-							double price =p1.getPriceCalculator().getDefaultPriceValue();
+							double price =pricing1.getPriceCalculator().getDefaultPriceValue();
 							disc1=(price*disc1)/100;
 						}
 					}
@@ -242,10 +243,11 @@ public class FilteringComparatorUtil {
 					if(EnumCouponOfferType.DOLLAR_OFF.equals(cp2.getOfferType())){
 						disc2=Double.parseDouble(cp2.getValue());	
 					}else{
-						if(EnumCouponOfferType.PERCENT_OFF.equals(cp2.getOfferType())){
+						if(EnumCouponOfferType.PERCENT_OFF.equals(cp2.getOfferType()) && p2 instanceof ProductModelPricingAdapter){
+							ProductModelPricingAdapter pricing2 = (ProductModelPricingAdapter)p2;
 							disc2=Double.parseDouble(cp2.getValue());
 							//Calculate the dollar discount based on the % discount value and the price
-							double price =p2.getPriceCalculator().getDefaultPriceValue();
+							double price =pricing2.getPriceCalculator().getDefaultPriceValue();
 							disc2=(price*disc2)/100;
 						}
 					}
@@ -271,9 +273,10 @@ public class FilteringComparatorUtil {
 					if(EnumCouponOfferType.PERCENT_OFF.equals(cp1.getOfferType())){
 						disc1=Double.parseDouble(cp1.getValue());
 					}else{
-						if(EnumCouponOfferType.DOLLAR_OFF.equals(cp1.getOfferType())){
+						if(EnumCouponOfferType.DOLLAR_OFF.equals(cp1.getOfferType()) && p1 instanceof ProductModelPricingAdapter){
+							ProductModelPricingAdapter pricing1 = (ProductModelPricingAdapter)p1;
 							disc1=Double.parseDouble(cp1.getValue());
-							double price =p1.getPriceCalculator().getDefaultPriceValue();
+							double price =pricing1.getPriceCalculator().getDefaultPriceValue();
 							//Calculate the % discount based on the dollar discount value and the price
 							disc1= price-disc1> 0?((disc1)/price)*100:100;
 							disc1=Math.abs(disc1);
@@ -283,9 +286,10 @@ public class FilteringComparatorUtil {
 					if(EnumCouponOfferType.PERCENT_OFF.equals(cp2.getOfferType())){
 						disc2=Double.parseDouble(cp2.getValue());	
 					}else{
-						if(EnumCouponOfferType.DOLLAR_OFF.equals(cp2.getOfferType())){
+						if(EnumCouponOfferType.DOLLAR_OFF.equals(cp2.getOfferType()) && p2 instanceof ProductModelPricingAdapter){
+							ProductModelPricingAdapter pricing2 = (ProductModelPricingAdapter)p2;
 							disc2=Double.parseDouble(cp2.getValue());
-							double price =p2.getPriceCalculator().getDefaultPriceValue();
+							double price =pricing2.getPriceCalculator().getDefaultPriceValue();
 							//Calculate the % discount based on the dollar discount value and the price
 							disc2= price-disc2> 0?((disc2)/price)*100:100;
 							disc2=Math.abs(disc2);
@@ -322,6 +326,7 @@ public class FilteringComparatorUtil {
 	};
 	
 	
+	
 
 	public static void logSortResult(List<FilteringSortingItem<ProductModel>> products, FDUserI user){
 		try {
@@ -353,3 +358,4 @@ public class FilteringComparatorUtil {
 		}
 	}
 }
+

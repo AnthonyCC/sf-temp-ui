@@ -19,6 +19,8 @@ import com.freshdirect.fdstore.content.SortStrategyType;
 import com.freshdirect.fdstore.content.SortValueComparator;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
+import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
 
 public class ProductItemSorterFactory {
@@ -42,8 +44,6 @@ public class ProductItemSorterFactory {
 		initAvailName(SortStrategyType.E_COUPON_POPULARITY, 		adapterForProductModel(FilteringComparatorUtil.COUPON_POPULARITY_COMPARATOR));
 		initAvailName(SortStrategyType.E_COUPON_START_DATE, 		adapterForProductModel(FilteringComparatorUtil.COUPON_START_DATE_COMPARATOR));
 		initAvailName(SortStrategyType.E_COUPON_EXPIRATION_DATE,	adapterForProductModel(FilteringComparatorUtil.COUPON_EXP_DATE_COMPARATOR));
-		initAvailName(SortStrategyType.E_COUPON_PERCENT_DISCOUNT, 	adapterForProductModel(FilteringComparatorUtil.COUPON_PERCENT_OFF_COMPARATOR));
-		initAvailName(SortStrategyType.E_COUPON_DOLLAR_DISCOUNT, 	adapterForProductModel(FilteringComparatorUtil.COUPON_DOLLAR_OFF_COMPARATOR));
 	}
 
 	private static void initAvailName(SortStrategyType sortStrategy, Comparator<FilteringProductItem> comparator){
@@ -86,11 +86,18 @@ public class ProductItemSorterFactory {
 	}
 
 	public static Comparator<FilteringProductItem> createComparator(SortStrategyType sortStrategy, FDUserI user, boolean reverseOrder){
-		if (sortStrategy == SortStrategyType.SEARCH_RELEVANCY){
-			return createSearchRelevancyComparator(user, reverseOrder);
+		switch (sortStrategy){
+			case SEARCH_RELEVANCY:
+				return createSearchRelevancyComparator(user, reverseOrder);
 
-		} else {
-			return reverseOrder ? reverseComparatorMap.get(sortStrategy) : comparatorMap.get(sortStrategy);
+			case E_COUPON_PERCENT_DISCOUNT:
+				return createPricingAdapterComparator (FilteringComparatorUtil.COUPON_PERCENT_OFF_COMPARATOR, user, reverseOrder);
+
+			case E_COUPON_DOLLAR_DISCOUNT:
+				return createPricingAdapterComparator (FilteringComparatorUtil.COUPON_DOLLAR_OFF_COMPARATOR, user, reverseOrder);
+				
+			default:
+				return reverseOrder ? reverseComparatorMap.get(sortStrategy) : comparatorMap.get(sortStrategy);
 		}
 	}
 	
@@ -130,6 +137,28 @@ public class ProductItemSorterFactory {
 		return adapterForSearchResult(comparator); //TODO deal with reverse order?
 	}
 
+	private static Comparator<FilteringProductItem> createPricingAdapterComparator(final Comparator<ProductModel> comparator, final FDUserI user, boolean reverseOrder){
+		
+		Comparator<FilteringProductItem> adapterComparator =  new Comparator<FilteringProductItem>(){
+			@Override
+			public int compare(FilteringProductItem o1, FilteringProductItem o2) {
+				ProductModel p1 = o1.getProductModel();
+				ProductModel p2 = o2.getProductModel();
+				
+				if(!(p1 instanceof ProductModelPricingAdapter)){
+					p1 = ProductPricingFactory.getInstance().getPricingAdapter( p1, user.getPricingContext() );
+				}
+
+				if(!(p2 instanceof ProductModelPricingAdapter)){
+					p2 = ProductPricingFactory.getInstance().getPricingAdapter( p2, user.getPricingContext() );
+				}
+
+				return comparator.compare(p1, p2);
+			}
+		};
+		
+		return reverseOrder ? wrapAvailAndName(Collections.reverseOrder(adapterComparator)) : wrapAvailAndName(adapterComparator);
+	}
 	
 	public static Comparator<FilteringProductItem> createNutritionComparator(ErpNutritionType.Type erpNutritionTypeType){
 		return wrapAvailAndName(new NutritionComparator(erpNutritionTypeType));
