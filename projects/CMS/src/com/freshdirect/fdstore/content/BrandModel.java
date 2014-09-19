@@ -8,6 +8,7 @@ import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 public class BrandModel extends ContentNodeModelImpl {
 
+	@SuppressWarnings("unused")
 	private static final long	serialVersionUID	= 3825451393246006610L;
 
 	List<ProductModel> featuredProducts = new ArrayList<ProductModel>();
@@ -66,5 +67,26 @@ public class BrandModel extends ContentNodeModelImpl {
 	public String getName() {
 		return this.getAttribute("FULL_NAME", null);
 	}
+
+	public String getTabletCopyright() {
+		return this.getAttribute("tabletCopyright", null);
+	}
+
+	public Image getTabletHeader() {
+	    return FDAttributeFactory.constructImage(this, "tabletHeader");
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Image> getTabletImages() {
+		return FDAttributeFactory.constructWrapperList(this, "tabletImages");
+	}
+
+    public Html getTabletAboutTextShort() {
+        return FDAttributeFactory.constructHtml(this, "tabletAboutTextShort");
+    }
+
+    public Html getTabletAboutTextLong() {
+        return FDAttributeFactory.constructHtml(this, "tabletAboutTextLong");
+    }
 
 }

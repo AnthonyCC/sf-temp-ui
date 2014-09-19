@@ -1512,4 +1512,8 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		return prodModel.getSpecialLayout();
 	}
 
+	@Override
+	public List<ProductModel> getCompleteTheMeal() {
+		return prodModel.getCompleteTheMeal();
+	}
 }

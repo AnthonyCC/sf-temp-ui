@@ -97,6 +97,14 @@
 							<CmsField><attribute>tile_list</attribute></CmsField>
 						</fields>
 					</CmsSection>
+					<CmsSection>
+						<title>TABLET</title>
+						<fields>
+							<CmsField><attribute>tabletIcon</attribute></CmsField>
+							<CmsField><attribute>tabletCallToActionBanner</attribute></CmsField>
+							<CmsField><attribute>tabletNoPurchaseSuggestions</attribute></CmsField>
+						</fields>
+					</CmsSection>
 				</sections>
 			</CmsPage>
 			<CmsPage>
@@ -355,6 +363,12 @@
                             	<CmsField><attribute>PRODUCT_PROMOTION_TYPE</attribute></CmsField>	 
                             </fields>	 
                     </CmsSection>
+					<CmsSection>
+						<title>TABLET</title>
+						<fields>
+							<CmsField><attribute>tabletCallToActionBanner</attribute></CmsField>
+						</fields>
+					</CmsSection>
 				</sections>
 			</CmsPage>
 			<CmsPage>
@@ -722,6 +736,7 @@
 							<CmsField><attribute>PREFERRED_SKU</attribute></CmsField>
 							<CmsField><attribute>PDP_UPSELL</attribute></CmsField>
 							<CmsField><attribute>PDP_XSELL</attribute></CmsField>
+							<CmsField><attribute>completeTheMeal</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>

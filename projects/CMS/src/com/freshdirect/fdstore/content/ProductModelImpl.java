@@ -131,7 +131,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 */
 	private List<ProductModel> crossSellProducts = new ArrayList<ProductModel>();
 
-
+	private List<ProductModel> completeTheMeal = new ArrayList<ProductModel>();
+		
 	public ProductModelImpl(ContentKey cKey) {
 		super(cKey);
 	}
@@ -1950,4 +1951,10 @@ inner:
 		}
 	}
 
+	@Override
+	public List<ProductModel> getCompleteTheMeal() {
+		ContentNodeModelUtil.refreshModels(this, "completeTheMeal", completeTheMeal, false);
+		return new ArrayList<ProductModel>(completeTheMeal);
+	}
+	
 }

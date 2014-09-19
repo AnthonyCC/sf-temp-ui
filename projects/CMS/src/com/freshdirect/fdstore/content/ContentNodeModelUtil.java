@@ -121,6 +121,8 @@ public class ContentNodeModelUtil {
         TYPE_MODEL_MAP.put("SuperDepartment", SuperDepartmentModel.class);
         TYPE_MODEL_MAP.put("GlobalNavigation", GlobalNavigationModel.class);
         TYPE_MODEL_MAP.put("CategorySection", CategorySectionModel.class);
+        TYPE_MODEL_MAP.put("Banner", BannerModel.class);
+        TYPE_MODEL_MAP.put("SearchSuggestionGroup", SearchSuggestionGroupModel.class);
 	}
 
 	/**

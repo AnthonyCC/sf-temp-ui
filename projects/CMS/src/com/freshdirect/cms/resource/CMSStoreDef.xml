@@ -46,6 +46,8 @@
 				<DestinationDef contentType="Tag" />
 				<DestinationDef contentType="ProductFilterMultiGroup" />
 				<DestinationDef contentType="SortOption" />
+				<DestinationDef contentType="Banner" />
+				<DestinationDef contentType="SearchSuggestionGroup" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -160,6 +162,12 @@
             <RelationshipDef name="presPicksPageTopMediaBanner" cardinality="One" label="President Picks Page Top Media Banner">
                 <DestinationDef contentType="Html"/>
             </RelationshipDef>
+			<RelationshipDef name="tabletFeaturedCategories" label="Tablet Featured Categories" cardinality="Many">
+				<DestinationDef contentType="Category" />
+			</RelationshipDef>
+			<RelationshipDef name="tabletSearchSuggestionGroups" label="Tablet Search Suggestion Groups" cardinality="Many">
+				<DestinationDef contentType="SearchSuggestionGroup" />
+			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
 
@@ -441,6 +449,15 @@
 			</RelationshipDef>
 			<RelationshipDef name="categorySections" label="Category Sections" required="false" cardinality="Many" navigable="true">
 				<DestinationDef contentType="CategorySection" />
+			</RelationshipDef>
+			<RelationshipDef name="tabletCallToActionBanner" label="Call To Action Banner" inheritable="true">
+				<DestinationDef contentType="Banner" />
+			</RelationshipDef>
+			<RelationshipDef name="tabletNoPurchaseSuggestions" label="No Purchase Suggestions" cardinality="Many">
+				<DestinationDef contentType="Banner" />
+			</RelationshipDef>
+			<RelationshipDef name="tabletIcon" label="Icon">
+				<DestinationDef contentType="Image" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -772,6 +789,9 @@
 			</RelationshipDef>
 			<RelationshipDef name="popularCategories" cardinality="Many" label="Popular Categories">
 				<DestinationDef contentType="Category" />
+			</RelationshipDef>
+			<RelationshipDef name="tabletCallToActionBanner" label="Call To Action Banner" inheritable="true">
+				<DestinationDef contentType="Banner" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -1206,6 +1226,10 @@
 				<DestinationDef contentType="Product" />
 				<DestinationDef contentType="ConfiguredProduct"/>
 			</RelationshipDef>
+			<RelationshipDef name="completeTheMeal" label="Complete The Meal" cardinality="Many">
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="ConfiguredProduct"/>
+			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
 	<!--
@@ -1422,6 +1446,7 @@
 			<AttributeDef type="S" name="BLURB"  label="Blurb"/>
 			<AttributeDef type="S" name="CHEF_NAME" label="Chef name"/>
 			<AttributeDef type="S" name="CHEF_BLURB" label="Chef blurb text"/>
+			<AttributeDef type="S" name="tabletCopyright" label="Tablet Copyright" required="true"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="FEATURED_PRODUCTS" label="Featured Products" cardinality="Many" inheritable="true">
@@ -1445,6 +1470,18 @@
 			</RelationshipDef>
 			<!-- text stuff -->
 			<RelationshipDef name="BRAND_POPUP_CONTENT" label="Brand Popup Content">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="tabletHeader" label="Tablet Header" required="true">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="tabletImages" label="Tablet Images" cardinality="Many">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="tabletAboutTextShort" label="Tablet About Text Short" required="true">
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="tabletAboutTextLong" label="Tablet About Text Long" required="true">
 				<DestinationDef contentType="Html" />
 			</RelationshipDef>
 		</RelationshipDefs>
@@ -2321,5 +2358,38 @@
 			</EnumDef>
 		</AttributeDefs>
 	</ContentTypeDef>
+
+	<ContentTypeDef name="Banner">
+		<AttributeDefs>
+			<EnumDef type="S" name="location" label="Location">
+				<EnumValue value="CHECKOUT" label="Checkout"/>
+				<EnumValue value="HOMEPAGE" label="Homepage"/>
+			</EnumDef>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="image" label="Image">
+				<DestinationDef contentType="Image"/>
+			</RelationshipDef>
+			<RelationshipDef name="link" label="Link">
+				<DestinationDef contentType="SuperDepartment"/>
+				<DestinationDef contentType="Department"/>
+				<DestinationDef contentType="Category"/>
+				<DestinationDef contentType="Product"/>
+				<DestinationDef contentType="Recipe"/>
+				<DestinationDef contentType="Brand"/>
+				<DestinationDef contentType="Html"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
 	
+	<ContentTypeDef name="SearchSuggestionGroup">
+		<AttributeDefs>
+			<AttributeDef type="S" name="searchTerms" label="Search Terms (separated by semicolons)" required="true"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="tabletImage" label="Tablet Image">
+				<DestinationDef contentType="Image"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
 </CMSDef>

@@ -28,6 +28,7 @@ public class DepartmentModel extends ProductContainer {
     
     private final List<CategorySectionModel> categorySections = new ArrayList<CategorySectionModel>();
 	
+    private final List<BannerModel> tabletNoPurchaseSuggestions = new ArrayList<BannerModel>();
 	
 	public DepartmentModel(ContentKey cKey) {
 		super(cKey);
@@ -266,5 +267,14 @@ public class DepartmentModel extends ProductContainer {
 	
 	public boolean isHideGlobalNavDropDown() {
 		return getAttribute("hideGlobalNavDropDown", false);
+	}
+	
+    public List<BannerModel> getTabletNoPurchaseSuggestions() {
+        ContentNodeModelUtil.refreshModels(this, "tabletNoPurchaseSuggestions", tabletNoPurchaseSuggestions, false);
+        return new ArrayList<BannerModel>(tabletNoPurchaseSuggestions);
+    }
+
+	public Image getTabletIcon() {
+        return FDAttributeFactory.constructImage(this, "tabletIcon");
 	}
 }

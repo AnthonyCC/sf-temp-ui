@@ -2085,4 +2085,9 @@ public class MockProductModel extends MockContentNodeModel implements
 	public EnumProductLayout getSpecialLayout() {
 		return null;
 	}
+	
+	@Override
+	public List<ProductModel> getCompleteTheMeal() {
+		return null;
+	}
 }

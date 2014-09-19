@@ -1450,4 +1450,9 @@ public class ProductModelPromotionAdapter implements ProductModel, Serializable,
 	public EnumProductLayout getSpecialLayout() {
 		return productModel.getSpecialLayout();
 	}
+	
+	@Override
+	public List<ProductModel> getCompleteTheMeal() {
+		return productModel.getCompleteTheMeal();
+	}
 }

@@ -21,6 +21,8 @@ public class StoreModel extends ContentNodeModelImpl {
 	private List<SortOptionModel> newProductsPageSortOptions =  new ArrayList<SortOptionModel>();	
 	private List<SortOptionModel> presidentsPicksPageSortOptions =  new ArrayList<SortOptionModel>();
 	private List<SortOptionModel> eCouponsPageSortOptions =  new ArrayList<SortOptionModel>();
+	private List<CategoryModel> tabletFeaturedCategories = new ArrayList<CategoryModel>();
+	private List<SearchSuggestionGroupModel> tabletSearchSuggestionGroups = new ArrayList<SearchSuggestionGroupModel>(); 
 	
 	public StoreModel(com.freshdirect.cms.ContentKey cKey) {
 		super(cKey);
@@ -78,7 +80,16 @@ public class StoreModel extends ContentNodeModelImpl {
 		ContentNodeModelUtil.refreshModels(this, "pages", pages, true);
 		return new ArrayList<PageModel>( pages );
 	}
-	
+
+	public List<CategoryModel> getTabletFeaturedCategories() {
+		ContentNodeModelUtil.refreshModels(this, "tabletFeaturedCategories", tabletFeaturedCategories, false);
+		return new ArrayList<CategoryModel>( tabletFeaturedCategories );
+	}
+
+	public List<SearchSuggestionGroupModel> getTabletSearchSuggestionGroups() {
+		ContentNodeModelUtil.refreshModels(this, "tabletSearchSuggestionGroups", tabletSearchSuggestionGroups, false);
+		return new ArrayList<SearchSuggestionGroupModel>( tabletSearchSuggestionGroups );
+	}
     public List<SortOptionModel> getSearchPageSortOptions() {
         ContentNodeModelUtil.refreshModels(this, "searchPageSortOptions", searchPageSortOptions, false);
         return new ArrayList<SortOptionModel>(searchPageSortOptions);

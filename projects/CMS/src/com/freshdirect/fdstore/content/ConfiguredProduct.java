@@ -514,4 +514,9 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	public EnumProductLayout getSpecialLayout() {
 		return getProduct().getSpecialLayout();
 	}
+
+	@Override
+	public List<ProductModel> getCompleteTheMeal() {
+		return getProduct().getCompleteTheMeal();
+	}
 }
