@@ -39,7 +39,7 @@ var FreshDirect = FreshDirect || {};
         // render department header
         $('.browse-carousels-top').html(browse.topCarousels(data));
         $('.browse-carousels-bottom').html(browse.bottomCarousels(data));
-        if (srch) {
+        if (window.srch) {
           $('.srch-carousel').html(srch.carouselWrapper(data));
         }
 
