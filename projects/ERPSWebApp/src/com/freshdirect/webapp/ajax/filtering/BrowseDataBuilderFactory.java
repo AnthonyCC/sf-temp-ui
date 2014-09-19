@@ -52,6 +52,8 @@ import com.freshdirect.webapp.ajax.browse.data.CarouselData;
 import com.freshdirect.webapp.ajax.browse.data.CategoryData;
 import com.freshdirect.webapp.ajax.browse.data.DescriptiveDataI;
 import com.freshdirect.webapp.ajax.browse.data.MenuBoxData;
+import com.freshdirect.webapp.ajax.browse.data.MenuBoxData.MenuBoxSelectionType;
+import com.freshdirect.webapp.ajax.browse.data.MenuBoxData.MenuBoxType;
 import com.freshdirect.webapp.ajax.browse.data.MenuItemData;
 import com.freshdirect.webapp.ajax.browse.data.NavDepth;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
@@ -1011,7 +1013,35 @@ public class BrowseDataBuilderFactory {
 		for(ProductItemFilterI filter : navModel.getActiveFilters()){
 			filterLabels.add(new ParentData(filter.getParentId(), filter.getId(), filter.getName()));
 		}
-		browseData.getSections().getFilterLabels().setFilterLabels(filterLabels);
+		List<ParentData> orderedFilterLabels = reorderFilterLabels(browseData, filterLabels);
+		browseData.getSections().getFilterLabels().setFilterLabels(orderedFilterLabels);
+	}
+	
+	private List<ParentData> reorderFilterLabels(BrowseDataContext browseDataContext, List<ParentData> filterLabels) {
+		List<ParentData> orderedFilterLabels = new ArrayList<ParentData>();
+		for (MenuBoxData menuBox : browseDataContext.getMenuBoxes().getMenuBoxes()) {
+			String id = menuBox.getId();
+			if (MenuBoxType.FILTER.equals(menuBox.getBoxType()) && MenuBoxSelectionType.MULTI.equals(menuBox.getSelectionType())) {
+				for (MenuItemData menuItem : menuBox.getItems()) {
+					if (menuItem.isSelected()) {
+						for (ParentData item : filterLabels) {
+							if (menuItem.getId().equals(item.getId())) {
+								orderedFilterLabels.add(item);
+								break;
+							}
+						}
+					}
+				}
+			} else {
+				for (ParentData unorderedFilterLabel : filterLabels) {
+					if (id.equals(unorderedFilterLabel.getParentId())) {
+						orderedFilterLabels.add(unorderedFilterLabel);
+						break;
+					}
+				}
+			}
+		}
+		return orderedFilterLabels;
 	}
 	
 	public void calculateMaxSectionLevel(SectionDataCointainer data, List<SectionData> sections, int level){
