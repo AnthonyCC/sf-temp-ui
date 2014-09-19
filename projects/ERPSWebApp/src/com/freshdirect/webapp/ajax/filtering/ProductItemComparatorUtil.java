@@ -55,24 +55,27 @@ public class ProductItemComparatorUtil {
 				
 			FDIdentity identity = user.getIdentity();
 			String userId = identity == null ? null : identity.getErpCustomerPK();
+			
 			List<FilteringProductItem> allProductItems = data.getSectionContexts().get(0).getProductItems();
-			
-			//collect available favorites
-			List<FilteringProductItem> favourites = new ArrayList<FilteringProductItem>();
-			for (FilteringProductItem productItem : allProductItems){
-				ProductModel productModel = productItem.getProductModel();  
-				
-				if (ScoreProvider.getInstance().isUserHasScore(userId, productModel.getContentKey()) && productModel.isFullyAvailable()) {
-					favourites.add(productItem);
+			if (allProductItems!=null){
+
+				//collect available favorites
+				List<FilteringProductItem> favourites = new ArrayList<FilteringProductItem>();
+				for (FilteringProductItem productItem : allProductItems){
+					ProductModel productModel = productItem.getProductModel();  
+					
+					if (ScoreProvider.getInstance().isUserHasScore(userId, productModel.getContentKey()) && productModel.isFullyAvailable()) {
+						favourites.add(productItem);
+					}
 				}
-			}
-			
-			Collections.sort(favourites, ProductItemSorterFactory.createSearchRelevancyComparatorForFavorites(user)); //sort favorites
-			List<FilteringProductItem> favouritesToMove = favourites.subList(0, Math.min(FDStoreProperties.getSearchPageTopFavouritesNumber(), favourites.size())); //get top favorites that will be moved
-			allProductItems.removeAll(favouritesToMove); //remove top favorites from original place
-			
-			for (int index = favouritesToMove.size() - 1; index >= 0 ; index --) { //place top favorites to the beginning of the products
-				allProductItems.add(0,favourites.get(index));
+				
+				Collections.sort(favourites, ProductItemSorterFactory.createSearchRelevancyComparatorForFavorites(user)); //sort favorites
+				List<FilteringProductItem> favouritesToMove = favourites.subList(0, Math.min(FDStoreProperties.getSearchPageTopFavouritesNumber(), favourites.size())); //get top favorites that will be moved
+				allProductItems.removeAll(favouritesToMove); //remove top favorites from original place
+				
+				for (int index = favouritesToMove.size() - 1; index >= 0 ; index --) { //place top favorites to the beginning of the products
+					allProductItems.add(0,favourites.get(index));
+				}
 			}
 		}
 	}
