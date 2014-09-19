@@ -134,7 +134,7 @@ public class ProductItemSorterFactory {
 		ComparatorChain<FilteringSortingItem<ProductModel>> comparator = ComparatorChain.create(getFavoritesComparator(user));
 		comparator.chain(new SortValueComparator<ProductModel>(EnumSortingValue.CATEGORY_RELEVANCY));
 		comparator.chain(new SortLongValueComparator<ProductModel>(EnumSortingValue.TERM_SCORE));
-		return adapterForSearchResult(comparator); //TODO deal with reverse order?
+		return adapterForSearchResult(comparator); //no respect for reverse order
 	}
 
 	private static Comparator<FilteringProductItem> createPricingAdapterComparator(final Comparator<ProductModel> comparator, final FDUserI user, boolean reverseOrder){
