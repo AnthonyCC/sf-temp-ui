@@ -611,7 +611,9 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		<td colspan="6" align="left" style="padding-right:5px;" class="text12">Messages will be sent to the following mobile number:</td>
 	</tr>
 	<tr valign="top">
-		<td style="padding-right: 5px;" align="left" colspan="6"><FONT class="text10" style="color:gray;font-style:italic;">By signing up you agree to the <a href="javascript:popup('/your_account/terms.jsp', 'large')">Terms and Conditions</a></FONT></td>
+		<td style="padding-right: 5px;" align="left" colspan="6">
+			<fd:IncludeMedia name="/media/editorial/site_pages/sms/terms_short.html" />
+		</td>
 	</tr>
 	<tr><td colspan="6">&nbsp;</td></tr>
 	<tr>
@@ -726,7 +728,9 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 		</td>
 	</tr>  --%>
 	<tr valign="top">
-		<td style="padding-right: 5px;" align="left" colspan="6"><FONT class="text9" style="color:gray;font-style:italic;">* Standard text messaging rate apply</FONT></td>
+		<td style="padding-right: 5px;" align="left" colspan="6">
+			<fd:IncludeMedia name="/media/editorial/site_pages/sms/terms_medium.html" />
+		</td>
 	</tr>	
 	</form>
 	

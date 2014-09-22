@@ -19,7 +19,7 @@ int tableWidth = W_PRIVACY_POLICY_TOTAL;
 	
 String type = request.getParameter("type");
 if (type != null && !"".equals(type) && type.equalsIgnoreCase("popup")) {
-	template = "/shared/template/large_pop.jsp";
+	template = "/shared/template/large_pop_no_resize.jsp";
 	help = "";
 	tableWidth = W_PRIVACY_POLICY_POPUP_TOTAL;
 }
