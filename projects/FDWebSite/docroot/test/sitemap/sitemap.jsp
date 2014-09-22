@@ -87,6 +87,9 @@ private void displayCategory(CategoryModel cat, JspWriter out) throws java.io.IO
     [data-sumproducts="0"] {
       color: #888;
     }
+    .noempty [data-sumproducts="0"] {
+      display: none;
+    }
     [data-sumproducts="0"]:before {
       content: '';
     }
@@ -95,7 +98,6 @@ private void displayCategory(CategoryModel cat, JspWriter out) throws java.io.IO
       margin-left: 1em;
       color: red;
     }
-    
   </style>
 </head>
 <body>
@@ -103,6 +105,7 @@ private void displayCategory(CategoryModel cat, JspWriter out) throws java.io.IO
   <div class="control">
     <button id="btn_open_all">open all</button>
     <button id="btn_close_all">close all</button>
+    <button id="btn_toggle_empty">show/hide empty nodes</button>
   </div>
 <%
 out.print("<ul>");
@@ -131,6 +134,9 @@ document.getElementById("btn_close_all").addEventListener("click", function (e) 
   nodes.forEach(function (node) {
     node.classList.remove("selected");
   }); 
+});
+document.getElementById("btn_toggle_empty").addEventListener("click", function (e) {
+  document.body.classList.toggle("noempty");
 });
 nodes.forEach(function (node) {
   var subnodes = [].slice.call(node.querySelectorAll('[data-products]')),
