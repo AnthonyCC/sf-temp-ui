@@ -679,6 +679,8 @@ public class FDStoreProperties {
 	
 	private static final String PROP_SEARCH_CAROUSEL_PRODUCT_LIMIT = "fdstore.search.carousel.product.limit";
 	
+	private static final String PROP_PRESIDENT_PICK_PAGING_ENABLED = "fdstore.prespicks.paging.enabled";
+	
 	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1343,6 +1345,8 @@ public class FDStoreProperties {
         defaults.put(PROP_SMS_OVERLAY_FLAG, "false");
 
         defaults.put(PROP_SEARCH_CAROUSEL_PRODUCT_LIMIT, "25");
+        
+        defaults.put(PROP_PRESIDENT_PICK_PAGING_ENABLED, "false");
 
         refresh();
     }
@@ -3385,6 +3389,10 @@ public class FDStoreProperties {
 
 	public static boolean getSMSOverlayFlag() {
 		return Boolean.valueOf(get(PROP_SMS_OVERLAY_FLAG)).booleanValue();
+	}
+	
+	public static boolean isPresidentPicksPagingEnabled() {
+		return Boolean.valueOf(get(PROP_PRESIDENT_PICK_PAGING_ENABLED)).booleanValue();
 	}
 }
 

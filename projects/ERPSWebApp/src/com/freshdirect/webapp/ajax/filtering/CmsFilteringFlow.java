@@ -167,7 +167,9 @@ public class CmsFilteringFlow {
 			
 				
 			// -- PAGING --
-			BrowseDataPagerHelper.createPagerContext(browseData, nav);
+			if (!FilteringFlowType.PRES_PICKS.equals(nav.getPageType()) || (FilteringFlowType.PRES_PICKS.equals(nav.getPageType()) && FDStoreProperties.isPresidentPicksPagingEnabled())) {
+				BrowseDataPagerHelper.createPagerContext(browseData, nav);
+			}
 	
 			//Update product hit counts
 //			for (BrowseData.SearchParams.Tab tab : browseData.getSearchParams().getTabs()) {

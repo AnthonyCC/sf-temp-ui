@@ -81,7 +81,9 @@
 
   <tmpl:put name='content' direct='true'>
     <div class="pager-holder top">
-      <soy:render template="browse.pager" data="${browsePotato.pager}" />
+      <c:if test="${not empty browsePotato.pager}">
+        <soy:render template="browse.pager" data="${browsePotato.pager}" />
+      </c:if>
     </div>
 
     <div id="sorter">
@@ -114,7 +116,9 @@
     </c:choose>
 
     <div class="pager-holder bottom">
-      <soy:render template="browse.pager" data="${browsePotato.pager}" />
+      <c:if test="${not empty browsePotato.pager}">
+        <soy:render template="browse.pager" data="${browsePotato.pager}" />
+      </c:if>
     </div>
     
     <script>

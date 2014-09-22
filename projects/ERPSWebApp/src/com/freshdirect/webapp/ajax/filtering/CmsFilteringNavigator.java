@@ -220,12 +220,14 @@ public class CmsFilteringNavigator {
 				queryString.append("&");
 				break;
 		}
-		queryString.append("pageSize=").append(pageSize);
-		queryString.append("&");
-		queryString.append("all=").append(all);
-		queryString.append("&");
-		queryString.append("activePage=").append(activePage);
-		queryString.append("&");
+		if (!FilteringFlowType.PRES_PICKS.equals(pageType) || (FilteringFlowType.PRES_PICKS.equals(pageType) && FDStoreProperties.isPresidentPicksPagingEnabled())) {
+			queryString.append("pageSize=").append(pageSize);
+			queryString.append("&");
+			queryString.append("all=").append(all);
+			queryString.append("&");
+			queryString.append("activePage=").append(activePage);
+			queryString.append("&");
+		}
 		queryString.append("sortBy=").append(sortBy);
 		queryString.append("&");
 		queryString.append("orderAsc=").append(isOrderAscending);
