@@ -181,33 +181,11 @@ if (request.getParameter("show") != null && !"".equals(request.getParameter("sho
 				<td></td>
 				<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 				<td>
-<!--				<%if(intro){%>-->
-<!--					<jsp:include page="/help/intro.jsp"/>-->
-<!--				<%}else if(about){%>-->
-<!--					<jsp:include page="/help/about_freshdirect.jsp"/>	-->
-<!--				<%}else if(signup){%>-->
-<!--					<jsp:include page="/help/signing_up.jsp"/>-->
-<!--				<%}else if(security){%>-->
-<!--					<jsp:include page="/help/security.jsp"/>-->
-<!--				<%}else if(shopping){%>-->
-<!--					<jsp:include page="/help/shopping.jsp"/>-->
-<!--				<%}else if(payment){%>-->
-<!--					<jsp:include page="/help/payment.jsp"/>-->
-<!--				<%}else if(delivery){%>-->
-<!--					<fd:IncludeMedia name="/media/editorial/faq/home_delivery.ftl" parameters="<%=params%>" withErrorReport="true"/>-->
-					<jsp:include page="/help/delivery_home.jsp"/>
-<!--				<%}else if(delivery_depot){%>-->
-<!--					<jsp:include page="/help/delivery_depot.jsp"/>				-->
-<!--				<%}else if(inside_fd){%>-->
-<!--					<jsp:include page="/help/inside_fd.jsp"/>		-->
-<!--				<%}else if(cos){%>-->
-<!--                    <jsp:include page="/help/cos.jsp"/>		-->
-<!--                <%}%>-->
-<% if(!isDefaultFtl){ %>
-			<fd:IncludeMedia name="<%= ftl%>" parameters="<%=params%>" withErrorReport="true"/>
-			<% } else { %>
-			<fd:IncludeMedia name="<%= defaultFtl%>" parameters="<%=params%>" withErrorReport="true"/>
-			<% } %>
+					<% if(!isDefaultFtl){ %>
+						<fd:IncludeMedia name="<%= ftl%>" parameters="<%=params%>" withErrorReport="true"/>
+					<% } else { %>
+						<fd:IncludeMedia name="<%= defaultFtl%>" parameters="<%=params%>" withErrorReport="true"/>
+					<% } %>
 				</td>
 			</tr>
 			<tr>
