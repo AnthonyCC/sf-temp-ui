@@ -197,8 +197,8 @@ public class MenuBuilderFactory {
 			boolean expandSecondLowestNavBox = ((CategoryModel)navModel.getSelectedContentNodeModel()).isExpandSecondLowestNavigationBox();
 			
 			// determine the box dipslay and selection type (lowest level of navigation should always remain expanded [APPDEV-3814])
-			if(((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories()==null || 
-					   ((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories().size()==0){
+			List<CategoryModel> subCategories = ((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories();
+			if(!nav.isPdp() && (subCategories==null || subCategories.size()==0)){
 				
 				createTopLevelBoxes(menu, navModel);
 				
@@ -402,8 +402,6 @@ public class MenuBuilderFactory {
 	
 	public void setSecondLowestLevelBoxType(List<MenuBoxData> menu, CategoryModel cat){
 		
-		boolean expand = cat.isExpandSecondLowestNavigationBox();
-		
 		int catCounter=0;
 		for(MenuBoxData box : menu){
 			if(box.getBoxType()!=MenuBoxType.FILTER){
@@ -537,28 +535,6 @@ public class MenuBuilderFactory {
 			if(nodeId!=null && nodeId.equals(menuItem.getId())){
 				menuItem.setSelected(true);
 				box.setSelectedLabel(menuItem.getName());
-				return true;
-			}
-		}
-		
-		return false;
-	}
-
-	/**
-	 * Check selected menu item and set explicit label name (instead of the name of particular menu item)
-	 * See {@link #checkSelected(MenuBoxData, String)
-	 * 
-	 * @param box menu box
-	 * @param nodeId
-	 * @param selectedLabelName
-	 * @return
-	 */
-	private boolean checkSelectedEx(MenuBoxData box, String nodeId, String selectedLabelName){
-		
-		for(MenuItemData menuItem : box.getItems()){
-			if(nodeId!=null && nodeId.equals(menuItem.getId())){
-				menuItem.setSelected(true);
-				box.setSelectedLabel(selectedLabelName);
 				return true;
 			}
 		}
