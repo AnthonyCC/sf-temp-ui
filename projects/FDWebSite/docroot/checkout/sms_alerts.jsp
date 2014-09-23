@@ -5,6 +5,9 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager" %>
 <%@page import="com.freshdirect.common.address.PhoneNumber"%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+
+<%@ page import='com.freshdirect.framework.webapp.ActionError' %>
+<%@ page import='com.freshdirect.framework.webapp.ActionResult' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
@@ -27,7 +30,7 @@
 			padding-right: 10px;
 		}
 		.smsErrorMsgCont {
-			padding: 10px 0 10px 10px;
+			margin: 10px 0 5px 10px;
 		}
 		#MB_caption {
 			color: #333;
@@ -151,12 +154,11 @@
 					</div>
 				<% }
 			} else { %>
-				<div style=" overflow-y: auto; overflow-x: hide; margin: 0 30px; width: 600px;">
-					<form id="smsalertform" name="smsalertform" method="post" action="">
+				<div style=" overflow-y: auto; overflow-x: hidden; margin: 0 30px; width: 600px;">
+					<form id="smsalertform" name="smsalertform" method="post" action="" style="overflow:hidden">
 						<input type="hidden" name="actionName" value="ordersmsalerts" />	
 						<table border="0" cellpadding="0" cellspacing="0" width="100%">
 							<tr><td><fd:IncludeMedia name="/media/editorial/site_pages/sms/co_head.html" /></td></tr>
-							<tr><td class="text11rbold" style="text-align: left;"><fd:ErrorHandler result='<%=result%>' name='text_option' id='errorMsg'><div class="smsErrorMsgCont"><%=errorMsg%></div></fd:ErrorHandler></td></tr>
 							<tr><td><fd:IncludeMedia name="/media/editorial/site_pages/sms/terms_short.html" /></td></tr>
 							<tr><td>&nbsp;</td></tr>
 							<tr valign="top">
@@ -165,7 +167,7 @@
 									<input type="text" size="28" maxlength="20" class="text9" name="mobile_number" value="<%=mobile_number%>" style="width:175px; padding:1px; height:20px;font-size:13px" />
 								</td>
 							</tr>
-							<tr><td class="text11rbold" style="text-align: left; padding-left: 15px;"><div class="smsErrorMsgCont"><fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></div></td></tr>
+							<tr><td class="text11rbold" style="text-align: left; padding-left: 15px;"><fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><div class="smsErrorMsgCont"><%=errorMsg%></div></fd:ErrorHandler></div></td></tr>
 							<tr><td><fd:IncludeMedia name="/media/editorial/site_pages/sms/terms_medium.html" /></td></tr>
 							<tr><td>&nbsp;</td></tr>
 							<tr>
