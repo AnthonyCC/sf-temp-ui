@@ -90,9 +90,16 @@ public class CmsFilteringFlow {
 		
 		} else {
 			browseDataContext = EhCacheUtil.getObjectFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey);
-			if (browseDataContext!=null && browseDataContext.getCurrentContainer()!=null && !browseDataContext.getCurrentContainer().getContentName().equalsIgnoreCase(nav.getId())){
-				EhCacheUtil.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey); //if cached id is not the same as url id 
-				browseDataContext = null;
+			if (FilteringFlowType.BROWSE.equals(nav.getPageType())) {
+				if (browseDataContext!=null && browseDataContext.getCurrentContainer()!=null && !browseDataContext.getCurrentContainer().getContentName().equalsIgnoreCase(nav.getId())){
+					EhCacheUtil.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey); //if cached id is not the same as url id 
+					browseDataContext = null;
+				}
+			} else {
+				if (browseDataContext!=null && !browseDataContext.getSearchParams().getSearchParams().equals(nav.getSearchParams())) {
+					EhCacheUtil.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey); //if cached id is not the same as url id 
+					browseDataContext = null;
+				}
 			}
 		}
 		
