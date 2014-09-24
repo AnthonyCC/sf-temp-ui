@@ -39,7 +39,13 @@ var FreshDirect = FreshDirect || {};
     }
 
     $('[data-component="ATCButton"]').addClass('ATCinProgress');
-
+    
+    //Close the popup after added product to the cart with delay on mobile
+    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+    	setTimeout(function(){$("#transactionalPopup").removeClass("shown");}, 1000);    	
+    }
+    
+    
 		fd.common.dispatcher.signal('server',{
 			url:'/api/addtocart',
 			data:{data:JSON.stringify(request)},
