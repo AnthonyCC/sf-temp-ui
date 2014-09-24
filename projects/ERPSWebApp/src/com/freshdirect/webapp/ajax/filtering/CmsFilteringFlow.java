@@ -31,7 +31,6 @@ import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.Html;
-import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductContainer;
@@ -77,32 +76,8 @@ public class CmsFilteringFlow {
 	
 	@SuppressWarnings("deprecation")
 	public CmsFilteringFlowResult doFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException{
-		
-		BrowseDataContext browseDataContext = null;
 		BrowseData browseData = null;
-		
-		BrowseEvent event = nav.getBrowseEvent()!=null ? BrowseEvent.valueOf(nav.getBrowseEvent().toUpperCase()) : BrowseEvent.NOEVENT;
-
-		//use userRefinementCache
-		String userPrimaryKey = user.getUser().getPrimaryKey();
-		if(event!=BrowseEvent.PAGE && event!=BrowseEvent.SORT) { // invalidate cache entry in every other case than paging or sorting		
-			EhCacheUtil.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey);
-		
-		} else {
-			browseDataContext = EhCacheUtil.getObjectFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey);
-			if (FilteringFlowType.BROWSE.equals(nav.getPageType())) {
-				if (browseDataContext!=null && browseDataContext.getCurrentContainer()!=null && !browseDataContext.getCurrentContainer().getContentName().equalsIgnoreCase(nav.getId())){
-					EhCacheUtil.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey); //if cached id is not the same as url id 
-					browseDataContext = null;
-				}
-			} else {
-				if (browseDataContext!=null && !browseDataContext.getSearchParams().getSearchParams().equals(nav.getSearchParams())) {
-					EhCacheUtil.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey); //if cached id is not the same as url id 
-					browseDataContext = null;
-				}
-			}
-		}
-		
+		BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPagingOrSorting(nav, user);
 		if (nav.getPageType() == FilteringFlowType.BROWSE) {
 			
 			if (browseDataContext == null) {
@@ -196,6 +171,46 @@ public class CmsFilteringFlow {
 		}
 
 		return new CmsFilteringFlowResult(browseData, browseDataContext.getNavigationModel());
+	}
+
+	private BrowseDataContext getBrowseDataContextFromCacheForPagingOrSorting(CmsFilteringNavigator nav, FDSessionUser user) {
+		BrowseDataContext browseDataContext = null;
+		BrowseEvent event = nav.getBrowseEvent()!=null ? BrowseEvent.valueOf(nav.getBrowseEvent().toUpperCase()) : BrowseEvent.NOEVENT;
+		//use userRefinementCache
+		String userPrimaryKey = user.getUser().getPrimaryKey();
+		if(event != BrowseEvent.PAGE && event != BrowseEvent.SORT) { // invalidate cache entry in every other case than paging or sorting
+			removeBrowseDataContextFromCache(userPrimaryKey);
+		} else {
+			browseDataContext = EhCacheUtil.getObjectFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey);
+			if (FilteringFlowType.BROWSE.equals(nav.getPageType())) {
+				if (isBrowseRequestForTheSameId(nav, browseDataContext)){
+					removeBrowseDataContextFromCache(userPrimaryKey); //if cached id is not the same as url id 
+					browseDataContext = null;
+				}
+			} else {
+				if (browseDataContext!=null && (!isRequestForTheSamePageType(nav, browseDataContext) || (FilteringFlowType.SEARCH.equals(nav.getPageType()) && !isRequestForTheSameSearchParams(nav, browseDataContext)))) {
+					removeBrowseDataContextFromCache(userPrimaryKey); //if cached id is not the same as url id 
+					browseDataContext = null;
+				}
+			}
+		}
+		return browseDataContext;
+	}
+
+	private boolean isRequestForTheSameSearchParams(CmsFilteringNavigator nav, BrowseDataContext browseDataContext) {
+		return browseDataContext.getSearchParams().getSearchParams().equals(nav.getSearchParams());
+	}
+
+	private boolean isRequestForTheSamePageType(CmsFilteringNavigator nav, BrowseDataContext browseDataContext) {
+		return browseDataContext.getSearchParams().getPageType().equals(nav.getPageType());
+	}
+
+	private boolean isBrowseRequestForTheSameId(CmsFilteringNavigator nav, BrowseDataContext browseDataContext) {
+		return browseDataContext != null && browseDataContext.getCurrentContainer() != null && !browseDataContext.getCurrentContainer().getContentName().equalsIgnoreCase(nav.getId());
+	}
+
+	private void removeBrowseDataContextFromCache(String userPrimaryKey) {
+		EhCacheUtil.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey);
 	}
 
 	private void populateSearchCarouselProductLimit(int activePage,
