@@ -1446,7 +1446,7 @@
 			<AttributeDef type="S" name="BLURB"  label="Blurb"/>
 			<AttributeDef type="S" name="CHEF_NAME" label="Chef name"/>
 			<AttributeDef type="S" name="CHEF_BLURB" label="Chef blurb text"/>
-			<AttributeDef type="S" name="tabletCopyright" label="Tablet Copyright" required="true"/>
+			<AttributeDef type="S" name="tabletCopyright" label="Tablet Copyright"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="FEATURED_PRODUCTS" label="Featured Products" cardinality="Many" inheritable="true">
@@ -1472,16 +1472,16 @@
 			<RelationshipDef name="BRAND_POPUP_CONTENT" label="Brand Popup Content">
 				<DestinationDef contentType="Html" />
 			</RelationshipDef>
-			<RelationshipDef name="tabletHeader" label="Tablet Header" required="true">
+			<RelationshipDef name="tabletHeader" label="Tablet Header">
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
 			<RelationshipDef name="tabletImages" label="Tablet Images" cardinality="Many">
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
-			<RelationshipDef name="tabletAboutTextShort" label="Tablet About Text Short" required="true">
+			<RelationshipDef name="tabletAboutTextShort" label="Tablet About Text Short">
 				<DestinationDef contentType="Html" />
 			</RelationshipDef>
-			<RelationshipDef name="tabletAboutTextLong" label="Tablet About Text Long" required="true">
+			<RelationshipDef name="tabletAboutTextLong" label="Tablet About Text Long">
 				<DestinationDef contentType="Html" />
 			</RelationshipDef>
 		</RelationshipDefs>
