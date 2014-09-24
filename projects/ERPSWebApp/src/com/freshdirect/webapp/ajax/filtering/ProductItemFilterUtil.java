@@ -148,13 +148,13 @@ public class ProductItemFilterUtil {
 	public static void collectAllItems(List<SectionContext> sections, List<FilteringProductItem> items, NavigationModel navigationModel){
 		if(sections!=null){
 			for(SectionContext section : sections){
-				if (navigationModel.isProductListing()) {
-					if(section.getProductItems()!=null){
-						items.addAll(section.getProductItems());
-					}
-				} else if (navigationModel.isRecipeListing()) {
+				if (navigationModel.isRecipeListing()) {
 					if(section.getRecipeItems()!=null){
 						items.addAll(section.getRecipeItems());
+					}
+				} else {
+					if(section.getProductItems()!=null){
+						items.addAll(section.getProductItems());
 					}
 				}
 				collectAllItems(section.getSectionContexts(), items, navigationModel);
