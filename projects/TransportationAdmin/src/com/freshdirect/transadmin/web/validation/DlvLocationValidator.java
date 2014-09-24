@@ -23,8 +23,7 @@ public class DlvLocationValidator extends AbstractValidator {
 		//ValidationUtils.rejectIfEmpty(errors, "longitude", "app.error.112", new Object[]{"Longitude"},"required field");
 		//ValidationUtils.rejectIfEmpty(errors, "latitude", "app.error.112", new Object[]{"Latitude"},"required field");
 		
-		validateServiceTimeGroup("serviceTimeAdjustable",model.getDlvServiceTimeType(),
-				model.getServiceTimeAdjustable(),"ST Type or ST Adjustment",errors);
+		//validateServiceTimeGroup("serviceTimeAdjustable",model.getDlvServiceTimeType(), model.getServiceTimeAdjustable(),"ST Type or ST Adjustment",errors);
 		
 	}
 	

@@ -4,7 +4,7 @@
 		var console = console || { log:function(){} };
 	
 	  var SystemMessage='SystemMessage',
-	  messages = {},order = ['sitemessage',SystemMessage,'cutoff','platterwarning','reservationwarning'],
+	  messages = {},order = ['sitemessage',SystemMessage,'cutoff','platterwarning','reservationwarning','deliveryetawarning'],
 	  messageObj = document.getElementById('messages'),
 	  hashes = {},
 	  /* REMOVE THIS DEPENDENCY - USQLegalWarning can be an object with only sessionStore prop

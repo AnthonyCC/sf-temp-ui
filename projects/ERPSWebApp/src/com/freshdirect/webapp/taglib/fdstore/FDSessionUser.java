@@ -1739,5 +1739,12 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setGlobalNavTutorialSeen(boolean isGlobalNavTutorialSeen) {
 		user.setGlobalNavTutorialSeen(isGlobalNavTutorialSeen);
 	}
+	
+	@Override
+	public List<FDOrderInfoI> getScheduledOrdersForDelivery(boolean sorted)
+			throws FDResourceException {
+		return this.user.getScheduledOrdersForDelivery(sorted);
+	}
+	
 
 }

@@ -89,7 +89,7 @@
                --><tr>
                   <td>Service Time Factor Formula <b>(Use x, y, z)</b></td>
                   <td>                  
-                    <form:input maxlength="50" size="30" path="serviceTimeFactorFormula" />
+                    <form:input maxlength="256" size="30" path="serviceTimeFactorFormula" />
                 </td>
                 <td>
                   &nbsp;<form:errors path="serviceTimeFactorFormula" />
@@ -99,7 +99,7 @@
                <tr>
                   <td>Service Time Formula <b>(Use a, b, m)</b></td>
                   <td>                  
-                    <form:input maxlength="50" size="30" path="serviceTimeFormula" />
+                    <form:input maxlength="256" size="30" path="serviceTimeFormula" />
                 </td>
                 <td>
                   &nbsp;<form:errors path="serviceTimeFormula" />
@@ -120,7 +120,7 @@
                <tr>
                   <td>Order Size Formula <b>(Use x, y, z)</b></td>
                   <td>                  
-                    <form:input maxlength="50" size="30" path="orderSizeFormula" />
+                    <form:input maxlength="256" size="30" path="orderSizeFormula" />
                 </td>
                 <td>
                   &nbsp;<form:errors path="orderSizeFormula" />
@@ -226,7 +226,7 @@
                   <td colspan="3" align="center">
                   	<input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:back('scenario');" />
                    	<input type = "submit" value="&nbsp;Save&nbsp;"  />
-                   	<input type = "button" value="Scenario Zones"  onclick="javascript:showScenarioZonesTable(document.getElementById('code').value);"/>
+                   	<input type = "button" value="Scenario Zones"  onclick="javascript:showScenarioZonesTable('<%= request.getParameter("scenarioRefId") != null ?  request.getParameter("scenarioRefId") :  request.getParameter("id") %>');"/>
                   </td>                        
               </tr>
               

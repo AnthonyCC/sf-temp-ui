@@ -60,7 +60,8 @@ if(user != null) {
 	}
 	String uri = request.getRequestURI().toLowerCase();
 	%>	
-	<div class="container globalnav_top<%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp")) ? " disableCart" : "" %>">
+	<div class="message invisible" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div>	
+  	<div class="container globalnav_top<%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp")) ? " disableCart" : "" %>">
 	  	<%
 		if (user.isDepotUser()){ %>
 			<a class="logo" href="/index.jsp"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif"  alt="" /></a>

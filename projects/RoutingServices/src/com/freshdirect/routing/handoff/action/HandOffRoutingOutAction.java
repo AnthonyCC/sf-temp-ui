@@ -585,11 +585,12 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 						if(currRouteId == null) {
 							currRouteId = routeID;
 						}
-					
+
+						// depot reload logic
 						if(_order.getOrderNumber() == null || _order.getOrderNumber().trim().length() == 0
-								//|| IRoutingStopModel.DEPOT_STOPNO.equalsIgnoreCase(_order.getOrderNumber())) {
 								|| _order.getOrderNumber().startsWith(IRoutingStopModel.DEPOT_STOPNO)) {
-							currDepotDeparture = _order.getStopArrivalTime();
+							//APPDEV-3138 - Adjust Reloads with Wait Time
+							currDepotDeparture = (_order.isWaitStop() && currDepotDeparture != null) ? RoutingDateUtil.addSeconds(currDepotDeparture, (int) _order.getServiceTime()) : _order.getStopArrivalTime();
 							continue;
 						} else if(currRouteId != null && !currRouteId.equalsIgnoreCase(routeID)) {
 							currDepotDeparture = null;

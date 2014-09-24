@@ -147,8 +147,8 @@
 					  <ec:column title=" " width="5px" 
 									filterable="false" sortable="false" cell="selectcol"
 									property="id" />
-					  <ec:column property="id" alias="maintenanceId" title="ID"/> 
-					  <ec:column property="createdDate" title="Issue Date" />
+					  <ec:column property="id" alias="maintenanceId" width="15px" title="ID"/> 
+					  <ec:column cell="date" format="MM/dd/yyyy hh:mm aaa" property="createDate" title="Create Date"/>
 					  <ec:column property="displayVerificationDate" title="Verification Date" />
 					  <ec:column property="displayEstimatedRepairDate" title="Estimated Repair Date" />
 					  <ec:column property="displayActualRepairDate" title="Actual Repair Date" />

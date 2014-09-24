@@ -252,18 +252,6 @@ public class MaintenanceIssue extends BaseCommand {
 	public void setTruckLocation(String truckLocation) {
 		this.truckLocation = truckLocation;
 	}
-
-	public String getCreatedDate(){
-		String date = "";
-		if(this.getCreateDate()!=null){
-			try {
-				date = TransStringUtil.getDate(this.getCreateDate());
-			} catch (ParseException e) {				
-				e.printStackTrace();
-			}
-		}
-		return date;
-	}
 	
 	public String getDisplayVerificationDate(){
 		String date = "";

@@ -2831,4 +2831,34 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public void setGlobalNavTutorialSeen(boolean isGlobalNavTutorialSeen) {
 		this.isGlobalNavTutorialSeen = isGlobalNavTutorialSeen;
 	}
+	
+	/* return List of orderInfos for all orders in En-route status. */
+	public List<FDOrderInfoI> getScheduledOrdersForDelivery(boolean sorted) throws FDResourceException {
+		
+		FDOrderHistory history = (FDOrderHistory) getOrderHistory();//Changed to fetch from cache.
+		List<FDOrderInfoI> orderHistoryInfo = new ArrayList<FDOrderInfoI>(history.getFDOrderInfos(EnumSaleType.REGULAR));
+		
+		List<FDOrderInfoI> validScheduledOrders = new ArrayList<FDOrderInfoI> ();
+		if(orderHistoryInfo != null) {
+			for (Iterator<FDOrderInfoI> hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
+				FDOrderInfoI orderInfo = hIter.next();
+				if (orderInfo.getOrderStatus() == EnumSaleStatus.ENROUTE ) {
+					validScheduledOrders.add(orderInfo);
+				}
+			}
+		}
+		LOGGER.info("Total Orders scheduled for delivery: " + validScheduledOrders.size());
+		if (sorted) {
+			Collections.sort(validScheduledOrders, ORDER_DELIVERY_STARTTIME_COMPARATOR);
+		}
+		
+		return validScheduledOrders;
+	}
+	
+	/** Sorts orders by dlv. start time, ascending */
+	private final static Comparator<FDOrderInfoI> ORDER_DELIVERY_STARTTIME_COMPARATOR = new Comparator<FDOrderInfoI>() {
+		public int compare(FDOrderInfoI o1, FDOrderInfoI o2) {
+			return (o1).getDeliveryStartTime().compareTo((o2).getDeliveryStartTime());
+		}
+	};
 }

@@ -198,12 +198,17 @@ public class RoutingDataDecoder {
 			int lastSequence = 0;
 			
 			if(route.getStops() != null) {
-				//System.out.println(route.getRouteID()+"->"+route.getStops().length+retrieveBlankStops);
+				//System.out.println(route.getRouteID()+"->"+route.getStops().length + " retrieveBlankStops "+ retrieveBlankStops);
 				for(int intCount=0;intCount<route.getStops().length ;intCount++) {
 					_refStop = route.getStops()[intCount];
 					
-					//System.out.println("\t"+_refStop.getSequenceNumber()+" "+_refStop.getLocationIdentity().getLocationID()+" "+_refStop.getOrders()+" "+_refStop.getStopType()+" "+_refStop.getLocationIdentity().getLocationType());
-					
+					/*System.out.println("\t"+_refStop.getSequenceNumber()+" "+_refStop.getLocationIdentity().getLocationID()+" "+_refStop.getStopType()+" "+(_refStop.getOrders() != null
+							&& _refStop.getOrders().length > 0 ? _refStop.getOrders()[0].getOrderNumber() 
+									: IRoutingStopModel.DEPOT_STOPNO 
+									+ (_refStop.getArrival() != null 
+											? _refStop.getArrival().getTimeInMillis() : 
+												_refStop.getStopIdentity().getInternalStopID()))+" "+_refStop.getLocationIdentity().getLocationType()+" Arrival Time: "+(_refStop.getArrival() != null ? _refStop.getArrival().getTime() : null));
+					*/
 					/** We are ignoring breaks for depots as we dont know how to handle them currently. Discussed this with Rod and he is ok with ignoring breaks for Depots.  */
 					if(!retrieveBlankStops && _refStop.getStopType()!=null && (StopType._stpPaidBreak.equals(_refStop.getStopType().getValue())
 													|| StopType._stpUnpaidBreak.equals(_refStop.getStopType().getValue()))){
@@ -211,9 +216,10 @@ public class RoutingDataDecoder {
 								_refStop.getArrival() != null ? RoutingDateUtil.addSeconds(_refStop.getArrival().getTime()
 										, _refStop.getServiceTime()) : null);
 						result.getBreaks().add(_break);
-					}else if(_refStop.getSequenceNumber() >= 0 ||
-							(retrieveBlankStops && _refStop.getStopType()!=null && StopType._stpDepot.equals(_refStop.getStopType().getValue()))) {
-						
+					} else if (_refStop.getSequenceNumber() >= 0
+							|| (retrieveBlankStops
+									&& _refStop.getStopType() != null && (StopType._stpDepot.equals(_refStop.getStopType().getValue()) 
+																			|| StopType._stpPaidWait.equals(_refStop.getStopType().getValue())))) {
 						
 						_stop = new RoutingStopModel(_refStop.getSequenceNumber() >= 0 ? _refStop.getSequenceNumber() : lastSequence);
 						lastSequence =  _refStop.getSequenceNumber();
@@ -262,7 +268,7 @@ public class RoutingDataDecoder {
 						_stop.setServiceTime(_refStop.getServiceTime());
 						
 						_stop.setOrderSize(_refStop.getDeliveryQuantity() != null ? _refStop.getDeliveryQuantity().getSize1() : 0);
-						
+						_stop.setWaitStop((_refStop.getStopType() != null && StopType._stpPaidWait.equals(_refStop.getStopType().getValue())) ? true : false);
 						result.getStops().add(_stop);
 					}
 				}

@@ -133,7 +133,7 @@
 					  <ec:column width="15px" property="id" alias="virId" title="VIR ID"/> 
 					  <ec:column width="10px" property="truckNumber" title="Truck" />
 					  <ec:column width="15px" property="vendor" title="Vendor" />
-					  <ec:column width="6px" property="createdDate" title="Created Date" />
+					  <ec:column width="6px" cell="date" format="MM/dd/yyyy hh:mm aaa" property="createDate" title="Created Date" />
 					  <ec:column width="250px" filterable="false" sortable="false" property="virRecordIssues" cell="issueLogCell" title="Issues&nbsp;&nbsp;&nbsp;Maintenance Issue&nbsp;&nbsp;&nbsp;DamageLocation&nbsp;&nbsp;&nbsp;IssueSide&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comments"/>  					   
 					  <ec:column width="10px" property="electricSOCInfo" title="Start/End" />					  
 					  <ec:column width="10px" property="reeferInfo" title="Reefer Start/End" />

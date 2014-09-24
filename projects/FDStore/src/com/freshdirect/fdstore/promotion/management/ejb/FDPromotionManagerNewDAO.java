@@ -3429,10 +3429,13 @@ public class FDPromotionManagerNewDAO {
 				cal.add(Calendar.DATE, 1);
 				double totalSpent = 0.0;
 				int dayofweek = cal.get(Calendar.DAY_OF_WEEK);
+				int weekOfYear = cal.get(Calendar.WEEK_OF_YEAR);
 				Iterator<WSPromotionInfo> it = wspromotions.iterator();
 				while(it.hasNext()){
 					WSPromotionInfo promo = it.next();
-					if(promo.getDayofweek() == dayofweek) {
+					Calendar cal1 = Calendar.getInstance();
+					cal1.setTime(promo.getRequestedDate());
+					if(promo.getDayofweek() == dayofweek && cal1.get(Calendar.WEEK_OF_YEAR) == weekOfYear) {
 						totalSpent += (promo.getDiscount() * promo.getRedemptions());
 					}
 				}

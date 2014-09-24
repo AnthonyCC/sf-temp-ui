@@ -37,5 +37,9 @@ public interface IRoutingStopModel extends IOrderModel {
 	double getOrderSize();
 
 	void setOrderSize(double orderSize);
+	
+	boolean isWaitStop();
+	
+	void setWaitStop(boolean isWaitStop);
 
 }

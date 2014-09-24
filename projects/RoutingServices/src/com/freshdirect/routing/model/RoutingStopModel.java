@@ -18,6 +18,8 @@ public class RoutingStopModel extends OrderModel implements IRoutingStopModel, C
 	
 	private double orderSize;
 	
+	private boolean isWaitStop;
+	
 	public RoutingStopModel() {
 		super();	
 	}
@@ -81,6 +83,14 @@ public class RoutingStopModel extends OrderModel implements IRoutingStopModel, C
 
 	public void setServiceTime(double serviceTime) {
 		this.serviceTime = serviceTime;
+	}
+
+	public boolean isWaitStop() {
+		return isWaitStop;
+	}
+
+	public void setWaitStop(boolean isWaitStop) {
+		this.isWaitStop = isWaitStop;
 	}
 
 	public int hashCode() {

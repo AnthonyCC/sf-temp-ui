@@ -73,7 +73,8 @@
 						<%=pageTitle%>
 					</span>
 					<span >
-						<a href="employee.do?sync=true">Sync Employees</a>
+						<a href="employee.do?sync=true">Sync Employees</a>&nbsp;&nbsp;&nbsp;
+						<a href="employee.do?empstatus=T&clearteam=true">Clear Team</a>
 					</span>					
 				</div>
 			</div>
@@ -95,8 +96,7 @@
 							<ec:exportXls fileName="transportationemployee.xls" tooltip="Export PDF" />
 							<ec:exportCsv fileName="transportationemployee.csv" tooltip="Export CSV" delimiter="|"/>
 								
-							<ec:row interceptor="obsoletemarker">            
-								
+							<ec:row interceptor="obsoletemarker">
 								<ec:column property="firstName" title="First Name"/>
 								<ec:column property="lastName" title="Last Name"/>
 								<ec:column alias="kronosId" property="employeeId" title="KronosID"/>

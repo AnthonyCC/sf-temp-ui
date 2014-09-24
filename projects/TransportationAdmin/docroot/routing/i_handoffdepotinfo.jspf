@@ -29,10 +29,10 @@
         depotDataSource = new YAHOO.util.DataSource(depotDataIncrementer);                           
                             		  
 		var depotColumns =  [ 
-			    {key:"area", label:"Zone",sortable:false, width: 50, className:"forms1"}, 
-			    {key:"depotArrivalTimeInfo", label:"Depot Arrival Time",sortable:false, width: 150, className:"forms1"},
-			    {key:"truckDepartureTimeInfo", label:"Truck Departure Time",sortable:false, width: 150, className:"forms1"},
-			    {key:"originId", label:"Origin ID", sortable:false, width: 100, className:"forms1"},
+			    {key:"area", label:"Zone",sortable:true, width: 50, className:"forms1"}, 
+			    {key:"depotArrivalTimeInfo", label:"Depot Arrival Time",sortable:true, width: 150, className:"forms1"},
+			    {key:"truckDepartureTimeInfo", label:"Truck Departure Time",sortable:true, width: 150, className:"forms1"},
+			    {key:"originId", label:"Origin ID", sortable:true, width: 100, className:"forms1"},
 			    {key:'deleteBtn',label:' ',formatter:function(elCell) {
         										elCell.innerHTML = '<img src="images/icons/delete.gif" title="delete row" />';
         										elCell.style.cursor = 'pointer';

@@ -151,18 +151,6 @@ public class VIRRecord extends BaseCommand {
 		
 		return null;
 	}
-	public String getCreatedDate(){
-		String date = "";
-		if(this.getCreateDate()!=null){
-			try {
-				date = TransStringUtil.getDate(this.getCreateDate());
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return date;
-	}
 	
 	@Override
 	public int hashCode() {

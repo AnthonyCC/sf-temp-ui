@@ -592,7 +592,8 @@ public interface FDUserI extends java.io.Serializable {
 	public boolean hasJustSignedUp();
 	public boolean hasJustSignedUp(boolean clear);
 	public void setJustSignedUp(boolean val);
-
 	public boolean isGlobalNavTutorialSeen();
     public void setGlobalNavTutorialSeen(boolean isGlobalNavTutorialSeen);
+	public List<FDOrderInfoI> getScheduledOrdersForDelivery(boolean sorted) throws FDResourceException;
+
 }

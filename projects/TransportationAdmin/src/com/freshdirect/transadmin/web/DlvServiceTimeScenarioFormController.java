@@ -10,6 +10,8 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.util.StringUtils;
+
 import com.freshdirect.routing.constants.EnumArithmeticOperator;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.service.DomainManagerI;
@@ -36,13 +38,36 @@ public class DlvServiceTimeScenarioFormController extends AbstractFormController
 	}
 	
 	public Object getBackingObject(String id) {
-		return getLocationManagerService().getServiceTimeScenario(id);
+		return null;
+	}
+	
+	public Object getBackingObject(String id, HttpServletRequest request) {
+		DlvServiceTimeScenario scenario = locationManagerService.getServiceTimeScenario(id);
+		
+		String cloneRefId = request.getParameter("scenarioRefId");
+		if(!TransStringUtil.isEmpty(cloneRefId)) {
+			scenario.setCode(null);
+			scenario.setDescription(null);
+		}
+		return scenario;
 	}
 	
 	public Object getDefaultBackingObject() {
 		DlvServiceTimeScenario scenario = new DlvServiceTimeScenario();
 		scenario.setIsNew("true");
 		return scenario;
+	}
+	
+	protected Object formBackingObject(HttpServletRequest request)
+			throws Exception {
+		String id = getIdFromRequest(request);
+
+		if (StringUtils.hasText(id)) {
+			Object  tmp = getBackingObject(id, request);
+			return tmp;
+		} else {
+			return getDefaultBackingObject();
+		}
 	}
 	
 	public boolean isNew(Object command) {
@@ -103,6 +128,14 @@ public class DlvServiceTimeScenarioFormController extends AbstractFormController
 		}
 		
 		return errorList;
+	}
+	
+	protected String getIdFromRequest(HttpServletRequest request){
+		String id = request.getParameter("id");
+		if(TransStringUtil.isEmpty(id)) {
+			id = request.getParameter("scenarioRefId");
+		}
+		return id;
 	}
 
 	public DomainManagerI getDomainManagerService() {

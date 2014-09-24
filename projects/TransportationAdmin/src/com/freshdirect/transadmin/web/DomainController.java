@@ -37,6 +37,7 @@ import com.freshdirect.transadmin.datamanager.assembler.IDataAssembler;
 import com.freshdirect.transadmin.datamanager.parser.FileCreator;
 import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormCreatorException;
 import com.freshdirect.transadmin.model.DispatchGroup;
+import com.freshdirect.transadmin.model.EmployeeTeam;
 import com.freshdirect.transadmin.model.MaintenanceIssue;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
@@ -55,6 +56,7 @@ import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.ModelUtil;
+import com.freshdirect.transadmin.util.TransAdminCacheManager;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.ResourceList;
@@ -118,6 +120,20 @@ public class DomainController extends AbstractMultiActionController {
         Collection empList = null;
        
         if("T".equalsIgnoreCase(empStatus)) {
+        	if ("true".equalsIgnoreCase(request.getParameter("clearteam"))) {
+        		Map<String, String> employeeTeamMapping = employeeManagerService.getTeamMapping();
+        		dataList = employeeManagerService.getTerminatedEmployees();
+        		if(dataList != null) {
+        			Collection teamEntry = new ArrayList();
+	        		for (Iterator iterator = dataList.iterator(); iterator.hasNext();) {
+	        			WebEmployeeInfo webInfo = (WebEmployeeInfo) iterator.next();
+	        			if(employeeTeamMapping.containsKey(webInfo.getEmployeeId())) {
+	        				teamEntry.add(new EmployeeTeam(webInfo.getEmployeeId(), employeeTeamMapping.get(webInfo.getEmployeeId())));
+	        			}
+	        		}
+	        		employeeManagerService.removeEntity(teamEntry);
+        		}
+			}
         	dataList = employeeManagerService.getTerminatedEmployees();
         } else if("S".equalsIgnoreCase(empStatus)) {
         	String scheduleDate = request.getParameter("scheduleDate");

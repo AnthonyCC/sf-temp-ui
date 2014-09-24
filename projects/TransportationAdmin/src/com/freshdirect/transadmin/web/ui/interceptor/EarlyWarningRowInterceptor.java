@@ -18,9 +18,9 @@ public class EarlyWarningRowInterceptor extends FDRowInterceptor {
     	
     	EarlyWarningCommand rowEntity = (EarlyWarningCommand) model.getCurrentRowBean(); 
     	
-		if (getDouble(rowEntity.getPercentageAllocated()) > 89.0) {
+		/*if (getDouble(rowEntity.getPercentageAllocated()) > 89.0) {
 			row.setStyleClass("earlyWarningRow"); // Red
-		} else {    		
+		} else {  */  		
     		Map<String, Integer> waveCodeCnts = new HashMap<String, Integer>();    	
     		if(rowEntity.getTimeslotDetails() != null) {
     			for(EarlyWarningCommand _tsCommand : rowEntity.getTimeslotDetails()) {
@@ -45,10 +45,10 @@ public class EarlyWarningRowInterceptor extends FDRowInterceptor {
     		switch (switchVar) { 
     		    case 1:
     		    	for (Map.Entry<String, Integer> _cutOffEntry : waveCodeCnts.entrySet()) {
-    		    		if(_cutOffEntry.getValue().intValue() >= 3) {
+    		    		if((_cutOffEntry.getValue().doubleValue() / rowEntity.getTimeslotDetails().size()) * 100.0 >= 75.0) {
     		    			row.setStyleClass("earlyWarningRow"); // Red
     		    			break;
-    		    		} else if (_cutOffEntry.getValue().intValue() == 2) {
+    		    		} else if ((_cutOffEntry.getValue().doubleValue() / rowEntity.getTimeslotDetails().size()) * 100.0 >= 50.0) {
     		    			row.setStyleClass("earlyWarningOrangeRow"); // Orange
     		    			break;
     		    		} else {
@@ -63,7 +63,7 @@ public class EarlyWarningRowInterceptor extends FDRowInterceptor {
     		    case 2:
     		        // CutOffs >= 2
     		    	for (Map.Entry<String, Integer> _cutOffEntry : waveCodeCnts.entrySet()) {
-    		    		if(_cutOffEntry.getValue().intValue() == 2 || _cutOffEntry.getValue().intValue() >= 3) {
+    		    		if((_cutOffEntry.getValue().doubleValue() / rowEntity.getTimeslotDetails().size()) * 100.0 >= 50.0) {
     		    			row.setStyleClass("earlyWarningYellowRow"); // Yellow
     		    			break;
     		    		} else {
@@ -83,7 +83,7 @@ public class EarlyWarningRowInterceptor extends FDRowInterceptor {
     	    		}
     		        break;
     		}    		
-    	}
+    	//}
     }
     
     private double getDouble(String strVal) {

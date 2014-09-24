@@ -142,6 +142,11 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
 		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 		        hssfCell.setCellValue(new HSSFRichTextString("Dispatch"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("DPT"));
 		        		        
 		        while (_colsItr.hasNext()) {
 
@@ -193,14 +198,17 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 			        hssfCell.setCellValue(new HSSFRichTextString(routeId));			            
 			        totalRoutes++;
 			        
-			        
-			        
 			        //Change to display the dispatch Time
 			        hssfCell = row.createCell(cellnum++);		        
 			        hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
 			        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 			        hssfCell.setCellValue(new HSSFRichTextString(dispatchTime != null 
 			        											? TransStringUtil.formatTime(dispatchTime) : ""));
+			        
+			        hssfCell = row.createCell(cellnum++);		        
+			        hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
+			        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+					hssfCell.setCellValue(new HSSFRichTextString(routeModel.getOriginId() != null ? routeModel.getOriginId() : ""));
 			        
 			        int totalStops = 0;
 					while (_timeSlotItr.hasNext()) {
@@ -360,6 +368,11 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
 		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 		        hssfCell.setCellValue(new HSSFRichTextString("Dispatch"));
+		        
+		        hssfCell = row.createCell(cellnum++);		        
+		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+		        hssfCell.setCellValue(new HSSFRichTextString("DPT"));
 		        		        
 		        while (_colsItr.hasNext()) {
 
@@ -411,14 +424,17 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 			        hssfCell.setCellValue(new HSSFRichTextString(routeId));			            
 			        totalRoutes++;
 			        
-			        
-			        
 			        //Change to display the dispatch Time
 			        hssfCell = row.createCell(cellnum++);		        
 			        hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
 			        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 			        hssfCell.setCellValue(new HSSFRichTextString(dispatchTime != null 
 			        											? TransStringUtil.formatTime(dispatchTime) : ""));
+
+			        hssfCell = row.createCell(cellnum++);		        
+			        hssfCell.setCellStyle((HSSFCellStyle) styles.get(rowStyleSwitch ? "textStyle" : "textStyleHighlight"));
+			        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+					hssfCell.setCellValue(new HSSFRichTextString(routeModel.getOriginId() != null ? routeModel.getOriginId() : ""));
 			        
 			        int totalRouteOrderSize = 0;
 					while (_timeSlotItr.hasNext()) {

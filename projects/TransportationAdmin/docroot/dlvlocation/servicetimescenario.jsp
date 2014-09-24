@@ -13,6 +13,7 @@
 %>
 <% 
 	String pageTitle = "Scenario";
+	pageContext.setAttribute("HAS_CLONEBUTTON", "true");
 %>
 
   <tmpl:put name='title' direct='true'>Routing : <%=pageTitle%></tmpl:put>
@@ -180,7 +181,39 @@
           } else{
               	alert('Please delete Zones or ScenarioDays associated with Scenario before deleting the scenario.');
           }                           
- 	}  
+ 	 }
+     
+     function doClone(tableId, url) 
+     {  
+   	    var table = document.getElementById(tableId);
+   	    var checkboxList = table.getElementsByTagName("input");
+   	    var paramValues = null;
+   	    var rowSelCnt = 0;
+   	    for (i = 0; i < checkboxList.length; i++) {
+   	    	if (checkboxList[i].type=="checkbox" && checkboxList[i].checked) {
+   	    		rowSelCnt++;
+   	    		var rowFld = checkboxList[i].parentNode.parentNode.getElementsByTagName("td")[5];  		
+	    		if (paramValues != null) {
+	    			paramValues = paramValues+","+rowFld.innerHTML;
+	    		} else {
+	    			paramValues = rowFld.innerHTML;
+	    		}
+   	    	}
+   	    }
+   	    
+   	    if(rowSelCnt === 0) {
+   	    	alert('Please select a Row!');
+   	    } else if(rowSelCnt > 1){
+   	    	alert('Please select only one Row!');
+   	    } else {
+   		    if (paramValues != null) {
+   		    	var hasConfirmed = confirm ("You are about to clone the selected scenario entry. Do you want to continue?")
+   		    	if (hasConfirmed) {
+   		    		location.href = url+"?scenarioRefId="+ paramValues+"&filter="+getFilterTestValue();
+   				} 
+   		    }	
+   	    }
+	  }
 				
   	
     </script>   
