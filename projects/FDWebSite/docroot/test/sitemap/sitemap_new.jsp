@@ -1,3 +1,10 @@
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.cms.ContentType"%>
+<%@page import="com.freshdirect.cms.application.CmsManager"%>
+<%@page import="com.freshdirect.cms.ContentKey"%>
+<%@page import="java.util.HashSet"%>
+<%@page import="java.util.Set"%>
+<%@page import="com.freshdirect.fdstore.content.SuperDepartmentModel"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
@@ -12,6 +19,9 @@ public static class Data {
 	String name;
 	String id;
 	int countAll;
+	int countAvailable;
+	int countTempUnavailable;
+	int countDiscontinued;
 	List<Data> children = new ArrayList<Data>();
 	
 	public String toString(){
@@ -38,7 +48,7 @@ public static class Data {
 }
 
 
-private void process(Data parentData, ProductContainer container) {
+private Data process(Data parentData, ProductContainer container) {
 	Data data = new Data();
 	parentData.children.add(data);
 	
@@ -47,21 +57,63 @@ private void process(Data parentData, ProductContainer container) {
 	
 	if (container instanceof CategoryModel){
 		CategoryModel cat = (CategoryModel) container;
-		data.countAll = cat.getProducts().size();
+		data.countAll 				= cat.getProducts().size();
+		data.countAvailable 		= cat.getProducts().size();
+		data.countTempUnavailable 	= cat.getProducts().size();
+		data.countDiscontinued 		= cat.getProducts().size();
 	}
 	
 	for (CategoryModel subCat : container.getSubcategories()){
-		process(data, subCat);
+		Data childData = process(data, subCat);
+		data.countAll 				+= childData.countAll;
+		data.countAvailable 		+= childData.countAvailable;
+		data.countTempUnavailable 	+= childData.countTempUnavailable;
+		data.countDiscontinued 		+= childData.countDiscontinued;
 	}
+	return data;
 }
 %>
 
 <%
-Data data = new Data();
-for (DepartmentModel dep: ContentFactory.getInstance().getStore().getDepartments()){
-  process(data, dep);
+Data rootData = new Data();
+
+Set<DepartmentModel> processedDepartments = new HashSet<DepartmentModel>();
+
+for (ContentKey superDeptKey : CmsManager.getInstance().getContentKeysByType(ContentType.get("SuperDepartment"))) {
+	ContentNodeModel superDeptNode = ContentFactory.getInstance().getContentNodeByKey(superDeptKey);
+	
+	if (superDeptNode instanceof SuperDepartmentModel) {
+		SuperDepartmentModel superDept = (SuperDepartmentModel) superDeptNode;
+		Data superDeptData = new Data();
+		rootData.children.add(superDeptData);
+		superDeptData.id	= superDept.getContentName();
+		superDeptData.name	= superDept.getFullName();
+		
+		for (DepartmentModel dept : superDept.getDepartments()){
+			if (processedDepartments.add(dept)){
+				Data deptData = process(superDeptData, dept);
+				superDeptData.countAll 				+= deptData.countAll;
+				superDeptData.countAvailable 		+= deptData.countAvailable;
+				superDeptData.countTempUnavailable 	+= deptData.countTempUnavailable;
+				superDeptData.countDiscontinued 	+= deptData.countDiscontinued;
+			}
+		}
+	}
+}
+
+Data emptySuperDeptData = new Data();
+rootData.children.add(emptySuperDeptData);
+emptySuperDeptData.id	= "none";
+emptySuperDeptData.name	= "No Super Department";
+
+//remaining departments
+for (DepartmentModel dept : ContentFactory.getInstance().getStore().getDepartments()) {
+	if (!processedDepartments.contains(dept)) {
+		process(emptySuperDeptData, dept);
+	}
 }
 %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -136,7 +188,7 @@ for (DepartmentModel dep: ContentFactory.getInstance().getStore().getDepartments
   </pre>
 
 <script>
-var data = <%=data%>,
+var data = <%=rootData%>,
     buff = [], csvbuff = [];
 
 function displayNode (node, buff) {
