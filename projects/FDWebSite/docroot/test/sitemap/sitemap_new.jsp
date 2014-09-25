@@ -83,62 +83,47 @@ private Data process(Data parentData, ProductContainer container) {
 }
 %>
 
-<%
-Data rootData = new Data();
-
-Set<DepartmentModel> processedDepartments = new HashSet<DepartmentModel>();
-
-for (ContentKey superDeptKey : CmsManager.getInstance().getContentKeysByType(ContentType.get("SuperDepartment"))) {
-	ContentNodeModel superDeptNode = ContentFactory.getInstance().getContentNodeByKey(superDeptKey);
-	
-	if (superDeptNode instanceof SuperDepartmentModel) {
-		SuperDepartmentModel superDept = (SuperDepartmentModel) superDeptNode;
-		Data superDeptData = new Data();
-		rootData.children.add(superDeptData);
-		superDeptData.id	= superDept.getContentName();
-		superDeptData.name	= superDept.getFullName();
-		
-		for (DepartmentModel dept : superDept.getDepartments()){
-			if (processedDepartments.add(dept)){
-				Data deptData = process(superDeptData, dept);
-				superDeptData.countAll 				+= deptData.countAll;
-				superDeptData.countAvailable 		+= deptData.countAvailable;
-				superDeptData.countTempUnavailable 	+= deptData.countTempUnavailable;
-				superDeptData.countDiscontinued 	+= deptData.countDiscontinued;
-			}
-		}
-	}
-}
-
-Data emptySuperDeptData = new Data();
-rootData.children.add(emptySuperDeptData);
-emptySuperDeptData.id	= "none";
-emptySuperDeptData.name	= "No Super Department";
-
-//remaining departments
-for (DepartmentModel dept : ContentFactory.getInstance().getStore().getDepartments()) {
-	if (!processedDepartments.contains(dept)) {
-		Data deptData = process(emptySuperDeptData, dept);
-		emptySuperDeptData.countAll 			+= deptData.countAll;
-		emptySuperDeptData.countAvailable 		+= deptData.countAvailable;
-		emptySuperDeptData.countTempUnavailable += deptData.countTempUnavailable;
-		emptySuperDeptData.countDiscontinued 	+= deptData.countDiscontinued;
-	}
-}
-%>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Category sitemap</title>
+  <title>FreshDirect Sitemap</title>
   <style>
     body {
-      background-color: #ccffee;
+      font-family: Verdana, Arial;
+      font-size: 12px;
+      margin: auto;
+      width: 970px;
+      position: relative;
+    }
+    h1 {
+    	color: rgb(51,102,0);
     }
     ul > li {
-      background-color: rgba(0,0,0,.05);
+     /* background-color: rgba(112,139,74,.1);*/
     }
+    
+    ul > li {
+     color: rgb(51,102,0);
+    }
+
+    ul > li > ul > li {
+     color: #dd7711;
+    }
+    
+    ul > li > ul > li > ul > li {
+     color: rgb(51,102,0);
+    }
+    
+    ul > li > ul > li > ul > li > ul > li{
+     color: #dd7711;
+    }
+    
+    ul > li > ul > li > ul > li > ul > li > ul > li{
+     color: rgb(51,102,0);
+    }
+        
+    
     ul {
       list-style-type: none;
     }
@@ -157,16 +142,21 @@ for (DepartmentModel dept : ContentFactory.getInstance().getStore().getDepartmen
     }
     span.handle:after {
       content: '>';
+      color: red;
     }
     .selected > span.handle:after {
       content: 'V';
+      color: red;
     }
+    
     [data-products]:before {
-      display: inline-block;
-      content: attr(data-products) " (A: " attr(data-products-avail) " + TU: " attr(data-products-tempunavail) " + D :" attr(data-products-disc) ")";
-      color: #990044;
+      /*display: inline-block;*/
+      position: absolute;
+      content: attr(data-products) " products (" attr(data-products-avail) " avail / " attr(data-products-tempunavail) " unav / " attr(data-products-disc) " disc)";
+      /*color: #c27916;
       margin-right: 10px;
-      width: 280px;
+      width: 360px;*/
+      right: 20px;
       white-space: nowrap;
     }
     [data-products="0"] {
@@ -180,16 +170,91 @@ for (DepartmentModel dept : ContentFactory.getInstance().getStore().getDepartmen
     }
     span.contentId {
       display: inline-block;
-      margin-left: 1em;
-      color: red;
+      margin-left: 0.3em;
+      color: gray;
     }
+    span.contentId:before {
+    	content: "("
+    }
+    span.contentId:after {
+    	content: ")"
+    }
+    a {
+    	color: inherit;
+    } 
     #csvcontent {
       display: none;
+    }
+    #content {
+    	/*background-color: rgb(220,230,190);*/
+    }
+    header {
+      text-align: center;
+    }
+    #log {
+    	color: rgb(51,102,0);
     }
   </style>
 </head>
 <body>
-  <h1># of products in departments/categories</h1>
+  <header>
+	  <img alt="freshdirect" src="/media_stat/images/template/quickshop/9managers_s.jpg">
+	  <img alt="freshdirect" height="125" src="/media/images/navigation/department/local/dept_icons/dpt_local_whoslocal_map.gif">
+	  <h1>Sitemap</h1>
+	  
+	  <img id="spinner" alt=spinner" src="/media_stat/images/navigation/spinner.gif">
+  </header>
+  <div id="log">Processing 
+<%
+response.flushBuffer();
+
+Data rootData = new Data();
+
+Set<DepartmentModel> processedDepartments = new HashSet<DepartmentModel>();
+
+for (ContentKey superDeptKey : CmsManager.getInstance().getContentKeysByType(ContentType.get("SuperDepartment"))) {
+	ContentNodeModel superDeptNode = ContentFactory.getInstance().getContentNodeByKey(superDeptKey);
+	
+	if (superDeptNode instanceof SuperDepartmentModel) {
+		SuperDepartmentModel superDept = (SuperDepartmentModel) superDeptNode;
+		Data superDeptData = new Data();
+		rootData.children.add(superDeptData);
+		superDeptData.id	= superDept.getContentName();
+		superDeptData.name	= superDept.getFullName();
+		
+		for (DepartmentModel dept : superDept.getDepartments()){
+			if (processedDepartments.add(dept)){
+				out.println(" "+dept.getFullName()+"...");
+				response.flushBuffer();
+				Data deptData = process(superDeptData, dept);
+				superDeptData.countAll 				+= deptData.countAll;
+				superDeptData.countAvailable 		+= deptData.countAvailable;
+				superDeptData.countTempUnavailable 	+= deptData.countTempUnavailable;
+				superDeptData.countDiscontinued 	+= deptData.countDiscontinued;
+			}
+		}
+	}
+}
+
+Data emptySuperDeptData = new Data();
+rootData.children.add(emptySuperDeptData);
+emptySuperDeptData.id	= "none";
+emptySuperDeptData.name	= "No Super Department";
+
+//remaining departments
+for (DepartmentModel dept : ContentFactory.getInstance().getStore().getDepartments()) {
+	if (!processedDepartments.contains(dept)) {
+		out.println(" "+dept.getFullName()+"...");
+		response.flushBuffer();
+		Data deptData = process(emptySuperDeptData, dept);
+		emptySuperDeptData.countAll 			+= deptData.countAll;
+		emptySuperDeptData.countAvailable 		+= deptData.countAvailable;
+		emptySuperDeptData.countTempUnavailable += deptData.countTempUnavailable;
+		emptySuperDeptData.countDiscontinued 	+= deptData.countDiscontinued;
+	}
+}
+%>
+  </div>
   <div class="control">
     <button id="btn_open_all">open all</button>
     <button id="btn_close_all">close all</button>
@@ -274,6 +339,8 @@ document.getElementById("btn_toggle_empty").addEventListener("click", function (
 document.getElementById("btn_download_csv").addEventListener("click", function (e) {
   window.location.href = 'data:application/csv;charset=utf-8,'+encodeURIComponent(document.getElementById('csvcontent').childNodes[0].nodeValue);
 });
+document.getElementById("spinner").style.display="none";
+document.getElementById("log").style.display="none";
 </script>
 </body>
 </html>
