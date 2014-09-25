@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@page import="com.freshdirect.cms.ContentType"%>
 <%@page import="com.freshdirect.cms.application.CmsManager"%>
@@ -29,7 +30,10 @@ public static class Data {
 		sb.append("{").append("\n");
 		sb.append("id:\"").append(id).append("\",\n");
 		sb.append("name:\"").append(name == null ? "" : name.replace("\"", "\\\"")).append("\",\n");;
-		sb.append("countAll:").append(countAll).append(",\n");;
+		sb.append("countAll:").append(countAll).append(",\n");
+		sb.append("countAvailable:").append(countAvailable).append(",\n");
+		sb.append("countTempUnavailable:").append(countTempUnavailable).append(",\n");
+		sb.append("countDiscontinued:").append(countDiscontinued).append(",\n");
 		sb.append("children: [\n");
 		boolean first = true;
 		for (Data childData : children){
@@ -56,11 +60,16 @@ private Data process(Data parentData, ProductContainer container) {
 	data.name = container.getFullName();
 	
 	if (container instanceof CategoryModel){
-		CategoryModel cat = (CategoryModel) container;
-		data.countAll 				= cat.getProducts().size();
-		data.countAvailable 		= cat.getProducts().size();
-		data.countTempUnavailable 	= cat.getProducts().size();
-		data.countDiscontinued 		= cat.getProducts().size();
+		for (ProductModel prod : ((CategoryModel) container).getProducts()){
+			if (prod.isDiscontinued()){
+				data.countDiscontinued++;
+			} else if (prod.isTempUnavailable()){
+				data.countTempUnavailable++;
+			} else {
+				data.countAvailable++;
+			}
+			data.countAll++;
+		}
 	}
 	
 	for (CategoryModel subCat : container.getSubcategories()){
