@@ -29,7 +29,7 @@ public static class Data {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{").append("\n");
 		sb.append("id:\"").append(id).append("\",\n");
-		sb.append("name:\"").append(name == null ? "" : name.replace("\"", "\\\"")).append("\",\n");;
+		sb.append("name:\"").append(name == null ? "" : name.replace("\"", "\\\"")).append("\",\n");
 		sb.append("countAll:").append(countAll).append(",\n");
 		sb.append("countAvailable:").append(countAvailable).append(",\n");
 		sb.append("countTempUnavailable:").append(countTempUnavailable).append(",\n");
@@ -161,20 +161,21 @@ for (DepartmentModel dept : ContentFactory.getInstance().getStore().getDepartmen
     .selected > span.handle:after {
       content: 'V';
     }
-    [data-sumproducts]:before {
+    [data-products]:before {
       display: inline-block;
-      content: attr(data-sumproducts);
-      color: blue;
+      content: attr(data-products) " (A: " attr(data-products-avail) " + TU: " attr(data-products-tempunavail) " + D :" attr(data-products-disc) ")";
+      color: #990044;
       margin-right: 10px;
-      width: 100px;
+      width: 280px;
+      white-space: nowrap;
     }
-    [data-sumproducts="0"] {
+    [data-products="0"] {
       color: #888;
     }
-    .noempty [data-sumproducts="0"] {
+    .noempty [data-products="0"] {
       display: none;
     }
-    [data-sumproducts="0"]:before {
+    [data-products="0"]:before {
       content: '';
     }
     span.contentId {
@@ -193,7 +194,7 @@ for (DepartmentModel dept : ContentFactory.getInstance().getStore().getDepartmen
     <button id="btn_open_all">open all</button>
     <button id="btn_close_all">close all</button>
     <button id="btn_toggle_empty">show/hide empty nodes</button>
-    <button id="btn_download_csv">CSV</button>
+    <button id="btn_download_csv">Download CSV</button>
   </div>
   <ul id="content">
   </ul>
@@ -205,7 +206,7 @@ var data = <%=rootData%>,
     buff = [], csvbuff = [];
 
 function displayNode (node, buff) {
-  buff.push('<li id="'+node.id+'" data-products="'+node.countAll+'">'+node.name+'<span class="contentId">'+node.id+'</span>');
+  buff.push('<li id="'+node.id+'" data-products="'+node.countAll+'" data-products-avail="'+node.countAvailable+'" data-products-tempunavail="'+node.countTempUnavailable+'" data-products-disc="'+node.countDiscontinued+'"><a href="/browse.jsp?id='+node.id+'">'+node.name+'<span class="contentId">'+node.id+'</span></a>');
 
   if (node.children && node.children.length) {
     buff.push('<span class="handle"></span><ul>');
@@ -223,9 +224,9 @@ function displayCSVNode (node, csvbuff, parents) {
   parents = parents || [];
   var family = parents.concat([node]);
 
-  csvbuff.push(node.countAll+';'+parents.map(function (parent) {
-    return parent.name+';'+parent.id;
-  }).join(';')+';'+node.name+';'+node.id+';\n');
+  csvbuff.push(node.countAll+';'+node.countAvailable+';'+node.countTempUnavailable+';'+node.countDiscontinued+';'+parents.map(function (parent) {
+    return parent.name+';'+parent.id+';';
+  }).join('')+node.name+';'+node.id+';\n');
 
   if (node.children && node.children.length) {
     node.children.forEach(function (childnode) {
@@ -272,15 +273,6 @@ document.getElementById("btn_toggle_empty").addEventListener("click", function (
 });
 document.getElementById("btn_download_csv").addEventListener("click", function (e) {
   window.location.href = 'data:application/csv;charset=utf-8,'+encodeURIComponent(document.getElementById('csvcontent').childNodes[0].nodeValue);
-});
-nodes.forEach(function (node) {
-  var subnodes = [].slice.call(node.querySelectorAll('[data-products]')),
-      products = +node.getAttribute('data-products'),
-      sumproducts = subnodes.reduce(function (p, c) {
-        return p + +c.getAttribute('data-products');
-      }, 0);
-
-  node.setAttribute('data-sumproducts', sumproducts + products);
 });
 </script>
 </body>
