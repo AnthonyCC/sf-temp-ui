@@ -222,7 +222,7 @@ public class RoutingDataDecoder {
 																			|| StopType._stpPaidWait.equals(_refStop.getStopType().getValue())))) {
 						
 						_stop = new RoutingStopModel(_refStop.getSequenceNumber() >= 0 ? _refStop.getSequenceNumber() : lastSequence);
-						lastSequence =  _refStop.getSequenceNumber();
+						lastSequence = _stop.getStopNo();
 							
 						building = new BuildingModel();
 						
