@@ -118,7 +118,11 @@ emptySuperDeptData.name	= "No Super Department";
 //remaining departments
 for (DepartmentModel dept : ContentFactory.getInstance().getStore().getDepartments()) {
 	if (!processedDepartments.contains(dept)) {
-		process(emptySuperDeptData, dept);
+		Data deptData = process(emptySuperDeptData, dept);
+		emptySuperDeptData.countAll 			+= deptData.countAll;
+		emptySuperDeptData.countAvailable 		+= deptData.countAvailable;
+		emptySuperDeptData.countTempUnavailable += deptData.countTempUnavailable;
+		emptySuperDeptData.countDiscontinued 	+= deptData.countDiscontinued;
 	}
 }
 %>
