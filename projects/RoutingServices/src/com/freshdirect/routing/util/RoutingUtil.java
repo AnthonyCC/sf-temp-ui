@@ -486,16 +486,30 @@ public static boolean updateReservation(DlvReservationModel reservation, IOrderM
 					cal.add(Calendar.MINUTE, timeWindowInterval);
 	
 					if (cal.getTime().before(_endWindowTime)) {
+				
 						result.add(new DateRange(_tempStartDate, cal.getTime()));
+						
 						_tempStartDate = cal.getTime();
+					
 					} else {
+						
 						cal.setTime(_endWindowTime);
+						
 						cal.add(Calendar.MINUTE, -timeWindowInterval);
-						result.add(new DateRange(cal.getTime(), _endWindowTime));
+
+						if(cal.getTime().after(_startWindowTime))
+						{
+							result.add(new DateRange(cal.getTime(), _endWindowTime));
+						} else {
+							result.add(new DateRange(_startWindowTime, _endWindowTime));
+						}
+						
 						_tempStartDate = _endWindowTime;
 					}
 					if(_tempStartDate.equals(_endWindowTime))
+					{
 						done = true;
+					}
 			}
 		}
 		return result;
