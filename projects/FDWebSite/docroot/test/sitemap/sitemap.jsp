@@ -61,13 +61,13 @@ private Data process(Data parentData, ProductContainer container) {
 	
 	if (container instanceof CategoryModel){
 		for (ProductModel prod : ((CategoryModel) container).getProducts()){
-	/*		if (prod.isDiscontinued()){
+			if (prod.isDiscontinued()){
 				data.countDiscontinued++;
 			} else if (prod.isTempUnavailable()){
 				data.countTempUnavailable++;
-			} else { */
+			} else {
 				data.countAvailable++;
-		//	}
+			}
 			data.countAll++;
 		}
 	}
