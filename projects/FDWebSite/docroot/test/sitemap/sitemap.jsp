@@ -259,7 +259,7 @@ for (DepartmentModel dept : ContentFactory.getInstance().getStore().getDepartmen
     <button id="btn_open_all">open all</button>
     <button id="btn_close_all">close all</button>
     <button id="btn_toggle_empty">show/hide empty nodes</button>
-    <button id="btn_download_csv">Download CSV</button>
+    <a id="btn_download_csv" download="sitemap.csv" href="#">Download CSV</a>
   </div>
   <ul id="content">
   </ul>
@@ -267,6 +267,9 @@ for (DepartmentModel dept : ContentFactory.getInstance().getStore().getDepartmen
   </pre>
 
 <script>
+document.getElementById("spinner").style.display="none";
+document.getElementById("log").style.display="none";
+
 var data = <%=rootData%>,
     buff = [], csvbuff = [];
 
@@ -337,10 +340,8 @@ document.getElementById("btn_toggle_empty").addEventListener("click", function (
   document.body.classList.toggle("noempty");
 });
 document.getElementById("btn_download_csv").addEventListener("click", function (e) {
-  window.location.href = 'data:application/csv;charset=utf-8,'+encodeURIComponent(document.getElementById('csvcontent').childNodes[0].nodeValue);
+  this.href = 'data:application/csv;charset=utf-8,'+encodeURIComponent(document.getElementById('csvcontent').childNodes[0].nodeValue);
 });
-document.getElementById("spinner").style.display="none";
-document.getElementById("log").style.display="none";
 </script>
 </body>
 </html>
