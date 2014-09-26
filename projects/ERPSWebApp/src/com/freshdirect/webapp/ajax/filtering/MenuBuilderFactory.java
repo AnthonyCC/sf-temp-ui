@@ -501,6 +501,7 @@ public class MenuBuilderFactory {
 		domain.setBoxType(type);
 		domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
 		domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+		domain.setItems(Collections.<MenuItemData>emptyList());
 		
 		return domain;
 	}
