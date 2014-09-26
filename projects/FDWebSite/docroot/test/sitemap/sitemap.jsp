@@ -61,13 +61,13 @@ private Data process(Data parentData, ProductContainer container) {
 	
 	if (container instanceof CategoryModel){
 		for (ProductModel prod : ((CategoryModel) container).getProducts()){
-			if (prod.isDiscontinued()){
+	/*		if (prod.isDiscontinued()){
 				data.countDiscontinued++;
 			} else if (prod.isTempUnavailable()){
 				data.countTempUnavailable++;
-			} else {
+			} else { */
 				data.countAvailable++;
-			}
+		//	}
 			data.countAll++;
 		}
 	}
@@ -290,11 +290,24 @@ function displayNode (node, buff) {
 
 function displayCSVNode (node, csvbuff, parents) {
   parents = parents || [];
-  var family = parents.concat([node]);
+  var family = parents.concat([node]),
+      line = [];
 
-  csvbuff.push(node.countAll+';'+node.countAvailable+';'+node.countTempUnavailable+';'+node.countDiscontinued+';'+parents.map(function (parent) {
-    return parent.name+';'+parent.id+';';
-  }).join('')+node.name+';'+node.id+';\n');
+
+  line = [node.countAll, node.countAvailable, node.countTempUnavailable, node.countDiscontinued];
+
+  parents.forEach(function (parent) {
+    line.push(parent.name);
+    line.push(parent.id);
+  });
+
+  line.push(node.name);
+  line.push(node.id);
+
+  csvbuff.push(line.map(function (item) {
+    item = ""+item;
+    return '"'+item.replace(/"/g, '""')+'"';
+  }).join(',')+'\n');
 
   if (node.children && node.children.length) {
     node.children.forEach(function (childnode) {
