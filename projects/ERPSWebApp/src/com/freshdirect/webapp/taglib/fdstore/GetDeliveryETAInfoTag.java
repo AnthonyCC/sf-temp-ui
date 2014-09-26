@@ -45,11 +45,11 @@ public class GetDeliveryETAInfoTag extends AbstractGetterTag {
 					earlyScheduledDlvOrderInfo = (FDOrderInfoI) i.next();
 					if(earlyScheduledDlvOrderInfo.getDeliveryEndTime().before(new Date())) {
 						earlyScheduledDlvOrderETAInfo = dlvMgr.getETAWindowBySaleId(earlyScheduledDlvOrderInfo.getErpSalesId());
-						if(earlyScheduledDlvOrderETAInfo == null || (earlyScheduledDlvOrderETAInfo != null 
-								&& !earlyScheduledDlvOrderETAInfo.isEmailETAenabled() && !earlyScheduledDlvOrderETAInfo.isSmsETAenabled())) {
-							continue;
-						} else {
+						if(earlyScheduledDlvOrderETAInfo != null 
+								&& (earlyScheduledDlvOrderETAInfo.isEmailETAenabled() || earlyScheduledDlvOrderETAInfo.isSmsETAenabled())) {
 							break;
+						} else {
+							continue;
 						}
 					}
 				}
