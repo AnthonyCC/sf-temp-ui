@@ -52,7 +52,7 @@ public static class Data {
 }
 
 
-private Data process(Data parentData, ProductContainer container) {
+private Data process(Data parentData, ProductContainer container, Boolean isQuick) {
 	Data data = new Data();
 	parentData.children.add(data);
 	
@@ -61,19 +61,23 @@ private Data process(Data parentData, ProductContainer container) {
 	
 	if (container instanceof CategoryModel){
 		for (ProductModel prod : ((CategoryModel) container).getProducts()){
-			if (prod.isDiscontinued()){
-				data.countDiscontinued++;
-			} else if (prod.isTempUnavailable()){
-				data.countTempUnavailable++;
-			} else {
-				data.countAvailable++;
-			}
+      if (isQuick) {
+        data.countAvailable++;
+      } else {
+        if (prod.isDiscontinued()){
+          data.countDiscontinued++;
+        } else if (prod.isTempUnavailable()){
+          data.countTempUnavailable++;
+        } else {
+          data.countAvailable++;
+        }
+      }
 			data.countAll++;
 		}
 	}
 	
 	for (CategoryModel subCat : container.getSubcategories()){
-		Data childData = process(data, subCat);
+		Data childData = process(data, subCat, isQuick);
 		data.countAll 				+= childData.countAll;
 		data.countAvailable 		+= childData.countAvailable;
 		data.countTempUnavailable 	+= childData.countTempUnavailable;
@@ -194,6 +198,32 @@ private Data process(Data parentData, ProductContainer container) {
     #log {
     	color: rgb(51,102,0);
     }
+
+    /* SVG */
+    svg .node {
+      cursor: pointer;
+    }
+
+    svg .node:hover {
+      stroke: #000;
+      stroke-width: 1.5px;
+    }
+
+    svg .node--leaf {
+      fill: white;
+    }
+
+    svg .label {
+      font: 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+      text-anchor: middle;
+      text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+    }
+
+    svg .label,
+    svg .node--leaf {
+      pointer-events: none;
+    }
+
   </style>
 </head>
 <body>
@@ -209,6 +239,8 @@ private Data process(Data parentData, ProductContainer container) {
 response.flushBuffer();
 
 Data rootData = new Data();
+String pQuick = request.getParameter("quick");
+Boolean isQuick = pQuick != null && pQuick.equals("true");
 
 Set<DepartmentModel> processedDepartments = new HashSet<DepartmentModel>();
 
@@ -226,7 +258,7 @@ for (ContentKey superDeptKey : CmsManager.getInstance().getContentKeysByType(Con
 			if (processedDepartments.add(dept)){
 				out.println(" "+dept.getFullName()+"...");
 				response.flushBuffer();
-				Data deptData = process(superDeptData, dept);
+				Data deptData = process(superDeptData, dept, isQuick);
 				superDeptData.countAll 				+= deptData.countAll;
 				superDeptData.countAvailable 		+= deptData.countAvailable;
 				superDeptData.countTempUnavailable 	+= deptData.countTempUnavailable;
@@ -246,7 +278,7 @@ for (DepartmentModel dept : ContentFactory.getInstance().getStore().getDepartmen
 	if (!processedDepartments.contains(dept)) {
 		out.println(" "+dept.getFullName()+"...");
 		response.flushBuffer();
-		Data deptData = process(emptySuperDeptData, dept);
+		Data deptData = process(emptySuperDeptData, dept, isQuick);
 		emptySuperDeptData.countAll 			+= deptData.countAll;
 		emptySuperDeptData.countAvailable 		+= deptData.countAvailable;
 		emptySuperDeptData.countTempUnavailable += deptData.countTempUnavailable;
@@ -266,12 +298,15 @@ for (DepartmentModel dept : ContentFactory.getInstance().getStore().getDepartmen
   <pre id="csvcontent">
   </pre>
 
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script>
 document.getElementById("spinner").style.display="none";
 document.getElementById("log").style.display="none";
 
 var data = <%=rootData%>,
     buff = [], csvbuff = [];
+
+data.countAll = data.children.reduce(function (p, c) { return p + c.countAll; }, 0);
 
 function displayNode (node, buff) {
   buff.push('<li id="'+node.id+'" data-products="'+node.countAll+'" data-products-avail="'+node.countAvailable+'" data-products-tempunavail="'+node.countTempUnavailable+'" data-products-disc="'+node.countDiscontinued+'"><a href="/browse.jsp?id='+node.id+'">'+node.name+'<span class="contentId">'+node.id+'</span></a>');
@@ -355,6 +390,76 @@ document.getElementById("btn_toggle_empty").addEventListener("click", function (
 document.getElementById("btn_download_csv").addEventListener("click", function (e) {
   this.href = 'data:application/csv;charset=utf-8,'+encodeURIComponent(document.getElementById('csvcontent').childNodes[0].nodeValue);
 });
+</script>
+<script>
+
+var margin = 20,
+    diameter = 960;
+
+var color = d3.scale.linear()
+    .domain([-1, 5])
+    .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
+    .interpolate(d3.interpolateHcl);
+
+var pack = d3.layout.pack()
+    .padding(2)
+    .size([diameter - margin, diameter - margin])
+    .value(function(d) { return d.countAll; })
+
+var svg = d3.select("body").append("svg")
+    .attr("width", diameter)
+    .attr("height", diameter)
+  .append("g")
+    .attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+
+var focus = data,
+    root = data,
+    nodes = pack.nodes(data),
+    view;
+
+var circle = svg.selectAll("circle")
+    .data(nodes)
+  .enter().append("circle")
+    .attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
+    .style("fill", function(d) { return d.children ? color(d.depth) : null; })
+    .on("click", function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); });
+
+var text = svg.selectAll("text")
+    .data(nodes)
+  .enter().append("text")
+    .attr("class", "label")
+    .style("fill-opacity", function(d) { return d.parent === root ? 1 : 0; })
+    .style("display", function(d) { return d.parent === root ? null : "none"; })
+    .text(function(d) { return d.name; });
+
+var node = svg.selectAll("circle,text");
+
+zoomTo([root.x, root.y, root.r * 2 + margin]);
+
+function zoom(d) {
+  var focus0 = focus; focus = d;
+
+  var transition = d3.transition()
+      .duration(d3.event.altKey ? 7500 : 750)
+      .tween("zoom", function(d) {
+        var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
+        return function(t) { zoomTo(i(t)); };
+      });
+
+  transition.selectAll("text")
+    .filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
+      .style("fill-opacity", function(d) { return d.parent === focus ? 1 : 0; })
+      .each("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })
+      .each("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
+}
+
+function zoomTo(v) {
+  var k = diameter / v[2]; view = v;
+  node.attr("transform", function(d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
+  circle.attr("r", function(d) { return d.r * k; });
+}
+
+d3.select(self.frameElement).style("height", diameter + "px");
 </script>
 </body>
 </html>
