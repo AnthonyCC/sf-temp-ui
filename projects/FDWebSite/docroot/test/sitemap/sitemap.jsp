@@ -1,4 +1,3 @@
-<%@ page autoFlush='false' buffer="64kb" %>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@page import="com.freshdirect.cms.ContentType"%>
