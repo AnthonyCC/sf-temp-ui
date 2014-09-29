@@ -14,6 +14,7 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
+@SuppressWarnings("serial")
 public class GetDeliveryETAInfoTag extends AbstractGetterTag {
 	
 	private final static Category LOGGER = LoggerFactory.getInstance(GetDeliveryETAInfoTag.class);
@@ -43,7 +44,7 @@ public class GetDeliveryETAInfoTag extends AbstractGetterTag {
 			if(scheduledOrderInfos != null && scheduledOrderInfos.size() > 0) {
 				for(Iterator<FDOrderInfoI> i = scheduledOrderInfos.iterator(); i.hasNext(); ){
 					earlyScheduledDlvOrderInfo = (FDOrderInfoI) i.next();
-					if(earlyScheduledDlvOrderInfo.getDeliveryEndTime().before(new Date())) {
+					if(new Date().before(earlyScheduledDlvOrderInfo.getDeliveryEndTime())) {
 						earlyScheduledDlvOrderETAInfo = dlvMgr.getETAWindowBySaleId(earlyScheduledDlvOrderInfo.getErpSalesId());
 						if(earlyScheduledDlvOrderETAInfo != null 
 								&& (earlyScheduledDlvOrderETAInfo.isEmailETAenabled() || earlyScheduledDlvOrderETAInfo.isSmsETAenabled())) {
