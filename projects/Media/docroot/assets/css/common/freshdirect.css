@@ -407,6 +407,7 @@ section.main .pager [data-component="pager-next"],
 section.main .pager .cssbutton.gray,
 .srch .pager .cssbutton.gray{
   cursor:auto;
+  background:#C0C0C0;
 }
 
 section.main .pager .pagination-pager-separator,
