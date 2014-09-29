@@ -39,7 +39,7 @@ if(user != null) {
 	if (FDStoreProperties.isAdServerEnabled()) { 
   %><div id="OAS_SystemMessage">
   <script type="text/javascript">OAS_AD('SystemMessage');</script>
-  </div><% 
+  </div><div class="message" id="deliveryetawarning" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div><% 
 	} else { %>
 		<div class="message" data-type="system"><fd:GetSiteAnnouncements id="announcments" user="<%=user%>">
 		
