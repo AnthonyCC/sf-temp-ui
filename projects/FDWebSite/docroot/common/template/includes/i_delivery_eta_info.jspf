@@ -9,6 +9,12 @@
 final int W_DELIVERY_ETA_INFO_TOTAL = 970;
 %>
 
+<script>
+$jq('#messages').ready(function() { 
+	$jq('#deliveryetawarning').messages('add','deliveryetawarning'); 
+});
+</script>
+
 
 <%
 boolean dlvETAInfoDisplayed = false;
