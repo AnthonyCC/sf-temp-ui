@@ -1,3 +1,4 @@
+<%@ page autoFlush='false' buffer="64kb" %>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@page import="com.freshdirect.cms.ContentType"%>
@@ -236,6 +237,9 @@ private Data process(Data parentData, ProductContainer container, Boolean isQuic
   </header>
   <div id="log">Processing 
 <%
+response.setHeader("Cache-Control", "no-cache");
+response.setHeader("Pragma", "no-cache");
+response.setDateHeader ("Expires", 0);
 response.flushBuffer();
 
 Data rootData = new Data();
