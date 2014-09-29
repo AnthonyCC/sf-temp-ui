@@ -248,7 +248,7 @@ public class CmsFilteringFlow {
 			processRecipes(navigationModel, searchResults);
 			searchPageType = SearchPageType.RECIPE;
 		} else {
-			processProducts(navigationModel, searchResults);
+			processProducts(nav.getPageType(), navigationModel, searchResults);
 			searchPageType = SearchPageType.PRODUCT; //TODO why is this set again?
 		}
 
@@ -261,7 +261,7 @@ public class CmsFilteringFlow {
 			nav.setActiveTab("product");
 			navigationModel.setRecipeListing(false);
 			navigationModel.getRecipeResults().clear();
-			processProducts(navigationModel, searchResults);
+			processProducts(nav.getPageType(), navigationModel, searchResults);
 			searchPageType = SearchPageType.PRODUCT;
 			setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
 			browseDataContext = BrowseDataBuilderFactory.createBuilder(null, navigationModel.isSuperDepartment(), searchPageType).buildBrowseData(navigationModel, user, nav);
@@ -269,7 +269,7 @@ public class CmsFilteringFlow {
 		
 		//refresh context sensitive filters
 		if (navigationModel.getActiveFilters().size() > 0 && searchPageType == SearchPageType.PRODUCT && browseDataContext.getSectionContexts().size() > 0) {
-			refreshResultDependantFilters(navigationModel, browseDataContext.getSectionContexts().get(0).getProductItems());
+			refreshResultDependantFilters(nav.getPageType(), navigationModel, browseDataContext.getSectionContexts().get(0).getProductItems());
 			setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
 		}
 		
@@ -424,27 +424,27 @@ public class CmsFilteringFlow {
 		SmartSearchUtils.collectTermScores(products, suggestedTerm);
 	}
 	
-	private void processProducts(NavigationModel navigationModel, SearchResults searchResults) {
+	private void processProducts(FilteringFlowType pageType, NavigationModel navigationModel, SearchResults searchResults) {
 		navigationModel.setProductListing(true);
 				
 		Iterator<FilteringSortingItem<ProductModel>> iterator = searchResults.getProducts().iterator();
 		while (iterator.hasNext()) {
 			FilteringSortingItem<ProductModel> result = iterator.next();
 			ProductModel product = result.getModel();
-			
+			boolean showMeOnlyNewDisabledOnNewProductsPage = FilteringFlowType.NEWPRODUCTS.equals(pageType);
 			try {
-				collectBrandAndShowMeOnlyFilters(navigationModel, product);  //TODO is this necessary when refreshResultDependantFilters() will run as well?
+				FilterCollector.defaultFilterCollector(showMeOnlyNewDisabledOnNewProductsPage).collectBrandAndShowMeOnlyFilters(navigationModel, product);  //TODO is this necessary when refreshResultDependantFilters() will run as well?
 			} catch (FDException e) {
 				LOG.error("Filtering setup failed: " + e.getMessage());
 				iterator.remove();
 			}
 
 			navigationModel.getSearchResults().add(result);
-			collectDepartmentAndCategoryFilters(navigationModel, product);
+			FilterCollector.defaultFilterCollector(showMeOnlyNewDisabledOnNewProductsPage).collectDepartmentAndCategoryFilters(navigationModel, product);
 		}
 	}
 
-	private void refreshResultDependantFilters(NavigationModel navigationModel, List<FilteringProductItem> results) {
+	private void refreshResultDependantFilters(FilteringFlowType pageType, NavigationModel navigationModel, List<FilteringProductItem> results) {
 		processActiveFilters(navigationModel);
 		
 		Iterator<FilteringProductItem> iterator = results.iterator();
@@ -452,77 +452,14 @@ public class CmsFilteringFlow {
 			ProductModel product = iterator.next().getProductModel();
 			
 			try {
-				collectBrandAndShowMeOnlyFilters(navigationModel, product);
+				boolean showMeOnlyNewDisabledOnNewProductsPage = FilteringFlowType.NEWPRODUCTS.equals(pageType);
+				FilterCollector.defaultFilterCollector(showMeOnlyNewDisabledOnNewProductsPage).collectBrandAndShowMeOnlyFilters(navigationModel, product);
 			} catch (FDException e) {
 				LOG.error("Filtering setup failed: " + e.getMessage());
 				iterator.remove();
 			}
 		}
 	}
-	
-	private void collectBrandAndShowMeOnlyFilters(NavigationModel navigationModel, ProductModel product) throws FDResourceException, FDSkuNotFoundException {
-		for (BrandModel brandModel : product.getBrands()) {
-			navigationModel.getBrandsOfSearchResults().put(brandModel.getContentName(), brandModel);
-		}
-		if (product.isNew()) {
-			navigationModel.getShowMeOnlyOfSearchResults().add("new");
-		}
-		FDProduct fdProduct = PopulatorUtil.getDefSku(product).getProduct();
-		
-		int NON_KOSHER_PRI = 999;
-		FDKosherInfo kInfo = fdProduct.getKosherInfo();
-		int kosherPriority = kInfo != null ? kInfo.getPriority() : NON_KOSHER_PRI;
-		if (EnumKosherSymbolValue.NONE.getPriority() < kosherPriority && kosherPriority < NON_KOSHER_PRI) {
-			navigationModel.getShowMeOnlyOfSearchResults().add("kosher");
-		}
-		List<? extends NutritionValueEnum> nutritionInfo = fdProduct.getNutritionInfoList(ErpNutritionInfoType.ORGANIC);
-		if (nutritionInfo != null) {
-			for (NutritionValueEnum nutritionValueEnum : nutritionInfo) {
-				if (nutritionValueEnum.getCode().equals(ErpNutritionInfoType.ORGANIC)) {
-					navigationModel.getShowMeOnlyOfSearchResults().add("organic");
-				}
-			}
-		}
-		
-		final PriceCalculator pricing = product.getPriceCalculator(ContentFactory.getInstance().getCurrentPricingContext());
-		if (pricing.getDealPercentage() > 0 || pricing.getTieredDealPercentage() > 0 || pricing.getGroupPrice() != 0.0) {
-			navigationModel.getShowMeOnlyOfSearchResults().add("onsale");
-		}
-	}
-	
-	private void collectDepartmentAndCategoryFilters(NavigationModel navigationModel, ProductModel product) {
-
-		Set<ContentKey> parentKeys = ContentNodeModelUtil.getAllParentKeys(product.getContentKey(), true);
-
-		for (ContentKey contentKey : parentKeys) {
-			if ("Department".equals(contentKey.getType().getName())) {
-				DepartmentModel departmentModel = (DepartmentModel) ContentFactory.getInstance().getContentNode(contentKey.getId());
-				if (departmentModel.isSearchable()) {
-					navigationModel.getDepartmentsOfSearchResults().put(departmentModel.getContentName(), departmentModel);
-				}
-			} else if ("Category".equals(contentKey.getType().getName())) {
-				CategoryModel categoryModel = (CategoryModel) ContentFactory.getInstance().getContentNode(contentKey.getId());
-				if (categoryModel.getParentNode() instanceof DepartmentModel) { //Category
-					if (categoryModel.isSearchable()) {
-						navigationModel.getCategoriesOfSearchResults().put(categoryModel.getContentName(), categoryModel);
-					}
-				} else {
-					if (categoryModel.getParentNode() != null && categoryModel.getParentNode().getParentNode() instanceof DepartmentModel) { //Subcategory
-						if (categoryModel.isSearchable()) {
-							navigationModel.getSubCategoriesOfSearchResults().put(categoryModel.getContentName(), categoryModel);
-							navigationModel.getCategoriesOfSearchResults().put(categoryModel.getParentNode().getContentName(), (CategoryModel)categoryModel.getParentNode());
-						}
-					} else if (categoryModel.getParentNode() != null && categoryModel.getParentNode().getParentNode() != null) { //Subsubcategory
-						if (categoryModel.isSearchable()) {
-							navigationModel.getSubCategoriesOfSearchResults().put(categoryModel.getParentNode().getContentName(), (CategoryModel)categoryModel.getParentNode());
-							navigationModel.getCategoriesOfSearchResults().put(categoryModel.getParentNode().getParentNode().getContentName(), (CategoryModel)categoryModel.getParentNode().getParentNode());
-						}
-					}
-				}
-			}
-		}
-	}
-
 	
 	public BrowseDataContext doBrowseFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException{
 		
