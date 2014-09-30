@@ -13,6 +13,7 @@ var FreshDirect = FreshDirect || {};
   var animFinished = false;
   var subDept = " ";
   var dept = " ";
+  var $tRealign;
   var POPUPWIDGET = fd.modules.common.popupWidget;
 	  $.fn.getHiddenDimensions = function(includeMargin) {
 		  var $item = this,
@@ -79,6 +80,8 @@ var FreshDirect = FreshDirect || {};
         $popup = $(popup),
         $popupBody = $(popup).find(".globalnav-popup-content"),
         $content = $("[data-component='globalnav-popup-body'][data-id='"+ $t.data('id') +"']").children().first();
+    
+    $tRealign = $t;
         
     //closes popup when cursor is taken away on Sub Dept
     $(".globalnav-popup").mouseover(function(event) {
@@ -168,6 +171,8 @@ var FreshDirect = FreshDirect || {};
         $ghostMenuItem = $ghost.find("[data-id='" + $t.data('id') + "']"),
         $popupBody = $popup.find(".globalnav-popup-content");
     
+    $tRealign = $t;
+    
     //if (!fd.modules.common.mouse.isSlow()) { return; }
 
     // check in order to not reload function if hovered over elements inside same department
@@ -220,7 +225,6 @@ var FreshDirect = FreshDirect || {};
 
         tMouseEventBinder($t, $popupBody, $popup);
       }
-
   }
         
   function tsubMouseEvent_Over($popupBody, $content) {
@@ -237,7 +241,7 @@ var FreshDirect = FreshDirect || {};
 		  	          $(".seasonal-media").fadeIn(200);
 		            //$popupBody.css('overflow', 'visible');
 		          });
-        } else {
+	    	  } else {
         	//$("#globalnavpopup").addClass("shadow-for-superdepart");
 	    		animFinished = true;
 	    		$content.css('top', '0px');
@@ -245,7 +249,7 @@ var FreshDirect = FreshDirect || {};
 	          }  
 	      }, delayPopup); 
 	  })($popupBody);
-        }
+  }
 
   function tsubMouseEvent_Leave($popup) {
 	  return function() {
@@ -254,8 +258,7 @@ var FreshDirect = FreshDirect || {};
 			  $popup.find(".arrow-down").hide();
 		  };
 		  clearTimeout(popupTimeout);
-    
-  }
+	  };
   }
 
   function tsubMouseEventBinder($t, $popupBody, $popup, $content) {
@@ -296,8 +299,7 @@ var FreshDirect = FreshDirect || {};
 			  $popup.find(".subdepartments_cont").remove();
 		  };
 		  clearTimeout(popupTimeout);
-		 
-	  }
+	  };
   }
 
   function tMouseEventBinder($t, $popupBody, $popup) {
@@ -325,7 +327,7 @@ var FreshDirect = FreshDirect || {};
     $(document).on('mouseover', trigger, open);
     //$(document).on('mousemove', trigger, open);
     $(document).on('mouseover', subTrigger, openSub);
-    $(window).on('resize', function(){ repos($(topnav), $(ghost), $(popup)); });
+    $(window).on('resize', function(){ repos($topnav, $ghost, $popup, $tRealign); });
 
     // set init position
     repos($topnav, $ghost, $popup);
@@ -358,8 +360,7 @@ function getElemDim($elem, includeMargins){
 
 /* adjust left/right positioning of popup elements and their children */
 function realigner($topnav, $popup, $t) {
-	if ($t === undefined || $t === null) { return $topnav.offset().left; }
-
+		
     $popup.css('left', ''); //reset popup so realign works properly
 
 	var navDim = getElemDim($topnav);
@@ -427,9 +428,10 @@ function realigner($topnav, $popup, $t) {
 			
 		}
 		
+		
 		//now re-align the popup to the nav item if possible
 		if (isRightOfNavCenter) {
-			possibleOffset = (navDim.offset.left + navDim.width) - $popupContRef.outerWidth();
+			possibleOffset = (navDim.offset.left + navDim.width) - $popupContRef.outerWidth();			
 		} else {
 			possibleOffset = navDim.offset.left;
 		}
