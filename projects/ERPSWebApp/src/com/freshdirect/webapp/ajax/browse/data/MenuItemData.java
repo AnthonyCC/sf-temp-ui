@@ -8,6 +8,7 @@ public class MenuItemData extends SelectableData {
 	private String filterId;
 	private boolean active;
 	private boolean special;
+	private Integer hitCount;
 	
 	public MenuItemData() {
 		super();
@@ -57,6 +58,14 @@ public class MenuItemData extends SelectableData {
 
 	public void setFilterId(String filterId) {
 		this.filterId = filterId;
+	}
+
+	public Integer getHitCount() {
+		return hitCount;
+	}
+
+	public void setHitCount(Integer hitCount) {
+		this.hitCount = hitCount;
 	}
 	
 	

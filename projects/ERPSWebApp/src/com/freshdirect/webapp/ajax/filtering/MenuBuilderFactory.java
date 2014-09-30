@@ -29,6 +29,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.browse.SearchPageType;
 import com.freshdirect.webapp.ajax.browse.data.BrowseDataContext;
+import com.freshdirect.webapp.ajax.browse.data.BrowseDataContextService;
 import com.freshdirect.webapp.ajax.browse.data.CategoryData;
 import com.freshdirect.webapp.ajax.browse.data.DataUtil;
 import com.freshdirect.webapp.ajax.browse.data.MenuBoxData;
@@ -818,8 +819,7 @@ public class MenuBuilderFactory {
 		
 		Map<String, ProductItemFilterI> allFilters = ProductItemFilterUtil.prepareFilters(navModel.getAllFilters());
 		Map<String, ProductItemFilterI> activeFilters = ProductItemFilterUtil.prepareFilters(navModel.getActiveFilters());
-		List<FilteringProductItem> items = new ArrayList<FilteringProductItem>();
-		ProductItemFilterUtil.collectAllItems(browseData.getSectionContexts(), items, navModel);
+		List<FilteringProductItem> items = BrowseDataContextService.getDefaultBrowseDataContextService().collectAllItems(browseData);
 		
 		boolean clp = false;
 		if(isFilterPresentOnPage(menu) && navModel.getNavDepth()==NavDepth.CATEGORY && items.size()==0){

@@ -4,35 +4,27 @@ import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
-import com.freshdirect.content.nutrition.ErpNutritionInfoType;
-import com.freshdirect.content.nutrition.NutritionValueEnum;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDKosherInfo;
-import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ProductModelPromotionAdapter;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.AbstractProductItemFilter;
-import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.Html;
-import com.freshdirect.fdstore.content.PopulatorUtil;
-import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductContainer;
 import com.freshdirect.fdstore.content.ProductItemFilterI;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -53,7 +45,9 @@ import com.freshdirect.webapp.ajax.browse.SearchPageType;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.CarouselDataCointainer;
 import com.freshdirect.webapp.ajax.browse.data.BrowseDataContext;
+import com.freshdirect.webapp.ajax.browse.data.BrowseDataContextService;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
+import com.freshdirect.webapp.ajax.browse.data.MenuBoxData;
 import com.freshdirect.webapp.ajax.browse.data.NavDepth;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
 import com.freshdirect.webapp.ajax.browse.data.PagerData;
@@ -280,6 +274,7 @@ public class CmsFilteringFlow {
 		if (!navigationModel.isSuperDepartment()) { //don't do these in case of super department page
 			// menu availability check
 			MenuBuilderFactory.getInstance().checkMenuStatus(browseDataContext, navigationModel, user);
+			reOrderMenuItemsByHitCount(navigationModel, browseDataContext);
 		}
 		browseDataContext.getMenuBoxes().setMenuBoxes(navigationModel.getLeftNav());
 		BrowseData.DescriptiveDataCointainer descriptiveContent = browseDataContext.getDescriptiveContent();
@@ -356,6 +351,15 @@ public class CmsFilteringFlow {
 		BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
 		
 		return browseDataContext;
+	}
+
+	private void reOrderMenuItemsByHitCount(NavigationModel navigationModel, BrowseDataContext browseDataContext) {
+		MenuBoxData menuBoxData = MenuBoxDataService.getDefaultMenuBoxDataService().getMenuBoxById("departmentFilterGroup", navigationModel.getLeftNav());
+		if (menuBoxData != null && menuBoxData.getSelectedLabel() == null) {
+			List<FilteringProductItem> items = BrowseDataContextService.getDefaultBrowseDataContextService().collectAllItems(browseDataContext);
+			Map<String, ProductItemFilterI> allFilters = ProductItemFilterUtil.prepareFilters(navigationModel.getAllFilters());
+			MenuItemSorter.getDefaultMenuItemSorter().sortItemsByHitCount(menuBoxData, items , allFilters);
+		}
 	}
 
 	private void setupAllAndActiveFiltersForNavigationModel(CmsFilteringNavigator nav, FDSessionUser user, NavigationModel navigationModel) {

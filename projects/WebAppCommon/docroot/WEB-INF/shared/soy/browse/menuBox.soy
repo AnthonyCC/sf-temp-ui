@@ -166,6 +166,6 @@
       <li data-component="menuitem" data-urlparameter="{$item.urlParameter}" class="{if $item.selected}selected{/if} {if not $item.active}disabled{/if}"><a href="/browse.jsp?id={$item.urlParameter}">{$item.name}</a></li>
     {/if}
   {else}
-    <li data-component="menuitem" data-urlparameter="{$item.urlParameter}" class="{if $item.selected}selected{/if} {if not $item.active}disabled{/if}"><label><input type="{$menuBox.selectionType != 'MULTI' ? 'radio' : 'checkbox'}" name="menuBox_{$menuBox.id}" value="{$item.urlParameter}" {if $item.selected}checked{/if} {if not $item.active}disabled{/if}/><span>{$item.name}</span></label></li>
+    <li data-component="menuitem" data-urlparameter="{$item.urlParameter}" class="{if $item.selected}selected{/if} {if not $item.active}disabled{/if}"><label><input type="{$menuBox.selectionType != 'MULTI' ? 'radio' : 'checkbox'}" name="menuBox_{$menuBox.id}" value="{$item.urlParameter}" {if $item.selected}checked{/if} {if not $item.active}disabled{/if}/><span>{$item.name} {if $item.hitCount}({$item.hitCount}){/if}</span></label></li>
   {/if}
 {/template}
