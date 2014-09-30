@@ -15,10 +15,6 @@ public class CertonaUserContextHolder {
 		
 		private String id;
 		private String searchParam;
-		/**
-		 * Holds true value if the latest search operation was successful
-		 */
-		private boolean successfulSearch = false;
 		private String trackingId;
 		private String sessionId;
 		private String pageId;
@@ -101,13 +97,6 @@ public class CertonaUserContextHolder {
 			this.searchParam = searchParam;
 		}
 
-		public boolean isSuccessfulSearch() {
-			return successfulSearch;
-		}
-		
-		public void setSuccessfulSearch(boolean successfulSearch) {
-			this.successfulSearch = successfulSearch;
-		}
 	}
 
 	public static void initCertonaContextFromCookies(HttpServletRequest request) {
@@ -195,15 +184,6 @@ public class CertonaUserContextHolder {
 	public static void setSearchParam(String searchParam) {
 		getCertonaUserContext().setSearchParam(searchParam);
 	}
-
-	public static boolean isSuccessfulSearch() {
-		return getCertonaUserContext().isSuccessfulSearch();
-	}
-	
-	public static void setSuccessfulSearch(boolean flag) {
-		getCertonaUserContext().setSuccessfulSearch(flag);
-	}
-
 
 	private static CertonaUserContext getCertonaUserContext() {
 		if (certonaUserContext.get() == null) {

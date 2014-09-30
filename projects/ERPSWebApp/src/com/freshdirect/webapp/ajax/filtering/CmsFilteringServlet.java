@@ -23,7 +23,6 @@ import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.CoremetricsPopulator;
 import com.freshdirect.webapp.ajax.DataPotatoField;
 import com.freshdirect.webapp.ajax.JsonHelper;
-import com.freshdirect.webapp.ajax.browse.data.BrowseData.SearchParams.Tab;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 
@@ -39,12 +38,7 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 		
 		try {
-			final CmsFilteringNavigator navigator = parseRequestData(request, CmsFilteringNavigator.class);
-			final CmsFilteringFlowResult result = new CmsFilteringFlow().doFlow(navigator, (FDSessionUser)user);
-
-			adjustCertonaSearchStatus(navigator, result);
-	
-			writeResponseData(response, result);
+			writeResponseData(response, new CmsFilteringFlow().doFlow(parseRequestData(request, CmsFilteringNavigator.class), (FDSessionUser)user));
 		} catch (InvalidFilteringArgumentException e) {
 			returnHttpError( 400, "JSON contains invalid arguments", e );	// 400 Bad Request
 		}
@@ -70,9 +64,6 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 			CertonaUserContextHolder.setSearchParam(navigator.getSearchParams());
 			final CmsFilteringFlowResult flow = new CmsFilteringFlow().doFlow(navigator, (FDSessionUser)user);
 			final Map<String, ?> payload = DataPotatoField.digBrowse(flow);
-
-			// certona extension
-			adjustCertonaSearchStatus(navigator, flow);
 
 
 			if ( request.getParameterMap().keySet().contains("data") ) {
@@ -148,27 +139,5 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 	protected int getRequiredUserLevel() {		
 		return FDUserI.GUEST;
 	}
-
-	/**
-	 * Utility function that maintains certona context
-	 * based on recent navigation flow result
-	 * 
-	 * @param navigator
-	 * @param result
-	 */
-	public static void adjustCertonaSearchStatus(final CmsFilteringNavigator navigator, final CmsFilteringFlowResult result) {
-		// certona extension
-		if (navigator.getPageType().isSearchLike()) {
-			// assume search operation was executed
-			for (Tab t : result.getBrowseDataPrototype().getSearchParams().getTabs()) {
-				// pick active tab, check the search result
-				if (t.isActive()) {
-					if (t.getHits() > 0) {
-						CertonaUserContextHolder.setSuccessfulSearch(true);
-						break;
-					}
-				}
-			}
-		}
-	}
+	
 }

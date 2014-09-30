@@ -19,6 +19,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>contextObjects</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>urlOverride</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
