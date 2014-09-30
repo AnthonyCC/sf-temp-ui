@@ -48,7 +48,7 @@
 	margin-right:8px;
 }
 
-.pdp-accordion>li>input[type="checkbox"] ~ label:hover .pdp-accordion-item-carrot {
+.no-touch .pdp-accordion>li>input[type="checkbox"] ~ label:hover .pdp-accordion-item-carrot {
 	background-position:-167px -219px;width:17px;height:17px;
 }
 
@@ -56,7 +56,7 @@
   background-position:-150px -202px;width:17px;height:17px;
 }
 
-.pdp-accordion>li>input[type="checkbox"]:checked ~ label:hover .pdp-accordion-item-carrot {
+.no-touch .pdp-accordion>li>input[type="checkbox"]:checked ~ label:hover .pdp-accordion-item-carrot {
   background-position:-150px -219px;width:17px;height:17px;
 }
 
