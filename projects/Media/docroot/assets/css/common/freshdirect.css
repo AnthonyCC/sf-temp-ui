@@ -628,7 +628,7 @@ section.main .category.cssbutton.green:hover,
   border-radius: 5px;
 }
 
-.browse-popup-content li label:hover   {
+.no-touch .browse-popup-content li label:hover   {
   text-decoration: underline;
 }
 
@@ -770,7 +770,7 @@ section.main .leftnav .menuBox input[type="radio"]:checked + span {
   font-weight: bold;
 }
 
-section.main .leftnav .menuBox label:hover {
+.no-touch section.main .leftnav .menuBox label:hover {
   text-decoration: underline;
 }
 
