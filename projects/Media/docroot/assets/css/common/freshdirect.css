@@ -798,6 +798,7 @@ section.main .leftnav button.back:hover {
 
 section.main .leftnav button.back:before {
   font-size: 15px;
+  display:inline-block;
 }
 
 .leftnav-category-popup-button.cssbutton,
