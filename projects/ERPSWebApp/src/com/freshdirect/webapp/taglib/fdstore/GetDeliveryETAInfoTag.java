@@ -11,6 +11,7 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
@@ -44,7 +45,7 @@ public class GetDeliveryETAInfoTag extends AbstractGetterTag {
 			if(scheduledOrderInfos != null && scheduledOrderInfos.size() > 0) {
 				for(Iterator<FDOrderInfoI> i = scheduledOrderInfos.iterator(); i.hasNext(); ){
 					earlyScheduledDlvOrderInfo = (FDOrderInfoI) i.next();
-					if(new Date().before(earlyScheduledDlvOrderInfo.getDeliveryEndTime())) {
+					if(DateUtil.getCurrentTime().before(earlyScheduledDlvOrderInfo.getDeliveryEndTime())) {
 						earlyScheduledDlvOrderETAInfo = dlvMgr.getETAWindowBySaleId(earlyScheduledDlvOrderInfo.getErpSalesId());
 						if(earlyScheduledDlvOrderETAInfo != null 
 								&& (earlyScheduledDlvOrderETAInfo.isEmailETAenabled() || earlyScheduledDlvOrderETAInfo.isSmsETAenabled())) {
