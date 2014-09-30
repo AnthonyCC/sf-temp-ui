@@ -56,4 +56,13 @@ public class DeliveryETAModel extends ModelSupport {
 	public void setSmsETAenabled(boolean smsETAenabled) {
 		this.smsETAenabled = smsETAenabled;
 	}
+	@Override
+	public String toString() {
+		return "DeliveryETAModel [orderId=" + orderId + ", startTime="
+				+ startTime + ", endTime=" + endTime + ", emailETAenabled="
+				+ emailETAenabled + ", manifestETAenabled="
+				+ manifestETAenabled + ", smsETAenabled=" + smsETAenabled + "]";
+	}
+	
+	
 }

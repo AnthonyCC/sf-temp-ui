@@ -3361,7 +3361,10 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 		Connection con = null;
 		try {
 			con = getConnection();
-			DeliveryETAModel model = this.getDeliveryETABySaleId(con, orderId);			
+			DeliveryETAModel model = this.getDeliveryETABySaleId(con, orderId);	
+			if(model != null) {
+				LOGGER.info("ETA window for order# "+ model.toString());
+			}
 			return model;
 
 		} catch (SQLException se) {
