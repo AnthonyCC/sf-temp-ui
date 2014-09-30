@@ -90,7 +90,7 @@
 	font-weight: bold;
 }
 
-.sorter-element:hover > span,
-.sorter-element:focus > span {
+.no-touch .sorter-element:hover > span,
+.no-touch .sorter-element:focus > span {
 	text-decoration: underline;
 }
