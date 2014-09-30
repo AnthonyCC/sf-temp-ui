@@ -42,11 +42,13 @@ public class ResonanceJSObjectTag extends SimpleTagSupport {
 		request = (HttpServletRequest)((PageContext) getJspContext()).getRequest();
 
 		if ("init".equals(action)) {
+			LOGGER.debug("INIT PHASE (initialize certona context)");
 			assemblyUserCertonaContext(request);
 		} else {
+			LOGGER.debug("POST PHASE (create resonance object)");
 			assemblyResonanceTag();
 		}
-		
+
 	}
 	
 
@@ -122,8 +124,17 @@ public class ResonanceJSObjectTag extends SimpleTagSupport {
 			}
 
 		} else 	if ("SEARCH".equals(certonaPageId)) {
+			// Soon to be deprecated
 			SearchResults searchResults = (SearchResults)request.getAttribute("searchInputForCertona");
 			if (searchResults != null && !searchResults.isEmpty()) {
+				certona.put("pagetype", "SEARCH");
+			} else {
+				certona.put("pagetype", "NOSEARCH");
+			}
+
+		} else 	if ("SRCH".equals(certonaPageId)) {
+			final boolean result = CertonaUserContextHolder.isSuccessfulSearch();
+			if (result) {
 				certona.put("pagetype", "SEARCH");
 			} else {
 				certona.put("pagetype", "NOSEARCH");
