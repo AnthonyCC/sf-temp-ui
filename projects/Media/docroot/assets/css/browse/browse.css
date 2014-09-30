@@ -355,11 +355,13 @@ ul.products .description-skin{
 .container.browse .carousels table tr.ccontent td.c2 {
 }
 
+.container.srch [data-component="carousel"] ul li.portrait-item,
 .container.browse [data-component="carousel"] ul li.portrait-item {
   width: 118px;
   margin: 0;
 }
 
+.container.srch .carouselTransactionalItem-image_wrapper .portrait-item-productimage,
 .container.browse .carouselTransactionalItem-image_wrapper .portrait-item-productimage {
   max-height: 89px;
   max-width: 89px;

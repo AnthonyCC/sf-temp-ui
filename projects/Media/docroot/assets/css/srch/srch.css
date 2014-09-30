@@ -112,7 +112,11 @@
 }
 
 .srch .srch-carousel .carousel {
-  margin: 10px 0;
+  margin: 0 0;
+}
+
+.srch .srch-carousel .carousel [data-component="carousel-mask"] {
+  margin: 0 8px 0 7px;
 }
 
 .srch .bottom .srch-carousel .carousel [data-component="carousel"] ul li.portrait-item {
