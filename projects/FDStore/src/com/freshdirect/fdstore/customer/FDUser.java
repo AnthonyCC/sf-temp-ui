@@ -2834,7 +2834,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	/* return List of orderInfos for all orders in En-route status. */
 	public List<FDOrderInfoI> getScheduledOrdersForDelivery(boolean sorted) throws FDResourceException {
-		LOGGER.info("getScheduledOrdersForDelivery: " + sorted);
+		LOGGER.debug("getScheduledOrdersForDelivery: " + sorted);
 		
 		FDOrderHistory history = (FDOrderHistory) getOrderHistory();//Changed to fetch from cache.
 		List<FDOrderInfoI> orderHistoryInfo = new ArrayList<FDOrderInfoI>(history.getFDOrderInfos(EnumSaleType.REGULAR));
@@ -2848,7 +2848,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 				}
 			}
 		}
-		LOGGER.info("Total Orders scheduled for delivery: " + validScheduledOrders.size());
+		LOGGER.debug("Total Orders scheduled for delivery: " + validScheduledOrders.size());
 		if (sorted) {
 			Collections.sort(validScheduledOrders, ORDER_DELIVERY_STARTTIME_COMPARATOR);
 		}
