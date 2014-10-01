@@ -24,7 +24,6 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUser;
-import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponWallet;
 import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -33,6 +32,7 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
+import com.freshdirect.webapp.ajax.registration.RegistrationRequest;
 import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.util.AccountUtil;
 
@@ -61,6 +61,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 
 	private AddressModel address = null;
 	private EnumDeliveryStatus requestedServiceTypeDlvStatus;
+	
+	private RegistrationRequest regRequest = null;
 	
 	public void setAction(String action) {
 		this.action = action;
@@ -465,6 +467,49 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		return FDDeliveryManager.getInstance().checkZipCode(this.address.getZipCode());
 	}
 	
+	private DlvServiceSelectionResult checkSLiteAjaxZipCode(ActionResult result) throws FDResourceException {
+		if (this.regRequest == null) {
+			return null;
+		}
+		
+		//populate address
+		this.address = new AddressModel();
+		String sType = this.regRequest.getServiceType().trim();
+		this.address.setZipCode(this.regRequest.getZipcode().trim());
+		this.serviceType = EnumServiceType.getEnum(sType);
+		//this.address.setAddress1(NVL.apply(request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode()), "").trim());		
+		//this.address.setApartment(NVL.apply(request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode()), "").trim());
+		//this.address.setCity(NVL.apply(request.getParameter(EnumUserInfoName.DLV_CITY.getCode()), "").trim());
+		//this.address.setState(NVL.apply(request.getParameter(EnumUserInfoName.DLV_STATE.getCode()), "").trim());	
+		
+		this.validate(result, false);
+		
+		int regType = AccountUtil.HOME_USER;
+		if(EnumServiceType.CORPORATE.getName().equals(sType)) {
+			//This is a corp user
+			regType = AccountUtil.CORP_USER;
+		}
+		RegistrationAction ra = new RegistrationAction(regType);
+
+		HttpContext ctx =
+			new HttpContext(
+				this.pageContext.getSession(),
+				(HttpServletRequest) this.pageContext.getRequest(),
+				(HttpServletResponse) this.pageContext.getResponse());
+
+		ra.setHttpContext(ctx);
+		ra.setResult(result);
+		ra.validateLiteSignup();
+
+		if (result.isFailure()) {
+			//Reset success page to null
+			this.regRequest.setSuccessPage("");
+			return null;
+		}
+		
+		return FDDeliveryManager.getInstance().checkZipCode(this.address.getZipCode());
+	}
+	
 	private DlvServiceSelectionResult checkSLiteZipCode(HttpServletRequest request, ActionResult result) throws FDResourceException {
 		//populate address
 		this.address = new AddressModel();
@@ -826,6 +871,14 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
         session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
         session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
 		
+	}
+
+	public RegistrationRequest getRegRequest() {
+		return regRequest;
+	}
+
+	public void setRegRequest(RegistrationRequest regRequest) {
+		this.regRequest = regRequest;
 	}	
 
 }

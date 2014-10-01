@@ -33,7 +33,16 @@
 			<%@ include file="/common/template/includes/metatags.jspf" %>
 			<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 			<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-		<% } %>
+	<% } else { %>
+		<%@ include file="/common/template/includes/metatags.jspf" %>
+		<%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
+		<%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
+		<style>
+			.star {
+				color:orange;
+			}
+		</style>
+	<% } %>
 		<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 	</head>
 	<body>

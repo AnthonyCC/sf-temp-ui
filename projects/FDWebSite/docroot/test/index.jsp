@@ -931,6 +931,12 @@
 		<div class="link"><a href="/test/gateway/index.jsp">/test/gateway/index.jsp</a></div>
 		<div class="pageDesc">Helps to test Gateway Transactions .</div>
 	</div>
+	
+	<div class="tag oas">
+		<div class="pageName"><span>Test OAS ads</span></div>
+		<div class="link"><a href="/test/content/oas.jsp">/test/content/oas.jsp</a></div>
+		<div class="pageDesc">Test OAS calls using dynamic values.</div>
+	</div>
 
 	<hr />
 </div>

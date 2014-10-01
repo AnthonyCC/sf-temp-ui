@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,14 +17,20 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 
+import weblogic.wsee.wsdl.http.UrlEncoded;
+
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.delivery.DlvServiceSelectionResult;
 import com.freshdirect.delivery.DlvZoneInfoModel;
+import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.EnumZipCheckResponses;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -47,13 +54,19 @@ import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.mail.EmailUtil;
+import com.freshdirect.webapp.action.HttpContext;
+import com.freshdirect.webapp.action.fdstore.RegistrationAction;
+import com.freshdirect.webapp.ajax.registration.RegistrationRequest;
+import com.freshdirect.webapp.ajax.registration.RegistrationResponse;
 import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
+import com.freshdirect.webapp.util.AccountUtil;
 
 public class UserUtil {
 	
@@ -503,5 +516,311 @@ public class UserUtil {
         	}
         }
         return updatedSuccessPage;		
+	}
+
+	//passing in regRequest rather than all the params it contains
+	public static void registerUser(HttpSession session,
+			HttpServletRequest request, HttpServletResponse response,
+			ActionResult actionResult, RegistrationRequest regRequest, RegistrationResponse regResponse,
+			String mergepage) {
+		//logic from reg tag(s)
+		
+		//check for errors in request fields
+		String serviceType = regRequest.getServiceType();
+		String firstName = regRequest.getFirstName();
+		String lastName = regRequest.getLastName();
+		String zipcode = regRequest.getZipcode();
+		String email = regRequest.getEmail();
+		String emailConfirm = regRequest.getEmailConfirm();
+		String password = regRequest.getPassword();
+		String passwordConfirm = regRequest.getPasswordConfirm();
+		String securityQuestion = regRequest.getSecurityQuestion();
+		String terms = regRequest.getTerms();
+		String successPage = regRequest.getSuccessPage();
+		String updatedSuccessPage = regRequest.getSuccessPage();
+
+		if (serviceType == null || serviceType.length() < 1 ) {
+            actionResult.addError(new ActionError(EnumUserInfoName.DLV_SERVICE_TYPE.getCode(), SystemMessageList.MSG_REQUIRED));
+        }
+		
+		if (firstName == null || firstName.length() < 1 ) {
+            actionResult.addError(new ActionError(EnumUserInfoName.CONTACT_FD_FIRST_NAME.getCode(), SystemMessageList.MSG_REQUIRED));
+        }
+		
+		if (lastName == null || lastName.length() < 1 ) {
+            actionResult.addError(new ActionError(EnumUserInfoName.CONTACT_FD_LAST_NAME.getCode(), SystemMessageList.MSG_REQUIRED));
+        }
+		
+		if ("".equals(zipcode)) {
+			actionResult.addError(true, EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED);
+		} else {
+			boolean isNumber = true;
+			try {
+				Integer.parseInt(zipcode);
+			} catch (NumberFormatException ne) {
+				isNumber = false;
+			}
+			if (zipcode.length() != 5 || !isNumber || zipcode.equals("00000")) {
+				actionResult.addError(true, EnumUserInfoName.DLV_ZIPCODE.getCode(), SystemMessageList.MSG_ZIP_CODE);
+			}
+		}
+
+		if (!EmailUtil.isValidEmailAddress(email)) {
+            actionResult.addError(new ActionError(EnumUserInfoName.EMAIL_FORMAT.getCode(), SystemMessageList.MSG_EMAIL_FORMAT));
+        } else if (!EmailUtil.isValidEmailAddress(emailConfirm)) {
+            actionResult.addError(new ActionError(EnumUserInfoName.EMAIL_FORMAT.getCode(), SystemMessageList.MSG_EMAIL_FORMAT));
+        } else if (!email.equalsIgnoreCase(emailConfirm)) {
+            actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_EMAIL_NOMATCH_REG));
+        	
+        }
+		
+		if (password==null || password.length() < 1) {
+            actionResult.addError(new ActionError(EnumUserInfoName.PASSWORD.getCode(), SystemMessageList.MSG_REQUIRED));
+        } else if (password.length() < 4) {
+            actionResult.addError(new ActionError(EnumUserInfoName.PASSWORD.getCode(), SystemMessageList.MSG_PASSWORD_TOO_SHORT));
+        }
+		if (passwordConfirm==null || passwordConfirm.length() < 1) {
+            actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_PASSWORD.getCode(), SystemMessageList.MSG_REQUIRED));
+        } else if (password.length() < 4) {
+            actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_PASSWORD.getCode(), SystemMessageList.MSG_PASSWORD_TOO_SHORT));
+        }
+		
+		if (securityQuestion == null || securityQuestion.length() < 1 ) {
+            actionResult.addError(new ActionError(EnumUserInfoName.PASSWORD_HINT.getCode(), SystemMessageList.MSG_REQUIRED));
+        }
+
+		if (terms == null || !"true".equalsIgnoreCase(terms)) {
+            actionResult.addError(new ActionError(EnumUserInfoName.CUSTOMER_AGREEMENT.getCode(), SystemMessageList.MSG_AGREEMENT_CHECK));
+        }
+
+		//return on missing info for immediate error msgs
+		if (!actionResult.isSuccess()) {
+			regResponse.setSuccess(false);
+			regResponse.addErrors(actionResult.getErrors());
+			
+			return;
+		}
+				
+		FDUserI sessionUser = (FDUserI)session.getAttribute(SessionName.USER);
+		
+		int registrationType = AccountUtil.HOME_USER;
+		if(EnumServiceType.CORPORATE.getName().equals(serviceType)) {
+			//This is a corp user
+			registrationType = AccountUtil.CORP_USER;
+		}
+		
+
+		
+		RegistrationAction ra = new RegistrationAction(registrationType);
+
+		DlvServiceSelectionResult serviceResult = null;
+		EnumServiceType reqServiceTypeEnum = null;
+		EnumDeliveryStatus reqServiceTypeDlvStatus = null;
+
+		EnumDeliveryStatus cosServiceTypeDlvStatus = null;
+		EnumDeliveryStatus homeServiceTypeDlvStatus = null;
+		AddressModel addressModel = null;
+		
+		String serviceTypeString = NVL.apply(regRequest.getServiceType(), "").trim();
+		
+		String altDeliveryPage = "/site_access/alt_dlv_home.jsp?serviceType=" + serviceTypeString;
+		String failedCorpPage = "/survey/cos_site_access_survey.jsp?successPage=index.jsp";
+		String failedHomePage = "/site_access/delivery.jsp?successPage=index.jsp&serviceType=" + serviceTypeString + "&email=" + email;
+		String moreInfoPage = "/site_access/site_access_address_lite.jsp?successPage=" +
+				((!"".equals(successPage)) ? URLEncoder.encode(successPage) : "index.jsp") + "&serviceType=" + serviceTypeString;
+		
+		boolean requiresAdditionalInfo = false;
+		
+		try {
+			reqServiceTypeEnum = EnumServiceType.getEnum(serviceTypeString);
+			serviceResult = FDDeliveryManager.getInstance().checkZipCode(regRequest.getZipcode());
+			
+			if (serviceResult != null && reqServiceTypeEnum != null) {
+				reqServiceTypeDlvStatus = serviceResult.getServiceStatus(reqServiceTypeEnum);
+				//set the opposite dlvType's status
+				cosServiceTypeDlvStatus = serviceResult.getServiceStatus(EnumServiceType.CORPORATE);
+				homeServiceTypeDlvStatus = serviceResult.getServiceStatus(EnumServiceType.HOME);
+				
+				//additional overlays required
+				regResponse.setSuccess(false);
+				
+				if (reqServiceTypeEnum.equals(EnumServiceType.CORPORATE)) {
+					//cos chosen
+					if (cosServiceTypeDlvStatus.equals(EnumDeliveryStatus.DONOT_DELIVER)) {
+						//no cos
+						if (homeServiceTypeDlvStatus.equals(EnumDeliveryStatus.DELIVER)) {
+							//full home delivery
+							//add zip code user typed
+							regResponse.setMessage(altDeliveryPage+((!"".equals(zipcode)) ? "&corpZipcode="+zipcode : ""));
+							requiresAdditionalInfo = true;
+						} else if (homeServiceTypeDlvStatus.equals(EnumDeliveryStatus.DONOT_DELIVER)) {
+							//no home, either
+							regResponse.setMessage(failedCorpPage);
+							requiresAdditionalInfo = true;
+						} else if (homeServiceTypeDlvStatus.equals(EnumDeliveryStatus.PARTIALLY_DELIVER)) {
+							//partial home
+							regResponse.setMessage(moreInfoPage+((!"".equals(zipcode)) ? "&corpZipcode="+zipcode : ""));
+							requiresAdditionalInfo = true;
+						}
+					} else {
+						//add zip code user typed
+						regResponse.setMessage(moreInfoPage+((!"".equals(zipcode)) ? "&corpZipcode="+zipcode : ""));
+						requiresAdditionalInfo = true;
+					}
+				} else {
+					//anything else
+					if (
+							reqServiceTypeDlvStatus.equals(EnumDeliveryStatus.RARELY_DELIVER)
+							|| reqServiceTypeDlvStatus.equals(EnumDeliveryStatus.DONOT_DELIVER)
+					) {
+						//rare or no delivery
+						regResponse.setMessage(failedHomePage);
+						requiresAdditionalInfo = true;
+					} else if (reqServiceTypeDlvStatus.equals(EnumDeliveryStatus.PARTIALLY_DELIVER)) {
+						//add zip code user typed
+						moreInfoPage += ((!"".equals(zipcode)) ? "&zipcode="+zipcode : "");
+						regResponse.setMessage(moreInfoPage);
+						requiresAdditionalInfo = true;
+					} else if (reqServiceTypeDlvStatus.equals(EnumDeliveryStatus.DELIVER)) {
+						//do nothing, continue registration flow
+					}
+				}
+				
+				
+			}
+			
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (requiresAdditionalInfo) { 
+			return;
+		}
+
+		HttpContext ctx = new HttpContext(session, request, response);
+
+		ra.setHttpContext(ctx);
+		ra.setResult(actionResult);
+		//ra.setFraudPage(fraudPage);
+		//ra.setSignupFromCheckout(signupFromCheckout);
+		//ra.setStatusChangePage(statusChangePage);
+		ra.setSuccessPage(updatedSuccessPage);
+
+		
+		if(actionResult.getErrors() == null || actionResult.getErrors().isEmpty()) {
+			regResponse.setSuccess(true);
+			
+			//needed?
+//			try {
+//				addressModel = AddressUtil.scrubAddress(
+//						new AddressModel(regRequest.getStreet1(), regRequest.getApt(), regRequest.getCity(), regRequest.getState(), regRequest.getZipcode()),
+//						true, actionResult);
+//			} catch (FDResourceException e1) {
+//				e1.printStackTrace();
+//			}
+			
+			try {
+				ra.executeAjaxRegistration(request, regRequest);
+			} catch (Exception e) {
+				regResponse.setSuccess(false);
+				e.printStackTrace();
+			}
+			
+			if (actionResult.isSuccess() && regResponse.isSuccess()) {
+
+				if (EnumDeliveryStatus.DELIVER.equals(reqServiceTypeDlvStatus)) {
+					try {
+						createUser(session, response, addressModel, reqServiceTypeEnum, serviceResult.getAvailableServices());
+						CmRegistrationTag.setPendingRegistrationEvent(session);
+					} catch (FDResourceException e) {
+						regResponse.setSuccess(false);
+						e.printStackTrace();
+					}
+				} else { 
+					try {
+						createUser(session, response, addressModel, EnumServiceType.PICKUP, serviceResult.getAvailableServices());
+						CmRegistrationTag.setPendingRegistrationEvent(session);
+					} catch (FDResourceException e) {
+						regResponse.setSuccess(false);
+						e.printStackTrace();
+					}
+				}
+			}
+			
+		}
+		
+		if (!actionResult.isSuccess() || !regResponse.isSuccess()) {
+			regResponse.setSuccess(false);
+			regResponse.addErrors(actionResult.getErrors());
+		}
+	}
+	
+	public static void createUser(HttpSession session, HttpServletResponse response, AddressModel address, EnumServiceType serviceType, Set availableServices) throws FDResourceException {
+		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);		
+
+		if ((user == null) || ((user.getZipCode() == null) && (user.getDepotCode() == null))) {
+			//
+			// if there is no user object or a dummy user object created in
+			// CallCenter, make a new using this zipcode
+			// make sure to hang on to the cart that might be in progress in
+			// CallCenter
+			//
+			FDCartModel oldCart = null;
+			if (user != null) {
+				oldCart = user.getShoppingCart();
+			}
+			user = new FDSessionUser(FDCustomerManager.createNewUser(address, serviceType), session);
+			user.setUserCreatedInThisSession(true);
+			
+			if(address!=null && user.getAddress()!=null && 
+					"".equalsIgnoreCase(address.getState())&& address.getZipCode().equals(user.getAddress().getZipCode())){
+				address.setState(user.getAddress().getState());
+			}
+			user.setAddress(address);
+			user.setSelectedServiceType(serviceType);
+			//Added the following line for zone pricing to keep user service type up-to-date.
+			user.setZPServiceType(serviceType);
+			user.setAvailableServices(availableServices);
+
+			
+			if (oldCart != null) {
+				user.setShoppingCart(oldCart);
+			}
+
+			CookieMonster.storeCookie(user, response);
+			session.setAttribute(SessionName.USER, user);
+
+		} else {	
+			//
+			// otherwise, just update the zipcode in their existing object if
+			// they haven't yet registered
+			//
+			if (user.getLevel() < FDUser.RECOGNIZED) {
+				user.setAddress(address);
+				user.setSelectedServiceType(serviceType);
+				//Added the following line for zone pricing to keep user service type up-to-date.
+				user.setZPServiceType(serviceType);
+				user.setAvailableServices(availableServices);
+				//Need to reset the pricing context so the pricing context can be recalculated.
+				user.resetPricingContext();
+				CookieMonster.storeCookie(user, response);
+				FDCustomerManager.storeUser(user.getUser());
+				session.setAttribute(SessionName.USER, user);
+			}
+						
+		}
+			
+		//To fetch and set customer's coupons.
+		if(user != null){
+			FDCustomerCouponUtil.initCustomerCoupons(session);
+			user.setNewUserWelcomePageShown(true); //do not redirect to welcome.jsp 
+		}
+		
+        //The previous recommendations of the current session need to be removed.
+        session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
+        session.removeAttribute(SessionName.SAVINGS_FEATURE_LOOK_UP_TABLE);
+        session.removeAttribute(SessionName.PREV_SAVINGS_VARIANT);
+		
 	}
 }

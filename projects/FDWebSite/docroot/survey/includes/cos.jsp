@@ -119,7 +119,7 @@ if("slite".equals(request.getParameter("referrer_page"))) {
 	        <tr>
 	            <td colspan="4" class="text12" align="center"><br><img src="/media_stat/images/layout/999966.gif" width="100%" height="1" vspace="10"><br>
 	            <input type="image" value="submit" src="/media_stat/images/template/help/b_submit.gif" width="68" height="18">
-	            <input type="image"  src="/media_stat/images/template/help/b_clear.gif"  onclick="document.corporateServiceSurvey.reset(); return false;" width="69" height="19">
+	            <input type="image" src="/media_stat/images/template/help/b_clear.gif"  onclick="document.corporateServiceSurvey.reset(); return false;" width="69" height="19" id="corporateServiceSurvey_bClear" />
 	            <%--input type="submit" value="SUBMIT SURVEY" style="background-color:#336600; color:#FFFFFF; font-weight: bold; font-size:9pt; padding-left: 40px; padding-right: 40px;"--%><br>
 	            <img src="/media_stat/images/layout/999966.gif" width="100%" height="1" vspace="10">
 	        </tr>

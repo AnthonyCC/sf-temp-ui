@@ -47,6 +47,7 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.action.WebActionSupport;
+import com.freshdirect.webapp.ajax.registration.RegistrationRequest;
 import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
@@ -105,7 +106,7 @@ public class RegistrationAction extends WebActionSupport {
 	public String getReferralId() {
 		return referralId;
 	}
-
+	
 	public String execute() throws Exception {
 	    //ALLOW_ALL = true;
 		HttpSession session = this.getWebActionContext().getSession();
@@ -279,6 +280,155 @@ public class RegistrationAction extends WebActionSupport {
 		}
 	}
 
+	/* using RegistrationRequest, rather than HttpServletRequest */
+	public void executeAjaxRegistration(HttpServletRequest request, RegistrationRequest regRequest) throws Exception {
+		HttpSession session = this.getWebActionContext().getSession();
+		ActionResult actionResult = this.getResult();
+		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+		
+		if (regRequest != null) {
+			ContactInfo conInfo = new ContactInfo(regRequest);
+			AccountInfo accInfo = new AccountInfo(regRequest);
+			AddressInfo addInfo = new AddressInfo(regRequest);
+			
+			//check for corp and required params
+			if(user.getSelectedServiceType().getName().equals(EnumServiceType.CORPORATE.getName())) {				
+				addInfo.validate(actionResult);
+			}
+
+			accInfo.validateAjaxReg(actionResult);
+			conInfo.validateAjaxReg(actionResult);
+			
+			if (actionResult.isSuccess()) {
+	
+				ErpCustomerModel erpCustomer = accInfo.getErpCustomerModel();
+				ErpCustomerInfoModel customerInfo = new ErpCustomerInfoModel();
+				accInfo.decorateCustomerInfo(customerInfo);
+				conInfo.decorateCustomerInfo(customerInfo);
+			
+				//String address1 = request.getParameter("address1");
+				//boolean isPartialDelivery =  address1 != null && address1.length() > 0;
+				EnumServiceType serviceType = user.getSelectedServiceType();
+				AddressModel address = user.getAddress();
+				//Address will not be null when user signs up for a Partial Delivery address
+				if(address != null && address.getAddress1() != null && address.getAddress1().length() > 0) {
+					// VALIDATE DELIVERY ADDRESS to see if service restricted
+				
+					address.setServiceType(user.getSelectedServiceType());
+					DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkAddress(address);
+					
+					this.reclassifyUser(user, address, serviceType, serviceResult);
+				} else {
+					//Directly from Zip Check page
+					String zipCode = user.getZipCode();
+					DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkZipCode(zipCode);
+			        AddressModel addr = new AddressModel();
+			        addr.setZipCode(zipCode);
+		        	this.reclassifyUser(user, addr,serviceType , serviceResult);
+				}
+				
+				
+				//
+				// Absence of an FDIdentity in session means this is a new registration.
+				// Presence of an FDIdentity might indicate a registered user but failed predicate function
+				// (like adding a credit card in CallCenter), so don't attempt to re-register if one is found.
+				//
+				if (user.getIdentity() == null) {
+					
+					customerInfo.setRegRefTrackingCode(user.getLastRefTrackingCode());
+					// changes done by gopal
+					customerInfo.setReferralProgId(user.getLastRefProgId());
+					customerInfo.setReferralProgInvtId(user.getLastRefProgInvtId());
+					
+					erpCustomer.setCustomerInfo(customerInfo);
+					ErpAddressModel erpAddress = null;
+					if(address != null && address.getAddress1() != null && address.getAddress1().length() > 0) {//Only true when customer came from partial zip check page in IPhone.
+						erpAddress = new ErpAddressModel(address);
+						erpAddress.setFirstName(customerInfo.getFirstName());
+						erpAddress.setLastName(customerInfo.getLastName());
+						erpAddress.setPhone(customerInfo.getHomePhone());
+
+						erpAddress.setAddressInfo(address.getAddressInfo());
+						erpAddress.setServiceType(serviceType);
+						erpCustomer.addShipToAddress(erpAddress);
+						if(serviceType.getName().equals(EnumServiceType.CORPORATE.getName())) {
+							erpAddress.setCompanyName(addInfo.getCompanyName());
+						}
+					} else {
+						erpAddress=new ErpAddressModel();
+						erpAddress.setFirstName(customerInfo.getFirstName());
+						erpAddress.setLastName(customerInfo.getLastName());
+						erpAddress.setPhone(customerInfo.getHomePhone());
+						//Need to set dummy sap billing info for SAP processing.
+						erpAddress.setAddress1("23-30 borden ave");
+						erpAddress.setCity("Long Island City");
+						erpAddress.setState("NY");
+						erpAddress.setCountry("US");
+						erpAddress.setZipCode("11101");
+	
+						//save original zip code before it's overwritten by dummy value
+						CmRegistrationTag.setRegistrationOrigZipCode(session, user.getZipCode());
+						
+						/*
+						 * Alternatively we can pass the actual city,state and zipcode to SAP.
+						 */
+						//Lookup state and city by zipcode.
+						/*
+						StateCounty scinfo = FDDeliveryManager.getInstance().lookupStateCountyByZip(addInfo.getZipCode());
+						erpAddress.setCity(scinfo.getCity());
+						erpAddress.setState(scinfo.getState());
+						erpAddress.setCountry("US");
+						erpAddress.setZipCode(addInfo.getZipCode());
+						*/
+						erpAddress.setServiceType(serviceType);
+						erpCustomer.setSapBillToAddress(erpAddress);
+					}
+		
+					FDCustomerModel fdCustomer = new FDCustomerModel();
+		
+					fdCustomer.setPasswordHint(accInfo.getPasswordHint());
+					fdCustomer.setDepotCode(user.getDepotCode());
+					fdCustomer.setDepotCode(user.getDepotCode());
+		
+					FDSurveyResponse survey = accInfo.getMarketingSurvey(new SurveyKey(EnumSurveyType.REGISTRATION_SURVEY, serviceType), request);
+		
+					try {
+						FDIdentity regIdent = this.doRegistration(fdCustomer, erpCustomer, survey, serviceType);
+						//user.getShoppingCart().setZoneInfo(zoneInfo);
+						user.setIdentity(regIdent);
+						user.invalidateCache();
+						user.isLoggedIn(true);
+						if(address != null && address.getAddress1() != null && address.getAddress1().length() > 0) {
+							//update user's zip only if a valid address is supplied. Without this check user's zip will be updated to default zip 11101
+							user.setZipCode(erpAddress.getZipCode());
+						}
+						if(address != null) {
+							//This is from partial zip check page from where we will have a valid address.
+							user.setSelectedServiceType(AddressUtil.getDeliveryServiceType(erpAddress));
+							//Added the following line for zone pricing to keep user service type up-to-date.
+							user.setZPServiceType(AddressUtil.getDeliveryServiceType(erpAddress));
+						} else {
+							//This is from regular zip Check oage.
+							user.setSelectedServiceType(serviceType);
+							user.setZPServiceType(serviceType);
+						}
+						user.updateUserState();
+						//Set the Default Delivery pass status.
+						FDUserDlvPassInfo dlvpassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE, null, null, null,0,0,0,false,0,null,0,null);
+						user.getUser().setDlvPassInfo(dlvpassInfo);
+						user.getUser().setAssignedCustomerParams(FDCustomerManager.getAssignedCustomerParams(user.getUser()));
+						session.setAttribute(SessionName.USER, user);
+						
+					} catch (ErpDuplicateUserIdException de) {
+						LOGGER.warn("User registration failed due to duplicate id", de);
+						actionResult.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_UNIQUE_USERNAME));
+					}
+		
+				}
+			}
+		}
+	}
+	
 	public String executeEx() throws Exception {
 	    //ALLOW_ALL = true;
 		HttpSession session = this.getWebActionContext().getSession();
@@ -583,6 +733,28 @@ public class RegistrationAction extends WebActionSupport {
 			this.initialize(request);
 		}
 
+		public ContactInfo(RegistrationRequest regRequest) {
+			this.initialize(regRequest);
+		}
+
+		private void initialize(RegistrationRequest regRequest) {
+			this.title = NVL.apply(regRequest.getTitle(), "").trim();
+			this.firstName = NVL.apply(regRequest.getFirstName(), "").trim();
+			this.lastName = NVL.apply(regRequest.getLastName(), "").trim();
+
+			this.homePhone = NVL.apply(regRequest.getHomePhone(), "").trim();
+			this.homePhoneExt = NVL.apply(regRequest.getHomePhoneExt(), "").trim();
+
+			this.workPhone = NVL.apply(regRequest.getWorkPhone(), "").trim();
+			this.workPhoneExt = NVL.apply(regRequest.getWorkPhoneExt(), "").trim();
+
+			this.cellPhone = NVL.apply(regRequest.getCellPhone(), "").trim();
+			this.cellPhoneExt = NVL.apply(regRequest.getCellPhoneExt(), "").trim();
+			this.department = NVL.apply(regRequest.getWorkDepartment(), "").trim();
+			this.employeeId = NVL.apply(regRequest.getEmployeeId(), "").trim();
+			
+		}
+
 		private void initialize(HttpServletRequest request) {
 
 			this.title = NVL.apply(request.getParameter("title"), "");
@@ -647,6 +819,17 @@ public class RegistrationAction extends WebActionSupport {
 
 		
 		}
+
+		/* validate required fields for ajax sign up */
+		//only name is available here
+		public void validateAjaxReg(ActionResult actionResult) {
+
+			actionResult.addError("".equals(this.lastName), EnumUserInfoName.DLV_LAST_NAME.getCode(),
+				SystemMessageList.MSG_REQUIRED);
+
+			actionResult.addError("".equals(this.firstName), EnumUserInfoName.DLV_LAST_NAME.getCode(),
+				SystemMessageList.MSG_REQUIRED);
+		}
 		
 		public boolean validatePhoneNumber(String phoneNumber){
 			phoneNumber = phoneNumber.trim();
@@ -687,9 +870,29 @@ public class RegistrationAction extends WebActionSupport {
 		public AccountInfo(HttpServletRequest request) {
 			this.initialize(request);
 		}
+		
+		public AccountInfo(RegistrationRequest regRequest) {
+			this.initialize(regRequest);
+		}
 
+		private void initialize(RegistrationRequest regRequest) {
+			this.emailAddress = NVL.apply(regRequest.getEmail(), "").trim();
+			this.repeatEmailAddress = NVL.apply(regRequest.getEmailConfirm(), "").trim();
+			this.altEmailAddress = NVL.apply(regRequest.getAltEmail(), "").trim();
 
-        private void initialize(HttpServletRequest request) {
+			this.password = NVL.apply(regRequest.getPassword(), "").trim();
+			this.repeatPassword = NVL.apply(regRequest.getPasswordConfirm(), "").trim();
+			this.passwordHint = NVL.apply(regRequest.getSecurityQuestion(), "").trim();
+
+			this.receiveNews = Boolean.parseBoolean(regRequest.getReceiveNews()); //true;
+			this.plainTextEmail = Boolean.parseBoolean(regRequest.getPlainTextEmail()); //false;
+			
+			this.termsAccepted = Boolean.parseBoolean(regRequest.getTerms());
+			
+			this.deliveryInstructions = NVL.apply(regRequest.getDeliveryInstructions(), "").trim();
+		}
+
+		private void initialize(HttpServletRequest request) {
 			this.emailAddress = NVL.apply(request.getParameter(EnumUserInfoName.EMAIL.getCode()), "").trim();
 			this.repeatEmailAddress = NVL.apply(request.getParameter(EnumUserInfoName.REPEAT_EMAIL.getCode()), "").trim();
 			this.altEmailAddress = NVL.apply(request.getParameter(EnumUserInfoName.ALT_EMAIL.getCode()), "").trim();
@@ -705,8 +908,6 @@ public class RegistrationAction extends WebActionSupport {
 
 			this.deliveryInstructions = NVL.apply(request.getParameter(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode()),
 				"none").trim();
-			
-
 		}
 
 		public void validate(ActionResult actionResult) {
@@ -755,6 +956,29 @@ public class RegistrationAction extends WebActionSupport {
 				.addError("".equals(passwordHint), EnumUserInfoName.PASSWORD_HINT.getCode(), SystemMessageList.MSG_REQUIRED);
 
 			actionResult.addError(!termsAccepted, "terms", SystemMessageList.MSG_AGREEMENT_CHECK);
+		}
+
+		/* validate required fields for ajax sign up */
+		//email, password, terms
+        public void validateAjaxReg(ActionResult actionResult) {
+        	actionResult.addError("".equals(emailAddress), EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_REQUIRED);
+
+			actionResult.addError(!actionResult.hasError(EnumUserInfoName.EMAIL.getCode())
+				&& !EmailUtil.isValidEmailAddress(emailAddress), EnumUserInfoName.EMAIL.getCode(),
+				SystemMessageList.MSG_EMAIL_FORMAT);
+
+			if ("".equals(repeatEmailAddress)) {
+				actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_EMAIL.getCode(), SystemMessageList.MSG_REQUIRED));
+			} else if (!emailAddress.equalsIgnoreCase(repeatEmailAddress)) {
+				actionResult.addError(new ActionError(EnumUserInfoName.REPEAT_EMAIL.getCode(), SystemMessageList.MSG_EMAIL_REPEAT));
+			}
+			
+			AccountUtil.validatePassword(actionResult, password, repeatPassword);
+
+			actionResult.addError("".equals(passwordHint), EnumUserInfoName.PASSWORD_HINT.getCode(), SystemMessageList.MSG_REQUIRED);
+
+			actionResult.addError(!termsAccepted, "terms", SystemMessageList.MSG_AGREEMENT_CHECK);
+			
 		}
 		
 		public void decorateCustomerInfo(ErpCustomerInfoModel customerInfo) {
@@ -811,6 +1035,31 @@ public class RegistrationAction extends WebActionSupport {
 		
 		public AddressInfo(HttpServletRequest request) {
 			this.initialize(request);
+		}
+
+		public AddressInfo(RegistrationRequest regRequest) {
+			this.initialize(regRequest);
+		}
+
+		private void initialize(RegistrationRequest regRequest) {
+			String serviceType = regRequest.getServiceType().trim();
+			if ("".equals(serviceType)) {
+				this.serviceType = EnumServiceType.HOME;
+			} else {
+				this.serviceType = (EnumServiceType) EnumServiceType.getEnum(serviceType);
+			}
+			this.companyName = NVL.apply(regRequest.getCompanyName(), "").trim();
+			this.street1 = NVL.apply(regRequest.getStreet1(), "").trim();
+			this.street2 = NVL.apply(regRequest.getStreet2(), "").trim();
+			this.apt = NVL.apply(regRequest.getApt(), "").trim();
+			this.city = NVL.apply(regRequest.getCity(), "").trim();
+			this.state = NVL.apply(regRequest.getState(), "").trim();
+			this.zipcode = NVL.apply(regRequest.getZipcode(), "").trim();
+			this.addressOrLocation = NVL.apply(regRequest.getAddressOrLocation(), "").trim();
+			
+			if (!"".equals(this.addressOrLocation) && addressOrLocation.indexOf("DEPOT_") > -1) {
+				locationId = this.addressOrLocation.substring(6, addressOrLocation.length());
+			}	
 		}
 
 		private void initialize(HttpServletRequest request) {

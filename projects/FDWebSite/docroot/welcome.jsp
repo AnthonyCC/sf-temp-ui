@@ -1,6 +1,6 @@
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" /><%
+<fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" id="user" /><%
 
 request.setAttribute("listPos", "SystemMessage,WDelivery,WAffiliate");
 request.setAttribute("noyui", true);

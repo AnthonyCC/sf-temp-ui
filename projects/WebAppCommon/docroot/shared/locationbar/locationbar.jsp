@@ -75,12 +75,13 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 	<button class="loginButton" id="locabar_loginButton">log in</button>
 </tmpl:put>
 <tmpl:put name="logoutButton"><button onclick="window.location='/logout.jsp';" class="logoutButton">logout</button></tmpl:put>
-<tmpl:put name="signupButton"><% 
-	if(FDStoreProperties.isLightSignupEnabled()) { 
-  %><button class="signUpButton" onclick="if (FreshDirect && FreshDirect.components && FreshDirect.components.ifrPopup) { FreshDirect.components.ifrPopup.open({ url: '/registration/signup_lite.jsp', width: 480, height: 600, opacity: .5}) } else { doOverlayWindow('<iframe id=\'signupframe\' src=\'/registration/signup_lite.jsp\' width=\'480px\' height=\'590px\' frameborder=\'0\' ></iframe>', '<span class=\'text12\' style=\'color: #000; margin-left: -12px;\'><strong>Already have a password? <a href=\'/login/login.jsp\' onclick=\'window.top.location=this.href;return false;\' style=\'text-decoration:none;\'>Log in now</a></strong></span>') }">sign up</button><% 
-	} else { 
-		%><button class="signUpButton" onclick="window.location='/registration/signup.jsp';">sign up</button><% 
-	} 
+<tmpl:put name="signupButton"><%
+	/*
+		handle sign up logic in a single function in locationbar.js (on click event for button id)
+		set data for lightsignup (defaults to false)
+		set data for "ajax" signup (redesign: APPDEV-3467) (defaults to false)
+	*/
+	%><button id="locabar_signupButton" class="signUpButton" data-lightsignup="<%= FDStoreProperties.isLightSignupEnabled() %>" data-ajaxsignup="<%= FDStoreProperties.isAjaxSignupEnabled() %>">sign up</button><%
 %></tmpl:put>
 <%
 	if (user!=null && user.getLevel() == FDUserI.SIGNED_IN) {

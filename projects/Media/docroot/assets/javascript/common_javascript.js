@@ -970,10 +970,24 @@ function maxLen(elem, len) {
  * @param frameId DOM ID of your iframe
  * @param offset Number to extend height (optional)
  */
-function setFrameHeight(frameId, offset) {
-	var f = window.parent.document.getElementById(frameId);
+function getFrameById(frameId) {
+	var f = null;
+	try {
+		f = window.parent.document.getElementById(frameId);
+		if (f == null || f == undefined) {
+			f = window.top.document.getElementById(frameId);
+		}
+	} catch (e) {
+		
+	}
+	return f;
+}
 
-  f.style.height = null;
+function setFrameHeight(frameId, offset) {
+	var f = getFrameById(frameId);
+	if (f == null) { return; }
+
+	f.style.height = null;
 
 	var hgt = getFrameHeight(frameId);
 	
@@ -984,32 +998,39 @@ function setFrameHeight(frameId, offset) {
 }
 
 function setFrameHeightSL(frameId, hgt) {
-	var f = window.parent.document.getElementById(frameId);
+	var f = getFrameById(frameId);
+	if (f == null) { return; }
 
 	f.style.height = (hgt)+"px";
 }
 
 function setFrameWidthSL(frameId, wth) {
-	var f = window.parent.document.getElementById(frameId);
+	var f = getFrameById(frameId);
+	if (f == null) { return; }
 
 	f.style.width = (wth)+"px";
 }
 
 function getFrameHeight(frameId) {
-	var f = window.parent.document.getElementById(frameId);
+	var f = getFrameById(frameId);
+	if (f == null) { return; }
+	
 	var innerDoc = (f.contentDocument) ? f.contentDocument : f.contentWindow.document;
 
 	return innerDoc.body.parentNode.scrollHeight;
 }
 
 function getFrameWidth(frameId) {
-	var f = window.parent.document.getElementById(frameId);
+	var f = getFrameById(frameId);
+	if (f == null) { return; }
+	
 	var innerDoc = (f.contentDocument) ? f.contentDocument : f.contentWindow.document;
 
 	return innerDoc.body.parentNode.scrollWidth;
 }
 function setFrameSize(frameId, offsetX, offsetY) {
-	var f = window.parent.document.getElementById(frameId);
+	var f = getFrameById(frameId);
+	if (f == null) { return; }
 
 	var wdh = getFrameWidth(frameId);
 	var hgt = getFrameHeight(frameId);
