@@ -100,7 +100,7 @@ public class PageViewTagModelBuilder  {
 		} else {
 			String fileName = TagModelUtil.dropExtension(uriAfterSlash);
 			
-			if ("search".equalsIgnoreCase(fileName)){
+			if ("search".equalsIgnoreCase(fileName) || "srch".equalsIgnoreCase(fileName) && (input.page == null || "SEARCH".equalsIgnoreCase(input.page))){
 				processSearchAttributes();
 				tagModel.setPageId("search");
 				tagModel.setCategoryId(CustomCategory.SEARCH.toString());
@@ -108,7 +108,7 @@ public class PageViewTagModelBuilder  {
 
 			} else if ("department".equals(fileName) || "department_cohort_match".equals(fileName) || "category".equals(fileName) || "newsletter".equals(fileName) || "whatsgood".equals(fileName)  || "ddpp".equals(fileName) /* || "browse".equals(fileName) */){
 				processDeptOrCat();
-			} else if ("browse".equals(fileName) || "browse_special".equals(fileName)) {
+			} else if ("browse".equals(fileName) || "browse_special".equals(fileName) || uriAfterSlash.contains("srch.jsp") && "PRES_PICKS".equalsIgnoreCase(input.page)) {
 				findCurrentFolder( input.id );
 				processDeptOrCat();
 			} else if ("product".equals(fileName) || "pdp".equals(fileName)) {
@@ -186,10 +186,13 @@ public class PageViewTagModelBuilder  {
 				tagModel.setPageId("LOG OUT");
 			//account end
 				
-			} else if (uriAfterSlash.contains("newproducts.jsp")){
+			} else if (uriAfterSlash.contains("newproducts.jsp") || uriAfterSlash.contains("srch.jsp") && "NEWPRODUCTS".equalsIgnoreCase(input.page)){
 				tagModel.setCategoryId(CustomCategory.NEW_PRODUCTS_DEPARTMENT.toString());
 				tagModel.setPageId("");
 
+			} else if (uriAfterSlash.contains("ecoupon.jsp") || uriAfterSlash.contains("srch.jsp") && "ECOUPON".equalsIgnoreCase(input.page)){
+				tagModel.setCategoryId(CustomCategory.ECOUPON.toString());
+				tagModel.setPageId("ecoupons");
 
 			} else if (uriAfterSlash.contains("cos.jsp")){
 				tagModel.setCategoryId(CustomCategory.HOMEPAGE.toString());

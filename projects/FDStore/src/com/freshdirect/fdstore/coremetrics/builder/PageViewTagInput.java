@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.freshdirect.framework.util.NVL;
+
 public class PageViewTagInput implements Serializable {
 	private static final long serialVersionUID = -1642096101082416197L;
 
@@ -27,7 +29,7 @@ public class PageViewTagInput implements Serializable {
 	
 	public String uri;
 	public String id; // Page ID (Content Node)
-	public String page;
+	public String page; //help page 'page' param or search like page 'pageType' param
 
 
 	/**
@@ -44,7 +46,7 @@ public class PageViewTagInput implements Serializable {
 		// process values
 		obj.uri = request.getRequestURI();
 		obj.id = request.getParameter("id");
-		obj.page = request.getParameter("page");
+		obj.page = NVL.apply(request.getParameter("page"), request.getParameter("pageType"));
 
 		return obj;
 	}

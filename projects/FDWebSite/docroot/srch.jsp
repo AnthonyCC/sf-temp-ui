@@ -133,12 +133,16 @@
   </tmpl:put>
 
   <tmpl:put name='bottom' direct='true'>
-
-    <c:if test="${browsePotato.searchParams.pageType != 'SEARCH'}">
-      <div class="srch-carousel">
-        <soy:render template="srch.carouselWrapper" data="${browsePotato.carousels}" />
-      </div>
-    </c:if>
+    <c:choose>
+	    <c:when test="${browsePotato.searchParams.pageType != 'SEARCH'}">
+	      <div class="srch-carousel">
+	        <soy:render template="srch.carouselWrapper" data="${browsePotato.carousels}" />
+	      </div>
+	    </c:when>
+	    <c:otherwise>
+    		<fd:CmPageView wrapIntoScriptTag="true" searchTerm="${browsePotato.searchParams.searchParams}" searchResultsSize="${browsePotato.searchParams.tabs[0].hits}" suggestedTerm="${browsePotato.searchParams.searchTerm}" recipeSearchResultsSize="${browsePotato.searchParams.tabs[1].hits}"/>
+		</c:otherwise>
+    </c:choose>
     <div class="ddpp-bottom">
             <hr class="ddpp-hr top" />
             <table class="ddppBotAds">
