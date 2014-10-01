@@ -56,9 +56,6 @@
   </tmpl:put>
 
   <tmpl:put name='content' direct='true'>
-    <div class="page-type">
-        <soy:render template="browse.pageType" data="${browsePotato.searchParams}" />
-    </div>
 
     <div class="browse-breadcrumbs">
       <soy:render template="browse.breadCrumb" data="${browsePotato.breadCrumbs}" />
