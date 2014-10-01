@@ -45,7 +45,7 @@ var FreshDirect = FreshDirect || {};
           this.$overlay.addClass(this.config.overlayExtraClass);
         }
 
-        if (this.config.zIndex) {
+        if (this.config.zIndex && this.$overlay) {
           this.$overlay.css('z-index', this.config.zIndex);
         }
 
@@ -196,7 +196,7 @@ var FreshDirect = FreshDirect || {};
       if (this.config.placeholder || this.config.lateplaceholder) {
         this.$ghost.css({display: "block"});
       }
-      if (this.config.overlay) {
+      if (this.config.overlay && this.$overlay) {
         this.$overlay.css({display: "block"});
       }
       var el = this.$el;
@@ -234,7 +234,7 @@ var FreshDirect = FreshDirect || {};
         this.$placeholder.detach();
       }
     }
-    if (this.config.overlay) {
+    if (this.config.overlay && this.$overlay) {
       this.$overlay.css({display: "none"});
     }
     if (this.config.hidecallback) {
