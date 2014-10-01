@@ -552,3 +552,8 @@ ul.products .description-skin{
 /* -------------------------------- */
 /* LARGE VISUAL END                 */
 /* -------------------------------- */
+
+.browse .main .sortSelectButton .title,
+.popupcontentghost .sortSelectButton .title{
+  line-height:18px;
+}
