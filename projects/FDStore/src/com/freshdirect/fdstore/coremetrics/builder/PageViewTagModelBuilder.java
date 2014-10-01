@@ -59,17 +59,18 @@ public class PageViewTagModelBuilder  {
 
 		if (PageViewTagInput.SRC_JSON == input.source) {
 			// SPECIAL TREATMENT FOR AJAX REQUESTS
-
-
 			
-			if (input.uri.contains("filter")) {
+			if ("SEARCH".equalsIgnoreCase(input.page)) {
+				processSearchAttributes();
+				tagModel.setPageId("search");
+				tagModel.setCategoryId(CustomCategory.SEARCH.toString());
+				decoratePageIdWithCatId();
+			
+			} else if (input.uri.contains("filter")) {
 				// "/api/filter" branch:
 				findCurrentFolder( input.id );
 				processDeptOrCat();
-			} else {
-				// UNKNOWN CASE
 			}
-			
 			
 			return;
 		}

@@ -23,9 +23,9 @@ public class CoremetricsPopulator {
 	private static final Logger LOGGER = LoggerFactory.getInstance( CoremetricsPopulator.class );
 	
 	
-	private static ElementTagModelBuilder elementBuilder = new ElementTagModelBuilder();
+	private ElementTagModelBuilder elementBuilder = new ElementTagModelBuilder();
 
-	private static PageViewTagModelBuilder tagModelBuilder = new PageViewTagModelBuilder();
+	private PageViewTagModelBuilder tagModelBuilder = new PageViewTagModelBuilder();
 
 
 	public static final String CM_KEY = "coremetrics";
@@ -40,7 +40,7 @@ public class CoremetricsPopulator {
 	 * @throws SkipTagException
 	 */
 	@Deprecated
-	public static void appendPageViewTag(Map<String,Object> flatData, HttpServletRequest request) throws SkipTagException {
+	public void appendPageViewTag(Map<String,Object> flatData, HttpServletRequest request) throws SkipTagException {
 		tagModelBuilder.setInput( PageViewTagInput.populateFromRequest(request));
 
 		final List<String> cmResult = tagModelBuilder.buildTagModel().toStringList();
@@ -52,7 +52,18 @@ public class CoremetricsPopulator {
 		appendCMData(flatData, cmResult );
 	}
 	
-	public static void appendPageViewTag(Map<String,Object> flatData, final PageViewTagInput input) throws SkipTagException {
+	
+	
+	public void appendPageViewTag(Map<String,Object> flatData, final PageViewTagInput input, String searchTerm, String suggestedTerm, Integer searchResultsSize, Integer recipeSearchResultsSize) throws SkipTagException {
+		tagModelBuilder.setSearchTerm(searchTerm);
+		tagModelBuilder.setSuggestedTerm(suggestedTerm);
+		tagModelBuilder.setSearchResultsSize(searchResultsSize);
+		tagModelBuilder.setRecipeSearchResultsSize(recipeSearchResultsSize);
+		appendPageViewTag(flatData, input);
+	}
+	
+	public void appendPageViewTag(Map<String,Object> flatData, final PageViewTagInput input) throws SkipTagException {
+
 		tagModelBuilder.setInput( input );
 
 		final List<String> cmResult = tagModelBuilder.buildTagModel().toStringList();
@@ -65,7 +76,7 @@ public class CoremetricsPopulator {
 	}
 
 	
-	public static void appendFilterElementTag(Map<String, Object> flatData,
+	public void appendFilterElementTag(Map<String, Object> flatData,
 			Map<String, Object> filters) throws SkipTagException {
 		if (flatData == null || filters == null)
 			return;
@@ -81,7 +92,7 @@ public class CoremetricsPopulator {
 		appendCMData(flatData, cmResult );
 	}
 	
-	public static void appendSortElementTag(Map<String, Object> flatData, String sortId) throws SkipTagException {
+	public void appendSortElementTag(Map<String, Object> flatData, String sortId) throws SkipTagException {
 		if (flatData == null || sortId == null)
 			return;
 
@@ -98,7 +109,7 @@ public class CoremetricsPopulator {
 
 
 
-	private static void appendCMData(Map<String,Object> flatData, final List<String> cmData) {
+	private void appendCMData(Map<String,Object> flatData, final List<String> cmData) {
 		if (flatData == null || cmData == null)
 			return;
 		

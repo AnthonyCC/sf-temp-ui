@@ -61,8 +61,8 @@ public class PageViewTagInput implements Serializable {
 		if (valueMap.containsKey("id")) {
 			obj.id = (String) valueMap.get("id");
 		}
-		if (valueMap.containsKey("page")) {
-			obj.id = (String) valueMap.get("page");
+		if (valueMap.containsKey("page") || valueMap.containsKey("pageType")) {
+			obj.page = NVL.apply((String) valueMap.get("page"), (String) valueMap.get("pageType"));
 		}
 
 		return obj;

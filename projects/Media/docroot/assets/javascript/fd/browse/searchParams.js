@@ -31,6 +31,9 @@ var FreshDirect = FreshDirect || {};
       value:function(clickEvent){
         clickEvent.preventDefault();
         fd.browse.menu.resetFilters();
+        if (cm) {
+            cm.setEvent('pageview');
+          }
         $(this.placeholder).trigger('searchParams-change');
       }
     },

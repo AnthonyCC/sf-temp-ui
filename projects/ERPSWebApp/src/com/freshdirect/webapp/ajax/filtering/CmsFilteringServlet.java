@@ -2,6 +2,7 @@ package com.freshdirect.webapp.ajax.filtering;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,8 @@ import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.CoremetricsPopulator;
 import com.freshdirect.webapp.ajax.DataPotatoField;
 import com.freshdirect.webapp.ajax.JsonHelper;
+import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
+import com.freshdirect.webapp.ajax.browse.data.BrowseData.SearchParams;
 import com.freshdirect.webapp.ajax.browse.data.BrowseData.SearchParams.Tab;
 import com.freshdirect.webapp.ajax.browse.data.CmsFilteringFlowResult;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -92,13 +95,25 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 					// handle event
 					switch(cmEvent) {
 					case PAGEVIEW:
-						CoremetricsPopulator.appendPageViewTag( (Map<String, Object>) payload , PageViewTagInput.populateFromJSONInput(request.getRequestURI(), clientInput) );
+						SearchParams searchParams = flow.getBrowseDataPrototype().getSearchParams();
+						if (searchParams.getPageType()==FilteringFlowType.SEARCH) {
+							List<Tab> tabs = searchParams.getTabs();
+							
+							String searchTerm = searchParams.getSearchParams();
+							String suggestedTerm = searchParams.getSearchTerm();
+							Integer searchResultsSize = tabs.size() > 0 ? tabs.get(0).getHits() : 0;
+							Integer recipeSearchResultsSize = tabs.size() > 1 ? tabs.get(1).getHits() : 0;
+
+							new CoremetricsPopulator().appendPageViewTag( (Map<String, Object>) payload , PageViewTagInput.populateFromJSONInput(request.getRequestURI(), clientInput), searchTerm, suggestedTerm, searchResultsSize, recipeSearchResultsSize );
+						} else {
+							new CoremetricsPopulator().appendPageViewTag( (Map<String, Object>) payload , PageViewTagInput.populateFromJSONInput(request.getRequestURI(), clientInput) );
+						}
 						break;
 					case ELEMENT:
-						CoremetricsPopulator.appendFilterElementTag((Map<String, Object>) payload , (Map<String, Object>) clientInput.get("requestFilterParams"));
+						new CoremetricsPopulator().appendFilterElementTag((Map<String, Object>) payload , (Map<String, Object>) clientInput.get("requestFilterParams"));
 						break;
 					case SORT:
-						CoremetricsPopulator.appendSortElementTag((Map<String, Object>) payload, navigator.getSortBy());
+						new CoremetricsPopulator().appendSortElementTag((Map<String, Object>) payload, navigator.getSortBy());
 						break;
 					case PAGE:
 					case NOEVENT:
