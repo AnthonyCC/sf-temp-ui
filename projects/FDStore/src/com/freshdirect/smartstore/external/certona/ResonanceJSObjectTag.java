@@ -299,9 +299,20 @@ public class ResonanceJSObjectTag extends SimpleTagSupport {
 	public static void assemblyUserCertonaContext(HttpServletRequest request) throws JspException {
 		
 		CertonaUserContextHolder.initCertonaContextFromCookies(request);
-		String id = request.getParameter("id") == null ? "" : request.getParameter("id").toString();
+		String id = null;
+		if (request.getParameterMap().containsKey("id")) {
+			id = request.getParameter("id");
+		} else if (request.getParameterMap().containsKey("catId")) {
+			id = request.getParameter("catId");
+		} else if (request.getParameterMap().containsKey("deptId")) {
+			id = request.getParameter("deptId");
+		}
+
+		if (id != null) {
+			CertonaUserContextHolder.setId(id);
+		}
+		
 		String searchParam = request.getParameter("searchParams") == null ? "" : request.getParameter("searchParams").toString();
-		CertonaUserContextHolder.setId(id);
 		CertonaUserContextHolder.setSearchParam(searchParam);
 		
 	}
