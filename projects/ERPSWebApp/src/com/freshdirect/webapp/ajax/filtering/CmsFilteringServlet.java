@@ -158,17 +158,37 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 	 */
 	public static void adjustCertonaSearchStatus(final CmsFilteringNavigator navigator, final CmsFilteringFlowResult result) {
 		// certona extension
-		if (navigator.getPageType().isSearchLike()) {
-			// assume search operation was executed
-			for (Tab t : result.getBrowseDataPrototype().getSearchParams().getTabs()) {
-				// pick active tab, check the search result
-				if (t.isActive()) {
-					if (t.getHits() > 0) {
-						CertonaUserContextHolder.setSuccessfulSearch(true);
-						break;
+		if (navigator.getPageType().isSearchLike() && result.getBrowseDataPrototype() != null) {
+			switch (navigator.getPageType()) {
+			case SEARCH:
+				if (result.getBrowseDataPrototype().getSearchParams() != null && result.getBrowseDataPrototype().getSearchParams().getTabs() != null) {
+					// assume search operation was executed
+					for (Tab t : result.getBrowseDataPrototype().getSearchParams().getTabs()) {
+						// pick active tab, check the search result
+						if (t.isActive()) {
+							if (t.getHits() > 0) {
+								CertonaUserContextHolder.setSuccessfulSearch(true);
+								break;
+							}
+						}
 					}
 				}
+				break;
+			case NEWPRODUCTS:
+				// TBD
+				break;
+			case PRES_PICKS:
+				// TBD
+				break;
+			case ECOUPON:
+				// TBD
+				break;
+			default:
+				// DO NOTHING
+				break;
 			}
+			
+			
 		}
 	}
 }
