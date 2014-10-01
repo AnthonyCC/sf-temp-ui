@@ -681,6 +681,7 @@ public class FDStoreProperties {
 	
 	private static final String PROP_PRESIDENT_PICK_PAGING_ENABLED = "fdstore.prespicks.paging.enabled";
 	
+	private static final String PROP_ALL_DEALS_CACHE_ENABLED = "fdstore.all_deals_cache.enabled";
 	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1347,6 +1348,8 @@ public class FDStoreProperties {
         defaults.put(PROP_SEARCH_CAROUSEL_PRODUCT_LIMIT, "25");
         
         defaults.put(PROP_PRESIDENT_PICK_PAGING_ENABLED, "false");
+        
+        defaults.put(PROP_ALL_DEALS_CACHE_ENABLED, "true");
 
         refresh();
     }
@@ -3393,6 +3396,10 @@ public class FDStoreProperties {
 	
 	public static boolean isPresidentPicksPagingEnabled() {
 		return Boolean.valueOf(get(PROP_PRESIDENT_PICK_PAGING_ENABLED)).booleanValue();
+	}
+	
+	public static boolean isAllDealsCacheEnabled() {
+		return Boolean.valueOf(get(PROP_ALL_DEALS_CACHE_ENABLED)).booleanValue();
 	}
 }
 
