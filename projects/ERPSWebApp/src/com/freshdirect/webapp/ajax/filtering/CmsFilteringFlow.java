@@ -274,7 +274,7 @@ public class CmsFilteringFlow {
 		if (!navigationModel.isSuperDepartment()) { //don't do these in case of super department page
 			// menu availability check
 			MenuBuilderFactory.getInstance().checkMenuStatus(browseDataContext, navigationModel, user);
-			reOrderMenuItemsByHitCount(navigationModel, browseDataContext);
+			reOrderAllMenuItemsByHitCount(navigationModel, browseDataContext);
 		}
 		browseDataContext.getMenuBoxes().setMenuBoxes(navigationModel.getLeftNav());
 		BrowseData.DescriptiveDataCointainer descriptiveContent = browseDataContext.getDescriptiveContent();
@@ -353,12 +353,23 @@ public class CmsFilteringFlow {
 		return browseDataContext;
 	}
 
-	private void reOrderMenuItemsByHitCount(NavigationModel navigationModel, BrowseDataContext browseDataContext) {
-		MenuBoxData menuBoxData = MenuBoxDataService.getDefaultMenuBoxDataService().getMenuBoxById("departmentFilterGroup", navigationModel.getLeftNav());
+	private void reOrderAllMenuItemsByHitCount(NavigationModel navigationModel, BrowseDataContext browseDataContext) {
+		List<MenuBoxData> leftNav = navigationModel.getLeftNav();
+		List<FilteringProductItem> items = BrowseDataContextService.getDefaultBrowseDataContextService().collectAllItems(browseDataContext);
+		Map<String, ProductItemFilterI> allFilters = ProductItemFilterUtil.prepareFilters(navigationModel.getAllFilters());
+		MenuBoxData menuBoxData = MenuBoxDataService.getDefaultMenuBoxDataService().getMenuBoxById(NavigationUtil.DEPARTMENT_FILTER_GROUP_ID, leftNav);
+		reOrderMenuItemsByHitCount(menuBoxData, items, allFilters);
+		menuBoxData = MenuBoxDataService.getDefaultMenuBoxDataService().getMenuBoxById(NavigationUtil.CATEGORY_FILTER_GROUP_ID, leftNav);
+		reOrderMenuItemsByHitCount(menuBoxData, items, allFilters);
+		menuBoxData = MenuBoxDataService.getDefaultMenuBoxDataService().getMenuBoxById(NavigationUtil.SUBCATEGORY_FILTER_GROUP_ID, leftNav);
+		reOrderMenuItemsByHitCount(menuBoxData, items, allFilters);
+		menuBoxData = MenuBoxDataService.getDefaultMenuBoxDataService().getMenuBoxById(NavigationUtil.BRAND_FILTER_GROUP_ID, leftNav);
+		reOrderMenuItemsByHitCount(menuBoxData, items, allFilters);
+	}
+
+	private void reOrderMenuItemsByHitCount(MenuBoxData menuBoxData, List<FilteringProductItem> items, Map<String, ProductItemFilterI> allFilters) {
 		if (menuBoxData != null && menuBoxData.getSelectedLabel() == null) {
-			List<FilteringProductItem> items = BrowseDataContextService.getDefaultBrowseDataContextService().collectAllItems(browseDataContext);
-			Map<String, ProductItemFilterI> allFilters = ProductItemFilterUtil.prepareFilters(navigationModel.getAllFilters());
-			MenuItemSorter.getDefaultMenuItemSorter().sortItemsByHitCount(menuBoxData, items , allFilters);
+			MenuItemSorter.getDefaultMenuItemSorter().sortItemsByHitCount(menuBoxData, items, allFilters);
 		}
 	}
 
