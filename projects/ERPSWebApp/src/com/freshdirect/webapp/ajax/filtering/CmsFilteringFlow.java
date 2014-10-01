@@ -357,14 +357,16 @@ public class CmsFilteringFlow {
 		List<MenuBoxData> leftNav = navigationModel.getLeftNav();
 		List<FilteringProductItem> items = BrowseDataContextService.getDefaultBrowseDataContextService().collectAllItems(browseDataContext);
 		Map<String, ProductItemFilterI> allFilters = ProductItemFilterUtil.prepareFilters(navigationModel.getAllFilters());
-		MenuBoxData menuBoxData = MenuBoxDataService.getDefaultMenuBoxDataService().getMenuBoxById(NavigationUtil.DEPARTMENT_FILTER_GROUP_ID, leftNav);
+		reOrderMenuItemsByHitCountForMenuBox(leftNav, items, allFilters, NavigationUtil.DEPARTMENT_FILTER_GROUP_ID);
+		reOrderMenuItemsByHitCountForMenuBox(leftNav, items, allFilters, NavigationUtil.CATEGORY_FILTER_GROUP_ID);
+		reOrderMenuItemsByHitCountForMenuBox(leftNav, items, allFilters, NavigationUtil.SUBCATEGORY_FILTER_GROUP_ID);
+		reOrderMenuItemsByHitCountForMenuBox(leftNav, items, allFilters, NavigationUtil.BRAND_FILTER_GROUP_ID);
+	}
+
+	private void reOrderMenuItemsByHitCountForMenuBox(List<MenuBoxData> leftNav, List<FilteringProductItem> items, Map<String, ProductItemFilterI> allFilters, String menuBoxId) {
+		MenuBoxData menuBoxData = MenuBoxDataService.getDefaultMenuBoxDataService().getMenuBoxById(menuBoxId, leftNav);
 		reOrderMenuItemsByHitCount(menuBoxData, items, allFilters);
-		menuBoxData = MenuBoxDataService.getDefaultMenuBoxDataService().getMenuBoxById(NavigationUtil.CATEGORY_FILTER_GROUP_ID, leftNav);
-		reOrderMenuItemsByHitCount(menuBoxData, items, allFilters);
-		menuBoxData = MenuBoxDataService.getDefaultMenuBoxDataService().getMenuBoxById(NavigationUtil.SUBCATEGORY_FILTER_GROUP_ID, leftNav);
-		reOrderMenuItemsByHitCount(menuBoxData, items, allFilters);
-		menuBoxData = MenuBoxDataService.getDefaultMenuBoxDataService().getMenuBoxById(NavigationUtil.BRAND_FILTER_GROUP_ID, leftNav);
-		reOrderMenuItemsByHitCount(menuBoxData, items, allFilters);
+		MenuBoxDataService.getDefaultMenuBoxDataService().removeHitCountFromAllFilters(menuBoxData);
 	}
 
 	private void reOrderMenuItemsByHitCount(MenuBoxData menuBoxData, List<FilteringProductItem> items, Map<String, ProductItemFilterI> allFilters) {
