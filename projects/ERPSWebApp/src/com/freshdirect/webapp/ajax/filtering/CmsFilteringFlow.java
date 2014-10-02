@@ -163,8 +163,21 @@ public class CmsFilteringFlow {
 			
 			populateSearchCarouselProductLimit(nav.getActivePage(), browseDataContext);
 		}
+		savePageTypeForCaching(nav.getPageType(), browseDataContext);
 
 		return new CmsFilteringFlowResult(browseData, browseDataContext.getNavigationModel());
+	}
+
+	/**
+	 * Set page type value in {@code browseDataContext} for paging and sorting cache.
+	 * This value is also available in {@code browseDataContext.searchParams.pageType} but {@code browseDataContext.searchParams} is empty when we are on browse.
+	 * @param nav
+	 * @param browseDataContext
+	 */
+	private void savePageTypeForCaching(FilteringFlowType pageType, BrowseDataContext browseDataContext) {
+		if (browseDataContext.getPageType() == null) {
+			browseDataContext.setPageType(pageType);
+		}
 	}
 
 	private BrowseDataContext getBrowseDataContextFromCacheForPagingOrSorting(CmsFilteringNavigator nav, FDSessionUser user) {
@@ -173,18 +186,16 @@ public class CmsFilteringFlow {
 		//use userRefinementCache
 		String userPrimaryKey = user.getUser().getPrimaryKey();
 		if(event != BrowseEvent.PAGE && event != BrowseEvent.SORT) { // invalidate cache entry in every other case than paging or sorting
-			removeBrowseDataContextFromCache(userPrimaryKey);
+			browseDataContext = removeBrowseDataContextFromCache(userPrimaryKey);
 		} else {
 			browseDataContext = EhCacheUtil.getObjectFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey);
-			if (FilteringFlowType.BROWSE.equals(nav.getPageType())) {
-				if (isBrowseRequestForTheSameId(nav, browseDataContext)){
-					removeBrowseDataContextFromCache(userPrimaryKey); //if cached id is not the same as url id 
-					browseDataContext = null;
-				}
+			if (!isRequestForTheSamePageType(nav, browseDataContext)) {
+				browseDataContext = removeBrowseDataContextFromCache(userPrimaryKey); //if cached has other page type
 			} else {
-				if (browseDataContext!=null && (!isRequestForTheSamePageType(nav, browseDataContext) || (FilteringFlowType.SEARCH.equals(nav.getPageType()) && !isRequestForTheSameSearchParams(nav, browseDataContext)))) {
-					removeBrowseDataContextFromCache(userPrimaryKey); //if cached id is not the same as url id 
-					browseDataContext = null;
+				if (FilteringFlowType.BROWSE.equals(nav.getPageType()) && !isBrowseRequestForTheSameId(nav, browseDataContext)) {
+					browseDataContext = removeBrowseDataContextFromCache(userPrimaryKey); //if cached has same page type(browse) but other id
+				} else if (FilteringFlowType.SEARCH.equals(nav.getPageType()) && !isRequestForTheSameSearchParams(nav, browseDataContext)) {
+					browseDataContext = removeBrowseDataContextFromCache(userPrimaryKey); //if cached has same page type(search) but other search params
 				}
 			}
 		}
@@ -196,15 +207,16 @@ public class CmsFilteringFlow {
 	}
 
 	private boolean isRequestForTheSamePageType(CmsFilteringNavigator nav, BrowseDataContext browseDataContext) {
-		return browseDataContext.getSearchParams().getPageType().equals(nav.getPageType());
+		return browseDataContext.getPageType().equals(nav.getPageType());
 	}
 
 	private boolean isBrowseRequestForTheSameId(CmsFilteringNavigator nav, BrowseDataContext browseDataContext) {
 		return browseDataContext != null && browseDataContext.getCurrentContainer() != null && !browseDataContext.getCurrentContainer().getContentName().equalsIgnoreCase(nav.getId());
 	}
 
-	private void removeBrowseDataContextFromCache(String userPrimaryKey) {
+	private BrowseDataContext removeBrowseDataContextFromCache(String userPrimaryKey) {
 		EhCacheUtil.removeFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey);
+		return null;
 	}
 
 	private void populateSearchCarouselProductLimit(int activePage,
