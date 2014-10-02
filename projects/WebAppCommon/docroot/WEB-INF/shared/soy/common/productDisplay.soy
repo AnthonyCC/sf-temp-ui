@@ -11,6 +11,9 @@
 	{if isNonnull($data.atcItemId)}
 	<input type="hidden" data-component="productData" data-productdata-name="atcItemId" name="atcItemId" value="{$data.atcItemId}">
 	{/if}	
+  {if $data.pageType}
+	<input type="hidden" data-component="productData" data-productdata-name="pageType" name="pageType" value="{$data.pageType}">
+  {/if}
 	{if $data.skus}
 	<ol class="productDisplay-skulist">
 	{foreach $sku in $data.skus}

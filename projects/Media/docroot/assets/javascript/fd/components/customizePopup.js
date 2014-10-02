@@ -53,6 +53,7 @@ var FreshDirect = FreshDirect || {};
         hasApply:false,
         lineId:false,
         listId:false,
+        pageType:false,
         ATCApply:false,
         cmEventSource:''
       },
@@ -91,6 +92,7 @@ var FreshDirect = FreshDirect || {};
         value.ATCApply = this.dataConfig.ATCApply;
         value.cmEventSource = this.dataConfig.cmEventSource;
         value.cartData = this.dataConfig.cartData;
+        value.pageType = this.dataConfig.pageType;
         this.refreshBody(value);
         this.refreshSkuControls();
       }
@@ -116,6 +118,7 @@ var FreshDirect = FreshDirect || {};
             lineId:item.lineId,
             listId:item.listId,
             cartData:cartData,
+            pageType:item.pageType,
             cmEventSource:config.cmEventSource || '',
             ATCApply:config.hasApply && fd.quickshop.itemType === 'pastOrders'
         };
