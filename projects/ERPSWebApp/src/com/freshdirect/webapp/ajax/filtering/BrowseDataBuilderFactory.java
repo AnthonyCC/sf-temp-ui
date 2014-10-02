@@ -720,6 +720,10 @@ public class BrowseDataBuilderFactory {
 	}
 	
 	private CarouselData createCarouselData(String id, String name, List<ProductModel> products, FDSessionUser user, String cmEventSource){
+		return createCarouselData(id, name, products, user, cmEventSource, null);
+	}
+	
+	private CarouselData createCarouselData(String id, String name, List<ProductModel> products, FDSessionUser user, String cmEventSource, String variantId){
 
 		if (products.size()==0){
 			return null; //should not display empty carousel
@@ -735,6 +739,7 @@ public class BrowseDataBuilderFactory {
 			try {
 				ProductData productData = ProductDetailPopulator.createProductData(user, product);
 				productData = ProductDetailPopulator.populateBrowseRecommendation(user, productData, product);
+				productData.setVariantId(variantId);
 				productDatas.add(productData);
 			} catch (FDResourceException e) {
 				LOG.error("failed to create ProductData", e);
@@ -936,7 +941,7 @@ public class BrowseDataBuilderFactory {
 	
 					Recommendations recommendations = ProductRecommenderUtil.getSearchPageRecommendations(user, browseData.getSections().getSections().get(0).getProducts().get(0));
 					if (recommendations != null && recommendations.getAllProducts().size() > 0) {
-						browseData.getCarousels().setCarousel1(createCarouselData(null, "You Might Also Like", recommendations.getAllProducts(), user, ""));
+						browseData.getCarousels().setCarousel1(createCarouselData(null, "You Might Also Like", recommendations.getAllProducts(), user, "", recommendations.getVariant().getId()));
 					}
 				}
 				break;
@@ -946,17 +951,17 @@ public class BrowseDataBuilderFactory {
 	        	si.setCurrentNode(ContentFactory.getInstance().getContentNode("gro"));
 				Recommendations groRecommendations = ProductRecommenderUtil.doRecommend(user, EnumSiteFeature.BRAND_NAME_DEALS,si);
 				if (groRecommendations != null && groRecommendations.getAllProducts().size() > 0) {
-					browseData.getCarousels().setCarousel1(createCarouselData(null, groRecommendations.getVariant().getServiceConfig().get("prez_title_gro"), groRecommendations.getAllProducts(), user, ""));
+					browseData.getCarousels().setCarousel1(createCarouselData(null, groRecommendations.getVariant().getServiceConfig().get("prez_title_gro"), groRecommendations.getAllProducts(), user, "", groRecommendations.getVariant().getId()));
 				}
 	        	si.setCurrentNode(ContentFactory.getInstance().getContentNode("fro"));
 				Recommendations froRecommendations = ProductRecommenderUtil.doRecommend(user, EnumSiteFeature.BRAND_NAME_DEALS,si);
 				if (froRecommendations != null && froRecommendations.getAllProducts().size() > 0) {
-					browseData.getCarousels().setCarousel2(createCarouselData(null, froRecommendations.getVariant().getServiceConfig().get("prez_title_fro"), froRecommendations.getAllProducts(), user, ""));
+					browseData.getCarousels().setCarousel2(createCarouselData(null, froRecommendations.getVariant().getServiceConfig().get("prez_title_fro"), froRecommendations.getAllProducts(), user, "", froRecommendations.getVariant().getId()));
 				}
 	        	si.setCurrentNode(ContentFactory.getInstance().getContentNode("dai"));
 				Recommendations daiRecommendations = ProductRecommenderUtil.doRecommend(user, EnumSiteFeature.BRAND_NAME_DEALS,si);
 				if (daiRecommendations != null && daiRecommendations.getAllProducts().size() > 0) {
-					browseData.getCarousels().setCarousel3(createCarouselData(null, daiRecommendations.getVariant().getServiceConfig().get("prez_title_dai"), daiRecommendations.getAllProducts(), user, ""));
+					browseData.getCarousels().setCarousel3(createCarouselData(null, daiRecommendations.getVariant().getServiceConfig().get("prez_title_dai"), daiRecommendations.getAllProducts(), user, "", daiRecommendations.getVariant().getId()));
 				}
 				break;
 			
