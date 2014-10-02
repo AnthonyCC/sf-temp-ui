@@ -875,7 +875,7 @@ public class MenuBuilderFactory {
 					Set<ProductItemFilterI> currentFiltersBase = ProductItemFilterUtil.removeFiltersByParentId(boxId, activeFilters);
 					
 					// create the pre filtered item list (filters belongs to this filtergroup will be removed)
-					List<FilteringProductItem> preFilteredItems = ProductItemFilterUtil.getFilteredProducts(!clp ? browseData.getUnfilteredItems() : items, currentFiltersBase, false, isProductListing);
+					List<FilteringProductItem> preFilteredItems = ProductItemFilterUtil.getFilteredProducts(!clp ? browseData.getUnfilteredItems() : items, currentFiltersBase, !FilteringFlowType.BROWSE.equals(browseData.getPageType()), isProductListing);
 					final int pfSize = preFilteredItems.size();
 					
 					final long t0 = System.currentTimeMillis();

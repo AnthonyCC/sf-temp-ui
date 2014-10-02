@@ -163,8 +163,6 @@ public class CmsFilteringFlow {
 			
 			populateSearchCarouselProductLimit(nav.getActivePage(), browseDataContext);
 		}
-		savePageTypeForCaching(nav.getPageType(), browseDataContext);
-
 		return new CmsFilteringFlowResult(browseData, browseDataContext.getNavigationModel());
 	}
 
@@ -278,7 +276,7 @@ public class CmsFilteringFlow {
 			refreshResultDependantFilters(nav.getPageType(), navigationModel, browseDataContext.getSectionContexts().get(0).getProductItems());
 			setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
 		}
-		
+		savePageTypeForCaching(nav.getPageType(), browseDataContext);
 		browseDataContext.setNavigationModel(navigationModel);
 		MenuBuilderI menuBuilder = MenuBuilderFactory.createBuilderByPageType(null, navigationModel.isSuperDepartment(), searchPageType);
 		// create menu
@@ -530,6 +528,7 @@ public class CmsFilteringFlow {
 		// inject references
 		browseDataContext.setNavigationModel(navigationModel);
 		browseDataContext.setCurrentContainer(contentNodeModel);
+		savePageTypeForCaching(nav.getPageType(), browseDataContext);
 
 		if (!navigationModel.isSuperDepartment()) { //don't do these in case of super department page
 			// menu availability check
