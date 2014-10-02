@@ -287,6 +287,7 @@ public class CmsFilteringFlow {
 			// menu availability check
 			MenuBuilderFactory.getInstance().checkMenuStatus(browseDataContext, navigationModel, user);
 			reOrderAllMenuItemsByHitCount(navigationModel, browseDataContext);
+			reOrderAllMenuItemsByName(navigationModel);
 		}
 		browseDataContext.getMenuBoxes().setMenuBoxes(navigationModel.getLeftNav());
 		BrowseData.DescriptiveDataCointainer descriptiveContent = browseDataContext.getDescriptiveContent();
@@ -372,7 +373,6 @@ public class CmsFilteringFlow {
 		reOrderMenuItemsByHitCountForMenuBox(leftNav, items, allFilters, NavigationUtil.DEPARTMENT_FILTER_GROUP_ID);
 		reOrderMenuItemsByHitCountForMenuBox(leftNav, items, allFilters, NavigationUtil.CATEGORY_FILTER_GROUP_ID);
 		reOrderMenuItemsByHitCountForMenuBox(leftNav, items, allFilters, NavigationUtil.SUBCATEGORY_FILTER_GROUP_ID);
-		reOrderMenuItemsByHitCountForMenuBox(leftNav, items, allFilters, NavigationUtil.BRAND_FILTER_GROUP_ID);
 	}
 
 	private void reOrderMenuItemsByHitCountForMenuBox(List<MenuBoxData> leftNav, List<FilteringProductItem> items, Map<String, ProductItemFilterI> allFilters, String menuBoxId) {
@@ -384,6 +384,22 @@ public class CmsFilteringFlow {
 	private void reOrderMenuItemsByHitCount(MenuBoxData menuBoxData, List<FilteringProductItem> items, Map<String, ProductItemFilterI> allFilters) {
 		if (menuBoxData != null && menuBoxData.getSelectedLabel() == null) {
 			MenuItemSorter.getDefaultMenuItemSorter().sortItemsByHitCount(menuBoxData, items, allFilters);
+		}
+	}
+	
+	private void reOrderAllMenuItemsByName(NavigationModel navigationModel) {
+		List<MenuBoxData> leftNav = navigationModel.getLeftNav();
+		reOrderMenuItemsByNameForMenuBox(leftNav, NavigationUtil.BRAND_FILTER_GROUP_ID);
+	}
+	
+	private void reOrderMenuItemsByNameForMenuBox(List<MenuBoxData> leftNav, String menuBoxId) {
+		MenuBoxData menuBoxData = MenuBoxDataService.getDefaultMenuBoxDataService().getMenuBoxById(menuBoxId, leftNav);
+		reOrderMenuItemsByName(menuBoxData);
+	}
+	
+	private void reOrderMenuItemsByName(MenuBoxData menuBoxData) {
+		if (menuBoxData != null) {
+			MenuItemSorter.getDefaultMenuItemSorter().sortItemsByName(menuBoxData);
 		}
 	}
 

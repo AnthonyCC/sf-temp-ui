@@ -30,6 +30,15 @@ public class MenuItemSorter {
 
 	}
 
+	private class NameComparator implements Comparator<MenuItemData> {
+
+		@Override
+		public int compare(MenuItemData o1, MenuItemData o2) {
+			return o1.getName().compareTo(o2.getName());
+		}
+
+	}
+
 	private static final MenuItemSorter INSTANCE = new MenuItemSorter();
 
 	private MenuItemSorter() {
@@ -42,5 +51,14 @@ public class MenuItemSorter {
 	public void sortItemsByHitCount(MenuBoxData menuBoxData, List<FilteringProductItem> items, Map<String, ProductItemFilterI> allFilters) {
 		HitCountComparator hitCountComparator = new HitCountComparator(items, allFilters, menuBoxData.getItems(), menuBoxData.getId());
 		Collections.sort(menuBoxData.getItems(), hitCountComparator);
+	}
+
+	public void sortItemsByName(MenuBoxData menuBoxData) {
+		NameComparator nameComparator = new NameComparator();
+		List<MenuItemData> menuItems = menuBoxData.getItems();
+		if (menuItems.size() > 1) {
+			List<MenuItemData> menuItemsExceptTheAll = menuItems.subList(1, menuItems.size());
+			Collections.sort(menuItemsExceptTheAll, nameComparator);
+		}
 	}
 }
