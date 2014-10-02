@@ -343,7 +343,9 @@ public class CmsFilteringFlow {
 				ProductData productData = ProductDetailPopulator.createProductData(user, product);
 				productData.setFeatured(((ProductModelPromotionAdapter)product).isFeatured());
 				productData.setFeaturedHeader(((ProductModelPromotionAdapter)product).getFeaturedHeader());
-				productData.setPageType(FilteringFlowType.PRES_PICKS.toString());
+				if (nav.getPageType()!=null){
+					productData.setPageType(nav.getPageType().toString());
+				}
 				browseDataContext.getDDPPProducts().getProducts().add(productData);
 			} catch (FDResourceException e) {
 				LOG.warn("Getting DDPP products failed!", e);
