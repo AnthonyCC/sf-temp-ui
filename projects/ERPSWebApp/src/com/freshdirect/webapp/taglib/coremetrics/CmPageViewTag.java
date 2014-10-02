@@ -1,5 +1,10 @@
 package com.freshdirect.webapp.taglib.coremetrics;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -32,9 +37,10 @@ public class CmPageViewTag extends AbstractCmTag {
 		tagModelBuilder.setInput(PageViewTagInput.populateFromRequest(getRequest()));
 		PageViewTagModel tagModel = tagModelBuilder.buildTagModel();
 
-		Object CM_VC = this.getRequest().getParameter("cm_vc");
+		String CM_VC = this.getRequest().getParameter("cm_vc");
 		if (CM_VC == null || "".equals(CM_VC)) {
-			CM_VC = QueryParameterCollection.decode(getRequest().getHeader("referer")).getParameterValue("cm_vc");
+			// pick value of cm_vc param from referer URL
+			CM_VC = extractParameterFromHeader(getRequest());
 		}
 
 		StringBuilder sb = new StringBuilder();
@@ -50,6 +56,35 @@ public class CmPageViewTag extends AbstractCmTag {
 		
 		//LOGGER.debug(sb.toString());
 		return sb.toString();
+	}
+
+
+	/**
+	 * Basic utility method that extracts 'cm_vc' parameter from the query part of referer URL
+	 * @param request
+	 * @return
+	 */
+	private static String extractParameterFromHeader(final HttpServletRequest request) {
+		if (request == null) {
+			return null;
+		}
+
+		try {
+			URL refUrl = new URL(request.getHeader("referer"));
+
+			final String query = refUrl.getQuery();
+			if (query != null && query.contains("cm_vc=")) {
+				String[] params = query.split("&");
+				for (String p : params) {
+					if (p.startsWith("cm_vc=")) {
+						return p.split("=")[1];
+					}
+				}
+			}
+		} catch (MalformedURLException exc) {
+			LOGGER.error("Failed to process referer URL " + request.getHeader("referer"));
+		}
+		return null;
 	}
 
 	private String getPackedPageLocationSubset(PageViewTagModel tagModel) {

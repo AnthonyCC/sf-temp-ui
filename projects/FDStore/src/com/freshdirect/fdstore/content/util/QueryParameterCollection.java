@@ -49,7 +49,14 @@ public class QueryParameterCollection implements Serializable, Cloneable {
 					if (j >= encoded.length())
 						break; // the string has ended
 				}
-				String value = URLDecoder.decode(encoded.substring(i, j), "utf-8");
+				
+				String value = encoded.substring(i, j);
+				try {
+					value = URLDecoder.decode(encoded.substring(i, j), "utf-8");
+				} catch(IllegalArgumentException exc) {
+					System.out.println("Warning Range cannot be decoded: "+ encoded.substring(i, j) );
+				}
+				
 				if (value.length() != 0)
 					params.addParameterValue(name, value);
 				i = j + 1;
