@@ -281,6 +281,6 @@
   margin:0;
 }
 
-.srch .tabs li span:hover{
+.no-touch .srch .tabs li span:hover{
   text-decoration:underline;
 }
