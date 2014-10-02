@@ -8,6 +8,7 @@
  * @param productId productId
  * @param? catId categoryId
  * @param? variantId variantId
+ * @param? pageType pageType
  * @param? skuCode skuId
  * @param? listId listId
  * @param? productPageUrl productPageUrl
@@ -23,6 +24,7 @@
 {param productPageUrl:$productPageUrl /}
 {param catId:$catId /}
 {param variantId:$variantId /}
+{param pageType:$pageType /}
 {param skuCode:$skuCode /}
 {param alcoholic:$isAlcoholic /}
 {/call}
@@ -52,6 +54,7 @@
  * @param productId productId
  * @param? catId categoryId
  * @param? variantId variantId
+ * @param? pageType pageType
  * @param? skuCode skuId
  * @param? alcoholic product configuration
  * @param? productPageUrl productPageUrl
@@ -80,5 +83,8 @@
 {/if}
 {if $alcoholic}
 <input type="hidden" data-component="productData" data-productdata-name="isAlcoholic" name="isAlcoholic" value="{$alcoholic}">
+{/if}
+{if $pageType}
+<input type="hidden" data-component="productData" data-productdata-name="pageType" name="pageType" value="{$pageType}">
 {/if}
 {/template}

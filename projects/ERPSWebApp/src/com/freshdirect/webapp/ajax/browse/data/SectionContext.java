@@ -11,6 +11,7 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
@@ -63,6 +64,11 @@ public class SectionContext extends SectionData {
 					ProductData productData = ProductDetailPopulator.createProductData(user, product);
 					productData = ProductDetailPopulator.populateBrowseRecommendation(user, productData, product);
 					productData = ProductDetailPopulator.populateSelectedNutritionFields(user, productData, productItem.getFdProduct(), nav.getErpNutritionTypeType());
+					
+					FilteringFlowType pageType = nav.getPageType();
+					if (pageType!=null){
+						productData.setPageType(pageType.toString());
+					}
 					productDatas.add(productData);
 				} catch (Exception e){
 					LOGGER.error("Failed to create product data for " + product==null ? "null": product.getContentName()+ " (" + e.getMessage() + ")");

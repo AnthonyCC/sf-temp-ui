@@ -22,7 +22,7 @@
 <c:set var="listPos" scope="request" value="SystemMessage,LittleRandy,CategoryNote,PPHeader,PPHeader2,PPSuperBuy,PPLeftBottom,PPMidBottom,PPRightBottom" />
 
 <tmpl:insert template='/common/template/browse_template.jsp'>
-  <tmpl:put name='cmeventsource' direct='true'>SEARCH</tmpl:put>
+  <tmpl:put name='cmeventsource' direct='true'>BROWSE</tmpl:put>
 
   <tmpl:put name='soypackage' direct='true'>
     <soy:import packageName="browse" />

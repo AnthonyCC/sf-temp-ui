@@ -168,6 +168,8 @@ public class ProductData extends BasicProductData implements SkuData {
 	private boolean isFeatured;
 	private String featuredHeader;
 	
+	private String pageType; //FilteringFlowType
+	
 	public boolean isFeatured() {
 		return isFeatured;
 	}
@@ -568,5 +570,11 @@ public class ProductData extends BasicProductData implements SkuData {
 	}
 	public void setShowRatings(boolean showRatings) {
 		this.showRatings = showRatings;
+	}
+	public String getPageType() {
+		return pageType;
+	}
+	public void setPageType(String pageType) {
+		this.pageType = pageType;
 	}
 }

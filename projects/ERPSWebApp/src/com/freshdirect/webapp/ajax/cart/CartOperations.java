@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.event.EventLogger;
@@ -57,6 +58,7 @@ import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
+import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartCouponResponse;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartRequestData;
@@ -154,7 +156,21 @@ public class CartOperations {
 				}
 				
 				cartLine.setSource( evtSrc ); 					
-				cartLine.setAddedFromSearch(false);	 // currently search page does not use ajax based add-to-cart. TODO when search page is changed ...  
+				cartLine.setAddedFromSearch(false);	 //obsolete 
+				
+				String pageType = item.getPageType();
+				if (FilteringFlowType.SEARCH.toString().equalsIgnoreCase(pageType)){
+					cartLine.setAddedFrom(EnumATCContext.SEARCH);
+				
+				} else if (FilteringFlowType.ECOUPON.toString().equalsIgnoreCase(pageType)){
+					cartLine.setAddedFrom(EnumATCContext.ECOUPON);
+				
+				} else if (FilteringFlowType.PRES_PICKS.toString().equalsIgnoreCase(pageType)){
+					cartLine.setAddedFrom(EnumATCContext.DDPP);
+				
+				} else if (FilteringFlowType.NEWPRODUCTS.toString().equalsIgnoreCase(pageType)){
+					cartLine.setAddedFrom(EnumATCContext.NEWPRODUCTS);
+				}
 				
 				cartLine.setCoremetricsPageContentHierarchy( reqData.getCoremetricsPageContentHierarchy() );
 				cartLine.setCoremetricsPageId( reqData.getCoremetricsPageId() );

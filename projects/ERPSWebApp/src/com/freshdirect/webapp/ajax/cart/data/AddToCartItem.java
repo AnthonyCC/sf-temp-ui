@@ -18,7 +18,6 @@ public class AddToCartItem implements Serializable {
 	private String skuCode = null;
 	private String quantity = null;
 	private String salesUnit = null;
-	private boolean fromSearch = false;
 	private Map<String,String> configuration = new HashMap<String, String>();
 	
 	private boolean deleteItem = false;
@@ -26,6 +25,8 @@ public class AddToCartItem implements Serializable {
 	private String externalAgency; //e.g. Foodily
 	private String externalSource; //e.g. Recipe source
 	private String externalGroup; //e.g. Recipe name
+	
+	private String pageType; //FilteringFlowType
 	
 	public String getProductId() {
 		return productId;
@@ -62,12 +63,6 @@ public class AddToCartItem implements Serializable {
 	}		
 	public void setSalesUnit( String salesUnit ) {
 		this.salesUnit = salesUnit;
-	}		
-	public boolean isFromSearch() {
-		return fromSearch;
-	}		
-	public void setFromSearch( boolean fromSearch ) {
-		this.fromSearch = fromSearch;
 	}		
 	public Map<String,String> getConfiguration() {
 		return configuration;
@@ -126,5 +121,11 @@ public class AddToCartItem implements Serializable {
 	@Override
 	public String toString() {
 		return "ATCi{" + skuCode + "}";
+	}
+	public String getPageType() {
+		return pageType;
+	}
+	public void setPageType(String pageType) {
+		this.pageType = pageType;
 	}
 }
