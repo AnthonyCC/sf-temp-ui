@@ -553,7 +553,11 @@ ul.products .description-skin{
 /* LARGE VISUAL END                 */
 /* -------------------------------- */
 
-.browse .main .sortSelectButton .title,
-.popupcontentghost .sortSelectButton .title{
+.cssbutton.sortSelectButton{
+  padding-top:6px;
+}
+
+.sortSelectButton,
+.sortSelectButton .title{
   line-height:18px;
 }
