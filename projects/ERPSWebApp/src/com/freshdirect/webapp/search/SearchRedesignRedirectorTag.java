@@ -1,12 +1,14 @@
 package com.freshdirect.webapp.search;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+import java.net.URLEncoder;
 
 import org.apache.log4j.Logger;
 
@@ -37,6 +39,10 @@ public class SearchRedesignRedirectorTag extends BodyTagSupport {
 			switch(pageType) {
 				case SEARCH:
 					String searchParams = ((HttpServletRequest) ctx.getRequest()).getParameter("searchParams");
+					try {
+						searchParams = URLEncoder.encode(searchParams, "UTF-8");
+					} catch (UnsupportedEncodingException e) {
+					}
 					redirectUrl = NEW_SEARCH_PAGE + "?searchParams=" + (searchParams == null ? "" : searchParams);
 					break;
 				case NEWPRODUCTS:
