@@ -6,8 +6,8 @@ var FreshDirect = FreshDirect || {};
 
 	var $ = fd.libs.$;
 
-	$(document).on('click','[data-component="ecoupon"]', function(e){
-		var couponId = $(e.currentTarget).data('ecouponid');
+	$(document).on('click','[data-component="ecoupon"] .fdCoupon_cb', function(e){
+		var couponId = $(e.currentTarget).closest('[data-component="ecoupon"]').data('ecouponid');
 		if(couponId && fdCouponClip) {
 			fdCouponClip(couponId);
 		}
