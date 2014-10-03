@@ -83,6 +83,8 @@
 	cursor:pointer;
 }
 
+.srch .srch-carousel .carousel [data-component="carousel-prev"],
+.srch .srch-carousel .carousel 	[data-component="carousel-next"],
 .browse .carousels [data-component="carousel-prev"],
 .browse .carousels 	[data-component="carousel-next"] {
 	margin-top: 82px;
