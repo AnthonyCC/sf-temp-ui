@@ -99,7 +99,7 @@
 		<td width="2%">&nbsp;</td>
 		<td width="30%" valign="top">&nbsp;</td>
 	</tr>
-     <tr><td colspan="5" class="bodyCopy"><br/><b>FRESHDIRECT TIPPING POLICY<br/><img src="http://www.freshdirect.com/media_stat/images/layout/cccccc.gif" width="100%" height="1" border="0" vspace="4"/><br/>You are under no obligation to tip but have the option of providing a tip if you feel that you've received exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances. The delivery fee is not a gratuity for any FreshDirect employee who delivers or is otherwise involved with the delivery of your order and will not be given to such any employee as a gratuity.</b><br/><br/><br/></td></tr>
+     <tr><td colspan="5" class="bodyCopy"><br/><b>FRESHDIRECT TIPPING POLICY<br/><img src="http://www.freshdirect.com/media_stat/images/layout/cccccc.gif" width="100%" height="1" border="0" vspace="4"/><br/>You are under no obligation to tip but have the option of providing a tip if you feel that you've received exceptional service. FreshDirect delivery personnel are not permitted to solicit tips under any circumstances. The delivery fee is not a gratuity for any FreshDirect employee who delivers or is otherwise involved with the delivery of your order and will not be given to any such employee as a gratuity.</b><br/><br/><br/></td></tr>
 </table>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
      <tr>
