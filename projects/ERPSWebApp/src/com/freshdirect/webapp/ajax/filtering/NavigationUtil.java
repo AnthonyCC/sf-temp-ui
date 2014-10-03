@@ -262,11 +262,7 @@ public class NavigationUtil {
 		recipeCategoryFilterGroup.setProductFilters(productFilters);
 		recipeCategoryFilterGroup.setId("recipeCategoryFilterGroup");
 		recipeCategoryFilterGroup.setName("Recipe Category");
-		if (isFilterActive(navigator, recipeCategoryFilterGroup)) {
-			recipeCategoryFilterGroup.setType("POPUP");
-		} else {
-			recipeCategoryFilterGroup.setType("SINGLE");
-		}
+		recipeCategoryFilterGroup.setType("SINGLE");
 		recipeCategoryFilterGroup.setAllSelectedLabel("ALL RECIPES");
 		recipeCategoryFilterGroup.setDisplayOnCategoryListingPage(false);
 		results.add(recipeCategoryFilterGroup);
