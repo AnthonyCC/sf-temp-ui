@@ -196,7 +196,12 @@
 					pages.put("/recipe_search.jsp", "recipe_search");
 					pages.put("cart_confirm_pdp.jsp", "pdpconfirm");
 		
-					String pageType = "";
+					String pageType = NVL.apply(request.getParameter("pageType"), "");
+					
+					if (request.getParameter("searchParams") != null) {
+						pageType = "search";
+					}
+					
 					String uri = request.getRequestURI().toLowerCase();
 					for (Iterator ptIter = pages.entrySet().iterator(); ptIter
 							.hasNext();) {
