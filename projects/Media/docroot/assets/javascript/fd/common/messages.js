@@ -161,5 +161,5 @@
 	  });
 	  
 	  $(document).messages('init');
-	  $('.messages').messages('add');
+	  $('.message').messages('add');
 })(FreshDirect);
