@@ -762,7 +762,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 
-		if ((email != null) && (!"".equals(email))) {					
+		if ((email != null) && (!"".equals(email)) && user != null) {					
 			FDDeliveryManager.getInstance().saveFutureZoneNotification(email, user.getZipCode(),this.serviceType);
 			LOGGER.debug("SAVED FUTURE ZONE TO NOTIFY");
 		}
