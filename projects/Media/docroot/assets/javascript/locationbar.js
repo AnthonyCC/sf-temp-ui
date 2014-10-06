@@ -519,6 +519,14 @@
 		    					if (data.errorMessages[errMsg] == 'This information is required.') {
 		    						data.errorMessages[errMsg] = 'Information is missing, please make sure all fields are filled in';
 		    					}
+
+		    					if (data.errorMessages[errMsg].indexOf('An account already exists with this email address.') !== -1) {
+		    						//clear fields
+		    						$(['#signup_cont_formContent_password', '#signup_cont_formContent_passwordConfirm']).each(function(i,e) {
+			    						$(e).val('');
+			    						$(e).blur();
+		    						})
+		    					}
 		    					errMsgsUnique[data.errorMessages[errMsg]] = [];
 		    					errMsgsUnique[data.errorMessages[errMsg]].push(errMsg);
 		    				}
