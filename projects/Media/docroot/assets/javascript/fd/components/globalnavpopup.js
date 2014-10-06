@@ -13,7 +13,7 @@ var FreshDirect = FreshDirect || {};
   var animFinished = false;
   var subDept = " ";
   var dept = " ";
-  var $tRealign;
+  var leftShift = 0;
   var POPUPWIDGET = fd.modules.common.popupWidget;
 	  $.fn.getHiddenDimensions = function(includeMargin) {
 		  var $item = this,
@@ -80,8 +80,6 @@ var FreshDirect = FreshDirect || {};
         $popup = $(popup),
         $popupBody = $(popup).find(".globalnav-popup-content"),
         $content = $("[data-component='globalnav-popup-body'][data-id='"+ $t.data('id') +"']").children().first();
-    
-    $tRealign = $t;
         
     //closes popup when cursor is taken away on Sub Dept
     $(".globalnav-popup").mouseover(function(event) {
@@ -170,8 +168,7 @@ var FreshDirect = FreshDirect || {};
         $t = $(e.currentTarget),
         $ghostMenuItem = $ghost.find("[data-id='" + $t.data('id') + "']"),
         $popupBody = $popup.find(".globalnav-popup-content");
-    
-    $tRealign = $t;
+
     
     //if (!fd.modules.common.mouse.isSlow()) { return; }
 
@@ -327,7 +324,8 @@ var FreshDirect = FreshDirect || {};
     $(document).on('mouseover', trigger, open);
     //$(document).on('mousemove', trigger, open);
     $(document).on('mouseover', subTrigger, openSub);
-    $(window).on('resize', function(){ repos($topnav, $ghost, $popup, $tRealign); });
+    //$(window).on('resize', function(){ repos($topnav, $ghost, $popup); });
+    $(window).on('resize', function(){ coordinatesOnResize($ghost); });
 
     // set init position
     repos($topnav, $ghost, $popup);
@@ -356,6 +354,12 @@ function getElemDim($elem, includeMargins){
 	}
 
 	return retDim;
+}
+
+/* adjust left coordinates for popup on resize */
+function coordinatesOnResize($ghost){
+	$ghost.css('left', $("nav.gnav").position().left + 'px');
+	$("#globalnavpopup").css('left', $("nav.gnav").position().left + leftShift + 'px');
 }
 
 /* adjust left/right positioning of popup elements and their children */
@@ -392,7 +396,7 @@ function realigner($topnav, $popup, $t) {
 	
 	if ($deptContRef.length !== 0) { //dept popup
 		var catColumns = $deptContRef.find('.dropdown-column'), catColumnsMaxWidth = 0, catColumnsSetMaxWidth = false;
-
+		
 		//adhere to min content >= 50% of globalnav
 		if ($popupContRef.outerWidth() < (navDim.width/2)) {
 			//figure out how wide to make deptCont
@@ -408,7 +412,6 @@ function realigner($topnav, $popup, $t) {
 				$deptContRef.css('width', navDim.width);
 			}
 		}
-		
 		
 		//add max catColumns widths
 		if (catColumnsSetMaxWidth) {
@@ -428,7 +431,6 @@ function realigner($topnav, $popup, $t) {
 			
 		}
 		
-		
 		//now re-align the popup to the nav item if possible
 		if (isRightOfNavCenter) {
 			possibleOffset = (navDim.offset.left + navDim.width) - $popupContRef.outerWidth();			
@@ -444,7 +446,7 @@ function realigner($topnav, $popup, $t) {
 	if ($subDeptsRef.length !== 0 && !topNavIsSubnav) { //superdept, subdept popup (first level)
 		realigner_superdept($topnav, tarDim, navDim, $subDeptsRef, isRightOfNavCenter);
 	}
-
+	
 	return navDim.offset.left;
 }
 
@@ -553,6 +555,10 @@ function realigner_superdept($topnav, tarDim, navDim, $subDeptsRef, isRightOfNav
         top: $topnav.offset().top + $topnav.height(),
         left: alignAt
     });
+    
+    if($ghost !== null){
+    	leftShift = $("#globalnavpopup").position().left-$ghost.position().left;
+    }
   }
 
   function removeTopItemHighlights(){
