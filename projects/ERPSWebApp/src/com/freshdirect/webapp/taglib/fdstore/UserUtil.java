@@ -626,7 +626,7 @@ public class UserUtil {
 		String altDeliveryPage = "/site_access/alt_dlv_home.jsp?serviceType=" + serviceTypeString;
 		String failedCorpPage = "/survey/cos_site_access_survey.jsp?successPage=/index.jsp";
 		String failedHomePage = "/site_access/delivery.jsp?successPage=/index.jsp&serviceType=" + serviceTypeString + "&email=" + email;
-		String moreInfoPage = "/site_access/site_access_address_lite.jsp?successPage=" +
+		String moreInfoPage = "/site_access/site_access_address.jsp?successPage=" +
 				((!"".equals(successPage)) ? URLEncoder.encode(successPage) : "/index.jsp") + "&serviceType=" + serviceTypeString;
 		
 		boolean requiresAdditionalInfo = false;
