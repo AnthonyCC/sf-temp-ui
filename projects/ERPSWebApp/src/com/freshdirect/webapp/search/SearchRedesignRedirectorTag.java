@@ -40,7 +40,7 @@ public class SearchRedesignRedirectorTag extends BodyTagSupport {
 				case SEARCH:
 					String searchParams = ((HttpServletRequest) ctx.getRequest()).getParameter("searchParams");
 					try {
-						searchParams = URLEncoder.encode(searchParams, "UTF-8");
+						searchParams = (searchParams == null ? "" : URLEncoder.encode(searchParams, "UTF-8"));
 					} catch (UnsupportedEncodingException e) {
 					}
 					redirectUrl = NEW_SEARCH_PAGE + "?searchParams=" + (searchParams == null ? "" : searchParams);
