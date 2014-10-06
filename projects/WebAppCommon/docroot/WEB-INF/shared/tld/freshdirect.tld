@@ -5662,4 +5662,8 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	<tag>
+		<name>SiteMap</name>
+		<tagclass>com.freshdirect.webapp.taglib.sitemap.SiteMapTag</tagclass>
+	</tag>
 </taglib>
