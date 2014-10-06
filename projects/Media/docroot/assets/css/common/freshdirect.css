@@ -452,6 +452,14 @@ section.main .leftnav .menuBox {
   overflow: hidden;
 }
 
+.srch section.main .leftnav .menuBox:first-child {
+  margin-top: 0;
+}
+
+.srch section.main .leftnav .menuBox:first-child h2 {
+  margin-top: 3px;
+}
+
 section.main .leftnav h2 + .menuBox {
   margin-top: 10px;
 }
