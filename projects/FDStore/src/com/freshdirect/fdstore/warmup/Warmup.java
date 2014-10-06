@@ -44,6 +44,7 @@ import com.freshdirect.fdstore.content.WineFilterRatingIndex;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext;
 import com.freshdirect.fdstore.grp.FDGrpInfoManager;
 import com.freshdirect.fdstore.oauth.provider.OAuthProvider;
+import com.freshdirect.fdstore.sitemap.SitemapDataFactory;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.service.CmsRecommenderRegistry;
@@ -130,6 +131,8 @@ public class Warmup {
 					}
 
 					warmupSmartCategories();
+					
+					SitemapDataFactory.create();
 
 					LOGGER.info("Warmup done");
 				} catch (FDResourceException e) {

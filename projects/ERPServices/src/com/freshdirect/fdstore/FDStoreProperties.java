@@ -683,6 +683,9 @@ public class FDStoreProperties {
 	
 	private static final String PROP_ALL_DEALS_CACHE_ENABLED = "fdstore.all_deals_cache.enabled";
 	
+	private static final String PROP_SITEMAP_ENABLED = "fdstore.sitemap.enabled";
+	private static final String PROP_SITEMAP_PASSWORDS = "fdstore.sitemap.passwords";
+	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1350,6 +1353,9 @@ public class FDStoreProperties {
         defaults.put(PROP_PRESIDENT_PICK_PAGING_ENABLED, "false");
         
         defaults.put(PROP_ALL_DEALS_CACHE_ENABLED, "true");
+
+        defaults.put(PROP_SITEMAP_ENABLED, "false");
+        defaults.put(PROP_SITEMAP_PASSWORDS, "fd8848admin,GetMe2TheSitem@p");
 
         refresh();
     }
@@ -3400,6 +3406,19 @@ public class FDStoreProperties {
 	
 	public static boolean isAllDealsCacheEnabled() {
 		return Boolean.valueOf(get(PROP_ALL_DEALS_CACHE_ENABLED)).booleanValue();
+	}
+	
+	public static boolean isSiteMapEnabled() {
+        return (Boolean.valueOf(get(PROP_SITEMAP_ENABLED))).booleanValue();
+    }
+
+	public static List<String> getSitemapPasswords(){
+		List<String> passwords = new ArrayList<String>();
+		for(String token : get(PROP_SITEMAP_PASSWORDS).split(",")){
+			passwords.add(token.trim());
+		}
+		
+		return passwords;
 	}
 }
 

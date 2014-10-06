@@ -5663,7 +5663,7 @@
 		</attribute>
 	</tag>
 	<tag>
-		<name>SiteMap</name>
-		<tagclass>com.freshdirect.webapp.taglib.sitemap.SiteMapTag</tagclass>
+		<name>Sitemap</name>
+		<tagclass>com.freshdirect.webapp.taglib.sitemap.SitemapTag</tagclass>
 	</tag>
 </taglib>

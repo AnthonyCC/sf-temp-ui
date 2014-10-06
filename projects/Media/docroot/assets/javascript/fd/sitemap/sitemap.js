@@ -1,7 +1,7 @@
 //depends on http://d3js.org/d3.v3.min.js
 
-document.getElementById("spinner").style.display="none";
-document.getElementById("log").style.display="none";
+//document.getElementById("spinner").style.display="none";
+//document.getElementById("log").style.display="none";
 
 var buff = [], csvbuff = [];
 
