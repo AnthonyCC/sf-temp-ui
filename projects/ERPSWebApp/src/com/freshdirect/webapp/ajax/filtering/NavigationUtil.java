@@ -262,7 +262,7 @@ public class NavigationUtil {
 		ProductFilterGroupImpl recipeCategoryFilterGroup = new ProductFilterGroupImpl();
 		recipeCategoryFilterGroup.setProductFilters(productFilters);
 		recipeCategoryFilterGroup.setId(RECIPE_CATEGORY_FILTER_GROUP);
-		recipeCategoryFilterGroup.setName("Recipe Category");
+		recipeCategoryFilterGroup.setName("Recipes");
 		recipeCategoryFilterGroup.setType("SINGLE");
 		recipeCategoryFilterGroup.setAllSelectedLabel("ALL RECIPES");
 		recipeCategoryFilterGroup.setDisplayOnCategoryListingPage(false);
