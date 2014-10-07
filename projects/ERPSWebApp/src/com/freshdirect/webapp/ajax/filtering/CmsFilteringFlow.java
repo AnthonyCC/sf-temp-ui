@@ -149,7 +149,7 @@ public class CmsFilteringFlow {
 	
 			//Update product hit counts
 //			for (BrowseData.SearchParams.Tab tab : browseData.getSearchParams().getTabs()) {
-//				if ("product".equalsIgnoreCase(nav.getActiveTab())) {
+//				if (SearchPageType.PRODUCT.name.equalsIgnoreCase(nav.getActiveTab())) {
 //					int hits = browseData.getPager().getItemCount();
 //					tab.setHits(hits);
 //					tab.setFilteredHits(filteredHits);
@@ -248,7 +248,7 @@ public class CmsFilteringFlow {
 		}
 		
 		SearchPageType searchPageType = SearchPageType.PRODUCT; //default behavior
-		if ("recipe".equalsIgnoreCase(nav.getActiveTab())) {
+		if (SearchPageType.RECIPE.name.equalsIgnoreCase(nav.getActiveTab())) {
 			processRecipes(navigationModel, searchResults);
 			searchPageType = SearchPageType.RECIPE;
 		} else {
@@ -261,12 +261,19 @@ public class CmsFilteringFlow {
 		BrowseDataContext browseDataContext = BrowseDataBuilderFactory.createBuilder(null, navigationModel.isSuperDepartment(), searchPageType).buildBrowseData(navigationModel, user, nav);
 		
 		// if we are on recipe tab but there is no search result, it should fallback to products
-		if ("recipe".equalsIgnoreCase(nav.getActiveTab()) && 0 == nav.getRecipeHits()) {
-			nav.setActiveTab("product");
+		if (SearchPageType.RECIPE.name.equalsIgnoreCase(nav.getActiveTab()) && 0 == nav.getRecipeHits()) {
+			nav.setActiveTab(SearchPageType.PRODUCT.name);
 			navigationModel.setRecipeListing(false);
 			navigationModel.getRecipeResults().clear();
 			processProducts(nav.getPageType(), navigationModel, searchResults);
 			searchPageType = SearchPageType.PRODUCT;
+			setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
+			browseDataContext = BrowseDataBuilderFactory.createBuilder(null, navigationModel.isSuperDepartment(), searchPageType).buildBrowseData(navigationModel, user, nav);
+		} else if (SearchPageType.PRODUCT.name.equalsIgnoreCase(nav.getActiveTab()) && 0 == nav.getProductHits() && !searchResults.getRecipes().isEmpty()) {
+			nav.setActiveTab(SearchPageType.RECIPE.name);
+			navigationModel.setProductListing(false);
+			processRecipes(navigationModel, searchResults);
+			searchPageType = SearchPageType.RECIPE;
 			setupAllAndActiveFiltersForNavigationModel(nav, user, navigationModel);
 			browseDataContext = BrowseDataBuilderFactory.createBuilder(null, navigationModel.isSuperDepartment(), searchPageType).buildBrowseData(navigationModel, user, nav);
 		}
@@ -420,13 +427,15 @@ public class CmsFilteringFlow {
 	private void buildTabs(BrowseDataContext browseDataContext, SearchResults results, CmsFilteringNavigator cmsFilteringNavigator) {
 		switch (cmsFilteringNavigator.getPageType()) {
 		case SEARCH:
-			if ("recipe".equalsIgnoreCase(cmsFilteringNavigator.getActiveTab())) {
-				browseDataContext.getSearchParams().buildTabs("Products", "product", results.getProducts().size(), results.getProducts().size(), false);
-				browseDataContext.getSearchParams().buildTabs("Recipes", "recipe", results.getRecipes().size(), cmsFilteringNavigator.getRecipeHits(), true);
+			if (SearchPageType.RECIPE.name.equalsIgnoreCase(cmsFilteringNavigator.getActiveTab())) {
+				if (!results.getProducts().isEmpty()) {
+					browseDataContext.getSearchParams().buildTabs(SearchPageType.PRODUCT.label, SearchPageType.PRODUCT.name, results.getProducts().size(), results.getProducts().size(), false);
+				}
+				browseDataContext.getSearchParams().buildTabs(SearchPageType.RECIPE.label, SearchPageType.RECIPE.name, results.getRecipes().size(), cmsFilteringNavigator.getRecipeHits(), true);
 			} else {
-				browseDataContext.getSearchParams().buildTabs("Products", "product", results.getProducts().size(), Math.min(results.getProducts().size(), cmsFilteringNavigator.getProductHits()), true); //Math.min ~ workaround for product losses because of non existent default sku
-				if (0 < results.getRecipes().size()) {
-					browseDataContext.getSearchParams().buildTabs("Recipes", "recipe", results.getRecipes().size(), results.getRecipes().size(), false);
+				browseDataContext.getSearchParams().buildTabs(SearchPageType.PRODUCT.label, SearchPageType.PRODUCT.name, results.getProducts().size(), Math.min(results.getProducts().size(), cmsFilteringNavigator.getProductHits()), true); //Math.min ~ workaround for product losses because of non existent default sku
+				if (!results.getRecipes().isEmpty()) {
+					browseDataContext.getSearchParams().buildTabs(SearchPageType.RECIPE.label, SearchPageType.RECIPE.name, results.getRecipes().size(), results.getRecipes().size(), false);
 				}
 			}
 			break;
