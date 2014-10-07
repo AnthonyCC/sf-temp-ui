@@ -257,6 +257,7 @@
   margin:25px 0 0 0;
 }
 
+.srch section.main .leftnav .menuBox[data-id="recipeCategoryFilterGroup"],
 .srch section.main .leftnav .menuBox[data-id="departmentFilterGroup"],
 .srch section.main .leftnav .menuBox[data-id="categoryFilterGroup"],
 .srch section.main .leftnav .menuBox[data-id="subCategoryFilterGroup"]{
@@ -265,12 +266,14 @@
   border-radius:0;
 }
 
+.srch section.main .leftnav .menuBox[data-id="recipeCategoryFilterGroup"] h2,
 .srch section.main .leftnav .menuBox[data-id="departmentFilterGroup"] h2,
 .srch section.main .leftnav .menuBox[data-id="categoryFilterGroup"] h2,
 .srch section.main .leftnav .menuBox[data-id="subCategoryFilterGroup"] h2{
   text-align:center;
 }
 
+.srch section.main .leftnav .menuBox[data-id="recipeCategoryFilterGroup"] ul,
 .srch section.main .leftnav .menuBox[data-id="departmentFilterGroup"] ul,
 .srch section.main .leftnav .menuBox[data-id="categoryFilterGroup"] ul,
 .srch section.main .leftnav .menuBox[data-id="subCategoryFilterGroup"] ul{
