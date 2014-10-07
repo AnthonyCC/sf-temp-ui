@@ -22,7 +22,7 @@
 			Sitemap is disabled
 		</c:when>		
 		<c:when test="${empty siteMapData}">
-			Please provide password to see site map
+			Please provide password to see sitemap
 			<form method="post">
 				<input type="password" name="password">
 				<input type="submit" value="Submit">
