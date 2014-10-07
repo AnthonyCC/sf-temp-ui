@@ -65,7 +65,7 @@ data.children.forEach(function (node) {
 document.getElementById('csvcontent').innerHTML = csvbuff.join('');
 
 
-var nodes = [].slice.call(document.querySelectorAll('li'));
+var domNodes = [].slice.call(document.querySelectorAll('li'));
 document.addEventListener("click", function (e) {
   if (e.target.classList.contains("handle")) {
     e.stopPropagation();
@@ -73,12 +73,12 @@ document.addEventListener("click", function (e) {
   }
 });
 document.getElementById("btn_open_all").addEventListener("click", function (e) {
-  nodes.forEach(function (node) {
+  domNodes.forEach(function (node) {
     node.classList.add("selected");
   }); 
 });
 document.getElementById("btn_close_all").addEventListener("click", function (e) {
-  nodes.forEach(function (node) {
+  domNodes.forEach(function (node) {
     node.classList.remove("selected");
   }); 
 });
