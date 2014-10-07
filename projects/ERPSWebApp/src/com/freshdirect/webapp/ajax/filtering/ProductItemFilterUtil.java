@@ -85,6 +85,24 @@ public class ProductItemFilterUtil {
 		return count;
 	}
 	
+	public static int countItemsForRecipe(List<FilteringProductItem> items, ProductItemFilterI filter){
+		if(filter==null){
+			return items.size();
+		}
+		int count = 0;
+		for(FilteringProductItem item : items){
+			try {
+				if(filter.apply(item)){
+					++count;
+				}
+			} catch (FDResourceException e) {
+				LOG.error("Could not apply filter on product: " + item.getProductModel());
+				continue;
+			}
+		}
+		return count;
+	}
+	
 	/**
 	 * @param parentId
 	 * @param filters

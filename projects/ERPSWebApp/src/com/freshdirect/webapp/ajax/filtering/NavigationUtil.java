@@ -48,6 +48,7 @@ import com.freshdirect.webapp.globalnav.GlobalNavContextUtil;
 
 public class NavigationUtil {
 	
+	public static final String RECIPE_CATEGORY_FILTER_GROUP = "recipeCategoryFilterGroup";
 	public static final String SHOW_ME_ONLY_FILTER_GROUP_ID = "showMeOnlyFilterGroup";
 	public static final String BRAND_FILTER_GROUP_ID = "brandFilterGroup";
 	public static final String DEPARTMENT_FILTER_GROUP_ID = "departmentFilterGroup";
@@ -256,11 +257,11 @@ public class NavigationUtil {
 		}
 		for (String domainValueContentName : domainValues.keySet()) {
 			DomainValue domainValue = domainValues.get(domainValueContentName);
-			productFilters.add(new ContentNodeFilter(domainValue, "recipeCategoryFilterGroup"));
+			productFilters.add(new ContentNodeFilter(domainValue, RECIPE_CATEGORY_FILTER_GROUP));
 		}
 		ProductFilterGroupImpl recipeCategoryFilterGroup = new ProductFilterGroupImpl();
 		recipeCategoryFilterGroup.setProductFilters(productFilters);
-		recipeCategoryFilterGroup.setId("recipeCategoryFilterGroup");
+		recipeCategoryFilterGroup.setId(RECIPE_CATEGORY_FILTER_GROUP);
 		recipeCategoryFilterGroup.setName("Recipe Category");
 		recipeCategoryFilterGroup.setType("SINGLE");
 		recipeCategoryFilterGroup.setAllSelectedLabel("ALL RECIPES");

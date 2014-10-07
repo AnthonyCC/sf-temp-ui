@@ -381,6 +381,7 @@ public class CmsFilteringFlow {
 		reOrderMenuItemsByHitCountForMenuBox(leftNav, items, allFilters, NavigationUtil.DEPARTMENT_FILTER_GROUP_ID);
 		reOrderMenuItemsByHitCountForMenuBox(leftNav, items, allFilters, NavigationUtil.CATEGORY_FILTER_GROUP_ID);
 		reOrderMenuItemsByHitCountForMenuBox(leftNav, items, allFilters, NavigationUtil.SUBCATEGORY_FILTER_GROUP_ID);
+		reOrderMenuItemsByHitCountForMenuBox(leftNav, items, allFilters, NavigationUtil.RECIPE_CATEGORY_FILTER_GROUP);
 	}
 
 	private void reOrderMenuItemsByHitCountForMenuBox(List<MenuBoxData> leftNav, List<FilteringProductItem> items, Map<String, ProductItemFilterI> allFilters, String menuBoxId) {
