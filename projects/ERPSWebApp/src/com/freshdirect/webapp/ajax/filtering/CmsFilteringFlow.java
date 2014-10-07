@@ -209,7 +209,7 @@ public class CmsFilteringFlow {
 	}
 
 	private boolean isBrowseRequestForTheSameId(CmsFilteringNavigator nav, BrowseDataContext browseDataContext) {
-		return browseDataContext != null && browseDataContext.getCurrentContainer() != null && !browseDataContext.getCurrentContainer().getContentName().equalsIgnoreCase(nav.getId());
+		return browseDataContext != null && browseDataContext.getCurrentContainer() != null && browseDataContext.getCurrentContainer().getContentName().equalsIgnoreCase(nav.getId());
 	}
 
 	private BrowseDataContext removeBrowseDataContextFromCache(String userPrimaryKey) {
