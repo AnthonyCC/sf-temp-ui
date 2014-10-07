@@ -42,7 +42,7 @@
 			<script>
 				var data = ${siteMapData};
 			</script>
-			<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+			<script src="/assets/javascript/d3.v3.min.js" charset="utf-8"></script>
 			<script src="/assets/javascript/fd/sitemap/sitemap.js" charset="utf-8"></script>
 		</c:otherwise>
 	</c:choose>
