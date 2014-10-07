@@ -18,12 +18,7 @@ public class MenuItemSorter {
 			for (MenuItemData menuItem : menuItems) {
 				String menuItemId = menuItem.getId();
 				ProductItemFilterI filter = allFilters.get(ProductItemFilterUtil.createCompositeId(menuBoxId, menuItemId));
-				final int hitCount;
-				if (NavigationUtil.RECIPE_CATEGORY_FILTER_GROUP.equals(menuBoxId)) {
-					hitCount = ProductItemFilterUtil.countItemsForRecipe(items, filter);
-				} else {
-					hitCount = ProductItemFilterUtil.countItemsForFilter(items, filter);
-				}
+				final int hitCount = ProductItemFilterUtil.countItemsForFilter(items, filter);
 				menuItem.setHitCount(hitCount);
 			}
 		}

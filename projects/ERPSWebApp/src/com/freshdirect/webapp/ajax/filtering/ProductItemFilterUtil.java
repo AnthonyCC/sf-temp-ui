@@ -65,27 +65,6 @@ public class ProductItemFilterUtil {
 	}
 	
 	public static int countItemsForFilter(List<FilteringProductItem> items, ProductItemFilterI filter){
-		
-		if(filter==null){
-			return items.size();
-		}
-		
-		int count = 0;
-		for(FilteringProductItem item : items){
-			try {
-				if(filter.apply(item) && item.getProductModel() != null && item.getProductModel().isFullyAvailable()){
-					++count;
-				}
-			} catch (FDResourceException e) {
-				LOG.error("Could not apply filter on product: " + item.getProductModel());
-				continue;
-			}
-		}
-		
-		return count;
-	}
-	
-	public static int countItemsForRecipe(List<FilteringProductItem> items, ProductItemFilterI filter){
 		if(filter==null){
 			return items.size();
 		}
