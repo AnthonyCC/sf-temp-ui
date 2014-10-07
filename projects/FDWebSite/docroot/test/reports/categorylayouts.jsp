@@ -1,7 +1,7 @@
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri='logic' prefix='logic'%>
-<!DOCTYPE hmtl>
+<!DOCTYPE html>
 <html>
 <head>
   <title>Category/layout test page</title>
