@@ -31,7 +31,7 @@ var FreshDirect = FreshDirect || {};
         elements = $list.children(),
         itemsize = elements.first().outerWidth(true),
         currentPage = carousel.data('carousel-page') || 0,
-        itemPerPage = Math.floor($mask.width() / itemsize),
+        itemPerPage = Math.floor($mask.width() / itemsize) || 1,
         nrPages = Math.ceil($list.children().size() / itemPerPage),
         newPage, result, targetElem;
 
