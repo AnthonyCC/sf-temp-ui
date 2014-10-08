@@ -325,7 +325,7 @@
 }
 
 .ccc {
-	color: #ccc;
+	color: #959595;
 }
 .bold {
 	folt-weight: bold;
@@ -336,7 +336,7 @@
 #login_cont {
 	display: inline-block;
 }
-#login_cont_formContent {
+/*#login_cont_formContent {
 	position: absolute;
 	z-index: 10001;
 	width: 200px;
@@ -346,8 +346,9 @@
 	border: 1px solid #E3E6D7;
   	border-radius: 10px 0 10px 10px;
   	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
+}*/
 
+#login_cont_formContent,
 #signup_cont_formContent {
 	position: absolute;
 	z-index: 10001;
@@ -360,6 +361,11 @@
   	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 	font-size: 12px;
 }
+
+#login_cont_formContent {
+	width: 200px;
+}
+
 #login_cont_formContent a {
 	font-size: 11px;
 }
@@ -389,9 +395,9 @@
 	text-align: right;
 	padding-right: 5px;
 }
-#login_cont_formContent .fieldInputs {
+/*#login_cont_formContent .fieldInputs {
 	margin: 6px 0;
-}
+}*/
 .loginButton {
 	border: 0 none;
 	cursor: pointer;
@@ -427,13 +433,64 @@
 #signup_cont_formContent .signup_cont_formFieldsContRightCol {
 	padding: 0 10px 0 30px;
 }
-#signup_cont_formContent .fieldInputs input {
-	width: 100%;
+
+#signup_cont_formContent .text12{
+	padding-top: 5px;
+	color: #424242;
 }
 
+#signup_cont_formContent .text14{
+	font-size: 14px;
+	color: #424242;
+}
+
+#signup_cont_formContent .text14bold{
+	padding-top: 10px;
+	height: 15px;
+	line-height: 15px;
+	color: #424242;
+}
+
+#signup_cont_formContent a.text14,
+#signup_cont_formContent a:hover{
+	color: #693;
+}
+
+#signup_cont_formContent .text14bold:first-child{
+	margin-top: 40px;
+	padding-top: 0px;
+	height: auto;
+}
+
+#signup_cont_formContent .text14bold input[type="radio"]{
+	height: 15px;
+	line-height: 15px;
+	vertical-align: text-bottom;
+	margin: 0px 3px 0px 5px;
+	color:#424242;
+}
+
+#login_cont_formContentForm .fieldInputs input,
+#signup_cont_formContent .fieldInputs input {
+	padding-left: 5px;
+	width: 100%;
+	height: 26px;
+}
+
+#login_cont_formContentForm .fieldInputs input{
+	height: 30px;
+}
+
+#login_cont_formContentForm .fieldInputs,
 #signup_cont_formContent .fieldInputs {
 	margin: 0 0 20px 0;
 }
+
+#login_cont_formContentForm input,
+#signup_cont_formContent input{
+	border: 1px solid #ccc;
+}
+
 #signup_cont_formContent .fieldInputs.noMargin {
 	margin: 0;
 }
@@ -456,7 +513,7 @@
 	font-size: 38px;
 	line-height: 38px;
 	color: #669933;
-	margin-bottom: 20px;
+	margin-bottom: 30px;
 }
 
 .dots-hline {
@@ -465,4 +522,6 @@
 	line-height: 1px;
 	font-size: 1px;
 	width: 100%;
+	margin-top: 5px;
+	margin-bottom: 5px;
 }
