@@ -694,9 +694,9 @@ public class UserUtil {
 			e.printStackTrace();
 		}
 		
-		if (requiresAdditionalInfo) { 
-			return;
-		}
+		//if (requiresAdditionalInfo) { 
+		//	return;
+		//}
 
 		HttpContext ctx = new HttpContext(session, request, response);
 

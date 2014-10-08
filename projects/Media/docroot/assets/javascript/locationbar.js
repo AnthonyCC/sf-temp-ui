@@ -230,12 +230,8 @@
 		var lightEnabled = (lEnabData != null && lEnabData != undefined) ? lEnabData : false;
 		var ajaxEnabled = (ajaxEnabData != null && ajaxEnabData != undefined) ? ajaxEnabData : false;
 
-		if (lightEnabled) {
-			if (ajaxEnabled) { //tab-look
-				//add class here to add right-arrow			
-			} else { //sign up light
-				showSignupOverlay('/registration/signup_lite.jsp', '<span class=\'text12\' style=\'color: #000; margin-left: -12px;\'><strong>Already have a password? <a href=\'/login/login.jsp\' onclick=\'window.top.location=this.href;return false;\' style=\'text-decoration:none;\'>Log in now</a></strong></span>');
-			}
+		if (ajaxEnabled) { //tab-look
+			//add class here to add right-arrow	
 		} else {
 			//default to page
 			window.location='/registration/signup.jsp';
@@ -502,14 +498,6 @@
 	    	    			}
 	    	    		});
 	    	    		
-	    	    		//additional overlays
-	    	    		if (data.hasOwnProperty('message') && data.message != '' && data.message != null) {
-	    	    			//$('#signup_cont_formContent').hide();
-	    	    			//$('#locabar_signupButton').click(); //closer
-	    	            	updatePinLevel('#signup_cont_formContent');
-	    	    			showSignupOverlay(data.message, null, 400, 650);
-	    	    		}
-	    	    		
 	    	    		//error msgs
 	    	    		if (data.hasOwnProperty('errorMessages') && data.errorMessages != '' && data.errorMessages != null) {
 
@@ -542,6 +530,14 @@
 		    				
 		    				
 		    				$('#signup_cont_formContent .errorMsg').show();
+	    	    		} else { //no error msgs
+		    	    		//additional overlays
+		    	    		if (data.hasOwnProperty('message') && data.message != '' && data.message != null) {
+		    	    			//$('#signup_cont_formContent').hide();
+		    	    			//$('#locabar_signupButton').click(); //closer
+		    	            	updatePinLevel('#signup_cont_formContent');
+		    	    			showSignupOverlay(data.message, null, 400, 650);
+		    	    		}
 	    	    		}
 	    			}
 	    		}, "json");

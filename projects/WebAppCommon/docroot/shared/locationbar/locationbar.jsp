@@ -81,7 +81,7 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 		set data for lightsignup (defaults to false)
 		set data for "ajax" signup (redesign: APPDEV-3467) (defaults to false)
 	*/
-	%><button id="locabar_signupButton" class="signUpButton" data-lightsignup="<%= FDStoreProperties.isLightSignupEnabled() %>" data-ajaxsignup="<%= FDStoreProperties.isAjaxSignupEnabled() %>">sign up</button><%
+	%><button id="locabar_signupButton" class="signUpButton" data-ajaxsignup="true">sign up</button><%
 %></tmpl:put>
 <%
 	if (user!=null && user.getLevel() == FDUserI.SIGNED_IN) {
