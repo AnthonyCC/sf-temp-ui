@@ -36,6 +36,12 @@ var FreshDirect = FreshDirect || {};
     });
   }
 
+  $(document).on('keyup', '[data-component="autocomplete"]', function (e) {
+    var value = $(e.target).val();
+
+    $('[data-component="autocomplete"]').val(value);
+  });
+
   autoCompleteInit();
 
   fd.modules.common.utils.register("components", "autoComplete", { 'init' : autoCompleteInit }, fd);

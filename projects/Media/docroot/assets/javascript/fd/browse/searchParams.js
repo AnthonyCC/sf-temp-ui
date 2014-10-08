@@ -41,6 +41,7 @@ var FreshDirect = FreshDirect || {};
       value:function(data){
         WIDGET.render.call(this, data);
         FreshDirect.components.autoComplete.init(this.placeholder+' input.searchinput');
+        $('input.searchinput,input[name="searchParams"]').val(data.searchParams || "");
       }
     }
   });
