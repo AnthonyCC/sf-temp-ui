@@ -636,11 +636,11 @@ section.main .category.cssbutton.green:hover,
   border-radius: 5px;
 }
 
-.no-touch .browse-popup-content li label:hover   {
+.no-touch .browse-popup-content li label:hover > span > span  {
   text-decoration: underline;
 }
 
-.browse-popup-content li.disabled label:hover   {
+.browse-popup-content li.disabled label:hover > span > span {
   text-decoration: none;
 }
 
@@ -778,14 +778,14 @@ section.main .leftnav .menuBox input[type="radio"]:checked + span {
   font-weight: bold;
 }
 
-.no-touch section.main .leftnav .menuBox label:hover {
+.no-touch section.main .leftnav .menuBox label:hover > span > span {
   text-decoration: underline;
 }
 
-#menupopup .selected label:hover,
-section.main .leftnav .menuBox .selected label:hover,
-section.main .leftnav .menuBox .disabled label:hover,
-section.main .leftnav .menuBox label.disabled:hover {
+#menupopup .selected label:hover > span > span,
+section.main .leftnav .menuBox .selected label:hover > span > span,
+section.main .leftnav .menuBox .disabled label:hover > span > span,
+section.main .leftnav .menuBox label.disabled:hover > span > span {
   text-decoration: none;
 }
 
