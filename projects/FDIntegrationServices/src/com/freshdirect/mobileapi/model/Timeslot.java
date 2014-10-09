@@ -165,6 +165,11 @@ public class Timeslot {
 	public boolean isEcoFriendly() {
 		return slot.isEcoFriendly();
 	}
+	
+	/* Early AM TimeSlot */
+	public boolean isEarlyAM(){
+		return slot.isEarlyAM();
+	}
 
 	/* Building Favs timeslot*/
 	public boolean isDepot() {

@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.TimeslotCapacityContext;
 import com.freshdirect.delivery.TimeslotCapacityWrapper;
@@ -41,6 +42,7 @@ import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.rules.OrderMinimumCalculator;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
@@ -209,6 +211,13 @@ public class TimeslotLogic {
 						timeslot.setTimeslotRestricted(tsRestricted);
 					}
 					
+					if (timeslot.isEarlyAM()
+							&& EnumUnattendedDeliveryFlag.OPT_OUT
+									.equals(address.getUnattendedDeliveryFlag())) {
+						timeslot.setStoreFrontAvailable("E");
+						timeslot.setTimeslotRemoved(true);
+						_remove = true;
+					}
 					
 					Calendar cal = Calendar.getInstance();
 					Date now = cal.getTime();
@@ -286,6 +295,11 @@ public class TimeslotLogic {
 
 					if (!timeslot.isDepot() && timeslot.isEcoFriendly())
 						stats.incrementEcoFriendlySlots();
+					
+					// Early AM TimeSlot
+					if(timeslot.isEarlyAM()){
+						stats.incrementEarlyAMSlots();
+					}
 
 					if (!genericTimeslots && timeslot.isDepot() && timeslot.isEcoFriendly())
 						stats.incrementNeighbourhoodSlots();

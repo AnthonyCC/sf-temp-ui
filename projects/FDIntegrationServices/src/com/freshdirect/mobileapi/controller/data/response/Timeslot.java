@@ -40,8 +40,11 @@ public class Timeslot implements DateFormat {
     private final SimpleDateFormat formatter = new SimpleDateFormat(STANDARDIZED_DATE_FORMAT);
 
 	private boolean unavailable;
-
-    public static List<Timeslot> initWithList(List<com.freshdirect.mobileapi.model.Timeslot> slots) {
+	
+	private Boolean isEarlyAM;
+	
+	
+	public static List<Timeslot> initWithList(List<com.freshdirect.mobileapi.model.Timeslot> slots) {
         List<Timeslot> newInstances = new ArrayList<Timeslot>();
         for (com.freshdirect.mobileapi.model.Timeslot slot : slots) {
             newInstances.add(new Timeslot(slot));
@@ -68,6 +71,7 @@ public class Timeslot implements DateFormat {
         this.minOrderAmt = slot.getMinOrderAmt();
         this.minOrderMet = slot.isMinOrderMet();
         
+        this.isEarlyAM = slot.isEarlyAM();
     
     }
 
@@ -188,5 +192,12 @@ public class Timeslot implements DateFormat {
 	public boolean isMinOrderMet() {
 		return minOrderMet;
 	}
-	
+
+	public Boolean getIsEarlyAM() {
+		return isEarlyAM;
+	}
+
+	public void setIsEarlyAM(Boolean isEarlyAM) {
+		this.isEarlyAM = isEarlyAM;
+	}
 }

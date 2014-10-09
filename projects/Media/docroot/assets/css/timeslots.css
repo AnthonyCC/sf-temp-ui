@@ -164,7 +164,7 @@ div.tsDayNameE {
 	color: #333;
 	cursor: pointer;
 	overflow: hidden;
-	padding-left: 20px;
+	padding-left: 10px;
 }
 .tsCol div.tsContent div {
 	/* height: 12px; */
@@ -635,6 +635,38 @@ div.tsHeaderC {
 	color:#54821E;
 }
 
+/*EarlyAM Timeslot */
+
+.tsEarlyAmE {
+	color:#666666;
+	font-size: 9px; 
+	font-family: Verdana, Arial, sans-serif;
+	vertical-align: bottom;
+}
+.tsEarlyAmPropE {
+	overflow: hidden;
+	text-align:right;
+	padding-top:10px;
+}
+.tsEarlyAmPropC {
+	text-align:right;
+	margin-top:5px;
+}
+
+.tsCol div.tsContent div.tsEarlyAmPropE {
+	height:28px;
+}
+.tsDivHide a, .tsDivHide div {
+	color:#669933;
+	text-align:right;
+	font-weight:normal;
+	font-size:11px;
+}
+
+.tsEarlyAmTimeC {
+	color:#54821E;
+}
+
 /*Neighbourhood slot*/
 .tsNeighbourhoodE {
 	color:#666666;
@@ -795,6 +827,9 @@ td.noTopBorder {
 .tsEcoFriendlyPropC {
 	padding-top: 4px;
 }
+.tsEarlyAmPropC {
+	padding-top: 4px;
+}
 .tsChefstablePropC {
 	padding-top: 6px;
 }
@@ -844,7 +879,9 @@ td.noTopBorder {
 .tsContainerBGE .tsDiscountPropC,
 .tsContainerBGC .tsDiscountPropE, 
 .tsContainerBGE .tsEcoFriendlyPropC, 
-.tsContainerBGC .tsEcoFriendlyPropE, 
+.tsContainerBGC .tsEcoFriendlyPropE,
+.tsContainerBGE .tsEarlyAmPropC, 
+.tsContainerBGC .tsEarlyAmPropE, 
 .tsContainerBGE .tsNeighbourhoodPropC, 
 .tsContainerBGC .tsNeighbourhoodPropE, 
 .tsContainerBGE .tsPremiumPropC,
@@ -870,7 +907,9 @@ td.noTopBorder {
 .tsContainerBGC .tsDiscountPropC,
 .tsContainerBGE .tsDiscountPropE,
 .tsContainerBGC .tsEcoFriendlyPropC, 
-.tsContainerBGE .tsEcoFriendlyPropE, 
+.tsContainerBGE .tsEcoFriendlyPropE,
+.tsContainerBGC .tsEarlyAmPropC, 
+.tsContainerBGE .tsEarlyAmPropE, 
 .tsContainerBGC .tsNeighbourhoodPropC, 
 .tsContainerBGE .tsNeighbourhoodPropE, 
 .tsContainerBGC .tsPremiumPropC,

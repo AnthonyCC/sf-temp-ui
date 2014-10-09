@@ -27,6 +27,8 @@ public class DlvTimeslotStats {
 	String sameDayCutoffUTC;
 	HashMap<String, DlvZoneModel> zonesMap = new HashMap<String, DlvZoneModel>();
 	boolean isAlcoholDelivery = false;
+	int earlyAmSlots=0;
+	
 	
 	public boolean isAlcoholDelivery() {
 		return isAlcoholDelivery;
@@ -93,6 +95,10 @@ public class DlvTimeslotStats {
 		hasCapacity = hasCapacity || flag;
 	}
 	
+	public void incrementEarlyAMSlots(){
+		earlyAmSlots++;
+	}
+	
 	
 	/**
 	 * Apply stat results to delivery model
@@ -113,6 +119,7 @@ public class DlvTimeslotStats {
 		deliveryModel.setNeighbourhoodCount(neighbourhoodSlots);
 		deliveryModel.setPercSlotsSold(totalSlots > 0 ? Math
 				.round((soldOut / totalSlots) * 100) : 0.0);
+		deliveryModel.setEarlyAMCount(earlyAmSlots);
 	}
 
 	/**

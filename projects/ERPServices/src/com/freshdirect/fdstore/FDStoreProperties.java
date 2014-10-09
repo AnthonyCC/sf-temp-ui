@@ -686,6 +686,11 @@ public class FDStoreProperties {
 	private static final String PROP_SITEMAP_ENABLED = "fdstore.sitemap.enabled";
 	private static final String PROP_SITEMAP_PASSWORDS = "fdstore.sitemap.passwords";
 	
+	//Early AM timeSlot
+	private static final String PROP_EARLY_AM_HOUR = "fdstore.early.window.hour";
+	private static final String PROP_EARLY_AM_MINUTE = "fdstore.early.window.minute";
+		
+	
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1356,6 +1361,10 @@ public class FDStoreProperties {
 
         defaults.put(PROP_SITEMAP_ENABLED, "true");
         defaults.put(PROP_SITEMAP_PASSWORDS, "fd8848admin,GetMe2TheSitem@p");
+        
+        //Early Am Defaults
+        defaults.put(PROP_EARLY_AM_HOUR, "11");
+        defaults.put(PROP_EARLY_AM_MINUTE, "0");
 
         refresh();
     }
@@ -3419,6 +3428,14 @@ public class FDStoreProperties {
 		}
 		
 		return passwords;
+	}
+	
+	//Early AM
+	public static int getEarlyAMWindowHour(){
+		return Integer.parseInt(get(PROP_EARLY_AM_HOUR));
+	}
+	public static int getEarlyAMWindowMinute(){
+		return Integer.parseInt(get(PROP_EARLY_AM_MINUTE));
 	}
 }
 

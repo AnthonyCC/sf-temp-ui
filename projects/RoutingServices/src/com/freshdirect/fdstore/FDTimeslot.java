@@ -10,6 +10,7 @@ import com.freshdirect.delivery.EnumDayShift;
 import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import java.text.DecimalFormat;
 
@@ -201,6 +202,25 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	/* Eco Friendly timeslot*/
 	public boolean isEcoFriendly() {
 		return dlvTimeslot.isEcoFriendly();
+	}
+	
+	
+	// Early AM timeslot
+	public boolean isEarlyAM() {
+		if (this.getBegTime() != null
+				&& this.getBegTime().before(new TimeOfDay(getEarlyAMTime()).getNormalDate())) {
+			return true;
+		}
+		return false;
+	}
+
+	private Date getEarlyAMTime() {
+		Calendar _earlyWindowCalInstance = Calendar.getInstance();
+		_earlyWindowCalInstance.set(Calendar.HOUR_OF_DAY, FDStoreProperties.getEarlyAMWindowHour());
+		_earlyWindowCalInstance.set(Calendar.MINUTE, FDStoreProperties.getEarlyAMWindowMinute());
+		_earlyWindowCalInstance.set(Calendar.SECOND, 0);
+		_earlyWindowCalInstance.set(Calendar.MILLISECOND, 0);
+		return _earlyWindowCalInstance.getTime();
 	}
 	
 	/* is_Depot timeslot*/

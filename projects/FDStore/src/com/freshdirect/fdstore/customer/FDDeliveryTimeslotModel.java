@@ -74,8 +74,16 @@ public class FDDeliveryTimeslotModel implements Serializable{
     private int alcoholRestrictedCount;
     private boolean isAlcoholDelivery;
     private boolean minOrderReqd;
+    private int earlyAMCount;
     
-    public boolean isAlcoholDelivery() {
+    
+	public int getEarlyAMCount() {
+		return earlyAMCount;
+	}
+	public void setEarlyAMCount(int earlyAMCount) {
+		this.earlyAMCount = earlyAMCount;
+	}
+	public boolean isAlcoholDelivery() {
 		return isAlcoholDelivery;
 	}
 	public void setAlcoholDelivery(boolean isAlcoholDelivery) {

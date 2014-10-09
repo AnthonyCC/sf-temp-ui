@@ -93,6 +93,11 @@ int page_type = TimeslotLogic.PAGE_NORMAL;
 		depotAddress =  (ErpDepotAddressModel) address;
 		depotCode = com.freshdirect.fdstore.FDDepotManager.getInstance().getDepotByLocationId(depotAddress.getLocationId()).getDepotCode();
 	}
+	
+	boolean unattededChecked=false;
+	if(!isDepotAddress && address.getUnattendedDeliveryFlag()== EnumUnattendedDeliveryFlag.OPT_IN){
+		unattededChecked=true;
+	}
 
     List<ErpPaymentMethodI> payMethods = FDCustomerFactory.getErpCustomer(user.getIdentity()).getPaymentMethods();
     if (payMethods==null || payMethods.size()==0) {
@@ -354,6 +359,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 						<td Valign="middle" align="right">
 						 	<table>
 								<tr>
+									
 									<%if(deliveryModel.isMinOrderReqd()){%>
 										<td>
 											<img src="/media_stat/images/timeslots/diamond_icon.png" WIDTH="16" HEIGHT="16" border="0">
@@ -386,7 +392,15 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 											<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_alcoholrestriction_timeslot.html&windowSize=small&name=Alcohol Restriction','small');return false;"><%= FDStoreProperties.getAlcoholRestrictedLabel()%></a>
 										</td>
 										<td>&nbsp;</td>
-									<%}%>									
+									<%}%>
+									<%if(deliveryModel.getEarlyAMCount() > 0) { %>
+										<td >
+											<img src="/media_stat/images/timeslots/early_delivery_icon_web.png" WIDTH="20" HEIGHT="16" border="0">
+										</td>
+										<td Valign="top">
+										<a onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_early_am_timeslot.html&windowSize=small&name=Early AM','large');return false;">&nbsp;Early AM - Unattended</td>
+										<td>&nbsp;</td>
+									<% } %>									
 								</tr>
 							</table>
 						</td>

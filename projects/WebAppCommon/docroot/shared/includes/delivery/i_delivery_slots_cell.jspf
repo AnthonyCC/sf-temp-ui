@@ -267,6 +267,16 @@
 					.append("									<div class=\"tsChefstablePropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
 						.append("<img src=\"/media_stat/images/timeslots/purple_star.gif\" width=\"16\" height=\"15\" border=\"0\">")
 					.append("</div>\n");
+	} else if(slot.isEarlyAM()){
+		stringBuffer.append("									<div class=\"tsEarlyAmPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
+		.append("										<div>")
+				.append("<img src=\"/media_stat/images/timeslots/early_delivery_icon_web.png\" width=\"16\" height=\"12\" border=\"0\">")
+				.append("<font class=\"tsEarlyAmE\">Early Unattended</font>")
+			.append("</div>\n")
+		.append("									</div>\n")
+		.append("									<div class=\"tsEarlyAmPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
+			.append("<img class=\"tsEarlyAmImage\" src=\"/media_stat/images/timeslots/early_delivery_icon_web.png\" width=\"16\" height=\"12\" border=\"0\">\n")
+		.append("</div>");
 	} else if (slot.isEcoFriendly()){
 		if(!slot.isDepot()){
 			stringBuffer.append("									<div class=\"tsEcoFriendlyPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
