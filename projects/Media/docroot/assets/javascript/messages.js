@@ -35,19 +35,6 @@
 	  	}
 	  };
 	  
-    /**
-     * https://gist.github.com/paulirish/5558557
-     */
-    function hasSessionStorage(){
-      try {
-        sessionStorage.setItem('test', 1);
-        sessionStorage.removeItem('test');
-        return true;
-      } catch(e) {
-        return false;
-      }
-    }
-
 	  var methods = {
 	     init : function( options ) {
 
@@ -69,18 +56,14 @@
 	     open : function( ) { 
 	    	 var $messages = $(document.getElementById('messages'));
 	    	 isClosed = false;
-         if(hasSessionStorage()){
-	    	   sessionStorage.setItem(closedStorageKey,JSON.stringify(isClosed));
-         }
+	    	 sessionStorage.setItem(closedStorageKey,JSON.stringify(isClosed));
 	    	 $messages.addClass('open');
 	     },
 	     close : function( ) {
 	    	 var $messages = $(document.getElementById('messages'));
 	    	 isClosed = true;
-         if(hasSessionStorage()){
-           sessionStorage.setItem(hashesStorageKey,JSON.stringify(hashes));
-           sessionStorage.setItem(closedStorageKey,JSON.stringify(isClosed));
-         }
+	    	 sessionStorage.setItem(hashesStorageKey,JSON.stringify(hashes));
+	    	 sessionStorage.setItem(closedStorageKey,JSON.stringify(isClosed));
 	    	 $messages.removeClass('open');
 	     },
 	     add:function(type){
