@@ -3,6 +3,7 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<fd:CheckLoginStatus />
 <tmpl:insert template='/common/template/dnav.jsp'>
 
     <tmpl:put name='title' direct='true'>FreshDirect - Help - Customer Agreement</tmpl:put>
