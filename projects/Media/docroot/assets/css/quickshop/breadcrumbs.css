@@ -30,7 +30,7 @@
 	background: url('/media_stat/images/quickshop/buttons-sprite.png') no-repeat -175px -561px  #eedfee;
 }
 
-#breadcrumbs li label:hover {
+.no-touch #breadcrumbs li label:hover {
 	text-decoration:underline;
 }
 

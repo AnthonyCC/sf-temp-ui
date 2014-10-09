@@ -21,8 +21,8 @@
 	color:#333;
 	text-transform: uppercase;
 }
-.orders-list-clear_dept:hover label,
-.orders-list-all_dept:hover label {
+.no-touch .orders-list-clear_dept:hover label,
+.no-touch .orders-list-all_dept:hover label {
 	text-decoration: underline;
 }
 .orders-list-clear_dept input[checked] + label,

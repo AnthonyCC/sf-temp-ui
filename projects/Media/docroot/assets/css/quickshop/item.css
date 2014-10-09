@@ -140,7 +140,7 @@ button[data-component="addToListButton"]:focus {
   background: url(/media_stat/images/quickshop/bullet-orange.png) no-repeat;
 }
 
-.itemlist-item-header-changecustomization button span:hover {
+.no-touch .itemlist-item-header-changecustomization button span:hover {
   text-decoration: underline;
 }
 
@@ -260,7 +260,7 @@ button[data-component="addToListButton"]:focus {
 	cursor:pointer;
 }
 
-.itemlist-item-replacement-item:hover {
+.no-touch .itemlist-item-replacement-item:hover {
 	text-decoration:underline;
 }
 

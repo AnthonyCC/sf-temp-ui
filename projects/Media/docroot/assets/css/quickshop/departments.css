@@ -16,8 +16,8 @@
 	color:#333;
 	text-transform: uppercase;
 }
-.departments-list-clear_dept:hover label,
-.departments-list-all_dept:hover label {
+.no-touch .departments-list-clear_dept:hover label,
+.no-touch .departments-list-all_dept:hover label {
 	text-decoration: underline;
 }
 .departments-list-clear_dept input[checked] + label,

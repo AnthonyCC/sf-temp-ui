@@ -12,7 +12,7 @@
 	position: relative;
 }
 
-.checkboxlist li:hover label span {
+.no-touch .checkboxlist li:hover label span {
 	text-decoration: underline;
 }
 .checkboxlist li:hover span.noitem span {
