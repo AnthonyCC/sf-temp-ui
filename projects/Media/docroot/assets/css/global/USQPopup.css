@@ -5,6 +5,11 @@
 	width: 100%;
 	height: 100%;
 	z-index: 25000;
+	overflow-y: auto;
+	-ms-overflow-style: none;
+}
+#USQPopup::-webkit-scrollbar { 
+    display: none; 
 }
 #USQPopup:before {
 	content: '';
