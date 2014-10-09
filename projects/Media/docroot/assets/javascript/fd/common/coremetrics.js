@@ -24,13 +24,13 @@ var FreshDirect = FreshDirect || {};
 			}
 		},
     setEvent:{
-      value: function (cme) {
-        cmevent = 
+      value: function (cme, force) {
+        cmevent =  (force ? cme :
           (cme === 'pageview' || cmevent === 'pageview') ? 'pageview' : (
           (cme === 'element' || cmevent === 'element') ? 'element' : (
           (cme === 'sort' || cmevent === 'sort') ? 'sort' : (
           (cme === 'page' || cmevent === 'page') ? 'page' :
-          'noevent')));
+          'noevent'))));
       }
     },
     serialize:{

@@ -32,7 +32,7 @@ var FreshDirect = FreshDirect || {};
 
         clicked.remove();
         if (cm) {
-          cm.setEvent('');
+          cm.setEvent('noevent', true);
         }
 
         parent.trigger('filtertags-change');
