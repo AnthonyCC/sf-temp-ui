@@ -34,10 +34,10 @@
 #quickshop .qs-tabs li .count {
 	font-weight: normal;
 }
-#quickshop .tabs li:hover,
-#quickshop .tabs li:focus,
-#quickshop .tabs li:hover strong,
-#quickshop .tabs li:focus strong {
+.no-touch #quickshop .tabs li:hover,
+.no-touch #quickshop .tabs li:focus,
+.no-touch #quickshop .tabs li:hover strong,
+.no-touch #quickshop .tabs li:focus strong {
 	text-decoration: underline;
 }
 #quickshop .qs-tabs li:hover,

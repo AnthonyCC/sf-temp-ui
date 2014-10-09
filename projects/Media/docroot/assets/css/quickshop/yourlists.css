@@ -3,7 +3,7 @@
   margin: 0 12px 0 12px;
   cursor: pointer;
 }
-.shoppinglists-manage:hover {
+.no-touch .shoppinglists-manage:hover {
   text-decoration: underline;
 }
 
@@ -31,7 +31,7 @@
   padding: 4px 12px;
   cursor: pointer;
 }
-.checkboxlist.shoppinglists-list li:hover .list-name {
+.no-touch .checkboxlist.shoppinglists-list li:hover .list-name {
   text-decoration: underline;
 }
 

@@ -49,9 +49,9 @@
 	visibility:hidden;
 }
 
-.pagination-pager-prev:hover,
-.pagination-pager-next:hover,
-.pagination-pager-button:hover {
+.no-touch .pagination-pager-prev:hover,
+.no-touch .pagination-pager-next:hover,
+.no-touch .pagination-pager-button:hover {
 	border-color:#666;
 }
 
