@@ -41,10 +41,16 @@ public class FilterCollector {
 		collectBrandFilters(navigationModel, product);
 		Set<String> showMeOnlyOfSearchResults = navigationModel.getShowMeOnlyOfSearchResults();
 		collectShowMeOnlyNewFilter(product, showMeOnlyOfSearchResults);
-		FDProduct fdProduct = PopulatorUtil.getDefSku(product).getProduct();
-		collectShowMeOnlyKosherFilter(showMeOnlyOfSearchResults, fdProduct.getKosherInfo());
-		collectShowMeOnlyOrganicFilter(showMeOnlyOfSearchResults, fdProduct.getNutritionInfoList(ErpNutritionInfoType.ORGANIC));
-		collectShowMeOnlyOnSaleFilter(product, showMeOnlyOfSearchResults);
+		try {
+			FDProduct fdProduct = PopulatorUtil.getDefSku(product).getProduct();
+			if (fdProduct != null) {
+				collectShowMeOnlyKosherFilter(showMeOnlyOfSearchResults, fdProduct.getKosherInfo());
+				collectShowMeOnlyOrganicFilter(showMeOnlyOfSearchResults, fdProduct.getNutritionInfoList(ErpNutritionInfoType.ORGANIC));
+				collectShowMeOnlyOnSaleFilter(product, showMeOnlyOfSearchResults);
+			}
+		} catch (FDSkuNotFoundException exc) {
+			// absorp exception
+		}
 	}
 
 	public void collectDepartmentAndCategoryFilters(NavigationModel navigationModel, ProductModel product) {
