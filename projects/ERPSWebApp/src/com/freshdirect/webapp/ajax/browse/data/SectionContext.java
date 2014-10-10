@@ -63,8 +63,10 @@ public class SectionContext extends SectionData {
 				try{
 					ProductData productData = ProductDetailPopulator.createProductData(user, product);
 					productData = ProductDetailPopulator.populateBrowseRecommendation(user, productData, product);
-					productData = ProductDetailPopulator.populateSelectedNutritionFields(user, productData, productItem.getFdProduct(), nav.getErpNutritionTypeType());
-					
+					if (!productData.isIncomplete()) {
+						productData = ProductDetailPopulator.populateSelectedNutritionFields(user, productData, productItem.getFdProduct(), nav.getErpNutritionTypeType());
+					}
+
 					FilteringFlowType pageType = nav.getPageType();
 					if (pageType!=null){
 						productData.setPageType(pageType.toString());
