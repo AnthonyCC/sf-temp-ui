@@ -68,6 +68,7 @@ var FreshDirect = FreshDirect || {};
         if (cm) {
           cm.setEvent('pageview');
         }
+        if (FreshDirect.browse.sorter) { FreshDirect.browse.sorter.reset(); }
       }
     },
     resetFilters:{
@@ -117,6 +118,7 @@ var FreshDirect = FreshDirect || {};
           if (cm) {
             cm.setEvent('pageview');
           }
+          if (FreshDirect.browse.sorter) { FreshDirect.browse.sorter.reset(); }
         }
 
         this.savedScrolls = this.saveScrolls();
@@ -154,6 +156,7 @@ var FreshDirect = FreshDirect || {};
           } else {  
             this.setId(id);
           } 
+          if (FreshDirect.browse.sorter) { FreshDirect.browse.sorter.reset(); }
         }
 
         if (menubox.data('boxtype') === 'FILTER') {

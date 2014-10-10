@@ -8,6 +8,7 @@
  * @param? optional
  */
 {template .atcControls autoescape="false"}
+{if $salesUnit and length($salesUnit)}
 	{if $soldBySalesUnit}
 		<input type="hidden" value="1" data-productdata-name="quantity" data-component="productData">
 		{call common.salesunit}
@@ -23,4 +24,5 @@
 			{param optional:$optional /}
       	{/call}
 	{/if}
+{/if}
 {/template}
