@@ -1363,7 +1363,7 @@ public class FDStoreProperties {
         defaults.put(PROP_SITEMAP_PASSWORDS, "fd8848admin,GetMe2TheSitem@p");
         
         //Early Am Defaults
-        defaults.put(PROP_EARLY_AM_HOUR, "11");
+        defaults.put(PROP_EARLY_AM_HOUR, "6");
         defaults.put(PROP_EARLY_AM_MINUTE, "0");
 
         refresh();
