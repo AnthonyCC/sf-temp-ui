@@ -125,6 +125,9 @@ public class ProductDetailPopulator {
 	
 		// Get the ProductModel
 		ProductModel product = PopulatorUtil.getProduct( productId, categoryId );
+		if (PopulatorUtil.isProductIncomplete(product)) {
+			return createProductDataLight(user, product);
+		}
 		
 		return createProductData( user, product );
 	}
@@ -281,6 +284,10 @@ public class ProductDetailPopulator {
 		if ( !(product instanceof ProductModelPricingAdapter) ) {
 			// wrap it into a pricing adapter if naked
 			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getPricingContext() );
+		}
+		
+		if (PopulatorUtil.isProductIncomplete(product)) {
+			return createProductDataLight(user, product);
 		}
 		
 		SkuModel sku = PopulatorUtil.getDefSku( product );
@@ -1329,10 +1336,12 @@ public class ProductDetailPopulator {
 
 		
 		// Episode II - POPULATE DATA
+		LOG.debug("Product["+product.getContentKey().getId() + "] with SKU[" + (sku != null ? sku.getContentKey().getId() : "null") + "] is considered incomplete");
 		
 		// Create response data object
 		ProductData data = new ProductData();
-		
+		data.setIncomplete(true);
+
 		// Populate product basic-level data
 		populateBasicProductData( data, user, product );
 

@@ -37,6 +37,15 @@ public class ProductData extends BasicProductData implements SkuData {
 	protected boolean available;
 
 
+	/**
+	 * This flag signals that product data is rather incomplete
+	 * Expect that most of them are not populated
+	 * It might only be turned on when populating products / skus without
+	 * backing data in ERPS
+	 * 
+	 * @ticket APPDEV-3918
+	 */
+	protected boolean incomplete;
 	
 	
 	/**
@@ -576,5 +585,14 @@ public class ProductData extends BasicProductData implements SkuData {
 	}
 	public void setPageType(String pageType) {
 		this.pageType = pageType;
+	}
+	
+	
+	public boolean isIncomplete() {
+		return incomplete;
+	}
+
+	public void setIncomplete(boolean incomplete) {
+		this.incomplete = incomplete;
 	}
 }
