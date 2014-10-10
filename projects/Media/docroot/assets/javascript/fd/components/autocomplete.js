@@ -39,7 +39,11 @@ var FreshDirect = FreshDirect || {};
   $(document).on('keyup', '[data-component="autocomplete"]', function (e) {
     var value = $(e.target).val();
 
-    $('[data-component="autocomplete"]').val(value);
+    $('[data-component="autocomplete"]').each(function (i, el) {
+      if (e.target !== el) {
+        $(el).val(value);
+      }
+    });
   });
 
   autoCompleteInit();
