@@ -47,6 +47,7 @@ import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.ZonePriceModel;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.productfeed.Attributes.ProdAttribute;
 import com.freshdirect.fdstore.content.productfeed.Configurations.Configuration;
@@ -126,7 +127,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 			for (Iterator<ContentKey> i = skuContentKeys.iterator(); i.hasNext();) {
 				ContentKey key = (ContentKey) i.next();
 				String skucode = key.getId();
-			    //if(skucode.equals("MEA0004687") || skucode.equals("FRU0005151")|| skucode.equals("DAI0069651") || skucode.equals("MEA1075865")) {
+//			    if(skucode.equals("VAR3770250") || skucode.equals("MEA1075690")|| skucode.equals("DAI0069651") || skucode.equals("MEA1075865")) {
 					ProductModel productModel =null;
 					FDProductInfo fdProductInfo = null;
 					FDProduct fdProduct = null;
@@ -165,7 +166,7 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 						
 						populateImages(productModel, product);	
 					}
-				//}
+//				}
 			}
 		}
 	}
@@ -284,13 +285,31 @@ public class FDProductFeedSessionBean extends SessionBeanSupport {
 		product.setProdId(productModel.getContentName());
 		product.setProdName(productModel.getFullName());
 		product.setProdUrl(URL_DOMAIN+PreviewLinkProvider.getLink(productModel.getContentKey()));
-		product.setCatId(productModel.getCategory().getContentName());
-		product.setSubCatId(productModel.getParentId());
+		populateParentInfo(productModel, product);
 		product.setDeptId(productModel.getDepartment().getContentName());
 		product.setProdStatus(null !=fdProductInfo.getAvailabilityStatus()?fdProductInfo.getAvailabilityStatus().getStatusCode():"");
 		product.setMinQuantity(""+productModel.getQuantityMinimum());
 		product.setMaxQuantity(""+productModel.getQuantityMaximum());
 		product.setQtyIncrement(""+productModel.getQuantityIncrement());
+	}
+
+	private void populateParentInfo(ProductModel productModel, Product product) {
+		product.setCatId(productModel.getParentId());
+		product.setParentCatId(productModel.getParentId());
+		product.setRootCatId(productModel.getParentId());
+		product.setSubCatId(productModel.getParentId());
+		if(null !=productModel.getCategory()){
+			ContentNodeModel contentNode =ContentFactory.getInstance().getContentNode(productModel.getCategory().getParentId());
+			if(null !=contentNode && FDContentTypes.CATEGORY.equals(contentNode.getContentKey().getType())){
+				product.setParentCatId(contentNode.getContentName());
+				contentNode =ContentFactory.getInstance().getContentNode(contentNode.getParentId());
+				if(null !=contentNode && FDContentTypes.CATEGORY.equals(contentNode.getContentKey().getType())){
+					product.setRootCatId(contentNode.getContentName());
+				}else {
+					product.setRootCatId(productModel.getCategory().getParentId());
+				}
+			}
+		}
 	}
 
 	private void populateImages(ProductModel productModel,
