@@ -381,6 +381,11 @@ ul.globalnavPopups li {
   color:#414141;
 }
 
+.globalnav-popup .department h3:after {
+  content: '';
+  display: inline-block;
+}
+
 .globalnav-popup .department ul{
   list-style-type:none;
 }
