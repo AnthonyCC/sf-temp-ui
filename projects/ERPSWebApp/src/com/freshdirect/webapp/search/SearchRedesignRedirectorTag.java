@@ -2,13 +2,12 @@ package com.freshdirect.webapp.search;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import java.net.URLEncoder;
 
 import org.apache.log4j.Logger;
 
@@ -18,6 +17,7 @@ import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
+import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 
 public class SearchRedesignRedirectorTag extends BodyTagSupport {
 
@@ -31,14 +31,16 @@ public class SearchRedesignRedirectorTag extends BodyTagSupport {
 	private boolean redirected = false;
 
 	public int doStartTag() throws JspException {
-		if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.searchredesign2014, user)) {
+		PageContext ctx = (PageContext) pageContext;
+		HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
+		boolean disabledPartialRolloutRedirector = CmsFilteringNavigator.isDisabledPartialRolloutRedirector(request);
+		if (!disabledPartialRolloutRedirector && FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.searchredesign2014, user)) {
 
-			PageContext ctx = (PageContext) pageContext;
 			String redirectUrl = null;
 
 			switch(pageType) {
 				case SEARCH:
-					String searchParams = ((HttpServletRequest) ctx.getRequest()).getParameter("searchParams");
+					String searchParams = request.getParameter("searchParams");
 					try {
 						searchParams = (searchParams == null ? "" : URLEncoder.encode(searchParams, "UTF-8"));
 					} catch (UnsupportedEncodingException e) {
@@ -49,7 +51,7 @@ public class SearchRedesignRedirectorTag extends BodyTagSupport {
 					redirectUrl = NEW_SEARCH_PAGE + "?pageType=" + FilteringFlowType.NEWPRODUCTS.toString().toLowerCase();
 					break;
 				case PRES_PICKS:
-					String id = ((HttpServletRequest) ctx.getRequest()).getParameter("id");
+					String id = request.getParameter("id");
 					if ("picks_love".equals(id)) {
 						redirectUrl = NEW_SEARCH_PAGE + "?pageType=" + FilteringFlowType.PRES_PICKS.toString().toLowerCase() + "&id=picks_love";
 					}
@@ -63,12 +65,11 @@ public class SearchRedesignRedirectorTag extends BodyTagSupport {
 			}
 			
 			if (redirectUrl != null) {
-				String originalUrl = ((HttpServletRequest) ctx.getRequest()).getRequestURI();
-				if (ctx.getRequest().getParameter("cm_vc") != null) {
-					redirectUrl = redirectUrl + "&cm_vc=" + ctx.getRequest().getParameter("cm_vc");
+				String originalUrl = request.getRequestURI();
+				if (request.getParameter("cm_vc") != null) {
+					redirectUrl = redirectUrl + "&cm_vc=" + request.getParameter("cm_vc");
 				}
 				LOGGER.debug("Redirecting from " + originalUrl + " to " + redirectUrl);
-				ServletRequest request = ctx.getRequest();
 				// To ensure that https requests get redirect to https correctly
 				redirectUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
 				redirected = true;

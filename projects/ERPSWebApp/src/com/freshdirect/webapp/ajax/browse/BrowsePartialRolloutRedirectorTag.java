@@ -2,7 +2,6 @@ package com.freshdirect.webapp.ajax.browse;
 
 import java.io.IOException;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
@@ -22,6 +21,7 @@ import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.util.ProductDisplayUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
 import com.freshdirect.webapp.util.FDURLUtil;
 
 public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport{
@@ -37,7 +37,10 @@ public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport{
 	private FDUserI user;
 
 	public void doTag() throws JspException, IOException {
-		if (FDStoreProperties.isBrowseRolloutRedirectEnabled()) {
+		final PageContext ctx = (PageContext) getJspContext();
+		final HttpServletRequest request = (HttpServletRequest) ctx.getRequest();
+		final boolean disabledPartialRolloutRedirector = CmsFilteringNavigator.isDisabledPartialRolloutRedirector(request);
+		if (!disabledPartialRolloutRedirector && FDStoreProperties.isBrowseRolloutRedirectEnabled()) {
 
 			String redirectUrl = null;
 			boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user);
@@ -62,21 +65,18 @@ public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport{
 	
 
 			if (redirectUrl != null) {
-				final PageContext ctx = (PageContext) getJspContext();
-				final HttpServletRequest req = (HttpServletRequest) ctx.getRequest();
-				final String originalUrl = req.getRequestURI();
+				final String originalUrl = request.getRequestURI();
 
-				redirectUrl = decorateRedirectUrl(redirectUrl, req);
+				redirectUrl = decorateRedirectUrl(redirectUrl, request);
 
 	        	LOGGER.debug("Redirecting from " +originalUrl+ " to " +redirectUrl);
 
 	        	//To ensure that https requests get redirect to https correctly
-	        	redirectUrl = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + redirectUrl;
+	        	redirectUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
 				((HttpServletResponse)ctx.getResponse()).sendRedirect(redirectUrl);
 			}
 		}
 	}
-
 
 	/**
 	 * Pick and append select parameters to the redirect URL

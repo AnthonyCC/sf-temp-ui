@@ -197,6 +197,17 @@ public class CmsFilteringNavigator {
 		return cmsFilteringNavigator;
 	}
 	
+	public static boolean isDisabledPartialRolloutRedirector(HttpServletRequest request) {
+		String value = request.getParameter("disablePartialRolloutRedirector");
+		final boolean result;
+		if (value != null) {
+			result = Boolean.parseBoolean(value);
+		} else {
+			result = false;
+		}
+		return result;
+	}
+	
 	/**
 	 * @return non URL encoded query string
 	 */
