@@ -36,7 +36,6 @@ public class ProductItemSorterFactory {
 
 		initAvailName(SortStrategyType.CUSTOMER_RATING,				new CustomerRatingComparator());
 		initAvailName(SortStrategyType.EXPERT_RATING, 				new ExpertRatingComparator());
-		initAvailName(SortStrategyType.POPULARITY, 					adapterForProductModel(ScriptedContentNodeComparator.createGlobalComparator(null, null)));
 		initAvailName(SortStrategyType.PRICE, 						new PriceComparator());
 		initAvailName(SortStrategyType.SALE, 						new SaleComparator());
 		initAvailName(SortStrategyType.SUSTAINABILITY_RATING, 		new SustainabilityRatingComparator());
@@ -95,6 +94,10 @@ public class ProductItemSorterFactory {
 
 			case E_COUPON_DOLLAR_DISCOUNT:
 				return createPricingAdapterComparator (FilteringComparatorUtil.COUPON_DOLLAR_OFF_COMPARATOR, user, reverseOrder);
+				
+			case POPULARITY:
+				Comparator<FilteringProductItem> popularityInner = adapterForProductModel(ScriptedContentNodeComparator.createGlobalComparator(null, null));
+				return reverseOrder ? wrapAvailAndName(Collections.reverseOrder(popularityInner)) : wrapAvailAndName(popularityInner);
 				
 			default:
 				return reverseOrder ? reverseComparatorMap.get(sortStrategy) : comparatorMap.get(sortStrategy);

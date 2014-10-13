@@ -34,47 +34,23 @@ public class EhCacheUtil {
 
 	private static CacheManager manager;
 	
-	private static synchronized void init() {
-		
-		if ( manager == null ) {
+	static {
+		if (FDStoreProperties.isEhCacheEnabled()) {
 			LOG.info( "Initializing EH cache" );
 			URL ehcacheConfig = ClassLoader.getSystemResource( EHCACHE_CONFIG_LOCATION );
 			if ( ehcacheConfig == null ) {
 				LOG.error( "EHCache config file ("+EHCACHE_CONFIG_LOCATION+") not found !" );
-				return;
-			}
 
-			manager = CacheManager.create( ehcacheConfig );
+			} else {
+				manager = CacheManager.create( ehcacheConfig );
+			}
 		}
 	}
 	
-	private static synchronized void shutdown() {
+	private static Ehcache getCache( String cacheName ) {
 		if ( manager != null ) {
-			LOG.info( "Disabling EH cache" );				
-			manager.shutdown();
-			manager = null;
+			return manager.getCache( cacheName );
 		}
-	}
-	
-	private static boolean useCache() {
-		return FDStoreProperties.isEhCacheEnabled();
-	}	
-	
-	private static synchronized Ehcache getCache( String cacheName ) {
-		
-		// Using cache
-		if ( useCache() ) {
-			if ( manager == null ) {
-				init();
-			}
-			if ( manager != null ) {
-				return manager.getCache( cacheName );
-			}
-		} else {
-			shutdown();
-			// Cache disabled
-		}
-		
 		return null;
 	}
 	
