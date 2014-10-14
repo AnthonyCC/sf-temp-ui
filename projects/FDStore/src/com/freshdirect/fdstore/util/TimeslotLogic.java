@@ -211,9 +211,33 @@ public class TimeslotLogic {
 						timeslot.setTimeslotRestricted(tsRestricted);
 					}
 					
+					// Build zone map
+					{
+						String zoneCode = timeslot.getZoneId();
+						if (!_zonesMap.containsKey(zoneCode)) {
+							try {
+								FDDeliveryManager deliveryManager = FDDeliveryManager
+										.getInstance();
+								DlvZoneModel zoneModel = deliveryManager
+										.findZoneById(zoneCode);
+								if (zoneModel.isCtActive()) {
+									stats.setCtActive(true);
+								}
+								_zonesMap.put(zoneCode, zoneModel);
+							} catch (FDZoneNotFoundException e) {
+								LOGGER.error("Referenced zone not found, database error. Zone:"
+										+ zoneCode
+										+ " timeslot id:"
+										+ timeslot.getTimeslotId());
+							}
+						}
+					}
+					
 					if (timeslot.isEarlyAM()
-							&& EnumUnattendedDeliveryFlag.OPT_OUT
-									.equals(address.getUnattendedDeliveryFlag())) {
+							&& (!EnumUnattendedDeliveryFlag.OPT_IN
+									.equals(address.getUnattendedDeliveryFlag()) || 
+									(EnumUnattendedDeliveryFlag.OPT_IN.equals(address.getUnattendedDeliveryFlag()) && 
+									!_zonesMap.get(timeslot.getZoneId()).getZoneDescriptor().isUnattended()))) {
 						timeslot.setStoreFrontAvailable("E");
 						timeslot.setTimeslotRemoved(true);
 						_remove = true;
@@ -247,27 +271,7 @@ public class TimeslotLogic {
 						}
 					}
 
-					// Build zone map
-					{
-						String zoneCode = timeslot.getZoneId();
-						if (!_zonesMap.containsKey(zoneCode)) {
-							try {
-								FDDeliveryManager deliveryManager = FDDeliveryManager
-										.getInstance();
-								DlvZoneModel zoneModel = deliveryManager
-										.findZoneById(zoneCode);
-								if (zoneModel.isCtActive()) {
-									stats.setCtActive(true);
-								}
-								_zonesMap.put(zoneCode, zoneModel);
-							} catch (FDZoneNotFoundException e) {
-								LOGGER.error("Referenced zone not found, database error. Zone:"
-										+ zoneCode
-										+ " timeslot id:"
-										+ timeslot.getTimeslotId());
-							}
-						}
-					}
+				
 
 
 					if (_remove)
