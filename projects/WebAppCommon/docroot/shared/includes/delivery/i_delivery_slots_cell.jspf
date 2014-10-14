@@ -159,6 +159,8 @@
 										? "tsReservationTimeE"
 											: (request.getAttribute("SHOW_WINDOWS_STEERING")!=null && "true".equals(request.getAttribute("SHOW_WINDOWS_STEERING")) && slot.getSteeringDiscount() > 0)
 											? "tsDiscountTimeC"
+											: (slot.isEarlyAM() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()))
+											?""
 											: (slot.isEcoFriendly() && slot.isDepot() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()))
 												? "tsNeighbourhoodTimeC"
 												: (slot.isEcoFriendly() && !(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()))
