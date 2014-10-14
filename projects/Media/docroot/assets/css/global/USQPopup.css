@@ -6,11 +6,8 @@
 	height: 100%;
 	z-index: 25000;
 	overflow-y: auto;
-	-ms-overflow-style: none;
 }
-#USQPopup::-webkit-scrollbar { 
-    display: none; 
-}
+
 #USQPopup:before {
 	content: '';
 	display: block;
@@ -24,6 +21,7 @@
 	filter: alpha(opacity=50);
 	background-color: #FFF;
 }
+
 .USQPopupContent {
 	width: 766px;
 	margin: 10px auto;
