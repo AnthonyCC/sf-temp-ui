@@ -13,6 +13,10 @@ var FreshDirect = FreshDirect || {};
     globalComponent: "[data-component='globalnav']",
     footerComponent: "[data-component='footer']",
     footerContainerComponent: "[data-component='footer-cont']",
+    reset: function () {
+      $('[data-highlight]').attr('data-highlight', null);
+      this.highlightNavItem();
+    },
     highlightNavItem : function(){
     /*
       console.log("top loc: " + this.topNavCurrentLocation);
@@ -23,6 +27,10 @@ var FreshDirect = FreshDirect || {};
 
       if(!this.isHighlighted()){
         this.setHighlightById(this.onFooterNavItem, this.bottomNavCurrentLocation);
+      }
+
+      if (!this.isHighlighted()) {
+        this.setHighlightByMatch();
       }
     },
     attachHiglightChangeHandlers : function(){
@@ -49,14 +57,31 @@ var FreshDirect = FreshDirect || {};
     onFooterNavItem : function(location){
       return $(this.footerComponent).find(location).attr("data-highlight", "on");
     },
+    setHighlightByMatch: function () {
+      var $els = $('[data-highlight-match]');
+
+      $els.each(function (i, el) {
+        var $el = $(el),
+            match = $el.attr('data-highlight-match'),
+            $target = $el.find('a').first();
+        
+        if ($target.size() === 0) {
+          $target = $el;
+        }
+
+        if (window.location.href.match(match)) {
+          $target.attr('data-highlight', 'on');
+        }
+      });
+    },
     isHighlighted : function(){
       return $(document.body).find("[data-highlight='on']").length > 0;
     }
   };
 
   $(function(){
-    navigationHighlighter.highlightNavItem.bind(navigationHighlighter)();
-    navigationHighlighter.attachHiglightChangeHandlers.bind(navigationHighlighter)();
+    navigationHighlighter.highlightNavItem();
+    navigationHighlighter.attachHiglightChangeHandlers();
   
     fd.modules.common.utils.register("components", "navigationHighlighter", navigationHighlighter, fd);
   });

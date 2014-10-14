@@ -95,6 +95,10 @@ var FreshDirect = FreshDirect || {};
       } else if (window.history.replaceState) {
         window.history.replaceState({searchParams: params}, title, window.location.pathname + '?' + window.decodeURIComponent(params));
       }
+
+      if (fd.components && fd.components.navigationHighlighter) {
+        fd.components.navigationHighlighter.reset();
+      }
     }
   }
 
