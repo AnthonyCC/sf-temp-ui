@@ -200,16 +200,16 @@ public class CmsFilteringFlow {
 		return browseDataContext;
 	}
 
-	private boolean isRequestForTheSameSearchParams(CmsFilteringNavigator nav, BrowseDataContext browseDataContext) {
-		return browseDataContext.getSearchParams().getSearchParams().equals(nav.getSearchParams());
+	private boolean isRequestForTheSameSearchParams(CmsFilteringNavigator navigator, BrowseDataContext browseDataContext) {
+		return browseDataContext != null && navigator != null && browseDataContext.getSearchParams() != null && browseDataContext.getSearchParams().getSearchParams() != null && browseDataContext.getSearchParams().getSearchParams().equals(navigator.getSearchParams());
 	}
 
-	private boolean isRequestForTheSamePageType(CmsFilteringNavigator nav, BrowseDataContext browseDataContext) {
-		return browseDataContext.getPageType().equals(nav.getPageType());
+	private boolean isRequestForTheSamePageType(CmsFilteringNavigator navigator, BrowseDataContext browseDataContext) {
+		return browseDataContext != null && navigator != null && browseDataContext.getPageType() != null && browseDataContext.getPageType().equals(navigator.getPageType());
 	}
 
-	private boolean isBrowseRequestForTheSameId(CmsFilteringNavigator nav, BrowseDataContext browseDataContext) {
-		return browseDataContext != null && browseDataContext.getCurrentContainer() != null && browseDataContext.getCurrentContainer().getContentName().equalsIgnoreCase(nav.getId());
+	private boolean isBrowseRequestForTheSameId(CmsFilteringNavigator navigator, BrowseDataContext browseDataContext) {
+		return browseDataContext != null && browseDataContext.getCurrentContainer() != null && browseDataContext.getCurrentContainer().getContentName() != null && browseDataContext.getCurrentContainer().getContentName().equalsIgnoreCase(navigator.getId());
 	}
 
 	private BrowseDataContext removeBrowseDataContextFromCache(String userPrimaryKey) {
