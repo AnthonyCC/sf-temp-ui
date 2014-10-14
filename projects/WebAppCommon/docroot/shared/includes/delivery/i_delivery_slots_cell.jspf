@@ -271,7 +271,7 @@
 		stringBuffer.append("									<div class=\"tsEarlyAmPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
 		.append("										<div>")
 				.append("<img src=\"/media_stat/images/timeslots/early_delivery_icon_web.png\" width=\"16\" height=\"12\" border=\"0\">")
-				.append("<font class=\"tsEarlyAmE\">Early Unattended</font>")
+				.append("<font class=\"tsEarlyAmE\"> Early Unattended</font>")
 			.append("</div>\n")
 		.append("									</div>\n")
 		.append("									<div class=\"tsEarlyAmPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
