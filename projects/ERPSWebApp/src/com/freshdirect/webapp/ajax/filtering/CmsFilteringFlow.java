@@ -71,7 +71,7 @@ public class CmsFilteringFlow {
 	@SuppressWarnings("deprecation")
 	public CmsFilteringFlowResult doFlow(CmsFilteringNavigator nav, FDSessionUser user) throws InvalidFilteringArgumentException{
 		BrowseData browseData = null;
-		BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPagingOrSorting(nav, user);
+		BrowseDataContext browseDataContext = getBrowseDataContextFromCacheForPaging(nav, user);
 		if (nav.getPageType() == FilteringFlowType.BROWSE) {
 			
 			if (browseDataContext == null) {
@@ -178,12 +178,12 @@ public class CmsFilteringFlow {
 		}
 	}
 
-	private BrowseDataContext getBrowseDataContextFromCacheForPagingOrSorting(CmsFilteringNavigator nav, FDSessionUser user) {
+	private BrowseDataContext getBrowseDataContextFromCacheForPaging(CmsFilteringNavigator nav, FDSessionUser user) {
 		BrowseDataContext browseDataContext = null;
 		BrowseEvent event = nav.getBrowseEvent()!=null ? BrowseEvent.valueOf(nav.getBrowseEvent().toUpperCase()) : BrowseEvent.NOEVENT;
 		//use userRefinementCache
 		String userPrimaryKey = user.getUser().getPrimaryKey();
-		if(event != BrowseEvent.PAGE && event != BrowseEvent.SORT) { // invalidate cache entry in every other case than paging or sorting
+		if(event != BrowseEvent.PAGE) { // invalidate cache entry in every other case than paging
 			browseDataContext = removeBrowseDataContextFromCache(userPrimaryKey);
 		} else {
 			browseDataContext = EhCacheUtil.getObjectFromCache(EhCacheUtil.BR_USER_REFINEMENT_CACHE_NAME, userPrimaryKey);
