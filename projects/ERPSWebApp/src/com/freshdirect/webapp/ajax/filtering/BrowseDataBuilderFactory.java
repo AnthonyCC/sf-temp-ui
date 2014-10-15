@@ -714,9 +714,6 @@ public class BrowseDataBuilderFactory {
 			data.getCarousels().setCarouselPosition(cat.getCarouselPositionCLP(CAROUSEL_POSITION_DEFAULT).toString());
 			data.getCarousels().setCarouselRatio(cat.getCarouselRatioCLP(CATEGORY_CAROUSEL_RATIO_DEFAULT).toString());
 		}
-		if(!nav.isPdp()){
-			data.getCarousels().setCarousel2(createCarouselData(null, cat.getCatMerchantRecommenderTitle(), ProductRecommenderUtil.getMerchantRecommenderProducts(cat), user, EnumEventSource.CMR.getName()));			
-		}
 	}
 	
 	private CarouselData createCarouselData(String id, String name, List<ProductModel> products, FDSessionUser user, String cmEventSource){
@@ -911,8 +908,7 @@ public class BrowseDataBuilderFactory {
 	/**
 	 * appends carousels using shown products if necessary
 	 */
-	public void appendCarousels(BrowseData browseData, FDSessionUser user, Set<ContentKey> shownProductKeysForRecommender, boolean disableCategoryYmalRecommender){
-		
+	public void appendCarousels(BrowseData browseData, BrowseDataContext browseDataContext, FDSessionUser user, Set<ContentKey> shownProductKeysForRecommender, boolean disableCategoryYmalRecommender, boolean isPdp){
 		//Product Listing Page Scarab
 		if (browseData.getCarousels().getCarousel1() == null && shownProductKeysForRecommender.size() > 0) {
 			try {
@@ -924,6 +920,19 @@ public class BrowseDataBuilderFactory {
 				}
 			} catch (FDResourceException e) {
 				LOG.error("recommendation failed",e);
+			}
+		}
+		
+		if(!isPdp){
+			CategoryModel categoryModel = (CategoryModel) browseDataContext.getNavigationModel().getNavigationHierarchy().get(NavDepth.SUB_SUB_CATEGORY);
+			if (categoryModel == null) {
+				categoryModel = (CategoryModel) browseDataContext.getNavigationModel().getNavigationHierarchy().get(NavDepth.SUB_CATEGORY);
+			}
+			if (categoryModel == null) {
+				categoryModel = (CategoryModel) browseDataContext.getNavigationModel().getNavigationHierarchy().get(NavDepth.CATEGORY);
+			}
+			if (categoryModel != null) {
+				browseData.getCarousels().setCarousel2(createCarouselData(null, categoryModel.getCatMerchantRecommenderTitle(), ProductRecommenderUtil.getMerchantRecommenderProducts(categoryModel), user, EnumEventSource.CMR.getName()));
 			}
 		}
 	}
