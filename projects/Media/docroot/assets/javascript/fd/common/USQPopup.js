@@ -35,7 +35,7 @@ var FreshDirect = FreshDirect || {};
         		this.container = $('<div id="USQPopup"></div>').hide().append(popupContent).appendTo($('body'));
         		this.opened = true;
         		this.container.show();
-        		changeHeightOfBack()
+        		changeSizeOfBack()
         	});
           
 
@@ -65,7 +65,7 @@ var FreshDirect = FreshDirect || {};
         } else {
             this.opened = true;
             this.container.show();
-            changeHeightOfBack()
+            changeSizeOfBack()
         }
         //hiding the background body scrollbar and adding margin with width of scrollbar, so the content will not move
         $("body").css("overflow","hidden");
@@ -96,15 +96,21 @@ var FreshDirect = FreshDirect || {};
   });
   
   //changes background size if the window is resized
-  $(window).on('resize', function(){ changeHeightOfBack(); });
+  $(window).on('resize', function(){ changeSizeOfBack(); });
   
   //changes the background size of popup, so it will be bigger if the window is too small
-  function changeHeightOfBack(){
+  function changeSizeOfBack(){
 	  $('head').append('<style>#USQPopup:before{height:100%;}</style>');
+	  $('head').append('<style>#USQPopup:before{width:100%;}</style>');
+	  
 	  if ($("#USQPopup").height() < $("#USQPopup div.USQPopupContent").height()){
-			var sum = $("#USQPopup div.USQPopupContent").height() + 25;
-			$('head').append('<style>#USQPopup:before{height:'+ sum + 'px;}</style>');
+			var sumH = $("#USQPopup div.USQPopupContent").height() + 25;
+			$('head').append('<style>#USQPopup:before{height:'+ sumH + 'px;}</style>');
 		} 
+	  if ($(window).width() < $("#USQPopup div.USQPopupContent").width()){
+			var sumW = $("#USQPopup div.USQPopupContent").width();
+			$('head').append('<style>#USQPopup:before{width:'+ sumW + 'px;}</style>');
+		}
   }
   
   USQPopup.state=Bacon.mergeAll([$(document).asEventStream('click','#USQAcceptButton').map(true),
