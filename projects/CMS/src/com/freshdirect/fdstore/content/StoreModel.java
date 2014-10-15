@@ -23,6 +23,8 @@ public class StoreModel extends ContentNodeModelImpl {
 	private List<SortOptionModel> eCouponsPageSortOptions =  new ArrayList<SortOptionModel>();
 	private List<CategoryModel> tabletFeaturedCategories = new ArrayList<CategoryModel>();
 	private List<SearchSuggestionGroupModel> tabletSearchSuggestionGroups = new ArrayList<SearchSuggestionGroupModel>(); 
+	private List<CategoryModel> tabletIdeasFeaturedPicksLists = new ArrayList<CategoryModel>();
+	private List<RecipeTagModel> tabletIdeasRecipeTags = new ArrayList<RecipeTagModel>();
 	
 	public StoreModel(com.freshdirect.cms.ContentKey cKey) {
 		super(cKey);
@@ -124,5 +126,19 @@ public class StoreModel extends ContentNodeModelImpl {
 	
 	public Html getPresidentPicksPageTopMediaBanner() {
 		return FDAttributeFactory.constructHtml(this, "presPicksPageTopMediaBanner");
+	}
+	
+	public BannerModel getTabletIdeasBanner() {
+		return FDAttributeFactory.lookup(this, "tabletIdeasBanner", null);
+	}
+	
+	public List<CategoryModel> getTabletIdeasFeaturedPicksLists() {
+		ContentNodeModelUtil.refreshModels(this, "tabletIdeasFeaturedPicksLists", tabletIdeasFeaturedPicksLists, false);
+		return new ArrayList<CategoryModel>( tabletIdeasFeaturedPicksLists );
+	}
+	
+	public List<RecipeTagModel> getTabletIdeasRecipeTags() {
+		ContentNodeModelUtil.refreshModels(this, "tabletIdeasRecipeTags", tabletIdeasRecipeTags, false);
+		return new ArrayList<RecipeTagModel>( tabletIdeasRecipeTags );
 	}
 }

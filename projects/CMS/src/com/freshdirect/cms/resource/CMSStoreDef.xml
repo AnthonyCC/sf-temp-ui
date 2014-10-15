@@ -48,6 +48,7 @@
 				<DestinationDef contentType="SortOption" />
 				<DestinationDef contentType="Banner" />
 				<DestinationDef contentType="SearchSuggestionGroup" />
+				<DestinationDef contentType="RecipeTag" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -167,6 +168,15 @@
 			</RelationshipDef>
 			<RelationshipDef name="tabletSearchSuggestionGroups" label="Tablet Search Suggestion Groups" cardinality="Many">
 				<DestinationDef contentType="SearchSuggestionGroup" />
+			</RelationshipDef>
+			<RelationshipDef name="tabletIdeasBanner" label="Tablet Ideas Banner">
+				<DestinationDef contentType="Banner" />
+			</RelationshipDef>
+			<RelationshipDef name="tabletIdeasFeaturedPicksLists" label="Tablet Ideas Featured Picks Lists" cardinality="Many">
+				<DestinationDef contentType="Category" />
+			</RelationshipDef>
+			<RelationshipDef name="tabletIdeasRecipeTags" label="Tablet Ideas Recipe Tags" cardinality="Many">
+				<DestinationDef contentType="RecipeTag" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -2385,6 +2395,17 @@
 	<ContentTypeDef name="SearchSuggestionGroup">
 		<AttributeDefs>
 			<AttributeDef type="S" name="searchTerms" label="Search Terms (separated by semicolons)" required="true"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="tabletImage" label="Tablet Image">
+				<DestinationDef contentType="Image"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	<ContentTypeDef name="RecipeTag">
+		<AttributeDefs>
+			<AttributeDef type="S" name="tagId" label="Tag ID" required="true"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="tabletImage" label="Tablet Image">
