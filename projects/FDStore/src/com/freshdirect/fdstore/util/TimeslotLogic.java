@@ -234,9 +234,9 @@ public class TimeslotLogic {
 					}
 					
 					if (timeslot.isEarlyAM()
-							&& (!EnumUnattendedDeliveryFlag.OPT_IN
+							&& (EnumUnattendedDeliveryFlag.OPT_OUT
 									.equals(address.getUnattendedDeliveryFlag()) || 
-									(EnumUnattendedDeliveryFlag.OPT_IN.equals(address.getUnattendedDeliveryFlag()) && 
+									(!EnumUnattendedDeliveryFlag.OPT_OUT.equals(address.getUnattendedDeliveryFlag()) && 
 									!_zonesMap.get(timeslot.getZoneId()).getZoneDescriptor().isUnattended()))) {
 						timeslot.setStoreFrontAvailable("E");
 						timeslot.setTimeslotRemoved(true);
