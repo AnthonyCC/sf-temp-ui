@@ -92,7 +92,7 @@ public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport{
 		StringBuilder redirBuilder = new StringBuilder();
 		
 		// pick and pass fixed parameters first
-		for (final String pName : new String[]{ "cm_vc", "ppPreviewId", "redirected" }) {
+		for (final String pName : new String[]{ "cm_vc", "ppPreviewId", "redirected", "ppId" }) {
 			final String val = req.getParameter(pName);
 			if (val != null) {
 				redirBuilder.append(ProductDisplayUtil.URL_PARAM_SEP)
