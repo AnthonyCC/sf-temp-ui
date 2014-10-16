@@ -184,12 +184,17 @@
 }
 
 .srch .ddpp-oas{
-  float:right; 
+  float:left; 
   display:none;
 }
 
 [data-pagetype="PRES_PICKS"] .ddpp-oas{
   display:block;
+  max-width: 220px;
+  max-height: 275px;
+  overflow: hidden;
+  padding: 10px 0px;
+  margin-left: 10px;
 }
 
 .srch .ddpp-item .burst{
