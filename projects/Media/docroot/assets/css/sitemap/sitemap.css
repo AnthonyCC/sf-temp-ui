@@ -31,7 +31,10 @@ ul > li > ul > li > ul > li > ul > li{
 ul > li > ul > li > ul > li > ul > li > ul > li{
  color: rgb(51,102,0);
 }
-    
+
+li.selectedForExport > a {
+  background-color: #afe;
+}
 
 ul {
   list-style-type: none;
@@ -83,14 +86,20 @@ span.contentId {
   color: gray;
 }
 span.contentId:before {
-	content: "("
+	content: "(";
 }
 span.contentId:after {
-	content: ")"
+	content: ")";
 }
 a {
 	color: inherit;
 } 
+li > b {
+  color: #39a;
+  display: inline-block;
+  width: 20px;
+  cursor: pointer;
+}
 #csvcontent {
   display: none;
 }

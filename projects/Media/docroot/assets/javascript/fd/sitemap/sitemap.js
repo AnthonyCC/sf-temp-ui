@@ -8,7 +8,7 @@ var buff = [], csvbuff = [];
 data.countAll = data.children.reduce(function (p, c) { return p + c.countAll; }, 0);
 
 function displayNode (node, buff) {
-  buff.push('<li id="'+node.id+'" data-products="'+node.countAll+'" data-products-avail="'+node.countAvailable+'" data-products-tempunavail="'+node.countTempUnavailable+'" data-products-disc="'+node.countDiscontinued+'"><a href="/browse.jsp?id='+node.id+'">'+node.name+'<span class="contentId">'+node.id+'</span></a>');
+  buff.push('<li id="'+node.id+'" data-products="'+node.countAll+'" data-products-avail="'+node.countAvailable+'" data-products-tempunavail="'+node.countTempUnavailable+'" data-products-disc="'+node.countDiscontinued+'"><b class="exportselect">X</b><a href="/browse.jsp?id='+node.id+'">'+node.name+'</a><span class="contentId">'+node.id+'</span>');
 
   if (node.children && node.children.length) {
     buff.push('<span class="handle"></span><ul>');
@@ -64,12 +64,32 @@ data.children.forEach(function (node) {
 
 document.getElementById('csvcontent').innerHTML = csvbuff.join('');
 
+var selectForExport = function (node) {
+  var childNodes = [].slice.call(node.getElementsByTagName('li'));
+
+  node.classList.toggle("selectedForExport");
+  if (node.classList.contains("selectedForExport")) {
+    childNodes.forEach(function (n) {
+      n.classList.add("selectedForExport");
+    });
+  } else {
+    childNodes.forEach(function (n) {
+      n.classList.remove("selectedForExport");
+    });
+  }
+}
 
 var domNodes = [].slice.call(document.querySelectorAll('li'));
 document.addEventListener("click", function (e) {
   if (e.target.classList.contains("handle")) {
     e.stopPropagation();
     e.target.parentNode.classList.toggle("selected");
+  }
+});
+document.addEventListener("click", function (e) {
+  if (e.target.classList.contains("exportselect")) {
+    e.stopPropagation();
+    selectForExport(e.target.parentNode);
   }
 });
 document.getElementById("btn_open_all").addEventListener("click", function (e) {
