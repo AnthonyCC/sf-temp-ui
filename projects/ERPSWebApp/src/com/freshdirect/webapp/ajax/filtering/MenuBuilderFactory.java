@@ -966,7 +966,26 @@ public class MenuBuilderFactory {
 					boxIterator.remove();
 				}
 			}
-		}		
+		}
+		if (!FilteringFlowType.BROWSE.equals(browseData.getPageType())) {
+			MenuBoxData menuBoxData = MenuBoxDataService.getDefaultMenuBoxDataService().getMenuBoxById(NavigationUtil.SUBCATEGORY_FILTER_GROUP_ID, menu);
+			if (menuBoxData != null) {
+				if (menuBoxData.getItems().size() == 2) {
+					int menuIndex = menu.indexOf(menuBoxData);
+					menu.get(menuIndex - 1).setDisplayType(MenuBoxDisplayType.SIMPLE);
+					menu.remove(menuBoxData);
+				}
+			} else {
+				menuBoxData = MenuBoxDataService.getDefaultMenuBoxDataService().getMenuBoxById(NavigationUtil.CATEGORY_FILTER_GROUP_ID, menu);
+				if (menuBoxData != null) {
+					if (menuBoxData.getItems().size() == 2) {
+						int menuIndex = menu.indexOf(menuBoxData);
+						menu.get(menuIndex - 1).setDisplayType(MenuBoxDisplayType.SIMPLE);
+						menu.remove(menuBoxData);
+					}
+				}
+			}
+		}
 	}
 	
 	private boolean isFilterPresentOnPage(List<MenuBoxData> menu){
