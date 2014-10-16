@@ -3432,10 +3432,18 @@ public class FDStoreProperties {
 	
 	//Early AM
 	public static int getEarlyAMWindowHour(){
-		return Integer.parseInt(get(PROP_EARLY_AM_HOUR));
+		try {
+			return Integer.parseInt(get(PROP_EARLY_AM_HOUR));
+		} catch (NumberFormatException e) {
+			return 0;
+		}
 	}
 	public static int getEarlyAMWindowMinute(){
-		return Integer.parseInt(get(PROP_EARLY_AM_MINUTE));
+		try {
+			return Integer.parseInt(get(PROP_EARLY_AM_MINUTE));
+		} catch (NumberFormatException e) {
+			return 0;
+		}
 	}
 }
 
