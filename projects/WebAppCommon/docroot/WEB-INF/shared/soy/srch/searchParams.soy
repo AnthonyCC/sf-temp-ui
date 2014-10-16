@@ -33,22 +33,22 @@
  * @param? tabs
  */
 {template .searchSuggestions autoescape="false"}
-  <div>
     {if $tabs and length($tabs) > 0}
-      {foreach $tab in $tabs}
-        {if $tab.active}
-          {call .searchDescription}
-            {param hits:$tab.hits /}
-            {param itemType:$tab.type /}
-            {param searchTerm:$searchTerm /}
-            {param searchParams:$searchParams /}
-          {/call}
-        {/if}
-      {/foreach}
+      <div class="top-marg left-marg">
+        {foreach $tab in $tabs}
+          {if $tab.active}
+            {call .searchDescription}
+              {param hits:$tab.hits /}
+              {param itemType:$tab.type /}
+              {param searchTerm:$searchTerm /}
+              {param searchParams:$searchParams /}
+            {/call}
+          {/if}
+        {/foreach}
+      </div>
     {/if}
-  </div>
     {if $suggestions and length($suggestions) > 0}
-  <div>
+  <div class="left-marg">
     Did you mean {foreach $term in $suggestions}
       <a href="/srch.jsp?searchParams={$term}">{$term}</a>
       {if index($term) < length($suggestions) - 2}, {/if}

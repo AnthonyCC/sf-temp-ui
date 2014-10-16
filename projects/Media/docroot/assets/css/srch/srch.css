@@ -107,7 +107,13 @@
   float: left;
   font-size: 14px;
   line-height: 1.2em;
+}
+
+.srch .tabs .itemcount .top-marg{
   margin-top: 5px;
+}
+
+.srch .tabs .itemcount .left-marg{
   margin-left:10px;
 }
 
