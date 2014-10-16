@@ -33,7 +33,7 @@ var FreshDirect = FreshDirect || {};
     } catch(e) {
       
     }
-    ifrPopup.noscroll();
+    //ifrPopup.noscroll();
   };
 
   var ifrPopup = Object.create(POPUPWIDGET,{
@@ -93,7 +93,7 @@ var FreshDirect = FreshDirect || {};
             }
             ifrPopup.popup.clicked=true;
             ifrPopup.popup.show($('body'),false);
-            ifrPopup.noscroll();
+            //ifrPopup.noscroll();
         }
         var $ifr = $('#ifrPopup iframe');
 
