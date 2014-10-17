@@ -99,6 +99,17 @@ li > b {
   display: inline-block;
   width: 20px;
   cursor: pointer;
+  visibility: hidden;
+}
+li > b:before {
+  content: "\2713";
+  visibility: visible;
+  color: green;
+}
+li.selectedForExport > b:before {
+  content: "\274c";
+  visibility: visible;
+  color: red;
 }
 #csvcontent {
   display: none;
