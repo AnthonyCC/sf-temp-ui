@@ -34,6 +34,7 @@
 				<button id="btn_open_all">open all</button>
 				<button id="btn_close_all">close all</button>
 				<button id="btn_toggle_empty">show/hide empty nodes</button>
+				<button id="btn_redraw_chart">redraw chart based on selection</button>
 				<a id="btn_download_csv" download="sitemap.csv" href="#">Download CSV</a>
 			</div>
 			<ul id="content"></ul>

@@ -115,6 +115,14 @@ document.getElementById("btn_download_csv").addEventListener("click", function (
 
   this.href = 'data:application/csv;charset=utf-8,'+encodeURIComponent(document.getElementById('csvcontent').childNodes[0].nodeValue);
 });
+document.getElementById("btn_redraw_chart").addEventListener("click", function (e) {
+  var selection = [].slice.call(document.getElementsByClassName('selectedForExport'))
+        .map(function (el) {
+          return el.id;
+        });
+
+  displayChart(selection);
+});
 
 var displayChart = function (selection) { 
   var oldSvg = document.getElementById('bubbleChart');
@@ -147,6 +155,12 @@ var displayChart = function (selection) {
       root = data,
       nodes = pack.nodes(data),
       view;
+
+  if (selection && selection.length) {
+    nodes = nodes.filter(function (n) {
+      return n.id === "null" || selection.indexOf(n.id) > -1;
+    });
+  }
 
   var circle = svg.selectAll("circle")
       .data(nodes)
