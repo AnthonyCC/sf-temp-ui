@@ -124,7 +124,7 @@ public class NavigationUtil {
 	
 			for (CategoryModel cat : department.getCategories()){
 				if (cat instanceof CategoryModel) {
-					if (NavigationUtil.isCategoryHiddenInContext(user, cat)) {
+					if (isCategoryHiddenAndSelectedNotShowSelf(user, cat.getContentName(), cat)) {
 						continue;
 					}
 					if (cat.isPreferenceCategory()){
@@ -476,5 +476,16 @@ public class NavigationUtil {
 		}
 
 		return null;
+	}
+	
+	/**
+	 * Checks category is forbidden or not show self. Also checks if the category is not show self and it's selected.
+	 * @param user
+	 * @param nodeId
+	 * @param category
+	 * @return true iff the category has to be hidden
+	 */
+	public static boolean isCategoryHiddenAndSelectedNotShowSelf(FDUserI user, String nodeId, CategoryModel category) {
+		return isCategoryHiddenInContext(user, category) && !(!category.isShowSelf() && category.getContentName().equals(nodeId));
 	}
 }

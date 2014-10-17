@@ -199,12 +199,13 @@ public class MenuBuilderFactory {
 			
 			// determine the box dipslay and selection type (lowest level of navigation should always remain expanded [APPDEV-3814])
 			List<CategoryModel> subCategories = ((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories();
+			String categoryId = getNodeContentNameByNavDepth(thePath, NavDepth.CATEGORY);
 			if(!nav.isPdp() && (subCategories==null || subCategories.size()==0)){
 				
 				createTopLevelBoxes(menu, navModel);
 				
 				for(MenuBoxData domain : menu){
-					checkSelected(domain, thePath.get(NavDepth.CATEGORY).getContentName());				
+					checkSelected(domain, categoryId);				
 				}
 				
 			} else {
@@ -246,7 +247,7 @@ public class MenuBuilderFactory {
 							MenuItemData sectionTitle = new MenuItemData();
 							sectionTitle.setName(categorySection.getHeadline());
 							menuItems.add(sectionTitle);
-							createCatMenuItems(selectedCategories, menuItems, navModel.getUser());
+							createCatMenuItems(selectedCategories, menuItems, navModel.getUser(), categoryId);
 						}
 						
 					}
@@ -257,7 +258,7 @@ public class MenuBuilderFactory {
 						menuItems.add(new MenuItemData(dept.getRegularCategoriesNavHeader()));
 						
 						//regular categories
-						createCatMenuItems(navModel.getRegularCategories(), menuItems, navModel.getUser());
+						createCatMenuItems(navModel.getRegularCategories(), menuItems, navModel.getUser(), categoryId);
 					}
 					
 					if(!navModel.getPreferenceCategories().isEmpty()){
@@ -266,25 +267,26 @@ public class MenuBuilderFactory {
 						menuItems.add(new MenuItemData(dept.getPreferenceCategoriesNavHeader()));
 						
 						//preference categories				
-						createCatMenuItems(navModel.getPreferenceCategories(), menuItems, navModel.getUser());
+						createCatMenuItems(navModel.getPreferenceCategories(), menuItems, navModel.getUser(), categoryId);
 					}
 					
 					domain.setItems(menuItems);
 					insertMarkersForSpecialBox(domain, dept.getMaxItemsPerColumn());
-					checkSelected(domain, thePath.get(NavDepth.CATEGORY).getContentName());
+					checkSelected(domain, categoryId);
 					
 					menu.add(domain);
 				}
 			}
 			
 			
+			String subCategoryId = getNodeContentNameByNavDepth(thePath, NavDepth.SUB_CATEGORY);
 			// sub categories box on category and sub category page
 			if(((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories()!=null && 
 			   ((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories().size()>0){
 				
 				CategoryModel cat = (CategoryModel)thePath.get(NavDepth.CATEGORY);
 				
-				if (!NavigationUtil.isCategoryHiddenInContext(navModel.getUser(), (CategoryModel)cat)) {
+				if (!NavigationUtil.isCategoryHiddenAndSelectedNotShowSelf(navModel.getUser(), categoryId, (CategoryModel) cat)) {
 					MenuBoxData domain = new MenuBoxData();
 					domain.setName("");//leave empty
 					domain.setId(cat.getContentName());
@@ -304,7 +306,7 @@ public class MenuBuilderFactory {
 							createTopLevelBoxes(menu, navModel);
 							
 							for(MenuBoxData box : menu){
-								checkSelected(box, thePath.get(NavDepth.CATEGORY).getContentName());				
+								checkSelected(box, categoryId);				
 							}
 						}
 					}
@@ -320,10 +322,10 @@ public class MenuBuilderFactory {
 						items.add(allProductsItem);					
 					}
 					
-					domain.setItems(createCatMenuItems(((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories(), items, navModel.getUser()));
+					domain.setItems(createCatMenuItems(((CategoryModel)thePath.get(NavDepth.CATEGORY)).getSubcategories(), items, navModel.getUser(), subCategoryId));
 					
 					if(thePath.get(NavDepth.SUB_CATEGORY)!=null){
-						checkSelected(domain, thePath.get(NavDepth.SUB_CATEGORY).getContentName());
+						checkSelected(domain, subCategoryId);
 					}
 					
 					if (items.size() > 1) {
@@ -343,7 +345,7 @@ public class MenuBuilderFactory {
 				
 				CategoryModel subCat = (CategoryModel)thePath.get(NavDepth.SUB_CATEGORY);
 				
-				if (!NavigationUtil.isCategoryHiddenInContext(navModel.getUser(), (CategoryModel)subCat)) {
+				if (!NavigationUtil.isCategoryHiddenAndSelectedNotShowSelf(navModel.getUser(), subCategoryId, (CategoryModel) subCat)) {
 					MenuBoxData domain = new MenuBoxData();
 					domain.setName("");//leave empty
 					domain.setId(subCat.getContentName());
@@ -371,11 +373,11 @@ public class MenuBuilderFactory {
 					allProductsItem.setUrlParameter(subCat.getContentName());
 					items.add(allProductsItem);
 					
-					domain.setItems(createCatMenuItems(subCat.getSubcategories(), items, navModel.getUser()));
+					domain.setItems(createCatMenuItems(subCat.getSubcategories(), items, navModel.getUser(), getNodeContentNameByNavDepth(thePath, NavDepth.SUB_SUB_CATEGORY)));
 					
-					CategoryModel subSubCat = (CategoryModel) thePath.get(NavDepth.SUB_SUB_CATEGORY);
 					
 					if(domain.getItems()!=null && domain.getItems().size()>0){
+						CategoryModel subSubCat = (CategoryModel) thePath.get(NavDepth.SUB_SUB_CATEGORY);
 						String subCatId = subSubCat == null ? null : subSubCat.getContentName();
 						if(!checkSelected(domain, subCatId)){
 							allProductsItem.setSelected(true); // select ALL PRODUCTS option if no menu item were selected
@@ -399,6 +401,17 @@ public class MenuBuilderFactory {
 			return menu;
 			
 		}
+	}
+
+	private String getNodeContentNameByNavDepth(final Map<NavDepth, ContentNodeModel> thePath, NavDepth navDepth) {
+		String result = null;
+		if (thePath != null && navDepth != null) {
+			ContentNodeModel contentNodeModel = thePath.get(navDepth);
+			if (contentNodeModel != null) {
+				result = contentNodeModel.getContentName();
+			}
+		}
+		return result;
 	}
 	
 	public void setSecondLowestLevelBoxType(List<MenuBoxData> menu, CategoryModel cat){
@@ -444,7 +457,7 @@ public class MenuBuilderFactory {
 
 				List<MenuItemData> items = new ArrayList<MenuItemData>();
 				items.add(new MenuItemData(categorySection.getHeadline()));
-				domain.addItems(createCatMenuItems(categorySection.getSelectedCategories(), items, navModel.getUser()));
+				domain.addItems(createCatMenuItems(categorySection.getSelectedCategories(), items, navModel.getUser(), getNodeContentNameByNavDepth(thePath, NavDepth.CATEGORY)));
 
 			}
 
@@ -469,7 +482,7 @@ public class MenuBuilderFactory {
 			List<MenuItemData> items = new ArrayList<MenuItemData>();
 			items.add(new MenuItemData(dept.getRegularCategoriesNavHeader()));
 
-			domain.setItems(createCatMenuItems(navModel.getRegularCategories(), items, navModel.getUser()));
+			domain.setItems(createCatMenuItems(navModel.getRegularCategories(), items, navModel.getUser(), getNodeContentNameByNavDepth(thePath, NavDepth.CATEGORY)));
 
 			menu.add(domain);
 		}
@@ -488,7 +501,7 @@ public class MenuBuilderFactory {
 			List<MenuItemData> items = new ArrayList<MenuItemData>();
 			items.add(new MenuItemData(dept.getPreferenceCategoriesNavHeader()));
 
-			domain.setItems(createCatMenuItems(navModel.getPreferenceCategories(), items, navModel.getUser()));
+			domain.setItems(createCatMenuItems(navModel.getPreferenceCategories(), items, navModel.getUser(), getNodeContentNameByNavDepth(thePath, NavDepth.CATEGORY)));
 
 			menu.add(domain);
 		}
@@ -774,7 +787,7 @@ public class MenuBuilderFactory {
 		return menuItems;
 	}
 	
-	private List<MenuItemData> createCatMenuItems(List<CategoryModel> categories, List<MenuItemData> menuItems, FDUserI user){
+	private List<MenuItemData> createCatMenuItems(List<CategoryModel> categories, List<MenuItemData> menuItems, FDUserI user, String nodeId){
 		
 		if(menuItems==null){
 			menuItems = new ArrayList<MenuItemData>();			
@@ -784,7 +797,7 @@ public class MenuBuilderFactory {
 		List<MenuItemData> newMenuItems = new ArrayList<MenuItemData>();	
 		
 		for(CategoryModel category : categories){
-			if (NavigationUtil.isCategoryHiddenInContext(user, category)) {
+			if (NavigationUtil.isCategoryHiddenAndSelectedNotShowSelf(user, nodeId, category)) {
 				continue;
 			}
 			
@@ -806,7 +819,7 @@ public class MenuBuilderFactory {
 		
 		return menuItems;
 	}
-	
+
 	/**
 	 * @param filters
 	 * @param menu
