@@ -298,3 +298,8 @@
 .no-touch .srch .tabs li span:hover{
   text-decoration:underline;
 }
+
+.srch .browse-media{
+  clear:both;
+  padding:10px 0;
+}

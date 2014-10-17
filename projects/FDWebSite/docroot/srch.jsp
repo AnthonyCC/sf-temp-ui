@@ -45,7 +45,6 @@
 
   <tmpl:put name='deptnav' direct='true'>
     <div class="srch-header">
-      <soy:render template="browse.topMedia" data="${browsePotato.descriptiveContent}" />
       <soy:render template="srch.header" data="${browsePotato.searchParams}" />
     </div>
   </tmpl:put>
@@ -82,6 +81,8 @@
   </tmpl:put>
 
   <tmpl:put name='content' direct='true'>
+    <soy:render template="browse.topMedia" data="${browsePotato.descriptiveContent}" />
+
     <div class="pager-holder top">
       <c:if test="${not empty browsePotato.pager}">
         <soy:render template="browse.pager" data="${browsePotato.pager}" />
