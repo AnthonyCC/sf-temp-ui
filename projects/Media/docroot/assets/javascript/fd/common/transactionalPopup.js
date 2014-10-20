@@ -58,6 +58,8 @@ var FreshDirect = FreshDirect || {};
           this.currentTarget.attr('data-currentrelatedvalue', $('#'+this.popupId+' .transactional-related-item input.qty').val());
           this.currentTarget.attr('data-currentselectvalue', $('#'+this.popupId+' .transactional-main-item select.salesunit').val());
           this.currentTarget.attr('data-currentrelatedselectvalue', $('#'+this.popupId+' .transactional-related-item select.salesunit').val());
+          // hiding tooltips on ecoupons
+          $('.cDetToolTipClickToApply, .cDetToolTip').hide();
         }
       }
     },
