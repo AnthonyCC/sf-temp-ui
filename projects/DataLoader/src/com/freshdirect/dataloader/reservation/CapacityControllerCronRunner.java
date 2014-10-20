@@ -106,6 +106,8 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 					TimeslotGroup group = groupDeliverySlotByZone(slots);
 					Map<String, List<DlvTimeslotModel>> slotsByZone = group.getGroupByZone();
 					
+					LOGGER.info("##### CapacityControllerCronRunner synchronizeWaveInstance "+processDate);
+					
 					if(!isWaveSyncLocked) {
 						LOGGER.info("CapacityControllerCronRunner beginning to synchronize "+slots.size()
 								+" timeslots for date "+processDate+ (isTrialRun ? " and is a trail run" : ""));
@@ -115,12 +117,16 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 							for(IRoutingSchedulerIdentity schedulerId : group.getSchedulerIds()) {
 								if(waveInstanceTree.containsKey(schedulerId.getDeliveryDate())) {
 									if(waveInstanceTree.get(schedulerId.getDeliveryDate()).containsKey(schedulerId.getArea().getAreaCode())) {
+										LOGGER.info("##### synchronizeWaveInstance schedulerId "+schedulerId);
+										
 										dsb.synchronizeWaveInstance(schedulerId, waveInstanceTree, inSyncZones, routingLocationMap,inSyncRoutingWaveInstIds);
 									}
 								}
 							}
 						}	
 					}
+					LOGGER.info("##### CapacityControllerCronRunner synchronizeWaveInstance "+processDate);
+					
 					
 					Iterator<String> _itr = slotsByZone.keySet().iterator();
 
@@ -128,6 +134,8 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 					List<IDeliverySlot> _routingSlots = null;
 					List<DlvTimeslotModel> _dlvSlots = null;
 
+					LOGGER.info("#####START CapacityControllerCronRunner retrieveCapacityMetrics "+processDate);
+					
 					while(_itr.hasNext()) {
 
 						_zoneCode = _itr.next();
@@ -143,6 +151,9 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 							attachWindowMetrics(_dlvSlots, metrics);
 						}									
 					}
+					
+					LOGGER.info("#####END CapacityControllerCronRunner retrieveCapacityMetrics "+processDate);
+					
 					recalculateCapacity(slots);
 					if(!isTrialRun) {
 						List<DlvTimeslotModel> filteredTimeSlots = new ArrayList<DlvTimeslotModel>();
@@ -170,9 +181,9 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 				}
 			}
 			if(!isWaveSyncLocked){
-				LOGGER.debug("Fixing disassociated timeslots: START");
+				LOGGER.info("Fixing disassociated timeslots: START");
 				dsb.fixDisassociatedTimeslots();
-				LOGGER.debug("Fixing disassociated timeslots: STOP");
+				LOGGER.info("Fixing disassociated timeslots: STOP");
 			}
 			LOGGER.info("########################## CapacityControllerCronRunner Stop ##############################");
 		} catch (Exception e) {
