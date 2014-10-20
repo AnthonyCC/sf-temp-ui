@@ -106,7 +106,7 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 					TimeslotGroup group = groupDeliverySlotByZone(slots);
 					Map<String, List<DlvTimeslotModel>> slotsByZone = group.getGroupByZone();
 					
-					LOGGER.info("##### CapacityControllerCronRunner synchronizeWaveInstance "+processDate);
+					LOGGER.info("#####START CapacityControllerCronRunner synchronizeWaveInstance "+processDate);
 					
 					if(!isWaveSyncLocked) {
 						LOGGER.info("CapacityControllerCronRunner beginning to synchronize "+slots.size()
@@ -125,7 +125,7 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 							}
 						}	
 					}
-					LOGGER.info("##### CapacityControllerCronRunner synchronizeWaveInstance "+processDate);
+					LOGGER.info("#####END CapacityControllerCronRunner synchronizeWaveInstance "+processDate);
 					
 					
 					Iterator<String> _itr = slotsByZone.keySet().iterator();
