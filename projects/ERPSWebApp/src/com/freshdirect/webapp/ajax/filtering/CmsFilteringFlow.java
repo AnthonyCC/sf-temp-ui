@@ -112,7 +112,7 @@ public class CmsFilteringFlow {
 
 				//only display recommenders if on last page
 				PagerData pagerData = browseData.getPager();
-				if (pagerData.isAll() || pagerData.getActivePage() == pagerData.getPageCount()){
+				if (pagerData.isAll() || isCaroulelsTopAndOnFirstPage(browseData, pagerData) || isCarouselsBottomAndOnLastPage(browseData, pagerData)) {
 					boolean disableCategoryYmalRecommender = browseDataContext.getCurrentContainer() instanceof ProductContainer && ((ProductContainer) browseDataContext.getCurrentContainer()).isDisableCategoryYmalRecommender();
 					BrowseDataBuilderFactory.getInstance().appendCarousels(browseData, browseDataContext, user, shownProductKeysForRecommender, disableCategoryYmalRecommender, nav.isPdp());
 				} else { //remove if already added
@@ -164,6 +164,14 @@ public class CmsFilteringFlow {
 			populateSearchCarouselProductLimit(nav.getActivePage(), browseDataContext);
 		}
 		return new CmsFilteringFlowResult(browseData, browseDataContext.getNavigationModel());
+	}
+
+	private boolean isCarouselsBottomAndOnLastPage(BrowseData browseData, PagerData pagerData) {
+		return "BOTTOM".equals(browseData.getCarousels().getCarouselPosition()) && pagerData.getActivePage() == pagerData.getPageCount();
+	}
+
+	private boolean isCaroulelsTopAndOnFirstPage(BrowseData browseData, PagerData pagerData) {
+		return "TOP".equals(browseData.getCarousels().getCarouselPosition()) && pagerData.getActivePage() == 1;
 	}
 
 	/**
