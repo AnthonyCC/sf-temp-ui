@@ -21,7 +21,7 @@
 
 <%-- OAS variables --%>
 <c:set var="sitePage" scope="request" value="${empty browsePotato.descriptiveContent.oasSitePage ? 'www.freshdirect.com/search.jsp' : browsePotato.descriptiveContent.oasSitePage }" />
-<c:set var="listPos" scope="request" value="SystemMessage,LittleRandy,CategoryNote,PPHeader,PPHeader2,PPSuperBuy,PPLeftBottom,PPMidBottom,PPRightBottom" />
+<c:set var="listPos" scope="request" value="SystemMessage,LittleRandy,CategoryNote,PPHeader,PPHeader2,PPSuperBuy,PPLeftBottom,PPMidBottom,PPRightBottom,PPSearchContent" />
 
 <tmpl:insert template='/common/template/browse_template.jsp'>
   <tmpl:put name='cmeventsource' direct='true'>BROWSE</tmpl:put>
@@ -81,6 +81,12 @@
   </tmpl:put>
 
   <tmpl:put name='content' direct='true'>
+    <div class="oas-cnt PPSearchContent" id="oas_b_PPSearchContent">
+     <script type="text/javascript">
+       OAS_AD('PPSearchContent');
+     </script>
+    </div>
+
     <soy:render template="browse.topMedia" data="${browsePotato.descriptiveContent}" />
 
     <div class="pager-holder top">
