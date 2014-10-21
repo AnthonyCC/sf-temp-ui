@@ -6,7 +6,7 @@ import java.util.List;
 import com.freshdirect.framework.util.IndexedList;
 import com.freshdirect.framework.util.TimedLruCache;
 
-class CachingExternalRecommender implements ExternalRecommender {
+public class CachingExternalRecommender implements ExternalRecommender {
 	final private ExternalRecommender originalRecommender;
 
 	final private TimedLruCache<ExternalRecommenderRequest, List<RecommendationItem>> cache;
@@ -31,5 +31,9 @@ class CachingExternalRecommender implements ExternalRecommender {
 			return Collections.emptyList();
 		}
 		return originalRecommender.recommendItems(request);
+	}
+	
+	public ExternalRecommender getOriginalRecommender() {
+		return originalRecommender;
 	}
 }

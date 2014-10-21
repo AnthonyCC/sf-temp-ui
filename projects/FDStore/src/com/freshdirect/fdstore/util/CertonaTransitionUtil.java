@@ -7,6 +7,11 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.smartstore.external.CachingExternalRecommender;
+import com.freshdirect.smartstore.external.ExternalRecommender;
+import com.freshdirect.smartstore.external.ExternalRecommenderRegistry;
+import com.freshdirect.smartstore.external.ExternalRecommenderType;
+import com.freshdirect.smartstore.external.NoSuchExternalRecommenderException;
 import com.freshdirect.smartstore.external.certona.CertonaInfrastructure;
 import com.freshdirect.smartstore.external.certona.CertonaRecommender;
 import com.freshdirect.smartstore.fdstore.VariantSelector;
@@ -114,6 +119,31 @@ public class CertonaTransitionUtil {
 			return false;
 		}
 
+		final boolean isCertonaBased = getCertonaInfo(siteFeature, cohortName) != null;
+
+		if (isCertonaBased) {
+			LOGGER.debug("Cohort " + cohortName + " gets Certona recommendations for site feature " + siteFeature.getName());
+		} else {
+			LOGGER.debug("Cohort " + cohortName + " gets legacy recommendations for site feature " + siteFeature.getName());
+		}
+		return isCertonaBased;
+	}
+	
+	public static class CertonaInfo {
+		// public EnumSiteFeature siteFeature;
+		public String cohortName;
+		public Variant variant;
+		/** @see registered names {@link CertonaInfrastructure} */
+		public String certonaRecommenderName; 
+		public String certonaScheme;
+	}
+
+
+	public static CertonaInfo getCertonaInfo(final EnumSiteFeature siteFeature, final String cohortName) {
+		if (cohortName == null || siteFeature == null) {
+			return null;
+		}
+
 		// pick variant set for the given site feature
 		final VariantSelector selector = VariantSelectorFactory.getSelector(siteFeature);
 		
@@ -121,9 +151,8 @@ public class CertonaTransitionUtil {
 		final Variant v = selector.getVariant(cohortName);
 		if (v == null || v.getRecommender() == null) {
 			LOGGER.error("Incomplete/bogus variant returned, fall back to legacy");
-			return false;
+			return null;
 		}
-
 
 		// final boolean isCertonaBased = v.getRecommender() instanceof CertonaRecommender;
 		boolean isCertonaBased = false;
@@ -140,14 +169,39 @@ public class CertonaTransitionUtil {
 				// String n should match one of certona recommender names
 				// stored in {@link CertonaInfrastructure} class
 				isCertonaBased = n != null && n.startsWith("certona");
+				
+				if (isCertonaBased) {
+					CertonaInfo ci = new CertonaInfo();
+					
+					// ci.siteFeature = siteFeature;
+					ci.cohortName = cohortName;
+					ci.variant = r.getVariant();
+					ci.certonaRecommenderName = n;
+
+					for (ExternalRecommenderType t : ExternalRecommenderType.values()) {
+						ExternalRecommender recommender = null;
+						try {
+							recommender = ExternalRecommenderRegistry.getInstance(n, t);
+						} catch (IllegalArgumentException e) {
+						} catch (NoSuchExternalRecommenderException e) {
+						}
+						
+						if (recommender instanceof CachingExternalRecommender) {
+							recommender = ((CachingExternalRecommender) recommender).getOriginalRecommender();
+						}
+
+						if (recommender instanceof CertonaRecommender) {
+							CertonaRecommender cRec = (CertonaRecommender) recommender;
+							ci.certonaScheme = cRec.getScheme();
+							break;
+						}
+					}
+
+					return ci;
+				}
 			}
 		}
-
-		if (isCertonaBased) {
-			LOGGER.debug("Cohort " + cohortName + " gets Certona recommendations for site feature " + siteFeature.getName());
-		} else {
-			LOGGER.debug("Cohort " + cohortName + " gets legacy recommendations for site feature " + siteFeature.getName());
-		}
-		return isCertonaBased;
+		
+		return null;
 	}
 }

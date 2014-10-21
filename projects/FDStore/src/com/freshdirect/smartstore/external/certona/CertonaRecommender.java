@@ -147,4 +147,9 @@ public class CertonaRecommender implements ExternalRecommender {
 
 		return results;
 	}
+
+
+	public String getScheme() {
+		return scheme;
+	}
 }
