@@ -56,7 +56,6 @@ if ( qc.getParameter("pageSize") == null ) {
 				<img src="/media/images/layout/clear.gif" width="10" height="1" alt="" border="0">
 			</td><td colspan="3"><img src="/media_stat/images/layout/999966.gif" height="1" border="0" width="100%" VSPACE="3"><br></td></tr>
 		<tr><td colspan="4">&nbsp;</td></tr>
-		
 		<fd:SearchFaq id="result" nav="<%= nav %>">
 		<%	int itemCount = (Integer) pageContext.getAttribute("searchResultsSize"); %>
 	
@@ -65,8 +64,7 @@ if ( qc.getParameter("pageSize") == null ) {
 		
 	</td>
 	</tr>
-		
-		<% if(null ==result || result.isEmpty()||result.size()==0) {%>
+		<% if(result == null || result.isEmpty() || result.size() == 0) {%>
 		<tr><td valign="top">
 				<img src="/media/images/layout/clear.gif" width="10" height="1" alt="" border="0">
 			</td><td colspan="3"><b>No matching FAQs found for '<%= pageContext.getAttribute("keywords") %>'</b></td></tr>
@@ -103,7 +101,7 @@ if ( qc.getParameter("pageSize") == null ) {
 		</table></td></tr>
 		</logic:iterate>
 		<% } %>
-		</table>
+		
 		<% if(null !=result && !result.isEmpty() && result.size()!=0) {%>
 		<div class="pager" style="margin-top: 50px; margin-left: 14px;">
 			<div class="results">
@@ -119,6 +117,16 @@ if ( qc.getParameter("pageSize") == null ) {
 			</div>
 		<% } %>
 		</fd:SearchFaq>
+		<% String resultInvalid = (String) pageContext.getAttribute("resultInvalid"); %>
+		<% if("true".equals(resultInvalid)) { %>
+				<tr><td valign="top">
+					<img src="/media/images/layout/clear.gif" width="10" height="1" alt="" border="0">
+				</td><td colspan="3"><b>No matching FAQs found for '<%= pageContext.getAttribute("keywords") %>'</b></td></tr>
+				<tr><td valign="top">
+					<img src="/media/images/layout/clear.gif" width="10" height="1" alt="" border="0">
+				</td><td colspan="3">&nbsp;</td></tr>
+		<% } %>
+		</table>
 		
 		</form>
 		<fd:CmPageView wrapIntoScriptTag="true" searchTerm='<%=(String)(pageContext.getAttribute("keywords"))%>' searchResultsSize='<%=(Integer)(pageContext.getAttribute("searchResultsSize"))%>'/>

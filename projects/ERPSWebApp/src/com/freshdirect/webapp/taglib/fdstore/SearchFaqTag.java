@@ -56,6 +56,8 @@ public class SearchFaqTag extends AbstractGetterTag {
 			if("".equals(faqKeyword.trim())){
 				pageContext.setAttribute("searchResultsSize", 0);
 				pageContext.setAttribute("keywords", "");
+
+				pageContext.setAttribute("resultInvalid", "true");
 				return null;				
 			}
 
