@@ -21,7 +21,6 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
 import com.freshdirect.WineUtil;
-import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
@@ -1265,23 +1264,6 @@ public class ProductDetailPopulator {
 			
 			List<VarItem> varOpts = new ArrayList<VarItem>();
 			for ( FDVariationOption varOpt : fdVar.getVariationOptions() ) {
-				
-				/** Availability check **/
-				final String varOptSkuCode = varOpt.getSkuCode();
-
-				if (varOptSkuCode == null || "".equals(varOptSkuCode.trim())) {
-					continue;
-				}
-
-				SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNode(FDContentTypes.SKU, varOptSkuCode);
-				if (sku==null || sku.isUnavailable()) {
-					continue;
-				}
-
-
-
-				/** Process options **/
-
 				VarItem v = new VarItem();
 				String vName = varOpt.getName();
 				v.setLabelValue( varOpt.isLabelValue() );
@@ -1292,11 +1274,8 @@ public class ProductDetailPopulator {
 				v.setCvp(cvp == null ? "0" : JspMethods.formatPrice( cvp.getPrice() ) );
 				varOpts.add( v );
 			}
-
-			if (varOpts.size() > 0) {
-				var.setValues( varOpts );
-				varList.add( var );
-			}
+			var.setValues( varOpts );
+			varList.add( var );
 		}
 		return varList;
 	}
