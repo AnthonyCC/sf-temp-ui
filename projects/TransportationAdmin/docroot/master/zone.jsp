@@ -96,6 +96,7 @@
 							  <ec:column property="nextStopSmsEnabled" title="Next Stop SMS"/>
 							  <ec:column property="unattendedSmsEnabled" title="Unatteded/Doorman delivery SMS"/>
 							  <ec:column property="dlvAttemptedSmsEnabled" title="Delivery Attempted SMS"/>
+							  <ec:column property="dlvWindowReminder" title="Delivery Window Reminder"/>
 							</ec:row>
 						  </ec:table>
 		<% }else{ %>
@@ -129,6 +130,7 @@
 							  <ec:column property="nextStopSmsEnabled" title="Next Stop SMS Enabled"/>
 							  <ec:column property="unattendedSmsEnabled" title="Unatteded/Doorman delivery SMS Enabled"/>
 							  <ec:column property="dlvAttemptedSmsEnabled" title="Delivery Attempted SMS Enabled"/>
+							  <ec:column property="dlvWindowReminder" title="Delivery Window Reminder"/>
 							</ec:row>
 						  </ec:table>
 		<% } %>

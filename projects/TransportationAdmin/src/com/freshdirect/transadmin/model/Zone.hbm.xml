@@ -75,6 +75,9 @@
         <property name="dlvAttemptedSmsEnabled" type="string">
             <column name="DLV_ATTEMPTED_SMS_ENABLED" length="1" />
         </property>
+        <property name="dlvWindowReminder" type="string">
+            <column name="DLV_WINDOW_REMINDER_ENABLED" length="1" />
+        </property>
         <many-to-one name="defaultServiceTimeType" class="com.freshdirect.transadmin.model.DlvServiceTimeType" fetch="select" lazy="false">
             <column name="SERVICETIME_TYPE" length="8" />
         </many-to-one>

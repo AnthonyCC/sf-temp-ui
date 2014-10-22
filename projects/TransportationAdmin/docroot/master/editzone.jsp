@@ -13,6 +13,22 @@
 <% 
 	String pageTitle = "Add/Edit Zone";
 %>
+<script type="text/javascript"> 
+	function enableDisable() { 
+	var myForm="zoneForm";
+  if(document.getElementById(myForm).smsEta.checked){ 
+	 document.getElementById(myForm).dlvWindow.checked=false;
+     document.getElementById(myForm).dlvWindow.disabled = true; 
+  } else if(document.getElementById(myForm).dlvWindow.checked){ 
+	 document.getElementById(myForm).smsEta.checked=false;
+     document.getElementById(myForm).smsEta.disabled = true; 
+  } else{
+  document.getElementById(myForm).smsEta.disabled=false;
+  document.getElementById(myForm).dlvWindow.disabled=false;
+  }
+} 
+ window.onload=enableDisable;
+	</script>
 <tmpl:insert template='/common/sitelayout.jsp'>
 
 <tmpl:put name='yui-lib'>
@@ -47,7 +63,7 @@
 
 		<br/>	
 		<div align="center">
-      <form:form commandName = "zoneForm" method="post">
+      <form:form id="zoneForm" commandName = "zoneForm" method="post">
       <form:hidden path="zoneCode"/>
       
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -221,9 +237,10 @@
                	<td>SMS Alerts Enabled</td>
                	<td>
                		<form:checkbox path="nextStopSmsEnabled" value="X" />&nbsp;NextStop SMS Alerts
-               		<form:checkbox path="smsETAEnabled" value="X" />&nbsp;SMS ETA Window
+               		<form:checkbox id="smsEta" path="smsETAEnabled" value="X" onchange="enableDisable();" />&nbsp;SMS ETA Window
                		<form:checkbox path="unattendedSmsEnabled" value="X" />&nbsp;Unattended/Doorman Delivery SMS Alerts
                		<form:checkbox path="dlvAttemptedSmsEnabled" value="X" />&nbsp;Delivery Attempted SMS Alerts
+               		 <form:checkbox id="dlvWindow" path="dlvWindowReminder" value="X"  onchange="enableDisable();" />&nbsp;Delivery Window Reminder
                	</td>
                	<td>
                		&nbsp;<form:errors path="nextStopSmsEnabled" />&nbsp;&nbsp;<form:errors path="smsETAEnabled" />&nbsp;&nbsp;<form:errors path="unattendedSmsEnabled" />&nbsp;&nbsp;<form:errors path="dlvAttemptedSmsEnabled" />

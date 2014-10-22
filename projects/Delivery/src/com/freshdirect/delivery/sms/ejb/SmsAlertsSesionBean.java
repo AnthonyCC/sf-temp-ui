@@ -59,8 +59,9 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	private static final String WRONG_RESPONSE_MESSAGE = "FreshDirect: Sorry, we didn't understand your response. Reply HELP for help, STOP to cancel.";
 	private static final String ETA_MESSAGE_TEXT_1 = "Hello! Your FreshDirect order is getting a few finishing touches, and will be delivered between ";
 	private static final String ETA_MESSAGE_TEXT_2 = ". Questions? www.freshdirect.com/help";
-	private static final String UATTENDED_OR_DOORMAN_DELIVERY_TEXT = "Special delivery! Your FreshDirect order is waiting for you at home. We hope you love it! Questions? www.freshdirect.com/help";
+	private static final String UATTENDED_OR_DOORMAN_DELIVERY_TEXT = "Special delivery! Your FreshDirect order is waiting for you. We hope you love it! Questions? www.freshdirect.com/help";
 	private static final String DLV_ATTEMPTED_TEXT = "We just missed you! An attempt was made to deliver your FreshDirect order. Questions? www.freshdirect.com/help";
+	
 
 	/**
 	 * This method sends the optin sms message to customer when he enrolls
@@ -212,7 +213,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		Connection con = null;
 		try {
 			con = this.getConnection();
-			LOGGER.debug("MobileNumber = " + mobileNumber);
+			
 			PhoneNumber phone = new PhoneNumber(mobileNumber);
 			String confirmed = isConfirmed(message);
 			List<SmsCustInfo> customerInfoList = getCustomerInfoList(con, phone.getPhone());
@@ -281,7 +282,6 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			
 			STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, OPTIN_CONFIRMATION_SUCCESS_MESSAGE);
 			smsResponseModel.setDate(new Date());
-			
 			updateSmsAlertCaptured(con, smsResponseModel, OPTIN_ALERT_TYPE, customerId);
 
 		}  else if (confirmed.equalsIgnoreCase("STOP")) {
@@ -375,21 +375,36 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		try {
 			con = this.getConnection();
 			List<SmsAlertETAInfo> etaInfoList = smsDAO.getETAInfo(con);
-			for (int i = 0; i < etaInfoList.size(); i++) {
+			if (etaInfoList!=null) {
+				for (int i = 0; i < etaInfoList.size(); i++) {
 
-				boolean isSubscribed = isSubscribed(con, ETA_ALERT_TYPE,
-						etaInfoList.get(i).getCustomerId());
-				if (isSubscribed) {
-					if(etaInfoList.get(i).getEtaStartTime()!=null && etaInfoList.get(i).getEtaEndTime()!=null){
-						STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(etaInfoList.get(i)
-										.getMobileNumber(), ETA_MESSAGE_TEXT_1
-										+ getTime(etaInfoList.get(i).getEtaStartTime())+ " and "
-										+ getTime(etaInfoList.get(i).getEtaEndTime())
-										+ ETA_MESSAGE_TEXT_2);
-						
-						smsResponseModel.setDate(new Date());
-						smsResponseModel.setOrderId(etaInfoList.get(i).getOrderId());
-						updateSmsAlertCaptured(con, smsResponseModel, ETA_ALERT_TYPE, etaInfoList.get(i).getCustomerId());
+					boolean isSubscribed = isSubscribed(con, ETA_ALERT_TYPE,
+							etaInfoList.get(i).getCustomerId());
+					if (isSubscribed && etaInfoList.get(i).isETA() != null) {
+						if (etaInfoList.get(i).isETA()
+								&& etaInfoList.get(i).getEtaStartTime() != null
+								&& etaInfoList.get(i).getEtaEndTime() != null) {
+							STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(etaInfoList.get(i).getMobileNumber(),ETA_MESSAGE_TEXT_1
+													+ getTime(etaInfoList.get(i).getEtaStartTime())+ " and "
+													+ getTime(etaInfoList.get(i).getEtaEndTime())
+													+ ETA_MESSAGE_TEXT_2);
+
+							smsResponseModel.setDate(new Date());
+							smsResponseModel.setOrderId(etaInfoList.get(i).getOrderId());
+							updateSmsAlertCaptured(con, smsResponseModel, ETA_ALERT_TYPE, etaInfoList.get(i).getCustomerId());
+						} else if (!etaInfoList.get(i).isETA()
+								&& etaInfoList.get(i).getWindowStartTime() != null
+								&& etaInfoList.get(i).getWindowEndTime() != null) {
+							STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(etaInfoList.get(i).getMobileNumber(),ETA_MESSAGE_TEXT_1
+													+ getTime(etaInfoList.get(i).getWindowStartTime())
+													+ " and "
+													+ getTime(etaInfoList.get(i).getWindowEndTime())
+													+ ETA_MESSAGE_TEXT_2);
+
+							smsResponseModel.setDate(new Date());
+							smsResponseModel.setOrderId(etaInfoList.get(i).getOrderId());
+							updateSmsAlertCaptured(con, smsResponseModel,ETA_ALERT_TYPE, etaInfoList.get(i).getCustomerId());
+						}
 					}
 				}
 			}
@@ -655,4 +670,5 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			ps.close();
 		}
 	}
+
 }

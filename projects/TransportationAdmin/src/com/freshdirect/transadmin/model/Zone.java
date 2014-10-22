@@ -53,7 +53,17 @@ public class Zone implements java.io.Serializable {
 	private String nextStopSmsEnabled;
 	private String unattendedSmsEnabled;
 	private String dlvAttemptedSmsEnabled;
+	private String dlvWindowReminder;
 	private BigInteger ETAInterval;
+
+	
+	public String getDlvWindowReminder() {
+		return dlvWindowReminder;
+	}
+
+	public void setDlvWindowReminder(String dlvWindowReminder) {
+		this.dlvWindowReminder = dlvWindowReminder;
+	}
 
 	public Set getZoneSupervisors() {
 		return zoneSupervisors;

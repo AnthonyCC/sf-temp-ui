@@ -159,7 +159,7 @@ public class SmsDAO {
 		ResultSet rs = null;
 		Date toTime=new Date();
 		try {
-			String GET_ETA_WINDOW = "select BS.WEBORDER_ID, bs.DLV_ETA_STARTTIME ,bs.DLV_ETA_ENDTIME, BS.MOBILE_NUMBER, z.SMS_ETA_ENABLED,S.CUSTOMER_ID " + 
+			String GET_ETA_WINDOW = "select BS.WEBORDER_ID, bs.DLV_ETA_STARTTIME ,bs.DLV_ETA_ENDTIME,BS.WINDOW_STARTTIME, BS.WINDOW_ENDTIME, BS.MOBILE_NUMBER, z.SMS_ETA_ENABLED, z.DLV_WINDOW_REMINDER_ENABLED, S.CUSTOMER_ID " + 
 					"from TRANSP.HANDOFF_BATCH b, TRANSP.HANDOFF_BATCHACTION ba, transp.handoff_batchstop bs, cust.sale s, TRANSP.TRN_AREA ta, TRANSP.ZONE z " + 
 					"where B.BATCH_ID = BA.BATCH_ID and b.BATCH_ID = bs.BATCH_ID " + 
 					"and BS.AREA = TA.CODE and Z.AREA = ta.code  and bs.DLV_ETA_STARTTIME is not null and mobile_number is not null and s.id = BS.WEBORDER_ID " + 
@@ -171,7 +171,7 @@ public class SmsDAO {
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				if (rs.getString("MOBILE_NUMBER") != null
-						&& rs.getString("SMS_ETA_ENABLED")!=null ) {
+						&& (rs.getString("SMS_ETA_ENABLED")!=null || rs.getString("DLV_WINDOW_REMINDER_ENABLED")!=null )) {
 					
 					SmsAlertETAInfo smsAlertETAInfo=new SmsAlertETAInfo();
 					smsAlertETAInfo.setCustomerId(rs.getString("CUSTOMER_ID"));
@@ -180,6 +180,13 @@ public class SmsDAO {
 					smsAlertETAInfo.setEtaEndTime(rs.getTimestamp("DLV_ETA_ENDTIME"));
 					smsAlertETAInfo.setEtaEnabled(rs.getString("SMS_ETA_ENABLED")!=null?true:false);
 					smsAlertETAInfo.setOrderId(rs.getString("WEBORDER_ID"));
+					smsAlertETAInfo.setWindowStartTime(rs.getTimestamp("WINDOW_STARTTIME"));
+					smsAlertETAInfo.setWindowEndTime(rs.getTimestamp("WINDOW_ENDTIME"));
+					if(rs.getString("SMS_ETA_ENABLED")!=null){
+						smsAlertETAInfo.setETA(true);
+					} else if (rs.getString("DLV_WINDOW_REMINDER_ENABLED")!=null){
+						smsAlertETAInfo.setETA(false);
+					} 
 					etaInfoList.add(smsAlertETAInfo);
 				}
 			}

@@ -9,10 +9,30 @@ public class SmsAlertETAInfo {
 	private Date etaEndTime;
 	private boolean etaEnabled;
 	private String orderId;
+	private Date windowStartTime;
+	private Date windowEndTime;
+	private Boolean isETA;
 	
 	
 	
-	
+	public Boolean isETA() {
+		return isETA;
+	}
+	public void setETA(Boolean isETA) {
+		this.isETA = isETA;
+	}
+	public Date getWindowStartTime() {
+		return windowStartTime;
+	}
+	public void setWindowStartTime(Date windowStartTime) {
+		this.windowStartTime = windowStartTime;
+	}
+	public Date getWindowEndTime() {
+		return windowEndTime;
+	}
+	public void setWindowEndTime(Date windowEndTime) {
+		this.windowEndTime = windowEndTime;
+	}
 	public String getOrderId() {
 		return orderId;
 	}
