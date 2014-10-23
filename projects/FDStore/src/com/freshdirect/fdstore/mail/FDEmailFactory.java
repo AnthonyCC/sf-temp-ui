@@ -377,8 +377,8 @@ public class FDEmailFactory {
 		return email;
 	}
 	
-	public XMLEmailI createReferAFriendInvitationEmail(String name, String userMessage, String systemMessage, String legal, String refLink) {
-		FDReferAFriendInvEmail email = new FDReferAFriendInvEmail(name, userMessage, systemMessage, legal, refLink);
+	public XMLEmailI createReferAFriendInvitationEmail(String name, String userMessage, String systemMessage, String legal, String refLink, String offerText) {
+		FDReferAFriendInvEmail email = new FDReferAFriendInvEmail(name, userMessage, systemMessage, legal, refLink, offerText);
 		return email;
 	}
 	

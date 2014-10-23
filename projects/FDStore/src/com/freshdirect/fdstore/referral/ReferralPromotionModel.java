@@ -42,6 +42,7 @@ public class ReferralPromotionModel extends ModelSupport {
 	private String referralPageText;
 	private String referralPageLegal;
 	private String inviteEmailSubject;
+	private String inviteEmailOfferText;
 	private String inviteEmailText;
 	private String inviteEmailLegal;
 	private String referralCreditEmailSubject;
@@ -252,6 +253,13 @@ public class ReferralPromotionModel extends ModelSupport {
 	}
 	public String getSiteAccessImageFile() {
 		return siteAccessImageFile;
+	}
+	
+	public void setInviteEmailOfferText(String inviteEmailOfferText) {
+		this.inviteEmailOfferText = inviteEmailOfferText;
+	}
+	public String getInviteEmailOfferText() {
+		return inviteEmailOfferText;
 	}
 	
 	

@@ -16,13 +16,15 @@ public class FDReferAFriendInvEmail extends EmailSupport implements XMLEmailI {
 	private String systemMessage;
 	private String legal;
 	private String refLink;
+	private String offerText;
 
-	public FDReferAFriendInvEmail(String name, String userMessage, String systemMessage, String legal, String refLink) {			
+	public FDReferAFriendInvEmail(String name, String userMessage, String systemMessage, String legal, String refLink, String offerText) {			
 		this.name = name;
 		this.userMessage = userMessage;
 		this.systemMessage = systemMessage;
 		this.legal = legal;
 		this.refLink = refLink;
+		this.offerText = offerText;
 	}
 
 	/**
@@ -34,6 +36,7 @@ public class FDReferAFriendInvEmail extends EmailSupport implements XMLEmailI {
 		map.put("systemMessage", systemMessage);
 		map.put("legal", legal);
 		map.put("refLink", refLink);
+		map.put("offerText", offerText);
 	}
 
 	@Override

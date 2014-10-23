@@ -100,6 +100,7 @@
 				<!----------------Invitation Email---------------------------------------->
 				<tr><td colspan="2"><b>Invitation Email</b></td></tr>
 				<tr><td>Email Subject Line:</td><td><%=model.getInviteEmailSubject()%></td></tr>
+				<tr><td>Offer Text:</td><td><%=model.getInviteEmailOfferText() %></td></tr>
 				<tr><td>Default text for website: <br/>Note this text may be deleted by the customer:</td>
 				<td><%=model.getInviteEmailText()%></td></tr>
 				<tr><td>Legal:</td><td><%=model.getInviteEmailLegal()%></td></tr>
@@ -377,6 +378,17 @@
 					<td valign="top">Email Subject Line:</td>
 					<td>
 					<spring1:bind path="command.inviteEmailSubject"><input type="text" name="inviteEmailSubject" value="<c1:out value='${status.value}'/>" size="50"/>
+					<c1:if test="${not empty status.errorMessage}" >
+						<br/>
+						<span style="color:red;font-weight:bold;font-size:12px;"><c1:out value="${status.errorMessage}" /></span>
+					</c1:if>
+					</spring1:bind></td>
+					</tr>
+					
+					<tr>
+					<td valign="top">Offer Text:</td>
+					<td>
+					<spring1:bind path="command.inviteEmailOfferText"><input type="text" name="inviteEmailOfferText" value="<c1:out value='${status.value}'/>" size="50"/>
 					<c1:if test="${not empty status.errorMessage}" >
 						<br/>
 						<span style="color:red;font-weight:bold;font-size:12px;"><c1:out value="${status.errorMessage}" /></span>

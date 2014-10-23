@@ -33,6 +33,7 @@ public class ReferralAdminModel implements Serializable{
 	private String referralPageText;
 	private String referralPageLegal;
 	private String inviteEmailSubject;
+	private String inviteEmailOfferText;
 	private String inviteEmailText;
 	private String inviteEmailLegal;
 	private String referralCreditEmailSubject;
@@ -156,6 +157,7 @@ public class ReferralAdminModel implements Serializable{
 				+ ", giveHeader=" + giveHeader + ", giveText=" + giveText
 				+ ", inviteEmailLegal=" + inviteEmailLegal
 				+ ", inviteEmailSubject=" + inviteEmailSubject
+				+ ", inviteEmailOfferText=" + inviteEmailOfferText
 				+ ", inviteEmailText=" + inviteEmailText + ", notes=" + notes
 				+ ", promoDescription=" + promoDescription + ", promotionId="
 				+ promotionId + ", referralCreditEmailSubject="
@@ -289,6 +291,12 @@ public class ReferralAdminModel implements Serializable{
 	}
 	public String getSiteAccessImageFile() {
 		return siteAccessImageFile;
+	}
+	public String getInviteEmailOfferText() {
+		return inviteEmailOfferText;
+	}
+	public void setInviteEmailOfferText(String inviteEmailOfferText) {
+		this.inviteEmailOfferText = inviteEmailOfferText;
 	}
 	
 		

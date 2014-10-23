@@ -943,9 +943,9 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 
 	private static final String INSERT_REFPROMO = "insert into  CUST.REFERRAL_PRGM (ID, EXPIRATION_DATE, GIVE_TEXT, GET_TEXT, DESCRIPTION, "
 			+ "PROMOTION_ID, REFERRAL_FEE, DEFAULT_PROMO, SHARE_HEADER, SHARE_TEXT, GIVE_HEADER, GET_HEADER, NOTES, "
-			+ "FB_IMAGE_PATH, FB_HEADLINE, FB_TEXT, TWITTER_TEXT, RL_PAGE_TEXT, RL_PAGE_LEGAL, INV_EMAIL_SUBJECT, " 
+			+ "FB_IMAGE_PATH, FB_HEADLINE, FB_TEXT, TWITTER_TEXT, RL_PAGE_TEXT, RL_PAGE_LEGAL, INV_EMAIL_SUBJECT, INV_EMAIL_OFFER_TEXT, " 
 			+ "INV_EMAIL_TEXT, INV_EMAIL_LEGAL, REF_CRE_EMAIL_SUB, REF_CRE_EMAIL_TEXT, add_by_date, add_by_user, sa_image_path) "
-			+ "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate, ?, ?)";
+			+ "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, sysdate, ?, ?)";
 
 	public String createRefPromo(ReferralAdminModel rModel) throws SQLException {
 		Connection conn = null;
@@ -955,6 +955,7 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 		String rcet = rModel.getReferralCreditEmailText();
 		String iet = rModel.getInviteEmailText();
 		String rpt = rModel.getReferralPageText();
+		String ieOfferText = rModel.getInviteEmailOfferText();
 		
 		try {
 			conn = this.jdbcTemplate.getDataSource().getConnection();
@@ -985,12 +986,13 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 			pstmt.setString(18, rpt);
 			pstmt.setString(19, rModel.getReferralPageLegal());
 			pstmt.setString(20, rModel.getInviteEmailSubject());
-			pstmt.setString(21, iet);
-			pstmt.setString(22, rModel.getInviteEmailLegal());
-			pstmt.setString(23, rModel.getReferralCreditEmailSubject());
-			pstmt.setString(24, rcet);
-			pstmt.setString(25, rModel.getAddByUser());
-			pstmt.setString(26, rModel.getSiteAccessImageFile());
+			pstmt.setString(21, ieOfferText);
+			pstmt.setString(22, iet);
+			pstmt.setString(23, rModel.getInviteEmailLegal());
+			pstmt.setString(24, rModel.getReferralCreditEmailSubject());
+			pstmt.setString(25, rcet);
+			pstmt.setString(26, rModel.getAddByUser());
+			pstmt.setString(27, rModel.getSiteAccessImageFile());
 			pstmt.execute();
 			return id;
 		} catch (Exception e) {
@@ -1162,7 +1164,7 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 
 	private static final String GET_REF_PROMOTION = "select  rp.DESCRIPTION, P.CODE , SHARE_HEADER, SHARE_TEXT, GET_HEADER, GET_TEXT, GIVE_HEADER, GIVE_TEXT, " +
 			"REFERRAL_FEE,rp.EXPIRATION_DATE, DEFAULT_PROMO, NOTES,  rp.ID, PROMOTION_ID, rp.FB_IMAGE_PATH, rp.FB_HEADLINE, rp.FB_TEXT, rp.TWITTER_TEXT, " + 
-			"rp.RL_PAGE_TEXT, rp.RL_PAGE_LEGAL, rp.INV_EMAIL_SUBJECT, rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT, rp.sa_image_path " +
+			"rp.RL_PAGE_TEXT, rp.RL_PAGE_LEGAL, rp.INV_EMAIL_SUBJECT, rp.INV_EMAIL_OFFER_TEXT, rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT, rp.sa_image_path " +
 			"from CUST.REFERRAL_PRGM rp, " +
 				  "cust.promotion_new p " +
 			"where rp.id = ? " + 
@@ -1202,6 +1204,7 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 				rAdm.setReferralPageText(rpt);
 				rAdm.setReferralPageLegal(rset.getString("RL_PAGE_LEGAL"));
 				rAdm.setInviteEmailSubject(rset.getString("INV_EMAIL_SUBJECT"));
+				rAdm.setInviteEmailOfferText(rset.getString("INV_EMAIL_OFFER_TEXT"));
 				String iet = rset.getString("INV_EMAIL_TEXT");
 				rAdm.setInviteEmailText(iet);
 				rAdm.setInviteEmailLegal(rset.getString("INV_EMAIL_LEGAL"));
@@ -1263,7 +1266,7 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 	private static final String UPDATE_REFPROMO = "update CUST.REFERRAL_PRGM set EXPIRATION_DATE=?, GIVE_TEXT=?, GET_TEXT=?, "
 			+ "DESCRIPTION=?, PROMOTION_ID=?, REFERRAL_FEE=?, DEFAULT_PROMO=?, SHARE_HEADER=?, SHARE_TEXT=?, GIVE_HEADER=?, "
 			+ "GET_HEADER=?, NOTES=?, FB_IMAGE_PATH=?, FB_HEADLINE=?, FB_TEXT=?, TWITTER_TEXT=?, RL_PAGE_TEXT=?, RL_PAGE_LEGAL=?, " 
-			+ "INV_EMAIL_SUBJECT=?, INV_EMAIL_TEXT=?, INV_EMAIL_LEGAL=?, REF_CRE_EMAIL_SUB=?, REF_CRE_EMAIL_TEXT=?, "
+			+ "INV_EMAIL_SUBJECT=?, INV_EMAIL_OFFER_TEXT=?, INV_EMAIL_TEXT=?, INV_EMAIL_LEGAL=?, REF_CRE_EMAIL_SUB=?, REF_CRE_EMAIL_TEXT=?, "
 			+ "change_by_date = sysdate, change_by_user=?, sa_image_path=? "
 			+ "where ID=?";
 
@@ -1274,6 +1277,7 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 		
 		String rcet = rModel.getReferralCreditEmailText();
 		String iet = rModel.getInviteEmailText();
+		String ieOfferText = rModel.getInviteEmailOfferText();
 		String rpt = rModel.getReferralPageText();
 		
 		try {
@@ -1303,13 +1307,14 @@ public class OracleMarketAdminDAOImpl implements MarketAdminDAOIntf {
 			pstmt.setString(17, rpt);
 			pstmt.setString(18, rModel.getReferralPageLegal());
 			pstmt.setString(19, rModel.getInviteEmailSubject());
-			pstmt.setString(20, iet);
-			pstmt.setString(21, rModel.getInviteEmailLegal());
-			pstmt.setString(22, rModel.getReferralCreditEmailSubject());
-			pstmt.setString(23, rcet);
-			pstmt.setString(24, rModel.getAddByUser());
-			pstmt.setString(25, rModel.getSiteAccessImageFile());
-			pstmt.setString(26, rModel.getReferralId());
+			pstmt.setString(20, ieOfferText);
+			pstmt.setString(21, iet);
+			pstmt.setString(22, rModel.getInviteEmailLegal());
+			pstmt.setString(23, rModel.getReferralCreditEmailSubject());
+			pstmt.setString(24, rcet);
+			pstmt.setString(25, rModel.getAddByUser());
+			pstmt.setString(26, rModel.getSiteAccessImageFile());
+			pstmt.setString(27, rModel.getReferralId());
 			pstmt.executeUpdate();
 		} catch (Exception e) {
 			LOGGER.error("Failed with insert into CUST.REFERRAL_PRGM", e);

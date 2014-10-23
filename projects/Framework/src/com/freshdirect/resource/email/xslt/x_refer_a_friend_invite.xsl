@@ -11,88 +11,124 @@
 <html xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
 	<title>Refer A Friend Invitation</title>
-	<link rel="stylesheet" href="http://www.freshdirect.com/assets/css/emails.css"/>
+	<link rel="stylesheet" href="https://www.freshdirect.com/assets/css/emails.css"/>
 	<style type="text/css">
 		v\:* { behavior: url(#default#VML); display:inline-block}
 	</style>
 </head>
-<body style="padding-top:0px;margin-top:0px;">
-<table width="800">
-	<tr><td>
-		<div id="parentdiv" style="float:left;position:relative !important;top:0;left:0;">
-			<table width="800" height="760" background="http://www.freshdirect.com/media_stat/images/profile/email_background1.jpg" style="background-image:url('http://www.freshdirect.com/media_stat/images/profile/email_background1.jpg');background-repeat: no-repeat;background-position: top;border:0;">
+<body style="padding-top: 0px; margin-top: 0px;">
+	<table align="center" border="0" width="640" cellpadding="0" cellspacing="0">
+		<tr>
+			<td colspan="3" valign="middle" align="center">
 				<xsl:comment>[if gte vml 1]<![CDATA[>]]>
-					&lt;v:shape stroked="f" style= "float:left;position:absolute;z-index:-2;visibility:visible;width:800px; height:760px;top:0;left:0px;border:0;align:center;"&gt;
-							&lt;v:imagedata src="http://www.freshdirect.com/media_stat/images/profile/email_background1.jpg"/&gt;
-				<![CDATA[<![endif]]]></xsl:comment>
-				
-				<tr valign="top" style="vertical-align:top;"><td>
-					<table width="550" border='0' style="float:left;position:absolute !important;width:550px;align:center;top:70px;left:70px;padding-left:50px;margin-top:0px;margin-left:70px;border-collapse:separate;border-spacing:2px;">
-						<xsl:comment>[if gte vml 1]<![CDATA[>]]>
-							&lt;tr&gt;&lt;td colspan="2"&gt;&lt;br/&gt;&lt;br/&gt;&lt;/td&gt;&lt;/tr&gt;
-						<![CDATA[<![endif]]]></xsl:comment>
-						<tr valign="bottom" style="vertical-align:bottom;">
-							<td colspan="2" align="center" height="167" valign="bottom">
-								<img src="http://www.freshdirect.com/media_stat/images/profile/unlock_greate_taste.jpg" border="0" />
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2" align="center">
-								<p><img src="http://www.freshdirect.com/media_stat/images/profile/left_curly_bracket.jpg" border="0" /><b><xsl:value-of select="name"/></b> has invited you to try Freshdirect.com<img src="http://www.freshdirect.com/media_stat/images/profile/right_curly_bracket.jpg" border="0" /></p><br />
-							</td>
-						</tr>
-						<tr>
-							<td valign="top" colspan="2" align="center" style="line-height:20px;">
-								<p>&quot;<xsl:value-of select="userMessage"/>&quot;</p>
-							</td>					
-						</tr>
-						<tr><td colspan="2"><br/><br/></td></tr>
-						<tr>
-							<td valign="top" colspan="2" align="center" style="line-height:20px;">
-								<p><xsl:value-of select="systemMessage"/></p>
-							</td>					
-						</tr>				
-						<tr>
-							<td valign="top" colspan="2" align="center">
-								<p><br/><a href="{refLink}"><img src="http://www.freshdirect.com/media_stat/images/profile/sign_up_and_start_shopping.jpg" border="0" /></a></p>
-							</td>					
-						</tr>	
-					</table>			
-				</td></tr>
-				<xsl:comment>[if gte vml 1]<![CDATA[>]]>
-					&lt;/v:imagedata&gt;
+					&lt;v:shape stroked="f" style= "float: left; position: absolute; z-index:-2; visibility: visible; width: 640px; height: 66px; top: 0; left: 0px; border: 0; align: center;"&gt;
+						&lt;v:imagedata src="https://www.freshdirect.com/media_stat/images/profile/raf_email/content_header.png"/&gt;&lt;/v:imagedata&gt;
 					&lt;/v:shape&gt;
 				<![CDATA[<![endif]]]></xsl:comment>
-			</table>
-		</div>
-	</td></tr>
-	<tr><td>
-		<xsl:comment>[if gte vml 1]<![CDATA[>]]>
-			&lt;v:shape style="position:absolute;top:375px;left:0;margin-top:375px;width:800px;"&gt;		
-		 <![CDATA[<![endif]]]></xsl:comment>
-		<table width="100%">
-			<tr><td align="center" style="font-size:9px;">
-			Legal: <xsl:value-of select="legal"/>
-			</td></tr>
-		</table>
-		<xsl:comment>[if gte vml 1]<![CDATA[>]]>
-			&lt;/v:shape&gt;
-		<![CDATA[<![endif]]]></xsl:comment>
-	</td></tr>
-	<tr><td>
-		<xsl:comment>[if gte vml 1]<![CDATA[>]]>
-			&lt;v:shape style="position:absolute;top:415px;left:0;margin-top:415px;width:800px;height:100px;"&gt;		
-		 <![CDATA[<![endif]]]></xsl:comment>
-		<table width="100%">
-			<tr><td align="center">
-			<xsl:call-template name="h_footer_v1"/>
-			</td></tr>
-		</table>
-		<xsl:comment>[if gte vml 1]<![CDATA[>]]>
-			&lt;/v:shape&gt;
-		<![CDATA[<![endif]]]></xsl:comment>
-	</td></tr>
-</table>
+				<div style="color: #fff; text-align: center; font-size: 18px;">
+					<xsl:value-of select="name"/> has invited you to try FreshDirect!
+				</div>
+				
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3">
+				<img src="https://www.freshdirect.com/media_stat/images/profile/raf_email/content_header_2.png" width="640" height="170" alt="" />
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<img src="https://www.freshdirect.com/media_stat/images/profile/raf_email/content_middle_1.png" width="24" height="482" alt="" />
+			</td>
+			<td width="327" valign="top">
+				<xsl:comment>[if gte vml 1]<![CDATA[>]]>
+					&lt;v:shape stroked="f" style= "float: left; position: absolute; z-index:-2; visibility: visible; width: 327px; height: 482px; top: 0; left: 0px; border: 0; align: center;"&gt;
+						&lt;v:imagedata src="https://www.freshdirect.com/media_stat/images/profile/raf_email/content_middle_2.png"/&gt;&lt;/v:imagedata&gt;
+					&lt;/v:shape&gt;
+				<![CDATA[<![endif]]]></xsl:comment>
+				
+				<table>
+					<tr><td><img src="https://www.freshdirect.com/media_stat/images/profile/raf_email/transparent_10x10.png" width="300" height="10" alt="" /></td></tr>
+					<tr><td style="margin: 10px 10px 10px 0;"><xsl:value-of select="offerText" disable-output-escaping="yes"/></td></tr>
+					<tr><td style="margin: 20px 10px 10px 0;"><img src="https://www.freshdirect.com/media_stat/images/profile/raf_email/quote.png" alt="" /> <xsl:value-of select="userMessage"/></td></tr>
+					<tr><td style="margin: 20px 10px 10px 0;"><xsl:value-of select="systemMessage"/></td></tr>
+					<tr><td style="margin: 20px 10px 10px 0;"><a href="http://www.freshdirect.com/index.jsp"><img src="https://www.freshdirect.com/media_stat/images/profile/raf_email/get_started.png" alt="" /></a></td></tr>
+				</table>
+			</td>
+			<td>
+				<img src="https://www.freshdirect.com/media_stat/images/profile/raf_email/content_middle_3.png" width="289" height="482" alt="" />
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3"><img src="https://www.freshdirect.com/media_stat/images/profile/raf_email/content_footer.jpg" width="640" height="67" alt="FreshDirect" /></td>
+		</tr>
+	</table>
+
+	
+	<table align="center" bgcolor="#ffffff" border="0" width="640" cellpadding="0" cellspacing="0">
+	<tbody>
+	<tr>
+	<td><img style="DISPLAY: block" alt="" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/transparent_10x10.png" border="0" height="19" width="8" /></td></tr></tbody></table>
+
+	<table align="center" border="0" width="640" cellpadding="0" cellspacing="0">
+	<tbody>
+	<tr>
+	<td><a href="http://www.freshdirect.com/index.jsp"><img style="DISPLAY: block" alt="Go to FreshDirect" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/ftr_nav_go_to_freshdirect.gif" usemap="#Map" border="0" height="34" width="150" /></a></td>
+	<td><a href="http://www.freshdirect.com/category.jsp?catId=picks_love"><img style="DISPLAY: block" alt="President's Picks" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/ftr_nav_presidents_picks.gif" usemap="#Map" border="0" height="34" width="130" /></a></td>
+	<td><a href="https://www.freshdirect.com/newproducts.jsp"><img style="DISPLAY: block" alt="New Products" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/ftr_nav_new_products.gif" usemap="#Map" border="0" height="34" width="116" /></a></td>
+	<td><a href="https://www.freshdirect.com/your_account/manage_account.jsp"><img style="DISPLAY: block" alt="Your Account" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/ftr_nav_your-account.gif" usemap="#Map" border="0" height="34" width="116" /></a></td>
+	<td><a href="https://www.freshdirect.com/your_account/brownie_points.jsp"><img style="DISPLAY: block" alt="Refer a Friend" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/ftr_nav_refer_a_friend.gif" usemap="#Map" border="0" height="34" width="128" /></a></td></tr></tbody></table>
+
+	<table align="center" bgcolor="#ffffff" border="0" width="640" cellpadding="0" cellspacing="0">
+	<tbody>
+	<tr>
+	<td><img style="DISPLAY: block" alt="" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/transparent_10x10.png" border="0" height="19" width="8" /></td></tr></tbody></table>
+	<table align="center" border="0" width="640" cellpadding="0" cellspacing="0">
+	<tbody>
+	<tr>
+	<td style="FONT-FAMILY: 'Century Gothic', Verdana, Arial, Helvetica, sans-serif; COLOR: #999; FONT-SIZE: 14px" align="center" valign="middle">Connect with FreshDirect</td>
+	<td style="FONT-FAMILY: 'Century Gothic', Verdana, Arial, Helvetica, sans-serif; COLOR: #999; FONT-SIZE: 14px" align="center" valign="middle">Get the App for Your Appetite</td></tr>
+	<tr>
+	<td align="center" valign="middle"><img style="DISPLAY: block" alt="" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/transparent_10x10.png" border="0" height="15" width="310" /></td>
+	<td align="center" valign="middle"><img style="DISPLAY: block" alt="" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/transparent_10x10.png" border="0" height="15" width="330" /></td></tr></tbody></table>
+	<table align="center" border="0" width="640" cellpadding="0" cellspacing="0">
+	<tbody>
+	<tr>
+	<td width="88"><img style="DISPLAY: block" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/ftr_left_before_fb.gif" border="0" height="27" width="88" /></td>
+	<td width="27"><a href="http://www.facebook.com/freshdirect"><img style="DISPLAY: block" alt="Facebook" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/ftr_facebook.gif" border="0" height="27" width="27" /></a></td>
+	<td width="11"><img style="DISPLAY: block" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/ftr_right_after_facebook.gif" border="0" height="27" width="11" /></td>
+	<td width="27"><a href="http://www.twitter.com/freshdirect"><img style="DISPLAY: block" alt="Twitter" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/ftr_twitter.gif" border="0" height="27" width="27" /></a></td>
+	<td width="10"><img style="DISPLAY: block" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/ftr_right_after_twitter.gif" border="0" height="27" width="10" /></td>
+	<td width="27"><a href="http://www.pinterest.com/freshdirect/"><img style="DISPLAY: block" alt="Pinterest" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/ftr_pinterest.gif" border="0" height="27" width="27" /></a></td>
+	<td width="12"><img style="DISPLAY: block" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/ftr_right_after_pinterest.gif" border="0" height="27" width="12" /></td>
+	<td width="26"><a href="http://instagram.com/freshdirect"><img style="DISPLAY: block" alt="Intstagram" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/ftr_instagram.gif" border="0" height="27" width="26" /></a></td>
+	<td width="167"><img style="DISPLAY: block" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/ftr_right_after_instagram.gif" border="0" height="27" width="167" /></td>
+	<td width="75"><a href="http://itunes.apple.com/us/app/freshdirect/id346631494"><img style="DISPLAY: block" alt="Available on the App Store" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/ftr_apple_app.gif" border="0" height="27" width="75" /></a></td>
+	<td width="12"><img style="DISPLAY: block" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/ftr_right_after_instagram.gif" border="0" height="27" width="12" /></td>
+	<td width="76"><a href="https://play.google.com/store/apps/details?id=com.freshdirect.android"><img style="DISPLAY: block" alt="Android app on Google Play Store" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/ftr_google_play.gif" border="0" height="27" width="76" /></a></td>
+	<td width="82"><img style="DISPLAY: block" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/ftr_right_after_google_play.gif" border="0" height="27" width="82" /></td></tr></tbody></table>
+	<table align="center" bgcolor="#ffffff" border="0" width="640" cellpadding="0" cellspacing="0">
+	  <tbody>
+	<tr>
+	<td height="11"><img style="DISPLAY: block" alt="" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/transparent_10x10.png" border="0" height="30" width="8" /></td></tr></tbody></table>
+	<table align="center" bgcolor="#ffffff" border="0" width="640" cellpadding="0" cellspacing="0">
+	<tbody>
+	<tr>
+	<td style="LINE-HEIGHT: 14px; FONT-FAMILY: Verdana,Arial,Helvetica,sans-serif; COLOR: #999; FONT-SIZE: 10px" align="left">Please add announcements@.freshdirect.com to your address book to ensure our emails reach your inbox.<br /><br />For FreshDirect online Help or to contact us, please <a style="COLOR: rgb(51,102,0)" href="http://www.freshdirect.com/help/contact_fd.jsp"><span style="COLOR: rgb(51,102,0); FONT-WEIGHT: normal; TEXT-DECORATION: underline">click here</span></a>.<br /><br />23-30 Borden Ave. Long Island City, NY 11101<br /><br /><a style="COLOR: #360" href="https://www.freshdirect.com/help/terms_of_service.jsp"><span style="COLOR: rgb(51,102,0); FONT-WEIGHT: normal; TEXT-DECORATION: underline">Customer Agreement</span></a><br />2014 Fresh Direct, LLC. All Rights Reserved.</td></tr></tbody></table>
+
+	<table align="center" bgcolor="#ffffff" border="0" width="640" cellpadding="0" cellspacing="0">
+	<tbody>
+	<tr>
+	<td><img style="DISPLAY: block" alt="" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/transparent_10x10.png" border="0" height="19" width="8" /></td></tr></tbody></table>
+
+	<table align="center" bgcolor="#ccc" border="0" width="640" cellpadding="0" cellspacing="0">
+		<tbody>
+			<tr><td><img alt="" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/line_640x1.png" border="0" height="1" width="640" /></td></tr>
+			<tr><td><img alt="" src="https://www.freshdirect.com/media_stat/images/profile/raf_email/transparent_10x10.png" border="0" height="10" /></td></tr>
+			<tr><td style="LINE-HEIGHT: 14px; FONT-FAMILY: Verdana,Arial,Helvetica,sans-serif; COLOR: #999; FONT-SIZE: 10px" align="left"><xsl:value-of select="legal"/></td></tr>
+		</tbody>
+	</table>
+
 </body>
 </html>
 </xsl:template>

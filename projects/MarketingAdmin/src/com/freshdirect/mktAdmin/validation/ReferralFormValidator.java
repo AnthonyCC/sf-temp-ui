@@ -38,6 +38,7 @@ public class ReferralFormValidator implements Validator {
 			ValidationUtils.rejectIfEmpty(errors, "referralPageText", "fields.referralPageText","Text is required field.");
 			ValidationUtils.rejectIfEmpty(errors, "referralPageLegal", "fields.referralPageLegal","Legal is required field.");
 			ValidationUtils.rejectIfEmpty(errors, "inviteEmailSubject", "fields.inviteEmailSubject","Subject line is required field.");
+			ValidationUtils.rejectIfEmpty(errors, "inviteEmailOfferText", "fields.inviteEmailOfferText","Offer Text is a required field.");
 			ValidationUtils.rejectIfEmpty(errors, "inviteEmailText", "fields.inviteEmailText","Email Text is required field.");
 			ValidationUtils.rejectIfEmpty(errors, "inviteEmailLegal", "fields.inviteEmailLegal","Legal is required field.");
 			ValidationUtils.rejectIfEmpty(errors, "referralCreditEmailSubject", "fields.referralCreditEmailSubject","Subject line is required.");
@@ -102,6 +103,8 @@ public class ReferralFormValidator implements Validator {
 			if(model.getReferralPageText() != null && model.getReferralPageText().length() > 160) {				
 				errors.rejectValue("referralPageText","field.referralPageText", "Referral Page text can take only upto 160 characters.");				
 			}
+			
+			//check invite email offer text
 		
 	}
 }

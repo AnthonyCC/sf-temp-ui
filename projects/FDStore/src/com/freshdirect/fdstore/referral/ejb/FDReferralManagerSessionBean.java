@@ -1216,14 +1216,19 @@ public class FDReferralManagerSessionBean extends FDSessionBeanSupport {
 			ReferralPromotionModel rpModel = FDReferAFriendDAO.getReferralPromotionDetailsById(conn, rpid);
 			String name = user.getFirstName();
 			String invEmailTxt = rpModel.getInviteEmailText();
-			String refLink = "http://" + serverName + "/invite/" + user.getReferralLink();
+			String refLink = "https://" + serverName + "/invite/" + user.getReferralLink();
 			invEmailTxt = invEmailTxt.replaceAll("<personal url>", refLink);
-			FDReferAFriendInvEmail xemail = (FDReferAFriendInvEmail) FDEmailFactory.getInstance().createReferAFriendInvitationEmail(name, mail_message, invEmailTxt, rpModel.getInviteEmailLegal(), refLink);
+			String offerText = rpModel.getInviteEmailOfferText();
+			
+			FDReferAFriendInvEmail xemail = (FDReferAFriendInvEmail) FDEmailFactory.getInstance().createReferAFriendInvitationEmail(name, mail_message, invEmailTxt, rpModel.getInviteEmailLegal(), refLink, offerText);
+			
 			String subject = rpModel.getInviteEmailSubject();
 			subject = subject.replaceAll("<first name>", user.getFirstName());
 			subject = subject.replaceAll("<last name>", user.getLastName());
 			xemail.setSubject(subject);
+			
 			xemail.setFromAddress(new EmailAddress(name, user.getUserId()));
+			
 			MailerGatewaySB mailer = getMailerHome().create();
 			
 			StringTokenizer stokens = new StringTokenizer(recipient_list, ",");			

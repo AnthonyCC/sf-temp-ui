@@ -35,8 +35,9 @@ public class FDReferAFriendDAO {
 	
 	public static final String GET_REFRRAL_PROMO = "select RP.ID, RP.GIVE_TEXT, RP.GET_TEXT, RP.REFERRAL_FEE, P.AUDIENCE_DESC, "
 		    + "RP.SHARE_HEADER, RP.SHARE_TEXT, RP.GIVE_HEADER, RP.GET_HEADER, "
-		    + "rp.FB_IMAGE_PATH, rp.FB_HEADLINE, rp.FB_TEXT, rp.TWITTER_TEXT, rp.RL_PAGE_TEXT, rp.RL_PAGE_LEGAL, rp.INV_EMAIL_SUBJECT, "   
-            + "rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT, rp.sa_image_path " 
+		    + "rp.FB_IMAGE_PATH, rp.FB_HEADLINE, rp.FB_TEXT, rp.TWITTER_TEXT, rp.RL_PAGE_TEXT, rp.RL_PAGE_LEGAL, "
+		    + "rp.INV_EMAIL_SUBJECT, rp.INV_EMAIL_OFFER_TEXT, rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, "
+		    + "rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT, rp.sa_image_path " 
 			+ "from CUST.REFERRAL_PRGM rp, "
 			+ "CUST.REFERRAL_CUSTOMER_LIST rcl, "
 			+ "CUST.PROMOTION_NEW p "
@@ -50,13 +51,14 @@ public class FDReferAFriendDAO {
 	
 	private static final String GET_DEFAULT_REFERRAL_PROMO = "select RP.ID, RP.GIVE_TEXT, RP.GET_TEXT, RP.REFERRAL_FEE, P.AUDIENCE_DESC, "
 			+ "RP.SHARE_HEADER, RP.SHARE_TEXT, RP.GIVE_HEADER, RP.GET_HEADER, "
-			+ "rp.FB_IMAGE_PATH, rp.FB_HEADLINE, rp.FB_TEXT, rp.TWITTER_TEXT, rp.RL_PAGE_TEXT, rp.RL_PAGE_LEGAL, rp.INV_EMAIL_SUBJECT, "   
-            + "rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT, rp.sa_image_path "
+			+ "rp.FB_IMAGE_PATH, rp.FB_HEADLINE, rp.FB_TEXT, rp.TWITTER_TEXT, rp.RL_PAGE_TEXT, rp.RL_PAGE_LEGAL, "
+			+ "rp.INV_EMAIL_SUBJECT, rp.INV_EMAIL_OFFER_TEXT, rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, "
+			+ "rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT, rp.sa_image_path "
 			+ "from CUST.REFERRAL_PRGM rp, "
 			+ "CUST.PROMOTION_NEW p "
 			+ "where trunc(RP.EXPIRATION_DATE) > trunc(sysdate) "
 			+ "and    RP.PROMOTION_ID = P.ID "
-			+ "and    P.STATUS = 'LIVE' "
+			/*+ "and    P.STATUS = 'LIVE' "*/
 			+ "and    trunc(sysdate) between P.START_DATE and P.EXPIRATION_DATE "
 			+ "and    RP.DEFAULT_PROMO = 'Y' "
 			+ "and    (rp.Delete_flag is null or rp.delete_flag != 'Y')";
@@ -90,8 +92,9 @@ public class FDReferAFriendDAO {
 	
 	private static final String GET_REFERRAL_PROMO_BY_ID = "select RP.ID, RP.GIVE_TEXT, RP.GET_TEXT, RP.REFERRAL_FEE, ' ' as AUDIENCE_DESC, " + 
             "RP.SHARE_HEADER, RP.SHARE_TEXT, RP.GIVE_HEADER, RP.GET_HEADER, " + 
-            "rp.FB_IMAGE_PATH, rp.FB_HEADLINE, rp.FB_TEXT, rp.TWITTER_TEXT, rp.RL_PAGE_TEXT, rp.RL_PAGE_LEGAL, rp.INV_EMAIL_SUBJECT, " +    
-            "rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT, rp.sa_image_path " +
+            "rp.FB_IMAGE_PATH, rp.FB_HEADLINE, rp.FB_TEXT, rp.TWITTER_TEXT, rp.RL_PAGE_TEXT, rp.RL_PAGE_LEGAL, " +
+            "rp.INV_EMAIL_SUBJECT, rp.INV_EMAIL_OFFER_TEXT, rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, " +
+            "rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT, rp.sa_image_path " +
             "from CUST.REFERRAL_PRGM rp " +
             "where RP.ID =  ?";
 	
@@ -133,6 +136,7 @@ public class FDReferAFriendDAO {
 		rpm.setReferralPageText(rs.getString("RL_PAGE_TEXT"));
 		rpm.setReferralPageLegal(rs.getString("RL_PAGE_LEGAL"));
 		rpm.setInviteEmailSubject(rs.getString("INV_EMAIL_SUBJECT"));
+		rpm.setInviteEmailOfferText(rs.getString("INV_EMAIL_OFFER_TEXT"));
 		rpm.setInviteEmailText(rs.getString("INV_EMAIL_TEXT"));
 		rpm.setInviteEmailLegal(rs.getString("INV_EMAIL_LEGAL"));
 		rpm.setReferralCreditEmailSubject(rs.getString("REF_CRE_EMAIL_SUB"));
@@ -619,7 +623,7 @@ public class FDReferAFriendDAO {
 												   "f.ID as fdcustomerid,sq1.erp_customer_id, sq1.ID, sq1.GIVE_TEXT, sq1.GET_TEXT, sq1.REFERRAL_FEE, " +
 												   "sq1.AUDIENCE_DESC, sq1.SHARE_HEADER, sq1.SHARE_TEXT, sq1.GIVE_HEADER, sq1.GET_HEADER, "+ 
                                                    "sq1.FB_IMAGE_PATH, sq1.FB_HEADLINE, sq1.FB_TEXT, sq1.TWITTER_TEXT, sq1.RL_PAGE_TEXT, " +
-												   "sq1.RL_PAGE_LEGAL, sq1.INV_EMAIL_SUBJECT,sq1.INV_EMAIL_TEXT, sq1.INV_EMAIL_LEGAL, " +
+												   "sq1.RL_PAGE_LEGAL, sq1.INV_EMAIL_SUBJECT,  sq1.INV_EMAIL_OFFER_TEXT, sq1.INV_EMAIL_TEXT, sq1.INV_EMAIL_LEGAL, " +
                                                    "sq1.REF_CRE_EMAIL_SUB, sq1.REF_CRE_EMAIL_TEXT, sq1.sa_image_path " +
                                                    "from " +
                                                    "cust.sale s, " + 
@@ -631,7 +635,7 @@ public class FDReferAFriendDAO {
                                                             "select RCL.ERP_CUSTOMER_ID, RP.ID, RP.GIVE_TEXT, RP.GET_TEXT, RP.REFERRAL_FEE, P.AUDIENCE_DESC, " + 
                                                             "RP.SHARE_HEADER, RP.SHARE_TEXT, RP.GIVE_HEADER, RP.GET_HEADER,  " +
                                                             "rp.FB_IMAGE_PATH, rp.FB_HEADLINE, rp.FB_TEXT, rp.TWITTER_TEXT, rp.RL_PAGE_TEXT, rp.RL_PAGE_LEGAL, rp.INV_EMAIL_SUBJECT, " +    
-                                                            "rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT, rp.sa_image_path  " +
+                                                            "rp.INV_EMAIL_OFFER_TEXT, rp.INV_EMAIL_TEXT, rp.INV_EMAIL_LEGAL, rp.REF_CRE_EMAIL_SUB, rp.REF_CRE_EMAIL_TEXT, rp.sa_image_path  " +
                                                             "from CUST.REFERRAL_PRGM rp, " +
                                                             "CUST.REFERRAL_CUSTOMER_LIST rcl, " + 
                                                             "CUST.PROMOTION_NEW p " +
