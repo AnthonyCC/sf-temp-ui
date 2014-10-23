@@ -83,13 +83,13 @@ if ("KOSHER".equalsIgnoreCase(attrib)) {
                                 title = deptName + " - Department Manager";
                         }
                 } else {
-                title = deptName + " - ";
-                if ("parbaked_promo".equalsIgnoreCase(spec)) {
-                title += "Parbaked Breads";
-                } else {
-                title += "About Flash-Freezing";
-                }
-                pathToMedia = "/media/editorial/" + deptName.toLowerCase() +"/fd_defs/" + spec + ".html";
+	                title = deptName + " - ";
+	                if ("parbaked_promo".equalsIgnoreCase(spec)) {
+	                	title += "Parbaked Breads";
+	                } else {
+	                	title += "About Flash-Freezing";
+	                }
+	                pathToMedia = "/media/editorial/" + deptId +"/fd_defs/" + spec + ".html";
                 }
 } else {
         prod =  cf.getProductByName(catId,prodId);
