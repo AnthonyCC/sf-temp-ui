@@ -313,7 +313,7 @@ public class DlvDepotEntityBean extends EntityBeanSupport{
 		ResultSet rs = null;
 		try{
 			conn = this.getConnection();
-			ps = conn.prepareStatement("SELECT ID FROM DLV.DEPOT");
+			ps = conn.prepareStatement("SELECT ID FROM DLV.DEPOT ORDER BY DISPLAY_SEQUENCE");
 			
 			rs = ps.executeQuery();
 			

@@ -7,111 +7,61 @@
 
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
 
-<% boolean fromZipCheck = "yes".equalsIgnoreCase(request.getParameter("zipCheck"));%>
+<%
+	Map params = new HashMap();
 
-<tmpl:insert template='/shared/template/large_pop.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - Our Delivery Zones</tmpl:put>
-		<tmpl:put name='content' direct='true'>
+	Enumeration keys = request.getParameterNames();  
+	while (keys.hasMoreElements() ) {  
+		String key = (String)keys.nextElement(); 
 
-<script>
-<!--
-function goToDepotHome(){
+		//To retrieve a single value  
+		String value = request.getParameter(key); 
 
-	var depot = document.forms['depots'].depotNames.value;
-	if(depot != ""){
-		var url = "http://<%=request.getServerName()%>/" + depot + "/";
-		parent.window.opener.location = url ;
-		parent.window.opener.focus();
-	}
-	else{
-	alert("Please chose a Depot Delivery Partner")
-	}
-}
-
-function goToPage(pagePath) {
-	redirectUrl = "http://" + location.host + pagePath;
-	self.opener.location = redirectUrl;
-	self.opener.focus();
-}
-//-->
-</script>
+		params.put(key, value);
 	
-<oscache:cache time="28800">
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-	<tr valign="top">
-		<td width="341">
-		<%
-			List<DlvZipInfoModel> zipCodesUnsorted = FDDeliveryManager.getInstance().getDeliverableZipCodes(EnumServiceType.HOME);
-			TreeMap<String, DlvZipInfoModel> zipCodesSorted = new TreeMap<String, DlvZipInfoModel>();
-			for (DlvZipInfoModel zipInfo : zipCodesUnsorted) {
-				zipCodesSorted.put(zipInfo.getZipCode(), zipInfo);
-			}
-			List<DlvZipInfoModel> zipCodes = new ArrayList<DlvZipInfoModel>(zipCodesSorted.values());
-			
-		%>
-			<%if (zipCodes.size() > 0) {%>
-				<table border="0" cellpadding="0" cellspacing="0" width="100%">
-					<tr>
-						<td>	
-							<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"><br>
-							<img src="/media_stat/images/template/help/delivery/home_delivery_zones.gif" width="144" height="9" alt="" border="0">
-							<br><img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br>
-							We currently deliver to the zip codes below, and we are expanding all the time.<br><img src="/media_stat/images/layout/clear.gif" width="1" height="5">
-						</td>
-					</tr>
-				</table>
-				<%@ include file="/shared/includes/popups/i_deliverable_zips.jspf" %><br>
-			<%}%>
-		<%
+		// If the same key has multiple values (check boxes)  
+		String[] valueArray = request.getParameterValues(key);  
+		 
+		for(int i = 0; i > valueArray.length; i++){
+			params.put(key+valueArray[i], valueArray[i]);
+		}  
+	}
 
-			zipCodesUnsorted = FDDeliveryManager.getInstance().getDeliverableZipCodes(EnumServiceType.CORPORATE);
-			zipCodesSorted = new TreeMap<String, DlvZipInfoModel>();
-			for (DlvZipInfoModel zipInfo : zipCodesUnsorted) {
-				zipCodesSorted.put(zipInfo.getZipCode(), zipInfo);
-			}
-			zipCodes = new ArrayList<DlvZipInfoModel>(zipCodesSorted.values());
-		%>
-			<%if (zipCodes.size() > 0) {%>
-				<table border="0" cellpadding="0" cellspacing="0" width="100%">
-					<tr>
-						<td>	
-							<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"><br>
-							<img src="/media_stat/images/template/help/delivery/cos_delivery_zones.gif" width="180" height="9" alt="" border="0">
-							<br><img src="/media_stat/images/layout/clear.gif" width="1" height="5"><br>
-							We currently deliver to the zip codes below, and we are expanding all the time.<br><img src="/media_stat/images/layout/clear.gif" width="1" height="5">
-						</td>
-					</tr>
-				</table>
-				<%@ include file="/shared/includes/popups/i_deliverable_zips.jspf" %><br>
-			<%}%>
-		</td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="8" height="1" alt="" border="0"></td>
-		<td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" border="0"></td>
-		<td><img src="/media_stat/images/layout/clear.gif" width="6" height="1" alt="" border="0"></td>
-		<td width="164" align="center">
-			<% if (!fromZipCheck) {%>
-				<a href="javascript:goToPage('/help/delivery_lic_pickup.jsp')">
-			<%}%>
-			<img src="/media_stat/images/template/pickup/lic_pickup_hdr.gif" width="144" height="77" alt="DID YOU KNOW? YOU CAN PICKUP YOUR ORDER AT OUR FACILITY!" border="0"><br>
-			<img src="/media_stat/images/template/pickup/lic_pickup_img.jpg" width="115" height="75" alt="Our Facility" border="0" vspace="8">
-			<% if (!fromZipCheck) {%>
-				</a>
-			<%}%><br>
-			<b>Minutes from Manhattan!</b><br>You can also enjoy food from<br>FreshDirect by picking up<br>your order at our<br>
-			<% if (!fromZipCheck) {%>
-				<a href="javascript:backtoWin('/help/delivery_lic_pickup.jsp')">
-			<%}%>
-			Long Island City facility
-			<% if (!fromZipCheck) {%>
-				</a>
-			<%}%>.*<br><br>
-		</td>
-	</tr>
-</table>
-</oscache:cache>
-</tmpl:put>
+	String baseUrl = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort();
+	params.put("baseUrl", baseUrl);
+	params.put("uri", request.getRequestURI());
+	
+	boolean fromZipCheck = "yes".equalsIgnoreCase(request.getParameter("zipCheck"));
+	params.put("fromZipCheck", fromZipCheck);
+	
+	/* deliverable zips */
+	List<DlvZipInfoModel> zipCodesUnsortedH = FDDeliveryManager.getInstance().getDeliverableZipCodes(EnumServiceType.HOME);
+	TreeMap<String, DlvZipInfoModel> zipCodesSortedH = new TreeMap<String, DlvZipInfoModel>();
+	for (DlvZipInfoModel zipInfoH : zipCodesUnsortedH) {
+		zipCodesSortedH.put(zipInfoH.getZipCode()+(zipInfoH.getCoverage() <= 0.9 ? "*" : ""), zipInfoH);
+	}
+	List<DlvZipInfoModel> zipCodesH = new ArrayList<DlvZipInfoModel>(zipCodesSortedH.values());
+	
+	params.put("zipsHome", zipCodesH);
+	
+	List<DlvZipInfoModel> zipCodesUnsortedC = FDDeliveryManager.getInstance().getDeliverableZipCodes(EnumServiceType.CORPORATE);
+	TreeMap<String, DlvZipInfoModel> zipCodesSortedC = new TreeMap<String, DlvZipInfoModel>();
+	for (DlvZipInfoModel zipInfoC : zipCodesUnsortedC) {
+		zipCodesSortedC.put(zipInfoC.getZipCode()+(zipInfoC.getCoverage() <= 0.9 ? "*" : ""), zipInfoC);
+	}
+	List<DlvZipInfoModel> zipCodesC = new ArrayList<DlvZipInfoModel>(zipCodesSortedC.values());
+	
+	params.put("zipsCorp", zipCodesC);
+	
+
+	params.put("showZips", true);
+%>
+<tmpl:insert template='/shared/template/large_pop_no_ads.jsp'>
+	<tmpl:put name='title' direct='true'>FreshDirect - Our Delivery Zones</tmpl:put>
+	<tmpl:put name='content' direct='true'>
+		<fd:IncludeMedia name="/media/editorial/site_pages/delivery_info/pickup/main.ftl" parameters="<%=params%>" withErrorReport="true" />
+	</tmpl:put>
 </tmpl:insert>
 
 

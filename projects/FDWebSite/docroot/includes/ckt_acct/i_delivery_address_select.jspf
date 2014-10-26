@@ -96,7 +96,7 @@ if(isNormalCheckout && yuzer.isDepotUser()){
 		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="970" >
 			<TR VALIGN="TOP">
 				<TD WIDTH="<%=W_DELIVERY_ADDRESS_SELECT_TOTAL%>" class="text12">
-					<img src="/media_stat/images/template/youraccount/hdr_corp_delivery.gif" width="154" height="15" alt="CORPORATE DELIVERY">&nbsp;&nbsp;&nbsp;&nbsp;(minimum order $<%=(int)yuzer.getMinCorpOrderAmount() %>)
+					<span class="title14">CORPORATE DELIVERY</span>&nbsp;&nbsp;&nbsp;&nbsp;(minimum order $<%=(int)yuzer.getMinCorpOrderAmount() %>)
 					<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_DELIVERY_ADDRESS_SELECT_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
 				</td>
@@ -123,7 +123,7 @@ if(isNormalCheckout && yuzer.isDepotUser()){
 		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=W_DELIVERY_ADDRESS_SELECT_TOTAL%>" >
 			<TR  VALIGN="TOP">
 				<TD class="text12" WIDTH="675">
-					<img src="/media_stat/images/template/youraccount/hdr_home_delivery.gif" width="110" height="15" alt="HOME DELIVERY">&nbsp;&nbsp;&nbsp;&nbsp;(minimum order $<%=(int)yuzer.getMinHomeOrderAmount()%>)
+					<span class="title14">HOME DELIVERY</span>&nbsp;&nbsp;&nbsp;&nbsp;(minimum order $<%=(int)yuzer.getMinHomeOrderAmount()%>)
 					<IMG src="/media_stat/images/layout/dotted_line_w.gif" WIDTH="<%=W_DELIVERY_ADDRESS_SELECT_TOTAL%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
 					<% if (FDStoreProperties.isSummerServiceEnabled() ) { %>

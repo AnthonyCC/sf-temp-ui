@@ -46,25 +46,6 @@ if (user != null) {
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-		<table width="<%=W_DELIVERY_LIC_PICKUP_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
-		     <tr>
-				<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_LIC_PICKUP_LEFT%>" height="18"></td>
-				<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="<%=(W_DELIVERY_LIC_PICKUP_CENTER-1)/2%>" height="1"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-				<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="<%=(W_DELIVERY_LIC_PICKUP_CENTER-1)/2%>" height="1"></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_LIC_PICKUP_RIGHT%>" height="1"></td>
-		    </tr>
-		          
-		    <tr valign="top">
-				<td class="text12">
-	                <fd:IncludeMedia name="/media/editorial/site_pages/delivery_info/pickup/main.ftl" parameters="<%=params%>" withErrorReport="true"/>
-	                <br><br><br>
-				 </td>
-				<td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-				<td align="left">
-	                <fd:IncludeMedia name="/media/editorial/site_pages/delivery_info/pickup/right.ftl" parameters="<%=params%>" withErrorReport="true"/>
-				</td>
-		    </tr>
-	    </table>
+		<fd:IncludeMedia name="/media/editorial/site_pages/delivery_info/pickup/main.ftl" parameters="<%=params%>" withErrorReport="true"/>
 	</tmpl:put>
 </tmpl:insert>
