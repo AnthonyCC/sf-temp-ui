@@ -3489,18 +3489,19 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		
 		try {
 			conn = this.getConnection();
-			ps = conn.prepareStatement("INSERT INTO CUST.IVR_CALLLOG(ID,CALLERID,ORDERNUMBER,CALLTIME,CALLDURATION,TALKTIME,PHONE_NUMBER,CALL_OUTCOME,MENU_OPTION)" +
-										" VALUES(?,?,?,?,?,?,?,?,?)");
+			ps = conn.prepareStatement("INSERT INTO CUST.IVR_CALLLOG(ID,CALLERID,ORDERNUMBER,CALLTIME,CALLDURATION,TALKTIME,PHONE_NUMBER,CALL_OUTCOME,MENU_OPTION,INSERT_TIMESTAMP)" +
+										" VALUES(?,?,?,?,?,?,?,?,?,?)");
 				
 			ps.setString(1, model.getCallerGUIId());
 			ps.setString(2, model.getCallerId());
 			ps.setString(3, model.getOrderNumber());
-			ps.setTimestamp(4, new Timestamp(model.getStartTime().getTime()));
+			ps.setTimestamp(4, new java.sql.Timestamp(model.getStartTime().getTime()));
 			ps.setInt(5, model.getDuration());
 			ps.setInt(6, model.getTalkTime());
 			ps.setString(7, model.getPhoneNumber());
 			ps.setString(8, model.getCallOutcome());
-			ps.setString(9, model.getMenuOption());			
+			ps.setString(9, model.getMenuOption());
+			ps.setTimestamp(10, new java.sql.Timestamp(System.currentTimeMillis()));
 			ps.execute();
 		} catch (SQLException sqle) {
 			LOGGER.error(sqle.getMessage(), sqle);			
