@@ -689,6 +689,9 @@ public class FDStoreProperties {
 	//Early AM timeSlot
 	private static final String PROP_EARLY_AM_HOUR = "fdstore.early.window.hour";
 	private static final String PROP_EARLY_AM_MINUTE = "fdstore.early.window.minute";
+	
+	/* Alt. Pickup convenience APPDEV-3623 */
+	private static final String PROP_DEPOT_CACHE_REFRESH = "fdstore.depot.cache.refresh";
 		
 	
     static {
@@ -1365,6 +1368,10 @@ public class FDStoreProperties {
         //Early Am Defaults
         defaults.put(PROP_EARLY_AM_HOUR, "6");
         defaults.put(PROP_EARLY_AM_MINUTE, "0");
+        
+
+    	/* Alt. Pickup convenience APPDEV-3623 */
+        defaults.put(PROP_DEPOT_CACHE_REFRESH, "28800000"); //1000 * 60 * 480 = 8 hours
 
         refresh();
     }
@@ -3441,6 +3448,15 @@ public class FDStoreProperties {
 	public static int getEarlyAMWindowMinute(){
 		try {
 			return Integer.parseInt(get(PROP_EARLY_AM_MINUTE));
+		} catch (NumberFormatException e) {
+			return 0;
+		}
+	}
+
+	/* Alt. Pickup convenience APPDEV-3623 */
+	public static long getDepotCacheRefreshPeriod() {
+		try {
+			return Long.parseLong(get(PROP_DEPOT_CACHE_REFRESH));
 		} catch (NumberFormatException e) {
 			return 0;
 		}

@@ -49,7 +49,7 @@ public class FDDepotManager {
 	private List pickupDepotList = new ArrayList();
 	private List corpDepotList = new ArrayList();
 
-	private long REFRESH_PERIOD = 1000 * 60 * 480; // 8 hours
+	private long REFRESH_PERIOD = FDStoreProperties.getDepotCacheRefreshPeriod();
 
 	private long lastRefresh = 0;
 
