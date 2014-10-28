@@ -84,10 +84,10 @@
 }
 
 .srch .search-input input {
-  height: 30px;
-  line-height: 30px;
+  height: 17px;
+  line-height: 17px;
   width: 350px;
-  padding: 0 0 0 10px;
+  padding: 7px 0 6px 10px;
 }
 
 .srch .search-input ::-ms-input-placeholder {
