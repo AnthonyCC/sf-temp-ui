@@ -30,10 +30,6 @@ response.setHeader("Cache-Control", "no-cache");
 <tmpl:put name='customhead' direct='true'>
 <style>
 
-	body { font-family: Verdana, Arial, sans-serif; font-size: 10px; height: 100%; }
-	a:link, a:visited { color:#360 !important}
-	a:active { color:#f90; }
-	
 	.yui-skin-sam .yui-pg-container {
 		text-align: right;
 	}
