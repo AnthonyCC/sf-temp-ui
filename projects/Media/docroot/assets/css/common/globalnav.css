@@ -23,6 +23,11 @@
  font-style: normal;
 }
 
+/* for Safari font-rendering */
+body{
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
 .globalnav_top {
   position: relative;
   margin-top: 12px;
