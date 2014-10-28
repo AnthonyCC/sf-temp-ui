@@ -277,4 +277,8 @@ public class DepartmentModel extends ProductContainer {
 	public Image getTabletIcon() {
         return FDAttributeFactory.constructImage(this, "tabletIcon");
 	}
+	
+	public BannerModel getTabletHeaderBanner() {
+		return FDAttributeFactory.lookup(this, "tabletHeaderBanner", null);
+	}
 }

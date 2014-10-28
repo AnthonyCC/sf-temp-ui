@@ -103,6 +103,7 @@
 							<CmsField><attribute>tabletIcon</attribute></CmsField>
 							<CmsField><attribute>tabletCallToActionBanner</attribute></CmsField>
 							<CmsField><attribute>tabletNoPurchaseSuggestions</attribute></CmsField>
+							<CmsField><attribute>tabletHeaderBanner</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>
@@ -367,6 +368,7 @@
 						<title>TABLET</title>
 						<fields>
 							<CmsField><attribute>tabletCallToActionBanner</attribute></CmsField>
+							<CmsField><attribute>tabletThumbnailImage</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>
@@ -1095,6 +1097,12 @@
 							<CmsField><attribute>photo</attribute></CmsField>
 							<CmsField><attribute>theme_color</attribute></CmsField>
 							<CmsField><attribute>logo</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Tablet</title>
+						<fields>
+							<CmsField><attribute>tabletThumbnailImage</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>

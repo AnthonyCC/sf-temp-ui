@@ -89,4 +89,7 @@ public class BrandModel extends ContentNodeModelImpl {
         return FDAttributeFactory.constructHtml(this, "tabletAboutTextLong");
     }
 
+	public final Image getTabletThumbnailImage() {
+		return FDAttributeFactory.constructImage(this, "tabletThumbnailImage");
+	}
 }

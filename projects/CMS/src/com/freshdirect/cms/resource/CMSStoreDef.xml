@@ -175,8 +175,17 @@
 			<RelationshipDef name="tabletIdeasFeaturedPicksLists" label="Tablet Ideas Featured Picks Lists" cardinality="Many">
 				<DestinationDef contentType="Category" />
 			</RelationshipDef>
-			<RelationshipDef name="tabletIdeasRecipeTags" label="Tablet Ideas Recipe Tags" cardinality="Many">
+			<RelationshipDef name="tabletIdeasRecipeTags" label="Tablet Ideas Recipe Tags (Theme Page)" cardinality="Many">
 				<DestinationDef contentType="RecipeTag" />
+			</RelationshipDef>
+			<RelationshipDef name="tabletHomeScreenPopUpShopBanners" label="Tablet Home Screen Pop-up Shop Banners" cardinality="Many">
+				<DestinationDef contentType="Banner" />
+			</RelationshipDef>
+			<RelationshipDef name="tabletIdeasBrands" label="Tablet Ideas Brands" cardinality="Many">
+				<DestinationDef contentType="Brand" />
+			</RelationshipDef>
+			<RelationshipDef name="tabletIdeasRecipes" label="Tablet Ideas Recipes" cardinality="Many">
+				<DestinationDef contentType="Recipe" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -468,6 +477,9 @@
 			</RelationshipDef>
 			<RelationshipDef name="tabletIcon" label="Icon">
 				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="tabletHeaderBanner" label="Tablet Header Banner">
+				<DestinationDef contentType="Banner" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -802,6 +814,9 @@
 			</RelationshipDef>
 			<RelationshipDef name="tabletCallToActionBanner" label="Call To Action Banner" inheritable="true">
 				<DestinationDef contentType="Banner" />
+			</RelationshipDef>
+			<RelationshipDef name="tabletThumbnailImage" label="Tablet Thumbnail Image">
+				<DestinationDef contentType="Image" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -1494,6 +1509,9 @@
 			<RelationshipDef name="tabletAboutTextLong" label="Tablet About Text Long">
 				<DestinationDef contentType="Html" />
 			</RelationshipDef>
+			<RelationshipDef name="tabletThumbnailImage" label="Tablet Thumbnail Image">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
 	<!--
@@ -1694,6 +1712,9 @@
 			</RelationshipDef>			
 			<RelationshipDef name="copyrightMedia" cardinality="One">
 				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="tabletThumbnailImage" label="Tablet Thumbnail Image">
+				<DestinationDef contentType="Image" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>

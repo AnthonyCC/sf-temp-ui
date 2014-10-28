@@ -20,6 +20,7 @@ import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.util.DateRange;
 
 public class Recipe extends ContentNodeModelImpl implements ContentStatusI, YmalSource, YmalSetSource {
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 1726859705342564086L;
 	
 	private static ThreadLocal<HashMap<String,YmalSet>> activeYmalSets = new ThreadLocal<HashMap<String,YmalSet>>() {
@@ -621,5 +622,9 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	
 	public Image getTitleImage() {
 	    return FDAttributeFactory.constructImage(this, "titleImage");
+	}
+
+	public final Image getTabletThumbnailImage() {
+		return FDAttributeFactory.constructImage(this, "tabletThumbnailImage");
 	}
 }

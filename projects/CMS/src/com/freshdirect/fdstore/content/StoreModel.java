@@ -25,7 +25,10 @@ public class StoreModel extends ContentNodeModelImpl {
 	private List<SearchSuggestionGroupModel> tabletSearchSuggestionGroups = new ArrayList<SearchSuggestionGroupModel>(); 
 	private List<CategoryModel> tabletIdeasFeaturedPicksLists = new ArrayList<CategoryModel>();
 	private List<RecipeTagModel> tabletIdeasRecipeTags = new ArrayList<RecipeTagModel>();
-	
+    private List<BannerModel> tabletHomeScreenPopUpShopBanners = new ArrayList<BannerModel>();
+    private List<BrandModel> tabletIdeasBrands = new ArrayList<BrandModel>();
+    private List<Recipe> tabletIdeasRecipes = new ArrayList<Recipe>();
+   
 	public StoreModel(com.freshdirect.cms.ContentKey cKey) {
 		super(cKey);
 	}
@@ -140,5 +143,20 @@ public class StoreModel extends ContentNodeModelImpl {
 	public List<RecipeTagModel> getTabletIdeasRecipeTags() {
 		ContentNodeModelUtil.refreshModels(this, "tabletIdeasRecipeTags", tabletIdeasRecipeTags, false);
 		return new ArrayList<RecipeTagModel>( tabletIdeasRecipeTags );
+	}
+	
+    public List<BannerModel> getTabletHomeScreenPopUpShopBanners() {
+        ContentNodeModelUtil.refreshModels(this, "tabletHomeScreenPopUpShopBanners", tabletHomeScreenPopUpShopBanners, false);
+        return new ArrayList<BannerModel>(tabletHomeScreenPopUpShopBanners);
+    }
+    
+	public List<BrandModel> getTabletIdeasBrands() {
+        ContentNodeModelUtil.refreshModels(this, "tabletIdeasBrands", tabletIdeasBrands, false);
+        return new ArrayList<BrandModel>(tabletIdeasBrands);
+	}
+	
+	public List<Recipe> getTabletIdeasRecipes() {
+        ContentNodeModelUtil.refreshModels(this, "tabletIdeasRecipes", tabletIdeasRecipes, false);
+        return new ArrayList<Recipe>(tabletIdeasRecipes);
 	}
 }

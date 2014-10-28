@@ -1301,4 +1301,7 @@ public class CategoryModel extends ProductContainer {
 		return EnumBrandFilterLocation.valueOf(getAttribute("brandFilterLocation", defaultValue));
 	}
 
+	public final Image getTabletThumbnailImage() {
+		return FDAttributeFactory.constructImage(this, "tabletThumbnailImage");
+	}
 }
