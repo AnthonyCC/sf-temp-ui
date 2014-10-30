@@ -464,7 +464,7 @@
 			    });
 			function updateMuniMeterCardDetails(isDispatch, value, status){
 				//Validate data and close the overlay
-				var valid=false;
+				var valid=true;
 				var status="N";
 				if(isDispatch){
 					valid=validateDialog(dispcardvalue, cardnotassigned);
@@ -515,7 +515,7 @@
 					
 				} else if($.trim(valueField.val()).length==0 && checkboxField.is(':checked')){
 					valid=true;
-					alert("I am here : value of valid"+valid);
+					
 				} else{
 					valid=false;
 					valueField.addClass( "ui-state-error" );
@@ -527,9 +527,10 @@
 			function updateCardCallBack(result, exception) {
 				
          	   if(result != null && result) {
-         		   alert('Card data updated successfully');
          		  dialog2.dialog( "close" );
-         		   dialog1.dialog("close");
+        		   dialog1.dialog("close");
+         		   alert('Card data updated successfully');
+         		  
          	   } else {
          		   alert('Error updating card data');
          		  dispcardvalue.addClass( "ui-state-error" );
@@ -567,7 +568,7 @@
 			$(".chkinoverlay").click(function() {
 				
 			       if ($(this).is(':checked')) {
-			    	   var classes = $(this).attr("class").split(",");
+			    	   var classes = $(this).attr("class").split(" ");
 			    	   dispId=classes[2].trim();
 			    	   displayDialog("checkin");
 				        

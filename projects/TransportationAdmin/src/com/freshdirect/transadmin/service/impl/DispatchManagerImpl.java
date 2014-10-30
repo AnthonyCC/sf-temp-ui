@@ -690,6 +690,9 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 					&& "X".equals(dispatch.getMuniMeterCardNotAssigned())){
 				
 					displayFlag=CHECKIN_FLAG;
+			} else if(dialogFlag.equalsIgnoreCase(CHECKIN_FLAG) && muniMeterFlag.equals("X")
+					&& TransStringUtil.isEmpty(dispatch.getMuniMeterCardNotAssigned()) ){
+				displayFlag=CHECKIN_FLAG;
 			}
 		}
 		return displayFlag;
