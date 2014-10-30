@@ -27,6 +27,7 @@ final int W_DELIVERY_LIC_PICKUP_RIGHT = 191;
 // setting up template parameters
 Map params = new HashMap();
 params.put("baseUrl", "");
+params.put("uri", request.getRequestURI());
 params.put("helper", new MediaHelper());
 params.put("fromZipCheck", Boolean.FALSE);
 params.put("isPopup", Boolean.FALSE);
