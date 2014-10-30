@@ -126,4 +126,9 @@ public interface DispatchManagerI extends BaseManagerI {
 	Collection getTrnFacilitys();
 	
 	public int updateOrderUnassignedInfo(String orderNo);
+	
+	boolean updateMuniMeterCardDetails(String flag, String value, String status, String dispatchId, String userId);
+	
+	String getDialogDisplayFlag(String dialogFlag, String dispatchId);
+	
 }

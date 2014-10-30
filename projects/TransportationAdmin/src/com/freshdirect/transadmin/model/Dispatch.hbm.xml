@@ -94,6 +94,18 @@
         <property name="dispatchType" type="string">
             <column name="DISPATCH_TYPE" length="3" />
         </property>
+        <property name="muniMeterValueAssigned" type="double">
+            <column name="MUNI_METER_AMOUNT_ASSIGNED"  />
+        </property>
+        <property name="muniMeterValueReturned" type="double">
+            <column name="MUNI_METER_AMOUNT_RETURNED"  />
+        </property>
+        <property name="muniMeterCardNotAssigned" type="string">
+            <column name="MUNI_METER_NOT_ASSIGNED" length="1" />
+        </property>
+        <property name="muniMeterCardNotReturned" type="string">
+            <column name="MUNI_METER_NOT_RETURNED" length="1" />
+        </property>
         <many-to-one name="originFacility" class="com.freshdirect.transadmin.model.TrnFacility" fetch="select" lazy="false">
             <column name="ORIGIN_FACILITY" length="16" />
         </many-to-one>

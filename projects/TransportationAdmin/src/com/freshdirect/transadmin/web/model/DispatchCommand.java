@@ -73,8 +73,46 @@ public class DispatchCommand extends WebPlanInfo {
 	private boolean isActualTruckAssigned;
 	private String dispatchTypeModified;
 	private String assetStatus;
+	private Double muniMeterValueAssigned;
+	private Double muniMeterValueReturned;
+	private String muniMeterCardNotAssigned;
+	private String muniMeterCardNotReturned;
 	
-    public int getResourceSize(List resources)
+	
+	
+    public Double getMuniMeterValueAssigned() {
+		return muniMeterValueAssigned;
+	}
+
+	public void setMuniMeterValueAssigned(Double muniMeterValueAssigned) {
+		this.muniMeterValueAssigned = muniMeterValueAssigned;
+	}
+
+	public Double getMuniMeterValueReturned() {
+		return muniMeterValueReturned;
+	}
+
+	public void setMuniMeterValueReturned(Double muniMeterValueReturned) {
+		this.muniMeterValueReturned = muniMeterValueReturned;
+	}
+
+	public String getMuniMeterCardNotAssigned() {
+		return muniMeterCardNotAssigned;
+	}
+
+	public void setMuniMeterCardNotAssigned(String muniMeterCardNotAssigned) {
+		this.muniMeterCardNotAssigned = muniMeterCardNotAssigned;
+	}
+
+	public String getMuniMeterCardNotReturned() {
+		return muniMeterCardNotReturned;
+	}
+
+	public void setMuniMeterCardNotReturned(String muniMeterCardNotReturned) {
+		this.muniMeterCardNotReturned = muniMeterCardNotReturned;
+	}
+
+	public int getResourceSize(List resources)
 	{
 		int result=0;
 		if(resources!=null)

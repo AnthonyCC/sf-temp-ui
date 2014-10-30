@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -30,7 +29,6 @@ import com.freshdirect.transadmin.model.ResourceI;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.ScribLabel;
-import com.freshdirect.transadmin.model.TrnFacility;
 import com.freshdirect.transadmin.model.UPSRouteInfo;
 import com.freshdirect.transadmin.model.WaveInstance;
 import com.freshdirect.transadmin.model.WaveInstancePublish;
@@ -39,7 +37,6 @@ import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.service.LogManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
-import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransAdminCacheManager;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
@@ -47,6 +44,13 @@ import com.freshdirect.transadmin.util.WaveUtil;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 
 public class DispatchManagerImpl extends BaseManagerImpl implements DispatchManagerI {
+	
+	/*
+	 * These constants are used by Muni Meter update method
+	 * @updateMuniMeterCardDetails(String flag, String value, String status, String dispatchId)
+	 */
+	private final static String DISPATCH_FLAG="dispatch";
+	private final static String CHECKIN_FLAG="checkin";
 	
 	private DispatchManagerDaoI dispatchManagerDao = null;
 	
@@ -59,6 +63,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	private SpatialManagerDaoI spatialManagerDao;
 	
 	private LogManagerI logManager; 
+	
 	
 	public DispatchManagerDaoI getDispatchManagerDao() {
 		return dispatchManagerDao;
@@ -624,6 +629,67 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	
 	public int updateOrderUnassignedInfo(String orderNo) {
 		return this.getRouteManagerDao().updateOrderUnassignedInfo(orderNo);
+	}
+	
+	public boolean updateMuniMeterCardDetails(String flag, String value, String status, String dispatchId, String userId){
+		//Need to get the userId Important
+		
+		double cardValue=0.00;
+		// Get the current dispatch record
+		Dispatch tmpDispatch = getDispatch(dispatchId);
+		tmpDispatch.setUserId(userId);
+		if(value!=null && !value.isEmpty()){
+			try {
+				cardValue = Double.parseDouble(value);
+				if(cardValue > TransportationAdminProperties.getMuniMeterMaxValue()){
+					return false;
+				}
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		}
+		if(status.equals("N")){
+			status=null;
+		}
+		// Based on flag update the values of munimeter
+		if(flag.equalsIgnoreCase(DISPATCH_FLAG)){
+			tmpDispatch.setMuniMeterValueAssigned(!TransStringUtil.isEmpty(value)?Double.parseDouble(value):null);
+			tmpDispatch.setMuniMeterCardNotAssigned(status);
+		} else if(flag.equalsIgnoreCase(CHECKIN_FLAG)){
+			tmpDispatch.setMuniMeterValueReturned(!TransStringUtil.isEmpty(value)?Double.parseDouble(value):null);
+			tmpDispatch.setMuniMeterCardNotReturned(status);
+		} else {
+			return false;
+		}
+		//call dispatchermanagerDAOIMPL with the dispatch 
+		try {
+			this.getDispatchManagerDao().saveDispatch(tmpDispatch);
+			return true;
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+			return false;
+		}
+		//return muniMeterDao.updateMuniMeterCardDetails(flag, value, status, dispatchId);
+	}
+	
+	public String getDialogDisplayFlag(String dialogFlag, String dispatchId){
+		String displayFlag="NONE";
+		// Get the current dispatch record
+		Dispatch dispatch = getDispatch(dispatchId);
+		//get MuniMeter flag
+		String muniMeterFlag=dispatch.getRegion().getMuniMeterEnabled();
+		
+		if(!(TransStringUtil.isEmpty(muniMeterFlag))){
+			if(dialogFlag.equalsIgnoreCase(DISPATCH_FLAG) && muniMeterFlag.equals("X")){
+				displayFlag=DISPATCH_FLAG;
+			} else if(dialogFlag.equalsIgnoreCase(CHECKIN_FLAG) && muniMeterFlag.equals("X") 
+					&& !TransStringUtil.isEmpty(dispatch.getMuniMeterCardNotAssigned())
+					&& "X".equals(dispatch.getMuniMeterCardNotAssigned())){
+				
+					displayFlag=CHECKIN_FLAG;
+			}
+		}
+		return displayFlag;
 	}
 	
 }

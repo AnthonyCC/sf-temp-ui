@@ -622,7 +622,49 @@
 						<td>
 							<form:errors path="comments" />&nbsp;
 						</td>
-					</tr>                
+					</tr> 
+					<tr>
+					<td> Muni Meter </td>
+					<td>
+					<table>
+					<tr>					
+						<td>Card Value Assigned</td>
+						<td>                  
+							<form:input  path="muniMeterValueAssigned"  />
+						</td>
+						<td>
+							<form:errors path="muniMeterValueAssigned" />&nbsp;
+						</td>
+					</tr>    
+					<tr>					
+						<td>Card Not Assigned</td>
+						<td>                  
+							<form:checkbox  path="muniMeterCardNotAssigned" value="X" />
+						</td>
+						<td>
+							<form:errors path="muniMeterCardNotAssigned" />&nbsp;
+						</td>
+					</tr>     
+					<tr>					
+						<td>Card Value Returned</td>
+						<td>                  
+							<form:input  path="muniMeterValueReturned"  />
+						</td>
+						<td>
+							<form:errors path="muniMeterValueReturned" />&nbsp;
+						</td>
+					</tr>    
+					<tr>					
+						<td>Card Not Returned</td>
+						<td>                  
+							<form:checkbox  path="muniMeterCardNotReturned" value="X" />
+						</td>
+						<td>
+							<form:errors path="muniMeterCardNotReturned" />&nbsp;
+						</td>
+					</tr>
+					</table>
+					</td></tr>                
 					<tr>
 						<td colspan="3">&nbsp;</td>
 					</tr>

@@ -68,6 +68,15 @@
                 </td>
                </tr>
                <tr>
+                  <td>Muni Meter</td>
+                  <td>
+                  <form:checkbox path="muniMeterEnabled" value="X"/>
+                  </td>
+                <td>
+                  &nbsp;<form:errors path="muniMeterEnabled" />
+                </td>
+               </tr>
+               <tr>
                   <td>Dispatch validation</td>
                   <td>
                   <form:checkbox path="needsDispValidation" value="X"/>

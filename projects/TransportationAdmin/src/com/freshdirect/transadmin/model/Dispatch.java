@@ -48,6 +48,11 @@ public class Dispatch implements java.io.Serializable{
 	private TrnFacility originFacility;
 	private TrnFacility destinationFacility;	
 	private String dispatchType;
+	private Double muniMeterValueAssigned;
+	private Double muniMeterValueReturned;
+	private String muniMeterCardNotAssigned;
+	private String muniMeterCardNotReturned;
+	
 	
 	/* Temp variable to fill START_TIME column on TRANSP.DISPATCH */
 	private Date dispatchTimeEx;
@@ -378,5 +383,37 @@ public class Dispatch implements java.io.Serializable{
 
 	public void setDispatchTimeEx(Date dispatchTimeEx) {
 		this.dispatchTimeEx = dispatchTimeEx;
+	}
+
+	public Double getMuniMeterValueAssigned() {
+		return muniMeterValueAssigned;
+	}
+
+	public void setMuniMeterValueAssigned(Double muniMeterValueAssigned) {
+		this.muniMeterValueAssigned = muniMeterValueAssigned;
+	}
+
+	public Double getMuniMeterValueReturned() {
+		return muniMeterValueReturned;
+	}
+
+	public void setMuniMeterValueReturned(Double muniMeterValueReturned) {
+		this.muniMeterValueReturned = muniMeterValueReturned;
+	}
+
+	public String getMuniMeterCardNotAssigned() {
+		return muniMeterCardNotAssigned;
+	}
+
+	public void setMuniMeterCardNotAssigned(String muniMeterCardNotAssigned) {
+		this.muniMeterCardNotAssigned = muniMeterCardNotAssigned;
+	}
+
+	public String getMuniMeterCardNotReturned() {
+		return muniMeterCardNotReturned;
+	}
+
+	public void setMuniMeterCardNotReturned(String muniMeterCardNotReturned) {
+		this.muniMeterCardNotReturned = muniMeterCardNotReturned;
 	}
 }

@@ -24,7 +24,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.framework.util.StringUtil;
-import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumArithmeticOperator;
 import com.freshdirect.routing.constants.EnumWaveInstancePublishSrc;
@@ -1057,6 +1056,14 @@ public class DispatchProviderController extends JsonRpcController implements IDi
 			}			
 		}
 		return regionFacilityId;
+	}
+	public boolean updateMuniMeterCardDetails(String flag, String value, String status, String dispatchId, String userId){
+		
+		return dispatchManagerService.updateMuniMeterCardDetails(flag, value, status, dispatchId, userId);
+	}
+	public String getDialogDisplayFlag(String dialogFlag, String dispatchId){
+		
+		return dispatchManagerService.getDialogDisplayFlag(dialogFlag, dispatchId);
 	}
 	
 

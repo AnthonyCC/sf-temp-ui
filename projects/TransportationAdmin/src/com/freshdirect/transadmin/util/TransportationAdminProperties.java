@@ -252,6 +252,7 @@ public class TransportationAdminProperties {
 	private final static String PROP_EVENTLOG_MAILSUBJECT = "transportation.eventlog.mailsubject";
 	private final static String PROP_EVENTLOG_DATALOOKUP = "transportation.eventlog.lookup.days";
 	private final static String PROP_KRONOS_CLOUD_ENABLE = "transportation.kronoscloud.enable";
+	private final static String PROP_MUNI_METER_CARD_MAX_VALUE="munimeter.max.value";
 	
 	static {
 
@@ -461,6 +462,7 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_EVENTLOG_MAILSUBJECT, "Eventlog Notification");
 		defaults.put(PROP_EVENTLOG_DATALOOKUP, "-2");		
 		defaults.put(PROP_KRONOS_CLOUD_ENABLE, "false");
+		defaults.put(PROP_MUNI_METER_CARD_MAX_VALUE, "100.00");
 		
 		refresh();
 	}
@@ -997,6 +999,15 @@ public class TransportationAdminProperties {
 	public static int getEventLogDataLookUpDays() {
 		return getIntVal(get(PROP_EVENTLOG_DATALOOKUP));
 
+	}
+	
+	public static double getMuniMeterMaxValue() {
+		try {
+			double value= Double.parseDouble(PROP_MUNI_METER_CARD_MAX_VALUE);
+			return value;
+		} catch (NumberFormatException e) {
+			return 100.00;
+		}
 	}
 	
 }

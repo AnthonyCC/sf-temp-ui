@@ -13,6 +13,7 @@ public class Region implements java.io.Serializable,Comparable, TrnBaseEntityI {
 	private String name;
 	private String description;
 	private String obsolete;
+	private String muniMeterEnabled;
 	private String needsDispValidation;
 	private Set zones;
 	
@@ -104,6 +105,15 @@ public class Region implements java.io.Serializable,Comparable, TrnBaseEntityI {
 
 	public void setOriginFacility(TrnFacility originFacility) {
 		this.originFacility = originFacility;
+	}
+	
+
+	public String getMuniMeterEnabled() {
+		return muniMeterEnabled;
+	}
+
+	public void setMuniMeterEnabled(String muniMeterEnabled) {
+		this.muniMeterEnabled = muniMeterEnabled;
 	}
 
 	public String toString()

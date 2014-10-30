@@ -59,4 +59,6 @@ public interface IDispatchProvider {
 	boolean updateDispatchStatus(DispatchStatusList dispatches, String userId);
 	boolean validateAccessCode(String accessCode);
 	String getRegionFacility(String regionCode);
+	boolean updateMuniMeterCardDetails(String flag, String value, String status, String dispatchId, String userId);
+	String getDialogDisplayFlag(String dialogFlag, String dispatchId);
 }

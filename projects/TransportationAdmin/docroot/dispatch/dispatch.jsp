@@ -16,13 +16,14 @@
   <link rel="stylesheet" href="css/transportation.css" type="text/css" />		
   <link rel="stylesheet" href="css/airclic.css" type="text/css" />
   
+  
   <% boolean airclic_msg = false; 
   
   if(dateRangeVal.equals(TransStringUtil.getCurrentDate())) airclic_msg = true;
   %>
   
 <tmpl:insert template='/common/sitelayout.jsp'>
-
+ <link rel="stylesheet" href="css/muni_meter_dialog.css" type="text/css" />  
     <tmpl:put name='title' direct='true'>Dispatch Sheet</tmpl:put>
 	<tmpl:put name='yui-lib'>
 		<%@ include file='/common/i_yui.jspf'%>
@@ -386,8 +387,10 @@
               <div align="center" id="errContainer"></div></td>
             </td>
           </tr>               
-        </table>    
-       <script>
+        </table> 
+        
+       <script language="javascript">
+       var dispId;
          function doCompositeLink(compId1,compId2, compId3, url) {
           var param1 = document.getElementById(compId1).value;
           var param2 = document.getElementById(compId2).value;
@@ -410,8 +413,197 @@
 	       	panel.render(document.body);
 	        panel.show();
        }
+		
+		$(function() {
+			
+			var dialog1, dialog2, 
+			dispcardvalue = $("#dispcardvalue"),
+			cardnotassigned = $("#cardnotassigned"),
+			chkincardvalue= $("#chkincardvalue"),
+			cardnotreturned = $("#cardnotreturned");
+			var tips = $( ".validateTips" );
+			 function updateTips( t ) {
+			      tips
+			        .text( t )
+			        .addClass( "ui-state-highlight" );
+			      setTimeout(function() {
+			        tips.removeClass( "ui-state-highlight", 1500 );
+			      }, 500 );
+			    }
+			dialog1 = $( "#dialog-dispatch" ).dialog({
+			      autoOpen: false,
+			      height: 210,
+			      width: 300,
+			      modal: true,
+				  closeOnEscape: false,
+			      dialogClass: "noclose",
+				  //position: { my: "left+10 bottom", at: "right top", of: $(".dispoverlay") },
+			      buttons: {
+			        "save": function() {
+			        	updateMuniMeterCardDetails(true);
+			         
+			        }
+			      }
+			      
+			    });
+			dialog2 = $( "#dialog-checkin" ).dialog({
+			      autoOpen: false,
+			      height: 210,
+			      width: 300,
+			      modal: true,
+				  closeOnEscape: false,
+			      dialogClass: "noclose",
+				  //position: { my: "left+10 bottom", at: "right top", of: $(".chkinoverlay") },
+			      buttons: {
+			        "save": function() {
+			        	updateMuniMeterCardDetails(false);
+			         
+			        }
+			      }
+			      
+			    });
+			function updateMuniMeterCardDetails(isDispatch, value, status){
+				//Validate data and close the overlay
+				var valid=false;
+				var status="N";
+				if(isDispatch){
+					valid=validateDialog(dispcardvalue, cardnotassigned);
+					
+					if(valid){
+						if(cardnotassigned.is(':checked')){
+							status="X";
+							
+						}
+						var result = jsonrpcClient.AsyncDispatchProvider.updateMuniMeterCardDetails(updateCardCallBack, "dispatch", $.trim(dispcardvalue.val()), status, dispId,'<%= com.freshdirect.transadmin.security.SecurityManager.getUserName(request)%>');
+						
+					}
+				} else {
+					valid=validateDialog(chkincardvalue, cardnotreturned);
+					if(valid){
+						if(cardnotreturned.is(':checked')){
+							status="X";
+						}
+						var result = jsonrpcClient.AsyncDispatchProvider.updateMuniMeterCardDetails(updateCardCallBack, "checkin", $.trim(chkincardvalue.val()), status, dispId, '<%= com.freshdirect.transadmin.security.SecurityManager.getUserName(request)%>');
+						
+					}
+				}
+				
+				
+			}
+			
+			function validateDialog(valueField, checkboxField){
+				valid=false;
+				if($.trim(valueField.val()).length==0 && !checkboxField.is(':checked') ){
+					valid=false;
+					valueField.addClass( "ui-state-error" );
+					updateTips("Please fill one of the values");
+				} else if($.trim(valueField.val()).length>0 && checkboxField.is(':checked')){
+					valid=false;
+					valueField.addClass( "ui-state-error" );
+					updateTips("Please fill only one field");
+				} else if($.trim(valueField.val()).length>0 && !checkboxField.is(':checked')){
+					if( !/^\s*$/.test($.trim(valueField.val())) && !isNaN($.trim(dispcardvalue.val()))){
+						if(parseFloat($.trim(valueField.val())) > 0){
+							valid=true;
+						} else {
+							valid=false;
+							valueField.addClass( "ui-state-error" );
+							updateTips("Negative dollar amount!");
+						}
+						
+					}  
+					
+				} else if($.trim(valueField.val()).length==0 && checkboxField.is(':checked')){
+					valid=true;
+					alert("I am here : value of valid"+valid);
+				} else{
+					valid=false;
+					valueField.addClass( "ui-state-error" );
+					updateTips("Please Enter valid values");
+				}
+				return valid;
+			}
+			
+			function updateCardCallBack(result, exception) {
+				
+         	   if(result != null && result) {
+         		   alert('Card data updated successfully');
+         		  dialog2.dialog( "close" );
+         		   dialog1.dialog("close");
+         	   } else {
+         		   alert('Error updating card data');
+         		  dispcardvalue.addClass( "ui-state-error" );
+         		 chkincardvalue.addClass( "ui-state-error" );
+         		  updateTips("Please give a valid value");
+         	   }
+         	   
+            }
+			
+			function displayDialog(dialogFlag){
+				
+				//run a jsonrpcclient call 
+				var result = jsonrpcClient.AsyncDispatchProvider.getDialogDisplayFlag(displayDialogCallBack, dialogFlag, dispId);
+				
+			}
+			
+			function displayDialogCallBack(result, exception){
+				if(result!=null && result=="dispatch"){
+					 dialog1.dialog( "open" );
+				} else if(result!=null && result=="checkin"){
+					 dialog2.dialog( "open" );
+				} else {
+					//Do nothing
+				}
+			}
+			
+			$(".dispoverlay").change(function() { 
+			       if ($(this).is(':checked')) {
+			    	   var classes = $(this).attr("class").split(" ");
+			    	  dispId=classes[2].trim();
+			    	   displayDialog("dispatch");
+				       
+			        }
+			    });
+			$(".chkinoverlay").click(function() {
+				
+			       if ($(this).is(':checked')) {
+			    	   var classes = $(this).attr("class").split(",");
+			    	   dispId=classes[2].trim();
+			    	   displayDialog("checkin");
+				        
+			        }
+			    });
+		 });
       </script>      
       </div>
+      <div id="dialog-dispatch" >
+	
+  	<div class="muni" style="text-align:center;">Muni Meter card</div>
+ 	<div class ="validateTips"> </div>
+	  <form>
+	    <table>
+		<tr><td >
+	      card value $</td><td valign="bottom"  colspan="2"> <input type="text" name="dispcardvalue" id="dispcardvalue"  maxlength="6" size="6" class="text ">
+		  </td></tr><tr><td colspan="2" >
+	      Card Not Assigned</td><td><input type="checkbox" name="cardnotassigned" id="cardnotassigned" value="X">
+		  </td></tr>
+	      </table>
+	  </form>
+	</div>
+	<div id="dialog-checkin" >
+	
+  	<div class="muni" style="text-align:center;">Muni Meter card</div>
+ 
+	  <form>
+	    <table>
+		<tr><td >
+	      card value $</td><td valign="bottom"  colspan="2"> <input type="text" name="chkincardvalue" id="chkincardvalue"  maxlength="6" size="6" class="text ">
+		  </td></tr><tr><td colspan="2" >
+	      Card Not returned</td><td><input type="checkbox" name="cardnotreturned" id="cardnotreturned" value="X">
+		  </td></tr>
+	      </table>
+	  </form>
+	</div>
     
     <div align="center">
       <ec:table items="dispatchInfos"   action="${pageContext.request.contextPath}/dispatch.do"

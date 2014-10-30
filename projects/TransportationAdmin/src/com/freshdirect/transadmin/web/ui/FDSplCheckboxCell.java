@@ -101,14 +101,34 @@ public class FDSplCheckboxCell extends FDBaseCell {
 					}
 				}
 
-				columnBuilder.getHtmlBuilder().input("checkbox")
-						.name(id + "_" + column.getProperty())
-						.styleClass("datalistchx");
-				if (!enabled)
-					columnBuilder.getHtmlBuilder().disabled();
-				if (value)
-					columnBuilder.getHtmlBuilder().checked();
-				columnBuilder.getHtmlBuilder().xclose();
+				if("dispatched".equalsIgnoreCase(column.getProperty())){
+					columnBuilder.getHtmlBuilder().input("checkbox")
+					.name(id + "_" + column.getProperty())
+					.styleClass("datalistchx dispoverlay "+id);
+					if (!enabled)
+						columnBuilder.getHtmlBuilder().disabled();
+					if (value)
+						columnBuilder.getHtmlBuilder().checked();
+					columnBuilder.getHtmlBuilder().xclose();
+				} else if("checkedIn".equalsIgnoreCase(column.getProperty())){
+					columnBuilder.getHtmlBuilder().input("checkbox")
+					.name(id + "_" + column.getProperty())
+					.styleClass("datalistchx chkinoverlay "+id);
+					if (!enabled)
+						columnBuilder.getHtmlBuilder().disabled();
+					if (value)
+						columnBuilder.getHtmlBuilder().checked();
+					columnBuilder.getHtmlBuilder().xclose();
+				} else{
+					columnBuilder.getHtmlBuilder().input("checkbox")
+							.name(id + "_" + column.getProperty())
+							.styleClass("datalistchx");
+					if (!enabled)
+						columnBuilder.getHtmlBuilder().disabled();
+					if (value)
+						columnBuilder.getHtmlBuilder().checked();
+					columnBuilder.getHtmlBuilder().xclose();
+				}
 			}
 
 		} catch (Exception e) {

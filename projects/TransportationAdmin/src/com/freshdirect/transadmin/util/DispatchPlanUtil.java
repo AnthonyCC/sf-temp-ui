@@ -249,6 +249,10 @@ public class DispatchPlanUtil {
 		command.setAdditionalNextels(dispatch.getAdditionalNextels());
 		command.setMotKitNumber(dispatch.getMotKitNumber());	
 		command.setDispatchType(dispatch.getDispatchType());
+		command.setMuniMeterValueAssigned(dispatch.getMuniMeterValueAssigned());
+		command.setMuniMeterValueReturned(dispatch.getMuniMeterValueReturned());
+		command.setMuniMeterCardNotAssigned(dispatch.getMuniMeterCardNotAssigned());
+		command.setMuniMeterCardNotReturned(dispatch.getMuniMeterCardNotReturned());
 		
 		return command;
 	}
@@ -347,6 +351,10 @@ public class DispatchPlanUtil {
 		dispatch.setIsOverride(command.getIsOverride());
 		dispatch.setOriginFacility(command.getOriginFacility());
 		dispatch.setDestinationFacility(command.getDestinationFacility());
+		dispatch.setMuniMeterValueAssigned(Double.valueOf(command.getMuniMeterValueAssigned()));
+		dispatch.setMuniMeterValueReturned(Double.valueOf(command.getMuniMeterValueReturned()));
+		dispatch.setMuniMeterCardNotAssigned(command.getMuniMeterCardNotAssigned());
+		dispatch.setMuniMeterCardNotReturned(command.getMuniMeterCardNotReturned());
 		if(command.getOverrideReasonCode()!=null&&command.getOverrideReasonCode().length()>0)
 		{
 			DispatchReason reason=new DispatchReason();
