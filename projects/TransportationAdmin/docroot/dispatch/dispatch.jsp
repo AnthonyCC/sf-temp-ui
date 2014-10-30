@@ -594,7 +594,7 @@
 	<div id="dialog-checkin" >
 	
   	<div class="muni" style="text-align:center;">Muni Meter card</div>
- 
+ 	<div class ="validateTips"> </div>
 	  <form>
 	    <table>
 		<tr><td >
