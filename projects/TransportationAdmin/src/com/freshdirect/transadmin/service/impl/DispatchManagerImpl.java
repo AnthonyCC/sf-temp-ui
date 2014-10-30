@@ -656,6 +656,9 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			tmpDispatch.setMuniMeterValueAssigned(!TransStringUtil.isEmpty(value)?Double.parseDouble(value):null);
 			tmpDispatch.setMuniMeterCardNotAssigned(status);
 		} else if(flag.equalsIgnoreCase(CHECKIN_FLAG)){
+			if(!TransStringUtil.isEmpty(value) && tmpDispatch.getMuniMeterValueAssigned()< Double.parseDouble(value)){
+				return false;
+			}
 			tmpDispatch.setMuniMeterValueReturned(!TransStringUtil.isEmpty(value)?Double.parseDouble(value):null);
 			tmpDispatch.setMuniMeterCardNotReturned(status);
 		} else {
