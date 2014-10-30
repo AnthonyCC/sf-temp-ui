@@ -19,7 +19,7 @@
 <body style="padding-top: 0px; margin-top: 0px;">
 	<table align="center" border="0" width="640" cellpadding="0" cellspacing="0">
 		<tr>
-			<td colspan="3" valign="middle" align="center">
+			<td colspan="3" valign="middle" align="center" style="background-image: url('https://www.freshdirect.com/media/images/profile/raf_email/content_header.png');">
 				<xsl:comment>[if gte vml 1]<![CDATA[>]]>
 					&lt;v:shape stroked="f" style= "float: left; position: absolute; z-index:-2; visibility: visible; width: 640px; height: 66px; top: 0; left: 0px; border: 0; align: center;"&gt;
 						&lt;v:imagedata src="https://www.freshdirect.com/media/images/profile/raf_email/content_header.png"/&gt;&lt;/v:imagedata&gt;
@@ -33,34 +33,34 @@
 		</tr>
 		<tr>
 			<td colspan="3">
-				<img src="https://www.freshdirect.com/media/images/profile/raf_email/content_header_2.png" width="640" height="170" alt="" />
+				<img src="https://www.freshdirect.com/media/images/profile/raf_email/content_header_2.png" width="640" height="170" alt="" style="display: block;" />
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<img src="https://www.freshdirect.com/media/images/profile/raf_email/content_middle_1.png" width="24" height="482" alt="" />
+				<img src="https://www.freshdirect.com/media/images/profile/raf_email/content_middle_1.png" width="24" height="482" alt="" style="display: block;" />
 			</td>
-			<td width="327" valign="top">
+			<td width="327" valign="top" style="background-image: url('https://www.freshdirect.com/media/images/profile/raf_email/content_middle_2.png');">
 				<xsl:comment>[if gte vml 1]<![CDATA[>]]>
 					&lt;v:shape stroked="f" style= "float: left; position: absolute; z-index:-2; visibility: visible; width: 327px; height: 482px; top: 0; left: 0px; border: 0; align: center;"&gt;
 						&lt;v:imagedata src="https://www.freshdirect.com/media/images/profile/raf_email/content_middle_2.png"/&gt;&lt;/v:imagedata&gt;
 					&lt;/v:shape&gt;
 				<![CDATA[<![endif]]]></xsl:comment>
 				
-				<table>
-					<tr><td><img src="https://www.freshdirect.com/media/images/profile/raf_email/transparent_10x10.png" width="300" height="10" alt="" /></td></tr>
-					<tr><td style="margin: 10px 10px 10px 0;"><xsl:value-of select="offerText" disable-output-escaping="yes"/></td></tr>
-					<tr><td style="margin: 20px 10px 10px 0;"><img src="https://www.freshdirect.com/media/images/profile/raf_email/quote.png" alt="" /> <xsl:value-of select="userMessage"/></td></tr>
-					<tr><td style="margin: 20px 10px 10px 0;"><xsl:value-of select="systemMessage"/></td></tr>
-					<tr><td style="margin: 20px 10px 10px 0;"><a href="http://www.freshdirect.com/index.jsp"><img src="https://www.freshdirect.com/media/images/profile/raf_email/get_started.png" alt="" /></a></td></tr>
+				<table cellpadding="0" cellspacing="0">
+					<tr><td><img src="https://www.freshdirect.com/media/images/profile/raf_email/transparent_10x10.png" width="300" height="10" alt="" style="display: block;" /></td></tr>
+					<tr><td style="padding: 10px 10px 10px 0;"><xsl:value-of select="offerText" disable-output-escaping="yes"/></td></tr>
+					<tr><td style="padding: 20px 10px 10px 0;"><img src="https://www.freshdirect.com/media/images/profile/raf_email/quote.png" alt="" /> <xsl:value-of select="userMessage"/></td></tr>
+					<tr><td style="padding: 20px 10px 10px 0;"><xsl:value-of select="systemMessage"/></td></tr>
+					<tr><td style="padding: 20px 10px 10px 0;"><a href="http://www.freshdirect.com/index.jsp"><img src="https://www.freshdirect.com/media/images/profile/raf_email/get_started.png" alt="" /></a></td></tr>
 				</table>
 			</td>
 			<td>
-				<img src="https://www.freshdirect.com/media/images/profile/raf_email/content_middle_3.png" width="289" height="482" alt="" />
+				<img src="https://www.freshdirect.com/media/images/profile/raf_email/content_middle_3.png" width="289" height="482" alt="" style="display: block;" />
 			</td>
 		</tr>
 		<tr>
-			<td colspan="3"><img src="https://www.freshdirect.com/media/images/profile/raf_email/content_footer.jpg" width="640" height="67" alt="FreshDirect" /></td>
+			<td colspan="3"><img src="https://www.freshdirect.com/media/images/profile/raf_email/content_footer.jpg" width="640" height="67" alt="FreshDirect" style="display: block;" /></td>
 		</tr>
 	</table>
 
