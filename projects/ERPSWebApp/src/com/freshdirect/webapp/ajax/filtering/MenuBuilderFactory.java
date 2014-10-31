@@ -999,8 +999,22 @@ public class MenuBuilderFactory {
 				}
 			}
 		}
+		if (FilteringFlowType.BROWSE.equals(browseData.getPageType())) {
+			removeEmptyMenuBox(menu);
+		}
 	}
 	
+	private void removeEmptyMenuBox(List<MenuBoxData> menu) {
+		Iterator<MenuBoxData> menuBoxIterator = menu.iterator();
+		while (menuBoxIterator.hasNext()) {
+			MenuBoxData menuBox = menuBoxIterator.next();
+			List<MenuItemData> menuItems = menuBox.getItems();
+			if (menuItems == null || menuItems.isEmpty()) {
+				menuBoxIterator.remove();
+			}
+		}
+	}
+
 	private boolean isFilterPresentOnPage(List<MenuBoxData> menu){
 		
 		for(MenuBoxData box : menu){
