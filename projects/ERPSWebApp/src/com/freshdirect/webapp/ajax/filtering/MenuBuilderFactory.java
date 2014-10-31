@@ -427,8 +427,6 @@ public class MenuBuilderFactory {
 	}
 	
 	private void createTopLevelBoxes(List<MenuBoxData> menu, NavigationModel navModel){
-		
-
 		final Map<NavDepth, ContentNodeModel> thePath = navModel.getNavigationHierarchy();
 		
 		DepartmentModel dept = (DepartmentModel) thePath.get(NavDepth.DEPARTMENT); 
@@ -445,7 +443,6 @@ public class MenuBuilderFactory {
 		
 		// create categories and preference categories box
 		if (!navModel.getCategorySections().isEmpty()) {
-
 			MenuBoxData domain = new MenuBoxData();
 			domain.setName(dept.getRegularCategoriesLeftNavBoxHeader());
 			domain.setId(deptId + "_regular");
@@ -454,57 +451,59 @@ public class MenuBuilderFactory {
 			domain.setSelectionType(MenuBoxSelectionType.SINGLE);
 
 			for (CategorySectionModel categorySection : navModel.getCategorySections()) {
-
-				List<MenuItemData> items = new ArrayList<MenuItemData>();
-				items.add(new MenuItemData(categorySection.getHeadline()));
-				domain.addItems(createCatMenuItems(categorySection.getSelectedCategories(), items, navModel.getUser(), getNodeContentNameByNavDepth(thePath, NavDepth.CATEGORY)));
-
+				List<MenuItemData> items = createCatMenuItems(categorySection.getSelectedCategories(), null, navModel.getUser(), getNodeContentNameByNavDepth(thePath, NavDepth.CATEGORY));
+				if (!items.isEmpty()) {
+					items.add(0, new MenuItemData(categorySection.getHeadline()));
+				}
+				domain.addItems(items);
 			}
-
 			menu.add(domain);
-
 		} else if (!navModel.getRegularCategories().isEmpty()) {
-			
 			// regular categories
-
-			MenuBoxData domain = new MenuBoxData();
-			domain.setName(dept.getRegularCategoriesLeftNavBoxHeader());
-			domain.setId(deptId + "_regular");
-			if(!navModel.getPreferenceCategories().isEmpty()){
-				// mimic the regular categories box type in case of preference categories based on requirement [APPDEV-3814]
-				domain.setBoxType(MenuBoxType.DEPARTMENT);
-			}else{
-				domain.setBoxType(MenuBoxType.CATEGORY);				
+			MenuBoxData domain = createRegularCategoryMenuBox(navModel, dept, deptId);
+			List<MenuItemData> items = createCatMenuItems(navModel.getRegularCategories(), null, navModel.getUser(), getNodeContentNameByNavDepth(thePath, NavDepth.CATEGORY));
+			if (!items.isEmpty()) {
+				items.add(0, new MenuItemData(dept.getRegularCategoriesNavHeader()));
+				domain.setItems(items);
+				menu.add(domain);
 			}
-			domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
-			domain.setSelectionType(MenuBoxSelectionType.SINGLE);
-
-			List<MenuItemData> items = new ArrayList<MenuItemData>();
-			items.add(new MenuItemData(dept.getRegularCategoriesNavHeader()));
-
-			domain.setItems(createCatMenuItems(navModel.getRegularCategories(), items, navModel.getUser(), getNodeContentNameByNavDepth(thePath, NavDepth.CATEGORY)));
-
-			menu.add(domain);
 		}
 
 		if (!navModel.getPreferenceCategories().isEmpty()) {
-
 			// preference categories
-
-			MenuBoxData domain = new MenuBoxData();
-			domain.setName(dept.getPreferenceCategoriesLeftNavBoxHeader());
-			domain.setId(deptId + "_preference");
-			domain.setBoxType(MenuBoxType.CATEGORY);
-			domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
-			domain.setSelectionType(MenuBoxSelectionType.SINGLE);
-
-			List<MenuItemData> items = new ArrayList<MenuItemData>();
-			items.add(new MenuItemData(dept.getPreferenceCategoriesNavHeader()));
-
-			domain.setItems(createCatMenuItems(navModel.getPreferenceCategories(), items, navModel.getUser(), getNodeContentNameByNavDepth(thePath, NavDepth.CATEGORY)));
-
-			menu.add(domain);
+			MenuBoxData domain = createPreferenceCategoryMenuBox(dept, deptId);
+			List<MenuItemData> items = createCatMenuItems(navModel.getPreferenceCategories(), null, navModel.getUser(), getNodeContentNameByNavDepth(thePath, NavDepth.CATEGORY));
+			if (!items.isEmpty()) {
+				items.add(0, new MenuItemData(dept.getPreferenceCategoriesNavHeader()));
+				domain.setItems(items);
+				menu.add(domain);
+			}
 		}
+	}
+
+	private MenuBoxData createRegularCategoryMenuBox(NavigationModel navModel, DepartmentModel dept, String deptId) {
+		MenuBoxData domain = new MenuBoxData();
+		domain.setName(dept.getRegularCategoriesLeftNavBoxHeader());
+		domain.setId(deptId + "_regular");
+		if(!navModel.getPreferenceCategories().isEmpty()){
+			// mimic the regular categories box type in case of preference categories based on requirement [APPDEV-3814]
+			domain.setBoxType(MenuBoxType.DEPARTMENT);
+		}else{
+			domain.setBoxType(MenuBoxType.CATEGORY);
+		}
+		domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+		domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+		return domain;
+	}
+
+	private MenuBoxData createPreferenceCategoryMenuBox(DepartmentModel dept, String deptId) {
+		MenuBoxData domain = new MenuBoxData();
+		domain.setName(dept.getPreferenceCategoriesLeftNavBoxHeader());
+		domain.setId(deptId + "_preference");
+		domain.setBoxType(MenuBoxType.CATEGORY);
+		domain.setDisplayType(MenuBoxDisplayType.SIMPLE);
+		domain.setSelectionType(MenuBoxSelectionType.SINGLE);
+		return domain;
 	}
 	
 	private MenuBoxData createHeaderOnlyBox(CategoryModel node, MenuBoxType type){
