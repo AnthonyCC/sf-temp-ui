@@ -114,6 +114,7 @@
     {/if}
   {/param}
   {param cmEventSource:$cmEventSource /}
+  {param usq:$item.usq /}
 {/call}
 {/template}
 
@@ -264,6 +265,7 @@
  * @param? nutritionServingSizeValue
  * @param? showRatings
  * @param? cmEventSource optional coremetrics event source
+ * @param? usq should display legal information
  */
 {template .potatoTransactionalGridItem autoescape="false"}
 {let $atcItemId: 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) /}
@@ -271,7 +273,7 @@
   <div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
     <div class="portrait-item-burst_wrapper">
       <img src="{$productImage}" class="portrait-item-productimage" data-product-url="{$productPageUrl}">
-      {call common.bursts}{param badge:$badge /}{param deal:$deal /}{/call}
+      {call common.bursts}{param badge:$badge /}{param deal:$deal /}{param usq:$usq /}{/call}
     </div>
   </div>
   <div class="portrait-item-header">
