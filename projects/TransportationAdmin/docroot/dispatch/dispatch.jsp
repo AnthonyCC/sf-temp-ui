@@ -502,7 +502,8 @@
 					valueField.addClass( "ui-state-error" );
 					updateTips("Please fill only one field");
 				} else if($.trim(valueField.val()).length>0 && !checkboxField.is(':checked')){
-					if( !/^\s*$/.test($.trim(valueField.val())) && !isNaN($.trim(dispcardvalue.val()))){
+					if( !/^\s*$/.test($.trim(valueField.val())) && !isNaN(parseFloat($.trim(valueField.val())))){
+						
 						if(parseFloat($.trim(valueField.val())) > 0){
 							valid=true;
 						} else {
@@ -511,12 +512,17 @@
 							updateTips("Negative dollar amount!");
 						}
 						
-					}  
+					} else{
+						valid=false;
+						valueField.addClass( "ui-state-error" );
+						updateTips("Please enter a valid dollar amount!");
+					}
 					
 				} else if($.trim(valueField.val()).length==0 && checkboxField.is(':checked')){
 					valid=true;
 					
 				} else{
+					
 					valid=false;
 					valueField.addClass( "ui-state-error" );
 					updateTips("Please Enter valid values");
@@ -527,6 +533,9 @@
 			function updateCardCallBack(result, exception) {
 				
          	   if(result != null && result) {
+         		  dispcardvalue.removeClass( "ui-state-error");
+         		 chkincardvalue.removeClass( "ui-state-error");
+         		$( ".validateTips" ).empty();
          		  dialog2.dialog( "close" );
         		   dialog1.dialog("close");
          		   alert('Card data updated successfully');
@@ -577,28 +586,28 @@
 		 });
       </script>      
       </div>
-      <div id="dialog-dispatch" >
+      <div id="dialog-dispatch" style="display: none">
 	
-  	<div class="muni" style="text-align:center;">Muni Meter card</div>
+  	<div class="muni" style="text-align:center;">Muni Meter Card</div>
  	<div class ="validateTips"> </div>
 	  <form>
 	    <table>
 		<tr><td >
-	      card value $</td><td valign="bottom"  colspan="2"> <input type="text" name="dispcardvalue" id="dispcardvalue"  maxlength="6" size="6" class="text ">
+	      Card Value $</td><td valign="bottom"  colspan="2"> <input type="text" name="dispcardvalue" id="dispcardvalue"  maxlength="6" size="6" class="text ">
 		  </td></tr><tr><td colspan="2" >
 	      Card Not Assigned</td><td><input type="checkbox" name="cardnotassigned" id="cardnotassigned" value="X">
 		  </td></tr>
 	      </table>
 	  </form>
 	</div>
-	<div id="dialog-checkin" >
+	<div id="dialog-checkin" style="display: none" >
 	
-  	<div class="muni" style="text-align:center;">Muni Meter card</div>
+  	<div class="muni" style="text-align:center;">Muni Meter Card</div>
  	<div class ="validateTips"> </div>
 	  <form>
 	    <table>
 		<tr><td >
-	      card value $</td><td valign="bottom"  colspan="2"> <input type="text" name="chkincardvalue" id="chkincardvalue"  maxlength="6" size="6" class="text ">
+	      Card Value $</td><td valign="bottom"  colspan="2"> <input type="text" name="chkincardvalue" id="chkincardvalue"  maxlength="6" size="6" class="text ">
 		  </td></tr><tr><td colspan="2" >
 	      Card Not returned</td><td><input type="checkbox" name="cardnotreturned" id="cardnotreturned" value="X">
 		  </td></tr>
