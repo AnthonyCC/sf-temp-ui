@@ -390,7 +390,7 @@
         </table> 
         
        <script language="javascript">
-       var dispId;
+       var dispId, assignedValue;
          function doCompositeLink(compId1,compId2, compId3, url) {
           var param1 = document.getElementById(compId1).value;
           var param2 = document.getElementById(compId2).value;
@@ -479,6 +479,13 @@
 					}
 				} else {
 					valid=validateDialog(chkincardvalue, cardnotreturned);
+					//alert("before condition");
+					if( assignedValue>0 && $.trim(chkincardvalue.val()).length>0 && parseFloat($.trim(chkincardvalue.val())) > assignedValue){
+						//alert("After condition : "+assignedValue);
+						valid=false;
+						chkincardvalue.addClass( "ui-state-error" );
+						updateTips("Value exceded assigned value : $"+assignedValue);
+					}
 					if(valid){
 						if(cardnotreturned.is(':checked')){
 							status="X";
@@ -501,6 +508,7 @@
 					valid=false;
 					valueField.addClass( "ui-state-error" );
 					updateTips("Please fill only one field");
+			
 				} else if($.trim(valueField.val()).length>0 && !checkboxField.is(':checked')){
 					if( !/^\s*$/.test($.trim(valueField.val())) && !isNaN(parseFloat($.trim(valueField.val())))){
 						
@@ -559,10 +567,12 @@
 			function displayDialogCallBack(result, exception){
 				if(result!=null && result=="dispatch"){
 					 dialog1.dialog( "open" );
-				} else if(result!=null && result=="checkin"){
+				} else if(result!=null && result.indexOf("checkin")>-1){
+					var resultSplit=result.split("_");
+					assignedValue=parseFloat(resultSplit[1].trim());
 					 dialog2.dialog( "open" );
 				} else {
-					//Do nothing
+					//Do nothing result=="checkin"
 				}
 			}
 			

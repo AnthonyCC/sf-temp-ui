@@ -677,10 +677,14 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	
 	public String getDialogDisplayFlag(String dialogFlag, String dispatchId){
 		String displayFlag="NONE";
+		String muniMeterAssignedValue="0";
 		// Get the current dispatch record
 		Dispatch dispatch = getDispatch(dispatchId);
 		//get MuniMeter flag
 		String muniMeterFlag=dispatch.getRegion().getMuniMeterEnabled();
+		if(dispatch.getMuniMeterValueAssigned()!=null){
+			muniMeterAssignedValue = Double.toString(dispatch.getMuniMeterValueAssigned());
+		}
 		
 		if(!(TransStringUtil.isEmpty(muniMeterFlag))){
 			if(dialogFlag.equalsIgnoreCase(DISPATCH_FLAG) && muniMeterFlag.equals("X")){
@@ -689,10 +693,13 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 					&& !TransStringUtil.isEmpty(dispatch.getMuniMeterCardNotAssigned())
 					&& "X".equals(dispatch.getMuniMeterCardNotAssigned())){
 				
-					displayFlag=CHECKIN_FLAG;
+					displayFlag="NONE";
 			} else if(dialogFlag.equalsIgnoreCase(CHECKIN_FLAG) && muniMeterFlag.equals("X")
 					&& TransStringUtil.isEmpty(dispatch.getMuniMeterCardNotAssigned()) ){
-				displayFlag=CHECKIN_FLAG;
+				if(dispatch.getMuniMeterValueAssigned()!=null){
+					displayFlag=CHECKIN_FLAG+"_"+muniMeterAssignedValue;
+				}
+				
 			}
 		}
 		return displayFlag;
