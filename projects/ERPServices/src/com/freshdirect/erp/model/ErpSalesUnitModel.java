@@ -39,6 +39,15 @@ public class ErpSalesUnitModel extends ErpModelSupport implements DurableModelI 
 	
 	/** [APPDEV-209]Display Indicator - Only for display or not.*/
 	private boolean displayInd;
+	
+	/** [APPDEV-3438]-Display Unit Pricing calculation */
+	private int unitPriceNumerator;
+	
+	private int unitPriceDenominator;
+	
+	private String unitPriceUOM;
+	
+	private String unitPriceDescription;
 
 
 	/**
@@ -73,6 +82,20 @@ public class ErpSalesUnitModel extends ErpModelSupport implements DurableModelI 
 		this.setDisplayInd(displayInd);
 	}
 
+	public ErpSalesUnitModel(String alternativeUnit, String baseUnit, int numerator, int denominator, String description, boolean displayInd,int unitPriceNumerator,
+			int unitPriceDenominator,
+			String unitPriceUOM, String unitPriceDescription) {
+		this.setAlternativeUnit( alternativeUnit );
+		this.setBaseUnit( baseUnit );
+		this.setNumerator( numerator );
+		this.setDenominator( denominator );
+		this.setDescription( description );
+		this.setDisplayInd(displayInd);
+		this.setUnitPriceNumerator(unitPriceNumerator);
+		this.setUnitPriceDenominator(unitPriceDenominator);
+		this.setUnitPriceUOM(unitPriceUOM);
+		this.setUnitPriceDescription(unitPriceDescription);
+	}
 
 	/**
 	 * Get alternative unit of measure.
@@ -189,5 +212,37 @@ public class ErpSalesUnitModel extends ErpModelSupport implements DurableModelI 
 
 	public void setDisplayInd(boolean displayInd) {
 		this.displayInd = displayInd;
+	}
+
+	public int getUnitPriceNumerator() {
+		return unitPriceNumerator;
+	}
+
+	public void setUnitPriceNumerator(int unitPriceNumerator) {
+		this.unitPriceNumerator = unitPriceNumerator;
+	}
+
+	public int getUnitPriceDenominator() {
+		return unitPriceDenominator;
+	}
+
+	public void setUnitPriceDenominator(int unitPriceDenominator) {
+		this.unitPriceDenominator = unitPriceDenominator;
+	}
+
+	public String getUnitPriceUOM() {
+		return unitPriceUOM;
+	}
+
+	public void setUnitPriceUOM(String unitPriceUOM) {
+		this.unitPriceUOM = unitPriceUOM;
+	}
+
+	public String getUnitPriceDescription() {
+		return unitPriceDescription;
+	}
+
+	public void setUnitPriceDescription(String unitPriceDescription) {
+		this.unitPriceDescription = unitPriceDescription;
 	}
 }

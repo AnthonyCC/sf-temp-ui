@@ -31,6 +31,14 @@ public class FDSalesUnit extends FDAttributeProxy {
 	
 	private String baseUnit;
 	
+	/** [APPDEV-3438]-Display Unit Pricing calculation */
+	private int unitPriceNumerator;
+	
+	private int unitPriceDenominator;
+	
+	private String unitPriceUOM;
+	
+	private String unitPriceDescription;
 
 	/**
 	 * Constructor with all properties.
@@ -123,6 +131,21 @@ public class FDSalesUnit extends FDAttributeProxy {
 		this.denominator = denominator;
 		this.baseUnit = baseUnit;
 	}
+	
+	public FDSalesUnit(AttributesI attributes, String name, String description,
+			int numerator, int denominator, String baseUnit, int unitPriceNumerator,
+			int unitPriceDenominator, String unitPriceUOM, String unitPriceDescription) {
+		super(attributes);
+		this.name = name;
+		this.description = description;
+		this.numerator = numerator;
+		this.denominator = denominator;
+		this.baseUnit = baseUnit;
+		this.unitPriceNumerator = unitPriceNumerator;
+		this.unitPriceDenominator = unitPriceDenominator;
+		this.unitPriceUOM = unitPriceUOM;
+		this.unitPriceDescription = unitPriceDescription;
+	}
 
 	public int getNumerator() {
 		return numerator;
@@ -134,5 +157,21 @@ public class FDSalesUnit extends FDAttributeProxy {
 
 	public String getBaseUnit() {
 		return baseUnit;
+	}
+
+	public int getUnitPriceNumerator() {
+		return unitPriceNumerator;
+	}
+
+	public int getUnitPriceDenominator() {
+		return unitPriceDenominator;
+	}
+
+	public String getUnitPriceUOM() {
+		return unitPriceUOM;
+	}
+
+	public String getUnitPriceDescription() {
+		return unitPriceDescription;
 	}
 }

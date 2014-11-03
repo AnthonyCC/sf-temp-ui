@@ -47,6 +47,15 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 	/** [APPDEV-209]Display Indicator - Only for display or not.*/
 	private boolean displayInd;
 	
+	/** [APPDEV-3438]-Display Unit Pricing calculation */
+	private int unitPriceNumerator;
+	
+	private int unitPriceDenominator;
+	
+	private String unitPriceUOM;
+	
+	private String unitPriceDescription;
+	
 	/**
 	 * Copy constructor, from model.
 	 *
@@ -77,6 +86,31 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 		this.description = description;
 		this.displayInd = displayInd;
 	}
+	
+	public ErpSalesUnitPersistentBean(
+			VersionedPrimaryKey pk,
+			String alternativeUnit,
+			String baseUnit,
+			int numerator,
+			int denominator,
+			String description,
+			boolean displayInd,
+			int unitPriceNumerator,
+			int unitPriceDenominator,
+			String unitPriceUOM, String unitPriceDescription) {
+			super(pk);
+			this.alternativeUnit = alternativeUnit != null ? alternativeUnit.intern() : null;
+			this.baseUnit = baseUnit != null ? baseUnit.intern() : null;
+			this.numerator = numerator;
+			this.denominator = denominator;
+			this.description = description;
+			this.displayInd = displayInd;
+			this.unitPriceNumerator = unitPriceNumerator;
+			this.unitPriceDenominator = unitPriceDenominator;
+			this.unitPriceUOM = unitPriceUOM;
+			this.unitPriceDescription = unitPriceDescription;
+			
+		}
 
 	/**
 	 * Copy into model.
@@ -101,6 +135,10 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 		this.denominator = m.getDenominator();
 		this.description = m.getDescription();
 		this.displayInd = m.isDisplayInd();
+		this.unitPriceNumerator = m.getUnitPriceNumerator();
+		this.unitPriceDenominator = m.getUnitPriceDenominator();
+		this.unitPriceUOM = m.getUnitPriceUOM();
+		this.unitPriceDescription = m.getUnitPriceDescription();
 	}
 
 	/**
@@ -115,7 +153,7 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 	 */
 	public static List findByParent(Connection conn, VersionedPrimaryKey parentPK) throws SQLException {
 		java.util.List lst = new java.util.LinkedList();
-		PreparedStatement ps = conn.prepareStatement("select id, alternative_unit, base_unit, numerator, denominator, description, display_ind from erps.salesunit where mat_id = ? and upper(display_ind) <>'Y'" );
+		PreparedStatement ps = conn.prepareStatement("select id, alternative_unit, base_unit, numerator, denominator, description, display_ind, UP_NUMERATOR, UP_DENOMINATOR,UP_UOM,UP_DESCRIPTION from erps.salesunit where mat_id = ? and upper(display_ind) <>'Y'" );
 		ps.setString(1, parentPK.getId());
 		ResultSet rs = ps.executeQuery();
 
@@ -128,7 +166,11 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 					rs.getInt(4),
 					rs.getInt(5),
 					rs.getString(6),
-					"Y".equalsIgnoreCase(rs.getString(7)));
+					"Y".equalsIgnoreCase(rs.getString(7)),
+					rs.getInt(8),
+					rs.getInt(9),
+					rs.getString(10),
+					rs.getString(11));
 			bean.setParentPK(parentPK);
 			lst.add(bean);
 		}
@@ -140,7 +182,7 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String id = this.getNextId(conn, "ERPS");
 		int version = ((VersionedPrimaryKey) this.getParentPK()).getVersion();
-		PreparedStatement ps = conn.prepareStatement("insert into erps.salesunit (id, mat_id, version, alternative_unit, base_unit, numerator, denominator, description, display_ind) values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		PreparedStatement ps = conn.prepareStatement("insert into erps.salesunit (id, mat_id, version, alternative_unit, base_unit, numerator, denominator, description, display_ind, UP_NUMERATOR, UP_DENOMINATOR,UP_UOM,UP_DESCRIPTION) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
 		ps.setInt(3, version);
@@ -150,7 +192,10 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 		ps.setInt(7, this.denominator);
 		ps.setString(8, this.description);
 		ps.setString(9, this.displayInd?"Y":"N");
-		
+		ps.setInt(10, this.unitPriceNumerator);
+		ps.setInt(11, this.unitPriceDenominator);
+		ps.setString(12, this.unitPriceUOM);
+		ps.setString(13, this.unitPriceDescription);
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("No database rows created!");
 		}
@@ -174,7 +219,7 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 	 */
 	public static List findByParentForDisplay(Connection conn, VersionedPrimaryKey parentPK) throws SQLException {
 		java.util.List lst = new java.util.LinkedList();
-		PreparedStatement ps = conn.prepareStatement("select id, alternative_unit, base_unit, numerator, denominator, description, display_ind from erps.salesunit where mat_id = ? and upper(display_ind) ='Y'" );
+		PreparedStatement ps = conn.prepareStatement("select id, alternative_unit, base_unit, numerator, denominator, description, display_ind, UP_NUMERATOR, UP_DENOMINATOR,UP_UOM,UP_DESCRIPTION from erps.salesunit where mat_id = ? and upper(display_ind) ='Y'" );
 		ps.setString(1, parentPK.getId());
 		ResultSet rs = ps.executeQuery();
 
@@ -187,7 +232,11 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 					rs.getInt(4),
 					rs.getInt(5),
 					rs.getString(6),
-					"Y".equalsIgnoreCase(rs.getString(7)));
+					"Y".equalsIgnoreCase(rs.getString(7)),
+					rs.getInt(8),
+					rs.getInt(9),
+					rs.getString(10),
+					rs.getString(11));
 			bean.setParentPK(parentPK);
 			lst.add(bean);
 		}

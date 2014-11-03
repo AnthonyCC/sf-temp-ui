@@ -387,7 +387,8 @@ public class FDProductHelper {
 			AttributesI attribs = new AttributeCollection( su.getAttributes() );
 
 //			salesUnits[i] = new FDSalesUnit(attribs, su.getAlternativeUnit(), su.getDescription());
-			salesUnits[i] = new FDSalesUnit(attribs, su.getAlternativeUnit(), su.getDescription(),su.getNumerator(),su.getDenominator(),su.getBaseUnit());
+//			salesUnits[i] = new FDSalesUnit(attribs, su.getAlternativeUnit(), su.getDescription(),su.getNumerator(),su.getDenominator(),su.getBaseUnit());
+			salesUnits[i] = new FDSalesUnit(attribs, su.getAlternativeUnit(), su.getDescription(),su.getNumerator(),su.getDenominator(),su.getBaseUnit(),su.getUnitPriceNumerator(),su.getUnitPriceDenominator(),su.getUnitPriceUOM(),su.getUnitPriceDescription());
 		}
 		return salesUnits;
 	}

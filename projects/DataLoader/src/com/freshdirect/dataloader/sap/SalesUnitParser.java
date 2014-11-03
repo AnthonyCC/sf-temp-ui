@@ -25,12 +25,14 @@ public class SalesUnitParser extends SAPParser {
     /** a collection of sales unit objects parsed from a file
      */    
     HashMap<String, HashSet<ErpSalesUnitModel>> salesUnits = null;
+    HashMap<String, ErpSalesUnitModel> salesUnitsPricingInfo = null;
     
     /** Creates new SalesUnitParser
      */
     public SalesUnitParser() {
         super();
         salesUnits = new HashMap<String, HashSet<ErpSalesUnitModel>>();
+        salesUnitsPricingInfo = new HashMap<String, ErpSalesUnitModel>();
         /*
          * from ERP Services/Technical Specs/Batch Loads/Material_Export_CSD.doc in VSS repository
          */
@@ -102,10 +104,29 @@ public class SalesUnitParser extends SAPParser {
 	                //
 	                units = salesUnits.get(matlNumber);
 	            }
-	            //
-	            // add the new sales unit to the set
-	            //
-	            units.add(salesUnit);
+	            
+	            //[APPDEV-3438] set the unit pricing info to each sales unit record.
+	            if("U1".equalsIgnoreCase(getString(tokens,DISPLAY_IND))){
+//	            	if(!salesUnitsPricingInfo.containsKey(matlNumber)){
+	            		salesUnitsPricingInfo.put(matlNumber, salesUnit);
+//	            	}
+	           
+	            }else{
+	            	//
+		            // add the new sales unit to the set
+		            //
+	            	units.add(salesUnit);
+	            }
+	            
+	            if(salesUnitsPricingInfo.containsKey(matlNumber)){
+	            	ErpSalesUnitModel unitPricingInfo =salesUnitsPricingInfo.get(matlNumber);
+		        	for (ErpSalesUnitModel erpSalesUnitModel : units) {
+						erpSalesUnitModel.setUnitPriceNumerator(unitPricingInfo.getNumerator());
+						erpSalesUnitModel.setUnitPriceDenominator(unitPricingInfo.getDenominator());
+						erpSalesUnitModel.setUnitPriceUOM(unitPricingInfo.getAlternativeUnit());
+						erpSalesUnitModel.setUnitPriceDescription(unitPricingInfo.getDescription());
+					}
+	            }
         	}
             
         } catch (Exception e) {
