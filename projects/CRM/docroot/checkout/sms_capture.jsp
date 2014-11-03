@@ -126,7 +126,7 @@
 				</table>
 			</td>
 		</tr>
-		<tr><td><div class="smshline" id=""><!-- --></div></td></tr>
+		<%-- <tr><td><div class="smshline" id=""><!-- --></div></td></tr>
 		<tr>
 			<td>		
 				<table width="100%" border="0">
@@ -157,7 +157,7 @@
 					<tr><td colspan="2" class="text11rbold trpad" style="width:500px; text-align: left;padding-left: 15px;height:25px;">&nbsp;<fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><%=errorMsg%></fd:ErrorHandler></td></tr>
 				</table>
 			</td>
-		</tr>
+		</tr> --%>
 		<tr><td><div class="smshline" id=""><!-- --></div></td></tr>
 		<tr>
 			<td>

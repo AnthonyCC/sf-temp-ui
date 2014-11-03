@@ -17,8 +17,8 @@ public class CrmSmsDisplayInfo {
 	public void setMobileNumber(String mobileNumber) {
 		this.mobileNumber = mobileNumber;
 	}
-	public Date getTimeSent() {
-		return timeSent;
+	public String getTimeSent() {
+		return timeSent.toString();
 	}
 	public void setTimeSent(Date timeSent) {
 		this.timeSent = timeSent;

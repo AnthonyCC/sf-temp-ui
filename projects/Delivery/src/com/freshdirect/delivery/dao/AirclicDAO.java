@@ -1394,8 +1394,8 @@ public class AirclicDAO {
 		PreparedStatement ps=null;
 		ResultSet rs=null;
 		try {
-			String getSmsInfo ="select s.create_date, s.alert_type, s.message, s.status, s.mobile_number from mis.sms_alert_capture s,transp.handoff_batchstop bs"
-					+"where s.mobile_number=bs.mobile_number and bs.weborder_id=s.order_id and bs.weborder_id =?";
+			String getSmsInfo ="select s.create_date, s.alert_type, s.message, s.status, s.mobile_number from mis.sms_alert_capture s,transp.handoff_batchstop bs, TRANSP.HANDOFF_BATCH B"
+					+" where s.mobile_number=bs.mobile_number and bs.weborder_id=s.order_id and b.batch_id = bs.batch_id and b.batch_status IN ('CPD/ADC','CPD','CPD/ADF') and bs.weborder_id =?";
 			ps= con.prepareStatement(getSmsInfo);
 			ps.setString(1,orderId);
 			rs = ps.executeQuery();
@@ -1403,7 +1403,7 @@ public class AirclicDAO {
 				CrmSmsDisplayInfo _smsInfo= new CrmSmsDisplayInfo();
 				_smsInfo.setTimeSent(rs.getTimestamp("create_date"));
 				_smsInfo.setAlertType(rs.getString("alert_type"));
-				_smsInfo.setMessage(rs.getString("alert_type"));
+				_smsInfo.setMessage(rs.getString("message"));
 				_smsInfo.setStatus(rs.getString("status").equalsIgnoreCase("SUCCESS")?"Delivered":"Failed");
 				_smsInfo.setMobileNumber(rs.getString("mobile_number"));
 				smsInfo.add(_smsInfo);

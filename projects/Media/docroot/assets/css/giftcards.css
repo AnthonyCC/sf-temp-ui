@@ -487,6 +487,15 @@ div.clear,p.clear,span.clear { clear: both; display: none; }
 .gc_colHeader .gc_balance {
 	width: 100px;
 	text-align: center;
+	
+	
+}
+.gc_smsColHeader{
+	width: 110px;
+	text-align: center;
+	color: #333;
+	background-color: #fc9;
+	font-weight: bold;
 }
 
 .gc_table1 th, .gc_table2 th, .gc_table3, .gc_table4 th {

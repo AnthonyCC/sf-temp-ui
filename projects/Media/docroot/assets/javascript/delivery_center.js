@@ -56,10 +56,10 @@
 						} else {
 							result += "<tr>";
 						}
-						result += "<td width=\"115\">"+ smsrows[i].timeSent + "</td>";
-						result += "<td width=\"115\">"+ smsrows[i].alertType + "</td>";
-						result += "<td width=\"115\">"+ smsrows[i].message + "</td>";
-						result += "<td width=\"115\">"+ smsrows[i].status + "</td>";
+						result += "<td width=\"115\" style=\"text-align:center \">"+ smsrows[i].timeSent + "</td>";
+						result += "<td width=\"111\" style=\"text-align:center \">"+ smsrows[i].alertType + "</td>";
+						result += "<td width=\"115\" >"+ smsrows[i].message + "</td>";
+						result += "<td width=\"115\" style=\"text-align:center \">"+ smsrows[i].status + "</td>";
 						result += "<td width=\"115\">"+ smsrows[i].mobileNumber + "</td>";
 						result += "</tr>";
 					}

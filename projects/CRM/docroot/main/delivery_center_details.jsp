@@ -253,15 +253,15 @@
 								<td class="gc_table_footer " >
 									<div align="right"><input type="button" onclick="lookupSmsMessages();" class="button" value="Refresh" name="Refresh Manifest"></div>
 									<table width="99%" cellspacing="0" cellpadding="0" border="0" class="gc_table4footer">
-									<tr class="gc_colHeader">
-											<td>Time Sent</td>
-											<td>Type</td>
-											<td>Message</td>
-											<td>Result</td>
-											<td>Mobile Number</td>
+									<tr class="gc_smsColHeader">
+											<td width="117">Time Sent</td>
+											<td width="122">Type</td>
+											<td width="120">Message</td>
+											<td width="117">Result</td>
+											<td width="117">Mobile Number</td>
 										</tr>
 										<tr>
-											<td colspan="4"><div id="smsInfo" style="overflow-y:auto;height:200px;"></div></td>
+											<td colspan="5"><div id="smsInfo" style="overflow-y:auto;height:200px;"></div></td>
 										</tr>
 									</table>
 								</td>
