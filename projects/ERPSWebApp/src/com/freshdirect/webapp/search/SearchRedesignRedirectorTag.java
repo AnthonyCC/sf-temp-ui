@@ -1,6 +1,5 @@
 package com.freshdirect.webapp.search;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -73,11 +72,9 @@ public class SearchRedesignRedirectorTag extends BodyTagSupport {
 				// To ensure that https requests get redirect to https correctly
 				redirectUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
 				redirected = true;
-				try {
-					((HttpServletResponse) ctx.getResponse()).sendRedirect(redirectUrl);
-				} catch (IOException ioe) {
-					throw new JspException(ioe);
-				}
+				HttpServletResponse httpServletResponse = (HttpServletResponse) ctx.getResponse();
+				httpServletResponse.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+				httpServletResponse.setHeader("Location", redirectUrl);
 				return SKIP_PAGE;
 			}
 		}

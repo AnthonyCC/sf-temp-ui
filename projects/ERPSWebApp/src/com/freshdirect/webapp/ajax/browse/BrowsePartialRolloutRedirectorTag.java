@@ -73,7 +73,9 @@ public class BrowsePartialRolloutRedirectorTag extends SimpleTagSupport{
 
 	        	//To ensure that https requests get redirect to https correctly
 	        	redirectUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
-				((HttpServletResponse)ctx.getResponse()).sendRedirect(redirectUrl);
+				HttpServletResponse httpServletResponse = (HttpServletResponse)ctx.getResponse();
+				httpServletResponse.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+				httpServletResponse.setHeader("Location", redirectUrl);
 			}
 		}
 	}
