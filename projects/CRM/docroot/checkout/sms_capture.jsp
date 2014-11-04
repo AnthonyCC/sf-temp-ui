@@ -163,7 +163,7 @@
 			<td>
 				<table width="100%" border="0">
 					<tr><td colspan="2" >&nbsp;</td></tr>
-					<tr><td colspan="2" ><span class="title18or trpad">3.&nbsp;</span><span class="title18">Go green!</span>&nbsp;<img src="/media_stat/images/navigation/go_green_leaf.gif" border="0" alt="GO GREEN" /></td></tr>
+					<tr><td colspan="2" ><span class="title18or trpad">2.&nbsp;</span><span class="title18">Go green!</span>&nbsp;<img src="/media_stat/images/navigation/go_green_leaf.gif" border="0" alt="GO GREEN" /></td></tr>
 					<tr><td colspan="2" >&nbsp;</td></tr>
 					<tr valign="middle">
 						<td class="text12 trpad" style="width: 30px;"><input class="radio" type="checkbox" name="go_green" value="Y" <%=go_green ? "checked":""%> /></td>

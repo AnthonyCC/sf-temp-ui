@@ -1,5 +1,7 @@
 package com.freshdirect.sms;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class CrmSmsDisplayInfo {
@@ -18,7 +20,11 @@ public class CrmSmsDisplayInfo {
 		this.mobileNumber = mobileNumber;
 	}
 	public String getTimeSent() {
-		return timeSent.toString();
+		DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+		if(timeSent!=null)
+			return sdf.format(timeSent);
+		else
+			return "N/A";
 	}
 	public void setTimeSent(Date timeSent) {
 		this.timeSent = timeSent;
