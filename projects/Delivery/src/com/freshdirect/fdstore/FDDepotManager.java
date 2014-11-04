@@ -49,7 +49,7 @@ public class FDDepotManager {
 	private List pickupDepotList = new ArrayList();
 	private List corpDepotList = new ArrayList();
 
-	private long REFRESH_PERIOD = FDStoreProperties.getDepotCacheRefreshPeriod();
+	//private long REFRESH_PERIOD = FDStoreProperties.getDepotCacheRefreshPeriod() * 1000 * 60;
 
 	private long lastRefresh = 0;
 
@@ -68,8 +68,11 @@ public class FDDepotManager {
 		return FDDepotManager.instance;
 	}
 
+	private long getRefreshInterval(){
+		return FDStoreProperties.getDepotCacheRefreshPeriod() * 1000 * 60;
+	}
 	private synchronized void refreshCacheMaps() throws FDResourceException {
-		if (System.currentTimeMillis() - lastRefresh > REFRESH_PERIOD) {
+		if (System.currentTimeMillis() - lastRefresh > getRefreshInterval()) {
 			try {
 				DlvDepotManagerSB sb = this.getDlvDepotManagerHome().create();
 

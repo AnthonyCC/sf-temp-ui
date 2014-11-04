@@ -1371,7 +1371,7 @@ public class FDStoreProperties {
         
 
     	/* Alt. Pickup convenience APPDEV-3623 */
-        defaults.put(PROP_DEPOT_CACHE_REFRESH, "28800000"); //1000 * 60 * 480 = 8 hours
+        defaults.put(PROP_DEPOT_CACHE_REFRESH, "480"); //1000 * 60 * 480 = 8 hours
 
         refresh();
     }
@@ -3454,9 +3454,9 @@ public class FDStoreProperties {
 	}
 
 	/* Alt. Pickup convenience APPDEV-3623 */
-	public static long getDepotCacheRefreshPeriod() {
+	public static int getDepotCacheRefreshPeriod() {
 		try {
-			return Long.parseLong(get(PROP_DEPOT_CACHE_REFRESH));
+			return Integer.parseInt(get(PROP_DEPOT_CACHE_REFRESH));
 		} catch (NumberFormatException e) {
 			return 0;
 		}
