@@ -351,8 +351,8 @@ public class DispatchPlanUtil {
 		dispatch.setIsOverride(command.getIsOverride());
 		dispatch.setOriginFacility(command.getOriginFacility());
 		dispatch.setDestinationFacility(command.getDestinationFacility());
-		dispatch.setMuniMeterValueAssigned(Double.valueOf(command.getMuniMeterValueAssigned()));
-		dispatch.setMuniMeterValueReturned(Double.valueOf(command.getMuniMeterValueReturned()));
+		dispatch.setMuniMeterValueAssigned(command.getMuniMeterValueAssigned());
+		dispatch.setMuniMeterValueReturned(command.getMuniMeterValueReturned());
 		dispatch.setMuniMeterCardNotAssigned(command.getMuniMeterCardNotAssigned());
 		dispatch.setMuniMeterCardNotReturned(command.getMuniMeterCardNotReturned());
 		if(command.getOverrideReasonCode()!=null&&command.getOverrideReasonCode().length()>0)
