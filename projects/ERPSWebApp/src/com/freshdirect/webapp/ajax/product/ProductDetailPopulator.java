@@ -818,7 +818,7 @@ public class ProductDetailPopulator {
 		} catch ( FDSkuNotFoundException ignore ) {
 		}
 		
-		int deal = showBurstImage ? priceCalculator.getHighestDealPercentage() : 0;
+		int deal = showBurstImage ? priceCalculator.getHighestDealPercentage() : priceCalculator.getGroupDealPercentage();
 		
 		boolean isNew = product.isNew();
 		boolean isYourFave = DYFUtil.isFavorite( product, user );
