@@ -10,7 +10,7 @@ public class BannerModel extends ContentNodeModelImpl {
 	}
 
 	public String getLocation(){
-		return this.getAttribute("location", null);
+		return this.getAttribute("location", "EMPTY");
 	}
 	
 	public Image getImage() {

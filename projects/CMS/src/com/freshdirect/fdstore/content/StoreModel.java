@@ -27,7 +27,7 @@ public class StoreModel extends ContentNodeModelImpl {
 	private List<RecipeTagModel> tabletIdeasRecipeTags = new ArrayList<RecipeTagModel>();
     private List<BannerModel> tabletHomeScreenPopUpShopBanners = new ArrayList<BannerModel>();
     private List<BrandModel> tabletIdeasBrands = new ArrayList<BrandModel>();
-    private List<Recipe> tabletIdeasRecipes = new ArrayList<Recipe>();
+    private List<ContentNodeModel> tabletIdeasRecipes = new ArrayList<ContentNodeModel>();
    
 	public StoreModel(com.freshdirect.cms.ContentKey cKey) {
 		super(cKey);
@@ -155,8 +155,9 @@ public class StoreModel extends ContentNodeModelImpl {
         return new ArrayList<BrandModel>(tabletIdeasBrands);
 	}
 	
-	public List<Recipe> getTabletIdeasRecipes() {
+	/** returns list of Recipes or RecipeTags */
+	public List<ContentNodeModel> getTabletIdeasRecipes() {
         ContentNodeModelUtil.refreshModels(this, "tabletIdeasRecipes", tabletIdeasRecipes, false);
-        return new ArrayList<Recipe>(tabletIdeasRecipes);
+        return new ArrayList<ContentNodeModel>(tabletIdeasRecipes);
 	}
 }

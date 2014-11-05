@@ -186,6 +186,7 @@
 			</RelationshipDef>
 			<RelationshipDef name="tabletIdeasRecipes" label="Tablet Ideas Recipes" cardinality="Many">
 				<DestinationDef contentType="Recipe" />
+				<DestinationDef contentType="RecipeTag" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -2393,6 +2394,7 @@
 	<ContentTypeDef name="Banner">
 		<AttributeDefs>
 			<EnumDef type="S" name="location" label="Location">
+				<EnumValue value="EMPTY" label="Empty"/>
 				<EnumValue value="CHECKOUT" label="Checkout"/>
 				<EnumValue value="HOMEPAGE" label="Homepage"/>
 			</EnumDef>
