@@ -22,17 +22,7 @@ import com.freshdirect.transadmin.web.model.WebPlanInfo;
 
 public class DispatchValidator extends AbstractValidator {
 	
-	private DomainManagerDaoI domainManagerDao;
 	
-	
-	
-	public DomainManagerDaoI getDomainManagerDao() {
-		return domainManagerDao;
-	}
-
-	public void setDomainManagerDao(DomainManagerDaoI domainManagerDao) {
-		this.domainManagerDao = domainManagerDao;
-	}
 
 	public boolean supports(Class clazz) {
 		return DispatchCommand.class.isAssignableFrom(clazz);
@@ -70,15 +60,10 @@ public class DispatchValidator extends AbstractValidator {
 			ValidationUtils.rejectIfEmpty(errors, "supervisorCode", "app.error.112", new Object[]{"Supervisor"},"required field");
 			//MuniMeter Specific validations
 			// need to add some new messages to messages.properties.
-			Region region=null;
-			if(model != null && model.getRegionCode()!=null){
-				region = domainManagerDao.getRegion(model.getRegionCode());
-			}
-			if(region!=null){
-				String muniMeterEnabled= region.getMuniMeterEnabled();
-				if(!TransStringUtil.isEmpty(muniMeterEnabled) && "X".equals(muniMeterEnabled)){
+			
+			if(model != null && !TransStringUtil.isEmpty(model.getMuniMeterEnabled()) && "X".equals(model.getMuniMeterEnabled())){
 					
-					if(model != null && model.getMuniMeterValueAssigned()!=null){
+					if(model.getMuniMeterValueAssigned()!=null){
 						if(model.getMuniMeterCardNotAssigned()!=null && "X".equals(model.getMuniMeterCardNotAssigned())){
 							//reject value app.error.154
 							errors.rejectValue("muniMeterValueAssigned", "app.error.154", null);
@@ -93,7 +78,7 @@ public class DispatchValidator extends AbstractValidator {
 						}
 						
 					}
-					if(model!=null && model.getMuniMeterValueReturned()!=null){
+					if(model.getMuniMeterValueReturned()!=null){
 						if(model.getMuniMeterCardNotReturned()!=null && "X".equals(model.getMuniMeterCardNotReturned())){
 							//reject value app.error.155
 							errors.rejectValue("muniMeterValueReturned", "app.error.155", null);
@@ -115,14 +100,14 @@ public class DispatchValidator extends AbstractValidator {
 							errors.rejectValue("muniMeterValueReturned", "app.error.158", null);
 						}
 					}
-					if(model!=null && model.getMuniMeterCardNotReturned()!=null && "X".equals(model.getMuniMeterCardNotReturned())){
+					if(model.getMuniMeterCardNotReturned()!=null && "X".equals(model.getMuniMeterCardNotReturned())){
 						if(model.getMuniMeterValueAssigned()==null){
 							//reject value
 							errors.rejectValue("muniMeterCardNotReturned", "app.error.157", null);
 						}
 					}
-				}
 			}
+			
 			
 			if(!model.getIsOverride())
 			{

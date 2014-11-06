@@ -927,9 +927,7 @@
 	<bean id="zoneTypeValidator" class="com.freshdirect.transadmin.web.validation.ZoneTypeValidator"/>	
 	<bean id="routeValidator" class="com.freshdirect.transadmin.web.validation.RouteAdHocValidator"/>
 	<bean id="planValidator" class="com.freshdirect.transadmin.web.validation.PlanValidator"/>
-	<bean id="dispatchValidator" class="com.freshdirect.transadmin.web.validation.DispatchValidator">
-		<property name="domainManagerDao" ref="domainManagerDAO"/>
-	</bean>
+	<bean id="dispatchValidator" class="com.freshdirect.transadmin.web.validation.DispatchValidator"/>
 	<bean id="copyPlanValidator" class="com.freshdirect.transadmin.web.validation.CopyPlanValidator"/>
 	<bean id="deliveryLocationValidator" class="com.freshdirect.transadmin.web.validation.DlvLocationValidator"/>
 	<bean id="dlvServiceTimeTypeValidator" class="com.freshdirect.transadmin.web.validation.DlvServiceTimeTypeValidator"/>
