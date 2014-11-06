@@ -43,6 +43,10 @@
 
   <tmpl:put name='title'>${browsePotato.descriptiveContent.pageTitle}</tmpl:put>
 
+  <c:if test="${browsePotato.descriptiveContent.wineDepartment == true}">
+    <tmpl:put name='department'>WINE</tmpl:put>
+  </c:if>
+
   <tmpl:put name='deptnav' direct='true'>
     <div class="browse-titlebar">
       <soy:render template="browse.titleBar" data="${browsePotato.descriptiveContent}" />

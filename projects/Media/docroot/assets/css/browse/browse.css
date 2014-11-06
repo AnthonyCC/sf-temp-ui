@@ -561,3 +561,7 @@ ul.products .description-skin{
 .sortSelectButton .title{
   line-height:18px;
 }
+
+[data-department='WINE'] .burst-wine{
+  display:none;
+}
