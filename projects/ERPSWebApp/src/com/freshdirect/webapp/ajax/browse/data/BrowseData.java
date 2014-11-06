@@ -135,6 +135,7 @@ public class BrowseData implements Serializable {
 		private String oasSitePage;
 		private String navDepth;
 		private String contentId; //workaround for ajax response listening...
+		private boolean isWineDepartment;
 		
 		public String getMedia() {
 			return media;
@@ -189,6 +190,12 @@ public class BrowseData implements Serializable {
 		}
 		public void setContentId(String contentId) {
 			this.contentId = contentId;
+		}
+		public boolean isWineDepartment() {
+			return isWineDepartment;
+		}
+		public void setWineDepartment(boolean isWineDepartment) {
+			this.isWineDepartment = isWineDepartment;
 		}
 	}
 

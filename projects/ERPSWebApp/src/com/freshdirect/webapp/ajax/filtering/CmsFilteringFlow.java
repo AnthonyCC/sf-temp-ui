@@ -9,7 +9,9 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.WineUtil;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -573,7 +575,19 @@ public class CmsFilteringFlow {
 		// populate browseData with filterLabels
 		BrowseDataBuilderFactory.getInstance().populateWithFilterLabels(browseDataContext, navigationModel);
 		
+		boolean isWineDepartment = checkWineDepartment(navigationModel);
+		browseDataContext.getDescriptiveContent().setWineDepartment(isWineDepartment);
+		
 		return browseDataContext;
+	}
+
+	private boolean checkWineDepartment(NavigationModel navigationModel) {
+		boolean result = false;
+		if (navigationModel != null && navigationModel.getNavigationHierarchy() != null) {
+			ContentNodeModel department = navigationModel.getNavigationHierarchy().get(NavDepth.DEPARTMENT);
+			result = department != null && department.getContentKey() != null && WineUtil.getWineAssociateId().equalsIgnoreCase(department.getContentKey().getId());
+		}
+		return result;
 	}
 
 	private ContentNodeModel getDepartmentOrSuperDepartment(ContentNodeModel contentNodeModel,
