@@ -419,7 +419,7 @@
 	
   	<div class="muni" style="text-align:center;">Muni Meter Card</div>
  	<div class ="validateTips"> </div>
-	  <form>
+	  
 	    <table>
 		<tr><td >
 	      Card Value $</td><td valign="bottom"  colspan="2"> <input type="text" name="dispcardvalue" id="dispcardvalue"  maxlength="6" size="6" class="text ">
@@ -427,13 +427,13 @@
 	      Card Not Assigned</td><td><input type="checkbox" name="cardnotassigned" id="cardnotassigned" value="X">
 		  </td></tr>
 	      </table>
-	  </form>
+	  
 	</div>
 	<div id="dialog-checkin" style="display: none" >
 	
   	<div class="muni" style="text-align:center;">Muni Meter Card</div>
  	<div class ="validateTips"> </div>
-	  <form>
+	  
 	    <table>
 		<tr><td >
 	      Card Value $</td><td valign="bottom"  colspan="2"> <input type="text" name="chkincardvalue" id="chkincardvalue"  maxlength="6" size="6" class="text ">
@@ -441,7 +441,7 @@
 	      Card Not returned</td><td><input type="checkbox" name="cardnotreturned" id="cardnotreturned" value="X">
 		  </td></tr>
 	      </table>
-	  </form>
+	  
 	</div>
     
     <div align="center">

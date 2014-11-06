@@ -46,7 +46,7 @@ jQuery(function() {
 		      }
 		      
 		    });
-		function updateMuniMeterCardDetails(isDispatch, value, status){
+		function updateMuniMeterCardDetails(isDispatch){
 			//Validate data and close the overlay
 			var valid=true;
 			var status="N";
@@ -68,7 +68,7 @@ jQuery(function() {
 					
 					valid=false;
 					chkincardvalue.addClass( "ui-state-error" );
-					updateTips("Value exceded assigned value : jQuery"+assignedValue);
+					updateTips("Value exceded assigned value : $"+assignedValue);
 				}
 				if(valid){
 					if(cardnotreturned.is(':checked')){
@@ -94,7 +94,7 @@ jQuery(function() {
 				updateTips("Please fill only one field");
 		
 			} else if(jQuery.trim(valueField.val()).length>0 && !checkboxField.is(':checked')){
-				if( !/^\s*jQuery/.test(jQuery.trim(valueField.val())) && !isNaN(parseFloat(jQuery.trim(valueField.val())))){
+				if( !/^\s*$/.test(jQuery.trim(valueField.val())) && !isNaN(parseFloat(jQuery.trim(valueField.val())))){
 					
 					if(parseFloat(jQuery.trim(valueField.val())) > 0){
 						valid=true;
@@ -180,4 +180,16 @@ jQuery(function() {
 			        
 		        }
 		    });
+		jQuery("#dispcardvalue, #cardnotassigned").on("keyup", function(event) {
+			event.preventDefault();
+			if (event.keyCode === 13) {
+				updateMuniMeterCardDetails(true);
+			}
+		});
+		jQuery("#chkincardvalue, #cardnotreturned").on("keyup", function(event) {
+			event.preventDefault();
+			if (event.keyCode === 13) {
+				updateMuniMeterCardDetails(false);
+			}
+		});
 	 });
