@@ -622,7 +622,8 @@
 						<td>
 							<form:errors path="comments" />&nbsp;
 						</td>
-					</tr> 
+					</tr>
+					<c:if test="${dispatchForm.muniMeterEnabled!=null }" >
 					<tr>
 					<td> Muni Meter </td>
 					<td>
@@ -664,7 +665,8 @@
 						</td>
 					</tr>
 					</table>
-					</td></tr>                
+					</td></tr> 
+					</c:if>               
 					<tr>
 						<td colspan="3">&nbsp;</td>
 					</tr>

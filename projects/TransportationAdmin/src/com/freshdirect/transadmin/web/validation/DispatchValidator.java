@@ -11,14 +11,29 @@ import org.springframework.validation.ValidationUtils;
 import com.freshdirect.framework.util.DateComparator;
 import com.freshdirect.routing.constants.EnumTransportationFacilitySrc;
 import com.freshdirect.transadmin.constants.EnumDispatchType;
+import com.freshdirect.transadmin.dao.DomainManagerDaoI;
+import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.DispatchResourceInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
 
 public class DispatchValidator extends AbstractValidator {
 	
+	private DomainManagerDaoI domainManagerDao;
+	
+	
+	
+	public DomainManagerDaoI getDomainManagerDao() {
+		return domainManagerDao;
+	}
+
+	public void setDomainManagerDao(DomainManagerDaoI domainManagerDao) {
+		this.domainManagerDao = domainManagerDao;
+	}
+
 	public boolean supports(Class clazz) {
 		return DispatchCommand.class.isAssignableFrom(clazz);
 	}
@@ -53,6 +68,61 @@ public class DispatchValidator extends AbstractValidator {
 			
 			ValidationUtils.rejectIfEmpty(errors, "route", "app.error.112", new Object[]{"Route Number"},"required field");
 			ValidationUtils.rejectIfEmpty(errors, "supervisorCode", "app.error.112", new Object[]{"Supervisor"},"required field");
+			//MuniMeter Specific validations
+			// need to add some new messages to messages.properties.
+			Region region=null;
+			if(model != null && model.getRegionCode()!=null){
+				region = domainManagerDao.getRegion(model.getRegionCode());
+			}
+			if(region!=null){
+				String muniMeterEnabled= region.getMuniMeterEnabled();
+				if(!TransStringUtil.isEmpty(muniMeterEnabled) && "X".equals(muniMeterEnabled)){
+					
+					if(model != null && model.getMuniMeterValueAssigned()!=null){
+						if(model.getMuniMeterCardNotAssigned()!=null && "X".equals(model.getMuniMeterCardNotAssigned())){
+							//reject value app.error.154
+							errors.rejectValue("muniMeterValueAssigned", "app.error.154", null);
+						}
+						if(model.getMuniMeterValueAssigned()>TransportationAdminProperties.getMuniMeterMaxValue()){
+							//reject value app.error.156
+							errors.rejectValue("muniMeterValueAssigned", "app.error.156", new Object[]{"Card Value Assigned","$"+TransportationAdminProperties.getMuniMeterMaxValue()},"Field value cannot exceed Max.");
+						}
+						if(model.getMuniMeterValueAssigned()<0){
+							//reject Value app.error.158
+							errors.rejectValue("muniMeterValueAssigned", "app.error.158", null);
+						}
+						
+					}
+					if(model!=null && model.getMuniMeterValueReturned()!=null){
+						if(model.getMuniMeterCardNotReturned()!=null && "X".equals(model.getMuniMeterCardNotReturned())){
+							//reject value app.error.155
+							errors.rejectValue("muniMeterValueReturned", "app.error.155", null);
+						}
+						if(model.getMuniMeterValueReturned()>TransportationAdminProperties.getMuniMeterMaxValue()){
+							//reject value app.error.156
+							errors.rejectValue("muniMeterValueReturned", "app.error.156", new Object[]{"Card Value Returned","$"+TransportationAdminProperties.getMuniMeterMaxValue()},"Field value cannot exceed Max.");
+						}
+						if(model.getMuniMeterValueAssigned()==null){
+							//reject value
+							errors.rejectValue("muniMeterValueReturned", "app.error.157", null);
+						}
+						if(model.getMuniMeterValueAssigned()!=null && model.getMuniMeterValueReturned()>model.getMuniMeterValueAssigned()){
+							//reject value app.error.119
+							errors.rejectValue("muniMeterValueReturned", "app.error.119", new Object[]{"Card Value Returned","$0","$"+model.getMuniMeterValueAssigned()},"Field value cannot exceed Card Value Assigned.");
+						}
+						if(model.getMuniMeterValueReturned()<0){
+							//reject Value app.error.158
+							errors.rejectValue("muniMeterValueReturned", "app.error.158", null);
+						}
+					}
+					if(model!=null && model.getMuniMeterCardNotReturned()!=null && "X".equals(model.getMuniMeterCardNotReturned())){
+						if(model.getMuniMeterValueAssigned()==null){
+							//reject value
+							errors.rejectValue("muniMeterCardNotReturned", "app.error.157", null);
+						}
+					}
+				}
+			}
 			
 			if(!model.getIsOverride())
 			{

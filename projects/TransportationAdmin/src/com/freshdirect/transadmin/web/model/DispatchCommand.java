@@ -77,10 +77,19 @@ public class DispatchCommand extends WebPlanInfo {
 	private Double muniMeterValueReturned;
 	private String muniMeterCardNotAssigned;
 	private String muniMeterCardNotReturned;
+	private String muniMeterEnabled;
 	
 	
 	
-    public Double getMuniMeterValueAssigned() {
+    public String getMuniMeterEnabled() {
+		return muniMeterEnabled;
+	}
+
+	public void setMuniMeterEnabled(String muniMeterEnabled) {
+		this.muniMeterEnabled = muniMeterEnabled;
+	}
+
+	public Double getMuniMeterValueAssigned() {
 		return muniMeterValueAssigned;
 	}
 

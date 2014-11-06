@@ -253,6 +253,7 @@ public class DispatchPlanUtil {
 		command.setMuniMeterValueReturned(dispatch.getMuniMeterValueReturned());
 		command.setMuniMeterCardNotAssigned(dispatch.getMuniMeterCardNotAssigned());
 		command.setMuniMeterCardNotReturned(dispatch.getMuniMeterCardNotReturned());
+		command.setMuniMeterEnabled(dispatch.getRegion().getMuniMeterEnabled());
 		
 		return command;
 	}
