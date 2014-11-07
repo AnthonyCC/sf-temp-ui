@@ -95,8 +95,15 @@ jQuery(function() {
 		
 			} else if(jQuery.trim(valueField.val()).length>0 && !checkboxField.is(':checked')){
 				if( !/^\s*$/.test(jQuery.trim(valueField.val())) && !isNaN(parseFloat(jQuery.trim(valueField.val())))){
-					
-					if(parseFloat(jQuery.trim(valueField.val())) > 0){
+					var muniMeterMaxValue = jQuery("#muniMetermaxValue").val();
+					if(parseFloat(jQuery.trim(valueField.val()))>parseFloat(jQuery.trim(muniMeterMaxValue))){
+						valid=false;
+						valueField.addClass( "ui-state-error" );
+						updateTips("Value canot be greater than $"+muniMeterMaxValue);
+						return valid;
+					}
+					//#muniMetermaxValue
+					if(parseFloat(jQuery.trim(valueField.val())) >= 0){
 						valid=true;
 					} else {
 						valid=false;
@@ -149,13 +156,29 @@ jQuery(function() {
 		}
 		
 		function displayDialogCallBack(result, exception){
-			
-			if(result!=null && result=="dispatch"){
-				
+			var cardValueAssigned, cardValueReturned, cardNotAssigned, cardNotReturned;
+			if(result!=null && result.indexOf("dispatch")>-1){
+				var dispOverlayValues=result.split("_");
+				cardValueAssigned = parseFloat(dispOverlayValues[1].trim())==-1?"":dispOverlayValues[1].trim();
+				cardNotAssigned = dispOverlayValues[2].trim()==="N"?"":"checked";
+				jQuery("#dispcardvalue").val(cardValueAssigned);
+				if(cardNotAssigned==="checked"){
+					jQuery("#cardnotassigned").attr('checked', true);
+				} else {
+					jQuery("#cardnotassigned").attr('checked', false);
+				}
 				 dialog1.dialog( "open" );
 			} else if(result!=null && result.indexOf("checkin")>-1){
 				var resultSplit=result.split("_");
 				assignedValue=parseFloat(resultSplit[1].trim());
+				cardValueReturned=parseFloat(resultSplit[2].trim())==-1?"":resultSplit[2].trim();
+				cardNotReturned=resultSplit[3].trim()==="N"?"":"checked";
+				jQuery("#chkincardvalue").val(cardValueReturned);
+				if(cardNotReturned==="checked"){
+					jQuery("#cardnotreturned").attr('checked', true);
+				} else{
+					jQuery("#cardnotreturned").attr('checked', false);
+				}
 				 dialog2.dialog( "open" );
 			} else {
 				//Do nothing result=="checkin"

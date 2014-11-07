@@ -52,6 +52,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	private final static String DISPATCH_FLAG="dispatch";
 	private final static String CHECKIN_FLAG="checkin";
 	
+	
 	private DispatchManagerDaoI dispatchManagerDao = null;
 	
 	private RouteManagerDaoI routeManagerDao = null;
@@ -677,18 +678,39 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	
 	public String getDialogDisplayFlag(String dialogFlag, String dispatchId){
 		String displayFlag="NONE";
-		String muniMeterAssignedValue="0";
+		String muniMeterAssignedValue="-1";
+		String muniMeterReturnedValue="-1";
+		String muniMeterCardNotAssigned="N";
+		String muniMeterCardNotReturned="N";
 		// Get the current dispatch record
 		Dispatch dispatch = getDispatch(dispatchId);
 		//get MuniMeter flag
 		String muniMeterFlag=dispatch.getRegion().getMuniMeterEnabled();
+		
 		if(dispatch.getMuniMeterValueAssigned()!=null){
+			
 			muniMeterAssignedValue = Double.toString(dispatch.getMuniMeterValueAssigned());
+			
 		}
+		if(dispatch.getMuniMeterValueReturned()!=null){
+			
+			muniMeterReturnedValue = Double.toString(dispatch.getMuniMeterValueReturned());
+			
+		} 
+		if(dispatch.getMuniMeterCardNotAssigned()!=null){
+			
+			muniMeterCardNotAssigned = dispatch.getMuniMeterCardNotAssigned();
+			
+		} 
+		if(dispatch.getMuniMeterCardNotReturned()!=null){
+			
+			muniMeterCardNotReturned = dispatch.getMuniMeterCardNotReturned();
+			
+		} 
 		
 		if(!(TransStringUtil.isEmpty(muniMeterFlag))){
 			if(dialogFlag.equalsIgnoreCase(DISPATCH_FLAG) && muniMeterFlag.equals("X")){
-				displayFlag=DISPATCH_FLAG;
+				displayFlag=DISPATCH_FLAG+"_"+muniMeterAssignedValue+"_"+muniMeterCardNotAssigned;
 			} else if(dialogFlag.equalsIgnoreCase(CHECKIN_FLAG) && muniMeterFlag.equals("X") 
 					&& !TransStringUtil.isEmpty(dispatch.getMuniMeterCardNotAssigned())
 					&& "X".equals(dispatch.getMuniMeterCardNotAssigned())){
@@ -697,7 +719,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			} else if(dialogFlag.equalsIgnoreCase(CHECKIN_FLAG) && muniMeterFlag.equals("X")
 					&& TransStringUtil.isEmpty(dispatch.getMuniMeterCardNotAssigned()) ){
 				if(dispatch.getMuniMeterValueAssigned()!=null){
-					displayFlag=CHECKIN_FLAG+"_"+muniMeterAssignedValue;
+					displayFlag=CHECKIN_FLAG+"_"+muniMeterAssignedValue+"_"+muniMeterReturnedValue+"_"+muniMeterCardNotReturned;
 				}
 				
 			}

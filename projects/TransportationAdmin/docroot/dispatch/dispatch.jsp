@@ -11,6 +11,7 @@
   	pageContext.setAttribute("HAS_CLONEBUTTON", "true");
    	String dateRangeVal = request.getParameter("dispDate") != null ? request.getParameter("dispDate") : "";
    	if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getCurrentDate();
+   	double muniMetermaxValue = TransportationAdminProperties.getMuniMeterMaxValue();
   %>
   
   <link rel="stylesheet" href="css/transportation.css" type="text/css" />		
@@ -415,12 +416,14 @@
        }
       </script>      
       </div>
+      <input name="muniMetermaxValue" id="muniMetermaxValue" type="hidden" value="<%=muniMetermaxValue%>">
       <div id="dialog-dispatch" style="display: none">
 	
   	<div class="muni" style="text-align:center;">Muni Meter Card</div>
  	<div class ="validateTips"> </div>
 	  
 	    <table>
+	     
 		<tr><td >
 	      Card Value $</td><td valign="bottom"  colspan="2"> <input type="text" name="dispcardvalue" id="dispcardvalue"  maxlength="6" size="6" class="text ">
 		  </td></tr><tr><td colspan="2" >
@@ -435,6 +438,7 @@
  	<div class ="validateTips"> </div>
 	  
 	    <table>
+	    
 		<tr><td >
 	      Card Value $</td><td valign="bottom"  colspan="2"> <input type="text" name="chkincardvalue" id="chkincardvalue"  maxlength="6" size="6" class="text ">
 		  </td></tr><tr><td colspan="2" >
