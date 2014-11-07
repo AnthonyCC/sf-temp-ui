@@ -99,7 +99,7 @@ jQuery(function() {
 					if(parseFloat(jQuery.trim(valueField.val()))>parseFloat(jQuery.trim(muniMeterMaxValue))){
 						valid=false;
 						valueField.addClass( "ui-state-error" );
-						updateTips("Value canot be greater than $"+muniMeterMaxValue);
+						updateTips("Value cannot be greater than $"+muniMeterMaxValue);
 						return valid;
 					}
 					//#muniMetermaxValue
