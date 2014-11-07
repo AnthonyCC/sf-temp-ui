@@ -111,6 +111,10 @@ public class ProductData extends BasicProductData implements SkuData {
 	protected String taxAndDeposit;
 	protected String aboutPriceText;	
 
+	// APPDEV-3528
+	private double utPrice;
+	private String utSalesUnit;
+
 	// TODO ???
 	protected double wasPrice;
 	
@@ -594,5 +598,25 @@ public class ProductData extends BasicProductData implements SkuData {
 
 	public void setIncomplete(boolean incomplete) {
 		this.incomplete = incomplete;
+	}
+
+	@Override
+	public void setUtPrice(double price) {
+		this.utPrice = price;
+	}
+
+	@Override
+	public double getUtPrice() {
+		return utPrice;
+	}
+
+	@Override
+	public void setUtSalesUnit(String salesUnit) {
+		this.utSalesUnit = salesUnit;
+	}
+
+	@Override
+	public String getUtSalesUnit() {
+		return utSalesUnit;
 	}
 }

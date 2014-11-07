@@ -114,6 +114,8 @@
     {/if}
   {/param}
   {param cmEventSource:$cmEventSource /}
+  {param utPrice:$item.utPrice /}
+  {param utSalesUnit:$item.utSalesUnit /}
   {param usq:$item.usq /}
 {/call}
 {/template}
@@ -265,6 +267,8 @@
  * @param? nutritionServingSizeValue
  * @param? showRatings
  * @param? cmEventSource optional coremetrics event source
+ * @param? utPrice unit price
+ * @param? utSalesUnit unit price sales unit
  * @param? usq should display legal information
  */
 {template .potatoTransactionalGridItem autoescape="false"}
@@ -319,6 +323,9 @@
     {else}
     <div class="portrait-item-price-deal">{$savingString}</div>
     {/if}
+  {/if}
+  {if $utPrice}
+    <span class="portrait-item-unit-price">(${$utPrice}/{$utSalesUnit})</span>
   {/if}
   {if $mixNMatch}<div class="portrait-item-price-deal mixnmatch">Mix'n'Match</div>{/if}
   </div>

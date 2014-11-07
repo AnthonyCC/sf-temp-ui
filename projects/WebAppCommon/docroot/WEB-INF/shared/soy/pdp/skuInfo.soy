@@ -4,6 +4,8 @@
  * @param label sku label
  * @param salesUnitDescrPDP
  * @param? packageDescription
+ * @param? utPrice
+ * @param? utSalesUnit
  */
 {template .skuInfo}
 {if $label}
@@ -13,4 +15,5 @@
 {/if}
 <div class="pdp-configDescr">{$salesUnitDescrPDP}</div>
 {if $packageDescription}<div class="productDisplay-packageDescription">{$packageDescription}</div>{/if}
+{if $utPrice and $utSalesUnit}<div class="pdp-unitPrice">(${$utPrice}/{$utSalesUnit})</div>{/if}
 {/template}

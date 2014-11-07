@@ -119,7 +119,8 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 	 */
 	public ModelI getModel() {
 		ErpSalesUnitModel model =
-			new ErpSalesUnitModel(this.alternativeUnit, this.baseUnit, this.numerator, this.denominator, this.description, this.displayInd);
+			new ErpSalesUnitModel(this.alternativeUnit, this.baseUnit, this.numerator, this.denominator, this.description, this.displayInd,
+					this.unitPriceNumerator, this.unitPriceDenominator, this.unitPriceUOM, this.unitPriceDescription);
 		super.decorateModel(model);
 		return model;
 	}

@@ -84,6 +84,10 @@ public class ProductConfigResponseData extends BasicProductData {
 		private String salesUnitLabel;
 		private boolean hasSalesUnitDescription;
 
+		// APPDEV-3528
+		private double utPrice;
+		private String utSalesUnit;
+
 		
 		
 		@Override
@@ -308,7 +312,26 @@ public class ProductConfigResponseData extends BasicProductData {
 		public void setDefaultSku( boolean defaultSku ) {
 			this.defaultSku = defaultSku;
 		}
-		
+
+		@Override
+		public void setUtPrice(double price) {
+			this.utPrice = price;
+		}
+
+		@Override
+		public double getUtPrice() {
+			return utPrice;
+		}
+
+		@Override
+		public void setUtSalesUnit(String salesUnit) {
+			this.utSalesUnit = salesUnit;
+		}
+
+		@Override
+		public String getUtSalesUnit() {
+			return utSalesUnit;
+		}
 	}
 	
 	/**

@@ -992,6 +992,20 @@ public class ProductDetailPopulator {
 		
 		populateSubtotalInfo( item, fdProduct, productInfo, priceCalculator );
 		populateSaving( item, productInfo, priceCalculator );
+		
+		// [APPDEV-3438] unit price thingy
+		FDSalesUnit su = fdProduct.getDefaultSalesUnit();
+		if (su != null) {
+			// validate unit price values
+			final int n = su.getUnitPriceNumerator();
+			final int d = su.getUnitPriceDenominator();
+			if (n > 0 && n > 0) {
+				final double p = (item.getPrice() * n) / d;
+
+				item.setUtPrice( formatDecimal(p) );
+				item.setUtSalesUnit( su.getUnitPriceUOM() );
+			}
+		}
 	}
 
 	private static void populateSubtotalInfo( ProductData item, FDProduct fdProduct, FDProductInfo productInfo, PriceCalculator priceCalculator ) throws FDResourceException {
@@ -1378,5 +1392,15 @@ public class ProductDetailPopulator {
 		outString = MediaUtils.fixMedia(outString);
 		
 		return quoted ? JSONObject.quote( outString ) : outString;
+	}
+
+
+	private static String FORMAT_STR = "0.##";
+	private static double formatDecimal(double number) {
+		DecimalFormat decimalFormat = new DecimalFormat( FORMAT_STR );
+		String strNumber = decimalFormat.format(number);
+		strNumber = strNumber.replaceAll(",", ".");
+		Double numberDouble = new Double(strNumber);
+		return numberDouble.doubleValue();
 	}
 }

@@ -50,6 +50,18 @@
   font-weight: bold;
 }
 
+.portrait-item-unit-price {
+  display: block;
+  font-size: 10px;
+  font-weight: normal;
+  color: #888;
+}
+
+.portrait-item-unit-price:first-child {
+  display: inline-block;
+  margin-left: .5em;
+}
+
 .portrait-item-header .atc-info {
   height: 16px;
 }
