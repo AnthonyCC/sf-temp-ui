@@ -888,4 +888,38 @@ public class FDURLUtil {
 		
 		return buf.toString();
 	}
+
+
+
+	/**
+	 * Pick and append select parameters to the redirect URL
+	 * 
+	 * @param redirectUrl
+	 * @param req
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static String decorateRedirectUrl(final String redirectUrl,
+			final HttpServletRequest req) {
+
+		StringBuilder redirBuilder = new StringBuilder();
+		
+		// pick and pass fixed parameters first
+		for (final String pName : new String[]{ "cm_vc", "ppPreviewId", "redirected", "ppId" }) {
+			final String val = req.getParameter(pName);
+			if (val != null) {
+				redirBuilder.append(ProductDisplayUtil.URL_PARAM_SEP)
+					.append(pName)
+					.append("=")
+					.append(val);
+			}
+		}
+
+		// pass tracking parameters too
+		FDURLUtil.appendCommonParameters(redirBuilder, req.getParameterMap());
+
+		// unescape query param separators before appending params to redirect URL
+		return redirectUrl + redirBuilder.toString().replaceAll(ProductDisplayUtil.URL_PARAM_SEP, "&");
+	}
+
 }

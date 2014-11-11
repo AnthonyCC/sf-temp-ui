@@ -17,6 +17,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.filtering.CmsFilteringNavigator;
+import com.freshdirect.webapp.util.FDURLUtil;
 
 public class SearchRedesignRedirectorTag extends BodyTagSupport {
 
@@ -65,10 +66,11 @@ public class SearchRedesignRedirectorTag extends BodyTagSupport {
 			
 			if (redirectUrl != null) {
 				String originalUrl = request.getRequestURI();
-				if (request.getParameter("cm_vc") != null) {
-					redirectUrl = redirectUrl + "&cm_vc=" + request.getParameter("cm_vc");
-				}
+
+				redirectUrl = FDURLUtil.decorateRedirectUrl(redirectUrl, request);
+
 				LOGGER.debug("Redirecting from " + originalUrl + " to " + redirectUrl);
+
 				// To ensure that https requests get redirect to https correctly
 				redirectUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + redirectUrl;
 				redirected = true;
