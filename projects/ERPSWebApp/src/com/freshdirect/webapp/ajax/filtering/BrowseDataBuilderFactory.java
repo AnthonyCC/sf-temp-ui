@@ -328,7 +328,7 @@ public class BrowseDataBuilderFactory {
 						List<ProductModel> products = recommendations.getAllProducts();
 						
 						if (products.size()>0 && !cat.isDisableCategoryYmalRecommender()){
-							data.getCarousels().setCarousel1(createCarouselData(null, "You May Also Like", products, user, EnumEventSource.CSR.getName()));
+							data.getCarousels().setCarousel1(createCarouselData(null, "You May Also Like", products, user, EnumEventSource.CSR.getName(), recommendations.getVariant().getId() ));
 						}
 					} catch (FDResourceException e) {
 						LOG.error("recommendation failed",e);
@@ -916,7 +916,7 @@ public class BrowseDataBuilderFactory {
 				List<ProductModel> products = recommendations.getAllProducts();
 				
 				if (products.size()>0 && !disableCategoryYmalRecommender){
-					browseData.getCarousels().setCarousel1(createCarouselData(null, "You Might Also Like", products, user, ""));
+					browseData.getCarousels().setCarousel1(createCarouselData(null, "You Might Also Like", products, user, "", recommendations.getVariant().getId() ));
 				}
 			} catch (FDResourceException e) {
 				LOG.error("recommendation failed",e);
