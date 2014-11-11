@@ -214,16 +214,6 @@ public class ProductConfigServlet extends BaseJsonServlet {
 		skuItem.setLabel( ProductDetailPopulator.getLabel( sku ) );
 		skuItem.setPrice( fdProdInf.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice() );
 		
-		// FIXME: !! Sample Data !!
-		// final String skuCode = skuItem.getSkuCode();
-		if ("SPE0063740".equals(skuCode)) {
-			skuItem.setUtPrice(1.29);
-			skuItem.setUtSalesUnit("oz");
-		} else if ("GRO001655".equals(skuCode)) {
-			skuItem.setUtPrice(1.29);
-			skuItem.setUtSalesUnit("oz");
-		}
-
 		QuickShopLineItem qsSku = QuickShopHelper.createItemFromProduct( product, sku, user, true );
 		
 		skuItem.setAvailMatPrices( qsSku.getAvailMatPrices() );
