@@ -162,7 +162,7 @@ public class SmsDAO {
 			String GET_ETA_WINDOW = "select BS.WEBORDER_ID, bs.DLV_ETA_STARTTIME ,bs.DLV_ETA_ENDTIME,BS.WINDOW_STARTTIME, BS.WINDOW_ENDTIME, BS.MOBILE_NUMBER, z.SMS_ETA_ENABLED, z.DLV_WINDOW_REMINDER_ENABLED, S.CUSTOMER_ID " + 
 					"from TRANSP.HANDOFF_BATCH b, TRANSP.HANDOFF_BATCHACTION ba, transp.handoff_batchstop bs, cust.sale s, TRANSP.TRN_AREA ta, TRANSP.ZONE z " + 
 					"where B.BATCH_ID = BA.BATCH_ID and b.BATCH_ID = bs.BATCH_ID " + 
-					"and BS.AREA = TA.CODE and Z.AREA = ta.code  and bs.DLV_ETA_STARTTIME is not null and mobile_number is not null and s.id = BS.WEBORDER_ID " + 
+					"and BS.AREA = TA.CODE and Z.AREA = ta.code and mobile_number is not null and s.id = BS.WEBORDER_ID " + 
 					"and B.BATCH_STATUS in ('CPD/ADC','CPD','CPD/ADF') and action_type = 'COM' and " + 
 					"BA.ACTION_DATETIME > (select NVL(MAX(LAST_EXPORT),SYSDATE-1/24) from DLV.SMS_TRANSIT_EXPORT st where ST.SMS_ALERT_TYPE = 'SMS_ETA' " + 
 					"and ST.SUCCESS = 'Y')";
