@@ -1,4 +1,5 @@
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.net.URLEncoder"%>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 
@@ -12,6 +13,34 @@
 <%@ taglib uri='fd-certona-tag' prefix='certona' %>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 
+<%
+	// [APPDEV-3953] Special rule for DDPP Preview Mode
+	// Redirect to site access for getting zip code first
+	if (null != request.getParameter("ppPreviewId")) {
+		/* from category.jsp, for being forwarded here */
+
+		//disable linking
+		// disableLinks = true;
+		if (request.getParameter("redirected") == null) {
+			StringBuffer redirBuf = new StringBuffer();
+			//redirBuf.append("/site_access/site_access_lite.jsp?successPage="+request.getRequestURI());
+
+			redirBuf.append("/site_access/site_access.jsp?successPage="
+					+ request.getRequestURI());
+
+			String requestQryString = request.getQueryString();
+
+			if ((requestQryString != null)
+					&& (requestQryString.trim().length() > 0)) {
+				redirBuf.append(URLEncoder.encode("?"
+						+ requestQryString));
+			}
+			redirBuf.append("&redirected=true");
+			response.sendRedirect(redirBuf.toString());
+			return;
+		}
+	}
+%>
 <fd:CheckLoginStatus id="user" guestAllowed='true' recognizedAllowed='true' />
 <fd:BrowsePartialRolloutRedirector user="<%=user%>" id="${param.id}"/>
 
