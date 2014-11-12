@@ -50,6 +50,14 @@
   border-bottom: 1px solid #e0e3d0;
 }
 
+.browseContent .noSubSections{
+  margin-top:40px;
+}
+
+.browseContent .noSubSections:first-child{
+  margin-top:inherit;
+}
+
 .browseContent .sectionContent ul.products {
   margin: 32px 0 29px;
   padding: 0;
