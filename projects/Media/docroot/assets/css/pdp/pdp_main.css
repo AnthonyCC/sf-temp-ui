@@ -415,8 +415,7 @@ span.cssbutton.annotation:hover {
 	position:relative;
 }
 
-.pdp .pdp-evenbetter h2,
-.pdp .pdp-likethat h2 {
+.pdp .pdp-evenbetter h2 {
 	font-family:"EagleBook";
 	font-size:21px;
 	color:#98659d;
@@ -427,13 +426,30 @@ span.cssbutton.annotation:hover {
 	-moz-osx-font-smoothing: grayscale;		
 }
 
-.pdp .pdp-evenbetter h2 {
-	margin-top:30px;
+.pdp .pdp-likethat h2 {
+  font-family: Verdana, Arial, sans-serif;
+  color:#333;
+  font-size:20px;
+  font-weight: bold;
+  padding: 10px 28px 16px;
+  line-height:20px;
+  margin: 0;
+  text-align:left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  /* gradient */
+  background: -moz-linear-gradient(top, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.15)), color-stop(100%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%); /* IE10+ */
+  background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#26000000', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
 }
 
-.pdp .pdp-likethat h2 {
-	text-align:center;
-	margin:10px 0;
+.pdp .pdp-evenbetter h2 {
+	margin-top:30px;
 }
 
 .pdp-evenbetter-quantity,
@@ -697,10 +713,6 @@ span.cssbutton.annotation:hover {
 	display:inline;
 }
 
-.pdp .skucontrol-salesunit select{
-	
-}
-
 #evenBetterPopup .skucontrol-salesunit select{
 	margin:10px 0;
 	text-align:left;
@@ -721,15 +733,10 @@ span.cssbutton.annotation:hover {
 
 .pdp .pdp-likethat {
 	margin-top:30px;
-	border:1px solid #DCD2DC;
-	border-radius: 10px;	
 }
 
 .pdp .pdp-likethat .portrait-item {
 	width:132px;
-}
-
-.pdp .pdp-likethat .portrait-item .smallrating {
 }
 
 .pdp .pdp-likethat [data-component="carousel"] {
