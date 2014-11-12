@@ -531,6 +531,10 @@ section.main .leftnav .menuBox[data-selectionType="MULTI"] li.selected label {
   line-height: 20px;
 }
 
+section.main .leftnav .menuBox[data-selectionType="MULTI"] label{
+  margin:7px 0 7px 0;
+}
+
 .browse-popup-content label,
 section.main .leftnav .menuBox label {
   display: block;
@@ -748,7 +752,7 @@ section.main .leftnav .menuBox input[type="radio"] {
 
 section.main .leftnav .menuBox li input[type="radio"] + span {
   display: block;
-  padding: 0 0 0 5px;
+  padding: 2px 0 2px 5px;
   border-radius: 6px;
 }
 
@@ -762,6 +766,10 @@ section.main .leftnav .menuBox li.selected input[type="radio"] + span {
   display: block;
   padding: 1px 5px;
   border-radius: 6px;
+}
+
+#menupopup [data-component=menuitem]{
+  padding:2px 0 2px 0;
 }
 
 #menupopup input[type="radio"]:checked + span,
