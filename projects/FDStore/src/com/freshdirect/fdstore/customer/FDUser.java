@@ -23,7 +23,6 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.FDCouponProperties;
@@ -2848,7 +2847,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 			}
 		}
 		LOGGER.debug("Total Orders scheduled for delivery: " + validScheduledOrders.size());
-		if (sorted && CollectionUtils.isNotEmpty(validScheduledOrders)) {
+		if (sorted && !validScheduledOrders.isEmpty()) {
 			Collections.sort(validScheduledOrders, ORDER_DELIVERY_STARTTIME_COMPARATOR);
 		}
 		
