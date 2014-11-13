@@ -93,6 +93,10 @@ span.cssbutton.annotation:hover {
     display:none
 }
 
+.pdp-info .pdp-unitPrice{
+  margin-top:14px;
+}
+
 .pdp .pdp-price {
   margin-bottom: 14px;
 }
