@@ -503,6 +503,7 @@ public class ProductDetailPopulator {
 		item.setCatId( usePrimaryHome ? productModel.getPrimaryHome().getContentKey().getId() : productModel.getCategory().getContentName() );
 		item.setSkuCode( sku.getSkuCode() );
 		item.setCustomizePopup( !productModel.isAutoconfigurable() );
+		item.setHasTerms( productModel.hasTerms() );
 		
 		populateRatings( item, user, productModel, sku.getSkuCode() );
 		populateBursts( item, user, productModel, priceCalculator, useFavBurst );

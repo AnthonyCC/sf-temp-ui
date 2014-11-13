@@ -208,7 +208,7 @@
 	background:black;
 	border:none;
 	margin:1em 0;
-	clear:none;
+	clear: right;
 }
 
 .customizePopup .applyCustomization {

@@ -182,6 +182,8 @@ public class ProductData extends BasicProductData implements SkuData {
 	private String featuredHeader;
 	
 	private String pageType; //FilteringFlowType
+
+	protected boolean hasTerms;
 	
 	public boolean isFeatured() {
 		return isFeatured;
@@ -618,5 +620,16 @@ public class ProductData extends BasicProductData implements SkuData {
 	@Override
 	public String getUtSalesUnit() {
 		return utSalesUnit;
+	}
+	
+	@Override
+	public void setHasTerms(boolean hasTerms) {
+		this.hasTerms = hasTerms;
+		
+	}
+	@Override
+	public boolean getHasTerms() {
+		return hasTerms;
+		
 	}
 }

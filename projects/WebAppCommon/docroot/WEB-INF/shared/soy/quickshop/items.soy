@@ -85,7 +85,7 @@
     <button class="addtolist">add to list</button>
   </div>
 	<div class="itemlist-item-header">{call .itemHeader}{param itemTitle:$itemTitle /}{param item:$item /}{param tempConfig:$tempConfig /}{param replaced:$replaced /}{/call}</div>
-	<div class="itemlist-item-controls">
+	<div class="itemlist-item-controls" data-component="product-controls">
 		<div class="itemlist-item-controls-subtotal">
 		{foreach $salesUnit in $item.salesUnit}{if $salesUnit.selected}
 			<input type="hidden" value="{$salesUnit.id}" data-productdata-name="salesUnit" data-component="productData">
@@ -103,12 +103,12 @@
 		</div>
 		<div class="itemlist-item-addtocart">
 			{if $replaced}
-				{if $item.customizePopup}<button class="customize {$inCart}" data-component="customizeButton">customize</button>
+				{if $item.customizePopup}<button class="customize {$inCart}" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}data-component="customizeButton">customize</button>
 				{else}<button class="addtocart {$inCart}" data-component="ATCButton">add to cart</button>
 				{/if}
 			{else}
 				{if not $item.customizePopup }<button class="addtocart {$inCart}" data-component="ATCButton">add to cart</button>
-				{else}<button class="customize {$inCart}" data-component="customizeButton">customize</button>
+				{else}<button class="customize {$inCart}" data-component="customizeButton" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}>customize</button>
 				{/if}
 			{/if}
 			{call common.atcInCart}
@@ -137,6 +137,7 @@
 			{param atcItemId:$item.itemId /}
 			{param isAlcoholic:$item.alcoholic /}
 			{param originalLineId:$item.originalLineId /}
+			{param productPageUrl:$item.productPageUrl /}
 		{/call}
 	</div>
 </li>
@@ -161,7 +162,7 @@
     <button class="addtolist">add to list</button>
   </div>
 	<div class="itemlist-item-header">{call .itemHeader}{param itemTitle:$itemTitle /}{param item:$item /}{/call}</div>
-	<div class="itemlist-item-controls">
+	<div class="itemlist-item-controls" data-component="product-controls">
 		{if $item.coupon}{call common.ecoupon}{param coupon:$item.coupon /}{param couponDisplay:$item.couponDisplay /}{param couponClipped:$item.couponClipped /}{param couponStatusText:$item.couponStatusText /}{/call}{/if}
 		<div class="itemlist-item-controls-subtotal">
 		{if not $item.customizePopup}
@@ -181,7 +182,7 @@
 		</div>
 		<div class="itemlist-item-addtocart">
 			{if $item.customizePopup}
-				<button class="customize {if $item.inCartAmount > 0}incart{/if}" data-component="customizeButton" {if $type == 'shopfromlists'}data-hasApply="true"{/if}>customize</button>
+				<button class="customize {if $item.inCartAmount > 0}incart{/if}" data-component="customizeButton" {if $type == 'shopfromlists'}data-hasApply="true"{/if} {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}>customize</button>
 				<input type="hidden" value="{$item.quantity.quantity}" data-productdata-name="quantity" data-component="productData">
 				{foreach $salesUnit in $item.salesUnit}
 					{if $salesUnit.selected}
@@ -216,6 +217,7 @@
 			{param atcItemId:$item.itemId /}
 			{param isAlcoholic:$item.alcoholic /}
 			{param originalLineId:$item.originalLineId /}
+			{param productPageUrl:$item.productPageUrl /}
 		{/call}
 	</div>
 </li>
@@ -328,7 +330,7 @@
 		{/if}
     {if $item.customizePopup and not $replaced}
     <div class="itemlist-item-header-changecustomization">
-      <button data-component="customizeButton" data-hasApply="true"><span>Change Customization</span></button>
+      <button data-component="customizeButton" data-hasApply="true" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}><span>Change Customization</span></button>
     </div>
     {/if}
     <div class="availability">

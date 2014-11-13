@@ -139,6 +139,20 @@ var FreshDirect = FreshDirect || {};
 
   $(document).on('click', '[data-component="customizeButton"]', function(event){
     var element = event.currentTarget;
+    
+    /* go to product instead of showing customize */
+    if ($(element).data('bypasscustomizepopup')) {
+    	var $par = $(element).closest('[data-component="product-controls"]');
+    	if ($par.length === 0) { $par = $(element).closest('[data-component="product"]').find('[data-component="product-controls"]'); }
+    	if ($par) {
+	    	var bypassUri = $par.find('[data-productdata-name="productPageUrl"]:first').val();
+	    	if (bypassUri) {
+	    		document.location = bypassUri; 
+	    		return;
+	    	}
+    	}
+    }
+    
     var item = fd.modules.common.productSerialize(element).pop();
     var cartData = fd.modules.common.getCartData(element);
     var cmEventSourceElement = $(element).closest('[data-cmeventsource]');

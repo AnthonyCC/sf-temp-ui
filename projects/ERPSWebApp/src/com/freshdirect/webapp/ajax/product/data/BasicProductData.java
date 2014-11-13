@@ -153,6 +153,11 @@ public abstract class BasicProductData implements Serializable {
 	 */
 	protected String couponStatusText;
 
+	/* 
+	 * product has terms & conditions
+	 */
+	protected boolean hasTerms;
+
 	
 	public String getProductName() {
 		return productName;
@@ -321,5 +326,11 @@ public abstract class BasicProductData implements Serializable {
 	}
 	public String getCMSKey() {
 		return CMSKey;
-	}	
+	}
+	public void setHasTerms(boolean hasTerms) {
+		this.hasTerms = hasTerms;
+	}
+	public boolean getHasTerms() {
+		return hasTerms;
+	}
 }
