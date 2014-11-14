@@ -8,7 +8,7 @@
 #quickshop .qs-tabs {
 	border-bottom: 1px solid #c1b5c1;
 }
-#quickshop .tabs li {
+#quickshop > .tabs li {
 	display: block;
 	float: left;
 	height: 35px;
@@ -34,10 +34,10 @@
 #quickshop .qs-tabs li .count {
 	font-weight: normal;
 }
-.no-touch #quickshop .tabs li:hover,
-.no-touch #quickshop .tabs li:focus,
-.no-touch #quickshop .tabs li:hover strong,
-.no-touch #quickshop .tabs li:focus strong {
+.no-touch #quickshop > .tabs li:hover,
+.no-touch #quickshop > .tabs li:focus,
+.no-touch #quickshop > .tabs li:hover strong,
+.no-touch #quickshop > .tabs li:focus strong {
 	text-decoration: underline;
 }
 #quickshop .qs-tabs li:hover,
@@ -96,66 +96,7 @@
 	background: url(/media_stat/images/quickshop/tab-fd-selected.png) no-repeat 50% 50%;
 }
 
-#quickshop .tabbed-carousel .tabs {
-	height: 35px;
-	border-bottom: 1px solid #c2c292;
-}
-#quickshop .tabbed-carousel .tabs li {
-	background: #63602d;
-	border: 1px solid #63602d;
-}
-#quickshop .tabbed-carousel .tabs li.selected {
-	width: auto;
-	padding: 0 20px;
-	line-height: 42px;
-	height: 42px;
-	margin: -7px -2px -1px 0;
-	position: relative;
-	background: #e2e2cf;
-	color: #64612a;
-	border-radius: 8px 8px 0 0;
-	border: 1px solid #c2c292;
-	text-shadow: none;
-	-webkit-box-shadow: none;
-	box-shadow: none;
-	font-family: 'EagleBook', Verdana, Arial, sans-serif;
-	font-weight: normal;
-	/* Better Font Rendering =========== */
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;		
-}
-
-#quickshop .tabbed-carousel [data-component="carousel"] {
-	background:white;
-  margin: 0;
-  padding-bottom: 15px;
-}
-
-#quickshop .tabbed-carousel [data-component="carousel"] .pager {
-  display: block;
-}
-
-#quickshop .tabbed-carousel [data-component="carousel-mask"] {
-	width:885px;
-}
-
 #quickshop .tabbed-carousel [data-component="carousel"] .portrait-item {
 	width:159px;
 }
 
-.tabbed-carousel .tab-container {
-	position: relative;
-	border: 1px solid #c2c292;
-	border-top: none;
-	background: #e2e2cf;
-	padding: 15px 0 0;
-}
-.tabbed-carousel .tab-container .light-carousel {
-	background: #fff;
-	border-top: 1px solid #938f60;
-	border-bottom: 1px solid #938f60;
-}
-
-.tabbed-carousel .tab-container .light-carousel .portrait-item {
-	width:156px;
-}
