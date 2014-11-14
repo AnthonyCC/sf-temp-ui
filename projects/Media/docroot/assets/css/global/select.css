@@ -50,3 +50,7 @@ ul.customselect,
 select.selected + .fdselect > .selectButton {
   background-color: #728d4b;
 }
+
+.fdselect .selectButton {
+  background-color: #999;
+}
