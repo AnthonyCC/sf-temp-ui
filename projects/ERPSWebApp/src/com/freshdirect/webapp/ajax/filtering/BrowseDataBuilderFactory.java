@@ -811,7 +811,7 @@ public class BrowseDataBuilderFactory {
 				
 				SelectableData defaultNutritionDropDownOption = new SelectableData();
 				dropDownOptions.add(defaultNutritionDropDownOption);
-				defaultNutritionDropDownOption.setName("Nutrition");
+				defaultNutritionDropDownOption.setName("View by Nutrition");
 		
 				for (ErpNutritionType.Type erpNutritionTypeType : ErpNutritionType.getCommonList()){ //based on grocery_product.jsp:989
 					SelectableData dropDownOption = new SelectableData();
