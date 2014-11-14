@@ -46,14 +46,14 @@
 #quickshop .qs-tabs a:focus {
 	text-decoration: none;
 }
-#quickshop .tabs li a,
-#quickshop .tabs li button {
+#quickshop > .tabs li a,
+#quickshop > .tabs li button {
 	display: block;
 	width: 100%;
 	color: #fff;
 }
-#quickshop .tabs li.selected,
-#quickshop .tabs li .selected {
+#quickshop > .tabs li.selected,
+#quickshop > .tabs li .selected {
 	font-size: 21px;
 }
 #quickshop .qs-tabs li a.selected {
