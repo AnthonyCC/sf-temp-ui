@@ -706,6 +706,11 @@ span.cssbutton.annotation:hover {
 	min-width:194px;
 }
 
+#evenBetterPopup .skucontrol-variations-item select,
+#evenBetterPopup .skucontrol-salesunit select{
+	width:221px;
+}
+
 #evenBetterPopup .skucontrol-variations-item label,
 .pdp .skucontrol-variations-item label {
 	overflow:hidden;
