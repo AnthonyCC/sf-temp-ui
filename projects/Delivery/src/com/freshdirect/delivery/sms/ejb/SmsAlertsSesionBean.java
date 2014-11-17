@@ -373,14 +373,12 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		Connection con = null;
 		SmsDAO smsDAO = new SmsDAO();
 		try {
-			con = this.getConnection();
-			List<SmsAlertETAInfo> etaInfoList = smsDAO.getETAInfo(con);
+			
+			List<SmsAlertETAInfo> etaInfoList = getETAInfo();
 			if (etaInfoList!=null) {
 				for (int i = 0; i < etaInfoList.size(); i++) {
 
-					boolean isSubscribed = isSubscribed(con, ETA_ALERT_TYPE,
-							etaInfoList.get(i).getCustomerId());
-					if (isSubscribed && etaInfoList.get(i).isETA() != null) {
+					if (etaInfoList.get(i).isETA() != null) {
 						if (etaInfoList.get(i).isETA()
 								&& etaInfoList.get(i).getEtaStartTime() != null
 								&& etaInfoList.get(i).getEtaEndTime() != null) {
@@ -424,6 +422,32 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		}
 
 	}
+	
+	private List<SmsAlertETAInfo> getETAInfo(){
+		Connection con = null;
+		SmsDAO smsDAO = new SmsDAO();
+		List<SmsAlertETAInfo> etaInfoList = new ArrayList<SmsAlertETAInfo>();
+		try {
+			con = this.getConnection();
+			etaInfoList = smsDAO.getETAInfo(con);
+			
+		}catch (Exception e) {
+
+			e.printStackTrace();
+		} finally {
+			try {
+				if (con != null) {
+					con.close();
+					con = null;
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("Exception while trying to cleanup", se);
+			}
+		}
+		return etaInfoList;
+	}
+	
+	
 
 	/**
 	 * This method sends the Unattended or doorman delivery sms messages to the

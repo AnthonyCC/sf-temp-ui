@@ -159,20 +159,18 @@ public class SmsDAO {
 		ResultSet rs = null;
 		Date toTime=new Date();
 		try {
-			String GET_ETA_WINDOW = "select BS.WEBORDER_ID, bs.DLV_ETA_STARTTIME ,bs.DLV_ETA_ENDTIME,BS.WINDOW_STARTTIME, BS.WINDOW_ENDTIME, BS.MOBILE_NUMBER, z.SMS_ETA_ENABLED, z.DLV_WINDOW_REMINDER_ENABLED, S.CUSTOMER_ID " + 
-					"from TRANSP.HANDOFF_BATCH b, TRANSP.HANDOFF_BATCHACTION ba, transp.handoff_batchstop bs, cust.sale s, TRANSP.TRN_AREA ta, TRANSP.ZONE z " + 
-					"where B.BATCH_ID = BA.BATCH_ID and b.BATCH_ID = bs.BATCH_ID " + 
-					"and BS.AREA = TA.CODE and Z.AREA = ta.code and mobile_number is not null and s.id = BS.WEBORDER_ID " + 
-					"and B.BATCH_STATUS in ('CPD/ADC','CPD','CPD/ADF') and action_type = 'COM' and " + 
-					"BA.ACTION_DATETIME > (select NVL(MAX(LAST_EXPORT),SYSDATE-1/24) from DLV.SMS_TRANSIT_EXPORT st where ST.SMS_ALERT_TYPE = 'SMS_ETA' " + 
-					"and ST.SUCCESS = 'Y')";
+			String GET_ETA_WINDOW = "select BS.WEBORDER_ID, bs.DLV_ETA_STARTTIME ,bs.DLV_ETA_ENDTIME,BS.WINDOW_STARTTIME, BS.WINDOW_ENDTIME, BS.MOBILE_NUMBER, " +
+					"z.SMS_ETA_ENABLED, z.DLV_WINDOW_REMINDER_ENABLED, S.CUSTOMER_ID " +
+					"FROM TRANSP.HANDOFF_BATCH B, TRANSP.HANDOFF_BATCHACTION BA, TRANSP.HANDOFF_BATCHSTOP BS, CUST.SALE S, TRANSP.TRN_AREA TA, " +
+					"TRANSP.ZONE Z, CUST.CUSTOMERINFO CI WHERE B.BATCH_ID = BA.BATCH_ID AND B.BATCH_ID = BS.BATCH_ID AND BS.AREA  = Z.ZONE_CODE " +
+					"AND Z.AREA = TA.CODE  AND BS.MOBILE_NUMBER IS NOT NULL AND S.ID = BS.WEBORDER_ID AND B.BATCH_STATUS IN ('CPD/ADC','CPD','CPD/ADF') " +
+					"AND ACTION_TYPE = 'COM' AND BA.ACTION_DATETIME > (SELECT NVL(MAX(LAST_EXPORT),SYSDATE-1/24) FROM DLV.SMS_TRANSIT_EXPORT ST " +
+					"WHERE ST.SMS_ALERT_TYPE = 'SMS_ETA' AND ST.SUCCESS = 'Y') AND CI.CUSTOMER_ID = S.CUSTOMER_ID AND CI.ORDER_NOTIFICATION = 'S' " +
+					"AND  (SMS_ETA_ENABLED IS NOT NULL OR DLV_WINDOW_REMINDER_ENABLED IS NOT NULL)";
 
 			ps = con.prepareStatement(GET_ETA_WINDOW);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				if (rs.getString("MOBILE_NUMBER") != null
-						&& (rs.getString("SMS_ETA_ENABLED")!=null || rs.getString("DLV_WINDOW_REMINDER_ENABLED")!=null )) {
-					
 					SmsAlertETAInfo smsAlertETAInfo=new SmsAlertETAInfo();
 					smsAlertETAInfo.setCustomerId(rs.getString("CUSTOMER_ID"));
 					smsAlertETAInfo.setMobileNumber(rs.getString("MOBILE_NUMBER"));
@@ -189,7 +187,6 @@ public class SmsDAO {
 					} 
 					etaInfoList.add(smsAlertETAInfo);
 				}
-			}
 			updateLastExport(con, ETA_ALERT_TYPE,toTime);
 		}catch(SQLException e)
 		{
