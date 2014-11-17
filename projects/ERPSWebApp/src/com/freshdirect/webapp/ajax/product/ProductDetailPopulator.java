@@ -490,7 +490,7 @@ public class ProductDetailPopulator {
 	 */
 	public static void populateProductData( ProductData item, FDUserI user, ProductModel productModel, SkuModel sku, FDProduct fdProduct, PriceCalculator priceCalculator, FDProductSelectionI orderLine, boolean useFavBurst, boolean usePrimaryHome ) {
 
-		if ( sku.isUnavailable() ) {
+		if (productModel.isUnavailable()) {
 			item.setAvailable( false );
 			// if unavailable add product replacements
 			if ( item instanceof QuickShopLineItem ) {
