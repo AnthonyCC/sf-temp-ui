@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,6 +25,7 @@ import com.freshdirect.delivery.sms.NextStopSmsInfo;
 import com.freshdirect.delivery.sms.OrderDlvInfo;
 import com.freshdirect.delivery.sms.SmsAlertETAInfo;
 import com.freshdirect.delivery.sms.SmsCustInfo;
+import com.freshdirect.delivery.sms.SmsUtil;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -370,42 +369,15 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	 */
 	public void sendETASms() {
 
+		
 		Connection con = null;
-		SmsDAO smsDAO = new SmsDAO();
 		try {
 			
 			List<SmsAlertETAInfo> etaInfoList = getETAInfo();
-			if (etaInfoList!=null) {
-				for (int i = 0; i < etaInfoList.size(); i++) {
-
-					if (etaInfoList.get(i).isETA() != null) {
-						if (etaInfoList.get(i).isETA()
-								&& etaInfoList.get(i).getEtaStartTime() != null
-								&& etaInfoList.get(i).getEtaEndTime() != null) {
-							STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(etaInfoList.get(i).getMobileNumber(),ETA_MESSAGE_TEXT_1
-													+ getTime(etaInfoList.get(i).getEtaStartTime())+ " and "
-													+ getTime(etaInfoList.get(i).getEtaEndTime())
-													+ ETA_MESSAGE_TEXT_2);
-
-							smsResponseModel.setDate(new Date());
-							smsResponseModel.setOrderId(etaInfoList.get(i).getOrderId());
-							updateSmsAlertCaptured(con, smsResponseModel, ETA_ALERT_TYPE, etaInfoList.get(i).getCustomerId());
-						} else if (!etaInfoList.get(i).isETA()
-								&& etaInfoList.get(i).getWindowStartTime() != null
-								&& etaInfoList.get(i).getWindowEndTime() != null) {
-							STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(etaInfoList.get(i).getMobileNumber(),ETA_MESSAGE_TEXT_1
-													+ getTime(etaInfoList.get(i).getWindowStartTime())
-													+ " and "
-													+ getTime(etaInfoList.get(i).getWindowEndTime())
-													+ ETA_MESSAGE_TEXT_2);
-
-							smsResponseModel.setDate(new Date());
-							smsResponseModel.setOrderId(etaInfoList.get(i).getOrderId());
-							updateSmsAlertCaptured(con, smsResponseModel,ETA_ALERT_TYPE, etaInfoList.get(i).getCustomerId());
-						}
-					}
-				}
-			}
+			List<STSmsResponse> etaSmsUpdateList = sendSmsToGateway(etaInfoList);
+			SmsDAO smsDao = new SmsDAO();
+			con = this.getConnection();
+			smsDao.batchSmsResponseUpdate(con, etaSmsUpdateList);
 
 		} catch (Exception e) {
 
@@ -421,6 +393,11 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			}
 		}
 
+	}
+	
+	public List<STSmsResponse> sendSmsToGateway(List<SmsAlertETAInfo> etaInfoList){
+		List<STSmsResponse> etaSmsUpdateList = SmsUtil.getEtaSmsUpdateList(etaInfoList);
+		return etaSmsUpdateList;
 	}
 	
 	private List<SmsAlertETAInfo> getETAInfo(){
@@ -446,6 +423,8 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		}
 		return etaInfoList;
 	}
+	
+	
 	
 	
 

@@ -50,6 +50,8 @@ public class DlvProperties {
 	private final static String PROP_FREE_SPATIAL_ONLY		= "delivery.free.spatial.only";
 	private final static String PROP_SMS_ALERTS_HOME        = "smsalerts.home";
 	private final static String PROP_SMS_EXPIRE_IN_MINS		=	"smsalerts.expire";
+	private final static String PROP_SMSETA_NO_OF_THREADS		=	"smsalerts.eta.noofthreads";
+	
 	private final static String PROP_NEXTSTOP_SMS_NO_SEND_LIMIT		=	"nextstop.sms.nosend.limit";
 	
 	private final static Properties config;
@@ -81,6 +83,7 @@ public class DlvProperties {
 		defaults.put(PROP_SMS_ALERTS_HOME, "freshdirect.SmsAlerts");
 		defaults.put(PROP_SMS_EXPIRE_IN_MINS, "60");
 		defaults.put(PROP_NEXTSTOP_SMS_NO_SEND_LIMIT, "30");
+		defaults.put(PROP_SMSETA_NO_OF_THREADS, "5");
 				
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration for Delivery: "+config);
@@ -183,6 +186,17 @@ public class DlvProperties {
 		return Integer.parseInt(config.getProperty(PROP_NEXTSTOP_SMS_NO_SEND_LIMIT));
 	}
 
+	public static int getSmsETANumOfThreads(){
+		try {
+			return Integer.parseInt(config.getProperty(PROP_SMSETA_NO_OF_THREADS));
+		} catch (Exception e) {
+			//Default number of threads is 5 - return 5
+			return 5;
+			
+		}
+	}
+
+	
 	public static Context getInitialContext() throws NamingException {
 		Hashtable env = new Hashtable();
 		env.put(Context.PROVIDER_URL, getProviderURL() );

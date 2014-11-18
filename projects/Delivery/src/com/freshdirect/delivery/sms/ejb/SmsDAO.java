@@ -8,15 +8,20 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.delivery.DlvProperties;
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.model.TransitInfo;
 import com.freshdirect.delivery.sms.NextStopSmsInfo;
 import com.freshdirect.delivery.sms.OrderDlvInfo;
 import com.freshdirect.delivery.sms.SmsAlertETAInfo;
+import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.sms.model.st.STSmsResponse;
 
 public class SmsDAO {
 	
@@ -368,6 +373,53 @@ public class SmsDAO {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void batchSmsResponseUpdate(Connection con, List<STSmsResponse> etaSmsUpdateList) throws DlvResourceException{
+		int batchCount = 0;
+		PreparedStatement ps = null;
+		try{
+			
+			ps = con.prepareStatement("INSERT INTO MIS.SMS_ALERT_CAPTURE "
+					+ "(ID, USER_ID, ALERT_TYPE,CREATE_DATE,INSERT_DATE,STATUS,ERROR,ERROR_DESC,MOBILE_NUMBER,MESSAGE,STI_SMS_ID,ORDER_ID)"
+					+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+			
+			for(STSmsResponse smsResponseModel : etaSmsUpdateList){
+				String customerId = smsResponseModel.getCustomerId();
+				//STSmsResponse smsResponseModel = etaSmsUpdateList.get(customerId);
+				PhoneNumber phone = new PhoneNumber(String.valueOf(smsResponseModel.getSms_to()));
+				ps.setInt(1, Integer.parseInt(SequenceGenerator.getNextIdFromSequence(
+						con, "MIS.SMS_ALERT_SEQ")));
+				ps.setString(2, customerId);
+				//ETA_ALERT_TYPE
+				ps.setString(3, ETA_ALERT_TYPE);
+				ps.setTimestamp(4, new java.sql.Timestamp(smsResponseModel.getDate().getTime()));
+				ps.setTimestamp(5, new java.sql.Timestamp(smsResponseModel.getDate().getTime()));
+				ps.setString(6, smsResponseModel.getStatus());
+				ps.setInt(7, smsResponseModel.getError());
+				ps.setString(8, smsResponseModel.getError_description());
+				ps.setString(9, phone.getPhone());
+				ps.setString(10, smsResponseModel.getSms_msg());
+				ps.setInt(11, smsResponseModel.getSms_id());
+				ps.setString(12, smsResponseModel.getOrderId() != null ? smsResponseModel.getOrderId() : null);
+				ps.addBatch();
+				batchCount++;
+			}
+			if(batchCount>0){
+				ps.executeBatch();
+			}
+		}catch(SQLException e) {
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
 	}
 	
 }
