@@ -1276,9 +1276,11 @@ public class ProductDetailPopulator {
 				}
 			} catch ( Exception ex ) { } 
 
-			
+
+			List<FDVariationOption> availableFDVarOptions = collectAvailableVariations(fdVar);
+
 			List<VarItem> varOpts = new ArrayList<VarItem>();
-			for ( FDVariationOption varOpt : fdVar.getVariationOptions() ) {
+			for ( FDVariationOption varOpt : availableFDVarOptions ) {
 				VarItem v = new VarItem();
 				String vName = varOpt.getName();
 				v.setLabelValue( varOpt.isLabelValue() );
@@ -1293,6 +1295,52 @@ public class ProductDetailPopulator {
 			varList.add( var );
 		}
 		return varList;
+	}
+
+
+
+	private static List<FDVariationOption> collectAvailableVariations(
+			FDVariation fdVar) {
+		// collect all available variation options
+		List<FDVariationOption> availableFDVarOptions = new ArrayList<FDVariationOption>();
+
+		final ContentFactory cf = ContentFactory.getInstance();
+
+		FDVariationOption[] varOpts = fdVar.getVariationOptions();
+
+		for (int optIdx = 0; optIdx < varOpts.length; optIdx++) {
+			String optSkuCode = varOpts[optIdx].getSkuCode();
+
+			// sometimes skucode attrib in erps may be missing..so handle
+			// it, so we don't get SkuNotFoundException
+			if (optSkuCode == null || "".equals(optSkuCode.trim())) {
+				 // not a product, add to list
+				availableFDVarOptions.add(varOpts[optIdx]);
+			} else {
+				ProductModel pm = null;
+				try {
+					pm = cf.getProduct(optSkuCode);
+				} catch (FDSkuNotFoundException e) {
+					LOG.error(e);
+				}
+
+				if (pm == null) {
+					LOG.debug("Variation has orphan sku with no ProductModel): " + varOpts[optIdx] + " (Sku: " + optSkuCode + ")");
+				} else {
+					SkuModel sku = pm.getSku(optSkuCode);
+
+					if (sku != null && !sku.isUnavailable()) {
+						availableFDVarOptions.add(varOpts[optIdx]);
+					} else {
+						if (sku.isUnavailable()) {
+							LOG.debug("Skipping as unavailable: " + varOpts[optIdx] + " (Sku: " + optSkuCode + ")");
+						}
+					}
+				}
+			}
+		}
+
+		return availableFDVarOptions;
 	}
 
 
