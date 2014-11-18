@@ -137,7 +137,7 @@
   padding: 2px 12px;
 }
 
-.portrait-item-atl span.fakeaddtolist {
+.portrait-item-atl span.hiddenfakeaddtolist {
 	display: none;
 }
 

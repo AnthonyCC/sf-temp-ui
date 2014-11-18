@@ -370,7 +370,7 @@
     {param atcItemId:$atcItemId /}
   {/call}
   <div class="portrait-item-atl">
-    <span class="{if $customizePopup}fake{/if}addtolist cssbutton purple icon-file2-before" {if not $customizePopup}data-component="addToListButton" data-alignpopup="tc-bc-c"{else}data-component="customizeButton" data-alignpopupfunction="transactionalCustomize"{/if}>save to list</span>
+    <span class="{if $customizePopup}{if $hasTerms}hidden{/if}fake{/if}addtolist cssbutton purple icon-file2-before" {if not $customizePopup}data-component="addToListButton" data-alignpopup="tc-bc-c"{else}data-component="customizeButton" data-alignpopupfunction="transactionalCustomize"{/if}>save to list</span>
   </div>
   {if $relatedItem}
   <ul class="relatedItem" data-component="relateditem" data-cmeventsource="TRY">
