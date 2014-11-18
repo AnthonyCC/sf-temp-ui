@@ -11,7 +11,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.Product.ProductWarningMessage;
 import com.freshdirect.mobileapi.controller.data.Product.ProductWarningMessage.ProductWarningMessageType;
 import com.freshdirect.mobileapi.model.Product.ImageType;
-import com.freshdirect.webapp.util.CCFormatter;
 
 public class ProductSearchResult {
 
@@ -48,6 +47,8 @@ public class ProductSearchResult {
     private Image image = new Image();
 
     private Image thumbnail = new Image();
+    
+    private Image detailImage = new Image();
 
     private Image thumbBurst = null;
 
@@ -151,6 +152,17 @@ public class ProductSearchResult {
             this.thumbnail.setHeight(thumbImage.getHeight());
             this.thumbnail.setWidth(thumbImage.getWidth());
         }
+        
+
+        com.freshdirect.fdstore.content.Image detailImage = product.getImage(ImageType.DETAIL);
+        
+        if (detailImage != null) {
+	        this.detailImage.setHeight(detailImage.getHeight());
+	        this.detailImage.setWidth(detailImage.getWidth());
+	        this.detailImage.setSource(detailImage.getPath());
+        }
+       
+        
         setQuantityMaximum(product.getQuantityMaximum());
         setQuantityMinimum(product.getQuantityMinimum());
         setQuantityIncrement(product.getQuantityIncrement());
@@ -295,7 +307,16 @@ public class ProductSearchResult {
     public void setThumbnail(Image thumbnail) {
         this.thumbnail = thumbnail;
     }
+    
+    public Image getDetailImage() {
+        return detailImage;
+    }
 
+    public void setDetailImage(Image detailImage) {
+        this.detailImage = detailImage;
+    }
+
+    
     public double getQuantityMinimum() {
         return quantityMinimum;
     }
