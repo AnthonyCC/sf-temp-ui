@@ -372,12 +372,13 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		
 		Connection con = null;
 		try {
-			
+			Date toTime=new Date();
 			List<SmsAlertETAInfo> etaInfoList = getETAInfo();
 			List<STSmsResponse> etaSmsUpdateList = sendSmsToGateway(etaInfoList);
 			SmsDAO smsDao = new SmsDAO();
 			con = this.getConnection();
 			smsDao.batchSmsResponseUpdate(con, etaSmsUpdateList);
+			smsDao.updateLastExport(con, ETA_ALERT_TYPE,toTime);
 
 		} catch (Exception e) {
 
@@ -541,7 +542,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		
 		ps.executeUpdate();
 		}catch(SQLException e){
-			
+			e.printStackTrace();
 		}finally{
 			if(ps!=null){
 				ps.close();

@@ -162,7 +162,7 @@ public class SmsDAO {
 		List<SmsAlertETAInfo> etaInfoList = new ArrayList<SmsAlertETAInfo>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		Date toTime=new Date();
+		
 		try {
 			String GET_ETA_WINDOW = "select BS.WEBORDER_ID, bs.DLV_ETA_STARTTIME ,bs.DLV_ETA_ENDTIME,BS.WINDOW_STARTTIME, BS.WINDOW_ENDTIME, BS.MOBILE_NUMBER, " +
 					"z.SMS_ETA_ENABLED, z.DLV_WINDOW_REMINDER_ENABLED, S.CUSTOMER_ID " +
@@ -192,7 +192,6 @@ public class SmsDAO {
 					} 
 					etaInfoList.add(smsAlertETAInfo);
 				}
-			updateLastExport(con, ETA_ALERT_TYPE,toTime);
 		}catch(SQLException e)
 		{
 			throw new DlvResourceException(e);
@@ -356,7 +355,7 @@ public class SmsDAO {
 	 * updated the SMS_transit_export table for COrresponding alert type.
 	 * @throws DlvResourceException 
 	 */
-	private void updateLastExport(Connection con, String alertType, Date toTime) throws DlvResourceException {
+	public void updateLastExport(Connection con, String alertType, Date toTime) throws DlvResourceException {
 		PreparedStatement ps = null;
 		try {
 			ps = con.prepareStatement("INSERT INTO DLV.SMS_TRANSIT_EXPORT(LAST_EXPORT, SUCCESS, SMS_ALERT_TYPE) VALUES (?,'Y',?)");

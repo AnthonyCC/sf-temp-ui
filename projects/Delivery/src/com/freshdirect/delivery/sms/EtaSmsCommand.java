@@ -65,7 +65,7 @@ public class EtaSmsCommand implements Serializable, Runnable {
 						if (etaInfoList.get(i).isETA()
 								&& etaInfoList.get(i).getEtaStartTime() != null
 								&& etaInfoList.get(i).getEtaEndTime() != null
-								&& !etaInfoList.get(i).getEtaEndTime().before(currentDate)) {
+								&& etaInfoList.get(i).getEtaEndTime().after(currentDate)) {
 							STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(etaInfoList.get(i).getMobileNumber(),ETA_MESSAGE_TEXT_1
 													+ getTime(etaInfoList.get(i).getEtaStartTime())+ " and "
 													+ getTime(etaInfoList.get(i).getEtaEndTime())
@@ -80,7 +80,7 @@ public class EtaSmsCommand implements Serializable, Runnable {
 						} else if (!etaInfoList.get(i).isETA()
 								&& etaInfoList.get(i).getWindowStartTime() != null
 								&& etaInfoList.get(i).getWindowEndTime() != null
-								&& !etaInfoList.get(i).getWindowEndTime().before(currentDate)) {
+								&& etaInfoList.get(i).getWindowEndTime().after(currentDate)) {
 							STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(etaInfoList.get(i).getMobileNumber(),ETA_MESSAGE_TEXT_1
 													+ getTime(etaInfoList.get(i).getWindowStartTime())
 													+ " and "
