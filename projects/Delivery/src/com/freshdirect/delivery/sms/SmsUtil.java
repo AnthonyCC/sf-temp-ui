@@ -57,9 +57,8 @@ public class SmsUtil {
 		return etaSmsUpdateList;
 	}
 	
-	
 	static <T> List<List<T>> chopped(List<T> list, final int L) {
-		int chunksize = Math.round(new Float(list.size())/L);
+		int chunksize = (int) (Math.ceil(new Double(list.size())/L));
 	    List<List<T>> parts = new ArrayList<List<T>>();
 	    final int N = list.size();
 	    for (int i = 0; i < N; i += chunksize) {
