@@ -434,6 +434,7 @@ public class ProductDetailPopulator {
 		data.setQuantityText( product.getQuantityText() );
 		data.setPackageDescription( product.getPackageDescription() );
 		data.setSoldBySalesUnit( product.isSoldBySalesUnits() );
+		data.setHasTerms( product.hasTerms() );
 		
 		// alcoholic & usq flags
 		try {

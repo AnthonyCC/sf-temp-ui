@@ -137,6 +137,10 @@
   padding: 2px 12px;
 }
 
+.portrait-item-atl span.fakeaddtolist {
+	display: none;
+}
+
 #transactionalPopup .portrait-item-atl {
   display: block;
   text-align: center;
