@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
 import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
+import com.freshdirect.webapp.soy.SoyTemplateEngine;
 
 public class ViewCartPotatoTag extends SimpleTagSupport {
 
@@ -28,7 +29,7 @@ public class ViewCartPotatoTag extends SimpleTagSupport {
 		} catch (Exception e) {
 			LOGGER.error("recommendation failed", e);
 		}
-		pageContext.setAttribute(VIEW_CART_POTATO_NAME, carousels);
+		pageContext.setAttribute(VIEW_CART_POTATO_NAME, SoyTemplateEngine.convertToMap(carousels));
 	}
 
 }

@@ -29,19 +29,30 @@ var FreshDirect = FreshDirect || {};
 			value:function(tabPanelElement,tabName,clickedTab) {
 				var proto = Object.getPrototypeOf(this),
 					siteFeature = clickedTab.data('sitefeature'),
-					tabPanel;
+          impressionId = clickedTab.data('impressionid'),
+          parentImpressionId = clickedTab.data('parentimpressionid'),
+          parentVariantId = clickedTab.data('parentvariantid'),
+					tabPanel, recommender, url, data;
 				
 				proto.selectTab.call(this,tabPanelElement,tabName);
 				if(siteFeature.trim()!==''){
-					tabPanel = $('[data-component="tabbedRecommender"] [data-component="tabpanel"]');
+          recommender = clickedTab.parents('[data-component="tabbedRecommender"]').first();
+					tabPanel = recommender.find('[data-component="tabpanel"]');
 					tabPanel.attr('data-cmSiteFeature',siteFeature);
 					tabPanel.css('min-height', tabPanel.height());
 					tabPanel.html('');
+          url = recommender.data('apiendpoint') || '/api/qs/ymal';
+          data = { feature: siteFeature };
+          if (impressionId) {
+            data.impressionId = impressionId;
+            data.parentImpressionId = parentImpressionId;
+            data.parentVariantId = parentVariantId;
+          }
 					DISPATCHER.signal('server',{
-						url:'/api/qs/ymal',
+						url: url,
 						method:'GET',
 						data: {
-				            data: JSON.stringify({ feature:siteFeature })
+              data: JSON.stringify(data)
 				    }});
 				}
 			}

@@ -40,3 +40,43 @@
     </div>
 </div>
 {/template}
+
+/**
+ * @param? recommendationTabs
+ * @param? cmEventSource
+ * @param? apiEndPoint
+ * @param? fullSize
+ */
+{template .generalTabbedCarousel}
+{if $recommendationTabs and length($recommendationTabs)}
+<div class="tabbed-carousel {if $fullSize}fullsize{/if}" data-component="tabbedRecommender" data-cmeventsource="{if $cmEventSource }{$cmEventSource}{else}tabbedRecommender{/if}" {if $apiEndPoint}data-apiendpoint="{$apiEndPoint}"{/if}>
+    <ul class="tabs">
+    {foreach $tab in $recommendationTabs}
+      <li data-component="tabitem" class="{if isFirst($tab)}selected{/if}" data-tabname="{$tab.title}" data-sitefeature="{$tab.siteFeature}" data-impressionid="{$tab.impressionId}" data-parentimpressionid="{$tab.parentImpressionId}" data-parentvariantid="{$tab.parentVariantId}">{$tab.title}</li>
+    {/foreach}
+    </ul>
+
+    <div class="tab-container light-carousel" data-component="tabpanel" data-cmSiteFeature="{$recommendationTabs[0].siteFeature}">
+    {if $recommendationTabs[0].carouselData and $recommendationTabs[0].carouselData.products}
+    	{call common.simpleCarousel}
+    		{param items:$recommendationTabs[0].carouselData.products /}
+    		{param itemType:'grid' /}
+    	{/call}
+    {/if}
+    </div>
+</div>
+{/if}
+{/template}
+
+
+/**
+ * @param? recommendationTabs
+ */
+{template .viewCartTabbedCarousel}
+{call common.generalTabbedCarousel}
+  {param recommendationTabs:$recommendationTabs /}
+  {param cmEventSource:'view_cart' /}
+  {param apiEndPoint:'/api/viewcart/recommendation' /}
+  {param fullSize:true /}
+{/call}
+{/template}
