@@ -8,6 +8,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
@@ -177,6 +178,7 @@ public class ViewCartCarouselService {
 			int tabIndex = 0;
 			for (Variant variant : tabs.getVariants()) {
 				String tabTitle = tabs.getTabTitle(tabIndex);
+				tabTitle = WordUtils.capitalizeFully(tabTitle);
 				String siteFeatureName = variant.getSiteFeature().getName();
 				RecommendationTab tab = new RecommendationTab(tabTitle, siteFeatureName, tabs.getParentImpressionId(), tabs.getFeatureImpressionId(tabIndex), parentVariantId);
 				result.getRecommendationTabs().add(tab);
