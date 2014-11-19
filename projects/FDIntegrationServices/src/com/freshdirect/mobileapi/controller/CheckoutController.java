@@ -518,6 +518,9 @@ public class CheckoutController extends BaseController {
      */
     private ModelAndView getAtpErrorDetail(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException,
             JsonException {
+        if (user == null) {
+            user = fakeUser(request.getSession());
+        }
         Checkout checkout = new Checkout(user);
         Message responseMessage = checkout.getAtpErrorDetail();
         setResponseMessage(model, responseMessage, user);
