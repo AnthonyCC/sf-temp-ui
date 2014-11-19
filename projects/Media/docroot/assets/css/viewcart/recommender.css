@@ -1,0 +1,4 @@
+#viewcart + .tabbed-carousel .tabs li {
+  min-width: 33%;
+  max-width: 50%;
+}

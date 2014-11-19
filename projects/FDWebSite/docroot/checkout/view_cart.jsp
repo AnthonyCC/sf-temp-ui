@@ -13,6 +13,8 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
+<%@ taglib uri="fd-data-potatoes" prefix="potato" %>
+<%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 
 <% //expanded page dimensions
 final int W_CHECKOUT_VIEW_CART_TOTAL = 970;
@@ -201,23 +203,8 @@ StringBuffer buffer = new StringBuffer(
 
 </form>
 
-<!-- ===================================== -->
-<!-- ============ Cart & tabs ============ -->
-<!-- ===================================== -->
-
-<% String smartStoreFacility = "checkout"; %>
-<%@ include file="/includes/smartstore/i_recommender_tabs.jspf" %>
-
-<br />
-<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
-<% if (!"true".equals(request.getAttribute("recommendationsRendered"))) { %>
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
-	<img src="/media_stat/images/layout/ff9933.gif" width="<%=W_CHECKOUT_VIEW_CART_TOTAL%>" height="1" border="0" alt="" /><br />
-	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
-<% } %>
-
-<br />
-<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
+<potato:viewCart />
+<soy:render template="common.viewCartTabbedCarousel" data="${viewCartPotato}" /> 
 
 <table border="0" cellspacing="0" cellpadding="0" width="<%= W_CHECKOUT_VIEW_CART_TOTAL %>">
     <tr valign=""top"">
