@@ -268,6 +268,8 @@ public class AddToCartServlet extends BaseJsonServlet {
            		}
 
            		responseData.setRedirectUrl("/view_cart.jsp");
+           	} else if ("view_cart".equals(reqData.getEventSource())) {
+           		responseData.setRedirectUrl(request.getHeader("Referer"));
            	}
            	
 			writeResponseData( response, responseData );
