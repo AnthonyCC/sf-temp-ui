@@ -114,10 +114,15 @@ public class ProductMoreInfo {
             wineInfo.setImporter(wine.getImporter());
             wineInfo.setRegionDescription(wine.getWineRegionDescription());
             wineInfo.setRegionLabel(wine.getWineRegionLabel());
-            for (String iconPath : wine.getWineTypeIcons()) {
-                Image iconImage = new Image();
-                iconImage.setSource(iconPath);
-                wineInfo.getTypeIcons().add(iconImage);
+            
+            List<String> wineIcons = wine.getWineTypeIcons();
+            
+            if(wineIcons != null){
+	            for (String iconPath : wineIcons) {
+	                Image iconImage = new Image();
+	                iconImage.setSource(iconPath);
+	                wineInfo.getTypeIcons().add(iconImage);
+	            }
             }
         }
 

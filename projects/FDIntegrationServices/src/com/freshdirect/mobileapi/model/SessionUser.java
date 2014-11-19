@@ -73,6 +73,12 @@ public class SessionUser {
 
         return newInstance;
     }
+    
+    // DOOR3 FD-iPad FDIP-474
+	public boolean isFutureZoneNotificationEmailSentForCurrentAddress()
+	{
+		return sessionUser.isFutureZoneNotificationEmailSentForCurrentAddress();
+	}
 
     public List<CustomerCreatedList> getCustomerCreatedList() throws FDException {
         FDCustomerCreatedListTagWrapper tagWrapper = new FDCustomerCreatedListTagWrapper(this);
@@ -283,6 +289,13 @@ public class SessionUser {
             try {
                 Product productData = Product.wrap(product.getProductRef().lookupProductModel(), this.sessionUser.getUser(), null, EnumCouponContext.PRODUCT);
                 Sku sku = productData.getSkyByCode(product.getSkuCode());
+                if (sku != null) {
+                	if (productData.getDefaultSku() != null) {
+                		sku = productData.getDefaultSku();
+                	} else if (productData.getSkus().size() > 0) {
+                		sku = productData.getSkus().iterator().next();
+                	}
+                }
                 if(sku != null) {
                     productConfiguration.populateProductWithModel(productData, com.freshdirect.mobileapi.controller.data.Sku.wrap(sku));
                 } else {
@@ -649,5 +662,17 @@ public class SessionUser {
 			e.printStackTrace();
 		};
 		return 0;
+	}
+	
+	public boolean isFake() {
+		return false;
+	}
+
+	public String getLastName() {
+		try {
+			return sessionUser.getLastName();
+		} catch (FDResourceException e) {
+			return "";
+		}
 	}
 }

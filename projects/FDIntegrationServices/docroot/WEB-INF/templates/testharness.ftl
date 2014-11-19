@@ -37,7 +37,18 @@ $(document).ready(function(){
 		$('#ajaxBusy').hide();
 	});
   
+  $("#url").keyup(function(event){
+    if(event.keyCode == 13){
+        doStuff();
+    }
+  });
   
+  $("#payload").keyup(function(event){
+    if(event.keyCode == 13){
+        doStuff();
+    }
+  });
+
 });
 
 
@@ -616,6 +627,8 @@ function loadStuff() {
   	$("#payload").val(""); 	
   	$("#result").val("");
   }  
+
+  $("#payload").focus();
 }
 
 function doStuff() {

@@ -1,58 +1,26 @@
 package com.freshdirect.mobileapi.controller;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressRequest;
-import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressSelection;
-import com.freshdirect.mobileapi.controller.data.request.DeliverySlotReservation;
-import com.freshdirect.mobileapi.controller.data.request.Login;
-import com.freshdirect.mobileapi.controller.data.request.PaymentMethodRequest;
-import com.freshdirect.mobileapi.controller.data.request.PaymentMethodSelection;
 import com.freshdirect.mobileapi.controller.data.request.RegisterMessage;
-import com.freshdirect.mobileapi.controller.data.request.ZipCheck;
-import com.freshdirect.mobileapi.controller.data.response.DeliveryAddresses;
 import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
-import com.freshdirect.mobileapi.controller.data.response.OrderReceipt;
-import com.freshdirect.mobileapi.controller.data.response.PaymentMethods;
+import com.freshdirect.mobileapi.controller.data.response.OrderHistory;
 import com.freshdirect.mobileapi.controller.data.response.Timeslot;
-import com.freshdirect.mobileapi.controller.data.response.Visitor;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
-import com.freshdirect.mobileapi.model.Checkout;
-import com.freshdirect.mobileapi.model.DeliveryAddress;
-import com.freshdirect.mobileapi.model.DeliveryTimeslots;
-import com.freshdirect.mobileapi.model.Depot;
-import com.freshdirect.mobileapi.model.MessageCodes;
-import com.freshdirect.mobileapi.model.OrderHistory;
-import com.freshdirect.mobileapi.model.OrderInfo;
-import com.freshdirect.mobileapi.model.PaymentMethod;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
-import com.freshdirect.mobileapi.model.ShipToAddress;
-import com.freshdirect.mobileapi.model.User;
-import com.freshdirect.mobileapi.model.DeliveryAddress.DeliveryAddressType;
-import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
 import com.freshdirect.mobileapi.model.tagwrapper.RegistrationControllerTagWrapper;
-import com.freshdirect.mobileapi.model.tagwrapper.RequestParamName;
-import com.freshdirect.mobileapi.model.tagwrapper.SiteAccessControllerTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -150,12 +118,14 @@ public class RegistrationController extends BaseController {
 					user.getReservationTimeslot()));
 		}
 		((LoggedIn) responseMessage).setFirstName(user.getFirstName());
+        ((LoggedIn) responseMessage).setLastName(user.getLastName());
 		((LoggedIn) responseMessage).setUsername(user.getUsername());
 		((LoggedIn) responseMessage)
 				.setSuccessMessage("User has been logged in successfully.");
 		((LoggedIn) responseMessage).setItemsInCartCount(user
 				.getItemsInCartCount());
 		((LoggedIn) responseMessage).setOrderCount(user.getOrderHistory().getValidOrderCount());
+        ((LoggedIn) responseMessage).setOrders(java.util.Collections.<OrderHistory.Order>emptyList());
 		((LoggedIn) responseMessage).setFdUserId(user.getPrimaryKey());
 
 		//With Mobile App having given ability to add/remove payment method this is removed

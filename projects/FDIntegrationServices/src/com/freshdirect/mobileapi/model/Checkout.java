@@ -50,12 +50,12 @@ import com.freshdirect.mobileapi.controller.data.response.SpecialRestrictedItems
 import com.freshdirect.mobileapi.exception.ValidationException;
 import com.freshdirect.mobileapi.model.DeliveryAddress.DeliveryAddressType;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
+import com.freshdirect.mobileapi.model.data.Unavailability;
 import com.freshdirect.mobileapi.model.tagwrapper.AdjustAvailabilityTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.AgeVerificationControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.CheckoutControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.DlvPassAvailabilityControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.OrderHistoryInfoTagWrapper;
-import com.freshdirect.mobileapi.model.tagwrapper.RequestParamName;
 
 public class Checkout {
 
@@ -99,13 +99,13 @@ public class Checkout {
         ResultBundle result = tagWrapper.setPaymentMethod(paymentMethodId, billingReference);
         return result;
     }
-    
+
     public ResultBundle addPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.addPaymentMethod(paymentMethod);
         return result;
     }
-    
+
     public ResultBundle addAndSetPaymentMethod(PaymentMethodRequest paymentMethod) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.addAndSetPaymentMethod(paymentMethod);
@@ -117,7 +117,7 @@ public class Checkout {
         ResultBundle result = tagWrapper.editPaymentMethod(paymentMethod);
         return result;
     }
-    
+
     public ResultBundle deletePaymentMethod(String paymentMethodId) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.deletePaymentMethod(paymentMethodId);
@@ -129,14 +129,14 @@ public class Checkout {
         ResultBundle result = tagWrapper.addAndSetDeliveryAddress(deliveryAddress);
         return result;
     }
-    
-    
+
+
     public ResultBundle deleteDeliveryAddress(String deleteShipToAddressId) throws FDException {
         CheckoutControllerTagWrapper tagWrapper = new CheckoutControllerTagWrapper(this.sessionUser);
         ResultBundle result = tagWrapper.deleteDeliveryAddress(deleteShipToAddressId);
         return result;
     }
-    
+
     public String getPreselectedPaymethodMethodId() {
         String preselectedPaymethodMethodId = null;
 
@@ -191,9 +191,19 @@ public class Checkout {
      */
     public String getPreselectedDeliveryAddressId() throws FDResourceException {
         String addressId = null;
-        if (sessionUser.getShoppingCart().isModifyCart()) {
-            addressId = sessionUser.getShoppingCart().getCart().getDeliveryReservation().getAddressId();
-        } else {
+        
+        Cart cart = sessionUser.getShoppingCart();
+            
+        if (cart != null && cart.isModifyCart()) 
+        {
+        	FDCartModel cartModel = cart.getCart();
+        	
+        	if(cartModel == null) 
+        		return sessionUser.getDefaultShipToAddress();
+        	
+            addressId = cartModel.getDeliveryReservation().getAddressId();
+        }
+        else {
             addressId = sessionUser.getDefaultShipToAddress();
             if (addressId == null) {
                 addressId = sessionUser.getReservationAddressId();
@@ -206,9 +216,9 @@ public class Checkout {
      * @see com.freshdirect.webapp.taglib.fdstore.CheckoutControllerTag
      * DUP: duplicated the age verification logic on the CheckoutControllerTag class.
      * It was also updated to remove a reference about a page/HttpServletRequest.
-     * We also removed the logic about "app" == "CALLCENTER" check as that should controlled 
+     * We also removed the logic about "app" == "CALLCENTER" check as that should controlled
      * by the controller not model.
-     * 
+     *
      * @param app
      * @param request
      * @return
@@ -232,15 +242,15 @@ public class Checkout {
         /*
          * DUP: /checkout/step_3_choose.jsp
          * @see /checkout/step_3_choose.jsp
-         * 
+         *
             // redirect to Duplicate Order warning page if has another order for the same day
             String ignoreSaleId = null;
             if (cart instanceof FDModifyCartModel) {
                     ignoreSaleId = ((FDModifyCartModel) cart).getOriginalOrder().getErpSalesId();
             }
-        
+
             Date currentDlvStart = DateUtil.truncate(cart.getDeliveryReservation().getStartTime());
-            
+
             for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
                     FDOrderInfoI oi = (FDOrderInfoI) hIter.next();
                     if (!(oi.getErpSalesId().equals(ignoreSaleId))
@@ -324,7 +334,7 @@ public class Checkout {
         orderReceipt.setOrderNumber(orderNumber);
         return orderReceipt;
     }
-    
+
      /**
      * TODO: Model should not return request data class.  Unnecessary coupling of model and view.
      * @return
@@ -346,21 +356,27 @@ public class Checkout {
         List<Integer> regularItems = new ArrayList<Integer>();
         List<String> groupingKeyList = new ArrayList<String>();
 
+        List<String> unreadKeys = new ArrayList<String>();
         for (String item : invsInfoMap.keySet()) {
-            Integer key =  Integer.parseInt(item);
-            FDCartLineI cartLine = cart.getOrderLineById((key).intValue());
-            String rcpSrcId = cartLine.getRecipeSourceId();
-            if (rcpSrcId != null) {
-                String deptDecs = cartLine.getDepartmentDesc();
-                List rcpItems = groupingMap.get(deptDecs);
-                if (rcpItems == null) {
-                    rcpItems = new ArrayList();
-                    groupingMap.put(deptDecs, rcpItems);
-                    groupingKeyList.add(deptDecs);
+            Integer key;
+            try {
+                key = Integer.parseInt(item, 10);
+                FDCartLineI cartLine = cart.getOrderLineById((key).intValue());
+                String rcpSrcId = cartLine.getRecipeSourceId();
+                if (rcpSrcId != null) {
+                    String deptDecs = cartLine.getDepartmentDesc();
+                    List rcpItems = groupingMap.get(deptDecs);
+                    if (rcpItems == null) {
+                        rcpItems = new ArrayList();
+                        groupingMap.put(deptDecs, rcpItems);
+                        groupingKeyList.add(deptDecs);
+                    }
+                    rcpItems.add(key);
+                } else {
+                    regularItems.add(key);
                 }
-                rcpItems.add(key);
-            } else {
-                regularItems.add(key);
+            } catch (NumberFormatException e) {
+                unreadKeys.add(item);
             }
         }
 
@@ -403,6 +419,7 @@ public class Checkout {
                 } else if (info instanceof FDStockAvailabilityInfo) {
                     itemAvailabilityError.setErrorCode(MessageCodes.ERR_ATP_TYPE_LIMITED_INVENTORY);
                     double availQty = ((FDStockAvailabilityInfo) info).getQuantity();
+                    item.setInStock(Double.toString(availQty));
                     itemAvailabilityError.setArgs(new String[] { Double.toString(availQty) });
                     itemAvailabilityError.setMessage(availQty == 0 ? "None" : quantityFormatter.format(availQty) + " Available");
                 } else if (info instanceof FDCompositeAvailabilityInfo) {
@@ -438,7 +455,7 @@ public class Checkout {
                             + StringUtils.join(unavailableOptions.iterator(), ","));
 
                     //The arg index are: 0 : "singleOptionIsOut", is only option flag
-                    //The arg index are: 1+ : options that were unavailable                    
+                    //The arg index are: 1+ : options that were unavailable
                     String[] args = (String[]) ArrayUtils.add(unavailableOptions.toArray(new String[unavailableOptions.size()]), 0, Boolean
                             .toString(singleOptionIsOut));
                     itemAvailabilityError.setArgs(args);
@@ -450,7 +467,7 @@ public class Checkout {
                     itemAvailabilityError.setErrorCode(MessageCodes.ERR_ATP_TYPE_GENERIC_UNAVAILABILITY);
                     itemAvailabilityError.setMessage("Out of stock");
                 }
-            }
+            } // end for
         }
 
         //Set first date available, in case.
@@ -481,6 +498,10 @@ public class Checkout {
                 itemAvailabilityError.setMessage(info.getReason());
             }
         }
+        // Unavailability Data
+        Unavailability unavailability = Unavailability.collectData(this.sessionUser);
+    	atpError.setUnavailability(unavailability);
+        atpError.setUnreadKeys(unreadKeys);
         return atpError;
     }
 
@@ -496,50 +517,50 @@ public class Checkout {
         ResultBundle result = wrapper.removeUnavailableItemsFromCart(cartEvent);
         return result;
     }
-    
+
  // Code from checkout/step_3_unavail.jsp
     public Message getSpecialRestrictedItemDetail() {
-    	
-    	SpecialRestrictedItemsError splRestrictionError = new SpecialRestrictedItemsError();
-    	
-    	if(this.sessionUser != null && this.sessionUser.getShoppingCart() != null) {
-    		
-    		Cart cart = this.sessionUser.getShoppingCart();
-	    	List<FDCartLineI> ebtIneligibleOrderLines = new ArrayList<FDCartLineI>();
-	    		    	
-	    	List<FDCartLineI> orderLines = cart.getOrderLines();
-	    	if(orderLines != null && orderLines.size() > 0) {
-	    		
-	    		for(FDCartLineI cartLine : orderLines) {
-	    			if(cartLine.getProductRef().lookupProductModel().isExcludedForEBTPayment()) {
-	    				ebtIneligibleOrderLines.add(cartLine);
-	    				
-	    				SpecialRestrictedItemsError.CartLineItem item = new SpecialRestrictedItemsError.CartLineItem();
-	    				splRestrictionError.addCartLineItem(item);
-	
-	                    item.setQuantity(cartLine.getQuantity());
-	                    item.setDescription(cartLine.getDescription());
-	                    item.setConfigurationDesc(cartLine.getConfigurationDesc());
-	    			}
-	    		}
-	    		
-	    		if(splRestrictionError.getItems() != null && ebtIneligibleOrderLines.size() > 0) {
-	    			splRestrictionError.setErrorCode(MessageCodes.ERR_EBT_RESTRICTED);
-		    		splRestrictionError.setMessage(MessageCodes.MSG_EBT_PRODUCT_NOT_ALLOWED);
-		    		cart.setEbtIneligibleOrderLines(ebtIneligibleOrderLines);
-	    		}
-	    	}
-    	}
-    	return splRestrictionError;
+
+        SpecialRestrictedItemsError splRestrictionError = new SpecialRestrictedItemsError();
+
+        if(this.sessionUser != null && this.sessionUser.getShoppingCart() != null) {
+
+            Cart cart = this.sessionUser.getShoppingCart();
+            List<FDCartLineI> ebtIneligibleOrderLines = new ArrayList<FDCartLineI>();
+
+            List<FDCartLineI> orderLines = cart.getOrderLines();
+            if(orderLines != null && orderLines.size() > 0) {
+
+                for(FDCartLineI cartLine : orderLines) {
+                    if(cartLine.getProductRef().lookupProductModel().isExcludedForEBTPayment()) {
+                        ebtIneligibleOrderLines.add(cartLine);
+
+                        SpecialRestrictedItemsError.CartLineItem item = new SpecialRestrictedItemsError.CartLineItem();
+                        splRestrictionError.addCartLineItem(item);
+
+                        item.setQuantity(cartLine.getQuantity());
+                        item.setDescription(cartLine.getDescription());
+                        item.setConfigurationDesc(cartLine.getConfigurationDesc());
+                    }
+                }
+
+                if(splRestrictionError.getItems() != null && ebtIneligibleOrderLines.size() > 0) {
+                    splRestrictionError.setErrorCode(MessageCodes.ERR_EBT_RESTRICTED);
+                    splRestrictionError.setMessage(MessageCodes.MSG_EBT_PRODUCT_NOT_ALLOWED);
+                    cart.setEbtIneligibleOrderLines(ebtIneligibleOrderLines);
+                }
+            }
+        }
+        return splRestrictionError;
     }
-    
+
     /**
      * @param requestData [For now special means EBT restricted item, may be useful in future for other special restriction]
      * @return
      * @throws FDException
      */
     public ResultBundle removeSpecialRestrictedItemsFromCart(RequestData requestData) throws FDException {
-        AdjustAvailabilityTagWrapper wrapper = new AdjustAvailabilityTagWrapper(this.sessionUser);        
+        AdjustAvailabilityTagWrapper wrapper = new AdjustAvailabilityTagWrapper(this.sessionUser);
         CartEvent cartEvent = new CartEvent(CartEvent.FD_REMOVE_CART_EVENT);
         cartEvent.setRequestData(requestData);
         ResultBundle result = wrapper.removeSpecialRestrictedItemsFromCart(cartEvent);

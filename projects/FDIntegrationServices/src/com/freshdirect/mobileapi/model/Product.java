@@ -1,5 +1,7 @@
 package com.freshdirect.mobileapi.model;
 
+import static java.util.Collections.emptySet;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -11,12 +13,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -38,7 +41,10 @@ import com.freshdirect.common.pricing.PricingEngine;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.common.pricing.SalesUnitRatio;
 import com.freshdirect.content.nutrition.EnumAllergenValue;
+import com.freshdirect.content.nutrition.EnumClaimValue;
+import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
+import com.freshdirect.content.nutrition.NutritionValueEnum;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -59,11 +65,14 @@ import com.freshdirect.fdstore.content.ComponentGroupModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.EnumProductLayout;
+import com.freshdirect.fdstore.content.EnumSearchFilteringValue;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
+import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.content.TagModel;
 import com.freshdirect.fdstore.content.view.ProductRating;
 import com.freshdirect.fdstore.content.view.WebProductRating;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -79,7 +88,7 @@ import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.QuickDateFormat;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.xml.XMLSerializer;
-import com.freshdirect.mobileapi.controller.data.Coupon;
+import com.freshdirect.mobileapi.controller.data.ProductMoreInfo;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.comparator.DomainValueComparator;
 import com.freshdirect.mobileapi.model.comparator.VariationComparator;
@@ -94,15 +103,16 @@ import com.freshdirect.webapp.util.RestrictionUtil;
 /**
  * Wrapper class for ProductModel and ProductImpression classe. The Idea is to
  * consolidate both classes in just one.
- * 
+ *
  * @author fgarcia
- * 
+ *
  */
 public class Product {
     private static final Logger LOG = Logger.getLogger(Product.class);
 
     // 5minutes
-    private static final int REFRESH_PERIOD = 300;
+    @SuppressWarnings("unused")
+	private static final int REFRESH_PERIOD = 300;
 
     public enum ImageType {
         ALTERNATE, CATEGORY, CONFIRM, DESCRIPTIVE, DETAIL, FEATURE, PRODUCT, RATING_RELATED, ROLLOVER, THUMBNAIL, ZOOM, LARGE_BURST, THUMB_BURST, WINE_ALT, PACKAGE
@@ -154,8 +164,8 @@ public class Product {
 
     protected String ratingLabel = "";
 
-    @SuppressWarnings("unchecked")
-    protected List domains;
+    @SuppressWarnings("rawtypes")
+	protected List domains;
 
     // business logic flags
 
@@ -186,10 +196,10 @@ public class Product {
     protected boolean hideForMobile;
 
     /**
-     * Flag that indicates how the product is sold. 
-     * 
-     * Possible values: 
-     * QUANTITY = sold by quantity only 
+     * Flag that indicates how the product is sold.
+     *
+     * Possible values:
+     * QUANTITY = sold by quantity only
      * SALES_UNIT = sold by sales unit only
      * BOTH = sold by quantity and sales unit.
      */
@@ -208,10 +218,18 @@ public class Product {
     private FDUserI user; //Used for product burst labeling
 
     private Variant variant; //Used for product burst labeling
-    
+
+	private String unbrandedTitle;
+
+	private SortedSet<String> tags = new TreeSet<String>();
+
+	private String sashType;
+
+	private Map<String, SortedSet<String>> filters = new LinkedHashMap<String, SortedSet<String>>();
+	
+	private Map<String, String> nutritionFacts;
     //private List<String> warningMessages = new ArrayList<String>();
 
-    @SuppressWarnings("unchecked")
     public Product(ProductModel productModel, FDUserI user, Variant variant, FDCartLineI cartLine, EnumCouponContext ctx) throws ModelException {
     	 this(productModel, user, variant, cartLine, ctx, false);
     }
@@ -225,15 +243,12 @@ public class Product {
         this.user = user;
         this.variant = variant;
 
-        //Skus init    
-        ListIterator li = productModel.getSkus().listIterator();
-       
+        //Skus init
         if (!productModel.isUnavailable()) {
             //Filter skus
-            while (li.hasNext()) {
-                SkuModel skuModel = (SkuModel) li.next();
-                if (skuModel != null && !skuModel.isUnavailable()) {
-                	
+            for (SkuModel skuModel : productModel.getSkus()) {
+				if (skuModel != null && !skuModel.isUnavailable()) {
+
                     Sku sku = Sku.wrap(new PriceCalculator(pricingContext, productModel, skuModel)
                     															, skuModel
                     															, findCoupon(skuModel, user, cartLine, ctx, isQuickBuy));
@@ -262,7 +277,7 @@ public class Product {
                 if (product.getProductModel().getParentNode() instanceof CategoryModel) {
                     /*
                     * DUP: /shared/includes/product/i_product_methods.jspf
-                    * DATE: 9/25/2009   
+                    * DATE: 9/25/2009
                     * WHY: The following logic was duplicate because it was specified in a JSP file.
                     * WHAT: The duplicate code determines the product ratings
                     */
@@ -301,12 +316,11 @@ public class Product {
                 this.salesUnitsMatch = true;
                 this.salesUnitDescrsMatch = true;
 
-                Iterator i = productModel.getSkus().iterator();
-                while (i.hasNext()) {
+                for (SkuModel skuModel : productModel.getSkus()) {
                     FDProduct fdp = null;
                     String skuCode = null;
                     try {
-                        skuCode = ((SkuModel) i.next()).getSkuCode();
+                        skuCode = skuModel.getSkuCode();
                         fdp = FDCachedFactory.getProduct(FDCachedFactory.getProductInfo(skuCode));
                     } catch (FDResourceException e) {
                         LOG.info("Error getting product for sku=" + skuCode, e);
@@ -332,9 +346,9 @@ public class Product {
                 this.isPricedByLB = "LB".equalsIgnoreCase(this.defaultPriceCalculator.getZonePriceModel().getMaterialPrices()[0]
                         .getPricingUnit());
             } catch (FDResourceException e1) {
-                // it will never happens, because only FDProduct construction can throw exception 
+                // it will never happens, because only FDProduct construction can throw exception
             } catch (FDSkuNotFoundException e1) {
-                // it will never happens, because only FDProduct construction can throw exception 
+                // it will never happens, because only FDProduct construction can throw exception
             }
             this.isSoldByLB = this.isPricedByLB && ("LB".equalsIgnoreCase((this.defaultProduct.getSalesUnits()[0]).getName()));
 
@@ -360,31 +374,18 @@ public class Product {
                 MAX_BRANDS_TO_SHOW = 1;
             }
 
-            // i_product_initialize.jspf
-            List prodBrands = productModel.getBrands();
-            Iterator it = prodBrands.iterator();
-            while (it.hasNext()) {
-                BrandModel brandModel = (BrandModel) it.next();
-                Brand brand = Brand.wrap(brandModel);
-                this.brands.add(brand);
-
-            }
-            prodBrands = productModel.getDisplayableBrands(MAX_BRANDS_TO_SHOW);
-            it = prodBrands.iterator();
-            while (it.hasNext()) {
-                BrandModel brandModel = (BrandModel) it.next();
-                Brand brand = Brand.wrap(brandModel);
-                this.brandWithLogos.add(brand);
-
-            }
+            for (BrandModel brandModel : productModel.getBrands()) {
+				this.brands.add(Brand.wrap(brandModel));
+			}
+            for (Object brandModel : productModel.getDisplayableBrands(MAX_BRANDS_TO_SHOW)) {
+				this.brandWithLogos.add(Brand.wrap((BrandModel) brandModel));
+			}
 
             // Logic for grouping the skus
             DomainValueComparator domainValueComp = new DomainValueComparator();
             Map<DomainValue, ProductDomain> domainSkuMatrix = new TreeMap<DomainValue, ProductDomain>(domainValueComp);
 
-            Iterator<Sku> skuIt = this.skus.iterator();
-            while (skuIt.hasNext()) {
-                Sku sku = skuIt.next();
+            for (Sku sku : this.skus) {
                 sku.setDomains(this.domains);
 
                 FDProduct fdProduct;
@@ -399,9 +400,9 @@ public class Product {
                 if (this.hasSingleSku) {
                     /**
                      * DUP: FDWebSite/docroot/shared/includes/product/i_product_single_sku_box.jspf
-                     * DATE: 9/25/2009   
+                     * DATE: 9/25/2009
                      * WHY: The following logic was duplicate because it was specified in a JSP file.
-                     * WHAT: The duplicated code determines if sales unit description for the given sku should be displayed 
+                     * WHAT: The duplicated code determines if sales unit description for the given sku should be displayed
                      */
                     if (this.hasSingleSalesUnit && !this.hasVariationMatrix) {
                         if (!"nm".equalsIgnoreCase(suDescr) && !"ea".equalsIgnoreCase(suDescr) && !"".equalsIgnoreCase(suDescr)) {
@@ -411,9 +412,9 @@ public class Product {
                 } else {
                     /**
                      * DUP: FDWebSite/docroot/shared/includes/product/i_product_multiple_sku_box.jspf
-                     * DATE: 9/25/2009   
+                     * DATE: 9/25/2009
                      * WHY: The following logic was duplicate because it was specified in a JSP file.
-                     * WHAT: The duplicated code determines if sales unit description for the given sku should be displayed 
+                     * WHAT: The duplicated code determines if sales unit description for the given sku should be displayed
                      */
                     if (this.hasSingleSalesUnit && !this.isSoldByLB && (!this.salesUnitsMatch || !this.salesUnitDescrsMatch)) {
                         if (!"nm".equalsIgnoreCase(suDescr)) {
@@ -435,7 +436,7 @@ public class Product {
                 //*******************************************************************************
                 // i_product_multiple_skus.jspf
                 //
-                // Matrix for ordering skus by domain value. 
+                // Matrix for ordering skus by domain value.
 
                 List<DomainValue> skuMultAttr = sku.getOriginalSku().getVariationMatrix();
 
@@ -471,8 +472,7 @@ public class Product {
                     StringBuffer key = new StringBuffer();
                     key.append("*");
 
-                    for (Iterator<DomainValue> i = domains.iterator(); i.hasNext();) {
-                        DomainValue domainValue = i.next();
+                    for (DomainValue domainValue : domains) {
                         key.append(domainValue.getLabel());
                         key.append(", ");
                         key.deleteCharAt(key.length() - 2);
@@ -483,7 +483,7 @@ public class Product {
                 }
 
             }
-            //end skus init            
+            //end skus init
             // Getting the product domains in order.
             for (ProductDomain productDomain : domainSkuMatrix.values()) {
                 this.productDomains.add(productDomain);
@@ -505,7 +505,7 @@ public class Product {
                 this.salesUnit.add(su);
             }
             /*
-             * i_product 
+             * i_product
              */
             if (!salesUnitSelected && displaySalesUnitsOnly) {
                 salesUnit.get(0).setDefault(true);
@@ -525,7 +525,7 @@ public class Product {
         }
 
         if (ProductLayout.COMPONENTGROUPMEAL.name().equalsIgnoreCase(getLayout())) {
-            List<ComponentGroupModel> componentGroups = (List) product.getProductModel().getComponentGroups();
+            List<ComponentGroupModel> componentGroups = product.getProductModel().getComponentGroups();
             for (ComponentGroupModel componentGroup : componentGroups) {
                 ComponentGroup cgp;
                 try {
@@ -543,6 +543,108 @@ public class Product {
 
         this.hideForMobile = productModel.isHideIphone();
 
+        // Product name without brands
+        String originalTitle = this.getProductTitle();
+        String cleanTitle = originalTitle;
+        for (Brand brand : this.getBrands()) {
+			cleanTitle = cleanTitle
+					.replace(brand.getName() + "'s", "")
+					.replace(brand.getName(), "")
+					.replaceAll("\\s+", " ").trim();
+		}
+        this.unbrandedTitle = cleanTitle;
+
+        // Tags
+        for (TagModel tag : productModel.getAllTags()) {
+        	this.tags.add(tag.getName());
+		}
+
+        // Sashes
+        for (TagModel tag : productModel.getAllTags()) {
+        	if (tag.getName() != null && tag.getName().toLowerCase().startsWith("tablet")) {
+        		
+        		//DOOR3 FD-iPad FDIP-644
+        		String sash = tag.getName();//.substring(6);
+        		this.setSashType(sash/*.toLowerCase()*/);
+        		break;
+        	}
+		}
+
+        // filter possibilities
+        SortedSet<String> brandSet = new TreeSet<String>();
+        for (Brand brand : this.getBrands()) {
+			brandSet.add(brand.getName());
+		}
+        this.getFilters().put("brand", brandSet);
+        SortedSet<String> types = new TreeSet<String>();
+        try {
+			PriceCalculator pricing = productModel.getPriceCalculator();
+			if (pricing.getKosherPriority() != 999 && pricing.getKosherPriority() != 0) {
+				types.add("Kosher");
+			}
+			if (pricing.getProduct()!=null && pricing.getProduct().getClaims() != null) {
+				for (EnumClaimValue claim : pricing.getProduct().getClaims()) {
+					if ("FR_GLUT".equals(claim.getCode())) {
+						types.add("Gluten Free");
+						break;
+					}
+				}
+			}
+			if (pricing.getDealPercentage() > 0 || pricing.getTieredDealPercentage() > 0 || pricing.getGroupPrice() != 0.0) {
+				types.add("Sale");
+			}
+			
+			if (productModel.isFullyAvailable()) {
+				if (productModel.isBackInStock() || productModel.isNew()) {
+					types.add("New/Back in stock");
+				}
+			}
+			
+			FDProduct fdProduct = pricing.getProduct();
+			if (fdProduct != null) 
+			{
+				boolean organic = fdProduct.hasOANClaim();
+				if(organic) {
+					types.add("Organic");
+				}			
+			}
+			
+			String fullName = productModel.getFullName();
+			if(fullName != null && fullName.toLowerCase().contains("organic")){
+				types.add("Organic");			
+			}
+			
+			/* Commenting this out for now (AA) 
+			for (TagModel tag : productModel.getTags()) {
+				if (tag.getName() != null) {
+					types.add(tag.getName());
+				}
+			}
+			*/
+						
+			if (this.getSashType() != null) {
+				types.add(this.getSashType());
+			}
+		} catch (FDResourceException e) {
+		} catch (FDSkuNotFoundException e) {
+		}
+        this.filters.put("type", types);
+
+        addFiltersToTags();
+        
+        try {
+			final ProductMoreInfo moreInfo = new ProductMoreInfo(this);
+			final Map<String, String> nutritionFacts = moreInfo.getNutritionFacts();
+			if (nutritionFacts != null && nutritionFacts.size() > 0) {
+				this.setNutritionFacts(nutritionFacts);
+			}
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FDSkuNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         // Getting any notice message that neeed to be displayed on screen:
         //rsung
         //        if (getFilteredEarliestAvailabilityDate() != null && !hasSingleSku()) {
@@ -555,7 +657,14 @@ public class Product {
         //        }
 
     }
-    
+
+    protected void addFiltersToTags() {
+    	if (this.getTags() == null) this.setTags(new TreeSet<String>());
+    	for (SortedSet<String> filterTags : this.getFilters().values()) {
+			this.getTags().addAll(filterTags);
+		}
+	}
+
     private FDCustomerCoupon findCoupon(SkuModel skuModel, FDUserI user, FDCartLineI cartLine, EnumCouponContext ctx, boolean isQuickBuy) throws ModelException  {
     	FDCustomerCoupon coupon = null;
     	try {
@@ -563,10 +672,10 @@ public class Product {
 		    	if(cartLine != null && cartLine.getSkuCode() != null && cartLine.getSkuCode().equalsIgnoreCase(skuModel.getSkuCode())) {
 		    		coupon = user.getCustomerCoupon(cartLine, ctx);
 		    	} else {
-		    		coupon = user.getCustomerCoupon(skuModel.getProductInfo() != null 
+		    		coupon = user.getCustomerCoupon(skuModel.getProductInfo() != null
 		    														? skuModel.getProductInfo().getUpc() : null, ctx);
 		    	}
-		    	
+
 		    	List<FDCartLineI> recentOrderLines = user.getShoppingCart().getRecentOrderLines();
 		    	if(isQuickBuy && null!=coupon && null != recentOrderLines && !recentOrderLines.isEmpty() && null !=cartLine){
 			    	if(recentOrderLines.get(0).getCartlineId().equals(cartLine.getCartlineId())){
@@ -590,7 +699,7 @@ public class Product {
      * @throws FDResourceException
      */
     public String[] getPlatterCutoffMessage() {
-        TimeOfDay cutoffTime = null;        
+        TimeOfDay cutoffTime = null;
         StringBuilder title = new StringBuilder();
         StringBuilder message = new StringBuilder();
         try {
@@ -714,19 +823,18 @@ public class Product {
 
     /**
     * DUP: /shared/includes/product/i_product.jspf
-    * DATE: 9/25/2009   
+    * DATE: 9/25/2009
     * WHY: The following logic was duplicate because it was specified in a JSP file.
     * WHAT: The duplicated code determines the product title. For wine, the wine vintage domain label is appended
     * @return
     */
-    @SuppressWarnings("unchecked")
     public String getProductTitle() {
         String result = "";
 
         result = product.getProductModel().getFullName();
 
         if (EnumProductLayout.WINE.equals(product.getProductModel().getProductLayout())) {
-            List wineVintage = product.getProductModel().getWineVintage();
+            List<DomainValue> wineVintage = product.getProductModel().getWineVintage();
             if (wineVintage != null && wineVintage.size() > 0) {
                 DomainValue dValue = (DomainValue) wineVintage.get(0);
                 result = new StringBuffer(100).append(result).append(" ").append(dValue.getLabel()).toString();
@@ -764,7 +872,7 @@ public class Product {
 
     /**
      * DUP: /shared/includes/product/i_product_quality_note.jspf
-     * DATE: 9/25/2009   
+     * DATE: 9/25/2009
      * WHY: The following logic was duplicate because it was specified in a JSP file.
      * WHAT: The duplicated code determines the product quality note
      * @return String
@@ -793,7 +901,7 @@ public class Product {
 
     /**
      * DUP: /includes/product/cutoff_notice.jspf
-     * DATE: 9/25/2009   
+     * DATE: 9/25/2009
      * WHY: The following logic was duplicate because it was specified in a JSP file.
      * WHAT: Retrieves the time restriction to order a platter product. Only applies for platter type products.
      * @return
@@ -814,7 +922,7 @@ public class Product {
 
     /**
      * Products with alcohol must show an health warning before display any product information. If the user
-     * has seen the alert and is aware, the warning screen can be skipped. 
+     * has seen the alert and is aware, the warning screen can be skipped.
      * @param isHealthWarningAcknowledged
      * @return
      */
@@ -824,9 +932,9 @@ public class Product {
 
     /**
      * DUP: /shared/includes/product/i_product.jspf
-     * DATE: 9/25/2009   
+     * DATE: 9/25/2009
      * WHY: The following logic was duplicate because it was specified in a JSP file.
-     * WHAT: Check if the short term unavailability message should be displayed. There is a specific message related if the product is single or multi sku  
+     * WHAT: Check if the short term unavailability message should be displayed. There is a specific message related if the product is single or multi sku
      * @return
      */
     public boolean displayShortTermUnavailability() {
@@ -835,7 +943,7 @@ public class Product {
 
     /**
      * DUP: /shared/includes/product/i_product.jspf
-     * DATE: 9/25/2009   
+     * DATE: 9/25/2009
      * WHY: The following logic was duplicate because it was specified in a JSP file.
      * WHAT: Returns the earliest date of availability
      * @return
@@ -852,7 +960,7 @@ public class Product {
 
     /**
      * DUP: /shared/includes/product/i_product.jspf
-     * DATE: 10/23/2009   
+     * DATE: 10/23/2009
      * WHY: The following logic was duplicate because it was specified in a JSP file.
      * WHAT: Returns the earliest date of availability if flag to display it is set to true. otherwise returns null.
      * @return
@@ -867,10 +975,10 @@ public class Product {
 
     /**
      * DUP: /shared/includes/product/i_product.jspf
-     * DATE: 9/25/2009   
+     * DATE: 9/25/2009
      * WHY: The following logic was duplicate because it was specified in a JSP file.
      * WHAT: Returns the message for short term unavailability
-     * @deprecated Please use the displayShortTermUnavailability() method and hasSingleSku flag to display the message 
+     * @deprecated Please use the displayShortTermUnavailability() method and hasSingleSku flag to display the message
      * @return
      */
     @Deprecated
@@ -888,16 +996,16 @@ public class Product {
 
     /**
      * DUP: /shared/includes/product/i_dayofweek_notice.jspf
-     * DATE: 9/25/2009   
+     * DATE: 9/25/2009
      * WHY: The following logic was duplicate because it was specified in a JSP file.
      * WHAT: The duplicate code determines the following logic:
-     * Logic from 
-     * if the Number of days available is 3 or less, then 
+     * Logic from
+     * if the Number of days available is 3 or less, then
      *   show message; This item is ONLY available for delivery on ...
-     * Else 
+     * Else
      *  show message:This item is Not available for delivery on ....
-     *  
-     *  Days orders is from Monday-Sunday, and must be in the plural form  
+     *
+     *  Days orders is from Monday-Sunday, and must be in the plural form
      */
     public String getDayOfWeekNotice() {
         String result = "";
@@ -917,7 +1025,7 @@ public class Product {
             }
 
             if (numOfDays > 1) {
-                //** make sundays the last day, if more than one in the list 
+                //** make sundays the last day, if more than one in the list
                 if (daysStringBuffer.indexOf("Sundays, ") != -1) {
                     daysStringBuffer.delete(0, 9);
                     daysStringBuffer.append(" ,Sundays");
@@ -937,7 +1045,7 @@ public class Product {
 
     /**
      * DUP: /shared/includes/product/i_delivery_note.jspf
-     * DATE: 9/25/2009   
+     * DATE: 9/25/2009
      * WHY: The following logic was duplicate because it was specified in a JSP file.
      * WHAT: The duplicate code determines delivery note based on blocked days
      */
@@ -1044,7 +1152,7 @@ public class Product {
 
     /**
     * DUP: /shared/includes/product/i_product.jspf
-    * DATE: 9/25/2009   
+    * DATE: 9/25/2009
     * WHY: The following logic was duplicate because it was specified in a JSP file.
     * WHAT: The duplicate code determines the text for the quantity text field
     */
@@ -1146,9 +1254,10 @@ public class Product {
         return result;
     }
 
-    public List<String> getAllergens() {
+    @SuppressWarnings("unchecked")
+	public List<String> getAllergens() {
         List<String> result = new ArrayList<String>();
-        Set common = Collections.EMPTY_SET;
+        Set<EnumAllergenValue> common = emptySet();
 
         try {
             common = product.getProductModel().getCommonNutritionInfo(ErpNutritionInfoType.ALLERGEN);
@@ -1156,8 +1265,7 @@ public class Product {
             LOG.warn("Unable to get allergens list", e);
         }
 
-        for (Iterator ic = common.iterator(); ic.hasNext();) {
-            EnumAllergenValue allergen = (EnumAllergenValue) ic.next();
+        for (EnumAllergenValue allergen : common) {
             if (!EnumAllergenValue.getValueForCode("NONE").equals(allergen)) {
                 result.add(allergen.toString());
             }
@@ -1189,12 +1297,12 @@ public class Product {
 
     /**
      * DUP: /shared/includes/product/i_product_descriptions.jspf
-     * DATE: 9/25/2009   
+     * DATE: 9/25/2009
      * WHY: The following logic is used different in a JSP and has been changed to help display the contnet for other clients
-     * WHAT: 
+     * WHAT:
      * Return heat rating. The heat rating is contained in a HTML file. A search is done on that content
      * looking for the text that represents the heat level of the product and assign a numeric value
-     * from 1 to 5, where 1 is the lowest. 
+     * from 1 to 5, where 1 is the lowest.
      * @return
      */
     public int getHeatRating() throws ModelException {
@@ -1229,10 +1337,10 @@ public class Product {
 
     /**
      * DUP: /shared/includes/product/i_product_descriptions.jspf
-     * DATE: 9/25/2009   
+     * DATE: 9/25/2009
      * WHY: The following logic was duplicate because it was specified in a JSP file.
      * WHAT: If product has product rating, and has a sku, show the daily product rating image
-     * 
+     *
      * @return
      */
     public boolean showProductRating() {
@@ -1252,7 +1360,7 @@ public class Product {
 
     /**
      * DUP: /shared/includes/product/i_cancellation_note.jspf
-     * DATE: 9/25/2009   
+     * DATE: 9/25/2009
      * WHY: The following logic was duplicate because it was specified in a JSP file.
      * WHAT: A specific message for platter products.
      * @deprecated User isPlatter() method
@@ -1300,17 +1408,15 @@ public class Product {
 
     /**
      * DUP: /shared/includes/product/i_also_sold_as.jspf
-     * DATE: 9/25/2009   
+     * DATE: 9/25/2009
      * WHY: The following logic was duplicate because it was specified in a JSP file.
-     * WHAT: Get a list of products associated to this product that are sold similarly 
+     * WHAT: Get a list of products associated to this product that are sold similarly
      */
     public List<Product> getAlsoSoldAs() throws ModelException {
         List<Product> result = new ArrayList<Product>();
         List<ProductModel> alsoSoldAsRefs = product.getProductModel().getAlsoSoldAsRefs();
         if (alsoSoldAsRefs != null) {
-            Iterator<ProductModel> it = alsoSoldAsRefs.iterator();
-            while (it.hasNext()) {
-                ProductModel asaProd = it.next();
+            for (ProductModel asaProd : alsoSoldAsRefs) {
                 if (!asaProd.getParentNode().isHidden() && !asaProd.isUnavailable()) {
                     try {
                         result.add(new Product(asaProd, this.user, this.variant, null, EnumCouponContext.PRODUCT));
@@ -1336,18 +1442,18 @@ public class Product {
         }
         return result;
     }
-    
-    
+
+
     public boolean isAvailable() {
         return !product.getProductModel().isUnavailable();
     }
 
     /**
      * DUP: FDWebSite/docroot/shared/includes/product/i_product.jspf
-     * DATE: 9/58/2009   
+     * DATE: 9/58/2009
      * WHY: The following logic was duplicate because it was specified in a JSP file.
-     * WHAT: The duplicated code displays the days when the produc is available, based on kosher restrictions 
-     * 
+     * WHAT: The duplicated code displays the days when the produc is available, based on kosher restrictions
+     *
      * @return A map keyed by kosher restriction name, and the available date for the product as value
      * @throws FDException
      */
@@ -1369,9 +1475,9 @@ public class Product {
 
     /**
      * DUP: FDWebSite/docroot/shared/includes/product/i_product.jspf
-     * DATE: 9/28/2009   
+     * DATE: 9/28/2009
      * WHY: The following logic was duplicate because it was specified in a JSP file.
-     * WHAT: The duplicated code determines the label for price field 
+     * WHAT: The duplicated code determines the label for price field
      * Returns the label for price field
      * @return
      */
@@ -1390,10 +1496,10 @@ public class Product {
     /**
      * DUP: FDWebSite/docroot/shared/includes/product/i_product_about.jspf
      *      Class IncludeMediaTag
-     * DATE: 9/28/2009   
+     * DATE: 9/28/2009
      * WHY: The following logic was duplicate because it was specified in a JSP file.
      * WHAT: The duplicated code "prints" the product description, reading the Html object called productDesc
-     * 
+     *
      * @return the product description (HTML content)
      */
     public String getDescription() {
@@ -1408,10 +1514,10 @@ public class Product {
     /**
      * DUP: FDWebSite/docroot/shared/includes/i_nutrition_sheet.jspf
      *      Class IncludeMediaTag
-     * DATE: 9/28/2009   
+     * DATE: 9/28/2009
      * WHY: The following logic was duplicate because it was specified in a JSP file.
      * WHAT: The duplicated code "prints" the product description, reading the Html object called productDesc
-     * 
+     *
      * @return the product description (HTML content)
      */
     public String getHeatingInstructions() {
@@ -1424,7 +1530,7 @@ public class Product {
 
     /**
      * DUP: /shared/includes/i_nutrition_sheet.jspf
-     * DATE: 9/25/2009   
+     * DATE: 9/25/2009
      * WHY: The following logic was duplicate because it was specified in a JSP file.
      * WHAT: Generates the Nutrition Facts layout for the product.
      * TODO: Look for caching if we find any performance issue.
@@ -1501,7 +1607,7 @@ public class Product {
     public static Product wrap(ProductModel productModel, FDUserI user, Variant variant, FDCartLineI cartLine, EnumCouponContext ctx) throws ModelException {
        return wrap(productModel, user, variant, cartLine, ctx, false);
     }
-    
+
     public static Product wrap(ProductModel productModel, FDUserI user, Variant variant, FDCartLineI cartLine, EnumCouponContext ctx, boolean isQuickBuy) throws ModelException {
         Product result = null;
         if(null != productModel){
@@ -1522,6 +1628,9 @@ public class Product {
 
     public static Product wrap(ProductModel productModel) throws ModelException { //Only Used for Product Browse
         return wrap(productModel, null, null, null, EnumCouponContext.PRODUCT);
+    }
+    public static Product wrap(ProductModel productModel, FDUserI user) throws ModelException { //Used for Recipes
+        return wrap(productModel, user, null, null, EnumCouponContext.PRODUCT);
     }
 
     public boolean isAutoConfigurable() {
@@ -1557,7 +1666,7 @@ public class Product {
         return price;
     }
 
-    
+
     public double getEstimatedQuantity(Sku sku, SalesUnit salesUnit, double quantity) throws PricingException {
         double estimatedQuantity = 0.0;
 
@@ -1613,7 +1722,7 @@ public class Product {
         }
 
     }
-    
+
     public String getSellBySalesUnit() {
         return sellBySalesUnit;
 
@@ -1636,7 +1745,7 @@ public class Product {
             result = defaultPriceCalculator.getHighestDealPercentage();
             if(result == 0) {
             	if(this.product.getFDGroup() != null) {
-            		result = defaultPriceCalculator.getGroupDealPercentage();                	
+            		result = defaultPriceCalculator.getGroupDealPercentage();
                 }
             }
         }
@@ -1644,12 +1753,12 @@ public class Product {
     }
 
     /**
-     * Method to get a product by id and category id. If product is not get, 
-     * 
+     * Method to get a product by id and category id. If product is not get,
+     *
      * @param id
      * @param categoryId
      * @return
-     * @throws ServiceException 
+     * @throws ServiceException
      * @throws ModelException
      */
     public static Product getProduct(String id, String categoryId, FDCartLineI cartLine, SessionUser user) throws ServiceException {
@@ -1679,7 +1788,6 @@ public class Product {
         return product.getProductModel().isFrozen();
     }
 
-    @SuppressWarnings("deprecation")
     public String getPartiallyFrozen() {
         String result = "";
         Html partiallyFrozen = product.getProductModel().getPartallyFrozen();
@@ -1724,7 +1832,7 @@ public class Product {
                 .getHideBursts()));
         if (productLabeling.isDisplayDeal()) {
         */
-        
+
         //LOG.debug("product is :"+product.getProductModel().getClass());
         if( (FDStoreProperties.getBurstsLowerLimit()<=this.getHighestDealPercentage()) && (FDStoreProperties.getBurstUpperLimit()>=this.getHighestDealPercentage()) ){
             image = new Image("/media_stat/images/deals/brst_lg_" + getHighestDealPercentage() + ".png", 55, 55);
@@ -1737,16 +1845,16 @@ public class Product {
 
         ProductLabeling productLabeling = new ProductLabeling(this.user, this.product.getProductModel(), (variant == null ? null : variant
                 .getHideBursts()));
-        
+
         //LOG.debug("product is :"+product.getProductModel().getClass());
 
-        if ( productLabeling.isDisplayDeal() || this.product.getFDGroup() != null) {                   	
+        if ( productLabeling.isDisplayDeal() || this.product.getFDGroup() != null) {
             image = new Image("/media_stat/images/deals/brst_sm_" + getHighestDealPercentage() + ".png", 35, 35);
         } else if (productLabeling.isDisplayFave()) {
             image = new Image("/media_stat/images/bursts/brst_sm_fave.png", 35, 35);
         } else if (productLabeling.isDisplayNew()) {
             image = new Image("/media_stat/images/bursts/brst_sm_new.png", 35, 35);
-        } 
+        }
         return image;
 
     }
@@ -1768,7 +1876,7 @@ public class Product {
      * LAST UPDATED WITH SVN#: 1
      * WHY: The following logic was duplicate because it was specified in a JSP file.
      * WHAT: Retrieves the kosher symbol to display the correct logo on product description
-     * 
+     *
      * @return
      * @throws FDResourceException
      */
@@ -1796,4 +1904,34 @@ public class Product {
     public boolean isPricedByLB() {
         return isPricedByLB;
     }
+	public String getUnbrandedTitle() {
+		return unbrandedTitle;
+	}
+	public void setUnbrandedTitle(String unbrandedTitle) {
+		this.unbrandedTitle = unbrandedTitle;
+	}
+	public SortedSet<String> getTags() {
+		return tags;
+	}
+	public void setTags(SortedSet<String> tags) {
+		this.tags = tags;
+	}
+	public String getSashType() {
+		return sashType;
+	}
+	public void setSashType(String sashType) {
+		this.sashType = sashType;
+	}
+	public Map<String, SortedSet<String>> getFilters() {
+		return filters;
+	}
+	public void setFilters(Map<String, SortedSet<String>> filters) {
+		this.filters = filters;
+	}
+	public Map<String, String> getNutritionFacts() {
+		return nutritionFacts;
+	}
+	public void setNutritionFacts(Map<String, String> nutritionFacts) {
+		this.nutritionFacts = nutritionFacts;
+	}
 }

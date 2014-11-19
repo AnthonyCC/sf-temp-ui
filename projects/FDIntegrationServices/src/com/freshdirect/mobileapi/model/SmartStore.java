@@ -517,6 +517,10 @@ public class SmartStore {
     }
 
     private String logImpressions(String previousImpression, PageContext pageContext, Recommendations recs) {
+    	// TODO: decide whether we should log impressions for non-logged-in users 
+    	if (user.isFake()) {
+    		return null;
+    	}
         if (recs.getProducts().size() > 0) {
             user.getFDSessionUser().logImpression(recs.getVariant().getId(), recs.getProducts().size());
         }

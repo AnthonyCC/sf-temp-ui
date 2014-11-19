@@ -153,17 +153,24 @@ public class OrderController extends BaseController {
      */
     private ModelAndView cancelOrderModify(ModelAndView model, SessionUser user, HttpServletRequest request) throws FDException,
             JsonException {
-        ResultBundle resultBundle = Order.cancelModify(user);
-        ActionResult result = resultBundle.getActionResult();
-        propogateSetSessionValues(request.getSession(), resultBundle);
+        Message responseMessage;
+		try {
+			ResultBundle resultBundle = Order.cancelModify(user);
+			ActionResult result = resultBundle.getActionResult();
+			propogateSetSessionValues(request.getSession(), resultBundle);
 
-        Message responseMessage = null;
-        if (result.isSuccess()) {
-            responseMessage = Message.createSuccessMessage("Order modification was successfully canceled");
-        } else {
-            responseMessage = getErrorMessage(result, request);
-        }
-        responseMessage.addWarningMessages(result.getWarnings());
+			responseMessage = null;
+			if (result.isSuccess()) {
+			    responseMessage = Message.createSuccessMessage("Order modification was successfully canceled");
+			} else {
+			    responseMessage = getErrorMessage(result, request);
+			}
+			responseMessage.addWarningMessages(result.getWarnings());
+		} catch (Exception e) {
+			responseMessage = new Message();
+			responseMessage.addErrorMessage(traceFor(e));
+//			responseMessage.setStatus(ERR_SYSTEM);
+		}
         setResponseMessage(model, responseMessage, user);
         return model;
     }
@@ -181,6 +188,7 @@ public class OrderController extends BaseController {
      */
     private ModelAndView loadOrder(ModelAndView model, SessionUser user, String orderId, HttpServletRequest request) throws FDException,
             JsonException {
+    	com.freshdirect.mobileapi.controller.data.response.Order order = user.getOrder(orderId).getOrderDetail(user);
         ResultBundle resultBundle = Order.loadOrderToCartForUpdate(orderId, user);
         ActionResult result = resultBundle.getActionResult();
         propogateSetSessionValues(request.getSession(), resultBundle);
@@ -192,6 +200,10 @@ public class OrderController extends BaseController {
             responseMessage = new ModifiedOrder();
             ((ModifiedOrder) responseMessage).setCartDetail(cartDetail);
             ((ModifiedOrder) responseMessage).setModificationCutoffTime(cart.getModificationCutoffTime());
+            ((ModifiedOrder) responseMessage).setDeliveryAddress(order.getDeliveryAddress());
+            ((ModifiedOrder) responseMessage).setPaymentMethod(order.getPaymentMethod());
+            ((ModifiedOrder) responseMessage).setReservationDateTime(order.getReservationDateTime());
+            ((ModifiedOrder) responseMessage).setReservationTimeRange(order.getReservationTimeRange());
         } else {
             responseMessage = getErrorMessage(result, request);
         }

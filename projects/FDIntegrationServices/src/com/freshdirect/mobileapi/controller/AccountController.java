@@ -92,7 +92,7 @@ public class AccountController extends BaseController {
         List<OrderInfo> orderInfos = user.getCompleteOrderHistory();
         
         OrderHistory responseMessage = new OrderHistory();
-        List<Order> orders = OrderHistory.Order.createOrderList(orderInfos);
+        List<Order> orders = OrderHistory.Order.createOrderList(orderInfos, user);
         
         String postData = getPostData(request, response);
         int page = 1;

@@ -1,6 +1,7 @@
 package com.freshdirect.mobileapi.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -70,5 +71,9 @@ public class CustomerCreatedList {
                                                  
         return CustomerProductListLineItem.wrap((List<FDCustomerListItem>)(List)this.target.getLineItems());
     }
+
+    public Date getCreateDate() {
+		return this.target.getCreateDate();
+	}
 
 }

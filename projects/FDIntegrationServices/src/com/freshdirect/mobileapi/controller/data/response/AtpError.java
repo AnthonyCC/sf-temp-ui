@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.freshdirect.mobileapi.controller.data.Message;
+import com.freshdirect.mobileapi.model.data.Unavailability;
 
 /**
  * @author Rob
@@ -29,6 +30,8 @@ public class AtpError extends Message {
 	}
 
 	private List<Group> groups = new ArrayList<Group>();
+	private List<String> unreadKeys;
+	private Unavailability unavailability;
 
 	public List<Group> getGroups() {
 		return groups;
@@ -41,6 +44,22 @@ public class AtpError extends Message {
 	public void addGroup(Group group) {
 		this.groups.add(group);
 	}
+
+	public List<String> getUnreadKeys() {
+	    return unreadKeys;
+    }
+
+	public void setUnreadKeys(List<String> unreadKeys) {
+	    this.unreadKeys = unreadKeys;
+    }
+
+	public Unavailability getUnavailability() {
+	    return unavailability;
+    }
+
+	public void setUnavailability(Unavailability unavailability) {
+	    this.unavailability = unavailability;
+    }
 
 	/**
 	 * @author Rob
@@ -122,6 +141,8 @@ public class AtpError extends Message {
 
 		private String configurationDesc;
 
+		private String inStock = "-1";
+
 		private ItemAvailabilityError error;
 
 		public double getQuantity() {
@@ -155,6 +176,14 @@ public class AtpError extends Message {
 		public void setError(ItemAvailabilityError error) {
 			this.error = error;
 		}
+
+		public String getInStock() {
+	        return inStock;
+        }
+
+		public void setInStock(String inStock) {
+	        this.inStock = inStock;
+        }
 
 	}
 

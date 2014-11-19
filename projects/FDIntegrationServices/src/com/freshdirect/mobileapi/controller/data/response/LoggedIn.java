@@ -24,6 +24,8 @@ public class LoggedIn extends Message {
 
     private String firstName;
     
+    private String lastName;
+
     private String customerServicePhoneNumber;
     
     private boolean isBrowseEnabled;
@@ -36,6 +38,11 @@ public class LoggedIn extends Message {
     private int totalOrderCount;
     
     private String fdUserId;
+
+    private List<OrderHistory.Order> orders;
+    
+    //DOOR3 FD-iPad FDIP-474
+    private boolean onMailingList = false;
     
     public String getFdUserId() {
 		return fdUserId;
@@ -119,8 +126,6 @@ public class LoggedIn extends Message {
         this.orders = orders;
     }
 
-    private List<OrderHistory.Order> orders;
-
 	public boolean isBrowseEnabled() {
 		return isBrowseEnabled;
 	}
@@ -151,6 +156,24 @@ public class LoggedIn extends Message {
 
 	public void setTotalOrderCount(int totalOrderCount) {
 		this.totalOrderCount = totalOrderCount;
-	}   
-		
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	//*************************************************************8
+	//DOOR3 FD-iPad FDIP-474
+    public boolean isOnMailingList() {
+		return onMailingList;
+	}
+
+	public void setOnMailingList(boolean onMailingList) {
+		this.onMailingList = onMailingList;
+	}
+	//*************************************************************8
 }

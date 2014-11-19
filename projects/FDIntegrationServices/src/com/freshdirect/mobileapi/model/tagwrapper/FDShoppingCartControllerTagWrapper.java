@@ -86,7 +86,9 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         addRequestValue(REQ_PARAM_WINE_CATEGORY_ID, productConfiguration.getCategoryId());
         addRequestValue(REQ_PARAM_QUANTITY, productConfiguration.getQuantity());
         addRequestValue(REQ_PARAM_SALES_UNIT, productConfiguration.getSalesUnit().getName());
-        addRequestValue(REQ_PARAM_REQUEST_NOTIFICATION, cartLine.isRequestNotification());
+        
+        if(cartLine != null)
+        	addRequestValue(REQ_PARAM_REQUEST_NOTIFICATION, cartLine.isRequestNotification());
 
         //Add all the configuration options
         if (null != productConfiguration.getOptions()) {

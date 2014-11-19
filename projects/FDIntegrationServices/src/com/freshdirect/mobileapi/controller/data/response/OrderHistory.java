@@ -6,9 +6,11 @@ import java.util.Date;
 import java.util.List;
 
 import com.freshdirect.common.pricing.PricingException;
+import com.freshdirect.fdstore.FDException;
 import com.freshdirect.mobileapi.controller.data.DateFormat;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.model.OrderInfo;
+import com.freshdirect.mobileapi.model.SessionUser;
 
 /**
  * 
@@ -73,11 +75,15 @@ public class OrderHistory extends Message {
 
         private boolean refused;
 
+		private DeliveryAddress deliveryAddress;
+
         /**
          * @param orderInfo
+         * @param user 
          * @throws PricingException
+         * @throws FDException 
          */
-        public Order(OrderInfo orderInfo) throws PricingException {
+        public Order(OrderInfo orderInfo, SessionUser user) throws PricingException, FDException {
             this.id = orderInfo.getId();
             this.orderDate = orderInfo.getRequestedDate();
             this.status = orderInfo.getOrderStatus();
@@ -88,19 +94,29 @@ public class OrderHistory extends Message {
             this.refused = orderInfo.isRefused();
             this.shoppable = orderInfo.isShoppable();
             this.modifiable = orderInfo.isModifiable();
+			try {
+				// FDIP-740
+	            // this.setDeliveryAddress(user.getOrder(this.id).getOrderDetail(user).getDeliveryAddress());
+            } catch (Exception e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+            }
         }
 
         /**
          * @param orderInfos
+         * @param user 
          * @return
          * @throws PricingException
          */
-        public static List<Order> createOrderList(List<OrderInfo> orderInfos) {
+        public static List<Order> createOrderList(List<OrderInfo> orderInfos, SessionUser user) {
             List<Order> infos = new ArrayList<Order>();
             for (OrderInfo orderInfo : orderInfos) {
                 try {
-                    infos.add(new Order(orderInfo));
+                    infos.add(new Order(orderInfo, user));
                 } catch (PricingException e) {
+
+                } catch (FDException e) {
 
                 }
             }
@@ -152,6 +168,14 @@ public class OrderHistory extends Message {
         public void setDeliveryTimeslot(Timeslot deliveryTimeslot) {
             this.deliveryTimeslot = deliveryTimeslot;
         }
+
+		public DeliveryAddress getDeliveryAddress() {
+			return deliveryAddress;
+		}
+
+		public void setDeliveryAddress(DeliveryAddress deliveryAddress) {
+			this.deliveryAddress = deliveryAddress;
+		}
 
     }
 

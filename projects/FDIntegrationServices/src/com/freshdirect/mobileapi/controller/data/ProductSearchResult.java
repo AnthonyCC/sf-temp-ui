@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 
 import org.apache.log4j.Category;
 
@@ -75,6 +76,11 @@ public class ProductSearchResult {
     private boolean soldByWeight;
 
     private boolean pricedByWeight;
+    
+    private SortedSet<String> tags;
+    
+    //DOOR3 FD-iPad FDIP-644
+    private String sashType = "";
 
     public String getFormattedUnitPriceLabel() {
 
@@ -221,7 +227,15 @@ public class ProductSearchResult {
         if (!product.getDeliveryNote().isEmpty()) {
             addProductWarningMessage(new ProductWarningMessage(ProductWarningMessageType.DELIVERY_NOTE, null, product.getDeliveryNote()));
         }
-
+        
+        // Code duplication FTW!
+        // Seriously, guys, that's the third class that represents Product in this one module!
+        this.setTags(product.getTags());
+        
+        //DOOR3 FD-iPad FDIP-644
+        String prodsashType = product.getSashType();
+        if( prodsashType != null )
+        	this.setSashType( prodsashType );
     }
 
     //    public String getCancellationNote() {
@@ -413,4 +427,19 @@ public class ProductSearchResult {
         return pricedByWeight;
     }
 
+	public SortedSet<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(SortedSet<String> tags) {
+		this.tags = tags;
+	}
+
+	public String getSashType() {
+		return sashType;
+	}
+
+	public void setSashType(String sashType) {
+		this.sashType = sashType;
+	}
 }

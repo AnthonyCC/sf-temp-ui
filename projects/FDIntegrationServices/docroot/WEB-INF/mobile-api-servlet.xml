@@ -58,7 +58,22 @@
 	
 	<bean id="browseController" class="com.freshdirect.mobileapi.controller.BrowseController"
 		parent="baseController" />
-		
+
+	<bean id="ideasController" class="com.freshdirect.mobileapi.controller.IdeasController"
+		parent="baseController" />
+
+	<bean id="homeController" class="com.freshdirect.mobileapi.controller.HomeController"
+		parent="baseController" />
+
+	<bean id="recipesController" class="com.freshdirect.mobileapi.controller.RecipesController"
+		parent="baseController" />
+
+	<bean id="producersController" class="com.freshdirect.mobileapi.controller.ProducersController"
+		parent="baseController" />
+
+	<bean id="pickslistController" class="com.freshdirect.mobileapi.controller.PickslistController"
+		parent="baseController" />
+
 	<bean id="couponBrowseController" class="com.freshdirect.mobileapi.controller.CouponBrowseController"
 		parent="baseController" />		
 
@@ -66,6 +81,9 @@
 		parent="baseController" />
 
 	<bean id="registerController" class="com.freshdirect.mobileapi.controller.RegistrationController"
+		parent="baseController" />
+
+	<bean id="userController" class="com.freshdirect.mobileapi.controller.UserController"
 		parent="baseController" />
 				
 	<bean id="urlMapping"
@@ -89,8 +107,14 @@
 				<prop key="**/help.do">helpController</prop>
 				<prop key="**/browse.do">browseController</prop>
 				<prop key="**/browsecoupon.do">couponBrowseController</prop>
+				<prop key="**/ideas.do">ideasController</prop>
+				<prop key="**/home.do">homeController</prop>
+				<prop key="**/recipes.do">recipesController</prop>
+				<prop key="**/producers.do">producersController</prop>
+				<prop key="**/pickslist.do">pickslistController</prop>
 				<prop key="**/zipcheck.do">siteAccessController</prop>
 				<prop key="**/register.do">registerController</prop>
+				<prop key="**/user.do">userController</prop>
 				<prop key="**/fdinterface.do">externalInterfaceController</prop>
 			</props>
 		</property>

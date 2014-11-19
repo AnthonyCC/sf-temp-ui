@@ -1,7 +1,10 @@
 package com.freshdirect.mobileapi.controller.data;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
 
 import com.freshdirect.mobileapi.model.Category;
 import com.freshdirect.mobileapi.model.Department;
@@ -17,6 +20,10 @@ public class BrowseResult extends Message {
     private List<Department> departments = new ArrayList<Department>();
 
     private List<Category> categories = new ArrayList<Category>();
+    
+    private Map<String, SortedSet<String>> filters = new LinkedHashMap<String, SortedSet<String>>();
+
+    private boolean isBottomLevel = false;
 
     public List<ProductSearchResult> getProducts() {
         return products;
@@ -63,5 +70,21 @@ public class BrowseResult extends Message {
 
 	public void setResultCount(Integer resultCount) {
 		this.resultCount = resultCount;
+	}
+
+	public Map<String, SortedSet<String>> getFilters() {
+		return filters;
+	}
+
+	public void setFilters(Map<String, SortedSet<String>> filters) {
+		this.filters = filters;
+	}
+
+	public boolean isBottomLevel() {
+		return isBottomLevel;
+	}
+
+	public void setBottomLevel(boolean isBottomLevel) {
+		this.isBottomLevel = isBottomLevel;
 	}        
 }

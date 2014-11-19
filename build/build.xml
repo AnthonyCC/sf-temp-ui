@@ -2613,6 +2613,7 @@
 				<include name="DataLoaderEJB-WL.jar"/>
 				<include name="FDWebSite.war"/>
 				<include name="cms-gwt.war"/>
+				<include name="FDIntegrationServices.war"/>
 			</ejbs>
 			<libraries>
 				<include name="Framework.jar"/>
@@ -2620,6 +2621,10 @@
 				<include name="ERPSWebApp.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
 				<include name="RoutingServices.jar"/>
+				<include name="ERPServicesEJB-WL.jar"/>
+				<include name="DeliveryEJB-WL.jar"/>
+				<include name="FDStoreEJB-WL.jar"/>
+				<include name="FDStore.jar"/>
 			</libraries>
 			<lib>
 				<include name="oscache-2.4.1.jar"/>
@@ -2645,6 +2650,15 @@
 				<include name="jackson-core-2.2.0.jar"/>
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
+
+				<include name="spring.jar"/>
+				<include name="opencsv-1.8.jar"/>
+				<include name="commons-discovery-0.2.jar"/>
+				<include name="commons-logging-1.1.1.jar"/>
+				<include name="ctah-api-client.jar"/>
+				<include name="JFEP-0.1.0.jar"/>
+				<include name="antlr-2.7.5H3.jar"/>
+				<include name="urlrewrite-2.6.0.jar"/>
 			</lib>
 			<extra>	 
 				<zipfileset dir="${thirdparty.home}/slide" prefix="APP-INF/lib" includes="*.jar"/>	 

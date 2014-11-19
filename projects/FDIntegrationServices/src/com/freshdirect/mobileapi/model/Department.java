@@ -3,15 +3,20 @@ package com.freshdirect.mobileapi.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.freshdirect.fdstore.content.BannerModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.mobileapi.controller.data.Image;
 import com.freshdirect.mobileapi.controller.data.Image.ImageSizeType;
 
 public class Department extends ProductContainer {
-    String name;
+    private String name;
 
-    String id;
+    private String id;
     
+    private Image icon;
+    
+    private Image banner;
+
     private List<Image> images = new ArrayList<Image>();
     
     public static Department wrap(DepartmentModel model) {
@@ -50,6 +55,24 @@ public class Department extends ProductContainer {
             images.add(detailImage);
         }        
         result.setNoOfProducts(noOfProducts);
+        
+        com.freshdirect.fdstore.content.Image tabletIcon = model.getTabletIcon();
+        
+        if (tabletIcon != null) {
+        	Image icon = new Image();
+        	icon.setHeight(tabletIcon.getHeight());
+        	icon.setWidth(tabletIcon.getWidth());
+        	icon.setSource(tabletIcon.getPathWithPublishId());
+        	icon.setType(ImageSizeType.ICON);
+        	result.setIcon(icon);
+        	images.add(icon);
+        }
+        
+        final BannerModel banner = model.getTabletHeaderBanner();
+        if (banner != null && banner.getImage() != null) {
+            result.setBanner(new Image(banner.getImage()));
+        }
+        
         return result;
     }
     
@@ -76,5 +99,21 @@ public class Department extends ProductContainer {
 
 	public void setImages(List<Image> images) {
 		this.images = images;
-	}       
+	}
+
+	public Image getIcon() {
+		return icon;
+	}
+
+	public void setIcon(Image icon) {
+		this.icon = icon;
+	}
+
+	public Image getBanner() {
+		return banner;
+	}
+
+	public void setBanner(Image banner) {
+		this.banner = banner;
+	}
 }

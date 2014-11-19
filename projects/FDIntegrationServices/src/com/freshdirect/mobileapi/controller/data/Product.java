@@ -3,8 +3,11 @@ package com.freshdirect.mobileapi.controller.data;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.log4j.Category;
 
@@ -16,8 +19,8 @@ import com.freshdirect.mobileapi.controller.data.Product.ProductWarningMessage.P
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.Brand;
 import com.freshdirect.mobileapi.model.ComponentGroup;
-import com.freshdirect.mobileapi.model.ProductDomain;
 import com.freshdirect.mobileapi.model.Product.ImageType;
+import com.freshdirect.mobileapi.model.ProductDomain;
 
 public class Product extends Message {
 
@@ -218,8 +221,19 @@ public class Product extends Message {
     private boolean pricedByWeight;
 
     private String deliveryNote;
+
+    private SortedSet<String> tags = new TreeSet<String>();
+
+    private String sashType;
+    
+    private Map<String, SortedSet<String>> filters = new LinkedHashMap<String, SortedSet<String>>();
+    
+    private Map<String, String> nutritionFacts;
+    
+    //JIRA FD-iPadFDIP-690 -- Michael Cress
+    private String description;
    
-    public Product() {
+	public Product() {
 
     }
 
@@ -241,6 +255,10 @@ public class Product extends Message {
         setAkaName(product.getAkaName());
         setFullName(product.getProductTitle());
         setAvailable(product.isAvailable());
+        
+        //JIRA FD-iPadFDIP-690 -- Michael Cress
+        this.setDescription(product.getDescription());
+        
         if ("perishable".equals(product.getLayout())) {
             setLayoutType(LayoutType.PERISHABLE);
         }
@@ -427,6 +445,15 @@ public class Product extends Message {
         if (!product.getDeliveryNote().isEmpty()) {
             addProductWarningMessage(new ProductWarningMessage(ProductWarningMessageType.DELIVERY_NOTE, null, product.getDeliveryNote()));
         }
+
+        this.setTags(product.getTags());
+
+        // Sashes
+        this.setSashType(product.getSashType());
+        
+        this.setFilters(product.getFilters());
+        
+        this.setNutritionFacts(product.getNutritionFacts());
         //RSUNG: this.deliveryNote = product.getDayOfWeekNotice();
         //RSUNG: this.dayOfTheWeekNotice = product.getDeliveryNote();
         //RSUNG: this.setCancellationNote(product.getCancellationNote());
@@ -803,4 +830,46 @@ public class Product extends Message {
     public String getDeliveryNote() {
         return deliveryNote;
     }
+
+	public SortedSet<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(SortedSet<String> tags) {
+		this.tags = tags;
+	}
+
+	public String getSashType() {
+		return sashType;
+	}
+
+	public void setSashType(String sashType) {
+		this.sashType = sashType;
+	}
+
+	public Map<String, SortedSet<String>> getFilters() {
+		return filters;
+	}
+
+	public void setFilters(Map<String, SortedSet<String>> filters) {
+		this.filters = filters;
+	}
+
+	public Map<String, String> getNutritionFacts() {
+		return nutritionFacts;
+	}
+
+	public void setNutritionFacts(Map<String, String> nutritionFacts) {
+		this.nutritionFacts = nutritionFacts;
+	}
+
+	//JIRA FD-iPadFDIP-690 -- Michael Cress
+    public String getDescription() {
+		return description;
+	}
+
+  //JIRA FD-iPadFDIP-690 -- Michael Cress
+    public void setDescription(String description) {
+		this.description = description;
+	}
 }

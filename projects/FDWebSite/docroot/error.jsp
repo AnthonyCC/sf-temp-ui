@@ -5,7 +5,9 @@
 final int W_ERROR_TOTAL = 970;
 %>
 
-<% response.setStatus(500); %> 
+<% 
+try {
+response.setStatus(500); %> 
 <tmpl:insert template='/common/template/no_space_border.jsp'>
 	<tmpl:put name='title' direct='true'>FreshDirect</tmpl:put>
 		<tmpl:put name='content' direct='true'>
@@ -82,3 +84,8 @@ final int W_ERROR_TOTAL = 970;
 </center>
 </tmpl:put>
 </tmpl:insert>
+<% 
+} catch (Exception fatalError) { %>
+	<%=  String.valueOf(fatalError) %>
+	<% JspLogger.GENERIC.error("FatalError in error page", fatalError); 
+} %>

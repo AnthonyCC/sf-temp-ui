@@ -1,6 +1,7 @@
 package com.freshdirect.mobileapi.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Enumeration;
@@ -22,9 +23,11 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
@@ -44,6 +47,7 @@ import com.freshdirect.mobileapi.service.OasService;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 
@@ -52,6 +56,15 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 public abstract class BaseController extends AbstractController implements MessageCodes {
+
+    public final class AnonymousUser extends FDUser {
+	    private static final long serialVersionUID = 6972700005485690087L;
+
+	    @Override
+	    public PricingContext getPricingContext() {
+	        return PricingContext.DEFAULT;
+	    }
+    }
 
     private static final String JSON = "JSON";
 
@@ -62,6 +75,13 @@ public abstract class BaseController extends AbstractController implements Messa
     public static OasService oasService = new Oas247Service();
 
     protected static Map<String, String> configParams = new HashMap<String, String>();
+
+    private ThreadLocal<Boolean> fakedUserForRequest = new ThreadLocal<Boolean>() {
+		@Override
+		protected Boolean initialValue() {
+			return Boolean.FALSE;
+		}
+    };
 
     private Resource file;
 
@@ -181,10 +201,32 @@ public abstract class BaseController extends AbstractController implements Messa
         return SessionUser.wrap(request.getSession().getAttribute(SessionName.USER));
     }
 
+
+    @Override
+	protected ModelAndView handleRequestInternal(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+    	Throwable uncaughtException = null;
+    	ModelAndView model = null;
+    	try {
+    		model = handleRequestInterna(request, response);
+    	} catch (Throwable e) {
+    		uncaughtException = e;
+    	} finally {
+    		if (uncaughtException != null) {
+    			model = getModelAndView(JSON_RENDERED);
+    			Message responseMessage = new Message();
+    			responseMessage.addWarningMessage(traceFor(uncaughtException));
+				setResponseMessage(model, responseMessage, null);
+    		}
+    	}
+		return model;
+	}
+
+    
     /* (non-Javadoc)
      * @see org.springframework.web.servlet.mvc.Controller#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public final ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws JsonException,
+    private final ModelAndView handleRequestInterna(HttpServletRequest request, HttpServletResponse response) throws JsonException,
             FDException, ServiceException {
         response.setContentType("text/xml");
         ModelAndView model = getModelAndView(JSON_RENDERED);
@@ -193,6 +235,7 @@ public abstract class BaseController extends AbstractController implements Messa
         String paramVersion = "0";
         if ((null != version) && (!version.isEmpty())) {
             SessionUser user = null;
+            Throwable uncaughtException = null;
             try {
                 paramVersion = version;
 
@@ -215,6 +258,7 @@ public abstract class BaseController extends AbstractController implements Messa
                         throw new NoCartException("Where my cart?");
                     }
                 }
+                fakedUserForRequest.set(Boolean.FALSE);
                 model = processRequest(request, response, model, action, user);
             } catch (NoSessionException e) {
                 Message responseMessage = getErrorMessage(ERR_SESSION_EXPIRED, "Session does not exist in the server.");
@@ -222,16 +266,41 @@ public abstract class BaseController extends AbstractController implements Messa
             } catch (NoCartException e) {
                 Message responseMessage = getErrorMessage(ERR_CART_EXPIRED, "User's shopping cart doesn't exists Que passo?");
                 setResponseMessage(model, responseMessage, user);
-            } catch (NumberFormatException e) {
-                Message responseMessage = getErrorMessage(ERR_INCOMPATIBLE_CLIENT, MobileApiProperties.getDiscoveryServiceUrl());
-                setResponseMessage(model, responseMessage, user);
+//            } catch (NumberFormatException e) {
+//                Message responseMessage = getErrorMessage(ERR_INCOMPATIBLE_CLIENT, MobileApiProperties.getDiscoveryServiceUrl());
+//                setResponseMessage(model, responseMessage, user);
             } catch (IllegalArgumentException e) {
                 Message responseMessage = getErrorMessage(ERR_INCOMPATIBLE_CLIENT, MobileApiProperties.getDiscoveryServiceUrl());
                 setResponseMessage(model, responseMessage, user);
-            }
+            } catch (Throwable e) {
+				uncaughtException = e;
+			} finally {
+				if (fakedUserForRequest.get().booleanValue()) {
+					fakedUserForRequest.set(Boolean.FALSE);
+					request.getSession().removeAttribute(SessionName.USER);
+				}
+				if (uncaughtException != null) {
+//					throw uncaughtException;
+					String printedTrace = traceFor(uncaughtException);
+					Message responseMessage = getErrorMessage(ERR_SYSTEM, printedTrace);
+	                setResponseMessage(model, responseMessage, user);
+				}
+			}
         }
 
         return model;
+    }
+
+	protected String traceFor(Throwable e) {
+		if (e == null) return "No Exception";
+		while (true) {
+			if (e.getCause() == null) break;
+			e = e.getCause();
+		}
+	    StringWriter trace = new StringWriter();
+	    e.printStackTrace(new PrintWriter(trace));
+	    String printedTrace = "Exception: " + e.getMessage() + "\n" + trace.toString();
+	    return printedTrace;
     }
 
     protected <T> T parseRequestObject(HttpServletRequest request, HttpServletResponse response, Class<T> valueType) throws JsonException {
@@ -281,8 +350,10 @@ public abstract class BaseController extends AbstractController implements Messa
     protected void setResponseMessage(ModelAndView model, Message responseMessage, SessionUser user) throws JsonException {
         try {
             try {
-            	if(user != null && user.isLoggedIn()) {
+            	if (user != null && user.isLoggedIn() && !isFakeUser()) {
             		responseMessage.addNoticeMessages(oasService.getMessages(user));
+            	} else {
+                    responseMessage.addNoticeMessages(oasService.getMessages());
             	}
             } catch (ServiceException e) {
                 LOGGER.warn("ServiceException while trying to get oas messages. not stopping execution.", e);
@@ -367,5 +438,17 @@ public abstract class BaseController extends AbstractController implements Messa
     		return user.getFDSessionUser().getIdentity().getErpCustomerPK();
     	}
     	return null;
+    }
+
+    protected SessionUser fakeUser(HttpSession session) {
+    	fakedUserForRequest.set(Boolean.TRUE);
+    	FDUser user = new AnonymousUser();
+		FDSessionUser sessionUser = new FDSessionUser(user, session);
+    	session.setAttribute(SessionName.USER, sessionUser);
+		return SessionUser.wrap(sessionUser);
+    }
+    
+    protected boolean isFakeUser() {
+    	return fakedUserForRequest.get();
     }
 }

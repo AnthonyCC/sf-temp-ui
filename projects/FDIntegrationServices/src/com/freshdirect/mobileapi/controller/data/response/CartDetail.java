@@ -3,8 +3,8 @@ package com.freshdirect.mobileapi.controller.data.response;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
+import com.freshdirect.mobileapi.model.data.Unavailability;
 
 public class CartDetail {
     private List<AffiliateCartDetail> affiliates = new ArrayList<AffiliateCartDetail>();
@@ -761,6 +761,13 @@ public class CartDetail {
 		this.expCouponDeliveryDate = expCouponDeliveryDate;
 	}
     
-	
-    
+    private Unavailability unavailability;
+
+    public Unavailability getUnavailability() {
+		return unavailability;
+	}
+
+	public void setUnavailability(Unavailability unavailability) {
+		this.unavailability = unavailability;
+	}
 }

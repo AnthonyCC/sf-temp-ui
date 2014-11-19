@@ -1,5 +1,8 @@
 package com.freshdirect.mobileapi.controller;
 
+import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -50,6 +53,10 @@ public class SearchController extends BaseController {
      */
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws FDException, ServiceException, NoSessionException, JsonException {
+    	if (user == null) {
+    		user = fakeUser(request.getSession());
+    	}
+
         if (AUTOCOMPLETE_ACTION.equalsIgnoreCase(action)) {
             autocomplete(request, response, user, model);
         } else { // default go to search
@@ -89,6 +96,11 @@ public class SearchController extends BaseController {
         // If there is no searchTerm, default is blank string (will retrieve everything)
         if (searchTerm == null) {
             searchTerm = "";
+        }
+        
+        // brand search
+        if (isBlank(searchTerm) && isNotBlank(brandToFilter)) {
+        	searchTerm = brandToFilter;
         }
         
         if (null != searchTerm) {

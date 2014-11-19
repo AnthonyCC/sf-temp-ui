@@ -9,8 +9,8 @@ public class Content {
 
     public static Category wrap(CategoryModel model) {
         Category result = new Category();
-        result.name = model.getContentName();
-        result.id = model.getContentKey().getId();
+        result.setName(model.getContentName());
+        result.setId(model.getContentKey().getId());
         return result;
     }
 

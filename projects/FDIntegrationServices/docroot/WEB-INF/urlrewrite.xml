@@ -56,6 +56,32 @@
 		<to last="true">/product.do?productId=$3&amp;categoryId=$2&amp;action=getprice&amp;ver=$1</to>
 	</rule>
 
+	<rule>
+		<from>^/v/([0-9]+)/product/getrelatedproducts/catid/(.*)/id/(.*)</from>
+		<to last="true">/product.do?productId=$3&amp;categoryId=$2&amp;action=getrelatedproducts&amp;ver=$1</to>
+	</rule>
+	
+	<!-- User -->
+	<rule>
+		<from>^/v/([0-9]+)/user/update/$</from>
+		<to last="true">/user.do?action=updateUser&amp;ver=$1</to>
+	</rule>
+	
+	<rule>
+		<from>^/v/([0-9]+)/user/address/update/(.*)$</from>
+		<to last="true">/user.do?action=updateUserAddress&amp;ver=$1&amp;AddressID=$2</to>
+	</rule>
+	
+	<rule>
+		<from>^/v/([0-9]+)/user/paymentmethod/update/(.*)$</from>
+		<to last="true">/user.do?action=updateUserPaymentMethod&amp;ver=$1&amp;PaymentID=$2</to>
+	</rule>
+	
+	<rule>
+		<from>^/v/([0-9]+)/user/deliverytimeslot/reserve/(.*)$</from>
+		<to last="true">/user.do?action=reserveDeliveryTimeSlot&amp;ver=$1&amp;ReserveID=$2</to>
+	</rule>
+
 	<!-- Login -->
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/login/$</from>
@@ -498,6 +524,10 @@
 		<from>^/v/([0-9]+)/(.*)/smartstore/carousel/(.*)/$</from>
 		<to last="true">/smartstore.do?action=getDepartmentCarousel&amp;ver=$1&amp;departmentId=$3</to>
 	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/smartstore/carousel/(.*)/$</from>
+		<to last="true">/smartstore.do?action=getDepartmentCarousel&amp;ver=$1&amp;departmentId=$2</to>
+	</rule>
 
 	<!-- Contact Us : Get -->
 	<rule>
@@ -619,7 +649,61 @@
 		<from>^/v/([0-9]+)/browse/groupproducts/(.*)</from>
 		<to last="true">/browse.do?action=getGroupProducts&amp;ver=$1</to>
 	</rule>
-	
+
+	<!-- Ideas -->
+	<rule>
+		<from>^/v/([0-9]+)/ideas/home/(.*)</from>
+		<to last="true">/ideas.do?action=getHomeContent&amp;ver=$1</to>
+	</rule>
+
+	<!-- Home -->
+	<rule>
+		<from>^/v/([0-9]+)/home/getall/(.*)</from>
+		<to last="true">/home.do?action=getAll&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/home/featuredcategories/(.*)</from>
+		<to last="true">/home.do?action=getFeaturedCategories&amp;ver=$1</to>
+	</rule>
+
+	<!-- Recipes -->
+	<rule>
+		<from>^/v/([0-9]+)/recipe/gettags/(.*)</from>
+		<to last="true">/recipes.do?action=getTags&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/recipe/getall/(.*)</from>
+		<to last="true">/recipes.do?action=getAll&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/recipe/getdetail/(.*)</from>
+		<to last="true">/recipes.do?action=getDetail&amp;ver=$1&amp;recipeId=$2</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/recipe/search/(.*)</from>
+		<to last="true">/recipes.do?action=search&amp;ver=$1</to>
+	</rule>
+
+	<!-- Producers -->
+	<rule>
+		<from>^/v/([0-9]+)/producer/getall/(.*)</from>
+		<to last="true">/producers.do?action=getAll&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/producer/getdetail/(.*)</from>
+		<to last="true">/producers.do?action=getDetail&amp;ver=$1&amp;producerId=$2</to>
+	</rule>
+
+	<!-- PickLists -->
+	<rule>
+		<from>^/v/([0-9]+)/pickslist/getall/(.*)</from>
+		<to last="true">/pickslist.do?action=getAll&amp;ver=$1</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/pickslist/getdetail/(.*)</from>
+		<to last="true">/pickslist.do?action=getDetail&amp;ver=$1&amp;pickslistId=$2</to>
+	</rule>
+
 	<!-- External Interface -->
 	<rule>
 		<from>^/v/([0-9]+)/ext/t001(.*)</from>

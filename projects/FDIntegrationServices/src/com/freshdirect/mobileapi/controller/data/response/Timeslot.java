@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.freshdirect.mobileapi.controller.data.DateFormat;
 
 public class Timeslot implements DateFormat {
@@ -89,6 +90,7 @@ public class Timeslot implements DateFormat {
         this.start = start;
     }
 
+    @JsonSetter("start")
     public void setStart(String start) throws ParseException {
         this.start = formatter.parse(start);
     }
@@ -97,6 +99,7 @@ public class Timeslot implements DateFormat {
         return formatter.format(this.end);
     }
 
+    @JsonSetter("end")
     public void setEnd(String end) throws ParseException {
         this.end = formatter.parse(end);
     }

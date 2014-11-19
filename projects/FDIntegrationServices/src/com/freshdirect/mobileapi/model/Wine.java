@@ -1,8 +1,13 @@
 package com.freshdirect.mobileapi.model;
 
+import static java.util.Arrays.asList;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 
@@ -14,6 +19,7 @@ import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.mobileapi.util.ProductUtil;
+import com.freshdirect.mobileapi.util.StringUtil;
 import com.freshdirect.smartstore.Variant;
 
 public class Wine extends Product {
@@ -113,6 +119,18 @@ public class Wine extends Product {
         ratingIcons.addAll(getIconPath(wineRating1, MobileApiProperties.getMediaPath()+"/media/editorial/win_usq/icons/rating/", ".gif"));
         ratingIcons.addAll(getIconPath(wineRating2, MobileApiProperties.getMediaPath()+"/media/editorial/win_usq/icons/rating/", ".gif"));
         ratingIcons.addAll(getIconPath(wineRating3, MobileApiProperties.getMediaPath()+"/media/editorial/win_usq/icons/rating/", ".gif"));
+        
+        if (this.getFilters() == null)
+        	this.setFilters(new LinkedHashMap<String, SortedSet<String>>());
+        
+        if (!StringUtil.isEmpty(this.getWineCountry()))
+        	this.getFilters().put("country", new TreeSet<String>(asList(this.getWineCountry())));
+        if (!StringUtil.isEmpty(this.getWineRegionName()))
+        	this.getFilters().put("region", new TreeSet<String>(asList(this.getWineRegionName())));
+        if (!StringUtil.isEmpty(grape))
+        	this.getFilters().put("grape", new TreeSet<String>(asList(grape)));
+        
+        addFiltersToTags();
     }
 
     public String getWineCountry() {

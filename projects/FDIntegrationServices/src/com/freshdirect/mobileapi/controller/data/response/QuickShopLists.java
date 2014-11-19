@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.fdstore.content.StarterList;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.model.CustomerCreatedList;
 import com.freshdirect.mobileapi.model.OrderInfo;
@@ -58,7 +59,7 @@ public class QuickShopLists extends Message {
     public static QuickShopLists initWithList(List<CustomerCreatedList> lists) {
         QuickShopLists newInstance = new QuickShopLists();
         for (CustomerCreatedList list : lists) {
-            newInstance.lists.add(new QuickShopList(list.getId(), list.getName(), Integer.toString(list.getCount())));
+            newInstance.lists.add(new QuickShopList(list.getId(), list.getName(), Integer.toString(list.getCount()), list.getCount(), DateUtil.getUTCDate(list.getCreateDate())));
         }
         return newInstance;
     }
@@ -66,7 +67,7 @@ public class QuickShopLists extends Message {
     public static QuickShopLists initWithStarterList(List<StarterList> lists) {
         QuickShopLists newInstance = new QuickShopLists();
         for (StarterList list : lists) {
-            newInstance.lists.add(new QuickShopList(list.getContentKey().getId(), list.getFullName(), Integer.toString(list.getListContents().size())));
+            newInstance.lists.add(new QuickShopList(list.getContentKey().getId(), list.getFullName(), Integer.toString(list.getListContents().size()), list.getListContents().size(), DateUtil.getUTCDate(list.getStartDate())));
         }
         return newInstance;
     }
@@ -81,10 +82,12 @@ public class QuickShopLists extends Message {
 
     public static class QuickShopList {
 
-        public QuickShopList(String id, String label, String caption) {
+        public QuickShopList(String id, String label, String caption, int productCount, String date) {
             this.label = label;
             this.caption = caption;
             this.id = id;
+            this.productCount = productCount;
+            this.dateCreated = date;
         }
 
         public QuickShopList(String id, String label, String caption,
@@ -102,6 +105,10 @@ public class QuickShopLists extends Message {
         private String caption;
         
         private String status;
+
+        private String dateCreated;
+
+        private int productCount;
 
         public String getId() {
             return id;
@@ -133,6 +140,22 @@ public class QuickShopLists extends Message {
 
 		public void setStatus(String status) {
 			this.status = status;
+		}
+
+		public String getDateCreated() {
+			return dateCreated;
+		}
+
+		public void setDateCreated(String dateCreated) {
+			this.dateCreated = dateCreated;
+		}
+
+		public int getProductCount() {
+			return productCount;
+		}
+
+		public void setProductCount(int productCount) {
+			this.productCount = productCount;
 		}
     }
 

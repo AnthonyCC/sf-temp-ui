@@ -1,6 +1,8 @@
 package com.freshdirect.mobileapi.controller;
 
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +17,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
@@ -35,9 +39,13 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.Sku;
 import com.freshdirect.mobileapi.model.WhatsGood;
 import com.freshdirect.mobileapi.model.data.WhatsGoodCategory;
+import com.freshdirect.mobileapi.service.ProductServiceImpl;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
+import com.freshdirect.mobileapi.util.SortType;
+import com.freshdirect.webapp.ajax.product.data.ProductData;
+import com.freshdirect.webapp.util.ProductRecommenderUtil;
 
 import freemarker.template.TemplateException;
 
@@ -67,10 +75,21 @@ public class ProductController extends BaseController {
     public static final String WHATS_GOOD_PRODUCE_ACTION = "wsgproduce";
 
     private static final String PRODUCT_MORE_INFO_TEMPLATE = "product-more-info";
+    
+    public static final String GET_REALTED_PRODUCTS_ACTION = "getrelatedproducts";
+
+    @Override
+    protected boolean validateUser() {
+        return false;
+    }
 
     @Override
     protected ModelAndView processRequest(HttpServletRequest request, HttpServletResponse response, ModelAndView model, String action,
             SessionUser user) throws FDException, ServiceException, NoSessionException, JsonException {
+
+    	if (user == null) {
+    		user = fakeUser(request.getSession());
+    	}
 
         try {
             if (MORE_INFO_ACTION.equalsIgnoreCase(action)) {
@@ -84,6 +103,8 @@ public class ProductController extends BaseController {
             } else if (GET_WHATS_GOOD_CATEGORY_PRODUCTS_ACTION.equals(action)) {
                 String categoryId = request.getParameter("categoryId");
                 model = getWhatsGoodProducts(model, request, response, user, categoryId);
+            } else if (GET_REALTED_PRODUCTS_ACTION.equals(action)) {
+                model = getRelatedProducts(model, request, response, user);
             } else {
                 model = getProduct(model, request, response, user);
             }
@@ -94,7 +115,73 @@ public class ProductController extends BaseController {
         return model;
     }
 
-    /**
+    private ModelAndView getRelatedProducts(ModelAndView model,
+            HttpServletRequest request, HttpServletResponse response,
+            SessionUser user) throws JsonException {
+        String categoryId = request.getParameter("categoryId");
+        String productId = request.getParameter("productId");
+		SearchResult result = new SearchResult();
+        ProductModel product = ContentFactory.getInstance().getProductByName(categoryId, productId);
+
+        List<com.freshdirect.mobileapi.model.Product> products = new ArrayList<com.freshdirect.mobileapi.model.Product>();
+
+        boolean restoreAllowAnon = com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper.AllowAnonymousUsers;
+        com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper.AllowAnonymousUsers = true;
+        
+        
+		try {
+            // upsell first
+            List<ProductModel> upsellProducts = ProductRecommenderUtil.getUpsellProducts(product);
+            for (ProductModel productModel : upsellProducts) {
+                try {
+                    com.freshdirect.mobileapi.model.Product p = com.freshdirect.mobileapi.model.Product.wrap(productModel);
+            		products.add(p);
+                } catch (ModelException e) {
+                    result.addDebugMessage("NOPRODUCTFOR_" + productModel.getContentName(), this.traceFor(e));
+                }
+            }
+        } catch (Exception e) {
+            result.addDebugMessage("ERROR_LOADING_UPSELL_ITEMS", this.traceFor(e));
+        }
+
+		try {
+            // crosssell next
+            List<ProductData> crossSellProducts = ProductRecommenderUtil.getCrossSellProducts(product , user.getFDSessionUser().getUser());
+            for (ProductData productData : crossSellProducts) {
+            	try {
+                    com.freshdirect.mobileapi.model.Product p = com.freshdirect.mobileapi.model.Product.getProduct(productData.getProductId(), productData.getCatId(), null, user);
+                    products.add(p);
+                } catch (ServiceException e) {
+                    result.addDebugMessage("NOPRODUCTFOR_" + productData.getProductId(), this.traceFor(e));
+                }
+            }
+        } catch (Exception e) {
+            result.addDebugMessage("ERROR_LOADING_CROSSSELL_ITEMS", this.traceFor(e));
+        }
+
+		// no recommendations - will search for something instead
+		if (products.size() == 0) {
+	        ProductServiceImpl productService = new ProductServiceImpl();
+			try {
+	            List<com.freshdirect.mobileapi.model.Product> searchResults = productService.search("", null, 0, 10, SortType.RELEVANCY, null, null, null,
+	                    user);
+	            products.addAll(searchResults);
+            } catch (ServiceException e) {
+                result.addDebugMessage("ERROR_LOADING_SEARCH_ITEMS", this.traceFor(e));
+            }
+
+		}
+		
+		result.setProductsFromModel(products);
+		result.setTotalResultCount(products.size());
+		setResponseMessage(model, result, user);
+		
+        com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper.AllowAnonymousUsers = restoreAllowAnon;
+
+		return model;
+    }
+
+	/**
      * @param model
      * @param request
      * @param response

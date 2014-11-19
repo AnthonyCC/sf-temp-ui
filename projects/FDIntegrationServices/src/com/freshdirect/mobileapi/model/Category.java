@@ -1,20 +1,35 @@
 package com.freshdirect.mobileapi.model;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.mobileapi.controller.data.Image;
 import com.freshdirect.mobileapi.controller.data.Image.ImageSizeType;
+import com.freshdirect.mobileapi.controller.data.response.FilterOption;
+import com.freshdirect.mobileapi.model.comparator.FilterOptionLabelComparator;
 
 public class Category extends ProductContainer {
 
-    String name;
+    private String name;
 
-    String id;
+    private String id;
+
+    private String sectionHeader;
     
     private List<Image> images = new ArrayList<Image>();
     
+    private boolean healthWarning = false;
+    
+    private Map<String, Set<FilterOption>> filterOptions = new LinkedHashMap<String, Set<FilterOption>>();
+
     public static Category wrap(CategoryModel model) {
         return wrapCategory(model, 0);
     }
@@ -41,6 +56,34 @@ public class Category extends ProductContainer {
             images.add(detailImage);
         }
         result.setNoOfProducts(noOfProducts);
+
+        try {
+			Set<BrandModel> brandModels = model.getAllBrands();
+			TreeSet<FilterOption> brands = new TreeSet<FilterOption>(new FilterOptionLabelComparator());
+			for (BrandModel brand : brandModels) {
+				FilterOption filterOption = new FilterOption();
+				filterOption.setId(brand.getContentName());
+				filterOption.setLabel(brand.getName());
+				brands.add(filterOption);
+			}
+//			result.getFilterOptions().put("brands", brands);
+		} catch (FDResourceException e) {
+		}
+
+        List<Domain> domains = model.getWineSideNavFullList();
+        TreeSet<FilterOption> wineFilters = new TreeSet<FilterOption>(new FilterOptionLabelComparator());
+        for (Domain domain : domains) {
+			FilterOption filterOption = new FilterOption();
+			filterOption.setId(domain.getContentName());
+			filterOption.setLabel(domain.getName());
+			wineFilters.add(filterOption);
+		}
+        result.filterOptions.put("wine", wineFilters);
+        
+        // health warning
+        final boolean hasAlcohol = model.isHavingBeer();
+        result.setHealthWarning(hasAlcohol);
+
         return result;
     }
 
@@ -67,5 +110,29 @@ public class Category extends ProductContainer {
 	public void setImages(List<Image> images) {
 		this.images = images;
 	}
+
+	public Map<String, Set<FilterOption>> getFilterOptions() {
+		return filterOptions;
+	}
+
+	public void setFilterOptions(Map<String, Set<FilterOption>> tags) {
+		this.filterOptions = tags;
+	}
+
+	public String getSectionHeader() {
+		return sectionHeader;
+	}
+
+	public void setSectionHeader(String sectionHeader) {
+		this.sectionHeader = sectionHeader;
+	}
+
+    public boolean isHealthWarning() {
+        return healthWarning;
+    }
+
+    public void setHealthWarning(boolean healthWarning) {
+        this.healthWarning = healthWarning;
+    }
     
 }

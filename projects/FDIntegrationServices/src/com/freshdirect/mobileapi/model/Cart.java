@@ -41,7 +41,6 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDModifyCartLineI;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
-import com.freshdirect.fdstore.customer.FDTransientCartModel;
 import com.freshdirect.fdstore.customer.WebOrderViewI;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
@@ -74,6 +73,7 @@ import com.freshdirect.mobileapi.controller.data.response.ElectronicCheck;
 import com.freshdirect.mobileapi.controller.data.response.ModifyCartDetail;
 import com.freshdirect.mobileapi.controller.data.response.Order;
 import com.freshdirect.mobileapi.exception.ModelException;
+import com.freshdirect.mobileapi.model.data.Unavailability;
 import com.freshdirect.mobileapi.model.tagwrapper.FDShoppingCartControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.RedemptionCodeControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.RequestParamName;
@@ -1010,6 +1010,10 @@ public class Cart {
         if(cart instanceof FDCartModel){
         	cartDetail.setExpCouponDeliveryDate(((FDCartModel)cart).getExpCouponDeliveryDate());
         }
+        
+        // Unavailability Data
+        Unavailability unavailability = Unavailability.collectData(user);
+    	cartDetail.setUnavailability(unavailability);
         return cartDetail;
     }
 
