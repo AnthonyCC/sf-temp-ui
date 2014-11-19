@@ -692,6 +692,8 @@ public class FDStoreProperties {
 	
 	/* Alt. Pickup convenience APPDEV-3623 */
 	private static final String PROP_DEPOT_CACHE_REFRESH = "fdstore.depot.cache.refresh";
+	
+	private static final String PROP_LOG_RECOMMENDTATIONS_RESULTS = "fdstore.log.recommendations_results";
 		
 	
     static {
@@ -1372,6 +1374,8 @@ public class FDStoreProperties {
 
     	/* Alt. Pickup convenience APPDEV-3623 */
         defaults.put(PROP_DEPOT_CACHE_REFRESH, "480"); //1000 * 60 * 480 = 8 hours
+        
+        defaults.put(PROP_LOG_RECOMMENDTATIONS_RESULTS, "false");
 
         refresh();
     }
@@ -3460,6 +3464,10 @@ public class FDStoreProperties {
 		} catch (NumberFormatException e) {
 			return 0;
 		}
+	}
+
+	public static boolean isLogRecommenderResults() {
+		return (Boolean.valueOf(get(PROP_LOG_RECOMMENDTATIONS_RESULTS))).booleanValue();
 	}
 }
 

@@ -206,6 +206,15 @@
 		<servlet-name>LoginServlet</servlet-name>
 		<url-pattern>/api/login/*</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+        <servlet-name>ViewCartPotatoServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.viewcart.ViewCartPotatoServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+        <servlet-name>ViewCartPotatoServlet</servlet-name>
+        <url-pattern>/api/viewcart/recommendation</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>TestUnavailabilityServlet</servlet-name>

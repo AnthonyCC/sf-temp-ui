@@ -1,6 +1,6 @@
-package com.freshdirect.webapp.ajax.quickshop.data;
+package com.freshdirect.webapp.ajax.recommendation;
 
-public class QuickShopYmalRequestObject {
+public class RecommendationRequestObject {
 
 	// SmartStore Site Feature ID (required)
 	private String feature;
@@ -8,6 +8,9 @@ public class QuickShopYmalRequestObject {
 	private String listId;
 	private int numberOfItems=15;
 	private String deptId;
+	private String parentImpressionId;
+	private String impressionId;
+	private String parentVariantId;
 	
 	public String getTab() {
 		return tab;
@@ -38,5 +41,23 @@ public class QuickShopYmalRequestObject {
 	}	
 	public void setDeptId( String deptId ) {
 		this.deptId = deptId;
+	}
+	public String getParentImpressionId() {
+		return parentImpressionId;
+	}
+	public void setParentImpressionId(String parentImpressionId) {
+		this.parentImpressionId = parentImpressionId;
+	}
+	public String getImpressionId() {
+		return impressionId;
+	}
+	public void setImpressionId(String impressionId) {
+		this.impressionId = impressionId;
+	}
+	public String getParentVariantId() {
+		return parentVariantId;
+	}
+	public void setParentVariantId(String parentVariantId) {
+		this.parentVariantId = parentVariantId;
 	}	
 }

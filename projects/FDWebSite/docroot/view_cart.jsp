@@ -190,6 +190,7 @@ StringBuffer buffer = new StringBuffer(
 
 <% String smartStoreFacility = "view_cart"; %>
 <%@ include file="/includes/smartstore/i_recommender_tabs.jspf" %>
+<potato:viewCart />
 
 <br />
 <img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" alt="" /><br />
@@ -231,6 +232,8 @@ StringBuffer buffer = new StringBuffer(
 <script>
   window.FreshDirect = window.FreshDirect || {};
   window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
+  window.FreshDirect.viewcart = window.FreshDirect.viewcart || {};
+  window.FreshDirect.viewcart.data = <fd:ToJSON object="${viewCartPotato}" noHeaders="true"/>
 </script>
 
 </tmpl:put>

@@ -40,7 +40,7 @@ import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.smartstore.scoring.HelperFunctions;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
-import com.freshdirect.webapp.ajax.quickshop.data.QuickShopYmalRequestObject;
+import com.freshdirect.webapp.ajax.recommendation.RecommendationRequestObject;
 import com.freshdirect.webapp.taglib.fdstore.GetPeakProduceTag;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
 
@@ -68,9 +68,9 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 		HttpSession session = request.getSession();
 		
 		// parse request data
-		QuickShopYmalRequestObject requestData = parseRequestData(request, QuickShopYmalRequestObject.class, true);
+		RecommendationRequestObject requestData = parseRequestData(request, RecommendationRequestObject.class, true);
 		if (requestData == null) {
-			requestData = new QuickShopYmalRequestObject();
+			requestData = new RecommendationRequestObject();
 		}
 		
 		//check if we have listId. If yes then recommend product for the given list content
