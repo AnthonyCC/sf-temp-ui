@@ -6,9 +6,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.content.BrandModel;
@@ -19,7 +16,6 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
-import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.exception.ModelException;
@@ -31,7 +27,6 @@ import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.tagwrapper.SmartSearchTagWrapper;
 import com.freshdirect.mobileapi.util.SortType;
-import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SmartSearchTag;
 import com.freshdirect.webapp.util.AutoCompleteFacade;
 
@@ -48,9 +43,6 @@ public class ProductServiceImpl implements ProductService {
     private int recentSearchTotalCount;
 
     private String spellingSuggestion;
-
-//    private ExecutorService es = Executors.newCachedThreadPool();
-    private ExecutorService es = Executors.newFixedThreadPool(20);
 
     /*
      * (non-Javadoc)
@@ -78,7 +70,7 @@ public class ProductServiceImpl implements ProductService {
 
     public List<Product> search(String searchTerm, String upc, Integer page, Integer max, SortType sortType, String brandId,
             String categoryId, String deparmentId, SessionUser user) throws ServiceException {
-        final List<Product> result = new ArrayList<Product>();
+        List<Product> result = new ArrayList<Product>();
 
         List<ProductModel> productModels = null;
         SmartSearchTag search = null;
@@ -114,154 +106,39 @@ public class ProductServiceImpl implements ProductService {
         departments = new HashSet<Department>();
         categories = new HashSet<Category>();
 
-        //*********************************************************************************************************************
-        //DOOR3 FD-iPad FDIP-637
-        //Parallelize as many tasks as possible to try and improve performance for this call.
-        final Set<TreeElement> treeRoots = tree.getRoots();
-        final SortedSet<BrandModel> brandModels = search.getBrands();
-        
-        //Calculate how many total overall tasks we will be creating, so that we can track when the total
-        //job is complete.
-        final int numTreeTasks = treeRoots.size();
-        final int numProductTasks = productModels.size();
-        final int numBrandTasks = brandModels.size();
-        final int totalTaskCount = numTreeTasks + numProductTasks + numBrandTasks;
-        final List<Boolean> completedTasks = new ArrayList<Boolean>();
-        Iterator<TreeElement> categoryIterator = treeRoots.iterator();
+        Iterator<TreeElement> categoryIterator = tree.getRoots().iterator();
         while (categoryIterator.hasNext()) {
-            final TreeElement treeElement = categoryIterator.next();
+            TreeElement treeElement = categoryIterator.next();
             ContentNodeModel model = treeElement.getModel();
 
             if (model instanceof DepartmentModel) {
                 Department department = Department.wrap((DepartmentModel) model);
                 departments.add(department);
             }
-            
-            es.execute(new Runnable()
-            {
-            	public void run()
-            	{
-        	        final Set<Category> localtempCategories = new HashSet<Category>();
-            		try
-            		{
-	                    Collection<TreeElement> childElement = treeElement.getChildren();
-	                    Iterator<TreeElement> childIterator = childElement.iterator();
-	                    while (childIterator.hasNext()) {
-	                        TreeElement grandSonElement = childIterator.next();
-	
-	                        if (grandSonElement.getModel() instanceof CategoryModel) {
-	                            Category category = Category.wrap((CategoryModel) grandSonElement.getModel());
-                            	localtempCategories.add(category);
-	                        }
-	                    }
-            		}
-            		finally
-            		{
-            			//merge results
-                        synchronized(categories)
-                        {
-                        	categories.addAll(localtempCategories);
-                        }
+            Collection<TreeElement> childElement = treeElement.getChildren();
+            Iterator<TreeElement> childIterator = childElement.iterator();
+            while (childIterator.hasNext()) {
+                TreeElement grandSonElement = childIterator.next();
 
-        				//Signal the controller that this unit of work is complete
-            			synchronized(completedTasks)
-            			{
-            				completedTasks.add(true);
-            				completedTasks.notify();
-            			}
-            		}
-            	}
-            });
+                if (grandSonElement.getModel() instanceof CategoryModel) {
+                    Category category = Category.wrap((CategoryModel) grandSonElement.getModel());
+                    categories.add(category);
+                }
+            }
         }
 
-    	final FDSessionUser sessUser = user.getFDSessionUser();
-    	final FDUser fduser = sessUser.getUser();
-        for (ProductModel prod : productModels)
-        {
-        	final ProductModel product = prod;
-        	
-        	es.execute(new Runnable()
-        	{
-        		public void run()
-        		{
-                    try
-                    {
-                    	Product p = Product.wrap(product, fduser, null, EnumCouponContext.PRODUCT);
-                    	
-                    	synchronized(result)
-                    	{
-                    		result.add(p);
-                    	}
-                    }
-                    catch (ModelException e)
-                    {
-                        LOG.warn("ModelException encountered while preparing search result.", e);
-                    }
-                    finally
-                    {
-        				//Signal the controller that this unit of work is complete
-            			synchronized(completedTasks)
-            			{
-            				completedTasks.add(true);
-            				completedTasks.notify();
-            			}
-                    }
-        		}
-        	});
-        }      
-
         brands = new HashSet<Brand>();
-      for (BrandModel b : brandModels)
-      {
-    	  final BrandModel brand = b;
-    	  es.execute(new Runnable()
-    	  {
-    		  public void run()
-    		  {
-    			  try
-    			  {
-	    			  Brand b = Brand.wrap(brand);
-	    			  
-	    			  synchronized(brands)
-	    			  {
-	    				  brands.add(b);
-	    			  }
-    			  }
-    			  finally
-    			  {
-					//Signal the controller that this unit of work is complete
-					synchronized(completedTasks)
-					{
-						completedTasks.add(true);
-						completedTasks.notify();
-					}
-    			  }
-    		  }
-    	  });
-      }
-
-      
-      //Wait for all results:
-      while(true)
-      {
-      	synchronized(completedTasks)
-      	{
-      		if( completedTasks.size() == totalTaskCount )
-  				break;
-  			else
-  			{
-	        		try
-	        		{
-	        			completedTasks.wait();
-	        		}
-	        		catch(InterruptedException IE)
-	        		{
-	        		}
-  			}
-      	}
-      }
-      
-        //*********************************************************************************************************************
+        brands = new HashSet<Brand>();
+        for (BrandModel brand : search.getBrands()) {
+        	brands.add(Brand.wrap(brand));
+		}
+        
+        for (ProductModel product : productModels)
+            try {
+                result.add(Product.wrap(product, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT));
+            } catch (ModelException e) {
+                LOG.warn("ModelException encountered while preparing search result.", e);
+            }
 
         return result;
     }

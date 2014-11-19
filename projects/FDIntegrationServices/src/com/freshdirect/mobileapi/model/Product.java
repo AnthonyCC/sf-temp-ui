@@ -632,6 +632,7 @@ public class Product {
 
         addFiltersToTags();
         
+        /* Commenting out for performance issues (AA)
         try {
 			final ProductMoreInfo moreInfo = new ProductMoreInfo(this);
 			final Map<String, String> nutritionFacts = moreInfo.getNutritionFacts();
@@ -645,6 +646,8 @@ public class Product {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
+        
         // Getting any notice message that neeed to be displayed on screen:
         //rsung
         //        if (getFilteredEarliestAvailabilityDate() != null && !hasSingleSku()) {
