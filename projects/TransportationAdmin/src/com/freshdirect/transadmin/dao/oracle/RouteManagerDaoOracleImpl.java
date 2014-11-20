@@ -400,7 +400,7 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 	}
 	
 	private static String UPDATE_ORDER_RESERVATION_QRY="" +
-			" UPDATE DLV.RESERVATION R SET R.UNASSIGNED_ACTION = 'RESERVE_TIMESLOT', R.UNASSIGNED_DATETIME = SYSDATE, R.IN_UPS = 'X' WHERE r.ID in " +
+			" UPDATE DLV.RESERVATION R SET R.UNASSIGNED_ACTION = 'RESERVE_TIMESLOT', R.UNASSIGNED_DATETIME = SYSDATE, R.IN_UPS = 'X', R.STATUS_CODE = '10' WHERE r.ID in " +
 			"( select r.id from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation r "+ 
 			" where s.id = sa.sale_id and s.cromod_date = sa.action_date and sa.requested_date >= trunc(sysdate) and SA.ACTION_TYPE in ('CRO','MOD') and sa.id = DI.SALESACTION_ID and DI.RESERVATION_ID = R.ID and s.type ='REG' "+ 
 			" and s.status <> 'CAN' and s.id = ? ) ";
