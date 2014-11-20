@@ -91,7 +91,8 @@ public class RecipesController extends BaseController {
 	}
 
 	private ModelAndView getDetail(final String recipeId, final ModelAndView model, final SessionUser user) {
-		final HttpClient http = new HttpClient();
+		final sun.net.www.http.HttpClient http = new HttpClient();
+		http.setConnectionTimeout(5000);
 		final GetMethod get = new GetMethod(FOODILY_API + "/recipes/" + recipeId);
 		get.addRequestHeader("Authorization","Bearer " + FOODILY_API_TOKEN.get());
 		try {
