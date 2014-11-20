@@ -24,7 +24,7 @@
   </servlet>
   <servlet>
     <servlet-name>mobile-api</servlet-name>
-    <servlet-class>com.freshdirect.mobileapi.servlet.DispatchServlet</servlet-class>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
     <load-on-startup>2</load-on-startup>
   </servlet>
   <servlet>
