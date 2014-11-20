@@ -140,7 +140,7 @@ public class GiftCardApplicationStrategy extends PaymentStrategy {
 		remainder = fdwAppInfo.addDeduction(remainder);
 		
 		if (remainder > 0) {
-			throw new FDRuntimeException("Applied more discount than order pre deduction total");
+			throw new FDRuntimeException("Applied more discount "+remainder+" than order pre deduction total");
 		}
 	}
 
