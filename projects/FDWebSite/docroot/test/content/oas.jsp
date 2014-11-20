@@ -22,17 +22,19 @@
 			var OAS_rn = '001234567890', OAS_rns = '1234567890';
 			OAS_rn = new String (Math.random()); OAS_rns = OAS_rn.substring (2, 11);
 			var oasTestParams = 'CosFreeDelTest=&baf=0&brand=&camp=fallcamp2&cart=veg&cohort=C1&county=KINGS&ct=1&cti=&cts=WeeklyTest&depot=&do=346&dp=MKT0072950&dpar=n&dpas=&dpcamp=&ecp=1&ecpoc=29&ecppromo=&enteredCampn=OasDefault%2FHPFeatureTop_SweepStakes%2COasDefault%2FSpecialTopbar_SweepStakes_Week1&expd=0&hv=1&id=kitchen&lotype=h&lozn=560&lu=2&mktpro=&mzid=0000100000&nod=2014-07-24&og=&oim=0&pt=&recipe=true&ref_prog_id=&ret=&state=NY&sub=1.99&sv=1988&szid=0000200201&test=false&tofurkey=&type=home&v=4&win=2&wnbk=&zid=0000200201&zip=11231&zonelevel=true';
+			var oasTestSite = 'www.freshdirect.com';
 			var oasTestId = 'kitchen';
 			var oasTestSpots = 'SystemMessage,CategoryNote,BrowseTop1,BrowseTop2,BrowseTop3,BrowseBottom1,BrowseBottom2';
 			var oasTestURL = 'http://devpromo.freshdirect.com';
 			if (afterLoad) {
 				//dynamic id and spots
 				oasTestURL = $jq('#oasTestURL').val();
+				oasTestSite = $jq('#oasTestSite').val();
 				oasTestId = $jq('#oasTestId').val();
 				oasTestSpots = $jq('#oasTestSpots').val();
 				oasTestParams = $jq('#oasTestParams').val();
 			}
-			var oasTestScript = '<script src="'+oasTestURL+'/RealMedia/ads/adstream_mjx.ads/www.freshdirect.com/'+oasTestId+'/1'+OAS_rns+'@'+oasTestSpots+'?'+oasTestParams+'"><\/script>';
+			var oasTestScript = '<script src="'+oasTestURL+'/RealMedia/ads/adstream_mjx.ads/'+oasTestSite+'/'+oasTestId+'/1'+OAS_rns+'@'+oasTestSpots+'?'+oasTestParams+'"><\/script>';
 			postscribe('#oas_contents', oasTestScript, 
 					{
 						done: function() {
@@ -61,6 +63,9 @@
 			.testOasCont th {
 				padding-right: 20px;
 			}
+			.testOasCont textarea {
+				box-sizing: border-box;
+			}
 		</style>
 </head>
 	<body>
@@ -70,20 +75,30 @@
 		<div style="margin-bottom: 10px;" class="testOasCont">
 			<table>
 				<tr>
-					<th rowspan="3" style="font-weight: bold;" width="150px;" align="center" valign="top">
-						Test After Page Has Loaded<br /><br />
-						<button id="oasAjaxtest" style="padding: 10px 20px;">Test</button>
+					<th rowspan="3" style="font-weight: bold; width: 150px;" align="center" valign="middle">
+						<div style="padding: 10px 0;">Test After Page Has Loaded</div>
+						<button id="oasAjaxtest">Test</button>
 					</th>
-					<td>Use this URL : </td>
-					<td><input id="oasTestURL" value="http://devpromo.freshdirect.com" style="text-align: center; font-weight: bold; width: 250px; font-size: 12px;" /> And this id: <input id="oasTestId" value="fro" style="font-size: 12px; text-align: center; font-weight: bold;" /></td>
+					<td style="padding: 0 5px;">Server :</td>
+					<td>
+						<input id="oasTestURL" value="http://devpromo.freshdirect.com" style="text-align: center; font-weight: bold; width: 250px; font-size: 12px;" />
+					</td>
+					<td style="padding: 0 5px;"> Site :</td>
+					<td>
+						<input id="oasTestSite" value="www.freshdirect.com" style="text-align: center; font-weight: bold; width: 250px; font-size: 12px;" />
+					</td>
+					<td style="padding: 0 5px;">Page :</td>
+					<td align="right">
+						<input id="oasTestId" value="fro" style="font-size: 12px; text-align: center; font-weight: bold; width: 250px;" />
+					</td>
 				</tr>
 				<tr>
-					<td>Use these spots : </td>
-					<td><textarea id="oasTestSpots" style="font-weight: bold; font-size: 12px; width: 840px; height: 16px; word-wrap: break-word;">SystemMessage,CategoryNote,BrowseTop1,BrowseTop2,BrowseTop3,BrowseBottom1,BrowseBottom2</textarea></td>
+					<td style="padding: 0 5px;">Position(s) :</td>
+					<td colspan="5"><textarea id="oasTestSpots" style="font-weight: bold; font-size: 12px; width: 100%; height: 2em; word-wrap: break-word;">SystemMessage,CategoryNote,BrowseTop1,BrowseTop2,BrowseTop3,BrowseBottom1,BrowseBottom2</textarea></td>
 				</tr>
 				<tr>
-					<td>And the params : </td>
-					<td><textarea id="oasTestParams" style="font-weight: bold; font-size: 12px; width: 840px; height: 80px; word-wrap: break-word;">CosFreeDelTest=&baf=0&brand=&camp=fallcamp2&cart=veg&cohort=C1&county=KINGS&ct=1&cti=&cts=WeeklyTest&depot=&do=346&dp=MKT0072950&dpar=n&dpas=&dpcamp=&ecp=1&ecpoc=29&ecppromo=&enteredCampn=OasDefault%2FHPFeatureTop_SweepStakes%2COasDefault%2FSpecialTopbar_SweepStakes_Week1&expd=0&hv=1&id=kitchen&lotype=h&lozn=560&lu=2&mktpro=&mzid=0000100000&nod=2014-07-24&og=&oim=0&pt=&recipe=true&ref_prog_id=&ret=&state=NY&sub=1.99&sv=1988&szid=0000200201&test=false&tofurkey=&type=home&v=4&win=2&wnbk=&zid=0000200201&zip=11231&zonelevel=true</textarea></td>
+					<td style="padding: 0 5px;">Params :</td>
+					<td colspan="5"><textarea id="oasTestParams" style="font-weight: bold; font-size: 12px; width: 100%; height: 7em; word-wrap: break-word;">CosFreeDelTest=&baf=0&brand=&camp=fallcamp2&cart=veg&cohort=C1&county=KINGS&ct=1&cti=&cts=WeeklyTest&depot=&do=346&dp=MKT0072950&dpar=n&dpas=&dpcamp=&ecp=1&ecpoc=29&ecppromo=&enteredCampn=OasDefault%2FHPFeatureTop_SweepStakes%2COasDefault%2FSpecialTopbar_SweepStakes_Week1&expd=0&hv=1&id=kitchen&lotype=h&lozn=560&lu=2&mktpro=&mzid=0000100000&nod=2014-07-24&og=&oim=0&pt=&recipe=true&ref_prog_id=&ret=&state=NY&sub=1.99&sv=1988&szid=0000200201&test=false&tofurkey=&type=home&v=4&win=2&wnbk=&zid=0000200201&zip=11231&zonelevel=true</textarea></td>
 				</tr>
 			</table>
 			
@@ -104,6 +119,7 @@
 				oas_loader(true);
 			});
 			
+			$jq('#oasAjaxtest').button();
 		</script>
 
 
