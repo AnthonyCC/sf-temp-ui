@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,7 +48,6 @@ import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.EnumCheckoutMode;
-import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
@@ -69,14 +67,12 @@ import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
-import com.freshdirect.fdstore.giftcard.FDGiftCardI;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
 import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionApplicatorI;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
-import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.event.EnumEventSource;
@@ -84,7 +80,6 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
 import com.freshdirect.webapp.ajax.cart.ModifyOrderHelper;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.util.FDEventUtil;
@@ -386,9 +381,35 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		}
 	}
 
+	
+	protected static void doCancelModifyOrder(HttpSession session, FDSessionUser currentUser) throws FDAuthenticationException, FDResourceException {
+		ShoppingCartUtil.restoreCart(session);
+	
+		FDGiftCardInfoList gcList = currentUser.getGiftCardList();
+		//Clear any hold amounts.
+		gcList.clearAllHoldAmount();
+        
+		//reset user to see pendingOrder overlay again since they didn't check out
+		currentUser.setSuspendShowPendingOrderOverlay(false);
+	}
+
+
 	public static FDModifyCartModel modifyOrder(HttpServletRequest request, FDSessionUser currentUser, String orderId, HttpSession session,
 			FDStandingOrder currentStandingOrder, EnumCheckoutMode checkOutMode, boolean mergePending)
 					throws FDResourceException, FDInvalidConfigurationException{
+
+		if (currentUser != null && currentUser.getShoppingCart() instanceof FDModifyCartModel ) {
+			// there's a modify order already going on ...
+			LOGGER.warn("An order is already opened for modification, cancel it first");
+			
+			try {
+				doCancelModifyOrder(session, currentUser);
+			} catch (FDAuthenticationException e) {
+				// it is unlikely to happen but report it anyway
+				LOGGER.error(e);
+			}
+		}
+
 
 		FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder( currentUser.getIdentity(), orderId );
 		FDCustomerManager.storeUser(currentUser.getUser());
@@ -510,16 +531,10 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		//
 		// Cancel Modify order: load the shopping cart with the old items
 		//
+
+
 		try {
-			ShoppingCartUtil.restoreCart(session);
-			
-    		FDGiftCardInfoList gcList = currentUser.getGiftCardList();
-    		//Clear any hold amounts.
-    		gcList.clearAllHoldAmount();
-            
-    		//reset user to see pendingOrder overlay again since they didn't check out
-    		currentUser.setSuspendShowPendingOrderOverlay(false);
-            
+			doCancelModifyOrder(session, currentUser);
 		} catch (FDResourceException ex) {
 			LOGGER.warn("Error accessing resources", ex);
 			throw new JspException(ex.getMessage());
@@ -583,8 +598,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				//
 				ErpPaymentMethodI paymentMethod = null;
 				ErpPaymentMethodI tmpPM = null;
-				Collection payments = erpCustomer.getPaymentMethods();
-				for (Iterator it = payments.iterator(); it.hasNext(); ) {
+				Collection<ErpPaymentMethodI> payments = erpCustomer.getPaymentMethods();
+				for (Iterator<ErpPaymentMethodI> it = payments.iterator(); it.hasNext(); ) {
 					ErpPaymentMethodI p = (ErpPaymentMethodI) it.next();
 					tmpPM = (ErpPaymentMethodModel) p;
 					if (((ErpPaymentMethodModel)tmpPM).getPK().getId().equals(paymentId)) {
@@ -631,7 +646,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		        	modCart.setPaymentMethod(paymentMethod);
 					FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 		        	CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
-					Set appliedPromos = null;
+					Set<String> appliedPromos = null;
 					if(user.isEligibleForSignupPromotion()){
 						//If applied promo is signup then store the eligibilty list.
 						appliedPromos = user.getPromotionEligibility().getEligiblePromotionCodes();
@@ -706,9 +721,9 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				//
 				ErpPaymentMethodI paymentMethod = null;
 				ErpPaymentMethodI tmpPM = null;
-				Collection payments = erpCustomer.getPaymentMethods();
-				for (Iterator it = payments.iterator(); it.hasNext(); ) {
-					ErpPaymentMethodI p = (ErpPaymentMethodI) it.next();
+				Collection<ErpPaymentMethodI> payments = erpCustomer.getPaymentMethods();
+				for (Iterator<ErpPaymentMethodI> it = payments.iterator(); it.hasNext(); ) {
+					ErpPaymentMethodI p = it.next();
 					tmpPM = (ErpPaymentMethodModel) p;
 					if (((ErpPaymentMethodModel)tmpPM).getPK().getId().equals(paymentId)) {
 						paymentMethod = tmpPM;
@@ -740,7 +755,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 
 					FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 		        	CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
-					Set appliedPromos = null;
+					Set<String> appliedPromos = null;
 					if(user.isEligibleForSignupPromotion()){
 						//If applied promo is signup then store the eligibilty list.
 						appliedPromos = user.getPromotionEligibility().getEligiblePromotionCodes();
@@ -806,14 +821,14 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		if (paymentId != null && !"".equals(paymentId.trim())) {
 			try {
 				ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(currentUser.getIdentity());
-				String erpCustomerID = currentUser.getIdentity().getErpCustomerPK();
+				/// String erpCustomerID = currentUser.getIdentity().getErpCustomerPK();
 				//
 				// Get payment method
 				//
 				ErpPaymentMethodI paymentMethod = null;
 				ErpPaymentMethodI tmpPM = null;
-				Collection payments = erpCustomer.getPaymentMethods();
-				for (Iterator it = payments.iterator(); it.hasNext(); ) {
+				Collection<ErpPaymentMethodI> payments = erpCustomer.getPaymentMethods();
+				for (Iterator<ErpPaymentMethodI> it = payments.iterator(); it.hasNext(); ) {
 					ErpPaymentMethodI p = (ErpPaymentMethodI) it.next();
 					tmpPM = (ErpPaymentMethodModel) p;
 					if (((ErpPaymentMethodModel)tmpPM).getPK().getId().equals(paymentId)) {
@@ -872,8 +887,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				//
 				ErpPaymentMethodI paymentMethod = null;
 				ErpPaymentMethodI tmpPM = null;
-				Collection payments = erpCustomer.getPaymentMethods();
-				for (Iterator it = payments.iterator(); it.hasNext(); ) {
+				Collection<ErpPaymentMethodI> payments = erpCustomer.getPaymentMethods();
+				for (Iterator<ErpPaymentMethodI> it = payments.iterator(); it.hasNext(); ) {
 					ErpPaymentMethodI p = (ErpPaymentMethodI) it.next();
 					tmpPM = p;
 					if (((ErpPaymentMethodModel)tmpPM).getPK().getId().equals(paymentId)) {
@@ -884,7 +899,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				//
 				// Get list of charges
 				//
-				Collection charges = new ArrayList();
+				Collection<ErpChargeLineModel> charges = new ArrayList<ErpChargeLineModel>();
 				if ( !"true".equalsIgnoreCase(request.getParameter("waive_"+paymentId)) ) {
 					ErpChargeLineModel line = new ErpChargeLineModel();
 					// !!! NEED TO READ THIS DYNAMICALLY FROM SOMEWHERE
