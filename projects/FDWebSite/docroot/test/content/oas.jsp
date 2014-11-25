@@ -25,7 +25,7 @@
 			var oasTestSite = 'www.freshdirect.com';
 			var oasTestId = 'kitchen';
 			var oasTestSpots = 'SystemMessage,CategoryNote,BrowseTop1,BrowseTop2,BrowseTop3,BrowseBottom1,BrowseBottom2';
-			var oasTestURL = 'http://devpromo.freshdirect.com';
+			var oasTestURL = 'https://devpromo.freshdirect.com';
 			if (afterLoad) {
 				//dynamic id and spots
 				oasTestURL = $jq('#oasTestURL').val();
@@ -81,7 +81,7 @@
 					</th>
 					<td style="padding: 0 5px;">Server :</td>
 					<td>
-						<input id="oasTestURL" value="http://devpromo.freshdirect.com" style="text-align: center; font-weight: bold; width: 250px; font-size: 12px;" />
+						<input id="oasTestURL" value="https://devpromo.freshdirect.com" style="text-align: center; font-weight: bold; width: 250px; font-size: 12px;" />
 					</td>
 					<td style="padding: 0 5px;"> Site :</td>
 					<td>
