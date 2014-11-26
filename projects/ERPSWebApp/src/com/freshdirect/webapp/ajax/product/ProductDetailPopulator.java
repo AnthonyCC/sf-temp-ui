@@ -1445,7 +1445,7 @@ public class ProductDetailPopulator {
 	}
 
 
-	private static String FORMAT_STR = "0.##";
+	private static String FORMAT_STR = "0.00";
 	private static double formatDecimal(double number) {
 		DecimalFormat decimalFormat = new DecimalFormat( FORMAT_STR );
 		String strNumber = decimalFormat.format(number);
