@@ -695,7 +695,9 @@ public class FDStoreProperties {
 	
 	private static final String PROP_LOG_RECOMMENDTATIONS_RESULTS = "fdstore.log.recommendations_results";
 		
-	
+    // [APPDEV-3438] Unit Price Display
+    private final static String UNIT_PRICE_DISPLAY_ENABLED = "fdstore.unitprice.enabled";
+
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
         defaults.put(PROP_PROVIDER_URL, "t3://localhost:7001");
@@ -1377,6 +1379,9 @@ public class FDStoreProperties {
         
         defaults.put(PROP_LOG_RECOMMENDTATIONS_RESULTS, "false");
 
+        // Unit Price Display
+        defaults.put(UNIT_PRICE_DISPLAY_ENABLED,  "false");
+        
         refresh();
     }
 
@@ -3469,5 +3474,10 @@ public class FDStoreProperties {
 	public static boolean isLogRecommenderResults() {
 		return (Boolean.valueOf(get(PROP_LOG_RECOMMENDTATIONS_RESULTS))).booleanValue();
 	}
-}
 
+
+
+	public static boolean isUnitPriceDisplayEnabled() {
+		return (Boolean.valueOf(get(UNIT_PRICE_DISPLAY_ENABLED))).booleanValue();
+	}
+}
