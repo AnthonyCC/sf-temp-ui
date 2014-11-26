@@ -265,11 +265,11 @@
 		
 	-->
 	<ContentTypeDef name="CategorySection">
+		<AttributeDefs>
+			<AttributeDef type="S" name="headline" label="Headline"/>
+			<AttributeDef type="B" name="insertColumnBreak" label="Break Following Categories Into A New Column"/>
+		</AttributeDefs>
 		<RelationshipDefs>
-			<AttributeDefs>
-				<AttributeDef type="S" name="headline" label="Headline"/>
-				<AttributeDef type="B" name="insertColumnBreak" label="Break Following Categories Into A New Column"/>
-			</AttributeDefs>
 			<RelationshipDef name="selectedCategories" label="Selected Categories" required="true" cardinality="Many">
 				<DestinationDef contentType="Category" />
 			</RelationshipDef>
