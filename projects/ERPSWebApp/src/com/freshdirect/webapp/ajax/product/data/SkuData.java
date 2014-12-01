@@ -108,20 +108,20 @@ public interface SkuData {
 
 	public double getPrice();
 
-	// APPDEV-3528
-	public void setUtPrice( double price );
+	// APPDEV-3438
+	public void setUtPrice( String price );
 
-	// APPDEV-3528
-	public double getUtPrice();
+	// APPDEV-3438
+	public String getUtPrice();
 
 	public void setSalesUnit( List<SalesUnit> salesUnit );
 
 	public List<SalesUnit> getSalesUnit();
 
-	// APPDEV-3528
+	// APPDEV-3438
 	public void setUtSalesUnit( String salesUnit );
 
-	// APPDEV-3528
+	// APPDEV-3438
 	public String getUtSalesUnit();
 
 	public void setQuantity( Quantity quantity );

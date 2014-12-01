@@ -111,8 +111,8 @@ public class ProductData extends BasicProductData implements SkuData {
 	protected String taxAndDeposit;
 	protected String aboutPriceText;	
 
-	// APPDEV-3528
-	private double utPrice;
+	// APPDEV-3438
+	private String utPrice;
 	private String utSalesUnit;
 
 	// TODO ???
@@ -603,12 +603,12 @@ public class ProductData extends BasicProductData implements SkuData {
 	}
 
 	@Override
-	public void setUtPrice(double price) {
+	public void setUtPrice(String price) {
 		this.utPrice = price;
 	}
 
 	@Override
-	public double getUtPrice() {
+	public String getUtPrice() {
 		return utPrice;
 	}
 

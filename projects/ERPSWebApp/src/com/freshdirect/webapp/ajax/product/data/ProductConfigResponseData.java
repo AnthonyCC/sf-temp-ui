@@ -84,8 +84,8 @@ public class ProductConfigResponseData extends BasicProductData {
 		private String salesUnitLabel;
 		private boolean hasSalesUnitDescription;
 
-		// APPDEV-3528
-		private double utPrice;
+		// APPDEV-3438
+		private String utPrice;
 		private String utSalesUnit;
 
 		
@@ -314,12 +314,12 @@ public class ProductConfigResponseData extends BasicProductData {
 		}
 
 		@Override
-		public void setUtPrice(double price) {
+		public void setUtPrice(String price) {
 			this.utPrice = price;
 		}
 
 		@Override
-		public double getUtPrice() {
+		public String getUtPrice() {
 			return utPrice;
 		}
 

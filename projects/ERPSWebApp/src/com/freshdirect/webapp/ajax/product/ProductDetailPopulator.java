@@ -1005,7 +1005,7 @@ public class ProductDetailPopulator {
 				if (n > 0 && n > 0) {
 					final double p = (item.getPrice() * n) / d;
 	
-					item.setUtPrice( formatDecimal(p) );
+					item.setUtPrice( formatDecimalToString(p) );
 					item.setUtSalesUnit( su.getUnitPriceUOM() );
 				}
 			}
@@ -1454,5 +1454,14 @@ public class ProductDetailPopulator {
 		strNumber = strNumber.replaceAll(",", ".");
 		Double numberDouble = new Double(strNumber);
 		return numberDouble.doubleValue();
+	}
+
+
+	private static String formatDecimalToString(double number) {
+		DecimalFormat decimalFormat = new DecimalFormat( FORMAT_STR );
+		String strNumber = decimalFormat.format(number);
+		strNumber = strNumber.replaceAll(",", ".");
+
+		return strNumber;
 	}
 }
