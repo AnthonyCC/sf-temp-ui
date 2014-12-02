@@ -40,15 +40,17 @@
 {template .globalnavMenuItem autoescape="false"}
 {if $menuitem.departments}
   {if not $menuitem.hideDropDown}
-	<li data-component="globalnav-popup-body" data-id="{$menuitem.id}">
+	<li data-component="globalnav-popup-body" data-id="{$menuitem.id}" data-popup-type="superdepartment">
 		//{call .globalnavSuperDepartment data="$menuitem" /} 
       	<!-- SUPERDEPARTMENT - {$menuitem.id} -->
       	<div class="subdepartments_cont">
 	    	<ul class="subdepartments">
 			{foreach $department in $menuitem.departments}
 	        	<li class="submenuitem" data-component="globalnav-submenu-item" data-id="{$department.id}">
+              <span class="submenuitem-link">
 	          		<a href="/browse.jsp?id={$department.id}">{$department.name ? $department.name : $department.id}</a>
-	          		<div class="arrow-down"></div>
+              </span>
+              <div class="arrow-down"></div>
 	        	</li> 
 	      	{/foreach}
 	    	</ul>
@@ -103,7 +105,7 @@
 {let $hasPrefCategories:$department.preferenceCategories and length($department.preferenceCategories) > 0 /}
 
 {if not $department.hideDropDown}
-<li class="department" data-component="globalnav-popup-body" data-id="{$department.id}">
+<li class="department" data-component="globalnav-popup-body" data-id="{$department.id}" data-popup-type="department">
   <div class="deptcontainer">
     {if $department.heroImage} 
       <div class="heroimg_cont"><img class="heroimg" src="{$department.heroImage}" alt="Department background" /></div>

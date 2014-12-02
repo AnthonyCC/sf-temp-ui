@@ -52,7 +52,7 @@ var FreshDirect = FreshDirect || {};
         return componentFn.call(navigationHighlighter, "[data-id='" + location + "']");
     },
     onGlobalNavItem : function(location){
-      return $(this.globalComponent).find(location).find("a").attr("data-highlight", "on");
+      return $(this.globalComponent).find(location).find("a").first().attr("data-highlight", "on");
     },
     onFooterNavItem : function(location){
       return $(this.footerComponent).find(location).attr("data-highlight", "on");
