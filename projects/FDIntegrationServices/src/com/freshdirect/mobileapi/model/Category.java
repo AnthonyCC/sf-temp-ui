@@ -28,6 +28,8 @@ public class Category extends ProductContainer {
     
     private boolean healthWarning = false;
     
+    private boolean isBottomLevel = false;
+    
     private Map<String, Set<FilterOption>> filterOptions = new LinkedHashMap<String, Set<FilterOption>>();
 
     public static Category wrap(CategoryModel model) {
@@ -133,6 +135,14 @@ public class Category extends ProductContainer {
 
     public void setHealthWarning(boolean healthWarning) {
         this.healthWarning = healthWarning;
+    }
+    
+    public boolean isBottomLevel() {
+    	return isBottomLevel;
+    }
+    
+    public void setBottomLevel(boolean bottomLevel) {
+        this.isBottomLevel = bottomLevel;
     }
     
 }

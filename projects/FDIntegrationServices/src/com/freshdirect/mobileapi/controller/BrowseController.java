@@ -221,16 +221,19 @@ public class BrowseController extends BaseController {
 									}
 		                    		if (product instanceof Wine) {
 		                    			Wine wine = ((Wine) product);
-		                    			countries.add(wine.getWineCountry());
-		                    			regions.add(wine.getWineRegionName());
+		                    			if (wine.getWineCountry() != null && wine.getWineRegionName() != null && wine.getGrape() != null) {
+			                    			countries.add(wine.getWineCountry());
+			                    			regions.add(wine.getWineRegionName());
 		                    			
-		                    			String grape = wine.getGrape();
 		                    			
-		                    			String [] grapesSplit = grape.split(",");
-		                    			
-		                    			for(String g : grapesSplit){
-		                    				g = g.replaceAll("[\\(\\)\\d\\%]*", "").trim();
-		                    				grapes.add(g);
+			                    			String grape = wine.getGrape();
+			                    			
+			                    			String [] grapesSplit = grape.split(",");
+			                    			
+			                    			for(String g : grapesSplit){
+			                    				g = g.replaceAll("[\\(\\)\\d\\%]*", "").trim();
+			                    				grapes.add(g);
+			                    			}
 		                    			}
 		                    			
 		                    		} else {
@@ -253,12 +256,15 @@ public class BrowseController extends BaseController {
 	                    }
 	                } else if(content instanceof CategoryModel) {
 	                	CategoryModel categoryModel = (CategoryModel)content;
+	                	String parentId = categoryModel.getParentNode().getContentKey().getId();
+	                	
 						if((categoryModel.isActive()
 	                					|| (categoryModel.getRedirectUrl() != null
 	                								&& categoryModel.getRedirectUrl().trim().length() > 0))
 	                				// && !categoryModel.isHideIphone()
 	                				// && !categoryIDs.contains(categoryModel.getParentId())
 	                				// && !isEmptyProductGrabberCategory(categoryModel)
+	                				&& contentId.equals(parentId)
 	                				) {	// Show only one level of category
 							// check if the next level in hierarchy has only products
 							// it's important for the UI
@@ -275,10 +281,12 @@ public class BrowseController extends BaseController {
 	                		Category category = Category.wrap(categoryModel);
 							addCategoryHeadline(categorySections, categoryModel, category);
 
+							category.setNoOfProducts(0);
+							
 							if(!categoryModel.getSubcategories().isEmpty())
-								category.setNoOfProducts(0);
+								category.setBottomLevel(false);
 							else
-								category.setNoOfProducts(categoryModel.getProducts().size());
+								category.setBottomLevel(true);
 								
 							
 							categories.add(category);
