@@ -1,4 +1,3 @@
-/*global jQuery,common, FDModalDialog */
 var FreshDirect = FreshDirect || {};
 
 // module initialization
@@ -6,7 +5,7 @@ var FreshDirect = FreshDirect || {};
   "use strict";
 
   // TODO
-  // - submenu positioning
+  // - iPad - add class on touch, prevent click
 
   // copy menu popups to menu items
   ["globalnav-item", "globalnav-submenu-item"].forEach(function (item) {
@@ -32,8 +31,6 @@ var FreshDirect = FreshDirect || {};
             $popupcontent.find('li.submenuitem').each(function () {
               width += $(this).outerWidth();
             });
-            $popupcontent.attr('c', center);
-            $popupcontent.attr('w', width);
             $popupcontent.find('.subdepartments').css({
               'padding-left': Math.max(0, Math.min(center - width / 2, 960 - width))
             });
@@ -63,6 +60,16 @@ var FreshDirect = FreshDirect || {};
       if ($popupcontent.size() > 0) {
         $popupcontent.insertAfter($menuitem.children('span').first());
       }
+    }
+  });
+
+  $('[data-component="globalnav-item"],[data-component="globalnav-submenu-item"]').on("touchstart", function (e) {
+    var $t = $(this);
+
+    if (!$t.hasClass('touched')) {
+      e.preventDefault();
+      $t.parent().find('.touched').removeClass('touched');
+      $t.addClass('touched');
     }
   });
 }(FreshDirect, FreshDirect.libs.$));
