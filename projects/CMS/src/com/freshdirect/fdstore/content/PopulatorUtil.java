@@ -2,6 +2,8 @@ package com.freshdirect.fdstore.content;
 
 import java.util.StringTokenizer;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -10,6 +12,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 
 public class PopulatorUtil {
+	private static final Logger LOGGER = Logger.getLogger(PopulatorUtil.class.getSimpleName());
 	
 	public static final ProductModel getProduct( String productId, String categoryId ) {
 		if ( categoryId == null ) {
@@ -22,10 +25,22 @@ public class PopulatorUtil {
 	}
 	
 	public static final SkuModel getDefSku( ProductModel product ) {
+		if (product == null) {
+			LOGGER.error("getDefSku(): No input product!");
+			return null;
+		}
+		final ContentKey ck = product.getContentKey();
+
 		SkuModel sku = product.getDefaultSku();
-		if ( sku == null ) {			
+		if ( sku == null ) {
+			LOGGER.debug("getDefSku(): ... fall back to default temporary unavailable sku");
+
 			// temporary unav item?
 			sku = product.getDefaultTemporaryUnavSku();
+			
+			if (sku == null) {
+				LOGGER.error("getDefSku(): No default SKU found for product with key " + (ck != null ? ck.getId() : "<null>") + " at all");
+			}
 		}
 		return sku;
 	}

@@ -20,10 +20,10 @@ import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.webapp.ajax.browse.data.NavigationModel;
 
 public class FilterCollector {
-
 	private static final FilterCollector INSTANCE = new FilterCollector();
 
 	private static final int NON_KOSHER_PRI = 999;
@@ -42,14 +42,20 @@ public class FilterCollector {
 		Set<String> showMeOnlyOfSearchResults = navigationModel.getShowMeOnlyOfSearchResults();
 		collectShowMeOnlyNewFilter(product, showMeOnlyOfSearchResults);
 		try {
-			FDProduct fdProduct = PopulatorUtil.getDefSku(product).getProduct();
+			final SkuModel defSku = PopulatorUtil.getDefSku(product);
+			if (defSku == null) {
+				// prevent NPE, just leave the scene
+				return;
+			}
+
+			FDProduct fdProduct = defSku.getProduct();
 			if (fdProduct != null) {
 				collectShowMeOnlyKosherFilter(showMeOnlyOfSearchResults, fdProduct.getKosherInfo());
 				collectShowMeOnlyOrganicFilter(showMeOnlyOfSearchResults, fdProduct.getNutritionInfoList(ErpNutritionInfoType.ORGANIC));
 				collectShowMeOnlyOnSaleFilter(product, showMeOnlyOfSearchResults);
 			}
 		} catch (FDSkuNotFoundException exc) {
-			// absorp exception
+			// absorb exception
 		}
 	}
 
