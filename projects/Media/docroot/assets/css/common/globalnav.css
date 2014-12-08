@@ -378,12 +378,6 @@ ul.globalnavPopups li {
   overflow: hidden;
 }
 
-.subdepartments_cont {
-  box-shadow: 		  0 2px 3px rgba(79, 79, 79, 0.68);
-  -moz-box-shadow:    0 2px 3px rgba(79, 79, 79, 0.68);
-  -webkit-box-shadow: 0 2px 3px rgba(79, 79, 79, 0.68);
-}
-
 .gnav .department,
 .globalnav-popup .department{
   color: #414141;
@@ -543,10 +537,28 @@ ul.globalnavPopups li {
 /* second level department list */
 .subdepartments_cont {
 	background-color: #fff;
-	border: 1px solid #CCC;
-  	position: relative;
+  border: 1px solid #ccc;
+  border-top: none;
+  position: relative;
 	z-index:5;
 }
+.subdepartments_cont:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: -moz-linear-gradient(top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.65)), color-stop(100%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* IE10+ */
+  background: linear-gradient(to bottom, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
+  opacity: .7;
+}
+
 ul.subdepartments {
 	margin: 0;
 	position: relative;
@@ -642,6 +654,7 @@ ul.subdepartments {
 
 .top-nav {
   font: 18px/54px 'TradeGothic', 'Trebuchet MS', Trebuchet, 'Lucida Grande', sans-serif;
+  position: relative;
 }
 
 .animcontainer{
@@ -849,17 +862,17 @@ ul.subdepartments {
 	overflow: hidden;
 	background-color:#FFFFFF;
 	color: #000000;
-	box-shadow: 	  0 2px 3px rgba(79, 79, 79, 0.68), inset 2px 2px 3px 0 rgba(79,79,79,0.68);
 	-moz-box-shadow:    0 2px 3px rgba(79, 79, 79, 0.68), inset 2px 2px 3px 0 rgba(79,79,79,0.68);
 	-webkit-box-shadow: 0 2px 3px rgba(79, 79, 79, 0.68), inset 2px 2px 3px 0 rgba(79,79,79,0.68);
+	box-shadow: 	  0 2px 3px rgba(79, 79, 79, 0.68), inset 2px 2px 3px 0 rgba(79,79,79,0.68);
 }
 
 [data-component="globalnav-menu"] .alignPopupRight > [data-component="globalnav-popup-body"] {
   right: 30px;
   left: auto;
-	box-shadow: 	  0 2px 3px rgba(79, 79, 79, 0.68), inset -2px 2px 3px 0 rgba(79,79,79,0.68);
 	-moz-box-shadow:    0 2px 3px rgba(79, 79, 79, 0.68), inset -2px 2px 3px 0 rgba(79,79,79,0.68);
 	-webkit-box-shadow: 0 2px 3px rgba(79, 79, 79, 0.68), inset -2px 2px 3px 0 rgba(79,79,79,0.68);
+	box-shadow: 	  0 2px 3px rgba(79, 79, 79, 0.68), inset -2px 2px 3px 0 rgba(79,79,79,0.68);
 }
 
 [data-component="globalnav-menu"] .subdepartments .alignPopupRight > [data-component="globalnav-popup-body"] {
