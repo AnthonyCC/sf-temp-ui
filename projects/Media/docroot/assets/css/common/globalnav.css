@@ -867,7 +867,13 @@ ul.subdepartments {
 	box-shadow: 	  0 2px 3px rgba(79, 79, 79, 0.68), inset 2px 2px 3px 0 rgba(79,79,79,0.68);
 }
 
-[data-component="globalnav-menu"] .alignPopupRight > [data-component="globalnav-popup-body"] {
+[data-component="globalnav-menu"] .top-item-w-sub > [data-component="globalnav-popup-body"] {
+	-moz-box-shadow:    0 2px 3px rgba(79, 79, 79, 0.68), inset 2px 2px 3px 0 rgba(79,79,79,0.68);
+	-webkit-box-shadow: 0 2px 3px rgba(79, 79, 79, 0.68), inset 2px 2px 3px 0 rgba(79,79,79,0.68);
+	box-shadow: 	  0 2px 3px rgba(79, 79, 79, 0.68), inset 2px 2px 3px 0 rgba(79,79,79,0.68);
+}
+
+[data-component="globalnav-menu"] .alignPopupRight > .department[data-component="globalnav-popup-body"] {
   right: 30px;
   left: auto;
 	-moz-box-shadow:    0 2px 3px rgba(79, 79, 79, 0.68), inset -2px 2px 3px 0 rgba(79,79,79,0.68);
@@ -909,9 +915,6 @@ ul.subdepartments {
 	visibility:visible;
   opacity: 1;
 	transition-delay: 0.3s;
-	box-shadow: inset 0px 2px 3px 0px rgba(79,79,79,0.68);
-	-moz-box-shadow:   inset 0px 2px 3px 0px rgba(79,79,79,0.68);
-  -webkit-box-shadow: inset 0px 2px 3px 0px rgba(79,79,79,0.68);
 	z-index:13;
 }
 
