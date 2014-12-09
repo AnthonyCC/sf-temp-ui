@@ -536,11 +536,11 @@ ul.globalnavPopups li {
 
 /* second level department list */
 .subdepartments_cont {
-	background-color: #fff;
-  border: 1px solid #ccc;
-  border-top: none;
+  background-color: #fff;
+/*  border: 1px solid #ccc;	*/
+  border: none;
   position: relative;
-	z-index:5;
+  z-index:5;
 }
 .subdepartments_cont:after {
   content: '';
