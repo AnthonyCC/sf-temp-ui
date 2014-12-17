@@ -33,13 +33,13 @@ public class PopulatorUtil {
 
 		SkuModel sku = product.getDefaultSku();
 		if ( sku == null ) {
-			LOGGER.debug("getDefSku(): ... fall back to default temporary unavailable sku");
+			//LOGGER.debug("getDefSku(): ... fall back to default temporary unavailable sku");
 
 			// temporary unav item?
 			sku = product.getDefaultTemporaryUnavSku();
 			
 			if (sku == null) {
-				LOGGER.error("getDefSku(): No default SKU found for product with key " + (ck != null ? ck.getId() : "<null>") + " at all");
+				//LOGGER.error("getDefSku(): No default SKU found for product with key " + (ck != null ? ck.getId() : "<null>") + " at all");
 			}
 		}
 		return sku;

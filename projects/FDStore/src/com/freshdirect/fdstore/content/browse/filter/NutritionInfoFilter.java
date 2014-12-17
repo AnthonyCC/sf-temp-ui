@@ -67,7 +67,7 @@ public abstract class NutritionInfoFilter extends AbstractProductItemFilter {
 				}
 			}
 		} catch (FDResourceException e) {
-			LOGGER.error("Failed to obtain fdProduct for product " + ctx.getProductModel().getContentName());
+			//LOGGER.error("Failed to obtain fdProduct for product " + ctx.getProductModel().getContentName());
 			return false;
 		}
 

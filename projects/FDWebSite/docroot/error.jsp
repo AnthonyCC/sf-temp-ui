@@ -45,8 +45,8 @@ response.setStatus(500); %>
 								Detail Message: 
 		    	<% if (exception!=null) { 
 				%>
-					<%=String.valueOf(exception.getMessage())%>
 					<% JspLogger.GENERIC.error("Got an error page", exception); %>
+					<%=String.valueOf(exception.getMessage())%>
 				<% } %>
 				<br><br>
 
@@ -86,6 +86,6 @@ response.setStatus(500); %>
 </tmpl:insert>
 <% 
 } catch (Exception fatalError) { %>
+	<% JspLogger.GENERIC.error("FatalError in error page", fatalError);  %>
 	<%=  String.valueOf(fatalError) %>
-	<% JspLogger.GENERIC.error("FatalError in error page", fatalError); 
-} %>
+<% } %>

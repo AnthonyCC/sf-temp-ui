@@ -35,6 +35,6 @@ if (deliveryETAInfo != null) {
 </fd:GetDeliveryETAInfo>
 <%
 } catch (Exception e) {
-	JspLogger.GENERIC.error("Exception in i_delivery_eta_info.jspf", e);
+	//JspLogger.GENERIC.error("Exception in i_delivery_eta_info.jspf", e);
 }
 %>

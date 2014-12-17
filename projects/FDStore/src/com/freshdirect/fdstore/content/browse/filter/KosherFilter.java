@@ -47,7 +47,7 @@ public class KosherFilter extends AbstractProductItemFilter {
 
 			return invertChecker(EnumKosherSymbolValue.NONE.getPriority() < kosherPriority && kosherPriority < NON_KOSHER_PRI);
 		} catch (FDResourceException e) {
-			LOGGER.error("Failed to obtain fdProduct for product " + ctx.getProductModel().getContentName());
+			//LOGGER.error("Failed to obtain fdProduct for product " + ctx.getProductModel().getContentName());
 			return false;
 		}
 	}
