@@ -22,9 +22,9 @@
   
   <tmpl:get name='facebookmeta'/>
 
-  <jwr:style src="/grid.css"/>
-  <jwr:style src="/global.css"/>
-  <jwr:style src="/oldglobal.css"/>
+  <jwr:style src="/grid.css" media="all" />
+  <jwr:style src="/global.css" media="all" />
+  <jwr:style src="/oldglobal.css" media="all" />
 
   <tmpl:get name='extraCss'/>
 

@@ -18,10 +18,10 @@
         <title><tmpl:get name="title" /></title>
 		<%@ include file="/common/template/includes/metatags.jspf" %>
         <%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	  	<jwr:style src="/grid.css"/>
-		<jwr:style src="/global.css"/>
-        <jwr:style src="/oldglobal.css"/>
-        <jwr:style src="/quickshop.css"/>
+	  	<jwr:style src="/grid.css" media="all" />
+		<jwr:style src="/global.css" media="all" />
+        <jwr:style src="/oldglobal.css" media="all" />
+        <jwr:style src="/quickshop.css" media="all" />
         <tmpl:get name="extraJs"/>
         <%@ include file="/shared/template/includes/i_head_end.jspf" %>
     </head>

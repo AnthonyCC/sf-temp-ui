@@ -92,8 +92,8 @@ final int W_DNAV_TOTAL = 970;
 
 	<%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
 	
-	<jwr:style src="/assets/css/brownie_points.css" />
-	<jwr:style src="/assets/css/TextboxList.css" />
+	<jwr:style src="/assets/css/brownie_points.css" media="all" />
+	<jwr:style src="/assets/css/TextboxList.css" media="all" />
 
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>

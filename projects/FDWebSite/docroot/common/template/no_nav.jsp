@@ -33,8 +33,8 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
 	<% } %>
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-	<fd:css href="/assets/css/giftcards.css"/>
-	<fd:css href="/assets/css/timeslots.css"/>
+	<fd:css href="/assets/css/giftcards.css" media="all" />
+	<fd:css href="/assets/css/timeslots.css" media="all" />
   <tmpl:get name='extraCss'/>
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
 <%		

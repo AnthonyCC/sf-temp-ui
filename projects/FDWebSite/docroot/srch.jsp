@@ -61,9 +61,9 @@
   </tmpl:put>
 
   <tmpl:put name='extraCss' direct='true'>
-    <jwr:style src="/quickshop.css"/>
-    <jwr:style src="/browse.css"/>
-    <jwr:style src="/srch.css"/>
+    <jwr:style src="/quickshop.css" media="all" />
+    <jwr:style src="/browse.css" media="all" />
+    <jwr:style src="/srch.css" media="all" />
   </tmpl:put>
 
   <tmpl:put name='containerExtraClass' direct='true'>srch ${empty browsePotato.menuBoxes.menuBoxes ? 'emptymenu' : ''}</tmpl:put>

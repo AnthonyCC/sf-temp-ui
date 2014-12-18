@@ -35,8 +35,8 @@
   </tmpl:put>
 
   <tmpl:put name='extraCss' direct='true'>
-    <jwr:style src="/quickshop.css"/>
-    <jwr:style src="/browse.css"/>
+    <jwr:style src="/quickshop.css" media="all"/>
+    <jwr:style src="/browse.css" media="all"/>
   </tmpl:put>
 
   <tmpl:put name='containerExtraClass' direct='true'>browse</tmpl:put>

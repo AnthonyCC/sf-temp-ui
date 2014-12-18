@@ -112,8 +112,8 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
   <tmpl:put name='containerExtraClass' direct='true'>pdp</tmpl:put>
 
   <tmpl:put name='extraCss' direct='true'>
-    <jwr:style src="/quickshop.css"/>
-    <jwr:style src="/pdp.css"/>
+    <jwr:style src="/quickshop.css" media="all" />
+    <jwr:style src="/pdp.css" media="all" />
   </tmpl:put>
   
 <% if(shouldBeOnNew) {  // new leftnav, TODO: remove this after full rollout%>
