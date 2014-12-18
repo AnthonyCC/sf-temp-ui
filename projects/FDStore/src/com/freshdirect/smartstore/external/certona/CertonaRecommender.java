@@ -93,7 +93,7 @@ public class CertonaRecommender implements ExternalRecommender {
 			}
 
 			url = new URL(FDStoreProperties.getCertonaService() + urlParameters.toString());
-			logger.info("Certona request: " + FDStoreProperties.getCertonaService() + urlParameters.toString());
+			//logger.info("Certona request: " + FDStoreProperties.getCertonaService() + urlParameters.toString());
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 
@@ -104,7 +104,7 @@ public class CertonaRecommender implements ExternalRecommender {
 			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 			StringWriter writer = new StringWriter();
 			transformer.transform(new DOMSource(document), new StreamResult(writer));
-			logger.info("Certona answer: " + writer.getBuffer().toString().replaceAll("\n|\r", ""));
+			//logger.info("Certona answer: " + writer.getBuffer().toString().replaceAll("\n|\r", ""));
 			
 //			Document document = builder.parse(new InputSource(new StringReader("<?xml version=\"1.0\" encoding=\"UTF-8\"?><response>"
 //					+ "<products>"
