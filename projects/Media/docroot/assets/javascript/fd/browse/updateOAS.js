@@ -46,14 +46,22 @@ var FreshDirect = FreshDirect || {};
           sitePage = 'www.freshdirect.com/browse';
         }
 
-        if (lastSitePage === sitePage) {
-          return;
-        } else {
-          lastSitePage = sitePage;
-        }
+//        if (lastSitePage === sitePage) {
+//          return;
+//        } else {
+//          lastSitePage = sitePage;
+//        }
 
         if (data.contentId) {
           OAS_query = OAS_query.replace(/id=.*?&/, "id="+data.contentId+"&");
+        }
+        
+        if (data.url) {
+        	 try {
+        		 OAS_query = OAS_query.replace(/searchParams=.*?&/, "searchParams=" + decodeURIComponent(data.url).match(/searchParams=([^&]+)&/)[1] + "&");
+        	 } catch (e) {
+        		 
+        	 }
         }
 
         updateOAS(OAS_url, sitePage, OAS_rns, listPos, OAS_query);
