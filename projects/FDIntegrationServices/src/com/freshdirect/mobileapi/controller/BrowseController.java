@@ -256,6 +256,10 @@ public class BrowseController extends BaseController {
 	                    }
 	                } else if(content instanceof CategoryModel) {
 	                	CategoryModel categoryModel = (CategoryModel)content;
+                        if (StringUtils.equals(contentId, categoryModel.getContentName())) {
+                            // don't return recursive models
+                            break;
+                        }
 	                	String parentId = categoryModel.getParentNode().getContentKey().getId();
 	                	
 						if((categoryModel.isActive()
