@@ -48,4 +48,20 @@ public class SalesUnit {
     public String getDescriptionUnit() {
         return fdSalesUnit.getDescriptionUnit();
     }
+    
+    public int getUnitPriceNumerator() {
+		return fdSalesUnit.getUnitPriceNumerator();
+	}
+
+	public int getUnitPriceDenominator() {
+		return fdSalesUnit.getUnitPriceDenominator();
+	}
+
+	public String getUnitPriceUOM() {
+		return fdSalesUnit.getUnitPriceUOM();
+	}
+
+	public String getUnitPriceDescription() {
+		return fdSalesUnit.getUnitPriceDescription();
+	}
 }
