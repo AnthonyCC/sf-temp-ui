@@ -88,7 +88,7 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 			//set the default list id on the first page load OR if the current selected list is just deleted or empty
 			selectList(user, nav);
 			
-			List<FilteringSortingItem<QuickShopLineItemWrapper>> filterItems = QuickShopFilterServlet.prepareForFiltering(items);
+			List<FilteringSortingItem<QuickShopLineItemWrapper>> filterItems = QuickShopHelper.prepareForFiltering(items);
 			
 			QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, user, filters, filterItems, QuickShopHelper.getActiveReplacements( session ));
 			result = filter.doFlow(nav, filterItems);

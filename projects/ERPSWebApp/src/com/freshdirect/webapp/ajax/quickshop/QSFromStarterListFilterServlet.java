@@ -77,7 +77,7 @@ public class QSFromStarterListFilterServlet extends QuickShopServlet {
 				items = new ArrayList<QuickShopLineItemWrapper>(items);
 			}
 
-			List<FilteringSortingItem<QuickShopLineItemWrapper>> filterItems = QuickShopFilterServlet.prepareForFiltering(items);
+			List<FilteringSortingItem<QuickShopLineItemWrapper>> filterItems = QuickShopHelper.prepareForFiltering(items);
 			
 			QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, user, filters, filterItems, QuickShopHelper.getActiveReplacements( session ));
 			result = filter.doFlow(nav, filterItems);

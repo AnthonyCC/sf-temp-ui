@@ -730,7 +730,7 @@ public class QuickShopHelper {
 		return result;
 	}
 	
-	private static List<FilteringSortingItem<QuickShopLineItemWrapper>> prepareForFiltering(List<QuickShopLineItemWrapper> items){
+	public static List<FilteringSortingItem<QuickShopLineItemWrapper>> prepareForFiltering(List<QuickShopLineItemWrapper> items){
 		
 		// Wrap items in a FilteringSortingItem for the FilteringFlow
 		List<FilteringSortingItem<QuickShopLineItemWrapper>> result = new ArrayList<FilteringSortingItem<QuickShopLineItemWrapper>>();
@@ -748,7 +748,7 @@ public class QuickShopHelper {
 	 * 
 	 * Merge the original search result with the user's order history
 	 */
-	private static void search(String searchTerm, List<QuickShopLineItemWrapper> items){
+	public static void search(String searchTerm, List<QuickShopLineItemWrapper> items){
 		
 		List<String> productIds = null;
 		if(searchTerm!=null){
