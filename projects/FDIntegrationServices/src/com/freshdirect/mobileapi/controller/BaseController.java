@@ -34,6 +34,7 @@ import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoCartException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
+import com.freshdirect.mobileapi.model.AnonymousUser;
 import com.freshdirect.mobileapi.model.Cart;
 import com.freshdirect.mobileapi.model.MessageCodes;
 import com.freshdirect.mobileapi.model.RequestData;
@@ -57,14 +58,14 @@ import freemarker.template.TemplateException;
 
 public abstract class BaseController extends AbstractController implements MessageCodes {
 
-    public final class AnonymousUser extends FDUser {
+   /* public final class AnonymousUser extends FDUser {
 	    private static final long serialVersionUID = 6972700005485690087L;
 
 	    @Override
 	    public PricingContext getPricingContext() {
 	        return PricingContext.DEFAULT;
 	    }
-    }
+    }*/
 
     private static final String JSON = "JSON";
 
