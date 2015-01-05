@@ -18,7 +18,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.FilteringFlowResult;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -46,11 +49,10 @@ import com.freshdirect.mobileapi.model.comparator.FilterOptionLabelComparator;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
-import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
-import com.freshdirect.webapp.ajax.quickshop.QuickShopFilterServlet;
+import com.freshdirect.webapp.ajax.quickshop.QuickShopHelper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
+import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopListRequestObject;
-import com.freshdirect.webapp.ajax.quickshop.data.QuickShopReturnValue;
 
 /**
  * @author Rob
@@ -352,49 +354,36 @@ public class OrderController extends BaseController {
         requestData.setSortId(sortBy);
         requestData.setSearchTerm(query.getQuery());
         try {
-            QuickShopReturnValue result = callQuickShopFilterServlet(fdUser, session, requestData);
+        	FilteringFlowResult<QuickShopLineItemWrapper> result = QuickShopHelper.getQuickShopPastOrderItems(fdUser, session, requestData, requestData.convertToFilteringNavigator());
             return convertToSkuList(result);
-        } catch (HttpErrorResponse e) {
-            throw new RuntimeException(e);
+        } catch (FDResourceException e) {
+            throw new ModelException(e);
         }
     }
 
-    private List<ProductConfiguration> convertToSkuList(QuickShopReturnValue result) throws ModelException {
+    private List<ProductConfiguration> convertToSkuList(FilteringFlowResult<QuickShopLineItemWrapper> result) throws ModelException {
         List<ProductConfiguration> productsWithSkus = new ArrayList<ProductConfiguration>();
-        for (List<QuickShopLineItem> list : result.getItems().values()) {
-            for (QuickShopLineItem line : list) {
-                final ProductModel productModel = ContentFactory.getInstance().getProductByName(line.getCatId(), line.getProductId());
+        if(result != null) {
+        	List<FilteringSortingItem<QuickShopLineItemWrapper>> items =  result.getItems();
+        	
+	        for (FilteringSortingItem<QuickShopLineItemWrapper> wrapper : items) {
+	        	QuickShopLineItem line = wrapper.getNode().getItem();
+	        	final ProductModel productModel = ContentFactory.getInstance().getProductByName(line.getCatId(), line.getProductId());
                 ProductConfiguration configuration = new ProductConfiguration();
                 configuration.populateProductWithModel(Product.wrap(productModel), line.getSkuCode());
                 productsWithSkus.add(configuration);
-            }
+	        }
         }
         return productsWithSkus;
     }
-
-    private QuickShopReturnValue callQuickShopFilterServlet(FDUserI user, HttpSession session, QuickShopListRequestObject requestData) throws HttpErrorResponse {
-        final QuickShopReturnValue result = new QuickShopFilterServlet() {
-            private static final long serialVersionUID = -4517117963181278796L;
-
-            @Override
-            public QuickShopReturnValue process(FDUserI user, HttpSession session,
-                    QuickShopListRequestObject requestData) throws HttpErrorResponse {
-                return super.process(user, session, requestData);
-            }
-            
-        }.process(user, session, requestData);
-        return result;
-    }
-
+    
     private ModelAndView getDeptForQuickshopEveryItem(ModelAndView model, SessionUser user, String orderId, Integer filterOrderDays) throws FDException, JsonException {
     	Order order = new Order();
 
     	List<Department> departments;
     	    	
     	List<FilterOption> qCartDepartments = new ArrayList<FilterOption>();
-    	
-    	
-        
+    	        
         List<FilterOption> departmentList = new ArrayList<FilterOption>();
     	try {
     		departments = order.getDeptForQuickshopEveryItem(orderId,filterOrderDays, user);

@@ -32,12 +32,16 @@ import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ConfiguredProductGroup;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentSearch;
+import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.FDFolder;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.StarterList;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -56,6 +60,7 @@ import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.pricing.SkuModelPricingAdapter;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
@@ -63,12 +68,31 @@ import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.quickshop.data.EnumQuickShopTab;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
+import com.freshdirect.webapp.ajax.quickshop.data.QuickShopListRequestObject;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class QuickShopHelper {
 
 	private static final int TIME_LIMIT = -13;
 	private final static Logger LOG = LoggerFactory.getInstance(QuickShopHelper.class);
+	
+	//create filter
+	private static final Set<FilteringValue> filters = new HashSet<FilteringValue>();
+	static {
+		filters.add(EnumQuickShopFilteringValue.TIME_FRAME_ALL);
+		filters.add(EnumQuickShopFilteringValue.TIME_FRAME_LAST);
+		filters.add(EnumQuickShopFilteringValue.TIME_FRAME_30);
+		filters.add(EnumQuickShopFilteringValue.TIME_FRAME_60);
+		filters.add(EnumQuickShopFilteringValue.TIME_FRAME_90);
+		filters.add(EnumQuickShopFilteringValue.TIME_FRAME_180);
+		filters.add(EnumQuickShopFilteringValue.ORDERS_BY_DATE);
+		filters.add(EnumQuickShopFilteringValue.DEPT);
+		filters.add(EnumQuickShopFilteringValue.GLUTEN_FREE);
+		filters.add(EnumQuickShopFilteringValue.KOSHER);
+		filters.add(EnumQuickShopFilteringValue.LOCAL);
+		filters.add(EnumQuickShopFilteringValue.ORGANIC);
+		filters.add(EnumQuickShopFilteringValue.ON_SALE);	
+	}
 
 	public static List<QuickShopLineItemWrapper> getWrappedOrderHistory(FDUserI user, EnumQuickShopTab tab) throws FDResourceException {
 
@@ -671,4 +695,78 @@ public class QuickShopHelper {
 			return false;
 		}
 	}
+	
+	//Moved code from QuickShopFilterServlet into Helper class so that mobileapi OrderController can use it.	
+	public static FilteringFlowResult<QuickShopLineItemWrapper> getQuickShopPastOrderItems(FDUserI user, HttpSession session, QuickShopListRequestObject requestData, FilteringNavigator nav) throws FDResourceException {
+		
+		//transform request data
+		FilteringFlowResult<QuickShopLineItemWrapper> result = null;
+
+		List<QuickShopLineItemWrapper> items = EhCacheUtil.getListFromCache(EhCacheUtil.QS_PAST_ORDERS_CACHE_NAME, user.getIdentity().getErpCustomerPK());
+		
+		if(items==null){
+			LOG.info("Wrapping products");
+			items = QuickShopHelper.getWrappedOrderHistory(user, EnumQuickShopTab.PAST_ORDERS);
+			if(!items.isEmpty()) {
+				EhCacheUtil.putListToCache(EhCacheUtil.QS_PAST_ORDERS_CACHE_NAME, user.getIdentity().getErpCustomerPK(), new ArrayList<QuickShopLineItemWrapper>(items));					
+			}
+		}else{
+			LOG.info("Fetching items from cache");
+			items = new ArrayList<QuickShopLineItemWrapper>(items);
+		}
+		
+		search(nav.getSearchTerm(), items);
+		
+		List<FilteringSortingItem<QuickShopLineItemWrapper>> filterItems = prepareForFiltering(items);
+		
+		QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, user, filters, filterItems, QuickShopHelper.getActiveReplacements( session ));
+		
+		LOG.info("Start filtering process");			
+		result = filter.doFlow(nav, filterItems);
+		
+		// post-process
+		QuickShopHelper.postProcessPopulate( user, result, session );
+		
+		return result;
+	}
+	
+	private static List<FilteringSortingItem<QuickShopLineItemWrapper>> prepareForFiltering(List<QuickShopLineItemWrapper> items){
+		
+		// Wrap items in a FilteringSortingItem for the FilteringFlow
+		List<FilteringSortingItem<QuickShopLineItemWrapper>> result = new ArrayList<FilteringSortingItem<QuickShopLineItemWrapper>>();
+		for(QuickShopLineItemWrapper item : items){
+			FilteringSortingItem<QuickShopLineItemWrapper> fsi = new FilteringSortingItem<QuickShopLineItemWrapper>(item);
+			result.add(fsi);
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * @param searchTerm
+	 * @param items - to be merged with the search result
+	 * 
+	 * Merge the original search result with the user's order history
+	 */
+	private static void search(String searchTerm, List<QuickShopLineItemWrapper> items){
+		
+		List<String> productIds = null;
+		if(searchTerm!=null){
+			
+			SearchResults results = ContentSearch.getInstance().searchProducts(searchTerm);
+			productIds = new ArrayList<String>();
+			for(FilteringSortingItem<ProductModel> product : results.getProducts()){
+				productIds.add(product.getNode().getContentKey().getId());
+			}
+			
+			Iterator<QuickShopLineItemWrapper> it = items.iterator();
+			while(it.hasNext()){
+				if(!productIds.contains(it.next().getProduct().getContentKey().getId())){
+					it.remove();
+				}
+			}
+		}
+		
+	}
+	
 }
