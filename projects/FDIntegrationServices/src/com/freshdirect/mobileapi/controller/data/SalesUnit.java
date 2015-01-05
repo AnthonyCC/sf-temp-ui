@@ -8,6 +8,15 @@ public class SalesUnit {
     private String shortDescription;
 
     private boolean defaultSalesUnit;
+    
+    /**[APPDEV-4023]-Unit Pricing - Mobile API Changes */
+	private int unitPriceNumerator;
+	
+	private int unitPriceDenominator;
+	
+	private String unitPriceUOM;
+	
+	private String unitPriceDescription;
 
     public SalesUnit(String name) {
         this.name = name;
@@ -46,6 +55,13 @@ public class SalesUnit {
             }
         }
         */
+        if(su.getUnitPriceNumerator() !=0 && su.getUnitPriceDenominator() !=0){
+	        unitPriceNumerator = su.getUnitPriceNumerator();
+	        unitPriceDenominator = su.getUnitPriceDenominator();
+	        unitPriceUOM = su.getUnitPriceUOM();
+	        unitPriceDescription = su.getUnitPriceDescription();
+        }
+        
     }
 
     public String getName() {
@@ -80,4 +96,37 @@ public class SalesUnit {
         this.shortDescription = shortDescription;
     }
 
+	public int getUnitPriceNumerator() {
+		return unitPriceNumerator;
+	}
+
+	public void setUnitPriceNumerator(int unitPriceNumerator) {
+		this.unitPriceNumerator = unitPriceNumerator;
+	}
+
+	public int getUnitPriceDenominator() {
+		return unitPriceDenominator;
+	}
+
+	public void setUnitPriceDenominator(int unitPriceDenominator) {
+		this.unitPriceDenominator = unitPriceDenominator;
+	}
+
+	public String getUnitPriceUOM() {
+		return unitPriceUOM;
+	}
+
+	public void setUnitPriceUOM(String unitPriceUOM) {
+		this.unitPriceUOM = unitPriceUOM;
+	}
+
+	public String getUnitPriceDescription() {
+		return unitPriceDescription;
+	}
+
+	public void setUnitPriceDescription(String unitPriceDescription) {
+		this.unitPriceDescription = unitPriceDescription;
+	}
+
+    
 }
