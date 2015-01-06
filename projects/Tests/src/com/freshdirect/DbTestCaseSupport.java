@@ -37,7 +37,8 @@ import org.mockejb.jndi.MockContextFactory;
 
 public abstract class DbTestCaseSupport extends TestCase {
 
-	private final static String JDBC_URL = "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=nyc1dbcl01-vip01.nyc1.freshdirect.com)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=nyc1dbcl01-vip02.nyc1.freshdirect.com)(PORT=1521))(LOAD_BALANCE=yes)(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=appunit_test)))";
+	
+	private final static String JDBC_URL = "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=scan-dev.dev.nyc1.freshdirect.com)(PORT=1521))(CONNECT_DATA=(SERVER=dedicated)(SERVICE_NAME=appunit_test)))";
 
 	private final static String JDBC_USER = "fdstore";
 	
