@@ -343,7 +343,7 @@ public class OrderController extends BaseController {
     }
     
     private List<ProductConfiguration> loadProductsWithQuickShopFilter(SessionUser user, HttpSession session, String departmentId, String orderId, Integer filterOrderDays, String sortBy, SearchQuery query) throws ModelException {
-        FDUserI fdUser = user.getFDSessionUser().getUser();
+        FDUserI fdUser = user.getFDSessionUser();//.getUser();
         
         QuickShopListRequestObject requestData = new QuickShopListRequestObject();
         requestData.setUserId(user.getPrimaryKey());
