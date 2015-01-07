@@ -522,7 +522,10 @@ public class ProductDetailPopulator {
 			ProductModel productModel, FDProduct fdProduct, SkuModel sku) {
 		// Party platter cancellation notice
 		if ( productModel.isPlatter() ) {
-			item.setMsgCancellation( "* Orders for this item cancelled after 3PM the day before delivery (or Noon on Friday/Saturday/Sunday and major holidays) will be subject to a 50% fee." );
+			/* COMMENTED OUT FOR APPDEV-4014
+			 * 
+			 * item.setMsgCancellation( "* Orders for this item cancelled after 3PM the day before delivery (or Noon on Friday/Saturday/Sunday and major holidays) will be subject to a 50% fee." );
+			 */
 		}
 
 		// Party platter cutoff notice (header+text)
