@@ -1,32 +1,37 @@
 package com.freshdirect.mobileapi.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import org.apache.commons.httpclient.HttpStatus;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpDuplicateUserIdException;
+import com.freshdirect.customer.ErpInvalidPasswordException;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.mobileapi.controller.data.Message;
-import com.freshdirect.mobileapi.controller.data.request.DeliveryAddressRequest;
-import com.freshdirect.mobileapi.controller.data.request.RegisterMessage;
-import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
-import com.freshdirect.mobileapi.controller.data.response.OrderHistory;
-import com.freshdirect.mobileapi.controller.data.response.Timeslot;
+import com.freshdirect.mobileapi.controller.data.request.UserAccountUpdateRequest;
+import com.freshdirect.mobileapi.controller.data.response.UserAccountUpdateResponse;
+import com.freshdirect.mobileapi.controller.data.response.UserAccountUpdateResponse.ResultCode;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
-import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
-import com.freshdirect.mobileapi.model.tagwrapper.RegistrationControllerTagWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
-import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.location.LocationHandlerTag;
@@ -36,7 +41,8 @@ public class UserController extends BaseController {
 	private static Category LOGGER = LoggerFactory.getInstance(SiteAccessController.class);
 
 	public static final String ACTION_UPDATE_USER = "updateUser";
-	public static final String ACTION_UPDATE_USER_ADDRESS = "updateUserAddress";
+	public static final String ACTION_UPDATE_USER_ACCOUNT = "updateUser";
+	public static final String ACTION_UPDATE_USER_ADDRESS = "updateUserAddress";	//JIRA FD-iPad FDIP-1062
 	public static final String ACTION_UPDATE_USER_PAYMENTMETHOD = "updateUserPaymentMethod";
 	public static final String ACTION_USER_RESERVE_DELIVERY_SLOT = "reserveDeliveryTimeSlot";
 
@@ -69,7 +75,49 @@ public class UserController extends BaseController {
 				performUserUpdate( user, request );
 			}
 			
-		} else if (ACTION_UPDATE_USER_ADDRESS.equals(action)) {
+		}
+		//JIRA FD-iPad FDIP-1062
+		else if( ACTION_UPDATE_USER_ACCOUNT.equals(action))
+		{
+			UserAccountUpdateResponse responseObject = new UserAccountUpdateResponse();
+			try
+			{
+				UserAccountUpdateRequest uau = parseRequestObject( request, response, UserAccountUpdateRequest.class );
+				performUserAccountUpdate( request.getSession(), uau);
+				responseObject.setResult(ResultCode.OK);
+			}
+			catch(JsonException je )
+			{
+				responseObject.setResult(ResultCode.REQUEST_FORMAT_ERROR);
+			}
+			catch (ErpInvalidPasswordException e)
+			{
+				responseObject.setResult(ResultCode.INVALID_PASSWORD_ERROR);
+			}
+			catch (ErpDuplicateUserIdException e)
+			{
+				responseObject.setResult(ResultCode.USERIDALREADYTAKEN);
+			}
+			
+			ObjectMapper om = new ObjectMapper();
+			String jsonresponse;
+			try
+			{
+				jsonresponse = om.writeValueAsString(responseObject);
+				PrintWriter pw = response.getWriter();
+				pw.write(jsonresponse);
+				pw.flush();
+			}
+			catch (JsonProcessingException e)
+			{
+				response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+			}
+			catch (IOException e)
+			{
+				response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+			}
+		}
+		else if (ACTION_UPDATE_USER_ADDRESS.equals(action)) {
 //        	DeliveryAddressRequest requestMessage = parseRequestObject(request, response, DeliveryAddressRequest.class);
 //            model = addDeliveryAddress(model, user, requestMessage, request);
 			
@@ -110,6 +158,40 @@ public class UserController extends BaseController {
     {
     	UserUpdater updater = new UserUpdater( UserObject.getFDSessionUser(), request );
     	updater.execute();
+    }
+    
+    private void performUserAccountUpdate( HttpSession Session, UserAccountUpdateRequest UAU )
+    		throws FDAuthenticationException, FDResourceException, ErpInvalidPasswordException, ErpDuplicateUserIdException
+    {
+    	String oldUserID = UAU.getOldUserName();
+    	String newUserID = UAU.getNewUserName();
+    	String oldPW = UAU.getOldPassword();
+    	String newPW = UAU.getNewPassword();
+
+		//Verify user
+		FDIdentity FDID = FDCustomerManager.login(oldUserID, oldPW);
+		
+		if( FDID == null )	//Not sure if this could happen, but I'm checking for it anyways
+		{
+			throw new FDAuthenticationException();
+		}
+		
+		/*
+		 * Implementation note: In the event of a fault condition, I'm changing the user's password first.
+		 * My thinking is that, if a fault occurs somewhere in the execution of this code, it'll be easier for
+		 * the user to remember their most recent email address than their most recent password choice, in the
+		 * event that a follow-on call has to be made.
+		 */
+
+		//Adapted from AccountActivityUtil:
+		FDSessionUser currentUser = (FDSessionUser) Session.getAttribute(SessionName.USER);
+		FDActionInfo info = new FDActionInfo(EnumTransactionSource.IPHONE_WEBSITE, FDID, "CUSTOMER", "", null, (currentUser!=null)?currentUser.getPrimaryKey():null);
+
+		//Update the user's password
+		FDCustomerManager.changePassword(info, oldUserID, newPW);
+
+		//Update the user's email
+		FDCustomerManager.updateUserId(info, newUserID);
     }
     
     private void performUserAddressUpdate( UpdateUserAddressRequest UUAR )
