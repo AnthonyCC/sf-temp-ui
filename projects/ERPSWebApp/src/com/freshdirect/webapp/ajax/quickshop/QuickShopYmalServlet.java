@@ -42,6 +42,7 @@ import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.recommendation.RecommendationRequestObject;
 import com.freshdirect.webapp.taglib.fdstore.GetPeakProduceTag;
+import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
 
 public class QuickShopYmalServlet extends BaseJsonServlet{
@@ -165,6 +166,10 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 			while ( maxItems != 0 && it.hasNext() ) {
 				ProductModel product = it.next();
 				QuickShopLineItem item = QuickShopHelper.createItemFromProduct( product, null, user, useFavBurst );
+
+				// APPDEV-4007 populate variant info
+				item.setVariantId( results.getVariant().getId() );
+				item.setProductPageUrl( FDURLUtil.getNewProductURI(product, results.getVariant().getId() ));
 				
 				// Availability check - do not let anything unavailable beyond this point
 				if ( !item.isAvailable() ) {

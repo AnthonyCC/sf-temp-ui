@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,16 +26,19 @@ import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.CertonaTransitionUtil;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.framework.util.ValueHolder;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
+import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
+import com.freshdirect.smartstore.fdstore.VariantSelector;
+import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.freshdirect.webapp.taglib.smartstore.Impression;
 
 public class ProductRecommenderUtil {
 	
@@ -133,7 +135,7 @@ public class ProductRecommenderUtil {
 		}
     }    
 
-	public static List<ProductModel> getAggregatedSuperDepartmentFeaturedRecommenderProducts(SuperDepartmentModel superDeptModel, HttpSession session) throws FDResourceException {
+	public static List<ProductModel> getAggregatedSuperDepartmentFeaturedRecommenderProducts(SuperDepartmentModel superDeptModel, HttpSession session, ValueHolder<Variant> outVariant) throws FDResourceException {
 		List<ProductModel> products = new ArrayList<ProductModel>();
 		
 		CategoryModel sourceCat = superDeptModel.getSdFeaturedRecommenderSourceCategory();
@@ -149,6 +151,10 @@ public class ProductRecommenderUtil {
 					Recommendations results = doRecommend(user, session, siteFeat, MAX_DEPT_FEATURED_RECOMMENDER_COUNT, new HashSet<ContentKey>(), deptModel);
 					products.addAll(results.getAllProducts()); //TODO de we need to provide site feature id for CM?
 					cleanUpProducts(products, superDeptModel.isSdFeaturedRecommenderRandomizeProducts(), MAX_DEPT_FEATURED_RECOMMENDER_COUNT);
+					
+					if (outVariant != null) {
+						getUserVariant(user, siteFeat, outVariant);
+					}
 				}
 			}
 			
@@ -160,7 +166,8 @@ public class ProductRecommenderUtil {
 		return products;
 	}
 	
-	public static List<ProductModel> getFeaturedRecommenderProducts(DepartmentModel deptModel, FDSessionUser user, HttpSession session) throws FDResourceException {
+	// FIXME
+	public static List<ProductModel> getFeaturedRecommenderProducts(DepartmentModel deptModel, FDSessionUser user, HttpSession session, ValueHolder<Variant> outVariant) throws FDResourceException {
 		List<ProductModel> products = new ArrayList<ProductModel>();
 		
 		CategoryModel sourceCat = deptModel.getFeaturedRecommenderSourceCategory();
@@ -171,6 +178,10 @@ public class ProductRecommenderUtil {
 			if (siteFeat!=null) {
 				Recommendations results = doRecommend(user, session, siteFeat, MAX_DEPT_FEATURED_RECOMMENDER_COUNT, new HashSet<ContentKey>(), deptModel);
 				products = results.getAllProducts(); //TODO de we need to provide site feature id for CM?
+
+				if (outVariant != null) {
+					getUserVariant(user, siteFeat, outVariant);
+				}
 			}
 			
 		} else {
@@ -478,4 +489,18 @@ public class ProductRecommenderUtil {
 	        }
 	    }
 	}
+
+
+
+    private static Variant getUserVariant(FDUserI user, EnumSiteFeature siteFeature, ValueHolder<Variant> out) {
+        final VariantSelector selector = VariantSelectorFactory.getSelector(siteFeature);
+
+        final Variant variant = selector.select(user);
+        
+        if (out != null) {
+                out.setValue(variant);
+        }
+
+        return variant;
+    }
 }

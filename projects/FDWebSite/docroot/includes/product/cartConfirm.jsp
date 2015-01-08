@@ -19,7 +19,7 @@
 
 <c:set var="potatoes" value='${cartConfirmPotatoes["cartConfirmPotatoes"]}'/>
 <potato:recommender siteFeature="DEALS_QS" name="deals" maxItems="15"  cmEventSource="cc_tabbedRecommender" />
-<potato:recommender siteFeature="YMAL" name="ymal" maxItems="25" currentNodeKey="${potatoes[0].cartLine.cmskey}" cmEventSource="CC_YMAL"/>
+<potato:recommender siteFeature="YMAL" name="ymal" maxItems="25" currentNodeKey="${potatoes[0].cartLine.cmskey}" cmEventSource="CC_YMAL"  sendVariant="<%= true %>"/>
 <c:set target="${deals}" property="selected" value="deals" />
 <div class="pdp pdp-cc">
   <soy:render template="pdp.cartConfirmIterator" data="${cartConfirmPotatoes}" />

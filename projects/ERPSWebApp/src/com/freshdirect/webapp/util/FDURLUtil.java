@@ -86,6 +86,21 @@ public class FDURLUtil {
 		return buf.toString();
 	}
 	
+	public static String getNewProductURI(ProductModel productNode, final String variantId) {
+		StringBuilder buf = new StringBuilder(ProductDisplayUtil.NEW_PRODUCT_PAGE_BASE);
+
+		buf.append("?");
+		buf.append("productId=").append(productNode.getContentKey().getId());
+		buf.append(ProductDisplayUtil.URL_PARAM_SEP);
+		buf.append("catId=").append(productNode.getCategory().getContentKey().getId());
+		if (variantId != null) {
+			buf.append(ProductDisplayUtil.URL_PARAM_SEP);
+			buf.append("variantId=").append(variantId);
+		}
+
+		return buf.toString();
+	}
+	
 	public static String getProductURI(ProductModel productNode, String trackingCode) {
 		return FDURLUtil.getProductURI(productNode, trackingCode, null);
 	}

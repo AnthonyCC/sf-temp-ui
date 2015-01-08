@@ -38,8 +38,10 @@ import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.event.EnumEventSource;
+import com.freshdirect.framework.util.ValueHolder;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
+import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
@@ -69,6 +71,7 @@ import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.globalnav.data.DepartmentData;
 import com.freshdirect.webapp.globalnav.data.SuperDepartmentData;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.MediaUtils;
 import com.freshdirect.webapp.util.ProductRecommenderUtil;
 
@@ -155,7 +158,9 @@ public class BrowseDataBuilderFactory {
 			appendTitle(data, superDepartmentModel.getTitleBar());
 
 			try { //session is null because saving SMART_STORE_PREV_RECOMMENDATIONS isn't necessary here
-				data.getCarousels().setCarousel1(createCarouselData(null, superDepartmentModel.getSdFeaturedRecommenderTitle(), ProductRecommenderUtil.getAggregatedSuperDepartmentFeaturedRecommenderProducts(superDepartmentModel, null), user, EnumEventSource.SDFR.getName()));
+				ValueHolder<Variant> out = new ValueHolder<Variant>();
+				List<ProductModel> recommendedItems = ProductRecommenderUtil.getAggregatedSuperDepartmentFeaturedRecommenderProducts(superDepartmentModel, null, out);
+				data.getCarousels().setCarousel1(createCarouselData(null, superDepartmentModel.getSdFeaturedRecommenderTitle(), recommendedItems, user, EnumEventSource.SDFR.getName(), out.isSet() ? out.getValue().getId() : null ));
 			} catch (FDResourceException e) {
 				LOG.error("recommendation failed", e);
 			}
@@ -254,7 +259,9 @@ public class BrowseDataBuilderFactory {
 			appendTitle(data, department.getTitleBar());
 
 			try {  //session is null because saving SMART_STORE_PREV_RECOMMENDATIONS isn't necessary here
-				data.getCarousels().setCarousel1(createCarouselData(null, department.getFeaturedRecommenderTitle(), ProductRecommenderUtil.getFeaturedRecommenderProducts(department, user, null), user, EnumEventSource.DFR.getName()));
+				ValueHolder<Variant> out = new ValueHolder<Variant>();
+				List<ProductModel> recommendedItems = ProductRecommenderUtil.getFeaturedRecommenderProducts(department, user, null, out);
+				data.getCarousels().setCarousel1(createCarouselData(null, department.getFeaturedRecommenderTitle(), recommendedItems, user, EnumEventSource.DFR.getName(), out.isSet() ? out.getValue().getId() : null ));
 			} catch (FDResourceException e) {
 				LOG.error("recommendation failed", e);
 			}
@@ -736,7 +743,10 @@ public class BrowseDataBuilderFactory {
 			try {
 				ProductData productData = ProductDetailPopulator.createProductData(user, product);
 				productData = ProductDetailPopulator.populateBrowseRecommendation(user, productData, product);
-				productData.setVariantId(variantId);
+				if (variantId != null) {
+					productData.setVariantId(variantId);
+					productData.setProductPageUrl( FDURLUtil.getNewProductURI(product, variantId) );
+				}
 				productDatas.add(productData);
 			} catch (FDResourceException e) {
 				LOG.error("failed to create ProductData", e);

@@ -116,8 +116,11 @@ public class DataPotatoField {
 			
 			// first get a ProductData for product level attributes
 			ProductData productData = ProductDetailPopulator.createProductData( user, product );
-			productData.setVariantId(variantId);
-						
+			if (variantId != null) {
+				productData.setVariantId(variantId);
+				productData.setProductPageUrl( FDURLUtil.getNewProductURI(product, variantId) );
+			}
+			
 			// convert and return
 			return SoyTemplateEngine.convertToMap( productData );
 			

@@ -14,6 +14,7 @@ import com.freshdirect.webapp.ajax.browse.data.CarouselData;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.util.FDURLUtil;
 
 public class CarouselService {
 
@@ -58,6 +59,7 @@ public class CarouselService {
 					ProductData productData = ProductDetailPopulator.createProductData(user, product);
 					productData = ProductDetailPopulator.populateBrowseRecommendation(user, productData, product);
 					productData.setVariantId(variantId);
+					productData.setProductPageUrl( FDURLUtil.getNewProductURI(product, variantId));
 					productDatas.add(productData);
 				} catch (FDResourceException e) {
 					LOGGER.error("failed to create ProductData", e);

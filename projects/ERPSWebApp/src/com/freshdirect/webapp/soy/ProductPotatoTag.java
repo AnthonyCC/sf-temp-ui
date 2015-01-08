@@ -29,6 +29,8 @@ public class ProductPotatoTag extends SimpleTagSupport {
 	protected String extraName;
 	protected String productId;
 	protected String categoryId;
+	/** optional */
+	protected String variantId;
 
 	public String getName() {
 		return name;
@@ -52,9 +54,12 @@ public class ProductPotatoTag extends SimpleTagSupport {
 		this.categoryId = categoryId;
 	}
 	
-
-	private Map<String, ?> extractPotato(FDUserI user, ProductModel product) {
-		return DataPotatoField.digProduct(user, product);
+	public void setVariantId(String variantId) {
+		this.variantId = variantId;
+	}
+	
+	private Map<String, ?> extractPotato(FDUserI user, ProductModel product, final String variantId) {
+		return DataPotatoField.digProduct(user, product, variantId);
 	}
 
 	private Map<String, ?> extractExtraPotato(FDUserI user, ProductModel product) {
@@ -112,7 +117,7 @@ public class ProductPotatoTag extends SimpleTagSupport {
 			((PageContext)getJspContext()).setAttribute( name, dataMap );
 		} else {
 			// normal population
-			final Map<String,?> dataMap = extractPotato(user, product);
+			final Map<String,?> dataMap = extractPotato(user, product, variantId);
 
 			((PageContext)getJspContext()).setAttribute( name, dataMap );
 		}
