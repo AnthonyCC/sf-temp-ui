@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
+import com.freshdirect.mobileapi.controller.data.response.Idea;
 import com.freshdirect.mobileapi.model.Category;
 import com.freshdirect.mobileapi.model.Department;
 
@@ -24,6 +25,9 @@ public class BrowseResult extends Message {
     private Map<String, SortedSet<String>> filters = new LinkedHashMap<String, SortedSet<String>>();
 
     private boolean isBottomLevel = false;
+    
+    //DOOR3 FD-iPad FDIP-1046
+    private Idea featuredCard = null;
 
     public List<ProductSearchResult> getProducts() {
         return products;
@@ -86,5 +90,15 @@ public class BrowseResult extends Message {
 
 	public void setBottomLevel(boolean isBottomLevel) {
 		this.isBottomLevel = isBottomLevel;
-	}        
+	}
+
+	//DOOR3 FD-iPad FDIP-1046
+	public Idea getFeaturedCard() {
+		return featuredCard;
+	}
+
+	//DOOR3 FD-iPad FDIP-1046
+	public void setFeaturedCard(Idea featuredCard) {
+		this.featuredCard = featuredCard;
+	}
 }

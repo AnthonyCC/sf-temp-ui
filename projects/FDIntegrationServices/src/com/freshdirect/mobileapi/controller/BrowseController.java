@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.content.BannerModel;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.CategorySectionModel;
@@ -37,6 +38,7 @@ import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.BrowseResult;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
+import com.freshdirect.mobileapi.controller.data.response.Idea;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.model.Brand;
 import com.freshdirect.mobileapi.model.Category;
@@ -159,6 +161,18 @@ public class BrowseController extends BaseController {
 	        	if(currentFolder instanceof CategoryModel && ((CategoryModel)currentFolder).isShowAllByDefault()) { // To Support new left nav flow[APPDEV-3251 : mobile API to utilize showAllByDefault]
 	            	action = ACTION_GET_CATEGORYCONTENT_PRODUCTONLY;
 	            }
+	        	
+	        	//DOOR3 FD-iPad FDIP-1046
+	        	if( currentFolder instanceof CategoryModel )
+	        	{
+	        		CategoryModel cm = (CategoryModel) currentFolder;
+	        		BannerModel bm = cm.getTabletCallToActionBanner();
+	        		if( bm != null )
+	        		{
+	        			Idea featuredCardIdea = Idea.ideaFor(bm);
+	        			result.setFeaturedCard(featuredCardIdea);
+	        		}
+	        	}
 
 	        	List contents = new ArrayList();
 
