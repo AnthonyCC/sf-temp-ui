@@ -3131,6 +3131,9 @@
 				<include name="jackson-core-2.2.0.jar"/>
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
+				
+				<include name="freemarker-2.3.15.jar"/>
+
 			</lib>
 		
 		</makeFDAdminEar>
