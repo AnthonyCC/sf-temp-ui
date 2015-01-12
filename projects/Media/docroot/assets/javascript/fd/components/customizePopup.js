@@ -93,6 +93,7 @@ var FreshDirect = FreshDirect || {};
         value.cmEventSource = this.dataConfig.cmEventSource;
         value.cartData = this.dataConfig.cartData;
         value.pageType = this.dataConfig.pageType;
+        value.variantId = this.dataConfig.variantId;
         this.refreshBody(value);
         this.refreshSkuControls();
       }
@@ -120,6 +121,7 @@ var FreshDirect = FreshDirect || {};
             cartData:cartData,
             pageType:item.pageType,
             cmEventSource:config.cmEventSource || '',
+            variantId:item.variantId,
             ATCApply:config.hasApply && fd.quickshop.itemType === 'pastOrders'
         };
 
