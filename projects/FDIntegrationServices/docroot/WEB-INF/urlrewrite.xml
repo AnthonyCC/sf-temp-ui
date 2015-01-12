@@ -459,6 +459,10 @@
 	
 	<!-- QuickShop from Previous Order By Dept -->
 	<rule>
+		<from>^/v/([0-9]+)/(.*)/quickshop/geteveryitemeverordered/</from>
+		<to last="true">/order.do?action=geteveryitemeverordered&amp;ver=$1</to>
+	</rule>
+	<rule>
 		<from>^/v/([0-9]+)/(.*)/quickshop/dept/id/(.*)/filterdays/(.*)/sortby/(.*)/geteveryitemfordept/</from>
 		<to last="true">/order.do?orderId=every&amp;qsDeptId=$3&amp;qsNoOfFilterDays=$4&amp;qsSortBy=$5&amp;action=geteveryitemfordept&amp;ver=$1</to>
 	</rule>

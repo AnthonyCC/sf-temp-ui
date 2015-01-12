@@ -2,7 +2,6 @@ package com.freshdirect.mobileapi.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -79,6 +78,8 @@ public class OrderController extends BaseController {
     
     private static final String ACTION_GET_QUICK_SHOP_EVERYITEM_DEPT = "getdeptsforeveryitem";
     
+    private static final String ACTION_GET_QUICK_SHOP_EVERYITEMEVERORDERED = "geteveryitemeverordered";
+    
     
     /* (non-Javadoc)
      * @see com.freshdirect.mobileapi.controller.BaseController#processRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.web.servlet.ModelAndView, java.lang.String, com.freshdirect.mobileapi.model.SessionUser)
@@ -148,6 +149,17 @@ public class OrderController extends BaseController {
         		noOfOrderFilterDays =  new Integer(noOfOrderDays);
         	}
         	model = getDeptForQuickshopEveryItem(model, user, orderId, noOfOrderFilterDays);
+        }  else if (ACTION_GET_QUICK_SHOP_EVERYITEMEVERORDERED.equals(action)) {  
+        	//Every item ever ordered similar to storefront quickshop every item ever ordered
+        	// Retrieving any possible payload
+            String postData = getPostData(request, response);
+            
+        	System.out.println("PostData received: [" + postData + "]");
+        	SearchQuery requestMessage = new SearchQuery();
+            if (StringUtils.isNotEmpty(postData)) {
+                requestMessage = parseRequestObject(request, response, SearchQuery.class);
+            }
+            model = getEveryItemEverOrdered(model, user, requestMessage, request.getSession());
         }
 
         return model;
@@ -318,14 +330,13 @@ public class OrderController extends BaseController {
     													, String orderId, String deptId
     													, Integer filterOrderDays, String sortBy
     													, SearchQuery query, HttpSession session) throws FDException, JsonException {
-        // Order order = new Order();
+        Order order = new Order();
         
         List<ProductConfiguration> products;
         List<ProductConfiguration> productPage = null;
         
         try {
-            // products = order.getOrderProductsForDept(orderId, deptId, filterOrderDays, sortBy, user);
-            products = loadProductsWithQuickShopFilter(user, session, deptId, sortBy, filterOrderDays, sortBy, query);
+            products = order.getOrderProductsForDept(orderId, deptId, filterOrderDays, sortBy, user);            
             if(products != null) {
             	int start = (query.getPage() - 1) * query.getMax();
             	if(start >=0 && start <= products.size()) {
@@ -342,26 +353,48 @@ public class OrderController extends BaseController {
         return model;
     }
     
-    private List<ProductConfiguration> loadProductsWithQuickShopFilter(SessionUser user, HttpSession session, String departmentId, String orderId, Integer filterOrderDays, String sortBy, SearchQuery query) throws ModelException {
+	private ModelAndView getEveryItemEverOrdered(ModelAndView model, SessionUser user, SearchQuery query,
+			HttpSession session) throws FDException, JsonException {
+		
+		List<ProductConfiguration> products;
+		List<ProductConfiguration> productPage = null;
+
+		try {
+			products = loadProductsWithQuickShopFilter(user, session, query);
+			if (products != null) {
+				int start = (query.getPage() - 1) * query.getMax();
+				if (start >= 0 && start <= products.size()) {
+					productPage = products.subList(start,
+							Math.min(start + query.getMax(), products.size()));
+				}
+			}
+		} catch (ModelException e) {
+			throw new FDException(e);
+		}
+		QuickShop quickShop = new QuickShop();
+		quickShop.setProducts(productPage);
+		quickShop.setTotalResultCount(products != null ? products.size() : 0);
+		setResponseMessage(model, quickShop, user);
+		return model;
+	}
+    
+    private List<ProductConfiguration> loadProductsWithQuickShopFilter(SessionUser user, HttpSession session, SearchQuery query) throws ModelException {
         FDUserI fdUser = user.getFDSessionUser();//.getUser();
         
         QuickShopListRequestObject requestData = new QuickShopListRequestObject();
-        requestData.setUserId(user.getPrimaryKey());
-        requestData.setDeptIdList(new ArrayList<Object>(Arrays.asList(departmentId)));
-        requestData.setOrderIdList(new ArrayList<Object>(Arrays.asList(orderId)));
-        if (filterOrderDays != null) 
-            requestData.setTimeFrame(filterOrderDays.toString());
-        requestData.setSortId(sortBy);
+       
+        requestData.setTimeFrame("timeFrameAll");
+        requestData.setSortId("freq");
         requestData.setSearchTerm(query.getQuery());
         try {
         	FilteringFlowResult<QuickShopLineItemWrapper> result = QuickShopHelper.getQuickShopPastOrderItems(fdUser, session, requestData, requestData.convertToFilteringNavigator());
-            return convertToSkuList(result);
+            return convertToSkuList(result, fdUser);
         } catch (FDResourceException e) {
             throw new ModelException(e);
         }
     }
 
-    private List<ProductConfiguration> convertToSkuList(FilteringFlowResult<QuickShopLineItemWrapper> result) throws ModelException {
+    private List<ProductConfiguration> convertToSkuList(FilteringFlowResult<QuickShopLineItemWrapper> result, FDUserI fdUser) throws ModelException {
         List<ProductConfiguration> productsWithSkus = new ArrayList<ProductConfiguration>();
         if(result != null) {
         	List<FilteringSortingItem<QuickShopLineItemWrapper>> items =  result.getItems();
@@ -369,9 +402,11 @@ public class OrderController extends BaseController {
 	        for (FilteringSortingItem<QuickShopLineItemWrapper> wrapper : items) {
 	        	QuickShopLineItem line = wrapper.getNode().getItem();
 	        	final ProductModel productModel = ContentFactory.getInstance().getProductByName(line.getCatId(), line.getProductId());
-                ProductConfiguration configuration = new ProductConfiguration();
-                configuration.populateProductWithModel(Product.wrap(productModel), line.getSkuCode());
-                productsWithSkus.add(configuration);
+	        	if(productModel != null) {
+	                ProductConfiguration configuration = new ProductConfiguration();
+	                configuration.populateProductWithModel(Product.wrap(productModel, fdUser), line.getSkuCode());
+	                productsWithSkus.add(configuration);
+	        	}
 	        }
         }
         return productsWithSkus;

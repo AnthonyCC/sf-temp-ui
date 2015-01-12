@@ -387,12 +387,16 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/shoppinglist/id/2153098981/quickshop/");
   	$("#payload").val("");
   	$("#result").val("");
-  } else if (loaddata == "QuickShopEveryItemOrderedDept") {
+  } else if (loaddata == "QuickShopGetDeptsForEveryItemOrdered") {
   	$("#url").val("/saptest12@freshdirect.com/quickshop/filterdays/none/getdeptsforeveryitem/");
   	$("#payload").val("");
   	$("#result").val("");
-  } else if (loaddata == "QuickShopEveryItemOrdered") {
+  } else if (loaddata == "QuickShopEveryItemOrderedByDept") {
   	$("#url").val("/saptest12@freshdirect.com/quickshop/dept/id/gro/filterdays/none/sortby/name/geteveryitemfordept/");
+  	$("#payload").val('{"page" : "1"}');
+  	$("#result").val("");
+  } else if (loaddata == "QuickShopEveryItemEverOrdered") {
+  	$("#url").val("/saptest12@freshdirect.com/quickshop/geteveryitemeverordered/");
   	$("#payload").val('{"page" : "1"}');
   	$("#result").val("");
   } else if (loaddata == "RemoveMultipleItems") {
@@ -803,8 +807,9 @@ function doStuff() {
   <option value="FdLists">QUICKSHOP - Fd Lists</option>
   <option value="QuickShopFdLists">QUICKSHOP - Shop from Fd Lists</option>
   <option value="QuickShopLists">QUICKSHOP - Shop from Shopping List</option>
-  <option value="QuickShopEveryItemOrderedDept">QUICKSHOP - Department Everything You've Ever Ordered!</option>
-  <option value="QuickShopEveryItemOrdered">QUICKSHOP - Everything You've Ever Ordered!</option>
+  <option value="QuickShopGetDeptsForEveryItemOrdered">QUICKSHOP - Get Department for Everything You've Ever Ordered!</option>
+  <option value="QuickShopEveryItemOrderedByDept">QUICKSHOP - Everything You've Ever Ordered By Dept !</option>
+  <option value="QuickShopEveryItemEverOrdered">QUICKSHOP - Everything You've Ever Ordered!</option>
   <option value=""> ========== WHATS GOOD ========== </option>
   <option value="WGDCategories">WHATS GOOD - Categories</option>
   <option value="WGDCategoryProducts">WHATS GOOD - Category Products</option>
