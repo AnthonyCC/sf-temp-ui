@@ -22,7 +22,8 @@ var FreshDirect = FreshDirect || {};
       },
       open: function (e, ui) {
         $(this).autocomplete('widget').css('z-index', 1010);
-      }
+      },
+      html: true
     });
     
     $(queryPath).on('keydown', function (e) {
