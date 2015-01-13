@@ -385,6 +385,11 @@ public class OrderController extends BaseController {
        
         requestData.setTimeFrame("timeFrameAll");
         requestData.setSortId("freq");
+        if(query.getDepartment() != null && query.getDepartment().trim().length() > 0) {
+        	List<Object> depts = new ArrayList<Object>();
+        	depts.add(query.getDepartment());
+        	requestData.setDeptIdList(depts);
+        }        
         requestData.setSearchTerm(query.getQuery());
         try {
         	FilteringFlowResult<QuickShopLineItemWrapper> result = QuickShopHelper.getQuickShopPastOrderItems(fdUser, session, requestData, requestData.convertToFilteringNavigator());
