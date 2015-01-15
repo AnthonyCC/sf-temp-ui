@@ -339,6 +339,50 @@
                                }
                             
 
+                        /**
+                        * field for Loaded
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.Quantities localLoaded ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localLoadedTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.Quantities
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.Quantities getLoaded(){
+                               return localLoaded;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Loaded
+                               */
+                               public void setLoaded(com.freshdirect.routing.proxy.stub.transportation.Quantities param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localLoadedTracker = true;
+                                       } else {
+                                          localLoadedTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localLoaded=param;
+                                    
+
+                               }
+                            
+
      /**
      * isReaderMTOMAware
      * @return true if the reader supports MTOM
@@ -652,6 +696,37 @@
                                      localDamaged.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","damaged"),
                                         factory,xmlWriter);
                                     }
+                                } if (localLoadedTracker){
+                                    if (localLoaded==null){
+
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"loaded", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"loaded");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("loaded");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localLoaded.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","loaded"),
+                                        factory,xmlWriter);
+                                    }
                                 }
                     xmlWriter.writeEndElement();
                
@@ -863,6 +938,13 @@
                             
                                     elementList.add(localDamaged==null?null:
                                     localDamaged);
+                                } if (localLoadedTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "loaded"));
+                            
+                            
+                                    elementList.add(localLoaded==null?null:
+                                    localLoaded);
                                 }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
@@ -1098,6 +1180,30 @@
                                       }else{
                                     
                                                 object.setDamaged(com.freshdirect.routing.proxy.stub.transportation.Quantities.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","loaded").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setLoaded(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setLoaded(com.freshdirect.routing.proxy.stub.transportation.Quantities.Factory.parse(reader));
                                               
                                         reader.next();
                                     }

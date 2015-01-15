@@ -1,6 +1,6 @@
 
 /**
- * SchedulerOptimizeOrdersExResponse.java
+ * RetrieveEmployeeByIdentityEx.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,27 +10,115 @@
             
 
             /**
-            *  SchedulerOptimizeOrdersExResponse bean class
+            *  RetrieveEmployeeByIdentityEx bean class
             */
         
-        public  class SchedulerOptimizeOrdersExResponse
+        public  class RetrieveEmployeeByIdentityEx
         implements org.apache.axis2.databinding.ADBBean{
         
                 public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
-                "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                "SchedulerOptimizeOrdersExResponse",
+                "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                "RetrieveEmployeeByIdentityEx",
                 "ns1");
 
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService")){
+            if(namespace.equals("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService")){
                 return "ns1";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
         }
 
         
+
+                        /**
+                        * field for Identity
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity localIdentity ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localIdentityTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity getIdentity(){
+                               return localIdentity;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Identity
+                               */
+                               public void setIdentity(com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localIdentityTracker = true;
+                                       } else {
+                                          localIdentityTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localIdentity=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for Options
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.EmployeeRetrieveOptions localOptions ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localOptionsTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.EmployeeRetrieveOptions
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.EmployeeRetrieveOptions getOptions(){
+                               return localOptions;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Options
+                               */
+                               public void setOptions(com.freshdirect.routing.proxy.stub.transportation.EmployeeRetrieveOptions param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localOptionsTracker = true;
+                                       } else {
+                                          localOptionsTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localOptions=param;
+                                    
+
+                               }
+                            
 
      /**
      * isReaderMTOMAware
@@ -64,7 +152,7 @@
                        new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       SchedulerOptimizeOrdersExResponse.this.serialize(MY_QNAME,factory,xmlWriter);
+                       RetrieveEmployeeByIdentityEx.this.serialize(MY_QNAME,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
@@ -115,20 +203,82 @@
                   if (serializeType){
                
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":SchedulerOptimizeOrdersExResponse",
+                           namespacePrefix+":RetrieveEmployeeByIdentityEx",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "SchedulerOptimizeOrdersExResponse",
+                           "RetrieveEmployeeByIdentityEx",
                            xmlWriter);
                    }
 
                
                    }
-               
+                if (localIdentityTracker){
+                                    if (localIdentity==null){
+
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"identity", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"identity");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("identity");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","identity"),
+                                        factory,xmlWriter);
+                                    }
+                                } if (localOptionsTracker){
+                                    if (localOptions==null){
+
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"options", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"options");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("options");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localOptions.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","options"),
+                                        factory,xmlWriter);
+                                    }
+                                }
                     xmlWriter.writeEndElement();
                
 
@@ -290,7 +440,21 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                
+                 if (localIdentityTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "identity"));
+                            
+                            
+                                    elementList.add(localIdentity==null?null:
+                                    localIdentity);
+                                } if (localOptionsTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "options"));
+                            
+                            
+                                    elementList.add(localOptions==null?null:
+                                    localOptions);
+                                }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -315,9 +479,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static SchedulerOptimizeOrdersExResponse parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            SchedulerOptimizeOrdersExResponse object =
-                new SchedulerOptimizeOrdersExResponse();
+        public static RetrieveEmployeeByIdentityEx parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            RetrieveEmployeeByIdentityEx object =
+                new RetrieveEmployeeByIdentityEx();
 
             int event;
             java.lang.String nillableValue = null;
@@ -341,10 +505,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"SchedulerOptimizeOrdersExResponse".equals(type)){
+                            if (!"RetrieveEmployeeByIdentityEx".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (SchedulerOptimizeOrdersExResponse)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                return (RetrieveEmployeeByIdentityEx)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -365,7 +529,55 @@
                  
                     
                     reader.next();
-                  
+                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","identity").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setIdentity(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setIdentity(com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","options").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setOptions(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setOptions(com.freshdirect.routing.proxy.stub.transportation.EmployeeRetrieveOptions.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             

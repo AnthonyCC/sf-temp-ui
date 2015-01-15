@@ -136,6 +136,126 @@
                             
 
                         /**
+                        * field for LoadedRouteCount
+                        */
+
+                        
+                                    protected int localLoadedRouteCount ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getLoadedRouteCount(){
+                               return localLoadedRouteCount;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param LoadedRouteCount
+                               */
+                               public void setLoadedRouteCount(int param){
+                            
+                                            this.localLoadedRouteCount=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for TotalMissedTimeWindowCount
+                        */
+
+                        
+                                    protected int localTotalMissedTimeWindowCount ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getTotalMissedTimeWindowCount(){
+                               return localTotalMissedTimeWindowCount;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param TotalMissedTimeWindowCount
+                               */
+                               public void setTotalMissedTimeWindowCount(int param){
+                            
+                                            this.localTotalMissedTimeWindowCount=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for TotalOnTimeCount
+                        */
+
+                        
+                                    protected int localTotalOnTimeCount ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getTotalOnTimeCount(){
+                               return localTotalOnTimeCount;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param TotalOnTimeCount
+                               */
+                               public void setTotalOnTimeCount(int param){
+                            
+                                            this.localTotalOnTimeCount=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for ExceptionCount
+                        */
+
+                        
+                                    protected int localExceptionCount ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getExceptionCount(){
+                               return localExceptionCount;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param ExceptionCount
+                               */
+                               public void setExceptionCount(int param){
+                            
+                                            this.localExceptionCount=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for TotalPlannedServiceTime
                         */
 
@@ -1756,6 +1876,36 @@
                             
 
                         /**
+                        * field for TotalCancelledStopCount
+                        */
+
+                        
+                                    protected int localTotalCancelledStopCount ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getTotalCancelledStopCount(){
+                               return localTotalCancelledStopCount;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param TotalCancelledStopCount
+                               */
+                               public void setTotalCancelledStopCount(int param){
+                            
+                                            this.localTotalCancelledStopCount=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for TotalPlannedCost
                         */
 
@@ -2177,6 +2327,122 @@
                                                       
                                                } else {
                                                     xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActualRouteCount));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"loadedRouteCount", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"loadedRouteCount");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("loadedRouteCount");
+                                    }
+                                
+                                               if (localLoadedRouteCount==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("loadedRouteCount cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLoadedRouteCount));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"totalMissedTimeWindowCount", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"totalMissedTimeWindowCount");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("totalMissedTimeWindowCount");
+                                    }
+                                
+                                               if (localTotalMissedTimeWindowCount==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("totalMissedTimeWindowCount cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localTotalMissedTimeWindowCount));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"totalOnTimeCount", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"totalOnTimeCount");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("totalOnTimeCount");
+                                    }
+                                
+                                               if (localTotalOnTimeCount==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("totalOnTimeCount cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localTotalOnTimeCount));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"exceptionCount", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"exceptionCount");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("exceptionCount");
+                                    }
+                                
+                                               if (localExceptionCount==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("exceptionCount cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localExceptionCount));
                                                }
                                     
                                    xmlWriter.writeEndElement();
@@ -3581,6 +3847,35 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
+                                            xmlWriter.writeStartElement(prefix,"totalCancelledStopCount", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"totalCancelledStopCount");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("totalCancelledStopCount");
+                                    }
+                                
+                                               if (localTotalCancelledStopCount==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("totalCancelledStopCount cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localTotalCancelledStopCount));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
                                             xmlWriter.writeStartElement(prefix,"totalPlannedCost", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
@@ -3988,6 +4283,30 @@
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localActualRouteCount));
                             
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "loadedRouteCount"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLoadedRouteCount));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "totalMissedTimeWindowCount"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localTotalMissedTimeWindowCount));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "totalOnTimeCount"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localTotalOnTimeCount));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "exceptionCount"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localExceptionCount));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "totalPlannedServiceTime"));
                                  
                                 elementList.add(
@@ -4285,6 +4604,12 @@
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAvgActualStopCount));
                             
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "totalCancelledStopCount"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localTotalCancelledStopCount));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "totalPlannedCost"));
                                  
                                 elementList.add(
@@ -4458,6 +4783,82 @@
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setActualRouteCount(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","loadedRouteCount").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setLoadedRouteCount(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","totalMissedTimeWindowCount").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setTotalMissedTimeWindowCount(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","totalOnTimeCount").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setTotalOnTimeCount(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","exceptionCount").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setExceptionCount(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
                                               
                                         reader.next();
@@ -5426,6 +5827,25 @@
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setAvgActualStopCount(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","totalCancelledStopCount").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setTotalCancelledStopCount(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
                                               
                                         reader.next();

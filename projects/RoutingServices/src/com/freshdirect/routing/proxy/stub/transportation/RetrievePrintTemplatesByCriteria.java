@@ -1,6 +1,6 @@
 
 /**
- * KeyValuePairCollection.java
+ * RetrievePrintTemplatesByCriteria.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,16 +10,17 @@
             
 
             /**
-            *  KeyValuePairCollection bean class
+            *  RetrievePrintTemplatesByCriteria bean class
             */
         
-        public  class KeyValuePairCollection
+        public  class RetrievePrintTemplatesByCriteria
         implements org.apache.axis2.databinding.ADBBean{
-        /* This type was generated from the piece of schema that had
-                name = KeyValuePairCollection
-                Namespace URI = http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService
-                Namespace Prefix = ns1
-                */
+        
+                public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
+                "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                "RetrievePrintTemplatesByCriteria",
+                "ns1");
+
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
@@ -32,86 +33,92 @@
         
 
                         /**
-                        * field for Pairs
-                        * This was an Array!
+                        * field for Criteria
                         */
 
                         
-                                    protected com.freshdirect.routing.proxy.stub.transportation.KeyValuePair[] localPairs ;
+                                    protected com.freshdirect.routing.proxy.stub.transportation.PrintTemplateCriteria localCriteria ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
                            *   in the serialized XML
                            */
-                           protected boolean localPairsTracker = false ;
+                           protected boolean localCriteriaTracker = false ;
                            
 
                            /**
                            * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.KeyValuePair[]
+                           * @return com.freshdirect.routing.proxy.stub.transportation.PrintTemplateCriteria
                            */
-                           public  com.freshdirect.routing.proxy.stub.transportation.KeyValuePair[] getPairs(){
-                               return localPairs;
+                           public  com.freshdirect.routing.proxy.stub.transportation.PrintTemplateCriteria getCriteria(){
+                               return localCriteria;
                            }
 
                            
                         
-
-
-                               
-                              /**
-                               * validate the array for Pairs
+                            /**
+                               * Auto generated setter method
+                               * @param param Criteria
                                */
-                              protected void validatePairs(com.freshdirect.routing.proxy.stub.transportation.KeyValuePair[] param){
-                             
-                              }
-
-
-                             /**
-                              * Auto generated setter method
-                              * @param param Pairs
-                              */
-                              public void setPairs(com.freshdirect.routing.proxy.stub.transportation.KeyValuePair[] param){
-                              
-                                   validatePairs(param);
-
-                               
-                                          if (param != null){
-                                             //update the setting tracker
-                                             localPairsTracker = true;
-                                          } else {
-                                             localPairsTracker = false;
-                                                 
-                                          }
-                                      
-                                      this.localPairs=param;
-                              }
-
-                               
-                             
-                             /**
-                             * Auto generated add method for the array for convenience
-                             * @param param com.freshdirect.routing.proxy.stub.transportation.KeyValuePair
-                             */
-                             public void addPairs(com.freshdirect.routing.proxy.stub.transportation.KeyValuePair param){
-                                   if (localPairs == null){
-                                   localPairs = new com.freshdirect.routing.proxy.stub.transportation.KeyValuePair[]{};
-                                   }
-
+                               public void setCriteria(com.freshdirect.routing.proxy.stub.transportation.PrintTemplateCriteria param){
                             
-                                 //update the setting tracker
-                                localPairsTracker = true;
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localCriteriaTracker = true;
+                                       } else {
+                                          localCriteriaTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localCriteria=param;
+                                    
+
+                               }
                             
 
-                               java.util.List list =
-                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localPairs);
-                               list.add(param);
-                               this.localPairs =
-                             (com.freshdirect.routing.proxy.stub.transportation.KeyValuePair[])list.toArray(
-                            new com.freshdirect.routing.proxy.stub.transportation.KeyValuePair[list.size()]);
+                        /**
+                        * field for Options
+                        */
 
-                             }
-                             
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.PrintTemplateRetrieveOptions localOptions ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localOptionsTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.PrintTemplateRetrieveOptions
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.PrintTemplateRetrieveOptions getOptions(){
+                               return localOptions;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Options
+                               */
+                               public void setOptions(com.freshdirect.routing.proxy.stub.transportation.PrintTemplateRetrieveOptions param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localOptionsTracker = true;
+                                       } else {
+                                          localOptionsTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localOptions=param;
+                                    
+
+                               }
+                            
 
      /**
      * isReaderMTOMAware
@@ -141,15 +148,15 @@
 
 
         
-               org.apache.axiom.om.OMDataSource dataSource =
-                       new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
+                org.apache.axiom.om.OMDataSource dataSource =
+                       new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       KeyValuePairCollection.this.serialize(parentQName,factory,xmlWriter);
+                       RetrievePrintTemplatesByCriteria.this.serialize(MY_QNAME,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
-               parentQName,factory,dataSource);
+               MY_QNAME,factory,dataSource);
             
        }
 
@@ -199,35 +206,79 @@
                    java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":KeyValuePairCollection",
+                           namespacePrefix+":RetrievePrintTemplatesByCriteria",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "KeyValuePairCollection",
+                           "RetrievePrintTemplatesByCriteria",
                            xmlWriter);
                    }
 
                
                    }
-                if (localPairsTracker){
-                                       if (localPairs!=null){
-                                            for (int i = 0;i < localPairs.length;i++){
-                                                if (localPairs[i] != null){
-                                                 localPairs[i].serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","pairs"),
-                                                           factory,xmlWriter);
-                                                } else {
-                                                   
-                                                        // we don't have to do any thing since minOccures is zero
-                                                    
-                                                }
+                if (localCriteriaTracker){
+                                    if (localCriteria==null){
 
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"criteria", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"criteria");
                                             }
-                                     } else {
-                                        
-                                               throw new org.apache.axis2.databinding.ADBException("pairs cannot be null!!");
-                                        
+
+                                        } else {
+                                            xmlWriter.writeStartElement("criteria");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localCriteria.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","criteria"),
+                                        factory,xmlWriter);
                                     }
-                                 }
+                                } if (localOptionsTracker){
+                                    if (localOptions==null){
+
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"options", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"options");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("options");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localOptions.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","options"),
+                                        factory,xmlWriter);
+                                    }
+                                }
                     xmlWriter.writeEndElement();
                
 
@@ -389,28 +440,21 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                 if (localPairsTracker){
-                             if (localPairs!=null) {
-                                 for (int i = 0;i < localPairs.length;i++){
-
-                                    if (localPairs[i] != null){
-                                         elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                          "pairs"));
-                                         elementList.add(localPairs[i]);
-                                    } else {
-                                        
-                                                // nothing to do
-                                            
-                                    }
-
-                                 }
-                             } else {
-                                 
-                                        throw new org.apache.axis2.databinding.ADBException("pairs cannot be null!!");
-                                    
-                             }
-
-                        }
+                 if (localCriteriaTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "criteria"));
+                            
+                            
+                                    elementList.add(localCriteria==null?null:
+                                    localCriteria);
+                                } if (localOptionsTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "options"));
+                            
+                            
+                                    elementList.add(localOptions==null?null:
+                                    localOptions);
+                                }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -435,9 +479,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static KeyValuePairCollection parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            KeyValuePairCollection object =
-                new KeyValuePairCollection();
+        public static RetrievePrintTemplatesByCriteria parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            RetrievePrintTemplatesByCriteria object =
+                new RetrievePrintTemplatesByCriteria();
 
             int event;
             java.lang.String nillableValue = null;
@@ -461,10 +505,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"KeyValuePairCollection".equals(type)){
+                            if (!"RetrievePrintTemplatesByCriteria".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (KeyValuePairCollection)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                return (RetrievePrintTemplatesByCriteria)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -486,48 +530,48 @@
                     
                     reader.next();
                 
-                        java.util.ArrayList list1 = new java.util.ArrayList();
-                    
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","pairs").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","criteria").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setCriteria(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setCriteria(com.freshdirect.routing.proxy.stub.transportation.PrintTemplateCriteria.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
                                 
                                     
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","options").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setOptions(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
                                     
-                                    // Process the array and step past its final element's end.
-                                    list1.add(com.freshdirect.routing.proxy.stub.transportation.KeyValuePair.Factory.parse(reader));
-                                                                
-                                                        //loop until we find a start element that is not part of this array
-                                                        boolean loopDone1 = false;
-                                                        while(!loopDone1){
-                                                            // We should be at the end element, but make sure
-                                                            while (!reader.isEndElement())
-                                                                reader.next();
-                                                            // Step out of this element
-                                                            reader.next();
-                                                            // Step to next element event.
-                                                            while (!reader.isStartElement() && !reader.isEndElement())
-                                                                reader.next();
-                                                            if (reader.isEndElement()){
-                                                                //two continuous end elements means we are exiting the xml structure
-                                                                loopDone1 = true;
-                                                            } else {
-                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","pairs").equals(reader.getName())){
-                                                                    list1.add(com.freshdirect.routing.proxy.stub.transportation.KeyValuePair.Factory.parse(reader));
-                                                                        
-                                                                }else{
-                                                                    loopDone1 = true;
-                                                                }
-                                                            }
-                                                        }
-                                                        // call the converter utility  to convert and set the array
-                                                        
-                                                        object.setPairs((com.freshdirect.routing.proxy.stub.transportation.KeyValuePair[])
-                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
-                                                                com.freshdirect.routing.proxy.stub.transportation.KeyValuePair.class,
-                                                                list1));
-                                                            
+                                                object.setOptions(com.freshdirect.routing.proxy.stub.transportation.PrintTemplateRetrieveOptions.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
                               }  // End of if for expected property start element
                                 
                                     else {

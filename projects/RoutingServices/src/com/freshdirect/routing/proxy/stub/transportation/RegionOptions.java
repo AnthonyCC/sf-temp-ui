@@ -1274,6 +1274,36 @@
                             
 
                         /**
+                        * field for IsOrderSourcingEnabled
+                        */
+
+                        
+                                    protected boolean localIsOrderSourcingEnabled ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getIsOrderSourcingEnabled(){
+                               return localIsOrderSourcingEnabled;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param IsOrderSourcingEnabled
+                               */
+                               public void setIsOrderSourcingEnabled(boolean param){
+                            
+                                            this.localIsOrderSourcingEnabled=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for CostQuantityReference
                         */
 
@@ -1388,6 +1418,155 @@
                                public void setCarbonDisplayUnits(com.freshdirect.routing.proxy.stub.transportation.CarbonDisplayUnits param){
                             
                                             this.localCarbonDisplayUnits=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for LayoverDepartureType
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.LayoverDepartureType localLayoverDepartureType ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.LayoverDepartureType
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.LayoverDepartureType getLayoverDepartureType(){
+                               return localLayoverDepartureType;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param LayoverDepartureType
+                               */
+                               public void setLayoverDepartureType(com.freshdirect.routing.proxy.stub.transportation.LayoverDepartureType param){
+                            
+                                            this.localLayoverDepartureType=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for LayoverDuration
+                        */
+
+                        
+                                    protected int localLayoverDuration =
+                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt("0");
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getLayoverDuration(){
+                               return localLayoverDuration;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param LayoverDuration
+                               */
+                               public void setLayoverDuration(int param){
+                            
+                                            this.localLayoverDuration=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for LayoverDepartureTime
+                        */
+
+                        
+                                    protected java.util.Calendar localLayoverDepartureTime ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localLayoverDepartureTimeTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.util.Calendar
+                           */
+                           public  java.util.Calendar getLayoverDepartureTime(){
+                               return localLayoverDepartureTime;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param LayoverDepartureTime
+                               */
+                               public void setLayoverDepartureTime(java.util.Calendar param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localLayoverDepartureTimeTracker = true;
+                                       } else {
+                                          localLayoverDepartureTimeTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localLayoverDepartureTime=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for LayoverArrivalTimeAtFirstStop
+                        */
+
+                        
+                                    protected java.util.Calendar localLayoverArrivalTimeAtFirstStop ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localLayoverArrivalTimeAtFirstStopTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.util.Calendar
+                           */
+                           public  java.util.Calendar getLayoverArrivalTimeAtFirstStop(){
+                               return localLayoverArrivalTimeAtFirstStop;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param LayoverArrivalTimeAtFirstStop
+                               */
+                               public void setLayoverArrivalTimeAtFirstStop(java.util.Calendar param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localLayoverArrivalTimeAtFirstStopTracker = true;
+                                       } else {
+                                          localLayoverArrivalTimeAtFirstStopTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localLayoverArrivalTimeAtFirstStop=param;
                                     
 
                                }
@@ -2491,6 +2670,35 @@
                                     
                                    xmlWriter.writeEndElement();
                              
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"isOrderSourcingEnabled", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"isOrderSourcingEnabled");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("isOrderSourcingEnabled");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("isOrderSourcingEnabled cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localIsOrderSourcingEnabled));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
                                             if (localCostQuantityReference==null){
                                                  throw new org.apache.axis2.databinding.ADBException("costQuantityReference cannot be null!!");
                                             }
@@ -2538,6 +2746,109 @@
                                            localCarbonDisplayUnits.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","carbonDisplayUnits"),
                                                factory,xmlWriter);
                                         
+                                            if (localLayoverDepartureType==null){
+                                                 throw new org.apache.axis2.databinding.ADBException("layoverDepartureType cannot be null!!");
+                                            }
+                                           localLayoverDepartureType.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","layoverDepartureType"),
+                                               factory,xmlWriter);
+                                        
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"layoverDuration", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"layoverDuration");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("layoverDuration");
+                                    }
+                                
+                                               if (localLayoverDuration==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("layoverDuration cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLayoverDuration));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                              if (localLayoverDepartureTimeTracker){
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"layoverDepartureTime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"layoverDepartureTime");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("layoverDepartureTime");
+                                    }
+                                
+
+                                          if (localLayoverDepartureTime==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("layoverDepartureTime cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLayoverDepartureTime));
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localLayoverArrivalTimeAtFirstStopTracker){
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"layoverArrivalTimeAtFirstStop", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"layoverArrivalTimeAtFirstStop");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("layoverArrivalTimeAtFirstStop");
+                                    }
+                                
+
+                                          if (localLayoverArrivalTimeAtFirstStop==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("layoverArrivalTimeAtFirstStop cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLayoverArrivalTimeAtFirstStop));
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             }
                     xmlWriter.writeEndElement();
                
 
@@ -2958,6 +3269,12 @@
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPassiveMode));
                             
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "isOrderSourcingEnabled"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localIsOrderSourcingEnabled));
+                            
                             elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "costQuantityReference"));
                             
@@ -2991,6 +3308,39 @@
                                     }
                                     elementList.add(localCarbonDisplayUnits);
                                 
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "layoverDepartureType"));
+                            
+                            
+                                    if (localLayoverDepartureType==null){
+                                         throw new org.apache.axis2.databinding.ADBException("layoverDepartureType cannot be null!!");
+                                    }
+                                    elementList.add(localLayoverDepartureType);
+                                
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "layoverDuration"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLayoverDuration));
+                             if (localLayoverDepartureTimeTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "layoverDepartureTime"));
+                                 
+                                        if (localLayoverDepartureTime != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLayoverDepartureTime));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("layoverDepartureTime cannot be null!!");
+                                        }
+                                    } if (localLayoverArrivalTimeAtFirstStopTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "layoverArrivalTimeAtFirstStop"));
+                                 
+                                        if (localLayoverArrivalTimeAtFirstStop != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLayoverArrivalTimeAtFirstStop));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("layoverArrivalTimeAtFirstStop cannot be null!!");
+                                        }
+                                    }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -3672,6 +4022,25 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","isOrderSourcingEnabled").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setIsOrderSourcingEnabled(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","costQuantityReference").equals(reader.getName())){
                                 
                                                 object.setCostQuantityReference(com.freshdirect.routing.proxy.stub.transportation.QuantityReference.Factory.parse(reader));
@@ -3735,7 +4104,78 @@
                                     // A start element we are not expecting indicates an invalid parameter was passed
                                     throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
                                 }
-                              
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","layoverDepartureType").equals(reader.getName())){
+                                
+                                                object.setLayoverDepartureType(com.freshdirect.routing.proxy.stub.transportation.LayoverDepartureType.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","layoverDuration").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setLayoverDuration(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","layoverDepartureTime").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setLayoverDepartureTime(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDateTime(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","layoverArrivalTimeAtFirstStop").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setLayoverArrivalTimeAtFirstStop(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDateTime(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             

@@ -1,6 +1,6 @@
 
 /**
- * LocationServiceDetails.java
+ * RetrievePrintTemplatesByCriteriaResponse.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,16 +10,17 @@
             
 
             /**
-            *  LocationServiceDetails bean class
+            *  RetrievePrintTemplatesByCriteriaResponse bean class
             */
         
-        public  class LocationServiceDetails
+        public  class RetrievePrintTemplatesByCriteriaResponse
         implements org.apache.axis2.databinding.ADBBean{
-        /* This type was generated from the piece of schema that had
-                name = LocationServiceDetails
-                Namespace URI = http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService
-                Namespace Prefix = ns1
-                */
+        
+                public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
+                "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                "RetrievePrintTemplatesByCriteriaResponse",
+                "ns1");
+
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
@@ -32,26 +33,26 @@
         
 
                         /**
-                        * field for Pairs
+                        * field for PrintTemplates
                         * This was an Array!
                         */
 
                         
-                                    protected com.freshdirect.routing.proxy.stub.transportation.KeyValuePair[] localPairs ;
+                                    protected com.freshdirect.routing.proxy.stub.transportation.PrintTemplate[] localPrintTemplates ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
                            *   in the serialized XML
                            */
-                           protected boolean localPairsTracker = false ;
+                           protected boolean localPrintTemplatesTracker = false ;
                            
 
                            /**
                            * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.KeyValuePair[]
+                           * @return com.freshdirect.routing.proxy.stub.transportation.PrintTemplate[]
                            */
-                           public  com.freshdirect.routing.proxy.stub.transportation.KeyValuePair[] getPairs(){
-                               return localPairs;
+                           public  com.freshdirect.routing.proxy.stub.transportation.PrintTemplate[] getPrintTemplates(){
+                               return localPrintTemplates;
                            }
 
                            
@@ -60,55 +61,55 @@
 
                                
                               /**
-                               * validate the array for Pairs
+                               * validate the array for PrintTemplates
                                */
-                              protected void validatePairs(com.freshdirect.routing.proxy.stub.transportation.KeyValuePair[] param){
+                              protected void validatePrintTemplates(com.freshdirect.routing.proxy.stub.transportation.PrintTemplate[] param){
                              
                               }
 
 
                              /**
                               * Auto generated setter method
-                              * @param param Pairs
+                              * @param param PrintTemplates
                               */
-                              public void setPairs(com.freshdirect.routing.proxy.stub.transportation.KeyValuePair[] param){
+                              public void setPrintTemplates(com.freshdirect.routing.proxy.stub.transportation.PrintTemplate[] param){
                               
-                                   validatePairs(param);
+                                   validatePrintTemplates(param);
 
                                
                                           if (param != null){
                                              //update the setting tracker
-                                             localPairsTracker = true;
+                                             localPrintTemplatesTracker = true;
                                           } else {
-                                             localPairsTracker = false;
+                                             localPrintTemplatesTracker = false;
                                                  
                                           }
                                       
-                                      this.localPairs=param;
+                                      this.localPrintTemplates=param;
                               }
 
                                
                              
                              /**
                              * Auto generated add method for the array for convenience
-                             * @param param com.freshdirect.routing.proxy.stub.transportation.KeyValuePair
+                             * @param param com.freshdirect.routing.proxy.stub.transportation.PrintTemplate
                              */
-                             public void addPairs(com.freshdirect.routing.proxy.stub.transportation.KeyValuePair param){
-                                   if (localPairs == null){
-                                   localPairs = new com.freshdirect.routing.proxy.stub.transportation.KeyValuePair[]{};
+                             public void addPrintTemplates(com.freshdirect.routing.proxy.stub.transportation.PrintTemplate param){
+                                   if (localPrintTemplates == null){
+                                   localPrintTemplates = new com.freshdirect.routing.proxy.stub.transportation.PrintTemplate[]{};
                                    }
 
                             
                                  //update the setting tracker
-                                localPairsTracker = true;
+                                localPrintTemplatesTracker = true;
                             
 
                                java.util.List list =
-                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localPairs);
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localPrintTemplates);
                                list.add(param);
-                               this.localPairs =
-                             (com.freshdirect.routing.proxy.stub.transportation.KeyValuePair[])list.toArray(
-                            new com.freshdirect.routing.proxy.stub.transportation.KeyValuePair[list.size()]);
+                               this.localPrintTemplates =
+                             (com.freshdirect.routing.proxy.stub.transportation.PrintTemplate[])list.toArray(
+                            new com.freshdirect.routing.proxy.stub.transportation.PrintTemplate[list.size()]);
 
                              }
                              
@@ -141,15 +142,15 @@
 
 
         
-               org.apache.axiom.om.OMDataSource dataSource =
-                       new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
+                org.apache.axiom.om.OMDataSource dataSource =
+                       new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       LocationServiceDetails.this.serialize(parentQName,factory,xmlWriter);
+                       RetrievePrintTemplatesByCriteriaResponse.this.serialize(MY_QNAME,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
-               parentQName,factory,dataSource);
+               MY_QNAME,factory,dataSource);
             
        }
 
@@ -199,21 +200,21 @@
                    java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":LocationServiceDetails",
+                           namespacePrefix+":RetrievePrintTemplatesByCriteriaResponse",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "LocationServiceDetails",
+                           "RetrievePrintTemplatesByCriteriaResponse",
                            xmlWriter);
                    }
 
                
                    }
-                if (localPairsTracker){
-                                       if (localPairs!=null){
-                                            for (int i = 0;i < localPairs.length;i++){
-                                                if (localPairs[i] != null){
-                                                 localPairs[i].serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","pairs"),
+                if (localPrintTemplatesTracker){
+                                       if (localPrintTemplates!=null){
+                                            for (int i = 0;i < localPrintTemplates.length;i++){
+                                                if (localPrintTemplates[i] != null){
+                                                 localPrintTemplates[i].serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","printTemplates"),
                                                            factory,xmlWriter);
                                                 } else {
                                                    
@@ -224,7 +225,7 @@
                                             }
                                      } else {
                                         
-                                               throw new org.apache.axis2.databinding.ADBException("pairs cannot be null!!");
+                                               throw new org.apache.axis2.databinding.ADBException("printTemplates cannot be null!!");
                                         
                                     }
                                  }
@@ -389,14 +390,14 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                 if (localPairsTracker){
-                             if (localPairs!=null) {
-                                 for (int i = 0;i < localPairs.length;i++){
+                 if (localPrintTemplatesTracker){
+                             if (localPrintTemplates!=null) {
+                                 for (int i = 0;i < localPrintTemplates.length;i++){
 
-                                    if (localPairs[i] != null){
+                                    if (localPrintTemplates[i] != null){
                                          elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                          "pairs"));
-                                         elementList.add(localPairs[i]);
+                                                                          "printTemplates"));
+                                         elementList.add(localPrintTemplates[i]);
                                     } else {
                                         
                                                 // nothing to do
@@ -406,7 +407,7 @@
                                  }
                              } else {
                                  
-                                        throw new org.apache.axis2.databinding.ADBException("pairs cannot be null!!");
+                                        throw new org.apache.axis2.databinding.ADBException("printTemplates cannot be null!!");
                                     
                              }
 
@@ -435,9 +436,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static LocationServiceDetails parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            LocationServiceDetails object =
-                new LocationServiceDetails();
+        public static RetrievePrintTemplatesByCriteriaResponse parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            RetrievePrintTemplatesByCriteriaResponse object =
+                new RetrievePrintTemplatesByCriteriaResponse();
 
             int event;
             java.lang.String nillableValue = null;
@@ -461,10 +462,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"LocationServiceDetails".equals(type)){
+                            if (!"RetrievePrintTemplatesByCriteriaResponse".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (LocationServiceDetails)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                return (RetrievePrintTemplatesByCriteriaResponse)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -491,12 +492,12 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","pairs").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","printTemplates").equals(reader.getName())){
                                 
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list1.add(com.freshdirect.routing.proxy.stub.transportation.KeyValuePair.Factory.parse(reader));
+                                    list1.add(com.freshdirect.routing.proxy.stub.transportation.PrintTemplate.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
                                                         boolean loopDone1 = false;
@@ -513,8 +514,8 @@
                                                                 //two continuous end elements means we are exiting the xml structure
                                                                 loopDone1 = true;
                                                             } else {
-                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","pairs").equals(reader.getName())){
-                                                                    list1.add(com.freshdirect.routing.proxy.stub.transportation.KeyValuePair.Factory.parse(reader));
+                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","printTemplates").equals(reader.getName())){
+                                                                    list1.add(com.freshdirect.routing.proxy.stub.transportation.PrintTemplate.Factory.parse(reader));
                                                                         
                                                                 }else{
                                                                     loopDone1 = true;
@@ -523,9 +524,9 @@
                                                         }
                                                         // call the converter utility  to convert and set the array
                                                         
-                                                        object.setPairs((com.freshdirect.routing.proxy.stub.transportation.KeyValuePair[])
+                                                        object.setPrintTemplates((com.freshdirect.routing.proxy.stub.transportation.PrintTemplate[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
-                                                                com.freshdirect.routing.proxy.stub.transportation.KeyValuePair.class,
+                                                                com.freshdirect.routing.proxy.stub.transportation.PrintTemplate.class,
                                                                 list1));
                                                             
                               }  // End of if for expected property start element

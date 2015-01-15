@@ -92,6 +92,9 @@
                                     public static final java.lang.String _value13 =
                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString("ctMC-BeginDate");
                                 
+                                    public static final java.lang.String _value14 =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("ctMC-DateRangeDriverEquipment");
+                                
                                 public static final ReportCriteriaType value1 =
                                     new ReportCriteriaType(_value1,true);
                             
@@ -130,6 +133,9 @@
                             
                                 public static final ReportCriteriaType value13 =
                                     new ReportCriteriaType(_value13,true);
+                            
+                                public static final ReportCriteriaType value14 =
+                                    new ReportCriteriaType(_value14,true);
                             
 
                                 public java.lang.String getValue() { return localReportCriteriaType;}

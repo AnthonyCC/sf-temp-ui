@@ -388,6 +388,21 @@
             }
                 
            /**
+            * auto generated Axis2 call back method for acknowledgeRouteExceptions method
+            * override this method for handling normal response from acknowledgeRouteExceptions operation
+            */
+           public void receiveResultacknowledgeRouteExceptions(
+                    ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from acknowledgeRouteExceptions operation
+           */
+            public void receiveErroracknowledgeRouteExceptions(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for updateDeliveryDetails method
             * override this method for handling normal response from updateDeliveryDetails operation
             */
@@ -888,6 +903,117 @@
             }
                 
            /**
+            * auto generated Axis2 call back method for arriveDepartStop method
+            * override this method for handling normal response from arriveDepartStop operation
+            */
+           public void receiveResultarriveDepartStop(
+                    ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from arriveDepartStop operation
+           */
+            public void receiveErrorarriveDepartStop(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for retrieveEmployeesByCriteriaEx method
+            * override this method for handling normal response from retrieveEmployeesByCriteriaEx operation
+            */
+           public void receiveResultretrieveEmployeesByCriteriaEx(
+                    com.freshdirect.routing.proxy.stub.transportation.Employee[] result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from retrieveEmployeesByCriteriaEx operation
+           */
+            public void receiveErrorretrieveEmployeesByCriteriaEx(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for retrieveQuantityReasonCodesByCriteria method
+            * override this method for handling normal response from retrieveQuantityReasonCodesByCriteria operation
+            */
+           public void receiveResultretrieveQuantityReasonCodesByCriteria(
+                    com.freshdirect.routing.proxy.stub.transportation.QuantityReasonCode[] result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from retrieveQuantityReasonCodesByCriteria operation
+           */
+            public void receiveErrorretrieveQuantityReasonCodesByCriteria(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for retrieveLineItemNotesByCriteriaEx method
+            * override this method for handling normal response from retrieveLineItemNotesByCriteriaEx operation
+            */
+           public void receiveResultretrieveLineItemNotesByCriteriaEx(
+                    com.freshdirect.routing.proxy.stub.transportation.LineItemNote[] result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from retrieveLineItemNotesByCriteriaEx operation
+           */
+            public void receiveErrorretrieveLineItemNotesByCriteriaEx(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for retrieveOrderNotesByCriteriaEx method
+            * override this method for handling normal response from retrieveOrderNotesByCriteriaEx operation
+            */
+           public void receiveResultretrieveOrderNotesByCriteriaEx(
+                    com.freshdirect.routing.proxy.stub.transportation.OrderNote[] result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from retrieveOrderNotesByCriteriaEx operation
+           */
+            public void receiveErrorretrieveOrderNotesByCriteriaEx(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for retrieveEquipmentTypeByIdentity method
+            * override this method for handling normal response from retrieveEquipmentTypeByIdentity operation
+            */
+           public void receiveResultretrieveEquipmentTypeByIdentity(
+                    com.freshdirect.routing.proxy.stub.transportation.EquipmentType result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from retrieveEquipmentTypeByIdentity operation
+           */
+            public void receiveErrorretrieveEquipmentTypeByIdentity(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for retrieveRoutingSourcedOrdersByCriteria method
+            * override this method for handling normal response from retrieveRoutingSourcedOrdersByCriteria operation
+            */
+           public void receiveResultretrieveRoutingSourcedOrdersByCriteria(
+                    com.freshdirect.routing.proxy.stub.transportation.RoutingOrder[] result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from retrieveRoutingSourcedOrdersByCriteria operation
+           */
+            public void receiveErrorretrieveRoutingSourcedOrdersByCriteria(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for retrieveUndeliverableStopCodesByCriteria method
             * override this method for handling normal response from retrieveUndeliverableStopCodesByCriteria operation
             */
@@ -967,38 +1093,6 @@
             }
                 
            /**
-            * auto generated Axis2 call back method for retrieveQuantityReasonCodesByCriteria method
-            * override this method for handling normal response from retrieveQuantityReasonCodesByCriteria operation
-            */
-           public void receiveResultretrieveQuantityReasonCodesByCriteria(
-                    com.freshdirect.routing.proxy.stub.transportation.QuantityReasonCode[] result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from retrieveQuantityReasonCodesByCriteria operation
-           */
-            public void receiveErrorretrieveQuantityReasonCodesByCriteria(java.lang.Exception e) {
-            }
-                
-           /**
-            * auto generated Axis2 call back method for retrieveLineItemNotesByCriteriaEx method
-            * override this method for handling normal response from retrieveLineItemNotesByCriteriaEx operation
-            */
-           public void receiveResultretrieveLineItemNotesByCriteriaEx(
-                    com.freshdirect.routing.proxy.stub.transportation.LineItemNote[] result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from retrieveLineItemNotesByCriteriaEx operation
-           */
-            public void receiveErrorretrieveLineItemNotesByCriteriaEx(java.lang.Exception e) {
-            }
-                
-           /**
             * auto generated Axis2 call back method for retrieveStandardRouteByIdentity method
             * override this method for handling normal response from retrieveStandardRouteByIdentity operation
             */
@@ -1015,38 +1109,6 @@
             }
                 
            /**
-            * auto generated Axis2 call back method for retrieveOrderNotesByCriteriaEx method
-            * override this method for handling normal response from retrieveOrderNotesByCriteriaEx operation
-            */
-           public void receiveResultretrieveOrderNotesByCriteriaEx(
-                    com.freshdirect.routing.proxy.stub.transportation.OrderNote[] result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from retrieveOrderNotesByCriteriaEx operation
-           */
-            public void receiveErrorretrieveOrderNotesByCriteriaEx(java.lang.Exception e) {
-            }
-                
-           /**
-            * auto generated Axis2 call back method for retrieveEquipmentTypeByIdentity method
-            * override this method for handling normal response from retrieveEquipmentTypeByIdentity operation
-            */
-           public void receiveResultretrieveEquipmentTypeByIdentity(
-                    com.freshdirect.routing.proxy.stub.transportation.EquipmentType result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from retrieveEquipmentTypeByIdentity operation
-           */
-            public void receiveErrorretrieveEquipmentTypeByIdentity(java.lang.Exception e) {
-            }
-                
-           /**
             * auto generated Axis2 call back method for deleteUnassigned method
             * override this method for handling normal response from deleteUnassigned operation
             */
@@ -1059,22 +1121,6 @@
            * override this method for handling error response from deleteUnassigned operation
            */
             public void receiveErrordeleteUnassigned(java.lang.Exception e) {
-            }
-                
-           /**
-            * auto generated Axis2 call back method for retrieveRoutingSourcedOrdersByCriteria method
-            * override this method for handling normal response from retrieveRoutingSourcedOrdersByCriteria operation
-            */
-           public void receiveResultretrieveRoutingSourcedOrdersByCriteria(
-                    com.freshdirect.routing.proxy.stub.transportation.RoutingOrder[] result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from retrieveRoutingSourcedOrdersByCriteria operation
-           */
-            public void receiveErrorretrieveRoutingSourcedOrdersByCriteria(java.lang.Exception e) {
             }
                 
            /**
@@ -1642,22 +1688,6 @@
             }
                 
            /**
-            * auto generated Axis2 call back method for saveRoutingStop method
-            * override this method for handling normal response from saveRoutingStop operation
-            */
-           public void receiveResultsaveRoutingStop(
-                    com.freshdirect.routing.proxy.stub.transportation.SaveRoutingRejection[] result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from saveRoutingStop operation
-           */
-            public void receiveErrorsaveRoutingStop(java.lang.Exception e) {
-            }
-                
-           /**
             * auto generated Axis2 call back method for savePlanningLocationExtensions method
             * override this method for handling normal response from savePlanningLocationExtensions operation
             */
@@ -1671,6 +1701,37 @@
            * override this method for handling error response from savePlanningLocationExtensions operation
            */
             public void receiveErrorsavePlanningLocationExtensions(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for savePrintTemplate method
+            * override this method for handling normal response from savePrintTemplate operation
+            */
+           public void receiveResultsavePrintTemplate(
+                    ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from savePrintTemplate operation
+           */
+            public void receiveErrorsavePrintTemplate(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for saveRoutingStop method
+            * override this method for handling normal response from saveRoutingStop operation
+            */
+           public void receiveResultsaveRoutingStop(
+                    com.freshdirect.routing.proxy.stub.transportation.SaveRoutingRejection[] result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from saveRoutingStop operation
+           */
+            public void receiveErrorsaveRoutingStop(java.lang.Exception e) {
             }
                 
            /**
@@ -2333,6 +2394,21 @@
             }
                 
            /**
+            * auto generated Axis2 call back method for removeAllEmployeeLocationAssignments method
+            * override this method for handling normal response from removeAllEmployeeLocationAssignments operation
+            */
+           public void receiveResultremoveAllEmployeeLocationAssignments(
+                    ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from removeAllEmployeeLocationAssignments operation
+           */
+            public void receiveErrorremoveAllEmployeeLocationAssignments(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for saveRoute method
             * override this method for handling normal response from saveRoute operation
             */
@@ -2459,6 +2535,21 @@
             }
                 
            /**
+            * auto generated Axis2 call back method for saveGlobalConfig method
+            * override this method for handling normal response from saveGlobalConfig operation
+            */
+           public void receiveResultsaveGlobalConfig(
+                    ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from saveGlobalConfig operation
+           */
+            public void receiveErrorsaveGlobalConfig(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for retrieveUserByUserID method
             * override this method for handling normal response from retrieveUserByUserID operation
             */
@@ -2490,21 +2581,6 @@
             }
                 
            /**
-            * auto generated Axis2 call back method for saveGlobalConfig method
-            * override this method for handling normal response from saveGlobalConfig operation
-            */
-           public void receiveResultsaveGlobalConfig(
-                    ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from saveGlobalConfig operation
-           */
-            public void receiveErrorsaveGlobalConfig(java.lang.Exception e) {
-            }
-                
-           /**
             * auto generated Axis2 call back method for saveEquipment method
             * override this method for handling normal response from saveEquipment operation
             */
@@ -2533,6 +2609,22 @@
            * override this method for handling error response from retrieveRouteExceptionsByCriteria operation
            */
             public void receiveErrorretrieveRouteExceptionsByCriteria(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for retrieveEmployeeByIdentityEx method
+            * override this method for handling normal response from retrieveEmployeeByIdentityEx operation
+            */
+           public void receiveResultretrieveEmployeeByIdentityEx(
+                    com.freshdirect.routing.proxy.stub.transportation.Employee result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from retrieveEmployeeByIdentityEx operation
+           */
+            public void receiveErrorretrieveEmployeeByIdentityEx(java.lang.Exception e) {
             }
                 
            /**
@@ -2675,6 +2767,21 @@
            * override this method for handling error response from schedulerSendRoutesToRoadnetEx operation
            */
             public void receiveErrorschedulerSendRoutesToRoadnetEx(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for removeEmployeeLocationAssignments method
+            * override this method for handling normal response from removeEmployeeLocationAssignments operation
+            */
+           public void receiveResultremoveEmployeeLocationAssignments(
+                    ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from removeEmployeeLocationAssignments operation
+           */
+            public void receiveErrorremoveEmployeeLocationAssignments(java.lang.Exception e) {
             }
                 
            /**
@@ -3036,6 +3143,22 @@
            * override this method for handling error response from retrievePlanningSessionPropertiesByIdentity operation
            */
             public void receiveErrorretrievePlanningSessionPropertiesByIdentity(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for retrievePrintTemplatesByCriteria method
+            * override this method for handling normal response from retrievePrintTemplatesByCriteria operation
+            */
+           public void receiveResultretrievePrintTemplatesByCriteria(
+                    com.freshdirect.routing.proxy.stub.transportation.PrintTemplate[] result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from retrievePrintTemplatesByCriteria operation
+           */
+            public void receiveErrorretrievePrintTemplatesByCriteria(java.lang.Exception e) {
             }
                 
            /**

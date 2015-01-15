@@ -2733,6 +2733,50 @@
                                }
                             
 
+                        /**
+                        * field for LastContactTime
+                        */
+
+                        
+                                    protected java.util.Calendar localLastContactTime ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localLastContactTimeTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.util.Calendar
+                           */
+                           public  java.util.Calendar getLastContactTime(){
+                               return localLastContactTime;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param LastContactTime
+                               */
+                               public void setLastContactTime(java.util.Calendar param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localLastContactTimeTracker = true;
+                                       } else {
+                                          localLastContactTimeTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localLastContactTime=param;
+                                    
+
+                               }
+                            
+
      /**
      * isReaderMTOMAware
      * @return true if the reader supports MTOM
@@ -4739,7 +4783,41 @@
                                      localPostRouteSurveyIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","postRouteSurveyIdentity"),
                                         factory,xmlWriter);
                                     }
-                                }
+                                } if (localLastContactTimeTracker){
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"lastContactTime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"lastContactTime");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("lastContactTime");
+                                    }
+                                
+
+                                          if (localLastContactTime==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("lastContactTime cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLastContactTime));
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             }
                     xmlWriter.writeEndElement();
                
 
@@ -5470,7 +5548,16 @@
                             
                                     elementList.add(localPostRouteSurveyIdentity==null?null:
                                     localPostRouteSurveyIdentity);
-                                }
+                                } if (localLastContactTimeTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "lastContactTime"));
+                                 
+                                        if (localLastContactTime != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLastContactTime));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("lastContactTime cannot be null!!");
+                                        }
+                                    }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -6889,6 +6976,24 @@
                                               
                                         reader.next();
                                     }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","lastContactTime").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setLastContactTime(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDateTime(content));
+                                              
+                                        reader.next();
+                                    
                               }  // End of if for expected property start element
                                 
                                     else {

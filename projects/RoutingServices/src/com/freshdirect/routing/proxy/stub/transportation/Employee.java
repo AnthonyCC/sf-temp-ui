@@ -783,6 +783,119 @@
                                }
                             
 
+                        /**
+                        * field for AssignAllLocations
+                        */
+
+                        
+                                    protected boolean localAssignAllLocations =
+                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean("false");
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getAssignAllLocations(){
+                               return localAssignAllLocations;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param AssignAllLocations
+                               */
+                               public void setAssignAllLocations(boolean param){
+                            
+                                            this.localAssignAllLocations=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for LocationIdentities
+                        * This was an Array!
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.LocationIdentity[] localLocationIdentities ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localLocationIdentitiesTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.LocationIdentity[]
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.LocationIdentity[] getLocationIdentities(){
+                               return localLocationIdentities;
+                           }
+
+                           
+                        
+
+
+                               
+                              /**
+                               * validate the array for LocationIdentities
+                               */
+                              protected void validateLocationIdentities(com.freshdirect.routing.proxy.stub.transportation.LocationIdentity[] param){
+                             
+                              }
+
+
+                             /**
+                              * Auto generated setter method
+                              * @param param LocationIdentities
+                              */
+                              public void setLocationIdentities(com.freshdirect.routing.proxy.stub.transportation.LocationIdentity[] param){
+                              
+                                   validateLocationIdentities(param);
+
+                               
+                                          if (param != null){
+                                             //update the setting tracker
+                                             localLocationIdentitiesTracker = true;
+                                          } else {
+                                             localLocationIdentitiesTracker = false;
+                                                 
+                                          }
+                                      
+                                      this.localLocationIdentities=param;
+                              }
+
+                               
+                             
+                             /**
+                             * Auto generated add method for the array for convenience
+                             * @param param com.freshdirect.routing.proxy.stub.transportation.LocationIdentity
+                             */
+                             public void addLocationIdentities(com.freshdirect.routing.proxy.stub.transportation.LocationIdentity param){
+                                   if (localLocationIdentities == null){
+                                   localLocationIdentities = new com.freshdirect.routing.proxy.stub.transportation.LocationIdentity[]{};
+                                   }
+
+                            
+                                 //update the setting tracker
+                                localLocationIdentitiesTracker = true;
+                            
+
+                               java.util.List list =
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localLocationIdentities);
+                               list.add(param);
+                               this.localLocationIdentities =
+                             (com.freshdirect.routing.proxy.stub.transportation.LocationIdentity[])list.toArray(
+                            new com.freshdirect.routing.proxy.stub.transportation.LocationIdentity[list.size()]);
+
+                             }
+                             
+
      /**
      * isReaderMTOMAware
      * @return true if the reader supports MTOM
@@ -1470,6 +1583,53 @@
                                         factory,xmlWriter);
                                     }
                                 }
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"assignAllLocations", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"assignAllLocations");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("assignAllLocations");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("assignAllLocations cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAssignAllLocations));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                              if (localLocationIdentitiesTracker){
+                                       if (localLocationIdentities!=null){
+                                            for (int i = 0;i < localLocationIdentities.length;i++){
+                                                if (localLocationIdentities[i] != null){
+                                                 localLocationIdentities[i].serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","locationIdentities"),
+                                                           factory,xmlWriter);
+                                                } else {
+                                                   
+                                                        // we don't have to do any thing since minOccures is zero
+                                                    
+                                                }
+
+                                            }
+                                     } else {
+                                        
+                                               throw new org.apache.axis2.databinding.ADBException("locationIdentities cannot be null!!");
+                                        
+                                    }
+                                 }
                     xmlWriter.writeEndElement();
                
 
@@ -1780,6 +1940,33 @@
                                     elementList.add(localCurrentRouteIdentity==null?null:
                                     localCurrentRouteIdentity);
                                 }
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "assignAllLocations"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAssignAllLocations));
+                             if (localLocationIdentitiesTracker){
+                             if (localLocationIdentities!=null) {
+                                 for (int i = 0;i < localLocationIdentities.length;i++){
+
+                                    if (localLocationIdentities[i] != null){
+                                         elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                          "locationIdentities"));
+                                         elementList.add(localLocationIdentities[i]);
+                                    } else {
+                                        
+                                                // nothing to do
+                                            
+                                    }
+
+                                 }
+                             } else {
+                                 
+                                        throw new org.apache.axis2.databinding.ADBException("locationIdentities cannot be null!!");
+                                    
+                             }
+
+                        }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -1855,6 +2042,8 @@
                     
                     reader.next();
                 
+                        java.util.ArrayList list20 = new java.util.ArrayList();
+                    
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
@@ -2200,6 +2389,71 @@
                                               
                                         reader.next();
                                     }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","assignAllLocations").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setAssignAllLocations(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","locationIdentities").equals(reader.getName())){
+                                
+                                    
+                                    
+                                    // Process the array and step past its final element's end.
+                                    list20.add(com.freshdirect.routing.proxy.stub.transportation.LocationIdentity.Factory.parse(reader));
+                                                                
+                                                        //loop until we find a start element that is not part of this array
+                                                        boolean loopDone20 = false;
+                                                        while(!loopDone20){
+                                                            // We should be at the end element, but make sure
+                                                            while (!reader.isEndElement())
+                                                                reader.next();
+                                                            // Step out of this element
+                                                            reader.next();
+                                                            // Step to next element event.
+                                                            while (!reader.isStartElement() && !reader.isEndElement())
+                                                                reader.next();
+                                                            if (reader.isEndElement()){
+                                                                //two continuous end elements means we are exiting the xml structure
+                                                                loopDone20 = true;
+                                                            } else {
+                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","locationIdentities").equals(reader.getName())){
+                                                                    list20.add(com.freshdirect.routing.proxy.stub.transportation.LocationIdentity.Factory.parse(reader));
+                                                                        
+                                                                }else{
+                                                                    loopDone20 = true;
+                                                                }
+                                                            }
+                                                        }
+                                                        // call the converter utility  to convert and set the array
+                                                        
+                                                        object.setLocationIdentities((com.freshdirect.routing.proxy.stub.transportation.LocationIdentity[])
+                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                                                                com.freshdirect.routing.proxy.stub.transportation.LocationIdentity.class,
+                                                                list20));
+                                                            
                               }  // End of if for expected property start element
                                 
                                     else {

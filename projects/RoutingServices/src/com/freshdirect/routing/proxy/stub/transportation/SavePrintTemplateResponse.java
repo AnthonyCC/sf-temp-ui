@@ -1,6 +1,6 @@
 
 /**
- * SchedulerRemoveFromServerResponse.java
+ * SavePrintTemplateResponse.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,21 +10,21 @@
             
 
             /**
-            *  SchedulerRemoveFromServerResponse bean class
+            *  SavePrintTemplateResponse bean class
             */
         
-        public  class SchedulerRemoveFromServerResponse
+        public  class SavePrintTemplateResponse
         implements org.apache.axis2.databinding.ADBBean{
         
                 public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
-                "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                "SchedulerRemoveFromServerResponse",
+                "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                "SavePrintTemplateResponse",
                 "ns1");
 
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService")){
+            if(namespace.equals("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService")){
                 return "ns1";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
@@ -64,7 +64,7 @@
                        new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       SchedulerRemoveFromServerResponse.this.serialize(MY_QNAME,factory,xmlWriter);
+                       SavePrintTemplateResponse.this.serialize(MY_QNAME,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
@@ -115,14 +115,14 @@
                   if (serializeType){
                
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":SchedulerRemoveFromServerResponse",
+                           namespacePrefix+":SavePrintTemplateResponse",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "SchedulerRemoveFromServerResponse",
+                           "SavePrintTemplateResponse",
                            xmlWriter);
                    }
 
@@ -315,9 +315,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static SchedulerRemoveFromServerResponse parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            SchedulerRemoveFromServerResponse object =
-                new SchedulerRemoveFromServerResponse();
+        public static SavePrintTemplateResponse parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            SavePrintTemplateResponse object =
+                new SavePrintTemplateResponse();
 
             int event;
             java.lang.String nillableValue = null;
@@ -341,10 +341,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"SchedulerRemoveFromServerResponse".equals(type)){
+                            if (!"SavePrintTemplateResponse".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (SchedulerRemoveFromServerResponse)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                return (SavePrintTemplateResponse)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         

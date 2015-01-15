@@ -462,34 +462,86 @@
                              
 
                         /**
-                        * field for Day
+                        * field for Days
+                        * This was an Array!
                         */
 
                         
-                                    protected com.freshdirect.routing.proxy.stub.transportation.DayOfWeek localDay ;
+                                    protected com.freshdirect.routing.proxy.stub.transportation.DayOfWeek[] localDays ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localDaysTracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.DayOfWeek
+                           * @return com.freshdirect.routing.proxy.stub.transportation.DayOfWeek[]
                            */
-                           public  com.freshdirect.routing.proxy.stub.transportation.DayOfWeek getDay(){
-                               return localDay;
+                           public  com.freshdirect.routing.proxy.stub.transportation.DayOfWeek[] getDays(){
+                               return localDays;
                            }
 
                            
                         
-                            /**
-                               * Auto generated setter method
-                               * @param param Day
-                               */
-                               public void setDay(com.freshdirect.routing.proxy.stub.transportation.DayOfWeek param){
-                            
-                                            this.localDay=param;
-                                    
 
-                               }
+
+                               
+                              /**
+                               * validate the array for Days
+                               */
+                              protected void validateDays(com.freshdirect.routing.proxy.stub.transportation.DayOfWeek[] param){
+                             
+                              }
+
+
+                             /**
+                              * Auto generated setter method
+                              * @param param Days
+                              */
+                              public void setDays(com.freshdirect.routing.proxy.stub.transportation.DayOfWeek[] param){
+                              
+                                   validateDays(param);
+
+                               
+                                          if (param != null){
+                                             //update the setting tracker
+                                             localDaysTracker = true;
+                                          } else {
+                                             localDaysTracker = false;
+                                                 
+                                          }
+                                      
+                                      this.localDays=param;
+                              }
+
+                               
+                             
+                             /**
+                             * Auto generated add method for the array for convenience
+                             * @param param com.freshdirect.routing.proxy.stub.transportation.DayOfWeek
+                             */
+                             public void addDays(com.freshdirect.routing.proxy.stub.transportation.DayOfWeek param){
+                                   if (localDays == null){
+                                   localDays = new com.freshdirect.routing.proxy.stub.transportation.DayOfWeek[]{};
+                                   }
+
                             
+                                 //update the setting tracker
+                                localDaysTracker = true;
+                            
+
+                               java.util.List list =
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localDays);
+                               list.add(param);
+                               this.localDays =
+                             (com.freshdirect.routing.proxy.stub.transportation.DayOfWeek[])list.toArray(
+                            new com.freshdirect.routing.proxy.stub.transportation.DayOfWeek[list.size()]);
+
+                             }
+                             
 
                         /**
                         * field for TeamSplit
@@ -1386,13 +1438,25 @@
                                                throw new org.apache.axis2.databinding.ADBException("routeEquipment cannot be null!!");
                                         
                                     }
-                                 }
-                                            if (localDay==null){
-                                                 throw new org.apache.axis2.databinding.ADBException("day cannot be null!!");
+                                 } if (localDaysTracker){
+                                       if (localDays!=null){
+                                            for (int i = 0;i < localDays.length;i++){
+                                                if (localDays[i] != null){
+                                                 localDays[i].serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","days"),
+                                                           factory,xmlWriter);
+                                                } else {
+                                                   
+                                                        // we don't have to do any thing since minOccures is zero
+                                                    
+                                                }
+
                                             }
-                                           localDay.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","day"),
-                                               factory,xmlWriter);
+                                     } else {
                                         
+                                               throw new org.apache.axis2.databinding.ADBException("days cannot be null!!");
+                                        
+                                    }
+                                 }
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -2060,16 +2124,28 @@
                                     
                              }
 
-                        }
-                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "day"));
-                            
-                            
-                                    if (localDay==null){
-                                         throw new org.apache.axis2.databinding.ADBException("day cannot be null!!");
+                        } if (localDaysTracker){
+                             if (localDays!=null) {
+                                 for (int i = 0;i < localDays.length;i++){
+
+                                    if (localDays[i] != null){
+                                         elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                          "days"));
+                                         elementList.add(localDays[i]);
+                                    } else {
+                                        
+                                                // nothing to do
+                                            
                                     }
-                                    elementList.add(localDay);
-                                
+
+                                 }
+                             } else {
+                                 
+                                        throw new org.apache.axis2.databinding.ADBException("days cannot be null!!");
+                                    
+                             }
+
+                        }
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "teamSplit"));
                                  
@@ -2263,6 +2339,8 @@
                         java.util.ArrayList list8 = new java.util.ArrayList();
                     
                         java.util.ArrayList list9 = new java.util.ArrayList();
+                    
+                        java.util.ArrayList list10 = new java.util.ArrayList();
                     
                         java.util.ArrayList list25 = new java.util.ArrayList();
                     
@@ -2508,19 +2586,49 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","day").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","days").equals(reader.getName())){
                                 
-                                                object.setDay(com.freshdirect.routing.proxy.stub.transportation.DayOfWeek.Factory.parse(reader));
-                                              
-                                        reader.next();
                                     
+                                    
+                                    // Process the array and step past its final element's end.
+                                    list10.add(com.freshdirect.routing.proxy.stub.transportation.DayOfWeek.Factory.parse(reader));
+                                                                
+                                                        //loop until we find a start element that is not part of this array
+                                                        boolean loopDone10 = false;
+                                                        while(!loopDone10){
+                                                            // We should be at the end element, but make sure
+                                                            while (!reader.isEndElement())
+                                                                reader.next();
+                                                            // Step out of this element
+                                                            reader.next();
+                                                            // Step to next element event.
+                                                            while (!reader.isStartElement() && !reader.isEndElement())
+                                                                reader.next();
+                                                            if (reader.isEndElement()){
+                                                                //two continuous end elements means we are exiting the xml structure
+                                                                loopDone10 = true;
+                                                            } else {
+                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","days").equals(reader.getName())){
+                                                                    list10.add(com.freshdirect.routing.proxy.stub.transportation.DayOfWeek.Factory.parse(reader));
+                                                                        
+                                                                }else{
+                                                                    loopDone10 = true;
+                                                                }
+                                                            }
+                                                        }
+                                                        // call the converter utility  to convert and set the array
+                                                        
+                                                        object.setDays((com.freshdirect.routing.proxy.stub.transportation.DayOfWeek[])
+                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                                                                com.freshdirect.routing.proxy.stub.transportation.DayOfWeek.class,
+                                                                list10));
+                                                            
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
+                                    else {
+                                        
+                                    }
+                                
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 

@@ -1,6 +1,6 @@
 
 /**
- * SchedulerOptimizeOrdersExOptions.java
+ * LayoverDepartureType.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,20 +10,21 @@
             
 
             /**
-            *  SchedulerOptimizeOrdersExOptions bean class
+            *  LayoverDepartureType bean class
             */
         
-        public  class SchedulerOptimizeOrdersExOptions
+        public  class LayoverDepartureType
         implements org.apache.axis2.databinding.ADBBean{
-        /* This type was generated from the piece of schema that had
-                name = SchedulerOptimizeOrdersExOptions
-                Namespace URI = http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService
-                Namespace Prefix = ns1
-                */
+        
+                public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
+                "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                "LayoverDepartureType",
+                "ns1");
+
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService")){
+            if(namespace.equals("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService")){
                 return "ns1";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
@@ -32,48 +33,57 @@
         
 
                         /**
-                        * field for BalancingOptions
+                        * field for LayoverDepartureType
                         */
 
                         
-                                    protected com.freshdirect.routing.proxy.stub.transportation.SchedulerRouteBalancingOptions localBalancingOptions ;
+                                    protected java.lang.String localLayoverDepartureType ;
                                 
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localBalancingOptionsTracker = false ;
-                           
+                            private static java.util.HashMap _table_ = new java.util.HashMap();
 
-                           /**
-                           * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.SchedulerRouteBalancingOptions
-                           */
-                           public  com.freshdirect.routing.proxy.stub.transportation.SchedulerRouteBalancingOptions getBalancingOptions(){
-                               return localBalancingOptions;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param BalancingOptions
-                               */
-                               public void setBalancingOptions(com.freshdirect.routing.proxy.stub.transportation.SchedulerRouteBalancingOptions param){
+                            // Constructor
                             
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localBalancingOptionsTracker = true;
-                                       } else {
-                                          localBalancingOptionsTracker = true;
-                                              
-                                       }
-                                   
-                                            this.localBalancingOptions=param;
+                                protected LayoverDepartureType(java.lang.String value, boolean isRegisterValue) {
+                                    localLayoverDepartureType = value;
+                                    if (isRegisterValue){
+                                        
+                                               _table_.put(localLayoverDepartureType, this);
+                                           
+                                    }
+
+                                }
+                            
+                                    public static final java.lang.String _dtFixedDuration =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("dtFixedDuration");
+                                
+                                    public static final java.lang.String _dtFixedDepartureTime =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("dtFixedDepartureTime");
+                                
+                                    public static final java.lang.String _dtFixedArrivalTime =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("dtFixedArrivalTime");
+                                
+                                public static final LayoverDepartureType dtFixedDuration =
+                                    new LayoverDepartureType(_dtFixedDuration,true);
+                            
+                                public static final LayoverDepartureType dtFixedDepartureTime =
+                                    new LayoverDepartureType(_dtFixedDepartureTime,true);
+                            
+                                public static final LayoverDepartureType dtFixedArrivalTime =
+                                    new LayoverDepartureType(_dtFixedArrivalTime,true);
+                            
+
+                                public java.lang.String getValue() { return localLayoverDepartureType;}
+
+                                public boolean equals(java.lang.Object obj) {return (obj == this);}
+                                public int hashCode() { return toString().hashCode();}
+                                public java.lang.String toString() {
+                                
+                                        return localLayoverDepartureType.toString();
                                     
 
-                               }
-                            
+                                }
+
+                        
 
      /**
      * isReaderMTOMAware
@@ -103,15 +113,15 @@
 
 
         
-               org.apache.axiom.om.OMDataSource dataSource =
-                       new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
+                org.apache.axiom.om.OMDataSource dataSource =
+                       new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       SchedulerOptimizeOrdersExOptions.this.serialize(parentQName,factory,xmlWriter);
+                       LayoverDepartureType.this.serialize(MY_QNAME,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
-               parentQName,factory,dataSource);
+               MY_QNAME,factory,dataSource);
             
        }
 
@@ -129,82 +139,56 @@
             throws javax.xml.stream.XMLStreamException, org.apache.axis2.databinding.ADBException{
             
                 
-
-
-                java.lang.String prefix = null;
-                java.lang.String namespace = null;
+                //We can safely assume an element has only one type associated with it
                 
+                            java.lang.String namespace = parentQName.getNamespaceURI();
+                            java.lang.String localName = parentQName.getLocalPart();
+                        
+                            if (! namespace.equals("")) {
+                                java.lang.String prefix = xmlWriter.getPrefix(namespace);
 
-                    prefix = parentQName.getPrefix();
-                    namespace = parentQName.getNamespaceURI();
+                                if (prefix == null) {
+                                    prefix = generatePrefix(namespace);
 
-                    if ((namespace != null) && (namespace.trim().length() > 0)) {
-                        java.lang.String writerPrefix = xmlWriter.getPrefix(namespace);
-                        if (writerPrefix != null) {
-                            xmlWriter.writeStartElement(namespace, parentQName.getLocalPart());
-                        } else {
-                            if (prefix == null) {
-                                prefix = generatePrefix(namespace);
+                                    xmlWriter.writeStartElement(prefix, localName, namespace);
+                                    xmlWriter.writeNamespace(prefix, namespace);
+                                    xmlWriter.setPrefix(prefix, namespace);
+
+                                } else {
+                                    xmlWriter.writeStartElement(namespace, localName);
+                                }
+
+                            } else {
+                                xmlWriter.writeStartElement(localName);
                             }
 
-                            xmlWriter.writeStartElement(prefix, parentQName.getLocalPart(), namespace);
-                            xmlWriter.writeNamespace(prefix, namespace);
-                            xmlWriter.setPrefix(prefix, namespace);
-                        }
-                    } else {
-                        xmlWriter.writeStartElement(parentQName.getLocalPart());
-                    }
-                
-                  if (serializeType){
-               
+                            // add the type details if this is used in a simple type
+                               if (serializeType){
+                                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
+                                   if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
+                                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
+                                           namespacePrefix+":LayoverDepartureType",
+                                           xmlWriter);
+                                   } else {
+                                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
+                                           "LayoverDepartureType",
+                                           xmlWriter);
+                                   }
+                               }
+                            
+                                          if (localLayoverDepartureType==null){
+                                            
+                                                     throw new org.apache.axis2.databinding.ADBException("Value cannot be null !!");
+                                                
+                                         }else{
+                                        
+                                                       xmlWriter.writeCharacters(localLayoverDepartureType);
+                                            
+                                         }
+                                    
+                            xmlWriter.writeEndElement();
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
-                   if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
-                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":SchedulerOptimizeOrdersExOptions",
-                           xmlWriter);
-                   } else {
-                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "SchedulerOptimizeOrdersExOptions",
-                           xmlWriter);
-                   }
-
-               
-                   }
-                if (localBalancingOptionsTracker){
-                                    if (localBalancingOptions==null){
-
-                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
-
-                                        if (! namespace2.equals("")) {
-                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
-
-                                            if (prefix2 == null) {
-                                                prefix2 = generatePrefix(namespace2);
-
-                                                xmlWriter.writeStartElement(prefix2,"balancingOptions", namespace2);
-                                                xmlWriter.writeNamespace(prefix2, namespace2);
-                                                xmlWriter.setPrefix(prefix2, namespace2);
-
-                                            } else {
-                                                xmlWriter.writeStartElement(namespace2,"balancingOptions");
-                                            }
-
-                                        } else {
-                                            xmlWriter.writeStartElement("balancingOptions");
-                                        }
-
-
-                                       // write the nil attribute
-                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
-                                      xmlWriter.writeEndElement();
-                                    }else{
-                                     localBalancingOptions.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","balancingOptions"),
-                                        factory,xmlWriter);
-                                    }
-                                }
-                    xmlWriter.writeEndElement();
-               
+                    
 
         }
 
@@ -361,21 +345,14 @@
 
 
         
-                 java.util.ArrayList elementList = new java.util.ArrayList();
-                 java.util.ArrayList attribList = new java.util.ArrayList();
-
-                 if (localBalancingOptionsTracker){
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "balancingOptions"));
-                            
-                            
-                                    elementList.add(localBalancingOptions==null?null:
-                                    localBalancingOptions);
-                                }
-
-                return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
-            
-            
+                
+                //We can safely assume an element has only one type associated with it
+                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(MY_QNAME,
+                            new java.lang.Object[]{
+                            org.apache.axis2.databinding.utils.reader.ADBXMLStreamReader.ELEMENT_TEXT,
+                            org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLayoverDepartureType)
+                            },
+                            null);
 
         }
 
@@ -388,6 +365,39 @@
 
         
         
+                public static LayoverDepartureType fromValue(java.lang.String value)
+                      throws java.lang.IllegalArgumentException {
+                    LayoverDepartureType enumeration = (LayoverDepartureType)
+                       
+                               _table_.get(value);
+                           
+
+                    if (enumeration==null) throw new java.lang.IllegalArgumentException();
+                    return enumeration;
+                }
+                public static LayoverDepartureType fromString(java.lang.String value,java.lang.String namespaceURI)
+                      throws java.lang.IllegalArgumentException {
+                    try {
+                       
+                                       return fromValue(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(value));
+                                   
+
+                    } catch (java.lang.Exception e) {
+                        throw new java.lang.IllegalArgumentException();
+                    }
+                }
+
+                public static LayoverDepartureType fromString(javax.xml.stream.XMLStreamReader xmlStreamReader,
+                                                                    java.lang.String content) {
+                    if (content.indexOf(":") > -1){
+                        java.lang.String prefix = content.substring(0,content.indexOf(":"));
+                        java.lang.String namespaceUri = xmlStreamReader.getNamespaceContext().getNamespaceURI(prefix);
+                        return LayoverDepartureType.Factory.fromString(content,namespaceUri);
+                    } else {
+                       return LayoverDepartureType.Factory.fromString(content,"");
+                    }
+                }
+            
 
         /**
         * static method to create the object
@@ -396,9 +406,12 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static SchedulerOptimizeOrdersExOptions parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            SchedulerOptimizeOrdersExOptions object =
-                new SchedulerOptimizeOrdersExOptions();
+        public static LayoverDepartureType parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            LayoverDepartureType object = null;
+                // initialize a hash map to keep values
+                java.util.Map attributeMap = new java.util.HashMap();
+                java.util.List extraAttributeList = new java.util.ArrayList();
+            
 
             int event;
             java.lang.String nillableValue = null;
@@ -410,32 +423,6 @@
                     reader.next();
 
                 
-                if (reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","type")!=null){
-                  java.lang.String fullTypeName = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance",
-                        "type");
-                  if (fullTypeName!=null){
-                    java.lang.String nsPrefix = null;
-                    if (fullTypeName.indexOf(":") > -1){
-                        nsPrefix = fullTypeName.substring(0,fullTypeName.indexOf(":"));
-                    }
-                    nsPrefix = nsPrefix==null?"":nsPrefix;
-
-                    java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
-                    
-                            if (!"SchedulerOptimizeOrdersExOptions".equals(type)){
-                                //find namespace for the prefix
-                                java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (SchedulerOptimizeOrdersExOptions)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
-                                     nsUri,type,reader);
-                              }
-                        
-
-                  }
-                
-
-                }
-
-                
 
                 
                 // Note all attributes that were handled. Used to differ normal attributes
@@ -443,41 +430,29 @@
                 java.util.Vector handledAttributes = new java.util.Vector();
                 
 
-                 
                     
-                    reader.next();
+                while(!reader.isEndElement()) {
+                    if (reader.isStartElement()  || reader.hasText()){
                 
+                                    java.lang.String content = reader.getElementText();
                                     
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","balancingOptions").equals(reader.getName())){
-                                
-                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
-                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                          object.setBalancingOptions(null);
-                                          reader.next();
-                                            
-                                            reader.next();
-                                          
-                                      }else{
-                                    
-                                                object.setBalancingOptions(com.freshdirect.routing.proxy.stub.transportation.SchedulerRouteBalancingOptions.Factory.parse(reader));
-                                              
-                                        reader.next();
-                                    }
-                              }  // End of if for expected property start element
-                                
-                                    else {
+                                        if (content.indexOf(":") > 0) {
+                                            // this seems to be a Qname so find the namespace and send
+                                            prefix = content.substring(0, content.indexOf(":"));
+                                            namespaceuri = reader.getNamespaceURI(prefix);
+                                            object = LayoverDepartureType.Factory.fromString(content,namespaceuri);
+                                        } else {
+                                            // this seems to be not a qname send and empty namespace incase of it is
+                                            // check is done in fromString method
+                                            object = LayoverDepartureType.Factory.fromString(content,"");
+                                        }
                                         
-                                    }
-                                  
-                            while (!reader.isStartElement() && !reader.isEndElement())
+                                        
+                             } else {
                                 reader.next();
-                            
-                                if (reader.isStartElement())
-                                // A start element we are not expecting indicates a trailing invalid property
-                                throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                            
+                             }  
+                           }  // end of while loop
+                        
 
 
 

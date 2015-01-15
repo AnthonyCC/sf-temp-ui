@@ -233,6 +233,9 @@
                                     public static final java.lang.String _tmzYakutskChita =
                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString("tmzYakutskChita");
                                 
+                                    public static final java.lang.String _tmzCentralAmerica =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("tmzCentralAmerica");
+                                
                                 public static final TimeZoneValue tmzNone =
                                     new TimeZoneValue(_tmzNone,true);
                             
@@ -412,6 +415,9 @@
                             
                                 public static final TimeZoneValue tmzYakutskChita =
                                     new TimeZoneValue(_tmzYakutskChita,true);
+                            
+                                public static final TimeZoneValue tmzCentralAmerica =
+                                    new TimeZoneValue(_tmzCentralAmerica,true);
                             
 
                                 public java.lang.String getValue() { return localTimeZoneValue;}

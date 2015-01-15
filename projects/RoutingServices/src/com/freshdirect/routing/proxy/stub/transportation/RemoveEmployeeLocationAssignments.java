@@ -1,6 +1,6 @@
 
 /**
- * RetrieveRoutingRoutesByIdentityResponse.java
+ * RemoveEmployeeLocationAssignments.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,21 +10,21 @@
             
 
             /**
-            *  RetrieveRoutingRoutesByIdentityResponse bean class
+            *  RemoveEmployeeLocationAssignments bean class
             */
         
-        public  class RetrieveRoutingRoutesByIdentityResponse
+        public  class RemoveEmployeeLocationAssignments
         implements org.apache.axis2.databinding.ADBBean{
         
                 public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
-                "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                "RetrieveRoutingRoutesByIdentityResponse",
+                "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                "RemoveEmployeeLocationAssignments",
                 "ns1");
 
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService")){
+            if(namespace.equals("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService")){
                 return "ns1";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
@@ -33,48 +33,130 @@
         
 
                         /**
-                        * field for Route
+                        * field for EmployeeIdentity
                         */
 
                         
-                                    protected com.freshdirect.routing.proxy.stub.transportation.RoutingRoute localRoute ;
+                                    protected com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity localEmployeeIdentity ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
                            *   in the serialized XML
                            */
-                           protected boolean localRouteTracker = false ;
+                           protected boolean localEmployeeIdentityTracker = false ;
                            
 
                            /**
                            * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.RoutingRoute
+                           * @return com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity
                            */
-                           public  com.freshdirect.routing.proxy.stub.transportation.RoutingRoute getRoute(){
-                               return localRoute;
+                           public  com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity getEmployeeIdentity(){
+                               return localEmployeeIdentity;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param Route
+                               * @param param EmployeeIdentity
                                */
-                               public void setRoute(com.freshdirect.routing.proxy.stub.transportation.RoutingRoute param){
+                               public void setEmployeeIdentity(com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity param){
                             
                                        if (param != null){
                                           //update the setting tracker
-                                          localRouteTracker = true;
+                                          localEmployeeIdentityTracker = true;
                                        } else {
-                                          localRouteTracker = true;
+                                          localEmployeeIdentityTracker = true;
                                               
                                        }
                                    
-                                            this.localRoute=param;
+                                            this.localEmployeeIdentity=param;
                                     
 
                                }
                             
+
+                        /**
+                        * field for LocationIds
+                        * This was an Array!
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.LocationIdentity[] localLocationIds ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localLocationIdsTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.LocationIdentity[]
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.LocationIdentity[] getLocationIds(){
+                               return localLocationIds;
+                           }
+
+                           
+                        
+
+
+                               
+                              /**
+                               * validate the array for LocationIds
+                               */
+                              protected void validateLocationIds(com.freshdirect.routing.proxy.stub.transportation.LocationIdentity[] param){
+                             
+                              }
+
+
+                             /**
+                              * Auto generated setter method
+                              * @param param LocationIds
+                              */
+                              public void setLocationIds(com.freshdirect.routing.proxy.stub.transportation.LocationIdentity[] param){
+                              
+                                   validateLocationIds(param);
+
+                               
+                                          if (param != null){
+                                             //update the setting tracker
+                                             localLocationIdsTracker = true;
+                                          } else {
+                                             localLocationIdsTracker = false;
+                                                 
+                                          }
+                                      
+                                      this.localLocationIds=param;
+                              }
+
+                               
+                             
+                             /**
+                             * Auto generated add method for the array for convenience
+                             * @param param com.freshdirect.routing.proxy.stub.transportation.LocationIdentity
+                             */
+                             public void addLocationIds(com.freshdirect.routing.proxy.stub.transportation.LocationIdentity param){
+                                   if (localLocationIds == null){
+                                   localLocationIds = new com.freshdirect.routing.proxy.stub.transportation.LocationIdentity[]{};
+                                   }
+
+                            
+                                 //update the setting tracker
+                                localLocationIdsTracker = true;
+                            
+
+                               java.util.List list =
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localLocationIds);
+                               list.add(param);
+                               this.localLocationIds =
+                             (com.freshdirect.routing.proxy.stub.transportation.LocationIdentity[])list.toArray(
+                            new com.freshdirect.routing.proxy.stub.transportation.LocationIdentity[list.size()]);
+
+                             }
+                             
 
      /**
      * isReaderMTOMAware
@@ -108,7 +190,7 @@
                        new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       RetrieveRoutingRoutesByIdentityResponse.this.serialize(MY_QNAME,factory,xmlWriter);
+                       RemoveEmployeeLocationAssignments.this.serialize(MY_QNAME,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
@@ -159,23 +241,23 @@
                   if (serializeType){
                
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":RetrieveRoutingRoutesByIdentityResponse",
+                           namespacePrefix+":RemoveEmployeeLocationAssignments",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "RetrieveRoutingRoutesByIdentityResponse",
+                           "RemoveEmployeeLocationAssignments",
                            xmlWriter);
                    }
 
                
                    }
-                if (localRouteTracker){
-                                    if (localRoute==null){
+                if (localEmployeeIdentityTracker){
+                                    if (localEmployeeIdentity==null){
 
-                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
 
                                         if (! namespace2.equals("")) {
                                             java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
@@ -183,16 +265,16 @@
                                             if (prefix2 == null) {
                                                 prefix2 = generatePrefix(namespace2);
 
-                                                xmlWriter.writeStartElement(prefix2,"route", namespace2);
+                                                xmlWriter.writeStartElement(prefix2,"employeeIdentity", namespace2);
                                                 xmlWriter.writeNamespace(prefix2, namespace2);
                                                 xmlWriter.setPrefix(prefix2, namespace2);
 
                                             } else {
-                                                xmlWriter.writeStartElement(namespace2,"route");
+                                                xmlWriter.writeStartElement(namespace2,"employeeIdentity");
                                             }
 
                                         } else {
-                                            xmlWriter.writeStartElement("route");
+                                            xmlWriter.writeStartElement("employeeIdentity");
                                         }
 
 
@@ -200,10 +282,28 @@
                                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
                                       xmlWriter.writeEndElement();
                                     }else{
-                                     localRoute.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","route"),
+                                     localEmployeeIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","employeeIdentity"),
                                         factory,xmlWriter);
                                     }
-                                }
+                                } if (localLocationIdsTracker){
+                                       if (localLocationIds!=null){
+                                            for (int i = 0;i < localLocationIds.length;i++){
+                                                if (localLocationIds[i] != null){
+                                                 localLocationIds[i].serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","locationIds"),
+                                                           factory,xmlWriter);
+                                                } else {
+                                                   
+                                                        // we don't have to do any thing since minOccures is zero
+                                                    
+                                                }
+
+                                            }
+                                     } else {
+                                        
+                                               throw new org.apache.axis2.databinding.ADBException("locationIds cannot be null!!");
+                                        
+                                    }
+                                 }
                     xmlWriter.writeEndElement();
                
 
@@ -365,14 +465,35 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                 if (localRouteTracker){
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "route"));
+                 if (localEmployeeIdentityTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "employeeIdentity"));
                             
                             
-                                    elementList.add(localRoute==null?null:
-                                    localRoute);
-                                }
+                                    elementList.add(localEmployeeIdentity==null?null:
+                                    localEmployeeIdentity);
+                                } if (localLocationIdsTracker){
+                             if (localLocationIds!=null) {
+                                 for (int i = 0;i < localLocationIds.length;i++){
+
+                                    if (localLocationIds[i] != null){
+                                         elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                          "locationIds"));
+                                         elementList.add(localLocationIds[i]);
+                                    } else {
+                                        
+                                                // nothing to do
+                                            
+                                    }
+
+                                 }
+                             } else {
+                                 
+                                        throw new org.apache.axis2.databinding.ADBException("locationIds cannot be null!!");
+                                    
+                             }
+
+                        }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -397,9 +518,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static RetrieveRoutingRoutesByIdentityResponse parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            RetrieveRoutingRoutesByIdentityResponse object =
-                new RetrieveRoutingRoutesByIdentityResponse();
+        public static RemoveEmployeeLocationAssignments parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            RemoveEmployeeLocationAssignments object =
+                new RemoveEmployeeLocationAssignments();
 
             int event;
             java.lang.String nillableValue = null;
@@ -423,10 +544,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"RetrieveRoutingRoutesByIdentityResponse".equals(type)){
+                            if (!"RemoveEmployeeLocationAssignments".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (RetrieveRoutingRoutesByIdentityResponse)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                return (RemoveEmployeeLocationAssignments)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -448,24 +569,72 @@
                     
                     reader.next();
                 
+                        java.util.ArrayList list2 = new java.util.ArrayList();
+                    
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","route").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","employeeIdentity").equals(reader.getName())){
                                 
                                       nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
                                       if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                          object.setRoute(null);
+                                          object.setEmployeeIdentity(null);
                                           reader.next();
                                             
                                             reader.next();
                                           
                                       }else{
                                     
-                                                object.setRoute(com.freshdirect.routing.proxy.stub.transportation.RoutingRoute.Factory.parse(reader));
+                                                object.setEmployeeIdentity(com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity.Factory.parse(reader));
                                               
                                         reader.next();
                                     }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","locationIds").equals(reader.getName())){
+                                
+                                    
+                                    
+                                    // Process the array and step past its final element's end.
+                                    list2.add(com.freshdirect.routing.proxy.stub.transportation.LocationIdentity.Factory.parse(reader));
+                                                                
+                                                        //loop until we find a start element that is not part of this array
+                                                        boolean loopDone2 = false;
+                                                        while(!loopDone2){
+                                                            // We should be at the end element, but make sure
+                                                            while (!reader.isEndElement())
+                                                                reader.next();
+                                                            // Step out of this element
+                                                            reader.next();
+                                                            // Step to next element event.
+                                                            while (!reader.isStartElement() && !reader.isEndElement())
+                                                                reader.next();
+                                                            if (reader.isEndElement()){
+                                                                //two continuous end elements means we are exiting the xml structure
+                                                                loopDone2 = true;
+                                                            } else {
+                                                                if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","locationIds").equals(reader.getName())){
+                                                                    list2.add(com.freshdirect.routing.proxy.stub.transportation.LocationIdentity.Factory.parse(reader));
+                                                                        
+                                                                }else{
+                                                                    loopDone2 = true;
+                                                                }
+                                                            }
+                                                        }
+                                                        // call the converter utility  to convert and set the array
+                                                        
+                                                        object.setLocationIds((com.freshdirect.routing.proxy.stub.transportation.LocationIdentity[])
+                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                                                                com.freshdirect.routing.proxy.stub.transportation.LocationIdentity.class,
+                                                                list2));
+                                                            
                               }  // End of if for expected property start element
                                 
                                     else {

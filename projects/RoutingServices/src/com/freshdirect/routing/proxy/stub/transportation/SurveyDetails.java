@@ -13,7 +13,7 @@
             *  SurveyDetails bean class
             */
         
-        public  class SurveyDetails
+        public  class SurveyDetails extends com.freshdirect.routing.proxy.stub.transportation.Survey
         implements org.apache.axis2.databinding.ADBBean{
         /* This type was generated from the piece of schema that had
                 name = SurveyDetails
@@ -30,138 +30,6 @@
         }
 
         
-
-                        /**
-                        * field for Identity
-                        */
-
-                        
-                                    protected com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity localIdentity ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localIdentityTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity
-                           */
-                           public  com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity getIdentity(){
-                               return localIdentity;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param Identity
-                               */
-                               public void setIdentity(com.freshdirect.routing.proxy.stub.transportation.SurveyIdentity param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localIdentityTracker = true;
-                                       } else {
-                                          localIdentityTracker = true;
-                                              
-                                       }
-                                   
-                                            this.localIdentity=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for Code
-                        */
-
-                        
-                                    protected java.lang.String localCode ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localCodeTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return java.lang.String
-                           */
-                           public  java.lang.String getCode(){
-                               return localCode;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param Code
-                               */
-                               public void setCode(java.lang.String param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localCodeTracker = true;
-                                       } else {
-                                          localCodeTracker = false;
-                                              
-                                       }
-                                   
-                                            this.localCode=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for Description
-                        */
-
-                        
-                                    protected java.lang.String localDescription ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localDescriptionTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return java.lang.String
-                           */
-                           public  java.lang.String getDescription(){
-                               return localDescription;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param Description
-                               */
-                               public void setDescription(java.lang.String param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localDescriptionTracker = true;
-                                       } else {
-                                          localDescriptionTracker = false;
-                                              
-                                       }
-                                   
-                                            this.localDescription=param;
-                                    
-
-                               }
-                            
 
                         /**
                         * field for Questions
@@ -325,8 +193,6 @@
                         xmlWriter.writeStartElement(parentQName.getLocalPart());
                     }
                 
-                  if (serializeType){
-               
 
                    java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
@@ -339,8 +205,6 @@
                            xmlWriter);
                    }
 
-               
-                   }
                 if (localIdentityTracker){
                                     if (localIdentity==null){
 
@@ -440,7 +304,13 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             } if (localQuestionsTracker){
+                             }
+                                            if (localDefaultFor==null){
+                                                 throw new org.apache.axis2.databinding.ADBException("defaultFor cannot be null!!");
+                                            }
+                                           localDefaultFor.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","defaultFor"),
+                                               factory,xmlWriter);
+                                         if (localQuestionsTracker){
                                        if (localQuestions!=null){
                                             for (int i = 0;i < localQuestions.length;i++){
                                                 if (localQuestions[i] != null){
@@ -620,6 +490,9 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
+                
+                    attribList.add(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema-instance","type"));
+                    attribList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","SurveyDetails"));
                  if (localIdentityTracker){
                             elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "identity"));
@@ -645,7 +518,16 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("description cannot be null!!");
                                         }
-                                    } if (localQuestionsTracker){
+                                    }
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "defaultFor"));
+                            
+                            
+                                    if (localDefaultFor==null){
+                                         throw new org.apache.axis2.databinding.ADBException("defaultFor cannot be null!!");
+                                    }
+                                    elementList.add(localDefaultFor);
+                                 if (localQuestionsTracker){
                              if (localQuestions!=null) {
                                  for (int i = 0;i < localQuestions.length;i++){
 
@@ -742,7 +624,7 @@
                     
                     reader.next();
                 
-                        java.util.ArrayList list4 = new java.util.ArrayList();
+                        java.util.ArrayList list5 = new java.util.ArrayList();
                     
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
@@ -807,16 +689,32 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","defaultFor").equals(reader.getName())){
+                                
+                                                object.setDefaultFor(com.freshdirect.routing.proxy.stub.transportation.PerformedAt.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","questions").equals(reader.getName())){
                                 
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list4.add(com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition.Factory.parse(reader));
+                                    list5.add(com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
-                                                        boolean loopDone4 = false;
-                                                        while(!loopDone4){
+                                                        boolean loopDone5 = false;
+                                                        while(!loopDone5){
                                                             // We should be at the end element, but make sure
                                                             while (!reader.isEndElement())
                                                                 reader.next();
@@ -827,13 +725,13 @@
                                                                 reader.next();
                                                             if (reader.isEndElement()){
                                                                 //two continuous end elements means we are exiting the xml structure
-                                                                loopDone4 = true;
+                                                                loopDone5 = true;
                                                             } else {
                                                                 if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","questions").equals(reader.getName())){
-                                                                    list4.add(com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition.Factory.parse(reader));
+                                                                    list5.add(com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition.Factory.parse(reader));
                                                                         
                                                                 }else{
-                                                                    loopDone4 = true;
+                                                                    loopDone5 = true;
                                                                 }
                                                             }
                                                         }
@@ -842,7 +740,7 @@
                                                         object.setQuestions((com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
                                                                 com.freshdirect.routing.proxy.stub.transportation.QuestionDefinition.class,
-                                                                list4));
+                                                                list5));
                                                             
                               }  // End of if for expected property start element
                                 

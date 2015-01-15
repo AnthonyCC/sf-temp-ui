@@ -149,6 +149,50 @@
                                }
                             
 
+                        /**
+                        * field for CreationMethod
+                        */
+
+                        
+                                    protected java.lang.String localCreationMethod ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localCreationMethodTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getCreationMethod(){
+                               return localCreationMethod;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CreationMethod
+                               */
+                               public void setCreationMethod(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localCreationMethodTracker = true;
+                                       } else {
+                                          localCreationMethodTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localCreationMethod=param;
+                                    
+
+                               }
+                            
+
      /**
      * isReaderMTOMAware
      * @return true if the reader supports MTOM
@@ -291,7 +335,41 @@
                                             }
                                            localDriverIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","driverIdentity"),
                                                factory,xmlWriter);
+                                        } if (localCreationMethodTracker){
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"creationMethod", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"creationMethod");
                                         }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("creationMethod");
+                                    }
+                                
+
+                                          if (localCreationMethod==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("creationMethod cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localCreationMethod);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             }
                     xmlWriter.writeEndElement();
                
 
@@ -480,7 +558,16 @@
                                          throw new org.apache.axis2.databinding.ADBException("driverIdentity cannot be null!!");
                                     }
                                     elementList.add(localDriverIdentity);
-                                }
+                                } if (localCreationMethodTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "creationMethod"));
+                                 
+                                        if (localCreationMethod != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCreationMethod));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("creationMethod cannot be null!!");
+                                        }
+                                    }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -596,6 +683,24 @@
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","driverIdentity").equals(reader.getName())){
                                 
                                                 object.setDriverIdentity(com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","creationMethod").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCreationMethod(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
                                               
                                         reader.next();
                                     

@@ -63,7 +63,6 @@ import com.freshdirect.routing.proxy.stub.transportation.SchedulerCalculateDeliv
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWaveInstanceCriteria;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowBase;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsOptions;
-import com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsType;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerReserveOrderOptions;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveDeliveryWaveInstanceOptions;
@@ -727,8 +726,6 @@ public class RoutingDataEncoder {
 		
 		
 		SchedulerDeliveryWindowMetricsOptions schMetricsOptions = new SchedulerDeliveryWindowMetricsOptions();
-		//schMetricsOptions.setType(SchedulerDeliveryWindowMetricsType.sdwmfPlannedArrivalTime);
-		//schMetricsOptions.setType(SchedulerDeliveryWindowMetricsType.sdwmfAssignedDeliveryWindow);
 		schMetricsOptions.setTimeZone(TimeZoneValue.tmzEasternTimeUSCanada);
 						
 		return schMetricsOptions;

@@ -196,36 +196,6 @@
                             
 
                         /**
-                        * field for InternalRouteID
-                        */
-
-                        
-                                    protected int localInternalRouteID ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return int
-                           */
-                           public  int getInternalRouteID(){
-                               return localInternalRouteID;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param InternalRouteID
-                               */
-                               public void setInternalRouteID(int param){
-                            
-                                            this.localInternalRouteID=param;
-                                    
-
-                               }
-                            
-
-                        /**
                         * field for Provider
                         */
 
@@ -577,35 +547,6 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
-                                            xmlWriter.writeStartElement(prefix,"internalRouteID", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"internalRouteID");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("internalRouteID");
-                                    }
-                                
-                                               if (localInternalRouteID==java.lang.Integer.MIN_VALUE) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("internalRouteID cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localInternalRouteID));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
                                             xmlWriter.writeStartElement(prefix,"provider", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
@@ -863,12 +804,6 @@
                                         }
                                     
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "internalRouteID"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localInternalRouteID));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "provider"));
                                  
                                 elementList.add(
@@ -1054,25 +989,6 @@
                                     
                                               object.setDeviceID(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","internalRouteID").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setInternalRouteID(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
                                               
                                         reader.next();
                                     

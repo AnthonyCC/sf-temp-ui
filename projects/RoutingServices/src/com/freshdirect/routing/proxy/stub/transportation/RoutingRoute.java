@@ -2578,6 +2578,259 @@
                             
 
                         /**
+                        * field for DockPosition
+                        */
+
+                        
+                                    protected int localDockPosition ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getDockPosition(){
+                               return localDockPosition;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param DockPosition
+                               */
+                               public void setDockPosition(int param){
+                            
+                                            this.localDockPosition=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for DockArrivalTime
+                        */
+
+                        
+                                    protected java.util.Calendar localDockArrivalTime ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localDockArrivalTimeTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.util.Calendar
+                           */
+                           public  java.util.Calendar getDockArrivalTime(){
+                               return localDockArrivalTime;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param DockArrivalTime
+                               */
+                               public void setDockArrivalTime(java.util.Calendar param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localDockArrivalTimeTracker = true;
+                                       } else {
+                                          localDockArrivalTimeTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localDockArrivalTime=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for DockDepartureTime
+                        */
+
+                        
+                                    protected java.util.Calendar localDockDepartureTime ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localDockDepartureTimeTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.util.Calendar
+                           */
+                           public  java.util.Calendar getDockDepartureTime(){
+                               return localDockDepartureTime;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param DockDepartureTime
+                               */
+                               public void setDockDepartureTime(java.util.Calendar param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localDockDepartureTimeTracker = true;
+                                       } else {
+                                          localDockDepartureTimeTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localDockDepartureTime=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for DockLoadTime
+                        */
+
+                        
+                                    protected int localDockLoadTime ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localDockLoadTimeTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getDockLoadTime(){
+                               return localDockLoadTime;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param DockLoadTime
+                               */
+                               public void setDockLoadTime(int param){
+                            
+                                       // setting primitive attribute tracker to true
+                                       
+                                               if (param==java.lang.Integer.MIN_VALUE) {
+                                           localDockLoadTimeTracker = true;
+                                              
+                                       } else {
+                                          localDockLoadTimeTracker = true;
+                                       }
+                                   
+                                            this.localDockLoadTime=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for StartTimeDelay
+                        */
+
+                        
+                                    protected int localStartTimeDelay ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getStartTimeDelay(){
+                               return localStartTimeDelay;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param StartTimeDelay
+                               */
+                               public void setStartTimeDelay(int param){
+                            
+                                            this.localStartTimeDelay=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for TotalLoadTime
+                        */
+
+                        
+                                    protected int localTotalLoadTime ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getTotalLoadTime(){
+                               return localTotalLoadTime;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param TotalLoadTime
+                               */
+                               public void setTotalLoadTime(int param){
+                            
+                                            this.localTotalLoadTime=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for AdditionalLoadTime
+                        */
+
+                        
+                                    protected int localAdditionalLoadTime ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getAdditionalLoadTime(){
+                               return localAdditionalLoadTime;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param AdditionalLoadTime
+                               */
+                               public void setAdditionalLoadTime(int param){
+                            
+                                            this.localAdditionalLoadTime=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for Stops
                         * This was an Array!
                         */
@@ -5700,6 +5953,219 @@
                                                }
                                     
                                    xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"dockPosition", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"dockPosition");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("dockPosition");
+                                    }
+                                
+                                               if (localDockPosition==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("dockPosition cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDockPosition));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                              if (localDockArrivalTimeTracker){
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"dockArrivalTime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"dockArrivalTime");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("dockArrivalTime");
+                                    }
+                                
+
+                                          if (localDockArrivalTime==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("dockArrivalTime cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDockArrivalTime));
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localDockDepartureTimeTracker){
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"dockDepartureTime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"dockDepartureTime");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("dockDepartureTime");
+                                    }
+                                
+
+                                          if (localDockDepartureTime==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("dockDepartureTime cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDockDepartureTime));
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localDockLoadTimeTracker){
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"dockLoadTime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"dockLoadTime");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("dockLoadTime");
+                                    }
+                                
+                                               if (localDockLoadTime==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDockLoadTime));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             }
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"startTimeDelay", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"startTimeDelay");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("startTimeDelay");
+                                    }
+                                
+                                               if (localStartTimeDelay==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("startTimeDelay cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localStartTimeDelay));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"totalLoadTime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"totalLoadTime");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("totalLoadTime");
+                                    }
+                                
+                                               if (localTotalLoadTime==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("totalLoadTime cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localTotalLoadTime));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"additionalLoadTime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"additionalLoadTime");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("additionalLoadTime");
+                                    }
+                                
+                                               if (localAdditionalLoadTime==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("additionalLoadTime cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAdditionalLoadTime));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
                               if (localStopsTracker){
                                        if (localStops!=null){
                                             for (int i = 0;i < localStops.length;i++){
@@ -7244,6 +7710,54 @@
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localProfit));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "dockPosition"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDockPosition));
+                             if (localDockArrivalTimeTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "dockArrivalTime"));
+                                 
+                                        if (localDockArrivalTime != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDockArrivalTime));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("dockArrivalTime cannot be null!!");
+                                        }
+                                    } if (localDockDepartureTimeTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "dockDepartureTime"));
+                                 
+                                        if (localDockDepartureTime != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDockDepartureTime));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("dockDepartureTime cannot be null!!");
+                                        }
+                                    } if (localDockLoadTimeTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "dockLoadTime"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDockLoadTime));
+                            }
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "startTimeDelay"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localStartTimeDelay));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "totalLoadTime"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localTotalLoadTime));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "additionalLoadTime"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAdditionalLoadTime));
                              if (localStopsTracker){
                              if (localStops!=null) {
                                  for (int i = 0;i < localStops.length;i++){
@@ -7537,7 +8051,7 @@
                     
                         java.util.ArrayList list17 = new java.util.ArrayList();
                     
-                        java.util.ArrayList list69 = new java.util.ArrayList();
+                        java.util.ArrayList list76 = new java.util.ArrayList();
                     
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
@@ -9047,16 +9561,159 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","dockPosition").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setDockPosition(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","dockArrivalTime").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setDockArrivalTime(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDateTime(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","dockDepartureTime").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setDockDepartureTime(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDateTime(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","dockLoadTime").equals(reader.getName())){
+                                
+                                       nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                       if (!"true".equals(nillableValue) && !"1".equals(nillableValue)){
+                                    
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setDockLoadTime(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                            
+                                       } else {
+                                           
+                                           
+                                                   object.setDockLoadTime(java.lang.Integer.MIN_VALUE);
+                                               
+                                           reader.getElementText(); // throw away text nodes if any.
+                                       }
+                                      
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                               object.setDockLoadTime(java.lang.Integer.MIN_VALUE);
+                                           
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","startTimeDelay").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setStartTimeDelay(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","totalLoadTime").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setTotalLoadTime(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","additionalLoadTime").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setAdditionalLoadTime(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","stops").equals(reader.getName())){
                                 
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list69.add(com.freshdirect.routing.proxy.stub.transportation.RoutingStop.Factory.parse(reader));
+                                    list76.add(com.freshdirect.routing.proxy.stub.transportation.RoutingStop.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
-                                                        boolean loopDone69 = false;
-                                                        while(!loopDone69){
+                                                        boolean loopDone76 = false;
+                                                        while(!loopDone76){
                                                             // We should be at the end element, but make sure
                                                             while (!reader.isEndElement())
                                                                 reader.next();
@@ -9067,13 +9724,13 @@
                                                                 reader.next();
                                                             if (reader.isEndElement()){
                                                                 //two continuous end elements means we are exiting the xml structure
-                                                                loopDone69 = true;
+                                                                loopDone76 = true;
                                                             } else {
                                                                 if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","stops").equals(reader.getName())){
-                                                                    list69.add(com.freshdirect.routing.proxy.stub.transportation.RoutingStop.Factory.parse(reader));
+                                                                    list76.add(com.freshdirect.routing.proxy.stub.transportation.RoutingStop.Factory.parse(reader));
                                                                         
                                                                 }else{
-                                                                    loopDone69 = true;
+                                                                    loopDone76 = true;
                                                                 }
                                                             }
                                                         }
@@ -9082,7 +9739,7 @@
                                                         object.setStops((com.freshdirect.routing.proxy.stub.transportation.RoutingStop[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
                                                                 com.freshdirect.routing.proxy.stub.transportation.RoutingStop.class,
-                                                                list69));
+                                                                list76));
                                                             
                               }  // End of if for expected property start element
                                 

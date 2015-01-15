@@ -1,6 +1,6 @@
 
 /**
- * SchedulerRemoveFromServer.java
+ * ArriveDepartStopResponse.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,71 +10,27 @@
             
 
             /**
-            *  SchedulerRemoveFromServer bean class
+            *  ArriveDepartStopResponse bean class
             */
         
-        public  class SchedulerRemoveFromServer
+        public  class ArriveDepartStopResponse
         implements org.apache.axis2.databinding.ADBBean{
         
                 public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
-                "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                "SchedulerRemoveFromServer",
+                "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                "ArriveDepartStopResponse",
                 "ns1");
 
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService")){
+            if(namespace.equals("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService")){
                 return "ns1";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
         }
 
         
-
-                        /**
-                        * field for SchedulerIdentity
-                        */
-
-                        
-                                    protected com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity localSchedulerIdentity ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localSchedulerIdentityTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity
-                           */
-                           public  com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity getSchedulerIdentity(){
-                               return localSchedulerIdentity;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param SchedulerIdentity
-                               */
-                               public void setSchedulerIdentity(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localSchedulerIdentityTracker = true;
-                                       } else {
-                                          localSchedulerIdentityTracker = true;
-                                              
-                                       }
-                                   
-                                            this.localSchedulerIdentity=param;
-                                    
-
-                               }
-                            
 
      /**
      * isReaderMTOMAware
@@ -108,7 +64,7 @@
                        new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       SchedulerRemoveFromServer.this.serialize(MY_QNAME,factory,xmlWriter);
+                       ArriveDepartStopResponse.this.serialize(MY_QNAME,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
@@ -159,51 +115,20 @@
                   if (serializeType){
                
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":SchedulerRemoveFromServer",
+                           namespacePrefix+":ArriveDepartStopResponse",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "SchedulerRemoveFromServer",
+                           "ArriveDepartStopResponse",
                            xmlWriter);
                    }
 
                
                    }
-                if (localSchedulerIdentityTracker){
-                                    if (localSchedulerIdentity==null){
-
-                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
-
-                                        if (! namespace2.equals("")) {
-                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
-
-                                            if (prefix2 == null) {
-                                                prefix2 = generatePrefix(namespace2);
-
-                                                xmlWriter.writeStartElement(prefix2,"schedulerIdentity", namespace2);
-                                                xmlWriter.writeNamespace(prefix2, namespace2);
-                                                xmlWriter.setPrefix(prefix2, namespace2);
-
-                                            } else {
-                                                xmlWriter.writeStartElement(namespace2,"schedulerIdentity");
-                                            }
-
-                                        } else {
-                                            xmlWriter.writeStartElement("schedulerIdentity");
-                                        }
-
-
-                                       // write the nil attribute
-                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
-                                      xmlWriter.writeEndElement();
-                                    }else{
-                                     localSchedulerIdentity.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","schedulerIdentity"),
-                                        factory,xmlWriter);
-                                    }
-                                }
+               
                     xmlWriter.writeEndElement();
                
 
@@ -365,14 +290,7 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                 if (localSchedulerIdentityTracker){
-                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "schedulerIdentity"));
-                            
-                            
-                                    elementList.add(localSchedulerIdentity==null?null:
-                                    localSchedulerIdentity);
-                                }
+                
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -397,9 +315,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static SchedulerRemoveFromServer parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            SchedulerRemoveFromServer object =
-                new SchedulerRemoveFromServer();
+        public static ArriveDepartStopResponse parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            ArriveDepartStopResponse object =
+                new ArriveDepartStopResponse();
 
             int event;
             java.lang.String nillableValue = null;
@@ -423,10 +341,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"SchedulerRemoveFromServer".equals(type)){
+                            if (!"ArriveDepartStopResponse".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (SchedulerRemoveFromServer)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                return (ArriveDepartStopResponse)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -447,31 +365,7 @@
                  
                     
                     reader.next();
-                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","schedulerIdentity").equals(reader.getName())){
-                                
-                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
-                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                          object.setSchedulerIdentity(null);
-                                          reader.next();
-                                            
-                                            reader.next();
-                                          
-                                      }else{
-                                    
-                                                object.setSchedulerIdentity(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity.Factory.parse(reader));
-                                              
-                                        reader.next();
-                                    }
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                  
+                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             

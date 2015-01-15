@@ -122,6 +122,36 @@
                             
 
                         /**
+                        * field for AutoCancelBreaks
+                        */
+
+                        
+                                    protected boolean localAutoCancelBreaks ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getAutoCancelBreaks(){
+                               return localAutoCancelBreaks;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param AutoCancelBreaks
+                               */
+                               public void setAutoCancelBreaks(boolean param){
+                            
+                                            this.localAutoCancelBreaks=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for AutoDepartOrigin
                         */
 
@@ -512,6 +542,66 @@
                             
 
                         /**
+                        * field for MinimumBreakTimeSeconds
+                        */
+
+                        
+                                    protected int localMinimumBreakTimeSeconds ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getMinimumBreakTimeSeconds(){
+                               return localMinimumBreakTimeSeconds;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param MinimumBreakTimeSeconds
+                               */
+                               public void setMinimumBreakTimeSeconds(int param){
+                            
+                                            this.localMinimumBreakTimeSeconds=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for MinimumBreakPercentage
+                        */
+
+                        
+                                    protected int localMinimumBreakPercentage ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getMinimumBreakPercentage(){
+                               return localMinimumBreakPercentage;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param MinimumBreakPercentage
+                               */
+                               public void setMinimumBreakPercentage(int param){
+                            
+                                            this.localMinimumBreakPercentage=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for UseCentroidArrivalDetection
                         */
 
@@ -721,6 +811,35 @@
                                                       
                                                } else {
                                                     xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAutoCancelStops));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"autoCancelBreaks", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"autoCancelBreaks");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("autoCancelBreaks");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("autoCancelBreaks cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAutoCancelBreaks));
                                                }
                                     
                                    xmlWriter.writeEndElement();
@@ -1109,6 +1228,64 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
+                                            xmlWriter.writeStartElement(prefix,"minimumBreakTimeSeconds", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"minimumBreakTimeSeconds");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("minimumBreakTimeSeconds");
+                                    }
+                                
+                                               if (localMinimumBreakTimeSeconds==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("minimumBreakTimeSeconds cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMinimumBreakTimeSeconds));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"minimumBreakPercentage", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"minimumBreakPercentage");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("minimumBreakPercentage");
+                                    }
+                                
+                                               if (localMinimumBreakPercentage==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("minimumBreakPercentage cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMinimumBreakPercentage));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
                                             xmlWriter.writeStartElement(prefix,"useCentroidArrivalDetection", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
@@ -1312,6 +1489,12 @@
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAutoCancelStops));
                             
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "autoCancelBreaks"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAutoCancelBreaks));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "autoDepartOrigin"));
                                  
                                 elementList.add(
@@ -1388,6 +1571,18 @@
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMinimumServiceTimeSeconds));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "minimumBreakTimeSeconds"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMinimumBreakTimeSeconds));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "minimumBreakPercentage"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMinimumBreakPercentage));
                             
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "useCentroidArrivalDetection"));
@@ -1516,6 +1711,25 @@
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setAutoCancelStops(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","autoCancelBreaks").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setAutoCancelBreaks(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
                                               
                                         reader.next();
@@ -1763,6 +1977,44 @@
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setMinimumServiceTimeSeconds(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","minimumBreakTimeSeconds").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setMinimumBreakTimeSeconds(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","minimumBreakPercentage").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setMinimumBreakPercentage(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
                                               
                                         reader.next();

@@ -152,6 +152,186 @@
                             
 
                         /**
+                        * field for OutStemDistance
+                        */
+
+                        
+                                    protected int localOutStemDistance ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getOutStemDistance(){
+                               return localOutStemDistance;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param OutStemDistance
+                               */
+                               public void setOutStemDistance(int param){
+                            
+                                            this.localOutStemDistance=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for InStemDistance
+                        */
+
+                        
+                                    protected int localInStemDistance ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getInStemDistance(){
+                               return localInStemDistance;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param InStemDistance
+                               */
+                               public void setInStemDistance(int param){
+                            
+                                            this.localInStemDistance=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for OutStemTime
+                        */
+
+                        
+                                    protected int localOutStemTime ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getOutStemTime(){
+                               return localOutStemTime;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param OutStemTime
+                               */
+                               public void setOutStemTime(int param){
+                            
+                                            this.localOutStemTime=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for InStemTime
+                        */
+
+                        
+                                    protected int localInStemTime ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getInStemTime(){
+                               return localInStemTime;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param InStemTime
+                               */
+                               public void setInStemTime(int param){
+                            
+                                            this.localInStemTime=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for PreRouteTime
+                        */
+
+                        
+                                    protected int localPreRouteTime ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getPreRouteTime(){
+                               return localPreRouteTime;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param PreRouteTime
+                               */
+                               public void setPreRouteTime(int param){
+                            
+                                            this.localPreRouteTime=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for PostRouteTime
+                        */
+
+                        
+                                    protected int localPostRouteTime ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getPostRouteTime(){
+                               return localPostRouteTime;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param PostRouteTime
+                               */
+                               public void setPostRouteTime(int param){
+                            
+                                            this.localPostRouteTime=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for Stops
                         * This was an Array!
                         */
@@ -404,7 +584,181 @@
                                             }
                                            localHelper.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","helper"),
                                                factory,xmlWriter);
-                                         if (localStopsTracker){
+                                        
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"outStemDistance", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"outStemDistance");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("outStemDistance");
+                                    }
+                                
+                                               if (localOutStemDistance==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("outStemDistance cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localOutStemDistance));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"inStemDistance", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"inStemDistance");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("inStemDistance");
+                                    }
+                                
+                                               if (localInStemDistance==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("inStemDistance cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localInStemDistance));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"outStemTime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"outStemTime");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("outStemTime");
+                                    }
+                                
+                                               if (localOutStemTime==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("outStemTime cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localOutStemTime));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"inStemTime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"inStemTime");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("inStemTime");
+                                    }
+                                
+                                               if (localInStemTime==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("inStemTime cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localInStemTime));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"preRouteTime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"preRouteTime");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("preRouteTime");
+                                    }
+                                
+                                               if (localPreRouteTime==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("preRouteTime cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPreRouteTime));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"postRouteTime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"postRouteTime");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("postRouteTime");
+                                    }
+                                
+                                               if (localPostRouteTime==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("postRouteTime cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPostRouteTime));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                              if (localStopsTracker){
                                        if (localStops!=null){
                                             for (int i = 0;i < localStops.length;i++){
                                                 if (localStops[i] != null){
@@ -617,7 +971,43 @@
                                          throw new org.apache.axis2.databinding.ADBException("helper cannot be null!!");
                                     }
                                     elementList.add(localHelper);
-                                 if (localStopsTracker){
+                                
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "outStemDistance"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localOutStemDistance));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "inStemDistance"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localInStemDistance));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "outStemTime"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localOutStemTime));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "inStemTime"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localInStemTime));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "preRouteTime"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPreRouteTime));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "postRouteTime"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPostRouteTime));
+                             if (localStopsTracker){
                              if (localStops!=null) {
                                  for (int i = 0;i < localStops.length;i++){
 
@@ -714,7 +1104,7 @@
                     
                     reader.next();
                 
-                        java.util.ArrayList list5 = new java.util.ArrayList();
+                        java.util.ArrayList list11 = new java.util.ArrayList();
                     
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
@@ -789,16 +1179,130 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","outStemDistance").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setOutStemDistance(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","inStemDistance").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setInStemDistance(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","outStemTime").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setOutStemTime(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","inStemTime").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setInStemTime(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","preRouteTime").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setPreRouteTime(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","postRouteTime").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setPostRouteTime(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","stops").equals(reader.getName())){
                                 
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list5.add(com.freshdirect.routing.proxy.stub.transportation.PlanningStop.Factory.parse(reader));
+                                    list11.add(com.freshdirect.routing.proxy.stub.transportation.PlanningStop.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
-                                                        boolean loopDone5 = false;
-                                                        while(!loopDone5){
+                                                        boolean loopDone11 = false;
+                                                        while(!loopDone11){
                                                             // We should be at the end element, but make sure
                                                             while (!reader.isEndElement())
                                                                 reader.next();
@@ -809,13 +1313,13 @@
                                                                 reader.next();
                                                             if (reader.isEndElement()){
                                                                 //two continuous end elements means we are exiting the xml structure
-                                                                loopDone5 = true;
+                                                                loopDone11 = true;
                                                             } else {
                                                                 if (new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","stops").equals(reader.getName())){
-                                                                    list5.add(com.freshdirect.routing.proxy.stub.transportation.PlanningStop.Factory.parse(reader));
+                                                                    list11.add(com.freshdirect.routing.proxy.stub.transportation.PlanningStop.Factory.parse(reader));
                                                                         
                                                                 }else{
-                                                                    loopDone5 = true;
+                                                                    loopDone11 = true;
                                                                 }
                                                             }
                                                         }
@@ -824,7 +1328,7 @@
                                                         object.setStops((com.freshdirect.routing.proxy.stub.transportation.PlanningStop[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
                                                                 com.freshdirect.routing.proxy.stub.transportation.PlanningStop.class,
-                                                                list5));
+                                                                list11));
                                                             
                               }  // End of if for expected property start element
                                 

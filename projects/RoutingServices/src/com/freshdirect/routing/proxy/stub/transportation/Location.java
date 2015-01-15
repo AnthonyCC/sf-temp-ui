@@ -2111,6 +2111,51 @@
                                }
                             
 
+                        /**
+                        * field for GeocodeVerified
+                        */
+
+                        
+                                    protected boolean localGeocodeVerified ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localGeocodeVerifiedTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getGeocodeVerified(){
+                               return localGeocodeVerified;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param GeocodeVerified
+                               */
+                               public void setGeocodeVerified(boolean param){
+                            
+                                       // setting primitive attribute tracker to true
+                                       
+                                               if (false) {
+                                           localGeocodeVerifiedTracker = true;
+                                              
+                                       } else {
+                                          localGeocodeVerifiedTracker = true;
+                                       }
+                                   
+                                            this.localGeocodeVerified=param;
+                                    
+
+                               }
+                            
+
      /**
      * isReaderMTOMAware
      * @return true if the reader supports MTOM
@@ -3560,6 +3605,35 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
+                             } if (localGeocodeVerifiedTracker){
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"geocodeVerified", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"geocodeVerified");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("geocodeVerified");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localGeocodeVerified));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
                              }
                     xmlWriter.writeEndElement();
                
@@ -4153,7 +4227,13 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("url cannot be null!!");
                                         }
-                                    }
+                                    } if (localGeocodeVerifiedTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "geocodeVerified"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localGeocodeVerified));
+                            }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -5280,6 +5360,33 @@
                                               object.setUrl(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
                                               
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","geocodeVerified").equals(reader.getName())){
+                                
+                                       nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                       if (!"true".equals(nillableValue) && !"1".equals(nillableValue)){
+                                    
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setGeocodeVerified(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                            
+                                       } else {
+                                           
+                                           
+                                           reader.getElementText(); // throw away text nodes if any.
+                                       }
+                                      
                                         reader.next();
                                     
                               }  // End of if for expected property start element

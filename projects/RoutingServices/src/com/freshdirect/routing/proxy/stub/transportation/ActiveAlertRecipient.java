@@ -256,6 +256,36 @@
                             
 
                         /**
+                        * field for Arrived
+                        */
+
+                        
+                                    protected boolean localArrived ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getArrived(){
+                               return localArrived;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Arrived
+                               */
+                               public void setArrived(boolean param){
+                            
+                                            this.localArrived=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for Delivered
                         */
 
@@ -671,6 +701,35 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
+                                            xmlWriter.writeStartElement(prefix,"arrived", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"arrived");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("arrived");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("arrived cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localArrived));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
                                             xmlWriter.writeStartElement(prefix,"delivered", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
@@ -995,6 +1054,12 @@
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localUpdatedETA));
                             
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "arrived"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localArrived));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "delivered"));
                                  
                                 elementList.add(
@@ -1217,6 +1282,25 @@
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setUpdatedETA(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","arrived").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setArrived(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
                                               
                                         reader.next();

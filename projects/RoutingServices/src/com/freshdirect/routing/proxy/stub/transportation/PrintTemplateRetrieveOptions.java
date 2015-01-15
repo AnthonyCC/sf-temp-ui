@@ -1,6 +1,6 @@
 
 /**
- * SchedulerReloadWaveInstances.java
+ * PrintTemplateRetrieveOptions.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,17 +10,16 @@
             
 
             /**
-            *  SchedulerReloadWaveInstances bean class
+            *  PrintTemplateRetrieveOptions bean class
             */
         
-        public  class SchedulerReloadWaveInstances
+        public  class PrintTemplateRetrieveOptions
         implements org.apache.axis2.databinding.ADBBean{
-        
-                public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
-                "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                "SchedulerReloadWaveInstances",
-                "ns1");
-
+        /* This type was generated from the piece of schema that had
+                name = PrintTemplateRetrieveOptions
+                Namespace URI = http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService
+                Namespace Prefix = ns1
+                */
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
@@ -31,94 +30,6 @@
         }
 
         
-
-                        /**
-                        * field for SchedulerIdentity
-                        */
-
-                        
-                                    protected com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity localSchedulerIdentity ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localSchedulerIdentityTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity
-                           */
-                           public  com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity getSchedulerIdentity(){
-                               return localSchedulerIdentity;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param SchedulerIdentity
-                               */
-                               public void setSchedulerIdentity(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localSchedulerIdentityTracker = true;
-                                       } else {
-                                          localSchedulerIdentityTracker = true;
-                                              
-                                       }
-                                   
-                                            this.localSchedulerIdentity=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for Options
-                        */
-
-                        
-                                    protected com.freshdirect.routing.proxy.stub.transportation.SchedulerReloadWaveInstancesOptions localOptions ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localOptionsTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return com.freshdirect.routing.proxy.stub.transportation.SchedulerReloadWaveInstancesOptions
-                           */
-                           public  com.freshdirect.routing.proxy.stub.transportation.SchedulerReloadWaveInstancesOptions getOptions(){
-                               return localOptions;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param Options
-                               */
-                               public void setOptions(com.freshdirect.routing.proxy.stub.transportation.SchedulerReloadWaveInstancesOptions param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localOptionsTracker = true;
-                                       } else {
-                                          localOptionsTracker = true;
-                                              
-                                       }
-                                   
-                                            this.localOptions=param;
-                                    
-
-                               }
-                            
 
      /**
      * isReaderMTOMAware
@@ -148,15 +59,15 @@
 
 
         
-                org.apache.axiom.om.OMDataSource dataSource =
-                       new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
+               org.apache.axiom.om.OMDataSource dataSource =
+                       new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       SchedulerReloadWaveInstances.this.serialize(MY_QNAME,factory,xmlWriter);
+                       PrintTemplateRetrieveOptions.this.serialize(parentQName,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
-               MY_QNAME,factory,dataSource);
+               parentQName,factory,dataSource);
             
        }
 
@@ -206,79 +117,17 @@
                    java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":SchedulerReloadWaveInstances",
+                           namespacePrefix+":PrintTemplateRetrieveOptions",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "SchedulerReloadWaveInstances",
+                           "PrintTemplateRetrieveOptions",
                            xmlWriter);
                    }
 
                
                    }
-                if (localSchedulerIdentityTracker){
-                                    if (localSchedulerIdentity==null){
-
-                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-
-                                        if (! namespace2.equals("")) {
-                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
-
-                                            if (prefix2 == null) {
-                                                prefix2 = generatePrefix(namespace2);
-
-                                                xmlWriter.writeStartElement(prefix2,"schedulerIdentity", namespace2);
-                                                xmlWriter.writeNamespace(prefix2, namespace2);
-                                                xmlWriter.setPrefix(prefix2, namespace2);
-
-                                            } else {
-                                                xmlWriter.writeStartElement(namespace2,"schedulerIdentity");
-                                            }
-
-                                        } else {
-                                            xmlWriter.writeStartElement("schedulerIdentity");
-                                        }
-
-
-                                       // write the nil attribute
-                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
-                                      xmlWriter.writeEndElement();
-                                    }else{
-                                     localSchedulerIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","schedulerIdentity"),
-                                        factory,xmlWriter);
-                                    }
-                                } if (localOptionsTracker){
-                                    if (localOptions==null){
-
-                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-
-                                        if (! namespace2.equals("")) {
-                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
-
-                                            if (prefix2 == null) {
-                                                prefix2 = generatePrefix(namespace2);
-
-                                                xmlWriter.writeStartElement(prefix2,"options", namespace2);
-                                                xmlWriter.writeNamespace(prefix2, namespace2);
-                                                xmlWriter.setPrefix(prefix2, namespace2);
-
-                                            } else {
-                                                xmlWriter.writeStartElement(namespace2,"options");
-                                            }
-
-                                        } else {
-                                            xmlWriter.writeStartElement("options");
-                                        }
-
-
-                                       // write the nil attribute
-                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
-                                      xmlWriter.writeEndElement();
-                                    }else{
-                                     localOptions.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","options"),
-                                        factory,xmlWriter);
-                                    }
-                                }
+               
                     xmlWriter.writeEndElement();
                
 
@@ -440,21 +289,7 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                 if (localSchedulerIdentityTracker){
-                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "schedulerIdentity"));
-                            
-                            
-                                    elementList.add(localSchedulerIdentity==null?null:
-                                    localSchedulerIdentity);
-                                } if (localOptionsTracker){
-                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "options"));
-                            
-                            
-                                    elementList.add(localOptions==null?null:
-                                    localOptions);
-                                }
+                
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -479,9 +314,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static SchedulerReloadWaveInstances parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            SchedulerReloadWaveInstances object =
-                new SchedulerReloadWaveInstances();
+        public static PrintTemplateRetrieveOptions parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            PrintTemplateRetrieveOptions object =
+                new PrintTemplateRetrieveOptions();
 
             int event;
             java.lang.String nillableValue = null;
@@ -505,10 +340,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"SchedulerReloadWaveInstances".equals(type)){
+                            if (!"PrintTemplateRetrieveOptions".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (SchedulerReloadWaveInstances)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                return (PrintTemplateRetrieveOptions)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -529,55 +364,7 @@
                  
                     
                     reader.next();
-                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","schedulerIdentity").equals(reader.getName())){
-                                
-                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
-                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                          object.setSchedulerIdentity(null);
-                                          reader.next();
-                                            
-                                            reader.next();
-                                          
-                                      }else{
-                                    
-                                                object.setSchedulerIdentity(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity.Factory.parse(reader));
-                                              
-                                        reader.next();
-                                    }
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","options").equals(reader.getName())){
-                                
-                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
-                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                          object.setOptions(null);
-                                          reader.next();
-                                            
-                                            reader.next();
-                                          
-                                      }else{
-                                    
-                                                object.setOptions(com.freshdirect.routing.proxy.stub.transportation.SchedulerReloadWaveInstancesOptions.Factory.parse(reader));
-                                              
-                                        reader.next();
-                                    }
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                  
+                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             

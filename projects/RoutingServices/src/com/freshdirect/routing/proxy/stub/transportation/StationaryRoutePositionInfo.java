@@ -151,6 +151,36 @@
                                }
                             
 
+                        /**
+                        * field for IsClustered
+                        */
+
+                        
+                                    protected boolean localIsClustered ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getIsClustered(){
+                               return localIsClustered;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param IsClustered
+                               */
+                               public void setIsClustered(boolean param){
+                            
+                                            this.localIsClustered=param;
+                                    
+
+                               }
+                            
+
      /**
      * isReaderMTOMAware
      * @return true if the reader supports MTOM
@@ -594,6 +624,35 @@
                                     
                                    xmlWriter.writeEndElement();
                              
+                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"isClustered", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"isClustered");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("isClustered");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("isClustered cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localIsClustered));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
                     xmlWriter.writeEndElement();
                
 
@@ -854,6 +913,12 @@
                                            throw new org.apache.axis2.databinding.ADBException("departureTime cannot be null!!");
                                         }
                                     
+                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "isClustered"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localIsClustered));
+                            
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -1170,6 +1235,25 @@
                                     
                                               object.setDepartureTime(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToDateTime(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","isClustered").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setIsClustered(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
                                               
                                         reader.next();
                                     

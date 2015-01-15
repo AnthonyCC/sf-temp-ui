@@ -212,30 +212,30 @@
                             
 
                         /**
-                        * field for NetScheduler
+                        * field for Scheduler
                         */
 
                         
-                                    protected boolean localNetScheduler ;
+                                    protected boolean localScheduler ;
                                 
 
                            /**
                            * Auto generated getter method
                            * @return boolean
                            */
-                           public  boolean getNetScheduler(){
-                               return localNetScheduler;
+                           public  boolean getScheduler(){
+                               return localScheduler;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param NetScheduler
+                               * @param param Scheduler
                                */
-                               public void setNetScheduler(boolean param){
+                               public void setScheduler(boolean param){
                             
-                                            this.localNetScheduler=param;
+                                            this.localScheduler=param;
                                     
 
                                }
@@ -549,24 +549,24 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
-                                            xmlWriter.writeStartElement(prefix,"NetScheduler", namespace);
+                                            xmlWriter.writeStartElement(prefix,"Scheduler", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
 
                                         } else {
-                                            xmlWriter.writeStartElement(namespace,"NetScheduler");
+                                            xmlWriter.writeStartElement(namespace,"Scheduler");
                                         }
 
                                     } else {
-                                        xmlWriter.writeStartElement("NetScheduler");
+                                        xmlWriter.writeStartElement("Scheduler");
                                     }
                                 
                                                if (false) {
                                            
-                                                         throw new org.apache.axis2.databinding.ADBException("NetScheduler cannot be null!!");
+                                                         throw new org.apache.axis2.databinding.ADBException("Scheduler cannot be null!!");
                                                       
                                                } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNetScheduler));
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localScheduler));
                                                }
                                     
                                    xmlWriter.writeEndElement();
@@ -799,10 +799,10 @@
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNetMap));
                             
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "NetScheduler"));
+                                                                      "Scheduler"));
                                  
                                 elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNetScheduler));
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localScheduler));
                             
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "RPD"));
@@ -1002,11 +1002,11 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","NetScheduler").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","Scheduler").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
-                                              object.setNetScheduler(
+                                              object.setScheduler(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
                                               
                                         reader.next();

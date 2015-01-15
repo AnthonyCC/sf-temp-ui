@@ -1,6 +1,6 @@
 
 /**
- * SchedulerReloadWaveInstancesOptions.java
+ * RemoveAllEmployeeLocationAssignments.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,16 +10,17 @@
             
 
             /**
-            *  SchedulerReloadWaveInstancesOptions bean class
+            *  RemoveAllEmployeeLocationAssignments bean class
             */
         
-        public  class SchedulerReloadWaveInstancesOptions
+        public  class RemoveAllEmployeeLocationAssignments
         implements org.apache.axis2.databinding.ADBBean{
-        /* This type was generated from the piece of schema that had
-                name = SchedulerReloadWaveInstancesOptions
-                Namespace URI = http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService
-                Namespace Prefix = ns1
-                */
+        
+                public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
+                "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                "RemoveAllEmployeeLocationAssignments",
+                "ns1");
+
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
@@ -30,6 +31,50 @@
         }
 
         
+
+                        /**
+                        * field for EmployeeIdentity
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity localEmployeeIdentity ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localEmployeeIdentityTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity getEmployeeIdentity(){
+                               return localEmployeeIdentity;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param EmployeeIdentity
+                               */
+                               public void setEmployeeIdentity(com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localEmployeeIdentityTracker = true;
+                                       } else {
+                                          localEmployeeIdentityTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localEmployeeIdentity=param;
+                                    
+
+                               }
+                            
 
      /**
      * isReaderMTOMAware
@@ -59,15 +104,15 @@
 
 
         
-               org.apache.axiom.om.OMDataSource dataSource =
-                       new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
+                org.apache.axiom.om.OMDataSource dataSource =
+                       new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       SchedulerReloadWaveInstancesOptions.this.serialize(parentQName,factory,xmlWriter);
+                       RemoveAllEmployeeLocationAssignments.this.serialize(MY_QNAME,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
-               parentQName,factory,dataSource);
+               MY_QNAME,factory,dataSource);
             
        }
 
@@ -117,17 +162,48 @@
                    java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":SchedulerReloadWaveInstancesOptions",
+                           namespacePrefix+":RemoveAllEmployeeLocationAssignments",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "SchedulerReloadWaveInstancesOptions",
+                           "RemoveAllEmployeeLocationAssignments",
                            xmlWriter);
                    }
 
                
                    }
-               
+                if (localEmployeeIdentityTracker){
+                                    if (localEmployeeIdentity==null){
+
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"employeeIdentity", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"employeeIdentity");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("employeeIdentity");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localEmployeeIdentity.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","employeeIdentity"),
+                                        factory,xmlWriter);
+                                    }
+                                }
                     xmlWriter.writeEndElement();
                
 
@@ -289,7 +365,14 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                
+                 if (localEmployeeIdentityTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "employeeIdentity"));
+                            
+                            
+                                    elementList.add(localEmployeeIdentity==null?null:
+                                    localEmployeeIdentity);
+                                }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -314,9 +397,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static SchedulerReloadWaveInstancesOptions parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            SchedulerReloadWaveInstancesOptions object =
-                new SchedulerReloadWaveInstancesOptions();
+        public static RemoveAllEmployeeLocationAssignments parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            RemoveAllEmployeeLocationAssignments object =
+                new RemoveAllEmployeeLocationAssignments();
 
             int event;
             java.lang.String nillableValue = null;
@@ -340,10 +423,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"SchedulerReloadWaveInstancesOptions".equals(type)){
+                            if (!"RemoveAllEmployeeLocationAssignments".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (SchedulerReloadWaveInstancesOptions)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                return (RemoveAllEmployeeLocationAssignments)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -364,7 +447,31 @@
                  
                     
                     reader.next();
-                  
+                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","employeeIdentity").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setEmployeeIdentity(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setEmployeeIdentity(com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             

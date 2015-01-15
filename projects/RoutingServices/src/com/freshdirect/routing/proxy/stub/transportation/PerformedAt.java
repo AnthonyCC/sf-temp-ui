@@ -1,6 +1,6 @@
 
 /**
- * SurveyAnswerType.java
+ * PerformedAt.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,15 +10,15 @@
             
 
             /**
-            *  SurveyAnswerType bean class
+            *  PerformedAt bean class
             */
         
-        public  class SurveyAnswerType
+        public  class PerformedAt
         implements org.apache.axis2.databinding.ADBBean{
         
                 public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
                 "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                "SurveyAnswerType",
+                "PerformedAt",
                 "ns1");
 
             
@@ -33,70 +33,58 @@
         
 
                         /**
-                        * field for SurveyAnswerType
+                        * field for PerformedAt
                         */
 
                         
-                                    protected java.lang.String localSurveyAnswerType ;
+                                    protected java.lang.String localPerformedAt ;
                                 
                             private static java.util.HashMap _table_ = new java.util.HashMap();
 
                             // Constructor
                             
-                                protected SurveyAnswerType(java.lang.String value, boolean isRegisterValue) {
-                                    localSurveyAnswerType = value;
+                                protected PerformedAt(java.lang.String value, boolean isRegisterValue) {
+                                    localPerformedAt = value;
                                     if (isRegisterValue){
                                         
-                                               _table_.put(localSurveyAnswerType, this);
+                                               _table_.put(localPerformedAt, this);
                                            
                                     }
 
                                 }
                             
-                                    public static final java.lang.String _satText =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("satText");
+                                    public static final java.lang.String _epaNone =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("epaNone");
                                 
-                                    public static final java.lang.String _satPickList =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("satPickList");
+                                    public static final java.lang.String _epaPreRoute =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("epaPreRoute");
                                 
-                                    public static final java.lang.String _satBoolean =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("satBoolean");
+                                    public static final java.lang.String _epaPostRoute =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("epaPostRoute");
                                 
-                                    public static final java.lang.String _satNumeric =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("satNumeric");
+                                    public static final java.lang.String _epaStop =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("epaStop");
                                 
-                                    public static final java.lang.String _satInspection =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("satInspection");
-                                
-                                    public static final java.lang.String _satDateTime =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("satDateTime");
-                                
-                                public static final SurveyAnswerType satText =
-                                    new SurveyAnswerType(_satText,true);
+                                public static final PerformedAt epaNone =
+                                    new PerformedAt(_epaNone,true);
                             
-                                public static final SurveyAnswerType satPickList =
-                                    new SurveyAnswerType(_satPickList,true);
+                                public static final PerformedAt epaPreRoute =
+                                    new PerformedAt(_epaPreRoute,true);
                             
-                                public static final SurveyAnswerType satBoolean =
-                                    new SurveyAnswerType(_satBoolean,true);
+                                public static final PerformedAt epaPostRoute =
+                                    new PerformedAt(_epaPostRoute,true);
                             
-                                public static final SurveyAnswerType satNumeric =
-                                    new SurveyAnswerType(_satNumeric,true);
-                            
-                                public static final SurveyAnswerType satInspection =
-                                    new SurveyAnswerType(_satInspection,true);
-                            
-                                public static final SurveyAnswerType satDateTime =
-                                    new SurveyAnswerType(_satDateTime,true);
+                                public static final PerformedAt epaStop =
+                                    new PerformedAt(_epaStop,true);
                             
 
-                                public java.lang.String getValue() { return localSurveyAnswerType;}
+                                public java.lang.String getValue() { return localPerformedAt;}
 
                                 public boolean equals(java.lang.Object obj) {return (obj == this);}
                                 public int hashCode() { return toString().hashCode();}
                                 public java.lang.String toString() {
                                 
-                                        return localSurveyAnswerType.toString();
+                                        return localPerformedAt.toString();
                                     
 
                                 }
@@ -135,7 +123,7 @@
                        new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       SurveyAnswerType.this.serialize(MY_QNAME,factory,xmlWriter);
+                       PerformedAt.this.serialize(MY_QNAME,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
@@ -185,22 +173,22 @@
                                    java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
                                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                                           namespacePrefix+":SurveyAnswerType",
+                                           namespacePrefix+":PerformedAt",
                                            xmlWriter);
                                    } else {
                                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                                           "SurveyAnswerType",
+                                           "PerformedAt",
                                            xmlWriter);
                                    }
                                }
                             
-                                          if (localSurveyAnswerType==null){
+                                          if (localPerformedAt==null){
                                             
                                                      throw new org.apache.axis2.databinding.ADBException("Value cannot be null !!");
                                                 
                                          }else{
                                         
-                                                       xmlWriter.writeCharacters(localSurveyAnswerType);
+                                                       xmlWriter.writeCharacters(localPerformedAt);
                                             
                                          }
                                     
@@ -368,7 +356,7 @@
                  return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(MY_QNAME,
                             new java.lang.Object[]{
                             org.apache.axis2.databinding.utils.reader.ADBXMLStreamReader.ELEMENT_TEXT,
-                            org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localSurveyAnswerType)
+                            org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPerformedAt)
                             },
                             null);
 
@@ -383,9 +371,9 @@
 
         
         
-                public static SurveyAnswerType fromValue(java.lang.String value)
+                public static PerformedAt fromValue(java.lang.String value)
                       throws java.lang.IllegalArgumentException {
-                    SurveyAnswerType enumeration = (SurveyAnswerType)
+                    PerformedAt enumeration = (PerformedAt)
                        
                                _table_.get(value);
                            
@@ -393,7 +381,7 @@
                     if (enumeration==null) throw new java.lang.IllegalArgumentException();
                     return enumeration;
                 }
-                public static SurveyAnswerType fromString(java.lang.String value,java.lang.String namespaceURI)
+                public static PerformedAt fromString(java.lang.String value,java.lang.String namespaceURI)
                       throws java.lang.IllegalArgumentException {
                     try {
                        
@@ -405,14 +393,14 @@
                     }
                 }
 
-                public static SurveyAnswerType fromString(javax.xml.stream.XMLStreamReader xmlStreamReader,
+                public static PerformedAt fromString(javax.xml.stream.XMLStreamReader xmlStreamReader,
                                                                     java.lang.String content) {
                     if (content.indexOf(":") > -1){
                         java.lang.String prefix = content.substring(0,content.indexOf(":"));
                         java.lang.String namespaceUri = xmlStreamReader.getNamespaceContext().getNamespaceURI(prefix);
-                        return SurveyAnswerType.Factory.fromString(content,namespaceUri);
+                        return PerformedAt.Factory.fromString(content,namespaceUri);
                     } else {
-                       return SurveyAnswerType.Factory.fromString(content,"");
+                       return PerformedAt.Factory.fromString(content,"");
                     }
                 }
             
@@ -424,8 +412,8 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static SurveyAnswerType parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            SurveyAnswerType object = null;
+        public static PerformedAt parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            PerformedAt object = null;
                 // initialize a hash map to keep values
                 java.util.Map attributeMap = new java.util.HashMap();
                 java.util.List extraAttributeList = new java.util.ArrayList();
@@ -458,11 +446,11 @@
                                             // this seems to be a Qname so find the namespace and send
                                             prefix = content.substring(0, content.indexOf(":"));
                                             namespaceuri = reader.getNamespaceURI(prefix);
-                                            object = SurveyAnswerType.Factory.fromString(content,namespaceuri);
+                                            object = PerformedAt.Factory.fromString(content,namespaceuri);
                                         } else {
                                             // this seems to be not a qname send and empty namespace incase of it is
                                             // check is done in fromString method
-                                            object = SurveyAnswerType.Factory.fromString(content,"");
+                                            object = PerformedAt.Factory.fromString(content,"");
                                         }
                                         
                                         

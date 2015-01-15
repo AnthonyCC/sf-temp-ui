@@ -76,51 +76,6 @@
                             
 
                         /**
-                        * field for InternalRouteID
-                        */
-
-                        
-                                    protected int localInternalRouteID ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localInternalRouteIDTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return int
-                           */
-                           public  int getInternalRouteID(){
-                               return localInternalRouteID;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param InternalRouteID
-                               */
-                               public void setInternalRouteID(int param){
-                            
-                                       // setting primitive attribute tracker to true
-                                       
-                                               if (param==java.lang.Integer.MIN_VALUE) {
-                                           localInternalRouteIDTracker = false;
-                                              
-                                       } else {
-                                          localInternalRouteIDTracker = true;
-                                       }
-                                   
-                                            this.localInternalRouteID=param;
-                                    
-
-                               }
-                            
-
-                        /**
                         * field for ProviderType
                         */
 
@@ -381,35 +336,6 @@
                                                    xmlWriter.writeCharacters(localDeviceID);
                                             
                                           }
-                                    
-                                   xmlWriter.writeEndElement();
-                             } if (localInternalRouteIDTracker){
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"internalRouteID", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"internalRouteID");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("internalRouteID");
-                                    }
-                                
-                                               if (localInternalRouteID==java.lang.Integer.MIN_VALUE) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("internalRouteID cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localInternalRouteID));
-                                               }
                                     
                                    xmlWriter.writeEndElement();
                              } if (localProviderTypeTracker){
@@ -680,13 +606,7 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("deviceID cannot be null!!");
                                         }
-                                    } if (localInternalRouteIDTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "internalRouteID"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localInternalRouteID));
-                            } if (localProviderTypeTracker){
+                                    } if (localProviderTypeTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
                                                                       "providerType"));
                                  
@@ -802,26 +722,6 @@
                                 
                                     else {
                                         
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","internalRouteID").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setInternalRouteID(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                               object.setInternalRouteID(java.lang.Integer.MIN_VALUE);
-                                           
                                     }
                                 
                                     

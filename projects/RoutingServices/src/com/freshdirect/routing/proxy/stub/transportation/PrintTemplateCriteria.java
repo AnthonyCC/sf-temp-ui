@@ -1,6 +1,6 @@
 
 /**
- * ReasonCodes.java
+ * PrintTemplateCriteria.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,13 +10,13 @@
             
 
             /**
-            *  ReasonCodes bean class
+            *  PrintTemplateCriteria bean class
             */
         
-        public  class ReasonCodes
+        public  class PrintTemplateCriteria
         implements org.apache.axis2.databinding.ADBBean{
         /* This type was generated from the piece of schema that had
-                name = ReasonCodes
+                name = PrintTemplateCriteria
                 Namespace URI = http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService
                 Namespace Prefix = ns1
                 */
@@ -32,264 +32,133 @@
         
 
                         /**
-                        * field for DeliveryCode
+                        * field for RegionID
                         */
 
                         
-                                    protected java.lang.String localDeliveryCode ;
+                                    protected java.lang.String localRegionID ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
                            *   in the serialized XML
                            */
-                           protected boolean localDeliveryCodeTracker = false ;
+                           protected boolean localRegionIDTracker = false ;
                            
 
                            /**
                            * Auto generated getter method
                            * @return java.lang.String
                            */
-                           public  java.lang.String getDeliveryCode(){
-                               return localDeliveryCode;
+                           public  java.lang.String getRegionID(){
+                               return localRegionID;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param DeliveryCode
+                               * @param param RegionID
                                */
-                               public void setDeliveryCode(java.lang.String param){
+                               public void setRegionID(java.lang.String param){
                             
                                        if (param != null){
                                           //update the setting tracker
-                                          localDeliveryCodeTracker = true;
+                                          localRegionIDTracker = true;
                                        } else {
-                                          localDeliveryCodeTracker = false;
+                                          localRegionIDTracker = false;
                                               
                                        }
                                    
-                                            this.localDeliveryCode=param;
+                                            this.localRegionID=param;
                                     
 
                                }
                             
 
                         /**
-                        * field for OverCode
+                        * field for Name
                         */
 
                         
-                                    protected java.lang.String localOverCode ;
+                                    protected java.lang.String localName ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
                            *   in the serialized XML
                            */
-                           protected boolean localOverCodeTracker = false ;
+                           protected boolean localNameTracker = false ;
                            
 
                            /**
                            * Auto generated getter method
                            * @return java.lang.String
                            */
-                           public  java.lang.String getOverCode(){
-                               return localOverCode;
+                           public  java.lang.String getName(){
+                               return localName;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param OverCode
+                               * @param param Name
                                */
-                               public void setOverCode(java.lang.String param){
+                               public void setName(java.lang.String param){
                             
                                        if (param != null){
                                           //update the setting tracker
-                                          localOverCodeTracker = true;
+                                          localNameTracker = true;
                                        } else {
-                                          localOverCodeTracker = false;
+                                          localNameTracker = false;
                                               
                                        }
                                    
-                                            this.localOverCode=param;
+                                            this.localName=param;
                                     
 
                                }
                             
 
                         /**
-                        * field for ShortCode
+                        * field for Enabled
                         */
 
                         
-                                    protected java.lang.String localShortCode ;
+                                    protected boolean localEnabled ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
                            *   in the serialized XML
                            */
-                           protected boolean localShortCodeTracker = false ;
+                           protected boolean localEnabledTracker = false ;
                            
 
                            /**
                            * Auto generated getter method
-                           * @return java.lang.String
+                           * @return boolean
                            */
-                           public  java.lang.String getShortCode(){
-                               return localShortCode;
+                           public  boolean getEnabled(){
+                               return localEnabled;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param ShortCode
+                               * @param param Enabled
                                */
-                               public void setShortCode(java.lang.String param){
+                               public void setEnabled(boolean param){
                             
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localShortCodeTracker = true;
-                                       } else {
-                                          localShortCodeTracker = false;
+                                       // setting primitive attribute tracker to true
+                                       
+                                               if (false) {
+                                           localEnabledTracker = true;
                                               
+                                       } else {
+                                          localEnabledTracker = true;
                                        }
                                    
-                                            this.localShortCode=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for DamagedCode
-                        */
-
-                        
-                                    protected java.lang.String localDamagedCode ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localDamagedCodeTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return java.lang.String
-                           */
-                           public  java.lang.String getDamagedCode(){
-                               return localDamagedCode;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param DamagedCode
-                               */
-                               public void setDamagedCode(java.lang.String param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localDamagedCodeTracker = true;
-                                       } else {
-                                          localDamagedCodeTracker = false;
-                                              
-                                       }
-                                   
-                                            this.localDamagedCode=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for LoadedCode
-                        */
-
-                        
-                                    protected java.lang.String localLoadedCode ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localLoadedCodeTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return java.lang.String
-                           */
-                           public  java.lang.String getLoadedCode(){
-                               return localLoadedCode;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param LoadedCode
-                               */
-                               public void setLoadedCode(java.lang.String param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localLoadedCodeTracker = true;
-                                       } else {
-                                          localLoadedCodeTracker = false;
-                                              
-                                       }
-                                   
-                                            this.localLoadedCode=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for PickupCode
-                        */
-
-                        
-                                    protected java.lang.String localPickupCode ;
-                                
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localPickupCodeTracker = false ;
-                           
-
-                           /**
-                           * Auto generated getter method
-                           * @return java.lang.String
-                           */
-                           public  java.lang.String getPickupCode(){
-                               return localPickupCode;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param PickupCode
-                               */
-                               public void setPickupCode(java.lang.String param){
-                            
-                                       if (param != null){
-                                          //update the setting tracker
-                                          localPickupCodeTracker = true;
-                                       } else {
-                                          localPickupCodeTracker = false;
-                                              
-                                       }
-                                   
-                                            this.localPickupCode=param;
+                                            this.localEnabled=param;
                                     
 
                                }
@@ -327,7 +196,7 @@
                        new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       ReasonCodes.this.serialize(parentQName,factory,xmlWriter);
+                       PrintTemplateCriteria.this.serialize(parentQName,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
@@ -381,17 +250,17 @@
                    java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":ReasonCodes",
+                           namespacePrefix+":PrintTemplateCriteria",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "ReasonCodes",
+                           "PrintTemplateCriteria",
                            xmlWriter);
                    }
 
                
                    }
-                if (localDeliveryCodeTracker){
+                if (localRegionIDTracker){
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -399,33 +268,33 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
-                                            xmlWriter.writeStartElement(prefix,"deliveryCode", namespace);
+                                            xmlWriter.writeStartElement(prefix,"regionID", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
 
                                         } else {
-                                            xmlWriter.writeStartElement(namespace,"deliveryCode");
+                                            xmlWriter.writeStartElement(namespace,"regionID");
                                         }
 
                                     } else {
-                                        xmlWriter.writeStartElement("deliveryCode");
+                                        xmlWriter.writeStartElement("regionID");
                                     }
                                 
 
-                                          if (localDeliveryCode==null){
+                                          if (localRegionID==null){
                                               // write the nil attribute
                                               
-                                                     throw new org.apache.axis2.databinding.ADBException("deliveryCode cannot be null!!");
+                                                     throw new org.apache.axis2.databinding.ADBException("regionID cannot be null!!");
                                                   
                                           }else{
 
                                         
-                                                   xmlWriter.writeCharacters(localDeliveryCode);
+                                                   xmlWriter.writeCharacters(localRegionID);
                                             
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             } if (localOverCodeTracker){
+                             } if (localNameTracker){
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -433,33 +302,33 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
-                                            xmlWriter.writeStartElement(prefix,"overCode", namespace);
+                                            xmlWriter.writeStartElement(prefix,"name", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
 
                                         } else {
-                                            xmlWriter.writeStartElement(namespace,"overCode");
+                                            xmlWriter.writeStartElement(namespace,"name");
                                         }
 
                                     } else {
-                                        xmlWriter.writeStartElement("overCode");
+                                        xmlWriter.writeStartElement("name");
                                     }
                                 
 
-                                          if (localOverCode==null){
+                                          if (localName==null){
                                               // write the nil attribute
                                               
-                                                     throw new org.apache.axis2.databinding.ADBException("overCode cannot be null!!");
+                                                     throw new org.apache.axis2.databinding.ADBException("name cannot be null!!");
                                                   
                                           }else{
 
                                         
-                                                   xmlWriter.writeCharacters(localOverCode);
+                                                   xmlWriter.writeCharacters(localName);
                                             
                                           }
                                     
                                    xmlWriter.writeEndElement();
-                             } if (localShortCodeTracker){
+                             } if (localEnabledTracker){
                                     namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
                                         prefix = xmlWriter.getPrefix(namespace);
@@ -467,132 +336,25 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
-                                            xmlWriter.writeStartElement(prefix,"shortCode", namespace);
+                                            xmlWriter.writeStartElement(prefix,"enabled", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
 
                                         } else {
-                                            xmlWriter.writeStartElement(namespace,"shortCode");
+                                            xmlWriter.writeStartElement(namespace,"enabled");
                                         }
 
                                     } else {
-                                        xmlWriter.writeStartElement("shortCode");
+                                        xmlWriter.writeStartElement("enabled");
                                     }
                                 
-
-                                          if (localShortCode==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("shortCode cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(localShortCode);
-                                            
-                                          }
-                                    
-                                   xmlWriter.writeEndElement();
-                             } if (localDamagedCodeTracker){
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"damagedCode", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"damagedCode");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("damagedCode");
-                                    }
-                                
-
-                                          if (localDamagedCode==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("damagedCode cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(localDamagedCode);
-                                            
-                                          }
-                                    
-                                   xmlWriter.writeEndElement();
-                             } if (localLoadedCodeTracker){
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"loadedCode", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"loadedCode");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("loadedCode");
-                                    }
-                                
-
-                                          if (localLoadedCode==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("loadedCode cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(localLoadedCode);
-                                            
-                                          }
-                                    
-                                   xmlWriter.writeEndElement();
-                             } if (localPickupCodeTracker){
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
-
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"pickupCode", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"pickupCode");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("pickupCode");
-                                    }
-                                
-
-                                          if (localPickupCode==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("pickupCode cannot be null!!");
-                                                  
-                                          }else{
-
-                                        
-                                                   xmlWriter.writeCharacters(localPickupCode);
-                                            
-                                          }
+                                               if (false) {
+                                           
+                                                         writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localEnabled));
+                                               }
                                     
                                    xmlWriter.writeEndElement();
                              }
@@ -757,61 +519,31 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                 if (localDeliveryCodeTracker){
+                 if (localRegionIDTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "deliveryCode"));
+                                                                      "regionID"));
                                  
-                                        if (localDeliveryCode != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDeliveryCode));
+                                        if (localRegionID != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRegionID));
                                         } else {
-                                           throw new org.apache.axis2.databinding.ADBException("deliveryCode cannot be null!!");
+                                           throw new org.apache.axis2.databinding.ADBException("regionID cannot be null!!");
                                         }
-                                    } if (localOverCodeTracker){
+                                    } if (localNameTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "overCode"));
+                                                                      "name"));
                                  
-                                        if (localOverCode != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localOverCode));
+                                        if (localName != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localName));
                                         } else {
-                                           throw new org.apache.axis2.databinding.ADBException("overCode cannot be null!!");
+                                           throw new org.apache.axis2.databinding.ADBException("name cannot be null!!");
                                         }
-                                    } if (localShortCodeTracker){
+                                    } if (localEnabledTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "shortCode"));
+                                                                      "enabled"));
                                  
-                                        if (localShortCode != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localShortCode));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("shortCode cannot be null!!");
-                                        }
-                                    } if (localDamagedCodeTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "damagedCode"));
-                                 
-                                        if (localDamagedCode != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDamagedCode));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("damagedCode cannot be null!!");
-                                        }
-                                    } if (localLoadedCodeTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "loadedCode"));
-                                 
-                                        if (localLoadedCode != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLoadedCode));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("loadedCode cannot be null!!");
-                                        }
-                                    } if (localPickupCodeTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "pickupCode"));
-                                 
-                                        if (localPickupCode != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPickupCode));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("pickupCode cannot be null!!");
-                                        }
-                                    }
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localEnabled));
+                            }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -836,9 +568,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static ReasonCodes parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            ReasonCodes object =
-                new ReasonCodes();
+        public static PrintTemplateCriteria parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            PrintTemplateCriteria object =
+                new PrintTemplateCriteria();
 
             int event;
             java.lang.String nillableValue = null;
@@ -862,10 +594,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"ReasonCodes".equals(type)){
+                            if (!"PrintTemplateCriteria".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (ReasonCodes)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                return (PrintTemplateCriteria)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -890,11 +622,11 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","deliveryCode").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","regionID").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
-                                              object.setDeliveryCode(
+                                              object.setRegionID(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
                                               
                                         reader.next();
@@ -908,11 +640,11 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","overCode").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","name").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
-                                              object.setOverCode(
+                                              object.setName(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
                                               
                                         reader.next();
@@ -926,67 +658,22 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","shortCode").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","enabled").equals(reader.getName())){
                                 
+                                       nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                       if (!"true".equals(nillableValue) && !"1".equals(nillableValue)){
+                                    
                                     java.lang.String content = reader.getElementText();
                                     
-                                              object.setShortCode(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","damagedCode").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setDamagedCode(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","loadedCode").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setLoadedCode(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","pickupCode").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setPickupCode(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
-                                              
+                                              object.setEnabled(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                            
+                                       } else {
+                                           
+                                           
+                                           reader.getElementText(); // throw away text nodes if any.
+                                       }
+                                      
                                         reader.next();
                                     
                               }  // End of if for expected property start element

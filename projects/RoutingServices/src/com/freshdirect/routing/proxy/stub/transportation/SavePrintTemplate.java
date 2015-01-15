@@ -1,6 +1,6 @@
 
 /**
- * SchedulerReloadWaveInstancesResponse.java
+ * SavePrintTemplate.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,15 +10,15 @@
             
 
             /**
-            *  SchedulerReloadWaveInstancesResponse bean class
+            *  SavePrintTemplate bean class
             */
         
-        public  class SchedulerReloadWaveInstancesResponse
+        public  class SavePrintTemplate
         implements org.apache.axis2.databinding.ADBBean{
         
                 public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
                 "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                "SchedulerReloadWaveInstancesResponse",
+                "SavePrintTemplate",
                 "ns1");
 
             
@@ -33,30 +33,44 @@
         
 
                         /**
-                        * field for Success
+                        * field for PrintTemplate
                         */
 
                         
-                                    protected boolean localSuccess ;
+                                    protected com.freshdirect.routing.proxy.stub.transportation.PrintTemplate localPrintTemplate ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localPrintTemplateTracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
-                           * @return boolean
+                           * @return com.freshdirect.routing.proxy.stub.transportation.PrintTemplate
                            */
-                           public  boolean getSuccess(){
-                               return localSuccess;
+                           public  com.freshdirect.routing.proxy.stub.transportation.PrintTemplate getPrintTemplate(){
+                               return localPrintTemplate;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param Success
+                               * @param param PrintTemplate
                                */
-                               public void setSuccess(boolean param){
+                               public void setPrintTemplate(com.freshdirect.routing.proxy.stub.transportation.PrintTemplate param){
                             
-                                            this.localSuccess=param;
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localPrintTemplateTracker = true;
+                                       } else {
+                                          localPrintTemplateTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localPrintTemplate=param;
                                     
 
                                }
@@ -94,7 +108,7 @@
                        new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       SchedulerReloadWaveInstancesResponse.this.serialize(MY_QNAME,factory,xmlWriter);
+                       SavePrintTemplate.this.serialize(MY_QNAME,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
@@ -148,46 +162,48 @@
                    java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":SchedulerReloadWaveInstancesResponse",
+                           namespacePrefix+":SavePrintTemplate",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "SchedulerReloadWaveInstancesResponse",
+                           "SavePrintTemplate",
                            xmlWriter);
                    }
 
                
                    }
-               
-                                    namespace = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
+                if (localPrintTemplateTracker){
+                                    if (localPrintTemplate==null){
 
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
+                                            java.lang.String namespace2 = "http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService";
 
-                                            xmlWriter.writeStartElement(prefix,"success", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"printTemplate", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"printTemplate");
+                                            }
 
                                         } else {
-                                            xmlWriter.writeStartElement(namespace,"success");
+                                            xmlWriter.writeStartElement("printTemplate");
                                         }
 
-                                    } else {
-                                        xmlWriter.writeStartElement("success");
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localPrintTemplate.serialize(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","printTemplate"),
+                                        factory,xmlWriter);
                                     }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("success cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localSuccess));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
+                                }
                     xmlWriter.writeEndElement();
                
 
@@ -349,13 +365,14 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                
-                                      elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
-                                                                      "success"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localSuccess));
+                 if (localPrintTemplateTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService",
+                                                                      "printTemplate"));
                             
+                            
+                                    elementList.add(localPrintTemplate==null?null:
+                                    localPrintTemplate);
+                                }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -380,9 +397,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static SchedulerReloadWaveInstancesResponse parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            SchedulerReloadWaveInstancesResponse object =
-                new SchedulerReloadWaveInstancesResponse();
+        public static SavePrintTemplate parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            SavePrintTemplate object =
+                new SavePrintTemplate();
 
             int event;
             java.lang.String nillableValue = null;
@@ -406,10 +423,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"SchedulerReloadWaveInstancesResponse".equals(type)){
+                            if (!"SavePrintTemplate".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (SchedulerReloadWaveInstancesResponse)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                return (SavePrintTemplate)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -434,22 +451,27 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","success").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.roadnet.com/RTS/TransportationSuite/TransportationWebService","printTemplate").equals(reader.getName())){
                                 
-                                    java.lang.String content = reader.getElementText();
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setPrintTemplate(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
                                     
-                                              object.setSuccess(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                                object.setPrintTemplate(com.freshdirect.routing.proxy.stub.transportation.PrintTemplate.Factory.parse(reader));
                                               
                                         reader.next();
-                                    
+                                    }
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                              
+                                    else {
+                                        
+                                    }
+                                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             
