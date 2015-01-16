@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -142,7 +143,7 @@ public class ProductNameWordList implements WordListI{
                 ProductModel pm = (ProductModel) nodeModel;
                 //if (pm.isDisplayableBasedOnCms()) {
                 if (pm.isFullyAvailable()) {
-                    words.add(pm.getFullName());
+                	words.add(StringEscapeUtils.unescapeHtml(pm.getFullName()));
                 }
             }
         }

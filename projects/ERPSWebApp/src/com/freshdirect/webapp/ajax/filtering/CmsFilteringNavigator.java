@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.ajax.filtering;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -81,6 +82,11 @@ public class CmsFilteringNavigator {
 	 */
 	public static CmsFilteringNavigator createInstance(HttpServletRequest request) throws InvalidFilteringArgumentException, FDResourceException {
 
+		try {
+			request.setCharacterEncoding("UTF-8");
+		} catch (UnsupportedEncodingException uee) {
+			throw new FDResourceException(uee);
+		}
 		@SuppressWarnings("unchecked")
 		Map<String, String[]> paramMap = request.getParameterMap();
 		Set<String> paramNames = new TreeSet<String>(paramMap.keySet()); 
