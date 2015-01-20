@@ -399,20 +399,22 @@ public abstract class BaseController extends AbstractController implements Messa
     
     protected void removeUserInSession(SessionUser user, HttpServletRequest request, HttpServletResponse response) {
     	
-    	user.touch();
-        HttpSession session = request.getSession();
-
-        // clear session
-        Enumeration e = session.getAttributeNames();
-        while (e.hasMoreElements()) {
-            String name = (String) e.nextElement();
-            session.removeAttribute(name);
-        }
-        // end session
-        session.invalidate();
-        // remove cookie
-        CookieMonster.clearCookie(response);
-        resetMobileSessionData(request);
+    	if(user != null) {
+	    	user.touch();	       
+    	}
+    	HttpSession session = request.getSession();
+    	
+    	// clear session
+    	Enumeration e = session.getAttributeNames();
+    	while (e.hasMoreElements()) {
+    		String name = (String) e.nextElement();
+    		session.removeAttribute(name);
+    	}
+    	// end session
+    	session.invalidate();
+    	// remove cookie
+    	CookieMonster.clearCookie(response);
+    	resetMobileSessionData(request);
     }
 
     protected ObjectMapper getMapper() {
