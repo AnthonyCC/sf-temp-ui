@@ -50,4 +50,8 @@ public interface IOrderModel {
 	
 	EnumSaleStatus getStatus();
 	void setStatus(EnumSaleStatus status);
+	
+	boolean isConfirmed();
+	void setConfirmed(boolean isConfirmed);
+	
 }

@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.axis2.AxisFault;
 
 import com.freshdirect.routing.constants.IRoutingConstants;
+import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.EquipmentType;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
@@ -196,7 +197,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 		
 	public void schedulerSaveLocation(IOrderModel orderModel, String locationType) throws RoutingServiceException {
 		try {
-			IRoutingSchedulerIdentity schId = RoutingDataEncoder.encodeSchedulerId(null, orderModel);
+			IRoutingSchedulerIdentity schId = RoutingDataEncoder.encodeSchedulerId(null, orderModel, RoutingActivityType.SAVE_LOCATION);
 			TransportationWebService port = getTransportationSuiteService(schId);
 			
 			List _tmpLocOrders = new ArrayList();
@@ -219,7 +220,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 		//System.out.println("schedulerAnalyzeOrder Order >"+orderModel);
 		//System.out.println("schedulerAnalyzeOrder Slot >"+slots);
 		try {
-			IRoutingSchedulerIdentity schId = RoutingDataEncoder.encodeSchedulerId(null, orderModel);
+			IRoutingSchedulerIdentity schId = RoutingDataEncoder.encodeSchedulerId(null, orderModel, RoutingActivityType.GET_TIMESLOT);
 			TransportationWebService port = getTransportationSuiteService(schId);
 						
 			return RoutingDataDecoder.decodeDeliveryWindows(
@@ -245,7 +246,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 			, String orderType) throws RoutingServiceException {
 
 		try {
-			IRoutingSchedulerIdentity schedulerId = RoutingDataEncoder.encodeSchedulerId(null, orderModel);
+			IRoutingSchedulerIdentity schedulerId = RoutingDataEncoder.encodeSchedulerId(null, orderModel, RoutingActivityType.RESERVE_TIMESLOT);
 			deliverySlot.setSchedulerId(schedulerId);//?? should I?
 			TransportationWebService port = getTransportationSuiteService(schedulerId);
 						
@@ -271,7 +272,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 	public void schedulerConfirmOrder(IOrderModel orderModel) throws RoutingServiceException {
 
 		try {
-			IRoutingSchedulerIdentity schedulerId = RoutingDataEncoder.encodeSchedulerId(null, orderModel);
+			IRoutingSchedulerIdentity schedulerId = RoutingDataEncoder.encodeSchedulerId(null, orderModel, RoutingActivityType.CONFIRM_TIMESLOT);
 			TransportationWebService port = getTransportationSuiteService(schedulerId);			
 						
 			port.schedulerConfirmOrder(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId), 
@@ -286,7 +287,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 	public boolean schedulerUpdateOrder(IOrderModel orderModel) throws RoutingServiceException {
 
 		try {
-			IRoutingSchedulerIdentity schedulerId = RoutingDataEncoder.encodeSchedulerId(null, orderModel);
+			IRoutingSchedulerIdentity schedulerId = RoutingDataEncoder.encodeSchedulerId(null, orderModel, RoutingActivityType.UPDATE_TIMESLOT);
 			TransportationWebService port = getTransportationSuiteService(schedulerId);			
 					
 			
@@ -302,7 +303,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 	public boolean schedulerUpdateOrderNo(IOrderModel orderModel) throws RoutingServiceException {
 
 		try {
-			IRoutingSchedulerIdentity schedulerId = RoutingDataEncoder.encodeSchedulerId(null, orderModel);
+			IRoutingSchedulerIdentity schedulerId = RoutingDataEncoder.encodeSchedulerId(null, orderModel, RoutingActivityType.UPDATE_TIMESLOT);
 			TransportationWebService port = getTransportationSuiteService(schedulerId);			
 					
 			
@@ -318,7 +319,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 	public void schedulerCancelOrder(IOrderModel orderModel) throws RoutingServiceException {
 
 		try {
-			IRoutingSchedulerIdentity schedulerId = RoutingDataEncoder.encodeSchedulerId(null, orderModel);
+			IRoutingSchedulerIdentity schedulerId = RoutingDataEncoder.encodeSchedulerId(null, orderModel, RoutingActivityType.CANCEL_TIMESLOT);
 			TransportationWebService port = getTransportationSuiteService(schedulerId);			
 					
 			
@@ -340,7 +341,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 	public IOrderModel schedulerRetrieveOrder(IOrderModel orderModel) throws RoutingServiceException {
 
 		try {
-			IRoutingSchedulerIdentity schedulerId = RoutingDataEncoder.encodeSchedulerId(null, orderModel);
+			IRoutingSchedulerIdentity schedulerId = RoutingDataEncoder.encodeSchedulerId(null, orderModel, RoutingActivityType.RETRIEVE_ORDER);
 			TransportationWebService port = getTransportationSuiteService(schedulerId);			
 
 

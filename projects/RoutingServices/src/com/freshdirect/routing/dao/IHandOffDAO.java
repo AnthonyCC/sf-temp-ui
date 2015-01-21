@@ -129,6 +129,8 @@ public interface IHandOffDAO {
 	void clearHandOffBatchRouteBreaks(String handOffBatchId) throws SQLException;
 	
 	List<IHandOffBatchRouteBreak> getHandOffBatchRouteBreaks(final String batchId) throws SQLException;
+	
+	void updateOrderUnassignedInfo(List<IHandOffBatchStop> unassignedOrders) throws SQLException;
 
 	
 }

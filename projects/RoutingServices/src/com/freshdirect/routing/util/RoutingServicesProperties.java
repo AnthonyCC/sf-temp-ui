@@ -84,6 +84,8 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_SERVICE_TIMEOUT="routingservices.serviceTimeOut";
 	
+	private final static String PROP_RESERVE_SERVICE_TIMEOUT="routingservices.reserve.serviceTimeOut";
+	
 	private final static String PROP_BATCH_SERVICE_TIMEOUT="routingservices.batchServiceTimeOut";
 	
 	private final static String PROP_DEFAULT_NOTIFICATIONRECEIVER		= "routingservices.default.notificationreceiver";
@@ -183,6 +185,7 @@ public class RoutingServicesProperties {
 		defaults.put(PROP_ORDER_ESTIMATIONRANGE, 	"5");
 		
 		defaults.put(PROP_SERVICE_TIMEOUT, "120");// in seconds 
+		defaults.put(PROP_RESERVE_SERVICE_TIMEOUT, "5");// in seconds 
 		defaults.put(PROP_BATCH_SERVICE_TIMEOUT, "600");// in seconds
 		
 		defaults.put(PROP_DEFAULT_NOTIFICATIONRECEIVER, "STO");
@@ -453,6 +456,10 @@ public class RoutingServicesProperties {
 	}
 	public static int getServiceTimeout() {
 		return getIntVal(get(PROP_SERVICE_TIMEOUT));
+	}
+	
+	public static int getReserveServiceTimeout() {
+		return getIntVal(get(PROP_RESERVE_SERVICE_TIMEOUT));
 	}
 
 	public static int getBatchServiceTimeout() {

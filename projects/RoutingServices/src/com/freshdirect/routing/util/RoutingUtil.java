@@ -31,6 +31,7 @@ import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IDeliveryModel;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
+import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPackagingModel;
@@ -43,6 +44,7 @@ import com.freshdirect.routing.model.OrderEstimationResult;
 import com.freshdirect.routing.model.OrderModel;
 import com.freshdirect.routing.model.PackagingModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
+import com.freshdirect.routing.model.ZoneModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
@@ -560,6 +562,27 @@ public static boolean updateReservation(DlvReservationModel reservation, IOrderM
 			}
 		}
 		return null;
+	}
+	
+	public static IOrderModel schedulerRetrieveOrder(IOrderModel orderModel) throws RoutingServiceException {
+
+		RoutingEngineServiceProxy routingService=new RoutingEngineServiceProxy();        
+        return routingService.schedulerRetrieveOrder(orderModel);        
+	}
+
+	public static IOrderModel getOrderModel(IHandOffBatchStop stop, Map<String, IAreaModel> areaLookup) {
+		
+		IOrderModel order= new OrderModel();
+		order.setOrderNumber(stop.getOrderNumber());
+		IDeliveryModel dModel = new DeliveryModel();
+		dModel.setDeliveryDate(stop.getDeliveryInfo().getDeliveryDate());
+		IZoneModel zModel = new ZoneModel();
+		IAreaModel aModel = areaLookup.get(stop.getDeliveryInfo().getDeliveryZone().getZoneNumber());
+		zModel.setArea(aModel);
+		dModel.setDeliveryZone(zModel);
+    	order.setDeliveryInfo(dModel);
+    	return order;
+    	
 	}
 }
 

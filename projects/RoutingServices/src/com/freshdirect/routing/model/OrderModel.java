@@ -30,7 +30,7 @@ public class OrderModel extends BaseModel implements IOrderModel {
 	private double reservedServiceTime;
 	private double reservedOrderSize;
 	
-	
+	private boolean isConfirmed;
 	
 	public String getMobileNumber() {
 		return mobileNumber;
@@ -154,5 +154,13 @@ public class OrderModel extends BaseModel implements IOrderModel {
 
 	public void setStatus(EnumSaleStatus status) {
 		this.status = status;
+	}
+
+	public boolean isConfirmed() {
+		return isConfirmed;
+	}
+
+	public void setConfirmed(boolean isConfirmed) {
+		this.isConfirmed = isConfirmed;
 	}
 }

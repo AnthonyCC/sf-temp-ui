@@ -202,4 +202,10 @@ public class HandOffServiceProxy  extends BaseServiceProxy  {
 		return getService().getHandOffBatchRouteBreaks(batchId);
 	}
 
+	public void updateOrderUnassignedInfo(
+			List<IHandOffBatchStop> unassignedOrders) {
+
+		getService().updateOrderUnassignedInfo(unassignedOrders);
+	}
+
 }

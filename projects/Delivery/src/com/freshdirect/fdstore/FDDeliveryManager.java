@@ -588,12 +588,14 @@ public class FDDeliveryManager {
 				dlvReservation.getStatusCode(),dlvReservation.getRsvClass(), dlvReservation.hasSteeringDiscount(),
 				dlvReservation.getBuildingId(), dlvReservation.getLocationId(), dlvReservation.getReservedOrdersAtBuilding(),
 				dlvReservation.getRegionSvcType());
-			if(FDStoreProperties.isDynamicRoutingEnabled() && (timeslot.getDlvTimeslot() != null && timeslot.getDlvTimeslot().getRoutingSlot() != null 
-					&& timeslot.getDlvTimeslot().getRoutingSlot().isDynamicActive())) {
-				boolean isSent=RoutingUtil.getInstance().sendTimeslotReservationRequest(dlvReservation, address, timeslot, event);
-				if(!isSent) {
-					sb.setUnassignedInfo(dlvReservation.getId(), RoutingActivityType.RESERVE_TIMESLOT);
+			
+			try{
+				if(FDStoreProperties.isDynamicRoutingEnabled() && (timeslot.getDlvTimeslot() != null && timeslot.getDlvTimeslot().getRoutingSlot() != null 
+						&& timeslot.getDlvTimeslot().getRoutingSlot().isDynamicActive())) {
+					reserveTimeslotEx(dlvReservation, address, timeslot, event);
 				}
+			}catch(Exception e){
+				sb.setUnassignedInfo(dlvReservation.getId(), RoutingActivityType.RESERVE_TIMESLOT);
 			}
 			return reservation;
 
@@ -657,9 +659,12 @@ public class FDDeliveryManager {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			DlvReservationModel reservation=sb.getReservation(reservationId);
 			if(FDStoreProperties.isDynamicRoutingEnabled() && reservation.isDynamic()) {
-				boolean isSent=	RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address, event);
-				if(!isSent && !reservation.isUnassigned()) {
+				try{
+					RoutingUtil.getInstance().sendReleaseReservationRequest(reservation, address, event);
+				}catch(Exception e){
+					if(!reservation.isUnassigned()) {
 						sb.setUnassignedInfo(reservationId, RoutingActivityType.CANCEL_TIMESLOT);
+					}
 				}
 			}
 
@@ -717,13 +722,18 @@ public class FDDeliveryManager {
 			reservation.setOrderId(orderId);
 			reservation.setStatusCode(EnumReservationStatus.COMMITTED.getCode());
 			
-			if(FDStoreProperties.isDynamicRoutingEnabled() && reservation.isDynamic()) {
-				SectorVO neighbourhoodInfo = FDDeliveryManager.getInstance().getSectorInfo(address);
-				if (neighbourhoodInfo != null) {
-					event.setSector(neighbourhoodInfo.getName());
+			try{
+				if(FDStoreProperties.isDynamicRoutingEnabled() && reservation.isDynamic()) {
+					SectorVO neighbourhoodInfo = FDDeliveryManager.getInstance().getSectorInfo(address);
+					if (neighbourhoodInfo != null) {
+						event.setSector(neighbourhoodInfo.getName());
+					}
+					
+					commitReservationEx(reservation, address, event);
+					
 				}
-				boolean isSent=RoutingUtil.getInstance().sendCommitReservationRequest(reservation, address, event);
-				if(!isSent && !reservation.isUnassigned()) {
+			}catch(Exception e){
+				if(!reservation.isUnassigned()) {
 					sb.setUnassignedInfo(rsvId, RoutingActivityType.CONFIRM_TIMESLOT);
 				}
 			}
@@ -752,10 +762,13 @@ public class FDDeliveryManager {
 						if (neighbourhoodInfo != null) {
 							event.setSector(neighbourhoodInfo.getName());
 						}
-						 boolean isSent=RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address,event);
-						 if(!isSent &&!reservation.isUnassigned()) {
+						try{
+							RoutingUtil.getInstance().sendReleaseReservationRequest(reservation,address,event);
+						}catch(Exception e){
+							if(!reservation.isUnassigned()) {
 								sb.setUnassignedInfo(rsvId, RoutingActivityType.CANCEL_TIMESLOT);
-						 }
+							}
+						}
 				 }
 			 }
 			 return isRestored;

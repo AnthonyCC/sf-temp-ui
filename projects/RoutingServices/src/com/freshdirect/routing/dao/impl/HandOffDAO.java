@@ -23,6 +23,7 @@ import java.util.TreeSet;
 import oracle.sql.ARRAY;
 import oracle.sql.ArrayDescriptor;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.SqlParameter;
@@ -110,7 +111,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	
 	private static String GET_ORDERSBY_DATE_CUTOFF = "SELECT /*+ USE_NL(s, sa) */ c.id customer_id, fdc.id fdc_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
 		+ "ci.cell_phone, ci.mobile_number, s.id weborder_id, s.sap_number erporder_id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
-		+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, rs.type, rs.NUM_CARTONS ,rs.NUM_FREEZERS, rs.NUM_CASES, rs.id, ts.routing_start_time, ts.routing_end_time "
+		+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, rs.type, rs.NUM_CARTONS, " 
+		+ " rs.NUM_FREEZERS, rs.NUM_CASES, rs.id, ts.routing_start_time, ts.routing_end_time, ts.is_dynamic "
 		+ "from cust.customer c, cust.fdcustomer fdc " 
 		+ ", cust.customerinfo ci " 
 		+ ", cust.sale s, cust.salesaction sa " 
@@ -123,7 +125,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		
 	private static String GET_ORDERSBY_DATE_CUTOFFSTANDBY = "SELECT /*+ USE_NL(s, sa) */ c.id customer_id, fdc.id fdc_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
 		+ "ci.cell_phone, ci.mobile_number, s.id weborder_id, s.sap_number erporder_id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, "
-		+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, rs.type, rs.NUM_CARTONS , rs.NUM_FREEZERS , rs.NUM_CASES. rs.id, ts.routing_start_time, ts.routing_end_time "
+		+ "di.cutofftime, di.zone ZONE, di.address1, di.address2, di.apartment, di.city, di.state, di.zip, di.country, di.delivery_type, rs.type, rs.NUM_CARTONS , " 
+		+ "rs.NUM_FREEZERS , rs.NUM_CASES. rs.id, ts.routing_start_time, ts.routing_end_time, ts.is_dynamic  "
 		+ "from cust.customer@DBSTOSBY.NYC.FRESHDIRECT.COM c, cust.fdcustomer@DBSTOSBY.NYC.FRESHDIRECT.COM fdc " 
 		+ ", cust.customerinfo@DBSTOSBY.NYC.FRESHDIRECT.COM ci " 
 		+ ", cust.sale@DBSTOSBY.NYC.FRESHDIRECT.COM s, cust.salesaction@DBSTOSBY.NYC.FRESHDIRECT.COM sa " 
@@ -238,7 +241,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			",bo.BLDG_START_HOUR ,bo.BLDG_END_HOUR  ,bo.BLDG_COMMENTS  ,bo.SERVICE_START_HOUR " +
 			",bo.SERVICE_END_HOUR  ,bo.SERVICE_COMMENTS  ,bo.DAY_OF_WEEK, ta.DELIVERYMODEL, tz.MANIFEST_ETA_ENABLED " +
 			",b.SCRUBBED_STREET bSCRUBBED_STREET ,b.ZIP bzip ,b.COUNTRY  bCOUNTRY,b.CITY bCITY, b.STATE bSTATE, " +
-			"b.LONGITUDE  BLONG,b.LATITUDE BLAT, l.APARTMENT LOCAPART " +
+			"b.LONGITUDE  BLONG,b.LATITUDE BLAT, l.APARTMENT LOCAPART, s.is_dynamic " +
 			"from transp.HANDOFF_BATCH hb , transp.HANDOFF_BATCHSTOP s , DLV.DELIVERY_LOCATION l , dlv.delivery_building b" +
 			", DLV.DELIVERY_BUILDING_DETAIL dd, TRANSP.TRN_AREA ta, TRANSP.ZONE tz, (select distinct xbo.* from transp.HANDOFF_BATCH xhb , transp.HANDOFF_BATCHSTOP xs " +
 			", DLV.DELIVERY_LOCATION xl , dlv.delivery_building xb  , DLV.DELIVERY_BUILDING_DETAIL xdd, DLV.DELIVERY_BUILDING_DETAIL_OPS xbo  " +
@@ -266,7 +269,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			", b.LONGITUDE  BLONG, b.LATITUDE BLAT, l.APARTMENT LOCAPART" +
 			", r.ROUTE_NO RROUTE_NO,r.ROUTING_ROUTE_NO RROUTING_ROUTE_NO, r.RN_ROUTE_ID RN_ROUTE_ID, r.AREA RAREA " +
 			", r.STARTTIME RSTARTTIME , r.COMPLETETIME RCOMPLETETIME  ,r.DISTANCE RDISTANCE" +
-			", r.TRAVELTIME RTRAVELTIME, r.SERVICETIME RSERVICETIME, z.MANIFEST_ETA_ENABLED " +
+			", r.TRAVELTIME RTRAVELTIME, r.SERVICETIME RSERVICETIME, z.MANIFEST_ETA_ENABLED, s.is_dynamic  " +
 			" from transp.HANDOFF_BATCH hb , TRANSP.HANDOFF_BATCHROUTE r, transp.HANDOFF_BATCHSTOP s" +
 			", DLV.DELIVERY_LOCATION l , dlv.delivery_building b, transp.ZONE z" +
 			" where HB.DELIVERY_DATE  = ? and HB.BATCH_STATUS IN ('CPD/ADC','CPD','CPD/ADF') and R.ROUTE_NO = ? " +
@@ -459,6 +462,9 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						infoModel.setStopDepartureTime(rs.getTimestamp("STOP_DEPARTUREDATETIME"));
 						infoModel.setException("X".equalsIgnoreCase(rs.getString("IS_EXCEPTION")));
 						infoModel.setServiceAddress2(rs.getString("SERVICE_ADDR2"));
+						infoModel.setDynamic("X".equalsIgnoreCase(rs.getString("IS_DYNAMIC")));
+						
+						
 						IDeliveryModel deliveryModel = new DeliveryModel();
 						deliveryModel.setDeliveryDate(rs.getDate("DELIVERY_DATE"));
 						deliveryModel.setDeliveryStartTime(rs.getTimestamp("WINDOW_STARTTIME"));
@@ -601,6 +607,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						infoModel.setStopArrivalTime(rs.getTimestamp("STOP_ARRIVALDATETIME"));
 						infoModel.setStopDepartureTime(rs.getTimestamp("STOP_DEPARTUREDATETIME"));
 						infoModel.setException("X".equalsIgnoreCase(rs.getString("IS_EXCEPTION")));
+						infoModel.setDynamic("X".equalsIgnoreCase(rs.getString("IS_DYNAMIC")));
 						
 						IDeliveryModel deliveryModel = new DeliveryModel();
 						deliveryModel.setDeliveryDate(rs.getDate("DELIVERY_DATE"));
@@ -1366,6 +1373,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						infoModel.setStatus(EnumSaleStatus.getSaleStatus(rs.getString("status")));
 						infoModel.setMobileNumber(rs.getString("mobile_number"));
 						//infoModel.setCustomerName(rs.getString("customer_id"));
+						infoModel.setDynamic("X".equalsIgnoreCase(rs.getString("is_dynamic")));
 						
 						IDeliveryModel deliveryModel = new DeliveryModel();
 						deliveryModel.setDeliveryDate(deliveryDate);
@@ -2239,5 +2247,30 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		);
 		return result;
 	}
-	
+
+	private static String UPDATE_ORDER_RESERVATION_QRY="" +
+			" UPDATE DLV.RESERVATION R SET R.UNASSIGNED_ACTION = 'RESERVE_TIMESLOT', R.UNASSIGNED_DATETIME = SYSDATE, R.IN_UPS = 'X', " +
+			"R.STATUS_CODE = '10' WHERE r.ID = ?";
+		
+	public void updateOrderUnassignedInfo(List<IHandOffBatchStop> unassignedOrders) throws SQLException {
+			
+		Connection connection = null;
+		try {
+			BatchSqlUpdate batchUpdater=new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),UPDATE_ORDER_RESERVATION_QRY);
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			
+			connection = this.jdbcTemplate.getDataSource().getConnection();
+			batchUpdater.compile();			
+			
+			for(IHandOffBatchStop model : unassignedOrders) {
+				
+				batchUpdater.update(new Object[]{ model.getOrderNumber()
+									});
+			}			
+			batchUpdater.flush();
+		}finally{
+			if(connection!=null) connection.close();
+		}
+	}
+
 }

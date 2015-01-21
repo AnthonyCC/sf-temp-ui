@@ -13,6 +13,8 @@ public class HandOffBatchStop extends RoutingStopModel implements IHandOffBatchS
 	private String serviceAddress2;
 	
 	private boolean isException;
+	private boolean isDynamic;
+	
 	
 	public HandOffBatchStop(IRoutingStopModel refModel) {
 		super();
@@ -256,5 +258,13 @@ public class HandOffBatchStop extends RoutingStopModel implements IHandOffBatchS
 			return this.getDeliveryInfo().getDeliveryETAEndTime();
 		}
 		return null;
+	}
+
+	public boolean isDynamic() {
+		return isDynamic;
+	}
+
+	public void setDynamic(boolean isDynamic) {
+		this.isDynamic = isDynamic;
 	}
 }

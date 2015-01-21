@@ -492,6 +492,9 @@ public class RoutingDataDecoder {
     		dModel.setDeliveryLocation(locModel);
     		    		
     		order.setDeliveryInfo(dModel);
+    		
+    		order.setConfirmed(model.getConfirmed());
+    		
 		}
 				
 		return order;

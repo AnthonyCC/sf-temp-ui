@@ -1,7 +1,7 @@
 package com.freshdirect.routing.constants;
 
 public enum RoutingActivityType {
-	GET_TIMESLOT,CHECK_TIMESLOT,RESERVE_TIMESLOT,CONFIRM_TIMESLOT,CANCEL_TIMESLOT,PROCESS_ADDRESS,UPDATE_TIMESLOT;
+	GET_TIMESLOT,CHECK_TIMESLOT,RESERVE_TIMESLOT,CONFIRM_TIMESLOT,CANCEL_TIMESLOT,PROCESS_ADDRESS,UPDATE_TIMESLOT, RETRIEVE_ORDER, SAVE_LOCATION;
 	
 	public String value(){
 	    switch(this) {
@@ -11,6 +11,8 @@ public enum RoutingActivityType {
 	     case UPDATE_TIMESLOT: return "UPDATE_TIMESLOT";
 	     case CONFIRM_TIMESLOT: return "CONFIRM_TIMESLOT";
 	     case CANCEL_TIMESLOT: return "CANCEL_TIMESLOT";
+	     case RETRIEVE_ORDER: return "RETRIEVE_ORDER";
+	     case SAVE_LOCATION: return "SAVE_LOCATION";
 	     case PROCESS_ADDRESS: return "ROUTINGADDRESS/process";
 	     default: return "";
 	   }
@@ -34,6 +36,10 @@ public enum RoutingActivityType {
 			return UPDATE_TIMESLOT;
 		} else if(value.equals(PROCESS_ADDRESS.value())) {
 			return PROCESS_ADDRESS;
+		} else if(value.equals(RETRIEVE_ORDER.value())) {
+			return RETRIEVE_ORDER;
+		}  else if(value.equals(SAVE_LOCATION.value())) {
+			return SAVE_LOCATION;
 		} else throw new RuntimeException("IRoutingActivityType: undefined enum :"+value);
 	}
 }

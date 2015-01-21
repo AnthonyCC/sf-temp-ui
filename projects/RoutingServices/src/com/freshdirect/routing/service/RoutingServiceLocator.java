@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService;
 import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebServiceStub;
@@ -141,7 +142,7 @@ public class RoutingServiceLocator {
 		}
 
 		TransportationWebServiceStub stub = new TransportationWebServiceStub(url);
-		initStub(stub);
+		initStub(stub, schedulerId.getType());
 		return stub;
 	}
 
@@ -244,6 +245,12 @@ public class RoutingServiceLocator {
 	private void initBatchStub(Stub stub) {
 		//System.out.println("RSL:initBatchStub() >>"+stub._getServiceClient().getAxisService().getEndpointURL()+RoutingServicesProperties.getBatchServiceTimeout());
 		stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(RoutingServicesProperties.getBatchServiceTimeout()*1000);
+	}
+	
+	private void initStub(TransportationWebServiceStub stub,
+			RoutingActivityType type) {
+		// TODO Auto-generated method stub
+		stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(RoutingServicesProperties.getReserveServiceTimeout()*1000);
 	}
 
 }

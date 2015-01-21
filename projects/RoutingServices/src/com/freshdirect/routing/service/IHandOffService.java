@@ -106,6 +106,8 @@ public interface IHandOffService {
 	int getStopCount(String batchId) throws RoutingServiceException;
 	
 	List<IHandOffBatchRouteBreak> getHandOffBatchRouteBreaks(String batchId) throws RoutingServiceException;
+	
+	void updateOrderUnassignedInfo(List<IHandOffBatchStop> unassignedOrders) throws RoutingServiceException;
 		
 	
 }

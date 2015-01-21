@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.axis2.databinding.types.Time;
 
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IGeoPoint;
 import com.freshdirect.routing.model.ILocationModel;
@@ -710,7 +711,7 @@ public class RoutingDataEncoder {
 		return options;
 	}
 	
-	public static IRoutingSchedulerIdentity encodeSchedulerId(IRoutingSchedulerIdentity schedulerId, IOrderModel orderModel) {
+	public static IRoutingSchedulerIdentity encodeSchedulerId(IRoutingSchedulerIdentity schedulerId, IOrderModel orderModel, RoutingActivityType type) {
 
     	if(schedulerId == null) {
     		schedulerId = new RoutingSchedulerIdentity();
@@ -719,6 +720,7 @@ public class RoutingDataEncoder {
     	schedulerId.setArea(orderModel.getDeliveryInfo().getDeliveryZone().getArea());
     	schedulerId.setDeliveryDate(orderModel.getDeliveryInfo().getDeliveryDate());
     	schedulerId.setDepot(orderModel.getDeliveryInfo().getDeliveryZone().getArea().isDepot());
+    	schedulerId.setType(type);
     	return schedulerId;
     }
 	

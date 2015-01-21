@@ -16,6 +16,10 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.apache.commons.lang.StringUtils;
+import org.python.parser.ast.unaryopType;
+
+import com.freshdirect.analytics.EventType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.delivery.model.BreakWindow;
 import com.freshdirect.framework.util.DateRange;
@@ -24,6 +28,7 @@ import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
+import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.HandOffBatchDepotSchedule;
 import com.freshdirect.routing.model.HandOffBatchRoute;
 import com.freshdirect.routing.model.HandOffBatchRouteBreak;
@@ -39,6 +44,7 @@ import com.freshdirect.routing.model.IHandOffBatchRouteBreak;
 import com.freshdirect.routing.model.IHandOffBatchSession;
 import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.model.IHandOffBatchTrailer;
+import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IRoutingStopModel;
@@ -356,7 +362,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 			proxy.updateHandOffBatchDetails(this.getBatch().getBatchId(), s_trailers, s_routes, s_stops, correlationResult.getDispatchStatus(), s_breaks);
 		}
 		
-		checkStopExceptions();
+		checkStopExceptions(areaLookup);
 		checkTrailerRouteExceptions(trailerResult);
 				
 		proxy.updateHandOffBatchStatus(this.getBatch().getBatchId(), EnumHandOffBatchStatus.ROUTEGENERATED);
@@ -418,7 +424,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 	}
 	
 	// Same Exception check but with a force option will performed during Commit Operation
-	private void checkStopExceptions() throws RoutingServiceException {
+	private void checkStopExceptions(Map<String, IAreaModel> areaLookup) throws RoutingServiceException {
 		
 		HandOffServiceProxy proxy = new HandOffServiceProxy();
 		
@@ -459,6 +465,8 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 			routeMapping.put(route.getRouteId(), route);
 		}
 		List<IHandOffBatchStop> needsErpNoUpdate = new ArrayList<IHandOffBatchStop>();
+		List<IHandOffBatchStop> unassignedOrders = new ArrayList<IHandOffBatchStop>();
+		List<IHandOffBatchStop> stopsWithNoRoute = new ArrayList<IHandOffBatchStop>();
 		
 		Iterator<IHandOffBatchStop> itrStop = stops.iterator();
 		while( itrStop.hasNext()) {
@@ -477,7 +485,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 			if(stop.getRouteId() == null || stop.getRouteId().trim().length() == 0
 					|| !routeMapping.containsKey(stop.getRouteId())) {
 				
-				String zoneCode = "";
+				/*String zoneCode = "";
 				String deliveryWindow = "";
 				if(stop.getDeliveryInfo() != null && stop.getDeliveryInfo().getDeliveryZone() != null
 						&& stop.getDeliveryInfo().getDeliveryZone().getArea() != null){
@@ -489,14 +497,40 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 				}
 				StringBuffer buff = new StringBuffer();
 				buff.append("<a href=\"javascript:showOrderException('" + stop.getOrderNumber() + "','"+ zoneCode + "','"+ deliveryWindow + "');\">"+ stop.getOrderNumber() + "</a>");
+				*/
+				if(stop.isDynamic()){
+					try {
+						
+						IOrderModel order = RoutingUtil.getOrderModel(stop, areaLookup);
+						IOrderModel _tmpOrder = RoutingUtil.schedulerRetrieveOrder(order);
+						if(_tmpOrder.isConfirmed()){
+							stopsWithNoRoute.add(stop);
+						}else{
+							unassignedOrders.add(stop);
+						}
+					} catch (RoutingServiceException rxp) {
+						unassignedOrders.add(stop);
+					}
+					
+				}else{
+					stopsWithNoRoute.add(stop);
+				}
 				
-				throw new RoutingServiceException(
-						"Error in route generation check cutoff report Stop No:"
-								+ buff.toString() + " ," + noOfRoutes
-								+ " Routes /" + noOfStops + " Stops", null, IIssue.PROCESS_HANDOFFBATCH_ERROR);					
+								
 			}
 		}
+		if(unassignedOrders.size()>0){
+			proxy.updateOrderUnassignedInfo(unassignedOrders);
+			// message teh user to route in .
+			
+		}
 		
+		if(stopsWithNoRoute.size() > 0){
+			throw new RoutingServiceException(
+					"Error in route generation check cutoff report Stops:"
+							+ StringUtils.join(stopsWithNoRoute, ",") + " ," + noOfRoutes
+							+ " Routes /" + noOfStops + " Stops", null, IIssue.PROCESS_HANDOFFBATCH_ERROR);	
+		}
 		if(needsErpNoUpdate.size() > 0) {
 			proxy.updateHandOffBatchStopErpNo(needsErpNoUpdate);
 		}

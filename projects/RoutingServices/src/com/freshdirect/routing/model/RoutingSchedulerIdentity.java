@@ -1,5 +1,7 @@
 package com.freshdirect.routing.model;
 
+import com.freshdirect.routing.constants.RoutingActivityType;
+
 public class RoutingSchedulerIdentity extends BaseModel implements IRoutingSchedulerIdentity {
 	
 	private java.lang.String regionId;
@@ -10,6 +12,7 @@ public class RoutingSchedulerIdentity extends BaseModel implements IRoutingSched
     
     private boolean isDepot;
     private boolean dynamic;
+    private RoutingActivityType type;
 
 	public boolean isDepot() {
 		return isDepot;
@@ -77,5 +80,13 @@ public class RoutingSchedulerIdentity extends BaseModel implements IRoutingSched
 		// TODO Auto-generated method stub
 		this.dynamic = dynamic;
 		
+	}
+
+	public RoutingActivityType getType() {
+		return type;
+	}
+
+	public void setType(RoutingActivityType type) {
+		this.type = type;
 	}
 }

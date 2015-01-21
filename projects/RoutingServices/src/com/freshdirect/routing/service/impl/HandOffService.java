@@ -463,4 +463,14 @@ public class HandOffService extends BaseService implements IHandOffService {
 					throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 				}
 			}
+
+	@Override
+	public void updateOrderUnassignedInfo(
+			List<IHandOffBatchStop> unassignedOrders) throws RoutingServiceException {
+		try {
+			getHandOffDAOImpl().updateOrderUnassignedInfo(unassignedOrders);
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
 }

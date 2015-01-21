@@ -1,5 +1,7 @@
 package com.freshdirect.routing.model;
 
+import com.freshdirect.routing.constants.RoutingActivityType;
+
 public interface IRoutingSchedulerIdentity {
 	
 	IAreaModel getArea();
@@ -22,5 +24,8 @@ public interface IRoutingSchedulerIdentity {
 	
 	void setDynamic(boolean isDynamic);
 	
+	RoutingActivityType getType();
+	
+	void setType(RoutingActivityType type);
 		
 }
