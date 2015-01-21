@@ -282,7 +282,7 @@ public class SubmitOrderAction extends WebActionSupport {
 		FDUser fdUser = user.getUser();
 		if(!fdUser.isPaymentechEnabled()) {
 			ErpPaymentMethodI pm=cart.getPaymentMethod();
-			pm.setProfileID("");//Explicitly clear the profile ID;
+//			pm.setProfileID("");//Explicitly clear the profile ID;
 		} else if (cart instanceof FDModifyCartModel){
 			 
 				FDModifyCartModel modifyCart = (FDModifyCartModel) cart;
@@ -570,7 +570,8 @@ public class SubmitOrderAction extends WebActionSupport {
 		FDCustomerCreditUtil.applyCustomerCredit(cart,user.getIdentity());
 		
 		FDUser fdUser = user.getUser();
-		if(!fdUser.isPaymentechEnabled()) {
+		//Commenting the below section, as we are completely migrated to new payment gateway and don't need to clear the profile id's anymore.
+		/*if(!fdUser.isPaymentechEnabled()) {
 			ErpPaymentMethodI pm=cart.getPaymentMethod();
 			pm.setProfileID(null);//Explicitly clear the profile ID;
 		}else if (cart instanceof FDModifyCartModel){
@@ -582,7 +583,7 @@ public class SubmitOrderAction extends WebActionSupport {
 					ErpPaymentMethodI pm=cart.getPaymentMethod();
 					pm.setProfileID(null);//Explicitly clear the profile ID;
 				}
-		}
+		}*/
 
 
 		/**

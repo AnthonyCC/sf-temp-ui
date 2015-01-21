@@ -118,12 +118,13 @@ public class PaymentSessionBean extends SessionBeanSupport{
 		
 		Map requiredCaptures = new CaptureStrategy(sale).getOutstandingCaptureAmounts();
 		PaymentGatewayContext context = new PaymentGatewayContext(StringUtil.isEmpty(paymentMethod.getProfileID())?GatewayType.CYBERSOURCE:GatewayType.PAYMENTECH, null);
-		Gateway gateway = GatewayFactory.getGateway(context);	
+//		Gateway gateway = GatewayFactory.getGateway(context);	
 		
 		try{
 				
 			List fdCaptures = freeOrder ? new ArrayList() : Collections.EMPTY_LIST;
 			if(!requiredCaptures.isEmpty()) {
+				Gateway gateway = GatewayFactory.getGateway(context);	
 				for(Iterator i = requiredCaptures.keySet().iterator(); i.hasNext(); ) {
 					double remainingAmount = 0;
 					ErpAffiliate aff = (ErpAffiliate) i.next();
