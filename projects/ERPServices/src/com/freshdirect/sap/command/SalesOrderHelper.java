@@ -285,7 +285,11 @@ class SalesOrderHelper {
 			this.bapi.addCondition(posex, "ZD11", discount.getAmount() * 100, "");
 
 		} else if (EnumDiscountType.DOLLAR_OFF.equals(pt)) {
-			this.bapi.addCondition(posex, "ZD10", discount.getAmount(), "USD");
+			if(discount.getSkuLimit() >0){//For Dollar-off line item promotions with Sku Limit.
+				this.bapi.addCondition(posex, "ZDFA", discount.getSkuLimit()*discount.getAmount(), "USD");	
+			}else{
+				this.bapi.addCondition(posex, "ZD10", discount.getAmount(), "USD");
+			}
 
 		} else if (EnumDiscountType.FREE.equals(pt)) {
 			this.bapi.addCondition(posex, "ZD11", 100.0, ""); // base price
