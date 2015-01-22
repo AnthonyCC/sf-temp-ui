@@ -17,18 +17,14 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
-import org.python.parser.ast.unaryopType;
 
-import com.freshdirect.analytics.EventType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.delivery.model.BreakWindow;
 import com.freshdirect.framework.util.DateRange;
-import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
-import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.HandOffBatchDepotSchedule;
 import com.freshdirect.routing.model.HandOffBatchRoute;
 import com.freshdirect.routing.model.HandOffBatchRouteBreak;
@@ -528,7 +524,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		if(stopsWithNoRoute.size() > 0){
 			throw new RoutingServiceException(
 					"Error in route generation check cutoff report Stops:"
-							+ StringUtils.join(stopsWithNoRoute, ",") + " ," + noOfRoutes
+							+ StringUtils.join(stopsWithNoRoute.toArray(), ",") + " ," + noOfRoutes
 							+ " Routes /" + noOfStops + " Stops", null, IIssue.PROCESS_HANDOFFBATCH_ERROR);	
 		}
 		if(needsErpNoUpdate.size() > 0) {
