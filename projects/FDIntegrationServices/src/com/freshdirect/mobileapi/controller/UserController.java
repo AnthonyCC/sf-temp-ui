@@ -41,7 +41,7 @@ public class UserController extends BaseController {
 	private static Category LOGGER = LoggerFactory.getInstance(SiteAccessController.class);
 
 	public static final String ACTION_UPDATE_USER = "updateUser";
-	public static final String ACTION_UPDATE_USER_ACCOUNT = "updateUser";
+	public static final String ACTION_UPDATE_USER_ACCOUNT = "updateUserAccount"; //FDIP-1062  modified to updateUserAccount from updateUser
 	public static final String ACTION_UPDATE_USER_ADDRESS = "updateUserAddress";	//JIRA FD-iPad FDIP-1062
 	public static final String ACTION_UPDATE_USER_PAYMENTMETHOD = "updateUserPaymentMethod";
 	public static final String ACTION_USER_RESERVE_DELIVERY_SLOT = "reserveDeliveryTimeSlot";
@@ -82,9 +82,21 @@ public class UserController extends BaseController {
 			UserAccountUpdateResponse responseObject = new UserAccountUpdateResponse();
 			try
 			{
-				UserAccountUpdateRequest uau = parseRequestObject( request, response, UserAccountUpdateRequest.class );
-				performUserAccountUpdate( request.getSession(), uau);
-				responseObject.setResult(ResultCode.OK);
+				//Check if a session exists and user is logged in if yes then proceed
+				if(user==null){
+					responseObject.setResult(ResultCode.USER_NOT_LOGGED_IN);
+				} else {
+					
+					UserAccountUpdateRequest uau = parseRequestObject(request, response, UserAccountUpdateRequest.class);
+					//Check if both new userId and new Password Are empty
+					if((uau.getNewPassword()==null||uau.getNewPassword().isEmpty())&&(uau.getNewUserName()==null || uau.getNewUserName().isEmpty())){
+						LOGGER.error("UserId and Password both empty noting is to change");
+						responseObject.setResult(ResultCode.BOTH_USERNAME_PASSWORD_EMPTY);
+					} else{
+						performUserAccountUpdate(request.getSession(), uau, user);
+						responseObject.setResult(ResultCode.OK);
+					}
+				}
 			}
 			catch(JsonException je )
 			{
@@ -160,7 +172,7 @@ public class UserController extends BaseController {
     	updater.execute();
     }
     
-    private void performUserAccountUpdate( HttpSession Session, UserAccountUpdateRequest UAU )
+    private void performUserAccountUpdate( HttpSession Session, UserAccountUpdateRequest UAU, SessionUser user )
     		throws FDAuthenticationException, FDResourceException, ErpInvalidPasswordException, ErpDuplicateUserIdException
     {
     	String oldUserID = UAU.getOldUserName();
@@ -169,9 +181,11 @@ public class UserController extends BaseController {
     	String newPW = UAU.getNewPassword();
 
 		//Verify user
+    	String sessionUserId = user.getUsername();
+    	
 		FDIdentity FDID = FDCustomerManager.login(oldUserID, oldPW);
 		
-		if( FDID == null )	//Not sure if this could happen, but I'm checking for it anyways
+		if( FDID == null || !oldUserID.equalsIgnoreCase(sessionUserId) )	//Not sure if this could happen, its an edge case
 		{
 			throw new FDAuthenticationException();
 		}
@@ -187,11 +201,20 @@ public class UserController extends BaseController {
 		FDSessionUser currentUser = (FDSessionUser) Session.getAttribute(SessionName.USER);
 		FDActionInfo info = new FDActionInfo(EnumTransactionSource.IPHONE_WEBSITE, FDID, "CUSTOMER", "", null, (currentUser!=null)?currentUser.getPrimaryKey():null);
 
+		
 		//Update the user's password
-		FDCustomerManager.changePassword(info, oldUserID, newPW);
+		if(newPW!=null && !newPW.isEmpty()){
+			FDCustomerManager.changePassword(info, oldUserID, newPW);
+		} else {
+			LOGGER.info("Password Not being Changed.");
+		}
 
 		//Update the user's email
-		FDCustomerManager.updateUserId(info, newUserID);
+		if(newUserID!=null && !newUserID.isEmpty() ){
+			FDCustomerManager.updateUserId(info, newUserID);
+		} else {
+			LOGGER.info("UserId not being Changed ");
+		}
     }
     
     private void performUserAddressUpdate( UpdateUserAddressRequest UUAR )

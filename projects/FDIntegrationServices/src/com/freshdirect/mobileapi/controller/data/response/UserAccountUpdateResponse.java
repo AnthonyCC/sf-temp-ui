@@ -46,6 +46,16 @@ public class UserAccountUpdateResponse extends Message {
 		 * The requested user ID already exists in the system.
 		 * Note: If this error occurs, then the password change successfully executed.
 		 */
-		USERIDALREADYTAKEN
+		USERIDALREADYTAKEN,
+		
+		/*
+		 * User Not in the session
+		 */
+		USER_NOT_LOGGED_IN,
+		
+		/*
+		 * Both userName and Password are empty
+		 */
+		BOTH_USERNAME_PASSWORD_EMPTY
 	}
 }
