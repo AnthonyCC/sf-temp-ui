@@ -223,6 +223,10 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/checkout/deliveryaddresses/addandset/");
   	$("#payload").val('{"dlvfirstname" : "David","dlvlastname" : "Saad", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "23-30 Borden Ave","address2" : "","apartment" : "","city" : "Long Island","state" : "NY","zipcode" : "11101","country" : "US","deliveryInstructions" : "","doorman":"false", "dlvServiceType" : "HOME"}');
   	$("#result").val("");
+  } else if (loaddata == "updateUserAccount") {
+  	$("#url").val("/user/account/update/");
+  	$("#payload").val('{"oldUserName" : "bogus@freshdirect.com","newUserName" : "bogus1@freshdirect.com","oldPassword" : "test","newPassword" : "test1"}');
+  	$("#result").val("");
   } else if (loaddata == "EditDeliveryAddress") {
   	$("#url").val("/saptest12@freshdirect.com/deliveryaddress/edit/");
   	$("#payload").val('{"shipToAddressId" : "2148933356", "dlvfirstname" : "David","dlvlastname" : "Chance", "dlvcompanyname" : "ABC Company", "dlvhomephone" : "7189281226","dlvhomephoneext" : "","address1" : "2100 Rachel terrace","address2" : "","apartment" : "4","city" : "Pine brook","state" : "NJ","zipcode" : "07058","country" : "US","deliveryInstructions" : "","dlvServiceType" : "HOME"}');
@@ -827,6 +831,7 @@ function doStuff() {
   <option value="ContactUsFormData">CONTACT US - Init</option>
   <option value="ContactUsSubmit">CONTACT US - Submit</option>
   <option value=""> ========== ACCOUNT ========== </option>
+  <option value="updateUserAccount">ACCOUNT - Update User Account-email and/or password</option>
   <option value="AccountDeliveryInfo">ACCOUNT - Get Addresses</option>
   <option value="AccountDeliveryTimeslotsDefault">ACCOUNT - Get Delivery Timeslots DEFAULT</option>
   <option value="AccountDeliveryTimeslots">ACCOUNT - Get Delivery Timeslots</option>
