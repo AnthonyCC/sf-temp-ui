@@ -517,7 +517,9 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		}
 		if(unassignedOrders.size()>0){
 			proxy.updateOrderUnassignedInfo(unassignedOrders);
-			// message teh user to route in .
+			throw new RoutingServiceException(
+					"Unassigned Orders"
+							+ StringUtils.join(unassignedOrders.toArray(), ",") + " are marked for reroute. Please route in again.", null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 			
 		}
 		

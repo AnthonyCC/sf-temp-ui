@@ -250,7 +250,13 @@ public class RoutingServiceLocator {
 	private void initStub(TransportationWebServiceStub stub,
 			RoutingActivityType type) {
 		// TODO Auto-generated method stub
-		stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(RoutingServicesProperties.getReserveServiceTimeout()*1000);
+		if(type!=null  && (RoutingActivityType.RESERVE_TIMESLOT.equals(type)||
+				RoutingActivityType.CONFIRM_TIMESLOT.equals(type)||
+				RoutingActivityType.CANCEL_TIMESLOT.equals(type))){
+			stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(RoutingServicesProperties.getReserveServiceTimeout()*1000);
+		}else{
+			initStub(stub);
+		}
 	}
 
 }
