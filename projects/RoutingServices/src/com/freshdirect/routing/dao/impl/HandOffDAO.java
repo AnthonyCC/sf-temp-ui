@@ -104,8 +104,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 																	"WEBORDER_ID, ERPORDER_ID, " +
 																	"AREA, DELIVERY_TYPE, WINDOW_STARTTIME, WINDOW_ENDTIME, ROUTING_STARTTIME, ROUTING_ENDTIME, LOCATION_ID, " +
 																	"SESSION_NAME, ROUTE_NO, ROUTING_ROUTE_NO, " +
-																	"STOP_ARRIVALDATETIME,  STOP_DEPARTUREDATETIME, TRAVELTIME , SERVICETIME, SERVICE_ADDR2, ORDERSIZE_SF, MOBILE_NUMBER ) " +
-																	"VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
+																	"STOP_ARRIVALDATETIME,  STOP_DEPARTUREDATETIME, TRAVELTIME , SERVICETIME, SERVICE_ADDR2, ORDERSIZE_SF, MOBILE_NUMBER, IS_DYNAMIC ) " +
+																	"VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
 	
 	private static final String GET_HANDOFFBATCHNEXTSEQ_QRY = "SELECT TRANSP.HANDOFFBATCHSEQ.nextval FROM DUAL";
 	
@@ -729,6 +729,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 											, model.getDeliveryInfo() != null ? model.getDeliveryInfo().getDeliveryETAEndTime() : null
 											, model.getBatchId()
 											, model.getOrderNumber()
+											
 									});
 			}			
 			batchUpdater.flush();
@@ -1136,6 +1137,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.NUMERIC));
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.compile();
 	
 				
@@ -1162,6 +1164,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 												, model.getDeliveryInfo().getDeliveryLocation().getBuilding().getStreetAddress2()
 												, model.getDeliveryInfo().getCalculatedOrderSize()
 												, model.getMobileNumber()
+												, model.isDynamic()?"X":null
 										});
 				}			
 				batchUpdater.flush();
@@ -2249,8 +2252,10 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	}
 
 	private static String UPDATE_ORDER_RESERVATION_QRY="" +
-			" UPDATE DLV.RESERVATION R SET R.UNASSIGNED_ACTION = 'RESERVE_TIMESLOT', R.UNASSIGNED_DATETIME = SYSDATE, R.IN_UPS = 'X', " +
-			"R.STATUS_CODE = '10' WHERE r.ID = ?";
+			" UPDATE DLV.RESERVATION R SET R.UNASSIGNED_ACTION = 'RESERVE_TIMESLOT', R.UNASSIGNED_DATETIME = SYSDATE, R.IN_UPS = 'X', R.STATUS_CODE = '10' WHERE r.ID in " +
+			"( select r.id from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation r "+ 
+			" where s.id = sa.sale_id and s.cromod_date = sa.action_date and sa.requested_date >= trunc(sysdate) and SA.ACTION_TYPE in ('CRO','MOD') and sa.id = DI.SALESACTION_ID and DI.RESERVATION_ID = R.ID and s.type ='REG' "+ 
+			" and s.status <> 'CAN' and s.id = ? ) ";
 		
 	public void updateOrderUnassignedInfo(List<IHandOffBatchStop> unassignedOrders) throws SQLException {
 			

@@ -518,8 +518,8 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		if(unassignedOrders.size()>0){
 			proxy.updateOrderUnassignedInfo(unassignedOrders);
 			throw new RoutingServiceException(
-					"Unassigned Orders"
-							+ StringUtils.join(unassignedOrders.toArray(), ",") + " are marked for reroute. Please route in again.", null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+					"Unassigned Orders "
+							+ unassignedOrdersFixMessage(unassignedOrders) + " are marked for reroute. Please route in again.", null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 			
 		}
 		
@@ -535,6 +535,19 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		proxy.updateHandOffStopException(this.getBatch().getBatchId(), exceptionOrderIds);
 	}
 		
+	
+	private String unassignedOrdersFixMessage(List<IHandOffBatchStop> unassignedOrders){
+		StringBuffer sb = new StringBuffer();
+		for(IHandOffBatchStop unassignedOrder: unassignedOrders){
+			sb.append("\nOrder No: ")
+			.append(unassignedOrder.getOrderNumber() != null ? unassignedOrder.getOrderNumber() : "")
+			.append(" Zone:")
+			.append(unassignedOrder.getDeliveryInfo() != null
+					&& unassignedOrder.getDeliveryInfo().getDeliveryZone() != null ? unassignedOrder.getDeliveryInfo().getDeliveryZone().getZoneNumber(): "");
+	
+		}
+		return sb.toString();
+	}
 	protected class RouteComparator implements Comparator<IRouteModel> {		
 		
 		public int compare(IRouteModel obj1, IRouteModel obj2){

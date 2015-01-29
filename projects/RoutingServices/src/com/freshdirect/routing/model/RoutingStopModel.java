@@ -143,6 +143,9 @@ public class RoutingStopModel extends OrderModel implements IRoutingStopModel, C
 		StringBuffer buf = new StringBuffer();
 		buf.append("Order No: ")
 				.append(this.getOrderNumber() != null ? this.getOrderNumber() : "")
+				.append(" Zone:")
+				.append(this.getDeliveryInfo() != null
+						&& this.getDeliveryInfo().getDeliveryZone() != null ? this.getDeliveryInfo().getDeliveryZone().getZoneNumber(): "")
 				.append(" Sequence No: ")
 				.append(this.getStopNo())
 				.append(" Address: ")
