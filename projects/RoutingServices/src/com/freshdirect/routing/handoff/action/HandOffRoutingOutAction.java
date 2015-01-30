@@ -429,12 +429,14 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		Map<String, String> orderNoToErpNo = new HashMap<String, String>();
 		
 		Map<String, EnumSaleStatus> exceptions = new HashMap<String, EnumSaleStatus>();
+		Map<String, String> orderNoToReservationNo = new HashMap<String, String>();
 		if(handOffStops != null) {
 			for(IHandOffBatchStop stop : handOffStops) {
 				if(stop.getErpOrderNumber() == null || stop.getErpOrderNumber().trim().length() == 0) {
 					exceptions.put(stop.getOrderNumber(), stop.getStatus());
 				}
 				orderNoToErpNo.put(stop.getOrderNumber(), stop.getErpOrderNumber());
+				orderNoToReservationNo.put(stop.getOrderNumber(), stop.getDeliveryInfo().getReservationId());
 			}
 		}
 		
@@ -496,7 +498,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 				*/
 				if(stop.isDynamic()){
 					try {
-						
+						stop.getDeliveryInfo().setReservationId(orderNoToReservationNo.get(stop.getOrderNumber()));
 						IOrderModel order = RoutingUtil.getOrderModel(stop, areaLookup);
 						IOrderModel _tmpOrder = RoutingUtil.schedulerRetrieveOrder(order);
 						if(_tmpOrder.isConfirmed()){
@@ -517,17 +519,15 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		}
 		if(unassignedOrders.size()>0){
 			proxy.updateOrderUnassignedInfo(unassignedOrders);
-			throw new RoutingServiceException(
-					"Unassigned Orders "
-							+ unassignedOrdersFixMessage(unassignedOrders) + " are marked for reroute. Please route in again.", null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+			throw new RoutingServiceException("Below orders are missing from the session and have been automatically corrected. Please route in again.\n" + 
+					unassignedOrdersFixMessage(unassignedOrders) , null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 			
 		}
 		
 		if(stopsWithNoRoute.size() > 0){
-			throw new RoutingServiceException(
-					"Error in route generation check cutoff report Stops:"
-							+ StringUtils.join(stopsWithNoRoute.toArray(), ",") + " ," + noOfRoutes
-							+ " Routes /" + noOfStops + " Stops", null, IIssue.PROCESS_HANDOFFBATCH_ERROR);	
+			throw new RoutingServiceException("Unassigned orders. Please check depot truck schedule and unassigned tab." +
+					stopsWithNoRouteFixMessage(stopsWithNoRoute) 
+							, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);	
 		}
 		if(needsErpNoUpdate.size() > 0) {
 			proxy.updateHandOffBatchStopErpNo(needsErpNoUpdate);
@@ -544,6 +544,23 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 			.append(" Zone:")
 			.append(unassignedOrder.getDeliveryInfo() != null
 					&& unassignedOrder.getDeliveryInfo().getDeliveryZone() != null ? unassignedOrder.getDeliveryInfo().getDeliveryZone().getZoneNumber(): "");
+	
+		}
+		return sb.toString();
+	}
+	
+	private String stopsWithNoRouteFixMessage(List<IHandOffBatchStop> stopsWithNoRoute){
+		StringBuffer sb = new StringBuffer();
+		for(IHandOffBatchStop stopWithNoRoute: stopsWithNoRoute){
+			sb.append("\nOrder No: ")
+			.append(stopWithNoRoute.getOrderNumber() != null ? stopWithNoRoute.getOrderNumber() : "")
+			.append(" Zone:")
+			.append(stopWithNoRoute.getDeliveryInfo() != null
+					&& stopWithNoRoute.getDeliveryInfo().getDeliveryZone() != null ? stopWithNoRoute.getDeliveryInfo().getDeliveryZone().getZoneNumber(): "")
+			.append(" Stop No: ")
+			.append(stopWithNoRoute.getStopNo())
+			.append(" Route No: ")
+			.append(stopWithNoRoute.getRoutingRouteId());
 	
 		}
 		return sb.toString();

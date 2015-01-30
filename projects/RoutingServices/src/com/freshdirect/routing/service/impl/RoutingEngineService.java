@@ -8,7 +8,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.axis2.AxisFault;
+import org.apache.log4j.Category;
 
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.IRoutingConstants;
 import com.freshdirect.routing.constants.RoutingActivityType;
 import com.freshdirect.routing.model.EquipmentType;
@@ -33,6 +35,8 @@ import com.freshdirect.routing.util.RoutingDataDecoder;
 import com.freshdirect.routing.util.RoutingDataEncoder;
 
 public class RoutingEngineService extends BaseService implements IRoutingEngineService {
+	
+	private static Category LOGGER = LoggerFactory.getInstance(RoutingEngineService.class);
 	
 	public void saveLocations(Collection orderList, String region, String locationType) throws RoutingServiceException {
 		
@@ -322,6 +326,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 			IRoutingSchedulerIdentity schedulerId = RoutingDataEncoder.encodeSchedulerId(null, orderModel, RoutingActivityType.CANCEL_TIMESLOT);
 			TransportationWebService port = getTransportationSuiteService(schedulerId);			
 					
+			LOGGER.info("cancelling order from roadnet SchedulerId: "+ schedulerId + " Reservation: "+orderModel.getDeliveryInfo().getReservationId());
 			
 			port.schedulerCancelOrder(RoutingDataEncoder.encodeSchedulerIdentity(schedulerId)
 											, encodeString(orderModel.getDeliveryInfo().getReservationId()));
@@ -343,10 +348,11 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 		try {
 			IRoutingSchedulerIdentity schedulerId = RoutingDataEncoder.encodeSchedulerId(null, orderModel, RoutingActivityType.RETRIEVE_ORDER);
 			TransportationWebService port = getTransportationSuiteService(schedulerId);			
-
-
+			
+			LOGGER.debug("retrieving order from roadnet SchedulerId: "+ schedulerId + " Reservation: "+orderModel.getDeliveryInfo().getReservationId());
+			
 			return RoutingDataDecoder.decodeDeliveryAreaOrder(port.schedulerRetrieveOrderByIdentity(RoutingDataEncoder.encodeDeliveryAreaOrderIdentity(schedulerId.getRegionId(),schedulerId.getArea().getAreaCode()
-					,schedulerId.getDeliveryDate(), orderModel.getOrderNumber()), RoutingDataEncoder.encodeDeliveryAreaOrderRetrieveOptions()));
+					,schedulerId.getDeliveryDate(), orderModel.getDeliveryInfo().getReservationId()), RoutingDataEncoder.encodeDeliveryAreaOrderRetrieveOptions()));
 
 
 		} catch (RemoteException exp) {  
@@ -388,6 +394,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 													RoutingDataEncoder.encodeSchedulerIdentity(schedulerId)
 													, options));
 			
+			LOGGER.info("schedulerId: "+schedulerId);
 			
 		} catch (RemoteException exp) {
 			throw new RoutingServiceException(exp, IIssue.PROCESS_RETRIEVEMETRICS_UNSUCCESSFUL);

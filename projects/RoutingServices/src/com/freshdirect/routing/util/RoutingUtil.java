@@ -576,6 +576,7 @@ public static boolean updateReservation(DlvReservationModel reservation, IOrderM
 		order.setOrderNumber(stop.getOrderNumber());
 		IDeliveryModel dModel = new DeliveryModel();
 		dModel.setDeliveryDate(stop.getDeliveryInfo().getDeliveryDate());
+		dModel.setReservationId(stop.getDeliveryInfo().getReservationId());
 		IZoneModel zModel = new ZoneModel();
 		IAreaModel aModel = areaLookup.get(stop.getDeliveryInfo().getDeliveryZone().getZoneNumber());
 		zModel.setArea(aModel);
