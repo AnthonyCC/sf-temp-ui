@@ -556,11 +556,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 			.append(stopWithNoRoute.getOrderNumber() != null ? stopWithNoRoute.getOrderNumber() : "")
 			.append(" Zone:")
 			.append(stopWithNoRoute.getDeliveryInfo() != null
-					&& stopWithNoRoute.getDeliveryInfo().getDeliveryZone() != null ? stopWithNoRoute.getDeliveryInfo().getDeliveryZone().getZoneNumber(): "")
-			.append(" Stop No: ")
-			.append(stopWithNoRoute.getStopNo())
-			.append(" Route No: ")
-			.append(stopWithNoRoute.getRoutingRouteId());
+					&& stopWithNoRoute.getDeliveryInfo().getDeliveryZone() != null ? stopWithNoRoute.getDeliveryInfo().getDeliveryZone().getZoneNumber(): "");
 	
 		}
 		return sb.toString();
