@@ -89,4 +89,12 @@ var FreshDirect = FreshDirect || {};
       $t.addClass('touched');
     }
   });
+
+  $(document).on('touchstart', function (e) {
+    var $gnavparent = $(e.target).parents('[data-component="globalnav-menu"]');
+
+    if ($gnavparent.size() === 0) {
+      $('[data-component="globalnav-menu"]').find('.touched').removeClass('touched');
+    }
+  });
 }(FreshDirect, FreshDirect.libs.$));

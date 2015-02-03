@@ -260,6 +260,7 @@ nav.globalnav {
   font-weight:normal;
 }
 
+.touched[data-component="globalnav-item"],
 [data-component="globalnav-item"]:hover,
 [data-component="globalnav-item"] .opened{
   background-color: #728d4b; 
@@ -913,6 +914,7 @@ ul.subdepartments {
   opacity: 1;
 }
 
+.touched >  [data-component="globalnav-popup-body"],
 .top-item-w-sub:hover >  [data-component="globalnav-popup-body"] {
 	visibility:visible;
   opacity: 1;
