@@ -496,25 +496,28 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 				StringBuffer buff = new StringBuffer();
 				buff.append("<a href=\"javascript:showOrderException('" + stop.getOrderNumber() + "','"+ zoneCode + "','"+ deliveryWindow + "');\">"+ stop.getOrderNumber() + "</a>");
 				*/
-				if(stop.isDynamic()){
-					try {
-						stop.getDeliveryInfo().setReservationId(orderNoToReservationNo.get(stop.getOrderNumber()));
-						IOrderModel order = RoutingUtil.getOrderModel(stop, areaLookup);
-						IOrderModel _tmpOrder = RoutingUtil.schedulerRetrieveOrder(order);
-						if(_tmpOrder.isConfirmed()){
-							stopsWithNoRoute.add(stop);
-						}else{
+				try {
+					if(stop.isDynamic()){
+						try {
+							stop.getDeliveryInfo().setReservationId(orderNoToReservationNo.get(stop.getOrderNumber()));
+							IOrderModel order = RoutingUtil.getOrderModel(stop, areaLookup);
+							IOrderModel _tmpOrder = RoutingUtil.schedulerRetrieveOrder(order);
+							if(_tmpOrder.isConfirmed()){
+								stopsWithNoRoute.add(stop);
+							}else{
+								unassignedOrders.add(stop);
+							}
+						} catch (RoutingServiceException rxp) {
 							unassignedOrders.add(stop);
 						}
-					} catch (RoutingServiceException rxp) {
-						unassignedOrders.add(stop);
+						
+					}else{
+						stopsWithNoRoute.add(stop);
 					}
-					
-				}else{
-					stopsWithNoRoute.add(stop);
-				}
-				
-								
+				} catch (Exception e) {
+					// handling exception if there is any
+					e.printStackTrace();
+				}			
 			}
 		}
 		if(unassignedOrders.size()>0){
@@ -525,7 +528,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		}
 		
 		if(stopsWithNoRoute.size() > 0){
-			throw new RoutingServiceException("Unassigned orders. Please check depot truck schedule and unassigned tab." +
+			throw new RoutingServiceException("Orders missing from route. Please check depot truck schedule and/or unassigned tab." +
 					stopsWithNoRouteFixMessage(stopsWithNoRoute) 
 							, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);	
 		}
