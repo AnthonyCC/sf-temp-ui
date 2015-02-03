@@ -9,14 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
-import com.freshdirect.framework.util.ValueHolder;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.DepartmentCarouselResult;
@@ -25,7 +18,6 @@ import com.freshdirect.mobileapi.controller.data.ProductSearchResult;
 import com.freshdirect.mobileapi.controller.data.SmartStoreProductResult;
 import com.freshdirect.mobileapi.controller.data.response.SmartStoreRecommendations;
 import com.freshdirect.mobileapi.exception.JsonException;
-import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.Product;
 import com.freshdirect.mobileapi.model.ResultBundle;
@@ -34,9 +26,9 @@ import com.freshdirect.mobileapi.model.SmartStore;
 import com.freshdirect.mobileapi.model.SmartStore.SmartStoreRecommendationContainer;
 import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
-import com.freshdirect.smartstore.Variant;
+import com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper;
 import com.freshdirect.smartstore.fdstore.Recommendations;
-import com.freshdirect.webapp.util.ProductRecommenderUtil;
+import com.freshdirect.webapp.util.DepartmentCarouselUtil;
 
 /**
  * @author rsung, csongor
@@ -79,7 +71,7 @@ public class SmartStoreController extends BaseController {
             model = getRecommendations(EnumSiteFeature.FAVORITES, model, user, request);
         } else if (ACTION_GET_FAVORITE.equals(action)) {
             model = getFavoritesRecommendations(model, user, request);
-        } else if (ACTION_GET_DEPARTMENT_CAROUSEL.equals(action)) {
+        } /*else if (ACTION_GET_DEPARTMENT_CAROUSEL.equals(action)) {
 			
         	DepartmentCarouselResult result = new DepartmentCarouselResult();
 						
@@ -101,7 +93,6 @@ public class SmartStoreController extends BaseController {
 																			, null
 																			, EnumCouponContext.PRODUCT));
 							} catch (ModelException e) {
-								// Donot filter the other products for few rotten products
 								e.printStackTrace();
 							}
         				}
@@ -110,7 +101,6 @@ public class SmartStoreController extends BaseController {
 	    			result.setSiteFeature(department.getFeaturedRecommenderSiteFeature());
 	    			result.setProducts(setProductsFromModel(recommendedProducts));
 				} catch (FDResourceException e) {
-					// In Case any system error No Recommendations is returned to the customer
 					e.printStackTrace();
 				}     		    			
 			}
@@ -119,6 +109,47 @@ public class SmartStoreController extends BaseController {
 				result.setSuccessMessage("No recommendations found.");
 			} else {
 				result.setSuccessMessage(result.getSiteFeature() + " have been retrieved successfully.");
+			}
+			setResponseMessage(model, result, user);
+		}*/  else if (ACTION_GET_DEPARTMENT_CAROUSEL.equals(action)) {
+			
+			String deptId = request.getParameter(PARAM_DEPT_ID);
+			EnumSiteFeature siteFeature = DepartmentCarouselUtil.getCarousel(deptId);
+			String title = DepartmentCarouselUtil.getCarouselTitle(deptId);
+			
+			DepartmentCarouselResult result = new DepartmentCarouselResult();
+			List products = null;
+			
+			if (EnumSiteFeature.PEAK_PRODUCE.equals(siteFeature)) {
+				products = getPeakProduce(model, user, request, response);				
+			} else if (EnumSiteFeature.WEEKS_MEAT_BEST_DEALS.equals(siteFeature)) {
+				products = getMeatBestDeals(model, user, request, response);
+			}/* else if (EnumSiteFeature.BRAND_NAME_DEALS.equals(siteFeature)) {
+				products = getCarouselRecommendations(siteFeature, model, user, request);
+			} */else {
+				// So called 'customer favorites department level' recommendations
+				// siteFeature: SideCart Featured Items (SCR_FEAT_ITEMS) + dept as currentNode
+				siteFeature = getSiteFeature("SCR_FEAT_ITEMS");
+			
+
+				boolean allowRestore = OverriddenVariantsHelper.AllowAnonymousUsers;
+				OverriddenVariantsHelper.AllowAnonymousUsers = true;
+
+				products = getCarouselRecommendations(siteFeature, model, user,
+						request);
+
+				OverriddenVariantsHelper.AllowAnonymousUsers = allowRestore;
+				
+				//products = getCarouselRecommendations(siteFeature,	model, user, request);
+			}
+			
+			result.setTitle(title);
+			result.setSiteFeature(siteFeature.getName());
+			result.setProducts(products);
+			if(products == null || (products != null && products.isEmpty())  ) {
+				result.setSuccessMessage("No recommendations found.");
+			} else {
+				result.setSuccessMessage(siteFeature.getTitle() + " have been retrieved successfully.");
 			}
 			setResponseMessage(model, result, user);
 		}
