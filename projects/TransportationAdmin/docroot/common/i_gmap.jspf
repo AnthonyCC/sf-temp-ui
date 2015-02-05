@@ -1,7 +1,7 @@
 <%@ page import='com.freshdirect.transadmin.util.*' %>
 
 <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?sensor=false&key=<%= TransportationAdminProperties.getDefaultMapKey() %>">
+      src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false&key=<%= TransportationAdminProperties.getDefaultMapKey() %>">
 </script>
 
 <script type="text/javascript" language="javascript" src="js/gmap/mapiconmaker.js"></script>
