@@ -637,12 +637,13 @@ ul.subdepartments {
   line-height:50px;
 }
 
+.subdepartments > li.touched,
 .subdepartments > li:hover{
   background-color:rgb(227, 236, 213);
   cursor:pointer;
 }
 
-.arrow-down{
+.arrow-down {
   visibility: hidden;
   position: relative;
   z-index: 14;
@@ -653,6 +654,7 @@ ul.subdepartments {
   border-top: 10px solid #e3ecd5;
   margin:0 auto;
   margin-bottom:-10px;
+  top: -1px;
 }
 
 .top-nav {
@@ -922,6 +924,7 @@ ul.subdepartments {
 	z-index:13;
 }
 
+.touched > .arrow-down,
 .submenuitem:hover > .arrow-down {
   visibility: visible;
 }
@@ -1036,6 +1039,7 @@ ul.subdepartments {
   transition-delay: 0.4s;
 }
 
+.touched [data-component="globalnav-popup-body"] .seasonal-media,
 .top-item:hover [data-component="globalnav-popup-body"] .seasonal-media,
 .submenuitem:hover [data-component="globalnav-popup-body"] .seasonal-media {
   opacity: 1;
