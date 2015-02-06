@@ -542,7 +542,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 	private String unassignedOrdersFixMessage(List<IHandOffBatchStop> unassignedOrders){
 		StringBuffer sb = new StringBuffer();
 		for(IHandOffBatchStop unassignedOrder: unassignedOrders){
-			sb.append("\nOrder No: ")
+			sb.append("<br>Order: ")
 			.append(unassignedOrder.getOrderNumber() != null ? unassignedOrder.getOrderNumber() : "")
 			.append(" Zone:")
 			.append(unassignedOrder.getDeliveryInfo() != null
@@ -555,7 +555,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 	private String stopsWithNoRouteFixMessage(List<IHandOffBatchStop> stopsWithNoRoute){
 		StringBuffer sb = new StringBuffer();
 		for(IHandOffBatchStop stopWithNoRoute: stopsWithNoRoute){
-			sb.append("\nOrder No: ")
+			sb.append("<br>Order: ")
 			.append(stopWithNoRoute.getOrderNumber() != null ? stopWithNoRoute.getOrderNumber() : "")
 			.append(" Zone:")
 			.append(stopWithNoRoute.getDeliveryInfo() != null

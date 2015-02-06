@@ -169,7 +169,7 @@
 					{key:"creationInfo", label:"Process Audit Details",sortable:false, width: 142,className:"forms1"},
 					{key:"status", label:"Status",sortable:false, width: 60,className:"forms1"},
 					{key:"sessionInfo", label:"Session",sortable:false, width: 305,className:"forms1"},
-					{key:"systemMessage", label:"System Message", width: 200,sortable:false,className:"forms1"},
+					{key:"systemMessage", label:"System Message", width: 220,sortable:false,className:"forms1"},
 					
 					{key:"action", label:"Action", sortable:false, width: 125, className:"forms1",
 									formatter:"dropdown", dropdownOptions:["","ROUTEIN","ROUTEOUT","COMMIT","AUTODISPATCH","ASSIGNTRUCK","CANCEL"] },
