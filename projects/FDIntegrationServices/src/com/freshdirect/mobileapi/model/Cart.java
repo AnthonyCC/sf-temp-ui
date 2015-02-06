@@ -13,6 +13,7 @@ import java.util.Map;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpAddressModel;
@@ -707,7 +708,20 @@ public class Cart {
             		productLineItem.setDiscountMsg(promotion.getDescription());
             		productLineItem.setDiscountSavings(cartLine.getDiscountAmount());
             	}
-                productLineItem.setProductConfiguration(productConfiguration);
+            	//Adding external page details if present.
+            	productConfiguration.setExternalAgency(cartLine.getExternalAgency()!=null?cartLine.getExternalAgency():null);
+            	productConfiguration.setExternalGroup(cartLine.getExternalGroup()!=null&&!cartLine.getExternalGroup().isEmpty()?cartLine.getExternalGroup():"");
+            	productConfiguration.setExternalSource(cartLine.getExternalSource()!=null&&!cartLine.getExternalSource().isEmpty()?cartLine.getExternalSource():"");
+                //Adding CoreMetrics Details
+            	productConfiguration.setCmPageId(cartLine.getCoremetricsPageId()!=null && !cartLine.getCoremetricsPageId().isEmpty()?cartLine.getCoremetricsPageId():null);
+            	productConfiguration.setCmPageContentHeirarchy(cartLine.getCoremetricsPageContentHierarchy()!=null && !cartLine.getCoremetricsPageContentHierarchy().isEmpty()?cartLine.getCoremetricsPageContentHierarchy():null);
+            	productConfiguration.setCmVirtualCategory(cartLine.getCoremetricsVirtualCategory()!=null && cartLine.getCoremetricsVirtualCategory().isEmpty()?cartLine.getCoremetricsVirtualCategory():"");
+            	productConfiguration.setAddedFrom(cartLine.getAddedFrom()!=null? cartLine.getAddedFrom().getName(): "");
+            	//productConfiguration.setAddedFromSearch(null);
+            	productConfiguration.setVariantId("");
+            	productConfiguration.setSavingsId(cartLine.getSavingsId()!=null && !cartLine.getSavingsId().isEmpty()?cartLine.getSavingsId():"");
+            	
+            	productLineItem.setProductConfiguration(productConfiguration);
                 productLineItem.setHasKosherRestriction(cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.KOSHER));
 
                 String earliestAvailability = productNode.getSku(cartLine.getSkuCode()).getEarliestAvailabilityMessage();

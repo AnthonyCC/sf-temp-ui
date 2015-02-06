@@ -87,6 +87,42 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         addRequestValue(REQ_PARAM_QUANTITY, productConfiguration.getQuantity());
         addRequestValue(REQ_PARAM_SALES_UNIT, productConfiguration.getSalesUnit().getName());
         
+      //Coremetrics tracking params, they do not exist in mobile implementation atm (22.07.2013)
+        if(productConfiguration.getCmPageId()!=null && !productConfiguration.getCmPageId().isEmpty()){
+        	addRequestValue(REQ_PARAM_CM_PAGEID, productConfiguration.getCmPageId());
+        } else {
+        	addRequestValue(REQ_PARAM_CM_PAGEID, "");
+        }
+        if(productConfiguration.getCmPageContentHeirarchy()!=null && !productConfiguration.getCmPageContentHeirarchy().isEmpty()){
+        	addRequestValue(REQ_PARAM_CM_PAGECONTENT_HIERARCHY, productConfiguration.getCmPageContentHeirarchy());
+        } else {
+        	addRequestValue(REQ_PARAM_CM_PAGECONTENT_HIERARCHY, "");
+        }
+        if(productConfiguration.getCmVirtualCategory()!=null && !productConfiguration.getCmVirtualCategory().isEmpty()){
+        	addRequestValue(REQ_PARAM_CM_VIRTUAL_CATEGORY, productConfiguration.getCmVirtualCategory());
+        } else {
+        	addRequestValue(REQ_PARAM_CM_VIRTUAL_CATEGORY, "");
+        }
+        if(productConfiguration.getAddedFrom()!=null && !productConfiguration.getAddedFrom().isEmpty()){
+        	addRequestValue(REQ_PARAM_ADDED_FROM, productConfiguration.getAddedFrom());
+        } else {
+        	addRequestValue(REQ_PARAM_ADDED_FROM, "");
+        }
+        
+        if(productConfiguration.getVariantId()!=null && !productConfiguration.getVariantId().isEmpty()){
+        	addRequestValue(REQ_PARAM_VARIANT_ID, productConfiguration.getVariantId());
+        } else {
+        	addRequestValue(REQ_PARAM_VARIANT_ID, "");
+        }
+        if(productConfiguration.getSavingsId()!=null && !productConfiguration.getSavingsId().isEmpty()){
+        	addRequestValue(REQ_PARAM_SAVINGS_ID, productConfiguration.getSavingsId());
+        } else {
+        	addRequestValue(REQ_PARAM_SAVINGS_ID, "");
+        }
+        
+        
+        
+        
         if(cartLine != null)
         	addRequestValue(REQ_PARAM_REQUEST_NOTIFICATION, cartLine.isRequestNotification());
 
@@ -146,7 +182,8 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         //"ymal_box"
         //ymalSetId
         addExpectedRequestValues(new String[] { REQ_PARAM_VARIANT, REQ_PARAM_YMAL_BOX, REQ_PARAM_YMAL_SET_ID, REQ_PARAM_YMAL_ORIG_PROD_ID,
-                REQ_PARAM_YMAL_ORIG_ORDER_LINE_ID, REQ_PARAM_ATC_SUFFIX, REQ_PARAM_CUSTOMER_CREATED_LIST_ID, REQ_PARAM_CARTONNUMBER,SessionName.PARAM_EVALUATE_COUPONS,REQ_PARAM_CM_PAGEID,REQ_PARAM_CM_PAGECONTENT_HIERARCHY,REQ_PARAM_CM_VIRTUAL_CATEGORY  }, new String[] {
+                REQ_PARAM_YMAL_ORIG_ORDER_LINE_ID, REQ_PARAM_ATC_SUFFIX, REQ_PARAM_CUSTOMER_CREATED_LIST_ID, REQ_PARAM_CARTONNUMBER,SessionName.PARAM_EVALUATE_COUPONS,REQ_PARAM_CM_PAGEID,REQ_PARAM_CM_PAGECONTENT_HIERARCHY,REQ_PARAM_CM_VIRTUAL_CATEGORY, REQ_PARAM_ADDED_FROM,
+                REQ_PARAM_VARIANT_ID, REQ_PARAM_SAVINGS_ID}, new String[] {
                 REQ_PARAM_ATC_SUFFIX, REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG, SessionName.PARAM_EVALUATE_COUPONS }); //gets,sets
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION }, new String[] { SESSION_PARAM_USER, SESSION_PARAM_SKUS_ADDED,
                 REQ_PARAM_ATC_SUFFIX }); //gets,sets
@@ -177,9 +214,63 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         addRequestValue(REQ_PARAM_IS_QUICKBUY, addItemToCart.isQuickBuy());
         
         //Coremetrics tracking params, they do not exist in mobile implementation atm (22.07.2013)
-        addRequestValue(REQ_PARAM_CM_PAGEID, "");
-        addRequestValue(REQ_PARAM_CM_PAGECONTENT_HIERARCHY, "");
-        addRequestValue(REQ_PARAM_CM_VIRTUAL_CATEGORY, "");
+        if(productConfiguration.getCmPageId()!=null && !productConfiguration.getCmPageId().isEmpty()){
+        	addRequestValue(REQ_PARAM_CM_PAGEID, productConfiguration.getCmPageId());
+        } else {
+        	addRequestValue(REQ_PARAM_CM_PAGEID, "");
+        }
+        if(productConfiguration.getCmPageContentHeirarchy()!=null && !productConfiguration.getCmPageContentHeirarchy().isEmpty()){
+        	addRequestValue(REQ_PARAM_CM_PAGECONTENT_HIERARCHY, productConfiguration.getCmPageContentHeirarchy());
+        } else {
+        	addRequestValue(REQ_PARAM_CM_PAGECONTENT_HIERARCHY, "");
+        }
+        if(productConfiguration.getCmVirtualCategory()!=null && !productConfiguration.getCmVirtualCategory().isEmpty()){
+        	addRequestValue(REQ_PARAM_CM_VIRTUAL_CATEGORY, productConfiguration.getCmVirtualCategory());
+        } else {
+        	addRequestValue(REQ_PARAM_CM_VIRTUAL_CATEGORY, "");
+        }
+        if(productConfiguration.getAddedFrom()!=null && !productConfiguration.getAddedFrom().isEmpty()){
+        	addRequestValue(REQ_PARAM_ADDED_FROM, productConfiguration.getAddedFrom());
+        } else {
+        	addRequestValue(REQ_PARAM_ADDED_FROM, "");
+        }
+        
+        if(productConfiguration.getVariantId()!=null && !productConfiguration.getVariantId().isEmpty()){
+        	addRequestValue(REQ_PARAM_VARIANT_ID, productConfiguration.getVariantId());
+        } else {
+        	addRequestValue(REQ_PARAM_VARIANT_ID, "");
+        }
+        if(productConfiguration.getSavingsId()!=null && !productConfiguration.getSavingsId().isEmpty()){
+        	addRequestValue(REQ_PARAM_SAVINGS_ID, productConfiguration.getSavingsId());
+        } else {
+        	addRequestValue(REQ_PARAM_SAVINGS_ID, "");
+        }
+        
+        
+        
+        /*
+         * Adding external Group external Source and external agency
+         */
+        if(productConfiguration.getExternalAgency()!=null){
+        	addRequestValue(REQ_PARAM_EXTERNAL_AGENCY, productConfiguration.getExternalAgency().name());
+        	
+        } else {
+        	addRequestValue(REQ_PARAM_EXTERNAL_AGENCY, null);
+        }
+        if(productConfiguration.getExternalGroup()!=null && !productConfiguration.getExternalGroup().isEmpty()){
+        	addRequestValue(REQ_PARAM_EXTERNAL_GROUP, productConfiguration.getExternalGroup());
+        } else {
+        	addRequestValue(REQ_PARAM_EXTERNAL_GROUP, null);
+        }
+        if(productConfiguration.getExternalSource()!=null && !productConfiguration.getExternalSource().isEmpty()){
+        	addRequestValue(REQ_PARAM_EXTERNAL_SOURCE, productConfiguration.getExternalSource());
+        } else {
+        	addRequestValue(REQ_PARAM_EXTERNAL_SOURCE, null);
+        }
+        
+        
+        
+        
 
         //Pass all smart store configuration values:
         String parameterBundle = smartStoreConfiguration.getParameterBundle();
@@ -237,7 +328,8 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
     public ResultBundle addMultipleItemsToCart(AddMultipleItemsToCart multipleItemsToCart, CartEvent cartEvent) throws FDException {
         addExpectedRequestValues(new String[] { REQ_PARAM_REMOVE, REQ_PARAM_REMOVE_RECIPE, REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG,
                 REQ_PARAM_CATEGORY_ID, REQ_PARAM_YMAL_BOX, REQ_PARAM_IMPRESSESION_ID, REQ_PARAM_ATC_SUFFIX,
-                REQ_PARAM_CUSTOMER_CREATED_LIST_ID, REQ_PARAM_CARTONNUMBER, SessionName.PARAM_ADDED_FROM_SEARCH,SessionName.PARAM_ADDED_FROM,SessionName.PARAM_EVALUATE_COUPONS,REQ_PARAM_CM_PAGEID,REQ_PARAM_CM_PAGECONTENT_HIERARCHY,REQ_PARAM_CM_VIRTUAL_CATEGORY   }, new String[] { REQ_PARAM_FD_ACTION, REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG,
+                REQ_PARAM_CUSTOMER_CREATED_LIST_ID, REQ_PARAM_CARTONNUMBER, SessionName.PARAM_ADDED_FROM_SEARCH,SessionName.PARAM_ADDED_FROM,SessionName.PARAM_EVALUATE_COUPONS,REQ_PARAM_CM_PAGEID,REQ_PARAM_CM_PAGECONTENT_HIERARCHY,REQ_PARAM_CM_VIRTUAL_CATEGORY,
+                REQ_PARAM_VARIANT_ID, REQ_PARAM_SAVINGS_ID}, new String[] { REQ_PARAM_FD_ACTION, REQ_PARAM_CART_CLEANUP_REMOVED_STUFF_FLAG,
                 REQ_PARAM_ATC_SUFFIX, SessionName.PARAM_ADDED_FROM_SEARCH, SessionName.PARAM_ADDED_FROM, SessionName.PARAM_EVALUATE_COUPONS  }); //gets,sets
         addExpectedSessionValues(new String[] { SESSION_PARAM_APPLICATION }, new String[] { SESSION_PARAM_SKUS_ADDED }); //gets,sets
 
@@ -260,6 +352,59 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
 
             } else {
                 addRequestValue(REQ_PARAM_SALES_UNIT + "_" + idx, null);
+            }
+            
+          //Coremetrics tracking params, they do not exist in mobile implementation atm (22.07.2013)
+            if(pc.getCmPageId()!=null && !pc.getCmPageId().isEmpty()){
+            	addRequestValue(REQ_PARAM_CM_PAGEID, pc.getCmPageId());
+            } else {
+            	addRequestValue(REQ_PARAM_CM_PAGEID, "");
+            }
+            if(pc.getCmPageContentHeirarchy()!=null && !pc.getCmPageContentHeirarchy().isEmpty()){
+            	addRequestValue(REQ_PARAM_CM_PAGECONTENT_HIERARCHY, pc.getCmPageContentHeirarchy());
+            } else {
+            	addRequestValue(REQ_PARAM_CM_PAGECONTENT_HIERARCHY, "");
+            }
+            if(pc.getCmVirtualCategory()!=null && !pc.getCmVirtualCategory().isEmpty()){
+            	addRequestValue(REQ_PARAM_CM_VIRTUAL_CATEGORY, pc.getCmVirtualCategory());
+            } else {
+            	addRequestValue(REQ_PARAM_CM_VIRTUAL_CATEGORY, "");
+            }
+            if(pc.getAddedFrom()!=null && !pc.getAddedFrom().isEmpty()){
+            	addRequestValue(REQ_PARAM_ADDED_FROM, pc.getAddedFrom());
+            } else {
+            	addRequestValue(REQ_PARAM_ADDED_FROM, "");
+            }
+            
+            if(pc.getVariantId()!=null && !pc.getVariantId().isEmpty()){
+            	addRequestValue(REQ_PARAM_VARIANT_ID, pc.getVariantId());
+            } else {
+            	addRequestValue(REQ_PARAM_VARIANT_ID, "");
+            }
+            if(pc.getSavingsId()!=null && !pc.getSavingsId().isEmpty()){
+            	addRequestValue(REQ_PARAM_SAVINGS_ID, pc.getSavingsId());
+            } else {
+            	addRequestValue(REQ_PARAM_SAVINGS_ID, "");
+            }
+            
+            /*
+             * Adding external Group external Source and external agency
+             */
+            if(pc.getExternalAgency()!=null){
+            	addRequestValue(REQ_PARAM_EXTERNAL_AGENCY, pc.getExternalAgency().name());
+            	
+            } else {
+            	addRequestValue(REQ_PARAM_EXTERNAL_AGENCY, null);
+            }
+            if(pc.getExternalGroup()!=null && !pc.getExternalGroup().isEmpty()){
+            	addRequestValue(REQ_PARAM_EXTERNAL_GROUP, pc.getExternalGroup());
+            } else {
+            	addRequestValue(REQ_PARAM_EXTERNAL_GROUP, null);
+            }
+            if(pc.getExternalSource()!=null && !pc.getExternalSource().isEmpty()){
+            	addRequestValue(REQ_PARAM_EXTERNAL_SOURCE, pc.getExternalSource());
+            } else {
+            	addRequestValue(REQ_PARAM_EXTERNAL_SOURCE, null);
             }
             /*
              * The following values are "expected" by the wrapper but not required as in i_vieworder.jspf. But as they are associated

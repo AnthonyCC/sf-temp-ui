@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -235,24 +236,28 @@ public class RecipesController extends BaseController {
 
 		@SuppressWarnings("unchecked")
 		final List<Map<String, String>> images = (List<Map<String, String>>) ((Map<String, Object>) json.get("images")).get("list");
-		for (final Map<String, String> image : images) {
-			final String url = image.get("largeUrl");
-			int width = 0;
-			int height = 0;
-			try {
-				final Matcher matcher = IMAGE_SIZE.matcher(url);
-				if (matcher.groupCount() == 2) {
-					final String w = matcher.group(1);
-					final String h = matcher.group(2);
-					width = Integer.valueOf(w, 10);
-					height = Integer.valueOf(h, 10);
-					break;
+		
+		if (images!=null && !images.isEmpty()) {
+			Collections.reverse(images);
+			for (final Map<String, String> image : images) {
+				final String url = image.get("largeUrl");
+				int width = 0;
+				int height = 0;
+				try {
+					final Matcher matcher = IMAGE_SIZE.matcher(url);
+					if (matcher.groupCount() == 2) {
+						final String w = matcher.group(1);
+						final String h = matcher.group(2);
+						width = Integer.valueOf(w, 10);
+						height = Integer.valueOf(h, 10);
+						break;
+					}
+				} catch (final Exception e) {
+					width = 0;
+					height = 0;
+				} finally {
+					recipe.setRecipeImage(new Image(url, height, width));
 				}
-			} catch (final Exception e) {
-				width = 0;
-				height = 0;
-			} finally {
-				recipe.setRecipeImage(new Image(url, height, width));
 			}
 		}
 	}

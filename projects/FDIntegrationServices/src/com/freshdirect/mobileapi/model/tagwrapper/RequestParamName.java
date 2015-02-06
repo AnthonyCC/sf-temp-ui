@@ -294,5 +294,22 @@ public interface RequestParamName {
     
     public static final String REQ_PARAM_TABLE_WIDTH = "tableWidth";
     
-    public static final String REQ_PARAM_CM_VIRTUAL_CATEGORY = "coremetricsVirtualCategory";  
+    public static final String REQ_PARAM_CM_VIRTUAL_CATEGORY = "coremetricsVirtualCategory"; 
+    
+    public static final String REQ_PARAM_VARIANT_ID = "variantId";
+    
+    public static final String REQ_PARAM_SAVINGS_ID = "savingsId";
+    
+    public static final String REQ_PARAM_ADDED_FROM_SEARCH = "addedFromSearch";
+    
+    public static final String REQ_PARAM_ADDED_FROM = "addedFrom";
+    
+    //Multiple Add to cart from external page thru' popcart
+    public static final String REQ_PARAM_EXTERNAL_AGENCY = "externalAgency";
+    
+    public static final String REQ_PARAM_EXTERNAL_GROUP = "externalGroup";
+    
+    public static final String REQ_PARAM_EXTERNAL_SOURCE = "externalSource";
+    
+    
 }

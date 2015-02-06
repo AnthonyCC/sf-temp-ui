@@ -25,6 +25,7 @@ import org.json.JSONObject;
 
 import weblogic.servlet.jsp.PageContextImpl;
 
+import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.crm.CrmAgentModel;
@@ -96,7 +97,7 @@ import com.freshdirect.webapp.util.ItemSelectionCheckResult;
 import com.freshdirect.webapp.util.QuickCartCache;
 import com.freshdirect.webapp.util.RequestUtil;
 
-@Deprecated
+
 public class FDShoppingCartControllerTag extends BodyTagSupport implements SessionName {
 
 	public static String PARAM_ADDED_FROM_SEARCH = "addedfromsearch";
@@ -1206,6 +1207,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			catName = request.getParameter(paramCatId);
 
 		String prodName = request.getParameter(paramProductId);
+		
 		// variant tracking
 		String variantId = request.getParameter(suffix != null ? "variant"+suffix : "variant"); // SmartStore
 		
@@ -1341,6 +1343,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			if(originalGrp != null)
 				originalGrp.setSkipProductPriceValidation(false);
 		}
+		
 				
 		FDCartLineI theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, pricingZoneId ,originalGrp);
 
@@ -1348,6 +1351,9 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			theCartLine.setCoremetricsPageId(request.getParameter("coremetricsPageId"));
 			theCartLine.setCoremetricsPageContentHierarchy(request.getParameter("coremetricsPageContentHierarchy"));
 			theCartLine.setCoremetricsVirtualCategory(request.getParameter("coremetricsVirtualCategory"));
+			theCartLine.setAddedFrom(request.getParameter("addedFrom")!=null && !request.getParameter("addedFrom").isEmpty()? EnumATCContext.getEnum( request.getParameter("addedFrom")):null);
+			theCartLine.setSavingsId(request.getParameter("savingsId")!=null && !request.getParameter("savingsId").isEmpty()?  request.getParameter("savingsId"):null);
+			
 		}
 		
 		
@@ -1497,6 +1503,28 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 					origCartLineId, null, false, variantId, pZoneId, clientCodes);
 			//Any group info from original cartline is moved to new cartline on modify.
 			cartLine.setFDGroup(group);
+		}
+		try {
+			if(request.getParameter("externalAgency")!=null && !request.getParameter("externalAgency").isEmpty()){
+				cartLine.setExternalAgency(ExternalAgency.safeValueOf(request.getParameter("externalAgency")));
+			} else {
+				cartLine.setExternalAgency(null);
+			}
+			if(request.getParameter("externalGroup")!=null && !request.getParameter("externalGroup").isEmpty()){
+				cartLine.setExternalGroup(request.getParameter("externalGroup"));
+			} else {
+				cartLine.setExternalGroup(null);
+			}
+			if(request.getParameter("externalSource")!=null && !request.getParameter("externalSource").isEmpty()){
+				cartLine.setExternalSource(request.getParameter("externalSource"));
+			} else {
+				cartLine.setExternalSource(null);
+			}
+		} catch (Throwable  e) {
+			LOGGER.info("These values are not set as expected for the incomming request");
+			/*cartLine.setExternalAgency(null);
+			cartLine.setExternalGroup(null);
+			cartLine.setExternalSource(null);*/
 		}
 
 		return cartLine;

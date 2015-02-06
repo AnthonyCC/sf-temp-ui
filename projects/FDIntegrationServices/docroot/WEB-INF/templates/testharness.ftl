@@ -353,7 +353,7 @@ function loadStuff() {
 		'\n		},'+
 		'\n		"quantity" : "2",'+
 		'\n		"salesUnit" : "E02",'+
-		'\n		"options" : { "C_MT_BF_PAK" : "ST" } '+
+		'\n		"options" : {"C_MT_BF_MAR" : "N" ,  "C_MT_BF_PAK" : "ST" } '+
 		'\n	},'+
 		'\n  { '+
 		'\n		"product" : { '+
@@ -365,7 +365,7 @@ function loadStuff() {
 		'\n		},'+
 		'\n		"quantity" : "1",'+
 		'\n		"salesUnit" : "E04",'+
-		'\n		"options" : { "C_MT_BF_PAK" : "VP" } '+
+		'\n		"options" : {"C_MT_BF_MAR" : "N" ,  "C_MT_BF_PAK" : "VP" } '+
 		'\n	}'+
 		'\n	]'+
 		'\n}';
@@ -634,7 +634,23 @@ function loadStuff() {
   	$("#url").val("/lookup/regions/"); 
   	$("#payload").val(""); 	
   	$("#result").val("");
-  }  
+  } else if (  loaddata == "getDetail") {
+  	$("#url").val("/recipe/getdetail/QLmRGXthw"); 
+  	$("#payload").val(""); 	
+  	$("#result").val("");
+  } else if (  loaddata == "getAll") {
+  	$("#url").val("/recipe/getall/"); 
+  	$("#payload").val(""); 	
+  	$("#result").val("");
+  } else if (  loaddata == "getTags") {
+  	$("#url").val("/recipe/gettags/"); 
+  	$("#payload").val(""); 	
+  	$("#result").val("");
+  } else if (  loaddata == "foodilySearch") {
+  	$("#url").val("/recipe/search/"); 
+  	$("#payload").val(""); 	
+  	$("#result").val("");
+  } 
 
   $("#payload").focus();
 }
@@ -860,6 +876,11 @@ function doStuff() {
   <option value=""> ========== Lookup ========== </option>
   <option value="GetCountries">Lookup - Get Countries</option>
   <option value="GetRegions">Lookup - Get Regions</option>
+  <option value=""> ========== Foodily ========== </option>
+  <option value="getDetail">Foodily - Get Recipe Details</option>
+  <option value="getTags">Foodily - Get Tags</option>
+  <option value="getAll">Foodily - Get All Recipes</option>
+  <option value="foodilySearch">Foodily - search</option>
 
   </select>
   

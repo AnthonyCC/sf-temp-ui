@@ -3,6 +3,7 @@ package com.freshdirect.mobileapi.controller.data;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.freshdirect.affiliate.ExternalAgency;
 import com.freshdirect.mobileapi.model.ProductSelection;
 
 public class ProductConfiguration {
@@ -46,8 +47,114 @@ public class ProductConfiguration {
     private Sku sku;
 
     private float quantity;
+    
+    //FDIP-1171 for foodily banner display in cart for grouping
+    private ExternalAgency externalAgency;
+    
+	private String externalGroup;
+	
+	private String externalSource;
+	
+	//FDIP-1214 Adding coremetrics Info
+	private String cmPageId;
+	
+	private String cmPageContentHeirarchy;
+	
+	private String addedFrom;
+	
+	private String cmVirtualCategory;
+	
+	private String variantId;
+	
+	private String savingsId;
+	
+	private String addedFromSearch;
+	
+	
+	
+	
 
-    public String getConfigurationDescription() {
+    public String getCmPageId() {
+		return cmPageId;
+	}
+
+	public void setCmPageId(String cmPageId) {
+		this.cmPageId = cmPageId;
+	}
+
+	public String getCmPageContentHeirarchy() {
+		return cmPageContentHeirarchy;
+	}
+
+	public void setCmPageContentHeirarchy(String cmPageContentHeirarchy) {
+		this.cmPageContentHeirarchy = cmPageContentHeirarchy;
+	}
+
+	public String getAddedFrom() {
+		return addedFrom;
+	}
+
+	public void setAddedFrom(String addedFrom) {
+		this.addedFrom = addedFrom;
+	}
+
+	public String getCmVirtualCategory() {
+		return cmVirtualCategory;
+	}
+
+	public void setCmVirtualCategory(String cmVirtualCategory) {
+		this.cmVirtualCategory = cmVirtualCategory;
+	}
+
+	public String getVariantId() {
+		return variantId;
+	}
+
+	public void setVariantId(String variantId) {
+		this.variantId = variantId;
+	}
+
+	public String getSavingsId() {
+		return savingsId;
+	}
+
+	public void setSavingsId(String savingsId) {
+		this.savingsId = savingsId;
+	}
+
+	public String getAddedFromSearch() {
+		return addedFromSearch;
+	}
+
+	public void setAddedFromSearch(String addedFromSearch) {
+		this.addedFromSearch = addedFromSearch;
+	}
+
+	public ExternalAgency getExternalAgency() {
+		return externalAgency;
+	}
+
+	public void setExternalAgency(ExternalAgency agency) {
+		this.externalAgency = agency;
+	}
+
+	public String getExternalGroup() {
+		return externalGroup;
+	}
+
+	public void setExternalGroup(String externalGroup) {
+		this.externalGroup = externalGroup;
+	}
+
+	public String getExternalSource() {
+		return externalSource;
+	}
+
+	public void setExternalSource(String externalSource) {
+		this.externalSource = externalSource;
+	}
+
+	public String getConfigurationDescription() {
         return configurationDescription;
     }
 
