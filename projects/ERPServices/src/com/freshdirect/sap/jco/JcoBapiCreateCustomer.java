@@ -1,15 +1,8 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.sap.jco;
 
 import com.freshdirect.sap.bapi.BapiCreateCustomer;
-import com.sap.mw.jco.JCO;
+import com.sap.conn.jco.JCoException;
+import com.sap.conn.jco.JCoStructure;
 
 /**
  *
@@ -19,50 +12,53 @@ import com.sap.mw.jco.JCO;
  */
 class JcoBapiCreateCustomer extends JcoBapiFunction implements BapiCreateCustomer {
 
-	private JCO.Structure personalData;
+	private JCoStructure personalData;
 
-	public JcoBapiCreateCustomer() {
+	public JcoBapiCreateCustomer() throws JCoException
+	{
 		super("Z_BAPI_CUSTOMER_CREATE");
 
 		this.personalData = this.function.getImportParameterList().getStructure("PI_PERSONALDATA");
-		this.personalData.setValue("E", "LANGU_P");
-		this.personalData.setValue("USD", "CURRENCY");
+		this.personalData.setValue("LANGU_P", "E");
+		this.personalData.setValue("CURRENCY", "USD");
 	}
 
-	public void setCopyReference(CopyReference copyRef) {
-		JCO.Structure copyReference = this.function.getImportParameterList().getStructure("PI_COPYREFERENCE");
-		copyReference.setValue(copyRef.getSalesOrg(), "SALESORG");
-		copyReference.setValue(copyRef.getDistrChan(), "DISTR_CHAN");
-		copyReference.setValue(copyRef.getDivision(), "DIVISION");
-		copyReference.setValue(copyRef.getRefCustomer(), "REF_CUSTMR");
+	public void setCopyReference(CopyReference copyRef)
+	{
+		JCoStructure copyReference = this.function.getImportParameterList().getStructure("PI_COPYREFERENCE");
+	
+		copyReference.setValue("SALESORG", copyRef.getSalesOrg());
+		copyReference.setValue("DISTR_CHAN", copyRef.getDistrChan());
+		copyReference.setValue("DIVISION", copyRef.getDivision());
+		copyReference.setValue("REF_CUSTMR", copyRef.getRefCustomer());
 	}
 
 	public void setFirstName(String firstName) {
-		personalData.setValue(firstName, "FIRSTNAME");
+		personalData.setValue("FIRSTNAME", firstName);
 	}
 
 	public void setLastName(String lastName) {
-		personalData.setValue(lastName, "LASTNAME");
+		personalData.setValue("LASTNAME", lastName);
 	}
 
 	public void setStreet(String street) {
-		personalData.setValue(street, "STREET");
+		personalData.setValue("STREET", street);
 	}
 
 	public void setPostalCode(String zip) {
-		personalData.setValue(zip, "POSTL_COD1");
+		personalData.setValue("POSTL_COD1", zip);
 	}
 
 	public void setCity(String city) {
-		personalData.setValue(city, "CITY");
+		personalData.setValue("CITY", city);
 	}
 
 	public void setRegion(String region) {
-		personalData.setValue(region, "REGION");
+		personalData.setValue("REGION", region);
 	}
 
 	public void setCountry(String country) {
-		personalData.setValue(country, "COUNTRY");
+		personalData.setValue("COUNTRY", country);
 	}
 
 	public String getCustomerNo() {

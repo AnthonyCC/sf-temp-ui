@@ -17,7 +17,9 @@ import java.util.Map;
 import com.freshdirect.customer.ErpCartonDetails;
 import com.freshdirect.customer.ErpCartonInfo;
 import com.freshdirect.sap.bapi.BapiCartonDetailsForSale;
-import com.sap.mw.jco.JCO;
+import com.sap.conn.jco.JCoException;
+import com.sap.conn.jco.JCoTable;
+
 
 /**
  *
@@ -27,22 +29,23 @@ import com.sap.mw.jco.JCO;
  */
 class JcoBapiCartonDetailsForSale extends JcoBapiFunction implements BapiCartonDetailsForSale {
 	
-	private JCO.Table lstCartonInfo;
+	private JCoTable lstCartonInfo;
 	
 	private String saleId;
 	
 	private String saleSapId;
 	
-	public JcoBapiCartonDetailsForSale() {
+	public JcoBapiCartonDetailsForSale() throws JCoException {
 		super("ZBAPI_CARTON_DETAILS");
 	}
 	
 	@Override
-	public void setParameters(String plantCode, Date deliveryDate, String saleId, String saleSapId, String waveNumber) {
-		this.function.getImportParameterList().setValue(plantCode, "WERKS");
-		this.function.getImportParameterList().setValue(deliveryDate, "VDATU");
-		this.function.getImportParameterList().setValue(saleSapId, "VBELN");
-		this.function.getImportParameterList().setValue(waveNumber, "WAVENO");
+	public void setParameters(String plantCode, Date deliveryDate, String saleId, String saleSapId, String waveNumber)
+	{
+		this.function.getImportParameterList().setValue("WERKS", plantCode);
+		this.function.getImportParameterList().setValue("VDATU", deliveryDate);
+		this.function.getImportParameterList().setValue("VBELN", saleSapId);
+		this.function.getImportParameterList().setValue("WAVENO", waveNumber);
 		
 		this.saleId = saleId;
 		this.saleSapId = saleSapId;
@@ -52,14 +55,15 @@ class JcoBapiCartonDetailsForSale extends JcoBapiFunction implements BapiCartonD
 		
 		List<ErpCartonInfo> cartons = new ArrayList<ErpCartonInfo>();
 		ErpCartonInfo currentCartonInfo = null;
-		//ErpCartonDetails currentCartonDetail = null;
+		
 		lstCartonInfo = this.function.getTableParameterList().getTable("CARTON_DET");
 		
 		Map<String, ErpCartonInfo> cartonNoToCartonInfo = new HashMap<String, ErpCartonInfo>();
 		Map<String, Map<String, List<ErpCartonDetails>>> cartonNoToHeaderLineToComponent = new HashMap<String, Map<String, List<ErpCartonDetails>>>();
 		Map<String, ErpCartonDetails> headerLineItemToCartonDetails = new HashMap<String, ErpCartonDetails>();
 		
-		for (int loop = 0; loop < lstCartonInfo.getNumRows(); loop++) {
+		for (int loop = 0; loop < lstCartonInfo.getNumRows(); loop++)
+		{
 			String cartonNumber = lstCartonInfo.getString("CARTON");	
 			String cartonType = lstCartonInfo.getString("CRT_TYP");	
 			String parentId = lstCartonInfo.getString("PARENT_LN");	

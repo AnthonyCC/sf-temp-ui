@@ -1,15 +1,9 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.sap.jco;
 
 import com.freshdirect.sap.bapi.BapiSalesOrderChange;
-import com.sap.mw.jco.JCO;
+import com.sap.conn.jco.JCoException;
+import com.sap.conn.jco.JCoStructure;
+import com.sap.conn.jco.JCoTable;
 
 /**
  *
@@ -19,95 +13,95 @@ import com.sap.mw.jco.JCO;
  */
 class JcoBapiSalesOrderChange extends JcoBapiOrder implements BapiSalesOrderChange {
 
-	private JCO.Table orderItemInX;
-	private JCO.Table schedulesInX;
+	private JCoTable orderItemInX;
+	private JCoTable schedulesInX;
 
-	public JcoBapiSalesOrderChange() {
+	public JcoBapiSalesOrderChange() throws JCoException {
+		
 		super("Z_BAPI_SALESORDER_CHANGE");
-
 		// X (change) structures
-		this.function.getImportParameterList().getStructure("ORDER_HEADER_INX").setValue("U", "UPDATEFLAG");
+		this.function.getImportParameterList().getStructure("ORDER_HEADER_INX").setValue("UPDATEFLAG", "U");
 		this.orderItemInX = this.function.getTableParameterList().getTable("ORDER_ITEM_INX");
 		this.schedulesInX = this.function.getTableParameterList().getTable("SCHEDULE_LINESX");
 	}
 
 	public void setOrderHeaderIn(OrderHeaderIn hdr) {
-		JCO.Structure orderHeaderIn = this.function.getImportParameterList().getStructure("ORDER_HEADER_IN");
-		JCO.Structure orderHeaderInX = this.function.getImportParameterList().getStructure("ORDER_HEADER_INX");
+		JCoStructure orderHeaderIn = this.function.getImportParameterList().getStructure("ORDER_HEADER_IN");
+		JCoStructure orderHeaderInX = this.function.getImportParameterList().getStructure("ORDER_HEADER_INX");
 
 		// Collective number (Delivery zone/depot number)
-		orderHeaderIn.setValue(hdr.getCollectiveNo(), "COLLECT_NO");
-		orderHeaderInX.setValue("X", "COLLECT_NO");
+		orderHeaderIn.setValue("COLLECT_NO", hdr.getCollectiveNo());
+		orderHeaderInX.setValue("COLLECT_NO", "X");
 
 		// Customer group 1 (Delivery Model)
-		orderHeaderIn.setValue(hdr.getCustGrp1(), "CUST_GRP1");
-		orderHeaderInX.setValue("X", "CUST_GRP1");
+		orderHeaderIn.setValue("CUST_GRP1", hdr.getCustGrp1());
+		orderHeaderInX.setValue("CUST_GRP1", "X");
 
 		// Customer's or vendor's internal reference
-		orderHeaderIn.setValue(hdr.getRef1(), "REF_1");
-		orderHeaderInX.setValue("X", "REF_1");
+		orderHeaderIn.setValue("REF_1", hdr.getRef1());
+		orderHeaderInX.setValue("REF_1", "X");
 		
-		orderHeaderInX.setValue("X", "REF_1_S");
-		orderHeaderIn.setValue(hdr.getRef1S(), "REF_1_S");
+		orderHeaderInX.setValue("REF_1_S", "X");
+		orderHeaderIn.setValue("REF_1_S", hdr.getRef1S());
 
-		orderHeaderIn.setValue(hdr.getPoSupplement(), "PO_SUPPLEM");
-		orderHeaderInX.setValue("X", "PO_SUPPLEM");
-		orderHeaderIn.setValue(hdr.getDunDate(), "DUN_DATE");
-		orderHeaderInX.setValue("X", "DUN_DATE");
-		orderHeaderIn.setValue(hdr.getName(), "NAME");
-		orderHeaderInX.setValue("X", "NAME");
-		orderHeaderIn.setValue(hdr.getPurchNoS(), "PURCH_NO_S");
-		orderHeaderInX.setValue("X", "PURCH_NO_S");
+		orderHeaderIn.setValue("PO_SUPPLEM", hdr.getPoSupplement());
+		orderHeaderInX.setValue("PO_SUPPLEM", "X");
+		orderHeaderIn.setValue("DUN_DATE", hdr.getDunDate());
+		orderHeaderInX.setValue("DUN_DATE", "X");
+		orderHeaderIn.setValue("NAME", hdr.getName());
+		orderHeaderInX.setValue("NAME", "X");
+		orderHeaderIn.setValue("PURCH_NO_S", hdr.getPurchNoS());
+		orderHeaderInX.setValue("PURCH_NO_S", "X");
 
 		// requested date
-		orderHeaderIn.setValue(hdr.getRequestedDate(), "REQ_DATE_H");
-		orderHeaderInX.setValue("X", "REQ_DATE_H");
-		orderHeaderIn.setValue(hdr.getRequestedDate(), "PO_DAT_S");
-		orderHeaderInX.setValue("X", "PO_DAT_S");
+		orderHeaderIn.setValue("REQ_DATE_H", hdr.getRequestedDate());
+		orderHeaderInX.setValue("REQ_DATE_H", "X");
+		orderHeaderIn.setValue("PO_DAT_S", hdr.getRequestedDate());
+		orderHeaderInX.setValue("PO_DAT_S", "X");
 
 		//customer segmentation/rating
-		orderHeaderIn.setValue( hdr.getCustGrp2(), "CUST_GRP2");
-		orderHeaderInX.setValue("X", "CUST_GRP2");
-		orderHeaderIn.setValue( hdr.getCustGrp3() ,"CUST_GRP3");
-		orderHeaderInX.setValue("X", "CUST_GRP3");
-		orderHeaderIn.setValue( hdr.getTelephone(),"TELEPHONE");
-		orderHeaderInX.setValue("X", "TELEPHONE");
+		orderHeaderIn.setValue("CUST_GRP2", hdr.getCustGrp2());
+		orderHeaderInX.setValue("CUST_GRP2", "X");
+		orderHeaderIn.setValue("CUST_GRP3", hdr.getCustGrp3());
+		orderHeaderInX.setValue("CUST_GRP3", "X");
+		orderHeaderIn.setValue("TELEPHONE",  hdr.getTelephone());
+		orderHeaderInX.setValue("TELEPHONE", "X");
 		
-		orderHeaderIn.setValue( hdr.getOrdReason(), "ORD_REASON");
-		orderHeaderInX.setValue("X", "ORD_REASON");
+		orderHeaderIn.setValue("ORD_REASON", hdr.getOrdReason());
+		orderHeaderInX.setValue("ORD_REASON", "X");
 
 	}
 
 	public void setSalesDocumentNumber(String salesDocumentNumber) {
-		this.function.getImportParameterList().setValue(salesDocumentNumber, "SALESDOCUMENT");
+		this.function.getImportParameterList().setValue("SALESDOCUMENT", salesDocumentNumber);
 	}
 
 	public void addOrderItemIn(OrderItemIn item) {
 		super.addOrderItemIn(item);
-		this.orderItemIn.setValue(item.getPriceDate(), "PRICE_DATE");
-		this.orderItemIn.setValue(item.getMaxPartialDlv(), "MAX_PL_DLV");
+		this.orderItemIn.setValue("PRICE_DATE", item.getPriceDate());
+		this.orderItemIn.setValue("MAX_PL_DLV", item.getMaxPartialDlv());
 	}
 
 	public void addOrderItemInX(String itmNumber) {
 		this.orderItemInX.appendRow();
-		this.orderItemInX.setValue(itmNumber, "ITM_NUMBER");
-		this.orderItemInX.setValue("I", "UPDATEFLAG"); // insert
-		this.orderItemInX.setValue("X", "PO_ITM_NO");
-		this.orderItemInX.setValue("X", "POITM_NO_S");
-		this.orderItemInX.setValue("X", "MATERIAL");
-		this.orderItemInX.setValue("X", "PURCH_NO_S");
-		this.orderItemInX.setValue("X", "PO_DAT_S");
-		this.orderItemInX.setValue("X", "PRICE_DATE");
-		this.orderItemInX.setValue("X", "SALES_UNIT");
-		this.orderItemInX.setValue("X", "CUST_MAT35");
+		this.orderItemInX.setValue("ITM_NUMBER", itmNumber);
+		this.orderItemInX.setValue("UPDATEFLAG", "I"); // insert
+		this.orderItemInX.setValue("PO_ITM_NO", "X");
+		this.orderItemInX.setValue("POITM_NO_S", "X");
+		this.orderItemInX.setValue("MATERIAL", "X");
+		this.orderItemInX.setValue("PURCH_NO_S", "X");
+		this.orderItemInX.setValue("PO_DAT_S", "X");
+		this.orderItemInX.setValue("PRICE_DATE", "X");
+		this.orderItemInX.setValue("SALES_UNIT", "X");
+		this.orderItemInX.setValue("CUST_MAT35", "X");
 	}
 
 	public void addOrderScheduleInX(int itmNumber) {
 		this.schedulesInX.appendRow();
-		this.schedulesInX.setValue("I", "UPDATEFLAG"); // insert
-		this.schedulesInX.setValue(itmNumber, "ITM_NUMBER");	// association key with order_items_in
-		this.schedulesInX.setValue("X", "REQ_QTY");
-		this.schedulesInX.setValue("X", "REQ_DATE");
+		this.schedulesInX.setValue("UPDATEFLAG", "I"); // insert
+		this.schedulesInX.setValue("ITM_NUMBER", itmNumber);	// association key with order_items_in
+		this.schedulesInX.setValue("REQ_QTY", "X");
+		this.schedulesInX.setValue("REQ_DATE", "X");
 	}
 
 	protected String getOrderItemInName() {

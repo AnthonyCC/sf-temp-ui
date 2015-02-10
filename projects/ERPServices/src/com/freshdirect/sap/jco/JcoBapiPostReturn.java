@@ -4,25 +4,27 @@
 package com.freshdirect.sap.jco;
 
 import com.freshdirect.sap.bapi.BapiPostReturnI;
-import com.sap.mw.jco.JCO;
+import com.sap.conn.jco.JCoException;
+import com.sap.conn.jco.JCoTable;
 
 /**
  * @author knadeem
  */
 public class JcoBapiPostReturn extends JcoBapiFunction implements BapiPostReturnI {
 		
-	private JCO.Table returnValuesIn;
-	private JCO.Table discountDetailsIn;	
+	private JCoTable returnValuesIn;
+	private JCoTable discountDetailsIn;	
 	
-	public JcoBapiPostReturn() {
-		//super("ZBAPI_POST_RETURNS_REDELIVERY");
+	public JcoBapiPostReturn() throws JCoException {
+		
 		super("Z_BAPI_POST_RETURNS_REDELIVERY");
+		
 		this.returnValuesIn = this.function.getTableParameterList().getTable("RETURN_VALUES");
 		this.discountDetailsIn = this.function.getTableParameterList().getTable("DISC_DETAILS");
 	}
 	
 	public void setInvoiceNumber(String invoiceNumber) {
-		this.function.getImportParameterList().setValue(invoiceNumber, "ACCT_DOC");
+		this.function.getImportParameterList().setValue("ACCT_DOC", invoiceNumber);
 	}
 
 	public void addAffiliateCharges(AffiliateCharges affiliateCharges) {
@@ -30,83 +32,87 @@ public class JcoBapiPostReturn extends JcoBapiFunction implements BapiPostReturn
 		String aff = affiliateCharges.getAffiliateCode();
 		
 		this.returnValuesIn.appendRow();
-		this.returnValuesIn.setValue(aff,	"NAME");
-		this.returnValuesIn.setValue("PR00", "AMOUNT_TYPE");
-		this.returnValuesIn.setValue(affiliateCharges.getSubtotal(), "AMOUNT");
+		this.returnValuesIn.setValue("NAME", aff);
+		this.returnValuesIn.setValue("AMOUNT_TYPE", "PR00");
+		this.returnValuesIn.setValue("AMOUNT", affiliateCharges.getSubtotal());
 
 		this.returnValuesIn.appendRow();
-		this.returnValuesIn.setValue(aff,	"NAME");
-		this.returnValuesIn.setValue("ZT00", "AMOUNT_TYPE");
-		this.returnValuesIn.setValue(affiliateCharges.getTax(), "AMOUNT");
+		this.returnValuesIn.setValue("NAME", aff);
+		this.returnValuesIn.setValue("AMOUNT_TYPE", "ZT00");
+		this.returnValuesIn.setValue("AMOUNT", affiliateCharges.getTax());
 
 		this.returnValuesIn.appendRow();
-		this.returnValuesIn.setValue(aff,	"NAME");
-		this.returnValuesIn.setValue("ZD00", "AMOUNT_TYPE");
-		this.returnValuesIn.setValue(affiliateCharges.getDeposit(), "AMOUNT");
+		this.returnValuesIn.setValue("NAME", aff);
+		this.returnValuesIn.setValue("AMOUNT_TYPE", "ZD00");
+		this.returnValuesIn.setValue("AMOUNT", affiliateCharges.getDeposit());
 
 		this.returnValuesIn.appendRow();
-		this.returnValuesIn.setValue(aff,	"NAME");
-		this.returnValuesIn.setValue("ZR00", "AMOUNT_TYPE");
-		this.returnValuesIn.setValue(affiliateCharges.getRestockingFee(), "AMOUNT");
+		this.returnValuesIn.setValue("NAME", aff);
+		this.returnValuesIn.setValue("AMOUNT_TYPE", "ZR00");
+		this.returnValuesIn.setValue("AMOUNT", affiliateCharges.getRestockingFee());
 
 		this.returnValuesIn.appendRow();
-		this.returnValuesIn.setValue(aff,	"NAME");
-		this.returnValuesIn.setValue("ZC00", "AMOUNT_TYPE");
-		this.returnValuesIn.setValue(affiliateCharges.getAppliedCredit(), "AMOUNT");
+		this.returnValuesIn.setValue("NAME", aff);
+		this.returnValuesIn.setValue("AMOUNT_TYPE", "ZC00");
+		this.returnValuesIn.setValue("AMOUNT", affiliateCharges.getAppliedCredit());
 
 	}
 
-	public void addPromotionAmount(SapPromotion sapPromo) {
+	public void addPromotionAmount(SapPromotion sapPromo)
+	{
 		this.returnValuesIn.appendRow();
-		this.returnValuesIn.setValue(sapPromo.getSapPromoCode(),	"NAME");
-		this.returnValuesIn.setValue("ZP00", "AMOUNT_TYPE");
-		this.returnValuesIn.setValue(sapPromo.getAmount(), "AMOUNT");
+		this.returnValuesIn.setValue("NAME", sapPromo.getSapPromoCode());
+		this.returnValuesIn.setValue("AMOUNT_TYPE", "ZP00");
+		this.returnValuesIn.setValue("AMOUNT", sapPromo.getAmount());
 	}
 
-	public void setDeliveryCharge(double dlvCharge) {
+	public void setDeliveryCharge(double dlvCharge)
+	{
 		this.returnValuesIn.appendRow();
-		this.returnValuesIn.setValue(" ",	"NAME");
-		this.returnValuesIn.setValue("ZF00", "AMOUNT_TYPE");
-		this.returnValuesIn.setValue(dlvCharge, "AMOUNT");
+		this.returnValuesIn.setValue("NAME", " ");
+		this.returnValuesIn.setValue("AMOUNT_TYPE", "ZF00");
+		this.returnValuesIn.setValue("AMOUNT", dlvCharge);
 	}
 
-	public void setPhoneCharge(double phoneCharge) {
+	public void setPhoneCharge(double phoneCharge)
+	{
 		this.returnValuesIn.appendRow();
-		this.returnValuesIn.setValue(" ",	"NAME");
-		this.returnValuesIn.setValue("ZH00", "AMOUNT_TYPE");
-		this.returnValuesIn.setValue(phoneCharge, "AMOUNT");
+		this.returnValuesIn.setValue("NAME", " ");
+		this.returnValuesIn.setValue("AMOUNT_TYPE", "ZH00");
+		this.returnValuesIn.setValue("AMOUNT", phoneCharge);
 	}
 
 	
-	public void addLineDiscounts(InvoiceLineDiscount lineDiscount) {
+	public void addLineDiscounts(InvoiceLineDiscount lineDiscount)
+	{
 		this.discountDetailsIn.appendRow();
-		this.discountDetailsIn.setValue(lineDiscount.getDiscountType(), "TYPE");
-		this.discountDetailsIn.setValue(lineDiscount.getInvoiceLineNumber(), "LINE_ITEM");
-		this.discountDetailsIn.setValue(lineDiscount.getDiscountCode(), "COUPON_ID");		
+		this.discountDetailsIn.setValue("TYPE", lineDiscount.getDiscountType());
+		this.discountDetailsIn.setValue("LINE_ITEM", lineDiscount.getInvoiceLineNumber());
+		this.discountDetailsIn.setValue("COUPON_ID", lineDiscount.getDiscountCode());		
 	}
 
 	/*****************
 	public void addAffiliateCharges(AffiliateCharges affiliateCharges) {
 		ParameterList p = this.function.getImportParameterList();
 		String aff = affiliateCharges.getAffiliateCode();
-		p.setValue(affiliateCharges.getSubtotal(), aff + "_ORDERLINE_AMOUNT");	
-		p.setValue(affiliateCharges.getTax(), aff+"_TAX_AMOUNT");
-		p.setValue(affiliateCharges.getDeposit(), aff+"_BOTTLE_DEPOSIT_AMOUNT");
-		p.setValue(affiliateCharges.getRestockingFee(), aff+"_RESTOCKING_FEE");
-		p.setValue(affiliateCharges.getAppliedCredit(), "CREDIT_MEMOS_"+aff);
+		p.setValue(aff + "_ORDERLINE_AMOUNT", affiliateCharges.getSubtotal());	
+		p.setValue(aff+"_TAX_AMOUNT", affiliateCharges.getTax());
+		p.setValue(aff+"_BOTTLE_DEPOSIT_AMOUNT", affiliateCharges.getDeposit());
+		p.setValue(aff+"_RESTOCKING_FEE", affiliateCharges.getRestockingFee());
+		p.setValue("CREDIT_MEMOS_"+aff, affiliateCharges.getAppliedCredit());
 
 	}
 
 	public void setPromotionAmount(double promotionAmount) {
-		this.function.getImportParameterList().setValue(promotionAmount, "SIGNUP_PROMOTION_AMOUNT");
+		this.function.getImportParameterList().setValue("SIGNUP_PROMOTION_AMOUNT", promotionAmount);
 	}
 
 	public void setDeliveryCharge(double dlvCharge) {
-		this.function.getImportParameterList().setValue(dlvCharge, "DELIVERY_CHARGE");
+		this.function.getImportParameterList().setValue("DELIVERY_CHARGE", dlvCharge);
 	}
 
 	public void setPhoneCharge(double phoneCharge) {
-		this.function.getImportParameterList().setValue(phoneCharge, "PHONE_CHARGE");
+		this.function.getImportParameterList().setValue("PHONE_CHARGE", phoneCharge);
 	}
 	******************************/
 	

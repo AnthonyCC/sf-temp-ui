@@ -22,7 +22,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.sap.SapProductPromotionConstants;
 import com.freshdirect.sap.bapi.BapiException;
 import com.freshdirect.sap.bapi.BapiProductPromotionPreviewI;
-import com.sap.mw.jco.JCO;
+import com.sap.conn.jco.JCoException;
+import com.sap.conn.jco.JCoTable;
 
 public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements BapiProductPromotionPreviewI, SapProductPromotionConstants {
 
@@ -31,7 +32,9 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 	private List<ErpProductInfoModel> erpProductInfoList = new ArrayList<ErpProductInfoModel>();
 	private Map<String, ErpProductInfoModel> erpProductInfoMap = new HashMap<String,ErpProductInfoModel>();
 	private Map<String,List<FDProductPromotionInfo>> productPromotionInfoMap;
+	
 	private String functionName = null;
+	
 	public List<ErpProductInfoModel> getErpProductInfoList() {
 		return erpProductInfoList;
 	}
@@ -58,34 +61,35 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 		this.erpProductInfoMap = erpProductInfoMap;
 	}
 
-	public JcoBapiProductPromotionPreview(String functionName) {
+	public JcoBapiProductPromotionPreview(String functionName) throws JCoException {
 		super(functionName);
-		this.functionName = functionName; 
-		// TODO Auto-generated constructor stub
+		this.functionName = functionName;
 	}
 	
 	public void getPromotionProductsForPreview(String id){
 		
 	}	
 
-	protected void processResponse() throws BapiException {
+	protected void processResponse() throws BapiException
+	{
 		super.processResponse();
 
 //		JCO.Table ppHeaderpromoHeader = function.getTableParameterList().getTable(TABLE_ZDDPP_PROMO_HDR);	
 		if("ZDDPA_PREVIEW".equals(functionName)){
-			JCO.Table ppDetailTbl = function.getTableParameterList().getTable(TABLE_ZDDPP_PROMO_DTL);
-			productPromotionInfoMap =getProductPromotionInfo(ppDetailTbl);			
+			JCoTable ppDetailTbl = function.getTableParameterList().getTable(TABLE_ZDDPP_PROMO_DTL);
+			productPromotionInfoMap = getProductPromotionInfo(ppDetailTbl);			
 		}else{
-			JCO.Table ppDetailTbl = function.getTableParameterList().getTable(TABLE_ZDDPP_PROMO_DTL);
-			productPromotionInfoMap =getProductPromotionInfo(ppDetailTbl);
-			JCO.Table ppPriceTbl = function.getTableParameterList().getTable(TABLE_ZDDPP_PROMO_PRICE);
-			Map<String,Map<String,List<ErpMaterialPrice>>> ppPricesMap =getProductPromotionPrices(ppPriceTbl);
+			JCoTable ppDetailTbl = function.getTableParameterList().getTable(TABLE_ZDDPP_PROMO_DTL);
+			productPromotionInfoMap = getProductPromotionInfo(ppDetailTbl);
+			JCoTable ppPriceTbl = function.getTableParameterList().getTable(TABLE_ZDDPP_PROMO_PRICE);
+			Map<String,Map<String,List<ErpMaterialPrice>>> ppPricesMap = getProductPromotionPrices(ppPriceTbl);
 			populatePrices(ppPricesMap);
 		}
 	}
 
 	private void populatePrices(
-			Map<String, Map<String, List<ErpMaterialPrice>>> ppPricesMap) {
+			Map<String, Map<String, List<ErpMaterialPrice>>> ppPricesMap)
+	{
 		if(null != erpProductInfoMap && null !=ppPricesMap){
 			for (Iterator iterator = erpProductInfoMap.keySet().iterator(); iterator.hasNext();) {
 				ErpProductInfoModel erpProductInfoModel = (ErpProductInfoModel)erpProductInfoMap.get(iterator.next());
@@ -103,12 +107,12 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 	}
 	
 	public void addRequest(String previewId){
-		this.function.getImportParameterList().setValue(previewId, FIELD_REQUESTID);			
+		this.function.getImportParameterList().setValue(FIELD_REQUESTID, previewId);			
 	}
 	
 	
-	private List<ErpProductPromotion> populateProductPromotion(
-			JCO.Table ppTable) {		
+	private List<ErpProductPromotion> populateProductPromotion(JCoTable ppTable)
+	{		
 		List<ErpProductPromotion> ppList = new ArrayList<ErpProductPromotion>();
 		ppTable.firstRow();
 		for (int i = 0; i < ppTable.getNumRows(); i++) {
@@ -150,7 +154,7 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 	
 	
 	private Map<String,List<FDProductPromotionInfo>> getProductPromotionInfo(
-			JCO.Table ppInfoTable) {
+			JCoTable ppInfoTable) {
 		
 //		List<FDProductPromotionInfo> ppInfoList = new ArrayList<FDProductPromotionInfo>();
 		Map<String,List<FDProductPromotionInfo>> zonePromoProdMap= new HashMap<String,List<FDProductPromotionInfo>>();
@@ -228,7 +232,7 @@ public class JcoBapiProductPromotionPreview extends JcoBapiFunction implements B
 	}
 	
 	private Map<String,Map<String,List<ErpMaterialPrice>>> getProductPromotionPrices(
-			JCO.Table ppPriceTable) {
+			JCoTable ppPriceTable) {
 		
 		/*List<ErpProductPromotionPrice> ppPriceList = new ArrayList<ErpProductPromotionPrice>();*/
 //		List<ErpMaterialPrice> matPrices = new ArrayList<ErpMaterialPrice>(5);

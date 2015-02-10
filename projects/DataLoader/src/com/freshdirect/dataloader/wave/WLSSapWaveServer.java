@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.dataloader.wave;
 
 import org.apache.log4j.Category;
@@ -14,13 +6,10 @@ import weblogic.application.ApplicationLifecycleEvent;
 import weblogic.application.ApplicationLifecycleListener;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.dataloader.bapi.BapiRepository;
-import com.freshdirect.dataloader.bapi.BapiServer;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
- * @version $Revision$
- * @author $Author$
+ * @author kkanuganti
  */
 public class WLSSapWaveServer extends ApplicationLifecycleListener {
 
@@ -39,20 +28,13 @@ public class WLSSapWaveServer extends ApplicationLifecycleListener {
 			if (gwServ == null)
 				throw new IllegalArgumentException("gwServ not specified");
 
+			final String serverName = "WLSSapWaveServer";
+			final String functionName = "ZERPS_WAVE_DETAILS";
 			final String progId = "WEBWAVE01";
 
-			new BapiServer(gwHost, gwServ, progId) {
+			new FDWaveDetailJcoServer(serverName, functionName, progId).startServer();
 
-				@Override
-                protected BapiRepository getRepository() {
-					BapiRepository repo = new BapiRepository("FDWaveRepository");
-					repo.addFunction(new BapiErpsWave());
-					return repo;
-				}
-
-			}.start();
-
-			LOGGER.info("Started and connected to " + gwHost + ":" + gwServ + " as " + progId);
+			LOGGER.info("Started server ["+ serverName +"] and connected to " + gwHost + ":" + gwServ + " as " + progId);
 
 		}
 	}

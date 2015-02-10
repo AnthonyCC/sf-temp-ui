@@ -12,7 +12,9 @@ import java.util.Date;
 
 import com.freshdirect.sap.bapi.BapiException;
 import com.freshdirect.sap.bapi.BapiSalesOrderSimulate;
-import com.sap.mw.jco.JCO;
+import com.sap.conn.jco.JCoException;
+import com.sap.conn.jco.JCoStructure;
+import com.sap.conn.jco.JCoTable;
 
 /**
  *
@@ -25,28 +27,31 @@ class JcoBapiSalesOrderSimulate extends JcoBapiOrder implements BapiSalesOrderSi
 	private OrderItemOut[] orderItemOut;
 	private OrderScheduleEx[] orderScheduleEx;
 
-	public JcoBapiSalesOrderSimulate(boolean composite) {
+	public JcoBapiSalesOrderSimulate(boolean composite) throws JCoException
+	{
 		super(composite ? "Z_BAPI_COMPOSITE_SIMULATE" : "Z_BAPI_SALESORDER_SIMULATE");
 	}
 
-	public void setOrderHeaderIn(OrderHeaderIn hdr) {
-		JCO.Structure orderHeaderIn = this.function.getImportParameterList().getStructure("ORDER_HEADER_IN");
-		orderHeaderIn.setValue(hdr.getDistrChan(), "DISTR_CHAN");
-		orderHeaderIn.setValue(hdr.getDivision(), "DIVISION");
-		orderHeaderIn.setValue(hdr.getDocumentType(), "DOC_TYPE");
-		orderHeaderIn.setValue(hdr.getSalesOrg(), "SALES_ORG");
+	public void setOrderHeaderIn(OrderHeaderIn hdr)
+	{
+		JCoStructure orderHeaderIn = this.function.getImportParameterList().getStructure("ORDER_HEADER_IN");
+		
+		orderHeaderIn.setValue("DISTR_CHAN", hdr.getDistrChan());
+		orderHeaderIn.setValue("DIVISION", hdr.getDivision());
+		orderHeaderIn.setValue("DOC_TYPE", hdr.getDocumentType());
+		orderHeaderIn.setValue("SALES_ORG", hdr.getSalesOrg());
 
-		orderHeaderIn.setValue(hdr.getPurchaseOrderNumber(), "PURCH_NO_C");
+		orderHeaderIn.setValue("PURCH_NO_C", hdr.getPurchaseOrderNumber());
 
 		// requested date
-		orderHeaderIn.setValue(hdr.getRequestedDate(), "REQ_DATE_H");
-		orderHeaderIn.setValue(hdr.getRequestedDate(), "PO_DAT_S");
+		orderHeaderIn.setValue("REQ_DATE_H", hdr.getRequestedDate());
+		orderHeaderIn.setValue("PO_DAT_S", hdr.getRequestedDate());
 
 		// pricing date
-		orderHeaderIn.setValue(hdr.getPricingDate(), "PRICE_DATE");
+		orderHeaderIn.setValue("PRICE_DATE", hdr.getPricingDate());
 
 		// current date
-		orderHeaderIn.setValue(hdr.getCurrentDate(), "PURCH_DATE");
+		orderHeaderIn.setValue("PURCH_DATE", hdr.getCurrentDate());
 	}
 
 	protected String getOrderItemInName() {
@@ -68,7 +73,7 @@ class JcoBapiSalesOrderSimulate extends JcoBapiOrder implements BapiSalesOrderSi
 	public void processResponse() throws BapiException {
 		super.processResponse();
 
-		JCO.Table jcoItemsOut = function.getTableParameterList().getTable("ORDER_ITEMS_OUT");
+		JCoTable jcoItemsOut = function.getTableParameterList().getTable("ORDER_ITEMS_OUT");
 
 		this.orderItemOut = new OrderItemOut[jcoItemsOut.getNumRows()];
 		jcoItemsOut.firstRow();
@@ -95,7 +100,7 @@ class JcoBapiSalesOrderSimulate extends JcoBapiOrder implements BapiSalesOrderSi
 			jcoItemsOut.nextRow();
 		}
 
-		JCO.Table jcoOrderSchedule = function.getTableParameterList().getTable("ORDER_SCHEDULE_EX");
+		JCoTable jcoOrderSchedule = function.getTableParameterList().getTable("ORDER_SCHEDULE_EX");
 		this.orderScheduleEx = new OrderScheduleEx[jcoOrderSchedule.getNumRows()];
 		jcoOrderSchedule.firstRow();
 		for (int i = 0; i < this.orderScheduleEx.length; i++) {
@@ -119,29 +124,6 @@ class JcoBapiSalesOrderSimulate extends JcoBapiOrder implements BapiSalesOrderSi
 			jcoOrderSchedule.nextRow();
 		}
 	}
-
-	
-/*		
-	public void addOrderItemIn(OrderItemIn item) {
-		this.orderItemIn.appendRow();
-
-		this.orderItemIn.setValue(item.getMaterialNo(),	"MATERIAL");
-		this.orderItemIn.setValue(item.getPurchNo(),	"PURCH_NO_S");
-		this.orderItemIn.setValue(item.getPoItemNo(),	"PO_ITM_NO");
-		if (item.getPoItemNoS() != 0) {
-			this.orderItemIn.setValue(item.getPoItemNoS(), "POITM_NO_S");
-		}
-		this.orderItemIn.setValue(item.getItemNumber(),	"ITM_NUMBER");
-		this.orderItemIn.setValue(item.getPurchDate(),	"PO_DAT_S");
-		if (item.getReqQty() != null) {
-			this.orderItemIn.setValue((int) (item.getReqQty().doubleValue() * 1000), "REQ_QTY");
-		}
-		this.orderItemIn.setValue(item.getSalesUnit(),	"SALES_UNIT");
-		this.orderItemIn.setValue(item.getDeliveryGroup(), "DLV_GROUP");
-		this.orderItemIn.setValue(item.getCustMat35(),	"CUST_MAT35");
-		//this.orderItemIn.setValue(item.getSalesDist(), "SALES_DIST");
-	}
-*/
 	
 	public int getOrderItemOutSize() {
 		return this.orderItemOut.length;

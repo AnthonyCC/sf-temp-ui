@@ -127,7 +127,7 @@ public class SapCheckAvailability implements SapCommandI {
 			orderLines.add(orderLine);
 		}
 
-		public List getBapis() {
+		public List getBapis() throws SapException {
 			if (orderLines.isEmpty()) {
 				return Collections.EMPTY_LIST;
 			}

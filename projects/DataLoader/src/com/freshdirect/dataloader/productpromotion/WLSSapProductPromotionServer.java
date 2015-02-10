@@ -6,17 +6,18 @@ import weblogic.application.ApplicationLifecycleEvent;
 import weblogic.application.ApplicationLifecycleListener;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.dataloader.bapi.BapiRepository;
-import com.freshdirect.dataloader.bapi.BapiServer;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
+/**
+ * @author kkanuganti
+ */
 public class WLSSapProductPromotionServer extends ApplicationLifecycleListener {
 
-	private static Category LOGGER = LoggerFactory.getInstance(WLSSapProductPromotionServer.class);
+	private static Category LOG = LoggerFactory.getInstance(WLSSapProductPromotionServer.class);
 	@Override
     public void postStart(ApplicationLifecycleEvent evt) {
 
-		LOGGER.info("Inside WLSSapProductPromotionServer");
+		LOG.info("WLSSapProductPromotionServer");
 		
 		if (ErpServicesProperties.getJcoClientListenersEnabled()) {
 
@@ -28,21 +29,14 @@ public class WLSSapProductPromotionServer extends ApplicationLifecycleListener {
 			if (gwServ == null)
 				throw new IllegalArgumentException("gwServ not specified");
 
-			final String progId = SAPProductPromotionContentLoader.SAP_PROGRAM_ID;
+			final String serverName = "WLSSapProductPromotionServer";
+			final String functionName = "ZDDPP_PUBLISH";
+			final String progId = "ZDDPP_PUB";
 
-			new BapiServer(gwHost, gwServ, progId) {
+			new FDProductPromotionJcoServer(serverName, functionName, progId).startServer();
 
-				@Override
-                protected BapiRepository getRepository() {
-					BapiRepository repo = new BapiRepository("FDWaveRepository");
-					repo.addFunction(new SAPProductPromotionContentLoader());
-					return repo;
-				}
-
-			}.start();
-
-			LOGGER.info("Started  WLSSapProductPromotionServer and connected to " + gwHost + ":" + gwServ + " as " + progId);
-
+			LOG.info("Started server["+ serverName +"] and connected to " + gwHost + ":" + gwServ + " as " + progId);
+			
 		}
 	}
 }

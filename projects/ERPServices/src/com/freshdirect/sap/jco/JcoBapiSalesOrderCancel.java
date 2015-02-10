@@ -1,14 +1,7 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.sap.jco;
 
 import com.freshdirect.sap.bapi.BapiSalesOrderCancel;
+import com.sap.conn.jco.JCoException;
 
 /**
  *
@@ -18,12 +11,13 @@ import com.freshdirect.sap.bapi.BapiSalesOrderCancel;
  */
 class JcoBapiSalesOrderCancel extends JcoBapiFunction implements BapiSalesOrderCancel {
 
-	public JcoBapiSalesOrderCancel() {
+	public JcoBapiSalesOrderCancel() throws JCoException
+	{
 		super("Z_BAPI_SALESORDER_CHANGE");
-		this.function.getImportParameterList().getStructure("ORDER_HEADER_INX").setValue("D", "UPDATEFLAG");
+		this.function.getImportParameterList().getStructure("ORDER_HEADER_INX").setValue("UPDATEFLAG","D");
 	}
 
 	public void setSalesDocumentNumber(String salesDocumentNumber) {
-		this.function.getImportParameterList().setValue(salesDocumentNumber, "SALESDOCUMENT");
+		this.function.getImportParameterList().setValue("SALESDOCUMENT", salesDocumentNumber);
 	}
 }

@@ -5,13 +5,10 @@ import weblogic.application.ApplicationLifecycleEvent;
 import weblogic.application.ApplicationLifecycleListener;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.dataloader.bapi.BapiRepository;
-import com.freshdirect.dataloader.bapi.BapiServer;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
- * @version $Revision$
- * @author $Author$
+ * @author kkanuganti
  */
 public class WLSSapCOOLChangeServer extends ApplicationLifecycleListener {
 	
@@ -20,9 +17,8 @@ public class WLSSapCOOLChangeServer extends ApplicationLifecycleListener {
 	@Override
     public void postStart(ApplicationLifecycleEvent evt) {
 		
-		//if (ErpServicesProperties.getJcoClientCOOLListenersEnabled()) {
-		if (ErpServicesProperties.getJcoClientListenersEnabled()) {
-
+		if (ErpServicesProperties.getJcoClientListenersEnabled())
+		{
 			final String gwHost = ErpServicesProperties.getJcoClientListenHost();
 			if (gwHost == null)
 				throw new IllegalArgumentException("gwHost not specified");
@@ -31,23 +27,13 @@ public class WLSSapCOOLChangeServer extends ApplicationLifecycleListener {
 			if (gwServ == null)
 				throw new IllegalArgumentException("gwServ not specified");
 	
+			final String serverName = "WLSSapCOOLChangeServer";
+			final String functionName = "ZSDI_COUNTRY_ORIGIN";
 			final String progId = "COUNTRY_ORIGIN";
-	
-			new BapiServer(gwHost, gwServ, progId) {
-	
-				@Override
-                protected BapiRepository getRepository() {
-					BapiRepository repo = new BapiRepository("FDCOOLChangeRepo");
-					repo.addFunction(new BapiErpsCOOLChange());
-					return repo;
-				}
-	
-			}.start();
-	
-			LOGGER.info("Started and connected to " + gwHost + ":" + gwServ + " as " + progId);
-		
-		}
-		
-	}
 
+			new FDCOOLJcoServer(serverName, functionName, progId).startServer();
+
+			LOGGER.info("Started server["+ serverName +"] and connected to " + gwHost + ":" + gwServ + " as " + progId);
+		}
+	}
 }

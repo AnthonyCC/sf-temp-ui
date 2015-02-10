@@ -3,14 +3,15 @@ package com.freshdirect.sap.jco;
 import java.util.Date;
 
 import com.freshdirect.sap.bapi.BapiSendEmployeeInfo;
-import com.sap.mw.jco.JCO;
+import com.sap.conn.jco.JCoException;
+import com.sap.conn.jco.JCoTable;
 
 public class JcoBapiSendEmployeeInfo extends JcoBapiFunction implements BapiSendEmployeeInfo {
 	
-	protected JCO.Table employee;
+	protected JCoTable employee;
 	
-	
-	public JcoBapiSendEmployeeInfo() {
+	public JcoBapiSendEmployeeInfo() throws JCoException
+	{
 		super("ZBAPI_EMPLOYEE_INFO_UPDATE");
 		
 		this.employee = this.function.getTableParameterList().getTable( "T_ZHR_EMPLOYEE" );
@@ -20,25 +21,25 @@ public class JcoBapiSendEmployeeInfo extends JcoBapiFunction implements BapiSend
 	public void addEmployee(String employeeId, String firstName, String lastName, String middleInitial
 			, String shortName, String jobType, Date hireDate, String status, String supervisorId
 			, String supervisorFirstName, String supervisorMiddleInitial, String supervisorLastName
-			, String supervisorShortName,Date terminationDate) {
-		
+			, String supervisorShortName,Date terminationDate)
+	{
 		employee.appendRow();
-		employee.setValue(employeeId, "ZEMPLOYEEID");
-		employee.setValue(firstName, "ZFIRSTNAME");
-		employee.setValue(lastName, "ZLASTNAME");
-		employee.setValue(middleInitial, "ZMIDDLEINITIAL");
+		employee.setValue("ZEMPLOYEEID", employeeId);
+		employee.setValue("ZFIRSTNAME", firstName);
+		employee.setValue("ZLASTNAME", lastName);
+		employee.setValue("ZMIDDLEINITIAL", middleInitial);
 		
-		employee.setValue(shortName, "ZSHORTNAME");
-		employee.setValue(jobType, "ZJOBTYPE");
-		employee.setValue(hireDate, "ZHIREDATE");
-		employee.setValue(status, "ZSTATUS");
-		employee.setValue(supervisorId, "ZSUPERVISORID");
-		employee.setValue(supervisorFirstName, "ZSUPFIRSTNAME");
-		employee.setValue(supervisorMiddleInitial, "ZSUPMIDDLENAME");
-		employee.setValue(supervisorLastName, "ZSUPLASTNAME");
+		employee.setValue("ZSHORTNAME", shortName);
+		employee.setValue("ZJOBTYPE", jobType);
+		employee.setValue("ZHIREDATE", hireDate);
+		employee.setValue("ZSTATUS", status);
+		employee.setValue("ZSUPERVISORID", supervisorId);
+		employee.setValue("ZSUPFIRSTNAME", supervisorFirstName);
+		employee.setValue("ZSUPMIDDLENAME", supervisorMiddleInitial);
+		employee.setValue("ZSUPLASTNAME", supervisorLastName);
 		
-		employee.setValue(supervisorShortName, "ZSUPSHORTNAME");
-		employee.setValue(terminationDate, "ZTERMINATIONDATE");
+		employee.setValue("ZSUPSHORTNAME", supervisorShortName);
+		employee.setValue("ZTERMINATIONDATE", terminationDate);
 	}
 	
 	

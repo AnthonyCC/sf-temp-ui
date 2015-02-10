@@ -1,15 +1,10 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.sap.jco;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Category;
 
@@ -18,122 +13,189 @@ import com.freshdirect.sap.bapi.BapiAbapException;
 import com.freshdirect.sap.bapi.BapiException;
 import com.freshdirect.sap.bapi.BapiFunctionI;
 import com.freshdirect.sap.bapi.BapiInfo;
-import com.sap.mw.jco.IFunctionTemplate;
-import com.sap.mw.jco.JCO;
+import com.sap.conn.jco.AbapException;
+import com.sap.conn.jco.JCoException;
+import com.sap.conn.jco.JCoFunction;
+import com.sap.conn.jco.JCoFunctionTemplate;
+import com.sap.conn.jco.JCoRecord;
+import com.sap.conn.jco.JCoStructure;
+import com.sap.conn.jco.JCoTable;
 
 /**
+ * @author kkanuganti
  *
- *
- * @version $Revision$
- * @author $Author$
  */
+@SuppressWarnings("unchecked")
 abstract class JcoBapiFunction implements BapiFunctionI {
 
-	private static Category LOGGER = LoggerFactory.getInstance(JcoBapiFunction.class);
+	private static Category LOG = LoggerFactory.getInstance(JcoBapiFunction.class);
 
-	protected JCO.Function function;
+	private static final String FUNCTIONTEMPLATE_CACHE_KEY = "_functiontemplate";
 
+	private static Map cache;
+
+	protected JCoFunction function;
+	
 	private boolean finished = false;
+	
 	private BapiInfo[] bapiInfos;
 
-	public JcoBapiFunction(String functionName) {
-		IFunctionTemplate ftemplate = JcoManager.getInstance().getFunctionTemplate(functionName);
-		this.function = new JCO.Function(ftemplate);
+	static
+	{
+		cache = Collections.synchronizedMap(new HashMap());
+	}
+	
+	public JcoBapiFunction(String functionName) throws JCoException
+	{
+		this.function = getFunction(functionName);
 	}
 
-	public final void execute() throws BapiException {
-		try {
+	public final void execute() throws BapiException
+	{
+		try
+		{
 			JcoManager manager = JcoManager.getInstance();
 
-			LOGGER.debug("Executing BAPI " + this.function.getName());
+			LOG.debug("Executing BAPI " + this.function.getName());
 
 			long startTime = System.currentTimeMillis();
 
-			manager.dump(this.function, "jco_" + startTime + "_in.html");
+			manager.dumpToXML(this.function, "jco_" + startTime + "_in.xml");
+			
+			try
+			{
+				function.execute(manager.getDestination());
 
-			JCO.Client sapClient = null;
-			try {
-				sapClient = manager.getClient();
-				if (sapClient == null) {
-					throw new BapiException("No available connections in JCO pool");
-				}
-				sapClient.execute(this.function);
-
-				manager.dump(this.function, "jco_" + startTime + "_out.html");
-
-			} catch (JCO.AbapException ex) {
+				manager.dumpToXML(this.function, "jco_" + startTime + "_out.xml");
+			} 
+			catch (AbapException ex)
+			{
 				throw new BapiAbapException("BAPI call failed in SAP (" + ex + ")");
-
-			} catch (JCO.Exception ex) {
+			} 
+			catch (JCoException ex)
+			{
 				throw new BapiException("BAPI call communication failure (" + ex + ")");
-
-			} finally {
-				if (sapClient != null) {
-					JCO.releaseClient(sapClient);
-				}
 			}
 
 			long endTime = System.currentTimeMillis();
 
-			LOGGER.debug("BAPI call " + this.function.getName() + " completed in " + (endTime - startTime) + " milliseconds");
+			LOG.debug("BAPI call " + this.function.getName() + " completed in " + (endTime - startTime) + " milliseconds");
 
 			this.processResponse();
-		} finally {
+			
+		}
+		catch (JCoException ex) 
+		{
+			throw new BapiException("BAPI call communication failure (" + ex + ")");
+		} 
+		finally
+		{
 			this.finished = true;
 		}
 	}
+	
+	/**
+	 * process response from SAP function module
+	 *
+	 * @throws BapiException
+	 */
+	protected void processResponse() throws BapiException
+	{
+		final List<BapiInfo> retList = new ArrayList<BapiInfo>();
 
-	public boolean isFinished() {
-		return finished;
-	}
+		JCoStructure returnStructure = null;
+		JCoTable returnTable = null;
 
-	public BapiInfo[] getInfos() {
-		return this.bapiInfos;
-	}
+		if (function.getExportParameterList() != null && function.getExportParameterList().getMetaData().hasField("RETURN")
+				&& function.getExportParameterList().getMetaData().isStructure("RETURN"))
+		{
+			returnStructure = function.getExportParameterList().getStructure("RETURN");
+			retList.add(this.convertReturn(returnStructure));
 
-	protected void processResponse() throws BapiException {
-		List retList = new ArrayList();
-
-		if (function.getExportParameterList() != null && function.getExportParameterList().hasField("RETURN")
-				&& function.getExportParameterList().isStructure("RETURN") ) {
-			// get "return" as a struct
-			JCO.Structure ret = function.getExportParameterList().getStructure("RETURN");
-			retList.add(this.convertReturn(ret));
-
-		} else if (function.getTableParameterList() != null && function.getTableParameterList().hasField("RETURN")
-				&& function.getTableParameterList().isTable("RETURN")) {
-			// get "return" as a table
-			JCO.Table ret = function.getTableParameterList().getTable("RETURN");
-			ret.firstRow();
-			do {
-				retList.add(this.convertReturn(ret));
-			} while (ret.nextRow());
-		} 
+		}
+		else if (function.getTableParameterList() != null && function.getTableParameterList().getMetaData().hasField("RETURN")
+				&& function.getTableParameterList().getMetaData().isTable("RETURN"))
+		{
+			returnTable = function.getTableParameterList().getTable("RETURN");
+			returnTable.firstRow();
+			do
+			{
+				retList.add(this.convertReturn(returnTable));
+			}
+			while (returnTable.nextRow());
+		}
 
 		this.bapiInfos = (BapiInfo[]) retList.toArray(new BapiInfo[0]);
 	}
-
-	private BapiInfo convertReturn(JCO.Record ret) {
+	
+	/**
+	 *
+	 * @param table
+	 *           the JCoTable
+	 * @return will return a String that represents the columns & values in a JCoTable
+	 */
+	private BapiInfo convertReturn(final JCoRecord ret)
+	{
 		String code;
-		if (ret.hasField("ID")) {
+		if (ret.getMetaData().hasField("ID"))
+		{
 			code = ret.getString("ID") + "/" + ret.getString("NUMBER");
-		} else {
+		}
+		else
+		{
 			code = ret.getString("CODE");
 		}
-		return new BapiInfo(
-			ret.getString("TYPE"),
-			code,
-			ret.getString("LOG_NO"),
-			ret.getString("LOG_MSG_NO"),
-			ret.getString("MESSAGE")
-				+ ","
-				+ ret.getString("MESSAGE_V1")
-				+ ","
-				+ ret.getString("MESSAGE_V2")
-				+ ","
-				+ ret.getString("MESSAGE_V3")
-				+ ","
-				+ ret.getString("MESSAGE_V4"));
+		return new BapiInfo(ret.getString("TYPE"), code, ret.getString("LOG_NO"), ret.getString("LOG_MSG_NO"),
+				ret.getString("MESSAGE") + "," + ret.getString("MESSAGE_V1") + "," + ret.getString("MESSAGE_V2") + ","
+						+ ret.getString("MESSAGE_V3") + "," + ret.getString("MESSAGE_V4"));
+	}
+	
+	/**
+	 * This method will resolve the FunctionTemplate for the given name. It will search the local cache and if not found,
+	 * retrieve it from SAP via the repository. It then caches that and returns it.
+	 * <p/>
+	 * This method NEVER returns null! An exception is thrown when the function can not be resolved.
+	 *
+	 * @param functionName
+	 *           the name of the function to find
+	 * @return the function template
+	 * @throws JCoException
+	 * @throws RuntimeException
+	 *            when the requested function can not be found in the configured repositories
+	 */
+	protected JCoFunction getFunction(final String functionName) throws JCoException
+	{
+		final String cacheKey = functionName + FUNCTIONTEMPLATE_CACHE_KEY;
+		cache = Collections.synchronizedMap(new HashMap());
+		JCoFunctionTemplate ftemplate = (JCoFunctionTemplate) cache.get(cacheKey);
+		if (ftemplate == null)
+		{
+			ftemplate = JcoManager.getInstance().getFunctionTemplate(functionName);
+			if (ftemplate == null)
+			{
+				throw new RuntimeException(new StringBuffer("Could not find function '").append(functionName).append("'").toString());
+			}
+			cache.put(cacheKey, ftemplate);
+		}
+		return ftemplate.getFunction();
+	}
+	
+
+	/**
+	 * @return the bapiInfos
+	 */
+	@Override
+	public BapiInfo[] getInfos()
+	{
+		return this.bapiInfos;
 	}
 
+
+	/**
+	 * @return the isTaskComplete
+	 */
+	public boolean isFinished() {
+		return finished;
+	}
+	
 }

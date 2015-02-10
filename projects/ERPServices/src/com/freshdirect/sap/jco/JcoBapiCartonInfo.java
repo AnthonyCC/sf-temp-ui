@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.sap.jco;
 
 import java.util.HashMap;
@@ -15,7 +7,8 @@ import java.util.Map;
 
 import com.freshdirect.sap.SapProperties;
 import com.freshdirect.sap.bapi.BapiCartonInfo;
-import com.sap.mw.jco.JCO;
+import com.sap.conn.jco.JCoException;
+import com.sap.conn.jco.JCoTable;
 
 /**
  *
@@ -25,16 +18,18 @@ import com.sap.mw.jco.JCO;
  */
 class JcoBapiCartonInfo extends JcoBapiFunction implements BapiCartonInfo {
 
-	private JCO.Table lstOrderID;
+	private JCoTable lstOrderID;
 	
-	private JCO.Table lstCartonInfo;
+	private JCoTable lstCartonInfo;
 
-	public JcoBapiCartonInfo() {
+	public JcoBapiCartonInfo() throws JCoException
+	{
 		super(SapProperties.getCartonInfoFunctionName());
-
 	}
 
-	public void setOrderIds(List orderIdList) {
+	@SuppressWarnings("rawtypes")
+	public void setOrderIds(List orderIdList)
+	{
 		lstOrderID = this.function.getTableParameterList().getTable("SALESORDER");
 		if(orderIdList != null) {
 			Iterator tmpIterator = orderIdList.iterator();
@@ -42,12 +37,13 @@ class JcoBapiCartonInfo extends JcoBapiFunction implements BapiCartonInfo {
 			while(tmpIterator.hasNext()) {
 				strOrderNo = (String)tmpIterator.next();
 				lstOrderID.insertRow(1);
-				lstOrderID.setValue(strOrderNo, "VBELN");				
+				lstOrderID.setValue("VBELN", strOrderNo);				
 				lstOrderID.nextRow();				
 			}
 		}		
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Map getCartonInfos() {
 		Map cartonInfoMap = new HashMap();
 		lstCartonInfo = this.function.getTableParameterList().getTable("ZCARTON_COUNT");

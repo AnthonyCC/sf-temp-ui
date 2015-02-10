@@ -1503,7 +1503,7 @@
 	<target name="erpservices" description="Build ERPServices">
 		<path id="erpservices.classpath">
 			<pathelement location="${work.dir}/Framework.jar"/>
-			<pathelement location="${thirdparty.home}/sapjco.jar"/>
+			<pathelement location="${thirdparty.home}/sapjco3.jar"/>
 			<pathelement location="${thirdparty.home}/lcc.jar"/>
             <pathelement location="${thirdparty.home}/givexclient.jar"/>
 			<pathelement location="${thirdparty.home}/antlr.jar"/>
@@ -1726,7 +1726,7 @@
 			<pathelement location="${work.dir}/MarketingAdmin.war"/>			
             		<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
             		<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
-			<pathelement location="${thirdparty.home}/sapjco.jar"/>
+			<pathelement location="${thirdparty.home}/sapjco3.jar"/>
 			<pathelement location="${thirdparty.home}/microba-0.4.4.2.jar"/>
 			<pathelement location="${thirdparty.home}/roadnetservices.jar"/>
 			<pathelement location="${weblogic.home}/server/lib/webservices.jar"/>
@@ -2187,7 +2187,7 @@
 				<pathelement location="${thirdparty.home}/c3p0-0.9.2-pre4.jar"/>
 				<pathelement location="${thirdparty.home}/c3p0-oracle-thin-extras-0.9.2-pre4.jar"/>
 				<pathelement location="${thirdparty.home}/mchange-commons-java-0.2.2.jar"/>
-				<pathelement location="${thirdparty.home}/sapjco.jar"/>
+				<pathelement location="${thirdparty.home}/sapjco3.jar"/>
 				<pathelement location="${thirdparty.home}/ojdbc6.jar"/>
 				<pathelement location="${thirdparty.home}/vaadin-6.8.2.jar"/>					
 			</path>
@@ -2239,7 +2239,7 @@
 				<fileset dir="${thirdparty.home}" includes="c3p0-0.9.2-pre4.jar"/>
 				<fileset dir="${thirdparty.home}" includes="c3p0-oracle-thin-extras-0.9.2-pre4.jar"/>
 				<fileset dir="${thirdparty.home}" includes="mchange-commons-java-0.2.2.jar"/>
-				<fileset dir="${thirdparty.home}" includes="sapjco.jar"/>
+				<fileset dir="${thirdparty.home}" includes="sapjco3.jar"/>
 				<!-- <fileset dir="${thirdparty.home}" includes="ojdbc6.jar"/> -->
 				<fileset dir="${thirdparty.home}" includes="vaadin-6.8.2.jar"/>				
 			</copy>
@@ -2358,7 +2358,7 @@
 			</libraries>
 			<lib>
 				<include name="lcc.jar"/>
-				<include name="sapjco.jar"/>
+				<include name="sapjco3.jar"/>
 		                <include name="givexclient.jar"/>
 		                <include name="${scarab.jar}"/>
 				<!-- scarab runtime dependencies -->
@@ -2393,7 +2393,7 @@
 			<lib>
 				<!-- <include name="oscache-2.4.jar"/> -->
 				<include name="lcc.jar"/>
-				<include name="sapjco.jar"/>
+				<include name="sapjco3.jar"/>
 				<include name="lucene-core-${lucene.version}.jar"/>
                 		<include name="givexclient.jar"/> 
                 		<include name="${scarab.jar}"/>
@@ -2469,7 +2469,7 @@
 			</libraries>
 			<lib>
 				<include name="lcc.jar"/>
-				<include name="sapjco.jar"/>
+				<include name="sapjco3.jar"/>
 				<include name="jstl-api-1.2.jar"/>
 				<include name="jstl-impl-1.2.jar"/>
 		                <include name="givexclient.jar"/>
@@ -2510,7 +2510,7 @@
 			</libraries>
 			<lib>
 				<include name="lcc.jar"/>
-				<include name="sapjco.jar"/>
+				<include name="sapjco3.jar"/>
 				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
 				<include name="spring.jar"/>
@@ -2630,7 +2630,7 @@
 				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
 				<include name="lcc.jar"/>
-				<include name="sapjco.jar"/>
+				<include name="sapjco3.jar"/>
 				<include name="givexclient.jar"/>                
 				<include name="poi-3.5-FINAL-20090928.jar"/>
 
@@ -2740,7 +2740,7 @@
 			<zipfileset src="${thirdparty.home}/jaxen-1.1-beta-4.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jakarta-oro-2.0.5.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/${log4j.jar}" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/sapjco.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/sapjco3.jar" excludes="META-INF/*"/>
            		<zipfileset src="${thirdparty.home}/givexclient.jar" excludes="META-INF/*"/>
 			<!-- hivemind -->
 			<zipfileset src="${thirdparty.home}/hivemind-1.1.1.jar"/>
@@ -2803,7 +2803,7 @@
 			<zipfileset src="${thirdparty.home}/jaxen-1.1-beta-4.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jakarta-oro-2.0.5.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/${log4j.jar}" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/sapjco.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/sapjco3.jar" excludes="META-INF/*"/>
 			<zipfileset src="${weblogic.home}/server/ext/jdbc/oracle/920/ojdbc14.jar" excludes="META-INF/*"/>
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar"/>
@@ -2846,7 +2846,7 @@
 			<zipfileset src="${thirdparty.home}/jaxen-1.1-beta-4.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/jakarta-oro-2.0.5.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/${log4j.jar}" excludes="META-INF/*"/>
-			<zipfileset src="${thirdparty.home}/sapjco.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/sapjco3.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/opencsv-1.8.jar" excludes="META-INF/*"/>
 			<zipfileset src="${weblogic.home}/server/ext/jdbc/oracle/10g/ojdbc14_g.jar" excludes="META-INF/*"/>
 			<zipfileset src="${weblogic.home}/server/lib/weblogic.jar" excludes="META-INF/*"/>			
@@ -3098,7 +3098,7 @@
 			</libraries>
 			<lib>
 				<include name="lcc.jar"/>
-				<include name="sapjco.jar"/>
+				<include name="sapjco3.jar"/>
 				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
 				<include name="spring.jar"/>

@@ -1,68 +1,155 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.sap.bapi;
 
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.erp.EnumProductPromotionType;
+import com.freshdirect.sap.ejb.SapException;
 import com.freshdirect.sap.jco.JcoBapiFunctionFactory;
 
 /**
  * Abstract factory for BAPIs.
  * 
- * @version $Revision$
- * @author $Author$
+ * @author kkanuganti
  */
 public abstract class BapiFactory {
 
 	private final static BapiFactory INSTANCE = new JcoBapiFunctionFactory();
 
+	/**
+	 * @return BapiFactory
+	 */
 	public static BapiFactory getInstance() {
 		return INSTANCE;
 	}
 
-	public abstract BapiCreateCustomer getCreateCustomerBuilder();
+	/**
+	 * @return BapiCreateCustomer
+	 * @throws SapException
+	 */
+	public abstract BapiCreateCustomer getCreateCustomerBuilder()
+			throws SapException;
 
+	/**
+	 * @param saleType
+	 * @return BapiSalesOrderCreate
+	 * @throws SapException
+	 */
 	public abstract BapiSalesOrderCreate getSalesOrderCreateBuilder(
-			EnumSaleType saleType);
+			EnumSaleType saleType) throws SapException;
 
-	public abstract BapiMaterialAvailability getMaterialAvailabilityBuilder();
+	/**
+	 * @return BapiMaterialAvailability
+	 * @throws SapException
+	 */
+	public abstract BapiMaterialAvailability getMaterialAvailabilityBuilder()
+			throws SapException;
 
-	public abstract BapiTruckMasterInfo getBapiTruckMasterInfoBuilder();
+	/**
+	 * @return BapiTruckMasterInfo
+	 * @throws SapException
+	 */
+	public abstract BapiTruckMasterInfo getBapiTruckMasterInfoBuilder()
+			throws SapException;
+
+	/**
+	 * @return BapiRouteMasterInfo
+	 * @throws SapException
+	 */
+	public abstract BapiRouteMasterInfo getBapiRouteMasterInfoBuilder()
+			throws SapException;
+
+	/**
+	 * @return BapiSalesOrderSimulate
+	 * @throws SapException
+	 */
+	public abstract BapiSalesOrderSimulate getSalesOrderSimulateBuilder()
+			throws SapException;
 	
-	public abstract BapiRouteMasterInfo getBapiRouteMasterInfoBuilder();
+	/**
+	 * @return BapiSalesOrderSimulate
+	 * @throws SapException
+	 */
+	public abstract BapiSalesOrderSimulate getCompositeSimulateBuilder()
+			throws SapException;
 
-	public abstract BapiSalesOrderSimulate getSalesOrderSimulateBuilder();
-
-	public abstract BapiSalesOrderSimulate getCompositeSimulateBuilder();
-
-	public abstract BapiSalesOrderChange getSalesOrderChangeBuilder();
-
-	public abstract BapiSalesOrderCancel getSalesOrderCancelBuilder();
-
-	public abstract BapiSendSettlement getSendSettlementBuilder();
-
-	public abstract BapiPostReturnI getPostReturnBuilder();
-
-	public abstract BapiCartonInfo getCartonInfoProvider();
+	/**
+	 * @return BapiSalesOrderChange
+	 * @throws SapException
+	 */
+	public abstract BapiSalesOrderChange getSalesOrderChangeBuilder()
+			throws SapException;
 	
-	public abstract BapiSendEmployeeInfo getSendEmployeeInfoSender();
-	
-	public abstract BapiSendHandOff getHandOffSender();
-	
-	public abstract BapiSendPhysicalTruckInfo getHandOffPhysicalTruckInfoSender();
-	
-	public abstract BapiRouteStatusInfo getBapiRouteStatusInfoBuilder();
-	
-	public abstract BapiProductPromotionPreviewI getBapiProductPromotionPreviewBuilder(EnumProductPromotionType type );
-	
-	public abstract BapiSendSettlementByCommand getBapiSendEBTSettlementSender();
-	
-	public abstract BapiCartonDetailsForSale getBapiCartonDetailsForSale();
+	/**
+	 * @return BapiSalesOrderCancel
+	 * @throws SapException
+	 */
+	public abstract BapiSalesOrderCancel getSalesOrderCancelBuilder()
+			throws SapException;
 
+	/**
+	 * @return BapiSendSettlement
+	 * @throws SapException
+	 */
+	public abstract BapiSendSettlement getSendSettlementBuilder()
+			throws SapException;
+
+	/**
+	 * @return BapiPostReturnI
+	 * @throws SapException
+	 */
+	public abstract BapiPostReturnI getPostReturnBuilder() throws SapException;
+
+	/**
+	 * @return BapiCartonInfo
+	 * @throws SapException
+	 */
+	public abstract BapiCartonInfo getCartonInfoProvider() throws SapException;
+
+	/**
+	 * @return BapiSendEmployeeInfo
+	 * @throws SapException
+	 */
+	public abstract BapiSendEmployeeInfo getSendEmployeeInfoSender()
+			throws SapException;
+
+	/**
+	 * @return BapiSendHandOff
+	 * @throws SapException
+	 */
+	public abstract BapiSendHandOff getHandOffSender() throws SapException;
+
+	/**
+	 * @return BapiSendPhysicalTruckInfo
+	 * @throws SapException
+	 */
+	public abstract BapiSendPhysicalTruckInfo getHandOffPhysicalTruckInfoSender()
+			throws SapException;
+
+	/**
+	 * @return BapiRouteStatusInfo
+	 * @throws SapException
+	 */
+	public abstract BapiRouteStatusInfo getBapiRouteStatusInfoBuilder()
+			throws SapException;
+
+	/**
+	 * @param type 
+	 * @return BapiProductPromotionPreviewI
+	 * @throws SapException
+	 */
+	public abstract BapiProductPromotionPreviewI getBapiProductPromotionPreviewBuilder(
+			EnumProductPromotionType type) throws SapException;
+
+	/**
+	 * @return BapiSendSettlementByCommand
+	 * @throws SapException
+	 */
+	public abstract BapiSendSettlementByCommand getBapiSendEBTSettlementSender()
+			throws SapException;
+	
+	/**
+	 * @return BapiCartonDetailsForSale
+	 * @throws SapException
+	 */
+	public abstract BapiCartonDetailsForSale getBapiCartonDetailsForSale()
+			throws SapException;
 }

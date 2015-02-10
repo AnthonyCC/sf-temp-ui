@@ -1,8 +1,6 @@
 package com.freshdirect.customer;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.freshdirect.erp.model.ErpMaterialPriceModel;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -34,8 +31,6 @@ public class ErpGrpPriceModel extends ModelSupport {
 	public void setMatList(Set<String> matList) {
 		this.matList = matList;
 	}
-
-
 	
 	public Set<ErpGrpPriceZoneModel> getZoneModelList() {
 		return zoneModelList;
@@ -46,7 +41,10 @@ public class ErpGrpPriceModel extends ModelSupport {
 		this.zoneModelList = zoneModelList;
 	}
 
-
+	public ErpGrpPriceModel()
+	{
+		
+	}
 	public  ErpGrpPriceModel(String grpId,String longDesc,String shortDesc,boolean isActive){		
 		this.grpId=grpId;
 		this.longDesc=longDesc;
@@ -77,6 +75,22 @@ public class ErpGrpPriceModel extends ModelSupport {
 
 	public boolean isActive() {
 		return isActive;
+	}
+	
+	public void setGrpId(String grpId) {
+		this.grpId = grpId;
+	}
+
+	public void setLongDesc(String longDesc) {
+		this.longDesc = longDesc;
+	}
+
+	public void setShortDesc(String shortDesc) {
+		this.shortDesc = shortDesc;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
 	}
 	
 	

@@ -29,6 +29,10 @@ public class ErpCOOLInfo implements Serializable {
 	public List<String> getCountryInfo() {
 		return countryInfo;
 	}
+	
+	public void setCountryInfo(List<String> countryInfo) {
+		this.countryInfo = countryInfo;
+	}
 
 	public String getSapID() {
 		return sapID;
