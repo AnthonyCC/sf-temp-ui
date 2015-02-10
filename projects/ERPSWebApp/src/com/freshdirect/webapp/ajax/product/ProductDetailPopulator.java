@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 
 import com.freshdirect.WineUtil;
@@ -71,8 +71,6 @@ import com.freshdirect.fdstore.ecoupon.EnumCouponStatus;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
-import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
-import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.util.DYFUtil;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.DateRange;
@@ -304,21 +302,10 @@ public class ProductDetailPopulator {
 		if ( data == null ) {
 			data = new ProductData();
 		}
-		
-		//APPDEV-4034
-
-		String browseRecommenderType = product.getBrowseRecommenderType();
-		boolean isAllowedCohort = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.browseflyoutrecommenders, user);
-		if ("PDP_XSELL".equals(browseRecommenderType) && !isAllowedCohort) {
-			return data;
-		}
-		
 		ProductModel browseRecommendation = ProductRecommenderUtil.getBrowseRecommendation(product);
-	
 		if(browseRecommendation!=null){
 			data.setBrowseRecommandation(createProductData(user, browseRecommendation));			
 		}
-		
 		return data;
 	}
 

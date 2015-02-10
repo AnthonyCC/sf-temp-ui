@@ -38,12 +38,8 @@ var FreshDirect = FreshDirect || {};
         // render department header
         $('.browse-titlebar').html(browse.titleBar(data));
 
-        // set page title, allow diacritics
-        var _temp = document.createElement('div');
-        _temp.innerHTML = data.pageTitle || document.title;
-        if (_temp.childNodes.length !== 0) {
-        	document.title = _temp.childNodes[0].nodeValue;
-        }
+        // set page title
+        document.title = data.pageTitle || document.title;
 
         // set history
         FreshDirect.browse.main.setURL(data.url, document.title, true);
