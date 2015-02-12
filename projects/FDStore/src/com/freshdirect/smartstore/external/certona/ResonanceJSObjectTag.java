@@ -178,7 +178,7 @@ public class ResonanceJSObjectTag extends SimpleTagSupport {
 			}			
 			
 			certona.put("pagetype", "CARTCONFIRMIFRAME");
-		} else 	if ("VIEW_CART".equals(certonaPageId)) {
+		} else 	if ("VIEW_CART".equals(certonaPageId) || "CHECKOUT/VIEW_CART".equals(certonaPageId)) {
 			StringBuffer inCartProductIds = new StringBuffer("");
 			FDCartModel cart = user.getShoppingCart();
 			
