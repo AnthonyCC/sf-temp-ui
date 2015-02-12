@@ -285,11 +285,11 @@ public class FDGroupScalePriceJcoServer extends FdSapServer
 					
 					scaleGroupModel.setGrpId(scaleGroupId);
 
-					final Boolean isActive = toBooleanObject(
+					final Boolean isScaleGroupExpired = toBooleanObject(
 							StringUtils.lowerCase(scaleGroupRecordEntry.getValue().get(0).getGrpExpiryIndicator()), "x", null,
 							null);
 					
-					scaleGroupModel.setActive(isActive);
+					scaleGroupModel.setActive(!isScaleGroupExpired.booleanValue());
 					scaleGroupModel.setShortDesc(scaleGroupRecordEntry.getValue().get(0).getGrpShortDesc());
 					scaleGroupModel.setLongDesc(scaleGroupRecordEntry.getValue().get(0).getGrpLongDesc());
 					
