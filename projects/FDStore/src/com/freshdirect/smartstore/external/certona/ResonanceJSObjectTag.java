@@ -27,6 +27,8 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.util.CertonaTransitionUtil;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
 
 public class ResonanceJSObjectTag extends SimpleTagSupport {
 	private static final Logger LOGGER = Logger.getLogger(ResonanceJSObjectTag.class.getSimpleName());
@@ -63,6 +65,8 @@ public class ResonanceJSObjectTag extends SimpleTagSupport {
 		String pageURI = request.getRequestURI();
 		FDUserI user = (FDUserI)request.getSession().getAttribute("fd.user");
 		String certonaPageId = pageURI.substring(1, pageURI.indexOf(".")).toUpperCase();
+		//using EnumSiteFeature as SRCH since we assume setup is all 50/50. So WHICH feature we check shouldn't matter
+		boolean isCertona = CertonaTransitionUtil.isEligibleForCertona(user, EnumSiteFeature.getEnum("SRCH"));
 		
 		JspWriter out = this.getJspContext().getOut();
 
@@ -269,7 +273,7 @@ public class ResonanceJSObjectTag extends SimpleTagSupport {
 			}
 
 
-			certona.put("segment", "1");
+			certona.put("segment", (isCertona) ? "1" : "2");
 			certona.put("pageid", CertonaUserContextHolder.getPageId());
 			if (products.length() > 0) {
 				certona.put("recitems", products.toString().substring(0, products.toString().length() - 1));
@@ -277,7 +281,7 @@ public class ResonanceJSObjectTag extends SimpleTagSupport {
 				certona.put("recitems", "");
 			}
 		} else {
-			certona.put("segment", "1");
+			certona.put("segment", (isCertona) ? "1" : "2");
 		}
 
 		out.println("<script>");

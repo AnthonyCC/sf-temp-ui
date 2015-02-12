@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.external.CachingExternalRecommender;
@@ -203,5 +204,22 @@ public class CertonaTransitionUtil {
 		}
 		
 		return null;
+	}
+
+	//moved from ProductRecommenderUtil
+	public static boolean isEligibleForCertona(final FDUserI user, final EnumSiteFeature sf) {
+		if (user == null || sf == null) {
+			return false;
+		}
+
+		final String cohortName = user.getCohortName();
+
+		if (TRANSITIONAL_PERIOD) {
+			return isCertonaBasedCohort(cohortName, sf);
+		}
+
+		// transition period is over, only certona should serve
+		return true;
+		
 	}
 }

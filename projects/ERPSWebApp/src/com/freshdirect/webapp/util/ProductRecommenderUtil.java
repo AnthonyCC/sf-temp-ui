@@ -231,26 +231,10 @@ public class ProductRecommenderUtil {
 		return null;
 	}
 	
-	// figure out customer belongs to Certona cohort
-	public static boolean isEligibleForCertona(final FDUserI user, final EnumSiteFeature sf) {
-		if (user == null || sf == null) {
-			return false;
-		}
-
-		final String cohortName = user.getCohortName();
-
-		if (CertonaTransitionUtil.TRANSITIONAL_PERIOD) {
-			return CertonaTransitionUtil.isCertonaBasedCohort(cohortName, sf);
-		}
-
-		// transition period is over, only certona should serve
-		return true;
-	}
-
 	public static Recommendations getBrowseCategoryListingPageRecommendations(FDUserI user, ContentNodeModel contentNode) throws FDResourceException{
 		final EnumSiteFeature siteFeature = EnumSiteFeature.getEnum("BRWS_CAT_LST");
 
-		if (isEligibleForCertona(user, siteFeature)) {
+		if (CertonaTransitionUtil.isEligibleForCertona(user, siteFeature)) {
 			// single-step recommender for Certona customers
 			return doRecommend(user, null, siteFeature, MAX_CAT_SCARAB_RECOMMENDER_COUNT, null, null);	
 		}
@@ -264,7 +248,7 @@ public class ProductRecommenderUtil {
 	public static Recommendations getBrowseProductListingPageRecommendations(FDUserI user, Set<ContentKey> keys) throws FDResourceException {
 		final EnumSiteFeature siteFeature = EnumSiteFeature.getEnum("BRWS_PRD_LST");
 
-		if (isEligibleForCertona(user, siteFeature)) {
+		if (CertonaTransitionUtil.isEligibleForCertona(user, siteFeature)) {
 			// single-step recommender for Certona customers
 			return doRecommend(user, null,
 				siteFeature,
