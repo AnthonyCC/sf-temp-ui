@@ -11,10 +11,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
 
+import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.mail.MessagingException;
 import javax.naming.Context;
@@ -31,6 +33,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.payment.ejb.ReconciliationHome;
+import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.sap.command.SapSendSettlement;
 import com.freshdirect.sap.ejb.SapException;
 
@@ -175,9 +178,10 @@ public class SettlementLoaderUtil {
 		LOGGER.info("finished uploading the file to sap");
 	}
 
-	public static void callSettlementBapi(String fileName) throws SapException {
-		SapSendSettlement command = new SapSendSettlement(fileName, DataLoaderProperties.getSapUploadFolder());
-		command.execute();
+	public static void callSettlementBapi(String fileName) throws SapException, RemoteException, CreateException {
+		
+		ReconciliationSB reconciliationSB = lookupReconciliationHome().create();
+		reconciliationSB.sendSettlementReconToSap(fileName, DataLoaderProperties.getSapUploadFolder());
 	}
 
 	public static ReconciliationHome lookupReconciliationHome() throws EJBException {

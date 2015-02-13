@@ -73,9 +73,7 @@ public class SettlementLoader {
 		this.uploadFileToSap(fileName);
 
 		//tell sap to the file is there
-		SapSendSettlement command = new SapSendSettlement(fileName, DataLoaderProperties.getSapUploadFolder());
-		command.execute();
-
+		SettlementLoaderUtil.callSettlementBapi(fileName);
 	}
 
 	private void uploadFileToSap(String fileName) throws IOException {

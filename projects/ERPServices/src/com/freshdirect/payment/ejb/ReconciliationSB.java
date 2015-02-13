@@ -1,14 +1,22 @@
 package com.freshdirect.payment.ejb;
 
-import javax.ejb.*;
 import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.EJBObject;
+
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.customer.*;
-import com.freshdirect.payment.model.*;
+import com.freshdirect.customer.EnumPaymentResponse;
+import com.freshdirect.customer.ErpAdjustmentModel;
+import com.freshdirect.customer.ErpChargebackModel;
+import com.freshdirect.customer.ErpChargebackReversalModel;
+import com.freshdirect.customer.ErpSettlementInfo;
+import com.freshdirect.customer.ErpSettlementModel;
+import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.payment.model.ErpSettlementSummaryModel;
+import com.freshdirect.sap.ejb.SapException;
 
 
 public interface ReconciliationSB extends EJBObject {
@@ -42,4 +50,6 @@ public interface ReconciliationSB extends EJBObject {
 	public List processGCSettlement(String saleId) throws RemoteException;
 	
 	public List processSettlementPendingOrders() throws RemoteException;
+	
+	public void sendSettlementReconToSap(String fileName, String folder) throws SapException, RemoteException;
 }

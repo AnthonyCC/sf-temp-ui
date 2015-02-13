@@ -57,6 +57,8 @@ import com.freshdirect.payment.EFTTransaction;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.model.ErpSettlementSummaryModel;
 import com.freshdirect.payment.reconciliation.detail.CCDetailOne;
+import com.freshdirect.sap.command.SapSendSettlement;
+import com.freshdirect.sap.ejb.SapException;
 
 public class ReconciliationSessionBean extends SessionBeanSupport{
 	
@@ -923,5 +925,12 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 			}
 		}
 		return settlementInfos;
+	}
+	
+	public void sendSettlementReconToSap(String fileName, String folder) throws SapException {
+		LOGGER.info("Start Send Settlement Recon to Sap: "+ fileName + " , "+folder);
+		SapSendSettlement command = new SapSendSettlement(fileName, folder);
+		command.execute();
+		LOGGER.info("End Send Settlement Recon to Sap: "+ fileName);
 	}
 }
