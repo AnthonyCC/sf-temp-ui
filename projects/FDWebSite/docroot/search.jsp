@@ -32,6 +32,7 @@
 <%@ page import="com.freshdirect.smartstore.SessionInput"%>
 <%@ page import='com.freshdirect.webapp.ajax.browse.FilteringFlowType' %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
+<%@ page import="com.freshdirect.fdstore.util.CertonaTransitionUtil"%>
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='bean' prefix='bean'%>
 <%@ taglib uri='logic' prefix='logic'%>
