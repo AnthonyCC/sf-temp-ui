@@ -2,6 +2,7 @@ package com.freshdirect.dataloader.invoice;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.dataloader.payment.InvoiceBatchListenerI;
 import com.freshdirect.dataloader.payment.InvoiceLoadListener;
 import com.freshdirect.dataloader.sap.jco.server.FDSapFunctionHandler;
@@ -95,15 +96,15 @@ public class FDInvoiceBatchJcoServer extends FdSapServer
 				listener.processInvoiceBatch(folder, fileName);				
 
 				exportParamList.setValue("RETURN", "S");
-				/*exportParamList.setValue("MESSAGE",
-						String.format("%s Invoice details imported successfully! [ %s ]", new Date()));*/								
 			}
-			catch (final Exception e)
+			catch (final LoaderException le)
 			{
-				LOG.error("Error importing invoice(s): Exception is ", e);
-				exportParamList.setValue("RETURN", "E");
-				/*exportParamList.setValue("MESSAGE",
-						"Error importing invoice(s) " + e.toString().substring(0, Math.min(230, e.toString().length())));*/
+				LOG.warn("Error occured processing batch", le);
+			
+				String errorMsg = ( le.getNestedException()==null ? le : le.getNestedException() ).toString();
+				errorMsg = errorMsg.substring(0, Math.min(5000, errorMsg.length()));
+				
+				exportParamList.setValue("RETURN", errorMsg);
 			}
 
 		}
