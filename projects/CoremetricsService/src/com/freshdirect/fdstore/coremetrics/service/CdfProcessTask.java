@@ -143,6 +143,17 @@ public class CdfProcessTask {
 		cdfRowModels.add(new CdfRowModel("MOBILE", "Category: MOBILE", null));
 		cdfRowModels.add(new CdfRowModel("MOBILE_OTHER", "Category: MOBILE_OTHER", "MOBILE"));
 		cdfRowModels.add(new CdfRowModel("MOBILE_ALL", "Category: MOBILE ALL", "MOBILE"));
+		
+		// APPDEV-4008 CDF File Updates for Coremetrics with New Ipad App
+		cdfRowModels.add(new CdfRowModel("ME", "ME", null));	
+		cdfRowModels.add(new CdfRowModel("MY_ITEMS", "MY ITEMS", "ME"));
+		cdfRowModels.add(new CdfRowModel("MY_ORDERS", "MY ORDERS", "ME"));
+		cdfRowModels.add(new CdfRowModel("MY_SHOPPING_LISTS", "MY LISTS", "ME"));
+		
+		cdfRowModels.add(new CdfRowModel("IDEAS", "IDEAS", null));	
+		cdfRowModels.add(new CdfRowModel("IDEAS_SHOPPINGSHORTCUTS", "SHOPPING SHORTCUTS", "IDEAS"));
+		cdfRowModels.add(new CdfRowModel("IDEAS_PRODUCERS", "PRODUCERS", "IDEAS"));
+		cdfRowModels.add(new CdfRowModel("IDEAS_DISHES", "DELICIOUS DISHES", "IDEAS"));		
 	}
 	
 	private void processCmsCategory(ProductContainer cat, String parentCatId) {
