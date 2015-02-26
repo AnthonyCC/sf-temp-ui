@@ -17,7 +17,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false' redirectPage='/quickshop/index_guest.jsp?successPage=/quickshop/index.jsp' />
+<fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false' />
 
 <tmpl:insert template='/common/template/quick_shop_nav.jsp'>
 

@@ -23,7 +23,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false' redirectPage='/quickshop/index_guest.jsp?successPage=/quickshop/index.jsp' />
+<fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false'/>
 
 <%-- redirect to new quickshop page if allowed to see it (partial rollout check) --%>
 <fd:QuickShopRedirector user="<%=user%>" from="<%=QuickShopRedirector.FROM.OLD_QS_ALL_LISTS %>"/>

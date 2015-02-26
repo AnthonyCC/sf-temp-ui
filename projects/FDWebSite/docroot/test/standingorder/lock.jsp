@@ -26,7 +26,7 @@
 <%@ include file="/shared/template/includes/yui.jspf" %>
 
 
-<fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false' redirectPage='/quickshop/index_guest.jsp?successPage=/test/standingorder/lock.jsp' />
+<fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false'/>
 
 <script type="text/javascript">
 	function isLocked(soId) {

@@ -13,7 +13,7 @@
 final int W_QUICKSHOP_INDEX_TOTAL = 755;
 %>
 <%! final java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
-<fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false' redirectPage='/quickshop/index_guest.jsp?successPage=/quickshop/index.jsp' />
+<fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false'/>
 
 <%-- redirect to appropriate quickshop tab if user passes the partial rollout check --%>
 <fd:QuickShopRedirector user="<%=user%>"/>

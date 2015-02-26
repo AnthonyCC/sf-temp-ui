@@ -37,7 +37,7 @@ final int W_QIUCK_SHOP_CONFIRM_INNER = 590;
 	//--------OAS Page Variables-----------------------
 	request.setAttribute("sitePage", "www.freshdirect.com/quickshop");
 	request.setAttribute("listPos", "QSBottom,SystemMessage,LittleRandy,QSTopRight");
-%><fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false' redirectPage='/quickshop/index_guest.jsp' />
+%><fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false'/>
 <fd:QuickShopController id="quickCart"><%
 	int n = quickCart.numberOfProducts();
 	cartType=quickCart.getProductType();

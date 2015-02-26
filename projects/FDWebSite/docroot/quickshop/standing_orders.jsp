@@ -18,7 +18,7 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false' redirectPage='/quickshop/index_guest.jsp?successPage=/quickshop/index.jsp' />
+<fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false'/>
 
 <%-- redirect to new quickshop page (partial rollout check) --%>
 <fd:QuickShopRedirector user="<%=user%>" from="<%=QuickShopRedirector.FROM.OLD_SO %>"/>
