@@ -419,7 +419,7 @@ public abstract class BaseController extends AbstractController implements Messa
 
     protected ObjectMapper getMapper() {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.INDENT_OUTPUT, true); //May want to flip to false in production
+        //mapper.configure(SerializationFeature.INDENT_OUTPUT, true); //May want to flip to false in production
         mapper.setSerializationInclusion( JsonInclude.Include.NON_NULL );
         return mapper;
     }
