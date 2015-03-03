@@ -2,15 +2,18 @@ package com.freshdirect.mobileapi.controller.data.response;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.mobileapi.controller.data.DateFormat;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.model.OrderInfo;
 import com.freshdirect.mobileapi.model.SessionUser;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 
 /**
  * 
@@ -113,7 +116,12 @@ public class OrderHistory extends Message {
             List<Order> infos = new ArrayList<Order>();
             for (OrderInfo orderInfo : orderInfos) {
                 try {
-                    infos.add(new Order(orderInfo, user));
+                	Date requestedDate = orderInfo.getRequestedDate();
+                	Date currentDate = new Date();
+                	int diffInMonths= DateUtil.monthsBetween(currentDate, requestedDate);
+                	if(diffInMonths<MobileApiProperties.getOrderHistoryFromInMonths()){
+                		infos.add(new Order(orderInfo, user));
+                	}
                 } catch (PricingException e) {
 
                 } catch (FDException e) {
@@ -122,6 +130,8 @@ public class OrderHistory extends Message {
             }
             return infos;
         }
+        
+        
 
         public String getId() {
             return id;
@@ -178,5 +188,7 @@ public class OrderHistory extends Message {
 		}
 
     }
+	
+	
 
 }

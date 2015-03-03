@@ -421,5 +421,23 @@ public class DateUtil {
 		return clientCalendar.getTime();
 	}
 	
+	public static int monthsBetween(Date minuend, Date subtrahend)
+    {
+    Calendar cal = Calendar.getInstance();
+    // default will be Gregorian in US Locales
+    cal.setTime(minuend);
+    int minuendMonth =  cal.get(Calendar.MONTH);
+    int minuendYear = cal.get(Calendar.YEAR);
+    cal.setTime(subtrahend);
+    int subtrahendMonth =  cal.get(Calendar.MONTH);
+    int subtrahendYear = cal.get(Calendar.YEAR);
+     
+    // the following will work okay for Gregorian but will not
+    // work correctly in a Calendar where the number of months 
+    // in a year is not constant
+    return ((minuendYear - subtrahendYear) * cal.getMaximum(Calendar.MONTH)) +  
+    (minuendMonth - subtrahendMonth);
+    }
+	
 	
 } 
