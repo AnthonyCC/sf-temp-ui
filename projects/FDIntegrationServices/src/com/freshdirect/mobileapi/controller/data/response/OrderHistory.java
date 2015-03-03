@@ -114,10 +114,10 @@ public class OrderHistory extends Message {
          */
         public static List<Order> createOrderList(List<OrderInfo> orderInfos, SessionUser user) {
             List<Order> infos = new ArrayList<Order>();
+            Date currentDate = new Date();
             for (OrderInfo orderInfo : orderInfos) {
                 try {
                 	Date requestedDate = orderInfo.getRequestedDate();
-                	Date currentDate = new Date();
                 	int diffInMonths= DateUtil.monthsBetween(currentDate, requestedDate);
                 	if(diffInMonths<MobileApiProperties.getOrderHistoryFromInMonths()){
                 		infos.add(new Order(orderInfo, user));
