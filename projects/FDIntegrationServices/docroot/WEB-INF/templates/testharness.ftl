@@ -596,6 +596,11 @@ function loadStuff() {
 	var postdata = '{"department": "cof", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
   	
+  } else if (loaddata == "Browse2") {
+  	$("#url").val("/browse2/");
+	var postdata = '{"id": "mea"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");
   } else if (loaddata == "BrowseCategoryContent") {
   	$("#url").val("/browse/categorycontent/");
 	var postdata = '{"category": "cof_espres", "page" : "1", "max" : "25"}';
@@ -667,6 +672,18 @@ function loadStuff() {
   	
   } else if (  loaddata == "foodilySearch") {
   	$("#url").val("/recipe/search/"); 
+  	$("#payload").val(""); 	
+  	
+  } else if (  loaddata == "getAllHome") {
+  	$("#url").val("/home/getall/"); 
+  	$("#payload").val(""); 	
+  	
+  } else if (  loaddata == "featuredCategories") {
+  	$("#url").val("/home/featuredcategories/"); 
+  	$("#payload").val(""); 	
+  	
+  } else if (  loaddata == "getHomeAndCategories") {
+  	$("#url").val("/home/all/"); 
   	$("#payload").val(""); 	
   	
   } 
@@ -821,6 +838,7 @@ function doStuff() {
   <option value="BrowseCategoryContent">BROWSE - CATEGORYCONTENT</option>
   <option value="BrowseCategoryContentProductOnly">BROWSE - CATEGORYCONTENT(Product Only)</option>
   <option value="BrowseGroupContents">BROWSE - GROUP CONTENTS</option> 
+  
   <option value=""> ========== BROWSE COUPON ========== </option>
   <option value="BrowseCouponDepartment">BROWSE COUPON - DEPARTMENT</option>
   <option value="BrowseCouponCategory">BROWSE COUPON - CATEGORY</option>
@@ -899,6 +917,11 @@ function doStuff() {
   <option value="getTags">Foodily - Get Tags</option>
   <option value="getAll">Foodily - Get All Recipes</option>
   <option value="foodilySearch">Foodily - search</option>
+  <option value=""> ========== Home ========== </option>
+  <option value="getAllHome"> Home - Get All</option>
+  <option value="featuredCategories"> Home - Featured Categories </option>
+  <option value="getHomeAndCategories"> Home - Get Home And Categories </option>
+  
 
   </select>
   
