@@ -22,8 +22,6 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
@@ -34,7 +32,6 @@ import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoCartException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
-import com.freshdirect.mobileapi.model.AnonymousUser;
 import com.freshdirect.mobileapi.model.Cart;
 import com.freshdirect.mobileapi.model.MessageCodes;
 import com.freshdirect.mobileapi.model.RequestData;
@@ -445,7 +442,8 @@ public abstract class BaseController extends AbstractController implements Messa
 
     protected SessionUser fakeUser(HttpSession session) {
     	fakedUserForRequest.set(Boolean.TRUE);
-    	FDUser user = new AnonymousUser();
+    	FDUser user = new FDUser();
+    	user.setDefaultPricingContext();
 		FDSessionUser sessionUser = new FDSessionUser(user, session);
     	session.setAttribute(SessionName.USER, sessionUser);
 		return SessionUser.wrap(sessionUser);
