@@ -23,15 +23,16 @@ import com.sap.conn.jco.ext.DestinationDataProvider;
 import com.sap.conn.jco.ext.Environment;
 
 /**
- * This class represents a manager to register / initialize the function modules in the ERP system
+ * This class represents a manager to register / initialize the function modules
+ * in the ERP system
  * 
  * @author kkanuganti
- *
+ * 
  */
 public class JcoManager {
 
 	private static final Logger LOG = Logger.getLogger(JcoManager.class.getName());
-	
+
 	private final static String DESTINATION_NAME = "FDSapPool";
 
 	private static Properties config;
@@ -48,88 +49,73 @@ public class JcoManager {
 	 * @return JcoManager
 	 * @throws JCoException
 	 */
-	public synchronized static JcoManager getInstance() throws JCoException
-	{
-		if (instance == null)
-		{
+	public synchronized static JcoManager getInstance() throws JCoException {
+		if (instance == null) {
 			instance = new JcoManager();
 		}
 		return instance;
 	}
 
 	private JCoRepository repository;
-	
+
 	private int dump;
 
 	/**
 	 * @throws JCoException
 	 */
-	private JcoManager() throws JCoException
-	{
+	private JcoManager() throws JCoException {
 		this.initializeDestination();
 	}
-	
+
 	/**
 	 * Method to initialize / register the destination to connect to ERP system
 	 * 
 	 * @throws JCoException
 	 */
-	public void initializeDestination() throws JCoException
-	{
+	public void initializeDestination() throws JCoException {
 		final CustomDestinationDataProvider myProvider = new CustomDestinationDataProvider();
 
 		// Register the provider with the JCo environment
-		try
-		{
-			if (!Environment.isDestinationDataProviderRegistered())
-			{
+		try {
+			if (!Environment.isDestinationDataProviderRegistered()) {
 				LOG.info("Registering SAP JCO provider...");
 
 				com.sap.conn.jco.ext.Environment.registerDestinationDataProvider(myProvider);
 			}
-		}
-		catch (final IllegalStateException providerAlreadyRegisteredException)
-		{
+		} catch (final IllegalStateException providerAlreadyRegisteredException) {
 			throw new Error(providerAlreadyRegisteredException);
 		}
 
 		LOG.info("JCoDestination: setting properties");
 
 		myProvider.changeProperties(DESTINATION_NAME, getDestinationProperties());
-		
+
 		LOG.info("JCoDestination: done setting properties");
 
-		if (JCoDestinationManager.getDestination(DESTINATION_NAME) != null)
-		{
+		if (JCoDestinationManager.getDestination(DESTINATION_NAME) != null) {
 			this.repository = JCoDestinationManager.getDestination(DESTINATION_NAME).getRepository();
 		}
 	}
-	
+
 	/**
 	 * @return connection properties
 	 */
-	private Properties getDestinationProperties()
-	{
+	private Properties getDestinationProperties() {
 		// parameters to configure a valid destination
 		final Properties jcoClientProperties = new Properties();
 		jcoClientProperties.put("sap.jco.dump", "critical");
 
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", jcoClientProperties);
-		
+
 		LOG.info("Loaded configuration from erpservices.properties: " + config);
-		
+
 		// set the dump parameter
 		final String dumpParam = config.getProperty("sap.jco.dump");
-		if ("true".equalsIgnoreCase(dumpParam))
-		{
+		if ("true".equalsIgnoreCase(dumpParam)) {
 			this.dump = DUMP_ALWAYS;
-		}
-		else if ("critical".equalsIgnoreCase(dumpParam))
-		{
+		} else if ("critical".equalsIgnoreCase(dumpParam)) {
 			this.dump = DUMP_CRITICAL;
-		}
-		else
-		{
+		} else {
 			this.dump = DUMP_OFF;
 		}
 
@@ -140,12 +126,10 @@ public class JcoManager {
 	 * @return JCoDestination
 	 * @throws JCoException
 	 */
-	public JCoDestination getDestination() throws JCoException
-	{
+	public JCoDestination getDestination() throws JCoException {
 		final JCoDestination destination = JCoDestinationManager.getDestination(DESTINATION_NAME);
 
-		if (LOG.isDebugEnabled())
-		{
+		if (LOG.isDebugEnabled()) {
 			LOG.debug("*************** Destination ********************");
 			LOG.debug("Pinging destination...");
 			destination.ping();
@@ -159,40 +143,36 @@ public class JcoManager {
 		}
 		return destination;
 	}
-	
 
 	/**
 	 * @param functionName
 	 * @return JCoFunctionTemplate
 	 * @throws JCoException
 	 */
-	public JCoFunctionTemplate getFunctionTemplate(String functionName) throws JCoException {
+	public JCoFunctionTemplate getFunctionTemplate(String functionName)
+			throws JCoException {
 		return this.repository.getFunctionTemplate(functionName);
 	}
-	
+
 	/**
-	 * Creates a jcoClient file that the DestinationManager can use to connect to SAP
-	 *
+	 * Creates a jcoClient file that the DestinationManager can use to connect
+	 * to SAP
+	 * 
 	 * @param poolName
 	 * @param suffix
 	 * @param properties
 	 */
-	protected static void createDestinationDataFile(final String poolName, final Properties properties)
-	{
+	protected static void createDestinationDataFile(final String poolName, final Properties properties) {
 		final File cfg = new File(poolName + ".jcoDestination");
 
-		if (!cfg.exists())
-		{
-			try
-			{
+		if (!cfg.exists()) {
+			try {
 				final FileOutputStream fos = new FileOutputStream(cfg, false);
 
 				properties.store(fos, "Jco Destination config file!");
 				fos.close();
-			}
-			catch (final Exception e)
-			{
-				throw new RuntimeException("Unable to create the destination file " + cfg.getName(), e);
+			} catch (final Exception e) {
+				throw new RuntimeException("Unable to create the destination file "	+ cfg.getName(), e);
 			}
 		}
 		LOG.info("Creating destination file " + cfg.getAbsolutePath());
@@ -204,12 +184,10 @@ public class JcoManager {
 	 * @param function
 	 * @param fileName
 	 */
-	public void dumpToXML(JCoFunction function, String fileName)
-	{
-		BufferedWriter writer = null;		
+	public void dumpToXML(JCoFunction function, String fileName) {
+		BufferedWriter writer = null;
 		try {
-			writer = new BufferedWriter(new FileWriter(fileName));
-
+			
 			switch (dump) {
 
 			case DUMP_OFF:
@@ -217,13 +195,13 @@ public class JcoManager {
 
 			case DUMP_CRITICAL:
 				String fname = function.getName();
-				if ("BAPI_MATERIAL_AVAILABILITY".equals(fname)
-						|| "BAPI_SALESORDER_SIMULATE".equals(fname)) {
+				if ("BAPI_MATERIAL_AVAILABILITY".equals(fname) || "BAPI_SALESORDER_SIMULATE".equals(fname)) {
 					// don't log ATP checks
 					return;
 				}
 			default:
 				LOG.debug("Dumping BAPI to " + fileName);
+				writer = new BufferedWriter(new FileWriter(fileName));
 				writer.write(function.toXML());
 			}
 		} catch (final IOException ioe) {
@@ -238,74 +216,58 @@ public class JcoManager {
 			}
 		}
 	}
-	
-	static class CustomDestinationDataProvider implements DestinationDataProvider
-	{
+
+	static class CustomDestinationDataProvider implements DestinationDataProvider {
 		private DestinationDataEventListener eL;
 		private final HashMap<String, Properties> secureDBStorage = new HashMap<String, Properties>();
 
-		public Properties getDestinationProperties(final String destinationName)
-		{
-			try
-			{
-				//read the destination from DB
+		public Properties getDestinationProperties(final String destinationName) {
+			try {
+				// read the destination from DB
 				final Properties p = secureDBStorage.get(destinationName);
 
-				if (p != null)
-				{
-					if (p.isEmpty())
-					{
-						throw new DataProviderException(DataProviderException.Reason.INVALID_CONFIGURATION,
-								"destination configuration is incorrect", null);
+				if (p != null) {
+					if (p.isEmpty()) {
+						throw new DataProviderException(DataProviderException.Reason.INVALID_CONFIGURATION, "destination configuration is incorrect", null);
 					}
 
 					return p;
 				}
 
 				return null;
-			}
-			catch (final RuntimeException re)
-			{
+			} catch (final RuntimeException re) {
 				throw new DataProviderException(DataProviderException.Reason.INTERNAL_ERROR, re);
 			}
 		}
 
 		/*
-		 * An implementation supporting events, to retain the eventListener instance provided by the JCo runtime. This
-		 * listener instance shall be used to notify the JCo runtime about all changes in destination configurations.
+		 * An implementation supporting events, to retain the eventListener
+		 * instance provided by the JCo runtime. This listener instance shall be
+		 * used to notify the JCo runtime about all changes in destination
+		 * configurations.
 		 */
-		public void setDestinationDataEventListener(final DestinationDataEventListener eventListener)
-		{
+		public void setDestinationDataEventListener(final DestinationDataEventListener eventListener) {
 			this.eL = eventListener;
 		}
 
-		public boolean supportsEvents()
-		{
+		public boolean supportsEvents() {
 			return true;
 		}
 
 		// implementation that saves the properties in a very secure way
-		void changeProperties(final String destName, final Properties properties)
-		{
-			synchronized (secureDBStorage)
-			{
+		void changeProperties(final String destName, final Properties properties) {
+			synchronized (secureDBStorage) {
 
-				if (!Environment.isDestinationDataProviderRegistered())
-				{
+				if (!Environment.isDestinationDataProviderRegistered()) {
 					Environment.registerDestinationDataProvider(this);
 				}
-				if (properties == null)
-				{
-					if (secureDBStorage.remove(destName) != null && eL != null)
-					{
+				if (properties == null) {
+					if (secureDBStorage.remove(destName) != null && eL != null) {
 						eL.deleted(destName);
 					}
-				}
-				else
-				{
+				} else {
 					secureDBStorage.put(destName, properties);
-					if (eL != null)
-					{
+					if (eL != null) {
 						eL.updated(destName);
 					}
 				}
