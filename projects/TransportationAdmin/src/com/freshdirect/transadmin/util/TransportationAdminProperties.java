@@ -254,6 +254,9 @@ public class TransportationAdminProperties {
 	private final static String PROP_KRONOS_CLOUD_ENABLE = "transportation.kronoscloud.enable";
 	private final static String PROP_MUNI_METER_CARD_MAX_VALUE="munimeter.max.value";
 	
+	//gmap version
+	private final static String PROP_GMAP_VERSION = "transportation.gmap.version";
+	
 	static {
 
 
@@ -463,6 +466,7 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_EVENTLOG_DATALOOKUP, "-2");		
 		defaults.put(PROP_KRONOS_CLOUD_ENABLE, "false");
 		defaults.put(PROP_MUNI_METER_CARD_MAX_VALUE, "100.00");
+		defaults.put(PROP_GMAP_VERSION, "3");
 		
 		refresh();
 	}
@@ -1008,6 +1012,10 @@ public class TransportationAdminProperties {
 		} catch (NumberFormatException e) {
 			return 100.00;
 		}
+	}
+	
+	public static String getGMapVersion() {
+		return get(PROP_GMAP_VERSION);
 	}
 	
 }

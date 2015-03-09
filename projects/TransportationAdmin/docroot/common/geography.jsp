@@ -7,7 +7,7 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <title>Google Maps Location Match</title>
     <script type="text/javascript"
-      src="http://maps.googleapis.com/maps/api/js?sensor=false&key=<%= request.getParameter("mapkey") %>">
+      src="//maps.googleapis.com/maps/api/js?v=<%= TransportationAdminProperties.getGMapVersion() %>&sensor=false&key=<%= request.getParameter("mapkey") %>">
 	</script>
 	<script type="text/javascript" language="javascript" src="../js/gmap/mapiconmaker.js"></script>
     <script type="text/javascript">
