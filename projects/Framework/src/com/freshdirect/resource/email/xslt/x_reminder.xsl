@@ -17,7 +17,7 @@ http://www.freshdirect.com?trk=remind01 to start shopping from our homepage.
 
 To see what's new and back in stock, http://www.freshdirect.com/newproducts.jsp?trk=remind01
 
-You can also use Quickshop ( http://www.freshdirect.com/quickshop/index.jsp?trk=remind01 ) to shop directly from your last order.
+Reorder in minutes ( http://www.freshdirect.com/quickshop/index.jsp?trk=remind01 ) — shop directly from your last order.
 
 Happy eating,
 

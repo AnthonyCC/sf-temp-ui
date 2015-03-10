@@ -63,7 +63,7 @@
 %>					<div style="font-size: 13px; font-weight: bold;">
 						<div style="color: #996699;">You have created a standing order: <%= __so.getCustomerListName() %><br/>This order will be delivered <%= __so.getFrequencyDescription() %>.</div>
 					</div>
-					<div style="margin-top: 1em; font-weight: bold;">You can review or change the details or contents of your deliveries at any time<br/>through the &quot;<a href="<%= FDURLUtil.getStandingOrderLandingPage(__so, null,user) %>">Standing Order</a>&quot; page in Quickshop.</div>
+					<div style="margin-top: 1em; font-weight: bold;">You can review or change the details or contents of your deliveries at any time<br/>through the &quot;<a href="<%= FDURLUtil.getStandingOrderLandingPage(__so, null,user) %>">Standing Order</a>&quot; page in "Reorder."</div>
 					<div style="margin-top: 1em; font-weight: bold;">Your first delivery is now scheduled for <%= __dfmt.format(order.getRequestedDate()) %>.</div>
 					<div>To make changes to just this <a href="/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>">specific order</a>, visit the &quot;Your Orders&quot; page in Your Account.</div>
 <%			} else {

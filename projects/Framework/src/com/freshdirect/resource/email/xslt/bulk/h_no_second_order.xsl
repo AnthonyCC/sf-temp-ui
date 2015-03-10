@@ -47,7 +47,7 @@
 			
             <p>Just place your next web order ($40 minimum), and give us your thoughts. We'll give you <b>$10 more free fresh food.</b>* Plus, you have free delivery for two more orders.</p>
 			
-            <p>Make sure to try out <a href="http://www.freshdirect.com/quickshop/index.jsp">Quickshop</a>. We've stored all the details of your last order, so you can reorder in minutes. And of course you'll find the same great selection of better food for up to 35% less than your local supermarket prices.</p>
+            <p>Did somebody say <a href="http://www.freshdirect.com/quickshop/index.jsp">Reorder</a>? It's easy to shop from your top items, past orders, and shopping lists to stay stocked on all your favorites.</p>
 			
             <p>GO AHEAD, START SHOPPING.<br />
 			<a href="http://www.freshdirect.com/index.jsp">www.freshdirect.com</a></p>

@@ -14,7 +14,7 @@
 
 <tmpl:insert template='/template/top_nav.jsp'>
 
-<tmpl:put name='title' direct='true'>/ FD CRM : Quickshop > Recipes /</tmpl:put>
+<tmpl:put name='title' direct='true'>/ FD CRM : Reorder > Recipes /</tmpl:put>
 
 <% FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER); %>
 

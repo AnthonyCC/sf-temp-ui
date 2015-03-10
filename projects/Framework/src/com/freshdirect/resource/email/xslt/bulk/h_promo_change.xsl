@@ -55,7 +55,7 @@
                 <br/>It's all about the food.
                 </p>
 			
-                <p>P.S. We've made reordering easy. We automatically store your past orders, details and all, so you can reorder in minutes. Just log on to <a href="http://www.freshdirect.com">www.FreshDirect.com</a> and <b>use our Quickshop feature</b>, select your previous order, choose the items you want and add them to your cart in a click. Yup, it's that easy.</p>
+                <p>P.S. We've made reordering easy. We automatically store your past orders, details and all, so you can reorder in minutes. Just <b>click on Reorder</b> to shop from your top items, previous orders, and personal shopping lists—choose the items you want and add them to your cart in a click. Yup, it's that easy.</p>
 
                 <p>*See <a href="http://www.freshdirect.com">website</a> for details.</p>
 			

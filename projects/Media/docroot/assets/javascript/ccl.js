@@ -181,10 +181,10 @@ CCLPanel.LINKS = {
         txt:   "<u>Visit Your Shopping Lists</u>", 
         style: "text11g" },
     "visitThisList" : { 
-        txt:   "<u>View this list in Quickshop</u>", 
+        txt:   "<u>View this list in Reorder</u>", 
         style: "text11g" },
     "visitThisSOList" : { 
-        txt:   "<u>View this list in Quickshop</u>", 
+        txt:   "<u>View this list in Reorder</u>", 
         style: "text11g" },
     "deleteList" : { 
         txt:   "<u>Yes, delete this list.</u>", 
@@ -193,7 +193,7 @@ CCLPanel.LINKS = {
         txt:   "<u>Create another list</u>", 
         style: "text11g" },
     "goToQS"   : { 
-        txt:   "<u>To the QuickShop page</u>", 
+        txt:   "<u>To the Reorder page</u>", 
         style: "text11g" },
     "refresh" : {
         txt:   "<u>Refresh the page.</u>",
@@ -2028,7 +2028,7 @@ CCLClass.prototype.delete_payment_method_so = function(deletePaymentMethodSoInfo
                                     
         self.makeBody(
         	self.createText("<img width=\"15\" height=\"15\" style=\"padding-right:2px\" src=\"/media_stat/images/template/quickshop/so_exclamation2.png\">THIS PAYMENT OPTION IS USED BY A STANDING ORDER. ARE YOU SURE YOU WANT TO <span style=\"color: #CB3030\">DELETE</span> IT?","title12"),
-			self.createText("If you delete it, you will need to assign another Payment Option to your Standing Order (in Quickshop).",'text11'),
+			self.createText("If you delete it, you will need to assign another Payment Option to your Standing Order (in 'Reorder').",'text11'),
             self.createLink("deletePaymentMethodSoLink"),
             self.createLink("noClosePopupLink")
         );
@@ -2104,7 +2104,7 @@ CCLClass.prototype.delete_delivery_address_so = function(deleteDeliveryAddressSo
                                     
         self.makeBody(
         	self.createText("<img width=\"15\" height=\"15\" style=\"padding-right:2px\" src=\"/media_stat/images/template/quickshop/so_exclamation2.png\">THIS DELIVERY ADDRESS IS USED BY A STANDING ORDER. ARE YOU SURE YOU WANT TO <span style=\"color: #CB3030\">DELETE</span> IT?","title12"),
-			self.createText("If you delete it, you will need to assign another Delivery Address to your Standing Order (in Quickshop).",'text11'),
+			self.createText("If you delete it, you will need to assign another Delivery Address to your Standing Order (in 'Reorder').",'text11'),
             self.createLink("deleteDeliveryAddressSoLink"),
             self.createLink("noClosePopupLink")
         );

@@ -46,7 +46,7 @@
                <p><b>Just a little reminder to place your next FreshDirect order.</b></p>
                
                <p>We've stored all the details of your last order, so you can reorder in minutes.<br/>
-               <b><a href="http://www.freshdirect.com/quickshop/index.jsp?trk=remind1">Click here to view your last order in Quickshop!</a></b>
+               <b><a href="http://www.freshdirect.com/quickshop/index.jsp?trk=remind1">Click here to view your last order in "Reorder."</a></b>
                </p>
                
                <p>Based on feedback from customers like you we've also recently added a whole line of <a href="http://www.freshdirect.com/category.jsp?catId=dai_organic&amp;trk=remind1"><b>organic and all-natural dairy products</b></a>. We are also working around the clock to add beer and a full line of organic fruits and vegetables to our selection.</p>

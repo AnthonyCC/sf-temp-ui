@@ -63,7 +63,7 @@ String referencedOrder = request.getParameter("orig_sale_id") != null ? request.
 					<a href="<%= response.encodeURL("/order/place_order_build.jsp") %>" class="order_step">Search</a>
 					 &middot; <a href="<%= response.encodeURL("/order/build_order_browse.jsp") %>" class="order_step">Browse</a>
 					<% if ( user != null && user.getIdentity() != null ) { %>
-						 &middot; <a href="/order/quickshop/quickshop_index.jsp" class="order_step">QuickShop</a>
+						 &middot; <a href="/order/quickshop/quickshop_index.jsp" class="order_step">Reorder</a>
 						 &middot; <a href="<%= response.encodeURL("/order/build_order_recipes.jsp") %>" class="order_step">Recipes</a>
 						<fd:CCLCheck>
 							 &middot; <a href="/order/quickshop/all_lists.jsp" class="order_step">Lists</a>
@@ -122,7 +122,7 @@ String referencedOrder = request.getParameter("orig_sale_id") != null ? request.
 	if (pageURI.indexOf("checkout") > -1) { 
 		showSubHeader = false;
 	} else if (pageURI.indexOf("quickshop") > -1) {
-		leftColumnTitle = "Quickshop";
+		leftColumnTitle = "Reorder";
 	} else if (pageURI.indexOf("place_order_build") > -1) {
 		leftColumnTitle = "Build List";
 		showFindBox = false;

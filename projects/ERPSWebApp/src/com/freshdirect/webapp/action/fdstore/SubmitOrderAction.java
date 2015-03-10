@@ -268,7 +268,7 @@ public class SubmitOrderAction extends WebActionSupport {
 		//
 		// Marketing message
 		//
-		cart.setMarketingMessage("Thanks for your order! Don't forget to try Quickshop, the fastest (and easiest) way to shop. We automatically store all your orders there, saving all the details. When you come back, you can reorder in minutes. Log onto www.FreshDirect.com");
+		cart.setMarketingMessage("Thanks for your order! Did you know you can shop your top items and past orders to reorder in minutes? We automatically store all your orders, saving all the details. When you come back, you can reorder in minutes. Log onto www.FreshDirect.com");
 		
 		// !!! HACK: For the first order, "Welcome!" gets prepended to the dlv. instructions in SapOrderAdapter.getDeliveryInstructions()
 		if (user.getAdjustedValidOrderCount()==0) {
@@ -488,7 +488,7 @@ public class SubmitOrderAction extends WebActionSupport {
 		//
 		// Marketing message
 		//
-		cart.setMarketingMessage("Thanks for your order! Don't forget to try Quickshop, the fastest (and easiest) way to shop. We automatically store all your orders there, saving all the details. When you come back, you can reorder in minutes. Log onto www.FreshDirect.com");
+		cart.setMarketingMessage("Thanks for your order! Did you know you can shop your top items and past orders to reorder in minutes? We automatically store all your orders, saving all the details. When you come back, you can reorder in minutes. Log onto www.FreshDirect.com");
 		
 		// !!! HACK: For the first order, "Welcome!" gets prepended to the dlv. instructions in SapOrderAdapter.getDeliveryInstructions()
 		if (user.getAdjustedValidOrderCount()==0) {
@@ -905,7 +905,7 @@ public class SubmitOrderAction extends WebActionSupport {
 		FDCustomerShoppingList everyItemList = (FDCustomerShoppingList) FDListManager.getCustomerList(user.getIdentity(), EnumCustomerListType.SHOPPING_LIST, FDCustomerShoppingList.EVERY_ITEM_LIST);
 		
 		if(everyItemList == null){
-			LOGGER.debug("Customer has no QuickShop List -- creating one");
+			LOGGER.debug("Customer has no Reorder List -- creating one");
 			everyItemList = FDListManager.generateEveryItemEverOrdered(user.getIdentity());
 		} else {
 		
@@ -1040,7 +1040,7 @@ public class SubmitOrderAction extends WebActionSupport {
 		//
 		// Marketing message
 		//
-		cart.setMarketingMessage("Thanks for your order! Don't forget to try Quickshop, the fastest (and easiest) way to shop. We automatically store all your orders there, saving all the details. When you come back, you can reorder in minutes. Log onto www.FreshDirect.com");
+		cart.setMarketingMessage("Thanks for your order! Did you know you can shop your top items and past orders to reorder in minutes? We automatically store all your orders, saving all the details. When you come back, you can reorder in minutes. Log onto www.FreshDirect.com");
 		
 		// !!! HACK: For the first order, "Welcome!" gets prepended to the dlv. instructions in SapOrderAdapter.getDeliveryInstructions()
 		if (user.getAdjustedValidOrderCount()==0) {

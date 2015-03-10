@@ -75,7 +75,7 @@ String show = request.getParameter("show");
 	<li><a href="#SaveCart">Will my cart be saved?</a></li>
 	<li><a href="#EstPrice">What do you mean by Estimated Pricing?</a></li>
 	<li><a href="#ChangeOrderPostCutoff">Why can't I make changes to my order after the order deadline time?</a></li>
-	<li><a href="#Quickshop">What is Quickshop?</a></li>
+	<li><a href="#Reorder">How do I reorder?</a></li>
 	<li><a href="#PhoneFee">Why is there a fee for telephone orders?</a></li>
 	</ol></b>
 	<hr class="grey1px">
@@ -106,9 +106,9 @@ String show = request.getParameter("show");
 	By morning, your order is already produced and being packed on one of our refrigerated trucks.  
 	It's all automated and unfortunately manual accommodations cannot be made.
 	<%@ include file="/includes/back_to_top.jspf" %><br><br>
-	<a name="Quickshop"></a>
-	<b>What is Quickshop?</b><br>
-	Quickshop is a feature which allows you to shop from existing orders. To use our Quickshop feature, just click on the Quickshop icon, and choose the order you wish to shop from, 
+	<a name="Reorder"></a>
+	<b>How do I reorder?</b><br>
+	To reorder fast, you can shop from your top items, past orders, and personal lists. Just click on "Reorder," and choose the order you wish to shop from, 
 	or all items ever ordered. Move selected items to your cart, and then to add more items just click on the Continue Shopping from Homepage link. 
 	Add items to your cart then when you are done shopping simply Checkout.
 	<%@ include file="/includes/back_to_top.jspf" %><br><br>

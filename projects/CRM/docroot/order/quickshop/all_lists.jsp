@@ -24,7 +24,7 @@
 <% request.setAttribute("needsCCL","true"); %>
 
 <tmpl:insert template='/template/top_nav.jsp'>
-<tmpl:put name='title' direct='true'>/ FD CRM : Quickshop > Lists /</tmpl:put>
+<tmpl:put name='title' direct='true'>/ FD CRM : Reorder > Lists /</tmpl:put>
 
 <%        
 

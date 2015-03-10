@@ -837,7 +837,7 @@ public class BuiltinSurveys {
         usQ1.setAnswers(radioOptions_ratingNa);
         usability.addQuestion(usQ1);
 
-        FDSurveyQuestion usQ2 = new FDSurveyQuestion("UsabilityQuickshop", "How easy is it to use Quickshop?", true, false, false, true);
+        FDSurveyQuestion usQ2 = new FDSurveyQuestion("UsabilityQuickshop", "How easy is it to reorder?", true, false, false, true);
         usQ2.setAnswers(radioOptions_ratingNa);
         usability.addQuestion(usQ2);
 

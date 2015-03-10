@@ -46,7 +46,7 @@ RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.war
 
 <tmpl:insert template='/template/top_nav.jsp'>
 
-<tmpl:put name='title' direct='true'>/ FD CRM : Quickshop > Every Item Ordered /</tmpl:put>
+<tmpl:put name='title' direct='true'>/ FD CRM : Reorder > Every Item Ordered /</tmpl:put>
 
 <% FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER); %>
 

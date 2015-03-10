@@ -33,7 +33,7 @@
         <div id="quickshop"  class="container text10 <tmpl:get name='containerClass' />">
           <!-- content lands here -->
             <div class="header">
-                <h1>Quickshop</h1>
+                <h1>Reorder</h1>
                 <ul>
                     <li><a href="/quickshop/qs_past_orders.jsp">Past Orders</a></li>
                     <li><a href="/quickshop/qs_shop_from_list.jsp">Your Lists</a></li>

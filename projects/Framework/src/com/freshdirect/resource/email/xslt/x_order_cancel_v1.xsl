@@ -8,9 +8,9 @@
 <xsl:template match="fdemail">
 Hello <xsl:value-of select="customer/firstName"/>,
 
-We received your cancellation request for your order (#<xsl:value-of select="orderNumber"/>) scheduled for between <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="deliveryStartTime" /></xsl:call-template> and <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="deliveryEndTime"/></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="deliveryStartTime"/></xsl:call-template>. The order will not be delivered and you won't be charged. All of the items from this order will be stored as "Your Last Order" in Quickshop.
+We received your cancellation request for your order (#<xsl:value-of select="orderNumber"/>) scheduled for between <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="deliveryStartTime" /></xsl:call-template> and <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="deliveryEndTime"/></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="deliveryStartTime"/></xsl:call-template>. The order will not be delivered and you won't be charged. All of the items from this order will be stored as "Your Last Order" in "Reorder."
 
-Reorder with Quickshop:
+Reorder in minutes:
 http://www.freshdirect.com/quickshop/index.jsp
 
 We're always trying to improve and your feedback is important to us. If you have a moment, please e-mail us at <xsl:choose><xsl:when test="customer/chefsTable = 'true'">chefstable@freshdirect.com</xsl:when><xsl:otherwise>service@freshdirect.com</xsl:otherwise></xsl:choose> and tell us your reasons for canceling. (You can also call us at <xsl:value-of select="customer/customerServiceContact"/>.)

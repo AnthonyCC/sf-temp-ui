@@ -8,7 +8,7 @@
 
 #locationbar {
 	position:relative;
-	height: 23px;
+	height: 18px;
 	font-family: Arial;
 	vertical-align: middle;
 	width: 970px;
@@ -16,7 +16,7 @@
 	text-align: left;
 	background: white;
 	overflow: hidden;
-  margin:0 auto;
+  	margin: 10px auto 0px;
 }
 
 #locationbar .zipdisplay,
@@ -31,7 +31,7 @@
 
 #locationbar .buttons {
 	height: 23px;
-	line-height: 23px;
+	line-height: 16px;
 }
 
 #locationbar .zipdisplay {
@@ -54,8 +54,8 @@
 	font-size: 14px;
 	font-weight: bold;
 	height: 23px;
-    line-height: 19px;
-    vertical-align: middle;
+    line-height: 16px;
+	vertical-align: top;
 }
 
 #newzip {
@@ -68,20 +68,21 @@
 	font-size:11px;
 	font-family:Arial;
 	padding:1px 2px;
-	/*vertical-align:top;*/
-	margin:0 2px;
+	vertical-align:top;
+	margin: 0 2px 0 10px;
 	height:11px;
 	width:90px;
 }
 
 #newzipgo {
-	height:15px;
+	height: 15px;
 	/*vertical-align:top;*/
 }
 
 #locationbar .address select {
-	width:225px;
-	font-size:11px;
+	width: 225px;
+	font-size: 11px;
+	margin-left: 10px;
 }
 
 #locationbar .hoicon {
@@ -185,7 +186,7 @@
 		text-decoration:none;
 		overflow:hidden;
 		text-indent:90px;
-		vertical-align:middle;
+		/*vertical-align:middle;*/
 		border: 0 none;
 		cursor: pointer;
 		background-color: transparent;

@@ -46,7 +46,7 @@
 			
 			<p>Hope you had a great summer.  If you are receiving this email, you are one of the many corporate depot customers that have enjoyed the free $50 fresh food offer from FreshDirect. In addition to the free fresh food promotion, we had also postponed initiating our delivery fee. The time has now come for us to activate the delivery fee. Our standard delivery fee is $3.95. However, we are discounting your delivery fee to $2.99. <b>The delivery fee will be effective on all orders placed after September 7, 2003.</b></p>
 			
-            <p>Also, just as a reminder, we've made reordering easy. We automatically store your past orders, details and all, so you can reorder in minutes. Just log on to <a href="http://www.freshdirect.com">www.FreshDirect.com</a> and use our <b>Quickshop feature</b>, select your previous order, choose the items you want and add them to your cart in a click. Yup, it's that easy.</p>
+            <p>Don't forget—we've made reordering easy for you. We automatically store your past orders, details and all, so you can reorder in minutes. Just <b>click on Reorder</b> to shop from your top items, previous orders, and personal shopping lists—choose the items you want and add them to your cart in a click. Yup, it's that easy.</p>
 			
             <p>Happy eating,
 			<br/><br/>

@@ -105,7 +105,7 @@
 							
 							<p>We hope you find everything absolutely fresh and delicious. Please keep in mind that we have a 100% <u>Satisfaction Guarantee</u>. If you're not happy, please contact us right away so we can make it right.</p>
 							
-							<p>Shop again soon, and don't forget - you can use our <u>Quickshop</u> feature to shop from all or part of your last order in minutes. Or create a <u>Shopping List</u> to keep track of all the food you love. </p>
+							<p>Shop again soon, and don't forget — you can easily shop from all or part of your past orders in minutes. Or create a <u>Shopping List</u> to keep track of all the food you love. </p>
 							
 							<p><b>Thank you for your order and happy eating!</b><br/>
 							<br/>
@@ -185,7 +185,7 @@
 				</xsl:choose> 
 				<xsl:if test="customer/goGreen = 'false'">We'll include a printed, itemized receipt with your goods. </xsl:if><xsl:element name = "a"><xsl:attribute name = "href">http://www.freshdirect.com/your_account/order_details.jsp?orderId=<xsl:value-of select="order/erpSalesId"/></xsl:attribute>Click here</xsl:element> to view order details online.</p>
 
-				<p>Come back again soon -- reordering is easy with <a href="http://www.freshdirect.com/quickshop/index.jsp">Quickshop</a>. Just choose a list and pick the items you want to buy. Then go to Checkout and start figuring out what to do with your spare time.</p>
+				<p>Come back again soon — <a href="http://www.freshdirect.com/quickshop/index.jsp">reordering</a> is easy. Just choose a list and pick the items you want to buy. Then go to Checkout and start figuring out what to do with all your spare time.</p>
 
 				<p><b>Thank you for your order and happy eating!</b><br/>
 				<br/>

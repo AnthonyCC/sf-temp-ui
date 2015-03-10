@@ -53,7 +53,7 @@ function linkTo(url){
 			<tr><td class="bodyCopy"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td></tr>		
 			<tr><td valign=top><li type="dot"></li></td><td class="bodyCopy"><A HREF="#question2">Can I order by phone?</A> </td></tr>
 			<tr><td class="bodyCopy"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td></tr>		
-			<tr><td valign=top><li type="dot"></li></td><td class="bodyCopy"><A HREF="#question3">What is Quickshop?</A></td></tr>
+			<tr><td valign=top><li type="dot"></li></td><td class="bodyCopy"><A HREF="#question3">How do I reorder?</A></td></tr>
 			<tr><td class="bodyCopy"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td></tr>		
 			<tr><td valign=top><li type="dot"></li></td><td class="bodyCopy"><A HREF="#question4">Why are some prices estimated?</A></td></tr>
 			<tr><td class="bodyCopy"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td></tr>		
@@ -92,7 +92,7 @@ function linkTo(url){
 		<tr><td class="bodyCopy"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td></tr>		
 		<tr><td valign=top><li type="dot"></li></td><td class="bodyCopy">Pay by credit card or from your checking account &mdash; we won't charge you until the day of delivery when we've finished preparing your order. We'll send you an e-mail confirming your order details.</td></tr>
 		<tr><td class="bodyCopy"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" alt="" border="0"></td></tr>		
-		<tr><td valign=top><li type="dot"></li></td><td class="bodyCopy">Use Quickshop to reorder quickly.</td></tr>
+		<tr><td valign=top><li type="dot"></li></td><td class="bodyCopy">Easily shop from past orders and lists.</td></tr>
 		</table>
 	   </td>
 	</tr>
@@ -114,7 +114,7 @@ function linkTo(url){
 	<tr valign="top">
 		<td width="15"><img src="/media/images/layout/clear.gif" width="15" height="1" alt="" border="0"></td>
 		<td width="<%=tableWidth%>" class="bodyCopy">
-			<b>What is Quickshop?</b><br>
+			<b>How do I reorder?</b><br>
 			Quickshop is where you can reorder your favorite items &#151; fast. We remember everything you've ordered, exactly the way you like it, so you can shop from your past orders in minutes. And soon you'll also be able to use our special lists to go directly to the most popular items in every department or get great ideas from FreshDirect on a range of food topics, from everyday to entertaining. <br>
 	   </td>
 	</tr>

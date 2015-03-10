@@ -214,7 +214,7 @@ boolean hasCase = false;
 					<div class="cust_sub_nav" style="width: 140px;"><%if(hasCustomerCase){%><a href="<%= response.encodeURL("/order/payment_exception.jsp?orderId=" + nav_orderId) %>" class="cust_sub_nav_text"><%}%>Payment Exception<%if(hasCustomerCase){%></a><%}%></div>
 				<% } %>
 				<%if(isRegularOrder && CrmSecurityManager.hasAccessToPage(agentRole1,"shop_from_order.jsp")){%>
-				    <div class="cust_sub_nav" style="width: 120px;"><a href="/order/quickshop/shop_from_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">QuickShop Order</a></div>
+				    <div class="cust_sub_nav" style="width: 120px;"><a href="/order/quickshop/shop_from_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">Reorder</a></div>
 				<% } %>
 				<%if(o_details && isRegularOrder && orderPermissions.allowComplaint()){%>
 				    <div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/order/quickshop/makegood_from_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text"><%}%>MakeGood Order<%if(hasCustomerCase){%></a><%}%></div>

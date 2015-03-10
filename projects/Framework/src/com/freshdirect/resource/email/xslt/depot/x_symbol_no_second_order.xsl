@@ -13,7 +13,7 @@ We hope your first FreshDirect experience was nothing short of excellent. Now we
 			
 Just place your next web order ($40 minimum), and give us your thoughts. We'll give you $10 more free fresh food.* Plus, you have free delivery for two more orders.
 
-Make sure to try out Quickshop. We've stored all the details of your last order, so you can reorder in minutes. And of course you'll find the same great selection of better food for up to 35% less than your local supermarket prices.
+Did somebody say Reorder? It’s easy to shop from your top items, past orders, and shopping lists to stay stocked on all your favorites.
 
 GO AHEAD, START SHOPPING.
 

@@ -49,7 +49,7 @@
 			
 			<p>To see what's new and back in stock, <a href="http://www.freshdirect.com/newproducts.jsp?trk=remind01">click here</a>.</p>
 			
-			<p>You can also use Quickshop to <a href="http://www.freshdirect.com/quickshop/index.jsp?trk=remind01">shop directly from your last order</a>.</p>
+			<p>You can also reorder <a href="http://www.freshdirect.com/quickshop/index.jsp?trk=remind01">by shopping directly from your last order</a>.</p>
 			
 			<p>Happy eating,</p>
 			

@@ -50,7 +50,7 @@
         <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     </tmpl:put>
 
-	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop</tmpl:put>
+	<tmpl:put name='title' direct='true'>FreshDirect - Reorder</tmpl:put>
 	<tmpl:put name='side_nav' direct='true'><font class="space4pix"><br></font>
 	<%--
 	   <tmpl:put name='banner' direct='true'>

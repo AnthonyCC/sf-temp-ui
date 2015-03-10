@@ -93,7 +93,7 @@ else{
 %>
 				<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0">
 				<TR VALIGN="MIDDLE">
-					<TD><A HREF="/quickshop/index.jsp"><img src="/media_stat/images/navigation/department/quickshop/qs_depnav.gif" width="158" height="28" border="0" alt="QUICKSHOP"></A></TD>
+					<TD><A HREF="/quickshop/index.jsp"><img src="/media_stat/images/navigation/department/quickshop/qs_depnav.gif" width="158" height="28" border="0" alt="REORDER"></A></TD>
 					<TD WIDTH="11" ALIGN="CENTER" VALIGN="BOTTOM"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="28" border="0" HSPACE="7"><BR></TD>
 					<TD valign="top">
 						<A HREF="/quickshop/previous_orders.jsp">Your Previous Orders</A><BR>

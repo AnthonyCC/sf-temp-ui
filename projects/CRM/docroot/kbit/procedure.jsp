@@ -76,7 +76,7 @@ When you are finished issuing credits, click [Process Credit].
 
 <li>Page down and click "Process Credit".<hr class="grey1px"></li>
 
-<li>At the top of the page click "Quickshop".<hr class="grey1px"></li>
+<li>At the top of the page click "Reorder."<hr class="grey1px"></li>
 
 <li>Zero out all quantities of items not being redelivered.<hr class="grey1px"></li>
 

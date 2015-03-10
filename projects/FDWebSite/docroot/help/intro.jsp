@@ -106,7 +106,7 @@ Find out how to order and reorder.<br>
 	<td>
 		<li type="dot">How do I order?</li>
 		<li type="dot">Can I order by phone?</li>
-		<li type="dot">What is Quickshop?</li>		
+		<li type="dot">How do I reorder?</li>		
 		<li type="dot">Why are some prices estimated?</li>
 		<li type="dot">How can I check on my order?</li>
 		<li type="dot">What happens to my cart if I leave before checking out?</li>		

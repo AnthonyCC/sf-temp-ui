@@ -20,7 +20,7 @@ CEO and Creator
 FreshDirect
 It's all about the food.
 
-P.S. We've made reordering easy. We automatically store your past orders, details and all, so you can reorder in minutes. Just log on to www.FreshDirect.com and use our Quickshop feature, select your previous order, choose the items you want and add them to your cart in a click. Yup, it's that easy.
+P.S. We've made reordering easy. We automatically store your past orders, details and all, so you can reorder in minutes. Just click on Reorder to shop from your top items, previous orders, and personal shopping lists—choose the items you want and add them to your cart in a click. Yup, it's that easy.
 
 
 *See website for details.

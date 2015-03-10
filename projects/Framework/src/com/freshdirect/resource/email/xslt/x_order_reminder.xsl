@@ -12,7 +12,7 @@ Dear <xsl:value-of select="customer/firstName"/>,
 Just a little reminder to place your next FreshDirect order.
 			
 We've stored all the details of your last order, so you can reorder in minutes.
-Click here to view your last order in Quickshop!
+Click here to view your last order!
 http://www.freshdirect.com/quickshop/index.jsp?trk=remind1
 
 Based on feedback from customers like you we've also recently added a whole line of organic and all-natural dairy products.

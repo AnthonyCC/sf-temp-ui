@@ -34,7 +34,7 @@
 
 <P><b>Hello <xsl:value-of select="@first-name"/></b>,</P>
 
-<P>Your order <b>(#<xsl:value-of select="@order-id"/>)</b> scheduled for between <b><xsl:value-of select="order/delivery-info/@formatted-delivery-start-time"/> and <xsl:value-of select="order/delivery-info/@formatted-delivery-end-time"/></b> on <b><xsl:call-template name="format-delivery-date"/></b> has been cancelled. The order will not be delivered and you won't be charged. All of the items from this order will be stored as <a href="http://www.freshdirect.com/quickshop/index.jsp">"Your Last Order"</a> in Quickshop.</P>
+<P>Your order <b>(#<xsl:value-of select="@order-id"/>)</b> scheduled for between <b><xsl:value-of select="order/delivery-info/@formatted-delivery-start-time"/> and <xsl:value-of select="order/delivery-info/@formatted-delivery-end-time"/></b> on <b><xsl:call-template name="format-delivery-date"/></b> has been canceled. The order will not be delivered and you won't be charged. All of the items from this order will be stored as <a href="http://www.freshdirect.com/quickshop/index.jsp">"Your Last Order"</a> in "Reorder."</P>
 
 <P>For more details please contact us at 1-866-283-7374. We're here  <xsl:for-each select="contactHours/contactHours"><xsl:value-of select="daysDisplay"/><xsl:value-of select="hoursDisplay"/>;</xsl:for-each></P>
 

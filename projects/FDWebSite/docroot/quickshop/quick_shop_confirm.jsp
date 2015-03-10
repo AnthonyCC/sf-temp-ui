@@ -126,7 +126,7 @@ String sPage = firstProductNode != null ? "/grocery_cart_confirm.jsp?catId="
 			<% if (QuickCart.PRODUCT_TYPE_CCL.equals(cartType)) { %>
 				<TD WIDTH="35"><A HREF="/quickshop/shop_from_list.jsp?<%=CclUtils.CC_LIST_ID%>=<%=quickCart.getOrderId()%>"><img src="/media_stat/images/template/quickshop/l_arrow_996699.gif" width="29" height="28" border="0" alt="CONTINUE SHOPPING"></A></TD>
 				<TD>
-					<A HREF="/quickshop/shop_from_list.jsp?<%=CclUtils.CC_LIST_ID%>=<%=quickCart.getOrderId()%>"><img src="/media_stat/images/template/quickshop/continue_shopping996699.gif" width="117" height="8" border="0" alt="CONTINUE SHOPPING IN QUICKSHOP" VSPACE="2"></A>
+					<A HREF="/quickshop/shop_from_list.jsp?<%=CclUtils.CC_LIST_ID%>=<%=quickCart.getOrderId()%>"><img src="/media_stat/images/template/quickshop/continue_shopping996699.gif" width="117" height="8" border="0" alt="CONTINUE SHOPPING IN REORDER" VSPACE="2"></A>
 					<BR>from <FONT CLASS="text11bold">
 					<A HREF="/quickshop/shop_from_list.jsp?<%=CclUtils.CC_LIST_ID%>=<%=quickCart.getOrderId()%>">
 						<b><%= StringUtil.escapeHTML(quickCart.getName())%> (<%=n%> <%=(n == 1 ? " Item" : " Items")%>)</b>							
@@ -135,7 +135,7 @@ String sPage = firstProductNode != null ? "/grocery_cart_confirm.jsp?catId="
 			<% } else if (QuickCart.PRODUCT_TYPE_STARTER_LIST.equals(cartType)) { %>
 				<TD WIDTH="35"><A HREF="/quickshop/starter_list.jsp?<%=CclUtils.STARTER_LIST_ID%>=<%=quickCart.getOrderId()%>"><img src="/media_stat/images/template/quickshop/l_arrow_996699.gif" width="29" height="28" border="0" alt="CONTINUE SHOPPING"></A></TD>
 				<TD>
-					<A HREF="/quickshop/starter_list.jsp?<%=CclUtils.STARTER_LIST_ID%>=<%=quickCart.getOrderId()%>"><img src="/media_stat/images/template/quickshop/continue_shopping996699.gif" width="117" height="8" border="0" alt="CONTINUE SHOPPING IN QUICKSHOP" VSPACE="2"></A>
+					<A HREF="/quickshop/starter_list.jsp?<%=CclUtils.STARTER_LIST_ID%>=<%=quickCart.getOrderId()%>"><img src="/media_stat/images/template/quickshop/continue_shopping996699.gif" width="117" height="8" border="0" alt="CONTINUE SHOPPING IN REORDER" VSPACE="2"></A>
 					<BR>from <FONT CLASS="text11bold">
 					<A HREF="/quickshop/starter_list.jsp?<%=CclUtils.STARTER_LIST_ID%>=<%=quickCart.getOrderId()%>">
 						<b><%= StringUtil.escapeHTML(quickCart.getName())%></b>							
@@ -145,7 +145,7 @@ String sPage = firstProductNode != null ? "/grocery_cart_confirm.jsp?catId="
 			<% } else {%> 
 				<TD WIDTH="35"><A HREF="/quickshop/shop_from_order.jsp?orderId=<%=quickCart.getOrderId()%>"><img src="/media_stat/images/template/quickshop/l_arrow_996699.gif" width="29" height="28" border="0" alt="CONTINUE SHOPPING"></A></TD>
 				<TD>
-					<A HREF="/quickshop/shop_from_order.jsp?orderId=<%=quickCart.getOrderId()%>"><img src="/media_stat/images/template/quickshop/continue_shopping996699.gif" width="117" height="8" border="0" alt="CONTINUE SHOPPING IN QUICKSHOP" VSPACE="2"></A>
+					<A HREF="/quickshop/shop_from_order.jsp?orderId=<%=quickCart.getOrderId()%>"><img src="/media_stat/images/template/quickshop/continue_shopping996699.gif" width="117" height="8" border="0" alt="CONTINUE SHOPPING IN REORDER" VSPACE="2"></A>
 					<BR>from your order on <FONT CLASS="text11bold">
 					<A HREF="/quickshop/shop_from_order.jsp?orderId=<%=quickCart.getOrderId()%>">
 						<%= dateFormatter.format( quickCart.getDeliveryDate() ) %>
@@ -160,7 +160,7 @@ String sPage = firstProductNode != null ? "/grocery_cart_confirm.jsp?catId="
 			}
 		%>
 		<TD WIDTH="35"><A HREF="<%= href %>"><img src="/media_stat/images/template/quickshop/l_arrow_996699.gif" width="29" height="28" border="0" alt="CONTINUE SHOPPING"></A></TD>
-		<TD><A HREF="<%= href %>"><img src="/media_stat/images/template/quickshop/continue_shopping996699.gif" width="117" height="8" border="0" alt="CONTINUE SHOPPING IN QUICKSHOP" VSPACE="2"></A><BR>
+		<TD><A HREF="<%= href %>"><img src="/media_stat/images/template/quickshop/continue_shopping996699.gif" width="117" height="8" border="0" alt="CONTINUE SHOPPING IN REORDER" VSPACE="2"></A><BR>
 			<FONT CLASS="text11bold"><A HREF="<%= href %>">From <%= currDept != null?currDept.getFullName():"Every Item Ordered"%></A></FONT>
 		</TD>
 		<% } %>

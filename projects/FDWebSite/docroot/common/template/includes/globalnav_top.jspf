@@ -72,7 +72,7 @@ if(user != null) {
 	if(user.isDepotUser()){%>
 		<a class="logo" href="/index.jsp"><img src="/media_stat/images/logos/<%=user.getDepotCode()%>_depot_logo.gif"  alt="" border="0"></a>
 	<% } else { %>
-	  <a class="logo" href="/index.jsp" ><img src="/media/images/navigation/global_nav/fd_logo_on.gif" border="0" alt="FreshDirect" name="FD_LOGO"></a>
+	  <a class="logo" href="/index.jsp" ><img src="/media/images/navigation/global_nav/fd_logo_on.png" border="0" alt="FreshDirect" name="FD_LOGO"></a>
 	<% } %>
 	<%
 		String hasEcouponsClass="";
@@ -141,11 +141,11 @@ if(user != null) {
 	{
 		String searchParams = request.getParameter("searchParams")!=null ? request.getParameter("searchParams") : "";
 %>
-							<input type="text" id="topSearchField" data-component="autocomplete" class="search" name="searchParams" value="<%= StringEscapeUtils.escapeHtml(searchParams) %>">
+							<input type="text" id="topSearchField" placeholder="Search" data-component="autocomplete" class="search" name="searchParams" value="<%= StringEscapeUtils.escapeHtml(searchParams) %>">
 <%
 }
 %>
-    <button type="submit" id="topInputFindButton" class="cssbutton khaki">Find</button>
+    <button type="submit" id="topInputFindButton" class="cssbutton khaki">Go</button>
 		</form>
 		</div>
 
@@ -157,7 +157,7 @@ if(user != null) {
 	<tr>
 		<td width="182" ROWSPAN="3" valign="BOTTOM">
 	
-	    <a href="/index.jsp" onMouseover="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_on.gif')" onMouseout="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_off.gif')"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" width="195" height="81" border="0" alt="FreshDirect" name="FD_LOGO"></a>
+	    <a href="/index.jsp" onMouseover="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_on.png')" onMouseout="swapImage('FD_LOGO','/media/images/navigation/global_nav/fd_logo_off.gif')"><img src="/media/images/navigation/global_nav/fd_logo_off.gif" width="195" height="81" border="0" alt="FreshDirect" name="FD_LOGO"></a>
 	    </td>
 	</tr>
 	<tr>

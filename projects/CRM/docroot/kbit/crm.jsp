@@ -99,7 +99,7 @@ String section = request.getParameter("section");
 				<ul>
 				<li>'Search' - main search products page</li>
 				<li>'Browse' - main departments page</li>
-				<li>'QuickShop' - previous orders page</li>
+				<li>'Reorder' - previous orders page</li>
 				<li>'Checkout' - go to checkout, default to 'review items'</li>
 				</ul>
 			</ul>

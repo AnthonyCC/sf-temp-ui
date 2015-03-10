@@ -17,7 +17,7 @@
 <% request.setAttribute("needsCCL","true"); %>
 <tmpl:insert template='/template/top_nav.jsp'>
 
-<tmpl:put name='title' direct='true'>/ FD CRM : Quickshop > Shop from Order /</tmpl:put>
+<tmpl:put name='title' direct='true'>/ FD CRM : Reorder > Shop from Order /</tmpl:put>
 
 <%
    RequestUtil.appendToAttribute(request,"bodyOnLoad","FormChangeUtil.recordSignature('qs_cart',false)",";");

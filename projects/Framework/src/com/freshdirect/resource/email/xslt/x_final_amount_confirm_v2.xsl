@@ -89,10 +89,10 @@
 <xsl:text>http://www.freshdirect.com/your_account/order_history.jsp
 
 </xsl:text>
-<xsl:text>Come back again soon -- reordering is easy with Quickshop. Just choose a list and pick the items you want to buy. Then go to Checkout and start figuring out what to do with your spare time.
+<xsl:text>Come back again soon! Reordering is easy — shop your top items and past orders to pick the items you want to buy. Yup, it's that fast.
 
 </xsl:text>
-		<xsl:text>Reorder with Quickshop:
+		<xsl:text>Reorder the easy way:
 </xsl:text>
 		<xsl:text>http://www.freshdirect.com/quickshop/index.jsp
 		

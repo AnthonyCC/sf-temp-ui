@@ -120,8 +120,9 @@ your account information, this is the place to do it.<br></td>
 	<% } %>
     </td></tr><tr>
 	<td valign="top" class="text13"> <% if(user.isChefsTable()) { %> <br><br> <% } %>
-		<font class="text13bold"><a href="<%=response.encodeURL("/your_account/order_history.jsp")%>">Your Orders</a></font><br>Check your order status and update open orders.
-		<br><br>
+		<font class="text13bold"><a href="<%=response.encodeURL("/your_account/order_history.jsp")%>">Your Orders</a></font><br>Check your order status and update open orders.<br>
+		<a id="yourAccount_reorder" href="/quickshop/qs_past_orders.jsp"><div class="new_purple_button_style"><div id="reorder-icon-big"></div><b>Reorder</b> from Past Orders</div></a>
+		<br>
 		
 		<% if ( user.isEligibleForStandingOrders() ) { %>					
 			<font class="text13bold">
@@ -172,7 +173,7 @@ your account information, this is the place to do it.<br></td>
         <font class="text13bold">
 		<a href="<%=response.encodeURL("/quickshop/all_lists.jsp")%>">Your Shopping Lists</a> </font>
 		<br>
-		Visit Quickshop to view, edit and shop with your shopping lists.
+		Visit "Reorder" to view, edit and shop with your shopping lists.
 		<br><br>
         <font class="text13bold">
 		<a href="<%=response.encodeURL("/your_account/customer_profile_summary.jsp")%>">Your Profile</a> </font>  <font class="text13bold" color="#990000"></font>

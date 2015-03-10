@@ -13,7 +13,7 @@
 <% request.setAttribute("needsCCL","true"); %>
 <tmpl:insert template='/template/top_nav.jsp'>
 
-<tmpl:put name='title' direct='true'>/ FD CRM : New Order > Quickshop /</tmpl:put>
+<tmpl:put name='title' direct='true'>/ FD CRM : New Order > Reorder /</tmpl:put>
 <% FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER); %>
 
 <tmpl:put name='header' direct='true'><jsp:include page='/includes/customer_header.jsp'/></tmpl:put>

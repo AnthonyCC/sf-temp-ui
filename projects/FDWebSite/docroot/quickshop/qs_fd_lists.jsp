@@ -16,7 +16,7 @@
     <tmpl:put name="soytemplates"><soy:import packageName="quickshop"/></tmpl:put>
     <tmpl:put name="jsmodules"><%@ include file="/common/template/includes/i_jsmodules.jspf" %>
     <jwr:script src="/qsfdlists.js" useRandomParam="false" /></tmpl:put>
-    <tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Shop from Previous Orders</tmpl:put>
+    <tmpl:put name='title' direct='true'>FreshDirect - Reorder from FD Lists</tmpl:put>
 
     <tmpl:put name='fdSelected'>selected</tmpl:put>
     <tmpl:put name='containerClass'>qs-fdlists</tmpl:put>
