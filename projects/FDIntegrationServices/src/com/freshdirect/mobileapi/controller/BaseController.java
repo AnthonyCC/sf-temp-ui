@@ -55,15 +55,6 @@ import freemarker.template.TemplateException;
 
 public abstract class BaseController extends AbstractController implements MessageCodes {
 
-   /* public final class AnonymousUser extends FDUser {
-	    private static final long serialVersionUID = 6972700005485690087L;
-
-	    @Override
-	    public PricingContext getPricingContext() {
-	        return PricingContext.DEFAULT;
-	    }
-    }*/
-
     private static final String JSON = "JSON";
 
     private static final Category LOGGER = LoggerFactory.getInstance(BaseController.class);
@@ -345,6 +336,7 @@ public abstract class BaseController extends AbstractController implements Messa
         responseMessage.addWarningMessage(code, message);
         return responseMessage;
     }
+    
     protected void setResponseMessage(ModelAndView model, Message responseMessage, SessionUser user) throws JsonException {
         try {
             try {
@@ -444,6 +436,7 @@ public abstract class BaseController extends AbstractController implements Messa
     	fakedUserForRequest.set(Boolean.TRUE);
     	FDUser user = new FDUser();
     	user.setDefaultPricingContext();
+    	user.setRobot(true);// I hate to do this but door3 didnt do anonymous browsing properly, revisit during fdx please
 		FDSessionUser sessionUser = new FDSessionUser(user, session);
     	session.setAttribute(SessionName.USER, sessionUser);
 		return SessionUser.wrap(sessionUser);
