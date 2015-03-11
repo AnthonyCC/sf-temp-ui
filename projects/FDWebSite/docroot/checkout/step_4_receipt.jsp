@@ -277,7 +277,7 @@
 	</div>
 	
 	<% /* top rows (everything above the top solid line, line is in /checkout/includes/i_checkout_receipt.jspf) */	%>
-	<table border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL%>" style="margin-top: 5px;">
+	<table class="globalnav_top" border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL%>" style="margin-top: 5px;">
 		<tr valign="bottom">      
 			<td colspan="2" width="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL%>" align="right">
 			<%
@@ -289,13 +289,36 @@
 			</td>
 		</tr>
 		<tr valign="bottom">
-			<td width="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL-300%>"><a href="/index.jsp"><img src="/media_stat/images/logos/fd_logo_md.gif" width="216" height="42" border="0" alt="FreshDirect" /></a></td>
-			<td width="300" align="right">
-				<A HREF="/index.jsp" onMouseOver="swapImage('home_top','/media/images/navigation/global_nav/go_home_01.gif')" onMouseOut="swapImage('home_top','/media/images/navigation/global_nav/go_home.gif')"><img name="home_top" src="/media_stat/images/navigation/global_nav/go_home.gif" width="56" height="26" border="0" alt="GO HOME"></A>
-				&nbsp;&nbsp;<IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="25">&nbsp;&nbsp;
-				<a href="/your_account/manage_account.jsp" onMouseover="swapImage('NAV_YOURACCOUNT_IMG','/media_stat/images/navigation/global_nav/nav_button_your_account2_r.gif')" onMouseout="swapImage('NAV_YOURACCOUNT_IMG','/media_stat/images/navigation/global_nav/nav_button_your_account2.gif')"><img src="/media_stat/images/navigation/global_nav/nav_button_your_account2.gif" name="NAV_YOURACCOUNT_IMG" width="71" height="25" alt="YOUR ACCOUNT" border="0"></a>
-				&nbsp;&nbsp;<IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="25">&nbsp;&nbsp;
-				<A HREF="/quickshop/index.jsp" onMouseOver="swapImage('quickshop','/media_stat/images/navigation/global_nav/nav_button_quickshop_r.gif')" onMouseOut="swapImage('quickshop','/media_stat/images/navigation/global_nav/nav_button_quick_shop.gif')"><img name="quickshop" src="/media_stat/images/navigation/global_nav/nav_button_quick_shop.gif" width="54" height="26" border="0" alt="REORDER"></A>
+			<td width="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL-450%>"><a href="/index.jsp"><img src="/media_stat/images/logos/fd_logo_md.gif" width="216" height="42" border="0" alt="FreshDirect" /></a></td>
+			<td width="450" align="right">
+			
+				<% String dlvInfoLink = ""; 
+					if (user.isPickupOnly()) {
+						dlvInfoLink = "/help/delivery_lic_pickup";
+					} else if (user.isDepotUser()) {
+						dlvInfoLink = "/help/delivery_info_depot";
+					} else if (user.getAdjustedValidOrderCount() >= 1) {
+						dlvInfoLink = "/your_account/delivery_info_avail_slots";
+					} else {
+						dlvInfoLink = "/help/delivery_info";
+							if (EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())) {
+								dlvInfoLink += "_cos";
+							} 
+					}
+				%>
+			
+				<div class="topnavitem" id="topnavitem_help">
+			    	<a href="/help/index.jsp?trk=gnav" style="margin-right: 0px;">Help</a>
+			    </div>    
+			    <div class="topnavitem" id="topnavitem_deliveryInfo">
+			    	<a href="<%=dlvInfoLink%>.jsp">Delivery Info</a>
+			    </div>
+			    <div class="topnavitem" id="topnavitem_reorder">
+			    	<a href="/quickshop/index.jsp"><div id="reorder-icon"></div>Reorder</a>
+			    </div>
+			    <div class="topnavitem" id="topnavitem_yourAccount">
+			    	<a href="/your_account/manage_account.jsp">Your Account</a>
+			    </div>
 			</td>
 		</tr>
 		<tr>

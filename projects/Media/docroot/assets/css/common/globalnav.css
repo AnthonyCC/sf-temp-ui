@@ -802,10 +802,6 @@ ul.subdepartments {
     font-style: normal;
 }
 
-.globalNavigation{
-  margin-top:6px;
-}
-
 /* debug classes */
 .globalNavigation .debug-green{
   outline:1px solid green;

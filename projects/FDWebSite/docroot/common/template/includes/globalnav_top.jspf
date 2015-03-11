@@ -117,26 +117,21 @@ if(user != null) {
 					} 
 			}
 		%>
-    <div class="topnavitem">
-      <a href="/help/index.jsp?trk=gnav" onMouseover="swapImage('NAV_HELP_IMG','/media_stat/images/navigation/global_nav/nav_button_get_help_r.gif')" onMouseout="swapImage('NAV_HELP_IMG','/media_stat/images/navigation/global_nav/nav_button_get_help.gif')"><img src="/media_stat/images/navigation/global_nav/nav_button_get_help.gif" name="NAV_HELP_IMG" width="54" height="26" alt="GET HELP" border="0"></a>
+    <div class="topnavitem" id="topnavitem_help">
+    	<a href="/help/index.jsp?trk=gnav">Help</a>
+    </div>    
+    <div class="topnavitem" id="topnavitem_deliveryInfo">
+    	<a href="<%=dlvInfoLink%>.jsp">Delivery Info</a>
     </div>
-    <div class="topnavitem">
-      <a href="/your_account/manage_account.jsp" onMouseover="swapImage('NAV_YOURACCOUNT_IMG','/media_stat/images/navigation/global_nav/nav_button_your_account2_r.gif')" onMouseout="swapImage('NAV_YOURACCOUNT_IMG','/media_stat/images/navigation/global_nav/nav_button_your_account2.gif')"><img src="/media_stat/images/navigation/global_nav/nav_button_your_account2.gif" name="NAV_YOURACCOUNT_IMG" width="71" height="25" alt="YOUR ACCOUNT" border="0"></a>
+    <div class="topnavitem" id="topnavitem_reorder">
+    	<a href="/quickshop/index.jsp"><div id="reorder-icon"></div>Reorder</a>
     </div>
-		<div class="topnavitem" id="topnav_ecoupons"><a href="/ecoupon.jsp?sort=prio&searchParams=&view=grid&refinement=1"><img src="/media/images/ecoupon/coupon_savings.gif" name="NAV_COUPON_IMG" width="71" height="27" alt="COUPON SAVINGS" border="0" /></a></div>
-    <div class="topnavitem">
-      <a href="/quickshop/index.jsp" onMouseover="swapImage('NAV_QUICKSHOP_IMG','/media_stat/images/navigation/global_nav/nav_button_quick_shop_r.gif')" onMouseout="swapImage('NAV_QUICKSHOP_IMG','/media_stat/images/navigation/global_nav/nav_button_quick_shop.gif')"><img src="/media_stat/images/navigation/global_nav/nav_button_quick_shop.gif" name="NAV_QUICKSHOP_IMG" width="54" height="26" alt="QUICK SHOP" border="0"></a>
-    </div>
-    <div class="topnavitem">
-      <a href="<%=dlvInfoLink%>.jsp" onMouseover="swapImage('DELIVERY_IMG','/media_stat/images/navigation/global_nav/delivery_r.gif')" onMouseout="swapImage('DELIVERY_IMG','/media_stat/images/navigation/global_nav/delivery.gif')"><img src="/media_stat/images/navigation/global_nav/delivery.gif" name="DELIVERY_IMG" height="26" alt="DELIVERY INFO" border="0"></a>
+    <div class="topnavitem" id="topnavitem_yourAccount">
+    	<a href="/your_account/manage_account.jsp">Your Account</a>
     </div>
     <div>
     <form class="searchform" name="search" action="/search.jsp" method="get" accept-charset="iso-8859-1">
-				<label>
-          <a href="/search.jsp">
-            <div class="spritediv sprite-nav-nav_button_search" style="margin: 1px 4px">Search</div>
-          </a>
-        </label>
+				<label><a href="/search.jsp"><img src="/media_stat/images/navigation/global_nav/nav_button_search.gif" alt="SEARCH" align="bottom" border="0"></a></label>
 <%
 	{
 		String searchParams = request.getParameter("searchParams")!=null ? request.getParameter("searchParams") : "";
@@ -145,7 +140,7 @@ if(user != null) {
 <%
 }
 %>
-    <button type="submit" id="topInputFindButton" class="cssbutton khaki">Go</button>
+    				<input type="submit" id="topInputFindButton" value="Go">
 		</form>
 		</div>
 
