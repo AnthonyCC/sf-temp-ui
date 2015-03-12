@@ -81,7 +81,7 @@ body{
 
 .globalnav_top .topnavitem a{
   float: right;
-  margin: 8px 0 0 0px;
+  margin: 9px 0 0 0px;
   font-family: Verdana;
   font-size: 14px;
   font-weight: normal;
@@ -89,7 +89,7 @@ body{
 }
 
 .globalnav_top .topnavitem a:hover{
-	color: #779A45;
+	color: #3d571e;
 	text-decoration: none;
 }
 
