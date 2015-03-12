@@ -53,7 +53,7 @@
 					<tr><td style="padding: 10px 10px 10px 0;"><xsl:value-of select="offerText" disable-output-escaping="yes"/></td></tr>
 					<tr><td style="padding: 20px 10px 10px 10px;"><img src="https://www.freshdirect.com/media/images/profile/raf_email/quote.png" alt="" /> <xsl:value-of select="userMessage"/></td></tr>
 					<tr><td style="padding: 20px 10px 10px 10px;"><xsl:value-of select="systemMessage"/></td></tr>
-					<tr><td style="padding: 20px 10px 10px 10px;"><a href="http://www.freshdirect.com/index.jsp"><img src="https://www.freshdirect.com/media/images/profile/raf_email/get_started.png" alt="" /></a></td></tr>
+					<tr><td style="padding: 20px 10px 10px 10px;"><a href="{refLink}"><img src="https://www.freshdirect.com/media/images/profile/raf_email/get_started.png" alt="" /></a></td></tr>
 				</table>
 			</td>
 			<td>
