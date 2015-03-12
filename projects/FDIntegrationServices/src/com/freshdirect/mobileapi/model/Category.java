@@ -31,6 +31,8 @@ public class Category extends ProductContainer {
     private boolean isBottomLevel = false;
     
     private Map<String, Set<FilterOption>> filterOptions = new LinkedHashMap<String, Set<FilterOption>>();
+    
+    List<Category> categories = new ArrayList<Category>();
 
     public static Category wrap(CategoryModel model) {
         return wrapCategory(model, 0);
@@ -85,6 +87,8 @@ public class Category extends ProductContainer {
         // health warning
         final boolean hasAlcohol = model.isHavingBeer();
         result.setHealthWarning(hasAlcohol);
+        
+       
 
         return result;
     }
@@ -144,5 +148,19 @@ public class Category extends ProductContainer {
     public void setBottomLevel(boolean bottomLevel) {
         this.isBottomLevel = bottomLevel;
     }
+
+	public List<Category> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<Category> categories) {
+		this.categories = categories;
+	}
+	
+	public void addCategories(Category cat){
+		this.categories.add(cat);
+	}
+    
+    
     
 }

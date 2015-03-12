@@ -40,6 +40,7 @@ import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
 import com.freshdirect.mobileapi.controller.data.response.Idea;
 import com.freshdirect.mobileapi.model.Brand;
 import com.freshdirect.mobileapi.model.Category;
+import com.freshdirect.mobileapi.model.DepartmentSection;
 import com.freshdirect.mobileapi.model.Product;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.Wine;
@@ -54,8 +55,9 @@ public class BrowseUtil {
 	private static final String ACTION_GET_CATEGORYCONTENT_PRODUCTONLY = "getCategoryContentProductOnly";
 	private static final String FILTER_KEY_BRANDS = "brands";
     private static final String FILTER_KEY_TAGS = "tags";
+    private static final String NO_SECTIONHEADER = "noSectionHeader";
 	
-	public   BrowseResult getCategories(BrowseQuery requestMessage, SessionUser user, HttpServletRequest request) throws FDException{
+	public static  BrowseResult getCategories(BrowseQuery requestMessage, SessionUser user, HttpServletRequest request) throws FDException{
 		
 		String contentId = null;
 		String action=null;
@@ -266,7 +268,7 @@ public class BrowseUtil {
 		
 	}
 	
-	private Map<String, String> getQueryMap(String url) {
+	private static Map<String, String> getQueryMap(String url) {
 		Map<String, String> map = new HashMap<String, String>();
 		if (url != null) {
 			try {
@@ -289,7 +291,7 @@ public class BrowseUtil {
 		return map;
 	}
 	
-	private void addCategoryHeadline(
+	private static  void addCategoryHeadline(
 			List<CategorySectionModel> categorySections,
 			CategoryModel categoryModel, Category category) {
 	    // Simple department
@@ -312,12 +314,12 @@ public class BrowseUtil {
 		}
 	}
 	
-	 private boolean passesFilter(ProductModel product,
+	 private static  boolean passesFilter(ProductModel product,
 				HttpServletRequest request) {
 	        return filterTags(product, request) && filterBrands(product, request);
 		}
 	 
-	 private boolean filterBrands(ProductModel product,
+	 private static  boolean filterBrands(ProductModel product,
 				HttpServletRequest request) {
 			String[] filterBrands = request.getParameterValues(FILTER_KEY_BRANDS);
 	    	if (filterBrands == null) {
@@ -331,7 +333,7 @@ public class BrowseUtil {
 	    	return false;
 		}
 
-		private boolean filterTags(ProductModel product, HttpServletRequest request) {
+		private static  boolean filterTags(ProductModel product, HttpServletRequest request) {
 			String[] filterTags = request.getParameterValues(FILTER_KEY_TAGS);
 	    	if (filterTags == null) {
 	    		return true;
@@ -344,7 +346,7 @@ public class BrowseUtil {
 	    	return false;
 		}
 		
-		private class NameComparator implements Comparator<Category> {
+		private static  class NameComparator implements Comparator<Category> {
 
 			@Override
 			public int compare(Category o1, Category o2) {
@@ -354,7 +356,7 @@ public class BrowseUtil {
 		}
 		
 		//This method Splits the categories List into sublists based on sectionHeader and sorts each alphabetically
-	    private List<Category> customizeCaegoryListForIpad(List<Category> categories, List<CategorySectionModel> categorySections){
+	    private static  List<Category> customizeCaegoryListForIpad(List<Category> categories, List<CategorySectionModel> categorySections){
 	    	//get the size of categorySections which we will use to create number of sublists
 	    	int numOfSections = categorySections.size();
 	    	NameComparator nameComparator = new NameComparator();
@@ -392,5 +394,173 @@ public class BrowseUtil {
 	    	return sortedCategories;
 	    	
 	    }
-
+//-------------------------------------------browse/Navigation-----------------------------------------------------------------------------	    
+	    /**
+	     * Populate the department section for a given department 
+	     * @return
+	     */
+	    public static List<DepartmentSection> getDepartmentSections(DepartmentModel storeDepartment){
+	    	
+	    	List<DepartmentSection> departmentSections = new ArrayList<DepartmentSection>();
+	    	
+	    	//get all the categories
+	    	List<CategoryModel> allCategories = storeDepartment.getCategories();
+	    	
+	    	List<CategorySectionModel> categorySections = emptyList();
+	    	categorySections = new ArrayList<CategorySectionModel>(storeDepartment.getCategorySections());
+	    	//Preference categories do not have any section Header
+    		String sectionHeaderPref = storeDepartment.getPreferenceCategoriesNavHeader();
+    		String sectionNamePref = isNotBlank(sectionHeaderPref) ? sectionHeaderPref : storeDepartment.getFullName();
+    		//Normal categories have department name as section header.
+    		String sectionHeaderNormal = storeDepartment.getRegularCategoriesNavHeader();
+    		String sectionNameNormal = isNotBlank(sectionHeaderNormal) ? sectionHeaderNormal : storeDepartment.getFullName();
+	    	//if category sections is empty all categories under one section Header 
+	    	if(categorySections==null || categorySections.isEmpty()){
+	    		//Two possibilities preference category or normal category
+	    		
+	    		
+	    		Map<String, List<CategoryModel>> nosectionCatMap = getNoSectionCategories(allCategories, null);
+	    		for(Map.Entry<String, List<CategoryModel>> entry :nosectionCatMap.entrySet()){
+	    			DepartmentSection section = new DepartmentSection();
+	    			//create department section for nosectionCategories for preference categories
+	    			if(entry.getKey().equals("prefCat")){
+	    				List<Category> selectedcategories = buildcategories(entry.getValue());
+			    		section.setCategories(selectedcategories);
+			    		section.setSectionHeader(sectionNamePref);
+			    		departmentSections.add(section);
+	    			} else if(entry.getKey().equals("normalCat")){
+	    				List<Category> selectedcategories = buildcategories(entry.getValue());
+	    				section.setCategories(selectedcategories);
+	    				section.setSectionHeader(sectionNameNormal);
+	    				departmentSections.add(section);
+	    			}
+		    		
+	    		}
+	    		
+	    	} else{
+	    		//for each section header we add those categories to categoryList
+	    		Map<String, List<CategoryModel>> nosectionCatMap = getNoSectionCategories(allCategories, categorySections);
+	    		for(CategorySectionModel catSection : categorySections){
+	    			DepartmentSection section = new DepartmentSection();
+	    			section.setSectionHeader(catSection.getHeadline());
+	    			//Call build categories with selected categories as argument and add it to categories of departmentsection
+	    			List<Category> selectedcategories = buildcategories(catSection.getSelectedCategories());
+	    			section.setCategories(selectedcategories);
+	    			departmentSections.add(section);
+	    		}
+	    		
+	    		for(Map.Entry<String, List<CategoryModel>> entry :nosectionCatMap.entrySet()){
+	    			DepartmentSection section = new DepartmentSection();
+	    			//create department section for nosectionCategories for preference categories
+	    			if(entry.getKey().equals("prefCat")){
+	    				List<Category> selectedcategories = buildcategories(entry.getValue());
+			    		section.setCategories(selectedcategories);
+			    		section.setSectionHeader(sectionNamePref);
+			    		departmentSections.add(section);
+	    			} else if(entry.getKey().equals("normalCat")){
+	    				List<Category> selectedcategories = buildcategories(entry.getValue());
+	    				section.setCategories(selectedcategories);
+	    				section.setSectionHeader(sectionNameNormal);
+	    				departmentSections.add(section);
+	    			}
+		    		
+	    		}
+	    		
+	    		
+	    	}
+	    	
+	    	return departmentSections;
+	    }
+	    
+	    /**
+	     * This should be a recursive call to build the tree of categories from CMS
+	     * @return
+	     */
+	    private static List<Category> buildcategories(List<CategoryModel> selectedCategories){
+	    	long startTime = System.currentTimeMillis();
+	    	List<Category> categories = new ArrayList<Category>();
+	    	for(CategoryModel model : selectedCategories){
+	    		Category cat = buildCategoryData(model);
+	    		categories.add(cat);
+	    	}
+	    	sortByName(categories);
+	    	long endTime   = System.currentTimeMillis();
+        	long totalTime = endTime - startTime;
+        	LOG.debug("Time to construct  categories :" +totalTime);
+	    	return categories;
+	    }
+	    
+	    private static void sortByName(List<Category> categories){
+	    	if(categories==null || categories.isEmpty()){
+	    		return;
+	    	} else {
+	    		NameComparator nameComparator = new NameComparator();
+		    	Collections.sort(categories, nameComparator);
+		    	for(Category cat : categories){
+		    		sortByName(cat.getCategories());
+		    	}
+	    	}
+	    }
+	    
+	    private static Category buildCategoryData (CategoryModel model){
+	    	if(model==null) return null;
+	    	Category category = Category.wrap(model);
+	    	if(model.getSubcategories()!=null && !model.getSubcategories().isEmpty()){
+	    		for(CategoryModel subcat : model.getSubcategories()){
+	    			category.addCategories(buildCategoryData(subcat));
+	    		}
+	    	}
+	    	return category;
+	    }
+	    
+	    /**
+	     * This method will separate categories into separate lists for adding to department section
+	     * @param allCategories
+	     * @param categorySections
+	     */
+	    private static Map<String, List<CategoryModel>> getNoSectionCategories(List<CategoryModel> allCategories, List<CategorySectionModel> categorySections){
+	    	
+	    	List<CategoryModel> noSectionCats = new ArrayList<CategoryModel>();
+	    	List<CategoryModel> noSectionPrefCats = new ArrayList<CategoryModel>();
+	    	Map<String, List<CategoryModel>> nosectionCatMap = new HashMap<String, List<CategoryModel>>();
+	    	if(categorySections==null || categorySections.isEmpty()){
+	    		for(CategoryModel itemInAllCategories : allCategories){
+	    			if(itemInAllCategories.isPreferenceCategory()){
+	    				noSectionPrefCats.add(itemInAllCategories);
+	    			} else {
+	    				noSectionCats.add(itemInAllCategories);
+	    			}
+	    		}
+	    		nosectionCatMap.put("normalCat", noSectionCats);
+		    	nosectionCatMap.put("prefCat", noSectionPrefCats);
+		    	return nosectionCatMap;
+	    	}
+	    	for(CategoryModel itemInAllCategories : allCategories){
+	    		boolean present = true;
+	    		for(CategorySectionModel catSection : categorySections){
+	    			if(catSection.getSelectedCategories().contains(itemInAllCategories)){
+	    				present = true;
+	    				break;
+	    			} else {
+	    				present = false;
+	    			}
+	    		}
+	    		if(!present){
+	    			//need to check if this is a preference category or normal category
+	    			if(itemInAllCategories.isPreferenceCategory()){
+	    				noSectionPrefCats.add(itemInAllCategories);
+	    			} else {
+	    				noSectionCats.add(itemInAllCategories);
+	    			}
+	    			
+	    		}
+	    		
+	    	}
+	    	nosectionCatMap.put("normalCat", noSectionCats);
+	    	nosectionCatMap.put("prefCat", noSectionPrefCats);
+	    	
+	    	return nosectionCatMap;
+	    }
+	    
+	    
 }

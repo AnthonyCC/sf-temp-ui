@@ -663,6 +663,10 @@
 		<from>^/v/([0-9]+)/browse/groupproducts/(.*)</from>
 		<to last="true">/browse.do?action=getGroupProducts&amp;ver=$1</to>
 	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/browse/navigation/(.*)</from>
+		<to last="true">/browse.do?action=navigation&amp;ver=$1</to>
+	</rule>
 	
 
 	<!-- Ideas -->

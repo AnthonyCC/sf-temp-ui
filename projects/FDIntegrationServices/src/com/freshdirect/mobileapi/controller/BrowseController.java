@@ -1,21 +1,15 @@
 package com.freshdirect.mobileapi.controller;
 
-import static java.util.Collections.emptyList;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,38 +18,27 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.content.BannerModel;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.CategorySectionModel;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.content.TagModel;
-import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.webapp.ActionError;
-import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.BrowseResult;
+import com.freshdirect.mobileapi.controller.data.GlobalNavResult;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
-import com.freshdirect.mobileapi.controller.data.response.Idea;
 import com.freshdirect.mobileapi.exception.JsonException;
-import com.freshdirect.mobileapi.model.Brand;
 import com.freshdirect.mobileapi.model.Category;
 import com.freshdirect.mobileapi.model.Department;
 import com.freshdirect.mobileapi.model.FDGroup;
 import com.freshdirect.mobileapi.model.Product;
 import com.freshdirect.mobileapi.model.SessionUser;
-import com.freshdirect.mobileapi.model.Wine;
-import com.freshdirect.mobileapi.model.tagwrapper.ItemGrabberTagWrapper;
-import com.freshdirect.mobileapi.model.tagwrapper.ItemSorterTagWrapper;
-import com.freshdirect.mobileapi.model.tagwrapper.LayoutManagerWrapper;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.BrowseUtil;
 import com.freshdirect.mobileapi.util.ListPaginator;
-import com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings;
 
 /**
  * @author Sivachandar
@@ -75,6 +58,8 @@ public class BrowseController extends BaseController {
     private static final String ACTION_GET_CATEGORYCONTENT_PRODUCTONLY = "getCategoryContentProductOnly";
 
     private static final String ACTION_GET_GROUP_PRODUCTS = "getGroupProducts";
+    
+    private static final String ACTION_NAVIGATION ="navigation";
 
 
 	private static final String FILTER_KEY_BRANDS = "brands";
@@ -105,12 +90,44 @@ public class BrowseController extends BaseController {
             requestMessage = parseRequestObject(request, response, BrowseQuery.class);
         }
         BrowseResult result = new BrowseResult();
+        
+        if(ACTION_NAVIGATION.equals(action)) {
+        	
+        	GlobalNavResult res = new GlobalNavResult();
+        	StoreModel store = ContentFactory.getInstance().getStore();
+        	
+        	List<Department> departments = new ArrayList<Department>();
+        	
+	           if(store != null) {
+	        	   List<DepartmentModel> storeDepartments = store.getDepartments();
+	        	 
+	        	   
+	        	   if(storeDepartments != null) {
+	        		  
+		        	   for(DepartmentModel storeDepartment : storeDepartments) {
+		        		   if(storeDepartment.getContentKey() != null
+		        				   && !storeDepartment.isHidden()
+		        				   && !storeDepartment.isHideIphone()) {
+		        			   //Add logic to populate departmentSections
+		        			   
+		        			   departments.add(Department.wrap(storeDepartment));
+		        			   
+		        		   }
+		        	   }
+		        	   
+	        	   }
+	           }
+        	res.setDepartments(departments);
+        	setResponseMessage(model, res, user);
+            return model;
+        }
 
         if(requestMessage != null) {
 	        if (ACTION_GET_DEPARTMENTS.equals(action)) {
 	           StoreModel store = ContentFactory.getInstance().getStore();
 	           if(store != null) {
 	        	   List<DepartmentModel> storeDepartments = store.getDepartments();
+	        	  // storeDepartments.get(0).getCategories().get(0).getSubcategories()
 
 	        	   List<Department> departments = new ArrayList<Department>();
 	        	   if(storeDepartments != null) {
@@ -121,6 +138,7 @@ public class BrowseController extends BaseController {
 		        			   departments.add(Department.wrap(storeDepartment));
 		        		   }
 		        	   }
+		        	   
 	        	   }
 	        	   ListPaginator<com.freshdirect.mobileapi.model.Department> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Department>(
 	        			   departments, requestMessage.getMax());
@@ -131,7 +149,7 @@ public class BrowseController extends BaseController {
 	        								|| ACTION_GET_CATEGORYCONTENT.equals(action)
 	        								|| ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
 	        	
-	        	result = new BrowseUtil().getCategories(requestMessage, user, request);
+	        	result =  BrowseUtil.getCategories(requestMessage, user, request);
 	        	
 	        } else if (ACTION_GET_GROUP_PRODUCTS.equals(action)) {
 	        	List<Product> products = FDGroup.getGroupScaleProducts(requestMessage.getGroupId(), requestMessage.getGroupVersion(), user);
@@ -292,5 +310,7 @@ public class BrowseController extends BaseController {
 		}
 		return map;
 	}
+	
+	
 
 }

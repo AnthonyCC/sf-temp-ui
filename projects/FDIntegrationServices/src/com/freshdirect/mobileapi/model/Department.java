@@ -7,6 +7,7 @@ import com.freshdirect.fdstore.content.BannerModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.mobileapi.controller.data.Image;
 import com.freshdirect.mobileapi.controller.data.Image.ImageSizeType;
+import com.freshdirect.mobileapi.util.BrowseUtil;
 
 public class Department extends ProductContainer {
     private String name;
@@ -18,6 +19,8 @@ public class Department extends ProductContainer {
     private Image banner;
 
     private List<Image> images = new ArrayList<Image>();
+    
+    private List<DepartmentSection> sections = new ArrayList<DepartmentSection>();
     
     public static Department wrap(DepartmentModel model) {
     	return wrapDepartment(model, 0);
@@ -72,8 +75,16 @@ public class Department extends ProductContainer {
         if (banner != null && banner.getImage() != null) {
             result.setBanner(new Image(banner.getImage()));
         }
+        addSections(model, result);
         
         return result;
+    }
+    
+    public static void addSections(DepartmentModel storeDepartment, Department result){
+    	//Department sections are added here
+    	//Call BrowseUtil to populate all the categories.
+		   List<DepartmentSection> departmentSections = BrowseUtil.getDepartmentSections(storeDepartment);
+		   result.setSections(departmentSections);
     }
     
 
@@ -116,4 +127,14 @@ public class Department extends ProductContainer {
 	public void setBanner(Image banner) {
 		this.banner = banner;
 	}
+
+	public List<DepartmentSection> getSections() {
+		return sections;
+	}
+
+	public void setSections(List<DepartmentSection> sections) {
+		this.sections = sections;
+	}
+	
+	
 }
