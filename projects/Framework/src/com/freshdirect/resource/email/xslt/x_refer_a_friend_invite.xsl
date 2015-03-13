@@ -19,17 +19,9 @@
 <body style="padding-top: 0px; margin-top: 0px;">
 	<table align="center" border="0" width="640" cellpadding="0" cellspacing="0">
 		<tr>
-			<td colspan="3" valign="middle" align="center" style="background-image: url('https://www.freshdirect.com/media/images/profile/raf_email/content_header.png');">
-				<xsl:comment>[if gte vml 1]<![CDATA[>]]>
-					&lt;v:shape stroked="f" style= "float: left; position: absolute; z-index:-2; visibility: visible; width: 640px; height: 66px; top: 0; left: 0px; border: 0; align: center;"&gt;
-						&lt;v:imagedata src="https://www.freshdirect.com/media/images/profile/raf_email/content_header.png"/&gt;&lt;/v:imagedata&gt;
-					&lt;/v:shape&gt;
-				<![CDATA[<![endif]]]></xsl:comment>
-				<div style="color: #fff; text-align: center; font-size: 18px;">
-					<img style="DISPLAY: block" alt="" src="https://www.freshdirect.com/media/images/profile/raf_email/transparent_10x10.png" border="0" height="10" width="8" />
-					<xsl:value-of select="name"/> has invited you to try FreshDirect!
-				</div>
-				
+			<td colspan="3" valign="middle" align="center" style="background-image: url('https://www.freshdirect.com/media/images/profile/raf_email/content_header.png'); background-color: #2f6606;">
+				<img style="display: block" alt="" src="https://www.freshdirect.com/media/images/profile/raf_email/transparent_10x10.png" border="0" height="10" width="8" /><br />
+				<span style="color: #fff; text-align: center; font-size: 18px; display: block;"><xsl:value-of select="name"/> has invited you to try FreshDirect!</span>
 			</td>
 		</tr>
 		<tr>
@@ -126,6 +118,10 @@
 		<tbody>
 			<tr><td><img alt="" src="https://www.freshdirect.com/media/images/profile/raf_email/line_640x1.png" border="0" height="1" width="640" /></td></tr>
 			<tr><td><img alt="" src="https://www.freshdirect.com/media/images/profile/raf_email/transparent_10x10.png" border="0" height="10" /></td></tr>
+		</tbody>
+	</table>
+	<table align="center" border="0" width="640" cellpadding="0" cellspacing="0">
+		<tbody>
 			<tr><td style="LINE-HEIGHT: 14px; FONT-FAMILY: Verdana,Arial,Helvetica,sans-serif; COLOR: #999; FONT-SIZE: 10px" align="left"><xsl:value-of select="legal"/></td></tr>
 		</tbody>
 	</table>
