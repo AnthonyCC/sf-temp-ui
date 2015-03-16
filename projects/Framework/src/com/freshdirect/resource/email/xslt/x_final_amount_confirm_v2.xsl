@@ -89,7 +89,7 @@
 <xsl:text>http://www.freshdirect.com/your_account/order_history.jsp
 
 </xsl:text>
-<xsl:text>Come back again soon! Reordering is easy — shop your top items and past orders to pick the items you want to buy. Yup, it's that fast.
+<xsl:text>Come back again soon! Reordering is easy -- shop your top items and past orders to pick the items you want to buy. Yup, it's that fast.
 
 </xsl:text>
 		<xsl:text>Reorder the easy way:
