@@ -362,10 +362,14 @@ public class OrderController extends BaseController {
 		try {
 			products = loadProductsWithQuickShopFilter(user, session, query);
 			if (products != null) {
-				int start = (query.getPage() - 1) * query.getMax();
-				if (start >= 0 && start <= products.size()) {
-					productPage = products.subList(start,
-							Math.min(start + query.getMax(), products.size()));
+				if(query.getPage() > 0) {
+					int start = (query.getPage() - 1) * query.getMax();
+					if (start >= 0 && start <= products.size()) {
+						productPage = products.subList(start,
+								Math.min(start + query.getMax(), products.size()));
+					}
+				} else {
+					productPage = products;
 				}
 			}
 		} catch (ModelException e) {

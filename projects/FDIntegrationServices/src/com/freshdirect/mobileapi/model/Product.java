@@ -763,7 +763,7 @@ public class Product {
      * @return
      */
     public String getDepartmentId(){
-    	return product.getProductModel().getDepartment().getContentKey().getId();
+    	return product.getProductModel().getDepartment() != null ? product.getProductModel().getDepartment().getContentKey().getId() : null;
     }
 
     /**
