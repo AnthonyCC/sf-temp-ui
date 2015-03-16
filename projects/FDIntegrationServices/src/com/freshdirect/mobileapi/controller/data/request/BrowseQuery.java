@@ -6,6 +6,8 @@ public class BrowseQuery extends Message {
 	public static final Integer DEFAULT_PAGE = 1;
 	public static final Integer DEFAULT_MAX = 25;
 
+	private String id;
+	
 	private String nutritionName;
 
 	private Integer max = DEFAULT_MAX;
@@ -85,5 +87,15 @@ public class BrowseQuery extends Message {
 	public void setGroupVersion(String groupVersion) {
 		this.groupVersion = groupVersion;
 	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	
 
 }

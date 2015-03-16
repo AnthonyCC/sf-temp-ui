@@ -605,7 +605,13 @@ function loadStuff() {
   	$("#url").val("/browse/navigation/"); 
   	$("#payload").val(""); 	
   	
-  } else if (loaddata == "BrowseCategoryContent") {
+  } else if (  loaddata == "getAllProductsForCategory") {
+  	$("#url").val("/browse/getproducts/"); 
+  	var postdata = '{"id": "bfry"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");  	
+  	
+  }else if (loaddata == "BrowseCategoryContent") {
   	$("#url").val("/browse/categorycontent/");
 	var postdata = '{"category": "cof_espres", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
@@ -842,7 +848,7 @@ function doStuff() {
   <option value="BrowseCategoryContent">BROWSE - CATEGORYCONTENT</option>
   <option value="BrowseCategoryContentProductOnly">BROWSE - CATEGORYCONTENT(Product Only)</option>
   <option value="BrowseGroupContents">BROWSE - GROUP CONTENTS</option> 
-  
+  <option value="getAllProductsForCategory">BROWSE - ALL PRODUCTS FOR CATEGORY</option>
   <option value="globalNav">BROWSE - NAVIGATION</option>
   <option value=""> ========== BROWSE COUPON ========== </option>
   <option value="BrowseCouponDepartment">BROWSE COUPON - DEPARTMENT</option>

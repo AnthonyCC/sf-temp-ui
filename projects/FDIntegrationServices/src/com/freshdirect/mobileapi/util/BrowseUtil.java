@@ -56,6 +56,8 @@ public class BrowseUtil {
 	private static final String FILTER_KEY_BRANDS = "brands";
     private static final String FILTER_KEY_TAGS = "tags";
     private static final String NO_SECTIONHEADER = "noSectionHeader";
+    
+     
 	
 	public static  BrowseResult getCategories(BrowseQuery requestMessage, SessionUser user, HttpServletRequest request) throws FDException{
 		
@@ -561,6 +563,65 @@ public class BrowseUtil {
 	    	
 	    	return nosectionCatMap;
 	    }
+	  //----------------------------------------getAllProducts-----------------------------------------------------
+	    public static List<Product> getAllProducts(BrowseQuery requestMessage,SessionUser user, HttpServletRequest request){
+	    	String contentId = null;
+	    	 //products.clear();
+	    	List<Product> products = new ArrayList<Product>();
+			contentId = requestMessage.getId();
+	    	if (contentId == null) {
+	    		contentId = requestMessage.getDepartment();
+	    	}
+	    	ContentNodeModel contentNode = ContentFactory.getInstance().getContentNode(contentId);
+	    	if(!(contentNode instanceof CategoryModel )){
+	    		LOG.info("The id was not a category. Hence sending an empty Products List ");
+	    		return products;
+	    	}
+	    	getAllProducts((CategoryModel)contentNode,user, request,products);
+	    	return products;
+	    }
 	    
 	    
+	    private static void getAllProducts(CategoryModel contentNode,SessionUser user, HttpServletRequest request,List<Product> products){
+	    	//Assuming only the id which comes in the request is at category level and not at department level...
+	    	
+	    	
+	    	//if the content node is not a category then throw an error
+	    	if(contentNode==null || !contentNode.isActive()){
+	    		LOG.info("The id was not a category. Hence sending an empty Products List ");
+	    		return ;
+	    	} else {
+	    		//Loop through the content node to get all the products recursively
+	    		CategoryModel category = (CategoryModel)contentNode;
+	    		List<ProductModel> productModels = category.getProducts();
+	    		//Now we need to wrap the product Model and then do a recursive call.
+	    		if(productModels!=null && !productModels.isEmpty()){
+	    			//So we do have the products wrap them and add.
+	    			for(ProductModel productModel : productModels){
+	    				try {
+							if (passesFilter(productModel, request)) {
+								Product product = Product.wrap(productModel, user.getFDSessionUser().getUser(), null, EnumCouponContext.PRODUCT);
+								products.add(product);
+							}
+						} catch (Exception e) {
+							//Don't let one rotten egg ruin it for the bunch
+		                    LOG.error("ModelException encountered. Product ID=" + productModel.getFullName(), e);
+						}
+	    				
+	    			}
+	    		}
+	    		List<CategoryModel> subCats = category.getSubcategories();
+				if(subCats!=null && !subCats.isEmpty()){
+					for(CategoryModel subCat : subCats){
+						getAllProducts(subCat, user, request, products);
+					}
+				} else {
+					return;
+				}
+	    	}
+	    	
+	    	
+	    	
+	    	
+	    }
 }

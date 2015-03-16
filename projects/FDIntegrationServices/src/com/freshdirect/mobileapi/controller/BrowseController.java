@@ -27,6 +27,7 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.content.TagModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mobileapi.controller.data.AllProductsResult;
 import com.freshdirect.mobileapi.controller.data.BrowseResult;
 import com.freshdirect.mobileapi.controller.data.GlobalNavResult;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
@@ -58,6 +59,8 @@ public class BrowseController extends BaseController {
     private static final String ACTION_GET_CATEGORYCONTENT_PRODUCTONLY = "getCategoryContentProductOnly";
 
     private static final String ACTION_GET_GROUP_PRODUCTS = "getGroupProducts";
+    
+    private static final String ACTION_GET_ALL_PRODUCTS = "getAllProducts";
     
     private static final String ACTION_NAVIGATION ="navigation";
 
@@ -145,6 +148,18 @@ public class BrowseController extends BaseController {
 	        	   result.setDepartments(paginator.getPage(requestMessage.getPage()));
 	        	   result.setTotalResultCount(result.getDepartments() != null ? result.getDepartments().size() : 0);
 	           }
+	        } else if(ACTION_GET_ALL_PRODUCTS.equals(action)){
+	        	
+	        	AllProductsResult res = new AllProductsResult();
+	        	//get the list of products (this will be done recursively) 
+	        	List<Product> products =  BrowseUtil.getAllProducts(requestMessage, user, request);
+	        	//populate the response with the products...
+	        	res.setProductsFromModel(products);
+	        	//set the response and return the json.
+	        	setResponseMessage(model, res, user);
+	            return model;
+	        	
+	        	
 	        } else if (ACTION_GET_CATEGORIES.equals(action)
 	        								|| ACTION_GET_CATEGORYCONTENT.equals(action)
 	        								|| ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
