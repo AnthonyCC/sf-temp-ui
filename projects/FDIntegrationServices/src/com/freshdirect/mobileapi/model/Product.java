@@ -757,6 +757,14 @@ public class Product {
     public String getCategoryId() {
         return product.getProductModel().getParentNode().getContentName();
     }
+    
+    /**
+     * Product DepartmentId
+     * @return
+     */
+    public String getDepartmentId(){
+    	return product.getProductModel().getDepartment().getContentKey().getId();
+    }
 
     /**
      * Prodcut id

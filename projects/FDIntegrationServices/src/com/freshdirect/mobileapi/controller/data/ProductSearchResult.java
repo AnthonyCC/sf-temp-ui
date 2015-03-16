@@ -36,6 +36,8 @@ public class ProductSearchResult {
     private String id;
 
     private String categoryId;
+    
+    private String departmentId;
 
     private String fullName;
 
@@ -136,6 +138,7 @@ public class ProductSearchResult {
         this.fullName = product.getProductTitle();
         this.id = product.getProductId();
         this.categoryId = product.getCategoryId();
+        this.departmentId=product.getDepartmentId();
         this.available = product.isAvailable();
 
         com.freshdirect.fdstore.content.Image prodImage = product.getImage(ImageType.PRODUCT);
@@ -273,8 +276,18 @@ public class ProductSearchResult {
     public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
     }
+    
+    
 
-    public String getFullName() {
+    public String getDepartmentId() {
+		return departmentId;
+	}
+
+	public void setDepartmentId(String departmentId) {
+		this.departmentId = departmentId;
+	}
+
+	public String getFullName() {
         return fullName;
     }
 
