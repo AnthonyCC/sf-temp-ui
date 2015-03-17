@@ -34,6 +34,7 @@ import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.model.Category;
 import com.freshdirect.mobileapi.model.Department;
+import com.freshdirect.mobileapi.model.DepartmentSection;
 import com.freshdirect.mobileapi.model.FDGroup;
 import com.freshdirect.mobileapi.model.Product;
 import com.freshdirect.mobileapi.model.SessionUser;
@@ -73,6 +74,13 @@ public class BrowseController extends BaseController {
 	protected boolean validateUser() {
 		return false;
 	}
+    
+    public void addSections(DepartmentModel storeDepartment, Department result) {
+    	//Department sections are added here
+    	//Call BrowseUtil to populate all the categories.
+	   List<DepartmentSection> departmentSections = BrowseUtil.getDepartmentSections(storeDepartment);
+	   result.setSections(departmentSections);
+    }
 
 	/* (non-Javadoc)
      * @see com.freshdirect.mobileapi.controller.BaseController#processRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.web.servlet.ModelAndView, java.lang.String, com.freshdirect.mobileapi.model.SessionUser)
@@ -100,7 +108,7 @@ public class BrowseController extends BaseController {
         	StoreModel store = ContentFactory.getInstance().getStore();
         	
         	List<Department> departments = new ArrayList<Department>();
-        	
+        	Department dpt = null;
 	           if(store != null) {
 	        	   List<DepartmentModel> storeDepartments = store.getDepartments();
 	        	 
@@ -112,9 +120,9 @@ public class BrowseController extends BaseController {
 		        				   && !storeDepartment.isHidden()
 		        				   && !storeDepartment.isHideIphone()) {
 		        			   //Add logic to populate departmentSections
-		        			   
-		        			   departments.add(Department.wrap(storeDepartment));
-		        			   
+		        			   dpt = Department.wrap(storeDepartment);
+		        			   addSections(storeDepartment, dpt);
+		        			   departments.add(dpt);		        			   
 		        		   }
 		        	   }
 		        	   
