@@ -96,14 +96,7 @@ public class OrderHistory extends Message {
             this.pendingDeliveryOrder = orderInfo.isPendingDeliveryOrder();
             this.refused = orderInfo.isRefused();
             this.shoppable = orderInfo.isShoppable();
-            this.modifiable = orderInfo.isModifiable();
-			try {
-				// FDIP-740
-	            // this.setDeliveryAddress(user.getOrder(this.id).getOrderDetail(user).getDeliveryAddress());
-            } catch (Exception e) {
-	            // TODO Auto-generated catch block
-	            e.printStackTrace();
-            }
+            this.modifiable = orderInfo.isModifiable();			
         }
 
         /**

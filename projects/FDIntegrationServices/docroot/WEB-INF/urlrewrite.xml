@@ -532,11 +532,15 @@
 	</rule>
 	<rule>
 		<from>^/v/([0-9]+)/(.*)/smartstore/carousel/(.*)/$</from>
+		<to last="true">/smartstore.do?action=getCarousel&amp;ver=$1&amp;departmentId=$3</to>
+	</rule>
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/smartstore/departmentcarousel/(.*)/$</from>
 		<to last="true">/smartstore.do?action=getDepartmentCarousel&amp;ver=$1&amp;departmentId=$3</to>
 	</rule>
 	<rule>
 		<from>^/v/([0-9]+)/smartstore/carousel/(.*)/$</from>
-		<to last="true">/smartstore.do?action=getDepartmentCarousel&amp;ver=$1&amp;departmentId=$2</to>
+		<to last="true">/smartstore.do?action=getCarousel&amp;ver=$1&amp;departmentId=$2</to>
 	</rule>
 
 	<!-- Contact Us : Get -->

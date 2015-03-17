@@ -88,7 +88,7 @@ public class AccountController extends BaseController {
     }
 
     private ModelAndView getOrderHistory(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws FDException, JsonException {
-        //ResultBundle resultBundle = Order.cancelModify(user);
+        
         List<OrderInfo> orderInfos = user.getCompleteOrderHistory();
         
         OrderHistory responseMessage = new OrderHistory();

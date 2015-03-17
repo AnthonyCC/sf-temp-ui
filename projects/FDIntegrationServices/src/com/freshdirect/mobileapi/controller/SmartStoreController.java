@@ -9,7 +9,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.framework.util.ValueHolder;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.DepartmentCarouselResult;
@@ -18,6 +25,7 @@ import com.freshdirect.mobileapi.controller.data.ProductSearchResult;
 import com.freshdirect.mobileapi.controller.data.SmartStoreProductResult;
 import com.freshdirect.mobileapi.controller.data.response.SmartStoreRecommendations;
 import com.freshdirect.mobileapi.exception.JsonException;
+import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.Product;
 import com.freshdirect.mobileapi.model.ResultBundle;
@@ -26,9 +34,11 @@ import com.freshdirect.mobileapi.model.SmartStore;
 import com.freshdirect.mobileapi.model.SmartStore.SmartStoreRecommendationContainer;
 import com.freshdirect.mobileapi.model.tagwrapper.SessionParamName;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.webapp.util.DepartmentCarouselUtil;
+import com.freshdirect.webapp.util.ProductRecommenderUtil;
 
 /**
  * @author rsung, csongor
@@ -47,6 +57,8 @@ public class SmartStoreController extends BaseController {
     private static String ACTION_GET_FAVORITE = "favorite";
     
     private static String ACTION_GET_DEPARTMENT_CAROUSEL = "getDepartmentCarousel";
+    
+    private static String ACTION_GET_CAROUSEL = "getCarousel";
     
     private static final String PARAM_DEPT_ID = "departmentId";
 
@@ -71,7 +83,7 @@ public class SmartStoreController extends BaseController {
             model = getRecommendations(EnumSiteFeature.FAVORITES, model, user, request);
         } else if (ACTION_GET_FAVORITE.equals(action)) {
             model = getFavoritesRecommendations(model, user, request);
-        } /*else if (ACTION_GET_DEPARTMENT_CAROUSEL.equals(action)) {
+        } else if (ACTION_GET_DEPARTMENT_CAROUSEL.equals(action)) {
 			
         	DepartmentCarouselResult result = new DepartmentCarouselResult();
 						
@@ -111,7 +123,7 @@ public class SmartStoreController extends BaseController {
 				result.setSuccessMessage(result.getSiteFeature() + " have been retrieved successfully.");
 			}
 			setResponseMessage(model, result, user);
-		}*/  else if (ACTION_GET_DEPARTMENT_CAROUSEL.equals(action)) {
+		} else if (ACTION_GET_CAROUSEL.equals(action)) {
 			
 			String deptId = request.getParameter(PARAM_DEPT_ID);
 			EnumSiteFeature siteFeature = DepartmentCarouselUtil.getCarousel(deptId);

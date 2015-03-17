@@ -242,7 +242,7 @@ public class BrowseUtil {
         if (grapes.size() > 0) filters.put("grape", grapes);
         if (typeFilters.size() > 0) filters.put("type", typeFilters);
         
-        categories= customizeCaegoryListForIpad(categories, categorySections);
+        //categories= customizeCaegoryListForIpad(categories, categorySections);
         
         if(categories.size() > 0 && !ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
         	ListPaginator<com.freshdirect.mobileapi.model.Category> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Category>(

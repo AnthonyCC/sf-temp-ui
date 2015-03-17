@@ -492,8 +492,12 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/smartstore/bestdealmeatcarousel/xxx/");
   	$("#payload").val("");
   	
-  }else if (loaddata == "SSDepartmentCarousel") {
+  }else if (loaddata == "SSCarousel") {
   	$("#url").val("/saptest12@freshdirect.com/smartstore/carousel/xxx/");
+  	$("#payload").val("");
+  	
+  }else if (loaddata == "SSDepartmentCarousel") {
+  	$("#url").val("/saptest12@freshdirect.com/smartstore/departmentcarousel/xxx/");
   	$("#payload").val("");
   	
   }else if (loaddata == "WGDCategories") {
@@ -889,6 +893,7 @@ function doStuff() {
   <option value="SSBestDealCarousel">SMARTSTORE - BestDeal Carousel</option>
   <option value="SSPeakProduceCarousel">SMARTSTORE - Peak Produce Carousel</option>
   <option value="SSBestDealMeatCarousel">SMARTSTORE - BestDeal Meat Carousel</option>  -->
+  <option value="SSCarousel">SMARTSTORE - Carousel</option>  
   <option value="SSDepartmentCarousel">SMARTSTORE - Department Carousel</option>  
   <option value=""> ========== CONTACT US ========== </option>
   <option value="ContactUsFormData">CONTACT US - Init</option>
