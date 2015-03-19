@@ -10,6 +10,7 @@ public enum EnumEventSource {
 	BROWSE("Browse"), /* The source of the event is the 'regular' site, looking at products, etc. */
 	RECIPE("Recipe"), /* The source of the event is watching recipes. */
 	QUICKSHOP("Quickshop"), /* The source of the event is the quickshop area. */
+	REORDER("Reorder"), /* The source of the event is the rebranded quickshop area. */
 	TXYMAL("TxYmal"), /* The source if the event is the TX YMAL */
 	CCL("CCL"), /* The source of the event is a customer created list. */
 	SmartStore("SS"), /* The source of the event is SmartStore related. */

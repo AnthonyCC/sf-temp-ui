@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -47,7 +49,11 @@ public class CdfProcessTask {
 	private String cdfFilePath;
 	private String cdfFileName;
 	
+	// New Hack for fixing the Parent Category ID
+	private Map<String, String> catToParentCatMapping = new HashMap<String, String>();
+	
 	public CdfProcessResult process(){
+		mapCatToParentCat();
 		generateCdfModel();
 		try {
 			saveCdfFile();
@@ -60,6 +66,15 @@ public class CdfProcessTask {
 		
 		LOGGER.info("CdfProcessTask complete");
 		return new CdfProcessResult(true, null);
+	}
+	
+	private void mapCatToParentCat() {
+		catToParentCatMapping.put(EnumEventSource.QUICKSHOP.name().toUpperCase(), EnumEventSource.REORDER.name().toUpperCase());
+		catToParentCatMapping.put(EnumEventSource.qs_pastOrders.name().toUpperCase(), EnumEventSource.REORDER.name().toUpperCase());
+		catToParentCatMapping.put(EnumEventSource.qs_customerLists.name().toUpperCase(), EnumEventSource.REORDER.name().toUpperCase());
+		catToParentCatMapping.put(EnumEventSource.qs_fdLists.name().toUpperCase(), EnumEventSource.REORDER.name().toUpperCase());
+		catToParentCatMapping.put(EnumEventSource.qs_ymal.name().toUpperCase(), EnumEventSource.REORDER.name().toUpperCase());
+		catToParentCatMapping.put(EnumEventSource.qs_tabbedRecommender.name().toUpperCase(), EnumEventSource.REORDER.name().toUpperCase());
 	}
 	
 	private void generateCdfModel(){
@@ -124,7 +139,8 @@ public class CdfProcessTask {
 	private void addCmPageViewTagCategory(String catId, Set<String> categoryKeys){
 		
 		if (categoryKeys.add(catId.toUpperCase())) {
-			cdfRowModels.add(new CdfRowModel(catId, "Category: " + catId, null));
+			cdfRowModels.add(new CdfRowModel(catId, "Category: " + catId
+												, catToParentCatMapping.containsKey(catId) ? catToParentCatMapping.get(catId) : null ));
 		}
 	}
 

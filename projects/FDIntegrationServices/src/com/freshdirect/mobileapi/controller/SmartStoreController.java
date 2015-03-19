@@ -98,18 +98,23 @@ public class SmartStoreController extends BaseController {
         																							, new ValueHolder<Variant>());
         			List<com.freshdirect.mobileapi.model.Product> recommendedProducts = new ArrayList<Product>();
         			if(recommendedItems != null) {
+        				if(recommendedItems.size() == 0) {
+        					recommendedItems = ProductRecommenderUtil.getMerchantRecommenderProducts(department);
+        					result.setTitle(department.getMerchantRecommenderTitle());
+        				} else {
+        					result.setTitle(department.getFeaturedRecommenderTitle());
+        				}
         				for(ProductModel content : recommendedItems) {
         					try {
 								recommendedProducts.add(Product.wrap((ProductModel) content
 																			, user.getFDSessionUser().getUser()
 																			, null
-																			, EnumCouponContext.PRODUCT));
+																			, EnumCouponContext.PRODUCT));								
 							} catch (ModelException e) {
 								e.printStackTrace();
 							}
         				}
-        			}
-					result.setTitle(department.getFeaturedRecommenderTitle());
+        			}					
 	    			result.setSiteFeature(department.getFeaturedRecommenderSiteFeature());
 	    			result.setProducts(setProductsFromModel(recommendedProducts));
 				} catch (FDResourceException e) {
