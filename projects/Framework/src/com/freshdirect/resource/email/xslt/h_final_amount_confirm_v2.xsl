@@ -58,6 +58,8 @@
 							</table>
 							</p>
 							
+							<p>To easily replace any unavailable items, you can shop from all or part of your <a href="http://www.freshdirect.com/quickshop/qs_past_orders.jsp">past orders</a> in minutes. Or create personal <a href="http://www.freshdirect.com/quickshop/qs_shop_from_list.jsp">shopping lists</a> to keep track of all the food you love.</p>
+														
 							<xsl:choose>
 							<xsl:when test="order/deliveryType = 'P'">
 								<p>The rest of your order <b>(#<xsl:value-of select="order/erpSalesId"/>)</b>
@@ -104,9 +106,7 @@
 								</xsl:choose> <xsl:if test="customer/goGreen = 'false'">We'll include a printed, itemized receipt with your goods. </xsl:if><xsl:element name = "a"><xsl:attribute name = "href">http://www.freshdirect.com/your_account/order_details.jsp?orderId=<xsl:value-of select="order/erpSalesId"/></xsl:attribute>Click here</xsl:element> to view order details online.</p>
 							
 							<p>We hope you find everything absolutely fresh and delicious. Please keep in mind that we have a 100% <u>Satisfaction Guarantee</u>. If you're not happy, please contact us right away so we can make it right.</p>
-							
-							<p>Shop again soon, and don't forget — you can easily shop from all or part of your past orders in minutes. Or create a <u>Shopping List</u> to keep track of all the food you love. </p>
-							
+													
 							<p><b>Thank you for your order and happy eating!</b><br/>
 							<br/>
 							FreshDirect<br/>

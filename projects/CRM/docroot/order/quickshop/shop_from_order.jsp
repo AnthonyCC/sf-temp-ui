@@ -61,7 +61,7 @@ RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.war
 				</TR>
 			</TABLE>
 			<hr class="gray1px">
-			<div class="order_detail">We've remembered every item, just the way you like it. Use your previous purchases to re-order with a couple clicks. Just update the quantities (or delete items) and then add them to your cart.<br></div>
+			<div class="order_detail">We've remembered every item, just the way you like it. Use your previous purchases to reorder with a couple clicks. Just update the quantities (or delete items) and then add them to your cart.<br></div>
 			<hr class="gray1px">
 
 <%	String orderId = request.getParameter("orderId");
