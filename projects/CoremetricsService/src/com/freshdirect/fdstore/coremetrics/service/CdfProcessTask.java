@@ -69,12 +69,12 @@ public class CdfProcessTask {
 	}
 	
 	private void mapCatToParentCat() {
-		catToParentCatMapping.put(EnumEventSource.QUICKSHOP.name().toUpperCase(), EnumEventSource.REORDER.name().toUpperCase());
-		catToParentCatMapping.put(EnumEventSource.qs_pastOrders.name().toUpperCase(), EnumEventSource.REORDER.name().toUpperCase());
-		catToParentCatMapping.put(EnumEventSource.qs_customerLists.name().toUpperCase(), EnumEventSource.REORDER.name().toUpperCase());
-		catToParentCatMapping.put(EnumEventSource.qs_fdLists.name().toUpperCase(), EnumEventSource.REORDER.name().toUpperCase());
-		catToParentCatMapping.put(EnumEventSource.qs_ymal.name().toUpperCase(), EnumEventSource.REORDER.name().toUpperCase());
-		catToParentCatMapping.put(EnumEventSource.qs_tabbedRecommender.name().toUpperCase(), EnumEventSource.REORDER.name().toUpperCase());
+		catToParentCatMapping.put(EnumEventSource.QUICKSHOP.toString(), EnumEventSource.REORDER.toString());
+		catToParentCatMapping.put(EnumEventSource.qs_pastOrders.toString(), EnumEventSource.REORDER.toString());
+		catToParentCatMapping.put(EnumEventSource.qs_customerLists.toString(), EnumEventSource.REORDER.toString());
+		catToParentCatMapping.put(EnumEventSource.qs_fdLists.toString(), EnumEventSource.REORDER.toString());
+		catToParentCatMapping.put(EnumEventSource.qs_ymal.toString(), EnumEventSource.REORDER.toString());
+		catToParentCatMapping.put(EnumEventSource.qs_tabbedRecommender.toString(), EnumEventSource.REORDER.toString());
 	}
 	
 	private void generateCdfModel(){
