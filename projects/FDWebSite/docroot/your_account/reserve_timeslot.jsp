@@ -77,7 +77,7 @@ String actionName = request.getParameter("actionName");
 				<td colspan="7"><img src="/media_stat/images/layout/dotted_line_w.gif" width="<%=W_RESERVE_TIMESLOTS_TOTAL%>" height="1"></td>
 			</tr>
 			<tr>
-				<td colspan="7"><img src="/media_stat/images/template/youraccount/choose_reservation_type.gif" width="256" height="10" vspace="10"></td>
+				<td colspan="7"><img src="/media_stat/images/template/youraccount/choose_reservation_type.gif" width="256" height="10" vspace="10" alt="Please Choose a Reservartion Type"></td>
 			</tr>
 			<tr valign="top">
 				<td>
@@ -106,10 +106,10 @@ String actionName = request.getParameter("actionName");
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
 				
 					<%if((rsv == null || rsv.isAnonymous()) && !hasReservation){%>
-						<input type="image" src="/media_stat/images/buttons/reserve_delivery.gif" onclick="reserveTimeslot.actionName.value='reserveTimeslot'">
+						<input type="image" src="/media_stat/images/buttons/reserve_delivery.gif" alt="Reserve Delivery" onclick="reserveTimeslot.actionName.value='reserveTimeslot'">
 					<%} else {%>
-						<input type="image" src="/media_stat/images/buttons/reserve_delivery_cancel.gif" onclick="reserveTimeslot.actionName.value='cancelReservation'">&nbsp;&nbsp;&nbsp;
-						<input type="image" src="/media_stat/images/buttons/reserve_delivery_save_changes.gif" onclick="reserveTimeslot.actionName.value='changeReservation'">
+						<input type="image" src="/media_stat/images/buttons/reserve_delivery_cancel.gif" alt="Cancel Reservation" onclick="reserveTimeslot.actionName.value='cancelReservation'">&nbsp;&nbsp;&nbsp;
+						<input type="image" src="/media_stat/images/buttons/reserve_delivery_save_changes.gif" alt="Save Changes" onclick="reserveTimeslot.actionName.value='changeReservation'">
 					<%}%>
 				</td>
 			</tr>

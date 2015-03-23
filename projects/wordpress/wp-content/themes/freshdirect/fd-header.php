@@ -76,7 +76,7 @@ cmCreatePageviewTag("<?php echo $page?>", "blog", <?php echo $searchTermJsVar ?>
 				<tr valign="bottom">
 					<td width="5">&nbsp;</td>
 					<td width="284"><input type="text" name="searchParams" style="width:284px;" maxlength="100" value="" class="search"></td>
-					<td width="41"><input type="image" src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav/nav_button_find.gif" style="width: 35px; height: 14px; border: 0; padding: 3px 3px;"></td>
+					<td width="41"><input type="image" src="<?php bloginfo('template_url'); ?>/media_stat/images/navigation/global_nav/nav_button_find.gif" alt="Find" style="width: 35px; height: 14px; border: 0; padding: 3px 3px;"></td>
 				</tr>
 			</table>
 		</form></td>

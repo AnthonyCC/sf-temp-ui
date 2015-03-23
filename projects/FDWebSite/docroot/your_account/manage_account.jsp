@@ -100,7 +100,7 @@ your account information, this is the place to do it.<br></td>
 	<% if(user.isChefsTable()) { %>
 	<table align="left" border="0" cellspacing="0" cellpadding="0">
 	<tr valign="top">
-		<td><img src="/media_stat/images/template/checkout/loy_ctcard_top.gif"/></td>
+		<td><img src="/media_stat/images/template/checkout/loy_ctcard_top.gif" alt="Chef's Table Member Card"/></td>
 	</tr>
 	<tr>
 		<td style="color: white; background: #221e1f; left: inherit; text-align: center;">

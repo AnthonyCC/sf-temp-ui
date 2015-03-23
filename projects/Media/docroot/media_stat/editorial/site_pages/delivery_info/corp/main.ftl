@@ -3,7 +3,7 @@
 <#assign minCorpOrderAmount=parameters["minCorpOrderAmount"]/>
 <#assign corpDeliveryFee=parameters["corpDeliveryFee"]/>
 <#assign corpDeliveryFeeMonday=parameters["corpDeliveryFeeMonday"]/>
-          <img src="/media_stat/images/template/help/about_cos.gif" width="291" height="13"><img src="/media_stat/images/template/help/cos_sandwich.jpg" width="108" height="70" align="right"><br><br>
+          <img src="/media_stat/images/template/help/about_cos.gif" width="291" height="13" alt="About Freshdirect At the Office"><img src="/media_stat/images/template/help/cos_sandwich.jpg" width="108" height="70" align="right" alt="Sandwich"><br><br>
            
 			FreshDirect At The Office brings area businesses the same great, fresh food that's made FreshDirect indispensable for tens of thousands of New York households, with expanded product and service offerings especially for corporate clients, including: 
 					<div class="text12">
@@ -18,7 +18,7 @@
 					</div>
 		  We deliver as soon as the next day, every weekday from 7:00 a.m. to 3:00 p.m. When you check out, just select the time slot that's most convenient for you.
 			<br><br>
-			<b>Office Delivery Areas</b><img src="/media_stat/images/template/help/cos_crudites.jpg" width="130" height="93" align="right" hspace="3"><br>
+			<b>Office Delivery Areas</b><img src="/media_stat/images/template/help/cos_crudites.jpg" width="130" height="93" align="right" hspace="3" alt="Office Delivery Areas"><br>
 			FreshDirect at the office is available in Manhattan. To see our current corporate delivery zones, <a href="javascript:popup('/help/delivery_zones.jsp','large')">click here</a>. <b>If you're interested but not yet in a delivery zone, <a href="#survey">let us know</a>.</b> 
 			<br><br>
 			<b>Office Delivery Fees</b><br>

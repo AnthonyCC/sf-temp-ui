@@ -67,7 +67,7 @@
 	%>
 	<div style="width:400px;height:530px;overflow-y: auto; overflow-x: hide;">
 	<div id="top_image" style="float: left; padding-bottom: 10px; width: 100%;">
-		<img src="/media_stat/images/profile/signup_easy.jpg" border="0"/>
+		<img src="/media_stat/images/profile/signup_easy.jpg" border="0" alt="Sign Up, It's Easy"/>
 		<br /><span class="text9">Sign up now to enjoy great quality food, delivered to your door.</span>
 	</div>
 	<div class="fright hline" id="" style="background-color: #ccc;"><!-- --></div>

@@ -283,12 +283,12 @@
 		if(!slot.isDepot()){
 			stringBuffer.append("									<div class=\"tsEcoFriendlyPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")
 						.append("										<div>")
-								.append("<img src=\"/media_stat/images/timeslots/ecofriendly_leaf.gif\" width=\"16\" height=\"16\" border=\"0\">")
+								.append("<img src=\"/media_stat/images/timeslots/ecofriendly_leaf.gif\" alt=\"Eco-Friendly\" width=\"16\" height=\"16\" border=\"0\">")
 								.append("<font class=\"tsEcoFriendlyE\">Eco-Friendly</font>")
 							.append("</div>\n")
 						.append("									</div>\n")
 						.append("									<div class=\"tsEcoFriendlyPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
-							.append("<img class=\"tsEcoFriendlyImage\" src=\"/media_stat/images/timeslots/ecofriendly_leaf.gif\" width=\"16\" height=\"16\" border=\"0\">\n")
+							.append("<img class=\"tsEcoFriendlyImage\" src=\"/media_stat/images/timeslots/ecofriendly_leaf.gif\" alt=\"Eco-Friendly\" width=\"16\" height=\"16\" border=\"0\">\n")
 						.append("</div>");
 	}else{
 			stringBuffer.append("									<div class=\"tsNeighbourhoodPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">\n")

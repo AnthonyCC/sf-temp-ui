@@ -50,7 +50,7 @@
 {template .multiItem}
 <div class="itemlist-item-productimage_wrapper">
   <div class="itemlist-item-burst_wrapper">
-      <img src="{$item.productImage}" class="itemlist-item-productimage">
+      <img src="{$item.productImage}" alt="{$item.productName}" class="itemlist-item-productimage">
     {call common.bursts}{param badge:$item.badge /}{param deal:$item.deal /}{param usq:$item.usq /}{/call}
   </div>
 </div>

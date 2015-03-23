@@ -45,7 +45,7 @@ RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource
 %>
 		<table width="100%" border="0" cellpadding="0" cellspacing="0">
 		<tr valign="top">
-		<td width="<%=W_RECIPE_CAT_BODY_TOP_LEFT%>" rowspan="2"><%if (catPhotoPath!=null){%><img src="<%= catPhotoPath %>" width="<%=catPhotoWidth%>" height="<%=catPhotoHeight%>"><%}%></td>
+		<td width="<%=W_RECIPE_CAT_BODY_TOP_LEFT%>" rowspan="2"><%if (catPhotoPath!=null){%><img src="<%= catPhotoPath %>" alt="" width="<%=catPhotoWidth%>" height="<%=catPhotoHeight%>"><%}%></td>
 		<td width="<%=W_RECIPE_CAT_BODY_TOP_RIGHT%>"><%if (editorialPath!=null){%><fd:IncludeMedia name='<%= editorialPath %>' /><%}%></td>
 		</tr>
 		<tr><td>
@@ -74,10 +74,10 @@ RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource
 	</table>
 	</td>
 	</tr>
-	<tr><td colspan="2"><img src="/media_stat/images/layout/cccccc.gif" width="<%=W_RECIPE_CAT_BODY_TOTAL%>" height="1" vspace="15"></td></tr>
+	<tr><td colspan="2"><img src="/media_stat/images/layout/cccccc.gif" alt="" width="<%=W_RECIPE_CAT_BODY_TOTAL%>" height="1" vspace="15"></td></tr>
 	<tr valign="top">
 	  <td width="<%=W_RECIPE_CAT_BODY_BOTTOM_LEFT%>" style="padding-right: 10px; border-right: solid 1px #CCCCCC;">
-	  <img src="/media_stat/recipe/hdr_our_faves.gif" width="127" height="11"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"><br>
+	  <img src="/media_stat/recipe/hdr_our_faves.gif" alt="Our Favorites" width="127" height="11"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0"><br>
 	  <% if (featuredRecipes!=null && featuredRecipes.size() > 0) { %>
           	  <logic:iterate id="aFeatRecipe" collection="<%=featuredRecipes%>" type="com.freshdirect.fdstore.content.Recipe">
 <%		   if (!isPreviewMode && !aFeatRecipe.isAvailable()) continue;  %>
@@ -92,7 +92,7 @@ RecipeSource featuredSource = ((RecipeCategory)recipeCategory).getFeaturedSource
 			MediaI srcImg = featuredSource.getImage();
 			List srcAuthors = featuredSource.getAuthors();
 			if (srcImg!=null) {  %>
-		   	  <a href="<%=ckbkURL%>"><img src="<%=srcImg.getPath()%>" border="0" width="<%=srcImg.getWidth()%>" height="<%=srcImg.getHeight()%>"></a>
+		   	  <a href="<%=ckbkURL%>"><img src="<%=srcImg.getPath()%>" alt="" border="0" width="<%=srcImg.getWidth()%>" height="<%=srcImg.getHeight()%>"></a>
 			  <br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
 <% 			} %>
 			Browse recipes from<br>

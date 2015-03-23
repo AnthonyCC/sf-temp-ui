@@ -8,7 +8,7 @@
 {template .recipeItem autoescape="false"}
 <li class="portrait-item {$extraClass ? $extraClass : ''}">
   <div class="portrait-item-productimage_wrapper">
-    <img src="{$item.imagePath}" class="portrait-item-productimage" data-product-url="/recipe.jsp?recipeId={$item.contentName}&trk=srch">
+    <img src="{$item.imagePath}" alt="{$item.fullName}" class="portrait-item-productimage" data-product-url="/recipe.jsp?recipeId={$item.contentName}&trk=srch">
   </div>
   <div class="portrait-item-header">
     <a href="/recipe.jsp?recipeId={$item.contentName}&trk=srch" class="portrait-item-header-name">{$item.fullName}</a>

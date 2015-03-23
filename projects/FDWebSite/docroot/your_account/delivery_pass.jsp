@@ -322,7 +322,7 @@
 		<tr>
 			<td align="center" colspan="2">
 				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="20" BORDER="0"><BR>
-<A HREF="javascript:pop('/shared/template/generic_popup.jsp?contentPath=/media/editorial/picks/deliverypass/dp_tc.html&windowSize=large&name=Delivery Pass Information',400,560)">
+<A HREF="javascript:pop('/shared/template/generic_popup.jsp?contentPath=/media/editorial/picks/deliverypass/dp_tc.html&windowSize=large&name=Delivery Pass Information',400,560,alt='')">
 				<font class="text11bold">Click here to learn more about FreshDirect DeliveryPass.</font>
 				</A>
 			</td>

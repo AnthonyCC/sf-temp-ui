@@ -12,7 +12,7 @@ Anyone in the Tri-State area (including existing home delivery customers) can no
 <tr><td width="30">&nbsp;</td><td><b>Saturday & Sunday</b></td><td>9am to 5pm</td></tr>
 </table>
 <% } else {%>
-<img src="/media_stat/images/template/help/about_pickup.gif" width="259" height="13"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
+<img src="/media_stat/images/template/help/about_pickup.gif" width="259" height="13" alt="About pickup at FreshDirect"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
 You don't have to live in an area where FreshDirect offers home delivery to get the best food at the best prices in New York! Anyone in the Tri-State area (including existing home delivery customers) can now place an order online for pickup at our facility, located just outside the Midtown Tunnel in Long Island City, Queens. It's also very convenient if you're headed out to the Hamptons or Fire Island.
 <% if (user != null && user.isEligibleForSignupPromotion()) {%><br><br>
     <font class="text13"><font color="#CC0000"><b>Pickup orders are not eligible for our free, fresh food promotion.</b></font><br>
@@ -28,7 +28,7 @@ You don't have to live in an area where FreshDirect offers home delivery to get 
 <font class="space4px"><br></font>
 You may place your order up to one week in advance and as late as the night before. Order cutoff for next-day pickup is 11 p.m. for weekday pickup, 9 p.m. for Saturday and Sunday pickup. Orders may be picked up between 1 p.m. and 9 p.m. on weekdays and on Saturdays and Sundays between 9 a.m. and 5 p.m.
 <br><img src="/media_stat/images/layout/clear.gif" width="1" height="18"><br>
-<img src="/media_stat/images/template/help/delivery/fd_box.jpg" width="150" height="77" align="right" hspace="6">
+<img src="/media_stat/images/template/help/delivery/fd_box.jpg" width="150" height="77" align="right" hspace="6" alt="FreshDirect box">
 <img src="/media_stat/images/template/help/delivery/lic_handled_extra_care.gif" width="172" height="10" alt="Handled with Extra Care">
 <font class="space4px"><br></font>
 Fresh foods need extra care in handling, and we do all the right things to make sure your food gets to you in top shape. After we prepare everything to fill your order, our trained packers carefully assemble it in sturdy boxes. We keep the boxes in our refrigerated environment, keeping everything cool and dry until you arrive to pick it up.
