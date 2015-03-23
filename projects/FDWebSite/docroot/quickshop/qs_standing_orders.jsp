@@ -78,7 +78,7 @@
 			<img style="margin: 35px 0px 20px 0px" src="/media_stat/images/template/quickshop/about_so.png" width="328" height="32" alt="About Standing Order">			
 			<div style="margin: 0px 6px 30px 6px">
 				<div style="margin-bottom: 1em">FreshDirect's Standing Orders let you get the foods you love without lifting a finger. They're simple to set up and update anytime. We automatically submit your order seven days before the Modify Next Delivery Only, and send you an email notification. That way you have plenty of time to make changes.</div>
-				<div style="margin-bottom: 1em">Once your first Standing Order has been delivered, you can come back to Quickshop and make changes for future deliveries. And if you ever need help, you can always <a href="/help/index.jsp">contact us</a>.</div>
+				<div style="margin-bottom: 1em">Once your first Standing Order has been delivered, you can come back to "Reorder" and make changes for future deliveries. And if you ever need help, you can always <a href="/help/index.jsp">contact us</a>.</div>
 				<div><b>Create a new Standing Order below!</b></div>
 			</div>
 
