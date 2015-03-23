@@ -16,7 +16,7 @@ final int W_AOL_NOTE_TOTAL = 970;
 	<td><img src="/media_stat/images/layout/clear.gif" width="1" height="20" alt="" border="0"></td>
 </tr>
 <tr>
-	<td><img src="/media_stat/images/template/help/aolnote_hdr.gif" width="215" height="16" alt="" border="0"></td>
+	<td><img src="/media_stat/images/template/help/aolnote_hdr.gif" width="215" height="16" alt="A Note for AOL Users" border="0"></td>
 </tr>
 <tr>
 	<td><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"></td>
@@ -43,7 +43,7 @@ AOL reduces the size and quality of all images viewed using its Web browser and 
 				5. Select "Never compress graphics" <br>
 				6. Click the "OK" button<br>
 			<br><br>
-			<img src="/media_stat/images/template/help/aolnote_settings.gif" width="406" height="263" alt="" border="0">
+			<img src="/media_stat/images/template/help/aolnote_settings.gif" width="406" height="263" alt="AOL Internet Properties" border="0">
 			<br>
 			</td>
 		</tr>

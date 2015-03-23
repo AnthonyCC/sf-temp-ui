@@ -159,7 +159,7 @@ if (request.getParameter("fldMessage") !=null) {
         <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0" /></td>
         <td align="right" class="text12">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
-				*&nbsp;Your&nbsp;Name 
+				<label>*&nbsp;Your&nbsp;Name</label> 
 			</span>
 		</td>
         <td rowspan="10" width="15"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" border="0" /></td>
@@ -172,7 +172,7 @@ if (request.getParameter("fldMessage") !=null) {
     <tr>
         <td align="right" class="text12">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
-				*&nbsp;Your&nbsp;Email
+				<label>*&nbsp;Your&nbsp;Email</label>
 			</span>
 		</td>
         <td colspan="2">
@@ -182,7 +182,7 @@ if (request.getParameter("fldMessage") !=null) {
     <tr>
         <td align="right" class="text12">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
-				*&nbsp;Recipient's&nbsp;Name
+				<label>*&nbsp;Recipient's&nbsp;Name</label>
 			</span>
         </td>
         <td colspan="2">
@@ -192,7 +192,7 @@ if (request.getParameter("fldMessage") !=null) {
     <tr>
     	<td align="right" class="text12">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_METHOD.getCode()%>">  class="text11rbold"</fd:ErrorHandler>>
-				*&nbsp;Delivery&nbsp;Method
+				<label>*&nbsp;Delivery&nbsp;Method</label>
 			</span>
     	</td>
     	<td colspan="2">
@@ -213,7 +213,7 @@ if (request.getParameter("fldMessage") !=null) {
     <tr>
         <td align="right" class="text12">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_EMAIL.getCode()%>">class="text11rbold"</fd:ErrorHandler> >
-				<span id="recipEmailStar">*</span>&nbsp;Recipient's&nbsp;Email
+				<span id="recipEmailStar">*</span><label>&nbsp;Recipient's&nbsp;Email</label>
 			</span>
         </td>
         <td colspan="2">
@@ -221,7 +221,7 @@ if (request.getParameter("fldMessage") !=null) {
 	</td>
 	</tr>
 	<tr>
-		<td align="right" class="text12"><span <fd:ErrorHandler result="<%=result%>" name="fldAmount">class="text11rbold"</fd:ErrorHandler>>*&nbsp;Amount&nbsp;$</td>
+		<td align="right" class="text12"><span <fd:ErrorHandler result="<%=result%>" name="fldAmount">class="text11rbold"</fd:ErrorHandler>><label>*&nbsp;Amount&nbsp;$</label></td>
     	<td colspan="2">
 			<table>
 				<tr>
@@ -240,7 +240,7 @@ if (request.getParameter("fldMessage") !=null) {
 						<input type="text" tabIndex="8"  maxlength="10" size="8" class="text9" name="fldAltAmount" id="fldAltAmount" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> onkeydown="$('fldAmount').value='OTHER';" />
 					</td>
 					<td>
-						<span style="white-space: nowrap;">Enter amount<br>(min. $20.00)</span>
+						<span style="white-space: nowrap;"><label>Enter amount<br>(min. $20.00)</label></span>
 					</td>
 				</tr>
 			</table>
@@ -251,10 +251,10 @@ if (request.getParameter("fldMessage") !=null) {
 	</tr>
     <tr>
 		<td align="right" class="text12" width="150">
-			*&nbsp;Message<br />
+			<label>*&nbsp;Message<br />
 			Type a personalized message over the default.<br />
 			<br />
-			150 character max.
+			150 character max.</label>
 		</td>
 		<td colspan="2">
 			<textarea rows="4" cols="30" maxlength="150" tabIndex="9"  class="text11" name="fldMessage" id="fldMessage" value="<%=(fldMessage!=null)?fldMessage.replaceAll("\"","&quot;"):"none"%>" onfocus="this.select();"><%=(fldMessage!=null)?fldMessage.replaceAll("\"","&quot;"):""%></textarea>

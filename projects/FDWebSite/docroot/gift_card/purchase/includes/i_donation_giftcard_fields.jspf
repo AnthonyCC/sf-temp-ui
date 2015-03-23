@@ -153,7 +153,7 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
         <td rowspan="10" width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0" /></td>
         <td align="right" class="text12" width="185">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
-				*&nbsp;Your&nbsp;Name 
+				<label>*&nbsp;Your&nbsp;Name</label> 
 			</span>
 		</td>
         <td rowspan="10" width="15"><img src="/media_stat/images/layout/clear.gif" width="10" height="1" border="0" /></td>
@@ -165,7 +165,7 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
     <tr>
         <td align="right" class="text12">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_DONOR_ORGANIZATION_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
-				&nbsp;Donor&nbsp;Organization
+				<label>&nbsp;Donor&nbsp;Organization</label>
 			</span>
 		</td>
         <td colspan="2">
@@ -175,7 +175,7 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
     <tr>
         <td align="right" class="text12">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_BUYER_EMAIL.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
-				*&nbsp;Your&nbsp;Email
+				<label>*&nbsp;Your&nbsp;Email</label>
 			</span>
 		</td>
         <td colspan="2">
@@ -185,7 +185,7 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
     <tr>
         <td align="right" class="text12">
 			<span <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.GC_RECIPIENT_NAME.getCode()%>">class="text11rbold"</fd:ErrorHandler>>
-				&nbsp;Organization&nbsp;Name
+				<label>&nbsp;Organization&nbsp;Name</label>
 			</span>
         </td>
         <td colspan="2">
@@ -199,7 +199,7 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
     	
 	
 	<tr>
-		<td align="right" class="text12"><span <fd:ErrorHandler result="<%=result%>" name="fldAmount">class="text11rbold"</fd:ErrorHandler>>*&nbsp;Amount&nbsp;$</td>
+		<td align="right" class="text12"><span <fd:ErrorHandler result="<%=result%>" name="fldAmount">class="text11rbold"</fd:ErrorHandler>><label>*&nbsp;Amount&nbsp;$</label></td>
     	<td colspan="2">
 			<table>
 				<tr>
@@ -218,7 +218,7 @@ if (_donOrganization != null && request.getParameter("gcDonId") != null) {
 						<input type="text" tabIndex="8"  maxlength="10" size="8" class="text9" name="fldAltAmount" id="fldAltAmount" value="<%=fldAltAmount%>" <%=!"".equalsIgnoreCase(fldAmount)?"":"disabled"%> onkeydown="$('fldAmount').value='OTHER';" />
 					</td>
 					<td>
-						<span style="white-space: nowrap;">Enter amount<br>(min. $20.00)</span>
+						<span style="white-space: nowrap;"><label>Enter amount<br>(min. $20.00)</label></span>
 					</td>
 				</tr>
 			</table>

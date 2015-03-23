@@ -156,7 +156,7 @@ if (theHamptonsIsOn) {
 	<%} %>	
 			<TD valign="top" width="50%" class="text13">
 		
-			<b><%=location.getFacility()%></b>&nbsp;(<a href="#" onclick="doOverlayDialog('/delivery_popup.jsp?depotCode=<%= depot.getDepotCode() %>&locaId=<%= location.getPK().getId() %>'); return false;">Click for details</a>)<br>
+			<b><%=location.getFacility()%></b>&nbsp;(<a href="#" onclick="doOverlayDialog('/delivery_popup.jsp?depotCode=<%= depot.getDepotCode() %>&locaId=<%= location.getPK().getId() %>',alt=''); return false;">Click for details</a>)<br>
 			<%=location.getAddress().getAddress1()%><br>
 			<% if(location.getAddress().getAddress2()!= null ){%>
 				<%=location.getAddress().getAddress2()%><br>

@@ -147,7 +147,7 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 %>
 			<div class="oas_home_bottom"><script type="text/javascript">OAS_AD('HPWideBottom');</script></div>
 		</div>
-		<div id="bottom_link"><a href="/welcome.jsp"><img src="/media_stat/images/home/fd_logo_learn_more_back.jpg"></a></div>
+		<div id="bottom_link"><a href="/welcome.jsp"><img src="/media_stat/images/home/fd_logo_learn_more_back.jpg" alt="Learn More About Our Services"></a></div>
 	<%-- END MAIN CONTENT--%> 
 </div>
 </fd:GetSegmentMessage>

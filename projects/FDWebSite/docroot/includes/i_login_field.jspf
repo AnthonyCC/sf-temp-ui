@@ -74,7 +74,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0">
 <form name="fd_login" method="post" action="<%= request.getRequestURI()+"?"+StringUtil.escapeXssUri(request.getQueryString()) %>">
 <TR>
-	<TD width="110" ALIGN="right" class="text13" style="padding-right: 10px;"><span style="white-space: nowrap;">* E-mail Address&nbsp;</span></TD>
+	<TD width="110" ALIGN="right" class="text13" style="padding-right: 10px;"><span style="white-space: nowrap;"><label for="userid">* E-mail Address&nbsp;</label></span></TD>
 	<TD width="125"><input name="userid" size="14" style="width: 140px" type="text" required="true" maxlength="128" tabindex="1" class="text11" value="<%= request.getParameter("userid")!=null ? request.getParameter("userid") : userFromSession%>"></td> 
 	<td></td>
 	<td class="text11rbold" width=220>
@@ -84,7 +84,7 @@ String[] checkErrorType = {"authentication", "technical_difficulty"};
 	<TD WIDTH="30" rowspan="3"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="30" HEIGHT="1" BORDER="0"><BR></TD>
 </TR>
 <TR VALIGN="MIDDLE">
-	<TD width="110" ALIGN="right" class="text13" style="padding-right: 10px;">* Password&nbsp;</TD>
+	<TD width="110" ALIGN="right" class="text13" style="padding-right: 10px;"><label for="password">* Password&nbsp;</label></TD>
 	<TD><input name="password" size="14" style="width: 140px" type="password" required="true" tabindex="2" class="text11"></TD>
 	<td>
 		<input type="image" src="/media_stat/images/template/homepages/go_round.gif"" width="18" height="18" name="check_access" border="0" alt="GO" hspace="4" tabindex="3">

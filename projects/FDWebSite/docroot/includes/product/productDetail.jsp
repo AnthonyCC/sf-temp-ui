@@ -88,7 +88,7 @@ FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<
 				<soy:render template="pdp.ecoupon" data="${productPotato}" />
 				<div class="pdp-atc">
 					<div class="pdp-atc-buttons">
-						<soy:render template="common.skuControlQuantity" data="${productPotato}" /><div class="pdp-atc-button-wrapper"><button class="cssbutton orange medium" data-component="ATCButton">add to cart</button><soy:render template="pdp.atcInCart" data="${productPotato}"/></div><button id="pdp-atc-addtolist" class="addtolist cssbutton purple medium" data-component="addToListButton">add to list</button>
+						<soy:render template="common.skuControlQuantity" data="${productPotato}" /><div class="pdp-atc-button-wrapper"><button class="cssbutton orange medium" alt="" data-component="ATCButton">add to cart</button><soy:render template="pdp.atcInCart" data="${productPotato}"/></div><button id="pdp-atc-addtolist" class="addtolist cssbutton purple medium" alt="" data-component="addToListButton">add to list</button>
 					</div>
 					<div>
 						<soy:render template="pdp.subtotal" data="${productPotato}"/>

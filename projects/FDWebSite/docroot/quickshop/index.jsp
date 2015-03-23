@@ -28,14 +28,14 @@ final int W_QUICKSHOP_INDEX_TOTAL = 755;
 
 <fd:SmartSavingsUpdate promoConflictMode="false"/>
 <tmpl:insert template='/common/template/quick_shop.jsp'>
-	<tmpl:put name='title' direct='true'>FreshDirect - Reorder</tmpl:put>
+	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop</tmpl:put>
 	<tmpl:put name="head"><fd:css href="/assets/css/fix.css"/></tmpl:put>
 	<tmpl:put name='content' direct='true'>
 					
 <TABLE WIDTH="<%= W_QUICKSHOP_INDEX_TOTAL %>" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 <TR>
 	<TD WIDTH="<%= W_QUICKSHOP_INDEX_TOTAL %>" align="center">
-	<img src="/media_stat/images/template/quickshop/quickshop_header.gif" alt="" border="0">
+	<img src="/media_stat/images/template/quickshop/quickshop_header.gif" alt="Quick Shop" border="0">
 	</TD>
 </TR>
 <TR>

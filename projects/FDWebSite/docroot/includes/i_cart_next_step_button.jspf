@@ -8,7 +8,7 @@
 			/* determine button for page */
 			if (uriNextButton.indexOf("view_cart") > -1) {
 				%>
-				<button class="imgButtonOrange" type="submit" name="nextStep" value="true">choose delivery address <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
+				<button class="imgButtonOrange" type="submit" name="nextStep" value="true" alt="">choose delivery address <img src="/media_stat/images/buttons/button_orange_arrow.gif" alt="" /></button>
 				<%									
 			} else if (uriNextButton.indexOf("step_1") > -1) {
 				%>

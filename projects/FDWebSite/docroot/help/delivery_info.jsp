@@ -52,7 +52,7 @@ request.setAttribute("listPos", "SystemMessage,ZDeliveryRight,DeliveryFees");
 					<td><img src="/media_stat/images/layout/clear.gif" width="<%=W_DELIVERY_INFO_RIGHT%>" height="1"></td>
 			    </tr>
 			    <tr valign="top">
-			        <td class="text12"><img src="/media_stat/images/template/help/about_home.gif" width="306" height="13">
+			        <td class="text12"><img src="/media_stat/images/template/help/about_home.gif" width="306" height="13" alt="About FreshDirect Home Delivery">
 	                    <fd:IncludeMedia name="/media/editorial/site_pages/delivery_info/home/main.ftl" parameters="<%=params%>" withErrorReport="true"/>		        
 	                </td>
 			            <td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
