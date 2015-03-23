@@ -104,7 +104,7 @@
 					<%-- all your content goes in this div, it controls the height/width --%>
 					<div id="group_info" style="display:none">This is the more info hidden div.<br /><br /></div>
 					<div style="height: auto; width: 200px; text-align: center; font-weight: bold;">
-						<br /><img onclick="Modalbox.hide(); return false;" src="/media_stat/images/buttons/close_window.gif" width="141" height="19" alt="" /><br />
+						<br /><img onclick="Modalbox.hide(); return false;" src="/media_stat/images/buttons/close_window.gif" width="141" height="19" alt="Close Window" /><br />
 					</div>
 				</td>
 				<td style="line-height: 1px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>

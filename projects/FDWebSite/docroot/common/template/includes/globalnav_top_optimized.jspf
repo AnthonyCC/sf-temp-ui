@@ -65,6 +65,11 @@ if(user != null) {
 	String uri = request.getRequestURI().toLowerCase();
 %>
 	<div class="message invisible" id="deliveryetawarning" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div>
+	
+	<!-- Adding Skip to Navigation : Start-->
+	<a href="#content" class="hidefromView">Skip to Content</a>
+	<!-- Adding Skip to Navigation : End-->
+	
   <!-- GLOBALNAV TOP -->
   <div class="container globalnav_top <%= (uri.contains("/checkout/") || uri.contains("view_cart.jsp") || uri.contains("merge_cart.jsp")) ? "disableCart" : "" %>">
   <%
@@ -81,7 +86,7 @@ if(user != null) {
     <fd:GetCart id="cart">
     <div id="sidecartbuttons">
       <div class="buttons">
-        <a class="cart" href="/view_cart.jsp"><span>cart</span></a><a class="checkout" href="/checkout/view_cart.jsp"><span>checkout</span></a>
+        <a class="cart" href="/view_cart.jsp"><div class="vahidden">cart</div></a><a class="checkout" href="/checkout/view_cart.jsp"><div class="vahidden">checkout</div></a>
       </div>
       <div class="summary">
         <span class="nritems"><em><%= cart.getItemCount() %></em> <% if (cart.getItemCount()>1) {%>items<%} else {%>item<%}%></span><span class="totalprice"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span>
@@ -97,8 +102,8 @@ if(user != null) {
     	</div>
 		<div class="footer"><span class="subtotal">SUBTOTAL: </span><span class="totalprice"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span></div>
       <span class="close"></span>
-      <a class="cart" href="/view_cart.jsp"><span>cart</span></a>
-      <a class="checkout" href="/checkout/view_cart.jsp"><span>checkout</span></a>
+      <a class="cart" href="/view_cart.jsp"><div class="vahidden">view cart</div></a>
+      <a class="checkout" href="/checkout/view_cart.jsp"><div class="vahidden">checkout</div></a>
     </div>
     </fd:GetCart>
 

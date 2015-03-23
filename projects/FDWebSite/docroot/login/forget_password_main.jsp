@@ -21,7 +21,7 @@
 			<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="400">
 	        <TR VALIGN="TOP">
 	            <TD WIDTH="400" COLSPAN="3">
-					<img src="/media_stat/images/template/site_access/forgot_your_pswd.gif" width="165" height="9" alt="" border="0">
+					<img src="/media_stat/images/template/site_access/forgot_your_pswd.gif" width="165" height="9" alt="Forgot Your Password?" border="0">
 					<BR>
 	           		<IMG src="/media_stat/images/layout/999966.gif" VSPACE="3" HSPACE="0" WIDTH="400" HEIGHT="1" BORDER="0"><BR>
 				</TD>

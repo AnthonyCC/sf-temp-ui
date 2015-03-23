@@ -27,7 +27,7 @@ request.setAttribute("listPos", "SystemMessage,SideCartBottom");
 <tmpl:insert template='/common/template/recipe_DLRnavs.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Recipe Search</tmpl:put>
 	<tmpl:put name='leftnav' direct='true'>
-		<a href="/recipe_search.jsp?trk=snav"><img src="/media_stat/recipe/recipes_advsearch_catnav.gif" width="118" height="64" vspace="17" border="0"></a>
+		<a href="/recipe_search.jsp?trk=snav"><img src="/media_stat/recipe/recipes_advsearch_catnav.gif" alt="Advanced recipe search" width="118" height="64" vspace="17" border="0"></a>
 	</tmpl:put>
     <tmpl:put name='content' direct='true'>
 
@@ -355,7 +355,7 @@ if (!searchPerformed) {
 						<td width="20"><input type="checkbox" id="<%= id %>" name="<%= crit.getContentName() %>" value="<%= dv.getContentName() %>" <%= sel ? "checked" : "" %> /></td>
 						<td width="126" style="padding-top:0.35em;"><label for="<%= id %>"><%= dv.getLabel() %></label></td>
 					</tr>
-					<tr><td><img src="/media_stat/images/layour/clear.gif" width="20" height="1"></td><td><img src="/media_stat/images/layour/clear.gif" width="124" height="1"></td></tr></table>
+					<tr><td><img src="/media_stat/images/layour/clear.gif" width="20" height="1" alt=""></td><td><img src="/media_stat/images/layour/clear.gif" width="124" height="1" alt=""></td></tr></table>
 					</div>
 					<% 
 					
@@ -390,7 +390,7 @@ if (!searchPerformed) {
 		%>
 	
 
-	<div align="center"><input type="image" src="/media_stat/recipe/adv_srch_butt_find.gif" width="62" height="23" border="0" alt="FIND"> &nbsp;&nbsp; <a href="javascript:document.recipeSearch.reset();"><img src="/media_stat/recipe/adv_srch_butt_clear.gif" width="62" height="23" border="0"></a></div>
+	<div align="center"><input type="image" src="/media_stat/recipe/adv_srch_butt_find.gif" width="62" height="23" border="0" alt="FIND"> &nbsp;&nbsp; <a href="javascript:document.recipeSearch.reset();"><img src="/media_stat/recipe/adv_srch_butt_clear.gif" width="62" height="23" border="0" alt=""></a></div>
 	</td>
 	<input type="hidden" name="trk" value="rsrch">
 	</form></tr></table>

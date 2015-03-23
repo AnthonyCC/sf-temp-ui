@@ -15,7 +15,7 @@
 <tr>
     <td bgcolor="#CCCCCC" style="font-size:1px;"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="1"></td>
     <td bgcolor="#FFFFFF" style="font-size:1px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"></td>
-    <td bgcolor="#FFFFFF" style="margin:0 5px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"><img src="/media_stat/images/timeslots/truck_delivery_warning.jpg" width="211" height="34" border="0" style="margin:0 5px;"></td>
+    <td bgcolor="#FFFFFF" style="margin:0 5px;"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"><img src="/media_stat/images/timeslots/truck_delivery_warning.jpg" alt="Delivery Notice" width="211" height="34" border="0" style="margin:0 5px;"></td>
     <td class="text11gbold" width="100%" bgcolor="#FFF9D7">
 <%
 	List messagesToDisplay = new ArrayList();

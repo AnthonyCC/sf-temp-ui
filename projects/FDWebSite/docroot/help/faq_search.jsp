@@ -43,12 +43,12 @@ if ( qc.getParameter("pageSize") == null ) {
 				<img src="/media/images/layout/clear.gif" width="10" height="1" alt="" border="0">
 			</td>
 		<td valign="top">
-		<img src="/media_stat/images/template/help/faq_hdr.gif"  height="16" width="318" alt="" border="0"><br>
+		<img src="/media_stat/images/template/help/faq_hdr.gif"  height="16" width="318" alt="Frequently Asked Questions" border="0"><br>
 		</td>
 		<td align="right" colspan="2">
-		<img border="0" alt="" src="/media_stat/images/template/help/search.gif">
+		<img border="0" src="/media_stat/images/template/help/search.gif"  alt="Search">
 		<input type="text" class="search" value="" maxlength="100" style="width: 200px;" name="searchFAQ2" />&nbsp;
-		<input type="image" name="searchFAQButton" style="border: 0pt none ; width: 35px; height: 14px;" src="/media_stat/images/template/search/search_find_button.gif"/>
+		<input type="image" name="searchFAQButton" style="border: 0pt none ; width: 35px; height: 14px;" src="/media_stat/images/template/search/search_find_button.gif" alt="Find"/>
 		</td>
 		</tr>
 		<tr><td colspan="4">&nbsp;</td></tr>
