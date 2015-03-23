@@ -101,7 +101,7 @@
 <div class="pagination-pager" data-component="pager" data-activepage="{$activePage}" data-itemcount="{$itemCount}" data-pagesize="{$pageSize}" data-pagecount="{$pageCount}" data-firstitemindex="{$firstItemIndex}" data-lastItemIndex="{$lastItemIndex}">
 
   {if $pageCount > 1}
-    <button class="cssbutton {if $hasBackButton}green{else}gray{/if}" data-component="pager-prev" class="pagination-pager-prev" {if not $hasBackButton}disabled{/if}>&lt;</button>
+    <button class="cssbutton {if $hasBackButton}green{else}gray{/if}" data-component="pager-prev" class="pagination-pager-prev" {if not $hasBackButton}disabled{/if}><div style="display:none;"> Previous Page </div>&lt;</button>
   {/if}
 
   {call .pagerNumbers}
@@ -111,7 +111,7 @@
   {/call}
 
   {if $pageCount > 1 }
-    <button class="cssbutton {if $hasNextButton}green{else}gray{/if}" data-component="pager-next" class="pagination-pager-next" {if not $hasNextButton}disabled{/if}>&gt;</button>
+    <button class="cssbutton {if $hasNextButton}green{else}gray{/if}" data-component="pager-next" class="pagination-pager-next" {if not $hasNextButton}disabled{/if}><div style="display:none;"> Next Page </div>&gt;</button>
   {/if}
 
   {call .pagerText}
@@ -122,11 +122,11 @@
 
   {if $activePage > 0}
     {if $pageCount != 1}
-      <button data-component="showall" class="cssbutton green pagination-showall-cssbutton" data-showall="0">Show All</button>
+      <button data-component="showall" class="cssbutton green pagination-showall-cssbutton" data-showall="0" alt="">Show All</button>
     {/if}
   {else}
     {if $itemCount > $pageSize}
-      <button data-component="showall" class="cssbutton green pagination-showall-cssbutton" data-showall="{$defaultPageSize}">Show {$defaultPageSize}</button>
+      <button data-component="showall" class="cssbutton green pagination-showall-cssbutton" data-showall="{$defaultPageSize}" alt="">Show {$defaultPageSize}</button>
     {/if}
   {/if}
 

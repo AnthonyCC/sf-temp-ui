@@ -61,7 +61,7 @@ String criteria = request.getParameter("searchParams");
 									</div>
 								</td>			
 								<td style="vertical-align:bottom">
-									<input name="submit" type="image" src="/media_stat/images/template/search/search_find_button.gif" style="border:none;">
+									<input name="submit" type="image" src="/media_stat/images/template/search/search_find_button.gif" alt="Find" style="border:none;">
 								</td>
 								<td><div id="searchDebug"></div></td>
 							</tr>

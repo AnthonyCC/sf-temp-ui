@@ -165,7 +165,7 @@
 <li class="portrait-item {not $available ? 'unavailable' : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}">
   <div class="portrait-item-productimage_wrapper">
     <div class="portrait-item-burst_wrapper">
-      <img src="{$productImage}" class="portrait-item-productimage">
+      <img src="{$productImage}" alt="" class="portrait-item-productimage">
       {call common.bursts}{param badge:$badge /}{param deal:$deal /}{/call}
     </div>
     {call common.potatoGridItemControls}
@@ -281,7 +281,7 @@
 <li class="portrait-item {not $available ? 'unavailable' : ''} {$extraClass ? $extraClass : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}">
   <div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
     <div class="portrait-item-burst_wrapper">
-      <img src="{$productImage}" class="portrait-item-productimage" data-product-url="{$productPageUrl}">
+      <img src="{$productImage}" alt="" class="portrait-item-productimage" data-product-url="{$productPageUrl}">
       {call common.bursts}{param badge:$badge /}{param deal:$deal /}{param usq:$usq /}{/call}
     </div>
   </div>
@@ -436,8 +436,8 @@
               {param soldBySalesUnit:$soldBySalesUnit /}
             {/call}
           {/if}
-          <span class="addtocart cssbutton orange small" data-component="ATCButton">Add to Cart</span>
-          <span class="addtolist cssbutton purple notext icon-file2-before" data-component="addToListButton">Add to List</span>
+          <span class="addtocart cssbutton orange small" data-component="ATCButton" alt="">Add to Cart</span>
+          <span class="addtolist cssbutton purple notext icon-file2-before" data-component="addToListButton" alt="">Add to List</span>
         {/if}
       </div>
       {call common.productData}
@@ -509,7 +509,7 @@
               {param customTemplate:'common.subtotalTransactionalInner' /}
               {param soldBySalesUnit:$soldBySalesUnit /}
             {/call}
-            <span class="addtocart cssbutton orange small" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></span>
+            <span class="addtocart cssbutton orange small" data-component="ATCButton"><span class="message" alt="">Add to Cart</span><ins class="iehelper">Added</ins></span>
           {/if}
         {/if}
       </div>

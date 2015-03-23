@@ -43,7 +43,7 @@
 <div class="pagination-pager" data-component="pager" data-activepage="{$activePage}" data-itemcount="{$itemCount}" data-pagesize="{$pageSize}">
 {if $pageSize > 0}
 {if $pageCount > 1}
-<button data-component="pager-prev" class="pagination-pager-prev {print 0==$activePage ? 'hidden' : ''}">&lt;</button>
+<button data-component="pager-prev" class="pagination-pager-prev {print 0==$activePage ? 'hidden' : ''}"><div style="display:none;"> Previous Page</div> &lt;</button>
 {/if}
 {if $pageCount <= 7 and $pageCount >1}
 	{for $i in range($pageCount)}
@@ -97,7 +97,7 @@
 	{/if}
 {/if}
 {if $pageCount > 1 }
-<button data-component="pager-next" class="pagination-pager-next {print ($pageCount-1)==$activePage ? 'hidden' : ''}">&gt;</button>
+<button data-component="pager-next" class="pagination-pager-next {print ($pageCount-1)==$activePage ? 'hidden' : ''}"><div style="display:none;"> Next Page </div>&gt;</button>
 {/if}
 {/if}
 {if $pageSize > 0}

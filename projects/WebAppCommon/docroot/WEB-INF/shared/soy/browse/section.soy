@@ -11,7 +11,7 @@
   {if $available}
     <a href="/browse.jsp?id={$id}" data-component="categorylink" data-id="{$id}">
       {if $image}
-        <img src="{$image}">
+        <img src="{$image}" alt="">
       {/if}
       {if $name}
         <div class="name">{$name}</div>
@@ -20,7 +20,7 @@
   {else}
     <span class="disabled">
       {if $image}
-        <img src="{$image}">
+        <img src="{$image}" alt="">
       {/if}
       {if $name}
         <div class="name">{$name}</div>

@@ -318,17 +318,17 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	</td>
 </tr>
 <tr>
-	<td><img src="/media_stat/images/layout/clear.gif" width="40" height="8" border="0"></td>
-	<td><img src="/media_stat/images/layout/clear.gif" width="100" height="8" border="0"></td>
-	<td><img src="/media_stat/images/layout/clear.gif" width="160" height="8" border="0"></td>
-	<td><img src="/media_stat/images/layout/clear.gif" width="80" height="8" border="0"></td>
-	<td><img src="/media_stat/images/layout/clear.gif" width="135" height="8" border="0"></td>
-	<td><img src="/media_stat/images/layout/clear.gif" width="160" height="8" border="0"></td>
+	<td><img src="/media_stat/images/layout/clear.gif" width="40" height="8" border="0" alt=""></td>
+	<td><img src="/media_stat/images/layout/clear.gif" width="100" height="8" border="0" alt=""></td>
+	<td><img src="/media_stat/images/layout/clear.gif" width="160" height="8" border="0" alt=""></td>
+	<td><img src="/media_stat/images/layout/clear.gif" width="80" height="8" border="0" alt=""></td>
+	<td><img src="/media_stat/images/layout/clear.gif" width="135" height="8" border="0" alt=""></td>
+	<td><img src="/media_stat/images/layout/clear.gif" width="160" height="8" border="0" alt=""></td>
 </tr>
 
 <tr>
 	<td colspan="6">
-		<img src="/media_stat/images/navigation/change_your_username.gif" width="214" height="10" border="0" alt="CHANGE YOUR USERNAME" align="absbottom">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT><br>
+		<img src="/media_stat/images/navigation/change_your_username.gif" width="214" height="10" border="0" alt="CHANGE YOUR  E-Mail/USERNAME" align="absbottom">&nbsp;&nbsp;&nbsp;<FONT class="text9">* Required information</FONT><br>
     <img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5">
 	</td>
 </tr>
@@ -336,16 +336,16 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 <form name="update_user_name" method="post">
 <input type="hidden" name="actionName" value="changeUserID">
 	<tr>
-		<td colspan="2" align="right" style="padding-right:5px;" class="text12">* E-mail Address</td>
+		<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* E-mail Address</label></td>
 		<td><input class="text9" size="28" style="width:150px; padding:1px;" type="text" maxlength="128" name="<%=EnumUserInfoName.EMAIL.getCode()%>" value="<%=email%>"></td>
 		<td colspan="2">
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL_FORMAT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 		<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16"  vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_user" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16" alt="Save Changes" vspace="3" hspace="3" border="0"></td>
 	</tr>
-	<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
+	<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
 	<tr>
-		<td colspan="2" align="right" style="padding-right:5px;" class="text12">* Repeat E-mail Address</td>
+		<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* Repeat E-mail Address</label></td>
 		<td><input type="text" class="text9" size="28" style="width:150px; padding:1px;" name="repeat_email"></td>
 		<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='repeat_email' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 		<td></td>
@@ -370,14 +370,14 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 <form name="update_change_password" method="post">
 <input type="hidden" name="actionName" value="changePassword">
 	<tr>
-		<td colspan="2" align="right" style="padding-right:5px;" class="text12">* Password</td>
+		<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* Password</label></td>
 		<td><input class="text9" size="28" type="password" style="width:150px; padding:1px;" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" value="<%=password%>"></td>
 		<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 		<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_password" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></td>
 	</tr>
-	<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
+	<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
 	<tr valign="top">
-		<td colspan="2" align="right" style="padding-right:5px;" class="text12">* Repeat Password</td>
+		<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* Repeat Password</label></td>
 		<td><input type="password" class="text9" size="28" style="width:150px; padding:1px;" name="confirmPassword"></td>
 		<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='repeat_password' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 		<td></td>
@@ -404,9 +404,9 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 <input type="hidden" name="actionName" value="changeDisplayName">
 
 
-<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
 <tr>
-	<td colspan="2" align="right" style="padding-right:5px;" class="text12">Display Name</td>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>Display Name</label></td>
 	<td><input class="text9" size="28" maxlength="30" type="text" id="displayName" name="displayName" value="<%=displayName%>" style="width:150px; padding:1px;"></td>
 	<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DISPLAY_NAME.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 		<span id="profaneText" class="text11rbold" style="display:block;width:250px"></span></td>
@@ -414,7 +414,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<img src="/media_stat/images/buttons/save_changes.gif"  width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></a></td>
 	
 </tr>
-<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"><br><br></td></tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""><br><br></td></tr>
 </form>
 
 <form method="post" name="updateContactInformation">
@@ -428,7 +428,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 
 
 <tr>
-	<td colspan="2" align="right" class="text12" style="padding-right:5px;">Title</td>
+	<td colspan="2" align="right" class="text12" style="padding-right:5px;"><label>Title</label></td>
 	<td colspan="3">
 	<select class="text9" name="title"	value="">
        <option <%="".equalsIgnoreCase(title)?"selected":""%> ></option>		
@@ -439,58 +439,58 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	</select></td>
 	<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_password" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></td>
 </tr>
-<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
 <tr>
-	<td colspan="2" align="right" style="padding-right:5px;" class="text12">* First Name</td>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* First Name</label></td>
 	<td><input class="text9" size="28" maxlength="20" type="text" name="first_name" value="<%=firstName%>" required="true" style="width:150px; padding:1px;"></td>
 	<td colspan="3"><span class="text9">(full name or first initial)</span> <fd:ErrorHandler result='<%=result%>' name='dlvfirstname' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
-<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
 <tr>
-	<td colspan="2" align="right" style="padding-right:5px;" class="text12">* Last Name</td>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* Last Name</label></td>
 	<td><input class="text9" size="28" maxlength="20" type="text" name="last_name" value="<%=lastName%>" required="true" style="width:150px; padding:1px;"></td>
 	<td colspan="3"><fd:ErrorHandler result='<%=result%>' name='dlvlastname' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
-<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
 <tr>
-	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><%=!user.isCorporateUser() ? "* " : "" %> Home Phone #</td>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><%=!user.isCorporateUser() ? "* " : "" %><label> Home Phone #</label></td>
     <td colspan="2" class="text12"><input type="text" size="28" maxlength="20" class="text9" name="homephone" id="uci_homePhone" title="Home Phone" value="<%=homePhone%>" required="true" style="width:150px; padding:1px;">&nbsp;&nbsp;Ext. <input type="text" maxlength="6" size="4" class="text9" name="ext" value="<%=homePhoneExt%>" style="width: 45px;"></td>
 	<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='dlvhomephone' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
-<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
 <tr>
-	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><%=user.isCorporateUser() ? "* " : "" %>Work Phone #</td>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><%=user.isCorporateUser() ? "* " : "" %><label>Work Phone #</label></td>
     <td colspan="2" class="text12"><input type="text" size="28" maxlength="20" class="text9" name="busphone" id="uci_busPhone" title="Business Phone" value="<%=busPhone%>" style="width:150px; padding:1px;">&nbsp;&nbsp;Ext. <input type="text" maxlength="6" size="4" class="text9" name="busphoneext" value="<%=busPhoneExt%>" style="width: 45px;"></td>
 	<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='busphone' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
-<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
 <tr>
-	<td colspan="2" align="right" style="padding-right:5px;" class="text12">Cell/Alt. #</td>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>Cell/Alt. #</label></td>
     <td colspan="2" class="text12"><input type="text" size="28" maxlength="20" class="text11" name="cellphone" id="uci_cellPhone" title="Cell Phone" value="<%=cellPhone%>" style="width:150px; padding:1px;">&nbsp;&nbsp;Ext. <input type="text" maxlength="6" size="4" class="text9" name="cellphoneext" value="<%=cellPhoneExt%>" style="width: 45px;"></td>
 	<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='dlvcellphone' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
-<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
 <tr>
-	<td colspan="2" align="right" style="padding-right:5px;" class="text12">Other Email</td>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>Other Email</label></td>
     <td><input type="text" size="28" maxlength="45" class="text9" name="<%=EnumUserInfoName.ALT_EMAIL.getCode()%>" value="<%=otherEmail%>" style="width:150px; padding:1px;"></td>
 	<td colspan="3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.ALT_EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr>
-<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
 <%  if (user.isDepotUser() || user.isCorporateUser()) { %>
 <tr>
-	<td colspan="2" align="right" style="padding-right:5px;" class="text12">* Work Department</td>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* Work Department</label></td>
     <td><input type="text" size="28" maxlength="45" class="text9" name="<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>" value="<%=workDept%>" style="width:150px; padding:1px;"></td>
 	<td colspan="3"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 </tr> 
-<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
     <%  if(user.isDepotUser()){
             com.freshdirect.delivery.depot.DlvDepotModel depot = FDDepotManager.getInstance().getDepot(user.getDepotCode());
             if (depot.getRequireEmployeeId()) { %>
 <tr>
-	<td colspan="2" align="right" style="padding-right:5px;" class="text12">* Employee Id</td>
+	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* Employee Id</label></td>
     <td valign="top" colspan="4"><input type="text" size="28" maxlength="45" class="text9" name="employeeId" value="<%=employeeId%>" style="width:150px; padding:1px;"></td>
 </tr> 
-<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0"></td></tr>
+<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
 <%          }
         }
     }    %>
@@ -617,7 +617,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	</tr>
 	<tr><td colspan="6">&nbsp;</td></tr>
 	<tr>
-		<td colspan="2" align="right" style="padding-right:5px;" class="text12">* Mobile Number</td>
+		<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* Mobile Number</label></td>
     	<td><input type="text" size="28" maxlength="20" class="text9" name="mobile_number" value="<%=mobile_number%>" style="width:150px; padding:1px;"></td>
 		<td colspan="2" width="500"><fd:ErrorHandler result='<%=result%>' name='mobile_number' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 		<td align="right" valign="top" colspan="6"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_email_preference" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></td>
@@ -646,7 +646,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 				<tr valign="top">
 					<td align="left">
 						<div class="accordion"><input type="checkbox" id="order_notices" />
-							<label for="order_notices" class="text12bold" style="margin-left: 0;"><pre class="text12bold">Examples of messages (depending on your area)</pre></label>
+							<label for="order_notices" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><pre class="text12bold">Examples of messages (depending on your area)</pre></label>
 							<div class="text12" id="article" align="left">
 								<strong>Estimated Time of Delivery: </strong> We'll narrow down your two-hour window to just one hour on the day of delivery.  
 								<br /><br /><strong>You're Next! </strong>Receive an alert when you are the next customer on our driver's route. Your food is on the way! 
@@ -670,7 +670,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 				<tr valign="top" >
 					<td align="left">
 						<div class="accordion"><input type="checkbox" id="order_exceptions"> 
-							<label for="order_exceptions" class="text12bold" style="margin-left: 0;"><pre class="text12bold">Examples of messages (depending on your area)</pre></label>
+							<label for="order_exceptions" class="text12bold" style="margin-left: 0;"><div style="display:none;">Examples of messages (depending on your area)</div><pre class="text12bold">Examples of messages (depending on your area)</pre></label>
 							<div class="text12"   id="article1" align="left">
 								<strong>Cancellation</strong> Get an alert when your order has to be cancelled because of unforeseen circumstances. 
 								<br /><br />
@@ -696,7 +696,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 				<tr valign="top" >
 					<td align="left">
 						<div class="accordion"><input type="checkbox" id="offers"> 
-							<label for="offers" class="text12bold" style="margin-left: 0;"><pre class="text12bold">Description</pre></label>
+							<label for="offers" class="text12bold" style="margin-left: 0;"><div style="display:none;">Description</div><pre class="text12bold">Description</pre></label>
 							<div class="text12" id="article2" align="left">
 								Get the inside scoop on exciting new features, exclusive promotions, and more!
 							<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;<br />
@@ -738,7 +738,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<input type="hidden" name="actionName" value="otherpreferences">	
 	<tr>
 		<td colspan="6"><br><br>
-			<img src="/media_stat/images/navigation/other_preferences.gif" border="0" alt="OTHER PREFERENCES"><br>
+			<img src="/media_stat/images/navigation/other_preferences.gif" border="0" alt="OTHER"><br>
 			<img src="/media_stat/images/layout/cccccc.gif" width="<%= W_YA_SIGNIN_INFO %>" height="1" border="0" vspace="5"><br>
 		</td>
 	</tr>
@@ -777,7 +777,7 @@ FreshDirect.PhoneValidator.register(document.getElementById("uci_cellPhone"));
 	<td width="35"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" border="0" alt="CONTINUE SHOPPING" align="LEFT"></a></td>
 	<td width="<%= W_YA_SIGNIN_INFO - 35 %>">
 		<a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  border="0" alt="CONTINUE SHOPPING"></a>
-		<br>from <FONT class="text11bold"><a HREF="/index.jsp">Home Page</a></FONT><br><img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
+		<br>from <FONT class="text11bold"><a HREF="/index.jsp">Home Page</a></FONT><br><img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0" alt="">
 	</td>
 </tr>
 </table>

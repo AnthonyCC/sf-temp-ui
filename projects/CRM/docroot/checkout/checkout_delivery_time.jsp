@@ -267,7 +267,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 								<%}%>
 								<%if(deliveryModel.getEcoFriendlyCount() > 0){%>
 									<td>
-										<img src="/media_stat/images/timeslots/ecofriendly_leaf.gif" WIDTH="16" HEIGHT="16" border="0">
+										<img src="/media_stat/images/timeslots/ecofriendly_leaf.gif" WIDTH="16" HEIGHT="16" border="0" alt="Eco-Friendly">
 									</td>
 									<td><div onClick="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_ecofriendly_timeslot.html&windowSize=small&name=Eco Friendly','small');"><%= FDStoreProperties.getEcoFriendlyLabel()%></div></td>
 									<td>&nbsp;</td>

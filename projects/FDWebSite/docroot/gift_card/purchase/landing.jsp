@@ -139,7 +139,7 @@ final int W_GIFTCARD_DONATION_TOTAL = 300;
 			</tr>
 			<tr>
 				<td colspan="3" align="center"><a href="">
-					<input type="image" src="/media_stat/images/giftcards/landing/shop_giftcard_btn.jpg" alt="Shop Now" name="gcLand_shopNow" id="gcLand_shopNow" border="0" onclick="$('giftcard_form').submit();return false;" />
+					<input type="image" src="/media_stat/images/giftcards/landing/shop_giftcard_btn.jpg" alt="Customize Your Gift Card" name="gcLand_shopNow" id="gcLand_shopNow" border="0" onclick="$('giftcard_form').submit();return false;" />
 				</td>
 			<%if(FDStoreProperties.isGiftCardDonationEnabled() && donationOrgList != null && donationOrgList.size() > 0) { %>
 				<td align="center" colspan="2">

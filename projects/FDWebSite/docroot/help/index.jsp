@@ -124,12 +124,17 @@ final int W_HELP_INDEX_TOTAL = 970;
 				
 				<div style="margin-bottom: 16px;">
 					<div style="margin-bottom: 8px;" class="text11bold">
-						<img src="/media_stat/images/template/help/search.gif" border="0" alt="" />
+						<img src="/media_stat/images/template/help/search.gif" border="0" alt="Search" />
 					</div>
 					<div style="margin-bottom: 8px;">
 						<form method="post" name="contact_fd" id="contact_fd_faq">
 							<input type="text" class="search" value="" maxlength="100" style="width: 180px;" name="searchFAQ" />
-							<input type="submit" name="searchFAQButton" style="cursor: pointer; width: 42px; height: 18px; vertical-align: bottom; margin-left: 10px; background-image: url('/media_stat/images/template/search/search_find_button.gif'); border: 0; text-indent: -9999px;" />
+							<input type="submit" name="searchFAQButton" style="cursor: pointer; width: 42px; height: 18px; vertical-align: bottom; margin-left: 10px; background-image: url('/media_stat/images/template/search/search_find_button.gif'); border: 0; text-indent: -9999px;">
+								<div style="display:none;">Find</div>
+							</input>
+							
+			
+							
 						</form>
 					</div>
 				</div>
@@ -137,7 +142,7 @@ final int W_HELP_INDEX_TOTAL = 970;
 				<div style="float: left; width: 34%; border-right: 1px solid #ccc; padding-right: 6px;">
 					<div style="margin-bottom: 16px;">
 						<div style="margin-bottom: 8px;">
-							<a href="/help/faq_home.jsp?page=faqHome"><img src="/media_stat/images/template/help/hdr_quick_links.gif" width="119" height="15" border="0" alt="" /></a>
+							<a href="/help/faq_home.jsp?page=faqHome"><img src="/media_stat/images/template/help/hdr_quick_links.gif" width="119" height="15" border="0" alt="Quick Links" /></a>
 						</div>
 						<div style="margin-bottom: 8px;">
 							Check below to find the fastest answers to our top customer concerns.
@@ -167,7 +172,7 @@ final int W_HELP_INDEX_TOTAL = 970;
 							if (null !=savedList && savedList.size()>0 && null != savedList.get(0)) { %>
 								<div style="margin-bottom: 8px;" class="text11bold">
 									<div style="margin-bottom: 4px;">
-										<img src="/media_stat/images/template/help/top_questions.gif" border="0" alt="" />
+										<img src="/media_stat/images/template/help/top_questions.gif" border="0" alt="Top Questions" />
 									</div>
 									<% if (null != faqSections) {
 										%>
@@ -196,7 +201,7 @@ final int W_HELP_INDEX_TOTAL = 970;
 
 					<div style="margin-bottom: 16px;">
 						<div style="margin-bottom: 8px;" class="text11bold">
-							<img src="/media_stat/images/template/help/learnmore.gif"  border="0" alt="" />
+							<img src="/media_stat/images/template/help/learnmore.gif"  border="0" alt="Learn More" />
 						</div>
 						<% if(null != faqSections) {
 							%>
@@ -378,22 +383,22 @@ final int W_HELP_INDEX_TOTAL = 970;
 	
 								<div style="margin-bottom: 32px;">
 									<div style="margin-bottom: 8px;">
-										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">* E-mail Address/User Name:</div><input type="text" class="text11" name="email" size="34" value="<%=email%>" />&nbsp;<fd:ErrorHandler result='<%=result%>' name='email' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;"><label>* E-mail Address/User Name:</label></div><input type="text" class="text11" name="email" size="34" value="<%=email%>" />&nbsp;<fd:ErrorHandler result='<%=result%>' name='email' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 									</div>
 									<div style="margin-bottom: 8px;">
-										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">* First Name:</div><input type="text" class="text11" name="first_name" size="21" value="<%=firstName%>" />&nbsp;<fd:ErrorHandler result='<%=result%>' name='first_name' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;"><label>* First Name:</label></div><input type="text" class="text11" name="first_name" size="21" value="<%=firstName%>" />&nbsp;<fd:ErrorHandler result='<%=result%>' name='first_name' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 									</div>
 									<div style="margin-bottom: 8px;">
-										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">* Last Name:</div><input type="text" class="text11" name="last_name" size="21" value="<%=lastName%>" />&nbsp;<fd:ErrorHandler result='<%=result%>' name='last_name' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
+										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;"><label>* Last Name:</label></div><input type="text" class="text11" name="last_name" size="21" value="<%=lastName%>" />&nbsp;<fd:ErrorHandler result='<%=result%>' name='last_name' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 									</div>
 									<div style="margin-bottom: 8px;">
-										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">Home Phone #:</div><input type="text" class="text11" name="home_phone" size="21" value="<%=homePhone%>" maxlength="15" />&nbsp;<span class="text9">Ext.</span>&nbsp;<input type="text" class="text9" name="home_phone_ext" size="4" value="<%=homePhoneExt%>" maxlength="6" />
+										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;"><label>Home Phone #:</label></div><input type="text" class="text11" name="home_phone" size="21" value="<%=homePhone%>" maxlength="15" />&nbsp;<span class="text9">Ext.</span>&nbsp;<input type="text" class="text9" name="home_phone_ext" size="4" value="<%=homePhoneExt%>" maxlength="6" />
 									</div>
 									<div style="margin-bottom: 8px;">
-										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">Work Phone #:</div><input type="text" class="text11" name="work_phone" size="21" value="<%=workPhone%>" maxlength="15" />&nbsp;<span class="text9">Ext.</span>&nbsp;<input type="text" class="text9" name="home_phone_ext" size="4" value="<%=workPhoneExt%>" maxlength="6" />
+										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;"><label>Work Phone #:</label></div><input type="text" class="text11" name="work_phone" size="21" value="<%=workPhone%>" maxlength="15" />&nbsp;<span class="text9">Ext.</span>&nbsp;<input type="text" class="text9" name="home_phone_ext" size="4" value="<%=workPhoneExt%>" maxlength="6" />
 									</div>
 									<div style="margin-bottom: 8px;">
-										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">Other Phone #:</div><input type="text" class="text11" name="alt_phone" size="21" value="<%=altPhone%>" maxlength="15" />&nbsp;<font class="text9">Ext.</font>&nbsp;<input type="text" class="text9" name="alt_phone_ext" size="4" value="<%=altPhoneExt%>" maxlength="6" />
+										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;"><label>Other Phone #:</label></div><input type="text" class="text11" name="alt_phone" size="21" value="<%=altPhone%>" maxlength="15" />&nbsp;<font class="text9">Ext.</font>&nbsp;<input type="text" class="text9" name="alt_phone_ext" size="4" value="<%=altPhoneExt%>" maxlength="6" />
 									</div>
 								</div>
 							<% }else{ %>
@@ -406,10 +411,10 @@ final int W_HELP_INDEX_TOTAL = 970;
 	
 								<div style="margin-bottom: 32px;">
 									<div style="margin-bottom: 8px;">
-										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">E-mail Address/User Name:</div><%=email%>
+										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;"><label>E-mail Address/User Name:</label></div><%=email%>
 									</div>
 									<div style="margin-bottom: 8px;">
-										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;">Name:</div><%=firstName%>&nbsp;<%=lastName%>
+										<div style="width: 50%; text-align: right; font-weight: bold; padding-right: 10px; float: left;"><label>Name:</label></div><%=firstName%>&nbsp;<%=lastName%>
 									</div>
 									<div style="margin-bottom: 8px; text-align: center;" class="text10">
 										(If this information is incorrect, <a href='/your_account/signin_information.jsp'>click here</a>!)
@@ -419,7 +424,9 @@ final int W_HELP_INDEX_TOTAL = 970;
 	
 							<div style="margin-bottom: 16px;">
 								<div style="width: 50%; text-align: right; float: left;"><a href="/help/index.jsp?home_phone=&home_phone_ext=&alt_phone=&alt_phone_ext=&body="><img src="/media_stat/images/template/help/clear.gif" width="46" height="16" border="0" alt="CLEAR" /></a></div>
-								<input type="submit" name="sendMessage" style="cursor: pointer; width: 90px; height: 16px; vertical-align: bottom; margin-left: 10px; background-image: url('/media_stat/images/template/help/send_message.gif'); border: 0; text-indent: -9999px;" />
+								<input type="submit" name="sendMessage" style="cursor: pointer; width: 90px; height: 16px; vertical-align: bottom; margin-left: 10px; background-image: url('/media_stat/images/template/help/send_message.gif'); border: 0; text-indent: -9999px;">
+									<div style="display:none;">Send Message</div>
+								</input>
 							</div>
 						</div>
 	

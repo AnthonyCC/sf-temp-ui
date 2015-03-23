@@ -115,18 +115,23 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 				<div id="socialFooterStatic">
 					<a href="http://www.facebook.com/FreshDirect" target="_social-facebook">
 						<div class="spritediv sprite-social-facebook"></div>
+							<div class="vahidden">Facebook</div>
 					</a>
 					<a href="http://www.twitter.com/FreshDirect" target="_social-twitter">
 						<div class="spritediv sprite-social-twitter"></div>
+							<div class="vahidden">Twitter</div>
 					</a>
 					<a href="http://www.pinterest.com/FreshDirect" target="_social-pinterest">
 						<div class="spritediv sprite-social-pinterest"></div>
-					</a>
+							<div class="vahidden">Pinterest</div>
+						</a>
 					<a href="https://plus.google.com/107881041343024996566" target="_social-googleplus">
 						<div class="spritediv sprite-social-googleplus"></div>
+							<div class="vahidden">Google Plus</div>
 					</a>
 					<a href="http://www.youtube.com/FreshDirect" target="_social-youtube">
 						<div class="spritediv sprite-social-youtube"></div>
+							<div class="vahidden">Youtube</div>
 					</a>
 				</div>
 			<% } else { %>

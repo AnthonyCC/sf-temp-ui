@@ -100,7 +100,7 @@
 					<table width="90%" cellpadding="0" cellspacing="0" border="0" align="center">
 						<tr>
 							<td colspan="7"><img src="/media_stat/images/template/youraccount/choose_reservation_type.gif"
-								width="256" height="10" vspace="10"></td>
+								width="256" height="10" vspace="10" alt="Please choose a reservartion type"></td>
 						</tr>
 						<tr valign="top">
 							<td>
@@ -131,7 +131,7 @@
 								src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
 							<%if((rsv == null || rsv.isAnonymous()) && !hasReservation){%> 
 								<input type="image"
-										src="/media_stat/images/buttons/reserve_delivery.gif"
+										src="/media_stat/images/buttons/reserve_delivery.gif" alt="Reserve Delivery"
 											onclick="reserveTimeslot.actionName.value='reserveTimeslot'">
 							<%} else {%>
 								<input type="image"

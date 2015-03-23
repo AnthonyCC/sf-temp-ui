@@ -126,25 +126,25 @@ final int W_RECIPE_BODY_TOTAL = 806;
 				<tr valign="top"><td width="90%" style="padding-right: 10px;">
                 <% if(recipeLogo != null) {
                        if (source != null) { %>
-                        <a href="javascript:popup('/recipe_source.jsp?recipeId=<%=recipe%>&trk=rec','large_long')"><img src=<%=recipeLogo.getPath()%> width="<%=recipeLogo.getWidth()%>" height="<%=recipeLogo.getHeight()%>" border="0"></a><br/>
+                        <a href="javascript:popup('/recipe_source.jsp?recipeId=<%=recipe%>&trk=rec','large_long')"><img src=<%=recipeLogo.getPath()%> width="<%=recipeLogo.getWidth()%>" height="<%=recipeLogo.getHeight()%>" border="0" alt=""></a><br/>
                     <% } else { %>
-                        <img src=<%=recipeLogo.getPath()%> width="<%=recipeLogo.getWidth()%>" height="<%=recipeLogo.getHeight()%>" border="0"><br/>
+                        <img src=<%=recipeLogo.getPath()%> width="<%=recipeLogo.getWidth()%>" height="<%=recipeLogo.getHeight()%>" border="0" alt=""><br/>
                     <% } %>
                 <% } %>
 				<span class="recipe_title"><%=recipe.getName().toUpperCase()%></span><br>
 	 			<span class="recipe_author"><%=recipe.getDisplayableSource(true)%></span>
 	 			<% if(recipeDesc!=null){ %><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><fd:IncludeMedia name='<%= recipeDesc.getPath() %>' /><% } %>
 				</td>
-				<td width="10%" align="right"><% if (source != null) { %><a href="javascript:popup('/recipe_source.jsp?recipeId=<%=recipe%>&trk=rec','large_long')"><% } %><% if(recipePhoto!=null){ %><img src=<%=recipePhoto.getPath()%> width="<%=recipePhoto.getWidth()%>" height="<%=recipePhoto.getHeight()%>" border="0"><% } %><% if (source != null) { %></a><% } %></td></tr>
+				<td width="10%" align="right"><% if (source != null) { %><a href="javascript:popup('/recipe_source.jsp?recipeId=<%=recipe%>&trk=rec','large_long')"><% } %><% if(recipePhoto!=null){ %><img src=<%=recipePhoto.getPath()%> width="<%=recipePhoto.getWidth()%>" height="<%=recipePhoto.getHeight()%>" border="0" alt=""><% } %><% if (source != null) { %></a><% } %></td></tr>
 			</table>
 	 	</td>
 	</tr>
-	<tr><td colspan="3"><img src="/media_stat/recipe/recipe_line<%=theme%>.gif" width="<%=W_RECIPE_BODY_TOTAL%>" height="1" style="margin: 10px 0;"></td></tr>
+	<tr><td colspan="3"><img src="/media_stat/recipe/recipe_line<%=theme%>.gif" width="<%=W_RECIPE_BODY_TOTAL%>" height="1" style="margin: 10px 0;alt=""></td></tr>
 	<tr valign="top">
 		<td style="padding-right:15px;"><% if(recipeIngrdMedia!=null){ %><a href="#ingredients"><img src="/media_stat/recipe/rec_hdr_ingredients<%=theme%>.gif" width="92" height="10" border="0" alt="INGREDIENTS"></a> (<a href="#ingredients"><b>CLICK TO BUY</b></a>)<br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br><fd:IncludeMedia name='<%= recipeIngrdMedia.getPath() %>' /><br><% } %>
 		<table>
 			<tr>
-				<td align="right"><a href="javascript:popup('/shared/recipe_print.jsp?recipeId=<%=recipe%>','print')"><img src="/media_stat/recipe/print.gif" width="16" height="16" border="0"></a></td>
+				<td align="right"><a href="javascript:popup('/shared/recipe_print.jsp?recipeId=<%=recipe%>','print')"><img src="/media_stat/recipe/print.gif" width="16" height="16" border="0" alt="Print"></a></td>
 				<td><a href="javascript:popup('/shared/recipe_print.jsp?recipeId=<%=recipe%>','print')"><strong>Print recipe</strong></a></td>
 			</tr>
 			<% String app = (String)session.getAttribute(SessionName.APPLICATION);
@@ -152,7 +152,7 @@ final int W_RECIPE_BODY_TOTAL = 806;
     		boolean isWebApp = "WEB".equalsIgnoreCase(app); %>
     		<% if(isWebApp){ %>
 			<tr>
-				<td><a href="javascript:popup('/tell_a_friend/step_1_compose.jsp?recipeId=<%=recipe%>','large')"><img src="/media_stat/recipe/email.gif" width="25" height="10" border="0"></a></td>
+				<td><a href="javascript:popup('/tell_a_friend/step_1_compose.jsp?recipeId=<%=recipe%>','large')"><img src="/media_stat/recipe/email.gif" width="25" height="10" border="0" alt="Email"></a></td>
 				<td><a href="javascript:popup('/tell_a_friend/step_1_compose_recipe.jsp?recipeId=<%=recipe%>','minimal')"><strong>Email to a friend</strong></a></td>
 			</tr>
 			<% } %>
@@ -263,16 +263,16 @@ span.selectedRecipeVariant {
 					<%
 					if (variant.equals(currVariant)) { //this tab is on
 						if (numTabs == 0 || (numTabs == 0 && ("default").equalsIgnoreCase(currVariant.getName()))) { %>
-							<td><img src="/media_stat/recipe/rectabs_tab1_on<%=theme%>.gif" width="174" height="25"></td>
+							<td><img src="/media_stat/recipe/rectabs_tab1_on<%=theme%>.gif" width="174" height="25" alt="Buy The Ingredients"></td>
 					<%
 						} else if (numTabs > 0) { //has between tab
 							if (lastTabOn) { //previous tab is on  
 					%>
-								<td><img src="/media_stat/recipe/rectabs_btwn_on_off<%=theme%>.gif" width="16" height="25"></td>
+								<td><img src="/media_stat/recipe/rectabs_btwn_on_off<%=theme%>.gif" width="16" height="25" alt=""></td>
 					<% 
 							} else { //previous tab off 
 					%>
-								<td><img src="/media_stat/recipe/rectabs_btwn_off_on<%=theme%>.gif" width="16" height="25"></td>
+								<td><img src="/media_stat/recipe/rectabs_btwn_off_on<%=theme%>.gif" width="16" height="25" alt=""></td>
 					<% 
 							} %>
 						<td style="background-image:url(/media_stat/recipe/rectabs_bg_on<%=theme%>.gif);"><span class="recipe_tab"><%= currVariant.getName() %></span></td>
@@ -281,16 +281,16 @@ span.selectedRecipeVariant {
 						lastTabOn = true;
 					} else { // this tab is off
 						if (numTabs == 0 || (numTabs == 0 && ("default").equalsIgnoreCase(currVariant.getName()))) { %>
-							<td><a href="<%=response.encodeURL("recipe.jsp?catId="+catIdParam+"&recipeId="+recipe.getContentName()+subCatIdParam+"&variantId="+currVariant.getContentName())%>&trk=var#ingredients"><img src="/media_stat/recipe/rectabs_tab1_off<%=theme%>.gif" width="174" height="25" border="0"></a></td>
+							<td><a href="<%=response.encodeURL("recipe.jsp?catId="+catIdParam+"&recipeId="+recipe.getContentName()+subCatIdParam+"&variantId="+currVariant.getContentName())%>&trk=var#ingredients"><img src="/media_stat/recipe/rectabs_tab1_off<%=theme%>.gif" width="174" height="25" border="0" alt=""></a></td>
 					<% 
 						} else if (numTabs > 0) { //has between tab
 							if (lastTabOn) { //previous tab is on  
 					%>
-								<td><img src="/media_stat/recipe/rectabs_btwn_on_off<%=theme%>.gif" width="16" height="25"></td>
+								<td><img src="/media_stat/recipe/rectabs_btwn_on_off<%=theme%>.gif" width="16" height="25" alt=""></td>
 					<% 
 							} else { //previous tab off 
 					%>
-								<td><img src="/media_stat/recipe/rectabs_btwn_off_off<%=theme%>.gif" width="16" height="25"></td>
+								<td><img src="/media_stat/recipe/rectabs_btwn_off_off<%=theme%>.gif" width="16" height="25" alt=""></td>
 					<% 
 							} %>
 						<td style="background-image:url(/media_stat/recipe/rectabs_bg_off<%=theme%>.gif);"><a href="<%=response.encodeURL("recipe.jsp?catId="+catIdParam+"&recipeId="+recipe.getContentName()+subCatIdParam+"&variantId="+currVariant.getContentName())%>&trk=var#ingredients" class="recipe_tab"><%= currVariant.getName() %></a></td>
@@ -304,11 +304,11 @@ span.selectedRecipeVariant {
 					<% //close out tab end
 					if (lastTabOn) { //previous tab is on  
 					%>
-						<td><img src="/media_stat/recipe/rectabs_btwn_on_nothing<%=theme%>.gif" width="16" height="25"></td>
+						<td><img src="/media_stat/recipe/rectabs_btwn_on_nothing<%=theme%>.gif" width="16" height="25" alt=""></td>
 					<% 
 						} else { //previous tab off 
 					%>
-						<td><img src="/media_stat/recipe/rectabs_btwn_off_nothing<%=theme%>.gif" width="16" height="25"></td>
+						<td><img src="/media_stat/recipe/rectabs_btwn_off_nothing<%=theme%>.gif" width="16" height="25" alt=""></td>
 					<% 
 						} %>
 			  </tr>
@@ -494,9 +494,9 @@ int prodIdx = 0;
                     <td colspan="3">
                       <% String quant = quantityFormatter.format(orderLine.getQuantity()); %>	
                       <div class="qtyinput">
-                        <a href="javascript:chgQty<%=prodIdx%>(<%= -_productNode.getQuantityIncrement() %>);" class="quantity_minus"><span>Decrease quantity</span></a>
+                        <a href="javascript:chgQty<%=prodIdx%>(<%= -_productNode.getQuantityIncrement() %>);" class="quantity_minus"><div class="vahidden">Decrease quantity</div></a>
                         <input class="qty" type="text" size="4" name="quantity_<%=prodIdx%>" maxlength="2" value="<%= !"0".equals(quant)?quant:"" %>" onChange="chgQty<%=prodIdx%>(0);" onBlur="pricing<%=prodIdx%>.setQuantity(this.value);"/>
-                        <a href="javascript:chgQty<%=prodIdx%>(<%= _productNode.getQuantityIncrement() %>);" class="quantity_plus"><span>Increase quantity</span></a>
+                        <a href="javascript:chgQty<%=prodIdx%>(<%= _productNode.getQuantityIncrement() %>);" class="quantity_plus"><div class="vahidden">Increase quantity</div></a>
                       </div>
                     </td>
 
