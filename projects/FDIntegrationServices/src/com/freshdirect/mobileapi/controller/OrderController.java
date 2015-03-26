@@ -371,7 +371,7 @@ public class OrderController extends BaseController {
 					}
 				} else {
 					//Change this to get only 600(default-configurable) products
-					productPage = products.subList(0, Math.min(FDStoreProperties.getQuickShopMobileResultMaxLimit(), products.size()));
+					productPage = products.subList(0, Math.min(FDStoreProperties.getQuickShopResultMaxLimit(), products.size()));
 				}
 			}
 		} catch (ModelException e) {

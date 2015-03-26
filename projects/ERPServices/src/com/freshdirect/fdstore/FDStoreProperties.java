@@ -699,7 +699,7 @@ public class FDStoreProperties {
     private final static String UNIT_PRICE_DISPLAY_ENABLED = "fdstore.unitprice.enabled";
     
     //Limiting the quicksearch results in mobile
-    private final static String QUICKSHOP_ALL_ITEMS_MAX = "fdsore.mobile.quickshop.max.results";
+    private final static String QUICKSHOP_ALL_ITEMS_MAX = "fdstore.quickshop.max.results";
     
     //Limiting orderHistory to show only last 13 months
     private static final String PROP_ORDER_HISTORY_FROM_IN_MONTHS = "fdstore.orderhistory.from.months";
@@ -3493,7 +3493,7 @@ public class FDStoreProperties {
 		return (Boolean.valueOf(get(UNIT_PRICE_DISPLAY_ENABLED))).booleanValue();
 	}
 	
-	public static int getQuickShopMobileResultMaxLimit(){
+	public static int getQuickShopResultMaxLimit(){
 		try {
 			return Integer.parseInt(get(QUICKSHOP_ALL_ITEMS_MAX));
 		} catch (NumberFormatException e) {

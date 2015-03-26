@@ -63,7 +63,7 @@ public class MobileApiProperties {
 
     private final static long REFRESH_PERIOD = 5 * 60 * 1000;
     
-    private static final String PROP_ORDER_HISTORY_FROM_IN_MONTHS = "mobileapi.orderhistory.from.months";
+    
 
     private static Properties config;
 
@@ -79,7 +79,7 @@ public class MobileApiProperties {
         defaults.put(PROP_EXTERNAL_INTERFACE_ENABLED, "true");
         defaults.put(PROP_SUSTAINABILITY_RATING_ENABLED, "true");
         defaults.put(PROP_SAMEDAY_DP_COMPATIBLE, "true");
-        defaults.put(PROP_ORDER_HISTORY_FROM_IN_MONTHS, "13");
+       
         refresh();
     }
 
@@ -183,12 +183,6 @@ public class MobileApiProperties {
         return get(PROP_UNATTENDED_DLV_MSG);
     }
     
-    public static int getOrderHistoryFromInMonths(){
-    	try{
-    		return Integer.parseInt(get(PROP_ORDER_HISTORY_FROM_IN_MONTHS));
-    	} catch(NumberFormatException nfe){
-    		return 13;
-    	}
-    }
+    
     
 }
