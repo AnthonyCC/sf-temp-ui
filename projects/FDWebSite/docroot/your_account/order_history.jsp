@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ page import="java.util.Calendar"%>
 <%@ page import="java.util.Date"%>
 <%@ page import="com.freshdirect.customer.EnumSaleStatus" %>
@@ -6,6 +7,7 @@
 <%@ page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.framework.webapp.*'%>
+<%@ page import='com.freshdirect.framework.util.DateUtil' %>
 <%@ page import='java.text.*' %>
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
 
@@ -131,8 +133,16 @@ if (user.isEligibleForClientCodes()) {
 	</tr>
 	
 <%
+Date currentDate = new Date();
 for (FDOrderInfoI orderInfo : orderHistoryInfo) {
 	orderNumber++;
+	Date requestedDate = orderInfo.getRequestedDate();
+	int diffInMonths= DateUtil.monthsBetween(currentDate, requestedDate);
+	
+	if(diffInMonths > FDStoreProperties.getOrderHistoryFromInMonths()){
+		continue;
+	}
+	//add the condition here
 %>	<tr bgcolor="<%= (rowCounter++ % 2 == 0) ? "#FFFFFF" : "#EEEEEE" %>">
 <%
     String orderDetailsUrl = "";

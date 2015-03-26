@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
@@ -129,7 +130,7 @@ public class OrderController extends BaseController {
         	// Retrieving any possible payload
             String postData = getPostData(request, response);
             
-        	System.out.println("PostData received: [" + postData + "]");
+        	
         	SearchQuery requestMessage = new SearchQuery();
             if (StringUtils.isNotEmpty(postData)) {
                 requestMessage = parseRequestObject(request, response, SearchQuery.class);
@@ -154,7 +155,7 @@ public class OrderController extends BaseController {
         	// Retrieving any possible payload
             String postData = getPostData(request, response);
             
-        	System.out.println("PostData received: [" + postData + "]");
+        	
         	SearchQuery requestMessage = new SearchQuery();
             if (StringUtils.isNotEmpty(postData)) {
                 requestMessage = parseRequestObject(request, response, SearchQuery.class);
@@ -369,7 +370,8 @@ public class OrderController extends BaseController {
 								Math.min(start + query.getMax(), products.size()));
 					}
 				} else {
-					productPage = products;
+					//Change this to get only 600(default-configurable) products
+					productPage = products.subList(0, Math.min(FDStoreProperties.getQuickShopMobileResultMaxLimit(), products.size()));
 				}
 			}
 		} catch (ModelException e) {

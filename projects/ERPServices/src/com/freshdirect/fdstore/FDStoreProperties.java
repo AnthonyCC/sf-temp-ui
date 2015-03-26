@@ -697,6 +697,12 @@ public class FDStoreProperties {
 		
     // [APPDEV-3438] Unit Price Display
     private final static String UNIT_PRICE_DISPLAY_ENABLED = "fdstore.unitprice.enabled";
+    
+    //Limiting the quicksearch results in mobile
+    private final static String QUICKSHOP_ALL_ITEMS_MAX = "fdsore.mobile.quickshop.max.results";
+    
+    //Limiting orderHistory to show only last 13 months
+    private static final String PROP_ORDER_HISTORY_FROM_IN_MONTHS = "fdstore.orderhistory.from.months";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1382,6 +1388,11 @@ public class FDStoreProperties {
 
         // Unit Price Display
         defaults.put(UNIT_PRICE_DISPLAY_ENABLED,  "false");
+        
+        //Limiting quickshop all items result in Mobile to set max
+        defaults.put(QUICKSHOP_ALL_ITEMS_MAX, "600");
+        
+        defaults.put(PROP_ORDER_HISTORY_FROM_IN_MONTHS, "13");
         
         refresh();
     }
@@ -3481,4 +3492,20 @@ public class FDStoreProperties {
 	public static boolean isUnitPriceDisplayEnabled() {
 		return (Boolean.valueOf(get(UNIT_PRICE_DISPLAY_ENABLED))).booleanValue();
 	}
+	
+	public static int getQuickShopMobileResultMaxLimit(){
+		try {
+			return Integer.parseInt(get(QUICKSHOP_ALL_ITEMS_MAX));
+		} catch (NumberFormatException e) {
+			return 600;
+		}
+	}
+	
+	public static int getOrderHistoryFromInMonths(){
+    	try{
+    		return Integer.parseInt(get(PROP_ORDER_HISTORY_FROM_IN_MONTHS));
+    	} catch(NumberFormatException nfe){
+    		return 13;
+    	}
+    }
 }

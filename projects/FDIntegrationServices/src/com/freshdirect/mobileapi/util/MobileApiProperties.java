@@ -185,7 +185,7 @@ public class MobileApiProperties {
     
     public static int getOrderHistoryFromInMonths(){
     	try{
-    		return Integer.parseInt(PROP_ORDER_HISTORY_FROM_IN_MONTHS);
+    		return Integer.parseInt(get(PROP_ORDER_HISTORY_FROM_IN_MONTHS));
     	} catch(NumberFormatException nfe){
     		return 13;
     	}

@@ -138,12 +138,19 @@ public class FilteringComparatorUtil {
 			}
 		}
 
-		//Sorting favourites according to user relevance
-		comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.CATEGORY_RELEVANCY));
+		//Sorting favorites according to user relevance
+		/*comparator = ComparatorChain.create(new SortValueComparator<ProductModel>(EnumSortingValue.CATEGORY_RELEVANCY));
 		comparator.chain(new SortLongValueComparator<ProductModel>(EnumSortingValue.TERM_SCORE));
 		SmartSearchUtils.collectAvailabilityInfo(products, pricingContext);
 		comparator.prepend(new SortValueComparator<ProductModel>(EnumSortingValue.AVAILABILITY));
-		Collections.sort(favourites, comparator);
+		Collections.sort(favourites, comparator);*/
+		ComparatorChain<FilteringSortingItem<ProductModel>> comparatorForFavorites = ComparatorChain.create(FilteringSortingItem.wrap(ScriptedContentNodeComparator.createUserComparator(userId, pricingContext)));
+		comparator.chain(new SortValueComparator<ProductModel>(EnumSortingValue.CATEGORY_RELEVANCY));
+		comparatorForFavorites.chain(new SortLongValueComparator<ProductModel>(EnumSortingValue.TERM_SCORE));
+		SmartSearchUtils.collectAvailabilityInfo(products, pricingContext);
+		comparatorForFavorites.prepend(new SortValueComparator<ProductModel>(EnumSortingValue.AVAILABILITY));
+		Collections.sort(favourites, comparatorForFavorites);
+		
 
 		//Reordering favourites in the product list
 		for (int index = 0; index < Math.min(FDStoreProperties.getSearchPageTopFavouritesNumber(), favourites.size()); index ++) {
