@@ -456,7 +456,7 @@ public class ProductDetailPopulator {
 			data.setAlcoholic( isAlcoholic( product, fdProduct ) );
 			data.setUsq( isUsq( product, fdProduct ) );
 		} catch (Exception ignore) {
-			LOG.info( "Failed to set alcoholic and usq flags" + ignore.getMessage() );
+			LOG.debug( "Failed to set alcoholic and usq flags" + ignore.getMessage() );
 			// ignore any errors
 		}
 		
@@ -559,7 +559,8 @@ public class ProductDetailPopulator {
 				//item.setMsgCutoffHeader( "Please <b>complete checkout by " + bodyTime + "</b> to order for delivery tomorrow." );
 				
 			}
-		} catch (FDResourceException e) {
+		} catch (Exception e) {
+			LOG.debug("Exception will figuring out Platter Cutoff Found only in Table APP, not sure about the rootcause");
 		}
 
 		

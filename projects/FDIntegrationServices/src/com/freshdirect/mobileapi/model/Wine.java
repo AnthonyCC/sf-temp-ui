@@ -88,7 +88,7 @@ public class Wine extends Product {
                     wineRegionDescription = ProductUtil.readContent(ProductUtil.resolve(wineRegionDescriptionFile));
                 } catch (IOException e) {
                     wineRegionDescription = "";
-                    LOG.warn("Unable to read wine region description file " + wineRegionDescriptionFile);
+                    LOG.debug("Unable to read wine region description file " + wineRegionDescriptionFile);
                 }
 
             }
