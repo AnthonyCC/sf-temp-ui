@@ -937,6 +937,12 @@
 		<div class="link"><a href="/test/content/oas.jsp">/test/content/oas.jsp</a></div>
 		<div class="pageDesc">Test OAS calls using dynamic values.</div>
 	</div>
+	
+	<div class="tag partialRollout partial rollout featureFlipping feature flipping A/B testing">
+	   <div class="pageName"><span>Feature Version Forcing Page</span></div>
+	   <div class="link"><a href="/test/features/index.jsp">/test/features/index.jsp</a></div>
+	   <div class="pageDesc">For Partial Rollout testing it makes easier feature forcing to do A/B testing.</div>
+	</div>
 
 	<hr />
 </div>
