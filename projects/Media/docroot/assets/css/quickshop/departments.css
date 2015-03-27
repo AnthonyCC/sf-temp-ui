@@ -4,7 +4,7 @@
 	color:#333;	
 }
 
-.departments-list {
+[data-feature-quickshop="2_0"] .departments-list {
 	max-height:210px;
 	overflow:auto;
 }
@@ -27,3 +27,37 @@
 
 .departments-list-clear_dept hr {
 }
+
+.departments.rounded-box .checkboxlist input[type="radio"] {
+  display: none;
+}
+
+.departments.rounded-box .checkboxlist input[type="radio"] + label {
+  display: block;
+  padding: 2px 0 2px 5px;
+  border-radius: 6px;
+  font-weight:normal;
+}
+
+.departments.rounded-box .checkboxlist input[type="radio"]:checked + label {
+  display: block;
+  padding: 5px;
+  border-radius: 6px;
+  background-color:#969;
+}
+
+.departments.rounded-box .checkboxlist input[type="radio"]:checked + label,
+.departments.rounded-box .checkboxlist input[type="radio"]:checked + label span{
+  color:#fff;
+  font-weight:bold;
+}
+
+.no-touch .checkboxlist li:hover input[type="radio"]:checked + label,
+.no-touch .checkboxlist li:hover input[type="radio"]:checked + label span{
+  text-decoration:none;
+}
+
+.departments.rounded-box .checkboxlist input[checked] + label span {
+	font-weight: normal;
+}
+

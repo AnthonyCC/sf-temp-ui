@@ -8,6 +8,8 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.util.Buildver;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
@@ -36,11 +38,23 @@ public class SoyImportTag extends SimpleTagSupport {
 	public void doTag() throws JspException {
 				
 		try {
+			StringBuilder uri = new StringBuilder();
+			
 			packageName = packageName.replace( '.', '/' );
 		    packageName = SoyTemplateEngine.cleanPackageName( packageName );
+		    
+		    uri.append(SOY_JS_BASE + packageName);
+		    
+			if (FDStoreProperties.isBuildverEnabled()) {
+				if (uri.indexOf("?") != -1)
+					uri.append("&buildver=");
+				else
+					uri.append("?buildver=");
+				uri.append(Buildver.getInstance().getBuildver());
+			}
 				
 			JspWriter out = getJspContext().getOut();
-			out.write(  "<script src=\""+ SOY_JS_BASE + packageName + "\"></script>" );		
+			out.write(  "<script src=\""+ uri.toString() + "\"></script>" );		
 			
 	    } catch ( IOException e ) {
 			throw new JspException( "Failed to import package: "+packageName, e );
@@ -51,3 +65,4 @@ public class SoyImportTag extends SimpleTagSupport {
 	}
 	
 }
+

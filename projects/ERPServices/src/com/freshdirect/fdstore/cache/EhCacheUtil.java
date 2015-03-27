@@ -21,6 +21,7 @@ public class EhCacheUtil {
 	public static final String QS_SHOP_FROM_LISTS_CACHE_NAME = "yourListsCache";
 	public static final String QS_STARTER_LISTS_CACHE_KEY = "STARTER_LIST";
 	public static final String QS_STARTER_LISTS_CACHE_NAME = "fdListsCache";
+	public static final String QS_TOP_ITEMS_CACHE_NAME = "topItemsCache";
 
 	//Browse caches
 	public static final String BR_CMS_ONLY_PRODUCT_GRABBER_CACHE_NAME = "cmsOnlyProductGrabberCache";

@@ -31,9 +31,11 @@ var FreshDirect = FreshDirect || {};
 
   var errorHandler = function( e ){
     var status = e.status;
-    DISPATCHER.signal('errorDialog',{
-      message:errorMessages[status]
-    });
+    if (status) {
+      DISPATCHER.signal('errorDialog',{
+        message:errorMessages[status]
+      });
+    }
 
   };
 

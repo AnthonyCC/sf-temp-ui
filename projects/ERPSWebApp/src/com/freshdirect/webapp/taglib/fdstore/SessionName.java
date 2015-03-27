@@ -41,6 +41,10 @@ public interface SessionName {
 	public static final String SS_SELECTED_TAB = "fd.ss.selTab"; // position of selected tab in view cart page
 	public static final String SS_SELECTED_VARIANT = "fd.ss.selVariantId"; // selected variant ID
 
+	// QuickShop bottom carousel attributes
+	public static final String QSB_SELECTED_TAB = "qsb.selTab"; // position of selected tab in view cart page
+	public static final String QSB_SELECTED_VARIANT = "qsb.selVariantId"; // selected variant ID
+
 	public static final String IMPRESSION = "Impression";
 	
 	public static final String SAVINGS_FEATURE_LOOK_UP_TABLE= "savingsFeatureLookup";

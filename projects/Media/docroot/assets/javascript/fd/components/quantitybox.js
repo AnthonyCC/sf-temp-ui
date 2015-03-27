@@ -13,6 +13,16 @@ var FreshDirect = FreshDirect || {};
     $quantitybox.trigger('quantity-change-'+($quantitybox.find('input.qty').val()<newVal?'inc':'dec'));
   }
 
+  $(document).on('quantity-change', '[data-component="product"]', function (e, data) {
+    var $t = $(e.currentTarget),
+        id = $t.find('[data-productdata-name="atcItemId"]').val(),
+        qty = data && data.newVal;
+
+    if (id && (qty || qty === 0)) {
+      fd.modules.common.productConfigurationChange(id, {quantity: qty});
+    }
+  });
+
   function getInput($quantitybox) {
     return $('input[data-component="quantitybox.value"]',$quantitybox);
   }

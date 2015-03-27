@@ -405,7 +405,8 @@ section.main .pager [data-component="pager-next"],
 }
 
 section.main .pager .cssbutton.gray,
-.srch .pager .cssbutton.gray{
+.srch .pager .cssbutton.gray,
+.qs-content .cssbutton.gray{
   cursor:auto;
   background:#C0C0C0;
 }

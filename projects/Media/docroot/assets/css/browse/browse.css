@@ -95,22 +95,6 @@
   border: none;
 }
 
-.browseContent .sectionContent ul.products li.portrait-item.unavailable {
-  color:#333;
-}
-
-.browseContent .sectionContent ul.products li.portrait-item.unavailable .portrait-item-controls,
-.browseContent .sectionContent ul.products li.portrait-item.unavailable .portrait-item-price,
-.browseContent .sectionContent ul.products li.portrait-item.unavailable .portrait-item-price-deal {
-  display:none;
-}
-
-.browseContent .sectionContent ul.products li.portrait-item.unavailable .portrait-item-header,
-.browseContent .sectionContent ul.products li.portrait-item.unavailable .portrait-item-header-name,
-.browseContent .sectionContent ul.products li.portrait-item.unavailable .portrait-item-header-configuration {
-  color:#999;
-}
-
 ul.products .description-skin{
   font-size:10px;
   line-height:10px;

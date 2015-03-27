@@ -65,6 +65,10 @@
 			<li><button class="cssbutton blue icon-arrow-left2-before">arrow-left2 - before</button><button class="cssbutton blue icon-arrow-left2-after">arrow-left2 - after</button><button class="cssbutton blue icon-arrow-left2-before notext">arrow-left2 - notext</button> - notext</li>
 			<li><button class="cssbutton blue icon-arrow-down2-before">arrow-down2 - before</button><button class="cssbutton blue icon-arrow-down2-after">arrow-down2 - after</button><button class="cssbutton blue icon-arrow-down2-before notext">arrow-down2 - notext</button> - notext</li>
 			<li><button class="cssbutton blue icon-arrow-right2-before">arrow-right2 - before</button><button class="cssbutton blue icon-arrow-right2-after">arrow-right2 - after</button><button class="cssbutton blue icon-arrow-right2-before notext">arrow-right2 - notext</button> - notext</li>
+			<li><button class="cssbutton purple icon-list-view-before">list-view - before</button><button class="cssbutton purple icon-list-view-after">list-view - after</button><button class="cssbutton purple icon-list-view-before notext">list-view - notext</button> - notext</li>
+			<li><button class="cssbutton purple icon-grid-view-before">grid-view - before</button><button class="cssbutton purple icon-grid-view-after">grid-view - after</button><button class="cssbutton purple icon-grid-view-before notext">grid-view - notext</button> - notext</li>
+			<li><button class="cssbutton purple icon-magnifying-glass-before">magnifying-glass - before</button><button class="cssbutton purple icon-magnifying-glass-after">magnifying-glass - after</button><button class="cssbutton purple icon-magnifying-glass-before notext">magnifying-glass - notext</button> - notext</li>
+			<li><button class="cssbutton purple icon-reorder-icon-before">reorder-icon - before</button><button class="cssbutton purple icon-reorder-icon-after">reorder-icon - after</button><button class="cssbutton purple icon-reorder-icon-before notext">reorder-icon - notext</button> - notext</li>
 		</ol>
 	</section>
 	</body>

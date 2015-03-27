@@ -64,6 +64,8 @@ public class EnumSiteFeature implements Serializable, Comparable<EnumSiteFeature
     
     public final static EnumSiteFeature WEEKS_MEAT_BEST_DEALS = new EnumSiteFeature("WEEKS_MEAT_BEST_DEALS", true, "Best Deals on Meat");
     
+    public final static EnumSiteFeature QS_BOTTOM_CAROUSEL = new EnumSiteFeature("QS_BOTTOM");
+    
     String name;
 	
 	/**

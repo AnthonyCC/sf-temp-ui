@@ -7,6 +7,7 @@ var FreshDirect = FreshDirect || {};
   var $ = fd.libs.$;
   var WIDGET = fd.modules.common.widget;
   var DISPATCHER = fd.common.dispatcher;
+  var QSVersion = fd.utils.getActive("quickshop");
 
   function findSelected(element) {
     var a = this[element],
@@ -27,7 +28,7 @@ var FreshDirect = FreshDirect || {};
       value:'YOUR LISTS'
     },
     template:{
-      value:quickshop.shoppinglists
+      value: QSVersion !== "2_0" ? quickshop.shoppinglistsQS22 : quickshop.shoppinglists
     },
     placeholder:{
       value:'#shoppinglists'

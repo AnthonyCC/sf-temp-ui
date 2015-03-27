@@ -212,8 +212,14 @@
 }
 
 .customizePopup .applyCustomization {
-	padding-top:50px;
+	padding-top:20px;
 	font-size:13px;
 	font-weight:bold;
   clear: both;
+  visibility: hidden;
 }
+
+.customizePopup .changed .applyCustomization {
+  visibility: visible;
+}
+

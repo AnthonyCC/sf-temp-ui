@@ -28,6 +28,10 @@ import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 
+/**
+ * Deprecated with Quickshop 2.2 version. Replaced with {@link com.freshdirect.webapp.ajax.reorder.QuickShopFilterImpl}
+ */
+@Deprecated
 public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>{
 	
 	private FilteringNavigator nav;

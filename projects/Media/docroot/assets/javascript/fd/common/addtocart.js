@@ -176,12 +176,34 @@ var FreshDirect = FreshDirect || {};
 
 	$(document).on('addToCart',atcHandler);
 
+  function allConfirmProcess(data) {
+    var $cont = $(data.container),
+        $products = $cont.find('[data-component="product"]').filter(function (i, el) {
+          return !$(el).hasClass('unavailable');
+        }),
+        sumsubtotal = 0;
+
+    data.header = "Add " + $products.size() + " items to cart?";
+
+    $products.each(function () {
+      var subtotal = $(this).find('[data-component="product-controls"] [data-component="subtotal"] b, [data-component="product-controls"] [data-component="subtotal"] span').text();
+
+      if (subtotal) {
+        sumsubtotal += +(subtotal.substring(1));
+      }
+    });
+
+    data.message = "Estimated Subtotal: $" + sumsubtotal.toFixed(2);
+
+    return data;
+  }
 	
   fd.modules.common.utils.register("components", "AddToCart", {
     addToCart:addToCart,
     requiredValidator:requiredValidator,
     atcFilter:atcFilter,
-    triggerATC:triggerATC
+    triggerATC:triggerATC,
+    allConfirmProcess: allConfirmProcess
   } , fd);
 
 }(FreshDirect));

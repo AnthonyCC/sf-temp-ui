@@ -19,6 +19,7 @@ public enum EnumEventSource {
 	
 	/* New quickshop event sources */
 	qs_pastOrders("QS-past-orders"),
+	qs_topItems("QS-top-items"),
 	qs_customerLists("QS-shopping-lists"),
 	qs_fdLists("QS-FD-lists"),	
 	qs_ymal("QS-top-recommender"),

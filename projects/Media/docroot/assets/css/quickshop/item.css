@@ -27,9 +27,6 @@
 	color:#333;
 }
 
-.itemlist-item.changed .itemlist-item-header:after {
-}
-
 .itemlist-item-controls {
 	margin-left:100px;	
 }
@@ -41,6 +38,14 @@
 .itemlist-item-header-buttons {
   float: right;
   margin-top: 20px;
+}
+
+.itemlist-item-header-buttons .cssbutton.editinlist {
+  display: none;
+}
+
+.changed .itemlist-item-header-buttons .cssbutton.editinlist {
+  display: inline-block;
 }
 
 .itemlist-item-header-buttons button,

@@ -5,13 +5,14 @@ var FreshDirect = FreshDirect || {};
 	"use strict";
 
 	var $ = fd.libs.$;
+  var QSVersion = fd.utils.getActive("quickshop");
 
 	var listheader = Object.create(fd.quickshop.common.listheader,{
 		signal:{
 			value:'listheader'
 		},
 		template:{
-			value:quickshop.shopFromListHeader
+			value: QSVersion !== "2_0" ? quickshop.shopFromListHeaderQS22 : quickshop.shopFromListHeader
 		},
 		placeholder:{
 			value:'#listheader'

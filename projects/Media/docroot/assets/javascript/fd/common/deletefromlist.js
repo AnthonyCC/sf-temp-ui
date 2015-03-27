@@ -28,7 +28,7 @@ var FreshDirect = FreshDirect || {};
       value: null
     },
     trigger: {
-      value: '[data-component=product] button.deletefromlist'
+      value: '[data-component=product] .deletefromlist'
     },
     popupId: {
       value: 'deletefromlistpopup'
@@ -59,7 +59,8 @@ var FreshDirect = FreshDirect || {};
         var listId = this.popup.$trigger.attr('data-listid'),
             itemId = this.popup.$trigger.attr('data-itemid'),
             items = fd.components.AddToCart.atcFilter(fd.modules.common.productSerialize(this.popup.$trigger)),
-            item = items && items[0];
+            item = items && items[0],
+            $itemEl;
 
         if (item) {
           item.lineId = itemId;
@@ -74,11 +75,15 @@ var FreshDirect = FreshDirect || {};
               method: 'PUT'
           });
         
-          $(this.popup.$trigger).closest('.itemlist-item').remove();
+          $itemEl = $(this.popup.$trigger).closest('.itemlist-item');
+
+          if ($itemEl.size()) {
+            $itemEl.remove();
+          }
+
+          $(document).trigger('list-change');
         }
-        
-        
-        
+
         this.close();
       }
     }

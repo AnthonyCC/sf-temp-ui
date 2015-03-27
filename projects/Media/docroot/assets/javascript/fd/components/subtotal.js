@@ -24,8 +24,7 @@ var FreshDirect = FreshDirect || {};
         pricingUnit = "",
         template = $subtotal.attr('data-template') || '[]';
 
-      template = FreshDirect.modules.common.utils.discover(template);
-    
+    template = FreshDirect.modules.common.utils.discover(template);
     
     /* Convert JSON string to JSON object */
     try { pricingInfo = JSON.parse(pricingInfo); } catch (e) {} 
@@ -58,27 +57,27 @@ var FreshDirect = FreshDirect || {};
     }
 
     try {
-        gpricingInfo.forEach(function (pi) {
-          if (+qty >= +pi.lowerBound && +qty < +pi.upperBound) {
-            price = Math.round(100 * +qty * +pi.price) / 100;
-          }
-        });
-      } catch (e) {
-      }
+      gpricingInfo.forEach(function (pi) {
+        if (+qty >= +pi.lowerBound && +qty < +pi.upperBound) {
+          price = Math.round(100 * +qty * +pi.price) / 100;
+        }
+      });
+    } catch (e) {
+    }
 
     try {
-        if('configuration' in itemInfo){
-          cvprices.forEach(function(cvp){
-            if(itemInfo.configuration[cvp.name] === cvp.value) {
-              if( cvp.applyHow === '1' ) {
-                price += origqty * cvp.price;                 
-              } else if( cvp.applyHow === '0' ) {
-                price += qty * cvp.price;
-              }
+      if('configuration' in itemInfo){
+        cvprices.forEach(function(cvp){
+          if(itemInfo.configuration[cvp.name] === cvp.value) {
+            if( cvp.applyHow === '1' ) {
+              price += origqty * cvp.price;                 
+            } else if( cvp.applyHow === '0' ) {
+              price += qty * cvp.price;
             }
-          });
-        }
-      } catch (e) {
+          }
+        });
+      }
+    } catch (e) {
     }
 
     price = Math.round( price * 100 ) /100;
@@ -129,11 +128,28 @@ var FreshDirect = FreshDirect || {};
     Subtotal.update(ct);
   }
   
+  function pccHandler (e) {
+    var $product = $('[data-productdata-name="atcItemId"][value="'+e.productId+'"]').parents('[data-product-id], [data-productid]');
+
+    if ($product.size() < 1) {
+      $product = $('[data-productid="'+e.productId+'"], [data-product-id="'+e.productId+'"]');
+    }
+
+
+    if ($product.size() > 0) {
+      Subtotal.update($product);
+    }
+  }
+
   $(document).on('quantity-change','[data-component="product"]',eventHandler);
   
   $(document).on('salesunit-change','[data-component="product"]',eventHandler);
   
   $(document).on('change','[data-component="productDataConfiguration"]',eventHandler);
+
+  $(document).on('transactionalPopup-open','[data-component="product"]',eventHandler);
+
+  $(document).on('productConfigurationChange', pccHandler);
 
   fd.modules.common.utils.register("components", "Subtotal", Subtotal, fd);
 }(FreshDirect));

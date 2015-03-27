@@ -41,7 +41,13 @@ var FreshDirect = FreshDirect || {};
     },
     open: {
       value: function (e) {
+        // update shopping list data
+        this.DISPATCHER.signal('server',{
+            url: '/api/shoppinglist'
+        });
+
         this.render();
+
         this.popup.show($(e.currentTarget));
         this.popup.clicked = true;
       }

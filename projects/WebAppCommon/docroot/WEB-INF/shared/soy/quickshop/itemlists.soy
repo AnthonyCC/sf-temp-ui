@@ -27,3 +27,59 @@
 </div>
 {/if}
 {/template}
+
+/**
+ * @param data some path, list of items
+ * @param itemType type of an item
+ * @param? hasGrid determines whether the product list shows as a grid
+ * @param? searchTerm search term
+ */
+{template .itemlistQS22 autoescape="false"}
+{if $hasGrid}
+  {let $len: length($data) /}
+  {let $lines: ceiling($len / 5) /}
+  {for $line in range(0, $lines)}
+    <ul class="products{if $line == $lines - 1} lastLine{/if} transactional">
+      {for $col in range(0, 5)}
+        {if $col + $line * 5 < $len}
+          {call common.transactionalGridItem}
+            {param item: $data[$col + $line * 5] /}
+            {param extraClass:(($col != 4 and $col + $line * 5 != $len - 1) ? '' : 'lastInLine') /}
+            {param showConfig: true /}
+          {/call}
+        {/if}
+      {/for}
+    </ul>
+  {/for}
+{else}
+{if length($data)}
+<ol class="{$itemType} lineitems22">
+{foreach $item in $data}
+{call quickshop.itemQS22}
+	{param item:$item /}
+	{param type:$itemType /}
+{/call}
+{/foreach}
+</ol>
+{/if}
+{/if}
+
+{if length($data) == 0}
+<div class="qs-tabhelp">
+{switch $itemType}
+{case 'shopfromlists'}
+  {if $searchTerm}
+    <div class="qs-empty-result">
+      <p class="selection"><b>No products meet your selected preferences.</b></p>
+    </div>
+  {else}
+    {call common.listhelp /}
+  {/if}
+{case 'fdlists'}
+	{call common.listhelp /}
+{default}
+	{call quickshop.pastOrdersHelp /}
+{/switch}
+</div>
+{/if}
+{/template}

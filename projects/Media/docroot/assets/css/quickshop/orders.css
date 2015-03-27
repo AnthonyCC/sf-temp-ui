@@ -2,6 +2,7 @@
 	font-family: Verdana,sans-serif;
 	font-size:11px;
 	color:#333;	
+  position: relative;
 }
 
 .orders-list {
@@ -40,17 +41,76 @@
 
 .locked .orders-list,
 .open .orders-list {
-	max-height: 135px;
 	padding: 10px 5px;
 	border: 1px solid #B293B2;
 }
 
-
-.orders-header {
+[data-feature-quickshop="2_0"] .locked .orders-list,
+[data-feature-quickshop="2_0"] .open .orders-list {
+  max-height: 135px;
 }
 
-.orders input {
-	vertical-align: top;
+.orders .seemore {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  line-height: 24px;
+  text-align: center;
+  background-color: #e4cee4;
+  color: #333;
+  border: 1px solid #dbccdb;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  cursor: pointer;
+}
+
+.orders .seemore:hover span {
+  text-decoration: underline;
+}
+
+.orders .seemore:after {
+  font-family: 'freshdirect_icons';
+  content: "\e619";
+  vertical-align: bottom;
+  font-size: 1.4em;
+  display: inline-block;
+  margin: 0 0 -1px 2px;
+}
+
+.orders .moreorders {
+  height: 1px;
+  visibility: hidden;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.orders .orders-list input {
+	vertical-align: bottom;
+  position: static;
+}
+
+[data-feature-quickshop="2_0"] .orders .orders-list input {
+  position: absolute;
+  vertical-align: top;
+}
+
+.orders .orders-list label {
+  padding: 2px 0;
+}
+
+[data-feature-quickshop="2_0"] .orders .orders-list label {
+  padding: 2px 0 2px 20px;
+}
+
+.orderlist.maxorder label span,
+.orders.maxorder label span {
+  color: #888;
+}
+
+.orderlist.maxorder label input:checked + span,
+.orders.maxorder label input:checked + span {
+  color: #333;
 }
 
 .orders label:after {
@@ -59,15 +119,15 @@
 	font-size: 11px;
 }
 
-.cancelled label:after {
+[data-feature-quickshop="2_0"] .cancelled label:after {
 	content:'- Cancelled Order';
 }
 
-.processing label:after {
+[data-feature-quickshop="2_0"] .processing label:after {
 	content:'- Processing Order';
 }
 
-.pending label:after {
+[data-feature-quickshop="2_0"] .pending label:after {
 	content:'- Pending Order';
 }
 
@@ -122,4 +182,75 @@
 #orders.open .qs-menu-toggle {
 	background-image: url(/media_stat/images/quickshop/sidenav-collapse.png);
 	content:'hide';	
+}
+
+#moreorderspopup {
+  width: auto;
+  max-width:760px; /* 4*170 cols + 4*10 margin + 35 body padding */
+  margin: 10px 0 0 30px;
+}
+
+#moreorderspopup span.bubblearrow {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-top: -47px;
+}
+
+#moreorderspopup span.bubblearrow:before {
+  position: absolute;
+  content: '';
+  height: 0;
+  border: 11px solid transparent;
+  border-right: 22px solid #aaa;
+  top: 0;
+  left: -33px;
+}
+
+#moreorderspopup span.bubblearrow:after {
+  position: absolute;
+  content: '';
+  height: 0;
+  border: 10px solid transparent;
+  border-right: 20px solid #f8f8f8;
+  top: 1px;
+  left: -30px;
+}
+
+
+#moreorderspopup ul.orderlist {
+  list-style-type: none;
+  margin: 0 0 0 10px;
+  padding: 0;
+  display: inline-block;
+  vertical-align: top;
+}
+
+#moreorderspopup ul.orderlist li {
+  width: 170px;
+  margin: 10px 0;
+}
+
+#moreorderspopup ul.orderlist li.header {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+#moreorderspopup ul.orderlist li.header:after {
+  content: '';
+  display: inline-block;
+}
+
+#moreorderspopup ul.orderlist li label {
+  font-size: 9px;
+  cursor: pointer;
+}
+
+#moreorderspopup ul.orderlist li label span {
+  font-size: 13px;
+}
+
+#moreorderspopup ul.orderlist li label:hover span {
+  text-decoration: underline;
 }

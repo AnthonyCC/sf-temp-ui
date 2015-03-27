@@ -239,6 +239,7 @@ var FreshDirect = FreshDirect || {};
 
   listaddlistener.listen();
   createlistpopup.listen();
+  createlistpopup.render();
   addtolistpopup.listen();
   addtolistpopup.render();
 

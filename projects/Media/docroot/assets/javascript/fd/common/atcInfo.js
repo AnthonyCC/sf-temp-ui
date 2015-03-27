@@ -19,7 +19,7 @@ var FreshDirect = FreshDirect || {};
       value:function(item) {
         // the original element might be copied (like in case of transactional popup), so we have to match for multiple ids
         var element = $('[id="'+item.itemId+'"], [id="'+item.atcItemId+'"]'),
-            controls, amount, product;
+            controls, amount, product, oSu, cSu, oQ, cQ;
 
         if(element) {
           element.addClass('atc-info-message');
@@ -36,9 +36,18 @@ var FreshDirect = FreshDirect || {};
 
           if (controls.size() !== 0) {
             // reset qty
-            controls.find('input.qty').val(+controls.find('.qtyinput').data('min') || 1).change();
-            controls.find('select.salesunit').val('');
-            controls.find('select.salesunit').val(controls.find('select.salesunit').find('option').first().attr('value'));
+            oQ = product.find('[data-quantity-original]').attr('data-quantity-original');
+            oSu = product.find('[data-salesunit-original]').attr('data-salesunit-original');
+            cQ = controls.find('input.qty').val();
+            cSu = controls.find('select.salesunit').val();
+
+            if (!oQ || oQ !== cQ) {
+              controls.find('input.qty').val(+oQ || +controls.find('.qtyinput').data('min') || 1).change();
+            }
+            if (!oSu || oSu !== cSu) {
+              controls.find('select.salesunit').val('');
+              controls.find('select.salesunit').val(oSu || controls.find('select.salesunit').find('option').first().attr('value'));
+            }
             // IE 8 helper
             controls.find('.iehelper').html(controls.find('.addtocart[data-amount]').attr('data-amount') + ' Added');
           }
@@ -58,7 +67,7 @@ var FreshDirect = FreshDirect || {};
     renderItem:{
       value:function(item) {
         var element = $('[id="'+item.itemId+'"], [id="'+item.atcItemId+'"]'),
-            controls, product;
+            controls, product, oSu, cSu, oQ, cQ;
 
         if(element.size()) {
           element.addClass('atc-info-message');
@@ -86,9 +95,20 @@ var FreshDirect = FreshDirect || {};
           controls = element.closest('[data-component="product"]').find('[data-component="product-controls"]');
           if (controls.size() !== 0) {
             controls.addClass('atc-info-message');
-            controls.find('input.qty').val(+controls.find('.qtyinput').data('min') || 1).change();
-            controls.find('select.salesunit').val('');
-            controls.find('select.salesunit').val(controls.find('select.salesunit').find('option').first().attr('value'));
+
+            oQ = product.find('[data-quantity-original]').attr('data-quantity-original');
+            oSu = product.find('[data-salesunit-original]').attr('data-salesunit-original');
+            cQ = controls.find('input.qty').val();
+            cSu = controls.find('select.salesunit').val();
+
+            if (!oQ || oQ !== cQ) {
+              controls.find('input.qty').val(+oQ || +controls.find('.qtyinput').data('min') || 1).change();
+            }
+            if (!oSu || oSu !== cSu) {
+              controls.find('select.salesunit').val('');
+              controls.find('select.salesunit').val(oSu || controls.find('select.salesunit').find('option').first().attr('value'));
+            }
+
             setTimeout(this.removeMessage.bind(controls),1800);
           }
 

@@ -71,6 +71,10 @@ import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopListRequestObject;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
+/**
+ * Deprecated with Quickshop 2.2 version. Replaced with {@link com.freshdirect.webapp.ajax.reorder.QuickShopHelper}
+ */
+@Deprecated
 public class QuickShopHelper {
 
 	private static final int TIME_LIMIT = -13;

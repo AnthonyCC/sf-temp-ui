@@ -6,12 +6,28 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri='fd-certona-tag' prefix='certona' %>
+<%@ taglib uri="fd-features" prefix="features" %>
 <%-- this file will be included in the <head> tag --%>
 	<%--
 		using the same /directory/version/ system as scriptaculous for jquery
 		also to avoid conflicts, jQuery's $ will always be set to $jq
 	--%>
 	
+  <%-- Feature version switcher --%>
+  <features:potato />
+  <%-- TODO !!! --%>
+  <script type="text/javascript">
+  (function () {
+    window.FreshDirect = window.FreshDirect || {};
+    var fd = window.FreshDirect;
+    
+    fd.features = fd.features || {};
+
+    fd.features.active = <fd:ToJSON object="${featuresPotato.active}" noHeaders="true"/>
+  
+  }());
+  </script>
+
 	<jwr:script src="/fdlibs.js" useRandomParam="false" />
 	<script src="/assets/javascript/jquery/corner/jquery.corner.js" type="text/javascript" language="javascript"></script>
 	<fd:javascript src="/assets/javascript/dialog-base.js" />
@@ -20,6 +36,7 @@
 	<fd:javascript src="/assets/javascript/coremetrics.js"/>
 	<fd:javascript src="/assets/javascript/USQLegalWarning.js"/>
 	
+
   <%-- HTML5 support for IE8 --%>
   <!--[if lt IE 9]>
     <fd:javascript src="/assets/javascript/html5.js"/>

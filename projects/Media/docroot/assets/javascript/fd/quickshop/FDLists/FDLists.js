@@ -73,6 +73,7 @@ var FreshDirect = FreshDirect || {};
 	var UIChanges = Bacon.mergeAll([
 			$(document).asEventStream('list-change').map('starterlists'),
 			$(document).asEventStream('page-change').map('pager'),
+			$(document).asEventStream('viewtypeChanged').map('viewtype'),
 			$(document).asEventStream('sorter-change').map('sorter'),
 			$(document).asEventStream('change','#departments input[type="radio"]').map('departments'),
 			$(document).asEventStream('change','#preferences input[type="checkbox"]').map('preferences')

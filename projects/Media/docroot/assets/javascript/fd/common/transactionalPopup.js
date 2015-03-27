@@ -167,8 +167,7 @@ var FreshDirect = FreshDirect || {};
           }
 
           // show subtotal
-          $('#'+popupId+' input.qty').change();
-          $('#'+popupId+' select').change();
+          $('#'+popupId+' [data-component="product"]').trigger('transactionalPopup-open');
 
           // set learn more url
           learnMoreLink.attr('href', mainHolder.find('[data-productdata-name="productPageUrl"]').first().val());

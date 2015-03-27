@@ -1,10 +1,11 @@
-/*global jQuery,common*/
+/*global common*/
 var FreshDirect = FreshDirect || {};
 
 
 // module initialization
 (function (fd) {
-	
+  "use strict";
+
 	var $=fd.libs.$;
   var POPUPWIDGET = fd.modules.common.popupWidget;
 
@@ -22,7 +23,7 @@ var FreshDirect = FreshDirect || {};
       value: null
     },
     trigger: {
-      value: '[data-component=product].changed button.editinlist'
+      value: '[data-component=product].changed .editinlist'
     },
     popupId: {
       value: 'editinlistpopup'
@@ -38,8 +39,11 @@ var FreshDirect = FreshDirect || {};
         var $t = $(e.currentTarget);
 
         this.render({ itemName: $t.attr('data-itemname') });
-        this.popup.show($t);
-        this.popup.clicked = true;
+        // #APPDEV-3901 - don't show popup
+        // this.popup.show($t);
+        // this.popup.clicked = true;
+        this.popup.$trigger = $t;
+        this.editInList(e);
       }
     },
     close: {
@@ -71,7 +75,7 @@ var FreshDirect = FreshDirect || {};
         if (item) {
         	this.saveChange(listId,itemId,item);
         }
-        this.popup.$trigger.closest('.itemlist-item').removeClass('changed');
+        this.popup.$trigger.closest('[data-component="product"]').removeClass('changed');
         this.close();
       }
     }
@@ -83,4 +87,3 @@ var FreshDirect = FreshDirect || {};
   fd.modules.common.utils.register("modules.common", "editinlistpopup", editinlistpopup, fd);
 
 }(FreshDirect));
-

@@ -27,13 +27,11 @@ button.cssbutton[data-component] {
 	-moz-osx-font-smoothing: grayscale;		
 }
 
-a.cssbutton[class^="icon-"],
-a.cssbutton[class*=" icon-"],
-button.cssbutton[class^="icon-"],
-button.cssbutton[class*=" icon-"],
-.cssbutton[class^="icon-"],
-.cssbutton[class*=" icon-"] {
-	padding-bottom:8px;
+.cssbutton[class^="icon-"]:before,
+.cssbutton[class*=" icon-"]:before,
+.cssbutton[class^="icon-"]:after,
+.cssbutton[class*=" icon-"]:after {
+  vertical-align: bottom;
 }
 
 a.cssbutton:focus,
@@ -195,5 +193,25 @@ button.cssbutton.incart[data-component="ATCButton"] {
 }
 
 button.cssbutton[data-component="addToListButton"] {
+}
+
+.cssbutton.white.transparent {
+  color: #aaa;
+  font-weight: normal;
+  text-shadow: none;
+}
+
+.cssbutton.white.transparent:hover {
+  color: #888;
+}
+
+.cssbutton.purple.transparent {
+  color: #b07bb7;
+  font-weight: normal;
+  text-shadow: none;
+}
+
+.cssbutton.purple.transparent:hover {
+  color: #8a588a;
 }
 

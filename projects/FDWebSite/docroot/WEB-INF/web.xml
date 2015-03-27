@@ -81,149 +81,192 @@
     <jsp-file>/registration/referee_signup.jsp</jsp-file>
   </servlet>
   
-  	<servlet>
-		<servlet-name>SoyToJsServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.soy.SoyToJsServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>SoyToJsServlet</servlet-name>
-		<url-pattern>/api/soy/*</url-pattern>
-	</servlet-mapping>
+    <servlet>
+        <servlet-name>SoyToJsServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.soy.SoyToJsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SoyToJsServlet</servlet-name>
+        <url-pattern>/api/soy/*</url-pattern>
+    </servlet-mapping>
 
-  	<servlet>
-		<servlet-name>CartDataServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.cart.CartDataServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>CartDataServlet</servlet-name>
-		<url-pattern>/api/cartdata/*</url-pattern>
-	</servlet-mapping>
-	
-  	<servlet>
-		<servlet-name>AddToCartServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.cart.AddToCartServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>AddToCartServlet</servlet-name>
-		<url-pattern>/api/addtocart/*</url-pattern>
-	</servlet-mapping>
+    <servlet>
+        <servlet-name>CartDataServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.cart.CartDataServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CartDataServlet</servlet-name>
+        <url-pattern>/api/cartdata/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>AddToCartServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.cart.AddToCartServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddToCartServlet</servlet-name>
+        <url-pattern>/api/addtocart/*</url-pattern>
+    </servlet-mapping>
 
-  	<servlet>
-		<servlet-name>ProductConfigServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.product.ProductConfigServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ProductConfigServlet</servlet-name>
-		<url-pattern>/api/productconfig/*</url-pattern>
-	</servlet-mapping>
+    <servlet>
+        <servlet-name>ProductConfigServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.product.ProductConfigServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProductConfigServlet</servlet-name>
+        <url-pattern>/api/productconfig/*</url-pattern>
+    </servlet-mapping>
 
-  	<servlet>
-		<servlet-name>ShoppingListServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.shoppinglist.ShoppingListServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ShoppingListServlet</servlet-name>
-		<url-pattern>/api/shoppinglist/*</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>QuickShopFilterServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.quickshop.QuickShopFilterServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>QuickShopFilterServlet</servlet-name>
-		<url-pattern>/api/qs/pastOrders</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>QSFromListFilterServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.quickshop.QSFromListFilterServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>QSFromListFilterServlet</servlet-name>
-		<url-pattern>/api/qs/shoppingLists/*</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>QSTempConfigServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.quickshop.QSTempConfigServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>QSTempConfigServlet</servlet-name>
-		<url-pattern>/api/qs/tempConfig/*</url-pattern>
-	</servlet-mapping>
+    <servlet>
+        <servlet-name>ShoppingListServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.shoppinglist.ShoppingListServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ShoppingListServlet</servlet-name>
+        <url-pattern>/api/shoppinglist/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>QuickShopFilterServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.quickshop.QuickShopFilterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>QuickShopFilterServlet</servlet-name>
+        <url-pattern>/api/qs/pastOrders</url-pattern>
+    </servlet-mapping>
+    
+<!--    TODO: QuickShop Top Items: Change QuickShopFilterServlet to the new servlet -->
+    <servlet-mapping>
+        <servlet-name>QuickShopFilterServlet</servlet-name>
+        <url-pattern>/api/qs/topItems</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>QSFromListFilterServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.quickshop.QSFromListFilterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>QSFromListFilterServlet</servlet-name>
+        <url-pattern>/api/qs/shoppingLists/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>QSTempConfigServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.quickshop.QSTempConfigServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>QSTempConfigServlet</servlet-name>
+        <url-pattern>/api/qs/tempConfig/*</url-pattern>
+    </servlet-mapping>
 
-	<servlet>
-		<servlet-name>QSFromStarterListFilterServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.quickshop.QSFromStarterListFilterServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>QSFromStarterListFilterServlet</servlet-name>
-		<url-pattern>/api/qs/starterLists</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>QuickShopYmalServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.quickshop.QuickShopYmalServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>QuickShopYmalServlet</servlet-name>
-		<url-pattern>/api/qs/ymal</url-pattern>
-	</servlet-mapping>
+    <servlet>
+        <servlet-name>QSFromStarterListFilterServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.quickshop.QSFromStarterListFilterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>QSFromStarterListFilterServlet</servlet-name>
+        <url-pattern>/api/qs/starterLists</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>QuickShopYmalServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.quickshop.QuickShopYmalServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>QuickShopYmalServlet</servlet-name>
+        <url-pattern>/api/qs/ymal</url-pattern>
+    </servlet-mapping>
 
-	<servlet>
-		<servlet-name>QuickShopReplacementServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.quickshop.QuickShopReplacementServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>QuickShopReplacementServlet</servlet-name>
-		<url-pattern>/api/qs/replacement</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>QuickShopTabMetaServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.quickshop.QuickShopTabMetaServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>QuickShopTabMetaServlet</servlet-name>
-		<url-pattern>/api/qs/tabMeta</url-pattern>
-	</servlet-mapping>
+    <servlet>
+        <servlet-name>QuickShopReplacementServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.quickshop.QuickShopReplacementServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>QuickShopReplacementServlet</servlet-name>
+        <url-pattern>/api/qs/replacement</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>QuickShopTabMetaServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.quickshop.QuickShopTabMetaServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>QuickShopTabMetaServlet</servlet-name>
+        <url-pattern>/api/qs/tabMeta</url-pattern>
+    </servlet-mapping>
+<!--     New Quickshop 2.2 API endpoints -->
+    <servlet>
+        <servlet-name>ReorderFilterServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.reorder.QuickShopFilterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReorderFilterServlet</servlet-name>
+        <url-pattern>/api/reorder/pastOrders</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ReorderFilterServlet</servlet-name>
+        <url-pattern>/api/reorder/topItems</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ReorderFromListFilterServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.reorder.QSFromListFilterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReorderFromListFilterServlet</servlet-name>
+        <url-pattern>/api/reorder/shoppingLists/*</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ReorderTabMetaServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.reorder.QuickShopTabMetaServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReorderTabMetaServlet</servlet-name>
+        <url-pattern>/api/reorder/tabMeta</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ReorderRecommendationServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.reorder.QuickShopRecommendationServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReorderRecommendationServlet</servlet-name>
+        <url-pattern>/api/reorder/recommendation</url-pattern>
+    </servlet-mapping>
 
-  	<servlet>
-		<servlet-name>CmsFilteringServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.filtering.CmsFilteringServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>CmsFilteringServlet</servlet-name>
-		<url-pattern>/api/filter</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>LoginServlet</servlet-name>
-		<servlet-class>com.freshdirect.webapp.ajax.login.LoginServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>LoginServlet</servlet-name>
-		<url-pattern>/api/login/*</url-pattern>
-	</servlet-mapping>
-	
-	<servlet>
+    <servlet>
+        <servlet-name>CmsFilteringServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.filtering.CmsFilteringServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CmsFilteringServlet</servlet-name>
+        <url-pattern>/api/filter</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>com.freshdirect.webapp.ajax.login.LoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/api/login/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
         <servlet-name>ViewCartPotatoServlet</servlet-name>
         <servlet-class>com.freshdirect.webapp.ajax.viewcart.ViewCartPotatoServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
+    </servlet>
+    <servlet-mapping>
         <servlet-name>ViewCartPotatoServlet</servlet-name>
         <url-pattern>/api/viewcart/recommendation</url-pattern>
-	</servlet-mapping>
+    </servlet-mapping>
 
-	<servlet>
-		<servlet-name>TestUnavailabilityServlet</servlet-name>
-		<servlet-class>com.freshdirect.test.checkout.TestUnavailabilityServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>TestUnavailabilityServlet</servlet-name>
-		<url-pattern>/test/checkout/unavailability</url-pattern>
-	</servlet-mapping>
+    <servlet>
+        <servlet-name>TestUnavailabilityServlet</servlet-name>
+        <servlet-class>com.freshdirect.test.checkout.TestUnavailabilityServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TestUnavailabilityServlet</servlet-name>
+        <url-pattern>/test/checkout/unavailability</url-pattern>
+    </servlet-mapping>
 
   <servlet>
     <servlet-name>JavascriptServlet</servlet-name>

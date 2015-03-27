@@ -99,9 +99,12 @@ var FreshDirect = FreshDirect || {};
 
 
     $(window).on('resize',$.proxy(function(e){
+      var clicked;
       if(this.shown){
-        this.hide();
+        clicked = this.clicked;
+        this.hide(null, true);
         this.show();
+        this.clicked = clicked;
       }
     },this));
 
@@ -215,7 +218,7 @@ var FreshDirect = FreshDirect || {};
     }
   };
 
-  PopupContent.prototype.hide = function () {
+  PopupContent.prototype.hide = function (e, noCallback) {
     if (this.$trigger) {
       this.$trigger.removeClass("hover");
     }
@@ -237,7 +240,7 @@ var FreshDirect = FreshDirect || {};
     if (this.config.overlay && this.$overlay) {
       this.$overlay.css({display: "none"});
     }
-    if (this.config.hidecallback) {
+    if (!noCallback && this.config.hidecallback) {
       this.config.hidecallback();
     }
     this.clearHideDelay();
@@ -271,6 +274,9 @@ var FreshDirect = FreshDirect || {};
         return;
       }
     }
+
+    // remove alignment data
+    this.$el.attr('data-align', null);
 
     var align = this.$alignTo.attr('data-alignpopup') || this.config.align;
 
@@ -342,21 +348,23 @@ var FreshDirect = FreshDirect || {};
         } else if (position.left < viewContainer.offset().left) {
           position.left = viewContainer.offset().left;
         }
-         
+
         if (position.left + contentWidth > $(window).width() + $(window).scrollLeft()) {
           position.left = $(window).width() + $(window).scrollLeft() - contentWidth;
         } else if (position.left + contentWidth > viewContainer.width() + viewContainer.offset().left) {
           position.left = viewContainer.width() + viewContainer.offset().left - contentWidth;
         }
       }
-            
+
       this.$el.css({
         top:position.top+'px',
         left:position.left+'px',
         right:'auto',
         bottom:'auto'
       });
-      
+
+      this.$el.attr('data-align', align);
+
     } else if(align!==false) {
       if (this.config.valign === 'bottom') {
           this.$el.css({top: (offset.top + height) + 'px', bottom: 'auto'});
@@ -375,8 +383,9 @@ var FreshDirect = FreshDirect || {};
       } else {
         this.$el.css({left: offset.left + 'px', right: 'auto'});
       }
+
+      this.$el.attr('data-align', (this.config.halign || "no")+'-'+(this.config.valign || "no"));
     }
-    
 
 
   };

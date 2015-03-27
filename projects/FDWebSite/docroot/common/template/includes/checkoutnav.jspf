@@ -220,8 +220,8 @@ String step3link = response.encodeURL("/checkout/step_3_choose.jsp");
     --><li class="menu-item co-item-skin">
           
           <span class="co-item co-item6">
-                  <% if(modOrder){ %>Modify Order<% } %>
-                  <% if(standingOrder){ %>Standing Order<% } %>
+                  <% if(modOrder){ %>Modify Order<% } else { %>
+                  <% if(standingOrder){ %>Standing Order<% } } %>
           </span>
       </li>
     </ul>

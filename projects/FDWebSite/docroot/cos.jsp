@@ -89,6 +89,10 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 			<potato:recommender siteFeature="COS_HOME" name="deals" maxItems="24" cmEventSource="BROWSE" sendVariant="true" />
 			<soy:render template="common.ymalCarousel" data="${deals}" />
 		</div>
+        <div id="top-items" class="">
+            <potato:recommender siteFeature="DYF" name="topItems" maxItems="24" cmEventSource="BROWSE" sendVariant="true" />
+            <soy:render template="common.yourTopItemsCarousel" data="${topItems}" />
+        </div>
 		<div id="categories">
 			<logic:iterate collection="<%= dept.getDeptNav() %>" id="cat" type="com.freshdirect.fdstore.content.CategoryModel">
 			<logic:equal name="cat" property="showSelf"  value="true" >

@@ -11,7 +11,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a3e3e3de', e
 }
 
 #qs-ymal h2 {
-	font-family: 'EagleBook', Verdana, Arial, sans-serif;
+	font-family: Verdana, Arial, sans-serif;
 	font-weight: normal;
 	font-size:20px;
 	line-height:1em;
@@ -47,7 +47,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a3e3e3de', e
 
 #qs-ymal .itemlist-item-header-title {
 	display:block;
-	font-family: 'EagleBook', Verdana, Arial, sans-serif;
+	font-family: Verdana, Arial, sans-serif;
 	font-weight: normal;
 	font-size:22px;
 	line-height:1em;

@@ -8,6 +8,8 @@ var FreshDirect = FreshDirect || {};
 	var WIDGET = fd.modules.common.widget;
 	var DISPATCHER = fd.common.dispatcher;
 	var FEATURE = 'CRAZY_QUICKSHOP';	// Note that this is not a real site-feature in smart-store, only a placeholder for the craziness for the top recommender, which can be virtually anything based on actual context
+  var QSVersion = fd.utils.getActive('quickshop');
+  var APIURL = QSVersion === '2_0' ? '/api/qs/ymal' : '/api/reorder/recommendation';
 
 	var ymal = Object.create(WIDGET,{
 		signal:{
@@ -43,7 +45,7 @@ var FreshDirect = FreshDirect || {};
 			value:function(data){
 				var deptId = data || "";
 				DISPATCHER.signal('server',{
-					url:'/api/qs/ymal',
+					url:APIURL,
 					method:'GET',
 					data: {
             data: JSON.stringify({ feature: FEATURE, deptId: deptId })

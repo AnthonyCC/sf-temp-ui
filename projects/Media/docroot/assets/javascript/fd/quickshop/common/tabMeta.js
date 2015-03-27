@@ -6,6 +6,7 @@ var FreshDirect = FreshDirect || {};
 
 	var $ = fd.libs.$;
 	var DISPATCHER = fd.common.dispatcher;
+  var QSVersion = fd.utils.getActive('quickshop');
 
 	var tabMeta = Object.create(fd.common.signalTarget,{
 		signal:{
@@ -33,11 +34,11 @@ var FreshDirect = FreshDirect || {};
 			}
 		},
 		update:{
-			value:function(){
-				if(!this.isLoaded) {
+			value:function(reload){
+				if(!this.isLoaded || reload) {
 					DISPATCHER.signal('server',{
-						url: '/api/qs/tabMeta'			
-					});					
+						url: QSVersion === '2_0' ? '/api/qs/tabMeta' : '/api/reorder/tabMeta'
+					});
 				}
 			}
 		},
@@ -47,7 +48,21 @@ var FreshDirect = FreshDirect || {};
 		}
 	});
 
+  var tabMetaUpdater = Object.create(fd.common.signalTarget, {
+    signal: {
+      value: 'shoppingListPageRefreshNeeded'
+    },
+    callback: {
+      value: function (e) {
+        if (e) {
+          tabMeta.update(true);
+        }
+      }
+    }
+  });
+
 	tabMeta.listen();
+  tabMetaUpdater.listen();
 
 	fd.modules.common.utils.register("quickshop.common", "tabMeta", tabMeta, fd);
 }(FreshDirect));

@@ -1,13 +1,35 @@
-.shoppinglists-manage {
+.rounded-box .shoppinglists-manage {
+  cursor: pointer;
+  line-height: 24px;
+  text-align: center;
+  background-color: #e4cee4;
+  color: #333;
+  border: 1px solid #dbccdb;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  font-size: 11px;
+}
+
+[data-feature-quickshop="2_0"] .shoppinglists-manage {
   color: #360;
   margin: 0 12px 0 12px;
   cursor: pointer;
 }
-.no-touch .shoppinglists-manage:hover {
+
+.rounded-box .shoppinglists-manage:after {
+  font-family: 'freshdirect_icons';
+  content: "\e619";
+  vertical-align: bottom;
+  font-size: 1.4em;
+  display: inline-block;
+  margin: 0 0 -1px 2px;
+}
+
+.no-touch .shoppinglists-manage:hover span {
   text-decoration: underline;
 }
 
-.shoppinglists-manage:before {
+[data-feature-quickshop="2_0"] .shoppinglists-manage:before {
   content: ' ';
   display: inline-block;
   height: 11px;
@@ -16,15 +38,16 @@
   margin-right: 4px;
 }
 
-.checkboxlist.shoppinglists-list {
+.no-touch[data-feature-quickshop="2_0"] .shoppinglists-manage:hover {
+  text-decoration: underline;
+}
+
+.no-touch .checkboxlist.shoppinglists-list {
   overflow: auto;
   max-height: 375px;
 }
 
-.checkboxlist.shoppinglists-list li {
-}
-
-.checkboxlist.shoppinglists-list li span.list {
+.rounded-box .checkboxlist.shoppinglists-list li span.list {
   display: block;
   line-height: 14px;
   color: #360;

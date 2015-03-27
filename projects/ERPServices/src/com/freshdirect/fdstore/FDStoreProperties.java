@@ -1,15 +1,7 @@
 package com.freshdirect.fdstore;
 
-import com.freshdirect.framework.util.ConfigHelper;
-import com.freshdirect.framework.util.DateRange;
-import com.freshdirect.framework.util.DateUtil;
-import com.freshdirect.framework.util.log.LoggerFactory;
-
-import org.apache.log4j.Category;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,6 +16,13 @@ import java.util.StringTokenizer;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import org.apache.log4j.Category;
+
+import com.freshdirect.framework.util.ConfigHelper;
+import com.freshdirect.framework.util.DateRange;
+import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 
 public class FDStoreProperties {
@@ -657,6 +656,7 @@ public class FDStoreProperties {
 	private static final String PROP_NEWPRODUCTS_PAGESIZE = "fdstore.newproducts.pagesize";
 	private static final String PROP_ECOUPON_PAGESIZE = "fdstore.ecoupon.pagesize";
 	private static final String PROP_SEARCH_PAGESIZE = "fdstore.search.pagesize";
+	private static final String PROP_QUICKSHOP_PAGESIZE = "fdstore.quickshop.pagesize";
 	private static final String PROP_BROWSE_POPULAR_CATEGORIES_MAX = "fdstore.browse.popularcategories.max";
 	
 	//Ignore Foodily P3P Policy(similar to facebook and google) 
@@ -697,12 +697,14 @@ public class FDStoreProperties {
 		
     // [APPDEV-3438] Unit Price Display
     private final static String UNIT_PRICE_DISPLAY_ENABLED = "fdstore.unitprice.enabled";
-    
+
     //Limiting the quicksearch results in mobile
     private final static String QUICKSHOP_ALL_ITEMS_MAX = "fdstore.quickshop.max.results";
     
     //Limiting orderHistory to show only last 13 months
     private static final String PROP_ORDER_HISTORY_FROM_IN_MONTHS = "fdstore.orderhistory.from.months";
+    
+    private static final String PROP_QUICKSHOP_PAST_ORDERS_VISIBLE_MENU_ITEMS_COUNT = "fdstore.quickshop.past_orders.menuitem.count";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1355,6 +1357,7 @@ public class FDStoreProperties {
         defaults.put(PROP_NEWPRODUCTS_PAGESIZE, "30");
         defaults.put(PROP_ECOUPON_PAGESIZE, "30");
         defaults.put(PROP_SEARCH_PAGESIZE, "30");
+        defaults.put(PROP_QUICKSHOP_PAGESIZE, "30");
         defaults.put(PROP_BROWSE_POPULAR_CATEGORIES_MAX, "5");
         
         defaults.put(PROP_3RDPARTY_P3PENABLED, "true");
@@ -1388,11 +1391,15 @@ public class FDStoreProperties {
 
         // Unit Price Display
         defaults.put(UNIT_PRICE_DISPLAY_ENABLED,  "false");
-        
+
         //Limiting quickshop all items result in Mobile to set max
         defaults.put(QUICKSHOP_ALL_ITEMS_MAX, "600");
         
         defaults.put(PROP_ORDER_HISTORY_FROM_IN_MONTHS, "13");
+        
+        defaults.put(PROP_QUICKSHOP_PAST_ORDERS_VISIBLE_MENU_ITEMS_COUNT, "8");
+        
+        defaults.put("feature.rollout.quickshop2_0", "GLOBAL:ENABLED,true;");
         
         refresh();
     }
@@ -3400,6 +3407,10 @@ public class FDStoreProperties {
     	return Integer.parseInt(get(PROP_SEARCH_PAGESIZE));
     }
     
+    public static int getQuickShopPageSize() {
+    	return Integer.parseInt(get(PROP_QUICKSHOP_PAGESIZE));
+    }
+    
     public static int getPopularCategoriesMax() {
         return Integer.parseInt(get(PROP_BROWSE_POPULAR_CATEGORIES_MAX));
     }
@@ -3492,7 +3503,7 @@ public class FDStoreProperties {
 	public static boolean isUnitPriceDisplayEnabled() {
 		return (Boolean.valueOf(get(UNIT_PRICE_DISPLAY_ENABLED))).booleanValue();
 	}
-	
+
 	public static int getQuickShopResultMaxLimit(){
 		try {
 			return Integer.parseInt(get(QUICKSHOP_ALL_ITEMS_MAX));
@@ -3508,4 +3519,8 @@ public class FDStoreProperties {
     		return 13;
     	}
     }
+    
+	public static int getPastOrdersVisibleItemsCount() {
+		return Integer.parseInt(get(PROP_QUICKSHOP_PAST_ORDERS_VISIBLE_MENU_ITEMS_COUNT));
+	}
 }

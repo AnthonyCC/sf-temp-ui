@@ -24,36 +24,39 @@ public class DateUtil {
 	private static final DateFormat DATE_YEAR_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
 	private static final DateFormat MONTH_DATE_YEAR_FORMATTER = new SimpleDateFormat("MM/dd/yyyy");
 	private static final DateFormat MONTH_DATE_YEAR_DAY_FORMATTER = new SimpleDateFormat("MM/dd/yyyy E");
-	
+
 	public static final String MONTH_DAY_YEAR_DAYOFWEEK_FORMATTER_STRING = "MM/dd/yy EEE";
 	private static final DateFormat MONTH_DAY_YEAR_DAYOFWEEK_FORMATTER = new SimpleDateFormat(MONTH_DAY_YEAR_DAYOFWEEK_FORMATTER_STRING);
-	
-	private static final DateFormat DAY_OF_WEEK_FORMATTER = new SimpleDateFormat("E");
-	
+
 	private static final DateFormat DATE_PLAIN = new SimpleDateFormat("yyyyMMdd");
-	
+
 	private static final DateFormat MIN_HOUR_FORMATTER = new SimpleDateFormat("h:mm a");
 	private static final DateFormat DAY_INWEEK_FORMATTER = new SimpleDateFormat("E");
 	private static final DateFormat MIN_AMPM_FORMATTER = new SimpleDateFormat("hh_mm_a");
-	
+
 	private static final DateFormat CM_TIMESLOT_FORMATTER = new SimpleDateFormat("HHmm");
-	
+
 	private static final DateFormat MON_DATE_YEAR_FORMATTER = new SimpleDateFormat("MMddyyyy");
-	
+
 	private static final DateFormat dateFormatwithTime = new SimpleDateFormat("MM/dd/yyyy hh:mm aaa");
-	
+
 	public static final DateFormat DAY_OF_WK_FORMATTER = new SimpleDateFormat("EEE");
-	
+
 	public static DateFormat serverTimeFormat = new SimpleDateFormat("hh:mm aaa");
-	
+
 	public static DateFormat hourInDayFormat = new SimpleDateFormat("H:mm");
-	
+
 	public static Calendar clientCalendar = Calendar.getInstance();
-	
+
+	public static final String MON_D_YEAR_PATTERN = "MMM. d, yyyy";
+	private static final DateFormat MON_D_YEAR_FORMATTER = new SimpleDateFormat(MON_D_YEAR_PATTERN);
+	private static final DateFormat MON_D_YEAR = new SimpleDateFormat(MON_D_YEAR_PATTERN);
+	private static final DateFormat YEAR_OF_THE_DATE = new SimpleDateFormat("yyyy");
+
 	private DateUtil() {
 	}
 
-	public static void main(String s[]){
+	public static void main(String s[]) {
 		Date d = new Date();
 		String str = DateUtil.formatDayOfWeek(d);
 		System.out.println(str);
@@ -64,11 +67,12 @@ public class DateUtil {
 		cal.setTime(date);
 		return cal;
 	}
-	
-	public static int getDayOfWeek(Date date) {		
+
+	public static int getDayOfWeek(Date date) {
 		return toCalendar(date).get(Calendar.DAY_OF_WEEK);
 	}
-	public static Date getEOD() {		
+
+	public static Date getEOD() {
 		Calendar cal = Calendar.getInstance();
 		cal = truncate(cal);
 		cal.set(Calendar.HOUR_OF_DAY, 23);
@@ -97,19 +101,20 @@ public class DateUtil {
 		cal1.setTime(d1);
 		Calendar cal2 = Calendar.getInstance();
 		cal2.setTime(d2);
-		
+
 		return Math.abs(cal2.get(Calendar.DATE) - cal1.get(Calendar.DATE));
-		
+
 	}
+
 	/* @return get absolute difference between d1/d2 in days, rounded to nearest */
 	public static int getDiffInDays(Date d1, Date d2) {
 		return Math.abs((int) Math.round(((d1.getTime() - d2.getTime()) / (double) DAY)));
 	}
-	
+
 	public static int getDiffInDaysFloor(Date d1, Date d2) {
 		return Math.abs((int) Math.floor(((d1.getTime() - d2.getTime()) / (double) DAY)));
 	}
-	
+
 	public static int getDiffInMinutes(TimeOfDay t1, TimeOfDay t2) {
 		return getDiffInMinutes(t1.getAsDate(), t2.getAsDate());
 	}
@@ -121,13 +126,16 @@ public class DateUtil {
 	public static float diffInDays(Date d1, Date d2) {
 		return Math.abs((float) (d1.getTime() - d2.getTime()) / (float) DAY);
 	}
-	
+
 	/**
-	 *  Add a number of days to a Date object.
-	 *  
-	 *  @param date the date to add.
-	 *  @param days the number of days to add.
-	 *  @return a date object, the specified number of days later then the supplied one.
+	 * Add a number of days to a Date object.
+	 * 
+	 * @param date
+	 *            the date to add.
+	 * @param days
+	 *            the number of days to add.
+	 * @return a date object, the specified number of days later then the
+	 *         supplied one.
 	 */
 	public static Date addDays(Date date, int days) {
 		Calendar cal = Calendar.getInstance();
@@ -135,7 +143,6 @@ public class DateUtil {
 		cal.add(Calendar.DATE, days);
 		return cal.getTime();
 	}
-	
 
 	public static Date addHours(Date date, int hours) {
 		Calendar cal = Calendar.getInstance();
@@ -143,31 +150,31 @@ public class DateUtil {
 		cal.add(Calendar.HOUR, hours);
 		return cal.getTime();
 	}
-	
+
 	public static Date getNextDate() {
 		Calendar cal = Calendar.getInstance();
 		cal = truncate(cal);
 		cal.add(Calendar.DATE, 1);
 		return cal.getTime();
 	}
+
 	public static Date getCurrentTime() {
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(new Date());		
+		cal.setTime(new Date());
 		return cal.getTime();
 	}
-	
+
 	public static boolean isSameDay(Date d1, Date d2) {
 		return isSameDay(toCalendar(d1), toCalendar(d2));
 	}
 
 	public static boolean isSameDay(Calendar cal1, Calendar cal2) {
-		return (cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR))
-			&& (cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH))
-			&& (cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH));
+		return (cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)) && (cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH)) && (cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH));
 	}
 
 	/**
-	 * Round up to nearest hour if within 1 minute (eg 3:59 -> 4:00, 11:59:59 -> 12:00:00 etc)
+	 * Round up to nearest hour if within 1 minute (eg 3:59 -> 4:00, 11:59:59 ->
+	 * 12:00:00 etc)
 	 */
 	public static Date roundUp(Date date) {
 		Calendar cal = DateUtil.toCalendar(date);
@@ -187,95 +194,110 @@ public class DateUtil {
 	public static Date max(Date d1, Date d2) {
 		return d1.after(d2) ? d1 : d2;
 	}
-	
 
-	public static Date parse(String dateValue) throws ParseException{
+	public static Date parse(String dateValue) throws ParseException {
 		return DATE_YEAR_FORMATTER.parse(dateValue);
 	}
-	
-	public static Date parseMDY(String dateValue) throws ParseException{
+
+	public static Date parseMDY(String dateValue) throws ParseException {
 		return MONTH_DATE_YEAR_FORMATTER.parse(dateValue);
 	}
-	
-	public static Date parseMDY2(String dateValue) throws ParseException{
+
+	public static Date parseMDY2(String dateValue) throws ParseException {
 		return MON_DATE_YEAR_FORMATTER.parse(dateValue);
 	}
 	
-	public static String formatSimpleTime(Date dateValue){
+	public static Date parseMonDYear(String dateValue) throws ParseException {
+		return MON_D_YEAR_FORMATTER.parse(dateValue);
+	}
+
+	public static String formatSimpleTime(Date dateValue) {
 		return SIMPLE_TIME_FORMATTER.format(dateValue);
 	}
-	
+
 	public static String format(Date dateValue) {
 		return DATE_YEAR_FORMATTER.format(dateValue);
 	}
-	
+
 	public static String formatPlain(Date dateValue) {
 		return DATE_PLAIN.format(dateValue);
 	}
-	
+
 	public static String formatDate(Date dateValue) {
 		return MONTH_DATE_YEAR_FORMATTER.format(dateValue);
 	}
-	
+
 	public static String formatDateWithDay(Date dateValue) {
 		return MONTH_DATE_YEAR_DAY_FORMATTER.format(dateValue);
 	}
-	
+
 	public static String formatDateWithDayOfWeek(Date dateValue) {
 		return MONTH_DAY_YEAR_DAYOFWEEK_FORMATTER.format(dateValue);
 	}
+
+	public static String formatDateWithMonDYear(Date dateValue) {
+		return MON_D_YEAR.format(dateValue);
+	}
 	
-	public static String formatDayOfWeek(Date dateValue) { //replacing with thread safe version.
+	public static String formatDateWithYear(Date dateValue) {
+		return YEAR_OF_THE_DATE.format(dateValue);
+	}
+
+	public static String formatDayOfWeek(Date dateValue) { // replacing with
+															// thread safe
+															// version.
 		FastDateFormat fdf = FastDateFormat.getInstance("E");
 		return fdf.format(dateValue);
 	}
-	
+
 	public static String formatDayOfWk(Date dateValue) {
 		return DAY_OF_WK_FORMATTER.format(dateValue);
 	}
-	
-	public static String formatCmTimeslot(Date dateValue){
+
+	public static String formatCmTimeslot(Date dateValue) {
 		return CM_TIMESLOT_FORMATTER.format(dateValue);
 	}
-	
+
 	public static String formatTime(Date dateValue) {
 		return MIN_HOUR_FORMATTER.format(dateValue);
 	}
-	
+
 	public static String formatTimeAMPM(Date dateValue) {
 		return MIN_AMPM_FORMATTER.format(dateValue);
 	}
-	
-	public static Date parseTimeAMPM(String dateValue)  throws ParseException {
+
+	public static Date parseTimeAMPM(String dateValue) throws ParseException {
 		return MIN_AMPM_FORMATTER.parse(dateValue);
 	}
-	
+
 	public static String formatDay(Date dateValue) {
 		return DAY_INWEEK_FORMATTER.format(dateValue);
 	}
-	
-	public static String getDatewithTime(Date clientDate) throws ParseException {       
-        return dateFormatwithTime.format(clientDate);
+
+	public static String getDatewithTime(Date clientDate) throws ParseException {
+		return dateFormatwithTime.format(clientDate);
 	}
-	
-	public static String getReceiptCutoffDate(Date date){
+
+	public static String getReceiptCutoffDate(Date date) {
 		return new SimpleDateFormat("EEEEE, MM/dd/yyyy, h:mm a").format(date);
 	}
-	
-	
-	
-	/** Report relative time difference as english text. 
+
+	/**
+	 * Report relative time difference as english text.
 	 * 
-	 * The time is counted as date1 - date2, thus if abs is false and date2 occured before, a negative prefix will be added.
-	 * The result is also rounded to the largest logical time unit, ie. seconds, minutes, hours and days
-	 * @param date1 
+	 * The time is counted as date1 - date2, thus if abs is false and date2
+	 * occured before, a negative prefix will be added. The result is also
+	 * rounded to the largest logical time unit, ie. seconds, minutes, hours and
+	 * days
+	 * 
+	 * @param date1
 	 * @param date2
 	 * @return time difference as english text
 	 */
 	public static String relativeDifferenceAsString(Date date1, Date date2) {
-		// time in milliseconds		
+		// time in milliseconds
 		long T = date1.getTime() - date2.getTime();
-		
+
 		// display negative time as "T .. from now", with a positive T value
 		String suffix;
 		if (T >= 0) {
@@ -284,23 +306,32 @@ public class DateUtil {
 			suffix = "from now";
 			T = -T;
 		}
-		  
+
 		// a bit ugly, e.g a minute less than two days is one day.
-		if (T < SECOND) return "now";
-		else if (T < 2*SECOND) return "1 second " + suffix;
-		else if (T < MINUTE) return "" + T/SECOND + " seconds " + suffix;
-		else if (T < 2*MINUTE) return "1 minute " + suffix;
-		else if (T < HOUR) return "" + (T/MINUTE) + " minutes " + suffix;
-		else if (T < 2*HOUR) return "1 hour " + suffix;
-		else if (T < DAY) return "" + (T/HOUR) + " hours " + suffix;
-		else if (T < 2*DAY) return "1 day " + suffix;
-		else return "" + (T/DAY) + " days " + suffix;
+		if (T < SECOND)
+			return "now";
+		else if (T < 2 * SECOND)
+			return "1 second " + suffix;
+		else if (T < MINUTE)
+			return "" + T / SECOND + " seconds " + suffix;
+		else if (T < 2 * MINUTE)
+			return "1 minute " + suffix;
+		else if (T < HOUR)
+			return "" + (T / MINUTE) + " minutes " + suffix;
+		else if (T < 2 * HOUR)
+			return "1 hour " + suffix;
+		else if (T < DAY)
+			return "" + (T / HOUR) + " hours " + suffix;
+		else if (T < 2 * DAY)
+			return "1 day " + suffix;
+		else
+			return "" + (T / DAY) + " days " + suffix;
 	}
-	
+
 	public static String relativeDifferenceAsString2(Date date1, Date date2) {
-		// time in milliseconds		
+		// time in milliseconds
 		long T = date1.getTime() - date2.getTime();
-		
+
 		// display negative time as "T .. from now", with a positive T value
 		String suffix;
 		if (T >= 0) {
@@ -309,113 +340,122 @@ public class DateUtil {
 			suffix = "from now";
 			T = -T;
 		}
-		  
+
 		// a bit ugly, e.g a minute less than two days is one day.
-		if (T < SECOND) return "now";
-		else if (T < 2*SECOND) return "1 second " + suffix;
-		else if (T < MINUTE) return "" + T/SECOND + " seconds " + suffix;
-		else if (T < 2*MINUTE) return "1 minute " + suffix;
-		else if (T < HOUR) return "" + (T/MINUTE) + " minutes " + suffix;
-		else if (T < 2*HOUR) return "1 hour " + suffix;
-		else if (T < DAY) return "" + (T/HOUR) + " hours " + suffix;
-		else if (T < 2*DAY) return "1 day " + suffix;
-		else if (T < WEEK) return "" + (T/DAY) + " days " + suffix;
-		else if (T < 2*WEEK) return "1 week " + suffix;
-		else if (T < MONTH) return "" + (T/WEEK) + " weeks " + suffix;
-		else if (T < 2*MONTH) return "1 month " + suffix;
-		else if (T < YEAR) return "" + (T/MONTH) + " months " + suffix;
-		else if (T < 2*YEAR) return "1 year " + suffix;
-		else return "" + (T/YEAR) + " years " + suffix;
+		if (T < SECOND)
+			return "now";
+		else if (T < 2 * SECOND)
+			return "1 second " + suffix;
+		else if (T < MINUTE)
+			return "" + T / SECOND + " seconds " + suffix;
+		else if (T < 2 * MINUTE)
+			return "1 minute " + suffix;
+		else if (T < HOUR)
+			return "" + (T / MINUTE) + " minutes " + suffix;
+		else if (T < 2 * HOUR)
+			return "1 hour " + suffix;
+		else if (T < DAY)
+			return "" + (T / HOUR) + " hours " + suffix;
+		else if (T < 2 * DAY)
+			return "1 day " + suffix;
+		else if (T < WEEK)
+			return "" + (T / DAY) + " days " + suffix;
+		else if (T < 2 * WEEK)
+			return "1 week " + suffix;
+		else if (T < MONTH)
+			return "" + (T / WEEK) + " weeks " + suffix;
+		else if (T < 2 * MONTH)
+			return "1 month " + suffix;
+		else if (T < YEAR)
+			return "" + (T / MONTH) + " months " + suffix;
+		else if (T < 2 * YEAR)
+			return "1 year " + suffix;
+		else
+			return "" + (T / YEAR) + " years " + suffix;
 	}
-	
+
 	/**
-	 * Returns the number of days since 1970-01-05, Monday for the date argument. 
-	 * Calculates using UTC, causes no issues with daylight saving.
+	 * Returns the number of days since 1970-01-05, Monday for the date
+	 * argument. Calculates using UTC, causes no issues with daylight saving.
 	 */
-	public static int getDayNumFromEpochFirstMonday(Date date){
+	public static int getDayNumFromEpochFirstMonday(Date date) {
 		Calendar local = Calendar.getInstance();
 		local.setTime(date);
-		
+
 		Calendar base = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		base.clear();
 		base.set(1970, 0, 5);
-		
+
 		Calendar actual = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 		actual.clear();
-		actual.set(local.get(Calendar.YEAR),local.get(Calendar.MONTH),local.get(Calendar.DATE));
-		
-		return (int) ( (actual.getTimeInMillis() - base.getTimeInMillis()) / DAY );
+		actual.set(local.get(Calendar.YEAR), local.get(Calendar.MONTH), local.get(Calendar.DATE));
+
+		return (int) ((actual.getTimeInMillis() - base.getTimeInMillis()) / DAY);
 	}
-	
+
 	/**
-	 * Returns the number of weeks since 1970-01-05, Monday for the date argument. 
-	 * Calculates using UTC, causes no issues with daylight saving. Week number is zero-based.
+	 * Returns the number of weeks since 1970-01-05, Monday for the date
+	 * argument. Calculates using UTC, causes no issues with daylight saving.
+	 * Week number is zero-based.
 	 */
-	public static int getWeekNumFromEpochFirstMonday(Date date){
+	public static int getWeekNumFromEpochFirstMonday(Date date) {
 		int dayNum = getDayNumFromEpochFirstMonday(date);
-		return (dayNum+1)/7;
-	}	
-
-	public static String getDate(Date dateVal) throws ParseException {		
-        return MONTH_DATE_YEAR_FORMATTER.format(dateVal);
+		return (dayNum + 1) / 7;
 	}
 
+	public static String getDate(Date dateVal) throws ParseException {
+		return MONTH_DATE_YEAR_FORMATTER.format(dateVal);
+	}
 
-	public static boolean isPremiumSlot(Date baseDate, TimeOfDay cutoffTime,
-			TimeOfDay premiumCutoffTime, int duration) {
+	public static boolean isPremiumSlot(Date baseDate, TimeOfDay cutoffTime, TimeOfDay premiumCutoffTime, int duration) {
 		Calendar cal = Calendar.getInstance();
 		Date cutoffDateTime = null;
-		Date premiumCutoffDateTime =null;
+		Date premiumCutoffDateTime = null;
 		Date now = cal.getTime();
-		if(cutoffTime!=null && premiumCutoffTime!=null)
-		{
-			 cutoffDateTime = DateUtil.addDays(cutoffTime.getAsDate(baseDate),-1);
-			 premiumCutoffDateTime = premiumCutoffTime.getAsDate(baseDate);
-			 cal.setTime(premiumCutoffDateTime);
-			 cal.add(Calendar.MINUTE, duration);
-			 premiumCutoffDateTime = cal.getTime();
-			if(now.after(cutoffDateTime))
+		if (cutoffTime != null && premiumCutoffTime != null) {
+			cutoffDateTime = DateUtil.addDays(cutoffTime.getAsDate(baseDate), -1);
+			premiumCutoffDateTime = premiumCutoffTime.getAsDate(baseDate);
+			cal.setTime(premiumCutoffDateTime);
+			cal.add(Calendar.MINUTE, duration);
+			premiumCutoffDateTime = cal.getTime();
+			if (now.after(cutoffDateTime))
 				return true;
 		}
-		
+
 		return false;
 	}
 
-	
-	public static String getUTCDate(Date date)
-	{
+	public static String getUTCDate(Date date) {
 		TimeZone gmt = TimeZone.getTimeZone("UTC");
 		DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 		formatter.setTimeZone(gmt);
 		return formatter.format(date);
 	}
-	
 
 	public static Date getServerTime(Date clientDate) {
-		try
-		{
-			if(clientDate != null) {
-				return (Date)serverTimeFormat.parse(serverTimeFormat.format(clientDate));
-			} 
-		}catch(ParseException pe){
-			
+		try {
+			if (clientDate != null) {
+				return (Date) serverTimeFormat.parse(serverTimeFormat.format(clientDate));
+			}
+		} catch (ParseException pe) {
+
 		}
 		return null;
-	}	
-	
+	}
+
 	public static String formatTimeRange(Date dateVal1, Date dateVal2) {
 		try {
 			String strTime1 = hourInDayFormat.format(dateVal1);
-			String strTime2 = hourInDayFormat.format(addSeconds(dateVal2,1));
-			return strTime1+" - "+strTime2;
+			String strTime2 = hourInDayFormat.format(addSeconds(dateVal2, 1));
+			return strTime1 + " - " + strTime2;
 		} catch (Exception e) {
 			// Do Nothing
 		}
-        return "Error";
+		return "Error";
 	}
-	
-	public static Date addSeconds(Date date, int seconds) {		
-		
+
+	public static Date addSeconds(Date date, int seconds) {
+
 		clientCalendar.setTime(date);
 		clientCalendar.add(Calendar.SECOND, seconds);
 		return clientCalendar.getTime();

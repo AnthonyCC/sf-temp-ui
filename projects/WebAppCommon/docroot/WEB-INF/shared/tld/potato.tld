@@ -255,4 +255,10 @@
         <name>viewCart</name>
         <tagclass>com.freshdirect.webapp.ajax.viewcart.ViewCartPotatoTag</tagclass>
     </tag>
+
+	<!-- APPDEV-3901 -->
+    <tag>
+        <name>qsRecommender</name>
+        <tagclass>com.freshdirect.webapp.ajax.reorder.QuickShopRecommenderPotatoTag</tagclass>
+    </tag>
 </taglib>

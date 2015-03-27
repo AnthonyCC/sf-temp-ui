@@ -13,6 +13,10 @@ var FreshDirect = FreshDirect || {};
 		},
 		callback:{
 			value:function( value ) {
+        var mainEl = $('.qs-content').first();
+
+        mainEl.addClass('noscroll');
+
 				DISPATCHER.signal('main',{});
 			}
 		},

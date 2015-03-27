@@ -7,6 +7,7 @@ var FreshDirect = FreshDirect || {};
   var $ = fd.libs.$;
   var POPUPWIDGET = fd.modules.common.popupWidget;
   var DISPATCHER = fd.common.dispatcher;
+  var QSVersion = fd.utils.getActive("quickshop");
 
   var manageshoppinglists = Object.create(POPUPWIDGET,{
     signal:{
@@ -27,13 +28,13 @@ var FreshDirect = FreshDirect || {};
       value: 'lists manageshoppinglists'
     },
     helpTemplate: {
-      value: 'common.managelisthelp'
+      value: QSVersion !== '2_0' ? '' : 'common.managelisthelp'
     },
     helpHeader: {
       value: 'about list manager'
     },
     bodyTemplate: {
-      value: quickshop.manageshoppinglists
+      value: QSVersion !== "2_0" ? quickshop.manageshoppinglistsQS22 : quickshop.manageshoppinglists
     },
     $trigger: {
       value: null
@@ -55,8 +56,10 @@ var FreshDirect = FreshDirect || {};
             url: '/api/shoppinglist'
         });
 
-        this.popup.show($(e.currentTarget));
-        this.popup.clicked = true;
+        if (this.popup) {
+          this.popup.show($(e.currentTarget));
+          this.popup.clicked = true;
+        }
       }
     },
     close: {
@@ -67,22 +70,36 @@ var FreshDirect = FreshDirect || {};
     },
     confirm: {
       value: function () {
-        var changes = [], 
+        var changes = [],
             $cnt = $('#' + this.popupId),
             $popupBody = $cnt.find(this.bodySelector),
-        	lists = $.makeArray($('ul.manage li.item .name span',$cnt)).map(function(item){
-        		return item.innerHTML;
-        	}),isValid=true;
-        
-        
+            lists = $.makeArray($('ul.manage li.item .name',$cnt)).map(function(item){
+              return $(item).attr('data-listname');
+            }),
+            isValid=true;
+
+        if (QSVersion === '2_0') {
+          lists = $.makeArray($('ul.manage li.item .name span',$cnt)).map(function(item){
+            return item.innerHTML;
+          });;
+        }
+
         $('ul.manage li.item', $cnt).each(function (i, el) {
           var listItem,
               id = $('.name', el).attr('data-listid'),
-              oldname = $('.name span', el).text(),
-              name = $('.rename input', el).val(),
+              oldname = $('.name', el).attr('data-listname'),
+              name = $('.name input', el).val(),
               def = !!$('.default input', el).attr('checked'),
               del = !!$('.delete input', el).attr('checked'),
-              validator = fd.modules.common.listValidator(name,lists);
+              validator;
+
+          if (QSVersion === '2_0') {
+            oldname = $('.name span', el).text();
+            name = $('.rename input', el).val();
+          }
+
+          if (name === oldname) { name = ''; }
+          validator = fd.modules.common.listValidator(name,lists);
 
           if(!validator.taken || (validator.taken && oldname === name )) {
               if (name || def || del) {
@@ -94,10 +111,10 @@ var FreshDirect = FreshDirect || {};
                     "default": def
                   };
                   changes.push(listItem);
-                }        	  
+                }
           } else {
-        	  isValid = false;
-        	  $('.error',el).html(validator.toString());
+            isValid = false;
+            $('.error',el).html(validator.toString());
           }
         });
 
@@ -108,8 +125,36 @@ var FreshDirect = FreshDirect || {};
               changes.forEach(function (e) { delete e.oldname; });
               this.save(changes);
               this.close();
-            }.bind(this));        	
+            }.bind(this));
         }
+      }
+    },
+    deleteList: {
+      value: function (listId) {
+        DISPATCHER.signal('server', {
+          url: '/api/shoppinglist',
+          method: 'PUT',
+          data: {data: JSON.stringify({listInfos: [{listId: listId, name: "", "delete": true, "default": false}]})}
+        });
+      }
+    },
+    emptyList: {
+      value: function (listId) {
+          DISPATCHER.signal('server', {
+              url: '/api/shoppinglist',
+              method: 'PUT',
+              data: {data: JSON.stringify({listInfos: [{listId: listId, name: "", "empty": true, "default": false}]})}
+            });
+      }
+    },
+    deleteCurrentList: {
+      value: function () {
+        manageshoppinglists.deleteList(fd.quickshop.shopFromList.shoppinglists.serialize().yourListId);
+      }
+    },
+    emptyCurrentList: {
+      value: function () {
+        manageshoppinglists.emptyList(fd.quickshop.shopFromList.shoppinglists.serialize().yourListId);
       }
     },
     save: {
@@ -124,6 +169,11 @@ var FreshDirect = FreshDirect || {};
   });
 
   manageshoppinglists.listen();
+
+  DISPATCHER.signal('server',{
+      url: '/api/shoppinglist'
+  });
+
 
   $(document).on('click', manageshoppinglists.trigger, manageshoppinglists.open.bind(manageshoppinglists));
   $(document).on('click', '#' + manageshoppinglists.popupId + ' .qs-popup-cancel-button', manageshoppinglists.close.bind(manageshoppinglists));

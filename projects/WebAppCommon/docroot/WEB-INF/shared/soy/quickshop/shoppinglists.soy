@@ -3,11 +3,12 @@
 
 /**
  * @param YOUR_LISTS some data
+ * @param? isQS22
  */
 {template .shoppinglists}
-<div class="shoppinglists">
+<div class="shoppinglists {if $isQS22}rounded-box{/if}">
 	<div class="shoppinglists-header qs-menu-header">YOUR LISTS ({$YOUR_LISTS.length})</div>
-  <div class="shoppinglists-manage">Manage Lists</div>
+  {if not $isQS22}<div class="shoppinglists-manage">Manage Lists</div>{/if}
 	<ul class="checkboxlist shoppinglists-list">
 	{foreach $dataItem in $YOUR_LISTS}
 		{let $id}yourListId_{index($dataItem)}{/let}
@@ -19,6 +20,16 @@
 		</li>
 	{/foreach}
 	</ul>
+  {if $isQS22}<div class="shoppinglists-manage" data-alignpopup="tr-tl"><span>Manage Lists</span></div>{/if}
 </div>
 {/template}
 
+/**
+ * @param YOUR_LISTS some data
+ */
+{template .shoppinglistsQS22}
+{call .shoppinglists}
+  {param YOUR_LISTS: $YOUR_LISTS /}
+  {param isQS22: true /}
+{/call}
+{/template}

@@ -11,9 +11,10 @@
  * @param? qMax quantity maximum
  * @param? customTemplate custom template to call
  * @param? soldBySalesUnit sales unit selector instead of quantity input
+ * @param? extraClass css class
  */
 {template .subtotal}
-<div class="subtotal" data-component="subtotal" data-template="{$customTemplate ?: ''}"
+<div class="subtotal {$extraClass ?: ''}" data-component="subtotal" data-template="{$customTemplate ?: ''}"
 {if $availMatPrices}data-prices='[ {foreach $price in $availMatPrices} {if not isFirst($price)} , {/if} {lb} "price": "{$price.price}", "lowerBound": "{$price.scaleLowerBound}", "upperBound": "{$price.scaleUpperBound}", "pricingUnit": "{$price.pricingUnit}" {rb} {/foreach} ]'{/if}
 {if $grpPrices}data-grpprices='[ {foreach $price in $grpPrices} {if not isFirst($price)} , {/if} {lb} "price": "{$price.price}", "lowerBound": "{$price.scaleLowerBound}", "upperBound": "{$price.scaleUpperBound}" {rb} {/foreach} ]'{/if}
 {if $suRatios}data-suratio='[ {foreach $su in $suRatios} {if not isFirst($su)} , {/if} {lb} "unit": "{$su.alternateUnit}", "ratio": "{$su.ratio}", "salesUnit": "{$su.salesUnit}" {rb} {/foreach} ]'{/if}
@@ -35,7 +36,7 @@
  * @param price
  */
 {template .subtotalInner}
-subtotal: <b>${$price}</b>
+Total: <b>${$price}</b>
 {/template}
 
 /**

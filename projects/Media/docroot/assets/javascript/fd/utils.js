@@ -29,10 +29,98 @@ var FreshDirect = FreshDirect || {};
    * @param {string} name the name of the object in the namespace
    * @param {Object} obj the object to register
    * @param {Object} root the namespace root (optional)
+   * @param {string} feature feature for module (optional)
+   * @param {string} version feature version for module (optional)
    */
-  utils.register = function (namespace, name, obj, root) {
-    var ns = utils.mknamespace(namespace, root);
-    ns[name] = obj;
+  utils.register = function (namespace, name, obj, root, feature, version) {
+    var ns = utils.mknamespace(namespace, root),
+        oldModule = ns[name],
+        isActive = utils.isActive(feature, version);
+
+    if (!oldModule || !feature || isActive) {
+      ns[name] = obj;
+
+      if (oldModule && oldModule._versions) {
+        ns[name]._versions = oldModule._versions;
+        delete oldModule._versions;
+      }
+    }
+
+    if (feature && version) {
+      ns[name]._versions = ns[name]._versions || {};
+      ns[name]._versions[feature + ":" + version] = obj;
+    }
+  };
+
+  utils.registerModule = function (namespace, name, obj, root, feature, version) {
+    if (typeof obj === "function") {
+      obj = obj(root, feature, version);
+    }
+
+    utils.register(namespace, name, obj, root, feature, version);
+  };
+
+  utils.module = function (name, root, feature, version) {
+    var ns = utils.mknamespace(name, root);
+
+    if (ns._versions && feature && version) {
+      ns = ns._versions[feature + ":" + version] || ns;
+    }
+
+    return ns;
+  };
+
+  utils.initModule = function (name, root, feature, version) {
+    var module = utils.module(name, root, feature, version);
+
+    if (module && module.initModule) {
+      module.initModule(root, feature, version);
+    }
+  };
+
+  utils.getActiveFeaturesFromCookie = function (cname) {
+    var featureStr, features = {};
+
+    cname = cname || "features";
+
+    featureStr = utils.readCookie(cname);
+
+    if (featureStr) {
+      featureStr.split('|').forEach(function (f) {
+        var splitF = f.split(':');
+
+        features[splitF[0]] = splitF[1];
+      });
+    }
+
+    return features;
+  };
+
+  utils.setActiveFeatures = function (features, cname) {
+    var featureArr = [];
+
+    cname = cname || "features";
+
+    if (features) {
+      Object.keys(features).forEach(function (k) {
+        featureArr.push(k + ":" + features[k]);
+      });
+      utils.setCookie(cname, featureArr.join("|"));
+    } else {
+      utils.eraseCookie(cname);
+    }
+  };
+
+  utils.getActiveFeatures = function () {
+    return (fd.features && fd.features.active) || utils.getActiveFeaturesFromCookie();
+  };
+
+  utils.getActive = function (feature) {
+    return utils.getActiveFeatures()[feature] || "default";
+  };
+
+  utils.isActive = function (feature, version) {
+    return utils.getActive(feature) === version;
   };
 
   /**
@@ -95,39 +183,47 @@ var FreshDirect = FreshDirect || {};
       return decodeURIComponent(results[1].replace(/\+/g, " "));
     }
   };
-  
-  
-  utils.createCookie = function(name,value,days) {
-	if (days) {
-		var date = new Date();
-		date.setTime(date.getTime()+(days*24*60*60*1000));
-		var expires = "; expires="+date.toGMTString();
-	}
-	else var expires = "";
-	document.cookie = name+"="+value+expires+"; path=/";
-  }
+
+
+  utils.createCookie = function (name, value, days) {
+    var date, expires = "";
+
+    if (days) {
+      date = new Date();
+      date.setTime(date.getTime()+(days*24*60*60*1000));
+      expires = "; expires="+date.toGMTString();
+    }
+    document.cookie = name+"="+value+expires+"; path=/";
+  };
+  utils.setCookie = utils.createCookie;
 
   utils.readCookie = function(name) {
-		var nameEQ = name + "=";
-		var ca = document.cookie.split(';');
-		for(var i=0;i < ca.length;i++) {
-			var c = ca[i];
-			while (c.charAt(0)==' ') c = c.substring(1,c.length);
-			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-		}
-		return null;
-  }
+    var nameEQ = name + "=",
+        ca = document.cookie.split(';'),
+        i, c;
 
-  utils.eraseCookie = function(name) {
-		createCookie(name,"",-1);
-  }  
-  
+    for (i=0; i < ca.length; i++) {
+      c = ca[i];
+      while (c.charAt(0) === ' ') {
+        c = c.substring(1, c.length);
+      }
+      if (c.indexOf(nameEQ) === 0) {
+        return c.substring(nameEQ.length, c.length);
+      }
+    }
+    return null;
+  };
+
+  utils.eraseCookie = function (name) {
+    utils.createCookie(name, "", -1);
+  };
+
   // create dummy console if there's no real one
   if (!window.console) {
     window.console = {
-    	      log: function () {},
-    	      debug: function () {},
-    	      error: function () {}
+      log: function () {},
+      debug: function () {},
+      error: function () {}
     };
   }
 
@@ -140,9 +236,13 @@ var FreshDirect = FreshDirect || {};
    * @return {object|null} The discovered member
    */
   utils.discover = function (fqpath, container) {
-    var ns = fqpath.split('.'),
+    var ns = fqpath && fqpath.split('.') || null,
         o = container || window,
         i, len;
+
+    if (!ns) {
+      return;
+    }
 
     for (i = 0, len = ns.length; i < len; i++) {
         o = o[ns[i]] || null;
@@ -154,7 +254,10 @@ var FreshDirect = FreshDirect || {};
     return o;
   };
 
+  // register utils under FreshDirect.modules.common.utils
   utils.register("modules.common", "utils", utils, fd);
 
-}(FreshDirect));
+  // register utils under FreshDirect.utils
+  utils.register("FreshDirect", "utils", utils, window);
 
+}(FreshDirect));

@@ -1,4 +1,4 @@
-/*global jQuery*/
+/*global quickshop*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
@@ -6,13 +6,14 @@ var FreshDirect = FreshDirect || {};
 
 	var $ = fd.libs.$;
 	var WIDGET = fd.modules.common.widget;
+  var QSVersion = fd.utils.getActive("quickshop");
 
 	var pager = Object.create(WIDGET,{
 		signal:{
 			value:'pager'
 		},
 		template:{
-			value:quickshop.pager
+			value: QSVersion !== "2_0" ? quickshop.pagerQS22 : quickshop.pager
 		},
 		placeholder:{
 			value:'.pagination'
@@ -24,7 +25,7 @@ var FreshDirect = FreshDirect || {};
 					activePage : parseInt($el.data('activepage'),10),
 					pageSize : parseInt($el.data('pagesize'),10),
 					itemCount : parseInt($el.data('itemcount'),10)
-				}
+        };
 			}
 		},
 		handleClick:{
@@ -39,13 +40,13 @@ var FreshDirect = FreshDirect || {};
 				} else if(component === 'pager-next') {
 					activePage = parent.data('activepage')*1;
 					newPage=Math.min(activePage+1,Math.ceil(parent.data('itemcount')/parent.data('pagesize')));
-				} else if(component == 'showall'){
+				} else if(component === 'showall'){
 					newPageSize=parseInt(clicked.data('showall'),10);
 					newPage=0;
 				} else {
 					newPage = clicked.data('page');
 				}
-				if(newPage!=undefined) {				
+				if(newPage!==undefined) {
 					var json = this.serialize(parent);
 					json.activePage=newPage;
 					json.pageSize = newPageSize;

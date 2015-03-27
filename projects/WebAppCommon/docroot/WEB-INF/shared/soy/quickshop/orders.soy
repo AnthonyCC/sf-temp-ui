@@ -32,3 +32,55 @@
 	{/foreach}
 {/template}
 
+/**
+ * @param firstMenuItems menu items in leftnav
+ * @param? pastOrdersGroupedByYear orders grouped by year (for popup)
+ */
+{template .ordersQS22}
+  {let $limit: 20 /}
+  {foreach $item in $firstMenuItems}
+    {call quickshop.orderMenuItem}
+      {param item: $item /}
+    {/call}
+  {/foreach}
+  {if $pastOrdersGroupedByYear and length($pastOrdersGroupedByYear)}
+    <div class="seemore" data-alignpopup="tr-tl" data-alignpopupfunction="moreordersalign"><span>See More Orders</span></div>
+    <div class="moreorders">
+      <span class="bubblearrow"></span>
+      {foreach $orders in $pastOrdersGroupedByYear}
+      <ul class="orderlist">
+        <li class="header">{$orders.year}</li>
+        {foreach $item in $orders.orders}
+          {if index($item) % 20 == 0 and index($item) != 0}
+            </ul>
+            <ul class="orderlist headerless">
+              <li class="header"></li>
+          {/if}
+          {call quickshop.orderMenuItem}
+            {param item: $item /}
+          {/call}
+        {/foreach}
+      </ul>
+      {/foreach}
+    </div>
+  {/if}
+{/template}
+
+/**
+ * @param item menu item
+ */
+{template .orderMenuItem}
+  <li>
+    {let $info}
+      {switch $item.info}
+        {case 'Cancelled'}cancelled
+        {case 'Processing'}processing
+        {case 'Submitted'}pending
+      {/switch}
+    {/let}
+    <span class="{if $item.counter < 1}noitem{/if} {$info}">
+      <label><input id="order_{$item.filteringUrlValue}" type="checkbox" name="orderListId" value="{$item.filteringUrlValue}" {($item.selected) ? 'checked="checked"' : ''}>
+      <span>{$item.name}</span> ({$item.counter})</label>
+    </span>			
+  </li>
+{/template}

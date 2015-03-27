@@ -14,7 +14,10 @@ import com.freshdirect.fdstore.content.FilteringMenuItem;
 import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.framework.util.DateUtil;
 
-
+/**
+ * Deprecated with Quickshop 2.2 version. Replaced with {@link com.freshdirect.webapp.ajax.reorder.QuickShopMenuOrderUtil}
+ */
+@Deprecated
 public class QuickShopMenuOrderUtil {
 	
 	public static void sortMenuItems(Map<String, Map<FilteringValue, List<FilteringMenuItem>>> menu){

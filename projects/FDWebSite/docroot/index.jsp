@@ -133,7 +133,14 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 		   				<soy:render template="common.ymalCarousel" data="${deals}" />
 		   			</div>
 <%
-	   			}
+          } else {
+          %>
+            <div id="top-items" class="">
+                <potato:recommender siteFeature="DYF" name="topItems" maxItems="24" cmEventSource="BROWSE" sendVariant="true" />
+                <soy:render template="common.yourTopItemsCarousel" data="${topItems}" />
+            </div>
+          <%
+          }  
 	   			Html edtMed = store.getEditorial();
 				if ( edtMed != null ) { %>
 					<fd:IncludeHtml html="<%= edtMed %>"/>

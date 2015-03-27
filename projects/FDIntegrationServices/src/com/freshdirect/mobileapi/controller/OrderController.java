@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.content.FilteringFlowResult;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
@@ -49,10 +50,11 @@ import com.freshdirect.mobileapi.model.comparator.FilterOptionLabelComparator;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
-import com.freshdirect.webapp.ajax.quickshop.QuickShopHelper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
-import com.freshdirect.webapp.ajax.quickshop.data.QuickShopListRequestObject;
+import com.freshdirect.webapp.ajax.reorder.QuickShopFilterServlet;
+import com.freshdirect.webapp.ajax.reorder.data.QuickShopListRequestObject;
+import com.freshdirect.webapp.ajax.reorder.service.QuickShopFilterService;
 
 /**
  * @author Rob
@@ -398,7 +400,8 @@ public class OrderController extends BaseController {
         }        
         requestData.setSearchTerm(query.getQuery());
         try {
-        	FilteringFlowResult<QuickShopLineItemWrapper> result = QuickShopHelper.getQuickShopPastOrderItems(fdUser, session, requestData, requestData.convertToFilteringNavigator());
+        	FilteringNavigator nav = requestData.convertToFilteringNavigator();
+        	FilteringFlowResult<QuickShopLineItemWrapper> result = QuickShopFilterService.defaultService().collectQuickShopLineItemForPastOrders(fdUser, session, nav, QuickShopFilterServlet.PAST_ORDERS_FILTERS, requestData);
             return convertToSkuList(result, fdUser);
         } catch (FDResourceException e) {
             throw new ModelException(e);

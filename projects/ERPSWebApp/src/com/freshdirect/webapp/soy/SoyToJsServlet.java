@@ -41,7 +41,7 @@ public class SoyToJsServlet extends HttpServlet {
 				response.addHeader( "Cache-control", "public, max-age=0, no-cache" );
 			} else {
 				// production mode - set cache headers to very long expiration
-				response.addHeader( "Cache-control", "public, max-age=15552000" );
+				response.addHeader( "Cache-control", "public, max-age=14400" );
 			}				
 			
 			for ( String js : jsSrcs ) {

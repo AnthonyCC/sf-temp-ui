@@ -33,6 +33,10 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 
+/**
+ * Deprecated with Quickshop 2.2 version. Replaced with {@link com.freshdirect.webapp.ajax.reorder.QuickShopFilterValueDecorator}
+ */
+@Deprecated
 public class QuickShopFilterValueDecorator extends GenericFilterDecorator<FilteringSortingItem<QuickShopLineItemWrapper>> {
 
 	private static final Logger LOG = LoggerFactory.getInstance(QuickShopFilterValueDecorator.class);

@@ -8,6 +8,7 @@ var FreshDirect = FreshDirect || {};
   var main = {};
 
   var DISPATCHER = fd.common.dispatcher;
+  var QSVersion = fd.utils.getActive('quickshop');
 
   fd.quickshop.itemType = 'pastOrders';
   
@@ -17,13 +18,14 @@ var FreshDirect = FreshDirect || {};
     var jsondata = JSON.stringify(data || { 
           timeFrame:'timeFrameAll',
           sortId:'freq',
-          searchTerm:null
+          searchTerm:null,
+          tabType:fd.quickshop.tabType
         });
 
     window.location.hash = window.encodeURIComponent(jsondata);
 
-    DISPATCHER.signal('server',{ 
-          url: '/api/qs/pastOrders', 
+    DISPATCHER.signal('server',{
+          url: QSVersion === '2_0' ? '/api/qs/pastOrders' : '/api/reorder/pastOrders',
           data: {
             data: jsondata
           },spinner:{
@@ -32,16 +34,20 @@ var FreshDirect = FreshDirect || {};
     }});
   }
 
-  function serialize(e) {
-    var data = $.extend({},
-      fd.quickshop.common.pager.serialize($('[data-component="pager"]:first')),
-      fd.quickshop.common.sorter.serialize(),
-      fd.quickshop.pastOrders.timeFrames.serialize(),
-      fd.quickshop.pastOrders.orders.serialize(),
-      fd.quickshop.pastOrders.search.serialize(),
-      fd.quickshop.common.preferences.serialize(),
-      fd.quickshop.common.departments.serialize()
-    );
+	function serialize(e, searchOnly) {
+		var data = searchOnly ?
+      $.extend({},
+        fd.quickshop.common.search.serialize()
+      ) :
+      $.extend({},
+        fd.quickshop.common.pager.serialize($('[data-component="pager"]:first')),
+        fd.quickshop.common.sorter.serialize(),
+        fd.quickshop.pastOrders.timeFrames.serialize(),
+        fd.quickshop.pastOrders.orders.serialize(),
+        fd.quickshop.common.search.serialize(),
+        fd.quickshop.common.preferences.serialize(),
+        fd.quickshop.common.departments.serialize()
+      );
 
     if(e !== 'pager') {
       data.activePage=0;
@@ -53,8 +59,24 @@ var FreshDirect = FreshDirect || {};
     }
 
     delete data.itemCount;
+    data.tabType = fd.quickshop.tabType;
 
-    return data;    
+    return data;
+  }
+
+  var slowUpdateId = null;
+  function slowUpdate(e, timeout, searchOnly) {
+    timeout = timeout || 1500;
+
+    if (slowUpdateId) {
+      clearTimeout(slowUpdateId);
+      slowUpdateId = null;
+    }
+
+    slowUpdateId = setTimeout(function () {
+      update(serialize(e, searchOnly));
+      slowUpdateId = null;
+    }, timeout);
   }
 
   function reset(){
@@ -76,26 +98,31 @@ var FreshDirect = FreshDirect || {};
 	  }
 
 		update(hashdata);
-
-	  
   }
 
   var UIChanges = Bacon.mergeAll([
       $(document).asEventStream('change','#timeframes input').map('timeframe'),
-      $(document).asEventStream('change','#orders input[type="radio"]').map('orders'),
+      $(document).asEventStream('orders-change').map('orders'),
       $(document).asEventStream('change','#departments input[type="radio"]').map('departments'),
       $(document).asEventStream('change','#preferences input[type="checkbox"]').map('preferences')
   ]), immediateUIChanges = Bacon.mergeAll([
-       $(document).asEventStream('qs_search').map('search'),
-       $(document).asEventStream('page-change').map('pager'),
-       $(document).asEventStream('sorter-change').map('sorter')
-   ]);
+      $(document).asEventStream('page-change').map('pager'),
+      $(document).asEventStream('viewtypeChanged').map('viewtype'),
+      $(document).asEventStream('sorter-change').map('sorter')
+  ]);
 
-  UIChanges.debounce(500).merge(immediateUIChanges).onValue(function(e){
-    update(serialize(e));
+  UIChanges.onValue(function(e){
+    slowUpdate(e);
+  });
+  immediateUIChanges.onValue(function(e){
+    slowUpdate(e, 0);
+  });
+  $(document).asEventStream('qs_search').map('search').onValue(function(e) {
+    slowUpdate(e, 0, true);
   });
 
-  	reload();
+
+  reload();
   	
   	
 	Object.create(fd.common.signalTarget,{

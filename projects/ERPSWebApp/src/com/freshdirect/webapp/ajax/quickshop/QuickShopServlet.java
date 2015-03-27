@@ -22,7 +22,10 @@ import com.freshdirect.webapp.ajax.quickshop.data.QuickShopListRequestObject;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopReturnValue;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopSorterValues;
 
-
+/**
+ * Deprecated with Quickshop 2.2 version. Replaced with {@link com.freshdirect.webapp.ajax.reorder.QuickShopServlet}
+ */
+@Deprecated
 public abstract class QuickShopServlet extends BaseJsonServlet {
 
 	private static final long	serialVersionUID	= -5842364142639570121L;

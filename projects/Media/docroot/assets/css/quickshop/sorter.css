@@ -52,12 +52,25 @@
   vertical-align: middle;
 }
 
-.sortSelectButton {
+.cssbutton.sortSelectButton {
   height: 30px;
   line-height: 16px;
 }
 
-.sortSelectButton:after {
+.cssbutton.sortSelectButton:after {
+  vertical-align: top;
+  font-size: 15px;
+  display: inline-block;
+  width: 15px;
+  padding-top: 3px;
+}
+
+[data-feature-quickshop="2_0"] .sortSelectButton {
+  height: 30px;
+  line-height: 16px;
+}
+
+[data-feature-quickshop="2_0"] .sortSelectButton:after {
   vertical-align: top;
   font-size: 15px;
   display: inline-block;

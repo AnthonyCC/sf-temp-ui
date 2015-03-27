@@ -80,3 +80,16 @@
   {param fullSize:true /}
 {/call}
 {/template}
+
+
+/**
+ * @param? recommendationTabs
+ */
+{template .qsBottomTabbedCarousel}
+{call common.generalTabbedCarousel}
+  {param recommendationTabs:$recommendationTabs /}
+  {param cmEventSource:'qs_bottom' /}
+  {param apiEndPoint:'/api/reorder/recommendation' /}
+  {param fullSize:true /}
+{/call}
+{/template}

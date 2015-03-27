@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.content.SortTypeI;
@@ -12,6 +13,11 @@ import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.webapp.ajax.quickshop.QuickShopServlet;
 import com.freshdirect.webapp.ajax.quickshop.QuickShopSortType;
 
+/**
+* Deprecated with Quickshop 2.2 version. Replaced with {@link com.freshdirect.webapp.ajax.reorder.data.QuickShopListRequestObject}
+*/
+@Deprecated
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class QuickShopListRequestObject {
 	
 	private String userId;

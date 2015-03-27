@@ -18,11 +18,11 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.FilteringValue;
-import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
@@ -47,6 +47,10 @@ import com.freshdirect.webapp.ajax.quickshop.data.QuickShopReturnValue;
 import com.freshdirect.webapp.ajax.shoppinglist.ShoppingListServlet;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
+/**
+ * Deprecated with Quickshop 2.2 version. Replaced with {@link com.freshdirect.webapp.ajax.reorder.QSFromListFilterServlet}
+ */
+@Deprecated
 public class QSFromListFilterServlet extends QuickShopServlet {
 
 	private static final long serialVersionUID = 6364193380447283594L;

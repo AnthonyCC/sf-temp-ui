@@ -66,6 +66,7 @@ import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseData;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem.Status;
 import com.freshdirect.webapp.ajax.cart.data.CartData;
+import com.freshdirect.webapp.ajax.reorder.QuickShopHelper;
 import com.freshdirect.webapp.taglib.coremetrics.AbstractCmShopTag;
 import com.freshdirect.webapp.taglib.coremetrics.CmShop5Tag;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
@@ -509,6 +510,10 @@ public class CartOperations {
 			
 			cart.sortOrderLines();		
 			user.updateUserState();
+			
+			if (user.getIdentity() != null && user.getIdentity().getErpCustomerPK() != null) {
+				QuickShopHelper.emptyQuickShopCaches(user.getIdentity().getErpCustomerPK());
+			}
 			
 			if(!(cart instanceof FDModifyCartModel)){
 				try {

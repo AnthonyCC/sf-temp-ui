@@ -18,7 +18,7 @@ var FreshDirect = FreshDirect || {};
 			value:'DEPARTMENTS'
 		},
 		template:{
-			value:quickshop.departments
+			value: quickshop.departments
 		},
 		placeholder:{
 			value:'#departments .departments-list'

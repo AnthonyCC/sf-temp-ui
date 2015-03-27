@@ -1,0 +1,48 @@
+package com.freshdirect.webapp.ajax.reorder.service;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import com.freshdirect.fdstore.content.ContentSearch;
+import com.freshdirect.fdstore.content.FilteringSortingItem;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SearchResults;
+import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
+
+public class QuickShopSearchService {
+
+	private static final QuickShopSearchService INSTANCE = new QuickShopSearchService();
+
+	private QuickShopSearchService() {
+	}
+
+	public static QuickShopSearchService defaultService() {
+		return INSTANCE;
+	}
+
+	/**
+	 * Merge the original search result with the user's order history.
+	 * 
+	 * @param searchTerm
+	 * @param items
+	 *            - to be merged with the search result
+	 */
+	public void search(String searchTerm, List<QuickShopLineItemWrapper> items) {
+		List<String> productIds = null;
+		if (searchTerm != null) {
+			SearchResults results = ContentSearch.getInstance().searchProducts(searchTerm);
+			productIds = new ArrayList<String>();
+			for (FilteringSortingItem<ProductModel> product : results.getProducts()) {
+				productIds.add(product.getNode().getContentKey().getId());
+			}
+			Iterator<QuickShopLineItemWrapper> it = items.iterator();
+			while (it.hasNext()) {
+				if (!productIds.contains(it.next().getProduct().getContentKey().getId())) {
+					it.remove();
+				}
+			}
+		}
+
+	}
+}

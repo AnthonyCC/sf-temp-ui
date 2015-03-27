@@ -18,6 +18,10 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.quickshop.data.EnumQuickShopTab;
 
+/**
+ * Deprecated with Quickshop 2.2 version. Replaced with {@link com.freshdirect.webapp.ajax.reorder.QuickShopTabMetaServlet}
+ */
+@Deprecated
 public class QuickShopTabMetaServlet extends BaseJsonServlet{
 
 	private static final long serialVersionUID = -2167113790077214304L;

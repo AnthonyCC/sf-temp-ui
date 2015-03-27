@@ -9,6 +9,10 @@
 #breadcrumbs li {
 	border: 1px solid #c1b5c1;	
 	display: inline-block;
+	margin:0 8px 4px 0;
+}
+
+[data-feature-quickshop="2_0"] #breadcrumbs li {
 	margin:0 8px 0 0;
 }
 

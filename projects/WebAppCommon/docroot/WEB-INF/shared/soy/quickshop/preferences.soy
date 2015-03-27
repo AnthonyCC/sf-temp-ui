@@ -2,10 +2,11 @@
 
 /**
  * @param data some data
+ * @param? isRounded
  */
 {template .preferences}
-<div class="preferences">
-	<div class="preferences-header qs-menu-header">Show Me Only</div>
+<div class="preferences {if $isRounded}rounded-box{/if}">
+	<div class="preferences-header qs-menu-header">Only Show</div>
 	<ul class="preferences-list checkboxlist" data-component="preferences">
 	{foreach $dataItem in $data}
 		<li>
@@ -19,4 +20,14 @@
 	{/foreach}
 	</ul>
 </div>
+{/template}
+
+/**
+ * @param data some data
+ */
+{template .preferencesQS22}
+{call .preferences}
+  {param data: $data /}
+  {param isRounded: true /}
+{/call}
 {/template}

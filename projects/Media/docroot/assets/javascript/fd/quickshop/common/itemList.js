@@ -1,56 +1,83 @@
-/*global jQuery,quickshop*/
+/*global quickshop,certona*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
-	"use strict";
+  "use strict";
 
-	var DISPATCHER = fd.common.dispatcher;
+  function setAdditionalInfos(v) {
+    if(!v.itemId) {
+      v.atcItemId="atcId-"+Date.now().toString(24)+'-'+Math.ceil(Math.random()*10000).toString(24);
+    }
+    if(v.quantity) {
+      v.quantity.mayempty = true;
+    }
+    return v;
+  }
 
-	function setAdditionalInfos(v) {
-		if(!v.itemId) {
-			v.atcItemId="atcId-"+Date.now().toString(24)+'-'+Math.ceil(Math.random()*10000).toString(24);			
-		}
-		if(v.quantity) {
-			v.quantity.mayempty = true;
-		}
-		return v;
-	}
+  var $ = fd.libs.$;
+  var WIDGET = fd.modules.common.widget;
+  var QSVersion = fd.utils.getActive("quickshop");
 
-	var $ = fd.libs.$;
-	var WIDGET = fd.modules.common.widget;
+  var itemList = Object.create(WIDGET,{
+    signal:{
+      value:'items'
+    },
+    template:{
+      value: QSVersion !== "2_0" ? quickshop.itemlistQS22 : quickshop.itemlist
+    },
+    placeholder:{
+      value:'#productlist'
+    },
+    scrollToTop: {
+      value: function () {
+        var mainEl = $('.qs-content').first(), crect;
 
-	var itemList = Object.create(WIDGET,{
-		signal:{
-			value:'items'
-		},
-		template:{
-			value:quickshop.itemlist
-		},
-		placeholder:{
-			value:'#productlist'
-		},
-		render:{
-			value:function(data) {
-				data.itemType = fd.quickshop.itemType || 'general';
-				certona.itemid = '';
-				$.each(data.data, function(i) {
-					certona.itemid = certona.itemid.concat(data.data[i].productId).concat(';');					
-				});
-				certona.itemid = certona.itemid.substring(0, certona.itemid.length - 1).toUpperCase();
-				data.data=data.data.map(setAdditionalInfos);
-				$('.qs-content').attr('data-items', data.data.length);
+        if (mainEl && mainEl.size()) {
+          if (mainEl.hasClass('noscroll')) {
+            mainEl.removeClass('noscroll');
+          } else {
+            crect = mainEl[0].getBoundingClientRect();
 
-				WIDGET.render.call(this,data);
+            if (crect.top < 0) {
+              $.smoothScroll(crect.top + $('body').scrollTop());
+            }
+          }
+        }
+        if (fd.common.transactionalPopup) { fd.common.transactionalPopup.close(); }
+      }
+    },
+    render:{
+      value:function(data) {
+        var $content = $('.qs-content').first();
 
-		        $('[data-component="product"]',$(this.placeholder)).each(function(index,element){
-		        	fd.components.Subtotal.update(element);
-		        });
-		      	fd.quickshop.common.tabMeta.update();
-			}
-		}
-	});
+        if ($content.hasClass('dontupdate')) {
+          $content.removeClass('dontupdate');
+          return;
+        }
 
-	itemList.listen();
+        data.itemType = fd.quickshop.itemType || 'general';
+        data.searchTerm = $('#searchTerm').val();
+        certona.itemid = '';
+        $.each(data.data, function(i) {
+          certona.itemid = certona.itemid.concat(data.data[i].productId).concat(';');
+        });
+        certona.itemid = certona.itemid.substring(0, certona.itemid.length - 1).toUpperCase();
+        data.data=data.data.map(setAdditionalInfos);
+        $content.attr('data-items', data.data.length);
 
-	fd.modules.common.utils.register("quickshop.common", "itemList", itemList, fd);
+        data.hasGrid = fd.quickshop.common.gridlistchange.getViewType() === 'grid';
+        WIDGET.render.call(this,data);
+
+        $('[data-component="product"]',$(this.placeholder)).each(function(index,element){
+          fd.components.Subtotal.update(element);
+        });
+        fd.quickshop.common.tabMeta.update();
+        this.scrollToTop();
+      }
+    }
+  });
+
+  itemList.listen();
+
+  fd.modules.common.utils.register("quickshop.common", "itemList", itemList, fd);
 }(FreshDirect));

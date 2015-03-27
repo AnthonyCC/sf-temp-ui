@@ -1,11 +1,12 @@
-/*global jQuery*/
+/*global quickshop,jQuery*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
-	"use strict"
+  "use strict";
 
 	var $ = fd.libs.$;
 	var DATALISTWIDGET = fd.quickshop.datalistWidget;
+  var QSVersion = fd.utils.getActive("quickshop");
 
 	function reduceValues(prev,current) {
 		prev.filterIdList.push(current.value);
@@ -17,7 +18,7 @@ var FreshDirect = FreshDirect || {};
 			value:'PREFERENCES'
 		},
 		template:{
-			value:quickshop.preferences
+			value: QSVersion !== "2_0" ? quickshop.preferencesQS22 : quickshop.preferences
 		},
 		placeholder:{
 			value:'#preferences'

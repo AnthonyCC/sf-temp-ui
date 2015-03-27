@@ -15,6 +15,10 @@ import com.freshdirect.webapp.ajax.quickshop.data.QuickShopListRequestObject;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopPagerValues;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopReturnValue;
 
+/**
+ * Deprecated with Quickshop 2.2 version. Replaced with {@link com.freshdirect.webapp.ajax.reorder.QuickShopFilterServlet}
+ */
+@Deprecated
 public class QuickShopFilterServlet extends QuickShopServlet {
 
 	private static final long serialVersionUID = -2275457565029351766L;

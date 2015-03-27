@@ -6,6 +6,8 @@ var FreshDirect = FreshDirect || {};
 
 	var $ = fd.libs.$;
 	var DISPATCHER = fd.common.dispatcher;
+  var QSVersion = fd.utils.getActive('quickshop');
+  var APIURL = QSVersion === '2_0' ? '/api/qs/ymal' : '/api/reorder/recommendation';
 
 	var tabbedRecommender = Object.create(Object.create(fd.common.signalTarget,fd.common.tabPanel),{
 		template:{
@@ -41,7 +43,7 @@ var FreshDirect = FreshDirect || {};
 					tabPanel.attr('data-cmSiteFeature',siteFeature);
 					tabPanel.css('min-height', tabPanel.height());
 					tabPanel.html('');
-          url = recommender.data('apiendpoint') || '/api/qs/ymal';
+          url = recommender.data('apiendpoint') || APIURL;
           data = { feature: siteFeature };
           if (impressionId) {
             data.impressionId = impressionId;

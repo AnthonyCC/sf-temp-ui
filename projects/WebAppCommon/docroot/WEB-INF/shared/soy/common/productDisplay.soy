@@ -4,7 +4,7 @@
  * @param data
  */
 {template .productDisplay autoescape="false"}
-<div class="leftColumn" data-component="product" data-cmeventsource="{$data.cmEventSource}">
+<div class="leftColumn" data-component="product" data-cmeventsource="{$data.cmEventSource}" data-productid="{$data.productId}">
 	<h1>{if $data.productName}{$data.productName}{/if}
 	{if $data.akaName}<p class="productDisplay-akaName">"{$data.akaName}"</p>{/if}
 	{if $data.packageDescription}<p class="productDisplay-packageDescription">{$data.packageDescription}</p>{/if}</h1>

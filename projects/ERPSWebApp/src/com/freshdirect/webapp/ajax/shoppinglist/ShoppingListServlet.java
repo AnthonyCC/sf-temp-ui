@@ -18,13 +18,14 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeVariant;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
+import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListExistsException;
 import com.freshdirect.fdstore.lists.FDCustomerListInfo;
@@ -96,11 +97,8 @@ public class ShoppingListServlet extends BaseJsonServlet {
 		}
 
 		for ( ShoppingListChange newInfo : newListInfos ) {
-			
 			String listId = newInfo.getListId();
-			
 			// ====== VALIDATION ======
-			
 			if ( listId == null ) {
 				// Invalid, no ID
 				LOG.warn( "Missing ID for shopping list change request, skipping." );
@@ -113,45 +111,30 @@ public class ShoppingListServlet extends BaseJsonServlet {
 				continue;
 			}
 			
-			
 			// ====== DELETE ======
-			
 			if ( newInfo.isDelete() ) {
-				LOG.info( "Deleting list " + listId );
-				try {
-					FDListManager.deleteShoppingList( listId );
-					if(listId.equals(user.getDefaultListId())){
-						user.setDefaultListId(null);
-					}
-					LOG.info( "Deleted list " + listId );
-				} catch (FDResourceException e) {
-					LOG.error( "Failed to delete list: "+listId, e );
-				}
+				deleteList(user, listId);
 				continue;
 			}
 
 			
 			// ====== SET DEFAULT LIST ======
-			
 			if ( newInfo.isDefault() ) {
 				user.setDefaultListId( newInfo.getListId() );
 			}
 
 			
 			// ====== RENAME ======
-			
 			String newName = newInfo.getName(); 
 			if ( newName != null && !newName.trim().equals( "" ) ) {
-				LOG.info( "renaming list " + newInfo.getListId() + " to " + newInfo.getName() );
-				try {
-					FDListManager.renameShoppingList( listId, newName );
-					LOG.info( "Renamed list " + listId + " to " + newName );
-				} catch (FDResourceException e) {
-					LOG.error( "Failed to rename list: "+listId, e );
-				}
+				renameList(newInfo, listId, newName);
 				continue;
 			}
 			
+			if (newInfo.isEmpty()) {
+				deleteListItems(user, listId);
+				continue;
+			}
 		}
 		
 		//invalidate cache entry TODO: partial invalidation?
@@ -163,6 +146,41 @@ public class ShoppingListServlet extends BaseJsonServlet {
 		// Query and send back the new state
         getInternal( request, response, user, true, null );
         
+	}
+
+	private void deleteListItems(FDUserI user, String listId) {
+		LOG.info("Deleting list items " + listId);
+		try {
+			FDCustomerCreatedList customerCreatedList = FDListManager.getCustomerCreatedList(user.getIdentity(), listId);
+			customerCreatedList.removeAllLineItems();
+			FDListManager.storeCustomerList(customerCreatedList);
+			LOG.info("Deleted list items " + listId);
+		} catch (FDResourceException e) {
+			LOG.error("Failed to delete list items: " + listId, e);
+		}
+	}
+
+	private void renameList(ShoppingListChange newInfo, String listId, String newName) {
+		LOG.info( "renaming list " + newInfo.getListId() + " to " + newInfo.getName() );
+		try {
+			FDListManager.renameShoppingList( listId, newName );
+			LOG.info( "Renamed list " + listId + " to " + newName );
+		} catch (FDResourceException e) {
+			LOG.error( "Failed to rename list: "+listId, e );
+		}
+	}
+
+	private void deleteList(FDUserI user, String listId) {
+		LOG.info( "Deleting list " + listId );
+		try {
+			FDListManager.deleteShoppingList( listId );
+			if(listId.equals(user.getDefaultListId())){
+				user.setDefaultListId(null);
+			}
+			LOG.info( "Deleted list " + listId );
+		} catch (FDResourceException e) {
+			LOG.error( "Failed to delete list: "+listId, e );
+		}
 	}
 	
 	
@@ -361,15 +379,17 @@ public class ShoppingListServlet extends BaseJsonServlet {
 		List<ConfiguredProduct> ingredients = recipeVariant.getSections().get( 0 ).getIngredients();
 		
 		for ( ConfiguredProduct product : ingredients ) {
-			AddToCartItem item = new AddToCartItem();
-			item.setProductId( product.getProduct().getContentName() );
-			item.setCategoryId( product.getCategory().getContentName() );
-			item.setSkuCode( product.getSkuCode() );
-			item.setQuantity( Double.toString( product.getQuantity() ) );
-			item.setSalesUnit( product.getSalesUnit() );
-			item.setConfiguration( product.getConfiguration().getOptions() );
-			item.setRecipeId( recipeId );
-			items.add(item);
+			if (product.getProduct() != null) {
+				AddToCartItem item = new AddToCartItem();
+				item.setProductId(product.getProduct().getContentName());
+				item.setCategoryId(product.getCategory().getContentName());
+				item.setSkuCode(product.getSkuCode());
+				item.setQuantity(Double.toString(product.getQuantity()));
+				item.setSalesUnit(product.getSalesUnit());
+				item.setConfiguration(product.getConfiguration().getOptions());
+				item.setRecipeId(recipeId);
+				items.add(item);
+			}
 		}
 		return recipe.getName();
 	}
