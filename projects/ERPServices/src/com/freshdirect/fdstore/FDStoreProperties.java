@@ -1401,6 +1401,8 @@ public class FDStoreProperties {
         
         defaults.put("feature.rollout.quickshop2_0", "GLOBAL:ENABLED,true;");
         
+        defaults.put("feature.rollout.akamaiimageconvertor", "GLOBAL:ENABLED,false;");
+        
         refresh();
     }
 

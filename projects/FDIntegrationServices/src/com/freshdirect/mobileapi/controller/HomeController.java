@@ -3,9 +3,7 @@ package com.freshdirect.mobileapi.controller;
 import static com.freshdirect.mobileapi.controller.data.response.Idea.ideaFor;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,16 +14,21 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.util.PublishId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.content.BannerModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.StoreModel;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
+import com.freshdirect.fdstore.util.Buildver;
 import com.freshdirect.mobileapi.controller.data.BrowseResult;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
+import com.freshdirect.mobileapi.controller.data.response.Configuration;
 import com.freshdirect.mobileapi.controller.data.response.FeaturedCategoriesResponse;
-import com.freshdirect.mobileapi.controller.data.response.HomeResponse;
 import com.freshdirect.mobileapi.controller.data.response.HomeGetAllResponse;
+import com.freshdirect.mobileapi.controller.data.response.HomeResponse;
 import com.freshdirect.mobileapi.controller.data.response.Idea;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.model.Category;
@@ -177,9 +180,12 @@ public class HomeController extends BaseController {
         response.setFeaturedCategories(featuredCategories);
         
         
-        //-------------------------------------------- END ---------------------------------------------------------  
-		
-        
+        //-------------------------------------------- END ------------------------------------------------------------------  
+        Configuration configuration = new Configuration();
+        configuration.setAkamaiImageConvertorEnabled( FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.akamaiimageconvertor, user.getFDSessionUser().getUser()));
+        configuration.setApiCodeVersion(Buildver.getInstance().getBuildver());
+        configuration.setStoreVersion(PublishId.getInstance().getPublishId());
+        response.setConfiguration(configuration);
 		
 		// Add all these to the response and send back the model.
         setResponseMessage(model, response, user);

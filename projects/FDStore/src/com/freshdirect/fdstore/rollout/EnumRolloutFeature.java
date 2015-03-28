@@ -3,7 +3,7 @@ package com.freshdirect.fdstore.rollout;
 public enum EnumRolloutFeature {
 	pdplayout2014("pdplayout", "2014"), pplayout2014("pplayout", "2014"), leftnav2014("leftnav", "2014"), searchredesign2014("searchredesign", "2014"), leftnavtut2014("leftnavtut", "2014"), 
 	browseflyoutrecommenders("browseflyout", "recommenders"), //fly-out recommended products on "browse" pages (transactionalPopup)
-	quickshop2_2("quickshop", "2_2"), quickshop2_0(quickshop2_2, "quickshop", "2_0");
+	quickshop2_2("quickshop", "2_2"), quickshop2_0(quickshop2_2, "quickshop", "2_0"), akamaiimageconvertor("akamaiimageconvertor", "2015");
 	
 	private final EnumRolloutFeature child;
 	private final String cookieName;
