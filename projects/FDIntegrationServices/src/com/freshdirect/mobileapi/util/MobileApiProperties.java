@@ -63,6 +63,8 @@ public class MobileApiProperties {
 
     private final static long REFRESH_PERIOD = 5 * 60 * 1000;
     
+    private final static String PROP_MOBILE_UNIT_PRICE_DISPLAY_ENABLED = "mobileapi.unitprice.enabled";
+    
     
 
     private static Properties config;
@@ -79,6 +81,7 @@ public class MobileApiProperties {
         defaults.put(PROP_EXTERNAL_INTERFACE_ENABLED, "true");
         defaults.put(PROP_SUSTAINABILITY_RATING_ENABLED, "true");
         defaults.put(PROP_SAMEDAY_DP_COMPATIBLE, "true");
+        defaults.put(PROP_MOBILE_UNIT_PRICE_DISPLAY_ENABLED, "false");
        
         refresh();
     }
@@ -183,6 +186,9 @@ public class MobileApiProperties {
         return get(PROP_UNATTENDED_DLV_MSG);
     }
     
+    public static boolean isMobileUnitPriceDisplayEnabled() {
+		return (Boolean.valueOf(get(PROP_MOBILE_UNIT_PRICE_DISPLAY_ENABLED))).booleanValue();
+	}
     
     
 }
