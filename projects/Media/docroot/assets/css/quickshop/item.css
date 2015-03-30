@@ -175,6 +175,7 @@ button[data-component="addToListButton"]:focus {
 
 .itemlist-item-productimage {
 	max-width:100%;
+  max-height: 100px;
 }
 .itemlist-item-controls {
 	margin-bottom: 10px;
