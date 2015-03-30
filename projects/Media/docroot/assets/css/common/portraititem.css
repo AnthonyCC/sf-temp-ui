@@ -144,6 +144,14 @@
   display: none;
 }
 
+.portrait-item-replacement > span {
+  text-align: center;
+}
+
+#transactionalPopup .portrait-item-replacement {
+  display: none;
+}
+
 #customizePopup .buttons .addtolist,
 .portrait-item-atl span.fakeaddtolist,
 .portrait-item-atl span.addtolist {
@@ -183,6 +191,10 @@
 
 [data-component="product"].changed .portrait-item-atl span.editinlist {
   display: block;
+}
+
+[data-component="product"].unavailable.changed .portrait-item-atl span.editinlist {
+  display: none;
 }
 
 .portrait-item-atl span.hiddenfakeaddtolist {
@@ -629,6 +641,14 @@ a.portrait-item-header-name:link {
   height:auto;
   z-index: 2;
   background: transparent;
+}
+
+#transactionalPopup .portrait-item.unavailable > .portrait-item-atl .addtolist {
+  visibility: hidden;
+}
+
+#transactionalPopup .portrait-item.unavailable > .portrait-item-controls {
+  display: none;
 }
 
 #transactionalPopup .atc-info,

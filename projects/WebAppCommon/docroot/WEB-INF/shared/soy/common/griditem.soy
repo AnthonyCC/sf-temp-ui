@@ -119,6 +119,8 @@
   {param listId: $item.listId /}
   {param originalLineId: $item.originalLineId /}
   {param itemId:$item.itemId /}
+  {param useReplacement:$item.useReplacement /}
+  {param replacement:$item.replacement /}
 {/call}
 {/template}
 
@@ -280,10 +282,12 @@
  * @param? listId shopping list id
  * @param? originalLineId shopping list line id
  * @param? itemId atc item id
+ * @param? replacement replacement item
+ * @param? useReplacement use replacement item
  */
 {template .potatoTransactionalGridItem autoescape="false"}
 {let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) + ($listId ? '_'+$listId : '') + ($originalLineId ? '_'+$originalLineId : '') /}
-<li class="portrait-item {not $available ? 'unavailable' : ''} {$extraClass ? $extraClass : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}">
+<li class="portrait-item {not $available ? 'unavailable' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}>
   <div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
     <div class="portrait-item-burst_wrapper">
       <img src="{$productImage}" alt="" class="portrait-item-productimage" data-product-url="{$productPageUrl}">
@@ -401,10 +405,27 @@
     <input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$originalLineId}" />
     {/if}
   </div>
+  {if $replacement}
+  <div class="portrait-item-replacement">
+    {if $useReplacement}
+    <span class="cssbutton green transparent">Show Recommended Product</span>
+    {else}
+    We Recommend: <span class="cssbutton green transparent" data-component="item-replacement" data-replacement="{$useReplacement}" data-replacement-id="{$itemId}">{$replacement.productName}</span>
+    {/if}
+  </div>
+  {/if}
   {if $relatedItem}
   <ul class="relatedItem" data-component="relateditem" data-cmeventsource="TRY">
     {call common.transactionalGridItem}
       {param item:$relatedItem /}
+      {param extraClass:$extraClass /}
+    {/call}
+  </ul>
+  {/if}
+  {if $useReplacement and $replacement}
+  <ul class="relatedItem" data-component="relateditem">
+    {call common.transactionalGridItem}
+      {param item:$replacement /}
       {param extraClass:$extraClass /}
     {/call}
   </ul>

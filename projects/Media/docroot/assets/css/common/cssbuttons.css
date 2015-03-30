@@ -215,3 +215,13 @@ button.cssbutton[data-component="addToListButton"] {
   color: #8a588a;
 }
 
+.cssbutton.green.transparent {
+  color: #669933;
+  font-weight: normal;
+  text-shadow: none;
+}
+
+.cssbutton.green.transparent:hover {
+  color: #728d4b;
+}
+
