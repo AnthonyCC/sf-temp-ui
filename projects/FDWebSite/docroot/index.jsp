@@ -34,7 +34,7 @@ final int W_INDEX_RIGHT_CENTER = W_INDEX_TOTAL - 228 - W_INDEX_CENTER_PADDING;
 request.setAttribute("noyui", true);
 
 %><fd:CheckLoginStatus guestAllowed='true' pixelNames="TheSearchAgency" />
-<fd:WelcomeExperience/><%
+<%-- fd:WelcomeExperience / --%><%
 
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	FDSessionUser sessionUser = (FDSessionUser)session.getAttribute(SessionName.USER);
