@@ -168,20 +168,11 @@ public class FDSalesUnit extends FDAttributeProxy {
 	}
 
 	public String getUnitPriceUOM() {
-		return getFormattedUnitPriceUOM();
+		return unitPriceUOM;
 	}
 
 	public String getUnitPriceDescription() {
 		return unitPriceDescription;
 	}
 	
-	public String getFormattedUnitPriceUOM() {
-		if("CT".equalsIgnoreCase(unitPriceUOM)){
-			return "ctn";
-		}else if("CN".equalsIgnoreCase(unitPriceUOM)){
-			return "ct";
-		} else {
-			return unitPriceUOM;
-		}
-	}
 }

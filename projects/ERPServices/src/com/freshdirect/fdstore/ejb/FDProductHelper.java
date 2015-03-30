@@ -65,6 +65,7 @@ import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.ZonePriceInfoListing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
+import com.freshdirect.fdstore.util.UnitPriceUtil;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -388,7 +389,7 @@ public class FDProductHelper {
 
 //			salesUnits[i] = new FDSalesUnit(attribs, su.getAlternativeUnit(), su.getDescription());
 //			salesUnits[i] = new FDSalesUnit(attribs, su.getAlternativeUnit(), su.getDescription(),su.getNumerator(),su.getDenominator(),su.getBaseUnit());
-			salesUnits[i] = new FDSalesUnit(attribs, su.getAlternativeUnit(), su.getDescription(),su.getNumerator(),su.getDenominator(),su.getBaseUnit(),su.getUnitPriceNumerator(),su.getUnitPriceDenominator(),su.getUnitPriceUOM(),su.getUnitPriceDescription());
+			salesUnits[i] = new FDSalesUnit(attribs, su.getAlternativeUnit(), su.getDescription(),su.getNumerator(),su.getDenominator(),su.getBaseUnit(),su.getUnitPriceNumerator(),su.getUnitPriceDenominator(),UnitPriceUtil.getFormattedUnitPriceUOM(su.getUnitPriceUOM()),su.getUnitPriceDescription());
 		}
 		return salesUnits;
 	}
