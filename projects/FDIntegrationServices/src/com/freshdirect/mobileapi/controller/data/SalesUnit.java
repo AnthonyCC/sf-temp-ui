@@ -1,5 +1,7 @@
 package com.freshdirect.mobileapi.controller.data;
 
+import com.freshdirect.fdstore.FDStoreProperties;
+
 public class SalesUnit {
     private String name;
 
@@ -55,7 +57,7 @@ public class SalesUnit {
             }
         }
         */
-        if(su.getUnitPriceNumerator() !=0 && su.getUnitPriceDenominator() !=0){
+        if(FDStoreProperties.isUnitPriceDisplayEnabled() && su.getUnitPriceNumerator() !=0 && su.getUnitPriceDenominator() !=0){
 	        unitPriceNumerator = su.getUnitPriceNumerator();
 	        unitPriceDenominator = su.getUnitPriceDenominator();
 	        unitPriceUOM = su.getUnitPriceUOM();
