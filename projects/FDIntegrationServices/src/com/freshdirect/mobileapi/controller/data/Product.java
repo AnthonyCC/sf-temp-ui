@@ -12,6 +12,9 @@ import java.util.TreeSet;
 import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDSalesUnit;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.util.UnitPriceUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.ContainerSize.Size;
 import com.freshdirect.mobileapi.controller.data.Image.ImageSizeType;
@@ -232,6 +235,10 @@ public class Product extends Message {
     
     //JIRA FD-iPadFDIP-690 -- Michael Cress
     private String description;
+    
+    //Unit Pricing Fields
+    private String utPrice;
+	private String utSalesUnit;
    
 	public Product() {
 
@@ -364,7 +371,7 @@ public class Product extends Message {
             SalesUnit salesUnit = new SalesUnit(su);
             this.salesUnits.add(salesUnit);
         }
-
+                
         if (LayoutType.COMPONENT_GROUP_MEAL.equals(getLayoutType())) {
             List<ComponentGroup> componentGroups = product.getComponentGroups();
             for (ComponentGroup cgp : componentGroups) {
@@ -457,6 +464,17 @@ public class Product extends Message {
         //RSUNG: this.deliveryNote = product.getDayOfWeekNotice();
         //RSUNG: this.dayOfTheWeekNotice = product.getDeliveryNote();
         //RSUNG: this.setCancellationNote(product.getCancellationNote());
+                
+        if(FDStoreProperties.isUnitPriceDisplayEnabled() && product.getDefaultProduct() != null){
+        	FDSalesUnit su = product.getDefaultProduct().getDefaultSalesUnit();
+			if (su != null) {
+				String unitPrice = UnitPriceUtil.getUnitPrice(su, product.getDefaultPrice());
+				if(unitPrice != null) {
+					this.setUtPrice( unitPrice );
+					this.setUtSalesUnit( su.getUnitPriceUOM() );
+				}
+			}	        
+        }
     }
 
     public String getId() {
@@ -872,4 +890,20 @@ public class Product extends Message {
     public void setDescription(String description) {
 		this.description = description;
 	}
+
+	public String getUtPrice() {
+		return utPrice;
+	}
+
+	public void setUtPrice(String utPrice) {
+		this.utPrice = utPrice;
+	}
+
+	public String getUtSalesUnit() {
+		return utSalesUnit;
+	}
+
+	public void setUtSalesUnit(String utSalesUnit) {
+		this.utSalesUnit = utSalesUnit;
+	}     
 }

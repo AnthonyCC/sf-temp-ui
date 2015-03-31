@@ -42,9 +42,7 @@ import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.common.pricing.SalesUnitRatio;
 import com.freshdirect.content.nutrition.EnumAllergenValue;
 import com.freshdirect.content.nutrition.EnumClaimValue;
-import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
-import com.freshdirect.content.nutrition.NutritionValueEnum;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -59,16 +57,15 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
+import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ComponentGroupModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.EnumProductLayout;
-import com.freshdirect.fdstore.content.EnumSearchFilteringValue;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
-import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
@@ -88,7 +85,6 @@ import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.QuickDateFormat;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.xml.XMLSerializer;
-import com.freshdirect.mobileapi.controller.data.ProductMoreInfo;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.comparator.DomainValueComparator;
 import com.freshdirect.mobileapi.model.comparator.VariationComparator;
@@ -1761,6 +1757,23 @@ public class Product {
             }
         }
         return result;
+    }
+    
+    public double getDefaultPrice() {
+    	ZonePriceInfoModel zpi;
+    	if(defaultPriceCalculator != null) {
+			try {
+				zpi = defaultPriceCalculator.getZonePriceInfoModel();
+				if ( zpi != null ) {
+					return zpi.getDefaultPrice();
+				}
+			} catch ( FDSkuNotFoundException e ) {
+				// No sku (cannot happen) - don't even try the pricing
+			}  catch ( FDResourceException e ) {
+				// No sku (cannot happen) - don't even try the pricing
+			}
+    	}
+    	return 0;
     }
 
     /**

@@ -1,7 +1,5 @@
 package com.freshdirect.mobileapi.controller.data;
 
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.mobileapi.util.MobileApiProperties;
 
 public class SalesUnit {
     private String name;
@@ -20,7 +18,7 @@ public class SalesUnit {
 	private String unitPriceUOM;
 	
 	private String unitPriceDescription;
-
+	
     public SalesUnit(String name) {
         this.name = name;
     }
@@ -39,33 +37,7 @@ public class SalesUnit {
             shortDescription = description.substring(0, lbIndex).trim();
         } else {
             shortDescription = description;
-        }
-        
-        /*
-        if (salesUnitOnly){
-            double fraction = (double) su.getNumerator() / (double) su.getDenominator();
-            if (fraction >= 1) {
-                int integerPart = (int) fraction;
-                fraction -= (double) integerPart;
-                int remainderNumerator = (int) ((double) fraction * (double) su.getDenominator());
-                if (remainderNumerator >= 1) {
-                    shortDescription = integerPart + " " + remainderNumerator + "/" + su.getDenominator();
-                } else {
-                    shortDescription = String.valueOf(integerPart);
-                }
-            } else {
-                shortDescription = su.getNumerator() + "/" + su.getDenominator();
-            }
-        }
-        */
-        if(MobileApiProperties.isMobileUnitPriceDisplayEnabled() && FDStoreProperties.isUnitPriceDisplayEnabled() 
-        		&& su.getUnitPriceNumerator() !=0 && su.getUnitPriceDenominator() !=0){
-	        unitPriceNumerator = su.getUnitPriceNumerator();
-	        unitPriceDenominator = su.getUnitPriceDenominator();
-	        unitPriceUOM = su.getUnitPriceUOM();
-	        unitPriceDescription = su.getUnitPriceDescription();
-        }
-        
+        }               
     }
 
     public String getName() {

@@ -74,6 +74,7 @@ import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.util.DYFUtil;
+import com.freshdirect.fdstore.util.UnitPriceUtil;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DayOfWeekSet;
@@ -1016,13 +1017,9 @@ public class ProductDetailPopulator {
 		if (FDStoreProperties.isUnitPriceDisplayEnabled()) {
 			FDSalesUnit su = fdProduct.getDefaultSalesUnit();
 			if (su != null) {
-				// validate unit price values
-				final int n = su.getUnitPriceNumerator();
-				final int d = su.getUnitPriceDenominator();
-				if (n > 0 && n > 0) {
-					final double p = (item.getPrice() * n) / d;
-	
-					item.setUtPrice( formatDecimalToString(p) );
+				String unitPrice = UnitPriceUtil.getUnitPrice(su, item.getPrice());
+				if(unitPrice != null) {
+					item.setUtPrice( unitPrice );
 					item.setUtSalesUnit( su.getUnitPriceUOM() );
 				}
 			}
@@ -1462,23 +1459,5 @@ public class ProductDetailPopulator {
 		
 		return quoted ? JSONObject.quote( outString ) : outString;
 	}
-
-
-	private static String FORMAT_STR = "0.00";
-	private static double formatDecimal(double number) {
-		DecimalFormat decimalFormat = new DecimalFormat( FORMAT_STR );
-		String strNumber = decimalFormat.format(number);
-		strNumber = strNumber.replaceAll(",", ".");
-		Double numberDouble = new Double(strNumber);
-		return numberDouble.doubleValue();
-	}
-
-
-	private static String formatDecimalToString(double number) {
-		DecimalFormat decimalFormat = new DecimalFormat( FORMAT_STR );
-		String strNumber = decimalFormat.format(number);
-		strNumber = strNumber.replaceAll(",", ".");
-
-		return strNumber;
-	}
+	
 }

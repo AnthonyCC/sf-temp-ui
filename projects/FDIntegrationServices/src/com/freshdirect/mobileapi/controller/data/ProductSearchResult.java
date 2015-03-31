@@ -8,6 +8,9 @@ import java.util.SortedSet;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.fdstore.FDSalesUnit;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.util.UnitPriceUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.Product.ProductWarningMessage;
 import com.freshdirect.mobileapi.controller.data.Product.ProductWarningMessage.ProductWarningMessageType;
@@ -83,6 +86,10 @@ public class ProductSearchResult {
     
     //DOOR3 FD-iPad FDIP-644
     private String sashType = "";
+    
+    //Unit Pricing Fields
+    private String utPrice;
+	private String utSalesUnit;
 
     public String getFormattedUnitPriceLabel() {
 
@@ -239,6 +246,17 @@ public class ProductSearchResult {
         String prodsashType = product.getSashType();
         if( prodsashType != null )
         	this.setSashType( prodsashType );
+        
+        if(FDStoreProperties.isUnitPriceDisplayEnabled() && product.getDefaultProduct() != null){
+        	FDSalesUnit su = product.getDefaultProduct().getDefaultSalesUnit();
+        	if (su != null) {
+        		String unitPrice = UnitPriceUtil.getUnitPrice(su, product.getDefaultPrice());
+        		if(unitPrice != null) {
+        			this.setUtPrice( unitPrice );
+        			this.setUtSalesUnit( su.getUnitPriceUOM() );
+        		}
+        	}	        
+        }
     }
 
     //    public String getCancellationNote() {
@@ -455,4 +473,20 @@ public class ProductSearchResult {
 	public void setSashType(String sashType) {
 		this.sashType = sashType;
 	}
+
+	public String getUtPrice() {
+		return utPrice;
+	}
+
+	public void setUtPrice(String utPrice) {
+		this.utPrice = utPrice;
+	}
+
+	public String getUtSalesUnit() {
+		return utSalesUnit;
+	}
+
+	public void setUtSalesUnit(String utSalesUnit) {
+		this.utSalesUnit = utSalesUnit;
+	}	
 }
