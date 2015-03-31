@@ -382,6 +382,8 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
 	            	ActivityLog al = new ActivityLog(null, skuCode, "UOM", oldValue, uom, ts, user);
 	            	al.setNutritionType(nutritionType);
 	            	aLog.add(al);
+
+	            	LOGGER.debug(al.toString());
 	            }
 	            
 	            String val_string = Double.toString(value);	            
@@ -393,6 +395,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
 	            	ActivityLog al = new ActivityLog(null, skuCode, "VALUE", oldValue, val_string, ts, user);
 	            	al.setNutritionType(nutritionType);
 	            	aLog.add(al);
+	            	
 	            	LOGGER.debug(al.toString());
 	            }
 				
@@ -406,6 +409,9 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
             }
             ps.close();
             
+            //reset oldHash for nutrition_info
+            oldHash = new Hashtable<String, String>();
+            
             pstmt = con.prepareStatement("select type, info, priority from erps.nutrition_info where skucode = ?");
             pstmt.setString(1, skuCode);
             rset = pstmt.executeQuery();
@@ -414,7 +420,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
             	String info = rset.getString(2);
             	if(info == null)
             		info = "";
-            	oldHash.put(ErpNutritionInfoType.getInfoType(rset.getString(1)).getName() +"|" + rset.getString(1) + "|" + rset.getString(3), info);
+            	oldHash.put(ErpNutritionInfoType.getInfoType(rset.getString(1)).getName() +"|" + rset.getString(1) + "|" + rset.getString(3) + "|" + info, info);
             }
             
             ps = con.prepareStatement("delete from erps.nutrition_info where skucode=?");
@@ -445,7 +451,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
                     ps.executeUpdate();
                     
                     String oldValue = "";
-                    String key = attr.getNutritionInfoType().getName()+ "|"+attr.getNutritionInfoType().getCode() + "|" + attr.getPriority();
+                    String key = attr.getNutritionInfoType().getName()+ "|"+attr.getNutritionInfoType().getCode() + "|" + attr.getPriority() + "|" + info_value;
     	            if(oldHash.containsKey(key)) {
     	            	oldValue = oldHash.get(key);
     	            }
@@ -456,10 +462,51 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
     	            	al.setNutritionPriority(attr.getPriority());
     	            	aLog.add(al);
     	            	LOGGER.debug(al.toString());
+    	            	
     	            }
+
+	            	//remove logged or new NUTRITION_INFO item
+	            	oldHash.remove(key);
                 }
             }
             ps.close();
+            
+            //log removals - oldHash should be only removed rows now
+            Iterator<Map.Entry<String, String>> itOldHash = oldHash.entrySet().iterator();
+
+            while (itOldHash.hasNext()) {
+        		Map.Entry<String, String> entry = itOldHash.next();
+
+    			String oldKey = entry.getKey();
+    			String oldValue = entry.getValue();
+
+    			if (oldKey == null || "".equalsIgnoreCase(oldKey)) {
+					itOldHash.remove();
+					continue;
+    			} else if (oldKey.contains("|")) {
+
+        			String[] oldKeyParts = oldKey.split("\\|");
+        			
+                	ActivityLog al = new ActivityLog(null, skuCode, "INFO", oldValue, "", ts, user);
+
+        			if (oldKeyParts.length >= 2) {
+                    	al.setNutInfoType(oldKeyParts[1]);
+        			}
+
+        			try {
+            			if (oldKeyParts.length >= 3) {
+            				al.setNutritionPriority(Integer.parseInt(oldKeyParts[2]));
+            			}
+        			} catch (NumberFormatException nfe) {
+        				
+        			}
+                	aLog.add(al);
+                	LOGGER.debug(al.toString());
+
+	            	//remove logged NUTRITION_INFO item
+					itOldHash.remove();
+    			}
+            }
             
             //call activity log method
 			com.freshdirect.erp.ejb.ErpActivityLogDAO.logActivity(con, aLog);
