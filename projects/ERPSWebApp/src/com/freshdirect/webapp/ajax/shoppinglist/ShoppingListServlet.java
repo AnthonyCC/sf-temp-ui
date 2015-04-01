@@ -45,6 +45,11 @@ public class ShoppingListServlet extends BaseJsonServlet {
 	
 	
 	@Override
+	protected boolean synchronizeOnUser() {
+		return false; //no need to synchronize
+	}
+	
+	@Override
 	protected int getRequiredUserLevel() {
 		return FDUserI.GUEST;
 	}	

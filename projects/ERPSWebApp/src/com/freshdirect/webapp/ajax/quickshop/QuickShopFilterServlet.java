@@ -26,6 +26,11 @@ public class QuickShopFilterServlet extends QuickShopServlet {
 	private static final Logger LOG = LoggerFactory.getInstance(QuickShopFilterServlet.class);
 			
 	@Override
+	protected boolean synchronizeOnUser() {
+		return false; //no need to synchronize
+	}
+	
+	@Override
 	protected QuickShopReturnValue process( FDUserI user, HttpSession session, QuickShopListRequestObject requestData ) throws HttpErrorResponse {
 		
 		LOG.info("Start processing request...");

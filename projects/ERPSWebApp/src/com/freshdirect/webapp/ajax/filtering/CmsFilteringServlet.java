@@ -40,6 +40,11 @@ public class CmsFilteringServlet extends BaseJsonServlet {
 	private static final long serialVersionUID = -3643980667721343751L;
 	private static final Logger LOGGER = LoggerFactory.getInstance( CmsFilteringServlet.class );
 
+	@Override
+	protected boolean synchronizeOnUser() {
+		return false; //no need to synchronize
+	}
+	
 	/**
 	 * Processing json post data
 	 */

@@ -21,6 +21,11 @@ public class QuickShopTabMetaServlet extends BaseJsonServlet{
 	private static final Logger LOG = LoggerFactory.getInstance(QuickShopTabMetaServlet.class);
 	
 	@Override
+	protected boolean synchronizeOnUser() {
+		return false; //no need to synchronize
+	}
+	
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 		
 		Map<String, Map<String, Integer>> result = new HashMap<String, Map<String, Integer>>();

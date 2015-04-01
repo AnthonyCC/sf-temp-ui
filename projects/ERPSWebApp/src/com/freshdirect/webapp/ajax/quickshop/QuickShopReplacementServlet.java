@@ -21,10 +21,16 @@ public class QuickShopReplacementServlet extends BaseJsonServlet {
 	
 	@SuppressWarnings( "unused" )
 	private static final Logger LOG = LoggerFactory.getInstance(QuickShopReplacementServlet.class);
+	
+	@Override
+	protected boolean synchronizeOnUser() {
+		return false; //no need to synchronize
+	}
 		
 	@Override
 	protected void doGet( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
 		
+		@SuppressWarnings("unchecked")
 		List<String> replacements = (List<String>)request.getSession().getAttribute( SessionName.SESSION_QS_REPLACEMENT );
 		if ( replacements == null ) {
 			replacements = new ArrayList<String>();

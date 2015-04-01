@@ -53,6 +53,11 @@ public class QSFromStarterListFilterServlet extends QuickShopServlet {
 	}
 	
 	@Override
+	protected boolean synchronizeOnUser() {
+		return false; //no need to synchronize
+	}
+	
+	@Override
 	protected QuickShopReturnValue process(FDUserI user, HttpSession session, QuickShopListRequestObject requestData ) throws HttpErrorResponse {
 		
 		QuickShopReturnValue responseData = null;

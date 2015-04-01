@@ -51,6 +51,11 @@ public class QuickShopFilterServlet extends QuickShopServlet {
 	}
 
 	@Override
+	protected boolean synchronizeOnUser() {
+		return false; //no need to synchronize
+	}
+	
+	@Override
 	protected QuickShopReturnValue process(FDUserI user, HttpSession session, QuickShopListRequestObject requestData) throws HttpErrorResponse {
 		LOG.info("Start processing request...");
 

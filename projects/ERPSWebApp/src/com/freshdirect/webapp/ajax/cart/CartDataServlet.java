@@ -17,14 +17,10 @@ import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.fdstore.FDProduct;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
-import com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDModifyCartLineI;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -41,6 +37,10 @@ public class CartDataServlet extends BaseJsonServlet {
 
 	private static final Logger LOG = LoggerFactory.getInstance( CartDataServlet.class );
 	
+	@Override
+	protected boolean synchronizeOnUser() {
+		return false; //synchronization is done on cart
+	}
 	
 	@Override
 	protected int getRequiredUserLevel() {

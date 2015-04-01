@@ -70,6 +70,11 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 	}
 	
 	@Override
+	protected boolean synchronizeOnUser() {
+		return false; //no need to synchronize
+	}
+	
+	@Override
 	protected QuickShopReturnValue process( FDUserI user, HttpSession session, QuickShopListRequestObject requestData ) throws HttpErrorResponse {
 		
 		//transform request data

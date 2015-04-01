@@ -33,6 +33,11 @@ public class QSTempConfigServlet extends BaseJsonServlet {
 
 	private static final long serialVersionUID = -7678311808717457332L;
 	private static final Logger LOG = LoggerFactory.getInstance( QSTempConfigServlet.class );
+
+	@Override
+	protected boolean synchronizeOnUser() {
+		return false; //no need to synchronize
+	}
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {

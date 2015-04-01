@@ -121,13 +121,16 @@ public class AddToCartServlet extends BaseJsonServlet {
 		}
 	}
 
-	
-
 	@Override
 	protected int getRequiredUserLevel() {
 		return FDUserI.GUEST;
 	}	
 
+	@Override
+	protected boolean synchronizeOnUser() {
+		return false; //synchronization is done on cart
+	}
+	
 	@Override
 	protected void doPost( HttpServletRequest request, HttpServletResponse response, FDUserI user ) throws HttpErrorResponse {
         
@@ -218,10 +221,8 @@ public class AddToCartServlet extends BaseJsonServlet {
 			AddToCartResponseData responseData = new AddToCartResponseData();			
        		boolean result = false;
        		
-           	synchronized ( cart ) {
-        		
+           	synchronized (cart) {
 				result = CartOperations.addToCart( user, cart, items, request.getServerName(), reqData, responseData, request.getSession(), evtSrc );
-				
             }
            	
            	if ( !result ) {
@@ -239,17 +240,20 @@ public class AddToCartServlet extends BaseJsonServlet {
            			}
            		}
            	} else if (EnumEventSource.FinalizingExternal.toString().equals(reqData.getEventSource())){
+
            		// as a bonus, append conversion event
            		
            		// collect all possible external sources of recipes
                 Set<ExtSource> extSources = new HashSet<ExtSource>();
-           		for (FDCartLineI item : cart.getOrderLines()) {
-           			if (item.getExternalAgency() != null) {
-           				ExtSource esrc = new ExtSource( item );
-           				extSources.add(esrc);
-           			}
-           		}
-
+               	synchronized (cart) {
+	           		for (FDCartLineI item : cart.getOrderLines()) {
+	           			if (item.getExternalAgency() != null) {
+	           				ExtSource esrc = new ExtSource( item );
+	           				extSources.add(esrc);
+	           			}
+	           		}
+               	}
+               	
            		for (ExtSource esrc : extSources) {
 	           		// ConversionEventTagModel model = new ConversionEventTagModel();
 

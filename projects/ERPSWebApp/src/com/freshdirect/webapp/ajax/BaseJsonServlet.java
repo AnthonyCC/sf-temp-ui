@@ -241,13 +241,13 @@ public abstract class BaseJsonServlet extends HttpServlet {
 	}
 	
 	/**
-	 * Subclasses can override and return false to turn off automatic synchronization on the user object and do their own synchronization manually. 
+	 * Subclasses can return return false and do their own synchronization manually OR<br>
+	 * return true to turn on automatic synchronization on the user object.<br>
+	 * <br>
+	 * Try avoid creating a bottleneck!
 	 * @return
 	 */
-	@SuppressWarnings( "static-method" )
-	protected boolean synchronizeOnUser() {
-		return true;
-	}
+	protected abstract boolean synchronizeOnUser();
 	
 	/**
 	 * Utility method to persist the user object (and invalidate any related caches)
