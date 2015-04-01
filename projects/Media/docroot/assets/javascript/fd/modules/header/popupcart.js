@@ -215,7 +215,7 @@ var FreshDirect = FreshDirect || {};
   var rmStream = $cart.asEventStream('click','.remove');
 
   var dataChange = qcStream.merge(sucStream).merge(rmStream);
-  var bouncedDataChange = dataChange.debounce(500);
+  var bouncedDataChange = dataChange.debounce(1500);
 
   /* dirty state */
   var setDirty = dataChange.map(function(){ return true });
