@@ -90,18 +90,14 @@
 }
 
 #searchTerm::-ms-input-placeholder {
-  color: #764077;
-  font-weight: bold;
+  color: #333;
 }
 #searchTerm::-moz-placeholder {
-  color: #764077;
-  font-weight: bold;
+  color: #333;
 }
 #searchTerm::-webkit-input-placeholder {
-  color: #764077;
-  font-weight: bold;
+  color: #333;
 }
 #searchTerm::input-placeholder {
-  color: #764077;
-  font-weight: bold;
+  color: #333;
 }
