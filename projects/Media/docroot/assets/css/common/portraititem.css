@@ -997,7 +997,7 @@ a.portrait-item-header-name:link {
 
 .qs-content .lineitems22 .itemlist-item-header-buttons {
   float:none;
-  margin-bottom:10px;
+  margin: 0 0 10px;
 }
 
 .qs-content .lineitems22 .itemlist-item-header-buttons button{
