@@ -36,7 +36,7 @@ var FreshDirect = FreshDirect || {};
           value: 'common.listhelppopup'
         },
         helpHeader: {
-          value: 'about shopping lists'
+          value: 'About Shopping Lists'
         },
         bodyTemplate: {
           value: null,
@@ -151,7 +151,7 @@ var FreshDirect = FreshDirect || {};
   
   var addtolistpopup = Object.create(listPopup,{
     headerContent: {
-      value: 'add to list'
+      value: 'Add to List'
     },
     bodyTemplate: {
       value: common.addtolistpopup
@@ -196,7 +196,7 @@ var FreshDirect = FreshDirect || {};
 
   var createlistpopup = Object.create(listPopup,{
     headerContent: {
-      value: 'create a new list'
+      value: 'Add All to List'
     },
     bodyTemplate: {
       value: common.createlistpopup

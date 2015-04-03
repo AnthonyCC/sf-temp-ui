@@ -6,7 +6,7 @@
  */
 {template .selectList private="true" autoescape="true"}
 	<p>
-		<label for="addtolist-selectList">add to existing list</label>
+		<label for="addtolist-selectList">Add to Existing List</label>
 		<select name="selectList" id="addtolist-selectList">
       {foreach $listInfo in $data}
         <option value="{$listInfo.listId}">
@@ -14,7 +14,7 @@
         </option>
       {/foreach}
 		</select>
-		<button class="addtolist-button-add enabled">add</button>
+		<button class="addtolist-button-add enabled">Add</button>
 	</p>
 {/template}
 
@@ -22,10 +22,10 @@
  */
 {template .newList private="true" autoescape="true"}
 	<p>
-		<label for="addtolist-newList">create new list</label>
+		<label for="addtolist-newList">Create New List</label>
 		<label class="error"></label>
 		<input type="text" id="addtolist-newList" maxlength="35">
-		<button class="addtolist-button-go enabled">go</button>
+		<button class="addtolist-button-go enabled">Create</button>
 	</p>
 {/template}
 
@@ -53,11 +53,11 @@
  * @param data shopping lists
  */
 {template .createlistpopup autoescape="true"}
-	{call .newList /}
 	{if length($data) > 0}
-		<div class="addtolist-or"><span>or</span></div>
 		{call .selectList data="all" /}
+		<div class="addtolist-or"><span>or</span></div>
 	{/if}
+	{call .newList /}
 {/template}
 
 /**
