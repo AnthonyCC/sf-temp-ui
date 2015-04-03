@@ -37,8 +37,11 @@
 }
 
 .addtolistpopup p button,
+.addtolistpopup .buttons button {
+  margin-left: 8px;
+}
+
 .saverecipepopup p button,
-.addtolistpopup .buttons button,
 .saverecipepopup .buttons button {
   display: inline-block;
 	padding: 0;
@@ -103,10 +106,7 @@
   font-weight:bold;
 }
 
-.addtolistpopup p button.addtolist-button-add,
-.addtolistpopup p button.addtolist-button-go,
 .saverecipepopup p button.saverecipe-button-go,
-.addtolistpopup .buttons button.addtolist-button-ok,
 .saverecipepopup .buttons button.addtolist-button-ok,
 .deletefromlistpopup .buttons button.deletefromlist-button-delete,
 .deletefromlistpopup .buttons button.deletefromlist-button-cancel,
@@ -116,38 +116,22 @@
 
 
 
-.addtolistpopup p button.addtolist-button-add {
-    width: 40px;
-    height: 27px;
-    background-position: -5px -115px;
-}
-.addtolistpopup p button.addtolist-button-add:hover,
-.addtolistpopup p button.addtolist-button-add:focus {
-    background-position: -55px -115px;
-}
-
-.addtolistpopup p button.addtolist-button-go,
 .saverecipepopup p button.saverecipe-button-go {
     width: 35px;
     height: 27px;
     background-position: -282px -115px;
 }
-.addtolistpopup p button.addtolist-button-go:hover,
 .saverecipepopup p button.saverecipe-button-go:hover,
-.addtolistpopup p button.addtolist-button-go:focus,
 .saverecipepopup p button.saverecipe-button-go:focus {
     background-position: -100px -253px;
 }
 
-.addtolistpopup .buttons button.addtolist-button-ok,
 .saverecipepopup .buttons button.addtolist-button-ok {
     width: 35px;
     height: 27px;
     background-position: -145px -253px;
 }
-.addtolistpopup .buttons button.addtolist-button-ok:hover,
 .saverecipepopup .buttons button.addtolist-button-ok:hover,
-.addtolistpopup .buttons button.addtolist-button-ok:focus,
 .saverecipepopup .buttons button.addtolist-button-ok:focus {
     background-position: -190px -253px;
 }
