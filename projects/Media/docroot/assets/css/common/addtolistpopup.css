@@ -83,7 +83,7 @@
 
 .editinlistpopup .buttons,
 .deletefromlistpopup .buttons {
-  text-align: right;
+  text-align: center;
   border-top: 1px solid #ccc;
   padding-top: 10px;
 }
@@ -102,8 +102,6 @@
 .addtolistpopup .error {
   font-weight:bold;
 }
-
-
 
 .addtolistpopup p button.addtolist-button-add,
 .addtolistpopup p button.addtolist-button-go,
@@ -152,6 +150,15 @@
 .addtolistpopup .buttons button.addtolist-button-ok:focus,
 .saverecipepopup .buttons button.addtolist-button-ok:focus {
     background-position: -190px -253px;
+}
+
+.deletefromlistpopup .qs-popup-header {
+  display: none;
+}
+
+.deletefromlistpopup p[data-item] {
+  text-align: center;
+  margin-top: 10px;
 }
 
 .deletefromlistpopup .buttons button.deletefromlist-button-delete {

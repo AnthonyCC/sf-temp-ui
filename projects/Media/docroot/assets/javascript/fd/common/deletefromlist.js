@@ -9,17 +9,8 @@ var FreshDirect = FreshDirect || {};
   var POPUPWIDGET = fd.modules.common.popupWidget;
 
   var deletefromlistpopup = Object.create(POPUPWIDGET,{
-    headerContent: {
-      value: 'delete this item from list'
-    },
     customClass: {
       value: 'deletefromlistpopup'
-    },
-    helpTemplate: {
-      value: 'common.listhelppopup'
-    },
-    helpHeader: {
-      value: 'about shopping lists'
     },
     bodyTemplate: {
       value: common.deletefromlistpopup
