@@ -211,12 +211,17 @@
 	clear: right;
 }
 
+.customizePopup .buttons {
+  overflow: hidden;
+}
+
 .customizePopup .applyCustomization {
 	padding-top:20px;
 	font-size:13px;
 	font-weight:bold;
   clear: both;
   visibility: hidden;
+  overflow: hidden;
 }
 
 .customizePopup .changed .applyCustomization {
