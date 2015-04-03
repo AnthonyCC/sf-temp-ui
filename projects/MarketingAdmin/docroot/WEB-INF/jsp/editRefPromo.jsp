@@ -401,7 +401,7 @@
 					<tr>
 					<td valign="top">Offer Text:</td>
 					<td>
-					<spring1:bind path="command.inviteEmailOfferText"><input type="text" name="inviteEmailOfferText" value="<c1:out value='${status.value}'/>" size="50"/>
+					<spring1:bind path="command.inviteEmailOfferText"><textarea name="inviteEmailOfferText" cols="50" rows="3"><c1:out value='${status.value}'/></textarea>
 					<c1:if test="${not empty status.errorMessage}" >
 						<br/>
 						<span style="color:red;font-weight:bold;font-size:12px;"><c1:out value="${status.errorMessage}" /></span>
