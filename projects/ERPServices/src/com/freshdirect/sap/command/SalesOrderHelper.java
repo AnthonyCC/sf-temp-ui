@@ -239,7 +239,7 @@ class SalesOrderHelper {
 			ErpCouponDiscountLineModel couponDiscount = orderLine.getCouponDiscount();
 			if (disc != null || couponDiscount!=null) {
 				if(disc != null){
-					this.addPromotionCondition(i, disc);
+					this.addPromotionCondition(i, disc, orderLine);
 				}
 				if(couponDiscount!=null){
 					this.addCouponCondition(i, couponDiscount, orderLine.getTaxationType());
@@ -272,17 +272,24 @@ class SalesOrderHelper {
 				this.bapi.addCondition(PosexUtil.getPosexInt(pos), "PB00", c.getAmount(), "USD");
 				Discount promo = c.getDiscount();
 				if (promo!= null && promo.getAmount() != 0.0) {
-						this.addPromotionCondition(pos, promo);				
+						this.addPromotionCondition(pos, promo, null);				
 				}
 		}
 
 	}
 
-	private void addPromotionCondition(int pos, Discount discount) {
+	private void addPromotionCondition(int pos, Discount discount,SapOrderLineI orderLine) {
 		int posex = PosexUtil.getPosexInt(pos);
 		EnumDiscountType pt = discount.getDiscountType();
 		if (EnumDiscountType.PERCENT_OFF.equals(pt)) {
-			this.bapi.addCondition(posex, "ZD11", discount.getAmount() * 100, "");
+			if(discount.getSkuLimit() > 0 && orderLine != null){//For Percent-off line item promotions with Sku Limit.
+				double pricePerQuantity = orderLine.getFixedPrice()/orderLine.getQuantity();
+				double discountableQuantity = orderLine.getQuantity() > discount.getSkuLimit() ?discount.getSkuLimit():orderLine.getQuantity();
+				double finalDiscountAmount = (discountableQuantity*pricePerQuantity)*discount.getAmount();
+				this.bapi.addCondition(posex, "ZDFA", finalDiscountAmount, "USD");
+			}else{				
+				this.bapi.addCondition(posex, "ZD11", discount.getAmount() * 100, "");
+			}
 
 		} else if (EnumDiscountType.DOLLAR_OFF.equals(pt)) {
 			if(discount.getSkuLimit() >0){//For Dollar-off line item promotions with Sku Limit.
