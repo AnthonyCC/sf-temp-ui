@@ -337,24 +337,13 @@ public class OrderController extends BaseController {
         
         List<ProductConfiguration> products;
         List<ProductConfiguration> productPage = null;
-        List<ProductConfiguration> deptProducts = new ArrayList<ProductConfiguration>();
+        
         try {
-            //products = order.getOrderProductsForDept(orderId, deptId, filterOrderDays, sortBy, user);  
-        	//products = loadProductsWithQuickShopFilter(user, session, query);
-        	products = loadProductsWithQuickShopTopItemsFilter(user, session, query);
-        	//Add All products in given dept id.
-        	
-        	for(ProductConfiguration product : products){
-        		if(deptId!=null){
-        			if(deptId.equals(product.getProduct().getDepartmentId())){
-        				deptProducts.add(product);
-        			}
-        		}
-        	}
-            if(deptProducts != null) {
+            products = order.getOrderProductsForDept(orderId, deptId, filterOrderDays, sortBy, user);            
+            if(products != null) {
             	int start = (query.getPage() - 1) * query.getMax();
-            	if(start >=0 && start <= deptProducts.size()) {
-            		productPage = deptProducts.subList(start, Math.min(start + query.getMax(), deptProducts.size()));
+            	if(start >=0 && start <= products.size()) {
+            		productPage = products.subList(start, Math.min(start + query.getMax(), products.size()));
             	}
             }
         } catch (ModelException e) {
@@ -362,7 +351,7 @@ public class OrderController extends BaseController {
         }
         QuickShop quickShop = new QuickShop();
         quickShop.setProducts(productPage);
-        quickShop.setTotalResultCount(deptProducts != null ? deptProducts.size() : 0);
+        quickShop.setTotalResultCount(products != null ? products.size() : 0);
         setResponseMessage(model, quickShop, user);
         return model;
     }
@@ -374,8 +363,7 @@ public class OrderController extends BaseController {
 		List<ProductConfiguration> productPage = null;
 
 		try {
-			//products = loadProductsWithQuickShopFilter(user, session, query);
-			products = loadProductsWithQuickShopTopItemsFilter(user, session, query);
+			products = loadProductsWithQuickShopFilter(user, session, query);
 			if (products != null) {
 				if(query.getPage() > 0) {
 					int start = (query.getPage() - 1) * query.getMax();
@@ -418,28 +406,6 @@ public class OrderController extends BaseController {
         } catch (FDResourceException e) {
             throw new ModelException(e);
         }
-    }
-    
-    //Load products for New quickshop - this will get the top Items
-    private List<ProductConfiguration> loadProductsWithQuickShopTopItemsFilter(SessionUser user, HttpSession session, SearchQuery query)throws ModelException{
-    	FDUserI fdUser = user.getFDSessionUser();//.getUser();
-    	QuickShopListRequestObject requestData = new QuickShopListRequestObject();
-    	requestData.setTimeFrame("timeFrameAll");
-        requestData.setSortId("freq");
-        if(query.getDepartment() != null && query.getDepartment().trim().length() > 0) {
-        	List<Object> depts = new ArrayList<Object>();
-        	depts.add(query.getDepartment());
-        	requestData.setDeptIdList(depts);
-        }        
-        requestData.setSearchTerm(query.getQuery());
-        try {
-			FilteringNavigator nav = requestData.convertToFilteringNavigator();
-			FilteringFlowResult<QuickShopLineItemWrapper> result=QuickShopFilterService.defaultService().collectQuickShopLineItemForTopItems(fdUser, session, nav, QuickShopFilterServlet.TOP_ITEMS_FILTERS);
-			return convertToSkuList(result, fdUser);
-        } catch (FDResourceException e) {
-			throw new ModelException(e);
-		}
-   
     }
 
     private List<ProductConfiguration> convertToSkuList(FilteringFlowResult<QuickShopLineItemWrapper> result, FDUserI fdUser) throws ModelException {
