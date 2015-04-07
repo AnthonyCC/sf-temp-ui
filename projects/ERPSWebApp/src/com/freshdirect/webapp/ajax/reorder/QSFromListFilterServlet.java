@@ -18,11 +18,12 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.FilteringFlowResult;
+import com.freshdirect.fdstore.content.FilteringMenuItem;
 import com.freshdirect.fdstore.content.FilteringSortingItem;
 import com.freshdirect.fdstore.content.FilteringValue;
-import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
@@ -37,12 +38,12 @@ import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
-import com.freshdirect.webapp.ajax.reorder.data.EnumQuickShopTab;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopListDetails;
-import com.freshdirect.webapp.ajax.reorder.data.QuickShopListRequestObject;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopPagerValues;
+import com.freshdirect.webapp.ajax.reorder.data.EnumQuickShopTab;
+import com.freshdirect.webapp.ajax.reorder.data.QuickShopListRequestObject;
 import com.freshdirect.webapp.ajax.reorder.data.QuickShopReturnValue;
 import com.freshdirect.webapp.ajax.reorder.service.QuickShopSearchService;
 import com.freshdirect.webapp.ajax.shoppinglist.ShoppingListServlet;
@@ -120,6 +121,8 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 														nav.getSearchTerm(),
 														listDetails);
 		
+		postPopulateEmptyCustomerListsToYourLists(responseData.getMenu(), user);
+		
 		// sorting menu items where needed
 		QuickShopMenuOrderUtil.sortMenuItems(responseData.getMenu());
 		
@@ -129,6 +132,26 @@ public class QSFromListFilterServlet extends QuickShopServlet {
 		return responseData;
 	}
 	
+	private void postPopulateEmptyCustomerListsToYourLists(Map<String, Map<FilteringValue, List<FilteringMenuItem>>> menu, FDUserI user) throws HttpErrorResponse {
+		try {
+			Map<FilteringValue, List<FilteringMenuItem>> yourLists = menu.get(EnumQuickShopFilteringValue.YOUR_LISTS.getParent());
+			if (yourLists == null) {
+				yourLists = new HashMap<FilteringValue, List<FilteringMenuItem>>();
+				List<FilteringMenuItem> emptyYourListsMenuItems = new ArrayList<FilteringMenuItem>();
+				yourLists.put(EnumQuickShopFilteringValue.YOUR_LISTS, emptyYourListsMenuItems);
+			}
+			List<FilteringMenuItem> yourListsMenuItems = yourLists.get(EnumQuickShopFilteringValue.YOUR_LISTS);
+			List<FDCustomerCreatedList> customerCreatedLists = FDListManager.getCustomerCreatedLists(user);
+			for (FDCustomerCreatedList list : customerCreatedLists) {
+				if (list.getCount() == 0) {
+					yourListsMenuItems.add(new FilteringMenuItem(list.getName(), null, 0, EnumQuickShopFilteringValue.YOUR_LISTS));
+				}
+			}
+		} catch (FDResourceException e) {
+			returnHttpError( 500, "An error occured while working on the user's shopping lists: ", e );
+		}
+	}
+
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 		
