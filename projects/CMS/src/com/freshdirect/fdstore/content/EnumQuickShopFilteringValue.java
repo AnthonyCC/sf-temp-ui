@@ -14,18 +14,18 @@ public enum EnumQuickShopFilteringValue implements FilteringValue {
 	TIME_FRAME_60("timeFrame60","60 days",1,true,"TIME FRAME",true,false,false),
 	TIME_FRAME_90("timeFrame90","90 days",1,true,"TIME FRAME",true,false,false),
 	TIME_FRAME_180("timeFrame180","180 days",1,true,"TIME FRAME",true,false,false),
-	
+
 	ORDERS_BY_DATE("ordersByDate",null,2,true,"ORDERS BY DATE",false,false,true),
-	
+
 	DEPT("dept",null,3,true,"DEPARTMENTS",false,true,false),
-	
-	GLUTEN_FREE("glutenFree","Gluten Free",4,false,"PREFERENCES",true,false,false),
-	KOSHER("kosher","Kosher",4,false,"PREFERENCES",true,false,false),
-	LOCAL("local","Local",4,false,"PREFERENCES",true,false,false),
-	ORGANIC("organic","Organic",4,false,"PREFERENCES",true,false,false),
-	ON_SALE("onSale","Sale Items",4,false,"PREFERENCES",true,false,false),
-	
-	YOUR_LISTS("yourLists", "YOUR LISTS,", 1, true, "YOUR LISTS", false,false,false),
+
+	GLUTEN_FREE("glutenFree","Gluten Free",4,false,"PREFERENCES",false,false,false),
+	KOSHER("kosher","Kosher",4,false,"PREFERENCES",false,false,false),
+	LOCAL("local","Local",4,false,"PREFERENCES",false,false,false),
+	ORGANIC("organic","Organic",4,false,"PREFERENCES",false,false,false),
+	ON_SALE("onSale","Sale Items",4,false,"PREFERENCES",false,false,false),
+
+	YOUR_LISTS("yourLists", "YOUR LISTS,", 1, true, "YOUR LISTS", false, false, false),
 	STARTER_LISTS("starterLists", "STARTER LISTS,", 1, true, "STARTER LISTS", false,false,false);
 	
 	
