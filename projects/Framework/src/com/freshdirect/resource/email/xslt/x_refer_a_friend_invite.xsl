@@ -51,7 +51,7 @@
 					<tr><td><img src="https://www.freshdirect.com/media/images/profile/raf_email/transparent_10x10.png" width="300" height="10" alt="" style="display: block;" /></td></tr>
 					<tr><td height="22px"></td></tr>					
 					<tr><td style="padding: 0 10px 0 0; font-family: Verdana, Arial, sans-serif;" ><xsl:value-of select="offerText" disable-output-escaping="yes"/></td></tr>
-					<tr><td style="padding: 20px 10px 10px 10px; font-family: Verdana, Arial, sans-serif; font-size: 12px; word-break: break-word; word-wrap: break-word;"><img src="https://www.freshdirect.com/media/images/profile/raf_email/quote.png" alt="“" /> <xsl:value-of select="userMessage" disable-output-escaping="yes"/>”</td></tr>
+					<tr><td style="padding: 20px 10px 10px 10px; font-family: Verdana, Arial, sans-serif; font-size: 12px; word-break: break-word; word-wrap: break-word;"><img src="https://www.freshdirect.com/media/images/profile/raf_email/quote.png" alt="“" /> <xsl:value-of select="userMessage" disable-output-escaping="yes"/><span style="font-weight:bold;color: #E58816;font-family: Cooper Black, Times New Roman, Sans-serif;"> ”</span></td></tr>
 					<tr><td style="padding: 20px 10px 10px 10px; font-family: Verdana, Arial, sans-serif; font-size: 12px; word-break: break-word; word-wrap: break-word;"><xsl:value-of select="systemMessage" disable-output-escaping="yes"/></td></tr>
 					<tr><td style="padding: 20px 10px 10px 10px;"><a href="{refLink}"><img src="https://www.freshdirect.com/media/images/profile/raf_email/get_started.png" alt="" /></a></td></tr>
 				</table>
