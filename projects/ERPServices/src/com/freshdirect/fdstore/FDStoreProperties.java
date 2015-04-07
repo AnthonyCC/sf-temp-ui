@@ -1390,7 +1390,7 @@ public class FDStoreProperties {
         defaults.put(PROP_LOG_RECOMMENDTATIONS_RESULTS, "false");
 
         // Unit Price Display
-        defaults.put(UNIT_PRICE_DISPLAY_ENABLED,  "false");
+        defaults.put(UNIT_PRICE_DISPLAY_ENABLED,  "true");
 
         //Limiting quickshop all items result in Mobile to set max
         defaults.put(QUICKSHOP_ALL_ITEMS_MAX, "600");
@@ -1399,7 +1399,7 @@ public class FDStoreProperties {
         
         defaults.put(PROP_QUICKSHOP_PAST_ORDERS_VISIBLE_MENU_ITEMS_COUNT, "8");
         
-        defaults.put("feature.rollout.quickshop2_0", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.quickshop2_0", "GLOBAL:ENABLED,false;");
         
         defaults.put("feature.rollout.akamaiimageconvertor", "GLOBAL:ENABLED,false;");
         
