@@ -177,3 +177,7 @@ button[data-component="saveCustomization"]:focus {
 	background-position: -181px -437px;
 }
 
+.qs-actions .cssbutton:after,
+.qs-actions .cssbutton:before {
+  font-size: 14px;
+}

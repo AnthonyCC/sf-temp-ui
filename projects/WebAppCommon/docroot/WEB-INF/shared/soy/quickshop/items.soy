@@ -301,9 +301,9 @@
   </div>
   {if $item.available}
   <div class="itemlist-item-header-buttons">
-    <span class="addtolist cssbutton transparent icon-file2-before purple" data-alignpopup="tc-bc">Save to a List</span>
+    <span class="addtolist cssbutton transparent icon-list-white-before purple" data-alignpopup="tc-bc">Save to a List</span>
     {if $type == 'shopfromlists' and not $replaced}
-  		<span data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-remove-before" data-alignpopup="tc-bc">Remove</span>
+  		<span data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="deletefromlist cssbutton transparent white icon-trash-new-before" data-alignpopup="tc-bc">Remove</span>
   		<span data-itemname="{$item.productName}" data-itemid="{$item.originalLineId}" data-listid="{$item.listId}" class="editinlist save cssbutton transparent purple">Save Changes</span>
     {/if}
   </div>

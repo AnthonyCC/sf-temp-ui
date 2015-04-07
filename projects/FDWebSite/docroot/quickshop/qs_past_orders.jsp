@@ -83,8 +83,8 @@
 
     <tmpl:put name='listactions'>
         <div class="qs-actions">
-          <button class="qs-addtolist ${isQS20 ? "" : "cssbutton purple icon-file2-before"}" data-component="ATLButton" data-ref="#productlist">add all to list</button>
-          <button class="qs-addtocart ${isQS20 ? "" : "cssbutton orange icon-cart-after"}" ${isQS20 ? 'data-component="ATCButton" data-ref="#productlist"' : 'data-alignpopup="tr-br" data-confirm="true" data-confirm-template="common.addalltocartconfirmpopup" data-confirm-data=\'{"container": "#productlist"}\' data-confirm-header="Add all items to cart?" data-confirm-process="FreshDirect.components.AddToCart.allConfirmProcess"'}>add all items on page</button>
+          <button class="qs-addtolist ${isQS20 ? "" : "cssbutton purple icon-list-black-before"}" data-component="ATLButton" data-ref="#productlist">add all to list</button>
+          <button class="qs-addtocart ${isQS20 ? "" : "cssbutton orange icon-cart-new-after"}" ${isQS20 ? 'data-component="ATCButton" data-ref="#productlist"' : 'data-alignpopup="tr-br" data-confirm="true" data-confirm-template="common.addalltocartconfirmpopup" data-confirm-data=\'{"container": "#productlist"}\' data-confirm-header="Add all items to cart?" data-confirm-process="FreshDirect.components.AddToCart.allConfirmProcess"'}>add all items on page</button>
         </div>
     </tmpl:put>
 
