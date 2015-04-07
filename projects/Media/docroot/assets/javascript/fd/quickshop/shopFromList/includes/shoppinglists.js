@@ -60,7 +60,8 @@ var FreshDirect = FreshDirect || {};
   });
 
   shoppinglists.listen();
-
+  
+  $(document).on('click', shoppinglists.placeholder + ' .noitem input', function (e) { e.preventDefault();});
   $(document).on('change', shoppinglists.placeholder + ' input',shoppinglists.handleClick.bind(shoppinglists));
 
   fd.modules.common.utils.register("quickshop.shopFromList", "shoppinglists", shoppinglists, fd);
