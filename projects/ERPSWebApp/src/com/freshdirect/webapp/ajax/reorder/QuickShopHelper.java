@@ -27,6 +27,7 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ConfiguredProductGroup;
@@ -70,7 +71,6 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class QuickShopHelper {
 
-	private static final int TOP_ITEMS_MAX_COUNT = 100;
 	private static final int TIME_LIMIT = -13;
 	private final static Logger LOG = LoggerFactory.getInstance(QuickShopHelper.class);
 	
@@ -389,8 +389,9 @@ public class QuickShopHelper {
 				List<FilteringSortingItem<QuickShopLineItemWrapper>> wrappedItems = QuickShopServlet.prepareForFiltering(result);
 				removeSkuDuplicates(wrappedItems);
 				result = FilteringSortingItem.unwrap(wrappedItems);
-				if (result.size() > TOP_ITEMS_MAX_COUNT) {
-					result = result.subList(0, TOP_ITEMS_MAX_COUNT);
+				final int topItemMaxCount = FDStoreProperties.getQuickShopResultMaxLimit();
+				if (result.size() > topItemMaxCount) {
+					result = result.subList(0, topItemMaxCount);
 				}
 			}
 			if (!result.isEmpty()) {
