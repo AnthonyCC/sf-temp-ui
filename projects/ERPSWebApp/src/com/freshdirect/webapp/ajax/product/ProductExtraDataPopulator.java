@@ -600,7 +600,10 @@ public class ProductExtraDataPopulator {
 		// *** wine info ***
 		
 		/* first check if product is a wine */
-		if (department != null && (WineUtil.getWineAssociateId()).equalsIgnoreCase( department.getContentKey().getId() )) {
+		//APPDEV 4131
+		//if (department != null && (WineUtil.getWineAssociateId()).equalsIgnoreCase( department.getContentKey().getId() )) {
+		
+		if (department != null){
 			WineData wd = new WineData();
 
 			/** code snipped from  WineRegionLabel#doStart method */
