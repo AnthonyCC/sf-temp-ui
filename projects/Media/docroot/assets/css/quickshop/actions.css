@@ -11,6 +11,9 @@
 [data-feature-quickshop="2_0"] .qs-actions {
 	width: 300px;
 }
+[data-feature-quickshop="2_0"] #recipe_form .qs-actions {
+	width: 330px;
+}
 .qs-recipe-actions {
 	width: 330px;
 }
@@ -124,6 +127,12 @@ button.customize.incart{
 [data-feature-quickshop="2_0"] button.qs-addtocart:hover,
 [data-feature-quickshop="2_0"] button.qs-addtocart:focus {
     background-position: -5px -76px;
+}
+
+[data-feature-quickshop="2_0"] #recipe_form button.qs-addtocart{
+  width: 166px;
+  height: 29px;
+  background-position: -5px -405px;
 }
 
 .qs-saverecipe {
