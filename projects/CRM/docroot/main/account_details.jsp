@@ -313,7 +313,13 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
                         </tr>
 						<tr>
                             <td colspan="2"><hr class="gray1px"><b>Mobile Options:</b>
-							<%= custInfo.isDeliveryNotification() || custInfo.isOffersNotification() ? "<br/>&nbsp;&nbsp;&nbsp;Mobile Number:"+custInfo.getMobileNumber().getPhone() : ""%>
+							
+							<!-- APPDEV-4081 Start -->
+							<% if (null != custInfo.getMobileNumber() && null != custInfo.getMobileNumber().getPhone()) {%>
+								<%= custInfo.isDeliveryNotification() || custInfo.isOffersNotification() ? "<br/>&nbsp;&nbsp;&nbsp;Mobile Number:"+custInfo.getMobileNumber().getPhone() : ""%>
+							<% } %>
+							<!-- APPDEV-4081 End -->
+							
 							<%= custInfo.isDeliveryNotification() ? "<br>&nbsp;&nbsp;&nbsp;Notify information about delivery via textmessage" : ""%>
 							<%= custInfo.isOffersNotification() ? "<br>&nbsp;&nbsp;&nbsp;Notify offers/discounts/promotion info via textmessage" : ""%>
 							<%= custInfo.isGoGreen() ? "<br>&nbsp;&nbsp;&nbsp;Turn off paper statement delivery." : "" %>
