@@ -29,7 +29,7 @@ public class QuickShopFilterServlet extends QuickShopServlet {
 
 	private static final Logger LOG = LoggerFactory.getInstance(QuickShopFilterServlet.class);
 
-	private static final Set<FilteringValue> TOP_ITEMS_FILTERS = new HashSet<FilteringValue>();
+	public static final Set<FilteringValue> TOP_ITEMS_FILTERS = new HashSet<FilteringValue>();
 	static {
 		TOP_ITEMS_FILTERS.add(EnumQuickShopFilteringValue.DEPT);
 		TOP_ITEMS_FILTERS.add(EnumQuickShopFilteringValue.GLUTEN_FREE);
