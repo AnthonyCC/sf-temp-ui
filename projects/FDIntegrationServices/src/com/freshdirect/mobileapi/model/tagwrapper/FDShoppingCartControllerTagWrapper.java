@@ -339,6 +339,19 @@ public class FDShoppingCartControllerTagWrapper extends CartEventTagWrapper {
         addRequestValue(REQ_PARAM_IS_QUICKBUY, multipleItemsToCart.isQuickBuy());
 
         List<ProductConfiguration> pcs = multipleItemsToCart.getProductsConfiguration();
+        int index =0;
+        for(ProductConfiguration productConfiguration : pcs){
+        	String skuCode = productConfiguration.getSkuCode();
+        	FDProduct product = FDCachedFactory.getProduct(FDCachedFactory.getProductInfo(skuCode));
+        	FDVariation[] variations = product.getVariations();
+        	String[] variationNames = new String[variations.length];
+        	for (int i = 0; i < variations.length; i++) {
+        		FDVariation variation = variations[i];
+        		variationNames[i] = variation.getName()+ "_" + index;
+        	}
+        	addExpectedRequestValues(variationNames, EMPTY_ARRAY);
+        	index++;
+        }
         for (int idx = 0; idx < pcs.size(); idx++) {
             ProductConfiguration pc = pcs.get(idx);
             addRequestValue(REQ_PARAM_SKU_CODE + "_" + idx, pc.getSkuCode());
