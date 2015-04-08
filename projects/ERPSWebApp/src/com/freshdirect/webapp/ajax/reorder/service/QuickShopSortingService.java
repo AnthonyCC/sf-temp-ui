@@ -61,7 +61,9 @@ public class QuickShopSortingService {
 	}
 
 	public void sortByDeliveryDateAndOrderId(List<QuickShopLineItemWrapper> items) {
-		Collections.sort(items, DELIVERY_DATE_AND_ORDER_ID_COMPARATOR);
+		if (items != null) {
+			Collections.sort(items, DELIVERY_DATE_AND_ORDER_ID_COMPARATOR);
+		}
 	}
 
 	public void sortByWrappedDeliveryDateAndOrderId(List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {

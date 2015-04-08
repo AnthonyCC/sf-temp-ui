@@ -67,6 +67,7 @@ import com.freshdirect.webapp.ajax.quickshop.QuickShopYmalServlet;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.ajax.reorder.data.EnumQuickShopTab;
+import com.freshdirect.webapp.ajax.reorder.service.QuickShopFilterService;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class QuickShopHelper {
@@ -294,6 +295,7 @@ public class QuickShopHelper {
 	public static int getOrderCount(FDUserI user) throws FDResourceException {
 		EnumQuickShopTab tab = EnumQuickShopTab.PAST_ORDERS;
 		List<QuickShopLineItemWrapper> items = getWrappedOrderHistoryUsingCache(user, tab, tab.cacheName);
+		QuickShopFilterService.defaultService().eliminatePreviousProductDuplicatesFromPastOrders(items);
 		return countOrders(items);
 	}
 

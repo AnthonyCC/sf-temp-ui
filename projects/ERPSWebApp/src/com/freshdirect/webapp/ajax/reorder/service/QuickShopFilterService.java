@@ -1,6 +1,8 @@
 package com.freshdirect.webapp.ajax.reorder.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -81,8 +83,10 @@ public class QuickShopFilterService {
 		FilteringFlowResult<QuickShopLineItemWrapper> result = null;
 		List<QuickShopLineItemWrapper> items = QuickShopHelper.getWrappedOrderHistoryUsingCache(user, tab, cacheName);
 		if (EnumQuickShopTab.PAST_ORDERS.equals(tab)) {
+			QuickShopSortingService.defaultService().sortByDeliveryDateAndOrderId(items);
 			String yourLastOrderId = getYourLastOrderId(items);
 			requestData.setYourLastOrderId(yourLastOrderId);
+			eliminatePreviousProductDuplicatesFromPastOrders(items);
 		}
 		QuickShopSearchService.defaultService().search(nav.getSearchTerm(), items);
 		List<FilteringSortingItem<QuickShopLineItemWrapper>> filterItems = QuickShopServlet.prepareForFiltering(items);
@@ -93,10 +97,38 @@ public class QuickShopFilterService {
 		return result;
 	}
 
+	/**
+	 * Remove older product duplicates by past orders.
+	 * <br>
+	 * IMPORTANT: Delivery Date and OrderId Sort needs to be applied before!
+	 * @param items
+	 */
+	public void eliminatePreviousProductDuplicatesFromPastOrders(List<QuickShopLineItemWrapper> items) {
+		if (items != null) {
+			Set<String> itemKeys = new HashSet<String>();
+			Iterator<QuickShopLineItemWrapper> iterator = items.iterator();
+			while (iterator.hasNext()) {
+				QuickShopLineItemWrapper item = iterator.next();
+				String contentKey = item.getProduct().getContentKey().getId();
+				if (itemKeys.contains(contentKey)) {
+					iterator.remove();
+				} else {
+					itemKeys.add(contentKey);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Gives the order id of the latest order.
+	 * <br>
+	 * IMPORTANT: Delivery Date and OrderId Sort needs to be applied before!
+	 * @param items
+	 * @return
+	 */
 	private String getYourLastOrderId(List<QuickShopLineItemWrapper> items) {
 		String result = null;
 		if (items != null && !items.isEmpty()) {
-			QuickShopSortingService.defaultService().sortByDeliveryDateAndOrderId(items);
 			result = items.get(0).getOrderId();
 		}
 		return result;
