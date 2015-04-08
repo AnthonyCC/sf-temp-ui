@@ -240,8 +240,9 @@ public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>
 		
 		Collections.sort(items, DELIVERY_DATE_COMPARATOR);
 		
+		//APPDEV4057
 		//remove sku duplicates
-		Set<String> skus = new HashSet<String>();
+		/*Set<String> skus = new HashSet<String>();
 		Iterator<FilteringSortingItem<QuickShopLineItemWrapper>> it = items.iterator();
 		while(it.hasNext()){
 			FilteringSortingItem<QuickShopLineItemWrapper> item = it.next();
@@ -250,7 +251,7 @@ public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>
 				continue;
 			}
 			skus.add(item.getNode().getItem().getSkuCode());
-		}
+		}*/
 		
 	}
 	
