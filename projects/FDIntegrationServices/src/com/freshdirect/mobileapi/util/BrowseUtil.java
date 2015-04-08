@@ -242,7 +242,7 @@ public class BrowseUtil {
         if (grapes.size() > 0) filters.put("grape", grapes);
         if (typeFilters.size() > 0) filters.put("type", typeFilters);
         
-        //categories= customizeCaegoryListForIpad(categories, categorySections);
+        categories= customizeCaegoryListForIpad(categories, categorySections);
         
         if(categories.size() > 0 && !ACTION_GET_CATEGORYCONTENT_PRODUCTONLY.equals(action)) {
         	ListPaginator<com.freshdirect.mobileapi.model.Category> paginator = new ListPaginator<com.freshdirect.mobileapi.model.Category>(
@@ -360,11 +360,21 @@ public class BrowseUtil {
 		//This method Splits the categories List into sublists based on sectionHeader and sorts each alphabetically
 	    private static  List<Category> customizeCaegoryListForIpad(List<Category> categories, List<CategorySectionModel> categorySections){
 	    	//get the size of categorySections which we will use to create number of sublists
-	    	int numOfSections = categorySections.size();
+	    	int numOfSections = categorySections==null||categorySections.isEmpty()? 0 : categorySections.size();
 	    	NameComparator nameComparator = new NameComparator();
 	    	List<List<Category>> sublists = new ArrayList<List<Category>>();
 	    	
 	    	// Loop on the categorySections : inside loop on categories to split into sublists based on sectionHeader
+	    	if(categorySections==null||categorySections.isEmpty()){
+	    		List<Category> nonPrefCats = new ArrayList<Category>();
+	    		for(Category cat : categories){
+	    			if(cat.getSectionHeader()!=null && !cat.getSectionHeader().isEmpty() ){
+	    				nonPrefCats.add(cat);
+	    			}
+	    		}
+	    		Collections.sort(nonPrefCats, nameComparator);
+	    		sublists.add(nonPrefCats);
+	    	}
 	    	for(int i = 0;i < numOfSections;i++){
 	    		List<Category> tempSublist = new ArrayList<Category>();
 	    		for(Category cat:categories){
