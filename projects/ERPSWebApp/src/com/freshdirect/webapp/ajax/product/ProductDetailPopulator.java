@@ -104,7 +104,7 @@ import com.freshdirect.webapp.util.RestrictionUtil;
 
 public class ProductDetailPopulator {
 
-	private static final java.util.logging.Logger LOG = LoggerFactory.getInstance( ProductDetailPopulator.class );
+	private static final Logger LOG = LoggerFactory.getInstance( ProductDetailPopulator.class );
 
 	
 	/**
