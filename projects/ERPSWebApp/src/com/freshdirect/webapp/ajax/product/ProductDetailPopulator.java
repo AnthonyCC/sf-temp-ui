@@ -104,7 +104,7 @@ import com.freshdirect.webapp.util.RestrictionUtil;
 
 public class ProductDetailPopulator {
 
-	private static final Logger LOG = LoggerFactory.getInstance( ProductDetailPopulator.class );
+	private static final java.util.logging.Logger LOG = LoggerFactory.getInstance( ProductDetailPopulator.class );
 
 	
 	/**
@@ -1234,11 +1234,17 @@ public class ProductDetailPopulator {
 	}
 
 	public static String getDefaultSalesUnit( FDProduct fdProduct ) {
+		LOG.debug("Logging into getDefaultSalesUNit()"); 
 		FDSalesUnit su = fdProduct.getDefaultSalesUnit();
 		if ( su == null ) {
+			LOG.debug("Displaying Default Value if SalesUnit attribute is null " +su); // displays the default Value of FDSalesUnit attribute  
+			
 			su = fdProduct.getSalesUnits()[0];
 		}
 		String salesUnit = su != null ? su.getName() : "unknown salesunit";
+		
+		LOG.debug("desired value"+salesUnit);//Getting the desired value of SalesUnit
+		
 		return salesUnit;
 	}
 
