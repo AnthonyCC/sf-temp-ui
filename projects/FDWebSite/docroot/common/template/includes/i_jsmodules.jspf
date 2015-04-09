@@ -2,5 +2,5 @@
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <%-- this file will be included just before the closing </body> tag --%>
 <soy:import packageName="common"/>
-<jwr:script src="/fdmodules.js"  useRandomParam="false" />
-<jwr:script src="/fdcomponents.js"  useRandomParam="false" />
+<jwr:script src="/fdmodules.js?publishId=201504"  useRandomParam="false" />
+<jwr:script src="/fdcomponents.js?publishId=201504"  useRandomParam="false" />
