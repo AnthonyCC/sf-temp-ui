@@ -83,6 +83,7 @@ public class UnattendedDeliveryTag extends AbstractGetterTag {
 		return FDDeliveryManager.getInstance().getZoneInfo(thisAddress, date != null ? date : new Date(), null, null);
 	}
 	
+	// NUll Point check added.
 	private boolean checkZone(DlvZoneInfoModel zoneInfo, ErpAddressModel thisAddress)  {
 		if(zoneInfo !=null && thisAddress !=null)
 		{
