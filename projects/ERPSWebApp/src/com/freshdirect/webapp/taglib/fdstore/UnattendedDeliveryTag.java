@@ -87,7 +87,7 @@ public class UnattendedDeliveryTag extends AbstractGetterTag {
 	private boolean checkZone(DlvZoneInfoModel zoneInfo, ErpAddressModel thisAddress)  {
 		if(zoneInfo !=null && thisAddress !=null)
 		{
-			if (zoneInfo.isUnattended() || (checkUserOptions &&	!thisAddress.getUnattendedDeliveryFlag().equals(EnumUnattendedDeliveryFlag.NOT_SEEN)))
+			if (zoneInfo.isUnattended() || (checkUserOptions && !EnumUnattendedDeliveryFlag.NOT_SEEN.equals(thisAddress.getUnattendedDeliveryFlag())))
 			{
 				return true;
 			}
