@@ -54,8 +54,11 @@ public class GetDeliveryETAInfoTag extends AbstractGetterTag {
 						}
 					}
 				}
-
-				if(earlyScheduledDlvOrderInfo != null && earlyScheduledDlvOrderETAInfo != null){ 
+				System.out.println("*******ManifestETAenabled()*********"+earlyScheduledDlvOrderETAInfo.isManifestETAenabled());
+				
+				//APP DEV 4132 Change start
+				//if(earlyScheduledDlvOrderInfo != null && earlyScheduledDlvOrderETAInfo != null){
+				if(earlyScheduledDlvOrderInfo != null && earlyScheduledDlvOrderETAInfo != null && (!earlyScheduledDlvOrderETAInfo.isManifestETAenabled())){
 					DeliveryETAInfo deliveryETAInfo = new DeliveryETAInfo(earlyScheduledDlvOrderInfo, earlyScheduledDlvOrderETAInfo);
 					deliveryETAInfo.setHasMultipleScheduledOrders(scheduledOrderInfos.size() > 1 ? true : false);
 					LOGGER.debug("User's ETA window warning info: " + deliveryETAInfo.toString());
