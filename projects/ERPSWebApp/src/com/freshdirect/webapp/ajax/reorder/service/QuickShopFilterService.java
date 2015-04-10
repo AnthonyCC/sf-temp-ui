@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.ajax.reorder.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -86,37 +87,66 @@ public class QuickShopFilterService {
 			QuickShopSortingService.defaultService().sortByDeliveryDateAndOrderId(items);
 			String yourLastOrderId = getYourLastOrderId(items);
 			requestData.setYourLastOrderId(yourLastOrderId);
-			eliminatePreviousProductDuplicatesFromPastOrders(items);
 		}
 		QuickShopSearchService.defaultService().search(nav.getSearchTerm(), items);
 		List<FilteringSortingItem<QuickShopLineItemWrapper>> filterItems = QuickShopServlet.prepareForFiltering(items);
 		QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, user, filters, filterItems, QuickShopHelper.getActiveReplacements(session), tab, requestData);
 		LOG.info("Start filtering process");
 		result = filter.doFlow(nav, filterItems);
+		eliminatePreviousProductDuplicatesFromPastOrders(result.getItems());
 		QuickShopHelper.postProcessPopulate(user, result, session);
 		return result;
 	}
 
 	/**
-	 * Remove older product duplicates by past orders.
-	 * <br>
-	 * IMPORTANT: Delivery Date and OrderId Sort needs to be applied before!
+	 * Remove older product duplicates from past orders.
+	 *
 	 * @param items
 	 */
-	public void eliminatePreviousProductDuplicatesFromPastOrders(List<QuickShopLineItemWrapper> items) {
-		if (items != null) {
+	public void eliminatePreviousProductDuplicatesFromPastOrders(List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {
 			Set<String> itemKeys = new HashSet<String>();
-			Iterator<QuickShopLineItemWrapper> iterator = items.iterator();
-			while (iterator.hasNext()) {
-				QuickShopLineItemWrapper item = iterator.next();
-				String contentKey = item.getProduct().getContentKey().getId();
-				if (itemKeys.contains(contentKey)) {
-					iterator.remove();
-				} else {
-					itemKeys.add(contentKey);
-				}
+			Map<String, Integer> indicesOfItems = collectItemIndicesByOrderIdAndContentKeyId(items);
+			List<FilteringSortingItem<QuickShopLineItemWrapper>> localItems = new ArrayList<FilteringSortingItem<QuickShopLineItemWrapper>>(items);
+			QuickShopSortingService.defaultService().sortByWrappedDeliveryDateAndOrderId(localItems);
+			Set<Integer> itemIndicesToBeRemoved = collectDuplicateItemIndicesToBeRemoved(itemKeys,
+					indicesOfItems, localItems);
+			removeDuplicateItemsByIndices(items, itemIndicesToBeRemoved);
+	}
+
+	private void removeDuplicateItemsByIndices(List<FilteringSortingItem<QuickShopLineItemWrapper>> items, Set<Integer> itemIndicesToBeRemoved) {
+		Iterator<FilteringSortingItem<QuickShopLineItemWrapper>> resultIterator = items.iterator();
+		int resultIndex = 0;
+		while (resultIterator.hasNext()) {
+			resultIterator.next();
+			if (itemIndicesToBeRemoved.contains(resultIndex)) {
+				resultIterator.remove();
+			}
+			resultIndex++;
+		}
+	}
+
+	private Set<Integer> collectDuplicateItemIndicesToBeRemoved(Set<String> itemKeys, Map<String, Integer> indicesOfItems, List<FilteringSortingItem<QuickShopLineItemWrapper>> localItems) {
+		Iterator<FilteringSortingItem<QuickShopLineItemWrapper>> iterator = localItems.iterator();
+		Set<Integer> itemIndicesToBeRemoved = new HashSet<Integer>();
+		while (iterator.hasNext()) {
+			FilteringSortingItem<QuickShopLineItemWrapper> item = iterator.next();
+			String contentKey = item.getModel().getProduct().getContentKey().getId();
+			if (itemKeys.contains(contentKey)) {
+				itemIndicesToBeRemoved.add(indicesOfItems.get(item.getModel().getOrderId() + contentKey));
+			} else {
+				itemKeys.add(contentKey);
 			}
 		}
+		return itemIndicesToBeRemoved;
+	}
+
+	private Map<String, Integer> collectItemIndicesByOrderIdAndContentKeyId(List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {
+		Map<String, Integer> indicesOfItems = new HashMap<String, Integer>();
+		int index=0;
+		for (FilteringSortingItem<QuickShopLineItemWrapper> item : items) {
+			indicesOfItems.put(item.getModel().getOrderId() + item.getModel().getProduct().getContentKey().getId(), index++);
+		}
+		return indicesOfItems;
 	}
 
 	/**
