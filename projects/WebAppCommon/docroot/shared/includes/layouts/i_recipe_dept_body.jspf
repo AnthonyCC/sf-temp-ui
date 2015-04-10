@@ -36,7 +36,7 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
 		
 	<table width="<%=W_RECIPE_DEPT_BODY_TOTAL%>" border="0" cellspacing="0" cellpadding="0">
       <tr>
-        <td colspan="3" width="206" height="25" valign="bottom"><img src="/media_stat/recipe/rechm_tab_choose.gif" width="206" height="25" alt=""></td>
+        <td colspan="3" width="206" height="25" valign="bottom"><img src="/media_stat/recipe/rechm_tab_choose.gif" width="206" height="25" alt="Choose a Category"></td>
         <td colspan="2" height="25" style="border-bottom: solid 2px #FF9933;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt=""></td>
         <td rowspan="2" width="8" valign="bottom" height="31"><img src="/media_stat/recipe/rechm_corn_tr.gif" width="8" height="8" border="0" alt=""></td>
       </tr>
@@ -117,7 +117,7 @@ if (editorialPath!=null && !"".equals(editorialPath.trim())) {  %>
       <tr>
         <td valign="bottom" style="border-left: solid 2px #FF9933;" height="402"><img src="/media_stat/images/layout/clear.gif" width="6" height="402" alt=""></td>
 		<td height="402"><img src="/media_stat/images/layout/clear.gif" width="1" height="402" alt=""></td>
-        <td width="185" height="410" colspan="2" rowspan="2" align="right" valign="bottom" style="background-image: url('/media_stat/recipe/bg_bot_image.gif');"><img src="/media/images/navigation/department/recipes/rechome/rechm_bot_image.jpg" width="185" height="410"></td>
+        <td width="185" height="410" colspan="2" rowspan="2" align="right" valign="bottom" style="background-image: url('/media_stat/recipe/bg_bot_image.gif');"><img src="/media/images/navigation/department/recipes/rechome/rechm_bot_image.jpg" width="185" height="410" alt="Recipe books"></td>
       </tr>
       <tr>
         <td width="8" height="8" valign="bottom" style="background-image: url('/media_stat/recipe/bg_left_image.gif');"><img src="/media_stat/recipe/rechm_corn_bl.gif" width="8" height="8" alt=""></td>
