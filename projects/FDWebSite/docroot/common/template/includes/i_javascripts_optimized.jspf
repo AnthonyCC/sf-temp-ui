@@ -40,11 +40,11 @@
   }());
   </script>
 
-	<jwr:script src="/fdlibs_opt.js?publishId=201504" useRandomParam="false" />
+	<jwr:script src="/fdlibs_opt.js" useRandomParam="false" />
 	<%--<jwr:script src="/fdproto.js" useRandomParam="false" />--%>
   <% if (request.getAttribute("noyui") == null || !request.getAttribute("noyui").equals(true)) { %>
-    <jwr:script src="/fdlibsyui.js?publishId=201504"  useRandomParam="false" />
-    <jwr:script src="/fdccl.js?publishId=201504"  useRandomParam="false" />
+    <jwr:script src="/fdlibsyui.js"  useRandomParam="false" />
+    <jwr:script src="/fdccl.js"  useRandomParam="false" />
   <% } %>
 
 	<certona:resonanceJSObject action="init"/>
@@ -70,10 +70,10 @@
 		initJQuery();
 	</script>
 	
-	<jwr:script src="/fdmisc.js?publishId=201504" useRandomParam="false" />
+	<jwr:script src="/fdmisc.js" useRandomParam="false" />
 	
 	<%-- if (request.getRequestURI().indexOf("brownie_points.jsp") == -1)  { --%>
-		<jwr:script src="/commonjavascript.js?publishId=201504" useRandomParam="false" />
+		<jwr:script src="/commonjavascript.js" useRandomParam="false" />
 	<%-- } else { --%>
 		<%-- jwr:script src="/composite_common.js" useRandomParam="false" / --%>
 	<%-- } --%>

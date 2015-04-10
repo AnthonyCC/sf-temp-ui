@@ -28,13 +28,13 @@
   }());
   </script>
 
-	<jwr:script src="/fdlibs.js?publishId=201504" useRandomParam="false" />
-	<script src="/assets/javascript/jquery/corner/jquery.corner.js?publishId=201504" type="text/javascript" language="javascript"></script>
-	<fd:javascript src="/assets/javascript/dialog-base.js?publishId=201504" />
-	<fd:javascript src="/assets/javascript/atcPendingOrder.js?publishId=201504"/>
-	<fd:javascript src="/assets/javascript/popupLogicDispatcher.js?publishId=201504"/>
-	<fd:javascript src="/assets/javascript/coremetrics.js?publishId=201504"/>
-	<fd:javascript src="/assets/javascript/USQLegalWarning.js?publishId=201504"/>
+	<jwr:script src="/fdlibs.js" useRandomParam="false" />
+	<script src="/assets/javascript/jquery/corner/jquery.corner.js" type="text/javascript" language="javascript"></script>
+	<fd:javascript src="/assets/javascript/dialog-base.js" />
+	<fd:javascript src="/assets/javascript/atcPendingOrder.js"/>
+	<fd:javascript src="/assets/javascript/popupLogicDispatcher.js"/>
+	<fd:javascript src="/assets/javascript/coremetrics.js"/>
+	<fd:javascript src="/assets/javascript/USQLegalWarning.js"/>
 	
 
   <%-- HTML5 support for IE8 --%>
@@ -66,16 +66,16 @@
 	</script>
 	
 	<% if (request.getRequestURI().indexOf("/checkout/step_1_choose.jsp") == -1)  { %>
-		<fd:javascript src="/assets/javascript/prototype.js?publishId=201504"/>
+		<fd:javascript src="/assets/javascript/prototype.js"/>
 		<%-- when upgrading scriptaculous please create a new directory for the version --%>
 		<script src="/assets/javascript/scriptaculous/1.9.0/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
-		<fd:javascript src="/assets/javascript/modalbox.js?publishId=201504"/>
+		<fd:javascript src="/assets/javascript/modalbox.js"/>
 	<% } %>
 	<% if (request.getRequestURI().indexOf("brownie_points.jsp") == -1)  { %>
-		<fd:javascript src="/assets/javascript/common_javascript.js?publishId=201504"/>
+		<fd:javascript src="/assets/javascript/common_javascript.js"/>
 	<% } %>
-	<fd:javascript src="/assets/javascript/rounded_corners.inc.js?publishId=201504"/>
-	<fd:javascript src="/assets/javascript/FD_PromoEligibility.js?publishId=201504"/>
+	<fd:javascript src="/assets/javascript/rounded_corners.inc.js"/>
+	<fd:javascript src="/assets/javascript/FD_PromoEligibility.js"/>
 
 	<%
 		/* Google Analytics Pixel */
