@@ -277,19 +277,8 @@ public class QuickShopHelper {
 	}
 
 	public static int getListCount(FDUserI user) throws FDResourceException {
-		EnumQuickShopTab tab = EnumQuickShopTab.CUSTOMER_LISTS;
-		List<QuickShopLineItemWrapper> items = EhCacheUtil.getListFromCache(tab.cacheName, user.getIdentity().getErpCustomerPK());
-		if (items == null) {
-			items = getWrappedCustomerCreatedLists(user, EnumQuickShopTab.CUSTOMER_LISTS);
-			if (!items.isEmpty()) {
-				EhCacheUtil.putListToCache(tab.cacheName, user.getIdentity().getErpCustomerPK(), new ArrayList<QuickShopLineItemWrapper>(items));
-			}
-		}
-		Set<String> listIds = new HashSet<String>();
-		for (QuickShopLineItemWrapper item : items) {
-			listIds.add(item.getCclId());
-		}
-		return listIds.size();
+		List<FDCustomerCreatedList> customerCreatedLists = FDListManager.getCustomerCreatedLists(user);
+		return customerCreatedLists.size();
 	}
 
 	public static int getOrderCount(FDUserI user) throws FDResourceException {
