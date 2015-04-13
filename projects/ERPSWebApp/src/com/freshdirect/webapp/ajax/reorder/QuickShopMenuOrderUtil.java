@@ -45,17 +45,9 @@ public class QuickShopMenuOrderUtil {
 	
 	/** Sorts orders by dlv. start time, descending */
 	private final static Comparator<FilteringMenuItem> ORDER_COMPARATOR = new Comparator<FilteringMenuItem>() {
-		private final SimpleDateFormat formatter = new SimpleDateFormat(DateUtil.MON_D_YEAR_PATTERN);
 		@Override
 		public int compare(FilteringMenuItem o1, FilteringMenuItem o2) {
-			try {
-				Date d1 = formatter.parse(o1.getName());
-				Date d2 = formatter.parse(o2.getName());
-				return d2.compareTo(d1);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			return 0;
+			return o2.getDeliveryDate().compareTo(o1.getDeliveryDate());
 		}
 	};
 	

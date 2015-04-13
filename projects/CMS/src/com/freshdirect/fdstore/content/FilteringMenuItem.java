@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.content;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Date;
 
 public class FilteringMenuItem implements Serializable {
 
@@ -15,6 +16,7 @@ public class FilteringMenuItem implements Serializable {
 	private FilteringValue filter;
 	private String info;
 	private String year;
+	private Date deliveryDate;
 
 	public FilteringMenuItem() {
 
@@ -99,6 +101,14 @@ public class FilteringMenuItem implements Serializable {
 
 	public void setYear(String year) {
 		this.year = year;
+	}
+
+	public Date getDeliveryDate() {
+		return deliveryDate;
+	}
+
+	public void setDeliveryDate(Date deliveryDate) {
+		this.deliveryDate = deliveryDate;
 	}
 
 	@Override

@@ -177,6 +177,7 @@ public class QuickShopFilterValueDecorator extends GenericFilterDecorator<Filter
 					Date deliveryDate = node.getDeliveryDate();
 					menu.setName(DateUtil.formatDateWithMonDYear(deliveryDate));
 					menu.setYear(DateUtil.formatDateWithYear(deliveryDate));
+					menu.setDeliveryDate(deliveryDate);
 					menu.setFilteringUrlValue(node.getOrderId());
 					menu.setFilter(filter);
 					menu.setInfo(node.getOrderStatus());

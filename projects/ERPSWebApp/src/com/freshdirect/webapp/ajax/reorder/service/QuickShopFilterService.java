@@ -84,7 +84,6 @@ public class QuickShopFilterService {
 		FilteringFlowResult<QuickShopLineItemWrapper> result = null;
 		List<QuickShopLineItemWrapper> items = QuickShopHelper.getWrappedOrderHistoryUsingCache(user, tab, cacheName);
 		if (EnumQuickShopTab.PAST_ORDERS.equals(tab)) {
-			QuickShopSortingService.defaultService().sortByDeliveryDateAndOrderId(items);
 			String yourLastOrderId = getYourLastOrderId(items);
 			requestData.setYourLastOrderId(yourLastOrderId);
 		}
@@ -159,6 +158,7 @@ public class QuickShopFilterService {
 	private String getYourLastOrderId(List<QuickShopLineItemWrapper> items) {
 		String result = null;
 		if (items != null && !items.isEmpty()) {
+			QuickShopSortingService.defaultService().sortByDeliveryDateAndOrderId(items);
 			result = items.get(0).getOrderId();
 		}
 		return result;
