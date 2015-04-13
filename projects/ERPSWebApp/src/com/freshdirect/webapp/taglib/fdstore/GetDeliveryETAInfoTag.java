@@ -30,7 +30,7 @@ public class GetDeliveryETAInfoTag extends AbstractGetterTag {
 
 	}
 
-	protected DeliveryETAInfo getDeliveryETAInfo(FDUserI user) throws FDResourceException {
+protected DeliveryETAInfo getDeliveryETAInfo(FDUserI user) throws FDResourceException {
 		
 		if (user != null && user.getLevel() >= FDUserI.RECOGNIZED) {
 			
@@ -40,7 +40,8 @@ public class GetDeliveryETAInfoTag extends AbstractGetterTag {
 			FDDeliveryETAModel earlyScheduledDlvOrderETAInfo = null;
 			
 			List<FDOrderInfoI> scheduledOrderInfos = user.getScheduledOrdersForDelivery(true);
-			
+			//APP DEV 4132 Change start
+			boolean isETAEnabled = false;
 			if(scheduledOrderInfos != null && scheduledOrderInfos.size() > 0) {
 				for(Iterator<FDOrderInfoI> i = scheduledOrderInfos.iterator(); i.hasNext(); ){
 					earlyScheduledDlvOrderInfo = (FDOrderInfoI) i.next();
@@ -48,6 +49,7 @@ public class GetDeliveryETAInfoTag extends AbstractGetterTag {
 						earlyScheduledDlvOrderETAInfo = dlvMgr.getETAWindowBySaleId(earlyScheduledDlvOrderInfo.getErpSalesId());
 						if(earlyScheduledDlvOrderETAInfo != null 
 								&& (earlyScheduledDlvOrderETAInfo.isEmailETAenabled() || earlyScheduledDlvOrderETAInfo.isSmsETAenabled())) {
+							isETAEnabled = true;
 							break;
 						} else {
 							continue;
@@ -56,9 +58,9 @@ public class GetDeliveryETAInfoTag extends AbstractGetterTag {
 				}
 				System.out.println("*******ManifestETAenabled()*********"+earlyScheduledDlvOrderETAInfo.isManifestETAenabled());
 				
-				//APP DEV 4132 Change start
+				
 				//if(earlyScheduledDlvOrderInfo != null && earlyScheduledDlvOrderETAInfo != null){
-				if(earlyScheduledDlvOrderInfo != null && earlyScheduledDlvOrderETAInfo != null && (!earlyScheduledDlvOrderETAInfo.isManifestETAenabled())){
+				if(earlyScheduledDlvOrderInfo != null && earlyScheduledDlvOrderETAInfo != null && isETAEnabled){
 					DeliveryETAInfo deliveryETAInfo = new DeliveryETAInfo(earlyScheduledDlvOrderInfo, earlyScheduledDlvOrderETAInfo);
 					deliveryETAInfo.setHasMultipleScheduledOrders(scheduledOrderInfos.size() > 1 ? true : false);
 					LOGGER.debug("User's ETA window warning info: " + deliveryETAInfo.toString());
