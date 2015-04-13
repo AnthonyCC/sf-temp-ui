@@ -30,6 +30,17 @@ var FreshDirect = FreshDirect || {};
 							.reduce(reduceValues,{ filterIdList:[] });
 			}
 		},
+		render: {
+			value: function (data) {
+				DATALISTWIDGET.render.call(this, data);
+				
+				if ($(this.placeholder + ' ul li').size() === 0) {
+					$(this.placeholder).hide();
+				} else {
+					$(this.placeholder).show();
+				}
+			}
+		},
 		handleClick:{
 			value:function(clickEvent){
 			}
