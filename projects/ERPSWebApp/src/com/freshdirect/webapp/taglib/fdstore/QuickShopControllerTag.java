@@ -120,7 +120,10 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 					// clean and remove duplicate product selections 
 					//
 					if (originalLines != null) {
-						List<FDCartLineI> cleanLines = OrderLineUtil.cleanAndRemoveDuplicateProductSelections(originalLines,false);
+					
+						//APPDEV4057
+						//List<FDCartLineI> cleanLines = OrderLineUtil.cleanAndRemoveDuplicateProductSelections(originalLines,false);
+						List<FDCartLineI> cleanLines = OrderLineUtil.cleanProductSelections(originalLines,false);
 						quickCart.setProducts(cleanLines);
 					}
 				}

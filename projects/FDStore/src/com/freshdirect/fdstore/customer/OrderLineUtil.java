@@ -115,6 +115,11 @@ public class OrderLineUtil {
 		return removeDuplicateProductSelections(cleanList);
 	}
 	
+	//APPDEV4057
+	public static List<FDCartLineI> cleanProductSelections(List<FDCartLineI> productSelections, boolean removeUnavailable) throws FDResourceException {
+		return update(productSelections,removeUnavailable);
+	}
+	
 
 	public static List<FDCartLineI> removeDuplicateProductSelections(List<FDCartLineI> productSelections) throws FDResourceException {
 		List<FDCartLineI> cleanList = new ArrayList<FDCartLineI>(productSelections);
