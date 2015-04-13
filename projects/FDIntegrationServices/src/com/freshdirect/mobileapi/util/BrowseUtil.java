@@ -31,6 +31,7 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.TagModel;
+import com.freshdirect.fdstore.content.util.SortStrategyElement;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -113,7 +114,16 @@ public class BrowseUtil {
         	layoutManagerSetting.setReturnSecondaryFolders(true);//Hardcoded for mobile api
             ItemGrabberTagWrapper itemGrabberTagWrapper = new ItemGrabberTagWrapper(user.getFDSessionUser());
             contents = itemGrabberTagWrapper.getProducts(layoutManagerSetting, currentFolder);
-
+            
+            // Hack to make tablet work for presidents picks, tablet uses /browse/category call with department="picks_love". instead of /whatsgood/category/picks_love/
+            if(currentFolder instanceof CategoryModel 
+            			&& ((CategoryModel)currentFolder).getProductPromotionType() != null) {
+            	layoutManagerSetting.setFilterUnavailable(true);
+            	List<SortStrategyElement> list = new ArrayList<SortStrategyElement>();
+            	list.add(new SortStrategyElement(SortStrategyElement.NO_SORT));
+            	layoutManagerSetting.setSortStrategy(list);
+            }
+            
             ItemSorterTagWrapper sortTagWrapper = new ItemSorterTagWrapper(user);
             sortTagWrapper.sort(contents, layoutManagerSetting.getSortStrategy());
 
