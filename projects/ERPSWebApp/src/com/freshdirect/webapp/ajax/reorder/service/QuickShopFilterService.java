@@ -92,7 +92,7 @@ public class QuickShopFilterService {
 		QuickShopFilterImpl filter = new QuickShopFilterImpl(nav, user, filters, filterItems, QuickShopHelper.getActiveReplacements(session), tab, requestData);
 		LOG.info("Start filtering process");
 		result = filter.doFlow(nav, filterItems);
-		// APPDEV-4092
+		// APPDEV-4057
 		//eliminatePreviousProductDuplicatesFromPastOrders(result.getItems());
 		QuickShopHelper.postProcessPopulate(user, result, session);
 		return result;
