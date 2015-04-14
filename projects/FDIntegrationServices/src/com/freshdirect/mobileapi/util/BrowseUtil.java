@@ -230,7 +230,7 @@ public class BrowseUtil {
 
             		Category category = Category.wrap(categoryModel);
 					addCategoryHeadline(categorySections, categoryModel, category);
-
+					boolean remove = removeCategoryToMatchStorefront(categorySections, categoryModel, category);
 					category.setNoOfProducts(0);
 					//Change this as well.
 					if(!categoryModel.getSubcategories().isEmpty())
@@ -238,8 +238,9 @@ public class BrowseUtil {
 					else
 						category.setBottomLevel(true);
 						
-					
-					categories.add(category);
+					if(!remove){
+						categories.add(category);
+					}
             		categoryIDs.add(categoryModel.getContentKey().getId());
             	}
             }
@@ -326,6 +327,19 @@ public class BrowseUtil {
 		}
 	}
 	
+	private static boolean removeCategoryToMatchStorefront(List<CategorySectionModel> categorySections,
+			CategoryModel categoryModel, Category category){
+		//The section Header is already set in category - see @addCategoryHeadline
+		if(category.getSectionHeader()!=null && !category.getSectionHeader().isEmpty()){
+			return false;
+		} else {
+			if(categorySections!=null && !categorySections.isEmpty() && !categoryModel.isPreferenceCategory()){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	 private static  boolean passesFilter(ProductModel product,
 				HttpServletRequest request) {
 	        return filterTags(product, request) && filterBrands(product, request);
@@ -400,6 +414,7 @@ public class BrowseUtil {
 	    	//For Shop By sectioHeader is null
 	    	List<Category> temp = new ArrayList<Category>();
 	    	for(Category cat : categories){
+	    		
 	    		if(cat.getSectionHeader()==null || cat.getSectionHeader().isEmpty() ){
 	    			temp.add(cat);
 	    		}
