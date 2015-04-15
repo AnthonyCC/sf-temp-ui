@@ -90,7 +90,7 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 			<soy:render template="common.ymalCarousel" data="${deals}" />
 		</div>
         <div id="top-items" class="">
-            <potato:recommender siteFeature="DYF" name="topItems" maxItems="24" cmEventSource="BROWSE" sendVariant="true" />
+            <potato:recommender siteFeature="TOP_ITEMS_QS" name="topItems" maxItems="24" cmEventSource="BROWSE" sendVariant="true" />
             <soy:render template="common.yourTopItemsCarousel" data="${topItems}" />
         </div>
 		<div id="categories">
