@@ -267,8 +267,7 @@ public class QuickShopFilterImpl extends FilteringFlow<QuickShopLineItemWrapper>
 	@Override
 	protected void preProcess(List<FilteringSortingItem<QuickShopLineItemWrapper>> items) {
 		if (EnumQuickShopTab.PAST_ORDERS.equals(tabType)) {
-			// APPDEV-4057
-			//QuickShopHelper.removeSkuDuplicatesInPastOrders(items);
+			QuickShopHelper.removeSkuDuplicatesInPastOrders(items);
 		}
 		if (EnumQuickShopTab.PAST_ORDERS.equals(tabType) && items != null && !items.isEmpty()) {
 			if (requestData.getOrderIdList() == null || requestData.getOrderIdList().isEmpty()) {
