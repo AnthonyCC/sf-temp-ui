@@ -56,10 +56,7 @@ protected DeliveryETAInfo getDeliveryETAInfo(FDUserI user) throws FDResourceExce
 						}
 					}
 				}
-				System.out.println("*******ManifestETAenabled()*********"+earlyScheduledDlvOrderETAInfo.isManifestETAenabled());
-				
-				
-				//if(earlyScheduledDlvOrderInfo != null && earlyScheduledDlvOrderETAInfo != null){
+
 				if(earlyScheduledDlvOrderInfo != null && earlyScheduledDlvOrderETAInfo != null && isETAEnabled){
 					DeliveryETAInfo deliveryETAInfo = new DeliveryETAInfo(earlyScheduledDlvOrderInfo, earlyScheduledDlvOrderETAInfo);
 					deliveryETAInfo.setHasMultipleScheduledOrders(scheduledOrderInfos.size() > 1 ? true : false);

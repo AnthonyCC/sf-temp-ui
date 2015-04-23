@@ -33,7 +33,7 @@ public class Depot {
         for (DlvDepotModel pickupDepot : pickupDepots) {
             //if ((!theHamptonsIsOn) && (HAMPTONS_DEPOT_CODE.equalsIgnoreCase(pickupDepot.getDepotCode()))) {
         	// Filtering Hamptons pickup forever use the previous if hamtopns pickup needs to be handled
-        	if (HAMPTONS_DEPOT_CODE.equalsIgnoreCase(pickupDepot.getDepotCode())) {
+        	if (HAMPTONS_DEPOT_CODE.equalsIgnoreCase(pickupDepot.getDepotCode()) || pickupDepot.isDeactivated()) {
                 //Skip since HAMPTON is OFF
             } else {
                 newList.add(Depot.wrap(pickupDepot));

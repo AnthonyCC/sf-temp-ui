@@ -128,7 +128,7 @@ if (theHamptonsIsOn) {
 <% }  %>
 <logic:iterate id="depot" collection="<%=pickups%>" type="com.freshdirect.delivery.depot.DlvDepotModel">
 <% 
-	if ("HAM".equalsIgnoreCase(depot.getDepotCode())) continue; //skipp it
+	if ("HAM".equalsIgnoreCase(depot.getDepotCode()) || depot.isDeactivated()) continue; //skipp it
     Date now = new Date();
 %>	
 <logic:iterate id="location" collection="<%= depot.getLocations() %>" type="com.freshdirect.delivery.depot.DlvLocationModel">
