@@ -560,7 +560,7 @@
 													<br />
 													<br />&nbsp;&nbsp; <a href="#" onclick="window.open('https://twitter.com/intent/tweet?text=<%=twitter_Text%>&amp;count=none&original_referrer=www.freshdirect.com', 'Twitter', 'height=400,width=600');" class="twitterbutton">Sign In</a>
 													<script type="text/javascript">
-														window.open("https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Ftwitter.com%2Fabout%2Fresources%2Fbuttons&source=tweetbutton&text=<%=twitter_Text%>&url=http%3A%2F%2Fwww.freshdirect.com%2Finvite%2F<%=user.getReferralLink()%>","Twitter", "height=400,width=600");
+														window.open("https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Ftwitter.com%2Fabout%2Fresources%2Fbuttons&source=tweetbutton&text=<%=twitter_Text%>","Twitter", "height=400,width=600");
 													</script>
 											<%
 												}
