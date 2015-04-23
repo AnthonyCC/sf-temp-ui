@@ -44,6 +44,9 @@
 	
 	boolean isHamptons = "hamptons".equalsIgnoreCase(request.getParameter("location"));
 	boolean isLbi = "lbi".equalsIgnoreCase(request.getParameter("location"));
+	boolean isJerseyShore = "jersey_shore".equalsIgnoreCase(request.getParameter("location"));
+	
+	params.put("location", request.getParameter("location"));
 	
 	DlvDepotModel depotModel = FDDepotManager.getInstance().getDepot(request.getParameter("depotCode"));
 	if (depotModel != null) {

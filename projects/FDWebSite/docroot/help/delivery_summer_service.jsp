@@ -16,9 +16,9 @@
 <fd:CheckLoginStatus id="user" />
 
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
-	<tmpl:put name='title' direct='true'>Hamptons - FreshDirect</tmpl:put>
-	
+	<tmpl:put name='title' direct='true'>Summer Service - FreshDirect</tmpl:put>
+		
 	<tmpl:put name='content' direct='true'>
-		<fd:IncludeMedia name="/media/editorial/summer_services/hamptons/hamptons_service.html" />
+		<fd:IncludeMedia name="/media/editorial/summer_services/landing_page/summer_service_delivery.html" />
 	</tmpl:put>
 </tmpl:insert>
