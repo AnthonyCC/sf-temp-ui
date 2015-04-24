@@ -12,16 +12,10 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
-import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.ContentNodeI;
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.fdstore.FDContentTypes;
-import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class AutocompleteService {
@@ -34,29 +28,16 @@ public class AutocompleteService {
 
     private final static int MAX_AUTOCOMPLETE_HITS     = 20;
     
-    final static Set<String> stopWords = new HashSet<String>();
-	/*final static Set<String> stopWords = new HashSet<String>(Arrays.asList(new String[] { "I", "a", "about", "an", "and", "are",
+	final static Set<String> stopWords = new HashSet<String>(Arrays.asList(new String[] { "I", "a", "about", "an", "and", "are",
 			"as", "at", "be", "by", "for", "from", "how", "in", "is", "it", "of", "on", "or", "that", "the", "this", "to", "was",
-			"what", "when", "where", "who", "will", "with" }));*/
+			"what", "when", "where", "who", "will", "with" }));
 
     final static Set<String> skipWordsInAutoCompletion = new HashSet<String>();
     static {
-    	stopWords.addAll(getStopwords());
         skipWordsInAutoCompletion.addAll(stopWords);
         skipWordsInAutoCompletion.add("all");
         skipWordsInAutoCompletion.add("non");
         skipWordsInAutoCompletion.add("without");
-    }
-    
-   	
-	public static Set<String> getStopwords() {
-		Set<ContentKey> contentKeysByType = CmsManager.getInstance().getContentKeysByType(FDContentTypes.STOPWORDS);
-		Set<String> stopWords = new HashSet<String>();
-		for(ContentKey contentKey: contentKeysByType){
-			ContentNodeI contentNode = CmsManager.getInstance().getContentNode(contentKey);
-			stopWords.add(StringUtils.trim(ContentNodeUtil.getStringAttribute(contentNode, "word")));
-		}
-		return stopWords;
     }
 
     SortedSet<HitCounter>         prefixSet;
