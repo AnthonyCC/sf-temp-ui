@@ -49,7 +49,6 @@
 				<DestinationDef contentType="Banner" />
 				<DestinationDef contentType="SearchSuggestionGroup" />
 				<DestinationDef contentType="RecipeTag" />
-				<DestinationDef contentType="Stopwords"/>
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -2436,11 +2435,5 @@
 				<DestinationDef contentType="Image"/>
 			</RelationshipDef>
 		</RelationshipDefs>
-	</ContentTypeDef>
-	
-	<ContentTypeDef name="Stopwords"  generateId="true">
-		<AttributeDefs>
-			<AttributeDef name="word" label="Word(s)" type="S" required="true"/>
-		</AttributeDefs>
 	</ContentTypeDef>
 </CMSDef>
