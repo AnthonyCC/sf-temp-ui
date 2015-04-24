@@ -82,6 +82,8 @@ public class FDContentTypes {
 	public final static ContentType CATEGORY_SECTION = ContentType.get("CategorySection");
 	public final static ContentType GLOBAL_NAVIGATION = ContentType.get("GlobalNavigation");
 	
+	public static final ContentType STOPWORDS = ContentType.get("Stopwords");
+	
 	private FDContentTypes() {
 	}
 

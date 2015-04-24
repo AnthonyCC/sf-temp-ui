@@ -33,6 +33,7 @@
 			<CmsEditor ref="productFilterGroup"/>
 			<CmsEditor ref="productFilterMultiGroup"/>
 			<CmsEditor ref="tag"/>
+			<CmsEditor ref="stopwords" />
 		</editors>
 	</CmsFolder>
 	
@@ -1931,6 +1932,23 @@
 						<fields>
 							<CmsField><attribute>media</attribute></CmsField>
 							<CmsField><attribute>items</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+	
+	<CmsEditor id="stopwords">
+		<contentType>Stopwords</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Stopwords Attributes</title>
+						<fields>
+							<CmsField><attribute>word</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>
