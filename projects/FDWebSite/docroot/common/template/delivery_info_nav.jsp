@@ -53,7 +53,7 @@ final int W_DELIVERY_INFO_NAV_TOTAL = 970;
 			folderMap.put("Reserve Delivery (in Your Account)","/your_account/reserve_timeslot.jsp");
 		}
 		if (FDStoreProperties.isSummerServiceEnabled()) {
-			folderMap.put("Summer Service","/help/delivery_summer_service.jsp");
+			folderMap.put("Summer Delivery","/help/delivery_summer_service.jsp");
 		}
 
 		//get ref to dlv pass category
