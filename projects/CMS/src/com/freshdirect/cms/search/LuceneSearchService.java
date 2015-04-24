@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -44,7 +46,9 @@ import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.cms.search.spell.SpellingHit;
 import com.freshdirect.cms.search.term.ApproximationsPermuter;
 import com.freshdirect.cms.search.term.SearchTermNormalizer;
@@ -79,23 +83,28 @@ public class LuceneSearchService implements ContentSearchServiceI {
 
 	private final static FreshdirectAnalyzer ANALYZER = new FreshdirectAnalyzer();
 
-	public final static String[] SPELLING_STOP_WORDS = { "a", "about", "above", "after", "again", "against", "all", "am", "an",
-			"and", "any", "are", "aren't", "as", "at", "be", "because", "been", "before", "being", "below", "between", "both",
-			"but", "by", "can't", "cannot", "could", "couldn't", "did", "didn't", "do", "does", "doesn't", "doing", "don't",
-			"down", "during", "each", "few", "for", "free", "from", "further", "had", "hadn't", "has", "hasn't", "have", "haven't",
-			"having", "he", "he'd", "he'll", "he's", "her", "here", "here's", "hers", "herself", "him", "himself", "his", "how",
-			"how's", "i", "i'd", "i'll", "i'm", "i've", "if", "in", "into", "is", "isn't", "it", "it's", "its", "itself", "let's",
-			"me", "more", "most", "mustn't", "my", "myself", "no", "nor", "not", "of", "off", "on", "once", "only", "or", "other",
-			"ought", "our", "ours ", "ourselves", "out", "over", "own", "same", "shan't", "she", "she'd", "she'll", "she's",
-			"should", "shouldn't", "so", "some", "such", "than", "that", "that's", "the", "their", "theirs", "them", "themselves",
-			"then", "there", "there's", "these", "they", "they'd", "they'll", "they're", "they've", "this", "those", "through",
-			"to", "too", "under", "until", "up", "very", "was", "wasn't", "we", "we'd", "we'll", "we're", "we've", "were",
-			"weren't", "what", "what's", "when", "when's", "where", "where's", "which", "while", "with", "without", "who", "who's",
-			"whom", "why", "why's", "with", "won't", "would", "wouldn't", "you", "you'd", "you'll", "you're", "you've", "your",
-			"yours", "yourself", "yourselves" };
+	public final static String[] SPELLING_STOP_WORDS =new  String[1500];
+	
+	static {
+		
+		ArrayUtils.add(SPELLING_STOP_WORDS, getStopwords().toArray());
+	}
+		
+	public static List<String> getStopwords() {
+		
+		Set<ContentKey> contentKeysByType = CmsManager.getInstance().getContentKeysByType(FDContentTypes.STOPWORDS);
+		List<String> stopWords = new ArrayList<String>();
+		for(ContentKey contentKey: contentKeysByType){
+			ContentNodeI contentNode = CmsManager.getInstance().getContentNode(contentKey);
+			stopWords.add(StringUtils.trim(ContentNodeUtil.getStringAttribute(contentNode, "word")));
+			
+		}
+		return stopWords;
+    }
 
 	public static boolean isSpellingStopWord(String word) {
-		for (String s : SPELLING_STOP_WORDS)
+		String[] localStopwords = (String[])ArrayUtils.add(SPELLING_STOP_WORDS, getStopwords().toArray());
+		for (String s : localStopwords)
 			if (s.equals(word))
 				return true;
 		return false;
