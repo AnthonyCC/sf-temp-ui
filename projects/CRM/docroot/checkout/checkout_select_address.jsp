@@ -471,7 +471,7 @@
     <logic:iterate id="depot" collection="<%= FDDepotManager.getInstance().getPickupDepots() %>" type="com.freshdirect.delivery.depot.DlvDepotModel">
     <logic:iterate id="location" collection="<%= depot.getLocations() %>" type="com.freshdirect.delivery.depot.DlvLocationModel" indexId="locationCounter">
         <%
-			if ("HAM".equalsIgnoreCase(depot.getDepotCode())) continue; //skip it
+			if ("HAM".equalsIgnoreCase(depot.getDepotCode()) || depot.isDeactivated()) continue; //skip it
             if (location.getPK().getId().equalsIgnoreCase(fldDepotLocation) || (user.isPickupOnly() && pickups.size() == 1)) {
 				checkedAddress = true;
    			}
