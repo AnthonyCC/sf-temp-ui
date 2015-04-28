@@ -12,7 +12,7 @@ final int W_FAQ_HELP_RIGHT = 820;
 %>
 
 <%
-String faqPage = "faqHome";
+String faqPage = FDFaqUtil.getFaqHomeId();
 if (request.getParameter("page")!= null){
 faqPage = request.getParameter("page");
 }
@@ -59,9 +59,9 @@ String faqSections = FDStoreProperties.getFaqSections();
 			    <TD WIDTH="10"><IMG src="/media_stat/images/layout/clear.gif" 
 		            WIDTH="10" HEIGHT="1" BORDER="0"></TD>
 			    <TD WIDTH="<%=W_FAQ_HELP_LEFT-15%>" valign=top><br><br>
-				<A HREF="faq_home.jsp?page=faqHome" TARGET="_top"><img src="/media_stat/images/template/help/faq_catnav.gif" width="91" height="58" alt="Frequently Asked Questions" border="0"></A><BR>
+				<A HREF="faq_home.jsp?page=<%= FDFaqUtil.getFaqHomeId() %>" TARGET="_top"><img src="/media_stat/images/template/help/faq_catnav.gif" width="91" height="58" alt="Frequently Asked Questions" border="0"></A><BR>
 				<font class="space4pix"><br></font>
-				
+
 				<%  if(null != faqSections){
 				  StringTokenizer st = new StringTokenizer(faqSections,",");
 				  while (st.hasMoreTokens()) {

@@ -6,7 +6,7 @@
 <%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import="com.freshdirect.webapp.util.FDFaqUtil" %>
 <%
-String faqPage = "faqHome";
+String faqPage = FDFaqUtil.getFaqHomeId();
 Map params = new HashMap();
 params.put("baseUrl", "");
 params.put("helper", new MediaHelper()); // include helper object. It allows to include media templates into template
@@ -101,7 +101,7 @@ String defaultFtl="/media/editorial/faq/intro.ftl";
 		    <TR VALIGN="TOP">
 			   
 			    <TD align="right" class="text12"> 
-					<A HREF="faq_home_pop.jsp?page=faqHome" TARGET="_top"><img src="/media_stat/images/template/help/fdqa_catnav.gif" width="118" height="56" alt="FreshDirect Q &amp; A" border="0"></A><BR>
+					<A HREF="faq_home_pop.jsp?page=<%= FDFaqUtil.getFaqHomeId() %>" TARGET="_top"><img src="/media_stat/images/template/help/fdqa_catnav.gif" width="118" height="56" alt="FreshDirect Q &amp; A" border="0"></A><BR>
 				<font class="space2pix"></font><br/>
 			
 			<%  if(null != faqSections){

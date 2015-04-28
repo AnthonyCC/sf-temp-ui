@@ -2,7 +2,8 @@
 	
 	based on footer.jspf
 		
---%><%@ page import="java.net.URLEncoder" %>
+--%><%@page import="com.freshdirect.webapp.util.FDFaqUtil"%>
+<%@ page import="java.net.URLEncoder" %>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
 <%@ page import='com.freshdirect.fdstore.sempixel.FDSemPixelCache' %>
@@ -182,7 +183,7 @@
 		String faqLink = "javascript:popup('/help/faq_index.jsp','large')";
 	
 		if(turi.indexOf("help") > -1){
-			faqLink = "/help/faq_home.jsp?page=faqHome";
+			faqLink = "/help/faq_home.jsp?page=" + FDFaqUtil.getFaqHomeId();
 		}
 	%>
 <% } %>

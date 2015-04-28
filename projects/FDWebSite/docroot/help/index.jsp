@@ -142,7 +142,7 @@ final int W_HELP_INDEX_TOTAL = 970;
 				<div style="float: left; width: 34%; border-right: 1px solid #ccc; padding-right: 6px;">
 					<div style="margin-bottom: 16px;">
 						<div style="margin-bottom: 8px;">
-							<a href="/help/faq_home.jsp?page=faqHome"><img src="/media_stat/images/template/help/hdr_quick_links.gif" width="119" height="15" border="0" alt="Quick Links" /></a>
+							<a href="/help/faq_home.jsp?page=<%= FDFaqUtil.getFaqHomeId() %>"><img src="/media_stat/images/template/help/hdr_quick_links.gif" width="119" height="15" border="0" alt="Quick Links" /></a>
 						</div>
 						<div style="margin-bottom: 8px;">
 							Check below to find the fastest answers to our top customer concerns.
@@ -161,7 +161,7 @@ final int W_HELP_INDEX_TOTAL = 970;
 
 					<div style="margin-bottom: 16px;">
 						<div style="margin-bottom: 8px;">
-							<a href="/help/faq_home.jsp?page=faqHome"><img src="/media_stat/images/template/help/hdr_faqs.gif" width="45" height="14" border="0" alt="FAQs" /></a>
+							<a href="/help/faq_home.jsp?page=<%= FDFaqUtil.getFaqHomeId() %>"><img src="/media_stat/images/template/help/hdr_faqs.gif" width="45" height="14" border="0" alt="FAQs" /></a>
 						</div>
 						<div style="margin-bottom: 8px;">
 							Scan our Frequently Asked Questions to get info on sign-up, delivery and everything in between.

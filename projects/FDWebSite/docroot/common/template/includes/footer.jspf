@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.util.FDFaqUtil"%>
 <%@ page import="java.net.URLEncoder" %>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
@@ -228,7 +229,7 @@ if(FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDU
 	String faqLink = "javascript:popup('/help/faq_index.jsp','large')";
 
 	if(turi.indexOf("help") > -1){
-		faqLink = "/help/faq_home.jsp?page=faqHome";
+		faqLink = "/help/faq_home.jsp?page=" + FDFaqUtil.getFaqHomeId();
 	}
 %>
 

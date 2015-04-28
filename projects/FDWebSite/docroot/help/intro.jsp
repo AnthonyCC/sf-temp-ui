@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.util.FDFaqUtil"%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -5,7 +6,7 @@
 <fd:CheckLoginStatus />
 
 <%
-String indexLink ="/help/faq_home.jsp?page=faqHome";
+String indexLink ="/help/faq_home.jsp?page="+FDFaqUtil.getFaqHomeId();
 String aboutLink ="/help/faq_home.jsp?page=about";
 String signupLink ="/help/faq_home.jsp?page=signup";
 String securityLink ="/help/faq_home.jsp?page=security";

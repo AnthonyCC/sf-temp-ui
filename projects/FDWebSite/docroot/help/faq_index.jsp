@@ -9,7 +9,7 @@
 <%@ page import='com.freshdirect.fdstore.content.*' %>
 <fd:CheckLoginStatus guestAllowed="true" />
 <%
-	String faqPage = "faqHome";
+	String faqPage = FDFaqUtil.getFaqHomeId();
 	Map params = new HashMap();
 	params.put("baseUrl", "");
 	params.put("helper", new MediaHelper()); // include helper object. It allows to include media templates into template

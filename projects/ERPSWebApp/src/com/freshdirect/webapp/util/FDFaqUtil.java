@@ -2,16 +2,19 @@ package com.freshdirect.webapp.util;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.EnumEStoreId;
 
 public class FDFaqUtil {
 
+	public static final String FAQ_HOME_FD = "faqHome";
+	public static final String FAQ_HOME_FDX = "faqHome_fdx";
+	
 	public static List<ContentNodeI> getFaqsByCategory(String categoryId){
 		CmsManager          manager     = CmsManager.getInstance();				
 		ContentKey 			key 		= new ContentKey(FDContentTypes.FDFOLDER, categoryId);
@@ -33,5 +36,13 @@ public class FDFaqUtil {
 
 		}
 		return faqSubFolders;
+	}
+
+	public static String getFaqHomeId() {
+		ContentKey storeKey = CmsManager.getInstance().getSingleStoreKey();
+
+		return storeKey != null && EnumEStoreId.FDX.getContentKey().equalsIgnoreCase( storeKey.getId() )
+				? FAQ_HOME_FDX
+				: FAQ_HOME_FD;
 	}
 }

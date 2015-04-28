@@ -9,7 +9,7 @@ final int W_HELP_FAQ_HOME_TOTAL = 806;
 %>
 
 <%
-	String faqPage = "faqHome";
+	String faqPage = FDFaqUtil.getFaqHomeId();
 	Map params = new HashMap();
 	params.put("baseUrl", "");
 	params.put("helper", new MediaHelper()); // include helper object. It allows to include media templates into template
