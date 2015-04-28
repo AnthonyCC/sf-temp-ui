@@ -2,8 +2,8 @@ package com.freshdirect.cms.search;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -14,11 +14,13 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.cms.search.term.LowercaseCoder;
 import com.freshdirect.cms.search.term.Term;
+import com.freshdirect.fdstore.EnumEStoreId;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class SearchRelevancyList {
@@ -26,8 +28,7 @@ public class SearchRelevancyList {
     final static Logger LOGGER = LoggerFactory.getInstance(SearchRelevancyList.class);
 
     public static final String SEARCH_RELEVANCY_KEY = "FDFolder:searchRelevancyList";
-    @Deprecated
-    public static final String WORD_STEMMING_EXCEPTION = "FDFolder:wordStemmingException";
+    public static final String SEARCH_RELEVANCY_KEY_FDX = "FDFolder:searchRelevancyListFdx";
 
     public static final String KEYWORDS = "Keywords";
     public static final String HINTS = "categoryHints";
@@ -35,10 +36,8 @@ public class SearchRelevancyList {
     private static final String SCORE = "score";
 
     private static final String CATEGORY = "category";
-    
-    private static final String WORD = "word";
-    
-    
+
+    private ContentKey listContentKey;
     
     /**
      * List<String>
@@ -50,10 +49,11 @@ public class SearchRelevancyList {
      */
     Map<ContentKey,Integer>     categoryScoreMap;
 
-    public SearchRelevancyList(String[] keywords, Map<ContentKey,Integer> categoryScoreMap) {
+    protected SearchRelevancyList(String[] keywords, Map<ContentKey,Integer> categoryScoreMap, ContentKey listContentKey) {
         super();
         this.keywords = keywords;
         this.categoryScoreMap = categoryScoreMap;
+        this.listContentKey = listContentKey;
     }
 
     public String[] getKeywords() {
@@ -64,6 +64,15 @@ public class SearchRelevancyList {
         return categoryScoreMap;
     }
 
+
+    /**
+     * Returns the root content node that holds the whole relevancy list
+     * @return
+     */
+    public ContentKey getRelevancyListContentKey() {
+    	return listContentKey;
+    }
+    
     /**
      * 
      * @return Map<String,SearchRelevancyList>
@@ -74,7 +83,13 @@ public class SearchRelevancyList {
 
         CmsManager instance = CmsManager.getInstance();
 
-        ContentNodeI searchRelRootNode = instance.getContentNode(ContentKey.decode(SearchRelevancyList.SEARCH_RELEVANCY_KEY));
+        // find out root content key of search relevancy list
+        
+        final boolean isFDX = instance.getSingleStoreKey().getId().equals(EnumEStoreId.FDX.getContentKey());
+        final ContentKey listKey = isFDX ? ContentKey.decode(SEARCH_RELEVANCY_KEY_FDX) : ContentKey.decode(SEARCH_RELEVANCY_KEY);
+        
+        
+        ContentNodeI searchRelRootNode = instance.getContentNode( listKey );
         if (searchRelRootNode!=null) {
             LOGGER.info("SearchRelevancyList:: " + searchRelRootNode + " located.");
             
@@ -110,7 +125,7 @@ public class SearchRelevancyList {
                         	}
                         	if (!kwds.isEmpty()) {
                         		kw = kwds.toArray(new String[kwds.size()]);
-	                            SearchRelevancyList srl = new SearchRelevancyList(kw, scores);
+	                            SearchRelevancyList srl = new SearchRelevancyList(kw, scores, listKey);
 	                            for (int i=0;i<kw.length;i++) {
 	                                result.put(kw[i], srl);
 	                            }
@@ -132,22 +147,39 @@ public class SearchRelevancyList {
      */
     @Deprecated
     public static Collection<String> getBadPluralFormsFromCms() {
-        Set<String> result = new HashSet<String>();
-        CmsManager instance = CmsManager.getInstance();
-
-        ContentNodeI searchRelRootNode = instance.getContentNode(ContentKey.decode(SearchRelevancyList.WORD_STEMMING_EXCEPTION));
-        if (searchRelRootNode!=null) {
-            Set<ContentKey> wordPluralException = ContentNodeUtil.collectReachableKeys(searchRelRootNode, FDContentTypes.WORD_STEMMING_EXCEPTION);
-            Map<ContentKey, ContentNodeI> wordPluralNodes = instance.getContentNodes(wordPluralException);
-    
-            for (ContentNodeI node : wordPluralNodes.values()) {
-                String word = ContentNodeUtil.getStringAttribute(node, WORD);
-                if (word!=null) {
-                    result.add(word.toLowerCase().trim());
-                }
-            }
-        }
-        return result;
+        return Collections.<String>emptyList();
     }
-    
+
+
+    /**
+     * Helper method to decide whether node is part of relevancy list
+     * 
+     * @param node
+     * @return
+     */
+    public static boolean isRelatedContentNode(ContentNodeI node) {
+    	if (node == null || node.getKey() == null) {
+    		return false;
+    	}
+    	
+    	final ContentKey key = node.getKey();
+    	final ContentType t = key.getType();
+    	
+		if (FDContentTypes.SEARCH_RELEVANCY_LIST.equals(t)
+				|| FDContentTypes.SEARCH_RELEVANCY_HINT.equals(t)
+				|| FDContentTypes.WORD_STEMMING_EXCEPTION.equals(t)) {
+			return true;
+		}
+
+        if (FDContentTypes.FDFOLDER.equals(t)) {
+        	final String k = key.getEncoded();
+        	
+			if (k.equals(SearchRelevancyList.SEARCH_RELEVANCY_KEY)
+					|| k.equals(SearchRelevancyList.SEARCH_RELEVANCY_KEY_FDX)) {
+				return true;
+			}
+        }
+
+		return false;
+    }
 }

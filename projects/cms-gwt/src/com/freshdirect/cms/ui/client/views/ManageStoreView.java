@@ -24,7 +24,9 @@ import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
 import com.freshdirect.cms.ui.model.ContentNodeModel;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
+import com.freshdirect.cms.ui.service.ContentServiceAsync;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ManageStoreView extends LayoutContainer {
 
@@ -51,7 +53,14 @@ public class ManageStoreView extends LayoutContainer {
 	
 	// temporary solution for storing actual context path  
 	private String contextPath = null; 
-	
+
+
+	/**
+	 * FDX - active Store ID
+	 * Can be null if selected root is actually not a Store node
+	 */
+	private String storeKey;
+
 	protected ManageStoreView() {
 		super();	
 		
@@ -244,6 +253,15 @@ public class ManageStoreView extends LayoutContainer {
 		return editorMode;
 	}
 
+	
+	public void setStoreKey(String storeKey) {
+		this.storeKey = storeKey;
+		CmsGwt.debug("Store key := " + storeKey);
+	}
+
+	public String getStoreKey() {
+		return storeKey;
+	}
 
 	/**
 	 * 
@@ -280,5 +298,44 @@ public class ManageStoreView extends LayoutContainer {
 */	
 	public Container<?> getDetailPanel() {
 		return detailPanel;
+	}
+
+
+	public void updatePreviewLink() {
+		if (currentNode == null) {
+			return;
+		}
+
+
+		final String nodeKey = currentNode.getNode().getKey();
+
+		/// CmsGwt.debug("updatePreviewLink(" + nodeKey + ", " + storeKey + ")");
+
+		// extract ID from key
+		String storeId = null;
+		if (storeKey != null) {
+			storeId = storeKey.split(":")[1];
+		} else {
+			CmsGwt.debug("updatePreviewLink(): Content node preview will be obtained without store context");
+		}
+
+		CmsGwt.getContentService().getPreviewUrl(nodeKey, storeId, new AsyncCallback<String>() {
+
+			@Override
+			public void onSuccess(String result) {
+				if (result != null) {
+					CmsGwt.debug("updatePreviewLink(): update preview with link " + result);
+					currentNode.setPreviewUrl(result);
+					((ContentEditorPanel) detailPanel).updatePreviewLink();
+				} else {
+					CmsGwt.debug("updatePreviewLink(): no preview link is created");
+				}
+			}
+
+			@Override
+			public void onFailure(Throwable caught) {
+				CmsGwt.log("updatePreviewLink(): ERROR ... " + caught.getMessage());
+			}
+		});
 	}
 }

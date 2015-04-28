@@ -169,6 +169,9 @@
 	</Product>
 	<Category id="dai_milk_butt">
 		<FULL_NAME>Buttermilk &amp; Goat Milk</FULL_NAME>
+		<products>
+			<Product ref="dai_farm_buttermilk_01"/>
+		</products>
 	</Category>
 	<Sku id="DAI0008803"/>
 	<Sku id="DAI0008802"/>
@@ -273,6 +276,10 @@
 	</Category>
 	<Category id="gro_bever_milk">
 		<FULL_NAME>Milk</FULL_NAME>
+		<products>
+			<Product ref="gro_parmalat_white_2_01"/>
+			<Product ref="gro_parmalat_white_2_02"/>
+		</products>
 	</Category>
 	<Product id="spe_feod_mlkhzl_01">
 		<skus>
@@ -292,6 +299,10 @@
 	<Sku id="DAI0008824"/>
 	<Category id="fro_icecr_sand">
 		<FULL_NAME>Sandwiches &amp; Bars</FULL_NAME>
+		<products>
+			<Product ref="fro_dove_bar_vanilla_02"/>
+			<Product ref="fro_haagen_vanilla_11"/>
+		</products>
 	</Category>
 	<Sku id="DAI0008927"/>
 	<Brand id="bd_parmalat">
@@ -353,6 +364,10 @@
 	</Brand>
 	<Category id="gro_cooki_cooki_choco">
 		<FULL_NAME>Chocolate</FULL_NAME>
+		<products>
+			<Product ref="spe_bahlsen_fcmchc"/>
+			<Product ref="spe_carrs_mchocteabis_01"/>
+		</products>
 	</Category>
 	<Brand id="bd_bahlsen">
 		<FULL_NAME>Bahlsen</FULL_NAME>
@@ -389,6 +404,11 @@
 	</Brand>
 	<Category id="gro_baby_formu">
 		<FULL_NAME>Formula</FULL_NAME>
+		<products>
+			<Product ref="gro_enfamil_powder_m_02"/>
+			<Product ref="gro_carnat_good_sta_02"/>
+			<Product ref="gro_carnat_good_sta_03"/>
+		</products>
 	</Category>
 	<Product id="dai_polly_o_whole_mi_01">
 		<skus>
@@ -513,6 +533,10 @@
 	</Brand>
 	<Category id="gro_fine_pkg">
 		<FULL_NAME>Premium</FULL_NAME>
+		<products>
+			<Product ref="spe_ritter_mchaz"/>
+			<Product ref="spe_feod_mlkalm_01"/>
+		</products>
 	</Category>
 	<Product id="gro_mrsfields_chcchp">
 		<skus>
@@ -582,6 +606,10 @@
 	</Product>
 	<Category id="gro_candy_chocpk">
 		<FULL_NAME>Packaged</FULL_NAME>
+		<products>
+			<Product ref="gro_alprose_bitchoc"/>
+			<Product ref="gro_alprose_mlkchoc"/>
+		</products>
 	</Category>
 	<Category id="gro_cooki_cooki">
 		<FULL_NAME>Cookies</FULL_NAME>
@@ -1045,6 +1073,9 @@
 	</Category>
 	<Category id="fro_deser_cake">
 		<FULL_NAME>Cake</FULL_NAME>
+		<products>
+			<Product ref="fro_david_mousse_01"/>
+		</products>
 	</Category>
 	<Product id="gro_parmalat_org_01">
 		<skus>
@@ -1318,6 +1349,14 @@
 	</Brand>
 	<Category id="dai_milk_skim">
 		<FULL_NAME>Skim &amp; Nonfat</FULL_NAME>
+		<products>
+			<Product ref="dai_farm_0milkpaper_01"/>
+			<Product ref="dai_farm_1milkpaper_01"/>
+			<Product ref="dai_farm_2milkpaper_01"/>
+			<Product ref="dai_farm_fat_milk_01"/>
+			<Product ref="dai_nsqare_skim_hg"/>
+			<Product ref="dai_farm_skimplus_02"/>
+		</products>
 	</Category>
 	<Category id="dai_yogur">
 		<FULL_NAME>Yogurt</FULL_NAME>
@@ -1373,6 +1412,10 @@
 	</Department>
 	<Category id="dai_yogur_regu">
 		<FULL_NAME>Regular</FULL_NAME>
+		<products>
+			<Product ref="dai_catham_mapyog"/>
+			<Product ref="dai_catham_shepyog"/>
+		</products>
 	</Category>
 	<Product id="gro_pfarm_saus">
 		<skus>
@@ -1484,6 +1527,13 @@
 	</Product>
 	<Category id="gro_bakin_conde">
 		<FULL_NAME>Canned Milk</FULL_NAME>
+		<products>
+			<Product ref="gro_eagle_borden_01"/>
+			<Product ref="gro_carnat_evaporat_02"/>
+			<Product ref="gro_carnat_fat_free_01"/>
+			<Product ref="gro_carnat_lowfat_e_01"/>
+			<Product ref="gro_carn_milk_01"/>
+		</products>
 	</Category>
 	<Sku id="GRO001066"/>
 	<Product id="dai_vita_soy_plain_so_01">
@@ -1553,6 +1603,12 @@
 	</Product>
 	<Category id="dai_milk_1per">
 		<FULL_NAME>1%</FULL_NAME>
+		<products>
+			<Product ref="dai_farm_special_1_01"/>
+			<Product ref="dai_farm_special_1_02"/>
+			<Product ref="dai_orgval_laclfmilkqt"/>
+			<Product ref="dai_organi_1_milk_01"/>
+		</products>
 	</Category>
 	<Product id="dai_polly_o_mozzarel_01">
 		<skus>
@@ -1786,6 +1842,10 @@
 			<Category ref="gro_bever_milk"/>
 			<Category ref="gro_bever_soy"/>
 		</subcategories>
+		<products>
+			<Product ref="hba_phillips_mom_01"/>
+			<Product ref="hba_phillips_mom_02"/>
+		</products>
 	</Category>
 	<Category id="dai_milk_milk">
 		<FULL_NAME>Milk</FULL_NAME>
@@ -1818,6 +1878,12 @@
 	</Product>
 	<Category id="gro_bever_juice_cocon">
 		<FULL_NAME>Coconut</FULL_NAME>
+		<products>
+			<Product ref="spe_tasthai_ltcocmlk"/>
+			<Product ref="gro_goya_coconut_01"/>
+			<Product ref="spe_tasthai_cocmlk"/>
+			<Product ref="spe_roland_orgcocomilk"/>
+		</products>
 	</Category>
 	<Product id="hba_viactiv_mlk_chc">
 		<skus>
@@ -1911,6 +1977,9 @@
 	<Sku id="GRO002268"/>
 	<Category id="bak_cookies_fd">
 		<FULL_NAME>FreshDirect Cookies</FULL_NAME>
+		<products>
+			<Product ref="ckibni_pecmilk"/>
+		</products>
 	</Category>
 	<Product id="gro_goya_coconut_01">
 		<skus>
@@ -1929,9 +1998,20 @@
 	</Brand>
 	<Category id="gro_candy_blkch">
 		<FULL_NAME>Bulk</FULL_NAME>
+		<products>
+			<Product ref="cfncndy_ash_mcbrk"/>
+			<Product ref="cfncndy_ash_mcchry"/>
+			<Product ref="cfncndy_ash_mcgrah"/>
+			<Product ref="cfncndy_ash_mcprtz"/>
+			<Product ref="cfncndy_ash_mcvmar"/>
+			<Product ref="cfncndy_ash_mcrrd"/>
+		</products>
 	</Category>
 	<Category id="gro_bakin_frost">
 		<FULL_NAME>Frosting</FULL_NAME>
+		<products>
+			<Product ref="gro_duncan_homestyl_02"/>
+		</products>
 	</Category>
 	<Product id="gro_duncan_homestyl_02">
 		<skus>
@@ -2033,6 +2113,9 @@
 	</Product>
 	<Category id="gro_cooki_cooki_wafer">
 		<FULL_NAME>Wafer</FULL_NAME>
+		<products>
+			<Product ref="spe_bahlsen_afrika_m_01"/>
+		</products>
 	</Category>
 	<Product id="cfncndy_ash_mcvmar">
 		<skus>
@@ -2082,6 +2165,21 @@
 	</Brand>
 	<Category id="gro_bever_soy">
 		<FULL_NAME>Soy &amp; Rice Drinks</FULL_NAME>
+		<products>
+			<Product ref="gro_westsoy_westbrae_01"/>
+			<Product ref="gro_westsoy_cho_shk_01"/>
+			<Product ref="gro_westsoy_lite_pla_01"/>
+			<Product ref="gro_westsoy_lite_van_01"/>
+			<Product ref="gro_westsoy_drink_pl_01"/>
+			<Product ref="gro_westsoy_drink_va_01"/>
+			<Product ref="gro_westsoy_nonfat_p_01"/>
+			<Product ref="gro_westsoy_west_soy_01"/>
+			<Product ref="gro_westsoy_unsweete_01"/>
+			<Product ref="gro_westsoy_rice_bev_01"/>
+			<Product ref="gro_westsoy_plus_pla_01"/>
+			<Product ref="gro_westsoy_plus_van_01"/>
+			<Product ref="gro_westsoy_van_shak_01"/>
+		</products>
 	</Category>
 	<Product id="dai_total_greek_sh_01">
 		<skus>
@@ -2113,6 +2211,12 @@
 	</Product>
 	<Category id="dai_yogur_goat">
 		<FULL_NAME>Sheep's Milk</FULL_NAME>
+		<products>
+			<Product ref="dai_total_greek_sh_01"/>
+			<Product ref="dai_total_whyog_01"/>
+			<Product ref="dai_total_whyog_02"/>
+			<Product ref="dai_total_honyog"/>
+		</products>
 	</Category>
 	<Brand id="bd_nesquick">
 		<FULL_NAME>Nesquick</FULL_NAME>

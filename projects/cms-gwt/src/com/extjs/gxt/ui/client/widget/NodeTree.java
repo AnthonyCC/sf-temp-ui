@@ -113,6 +113,10 @@ public class NodeTree extends ContentPanel {
 				toolBar.remove(tool);
 
 		}
+		
+		public void hideToolBar() {
+			toolBar.hide();
+		}
 
 		@Override
 		protected void doAttachChildren() {
@@ -141,6 +145,8 @@ public class NodeTree extends ContentPanel {
 				setIcon(icon);
 			}
 		}
+		  
+		
 
 	}
 	
@@ -150,6 +156,10 @@ public class NodeTree extends ContentPanel {
 	
 	private TreeStore<TreeContentNodeModel> mainStore;
 	
+	public TreeStore<TreeContentNodeModel> getMainStore() {
+		return mainStore;
+	}
+
 	private NodeTreePanel tree;
 	
 	private TextField<String> searchField;
@@ -741,6 +751,11 @@ public class NodeTree extends ContentPanel {
 		int scroll = elek.getScrollTop();				
 		elek.scrollTo( "top", 0 ).scrollTo( "top", 1 ).scrollTo( "top", scroll );
     }
+    
+    public void hideToolbar() {
+    	((NodeTreeHeader) head).hideToolBar();
+    }
+    
     
     @Override
     protected void onRender(Element parent, int pos) {

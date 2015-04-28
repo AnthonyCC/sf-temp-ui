@@ -84,7 +84,7 @@ public class MediaDao {
 	}
 
 	public Media lookup(Connection conn, String id) throws SQLException {
-    	LOGGER.debug("-->lookup(id="+id+")");
+    	LOGGER.debug("-->lookup()");
 		PreparedStatement ps = conn.prepareStatement("SELECT * FROM CMS_MEDIA WHERE id = ?");
 
 		ps.setString(1, id);
@@ -108,7 +108,7 @@ public class MediaDao {
 	}
 	
 	public Media lookupByUri(Connection conn, String uri) throws SQLException {
-    	LOGGER.debug("-->lookupByUri("+uri+")");
+    	LOGGER.debug("-->lookupByUri()");
 		PreparedStatement ps = conn.prepareStatement("SELECT * FROM CMS_MEDIA WHERE uri = ?");
 
 		ps.setString(1, uri);
@@ -127,13 +127,13 @@ public class MediaDao {
 		}
 		rs.close();
 		ps.close();
-    	LOGGER.debug("<--lookupByUri() => " + (media != null));
+    	LOGGER.debug("<--lookupByUri()");
 		return media;
 	}
 	
 
 	public void delete(Connection conn, String uri) throws SQLException {
-    	LOGGER.debug("-->delete("+uri+")");
+    	LOGGER.debug("-->delete()");
 		PreparedStatement ps = conn.prepareStatement("Delete from CMS_media where uri = ? or uri like ?");
 		ps.setString(1, uri);
 		ps.setString(2, uri + "/%");

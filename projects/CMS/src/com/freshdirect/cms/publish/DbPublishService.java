@@ -6,38 +6,33 @@ package com.freshdirect.cms.publish;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import com.freshdirect.cms.ConcurrentPublishException;
 import com.freshdirect.cms.application.service.DbService;
 import com.freshdirect.cms.core.CmsDaoFactory;
 import com.freshdirect.cms.search.IBackgroundProcessor;
-import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
- * Implementation of {@link com.freshdirect.cms.publish.PublishServiceI}
- * that records publications in the database.
+ * Implementation of {@link com.freshdirect.cms.publish.PublishServiceI} that
+ * records publications in the database.
  */
 public class DbPublishService extends DbService implements PublishServiceI {
 
-	private final static Logger LOGGER = LoggerFactory.getInstance(DbPublishService.class);
-	
 	/**
-	 *  The Publish data access object
+	 * The Publish data access object
 	 */
-	private PublishDao	publishDao;
+	private PublishDao publishDao;
 
 	private String basePath;
-	
+
 	private IBackgroundProcessor processor;
 
 	/**
-	 *  Constructor.
+	 * Constructor.
 	 */
 	public DbPublishService() {
 		publishDao = CmsDaoFactory.getInstance().getPublishDao();
 	}
-	
+
 	public String getBasePath() {
 		return basePath;
 	}
@@ -45,11 +40,10 @@ public class DbPublishService extends DbService implements PublishServiceI {
 	public void setBasePath(String basePath) {
 		this.basePath = basePath;
 	}
-	
-	public void setProcessor(IBackgroundProcessor processor) {
-            this.processor = processor;
-        }
 
+	public void setProcessor(IBackgroundProcessor processor) {
+		this.processor = processor;
+	}
 
 	public List<Publish> getPublishHistory() {
 		// return publishDao.getAllPublishesOrdered("timestamp desc");
@@ -69,44 +63,42 @@ public class DbPublishService extends DbService implements PublishServiceI {
 		publishDao.savePublish(publish);
 	}
 
-        /**
-         *  Return the most recent Publish object, with state COMPLETE.
-         * 
-         *  @return the most recent Publish object.
-         */
-        public Publish getMostRecentPublish() {
-            return publishDao.getMostRecentPublish();
-        }
-        
-        /**
-         *  Return the most recent Publish object.
-         * 
-         *  @return the most recent Publish object.
-         */
-        public Publish getMostRecentNotCompletedPublish() {
-            return publishDao.getMostRecentNotCompletedPublish();
-        }
-        
-	
+	/**
+	 * Return the most recent Publish object, with state COMPLETE.
+	 * 
+	 * @return the most recent Publish object.
+	 */
+	public Publish getMostRecentPublish() {
+		return publishDao.getMostRecentPublish();
+	}
+
+	/**
+	 * Return the most recent Publish object.
+	 * 
+	 * @return the most recent Publish object.
+	 */
+	public Publish getMostRecentNotCompletedPublish() {
+		return publishDao.getMostRecentNotCompletedPublish();
+	}
+
 	public Publish getPreviousPublish(Publish publish) {
 		return publishDao.getPreviousPublish(publish);
 	}
 
-	public String doPublish(Publish newPublish) throws ConcurrentPublishException {
+	public String doPublish(Publish publish) throws ConcurrentPublishException {
 
 		// TODO: put the below store inside a unit of work
 		publishDao.beginTransaction();
-		
-		storePublish(newPublish);
-		
+
+		storePublish(publish);
+
 		// one has to commit the transation for the storePublish() call above,
 		// as transactions are thread-specific
 		// and the Publisher will run in a different thread
 		publishDao.commitTransaction();
-		newPublish.setPath(basePath + "/" + newPublish.getId());
+		publish.setBasePath(basePath + "/" + publish.getId() );
 
-		processor.executePublish(newPublish);
-		return newPublish.getId();
+		processor.executePublish(publish);
+		return publish.getId();
 	}
 }
-

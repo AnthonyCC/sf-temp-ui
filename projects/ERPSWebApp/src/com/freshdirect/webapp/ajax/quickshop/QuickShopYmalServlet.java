@@ -2,6 +2,7 @@ package com.freshdirect.webapp.ajax.quickshop;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
@@ -365,7 +367,7 @@ public class QuickShopYmalServlet extends BaseJsonServlet{
 		CategoryModel rootNode = (CategoryModel)ContentFactory.getInstance().getContentNode( ContentType.get( "Category" ), "picks_love" );
 		
 		@SuppressWarnings( { "unchecked", "rawtypes" } )
-		List<ContentNodeModel> prespicks = (List)rootNode.getProducts(); // DDPP content!
+		List<ContentNodeModel> prespicks = rootNode==null ? Collections.emptyList() : (List)rootNode.getProducts(); // DDPP content!
 		
 		List<ProductModel> result = HelperFunctions.getTopN( prespicks, FactorUtil.GLOBAL_POPULARITY_8W_COLUMN, maxItems, ProductRecommenderUtil.createSessionInput( session, user, maxItems, rootNode, listContent ), ScoreProvider.getInstance() );		
 		return convertToQuickshopItems( user, maxItems, result );

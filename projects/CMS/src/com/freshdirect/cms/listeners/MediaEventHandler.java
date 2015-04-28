@@ -179,37 +179,6 @@ public class MediaEventHandler extends DbService implements MediaEventHandlerI {
 		new DbTxCommand() {
 			protected void run(Connection conn) throws SQLException {
 				Media m;
-				
-				if (media == null || media.getUri() == null) {
-					LOGGER.error("  [create] Missing or invalid input, aborting ...");
-					return;
-				}
-
-				final String mediaUri = media.getUri();
-
-				// Phase #1
-				// ok, before creating a new object first try to find if media already exists
-				try {
-					m = dao.lookupByUri(conn, mediaUri);
-					if (m != null) {
-						LOGGER.debug("  [create#1] update existing media (id='"+ m.getId() + "')");
-						
-						// found same media, just update it
-						dao.update(conn, media);
-						logChange(m.getContentKey(), EnumContentNodeChangeType.MODIFY, "updated " + media.getUri(), userId);
-
-						return;
-					}
-				} catch (SQLException exc) {
-					// something went wrong along the way ...
-					LOGGER.warn("  [create#1] An exception raised during update", exc);
-					// but no one cares, let's move on nothing to see here
-				}
-				LOGGER.debug("  [create#1] no existing asset found, create a new entry in MEDIA table.");
-
-
-				// Phase #2
-				// no media found, go ahead and create a new one
 				try {
 					m = dao.insert(conn, media);
 					logChange(m.getContentKey(), EnumContentNodeChangeType.ADD, "initial checkin", userId);
@@ -218,8 +187,7 @@ public class MediaEventHandler extends DbService implements MediaEventHandlerI {
 					}
 				} catch (SQLException e) {
 					if (e.getMessage().indexOf("unique constraint") >= 0) {
-						LOGGER.debug("  [create#2] create failed for '" + media.getUri() + "', trying update");
-
+						LOGGER.debug("create failed for '" + media.getUri() + "', trying update");
 						dao.update(conn, media);
 						m = dao.lookupByUri(conn, media.getUri());
 						logChange(m.getContentKey(), EnumContentNodeChangeType.MODIFY, "updated " + media.getUri(), userId);
@@ -258,12 +226,15 @@ public class MediaEventHandler extends DbService implements MediaEventHandlerI {
     	LOGGER.debug("<--copy()");
 	}
 
-	/**
-	 * [APPDEV-4010] - don't delete a media entry from the table
-	 *   as it would break affected content node to media associations.
-	 */
 	public void delete(final String sourceUri, final String userId) {
-    	LOGGER.debug("-->delete() SKIP");
+    	LOGGER.debug("-->delete()");
+		new DbTxCommand() {
+			protected void run(Connection conn) throws SQLException {
+				Media media = dao.lookupByUri(conn, sourceUri);
+				dao.delete(conn, sourceUri);
+				if (media != null) logChange(media.getContentKey(), EnumContentNodeChangeType.DELETE, "deleted " + sourceUri, userId);
+			}
+		}.execute();
     	LOGGER.debug("<--delete()");
 	}
 

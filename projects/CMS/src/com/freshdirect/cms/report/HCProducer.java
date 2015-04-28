@@ -14,6 +14,8 @@ import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.context.Context;
 import com.freshdirect.cms.context.ContextService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.util.MultiStoreProperties;
+import com.freshdirect.cms.util.PrimaryHomeUtil;
 
 
 /**
@@ -91,7 +93,7 @@ public class HCProducer implements Runnable {
 			ContentNodeI node = mgr.getContentNode(prodKey);
 			
 			// primary home
-			ContentKey priHomeKey = (ContentKey) node.getAttributeValue("PRIMARY_HOME");
+			ContentKey priHomeKey = CmsManager.getInstance().getPrimaryHomeKey(prodKey);
 			
 			if (priHomeKey == null)
 				continue;

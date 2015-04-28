@@ -3,40 +3,60 @@
  */
 package com.freshdirect.cms.application;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.Predicate;
 import org.apache.hivemind.Registry;
+import org.apache.log4j.Category;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.context.ContextService;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.search.ContentSearchServiceI;
 import com.freshdirect.cms.search.SearchHit;
 import com.freshdirect.cms.search.spell.SpellingHit;
+import com.freshdirect.cms.util.MultiStoreProperties;
+import com.freshdirect.cms.util.PrimaryHomeUtil;
 import com.freshdirect.framework.conf.FDRegistry;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.http.HttpService;
 
 /**
  * Singleton entry point for global CMS content service. Obtains primary content-service instance using
  * {@link com.freshdirect.framework.conf.FDRegistry} via service name <code>com.freshdirect.cms.CmsManager</code>.
  */
 public class CmsManager implements ContentServiceI {
+	private final static Category LOGGER = LoggerFactory.getInstance(CmsManager.class);
 
 	private static CmsManager instance;
 
 	private ContentServiceI pipeline;
 	private ContentSearchServiceI searchService;
+	private ContentKey singleStoreKey;
 	private boolean readOnlyContent = true; //false if CMS is in DB mode, true if XML mode
 
-	public CmsManager() {
+	protected CmsManager() {
 	}
 
+	/**
+	 * Note: this constructor should only called from Tests project
+	 * 
+	 * @param pipeline
+	 * @param searchService
+	 */
 	public CmsManager(ContentServiceI pipeline, ContentSearchServiceI searchService) {
-		this.initialize(pipeline, searchService);
+		this.initializeInternal(pipeline, searchService, true);
 	}
 
 	public static void main(String args[]) {
@@ -66,22 +86,81 @@ public class CmsManager implements ContentServiceI {
 		instance = manager;
 	}
 
+
 	/**
-	 * Default initialization based on {@link FDRegistry}.
+	 * Default initialization based on values stored in property files.
+	 * 
+	 * @see CMSServiceConfig.xml or CMSServiceConfig_prd.xml
 	 */
 	public void initialize() {
 		Registry registry = FDRegistry.getInstance();
+
+		// get values from the hivemind configuration
+		//   see CMSServiceConfig.xml or CMSServiceConfig_prd.xml
 		ContentServiceI mgr = (ContentServiceI) registry.getService("com.freshdirect.cms.CmsManager", ContentServiceI.class);
 		ContentSearchServiceI search = (ContentSearchServiceI) registry.getService(ContentSearchServiceI.class);
-		this.initialize(mgr, search);
-		readOnlyContent = !FDRegistry.getInstance().containsService("com.freshdirect.cms.ChangeTracker", ContentServiceI.class);
+		final boolean flag = !registry.containsService("com.freshdirect.cms.ChangeTracker", ContentServiceI.class);
+
+		this.initializeInternal(mgr, search, flag);
 	}
 
-	private void initialize(ContentServiceI pipeline, ContentSearchServiceI searchService) {
+
+	/**
+	 * Internal initializer method
+	 * 
+	 * @param pipeline Topmost service {@link ContentServiceI}
+	 * @param searchService Search facility
+	 * @param isReadOnly True value indicates CMS subsystem is read-only, no save, delete or update operations are allowed.
+	 */
+	private void initializeInternal(ContentServiceI pipeline, ContentSearchServiceI searchService, final boolean isReadOnly) {
 		this.pipeline = pipeline;
 		this.searchService = searchService;
-		ContextService.setInstance(new ContextService(this));
+		this.readOnlyContent = isReadOnly;
+
+		ContextService.setInstance( new ContextService(this) );
+
+		this.singleStoreKey = calculateSingleStoreId();
+		
+		if (this.readOnlyContent && this.singleStoreKey != null) {
+			initPrimaryHomeCache(this.singleStoreKey.getId());
+		}
 	}
+
+
+	private ContentKey calculateSingleStoreId() {
+		String theKey;
+		if (!MultiStoreProperties.isCmsMultiStoreEnabled()) {
+			//
+			// == Single-Store CMS mode ==
+			//
+			
+			// find first Store key
+			Set<ContentKey> storeKeys = this.getContentKeysByType(FDContentTypes.STORE);
+			LOGGER.debug(".. Available store keys in CMS : " + storeKeys);
+			if (storeKeys == null || storeKeys.isEmpty()) {
+				theKey = "FreshDirect";
+				LOGGER.error("[SINGLE-STORE CMS MODE] ATTENTION!! No store nodes found in CMS. Get ready for system failure!");
+			} else {
+				theKey = storeKeys.iterator().next().getId();
+				LOGGER.info("[SINGLE-STORE CMS MODE] booting with store ID : " + theKey);
+			}
+
+		} else {
+			//
+			// == Multi-Store CMS mode ==
+			//
+			// Preview nodes require explicit store keys
+			if (!MultiStoreProperties.hasCmsStoreID()) {
+				LOGGER.warn("[MULTI-STORE CMS MODE] No explicit CMS Store key is set! Will use default store key ...");
+			}
+
+			theKey = MultiStoreProperties.getCmsStoreId();
+			LOGGER.info("[MULTI-STORE CMS MODE] Multi-Store mode ENABLED, booting with store ID : " + theKey);
+		}
+		
+		return theKey != null ? new ContentKey(FDContentTypes.STORE, theKey) : null ;
+	}
+	
 
 	/**
 	 * Perform a search for content objects.
@@ -172,7 +251,9 @@ public class CmsManager implements ContentServiceI {
 
 	public CmsResponseI handle(CmsRequestI request) {
 		if (request.getUser().isAllowedToWrite()) {
-			return pipeline.handle(request);
+			CmsResponseI response = pipeline.handle(request);
+			propagateCmsChangeEvent(request.getNodes());
+			return response;
 		} else {
 			throw new SecurityException("Modification is not allowed to:" + request.getUser().getName());
 		}
@@ -190,6 +271,17 @@ public class CmsManager implements ContentServiceI {
 		return pipeline.getRealContentNode(key);
 	}
 
+
+	/**
+	 * The key of store root node for Store front or CMS preview nodes
+	 *  
+	 * @return
+	 */
+	public ContentKey getSingleStoreKey() {
+		return singleStoreKey;
+	}
+	
+	
 	/**
 	 * Convenience method to check if CMS Service is configured for XML use.
 	 * 
@@ -197,5 +289,75 @@ public class CmsManager implements ContentServiceI {
 	 */
 	public boolean isReadOnlyContent() {
 		return readOnlyContent;
+	}
+
+	private Map<ContentKey,ContentKey> primaryHomeMap; 
+
+	public void initPrimaryHomeCache(final String storeId) {
+		primaryHomeMap = new HashMap<ContentKey,ContentKey>();
+		
+		Set<ContentKey> keys = this.getContentKeysByType(FDContentTypes.PRODUCT);
+		
+		// final String storeId = MultiStoreProperties.getCmsStoreId();
+
+		// System.err.println("Init cache started, evaluating " + keys.size() + " products");
+		
+		for (ContentKey key : keys) {
+			ContentNodeI p = PrimaryHomeUtil.findParent(this.getContentNode(key), this, storeId);
+			if (p != null ) {
+				primaryHomeMap.put(key, p.getKey());
+			}
+		}
+		// System.err.println("Cache init finished, size: " + primaryHomeMap.size());
+	}
+	
+	public ContentKey getPrimaryHomeKey(ContentKey aKey) {
+		if (readOnlyContent && primaryHomeMap != null) {
+			return primaryHomeMap.get(aKey);
+		} else {
+			ContentNodeI p = PrimaryHomeUtil.findParent(this.getContentNode(aKey), this, MultiStoreProperties.getCmsStoreId());
+			return p != null ? p.getKey() : null;
+		}
+	}
+	
+    private static void propagateCmsChangeEvent(Collection<ContentNodeI> nodes) {
+    	Map<String, Set<String>> contentKeys = collectContentKeysByStore(nodes);
+    	for (String previewHost : contentKeys.keySet()) {
+    		Set<String> previewNodeContentKeys = contentKeys.get(previewHost);
+    		Map<String, Object> map = new HashMap<String, Object>();
+    		map.put("contentKeys", previewNodeContentKeys);
+    		Writer writer = new StringWriter();
+    		try {
+    			new ObjectMapper().writeValue(writer, map);
+    			String data = writer.toString();
+    			String uri = "http://" + previewHost + "/api/contentcache";
+    			LOGGER.info("[PCE]Propagate change event to: " + uri + " with: " + data);
+    			HttpService.defaultService().postData(uri, data);
+    		} catch (IOException exception) {
+    			LOGGER.error("CMS change event propagataion failed to preview node!");
+    		}
+    	}
+    }
+
+
+	private static Map<String, Set<String>> collectContentKeysByStore(Collection<ContentNodeI> nodes) {
+		Map<String, Set<String>> contentKeys = new HashMap<String, Set<String>>();
+		Set<String> contentKeysEncoded = new HashSet<String>();
+		Set<String> hosts = new HashSet<String>();
+    	for (ContentNodeI node : nodes) {
+    		String key = node.getKey().getEncoded();
+    		contentKeysEncoded.add(key);
+    		Set<ContentKey> storeKeys = PrimaryHomeUtil.getStoreKeys(node.getKey(), CmsManager.getInstance());
+    		for (ContentKey storeKey : storeKeys) {
+    			String previewHost = (String) storeKey.getContentNode().getAttributeValue("PREVIEW_HOST_NAME");
+    			if (previewHost != null) {
+    				hosts.add(previewHost);
+    			}
+    		}
+    	}
+    	for (String host : hosts) {
+    		contentKeys.put(host, contentKeysEncoded);
+    	}
+		return contentKeys;
 	}
 }

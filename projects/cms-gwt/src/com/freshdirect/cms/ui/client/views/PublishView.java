@@ -74,8 +74,10 @@ public class PublishView extends LayoutContainer implements PublishListener {
 	}
 
 	private void loadData(List<GwtPublishData> publishDataList) {
-		if (publishDataList.get(0).isInProgress()) {
-			onPublishClicked(publishDataList.get(0).getId());
+		final GwtPublishData latestPublishData = publishDataList != null
+				&& publishDataList.size() > 0 ? publishDataList.get(0) : null;
+		if (latestPublishData != null && latestPublishData.isInProgress()) {
+			onPublishClicked(latestPublishData.getId());
 		} else {
 			onPublishClicked("latest");
 		}

@@ -65,12 +65,14 @@ public class CompositeContentService extends AbstractContentService implements C
 		typeService = new CompositeTypeService(typeServices);
 	}
 
+	@Override
 	public ContentTypeServiceI getTypeService() {
 		return typeService;
 	}
 	
+	@Override
 	public ContentNodeI getContentNode(ContentKey cKey) {
-		Map nodes = new LinkedHashMap();
+		Map<String, ContentNodeI> nodes = new LinkedHashMap<String, ContentNodeI>();
 		boolean found = false;
 		for (int i = 0; i < contentServices.size(); i++) {
 			ContentServiceI service = (ContentServiceI) contentServices.get(i);
@@ -93,23 +95,24 @@ public class CompositeContentService extends AbstractContentService implements C
 		return new CompositeContentNode(this, cKey, nodes);
 	}
 
+	@Override
 	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys) {
 
 		Set<ContentKey> foundKeys = new HashSet<ContentKey>(keys.size());
 
 		/** Map of ContentKey -> (Map of String (service name) -> ContentNodeI) */
-		Map<ContentKey, Map> nodeMapsByKey = new HashMap(keys.size());
-		for (Iterator j = contentServices.iterator(); j.hasNext();) {
+		Map<ContentKey, Map<String, ContentNodeI>> nodeMapsByKey = new HashMap<ContentKey, Map<String, ContentNodeI>>(keys.size());
+		for (Iterator<ContentServiceI> j = contentServices.iterator(); j.hasNext();) {
 			ContentServiceI service = (ContentServiceI) j.next();
 
 			long t = System.currentTimeMillis();
 
-			Map serviceNodes = service.getContentNodes(keys);
+			Map<ContentKey, ContentNodeI> serviceNodes = service.getContentNodes(keys);
 
 			t = System.currentTimeMillis() - t;
 			LOGGER.debug("getContentNodes() " + service.getName() + " " + keys.size() + " took " + t);
 
-			for (Iterator k = keys.iterator(); k.hasNext();) {
+			for (Iterator<ContentKey> k = keys.iterator(); k.hasNext();) {
 				ContentKey key = (ContentKey) k.next();
 				ContentNodeI node = (ContentNodeI) serviceNodes.get(key);
 				if (node == null) {
@@ -118,9 +121,9 @@ public class CompositeContentService extends AbstractContentService implements C
 					foundKeys.add(key);
 				}
 				if (node != null) {
-					Map nodeMap = (Map) nodeMapsByKey.get(node.getKey());
+					Map<String, ContentNodeI> nodeMap = (Map<String, ContentNodeI>) nodeMapsByKey.get(node.getKey());
 					if (nodeMap == null) {
-						nodeMap = new LinkedHashMap();
+						nodeMap = new LinkedHashMap<String, ContentNodeI>();
 						nodeMapsByKey.put(node.getKey(), nodeMap);
 					}
 					nodeMap.put(service.getName(), node);
@@ -129,10 +132,10 @@ public class CompositeContentService extends AbstractContentService implements C
 		}
 
 		/** Map of ContentKey -> CompositeContentNode */
-		Map nodesByKey = new HashMap(keys.size());
-		for (Iterator i = foundKeys.iterator(); i.hasNext();) {
+		Map<ContentKey, ContentNodeI> nodesByKey = new HashMap<ContentKey, ContentNodeI>(keys.size());
+		for (Iterator<ContentKey> i = foundKeys.iterator(); i.hasNext();) {
 			ContentKey key = (ContentKey) i.next();
-			Map nodes = (Map) nodeMapsByKey.get(key);
+			Map<String, ContentNodeI> nodes = nodeMapsByKey.get(key);
 			if (!nodes.isEmpty()) {
 				nodesByKey.put(key, new CompositeContentNode(this, key, nodes));
 			}
@@ -141,8 +144,9 @@ public class CompositeContentService extends AbstractContentService implements C
 		return nodesByKey;
 	}
 
+	@Override
 	public ContentNodeI createPrototypeContentNode(ContentKey cKey) {
-		Map nodes = new HashMap();
+		Map<String, ContentNodeI> nodes = new HashMap<String, ContentNodeI>();
 		for (int i = 0; i < contentServices.size(); i++) {
 			ContentServiceI service = (ContentServiceI) contentServices.get(i);
 			ContentNodeI newNode = service.createPrototypeContentNode(cKey);
@@ -155,6 +159,7 @@ public class CompositeContentService extends AbstractContentService implements C
 		return new CompositeContentNode(this, cKey, nodes);
 	}
 
+	@Override
 	public Set<ContentKey> getContentKeysByType(ContentType type) {
 		Set<ContentKey> set = new HashSet<ContentKey>();
 		for (int i = 0; i < contentServices.size(); i++) {
@@ -164,15 +169,17 @@ public class CompositeContentService extends AbstractContentService implements C
 		return set;
 	}
 
+	@Override
 	public Set<ContentKey> getContentKeys() {
 		Set<ContentKey> set = new HashSet<ContentKey>();
-		for (Iterator i = contentServices.iterator(); i.hasNext();) {
-			ContentServiceI service = (ContentServiceI) i.next();
+		for (Iterator<ContentServiceI> i = contentServices.iterator(); i.hasNext();) {
+			ContentServiceI service =  i.next();
 			set.addAll(service.getContentKeys());
 		}
 		return set;
 	}
 
+	@Override
 	public Set<ContentKey> getParentKeys(ContentKey key) {
 		Set<ContentKey> keySet = new HashSet<ContentKey>();
 		for (int i = 0; i < contentServices.size(); i++) {
@@ -185,6 +192,7 @@ public class CompositeContentService extends AbstractContentService implements C
 		return keySet;
 	}
 
+	@Override
 	public CmsResponseI handle(CmsRequestI request) {
 
 		Map<String, CmsRequest> reqByService = decomposeRequest(request);
@@ -209,14 +217,13 @@ public class CompositeContentService extends AbstractContentService implements C
 		Map<String, CmsRequest> reqByService = new HashMap<String, CmsRequest>();
 
 		// decompose request with composite nodes
-		for (Iterator i = request.getNodes().iterator(); i.hasNext();) {
-			ContentNodeI node = (ContentNodeI) i.next();
+		for (ContentNodeI node : request.getNodes()) {
 			if (!(node instanceof CompositeContentNode)) {
 				throw new IllegalArgumentException("Node " + node + " is not a composite");
 			}
-			Map nodes = ((CompositeContentNode) node).getNodes();
-			for (Iterator j = nodes.entrySet().iterator(); j.hasNext();) {
-				Map.Entry e = (Map.Entry) j.next();
+			Map<String, ContentNodeI> nodes = ((CompositeContentNode) node).getNodes();
+			for (Iterator<Map.Entry<String, ContentNodeI>> j = nodes.entrySet().iterator(); j.hasNext();) {
+				Map.Entry<String, ContentNodeI> e = j.next();
 				String serviceName = (String) e.getKey();
 				ContentNodeI serviceNode = (ContentNodeI) e.getValue();
 
@@ -232,8 +239,9 @@ public class CompositeContentService extends AbstractContentService implements C
 		return reqByService;
 	}
 
+	@Override
 	public ContentNodeI getRealContentNode(ContentKey key) {
-		Map nodes = new LinkedHashMap();
+		Map<String, ContentNodeI> nodes = new LinkedHashMap<String, ContentNodeI>();
 		boolean found = false;
 		for (int i = 0; i < contentServices.size(); i++) {
 			ContentServiceI service = (ContentServiceI) contentServices.get(i);

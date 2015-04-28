@@ -26,7 +26,7 @@ import com.freshdirect.framework.cache.SimpleCache;
  * <p>
  * Also records non-existent nodes with a null-value in the cache.
  */
-public class ContentCacheMethodInterceptor implements MethodInterceptor {
+public class ContentCacheMethodInterceptor implements ContentCache {
 
 	/** Null-object to represent nodes that were not found. */
 	final static Object NULL = new Serializable() {};
@@ -114,23 +114,16 @@ public class ContentCacheMethodInterceptor implements MethodInterceptor {
 	private Object handle(MethodInvocation invocation) throws Throwable {
 		CmsRequestI request = (CmsRequestI) invocation.getArguments()[0];
 		Object response = invocation.proceed();
-		for (Iterator i = request.getNodes().iterator(); i.hasNext();) {
-			ContentNodeI node = (ContentNodeI) i.next();
-			this.getCache().remove(node.getKey());
-			// invalidate dependents also
-			// FIXME this is suboptimal, but fixes implicit node-creation issues
-			for (Iterator j = ContentNodeUtil.getAllRelatedContentKeys(node).iterator(); j.hasNext();) {
-				ContentKey k = (ContentKey) j.next();
-				this.getCache().remove(k);
-			}
-		}
-		// TODO optimize dependency cache invalidation
-		children.clear();
+		ContentCacheService.defaultService().invalidateContentNode(request.getNodes());
 		return response;
 	}
 
-	private CacheI<ContentKey,Object> getCache() {
+	public CacheI<ContentKey,Object> getCache() {
 		return cache;
+	}
+	
+	public void clearChildrenCache() {
+		children.clear();
 	}
 
 }

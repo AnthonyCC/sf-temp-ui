@@ -7,64 +7,154 @@ package com.freshdirect.cms.publish;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
+import javax.persistence.Transient;
 
 /**
  * Record of a content publish event.
  */
 public class Publish implements Serializable, Cloneable {
 
-	private String             id;
-	private Date               timestamp;
-	private String             userId;
-	private String             description;
-	private Date               lastModified;
-	private EnumPublishStatus  status;
-	private ArrayList<PublishMessage>          messages = new ArrayList<PublishMessage>();
+	private static final long serialVersionUID = 1807983326641626884L;
+
+	private String id;
+	private Date timestamp;
+	private String userId;
+	private String description;
+	private Date lastModified;
+	private EnumPublishStatus status;
+	private ArrayList<PublishMessage> messages = new ArrayList<PublishMessage>();
 	
-	// this field is not persistent
+	/**
+	 * Base path represents the path to
+	 * the common folder of publish materials of each store.
+	 * 
+	 * Basically, it should point to "${cms.publish.basePath}/<publish ID>"
+	 */
+	@Transient
+	private String basePath;
+	
+	/**
+	 * It holds the ID of store key 
+	 */
+	@Transient
+	private String storeId;
+
+	/**
+	 * Path points to a particular store material under base path
+	 */
+	@Transient
 	private String path;
-	
-	public String getId() {
-		return id;
+
+	/**
+	 * Clone the publish object.
+	 * 
+	 * @return a new Publish object, with the same properties.
+	 */
+
+	@SuppressWarnings("unchecked")
+	public Object clone() {
+		Publish clone = new Publish();
+		clone.id = id;
+		clone.timestamp = (Date) timestamp.clone();
+		clone.userId = userId;
+		clone.description = description;
+		clone.lastModified = (Date) lastModified.clone();
+		clone.status = status;
+		clone.messages = (ArrayList<PublishMessage>) messages.clone();
+		clone.basePath = basePath;
+		clone.path = path;
+		clone.storeId = storeId;
+		return clone;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public Date getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String user) {
-		this.userId = user;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Publish)) {
+			return false;
+		}
+		Publish other = (Publish) obj;
+		if (description == null) {
+			if (other.description != null) {
+				return false;
+			}
+		} else if (!description.equals(other.description)) {
+			return false;
+		}
+		if (id == null) {
+			if (other.id != null) {
+				return false;
+			}
+		} else if (!id.equals(other.id)) {
+			return false;
+		}
+		if (lastModified == null) {
+			if (other.lastModified != null) {
+				return false;
+			}
+		} else if (!lastModified.equals(other.lastModified)) {
+			return false;
+		}
+		if (messages == null) {
+			if (other.messages != null) {
+				return false;
+			}
+		} else if (!messages.equals(other.messages)) {
+			return false;
+		}
+		if (status == null) {
+			if (other.status != null) {
+				return false;
+			}
+		} else if (!status.equals(other.status)) {
+			return false;
+		}
+		if (storeId == null) {
+			if (other.storeId != null) {
+				return false;
+			}
+		} else if (!storeId.equals(other.storeId)) {
+			return false;
+		}
+		if (timestamp == null) {
+			if (other.timestamp != null) {
+				return false;
+			}
+		} else if (!timestamp.equals(other.timestamp)) {
+			return false;
+		}
+		if (userId == null) {
+			if (other.userId != null) {
+				return false;
+			}
+		} else if (!userId.equals(other.userId)) {
+			return false;
+		}
+		return true;
 	}
 
 	public String getDescription() {
 		return description;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public String getId() {
+		return id;
 	}
 
 	public Date getLastModified() {
 		return lastModified;
-	}
-
-	public void setLastModified(Date lastModified) {
-		this.lastModified = lastModified;
 	}
 
 	/**
@@ -75,83 +165,111 @@ public class Publish implements Serializable, Cloneable {
 	public List<PublishMessage> getMessages() {
 		return messages;
 	}
-	
-	/**
-	 * Set the messages for the publish object.
-	 * 
-	 * @param messages a set of PublishMessage objects, the new messages for the publish.
-	 */
-	public void setMessages(List<PublishMessage> messages) {
-		this.messages = new ArrayList<PublishMessage>(messages);
-	}
-	
-	/**
-	 * @return Returns the status.
-	 */
-	public EnumPublishStatus getStatus() {
-		return status;
-	}
-	
-	/**
-	 * @param status The status to set.
-	 */
-	public void setStatus(EnumPublishStatus status) {
-		this.status = status;
-	}
-	
+
 	/**
 	 * @return Returns the path.
 	 */
 	public String getPath() {
 		return path;
 	}
-	
+
 	/**
-	 * @param path The path to set.
+	 * @return Returns the status.
+	 */
+	public EnumPublishStatus getStatus() {
+		return status;
+	}
+
+	public String getBasePath() {
+		return basePath;
+	}
+	
+	public String getStoreId() {
+		return storeId;
+	}
+
+	public Date getTimestamp() {
+		return timestamp;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((lastModified == null) ? 0 : lastModified.hashCode());
+		result = prime * result + ((messages == null) ? 0 : messages.hashCode());
+		result = prime * result + ((basePath == null) ? 0 : basePath.hashCode());
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result + ((path == null) ? 0 : path.hashCode());
+		result = prime * result + ((storeId == null) ? 0 : storeId.hashCode());
+		result = prime * result + ((timestamp == null) ? 0 : timestamp.hashCode());
+		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+		return result;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setLastModified(Date lastModified) {
+		this.lastModified = lastModified;
+	}
+
+	/**
+	 * Set the messages for the publish object.
+	 * 
+	 * @param messages
+	 *            a set of PublishMessage objects, the new messages for the
+	 *            publish.
+	 */
+	public void setMessages(List<PublishMessage> messages) {
+		this.messages = new ArrayList<PublishMessage>(messages);
+	}
+
+	/**
+	 * @param path
+	 *            The path to set.
 	 */
 	public void setPath(String path) {
 		this.path = path;
 	}
-	
-	/**
-	 *  Clone the publish object.
-	 * 
-	 *  @return a new Publish object, with the same properties.
-	 */
-	
-    @SuppressWarnings("unchecked")
-    public Object clone() {
-        Publish clone = new Publish();
 
-        clone.id = id;
-        clone.timestamp = (Date) timestamp.clone();
-        clone.userId = userId;
-        clone.description = description;
-        clone.lastModified = (Date) lastModified.clone();
-        clone.status = status;
-        clone.messages = (ArrayList) messages.clone();
-
-        return clone;
-    }
-	
 	/**
-	 *  Compare the Publish object to another one.
-	 * 
-	 *  @return true if the two objects are equal Publish objects.
+	 * @param status
+	 *            The status to set.
 	 */
-	public boolean equals(Object other) {
-		if (other instanceof Publish) {
-			Publish publish = (Publish) other;
-			
-			return id.equals(publish.id)
-			    && timestamp.equals(publish.timestamp)
-				&& userId.equals(publish.userId)
-				&& description.equals(publish.description)
-				&& lastModified.equals(publish.lastModified)
-				&& status.equals(publish.status)
-				&& messages.equals(publish.messages);
-		}
-		
-		return false;
+	public void setStatus(EnumPublishStatus status) {
+		this.status = status;
+	}
+
+	public void setBasePath(String basePath) {
+		this.basePath = basePath;
+	}
+	
+	public void setStoreId(String storeId) {
+		this.storeId = storeId;
+	}
+
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public void setUserId(String user) {
+		this.userId = user;
 	}
 }

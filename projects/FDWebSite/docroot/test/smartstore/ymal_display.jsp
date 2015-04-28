@@ -36,7 +36,7 @@
 	final CmsManager mgr = CmsManager.getInstance();
 	
 	LinkedList s = new LinkedList();
-	s.add(mgr.getContentNode(ContentKey.decode("Store:FreshDirect"))); // store
+	s.add(mgr.getContentNode(ContentFactory.getInstance().getStoreKey())); // store
 	s.add(mgr.getContentNode(ContentKey.decode("FDFolder:recipes"))); // recipes
 %>
 <html>

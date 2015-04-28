@@ -169,7 +169,7 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	}
 
 	public void addPaymentMethod(ErpPaymentMethodI element){
-		this.paymentMethodList.add(element);
+		((List<ErpPaymentMethodI>)this.paymentMethodList).add(element);
 	}
 
 	public void updatePaymentMethod(ErpPaymentMethodI element) {

@@ -25,6 +25,7 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.util.MultiStoreProperties;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDException;
@@ -125,6 +126,30 @@ public class ContentFactory {
 		LOGGER.info("ContentFactory instance replaced");
 	}
 
+
+	/**
+	 * [FDX] The key of currently loaded store
+	 */
+	private ContentKey storeKey;
+	
+	/**
+	 * The main point to know the actual store node
+	 * @return
+	 */
+	public ContentKey getStoreKey() {
+		return storeKey;
+	}
+
+
+	/**
+	 * Shortcut to get the Store model directly
+	 * @return
+	 */
+	public StoreModel getStoreModel() {
+		return (StoreModel) getContentNodeByKey(getStoreKey());
+	}
+	
+	
 	public static List<ProductModel> filterProductsByDeptartment(List<ProductModel> products, String departmentId) {
 		if (departmentId != null)
 			for (ListIterator<ProductModel> li = products.listIterator(); li.hasNext();) {
@@ -137,7 +162,15 @@ public class ContentFactory {
 		return products;
 	}
 
+
 	public ContentFactory() {
+		// Set default store root key
+		this.storeKey = CmsManager.getInstance().getSingleStoreKey();
+
+		LOGGER.info("Store key is set to " + storeKey);
+
+		// ---- //
+
 		this.store = null;
 
 		// ISTVAN, changed HashMap to ConcurrentHashMap
@@ -178,7 +211,7 @@ public class ContentFactory {
 		// should be only one of these
 		//
 		//com.freshdirect.cms.ContentNodeI storeNode = null;
-		ContentKey storeKey = ContentKey.decode("Store:FreshDirect");
+		ContentKey storeKey = getStoreKey();
 		StoreModel theStore = (StoreModel) ContentNodeModelUtil.constructModel(storeKey, true);
 
 		List<BrandModel> brandList = new ArrayList<BrandModel>();

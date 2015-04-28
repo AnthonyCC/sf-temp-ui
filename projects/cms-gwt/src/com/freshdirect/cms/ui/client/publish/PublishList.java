@@ -396,7 +396,7 @@ public class PublishList extends LayoutContainer {
 	}
 
 	public void loadData(List<GwtPublishData> data, boolean add) {
-		int fetchedCount = data.size();
+		final int fetchedCount = data.size();
 		@SuppressWarnings("unchecked")
 		List<PublishItemWrapper> current = (List<PublishItemWrapper>) proxy.getData();
 		if (current == null)
@@ -411,7 +411,7 @@ public class PublishList extends LayoutContainer {
 		} else {
 			current.clear();
 			loadedItemsCount = 0;
-			if (data.get(0).isInProgress()) {
+			if (fetchedCount > 0 && data.get(0).isInProgress()) {
 				loadProgress(data.get(0));
 				data.remove(0);
 			} else {

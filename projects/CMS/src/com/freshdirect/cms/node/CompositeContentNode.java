@@ -28,16 +28,17 @@ import com.freshdirect.cms.application.ContentServiceI;
  * @see com.freshdirect.cms.application.service.CompositeContentService
  */
 public class CompositeContentNode implements ContentNodeI {
+	private static final long serialVersionUID = 8136738845448653594L;
 
 	private final ContentServiceI contentService;
 
 	private final ContentKey key;
 
 	/** Map of String (originating service name) -> {@link ContentNodeI} */
-	private final Map nodes;
+	private final Map<String, ContentNodeI> nodes;
 
 	/** Map of String (attribute name) -> {@link AttributeI} */ 
-	private final Map attributes = new HashMap();
+	private final Map<String, AttributeI> attributes = new HashMap<String, AttributeI>();
 
 	/**
 	 * 
@@ -45,7 +46,7 @@ public class CompositeContentNode implements ContentNodeI {
 	 * @param key content key of the composited node
 	 * @param nodes Map of String (originating service name) -> {@link ContentNodeI}
 	 */
-	public CompositeContentNode(ContentServiceI contentService, ContentKey key, Map nodes) {
+	public CompositeContentNode(ContentServiceI contentService, ContentKey key, Map<String, ContentNodeI> nodes) {
 		this.contentService = contentService;
 		this.key = key;
 		this.nodes = Collections.unmodifiableMap(nodes);
@@ -57,10 +58,10 @@ public class CompositeContentNode implements ContentNodeI {
 	//
 
 	private void initializeAttributes() {
-		for (Iterator i = nodes.values().iterator(); i.hasNext();) {
-			ContentNodeI node = (ContentNodeI) i.next();
-			for (Iterator j = node.getAttributes().values().iterator(); j.hasNext();) {
-				AttributeI a = (AttributeI) j.next();
+		for (Iterator<ContentNodeI> i = nodes.values().iterator(); i.hasNext();) {
+			ContentNodeI node = i.next();
+			for (Iterator<AttributeI> j = node.getAttributes().values().iterator(); j.hasNext();) {
+				AttributeI a = j.next();
 				AttributeI ca = a instanceof RelationshipI ? new CompositeRelationship(a) : new CompositeAttribute(a);
 				attributes.put(ca.getName(), ca);
 			}
@@ -68,6 +69,7 @@ public class CompositeContentNode implements ContentNodeI {
 	}
 
 	private class CompositeAttribute implements AttributeI {
+		private static final long serialVersionUID = 1240506000120118825L;
 
 		private final AttributeI attribute;
 
@@ -75,32 +77,39 @@ public class CompositeContentNode implements ContentNodeI {
 			this.attribute = attribute;
 		}
 
+		@Override
 		public Object getValue() {
 			return attribute.getValue();
 		}
 
+		@Override
 		public void setValue(Object o) {
 			attribute.setValue(o);
 		}
 
+		@Override
 		public ContentNodeI getContentNode() {
 			return CompositeContentNode.this;
 		}
 
+		@Override
 		public AttributeDefI getDefinition() {
 			return attribute.getDefinition();
 		}
 
+		@Override
 		public String getName() {
 			return attribute.getName();
 		}
 
+		@Override
 		public String toString() {
 			return "CompositeAttribute[" + attribute + "]";
 		}
 	}
 
 	private class CompositeRelationship extends CompositeAttribute implements RelationshipI {
+		private static final long serialVersionUID = 2142686335400764548L;
 
 		public CompositeRelationship(AttributeI attribute) {
 			super(attribute);
@@ -113,7 +122,7 @@ public class CompositeContentNode implements ContentNodeI {
 	 * 
 	 * @return Map of String (originating service name) -> {@link ContentNodeI}
 	 */
-	public Map getNodes() {
+	public Map<String, ContentNodeI> getNodes() {
 		return nodes;
 	}
 
@@ -121,31 +130,34 @@ public class CompositeContentNode implements ContentNodeI {
 	// attributes
 	//
 
+	@Override
 	public ContentKey getKey() {
 		return key;
 	}
 
+	@Override
 	public AttributeI getAttribute(String name) {
 		return (AttributeI) attributes.get(name);
 	}
 	
-        @Override
-        public Object getAttributeValue(String name) {
-            AttributeI a = getAttribute(name);
-            return a != null ? a.getValue() : null;
-        }
+	@Override
+	public Object getAttributeValue(String name) {
+	    AttributeI a = getAttribute(name);
+	    return a != null ? a.getValue() : null;
+	}
+	
+	@Override
+	public boolean setAttributeValue(String name, Object value) {
+	    AttributeI a = getAttribute(name);
+	    if (a != null) {
+	        a.setValue(value);
+	        return true;
+	    }
+	    return false;
+	}
 
-        @Override
-        public boolean setAttributeValue(String name, Object value) {
-            AttributeI a = getAttribute(name);
-            if (a != null) {
-                a.setValue(value);
-                return true;
-            }
-            return false;
-        }
-
-	public Map getAttributes() {
+	@Override
+	public Map<String, AttributeI> getAttributes() {
 		return attributes;
 	}
 
@@ -153,14 +165,17 @@ public class CompositeContentNode implements ContentNodeI {
 	// convenience
 	//
 
+	@Override
 	public ContentTypeDefI getDefinition() {
 		return contentService.getTypeService().getContentTypeDefinition(key.getType());
 	}
 
-	public Set getChildKeys() {
+	@Override
+	public Set<ContentKey> getChildKeys() {
 		return ContentNodeUtil.getChildKeys(this);
 	}
 
+	@Override
 	public String getLabel() {
 		return ContentNodeUtil.getLabel(this);
 	}
@@ -171,18 +186,21 @@ public class CompositeContentNode implements ContentNodeI {
 
 	private boolean delete = true;
 
+	@Override
 	public void setDelete(boolean b) {
 		delete = b;
 	}
 
+	@Override
 	public boolean isDelete() {
 		return delete;
 	}
 
+	@Override
 	public ContentNodeI copy() {
-	    Map newNodes = new HashMap();
-	    for (Iterator keyIter = nodes.keySet().iterator();keyIter.hasNext();) {
-	        Object key = keyIter.next();
+	    Map<String, ContentNodeI> newNodes = new HashMap<String, ContentNodeI>();
+	    for (Iterator<String> keyIter = nodes.keySet().iterator();keyIter.hasNext();) {
+	        String key = keyIter.next();
 	        ContentNodeI node = (ContentNodeI) nodes.get(key);
 	        newNodes.put(key, node.copy());
 	    }

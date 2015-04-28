@@ -267,6 +267,15 @@
         <servlet-name>TestUnavailabilityServlet</servlet-name>
         <url-pattern>/test/checkout/unavailability</url-pattern>
     </servlet-mapping>
+	
+	<servlet>
+	   <servlet-name>CmsChangePropagatorServlet</servlet-name>
+	   <servlet-class>com.freshdirect.webapp.ajax.cache.CmsChangePropagatorServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	   <servlet-name>CmsChangePropagatorServlet</servlet-name>
+	   <url-pattern>/api/contentcache</url-pattern>
+	</servlet-mapping>
 
   <servlet>
     <servlet-name>JavascriptServlet</servlet-name>

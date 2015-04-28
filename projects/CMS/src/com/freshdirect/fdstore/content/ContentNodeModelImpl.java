@@ -319,6 +319,23 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
 		return null;
 	}
 	
+
+	public ContentNodeModel getStoreNode() {
+		if (!this.getContentType().equals(ContentNodeModel.TYPE_DEPARTMENT)
+			&& !this.getContentType().equals(ContentNodeModel.TYPE_CATEGORY)
+			&& !this.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)
+			&& !this.getContentType().equals(ContentNodeModel.TYPE_SUPERDEPARTMENT)) {
+			return null;
+		}
+		ContentNodeModel p = this.getParentNode();
+		if (p != null) {
+			if (p.getContentType().equals(ContentNodeModel.TYPE_STORE)) {
+				return p;
+			}
+		}
+		return null;
+	}
+
 	private final static ContentKey RECIPE_ROOT_FOLDER = new ContentKey(FDContentTypes.FDFOLDER, "recipes");
 	private final static ContentKey FAQ_ROOT_FOLDER = new ContentKey(FDContentTypes.FDFOLDER, "FAQ");
 

@@ -2,7 +2,6 @@ package com.freshdirect.fdstore.content;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,9 +17,12 @@ import org.apache.log4j.Logger;
 import com.freshdirect.WineUtil;
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.util.MultiStoreProperties;
+import com.freshdirect.cms.util.PrimaryHomeUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ContentNodeModelUtil {
@@ -173,8 +175,7 @@ public class ContentNodeModelUtil {
 		ContentKey parentKey = null;
 
 		if (FDContentTypes.PRODUCT.equals(key.getType())) {
-			com.freshdirect.cms.ContentNodeI node = CmsManager.getInstance().getContentNode(key);
-			parentKey = (ContentKey) node.getAttributeValue("PRIMARY_HOME");
+			parentKey = CmsManager.getInstance().getPrimaryHomeKey(key);
 		}
 
 		if (parentKey == null) {
@@ -238,9 +239,9 @@ public class ContentNodeModelUtil {
 
         // except: for products, do not cache instances outside primary home 
         if (cache && FDContentTypes.PRODUCT.equals(key.getType())) {
-        	com.freshdirect.cms.ContentNodeI node = CmsManager.getInstance().getContentNode(key);
-        	ContentKey priHome = (ContentKey) node.getAttributeValue("PRIMARY_HOME");
-        	cache = refModel.getContentKey().equals(priHome);
+        	ContentKey otherKey = CmsManager.getInstance().getPrimaryHomeKey(key);
+        	// is refModel equals to primary home cat? -> cache
+        	cache = refModel.getContentKey().equals(otherKey);
         }
         if (cache) {
             ContentNodeModelImpl cachedContentNodeByKey = (ContentNodeModelImpl) ContentFactory.getInstance().getCachedContentNodeByKey(key);
@@ -396,9 +397,7 @@ public class ContentNodeModelUtil {
 		}
 		
 		if (foundCategory == null) {
-			Object attr = product.getCmsAttributeValue("PRIMARY_HOME");
-			ContentKey primaryHomeKey = (ContentKey) attr;
-			foundCategory = (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(primaryHomeKey);
+			foundCategory = product.getPrimaryHome();
 		}
 
 		if (foundCategory == product.getParentNode()) {

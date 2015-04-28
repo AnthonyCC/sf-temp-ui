@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.WineUtil;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
@@ -1183,10 +1184,19 @@ inner:
 		return new ArrayList<CategoryModel>(howtocookitFolders);
 	}
 
+	private CategoryModel primaryHome = null;
+
 	public CategoryModel getPrimaryHome() {
-	    ContentKey key = (ContentKey) getCmsAttributeValue("PRIMARY_HOME"); 
-	    
-	    return key == null ? null : (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(key);
+		if (primaryHome == null) {
+			ContentKey phKey = CmsManager.getInstance().getPrimaryHomeKey(getContentKey());
+			
+			if (phKey != null) {
+				// cache value
+				primaryHome = (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(phKey);
+			}
+		}
+
+		return primaryHome;
     }
 
 	public SkuModel getPreferredSku() {
@@ -1645,8 +1655,8 @@ inner:
 	}
 
 	public boolean isInPrimaryHome() {
-	    ContentKey primaryHome = (ContentKey) getCmsAttributeValue("PRIMARY_HOME");
-	    return primaryHome != null && primaryHome.equals(getParentNode().getContentKey());
+		CategoryModel phCat = getPrimaryHome();
+	    return phCat != null && phCat.equals(getParentNode());
 	}
 	
 	public ProductModel getPrimaryProductModel() {
@@ -1956,5 +1966,4 @@ inner:
 		ContentNodeModelUtil.refreshModels(this, "completeTheMeal", completeTheMeal, false);
 		return new ArrayList<ProductModel>(completeTheMeal);
 	}
-	
 }

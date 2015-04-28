@@ -197,10 +197,10 @@ public class DbContentService extends AbstractContentService implements ContentS
 		+ " where r.parent_contentnode_id in (?)"
 		+ " order by r.parent_contentnode_id, r.def_name, r.ordinal";
 
-	private final static String SELECT_PARENT_NODE = "select a.parent_contentnode_id"
-		+ " from cms_all_nodes a, cms_contentnode c"
-		+ " where a.child_contentnode_id = (?)"
-		+ " and a.child_contentnode_id = c.id";
+	// [APPDEV-3423] fixed parent key getter
+	private final static String SELECT_PARENT_KEYS = "select parent_contentnode_id "
+		+ "from  cms.navtree "
+		+ "where child_contentnode_id=?";
 
 	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys) {
 		Connection conn = null;
@@ -234,7 +234,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			PreparedStatement ps = conn.prepareStatement(SELECT_PARENT_NODE);
+			PreparedStatement ps = conn.prepareStatement(SELECT_PARENT_KEYS);
 			ps.setString(1, key.getEncoded());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {

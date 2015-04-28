@@ -101,12 +101,16 @@ public class ValidationTask implements PublishTask {
 	
 		// add all validation errors as warnings to the publish, with the current time stamp
 		if (!delegate.isEmpty()) {
-			for (Iterator it = delegate.getValidationMessages().iterator(); it.hasNext();) {
-				ContentValidationMessage message  = (ContentValidationMessage) it.next();
+			for (Iterator<ContentValidationMessage> it = delegate.getValidationMessages().iterator(); it.hasNext();) {
+				ContentValidationMessage message  = it.next();
 				// the time stamp is going to be the current time
-				PublishMessage pmessage = new PublishMessage(PublishMessage.WARNING, message.toString(), message.getContentKey());
-			
-				publish.getMessages().add(pmessage);
+				try {
+					PublishMessage pmessage = new PublishMessage(PublishMessage.WARNING, message.toString(), message.getContentKey());
+
+					publish.getMessages().add(pmessage);
+				} catch (Exception e) {
+					LOGGER.warn("An error caught during content validation message processing", e);
+				}
 			}
 		}	
 	}

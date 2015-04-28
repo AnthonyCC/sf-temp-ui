@@ -13,6 +13,8 @@ import com.freshdirect.cms.EnumCardinality;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.search.term.Term;
+import com.freshdirect.cms.util.MultiStoreProperties;
+import com.freshdirect.cms.util.PrimaryHomeUtil;
 import com.freshdirect.fdstore.FDStoreProperties;
 
 public class SearchUtils {
@@ -131,8 +133,7 @@ public class SearchUtils {
 		ContentKey parentKey = null;
 
 		if (FDContentTypes.PRODUCT.equals(key.getType())) {
-			ContentNodeI node1 = CmsManager.getInstance().getContentNode(key);
-			parentKey = (ContentKey) node1.getAttributeValue("PRIMARY_HOME");
+			parentKey = CmsManager.getInstance().getPrimaryHomeKey(key);
 		}
 
 		if (parentKey == null) {

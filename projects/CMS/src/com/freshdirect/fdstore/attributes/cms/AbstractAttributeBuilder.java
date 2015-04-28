@@ -15,6 +15,8 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.EnumCardinality;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.cms.util.MultiStoreProperties;
+import com.freshdirect.cms.util.PrimaryHomeUtil;
 import com.freshdirect.fdstore.attributes.FDAttributeBuilderI;
 
 /**
@@ -72,10 +74,9 @@ public abstract class AbstractAttributeBuilder implements FDAttributeBuilderI {
     protected ContentNodeI findBestParent(ContentNodeI childNode) {
 
 		if (FDContentTypes.PRODUCT.equals(childNode.getKey().getType())) {
-			Object n = childNode.getAttributeValue("PRIMARY_HOME");
-			if(n != null) {		
-				ContentNodeI d = ((ContentKey) n).lookupContentNode();
-				return d;
+			ContentKey key = CmsManager.getInstance().getPrimaryHomeKey(childNode.getKey());
+			if (key != null) {
+				return CmsManager.getInstance().getContentNode(key);
 			}
 		}
 

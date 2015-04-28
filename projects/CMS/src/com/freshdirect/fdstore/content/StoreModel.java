@@ -41,6 +41,11 @@ public class StoreModel extends ContentNodeModelImpl {
 		return this.getAttribute("FULL_NAME", "FreshDirect");
 	}
 
+	public String getPreviewHostName() {
+		return this.getAttribute("PREVIEW_HOST_NAME", null);
+	}
+	
+	
 	public List<DepartmentModel> getDepartments() {
 		ContentNodeModelUtil.refreshModels(this, "departments", departments, true);
 		return new ArrayList<DepartmentModel>(departments);

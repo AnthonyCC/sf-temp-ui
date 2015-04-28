@@ -33,7 +33,16 @@ public interface ContentService extends RemoteService {
     String generateUniqueId(String type) throws ServerException;
 
     String getGoogleMapsApiKey() throws ServerException;
-    
+
+    /**
+     * Returns preview link for the given content node and store context
+     * 
+     * @param nodeKey content key of node 
+     * @param storeId Store ID
+     * @return
+     */
+    String getPreviewUrl(String nodeKey, String storeId);
+
     /**
      * 
      * @param models
@@ -58,8 +67,6 @@ public interface ContentService extends RemoteService {
     List<GwtPublishData> getPublishHistory(PagingLoadConfig config) throws ServerException;
 
     String startPublish(String comment) throws ServerException;
-    
-    String getPreviewUrl( String contentKey ) throws ServerException;
     
     ProductConfigParams getProductConfigParams( String skuKey ) throws ServerException;
     

@@ -19,6 +19,7 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.core.CmsDaoFactory;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.publish.EnumPublishStatus;
 import com.freshdirect.cms.publish.Publish;
 import com.freshdirect.cms.publish.PublishDao;
@@ -200,21 +201,37 @@ public class BackgroundProcessorImpl implements IBackgroundProcessor {
                 PublishDao publishDao = getPublishDao();
                 try {
 
-                	if (publishTasks != null)
-	                    for (PublishTask task : publishTasks) {
-	                        status.setStatus("Publish step :" + task.getComment());
-	
-	                        publishDao.beginTransaction();
-	                        publish.getMessages().add(new PublishMessage(PublishMessage.INFO, task.getComment()));
-	                        publish.setLastModified(new Date());
-	                        publishDao.savePublish(publish);
-	                        
-	                        publishDao.commitTransaction();
-	
-	                        task.execute(publish);
-	                    }
-                	else
+                	if (publishTasks != null) {
+                		// Go through each Stores
+                		Collection<ContentKey> storeKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.STORE);
+
+                		final int n = storeKeys.size();
+                		int k=0;
+
+                		for (final ContentKey storeKey : storeKeys) {
+                			k++;
+
+                			publish.setStoreId(storeKey.getId());
+                			publish.setPath(publish.getBasePath() + "/" + publish.getStoreId());
+
+                			LOG.info("=== Start publish for store: " + publish.getStoreId() + "  ("+k+"/"+n+") ===");
+                		
+		                    for (PublishTask task : publishTasks) {
+		                        status.setStatus("Publish step :" + task.getComment());
+		
+		                        publishDao.beginTransaction();
+		                        publish.getMessages().add(new PublishMessage(PublishMessage.INFO, task.getComment()));
+		                        publish.setLastModified(new Date());
+		                        publishDao.savePublish(publish);
+		                        
+		                        publishDao.commitTransaction();
+		
+		                        task.execute(publish);
+		                    }
+                		}
+                	} else {
                 		LOG.warn("NOTE, that there are no publish tasks defined. Publish may become CORRUPT !!!!!");
+                	}
                     status.setStatus("Finalizing publish");
                     publishDao.beginTransaction();
                     publish.setStatus(EnumPublishStatus.COMPLETE);

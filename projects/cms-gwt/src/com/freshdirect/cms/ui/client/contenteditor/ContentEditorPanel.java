@@ -21,10 +21,10 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.NodeTree;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.layout.AnchorData;
 import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
@@ -36,6 +36,7 @@ import com.freshdirect.cms.ui.client.ActionBar;
 import com.freshdirect.cms.ui.client.Anchor;
 import com.freshdirect.cms.ui.client.CmsGwt;
 import com.freshdirect.cms.ui.client.DetailPanel;
+import com.freshdirect.cms.ui.client.PreviewAnchor;
 import com.freshdirect.cms.ui.client.WorkingSet;
 import com.freshdirect.cms.ui.client.action.SaveNodeAction;
 import com.freshdirect.cms.ui.client.nodetree.ContentTreePopUp;
@@ -55,6 +56,8 @@ public class ContentEditorPanel extends DetailPanel {
 	private Anchor compareEndButton;
 	private Container<?> editorComponent; // root editor component
 	private CompareNodesUtil compareUtil;
+	
+	private PreviewAnchor previewAnchor;
 	
 	private class ContextToolBar extends LayoutContainer {
 		
@@ -96,7 +99,18 @@ public class ContentEditorPanel extends DetailPanel {
 	                        return;
 	                    }
 	                    String path = contextPathsList.get(selectedIndex);
-	                    contentNode.changeContext(path);
+	                    
+	                    // -- FDX extension --
+	                    
+	                    // Extract store key (Store:FreshDirect) and store in a central place
+	    	            String _storeKey = GwtNodeContext.extractRootKey(path);
+	    	            if (!_storeKey.startsWith("Store:")) {
+	    	            	_storeKey = null;
+	    	            }
+	    	            ManageStoreView.getInstance().setStoreKey(_storeKey);
+	    	            contentNode.changeContext(path, _storeKey);
+	    	            
+	    	            ManageStoreView.getInstance().updatePreviewLink();
 	                }
 	            });
 	            
@@ -155,6 +169,17 @@ public class ContentEditorPanel extends DetailPanel {
 	            add(contextField);
 	            buttonMargin = new HBoxLayoutData(2, 0, 0, 2);
 	        
+	            // FDX 
+	            
+	            final String _storeKey = GwtNodeContext.extractRootKey( contextPathsList.get(0) );
+	            if (_storeKey != null && _storeKey.startsWith("Store:")) {
+	            	ManageStoreView.getInstance().setStoreKey(_storeKey);
+    	            ManageStoreView.getInstance().updatePreviewLink();
+	            } else {
+	            	ManageStoreView.getInstance().setStoreKey( null );
+	            	CmsGwt.debug("Could not extract store key from path " + contextPathsList.get(0));
+	            }
+
 	    	} else {	    	
 		    	// TODO what to do if there are no contexts at all ??
 	    		
@@ -251,22 +276,7 @@ public class ContentEditorPanel extends DetailPanel {
             saveButton.setToolTip( new ToolTipConfig( "Save", "Saves the workset." ) );
             saveButton.addStyleName( "green-button" );
             saveButton.setWidth(60);
-            actionBar.addButton( saveButton ); 
-/*
- * 
- *             Discard button uncomment, if needed
- *             
-            Button discardButton = new Button("Discard", new SelectionListener<ButtonEvent>() {
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                    nodeSelected(currentNode.getNode().getKey(), null, false);
-                }
-            });
-            discardButton.setToolTip( new ToolTipConfig( "Discard", "Discard the changes in this workset." ) );
-            discardButton.addStyleName( "red-button" );
-            contentToolBar.addButton( discardButton );
-*/            
-            
+            actionBar.addButton( saveButton );             
         }
 
 
@@ -313,20 +323,32 @@ public class ContentEditorPanel extends DetailPanel {
         });
         actionBar.addLink(viewHistoryButton, new Margins(0,10,0,0) );
 
-		if ( contentNode.getPreviewUrl() != null ) {
-			final String previewUrl = contentNode.getPreviewUrl();
-			final Anchor previewAnchor = new Anchor( "Preview", previewUrl );
+		{
+			final String previewUrl = "about:blank";
+			previewAnchor = new PreviewAnchor( "Preview", previewUrl );
 			previewAnchor.setNewWindow( true );
-			previewAnchor.addListener( Events.OnClick, new Listener<BaseEvent>() {
-				@Override
-				public void handleEvent( BaseEvent be ) {
-					previewAnchor.setUrl( previewUrl + "&preview=" + Math.random() );					
-				}				
-			});
+
 			actionBar.addLink( previewAnchor, new Margins(0,10,0,0) );
+			
+			previewAnchor.hide();
 		}
-        
 	}
+    
+    public void updatePreviewLink() {
+    	if (contentNode != null) {
+    		final String url = contentNode.getPreviewUrl();
+    		
+    		if (url != null) {
+        		previewAnchor.setOriginalUrl(contentNode.getPreviewUrl());
+        		previewAnchor.show();
+    		} else {
+    			previewAnchor.hide();
+    		}
+    	} else {
+			previewAnchor.hide();
+    	}
+    }
+    
     
     protected void viewHistory() {
         if (contentNode != null) {

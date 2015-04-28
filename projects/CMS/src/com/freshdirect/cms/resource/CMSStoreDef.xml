@@ -113,6 +113,7 @@
 	<ContentTypeDef name="Store">
 		<AttributeDefs>
 			<AttributeDef type="S" name="NAME" />
+			<AttributeDef name="PREVIEW_HOST_NAME" type="S"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="folders" navigable="true" cardinality="Many">
@@ -1044,7 +1045,7 @@
 			<RelationshipDef name="HOWTOCOOKIT_FOLDERS" label="HTCI Folders" cardinality="Many">
 				<DestinationDef contentType="Category" />
 			</RelationshipDef>
-			<RelationshipDef name="PRIMARY_HOME" label="Primary Home" cardinality="One">
+			<RelationshipDef name="PRIMARY_HOME" label="Primary Home" cardinality="Many">
 				<DestinationDef contentType="Category" />
 			</RelationshipDef>
 <!--  Usq changes -->                    

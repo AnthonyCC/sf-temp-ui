@@ -12,6 +12,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -23,10 +25,12 @@ import com.freshdirect.fdstore.content.RecipeDepartment;
 import com.freshdirect.fdstore.content.SuperDepartmentModel;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class NavigationHighlightTag extends SimpleTagSupport {
+	private final static Category LOGGER = LoggerFactory.getInstance(NavigationHighlightTag.class);
 
 	@Override
 	public void doTag() throws JspException, IOException {
@@ -184,7 +188,7 @@ public class NavigationHighlightTag extends SimpleTagSupport {
 			}
 			ctx.setAttribute("navigation", navigation);
 		} catch (Exception e) {
-			
+			LOGGER.error(e);
 		}
 
 	}

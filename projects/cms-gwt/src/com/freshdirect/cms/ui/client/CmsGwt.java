@@ -123,6 +123,10 @@ public class CmsGwt implements EntryPoint {
 		log(message, false);
 	}
 	
+	public static void debug(String message) {
+		consoleDebug(message);
+	}
+	
 	public static void log(String message, boolean isErr) {
 		PrintStream s = isErr ? System.err : System.out;
 		s.println(message);
@@ -136,4 +140,10 @@ public class CmsGwt implements EntryPoint {
 	    console.log(message);
 	}-*/;
 	
+	public static native void consoleDebug(String message) /*-{
+    if (!$wnd.console) {
+    	return;
+    }
+    console.debug(message);
+}-*/;
 }

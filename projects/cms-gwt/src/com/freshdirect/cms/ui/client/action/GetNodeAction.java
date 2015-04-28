@@ -22,7 +22,7 @@ public class GetNodeAction extends BasicAction<GwtNodeData> {
 		currentNodeData.setCurrentContext( path );
 		ms.setCurrentNode( currentNodeData );
 		ms.setupEditorLayout();
-
+		
         stopProgress();
     }
 

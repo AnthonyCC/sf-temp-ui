@@ -6,6 +6,8 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.ContentServiceI;
+import com.freshdirect.cms.util.PrimaryHomeUtil;
 
 /**
  * Provides links to the preview site for content objects.
@@ -13,64 +15,99 @@ import com.freshdirect.cms.application.CmsManager;
  * @TODO refactor as a configurable hivemind service
  */
 public class PreviewLinkProvider {
-
 	/**
 	 * Get a preview link for a content object.
 	 * 
 	 * @param key content key (never null)
 	 * @return URI string or null if no preview link exists
 	 */
-	public static String getLink(ContentKey key) {
+	@Deprecated
+	public static String getLink(ContentKey key) {		
+		return PreviewLinkProvider.getLink(key, null);
+	}
+
+	/**
+	 * Generate preview link for the given content node
+	 * 
+	 * @param key content node key
+	 * @param storeKey optional, except for products.
+	 * 	No store key results relative URI
+	 * 
+	 * @return Preview URL
+	 */
+	public static String getLink(ContentKey key, ContentKey storeKey) {
 		ContentType type = key.getType();
 		String id = key.getId();
 
+		String uri = null;
+		
+		final ContentServiceI svc = CmsManager.getInstance();
+		
 		if (FDContentTypes.PRODUCT.equals(type)) {
 			ContentNodeI productNode = key.lookupContentNode();
 			if (productNode != null) {
-				ContentKey priHome = (ContentKey) productNode.getAttributeValue("PRIMARY_HOME");
-				if (priHome != null) {
-					return "/product.jsp?catId=" + priHome.getId() + "&productId=" + id;
+				if (storeKey == null) {
+					// storeKey is essential!
+					return null;
+				}
+
+				ContentNodeI cat = PrimaryHomeUtil.findParent(productNode, svc, storeKey.getId());
+				
+				if (cat != null) {
+					uri = "/product.jsp?catId=" + cat.getKey().getId() + "&productId=" + id;
 				}
 			}
 			
 		} else if (FDContentTypes.CATEGORY.equals(type)) {
-			return "/category.jsp?catId=" + id;
+			uri = "/category.jsp?catId=" + id;
 
 		} else if (FDContentTypes.DEPARTMENT.equals(type)) {
-			return "/department.jsp?deptId=" + id;
+			uri = "/department.jsp?deptId=" + id;
 
 		} else if (FDContentTypes.RECIPE.equals(type)) {
-			return "/recipe.jsp?recipeId=" + id;
+			uri = "/recipe.jsp?recipeId=" + id;
 			
 		} else if (FDContentTypes.RECIPE_CATEGORY.equals(type)) {
-			return "/recipe_cat.jsp?catId=" + id;
+			uri = "/recipe_cat.jsp?catId=" + id;
 			
 		} else if (FDContentTypes.RECIPE_SUBCATEGORY.equals(type)) {
 			Set<ContentKey> parentKeys=CmsManager.getInstance().getParentKeys(key);
 			if (parentKeys.size() > 0 ) {
 				ContentKey parentKey = parentKeys.iterator().next();
-				return "/recipe_subcat.jsp?catId="+parentKey.getId()+"&subCatId=" + id;
+				uri = "/recipe_subcat.jsp?catId="+parentKey.getId()+"&subCatId=" + id;
 			}
 		} else if (FDContentTypes.RECIPE_DEPARTMENT.equals(type)) {
-			return "/department.jsp?deptId=" + id;
+			uri = "/department.jsp?deptId=" + id;
 			
 		} else if (FDContentTypes.RECIPE_SEARCH_PAGE.equals(type)) {
-			return "/recipe_search.jsp?deptId=" + id;
+			uri = "/recipe_search.jsp?deptId=" + id;
 		} else if(FDContentTypes.HTML.equals(type)){
 			ContentNodeI node = key.getContentNode(); 
 			if (node != null) {
-				return "/test/content/preview.jsp?template="+node.getAttributeValue("path");
+				uri = "/test/content/preview.jsp?template="+node.getAttributeValue("path");
 			}
 		} else if(FDContentTypes.YMAL_SET.equals(type)){
-			return "/test/content/ymal_set_preview.jsp?ymalSetId=" + id;
+			uri = "/test/content/ymal_set_preview.jsp?ymalSetId=" + id;
 		} else if (FDContentTypes.PAGE.equals(type)) {
-			return "/page.jsp?pageId=" + id;
+			uri = "/page.jsp?pageId=" + id;
 		} else if (FDContentTypes.TAG.equals(type)) {
-			return "/test/migration/products_tagged.jsp?tag=" + id;
+			uri = "/test/migration/products_tagged.jsp?tag=" + id;
 		} else if (FDContentTypes.SUPER_DEPARTMENT.equals(type)) {
-			return "/browse.jsp?id=" + id;
+			uri = "/browse.jsp?id=" + id;
 		}
-		
-		return null;
+
+		if (uri != null) {
+			if (storeKey != null) {
+				ContentNodeI theStoreNode = storeKey.lookupContentNode();
+				if (theStoreNode != null) {
+					String previewHostName = (String) theStoreNode.getAttributeValue("PREVIEW_HOST_NAME");
+					if (previewHostName != null) {
+						return "//"+previewHostName+(uri.startsWith("/") ? uri : "/" + uri);
+					}
+				}
+			}
+		}
+
+		return uri;
 	}
 }

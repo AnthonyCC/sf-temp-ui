@@ -3,11 +3,14 @@ package com.freshdirect.cms.ui.model;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.freshdirect.cms.ui.client.fields.ChangeTrackingField;
 import com.freshdirect.cms.ui.client.fields.InheritanceField;
+import com.freshdirect.cms.ui.client.fields.PrimaryHomeSelectorField;
 import com.freshdirect.cms.ui.client.fields.SaveListenerField;
 import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
@@ -29,6 +32,9 @@ public class GwtNodeData implements Serializable {
 
 	private String currentContext;
 	
+	private Map<String,Set<String>> parentMap;
+
+
 	public GwtNodeData() {
 		readonly = false;
 		tabDefinition = null;
@@ -87,6 +93,18 @@ public class GwtNodeData implements Serializable {
         return previewUrl;
     }
 	
+    public void setPreviewUrl(String previewUrl) {
+		this.previewUrl = previewUrl;
+	}
+
+    public Map<String, Set<String>> getParentMap() {
+		return parentMap;
+	}
+    
+    public void setParentMap(Map<String, Set<String>> parentMap) {
+		this.parentMap = parentMap;
+	}
+
     public String getDefaultContextPath() {
     	if ( contexts == null || contexts.size() == 0 ) 
     		return null;
@@ -94,9 +112,12 @@ public class GwtNodeData implements Serializable {
     	if ( contexts.size() == 1 )
     		return contexts.getPaths().iterator().next();
     	
-    	ContentNodeAttributeI attr = node.getOriginalAttribute( "PRIMARY_HOME" );
-    	if ( attr != null ) {
-	    	ContentNodeModel primaryHome = (ContentNodeModel)attr.getValue();    
+    	// FIXME FDX
+    	List<OneToManyModel> _homes = (List<OneToManyModel>) node.getOriginalAttributeValue("PRIMARY_HOME");
+    	
+    	if ( _homes != null && !_homes.isEmpty() ) {
+    		// FIXME FIXME FIXME FDX
+	    	ContentNodeModel primaryHome = _homes.get(0) /* (ContentNodeModel)attr.getValue() */;    
 	    	String PHKey = primaryHome.getKey(); 
 	    	for ( String path : contexts.getPaths() ) {
 	    		if ( path.contains( PHKey ) ) {
@@ -242,7 +263,7 @@ public class GwtNodeData implements Serializable {
 	 * @param contextPath
 	 */
 	@SuppressWarnings( "unchecked" )
-	public void changeContext(String contextPath) {
+	public void changeContext(String contextPath, String storeKey) {
 		setCurrentContext( contextPath );
         Map<String, ContentNodeAttributeI> attributes = getNode().getOriginalAttributes();
         Map<String, ContentNodeAttributeI> inheritedAttrs = getContexts().getInheritedAttributes(getCurrentContext());
@@ -267,6 +288,15 @@ public class GwtNodeData implements Serializable {
                 	inheritanceField.setInheritedValue(null);
                 }
             }
+        }
+
+        if (attributes.get("PRIMARY_HOME") != null) {
+            ContentNodeAttributeI attribute = attributes.get("PRIMARY_HOME");
+        	@SuppressWarnings("unused")
+			PrimaryHomeSelectorField field = (PrimaryHomeSelectorField)  ((Field)attribute.getFieldObject());
+        	if (field != null) {
+        		field.changeStoreKey( storeKey );
+        	}
         }
 	}
 

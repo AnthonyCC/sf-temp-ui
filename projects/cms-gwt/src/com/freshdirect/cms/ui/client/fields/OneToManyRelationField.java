@@ -182,10 +182,12 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 
 	protected Listener<BaseEvent> selectListener = new Listener<BaseEvent>() {
 		public void handleEvent(BaseEvent event) {
-			if (selectCheckbox.getValue()) {
-				selection.selectAll();
-			} else {
-				selection.deselectAll();
+			if (selectCheckbox != null) {
+				if (selectCheckbox.getValue()) {
+					selection.selectAll();
+				} else {
+					selection.deselectAll();
+				}
 			}
 		}
 	};
@@ -212,37 +214,37 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 				}
 			}
 
-                        CmsGwt.getNavigableRelations(moveType, new BaseCallback<NavigableRelationInfo>() {
-            
-                            public void onSuccess(final NavigableRelationInfo result) {
-                                final ContentTreePopUp popup = ContentTreePopUp.getInstance(result.getAllTargetTypes(parentType), false);
-                                if (copy) {
-                                    popup.setHeading("Copy " + selectedList.size() + " item(s) to :");
-                                } else {
-                                    popup.setHeading("Move " + selectedList.size() + " item(s) to :");
+            CmsGwt.getNavigableRelations(moveType, new BaseCallback<NavigableRelationInfo>() {
+
+                public void onSuccess(final NavigableRelationInfo result) {
+                    final ContentTreePopUp popup = ContentTreePopUp.getInstance(result.getAllTargetTypes(parentType), false);
+                    if (copy) {
+                        popup.setHeading("Copy " + selectedList.size() + " item(s) to :");
+                    } else {
+                        popup.setHeading("Move " + selectedList.size() + " item(s) to :");
+                    }
+
+                    popup.addListener(Events.Select, new Listener<BaseEvent>() {
+
+                        public void handleEvent(BaseEvent be) {
+                            ContentNodeModel targetNode = popup.getSelectedItem();
+                            String attrName;
+                            if (parentType.equals(targetNode.getType())) {
+                                attrName = attributeKey;
+                            } else {
+                                attrName = result.getNavigableAttributeName(targetNode.getType());
+                            }
+                            if (addRelationshipsToNode(targetNode.getKey(), attrName, selectedList)) {
+                                if (!copy) {
+                                    removeRelationships(selectedList);
                                 }
-            
-                                popup.addListener(Events.Select, new Listener<BaseEvent>() {
-            
-                                    public void handleEvent(BaseEvent be) {
-                                        ContentNodeModel targetNode = popup.getSelectedItem();
-                                        String attrName;
-                                        if (parentType.equals(targetNode.getType())) {
-                                            attrName = attributeKey;
-                                        } else {
-                                            attrName = result.getNavigableAttributeName(targetNode.getType());
-                                        }
-                                        if (addRelationshipsToNode(targetNode.getKey(), attrName, selectedList)) {
-                                            if (!copy) {
-                                                removeRelationships(selectedList);
-                                            }
-                                        }
-                                    }
-                                });
-                                popup.show();
-            
-                            };
-                        });
+                            }
+                        }
+                    });
+                    popup.show();
+
+                };
+            });
 		}
 	}
 
@@ -332,6 +334,54 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 
 	protected GridDNDListener<OneToManyModel> dndListener;
 
+
+	protected void setupTopToolbar(ToolBar aToolBar) {
+		// ==================================== CREATE ====================================
+		if ( navigable && allowedTypes.size() > 0 ) {
+			createButton = new ToolButton( "create-relation" );
+			createButton.setToolTip( new ToolTipConfig( "CREATE", "Create new node..." ) );
+
+			theToolBar.add( createButton );
+		}
+
+		// ==================================== ADD ====================================
+		if ( isAddRelationToolNeeded() ) {
+			addButton = new ToolButton( "add-relation" );
+			addButton.setToolTip( new ToolTipConfig( "ADD", "Add a relation..." ) );
+			theToolBar.add( addButton );
+		}
+
+		// ==================================== SORT ====================================
+		sortButton = new ToolButton( "sort-button" );
+		sortButton.setToolTip( new ToolTipConfig( "SORT", "Sort the relations alphabetically." ) );
+		theToolBar.add( sortButton );
+
+		theToolBar.add(new FillToolItem());
+
+		// ==================================== DELETE ====================================
+		deleteButton = new ToolButton( "delete-button" );
+		deleteButton.setToolTip( new ToolTipConfig( "DELETE", "Delete selected relations." ) );
+		theToolBar.add( deleteButton );
+
+		// ==================================== COPY ====================================
+		copyButton = new ToolButton( "copy-button" );
+		copyButton.setToolTip( new ToolTipConfig( "COPY", "Copy selected relations to another node." ) );
+		theToolBar.add( copyButton );
+
+		// ==================================== MOVE ====================================
+		moveButton = new ToolButton( "move-button" );
+		moveButton.setToolTip( new ToolTipConfig( "MOVE", "Move selected relations to another node." ) );
+		theToolBar.add( moveButton );
+
+		// ==================================== SELECT CHECKBOX ====================================
+		if ( isSelectAllToolNeeded() ) {
+			selectCheckbox = new CheckBox();
+			selectCheckbox.setToolTip( new ToolTipConfig( "Select all/none", "Select all/none relations." ) );
+			theToolBar.add( selectCheckbox );
+		}
+	}
+
+	
 	protected void initialize() {
 
 		ContentPanel cp = new ContentPanel();
@@ -341,51 +391,8 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 		theToolBar = new ToolBar();
 		cp.setTopComponent(theToolBar);
 
-		{
-			// ==================================== CREATE ====================================
-			if ( navigable && allowedTypes.size() > 0 ) {
-				createButton = new ToolButton( "create-relation" );
-				createButton.setToolTip( new ToolTipConfig( "CREATE", "Create new node..." ) );
-
-				theToolBar.add( createButton );
-			}
-
-			// ==================================== ADD ====================================
-			if ( isAddRelationToolNeeded() ) {
-				addButton = new ToolButton( "add-relation" );
-				addButton.setToolTip( new ToolTipConfig( "ADD", "Add a relation..." ) );
-				theToolBar.add( addButton );
-			}
-
-			// ==================================== SORT ====================================
-			sortButton = new ToolButton( "sort-button" );
-			sortButton.setToolTip( new ToolTipConfig( "SORT", "Sort the relations alphabetically." ) );
-			theToolBar.add( sortButton );
-
-			theToolBar.add(new FillToolItem());
-
-			// ==================================== DELETE ====================================
-			deleteButton = new ToolButton( "delete-button" );
-			deleteButton.setToolTip( new ToolTipConfig( "DELETE", "Delete selected relations." ) );
-			theToolBar.add( deleteButton );
-
-			// ==================================== COPY ====================================
-			copyButton = new ToolButton( "copy-button" );
-			copyButton.setToolTip( new ToolTipConfig( "COPY", "Copy selected relations to another node." ) );
-			theToolBar.add( copyButton );
-
-			// ==================================== MOVE ====================================
-			moveButton = new ToolButton( "move-button" );
-			moveButton.setToolTip( new ToolTipConfig( "MOVE", "Move selected relations to another node." ) );
-			theToolBar.add( moveButton );
-
-			// ==================================== SELECT CHECKBOX ====================================
-			if ( isSelectAllToolNeeded() ) {
-				selectCheckbox = new CheckBox();
-				selectCheckbox.setToolTip( new ToolTipConfig( "Select all/none", "Select all/none relations." ) );
-				theToolBar.add( selectCheckbox );
-			}
-		}
+		// ---
+		setupTopToolbar(theToolBar);
 
 		store = new ListStore<OneToManyModel>();
 		store.removeAll();
@@ -404,10 +411,8 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 
 		grid.hide();
 
-		{
-			dndListener = new GridDNDListener<OneToManyModel>(grid);
-		}
-
+		initDNDListener();
+		
 		cp.add(grid);
 
 		af = new AdapterField(cp);
@@ -421,6 +426,10 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 		setFireChangeEventOnSetValue(true);
 	}
 
+	protected void initDNDListener() {
+		dndListener = new GridDNDListener<OneToManyModel>(grid);
+	}
+	
     /**
      * @return
      */
@@ -478,11 +487,12 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 			}
 		}
 		
-		config.add(selection.getColumn());
 			
+		config.add(selection.getColumn());
+		
 		return config;
 	}
-
+	
 	public Set<String> getAllowedTypes() {
 		return allowedTypes;
 	}
@@ -490,6 +500,21 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 	public void setAllowedTypes(Set<String> aTypes) {
 		allowedTypes = aTypes;
 	}
+
+	
+
+	/**
+	 * Subclasses may define custom logic
+	 *  
+	 * @param value
+	 * @return
+	 */
+	protected boolean addSingleValueToStore(OneToManyModel value) {
+		store.add(value);
+		return true;
+	}
+
+
 
 	@Override
 	public void setValue(final List<OneToManyModel> values) {
@@ -628,7 +653,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 		if (store.findModel("key", key) == null) {
 			OneToManyModel model = createModel(type, key, label);
 			model.setNewNodeData(newNodeData);
-			store.add(model);
+			addSingleValueToStore(model);
 			grid.show();
 			grid.getView().refresh(false);
 			fireEvent(Events.Change, new FieldEvent(this));
@@ -640,7 +665,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 			if (store.findModel("key", cmModel.getKey()) == null) {
 				OneToManyModel otmModel = createModel(cmModel.getType(),
 						cmModel.getKey(), cmModel.getLabel());
-				store.add(otmModel);
+				addSingleValueToStore(otmModel);
 			}
 		}
 		grid.show();
@@ -779,10 +804,12 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 		// FIXME: grids not disabled allow to realign items which means change
 		// grid.setEnabled(!readOnly);
 
-		if (readOnly) {
-			dndListener.forget();
-		} else {
-			dndListener.observe();
+		if (dndListener != null) {
+			if (readOnly) {
+				dndListener.forget();
+			} else {
+				dndListener.observe();
+			}
 		}
 	}
 

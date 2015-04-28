@@ -42,8 +42,6 @@ public interface ContentServiceAsync {
     
     void startPublish(String comment, AsyncCallback<String> callback);
     
-    void getPreviewUrl( String contentKey, AsyncCallback<String> callback );
-    
     void getProductConfigParams( String skuKey, AsyncCallback<ProductConfigParams> callback ); 
 
 	void getPublishData(ChangeSetQuery publishId, AsyncCallback<GwtPublishData> callback);
@@ -51,4 +49,6 @@ public interface ContentServiceAsync {
     void getNavigableRelations(String contentType, AsyncCallback<NavigableRelationInfo> callback);
     
     void getGoogleMapsApiKey(AsyncCallback<String> callback);
+    
+    void getPreviewUrl(String nodeKey, String storeId, AsyncCallback<String> callback);
 }

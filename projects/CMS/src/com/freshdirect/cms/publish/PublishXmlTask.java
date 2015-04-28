@@ -21,8 +21,11 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
 import com.freshdirect.cms.CmsRuntimeException;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.service.xml.ContentNodeSerializer;
+import com.freshdirect.cms.util.SingleStoreFilterHelper;
 import com.freshdirect.framework.util.QuickDateFormat;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -66,10 +69,25 @@ public class PublishXmlTask implements PublishTask {
 	}
 
 	public void execute(Publish publish) {
-		Map nodes = contentService.getContentNodes(contentService.getContentKeys());
+		Map<ContentKey, ContentNodeI> nodes = contentService.getContentNodes(contentService.getContentKeys());
 
 		ContentNodeSerializer serializer = new ContentNodeSerializer();
-		List l = new ArrayList(nodes.values());
+		List<ContentNodeI> l = new ArrayList<ContentNodeI>(nodes.values());
+
+		// filter nodes
+		if (publish.getStoreId() != null) {
+			final int n0 = l.size();
+			LOG.info("Filtering " + l.size() + " nodes ..");
+
+			l = SingleStoreFilterHelper.filterContentNodes(publish.getStoreId(), l);
+
+			final int n1 = l.size();
+			final double perc = ((double)(n0-n1)*100)/((double)n0);
+			LOG.info("  dropped " + (n0-n1) + " nodes ("+(Math.round(perc))+" %)");
+		} else {
+			LOG.warn("No store ID specified, skip filtering nodes");
+		}
+		
 		Document doc = serializer.visitNodes(l);
 
 		Element rootElement = doc.getRootElement();
@@ -105,6 +123,9 @@ public class PublishXmlTask implements PublishTask {
 			throw new CmsRuntimeException(e);
 		}
 	}
+
+
+
 
 	public String getComment() {
 		return "Writing store file " + storeFilePath;

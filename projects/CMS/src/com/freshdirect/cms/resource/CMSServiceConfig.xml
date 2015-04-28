@@ -133,7 +133,7 @@ Symbols:
 	</service-point>  
 
 
-	<service-point id="StoreCacheInterceptor" interface="org.aopalliance.intercept.MethodInterceptor">
+	<service-point id="StoreCacheInterceptor" interface="com.freshdirect.cms.cache.ContentCache">
 		<invoke-factory>
 			<construct class="com.freshdirect.cms.cache.ContentCacheMethodInterceptor">
 				<service>StoreCache</service>
@@ -347,8 +347,6 @@ because otherwise the external modifications of the slide database won't get pic
 		<Object value="instance:com.freshdirect.cms.fdstore.RecipeChildNodeValidator"/>
 		<Object value="instance:com.freshdirect.cms.fdstore.ConfiguredProductValidator"/>
 		<Object value="instance:com.freshdirect.cms.fdstore.DateIntervalValidator"/>
-		<Object value="instance:com.freshdirect.cms.fdstore.SearchRelevancyScoreValidator"/>
-		<Object value="instance:com.freshdirect.cms.fdstore.SynonymValidator"/>
 		<Object value="instance:com.freshdirect.cms.fdstore.ConditionalFieldValidator"/>
 	</contribution>
 

@@ -22,7 +22,7 @@
 	int coupon_version = FDCouponManager.getMaxCouponsVersion();
 	CmsManager manager = CmsManager.getInstance();
 	Hashtable<String, String> departments = new Hashtable<String, String>();		
-	ContentKey storeKey = ContentKey.decode("Store:FreshDirect");
+	ContentKey storeKey = ContentFactory.getInstance().getStoreKey();
 	ContentNodeI contentNode = manager.getContentNode(storeKey);
 	if(null !=contentNode){
 		Set subNodes = contentNode.getChildKeys();

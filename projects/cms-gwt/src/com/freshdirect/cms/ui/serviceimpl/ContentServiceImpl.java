@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +20,7 @@ import org.apache.log4j.Logger;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.ContentNodeComparator;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
@@ -31,6 +34,7 @@ import com.freshdirect.cms.application.CmsResponseI;
 import com.freshdirect.cms.application.CmsUser;
 import com.freshdirect.cms.changecontrol.ChangeLogServiceI;
 import com.freshdirect.cms.changecontrol.ChangeSet;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.fdstore.PreviewLinkProvider;
 import com.freshdirect.cms.meta.ContentTypeUtil;
 import com.freshdirect.cms.publish.EnumPublishStatus;
@@ -38,7 +42,6 @@ import com.freshdirect.cms.publish.Publish;
 import com.freshdirect.cms.publish.PublishMessage;
 import com.freshdirect.cms.publish.PublishServiceI;
 import com.freshdirect.cms.search.SearchHit;
-import com.freshdirect.cms.search.SearchRelevancyList;
 import com.freshdirect.cms.ui.client.nodetree.TreeContentNodeModel;
 import com.freshdirect.cms.ui.model.ContentNodeModel;
 import com.freshdirect.cms.ui.model.GwtContentNode;
@@ -60,6 +63,7 @@ import com.freshdirect.cms.ui.service.GwtSecurityException;
 import com.freshdirect.cms.ui.service.ServerException;
 import com.freshdirect.cms.ui.translator.TranslatorFromGwt;
 import com.freshdirect.cms.ui.translator.TranslatorToGwt;
+import com.freshdirect.cms.util.PrimaryHomeUtil;
 import com.freshdirect.cms.validation.ContentValidationException;
 import com.freshdirect.cms.validation.ContentValidationMessage;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -79,21 +83,46 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 
     private final static int      MAX_HITS         = 120;
     
-    private static final String[] ROOTKEYS         = { "Store:FreshDirect", "MediaFolder:/", "CmsFolder:forms", "CmsQueryFolder:queries",
-            "CmsQuery:orphans", "FDFolder:recipes", "FDFolder:ymals", GlobalMenuItemModel.DEFAULT_MENU_FOLDER, "FDFolder:starterLists", "FDFolder:synonymList",
-            "FDFolder:spellingSynonymList", SearchRelevancyList.SEARCH_RELEVANCY_KEY, "FDFolder:FAQ", "FDFolder:donationOrganizationList", YoutubeVideoModel.DEFAULT_YOUTUBE_FOLDER};
+    // without store root keys
+    private static final String[] ROOTKEYS         = { "FDFolder:sharedResources", "MediaFolder:/", "CmsFolder:forms", "CmsQueryFolder:queries",
+            "CmsQuery:orphans", "FDFolder:recipes", "FDFolder:ymals", GlobalMenuItemModel.DEFAULT_MENU_FOLDER, "FDFolder:starterLists", "FDFolder:donationOrganizationList", YoutubeVideoModel.DEFAULT_YOUTUBE_FOLDER };
+
+    private Set<ContentKey> navRootKeys;
+    
+	/**
+	 * If previous publish date is not available (publish not or once done) then
+	 * let the lower bound of changesets for a publish is the earliest one.
+	 */
+	private static final Date TIME_ZERO = new Date(0);
+
 
     @Override
     public void init() throws ServletException {
         super.init();
-        CmsManager.getInstance();
-    }
+        
+        navRootKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.STORE);
+   }
     
     
     public String getGoogleMapsApiKey() {
     	return FDStoreProperties.getGoogleMapsAPIKey();
     }
 
+
+    public String getPreviewUrl(String nodeKey, String storeId) {
+    	ContentKey key = ContentKey.decode(nodeKey);
+    	
+    	ContentKey storeKey = null;
+    	if (storeId != null) {
+    		try {
+				storeKey = ContentKey.create(FDContentTypes.STORE, storeId);
+			} catch (InvalidContentKeyException e) {
+				LOG.error("BANG " + e);
+			}
+    	}
+
+    	return PreviewLinkProvider.getLink(key, storeKey);
+    }
     
     
     // ====================== User ====================== 
@@ -164,6 +193,15 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             ArrayList<TreeContentNodeModel> children = new ArrayList<TreeContentNodeModel>();
 
             if (parentNode == null) {
+            	// store root keys
+            	for (ContentKey key : navRootKeys) {
+                    ContentNodeI cn = key.getContentNode();
+                    if (cn != null) {
+                        children.add( TranslatorToGwt.toTreeContentNodeModel(cn) );
+                    }
+            	}
+
+            	// and the others
                 for (int i = 0; i < ROOTKEYS.length; i++) {
                     ContentNodeI cn = ContentKey.decode(ROOTKEYS[i]).getContentNode();
                     if (cn != null) {
@@ -208,8 +246,12 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     public GwtNodeData loadNodeData( String nodeKey ) throws ServerException {
         try {
             ContentNodeI node;
-            node = ContentKey.decode(nodeKey).getContentNode();
+            final ContentKey ncKey = ContentKey.decode(nodeKey);
+			node = ncKey.getContentNode();
             GwtNodeData gwtNode = TranslatorToGwt.gwtNodeData( node, !getUser().isAllowedToWrite() );
+            
+            gwtNode.setParentMap( getParentMapping(ncKey) );
+            
             return gwtNode;
             
         } catch (IllegalArgumentException e) {
@@ -282,13 +324,8 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 		}
 	}
 
-
-    
-    
-    // ====================== Changesets & Publish ======================    
-    
-    
-    private PublishServiceI getPublishService() {
+    // ====================== Changesets & Publish ======================
+	private PublishServiceI getPublishService() {
         return (PublishServiceI) FDRegistry.getInstance().getService(PublishServiceI.class);
     }
     private static ChangeLogServiceI getChangeLogService() {
@@ -350,13 +387,11 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             if ("latest".equalsIgnoreCase(query.getPublishId())) {
                 timestamp = new Date();
                 publish = service.getMostRecentPublish();
-                prevTimestamp = publish.getTimestamp();
+                prevTimestamp = publish != null ? publish.getTimestamp() : TIME_ZERO;
             } else {
                 publish = service.getPublish(query.getPublishId());
                 Publish prevPublish = service.getPreviousPublish(publish);
-            
-                // for unknown reason, sometimes during publish, prevPublish become null, fortunately 
-                prevTimestamp = prevPublish != null ? prevPublish.getTimestamp() : null;
+                prevTimestamp = prevPublish != null ? prevPublish.getTimestamp() : TIME_ZERO;
                 timestamp = publish.getTimestamp();
             }
             if (query.isPublishInfoQuery()) {
@@ -470,6 +505,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 	        publish.setStatus(EnumPublishStatus.PROGRESS);
 	        publish.setDescription(comment);
 	        publish.setLastModified(date);
+
 	        LOG.info("starting new publish by " + user.getName() + ", with comment : '" + comment + "'");
 	        return getPublishService().doPublish(publish);
         } catch (Throwable e) {
@@ -493,7 +529,11 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
                 publish = service.getPublish(query.getPublishId());
             }                      
             
-            publishData = TranslatorToGwt.getPublishData(publish);
+			if (publish == null) {
+				publishData = new GwtPublishData();
+			} else {
+				publishData = TranslatorToGwt.getPublishData(publish);
+			}
             publishData.setId(query.getPublishId());
             publishData.setFullyLoaded(true);            
 			int changeCount = 0;
@@ -509,21 +549,22 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
 			
 			publishData.setChangeCount(changeCount);
 			
-			for (PublishMessage message : publish.getMessages() ){
-				switch (message.getSeverity()) {
-					// Failure
-					case 0:
-					// Error
-					case 1:
-					// Warning
-					case 2: publishData.addMessage(String.valueOf(message.getSeverity()));
-				}				
+			if (publish != null) {
+				for (PublishMessage message : publish.getMessages() ){
+					switch (message.getSeverity()) {
+						// Failure
+						case 0:
+						// Error
+						case 1:
+						// Warning
+						case 2: publishData.addMessage(String.valueOf(message.getSeverity()));
+					}				
+				}
+				
+				Collections.sort(publishData.getContributors());
+				Collections.sort(publishData.getTypes());
+				Collections.sort(publishData.getMessages());
 			}
-			
-			Collections.sort(publishData.getContributors());
-			Collections.sort(publishData.getTypes());
-			Collections.sort(publishData.getMessages());
-						
 			return publishData;			
 			
         } catch (Throwable e) {
@@ -532,26 +573,30 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         }
 	}
     
-    @SuppressWarnings("unchecked")
-    public List<GwtPublishData> getPublishHistory(PagingLoadConfig config) throws ServerException {
-        try {
-            PublishServiceI ps = getPublishService();
-            List<Publish> listPublishes = ps.getPublishHistory();
-            List<GwtPublishData> result = new ArrayList<GwtPublishData>(listPublishes.size());
-            for (Publish p : listPublishes) {
-                result.add(TranslatorToGwt.getPublishData(p));
-            }
-    		int start = config.getOffset();
-    		int limit = listPublishes.size();
-    		if (config.getLimit() > 0) {
-    			limit = Math.min(start + config.getLimit(), limit);
-    		}
-            return new ArrayList(result.subList(start, limit));
-        } catch (Throwable e) {
-            LOG.error("RuntimeException in getPublishHistory", e);
-            throw TranslatorToGwt.wrap(e);
-        }
-    }
+	public List<GwtPublishData> getPublishHistory(PagingLoadConfig config) throws ServerException {
+		try {
+			PublishServiceI ps = getPublishService();
+			List<Publish> listPublishes = ps.getPublishHistory();
+
+			if (listPublishes.size() == 0)
+				return new ArrayList<GwtPublishData>();
+
+
+			List<GwtPublishData> result = new ArrayList<GwtPublishData>(listPublishes.size());
+			for (Publish p : listPublishes) {
+				result.add(TranslatorToGwt.getPublishData(p));
+			}
+			int start = config.getOffset();
+			int limit = listPublishes.size();
+			if (config.getLimit() > 0) {
+				limit = Math.min(start + config.getLimit(), limit);
+			}
+			return new ArrayList<GwtPublishData>(result.subList(start, limit));
+		} catch (Throwable e) {
+			LOG.error("RuntimeException in getPublishHistory", e);
+			throw TranslatorToGwt.wrap(e);
+		}
+	}
 
     
     
@@ -572,15 +617,6 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
             LOG.error("RuntimeException for getDomainValues "+domains, e);
             throw TranslatorToGwt.wrap(e);
         }
-    }
-    
-    public String getPreviewUrl( String contentKey ) throws ServerException {
-        try {
-        	return PreviewLinkProvider.getLink( ContentKey.decode( contentKey ) );
-        } catch (Throwable e) {
-            LOG.error("RuntimeException in getPreviewUrl", e);
-            throw TranslatorToGwt.wrap(e);
-        }    	
     }
     
     public ProductConfigParams getProductConfigParams( String skuKey ) throws ServerException { 
@@ -629,5 +665,32 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         return null;
     }
     
+
+
+    /**
+     * This utility method collects parent keys per store IDs
+     * in a {@see Map} where keys are store IDs and values are a {@see Set} of {@see ContentKey} entries
+     * All serialized to Strings
+     * 
+     * @param key Product Content Key
+     * @return
+     */
+    private Map<String,Set<String>> getParentMapping(ContentKey key) {
+    	Map<ContentKey,Set<ContentKey>> aMap = PrimaryHomeUtil.collectParentsMap(key, CmsManager.getInstance());
+    	
+    	// serialize keys to strings
+    	Map<String,Set<String>> result = new HashMap<String,Set<String>>();
+    	for (Map.Entry<ContentKey, Set<ContentKey>> e : aMap.entrySet()) {
+    		// serialize
+    		Set<String> keys = new HashSet<String>();
+    		for (ContentKey k : e.getValue()) {
+    			keys.add(k.getEncoded());
+    		}
+    		
+    		result.put(e.getKey().getEncoded(), keys);
+    	}
+    	
+    	return result;
+    }
 }
 

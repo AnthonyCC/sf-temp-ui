@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <Content>
+	<Store id="FreshDirect">
+		<departments>
+			<Department ref="gro"/>
+			<Department ref="orgnat"/>
+		</departments>
+	</Store>
+
 	<Category id="gro_choc_fine">
 		<FULL_NAME>Chocolate</FULL_NAME>
 		<subcategories>
@@ -67,6 +74,9 @@
 	</Product>
 	<Category id="dai_milk_2per">
 		<FULL_NAME>2%</FULL_NAME>
+		<products>
+			<Product ref="dai_organi_2_milk_02"/>
+		</products>
 	</Category>
 	<Category id="orgnat_dai_milk">
 		<FULL_NAME>Milk &amp; Soymilk</FULL_NAME>
@@ -89,6 +99,9 @@
 	</Product>
 	<Category id="orgnat_dai_milk_whol">
 		<FULL_NAME>Whole</FULL_NAME>
+		<products>
+			<Product ref="dai_orgval_whlmilk_01"/>
+		</products>
 	</Category>
 	<Sku id="DAI0008812"/>
 	<Category id="dai_milk_milk">
@@ -141,11 +154,15 @@
 	</Department>
 	<Category id="gro_candy_blkch">
 		<FULL_NAME>Bulk</FULL_NAME>
+		<products>
+			<Product ref="cfncndy_ash_mcrrd"/>
+		</products>
 	</Category>
 	<Category id="dai_milk_1per">
 		<FULL_NAME>1%</FULL_NAME>
 		<products>
-			<Product ref="dai_organi_1_milk_01"></Product>
+			<Product ref="dai_organi_1_milk_01"/>
+			<Product ref="dai_orgval_laclfmilkhlf"/>
 		</products>
 	</Category>
 	<Sku id="DAI0059088"/>

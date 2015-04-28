@@ -49,6 +49,12 @@ public class Context {
 		return this.parentContext;
 	}
 
+	public Context getRootContext() {
+		return this.parentContext == null
+				? this
+				: this.parentContext.getRootContext();
+	}
+
 	/**
 	 * @return slash-separated path, never null.
 	 * Slash is not good for separator character, 

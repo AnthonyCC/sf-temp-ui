@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.fdstore.FDContentTypes;
@@ -86,7 +84,7 @@ public class NodeWalker extends ContextWalker {
 	 * @param svc	ContextService instance.
 	 * @exception UnsupportedOperationException Thrown if iterator cannot remove from the set it belongs to 
 	 */
-	public static void filterOrphanedParents(Iterator it, ContextService svc) throws UnsupportedOperationException {
+	public static void filterOrphanedParents(Iterator<Context> it, ContextService svc) throws UnsupportedOperationException {
 		while (it.hasNext()) {
 			Context ctx = (Context) it.next();
 			NodeWalker nw1 = new NodeWalker(svc.getContextualizedContentNode(ctx)).walkWithMe();
@@ -104,11 +102,11 @@ public class NodeWalker extends ContextWalker {
 	 * @param svc	ContextService instance.
 	 * @return	UnsupportedOperationException Thrown if iterator cannot remove from the set it belongs to 
 	 */
-	public static List getVisibleParents(Iterator it, ContextService svc) {
-		List ctxs = new ArrayList();
+	public static List<Context> getVisibleParents(Iterator<Context> it, ContextService svc) {
+		List<Context> ctxs = new ArrayList<Context>();
 		
 		while (it.hasNext()) {
-			Context ctx = (Context) it.next();
+			Context ctx = it.next();
 			NodeWalker nw1 = new NodeWalker(svc.getContextualizedContentNode(ctx)).walkWithMe();
 			if (!nw1.getTestResult()) {
 				ctxs.add(ctx);

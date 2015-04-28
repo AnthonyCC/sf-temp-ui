@@ -22,6 +22,7 @@ import com.freshdirect.cms.ui.client.fields.PrimaryHomeSelectorField;
 import com.freshdirect.cms.ui.client.fields.ProductConfigEditor;
 import com.freshdirect.cms.ui.client.fields.TableField;
 import com.freshdirect.cms.ui.client.fields.VariationMatrixField;
+import com.freshdirect.cms.ui.client.views.ManageStoreView;
 import com.freshdirect.cms.ui.model.ContentNodeModel;
 import com.freshdirect.cms.ui.model.CustomFieldDefinition;
 import com.freshdirect.cms.ui.model.EnumModel;
@@ -75,7 +76,11 @@ public final class FieldFactory {
 		if ( customFieldDefinition != null ) {
 			switch(customFieldDefinition.getType()) {
 			case PrimaryHomeSelection:
-				aField = new PrimaryHomeSelectorField( (ContentNodeModel)value, nodeData.getContexts() );
+				String _key = ManageStoreView.getInstance().getStoreKey();
+				
+				aField = new PrimaryHomeSelectorField( nodeData.getContexts(), nodeData.getParentMap(), _key  );
+				((OneToManyRelationField)aField).setValue((List<OneToManyModel>)value);
+				
 				break;
 			case ProductConfigEditor:
 				ProductConfigAttribute pcAttr = null;

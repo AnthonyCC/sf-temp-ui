@@ -32,6 +32,7 @@ public class ContentTreePopUp extends Window {
     private List<TreeContentNodeModel> selected;
 
     private static ContentTreePopUp popup = null;
+    private static ContentTreePopUp phPopup = null;
 	private static boolean forceReload;
     
     private ContentTreePopUp( Collection<String> aTypes, boolean multiSelect ) {
@@ -68,6 +69,21 @@ public class ContentTreePopUp extends Window {
             }
         }
         return popup;
+    }
+    
+    public static ContentTreePopUp getPrimaryHomePopup(Collection<String> aTypes) {
+    	if (phPopup == null) {
+    		phPopup = new ContentTreePopUp(aTypes, false);
+    	} else {
+            phPopup.setAllowedTypes(aTypes);
+            phPopup.initialize( false );
+            List<Listener<? extends BaseEvent>> selectListeners = new ArrayList<Listener<? extends BaseEvent>>( phPopup.getListeners(Events.Select) );            	
+            for (Listener<? extends BaseEvent> listener : selectListeners ) {
+            	phPopup.removeListener(Events.Select, listener);
+            }
+    	}
+
+    	return phPopup;
     }
     
     public void setAllowedTypes(Collection<String> aTypes) {

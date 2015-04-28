@@ -211,11 +211,12 @@ public class CmsFunctionsTest extends TestCase {
             DataGenerator generator = comp.createDataGenerator("rec_test_2", "RecursiveNodes(ParentCategory(\"xxx_1\"), \"dai_milk_1per\")");
             List list = generator.generate(s, da);
             assertNotNull("list", list);
-            assertEquals("list size", 3, list.size());
+            assertEquals("list size", 4, list.size());
             Collection strings = TestUtils.convertToStringList(list);
             assertTrue("contains xxx_1", strings.contains("xxx_1"));
             assertTrue("contains xxx_2", strings.contains("xxx_2"));
             assertTrue("contains dai_organi_1_milk_01", strings.contains("dai_organi_1_milk_01"));
+            assertTrue("contains dai_orgval_laclfmilkhlf", strings.contains("dai_orgval_laclfmilkhlf"));
         }
     }
 
