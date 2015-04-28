@@ -91,8 +91,8 @@ public class PublishMediaTask extends DbService implements PublishTask {
 			WebdavResource webdav = new WebdavResource(slideUrl); //  "http://<dav-host>/<slide-path>/files/"
 
 			URL basePath = new URL(slideUrl.getURI()); // same as slideUrl
-			for (Iterator i = getUris(lastPublish.getLastModified()).iterator(); i.hasNext();) {
-				String childPath = (String) i.next(); // 	"/file1.ext"
+			for (Iterator<String> i = getUris(lastPublish.getLastModified()).iterator(); i.hasNext();) {
+				String childPath = i.next(); // 	"/file1.ext"
 				final String mediaPath = childPath;
 				
 				if (childPath.startsWith("/")) {
@@ -126,8 +126,8 @@ public class PublishMediaTask extends DbService implements PublishTask {
 
 	private static String MEDIA_DELTAS = "select uri from cms.media where last_modified > ?";
 
-	private List getUris(Date publishDate) {
-		List uris = new ArrayList();
+	private List<String> getUris(Date publishDate) {
+		List<String> uris = new ArrayList<String>();
 		Connection conn = null;
 		try {
 			conn = getConnection();
