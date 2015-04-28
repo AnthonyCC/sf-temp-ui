@@ -75,7 +75,7 @@ public class PublishMediaTask extends DbService implements PublishTask {
 	}
 
 	public void execute(Publish publish) {
-		File rootDir = new File(publish.getPath(), checkoutPath);
+		File rootDir = new File(publish.getBasePath(), checkoutPath);
 		Publish lastPublish = publishService.getMostRecentPublish();
 
 		if (lastPublish == null) {
