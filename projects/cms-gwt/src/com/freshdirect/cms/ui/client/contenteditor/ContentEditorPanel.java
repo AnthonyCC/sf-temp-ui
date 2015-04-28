@@ -170,14 +170,14 @@ public class ContentEditorPanel extends DetailPanel {
 	            buttonMargin = new HBoxLayoutData(2, 0, 0, 2);
 	        
 	            // FDX 
-	            
-	            final String _storeKey = GwtNodeContext.extractRootKey( contextPathsList.get(0) );
-	            if (_storeKey != null && _storeKey.startsWith("Store:")) {
-	            	ManageStoreView.getInstance().setStoreKey(_storeKey);
+	            final String _cpath = contextPathsList.get(0);
+	            final String _rootKey = GwtNodeContext.extractRootKey( _cpath );
+	            if (_rootKey != null && _rootKey.startsWith("Store:")) {
+	            	ManageStoreView.getInstance().setStoreKey(_rootKey);
     	            ManageStoreView.getInstance().updatePreviewLink();
 	            } else {
 	            	ManageStoreView.getInstance().setStoreKey( null );
-	            	CmsGwt.debug("Could not extract store key from path " + contextPathsList.get(0));
+    	            ManageStoreView.getInstance().updatePreviewLink();
 	            }
 
 	    	} else {	    	

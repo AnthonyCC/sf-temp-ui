@@ -117,7 +117,16 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     		try {
 				storeKey = ContentKey.create(FDContentTypes.STORE, storeId);
 			} catch (InvalidContentKeyException e) {
-				LOG.error("BANG " + e);
+				LOG.error("Invalid store key " + e);
+				return null;
+			}
+    	} else {
+    		// Fall back to FreshDirect
+    		try {
+				storeKey = ContentKey.create(FDContentTypes.STORE, "FreshDirect");
+			} catch (InvalidContentKeyException e) {
+				LOG.error("Invalid store key " + e);
+				return null;
 			}
     	}
 
