@@ -263,6 +263,44 @@ public class PrimaryHomeUtil {
 	}
 
 
+	/**
+	 * Pick the right primary home for the given store from the primary home list
+	 *  
+	 * @param key product key
+	 * @param storeKey store key
+	 * @param svc content service
+	 * @return
+	 */
+	public static ContentKey pickPrimaryHomeForStore(ContentKey key, ContentKey storeKey, ContentServiceI svc) {
+		if (key == null || storeKey == null || svc == null) {
+			return null;
+		}
+
+		ContentNodeI prd = svc.getContentNode(key);
+		if (prd == null) {
+			return null;
+		}
+
+		@SuppressWarnings("unchecked")
+		List<ContentKey> _priHomes = (List<ContentKey>) prd.getAttributeValue("PRIMARY_HOME");
+
+		if (_priHomes != null && !_priHomes.isEmpty()) {
+			// store to parent category keys mapping
+			Map<ContentKey, Set<ContentKey>> _s2p = PrimaryHomeUtil.collectParentsMap(key, svc);
+
+			if (_s2p.get(storeKey) != null) {
+				Set<ContentKey> candidates = new HashSet<ContentKey>(_s2p.get(storeKey));
+				candidates.retainAll(_priHomes);
+
+				ContentKey priHome = candidates.iterator().next();
+				return priHome;
+			}
+		}
+
+		return null;
+	}
+	
+	
 	// Suitable cms types
 	public static final ContentType TYPES[] = { FDContentTypes.CATEGORY,
 			FDContentTypes.DEPARTMENT, FDContentTypes.SUPER_DEPARTMENT,

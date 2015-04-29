@@ -9,6 +9,7 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -122,7 +123,7 @@ public class CmsManager implements ContentServiceI {
 		this.singleStoreKey = calculateSingleStoreId();
 		
 		if (this.readOnlyContent && this.singleStoreKey != null) {
-			initPrimaryHomeCache(this.singleStoreKey.getId());
+			initPrimaryHomeCache(this.singleStoreKey);
 		}
 	}
 
@@ -293,33 +294,27 @@ public class CmsManager implements ContentServiceI {
 
 	private Map<ContentKey,ContentKey> primaryHomeMap; 
 
-	public void initPrimaryHomeCache(final String storeId) {
+	public void initPrimaryHomeCache(final ContentKey storeKey) {
 		primaryHomeMap = new HashMap<ContentKey,ContentKey>();
 		
 		Set<ContentKey> keys = this.getContentKeysByType(FDContentTypes.PRODUCT);
-		
-		// final String storeId = MultiStoreProperties.getCmsStoreId();
 
-		// System.err.println("Init cache started, evaluating " + keys.size() + " products");
-		
 		for (ContentKey key : keys) {
-			ContentNodeI p = PrimaryHomeUtil.findParent(this.getContentNode(key), this, storeId);
-			if (p != null ) {
-				primaryHomeMap.put(key, p.getKey());
+			ContentKey priHome = PrimaryHomeUtil.pickPrimaryHomeForStore(key, storeKey, this);
+			if (priHome != null) {
+				primaryHomeMap.put(key, priHome);
 			}
 		}
-		// System.err.println("Cache init finished, size: " + primaryHomeMap.size());
 	}
 	
 	public ContentKey getPrimaryHomeKey(ContentKey aKey) {
 		if (readOnlyContent && primaryHomeMap != null) {
 			return primaryHomeMap.get(aKey);
 		} else {
-			ContentNodeI p = PrimaryHomeUtil.findParent(this.getContentNode(aKey), this, MultiStoreProperties.getCmsStoreId());
-			return p != null ? p.getKey() : null;
+			return PrimaryHomeUtil.pickPrimaryHomeForStore(aKey, singleStoreKey, this);
 		}
 	}
-	
+
     private static void propagateCmsChangeEvent(Collection<ContentNodeI> nodes) {
     	Map<String, Set<String>> contentKeys = collectContentKeysByStore(nodes);
     	for (String previewHost : contentKeys.keySet()) {
