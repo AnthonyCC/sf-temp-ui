@@ -256,7 +256,7 @@ public class LocationHandlerTag extends SimpleTagSupport {
 		for (Object pickupDepotObj : FDDepotManager.getInstance().getPickupDepots()){
 			if (pickupDepotObj instanceof DlvDepotModel){
 				DlvDepotModel pickupDepot = (DlvDepotModel) pickupDepotObj;
-				if (!"HAM".equalsIgnoreCase(pickupDepot.getDepotCode())) { //based on i_pickup_depot_locations.jspf
+				if (!"HAM".equalsIgnoreCase(pickupDepot.getDepotCode()) && !pickupDepot.isDeactivated()) { //based on i_pickup_depot_locations.jspf
 					for (Object locationObj : pickupDepot.getLocations()){
 						if (locationObj instanceof DlvLocationModel){
 							allPickupDepots.add((DlvLocationModel) locationObj);
