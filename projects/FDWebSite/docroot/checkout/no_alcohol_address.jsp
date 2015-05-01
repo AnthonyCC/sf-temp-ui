@@ -18,7 +18,12 @@
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 
 	if("POST".equals(request.getMethod())){
-		user.getShoppingCart().removeAlcoholicLines();
+		String isAlcoholForPickUp = request.getParameter("isAlcoholForPickUp");
+		if(null !=isAlcoholForPickUp && "true".equalsIgnoreCase(isAlcoholForPickUp)){
+			user.getShoppingCart().removeWineAndSpiritLines();
+		}else{
+			user.getShoppingCart().removeAlcoholicLines();
+		}
 		response.sendRedirect(response.encodeRedirectURL("/checkout/step_2_select.jsp"));
 	}
 	pageContext.setAttribute("user", user);
@@ -38,13 +43,28 @@
 	
 		<div class="warningBox">
 			<div class="warningTitle">Alcohol Restriction</div>
+			<% 
+			String isAlcoholForPickUp = request.getParameter("isAlcoholForPickUp");
+			if(null !=isAlcoholForPickUp && "true".equalsIgnoreCase(isAlcoholForPickUp)){
+				pageContext.setAttribute("belowMinimum", !user.isOrderMinimumMetWithoutWine());
+			%>
+			<input type="hidden" name="isAlcoholForPickUp" id="isAlcoholForPickUp" value="true" />
+			<p>Important Message</p>
+			<p>Wines and spirits are not available for pick-up orders. You may choose a New York State delivery address or you may continue checkout without the wines and spirits in your cart.</p>
+<p>You may visit FreshDirect Wines & Spirits to shop in person. FreshDirect Wines & Spirits is located at 620 Fifth Avenue, Brooklyn, NY 11215. Store hours are M-W 1pm-10pm, Th-Sa 11am-10pm, Su 12pm-8pm.</p>
 			
+			<c:if test="${belowMinimum}">
+		 		<p><b>Because your order falls below our $${user.minimumOrderAmount} minimum when Wines & Spirits is removed, please return to your cart to add items before continuing checkout.</b></p>
+		 	</c:if>
+			<% } else { %>
 			<p>Unfortunately, FreshDirect does not deliver alcohol to your building. 
 			You may choose a different address or continue checkout -- without the alcohol but with all of the other items in your cart.</p>
 		 
 		 	<c:if test="${belowMinimum}">
 		 		<p><b>Because your order falls below our $${user.minimumOrderAmount} minimum when alcohol is removed, please return to your cart to add items before continuing checkout.</b></p>
 		 	</c:if>
+		 	<% } %>
+		 	
 		</div>	
 	
 		<div class="navigationLine">

@@ -46,6 +46,8 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     private double taxRate;
     private double depositValue;
     private boolean alcohol;
+    private boolean wine;
+    private boolean beer;
     
     private String recipeSourceId;
     private String cartLineId;
@@ -232,6 +234,8 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 	
 	public boolean isAlcohol(){ return this.alcohol; }
 	public void setAlcohol(boolean alcohol){ this.alcohol = alcohol; }
+	
+	
 				
     public double getTaxRate(){ return this.taxRate; }
     public void setTaxRate(double taxRate){ this.taxRate = taxRate; }
@@ -471,6 +475,22 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 
 	public void setExternalSource(String externalSource) {
 		this.externalSource = externalSource;
+	}
+
+	public boolean isWine() {
+		return wine;
+	}
+
+	public void setWine(boolean wine) {
+		this.wine = wine;
+	}
+
+	public boolean isBeer() {
+		return beer;
+	}
+
+	public void setBeer(boolean beer) {
+		this.beer = beer;
 	}
 }
 	

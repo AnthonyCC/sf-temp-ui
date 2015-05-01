@@ -163,6 +163,8 @@ public interface FDUserI extends java.io.Serializable {
 	public PromotionI getEligibleSignupPromotion();
 
     public boolean isOrderMinimumMet() throws FDResourceException;
+    
+    public boolean isOrderMinimumMetWithoutWine() throws FDResourceException;    
 
     public double getMinimumOrderAmount();
     

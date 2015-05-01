@@ -44,6 +44,7 @@ import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDGroup;
+import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -1092,6 +1093,15 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		return false;
 	}
 
+	public boolean containsWineAndSpirit() {
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI line = i.next();
+			if (line.isAlcohol() && line.isWine()) {
+				return true;
+			}
+		}
+		return false;
+	}
 	public double getSubTotalWithoutAlcohol() {
 		double subTotal = 0.0;
 		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
@@ -1103,11 +1113,32 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 
 		return subTotal;
 	}
+	
+	public double getSubTotalWithoutWineAndSpirit() {
+		double subTotal = 0.0;
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI line = i.next();
+			if (!line.isWine()) {
+				subTotal += line.getPrice();
+			}
+		}
+
+		return subTotal;
+	}
 
 	public void removeAlcoholicLines() {
 		for (ListIterator<FDCartLineI> i = this.orderLines.listIterator(); i.hasNext();) {
 			FDCartLineI line = i.next();
 			if (line.isAlcohol()) {
+				i.remove();
+			}
+		}
+	}
+	
+	public void removeWineAndSpiritLines() {
+		for (ListIterator<FDCartLineI> i = this.orderLines.listIterator(); i.hasNext();) {
+			FDCartLineI line = i.next();
+			if (line.isAlcohol() && line.isWine()) {
 				i.remove();
 			}
 		}

@@ -14,6 +14,7 @@ import javax.servlet.jsp.JspException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.analytics.TimeslotEventModel;
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.customer.EnumTransactionSource;
@@ -73,6 +74,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 	private String				gcFraudPage			= "/gift_card/purchase/purchase_giftcard.jsp";
 	private final String		gcAVSExceptionPage	= "/gift_card/purchase/purchase_giftcard.jsp";
 	private String 				noContactPhonePage	= "/checkout/step_1_edit.jsp";
+	private String blockedAddressPage = "/checkout/no_alcohol_address.jsp";
 
 	private final String ebtUnavailableItemsPage	= "/checkout/step_3_unavail.jsp";
 	private final String ebtCRMUnavailableItemsPage	= "/checkout/checkout_EBT_unavail.jsp";
@@ -91,6 +93,14 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 	/** Used by FDIntegrationService / CheckoutControllerTagWrapper */
 	public String getAgeVerificationPage() {
 		return ageVerificationPage;
+	}
+
+	public String getBlockedAddressPage() {
+		return blockedAddressPage;
+	}
+
+	public void setBlockedAddressPage(String blockedAddressPage) {
+		this.blockedAddressPage = blockedAddressPage;
 	}
 
 	/** Used by FDIntegrationService / CheckoutControllerTagWrapper */
@@ -349,9 +359,13 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				"modifyStandingOrderTemplate".equalsIgnoreCase(action) // SO-MSOT (change SO without creating an order)
 			);
 
-			// if there is alcohol in the cart and the age verification has not been set then send to age verification page
-			if ( action != null && !terminalAction && isAgeVerificationNeeded( app, request ) ) {
-				this.setSuccessPage( this.ageVerificationPage );
+			if ( action != null && null !=cart.getDeliveryAddress() && "setDeliveryAddress".equalsIgnoreCase( action ) && !terminalAction && EnumServiceType.PICKUP.equals(cart.getDeliveryAddress().getServiceType()) && cart.containsWineAndSpirit()){
+				this.setSuccessPage( this.blockedAddressPage+"?isAlcoholForPickUp=true" );
+			} else{
+				// if there is alcohol in the cart and the age verification has not been set then send to age verification page
+				if ( action != null && !terminalAction && isAgeVerificationNeeded( app, request ) ) {
+					this.setSuccessPage( this.ageVerificationPage );
+				}
 			}
 		} catch ( Exception ex ) {
 			ex.printStackTrace();

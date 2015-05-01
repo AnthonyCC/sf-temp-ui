@@ -586,6 +586,10 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     	return this.user.isOrderMinimumMet(alcohol, getOverrideMinimumAmount());
     }
     
+    public boolean isOrderMinimumMetWithoutWine() throws FDResourceException {
+    	return this.user.isOrderMinimumMetWithoutWine();
+    }
+    
     public double getMinimumOrderAmount(){
     	Double overrideMinimumAmount = getOverrideMinimumAmount();
     	return (overrideMinimumAmount == null ? this.user.getMinimumOrderAmount() : overrideMinimumAmount);

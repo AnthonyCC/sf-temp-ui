@@ -221,6 +221,8 @@ public class FDProductSelection implements FDProductSelectionI {
 			if (fdProduct != null) {
 				this.orderLine.setMaterialNumber(fdProduct.getMaterial().getMaterialNumber());
 				this.orderLine.setAlcohol(fdProduct.isAlcohol());
+				this.orderLine.setWine(fdProduct.isWine());
+				this.orderLine.setBeer(fdProduct.isBeer());
 				this.orderLine.setAffiliate(fdProduct.getAffiliate());
 				this.orderLine.setDeliveryPass(fdProduct.isDeliveryPass());				
 			}
@@ -369,6 +371,14 @@ public class FDProductSelection implements FDProductSelectionI {
 
 	public boolean isAlcohol() {
 		return this.orderLine.isAlcohol();
+	}
+	
+	public boolean isWine() {
+		return this.orderLine.isWine();
+	}
+
+	public boolean isBeer() {
+		return this.orderLine.isBeer();
 	}
 
 	public boolean isPerishable() {

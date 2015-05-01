@@ -783,6 +783,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return subTotal >= (overrideMinimumAmount == null ? getMinimumOrderAmount() : overrideMinimumAmount);
     }
 
+    public boolean isOrderMinimumMetWithoutWine() throws FDResourceException {
+		double subTotal = this.shoppingCart.getSubTotalWithoutWineAndSpirit();
+		return subTotal >=  getMinimumOrderAmount();
+    }
     public double getMinimumOrderAmount() {
     	if (getShoppingCart() != null && getShoppingCart().getDeliveryAddress() != null){
 			try {

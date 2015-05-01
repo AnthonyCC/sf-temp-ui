@@ -380,6 +380,10 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
         }
 
         CheckoutControllerTag wrappedTag = (CheckoutControllerTag) this.getWrapTarget();
+        if (null !=successPage && successPage.indexOf(wrappedTag.getBlockedAddressPage()) >-1) {
+        	actionResult.addError(new ActionError("ERR_ALCOHOL_DELIVERY_AREA_RESTRICTION_NEW", "Alcohol cannot be delivery to the address specified."));
+//        	actionResult.addError(new ActionError(ERR_ALCOHOL_DELIVERY_AREA_RESTRICTION, "Alcohol cannot be delivery to the address specified."));
+        }else
         if (wrappedTag.getAgeVerificationPage().equals(successPage)) {
         	LOGGER.debug("setCheckoutDeliveryAddress[ERR_AGE_VERIFICATION] :"+ successPage);
             actionResult.addError(new ActionError(ERR_AGE_VERIFICATION, MobileApiProperties.getMediaPath()

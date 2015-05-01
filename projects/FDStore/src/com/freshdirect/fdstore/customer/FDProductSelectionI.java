@@ -295,5 +295,8 @@ public interface FDProductSelectionI extends FDConfigurableI {
 	public String getExternalSource();
 	
 	public void setExternalSource(String externalSource);
+
+	public boolean isWine();
 	
+	public boolean isBeer();
 }
