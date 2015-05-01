@@ -51,6 +51,8 @@ public class SimpleCartLine implements FDCartLineI {
 	// restrictions
 	
 	private boolean alcohol;
+	private boolean wine;
+	private boolean beer;
 	private boolean kosher;
 
 	private double price = 10.0;
@@ -452,7 +454,23 @@ public class SimpleCartLine implements FDCartLineI {
 	public void setAlcohol(boolean alcohol) {
 		this.alcohol = alcohol;
 	}
-	
+		
+	public boolean isWine() {
+		return wine;
+	}
+
+	public void setWine(boolean wine) {
+		this.wine = wine;
+	}
+
+	public boolean isBeer() {
+		return beer;
+	}
+
+	public void setBeer(boolean beer) {
+		this.beer = beer;
+	}
+
 	@Override
 	public boolean isInvalidConfig() {
 		return false;
