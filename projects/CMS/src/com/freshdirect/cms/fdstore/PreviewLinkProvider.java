@@ -51,10 +51,9 @@ public class PreviewLinkProvider {
 					return null;
 				}
 
-				ContentNodeI cat = PrimaryHomeUtil.findParent(productNode, svc, storeKey.getId());
-				
-				if (cat != null) {
-					uri = "/product.jsp?catId=" + cat.getKey().getId() + "&productId=" + id;
+				ContentKey homeKey = PrimaryHomeUtil.pickPrimaryHomeForStore(key, storeKey, svc);
+				if (homeKey != null) {
+					uri = "/product.jsp?catId=" + homeKey.getId() + "&productId=" + id;
 				}
 			}
 			

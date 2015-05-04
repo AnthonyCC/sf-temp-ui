@@ -25,7 +25,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class PrimaryHomeUtil {
 	private static final Category LOGGER = LoggerFactory.getInstance(PrimaryHomeUtil.class);
 
-
+	@Deprecated
 	public static ContentNodeI findParent(ContentNodeI prd, ContentServiceI svc, String storeId) {
 		if (prd == null || svc == null || storeId == null) {
 			return null;
@@ -46,6 +46,7 @@ public class PrimaryHomeUtil {
 		return null;
 	}
 	
+	@Deprecated
 	private static boolean findParentRecursively(ContentNodeI node, ContentServiceI svc, String storeId) {
 		while (node != null) {
 			if (FDContentTypes.STORE.equals(node.getKey().getType()) && storeId.equals(node.getKey().getId() ) ) {
@@ -254,12 +255,6 @@ public class PrimaryHomeUtil {
 
 		// new primary home := parent (category) node of the best scored contextualized node (that is a product)
 		return ctxs.isEmpty() ? null : ctxs.get(0).getParentContext().getContentKey();
-
-		/* ContentKey ph = ctxs.size() == 0
-				? null :
-					ctxService.getContextualizedContentNode( ctxs.get(0) )
-						.getParentNode().getKey();
-		return ph; */
 	}
 
 
