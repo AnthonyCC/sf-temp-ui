@@ -381,7 +381,7 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
 
         CheckoutControllerTag wrappedTag = (CheckoutControllerTag) this.getWrapTarget();
         if (null !=successPage && successPage.indexOf(wrappedTag.getBlockedAddressPage()) >-1) {
-        	actionResult.addError(new ActionError("ERR_ALCOHOL_DELIVERY_AREA_RESTRICTION_NEW", "Alcohol cannot be delivery to the address specified."));
+        	actionResult.addError(new ActionError("ERR_ALCOHOL_DELIVERY_AREA_RESTRICTION_NEW", "Wines and spirits are not available for pick-up orders. You may choose a New York State delivery address or you may continue checkout without the wines and spirits in your cart. You may visit FreshDirect Wines & Spirits to shop in person. FreshDirect Wines & Spirits is located at 620 Fifth Avenue, Brooklyn, NY 11215. Store hours are M-W 1pm-10pm, Th-Sa 11am-10pm, Su 12pm-8pm."));
 //        	actionResult.addError(new ActionError(ERR_ALCOHOL_DELIVERY_AREA_RESTRICTION, "Alcohol cannot be delivery to the address specified."));
         }else
         if (wrappedTag.getAgeVerificationPage().equals(successPage)) {
