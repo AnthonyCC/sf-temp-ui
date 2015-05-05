@@ -106,6 +106,8 @@ public class PrimaryHomeSelectorField extends OneToManyRelationField {
 								ContentTreePopUp popup = setupPopup(model);
 	
 								popup.show();
+                popup.setSize(401, 601);
+                popup.setSize(400, 600);
 							}
 					});
 
