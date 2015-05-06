@@ -24,7 +24,7 @@
 		CAL.setTimeInMillis(status.getStarted());
 
 		%>
-		<div><a href="#">Refresh page</a></div>
+		<div><a href="?action=refresh">Refresh page</a></div>
 		<h2>Re-index process is running</h2>
 		<div>Please refresh the page to check the status. If this text disappears and the button comes back, then the process is finished</div>
 
