@@ -6,6 +6,7 @@ package com.freshdirect.cms.application;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,10 +26,14 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.context.ContextService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.search.ContentSearchServiceI;
+import com.freshdirect.cms.search.IBackgroundProcessor;
 import com.freshdirect.cms.search.SearchHit;
+import com.freshdirect.cms.search.SearchRelevancyList;
+import com.freshdirect.cms.search.SynonymDictionary;
 import com.freshdirect.cms.search.spell.SpellingHit;
 import com.freshdirect.cms.util.MultiStoreProperties;
 import com.freshdirect.cms.util.PrimaryHomeUtil;
+import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.http.HttpService;
@@ -254,6 +259,13 @@ public class CmsManager implements ContentServiceI {
 		if (request.getUser().isAllowedToWrite()) {
 			CmsResponseI response = pipeline.handle(request);
 			propagateCmsChangeEvent(request.getNodes());
+			
+			try {
+				rebuildIndices(request.getNodes());
+			} catch (Exception exc) {
+				LOGGER.error("Failed to invoke rebuildIndices", exc);
+			}
+
 			return response;
 		} else {
 			throw new SecurityException("Modification is not allowed to:" + request.getUser().getName());
@@ -354,5 +366,53 @@ public class CmsManager implements ContentServiceI {
     		contentKeys.put(host, contentKeysEncoded);
     	}
 		return contentKeys;
+	}
+
+
+
+	/**
+	 * Utility method to make changes to various indices after updating content nodes
+	 * 
+	 * @param contentNodes
+	 */
+	public void rebuildIndices(Collection<ContentNodeI> contentNodes) {
+		IBackgroundProcessor adminTool = (IBackgroundProcessor) FDRegistry.getInstance().getService(IBackgroundProcessor.class);
+
+		LOGGER.debug("rebuildIndices was invoked");
+		
+		// reindex search service
+		searchService.index(contentNodes, false);
+		searchService.indexSpelling(contentNodes);
+
+		// invalidate search relevancy scores
+		for (ContentNodeI node : contentNodes) {
+			if (SearchRelevancyList.isRelatedContentNode(node)) {
+				LOGGER.info("SearchRelevancyList gets invalidated, reason=" + node.getKey());
+				ContentSearch.getInstance().invalidateRelevancyScores();
+				break;
+			}
+		}
+
+		// rebuild synonyms
+		for (ContentNodeI node : contentNodes) {
+	        final ContentType type = node.getKey().getType();
+			if (FDContentTypes.SYNONYM.equals(type)) {
+				LOGGER.info("Background reindex(1) is invoked with node " + node.getKey());
+
+				Set<String> keywords = new HashSet<String>();
+	            String[] fromValues = SynonymDictionary.getSynonymFromValues(node);
+	            keywords.addAll(Arrays.asList(fromValues));
+
+	            adminTool.backgroundReindex(keywords);
+	            
+	            break;
+	        } else if (FDContentTypes.FDFOLDER.equals(type) && SynonymDictionary.SYNONYM_LIST_KEY.equals(node.getKey().getId())) {
+				LOGGER.info("Background reindex(2) is invoked with node " + node.getKey());
+
+				adminTool.backgroundReindex();
+
+	            break;
+	        }
+		}
 	}
 }

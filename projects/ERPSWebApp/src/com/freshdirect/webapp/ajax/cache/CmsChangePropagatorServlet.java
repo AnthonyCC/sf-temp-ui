@@ -30,6 +30,7 @@ public class CmsChangePropagatorServlet extends HttpServlet {
 			try {
 				requestData = JsonHelper.parseRequestData(request, CmsChangeRequestObject.class);
 				if (requestData != null) {
+					LOG.info("CMS change event captured, keys: " + requestData.getContentKeys());
 					CmsChangePropagatorService.defaultService().propagateCmsChangesToCaches(requestData.getContentKeys());
 				}
 			} catch (IOException e) {
