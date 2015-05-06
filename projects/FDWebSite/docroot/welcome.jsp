@@ -5,6 +5,8 @@
 request.setAttribute("listPos", "SystemMessage,WDelivery,WAffiliate");
 request.setAttribute("noyui", true);
 
+response.sendRedirect("/"); //temproraly 302 redirect 
+
 %><tmpl:insert template="/common/template/page_template_optimized.jsp">
 	<tmpl:put name="title">FreshDirect</tmpl:put>
 	<tmpl:put name='content' direct='true'>
