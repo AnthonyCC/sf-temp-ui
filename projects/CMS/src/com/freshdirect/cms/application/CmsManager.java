@@ -380,10 +380,6 @@ public class CmsManager implements ContentServiceI {
 
 		LOGGER.debug("rebuildIndices was invoked");
 		
-		// reindex search service
-		searchService.index(contentNodes, false);
-		searchService.indexSpelling(contentNodes);
-
 		// invalidate search relevancy scores
 		for (ContentNodeI node : contentNodes) {
 			if (SearchRelevancyList.isRelatedContentNode(node)) {
