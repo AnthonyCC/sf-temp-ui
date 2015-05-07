@@ -1,11 +1,7 @@
 package com.freshdirect.fdstore.coremetrics.builder;
 
-import java.rmi.RemoteException;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import javax.ejb.CreateException;
 
 import org.apache.log4j.Logger;
 
@@ -17,9 +13,6 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.coremetrics.tagmodel.RegistrationTagModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
-import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
-import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class RegistrationTagModelBuilder  {
@@ -27,18 +20,14 @@ public class RegistrationTagModelBuilder  {
 	private static final Logger LOGGER = LoggerFactory.getInstance(RegistrationTagModelBuilder.class);
 	
 	private FDUserI user;
-	private static RegistrationTagModel tagModel = new RegistrationTagModel();
-	private static FDCustomerManagerHome managerHome = null;
-	private static FDServiceLocator LOCATOR = FDServiceLocator.getInstance();
+	private RegistrationTagModel tagModel = new RegistrationTagModel();
 	private AddressModel addressModel;
 	private String location;
 	private String origZipCode;
-	private String email;	
-	private String registrantProfileName;
-    private String registrantProfileValue;
-    String profileValue=null;
-	public RegistrationTagModel buildTagModel() throws SkipTagException{	
-		lookupManagerHome();
+	private String email;
+		
+	public RegistrationTagModel buildTagModel() throws SkipTagException{
+		
 		//if no address is passed explicitly, try to find out if user has a defaultShipToAddress (for existing users)
 		if (addressModel == null) {
 			identifyDefaultShipToAddress();
@@ -62,47 +51,12 @@ public class RegistrationTagModelBuilder  {
 			tagModel.setRegistrantCountry(addressModel.getCountry());
 		}
 		
-		tagModel.setRegistrationId(user.getIdentity().getFDCustomerPK());
-		tagModel.setRegistrantEmail(email==null ? user.getUserId(): email); 
-		tagModel.setRegistrantProfileName("MarketingPromotion");
-		
-		LOGGER.info( "REgID # # #: "+tagModel.getRegistrationId());           
-			
-				try {				
-					registrantProfileValue = getProfileValue(tagModel.getRegistrationId());
-					LOGGER.info( "registrantProfielvalue ====: "+registrantProfileValue);					
-					tagModel.setRegistrantProfileValue(registrantProfileValue);					
-				} catch (FDResourceException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			
-			LOGGER.info( "Registrationprofielvaue # # #: "+tagModel.getRegistrantProfileValue()); 
-		
-	
-	
+		tagModel.setRegistrationId(user.getPrimaryKey());
+		tagModel.setRegistrantEmail(email==null ? user.getUserId(): email);
+
 		identifyAttributes();
 		return tagModel;
 	}
-	
-	public String getProfileValue(String customerId)throws FDResourceException{
-		if (managerHome==null) {
-			lookupManagerHome();
-		}
-		
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-			profileValue = sb.getCustomersProfileValue(tagModel.getRegistrationId());
-		}catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		}
-		return profileValue;
-	}
-	
 
 	public void identifyDefaultShipToAddress() throws SkipTagException{
 		ErpAddressModel erpAddressModel = TagModelUtil.getDefaultShipToErpAddressModel(user);
@@ -140,9 +94,6 @@ public class RegistrationTagModelBuilder  {
 		
 		attributesMap.put(3, Integer.toString(TagModelUtil.getOrderCount(user)));
 		attributesMap.put(4, user.getCohortName());
-		//for enhancement 4125 marketingPromotion used as a constant value
-		attributesMap.put(5, tagModel.getRegistrantProfileName());
-		attributesMap.put(10, tagModel.getRegistrantProfileValue());
 	}
 	
 	public void setUser(FDUserI user) {
@@ -164,15 +115,4 @@ public class RegistrationTagModelBuilder  {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
-	private static void lookupManagerHome() {
-		if (managerHome != null) {
-			return;
-		}
-		managerHome = LOCATOR.getFDCustomerManagerHome();
-	}
-	private static void invalidateManagerHome() {
-		managerHome = null;
-	}
-	
 }
