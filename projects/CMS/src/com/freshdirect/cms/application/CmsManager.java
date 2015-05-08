@@ -18,6 +18,7 @@ import org.apache.commons.collections.Predicate;
 import org.apache.hivemind.Registry;
 import org.apache.log4j.Category;
 
+import com.bea.core.repackaged.aspectj.weaver.Iterators;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
@@ -33,7 +34,9 @@ import com.freshdirect.cms.search.SynonymDictionary;
 import com.freshdirect.cms.search.spell.SpellingHit;
 import com.freshdirect.cms.util.MultiStoreProperties;
 import com.freshdirect.cms.util.PrimaryHomeUtil;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentSearch;
+import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.http.HttpService;
@@ -327,46 +330,68 @@ public class CmsManager implements ContentServiceI {
 		}
 	}
 
+
+
+	private static final String PCE_EVENT_SINK_PROTOCOL = "http";
+	private static final String PCE_EVENT_SINK_URI = "/api/contentcache";
+	
+	/**
+	 * As part of CMS Change Propagation, this method broadcasts
+	 * changed content keys to preview hosts.
+	 * 
+	 * Each content key will be sent out to all destinations.
+	 * 
+	 * @param nodes
+	 */
     private static void propagateCmsChangeEvent(Collection<ContentNodeI> nodes) {
-    	Map<String, Set<String>> contentKeys = collectContentKeysByStore(nodes);
-    	for (String previewHost : contentKeys.keySet()) {
-    		Set<String> previewNodeContentKeys = contentKeys.get(previewHost);
-    		Map<String, Object> map = new HashMap<String, Object>();
-    		map.put("contentKeys", previewNodeContentKeys);
-    		Writer writer = new StringWriter();
+    	final ContentServiceI mgr = CmsManager.getInstance();
+
+    	// #1 Collect target hosts
+    	final Set<String> previewHosts = new HashSet<String>();
+    	{
+	    	final Set<ContentKey> _storeKeys = mgr.getContentKeysByType(FDContentTypes.STORE);
+	    	for (ContentKey theKey : _storeKeys) {
+	    		ContentNodeI ztore = mgr.getContentNode(theKey);
+	    		if (ztore == null)
+	    			continue;
+	    		
+	    		String host = (String) ztore.getAttributeValue("PREVIEW_HOST_NAME");
+	    		if (host == null)
+	    			continue;
+	    		
+	    		// TODO validate host against valid hostname
+	    		previewHosts.add(host);
+	    	}
+    	}
+
+
+    	// #2 transform nodes to content keys
+    	Set<ContentKey> contentKeys = new HashSet<ContentKey>(nodes.size());
+    	for (ContentNodeI node : nodes) {
+    		contentKeys.add(node.getKey());
+    	}
+
+    	// #3 setup outbound packet
+		final Map<String, Object> payload = new HashMap<String, Object>();
+		payload.put("contentKeys", contentKeys);
+
+
+		// #4 let it go
+		for (final String destination : previewHosts) {
+			final String uri = PCE_EVENT_SINK_PROTOCOL + "://" + destination + PCE_EVENT_SINK_URI;
+
+			Writer writer = new StringWriter();
     		try {
-    			new ObjectMapper().writeValue(writer, map);
+    			new ObjectMapper().writeValue(writer, payload);
     			String data = writer.toString();
-    			String uri = "http://" + previewHost + "/api/contentcache";
-    			LOGGER.info("[PCE]Propagate change event to: " + uri + " with: " + data);
+
+    			LOGGER.info("Broadcast CMS change event to: " + uri + " with: " + data);
     			HttpService.defaultService().postData(uri, data);
     		} catch (IOException exception) {
-    			LOGGER.error("CMS change event propagataion failed to preview node!");
+    			LOGGER.error("CMS change event propagataion failed to preview node " + destination, exception);
     		}
-    	}
+		}
     }
-
-
-	private static Map<String, Set<String>> collectContentKeysByStore(Collection<ContentNodeI> nodes) {
-		Map<String, Set<String>> contentKeys = new HashMap<String, Set<String>>();
-		Set<String> contentKeysEncoded = new HashSet<String>();
-		Set<String> hosts = new HashSet<String>();
-    	for (ContentNodeI node : nodes) {
-    		String key = node.getKey().getEncoded();
-    		contentKeysEncoded.add(key);
-    		Set<ContentKey> storeKeys = PrimaryHomeUtil.getStoreKeys(node.getKey(), CmsManager.getInstance());
-    		for (ContentKey storeKey : storeKeys) {
-    			String previewHost = (String) storeKey.getContentNode().getAttributeValue("PREVIEW_HOST_NAME");
-    			if (previewHost != null) {
-    				hosts.add(previewHost);
-    			}
-    		}
-    	}
-    	for (String host : hosts) {
-    		contentKeys.put(host, contentKeysEncoded);
-    	}
-		return contentKeys;
-	}
 
 
 
