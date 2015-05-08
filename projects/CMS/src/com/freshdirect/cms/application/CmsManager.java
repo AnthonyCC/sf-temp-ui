@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,7 +17,6 @@ import org.apache.commons.collections.Predicate;
 import org.apache.hivemind.Registry;
 import org.apache.log4j.Category;
 
-import com.bea.core.repackaged.aspectj.weaver.Iterators;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
@@ -34,9 +32,7 @@ import com.freshdirect.cms.search.SynonymDictionary;
 import com.freshdirect.cms.search.spell.SpellingHit;
 import com.freshdirect.cms.util.MultiStoreProperties;
 import com.freshdirect.cms.util.PrimaryHomeUtil;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentSearch;
-import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.http.HttpService;
