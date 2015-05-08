@@ -362,9 +362,9 @@ public class CmsManager implements ContentServiceI {
 
 
     	// #2 transform nodes to content keys
-    	Set<ContentKey> contentKeys = new HashSet<ContentKey>(nodes.size());
+    	Set<String> contentKeys = new HashSet<String>(nodes.size());
     	for (ContentNodeI node : nodes) {
-    		contentKeys.add(node.getKey());
+    		contentKeys.add(node.getKey().getEncoded());
     	}
 
     	// #3 setup outbound packet
