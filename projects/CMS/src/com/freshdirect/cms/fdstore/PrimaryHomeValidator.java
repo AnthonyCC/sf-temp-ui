@@ -1,6 +1,7 @@
 package com.freshdirect.cms.fdstore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -30,6 +31,9 @@ public class PrimaryHomeValidator implements ContentValidatorI {
 		@SuppressWarnings("unchecked")
 		// pick original homes
 		List<ContentKey> homes = (List<ContentKey>) node.getAttributeValue("PRIMARY_HOME");
+		if (homes == null) {
+			homes = Collections.EMPTY_LIST;
+		}
 
 		Set<ContentKey> validHomeKeys = PrimaryHomeUtil.fixPrimaryHomes(node, service, null);
 		if (validHomeKeys == null) {
