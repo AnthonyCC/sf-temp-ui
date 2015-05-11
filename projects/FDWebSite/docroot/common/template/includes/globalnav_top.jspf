@@ -69,7 +69,7 @@ if(user != null) {
   <div class="message invisible" data-type="deliveryetawarning"><%@ include file="/common/template/includes/i_delivery_eta_info.jspf"%></div>
   
   	<!-- Adding Skip to Navigation : Start-->
-	<a href="#content" class="hidefromView">Skip to Content</a>
+	<a href="#skip_to_content" class="hidefromView">Skip to Content</a>
 	<!-- Adding Skip to Navigation : End-->
 	 
   
@@ -167,3 +167,6 @@ if(user != null) {
 	</table>
 <%} %>	
 </div>
+
+<!-- Changes for Skip to Content Fix -->
+<div id="skip_to_content"></div>
