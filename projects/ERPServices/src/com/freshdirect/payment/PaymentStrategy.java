@@ -81,8 +81,16 @@ public abstract class PaymentStrategy implements Serializable {
 			
 			double appliedAmount = MathUtil.roundDecimal(Math.min(deduction, diff));
 			this.deductionAmount = MathUtil.roundDecimal(this.deductionAmount + appliedAmount);
-
-			return MathUtil.roundDecimal(deduction - appliedAmount);
+			deduction = MathUtil.roundDecimal(deduction);
+			/*APPDEV-4092 START*/
+			/*return MathUtil.roundDecimal(deduction - appliedAmount);*/
+			if(deduction == this.deductionAmount){
+				return MathUtil.roundDecimal(deduction - appliedAmount);
+			}
+			else{
+					return MathUtil.roundDecimal(this.deductionAmount - appliedAmount);
+			}
+			/*APPDEV-4092 END*/		
 		}
 
 		public void addGCPayment(double payment) {			
