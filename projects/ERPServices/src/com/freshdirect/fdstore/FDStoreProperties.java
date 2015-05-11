@@ -1,7 +1,17 @@
 package com.freshdirect.fdstore;
 
+import com.freshdirect.framework.util.ConfigHelper;
+import com.freshdirect.framework.util.DateRange;
+import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
+
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Category;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,13 +26,6 @@ import java.util.StringTokenizer;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import org.apache.log4j.Category;
-
-import com.freshdirect.framework.util.ConfigHelper;
-import com.freshdirect.framework.util.DateRange;
-import com.freshdirect.framework.util.DateUtil;
-import com.freshdirect.framework.util.log.LoggerFactory;
 
 
 public class FDStoreProperties {
@@ -697,6 +700,13 @@ public class FDStoreProperties {
 		
     // [APPDEV-3438] Unit Price Display
     private final static String UNIT_PRICE_DISPLAY_ENABLED = "fdstore.unitprice.enabled";
+	
+	//Recaptcha
+    private final static String PROP_RECAPTCHA_PUBLIC_KEY = "fdstore.recaptcha.publickey";
+    private final static String PROP_RECAPTCHA_PRIVATE_KEY = "fdstore.recaptcha.privatekey";
+    
+    //Max Invalid Login counts for Recaptcha
+    private final static String PROP_MAX_INVALID_LOGIN_ATTEMPT = "fdstore.max.invalid.login.count";
 
     //Limiting the quicksearch results in mobile
     private final static String QUICKSHOP_ALL_ITEMS_MAX = "fdstore.quickshop.max.results";
@@ -1403,7 +1413,12 @@ public class FDStoreProperties {
         
         defaults.put("feature.rollout.akamaiimageconvertor", "GLOBAL:ENABLED,false;");
         
-        refresh();
+        //Default reCaptcha Public & Private krys
+        defaults.put(PROP_RECAPTCHA_PUBLIC_KEY, "6LeEWAITAAAAAJTkH82Z7gsg1J28IHsjtPjBoPHX");
+        defaults.put(PROP_RECAPTCHA_PRIVATE_KEY, "6LeEWAITAAAAACmiHCIyTDfZz_SkCPtPIN_c1HSN");
+        defaults.put(PROP_MAX_INVALID_LOGIN_ATTEMPT, "10");
+		
+		refresh();
     }
 
     private FDStoreProperties() {
@@ -3505,6 +3520,23 @@ public class FDStoreProperties {
 	public static boolean isUnitPriceDisplayEnabled() {
 		return (Boolean.valueOf(get(UNIT_PRICE_DISPLAY_ENABLED))).booleanValue();
 	}
+	
+	// Recaptcha getter methods
+	 public static String getRecaptchaPublicKey() {
+	   	return StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PUBLIC_KEY),"6LeEWAITAAAAAJTkH82Z7gsg1J28IHsjtPjBoPHX");
+	 }
+	 
+	 public static String getRecaptchaPrivateKey() {
+	   	return StringUtils.defaultIfEmpty(get(PROP_RECAPTCHA_PRIVATE_KEY),"6LeEWAITAAAAACmiHCIyTDfZz_SkCPtPIN_c1HSN");
+	 }
+	 
+	 public static int getMaxInvalidLoginAttempt() {
+		try{
+	   		return Integer.parseInt(get(PROP_MAX_INVALID_LOGIN_ATTEMPT));
+	   	} catch(Exception e){
+	   		return 5;
+	   	}
+	 }
 
 	public static int getQuickShopResultMaxLimit(){
 		try {

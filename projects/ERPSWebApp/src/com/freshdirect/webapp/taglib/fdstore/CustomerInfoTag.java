@@ -269,8 +269,8 @@ public class CustomerInfoTag extends com.freshdirect.framework.webapp.BodyTagSup
                 result.addError(new ActionError("alt_email", "Please make sure your email address is in the format \"you@isp.com.\""));
             }
         }
-        if (password==null || password.length() < 4) {
-            result.addError(new ActionError("password", "Please enter a password that is at least four characters long."));
+        if (password==null || password.length() < 6) {
+            result.addError(new ActionError("password", "Please enter a password that is at least six characters long."));
         }
         else {
             if (repeatPassword==null || repeatPassword.length()<4 || !password.equals(repeatPassword)){
@@ -506,7 +506,7 @@ public class CustomerInfoTag extends com.freshdirect.framework.webapp.BodyTagSup
 					this.password);
                 buf.append("SUCCESS!");
             } catch (ErpInvalidPasswordException ex) {
-                result.addError(new ActionError("password", "Please enter a password that is at least four characters long."));
+                result.addError(new ActionError("password", "Please enter a password that is at least six characters long."));
                 buf.append("FAILED!");
             }
             LOGGER.debug(buf.toString());

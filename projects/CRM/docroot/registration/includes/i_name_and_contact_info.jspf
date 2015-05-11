@@ -67,7 +67,8 @@
 					}
 				%>
 			</table>
-		</td>
+		</td>	
+				
 		<td width="40%">
 			<table width="99%" cellpadding="2" cellspacing="0" border="0" class="register">
 				<tr>
@@ -75,13 +76,95 @@
 					<td width="60%"><input type="text" SIZE="15" name="email" value="<%= request.getParameter(EnumUserInfoName.EMAIL.getCode()) %>"  onChange="updateRepeatEmail(document.registration);" /><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.EMAIL.getCode()%>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
 					<input type="hidden" name="repeat_email" value="<%= request.getParameter("email") %>" />
 				</tr>
-				<tr>
+				
+				<!--  Added for Password Strength Display -->
+				<tr>					
+					<td width="40%" align="right"></td>
+					<br>
+					<td width="60%"></td>	
+				</tr>	
+				<tr>					
+					<td width="40%" align="right"></td>
+					<br>
+					<td width="60%"></td>	
+				</tr>	
+				<tr>					
+					<td width="40%" align="right"></td>
+					<br>
+					<td width="60%"></td>	
+				</tr>	
+				<tr>					
+					<td width="40%" align="right"></td>
+					<br>
+					<td width="60%"></td>	
+				</tr>	
+				<tr>					
 					<td width="40%" align="right">* New Password:&nbsp;</td>
-					<td width="60%"><INPUT SIZE="15" type="password" name="password" value="<%= request.getParameter("password") %>"><fd:ErrorHandler result='<%=result%>' name='password' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+					<td width="60%">
+						<div class="container1">		
+						<div class="content-group password">
+						<div class="subgroup">
+							<div class="password-hinter">
+								<div class="password-instructions">
+									<ul>
+										<li id="pw-length" class="invalid"><strong>6</strong> or more characters <strong>(Required)</strong></li>
+										<li class="subhead"><strong>Make your password stronger with:</strong></li>
+										<li id="pw-letter" class="invalid"><strong>1</strong> or more letters</li>
+										<li id="pw-number" class="invalid"><strong>1</strong> or more numbers</li>
+										<li id="pw-capital" class="invalid"><strong>1</strong> or more capital letters</li>
+										<li id="pw-special" class="invalid"><strong>1</strong> or more special characters</li>
+									</ul>
+								</div>
+							</div><!-- // .password-hinter -->
+							<div>
+								<input id="password1" SIZE="15" type="password" name="password" class="password" title="Choose Password" data-indicator="pwindicator" value="<%= request.getParameter("password") %>">
+								<span class="case-sensitive">Passwords are case sensitive</span>
+							</div>
+							<!--  
+							<div id="pwindicator">
+								   <div class="bar"></div>
+								   <div class="label"></div>
+							</div>
+							-->
+						</div><!-- // .subgroup -->			
+						</div><!-- // .content-group -->
+						</div><!-- // .container -->
+					</td>
+				</tr>		
+				
+				<tr>					
+					<td width="40%" align="right"></td>
+					<td width="60%">
+						<div id="pwindicator">
+								   <div class="bar"></div>
+								   <div class="label"></div>
+							</div>
+					</td>	
+				</tr>				
+				<!--  Added for Password Strength Display -->
+				<!--  
+				<tr>					
+					<td width="40%" align="right">* New Password:&nbsp;</td>
+					<td width="60%">
+					    <INPUT SIZE="15" type="password" name="password" value="<%= request.getParameter("password") %>" id="password1" onkeyup="passwordChanged();">
+					    <span id="strength">Type Password</span>
+					</td>
 				</tr>
+				-->
+				
+				<!--  Changed for Password Strength Display -->
+				<tr>					
+					<td width="40%" align="right"></td>
+					<td width="60%">
+						<fd:ErrorHandler result='<%=result%>' name='password' id='errorMsg'>
+						<span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler>
+					</td>	
+				</tr>
+				<!--  Changed for Password Strength Display -->
+				
 				<tr>
 					<td width="40%" align="right">* Repeat New Password:&nbsp;<br /><br /></td>
-					<td width="60%"><INPUT SIZE="15" type="password" name="repeat_password" value="<%= request.getParameter("repeat_password") %>"><fd:ErrorHandler result='<%=result%>' name='repeat_password' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler><br /><font class="note"><i>Must be at least 4 characters. Case sensitive.</i></font><br /></td>
+					<td width="60%"><INPUT SIZE="15" type="password" name="repeat_password" value="<%= request.getParameter("repeat_password") %>"><fd:ErrorHandler result='<%=result%>' name='repeat_password' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler><br /><font class="note"><i>Must be at least 6 characters. Case sensitive.</i></font><br /></td>
 				</tr>
 				<tr>
 					<td width="40%" align="right">* Town of Birth or&nbsp;<br />Mother's Maiden Name:&nbsp;</td>

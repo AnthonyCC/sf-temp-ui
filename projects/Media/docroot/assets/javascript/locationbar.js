@@ -215,7 +215,9 @@
 	    				
 	                   	$("#locabar_loginButton").toggleClass("loginButtonTab");
 	                   	$('#login_cont_formContent').toggle();
-	    			} else {
+	    			} else if(data.message == "CaptchaRedirect") {
+    					window.location = '/login/login.jsp';
+    				} else{
 	    				$('#login_cont_formContent .errorMsg').show();
 	    			}
 					$('#login_cont_formContentForm_loggingIn').hide();
@@ -257,9 +259,4 @@
 	});
 	
 }(jQuery));
-function goButtonFocus(e){
-	 var TABKEY = 9;
-    if(e.keyCode == TABKEY) {
-   	 document.getElementById("newzipgo").focus();
-    }
-}
+

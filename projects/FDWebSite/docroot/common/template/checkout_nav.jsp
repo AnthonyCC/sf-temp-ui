@@ -28,6 +28,22 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 	<%@ include file="/shared/template/includes/i_head_end.jspf" %>
 	
 		<jwr:style src="/atp.css"/>
+		
+		<!--  Added for Password Strength Display -->
+	    <script type="text/javascript" src="/assets/javascript/jquery-2.1.0.min.js"></script>
+		<script type="text/javascript" src="/assets/javascript/jquery.hint.js"></script>
+		<script type="text/javascript" src="/assets/javascript/jquery.pwstrength.js"></script>
+		<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
+		
+		<script type="text/javascript">
+	        jQuery(function($) { $('#password1').pwstrength(); });
+	  	 </script>
+	    <!--  Added for Password Strength Display -->
+	    
+	    <!--  Added for Password Strength Display -->
+	    <link rel="stylesheet" type="text/css" href="/assets/css/common/reset1.css"/>
+		<link rel="stylesheet" type="text/css" href="/assets/css/common/styles.css"/>
+		<!--  Added for Password Strength Display -->
 </head>
 	
 	<!--[if lt IE 9]><body class="ie8"><![endif]-->

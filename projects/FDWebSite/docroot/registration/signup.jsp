@@ -41,6 +41,7 @@ final int W_SIGNUP_TOTAL = 970;
 <tmpl:put name='title' direct='true'>FreshDirect - Sign Up</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
+
 <%--pageContext.setAttribute("listOfFields", FIELD_NAMES ,1 );--%>
 
 <fd:ErrorHandler result='<%=result%>' name='fraud' id='errorMsg'>
@@ -97,9 +98,10 @@ final int W_SIGNUP_TOTAL = 970;
 	</td>
 </tr>
 </table>
-<form name="address" method="post" >
+<form name="address" id="address" method="post" >
 <%@ include file="/includes/registration/i_signup.jspf" %>
 </form>
 </tmpl:put>
 </tmpl:insert>
 </fd:RegistrationController>
+
