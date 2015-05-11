@@ -921,7 +921,37 @@ public class ProductDetailPopulator {
 		if ( lineItem != null ) {
 			
 			item.setConfigInvalid( lineItem.isInvalidConfig() );
-	
+			
+			//APPDEV-4123 START
+			FDProductInfo defaultProductInfo = null;
+			FDProduct defaultProduct = null;
+			int sizeFDVar = 0;
+			try {
+				defaultProductInfo = FDCachedFactory.getProductInfo(lineItem.getSkuCode());
+				defaultProduct = FDCachedFactory.getProduct(defaultProductInfo);
+				for (FDVariation fdVariation : defaultProduct.getVariations()) {
+					sizeFDVar++;
+				}
+			} catch (FDResourceException e) {
+				LOG.error( "Error in post-process populate. Skipping item." );
+				return;
+			} catch (FDSkuNotFoundException e) {
+				LOG.warn( "Sku not found in post-process populate. This is unexpected. Skipping item." );
+				return;
+			}
+           
+			int lineItemSizeConfiguration = 0;
+			if(null != lineItem.getConfiguration()){
+				lineItemSizeConfiguration = lineItem.getConfiguration().getOptions().size();
+			}
+			
+			if(sizeFDVar != lineItemSizeConfiguration){
+				item.setShowMsg(true);
+			}
+			
+			//APPDEV-4123 END
+			
+			
 			Map<String,String> config = lineItem.getConfiguration().getOptions();
 			if ( config != null && !config.isEmpty() ) {
 				item.setConfiguration( config );

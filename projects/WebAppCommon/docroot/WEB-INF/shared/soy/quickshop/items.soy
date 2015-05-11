@@ -280,6 +280,14 @@
           {$item.configDescr}</i>
         {/if}
       {/if}
+ 
+	  /**
+	    * APPDEV-4123
+		*/  
+      {if $item.showMsg}
+      	<div style="color:#CC0000"><strong>Not available as originally customized.Please Customize.</strong></div>
+      {/if} 
+        
       <div class="item-price">
         {call common.price}
           {param wasPrice:$item.wasPrice /}

@@ -58,6 +58,17 @@ public class ProductData extends BasicProductData implements SkuData {
 	 */
 	protected List<SalesUnit> salesUnit;
 
+	//APPDEV-4123
+	/**
+	 * showMsg will display the error message if the configuration does not match.
+	 */
+	protected boolean showMsg;
+	public boolean isShowMsg() {
+		return showMsg;
+	}
+	public void setShowMsg(boolean showMsg) {
+		this.showMsg = showMsg;
+	}
 	
 	
 
