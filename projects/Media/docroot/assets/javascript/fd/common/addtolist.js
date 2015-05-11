@@ -90,7 +90,10 @@ var FreshDirect = FreshDirect || {};
           var trimmed = name.trim(),
             result = new String('');
           if(trimmed.length > 0){
-            if(lists.indexOf(name)>-1) {
+		   /* if(lists.indexOf(name)>-1) {*/
+        	 /* APPDEV-4138 START*/
+        	  if(lists.toString().toLowerCase().indexOf(name.toLowerCase())>-1) {
+        	 /* APPDEV-4138 END */  
               result = new String( 'Oops! That name is taken!' );
               result.taken = true;
             } else {
