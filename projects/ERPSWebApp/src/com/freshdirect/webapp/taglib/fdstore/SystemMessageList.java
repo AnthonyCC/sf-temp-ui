@@ -18,7 +18,7 @@ public interface SystemMessageList {
 			"<br><br>NOTE: If you are certain that you''ve entered your password correctly, it may need to be reset. To reset it, <a href=\"/login/forget_password_main.jsp\">click here</a> and follow the instructions. "+
 			"If you have any questions, please contact us toll-free at {0}.";
     public final static String MSG_DEACTIVATED     	="This account has been deactivated, please contact Customer Service at {0} to reactivate.";
-	public final static String MSG_PASSWORD_TOO_SHORT	= "Please enter a password that is at least six characters long.";
+	public final static String MSG_PASSWORD_TOO_SHORT	= "Please enter a password that is at least four characters long.";
     public final static String MSG_NUMBER_OF_ATTEMPTS 	= "We are not able to recognize that security word. Please contact Customer Service for help at {0}. <a href=\"/index.jsp\">Click here</a> to browse the site. Just remember that you''ll need to sign in to view account information or to checkout.";
     public final static String MSG_AGREEMENT_CHECK 		= "You must agree to the Customer Agreement to create an account with FreshDirect. Please check the box \"I have read and agree to the Customer Agreement\" to continue.";
 
@@ -89,7 +89,7 @@ public interface SystemMessageList {
 	public final static String MSG_NOT_UNIQUE_INFO				= "Some of the information you provided matches an existing account, so we are unable to extend our current promotions to you (one per household). If you believe you should be eligible for promotions, please contact our Customer Service Team at {0} before completing Checkout.";
 
 	public final static String MSG_PASSWORD_REPEAT				= "Please enter your password again - it doesn't match what you entered above.";
-	public final static String MSG_PASSWORD_LENGTH 				= "Please enter a password that is at least six characters long.";
+	public final static String MSG_PASSWORD_LENGTH 				= "Please enter a password that is at least four characters long.";
 	public final static String MSG_PASSWORDLINKEXPIRED 			= "An e-mail has been sent to this account. Please check your mailbox for a message from FreshDirect.";
 
 	public final static String MSG_UNIQUE_USERNAME				= "An account already exists with this email address.  Please enter a different one or <a href=\"/login/forget_password.jsp\">click here</a> if you have forgotten your password.";
@@ -200,7 +200,5 @@ public interface SystemMessageList {
 	public final static String MSG_SMS_ERROR = "Sorry, There was an error sending the SMS Message. Please check your number or try again later.";
 	public final static String MSG_OPTIN_REQ = "To subscribe, select at least one SMS alert. If you're opting out, please remove the mobile number.";
 	public final static String MSG_TIMEOUT_ERROR = "We apologise for the inconvenience, There was a problem with the gateway, Please try again later.";
-	
-	public final static String MSG_INVALID_CAPTCHA = "Captcha is not valid. Please select captcha";
 	
 }

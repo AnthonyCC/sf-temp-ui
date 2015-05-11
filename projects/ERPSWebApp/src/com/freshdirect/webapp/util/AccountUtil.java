@@ -11,9 +11,7 @@ public class AccountUtil {
 	public static final int DEPOT_USER= 20;
 	public static final int CORP_USER= 30;
 	
-	//Added for APPBUG-2907 Password Min Length to 6
-	private final static int MIN_PASSWORD_LENGTH = 6;
-	
+	private final static int MIN_PASSWORD_LENGTH = 4;
 	
 	public static void validatePassword(ActionResult result, String password, String repeatPassword) {
 		if ("".equals(password)) {

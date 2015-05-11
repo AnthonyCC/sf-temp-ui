@@ -102,7 +102,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 					actionResult.addError(true, "userId", "This email address is already in our database, please enter a different one.");
 					return true;
 				} catch (ErpInvalidPasswordException e) {
-					actionResult.addError(true, "password", "Please enter a password that is at least six characters long.");
+					actionResult.addError(true, "password", "Please enter a password that is at least four characters long.");
 					return true;
 				} catch (DlvResourceException e) {
 					actionResult.addError(true, "mobile_number", "Error with SMS Registration please verify the mobile Number");
@@ -145,7 +145,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			result.addError(!this.verifyPassword.equals(this.password), "verifyPassword", "passwords must match");
 		}
 		if(result.isSuccess()){
-			result.addError(this.password.length() < 6, "password", "Please enter a password that is at least six characters long.");
+			result.addError(this.password.length() < 4, "password", "Please enter a password that is at least four characters long.");
 		}
 	}
 	

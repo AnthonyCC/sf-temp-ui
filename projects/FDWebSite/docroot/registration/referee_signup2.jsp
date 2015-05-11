@@ -24,22 +24,6 @@
 <head>
 	<title>FreshDirect</title>
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
-
-	<!--  Added for Password Strength Display -->
-    <script type="text/javascript" src="/assets/javascript/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="/assets/javascript/jquery.hint.js"></script>
-	<script type="text/javascript" src="/assets/javascript/jquery.pwstrength.js"></script>
-	<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
-	
-	<script type="text/javascript">
-        jQuery(function($) { $('#password1').pwstrength(); });
-  	 </script>
-    <!--  Added for Password Strength Display -->
-    
-    <!--  Added for Password Strength Display -->
-    <link rel="stylesheet" type="text/css" href="/assets/css/common/reset1.css"/>
-	<link rel="stylesheet" type="text/css" href="/assets/css/common/styles.css"/>
-	<!--  Added for Password Strength Display -->
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
@@ -87,48 +71,6 @@
 		<br /><span class="text9">Sign up now to enjoy great quality food, delivered to your door.</span>
 	</div>
 	<div class="fright hline" id="" style="background-color: #ccc;"><!-- --></div>
-	
-		<!--  Added for Password Strength Display -->
-		<script language="javascript">
-			var pass_strength;
-			function IsEnoughLength(str,length)
-			{
-				if ((str == null) || isNaN(length))
-		           return false;
-		        else if (str.length < length)return false;
-		        return true;
-			}
-			function HasMixedCase(passwd)
-			{
-		 		if(passwd.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/))
-		           return true;
-		        else 
-		           return false;
-			}
-			function HasNumeral(passwd)
-			{
-				if(passwd.match(/[0-9]/))
-		          return true;
-		        else
-		          return false;
-			}
-			function HasSpecialChars(passwd)
-			{
-		 		if(passwd.match(/.[!,@,#,$,%,^,&,*,?,_,~]/))return true;else return false;
-			}
-			function passwordChanged()
-			{
-				var pwd = document.getElementById("password1");
-				if (pwd.value.length==0) pass_strength = "<span style='color:black'>Type Password</span>";
-				else if (IsEnoughLength(pwd.value,6) && HasMixedCase(pwd.value) && HasNumeral(pwd.value) && HasSpecialChars(pwd.value))pass_strength = "<b><span style='color:green'/>Very Strong!</span></b>";
-		        else if (IsEnoughLength(pwd.value,6) && HasMixedCase(pwd.value) && (HasNumeral(pwd.value) || HasSpecialChars(pwd.value)))pass_strength = "<b><span style='color:green'/>Strong!</span></b>";
-		 		else if (IsEnoughLength(pwd.value,6) && HasNumeral(pwd.value))pass_strength = "<b><span style='color:orange'>Medium!</span></b>";
-		 		else pass_strength = "<b><span style='color:red'>Weak!</span></b>";         
-	            document.getElementById('strength').innerHTML = pass_strength;
-			}
-		</script>
-		<!--  Added for Password Strength Display -->
-	
 	<div id="form_feilds" style="">
 		<form id="refaddress" name="refaddress" method="post" action="" style="padding: 0; margin: 0;">
 			<input type="hidden" name="submission" value="done" />	
@@ -166,39 +108,10 @@
 			</fd:ErrorHandler>
 			
 			<br /><br />
-			<span class="bodyCopy">Password <span class="star">*</span> </span> <br />	
+			<span class="bodyCopy">Password <span class="star">*</span> </span> <br />
+			<input type="password"  class="text11ref inputUser" size="21" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><br /><%=errorMsg%></span></fd:ErrorHandler>
 			
-			<!--  Added for Password Strength Display -->
-			<div class="container1">		
-			<div class="content-group password">
-			<div class="subgroup">
-				<div class="password-hinter">
-					<div class="password-instructions">
-						<ul>
-							<li id="pw-length" class="invalid"><strong>6</strong> or more characters <strong>(Required)</strong></li>
-							<li class="subhead"><strong>Make your password stronger with:</strong></li>
-							<li id="pw-letter" class="invalid"><strong>1</strong> or more letters</li>
-							<li id="pw-number" class="invalid"><strong>1</strong> or more numbers</li>
-							<li id="pw-capital" class="invalid"><strong>1</strong> or more capital letters</li>
-							<li id="pw-special" class="invalid"><strong>1</strong> or more special characters</li>
-						</ul>
-					</div>
-				</div><!-- // .password-hinter -->
-				<div>
-					<input id="password1" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" required="true" size="21" class="password" title="Choose Password" data-indicator="pwindicator" type="password" style="height: 20px;">
-					<span class="case-sensitive">Passwords are case sensitive</span>
-				</div>
-				<div id="pwindicator">
-					   <div class="bar"></div>
-					   <div class="label"></div>
-				</div>
-			</div><!-- // .subgroup -->			
-			</div><!-- // .content-group -->
-			</div><!-- // .container -->
-			<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><br /><%=errorMsg%></span></fd:ErrorHandler>
-			<!-- Added for Password Strength Display -->	
-				
-     		<br /><br />
+			<br /><br />
 			<span class="bodyCopy">First Name <span class="star">*</span> </span> <br />
 			<input type="text" class="text11ref inputUser" maxlength="25" size="21" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" value="<%=firstname%>" onfocus="fillVals(this.id, '','Enter your first name');" onblur="fillVals(this.id, 'Def','Enter your first name');" id="first_name"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_FIRST_NAME.getCode()%>" id='errorMsg'><br /><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 			

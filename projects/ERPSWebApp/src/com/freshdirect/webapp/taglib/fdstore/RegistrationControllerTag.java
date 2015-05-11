@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.analytics.TimeslotEventModel;
@@ -41,12 +40,10 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
-import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
-import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -120,7 +117,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 						this.pageContext.getSession(),
 						(HttpServletRequest) this.pageContext.getRequest(),
 						(HttpServletResponse) this.pageContext.getResponse());
-				
+
 				ra.setHttpContext(ctx);
 				ra.setResult(actionResult);
 				ra.setFraudPage(this.fraudPage);
@@ -203,31 +200,12 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			} else if ("addDeliveryAddress".equalsIgnoreCase(actionName)) {
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
 				m.performAddDeliveryAddress();
-				FDIdentity identity = getIdentity();
-				FDCustomerInfo customerInfo = FDCustomerManager.getCustomerInfo(identity);
-				// Made changed for address checking
-				if(actionResult.isSuccess()){
-					ActionResult result=new ActionResult();
-					ErpAddressModel erpAddress = checkDeliveryAddressInForm(request, result, session);
-					LOGGER.debug("RegistrationControllerTag :: addDeliveryAddress ===> If no address error send email");
-					FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createShippingAddressAdditionEmail(customerInfo,erpAddress));
-				}
-				
+
 			} else if ("editDeliveryAddress".equalsIgnoreCase(actionName)) {
 				//this.performEditDeliveryAddress(request, actionResult, event);
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
 				m.performEditDeliveryAddress(event);
-				//Security Enhancements
-				FDIdentity identity = getIdentity();
-				FDCustomerInfo customerInfo = FDCustomerManager.getCustomerInfo(identity);
-				// IGATE - Made changed for address checking
-				if(actionResult.isSuccess()){
-					ActionResult result=new ActionResult();
-					ErpAddressModel erpAddress = checkDeliveryAddressInForm(request, result, session);
-					LOGGER.debug("RegistrationControllerTag :: editDeliveryAddress ===> If no address error send email");
-					FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createShippingAddressChangeEmail(customerInfo,erpAddress));
-				}
-				
+
 			} else if ("deleteDeliveryAddress".equalsIgnoreCase(actionName)) {
 				//this.performDeleteDeliveryAddress(request, actionResult, event);
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
@@ -615,6 +593,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				user.setSelectedServiceType(erpAddress.getServiceType());
 			}	
 			*/
+
 		} catch (ErpDuplicateAddressException ex) {
 			LOGGER.warn(
 				"AddressUtil:addShipToAddress(): ErpDuplicateAddressException caught while trying to add a shipping address to the customer info:",
@@ -649,9 +628,6 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
 		if (result.isSuccess()) {
 			try {
-				
-				FDCustomerInfo customerInfo = FDCustomerManager.getCustomerInfo(identity);
-				String oldUserId = customerInfo.getEmailAddress();
 				//
 				// Update UserId first since if new user id is a duplicate it will not perform the second change (of user email address)
 				//
@@ -662,11 +638,8 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				//
 				cim = FDCustomerFactory.getErpCustomerInfo(identity);
 				cim.setEmail(userId);
-				
-				if(!StringUtils.equals(oldUserId,userId)){
-					FDCustomerManager.updateCustomerInfo(AccountActivityUtil.getActionInfo(pageContext.getSession()), cim);
-					FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createUserIdChangeEmail(customerInfo, oldUserId,userId));
-				}
+				FDCustomerManager.updateCustomerInfo(AccountActivityUtil.getActionInfo(pageContext.getSession()), cim);
+
 			} catch (ErpDuplicateUserIdException ex) {
 				LOGGER.warn("New userId already exists in system", ex);
 				result.addError(new ActionError(EnumUserInfoName.EMAIL.getCode(), SystemMessageList.MSG_UNIQUE_USERNAME));

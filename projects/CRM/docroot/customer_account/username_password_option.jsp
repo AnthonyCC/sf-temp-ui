@@ -29,66 +29,10 @@
                         <td align="right">* Username/Email Address:&nbsp;&nbsp;</td>
                         <td><input type="text" class="input_text" style="width: 200px;" name="userId" value="<%=customerInfo.getUserId()%>"><fd:ErrorHandler result="<%=result%>" name="userId" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
                     </tr>
-                    
-                    <!--  Added for Password Strength Display -->
-                    <tr>					
-						<td align="right">* New Password:&nbsp;</td>
-						<td>
-							<div class="container1">		
-								<div class="content-group password">
-								<div class="subgroup">
-									<div class="password-hinter">
-										<div class="password-instructions">
-											<ul>
-												<li id="pw-length" class="invalid"><strong>6</strong> or more characters <strong>(Required)</strong></li>
-												<li class="subhead"><strong>Make your password stronger with:</strong></li>
-												<li id="pw-letter" class="invalid"><strong>1</strong> or more letters</li>
-												<li id="pw-number" class="invalid"><strong>1</strong> or more numbers</li>
-												<li id="pw-capital" class="invalid"><strong>1</strong> or more capital letters</li>
-												<li id="pw-special" class="invalid"><strong>1</strong> or more special characters</li>
-											</ul>
-										</div>
-									</div><!-- // .password-hinter -->
-									<div>
-										<input id="password1" SIZE="15" type="password" name="password" class="password" title="Choose Password" data-indicator="pwindicator" value="<%= request.getParameter("password") %>">
-										<span class="case-sensitive">Passwords are case sensitive</span>
-									</div>
-									<!--  
-									<div id="pwindicator">
-										   <div class="bar"></div>
-										   <div class="label"></div>
-									</div>
-									-->
-								</div><!-- // .subgroup -->			
-								</div><!-- // .content-group -->
-								</div><!-- // .container -->
-						</td>						
-					</tr>	
-					<tr>
-                        <td align="right"></td>
-                        <td>
-                        	<div id="pwindicator">
-								   <div class="bar"></div>
-								   <div class="label"></div>
-							</div>
-                        </td>
-                    </tr>					
-					<!--  Added for Password Strength Display -->
-                    
-                    <!--
                     <tr>
                         <td align="right">* New Password:&nbsp;&nbsp;</td>
                         <td><input type="password" class="input_text" style="width: 150px;" name="password"><fd:ErrorHandler result="<%=result%>" name="password" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
                     </tr>
-                    -->
-                    <!--  Changed for Password Strength Display -->
-					<tr>					
-						<td align="right"></td>
-						<td>
-							<fd:ErrorHandler result="<%=result%>" name="password" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
-						</td>	
-					</tr>
-					<!--  Changed for Password Strength Display -->
                     <tr>
                         <td align="right">* Repeat New Password:&nbsp;&nbsp;</td>
                         <td><input type="password" class="input_text" style="width: 150px;" name="verifyPassword"><fd:ErrorHandler result="<%=result%>" name="verifyPassword" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>

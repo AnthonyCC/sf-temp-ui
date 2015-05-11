@@ -283,7 +283,7 @@ if(user.isDepotUser()){
 </tr>
 <tr valign="top">
 	<td width="120" align="right" class="text12"></td>
-	<td class="text11"><img src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0" />Must be at least 6 characters. Passwords are case sensitive.<font class="space4pix"><br /></font></td>
+	<td class="text11"><img src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0" />Must be at least 4 characters. Passwords are case sensitive.<font class="space4pix"><br /></font></td>
 </tr>
 
 <tr valign="top">

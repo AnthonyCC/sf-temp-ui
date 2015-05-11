@@ -13,65 +13,44 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
-import com.freshdirect.webapp.util.CaptchaUtil;
-
 /**
- * 
- * 
+ *
+ *
  * @version $Revision:26$
  * @author $Author:Viktor Szathmary$
  */
 public class LoginControllerTag extends AbstractControllerTag {
-
-	private static Category LOGGER = LoggerFactory.getInstance(LoginControllerTag.class);
-
-	private String mergePage;
-
-	public void setMergePage(String mp) {
-		this.mergePage = mp;
-	}
-
-	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
-		HttpSession session = request.getSession(true);
-		Integer fdLoginAttempt = session.getAttribute("fdLoginAttempt") != null ? (Integer) session.getAttribute("fdLoginAttempt") : Integer.valueOf(0);
-		boolean isCaptchaSuccess = true;
-		
-		if (request.getParameter("captchaEnabled") != null) {
-			isCaptchaSuccess = CaptchaUtil.validateCaptcha(request);
-			LOGGER.debug("Captcha enabled");
-		}
-		
-		String userId = request.getParameter(EnumUserInfoName.USER_ID.getCode()).trim();
-		String password = request.getParameter(EnumUserInfoName.PASSWORD.getCode()).trim();
-		HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-		String updatedSuccessPage = null;
-		if(isCaptchaSuccess){
-			updatedSuccessPage = UserUtil.loginUser(session, request, response, actionResult, userId, password, mergePage, this.getSuccessPage());
-		} else {
-			actionResult.addError(new ActionError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA)); 
-		}
-		if (updatedSuccessPage != null) {
-			this.setSuccessPage(updatedSuccessPage);
-			if (CollectionUtils.isEmpty(actionResult.getErrors()) && isCaptchaSuccess) {
-				fdLoginAttempt = 0;
-			} else {
-				fdLoginAttempt++;
-			}
-		} else {
-			fdLoginAttempt++;
-		}
-		session.setAttribute("fdLoginAttempt", fdLoginAttempt);
-		return true;
-	}
-	
-	public static class TagEI extends AbstractControllerTag.TagEI {
-		// default impl
-	}
+    
+    private static Category LOGGER = LoggerFactory.getInstance( LoginControllerTag.class );
+    
+    private String mergePage;
+    
+    public void setMergePage(String mp) {
+        this.mergePage = mp;
+    }
+    
+    protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
+        
+        String userId = request.getParameter(EnumUserInfoName.USER_ID.getCode()).trim();
+        String password = request.getParameter(EnumUserInfoName.PASSWORD.getCode()).trim();
+        
+        HttpSession session = pageContext.getSession();
+        HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+        
+        String updatedSuccessPage = UserUtil.loginUser(session, request, response, actionResult, userId, password, mergePage, this.getSuccessPage());
+        if(updatedSuccessPage != null) {
+        	this.setSuccessPage(updatedSuccessPage);
+        }
+        return true;
+    }
+        
+    public static class TagEI extends AbstractControllerTag.TagEI {
+        // default impl
+    }
+    
 }

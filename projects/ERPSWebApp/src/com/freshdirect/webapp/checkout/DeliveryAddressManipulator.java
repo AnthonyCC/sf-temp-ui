@@ -787,22 +787,4 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 	public void setLocationHandlerMode(boolean locationHandlerMode) {
 		this.locationHandlerMode = locationHandlerMode;
 	}
-	
-	//Method used to check update delivery address
-	public boolean checkEditDeliveryAddress(TimeslotEventModel event) throws FDResourceException {
-		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-
-		// call common delivery address check
-		ErpAddressModel erpAddress = checkDeliveryAddressInForm(request, result, session);
-		if (erpAddress == null) {
-			LOGGER.debug("DeliveryAddressManipulator :: checkEditDeliveryAddress ==>> Error Address");
-			return false;
-		}
-		
-		String shipToAddressId = request.getParameter("updateShipToAddressId");
-		boolean foundFraud = AddressUtil.updateShipToAddress(request, result, user, shipToAddressId, erpAddress);
-		LOGGER.debug("DeliveryAddressManipulator :: checkEditDeliveryAddress ==>> foundFraud"+foundFraud);
-		return foundFraud;
-		
-	}
 }
