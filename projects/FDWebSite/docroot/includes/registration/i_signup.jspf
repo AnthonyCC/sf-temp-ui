@@ -80,6 +80,47 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 }
 %>
 
+		<!--  Added for Password Strength Display -->
+		<script language="javascript">
+			var pass_strength;
+			function IsEnoughLength(str,length)
+			{
+				if ((str == null) || isNaN(length))
+		           return false;
+		        else if (str.length < length)return false;
+		        return true;
+			}
+			function HasMixedCase(passwd)
+			{
+		 		if(passwd.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/))
+		           return true;
+		        else 
+		           return false;
+			}
+			function HasNumeral(passwd)
+			{
+				if(passwd.match(/[0-9]/))
+		          return true;
+		        else
+		          return false;
+			}
+			function HasSpecialChars(passwd)
+			{
+		 		if(passwd.match(/.[!,@,#,$,%,^,&,*,?,_,~]/))return true;else return false;
+			}
+			function passwordChanged()
+			{
+				var pwd = document.getElementById("password1");
+				if (pwd.value.length==0) pass_strength = "<span style='color:black'>Type Password</span>";
+				else if (IsEnoughLength(pwd.value,6) && HasMixedCase(pwd.value) && HasNumeral(pwd.value) && HasSpecialChars(pwd.value))pass_strength = "<b><span style='color:green'/>Very Strong!</span></b>";
+		        else if (IsEnoughLength(pwd.value,6) && HasMixedCase(pwd.value) && (HasNumeral(pwd.value) || HasSpecialChars(pwd.value)))pass_strength = "<b><span style='color:green'/>Strong!</span></b>";
+		 		else if (IsEnoughLength(pwd.value,6) && HasNumeral(pwd.value))pass_strength = "<b><span style='color:orange'>Medium!</span></b>";
+		 		else pass_strength = "<b><span style='color:red'>Weak!</span></b>";         
+	            document.getElementById('strength').innerHTML = pass_strength;
+			}
+		</script>
+		<!--  Added for Password Strength Display -->
+
 <table border="0" cellspacing="0" cellpadding="2" width="<%=W_REGISTRATION_SIGNUP_TOTAL%>">
 <tr valign="top">
 	<td width="347" valign="bottom">
@@ -292,14 +333,63 @@ if(user.isDepotUser()){
 		<img src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0" />This will be your User Name. You will use this to access the site.<br /><font class="space4pix"><br /></font>
 	</td>
 </tr>
+
+
 <tr valign="middle">
 	<td width="120" align="right" class="text12">
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
 		*&nbsp;Password
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>'></span></fd:ErrorHandler>
 	</td>
-	<td colspan="3">&nbsp;&nbsp;<input class="text9" size="21" type="password" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" required="true" value="<%= fldPassword %>" /> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+	<!--  Added for Password Strength Display -->
+	<td colspan="3">
+		<div class="container1">		
+		<div class="content-group password">
+		<div class="subgroup">
+			<div class="password-hinter">
+				<div class="password-instructions">
+					<ul>
+						<li id="pw-length" class="invalid"><strong>6</strong> or more characters <strong>(Required)</strong></li>
+						<li class="subhead"><strong>Make your password stronger with:</strong></li>
+						<li id="pw-letter" class="invalid"><strong>1</strong> or more letters</li>
+						<li id="pw-number" class="invalid"><strong>1</strong> or more numbers</li>
+						<li id="pw-capital" class="invalid"><strong>1</strong> or more capital letters</li>
+						<li id="pw-special" class="invalid"><strong>1</strong> or more special characters</li>
+					</ul>
+				</div>
+			</div><!-- // .password-hinter -->
+			<div>&nbsp;
+				<input id="password1" size="16" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" required="true" value="<%= fldPassword %>" class="password" title="Choose Password" data-indicator="pwindicator" type="password">
+				<span class="case-sensitive">Passwords are case sensitive</span>
+			</div>
+			
+		</div><!-- // .subgroup -->			
+		</div><!-- // .content-group -->
+		</div><!-- // .container -->
+	</td>
+	<!-- Added for Password Strength Display -->
 </tr>
+
+<!--  Changed for Password Strength Display -->
+<tr>
+	<td class="text12" align="right" width="120">
+	</td>
+	<td colspan="3">
+			<div id="pwindicator">
+					   <div class="bar"></div>
+					   <div class="label"></div>
+			</div>
+	</td>
+</tr>
+<tr valign="middle">
+	<td width="120" align="right" class="text12">
+	</td>
+	<td colspan="3">&nbsp;&nbsp;<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'>
+	<span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
+</tr>
+<!--  Changed for Password Strength Display -->
+
+
 <tr valign="middle">
 	<td width="120" align="right" class="text12">
 	<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
@@ -310,7 +400,7 @@ if(user.isDepotUser()){
 </tr>
 <tr valign="top">
 	<td width="120" align="right" class="text12"></td>
-	<td class="text11"><img src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0" />Must be at least 4 characters. Passwords are case sensitive.<font class="space4pix"><br /></font></td>
+	<td class="text11"><img src="/media_stat/images/layout/clear.gif" width="8" height="11" border="0" />Must be at least 6 characters. Passwords are case sensitive.<font class="space4pix"><br /></font></td>
 </tr>
 
 <tr valign="top">

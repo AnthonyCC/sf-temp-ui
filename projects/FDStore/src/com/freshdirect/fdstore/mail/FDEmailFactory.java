@@ -7,6 +7,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,7 +21,9 @@ import org.apache.log4j.Category;
 import org.dom4j.Document;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.customer.EnumDeliveryType;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpCustomerEmailModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
@@ -1163,4 +1166,77 @@ public class FDEmailFactory {
 		return email;
 	}
 	
+	public XMLEmailI createUserIdChangeEmail(FDCustomerInfo customer, String oldUserId, String newUserId) {
+		//START : APPBUG-2900 - Added Logger for checking duplicate emails.
+		LOGGER.debug("FDEmailFactory :: createUserIdChangeEmail ===> Entered ");
+		FDInfoEmail email = new FDInfoEmail(customer);
+		email.setXslPath("h_user_id_change_V1.xsl", "x_user_id_change_V1.xsl");
+		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+		//Added changes for Email Subject
+		email.setSubject("FreshDirect: Change in your Email Id");		
+		email.setRecipient(oldUserId);	
+		List<String> ccAddress = Arrays.asList(oldUserId, newUserId);
+		email.setCCList(ccAddress);
+		return email;
+	}
+	
+	private static class FDCustomerInfoEmail extends FDInfoEmail {
+		Map<String,Object> attributes = null;
+
+		public FDCustomerInfoEmail(FDCustomerInfo customer, Map<String,Object> attributes) {
+			super(customer);
+			
+			attributes.put("customer", customer);
+			this.attributes = attributes;
+		}
+		
+		@Override
+		protected void decorateMap(Map map) {
+			map.putAll(this.attributes);
+		}
+	}
+	
+	public XMLEmailI createShippingAddressChangeEmail(FDCustomerInfo customer, ErpAddressModel erpAddress) {
+		Map<String,Object> attributeMap = new HashMap<String,Object>();
+		attributeMap.put("erpAddressModel", erpAddress);
+		attributeMap.put("phone", PhoneNumber.format(erpAddress.getPhone().getPhone()));
+		if(null!=erpAddress.getAltContactPhone()){
+		attributeMap.put("alternatePhone", PhoneNumber.format(erpAddress.getAltContactPhone().getPhone()));
+		}
+		FDInfoEmail email = new FDCustomerInfoEmail(customer,attributeMap);
+		email.setXslPath("h_user_edit_delv_address_V1.xsl", "x_user_edit_delv_address_V1.xsl");
+		//Added changes for Email Subject
+		email.setSubject("FreshDirect: Shipping Address changed to your account");
+		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));		
+		//START : APPBUG-2898 - Email functionality is not working when user add/ update the delivery address. 
+		if(customer.getEmailAddress() != null){
+			email.setRecipient(customer.getEmailAddress());	
+			List<String> ccAddress = Arrays.asList(customer.getEmailAddress());
+			//email.setCCList(ccAddress);
+		}
+		//END : APPBUG-2898 - Email functionality is not working when user add/ update the delivery address. 		
+		return email;
+	}
+	
+	public XMLEmailI createShippingAddressAdditionEmail(FDCustomerInfo customer, ErpAddressModel erpAddress) {
+		Map<String,Object> attributeMap = new HashMap<String,Object>();
+		attributeMap.put("erpAddressModel", erpAddress);
+		attributeMap.put("phone", PhoneNumber.format(erpAddress.getPhone().getPhone()));
+		if(null!=erpAddress.getAltContactPhone()){
+		attributeMap.put("alternatePhone", PhoneNumber.format(erpAddress.getAltContactPhone().getPhone()));
+		}
+		FDInfoEmail email = new FDCustomerInfoEmail(customer,attributeMap);
+		email.setXslPath("h_user_new_delv_address_V1.xsl", "x_user_new_delv_address_V1.xsl");
+		//Added changes for Email Subject
+		email.setSubject("FreshDirect: New Shipping Address added to your account");
+		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+		//START : APPBUG-2898 - Email functionality is not working when user add/ update the delivery address.
+		if(customer.getEmailAddress() != null){
+			email.setRecipient(customer.getEmailAddress());	
+			List<String> ccAddress = Arrays.asList(customer.getEmailAddress());
+			//email.setCCList(ccAddress);
+		}
+		//END : APPBUG-2898 - Email functionality is not working when user add/ update the delivery address.
+		return email;
+	}
 }

@@ -65,13 +65,18 @@
 	</style>
 	
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>     
+    
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/base/jquery-ui.css"/>
 	<link rel="stylesheet" type="text/css" href="/assets/css/common/globalnav.css" />
 	<link rel="stylesheet" type="text/css" href="/assets/css/common/footer.css">
-  <link rel="stylesheet" type="text/css" href="/assets/css/common/freshdirect.css">
-  <link rel="stylesheet" type="text/css" href="/assets/css/common/globalnav_and_footer.css">
-
+    <link rel="stylesheet" type="text/css" href="/assets/css/common/freshdirect.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/common/globalnav_and_footer.css">
+    
+    <!--  Added for Password Strength Display -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/common/reset1.css"/>
+	<link rel="stylesheet" type="text/css" href="/assets/css/common/styles.css"/>
+	<!--  Added for Password Strength Display -->
   
   <!--[if IE]>
   <link rel="stylesheet" type="text/css" href="/assets/css/common/footer.ie.css?buildver=5b224e7e-1f1b-4429-902f-7dee6d79d5aa">
@@ -82,15 +87,27 @@
 
   
   <link rel="stylesheet" type="text/css" href="/assets/css/global.css">
-	<link rel="stylesheet" type="text/css" href="/assets/css/pc_ie.css">
+  <link rel="stylesheet" type="text/css" href="/assets/css/pc_ie.css">
 	
-		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+  <%@ include file="/common/template/includes/i_javascripts.jspf" %>
+  <%@ include file="/shared/template/includes/i_head_end.jspf" %> 
+ 
+ <!--  Added for Password Strength Display -->
+    <script type="text/javascript" src="/assets/javascript/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="/assets/javascript/jquery.hint.js"></script>
+	<script type="text/javascript" src="/assets/javascript/jquery.pwstrength.js"></script>
+	<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
 	
-	
-<%@ include file="/shared/template/includes/i_head_end.jspf" %>
+	<script type="text/javascript">
+        jQuery(function($) { $('#password1').pwstrength(); });
+  	 </script>
+    <!--  Added for Password Strength Display -->
+    
 </head>
 <body bgcolor="#ffffff" text="#333333" class="text10" leftmargin="0" topmargin="0" style="">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>
+
+
 	<center>
   <div style="text-align: left; width: 450px; margin-bottom: 12px;" class="text12">
     <b>Already have a password? <a href="javascript:(function() { (window.parent || window).location.href='/login/login.jsp'; return false; })()">Log in now</a></b>
@@ -119,6 +136,7 @@
 					//}
 				window.top.location="/index.jsp";
 			</script>
+					
 		<%		 
 		} else {
 			//System.out.println("went to else part  on signup_liste.jsp?====================================================================================\n" );
@@ -128,12 +146,55 @@
 			}
 
 	%>
-	<div id="sulCont" style="width:450px; height:auto; overflow-y: auto; overflow-x: hide;">
+			
+		<div id="sulCont" style="width:450px; height:auto; overflow-y: auto; overflow-x: hidden;">
 		<div id="top_image" style="padding-bottom: 10px; width: 100%; text-align: left;">
 			<img src="/media_stat/images/profile/signup_easy.jpg" border="0" alt="Sign Up, It's Easy"/><br />
 			<span class="text9" style="color:gray; width:370px;">Sign up now to receive promotional materials or place your first order.</span>
 		</div>
 		<div class="fright hline" id="" style="width:100%; float:left;"><!-- --></div>
+		
+		<!--  Added for Password Strength Display -->
+		<script language="javascript">
+			var pass_strength;
+			function IsEnoughLength(str,length)
+			{
+				if ((str == null) || isNaN(length))
+		           return false;
+		        else if (str.length < length)return false;
+		        return true;
+			}
+			function HasMixedCase(passwd)
+			{
+		 		if(passwd.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/))
+		           return true;
+		        else 
+		           return false;
+			}
+			function HasNumeral(passwd)
+			{
+				if(passwd.match(/[0-9]/))
+		          return true;
+		        else
+		          return false;
+			}
+			function HasSpecialChars(passwd)
+			{
+		 		if(passwd.match(/.[!,@,#,$,%,^,&,*,?,_,~]/))return true;else return false;
+			}
+			function passwordChanged()
+			{
+				var pwd = document.getElementById("password1");
+				if (pwd.value.length==0) pass_strength = "<span style='color:black'>Type Password</span>";
+				else if (IsEnoughLength(pwd.value,6) && HasMixedCase(pwd.value) && HasNumeral(pwd.value) && HasSpecialChars(pwd.value))pass_strength = "<b><span style='color:green'/>Very Strong!</span></b>";
+		        else if (IsEnoughLength(pwd.value,6) && HasMixedCase(pwd.value) && (HasNumeral(pwd.value) || HasSpecialChars(pwd.value)))pass_strength = "<b><span style='color:green'/>Strong!</span></b>";
+		 		else if (IsEnoughLength(pwd.value,6) && HasNumeral(pwd.value))pass_strength = "<b><span style='color:orange'>Medium!</span></b>";
+		 		else pass_strength = "<b><span style='color:red'>Weak!</span></b>";         
+	            document.getElementById('strength').innerHTML = pass_strength;
+			}
+		</script>
+		<!--  Added for Password Strength Display -->
+				 
 		<div id="form_feilds" style="float:left;">
 			<form id="litesignup" name="litesignup" method="post" action="/registration/signup_lite.jsp" style="padding: 0; margin: 0;">
 				<input type="hidden" name="submission" value="done" />	
@@ -180,12 +241,52 @@
 					<tr><td><input type="text" class="text11ref inputDef" maxlength="128" size="31" name="<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>" value="<%=repeat_email%>" id="confirm_email"></td></tr>
 					<% if (result.hasError(EnumUserInfoName.REPEAT_EMAIL.getCode())) { %><tr><td class="errMsg"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.REPEAT_EMAIL.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span><%posn="center";%></fd:ErrorHandler>&nbsp;</td></tr><% } %>
 					
+					
+					
 					<tr><td class="bodyCopySUL"><span><label>Choose Password </label><span class="star">*</span> </span> </td></tr>
+					
 					<tr>
-						<td><input type="password"  class="text11ref inputUser" size="31" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1">
-							<br/><span class="text9 bodyCopySULNote">Must be at least 4 characters. Passwords are case sensitive. </span></td>
+					<!--  Added for Password Strength Display -->
+						<td>
+							<div class="container1">		
+							<div class="content-group password">
+							<div class="subgroup">
+								<div class="password-hinter">
+									<div class="password-instructions">
+										<ul>
+											<li id="pw-length" class="invalid"><strong>6</strong> or more characters <strong>(Required)</strong></li>
+											<li class="subhead"><strong>Make your password stronger with:</strong></li>
+											<li id="pw-letter" class="invalid"><strong>1</strong> or more letters</li>
+											<li id="pw-number" class="invalid"><strong>1</strong> or more numbers</li>
+											<li id="pw-capital" class="invalid"><strong>1</strong> or more capital letters</li>
+											<li id="pw-special" class="invalid"><strong>1</strong> or more special characters</li>
+										</ul>
+									</div>
+								</div><!-- // .password-hinter -->
+								<div>
+									<input id="password1" name="password" size="31" class="password" title="Choose Password" data-indicator="pwindicator" type="password" style="height: 20px;">
+									<span class="case-sensitive">Passwords are case sensitive</span>
+								</div>
+								<div id="pwindicator">
+									   <div class="bar"></div>
+									   <div class="label"></div>
+								</div>
+							</div><!-- // .subgroup -->			
+							</div><!-- // .content-group -->
+							</div><!-- // .container -->
+						</td>
+						<!-- Added for Password Strength Display -->
+					</tr>				    				
+					<!--  
+					<tr>
+					    <td><input type="password"  class="text11ref inputUser" size="31" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" id="password1" onkeyup="passwordChanged();" >
+						<span id="strength">Type Password</span>
+						<br/><span class="text9 bodyCopySULNote">Must be at least 6 characters. Passwords are case sensitive. </span></td>
 					</tr>
+					-->
 					<% if (result.hasError(EnumUserInfoName.PASSWORD.getCode())) { %><tr><td><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'> <span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;</td></tr><% } %>
+					
+					
 					
 					<tr><td class="bodyCopySUL"><span><label>Confirm Password </label><span class="star">*</span> </span> </td></tr>
 					<tr><td><input type="password"  class="text11ref inputUser" size="31" name="<%=EnumUserInfoName.REPEAT_PASSWORD.getCode()%>" id="password1"></td></tr>
@@ -206,7 +307,7 @@
 					<tr>
 						<td style="padding-top: 10px;"><a onclick="document.litesignup.submit();" href="#" class="butText" style="font-weight:bold;font-size:14px;"><img alt="Sign Up" src="/media_stat/images/buttons/signup.gif"></a></td>
 					</tr>
-					<tr><td align="right" style="font:Verdana;font-weight:bold;font-size:10px;padding:10px;">Having problems signing up? Call <%=(user == null)?"1-212-796-8002":user.getCustomerServiceContact()%></td></tr>
+					<tr><td style="font:Verdana;font-weight:bold;font-size:10px;padding:10px;">Having problems signing up? Call <%=(user == null)?"1-212-796-8002":user.getCustomerServiceContact()%></td></tr>
 				</table>
 			</form>
 		</div>

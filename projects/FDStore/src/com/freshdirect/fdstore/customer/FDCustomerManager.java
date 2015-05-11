@@ -2118,8 +2118,8 @@ public class FDCustomerManager {
 			//
 			// Check for valid password length
 			//
-			if (password.length() < 4)
-				throw new ErpInvalidPasswordException("Please enter a password that is at least four characters long.");
+			if (password.length() < 6)
+				throw new ErpInvalidPasswordException("Please enter a password that is at least six characters long.");
 			FDCustomerManagerSB sb = managerHome.create();
 			sb.changePassword(info, emailAddress, password);
 
@@ -4286,6 +4286,5 @@ public class FDCustomerManager {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
-
 	}
 }
