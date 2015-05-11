@@ -47,6 +47,20 @@ var FreshDirect = FreshDirect || {};
     },
     deleteFromList: {
       value: function (changes) {
+    	
+    /*APPDEV-4151 - Changes for displaying Spinning wheel : START*/ 
+    	
+  	  var listArea = $(this.popup.$trigger).closest('.itemlist-item').parent().parent(); 
+	  var spin = listArea.append('<img style="position:fixed;left:50%;top:50%;" id="load" src="/media_stat/images/navigation/spinner.gif"/>'); 
+	  listArea.css("opacity","0.2"); 
+	  
+	  var timeOutVar = setTimeout(function() { 
+		  $('#load').hide();
+		  listArea.css("opacity","1"); 
+	  	  }, 2000); 
+    
+	  /*APPDEV-4151 - Changes for displaying Spinning wheel : END*/ 
+    	
         var listId = this.popup.$trigger.attr('data-listid'),
             itemId = this.popup.$trigger.attr('data-itemid'),
             items = fd.components.AddToCart.atcFilter(fd.modules.common.productSerialize(this.popup.$trigger)),
