@@ -13,7 +13,7 @@ final int W_DNAV_TOTAL = 970;
 <html xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
     <title><tmpl:get name='title'/></title>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
 	

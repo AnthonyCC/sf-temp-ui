@@ -107,7 +107,7 @@ if (!origURL.equals(newURL)) {
 <%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 	<title>VIEW SMART YMALS PAGE</title>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<style type="text/css">

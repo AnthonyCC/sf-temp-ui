@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 		<fd:css href="css/reset.css"/>
 		<fd:css href="css/typography.css"/>
 		<fd:css href="css/grid.css"/>

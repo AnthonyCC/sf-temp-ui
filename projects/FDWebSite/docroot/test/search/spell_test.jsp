@@ -27,7 +27,7 @@
 <%@page import="java.util.Collections"%>
 <%@page import="java.util.Comparator"%><html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" lang="en-US">
 <title>Spell (aka Did you mean?) Test</title>
 <link rel="stylesheet" href="/assets/css/test/search/style.css" type="text/css">
 </head>

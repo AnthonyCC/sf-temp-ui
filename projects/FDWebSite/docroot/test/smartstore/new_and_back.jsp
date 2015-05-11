@@ -194,7 +194,7 @@ List<ProductEntry> calcProductEntries(Map<ProductModel, Date> products, Date now
 <%@page import="java.util.Iterator"%>
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"%><html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 <title>NEW AND BACK IN STOCK PRODUCTS TEST PAGE</title>
 <%@ include file="../../shared/template/includes/style_sheet_detect.jspf"%>
 <style type="text/css">

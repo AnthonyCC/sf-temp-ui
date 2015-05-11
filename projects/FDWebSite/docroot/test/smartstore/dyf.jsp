@@ -92,7 +92,7 @@ if ("upload".equalsIgnoreCase(action)) {
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" lang="en-US"/>
 	<title>SmartStore DYF Test Page</title>
 	<style>
 		body {

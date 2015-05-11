@@ -14,7 +14,7 @@
 <%@page import="java.util.TreeMap"%>
 <%@page import="java.util.SortedMap"%><html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" lang="en-US">
 <title>Available Multi-SKU Products</title>
 </head>
 <body>

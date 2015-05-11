@@ -5666,4 +5666,8 @@
 		<name>Sitemap</name>
 		<tagclass>com.freshdirect.webapp.taglib.sitemap.SitemapTag</tagclass>
 	</tag>
+	<tag-file>
+       <name>SEOMetaTag</name>
+       <path>/WEB-INF/shared/tags/common/metatags.tag</path>
+</tag-file>
 </taglib>

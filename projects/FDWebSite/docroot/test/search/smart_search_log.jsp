@@ -15,7 +15,7 @@
 <html>
 <head>
 <title>Smart Search Snapshot Generator log</title>
-<meta http-equiv="refresh" content="5">
+<meta http-equiv="refresh" content="5" lang="en-US">
 </head>
 <body>
 

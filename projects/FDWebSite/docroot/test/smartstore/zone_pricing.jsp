@@ -239,7 +239,7 @@ Map<String,RecommendationService> recommenderCache = new WeakHashMap<String,Reco
 <%@page import="com.freshdirect.smartstore.RecommendationService"%>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 <title>PRODUCT ZONE PRICING PAGE</title>
 <%@ include file="../../shared/template/includes/style_sheet_detect.jspf"%>
 <style type="text/css">

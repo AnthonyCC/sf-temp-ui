@@ -9,7 +9,7 @@
 <%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%><html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" lang="en-US">
 <title>Depth Calculator Test</title>
 <link rel="stylesheet" href="/assets/css/test/search/style.css" type="text/css">
 </head>

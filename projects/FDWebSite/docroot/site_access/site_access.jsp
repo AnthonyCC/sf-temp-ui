@@ -103,7 +103,7 @@ request.setAttribute("listPos", "CategoryNote,SiteAccess,DeliveryFees");
 		<title>FreshDirect</title>
 
 		<%@ include file="/common/template/includes/metatags.jspf" %>
-		<meta http-equiv="X-UA-Compatible" content="IE=8">
+		<meta http-equiv="X-UA-Compatible" content="IE=8" lang="en-US">
 		<meta name="msvalidate.01" content="2E163086C8383686A98EE1B694357FE7" />
 
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>

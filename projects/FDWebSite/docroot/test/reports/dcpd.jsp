@@ -52,7 +52,7 @@ if (!renderCSV) {
 
 <html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" lang="en-US">
 	<title>DCPD Report</title>
 	<meta name="generator" content="TextMate http://macromates.com/">
 	<meta name="author" content="segabor">

@@ -22,7 +22,7 @@
 <%@page import="com.freshdirect.fdstore.FDException"%>
 <%@page import="com.freshdirect.smartstore.fdstore.CohortSelector"%><html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" lang="en-US">
 	<title>VARIANT LOOKUP</title>
 	<meta name="author" content="Sebestyén Gábor, Somogyi Csongor">
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>

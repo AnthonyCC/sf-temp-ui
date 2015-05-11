@@ -15,7 +15,7 @@
 <%@page import="java.util.HashSet"%><html>
 <%@ taglib uri='freshdirect' prefix='fd'%>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 	<title>Revamp Local Dept Test Page - APPDEV-660</title>
 </head>
 <body>

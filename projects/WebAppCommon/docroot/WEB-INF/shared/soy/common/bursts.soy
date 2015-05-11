@@ -21,7 +21,7 @@
 {/if}
 {/let}
 {if $burst}
-<img class="burst {if $badge}{$badge}{/if}" src="{$burst}" alt="Save">
+<img class="burst {if $badge}{$badge}{/if}" src="{$burst}" alt="{if $badge}{$badge}{else}{if $deal}Save {$deal}%{/if}{/if}">
 {/if}
 {if $usq}<span id="burst-wine-" name="burst-wine" class="burst-wine"></span>{/if}
 {/template}

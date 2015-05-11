@@ -17,7 +17,7 @@
 <%@page import="com.freshdirect.framework.util.MemoryLeakCache"%>
 <%@page import="java.util.List"%><html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 <title>Memory Leak Administrator Page</title>
 </head>
 <body>

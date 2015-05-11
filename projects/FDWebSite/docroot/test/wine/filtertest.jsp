@@ -16,7 +16,7 @@
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
 <%@page import="com.freshdirect.fdstore.content.EnumWineRating"%><html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 <title>Filter Test</title>
 <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </head>

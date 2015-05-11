@@ -56,7 +56,7 @@
 		<link>
 			<name>tmp</name>
 			<type>2</type>
-			<location>/Users/pkovacs/projects/domain/domain/servers/citadel/tmp</location>
+			<location>D:/Users/pkovacs/projects/domain/domain/servers/citadel/tmp</location>
 		</link>
 	</linkedResources>
 </projectDescription>

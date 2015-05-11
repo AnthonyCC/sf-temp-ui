@@ -20,7 +20,7 @@
 <%@page import="com.freshdirect.cms.ContentNodeI"%><html>
 <%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <head>
-	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8" lang="en-US">
 	<title>Producers' Map</title>
 	<!-- Google Maps API -->
 	<script type="text/javascript">

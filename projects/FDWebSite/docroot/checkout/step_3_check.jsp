@@ -211,7 +211,7 @@ try {
 	resultPage = response.encodeRedirectURL( resultPage );
 	%>
 	</fd:DlvPassAvailabilityController>
-	<META HTTP-EQUIV="refresh" CONTENT="0;URL=<%=resultPage%>">
+	<META HTTP-EQUIV="refresh" CONTENT="0;URL=<%=resultPage%>" lang="en-US">
 	<BR>If the page does not refresh automatically, <A HREF="<%=resultPage%>">click here</A>.
 <%
 } catch (Exception ex) {

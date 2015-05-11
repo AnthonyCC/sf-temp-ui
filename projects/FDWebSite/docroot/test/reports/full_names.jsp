@@ -131,7 +131,7 @@ if (toCSV) {
     "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 	<title>YMAL PERFORMANCE TEST PAGE</title>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<style type="text/css">

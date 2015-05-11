@@ -4,11 +4,20 @@
 	<td>
 		<% if ( request.getParameter("lang") != null) { %>
 			<% if ("espanol".equalsIgnoreCase(request.getParameter("lang"))) { %> 
+			<tmpl:put name='seoMetaTag' direct='true'>
+       					<fd:SEOMetaTag language='es-ES'/>
+ 					 </tmpl:put>
 				<fd:IncludeMedia name="/media/editorial/site_pages/customer_agreement/user_agreement_espanol.html" />
 			<% } else { %>
+			<tmpl:put name='seoMetaTag' direct='true'>
+      					 <fd:SEOMetaTag language='en-US'/>
+  					</tmpl:put>
 				<fd:IncludeMedia name="/media/editorial/site_pages/customer_agreement/user_agreement.html" />
 			<% } %>
 		<% } else { %>
+		<tmpl:put name='seoMetaTag' direct='true'>
+      					 <fd:SEOMetaTag language='en-US'/>
+  					</tmpl:put>
 			<fd:IncludeMedia name="/media/editorial/site_pages/customer_agreement/user_agreement.html" />
 		<% } %>
 	</td>

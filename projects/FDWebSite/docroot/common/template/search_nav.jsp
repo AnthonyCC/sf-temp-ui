@@ -15,7 +15,7 @@ final int W_SEARCH_NAV_RIGHT = 820;
 <head>
     <title><tmpl:get name='title'/></title>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
-	<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+	<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' lang="en-US">
 
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>

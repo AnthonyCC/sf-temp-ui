@@ -28,7 +28,7 @@
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <html>  
 <head>
-	<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+	<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' lang="en-US">
 	<link rel="stylesheet" href="/assets/css/autocomplete.css" type="text/css">
 	<%@ include file="/includes/search/brandautocomplete.jspf" %>
 	<%@ include file="/includes/search/autocomplete.jspf" %>

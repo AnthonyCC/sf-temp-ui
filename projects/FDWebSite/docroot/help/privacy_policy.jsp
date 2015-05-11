@@ -44,12 +44,25 @@ if (type != null && !"".equals(type) && type.equalsIgnoreCase("popup")) {
 				</script>
 				
 				<% if ( request.getParameter("lang") != null) { %>
-					<% if ("espanol".equalsIgnoreCase(request.getParameter("lang"))) { %> 
+					<% if ("espanol".equalsIgnoreCase(request.getParameter("lang"))) { %>
+					<tmpl:put name='seoMetaTag' direct='true'>
+       					<fd:SEOMetaTag language='es-ES'/>
+ 					 </tmpl:put>
+					
 						<fd:IncludeMedia name="/media/editorial/site_pages/privacy_policy/privacy_policy_espanol.html" />
 					<% } else { %>
+					<tmpl:put name='seoMetaTag' direct='true'>
+      					 <fd:SEOMetaTag language='en-US'/>
+  					</tmpl:put>
+					
+					
 						<fd:IncludeMedia name="/media/editorial/site_pages/privacy_policy/privacy_policy.html" />
 					<% } %>
 				<% } else { %>
+					<tmpl:put name='seoMetaTag' direct='true'>
+      					 <fd:SEOMetaTag language='en-US'/>
+  					</tmpl:put>
+				
 					<fd:IncludeMedia name="/media/editorial/site_pages/privacy_policy/privacy_policy.html" />
 				<% } %>
 			</td>

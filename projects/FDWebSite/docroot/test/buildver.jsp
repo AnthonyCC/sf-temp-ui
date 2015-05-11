@@ -17,7 +17,7 @@
 <%@page import="java.util.jar.Attributes"%>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 <title>Build Version Page - List of Deployments and Their Corresponding Versions</title>
 </head>
 <body>

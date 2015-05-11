@@ -6,7 +6,7 @@
 <%@page import="com.freshdirect.cms.search.ContentSearchServiceI"%>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 	<title>SEARCH TEST PAGES - INDEX</title>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	

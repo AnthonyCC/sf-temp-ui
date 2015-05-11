@@ -9,7 +9,7 @@
 <%@page import="javax.mail.Message"%>
 <%@page import="javax.mail.Provider"%><html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 <title>Java Mail Test Page</title>
 </head>
 <body>

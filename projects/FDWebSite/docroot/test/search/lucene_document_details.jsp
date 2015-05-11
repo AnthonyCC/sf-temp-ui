@@ -22,7 +22,7 @@
 String contentKey = request.getParameter("contentKey");
 %>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" lang="en-US">
 <title>Lucene Document details &ndash; <%= contentKey %></title>
 <link rel="stylesheet" href="/assets/css/test/search/style.css" type="text/css">
 </head>

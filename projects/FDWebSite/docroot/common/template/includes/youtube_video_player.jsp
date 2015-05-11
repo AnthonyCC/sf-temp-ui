@@ -16,7 +16,7 @@ if(videoHeight == null) videoHeight="90%";
 
 %>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" lang="en-US"/>
 	<%if(isPopup !=null) { %>
 		<fd:AnalyticsInit/>
 		<!-- Load the swfobject library-->

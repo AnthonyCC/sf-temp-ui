@@ -13,11 +13,20 @@ response.sendRedirect("/"); //temproraly 302 redirect
 	    <div class="content span-24">
 		<% if ( request.getParameter("lang") != null) { %>
 			<% if ("espanol".equalsIgnoreCase(request.getParameter("lang"))) { %> 
+			<tmpl:put name='seoMetaTag' direct='true'>
+       					<fd:SEOMetaTag language='es-ES'/>
+ 					 </tmpl:put>
 				<fd:IncludeMedia name="/media/editorial/welcome/welcome-sp.html" />
 			<% } else { %>
+			<tmpl:put name='seoMetaTag' direct='true'>
+      					 <fd:SEOMetaTag language='en-US'/>
+  					</tmpl:put>
 				<fd:IncludeMedia name="/media/editorial/welcome/welcome-en.html" />
 			<% } %>
 		<% } else { %>
+		<tmpl:put name='seoMetaTag' direct='true'>
+      					 <fd:SEOMetaTag language='en-US'/>
+  					</tmpl:put>
 			<fd:IncludeMedia name="/media/editorial/welcome/welcome-en.html" />
 		<% } %>
 	    </div>

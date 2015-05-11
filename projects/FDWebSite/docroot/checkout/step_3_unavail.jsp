@@ -103,7 +103,7 @@ if(true ){//if(isEBTBlocked ){
 <%} else {
 	resultPage = request.getParameter("successPage");
 	response.encodeRedirectURL( resultPage );%>
-	<META HTTP-EQUIV="refresh" CONTENT="0;URL=<%=resultPage%>">
+	<META HTTP-EQUIV="refresh" CONTENT="0;URL=<%=resultPage%>" lang="en-US">
 <%} %>
 
 <CENTER>

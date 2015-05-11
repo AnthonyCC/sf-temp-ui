@@ -23,8 +23,8 @@ final String trk = "srch"; // tracking code
 %>
 <head>
 	<title>Grid Test Page</title>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US"/>
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>

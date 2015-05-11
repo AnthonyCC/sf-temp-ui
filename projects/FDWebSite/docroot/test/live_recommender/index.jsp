@@ -13,7 +13,7 @@
 %>
 <html>
 	<head>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
         <title>Live Recommender Test Page</title>
 		<%@ include file="/common/template/includes/metatags.jspf" %>
         <%@ include file="/common/template/includes/i_javascripts.jspf" %>

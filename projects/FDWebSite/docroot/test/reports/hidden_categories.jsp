@@ -3,7 +3,7 @@
 
 <html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" lang="en-US">
 	<title>List of Product having bad Primary Home</title>
 	<meta name="generator" content="TextMate http://macromates.com/">
 	<meta name="author" content="Sebestyén Gábor">

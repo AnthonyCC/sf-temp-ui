@@ -13,7 +13,7 @@
 <%@page import="java.util.Collections"%>
 <%@page import="com.freshdirect.webapp.util.TransactionalProductImpression"%><html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" lang="en-US">
 <title>Add to Cart w/o Page Reload Test Page</title>
 <%@ include file="/common/template/includes/metatags.jspf" %>
 <%@ include file="/common/template/includes/i_javascripts.jspf" %>
