@@ -1242,6 +1242,18 @@ public class ProductDetailPopulator {
 		}
 		String salesUnit = su != null ? su.getName() : "unknown salesunit";
 		
+		//APPDEV-4124
+		LOG.debug("Product Details - sku - "+fdProduct.getSkuCode());
+		LOG.debug("Product Details - version - "+fdProduct.getVersion());
+		LOG.debug("Product Details - FDSalesUnit - name - "+su.getName());
+		LOG.debug("Product Details - FDSalesUnit - description - "+su.getDescription());
+		LOG.debug("Product Details - FDSalesUnit - numerator - "+su.getNumerator());
+		LOG.debug("Product Details - FDSalesUnit - denominator - "+su.getDenominator());
+		LOG.debug("Product Details - FDSalesUnit - baseUnit - "+su.getBaseUnit());
+		LOG.debug("Product Details - FDSalesUnit - unitPriceNumerator - "+su.getUnitPriceNumerator());
+		LOG.debug("Product Details - FDSalesUnit - unitPriceDenominator - "+su.getUnitPriceDenominator());
+		LOG.debug("Product Details - FDSalesUnit - unitPriceUOM - "+su.getUnitPriceUOM());
+		LOG.debug("Product Details - FDSalesUnit - unitPriceDescription - "+su.getUnitPriceDescription());
 		
 		return salesUnit;
 	}
