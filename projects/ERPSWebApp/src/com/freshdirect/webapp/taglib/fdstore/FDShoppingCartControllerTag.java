@@ -1628,16 +1628,16 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 							continue;
 						}
 
-						
+						//APPDEV-2545 - Not to update the quantity to minimum purchasing quantity 
 						//make sure prodNode isn't null before checking mins
 						if (prodNode != null) {
-							if (quantity < prodNode.getQuantityMinimum()) {
+						/*	if (quantity < prodNode.getQuantityMinimum()) {
 								quantity = prodNode.getQuantityMinimum();
-							} else {
+							} else {*/
 								double totalQty = cart.getTotalQuantity(prodNode);
 								if (quantity + totalQty - orderLine.getQuantity() > user.getQuantityMaximum(prodNode)) {
 									quantity = user.getQuantityMaximum(prodNode) - totalQty + orderLine.getQuantity();
-								}
+							/*	}*/
 							}
 							quantity = Math.floor((quantity - prodNode.getQuantityMinimum())
 									/ prodNode.getQuantityIncrement())

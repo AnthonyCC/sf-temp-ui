@@ -273,7 +273,9 @@ public class FDStockAvailability implements Serializable, FDAvailabilityI {
 	
 	private static double roundQuantity(double quantity, double minimumQuantity, double quantityIncrement) {
 		if (quantity < minimumQuantity) {
-			return 0.0;
+			//APPDEV-2545 - Changes for not to update to minimum purchasing quantity
+			//return 0.0;
+			return quantity;
 		}
 		return Math.floor((quantity - minimumQuantity) / quantityIncrement) * quantityIncrement + minimumQuantity;
 	}
