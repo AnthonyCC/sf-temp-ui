@@ -259,4 +259,10 @@
 	});
 	
 }(jQuery));
+function goButtonFocus(e){
+	 var TABKEY = 9;
+    if(e.keyCode == TABKEY) {
+   	 document.getElementById("newzipgo").focus();
+    }
+}
 

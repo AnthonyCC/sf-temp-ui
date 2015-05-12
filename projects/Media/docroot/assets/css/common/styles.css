@@ -1,13 +1,13 @@
 /* ##### BASE STYLES ##### */
-
+/*
 body {
-/*	text-align: center;
-*/	font-family: Verdana, Arial, sans-serif;
+	text-align: center;
+	font-family: Verdana, Arial, sans-serif;
 	font-size: 12px;
 	line-height: 1.2;
-	/*padding: 400px 0 0 110px;*/
+	padding: 400px 0 0 110px;
 	color: #333;
-}
+}*/
 
 :focus { outline: 0px solid #f93; }
 
@@ -25,12 +25,12 @@ a:active {color: #360; text-decoration:underline;}
 
 /* ##### CONTENT STYLES ##### */
 
-
+/*
 form {
 	padding: 0;
 	margin: 0;
-	/*text-align: left;*/
-}
+	text-align: left;
+}*/
 
 
 #password1 {
