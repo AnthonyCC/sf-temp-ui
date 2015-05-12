@@ -1207,13 +1207,9 @@ public class FDEmailFactory {
 		email.setXslPath("h_user_edit_delv_address_V1.xsl", "x_user_edit_delv_address_V1.xsl");
 		//Added changes for Email Subject
 		email.setSubject("FreshDirect: Shipping Address changed to your account");
-		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
-		if(null != email.getFromAddress()){
-			System.out.println("From Address in createShippingAddressChangeEmail:::::::"+email.getFromAddress());
-		}
+		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));		
 		//START : APPBUG-2898 - Email functionality is not working when user add/ update the delivery address. 
 		if(customer.getEmailAddress() != null){
-			System.out.println("It enters Email Factory and creating email in createShippingAddressChangeEmail");
 			email.setRecipient(customer.getEmailAddress());	
 			List<String> ccAddress = Arrays.asList(customer.getEmailAddress());
 			//email.setCCList(ccAddress);
@@ -1234,12 +1230,8 @@ public class FDEmailFactory {
 		//Added changes for Email Subject
 		email.setSubject("FreshDirect: New Shipping Address added to your account");
 		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
-		if(null != email.getFromAddress()){
-			System.out.println("From Address in createShippingAddressAdditionEmail:::::::"+email.getFromAddress());
-		}
 		//START : APPBUG-2898 - Email functionality is not working when user add/ update the delivery address.
 		if(customer.getEmailAddress() != null){
-			System.out.println("It enters Email Factory and creating email in createShippingAddressAdditionEmail");
 			email.setRecipient(customer.getEmailAddress());	
 			List<String> ccAddress = Arrays.asList(customer.getEmailAddress());
 			//email.setCCList(ccAddress);
