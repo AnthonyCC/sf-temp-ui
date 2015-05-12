@@ -59,17 +59,14 @@ public class LoginControllerTag extends AbstractControllerTag {
 			actionResult.addError(new ActionError("captcha", SystemMessageList.MSG_INVALID_CAPTCHA)); 
 		}
 		if (updatedSuccessPage != null) {
-			this.setSuccessPage(updatedSuccessPage);
-			
-			if(actionResult.getErrors() != null){
+			this.setSuccessPage(updatedSuccessPage);			
 				
-				if(!(actionResult.getErrors().size()>0)  && isCaptchaSuccess){		
+				if(actionResult.getErrors() != null && actionResult.getErrors().size() <= 0  && isCaptchaSuccess){		
 					fdLoginAttempt = 0;
 				} else {
 					fdLoginAttempt++;
 				}
-				
-			}			
+	
 		} else {
 			fdLoginAttempt++;
 		}
