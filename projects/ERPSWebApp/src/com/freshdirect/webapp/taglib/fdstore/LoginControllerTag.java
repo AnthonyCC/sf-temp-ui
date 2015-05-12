@@ -13,7 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
-import org.apache.commons.collections.CollectionUtils;
+
+
 import org.apache.log4j.Category;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -59,11 +60,16 @@ public class LoginControllerTag extends AbstractControllerTag {
 		}
 		if (updatedSuccessPage != null) {
 			this.setSuccessPage(updatedSuccessPage);
-			if (CollectionUtils.isEmpty(actionResult.getErrors()) && isCaptchaSuccess) {
-				fdLoginAttempt = 0;
-			} else {
-				fdLoginAttempt++;
-			}
+			
+			if(actionResult.getErrors() != null){
+				
+				if(!(actionResult.getErrors().size()>0)  && isCaptchaSuccess){		
+					fdLoginAttempt = 0;
+				} else {
+					fdLoginAttempt++;
+				}
+				
+			}			
 		} else {
 			fdLoginAttempt++;
 		}
