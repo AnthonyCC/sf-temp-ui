@@ -211,6 +211,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 					ErpAddressModel erpAddress = checkDeliveryAddressInForm(request, result, session);
 					LOGGER.debug("RegistrationControllerTag :: addDeliveryAddress ===> If no address error send email");
 					FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createShippingAddressAdditionEmail(customerInfo,erpAddress));
+					LOGGER.debug("RegistrationControllerTag :: Mail sent to the user after adding delivery address");
 				}
 				
 			} else if ("editDeliveryAddress".equalsIgnoreCase(actionName)) {
@@ -226,6 +227,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 					ErpAddressModel erpAddress = checkDeliveryAddressInForm(request, result, session);
 					LOGGER.debug("RegistrationControllerTag :: editDeliveryAddress ===> If no address error send email");
 					FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createShippingAddressChangeEmail(customerInfo,erpAddress));
+					LOGGER.debug("RegistrationControllerTag :: Mail sent to the user after edit Delivery Address");
 				}
 				
 			} else if ("deleteDeliveryAddress".equalsIgnoreCase(actionName)) {
