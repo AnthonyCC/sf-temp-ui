@@ -1,10 +1,10 @@
 /* ##### BASE STYLES ##### */
-body {
-/*	text-align: center;
-*/	font-family: Verdana, Arial, sans-serif;
+/* body {
+	text-align: center;
+	font-family: Verdana, Arial, sans-serif;
 	font-size: 12px;
 	line-height: 1.2;
-	/*padding: 400px 0 0 110px;*/
+	padding: 400px 0 0 110px;
 	color: #333;
 }
 
@@ -16,7 +16,8 @@ a:link {color: #360; text-decoration:none;}
 a:visited {color: #360; text-decoration:none;}
 a:hover {color: #360; text-decoration:underline;}
 a:active {color: #360; text-decoration:underline;}
-/*a:focus { outline: 2px solid #f93; }*/
+a:focus { outline: 2px solid #f93; } */
+
 
 
 .container1 {
