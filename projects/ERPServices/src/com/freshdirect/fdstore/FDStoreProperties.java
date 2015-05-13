@@ -1414,8 +1414,8 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.akamaiimageconvertor", "GLOBAL:ENABLED,false;");
         
         //Default reCaptcha Public & Private krys
-        defaults.put(PROP_RECAPTCHA_PUBLIC_KEY, "6LeEWAITAAAAAJTkH82Z7gsg1J28IHsjtPjBoPHX");
-        defaults.put(PROP_RECAPTCHA_PRIVATE_KEY, "6LeEWAITAAAAACmiHCIyTDfZz_SkCPtPIN_c1HSN");
+        defaults.put(PROP_RECAPTCHA_PUBLIC_KEY, "6LdmgQYTAAAAAEqZbKoF4WpDqFU7pyAO-40mxdnc");
+        defaults.put(PROP_RECAPTCHA_PRIVATE_KEY, "6LdmgQYTAAAAAJcKVYSoFavVDLSLdV3x-fWsOtqH");
         defaults.put(PROP_MAX_INVALID_LOGIN_ATTEMPT, "10");
 		
 		refresh();
