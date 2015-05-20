@@ -39,13 +39,14 @@ import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.service.ServiceException;
+import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.mobileapi.util.StringUtil;
 
 public class ProducersController extends BaseController {
 
 	private static final String ACTION_GET_ALL = "getAll";
 	private static final String ACTION_GET_DETAIL = "getDetail";
-	private static final String FD_WWW = "http://www.freshdirect.com";
+	
 	
 	@Override
 	protected ModelAndView processRequest(HttpServletRequest request,
@@ -91,46 +92,10 @@ public class ProducersController extends BaseController {
 			//Read file from path
 			StringBuilder path = new StringBuilder();
 			StringBuffer responseStr = new StringBuffer();
-			path.append(FD_WWW);
+			path.append(MobileApiProperties.getMediaPath());
 			path.append( brand.getTabletAboutTextLong().getPath() );
-			if( path != null )
-			{
-//				try
-//				{
-//					URL url = new URL( path.toString() );
-//					HttpURLConnection con = (HttpURLConnection) url.openConnection();
-//					con.setRequestMethod("GET");
-//					con.setRequestProperty("User-Agent", "FreshDirect Mobile API");
-//			 
-//					int responseCode = con.getResponseCode();
-//					System.out.println("\nSending 'GET' request to URL : " + url);
-//					System.out.println("Response Code : " + responseCode);
-//					
-//					int readChar = -1;
-//					InputStream is = con.getInputStream();
-//					while( true )
-//					{
-//						readChar = is.read();
-//						if( readChar == -1 )
-//							break;
-//						else
-//							responseStr.append( (char) readChar);
-//					}
-//					is.close();					
-//				}
-////				catch( FileNotFoundException FNFE )
-////				{
-////					//TODO Output log entry here
-////				}
-//				catch( IOException IOE )
-//				{
-//					//TODO Output log entry here
-//				}
-//				
-//				
-//				//Set file contents in response object:
-//				response.setProducerText( responseStr.toString() );
-				
+			if( path != null ) 	{
+
 				response.setProducerText( path.toString() );
 			}
 		}
@@ -206,7 +171,7 @@ public class ProducersController extends BaseController {
 	private static String loadFeatureText(final BrandModel brand) {
 		final String path = brand.getTabletAboutTextShort().getPath();
 		HttpClient http = new HttpClient();
-		GetMethod get = new GetMethod("http://freshdirect.com" + path);
+		GetMethod get = new GetMethod(MobileApiProperties.getMediaPath() + path);
 		try {
 			http.executeMethod(get);
 			final String text = get.getResponseBodyAsString();
