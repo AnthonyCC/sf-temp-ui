@@ -3,7 +3,7 @@
 <%@ taglib uri="crm" prefix="crm" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
-<tmpl:insert template='/template/top_nav.jsp'>
+<tmpl:insert template='/template/top_nav_pwdstrng.jsp'>
 
     <tmpl:put name='title' direct='true'>Account Details > Edit Username & Password & Options</tmpl:put>
     
@@ -50,7 +50,7 @@
 										</div>
 									</div><!-- // .password-hinter -->
 									<div>
-										<input id="password1" SIZE="15" type="password" name="password" class="password" title="Choose Password" data-indicator="pwindicator" value="<%= request.getParameter("password") %>">
+										<input id="password1" SIZE="15" type="password" name="password" class="password" data-indicator="pwindicator" value="<%= request.getParameter("password") %>">
 										<span class="case-sensitive">Passwords are case sensitive</span>
 									</div>
 									<!--  

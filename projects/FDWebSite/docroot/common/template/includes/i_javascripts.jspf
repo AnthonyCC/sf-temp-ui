@@ -36,6 +36,8 @@
 	<fd:javascript src="/assets/javascript/coremetrics.js"/>
 	<fd:javascript src="/assets/javascript/USQLegalWarning.js"/>
 	
+	<fd:javascript src="/assets/javascript/jquery.hint.js"/>
+	<fd:javascript src="/assets/javascript/jquery.pwstrength.js"/>
 
   <%-- HTML5 support for IE8 --%>
   <!--[if lt IE 9]>

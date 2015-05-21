@@ -24,15 +24,13 @@
 	<!-- Sam Skin CSS -->
 	<%-- when upgrading yui please create a new directory for the version --%>
 	<link rel="stylesheet" type="text/css" href="/assets/yui-2.9.0/container/assets/skins/sam/container.css">
-	
-	
 
 	<%@ include file="/shared/template/includes/yui.jspf" %>
+
 	<%-- protoype must load AFTER YUI. YUI doesn't extend elements, so the modalbox usages will fail --%>
-	
-	    
+	<script type="text/javascript" language="javascript" src="/assets/javascript/FD_GiftCards.js"></script>
+
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
-	<script type="text/javascript" language="javascript" src="/assets/javascript/FD_GiftCards.js"></script>	
 	<script type="text/javascript" language="javascript" src="/ccassets/javascript/callcenter_javascript.js"></script>
 	<script type="text/javascript" language="javascript" src="/ccassets/javascript/jscalendar-1.0/calendar.js"></script>
 	<script type="text/javascript" language="javascript" src="/ccassets/javascript/jscalendar-1.0/lang/calendar-en.js"></script>
@@ -80,6 +78,26 @@
 
 	<tmpl:get name='styles'/>
 	
+	<!--  Added for Password Strength Display -->
+	<!--  
+    <script type="text/javascript" src="/assets/javascript/jquery-2.1.0.min.js"></script>
+    -->
+     <!--  Referred  jquery-1.7.2.min.js from FD-->
+    <!-- <script type="text/javascript" src="/docroot/common/js/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="/assets/javascript/jquery.hint.js"></script>
+	<script type="text/javascript" src="/assets/javascript/jquery.pwstrength.js"></script>-->
+	
+	<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
+	
+	<script type="text/javascript">
+        jQuery(function($jq) { $jq('#password1').pwstrength(); });
+  	 </script>
+    <!--  Added for Password Strength Display -->
+    
+    <!--  Added for Password Strength Display -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/common/reset1.css"/>
+	<link rel="stylesheet" type="text/css" href="/assets/css/common/styles.css"/>
+	<!--  Added for Password Strength Display -->
 </head>
 
 

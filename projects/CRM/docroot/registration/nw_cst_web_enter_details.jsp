@@ -59,7 +59,7 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 
 %>
 
-<tmpl:insert template='/template/top_nav.jsp'>
+<tmpl:insert template='/template/top_nav_pwdstrng.jsp'>
 
 	<tmpl:put name='title' direct='true'>New Customer > Enter Details</tmpl:put>
 	<tmpl:put name='content' direct='true'>

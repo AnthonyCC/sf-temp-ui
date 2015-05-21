@@ -22,6 +22,9 @@
 			$('#pwindicator').show();		
 		}
         
+        //4177 : Added to fix whitespace issue in Password strength
+        length = password.trim().length;
+        
         if(length < 6) score = 0;
         else if(length > 6) score += 10;
         else if(length < 12) score += 10;
@@ -38,12 +41,23 @@
         digits = password.match(/\d/g);
         if(digits && digits.length > 1) score += 5;
         
-        nonAlpha = password.match(/\W/g)
-        if(nonAlpha) score += (nonAlpha.length > 1) ? 15 : 10;
+        whiteSpace = password.match(/\s/);
+
+		if(!whiteSpace){
+     	nonAlpha = password.match(/\W/g);
+		if(nonAlpha) score += (nonAlpha.length > 1) ? 15 : 10;
+		}
         
         if(upperCase && lowerCase && digits && nonAlpha) score += 35;
 
-        if(password.match(/\s/)) score += 15;
+        //4177 : Commented to fix whitespace issue
+        //if(password.match(/\s/)) score += 15;
+
+        //4177 : Added to fix whitespace issue in Password strength
+		var whiteSpacelength = password.trim().length;
+		if(whiteSpacelength == 0){
+			score = 0;
+		}
 
         if(score < 15) return 0;
         if(score < 20) return 1;

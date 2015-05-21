@@ -13,7 +13,7 @@
 final int W_YA_SIGNIN_INFO = 970;
 %>
 <%@page import="com.freshdirect.common.address.PhoneNumber"%><fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
-<tmpl:insert template='/common/template/dnav.jsp'>
+<tmpl:insert template='/common/template/dnav_pwdstrng.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - User Name, Password, & Contact Info</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <fd:javascript src="/assets/javascript/phone_number.js"/>
@@ -95,6 +95,9 @@ final int W_YA_SIGNIN_INFO = 970;
 			                });
 						}
 				</script>
+				
+				
+				
 	<style>
 		.accordion > input[type="checkbox"] {
 			display: none;
@@ -392,7 +395,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 				</div>
 			</div><!-- // .password-hinter -->
 			<div>
-				<input id="password1" name="password" size="28" style="width:150px; padding:1px;" class="password" title="Choose Password" data-indicator="pwindicator" type="password">
+				<input id="password1" name="password" size="28" style="width:150px; padding:1px;" class="password" data-indicator="pwindicator" type="password">
 				<span class="case-sensitive">Passwords are case sensitive</span>
 			</div>
 			<!--  

@@ -42,9 +42,19 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		if("updateCustomerInfo".equalsIgnoreCase(this.getActionName())){
 			this.populateInfo(request);
 			this.validateInfo(actionResult);
+			
+			String password = request.getParameter("password");
+			String verifyPassword = request.getParameter("verifyPassword");
+			
+			if("".equals(password.trim()) || "".equals(verifyPassword.trim())){
+				actionResult.addError(true, "password", SystemMessageList.MSG_REQUIRED);
+				return true;
+			}
+			
 			if(!"".equals(this.password) || !"".equals(this.verifyPassword)){
 				this.validatePassword(actionResult);
 			}
+			
 			if(!actionResult.isSuccess()){
 				return true;	
 			}

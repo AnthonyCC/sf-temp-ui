@@ -64,6 +64,8 @@
 		}
 	</style>
 	
+	
+	
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/jquery-ui.min.js"></script>     
     
@@ -92,14 +94,15 @@
   <%@ include file="/common/template/includes/i_javascripts.jspf" %>
   <%@ include file="/shared/template/includes/i_head_end.jspf" %> 
  
- <!--  Added for Password Strength Display -->
-    <script type="text/javascript" src="/assets/javascript/jquery-2.1.0.min.js"></script>
-	<script type="text/javascript" src="/assets/javascript/jquery.hint.js"></script>
-	<script type="text/javascript" src="/assets/javascript/jquery.pwstrength.js"></script>
+    <!--  Referred  jquery-1.7.2.min.js from FD code base-->
+	<!-- <script type="text/javascript" src="/docroot/common/js/jquery-1.7.2.min.js"></script> -->
+	<!--<script type="text/javascript" src="/assets/javascript/jquery.hint.js"></script>
+	<script type="text/javascript" src="/assets/javascript/jquery.pwstrength.js"></script>-->
+	
 	<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
 	
 	<script type="text/javascript">
-        jQuery(function($) { $('#password1').pwstrength(); });
+        jQuery(function($jq) { $jq('#password1').pwstrength(); });
   	 </script>
     <!--  Added for Password Strength Display -->
     
@@ -222,7 +225,7 @@
 									</div>
 								</div><!-- // .password-hinter -->
 								<div>
-									<input id="password1" name="password" size="31" class="password" title="Choose Password" data-indicator="pwindicator" type="password" style="height: 20px;">
+									<input id="password1" name="password" size="31" class="password" data-indicator="pwindicator" type="password" style="height: 20px;">
 									<span class="case-sensitive">Passwords are case sensitive</span>
 								</div>
 								<div id="pwindicator">

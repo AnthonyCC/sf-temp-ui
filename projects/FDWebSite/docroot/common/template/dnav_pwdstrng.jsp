@@ -14,10 +14,12 @@ final int W_DNAV_TOTAL = 970;
 <html>
 <head>
     <title><tmpl:get name='title'/></title>
- <%--    <%@ include file="/common/template/includes/metatags.jspf" %> --%>
+    <%-- <%@ include file="/common/template/includes/metatags.jspf" %> --%>
 	<meta http-equiv="X-UA-Compatible" content="IE=8" />
 	
 	<tmpl:get name='customhead'/>
+	
+	
 
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<fd:javascript src="/assets/javascript/timeslots.js" />
@@ -28,6 +30,7 @@ final int W_DNAV_TOTAL = 970;
 	<fd:css href="/assets/css/giftcards.css"/>
     <fd:css href="/assets/css/timeslots.css"/>
     <tmpl:get name="seoMetaTag"/>
+ 
         
 	 <%
 		if ( (request.getRequestURI().indexOf("/your_account/giftcards.jsp")>-1) || (request.getRequestURI().indexOf("/your_account/gc_order_details.jsp")>-1) ) {
@@ -37,7 +40,27 @@ final int W_DNAV_TOTAL = 970;
 	<% } %>
 
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+	<!--  Added for Password Strength Display -->
+	<!--  
+    <script type="text/javascript" src="/assets/javascript/jquery-2.1.0.min.js"></script>
+    -->
+     <!--  Referred  jquery-1.7.2.min.js from FD code base -->
+    <!-- <script type="text/javascript" src="/docroot/common/js/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="/assets/javascript/jquery.hint.js"></script>
+	<script type="text/javascript" src="/assets/javascript/jquery.pwstrength.js"></script>-->
 	
+	<script type="text/javascript" src="/assets/javascript/scripts.js"></script>
+	
+	<script type="text/javascript">
+        jQuery(function($jq) { $jq('#password1').pwstrength(); });
+  	 </script>
+    <!--  Added for Password Strength Display -->
+    
+    <!--  Added for Password Strength Display -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/common/reset1.css"/>
+	<link rel="stylesheet" type="text/css" href="/assets/css/common/styles.css"/>
+	<!--  Added for Password Strength Display -->
+
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333">
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>

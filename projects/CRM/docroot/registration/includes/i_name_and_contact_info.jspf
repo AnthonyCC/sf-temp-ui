@@ -5,6 +5,8 @@
 		<td width="25%">&nbsp;&nbsp;<% if (user.isDepotUser()) { %>Depot Info <span class="register_header_detail">*&nbsp;Required information</span><% } %></td>
 	</tr>
 </table>
+	
+
 <table width="100%" cellpadding="2" cellspacing="0" border="0" align="center" class="register">
 	<tr valign="top">
 		<td width="35%">
@@ -117,7 +119,7 @@
 								</div>
 							</div><!-- // .password-hinter -->
 							<div>
-								<input id="password1" SIZE="15" type="password" name="password" class="password" title="Choose Password" data-indicator="pwindicator" value="<%= request.getParameter("password") %>">
+								<input id="password1" SIZE="15" type="password" name="password" class="password" data-indicator="pwindicator" value="<%= request.getParameter("password") %>">
 								<span class="case-sensitive">Passwords are case sensitive</span>
 							</div>
 							<!--  
