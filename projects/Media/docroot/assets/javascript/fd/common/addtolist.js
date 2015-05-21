@@ -89,10 +89,17 @@ var FreshDirect = FreshDirect || {};
         value: function( name, lists ) {
           var trimmed = name.trim(),
             result = new String('');
+          /* APPDEV-4138 START*/
+          for (i=0;i<lists.length;i++)
+          {
+        	  lists[i]=lists[i].toUpperCase();
+          }
+          /* APPDEV-4138 END */
           if(trimmed.length > 0){
+        	  /* APPDEV-4138 START*/
 		   /* if(lists.indexOf(name)>-1) {*/
-        	 /* APPDEV-4138 START*/
-        	  if(lists.toString().toLowerCase().indexOf(name.toLowerCase())>-1) {
+        	
+        	  if(lists.indexOf(name.toUpperCase())>-1) {
         	 /* APPDEV-4138 END */  
               result = new String( 'Oops! That name is taken!' );
               result.taken = true;
