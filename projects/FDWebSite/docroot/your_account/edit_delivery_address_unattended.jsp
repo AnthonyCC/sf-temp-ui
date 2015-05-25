@@ -14,7 +14,7 @@ final int W_YA_EDIT_DELIVERY_ADDR = 970;
 <%
 	String successPage = (request.getParameter("successPage") == null || "".equals(request.getParameter("successPage"))) ? "/your_account/delivery_information.jsp" : request.getParameter("successPage") ;
 %>
-<fd:RegistrationController actionName="editDeliveryAddress" result="result" successPage="<%=successPage%>">
+<fd:RegistrationController actionName="editDeliveryAddressForUnattendZone" result="result" successPage="<%=successPage%>">
 
 <fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
 	<%@ include file="/includes/i_error_messages.jspf" %>

@@ -228,6 +228,15 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 					FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createShippingAddressChangeEmail(customerInfo,erpAddress));
 				}
 				
+				
+			//APPDEV-4177 - Code changes to avoid sending multiple mails : Start
+			} else if ("editDeliveryAddressForUnattendZone".equalsIgnoreCase(actionName)) {
+				//this.performEditDeliveryAddress(request, actionResult, event);
+				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
+				m.performEditDeliveryAddress(event);
+			//APPDEV-4177 - Code changes to avoid sending multiple mails : End
+				
+				
 			} else if ("deleteDeliveryAddress".equalsIgnoreCase(actionName)) {
 				//this.performDeleteDeliveryAddress(request, actionResult, event);
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, actionResult, actionName);
