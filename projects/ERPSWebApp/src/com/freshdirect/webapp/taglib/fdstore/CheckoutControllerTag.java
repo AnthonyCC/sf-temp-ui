@@ -19,6 +19,7 @@ import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
@@ -31,11 +32,13 @@ import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.coremetrics.builder.ConversionEventTagModelBuilder;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderHistory;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -187,9 +190,24 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 			}  else if ( "addAndSetDeliveryAddress".equalsIgnoreCase( action ) ) { //Added IPhone functionality APPDEV-1565
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, "addDeliveryAddressEx");
 				m.performAddAndSetDeliveryAddress();
+								
+			//APPDEV-4177 : Code changes to trigger email while editing the delivery address : Start
+				
 			}  else if ( "editAndSetDeliveryAddress".equalsIgnoreCase( action ) ) {
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, getActionName());
 				m.performEditAndSetDeliveryAddress();
+				FDIdentity identity = getIdentity();
+				FDCustomerInfo customerInfo = FDCustomerManager.getCustomerInfo(identity);
+				// Made changed for address checking
+				if(result.isSuccess()){
+					ActionResult resultSuccess=new ActionResult();
+					ErpAddressModel erpAddress = RegistrationControllerTag.checkDeliveryAddressInForm(request, resultSuccess , session);
+					LOGGER.debug("CheckoutControllerTag :: Editing the delivery adderss and sending mail during checkout flow");
+					FDCustomerManager.sendEmail(FDEmailFactory.getInstance().createShippingAddressChangeEmail(customerInfo,erpAddress));
+				}	
+			
+			//APPDEV-4177 : Code changes to trigger email while editing the delivery address : End
+				
 			} else if ( "deleteDeliveryAddress".equalsIgnoreCase( action ) ) {
 				DeliveryAddressManipulator m = new DeliveryAddressManipulator(this.pageContext, result, getActionName());
 				m.performDeleteDeliveryAddress(event); //m.performDeleteDeliveryAddress() method was refactored to check for any existing reservations.
@@ -615,6 +633,16 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		FDUserI user = (FDUserI)session.getAttribute( SessionName.USER );
 		return user;
 	}
+	
+	//APPDEV-4177 : Code changes to trigger email while editing the delivery address : Start
+	
+	protected FDIdentity getIdentity() {
+		HttpSession session = pageContext.getSession();
+		FDSessionUser user = (FDSessionUser) session.getAttribute( SessionName.USER);
+		return (user == null) ? null : user.getIdentity();
+	}
+	
+	//APPDEV-4177 : Code changes to trigger email while editing the delivery address : End
 
 	private void addMakeGoodComplaint( ActionResult result, ErpComplaintModel complaintModel ) throws FDResourceException, ErpComplaintException {
 
