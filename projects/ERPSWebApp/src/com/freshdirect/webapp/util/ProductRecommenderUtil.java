@@ -49,7 +49,7 @@ public class ProductRecommenderUtil {
 	public static final int MAX_LIST_CONTENT_SIZE = 20;
 	
 	public static final int MAX_DEPT_FEATURED_RECOMMENDER_COUNT = 20;
-	public static final int MAX_DEPT_MERCHANT_RECOMMENDER_COUNT = 5;
+	public static final int MAX_DEPT_MERCHANT_RECOMMENDER_COUNT = 20;
 	public static final int MAX_CAT_MERCHANT_RECOMMENDER_COUNT = 10;
 	public static final int MAX_CAT_SCARAB_RECOMMENDER_COUNT = 10;
 	public static final int MAX_UNAVAILABLE_REPLACEMENTS_COUNT = 9;
@@ -203,6 +203,7 @@ public class ProductRecommenderUtil {
 		cleanUpProducts(products, deptModel.isMerchantRecommenderRandomizeProducts(), MAX_DEPT_MERCHANT_RECOMMENDER_COUNT);
 		return products;
 	}
+	
 
 	public static List<ProductModel> getMerchantRecommenderProducts (CategoryModel catModel){
 		List<ProductModel> products = catModel.getCatMerchantRecommenderProducts();
