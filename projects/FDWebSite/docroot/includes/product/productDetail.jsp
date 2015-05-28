@@ -67,7 +67,23 @@ FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<
 		    </ul>
 </c:if>
 <c:if test="${not productPotato.available }">
-	<soy:render template="pdp.accordion.descriptionText" data="${productExtraPotato}"/>
+
+<!--<soy:render template="pdp.accordion.descriptionText" data="${productExtraPotato}"/>-->
+<!-- JIRA-APPDEV-4195 starts here-->
+<ul class="pdp-accordion">
+		        <soy:render template="pdp.accordion.description" data="${productExtraPotato}"/>
+		        <soy:render template="pdp.nutrition.panel" data="${productExtraPotato}"/>
+		        <soy:render template="pdp.accordion.customerReviews" data="${productPotato}"/>
+		        <soy:render template="pdp.accordion.allergens" data="${productExtraPotato}"/>
+		        <soy:render template="pdp.accordion.ingredients" data="${productExtraPotato}"/>
+		        <soy:render template="pdp.accordion.cookingAndStorage" data="${productExtraPotato}"/>
+		        <soy:render template="pdp.accordion.servingSuggestions" data="${productExtraPotato}"/>
+		        <soy:render template="pdp.accordion.source" data="${productExtraPotato}"/>
+		        <soy:render template="pdp.accordion.recipes" data="${productExtraPotato}"/>
+		        <soy:render template="pdp.accordion.wine" data="${productExtraPotato}"/>
+		        <soy:render template="pdp.accordion.explanatory" data="${productPotato}"/>
+		    </ul> 
+<!-- JIRA-APPDEV-4195 ends here-->
 </c:if>		    
 		</div>
 		<div class="span-8 prepend-1">
