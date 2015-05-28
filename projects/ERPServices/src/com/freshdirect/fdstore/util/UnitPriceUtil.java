@@ -24,9 +24,24 @@ public class UnitPriceUtil {
 		if(null != unitPriceUOM && !"".equalsIgnoreCase(unitPriceUOM)){
 			if("CT".equalsIgnoreCase(unitPriceUOM)){ // CT in SAP is Carton which will be displayed as ctn in website
 				formattedUnitPriceUOM = "ctn";
-			}else if("CN".equalsIgnoreCase(unitPriceUOM)){ // CN is count in SAP which will be displayed as ct in website
+			} else if("CN".equalsIgnoreCase(unitPriceUOM)){ // CN is count in SAP which will be displayed as ct in website
 				formattedUnitPriceUOM = "ct";
+			} else if("PT".equalsIgnoreCase(unitPriceUOM)){
+				formattedUnitPriceUOM = "pt";
+			} else if("L".equalsIgnoreCase(unitPriceUOM)){
+				formattedUnitPriceUOM = "l";
+			} else if("OZ".equalsIgnoreCase(unitPriceUOM)){
+				formattedUnitPriceUOM = "oz";
+			} else if("QT".equalsIgnoreCase(unitPriceUOM)){
+				formattedUnitPriceUOM = "qt";
+			} else if("LB".equalsIgnoreCase(unitPriceUOM)){
+				formattedUnitPriceUOM = "lb";
+			} else if("FT2".equalsIgnoreCase(unitPriceUOM)){
+				formattedUnitPriceUOM = "sq ft";
+			} else if("YD".equalsIgnoreCase(unitPriceUOM)){
+				formattedUnitPriceUOM = "yd";
 			}
+			
 		}
 		return formattedUnitPriceUOM;
 	}
