@@ -50,6 +50,25 @@ var FreshDirect = FreshDirect || {};
             }
             // IE 8 helper
             controls.find('.iehelper').html(controls.find('.addtocart[data-amount]').attr('data-amount') + ' Added');
+            
+            // Dstillery Script Pixel
+            $.getScript("//action.media6degrees.com/orbserv/hbjs?pixId=26208&pcv=48");
+            
+            //Facebook Conversion Pixel
+            (function() {
+              var _fbq = window._fbq || (window._fbq = []);
+              if (!_fbq.loaded) {
+                var fbds = document.createElement('script');
+                fbds.async = true;
+                fbds.src = '//connect.facebook.net/en_US/fbds.js';
+                var s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(fbds, s);
+                _fbq.loaded = true;
+              }
+            })();
+            window._fbq = window._fbq || [];
+            window._fbq.push(['track', '6028257776486', {'value':'0.00','currency':'USD'}]);
+            
           }
         }
       }

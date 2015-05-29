@@ -107,6 +107,9 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 		</logic:iterate></div>
 		<div class="oas_home_bottom"><script type="text/javascript">OAS_AD('HPWideBottom');</script></div>
 	</div>
+	
+	<script src="//action.media6degrees.com/orbserv/hbjs?pixId=26207&pcv=47" type="text/javascript" async></script>
+	
 </div>
 </fd:GetSegmentMessage>
 </tmpl:put>

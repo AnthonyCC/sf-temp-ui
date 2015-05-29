@@ -277,6 +277,9 @@
 	</div>
 	
 	<% /* top rows (everything above the top solid line, line is in /checkout/includes/i_checkout_receipt.jspf) */	%>
+	
+	<script src="//action.media6degrees.com/orbserv/hbjs?pixId=26210&pcv=42" type="text/javascript" async></script>
+	
 	<table class="globalnav_top" border="0" cellspacing="0" cellpadding="0" width="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL%>" style="margin-top: 5px;">
 		<tr valign="bottom">      
 			<td colspan="2" width="<%=W_CHECKOUT_STEP_4_RECEIPT_TOTAL%>" align="right">

@@ -157,6 +157,9 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 		<%-- Removed the learn more for marketing change. --%>
 		<%-- <div id="bottom_link"><a href="/welcome.jsp"><img src="/media_stat/images/home/fd_logo_learn_more_back.jpg" alt="Learn More About Our Services"></a></div> --%>
 	<%-- END MAIN CONTENT--%> 
+	
+	<script src="//action.media6degrees.com/orbserv/hbjs?pixId=26207&pcv=47" type="text/javascript" async></script>
+	
 </div>
 </fd:GetSegmentMessage>
 </tmpl:put>
