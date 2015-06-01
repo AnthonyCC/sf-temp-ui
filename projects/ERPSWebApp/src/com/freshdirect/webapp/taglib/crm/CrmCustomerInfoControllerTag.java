@@ -43,13 +43,15 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 			this.populateInfo(request);
 			this.validateInfo(actionResult);
 			
-			String password = request.getParameter("password");
+			//APPDEV-4177 - Commenting the code to remove forceful validations
+			
+			/*String password = request.getParameter("password");
 			String verifyPassword = request.getParameter("verifyPassword");
 			
 			if("".equals(password.trim()) || "".equals(verifyPassword.trim())){
 				actionResult.addError(true, "password", SystemMessageList.MSG_REQUIRED);
 				return true;
-			}
+			}*/
 			
 			if(!"".equals(this.password) || !"".equals(this.verifyPassword)){
 				this.validatePassword(actionResult);
@@ -125,8 +127,15 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 
 	private void populateInfo(HttpServletRequest request) {
 		this.customerInfo.setUserId(NVL.apply(request.getParameter("userId"), "").trim());
-		this.password = NVL.apply(request.getParameter("password"), "").trim();
-		this.verifyPassword = NVL.apply(request.getParameter("verifyPassword"), "").trim();
+				
+		//APPDEV-4177 : Commenting the previous code, trim for the password is done at the validatePassword()
+		
+		//this.password = NVL.apply(request.getParameter("password"), "").trim();
+		//this.verifyPassword = NVL.apply(request.getParameter("verifyPassword"), "").trim();
+		 
+		this.password = NVL.apply(request.getParameter("password"), "");
+		this.verifyPassword = NVL.apply(request.getParameter("verifyPassword"), "");
+		
 		this.customerInfo.setPasswordHint(NVL.apply(request.getParameter("passwordHint"), "").trim());
 		this.customerInfo.setRecieveFdNews(request.getParameter("recieveFdNews") != null);
 		this.customerInfo.setTextOnlyEmail(request.getParameter("textOnlyEmail") != null);
@@ -149,13 +158,29 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 	}
 	
 	private void validatePassword(ActionResult result) {
-		result.addError("".equals(this.password), "password", SystemMessageList.MSG_REQUIRED);
-		result.addError("".equals(this.verifyPassword), "verifyPassword", SystemMessageList.MSG_REQUIRED);
-		if(result.isSuccess()){
-			result.addError(!this.verifyPassword.equals(this.password), "verifyPassword", "passwords must match");
+		
+		//APPDEV-4177- Adding trim in password and verifyPassword
+		
+		//result.addError("".equals(this.password), "password", SystemMessageList.MSG_REQUIRED);
+		//result.addError("".equals(this.verifyPassword), "verifyPassword", SystemMessageList.MSG_REQUIRED);
+		
+		result.addError("".equals(this.password.trim()), "password", SystemMessageList.MSG_REQUIRED);
+		result.addError("".equals(this.verifyPassword.trim()), "verifyPassword", SystemMessageList.MSG_REQUIRED);
+		
+		// APPDEV-4177- Adding trim in validating match and length for password and verifyPassword
+		
+		/*if(result.isSuccess()){
+			result.addError(!(this.verifyPassword).equals(this.password), "verifyPassword", "passwords must match");
 		}
 		if(result.isSuccess()){
 			result.addError(this.password.length() < 6, "password", "Please enter a password that is at least six characters long.");
+		}*/
+		
+		if(result.isSuccess()){
+			result.addError(!(this.verifyPassword.trim()).equals(this.password.trim()), "verifyPassword", "passwords must match");
+		}
+		if(result.isSuccess()){
+			result.addError(this.password.trim().length() < 6, "password", "Please enter a password that is at least six characters long.");
 		}
 	}
 	

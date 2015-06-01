@@ -56,7 +56,13 @@ public class CorporateServiceSurveyTag extends AbstractControllerTag implements 
 	private String email;
 	private String redirectSuccessPage;
 	
-	// setter & getter mehods
+	//product notify additional fields
+	private String firstName;
+	private String lastName;
+	private String custType;
+	private String notifyId; //prodId@catId
+
+	// setter & getter methods
 	public void setCompanyName(String companyName) {	
 		this.companyName = companyName;	
 	}
@@ -168,8 +174,39 @@ public class CorporateServiceSurveyTag extends AbstractControllerTag implements 
 	public String getRedirectSuccessPage() {
 		return this.redirectSuccessPage;
 	}
-
 	
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	
+	public String getCustType() {
+		return custType;
+	}
+
+	public void setCustType(String custType) {
+		this.custType = custType;
+	}
+
+	public String getNotifyId() {
+		return notifyId;
+	}
+
+	public void setNotifyId(String notifyId) {
+		this.notifyId = notifyId;
+	}
+
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		String actionName = this.getActionName();
 		try {
@@ -196,9 +233,16 @@ public class CorporateServiceSurveyTag extends AbstractControllerTag implements 
 	 *	otherwise, the survey will fail to be saved
 	 */
 	protected void storeCorporateServiceInfo(HttpServletRequest request, ActionResult result, String actionName) throws FDResourceException {
-		populateCorporateServiceForm(request);
-		validateCorporateServiceForm(result);
 
+		populateCorporateServiceForm(request);
+
+		/* modify validations by actionName */
+		if ((EnumSurveyType.COS_SURVEY_PRODUCT_NOTIFY).equals(EnumSurveyType.getEnum(actionName))) {
+			validateProductNotifyForm(result);
+		} else {
+			validateCorporateServiceForm(result);
+		}
+		
 		HttpSession session = pageContext.getSession();
 		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
 		
@@ -233,10 +277,12 @@ public class CorporateServiceSurveyTag extends AbstractControllerTag implements 
 		} else {
 			LOGGER.debug("CorpServTag err ");
 			LOGGER.debug("actionName "+actionName);
-			if (user!= null) { user.setLastCOSSurveySuccess(false); }
+			if (user!= null) {
+				user.setLastCOSSurveySuccess(false);
+			}
 		}
 	}
-	
+
 	//no action name is only called from site access
 	protected void storeCorporateServiceInfo(HttpServletRequest request, ActionResult result) throws FDResourceException {
 		populateCorporateServiceForm(request);
@@ -317,7 +363,11 @@ public class CorporateServiceSurveyTag extends AbstractControllerTag implements 
 		title = getParam(request, "title");
 		phone = getParam(request, "phone");
 		email = getParam(request, "email");
-		redirectSuccessPage = getParam(request, "successPage");		
+		redirectSuccessPage = getParam(request, "successPage");	
+		firstName = getParam(request, "firstName");	
+		lastName = getParam(request, "lastName");
+		custType = getParam(request, "custType");
+		notifyId = getParam(request, "notifyId");
 	}
 
 	protected void validateCorporateServiceForm(ActionResult result) {
@@ -345,6 +395,14 @@ public class CorporateServiceSurveyTag extends AbstractControllerTag implements 
 		result.addError(!"".equals(email) && !EmailUtil.isValidEmailAddress(email), "email", SystemMessageList.MSG_EMAIL_FORMAT);
 	
 	}
+	
+	/* only email and zip is required */
+	private void validateProductNotifyForm(ActionResult result) {
+		result.addError("".equals(email), "email", SystemMessageList.MSG_REQUIRED);
+		result.addError(!"".equals(email) && !EmailUtil.isValidEmailAddress(email), "email", SystemMessageList.MSG_EMAIL_FORMAT);
+		result.addError("".equals(zip) || zip.length()!=5, "zip", SystemMessageList.MSG_REQUIRED);
+	}
+
 
 	public static class TagEI extends AbstractControllerTag.TagEI {
 		// default impl

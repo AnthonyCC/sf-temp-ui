@@ -24,6 +24,7 @@ public enum EnumSurveyType {
     ,COS_SURVEY_V2("COS_Survey_v2") // this is used in CorporateServiceSurveyTag.java
     ,COS_SURVEY_VENDING("COS_Survey_Vending") //added for vending website
     ,COS_SURVEY_CATERING("COS_Survey_Catering") //added for APPDEV-2909
+    ,COS_SURVEY_PRODUCT_NOTIFY("Product_Notifications") //added for product notifications
     ;
     
     String label;
