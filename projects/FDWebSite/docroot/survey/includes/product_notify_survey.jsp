@@ -145,13 +145,13 @@ if ("".equals(custEnteredPhone)) { //if nothing has been entered ...
 			<div id="productNotifySurvey-subcontent" style="<%=(!custTypeHome)?"":"display: none; height: 0;" %>">
 				
 				
-				    <div class="bodyCopySUL"><span><label>First Name  (optional)</label></span></div>
+				    <div class="bodyCopySUL"><span><label>First Name <span class="bodyCopySUL-nonBold">(optional)</span></label></span></div>
 					<div><input type="text" size="35" class="text11ref inputUser" name="firstName" value="<%=custFirstName%>"></div>
 					
-				    <div class="bodyCopySUL"><span><label>Last Name (optional)</label></span></div>
+				    <div class="bodyCopySUL"><span><label>Last Name <span class="bodyCopySUL-nonBold">(optional)</span></label></span></div>
 					<div><input type="text" size="35" class="text11ref inputUser" name="lastName" value="<%=custLastName%>"></div>
 				    
-				    <div class="bodyCopySUL"><span><label>Work Phone Number (optional)</div>
+				    <div class="bodyCopySUL"><span><label>Work Phone Number <span class="bodyCopySUL-nonBold">(optional)</span></div>
 				    <div><input type="text" size="35" class="text11ref inputUser" name="phone" value="<%=custPhone%>"></div>
 			</div>
 			    
