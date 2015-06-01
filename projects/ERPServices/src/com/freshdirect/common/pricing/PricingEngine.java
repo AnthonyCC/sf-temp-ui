@@ -98,14 +98,7 @@ public class PricingEngine {
 			// $$$ off
 			double basePrice = 0.0;
 			
-			/*
-			 * APPDEV-4148: changed for displaying the unit price 
-			 *of the item as difference of Actual price and unit discount
-			 * when the quantity is less than SKU limit
-			 */
-			
-			//if(discount.getSkuLimit() > 0){
-			if(discount.getSkuLimit() > 0 && discount.getSkuLimit() < quantity) {
+			if(discount.getSkuLimit() > 0) {
 				if(!"lb".equalsIgnoreCase(pricingUnit)) {
 					basePrice = price.getBasePrice() - (discount.getAmount() * discount.getSkuLimit());
 				}
