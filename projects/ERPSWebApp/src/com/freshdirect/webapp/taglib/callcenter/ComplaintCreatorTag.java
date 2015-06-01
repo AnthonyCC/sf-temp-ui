@@ -350,11 +350,12 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
             //
             // Check that item is within appropriate return window (depends on Method and department)
             //
-            if ( !FDStoreProperties.getDisableTimeWindowCheck() && !isWithinReturnWindow(line.getMethod() ) ) {
-                result.addError(new ActionError("ol_error_"+i,"It is too late to return this item for the designated credit type."));
-                addGeneralError(result);
-                return;
-            }
+            //APPDEV-4197 -Remove line item credit expiration 
+//            if ( !FDStoreProperties.getDisableTimeWindowCheck() && !isWithinReturnWindow(line.getMethod() ) ) {
+//                result.addError(new ActionError("ol_error_"+i,"It is too late to return this item for the designated credit type."));
+//                addGeneralError(result);
+//                return;
+//            }
             
             if (orderLineQty[i] != null && !"".equals(orderLineQty[i]) && orderLineOriginalQty[i] != null && orderLineQtyReturned[i] != null) {
                 if (Double.parseDouble(orderLineQty[i]) > Double.parseDouble(orderLineOriginalQty[i]) - Double.parseDouble(orderLineQtyReturned[i])) {
