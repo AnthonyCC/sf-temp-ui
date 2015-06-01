@@ -27,6 +27,13 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.log4j.Category;
+
+import com.freshdirect.framework.util.ConfigHelper;
+import com.freshdirect.framework.util.DateRange;
+import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
+
 
 public class FDStoreProperties {
     private static final Category LOGGER = LoggerFactory.getInstance(FDStoreProperties.class);
@@ -715,6 +722,7 @@ public class FDStoreProperties {
     private static final String PROP_ORDER_HISTORY_FROM_IN_MONTHS = "fdstore.orderhistory.from.months";
     
     private static final String PROP_QUICKSHOP_PAST_ORDERS_VISIBLE_MENU_ITEMS_COUNT = "fdstore.quickshop.past_orders.menuitem.count";
+	private static final String PROP_TIP_RANGE_CONFIG = "fdstore.tip.range.config";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1417,7 +1425,7 @@ public class FDStoreProperties {
         defaults.put(PROP_RECAPTCHA_PUBLIC_KEY, "6LdmgQYTAAAAAEqZbKoF4WpDqFU7pyAO-40mxdnc");
         defaults.put(PROP_RECAPTCHA_PRIVATE_KEY, "6LdmgQYTAAAAAJcKVYSoFavVDLSLdV3x-fWsOtqH");
         defaults.put(PROP_MAX_INVALID_LOGIN_ATTEMPT, "10");
-		
+		 defaults.put(PROP_TIP_RANGE_CONFIG, "0,25,0.5;");
 		refresh();
     }
 
@@ -3556,5 +3564,9 @@ public class FDStoreProperties {
     
 	public static int getPastOrdersVisibleItemsCount() {
 		return Integer.parseInt(get(PROP_QUICKSHOP_PAST_ORDERS_VISIBLE_MENU_ITEMS_COUNT));
+	}
+
+	public static String getTipRangeConfig() {
+		return get(PROP_TIP_RANGE_CONFIG);
 	}
 }

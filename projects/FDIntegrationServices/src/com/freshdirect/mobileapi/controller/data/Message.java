@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionWarning;
+import com.freshdirect.mobileapi.controller.data.response.Configuration;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.MessageCodes.ErrorCodeTranslator;
 import com.freshdirect.mobileapi.model.MessageCodes.ErrorMessage;
@@ -61,6 +62,8 @@ public class Message implements DateFormat, Cloneable {
         this.status = status;
     }
 
+    private Configuration configuration = null;
+    
     private Map<String, String> warnings = new HashMap<String, String>();
 
     private Map<String, String> errors = new HashMap<String, String>();
@@ -161,4 +164,11 @@ public class Message implements DateFormat, Cloneable {
         this.errors.putAll(messages);
     }
 
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
+    }
+    public Configuration getConfiguration( ) {
+        return configuration;
+    }
+    
 }

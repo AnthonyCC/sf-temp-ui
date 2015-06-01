@@ -350,6 +350,11 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/logout/");
   	$("#payload").val("");
   	
+  } else if (loaddata == "TransactionSource") {
+  	$("#url").val("/saptest12@freshdirect.com/transactionsource/");
+  	var postdata = '{"source" : "IPW"}';
+  	$("#payload").val(postdata);
+  	
   } else if (loaddata == "ForgotPassword") {
   	$("#url").val("/saptest12@freshdirect.com/forgotpassword/");
   	$("#payload").val('{ "username" : "saptest12@freshdirect.com"}');
@@ -801,6 +806,7 @@ function doStuff() {
   <option value="Ping">Ping</option>
   <option value="LoginRefresh">Login Refresh</option>
   <option value="ForgotPassword">Forgot Password</option>
+  <option value="TransactionSource">Transaction Source</option>
   <option value=""> ========== CART ========== </option>  
   <option value="AddPromo">CART - Apply Promo</option>
   <option value="RemovePromo">CART - Remove Promo</option>

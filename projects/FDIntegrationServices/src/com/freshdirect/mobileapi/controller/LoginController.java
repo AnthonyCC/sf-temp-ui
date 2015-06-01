@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.freshdirect.common.pricing.PricingException;
+import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
@@ -23,7 +24,9 @@ import com.freshdirect.fdstore.customer.PasswordNotExpiredException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.controller.data.request.Login;
+import com.freshdirect.mobileapi.controller.data.request.SessionRequest;
 import com.freshdirect.mobileapi.controller.data.response.LoggedIn;
+import com.freshdirect.mobileapi.controller.data.response.SessionResponse;
 import com.freshdirect.mobileapi.controller.data.response.Timeslot;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;
@@ -34,10 +37,14 @@ import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.User;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
+import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
+import com.freshdirect.webapp.util.LocatorUtil;
 
 public class LoginController extends BaseController {
 
@@ -48,9 +55,13 @@ public class LoginController extends BaseController {
 	public static final String ACTION_FORGOTPASSWORD = "forgotpassword";
 
 	public static final String ACTION_PING = "ping";
+	
+	public static final String ACTION_SOURCE = "source";
 
 	private final static String MSG_INVALID_EMAIL = "Invalid or missing email address. If you need assistance please call us at 1-866-283-7374.";
 	private final static String MSG_EMAIL_NOT_EXPIRED = "An email was already sent. Please try again later.";
+	
+	private final static String ERR_INVALID_TRANSACTIONCODE = "Invalid Transaction Source";
 
 	private static Category LOGGER = LoggerFactory
 			.getInstance(LoginController.class);
@@ -88,6 +99,10 @@ public class LoginController extends BaseController {
 			model = ping(model, request, response);
 		} else if (ACTION_LOGOUT.equals(action)) {
 			model = logout(model, user, request, response);
+		}else if (ACTION_SOURCE.equals(action)) {
+			 SessionRequest requestMessage = parseRequestObject(request, response, SessionRequest.class); 
+			model = transactionSource(model, user, request, response,requestMessage);
+			
 		} else if (ACTION_FORGOTPASSWORD.equals(action)) {
 			try {
 				Login requestMessage = parseRequestObject(request, response,
@@ -134,6 +149,56 @@ public class LoginController extends BaseController {
 		setResponseMessage(model, responseMessage, user);
 		return model;
 	}
+	/**
+	 * @param request
+	 * @param requestMessage 
+	 * @return
+	 * @throws JsonException
+	 * @throws IOException
+	 * @throws JsonMappingException
+	 * @throws JsonGenerationException
+	 */
+	private ModelAndView transactionSource(ModelAndView model, SessionUser user,
+			HttpServletRequest request, HttpServletResponse response, SessionRequest requestMessage)
+			throws JsonException {
+        
+		String source = requestMessage.getSource();
+		Message responseMessage = new SessionResponse();
+		EnumTransactionSource transactionSource = EnumTransactionSource.getTransactionSource(source);
+
+		if (transactionSource == null) {
+			responseMessage = getErrorMessage(ERR_INVALID_TRANSACTIONCODE, MessageCodes.MSG_INVALID_TRANSACTIONCODE);
+		} else {
+			request.getSession().setAttribute(SessionName.APPLICATION,transactionSource.getCode());
+			if (user == null) {
+				FDSessionUser fdSessionUser = null;
+				try {
+					fdSessionUser = CookieMonster.loadCookie(request);
+				} catch (FDResourceException ex) {
+					LOGGER.warn(ex);
+				}
+				if (fdSessionUser != null) {
+					FDCustomerCouponUtil.initCustomerCoupons(request
+							.getSession());
+					((SessionResponse) responseMessage).setSessionExpired(true); 
+				} else {
+					fdSessionUser = LocatorUtil.useIpLocator(
+							request.getSession(), request, response, null);
+				}
+				((SessionResponse) responseMessage).setSessionIsNew(true); 
+				request.getSession().setAttribute(SessionName.USER,fdSessionUser);
+				user = SessionUser.wrap(fdSessionUser);
+			} else {
+				((SessionResponse) responseMessage).setLoggedIn(user
+						.isLoggedIn());
+			}
+			responseMessage.setConfiguration(getConfiguration(user));
+		}
+		setResponseMessage(model, responseMessage, user);
+		return model; 
+}
+
+
 
 	private ModelAndView ping(ModelAndView model, HttpServletRequest request,
 			HttpServletResponse response) throws NoSessionException,

@@ -435,6 +435,12 @@
 	
 	<!-- ForgotPassword -->
 	<rule>
+		<from>^/v/([0-9]+)/(.*)/transactionsource/</from>
+		<to last="true">/login.do?action=source&amp;ver=$1</to>
+	</rule>
+	
+	<!-- ForgotPassword -->
+	<rule>
 		<from>^/v/([0-9]+)/(.*)/forgotpassword/$</from>
 		<to last="true">/login.do?action=forgotpassword&amp;ver=$1</to>
 	</rule>
@@ -788,6 +794,7 @@
 		<from>^/test/$</from>
 		<to last="true">/test.do</to>
 	</rule>
+	<!-- for TranscationSource 4170 -->
 	
 	<!--	 Discovery Service -->
 	<!--	<rule>-->

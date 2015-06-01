@@ -22,10 +22,16 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.freshdirect.FDCouponProperties;
+import com.freshdirect.cms.util.PublishId;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
+import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
+import com.freshdirect.fdstore.util.Buildver;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.controller.data.Message;
@@ -48,6 +54,7 @@ import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
+import com.freshdirect.webapp.util.LocatorUtil;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -184,8 +191,20 @@ public abstract class BaseController extends AbstractController implements Messa
     }
 
     protected SessionUser getUserFromSession(HttpServletRequest request, HttpServletResponse response) throws NoSessionException {
-        if (null == request.getSession().getAttribute(SessionName.USER)) {
+/*        if (null == request.getSession().getAttribute(SessionName.USER)) {
             throw new NoSessionException("No session");
+        }*/
+        if (null == request.getSession().getAttribute(SessionName.USER)) {
+            FDSessionUser fdSessionUser = null;             
+            try {
+				fdSessionUser = CookieMonster.loadCookie(request);
+			} catch (FDResourceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            fdSessionUser = LocatorUtil.useIpLocator(request.getSession(), request, response, null);
+            request.getSession().setAttribute(SessionName.USER, fdSessionUser);
+            return SessionUser.wrap(fdSessionUser);      
         }
         return SessionUser.wrap(request.getSession().getAttribute(SessionName.USER));
     }
@@ -445,4 +464,23 @@ public abstract class BaseController extends AbstractController implements Messa
     protected boolean isFakeUser() {
     	return fakedUserForRequest.get();
     }
+	protected com.freshdirect.mobileapi.controller.data.response.Configuration getConfiguration(
+			SessionUser user) {
+
+		com.freshdirect.mobileapi.controller.data.response.Configuration configuration = new com.freshdirect.mobileapi.controller.data.response.Configuration();
+		configuration.setAkamaiImageConvertorEnabled(FeatureRolloutArbiter
+				.isFeatureRolledOut(EnumRolloutFeature.akamaiimageconvertor,
+						user.getFDSessionUser().getUser()));
+		configuration.setApiCodeVersion(Buildver.getInstance().getBuildver());
+		configuration.setStoreVersion(PublishId.getInstance().getPublishId());
+
+		configuration.setVerifyPaymentMethod(FDStoreProperties
+				.isPaymentMethodVerificationEnabled());
+		configuration.setEcouponEnabled(FDCouponProperties.isCouponsEnabled());
+		configuration.setAdServerUrl(FDStoreProperties.getAdServerUrl());
+
+		configuration.setTipRange(FDStoreProperties.getTipRangeConfig());
+		return configuration;
+	}
+
 }
