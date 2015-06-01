@@ -599,10 +599,14 @@ public class Product {
 			FDProduct fdProduct = pricing.getProduct();
 			if (fdProduct != null) 
 			{
-				boolean organic = fdProduct.hasOANClaim();
+				/*boolean organicClaim = fdProduct.hasOANClaim();
+				if(organicClaim) {
+					types.add("Organic");
+				}	*/
+				boolean organic = fdProduct.hasOrganicClaim();
 				if(organic) {
 					types.add("Organic");
-				}			
+				}	
 			}
 			
 			String fullName = productModel.getFullName();

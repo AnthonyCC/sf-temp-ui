@@ -14,7 +14,9 @@ import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.content.nutrition.EnumClaimValue;
 import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.content.nutrition.EnumKosherTypeValue;
+import com.freshdirect.content.nutrition.EnumOrganicValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
+import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.erp.EnumAlcoholicContent;
@@ -305,6 +307,23 @@ public class FDProduct extends FDSku implements AttributesI {
 
 	public boolean hasOANClaim() {
 		return hasClaim(EnumClaimValue.OAN_ORGANIC);
+	}
+	public boolean hasOrganicClaim() {
+
+	Set<ErpNutritionInfoType> nutritionIfo = FDNutritionCache.getInstance().getNutrition(this.getSkuCode()).getNutritionInfoNames();
+	
+	if(!nutritionIfo.isEmpty()){
+		for(ErpNutritionInfoType nutrition:nutritionIfo){
+		if(!EnumOrganicValue.getValueForCode("NONE").equals(nutrition.getCode()))
+		{
+
+			if((EnumOrganicValue.getValueForCode("ORGN")).equals(nutrition.getCode()))
+			return true;
+
+		}
+		}
+	}
+	return false;
 	}
 	
 	public boolean hasClaim(EnumClaimValue claimValue) {
