@@ -437,11 +437,12 @@ public class ProductDetailPopulator {
 		data.setProductName( fullName );
 		data.setProductNameNoBrand( productNameNoBrand );
 		data.setBrandName( brandName );
-		
+		// APPDEV - 4270 Optimize the webpage changes to append the domain
+		String domains = FDStoreProperties.getSubdomains();
 		data.setAkaName( product.getAka() );
-		data.setProductImage( product.getProdImage().getPathWithPublishId() );
-		data.setProductDetailImage( product.getDetailImage().getPathWithPublishId() );
-		data.setProductZoomImage( product.getZoomImage().getPathWithPublishId() );
+		data.setProductImage( domains + product.getProdImage().getPathWithPublishId() );
+		data.setProductDetailImage( domains + product.getDetailImage().getPathWithPublishId() );
+		data.setProductZoomImage( domains + product.getZoomImage().getPathWithPublishId() );
 		
 		data.setProductPageUrl( FDURLUtil.getNewProductURI( product ) );
 		

@@ -20,8 +20,10 @@ public class ImageBuilder extends AbstractAttributeBuilder {
 		ContentNodeI cNode = ((ContentKey) value).lookupContentNode();
 
         if (cNode == null) { return null; }
-
-		String path = (String) cNode.getAttributeValue("path");
+        
+        String lastModify = (String) cNode.getAttributeValue("lastmodified");
+        
+		String path = (String) cNode.getAttributeValue("path")+"?lastModify="+lastModify;
 		
 		// FIXME this is due to invalid data
 		if (path == null) {

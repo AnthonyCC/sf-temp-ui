@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -20,6 +21,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -40,6 +42,7 @@ public class FDStoreProperties {
     private static List<ConfigLoadedListener> listeners = new ArrayList<ConfigLoadedListener>();
     private static final SimpleDateFormat SF = new SimpleDateFormat(
             "yyyy-MM-dd");
+    private static final String SUB_DOMAIN = "fdstore.media.subdomain";
     private final static String PROP_PROVIDER_URL = "fdstore.providerURL";
     private final static String PROP_INIT_CTX_FACTORY = "fdstore.initialContextFactory";
     private final static String PROP_CRM_GEOCODELINK = "fdstore.crm.geocodeLink";
@@ -1426,6 +1429,7 @@ public class FDStoreProperties {
         defaults.put(PROP_RECAPTCHA_PRIVATE_KEY, "6LdmgQYTAAAAAJcKVYSoFavVDLSLdV3x-fWsOtqH");
         defaults.put(PROP_MAX_INVALID_LOGIN_ATTEMPT, "10");
 		 defaults.put(PROP_TIP_RANGE_CONFIG, "0,25,0.5;");
+	
 		refresh();
     }
 
@@ -3568,5 +3572,16 @@ public class FDStoreProperties {
 
 	public static String getTipRangeConfig() {
 		return get(PROP_TIP_RANGE_CONFIG);
+	}
+	// APPDEV-4270 : WebPerformacne issue code changes for subdomains
+	public static String getSubdomains(){
+        List<String> domains = new ArrayList<String>();
+        String subDomainList = get(SUB_DOMAIN);
+        String responseDomain = "";
+        if(subDomainList != null){
+        	domains = Arrays.asList(subDomainList.split(","));
+        	responseDomain = domains.get(new Random().nextInt(domains.size()));
+        }
+        return responseDomain;
 	}
 }

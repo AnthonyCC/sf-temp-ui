@@ -349,7 +349,7 @@ public class ProductImageTag extends BodyTagSupport {
         buf.append(">\n");
         
         String imageName = "ro_img_" + product.getContentName();
-
+        String domains = FDStoreProperties.getSubdomains();
         // ============= prepare rollover image script =============  
         String rolloverStr = "";
 
@@ -357,8 +357,9 @@ public class ProductImageTag extends BodyTagSupport {
             Image rolloverImage = product.getRolloverImage();
 
             if (rolloverImage != null) {
-                String rolloverImagePath = rolloverImage.getPathWithPublishId();
-                String baseImagePath = prodImg.getPathWithPublishId();
+            	
+                String rolloverImagePath = domains + rolloverImage.getPathWithPublishId();
+                String baseImagePath = domains + prodImg.getPathWithPublishId();
 
                 if (!"".equals(rolloverImagePath) && !"".equals(baseImagePath)) {
                     rolloverStr = " onMouseover='swapImage(\"" + imageName +
@@ -384,7 +385,7 @@ public class ProductImageTag extends BodyTagSupport {
             buf.append(this.prefix);
         }
 
-        buf.append(prodImg.getPathWithPublishId());
+        buf.append(domains + prodImg.getPathWithPublishId());
         buf.append("\"");
 
         if (getBoundImgWidth(prodImg) > 0) {

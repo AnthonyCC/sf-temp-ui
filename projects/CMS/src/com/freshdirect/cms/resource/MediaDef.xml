@@ -8,6 +8,7 @@
 			<cms:AttributeDef type="I" name="height" required="true" readOnly="true"/>
 			<cms:AttributeDef type="I" name="width" required="true" readOnly="true"/>
 			<cms:AttributeDef type="S" name="path" required="true" readOnly="true"/>
+			<cms:AttributeDef type="S" name="lastmodified" required="true" readOnly="true"/>
 		</cms:AttributeDefs>
 		
 		<cms:RelationshipDefs />
@@ -19,6 +20,7 @@
 		
 		<cms:AttributeDefs>
 			<cms:AttributeDef type="S" name="path" required="true"  readOnly="true"/>
+			<cms:AttributeDef type="S" name="lastmodified" required="true" readOnly="true"/>
 		</cms:AttributeDefs>
 		
 		<cms:RelationshipDefs />
@@ -29,6 +31,7 @@
 		
 		<cms:AttributeDefs>
 			<cms:AttributeDef type="S" name="path" required="true"  readOnly="true"/>
+			<cms:AttributeDef type="S" name="lastmodified" required="true" readOnly="true"/>
 		</cms:AttributeDefs>
 		
 		<cms:RelationshipDefs />
@@ -40,6 +43,7 @@
 		<cms:AttributeDefs>
 			<cms:AttributeDef type="S" name="name" required="true" readOnly="true"/>
 			<cms:AttributeDef type="S" name="path" required="true" readOnly="true" />
+			<cms:AttributeDef type="S" name="lastmodified" required="true" readOnly="true"/>
 		</cms:AttributeDefs>
 		
 		<cms:RelationshipDefs>

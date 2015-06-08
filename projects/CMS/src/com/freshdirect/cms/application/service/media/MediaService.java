@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -113,7 +114,7 @@ public class MediaService extends AbstractContentService implements MediaService
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			PreparedStatement ps = conn.prepareStatement("select id, uri, type, width, height from cms_media where id = ?");
+			PreparedStatement ps = conn.prepareStatement("select id, uri, type, width, height, last_modified from cms_media where id = ?");
 			ps.setString(1, cKey.getId());
 			ResultSet rs = ps.executeQuery();
 			ContentNodeI node = null;
@@ -221,11 +222,15 @@ public class MediaService extends AbstractContentService implements MediaService
 
 		String uri = rs.getString("URI");
 		node.getAttribute("path").setValue(uri);
-
+		String lastModDate = new Date().toString();
 		if (FDContentTypes.IMAGE.equals(type)) {
 			node.getAttribute("width").setValue(new Integer(rs.getInt("WIDTH")));
 			node.getAttribute("height").setValue(new Integer(rs.getInt("HEIGHT")));
-
+			if(rs.getDate("LAST_MODIFIED")!= null){
+				lastModDate = rs.getDate("LAST_MODIFIED").toString();
+			}
+			node.getAttribute("lastmodified").setValue(lastModDate);
+			
 		} else if (FDContentTypes.MEDIAFOLDER.equals(type)) {
 
 			Set children = queryChildren(conn, uri);
@@ -286,7 +291,7 @@ public class MediaService extends AbstractContentService implements MediaService
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			PreparedStatement ps = conn.prepareStatement("select id, uri, type, width, height from cms_media where uri = ? order by uri");
+			PreparedStatement ps = conn.prepareStatement("select id, uri, type, width, height, last_modified from cms_media where uri = ? order by uri");
 			ps.setString(1, uri);
 			ResultSet rs = ps.executeQuery();
 			ContentNodeI node = null;

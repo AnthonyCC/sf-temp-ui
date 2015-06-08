@@ -44,8 +44,8 @@ public class CMSModelToSoyDataConverter {
 				popularCategories.add(createCategoryData(categoryModel, user, false));
 			}
 		}
-		
-		return new CategoryData(catImage == null ? null : catImage.getPath(), cat.getContentKey().getId(), cat.getFullName(), globalNavPostNameImage == null ? null : globalNavPostNameImage.getPath(), popularCategories);
+		String domains = FDStoreProperties.getSubdomains();
+		return new CategoryData(catImage == null ? null : domains+catImage.getPath(), cat.getContentKey().getId(), cat.getFullName(), globalNavPostNameImage == null ? null : globalNavPostNameImage.getPath(), popularCategories);
 	}
 	
 	private static void extractCategorySections(DepartmentData departmentData, List<CategorySectionModel> categorySectionList, FDSessionUser user) {
@@ -168,13 +168,14 @@ public class CMSModelToSoyDataConverter {
 				pointer += columnHeight;
 			}
 		}
-		
+		// APPDEV - 4207 Optimize the webpage changes to append the domain
+		String domains = FDStoreProperties.getSubdomains();		
 		Image heroImage = departmentModel.getHeroImage();
 		Image deptPhoto = departmentModel.getPhoto();
 		Html seasonalMedia = departmentModel.getSeasonalMedia();
 		departmentData.setName(departmentModel.getFullName());
-		departmentData.setHeroImage(heroImage == null ? "" : heroImage.getPath());
-		departmentData.setDeptPhoto(deptPhoto == null ? "" : deptPhoto.getPath());
+		departmentData.setHeroImage(heroImage == null ? "" : domains + heroImage.getPath());
+		departmentData.setDeptPhoto(deptPhoto == null ? "" : domains + deptPhoto.getPath());
 //		departmentData.setSeasonalMedia(seasonalMedia == null ? "" : MediaUtils.renderHtmlToString(seasonalMedia, user));
 		departmentData.setSeasonalMedia((seasonalMedia== null || seasonalMedia.getPath() == null || "".equals(seasonalMedia.getPath())) ? "" : MediaUtils.renderHtmlToString(seasonalMedia, user));
 		departmentData.setPreferenceCategoriesNavHeader(departmentModel.getPreferenceCategoriesNavHeader());
