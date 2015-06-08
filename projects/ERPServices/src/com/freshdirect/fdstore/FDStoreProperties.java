@@ -1428,7 +1428,9 @@ public class FDStoreProperties {
         defaults.put(PROP_RECAPTCHA_PUBLIC_KEY, "6LdmgQYTAAAAAEqZbKoF4WpDqFU7pyAO-40mxdnc");
         defaults.put(PROP_RECAPTCHA_PRIVATE_KEY, "6LdmgQYTAAAAAJcKVYSoFavVDLSLdV3x-fWsOtqH");
         defaults.put(PROP_MAX_INVALID_LOGIN_ATTEMPT, "10");
-		 defaults.put(PROP_TIP_RANGE_CONFIG, "0,25,0.5;");
+		defaults.put(PROP_TIP_RANGE_CONFIG, "0,25,0.5;");
+		 
+		defaults.put(SUB_DOMAIN, "https://www.freshdirect.com");
 	
 		refresh();
     }
