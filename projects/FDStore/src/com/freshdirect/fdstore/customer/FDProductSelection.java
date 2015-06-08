@@ -327,7 +327,24 @@ public class FDProductSelection implements FDProductSelectionI {
 		Price p=new Price(this.price.getBasePrice());
 		if(this.getDiscount()!=null){
 			if(this.getDiscount().getSkuLimit() > 0 && !this.price.getBasePriceUnit().equalsIgnoreCase("lb") && this.getDiscount().getSkuLimit() != this.getQuantity()) {
+				
 				disAmount=this.price.getBasePrice();
+				
+			//APPDEV-4148-Displaying unit price if quantity is greater than sku limit - START
+				
+				if(this.getDiscount().getSkuLimit() < this.getQuantity()){
+					if(this.getDiscount().getDiscountType().equals(EnumDiscountType.PERCENT_OFF))
+					{											
+						disAmount=((this.price.getBasePrice() * this.getQuantity()) - ((this.price.getBasePrice() * this.getDiscount().getSkuLimit()) * this.getDiscount().getAmount() )) / this.getQuantity();
+					}
+					else
+					{
+						disAmount=((this.price.getBasePrice() * (this.getQuantity())) - (this.getDiscount().getAmount() * this.getDiscount().getSkuLimit()))/ this.getQuantity() ;
+					}
+				}
+				
+			//APPDEV-4148-Displaying unit price if quantity is greater than sku limit - END
+				
 			} else if(this.getDiscount().getSkuLimit() > 0 && this.price.getBasePriceUnit().equalsIgnoreCase("lb") && this.getDiscount().getDiscountType().equals(EnumDiscountType.DOLLAR_OFF)) {
 				disAmount=this.price.getBasePrice();
 			} else {
