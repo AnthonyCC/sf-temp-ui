@@ -241,6 +241,9 @@ var FreshDirect = FreshDirect || {};
   $(document).on('click',menu.placeholder+' [data-component="menuitem"]', menu.handleClick.bind(menu));
   $(document).on('click','.menupopup [data-component="menuitem"] a, .centermenupopup [data-component="menuitem"] a', menu.handlePopupClick.bind(menu));
   $(document).on('change','.menupopup [data-component="menuitem"] input, .centermenupopup [data-component="menuitem"] input', menu.handlePopupClick.bind(menu));
+  $(document).on('click', 'div.popupcontentghost button.selected.category.popup.leftnav-category-popup-button.cssbutton.green.hover', function() {
+  		$jq( '#menupopup.shown li.selected a').click();
+  	});
 
   fd.modules.common.utils.register("browse", "menu", menu, fd);
 }(FreshDirect));

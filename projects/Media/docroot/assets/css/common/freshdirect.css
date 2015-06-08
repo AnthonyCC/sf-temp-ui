@@ -898,3 +898,16 @@ section.main .leftnav .menuBox button.category.emptypopup {
   line-height:29px;
   margin:0;
 }
+
+div.popupcontentghost button.selected.category.popup.leftnav-category-popup-button.cssbutton.green.hover{
+  width: 100%;
+  padding: 8px 5px 8px 11px;
+}
+
+/* Left Nav - Make buttons active links */
+#leftnav .menuBox[data-selectiontype=LINK] button.selected.category.popup.leftnav-category-popup-button.cssbutton.green:hover,
+div.popupcontentghost button.selected.category.popup.leftnav-category-popup-button.cssbutton.green.hover:hover,
+section.main .leftnav .menuBox li.selected:hover input[type="radio"] + span{
+	color: #FFFFFF;
+	text-decoration: underline;
+}
