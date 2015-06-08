@@ -232,13 +232,13 @@
 		</div>
 		<div class="itemlist-item-addtocart">
 			{if $replaced}
-				{if $item.customizePopup}<button class="customize cssbutton blue small {$inCart}" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if} data-alignpopup="tc-bc" data-component="customizeButton">customize</button>
+				{if $item.customizePopup}<button class="customize cssbutton orange small {$inCart}" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if} data-alignpopup="tc-bc" data-component="customizeButton">Add to Cart</button>
 				{else}<span class="addtocart cssbutton orange small {$inCart}" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></span>
 				{/if}
 			{else}
 				{if not $item.customizePopup }
 <span class="addtocart cssbutton orange small {$inCart}" data-component="ATCButton"><span class="message">Add to Cart</span><ins class="iehelper">Added</ins></span>
-				{else}<button class="customize cssbutton blue small {$inCart}" {if $type == 'shopfromlists'}data-hasApply="true"{/if} data-component="customizeButton" data-alignpopup="tc-bc" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}>customize</button>
+				{else}<button class="customize cssbutton orange small {$inCart}" {if $type == 'shopfromlists'}data-hasApply="true"{/if} data-component="customizeButton" data-alignpopup="tc-bc" {if $item.hasTerms}data-bypasscustomizepopup="true" {/if}>Add to Cart</button>
 				{/if}
 			{/if}
 			{call common.atcInCart}

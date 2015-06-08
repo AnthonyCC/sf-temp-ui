@@ -479,7 +479,7 @@
       {/if}
       <div class="portrait-item-addtocart" {if $cmEventSource}data-cmeventsource="{$cmEventSource}"{/if}>
         {if $customizePopup}
-          <span class="customize cssbutton blue small" {if $hasTerms}data-bypasscustomizepopup="true" {/if}data-component="customizeButton">customize</span>
+          <span class="customize cssbutton orange small" {if $hasTerms}data-bypasscustomizepopup="true" {/if}data-component="customizeButton">Add to Cart</span>
         {else}
           {if $quantity}
             {call common.subtotal}
@@ -569,7 +569,7 @@
           {else}
             <div class="subtotalPlaceholder"></div>
           {/if}
-          <span class="customize cssbutton blue small" data-component="customizeButton" {if $listId}data-hasApply="true"{/if} {if $hasTerms}data-bypasscustomizepopup="true" {/if}data-alignpopupfunction="transactionalCustomize">Customize</span>
+          <span class="customize cssbutton orange small" data-component="customizeButton" {if $listId}data-hasApply="true"{/if} {if $hasTerms}data-bypasscustomizepopup="true" {/if}data-alignpopupfunction="transactionalCustomize">Add to Cart</span>
         {else}
           {if $quantity}
             {call common.subtotal}
