@@ -28,6 +28,7 @@ import com.freshdirect.common.pricing.GrpMaterialPrice;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.customer.ErpGrpPriceModel;
 import com.freshdirect.customer.ErpGrpPriceZoneModel;
+import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.SkuAvailabilityHistory;
@@ -237,7 +238,42 @@ public class FDFactory {
 		return pi;
 	}
 	
-	
+	public static ErpProductFamilyModel getFamilyInfo(String familyId) throws FDGroupNotFoundException, FDResourceException  {
+		if (factoryHome==null) {
+			lookupFactoryHome();
+		}
+		ErpProductFamilyModel pi;
+		try {
+			FDFactorySB sb = factoryHome.create();                                       		
+			pi = sb.getFamilyInfo(familyId);				
+				
+		}catch (CreateException ce) {
+			factoryHome=null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			factoryHome=null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+		return pi;
+	}
+	public static ErpProductFamilyModel getSkuFamilyInfo(String materialId) throws FDGroupNotFoundException, FDResourceException  {
+		if (factoryHome==null) {
+			lookupFactoryHome();
+		}
+		ErpProductFamilyModel pi;
+		try {
+			FDFactorySB sb = factoryHome.create();                                       		
+			pi = sb.getSkuFamilyInfo(materialId);				
+				
+		}catch (CreateException ce) {
+			factoryHome=null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			factoryHome=null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+		return pi;
+	}
 	
 	
 	
@@ -432,7 +468,7 @@ public class FDFactory {
 			EnumAvailabilityStatus.AVAILABLE,
 			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
 			null,pinfo.getRating(),pinfo.getFreshness(), pinfo.getZonePriceInfoList(),pinfo.getGroup(),pinfo.getSustainabilityRating(),
-			pinfo.getUpc(), pinfo.getAvailabilityDates());
+			pinfo.getUpc(), pinfo.getAvailabilityDates(),pinfo.getFamilyID());
 	}
 	
 	/**
@@ -446,7 +482,7 @@ public class FDFactory {
 			EnumATPRule.JIT,
 			EnumAvailabilityStatus.TEMP_UNAV,
 			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
-			null,null,null,ZonePriceInfoListing.getDummy(), null,null, null, new Date[0]);
+			null,null,null,ZonePriceInfoListing.getDummy(), null,null, null, new Date[0],null);
 	}
 
 

@@ -31,6 +31,10 @@ public class EhCacheUtil {
 	public static final String BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE_NAME = "categorySubTreeHasProductsCache";
 	public static final String BR_USER_REFINEMENT_CACHE_NAME = "userRefinementCache";
 	
+	
+	//Product Family Cache
+	public static final String FD_FAMILY_PRODUCT_CACHE_NAME = "familyProductCache";
+	
 	private static final Logger LOG = LoggerFactory.getInstance( EhCacheUtil.class );
 
 	private static CacheManager manager;

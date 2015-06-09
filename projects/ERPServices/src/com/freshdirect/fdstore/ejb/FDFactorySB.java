@@ -16,6 +16,7 @@ import java.util.Map;
 
 import javax.ejb.EJBObject;
 
+import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.model.ErpProductInfoModel;
@@ -109,6 +110,8 @@ public interface FDFactorySB extends EJBObject {
 	
 	public GroupScalePricing getGrpInfo(FDGroup group) throws RemoteException, FDGroupNotFoundException, FDResourceException;
 	
+	public ErpProductFamilyModel getFamilyInfo(String familyId) throws RemoteException, FDGroupNotFoundException, FDResourceException;
+	
 	public Collection getFilteredSkus(List skuList) throws RemoteException, FDResourceException;
 	
 	public Collection<GroupScalePricing> getGrpInfos(FDGroup grpIds[]) throws RemoteException, FDResourceException;
@@ -126,6 +129,7 @@ public interface FDFactorySB extends EJBObject {
 	public void refreshNewAndBackViews() throws RemoteException, FDResourceException; 
 	public FDGroup getLatestActiveGroup(String groupId) throws RemoteException, FDGroupNotFoundException, FDResourceException;
 
-	public FDProductInfo getProductInfo(ErpProductInfoModel erpProdInfo) throws RemoteException, FDResourceException;;
+	public FDProductInfo getProductInfo(ErpProductInfoModel erpProdInfo) throws RemoteException, FDResourceException;
+	public ErpProductFamilyModel getSkuFamilyInfo(String materialId)throws RemoteException, FDGroupNotFoundException, FDResourceException;
 }
 

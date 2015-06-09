@@ -3,6 +3,8 @@ package com.freshdirect.webapp.ajax.product;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +23,12 @@ import com.freshdirect.content.nutrition.EnumOrganicValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.panel.NutritionPanel;
+import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.erp.ErpFactory;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDFactory;
+import com.freshdirect.fdstore.FDGroupNotFoundException;
 import com.freshdirect.fdstore.FDNutritionCache;
 import com.freshdirect.fdstore.FDNutritionPanelCache;
 import com.freshdirect.fdstore.FDProduct;
@@ -31,6 +36,7 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.AbstractProductModelImpl;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -53,12 +59,15 @@ import com.freshdirect.fdstore.content.TitledMedia;
 import com.freshdirect.fdstore.content.view.WebHowToCookIt;
 import com.freshdirect.fdstore.content.view.WebProductRating;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
+import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.util.HowToCookItUtil;
 import com.freshdirect.fdstore.util.RatingUtil;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.product.data.ProductExtraData;
 import com.freshdirect.webapp.ajax.product.data.ProductExtraData.BrandInfo;
 import com.freshdirect.webapp.ajax.product.data.ProductExtraData.LabelAndLink;
@@ -713,8 +722,132 @@ public class ProductExtraDataPopulator {
 			// or null
 			data.setFreshness( Integer.parseInt(productInfo.getFreshness()) );
 		}
+		
+		
+		/* placeholder for product family products */
+		{
+			List<ProductData> familyProducts = new ArrayList<ProductData>();
+
+			/*SkuModel sku = productNode.getDefaultSku();
+			
+			FDProductInfo prodInfo = FDCachedFactory.getProductInfo( sku.getSkuCode() );
+			FDProduct fdProd = FDCachedFactory.getProduct( prodInfo );
+			*/
+			
+			String selectedProdSku = productNode.getDefaultSkuCode();
+			String familyID = productInfo.getFamilyID();
+			ErpProductFamilyModel products = null;
+			List<String> skuCodes = null;
+			if(familyID == null){
+				
+				try {
+					products = FDFactory.getSkuFamilyInfo(productInfo.getMaterialIds()[0]);
+				} catch (FDGroupNotFoundException e) {
+					
+					e.printStackTrace();
+				}
+				//skuCodes = products.getSkuList();
+				familyID = products.getFamilyId();
+				if(familyID!=null){
+				EhCacheUtil.putListToCache(EhCacheUtil.FD_FAMILY_PRODUCT_CACHE_NAME,familyID, products.getSkuList());
+				}
+			}
+			skuCodes = EhCacheUtil.getListFromCache(EhCacheUtil.FD_FAMILY_PRODUCT_CACHE_NAME, familyID);
+			
+			if(skuCodes == null&&familyID!=null){
+				
+				try {
+					products = FDFactory.getFamilyInfo(familyID);
+				} catch (FDGroupNotFoundException e) {
+					
+					e.printStackTrace();
+				}
+				skuCodes = products.getSkuList();
+				EhCacheUtil.putListToCache(EhCacheUtil.FD_FAMILY_PRODUCT_CACHE_NAME,familyID, products.getSkuList());
+			}
+			
+				
+				if(skuCodes!=null && selectedProdSku!=null){
+				duplicateSku : for (String skuCode : skuCodes) {
+	
+				if(selectedProdSku.equalsIgnoreCase(skuCode))
+				{continue duplicateSku;}
+					
+				ProductModel productModel = PopulatorUtil.getProduct(skuCode);
+
+				ProductData pd = new ProductData();
+				SkuModel skuModel = null;
+
+				if (!(productModel instanceof ProductModelPricingAdapter)) {
+					// wrap it into a pricing adapter if naked
+					productModel = ProductPricingFactory.getInstance()
+							.getPricingAdapter(productModel,
+									user.getPricingContext());
+				}
+
+				if (skuModel == null) {
+					skuModel = productModel.getDefaultSku();
+				}
+				//String skuCode = skuModel.getSkuCode();
+
+				try {
+					if(skuModel==null)
+					{continue duplicateSku;}
+					
+					FDProductInfo productInfo_fam = skuModel.getProductInfo();
+					FDProduct fdProduct = skuModel.getProduct();
+
+					PriceCalculator priceCalculator = productModel
+							.getPriceCalculator();
+
+					ProductDetailPopulator.populateBasicProductData(pd, user,
+							productModel);
+					
+					ProductDetailPopulator.populateProductData(pd, user,
+							productModel, skuModel, fdProduct, priceCalculator,
+							null, true, true);
+					ProductDetailPopulator.populatePricing(pd, fdProduct,
+							productInfo_fam, priceCalculator);
+
+					try {
+						ProductDetailPopulator.populateSkuData(pd, user,
+								productModel, skuModel, fdProduct);
+					} catch (FDSkuNotFoundException e) {
+						LOG.error("Failed to populate sku data", e);
+					} catch (HttpErrorResponse e) {
+						LOG.error("Failed to populate sku data", e);
+					}
+
+					ProductDetailPopulator.postProcessPopulate(user, pd,
+							pd.getSkuCode());
+
+				} catch (FDSkuNotFoundException e) {
+					LOG.warn("Sku not found: " + skuCode, e);
+				}
+
+				familyProducts.add(pd);
+				
+			}
+		}
+			//sortByPopularity(familyProducts);
+
+
+			data.setFamilyProducts(familyProducts);
+		}
+		
+		
 	}
 
+
+	private static void sortByPopularity(List<ProductData> familyProducts) {
+		 Collections.sort(familyProducts, new Comparator<ProductData>() {
+				@Override
+				public int compare(ProductData o1, ProductData o2) {
+					 return (o1.getCustomerRating() > o2.getCustomerRating()) ? 1 : -1;
+					}
+		         });
+		
+	}
 
 	private static WineRating processWineRating(List<DomainValue> wineRatingsDV, FDUserI user, Html reviewMedia) {
 		if (wineRatingsDV == null || wineRatingsDV.size() == 0)

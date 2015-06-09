@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
+import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
@@ -22,6 +23,12 @@ public class PopulatorUtil {
 			// get product in specified category context
 			return ContentFactory.getInstance().getProductByName( categoryId, productId );
 		}		
+	}
+	public static final ProductModel getProduct( String skuCode ) throws FDSkuNotFoundException {
+		if ( skuCode != null ) {
+			return ContentFactory.getInstance().getProduct(skuCode);
+		}		
+		return null;
 	}
 	
 	public static final SkuModel getDefSku( ProductModel product ) {

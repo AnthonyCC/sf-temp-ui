@@ -54,11 +54,13 @@ public class FDProductInfo extends FDSku  {
     
     private String upc;
     
+    private String familyID;
+    
     public FDProductInfo(String skuCode, int version, 
     		String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate, 
     		FDInventoryCacheI inventory, EnumOrderLineRating rating, String freshness,
     		ZonePriceInfoListing zonePriceInfoList, FDGroup group, EnumSustainabilityRating sustainabilityRating,
-    		String upc, Date[] availabilityDates) {
+    		String upc, Date[] availabilityDates, String familyID) {
 
 		super(skuCode, version);
 
@@ -78,6 +80,7 @@ public class FDProductInfo extends FDSku  {
         }
         this.upc = upc;
         this.availabilityDates = availabilityDates;
+        this.familyID = familyID;
 	
     }
 
@@ -224,7 +227,7 @@ public class FDProductInfo extends FDSku  {
 	}
 
 	public FDProductInfo copy(int version, EnumAvailabilityStatus availability, EnumOrderLineRating newRating, String newFreshness) {
-	    return new FDProductInfo (getSkuCode(), version, materialNumbers, atpRule, availability, new Date(), inventory, newRating, newFreshness, zonePriceInfoList.clone(), group, sustainabilityRating, upc, availabilityDates);
+	    return new FDProductInfo (getSkuCode(), version, materialNumbers, atpRule, availability, new Date(), inventory, newRating, newFreshness, zonePriceInfoList.clone(), group, sustainabilityRating, upc, availabilityDates,familyID);
 	}
 
 	public FDGroup getGroup() {
@@ -248,5 +251,13 @@ public class FDProductInfo extends FDSku  {
 	public FDCouponInfo getCoupon() {
 		return FDCouponFactory.getInstance().getCouponByUpc(upc);
 	}
-	
+
+	public String getFamilyID() {
+		// TODO Auto-generated method stub
+		return familyID;
+	}
+	public String[] getMaterialIds() {
+		// TODO Auto-generated method stub
+		return materialNumbers;
+	}
 }

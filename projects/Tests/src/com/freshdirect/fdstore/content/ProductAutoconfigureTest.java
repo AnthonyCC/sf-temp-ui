@@ -225,7 +225,7 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 					                           EnumATPRule.MATERIAL,
 					                           EnumAvailabilityStatus.AVAILABLE,
 					                           now,
-					                           inventoryCache,null,null,ZonePriceInfoListing.getDummy(), null,null, null, availDates);
+					                           inventoryCache,null,null,ZonePriceInfoListing.getDummy(), null,null, null, availDates,null);
 
 			return productInfo;
 		}

@@ -268,6 +268,22 @@ version="3.0">
         <res-auth>Container</res-auth>
       </resource-ref>
     </session>
+	 <session>
+      <ejb-name>SAPProductFamilyInfoLoader</ejb-name>
+      <home>
+      com.freshdirect.dataloader.sap.ejb.SAPProductFamilyLoaderHome</home>
+      <remote>
+      com.freshdirect.dataloader.sap.ejb.SAPProductFamilyLoaderSB</remote>
+      <ejb-class>
+      com.freshdirect.dataloader.sap.ejb.SAPProductFamilyLoaderSessionBean</ejb-class>
+      <session-type>Stateless</session-type>
+      <transaction-type>Bean</transaction-type>
+      <resource-ref>
+        <res-ref-name>jdbc/dbpool</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+      </resource-ref>
+    </session>
   </enterprise-beans>
   <assembly-descriptor>
     <container-transaction>

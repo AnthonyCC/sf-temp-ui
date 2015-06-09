@@ -39,6 +39,8 @@ import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceHome;
 import com.freshdirect.erp.ejb.ErpGrpInfoHome;
 import com.freshdirect.erp.ejb.ErpGrpInfoSB;
 import com.freshdirect.erp.ejb.ErpInfoSB;
+import com.freshdirect.erp.ejb.ErpProductFamilyHome;
+import com.freshdirect.erp.ejb.ErpProductFamilySB;
 import com.freshdirect.erp.model.ErpCharacteristicModel;
 import com.freshdirect.erp.model.ErpCharacteristicValueModel;
 import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
@@ -78,6 +80,7 @@ public class FDProductHelper {
 	private transient ErpCharacteristicValuePriceHome charValueHome = null;
 	private transient ErpNutritionHome nutritionHome = null;
 	private transient ErpGrpInfoHome grpHome = null;
+	private transient ErpProductFamilyHome erpProductFamilyHome = null;
 
 	public FDProduct getFDProduct(ErpProductModel product) throws FDResourceException {
 		// debug
@@ -200,6 +203,25 @@ public class FDProductHelper {
 				throw new FDResourceException( e1 );
 			}					
 		}
+		
+		String familyId = null;
+		if(FDStoreProperties.isProductFamilyEnabled()) {//otherwise family will not be associated with the product. 
+			ErpProductFamilySB remote;
+			try {
+				if (this.erpProductFamilyHome ==null) {
+					this.lookupFamilyHome();
+				}
+				remote = this.erpProductFamilyHome.create();
+				familyId = remote.getFamilyIdForMaterial(erpProductInfo.getMaterialSapIds()[0]);
+			} catch (RemoteException e1) {
+				e1.printStackTrace();
+				throw new FDResourceException( e1 );
+			} catch (CreateException e1) {
+				e1.printStackTrace();
+				throw new FDResourceException( e1 );
+			}					
+		}
+		
 		 Date[] availDates = new Date[0];
 		 if(FDStoreProperties.isLimitedAvailabilityEnabled()) {//otherwise group will not be associated with the product.
 			ErpInfoSB remote;
@@ -215,20 +237,20 @@ public class FDProductHelper {
 		}
 
 		
-		return new FDProductInfo(
-			erpProductInfo.getSkuCode(),
-			erpProductInfo.getVersion(),
-			erpProductInfo.getMaterialSapIds(),
-			erpProductInfo.getATPRule(),
-			status,
-			erpProductInfo.getUnavailabilityDate(),
-			null,
-			EnumOrderLineRating.getEnumByStatusCode(erpProductInfo.getRating()),
-			erpProductInfo.getFreshness(),
-			zonePriceInfoList,
-			group,
-			EnumSustainabilityRating.getEnumByStatusCode(erpProductInfo.getSustainabilityRating()),
-			erpProductInfo.getUpc(), availDates);
+		 return new FDProductInfo(
+					erpProductInfo.getSkuCode(),
+					erpProductInfo.getVersion(),
+					erpProductInfo.getMaterialSapIds(),
+					erpProductInfo.getATPRule(),
+					status,
+					erpProductInfo.getUnavailabilityDate(),
+					null,
+					EnumOrderLineRating.getEnumByStatusCode(erpProductInfo.getRating()),
+					erpProductInfo.getFreshness(),
+					zonePriceInfoList,
+					group,
+					EnumSustainabilityRating.getEnumByStatusCode(erpProductInfo.getSustainabilityRating()),
+					erpProductInfo.getUpc(), availDates,familyId);
 	
 	}
 	
@@ -499,6 +521,20 @@ public class FDProductHelper {
 		try {
 			ctx = new InitialContext();
 			this.grpHome = (ErpGrpInfoHome) ctx.lookup("java:comp/env/ejb/GrpPriceInfo");
+		} catch (NamingException ex) {
+			throw new FDResourceException(ex);
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException ne) {}
+		}
+	}
+	
+	private void lookupFamilyHome() throws FDResourceException {
+		Context ctx = null;
+		try {
+			ctx = new InitialContext();
+			this.erpProductFamilyHome = (ErpProductFamilyHome) ctx.lookup("java:comp/env/ejb/ErpProductFamily");
 		} catch (NamingException ex) {
 			throw new FDResourceException(ex);
 		} finally {

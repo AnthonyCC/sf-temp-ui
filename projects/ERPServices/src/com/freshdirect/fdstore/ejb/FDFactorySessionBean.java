@@ -25,6 +25,7 @@ import javax.naming.NamingException;
 
 import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.customer.ErpGrpPriceModel;
+import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.ejb.ErpGrpInfoHome;
@@ -32,6 +33,8 @@ import com.freshdirect.erp.ejb.ErpGrpInfoSB;
 import com.freshdirect.erp.ejb.ErpInfoHome;
 import com.freshdirect.erp.ejb.ErpInfoSB;
 import com.freshdirect.erp.ejb.ErpProductEB;
+import com.freshdirect.erp.ejb.ErpProductFamilyHome;
+import com.freshdirect.erp.ejb.ErpProductFamilySB;
 import com.freshdirect.erp.ejb.ErpProductHome;
 import com.freshdirect.erp.ejb.ErpZoneInfoHome;
 import com.freshdirect.erp.ejb.ErpZoneInfoSB;
@@ -60,6 +63,8 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 	private transient ErpProductHome productHome = null;
 	private transient ErpZoneInfoHome zoneHome = null;
 	private transient ErpGrpInfoHome grpHome = null;
+	private transient ErpProductFamilyHome familyHome = null;
+	
 	
 	private FDProductHelper productHelper = new FDProductHelper();
 
@@ -356,6 +361,41 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
     }
     
+	public ErpProductFamilyModel getFamilyInfo(String familyId) throws FDGroupNotFoundException, FDResourceException {
+		if (this.familyHome==null) {
+			this.lookupFamilyInfoHome();
+		}
+		try {
+			// find ErpProduct by sku & version
+					
+			ErpProductFamilySB infoSB = familyHome.create();		
+			return infoSB.findFamilyInfo(familyId);
+
+		} catch (CreateException fe) {
+			throw new FDResourceException(fe);
+		} catch (RemoteException re) {
+			this.productHome=null;
+			throw new FDResourceException(re);
+		}
+    }
+	
+	public ErpProductFamilyModel getSkuFamilyInfo(String materialId) throws FDGroupNotFoundException, FDResourceException {
+		if (this.familyHome==null) {
+			this.lookupFamilyInfoHome();
+		}
+		try {
+			// find ErpProduct by sku & version
+					
+			ErpProductFamilySB infoSB = familyHome.create();		
+			return infoSB.findSkyFamilyInfo(materialId);
+
+		} catch (CreateException fe) {
+			throw new FDResourceException(fe);
+		} catch (RemoteException re) {
+			this.productHome=null;
+			throw new FDResourceException(re);
+		}
+    }
 	
 	/**
 	 * Get product with specified version. 
@@ -444,6 +484,26 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
 	}
 	
+    private  void lookupFamilyInfoHome() throws FDResourceException {
+		if (familyHome != null) {
+			return;
+		}
+		Context ctx = null;
+		try {
+			ctx = FDStoreProperties.getInitialContext();
+			familyHome = (ErpProductFamilyHome) ctx.lookup("freshdirect.erp.ErpProductFamily");
+		} catch (NamingException ne) {
+			throw new FDResourceException(ne);
+		} finally {
+			try {
+				if (ctx != null) {
+					ctx.close();
+				}
+			} catch (NamingException ne) {
+				ne.printStackTrace();
+			}
+		}
+	}
 	public void ejbCreate() throws CreateException {
 		// nothing required
 	}

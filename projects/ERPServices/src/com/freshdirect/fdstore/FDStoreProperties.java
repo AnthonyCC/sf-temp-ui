@@ -726,6 +726,8 @@ public class FDStoreProperties {
     
     private static final String PROP_QUICKSHOP_PAST_ORDERS_VISIBLE_MENU_ITEMS_COUNT = "fdstore.quickshop.past_orders.menuitem.count";
 	private static final String PROP_TIP_RANGE_CONFIG = "fdstore.tip.range.config";
+	
+	private static final String PROP_PRODUCTFAMILY = "fdstore.productfamily";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1431,6 +1433,9 @@ public class FDStoreProperties {
 		defaults.put(PROP_TIP_RANGE_CONFIG, "0,25,0.5;");
 		 
 		defaults.put(SUB_DOMAIN, "https://www.freshdirect.com");
+		
+		 //Product Family 
+        defaults.put(PROP_PRODUCTFAMILY, "true");
 	
 		refresh();
     }
@@ -3585,5 +3590,8 @@ public class FDStoreProperties {
         	responseDomain = domains.get(new Random().nextInt(domains.size()));
         }
         return responseDomain;
+	}
+		public static boolean isProductFamilyEnabled() {
+		return (new Boolean(get(PROP_PRODUCTFAMILY))).booleanValue();
 	}
 }

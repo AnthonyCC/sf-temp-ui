@@ -11,6 +11,7 @@ import com.freshdirect.content.nutrition.panel.NutritionPanel;
 import com.freshdirect.fdstore.content.TitledMedia;
 import com.freshdirect.fdstore.content.view.WebHowToCookIt;
 import com.freshdirect.fdstore.content.view.WebProductRating;
+import com.freshdirect.fdstore.content.ProductModel;
 
 
 /**
@@ -376,6 +377,18 @@ public class ProductExtraData implements Serializable {
 	 */
 	protected int freshness = 0;
 	
+	
+	/* placeholder for product family products */
+ 	
+	protected List<ProductData> familyProducts;
+
+	public List<ProductData> getFamilyProducts() {
+		return familyProducts;
+	}
+
+	public void setFamilyProducts(List<ProductData> familyProducts) {
+		this.familyProducts = familyProducts;
+	}
 	
 	public List<String> getAllergens() {
 		return allergens;
