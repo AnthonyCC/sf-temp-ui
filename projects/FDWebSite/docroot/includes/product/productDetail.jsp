@@ -93,8 +93,10 @@ FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<
 					</div>
 				</div>
 			</div>
-			
-			<soy:render template="pdp.evenBetter" data="${evenBetter}" />			
+			<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />
+			<c:if test="${empty productExtraPotato.familyProducts}">
+				<soy:render template="pdp.evenBetter" data="${evenBetter}" />
+			</c:if>			
 			<soy:render template="pdp.likethat" data="${xsell}" />
 </c:if>			
 <c:if test="${not productPotato.available }">
