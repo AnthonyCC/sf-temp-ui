@@ -725,6 +725,7 @@ public class ProductExtraDataPopulator {
 		
 		
 		/* placeholder for product family products */
+		if(FDStoreProperties.isProductFamilyEnabled())
 		{
 			List<ProductData> familyProducts = new ArrayList<ProductData>();
 
@@ -829,7 +830,7 @@ public class ProductExtraDataPopulator {
 				
 			}
 		}
-			//sortByPopularity(familyProducts);
+			sortByPopularity(familyProducts);
 
 
 			data.setFamilyProducts(familyProducts);
