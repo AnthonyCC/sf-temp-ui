@@ -430,6 +430,10 @@ span.cssbutton.annotation:hover {
 	-moz-osx-font-smoothing: grayscale;		
 }
 
+.pdp .pdp-evenbetter h2.familyproducts {
+	color: #C50000;
+}
+
 .pdp .pdp-likethat h2 {
   font-family: Verdana, Arial, sans-serif;
   color:#333;
