@@ -60,10 +60,11 @@ public class SAPProductFamilyLoaderDAO {
     public static void createHistoryData(Connection con, Timestamp batchTimestamp,int batchNumber) throws SQLException
 	{
 	   Connection conn = con;
+	   String id = getNextId(conn, "ERPS");
        try {
 
     	    PreparedStatement ps = conn.prepareStatement("insert into erps.product_family_history (ID,VERSION, DATE_CREATED,MESSAGE) values (?,?,?,?)");
-		    ps.setString(1, String.valueOf(batchNumber));
+		    ps.setString(1, id);
 		    ps.setString(2, String.valueOf(batchNumber));
 		    ps.setTimestamp(3, batchTimestamp);
 		    ps.setString(4, EnumApprovalStatus.LOADING.getStatusCode());
