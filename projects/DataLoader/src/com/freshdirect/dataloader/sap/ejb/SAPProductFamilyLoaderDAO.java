@@ -124,12 +124,10 @@ public class SAPProductFamilyLoaderDAO {
      * @throws SQLException any problems while getting a unique id
      * @return an id that uniquely identifies a persistent object
      */    
-//    protected static String getNextId(Connection conn, String schema) throws SQLException {
-//		return SequenceGenerator.getNextId(conn, schema);
-//    }
+
     
-    protected static String getNextId(Connection conn) throws SQLException {
-		return SequenceGenerator.getNextId(conn);
+    protected static String getNextId(Connection conn,String schema) throws SQLException {
+		return SequenceGenerator.getNextId(conn,schema);
     }
     
     private static final String PRODUCT_FAMILY_MASTER_INSERT=" INSERT INTO ERPS.PRODUCT_FAMILY_MASTER  (ID, FAMILY_ID,VERSION,ACTIVE, PRODUCT_ID,GROUP_STAT) VALUES (?,?,?,?,?,?)";
@@ -149,7 +147,7 @@ public class SAPProductFamilyLoaderDAO {
 
    		 ErpProductFamilyModel erpProductFamilyModel = (ErpProductFamilyModel)productFamilyList.get(i);
    		flyIds.add(erpProductFamilyModel.getGrpId());
-    	 String id = getNextId(conn);
+   		String id = getNextId(conn, "ERPS");
      	 LOGGER.debug("id value ####"+id);
      	 LOGGER.debug("inside for loop prepared statement #####");
      	 PreparedStatement ps = conn.prepareStatement(PRODUCT_FAMILY_MASTER_INSERT);
@@ -179,7 +177,7 @@ public class SAPProductFamilyLoaderDAO {
     private static void updateFmlyVersion(Connection conn, int version,
 			Set<String> flyIds)  throws SQLException {
     	
-    	 String id = getNextId(conn);
+    	String id = getNextId(conn, "ERPS");
      	
      	 LOGGER.debug("inside for updateFmlyVersion statement #####");
      	 PreparedStatement ps = conn.prepareStatement(PRODUCT_FAMILY_HISTORY_INSERT);
@@ -206,9 +204,9 @@ private static final String PRODUCT_FAMLY_MAT_SQL=" INSERT INTO  ERPS.MATERIAL_P
 	    	   
 	    	    PreparedStatement ps = conn.prepareStatement(PRODUCT_FAMLY_MAT_SQL);
 		    	   
-	    	 // String id = getNextId(conn, "ERPS");
+	    	  
 	       	 // NOT passsing ERPS to get sqence. passing system sequence for main method call testing purpose
-	       	 String id = getNextId(conn);
+	    	    String id = getNextId(conn, "ERPS");
 	    	    	
 		    	    PrimaryKey key=new PrimaryKey(id);		    	    
 		    	    ps.setString(1, id);
