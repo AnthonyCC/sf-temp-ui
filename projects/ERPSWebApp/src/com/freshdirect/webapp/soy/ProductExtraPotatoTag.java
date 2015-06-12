@@ -24,6 +24,8 @@ public class ProductExtraPotatoTag extends SimpleTagSupport {
 	protected String name;
 	protected String productId;
 	protected String categoryId;
+	protected String grpId;
+	protected String version;
 
 	public String getName() {
 		return name;
@@ -44,12 +46,28 @@ public class ProductExtraPotatoTag extends SimpleTagSupport {
 		this.categoryId = categoryId;
 	}
 	
+	public String getGrpId() {
+		return grpId;
+	}
+	
+	public void setGrpId(String grpId) {
+		this.grpId = grpId;
+	}
+	
+	public String getVersion() {
+		return version;
+	}
+	
+	public void setVersion(String version) {
+		this.version = version;
+	}
+	
 
 	private Map<String, ?> extractPotato() {
 		FDUserI user = (FDUserI) ((PageContext) getJspContext()).getSession()
 				.getAttribute(SessionName.USER);
 
-		return DataPotatoField.digProductExtraData(user, categoryId, productId, ((PageContext) getJspContext()).getServletContext() );
+		return DataPotatoField.digProductExtraData(user, categoryId, productId, ((PageContext) getJspContext()).getServletContext(), grpId, version );
 	}
 
 	@Override

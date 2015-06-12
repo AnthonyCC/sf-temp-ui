@@ -393,7 +393,7 @@ span.cssbutton.annotation:hover {
 	color:#797965;
 }
 
-.pdp .pdp-atc .subtotal b {
+.pdp .pdp-atc .subtotal span.subtotal-inner {
 	font-size: 21px;
 }
 
@@ -430,8 +430,9 @@ span.cssbutton.annotation:hover {
 	-moz-osx-font-smoothing: grayscale;		
 }
 
-.pdp .pdp-evenbetter h2.familyproducts {
-	color: #C50000;
+.pdp .pdp-evenbetter h2.familyproducts,
+.pdp .pdp-evenbetter h2.groupProducts {
+	color: #C00;
 }
 
 .pdp .pdp-likethat h2 {
@@ -498,12 +499,16 @@ span.cssbutton.annotation:hover {
 	width:100%;
 	overflow:visible;
 	text-align:center;
-  font-size:10px;
+  	font-size:10px;
 	height:auto;
 }
 
-.pdp-evenbetter-quantity .subtotal b{
-	display:block;
+.pdp-evenbetter-quantity .subtotal{
+	padding-top: 3px;
+}
+
+.pdp-evenbetter-quantity .subtotal span.subtotal-inner{
+	font-weight: normal;
 }
 
 .pdp-evenbetter-quantity .salesunit{
@@ -543,7 +548,8 @@ span.cssbutton.annotation:hover {
 #evenBetterPopup .pdp-evenbetter-item-header {
 	height:40px;
 	position:relative;
-	background:white
+	background:white;
+	padding: 0 30px 0 10px;
 }
 
 #evenBetterPopup .pdp-evenbetter-item-header button {

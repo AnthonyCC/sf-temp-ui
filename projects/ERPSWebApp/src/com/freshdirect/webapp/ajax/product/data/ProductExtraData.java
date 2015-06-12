@@ -733,4 +733,27 @@ public class ProductExtraData implements Serializable {
 	public void setFrozen( boolean isFrozen ) {
 		this.isFrozen = isFrozen;
 	}
+	
+		/* group scale data */
+	
+	public static class GroupScaleData implements Serializable {
+		private static final long serialVersionUID = 1306378437653503330L;	
+		public String grpId;
+		public String version;			
+		public String grpQty;
+		public String grpTotalPrice;
+		public String grpShortDesc;
+		public String grpLongDesc;			
+		public List<ProductData> groupProducts;
+	}
+		
+	protected GroupScaleData groupScaleData;
+	
+	public GroupScaleData getGroupScaleData() {
+		return groupScaleData;
+	}
+	
+	public void setGroupScaleData(GroupScaleData groupScaleData) {
+		this.groupScaleData = groupScaleData;
+	}
 }
