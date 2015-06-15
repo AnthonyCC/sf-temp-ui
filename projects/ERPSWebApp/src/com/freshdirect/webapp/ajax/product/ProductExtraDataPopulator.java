@@ -888,7 +888,7 @@ public class ProductExtraDataPopulator {
 			String familyID = productInfo.getFamilyID();
 			ErpProductFamilyModel products = null;
 			List<String> skuCodes = null;
-			if(familyID == null){
+			if(familyID == null&&productInfo.getMaterialIds()!=null){
 				
 				try {
 					products = FDFactory.getSkuFamilyInfo(productInfo.getMaterialIds()[0]);
