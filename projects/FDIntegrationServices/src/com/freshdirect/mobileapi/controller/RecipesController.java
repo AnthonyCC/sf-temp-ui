@@ -20,7 +20,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpConnection;
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpRecoverableException;
+import org.apache.commons.httpclient.MethodRetryHandler;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -58,10 +62,14 @@ public class RecipesController extends BaseController {
 	private static final String ACTION_GET_DETAIL = "getDetail";
 	private static final String ACTION_SEARCH = "search";
 
+	private static final String RECIPYURL_API = "http://api.getpopcart.com/v1";
+		
 	private static final String FOODILY_API = "http://api.foodily.com/v1";
+	private static final String POPCART_API = "http://api.getpopcart.com/v1";
+	
 
-	private static final AtomicReference<String> FOODILY_API_TOKEN = new AtomicReference<String>(null);
-
+	private static final AtomicReference<String> RECIPY_API_TOKEN = new AtomicReference<String>(null);
+	
 	@Override
 	protected ModelAndView processRequest(final HttpServletRequest request,
 			final HttpServletResponse response, final ModelAndView model, final String action,
@@ -90,14 +98,39 @@ public class RecipesController extends BaseController {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	private ModelAndView getDetail(final String recipeId, final ModelAndView model, final SessionUser user) {
+	private static GetMethod getMethodRecp(String recipeId){
 		final HttpClient http = new HttpClient();
 		http.setConnectionTimeout(5000);
-		final GetMethod get = new GetMethod(FOODILY_API + "/recipes/" + recipeId);
-		get.addRequestHeader("Authorization","Bearer " + FOODILY_API_TOKEN.get());
+		GetMethod get = new GetMethod(POPCART_API + "/recipes/" + recipeId);
+		get.addRequestHeader("Authorization","Bearer " + RECIPY_API_TOKEN.get());
+			
 		try {
 			http.executeMethod(get);
+			if(200 == get.getStatusCode()){
+				return get;
+			} else {
+				get = new GetMethod(FOODILY_API + "/recipes/" + recipeId);
+				get.addRequestHeader("Authorization","Bearer " + RECIPY_API_TOKEN.get());
+				http.executeMethod(get);
+				return get;
+				
+			}
+		} catch (HttpException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return get;
+
+		}
+	private ModelAndView getDetail(final String recipeId, final ModelAndView model, final SessionUser user) {
+	
+		
+		GetMethod get = getMethodRecp(recipeId);
+		try {
+			
 			if (200 == get.getStatusCode()) {
 				final String json = get.getResponseBodyAsString();
 				final ObjectMapper mapper = new ObjectMapper();
@@ -145,12 +178,11 @@ public class RecipesController extends BaseController {
 	
 	@SuppressWarnings("unchecked")
 	private void fillIngredients(
-			RecipeDetailResponse recipe, FDUserI user) {
-		HttpClient http = new HttpClient();
-		GetMethod get = new GetMethod(FOODILY_API + "/shopping?recipes=" +recipe.getRecipeId() + "&stores=freshdirect&inStockOnly=false&fields=*(recipe(ingredients(list(*))),products(ingredient,products(*)))");
-		get.addRequestHeader("Authorization","Bearer " + FOODILY_API_TOKEN.get());
+			RecipeDetailResponse recipe, FDUserI user)  {
+
+		
 		try {
-			http.executeMethod(get);
+			GetMethod get = returnMethod(recipe);
 			if (get.getStatusCode() == 200) {
 				final String json = get.getResponseBodyAsString();				
 				final ObjectMapper mapper = new ObjectMapper();
@@ -170,6 +202,7 @@ public class RecipesController extends BaseController {
 						final Map<String, Object> vendorData = mapper.readValue(vendorJson, Map.class);
 						final String skuId = vendorData.get("skuCode").toString();
 						final SkuModel skuModel = (SkuModel) ContentFactory.getInstance().getContentNode(skuId);
+						if(skuModel!=null){
 						final ProductModel productModel = skuModel.getProductModel();
 						try {
 							final Product product = new Product(wrap(productModel, user));
@@ -200,6 +233,7 @@ public class RecipesController extends BaseController {
 						} catch (ModelException e) {
 							recipe.addWarningMessage("SKU: " + vendorJson + ": " + traceFor(e));
 						}
+						}
 					}
 					ingredients.add(suggestions);
 					
@@ -211,6 +245,25 @@ public class RecipesController extends BaseController {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	private GetMethod returnMethod(RecipeDetailResponse recipe) throws HttpException{
+		HttpClient http = new HttpClient();
+		GetMethod get = new GetMethod(RECIPYURL_API + "/shopping?recipes=" +recipe.getRecipeId() + "&stores=freshdirect&inStockOnly=false&fields=*(recipe(ingredients(list(*))),products(ingredient,products(*)))");
+		get.addRequestHeader("Authorization","Bearer " + RECIPY_API_TOKEN.get());
+		try {
+			http.executeMethod(get);
+			if(get.getStatusCode() == 200){
+				return get;
+			}else {
+				get = new GetMethod(FOODILY_API + "/shopping?recipes=" +recipe.getRecipeId() + "&stores=freshdirect&inStockOnly=false&fields=*(recipe(ingredients(list(*))),products(ingredient,products(*)))");
+				get.addRequestHeader("Authorization","Bearer " + RECIPY_API_TOKEN.get());
+				http.executeMethod(get);
+				return get;
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		
 	}
 
 	private void readFoodilyRecipe(final Map<String, Object> json,
@@ -288,16 +341,8 @@ public class RecipesController extends BaseController {
 				e.printStackTrace();			
 			}
 	
-			String url = FOODILY_API + "/recipes?expand=recipes";
-			if (searchTerm != null) {
-				url += "&q=" + urlEncode(searchTerm);
-			}
-			
-			final GetMethod get = new GetMethod(url);
-			get.addRequestHeader("Authorization","Bearer " + FOODILY_API_TOKEN.get());
-			http.executeMethod(get);
-			
-			http.executeMethod(get);
+		
+			final GetMethod get = getMethodURL( searchTerm);
 			if (200 == get.getStatusCode()) {
 				final String json = get.getResponseBodyAsString();
 				final ObjectMapper mapper = new ObjectMapper();
@@ -325,6 +370,30 @@ public class RecipesController extends BaseController {
 			throw new RuntimeException(e);
 		}
 		return model;
+	}
+	
+	private GetMethod getMethodURL(String searchTerm) throws HttpException, IOException{
+		final HttpClient http = new HttpClient();
+		String url = RECIPYURL_API + "/recipes?expand=recipes";
+		if (searchTerm != null) {
+			url += "&q=" + urlEncode(searchTerm);
+		}
+		
+		GetMethod get = new GetMethod(url);
+		get.addRequestHeader("Authorization","Bearer " + RECIPY_API_TOKEN.get());
+		http.executeMethod(get);
+		if(200 == get.getStatusCode()){
+			return get;
+		}else {
+			String url1 = FOODILY_API + "/recipes?expand=recipes";
+			if (searchTerm != null) {
+				url1 += "&q=" + urlEncode(searchTerm);
+			}
+		get = new GetMethod(url1);
+		get.addRequestHeader("Authorization","Bearer " + RECIPY_API_TOKEN.get());
+		http.executeMethod(get);
+		return get;
+		}
 	}
 
 	private String urlEncode(final String query) {
@@ -362,31 +431,44 @@ public class RecipesController extends BaseController {
 	}
 
 	private static String updateToken() {
-		final String previousToken = FOODILY_API_TOKEN.get();
+		final String previousToken = RECIPY_API_TOKEN.get();
 		String newToken = "";
 		final HttpClient http = new HttpClient();
-		final PostMethod auth = new PostMethod(FOODILY_API + "/token");
+		final PostMethod auth = new PostMethod(RECIPYURL_API + "/token");
 		auth.addRequestHeader("Authorization", "Basic ZnJlc2hkaXJlY3Q6SjNJZ3A5T3ZHZm5qcWpu");
 		auth.addParameter("grant_type", "client_credentials");
 		try {
 			http.executeMethod(auth);
 			if (200 == auth.getStatusCode()) {
-				final String json = auth.getResponseBodyAsString();
-				final ObjectMapper mapper = new ObjectMapper();
-				@SuppressWarnings("unchecked")
-				final Map<String, Object> response = mapper.readValue(json, Map.class);
-				final String access_token = response.get("access_token").toString();
-				if (FOODILY_API_TOKEN.compareAndSet(previousToken, access_token)) {
-					newToken = access_token;
-				} else {
-					newToken = FOODILY_API_TOKEN.get();
-				}
+				newToken = processsRequest(auth,previousToken);
+			}else{
+				final PostMethod authFood = new PostMethod(FOODILY_API + "/token");
+				authFood.addRequestHeader("Authorization", "Basic ZnJlc2hkaXJlY3Q6SjNJZ3A5T3ZHZm5qcWpu");
+				authFood.addParameter("grant_type", "client_credentials");			
+				http.executeMethod(authFood);
+				if (200 == authFood.getStatusCode()) 
+					newToken = processsRequest(authFood,previousToken);
 			}
 		} catch (final HttpException e) {
 			throw new RuntimeException(e);
 		} catch (final IOException e) {
 			throw new RuntimeException(e);
 		}
+		return newToken;
+	}
+	private static String processsRequest(PostMethod auth,String previousToken) throws JsonParseException, JsonMappingException, IOException{
+		String newToken = "";
+		final String json = auth.getResponseBodyAsString();
+		final ObjectMapper mapper = new ObjectMapper();
+		@SuppressWarnings("unchecked")
+		final Map<String, Object> response = mapper.readValue(json, Map.class);
+		final String access_token = response.get("access_token").toString();
+		if (RECIPY_API_TOKEN.compareAndSet(previousToken, access_token)) {
+			newToken = access_token;
+		} else {
+			newToken = RECIPY_API_TOKEN.get();
+		}
+	
 		return newToken;
 	}
 
