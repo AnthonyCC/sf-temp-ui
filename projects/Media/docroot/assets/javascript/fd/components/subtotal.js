@@ -17,13 +17,11 @@ var FreshDirect = FreshDirect || {};
         qMax = parseFloat($subtotal.attr('data-qmax')) || 10000,
         bySalesUnit = $subtotal.attr('data-bysalesunit') || false,
         price = 0,
-        itemInfo = fd.modules.common.productSerialize($subtotal).pop();
-  	  	if(typeof itemInfo != 'undefined'){
-  	  		var salesUnit = itemInfo.salesUnit,
-  	  		qty = parseFloat(itemInfo.quantity),
-  	        origqty = qty;
-  	  	}        
-        var pricingUnit = "",
+        itemInfo = fd.modules.common.productSerialize($subtotal).pop(),
+        salesUnit = itemInfo.salesUnit,
+        qty = parseFloat(itemInfo.quantity),
+        origqty = qty,
+        pricingUnit = "",
         template = $subtotal.attr('data-template') || '[]';
 
     template = FreshDirect.modules.common.utils.discover(template);

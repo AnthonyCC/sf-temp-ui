@@ -6,21 +6,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
-import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 import com.freshdirect.WineUtil;
-import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.content.nutrition.EnumAllergenValue;
 import com.freshdirect.content.nutrition.EnumClaimValue;
 import com.freshdirect.content.nutrition.EnumOrganicValue;
@@ -31,7 +27,6 @@ import com.freshdirect.customer.ErpProductFamilyModel;
 import com.freshdirect.erp.ErpFactory;
 import com.freshdirect.fdstore.EnumSustainabilityRating;
 import com.freshdirect.fdstore.FDCachedFactory;
-import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDFactory;
 import com.freshdirect.fdstore.FDGroupNotFoundException;
 import com.freshdirect.fdstore.FDNutritionCache;
@@ -41,7 +36,6 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.GroupScalePricing;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.AbstractProductModelImpl;
 import com.freshdirect.fdstore.content.BrandModel;
@@ -76,7 +70,6 @@ import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.product.data.ProductExtraData;
 import com.freshdirect.webapp.ajax.product.data.ProductExtraData.BrandInfo;
-import com.freshdirect.webapp.ajax.product.data.ProductExtraData.GroupScaleData;
 import com.freshdirect.webapp.ajax.product.data.ProductExtraData.LabelAndLink;
 import com.freshdirect.webapp.ajax.product.data.ProductExtraData.RecipeData;
 import com.freshdirect.webapp.ajax.product.data.ProductExtraData.SourceData;
@@ -88,10 +81,8 @@ import com.freshdirect.webapp.util.NutritionInfoPanelRendererUtil;
 
 public class ProductExtraDataPopulator {
 	private static final Logger LOG = LoggerFactory.getInstance( ProductExtraDataPopulator.class );
-	private final static java.text.DecimalFormat qtyFormatter = new java.text.DecimalFormat("0");
-	private final static java.text.DecimalFormat totalFormatter = new java.text.DecimalFormat("0.00");
 
-	public static ProductExtraData createExtraData( FDUserI user, ProductModel product, ServletContext ctx, String grpId, String grpVersion ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+	public static ProductExtraData createExtraData( FDUserI user, ProductModel product, ServletContext ctx ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
 		
 		if ( product == null ) {
 			BaseJsonServlet.returnHttpError( 500, "product not found" );
@@ -101,12 +92,12 @@ public class ProductExtraDataPopulator {
 		ProductExtraData data = new ProductExtraData();
 		
 		// First populate product-level data
-		populateData( data, user, product, ctx, grpId, grpVersion );
+		populateData( data, user, product,ctx );
 		
 		return data;
 	}
 	
-	public static ProductExtraData createExtraData( FDUserI user, String productId, String categoryId, ServletContext ctx, String grpId, String grpVersion ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+	public static ProductExtraData createExtraData( FDUserI user, String productId, String categoryId, ServletContext ctx ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
 		
 		if ( productId == null ) {
 			BaseJsonServlet.returnHttpError( 400, "productId not specified" );	// 400 Bad Request
@@ -115,12 +106,12 @@ public class ProductExtraDataPopulator {
 		// Get the ProductModel
 		ProductModel product = PopulatorUtil.getProduct( productId, categoryId );
 		
-		return createExtraData( user, product, ctx, grpId, grpVersion );
+		return createExtraData( user, product, ctx );
 	}
 	
 	
 	private static void populateData(ProductExtraData data, FDUserI user,
-			ProductModel productNode, ServletContext ctx, String grpId, String grpVersion) throws FDResourceException, FDSkuNotFoundException {
+			ProductModel productNode, ServletContext ctx) throws FDResourceException, FDSkuNotFoundException {
 
 		final String popupPage = "/shared/popup.jsp";
 
@@ -732,146 +723,6 @@ public class ProductExtraDataPopulator {
 			data.setFreshness( Integer.parseInt(productInfo.getFreshness()) );
 		}
 		
-		/* Group Scale products */
-		{
-			GroupScaleData gsData = new GroupScaleData(); //make sure this gets added, even if it's all nulls
-		
-			if (grpId != null && !"".equals(grpId) && grpVersion != null && !"".equals(grpVersion)) {
-							
-				List<ProductData> groupProductsList = new ArrayList<ProductData>();
-					
-				/* set initial values */
-				gsData.grpId = grpId;
-				gsData.version = grpVersion;
-						
-				try{
-		
-					List<String> skuList = null; /* we'll use this to get the other products */
-					final String prioritySku = defaultSku.getSkuCode(); /* this is the sku for the product we're starting with, we skip adding it to the product list */
-					List <ProductModel> productModelList = new ArrayList<ProductModel>();
-							
-					if (grpId != null && !"".equals(grpId)) {
-						FDGroup group = null;
-								
-						if(grpVersion==null || (grpVersion!=null && "".equals(grpVersion.trim()))) {
-							group=GroupScaleUtil.getLatestActiveGroup(grpId);
-						} else {			
-							group = new FDGroup(grpId, Integer.parseInt(grpVersion));
-						}
-								
-						MaterialPrice matPrice = GroupScaleUtil.getGroupScalePrice(group, user.getPricingZoneId());
-							
-						if (matPrice != null) {
-							String grpQty = "0";
-							String grpTotalPrice = "0";
-							boolean isSaleUnitDiff = false;
-							double displayPrice = 0.0;
-										
-							if(matPrice.getPricingUnit().equals(matPrice.getScaleUnit()))
-								displayPrice = matPrice.getPrice() * matPrice.getScaleLowerBound();
-							else {
-								displayPrice = matPrice.getPrice();
-								isSaleUnitDiff = true;
-							}
-										
-							grpQty = qtyFormatter.format(matPrice.getScaleLowerBound());
-										
-							if(matPrice.getScaleUnit().equals("LB"))//Other than eaches append the /pricing unit for clarity.
-								grpQty = grpQty + (matPrice.getScaleUnit().toLowerCase());
-				
-								grpTotalPrice = "$"+totalFormatter.format(displayPrice);
-										
-								if(isSaleUnitDiff)
-									grpTotalPrice = grpTotalPrice + "/" + (matPrice.getPricingUnit().toLowerCase());
-										
-									GroupScalePricing gsp = GroupScaleUtil.lookupGroupPricing(group);
-				
-									gsData.grpQty = grpQty;
-									gsData.grpTotalPrice = grpTotalPrice;
-									gsData.grpShortDesc = gsp.getShortDesc();
-									gsData.grpLongDesc = gsp.getLongDesc();
-										
-									skuList = gsp.getSkuList();
-						}
-					}
-							
-					/* iterate over list of skus to get productModels */
-					Iterator<String> skuListIt = skuList.iterator();
-					while(skuListIt.hasNext()){
-						String curSku = skuListIt.next();
-						if(prioritySku != null && prioritySku.equals(curSku))
-							//as it is already processed
-							continue;
-						try{
-							ProductModel pm = ContentFactory.getInstance().getProduct(curSku);
-							if (pm != null) {
-								productModelList.add(pm);
-							}
-						}catch(FDSkuNotFoundException se){
-							//Ignore this sku. move to next
-						}
-									
-					}
-							
-					/* now iterate over productModels to get ProductDatas */Iterator<String> it = skuList.iterator();
-					Iterator<ProductModel> productModelListIt = productModelList.iterator();
-					while(productModelListIt.hasNext()){
-						ProductModel curPm = productModelListIt.next();
-						ProductData pd = new ProductData();
-						SkuModel skuModel = null;
-								
-						if ( !(curPm instanceof ProductModelPricingAdapter) ) {
-							// wrap it into a pricing adapter if naked
-							curPm = ProductPricingFactory.getInstance().getPricingAdapter( curPm, user.getPricingContext() );
-						}
-								
-						if ( skuModel == null ) {
-							skuModel = curPm.getDefaultSku();
-						}
-						String skuCode = skuModel.getSkuCode();
-								
-						try {
-							FDProductInfo productInfo_fam = skuModel.getProductInfo();
-							FDProduct fdProduct = skuModel.getProduct();
-								
-							PriceCalculator priceCalculator = curPm.getPriceCalculator();
-									
-							ProductDetailPopulator.populateBasicProductData( pd, user, curPm );
-							ProductDetailPopulator.populateProductData( pd, user, curPm, skuModel, fdProduct, priceCalculator, null, true, true );
-							ProductDetailPopulator.populatePricing( pd, fdProduct, productInfo_fam, priceCalculator );
-									
-							try {
-								ProductDetailPopulator.populateSkuData( pd, user, curPm, skuModel, fdProduct );
-							} catch (FDSkuNotFoundException e) {
-								LOG.error( "Failed to populate sku data", e );
-							} catch ( HttpErrorResponse e ) {
-								LOG.error( "Failed to populate sku data", e );
-							}
-									
-							ProductDetailPopulator.postProcessPopulate( user, pd, pd.getSkuCode() );
-									
-						} catch (FDSkuNotFoundException e) {
-							LOG.warn( "Sku not found: "+skuCode, e );
-						}
-								
-						groupProductsList.add(pd);
-								
-					}
-							
-					/* and finally set to Data */
-					gsData.groupProducts = groupProductsList;
-							
-							
-				}catch(FDResourceException fe){
-					//throw new JspException(fe);
-				} catch (FDGroupNotFoundException e) {
-					// TODO Auto-generated catch block
-					//throw new JspException(e);
-				}
-			
-			}
-				data.setGroupScaleData(gsData);
-		}
 		
 		/* placeholder for product family products */
 		if(FDStoreProperties.isProductFamilyEnabled())

@@ -71,17 +71,11 @@ FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<
 		<div class="span-8 prepend-1">
 <c:if test="${productPotato.available}">			
 			<div class="pdp-availability"><soy:render template="pdp.availability" data="${productPotato}" /></div>
-			<div class="pdp-price">
-				<soy:render template="common.price" data="${productPotato}" />
-				<soy:render template="pdp.savestring" data="${productPotato}" />
-			</div>
+			<div class="pdp-price"><soy:render template="common.price" data="${productPotato}" /><soy:render template="pdp.savestring" data="${productPotato}" /></div>
 			<div class="span-7 prepend-1 first pdp-info">
 				<soy:render template="pdp.skuInfo" data="${productPotato}" />
 				<soy:render template="pdp.quantity" data="${productPotato}" />
-				<%-- don't show scale info if we're in group scale context --%>
-				<c:if test="${empty param.grpId and empty param.version}">
-					<soy:render template="pdp.scaleinfo" data="${productPotato}" />
-				</c:if>
+				<soy:render template="pdp.scaleinfo" data="${productPotato}" />
 				<soy:render template="pdp.ratings" data="${productPotato}" />
 				<soy:render template="pdp.badges" data="${productExtraPotato}" />
 				<soy:render template="pdp.heatRating" data="${productPotato}" />
@@ -99,14 +93,10 @@ FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<
 					</div>
 				</div>
 			</div>
-			<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
-				<%-- don't show evenBetter if we're in group scale context --%>
-			<c:if test="${empty param.grpId and empty param.version}">
-				<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />
-				<c:if test="${empty productExtraPotato.familyProducts}">					
-					<soy:render template="pdp.evenBetter" data="${evenBetter}" />					
-				</c:if>	
-			</c:if>
+			<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />
+			<c:if test="${empty productExtraPotato.familyProducts}">
+				<soy:render template="pdp.evenBetter" data="${evenBetter}" />
+			</c:if>			
 			<soy:render template="pdp.likethat" data="${xsell}" />
 </c:if>			
 <c:if test="${not productPotato.available }">

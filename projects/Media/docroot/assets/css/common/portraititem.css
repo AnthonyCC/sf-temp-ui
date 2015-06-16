@@ -952,7 +952,7 @@ a.portrait-item-header-name:link {
   text-transform: capitalize;
 }
 
-.portrait-item-configuration .subtotal span.subtotal-inner {
+.portrait-item-configuration .subtotal b {
   font-weight: normal;
 }
 

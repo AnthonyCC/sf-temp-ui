@@ -94,7 +94,7 @@ EnumProductLayout prodLayout = productNode.getProductLayout();
 boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, user);
 %>
 
-<potato:product name="productPotato" extraName="productExtraPotato" productId='${param.productId}' categoryId='${param.catId}' variantId='${param.variantId}' grpId='${param.grpId}' version='${param.version}' />
+<potato:product name="productPotato" extraName="productExtraPotato" productId='${param.productId}' categoryId='${param.catId}' variantId='${param.variantId}' />
 
 <% if(shouldBeOnNew) {  // new leftnav, TODO: remove this after full rollout%>
 	<potato:browse name="browsePotato" pdp="true" nodeId='${param.catId}'/>
@@ -214,8 +214,6 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 			<jsp:param name="catId" value="${ param.catId }"/>
 			<jsp:param name="productId" value="${ param.productId }"/>
 			<jsp:param name="variantId" value="${ param.variantId }"/>
-			<jsp:param name="grpId" value="${ param.grpId }"/>
-			<jsp:param name="version" value="${ param.version }"/>
 		</jsp:include>
     <script>
       window.FreshDirect = window.FreshDirect || {};

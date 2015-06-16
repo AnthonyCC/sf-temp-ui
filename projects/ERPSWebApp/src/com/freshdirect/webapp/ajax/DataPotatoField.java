@@ -229,10 +229,10 @@ public class DataPotatoField {
 	 * Collect product related extra info. Mostly used by PDP accordion widgets.
 	 * @return
 	 */
-	public static Map<String, ?> digProductExtraData( FDUserI user, String categoryId, String productId, ServletContext context, String grpId, String grpVersion ) {
+	public static Map<String, ?> digProductExtraData( FDUserI user, String categoryId, String productId, ServletContext context ) {
 		// first get a ProductData for product level attributes
 		try {
-			ProductExtraData extraData = ProductExtraDataPopulator.createExtraData( user, productId, categoryId, context, grpId, grpVersion );
+			ProductExtraData extraData = ProductExtraDataPopulator.createExtraData( user, productId, categoryId, context );
 			
 			// convert and return
 			return SoyTemplateEngine.convertToMap( extraData );
@@ -265,10 +265,10 @@ public class DataPotatoField {
 	 * Collect product related extra info. Mostly used by PDP accordion widgets.
 	 * @return
 	 */
-	public static Map<String, ?> digProductExtraData( FDUserI user, ProductModel product, ServletContext context, String grpId, String grpVersion ) {
+	public static Map<String, ?> digProductExtraData( FDUserI user, ProductModel product, ServletContext context ) {
 		// first get a ProductData for product level attributes
 		try {
-			ProductExtraData extraData = ProductExtraDataPopulator.createExtraData( user, product, context, grpId, grpVersion );
+			ProductExtraData extraData = ProductExtraDataPopulator.createExtraData( user, product, context );
 			
 			// convert and return
 			return SoyTemplateEngine.convertToMap( extraData );

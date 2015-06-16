@@ -63,9 +63,7 @@ var FreshDirect = FreshDirect || {};
 	  evenBetterPopup.open({
 		  element: element,
 		  productId:element.data('productId'),
-		  catId:element.data('catId'),
-		  grpId: element.data('grpId')||null,
-		  grpVersion: element.data('grpVersion')||null
+		  catId:element.data('catId')
 	  });
   });
   
