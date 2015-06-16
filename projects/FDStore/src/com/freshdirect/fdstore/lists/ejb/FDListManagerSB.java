@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.EJBObject;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
@@ -31,6 +32,8 @@ public interface FDListManagerSB extends EJBObject {
     public FDCustomerShoppingList generateEveryItemEverOrderedList(FDIdentity identity) throws FDResourceException, RemoteException;
     
     public List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedList(FDIdentity identity) throws FDResourceException, RemoteException;
+    //APPDEV-4179 - Item quantities should NOT be honored in "Your Top Items"
+    public List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedListTopItems(FDIdentity identity) throws FDResourceException, RemoteException;
 
     public String storeCustomerList(FDCustomerList list) throws FDResourceException, RemoteException;
     

@@ -128,6 +128,36 @@ public class FDListManagerSessionBean extends FDSessionBeanSupport {
             close(conn);
 		}
 	}
+	
+	//APPDEV-4179 - Item quantities should NOT be honored in "Your Top Items" 
+	public List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedListTopItems(FDIdentity identity) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDCustomerListDAO dao = new FDCustomerListDAO();
+			List<FDProductSelectionI> retList = new ArrayList<FDProductSelectionI>(100);
+			List<FDQsProductListLineItem> source;
+			try {
+				source = dao.getQsSpecificEveryItemEverOrderedListTopItemsTopItems(conn, identity);
+			} catch (FDSkuNotFoundException e1) {
+				throw new FDResourceException(e1);
+			}
+			for(FDQsProductListLineItem item : source){
+				if(item.getDeleted()==null){
+					try {
+						retList.add(item.convertToSelection());
+					} catch (FDSkuNotFoundException e) {
+						LOGGER.warn("Loaded an invalid sku - skipping", e);
+					}
+				}
+			}
+			return retList;
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+            close(conn);
+		}
+	}
 
 	public FDCustomerList getCustomerList(FDIdentity identity, EnumCustomerListType type, String listName) throws FDResourceException {
 		Connection conn = null;

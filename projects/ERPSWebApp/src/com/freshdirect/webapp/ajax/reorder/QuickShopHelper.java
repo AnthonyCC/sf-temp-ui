@@ -652,7 +652,11 @@ public class QuickShopHelper {
 		List<QuickShopLineItemWrapper> result = new ArrayList<QuickShopLineItemWrapper>();
 
 		List<FDProductSelectionI> items = FDListManager.getQsSpecificEveryItemEverOrderedList(user.getIdentity());
-
+		//APPDEV-4179 - Item quantities should NOT be honored in "Your Top Items" - START
+		if (EnumQuickShopTab.TOP_ITEMS.equals(tab)) {
+			items = FDListManager.getQsSpecificEveryItemEverOrderedListTopItems(user.getIdentity());
+		}
+		//APPDEV-4179 - Item quantities should NOT be honored in "Your Top Items" - END
 		if (items == null || items.isEmpty()) {
 			return result;
 		}

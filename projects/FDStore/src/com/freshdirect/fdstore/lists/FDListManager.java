@@ -79,6 +79,21 @@ public class FDListManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+	
+	//APPDEV-4179 - Item quantities should NOT be honored in "Your Top Items" 
+	public static List<FDProductSelectionI> getQsSpecificEveryItemEverOrderedListTopItems(FDIdentity identity) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDListManagerSB sb = managerHome.create();
+			return sb.getQsSpecificEveryItemEverOrderedListTopItems(identity);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
 
 	public static FDCustomerList getCustomerList(FDIdentity identity,
 			EnumCustomerListType type, String listName)

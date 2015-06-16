@@ -21,6 +21,9 @@ import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.ejb.ErpOrderLineUtil;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.content.PopulatorUtil;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
@@ -579,6 +582,43 @@ class FDCustomerListDAO {
 			rs.close();
 			ps.close();
 			//System.out.println(" Time taken in DAO in milliseconds:"+((System.currentTimeMillis()-startTime))+" for lines :"+result.size());
+			return result;
+		}
+		
+		//APPDEV-4179 - Item quantities should NOT be honored in "Your Top Items" 
+		public List<FDQsProductListLineItem> getQsSpecificEveryItemEverOrderedListTopItemsTopItems(Connection conn, FDIdentity identity) throws SQLException, FDSkuNotFoundException {
+			PreparedStatement ps = conn.prepareStatement(QUERY_EVERY_ITEM_QS_1);
+			
+			
+			Calendar timeLimit = Calendar.getInstance();
+			timeLimit.add(Calendar.MONTH, QUICKSHOP_MONTH_LIMIT);
+			
+			ps.setString(1, identity.getErpCustomerPK());
+			ps.setDate(2, new java.sql.Date(timeLimit.getTimeInMillis()));
+			
+			ResultSet rs = ps.executeQuery();
+			
+			List<FDQsProductListLineItem> result = new ArrayList<FDQsProductListLineItem>(100);
+			while (rs.next()) {
+				ProductModel productModel = PopulatorUtil.getProduct(rs.getString("SKU_CODE"));
+				double minQty = productModel.getQuantityMinimum();
+				String minQ = productModel.getSalesUnitLabel();							
+				FDQsProductListLineItem item = new FDQsProductListLineItem(
+						rs.getString("SKU_CODE"),
+						new FDConfiguration(minQty, rs.getString("QUANTITY"), ErpOrderLineUtil.convertStringToHashMap(rs.getString("CONFIGURATION"))),
+						rs.getString("RECIPE_SOURCE_ID")
+				);
+				
+				item.setDeliveryStartDate(getTimestamp(rs, "STARTTIME"));
+				item.setOrderId(rs.getString("SALE_ID"));
+				item.setOrderLineId(rs.getString("ORDERLINE_ID"));
+				item.setSaleStatus(EnumSaleStatus.getSaleStatus(rs.getString("STATUS")));
+				
+				result.add(item);
+			}
+
+			rs.close();
+			ps.close();
 			return result;
 		}
 
