@@ -602,10 +602,9 @@ class FDCustomerListDAO {
 			while (rs.next()) {
 				ProductModel productModel = PopulatorUtil.getProduct(rs.getString("SKU_CODE"));
 				double minQty = productModel.getQuantityMinimum();
-				String minQ = productModel.getSalesUnitLabel();							
 				FDQsProductListLineItem item = new FDQsProductListLineItem(
 						rs.getString("SKU_CODE"),
-						new FDConfiguration(minQty, rs.getString("QUANTITY"), ErpOrderLineUtil.convertStringToHashMap(rs.getString("CONFIGURATION"))),
+						new FDConfiguration(minQty, rs.getString("SALES_UNIT"), ErpOrderLineUtil.convertStringToHashMap(rs.getString("CONFIGURATION"))),
 						rs.getString("RECIPE_SOURCE_ID")
 				);
 				
