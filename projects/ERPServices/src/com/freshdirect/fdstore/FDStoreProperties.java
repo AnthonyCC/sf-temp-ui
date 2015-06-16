@@ -728,6 +728,11 @@ public class FDStoreProperties {
 	private static final String PROP_TIP_RANGE_CONFIG = "fdstore.tip.range.config";
 	
 	private static final String PROP_PRODUCTFAMILY = "fdstore.productfamily";
+	
+	// APPDEV - 4159 - Creating of variables for maximum size of columns in promo table
+	
+	private static final String PROMO_OLDCOLUMN_MAX_LIMIT = "fdstore.promopublish.oldValuecolumn.maxsize";
+	private static final String PROMO_NEWCOLUMN_MAX_LIMIT = "fdstore.promopublish.newValuecolumn.maxsize";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1436,6 +1441,10 @@ public class FDStoreProperties {
 		
 		 //Product Family 
         defaults.put(PROP_PRODUCTFAMILY, "true");
+        
+        // APPDEV - 4159 - Setting default values for maximum size of columns in promo table
+        defaults.put(PROMO_OLDCOLUMN_MAX_LIMIT, "2999");
+        defaults.put(PROMO_NEWCOLUMN_MAX_LIMIT, "2999");
 	
 		refresh();
     }
@@ -3593,5 +3602,15 @@ public class FDStoreProperties {
 	}
 		public static boolean isProductFamilyEnabled() {
 		return (new Boolean(get(PROP_PRODUCTFAMILY))).booleanValue();
+	}
+		
+	// APPDEV - 4159 - Creating Getter Methods to get the value of maximum size of columns in promo table
+	 
+	public static int getPromoOldCoumnSize() {
+		return Integer.parseInt(get(PROMO_OLDCOLUMN_MAX_LIMIT));
+	}
+
+	public static int getPromoNewCoumnSize() {
+		return Integer.parseInt(get(PROMO_NEWCOLUMN_MAX_LIMIT));
 	}
 }

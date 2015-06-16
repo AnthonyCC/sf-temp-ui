@@ -32,6 +32,7 @@ import com.freshdirect.delivery.EnumComparisionType;
 import com.freshdirect.delivery.EnumDeliveryOption;
 import com.freshdirect.enums.WeekDay;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
 import com.freshdirect.fdstore.promotion.EnumPromoChangeType;
 import com.freshdirect.fdstore.promotion.EnumPromotionSection;
@@ -2903,15 +2904,32 @@ public class FDPromotionManagerNewDAO {
 			for (Iterator<FDPromoChangeDetailModel> iterator = promoChangeDetails.iterator(); iterator
 					.hasNext();) {
 				FDPromoChangeDetailModel promoChangeDetailModel = (FDPromoChangeDetailModel) iterator.next();
-			
+				
+				/*APPDEV-4159 - Code changes to include Maximum character limitation functionality : START*/
+				
+				String oldFieldValue = promoChangeDetailModel.getChangeFieldOldValue();
+				String newFieldValue = promoChangeDetailModel.getChangeFieldNewValue();
+				
+				if(promoChangeDetailModel.getChangeFieldOldValue().length() > FDStoreProperties.getPromoOldCoumnSize()){
+					oldFieldValue = promoChangeDetailModel.getChangeFieldOldValue().substring(0, FDStoreProperties.getPromoOldCoumnSize());
+				}
+				if(promoChangeDetailModel.getChangeFieldNewValue().length() > FDStoreProperties.getPromoNewCoumnSize()){
+					newFieldValue = promoChangeDetailModel.getChangeFieldNewValue().substring(0, FDStoreProperties.getPromoNewCoumnSize());
+				}
+				
+				/*APPDEV-4159 - Code changes to include Maximum character limitation functionality : END*/
+				
 				int i=1;
 				String id = SequenceGenerator.getNextId(conn,"CUST");
 				ps.setString(i++, id);
 				ps.setString(i++, promoChangeDetailModel.getPromoChangeId());
 				ps.setString(i++, promoChangeDetailModel.getChangeSectionId().getName());
 				ps.setString(i++, promoChangeDetailModel.getChangeFieldName());
-				ps.setString(i++, promoChangeDetailModel.getChangeFieldOldValue());
-				ps.setString(i++, promoChangeDetailModel.getChangeFieldNewValue());		
+				
+				
+			//APPDEV-4159 - Adding newly created variables to implement maximum character limitation
+				ps.setString(i++, oldFieldValue);
+				ps.setString(i++, newFieldValue);
 				ps.addBatch();
 			}
 			ps.executeBatch();
