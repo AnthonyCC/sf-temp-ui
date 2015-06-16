@@ -631,7 +631,7 @@ public class FDFactory {
 		try {
 			FDFactorySB sb = factoryHome.create();
 			Date now = new Date();
-			Date first = new Date(now.getTime() - 120l * 24l * 3600000l);
+			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
 			Map<String, Date> regular = sb.getNewSkus();
 			Map<String, Date> overridden = sb.getOverriddenNewSkus();
 			Map<String, Date> overriddenBack = sb.getOverriddenBackInStockSkus();
