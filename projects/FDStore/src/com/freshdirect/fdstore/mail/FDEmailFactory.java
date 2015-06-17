@@ -87,7 +87,7 @@ public class FDEmailFactory {
 			else
 				email.setSubject("Service Alert: Your Order is Missing " + order.getShortedItems().size() + " Items");
 		} else if (EnumDeliveryType.PICKUP.equals(order.getDeliveryType())) {
-			email.setSubject("Your order for " + df.format(order.getRequestedDate()) + " is ready to be picked up.");
+			email.setSubject("Your order for " + df.format(order.getRequestedDate()) + " is being prepared for pick-up.");
 		} else if(order.getDeliveryReservation() != null && order.getDeliveryReservation().getDeliveryETA() != null
 				&& order.getDeliveryReservation().getDeliveryETA().isEmailETAenabled() && order.getDeliveryReservation().getDeliveryETA().getStartTime() != null
 				&& order.getDeliveryReservation().getDeliveryETA().getEndTime() != null) {
