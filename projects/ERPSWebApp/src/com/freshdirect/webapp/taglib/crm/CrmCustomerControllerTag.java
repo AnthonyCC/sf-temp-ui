@@ -87,7 +87,6 @@ public class CrmCustomerControllerTag extends AbstractControllerTag {
 	private void validateCustomerInfo(ActionResult actionResult) {
 		actionResult.addError("".equals(this.customerInfo.getFirstName()), "firstName", "required");
 		actionResult.addError("".equals(this.customerInfo.getLastName()), "lastName", "required");
-		actionResult.addError(this.customerInfo.getHomePhone() == null, "homePhone", "required");
 		actionResult.addError(this.customerInfo.getHomePhone() != null
 				&& PhoneNumber.normalize(this.customerInfo.getHomePhone().getPhone()).length() != 10, "homePhone", "requires 10 digits: 3 digit area-code + 7 digit local number");
 		actionResult.addError(this.customerInfo.getBusinessPhone() != null
