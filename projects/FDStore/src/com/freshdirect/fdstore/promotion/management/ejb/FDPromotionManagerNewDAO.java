@@ -2910,11 +2910,17 @@ public class FDPromotionManagerNewDAO {
 				String oldFieldValue = promoChangeDetailModel.getChangeFieldOldValue();
 				String newFieldValue = promoChangeDetailModel.getChangeFieldNewValue();
 				
-				if(promoChangeDetailModel.getChangeFieldOldValue().length() > FDStoreProperties.getPromoOldCoumnSize()){
-					oldFieldValue = promoChangeDetailModel.getChangeFieldOldValue().substring(0, FDStoreProperties.getPromoOldCoumnSize());
+				if(null != oldFieldValue){
+					if(oldFieldValue.length() > FDStoreProperties.getPromoOldCoumnSize()){
+						oldFieldValue = oldFieldValue.substring(0, FDStoreProperties.getPromoOldCoumnSize());
+					}
 				}
-				if(promoChangeDetailModel.getChangeFieldNewValue().length() > FDStoreProperties.getPromoNewCoumnSize()){
-					newFieldValue = promoChangeDetailModel.getChangeFieldNewValue().substring(0, FDStoreProperties.getPromoNewCoumnSize());
+				
+				if(null != newFieldValue)
+				{
+					if(newFieldValue.length() > FDStoreProperties.getPromoNewCoumnSize()){
+						newFieldValue = newFieldValue.substring(0, FDStoreProperties.getPromoNewCoumnSize());
+					}
 				}
 				
 				/*APPDEV-4159 - Code changes to include Maximum character limitation functionality : END*/
