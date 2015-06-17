@@ -80,7 +80,7 @@
 						<td>* Last<br><input type="text" class="input_text" style="width: 120px;" name="lastName" value="<%=customerInfo.getLastName()%>"><fd:ErrorHandler result="<%=result%>" name="lastName" id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler></td>
 					</tr>
 					<tr>
-						<td align="right">* Home #:&nbsp;&nbsp;</td>
+						<td align="right">Home #:&nbsp;&nbsp;</td>
 						<td><input type="text" class="input_text" style="width: 120px;" name="homePhone" id="nci_homePhone" title="Home Phone" value="<%=customerInfo.getHomePhone() != null ? customerInfo.getHomePhone().getPhone() : "" %>"></td>
 						<td align="right">Ext.&nbsp;&nbsp;</td>
 						<td><input type="text" maxlength="5" class="input_text" style="width: 80px;" name="homeExt" value="<%=customerInfo.getHomePhone() != null ? customerInfo.getHomePhone().getExtension() : "" %>">
