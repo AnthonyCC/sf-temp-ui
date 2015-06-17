@@ -164,12 +164,14 @@ if (brandId!=null) {
 <%
     }
 %>
+<!-- APPDEV-4198 POPUP debranding FDX project
 <table border="0" cellpadding="0" cellspacing="0" width="520">
+ 
 <tr>
 	<td><img src="/media_stat/images/layout/clear.gif" width="260" height="20"><br><a href="#top">Back to top</a></td>
 	<td align="right"><img src="/media_stat/images/layout/clear.gif" width="260" height="20"><br><a href="javascript:try { window.reallyClose(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}">Close window</a></td>
 </tr>
-</table>
+</table>-->
 </center>
 </body>
 </html>
