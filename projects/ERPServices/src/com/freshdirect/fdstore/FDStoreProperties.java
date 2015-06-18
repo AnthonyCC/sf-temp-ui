@@ -1437,7 +1437,7 @@ public class FDStoreProperties {
         defaults.put(PROP_MAX_INVALID_LOGIN_ATTEMPT, "10");
 		defaults.put(PROP_TIP_RANGE_CONFIG, "0,25,0.5;");
 		 
-		defaults.put(SUB_DOMAIN, "https://www.freshdirect.com");
+		defaults.put(SUB_DOMAIN, "");
 		
 		 //Product Family 
         defaults.put(PROP_PRODUCTFAMILY, "true");
