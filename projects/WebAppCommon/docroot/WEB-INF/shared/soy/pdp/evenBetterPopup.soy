@@ -5,7 +5,9 @@
  * @param customClass custom classname
  * @param bodyContent popup content
  * @param productId 
- * @param catId 
+ * @param catId
+ * @param? grpId
+ * @param? grpVersion
  */
 {template .evenBetterPopup autoescape="false"}
 <div class="{$customClass} evenbetter-popup" id="{$popupId}">
@@ -18,9 +20,10 @@
 
 /**
  * @param productId 
- * @param catId 
+ * @param catId
+ * @param? grpId
+ * @param? grpVersion
  */
 {template .evenBetterPopupHeader autoescape="false"}
-	<a class="pdp-evenbetter-learnmore" href="/product.jsp?productId={$productId}&catId={$catId}">learn more</a>
+	<a class="pdp-evenbetter-learnmore" href="/pdp.jsp?productId={$productId}&catId={$catId}{if $grpId and $grpVersion}&grpId={$grpId}&version={$grpVersion}{/if}">learn more</a>
 {/template}
-

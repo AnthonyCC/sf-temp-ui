@@ -1,18 +1,22 @@
 {namespace pdp}
 
 /**
- * @param familyProducts
+ * @param groupScaleData
  */
-{template .familyProducts}
-    {if $familyProducts and length($familyProducts) > 0}
+{template .groupProducts}    
+    {if $groupScaleData.groupProducts and length($groupScaleData.groupProducts) > 0}
 		<div class="pdp-evenbetter">
-			<h2 class="familyproducts">Try These Too!</h2>
-			{foreach $familyProducts in $familyProducts}
-				{if not isFirst($familyProducts)} <hr/> {/if}
-				{call .fProd data="$familyProducts"/}
+			<h2 class="groupProducts">Buy More & Save: {$groupScaleData.grpQty} for {$groupScaleData.grpTotalPrice}</h2>
+			{foreach $gProd in $groupScaleData.groupProducts} /* gProd is the full product item like common.griditem takes */
+				{if index($gProd) > 0}
+					<hr />
+				{/if}
+				<div class="pdp-evenbetter-item" data-component="evenBetterItem" data-product-id="{$gProd.productId}" data-cat-id="{$gProd.catId}" data-grp-id="{$groupScaleData.grpId}" data-grp-version="{$groupScaleData.version}">
+					{call .groupProductsItem data="$gProd"/}
+				</div>
 			{/foreach}
 		</div>
-    {/if}
+	{/if}
 {/template}
 
 /**
@@ -50,10 +54,10 @@
  * @param? couponDisplay
  * @param? couponClipped
  * @param? couponStatusText
+ * @param grpLink
  */
-{template .fProd}
+{template .groupProductsItem}
 {let $atcItemId: 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) /}
-<div class="pdp-evenbetter-item" data-component="evenBetterItem" data-product-id="{$productId}" data-cat-id="{$catId}">
 	<div class="pdp-evenbetter-image">
 		<div class="portrait-item-burst_wrapper">
 			<img src="{$productImage}" alt="" data-evenbetteritem-trigger class="portrait-item-productimage">
@@ -61,9 +65,9 @@
 		</div>
 	</div>
 	<div class="pdp-evenbetter-productinfo">
-		<h3 data-evenbetteritem-trigger><a href="/pdp.jsp?productId={$productId}&catId={$catId}"><b>{$brandName}</b> {$productNameNoBrand}</a></h3>{if $configDescr}<i>{$configDescr}</i>{/if}
+		<h3 data-evenbetteritem-trigger><a href="{$grpLink}"><b>{$brandName}</b> {$productNameNoBrand}</a></h3>{if $configDescr}<i>{$configDescr}</i>{/if}
 		<div class="pdp-evenbetter-price">{call common.price data="all" /}</div>
-		<div class="pdp-evenbetter-savestring">{call .dealinfo data="all" /}{call .savestring data="all" /}</div>
+		<!-- <div class="pdp-evenbetter-savestring">{call .dealinfo data="all" /}{call .savestring data="all" /}</div> -->
 		<div class="pdp-evenbetter-ratings">
       {call pdp.ratings data="all" /}
     </div>
@@ -98,5 +102,4 @@
 			</div>
 		</div>
 	</div>
-</div>
 {/template}

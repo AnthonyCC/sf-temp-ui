@@ -1129,7 +1129,8 @@ public class ProductDetailPopulator {
 			
 			item.setGrpShortDesc( grpPricing.getShortDesc() );
 			item.setGrpLongDesc( grpPricing.getLongDesc() );
-			item.setGrpLink( grpPricing.getGroupPageUrl( productInfo.getSkuCode() ) );
+			//change url for APPDEV-4060
+			item.setGrpLink( item.getProductPageUrl().replace("&amp;", "&")+"&grpId="+grpPricing.getGroupId()+"&version="+grpPricing.getVersion() );
 			
 			// Group Scale Pricing - price string
 			StringBuilder priceStr = new StringBuilder();

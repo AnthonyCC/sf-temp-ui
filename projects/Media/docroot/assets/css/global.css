@@ -3072,3 +3072,7 @@ a.imgButtonWhite:hover,
 div#i_viewcart td {
 	padding: 2px 0;
 }
+
+.subtotal-inner{
+	font-weight: bold;
+}
