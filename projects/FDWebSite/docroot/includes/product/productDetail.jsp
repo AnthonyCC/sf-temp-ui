@@ -99,20 +99,14 @@ FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<
 					</div>
 				</div>
 			</div>
-			<%--<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
-				<%-- don't show evenBetter if we're in group scale context 
+			<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
+				<%-- don't show evenBetter if we're in group scale context --%>
 			<c:if test="${empty param.grpId and empty param.version}">
 				<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />
 				<c:if test="${empty productExtraPotato.familyProducts}">					
 					<soy:render template="pdp.evenBetter" data="${evenBetter}" />					
 				</c:if>	
 			</c:if>
-			--%>
-			
-			<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
-			<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />
-			<soy:render template="pdp.evenBetter" data="${evenBetter}" />
-			
 			<soy:render template="pdp.likethat" data="${xsell}" />
 </c:if>			
 <c:if test="${not productPotato.available }">
