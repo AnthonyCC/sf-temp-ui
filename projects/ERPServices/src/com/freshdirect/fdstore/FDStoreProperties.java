@@ -3594,7 +3594,7 @@ public class FDStoreProperties {
         List<String> domains = new ArrayList<String>();
         String subDomainList = get(SUB_DOMAIN);
         String responseDomain = "";
-        if(subDomainList != null){
+        if(subDomainList != null&&!"".equals(subDomainList)){
         	domains = Arrays.asList(subDomainList.split(","));
         	responseDomain = domains.get(new Random().nextInt(domains.size()));
         }
