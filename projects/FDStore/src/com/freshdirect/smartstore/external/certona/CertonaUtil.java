@@ -106,7 +106,20 @@ public class CertonaUtil {
 			if (result) {
 				certona.put("pagetype", "SEARCH");
 			} else {
-				certona.put("pagetype", "NOSEARCH");
+				String pageType = request.getParameter("pageType");
+				
+				if ("newproducts".equalsIgnoreCase(pageType)) {
+					pageType = "NEWPRODUCTS";
+				} else if ("ecoupon".equalsIgnoreCase(pageType)) {
+					pageType = "ECOUPON";
+				} else if ("pres_picks".equalsIgnoreCase(pageType)) {
+					pageType = "PRESIDENTPICKS";
+				} else {
+					//}(pageType == null || "".equalsIgnoreCase(pageType)) {
+					pageType = "NOSEARCH";
+				}
+				
+				certona.put("pagetype", pageType);
 			}
 
 		} else 	if ("PDP".equals(certonaPageId)) {
