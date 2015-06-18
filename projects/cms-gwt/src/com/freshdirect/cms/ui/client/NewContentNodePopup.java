@@ -47,6 +47,8 @@ public class NewContentNodePopup extends Window {
 
             @Override
             public void handleEvent(BaseEvent be) {
+            	// drop preliminary key
+            	NewKeySet.remove(nodeData.getNode().getKey());
                 hide();
             }
         });
@@ -63,6 +65,7 @@ public class NewContentNodePopup extends Window {
                 OneToManyRelationField f = NewContentNodePopup.this.field;
                 if (f != null) {
                     GwtContentNode node = nodeData.getNode();
+                	NewKeySet.remove(node.getKey());
                     WorkingSet.add(node);
     
                     f.addOneToManyModel(node.getType(), node.getKey(), node.getType() + " : " + node.getLabel(), nodeData);

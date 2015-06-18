@@ -1,6 +1,7 @@
 package com.freshdirect.cms.ui.client.action;
 
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.freshdirect.cms.ui.client.NewKeySet;
 import com.freshdirect.cms.ui.client.WorkingSet;
 import com.freshdirect.cms.ui.client.nodetree.ContentTreePopUp;
 import com.freshdirect.cms.ui.client.views.ManageStoreView;
@@ -36,6 +37,7 @@ public class SaveNodeAction extends BasicAction<GwtSaveResponse> {
 
         if (result.isOk()) {
             WorkingSet.clear();
+            NewKeySet.clear();
             History.newItem(null);
 
             // display changeset of save operation

@@ -8,8 +8,8 @@ import java.util.Set;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.SortDir;
-import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.extjs.gxt.ui.client.dnd.DND.Feedback;
+import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.event.DNDListener;
@@ -38,6 +38,7 @@ import com.freshdirect.cms.ui.client.ContentTypeSelectorPopup;
 import com.freshdirect.cms.ui.client.FixedGridDropTarget;
 import com.freshdirect.cms.ui.client.MainLayout;
 import com.freshdirect.cms.ui.client.NewGwtNodeCallback;
+import com.freshdirect.cms.ui.client.NewKeySet;
 import com.freshdirect.cms.ui.client.WorkingSet;
 import com.freshdirect.cms.ui.client.nodetree.ContentTreePopUp;
 import com.freshdirect.cms.ui.model.ContentNodeModel;
@@ -640,6 +641,18 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 					@Override
 					public void handleEvent( BaseEvent be ) {
 						String id = w.getContentId();
+						
+						// check if node with same key is waiting to be saved
+						final String cKey = type+":"+id;
+						if (NewKeySet.contains(cKey)) {
+				            MessageBox.alert("Creating node failed", "Content ID '"+id+"' is just allocated for a new node.", null);
+				            return;
+						}
+						if (WorkingSet.containsNodeWithKey(cKey)) {
+				            MessageBox.alert("Creating node failed", "Content node with the given ID '"+id+"' is just created.", null);
+				            return;
+						}
+
 						contentService.createNodeData( type, id, new NewGwtNodeCallback( OneToManyRelationField.this ) );
 					}
 				} );

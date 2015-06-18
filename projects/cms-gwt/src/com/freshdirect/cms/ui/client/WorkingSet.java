@@ -2,8 +2,11 @@ package com.freshdirect.cms.ui.client;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ui.model.GwtContentNode;
 
 /**
@@ -73,5 +76,35 @@ public class WorkingSet {
     public static void clear() {
     	workingset.clear();
     }
-    
+
+
+    /**
+     * Ensures if node with the given content key exists in the working set
+     * @param contentKey String representation of content key (ie. "type:id")
+     * @return
+     * 
+     * @see ContentKey
+     */
+    public static boolean containsNodeWithKey(String contentKey) {
+    	if (contentKey == null) {
+    		return false;
+    	}
+
+    	for (GwtContentNode node : workingset) {
+    		if (node.getKey().equals(contentKey)) {
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
+
+
+    public static Set<String> getKeys() {
+    	Set<String> keySet = new HashSet<String>(workingset.size());
+    	for (GwtContentNode node : workingset) {
+    		keySet.add(node.getKey());
+    	}
+    	return keySet;
+    }
 }

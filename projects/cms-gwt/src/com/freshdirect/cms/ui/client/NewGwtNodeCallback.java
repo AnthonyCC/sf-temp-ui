@@ -20,6 +20,7 @@ public class NewGwtNodeCallback extends BaseCallback<GwtNodeData> {
             return;
         }
         NewContentNodePopup window = new NewContentNodePopup (result, field); 
+        NewKeySet.add(result.getNode().getKey());
         window.show();
     }
 
