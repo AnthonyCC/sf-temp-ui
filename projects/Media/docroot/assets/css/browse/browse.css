@@ -30,10 +30,13 @@
   display: block;
 }
 
+.srch h1.orange-title{
+	text-transform:capitalize;
+}
 .srch h1.orange-title,
 .browseContent h2 {
   font-size: 26px;
-  text-transform: capitalize;
+  /*text-transform: capitalize;*/
   font-family: Verdana, Arial, sans-serif;
   font-weight:bold;
   line-height: 1.1em;
