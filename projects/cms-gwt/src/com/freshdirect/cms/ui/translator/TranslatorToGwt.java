@@ -28,6 +28,7 @@ import com.freshdirect.cms.EnumDefI;
 import com.freshdirect.cms.ITable;
 import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.changecontrol.ChangeDetail;
 import com.freshdirect.cms.changecontrol.ChangeSet;
 import com.freshdirect.cms.changecontrol.ContentNodeChange;
@@ -36,7 +37,9 @@ import com.freshdirect.cms.context.ContextService;
 import com.freshdirect.cms.context.ContextualContentNodeI;
 import com.freshdirect.cms.fdstore.ConfiguredProductValidator;
 import com.freshdirect.cms.fdstore.PreviewLinkProvider;
+import com.freshdirect.cms.fdstore.UniqueContentKeyValidator;
 import com.freshdirect.cms.meta.EnumDef;
+import com.freshdirect.cms.node.ContentNode;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.cms.publish.Publish;
 import com.freshdirect.cms.publish.PublishMessage;
@@ -65,6 +68,8 @@ import com.freshdirect.cms.ui.model.changeset.GwtNodeChange;
 import com.freshdirect.cms.ui.model.publish.GwtPublishData;
 import com.freshdirect.cms.ui.model.publish.GwtPublishMessage;
 import com.freshdirect.cms.ui.service.ServerException;
+import com.freshdirect.cms.validation.ContentValidationDelegate;
+import com.freshdirect.cms.validation.ContentValidatorI;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -108,9 +113,16 @@ public class TranslatorToGwt {
 	 */
 	public static GwtNodeData gwtNodeDataSkeleton ( String type, String id ) throws ServerException {
             ContentNodeI node;
+            final ContentServiceI svc = CmsManager.getInstance();
             try {
                 ContentKey keey = ContentKey.create(ContentType.get(type), id);
-                ContentNodeI oldNode = CmsManager.getInstance().getRealContentNode(keey);
+
+                // Additional check: check whether key is unique
+                if (!checkUniqueContentKey(keey, svc)) {
+                    throw new ServerException("Content ID '" + id + "' is not unique!");
+                }
+
+                ContentNodeI oldNode = svc.getRealContentNode(keey);
                 if (oldNode != null) {
                     // there is already a node, return null.
                     return null;
@@ -128,7 +140,19 @@ public class TranslatorToGwt {
 	    return new GwtNodeData( gwtNode, tabDef, false );
 	}
 	
-	public static GwtContentNode getGwtNode( ContentNodeI node, TabDefinition tabDefs ) throws ServerException {
+    private static boolean checkUniqueContentKey(ContentKey cKey, ContentServiceI svc) {
+    	final ContentValidatorI v = new UniqueContentKeyValidator();
+    	final ContentValidationDelegate delegate = new ContentValidationDelegate();
+
+    	// fake node
+    	ContentNodeI node = new ContentNode(svc, cKey);
+    	
+    	v.validate(delegate, CmsManager.getInstance(), node, null, null);
+
+    	return delegate.isEmpty();
+    }
+
+    public static GwtContentNode getGwtNode( ContentNodeI node, TabDefinition tabDefs ) throws ServerException {
 		ContentKey contentKey = node.getKey();
 		GwtContentNode gwtNode = new GwtContentNode( contentKey.getType().getName(), contentKey.getId() );
 		gwtNode.setLabel( node.getLabel() );

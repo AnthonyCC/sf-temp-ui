@@ -41,7 +41,7 @@ public interface ContentService extends RemoteService {
      * @param storeId Store ID
      * @return
      */
-    String getPreviewUrl(String nodeKey, String storeId);
+    String getPreviewUrl(String nodeKey, String storeId) throws ServerException;
 
     /**
      * 
@@ -71,6 +71,6 @@ public interface ContentService extends RemoteService {
     ProductConfigParams getProductConfigParams( String skuKey ) throws ServerException;
     
     
-    NavigableRelationInfo getNavigableRelations(String contentType);
+    NavigableRelationInfo getNavigableRelations(String contentType)  throws ServerException;
     
 }
