@@ -107,7 +107,7 @@ public class PrimaryHomeSelectorField extends OneToManyRelationField {
 	
 								popup.show();
                 popup.setSize(401, 601);
-                popup.setSize(400, 600);
+                popup.setSize(650, 600);
 							}
 					});
 
@@ -148,11 +148,11 @@ public class PrimaryHomeSelectorField extends OneToManyRelationField {
 		for (String p : contexts.getPaths()) {
 			if (p.contains(selKey)) {
 				String[] _pathFragments = p.split("\\|");
-				String[] _labelFragments = contexts.getLabel(p).split(" > ");
+				//String[] _labelFragments = contexts.getLabel(p).split(" > ");
 				
 				TreeContentNodeModel alma;
 				alma = new TreeContentNodeModel("Category",
-						_labelFragments[_labelFragments.length-2],
+						contexts.getLabel(p),
 						_pathFragments[_pathFragments.length-2]);
 				alma.setHasChildren(false);
 				_treeStore.insert(alma, 0, false);
@@ -166,7 +166,6 @@ public class PrimaryHomeSelectorField extends OneToManyRelationField {
 				addOneToManyModels(popup.getSelectedItems());
 			}
 		});
-
 		return popup;
 	}
 
