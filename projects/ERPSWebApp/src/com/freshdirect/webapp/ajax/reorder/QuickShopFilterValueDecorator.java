@@ -175,7 +175,7 @@ public class QuickShopFilterValueDecorator extends GenericFilterDecorator<Filter
 
 				case ORDERS_BY_DATE: {
 					Date deliveryDate = node.getDeliveryDate();
-					menu.setName(DateUtil.formatDateWithMonDYear(deliveryDate));
+					menu.setName(DateUtil.removeDotAfterMay(DateUtil.formatDateWithMonDYear(deliveryDate)));
 					menu.setYear(DateUtil.formatDateWithYear(deliveryDate));
 					menu.setDeliveryDate(deliveryDate);
 					menu.setFilteringUrlValue(node.getOrderId());
@@ -370,5 +370,4 @@ public class QuickShopFilterValueDecorator extends GenericFilterDecorator<Filter
 
 		return parentNodes;
 	}
-
 }

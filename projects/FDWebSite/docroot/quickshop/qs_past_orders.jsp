@@ -99,7 +99,7 @@
         </c:when>
         <c:otherwise>
           <div id="listheader" class="qs-list-header">
-            <p>Viewing all items from:</p>
+            <p>Viewing:</p>
             <h2>Your Past Orders</h2>
           </div>
         </c:otherwise>

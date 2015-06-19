@@ -479,5 +479,12 @@ public class DateUtil {
     (minuendMonth - subtrahendMonth);
     }
 	
+	public static String removeDotAfterMay(String text) {
+		if (text.contains("May.")) {
+			return text.replaceAll("May.", "May");
+		} else {
+			return text;
+		}
+	}
 	
 } 

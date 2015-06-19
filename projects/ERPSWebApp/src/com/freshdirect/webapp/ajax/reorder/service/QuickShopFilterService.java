@@ -22,11 +22,13 @@ import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FilteringNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.ajax.cart.data.CartData.SalesUnit;
+import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
+import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.ajax.reorder.QuickShopFilterImpl;
 import com.freshdirect.webapp.ajax.reorder.QuickShopHelper;
 import com.freshdirect.webapp.ajax.reorder.QuickShopServlet;
 import com.freshdirect.webapp.ajax.reorder.data.EnumQuickShopTab;
-import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItemWrapper;
 import com.freshdirect.webapp.ajax.reorder.data.QuickShopListRequestObject;
 import com.freshdirect.webapp.ajax.reorder.data.QuickShopPastOrdersCustomMenu;
 
@@ -94,9 +96,22 @@ public class QuickShopFilterService {
 		result = filter.doFlow(nav, filterItems);
 		eliminatePreviousProductDuplicatesFromPastOrders(result.getItems());
 		QuickShopHelper.postProcessPopulate(user, result, session);
+		setYourTopItemQuantityToDefaultValue(tab, result);
 		return result;
 	}
 
+	private void setYourTopItemQuantityToDefaultValue(EnumQuickShopTab tab, FilteringFlowResult<QuickShopLineItemWrapper> result) {
+		if (EnumQuickShopTab.TOP_ITEMS.equals(tab)) {
+			for (FilteringSortingItem<QuickShopLineItemWrapper> filteringItem : result.getItems()) {
+				QuickShopLineItem item = filteringItem.getModel().getItem();
+				item.getQuantity().setQuantity(item.getQuantity().getqMin());
+				for (SalesUnit salesUnit : item.getSalesUnit()) {
+					salesUnit.setSelected(false);
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Remove older product duplicates from past orders.
 	 *
