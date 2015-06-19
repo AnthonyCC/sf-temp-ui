@@ -733,6 +733,9 @@ public class FDStoreProperties {
 	
 	private static final String PROMO_OLDCOLUMN_MAX_LIMIT = "fdstore.promopublish.oldValuecolumn.maxsize";
 	private static final String PROMO_NEWCOLUMN_MAX_LIMIT = "fdstore.promopublish.newValuecolumn.maxsize";
+	
+	private static final String CATEGORY_TOP_ITEM_CACHE_SIZE = "fdstore.category.top.item.cache.size";
+	private static final String CATEGORY_TOP_ITEM_CACHE_MAXIMAL_SIZE = "fdstore.category.top.item.cache.maximal.size";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1445,6 +1448,9 @@ public class FDStoreProperties {
         // APPDEV - 4159 - Setting default values for maximum size of columns in promo table
         defaults.put(PROMO_OLDCOLUMN_MAX_LIMIT, "2999");
         defaults.put(PROMO_NEWCOLUMN_MAX_LIMIT, "2999");
+        
+        defaults.put(CATEGORY_TOP_ITEM_CACHE_SIZE, "5");
+        defaults.put(CATEGORY_TOP_ITEM_CACHE_MAXIMAL_SIZE, "10");
 	
 		refresh();
     }
@@ -3613,4 +3619,13 @@ public class FDStoreProperties {
 	public static int getPromoNewCoumnSize() {
 		return Integer.parseInt(get(PROMO_NEWCOLUMN_MAX_LIMIT));
 	}
+	
+	public static int getCategoryTopItemCacheSize() {
+		return Integer.parseInt(get(CATEGORY_TOP_ITEM_CACHE_SIZE));
+	}
+	
+	public static int getCategoryTopItemCacheMaximalSize() {
+		return Integer.parseInt(get(CATEGORY_TOP_ITEM_CACHE_MAXIMAL_SIZE));
+	}
+		
 }

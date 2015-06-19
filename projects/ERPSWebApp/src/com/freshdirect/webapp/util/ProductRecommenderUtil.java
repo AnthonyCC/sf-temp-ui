@@ -2,6 +2,8 @@ package com.freshdirect.webapp.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -16,13 +18,17 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.cache.EhCacheUtil;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.content.SortStrategyType;
 import com.freshdirect.fdstore.content.SuperDepartmentModel;
+import com.freshdirect.fdstore.content.browse.sorter.ProductItemSorterFactory;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.CertonaTransitionUtil;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
@@ -35,6 +41,7 @@ import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.VariantSelector;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.filtering.ProductItemFilterUtil;
 import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -475,7 +482,47 @@ public class ProductRecommenderUtil {
 	    }
 	}
 
+	public static void initTopItemCategoriesCache() {
+		for (DepartmentModel departmentModel : ContentFactory.getInstance().getStore().getDepartments()) {
+			for (CategoryModel category : departmentModel.getCategories()) {
+				List<FilteringProductItem> cachedFiltereingProductItems = ProductItemFilterUtil.createFilteringProductItems(category.getProducts());
+				Comparator<FilteringProductItem> comparator = ProductItemSorterFactory.createComparator(SortStrategyType.POPULARITY, null, true);
+			
+				Collections.sort(cachedFiltereingProductItems, comparator);
 
+				int cachedFiltereingProductItemsSize = cachedFiltereingProductItems.size();
+				int categoryTopItemCacheMaximalSize = FDStoreProperties.getCategoryTopItemCacheMaximalSize();
+				int availableCategoryCacheMaximalSize = cachedFiltereingProductItemsSize >= categoryTopItemCacheMaximalSize ? categoryTopItemCacheMaximalSize : cachedFiltereingProductItemsSize;
+
+				List<ProductModel> categoryTopItems = new ArrayList<ProductModel>();
+				for (int i = 0; i < availableCategoryCacheMaximalSize; i++) {
+					categoryTopItems.add(cachedFiltereingProductItems.get(i).getProductModel());
+				}
+				
+				EhCacheUtil.putListToCache(EhCacheUtil.BR_CATEGORY_TOP_ITEM_CACHE_NAME, category.getContentKey().getId(), categoryTopItems);
+			}
+		}
+	}
+
+	public static List<ProductModel> getCategoryTopItem(String key) {
+		List<ProductModel> availableCategoryTopItems = new ArrayList<ProductModel>();
+
+		List<ProductModel> categoryTopItemCaches = EhCacheUtil.getListFromCache(EhCacheUtil.BR_CATEGORY_TOP_ITEM_CACHE_NAME, key);
+
+		if (categoryTopItemCaches != null) {
+			for (ProductModel productModel : categoryTopItemCaches) {
+				if (!productModel.isUnavailable()) {
+					availableCategoryTopItems.add(productModel);
+				}
+			}
+		}
+
+		int availableCategoryTopItemsSize = availableCategoryTopItems.size();
+		int categoryTopItemCacheSize = FDStoreProperties.getCategoryTopItemCacheSize();
+		int availableCategoryCacheCurrentSize = availableCategoryTopItemsSize >= categoryTopItemCacheSize ? categoryTopItemCacheSize : availableCategoryTopItemsSize;
+
+		return availableCategoryTopItems.subList(0, availableCategoryCacheCurrentSize);
+	}
 
     private static Variant getUserVariant(FDUserI user, EnumSiteFeature siteFeature, ValueHolder<Variant> out) {
         final VariantSelector selector = VariantSelectorFactory.getSelector(siteFeature);

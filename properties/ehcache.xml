@@ -80,6 +80,12 @@
            memoryStoreEvictionPolicy="LFU">
     </cache>
 
+    <cache name="categoryTopItemCache"
+           maxEntriesLocalHeap="10000"
+           eternal="true"
+           memoryStoreEvictionPolicy="LFU">
+    </cache>
+
     <!-- TODO fine tune cache size, max: 35 calls/minute on category.jsp-->
     <cache name="userRefinementCache"
            maxEntriesLocalHeap="50"

@@ -30,6 +30,7 @@ public class EhCacheUtil {
 	public static final String BR_STATIC_PRODUCTS_IN_SUB_TREE_CACHE_NAME = "staticProductsInSubTreeCache";
 	public static final String BR_CATEGORY_SUB_TREE_HAS_PRODUCTS_CACHE_NAME = "categorySubTreeHasProductsCache";
 	public static final String BR_USER_REFINEMENT_CACHE_NAME = "userRefinementCache";
+	public static final String BR_CATEGORY_TOP_ITEM_CACHE_NAME = "categoryTopItemCache";
 	
 	
 	//Product Family Cache
