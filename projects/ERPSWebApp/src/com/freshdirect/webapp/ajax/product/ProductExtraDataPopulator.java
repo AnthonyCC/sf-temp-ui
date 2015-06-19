@@ -53,6 +53,7 @@ import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.EnumPopupType;
 import com.freshdirect.fdstore.content.EnumProductLayout;
+import com.freshdirect.fdstore.content.FilteringProductItem;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.MediaModel;
@@ -61,7 +62,9 @@ import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.content.SortStrategyType;
 import com.freshdirect.fdstore.content.TitledMedia;
+import com.freshdirect.fdstore.content.browse.sorter.ProductItemSorterFactory;
 import com.freshdirect.fdstore.content.view.WebHowToCookIt;
 import com.freshdirect.fdstore.content.view.WebProductRating;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -71,6 +74,7 @@ import com.freshdirect.fdstore.util.HowToCookItUtil;
 import com.freshdirect.fdstore.util.RatingUtil;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.smartstore.sorting.ScriptedContentNodeComparator;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
@@ -883,6 +887,7 @@ public class ProductExtraDataPopulator {
 		if(FDStoreProperties.isProductFamilyEnabled())
 		{
 			List<ProductData> familyProducts = new ArrayList<ProductData>();
+			List<FilteringProductItem> modelList =  new ArrayList<FilteringProductItem>();
 
 			/*SkuModel sku = productNode.getDefaultSku();
 			
@@ -930,7 +935,21 @@ public class ProductExtraDataPopulator {
 				{continue duplicateSku;}
 					
 				ProductModel productModel = PopulatorUtil.getProduct(skuCode);
-
+				FilteringProductItem fpt = new FilteringProductItem(productModel);
+				modelList.add(fpt);
+				
+				}
+				//APPDEV-4256 Family Products Popularity Sort
+				Comparator<FilteringProductItem> comparator = ProductItemSorterFactory.createComparator(SortStrategyType.toEnum("POPULARITY"), user, true);
+				Collections.sort(modelList,comparator);
+				
+				/*Comparator<ProductModel> popComp = ScriptedContentNodeComparator.createGlobalComparator(user.getUserId(), user.getPricingContext());
+				Collections.sort( modelList, popComp );*/
+				
+				for (FilteringProductItem fpt : modelList )
+				{
+				
+				ProductModel productModel = fpt.getProductModel();
 				ProductData pd = new ProductData();
 				SkuModel skuModel = null;
 
@@ -948,7 +967,7 @@ public class ProductExtraDataPopulator {
 
 				try {
 					if(skuModel==null)
-					{continue duplicateSku;}
+					{continue;}
 					
 					FDProductInfo productInfo_fam = skuModel.getProductInfo();
 					FDProduct fdProduct = skuModel.getProduct();
@@ -978,32 +997,19 @@ public class ProductExtraDataPopulator {
 							pd.getSkuCode());
 
 				} catch (FDSkuNotFoundException e) {
-					LOG.warn("Sku not found: " + skuCode, e);
+					LOG.warn("Sku not found: " +pd.getSkuCode(), e);
 				}
-
+											
 				familyProducts.add(pd);
-				
-			}
+						
+			}	
 		}
-			sortByPopularity(familyProducts);
-
-
 			data.setFamilyProducts(familyProducts);
 		}
 		
 		
 	}
 
-
-	private static void sortByPopularity(List<ProductData> familyProducts) {
-		 Collections.sort(familyProducts, new Comparator<ProductData>() {
-				@Override
-				public int compare(ProductData o1, ProductData o2) {
-					 return (o1.getCustomerRating() > o2.getCustomerRating()) ? 1 : -1;
-					}
-		         });
-		
-	}
 
 	private static WineRating processWineRating(List<DomainValue> wineRatingsDV, FDUserI user, Html reviewMedia) {
 		if (wineRatingsDV == null || wineRatingsDV.size() == 0)
