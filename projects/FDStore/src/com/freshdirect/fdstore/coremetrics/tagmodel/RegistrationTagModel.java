@@ -13,6 +13,37 @@ public class RegistrationTagModel extends AbstractTagModel  {
 	private String registrantState;
 	private String registrantPostalCode;
 	private String registrantCountry;
+	public String getRegistrationProfileValue() {
+		return registrationProfileValue;
+	}
+
+	public void setRegistrationProfileValue(String registrationProfileValue) {
+		this.registrationProfileValue = registrationProfileValue;
+	}
+
+	private String registrationProfileValue;	
+	private String registrationCounty;
+	private String erpId;
+
+	public String getErpId() {
+		return erpId;
+	}
+
+	public void setErpId(String erpId) {
+		this.erpId = erpId;
+	}
+
+	public String getRegistrationCounty() {
+		return registrationCounty;
+	}
+
+	public void setRegistrationCounty(String registrationCounty) {
+		this.registrationCounty = registrationCounty;
+	}
+
+	
+
+	
 	
 	public String getRegistrationId() {
 		return registrationId;
