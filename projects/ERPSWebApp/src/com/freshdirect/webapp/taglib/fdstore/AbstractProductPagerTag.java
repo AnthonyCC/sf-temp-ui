@@ -198,7 +198,8 @@ public abstract class AbstractProductPagerTag extends BodyTagSupportEx implement
 			pageCount++;
 		int max = pageSize == 0 ? pageOffset + noOfPagedProducts : pageOffset + pageSize;
 		for (int i = pageOffset; i < max; i++) {
-			if (i >= results.getProducts().size())
+			// APPDEV-4236 - Call to getRelatedProducts failing for alcohol
+			if (i >= results.getProducts().size() || results.getProducts().size() == 0)
 				break;
 			pageProducts.add(results.getProducts().get(i));
 		}

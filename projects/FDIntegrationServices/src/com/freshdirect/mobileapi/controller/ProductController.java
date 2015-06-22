@@ -131,30 +131,36 @@ public class ProductController extends BaseController {
         
 		try {
             // upsell first
-            List<ProductModel> upsellProducts = ProductRecommenderUtil.getUpsellProducts(product);
-            for (ProductModel productModel : upsellProducts) {
-                try {
-                    com.freshdirect.mobileapi.model.Product p = com.freshdirect.mobileapi.model.Product.wrap(productModel);
-            		products.add(p);
-                } catch (ModelException e) {
-                    result.addDebugMessage("NOPRODUCTFOR_" + productModel.getContentName(), this.traceFor(e));
-                }
-            }
+			//APPDEV-4236: Call to getrelatedproducts failing for Alcohol
+			if(product != null){
+	            List<ProductModel> upsellProducts = ProductRecommenderUtil.getUpsellProducts(product);
+	            for (ProductModel productModel : upsellProducts) {
+	                try {
+	                    com.freshdirect.mobileapi.model.Product p = com.freshdirect.mobileapi.model.Product.wrap(productModel,user.getFDSessionUser().getUser());//4236 - added user parameter
+	                    products.add(p);
+	                } catch (ModelException e) {
+	                    result.addDebugMessage("NOPRODUCTFOR_" + productModel.getContentName(), this.traceFor(e));
+	                }
+	            }
+			}
         } catch (Exception e) {
             result.addDebugMessage("ERROR_LOADING_UPSELL_ITEMS", this.traceFor(e));
         }
 
 		try {
             // crosssell next
-            List<ProductData> crossSellProducts = ProductRecommenderUtil.getCrossSellProducts(product , user.getFDSessionUser().getUser());
-            for (ProductData productData : crossSellProducts) {
-            	try {
-                    com.freshdirect.mobileapi.model.Product p = com.freshdirect.mobileapi.model.Product.getProduct(productData.getProductId(), productData.getCatId(), null, user);
-                    products.add(p);
-                } catch (ServiceException e) {
-                    result.addDebugMessage("NOPRODUCTFOR_" + productData.getProductId(), this.traceFor(e));
-                }
-            }
+			//APPDEV-4236: Call to getrelatedproducts failing for Alcohol
+			if(product != null){
+	            List<ProductData> crossSellProducts = ProductRecommenderUtil.getCrossSellProducts(product , user.getFDSessionUser().getUser());
+	            for (ProductData productData : crossSellProducts) {
+	            	try {
+	                    com.freshdirect.mobileapi.model.Product p = com.freshdirect.mobileapi.model.Product.getProduct(productData.getProductId(), productData.getCatId(), null, user);
+	                    products.add(p);
+	                } catch (ServiceException e) {
+	                    result.addDebugMessage("NOPRODUCTFOR_" + productData.getProductId(), this.traceFor(e));
+	                }
+	            }
+			}
         } catch (Exception e) {
             result.addDebugMessage("ERROR_LOADING_CROSSSELL_ITEMS", this.traceFor(e));
         }
