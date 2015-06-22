@@ -16,8 +16,7 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
 <!--[if IE 9]>    <html class="no-js lt-ie10" lang="en"> <![endif]-->
 <!--[if gt IE 9]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
-    <title><tmpl:get name='title'/></title>
-	<%@ include file="/common/template/includes/metatags.jspf" %>
+    <tmpl:get name="seoMetaTag"/>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<% if (request.getRequestURI().contains("/myfd")) { %>
 	<fd:javascript src="/assets/javascript/cufon-yui.js"/>
@@ -52,9 +51,7 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
 
 <%@ include file="/shared/template/includes/i_head_end.jspf" %>
 </head>
-<body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#ff9900" text="#333333" 
-      onload="<%= request.getAttribute("bodyOnLoad")%>" 
-      onunload="<%= request.getAttribute("bodyOnUnload")%>" >
+<body bgcolor="#FFFFFF" link="#336600" vlink="#336600" alink="#ff9900" text="#333333" onload="<%= request.getAttribute("bodyOnLoad")%>" onunload="<%= request.getAttribute("bodyOnUnload")%>" >
 <%@ include file="/shared/template/includes/i_body_start.jspf" %>      
 		<%
 		boolean modOrder = false;

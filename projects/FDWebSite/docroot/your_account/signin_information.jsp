@@ -13,8 +13,11 @@
 final int W_YA_SIGNIN_INFO = 970;
 %>
 <%@page import="com.freshdirect.common.address.PhoneNumber"%><fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
-<tmpl:insert template='/common/template/dnav_pwdstrng.jsp'>
+<tmpl:insert template='/common/template/dnav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - User Name, Password, & Contact Info</tmpl:put>
+    <tmpl:put name="seoMetaTag" direct="true">
+		<fd:SEOMetaTag pageId="signin_info"></fd:SEOMetaTag>
+	</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <fd:javascript src="/assets/javascript/phone_number.js"/>
 <script src="/assets/javascript/jquery-1.6.4.js" type="text/javascript" charset="utf-8"></script>
@@ -372,80 +375,13 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 
 <form name="update_change_password" method="post">
 <input type="hidden" name="actionName" value="changePassword">
-
-    <!--  Changed for Password Strength Display -->
 	<tr>
 		<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* Password</label></td>
-		
-		<!--  Added for Password Strength Display -->
-		<td colspan="2">
-		<div class="container1">		
-		<div class="content-group password">
-		<div class="subgroup">
-			<div class="password-hinter">
-				<div class="password-instructions">
-					<ul>
-						<li id="pw-length" class="invalid"><strong>6</strong> or more characters <strong>(Required)</strong></li>
-						<li class="subhead"><strong>Make your password stronger with:</strong></li>
-						<li id="pw-letter" class="invalid"><strong>1</strong> or more letters</li>
-						<li id="pw-number" class="invalid"><strong>1</strong> or more numbers</li>
-						<li id="pw-capital" class="invalid"><strong>1</strong> or more capital letters</li>
-						<li id="pw-special" class="invalid"><strong>1</strong> or more special characters</li>
-					</ul>
-				</div>
-			</div><!-- // .password-hinter -->
-			<div>
-				<input id="password1" name="password" size="28" style="width:150px; padding:1px;" class="password" data-indicator="pwindicator" type="password">
-				<span class="case-sensitive">Passwords are case sensitive</span>
-			</div>
-			<!--  
-			<div id="pwindicator">
-	               <div class="bar"></div>
-	               <div class="label"></div>
-	        </div>
-	        -->
-		</div><!-- // .subgroup -->			
-		</div><!-- // .content-group -->
-		</div><!-- // .container -->
-	    </td>
-		<td></td>
-	    <!-- Added for Password Strength Display -->
-	    
-		<!--  
-		<td colspan="2">			
-			<input class="text9" size="28" type="password" style="width:150px; padding:1px;" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" value="<%=password%>" id="password1" onkeyup="passwordChanged();">
-			<span id="strength">Type Password</span>
-		</td>
-		<td></td>
-		-->
+		<td><input class="text9" size="28" type="password" style="width:150px; padding:1px;" name="<%=EnumUserInfoName.PASSWORD.getCode()%>" value="<%=password%>"></td>
+		<td colspan="2"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
 		<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_password" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></td>
 		
 	</tr>
-	
-	<tr>
-		<td colspan="2"></td>
-		<td>			
-			<div id="pwindicator">
-	               <div class="bar"></div>
-	               <div class="label"></div>
-	        </div>   		    
-		</td>
-		<td colspan="2"></td>
-		<td></td>
-	</tr>	
-
-	<tr>
-		<td colspan="2" ></td>
-		<td>
-			<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.PASSWORD.getCode()%>' id='errorMsg'>
-				 <span class="text11rbold"><%=errorMsg%></span>
-   		    </fd:ErrorHandler>
-		</td>
-		<td colspan="2"></td>
-		<td></td>
-	</tr>
-	<!--  Changed for Password Strength Display -->
-
 	<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
 	<tr valign="top">
 		<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* Repeat Password</label></td>
@@ -456,7 +392,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 	<tr>
 		<td colspan="2"></td>
 		<td colspan="3" class="text9" style="padding-top:3px;">
-			Must be at least six characters.<br>
+			Must be at least four characters.<br>
 			Passwords are case-sensitive.<br>
 			<br><br>
 		</td>

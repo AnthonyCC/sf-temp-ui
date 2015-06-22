@@ -47,6 +47,9 @@ request.setAttribute("noyui", true);
 
 <tmpl:insert template='/common/template/no_shell_optimized.jsp'>
 	<tmpl:put name='title' direct='true'>Welcome to FreshDirect</tmpl:put>
+	<tmpl:put name="seoMetaTag" direct="true">
+		<fd:SEOMetaTag pageId="index" includeSiteSearchLink="true"></fd:SEOMetaTag>
+	</tmpl:put>
 	<tmpl:put name="customCss">
 		<fd:css href="/assets/css/homepage/homepage.css" media="all" />
 	</tmpl:put>
@@ -157,9 +160,6 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 		<%-- Removed the learn more for marketing change. --%>
 		<%-- <div id="bottom_link"><a href="/welcome.jsp"><img src="/media_stat/images/home/fd_logo_learn_more_back.jpg" alt="Learn More About Our Services"></a></div> --%>
 	<%-- END MAIN CONTENT--%> 
-	
-	<script src="//action.media6degrees.com/orbserv/hbjs?pixId=26207&pcv=47" type="text/javascript" async></script>
-	
 </div>
 </fd:GetSegmentMessage>
 </tmpl:put>

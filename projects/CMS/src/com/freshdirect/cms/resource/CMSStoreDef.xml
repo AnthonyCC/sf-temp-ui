@@ -368,6 +368,9 @@
 			<AttributeDef type="S" name="globalNavName" label="Global Nav Name" inheritable="false"/>
 			<AttributeDef type="B" name="hideGlobalNavDropDown" label="Hide Global Nav Drop Down"/>
 			<AttributeDef type="B" name="disableCategoryYmalRecommender" label="Disable Category YMAL Recommender" inheritable="true"/>
+			<!--  SEO Changes -->
+			<AttributeDef name="SEO_META_DESC" type="S" label="SEO Meta Description" inheritable="true"/>
+			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" inheritable="true"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="categories" navigable="true" cardinality="Many">
@@ -628,6 +631,8 @@
 				<EnumValue value="OFF" label="Turned off"/>
 			</EnumDef>
 			<AttributeDef type="B" name="disableCategoryYmalRecommender" label="Disable Category YMAL Recommender" inheritable="true"/>
+			<AttributeDef name="SEO_META_DESC" type="S" label="SEO Meta Description" inheritable="true"/>
+			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" inheritable="true"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="ALTERNATE_CONTENT" label="Alternate Content">
@@ -988,6 +993,10 @@
 				<EnumValue value="4" label="Strong Heat"/>
 				<EnumValue value="5" label="Fiery Heat"/>
 			</EnumDef>
+			
+			<!--  SEO Changes -->
+			<AttributeDef name="SEO_META_DESC" type="S" label="SEO Meta Description" inheritable="true"/>
+			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" inheritable="true"/>
 		</AttributeDefs>
 		
 		
@@ -2436,5 +2445,13 @@
 				<DestinationDef contentType="Image"/>
 			</RelationshipDef>
 		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	<ContentTypeDef name="WebPage" generateId="false">
+		<AttributeDefs>
+			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" required="false"/>
+			<AttributeDef name="SEO_META_DESC" type="S" label="SEO Meta Description" required="false"/>
+			<AttributeDef name="URL" type="S" label="URL of the  page" required="false"/>
+		</AttributeDefs>
 	</ContentTypeDef>
 </CMSDef>

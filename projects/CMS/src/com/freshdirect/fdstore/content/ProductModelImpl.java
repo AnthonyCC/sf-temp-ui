@@ -1966,4 +1966,14 @@ inner:
 		ContentNodeModelUtil.refreshModels(this, "completeTheMeal", completeTheMeal, false);
 		return new ArrayList<ProductModel>(completeTheMeal);
 	}
+
+	@Override
+	public String getPageTitle() {
+		return getAttribute("PAGE_TITLE", "");
+	}
+
+	@Override
+	public String getSEOMetaDescription() {
+		return getAttribute("SEO_META_DESC", "");
+	}
 }

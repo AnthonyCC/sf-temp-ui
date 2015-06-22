@@ -19,9 +19,7 @@ final int W_BOTH_DNAV_RIGHT = 191;
 
 <html>
 <head>
-    <title><tmpl:get name='title'/></title>
-
-		<%@ include file="/common/template/includes/metatags.jspf" %>
+		<tmpl:get name="seoMetaTag"/>
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
     <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>

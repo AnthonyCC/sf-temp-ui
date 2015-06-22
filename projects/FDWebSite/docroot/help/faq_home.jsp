@@ -98,6 +98,9 @@ final int W_HELP_FAQ_HOME_TOTAL = 806;
 	String defaultFtl="/media/editorial/faq/intro.ftl";
 %><tmpl:insert template='/common/template/faq_help.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Help - FAQs</tmpl:put>
+    <tmpl:put name="seoMetaTag" direct="true">
+    	<fd:SEOMetaTag pageId="FAQHome"></fd:SEOMetaTag>
+    </tmpl:put>
 	<tmpl:put name='leftnav' direct='true'>
 	</tmpl:put>
     <tmpl:put name='content' direct='true'>

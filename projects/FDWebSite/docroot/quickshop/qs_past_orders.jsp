@@ -19,6 +19,9 @@
     <tmpl:put name="soytemplates"><soy:import packageName="quickshop"/></tmpl:put>
     <tmpl:put name="jsmodules"><%@ include file="/common/template/includes/i_jsmodules.jspf" %><jwr:script src="/qspastorders.js" useRandomParam="false" /></tmpl:put>
     <tmpl:put name='title' direct='true'>FreshDirect - Reorder from Past Orders</tmpl:put>
+    <tmpl:put name="seoMetaTag" direct="true">
+		<fd:SEOMetaTag pageId="past_orders"></fd:SEOMetaTag>
+	</tmpl:put>
 
     <tmpl:put name='poSelected'>selected</tmpl:put>
     <tmpl:put name='containerClass'>qs-pastorders</tmpl:put>

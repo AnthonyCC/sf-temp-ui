@@ -19,6 +19,9 @@ final int W_YA_GIFTCARDS = 970;
 
 <tmpl:insert template='/common/template/dnav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Your Gift Cards</tmpl:put>
+    <tmpl:put name="seoMetaTag" direct="true">
+		<fd:SEOMetaTag pageId="giftcard"></fd:SEOMetaTag>
+	</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <fd:RedemptionCodeController actionName="noaction" result="redemptionResult">
 	<div class="gcResendBox">

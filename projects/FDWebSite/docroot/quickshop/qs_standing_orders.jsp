@@ -29,7 +29,10 @@
 %>
 <tmpl:insert template='/quickshop/includes/qs_template.jsp'>
     <tmpl:put name="soytemplates"><soy:import packageName="quickshop"/></tmpl:put>
-    <tmpl:put name='title' direct='true'>FreshDirect - Standing Orders</tmpl:put>
+    <tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Standing Orders</tmpl:put>
+    <tmpl:put name="seoMetaTag" direct="true">
+		<fd:SEOMetaTag pageId="standing_orders"></fd:SEOMetaTag>
+	</tmpl:put>
     <tmpl:put name="jsmodules"><%@ include file="/common/template/includes/i_jsmodules.jspf" %><jwr:script src="/qscommon.js" useRandomParam="false" /><script>
     var FreshDirect = FreshDirect || {};
 
