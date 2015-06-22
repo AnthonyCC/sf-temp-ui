@@ -196,7 +196,11 @@ public class QuickShopHelper {
 		// === POPULATE ===
 
 		ProductDetailPopulator.populateBasicProductData(item, user, productModel);
-		ProductDetailPopulator.populateProductData(item, user, productModel, skuModel, latestFdProduct, priceCalculator, productSelection, true, true);
+		//APPDEV-4178 : "Your Fave" Bursts should not display in Reorder"
+
+		//ProductDetailPopulator.populateProductData(item, user, productModel, skuModel, latestFdProduct, priceCalculator, productSelection, true, true);
+		ProductDetailPopulator.populateProductData(item, user, productModel, skuModel, latestFdProduct, priceCalculator, productSelection, false, true);
+
 		ProductDetailPopulator.populatePricing(item, latestFdProduct, latestFdProductInfo, priceCalculator);
 
 		populateOrderLineData(item, productSelection);
