@@ -36,7 +36,7 @@ xsell=<fd:ToJSON object="${xsell}" noHeaders="true"/>
 FreshDirect.pdp.annotations=<fd:ToJSON object="${annotations}" noHeaders="true"/>
 FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<%=productNode.getContentKey().getId()%>" wrapIntoFunction="true" />;
 </script>
-<div class="pdp">
+<div itemscope itemtype="http://schema.org/Product" class="pdp">
 	<div>
 	<fd:CmFieldDecorator/>
 		<%if (FDStoreProperties.isAdServerEnabled()) {%>
@@ -49,10 +49,9 @@ FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<
 		<div id="" class="span-7 first">
 			<soy:render template="pdp.prdImage" data="${imagePotato}" />
 			<soy:render template="pdp.thumbnails" data="${imagePotato}" />
-			<c:if test="${productPotato.available}">			
-				<soy:render template="pdp.freshnessGuarantee" data="${productExtraPotato}"/>
-				<%@ include file="/includes/product/i_product_soc_buttons.jspf" %>
-			</c:if>
+<c:if test="${productPotato.available}">			
+			<soy:render template="pdp.freshnessGuarantee" data="${productExtraPotato}"/>
+			<%@ include file="/includes/product/i_product_soc_buttons.jspf" %>
 		    <ul class="pdp-accordion">
 		        <soy:render template="pdp.accordion.description" data="${productExtraPotato}"/>
 		        <soy:render template="pdp.nutrition.panel" data="${productExtraPotato}"/>
@@ -66,22 +65,19 @@ FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<
 		        <soy:render template="pdp.accordion.wine" data="${productExtraPotato}"/>
 		        <soy:render template="pdp.accordion.explanatory" data="${productPotato}"/>
 		    </ul>
-
+</c:if>
+<c:if test="${not productPotato.available }">
+	<soy:render template="pdp.accordion.descriptionText" data="${productExtraPotato}"/>
+</c:if>		    
 		</div>
 		<div class="span-8 prepend-1">
 <c:if test="${productPotato.available}">			
 			<div class="pdp-availability"><soy:render template="pdp.availability" data="${productPotato}" /></div>
-			<div class="pdp-price">
-				<soy:render template="common.price" data="${productPotato}" />
-				<soy:render template="pdp.savestring" data="${productPotato}" />
-			</div>
+			<div class="pdp-price"><soy:render template="common.price" data="${productPotato}" /><soy:render template="pdp.savestring" data="${productPotato}" /></div>
 			<div class="span-7 prepend-1 first pdp-info">
 				<soy:render template="pdp.skuInfo" data="${productPotato}" />
 				<soy:render template="pdp.quantity" data="${productPotato}" />
-				<%-- don't show scale info if we're in group scale context --%>
-				<c:if test="${empty param.grpId and empty param.version}">
-					<soy:render template="pdp.scaleinfo" data="${productPotato}" />
-				</c:if>
+				<soy:render template="pdp.scaleinfo" data="${productPotato}" />
 				<soy:render template="pdp.ratings" data="${productPotato}" />
 				<soy:render template="pdp.badges" data="${productExtraPotato}" />
 				<soy:render template="pdp.heatRating" data="${productPotato}" />
@@ -99,14 +95,8 @@ FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<
 					</div>
 				</div>
 			</div>
-			<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
-				<%-- don't show evenBetter if we're in group scale context --%>
-			<c:if test="${empty param.grpId and empty param.version}">
-				<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />
-				<c:if test="${empty productExtraPotato.familyProducts}">					
-					<soy:render template="pdp.evenBetter" data="${evenBetter}" />					
-				</c:if>	
-			</c:if>
+			
+			<soy:render template="pdp.evenBetter" data="${evenBetter}" />			
 			<soy:render template="pdp.likethat" data="${xsell}" />
 </c:if>			
 <c:if test="${not productPotato.available }">

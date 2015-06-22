@@ -18,9 +18,10 @@
 
 <html>
 	<head>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" lang="en-US"/>
-        <title><tmpl:get name="title" /></title>
-		<%@ include file="/common/template/includes/metatags.jspf" %>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+       
+	<%-- 	<%@ include file="/common/template/includes/metatags.jspf" %> --%>
+		<tmpl:get name="seoMetaTag"/> 
         <%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	  	<jwr:style src="/grid.css" media="all" />
 		<jwr:style src="/global.css" media="all" />

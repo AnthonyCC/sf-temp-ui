@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.AttributeDefI;
@@ -1515,5 +1514,15 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	@Override
 	public List<ProductModel> getCompleteTheMeal() {
 		return prodModel.getCompleteTheMeal();
+	}
+
+	@Override
+	public String getPageTitle() {
+		return prodModel.getPageTitle();
+	}
+
+	@Override
+	public String getSEOMetaDescription() {
+		return prodModel.getSEOMetaDescription();
 	}
 }
