@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
@@ -61,6 +63,9 @@ public class SmartStoreController extends BaseController {
     private static String ACTION_GET_CAROUSEL = "getCarousel";
     
     private static final String PARAM_DEPT_ID = "departmentId";
+    
+    //APPDEV-4181 Used directly as the same is done in StoreFront
+    private static final String FLOWER_DEPARTMENT = "flo";
 
     @Override
     protected boolean validateUser() {
@@ -101,6 +106,18 @@ public class SmartStoreController extends BaseController {
         				if(recommendedItems.size() == 0) {
         					recommendedItems = ProductRecommenderUtil.getMerchantRecommenderProducts(department);
         					result.setTitle(department.getMerchantRecommenderTitle());
+        					//APPDEV-4181 START
+        					//Direct use of CategoryRecommender is being done as this is department level carousel but category recommender
+        					// is directly being used in StoreFront for flowers department.
+        					if (recommendedItems != null && recommendedItems.size() == 0 && deptId.equals(FLOWER_DEPARTMENT)) {
+        						String cat = getSingleCategory(department);
+        						if (cat != null) {
+	        						CategoryModel category = (CategoryModel)ContentFactory.getInstance().getContentNode(ContentType.get("Category"), cat);
+	        						recommendedItems = ProductRecommenderUtil.getMerchantRecommenderProducts(category);
+	        						result.setTitle(category.getCatMerchantRecommenderTitle());
+        						}
+        					}
+        					//END APPDEV-4181 START
         				} else {
         					result.setTitle(department.getFeaturedRecommenderTitle());
         				}
@@ -289,4 +306,54 @@ public class SmartStoreController extends BaseController {
 		EnumSiteFeature siteFeat = EnumSiteFeature.getEnum(sfName);		
 		return siteFeat;
 	}
+    
+	/**
+	 * @param dept
+	 * @return
+	 * if department has only one usable category then return with that categoryId
+	 */
+    //APPDEV - 4181 START
+	private String getSingleCategory(DepartmentModel dept){
+		
+		String theOnlyOne=null;
+		
+		if(dept.getCategories()!=null){
+			
+			int categoryCounter = 0;
+			
+			for(CategoryModel cat : dept.getCategories()){
+				
+				if(isCategoryHiddenInContext(cat)){
+					continue;
+				}
+					
+				++categoryCounter;
+					
+				if(categoryCounter>1){
+					return null;
+				}
+					
+				theOnlyOne = cat.getContentKey().getId();
+			}
+			
+			if(categoryCounter==1){
+				return theOnlyOne;				
+			}
+			
+		}
+		
+		return null;
+	}
+	
+	/** if true category does not show up in any navigation **/
+	private boolean isCategoryHiddenInContext(CategoryModel cat) {
+		return 	!cat.isShowSelf() || isCategoryForbiddenInContext(cat);
+	}
+	
+	/** if true category page cannot be displayed **/
+	private boolean isCategoryForbiddenInContext(CategoryModel cat) {
+		return 	cat.isHideIfFilteringIsSupported() || 
+					cat.isHidden();
+	}
+	//APPDEV - 4181 END
 }
