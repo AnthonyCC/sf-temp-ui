@@ -7423,6 +7423,33 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		
 		
 	}
+	// for 4125 coremetrics
+	public String getCustomersProfileValue(String CustomerID)throws FDResourceException{
+		Connection conn = null;
+		String profileValue = null;
+		try {
+			conn = getConnection();
+			profileValue = ProfileDetailDAO.getCustomersProfile(conn,CustomerID);
+		}catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+			return profileValue;
+		}
+	public String getCustomersCounty(String CustomerID)throws FDResourceException{
+		Connection conn = null;
+		String county = null;
+		try {
+			conn = getConnection();		
+			county = ProfileDetailDAO.getCustomerCounty(conn,CustomerID);
+		}catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+			return county;
+		}
 		
 }
 

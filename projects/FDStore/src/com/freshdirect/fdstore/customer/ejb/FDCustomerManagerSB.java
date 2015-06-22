@@ -829,6 +829,9 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public FDUser getFDUserWithCart(FDIdentity identity) throws FDAuthenticationException, FDResourceException, RemoteException;
 	
 	public void storeSmsPrefereceFlag(String CustomerId, String flag) throws FDResourceException, RemoteException;
+	//4125 coremetrics
+    public String getCustomersProfileValue(String CustomerId) throws FDResourceException, RemoteException;
+	public String getCustomersCounty(String CustomerID) throws FDResourceException, RemoteException;
 	
 }
 
