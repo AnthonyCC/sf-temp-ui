@@ -1070,4 +1070,8 @@ public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, 
 	public EnumProductLayout getSpecialLayout();
 
 	public List<ProductModel> getCompleteTheMeal();
+	
+	public String getPageTitle();
+	
+	public String getSEOMetaDescription();
 }
