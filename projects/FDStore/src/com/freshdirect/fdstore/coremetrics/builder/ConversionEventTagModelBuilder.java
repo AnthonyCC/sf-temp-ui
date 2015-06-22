@@ -45,6 +45,9 @@ public class ConversionEventTagModelBuilder  {
 	private FDUserI user;
 	private String url;
 	private String subject;
+	private String paramName;
+	private String paramValue;
+	
 	
 	public ConversionEventTagModel buildTagModel() throws SkipTagException{
 		
@@ -244,5 +247,16 @@ public class ConversionEventTagModelBuilder  {
 
 	public void setSubject(String subject) {
 		this.subject = subject;
+	}
+
+	public void setParamName(String paramName) {
+		// TODO Auto-generated method stub
+		this.paramName = paramName;
+		
+	}
+	public void setParamValue(String paramValue) {
+		// TODO Auto-generated method stub
+		this.paramValue = paramValue;
+		
 	}
 }
