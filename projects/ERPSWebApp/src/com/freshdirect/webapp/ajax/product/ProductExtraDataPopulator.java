@@ -740,7 +740,7 @@ public class ProductExtraDataPopulator {
 		{
 			GroupScaleData gsData = new GroupScaleData(); //make sure this gets added, even if it's all nulls
 		
-			if (grpId != null && !"".equals(grpId) && grpVersion != null && !"".equals(grpVersion)) {
+			if (grpId != null && !"".equals(grpId)) {
 							
 				List<ProductData> groupProductsList = new ArrayList<ProductData>();
 					
@@ -758,7 +758,8 @@ public class ProductExtraDataPopulator {
 						FDGroup group = null;
 								
 						if(grpVersion==null || (grpVersion!=null && "".equals(grpVersion.trim()))) {
-							group=GroupScaleUtil.getLatestActiveGroup(grpId);
+							group=GroupScaleUtil.getLatestActiveGroup(grpId);							
+							gsData.version = Integer.toString(group.getVersion());
 						} else {			
 							group = new FDGroup(grpId, Integer.parseInt(grpVersion));
 						}
