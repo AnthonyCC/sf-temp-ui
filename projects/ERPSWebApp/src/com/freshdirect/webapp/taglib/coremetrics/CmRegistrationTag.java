@@ -73,16 +73,18 @@ public class CmRegistrationTag extends AbstractCmTag implements SessionName{
 			}
 			
 			RegistrationTagModel regModel = tagModelBuilder.buildTagModel();
-						
+			LOGGER.debug("cmregistration values @ @@ @ @@"+regModel.getRegistrationProfileValue());
+			LOGGER.debug("cmregistration COunty @ @@ @ @@"+regModel.getRegistrationCounty());
+
 			String tagJs = getFormattedTag(
 					toJsVar(regModel.getRegistrationId()),
 					toJsVar(regModel.getRegistrantEmail()),
 					toJsVar(regModel.getRegistrantCity()),
 					toJsVar(regModel.getRegistrantState()),
 					toJsVar(regModel.getRegistrantPostalCode()),
-					toJsVar(regModel.getRegistrantCountry()),
+					toJsVar(regModel.getRegistrantCountry()),					
 					toJsVar(mapToAttrString(regModel.getAttributesMaps())));
-			
+			LOGGER.debug("first tagjs"+tagJs);
 			
 			//append registration conversion event to tagJs
 			if (pendingRegistration){
@@ -93,8 +95,11 @@ public class CmRegistrationTag extends AbstractCmTag implements SessionName{
 				regConversionEventTag.setEventId(registrationLocation);
 				regConversionEventTag.setCategoryId(ConversionEventTagModelBuilder.CAT_REGISTRATION);
 				regConversionEventTag.setZipCode(regModel.getRegistrantPostalCode());
-				
+				regConversionEventTag.setParamValue(regModel.getRegistrationProfileValue());
+				regConversionEventTag.setParamCounty(regModel.getRegistrationCounty());
 				tagJs += getTagDelimiter() + regConversionEventTag.getTagOutput();
+				
+				LOGGER.debug("second tagjs"+tagJs);
 			} 
 
 			//append login conversion event to tagJs
@@ -108,6 +113,8 @@ public class CmRegistrationTag extends AbstractCmTag implements SessionName{
 				logConversionEventTag.setUser(user);
 				
 				tagJs += getTagDelimiter() + logConversionEventTag.getTagOutput();
+				LOGGER.debug("third tagjs"+tagJs);
+				
 			}
 			
 			LOGGER.debug(tagJs);
@@ -129,6 +136,7 @@ public class CmRegistrationTag extends AbstractCmTag implements SessionName{
 	public void setAddress(AddressModel address){
 		tagModelBuilder.setAddress(address);
 	}
+	
 	
 	protected boolean insertTagInCaseOfCrmContext(){
 		return true;

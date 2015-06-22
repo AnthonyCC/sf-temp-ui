@@ -133,5 +133,13 @@ public class CmConversionEventTag extends AbstractCmTag {
 	public void setZipCode(String zipCode) {
 		tagModelBuilder.setZipCode(zipCode);
 	}
+	public void setParamCounty(String ParamCounty)
+	{
+		tagModelBuilder.setParamName(ParamCounty);
+	}
+	public void setParamValue(String ParamValue)
+	{
+		tagModelBuilder.setParamValue(ParamValue);
+	}
 
 }
