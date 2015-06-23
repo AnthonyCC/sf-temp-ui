@@ -378,4 +378,12 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
 	public boolean isDisableCategoryYmalRecommender() {
 		return getAttribute("disableCategoryYmalRecommender", false);
 	}
+	
+	public String getSEOMetaDescription() {
+		return getAttribute("SEO_META_DESC", "");
+	}
+	
+	public String getPageTitle() {
+		return getAttribute("PAGE_TITLE", "");
+	}
 }
