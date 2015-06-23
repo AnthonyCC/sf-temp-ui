@@ -1028,10 +1028,7 @@ public class BrowseDataBuilderFactory {
 		browseData.getBreadCrumbs().setBreadCrumbs(breadCrumb);
 		
 		BrowseData.DescriptiveDataCointainer descriptiveContent = browseData.getDescriptiveContent();
-		final String pageTitle = navModel.getPageTitle().isEmpty() ? "FreshDirect - " + navModel.getSelectedContentNodeModel().getFullName() : navModel.getPageTitle();
-		
-		descriptiveContent.setMetaDescription(navModel.getMetaDescription());
-		descriptiveContent.setPageTitle(pageTitle);
+		descriptiveContent.setPageTitle("FreshDirect - " + navModel.getSelectedContentNodeModel().getFullName());
 		descriptiveContent.setOasSitePage(navModel.getSelectedContentNodeModel().getPath());
 	}
 	

@@ -87,12 +87,4 @@ public class SuperDepartmentModel extends ContentNodeModelImpl {
     public boolean isHideGlobalNavDropDown() {
 		return getAttribute("hideGlobalNavDropDown", false);
 	}
-    
-    public String getPageTitle() {
-		return getAttribute("PAGE_TITLE", "");
-	}
-    
-    public String getSEOMetaDescription() {
-		return getAttribute("SEO_META_DESC", "");
-	}
 }

@@ -18,7 +18,6 @@ import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
@@ -519,15 +518,5 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	@Override
 	public List<ProductModel> getCompleteTheMeal() {
 		return getProduct().getCompleteTheMeal();
-	}
-
-	@Override
-	public String getPageTitle() {
-		return getProduct().getPageTitle();
-	}
-
-	@Override
-	public String getSEOMetaDescription() {
-		return getProduct().getSEOMetaDescription();
 	}
 }

@@ -49,9 +49,6 @@ private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <tmpl:insert template='/common/template/no_nav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account</tmpl:put>
-    <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="manage_account"></fd:SEOMetaTag>
-	</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <% 
 DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy EEEE");

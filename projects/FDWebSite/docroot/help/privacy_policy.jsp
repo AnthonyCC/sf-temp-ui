@@ -28,10 +28,6 @@ if (type != null && !"".equals(type) && type.equalsIgnoreCase("popup")) {
 <tmpl:insert template='<%=template%>'>
 
     <tmpl:put name='title' direct='true'>FreshDirect -<%=help%> Privacy Policy</tmpl:put>
-    
-    <tmpl:put name="seoMetaTag" direct="true">
-    	<fd:SEOMetaTag pageId="privacy_policy"></fd:SEOMetaTag>
-    </tmpl:put>
 
     <tmpl:put name='content' direct='true'>
 		<table width="<%=tableWidth%>" border="0" cellspacing="0" cellpadding="0">
@@ -48,12 +44,25 @@ if (type != null && !"".equals(type) && type.equalsIgnoreCase("popup")) {
 				</script>
 				
 				<% if ( request.getParameter("lang") != null) { %>
-					<% if ("espanol".equalsIgnoreCase(request.getParameter("lang"))) { %> 
+					<% if ("espanol".equalsIgnoreCase(request.getParameter("lang"))) { %>
+					<tmpl:put name='seoMetaTag' direct='true'>
+       					<fd:SEOMetaTag language='es-ES'/>
+ 					 </tmpl:put>
+					
 						<fd:IncludeMedia name="/media/editorial/site_pages/privacy_policy/privacy_policy_espanol.html" />
 					<% } else { %>
+					<tmpl:put name='seoMetaTag' direct='true'>
+      					 <fd:SEOMetaTag language='en-US'/>
+  					</tmpl:put>
+					
+					
 						<fd:IncludeMedia name="/media/editorial/site_pages/privacy_policy/privacy_policy.html" />
 					<% } %>
 				<% } else { %>
+					<tmpl:put name='seoMetaTag' direct='true'>
+      					 <fd:SEOMetaTag language='en-US'/>
+  					</tmpl:put>
+				
 					<fd:IncludeMedia name="/media/editorial/site_pages/privacy_policy/privacy_policy.html" />
 				<% } %>
 			</td>

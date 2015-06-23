@@ -11,11 +11,14 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 
 <head>
-  <tmpl:get name="seoMetaTag"/>  
+  <title><tmpl:get name='title'/></title>
+    
+ <%--  <%@ include file="/common/template/includes/metatags.jspf" %> --%>
   <%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
   <%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
   <%@ include file="/shared/template/includes/i_head_end.jspf" %>
   <tmpl:get name='extraHead'/>
+   <tmpl:get name="seoMetaTag"/>
 </head>
 
 <body>

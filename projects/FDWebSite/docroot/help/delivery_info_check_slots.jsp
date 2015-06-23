@@ -57,10 +57,6 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 %>
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
-	 <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="delivery_info_check"></fd:SEOMetaTag>
-	</tmpl:put>
-	
 		<tmpl:put name='content' direct='true'>
 <table cellpadding="0" cellspacing="0" border="0">
 <tr><td colspan="2" class="title16"><img src="/media_stat/images/layout/clear.gif" width="1" height="18"><br>Check Available Delivery TimeSlots<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"></td></tr>

@@ -5,21 +5,28 @@
 request.setAttribute("listPos", "SystemMessage,WDelivery,WAffiliate");
 request.setAttribute("noyui", true);
 
-%>
-<tmpl:insert template="/common/template/page_template_optimized.jsp">
+response.sendRedirect("/"); //temproraly 302 redirect 
+
+%><tmpl:insert template="/common/template/page_template_optimized.jsp">
 	<tmpl:put name="title">FreshDirect</tmpl:put>
-	<tmpl:put name="seoMetaTag">
-		<fd:SEOMetaTag pageId="welcome"></fd:SEOMetaTag>
-	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	    <div class="content span-24">
 		<% if ( request.getParameter("lang") != null) { %>
 			<% if ("espanol".equalsIgnoreCase(request.getParameter("lang"))) { %> 
+			<tmpl:put name='seoMetaTag' direct='true'>
+       					<fd:SEOMetaTag language='es-ES'/>
+ 					 </tmpl:put>
 				<fd:IncludeMedia name="/media/editorial/welcome/welcome-sp.html" />
 			<% } else { %>
+			<tmpl:put name='seoMetaTag' direct='true'>
+      					 <fd:SEOMetaTag language='en-US'/>
+  					</tmpl:put>
 				<fd:IncludeMedia name="/media/editorial/welcome/welcome-en.html" />
 			<% } %>
 		<% } else { %>
+		<tmpl:put name='seoMetaTag' direct='true'>
+      					 <fd:SEOMetaTag language='en-US'/>
+  					</tmpl:put>
 			<fd:IncludeMedia name="/media/editorial/welcome/welcome-en.html" />
 		<% } %>
 	    </div>

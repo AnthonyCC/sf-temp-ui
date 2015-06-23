@@ -11,9 +11,6 @@
 %><%@ taglib uri='freshdirect' prefix='fd' 
 %><%@ taglib uri='oscache' prefix='oscache' 
 %>
-
-<%@ page import="org.apache.commons.lang.StringUtils"%>
-
 <fd:CheckLoginStatus id = "user"/>
 <fd:PDPRedirector user="<%=user %>"/>
 <fd:BrowsePartialRolloutRedirector user="<%=user%>" oldToNewDirection="true" id="${param.catId}"/>
@@ -71,20 +68,6 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 	//generic ad spots for [APPDEV-2370]
 	request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,ProductNote,SideCartBottom,CategoryGen01,CategoryGen02,CategoryGen03,CategoryGen04,CategoryGen05");
 
-	
-	String title = "FreshDirect - " + currentFolder.getFullName();
-	String seoMetaDescription = "";
-	if(productContainer != null){
-		title = productContainer.getPageTitle();	
-		seoMetaDescription = productContainer.getSEOMetaDescription();
-	} 
-	if(categoryModel != null){
-		title = categoryModel.getPageTitle();
-		seoMetaDescription = categoryModel.getSEOMetaDescription();
-	}
-	
-	
-			
 	boolean noLeftNav = false;
 	String jspTemplate = null;
 	boolean showAlternateContent = false;
@@ -188,19 +171,16 @@ final int W_CATEGORY_NO_LEFT_NAV = 765;
 	request.setAttribute("layoutType", layoutType); //make layoutType available in jspTemplate
 	request.setAttribute("noLeftNav",noLeftNav);
 	request.setAttribute("jspTemplate",jspTemplate);
-	String folderFullName = currentFolder.getFullName();
+
 	%><tmpl:insert template='<%=jspTemplate%>'><%
 		if (!noLeftNav) {
 			%><tmpl:put name='leftnav' direct='true'> <%-- <<< some whitespace is needed here --%></tmpl:put><%
 		} 
 		%>
-		<tmpl:put name="seoMetaTag" direct="true">
-	    	<fd:SEOMetaTag  title="<%= title%>" metaDescription="<%=seoMetaDescription%>"/>
-	    </tmpl:put>
 	
-		<%-- <tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put> --%>
+		<tmpl:put name='title' direct='true'>FreshDirect - <%= currentFolder.getFullName() %></tmpl:put>
 		<tmpl:put name='facebookmeta' direct='true'>
-			<meta property="og:title" content="FreshDirect - <%= folderFullName%>"/>
+			<meta property="og:title" content="FreshDirect - <%= currentFolder.getFullName() %>"/>
 			<meta property="og:site_name" content="FreshDirect"/>
 	
 	<% if (prodModel!=null) {

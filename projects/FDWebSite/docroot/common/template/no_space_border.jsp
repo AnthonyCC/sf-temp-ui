@@ -5,11 +5,20 @@
 <% //expanded page dimensions
 final int W_NO_SPACE_BORDER_TOTAL = 970;
 %>
+
+<%
+/*
+    if (session.isNew()){
+    	 response.sendRedirect(response.encodeRedirectURL("site_access.jsp"));
+			return;
+		}*/
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-	<tmpl:get name="seoMetaTag"/> 
+    <title><tmpl:get name='title'/></title>
+	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
   <%@ include file="/shared/template/includes/style_sheet_grid_compat.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>

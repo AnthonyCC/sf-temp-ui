@@ -51,10 +51,9 @@ public class PreviewLinkProvider {
 					return null;
 				}
 
-				ContentNodeI cat = PrimaryHomeUtil.findParent(productNode, svc, storeKey.getId());
-				
-				if (cat != null) {
-					uri = "/product.jsp?catId=" + cat.getKey().getId() + "&productId=" + id;
+				ContentKey homeKey = PrimaryHomeUtil.pickPrimaryHomeForStore(key, storeKey, svc);
+				if (homeKey != null) {
+					uri = "/product.jsp?catId=" + homeKey.getId() + "&productId=" + id;
 				}
 			}
 			
@@ -94,14 +93,6 @@ public class PreviewLinkProvider {
 			uri = "/test/migration/products_tagged.jsp?tag=" + id;
 		} else if (FDContentTypes.SUPER_DEPARTMENT.equals(type)) {
 			uri = "/browse.jsp?id=" + id;
-		} else if (FDContentTypes.WEBPAGE.equals(type)){
-			ContentNodeI node = key.getContentNode();
-			if(node.getAttributeValue("URL") != null){
-				uri = (String) node.getAttributeValue("URL");
-				if(uri != null && !uri.contains("?")){
-					uri += ("?");
-				}
-			}
 		}
 
 		if (uri != null) {

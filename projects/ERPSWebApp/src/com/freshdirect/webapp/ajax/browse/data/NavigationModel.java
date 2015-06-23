@@ -87,8 +87,6 @@ public class NavigationModel {
 	private boolean productListing;
 	private boolean recipeListing;
 	private EnumBrandFilterLocation brandFilterLocation;
-	private String pageTitle;
-	private String metaDescription;
 	
 	public NavDepth getNavDepth() {
 		return navDepth;
@@ -238,17 +236,5 @@ public class NavigationModel {
 	}
 	public void setBrandFilterLocation(EnumBrandFilterLocation brandFilterLocation) {
 		this.brandFilterLocation = brandFilterLocation;
-	}
-	public String getPageTitle() {
-		return pageTitle;
-	}
-	public void setPageTitle(String pageTitle) {
-		this.pageTitle = pageTitle;
-	}
-	public String getMetaDescription() {
-		return metaDescription;
-	}
-	public void setMetaDescription(String metaDescription) {
-		this.metaDescription = metaDescription;
 	}
 }
