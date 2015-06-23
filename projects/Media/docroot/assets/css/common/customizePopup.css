@@ -31,6 +31,8 @@
 	background:url(/media_stat/images/quickshop/button-close.png) no-repeat;
 }
 
+.clear{clear:both}
+
 .customizePopup-footer {
 	clear:both;
 }
