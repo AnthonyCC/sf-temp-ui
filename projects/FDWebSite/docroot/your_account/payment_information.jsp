@@ -21,6 +21,9 @@ final int W_YA_PAYMENT_INFO_TOTAL = 970;
 <% String actionName =  request.getParameter("actionName"); %>
 <tmpl:insert template='/common/template/dnav.jsp'>
    <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Payment Options</tmpl:put>
+   <tmpl:put name="seoMetaTag" direct="true">
+		<fd:SEOMetaTag pageId="payment_info"></fd:SEOMetaTag>
+	</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <fd:PaymentMethodController actionName='<%=actionName%>' result='result'>
 

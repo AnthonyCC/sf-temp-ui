@@ -16,8 +16,7 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);
 <!--[if IE 9]>    <html class="no-js lt-ie10" lang="en"> <![endif]-->
 <!--[if gt IE 9]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
-    <title><tmpl:get name='title'/></title>
-	<%@ include file="/common/template/includes/metatags.jspf" %>
+    <tmpl:get name="seoMetaTag"/>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<% if (request.getRequestURI().contains("/myfd")) { %>
 	<fd:javascript src="/assets/javascript/cufon-yui.js"/>

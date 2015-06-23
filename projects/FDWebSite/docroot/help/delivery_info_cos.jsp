@@ -44,6 +44,9 @@ request.setAttribute("listPos", "SystemMessage,DeliveryFees");
 %>
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
+	 <tmpl:put name="seoMetaTag" direct="true">
+		<fd:SEOMetaTag pageId="delivery_info_cos"></fd:SEOMetaTag>
+	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 		<table width="<%=W_DELIVERY_LIC_PICKUP_TOTAL%>" border="0" cellpadding="0" cellspacing="0">
 		     <tr>

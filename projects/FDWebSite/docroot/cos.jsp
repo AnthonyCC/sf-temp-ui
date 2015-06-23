@@ -31,6 +31,9 @@ request.setAttribute("noyui", true);
 
 <tmpl:insert template='/common/template/no_shell_optimized.jsp'>
 	<tmpl:put name='title' direct='true'>Welcome to FreshDirect</tmpl:put>
+	<tmpl:put name="seoMetaTag" direct="true">
+		<fd:SEOMetaTag pageId="cos"></fd:SEOMetaTag>
+	</tmpl:put>
 	<tmpl:put name="customCss">
 		<fd:css href="/assets/css/homepage/homepage.css"/>
 	</tmpl:put>

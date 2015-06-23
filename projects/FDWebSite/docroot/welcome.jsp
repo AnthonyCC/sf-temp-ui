@@ -9,6 +9,9 @@ response.sendRedirect("/"); //temproraly 302 redirect
 
 %><tmpl:insert template="/common/template/page_template_optimized.jsp">
 	<tmpl:put name="title">FreshDirect</tmpl:put>
+	<tmpl:put name="seoMetaTag">
+		<fd:SEOMetaTag pageId="welcome"></fd:SEOMetaTag>
+	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	    <div class="content span-24">
 		<% if ( request.getParameter("lang") != null) { %>
