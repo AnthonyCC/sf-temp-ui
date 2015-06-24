@@ -28,10 +28,6 @@ if (type != null && !"".equals(type) && type.equalsIgnoreCase("popup")) {
 <tmpl:insert template='<%=template%>'>
 
     <tmpl:put name='title' direct='true'>FreshDirect -<%=help%> Privacy Policy</tmpl:put>
-    
-    <tmpl:put name="seoMetaTag" direct="true">
-    	<fd:SEOMetaTag pageId="privacy_policy"></fd:SEOMetaTag>
-    </tmpl:put>
 
     <tmpl:put name='content' direct='true'>
 		<table width="<%=tableWidth%>" border="0" cellspacing="0" cellpadding="0">

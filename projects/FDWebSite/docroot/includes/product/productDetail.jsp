@@ -36,7 +36,7 @@ xsell=<fd:ToJSON object="${xsell}" noHeaders="true"/>
 FreshDirect.pdp.annotations=<fd:ToJSON object="${annotations}" noHeaders="true"/>
 FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<%=productNode.getContentKey().getId()%>" wrapIntoFunction="true" />;
 </script>
-<div itemscope itemtype="http://schema.org/Product" class="pdp">
+<div class="pdp">
 	<div>
 	<fd:CmFieldDecorator/>
 		<%if (FDStoreProperties.isAdServerEnabled()) {%>

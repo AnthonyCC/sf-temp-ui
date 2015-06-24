@@ -136,7 +136,6 @@ public class BrowseData implements Serializable {
 		private String navDepth;
 		private String contentId; //workaround for ajax response listening...
 		private boolean isWineDepartment;
-		private String metaDescription;
 		
 		public String getMedia() {
 			return media;
@@ -197,12 +196,6 @@ public class BrowseData implements Serializable {
 		}
 		public void setWineDepartment(boolean isWineDepartment) {
 			this.isWineDepartment = isWineDepartment;
-		}
-		public String getMetaDescription() {
-			return metaDescription;
-		}
-		public void setMetaDescription(String metaDescription) {
-			this.metaDescription = metaDescription;
 		}
 	}
 

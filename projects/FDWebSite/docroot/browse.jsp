@@ -42,10 +42,6 @@
   <tmpl:put name='containerExtraClass' direct='true'>browse</tmpl:put>
 
   <tmpl:put name='title'>${browsePotato.descriptiveContent.pageTitle}</tmpl:put>
-  
-  <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag title="${browsePotato.descriptiveContent.pageTitle}" metaDescription="${browsePotato.descriptiveContent.metaDescription}"></fd:SEOMetaTag>
-	</tmpl:put>
 
   <c:if test="${browsePotato.descriptiveContent.wineDepartment == true}">
     <tmpl:put name='department'>WINE</tmpl:put>

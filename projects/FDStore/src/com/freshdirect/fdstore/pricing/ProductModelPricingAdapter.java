@@ -1516,14 +1516,4 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 	public List<ProductModel> getCompleteTheMeal() {
 		return prodModel.getCompleteTheMeal();
 	}
-
-	@Override
-	public String getPageTitle() {
-		return prodModel.getPageTitle();
-	}
-
-	@Override
-	public String getSEOMetaDescription() {
-		return prodModel.getSEOMetaDescription();
-	}
 }

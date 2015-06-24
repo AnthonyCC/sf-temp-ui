@@ -80,8 +80,7 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 	request.setAttribute("sitePage", departmentModel.getPath());
 	request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,SideCartBottom,WineTopRight,WineBotLeft,WineBotMiddle,WineBotRight,4mmAd1,4mmAd2");
 
-	String title = departmentModel != null ? departmentModel.getPageTitle() : "FreshDirect - " + currentFolder.getFullName();
-	title = title.replaceAll("<[^>]*>", "");
+
 	if (!ContentFactory.getInstance().getPreviewMode()) {
 		if (currentFolder.isHidden()) {
 			response.sendRedirect(response.encodeRedirectURL(currentFolder.getHideUrl()));
@@ -103,11 +102,7 @@ final Logger LOG = LoggerFactory.getInstance("department.jsp");
 %>
 
 <tmpl:insert template='<%= (isIncludeMediaLayout ? "/common/template/no_nav.jsp" : "/common/template/right_nav.jsp") %>'>
-	
-	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag title="<%=title%>" metaDescription="<%=departmentModel.getSEOMetaDescription()%>"/>
-	</tmpl:put>
-
+<tmpl:put name='title' direct='true'>FreshDirect - <%= departmentModel.getFullName() %></tmpl:put>
 <tmpl:put name='content' direct='true'>
 	<fd:CmPageView wrapIntoScriptTag="true" currentFolder="<%=currentFolder%>"/>
 	<%

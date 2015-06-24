@@ -222,18 +222,6 @@
 					</CmsSection>
 				</sections>
 			</CmsPage>
-			<CmsPage>
-			    <title>SEO</title>
-				<sections>
-					<CmsSection>
-						<title>SEO Attributes</title>
-						<fields>
-							<CmsField><attribute>PAGE_TITLE</attribute></CmsField>
-							<CmsField><attribute>SEO_META_DESC</attribute></CmsField>
-						</fields>
-					</CmsSection>				    
-				</sections>
-			</CmsPage>
 		</pages>
 	</CmsEditor>
 	
@@ -555,18 +543,6 @@
 					</CmsSection>
 				</sections>
 			</CmsPage>
-			<CmsPage>
-			    <title>SEO</title>
-				<sections>
-					<CmsSection>
-						<title>SEO Attributes</title>
-						<fields>
-							<CmsField><attribute>PAGE_TITLE</attribute></CmsField>
-							<CmsField><attribute>SEO_META_DESC</attribute></CmsField>
-						</fields>
-					</CmsSection>				    
-				</sections>
-			</CmsPage>
 		</pages>
 	</CmsEditor>	
 	
@@ -860,18 +836,6 @@
 						<title>DATA SETUP</title>
 						<fields>
 							<CmsField><attribute>tags</attribute></CmsField>
-						</fields>
-					</CmsSection>
-				</sections>
-			</CmsPage>
-			<CmsPage>
-				<title>SEO</title>
-				<sections>
-					<CmsSection>
-						<title>SEO Attributes</title>
-						<fields>
-							<CmsField><attribute>PAGE_TITLE</attribute></CmsField>
-							<CmsField><attribute>SEO_META_DESC</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>
@@ -1967,24 +1931,6 @@
 						<fields>
 							<CmsField><attribute>media</attribute></CmsField>
 							<CmsField><attribute>items</attribute></CmsField>
-						</fields>
-					</CmsSection>
-				</sections>
-			</CmsPage>
-		</pages>
-	</CmsEditor>
-	<CmsEditor id="WebPage">
-		<contentType>WebPage</contentType>
-		<pages>
-			<CmsPage>
-				<title>Core Attributes</title>
-				<sections>
-					<CmsSection>
-						<title>SEO</title>
-						<fields>
-							<CmsField><attribute>PAGE_TITLE</attribute></CmsField>
-							<CmsField><attribute>SEO_META_DESC</attribute></CmsField>
-							<CmsField><attribute>URL</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>

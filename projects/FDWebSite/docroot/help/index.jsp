@@ -97,9 +97,6 @@ final int W_HELP_INDEX_TOTAL = 970;
 %>
 <tmpl:insert template='/common/template/no_nav.jsp'>
 	<tmpl:put name='title' direct='true'>FreshDirect - Help</tmpl:put>
-	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="index_help" includeSiteSearchLink="true"/>
-	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 		<fd:ContactFdController result="result" successPage='/help/contact_fd_thank_you.jsp'>
 			<fd:ErrorHandler result='<%=result%>' name='kana' id='errorMsg'>

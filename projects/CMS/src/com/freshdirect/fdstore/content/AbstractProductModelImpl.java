@@ -625,14 +625,4 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		ContentNodeModelUtil.refreshModels(this, "tags", tags, false);
 		return Collections.unmodifiableList(tags);
 	}
-	
-	@Override
-	public String getPageTitle(){
-		return getAttribute("PAGE_TITLE", "FreshDirect");
-	}
-	
-	@Override
-	public String getSEOMetaDescription(){
-		return getAttribute("SEO_META_DESC", "Online grocer providing high quality fresh foods and popular grocery and  household items at incredible prices delivered to the New York area.");
-	}
 }

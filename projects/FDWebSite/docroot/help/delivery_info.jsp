@@ -41,11 +41,6 @@ request.setAttribute("listPos", "SystemMessage,ZDeliveryRight,DeliveryFees");
 %>
 <tmpl:insert template='<%= jspTemplate %>'>
     <tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
-    
-     <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="delivery_info_help"></fd:SEOMetaTag>
-	</tmpl:put>
-	
     <tmpl:put name='content' direct='true'>
 		<%if(siteAccessPage==null || !siteAccessPage.equalsIgnoreCase("delivery")){%>
 			<table border="0" cellpadding="0" cellspacing="0" width="<%=W_DELIVERY_INFO_TOTAL%>">

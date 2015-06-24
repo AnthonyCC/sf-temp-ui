@@ -31,9 +31,6 @@ String redirectPage = "/login/login.jsp?successPage=" + successPage;
 %>
 <tmpl:insert template='/common/template/dnav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
-<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="customer_profile"></fd:SEOMetaTag>
-	</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
 <script type="text/javascript">

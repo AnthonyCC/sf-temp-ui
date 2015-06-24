@@ -120,22 +120,13 @@ if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
 } else { //assuming the default (Generic) Template
 	jspTemplate = "/common/template/both_dnav.jsp";
 }
-
-String title = productNode.getPageTitle() != null ? productNode.getPageTitle() : "FreshDirect - " + productNode.getFullName();
-title = title.replaceAll("<[^>]*>", "");
-String productFullName = productNode.getFullName().replaceAll("<[^>]*>", "");
 %>
 <tmpl:insert template='<%=jspTemplate%>'>
-
-	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag title="<%= title%>" metaDescription="<%=productNode.getSEOMetaDescription()%>"/>
-	</tmpl:put>
-
-   <%--  <tmpl:put name='title' direct='true'>FreshDirect - <%= productNode.getFullName() %></tmpl:put> --%>
+    <tmpl:put name='title' direct='true'>FreshDirect - <%= productNode.getFullName() %></tmpl:put>
     <tmpl:put name='leftnav' direct='true'>
     </tmpl:put>
 <tmpl:put name='facebookmeta' direct='true'>
-	<meta property="og:title" content="FreshDirect - <%= productFullName %>"/>
+	<meta property="og:title" content="FreshDirect - <%= productNode.getFullName() %>"/>
 	<meta property="og:site_name" content="FreshDirect"/>
 
 <% if (productNode!=null) {

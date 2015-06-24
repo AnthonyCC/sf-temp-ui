@@ -19,9 +19,6 @@
     <tmpl:put name="soytemplates"><soy:import packageName="quickshop"/></tmpl:put>
     <tmpl:put name="jsmodules"><%@ include file="/common/template/includes/i_jsmodules.jspf" %><jwr:script src="/qsshopfromlist.js" useRandomParam="false" /></tmpl:put>
     <tmpl:put name='title' direct='true'>FreshDirect - Reorder from Your Lists</tmpl:put>
-    <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="shop_list"></fd:SEOMetaTag>
-	</tmpl:put>
 
     <tmpl:put name='listSelected'>selected</tmpl:put>
     <tmpl:put name='containerClass'>qs-lists</tmpl:put>

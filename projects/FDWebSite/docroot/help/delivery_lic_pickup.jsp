@@ -46,9 +46,6 @@ if (user != null) {
 %>
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
-	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="delivery_lic"></fd:SEOMetaTag>
-	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 		<fd:IncludeMedia name="/media/editorial/site_pages/delivery_info/pickup/main.ftl" parameters="<%=params%>" withErrorReport="true"/>
 	</tmpl:put>

@@ -14,7 +14,6 @@
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
 
 <%
-	String pageId = request.getParameter("pageType") != null ? (String) request.getParameter("pageType"):"search";
 	// [APPDEV-3953] Special rule for DDPP Preview Mode
 	// Redirect to site access for getting zip code first
 	if (null != request.getParameter("ppPreviewId")) {
@@ -70,9 +69,6 @@
   <tmpl:put name='containerExtraClass' direct='true'>srch ${empty browsePotato.menuBoxes.menuBoxes ? 'emptymenu' : ''}</tmpl:put>
 
   <tmpl:put name='title'>${browsePotato.descriptiveContent.pageTitle}</tmpl:put>
-  <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="<%=pageId%>"></fd:SEOMetaTag>
-	</tmpl:put>
   
   <tmpl:put name='pageType'>${browsePotato.searchParams.pageType}</tmpl:put>
 

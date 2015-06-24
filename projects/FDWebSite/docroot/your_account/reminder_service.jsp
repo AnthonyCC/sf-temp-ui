@@ -12,9 +12,6 @@ final int W_YA_REMINDER_SERVICE = 970;
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <tmpl:insert template='/common/template/dnav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Delivery Addresses</tmpl:put>
-    <tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="remainder_service"></fd:SEOMetaTag>
-	</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <%! String[] dayNames = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};%>
 <%FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);

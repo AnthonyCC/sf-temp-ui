@@ -82,21 +82,6 @@ public class NavigationUtil {
 			}
 		}
 		
-		if(node instanceof CategoryModel){
-			model.setPageTitle(((CategoryModel) node).getPageTitle());
-			model.setMetaDescription(((CategoryModel) node).getSEOMetaDescription());
-		}
-		
-		if(node instanceof SuperDepartmentModel){
-			model.setPageTitle(((SuperDepartmentModel) node).getPageTitle());
-			model.setMetaDescription(((SuperDepartmentModel) node).getSEOMetaDescription());
-		}
-		
-		if(node instanceof DepartmentModel){
-			model.setPageTitle(((DepartmentModel) node).getPageTitle());
-			model.setMetaDescription(((DepartmentModel) node).getSEOMetaDescription());
-		}
-		
 		String id = navigator.getId();
 		
 		// validation for orphan categories

@@ -1,5 +1,4 @@
 <%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
 
 <% //expanded page dimensions
 final int W_AOL_NOTE_TOTAL = 970;
@@ -7,13 +6,10 @@ final int W_AOL_NOTE_TOTAL = 970;
 
 <tmpl:insert template='/common/template/no_space_border.jsp'>
 	<tmpl:put name='title' direct='true'>Note to AOL Users</tmpl:put>
-	
-	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag pageId="aol_note"></fd:SEOMetaTag>
-	</tmpl:put>
+		<tmpl:put name='content' direct='true'>
 
-	<tmpl:put name='content' direct='true'>
-	
+		
+		
 		
 <table cellpadding="0" cellspacing="0" border=0>
 <tr>

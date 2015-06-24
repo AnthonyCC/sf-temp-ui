@@ -519,14 +519,4 @@ public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 	public List<ProductModel> getCompleteTheMeal() {
 		return getProduct().getCompleteTheMeal();
 	}
-
-	@Override
-	public String getPageTitle() {
-		return getProduct().getPageTitle();
-	}
-
-	@Override
-	public String getSEOMetaDescription() {
-		return getProduct().getSEOMetaDescription();
-	}
 }
