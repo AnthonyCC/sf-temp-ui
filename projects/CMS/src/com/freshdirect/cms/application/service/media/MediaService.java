@@ -137,7 +137,7 @@ public class MediaService extends AbstractContentService implements MediaService
 		}
 	}
 
-	private static String QUERY_MEDIA_MANY = "select /*+ FIRST_ROWS */ id, uri, type, width, height from cms_media where id in (?)";
+	private static String QUERY_MEDIA_MANY = "select /*+ FIRST_ROWS */ id, uri, type, width, height, last_modified from cms_media where id in (?)";
 
 	/** @return Set of keys with known content types */
 	private Set filterKeys(Set keys) {
@@ -226,8 +226,8 @@ public class MediaService extends AbstractContentService implements MediaService
 		if (FDContentTypes.IMAGE.equals(type)) {
 			node.getAttribute("width").setValue(new Integer(rs.getInt("WIDTH")));
 			node.getAttribute("height").setValue(new Integer(rs.getInt("HEIGHT")));
-			if(rs.getDate("LAST_MODIFIED")!= null){
-				lastModDate = rs.getDate("LAST_MODIFIED").toString();
+			if(rs.getDate("last_modified")!= null){
+				lastModDate = rs.getDate("last_modified").toString();
 			}
 			node.getAttribute("lastmodified").setValue(lastModDate);
 			
