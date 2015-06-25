@@ -148,7 +148,7 @@ public class GwtNodeData implements Serializable {
 	public void collectValuesFromFields() {
 		for ( Map.Entry<String, ContentNodeAttributeI> e : node.getOriginalAttributes().entrySet() ) {
 			if ( !e.getValue().isReadonly() ) {
-				Field<Serializable> fieldObject = e.getValue().getFieldObject();
+				Field<? extends Serializable> fieldObject = e.getValue().getFieldObject();
 				// field object can be null, if the field not rendered
 				if ( fieldObject != null ) {
 					getValueFromField( e.getKey(), e.getValue().getFieldObject() );
@@ -157,7 +157,7 @@ public class GwtNodeData implements Serializable {
 		}
 	}
 	
-	private void getValueFromField( String name, Field<Serializable> fieldObject ) {
+	private void getValueFromField( String name, Field<? extends Serializable> fieldObject ) {
 		if ( fieldObject instanceof SaveListenerField ) {
 			// onSave will add nodes to the workingset
 			( (SaveListenerField)fieldObject ).onSave();
@@ -198,7 +198,7 @@ public class GwtNodeData implements Serializable {
 	
 	public Serializable getFieldValue(String attributeKey) {
 		ContentNodeAttributeI attr = this.node.getOriginalAttribute(attributeKey);
-		Field<Serializable> field= attr.getFieldObject();
+		Field<? extends Serializable> field= attr.getFieldObject();
 		if(field == null) {
 			return attr.getValue();
 		}
@@ -220,7 +220,7 @@ public class GwtNodeData implements Serializable {
 	}
 
 	protected boolean isDirty(String attributeKey, ContentNodeAttributeI attr) {
-		Field<Serializable> fieldObject = attr.getFieldObject();
+		Field<? extends Serializable> fieldObject = attr.getFieldObject();
 		// field object can be null, if the field not rendered
 		if ( fieldObject != null ) {
 			Serializable value = fieldObject.getValue();

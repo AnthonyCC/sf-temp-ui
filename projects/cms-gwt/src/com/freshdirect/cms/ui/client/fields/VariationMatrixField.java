@@ -158,7 +158,7 @@ public class VariationMatrixField extends OneToManyRelationField implements Save
         if (attribute2 instanceof OneToManyAttribute) {
             OneToManyAttribute attribute = (OneToManyAttribute) attribute2;
             
-            Field<Serializable> field = attribute.getFieldObject();
+            Field<? extends Serializable> field = attribute.getFieldObject();
             // we hope that field is already initialized ... if not, we are in a deep trouble ..
             if(field!=null) {
                 field.addListener(Events.Change, new Listener<FieldEvent>() {
