@@ -14,6 +14,6 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/gwt/gwt-dev-oophm.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/gwt/gwt-user.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/gwt/gwt-maps.jar"/>
-	<classpathentry kind="lib" path="FD_LIBS/thirdparty/gwt/ColorPicker-GWT-1.6.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/gwt/ColorPicker-GWT-1.6.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
