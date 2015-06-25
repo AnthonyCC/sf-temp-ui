@@ -13,7 +13,7 @@ public abstract class BaseAttribute implements Serializable, ContentNodeAttribut
     protected boolean              readonly;
     protected boolean              inheritable;
 
-    protected transient Field<Serializable> fieldObject;
+    protected transient Field<? extends Serializable> fieldObject;
     
     public BaseAttribute() {    	
     }
@@ -25,11 +25,11 @@ public abstract class BaseAttribute implements Serializable, ContentNodeAttribut
     	this.fieldObject = attr.fieldObject;
     }
     
-    public Field<Serializable> getFieldObject() {
+    public Field<? extends Serializable> getFieldObject() {
         return fieldObject;
     }
     
-    public void setFieldObject(Field<Serializable> obj) {
+    public void setFieldObject(Field<? extends Serializable> obj) {
         this.fieldObject = obj;
     }
 

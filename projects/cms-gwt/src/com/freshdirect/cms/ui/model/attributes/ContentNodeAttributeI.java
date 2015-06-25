@@ -18,7 +18,7 @@ public interface ContentNodeAttributeI extends Serializable {
 	
 	public boolean isInheritable();
 	
-	public Field<Serializable> getFieldObject();
+	public Field<? extends Serializable> getFieldObject();
 	
-	public void setFieldObject(Field<Serializable> obj);
+	public void setFieldObject(Field<? extends Serializable> obj);
 }
