@@ -15,6 +15,9 @@ final int W_YA_SIGNIN_INFO = 970;
 <%@page import="com.freshdirect.common.address.PhoneNumber"%><fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <tmpl:insert template='/common/template/dnav_pwdstrng.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - User Name, Password, & Contact Info</tmpl:put>
+    <tmpl:put name="seoMetaTag" direct="true">
+		<fd:SEOMetaTag pageId="signin_info"></fd:SEOMetaTag>
+	</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <fd:javascript src="/assets/javascript/phone_number.js"/>
 <script src="/assets/javascript/jquery-1.6.4.js" type="text/javascript" charset="utf-8"></script>

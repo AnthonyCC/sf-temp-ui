@@ -1355,4 +1355,14 @@ public class ProductModelFeaturedAdapter implements ProductModel, Serializable,
 	public List<ProductModel> getCompleteTheMeal() {
 		return productModel.getCompleteTheMeal();
 	}
+
+	@Override
+	public String getPageTitle() {
+		return productModel.getPageTitle();
+	}
+
+	@Override
+	public String getSEOMetaDescription() {
+		return productModel.getSEOMetaDescription();
+	}
 }

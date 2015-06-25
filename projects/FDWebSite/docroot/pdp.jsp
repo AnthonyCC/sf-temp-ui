@@ -35,6 +35,10 @@
 <%
 ProductModel productNode = ProductPricingFactory.getInstance().getPricingAdapter( ContentFactory.getInstance().getProductByName( request.getParameter("catId"), request.getParameter("productId") ), user.getPricingContext() );
 
+String title =  productNode.getPageTitle() != null && !productNode.getPageTitle().isEmpty() ? productNode.getPageTitle() : productNode.getFullName();
+String productFullName = productNode.getFullName().replaceAll("<[^>]*>", "");
+title = title.replaceAll("<[^>]*>", ""); 
+
 // Handle no-product case
 if (productNode==null) {
     throw new JspException("Product not found in Content Management System");
@@ -102,6 +106,12 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 
 <tmpl:insert template='/common/template/pdp_template.jsp'>
 
+  <tmpl:put name="seoMetaTag">
+  	<fd:SEOMetaTag metaDescription="<%= productNode.getSEOMetaDescription() %>" title='<%=title%>'/>
+  </tmpl:put>
+
+
+
   <tmpl:put name='cmeventsource' direct='true'>pdp_main</tmpl:put>
 
   <tmpl:put name='soypackage' direct='true'>
@@ -118,7 +128,7 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
   
 <% if(shouldBeOnNew) {  // new leftnav, TODO: remove this after full rollout%>
 
-  <tmpl:put name='title' direct='true'>FreshDirect - <%= productNode.getFullName() %></tmpl:put>    
+  
     
   <tmpl:put name='deptnav' direct='true'>
     <div class="browse-titlebar">
@@ -180,7 +190,7 @@ boolean shouldBeOnNew = FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeat
 <% } %>
     
 	<tmpl:put name='facebookmeta' direct='true'>
-		<meta property="og:title" content="FreshDirect - <%= productNode.getFullName() %>"/>
+		<meta property="og:title" content="FreshDirect - <%= productFullName %>"/>
 		<meta property="og:site_name" content="FreshDirect"/>
 		<% 
 			Image detailImage = productNode.getDetailImage();

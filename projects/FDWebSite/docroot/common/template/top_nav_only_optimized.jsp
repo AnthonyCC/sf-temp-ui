@@ -14,8 +14,7 @@
 	} %>
 <html>
 <head>
-    <title><tmpl:get name='title'/></title>
-	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<tmpl:get name="seoMetaTag"/>
 	<%@ include file="/common/template/includes/i_javascripts_optimized.jspf" %>
   <%@ include file="/shared/template/includes/i_stylesheets_optimized.jspf" %>
 <%		

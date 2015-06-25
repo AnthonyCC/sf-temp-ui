@@ -74,11 +74,11 @@
  */
 {template .descriptionText}
 {if $productDescription}
-	<div class="pdp-accordion-description pdp-accordion-description-description">{$productDescription|noAutoescape}
+	<div itemprop="description" class="pdp-accordion-description pdp-accordion-description-description">{$productDescription|noAutoescape}
 	</div>
 {/if}
 {if $productDescriptionNote}
-	<div class="pdp-accordion-description pdp-accordion-description-note">{$productDescriptionNote|noAutoescape}</div>
+	<div itemprop="description" class="pdp-accordion-description pdp-accordion-description-note">{$productDescriptionNote|noAutoescape}</div>
 {/if}
 {if $productAboutMedia}
 	<strong class="pdp-accordion-description">More About This Product</strong>
@@ -178,7 +178,7 @@
 {if $brand.contentPath}
 <a class="pdp-accordion-description-brand" href="javascript:pop('{$brand.contentPath}', 560, 585);">About {$brand.name}</a>
 {else}
-<span class="pdp-accordion-description-brand" >{$brand.name}</span>
+<span itemprop="brand" class="pdp-accordion-description-brand" >{$brand.name}</span>
 {/if}
 {/foreach}
 {/if}

@@ -17,6 +17,9 @@ final int W_YA_DELIVERY_INFORMATION = 970;
 
 <tmpl:insert template='/common/template/dnav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Delivery Addresses</tmpl:put>
+    <tmpl:put name="seoMetaTag" direct="true">
+		<fd:SEOMetaTag pageId="delivery_info"></fd:SEOMetaTag>
+	</tmpl:put>
     <tmpl:put name='content' direct='true'>
 <fd:RegistrationController actionName='<%=request.getParameter("dlvActionName")%>' result="result">
 <!-- error message handling here -->
