@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.Field;
@@ -23,6 +24,8 @@ import com.freshdirect.cms.ui.client.fields.ProductConfigEditor;
 import com.freshdirect.cms.ui.client.fields.TableField;
 import com.freshdirect.cms.ui.client.fields.VariationMatrixField;
 import com.freshdirect.cms.ui.client.views.ManageStoreView;
+import com.freshdirect.cms.ui.client.wysiwig.editor.RteEditor;
+import com.freshdirect.cms.ui.client.wysiwig.editor.RteEditorFactory;
 import com.freshdirect.cms.ui.model.ContentNodeModel;
 import com.freshdirect.cms.ui.model.CustomFieldDefinition;
 import com.freshdirect.cms.ui.model.EnumModel;
@@ -60,7 +63,7 @@ public final class FieldFactory {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static Field createInnerField( GwtNodeData nodeData, String key, boolean readonly, Serializable value ) {
+	public static Field<Serializable> createInnerField( GwtNodeData nodeData, String key, boolean readonly, Serializable value ) {
     	final GwtContentNode aNode = nodeData.getNode();
         ContentNodeAttributeI attribute = aNode.getOriginalAttribute(key);
         
@@ -217,6 +220,27 @@ public final class FieldFactory {
     		cn.getNode().getOriginalAttribute(key).setFieldObject(field);
     	
     	return field;
+    }
+    
+    public static ContentPanel createWysiwygEditor(GwtNodeData nodeData, String key){
+    	final GwtContentNode aNode = nodeData.getNode();
+    	final ContentNodeAttributeI attribute = aNode.getOriginalAttribute(key);
+    	RteEditor editor = null;
+    	if(attribute != null){
+	    	if("WYSIWYG".equals(attribute.getType())){
+	            editor = RteEditorFactory.instance().createDefault();
+	            editor.setStyleName("x-form-element wysiwigEditor");
+	            editor.setWidth(500);
+	    		editor.setHeight(300);
+	    		//final boolean readonly = attribute.isReadonly() || nodeData.isReadonly();
+	    		//editor.add(new Label("<span class=\"readonly\">" + attribute.getLabel() + "</span>"));
+	    		//editor.setEnabled(Boolean.valueOf(readonly));
+	    		final Serializable value = nodeData.getFormValue(key);
+	    		editor.setHTML((String)value);
+	    		nodeData.getNode().getOriginalAttribute(key).setFieldObject(editor.getTextArea());
+	    	}
+    	}
+    	return editor;
     }
 
 

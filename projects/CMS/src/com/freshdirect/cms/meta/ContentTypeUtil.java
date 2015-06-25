@@ -39,7 +39,7 @@ public class ContentTypeUtil {
 	 */
 	public static Collection<RelationshipDefI> getNavigableRelationshipDefs(ContentTypeDefI definition) {
 		if (definition==null) {
-			return Collections.EMPTY_LIST;
+			return Collections.<RelationshipDefI>emptyList();
 		}
 		List<RelationshipDefI> l = new ArrayList<RelationshipDefI>();		
 		for ( AttributeDefI def : definition.getSelfAttributeDefs() ) {
@@ -120,6 +120,8 @@ public class ContentTypeUtil {
 				} catch (ParseException e) {
 					throw new IllegalArgumentException(e.toString());
 				}
+			} else if (EnumAttributeType.WYSIWYG.equals(type)){
+				return str;
 			}
 			throw new IllegalArgumentException(
 					"Unable to convert value value [" + value + "] ("

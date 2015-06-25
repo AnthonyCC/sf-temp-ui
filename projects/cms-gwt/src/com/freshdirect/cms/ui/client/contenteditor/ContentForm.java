@@ -9,12 +9,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.freshdirect.cms.ui.client.FieldFactory;
+import com.freshdirect.cms.ui.model.GwtContentNode;
 import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.TabDefinition;
+import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.user.client.Element;
 
@@ -142,6 +146,15 @@ public class ContentForm extends FormPanel {
 		section.setWidth( FORM_WIDTH );
 		
 		for ( String attributeKey : attrKeys ) {			
+			final GwtContentNode aNode = nodeData.getNode();
+			final ContentNodeAttributeI attribute = aNode.getOriginalAttribute(attributeKey);
+			final ContentPanel wysiwigPanel = FieldFactory.createWysiwygEditor(nodeData, attributeKey);
+			if(wysiwigPanel != null){
+				final Label label = new Label(attribute.getLabel());
+				label.setStyleName("x-form-item-label wysiwigLabel");
+				section.add(label);
+				section.add(wysiwigPanel);
+			}
 			Field<Serializable> field = FieldFactory.createStandardField( nodeData, attributeKey );
 			if ( field != null ) {
 				section.add( field );			
@@ -152,10 +165,11 @@ public class ContentForm extends FormPanel {
 	}
 	
 	public FieldSet getSection(String sectionId) {
-		if (sectionId == null)
+		if (sectionId == null) {
 			return sections.get("<default>");
-		else
+		} else {
 			return sections.get(sectionId);
+		}
 	}
 	
 	public Set<String> getKeys() {

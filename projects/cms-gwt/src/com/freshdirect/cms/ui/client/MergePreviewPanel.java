@@ -152,7 +152,7 @@ public class MergePreviewPanel extends LayoutContainer {
 		otherField.setReadOnly(true);
 
 		// original field
-		field = hotspot.getAttribute().getFieldObject();
+		field = (Field<Serializable>) hotspot.getAttribute().getFieldObject();
 		if(field == null ) {
 			System.err.println("field is null");
 			return;

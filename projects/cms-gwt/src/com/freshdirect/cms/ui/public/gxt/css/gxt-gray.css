@@ -89,7 +89,7 @@
 
 /* Buttons */
 
-.x-btn-left{
+/*.x-btn-left{
 	background-image:url(../images/gray/button/btn-sprite.gif);
 }
 .x-btn-right{
@@ -98,7 +98,7 @@
 .x-btn-center{
 	background-image:url(../images/gray/button/btn-sprite.gif);
 }
-
+*/
 .x-btn-group-header {
     color: #333333;
 }
@@ -201,6 +201,7 @@
 }
 .x-toolbar .x-btn-over button {
     color:#111;
+    background: silver;
 }
 .x-toolbar .x-btn-click .x-btn-left, .x-toolbar .x-btn-pressed .x-btn-left, .x-toolbar .x-btn-menu-active .x-btn-left{
 	background-image:url(../images/gray/toolbar/tb-btn-sprite.gif);

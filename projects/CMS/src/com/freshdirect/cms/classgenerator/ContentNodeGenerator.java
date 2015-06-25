@@ -231,6 +231,7 @@ public class ContentNodeGenerator implements NodeGeneratorI {
             fieldTypes.put(EnumAttributeType.INTEGER, pool.get("java.lang.Integer"));
             fieldTypes.put(EnumAttributeType.DOUBLE, pool.get("java.lang.Double"));
             fieldTypes.put(EnumAttributeType.DATE, pool.get("java.util.Date"));
+            fieldTypes.put(EnumAttributeType.WYSIWYG, pool.get("java.lang.String"));
             // fieldTypes.put(EnumAttributeType.RELATIONSHIP,
             // pool.get("java.util.Date"));
         } catch (NotFoundException e) {

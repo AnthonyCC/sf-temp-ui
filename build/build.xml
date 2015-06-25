@@ -1925,7 +1925,8 @@
 			<pathelement location="${thirdparty.home}/gxt.jar"/>
 			<pathelement location="${thirdparty.home}/gwt/gwt-user.jar"/>
             <pathelement location="${thirdparty.home}/gwt/gwt-maps.jar"/>
-            		<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/> 
+			<pathelement location="${thirdparty.home}/gwt/ColorPicker-GWT-1.6.jar"/>
+            <pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/> 
 		</path>
             <property name="cms-gwt.path" value="projects/cms-gwt" />
             <makeProject
@@ -1947,7 +1948,8 @@
                     <exclude name="web.xml"/>
                 </webinf>
                 <lib file="${work.dir}/cms-gwt.jar"/>
-                <lib file="${thirdparty.home}/gxt.jar"/>
+                <lib file="${thirdparty.home}/ColorPicker-GWT-1.6.jar"/>
+				<lib file="${thirdparty.home}/gxt.jar"/>
                 <lib file="${thirdparty.home}/gwt/gwt-servlet.jar"/>
                 <fileset dir="${work.dir}/cms-gwt.js/com.freshdirect.cms.ui.cmsgwt"/>
                 <fileset dir="${cms-gwt.path}/war">

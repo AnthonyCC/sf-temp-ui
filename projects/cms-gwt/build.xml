@@ -30,6 +30,7 @@
         <include name="thirdparty/gwt/gwt-dev.jar"/>
         <include name="thirdparty/gwt/gwt-maps.jar"/>
         <include name="thirdparty/poi-3.5-FINAL-20090928.jar"/>
+    	<include name="thirdparty/gwt/ColorPicker-GWT-1.6.jar"/>
     </fileset>
     <pathelement location="${CMS.classes.dir}"/>
     <pathelement location="${FDStore.classes.dir}"/>

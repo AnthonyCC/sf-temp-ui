@@ -17,6 +17,7 @@ public class EnumAttributeType extends Enum {
 	public static final EnumAttributeType TABLE = new EnumAttributeType("T", "Table", null);
 	public static final EnumAttributeType ENUM = new EnumAttributeType("E", "Enumeration", null);
 	public static final EnumAttributeType DATE = new EnumAttributeType("DT", "Date", null);
+	public static final EnumAttributeType WYSIWYG = new EnumAttributeType("WY", "String", "");
 
 	private final String label;
 	private final Object emptyValue;
