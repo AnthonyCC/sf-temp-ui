@@ -2090,4 +2090,14 @@ public class MockProductModel extends MockContentNodeModel implements
 	public List<ProductModel> getCompleteTheMeal() {
 		return null;
 	}
+
+	@Override
+	public String getPageTitle() {
+		return null;
+	}
+
+	@Override
+	public String getSEOMetaDescription() {
+		return null;
+	}
 }
