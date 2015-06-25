@@ -231,7 +231,7 @@ public class BrowseUtil {
             		Category category = Category.wrap(categoryModel);
 					addCategoryHeadline(categorySections, categoryModel, category);
 					boolean remove = removeCategoryToMatchStorefront(categorySections, categoryModel, category);
-					/*category.setNoOfProducts(0);
+					category.setNoOfProducts(0);
 					//Change this as well.
 					if(!categoryModel.getSubcategories().isEmpty())
 						category.setBottomLevel(false);
@@ -241,21 +241,7 @@ public class BrowseUtil {
 					if(!remove){
 						categories.add(category);
 					}
-            		categoryIDs.add(categoryModel.getContentKey().getId());*/
-					
-					//APPDEV-4231 - Update "/browse/categories/" so that categories with no products can be hidden
-					
-					if((null != category) && (0 < category.getNoOfProducts())) {
-						if(!categoryModel.getSubcategories().isEmpty())
-							category.setBottomLevel(false);
-						else
-							category.setBottomLevel(true);
-							
-						if(!remove){
-							categories.add(category);
-						}
-	            		categoryIDs.add(categoryModel.getContentKey().getId());
-					}
+            		categoryIDs.add(categoryModel.getContentKey().getId());
             	}
             }
         }
