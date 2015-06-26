@@ -26,47 +26,33 @@ if (type != null && !"".equals(type) && type.equalsIgnoreCase("popup")) {
 %>
 
 <tmpl:insert template='<%=template%>'>
-
-    <tmpl:put name='title' direct='true'>FreshDirect -<%=help%> Privacy Policy</tmpl:put>
-    
-    <tmpl:put name="seoMetaTag" direct="true">
-    	<fd:SEOMetaTag pageId="privacy_policy"></fd:SEOMetaTag>
-    </tmpl:put>
-
     <tmpl:put name='content' direct='true'>
 		<table width="<%=tableWidth%>" border="0" cellspacing="0" cellpadding="0">
 		<tr>
 			<td>
-				<%--
-					Put any java-related variables needed by the page into the _page_options object. 
-				--%>
 				<script type="text/javascript">
 					if (!window['_page_options']) {	var _page_options = {}; };
 					_page_options['csEmail'] = '<fd:GetServiceEmail />';
 					_page_options['csPhone'] = '<% if (user != null) { %><%=user.getCustomerServiceContact()%><%}%>';
 					_page_options['csIsCT'] = <% if (user != null) { %><%=user.isChefsTable()%><%}else{%>false<%}%>;
 				</script>
-				
 				<% if ( request.getParameter("lang") != null) { %>
 					<% if ("espanol".equalsIgnoreCase(request.getParameter("lang"))) { %>
 					<tmpl:put name='seoMetaTag' direct='true'>
-       					<fd:SEOMetaTag language='es-ES'/>
+       					<fd:SEOMetaTag pageId="privacy_policy" language='es-ES'/>
  					 </tmpl:put>
 					
 						<fd:IncludeMedia name="/media/editorial/site_pages/privacy_policy/privacy_policy_espanol.html" />
 					<% } else { %>
-					<tmpl:put name='seoMetaTag' direct='true'>
-      					 <fd:SEOMetaTag language='en-US'/>
-  					</tmpl:put>
-					
-					
+						<tmpl:put name='seoMetaTag' direct='true'>
+      						<fd:SEOMetaTag pageId="privacy_policy" language='en-US'/>
+  						</tmpl:put>
 						<fd:IncludeMedia name="/media/editorial/site_pages/privacy_policy/privacy_policy.html" />
 					<% } %>
 				<% } else { %>
 					<tmpl:put name='seoMetaTag' direct='true'>
-      					 <fd:SEOMetaTag language='en-US'/>
+      					<fd:SEOMetaTag pageId="privacy_policy" language='en-US'/>
   					</tmpl:put>
-				
 					<fd:IncludeMedia name="/media/editorial/site_pages/privacy_policy/privacy_policy.html" />
 				<% } %>
 			</td>
