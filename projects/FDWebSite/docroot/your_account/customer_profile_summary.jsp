@@ -127,6 +127,9 @@ response.setHeader("Cache-Control", "no-cache");
 </style>
 
 <tmpl:insert template='/common/template/dnav.jsp'>
+<tmpl:put name="seoMetaTag" direct="true">
+	<fd:SEOMetaTag pageId="customer_profile_summary"></fd:SEOMetaTag>
+</tmpl:put>
 <tmpl:put name='title' direct='true'>FreshDirect - Your Profile</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
