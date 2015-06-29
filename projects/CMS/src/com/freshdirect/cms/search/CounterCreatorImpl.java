@@ -46,7 +46,7 @@ public class CounterCreatorImpl implements CounterCreatorI {
     private List<String> filterWords(String[] words) {
         List<String> result = new ArrayList<String> (words.length);
         for (int i = 0; i < words.length; i++) {
-            if (!AutocompleteService.skipWordsInAutoCompletion.contains(words[i])) {
+            if (!AutocompleteService.getStopWords().contains(words[i])) {
                 result.add(words[i]);
             }
         }
