@@ -86,13 +86,18 @@ public class DlvManagerDAO {
 			.getInstance(DlvManagerDAO.class);
 
 	public static boolean isAlcoholDeliverable(Connection conn,
-			String scrubbedAddress, String zipcode) throws SQLException {
+			String scrubbedAddress, String zipcode, String apartment) throws SQLException {
 
 		PreparedStatement ps = conn
-				.prepareStatement("SELECT * FROM DLV.RESTRICTED_ADDRESS WHERE SCRUBBED_ADDRESS = ? AND ZIPCODE = ? AND REASON = ?");
+				.prepareStatement("SELECT * FROM DLV.RESTRICTED_ADDRESS WHERE SCRUBBED_ADDRESS = ? AND APARTMENT = ? AND ZIPCODE = ? AND REASON = ?");
 		ps.setString(1, scrubbedAddress);
-		ps.setString(2, zipcode);
-		ps.setString(3, EnumRestrictedAddressReason.ALCOHOL.getCode());
+		if (apartment == null || "".equals(apartment)) {
+			ps.setNull(2, Types.VARCHAR);
+		} else {
+			ps.setString(2, apartment);
+		}
+		ps.setString(3, zipcode);
+		ps.setString(4, EnumRestrictedAddressReason.ALCOHOL.getCode());
 		ResultSet rs = ps.executeQuery();
 		if (rs.next()) {
 			return false;

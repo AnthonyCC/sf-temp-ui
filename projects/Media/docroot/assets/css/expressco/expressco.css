@@ -1,0 +1,127 @@
+#expresscheckout {
+  width: 100%;
+  border-top: 1px solid #e1e1e1;
+  position: relative;
+}
+
+#expresscheckout:before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: -moz-linear-gradient(top, rgba(237,237,237,1) 0%, rgba(0,0,0,0) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(237,237,237,1)), color-stop(100%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, rgba(237,237,237,1) 0%,rgba(0,0,0,0) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, rgba(237,237,237,1) 0%,rgba(0,0,0,0) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, rgba(237,237,237,1) 0%,rgba(0,0,0,0) 100%); /* IE10+ */
+  background: linear-gradient(to bottom, rgba(237,237,237,1) 0%,rgba(0,0,0,0) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
+  z-index: 1;
+}
+
+#expresscheckout > div {
+  position: relative;
+  z-index: 2;
+}
+
+.checkout__footer{
+  margin-top:70px;
+  text-align:center;
+}
+
+.checkout__footer-rights,
+.checkout__footer-links{
+  font-size:14px;
+  margin:0.5em 0;
+}
+
+.checkout__footer a{
+  text-decoration:none;
+}
+
+#successpage .header{
+  text-align:center;
+  margin:40px 0;
+}
+
+#successpage .headline{
+  text-transform:uppercase;
+  font-size:28px;
+  font-weight:bold;
+  margin:0;
+}
+
+#successpage .subhead{
+  font-size:16px;
+  margin:0;
+  color:#666;
+}
+
+#successpage .drawer-header button{
+  display:none;
+}
+
+.checkout__header{
+  height:52px;
+  position:relative;
+  background:#fff;
+}
+
+.checkout__header .header-logo,
+.checkout__header .header-needhelp{
+  position:absolute;
+}
+
+.checkout__header .header-logo{
+  top:5px;
+  left:0;
+}
+
+.checkout__header .header-needhelp{
+  top:0;
+  right:0;
+  font-size:12px;
+  color:#666;
+}
+
+.checkout-contentheader{
+  position:relative;
+  border-bottom:1px solid #ddd;
+}
+
+.checkout-contentheader h2{
+  font-size:22px;
+  color:#333;
+  font-weight:bold;
+  margin:0;
+  line-height:44px;
+}
+
+.checkout-contentheader a{
+  position:absolute;
+  right:0;
+  top:14px;
+  font-size:12px;
+  color:#693;
+  text-decoration:none;
+}
+
+#expresscheckout #timeslots_grid.float_children{
+  overflow-x:visible;
+}
+
+#expresscheckout #tsContainer{
+  margin:0 auto;
+}
+
+#expresscheckout #modifyorder{
+  margin-bottom:30px;
+}
+
+#content button.cssbutton.xc-addaction{
+  font-size:16px;
+  line-height:16px;
+}

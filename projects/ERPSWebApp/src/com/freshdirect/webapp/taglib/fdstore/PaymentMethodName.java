@@ -33,5 +33,7 @@ public interface PaymentMethodName {
     
     public final static String CSV="csv";
     
+    public static final String PHONE = "phone";
+    
 }
 

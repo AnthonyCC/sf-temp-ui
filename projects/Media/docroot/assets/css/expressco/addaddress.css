@@ -1,0 +1,334 @@
+#addaddresspopup .formselector label {
+  display: inline-block;
+  width: 145px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 16px;
+  margin-bottom: 5px;
+}
+
+#addaddresspopup .formselector label input {
+  margin: 0 5px;
+  vertical-align: top;
+}
+
+#addaddresspopup form {
+  display: none;
+}
+
+#addaddresspopup [data-show="addaddress_home"] #addaddress_home {
+  display: block;
+}
+
+#addaddresspopup [data-show="addaddress_office"] #addaddress_office {
+  display: block;
+}
+
+#addaddress_home input,
+#addaddress_home select,
+#addaddress_home textarea,
+#addaddress_office input,
+#addaddress_office select,
+#addaddress_office textarea {
+  box-sizing: border-box;
+}
+
+#addaddress_office input[name="street_address2"],
+#addaddress_home input[name="street_address2"],
+#addaddress_office input[name="company_name"],
+#addaddress_home input[name="nick_name"] {
+  width: 300px;
+}
+
+#addaddress_office input[name="floor"],
+#addaddress_office input[name="room"],
+#addaddress_office input[name="first_name"],
+#addaddress_office input[name="last_name"],
+#addaddress_home input[name="first_name"],
+#addaddress_home input[name="last_name"] {
+  width: 145px;
+}
+
+#addaddress_office input[name="phone"],
+#addaddress_office input[name="alt_phone"],
+#addaddress_home input[name="phone"],
+#addaddress_home .backup_delivery .bd-content input[name="bd_phone"],
+#addaddress_home input[name="alt_phone"] {
+  width: 210px;
+}
+
+#addaddress_office input[name="phone_ext"],
+#addaddress_office input[name="alt_phone_ext"],
+#addaddress_home input[name="phone_ext"],
+#addaddress_home input[name="alt_phone_ext"] {
+  width: 50px;
+  margin-left: 10px;
+}
+
+#addaddress_home .backup_delivery .bd-content input[name="bd_phone_ext"] {
+  width: 80px;
+  margin-left: 10px;
+}
+
+#addaddress_office input[name="room"],
+#addaddress_office input[name="last_name"],
+#addaddress_home input[name="last_name"] {
+  margin-left: 10px;
+}
+
+#addaddress_office input[name="street_address"],
+#addaddress_home input[name="street_address"] {
+  width: 210px;
+}
+
+#addaddress_office input[name="city"],
+#addaddress_office input[name="zip"],
+#addaddress_home input[name="city"],
+#addaddress_home input[name="zip"] {
+  width: 210px;
+}
+
+#addaddress_office input[name="apartment"],
+#addaddress_home input[name="apartment"] {
+  width: 80px;
+  margin-left: 10px;
+}
+
+#addaddress_office select[name="state"],
+#addaddress_home select[name="state"] {
+  width: 80px;
+  margin-left: 10px;
+}
+
+#addaddress_office textarea[name="instructions"],
+#addaddress_home textarea[name="instructions"] {
+  width: 300px;
+  min-height: 70px;
+}
+
+#addaddress_home .buttons,
+#addaddress_office .buttons {
+  text-align: center;
+}
+
+#addaddress_home .buttons button,
+#addaddress_office .buttons button {
+  width: 120px;
+  margin: 10px;
+}
+
+#addaddress_home .showaltphone,
+#addaddress_office .showaltphone {
+  padding: 0;
+  width: 21px;
+  height: 21px;
+  line-height: 21px;
+  text-align: center;
+}
+
+#addaddress_home div.altphone,
+#addaddress_office div.altphone {
+  display: none;
+}
+
+#addaddress_home[data-showaltphone] .showaltphone,
+#addaddress_office[data-showaltphone] .showaltphone {
+  display: none;
+}
+
+#addaddress_home[data-showaltphone] div.altphone,
+#addaddress_office[data-showaltphone] div.altphone {
+  display: block;
+}
+
+#addaddress_home .deletephonenumber,
+#addaddress_office .deletephonenumber {
+  display: none;
+  padding: 0;
+  width: 15px;
+  height: 15px;
+  line-height: 15px;
+  font-size: 9px;
+  text-align: center;
+  vertical-align: middle;
+  margin: 0 0 3px;
+}
+
+#addaddress_home[data-showaltphone] .deletephonenumber,
+#addaddress_office[data-showaltphone] .deletephonenumber {
+  display: inline-block;
+}
+
+#addaddress_home .phonetype label,
+#addaddress_office .phonetype label {
+  margin: 2px 10px 4px 0;
+  display: inline-block;
+}
+
+#addaddress_home .phonetype label input,
+#addaddress_office .phonetype label input {
+  vertical-align: top;
+  margin: 0 2px 0 0;
+}
+
+#addaddress_home .backup_delivery label {
+  margin: 5px 10px 4px 0;
+  display: block;
+}
+
+#addaddress_home .backup_delivery label input {
+  vertical-align: top;
+  margin: 0 2px 0 0;
+}
+
+#addaddress_home .backup_delivery [bd-id="none"] {
+  display: none;
+}
+
+#addaddress_home .backup_delivery[bd-selected] [bd-id="none"] {
+  display: block;
+}
+
+#addaddress_home .backup_delivery[bd-selected="none"] [bd-id="none"] {
+  display: none;
+}
+
+#addaddress_home .backup_delivery .bd-content {
+  display: none;
+}
+
+#addaddress_home .backup_delivery[bd-selected="doorman"] [bd-id="doorman"] .bd-content,
+#addaddress_home .backup_delivery[bd-selected="neighbor"] [bd-id="neighbor"] .bd-content,
+#addaddress_home .backup_delivery[bd-selected="unattended"] [bd-id="unattended"] .bd-content {
+  display: block;
+}
+
+#addaddress_home .backup_delivery .bd-content input,
+#addaddress_home .backup_delivery .bd-content textarea {
+  width: 300px;
+  box-sizing: border-box;
+}
+
+#addaddress_home .backup_delivery .bd-content textarea {
+  min-height: 70px;
+}
+
+[data-drawer-content="address"] span.phone {
+  display: inline-block;
+}
+
+[data-drawer-content="address"] span.phone:after {
+  display: inline-block;
+  background: #ddd;
+  font-size: 10px;
+  line-height: 10px;
+  margin-left: 4px;
+  padding: 2px 4px;
+}
+
+[data-drawer-content="address"] span.phone.mobile:after {
+  content: 'Mobile';
+}
+
+[data-drawer-content="address"] span.phone.home:after {
+  content: 'Home';
+}
+
+[data-drawer-content="address"] span.phone.work:after {
+  content: 'Work';
+}
+
+[data-drawer-content="address"] [data-component="addresschangebutton"] {
+  float: right;
+}
+
+[data-drawer-default-content="address"] ul.pickuptimes,
+[data-drawer-content="address"] ul.pickuptimes {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+[data-drawer-default-content="address"] ul.pickuptimes li,
+[data-drawer-content="address"] ul.pickuptimes li {
+  position: relative;
+  display: block;
+  height: 1.5em;
+}
+
+[data-drawer-default-content="address"] ul.pickuptimes li.closed,
+[data-drawer-content="address"] ul.pickuptimes li.closed {
+  color: #ccc;
+}
+
+[data-drawer-default-content="address"] ul.pickuptimes li:before,
+[data-drawer-content="address"] ul.pickuptimes li:before {
+  content: ' ';
+  position: absolute;
+  bottom: 6px;
+  left: 0;
+  right: 0;
+  border-bottom: 1px dotted #ccc;
+}
+
+[data-drawer-default-content="address"] ul.pickuptimes li .day,
+[data-drawer-content="address"] ul.pickuptimes li .day {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding-right: .3em;
+  background: #f7f7f7;
+}
+
+[data-drawer-default-content="address"] ul.pickuptimes li .time,
+[data-drawer-content="address"] ul.pickuptimes li .time {
+  display: block;
+  float: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 75px;
+  padding-left: .3em;
+  background: #f7f7f7;
+}
+
+[data-drawer-default-content="address"] ul.pickuptimes li .day,
+[data-drawer-default-content="address"] ul.pickuptimes li .time {
+  background: #fff;
+}
+
+[data-drawer-default-content="address"] .drawer__item__section.phone {
+  display: none;
+}
+
+[data-drawer-default-content="address"] .drawer__previewitem > p {
+  text-align: center;
+}
+
+[data-drawer-default-content="address"] .noaddress {
+  padding: 10px 10px 10px 30px;
+  min-width:250px;
+  margin: 0 19px 20px 0;
+  position:relative;
+}
+
+[data-drawer-default-content="address"] .noaddress .drawer__item__label {
+  cursor:pointer;
+}
+
+[data-drawer-default-content="address"] .noaddress .drawer__item__title {
+  margin: 0;
+}
+
+[data-drawer-default-content="address"] .noaddress .drawer__item__section {
+  padding: 0;
+}
+
+[data-drawer-default-content="address"] .noaddress .drawer__item__action {
+  display: block;
+}
+
+a.pickuppopup {
+  text-decoration: none;
+}

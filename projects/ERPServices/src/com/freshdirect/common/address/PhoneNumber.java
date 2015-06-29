@@ -5,14 +5,20 @@ import com.freshdirect.framework.util.NVL;
 public class PhoneNumber implements java.io.Serializable {
 	private final String phone;
 	private final String extension;
+	private final String type;
 
 	public PhoneNumber(String phone) {
 		this(phone, "");
 	}
 
 	public PhoneNumber(String phone, String extension) {
+		this(phone, extension, "");
+	}
+	
+	public PhoneNumber(String phone, String extension, String type) {
 		this.phone = retainDigits(NVL.apply(phone, ""));
 		this.extension = this.phone.length() == 0 ? null : extension;
+		this.type = type;
 	}
 
 	public boolean equals(Object o) {
@@ -31,6 +37,10 @@ public class PhoneNumber implements java.io.Serializable {
 		return this.extension;
 	}
 
+	public String getType(){
+		return this.type;
+	}
+	
 	public String toString() {
 		return (this.extension == null || "".equals(this.extension)) ? this.phone : (this.phone + " x" + this.extension);
 	}

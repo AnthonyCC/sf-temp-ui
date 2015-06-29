@@ -35,6 +35,7 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 /**
  * use this test after a time slot has been selected to go back to a mocked step_2_unavailable.jsp
+ * 
  * @author tgelesz
  */
 public class TestUnavailabilityServlet extends HttpServlet {
@@ -43,9 +44,9 @@ public class TestUnavailabilityServlet extends HttpServlet {
 
 	@SuppressWarnings("unchecked")
 	@Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		FDSessionUser user = (FDSessionUser) request.getSession().getAttribute(SessionName.USER);
-		FDCartModel cart = user.getShoppingCart(); 
+		FDCartModel cart = user.getShoppingCart();
 		LinkedList<FDAvailabilityI> failures = new LinkedList<FDAvailabilityI>();
 
 		failures.add(new FDMuniAvailability(null));
@@ -57,21 +58,21 @@ public class TestUnavailabilityServlet extends HttpServlet {
 			throw new ServletException(e);
 		}
 		List<EnumDlvRestrictionReason> reasons = EnumDlvRestrictionReason.getEnumList();
-		for (EnumDlvRestrictionReason reason : reasons){
+		for (EnumDlvRestrictionReason reason : reasons) {
 			Set<EnumDlvRestrictionReason> singleReasonSet = new HashSet<EnumDlvRestrictionReason>();
 			singleReasonSet.add(reason);
 			failures.add(new FDRestrictedAvailability(NullAvailability.AVAILABLE, new DlvRestrictionsList(allRestrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY, singleReasonSet))));
-			failures.add(new FDRestrictedAvailability(NullAvailability.AVAILABLE, new DlvRestrictionsList(allRestrictions.getRestrictions(EnumDlvRestrictionCriterion.CUTOFF,   singleReasonSet))));
+			failures.add(new FDRestrictedAvailability(NullAvailability.AVAILABLE, new DlvRestrictionsList(allRestrictions.getRestrictions(EnumDlvRestrictionCriterion.CUTOFF, singleReasonSet))));
 			failures.add(new FDRestrictedAvailability(NullAvailability.AVAILABLE, new DlvRestrictionsList(allRestrictions.getRestrictions(EnumDlvRestrictionCriterion.PURCHASE, singleReasonSet))));
 		}
 
-		Map<String,FDAvailabilityI> invs = new HashMap<String,FDAvailabilityI>();
+		Map<String, FDAvailabilityI> invs = new HashMap<String, FDAvailabilityI>();
 		double availableAmount = 0;
 		boolean odd = true;
-		
-		for (FDCartLineI cartline : cart.getOrderLines()){
+
+		for (FDCartLineI cartline : cart.getOrderLines()) {
 			FDAvailabilityI inv;
-			if (odd || failures.isEmpty()){
+			if (odd || failures.isEmpty()) {
 				availableAmount %= 3;
 				List<ErpInventoryEntryModel> erpEntries = new ArrayList<ErpInventoryEntryModel>();
 				erpEntries.add(new ErpInventoryEntryModel(new Date(), availableAmount++));
@@ -84,10 +85,14 @@ public class TestUnavailabilityServlet extends HttpServlet {
 		}
 
 		cart.setAvailability(new FDCompositeAvailability(invs));
-		
+
 		cart.getDeliveryReservation().getTimeslot().setMinOrderAmt(100000);
 
-		response.sendRedirect("/checkout/step_2_unavail.jsp?successPage=/checkout/step_3_choose.jsp");
+		if ("true".equals(request.getParameter("xc"))) {
+			response.sendRedirect("/expressco/checkout.jsp");
+		} else {
+			response.sendRedirect("/checkout/step_2_unavail.jsp?successPage=/checkout/step_3_choose.jsp");
+		}
 	}
-        
+
 }

@@ -1,0 +1,24 @@
+[fdform] [invalid] {
+  outline: 1px solid #cb2929;
+}
+
+[fdform-error] {
+  display: block;
+  color: #cb2929;
+  font-size: 12px;
+}
+
+[fdform] [fdform-warning] {
+  display: block;
+  color: #cb2929;
+  font-size: 12px;
+}
+
+[fdform] [fdform-error-container][invalid] {
+  outline: none;
+}
+
+[fdform][fdform-locked] *:disabled {
+  background:grey;
+  cursor:default;
+}

@@ -20,9 +20,7 @@ public class UserValidationUtil {
 	 * @return boolean true if order minimum conditions are met 
 	 */
 
-	public static boolean validateCartNotEmpty(HttpServletRequest request, ActionResult result) {
-		HttpSession session = request.getSession();
-		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+	public static boolean validateCartNotEmpty(FDUserI user, ActionResult result) {
 		if (user.getShoppingCart().getOrderLines().isEmpty()) {
 			result.addError(new ActionError("order_minimum", SystemMessageList.MSG_CHECKOUT_CART_EMPTY));
 			return false;
@@ -53,12 +51,10 @@ public class UserValidationUtil {
 		return false;
 	}
 	
-	public static boolean validateOrderMinimum(HttpServletRequest request, ActionResult result) throws FDResourceException {
-		
-		HttpSession session = request.getSession();
+	public static boolean validateOrderMinimum(HttpSession session, ActionResult result) throws FDResourceException {
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		
-		if (!validateCartNotEmpty(request,result))	{
+		if (!validateCartNotEmpty(user,result))	{
 			return false;
 		}
 		

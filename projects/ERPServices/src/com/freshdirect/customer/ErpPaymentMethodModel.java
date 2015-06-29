@@ -30,6 +30,7 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 
 	private String profileID="";
 	private String accountNumLast4;
+	private String bestNumberForBillingInquiries;
 
 	public String getAccountNumLast4() {
 		return accountNumLast4;
@@ -310,4 +311,12 @@ public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpP
 	 public void setProfileID(String profileID) {
 	    	this.profileID=profileID;
 	 }
+
+	public String getBestNumberForBillingInquiries() {
+		return bestNumberForBillingInquiries;
+	}
+
+	public void setBestNumberForBillingInquiries(String bestNumberForBillingInquiries) {
+		this.bestNumberForBillingInquiries = bestNumberForBillingInquiries;
+	}
 }

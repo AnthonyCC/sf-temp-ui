@@ -1,0 +1,44 @@
+{namespace expressco}
+
+/**
+ * @param? data
+ */
+{template .textalertpopup autoescape="false"}
+<div data-show="textalert_formbody">
+<form id="textalert" fdform="textalert" action="#" novalidate fdform-endpoint-submit="/api/expresscheckout/textalert/submit">
+  <div id="textalert_formbody">
+    {if $data.header}{$data.header}{/if}
+    <p class="mobile">Mobile # <input name="mobile" placeholder="(xxx) xxx xxxx" fdform-formatter="phone" fdform-fieldname="Mobile" required></p>
+    <p class="choices-title">Select Your Alerts</p>
+    <ul class="choices">
+      <li><label><input type="checkbox" fdform-v-onerequired="textalertcbs" name="notices" checked/><span class="choice-title">Order Notices</span> - Receive a refined estimated time of delivery on the day-of as well as an alert when you"re recieving the next delivery.</label></li>
+      <li><label><input type="checkbox" fdform-v-onerequired="textalertcbs" name="alerts" checked/><span class="choice-title">Order Alerts</span> - Recieve an alert when your order has been cancelled, an unsuccessful delivery attempt has been made or your order has been left with your doorman or according to your unattended delivery request.</label></li>
+      <li><label><input type="checkbox" fdform-v-onerequired="textalertcbs" name="perks" checked/><span class="choice-title">FreshDirect Perks</span> - Get the inside scoop on exciting new features, exclusive.</label></li>
+    </ul>
+    <p class="terms">By signing up you agree to the <a href="#" data-go="textalert_terms">Terms and Conditions</a></p>
+    <div class="actions">
+      <div class="nothanks-holder">
+        <button class="cssbutton khaki textalert-nothanks" type="submit" fdform-button="nothanks">No Thanks</button>
+        <label class="remindme"><input name="remindme" type="checkbox" checked/>Remind me later</label>
+      </div>
+      <button class="cssbutton green textalert-signup" type="submit">Sign Up</button>
+    </div>
+    <p class="legend">*Standard text messaging rates apply</p>
+  </div>
+</form>
+{call .textAlertTerms}{/call}
+</div>
+{/template}
+
+/**
+ */
+{template .textAlertTerms}
+<div id="textalert_terms">
+<p class="title"><button class="cssbutton green textalert-back" data-go="textalert_formbody">&lt; Back</button> Terms & Conditions</p>
+<div class='terms-body'>
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras semper sollicitudin metus, eu commodo leo iaculis sed. Maecenas feugiat porta diam, at tristique lectus porttitor id. Maecenas purus mi, pharetra a ante a, imperdiet bibendum velit. Morbi efficitur nec leo id pulvinar. Mauris condimentum tellus ultrices ligula tincidunt, vel dignissim nulla luctus. Praesent et tristique felis. Fusce faucibus odio a justo consequat lobortis. Fusce vel erat at erat tincidunt condimentum vel ac elit. Maecenas id ligula quis dolor dapibus cursus. Maecenas a fermentum erat. Pellentesque cursus sit amet erat ac volutpat. Cras nec augue eu nibh imperdiet semper. Duis ac lacus at augue fermentum placerat nec a risus. Nullam tempus mollis dapibus. Phasellus aliquam odio risus, sit amet bibendum magna sodales sed. Morbi nec tempor est, at accumsan mi.</p>
+  <p>Aliquam ut pulvinar velit. Nulla fringilla neque vel lorem finibus gravida. Suspendisse venenatis volutpat sapien in posuere. In hendrerit nulla odio. Quisque non viverra odio, non accumsan risus. In id massa vitae libero dignissim tincidunt sit amet ac diam. Fusce faucibus nulla vitae ante faucibus, quis posuere libero egestas. Curabitur ac tincidunt ipsum. Duis et eros risus.</p>
+  <p>Aliquam condimentum erat et sem pretium dignissim. Nunc sed condimentum lectus, in lacinia nisl. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Praesent interdum metus et quam consectetur tempus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Pellentesque ut risus ac ex malesuada scelerisque non vel dolor. Mauris accumsan diam orci, et euismod velit pretium ac. Pellentesque porttitor, arcu at suscipit rutrum, nulla nisl bibendum nibh, et tincidunt augue dui a nisi. Sed in felis eget urna vehicula bibendum. Maecenas in massa ac mi convallis pellentesque.</p>
+</div>
+</div>
+{/template}

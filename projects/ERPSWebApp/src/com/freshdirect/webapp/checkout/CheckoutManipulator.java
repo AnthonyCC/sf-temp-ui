@@ -34,8 +34,6 @@ public abstract class CheckoutManipulator {
 		this.actionName = actionName;
 	}
 
-
-
 	public HttpServletRequest getRequest() {
 		return request;
 	}
@@ -53,9 +51,6 @@ public abstract class CheckoutManipulator {
 		this.session = session;
 	}
 
-	
-	
-	
 	public String getActionName() {
 		return actionName;
 	}
@@ -72,11 +67,6 @@ public abstract class CheckoutManipulator {
 		this.result = result;
 	}
 	
-	
-	
-	
-
-
 	public FDUserI getUser() {
 		return (FDUserI) session.getAttribute( SessionName.USER );	
 	}
@@ -87,10 +77,13 @@ public abstract class CheckoutManipulator {
 
 
 	protected void setCart( FDCartModel cart ) {
-		FDUserI user = this.getUser();
-		if ( this.getActionName().indexOf( "gc_" ) != -1 ) {
+		setCart(cart, getUser(), getActionName(), session);
+	}
+	
+	protected static void setCart(FDCartModel cart, FDUserI user, String actionName, HttpSession session) {
+		if ( actionName.indexOf( "gc_" ) != -1 ) {
 			user.setGiftCart( cart );
-		} else if ( this.getActionName().indexOf( "rh_" ) != -1 ) {
+		} else if ( actionName.indexOf( "rh_" ) != -1 ) {
 			user.setDonationCart( cart );
 		} else {
 			user.setShoppingCart( cart );
@@ -98,13 +91,17 @@ public abstract class CheckoutManipulator {
 		session.setAttribute( SessionName.USER, user );
 	}
 
-	protected FDCartModel getCart() {
-		if ( this.getActionName().indexOf( "gc_" ) != -1 ) {
-			return this.getUser().getGiftCart();
-		} else if ( this.getActionName().indexOf( "rh_" ) != -1 ) {
-			return this.getUser().getDonationCart();
+	protected static FDCartModel getCart(FDUserI user, String actionName) {
+		if (actionName.indexOf("gc_") != -1) {
+			return user.getGiftCart();
+		} else if (actionName.indexOf("rh_") != -1) {
+			return user.getDonationCart();
 		}
-		return this.getUser().getShoppingCart();
+		return user.getShoppingCart();
+	}
+	
+	protected FDCartModel getCart() {
+		return getCart(getUser(), getActionName());
 	}
 
 

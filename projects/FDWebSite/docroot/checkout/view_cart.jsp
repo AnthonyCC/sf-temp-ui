@@ -15,6 +15,7 @@
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
+<%@ taglib uri="fd-features" prefix="features" %>
 
 <% //expanded page dimensions
 final int W_CHECKOUT_VIEW_CART_TOTAL = 970;
@@ -23,6 +24,7 @@ final int W_CHECKOUT_VIEW_CART_TOTAL = 970;
 <%! final java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 <%! final java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##"); %>
 <fd:CheckLoginStatus id="user" />
+<features:redirect featureName="checkout2_0" />
 <%
 //--------OAS Page Variables-----------------------
 request.setAttribute("sitePage", "www.freshdirect.com/view_cart.jsp");
@@ -74,7 +76,7 @@ boolean showMinError = true;
 	if(!UserValidationUtil.validateContainsDlvPassOnly(request, result)) {
 		//If the above validation is successful then check for order minimum.
 		if (user.getShoppingCart().getDeliveryAddress()!=null ){
-			UserValidationUtil.validateOrderMinimum(request, result); 
+			UserValidationUtil.validateOrderMinimum(request.getSession(), result); 
 			String errorMsg = (String)session.getAttribute(SessionName.ATP_WARNING);
 			if (errorMsg!=null) {
 				session.removeAttribute(SessionName.ATP_WARNING);

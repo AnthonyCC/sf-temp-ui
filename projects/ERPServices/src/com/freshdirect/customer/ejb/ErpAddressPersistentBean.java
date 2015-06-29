@@ -218,19 +218,27 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 	private final String convertExtension(PhoneNumber phoneNumber) {
 		return phoneNumber==null ? null : phoneNumber.getExtension();
 	}
+	
+	private final String convertType(PhoneNumber phoneNumber) {
+		return phoneNumber==null ? null : phoneNumber.getType();
+	}
 
 	private final PhoneNumber convertPhoneNumber(String phone, String extension) {
-		return "() -".equals(phone) ? null : new PhoneNumber(phone, NVL.apply(extension, ""));
+		return convertPhoneNumber(phone, extension, "");
+	}
+	
+	private final PhoneNumber convertPhoneNumber(String phone, String extension, String type) {
+		return "() -".equals(phone) ? null : new PhoneNumber(phone, NVL.apply(extension, ""), NVL.apply(type, ""));
 	}
 	
 	
 	private final static String STORE_ADDRESS_QUERY =
 		"INSERT INTO CUST.ADDRESS (" +
 		   "ID ,CUSTOMER_ID, FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP," +
-		   "COUNTRY, PHONE, PHONE_EXT, DELIVERY_INSTRUCTIONS, SCRUBBED_ADDRESS, ALT_DEST, ALT_FIRST_NAME," +
+		   "COUNTRY, PHONE, PHONE_EXT, PHONE_TYPE, DELIVERY_INSTRUCTIONS, SCRUBBED_ADDRESS, ALT_DEST, ALT_FIRST_NAME," +
 		   "ALT_LAST_NAME, ALT_APARTMENT, ALT_PHONE, ALT_PHONE_EXT, LONGITUDE, LATITUDE, GEOLOC, SERVICE_TYPE," +
-		   "COMPANY_NAME, ALT_CONTACT_PHONE, ALT_CONTACT_EXT, UNATTENDED_FLAG, UNATTENDED_INSTR) " +
-        " values (?,?,?,?,?,?,REPLACE(REPLACE(UPPER(?),'-'),' '),?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL),?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?)";
+		   "COMPANY_NAME, ALT_CONTACT_PHONE, ALT_CONTACT_EXT, ALT_CONTACT_TYPE, UNATTENDED_FLAG, UNATTENDED_INSTR) " +
+        " values (?,?,?,?,?,?,REPLACE(REPLACE(UPPER(?),'-'),' '),?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL),?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,?)";
 
 	public PrimaryKey create(Connection conn) throws SQLException {
 		String id = this.getNextId(conn, "CUST");
@@ -249,29 +257,31 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 		ps.setString(11, this.country);
 		ps.setString(12, this.convertPhone(this.phone));
 		ps.setString(13, this.convertExtension(this.phone));
-		ps.setString(14, this.instructions);
-		ps.setString(15, this.addressInfo.getScrubbedStreet());
-		ps.setString(16, this.altDeliverySetting.getDeliveryCode());
-		ps.setString(17, this.altFirstName);
-		ps.setString(18, this.altLastName);				
-		ps.setString(19, this.altApartment);
-		ps.setString(20, this.convertPhone(this.altPhone));
-		ps.setString(21, this.convertExtension(this.altPhone));
-		ps.setBigDecimal(22, new BigDecimal(String.valueOf(this.addressInfo.getLongitude())));
-		ps.setBigDecimal(23, new BigDecimal(String.valueOf(this.addressInfo.getLatitude())));
-		ps.setBigDecimal(24, new BigDecimal(String.valueOf(this.addressInfo.getLongitude())));
-		ps.setBigDecimal(25, new BigDecimal(String.valueOf(this.addressInfo.getLatitude())));
+		ps.setString(14, this.convertType(this.phone));
+		ps.setString(15, this.instructions);
+		ps.setString(16, this.addressInfo.getScrubbedStreet());
+		ps.setString(17, this.altDeliverySetting.getDeliveryCode());
+		ps.setString(18, this.altFirstName);
+		ps.setString(19, this.altLastName);				
+		ps.setString(20, this.altApartment);
+		ps.setString(21, this.convertPhone(this.altPhone));
+		ps.setString(22, this.convertExtension(this.altPhone));
+		ps.setBigDecimal(23, new BigDecimal(String.valueOf(this.addressInfo.getLongitude())));
+		ps.setBigDecimal(24, new BigDecimal(String.valueOf(this.addressInfo.getLatitude())));
+		ps.setBigDecimal(25, new BigDecimal(String.valueOf(this.addressInfo.getLongitude())));
+		ps.setBigDecimal(26, new BigDecimal(String.valueOf(this.addressInfo.getLatitude())));
 		if(this.serviceType == null){
-			ps.setNull(26, Types.VARCHAR);
+			ps.setNull(27, Types.VARCHAR);
 		} else {
-			ps.setString(26, this.serviceType.getName());
+			ps.setString(27, this.serviceType.getName());
 		}
-		ps.setString(27, this.companyName);
-		ps.setString(28, this.convertPhone(this.altContactPhone));
-		ps.setString(29, this.convertExtension(this.altContactPhone));
+		ps.setString(28, this.companyName);
+		ps.setString(29, this.convertPhone(this.altContactPhone));
+		ps.setString(30, this.convertExtension(this.altContactPhone));
+		ps.setString(31, this.convertType(this.altContactPhone));
 		
-		ps.setString(30, this.unattendedDeliveryFlag != null ? this.unattendedDeliveryFlag.toSQLValue() : null);
-		ps.setString(31, this.unattendedDeliveryInstructions);
+		ps.setString(32, this.unattendedDeliveryFlag != null ? this.unattendedDeliveryFlag.toSQLValue() : null);
+		ps.setString(33, this.unattendedDeliveryInstructions);
 				
 		try {
 			if (ps.executeUpdate() != 1) {
@@ -293,12 +303,12 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 
 	private final static String LOAD_ADDRESS_QUERY = 
 		"SELECT FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP, COUNTRY," +
-		"'('||substr(PHONE,1,3)||') '||substr(PHONE,4,3)||'-'||substr(PHONE,7,4) AS PHONE, PHONE_EXT," +
+		"'('||substr(PHONE,1,3)||') '||substr(PHONE,4,3)||'-'||substr(PHONE,7,4) AS PHONE, PHONE_EXT, PHONE_TYPE," +
 		"DELIVERY_INSTRUCTIONS, SCRUBBED_ADDRESS, NVL(ALT_DEST,'none') as ALT_DEST, ALT_FIRST_NAME," +
 		"ALT_LAST_NAME, ALT_APARTMENT, '('||substr(ALT_PHONE,1,3)||') '||substr(ALT_PHONE,4,3)||'-'||substr(ALT_PHONE,7,4) AS ALT_PHONE," +
 		"ALT_PHONE_EXT, LONGITUDE, LATITUDE, SERVICE_TYPE, COMPANY_NAME," +
 		"'('||substr(ALT_CONTACT_PHONE,1,3)||') '||substr(ALT_CONTACT_PHONE,4,3)||'-'||substr(ALT_CONTACT_PHONE,7,4) AS ALT_CONTACT_PHONE," +
-		"ALT_CONTACT_EXT, UNATTENDED_FLAG, UNATTENDED_INSTR, CUSTOMER_ID FROM CUST.ADDRESS WHERE ID=?";
+		"ALT_CONTACT_EXT, ALT_CONTACT_TYPE, UNATTENDED_FLAG, UNATTENDED_INSTR, CUSTOMER_ID FROM CUST.ADDRESS WHERE ID=?";
 		
 	public void load(Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(LOAD_ADDRESS_QUERY);
@@ -315,7 +325,7 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 			this.state = rs.getString("STATE");
 			this.zipCode = rs.getString("ZIP");
 			this.country = rs.getString("COUNTRY");
-			this.phone = this.convertPhoneNumber( rs.getString("PHONE"), rs.getString("PHONE_EXT") );
+			this.phone = this.convertPhoneNumber( rs.getString("PHONE"), rs.getString("PHONE_EXT"), rs.getString("PHONE_TYPE") );
 			this.instructions = rs.getString("DELIVERY_INSTRUCTIONS");
 			this.addressInfo.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
 			this.altDeliverySetting = EnumDeliverySetting.getDeliverySetting(rs.getString("ALT_DEST"));
@@ -327,7 +337,7 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 			this.addressInfo.setLatitude(Double.parseDouble((rs.getBigDecimal("LATITUDE")!=null)?rs.getBigDecimal("LATITUDE").toString():"0"));
 			this.serviceType = EnumServiceType.getEnum(rs.getString("SERVICE_TYPE"));
 			this.companyName = rs.getString("COMPANY_NAME");
-			this.altContactPhone = this.convertPhoneNumber(rs.getString("ALT_CONTACT_PHONE"), rs.getString("ALT_CONTACT_EXT"));
+			this.altContactPhone = this.convertPhoneNumber(rs.getString("ALT_CONTACT_PHONE"), rs.getString("ALT_CONTACT_EXT"), rs.getString("ALT_CONTACT_TYPE"));
 			this.unattendedDeliveryFlag = EnumUnattendedDeliveryFlag.fromSQLValue(rs.getString("UNATTENDED_FLAG"));
 			this.unattendedDeliveryInstructions = rs.getString("UNATTENDED_INSTR");
 			this.customerId=rs.getString("CUSTOMER_ID");
@@ -347,13 +357,13 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 	private final static String UPDATE_ADDRESS_QUERY =
 		"UPDATE CUST.ADDRESS SET CUSTOMER_ID = ?, FIRST_NAME = ?, LAST_NAME = ?, ADDRESS1 = ?, ADDRESS2 = ?," +
 			"APARTMENT = REPLACE(REPLACE(UPPER(?),'-'),' '), CITY = ?, STATE = ?, ZIP = ?, COUNTRY = ?," +
-			"PHONE = replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'), PHONE_EXT = ?," +
+			"PHONE = replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'), PHONE_EXT = ?, PHONE_TYPE = ?," +
 			"DELIVERY_INSTRUCTIONS = ?, SCRUBBED_ADDRESS = ?, ALT_DEST = ?, ALT_FIRST_NAME = ?, ALT_LAST_NAME = ?," +
 			"ALT_APARTMENT = ?, ALT_PHONE = replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.')," +
 			"ALT_PHONE_EXT = ?, LONGITUDE = ?, LATITUDE = ?," +
 			"GEOLOC=MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL), SERVICE_TYPE = ?," +
 			"COMPANY_NAME = ?, ALT_CONTACT_PHONE = replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.')," +
-			"ALT_CONTACT_EXT = ?, UNATTENDED_FLAG = ?, UNATTENDED_INSTR = ? WHERE ID = ?";
+			"ALT_CONTACT_EXT = ?, ALT_CONTACT_TYPE = ?, UNATTENDED_FLAG = ?, UNATTENDED_INSTR = ? WHERE ID = ?";
 		
 	public void store(Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(UPDATE_ADDRESS_QUERY);
@@ -370,32 +380,34 @@ public class ErpAddressPersistentBean extends DependentPersistentBeanSupport {
 		ps.setString(10, this.country);
 		ps.setString(11, this.convertPhone(this.phone));
 		ps.setString(12, this.convertExtension(this.phone));
-		ps.setString(13, this.instructions);
-		ps.setString(14, this.addressInfo.getScrubbedStreet());
-		ps.setString(15, this.altDeliverySetting.getDeliveryCode());
-		ps.setString(16, this.altFirstName);
-		ps.setString(17, this.altLastName);
-		ps.setString(18, ("".equals(this.altApartment) ? " " : this.altApartment));
-		ps.setString(19, this.convertPhone(this.altPhone));		
-		ps.setString(20, this.convertExtension(this.altPhone));
-		ps.setBigDecimal(21, new BigDecimal(String.valueOf(this.addressInfo.getLongitude())));
-		ps.setBigDecimal(22, new BigDecimal(String.valueOf(this.addressInfo.getLatitude())));
-		ps.setBigDecimal(23, new BigDecimal(String.valueOf(this.addressInfo.getLongitude())));
-		ps.setBigDecimal(24, new BigDecimal(String.valueOf(this.addressInfo.getLatitude())));
+		ps.setString(13, this.convertType(this.phone));
+		ps.setString(14, this.instructions);
+		ps.setString(15, this.addressInfo.getScrubbedStreet());
+		ps.setString(16, this.altDeliverySetting.getDeliveryCode());
+		ps.setString(17, this.altFirstName);
+		ps.setString(18, this.altLastName);
+		ps.setString(19, ("".equals(this.altApartment) ? " " : this.altApartment));
+		ps.setString(20, this.convertPhone(this.altPhone));		
+		ps.setString(21, this.convertExtension(this.altPhone));
+		ps.setBigDecimal(22, new BigDecimal(String.valueOf(this.addressInfo.getLongitude())));
+		ps.setBigDecimal(23, new BigDecimal(String.valueOf(this.addressInfo.getLatitude())));
+		ps.setBigDecimal(24, new BigDecimal(String.valueOf(this.addressInfo.getLongitude())));
+		ps.setBigDecimal(25, new BigDecimal(String.valueOf(this.addressInfo.getLatitude())));
 
 		if(this.serviceType == null){
-			ps.setNull(25, Types.VARCHAR);
+			ps.setNull(26, Types.VARCHAR);
 		}else{
-			ps.setString(25, this.serviceType.getName());
+			ps.setString(26, this.serviceType.getName());
 		}
-		ps.setString(26, this.companyName);
-		ps.setString(27, this.convertPhone(this.altContactPhone));
-		ps.setString(28, this.convertExtension(this.altContactPhone));
+		ps.setString(27, this.companyName);
+		ps.setString(28, this.convertPhone(this.altContactPhone));
+		ps.setString(29, this.convertExtension(this.altContactPhone));
+		ps.setString(30, this.convertType(this.altContactPhone));
 		
-		ps.setString(29, this.unattendedDeliveryFlag.toSQLValue());
-		ps.setString(30, this.unattendedDeliveryInstructions);
+		ps.setString(31, this.unattendedDeliveryFlag.toSQLValue());
+		ps.setString(32, this.unattendedDeliveryInstructions);
 		
-		ps.setString(31, this.getPK().getId());
+		ps.setString(33, this.getPK().getId());
 		
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("Row not updated");

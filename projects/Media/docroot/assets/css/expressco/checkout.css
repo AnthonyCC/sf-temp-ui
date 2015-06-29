@@ -1,0 +1,9 @@
+h1.checkout {
+  margin-top: 15px;
+  font-weight: bold;
+  color: #333;
+}
+
+h1.checkout:before {
+  font-size: 1.3em;
+}

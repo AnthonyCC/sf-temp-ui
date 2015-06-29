@@ -1,0 +1,169 @@
+{namespace expressco}
+
+/**
+ * @param? selected
+ * @param payments
+ */
+{template .paymentmethodpreview autoescape="false"}
+{if $selected}
+  {foreach $payment in $payments}
+    {if $payment.selected}
+      {call .paymentmethodpreviewitem data="$payment"}{/call}
+    {/if}
+  {/foreach}
+{else}
+<div class="drawer__previewitem__button__section">
+<button class='cssbutton green' data-component="addpaymentmethodbutton">Add a Method</button>
+</div>
+{/if}
+{/template}
+
+/**
+ * @param payments
+ */
+{template .paymentmethodcontent autoescape="false"}
+<form class='drawer__content' fdform="payment" fdform-endpoint-submit="/api/expresscheckout/payment" data-item-count="{length($payments)}">
+  <input type="hidden" name="action" value="selectPaymentMethod" />
+  <div class="drawer__header">
+    <button class="cssbutton orange" data-component="paymentchangebutton">Done</button>
+  </div>
+  <div fdform-error-container></div>
+  {foreach $payment in $payments}
+    {call .paymentmethod data="$payment"}{/call}
+  {/foreach}
+  <div class="drawer__item drawer__item-addaction">
+     <div class="addaction__center">
+          <button class="cssbutton green addaction__button icon-add-drawer-before xc-addaction" data-component="addpaymentmethodbutton">Add Method</button>
+          <p class="addaction__desc">OAS HERE: Lorem ipsum dolor sit amet, consectetur adipisicing elit!</p>
+     </div>
+   </div>
+</form>
+{/template}
+
+/**
+* @param id
+* @param type
+* @param nameOnCard
+* @param address1
+* @param address2
+* @param bestNumber
+* @param expiration
+* @param accountNumber
+* @param? selected
+* @param? bankAccountType
+* @param? bankName
+* @param? abaRouteNumber
+* @param? city
+* @param? state
+* @param? zip
+*/
+{template .paymentmethod autoescape="false"}
+<div class='drawer__item'>
+  <input id="payment_{$id}" value="{$id}" type='radio' class='drawer__itemleft' name='id' {if $selected}checked{/if} />
+
+  <label class='drawer__item__label' for='payment_{$id}'>
+  <div class='drawer__itemright'>
+    <p class='drawer__item__title'>{$bankName or $type}</p>
+    {if $accountNumber or $expiration or $bankAccountType}
+    <div class="drawer__item__section">
+      <div class='section__body'>
+        {if $bankAccountType}
+          <p>{$bankAccountType}</p>
+        {/if}
+        <p>{if $accountNumber}{$accountNumber} {/if}{if $expiration}Exp. {$expiration}{/if}</p>
+        {if $abaRouteNumber}<p>Routing # {$abaRouteNumber}</p>{/if}
+      </div>
+    </div>
+    {/if}
+    {if $nameOnCard}
+    <div class="drawer__item__section">
+      <p class='section__title'>Name{if $type != 'ECheck'} on card{/if}</p>
+      <div class='section__body'>
+        <p>{$nameOnCard}</p>
+      </div>
+    </div>
+    {/if}
+    {if $address1 or $address2}
+    <div class="drawer__item__section">
+      <p class='section__title'>Billing address</p>
+      <div class='section__body'>
+        {if $address1}<p>{$address1}</p>{/if}
+        {if $address2}<p>{$address2}</p>{/if}
+        <p>{$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
+      </div>
+    </div>
+    {/if}
+    {if $bestNumber}
+    <div class="drawer__item__section">
+      <p class='section__title'>Best # for billing inquiries:</p>
+      <div class='section__body'>
+        <p>{$bestNumber}</p>
+      </div>
+    </div>
+    {/if}
+  </div><!--/ drawer__itemright -->
+  </label>
+  <div class="drawer__item__action">
+    <span data-action="deletePaymentMethod" data-confirm data-confirm-header="Are you sure you want to permanently delete this payment method?" data-confirm-button-delete="FreshDirect.confirmFunctions.payment_deletePaymentMethod_{$id}" data-confirm-template="common.deleteconfirmpopup" class="action cssbutton transparent white icon-trash-new-before">Delete</span>
+    <span data-action="loadPaymentMethod" class="action cssbutton transparent white icon-pencil-before">Edit</span>
+  </div>
+</div><!--/ drawer__item -->
+{/template}
+
+/**
+* @param nameOnCard
+* @param address1
+* @param address2
+* @param bestNumber
+* @param expiration
+* @param? accountNumber
+* @param? type
+* @param? bankAccountType
+* @param? bankName
+* @param? abaRouteNumber
+* @param? city
+* @param? state
+* @param? zip
+*/
+{template .paymentmethodpreviewitem autoescape="false"}
+<div class='drawer__previewitem'>
+  <p class='drawer__previewitem__title'>{$bankName or $type}</p>
+  {if $accountNumber or $expiration or $bankAccountType}
+  <div class="drawer__previewitem__section">
+    <div class='section__body'>
+      {if $bankAccountType}
+        <p>{$bankAccountType}</p>
+      {/if}
+      <p>{if $accountNumber}{$accountNumber} {/if}{if $expiration}Exp. {$expiration}{/if}</p>
+      {if $abaRouteNumber}<p>Routing # {$abaRouteNumber}</p>{/if}
+    </div>
+  </div>
+  {/if}
+  {if $nameOnCard}
+  <div class="drawer__previewitem__section">
+    <p class='section__title'>Name on card</p>
+    <div class='section__body'>
+      <p>{$nameOnCard}</p>
+    </div>
+  </div>
+  {/if}
+  {if $address1 or $address2}
+  <div class="drawer__previewitem__section">
+    <p class='section__title'>Billing address</p>
+    <div class='section__body'>
+      {if $address1}<p>{$address1}</p>{/if}
+      {if $address2}<p>{$address2}</p>{/if}
+      <p>{$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
+    </div>
+  </div>
+  {/if}
+  {if $bestNumber}
+  <div class="drawer__previewitem__section">
+    <p class='section__title'>Best # for billing inquiries:</p>
+    <div class='section__body'>
+      <p>{$bestNumber}</p>
+    </div>
+  </div>
+  {/if}
+</div>
+{/template}

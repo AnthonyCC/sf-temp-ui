@@ -449,7 +449,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			return SUCCESS;
 		}
 
-		if (!UserValidationUtil.validateOrderMinimum(request, this.getResult())) {
+		if (!UserValidationUtil.validateOrderMinimum(session, this.getResult())) {
 			return ERROR;
 		}
 		

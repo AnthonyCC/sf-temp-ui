@@ -253,7 +253,7 @@ public class FDDeliveryManager {
 			}
 
 			DlvManagerSB sb = getDlvManagerHome().create();
-			return sb.checkForAlcoholDelivery(address.getScrubbedStreet(), address.getZipCode());
+			return sb.checkForAlcoholDelivery(address.getScrubbedStreet(), address.getZipCode(), address.getApartment());
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {

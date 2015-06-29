@@ -37,6 +37,7 @@ var FreshDirect = FreshDirect || {};
   }
 
   function chgQty(value, min, max, inc, incart) {
+    var originalValueIsFloat = (value + "").indexOf('.') > -1;
     var qty = parseFloat(value) + 0;
 
     incart = incart || 0;
@@ -46,7 +47,7 @@ var FreshDirect = FreshDirect || {};
     } else if (qty >= max-incart) {
       qty = Math.max(max-incart, min);
     }
-    qty = Math.floor( (qty-min)/inc )*inc  + min;
+    qty = originalValueIsFloat ? ((qty-min)/inc)*inc  + min : Math.floor( (qty-min)/inc )*inc  + min;
 
     return qty;
   }

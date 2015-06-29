@@ -542,6 +542,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
             LOGGER.warn("Error authenticating user to access original shopping cart", fdae);
             throw new JspException(fdae.getMessage());
         }
+		session.removeAttribute(SessionName.MODIFY_CART_PRESELECTION_COMPLETED);
 	}
 
 

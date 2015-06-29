@@ -190,6 +190,15 @@
 				<DestinationDef contentType="Recipe" />
 				<DestinationDef contentType="RecipeTag" />
 			</RelationshipDef>
+			<RelationshipDef name="expressCheckoutReceiptHeader" label="Express Checkout Receipt Header" cardinality="One" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="expressCheckoutReceiptEditorial" label="Express Checkout Receipt Editorial" cardinality="One" >
+				<DestinationDef contentType="Html" />
+			</RelationshipDef>
+			<RelationshipDef name="expressCheckoutTextMessageAlertHeader" label="Express Checkout Text Message Alert Header" cardinality="One" >
+                <DestinationDef contentType="Html" />
+            </RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
 

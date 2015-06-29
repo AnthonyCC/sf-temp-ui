@@ -2,22 +2,18 @@ package com.freshdirect.webapp.checkout;
 
 import java.text.MessageFormat;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumPaymentType;
-import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
-import com.freshdirect.delivery.DlvServiceSelectionResult;
-import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -25,13 +21,16 @@ import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDModifyCartModel;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.rollout.EnumFeatureRolloutStrategy;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodName;
@@ -50,6 +49,10 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 	public void setPaymentMethod() throws FDResourceException {
 		String paymentId = request.getParameter( "paymentMethodList" );
 		String billingRef = request.getParameter( "billingRef" );
+		setPaymentMethod(paymentId, billingRef, request, session, result, actionName);
+	}
+	
+	public static void setPaymentMethod(String paymentId, String billingRef, HttpServletRequest request, HttpSession session, ActionResult result, String actionName) throws FDResourceException {
 		boolean makeGoodOrder = false;
 		String referencedOrder = "";
 		String app = (String) session.getAttribute( SessionName.APPLICATION );
@@ -61,15 +64,15 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 				return;
 			}
 		}
-		this.setPaymentMethod( request, result, paymentId, billingRef, makeGoodOrder, referencedOrder );
+		setPaymentMethod( request, session, (FDUserI) session.getAttribute( SessionName.USER ), result, actionName, paymentId, billingRef, makeGoodOrder, referencedOrder );
 	}
 
 	private void setNoPaymentMethod( HttpServletRequest request, ActionResult result ) throws FDResourceException {
+		FDCartModel cart = getCart();
 		String billingRef = request.getParameter( "billingRef" );
 		boolean makeGoodOrder = false;
 		String referencedOrder = "";
 		String app = (String) session.getAttribute( SessionName.APPLICATION );
-		FDCartModel cart = getCart();
 		if ( "CALLCENTER".equalsIgnoreCase( app ) ) {
 			makeGoodOrder = request.getParameter( "makeGoodOrder" ) != null;
 			referencedOrder = NVL.apply( request.getParameter( "referencedOrder" ), "" ).trim();
@@ -77,25 +80,27 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 				result.addError( true, "referencedOrder", "Reference Order number is required for a make good order" );
 				return;
 			}
-		}else if (cart.getSelectedGiftCards() == null || cart.getSelectedGiftCards().size() == 0){
-			result.addError( new ActionError( "paymentMethodList", "You must select a payment method." ) );
+		} else if (cart.getSelectedGiftCards() == null || cart.getSelectedGiftCards().size() == 0) {
+			result.addError(new ActionError("paymentMethodList", "You must select a payment method."));
 			return;
 		}
-
-		ErpPaymentMethodI paymentMethod = PaymentMethodUtil.createGiftCardPaymentMethod( this.getUser() );
-
 		
-		paymentMethod.setBillingRef( billingRef );
-		paymentMethod.setPaymentType( makeGoodOrder ? EnumPaymentType.MAKE_GOOD : EnumPaymentType.REGULAR );
-		paymentMethod.setReferencedOrder( referencedOrder );
-		cart.setPaymentMethod( paymentMethod );
-		setCart( cart );
-		this.getUser().setPostPromoConflictEnabled( true );
-		this.getUser().updateUserState();
+		setNoPaymentMethod(session, getUser(), cart, getActionName(), billingRef, referencedOrder, makeGoodOrder, result);
 	}
 	
+	public static void setNoPaymentMethod(HttpSession session, FDUserI user, FDCartModel cart, String actionName, String billingRef, String referencedOrder, boolean makeGoodOrderEnabled,
+			ActionResult result) throws FDResourceException {
+		ErpPaymentMethodI paymentMethod = PaymentMethodUtil.createGiftCardPaymentMethod(user);
+		paymentMethod.setBillingRef(billingRef);
+		paymentMethod.setPaymentType(makeGoodOrderEnabled ? EnumPaymentType.MAKE_GOOD : EnumPaymentType.REGULAR);
+		paymentMethod.setReferencedOrder(referencedOrder);
+		cart.setPaymentMethod(paymentMethod);
+		setCart(cart, user, actionName, session);
+		user.setPostPromoConflictEnabled(true);
+		user.updateUserState();
+	}
 	
-	private void setPaymentMethod( HttpServletRequest request, ActionResult result, String paymentId, String billingRef, boolean makeGoodOrder, String referencedOrder ) throws FDResourceException {
+	private static void setPaymentMethod( HttpServletRequest request, HttpSession session, FDUserI user, ActionResult result, String actionName, String paymentId, String billingRef, boolean makeGoodOrder, String referencedOrder ) throws FDResourceException {
 		//
 		// check for a valid payment ID
 		//
@@ -104,7 +109,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			return;
 		}
 
-		FDIdentity identity = getIdentity();
+		FDIdentity identity = user.getIdentity();
 
 		//
 		// search for the payment method with the matching ID
@@ -139,7 +144,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
         		if (EnumPaymentMethodType.CREDITCARD.equals(paymentM.getPaymentMethodType())) {
         			numCreditCards++;
 	        	  	ActionResult tempResult=new ActionResult();
-					PaymentMethodUtil.validatePaymentMethod(request, paymentM, tempResult, getUser(),false,EnumAccountActivityType.UNKNOWN);
+					PaymentMethodUtil.validatePaymentMethod(request, paymentM, tempResult, user,false,EnumAccountActivityType.UNKNOWN);
 					if(null == tempResult.getError("expiration") || "".equals(tempResult.getError("expiration"))){
 						isValidCreditCardAvailable = true;
 						break;
@@ -156,8 +161,8 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			}
 		}
 
-		FDCartModel cart = getCart();
-		if(EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())&& !getUser().isEbtAccepted()/*!(cart.getDeliveryAddress() instanceof ErpDepotAddressModel)*/){
+		FDCartModel cart = getCart(user, actionName);
+		if(EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())&& !user.isEbtAccepted()/*!(cart.getDeliveryAddress() instanceof ErpDepotAddressModel)*/){
 			/*if(null ==getUser().getShoppingCart().getPaymentMethod() || !EnumPaymentMethodType.EBT.equals(getUser().getShoppingCart().getPaymentMethod().getPaymentMethodType()) ||
 					!(getUser().getShoppingCart() instanceof FDModifyCartModel)){*/	
 				
@@ -165,42 +170,47 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 				if(null!= cart.getDeliveryAddress() && cart.getDeliveryAddress().isEbtAccepted()){ 
 					result.addError(new ActionError("ebtPaymentNotAllowed",SystemMessageList.MSG_EBT_NOT_ALLOWED_UNSETTLED_ORDERS));
 				}
-				if(getUser().hasEBTAlert()){
+				if(user.hasEBTAlert()){
 					result.addError(new ActionError("ebtPaymentNotAllowed",MessageFormat.format(SystemMessageList.MSG_EBT_NOT_ALLOWED_ON_ALERT, 
 		            		new Object[] { UserUtil.getCustomerServiceContact(request)})));
 				}
 //			}
 		}
 			
-		paymentMethod.setBillingRef( billingRef );
-		paymentMethod.setPaymentType( makeGoodOrder ? EnumPaymentType.MAKE_GOOD : EnumPaymentType.REGULAR );
-		paymentMethod.setReferencedOrder( referencedOrder );
-		cart.setPaymentMethod( paymentMethod );
-		setCart( cart );
+		if (!FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user) || result.isSuccess()) {
+			paymentMethod.setBillingRef(billingRef);
+			paymentMethod.setPaymentType(makeGoodOrder ? EnumPaymentType.MAKE_GOOD : EnumPaymentType.REGULAR);
+			paymentMethod.setReferencedOrder(referencedOrder);
+			cart.setPaymentMethod(paymentMethod);
+			setCart(cart, user, actionName, session);
 
-		//
-		// set default payment method and check for unique billing address, if
-		// required
-		//
-		FDActionInfo info = AccountActivityUtil.getActionInfo( session );
-		final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethod ).getPK();
-		FDCustomerManager.setDefaultPaymentMethod( info, pmPK );
+			//
+			// set default payment method and check for unique billing address,
+			// if
+			// required
+			//
+			FDActionInfo info = AccountActivityUtil.getActionInfo(session);
+			final PrimaryKey pmPK = ((ErpPaymentMethodModel) paymentMethod).getPK();
+			FDCustomerManager.setDefaultPaymentMethod(info, pmPK);
 
-		/*if ( user.isDepotUser() ) {
-			if ( user.isEligibleForSignupPromotion() ) {
-				if ( FDCustomerManager.checkBillToAddressFraud( info, paymentMethod ) ) {
+			/*
+			 * if ( user.isDepotUser() ) { if (
+			 * user.isEligibleForSignupPromotion() ) { if (
+			 * FDCustomerManager.checkBillToAddressFraud( info, paymentMethod )
+			 * ) {
+			 * 
+			 * session.setAttribute( SessionName.SIGNUP_WARNING,
+			 * MessageFormat.format( SystemMessageList.MSG_NOT_UNIQUE_INFO, new
+			 * Object[] { user.getCustomerServiceContact() } ) );
+			 * 
+			 * } } }
+			 */
 
-					session.setAttribute( SessionName.SIGNUP_WARNING, MessageFormat.format( SystemMessageList.MSG_NOT_UNIQUE_INFO, new Object[] { user.getCustomerServiceContact() } ) );
-
-				}
-			}
-		}*/
-
-		FDSessionUser currentUser = (FDSessionUser)getUser();
-		currentUser.setPostPromoConflictEnabled( true );
-		currentUser.updateUserState();
-		session.setAttribute( SessionName.USER, currentUser );
-
+			FDSessionUser currentUser = (FDSessionUser) user;
+			currentUser.setPostPromoConflictEnabled(true);
+			currentUser.updateUserState();
+			session.setAttribute(SessionName.USER, currentUser);
+		}
 	}
 
 	public void performSetPaymentMethod() throws FDResourceException {
@@ -244,7 +254,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 					paymentId = payMethods.get(0).getPK().getId();
 				}
 				if(paymentId != null) {
-					setPaymentMethod( request, result, paymentId, request.getParameter( "billingRef" ), false, "" );
+					setPaymentMethod( request, session, getUser(), result, actionName, paymentId, request.getParameter( "billingRef" ), false, "" );
 				}
 				if ( result.isSuccess() ) {
 					applyCustomerCredits();
@@ -261,22 +271,24 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 	}
 
 	public void performAddPaymentMethod() throws FDResourceException {
-		ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm( request, result, getIdentity() );
-
-		if ( result.isSuccess() ) {
-			PaymentMethodUtil.validatePaymentMethod( request, paymentMethod, result, getUser(),true,EnumAccountActivityType.ADD_PAYMENT_METHOD );
-			if ( EnumPaymentMethodType.ECHECK.equals( paymentMethod.getPaymentMethodType() ) ) {
-				String terms = request.getParameter( PaymentMethodName.TERMS );
-				result.addError( terms == null || terms.length() <= 0, PaymentMethodName.TERMS, SystemMessageList.MSG_REQUIRED );
-				if ( result.isSuccess() && !PaymentMethodUtil.hasECheckAccount( getUser().getIdentity() ) ) {
-					paymentMethod.setIsTermsAccepted( true );
+		ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm(request, result, getIdentity());
+		if (result.isSuccess()) {
+			PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, result, getUser(), true, EnumAccountActivityType.ADD_PAYMENT_METHOD);
+			String terms = request.getParameter(PaymentMethodName.TERMS);
+			if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
+				result.addError(terms == null || terms.length() <= 0, PaymentMethodName.TERMS, SystemMessageList.MSG_REQUIRED);
+				if (result.isSuccess() && !PaymentMethodUtil.hasECheckAccount(getUser().getIdentity())) {
+					paymentMethod.setIsTermsAccepted(true);
 				}
 			}
-			if ( result.isSuccess() ) {
-				PaymentMethodUtil.addPaymentMethod( request, result, paymentMethod );
-			}
+			performAddPaymentMethod(paymentMethod, result, request, getUser());
 		}
+	}
 
+	public static void performAddPaymentMethod(ErpPaymentMethodI paymentMethod, ActionResult result, HttpServletRequest request, FDUserI user) throws FDResourceException {
+		if (result.isSuccess()) {
+			PaymentMethodUtil.addPaymentMethod(request, result, paymentMethod);
+		}
 	}
 
 	public void performEditPaymentMethod() throws FDResourceException {
@@ -301,20 +313,22 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 
 
 	/**
-	 * Apply customer credits
-	 * One exception: store credits should not be applied for Robin Hood
+	 * Apply customer credits One exception: store credits should not be applied
+	 * for Robin Hood
 	 * 
 	 * @throws FDResourceException
 	 */
 	public void applyCustomerCredits() throws FDResourceException {
-		if (	this.getActionName().equalsIgnoreCase( "rh_onestep_submitDonationOrder" ) ||
-				this.getActionName().equalsIgnoreCase( "rh_submitDonationOrder" ) ) {
+		applyCustomerCredits(getActionName(), getUser(), getSession());
+	}
+
+	public static void applyCustomerCredits(String actionName, FDUserI user, HttpSession session) throws FDResourceException {
+		if (actionName.equalsIgnoreCase("rh_onestep_submitDonationOrder") || actionName.equalsIgnoreCase("rh_submitDonationOrder")) {
 			// Store credits should not be applied for Robin Hood.
 			return;
 		}
-		FDIdentity identity = getIdentity();
-		FDCartModel cart = getCart();
-		FDCustomerCreditUtil.applyCustomerCredit( cart, identity );
-		setCart( cart );
+		FDCartModel cart = getCart(user, actionName);
+		FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
+		setCart(cart, user, actionName, session);
 	}
 }

@@ -111,7 +111,7 @@ public interface DlvManagerSB extends EJBObject {
     
     public List<DlvApartmentRange> findApartmentRanges(AddressModel address) throws InvalidAddressException, RemoteException;
     
-    public boolean checkForAlcoholDelivery(String scrubbedAddress, String zipcode) throws RemoteException;
+    public boolean checkForAlcoholDelivery(String scrubbedAddress, String zipcode, String apartment) throws RemoteException;
     
     public EnumRestrictedAddressReason checkAddressForRestrictions(AddressModel address) throws RemoteException;
     

@@ -943,6 +943,12 @@
 	   <div class="link"><a href="/test/features/index.jsp">/test/features/index.jsp</a></div>
 	   <div class="pageDesc">For Partial Rollout testing it makes easier feature forcing to do A/B testing.</div>
 	</div>
+	
+	<div class="tag ineligible_ebt_products">
+	   <div class="pageName"><span>Ineligible EBT products</span></div>
+	   <div class="link"><a href="/test/reports/ebt_products.jsp">/test/reports/ebt_products.jsp</a></div>
+	   <div class="pageDesc">List of ineligible EBT products</div>
+	</div>
 
 	<hr />
 </div>

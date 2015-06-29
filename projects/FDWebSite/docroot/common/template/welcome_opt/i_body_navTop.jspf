@@ -12,6 +12,7 @@
 %><%@ page import="org.apache.commons.lang.StringEscapeUtils"
 %><%@ taglib prefix="fd" uri="freshdirect"
 %><%@ taglib prefix="logic" uri="logic" %>
+<features:isActive name="isCO20" featureName="checkout2_0" />
 
 <% //expanded page dimensions
 final int W_GLOBAL_NAV_TOP_TOTAL = 970;
@@ -82,14 +83,14 @@ if(user != null) {
 	    	<fd:GetCart id="cart">
 	    		<div id="sidecartbuttons">
 	      			<div class="buttons">
-	        			<a class="cart" href="/view_cart.jsp"><div class="vahidden">cart</div></a><a class="checkout" href="/checkout/view_cart.jsp"><div class="vahidden">checkout</div></a>
+                <a class="cart" href="${isCO20 ? "/expressco/view_cart.jsp" : "/view_cart.jsp"}"><div class="vahidden">cart</div></a><a class="checkout" href="${isCO20 ? "/expressco/view_cart.jsp" : "/checkout/view_cart.jsp"}"><div class="vahidden">checkout</div></a>
 	      			</div>
 	      			<div class="summary">
 	        			<span class="nritems"><em><%= cart.getItemCount() %></em> <% if (cart.getItemCount()>1) {%>items<%} else {%>item<%}%></span><span class="totalprice"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span>
 	      			</div>
 	    		</div>
 	    		<div id="popupcart">
-	    			<div class="modifynote"><div class="modifynote-content">You are changing a placed order. <a href="/view_cart.jsp?trk=sidcrt">Click for details.</a></div></div>
+	    			<div class="modifynote"><div class="modifynote-content">You are changing a placed order. <a href="${isCO20 ? "/expressco/view_cart.jsp" : "/view_cart.jsp"}">Click for details.</a></div></div>
 	    			<div class="header"><span class="quantity">QTY</span><span class="item">ITEM</span><span class="price">PRICE</span></div>
 	    			<div class="body">
 	    				<table class="content"></table>
@@ -98,8 +99,8 @@ if(user != null) {
 	    			</div>
 					<div class="footer"><span class="subtotal">SUBTOTAL: </span><span class="totalprice"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span></div>
 	      				<span class="close"></span>
-	      				<a class="cart" href="/view_cart.jsp"><div class="vahidden">view cart</div></a>
-	      				<a class="checkout" href="/checkout/view_cart.jsp"><div class="vahidden">checkout</div></a>
+	      				<a class="cart" href="${isCO20 ? "/expressco/view_cart.jsp" : "/view_cart.jsp"}"><div class="vahidden">view cart</div></a>
+	      				<a class="checkout" href="${isCO20 ? "/expressco/view_cart.jsp" : "/checkout/view_cart.jsp"}"><div class="vahidden">checkout</div></a>
 	    			</div>
 	    	</fd:GetCart>
 

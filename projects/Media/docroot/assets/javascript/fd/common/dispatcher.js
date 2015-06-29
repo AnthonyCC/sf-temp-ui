@@ -4,15 +4,13 @@ var FreshDirect = FreshDirect || {};
 (function (fd) {
   "use strict";
 
-  var $ = fd.libs.$;
-
   var bus = new Bacon.Bus();
 
   var signal = function(to,body){
     try {
       bus.push({
-        to:to,
-        body:body
+        to: to,
+        body: body
       });
     } catch (e) {
       if (console && console.error) {

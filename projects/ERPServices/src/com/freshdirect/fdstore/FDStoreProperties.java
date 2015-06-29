@@ -1,17 +1,7 @@
 package com.freshdirect.fdstore;
 
-import com.freshdirect.framework.util.ConfigHelper;
-import com.freshdirect.framework.util.DateRange;
-import com.freshdirect.framework.util.DateUtil;
-import com.freshdirect.framework.util.log.LoggerFactory;
-
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Category;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,6 +19,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.framework.util.ConfigHelper;
@@ -492,6 +483,9 @@ public class FDStoreProperties {
 	//[APPDEV-1846] Pop up for DP copy update
 	private static final String PROP_TWO_MONTH_TRIAL_PASS_SKU = "fdstore.twomonth.trialdp.sku";
 	private static final String PROP_TWO_MONTH_TRIAL_PASS_PRICE = "fdstore.twomonth.trialdp.price";
+	private static final String PROP_ONE_YEAR_DELIVERY_PASS_SKU = "fdstore.oneyear.dp.sku";
+	private static final String PROP_SIX_MONTH_DELIVERY_PASS_SKU = "fdstore.sixmonth.dp.sku";
+	private static final String PROP_ONE_MONTH_DELIVERY_PASS_SKU = "fdstore.onemonth.dp.sku";
 	
 	// APPDEV-1850 build versioning of JavaScript/CSS files
     private static final String BUILDVER_ENABLE = "fdstore.buildver.enable";
@@ -733,7 +727,7 @@ public class FDStoreProperties {
 	
 	private static final String PROMO_OLDCOLUMN_MAX_LIMIT = "fdstore.promopublish.oldValuecolumn.maxsize";
 	private static final String PROMO_NEWCOLUMN_MAX_LIMIT = "fdstore.promopublish.newValuecolumn.maxsize";
-	
+
 	private static final String CATEGORY_TOP_ITEM_CACHE_SIZE = "fdstore.category.top.item.cache.size";
 	private static final String CATEGORY_TOP_ITEM_CACHE_MAXIMAL_SIZE = "fdstore.category.top.item.cache.maximal.size";
 
@@ -1218,6 +1212,9 @@ public class FDStoreProperties {
                 
         defaults.put(PROP_TWO_MONTH_TRIAL_PASS_SKU, "MKT0072335");
         defaults.put(PROP_TWO_MONTH_TRIAL_PASS_PRICE, "$59.00");
+        defaults.put(PROP_ONE_YEAR_DELIVERY_PASS_SKU, "mkt_dpass_auto14mo");
+        defaults.put(PROP_SIX_MONTH_DELIVERY_PASS_SKU, "mkt_dpss_6m_autrnwl");
+        defaults.put(PROP_ONE_MONTH_DELIVERY_PASS_SKU, "mkt_dpss_onemonth");
 
         defaults.put(BUILDVER_ENABLE, "true");
 
@@ -1451,7 +1448,10 @@ public class FDStoreProperties {
         
         defaults.put(CATEGORY_TOP_ITEM_CACHE_SIZE, "5");
         defaults.put(CATEGORY_TOP_ITEM_CACHE_MAXIMAL_SIZE, "10");
-	
+
+        defaults.put("feature.rollout.checkout1_0", "GLOBAL:ENABLED,true;");
+        defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,true;");
+		
 		refresh();
     }
 
@@ -2943,6 +2943,18 @@ public class FDStoreProperties {
 
     public static String getTwoMonthTrailDPrice() {
         return get(PROP_TWO_MONTH_TRIAL_PASS_PRICE);
+    }
+
+    public static String getOneYearDPSku() {
+    	return get(PROP_ONE_YEAR_DELIVERY_PASS_SKU);
+    }
+
+    public static String getSixMonthDPSku() {
+    	return get(PROP_SIX_MONTH_DELIVERY_PASS_SKU);
+    }
+
+    public static String getOneMonthDPSku() {
+    	return get(PROP_ONE_MONTH_DELIVERY_PASS_SKU);
     }
 
     public static boolean isPaymentMethodVerificationEnabled() {

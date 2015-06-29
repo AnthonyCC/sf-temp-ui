@@ -31,8 +31,8 @@ public class DlvManagerDAOTestCase extends DbTestCaseSupport {
 		this.setUpDataSet("DlvBeerAddressInit.xml");
 
 		// execute
-		boolean isDeliverable900 = DlvManagerDAO.isAlcoholDeliverable(conn, "900 MAIN ST", "10044");
-		boolean isDeliverable510 = DlvManagerDAO.isAlcoholDeliverable(conn, "510 MAIN ST", "10044");
+		boolean isDeliverable900 = DlvManagerDAO.isAlcoholDeliverable(conn, "900 MAIN ST", "10044", "10");
+		boolean isDeliverable510 = DlvManagerDAO.isAlcoholDeliverable(conn, "510 MAIN ST", "10044", "10");
 		
 		AddressModel address = new AddressModel();
 		AddressInfo info = new AddressInfo();
@@ -46,6 +46,7 @@ public class DlvManagerDAOTestCase extends DbTestCaseSupport {
 		info = new AddressInfo();
 		info.setScrubbedStreet("GREENWICH ST");
 		address.setAddressInfo(info);
+		address.setApartment("10");
 		address.setZipCode("10013");
 		EnumRestrictedAddressReason commercialReason = DlvManagerDAO.isAddressRestricted(conn, address);
 		

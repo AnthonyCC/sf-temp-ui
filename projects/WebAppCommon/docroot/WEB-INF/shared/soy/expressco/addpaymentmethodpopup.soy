@@ -1,0 +1,297 @@
+{namespace expressco}
+
+/**
+ * @param data popup data
+ */
+{template .addpaymentmethodpopup autoescape="false"}
+  <div class="formcontainer" data-show="{if not $data.paymentMethodType or $data.paymentMethodType == 'CC'}addpaymentmethod_creditcard{/if}{if $data.paymentMethodType == 'EC'}addpaymentmethod_bank{/if}{if $data.paymentMethodType == 'ET'}addpaymentmethod_ebt{/if}">
+    {if not $data.id}
+    <div class="formselector">
+      <label><input type="radio" name="showform" value="addpaymentmethod_creditcard" {if not $data.paymentMethodType or $data.paymentMethodType == 'CC'}checked{/if} />Credit Card</label>
+      {if not $data.metadata or $data.metadata.enableECheck}<label><input type="radio" name="showform" value="addpaymentmethod_bank" {if $data.paymentMethodType == 'EC'}checked{/if}/>Bank</label>{/if}
+      {if not $data.metadata or $data.metadata.enableEbtCheck}<label><input type="radio" name="showform" value="addpaymentmethod_ebt" {if $data.paymentMethodType == 'ET'}checked{/if}/>EBT</label>{/if}
+    </div>
+    {/if}
+    {call .methodcreditcard data="all" /}
+    {call .methodbank data="all" /}
+    {call .methodebt data="all" /}
+  </div>
+{/template}
+
+/**
+ * @param data popup data
+ */
+{template .methodcreditcard autoescape="false"}
+<form id="addpaymentmethod_creditcard" fdform="CC" action="#" novalidate fdform-endpoint-submit="/api/expresscheckout/payment" fdform-endpoint-validator="/api/expresscheckout/addpayment/validate" fdform-disable-resubmit="true">
+  {if not $data.id}
+    <input type="hidden" name="action" value="addPaymentMethod" />
+  {else}
+    <input type="hidden" name="action" value="editPaymentMethod" />
+    <input type="hidden" name="id" value="{$data.id}" />
+  {/if}
+  <input type="hidden" name="paymentMethodType" value="CC" />
+  <div fdform-error-container></div>
+  /* credit card form */
+  <p class='title__strong'>Name on Card</p>
+  <div>
+    <input name="cardHolderName" placeholder='Name exactly as it appears on card'
+      value="{if $data.cardHolderName}{$data.cardHolderName}{/if}" fdform-fieldname="Name on Card" required/>
+  </div>
+  <p class='title__strong'>Card Information</p>
+  <div>
+    <select name="cardBrand" required>
+      <option value="">Type of Card</option>
+      {if $data.metadata and $data.metadata.cardType}
+       {foreach $cardType in $data.metadata.cardType}
+        <option value="{$cardType.key}"
+         {if ($data.cardBrand and $cardType.key == $data.cardBrand) or (not $data.cardBrand and $cardType.selected)}selected{/if}>{$cardType.value}</option>
+       {/foreach}
+      {/if}
+    </select>
+  </div>
+  <div>
+    <input name="cardNum" placeholder='Card Number'
+      value="{if $data.cardNum}{$data.cardNum}{/if}" required {if $data.id}disabled{/if}/>
+  </div>
+  <div>
+    <span>Expires</span>
+    <select name="cardMonth" required>
+      <option value="">--</option>
+      {if $data.metadata and $data.metadata.expireMonth}
+       {foreach $expireMonth in $data.metadata.expireMonth}
+        <option value="{$expireMonth.key}"
+         {if ($data.cardMonth and $expireMonth.key == $data.cardMonth) or (not $data.cardMonth and $expireMonth.selected)}selected{/if}>{$expireMonth.value}</option>
+       {/foreach}
+      {/if}
+    </select>
+    <select name="cardYear" required>
+      <option value="">--</option>
+      {if $data.metadata and $data.metadata.expireYear}
+       {foreach $expireYear in $data.metadata.expireYear}
+        <option value="{$expireYear.key}"
+         {if ($data.cardYear and $expireYear.key == $data.cardYear) or (not $data.cardYear and $expireYear.selected)}selected{/if}>{$expireYear.value}</option>
+       {/foreach}
+      {/if}
+    </select>
+  </div>
+  <p class='title__strong'>Billing Address</p>
+  <div>
+    <select name="bil_country" required>
+      <option value="">--</option>
+      {if $data.metadata and $data.metadata.country}
+       {foreach $country in $data.metadata.country}
+        <option value="{$country.key}"
+         {if ($data.country and $country.key == $data.country) or (not $data.country and $country.selected)}selected{/if}>{$country.value}</option>
+       {/foreach}
+      {/if}
+    </select>
+  </div>
+  <div>
+    <input name="bil_address1" placeholder="Street Address"
+      value="{if $data.bil_address1}{$data.bil_address1}{/if}" required/>
+    <input name="bil_apartment" placeholder="Apt." value="{if $data.bil_apartment}{$data.bil_apartment}{/if}" />
+  </div>
+  <div>
+    <input name="bil_address2" placeholder="Address Line 2"
+      value="{if $data.bil_address2}{$data.bil_address2}{/if}"/>
+  </div>
+  <div>
+    <input name="bil_city" placeholder="City" value="{if $data.bil_city}{$data.bil_city}{/if}" required/>
+    <select name="bil_state" required>
+      <option value="">--</option>
+      {if $data.metadata and $data.metadata.state}
+       {foreach $state in $data.metadata.state}
+        <option value="{$state.key}"
+         {if ($data.state and $state.key == $data.state) or (not $data.state and $state.selected)}selected{/if}>{$state.value}</option>
+       {/foreach}
+      {/if}
+    </select>
+  </div>
+  <div>
+    <input name="bil_zipcode" placeholder="ZIP Code" fdform-v-zipcode value="{if $data.bil_zipcode}{$data.bil_zipcode}{/if}" required/>
+  </div>
+  <p class="title__bestno">Best # for billing inquiries</p>
+  <div>
+    <input name="phone" placeholder="(xxx) xxx xxxx" fdform-formatter="phone"
+      value="{if $data.phone}{$data.phone}{/if}" required />
+  </div>
+  <div class="buttons">
+    <button class="cssbutton khaki close" fdform-button="cancel">Cancel</button>
+    <button class="cssbutton green" type="submit">Save</button>
+  </div>
+</form>
+{/template}
+
+/**
+ * @param data popup data
+ */
+{template .methodbank autoescape="false"}
+<form id="addpaymentmethod_bank" fdform="EC" action="#" novalidate fdform-endpoint-submit="/api/expresscheckout/payment" fdform-endpoint-validator="/api/expresscheckout/addpayment/validate" fdform-disable-resubmit="true">
+  {if not $data.id}
+    <input type="hidden" name="action" value="addPaymentMethod" />
+  {else}
+    <input type="hidden" name="action" value="editPaymentMethod" />
+    <input type="hidden" name="id" value="{$data.id}" />
+  {/if}
+  <input type="hidden" name="paymentMethodType" value="EC" />
+  <input type="hidden" name="cardBrand" value="ECP"/>
+  <div fdform-error-container></div>
+  <h1>Add Bank Account</h1>
+  <p class='learn-more'>Learn More:
+    &nbsp;<a href='/pay_by_check.jsp' data-ifrpopup='/pay_by_check.jsp' data-ifrpopup-width='585' data-ifrpopup-height='400'>How it works</a>
+    &nbsp;<a href='/help/faq_index.jsp?show=security' data-ifrpopup='/help/faq_index.jsp?show=security' data-ifrpopup-width='585' data-ifrpopup-height='400'>Security Policies</a></p>
+  <div class='account_details'>
+    <h2>Account Details</h2>
+    <div class='account_type'>
+      <label><input type="radio" name="bankAccountType" value="C" {if not $data.bankAccountType or $data.bankAccountType == 'C'}checked{/if} />Checking</label>
+      <label><input type="radio" name="bankAccountType" value="S" {if $data.bankAccountType == 'S'}checked{/if}/>Savings</label>
+    </div>
+    <div>
+      <input name="cardHolderName" placeholder='Name on Account'
+        value="{if $data.cardHolderName}{$data.cardHolderName}{/if}" fdform-fieldname="Name on Account" required/>
+    </div>
+    <div>
+      <input name="bankName" placeholder='Bank Name'
+        value="{if $data.bankName}{$data.bankName}{/if}" fdform-fieldname="Bank Name" required/>
+    </div>
+    <div>
+      <input name="cardNum" placeholder='Account Number'
+        value="{if $data.cardNum}{$data.cardNum}{/if}" fdform-fieldname="Account Number" required {if $data.id}disabled{/if}/>
+    </div>
+    <div>
+      <input name="cardNumVerify" placeholder='Enter Account Number Again'
+        value="{if $data.cardNumVerify}{$data.cardNumVerify}{/if}" fdform-fieldname="Account Number Again" required/>
+    </div>
+    <div>
+      <input name="abaRouteNumber" placeholder='Routing Number'
+        value="{if $data.abaRouteNumber}{$data.abaRouteNumber}{/if}" fdform-fieldname="Routing Number" required/>
+    </div>
+    <div class='account-helper'>
+      Find your account information on your checks:
+    </div>
+  </div>
+  <div class='account_address'>
+    <h2>Account Address</h2>
+    <div>
+      <select name="bil_country" required>
+        <option value="">--</option>
+        {if $data.metadata and $data.metadata.country}
+         {foreach $country in $data.metadata.country}
+          <option value="{$country.key}"
+           {if ($data.country and $country.key == $data.country) or (not $data.country and $country.selected)}selected{/if}>{$country.value}</option>
+         {/foreach}
+        {/if}
+      </select>
+    </div>
+    <div>
+      <input name="bil_address1" placeholder="Street Address"
+        value="{if $data.bil_address1}{$data.bil_address1}{/if}" required/>
+      <input name="bil_apartment" placeholder="Apt." value="{if $data.bil_apartment}{$data.bil_apartment}{/if}" />
+    </div>
+    <div>
+      <input name="bil_address2" placeholder="Address Line 2"
+        value="{if $data.bil_address2}{$data.bil_address2}{/if}"/>
+    </div>
+    <div>
+      <input name="bil_city" placeholder="City" value="{if $data.bil_city}{$data.bil_city}{/if}" required/>
+      <select name="bil_state" required>
+        <option value="">--</option>
+        {if $data.metadata and $data.metadata.state}
+         {foreach $state in $data.metadata.state}
+          <option value="{$state.key}"
+           {if ($data.state and $state.key == $data.state) or (not $data.state and $state.selected)}selected{/if}>{$state.value}</option>
+         {/foreach}
+        {/if}
+      </select>
+    </div>
+    <div>
+      <input name="bil_zipcode" placeholder="ZIP Code" fdform-v-zipcode value="{if $data.bil_zipcode}{$data.bil_zipcode}{/if}" required/>
+    </div>
+    <p class="title__bestno">Best # for billing inquiries</p>
+    <div>
+      <input name="phone" placeholder="(xxx) xxx xxxx" fdform-formatter="phone"
+        value="{if $data.phone}{$data.phone}{/if}" required />
+    </div>
+    <div class='agreement'>
+      <label><input type="checkbox" name="terms" required />
+      I have read and agree to the <a href='/registration/checkacct_terms.jsp' data-ifrpopup='/registration/checkacct_terms.jsp' data-ifrpopup-width='585' data-ifrpopup-height='400'>Customer Agreement (print)</a></label>
+    </div>
+  </div>
+  <div class="buttons">
+    <button class="cssbutton khaki close" fdform-button="cancel">Cancel</button>
+    <button class="cssbutton green" type="submit">Save</button>
+  </div>
+</form>
+{/template}
+
+/**
+ * @param data popup data
+ */
+{template .methodebt autoescape="false"}
+<form id="addpaymentmethod_ebt" fdform="ET" action="#" novalidate fdform-endpoint-submit="/api/expresscheckout/payment" fdform-endpoint-validator="/api/expresscheckout/addpayment/validate" fdform-disable-resubmit="true">
+  {if not $data.id}
+    <input type="hidden" name="action" value="addPaymentMethod" />
+  {else}
+    <input type="hidden" name="action" value="editPaymentMethod" />
+    <input type="hidden" name="id" value="{$data.id}" />
+  {/if}
+  <input type="hidden" name="paymentMethodType" value="ET" />
+  <input type="hidden" name="cardBrand" value="EBT"/>
+  <div fdform-error-container></div>
+  <p class='title__strong'>Name on Card</p>
+  <div>
+    <input name="cardHolderName" placeholder='Name exactly as it appears on card'
+      value="{if $data.cardHolderName}{$data.cardHolderName}{/if}" fdform-fieldname="Name on Card" required/>
+  </div>
+  <p class='title__strong'>Card Information</p>
+  <div>
+    <input name="cardNum" placeholder='Card Number'
+      value="{if $data.cardNum}{$data.cardNum}{/if}" required {if $data.id}disabled{/if}/>
+  </div>
+  <p class='title__strong'>Billing Address</p>
+  <div>
+    <select name="bil_country" required>
+      <option value="">--</option>
+      {if $data.metadata and $data.metadata.country}
+       {foreach $country in $data.metadata.country}
+        <option value="{$country.key}"
+         {if ($data.country and $country.key == $data.country) or (not $data.country and $country.selected)}selected{/if}>{$country.value}</option>
+       {/foreach}
+      {/if}
+    </select>
+  </div>
+  <div>
+    <input name="bil_address1" placeholder="Street Address"
+      value="{if $data.bil_address1}{$data.bil_address1}{/if}" required/>
+    <input name="bil_apartment" placeholder="Apt." value="{if $data.bil_apartment}{$data.bil_apartment}{/if}" />
+  </div>
+  <div>
+    <input name="bil_address2" placeholder="Address Line 2"
+      value="{if $data.bil_address2}{$data.bil_address2}{/if}"/>
+  </div>
+  <div>
+    <input name="bil_city" placeholder="City" value="{if $data.bil_city}{$data.bil_city}{/if}" required/>
+    <select name="bil_state" required>
+      <option value="">--</option>
+      {if $data.metadata and $data.metadata.state}
+       {foreach $state in $data.metadata.state}
+        <option value="{$state.key}"
+         {if ($data.state and $state.key == $data.state) or (not $data.state and $state.selected)}selected{/if}>{$state.value}</option>
+       {/foreach}
+      {/if}
+    </select>
+  </div>
+  <div>
+    <input name="bil_zipcode" placeholder="ZIP Code" fdform-v-zipcode value="{if $data.bil_zipcode}{$data.bil_zipcode}{/if}" required/>
+  </div>
+  <p class="title__bestno">Best # for billing inquiries</p>
+  <div>
+    <input name="phone" placeholder="(xxx) xxx xxxx" fdform-formatter="phone"
+      value="{if $data.phone}{$data.phone}{/if}" required />
+  </div>
+  <div class="buttons">
+    <button class="cssbutton khaki close" fdform-button="cancel">Cancel</button>
+    <button class="cssbutton green" type="submit">Save</button>
+  </div>
+</form>
+{/template}

@@ -542,7 +542,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 					try {
 						LOGGER.debug("  about to call calidate Order min");
 						cart.refreshAll(true);
-						UserValidationUtil.validateCartNotEmpty(request, result);
+						UserValidationUtil.validateCartNotEmpty(user, result);
 					} catch (FDResourceException ex) {
 						throw new JspException(ex);
 					} catch (FDException e) {
@@ -632,29 +632,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			}
 		} else {
 			// Handle delivery pass (if any) in the cart.
-			cart.handleDeliveryPass();
-	
-			if (user.getSelectedServiceType() == EnumServiceType.HOME) {
-				/*
-				 * If home address perform delivery pass status check on the user
-				 * object. Otherwise delivery pass doesn't apply.
-				 */
-				try {
-					user.performDlvPassStatusCheck();
-				} catch (FDResourceException ex) {
-					LOGGER.warn("FDResourceException during user.performDlvPassStatusCheck()",ex);
-					throw new JspException(ex);
-				}
-			} else {
-				// If corporate or pickup do not apply the pass.
-				// If corporate or pickup do not apply the pass.
-				if (cart.isDlvPassApplied()) { // This if condition was added for
-					// Bug fix MNT-12
-					// If corporate or pickup do not apply the pass.
-					cart.setDlvPassApplied(false);
-					cart.setChargeWaived(EnumChargeType.DELIVERY, false, DlvPassConstants.PROMO_CODE);
-				}
-			}
+			handleDeliveryPass(user, cart);
 	
 			if (affectedLines > 0) {
 				// once we change the cart in a normal flow we no longer pop up the overlay
@@ -681,7 +659,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			}
 	
 			// Check for expired or cancelled passes if already used.
-			checkForExpOrCanPasses(user);
+			checkForExpOrCanPasses(user, result);
 	
 			
 			//
@@ -713,16 +691,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 				}
 			}
 	
-			if (this.cleanupCart) {
-				try {
-					this.doCartCleanup();
-				} catch (FDResourceException ex) {
-					LOGGER.warn("FDResourceException during cleanup", ex);
-					throw new JspException(ex);
-				}
-				// !!! refactor to doEndTag
-				this.finishCartCleanup();
-			}
+			cartCleanUp(cleanupCart, cart, session, user);
 			pageContext.setAttribute("cartCleanupRemovedSomeStuff", Boolean.valueOf(!(this.removeIds == null || this.removeIds.size() == 0)));
 		}
 		//
@@ -733,11 +702,55 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		
 		//Evaluate Coupons.
 //		if(null!=request.getAttribute(SessionName.PARAM_EVALUATE_COUPONS) && true==(Boolean)request.getAttribute(SessionName.PARAM_EVALUATE_COUPONS)){
+		requiredCouponEvaluation(session, user, filterCoupons);
+
+		return EVAL_BODY_BUFFERED;
+	}
+
+	public static void requiredCouponEvaluation(HttpSession session, FDUserI user, boolean filterCoupons) {
 		if(user.isCouponEvaluationRequired()){
 			FDCustomerCouponUtil.evaluateCartAndCoupons(session,filterCoupons);
 		}
+	}
 
-		return EVAL_BODY_BUFFERED;
+	public static boolean cartCleanUp(boolean cleanupCart, FDCartModel cart, HttpSession session,FDUserI user) throws JspException {
+		boolean cartChanged = false;
+		if (cleanupCart) {
+			List<Integer> removeIds = Collections.emptyList();
+			try {
+				removeIds = doCartCleanup(cart);
+			} catch (FDResourceException ex) {
+				LOGGER.warn("FDResourceException during cleanup", ex);
+				throw new JspException(ex);
+			}
+			// !!! refactor to doEndTag
+			cartChanged = finishCartCleanup(removeIds, cart, session, user);
+		}
+		return cartChanged;
+	}
+
+	public static void handleDeliveryPass(FDUserI user, FDCartModel cart) throws JspException {
+		cart.handleDeliveryPass();
+		if (user.getSelectedServiceType() == EnumServiceType.HOME) {
+			/*
+			 * If home address perform delivery pass status check on the user
+			 * object. Otherwise delivery pass doesn't apply.
+			 */
+			try {
+				user.performDlvPassStatusCheck();
+			} catch (FDResourceException ex) {
+				LOGGER.warn("FDResourceException during user.performDlvPassStatusCheck()",ex);
+				throw new JspException(ex);
+			}
+		} else {
+			// If corporate or pickup do not apply the pass.
+			if (cart.isDlvPassApplied()) { // This if condition was added for
+				// Bug fix MNT-12
+				// If corporate or pickup do not apply the pass.
+				cart.setDlvPassApplied(false);
+				cart.setChargeWaived(EnumChargeType.DELIVERY, false, DlvPassConstants.PROMO_CODE);
+			}
+		}
 	}
 
 	@Override
@@ -746,7 +759,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		return super.doEndTag();
 	}
 	
-	private void checkForExpOrCanPasses(FDSessionUser user) {
+	public static void checkForExpOrCanPasses(FDUserI user, ActionResult result) {
 		/*
 		 * if(user.getDlvPassInfo() != null &&
 		 * user.getDlvPassInfo().isUnlimited() && user.isDlvPassExpired() &&
@@ -784,11 +797,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		}
 	}
 
-	protected void doCartCleanup() throws FDResourceException {
-		HttpSession session = this.pageContext.getSession();
-		FDUserI user = (FDUserI) session.getAttribute(USER);
-		FDCartModel cart = user.getShoppingCart();
-
+	protected static List<Integer> doCartCleanup(FDCartModel cart) throws FDResourceException {
+		List<Integer> result = new ArrayList<Integer>();
 		for (int i = 0; i < cart.numberOfOrderLines(); i++) {
 			FDCartLineI cartLine = cart.getOrderLine(i);
 			if (cartLine instanceof FDModifyCartLineI) {
@@ -805,13 +815,10 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			}
 
 			if (!isAvail) {
-				if (this.removeIds == null) {
-					this.removeIds = new ArrayList<Integer>();
-				}
-				this.removeIds.add(new Integer(cartLine.getRandomId()));
+				result.add(new Integer(cartLine.getRandomId()));
 			}
-
 		}
+		return result;
 	}
 
 	/**
@@ -883,22 +890,17 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		return selection;
 	}
 
-	protected void finishCartCleanup() {
-		if (this.removeIds == null || this.removeIds.size() == 0) {
-			// nothing to be removed
-			return;
+	protected static boolean finishCartCleanup(List<Integer> removeIds, FDCartModel cart, HttpSession session, FDUserI user) {
+		boolean result = false;
+		if (removeIds != null && !removeIds.isEmpty()) {
+			result = true;
+			for (Iterator<Integer> i = removeIds.iterator(); i.hasNext();) {
+				int rid = i.next().intValue();
+				cart.removeOrderLineById(rid);
+			}
+			session.setAttribute(USER, user);
 		}
-
-		HttpSession session = this.pageContext.getSession();
-		FDUserI user = (FDUserI) session.getAttribute(USER);
-		FDCartModel cart = user.getShoppingCart();
-
-		for (Iterator<Integer> i = this.removeIds.iterator(); i.hasNext();) {
-			int rid = i.next().intValue();
-			cart.removeOrderLineById(rid);
-		}
-
-		session.setAttribute(USER, user);
+		return result;
 	}
 
 	/**

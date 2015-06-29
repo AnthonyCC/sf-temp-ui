@@ -75,12 +75,16 @@ public class UserUtil {
 		session.setAttribute(SessionName.USER, sessionUser);
 	}
 	
-	public static String getCustomerServiceContact(HttpServletRequest request) {
-		FDUserI user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
-		if (user==null) {
+	public static String getCustomerServiceContact(FDUserI user) {
+		if (user == null) {
 			return SystemMessageList.CUSTOMER_SERVICE_CONTACT;
 		}
 		return user.getCustomerServiceContact();
+	}
+
+	public static String getCustomerServiceContact(HttpServletRequest request) {
+		FDUserI user = (FDUserI) request.getSession().getAttribute(SessionName.USER);
+		return getCustomerServiceContact(user);
 	}
 	
 	public static void initializeGiftCart(FDUserI user){

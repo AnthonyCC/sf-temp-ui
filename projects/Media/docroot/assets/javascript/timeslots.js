@@ -1,4 +1,6 @@
-function fdTSDisplay(refIdArg) {
+var FreshDirect = FreshDirect || {};
+
+FreshDirect.fdTSDisplay = function(refIdArg) {
 	//check for required data
 	if (!window.refData && !window.refAdvData) {
 		return {}; //no data, no display
@@ -2254,7 +2256,7 @@ function fdTSDisplay(refIdArg) {
 	
 	return this;
 }
-
+window.fdTSDisplay = FreshDirect.fdTSDisplay;
 //row object
 	function Row(idArg) {
 		this.id = idArg || '';

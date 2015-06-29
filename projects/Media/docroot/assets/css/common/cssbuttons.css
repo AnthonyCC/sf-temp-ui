@@ -27,11 +27,13 @@ button.cssbutton[data-component] {
 	-moz-osx-font-smoothing: grayscale;		
 }
 
-.cssbutton[class^="icon-"]:before,
-.cssbutton[class*=" icon-"]:before,
-.cssbutton[class^="icon-"]:after,
-.cssbutton[class*=" icon-"]:after {
-  vertical-align: bottom;
+a.cssbutton[class^="icon-"],
+a.cssbutton[class*=" icon-"],
+button.cssbutton[class^="icon-"],
+button.cssbutton[class*=" icon-"],
+.cssbutton[class^="icon-"],
+.cssbutton[class*=" icon-"] {
+	padding-bottom:8px;
 }
 
 a.cssbutton:focus,
@@ -215,8 +217,19 @@ button.cssbutton[data-component="addToListButton"] {
   color: #8a588a;
 }
 
+
+.cssbutton.round {
+  border-radius: 50%;
+}
+
 .cssbutton.green.transparent {
   color: #669933;
+  font-weight: normal;
+  text-shadow: none;
+}
+
+.cssbutton.red.transparent {
+  color: #c94747;
   font-weight: normal;
   text-shadow: none;
 }

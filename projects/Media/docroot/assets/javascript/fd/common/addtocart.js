@@ -38,6 +38,10 @@ var FreshDirect = FreshDirect || {};
       request.eventSource = eventSource;
     }
 
+    if (event.ignoreRedirect) {
+      request.ignoreRedirect = true;
+    }
+
     $('[data-component="ATCButton"]').addClass('ATCinProgress');
     
     //Close the popup after added product to the cart with delay on mobile
@@ -128,17 +132,18 @@ var FreshDirect = FreshDirect || {};
 	}).filter(function(event){
 		return event.items.length > 0;
 	}).onValue(function(event){
-		triggerATC(event.items,{},event.target,event.eventSource);
+		triggerATC(event.items,{},event.target,event.eventSource,event.ignoreRedirect);
 	});
 
 	
-	function triggerATC(items,meta,triggerElement,eventSource){
+	function triggerATC(items,meta,triggerElement,eventSource,ignoreRedirect){
 		$(triggerElement || document.body).trigger({
 			type:'addToCart',
 			atcList:items,
 			ATCMeta:(meta || {}),
 			valid:true,
-			cmData:eventSource ? {eventSource: eventSource} : {}
+			cmData:eventSource ? {eventSource: eventSource} : {},
+      ignoreRedirect: !!ignoreRedirect
 		});		
 	}
 	
@@ -169,6 +174,13 @@ var FreshDirect = FreshDirect || {};
       }
       
       e.currentTarget.setAttribute('data-amount', amount);
+    }
+
+    var ignoreRedirect = e.currentTarget && e.currentTarget.getAttribute('data-ignoreredirect');
+    ignoreRedirect = ignoreRedirect && ignoreRedirect === 'true';
+
+    if(ignoreRedirect){
+      e.ignoreRedirect = true;
     }
 
 		ATC_BUS.push(e);

@@ -26,6 +26,8 @@ public class AddToCartRequestData implements Serializable {
 	private String coremetricsPageId;
 	private String coremetricsVirtualCategory;
 	
+	private boolean ignoreRedirect;
+	
 	public List<AddToCartItem> getItems() {
 		return items;
 	}	
@@ -85,5 +87,11 @@ public class AddToCartRequestData implements Serializable {
 	}
 	public void setCoremetricsVirtualCategory(String coremetricsVirtualCategory) {
 		this.coremetricsVirtualCategory = coremetricsVirtualCategory;
+	}
+	public boolean isIgnoreRedirect() {
+		return ignoreRedirect;
+	}
+	public void setIgnoreRedirect(boolean ignoreRedirect) {
+		this.ignoreRedirect = ignoreRedirect;
 	}
 }

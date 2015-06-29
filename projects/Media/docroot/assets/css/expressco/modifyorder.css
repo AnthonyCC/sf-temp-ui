@@ -1,0 +1,32 @@
+.modifyorder{
+  outline:2px solid #6699cc;
+  padding:30px;
+  clear:both;
+  margin-top:30px;
+  position:relative;
+}
+
+.modifyorder-title{
+  font-size:18px;
+  font-weight:bold;
+  color:#000;
+  margin:0.2em 0;
+}
+
+.modifyorder-list{
+  list-style-type:disc;
+  font-size:14px;
+  color:#333;
+  margin:0;
+}
+
+.modifyorder-cancelbutton{
+  font-size:18px;
+  font-weight:bold;
+  float:right;
+  position:absolute;
+  top:40px;
+  right:30px;
+  width:217px;
+  height:46px;
+}

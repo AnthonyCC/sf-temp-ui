@@ -114,6 +114,7 @@ public interface SystemMessageList {
 	public final static String MSG_AUTH_FAILED			= "Payment Authorization Failed.";
 	
 	// redemption promo messages
+	public final static String MSG_EMPTY_USER_INPUT_AT_PROMOTION_CODE = "Promotion Code is required";
 	public final static String MSG_INVALID_CODE = "We''re sorry, the code you entered ({0}) is not valid.";//"Sorry, this promotion code ({0}) is not valid.";
 	public final static String MSG_REDEMPTION_MIN_NOT_MET = "PLEASE NOTE: offer will be applied when cart subtotal is {0,number,$0.00} or more.";
 	public final static String MSG_REDEMPTION_ALREADY_USED = "The promotion code you entered has been applied to a previous order placed with this account.";

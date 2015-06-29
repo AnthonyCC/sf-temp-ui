@@ -1369,11 +1369,11 @@ public class DlvManagerSessionBean extends GatewaySessionBeanSupport {
 
 	}
 
-	public boolean checkForAlcoholDelivery(String scrubbedAddress, String zipcode) {
+	public boolean checkForAlcoholDelivery(String scrubbedAddress, String zipcode, String apartment) {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
-			return DlvManagerDAO.isAlcoholDeliverable(conn, scrubbedAddress, zipcode);
+			return DlvManagerDAO.isAlcoholDeliverable(conn, scrubbedAddress, zipcode, apartment);
 		} catch (SQLException ex) {
 			throw new EJBException(ex);
 		} finally {

@@ -18,12 +18,14 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="fd-features" prefix="features" %>
 
 <% //expanded page dimensions
 final int W_CHECKOUT_STEP_1_CHOOSE_TOTAL = 970;
 %>
 
 <fd:CheckLoginStatus id="user" guestAllowed="false" redirectPage="/checkout/signup_ckt.jsp" />
+<features:redirect featureName="checkout2_0" />
 <%
 
 // redirect to Survey if this is the second order && first order is delivered

@@ -39,6 +39,21 @@
 /**
  * @param data add all to cart confirmation data
  */
+{template .deleteconfirmpopup autoescape="true"}
+{if $data.message}
+<p>
+{$data.message}
+</p>
+{/if}
+<div class="buttons">
+  <button data-button="delete" class="cssbutton red">Delete</button>
+  <button data-button="cancel" class="cssbutton grey">Cancel</button>
+</div>
+{/template}
+
+/**
+ * @param data add all to cart confirmation data
+ */
 {template .addalltocartconfirmpopup autoescape="true"}
 {if $data.message}
 <p>

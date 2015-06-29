@@ -16,7 +16,7 @@ import com.freshdirect.framework.event.FDWebEvent;
  *
  */
 public class FDEventUtil {
-	
+
 	public static void logAddToCartEvent(FDCartLineI cartline, HttpServletRequest request) {
 		FDWebEvent event = FDEventFactory.getFDAddToCartEvent(cartline, request);
 		EventLogger.getInstance().logEvent(event);
@@ -26,27 +26,36 @@ public class FDEventUtil {
 		FDWebEvent event = FDEventFactory.getFDEditCartEvent(cartline, request);
 		EventLogger.getInstance().logEvent(event);
 	}
-	
+
+	public static void logEditCartEvent(FDCartLineI cartline, HttpServletRequest request, String requestUrl) {
+		FDWebEvent event = FDEventFactory.getFDEditCartEvent(cartline, request, requestUrl);
+		EventLogger.getInstance().logEvent(event);
+	}
+
 	public static void logRemoveCartEvent(FDCartLineI cartline, HttpServletRequest request) {
 		FDWebEvent event = FDEventFactory.getFDRemoveCartEvent(cartline, request);
 		EventLogger.getInstance().logEvent(event);
 	}
-	
-	
+
+	public static void logRemoveCartEvent(FDCartLineI cartline, HttpServletRequest request, String requestUrl) {
+		FDWebEvent event = FDEventFactory.getFDRemoveCartEvent(cartline, request, requestUrl);
+		EventLogger.getInstance().logEvent(event);
+	}
+
 	public static void logRecommendationImpression(String variantId, ContentKey contentKey) {
 		FDRecommendationEvent event = FDEventFactory.getImpressionEvent(variantId, contentKey);
 		ImpressionEventAggregator.getInstance().note(event);
 	}
-	
+
 	public static void flushImpressions() {
 		ImpressionEventAggregator.getInstance().flush();
 	}
-	
+
 	public static void logRecommendationClickThrough(String variantId, ContentKey contentKey) {
 		FDRecommendationEvent event = FDEventFactory.getClickThroughEvent(variantId, contentKey);
 		ClickThroughEventAggregator.getInstance().note(event);
 	}
-	
+
 	public static void flushClickThroughs() {
 		ClickThroughEventAggregator.getInstance().flush();
 	}

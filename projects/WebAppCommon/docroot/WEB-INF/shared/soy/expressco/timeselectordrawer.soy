@@ -1,0 +1,41 @@
+{namespace expressco}
+
+/**
+*/
+{template .timeselectorcontent autoescape="false"}
+<div class="drawer__content">
+  <div class="drawer__header">
+    <button class="cssbutton orange" data-component="timeslotchangebutton">Done</button>
+  </div>
+  <div data-component="timeselectorcontent">
+  </div>
+</div>
+{/template}
+
+/**
+ * @param? id
+ ** param? year
+ * @param? month
+ * @param? dayOfMonth
+ * @param? dayOfWeek
+ * @param? timePeriod
+ */
+{template .timeselectorpreview autoescape="false"}
+{if $id and $timePeriod}
+<div class='drawer__previewitem'>
+  {call .successtimeslot}
+    {param id: $id /}
+    {param month: $month /}
+    {param dayOfMonth: $dayOfMonth /}
+    {param dayOfWeek: $dayOfWeek /}
+    {param timePeriod: $timePeriod /}
+  {/call}
+</div>
+{else}
+<div class='drawer__previewitem'>
+  <div class="drawer__previewitem__button__section">
+    <button class="cssbutton green" data-drawer-activate="timeslot">Select a Time</button>
+  </div>
+</div>
+{/if}
+{/template}

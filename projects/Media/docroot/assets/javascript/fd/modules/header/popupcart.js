@@ -74,40 +74,46 @@ var FreshDirect = FreshDirect || {};
   };
 
   function createAjaxRequest(data){
-    return {  data:{ 
-                change:JSON.stringify({  
-                  header: createRequestHeader(), 
+    var reqType = data && 'POST' || 'GET';
+
+    return {  data:{
+                change:JSON.stringify({
+                  header: createRequestHeader(),
                   data:(data || {}) 
                 })
               },
               url: API_URL,
-              type:'POST',
+              type: reqType,
               dataType:'json'
             };
   };
 
   var collectData=function(){
-    var data={};
+    var data = {},
+        changeCount = 0;
 
     $('#popupcart tr.cartline.modified').each(function(){
       var cartlineId=$(this).attr('name'),
           value=$('select',this).val();
       if(value) {
-        data[cartlineId]={type:'csu',data:value}
+        data[cartlineId]={type:'csu',data:value};
+        changeCount++;
       } else {
         value=$('[data-component="quantitybox"]',this).quantityBox('value');
         if(value !== undefined) {
-          data[cartlineId]={type:'cqu',data:value}
+          data[cartlineId]={type:'cqu',data:value};
+          changeCount++;
         }
       }
     });
 
     $('#popupcart tr.cartline.removed').each(function(){
       var cartlineId=$(this).attr('name');
-        data[cartlineId]={type:'rmv',data:null}
+        data[cartlineId]={type:'rmv',data:null};
+        changeCount++;
     });
 
-    return data;
+    return changeCount ? data : null;
   };
 
   /* this shouldn't exist */

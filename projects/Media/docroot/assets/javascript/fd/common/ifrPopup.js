@@ -161,5 +161,27 @@ var FreshDirect = FreshDirect || {};
 
   ifrPopup.render();
   
+  $(document).on('click', '[data-ifrpopup]', function (e) {
+    var $el = $(e.currentTarget),
+        url = $el.attr('data-ifrpopup'),
+        w = $el.attr('data-ifrpopup-width'),
+        h = $el.attr('data-ifrpopup-height');
+
+    ifrPopup.open({
+      url: url,
+      width: w,
+      height: h
+    });
+
+    e.preventDefault();
+  });
+
+  // stop event propagation on fixed popup overlays
+  setTimeout(function () {
+    $('.fixedpopup').on('click', function (e) {
+      e.stopPropagation();
+    });
+  }, 10);
+
   fd.modules.common.utils.register("components", "ifrPopup", ifrPopup, fd);
 }(FreshDirect));

@@ -17,18 +17,18 @@ public class StoreModel extends ContentNodeModelImpl {
 	private List<Domain> domains;
 	private List<MyFD> myfds = new ArrayList<MyFD>();
 	private List<PageModel> pages = new ArrayList<PageModel>();
-	private List<SortOptionModel> searchPageSortOptions =  new ArrayList<SortOptionModel>();
-	private List<SortOptionModel> newProductsPageSortOptions =  new ArrayList<SortOptionModel>();	
-	private List<SortOptionModel> presidentsPicksPageSortOptions =  new ArrayList<SortOptionModel>();
-	private List<SortOptionModel> eCouponsPageSortOptions =  new ArrayList<SortOptionModel>();
+	private List<SortOptionModel> searchPageSortOptions = new ArrayList<SortOptionModel>();
+	private List<SortOptionModel> newProductsPageSortOptions = new ArrayList<SortOptionModel>();
+	private List<SortOptionModel> presidentsPicksPageSortOptions = new ArrayList<SortOptionModel>();
+	private List<SortOptionModel> eCouponsPageSortOptions = new ArrayList<SortOptionModel>();
 	private List<CategoryModel> tabletFeaturedCategories = new ArrayList<CategoryModel>();
-	private List<SearchSuggestionGroupModel> tabletSearchSuggestionGroups = new ArrayList<SearchSuggestionGroupModel>(); 
+	private List<SearchSuggestionGroupModel> tabletSearchSuggestionGroups = new ArrayList<SearchSuggestionGroupModel>();
 	private List<CategoryModel> tabletIdeasFeaturedPicksLists = new ArrayList<CategoryModel>();
 	private List<RecipeTagModel> tabletIdeasRecipeTags = new ArrayList<RecipeTagModel>();
-    private List<BannerModel> tabletHomeScreenPopUpShopBanners = new ArrayList<BannerModel>();
-    private List<BrandModel> tabletIdeasBrands = new ArrayList<BrandModel>();
-    private List<ContentNodeModel> tabletIdeasRecipes = new ArrayList<ContentNodeModel>();
-   
+	private List<BannerModel> tabletHomeScreenPopUpShopBanners = new ArrayList<BannerModel>();
+	private List<BrandModel> tabletIdeasBrands = new ArrayList<BrandModel>();
+	private List<ContentNodeModel> tabletIdeasRecipes = new ArrayList<ContentNodeModel>();
+
 	public StoreModel(com.freshdirect.cms.ContentKey cKey) {
 		super(cKey);
 	}
@@ -81,88 +81,102 @@ public class StoreModel extends ContentNodeModelImpl {
 		else
 			return null;
 	}
-	
-	public Html getEditorial(){
+
+	@Override
+	public Html getEditorial() {
 		return FDAttributeFactory.constructHtml(this, "EDITORIAL");
 	}
-	
+
 	public List<PageModel> getPages() {
 		ContentNodeModelUtil.refreshModels(this, "pages", pages, true);
-		return new ArrayList<PageModel>( pages );
+		return new ArrayList<PageModel>(pages);
 	}
 
 	public List<CategoryModel> getTabletFeaturedCategories() {
 		ContentNodeModelUtil.refreshModels(this, "tabletFeaturedCategories", tabletFeaturedCategories, false);
-		return new ArrayList<CategoryModel>( tabletFeaturedCategories );
+		return new ArrayList<CategoryModel>(tabletFeaturedCategories);
 	}
 
 	public List<SearchSuggestionGroupModel> getTabletSearchSuggestionGroups() {
 		ContentNodeModelUtil.refreshModels(this, "tabletSearchSuggestionGroups", tabletSearchSuggestionGroups, false);
-		return new ArrayList<SearchSuggestionGroupModel>( tabletSearchSuggestionGroups );
+		return new ArrayList<SearchSuggestionGroupModel>(tabletSearchSuggestionGroups);
 	}
-    public List<SortOptionModel> getSearchPageSortOptions() {
-        ContentNodeModelUtil.refreshModels(this, "searchPageSortOptions", searchPageSortOptions, false);
-        return new ArrayList<SortOptionModel>(searchPageSortOptions);
-    }
 
-    public List<SortOptionModel> getNewProductsPageSortOptions() {
-        ContentNodeModelUtil.refreshModels(this, "newProductsPageSortOptions", newProductsPageSortOptions, false);
-        return new ArrayList<SortOptionModel>(newProductsPageSortOptions);
-    }
+	public List<SortOptionModel> getSearchPageSortOptions() {
+		ContentNodeModelUtil.refreshModels(this, "searchPageSortOptions", searchPageSortOptions, false);
+		return new ArrayList<SortOptionModel>(searchPageSortOptions);
+	}
 
-    public List<SortOptionModel> getPresidentsPicksPageSortOptions() {
-        ContentNodeModelUtil.refreshModels(this, "presidentsPicksPageSortOptions", presidentsPicksPageSortOptions, false);
-        return new ArrayList<SortOptionModel>(presidentsPicksPageSortOptions);
-    }
+	public List<SortOptionModel> getNewProductsPageSortOptions() {
+		ContentNodeModelUtil.refreshModels(this, "newProductsPageSortOptions", newProductsPageSortOptions, false);
+		return new ArrayList<SortOptionModel>(newProductsPageSortOptions);
+	}
 
-    public List<SortOptionModel> getECouponsPageSortOptions() {
-        ContentNodeModelUtil.refreshModels(this, "eCouponsPageSortOptions", eCouponsPageSortOptions, false);
-        return new ArrayList<SortOptionModel>(eCouponsPageSortOptions);
-    }
-    
+	public List<SortOptionModel> getPresidentsPicksPageSortOptions() {
+		ContentNodeModelUtil.refreshModels(this, "presidentsPicksPageSortOptions", presidentsPicksPageSortOptions, false);
+		return new ArrayList<SortOptionModel>(presidentsPicksPageSortOptions);
+	}
+
+	public List<SortOptionModel> getECouponsPageSortOptions() {
+		ContentNodeModelUtil.refreshModels(this, "eCouponsPageSortOptions", eCouponsPageSortOptions, false);
+		return new ArrayList<SortOptionModel>(eCouponsPageSortOptions);
+	}
+
 	public Html getEcouponsPageTopMediaBanner() {
 		return FDAttributeFactory.constructHtml(this, "eCouponsPageTopMediaBanner");
 	}
-	
+
 	public Html getSearchPageTopMediaBanner() {
 		return FDAttributeFactory.constructHtml(this, "searchPageTopMediaBanner");
 	}
-	
+
 	public Html getNewProductsPageTopMediaBanner() {
 		return FDAttributeFactory.constructHtml(this, "newProductsPageTopMediaBanner");
 	}
-	
+
 	public Html getPresidentPicksPageTopMediaBanner() {
 		return FDAttributeFactory.constructHtml(this, "presPicksPageTopMediaBanner");
 	}
-	
+
 	public BannerModel getTabletIdeasBanner() {
 		return FDAttributeFactory.lookup(this, "tabletIdeasBanner", null);
 	}
-	
+
 	public List<CategoryModel> getTabletIdeasFeaturedPicksLists() {
 		ContentNodeModelUtil.refreshModels(this, "tabletIdeasFeaturedPicksLists", tabletIdeasFeaturedPicksLists, false);
-		return new ArrayList<CategoryModel>( tabletIdeasFeaturedPicksLists );
+		return new ArrayList<CategoryModel>(tabletIdeasFeaturedPicksLists);
 	}
-	
+
 	public List<RecipeTagModel> getTabletIdeasRecipeTags() {
 		ContentNodeModelUtil.refreshModels(this, "tabletIdeasRecipeTags", tabletIdeasRecipeTags, false);
-		return new ArrayList<RecipeTagModel>( tabletIdeasRecipeTags );
+		return new ArrayList<RecipeTagModel>(tabletIdeasRecipeTags);
 	}
-	
-    public List<BannerModel> getTabletHomeScreenPopUpShopBanners() {
-        ContentNodeModelUtil.refreshModels(this, "tabletHomeScreenPopUpShopBanners", tabletHomeScreenPopUpShopBanners, false);
-        return new ArrayList<BannerModel>(tabletHomeScreenPopUpShopBanners);
-    }
-    
+
+	public List<BannerModel> getTabletHomeScreenPopUpShopBanners() {
+		ContentNodeModelUtil.refreshModels(this, "tabletHomeScreenPopUpShopBanners", tabletHomeScreenPopUpShopBanners, false);
+		return new ArrayList<BannerModel>(tabletHomeScreenPopUpShopBanners);
+	}
+
 	public List<BrandModel> getTabletIdeasBrands() {
-        ContentNodeModelUtil.refreshModels(this, "tabletIdeasBrands", tabletIdeasBrands, false);
-        return new ArrayList<BrandModel>(tabletIdeasBrands);
+		ContentNodeModelUtil.refreshModels(this, "tabletIdeasBrands", tabletIdeasBrands, false);
+		return new ArrayList<BrandModel>(tabletIdeasBrands);
 	}
-	
+
 	/** returns list of Recipes or RecipeTags */
 	public List<ContentNodeModel> getTabletIdeasRecipes() {
-        ContentNodeModelUtil.refreshModels(this, "tabletIdeasRecipes", tabletIdeasRecipes, false);
-        return new ArrayList<ContentNodeModel>(tabletIdeasRecipes);
+		ContentNodeModelUtil.refreshModels(this, "tabletIdeasRecipes", tabletIdeasRecipes, false);
+		return new ArrayList<ContentNodeModel>(tabletIdeasRecipes);
+	}
+
+	public Html getExpressCheckoutReceiptHeader() {
+		return FDAttributeFactory.constructHtml(this, "expressCheckoutReceiptHeader");
+	}
+
+	public Html getExpressCheckoutReceiptEditorial() {
+		return FDAttributeFactory.constructHtml(this, "expressCheckoutReceiptEditorial");
+	}
+
+	public Html getExpressCheckoutTextMessageAlertHeader() {
+		return FDAttributeFactory.constructHtml(this, "expressCheckoutTextMessageAlertHeader");
 	}
 }

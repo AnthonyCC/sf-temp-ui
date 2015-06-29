@@ -101,7 +101,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 	public PrimaryKey create(Connection conn) throws SQLException {
 
 		String id = this.getNextId(conn, "CUST");
-		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTMETHOD (ID, CUSTOMER_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS2, APARTMENT,  ADDRESS1, CITY, STATE, ZIP_CODE, COUNTRY, AVS_FAILED,BYPASS_AVS_CHECK, PROFILE_ID,ACCOUNT_NUM_MASKED) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.PAYMENTMETHOD (ID, CUSTOMER_ID, NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS2, APARTMENT,  ADDRESS1, CITY, STATE, ZIP_CODE, COUNTRY, AVS_FAILED,BYPASS_AVS_CHECK, PROFILE_ID,ACCOUNT_NUM_MASKED, BEST_NUM_BILLING_INQ) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 		int index = 1;
 			ps.setString(index++, id);
 			ps.setString(index++, this.getParentPK().getId());
@@ -190,6 +190,11 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 			}else{
 				ps.setNull(index++, Types.VARCHAR);
 			}
+			if (model.getBestNumberForBillingInquiries() != null) {
+				ps.setString(index++, model.getBestNumberForBillingInquiries());
+			} else {
+				ps.setNull(index++, Types.VARCHAR);
+			}
 
 		//}
 		try {
@@ -209,7 +214,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 	}
 
 	public void load(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, CUSTOMER_ID, AVS_FAILED,BYPASS_AVS_CHECK, PROFILE_ID,ACCOUNT_NUM_MASKED FROM CUST.PAYMENTMETHOD WHERE ID = ?");
+		PreparedStatement ps = conn.prepareStatement("SELECT NAME, ACCOUNT_NUMBER, EXPIRATION_DATE, CARD_TYPE, PAYMENT_METHOD_TYPE, ABA_ROUTE_NUMBER, BANK_NAME, BANK_ACCOUNT_TYPE, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP_CODE, COUNTRY, CUSTOMER_ID, AVS_FAILED,BYPASS_AVS_CHECK, PROFILE_ID,ACCOUNT_NUM_MASKED,BEST_NUM_BILLING_INQ FROM CUST.PAYMENTMETHOD WHERE ID = ?");
 		ResultSet rs = null;
 		try {
 			ps.setString(1, this.getPK().getId());
@@ -246,7 +251,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 				model.setAccountNumLast4(rs.getString("ACCOUNT_NUM_MASKED"));
 				/*model.setProfileID("36280971");
 				model.setAccountNumLast4("7978");*/
-
+				model.setBestNumberForBillingInquiries(rs.getString("BEST_NUM_BILLING_INQ"));
 			} else {
 				throw new SQLException("No such ErpPaymentMethod PK: " + this.getPK());
 			}
@@ -266,7 +271,7 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 			return;
 		}
 
-		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.PAYMENTMETHOD SET CUSTOMER_ID = ?, NAME = ?, ACCOUNT_NUMBER = ?, EXPIRATION_DATE = ?, CARD_TYPE = ?, PAYMENT_METHOD_TYPE=?, ABA_ROUTE_NUMBER=?, BANK_NAME=?, BANK_ACCOUNT_TYPE=?, ADDRESS1 = ?, ADDRESS2 = ?, APARTMENT = ?, CITY = ?, STATE = ?, ZIP_CODE = ?, COUNTRY = ?,  AVS_FAILED=?, BYPASS_AVS_CHECK=?,ACCOUNT_NUM_MASKED=? WHERE ID=?");
+		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.PAYMENTMETHOD SET CUSTOMER_ID = ?, NAME = ?, ACCOUNT_NUMBER = ?, EXPIRATION_DATE = ?, CARD_TYPE = ?, PAYMENT_METHOD_TYPE=?, ABA_ROUTE_NUMBER=?, BANK_NAME=?, BANK_ACCOUNT_TYPE=?, ADDRESS1 = ?, ADDRESS2 = ?, APARTMENT = ?, CITY = ?, STATE = ?, ZIP_CODE = ?, COUNTRY = ?,  AVS_FAILED=?, BYPASS_AVS_CHECK=?,ACCOUNT_NUM_MASKED=?,BEST_NUM_BILLING_INQ=? WHERE ID=?");
 
 		try {
 			int index = 1;
@@ -340,6 +345,11 @@ public class ErpPaymentMethodPersistentBean extends DependentPersistentBeanSuppo
 			if(model.getMaskedAccountNumber()!=null) {
 				ps.setString(index++, model.getMaskedAccountNumber() );
 			}else{
+				ps.setNull(index++, Types.VARCHAR);
+			}
+			if (model.getBestNumberForBillingInquiries() != null) {
+				ps.setString(index++, model.getBestNumberForBillingInquiries());
+			} else {
 				ps.setNull(index++, Types.VARCHAR);
 			}
 			ps.setString(index++, this.getPK().getId());

@@ -90,11 +90,11 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		"INSERT INTO CUST.DELIVERYINFO (SALESACTION_ID, RESERVATION_ID, STARTTIME, ENDTIME, CUTOFFTIME, ZONE, DEPOTLOCATION_ID," +
 		" FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP, COUNTRY, PHONE, PHONE_EXT, DELIVERY_INSTRUCTIONS," +
 		"SCRUBBED_ADDRESS, ALT_DEST, ALT_FIRST_NAME, ALT_LAST_NAME, ALT_APARTMENT, ALT_PHONE, ALT_PHONE_EXT, DELIVERY_TYPE," +
-		"ALT_CONTACT_PHONE, ALT_CONTACT_EXT, GEOLOC, UNATTENDED_INSTR,CHARITY_NAME,COMPANY_NAME) " +
+		"ALT_CONTACT_PHONE, ALT_CONTACT_EXT, GEOLOC, UNATTENDED_INSTR,CHARITY_NAME,COMPANY_NAME, PHONE_TYPE, ALT_CONTACT_TYPE) " +
         " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')')," +
         "' '),'-'),'.'),?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.')," +
         "?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?," +
-        "MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL),?,?,?)";
+        "MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL),?,?,?,?,?)";
 		
 	public PrimaryKey create(Connection conn) throws SQLException {
 		//String id = this.getNextId(conn);
@@ -142,9 +142,11 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
         if(address.getAltContactPhone() != null) {
         	ps.setString(28, address.getAltContactPhone().getPhone());
         	ps.setString(29, address.getAltContactPhone().getExtension());
+        	ps.setString(36, address.getAltContactPhone().getType());
         }else{
 			ps.setString(28, "");
-			ps.setString(29, "");				
+			ps.setString(29, "");
+			ps.setString(36, "");
 		}
         
         ps.setBigDecimal(30, new BigDecimal(String.valueOf(address.getLongitude())));
@@ -160,6 +162,7 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		ps.setString(32, unattendedDeliveryInstructions);
 		ps.setString(33, address.getCharityName());
 		ps.setString(34, address.getCompanyName());
+		ps.setString(35, address.getPhone().getType());
 //		ps.setString(35, address.isOptInForDonation()?"Y":"N");
 
         
@@ -186,7 +189,7 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		"'('||substr(PHONE,1,3)||') '||substr(PHONE,4,3)||'-'||substr(PHONE,7,4) as PHONE, PHONE_EXT, DELIVERY_INSTRUCTIONS," +
 		"SCRUBBED_ADDRESS, ALT_DEST, ALT_FIRST_NAME, ALT_LAST_NAME, ALT_APARTMENT, " +
 		"'('||substr(ALT_PHONE,1,3)||') '||substr(ALT_PHONE,4,3)||'-'||substr(ALT_PHONE,7,4) AS ALT_PHONE, ALT_PHONE_EXT, " +
-		"DELIVERY_TYPE, ALT_CONTACT_PHONE, ALT_CONTACT_EXT, UNATTENDED_INSTR FROM  CUST.DELIVERYINFO WHERE SALESACTION_ID=?";
+		"DELIVERY_TYPE, ALT_CONTACT_PHONE, ALT_CONTACT_EXT, UNATTENDED_INSTR, PHONE_TYPE, ALT_CONTACT_TYPE FROM CUST.DELIVERYINFO WHERE SALESACTION_ID=?";
 	public void load(Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(LOAD_DELIVERY_INFO);
 		ps.setString(1, this.getPK().getId());
@@ -202,8 +205,8 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		ps = null;
 	}
     
-	private final PhoneNumber convertPhoneNumber(String phone, String extension) {
-		return "() -".equals(phone) ? null : new PhoneNumber(phone, NVL.apply(extension, ""));
+	private final PhoneNumber convertPhoneNumber(String phone, String extension, String type) {
+		return "() -".equals(phone) ? null : new PhoneNumber(phone, NVL.apply(extension, ""), NVL.apply(type, ""));
 	}
 
 	private void loadFromResultSet(ResultSet rs) throws SQLException {
@@ -223,7 +226,7 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		address.setState(rs.getString("STATE"));
 		address.setZipCode(rs.getString("ZIP"));
 		address.setCountry(rs.getString("COUNTRY"));
-		address.setPhone( this.convertPhoneNumber(rs.getString("PHONE"), rs.getString("PHONE_EXT")) );
+		address.setPhone( this.convertPhoneNumber(rs.getString("PHONE"), rs.getString("PHONE_EXT"), rs.getString("PHONE_TYPE")) );
 		address.setInstructions(rs.getString("DELIVERY_INSTRUCTIONS"));
 		AddressInfo info = new AddressInfo();
 		info.setScrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
@@ -233,9 +236,9 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		address.setAltFirstName(rs.getString("ALT_FIRST_NAME"));
 		address.setAltLastName(rs.getString("ALT_LAST_NAME"));
 		address.setAltApartment(rs.getString("ALT_APARTMENT")); 
-		address.setAltPhone(this.convertPhoneNumber(rs.getString("ALT_PHONE"), rs.getString("ALT_PHONE_EXT")));
+		address.setAltPhone(this.convertPhoneNumber(rs.getString("ALT_PHONE"), rs.getString("ALT_PHONE_EXT"), null));
 		this.model.setDeliveryType(EnumDeliveryType.getDeliveryType(rs.getString("DELIVERY_TYPE")));
-		address.setAltContactPhone(this.convertPhoneNumber(rs.getString("ALT_CONTACT_PHONE"), rs.getString("ALT_CONTACT_EXT")));
+		address.setAltContactPhone(this.convertPhoneNumber(rs.getString("ALT_CONTACT_PHONE"), rs.getString("ALT_CONTACT_EXT"), rs.getString("ALT_CONTACT_TYPE")));
 		
 		if (this.model.getDepotLocationId()!=null && !"".equals(this.model.getDepotLocationId()) ) {
 			ErpDepotAddressModel depotAddress = new ErpDepotAddressModel(address);

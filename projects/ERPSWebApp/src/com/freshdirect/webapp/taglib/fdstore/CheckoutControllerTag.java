@@ -1,6 +1,5 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
-import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Category;
 
@@ -29,14 +29,12 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.Util;
-import com.freshdirect.fdstore.coremetrics.builder.ConversionEventTagModelBuilder;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderHistory;
-import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -176,7 +174,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				}
 				if ( result.isSuccess() ) {
 					UserValidationUtil.validateContainsDlvPassOnly( request, result );
-					UserValidationUtil.validateOrderMinimum( request, result );
+					UserValidationUtil.validateOrderMinimum( session, result );
 					boolean makeGoodOrder = request.getParameter( "makeGoodOrder" ) != null;
 					if ( !makeGoodOrder ) {
 						// Set the selected gift carts for processing.
@@ -227,7 +225,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					this.setSuccessPage( backToViewCart );
 					return true;
 				}
-				String outcome = performSubmitOrder( request, result );
+				String outcome = performSubmitOrder(result);
 				// add logic to process make good order complaint.
 				if ( "true".equals( session.getAttribute( "makeGoodOrder" ) ) ) {
 					ErpComplaintModel complaintModel = (ErpComplaintModel)session.getAttribute( SessionName.MAKEGOOD_COMPLAINT );
@@ -276,7 +274,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				performGiftCardAction(request, result, action);
 
 				if ( result.isSuccess() ) {
-					String outcome = performSubmitOrder( request, result );
+					String outcome = performSubmitOrder(result);
 					saveCart = true;
 
 					if ( result.getError( "address_verification_failed" ) != null ) {
@@ -294,7 +292,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				m.performSetPaymentMethod();
 				
 				if ( result.isSuccess() ) {
-					UserValidationUtil.validateOrderMinimum( request, result );
+					UserValidationUtil.validateOrderMinimum( session, result );
 					checkEBTRestrictedLineItems(cart, isNotCallCenter);
 					if ( currentUser.isPromotionAddressMismatch() && isNotCallCenter ) {
 						this.setSuccessPage( "/checkout/step_3_waive.jsp" );
@@ -306,7 +304,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				m.performSetNoPaymentMethod();
 
 				if ( result.isSuccess() ) {
-					UserValidationUtil.validateOrderMinimum( request, result );
+					UserValidationUtil.validateOrderMinimum( session, result );
 					if ( currentUser.isPromotionAddressMismatch() && isNotCallCenter ) {
 						this.setSuccessPage( "/checkout/step_3_waive.jsp" );
 					}
@@ -316,7 +314,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, action);
 				m.performAddAndSetPaymentMethod();
 				if ( result.isSuccess() ) {
-					UserValidationUtil.validateOrderMinimum( request, result );
+					UserValidationUtil.validateOrderMinimum( session, result );
 					checkEBTRestrictedLineItems(cart, isNotCallCenter);
 				}
 
@@ -329,7 +327,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				m.performEditPaymentMethod();
 
 			} else if ( "setPaymentAndSubmit".equalsIgnoreCase( action ) ) {
-				if ( UserValidationUtil.validateOrderMinimum( request, result ) ) {
+				if ( UserValidationUtil.validateOrderMinimum( session, result ) ) {
 					String outcome = performSetPaymentAndSubmit( request, result );
 					saveCart = true;
 					if ( outcome.equals( Action.NONE ) ) {
@@ -365,7 +363,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				}
 
 				if ( result.isSuccess() ) {
-					UserValidationUtil.validateOrderMinimum( request, result );
+					UserValidationUtil.validateOrderMinimum( session, result );
 				}
 
 			}
@@ -559,56 +557,59 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 
 
-	protected String performSetPaymentAndSubmit( HttpServletRequest request, ActionResult result ) throws Exception {
+	protected String performSetPaymentAndSubmit(HttpServletRequest request, ActionResult result) throws Exception {
 		PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, getActionName());
 		m.setPaymentMethod();
-		
-		if ( result.isSuccess() ) {
-			return performSubmitOrder( request, result );
+
+		if (result.isSuccess()) {
+			return performSubmitOrder(result);
 		}
 		return Action.ERROR;
 	}
 
 
 
-
-	protected void configureAction( Action action, ActionResult result ) {
-		if ( action instanceof HttpContextAware ) {
-			HttpContext ctx = new HttpContext( this.pageContext.getSession(), (HttpServletRequest)this.pageContext.getRequest(), (HttpServletResponse)this.pageContext.getResponse() );
-
-			( (HttpContextAware)action ).setHttpContext( ctx );
-		}
-
-		if ( action instanceof ResultAware ) {
-			( (ResultAware)action ).setResult( result );
-		}
+	protected void configureAction(Action action, ActionResult result) {
+		configureAction(action, result, pageContext.getSession(), (HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse());
 	}
 
-	protected String performSubmitOrder( HttpServletRequest request, ActionResult result ) throws Exception {
-
+	protected String performSubmitOrder(ActionResult result) throws Exception {
+		return performSubmitOrder(getUser(), getActionName(), result, pageContext.getSession(), (HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), authCutoffPage, ccdProblemPage, ccdAddCardPage, gcFraudPage);
+	}
+	
+	public static String performSubmitOrder(FDUserI user, String actionName, ActionResult result, HttpSession session, HttpServletRequest request, HttpServletResponse response, String authCutoffPage, String ccdProblemPage, String ccdAddCardPage, String gcFraudPage) throws Exception {
 		SubmitOrderAction soa = new SubmitOrderAction();
-		this.configureAction( soa, result );
+		configureAction( soa, result, session, request, response);
 		soa.setAuthCutoffPage( authCutoffPage );
 		soa.setCcdProblemPage( ccdProblemPage );
 		soa.setCcdAddCardPage( ccdAddCardPage );
 		soa.setGCFraudPage( gcFraudPage );
-		soa.setStandingOrder( this.getUser().getCurrentStandingOrder() );
+		soa.setStandingOrder( user.getCurrentStandingOrder() );
 
-		if ( this.getActionName().equals( "gc_submitGiftCardOrder" ) || ( this.getActionName().equals( "gc_submitGiftCardBulkOrder" ) ) ) {
-			if ( this.getActionName().equals( "gc_submitGiftCardBulkOrder" ) ) {
+		if ( actionName.equals( "gc_submitGiftCardOrder" ) || ( actionName.equals( "gc_submitGiftCardBulkOrder" ) ) ) {
+			if ( actionName.equals( "gc_submitGiftCardBulkOrder" ) ) {
 				return soa.gcExecute( false, true );
 			} else {
 				return soa.gcExecute( false, false );
 			}
-		} else if ( this.getActionName().equals( "gc_onestep_submitGiftCardOrder" ) ) {
+		} else if ( actionName.equals( "gc_onestep_submitGiftCardOrder" ) ) {
 			return soa.gcExecute( true, false );
-		} else if ( this.getActionName().equals( "rh_submitDonationOrder" ) || this.getActionName().equals( "rh_onestep_submitDonationOrder" ) ) {
+		} else if ( actionName.equals( "rh_submitDonationOrder" ) || actionName.equals( "rh_onestep_submitDonationOrder" ) ) {
 			return soa.donationOrderExecute();
 		}
 		return soa.execute();
 	}
 
+	public static void configureAction(Action action, ActionResult result, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+		if (action instanceof HttpContextAware) {
+			HttpContext ctx = new HttpContext(session, request, response);
 
+			((HttpContextAware) action).setHttpContext(ctx);
+		}
+		if (action instanceof ResultAware) {
+			((ResultAware) action).setResult(result);
+		}
+	}
 
 
 

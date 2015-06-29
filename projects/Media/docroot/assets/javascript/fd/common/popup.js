@@ -58,8 +58,8 @@ var FreshDirect = FreshDirect || {};
             writable:true
         },
         close: {
-            value: function () {
-              this.popup.hide();
+            value: function (e) {
+              this.popup.hide(e);
             }
         },
         noscroll: {

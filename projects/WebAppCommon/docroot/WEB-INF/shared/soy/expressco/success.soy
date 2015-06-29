@@ -1,0 +1,97 @@
+{namespace expressco}
+
+/**
+* @param? header Media string from CMS
+* @param? orderId Number of order
+* @param? receipt Map of receipt data
+* @param? rightBlock Media string from CMS
+*/
+{template .successpage autoescape="false"}
+{if $orderId}
+  {call .successheader}
+    {param headerMedia: $header /}
+  {/call}
+  {call .successtotal}
+    {param orderId: $orderId /}
+    {param receipt: $receipt /}
+    {param rightBlock: $rightBlock /}
+  {/call}
+{/if}
+{/template}
+
+/**
+ * @param? headerMedia
+ */
+{template .successheader autoescape="false"}
+<div class="header">
+  {if $headerMedia}{$headerMedia}{/if}
+</div>
+{/template}
+
+/**
+ * @param? orderId Number of order
+ * @param? rightBlock
+ * @param? receipt
+ */
+{template .successtotal autoescape="false"}
+<div class="successtotal">
+  <div class="successtotal-left">
+    {call .receiptBox}
+      {param orderId: $orderId /}
+      {param receiptLines: $receipt.receiptLines /}
+      {param totalLabel: $receipt.totalLabel /}
+      {param total: $receipt.total /}
+    {/call}
+  </div>
+  <div class="successtotal-right">
+    <div class="tips">
+      <h2 class="next">What's Next?</h2>
+      <ul>
+        {if $rightBlock}{$rightBlock}{/if}
+      </ul>
+    </div>
+  </div>
+</div>
+{/template}
+
+/**
+ * @param? id
+ ** param? year
+ * @param? month
+ * @param? dayOfMonth
+ * @param? dayOfWeek
+ * @param? timePeriod
+ */
+{template .successtimeslot autoescape="false"}
+<div class="successtimeslot" timeslot-id="{$id ? $id : ''}">
+  <div class="successtimeslot_date">
+    {$dayOfWeek ? $dayOfWeek : ''}, {$month ? $month : ''}/{$dayOfMonth ? $dayOfMonth : ''}
+  </div>
+  <div class="successtimeslot_time">
+    {$timePeriod ? $timePeriod : ''}
+  </div>
+</div>
+{/template}
+
+/**
+* @param orderId Number
+* @param receiptLines List of receipt data
+* @param totalLabel Label of Subtotal
+* @param total Value of Subtotal
+*/
+{template .receiptBox autoescape="false"}
+<div class="orderbox">
+  <h2 class="orderid">Order #{$orderId}</h2>
+  {if $receiptLines and length($receiptLines) > 0}
+    <ul class="ordertotal">
+      {foreach $receipt in $receiptLines}
+        <li data-receipt-id="{$receipt.id}">
+          <span class="receipt-text">{$receipt.text}</span>
+          <span class="receipt-price">{$receipt.value}{if $receipt.other and $receipt.other.mark}{$receipt.other.mark}{/if}</span>
+        </li>
+      {/foreach}
+    </ul>
+  {/if}
+  <p class="estimated">{$totalLabel}: {$total}</p>
+</div>
+{/template}

@@ -219,6 +219,9 @@ var FreshDirect = FreshDirect || {};
   };
 
   PopupContent.prototype.hide = function (e, noCallback) {
+    if (e && e.stopPropagation) {
+      e.stopPropagation();
+    }
     if (this.$trigger) {
       this.$trigger.removeClass("hover");
     }

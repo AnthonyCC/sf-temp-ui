@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.ajax.cart.data;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -345,4 +346,11 @@ public class CartData implements Serializable {
 			this.selected = selected;
 		}
 	}
+	
+	public static final Comparator<Section> CART_DATA_SECTION_COMPARATOR_BY_TITLE = new Comparator<CartData.Section>() {
+		@Override
+		public int compare(Section o1, Section o2) {
+			return o1.getTitle().compareTo(o2.getTitle());
+		}
+	};
 }

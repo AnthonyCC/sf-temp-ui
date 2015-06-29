@@ -271,9 +271,13 @@ public class AddToCartServlet extends BaseJsonServlet {
 	          		responseData.addCoremetrics( model.toStringList() );
            		}
 
-           		responseData.setRedirectUrl("/view_cart.jsp");
+           		if (!reqData.isIgnoreRedirect()) {
+           			responseData.setRedirectUrl("/view_cart.jsp");
+           		}
            	} else if ("view_cart".equals(reqData.getEventSource())) {
-           		responseData.setRedirectUrl(request.getHeader("Referer"));
+           		if (!reqData.isIgnoreRedirect()) {
+           			responseData.setRedirectUrl(request.getHeader("Referer"));
+           		}
            	}
            	
 			writeResponseData( response, responseData );

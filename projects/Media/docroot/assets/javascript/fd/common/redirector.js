@@ -10,7 +10,9 @@ var FreshDirect = FreshDirect || {};
 		},
 		callback:{
 			value:function( redirectUrl ) {
-				location.href=redirectUrl;
+        if(redirectUrl){
+          location.href=redirectUrl;
+        }
 			}
 		}
 	});

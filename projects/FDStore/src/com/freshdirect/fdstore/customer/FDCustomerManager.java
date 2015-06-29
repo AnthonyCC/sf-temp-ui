@@ -57,7 +57,6 @@ import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.customer.ErpDuplicateDisplayNameException;
-import com.freshdirect.customer.ErpDuplicatePaymentMethodException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
@@ -126,7 +125,6 @@ import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
-import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.mail.FTLEmailI;
 import com.freshdirect.framework.mail.XMLEmailI;
@@ -3022,6 +3020,31 @@ public class FDCustomerManager {
 		}
 	}
 
+	public static String getLastOrderId(FDIdentity identity) throws FDResourceException {
+		String lastOrderId = null;
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB customerManagerSessionBean = managerHome.create();
+			lastOrderId = customerManagerSessionBean.getLastOrderID(identity);
+		} catch (CreateException exception) {
+			invalidateManagerHome();
+			throw new FDResourceException(exception, "Error creating session bean");
+		} catch (RemoteException exception) {
+			invalidateManagerHome();
+			throw new FDResourceException(exception, "Error talking session bean");
+		}
+		return lastOrderId;
+	}
+	
+	public static FDOrderI getLastOrder(FDIdentity identity) throws FDResourceException {
+		FDOrderI lastOrder = null;
+		String lastOrderId = getLastOrderId(identity);
+		if (lastOrderId != null) {
+			lastOrder = getOrder(lastOrderId);
+		}
+		return lastOrder;
+	}
+	
 	public static ErpAddressModel getLastOrderAddress(FDIdentity identity)
 			throws FDResourceException {
 		ErpAddressModel address = null;
