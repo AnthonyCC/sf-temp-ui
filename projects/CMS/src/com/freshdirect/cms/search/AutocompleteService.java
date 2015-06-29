@@ -16,6 +16,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class AutocompleteService {
@@ -38,6 +42,19 @@ public class AutocompleteService {
         skipWordsInAutoCompletion.add("all");
         skipWordsInAutoCompletion.add("non");
         skipWordsInAutoCompletion.add("without");
+    }
+    
+    public static Set<String> getStopWords(){
+    	Set<ContentKey> stopwordsKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.STOPWORDS);
+    	Set<String> stopwords = new HashSet<String>();
+    	if(stopwordsKeys != null){
+	    	for(final ContentKey key:stopwordsKeys){
+	    		ContentNodeI contentNode = CmsManager.getInstance().getContentNode(key);
+	    		stopwords.add((String)contentNode.getAttributeValue("word"));
+	    	}
+    	}
+    	stopwords.addAll(skipWordsInAutoCompletion);
+    	return stopwords;
     }
 
     SortedSet<HitCounter>         prefixSet;
