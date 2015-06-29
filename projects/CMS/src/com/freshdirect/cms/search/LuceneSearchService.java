@@ -44,6 +44,7 @@ import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.search.spell.SpellingHit;
 import com.freshdirect.cms.search.term.ApproximationsPermuter;
@@ -95,6 +96,19 @@ public class LuceneSearchService implements ContentSearchServiceI {
 			"yours", "yourself", "yourselves" };
 
 	public static boolean isSpellingStopWord(String word) {
+		//Configured in CMS.
+		if(word != null){
+			Set<ContentKey> stopwordsKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.STOPWORDS);
+			if(stopwordsKeys != null){
+		    	for(final ContentKey key:stopwordsKeys){
+		    		ContentNodeI contentNode = CmsManager.getInstance().getContentNode(key);
+		    		if(word.equals((String)contentNode.getAttributeValue("word"))){
+		    			return true;
+		    		}
+		    	}
+	    	}
+		}
+		//Default hardcoded checking.
 		for (String s : SPELLING_STOP_WORDS)
 			if (s.equals(word))
 				return true;
