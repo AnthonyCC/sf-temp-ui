@@ -79,7 +79,7 @@
 		<fd:SEOMetaTag pageId="${pageId}"></fd:SEOMetaTag>
 	</tmpl:put>
 	</c:otherwise>
-  
+  	</c:choose>
   <tmpl:put name='pageType'>${browsePotato.searchParams.pageType}</tmpl:put>
 
   <tmpl:put name='deptnav' direct='true'>
