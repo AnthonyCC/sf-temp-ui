@@ -69,7 +69,7 @@
 
   <tmpl:put name='containerExtraClass' direct='true'>srch ${empty browsePotato.menuBoxes.menuBoxes ? 'emptymenu' : ''}</tmpl:put>
  	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag title="${browsePotato.descriptiveContent.pageTitle}" pageId="<%=pageId%>"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="${browsePotato.descriptiveContent.pageTitle}" metaDescription="${browsePotato.descriptiveContent.metaDescription}"></fd:SEOMetaTag>
 	</tmpl:put>
   
   <tmpl:put name='pageType'>${browsePotato.searchParams.pageType}</tmpl:put>
