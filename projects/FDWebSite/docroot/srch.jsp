@@ -68,9 +68,17 @@
   </tmpl:put>
 
   <tmpl:put name='containerExtraClass' direct='true'>srch ${empty browsePotato.menuBoxes.menuBoxes ? 'emptymenu' : ''}</tmpl:put>
+ 	<c:choose>
+ 	<c:when test="${empty pageId or 'search' eq pageId}">
  	<tmpl:put name="seoMetaTag" direct="true">
-		<fd:SEOMetaTag title="${browsePotato.descriptiveContent.pageTitle}" metaDescription="${browsePotato.descriptiveContent.metaDescription}"></fd:SEOMetaTag>
+		<fd:SEOMetaTag title="${browsePotato.descriptiveContent.pageTitle}" metaDescription="${browsePotato.descriptiveContent.metaDescription}" ></fd:SEOMetaTag>
 	</tmpl:put>
+	</c:when>
+	<c:otherwise>
+	<tmpl:put name="seoMetaTag" direct="true">
+		<fd:SEOMetaTag pageId="${pageId}"></fd:SEOMetaTag>
+	</tmpl:put>
+	</c:otherwise>
   
   <tmpl:put name='pageType'>${browsePotato.searchParams.pageType}</tmpl:put>
 
