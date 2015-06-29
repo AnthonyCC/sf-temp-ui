@@ -16,7 +16,7 @@ public class ActiveInactiveStrategy implements PromotionStrategyI {
 	public int evaluate(String promotionCode, PromotionContextI context) {
 		PromotionI promo = PromotionFactory.getInstance().getPromotion(promotionCode);
 		
-		if(active || (promo.getOfferType().equals(EnumOfferType.WINDOW_STEERING) && context.isAlreadyRedeemedPromotion(promotionCode))){
+		if(active || (null != promo.getOfferType() && promo.getOfferType().equals(EnumOfferType.WINDOW_STEERING) && context.isAlreadyRedeemedPromotion(promotionCode))){
 			return ALLOW;
 		}
 		return DENY;

@@ -906,7 +906,7 @@ public class Cart {
               }
   		} else if (redemptionPromo.isSampleItem()) {
   			warningMessage = SystemMessageList.MSG_REDEMPTION_PRODUCT_UNAVAILABLE;
-  		} else if (redemptionPromo.getOfferType().equals(EnumOfferType.WINDOW_STEERING)) {               
+  		} else if (null != redemptionPromo.getOfferType() && redemptionPromo.getOfferType().equals(EnumOfferType.WINDOW_STEERING)) {               
               warningMessage = SystemMessageList.MSG_REDEMPTION_NO_ELIGIBLE_TIMESLOT;
         }  		
               

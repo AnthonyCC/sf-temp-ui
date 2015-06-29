@@ -1389,7 +1389,7 @@ public class FDOrderAdapter implements FDOrderI {
 		if ( usedCodes != null) {
 			for(Iterator<String> it = usedCodes.iterator(); it.hasNext();) {
 				PromotionI promo  = PromotionFactory.getInstance().getPromotion(it.next());
-				if (promo != null && promo.getOfferType().equals(EnumOfferType.WINDOW_STEERING))
+				if (promo != null && null != promo.getOfferType() && promo.getOfferType().equals(EnumOfferType.WINDOW_STEERING))
 					promoCode = promo.getPromotionCode();
 			}
 		}
