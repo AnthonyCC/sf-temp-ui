@@ -5,14 +5,12 @@ import java.util.Calendar;
 import java.util.List;
 
 import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.erp.EnumStateCodes;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.payment.BillingCountryInfo;
 import com.freshdirect.payment.BillingRegionInfo;
-import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormMetaData;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormMetaDataItem;
 
@@ -133,14 +131,7 @@ public class FormMetaDataService {
 		return user.isCheckEligible() && !FDCustomerManager.isECheckRestricted(user.getIdentity());
 	}
 
-	public boolean populateEbtCheck(FDUserI user) throws FDResourceException {
-		boolean hasEBT = false;
-		for (ErpPaymentMethodI paymentMethod : FDCustomerManager.getPaymentMethods(user.getIdentity())) {
-			if (EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {
-				hasEBT = true;
-				break;
-			}
-		}
-		return user.isEbtAccepted() || hasEBT;
+	public boolean populateEbtCheck(FDUserI user) {
+		return user.isEbtAccepted();
 	}
 }
