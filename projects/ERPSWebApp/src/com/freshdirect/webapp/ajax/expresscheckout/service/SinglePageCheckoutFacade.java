@@ -79,7 +79,7 @@ public class SinglePageCheckoutFacade {
 		Map<String, Object> preCheckOrderResult = CheckoutService.defaultService().preCheckOrder(user);
 		result.setHeaderData(SinglePageCheckoutHeaderService.defaultService().populateHeader(user));
 		result.setDrawer(DrawerService.defaultService().loadDrawer());
-		result.setAddress(loadAddress(user));
+		result.setAddress(loadAddress(user,request.getSession()));
 		result.setPayment(loadUserPaymentMethods(user, request));
 		result.setAtpFailure(CheckoutService.defaultService().getAtpFailureFromOrderPreCheckResult(preCheckOrderResult));
 		result.setFormMetaData(FormMetaDataService.defaultService().populateFormMetaData(user));
@@ -89,8 +89,8 @@ public class SinglePageCheckoutFacade {
 		return result;
 	}
 
-	public FormLocationData loadAddress(final FDUserI user) throws FDResourceException {
-		List<LocationData> deliveryAddresses = loadDeliveryAddress(user);
+	public FormLocationData loadAddress(final FDUserI user, HttpSession session) throws FDResourceException, JspException, RedirectToPage {
+		List<LocationData> deliveryAddresses = deliveryAddressService.loadDeliveryAddress(user, session);
 		FormLocationData formLocation = new FormLocationData();
 		formLocation.setAddresses(deliveryAddresses);
 		formLocation.setSelected(getSelectedAddressId(deliveryAddresses));
@@ -194,27 +194,6 @@ public class SinglePageCheckoutFacade {
 		formPaymentData.setPayments(cartPaymentDatas);
 		formPaymentData.setSelected(getSelectedPaymentId(cartPaymentDatas));
 		return formPaymentData;
-	}
-
-	private List<LocationData> loadDeliveryAddress(final FDUserI user) throws FDResourceException {
-		List<LocationData> addresses = new ArrayList<LocationData>();
-		
-		addresses.addAll(deliveryAddressService.loadAllDepotLocations(user));
-		addresses.addAll(deliveryAddressService.loadAllDeliveryLocations(user));
-		
-		if(addresses.size() < 2){
-			disableDeleteActionOnAddresses(addresses);
-		}
-		
-		addresses.addAll(deliveryAddressService.loadAllPickupLocations(user));
-		
-		return addresses;
-	}
-	
-	private void disableDeleteActionOnAddresses(List<LocationData> addresses) {
-		for (LocationData locationData : addresses) {
-			locationData.setCanDelete(false);
-		}
 	}
 
 	private FDOrderI loadOrder(final String orderNumber, final FDUserI user) throws FDResourceException {

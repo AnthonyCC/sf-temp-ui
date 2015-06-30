@@ -10,7 +10,6 @@ import javax.servlet.jsp.JspException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.template.TemplateException;
-import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.service.CartDataService;
@@ -58,7 +57,8 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
 					DeliveryAddressService.defaultService().deleteDeliveryAddressMethod(deliveryAddressRequest, request.getSession(), user);
 					cartChanged = true;
 				} else if ("selectDeliveryAddressMethod".equals(action)) {
-					List<ValidationError> validationErrors = DeliveryAddressService.defaultService().selectDeliveryAddressMethod(deliveryAddressRequest, request.getSession(), user);
+					String deliveryAddressId = FormDataService.defaultService().get(deliveryAddressRequest, "id");
+					List<ValidationError> validationErrors = DeliveryAddressService.defaultService().selectDeliveryAddressMethod(deliveryAddressId, action, request.getSession(), user);
 					PaymentService.defaultService().deselectEbtPayment(user, request.getSession());
 					validationResult.getErrors().addAll(validationErrors);
 					cartChanged = true;
