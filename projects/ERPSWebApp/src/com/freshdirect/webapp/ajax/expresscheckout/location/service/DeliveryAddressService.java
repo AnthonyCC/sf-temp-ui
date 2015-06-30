@@ -282,10 +282,8 @@ public class DeliveryAddressService {
 	}
 
 	public void sortDeliveryAddress(FDUserI user, List<ErpAddressModel> deliveryAddressMethods) throws FDResourceException {
-		String defaultShipToAddressId = FDCustomerManager.getDefaultShipToAddressPK(user.getIdentity());
-		ErpAddressModel lastUsedOrderAddress = null;
-		if (defaultShipToAddressId != null) {
-			lastUsedOrderAddress = FDCustomerManager.getAddress(user.getIdentity(), defaultShipToAddressId);
+		ErpAddressModel lastUsedOrderAddress = FDCustomerManager.getLastOrderAddress(user.getIdentity());
+		if (lastUsedOrderAddress != null) {
 			if (deliveryAddressMethods.contains(lastUsedOrderAddress)) {
 				deliveryAddressMethods.remove(lastUsedOrderAddress);
 			} else {
