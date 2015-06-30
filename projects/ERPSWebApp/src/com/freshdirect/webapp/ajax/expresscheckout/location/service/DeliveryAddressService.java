@@ -112,7 +112,8 @@ public class DeliveryAddressService {
 		List<ValidationError> validationErrors = new ArrayList<ValidationError>();
 		String deliveryAddressId = FormDataService.defaultService().get(deliveryAddressRequestData, "id");
 		String action = FormDataService.defaultService().get(deliveryAddressRequestData, "action");
-		if (!user.getShoppingCart().getDeliveryAddress().getId().equals(deliveryAddressId)) {
+		ErpAddressModel deliveryAddress = user.getShoppingCart().getDeliveryAddress();
+		if (deliveryAddress == null || !deliveryAddress.getId().equals(deliveryAddressId)) {
 			ActionResult actionResult = new ActionResult();
 			DeliveryAddressManipulator.performSetDeliveryAddress(session, user, deliveryAddressId, null, null, action, true, actionResult, null, null, null, null, null, null);
 			TimeslotService.defaultService().releaseTimeslot(user);
