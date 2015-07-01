@@ -1953,6 +1953,18 @@
 					</CmsSection>
 				</sections>
 			</CmsPage>
+			<CmsPage>
+				<title>SEO</title>
+				<sections>
+					<CmsSection>
+						<title>RELATIONSHIPS</title>
+						<fields>
+							<CmsField><attribute>PAGE_TITLE</attribute></CmsField>
+							<CmsField><attribute>SEO_META_DESC</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
 		</pages>
 	</CmsEditor>
 	
