@@ -32,7 +32,7 @@ public class GwtBulkLoadCell extends BaseModelData implements Serializable {
 		super();
 		// "_K" is a special value denoting keys
 		// "_U" is a special value denoting unsupported types
-		if ("S".equals(attributeType) || "TXT".equals(attributeType) || "R".equals(attributeType) || "_K".equals(attributeType) || "E".equals(attributeType)
+		if ("S".equals(attributeType) || "TXT".equals(attributeType) || "WY".equals(attributeType) || "R".equals(attributeType) || "_K".equals(attributeType) || "E".equals(attributeType)
 				|| "I".equals(attributeType) || "D".equals(attributeType) || "B".equals(attributeType)
 				|| "DT".equals(attributeType) || "_U".equals(attributeType) || "_RR".equals(attributeType)) {
 			this.columnName = columnName;
