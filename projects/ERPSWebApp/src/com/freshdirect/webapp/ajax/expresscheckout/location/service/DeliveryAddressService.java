@@ -214,6 +214,11 @@ public class DeliveryAddressService {
 				disableDeleteActionOnAddresses(addresses);
 			}
 
+			if (selectedDeliveryAddressId == null && !addresses.isEmpty()) {
+				selectDeliveryAddressMethod(addresses.get(0).getId(), "selectDeliveryAddressMethod", session, user);
+				addresses.get(0).setSelected(true);
+			}
+			
 			if (user.isPickupUser()) {
 				final ErpCustomerInfoModel customerInfoModel = FDCustomerFactory.getErpCustomerInfo(user.getIdentity());
 				for (final DlvDepotModel pickupDeliveryDepotModel : loadPickupDepotModel()) {
@@ -230,10 +235,7 @@ public class DeliveryAddressService {
 				}
 			}
 
-			if (selectedDeliveryAddressId == null && !addresses.isEmpty()) {
-				selectDeliveryAddressMethod(addresses.get(0).getId(), "selectDeliveryAddressMethod", session, user);
-				addresses.get(0).setSelected(true);
-			}
+			
 		}
 
 		return addresses;
