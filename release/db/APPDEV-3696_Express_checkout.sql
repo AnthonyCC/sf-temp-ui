@@ -4,7 +4,7 @@ INSERT INTO cms.relationshipdestination (ID, RELATIONSHIPDEFINITION_ID,CONTENTTY
 INSERT INTO cms.relationshipdefinition (NAME,ID,CONTENTTYPE_ID,INHERITABLE,REQUIRED,NAVIGABLE,READONLY,LABEL,CARDINALITY_CODE) VALUES ('expressCheckoutReceiptEditorial','Store.expressCheckoutReceiptEditorial','Store','F','F','F','F','Express Checkout Receipt Editorial','One');
 INSERT INTO cms.relationshipdestination (ID, RELATIONSHIPDEFINITION_ID,CONTENTTYPE_ID,REVERSE_ATTRIBUTE_NAME,REVERSE_ATTRIBUTE_LABEL) VALUES ('Store.expressCheckoutReceiptEditorial.Html','Store.expressCheckoutReceiptEditorial','Html',NULL,NULL);
 
-INSERT INTO cms.relationshipdefinition (NAME,ID,CONTENTTYPE_ID,INHERITABLE,REQUIRED,NAVIGABLE,READONLY,LABEL,CARDINALITY_CODE) VALUES $('expressCheckoutTextMessageAlertHeader','Store.expressCheckoutTextMessageAlertHeader','Store','F','F','F','F','Express Checkout Text Message Alert Header','One');
+INSERT INTO cms.relationshipdefinition (NAME,ID,CONTENTTYPE_ID,INHERITABLE,REQUIRED,NAVIGABLE,READONLY,LABEL,CARDINALITY_CODE) VALUES ('expressCheckoutTextMessageAlertHeader','Store.expressCheckoutTextMessageAlertHeader','Store','F','F','F','F','Express Checkout Text Message Alert Header','One');
 INSERT INTO cms.relationshipdestination (ID, RELATIONSHIPDEFINITION_ID,CONTENTTYPE_ID,REVERSE_ATTRIBUTE_NAME,REVERSE_ATTRIBUTE_LABEL) VALUES ('Store.expressCheckoutTextMessageAlertHeader.Html','Store.expressCheckoutTextMessageAlertHeader','Html',NULL,NULL);
 
 -- Update Payment with best # of billing inquiries
