@@ -640,7 +640,7 @@ public class BulkLoaderXlsUploadServlet extends FileUploadServlet {
 								} else {
 									parsedValue = handleSimpleValue(attributeName, doubleValue, status, rowStatus);
 								}
-							} else if (attributeType == EnumAttributeType.STRING || attributeType == EnumAttributeType.LONG_TEXT) {
+							} else if (attributeType == EnumAttributeType.STRING || attributeType == EnumAttributeType.LONG_TEXT ||  attributeType == EnumAttributeType.WYSIWYG) {
 								parsedValue = handleSimpleValue(attributeName, stringValue, status, rowStatus);
 							} else if (attributeType == EnumAttributeType.DATE) {
 								Date dateValue = parseDateValue(cell, type, stringValue, status);
@@ -730,7 +730,9 @@ public class BulkLoaderXlsUploadServlet extends FileUploadServlet {
 				|| attributeDef.getAttributeType() == EnumAttributeType.ENUM
 				|| attributeDef.getAttributeType() == EnumAttributeType.INTEGER
 				|| attributeDef.getAttributeType() == EnumAttributeType.DOUBLE
-				|| attributeDef.getAttributeType() == EnumAttributeType.DATE || attributeDef.getAttributeType() == EnumAttributeType.BOOLEAN);
+				|| attributeDef.getAttributeType() == EnumAttributeType.DATE 
+				|| attributeDef.getAttributeType() == EnumAttributeType.BOOLEAN
+				|| attributeDef.getAttributeType() == EnumAttributeType.WYSIWYG);
 	}
 
 	private String prepareIntegerString(String value) {
