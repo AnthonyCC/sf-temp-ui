@@ -102,6 +102,9 @@ var FreshDirect = FreshDirect || {};
   fd.modules.common.forms.register({
     id: "textalert",
     nothanksEndpoint: "/api/expresscheckout/textalert/cancel",
+    success: function () {
+      textalertpopup.close();
+    },
     nothanks: function (e) {
       var remindme = $(e.formEl).find('input[name="remindme"]').prop('checked');
 
