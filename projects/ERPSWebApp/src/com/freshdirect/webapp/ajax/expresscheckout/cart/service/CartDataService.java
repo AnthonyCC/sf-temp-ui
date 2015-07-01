@@ -47,7 +47,6 @@ import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
@@ -346,10 +345,11 @@ public class CartDataService {
 					continue;
 				}
 				String deptDesc = cartLine.getDepartmentDesc();
+				boolean isReceipt = deptDesc.contains("Recipe");
 				SectionInfo sectionInfo = sectionInfos.get(deptDesc);
 				if (sectionInfo == null) {
 					sectionInfo = new SectionInfo();
-					sectionInfo.setWine(cartLine.isWine());
+					sectionInfo.setWine(cartLine.isWine() && !isReceipt);
 					if (sectionInfo.isWine()) {
 						sectionInfo.setSubTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getSubTotalOnlyWineAndSpirit(cart)));
 						sectionInfo.setTaxTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getTaxValueOnlyWineAndSpirit(cart)));
@@ -358,7 +358,7 @@ public class CartDataService {
 				}
 				sectionInfo.setSectionTitle(deptDesc);
 				sectionInfo.setExternalGroup(cartLine.getExternalGroup());
-				sectionInfo.setRecipe(deptDesc.startsWith("Recipe: "));
+				sectionInfo.setRecipe(isReceipt);
 				List<CartData.Item> sectionList = loadDepartmentSectionList(sectionMap, sectionInfo);
 				loadSectionHeaderImage(sectionHeaderImgMap, productNode, deptDesc);
 				CartData.Item item = populateCartDataItem(cartLine, fdProduct, itemCount, cart, recentIds, productNode, user);
