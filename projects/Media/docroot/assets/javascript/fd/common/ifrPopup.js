@@ -179,7 +179,11 @@ var FreshDirect = FreshDirect || {};
   // stop event propagation on fixed popup overlays
   setTimeout(function () {
     $('.fixedpopup').on('click', function (e) {
-      e.stopPropagation();
+      var $t = $(e.target);
+
+      if (!$t.is('button,a,[data-component]')) {
+        e.stopPropagation();
+      }
     });
   }, 10);
 
