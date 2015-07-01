@@ -127,7 +127,7 @@
 */
 {template .paymentmethodpreviewitem autoescape="false"}
 <div class='drawer__previewitem'>
-  <p class='drawer__previewitem__title'>{$bankName or $type}</p>
+  <p class='drawer__previewitem__title'>{$bankName ? $bankName : $type}</p>
   {if $accountNumber or $expiration or $bankAccountType}
   <div class="drawer__previewitem__section">
     <div class='section__body'>
