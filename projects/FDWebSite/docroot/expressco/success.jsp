@@ -63,6 +63,7 @@
         </div>
 
         <%-- cart content --%>
+        <h2 class="inyourorder">In Your Order</h2>
         <div id="cartcontent" data-ec-linetemplate="expressco.successlines" data-drawer-disabled data-ec-request-uri="/api/expresscheckout/cartdata?orderId=${param['orderId']}">
 
         </div>
