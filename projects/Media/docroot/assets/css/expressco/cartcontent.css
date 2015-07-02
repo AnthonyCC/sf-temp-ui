@@ -102,17 +102,12 @@
 }
 
 .cartline-coupon span[data-component="ecoupon-status"] {
-  display: block;
   height: 15px;
   line-height: 15px;
 }
 
 .cartline-coupon .fdCoupon_stat {
-  display: block;
-}
-
-.cartline-coupon .fdCoupon_cb{
-  vertical-align:baseline;
+  font-size: 10px;
 }
 
 .cartline-coupon:before{

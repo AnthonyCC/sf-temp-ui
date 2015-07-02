@@ -110,7 +110,8 @@
 
 .successtimeslot .successtimeslot_time {
   color: #693;
-  font-size: 1.75em;
+  font-size: 1.25em;
+  white-space: nowrap;
 }
 
 #successpage h2.inyourorder {
