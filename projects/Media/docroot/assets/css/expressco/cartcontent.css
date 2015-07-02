@@ -298,6 +298,10 @@
   text-align:right;
 }
 
+[data-boxid="credits"] .subtotal__rowcell-mid {
+  color: #693;
+}
+
 .rowcell-colon-right:after{
   content:":";
 }
