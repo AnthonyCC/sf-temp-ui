@@ -298,6 +298,7 @@
   text-align:right;
 }
 
+[data-boxid="giftcardbalance"] .subtotal__rowcell-mid,
 [data-boxid="credits"] .subtotal__rowcell-mid {
   color: #693;
 }
