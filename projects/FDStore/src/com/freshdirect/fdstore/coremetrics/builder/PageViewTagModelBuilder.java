@@ -14,7 +14,7 @@ public class PageViewTagModelBuilder  {
 	
 	/** enum for all category ids not listed in FDStoreProperties - used in CDF generation too */
 	public enum CustomCategory {
-		SEARCH, SO_TEMPLATE, ACCOUNT, BUYING_GUIDES, CART, ERROR, HOMEPAGE, INVITE, POPUPS, RECIPE, NEW_PRODUCTS_DEPARTMENT, ABOUT, DDPP, ECOUPON
+		SEARCH, SO_TEMPLATE, ACCOUNT, BUYING_GUIDES, CART, ERROR, HOMEPAGE, INVITE, POPUPS, RECIPE, NEW_PRODUCTS_DEPARTMENT, ABOUT, DDPP, ECOUPON, CHECKOUT
 	}
 	
 	private static final String INDEX_FILE = "index.jsp";
@@ -94,6 +94,11 @@ public class PageViewTagModelBuilder  {
 				}
 				
 				processHelpDir();
+				decoratePageIdWithCatId();
+
+			} else if ("expressco".equals(dirName)){
+				tagModel.setCategoryId(CustomCategory.CHECKOUT.toString());
+				tagModel.setPageId(uriAfterSlash.substring(slashAfterDirNamePos+1));
 				decoratePageIdWithCatId();
 			}
 

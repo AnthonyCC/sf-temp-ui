@@ -14,6 +14,8 @@ import org.apache.log4j.Logger;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder.CustomCategory;
+import com.freshdirect.fdstore.coremetrics.tagmodel.PageViewTagModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.template.TemplateException;
@@ -77,6 +79,12 @@ public class CheckoutService {
 		if (cart.getDeliveryAddress() != null && cart.getDeliveryReservation() != null && applyAtpCheck) {
 			AvailabilityService.defaultService().checkCartAtpAvailability(user);
 			UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
+			
+			PageViewTagModel pvTagModel = new PageViewTagModel();
+			pvTagModel.setCategoryId(CustomCategory.CHECKOUT.toString());
+			pvTagModel.setPageId("unavailability");
+			atpFailureData.addCoremetrics(pvTagModel.toStringList());
+
 			result.put(ATPFAILURE_KEY, atpFailureData);
 		}
 		return result;
