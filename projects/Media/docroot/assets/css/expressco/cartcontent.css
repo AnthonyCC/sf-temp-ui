@@ -332,6 +332,10 @@
   visibility:hidden;
 }
 
+.cartsection-wine .cartsection__total:before{
+  content:'FD Wines & Spirits ';
+}
+
 .cartsection-wine .cartsection__title:before{
   content:'FD Wines & Spirits';
   visibility:visible;
