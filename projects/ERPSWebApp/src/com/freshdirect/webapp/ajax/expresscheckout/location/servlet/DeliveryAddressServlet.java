@@ -58,7 +58,8 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
 					cartChanged = true;
 				} else if ("selectDeliveryAddressMethod".equals(action)) {
 					String deliveryAddressId = FormDataService.defaultService().get(deliveryAddressRequest, "id");
-					List<ValidationError> validationErrors = DeliveryAddressService.defaultService().selectDeliveryAddressMethod(deliveryAddressId, action, request.getSession(), user);
+					String pickupPhone = FormDataService.defaultService().get(deliveryAddressRequest, deliveryAddressId +  "_phone");
+					List<ValidationError> validationErrors = DeliveryAddressService.defaultService().selectDeliveryAddressMethod(deliveryAddressId, pickupPhone, action, request.getSession(), user);
 					PaymentService.defaultService().deselectEbtPayment(user, request.getSession());
 					validationResult.getErrors().addAll(validationErrors);
 					cartChanged = true;

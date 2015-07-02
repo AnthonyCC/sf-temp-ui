@@ -109,12 +109,12 @@ public class DeliveryAddressService {
 		DeliveryAddressManipulator.performDeleteDeliveryAddress(user, session, deliveryAddressId, actionResult, event);
 	}
 
-	public List<ValidationError> selectDeliveryAddressMethod(String deliveryAddressId, String actionName, HttpSession session, FDUserI user) throws FDResourceException, JspException, RedirectToPage {
+	public List<ValidationError> selectDeliveryAddressMethod(String deliveryAddressId, String contactNumber, String actionName, HttpSession session, FDUserI user) throws FDResourceException, JspException, RedirectToPage {
 		List<ValidationError> validationErrors = new ArrayList<ValidationError>();
 		ErpAddressModel deliveryAddress = user.getShoppingCart().getDeliveryAddress();
 		if (deliveryAddress == null || deliveryAddress.getId() == null || !deliveryAddress.getId().equals(deliveryAddressId)) {
 			ActionResult actionResult = new ActionResult();
-			DeliveryAddressManipulator.performSetDeliveryAddress(session, user, deliveryAddressId, null, null, actionName, true, actionResult, null, null, null, null, null, null);
+			DeliveryAddressManipulator.performSetDeliveryAddress(session, user, deliveryAddressId, contactNumber, null, actionName, true, actionResult, null, null, null, null, null, null);
 			TimeslotService.defaultService().releaseTimeslot(user);
 			processErrors(validationErrors, actionResult);
 		}
@@ -158,7 +158,7 @@ public class DeliveryAddressService {
 				if (user.getShoppingCart().getDeliveryAddress() == null) {
 					selectedDeliveryAddressId = FDCustomerManager.getDefaultDepotLocationPK(user.getIdentity());
 					if (selectedDeliveryAddressId != null) {
-						selectDeliveryAddressMethod(selectedDeliveryAddressId, "selectDeliveryAddressMethod", session, user);
+						selectDeliveryAddressMethod(selectedDeliveryAddressId, "", "selectDeliveryAddressMethod", session, user);
 					}
 				} else {
 					ErpAddressModel deliveryAddress = user.getShoppingCart().getDeliveryAddress();
@@ -172,7 +172,7 @@ public class DeliveryAddressService {
 				if (user.getShoppingCart().getDeliveryAddress() == null) {
 					selectedDeliveryAddressId = FDCustomerManager.getDefaultShipToAddressPK(user.getIdentity());
 					if (selectedDeliveryAddressId != null) {
-						selectDeliveryAddressMethod(selectedDeliveryAddressId, "selectDeliveryAddressMethod", session, user);
+						selectDeliveryAddressMethod(selectedDeliveryAddressId, "", "selectDeliveryAddressMethod", session, user);
 					}
 				} else {
 					PrimaryKey deliveryAddressMethodPrimaryKey = user.getShoppingCart().getDeliveryAddress().getPK();
@@ -215,7 +215,7 @@ public class DeliveryAddressService {
 			}
 
 			if (selectedDeliveryAddressId == null && !addresses.isEmpty()) {
-				selectDeliveryAddressMethod(addresses.get(0).getId(), "selectDeliveryAddressMethod", session, user);
+				selectDeliveryAddressMethod(addresses.get(0).getId(), "", "selectDeliveryAddressMethod", session, user);
 				addresses.get(0).setSelected(true);
 			}
 			
@@ -407,7 +407,7 @@ public class DeliveryAddressService {
 		pickupDepotLocationData.setOpeningHours(OpeningHourConstants.getOpeningHours());
 
 		if (customerInfoModel.getOtherPhone() != null && !"".equals(customerInfoModel.getOtherPhone())) {
-			pickupDepotLocationData.setPhone(customerInfoModel.getOtherPhone().toString());
+			pickupDepotLocationData.setPhone(customerInfoModel.getOtherPhone().getPhone());
 		}
 
 		return pickupDepotLocationData;
