@@ -107,11 +107,11 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         addRequestValue(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode(), deliveryAddress.getDeliveryInstructions());
         if(deliveryAddress.isDoorman()){
         	
-        	//APPDEV-4228 - Doorman Property – not Adding/Editing addresses
+        	//APPDEV-4228  Doorman Property  not Adding/Editing addresses
         	//addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), EnumDeliverySetting.DOORMAN.getName());
         	addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), EnumDeliverySetting.DOORMAN.getDeliveryCode());
         } else{
-        	//APPDEV-4228 - Doorman Property – not Adding/Editing addresses
+        	//APPDEV-4228  Doorman Property  not Adding/Editing addresses
         	//addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), EnumDeliverySetting.NONE.getName());
         	addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), EnumDeliverySetting.NONE.getDeliveryCode());
         }
@@ -158,13 +158,13 @@ public class RegistrationControllerTagWrapper extends ControllerTagWrapper imple
         addRequestValue(EnumUserInfoName.DLV_DELIVERY_INSTRUCTIONS.getCode(), deliveryAddress.getDeliveryInstructions());
         if(deliveryAddress.isDoorman()) {
         	
-        	//APPDEV-4228 - Doorman Property – not Adding/Editing addresses
+        	//APPDEV-4228  Doorman Property  not Adding/Editing addresses
         	//addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), EnumDeliverySetting.DOORMAN.getName());
         	addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), EnumDeliverySetting.DOORMAN.getDeliveryCode());
         	
         } else {
         	
-        	//APPDEV-4228 - Doorman Property – not Adding/Editing addresses
+        	//APPDEV-4228  Doorman Property  not Adding/Editing addresses
         	//addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), EnumDeliverySetting.NONE.getName());
         	addRequestValue(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode(), EnumDeliverySetting.NONE.getDeliveryCode());
         }
