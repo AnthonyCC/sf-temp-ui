@@ -17,7 +17,8 @@
     <tmpl:get name="extraJs"/>
     <%@ include file="/shared/template/includes/i_head_end.jspf" %>
   </head>
-  <body data-ec-page="<tmpl:get name="ecpage" />">
+<!--[if lte IE 9]><body class="ie" data-ec-page="<tmpl:get name="ecpage" />"> <![endif]-->
+<!--[if gt IE 9]><!--><body data-ec-page="<tmpl:get name="ecpage" />"><!--<![endif]-->
     <%@ include file="/shared/template/includes/i_body_start.jspf" %>
     <tmpl:get name="globalnav" />
 

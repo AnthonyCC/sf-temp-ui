@@ -30,9 +30,15 @@
   text-align:center;
 }
 
+.deliverypasspopup_boxes {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  flex-flow: row wrap;
+}
+
 .deliverypasspopup__option{
   display:inline-block;
-  width:220px;
   overflow:visible;
   background-color:#fff;
   border:1px solid #c7cabc;
@@ -41,8 +47,11 @@
   width:210px;
   box-sizing:border-box;
   vertical-align:top;
-  min-height:120px;
   border-radius:5px;
+}
+
+body.ie .deliverypasspopup__option {
+  min-height:120px;
 }
 
 .deliverypasspopup__option span.saving {

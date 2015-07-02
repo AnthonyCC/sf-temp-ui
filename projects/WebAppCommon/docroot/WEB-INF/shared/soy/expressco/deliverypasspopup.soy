@@ -8,12 +8,14 @@
   <div class='deliverypasspopup__header'></div>
   <div data-component='deliverypasspopup-page'>
     <p class='deliverypasspopup__title'>Save with Unlimited <i>Free</i> Delivery!</p>
-    <form id="deliverypasspopup" fdform="deliverypass" action="#" data-cmeventsource="{$data.cmEventSource ? $data.cmEventSource : 'BROWSE'}">
+    <form fdform="deliverypass" action="#" data-cmeventsource="{$data.cmEventSource ? $data.cmEventSource : 'BROWSE'}">
+      <div class="deliverypasspopup_boxes">
       {if $data.products}
         {foreach $option in $data.products}
           {call .deliveryoption data="$option" /}
         {/foreach}
       {/if}
+      </div>
       <div class='deliverypasspopup__footer'>
         <button class='cssbutton green deliverypasspopup__submit' type='submit'>Submit</button>
         <p class='deliverypasspopup__terms'>By purchasing a DeliveryPass&#8482;, you are agreeing<br/> to the terms
