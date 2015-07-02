@@ -104,6 +104,10 @@
   font-weight: bold;
 }
 
+.successtimeslot .successtimeslot_date {
+  font-size: 1.5em;
+}
+
 .successtimeslot .successtimeslot_time {
   color: #693;
   font-size: 1.75em;
