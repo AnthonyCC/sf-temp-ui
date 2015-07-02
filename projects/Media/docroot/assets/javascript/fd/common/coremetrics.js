@@ -25,7 +25,7 @@ var FreshDirect = FreshDirect || {};
 		},
     setEvent:{
       value: function (cme, force) {
-        cmevent =  (force ? cme :
+        cmevent = (force ? cme :
           (cme === 'pageview' || cmevent === 'pageview') ? 'pageview' : (
           (cme === 'element' || cmevent === 'element') ? 'element' : (
           (cme === 'sort' || cmevent === 'sort') ? 'sort' : (
@@ -53,6 +53,12 @@ var FreshDirect = FreshDirect || {};
 	});
 
 	coremetrics.listen();
+
+  $(document).on('click', '[cm-click]', function (e) {
+    var cmData = $(e.target).attr('cm-click');
+
+    coremetrics.playOneItem(cmData.split(','));
+  });
 
   if (fd.coremetricsData) {
     fd.coremetricsData.each(coremetrics.playOneItem, coremetrics);
