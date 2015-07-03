@@ -377,11 +377,14 @@
 
 .cartheader__subtotal{
   width:240px;
+  vertical-align: top;
+  padding-top: 5px;
 }
 
 .cartheader__action{
   width:270px;
   text-align:right;
+  vertical-align: top;
 }
 
 .cartheader__action_w_subtotal {
