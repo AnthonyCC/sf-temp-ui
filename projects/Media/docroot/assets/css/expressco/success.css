@@ -116,4 +116,6 @@
 
 #successpage h2.inyourorder {
   font-weight: bold;
+  line-height: 44px;
+  border-bottom: 1px solid #ddd;
 }
