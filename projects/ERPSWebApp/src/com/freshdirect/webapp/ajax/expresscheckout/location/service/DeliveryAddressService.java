@@ -112,7 +112,7 @@ public class DeliveryAddressService {
 	public List<ValidationError> selectDeliveryAddressMethod(String deliveryAddressId, String contactNumber, String actionName, HttpSession session, FDUserI user) throws FDResourceException, JspException, RedirectToPage {
 		List<ValidationError> validationErrors = new ArrayList<ValidationError>();
 		ErpAddressModel deliveryAddress = user.getShoppingCart().getDeliveryAddress();
-		if (deliveryAddress == null || deliveryAddress.getId() == null || !deliveryAddress.getId().equals(deliveryAddressId)) {
+		if (deliveryAddress == null || deliveryAddress.getId() == null || user.getShoppingCart().getZoneInfo() == null || !deliveryAddress.getId().equals(deliveryAddressId)) {
 			ActionResult actionResult = new ActionResult();
 			DeliveryAddressManipulator.performSetDeliveryAddress(session, user, deliveryAddressId, contactNumber, null, actionName, true, actionResult, null, null, null, null, null, null);
 			TimeslotService.defaultService().releaseTimeslot(user);
@@ -164,6 +164,7 @@ public class DeliveryAddressService {
 					ErpAddressModel deliveryAddress = user.getShoppingCart().getDeliveryAddress();
 					if (deliveryAddress instanceof ErpDepotAddressModel) {
 						selectedDeliveryAddressId = user.getShoppingCart().getDeliveryAddress().getLocationId();
+						selectDeliveryAddressMethod(selectedDeliveryAddressId, "", "selectDeliveryAddressMethod", session, user);
 					}
 				}
 			}
