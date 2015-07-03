@@ -73,7 +73,7 @@ public class HttpRequestWrapper implements HttpServletRequest {
 
     @Override
     public Cookie[] getCookies() {
-        throw new IllegalAccessError("this method has not been implemented in this wrapper");
+        return new Cookie[0];
     }
 
     @Override
