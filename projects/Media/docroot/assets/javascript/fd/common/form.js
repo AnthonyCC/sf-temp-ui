@@ -574,7 +574,24 @@ var FreshDirect = FreshDirect || {};
 
     if (e.type === 'keydown') {
       if (e.keyCode >= 48 && e.keyCode <= 57 && pos < mask.length) {
+        // numbers
         ch = (e.keyCode - 48) + '';
+        oldch = val.substr(pos, 1);
+
+        for (newpos = pos; newpos < mask.length && oldch !== 'x' && oldch !== +oldch+''; newpos++) {
+          oldch = val.substr(newpos, 1);
+          pos = newpos;
+        }
+
+        if (newpos < mask.length) {
+          $el.val(val.substr(0, pos) + ch + val.substr(pos+1));
+          $el[0].setSelectionRange(pos+1, pos+1);
+        }
+
+        e.preventDefault();
+      } else if (e.keyCode >= 96 && e.keyCode <= 105 && pos < mask.length) {
+        // keypad
+        ch = (e.keyCode - 96) + '';
         oldch = val.substr(pos, 1);
 
         for (newpos = pos; newpos < mask.length && oldch !== 'x' && oldch !== +oldch+''; newpos++) {
