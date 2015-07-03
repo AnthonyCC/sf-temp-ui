@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.ajax.expresscheckout.cart.service;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -300,7 +301,8 @@ public class CartDataService {
 		try {
 			ZonePriceInfoModel zpi = priceCalculator.getZonePriceInfoModel();
 			if (zpi != null) {
-				item.setUnitPrice(Double.toString(zpi.getDefaultPrice()));
+				DecimalFormat df = new DecimalFormat("0.00");
+				item.setUnitPrice(df.format(zpi.getDefaultPrice()));
 				FDProductInfo productInfo = FDCachedFactory.getProductInfo(fdProduct.getSkuCode());
 				item.setUnitScale(productInfo.getDisplayableDefaultPriceUnit().toLowerCase());
 			}
