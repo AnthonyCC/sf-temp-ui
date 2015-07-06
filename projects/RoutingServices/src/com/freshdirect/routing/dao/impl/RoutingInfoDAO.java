@@ -1147,7 +1147,7 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 				}
 		
 				private static final String GET_STATIC_ROUTES_BY_AREA = 
-						"SELECT TA.CODE, T.CUTOFF_TIME, R.ORDER_ID, T.START_TIME, R.STATUS_CODE FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z , TRANSP.ZONE TZ, TRANSP.TRN_AREA TA " +
+						"SELECT TA.CODE, T.CUTOFF_TIME, R.ORDER_ID, T.START_TIME, T.ROUTING_START_TIME, R.STATUS_CODE FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z , TRANSP.ZONE TZ, TRANSP.TRN_AREA TA " +
 						"WHERE R.TIMESLOT_ID = T.ID AND R.STATUS_CODE in (10, 5) AND T.ZONE_ID = Z.ID AND T.BASE_DATE = ? AND Z.ZONE_CODE = TZ.ZONE_CODE " +
 						"AND TZ.AREA = TA.CODE AND R.IN_UPS IS NULL";
 				
@@ -1170,11 +1170,15 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 							do {
 								String areaCode  = rs.getString("CODE");
 								RoutingTimeOfDay cutoff = new RoutingTimeOfDay(rs.getTimestamp("CUTOFF_TIME"));
-								Date departureTime = rs.getTimestamp("START_TIME");
+								//Date departureTime = rs.getTimestamp("START_TIME");
 								int rsvStatusCode = rs.getInt("STATUS_CODE");
 								
 								IRoutingStopModel stop = new RoutingStopModel();
 								stop.setOrderNumber(rs.getString("ORDER_ID"));
+								Date departureTime = rs.getTimestamp("ROUTING_START_TIME");
+								if(departureTime == null){
+									departureTime = rs.getTimestamp("START_TIME");
+								}
 								stop.setStopDepartureTime(departureTime);
 								
 								if(!result.containsKey(areaCode))
