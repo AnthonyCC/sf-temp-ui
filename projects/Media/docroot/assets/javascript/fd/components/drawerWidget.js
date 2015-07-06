@@ -26,6 +26,9 @@ var FreshDirect = FreshDirect || {};
       value:function(data, placeHolderSelector, templateFn){
         var $ph =  $(placeHolderSelector);
 
+        data = data || {};
+        data.metadata = data.metadata || fd.metaData;
+
         if($ph.length){
           $ph.html(templateFn(data));
           fd.modules.common.Select.selectize($ph);
