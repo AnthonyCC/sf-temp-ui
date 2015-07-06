@@ -10,13 +10,14 @@ import java.util.TreeMap;
 import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.FilteringMenuItem;
 import com.freshdirect.fdstore.content.FilteringValue;
+import com.freshdirect.webapp.ajax.AbstractCoremetricsResponse;
 
 /**
  * Grouping return values for quickshop (JSON ready)
  * Deprecated with Quickshop 2.2 version. Replaced with {@link com.freshdirect.webapp.ajax.reorder.data.QuickShopReturnValue}
  */
 @Deprecated
-public class QuickShopReturnValue implements Serializable {
+public class QuickShopReturnValue extends AbstractCoremetricsResponse implements Serializable {
 
 	private static final long serialVersionUID = -1974804524813407050L;
 	
@@ -26,7 +27,6 @@ public class QuickShopReturnValue implements Serializable {
 	private Map<String,List<QuickShopSorterValues>> sorter;
 	private String searchTerm;
 	private QuickShopListDetails listDetails;
-	private List<List<String>> coremetrics = new ArrayList<List<String>>();
 	
 	public QuickShopReturnValue(List<QuickShopLineItem> items, Map<FilteringValue, Map<String, FilteringMenuItem>> menu, QuickShopPagerValues pager, List<QuickShopSorterValues> sorter, String searchTerm, QuickShopListDetails listDetails) {
 		super();
@@ -127,21 +127,6 @@ public class QuickShopReturnValue implements Serializable {
 
 	public void setListDetails(QuickShopListDetails listDetails) {
 		this.listDetails = listDetails;
-	}
-
-	public List<List<String>> getCoremetrics() {
-		return coremetrics;
-	}
-	
-	public void setCoremetrics( List<List<String>> coremetrics ) {
-		this.coremetrics = coremetrics;
-	}
-
-	public void addCoremetrics( List<String> cm ) {
-		if ( cm == null ) {
-			cm = new ArrayList<String>();
-		}
-		this.coremetrics.add( cm );
 	}
 
 }

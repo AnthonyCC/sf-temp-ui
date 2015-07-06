@@ -534,8 +534,8 @@ public class CartDataService {
 				}
 				String changeType = change.getType();
 				updateCartLinesByChangeType(user, cart, clines2report, serverName, cartLine, change, changeType);
+				CartOperations.populateCoremetricsShopTag(cartData, cartLine);
 			}
-			CartOperations.populateCoremetricsShopTag(cartData, clines2report, cart);
 		} catch (Exception e) {
 			LOG.error("Error while modifying cart for user " + userId, e);
 			BaseJsonServlet.returnHttpError(500, "Error while modifying cart");

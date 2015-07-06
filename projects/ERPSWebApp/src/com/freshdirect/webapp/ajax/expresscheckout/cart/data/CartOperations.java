@@ -58,6 +58,7 @@ import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
+import com.freshdirect.webapp.ajax.ICoremetricsResponse;
 import com.freshdirect.webapp.ajax.browse.FilteringFlowType;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartCouponResponse;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
@@ -66,7 +67,6 @@ import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseData;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartResponseDataItem.Status;
 import com.freshdirect.webapp.taglib.coremetrics.AbstractCmShopTag;
-import com.freshdirect.webapp.taglib.coremetrics.CmShop5Tag;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCouponUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.display.FDCouponTag;
@@ -199,7 +199,7 @@ public class CartOperations {
 
 	}
 
-	private static void populateCoremetricsShopTag( AddToCartResponseData responseData, FDCartLineI cartLine ) {
+	public static void populateCoremetricsShopTag( ICoremetricsResponse responseData, FDCartLineI cartLine ) {
 		// 		COREMETRICS SHOP5
 		try {
 			
@@ -221,25 +221,6 @@ public class CartOperations {
 		}
 	}
 
-	public static void populateCoremetricsShopTag( CartData responseData, List<FDCartLineI> cartLines, FDCartModel cart ) {
-		// 		COREMETRICS SHOP5
-		String cmScript = null;
-		try {
-			CmShop5Tag cmTag = new CmShop5Tag();
-			cmTag.setWrapIntoScriptTag( false );
-			cmTag.setOutStringVar( "cmStr" );
-			cmTag.setCart( cart );
-			cmTag.setExplicitList( cartLines );
-			cmScript = cmTag.getTagJs();
-		} catch (SkipTagException ignore) {
-			// ignore exception, cmScript is already null
-		}
-		if ( cmScript != null && cmScript.trim().isEmpty() ) {
-			cmScript = null;
-		}
-		responseData.setCoremetricsScript( cmScript );		
-	}
-	
 	
 	private static void populateECouponsStatus(AddToCartResponseData responseData, FDUserI user, FDCartModel cart, List<FDCartLineI> cartLinesToAdd, HttpSession session) {
 		

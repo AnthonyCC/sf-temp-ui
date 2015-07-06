@@ -3,10 +3,11 @@ package com.freshdirect.webapp.ajax.checkout.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.freshdirect.webapp.ajax.AbstractCoremetricsResponse;
 import com.freshdirect.webapp.ajax.product.data.CartLineData;
 import com.freshdirect.webapp.ajax.product.data.ProductData;
 
-public class UnavailabilityData {
+public class UnavailabilityData extends AbstractCoremetricsResponse {
 	
 	public static class Line {
 		private String availableQuantity;
@@ -47,7 +48,6 @@ public class UnavailabilityData {
 	private List<UnavailabilityData.Line> replaceableLines = new ArrayList<UnavailabilityData.Line>();
 	private List<UnavailabilityData.Line> nonReplaceableLines = new ArrayList<UnavailabilityData.Line>();
 	private List<UnavailabilityData.Line> passes = new ArrayList<UnavailabilityData.Line>();
-	private List<List<String>> coremetrics = new ArrayList<List<String>>();
 	
 	public String getDeliveryDate() {
 		return deliveryDate;
@@ -95,18 +95,6 @@ public class UnavailabilityData {
 
 	public void setNonReplaceableLines(List<UnavailabilityData.Line> nonReplaceableLines) {
 		this.nonReplaceableLines = nonReplaceableLines;
-	}
-
-	public List<List<String>> getCoremetrics() {
-		return coremetrics;
-	}
-	
-	public void setCoremetrics(List<List<String>> coremetrics) {
-		this.coremetrics = coremetrics;
-	}
-
-	public void addCoremetrics(List<String> cm) {
-		this.coremetrics.add( cm );
 	}
 
 }

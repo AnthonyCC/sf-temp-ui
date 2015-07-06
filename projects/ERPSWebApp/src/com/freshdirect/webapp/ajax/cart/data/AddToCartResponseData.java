@@ -6,13 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.webapp.ajax.AbstractCoremetricsResponse;
+
 /**
  *	Simple java bean for add to cart response. 
  *	Class structure is representing the JSON structure. 	
  * 
  * @author treer
  */
-public class AddToCartResponseData implements Serializable {
+public class AddToCartResponseData extends AbstractCoremetricsResponse implements Serializable {
 
 	
 	private static final long	serialVersionUID	= 8413382103584983050L;
@@ -20,8 +22,6 @@ public class AddToCartResponseData implements Serializable {
 	private List<AddToCartResponseDataItem> atcResult = new ArrayList<AddToCartResponseDataItem>();
 	
 	private PendingPopupData pendingPopupData;
-
-	private List<List<String>> coremetrics = new ArrayList<List<String>>();
 
 	// map: couponId -> statusMessage 
 	private Map<String,AddToCartCouponResponse> couponStatus = new HashMap<String, AddToCartCouponResponse>();
@@ -40,21 +40,6 @@ public class AddToCartResponseData implements Serializable {
 	}
 	public void setPendingPopupData(PendingPopupData pendingPopupData) {
 		this.pendingPopupData = pendingPopupData;
-	}
-
-	public List<List<String>> getCoremetrics() {
-		return coremetrics;
-	}
-	
-	public void setCoremetrics( List<List<String>> coremetrics ) {
-		this.coremetrics = coremetrics;
-	}
-
-	public void addCoremetrics( List<String> cm ) {
-		if ( cm == null ) {
-			cm = new ArrayList<String>();
-		}
-		this.coremetrics.add( cm );
 	}
 	
 	public Map<String, AddToCartCouponResponse> getCouponStatus() {

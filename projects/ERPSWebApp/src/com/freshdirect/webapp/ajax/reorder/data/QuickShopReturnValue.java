@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import com.freshdirect.fdstore.content.EnumQuickShopFilteringValue;
 import com.freshdirect.fdstore.content.FilteringMenuItem;
 import com.freshdirect.fdstore.content.FilteringValue;
+import com.freshdirect.webapp.ajax.AbstractCoremetricsResponse;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopListDetails;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopPagerValues;
@@ -19,7 +20,7 @@ import com.freshdirect.webapp.ajax.quickshop.data.QuickShopSorterValues;
  * Grouping return values for quickshop (JSON ready)
  *
  */
-public class QuickShopReturnValue implements Serializable {
+public class QuickShopReturnValue extends AbstractCoremetricsResponse implements Serializable {
 
 	private static final long serialVersionUID = -1974804524813407050L;
 	
@@ -29,7 +30,6 @@ public class QuickShopReturnValue implements Serializable {
 	private Map<String,List<QuickShopSorterValues>> sorter;
 	private String searchTerm;
 	private QuickShopListDetails listDetails;
-	private List<List<String>> coremetrics = new ArrayList<List<String>>();
 	private QuickShopPastOrdersCustomMenu orders;
 	
 	public QuickShopReturnValue(List<QuickShopLineItem> items, Map<FilteringValue, Map<String, FilteringMenuItem>> menu, QuickShopPagerValues pager, List<QuickShopSorterValues> sorter, String searchTerm, QuickShopListDetails listDetails) {
@@ -131,21 +131,6 @@ public class QuickShopReturnValue implements Serializable {
 
 	public void setListDetails(QuickShopListDetails listDetails) {
 		this.listDetails = listDetails;
-	}
-
-	public List<List<String>> getCoremetrics() {
-		return coremetrics;
-	}
-	
-	public void setCoremetrics( List<List<String>> coremetrics ) {
-		this.coremetrics = coremetrics;
-	}
-
-	public void addCoremetrics( List<String> cm ) {
-		if ( cm == null ) {
-			cm = new ArrayList<String>();
-		}
-		this.coremetrics.add( cm );
 	}
 
 	public QuickShopPastOrdersCustomMenu getOrders() {

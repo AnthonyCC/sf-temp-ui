@@ -9,13 +9,14 @@ import java.util.Map;
 
 import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
+import com.freshdirect.webapp.ajax.AbstractCoremetricsResponse;
 
 /**
  * Simple java bean for cart contents. Class structure is representing the resulting JSON structure.
  * 
  * @author treer
  */
-public class CartData implements Serializable {
+public class CartData extends AbstractCoremetricsResponse implements Serializable {
 
 	private static final long serialVersionUID = -5968293697377155974L;
 
@@ -23,11 +24,6 @@ public class CartData implements Serializable {
 	 * Optional global error message
 	 */
 	private String errorMessage;
-
-	/**
-	 * Coremetrics script - to run on the client side
-	 */
-	private String coremetricsScript;
 
 	/**
 	 * Number of items
@@ -89,14 +85,6 @@ public class CartData implements Serializable {
 
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
-	}
-
-	public String getCoremetricsScript() {
-		return coremetricsScript;
-	}
-
-	public void setCoremetricsScript(String coremetricsScript) {
-		this.coremetricsScript = coremetricsScript;
 	}
 
 	public List<Section> getCartSections() {
