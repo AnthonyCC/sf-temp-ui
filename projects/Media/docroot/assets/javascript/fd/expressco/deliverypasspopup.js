@@ -80,6 +80,26 @@ var FreshDirect = FreshDirect || {};
         this.noscroll(true);
       }
     },
+    render: {
+      value: function (data) {
+        POPUPWIDGET.render.call(this, data);
+        this.adjustBoxes();
+      }
+    },
+    adjustBoxes: {
+      value: function () {
+        var $boxes = $('#'+this.popupId+' .deliverypasspopup__option'),
+            hMax = 0;
+
+        $boxes.each(function (i, el) {
+          hMax = Math.max($(el).outerHeight(), hMax);
+        });
+
+        if (hMax > 0) {
+          $boxes.css('height', hMax);
+        }
+      }
+    },
     loadData: {
       value: function (e) {
         this.open(e);
