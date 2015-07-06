@@ -46,6 +46,7 @@
 * @param nameOnCard
 * @param address1
 * @param address2
+* @param? apartment 
 * @param bestNumber
 * @param expiration
 * @param accountNumber
@@ -87,7 +88,7 @@
     <div class="drawer__item__section">
       <p class='section__title'>Billing address</p>
       <div class='section__body'>
-        {if $address1}<p>{$address1}</p>{/if}
+        {if $address1}<p>{$address1} {$apartment ? $apartment : ''}</p>{/if}
         {if $address2}<p>{$address2}</p>{/if}
         <p>{$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
       </div>
@@ -114,6 +115,7 @@
 * @param nameOnCard
 * @param address1
 * @param address2
+* @param? apartment 
 * @param bestNumber
 * @param expiration
 * @param? accountNumber
@@ -151,7 +153,7 @@
   <div class="drawer__previewitem__section">
     <p class='section__title'>Billing address</p>
     <div class='section__body'>
-      {if $address1}<p>{$address1}</p>{/if}
+      {if $address1}<p>{$address1} {$apartment ? $apartment : ''}</p>{/if}
       {if $address2}<p>{$address2}</p>{/if}
       <p>{$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
     </div>
