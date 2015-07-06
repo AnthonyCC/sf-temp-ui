@@ -64,7 +64,7 @@ public class PageViewTagModelBuilder  {
 				processSearchAttributes();
 				tagModel.setPageId("search");
 				tagModel.setCategoryId(CustomCategory.SEARCH.toString());
-				decoratePageIdWithCatId();
+				decoratePageIdWithCatId(tagModel);
 			
 			} else if (input.uri.contains("filter")) {
 				// "/api/filter" branch:
@@ -94,12 +94,12 @@ public class PageViewTagModelBuilder  {
 				}
 				
 				processHelpDir();
-				decoratePageIdWithCatId();
+				decoratePageIdWithCatId(tagModel);
 
 			} else if ("expressco".equals(dirName)){
 				tagModel.setCategoryId(CustomCategory.CHECKOUT.toString());
 				tagModel.setPageId(uriAfterSlash.substring(slashAfterDirNamePos+1));
-				decoratePageIdWithCatId();
+				decoratePageIdWithCatId(tagModel);
 			}
 
 		//uri has only a file name	
@@ -110,7 +110,7 @@ public class PageViewTagModelBuilder  {
 				processSearchAttributes();
 				tagModel.setPageId("search");
 				tagModel.setCategoryId(CustomCategory.SEARCH.toString());
-				decoratePageIdWithCatId();
+				decoratePageIdWithCatId(tagModel);
 
 			} else if ("department".equals(fileName) || "department_cohort_match".equals(fileName) || "category".equals(fileName) || "newsletter".equals(fileName) || "whatsgood".equals(fileName)  || "ddpp".equals(fileName) /* || "browse".equals(fileName) */){
 				processDeptOrCat();
@@ -216,7 +216,7 @@ public class PageViewTagModelBuilder  {
 					tagModel.setPageId(uriAfterSlash);
 				}
 				
-				decoratePageIdWithCatId();
+				decoratePageIdWithCatId(tagModel);
 			}
 		}
 		
@@ -224,7 +224,7 @@ public class PageViewTagModelBuilder  {
 		if (tagModel.getCategoryId()==null) {
 			tagModel.setCategoryId(FDStoreProperties.getCoremetricsCatIdOtherPage());
 			tagModel.setPageId(uriAfterSlash);
-			decoratePageIdWithCatId();
+			decoratePageIdWithCatId(tagModel);
 		} 
 	}
 
@@ -249,11 +249,10 @@ public class PageViewTagModelBuilder  {
 		// No wayout. Shoot the horses. Hope is lost to make it to the destination.
 	}
 
-
-	private void decoratePageIdWithCatId(){
+	public static void decoratePageIdWithCatId(PageViewTagModel tagModel){
 		tagModel.setPageId(tagModel.getCategoryId().replace("_", " ").toUpperCase() + TagModelUtil.PAGE_ID_DELIMITER + tagModel.getPageId());
 	}
-	
+
 	private void processHelpDir() throws SkipTagException{
 		if ("help".equals(tagModel.getCategoryId())){
 			String pageParam = input.page;
