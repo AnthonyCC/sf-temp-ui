@@ -11,6 +11,7 @@ public class FormMetaData {
 	private List<FormMetaDataItem> expireYear;
 	private boolean enableECheck;
 	private boolean enableEbtCheck;
+	private String paymentPromoOAS;
 
 	public List<FormMetaDataItem> getState() {
 		return state;
@@ -66,6 +67,14 @@ public class FormMetaData {
 
 	public void setEnableEbtCheck(boolean enableEbtCheck) {
 		this.enableEbtCheck = enableEbtCheck;
+	}
+
+	public String getPaymentPromoOAS() {
+		return paymentPromoOAS;
+	}
+
+	public void setPaymentPromoOAS(String paymentPromoOAS) {
+		this.paymentPromoOAS = paymentPromoOAS;
 	}
 
 }

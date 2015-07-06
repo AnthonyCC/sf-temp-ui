@@ -16,8 +16,10 @@ import com.freshdirect.webapp.ajax.expresscheckout.data.FormMetaDataItem;
 
 public class FormMetaDataService {
 
+
 	private static final FormMetaDataService INSTANCE = new FormMetaDataService();
 
+	private static final String XC_PAYMENT_PROMO_OAS_SITEPAGE = "www.freshdirect.com/XCpaymentpromo";
 	private static final String DEFAULT_COUNTRY_CODE = "US";
 
 	private FormMetaDataService() {
@@ -37,6 +39,7 @@ public class FormMetaDataService {
 		formMetaData.setCountry(populateCountry(null));
 		formMetaData.setEnableECheck(populateECheck(user));
 		formMetaData.setEnableEbtCheck(populateEbtCheck(user));
+		formMetaData.setPaymentPromoOAS(XC_PAYMENT_PROMO_OAS_SITEPAGE);
 		return formMetaData;
 	}
 
