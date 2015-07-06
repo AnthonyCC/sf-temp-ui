@@ -158,6 +158,10 @@ var FreshDirect = FreshDirect || {};
           }
 
           cartcontent.render(ajaxData);
+          
+          if (ajaxData.coremetrics) {
+            fd.common.dispatcher.signal('coremetrics', ajaxData.coremetrics);
+          }
 
           fd.expressco.checkout.coFlowChecker.checkFlow();
         });
