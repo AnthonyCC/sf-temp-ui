@@ -337,7 +337,7 @@ public class CartOperations {
 				// how much we're adding/removing
 				double deltaQty = newQ - oldQ;
 	
-				if ( deltaQty < EPSILON ) {
+				if ( Math.abs(deltaQty) < EPSILON ) {
 					// nothing to do
 					return;
 					
