@@ -1,12 +1,17 @@
 package com.freshdirect.fdstore.customer;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
+import com.freshdirect.fdstore.promotion.ProductSampleApplicator;
+import com.freshdirect.fdstore.promotion.PromotionApplicatorI;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 
@@ -119,4 +124,27 @@ public class FDPromotionEligibility implements Serializable {
 	public void addRecommendedPromo(String promoCode) {
 		this.recommendedPromos.add(promoCode);
 	}
+	
+	
+	public List<ProductModel> getEligibleProductSamples() {
+		List<ProductModel> eligibleProdSamples = new ArrayList<ProductModel>();
+		ProductSampleApplicator productSampleApplicator = null;
+		Set<String> eligibleProdSamplePromotions = getEligiblePromotionCodes(EnumPromotionType.PRODUCT_SAMPLE);
+		eligibleProdSamplePromotions.retainAll(this.eligibilePromos);
+		
+		for ( Iterator<String> it = eligibleProdSamplePromotions.iterator(); it.hasNext(); ) {
+			String promoCode = it.next();
+			PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
+			for(Iterator<PromotionApplicatorI> i = promo.getApplicatorList().iterator(); i.hasNext();){
+				PromotionApplicatorI _applicator = i.next();
+				if(_applicator instanceof ProductSampleApplicator) {
+					productSampleApplicator = (ProductSampleApplicator) _applicator;
+				}
+			}
+			if(null != productSampleApplicator.getSampleProduct())
+			eligibleProdSamples.add(productSampleApplicator.getSampleProduct());
+		}
+		return eligibleProdSamples;
+	}
+
 }

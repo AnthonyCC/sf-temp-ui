@@ -32,6 +32,10 @@ public interface PromotionI extends Serializable {
 	
 	public double getMinSubtotal();
 	
+	public boolean isProductSampleItem();
+	
+	public List getApplicatorList();
+	
 	public EnumPromotionType getPromotionType();
 	
 	public Timestamp getModifyDate();

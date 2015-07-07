@@ -349,7 +349,32 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				clearLineItemTypeInfo();
 				this.promotion.setPercentOff("");
 	//			setWSPromotionCode();
+			}	else if(EnumPromotionType.PRODUCT_SAMPLE.getName().equalsIgnoreCase(promotionType)){
+				this.promotion.setOfferType(EnumOfferType.PRODUCT_SAMPLE.getName());
+				this.promotion.setCategoryName(NVL.apply(request.getParameter("prod_sam_categoryName"), "").trim());
+				this.promotion.setProductName(NVL.apply(request.getParameter("prod_sam_productName"), "").trim());
+				ContentFactory contentFactory = ContentFactory.getInstance();
+				if(promotion.getCategoryName().length() == 0 || promotion.getProductName().length() == 0) {
+					actionResult.addError(true, "invalidCategoryName", "Category Id and Product Id are required to create sample promotion." );
+				}
+				if(!"".equalsIgnoreCase(promotion.getCategoryName())){
+					if(null == contentFactory.getContentNode(FDContentTypes.CATEGORY, promotion.getCategoryName().toLowerCase())){
+						actionResult.addError(true, "invalidCategoryName", promotion.getCategoryName()+" is invalid category Id." );
+					}
+				}
+				if(!"".equalsIgnoreCase(promotion.getProductName())){
+					if(null == contentFactory.getContentNode(FDContentTypes.PRODUCT, promotion.getProductName().toLowerCase())){
+						actionResult.addError(true, "invalidProductName", promotion.getProductName()+" is invalid product Id" );
+					}
+				}
+					
+				this.promotion.setPromotionType(promotionType);
+				this.promotion.setCombineOffer(true);
+				clearHeaderTypeInfo();
+				clearLineItemTypeInfo();
+				this.promotion.setPercentOff("");
 			}
+
 			
 			String oldPromoCode = this.promotion.getPromotionCode();
 			String newPromoCode = this.promotion.getPromotionCode();
@@ -718,7 +743,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			changeDetailModel.setChangeSectionId(EnumPromotionSection.OFFER_INFO);
 			promoChangeDetails.add(changeDetailModel);
 		}
-		if(!promotion.getOfferType().equalsIgnoreCase(oldPromotion.getOfferType())){
+		if(null!=promotion.getOfferType() && !promotion.getOfferType().equalsIgnoreCase(oldPromotion.getOfferType())){
 			FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
 			changeDetailModel.setChangeFieldName("Offer Type");
 			changeDetailModel.setChangeFieldOldValue(NVL.apply(oldPromotion.getOfferType(),"").trim());

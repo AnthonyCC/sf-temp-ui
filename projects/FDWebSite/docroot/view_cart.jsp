@@ -184,11 +184,14 @@ StringBuffer buffer = new StringBuffer(
 <img src="/media_stat/images/layout/clear.gif" width="1" height="16" border="0" alt="" />
 
 <%@ include file="/includes/i_cartcleanup.jspf" %>
+
+<potato:viewCart />
+<soy:render template="common.productSampleCarousel" data="${viewCartPotato.productSamplesTab}" />
+
 <%@ include file="/includes/i_viewcart.jspf" %> 
 
 </form>
 
-<potato:viewCart />
 <soy:render template="common.viewCartTabbedCarousel" data="${viewCartPotato}" /> 
 
 <table border="0" cellspacing="0" cellpadding="0" width="<%= W_VIEWCART_TOTAL %>">
@@ -221,6 +224,11 @@ StringBuffer buffer = new StringBuffer(
   window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
   window.FreshDirect.viewcart = window.FreshDirect.viewcart || {};
   window.FreshDirect.viewcart.data = <fd:ToJSON object="${viewCartPotato}" noHeaders="true"/>
+</script>
+
+<script>
+	jQuery(".product-sample-carousel .portrait-item .portrait-item-price").text("FREE");
+	jQuery(".product-sample-carousel .portrait-item .portrait-item-price").addClass("product-sample-free");
 </script>
 
 </tmpl:put>

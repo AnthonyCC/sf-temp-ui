@@ -10,6 +10,8 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.ajax.browse.data.CarouselData;
+import com.freshdirect.webapp.ajax.viewcart.data.ProductSamplesCarousel;
 import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
 import com.freshdirect.webapp.ajax.viewcart.service.ViewCartCarouselService;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
@@ -23,9 +25,12 @@ public class ViewCartPotatoTag extends SimpleTagSupport {
 	@Override
 	public void doTag() throws JspException, IOException {
 		ViewCartCarouselData carousels = null;
+		ProductSamplesCarousel productSamplesTab = null;
 		PageContext pageContext = (PageContext) getJspContext();
 		try {
 			carousels = ViewCartCarouselService.defaultService().populateViewCartTabsRecommendationsAndCarousel((HttpServletRequest) pageContext.getRequest());
+			productSamplesTab = ViewCartCarouselService.defaultService().populateViewCartPageProductSampleCarousel((HttpServletRequest) pageContext.getRequest());
+			carousels.setProductSamplesTab(productSamplesTab);
 		} catch (Exception e) {
 			LOGGER.error("recommendation failed", e);
 		}

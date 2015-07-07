@@ -86,7 +86,8 @@ public class FDPromotionVisitor {
         
         //Reconcile the discounts to make sure total header discounts does not exceed pre-deduction total(subtotal + dlv charge + tax).
         reconcileDiscounts(context, eligibilities, combinableOffers, redemptionValue);
-       
+        context.getUser().setProductSample(eligibilities.getEligibleProductSamples());
+
 		return eligibilities;
 	}
 

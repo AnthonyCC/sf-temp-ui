@@ -235,7 +235,10 @@ public class FDProductSelection implements FDProductSelectionI {
 			}
 
 			if(this.lookupProduct()!=null){
-				OrderLineUtil.describe(this);				
+				OrderLineUtil.describe(this);
+				if(null != orderLine.getDiscount() && EnumDiscountType.FREE.equals(orderLine.getDiscount().getDiscountType())){
+					orderLine.setDepartmentDesc("FREE SAMPLE(S)");					
+				}
 			}
 
 			this.dirty = false;

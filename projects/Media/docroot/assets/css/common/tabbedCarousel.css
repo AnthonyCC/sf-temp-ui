@@ -104,3 +104,61 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00c4c4be', e
 .tabbed-carousel.fullsize .tab-container [data-component="carousel"] .portrait-item {
 	width:160px;
 }
+
+.product-sample-carousel h2.product-sample-header{
+	font-family: Verdana, Arial, sans-serif;
+	color: #333;
+	font-size: 20px;
+	font-weight: bold;
+	padding: 18px 14px;	
+	margin: 0px;
+	line-height: 20px;
+	text-align: left;
+	background: #f0f5e1;
+	background: -moz-linear-gradient(top,  #f0f5e1 0%, #f0f5e1 79%, #edf1de 92%, #edf2df 98%, #b3b3b0 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f0f5e1), color-stop(79%,#f0f5e1), color-stop(92%,#edf1de), color-stop(98%,#edf2df), color-stop(100%,#b3b3b0));
+	background: -webkit-linear-gradient(top,  #f0f5e1 0%,#f0f5e1 79%,#edf1de 92%,#edf2df 98%,#b3b3b0 100%);
+	background: -o-linear-gradient(top,  #f0f5e1 0%,#f0f5e1 79%,#edf1de 92%,#edf2df 98%,#b3b3b0 100%);
+	background: -ms-linear-gradient(top,  #f0f5e1 0%,#f0f5e1 79%,#edf1de 92%,#edf2df 98%,#b3b3b0 100%);
+	background: linear-gradient(to bottom,  #f0f5e1 0%,#f0f5e1 79%,#edf1de 92%,#edf2df 98%,#b3b3b0 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0f5e1', endColorstr='#b3b3b0',GradientType=0 );
+}
+
+.product-sample-free{
+	color: #c00;
+}
+
+.product-sample-carousel h2.product-sample-carousel-header{
+	font-family: Verdana, Arial, sans-serif;
+	color: #333;
+	font-size: 20px;
+	padding: 22px 16px 14px;
+	line-height: 20px;
+	margin: 0;
+	text-align: left;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	background: -moz-linear-gradient(top, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.15)), color-stop(100%,rgba(0,0,0,0)));
+	background: -webkit-linear-gradient(top, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%);
+	background: -o-linear-gradient(top, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%);
+	background: -ms-linear-gradient(top, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%);
+	background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#26000000', endColorstr='#00000000',GradientType=0);
+}
+
+.product-sample-carousel .product-sample-carousel-bottom{
+	height: 16px;
+	width: 100%;
+	margin-bottom: 25px;
+	background: #c8c8c6;
+	background: -moz-linear-gradient(top,  #c8c8c6 0%, #e7ecd9 7%, #e5e9d6 13%, #f0f5e1 40%, #f0f5e1 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#c8c8c6), color-stop(7%,#e7ecd9), color-stop(13%,#e5e9d6), color-stop(40%,#f0f5e1), color-stop(100%,#f0f5e1));
+	background: -webkit-linear-gradient(top,  #c8c8c6 0%,#e7ecd9 7%,#e5e9d6 13%,#f0f5e1 40%,#f0f5e1 100%);
+	background: -o-linear-gradient(top,  #c8c8c6 0%,#e7ecd9 7%,#e5e9d6 13%,#f0f5e1 40%,#f0f5e1 100%);
+	background: -ms-linear-gradient(top,  #c8c8c6 0%,#e7ecd9 7%,#e5e9d6 13%,#f0f5e1 40%,#f0f5e1 100%);
+	background: linear-gradient(to bottom,  #c8c8c6 0%,#e7ecd9 7%,#e5e9d6 13%,#f0f5e1 40%,#f0f5e1 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c8c8c6', endColorstr='#f0f5e1',GradientType=0 );
+	
+}

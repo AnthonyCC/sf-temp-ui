@@ -21,7 +21,8 @@ public class EnumPromotionType extends Enum {
 	public static final EnumPromotionType GENERIC = new EnumPromotionType("GENERIC", "Generic", 90, false);
 	public static final EnumPromotionType WAIVE_CHARGE = new EnumPromotionType("WAIVE_CHARGE", "Waive Delivery Charge", 110, false);
 	public static final EnumPromotionType DP_EXTENSION = new EnumPromotionType("DP_EXTENSION", "Delivery Pass Extension", 120, false);
-	
+	public static final EnumPromotionType PRODUCT_SAMPLE = new EnumPromotionType("PRODUCT_SAMPLE", "Sample Products", 120, false);
+
 	private final String description;
 	private final int priority;
 	private final boolean obsolete;

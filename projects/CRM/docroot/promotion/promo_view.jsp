@@ -74,6 +74,8 @@
 							<option value="<%= EnumOfferType.DP_EXTN.getName() %>" <%= EnumOfferType.DP_EXTN.getName().equalsIgnoreCase(offerType)?"selected":""%>>Header - <%= EnumOfferType.DP_EXTN.getDescription() %></option>
 							<option value="<%= EnumOfferType.LINE_ITEM.getName() %>" <%= EnumOfferType.LINE_ITEM.getName().equalsIgnoreCase(offerType)?"selected":""%>><%= EnumOfferType.LINE_ITEM.getDescription() %></option>
 							<option value="<%= EnumOfferType.SAMPLE.getName() %>" <%= EnumOfferType.SAMPLE.getName().equalsIgnoreCase(offerType)?"selected":""%>><%= EnumPromotionType.SAMPLE.getDescription() %></option>
+							<option value="<%= EnumOfferType.PRODUCT_SAMPLE.getName() %>" <%= EnumOfferType.PRODUCT_SAMPLE.getName().equalsIgnoreCase(offerType)?"selected":""%>><%= EnumPromotionType.PRODUCT_SAMPLE.getDescription() %></option>
+							
 						</select>
 					</td>
 					<td>

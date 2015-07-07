@@ -280,6 +280,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	/* APPDEV-3756 */
 	private boolean isGlobalNavTutorialSeen = false;
+	private List<ProductModel> productSamples;
 
 	public String getTsaPromoCode() {
 		return tsaPromoCode;
@@ -2834,6 +2835,16 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.isGlobalNavTutorialSeen = isGlobalNavTutorialSeen;
 	}
 	
+
+	public List<ProductModel> getProductSamples() {
+		return this.productSamples;
+	}
+
+	public void setProductSample(List<ProductModel> productSamples) {
+		this.productSamples = productSamples;
+	}
+	
+
 	/* return List of orderInfos for all orders in En-route status. */
 	public List<FDOrderInfoI> getScheduledOrdersForDelivery(boolean sorted) throws FDResourceException {
 		LOGGER.debug("getScheduledOrdersForDelivery: " + sorted);

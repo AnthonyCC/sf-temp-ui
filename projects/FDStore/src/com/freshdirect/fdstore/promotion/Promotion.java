@@ -181,6 +181,9 @@ public class Promotion extends ModelSupport implements PromotionI {
 		} else if(this.isSampleItem() && !(this.isLineItemDiscount()||this.isHeaderDiscount()))
 			//Sample Promo
 			setPriority(10);
+		else if(this.isProductSampleItem() && !(this.isLineItemDiscount()||this.isHeaderDiscount()))
+			//Sample Promo
+			setPriority(15);
 		else if(this.isWaiveCharge() && !(this.isLineItemDiscount()||this.isHeaderDiscount()))
 			//Delivery Promo
 			setPriority(20);	
@@ -208,6 +211,19 @@ public class Promotion extends ModelSupport implements PromotionI {
 		}
 	}
 	
+	
+	public boolean isProductSampleItem() {
+		for(Iterator<PromotionApplicatorI> i = this.applicators.iterator(); i.hasNext();){
+			PromotionApplicatorI _applicator = i.next();
+			if(_applicator instanceof ProductSampleApplicator) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+
 	/**
 	 * @return true if the Promotion is configured properly.
 	 */

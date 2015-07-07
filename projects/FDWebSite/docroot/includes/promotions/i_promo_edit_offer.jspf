@@ -1,4 +1,5 @@
 
+<%@page import="com.freshdirect.fdstore.promotion.EnumPromotionType"%>
 <%@page import="com.freshdirect.fdstore.promotion.EnumOfferType"%><table width="100%" height="76%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
 	<tr>
 		<%-- first td sets the row heights --%>
@@ -6,7 +7,8 @@
 		<%-- sets the column widths --%>
 		<td width="33%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 		<td width="34%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
-		<td width="33%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<td width="17%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<td width="16%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 	</tr>
 	<% if(promotion.getBatchId() != null) { %>
 	<input type="hidden" name="batch_id" value="<%= promotion.getBatchId() %>"/>
@@ -22,6 +24,7 @@
 		<% if(promotion.getPromotionCode().indexOf("WS_")<=-1){ %>
 		<td class="bordLgrayDash noBorderT alignC"><input type="radio" id="discount_type_line_item" name="discount_type" value="<%= EnumPromotionType.LINE_ITEM.getName() %>" <%= EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotion.getPromotionType())?"checked":"" %>/> LINE ITEM</td>
 		<td class="bordLgrayDash noBorderTR alignC"><input type="radio" id="discount_type_sample" name="discount_type" value="<%= EnumPromotionType.SAMPLE.getName() %>" <%= EnumPromotionType.SAMPLE.getName().equalsIgnoreCase(promotion.getPromotionType())?"checked":"" %>/> SAMPLE</td>
+		<td class="bordLgrayDash noBorderTR alignC"><input type="radio" id="discount_type_product_sample" name="discount_type" value="<%=EnumPromotionType.PRODUCT_SAMPLE.getName() %>" <%= EnumPromotionType.PRODUCT_SAMPLE.getName().equalsIgnoreCase(promotion.getPromotionType())?"checked":"" %>/> PRODUCT_SAMPLE</td>
 		<%} %>
 	</tr>	
 	<tr>
@@ -515,6 +518,33 @@
 				<tr>
 					<td class="promo_edit_offer_label">Product Id:</td>
 					<td class="alignL vTop padL8R16"><input type="text" id="productName" name="sam_productName" class="w100p" value="<%= EnumPromotionType.SAMPLE.getName().equalsIgnoreCase(promotion.getPromotionType())?promotion.getProductName():"" %>" maxlength="40" /><br /><span class="grayIta8pt">e.g. corn</span></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"></td>
+					<td class="alignL"></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"></td>
+					<td class="alignL"><input type="checkbox" id="" disabled checked/><span class="gray">Combine offer</span></td>
+				</tr>
+			</table>
+		</td>
+		
+		<%--PRODUCT SAMPLE --%>
+				<td class="bordLgrayDash noBorderR vTop">
+			<table width="100%">
+				<tr>
+					<%-- sets the column widths --%>
+					<td width="75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<tr>
+					<td class="promo_edit_offer_label">Category Id:</td>
+					<td class="alignL vTop padL8R16"><input type="text" id="categoryName" name="prod_sam_categoryName" class="w100p" value="<%= EnumPromotionType.PRODUCT_SAMPLE.getName().equalsIgnoreCase(promotion.getPromotionType())?promotion.getCategoryName():"" %>" maxlength="40" /><br /><span class="grayIta8pt">e.g. corn_local_bl</span></td>
+				</tr>
+				<tr>
+					<td class="promo_edit_offer_label">Product Id:</td>
+					<td class="alignL vTop padL8R16"><input type="text" id="productName" name="prod_sam_productName" class="w100p" value="<%= EnumPromotionType.PRODUCT_SAMPLE.getName().equalsIgnoreCase(promotion.getPromotionType())?promotion.getProductName():"" %>" maxlength="40" /><br /><span class="grayIta8pt">e.g. corn</span></td>
 				</tr>
 				<tr>
 					<td class="promo_detail_label"></td>

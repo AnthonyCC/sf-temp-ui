@@ -315,6 +315,7 @@ public class ErpOrderLinePersistentBean extends ErpReadOnlyPersistentBean {
 			if(promotionType == null){
 				throw new EJBException("Promotion code is wrong or does not exist");
 			}
+			
 			Discount discount = new Discount(rs.getString("PROMOTION_CAMPAIGN"), promotionType, rs.getDouble("PROMOTION_AMT"));
 			discount.setSkuLimit(rs.getInt("SKU_LIMIT"));		
 			this.model.setDiscount(discount);

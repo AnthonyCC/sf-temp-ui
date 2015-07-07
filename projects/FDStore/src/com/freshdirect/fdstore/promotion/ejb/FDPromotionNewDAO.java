@@ -51,6 +51,7 @@ import com.freshdirect.fdstore.promotion.MaxLineItemCountStrategy;
 import com.freshdirect.fdstore.promotion.MaxRedemptionStrategy;
 import com.freshdirect.fdstore.promotion.PercentOffApplicator;
 import com.freshdirect.fdstore.promotion.PerishableLineItemStrategy;
+import com.freshdirect.fdstore.promotion.ProductSampleApplicator;
 import com.freshdirect.fdstore.promotion.ProfileAttributeStrategy;
 import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.fdstore.promotion.PromoVariantModelImpl;
@@ -765,8 +766,12 @@ public class FDPromotionNewDAO {
 		wasNull |= rs.wasNull();
 		String productName = rs.getString("product_name");
 		wasNull |= rs.wasNull();
-		if (!wasNull) {
-			promo.addApplicator( new SampleLineApplicator(new ProductReference(categoryName, productName), minSubtotal));
+		if(!wasNull){
+			if ("SAMPLE".equals(rs.getString("CAMPAIGN_CODE"))) {
+				promo.addApplicator( new SampleLineApplicator(new ProductReference(categoryName, productName), minSubtotal));
+			}else{
+				promo.addApplicator(new ProductSampleApplicator(new ProductReference(categoryName, productName), minSubtotal));
+			}
 		}
 		
 		//Set the zone strategy if applicable.

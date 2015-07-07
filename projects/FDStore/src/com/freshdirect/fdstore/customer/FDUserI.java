@@ -88,6 +88,10 @@ public interface FDUserI extends java.io.Serializable {
 
 	public boolean isInZone();
 	
+	public void setProductSample(List<ProductModel> list);
+	
+	public List<ProductModel> getProductSamples();
+	
     public void isLoggedIn(boolean loggedId);
 
 	public FDCartModel getShoppingCart();

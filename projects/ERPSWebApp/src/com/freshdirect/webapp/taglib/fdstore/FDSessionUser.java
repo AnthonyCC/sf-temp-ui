@@ -152,6 +152,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	private boolean couponWarningAcknowledged = false;
 	
 	private Map<String, List<AddToCartItem>> pendingExternalAtcItems;
+
+	private List<ProductModel> productSamples;
 	
 	public boolean getLastCOSSurveySuccess() {
     	return this.lastCOSSurveySuccess;
@@ -1750,5 +1752,13 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return this.user.getScheduledOrdersForDelivery(sorted);
 	}
 	
+
+	public List<ProductModel> getProductSamples() {
+		return this.user.getProductSamples();
+	}
+
+	public void setProductSample(List<ProductModel> productSamples) {
+		this.productSamples = productSamples;
+	}
 
 }

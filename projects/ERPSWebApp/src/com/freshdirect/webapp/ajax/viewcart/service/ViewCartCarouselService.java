@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.ajax.viewcart.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,11 +14,22 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
+import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.event.ImpressionLogger;
+import com.freshdirect.fdstore.FDProduct;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.PopulatorUtil;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
+import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.CartTabRecommender;
@@ -27,8 +39,12 @@ import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
+import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.browse.data.CarouselData;
 import com.freshdirect.webapp.ajax.browse.service.CarouselService;
+import com.freshdirect.webapp.ajax.product.ProductDetailPopulator;
+import com.freshdirect.webapp.ajax.product.data.ProductData;
+import com.freshdirect.webapp.ajax.viewcart.data.ProductSamplesCarousel;
 import com.freshdirect.webapp.ajax.viewcart.data.RecommendationTab;
 import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -189,6 +205,78 @@ public class ViewCartCarouselService {
 		return result;
 	}
 
+	public ProductSamplesCarousel populateViewCartPageProductSampleCarousel(HttpServletRequest request) throws Exception {
+		CarouselData carouselData = new CarouselData();
+		ProductSamplesCarousel tab = new ProductSamplesCarousel("Product Samples", "Product Samples", "", "", "");
+		FDSessionUser user = (FDSessionUser) getUserFromSession(request.getSession());
+		List<ProductData> sampleProducts = new ArrayList<ProductData>();
+		Map<Integer, FDCartLineI> productSamplesInCart = new HashMap<Integer, FDCartLineI>();
+		List<ProductModel> tempProducts = null;
+		FDCartModel cart =  user.getShoppingCart(); 
+		List<FDCartLineI> orderLines=cart.getOrderLines();
+		int i= 0;
+		if(null !=orderLines && !orderLines.isEmpty()){
+			for (FDCartLineI orderLine : orderLines) {
+				if(null != orderLine.getDiscount() && orderLine.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)){
+					productSamplesInCart.put(i, orderLine);
+					i++;
+				}
+			}
+		}
+			if(productSamplesInCart.size() == FDStoreProperties.getProductSamplesMaxBuyLimit()){
+				tempProducts = new ArrayList<ProductModel>();
+			}
+			else{
+				tempProducts = user.getProductSamples();
+			}
+		
+		for (ProductModel productModel : tempProducts) {
+
+ 				ProductData pd = new ProductData();
+ 				SkuModel skuModel = null;
+ 				
+ 				if ( !(productModel instanceof ProductModelPricingAdapter) ) {
+ 					// wrap it into a pricing adapter if naked
+				productModel = ProductPricingFactory.getInstance().getPricingAdapter( productModel, user.getPricingContext() );
+			}
+			
+			if ( skuModel == null ) {
+				skuModel = productModel.getDefaultSku();
+			}
+			String skuCode = skuModel.getSkuCode();
+			
+			try {
+				FDProductInfo productInfo_fam = skuModel.getProductInfo();
+				FDProduct fdProduct = skuModel.getProduct();
+			
+				PriceCalculator priceCalculator = productModel.getPriceCalculator();
+				
+				ProductDetailPopulator.populateBasicProductData( pd, user, productModel );
+				ProductDetailPopulator.populateProductData( pd, user, productModel, skuModel, fdProduct, priceCalculator, null, true, true );
+				ProductDetailPopulator.populatePricing( pd, fdProduct, productInfo_fam, priceCalculator );
+				
+				try {
+					ProductDetailPopulator.populateSkuData( pd, user, productModel, skuModel, fdProduct );
+				} catch (FDSkuNotFoundException e) {
+					LOGGER.error( "Failed to populate sku data", e );
+				} catch ( HttpErrorResponse e ) {
+					LOGGER.error( "Failed to populate sku data", e );
+				}
+				
+				ProductDetailPopulator.postProcessPopulate( user, pd, pd.getSkuCode() );
+				
+				
+			} catch (FDSkuNotFoundException e) {
+				LOGGER.warn( "Sku not found: "+ skuCode, e );
+			}
+			
+			sampleProducts.add(pd);
+		}
+		carouselData.setProducts(sampleProducts);
+		tab.setCarouselData(carouselData);
+		
+		return tab;
+	}
 	private void collectRequestId(HttpServletRequest request, Recommendations recommendations, FDUserI user) {
 		if (recommendations.getAllProducts().size() > 0) {
 			Impression imp = Impression.get(user, request, SMART_STORE_FACILILTY);

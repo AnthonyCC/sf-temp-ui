@@ -1,0 +1,31 @@
+{namespace common}
+
+/**
+ * @param? title
+ * @param? carouselData
+ */
+{template .productSampleCarousel autoescape="false"}
+{if length($carouselData.products) != 0}
+<div class="product-sample-carousel">
+	<h2 class="product-sample-header">Congrats, you've qualified for a <span class="product-sample-free">FREE</span> Sample!</h2>
+	<h2 class="product-sample-carousel-header">Pick any two:</h2>{if $title}{/if}
+	<div data-component="carousel" class="FULL_WIDTH" data-cmeventsource="view_cart" data-apiendpoint="/api/qs/ymal">		
+		<div data-component="carousel-mask" class="transactional light-carousel">
+			<ul data-component="carousel-list" data-carousel-page="0">			
+				{foreach $item in $carouselData.products}
+					{delcall common.carouselItem variant="'grid'"}
+						{param item:$item /}
+						{param cmEventSource:'view_cart' /}
+					{/delcall}
+				{/foreach}
+			</ul>
+		</div>
+		<button data-component="carousel-prev" data-carousel-nav="prev">previous</button>
+		<button data-component="carousel-next" data-carousel-nav="next">next</button>
+	</div>
+	<div class="product-sample-carousel-bottom"></div>
+</div>
+{/if}
+{/template}
+
+              
