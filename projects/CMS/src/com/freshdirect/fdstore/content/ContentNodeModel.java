@@ -1,12 +1,13 @@
 package com.freshdirect.fdstore.content;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Comparator;
 
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.ContentKey;
 
-public interface ContentNodeModel extends PrioritizedI {
+public interface ContentNodeModel extends PrioritizedI, Serializable {
 
 	public final static Comparator<ContentNodeModel> FULL_NAME_COMPARATOR = new Comparator<ContentNodeModel>() {
 		public int compare(ContentNodeModel cn1, ContentNodeModel cn2) {
