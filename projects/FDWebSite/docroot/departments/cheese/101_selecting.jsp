@@ -13,10 +13,10 @@
 <a name="top"></a>
 <center>
 <table border="0" cellpadding="0" cellspacing="0" width="520">
-	<tr valign="TOP">
+	<!-- APPDEV 4284 <tr valign="TOP">
 		<td colspan="5" width="520"><a href="javascript:try { window.reallyClose(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}"><img src="/media_stat/images/layout/pop_up_header_lg.gif" width="520" height="33" border="0" alt="freshdirect    (close window)"></a><br><font class="space10pix"><br></font>
 		</td>
-	</tr>
+	</tr>-->
 	<tr valign="TOP">
 		<td width="120" align="RIGHT" rowspan="2" class="bodyCopySmall">
 		<img src="/media_stat/images/template/cheese/cheese101.gif" width="98" height="23" border="0" alt="CHEESE 101"><br>
@@ -49,7 +49,7 @@
 		<p>Consider the season. In the warmth of spring and the heat of summer, choose simple, lighter cheeses like fresh ch&egrave;vres and simple Bries. In the cool fall and icy winter, choose hardier, heavier, more strongly flavored cheeses, like Cheddar and Gruy&egrave;re.<br></font><img src="/media_stat/images/layout/clear.gif" width="379" height="10" hspace="0" vspace="0">
 		</td>
 	</tr>
-	<tr valign="TOP">
+	<!--APPDEV 4284 <tr valign="TOP">
 		<td width="379">
 			<table cellpadding="0" cellspacing="0" border="0" width="379">
 				<tr valign="TOP">
@@ -60,7 +60,7 @@
 				</tr>
 			</table>
 		</td>
-	</tr>
+	</tr>-->
 </table></center>
 </body>
 </html>

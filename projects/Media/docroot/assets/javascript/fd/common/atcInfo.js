@@ -83,9 +83,19 @@ var FreshDirect = FreshDirect || {};
           
           if (item.status === "SUCCESS"){        	  
         	  // Dstillery Script Pixel
-              $.getScript("//action.media6degrees.com/orbserv/hbjs?pixId=26208&pcv=48");
+        	 //APPDEV-4287  
+        	  function asyncPixelWithTimeout() {
+        	  var img = new Image(1, 1);
+        	  img.src = '//action.media6degrees.com/orbserv/hbpix?pixId=26208&pcv=48';
+        	  setTimeout(function ()
+        	  { if (!img.complete) img.src = ''; //kill the request }
+
+        	  , 33);
+        	  };
+        	  asyncPixelWithTimeout();
+        	              
               
-              //Facebook Conversion Pixel
+        	  //Facebook Conversion Pixel
               (function() {
                 var _fbq = window._fbq || (window._fbq = []);
                 if (!_fbq.loaded) {

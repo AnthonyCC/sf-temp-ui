@@ -13,13 +13,13 @@
 <A NAME="top"></A>
 <CENTER>
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="520">
-<TR VALIGN="TOP">
+<!-- APPDEV 4284<TR VALIGN="TOP">
 <TD COLSPAN="5" WIDTH="520">
 <A HREF="javascript:try { window.reallyClose(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}"><img src="/media_stat/images/layout/pop_up_header_lg.gif" 
 width="520" height="33" border="0" alt="freshdirect    (close window)"></A><BR>
 <FONT CLASS="space10pix"><BR></FONT>
 </TD>
-</TR>
+</TR>-->
 <TR VALIGN="TOP">
 <TD WIDTH="120" ALIGN="RIGHT" ROWSPAN="2" class="bodyCopySmall"><img src="/media_stat/images/template/cheese/cheese101.gif" 
 	width="98" height="23" border="0" alt="CHEESE 101"><BR><BR>
@@ -57,7 +57,7 @@ up fairly well in the freezer, though it loses a bit of its charm.
 <IMG SRC="/media_stat/images/layout/clear.gif" WIDTH="379" HEIGHT="10" HSPACE="0" VSPACE="0">
 </TD>
 </TR>
-<TR VALIGN="TOP">
+<!-- APPDEV 4284<TR VALIGN="TOP">
 	<TD WIDTH="379">
 		<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="379">
 			<TR VALIGN="TOP">
@@ -66,7 +66,7 @@ up fairly well in the freezer, though it loses a bit of its charm.
 			</TR>
 		</TABLE>
 </TD>
-</TR>
+</TR>-->
 </TABLE>
 </CENTER>
 </BODY>

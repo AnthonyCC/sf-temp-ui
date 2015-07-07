@@ -13,10 +13,10 @@
 <a name="top"></a>
 <center>
 <table border="0" cellpadding="0" cellspacing="0" width="520">
-	<tr valign="TOP">
+	<!-- APPDEV 4284<tr valign="TOP">
 		<td colspan="5" width="520"><a href="javascript:try { window.reallyClose(); window.parent.FreshDirect.components.ifrPopup.close(); } catch (e) {}"><img src="/media_stat/images/layout/pop_up_header_lg.gif" width="520" height="33" border="0" alt="freshdirect    (close window)"></a><br><font class="space10pix"><br></font>
 		</td>
-	</tr>
+	</tr>-->
 	<tr valign="TOP">
 		<td width="120" align="RIGHT" rowspan="2" class="bodyCopySmall"><img src="/media_stat/images/template/cheese/cheese101.gif" width="98" height="23" border="0" alt="CHEESE 101"><br><br><a href="101_selecting.jsp">Selecting</a><br><a href="101_buying.jsp">Buying</a><br><a href="101_storing.jsp">Storing</a><br><a href="101_serve.jsp">Serving Amounts</a><br><b>How to Cut</b><br><a href="101_plate.jsp">How to Plate</a><br><a href="101_board.jsp">Arranging a Board</a><br><a href="101_grate.jsp">Grating</a><br><a href="101_rind.jsp">About the Rind</a><br><a href="101_drinks.jsp">Pairing Drinks</a><br><br><img src="/media/images/navigation/department/cheese/che_manager_noname.jpg" border="0"><br>
 		</td>
@@ -64,7 +64,7 @@ break, and squash. To avoid disaster, use the right tools.
 			</table></font><img src="/media_stat/images/layout/clear.gif" width="379" height="10" hspace="0" vspace="0">
 		</td>
 	</tr>
-	<tr valign="TOP">
+	<!-- APPDEV 4284<tr valign="TOP">
 		<td width="379">
 			<table cellpadding="0" cellspacing="0" border="0" width="379">
 				<tr valign="TOP">
@@ -75,7 +75,7 @@ break, and squash. To avoid disaster, use the right tools.
 				</tr>
 			</table>
 		</td>
-	</tr>
+	</tr>-->
 </table></center>
 </body>
 </html>

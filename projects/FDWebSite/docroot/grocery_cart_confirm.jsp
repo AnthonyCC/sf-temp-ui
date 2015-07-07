@@ -77,8 +77,19 @@ Recipe recipe = null;
 	OAS_AD('ProductNote');
 </script>
 
-<!-- Dstillery Script Pixel -->
-<script src="//action.media6degrees.com/orbserv/hbjs?pixId=26208&pcv=48" type="text/javascript" async></script>
+<!-- APPDEV-4287 Dstillery Script Pixel -->
+<script type="text/javascript" async>
+function asyncPixelWithTimeout() {
+var img = new Image(1, 1);
+img.src = '//action.media6degrees.com/orbserv/hbpix?pixId=26208&pcv=48';
+setTimeout(function ()
+{ if (!img.complete) img.src = ''; /*kill the request*/ }
+
+, 33);
+};
+asyncPixelWithTimeout();
+</script>
+
 
 <!-- Facebook Conversion Code for Add_to_Cart -->
 <script>(function() {
