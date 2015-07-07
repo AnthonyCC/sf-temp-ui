@@ -3,6 +3,7 @@
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%  //--------OAS Page Variables-----------------------
   request.setAttribute("sitePage", "www.freshdirect.com/expressco/checkout/");
@@ -40,6 +41,27 @@
   <tmpl:put name="title">Success</tmpl:put>
 
   <tmpl:put name='content' direct='true'>
+	<% //based on step_4_receipt.jsp
+	boolean _modifyOrderMode = false; 	
+	String _ordNum = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
+	
+	if(session.getAttribute("MODIFIED" + _ordNum) != null && session.getAttribute("MODIFIED" + _ordNum).equals(_ordNum)) {
+		_modifyOrderMode = true;
+	}
+	%>
+		
+	<fd:GetOrder id='order' saleId='<%=_ordNum%>'>
+		<script type="text/javascript">
+			<fd:CmShop9 order="<%=order%>"/>
+			<fd:CmOrder order="<%=order%>"/>
+			<fd:CmRegistration force="true"/>
+			<fd:CmConversionEvent eventId="became_a_customer"/>
+			<% if(_modifyOrderMode){ %>
+				<fd:CmConversionEvent order="<%=order%>" orderModified="true"/>
+			<% } %>
+		</script>
+	</fd:GetOrder>
+
   <div id='successpage'>
       <div class="container">
         <div id="order-summary">
