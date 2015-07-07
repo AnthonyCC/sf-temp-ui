@@ -16,7 +16,6 @@
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
-<%@ taglib uri="fd-features" prefix="features" %>
 
 <% //expanded page dimensions
 final int W_VIEWCART_TOTAL = 970;
@@ -31,8 +30,6 @@ final int W_VIEWCART_LP = 215;
 <%! final java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##"); %>
 
 <fd:CheckLoginStatus id="user" />
-<features:redirect featureName="checkout2_0" />
-
 <potato:pendingExternalAtcItem/>
 <%
 //--------OAS Page Variables-----------------------
@@ -227,8 +224,14 @@ StringBuffer buffer = new StringBuffer(
 </script>
 
 <script>
+	var ProductSamplesMaxQuantityLimit = <%= FDStoreProperties.getProductSamplesMaxQuantityLimit() %>;
 	jQuery(".product-sample-carousel .portrait-item .portrait-item-price").text("FREE");
 	jQuery(".product-sample-carousel .portrait-item .portrait-item-price").addClass("product-sample-free");
+	jQuery(".product-sample-carousel li.portrait-item").each(function( index ) {
+		if( jQuery( this ).find(".atc-info div.incart-info").attr( "data-amount" ) == ProductSamplesMaxQuantityLimit){
+			jQuery( this ).addClass("unavailable");
+		}
+	});
 </script>
 
 </tmpl:put>

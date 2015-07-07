@@ -25,6 +25,7 @@
 <%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus"%>
 <%@ page import='com.freshdirect.fdstore.atp.FDLimitedAvailabilityInfo';%>
 <%@ page import='com.freshdirect.payment.EnumPaymentMethodType';%>
+<%@ page import="com.freshdirect.common.pricing.EnumDiscountType"%>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SystemMessageList" %>
 <%@ page import="com.freshdirect.framework.util.NVL"%>
@@ -373,8 +374,14 @@ asyncPixelWithTimeout();
 		<%
 			String discountMsg = null;
 			String groupDiscountMsg = null;
+			boolean isFreeProd = false;
 			if(cartLine.getDiscount() != null) {
-				Discount discount = cartLine.getDiscount();
+				Discount discount = cartLine.getDiscount();				
+				if ((discount.getDiscountType()).equals(EnumDiscountType.FREE)) {
+					List<ProductModel> pns = new ArrayList();
+					pns.add(productNode);
+					isFreeProd = true;
+				}				
 				PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
 				String skuMsg = "";
 				if(discount.getSkuLimit() > 0 && cartLine.getUnitPrice().indexOf("lb") == -1) {
@@ -400,11 +407,14 @@ asyncPixelWithTimeout();
 		%>
 			<td colspan="2">
 			<div style="margin-left:16px; text-indent:-8px;"><span class="text10bold"><a href="/product_modify.jsp?cartLine=<%= cartLine.getRandomId() %>&trk=cart"><%= cartLine.getDescription() %></a></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
+			<% if (!isFreeProd) { %>	
 				<%= fdProduct.getKosherInfo().isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
 				<%= cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER) ? " <font color=\"#FF9933\">**</font>":""  %>
 				<% if ((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) { %><span class="text10rbold">(new)</span><% } %>
 				<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %>
 				<% if ( groupDiscountMsg!=null && !"".equals(groupDiscountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= groupDiscountMsg %></span><% } %>
+				
+				
 				<% if (displayShortTermUnavailability && !(cartLine instanceof FDModifyCartLineI)) { 
 	
 	    				SkuModel a_sku = cartLine.getProductRef().lookupProductModel().getSku(cartLine.getSkuCode());
@@ -435,6 +445,7 @@ asyncPixelWithTimeout();
 				}
 				%>
 				<% if (!displayLimitedAvailability && displayShortTermUnavailability && earliestAvailability != null && !(cartLine instanceof FDModifyCartLineI)) { %><br>&nbsp;&nbsp;<span class="text10rbold">Earliest Delivery <%=earliestAvailability%></span><%  }%>
+			<% } %>
 			</div>
 			<% 
 				EnumCouponContext couponContext =EnumCouponContext.VIEWCART;
@@ -461,8 +472,8 @@ asyncPixelWithTimeout();
 			
 			</td>
             <% if(cartLine.getDiscount() != null || cartLine.getCouponDiscount() != null) { %>
-			<td width="70" align="right"><font color="#FF0000">(<%= cartLine.getUnitPrice() %>)</font></td>
-			<td width="60" align="right"><span class="text10bold"><font color="#FF0000"><%= JspMethods.formatPrice(cartLine.getPrice()) %></font></span></td>
+				<td width="70" align="right"><font color="#FF0000"><%= isFreeProd ? "" : "("%><%= isFreeProd ? "" : cartLine.getUnitPrice() %><%= isFreeProd ? "" : "("%></font></td>				
+				<td width="60" align="right"><span class="text10bold"><font color="#FF0000"><%= isFreeProd ? "FREE" : JspMethods.formatPrice(cartLine.getPrice()) %></font></span></td>
             <% } else { %>
   			<td width="70" align="right">(<%= cartLine.getUnitPrice() %>)</td>
             <%-- <td width="70" align="right">(<%= cartLine.getDiscountedUnitPrice() %>)</td> --%>

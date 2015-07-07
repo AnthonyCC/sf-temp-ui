@@ -160,5 +160,39 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00c4c4be', e
 	background: -ms-linear-gradient(top,  #c8c8c6 0%,#e7ecd9 7%,#e5e9d6 13%,#f0f5e1 40%,#f0f5e1 100%);
 	background: linear-gradient(to bottom,  #c8c8c6 0%,#e7ecd9 7%,#e5e9d6 13%,#f0f5e1 40%,#f0f5e1 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c8c8c6', endColorstr='#f0f5e1',GradientType=0 );
+}
+
+.product-sample-carousel li.portrait-item{
 	
+}
+
+.product-sample-carousel li.portrait-item.unavailable .portrait-item-productimage {
+	opacity: .5;
+	filter: alpha(opacity=50);
+}
+
+.product-sample-carousel li.portrait-item.unavailable {
+  	color:#333;
+}
+
+.product-sample-carousel li.portrait-item.unavailable .portrait-item-controls,
+.product-sample-carousel li.portrait-item.unavailable .portrait-item-configuration,
+.product-sample-carousel li.portrait-item.unavailable .portrait-item-price-deal {
+  	display:none;
+}
+
+.portrait-item.unavailable .portrait-item-price{
+	display: block;
+	opacity: .5;
+	filter: alpha(opacity=50);
+	pointer-events: none;
+   	cursor: default;
+}
+
+.product-sample-carousel li.portrait-item.unavailable .portrait-item-header,
+.product-sample-carousel li.portrait-item.unavailable .portrait-item-header-name,
+.product-sample-carousel li.portrait-item.unavailable .portrait-item-header-configuration {
+  	color:#999;
+  	pointer-events: none;
+   	cursor: default;
 }
