@@ -25,13 +25,12 @@ ErpAddressModel address = AddressFinder.getShipToAddress(user, "", timeSlotCtx, 
 		boolean isForAdvOrdSlots = false;
 		boolean isForNewAdvOrdSlots = false;
 		boolean defaultColExp = false;
-		//get amount for zone promotion
-		double zonePromoAmount = AddressFinder.getZonePromoAmount(user, address, timeSlotCtx);
-		String zonePromoString = null;
-
+                //get zone promotion amount
+		double zonePromoAmount = deliveryModel.getZonePromoAmount();
+		String zonePromoString=null;
 		if(zonePromoAmount > 0) {
 			zonePromoString = CCFormatter.formatQuantity(zonePromoAmount);
-			request.setAttribute("SHOW_WINDOWS_STEERING","false");
+			request.setAttribute("SHOW_WINDOWS_STEERING","true");
 		}
 		
 	%>
