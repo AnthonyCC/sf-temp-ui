@@ -27,6 +27,7 @@ import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.EnumWinePrice;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
@@ -88,9 +89,9 @@ public interface FDUserI extends java.io.Serializable {
 
 	public boolean isInZone();
 	
-	public void setProductSample(List<ProductModel> list);
+	public void setProductSample(List<ProductReference> list);
 	
-	public List<ProductModel> getProductSamples();
+	public List<ProductReference> getProductSamples();
 	
     public void isLoggedIn(boolean loggedId);
 

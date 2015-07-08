@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.ProductSampleApplicator;
 import com.freshdirect.fdstore.promotion.PromotionApplicatorI;
@@ -126,8 +127,8 @@ public class FDPromotionEligibility implements Serializable {
 	}
 	
 	
-	public List<ProductModel> getEligibleProductSamples() {
-		List<ProductModel> eligibleProdSamples = new ArrayList<ProductModel>();
+	public List<ProductReference> getEligibleProductSamples() {
+		List<ProductReference> eligibleProdSamples = new ArrayList<ProductReference>();
 		ProductSampleApplicator productSampleApplicator = null;
 		Set<String> eligibleProdSamplePromotions = getEligiblePromotionCodes(EnumPromotionType.PRODUCT_SAMPLE);
 		eligibleProdSamplePromotions.retainAll(this.eligibilePromos);
@@ -142,7 +143,7 @@ public class FDPromotionEligibility implements Serializable {
 				}
 			}
 			if(null != productSampleApplicator.getSampleProduct())
-			eligibleProdSamples.add(productSampleApplicator.getSampleProduct());
+			eligibleProdSamples.add(productSampleApplicator.getProductReference());
 		}
 		return eligibleProdSamples;
 	}

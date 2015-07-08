@@ -42,6 +42,7 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumWinePrice;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.customer.DCPDPromoProductCache;
 import com.freshdirect.fdstore.customer.ExternalCampaign;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -153,7 +154,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	
 	private Map<String, List<AddToCartItem>> pendingExternalAtcItems;
 
-	private List<ProductModel> productSamples;
+	private List<ProductReference> productSamples;
 	
 	public boolean getLastCOSSurveySuccess() {
     	return this.lastCOSSurveySuccess;
@@ -1753,11 +1754,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
 	
 
-	public List<ProductModel> getProductSamples() {
+	public List<ProductReference> getProductSamples() {
 		return this.user.getProductSamples();
 	}
 
-	public void setProductSample(List<ProductModel> productSamples) {
+	public void setProductSample(List<ProductReference> productSamples) {
 		this.productSamples = productSamples;
 	}
 

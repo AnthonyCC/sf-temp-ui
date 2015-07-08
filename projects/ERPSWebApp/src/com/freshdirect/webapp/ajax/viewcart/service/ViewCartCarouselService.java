@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -211,7 +212,7 @@ public class ViewCartCarouselService {
 		FDSessionUser user = (FDSessionUser) getUserFromSession(request.getSession());
 		List<ProductData> sampleProducts = new ArrayList<ProductData>();
 		Map<Integer, FDCartLineI> productSamplesInCart = new HashMap<Integer, FDCartLineI>();
-		List<ProductModel> tempProducts = null;
+		List<ProductReference> tempProducts = null;
 		FDCartModel cart =  user.getShoppingCart(); 
 		List<FDCartLineI> orderLines=cart.getOrderLines();
 		int i= 0;
@@ -224,14 +225,15 @@ public class ViewCartCarouselService {
 			}
 		}
 			if(productSamplesInCart.size() == FDStoreProperties.getProductSamplesMaxBuyLimit()){
-				tempProducts = new ArrayList<ProductModel>();
+				tempProducts = new ArrayList<ProductReference>();
 			}
 			else{
 				tempProducts = user.getProductSamples();
 			}
 		
-		for (ProductModel productModel : tempProducts) {
+		for (ProductReference productReference : tempProducts) {
 
+				ProductModel productModel = productReference.lookupProductModel();
  				ProductData pd = new ProductData();
  				SkuModel skuModel = null;
  				

@@ -71,6 +71,7 @@ import com.freshdirect.fdstore.content.EnumWinePrice;
 import com.freshdirect.fdstore.content.HolidayGreeting;
 import com.freshdirect.fdstore.content.MyFD;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.fdstore.customer.adapter.FDOrderInfoAdapter;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
@@ -280,7 +281,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	/* APPDEV-3756 */
 	private boolean isGlobalNavTutorialSeen = false;
-	private List<ProductModel> productSamples;
+	private List<ProductReference> productSamples;
 
 	public String getTsaPromoCode() {
 		return tsaPromoCode;
@@ -2836,11 +2837,11 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 	
 
-	public List<ProductModel> getProductSamples() {
+	public List<ProductReference> getProductSamples() {
 		return this.productSamples;
 	}
 
-	public void setProductSample(List<ProductModel> productSamples) {
+	public void setProductSample(List<ProductReference> productSamples) {
 		this.productSamples = productSamples;
 	}
 	
