@@ -179,6 +179,7 @@ asyncPixelWithTimeout();
   	boolean lastWasRecipe = false;
   
  	Collections.sort(orderLines, FDCartModel.EXTERNAL_GROUPS_IN_FRONT_COMPARATOR);
+ 	Collections.sort(orderLines, FDCartModel.PRODUCT_SAMPLE_COMPARATOR);
   
 	%>
 	<logic:iterate id="cartLine" collection="<%= orderLines %>" type="com.freshdirect.fdstore.customer.FDCartLineI" indexId="viewIndex">
@@ -1024,7 +1025,15 @@ asyncPixelWithTimeout();
 			}
 	}
 	%>
-    <%
+	<% if(107==(user.getPromoErrorCode("CD_1331652202648"))){		%>
+	<%= user.getPromoErrorCode("CD_1331652202648")+" "+SystemMessageList.MSG_REDEMPTION_NOTE_TIMESLOT %>
+	<% } else if(103==user.getPromoErrorCode("CD_1331652202648") || 105==user.getPromoErrorCode("CD_1331652202648")){		%>
+		<%= user.getPromoErrorCode("CD_1331652202648")+" "+SystemMessageList.MSG_REDEMPTION_NOTE_DLV_ADDRESS %>
+	<% } else if(106==user.getPromoErrorCode("CD_1331652202648") || 105==user.getPromoErrorCode("CD_1331652202648")){		%>
+		<%= user.getPromoErrorCode("CD_1331652202648")+" "+SystemMessageList.MSG_REDEMPTION_NOTE_PAYMENT %>
+	
+	<% } %>
+    <% 
         //This logic is invoked to display redemption failure due to address and payment method.
         if (redemptionPromo != null && !user.getPromotionEligibility().isEligible(promoCode) && request.getAttribute("promoError") != null) {
     %>
