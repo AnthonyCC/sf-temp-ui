@@ -32,16 +32,7 @@
   {foreach $payment in $payments}
     {call .paymentmethod data="$payment"}{/call}
   {/foreach}
-  <div class="drawer__item drawer__item-addaction">
-     <div class="addaction__center">
-          <button class="cssbutton green addaction__button icon-add-drawer-before xc-addaction" data-component="addpaymentmethodbutton">Add Method</button>
-          {if $metadata and $metadata.paymentPromoOAS}
-          <p class="addaction__desc">
-            <iframe width="200" height="150" src="/OASonly.jsp?listPos=AddPaymentPromo&sitePage={$metadata.paymentPromoOAS}"></iframe>
-          </p>
-          {/if}
-     </div>
-   </div>
+  
 </form>
 {/template}
 
