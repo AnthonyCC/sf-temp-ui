@@ -2,6 +2,10 @@
   margin:20px 0;
 }
 
+#cartcontent .cartsection__cartline{
+  padding-left:30px;
+}
+
 .cartsection__cartline .cartline-box{
   display:inline-block;
   box-sizing:border-box;
@@ -29,7 +33,7 @@
   padding-top:10px;
 }
 
-#cartcontent.view_cart .cartsection__cartline .cartline-title{
+#cartcontent .cartsection__cartline .cartline-title{
   width:570px;
 }
 
@@ -121,6 +125,10 @@
   font-size:18px;
   font-weight:bold;
   margin:5px 0;
+}
+
+#cartcontent .cartsection .cartsection__title{
+  margin-left:30px;
 }
 
 .cartsection .cartsection__title [data-component="removeRecipeButton"] {
