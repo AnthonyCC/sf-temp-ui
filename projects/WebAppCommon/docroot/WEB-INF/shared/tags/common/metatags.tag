@@ -71,5 +71,7 @@
 }
 </script>
 
+<c:import var="metadataMediaFile" url="/media/editorial/site_pages/metadata.html"/>
+<c:out value="${metadataMediaFile}" escapeXml="false" />
 
 </c:if>
