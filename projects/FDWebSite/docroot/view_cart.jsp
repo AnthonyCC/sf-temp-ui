@@ -16,6 +16,7 @@
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 <%@ taglib uri="fd-data-potatoes" prefix="potato" %>
 <%@ taglib uri="https://developers.google.com/closure/templates" prefix="soy" %>
+<%@ taglib uri="fd-features" prefix="features" %>
 
 <% //expanded page dimensions
 final int W_VIEWCART_TOTAL = 970;
@@ -30,6 +31,7 @@ final int W_VIEWCART_LP = 215;
 <%! final java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##"); %>
 
 <fd:CheckLoginStatus id="user" />
+<features:redirect featureName="checkout2_0" />
 <potato:pendingExternalAtcItem/>
 <%
 //--------OAS Page Variables-----------------------
