@@ -93,7 +93,7 @@
     <div class="drawer__item__section">
       <p class='section__title'>Billing address</p>
       <div class='section__body'>
-        {if $address1}<p>{$address1} {$apartment ? $apartment : ''}</p>{/if}
+        {if $address1}<p>{$address1} {if $apartment} Apt. {$apartment}{/if}</p>{/if}
         {if $address2}<p>{$address2}</p>{/if}
         <p>{$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
       </div>
@@ -158,7 +158,7 @@
   <div class="drawer__previewitem__section">
     <p class='section__title'>Billing address</p>
     <div class='section__body'>
-      {if $address1}<p>{$address1} {$apartment ? $apartment : ''}</p>{/if}
+      {if $address1}<p>{$address1} {if $apartment} Apt. {$apartment}{/if}</p>{/if}
       {if $address2}<p>{$address2}</p>{/if}
       <p>{$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
     </div>

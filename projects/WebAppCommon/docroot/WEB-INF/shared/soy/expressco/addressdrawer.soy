@@ -101,7 +101,7 @@
     <div class="drawer__item__section">
       <p class='section__title'>{$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</p>
       <div class='section__body'>
-        <p>{$street_address ? $street_address : ''} {$apartment ? $apartment : ''}</p>
+        <p>{$street_address ? $street_address : ''} {if $apartment} Apt. {$apartment}{/if}</p>
         {if $street_address2}<p>{$street_address2}</p>{/if}
         <p>{$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
       </div>
@@ -175,7 +175,7 @@
     <div class="drawer__item__section">
       <p class='section__title'>{$first_name ? $first_name : ''} {$last_name ? $last_name : ''}</p>
       <div class='section__body'>
-        <p>{$street_address ? $street_address : ''} {$floor ? $floor : ''}{if $floor and $room}/{/if}{$room ? $room : ''} {$apartment ? $apartment : ''}</p>
+        <p>{$street_address ? $street_address : ''} {$floor ? $floor : ''}{if $floor and $room}/{/if}{$room ? $room : ''} {if $apartment} Apt. {$apartment}{/if}</p>
         {if $street_address2}<p>{$street_address2}</p>{/if}
         <p>{$city ? $city : ''}, {$state ? $state : ''} {$zip ? $zip : ''}</p>
       </div>
