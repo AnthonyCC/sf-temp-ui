@@ -377,10 +377,14 @@ public class DeliveryAddressService {
 				deliveryLocationData.setBackupDeliveryAuthenticate(DeliveryAddressValidationConstants.BACKUP_DELIVERY_NEIGHBOR);
 				deliveryLocationData.setBackupDeliveryFirstName(deliveryAddress.getAltFirstName());
 				deliveryLocationData.setBackupDeliveryLastName(deliveryAddress.getAltLastName());
-				deliveryLocationData.setBackupDeliveryAddress(deliveryAddress.getAlternateAddress().getAddress1());
-				deliveryLocationData.setBackupDeliveryApartment(deliveryAddress.getAlternateAddress().getApartment());
-				deliveryLocationData.setBackupDeliveryPhone(deliveryAddress.getAltPhone().getPhone());
-				deliveryLocationData.setBackupDeliveryPhoneExtension(deliveryAddress.getAltPhone().getExtension());
+				if (deliveryAddress.getAlternateAddress() != null) {
+					deliveryLocationData.setBackupDeliveryAddress(deliveryAddress.getAlternateAddress().getAddress1());
+					deliveryLocationData.setBackupDeliveryApartment(deliveryAddress.getAlternateAddress().getApartment());
+				}
+				if (deliveryAddress.getAltPhone() != null) {
+					deliveryLocationData.setBackupDeliveryPhone(deliveryAddress.getAltPhone().getPhone());
+					deliveryLocationData.setBackupDeliveryPhoneExtension(deliveryAddress.getAltPhone().getExtension());
+				}
 			}
 		}
 
