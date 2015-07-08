@@ -117,9 +117,9 @@ function asyncPixelWithTimeout() {
 var img = new Image(1, 1);
 img.src = '//action.media6degrees.com/orbserv/hbpix?pixId=26207&pcv=47';
 setTimeout(function ()
-{ if (!img.complete) img.src = ''; //kill the request }
+{ if (!img.complete) img.src = ''; //kill the request
 
-, 33);
+}, 33);
 };
 asyncPixelWithTimeout();
 </script>	
