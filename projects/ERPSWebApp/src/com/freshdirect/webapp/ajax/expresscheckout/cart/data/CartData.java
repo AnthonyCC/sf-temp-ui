@@ -405,6 +405,11 @@ public class CartData extends AbstractCoremetricsResponse implements Serializabl
 		 * Is new?
 		 */
 		private boolean newItem;
+		
+		private boolean hasEstimatedPrice;
+		private boolean hasTax;
+		private boolean hasDepositValue;
+		private boolean hasScaledPricing;
 
 		private String image;
 		private String unitPrice;
@@ -543,6 +548,38 @@ public class CartData extends AbstractCoremetricsResponse implements Serializabl
 
 		public void setCouponStatusText(String couponStatusText) {
 			this.couponStatusText = couponStatusText;
+		}
+
+		public boolean getHasEstimatedPrice() {
+			return hasEstimatedPrice;
+		}
+
+		public void setHasEstimatedPrice(boolean hasEstimatedPrice) {
+			this.hasEstimatedPrice = hasEstimatedPrice;
+		}
+
+		public boolean getHasTax() {
+			return hasTax;
+		}
+
+		public void setHasTax(boolean hasTax) {
+			this.hasTax = hasTax;
+		}
+
+		public boolean getHasDepositValue() {
+			return hasDepositValue;
+		}
+
+		public void setHasDepositValue(boolean hasDepositValue) {
+			this.hasDepositValue = hasDepositValue;
+		}
+
+		public boolean getHasScaledPricing() {
+			return hasScaledPricing;
+		}
+
+		public void setHasScaledPricing(boolean hasScaledPricing) {
+			this.hasScaledPricing = hasScaledPricing;
 		}
 
 		public static class Discount implements Serializable {

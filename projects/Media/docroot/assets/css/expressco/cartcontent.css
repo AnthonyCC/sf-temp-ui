@@ -28,13 +28,13 @@
 }
 
 .cartsection__cartline .cartline-title{
-  width:600px;
+  width:560px;
   padding-left:10px;
   padding-top:10px;
 }
 
 #cartcontent .cartsection__cartline .cartline-title{
-  width:570px;
+  width:530px;
 }
 
 .cartsection__cartline .cartline-delete{
@@ -81,6 +81,24 @@
 .cartsection__cartline .cartline-titleholder{
   line-height:1.2;
   font-size:14px;
+}
+
+.cartsection__cartline .cartline-legend{
+  width:40px;
+  text-align:center;
+}
+
+.cartline-legend .legend-item{
+  display:inline-block;
+  font-weight:bold;
+  font-size:13px;
+  color:#333;
+  margin-right:2px;
+}
+
+.cartline-legend .cartline-legendwrapper{
+  line-height:normal;
+  margin-top:20px;
 }
 
 .cartline-titleholder .cartline-link{

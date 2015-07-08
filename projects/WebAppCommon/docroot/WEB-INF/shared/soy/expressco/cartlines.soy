@@ -174,6 +174,10 @@
  * @param? couponDisplay Boolean
  * @param? couponClipped Boolean
  * @param? couponStatusText the html formatted coupon status message
+ * @param? hasEstimatedPrice Boolean
+ * @param? hasTax Boolean
+ * @param? hasDepositValue Boolean
+ * @param? hasScaledPricing Boolean
  */
 {deltemplate expressco.cartline autoescape="false" variant="'YOUR_CART'"}
 <div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
@@ -222,6 +226,14 @@
       {if $unitPrice}<p class='cartline-unitprice'>({$unitPrice}/{$unitScale})</p>{/if}
     </div>
   </div>
+  <div class="cartline-legend cartline-box">
+    <div class="cartline-legendwrapper">
+      {if $hasEstimatedPrice}<div class="legend-item">*</div>{/if}
+      {if $hasTax}<div class="legend-item">T</div>{/if}
+      {if $hasDepositValue}<div class="legend-item">D</div>{/if}
+      {if $hasScaledPricing}<div class="legend-item">S</div>{/if}
+    </div>
+  </div>
 </div>
 {/deltemplate}
 
@@ -241,6 +253,10 @@
  * @param? couponClipped Boolean
  * @param? couponStatusText the html formatted coupon status message
  * @param? noModifyLinks hide product modify links
+ * @param? hasEstimatedPrice Boolean
+ * @param? hasTax Boolean
+ * @param? hasDepositValue Boolean
+ * @param? hasScaledPricing Boolean
  */
 {deltemplate expressco.cartline autoescape="false" variant="'CHECKOUT'"}
 <div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
@@ -298,6 +314,14 @@
     <div class='cartline-pricewrapper'>
       <p class='cartline-price-value'>{$price}</p>
       {if $unitPrice}<p class='cartline-unitprice'>({$unitPrice}/{$unitScale})</p>{/if}
+    </div>
+  </div>
+  <div class="cartline-legend cartline-box">
+    <div class="cartline-legendwrapper">
+      {if $hasEstimatedPrice}<div class="legend-item">*</div>{/if}
+      {if $hasTax}<div class="legend-item">T</div>{/if}
+      {if $hasDepositValue}<div class="legend-item">D</div>{/if}
+      {if $hasScaledPricing}<div class="legend-item">S</div>{/if}
     </div>
   </div>
 </div>

@@ -294,7 +294,21 @@ public class CartDataService {
 		item.setCouponDisplay(productData.isCouponDisplay());
 		item.setCouponClipped(productData.isCouponClipped());
 		item.setCouponStatusText(productData.getCouponStatusText());
+		item.setHasEstimatedPrice(cartLine.isEstimatedPrice());
+		item.setHasTax(cartLine.hasTax());
+		item.setHasDepositValue(cartLine.hasDepositValue());
+		item.setHasScaledPricing(calculateHasScaledPricing(cartLine));
 		return item;
+	}
+	
+	/**
+	 * @see i_viewcart.jspf:396, i_viewcart.jspf:482
+	 * 
+	 * @param cartLine
+	 * @return
+	 */
+	private boolean calculateHasScaledPricing(FDCartLineI cartLine){
+		return cartLine.hasScaledPricing() || (cartLine.getDiscount() == null && cartLine.getGroupQuantity() > 0 && cartLine.getGroupScaleSavings() > 0);
 	}
 
 	private void populateCartDataItemWithUnitPriceAndQuantity(double price, CartData.Item item, FDProduct fdProduct, PriceCalculator priceCalculator) {
