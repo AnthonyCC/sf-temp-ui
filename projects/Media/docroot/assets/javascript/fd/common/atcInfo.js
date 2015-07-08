@@ -88,9 +88,9 @@ var FreshDirect = FreshDirect || {};
         	  var img = new Image(1, 1);
         	  img.src = '//action.media6degrees.com/orbserv/hbpix?pixId=26208&pcv=48';
         	  setTimeout(function ()
-        	  { if (!img.complete) img.src = ''; //kill the request }
+        	  { if (!img.complete) img.src = ''; //kill the request
 
-        	  , 33);
+        	  }, 33);
         	  };
         	  asyncPixelWithTimeout();
         	              
