@@ -50,6 +50,7 @@
 	}
 	%>
 		
+  <% if (_ordNum != null) { %>
 	<fd:GetOrder id='order' saleId='<%=_ordNum%>'>
 		<script type="text/javascript">
 			<fd:CmShop9 order="<%=order%>"/>
@@ -61,6 +62,7 @@
 			<% } %>
 		</script>
 	</fd:GetOrder>
+  <% } %>
 
   <div id='successpage'>
       <div class="container">
