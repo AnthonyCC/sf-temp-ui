@@ -1,4 +1,5 @@
-.ec-popup.textalertpopup {
+.ec-popup.textalertpopup,
+.ec-popup.textalertconfirmpopup {
   position: relative;
   display: inline-block;
   vertical-align: middle;
@@ -116,3 +117,17 @@ label.remindme input[type=checkbox]{
 #textalert_terms .terms-body{
   color:#666;
 }
+
+.ec-popup.textalertconfirmpopup h2,
+.ec-popup.textalertconfirmpopup h3 {
+  font-weight: bold;
+  line-height: 1.2em;
+}
+
+.ec-popup.textalertconfirmpopup .buttons {
+  border-top: 1px solid #aaa;
+  margin-top: 20px;
+  padding-top: 20px;
+  text-align: center;
+}
+
