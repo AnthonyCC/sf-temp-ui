@@ -253,7 +253,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 					session.setAttribute(SessionName.USER, user);
 				} else {
 					// Set delivery address PK
-					setSODeliveryAddress(user, thisAddress, zoneInfo, thisAddress.getPK().getId());
+					setSODeliveryAddress(user, session, thisAddress, zoneInfo, thisAddress.getPK().getId());
 				}
 
 				user.invalidateAllAddressesCaches();
@@ -666,7 +666,7 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
 			setDeliveryAddress(user, session, actionName, shippingAddress, dlvResponse, null, true);
 		} else {
-			setSODeliveryAddress(user, shippingAddress, dlvResponse, addressPK);
+			setSODeliveryAddress(user, session, shippingAddress, dlvResponse, addressPK);
 		}
 	}
 
@@ -830,14 +830,15 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		session.setAttribute(SessionName.USER, user);
 	}
 
-	private static void setSODeliveryAddress(FDUserI user, ErpAddressModel address, DlvZoneInfoModel zoneInfo, String pk) throws FDResourceException {
+	private static void setSODeliveryAddress(FDUserI user, HttpSession session, ErpAddressModel address, DlvZoneInfoModel zoneInfo, String pk) throws FDResourceException {
+		setDeliveryAddressInternal(user, session, user.getShoppingCart(), address, zoneInfo, true);
 		FDStandingOrder so = user.getCurrentStandingOrder();
 		LOGGER.debug("SO[" + so.getId() + "] ADDRESS := " + pk);
 		so.setAddressId(pk);
 	}
 
 	private void setSODeliveryAddress(ErpAddressModel address, DlvZoneInfoModel zoneInfo, String pk) throws FDResourceException {
-		setSODeliveryAddress(getUser(), address, zoneInfo, pk);
+		setSODeliveryAddress(getUser(), session, address, zoneInfo, pk);
 	}
 
 	private static void applyFraudChange(FDUserI user, HttpSession session) throws FDResourceException {
