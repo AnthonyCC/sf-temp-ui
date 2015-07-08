@@ -109,7 +109,8 @@ public class DeliveryAddressService {
 		DeliveryAddressManipulator.performDeleteDeliveryAddress(user, session, deliveryAddressId, actionResult, event);
 	}
 
-	public List<ValidationError> selectDeliveryAddressMethod(String deliveryAddressId, String contactNumber, String actionName, HttpSession session, FDUserI user) throws FDResourceException, JspException, RedirectToPage {
+	public List<ValidationError> selectDeliveryAddressMethod(String deliveryAddressId, String contactNumber, String actionName, HttpSession session, FDUserI user) throws FDResourceException,
+			JspException, RedirectToPage {
 		List<ValidationError> validationErrors = new ArrayList<ValidationError>();
 		ErpAddressModel deliveryAddress = user.getShoppingCart().getDeliveryAddress();
 		if (deliveryAddress == null || deliveryAddress.getId() == null || user.getShoppingCart().getZoneInfo() == null || !deliveryAddress.getId().equals(deliveryAddressId)) {
@@ -219,10 +220,10 @@ public class DeliveryAddressService {
 				selectDeliveryAddressMethod(addresses.get(0).getId(), "", "selectDeliveryAddressMethod", session, user);
 				addresses.get(0).setSelected(true);
 			}
-			
+
 			if (user.isPickupUser()) {
 				final ErpCustomerInfoModel customerInfoModel = FDCustomerFactory.getErpCustomerInfo(user.getIdentity());
-				for (final DlvDepotModel pickupDeliveryDepotModel : loadPickupDepotModel()) {
+				for (final DlvDepotModel pickupDeliveryDepotModel : loadFilteredPickupDepotModel()) {
 					for (Object deliveryLocationModel : pickupDeliveryDepotModel.getLocations()) {
 						if (deliveryLocationModel instanceof DlvLocationModel) {
 							final DlvLocationModel pickupDeliveryLocationModel = (DlvLocationModel) deliveryLocationModel;
@@ -236,7 +237,6 @@ public class DeliveryAddressService {
 				}
 			}
 
-			
 		}
 
 		return addresses;
@@ -434,18 +434,14 @@ public class DeliveryAddressService {
 		return String.format(PICKUP_DELIVERY_POPUP, depotCode, addressId);
 	}
 
-	private List<DlvDepotModel> loadPickupDepotModel() throws FDResourceException {
+	private List<DlvDepotModel> loadFilteredPickupDepotModel() throws FDResourceException {
 		final List<DlvDepotModel> pickupDepotModels = new ArrayList<DlvDepotModel>();
 		for (Object pickupDepotObj : FDDepotManager.getInstance().getPickupDepots()) {
 			final DlvDepotModel pickupDepotModel = (DlvDepotModel) pickupDepotObj;
-			if (!isDepotCodeEqualsHampton(pickupDepotModel))
+			if (!(HAMPTON_DEPOT_CODE.equalsIgnoreCase(pickupDepotModel.getDepotCode()) || pickupDepotModel.isDeactivated()))
 				pickupDepotModels.add(pickupDepotModel);
 		}
 		return pickupDepotModels;
-	}
-
-	private boolean isDepotCodeEqualsHampton(final DlvDepotModel pickupDepotModel) {
-		return HAMPTON_DEPOT_CODE.equalsIgnoreCase(pickupDepotModel.getDepotCode());
 	}
 
 	private AddressModel parseDeliveryAddressForm(FormDataRequest addressRequestData) {
