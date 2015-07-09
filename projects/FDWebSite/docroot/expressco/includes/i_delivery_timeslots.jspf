@@ -40,10 +40,18 @@ ErpAddressModel address = AddressFinder.getShipToAddress(user, "", timeSlotCtx, 
 	<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.util.FDTimeslotUtil" indexId="idx">
 		<tr>
 			<td>
-			<% // fix for advance orders showing on this page
-			if (!timeslots.isAdvanced()) { %>
+				<% if(timeslotList.size()>1 && idx.intValue()==1) { %>
+				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><span class="title13 fleft tsAdvanceHeader">Advance Order Delivery Timeslots&nbsp;&nbsp;</span><a class="title13 fleft tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Delivery Timeslots</a><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
+				<% } %>
+
+				<% if(timeslotList.size()>1 && idx.intValue()==1){
+					isForAdvOrdSlots = true;
+				}
+				if(timeslotList.size()==3 && idx.intValue()==2){
+					isForNewAdvOrdSlots = true;
+				} %>
+
 				<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
-			<% } %>
 			</td>
 		</tr>
 	</logic:iterate>
