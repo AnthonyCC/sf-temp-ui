@@ -70,8 +70,38 @@
 	"https://www.youtube.com/FreshDirect"] 
 }
 </script>
-
-<c:import var="metadataMediaFile" url="/media/editorial/site_pages/metadata.html"/>
-<c:out value="${metadataMediaFile}" escapeXml="false" />
-
 </c:if>
+
+<meta name="verify-v1" content="2MXiorvt33Hqj6QEBylmr/TwpVMfiUQArG0etUIxV2c=" />
+<meta name="msvalidate.01" content="2E163086C8383686A98EE1B694357FE7" />
+<meta name="p:domain_verify" content="d522a86369f72195972bf60549401f4d"/>
+
+<meta http-equiv="x-dns-prefetch-control" content="off" />
+<link rel="dns-prefetch" href="//accounts.google.com" />
+<link rel="dns-prefetch" href="//adfarm.mediaplex.com" />
+<link rel="dns-prefetch" href="//apis.google.com" />
+<link rel="dns-prefetch" href="//connect.facebook.net" />
+<link rel="dns-prefetch" href="//ct1.addthis.com" />
+<link rel="dns-prefetch" href="//data.coremetrics.com" />
+<link rel="dns-prefetch" href="//display.ugc.bazaarvoice.com" />
+<link rel="dns-prefetch" href="//freshdirect.com" />
+<link rel="dns-prefetch" href="//google.com" />
+<link rel="dns-prefetch" href="//hits.convergetrack.com" />
+<link rel="dns-prefetch" href="//i1.ytimg.com" />
+<link rel="dns-prefetch" href="//libs.coremetrics.com" />
+<link rel="dns-prefetch" href="//m.addthis.com" />
+<link rel="dns-prefetch" href="//platform.twitter.com" />
+<link rel="dns-prefetch" href="//promo.freshdirect.com" />
+<link rel="dns-prefetch" href="//s-static.ak.facebook.com" />
+<link rel="dns-prefetch" href="//s.ytimg.com" />
+<link rel="dns-prefetch" href="//s7.addthis.com" />
+<link rel="dns-prefetch" href="//sb.scorecardresearch.com" />
+<link rel="dns-prefetch" href="//secure.img-cdn.mediaplex.com" />
+<link rel="dns-prefetch" href="//ssl.google-analytics.com" />
+<link rel="dns-prefetch" href="//tmscdn.coremetrics.com" />
+<link rel="dns-prefetch" href="//twitter.com" />
+<link rel="dns-prefetch" href="//youtube.com" />
+<link rel="dns-prefetch" href="//4394129.fls.doubleclick.net" />
+<link rel="dns-prefetch" href="//insight.adsrvr.org" />
+
+<script src="//cdn.optimizely.com/js/325803703.js" type="text/javascript"></script>
