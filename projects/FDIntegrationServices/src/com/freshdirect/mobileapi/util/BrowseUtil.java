@@ -86,6 +86,16 @@ public class BrowseUtil {
     				contentId = redirectContentId;
     				currentFolder = ContentFactory.getInstance().getContentNode(redirectContentId);
     			}
+				//APPDEV-4237 No Carousel Products
+    			else
+    			{
+    				redirectContentId = (String)redirectParams.get("deptId");
+    				if(redirectContentId != null && redirectContentId.trim().length() > 0) {
+        				contentId = redirectContentId;
+        				currentFolder = ContentFactory.getInstance().getContentNode(redirectContentId);
+        			}
+    				
+    			}
     		}
     	}
     	
