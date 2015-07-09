@@ -224,7 +224,7 @@ public class ViewCartCarouselService {
 				}
 			}
 		}
-			if(productSamplesInCart.size() == FDStoreProperties.getProductSamplesMaxBuyLimit()){
+			if(productSamplesInCart.size() >= FDStoreProperties.getProductSamplesMaxBuyLimit()){
 				tempProducts = new ArrayList<ProductReference>();
 			}
 			else{
