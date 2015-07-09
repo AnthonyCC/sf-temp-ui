@@ -236,6 +236,9 @@ public class Product extends Message {
     //JIRA FD-iPadFDIP-690 -- Michael Cress
     private String description;
     
+    //APPDEV-4256 -- Swapneel Kulkarni
+    private String descriptionNote;
+    
     //Unit Pricing Fields
     private String utPrice;
 	private String utSalesUnit;
@@ -265,6 +268,9 @@ public class Product extends Message {
         
         //JIRA FD-iPadFDIP-690 -- Michael Cress
         this.setDescription(product.getDescription());
+        
+        //APPDEV-4233 Product Description Note
+        this.setDescritpionNote(product.getDescriptionNote());
         
         if ("perishable".equals(product.getLayout())) {
             setLayoutType(LayoutType.PERISHABLE);
@@ -890,7 +896,17 @@ public class Product extends Message {
     public void setDescription(String description) {
 		this.description = description;
 	}
+    
+  //APPDEV-4233 -- Product Description Note
+    public String getDescriptionNote() {
+    	return descriptionNote;
+    }
 
+  //APPDEV-4233 -- Product Description Note
+    public void setDescritpionNote(String descriptionNote) {
+    	this.descriptionNote = descriptionNote;
+    }
+    
 	public String getUtPrice() {
 		return utPrice;
 	}
