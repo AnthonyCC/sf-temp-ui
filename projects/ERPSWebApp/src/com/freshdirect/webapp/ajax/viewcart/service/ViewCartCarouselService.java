@@ -209,6 +209,7 @@ public class ViewCartCarouselService {
 	public ProductSamplesCarousel populateViewCartPageProductSampleCarousel(HttpServletRequest request) throws Exception {
 		CarouselData carouselData = new CarouselData();
 		ProductSamplesCarousel tab = new ProductSamplesCarousel("Product Samples", "Product Samples", "", "", "");
+		tab.setCarouselData(carouselData);
 		FDSessionUser user = (FDSessionUser) getUserFromSession(request.getSession());
 		List<ProductData> sampleProducts = new ArrayList<ProductData>();
 		Map<Integer, FDCartLineI> productSamplesInCart = new HashMap<Integer, FDCartLineI>();
@@ -245,34 +246,36 @@ public class ViewCartCarouselService {
 			if ( skuModel == null ) {
 				skuModel = productModel.getDefaultSku();
 			}
-			String skuCode = skuModel.getSkuCode();
+			if (skuModel != null) {			
+				String skuCode = skuModel.getSkuCode();
 			
-			try {
-				FDProductInfo productInfo_fam = skuModel.getProductInfo();
-				FDProduct fdProduct = skuModel.getProduct();
-			
-				PriceCalculator priceCalculator = productModel.getPriceCalculator();
-				
-				ProductDetailPopulator.populateBasicProductData( pd, user, productModel );
-				ProductDetailPopulator.populateProductData( pd, user, productModel, skuModel, fdProduct, priceCalculator, null, true, true );
-				ProductDetailPopulator.populatePricing( pd, fdProduct, productInfo_fam, priceCalculator );
-				
 				try {
-					ProductDetailPopulator.populateSkuData( pd, user, productModel, skuModel, fdProduct );
+					FDProductInfo productInfo_fam = skuModel.getProductInfo();
+					FDProduct fdProduct = skuModel.getProduct();
+				
+					PriceCalculator priceCalculator = productModel.getPriceCalculator();
+					
+					ProductDetailPopulator.populateBasicProductData( pd, user, productModel );
+					ProductDetailPopulator.populateProductData( pd, user, productModel, skuModel, fdProduct, priceCalculator, null, true, true );
+					ProductDetailPopulator.populatePricing( pd, fdProduct, productInfo_fam, priceCalculator );
+					
+					try {
+						ProductDetailPopulator.populateSkuData( pd, user, productModel, skuModel, fdProduct );
+					} catch (FDSkuNotFoundException e) {
+						LOGGER.error( "Failed to populate sku data", e );
+					} catch ( HttpErrorResponse e ) {
+						LOGGER.error( "Failed to populate sku data", e );
+					}
+					
+					ProductDetailPopulator.postProcessPopulate( user, pd, pd.getSkuCode() );
+					
+					
 				} catch (FDSkuNotFoundException e) {
-					LOGGER.error( "Failed to populate sku data", e );
-				} catch ( HttpErrorResponse e ) {
-					LOGGER.error( "Failed to populate sku data", e );
+					LOGGER.warn( "Sku not found: "+ skuCode, e );
 				}
 				
-				ProductDetailPopulator.postProcessPopulate( user, pd, pd.getSkuCode() );
-				
-				
-			} catch (FDSkuNotFoundException e) {
-				LOGGER.warn( "Sku not found: "+ skuCode, e );
+				sampleProducts.add(pd);
 			}
-			
-			sampleProducts.add(pd);
 		}
 		carouselData.setProducts(sampleProducts);
 		tab.setCarouselData(carouselData);
