@@ -73,6 +73,7 @@ int idx = 0;
 	<%
 	String lastDept = null;
 	boolean firstRecipe = true;
+	Collections.sort(orderLines, FDCartModel.PRODUCT_SAMPLE_COMPARATOR);
 	%>
 	<logic:iterate id="cartLine" collection="<%= orderLines %>" type="com.freshdirect.fdstore.customer.FDCartLineI" indexId="viewIndex">
 		<%
