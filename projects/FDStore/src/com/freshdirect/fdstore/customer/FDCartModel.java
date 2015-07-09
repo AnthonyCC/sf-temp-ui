@@ -143,30 +143,32 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	};
 
 	public final static Comparator<FDCartLineI> PRODUCT_SAMPLE_COMPARATOR = new Comparator<FDCartLineI>() {
-        public int compare(FDCartLineI cartLine1, FDCartLineI cartLine2) {
-                                        ///order by Department and then by product.
-                        int retValue = 0;
-                        if(null != cartLine1.getDepartmentDesc() && null != cartLine2.getDepartmentDesc()){
-                        retValue = cartLine1.getDepartmentDesc().compareTo(cartLine2.getDepartmentDesc());                                                
-                        if (cartLine1.getDepartmentDesc().compareTo(cartLine2.getDepartmentDesc()) == 0) {
-                                        retValue = cartLine1.getDescription().compareTo(cartLine2.getDescription());
-                                        if (retValue == 0) {
-                                                        retValue = cartLine1.getConfigurationDesc().compareTo(cartLine2.getConfigurationDesc());
-                                                        if (retValue == 0) { //dept * desc * configDesc matches, check quantity
-                                                                        if (cartLine1.getQuantity() <= cartLine2.getQuantity()) {
-                                                                                        retValue = -1;
-                                                                        } else {
-                                                                                        retValue = 1;
-                                                                        }
-                                                        }
-                                        }
-                        }
-                        else if(null != cartLine1.getDiscount() && cartLine1.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)){
-                                        return 1;
-                        }
-                        }
-                        return retValue;
-        }
+		public int compare(FDCartLineI cartLine1, FDCartLineI cartLine2) {
+			// /order by Department and then by product.
+			int retValue = 0;
+			if (null != cartLine1.getDepartmentDesc()&& null != cartLine2.getDepartmentDesc()) {
+				retValue = cartLine1.getDepartmentDesc().compareTo(cartLine2.getDepartmentDesc());
+				if (cartLine1.getDepartmentDesc().compareTo(cartLine2.getDepartmentDesc()) == 0) {
+					retValue = cartLine1.getDescription().compareTo(cartLine2.getDescription());
+					if (retValue == 0) {
+						retValue = cartLine1.getConfigurationDesc().compareTo(cartLine2.getConfigurationDesc());
+						if (retValue == 0) { // dept * desc * configDesc
+												// matches, check quantity
+							if (cartLine1.getQuantity() <= cartLine2.getQuantity()) {
+								retValue = -1;
+							} else {
+								retValue = 1;
+							}
+						}
+					}
+				} else if (null != cartLine1.getDiscount() && cartLine1.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)) {
+					retValue = 1;
+				} else if (null != cartLine2.getDiscount() && cartLine2.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)) {
+					retValue = -1;
+				}
+			}
+			return retValue;
+		}
 	};
 
 	public final static Comparator<FDCartLineI> EXTERNAL_GROUPS_IN_FRONT_COMPARATOR = new Comparator<FDCartLineI>() {
