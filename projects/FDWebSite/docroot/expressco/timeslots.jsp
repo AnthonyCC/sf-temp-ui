@@ -18,6 +18,8 @@
 <%@ page import="com.freshdirect.webapp.util.TimeslotPageUtil" %>
 <%@ page import="com.freshdirect.fdstore.util.TimeslotContext" %>
 <%@ page import="com.freshdirect.fdstore.util.AddressFinder" %>
+<%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrder" %>
+<%@ page import="com.freshdirect.fdstore.standingorders.DeliveryInterval" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
@@ -29,9 +31,6 @@
 	boolean isCheckAddress = false;
 	FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 	TimeslotContext timeSlotCtx = TimeslotContext.CHECKOUT_TIMESLOTS;
-
-	// [APPDEV-2149] Display abstract timeslot table (Just days of week, no restrictions, etc.)
-	final boolean abstractTimeslots = false;
 %>
 
 <form fdform="timeslot" name="reserveTimeslot">

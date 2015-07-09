@@ -7,8 +7,17 @@
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 
 <%
+final boolean abstractTimeslots = EnumCheckoutMode.MODIFY_SO_TMPL == user.getCheckoutMode();
+FDStandingOrder currentStandingOrder = user.getCurrentStandingOrder();
+String addressId="";
 String timeSlotId = null;
-ErpAddressModel address = AddressFinder.getShipToAddress(user, "", timeSlotCtx, request);
+ErpAddressModel address;
+if ( EnumCheckoutMode.NORMAL == user.getCheckoutMode() || EnumCheckoutMode.CREATE_SO == user.getCheckoutMode() ) {
+	address = AddressFinder.getShipToAddress(user, addressId, timeSlotCtx, request);
+} else { // MODIFY_SO_CSOI or MODIFY_SO_MSOI 
+	address = currentStandingOrder.getDeliveryAddress();
+	/* STANDING ORDER - UNFINISHED CODE */
+} 
 %>
 <fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%= address %>" timeSlotId="<%=timeSlotId%>" deliveryInfo="<%= true %>" timeSlotContext="<%= timeSlotCtx %>">
 	<%	
@@ -25,7 +34,8 @@ ErpAddressModel address = AddressFinder.getShipToAddress(user, "", timeSlotCtx, 
 		boolean isForAdvOrdSlots = false;
 		boolean isForNewAdvOrdSlots = false;
 		boolean defaultColExp = false;
-                //get zone promotion amount
+
+		//get zone promotion amount
 		double zonePromoAmount = deliveryModel.getZonePromoAmount();
 		String zonePromoString=null;
 		if(zonePromoAmount > 0) {
@@ -36,26 +46,102 @@ ErpAddressModel address = AddressFinder.getShipToAddress(user, "", timeSlotCtx, 
 	%>
 
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ START TIMESLOT GRID ~~~~~~~~~~~~~~~~~~~~~~ -->
-<table CELLSPACING="0" CELLPADDING="0" id="tsContainer" width="735">
+<table CELLSPACING="0" CELLPADDING="0" id="tsContainer" align="center" width="100%">
+	
+	<% String gridMediaIncludePath = ""; %>
 	<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.util.FDTimeslotUtil" indexId="idx">
+		<% gridMediaIncludePath = "/media/editorial/timeslots/grid_media_"+idx.intValue()+".html"; %>
+		<% if(timeslotList.size() > 1 && idx.intValue() > 0) { /* //standard TS, HAS AO, show media for grids above 0 */ %>
+			<tr>
+				<td colspan="2"><fd:IncludeMedia name="<%= gridMediaIncludePath %>" /></td>
+			</tr>
+		<% } %>
 		<tr>
-			<td>
-				<% if(timeslotList.size()>1 && idx.intValue()==1) { %>
-				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><span class="title13 fleft tsAdvanceHeader">Advance Order Delivery Timeslots&nbsp;&nbsp;</span><a class="title13 fleft tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Delivery Timeslots</a><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
-				<% } %>
+			<td colspan="2">
+	<% if(timeslotList.size()>1 && idx.intValue()==1) { %>
+			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><span class="title13 fleft tsAdvanceHeader">Advance Order Delivery Timeslots&nbsp;&nbsp;</span><a class="title13 fleft tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Delivery Timeslots</a><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
+	<% } %>
+	
+	<%	
+		if(timeslotList.size()>1 && idx.intValue()==1){
+			isForAdvOrdSlots = true;
+		}
+		if(timeslotList.size()==3 && idx.intValue()==2){
+			isForNewAdvOrdSlots = true;
+		}
 
-				<% if(timeslotList.size()>1 && idx.intValue()==1){
-					isForAdvOrdSlots = true;
+		if((timeslotList.size() == 1 && idx.intValue()==0)){ //standard TS, no AO, no media include
+			/* no media include */
+		} else if((timeslotList.size() > 1 && idx.intValue()==0)) { //standard TS, HAS AO
+	%>
+			<div>
+				<span class="title13 tsAdvanceHeader">Standard Delivery Timeslots<br /></span>
+				<img src="/media_stat/images/layout/clear.gif" width="1" height="10" border="0" alt="" /><br />
+				<fd:IncludeMedia name="<%= gridMediaIncludePath %>" />
+			</div>
+	<% } %>
+	
+	<%
+		// calculate which timeslot to select when modifying standing orders
+		if ( currentStandingOrder != null ) {
+			//out.print( "SO=" + currentStandingOrder + "<br/>");
+			DeliveryInterval deliveryInterval;
+			try { 
+				deliveryInterval = new DeliveryInterval( currentStandingOrder );
+			} catch ( IllegalArgumentException e ) {
+				deliveryInterval = null;
+			}
+			if ( deliveryInterval != null && deliveryInterval.isWithinDeliveryWindow() ) {
+				for ( FDTimeslot tsl : timeslots.getTimeslotsFlat() ) {
+					if ( deliveryInterval.checkTimeslot( tsl ) ) {
+						deliveryModel.setTimeSlotId(tsl.getTimeslotId());
+						//out.print("timeslot has been selected :" + tsl +"<br/>");
+						break;
+					}
 				}
-				if(timeslotList.size()==3 && idx.intValue()==2){
-					isForNewAdvOrdSlots = true;
-				} %>
-
-				<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
+			}
+		}
+	
+	request.setAttribute("isSoTemplate", currentStandingOrder != null );
+	%>
+		<BR><%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
+		
+		<%
+		
+		if (abstractTimeslots) {
+			request.setAttribute("standingOrder", currentStandingOrder);
+			
+			%>
+			<fd:javascript src="/assets/javascript/fd/modules/common/utils.js"/>
+			<fd:javascript src="/assets/javascript/fd/modules/standingorder/nextdlvchooser.js"/>
+			<div><img width="18" border="0" height="18" src="/media_stat/images/timeslots/star_large.gif" style="margin-right:10px">
+			<span class="title18"><%if (currentStandingOrder.getFrequency() != 1) {%>CHOOSE <%}%>START DATE</span></FONT>
+			<hr style="margin-bottom:10px">
+			<div class="text12bold" style="margin-bottom: 2em; width: 970px">
+				<span style="font-size: 14px; font-weight: bold; color: #855386;">Deliver this Standing Order beginning on:</span>
+				<div style="display: inline-block"><fd:NextDeliveryDateChooser standingOrder="<%= currentStandingOrder %>"/></div>
+			</div>
+	<script type="text/javascript">
+	YAHOO.util.Event.onDOMReady(function() {
+		var f = new FreshDirect.modules.standingorder.NextDeliveryDateChooserObserver(<%= sodlv_selectable %>, <%= sodlv_candidates %>, 'soDeliveryWeekOffset');
+		var radios = YAHOO.util.Selector.query('input[type=radio]', 'step2Form');
+		var i;
+		for (i=0; i<radios.length; i++) {
+			YAHOO.util.Event.on(radios[i], 'click', function(e) {
+				f( Number(e.target.id[4])+1 );
+				
+			});
+		}
+	});
+	</script>
+			<%
+		}
+		%>
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~ END TIMESLOT GRID ~~~~~~~~~~~~~~~~~~~~~~ -->
 			</td>
-		</tr>
+	</tr>
 	</logic:iterate>
-</table>
+	</table>
 
 <script language="javascript">
 	
