@@ -236,7 +236,7 @@ public class Product extends Message {
     //JIRA FD-iPadFDIP-690 -- Michael Cress
     private String description;
     
-    //APPDEV-4256 -- Swapneel Kulkarni
+    //APPDEV-4233 Product Description Note
     private String descriptionNote;
     
     //Unit Pricing Fields
