@@ -1,5 +1,7 @@
 package com.freshdirect.webapp.ajax.expresscheckout.textmessagealert.service;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Map;
 
 import org.apache.log4j.Category;
@@ -15,17 +17,21 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.sms.EnumSMSAlertStatus;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.service.AlertValidationConstraints;
+import com.freshdirect.webapp.util.MediaUtils;
 
 public class TextMessageAlertService {
 
 	private static Category LOGGER = LoggerFactory.getInstance(TextMessageAlertService.class);
 
 	private static final TextMessageAlertService INSTANCE = new TextMessageAlertService();
+	
+	private static final String SMS_TERMS_AND_CONDITIONS_MEDIA_PATH = "/media/editorial/site_pages/sms/terms_long.html";
 
 	private TextMessageAlertService() {
 	}
@@ -85,6 +91,18 @@ public class TextMessageAlertService {
 			showTextMessageAlertPopup = true;
 		}
 		return showTextMessageAlertPopup;
+	}
+	
+	public String getTermsAndConditionsMedia() throws IOException, TemplateException{
+		StringWriter out = new StringWriter();
+		String result = null;
+		try {
+			MediaUtils.render(SMS_TERMS_AND_CONDITIONS_MEDIA_PATH, out, null, null);
+			result = out.toString();
+		} finally {
+			out.close();
+		}
+		return result;
 	}
 
 	private boolean isTextMessageAlertPopupEnabled(final FDUserI user, final ErpCustomerInfoModel customerInfoModel) {

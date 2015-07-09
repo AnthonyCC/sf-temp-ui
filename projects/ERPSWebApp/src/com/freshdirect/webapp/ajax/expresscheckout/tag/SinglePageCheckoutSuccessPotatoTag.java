@@ -12,6 +12,7 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutSuccessData;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
 import com.freshdirect.webapp.soy.SoyTemplateEngine;
@@ -38,6 +39,8 @@ public class SinglePageCheckoutSuccessPotatoTag extends SimpleTagSupport {
 				potato = SoyTemplateEngine.convertToMap(result);
 				context.setAttribute(name, potato);
 			} catch (FDResourceException e) {
+				throw new JspException(e);
+			} catch (TemplateException e) {
 				throw new JspException(e);
 			}
 		} else {

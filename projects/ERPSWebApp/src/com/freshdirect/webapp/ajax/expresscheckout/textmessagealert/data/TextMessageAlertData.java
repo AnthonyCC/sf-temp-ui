@@ -4,6 +4,7 @@ public class TextMessageAlertData {
 
 	private boolean show;
 	private String header;
+	private String media;
 
 	public boolean isShow() {
 		return show;
@@ -19,5 +20,13 @@ public class TextMessageAlertData {
 
 	public void setHeader(String header) {
 		this.header = header;
+	}
+
+	public String getMedia() {
+		return media;
+	}
+
+	public void setMedia(String media) {
+		this.media = media;
 	}
 }

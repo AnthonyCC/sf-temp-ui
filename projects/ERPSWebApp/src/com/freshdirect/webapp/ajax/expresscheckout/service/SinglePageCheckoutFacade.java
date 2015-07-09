@@ -105,7 +105,7 @@ public class SinglePageCheckoutFacade {
 		return formLocation;
 	}
 
-	public SinglePageCheckoutSuccessData loadSuccess(final String requestURI, final FDUserI user, String orderId) throws FDResourceException {
+	public SinglePageCheckoutSuccessData loadSuccess(final String requestURI, final FDUserI user, String orderId) throws FDResourceException, IOException, TemplateException {
 		SinglePageCheckoutSuccessData result = new SinglePageCheckoutSuccessData();
 		FDOrderI order = loadOrder(orderId, user);
 		result.setDrawer(DrawerService.defaultService().loadDrawer());
@@ -215,10 +215,11 @@ public class SinglePageCheckoutFacade {
 		return successPageData;
 	}
 
-	private TextMessageAlertData loadTextMessageAlertData(final FDUserI user) throws FDResourceException {
+	private TextMessageAlertData loadTextMessageAlertData(final FDUserI user) throws FDResourceException, IOException, TemplateException {
 		TextMessageAlertData textMessageAlertData = new TextMessageAlertData();
 		textMessageAlertData.setHeader(contentFactoryService.getExpressCheckoutTextMessageAlertHeader(user));
 		textMessageAlertData.setShow(textMessageAlertService.showTextMessageAlertPopup(user));
+		textMessageAlertData.setMedia(textMessageAlertService.getTermsAndConditionsMedia());
 		return textMessageAlertData;
 	}
 
