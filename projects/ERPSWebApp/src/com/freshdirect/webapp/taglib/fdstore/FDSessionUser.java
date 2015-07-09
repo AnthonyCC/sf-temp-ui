@@ -1762,4 +1762,9 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		this.productSamples = productSamples;
 	}
 
+	@Override
+	public boolean isProductSample(ProductReference prodRef) {
+		return this.user.isProductSample(prodRef);
+	}
+
 }

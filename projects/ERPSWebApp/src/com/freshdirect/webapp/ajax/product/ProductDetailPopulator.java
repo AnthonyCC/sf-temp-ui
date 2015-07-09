@@ -57,6 +57,7 @@ import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.PopulatorUtil;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsContext;
 import com.freshdirect.fdstore.content.customerrating.CustomerRatingsDTO;
@@ -844,11 +845,15 @@ public class ProductDetailPopulator {
 		boolean isNew = product.isNew();
 		boolean isYourFave = DYFUtil.isFavorite( product, user );
 		boolean isBackInStock = product.isBackInStock();
+		ProductReference prodRef = new ProductReference(product);
+		boolean isFree = user.isProductSample(prodRef);
 	
 		item.setDeal( deal );
 		
 		// determine what to display
-		if ( useFavBurst && isYourFave ) {
+		if(isFree){
+			item.setBadge("free");
+		}else if ( useFavBurst && isYourFave ) {
 			item.setBadge( "fav" );
 		} else if ( isNew ) {
 			item.setBadge( "new" );

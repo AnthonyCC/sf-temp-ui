@@ -603,4 +603,6 @@ public interface FDUserI extends java.io.Serializable {
     public void setGlobalNavTutorialSeen(boolean isGlobalNavTutorialSeen);
 	public List<FDOrderInfoI> getScheduledOrdersForDelivery(boolean sorted) throws FDResourceException;
 
+	public boolean isProductSample(ProductReference prodRef);
+
 }

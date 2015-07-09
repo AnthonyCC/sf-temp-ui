@@ -2876,4 +2876,15 @@ public class FDUser extends ModelSupport implements FDUserI {
 			return (o1).getDeliveryStartTime().compareTo((o2).getDeliveryStartTime());
 		}
 	};
+
+	@Override
+	public boolean isProductSample(ProductReference prodRef) {
+		for(ProductReference prod :getProductSamples()){
+		if(prod.equals(prodRef)){
+			return true;
+		}
+			
+		}
+		return false;
+	}
 }
