@@ -290,11 +290,19 @@ asyncPixelWithTimeout();
 		%>
 		
 		<tr valign="middle">
-		<%
+		<%		
+		boolean isFreeProd = false;
+		if(cartLine.getDiscount() != null) {
+			Discount discount = cartLine.getDiscount();				
+			if ((discount.getDiscountType()).equals(EnumDiscountType.FREE)) {
+				isFreeProd = true;
+			}
+		}
+		
 		if (cartLine.isSoldBySalesUnits()) {
 			%>
 			<td colspan="2" width="100">
-				<div class="quantity_col">
+				<div class='quantity_col <%= isFreeProd ? "product-sample-cart-quantity" : "" %>'>
 				<select id="salesUnit_<%=idx%>" name="salesUnit_<%=idx%>" CLASS="viewcartselect">
 				<option value="">0
 				<logic:iterate id="salesUnit" collection="<%= fdProduct.getSalesUnits() %>" type="com.freshdirect.fdstore.FDSalesUnit">
@@ -317,7 +325,7 @@ asyncPixelWithTimeout();
 		} else {
 			%>
 			<td width="100" colspan="2">
-				<div class="quantity_col">
+				<div class='quantity_col <%= isFreeProd ? "product-sample-cart-quantity" : "" %>'>
 				<script>
 				function chgQty<%=idx%>(delta) {
 					val = document.viewcart.quantity_<%=idx%>.value;
@@ -375,14 +383,8 @@ asyncPixelWithTimeout();
 		<%
 			String discountMsg = null;
 			String groupDiscountMsg = null;
-			boolean isFreeProd = false;
 			if(cartLine.getDiscount() != null) {
-				Discount discount = cartLine.getDiscount();				
-				if ((discount.getDiscountType()).equals(EnumDiscountType.FREE)) {
-					List<ProductModel> pns = new ArrayList();
-					pns.add(productNode);
-					isFreeProd = true;
-				}				
+				Discount discount = cartLine.getDiscount();
 				PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
 				String skuMsg = "";
 				if(discount.getSkuLimit() > 0 && cartLine.getUnitPrice().indexOf("lb") == -1) {

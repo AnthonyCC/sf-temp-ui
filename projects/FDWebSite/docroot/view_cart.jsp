@@ -220,17 +220,18 @@ StringBuffer buffer = new StringBuffer(
 
 <script>
   window.FreshDirect = window.FreshDirect || {};
-  window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>
+  window.FreshDirect.pendingCustomizations = <fd:ToJSON object="${pendingExternalAtcItemPotato}" noHeaders="true"/>;
   window.FreshDirect.viewcart = window.FreshDirect.viewcart || {};
-  window.FreshDirect.viewcart.data = <fd:ToJSON object="${viewCartPotato}" noHeaders="true"/>
+  window.FreshDirect.viewcart.data = <fd:ToJSON object="${viewCartPotato}" noHeaders="true"/>;
 </script>
 
 <script>
+	// APPDEV-4203 Product Sampling
 	var ProductSamplesMaxQuantityLimit = <%= FDStoreProperties.getProductSamplesMaxQuantityLimit() %>;
 	jQuery(".product-sample-carousel .portrait-item .portrait-item-price").text("FREE");
 	jQuery(".product-sample-carousel .portrait-item .portrait-item-price").addClass("product-sample-free");
 	jQuery(".product-sample-carousel li.portrait-item").each(function( index ) {
-		if( jQuery( this ).find(".atc-info div.incart-info").attr( "data-amount" ) == ProductSamplesMaxQuantityLimit){
+		if( jQuery( this ).find(".atc-info div.incart-info").attr( "data-amount" ) >= ProductSamplesMaxQuantityLimit){
 			jQuery( this ).addClass("unavailable");
 		}
 	});

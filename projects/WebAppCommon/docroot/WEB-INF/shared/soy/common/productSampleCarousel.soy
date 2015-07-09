@@ -9,7 +9,7 @@
 <div class="product-sample-carousel">
 	<h2 class="product-sample-header">Congrats, you've qualified for a <span class="product-sample-free">FREE</span> Sample!</h2>
 	<h2 class="product-sample-carousel-header">Pick any two:</h2>{if $title}{/if}
-	<div data-component="carousel" class="FULL_WIDTH" data-cmeventsource="view_cart" data-apiendpoint="/api/qs/ymal">		
+	<div data-component="carousel" data-cmeventsource="view_cart" data-apiendpoint="/api/qs/ymal">		
 		<div data-component="carousel-mask" class="transactional light-carousel">
 			<ul data-component="carousel-list" data-carousel-page="0">			
 				{foreach $item in $carouselData.products}
@@ -20,8 +20,8 @@
 				{/foreach}
 			</ul>
 		</div>
-		<button data-component="carousel-prev" data-carousel-nav="prev">previous</button>
-		<button data-component="carousel-next" data-carousel-nav="next">next</button>
+		<div data-component="carousel-prev" data-carousel-nav="prev">previous</div>
+		<div data-component="carousel-next" data-carousel-nav="next">next</div>
 	</div>
 	<div class="product-sample-carousel-bottom"></div>
 </div>

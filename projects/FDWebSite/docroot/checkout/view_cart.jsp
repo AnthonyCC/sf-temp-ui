@@ -201,11 +201,14 @@ StringBuffer buffer = new StringBuffer(
 
 <%@ include file="/includes/i_cartcleanup.jspf" %>
 
+<potato:viewCart />
+<soy:render template="common.productSampleCarousel" data="${viewCartPotato.productSamplesTab}" />
+
 <%@ include file="/includes/i_viewcart.jspf" %> 
 
 </form>
 
-<potato:viewCart />
+
 <soy:render template="common.viewCartTabbedCarousel" data="${viewCartPotato}" /> 
 
 <table border="0" cellspacing="0" cellpadding="0" width="<%= W_CHECKOUT_VIEW_CART_TOTAL %>">
@@ -230,6 +233,17 @@ StringBuffer buffer = new StringBuffer(
 	<fd:CmShop5 wrapIntoScriptTag="true" cart="<%=cart%>"/>	
 <%}%>
 
+<script>
+	//APPDEV-4203 Product Sampling
+	var ProductSamplesMaxQuantityLimit = <%= FDStoreProperties.getProductSamplesMaxQuantityLimit() %>;
+	jQuery(".product-sample-carousel .portrait-item .portrait-item-price").text("FREE");
+	jQuery(".product-sample-carousel .portrait-item .portrait-item-price").addClass("product-sample-free");
+	jQuery(".product-sample-carousel li.portrait-item").each(function( index ) {
+		if( jQuery( this ).find(".atc-info div.incart-info").attr( "data-amount" ) >= ProductSamplesMaxQuantityLimit){
+			jQuery( this ).addClass("unavailable");
+		}
+	});
+</script>
 
 </tmpl:put>
 </fd:RedemptionCodeController>

@@ -105,6 +105,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00c4c4be', e
 	width:160px;
 }
 
+/* APPDEV-4203 Product Sampling */
+.product-sample-carousel{
+	width: 970px;
+}
+
 .product-sample-carousel h2.product-sample-header{
 	font-family: Verdana, Arial, sans-serif;
 	color: #333;
@@ -162,8 +167,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00c4c4be', e
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c8c8c6', endColorstr='#f0f5e1',GradientType=0 );
 }
 
-.product-sample-carousel li.portrait-item{
-	
+.product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li {
+  	width: 205px;
 }
 
 .product-sample-carousel li.portrait-item.unavailable .portrait-item-productimage {
@@ -192,7 +197,25 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00c4c4be', e
 .product-sample-carousel li.portrait-item.unavailable .portrait-item-header,
 .product-sample-carousel li.portrait-item.unavailable .portrait-item-header-name,
 .product-sample-carousel li.portrait-item.unavailable .portrait-item-header-configuration {
-  	color:#999;
+  	color: #999;
   	pointer-events: none;
    	cursor: default;
+}
+
+#i_viewcart .quantity_col.product-sample-cart-quantity{
+	opacity: .5;
+	filter: alpha(opacity=50);
+	pointer-events: none;
+   	cursor: default;
+}
+
+#transactionalPopup .product-sample-qty-one{
+	font-weight: bold;
+	text-align: left;
+	margin: 0px;
+	padding: 10px 0px;
+}
+
+#transactionalPopup .portrait-item-controls .portrait-item-addtocart .subtotal{
+	display: none;
 }

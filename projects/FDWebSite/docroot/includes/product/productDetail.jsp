@@ -69,51 +69,53 @@ FreshDirect.pdp.coremetrics=<fd:CmElement elementCategory="reviews" productId="<
 
 		</div>
 		<div class="span-8 prepend-1">
-<c:if test="${productPotato.available}">			
-			<div class="pdp-availability"><soy:render template="pdp.availability" data="${productPotato}" /></div>
-			<div class="pdp-price">
-				<soy:render template="common.price" data="${productPotato}" />
-				<soy:render template="pdp.savestring" data="${productPotato}" />
-			</div>
-			<div class="span-7 prepend-1 first pdp-info">
-				<soy:render template="pdp.skuInfo" data="${productPotato}" />
-				<soy:render template="pdp.quantity" data="${productPotato}" />
-				<%-- don't show scale info if we're in group scale context --%>
-				<c:if test="${empty param.grpId and empty param.version}">
-					<soy:render template="pdp.scaleinfo" data="${productPotato}" />
-				</c:if>
-				<soy:render template="pdp.ratings" data="${productPotato}" />
-				<soy:render template="pdp.badges" data="${productExtraPotato}" />
-				<soy:render template="pdp.heatRating" data="${productPotato}" />
-			</div>
-			<div class="pdp-productconfig" data-component="product" data-cmeventsource="pdp_main">
-				<soy:render template="pdp.productDataMin" data="${productPotato}" />
-				<soy:render template="pdp.configWrapper" data="${productPotato}" />
-				<soy:render template="pdp.ecoupon" data="${productPotato}" />
-				<div class="pdp-atc">
-					<div class="pdp-atc-buttons">
-						<soy:render template="common.skuControlQuantity" data="${productPotato}" /><div class="pdp-atc-button-wrapper"><button class="cssbutton orange medium" alt="" data-component="ATCButton">add to cart</button><soy:render template="pdp.atcInCart" data="${productPotato}"/></div><button id="pdp-atc-addtolist" class="addtolist cssbutton purple medium" alt="" data-component="addToListButton">add to list</button>
-					</div>
-					<div>
-						<soy:render template="pdp.subtotal" data="${productPotato}"/>
-					</div>
-				</div>
-			</div>
-			<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
-				<%-- don't show evenBetter if we're in group scale context --%>
-			<c:if test="${empty param.grpId}">
-				<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />
-				<c:if test="${empty productExtraPotato.familyProducts}">					
-					<soy:render template="pdp.evenBetter" data="${evenBetter}" />					
-				</c:if>	
+			<c:if test="${productPotato.badge != 'free'}">
+				<c:if test="${productPotato.available}">			
+							<div class="pdp-availability"><soy:render template="pdp.availability" data="${productPotato}" /></div>
+							<div class="pdp-price">
+								<soy:render template="common.price" data="${productPotato}" />
+								<soy:render template="pdp.savestring" data="${productPotato}" />
+							</div>
+							<div class="span-7 prepend-1 first pdp-info">
+								<soy:render template="pdp.skuInfo" data="${productPotato}" />
+								<soy:render template="pdp.quantity" data="${productPotato}" />
+								<%-- don't show scale info if we're in group scale context --%>
+								<c:if test="${empty param.grpId and empty param.version}">
+									<soy:render template="pdp.scaleinfo" data="${productPotato}" />
+								</c:if>
+								<soy:render template="pdp.ratings" data="${productPotato}" />
+								<soy:render template="pdp.badges" data="${productExtraPotato}" />
+								<soy:render template="pdp.heatRating" data="${productPotato}" />
+							</div>
+							<div class="pdp-productconfig" data-component="product" data-cmeventsource="pdp_main">
+								<soy:render template="pdp.productDataMin" data="${productPotato}" />
+								<soy:render template="pdp.configWrapper" data="${productPotato}" />
+								<soy:render template="pdp.ecoupon" data="${productPotato}" />
+								<div class="pdp-atc">
+									<div class="pdp-atc-buttons">
+										<soy:render template="common.skuControlQuantity" data="${productPotato}" /><div class="pdp-atc-button-wrapper"><button class="cssbutton orange medium" alt="" data-component="ATCButton">add to cart</button><soy:render template="pdp.atcInCart" data="${productPotato}"/></div><button id="pdp-atc-addtolist" class="addtolist cssbutton purple medium" alt="" data-component="addToListButton">add to list</button>
+									</div>
+									<div>
+										<soy:render template="pdp.subtotal" data="${productPotato}"/>
+									</div>
+								</div>
+							</div>
+							<soy:render template="pdp.groupProducts" data="${productExtraPotato}" />
+								<%-- don't show evenBetter if we're in group scale context --%>
+							<c:if test="${empty param.grpId}">
+								<soy:render template="pdp.familyProducts" data="${productExtraPotato}" />
+								<c:if test="${empty productExtraPotato.familyProducts}">					
+									<soy:render template="pdp.evenBetter" data="${evenBetter}" />					
+								</c:if>	
+							</c:if>
+							<soy:render template="pdp.likethat" data="${xsell}" />
+				</c:if>			
+				<c:if test="${not productPotato.available }">
+					<soy:render template="pdp.unavailability" data="${productExtraPotato}"/>
+				</c:if>		    
+						<soy:render template="pdp.productRequest"/>
+						
 			</c:if>
-			<soy:render template="pdp.likethat" data="${xsell}" />
-</c:if>			
-<c:if test="${not productPotato.available }">
-	<soy:render template="pdp.unavailability" data="${productExtraPotato}"/>
-</c:if>		    
-			<soy:render template="pdp.productRequest"/>
-			
 		</div>
 	</div>
 </div>
