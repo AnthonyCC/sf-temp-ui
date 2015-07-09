@@ -167,6 +167,7 @@
  * @param qu Map of quantity descriptors
  * @param su List of salesunit options
  * @param image Location of cartline image
+ * @param? newItem new item in modified order
  * @param? unitPrice Location of cartline image
  * @param? unitScale Location of cartline image
  * @param? discount Map of discount data
@@ -189,6 +190,9 @@
   <div class='cartline-title cartline-box'>
     <div class='cartline-titleholder'>
       <a class='cartline-link' href='/product_modify.jsp?cartLine={$id}&trk=cart'>{$descr}</a>
+      {if $newItem}
+      <span class="new">(new)</span>
+      {/if}
       {if $confDescr}
       <p class='cartline-descriptor'>({$confDescr})</a>
       {/if}
@@ -245,6 +249,7 @@
  * @param qu Map of quantity descriptors
  * @param su List of salesunit options
  * @param image Location of cartline image
+ * @param? newItem new item in modified order
  * @param? unitPrice Location of cartline image
  * @param? unitScale Location of cartline image
  * @param? discount Map of discount data
@@ -277,6 +282,9 @@
       <a class='cartline-link' href='/product_modify.jsp?cartLine={$id}&trk=cart'>
         {$descr}
       </a>
+      {/if}
+      {if $newItem}
+      <span class="new">(new)</span>
       {/if}
       {if $confDescr}<p class='cartline-descriptor'>({$confDescr})</a>{/if}
       {if $discount and $discount.discountPrice}

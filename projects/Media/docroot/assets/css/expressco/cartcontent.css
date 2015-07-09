@@ -13,6 +13,13 @@
   vertical-align:top;
 }
 
+.cartsection__cartline .cartline-box span.new {
+  color: #dd0303;
+  display: inline-block;
+  margin-left: 1em;
+  font-weight: bold;
+}
+
 .cartsection__cartline .cartline-imageholder{
   width:70px;
   height:70px;
