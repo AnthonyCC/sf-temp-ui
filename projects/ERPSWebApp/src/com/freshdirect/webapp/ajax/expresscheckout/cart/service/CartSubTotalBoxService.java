@@ -57,7 +57,7 @@ public class CartSubTotalBoxService {
 	public static final String DELIVERY_PREMIUM_HAMPTONS_NAME = "Delivery Premium (Hamptons)";
 	public static final String TAXABLE_ITEM_MARK = "T";
 	private static final String ESTIMATED_PRICE_MARK = "*";
-	private static final String SUBTOTAL_NAME = "Subtotal";
+	private static final String SUBTOTAL_NAME = "Order Subtotal";
 	private static final String SUBTOTAL_ID = "subtotal";
 	private static final String FUEL_SURCHARGE_NAME = "Fuel Surcharge";
 	private static final String FUEL_SURCHARGE_ID = "fuelsurcharge";
