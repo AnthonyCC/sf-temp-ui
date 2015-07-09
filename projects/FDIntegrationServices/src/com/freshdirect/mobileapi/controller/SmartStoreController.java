@@ -1,7 +1,11 @@
 package com.freshdirect.mobileapi.controller;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -66,6 +70,8 @@ public class SmartStoreController extends BaseController {
     
     //APPDEV-4181 Used directly as the same is done in StoreFront
     private static final String FLOWER_DEPARTMENT = "flo";
+	
+	private static String HMR_DEPT_CHECK = "hmr_freshdining";
 
     @Override
     protected boolean validateUser() {
@@ -148,6 +154,21 @@ public class SmartStoreController extends BaseController {
 		} else if (ACTION_GET_CAROUSEL.equals(action)) {
 			
 			String deptId = request.getParameter(PARAM_DEPT_ID);
+			
+			//APPDEV-4237
+			String redirectDept = "";
+			if(deptId.equalsIgnoreCase(HMR_DEPT_CHECK))
+			{
+				ContentNodeModel currentFolderTemp = ContentFactory.getInstance().getContentNode(deptId);
+		    	String redirectURL = ((CategoryModel)currentFolderTemp).getRedirectUrl();
+		    	Map<String, String> redirectParams = getQueryMap(redirectURL);
+		    	redirectDept = redirectParams.get("deptId");
+			}
+			
+			if(deptId.equalsIgnoreCase(HMR_DEPT_CHECK) && redirectDept != null && !redirectDept.equals("")) {
+				deptId = redirectDept;
+			}
+		    
 			EnumSiteFeature siteFeature = DepartmentCarouselUtil.getCarousel(deptId);
 			String title = DepartmentCarouselUtil.getCarouselTitle(deptId);
 			
@@ -170,7 +191,7 @@ public class SmartStoreController extends BaseController {
 				OverriddenVariantsHelper.AllowAnonymousUsers = true;
 
 				products = getCarouselRecommendations(siteFeature, model, user,
-						request);
+						request,redirectDept);
 
 				OverriddenVariantsHelper.AllowAnonymousUsers = allowRestore;
 				
@@ -190,6 +211,30 @@ public class SmartStoreController extends BaseController {
         return model;
     }
     
+	//APPDEV-4237
+	private static Map<String, String> getQueryMap(String url) {
+		Map<String, String> map = new HashMap<String, String>();
+		if (url != null) {
+			try {
+				URI uri = new URI(url);
+				String query = uri.getQuery();
+				if(query != null) {
+					String[] params = query.split("&");
+					if(params != null) {
+						for (String param : params) {
+							map.put(param.split("=")[0], param.split("=")[1]);
+						}
+					}
+				}
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return map;
+		}
+		return map;
+	}
+	
 	 public List<ProductSearchResult> setProductsFromModel(List<com.freshdirect.mobileapi.model.Product> products) {
 	    	List<ProductSearchResult> result = new ArrayList<ProductSearchResult>();
 	        if(products != null) {
@@ -228,9 +273,14 @@ public class SmartStoreController extends BaseController {
 	}
 
     private List<SmartStoreProductResult> getCarouselRecommendations(EnumSiteFeature siteFeature, ModelAndView model,
-			SessionUser user, HttpServletRequest request) throws JsonException {
+			SessionUser user, HttpServletRequest request,String redirectDept) throws JsonException {
 		
     	String deptId = request.getParameter(PARAM_DEPT_ID);
+    	
+    	if(deptId.equalsIgnoreCase(HMR_DEPT_CHECK) && redirectDept != null && !redirectDept.equals("")) {
+			deptId = redirectDept;
+		}
+    	
     	String page = request.getParameter("page");
     	
     	SmartStore smartStore = new SmartStore(user);
