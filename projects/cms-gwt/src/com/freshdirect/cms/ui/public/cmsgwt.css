@@ -201,6 +201,18 @@ a.commandLink-active:hover {
 	background-repeat: no-repeat;
 }
 
+.moveup-button{
+  background-image: url(gxt/images/gray/panel/tool-sprites.gif) !important;
+  background-position: -15px -60px;
+  height: 15px
+}
+
+.movedown-button {
+  background-image: url(gxt/images/gray/panel/tool-sprites.gif) !important;
+  background-position: -15px -75px;
+  height: 15px;
+}
+
 .save-button-text button {
 	color: green;
 }
