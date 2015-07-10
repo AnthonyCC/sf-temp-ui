@@ -254,9 +254,8 @@ public class DeliveryAddressService {
 		ErpAddressModel deliveryAddress = cart.getDeliveryAddress();
 		ErpCustomerInfoModel customerInfoModel = FDCustomerFactory.getErpCustomerInfo(identity);
 
-		ErpDepotAddressModel depotAddress = deliveryAddress instanceof ErpDepotAddressModel ? (ErpDepotAddressModel) ((FDOrderI) cart).getDeliveryAddress() : null;
-
-		if (depotAddress != null) {
+		if (deliveryAddress instanceof ErpDepotAddressModel) {
+			ErpDepotAddressModel depotAddress = (ErpDepotAddressModel) deliveryAddress;
 			if (depotAddress.isPickup()) {
 				DlvDepotModel depotModel = com.freshdirect.fdstore.FDDepotManager.getInstance().getDepotByLocationId(depotAddress.getLocationId());
 				if (depotModel != null) {
@@ -271,14 +270,14 @@ public class DeliveryAddressService {
 					}
 				}
 			}
-		}
-
-		EnumServiceType selectedServiceType = user.getSelectedServiceType();
-		if (EnumServiceType.HOME.equals(selectedServiceType) || EnumServiceType.CORPORATE.equals(selectedServiceType)) {
-			String deliveryAddressId = NVL.apply(deliveryAddress.getId(), DEFAULT_DELIVERY_ADDRESS_ID);
-			LocationData deliveryLocationData = convertDeliveryAddressModelToLocationData(deliveryAddressId, deliveryAddress, selectedServiceType, isDeliveryAddressUnattended(deliveryAddress));
-			deliveryLocationData.setSelected(true);
-			depotLocationDatas.add(deliveryLocationData);
+		} else {
+			EnumServiceType selectedServiceType = user.getSelectedServiceType();
+			if (EnumServiceType.HOME.equals(selectedServiceType) || EnumServiceType.CORPORATE.equals(selectedServiceType)) {
+				String deliveryAddressId = NVL.apply(deliveryAddress.getId(), DEFAULT_DELIVERY_ADDRESS_ID);
+				LocationData deliveryLocationData = convertDeliveryAddressModelToLocationData(deliveryAddressId, deliveryAddress, selectedServiceType, isDeliveryAddressUnattended(deliveryAddress));
+				deliveryLocationData.setSelected(true);
+				depotLocationDatas.add(deliveryLocationData);
+			}
 		}
 
 		return depotLocationDatas;
