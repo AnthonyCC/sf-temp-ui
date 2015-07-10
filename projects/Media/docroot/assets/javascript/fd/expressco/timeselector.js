@@ -21,7 +21,9 @@ var FreshDirect = FreshDirect || {};
     },
     createRequestConfig : {
       value: function(){
-        return { url: '/expressco/timeslots.jsp', type: 'GET', dataType:'html' };
+        var t = (new Date()).getTime();
+
+        return { url: '/expressco/timeslots.jsp?thxie='+t, type: 'GET', dataType:'html' };
       }
     },
     expandDefaultColumn: {
