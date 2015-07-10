@@ -73,6 +73,10 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 	private ToolButton moveButton;
 	private ToolButton deleteButton;
 	private ToolButton sortButton;
+	
+	private ToolButton moveUpButton;
+	private ToolButton moveDownButton;
+	
 	private CheckBox selectCheckbox;
 
 	private CheckBoxSelectionModel<OneToManyModel> selection = new CheckBoxSelectionModel<OneToManyModel>();
@@ -248,6 +252,51 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
             });
 		}
 	}
+	
+	protected Listener<BaseEvent> moveUpButtonListener = new Listener<BaseEvent>() {
+		public void handleEvent(BaseEvent be) {
+			final List<OneToManyModel> selectedList = selection.getSelectedItems();
+			if ( selectedList.size() == 0 ) {
+				return;
+			} else if ( selectedList.size() > 1 ) {
+				String message = "Please select one item to move. You have selected " + selectedList.size() + "!";
+				MessageBox.alert( "Move Up", message, null);
+			} else {
+				OneToManyModel model = selectedList.get(0);
+				int position = store.indexOf(model);
+				if(position > 0 ){
+					position--;
+					store.remove(model);
+					store.insert(model, position);
+					grid.getView().refresh(false);
+					selection.setSelection(selectedList);
+				}
+			}
+		}
+	};
+	
+	protected Listener<BaseEvent> moveDownButtonListener = new Listener<BaseEvent>() {
+		public void handleEvent(BaseEvent be) {
+			final List<OneToManyModel> selectedList = selection.getSelectedItems();
+			if ( selectedList.size() == 0 ) {
+				return;
+			} else if ( selectedList.size() > 1 ) {
+				String message = "Please select one item to move. You have selected " + selectedList.size() + "!";
+				MessageBox.alert( "Move Down", message, null);
+			} else {
+				OneToManyModel model = selectedList.get(0);
+				int position = store.indexOf(model);
+				
+				if(position < store.getCount() - 1){
+					position++;
+					store.remove(model);
+					store.insert(model, position);
+					grid.getView().refresh(false);
+					selection.setSelection(selectedList);
+				}
+			}
+		}
+	};
 
     /**
 	 * Drag and drop listener for the grid component.
@@ -356,8 +405,18 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 		sortButton = new ToolButton( "sort-button" );
 		sortButton.setToolTip( new ToolTipConfig( "SORT", "Sort the relations alphabetically." ) );
 		theToolBar.add( sortButton );
-
+		
 		theToolBar.add(new FillToolItem());
+			
+		//==================================== MOVE UP ====================================
+		moveUpButton = new ToolButton( "moveup-button" );
+		moveUpButton.setToolTip( new ToolTipConfig( "Move Up", "Move Up" ) );
+		theToolBar.add( moveUpButton );
+		
+		//==================================== MOVE DOWN ====================================
+		moveDownButton = new ToolButton( "movedown-button" );
+		moveDownButton.setToolTip( new ToolTipConfig( "Move Down", "Move Down" ) );
+		theToolBar.add( moveDownButton );
 
 		// ==================================== DELETE ====================================
 		deleteButton = new ToolButton( "delete-button" );
@@ -373,7 +432,7 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 		moveButton = new ToolButton( "move-button" );
 		moveButton.setToolTip( new ToolTipConfig( "MOVE", "Move selected relations to another node." ) );
 		theToolBar.add( moveButton );
-
+		
 		// ==================================== SELECT CHECKBOX ====================================
 		if ( isSelectAllToolNeeded() ) {
 			selectCheckbox = new CheckBox();
@@ -799,6 +858,24 @@ public class OneToManyRelationField extends MultiField<List<OneToManyModel>> imp
 				sortButton.removeListener(Events.OnClick, sortButtonListener);
 			} else {
 				sortButton.addListener(Events.OnClick, sortButtonListener);
+			}
+		}
+		
+		if (moveUpButton != null) {
+			moveUpButton.setEnabled(!readOnly);
+			if (readOnly) {
+				moveUpButton.removeListener(Events.OnClick, moveUpButtonListener);
+			} else {
+				moveUpButton.addListener(Events.OnClick, moveUpButtonListener);
+			}
+		}
+		
+		if (moveDownButton != null) {
+			moveDownButton.setEnabled(!readOnly);
+			if (readOnly) {
+				moveDownButton.removeListener(Events.OnClick, moveDownButtonListener);
+			} else {
+				moveDownButton.addListener(Events.OnClick, moveDownButtonListener);
 			}
 		}
 
