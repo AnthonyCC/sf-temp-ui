@@ -414,6 +414,13 @@ public class CartSubTotalBoxService {
 
 	public void populateSavingToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart) {
 		double saving = cart.getTotalDiscountValue() + cart.getCustomerCreditsValue();
+		
+		for(FDCartLineI orderLine : cart.getOrderLines()){
+			if(hasCartLineGroupDiscount(orderLine)){
+				saving += orderLine.getGroupScaleSavings();
+			}
+		}
+
 		if (0 < saving) {
 			CartSubTotalFieldData data = new CartSubTotalFieldData();
 			data.setId(YOU_SAVED);
@@ -421,6 +428,10 @@ public class CartSubTotalBoxService {
 			data.setValue(JspMethods.formatPrice(saving));
 			subTotalBox.add(data);
 		}
+	}
+	
+	private boolean hasCartLineGroupDiscount(FDCartLineI cartLine){
+		return cartLine.getDiscount() == null && cartLine.getGroupQuantity() > 0 && cartLine.getGroupScaleSavings() > 0;
 	}
 
 	public void populateSignupPromotionInfoToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart, FDUserI user) {
