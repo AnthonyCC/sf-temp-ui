@@ -1,4 +1,9 @@
-<%@page import="com.freshdirect.customer.ErpClientCode"%><logic:iterate id="cartLine" collection="<%= view.getOrderLines() %>" type="com.freshdirect.fdstore.customer.FDCartLineI"><%@ page import="com.freshdirect.fdstore.ecoupon.EnumCouponContext"%><%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%@page import="com.freshdirect.customer.ErpClientCode"%>
+<%
+List<FDCartLineI> cartLines = view.getOrderLines();
+Collections.sort(cartLines, FDCartModel.PRODUCT_SAMPLE_COMPARATOR);
+%>
+<logic:iterate id="cartLine" collection="<%= cartLines %>" type="com.freshdirect.fdstore.customer.FDCartLineI"><%@ page import="com.freshdirect.fdstore.ecoupon.EnumCouponContext"%><%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%
 ErpInvoiceLineI invoiceLine = null;
 StringBuffer quantity = new StringBuffer();
@@ -42,7 +47,7 @@ if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) 
 <%
 	String discountMsg = null;
 	String groupDiscountMsg = null;
-	if(cartLine.getDiscount() != null) {
+	if(cartLine.getDiscount() != null && !EnumDiscountType.FREE.equals(cartLine.getDiscount().getDiscountType())) {
 		Discount discount = cartLine.getDiscount();
 		PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
 		discountMsg = promotion.getDescription()+" <span style=\"color: #ff0000;\">(You Saved "+currencyFormatter.format(cartLine.getDiscountAmount())+")</span> <a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"font-weight: normal;\">See details</a>";
@@ -62,7 +67,11 @@ if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) 
 		<display:FDCoupon coupon="<%= user.getCustomerCoupon(cartLine, EnumCouponContext.VIEWORDER) %>" contClass="fdCoupon_cartlineViewOrder" pastTense="true"></display:FDCoupon>
 	</td>
 	<td><%if(cartLine.hasInvoiceLine() && cartLine.isPricedByLb()){%><%=invoiceLine.getWeight()%>&nbsp;lb <%}%></td>
-    <% if(cartLine.getDiscount() != null || cartLine.getCouponDiscount()!=null) { %>
+	<% if(cartLine.getDiscount() != null && EnumDiscountType.FREE.equals(cartLine.getDiscount().getDiscountType())) { %>
+		<td><font color="#FF0000"></font></td>
+        <td>&nbsp;</td>
+         <td align="right" class="text10bold"><font color="#FF0000"><b>FREE</b></font></td>
+    <% } else if(cartLine.getDiscount() != null || cartLine.getCouponDiscount()!=null) { %>
         <td><font color="#FF0000"><%=cartLine.getUnitPrice()%></font></td>
         <td><%= ((cartLine.hasInvoiceLine() && invoiceLine.getCustomizationPrice()>0) ? currencyFormatter.format(invoiceLine.getCustomizationPrice()) : "&nbsp;") %></td>
         <td align="right" class="text10bold"><font color="#FF0000"><b><%= (cartLine.hasInvoiceLine()) ? currencyFormatter.format(invoiceLine.getPrice()) : currencyFormatter.format(cartLine.getPrice()) %></b></font></td>

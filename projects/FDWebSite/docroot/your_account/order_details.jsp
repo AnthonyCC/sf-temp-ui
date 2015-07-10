@@ -5,6 +5,7 @@
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
+<%@ page import='com.freshdirect.common.pricing.EnumDiscountType' %>
 
 <%@ page import="java.text.*" %>
 <%@ page import='java.util.List.*' %>
