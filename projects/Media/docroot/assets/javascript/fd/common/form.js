@@ -546,7 +546,7 @@ var FreshDirect = FreshDirect || {};
         $field = $(field),
         zip = $field.val();
 
-    if (zip.length !== 5 || zip !== +zip+'') {
+    if (zip.length !== 5 || '1'+zip !== +('1'+zip)+'') {
       errors = addError(errors, field, 'Please provide valid ZIP code!');
     }
 
