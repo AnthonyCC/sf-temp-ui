@@ -45,6 +45,8 @@
   margin-right:30px;
 }
 
+.restrictionpopup__continue,
+.restrictionpopup__cancel,
 .restrictionpopup__submitbutton,
 .restrictionpopup__removebutton{
   width:220px;

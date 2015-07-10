@@ -59,7 +59,9 @@ var FreshDirect = FreshDirect || {};
         },
         close: {
             value: function (e) {
-              this.popup.hide(e);
+              if (this.popup) {
+                this.popup.hide(e);
+              }
             }
         },
         noscroll: {

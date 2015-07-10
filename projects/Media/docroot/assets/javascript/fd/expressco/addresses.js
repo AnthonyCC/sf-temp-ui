@@ -32,6 +32,13 @@ var FreshDirect = FreshDirect || {};
       if (fd.expressco.drawer) {
         fd.expressco.drawer.reset();
       }
+    },
+    errorHandlers: {
+      testErrorHandler: function (form, name, error) { // TODO
+        fd.expressco.restrictionpopup.open({}, 'ebt_address', null, {form: form, name: name, error: error});
+
+        return true;
+      }
     }
   });
 
