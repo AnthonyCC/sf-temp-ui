@@ -21,6 +21,7 @@ import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.depot.DlvDepotModel;
 import com.freshdirect.delivery.depot.DlvLocationModel;
@@ -31,6 +32,7 @@ import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.customer.FDCartI;
+import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -41,6 +43,7 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.DeliveryLocationData;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.LocationData;
@@ -54,6 +57,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.validation.service.DeliveryAd
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.checkout.RedirectToPage;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
 public class DeliveryAddressService {
 
@@ -147,6 +151,23 @@ public class DeliveryAddressService {
 		}
 
 		return locationDatas;
+	}
+	
+	public List<ValidationError> checkEbtAddressPaymentSelection(FDUserI user, String addressId) throws FDResourceException {
+		List<ValidationError> result = new ArrayList<ValidationError>();
+		FDCartModel cart = user.getShoppingCart();
+		ErpPaymentMethodI paymentMethod = cart.getPaymentMethod();
+		if (cart.getDeliveryAddress() != null && paymentMethod != null && cart.getDeliveryAddress().getId() != null && addressId != null && !cart.getDeliveryAddress().getId().equals(addressId) && user.isEbtAccepted() && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {
+			ErpAddressModel requestedAddress = FDCustomerManager.getAddress(user.getIdentity(), addressId);
+			if (requestedAddress != null) {
+				String zipCode = requestedAddress.getZipCode();
+				boolean ebtAccepted = DeliveryAddressManipulator.checkEbtAccepted(user, zipCode);
+				if (!ebtAccepted) {
+					result.add(new ValidationError("ebtAddressRestriction", SystemMessageList.MSG_INVALID_NON_EBT_ADDRESS_FOR_EBT_PAYMENTH_METHOD));
+				}
+			}
+		}
+		return result;
 	}
 
 	public List<LocationData> loadDeliveryAddress(final FDUserI user, HttpSession session) throws FDResourceException, JspException, RedirectToPage {

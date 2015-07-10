@@ -410,21 +410,48 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 
 	private static void checkAndSetEbtAccepted(String zipCode, FDUserI user, FDCartModel cart) throws FDResourceException {
 		if (null != zipCode) {
-			DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkZipCode(zipCode);
-			boolean isEBTAccepted = null != serviceResult ? serviceResult.isEbtAccepted() : false;
+			boolean isEBTAccepted = isZipCodeEbtAccepted(zipCode);
 			if (null != cart.getDeliveryAddress()) {
 				cart.getDeliveryAddress().setEbtAccepted(isEBTAccepted);
 			}
 			if (isEBTAccepted) {
-				if (cart instanceof FDModifyCartModel) {
-					String orgSaleId = ((FDModifyCartModel) cart).getOriginalOrder().getErpSalesId();
-					isEBTAccepted = isEBTAccepted && !user.hasEBTAlert() && (user.getOrderHistory().getUnSettledEBTOrderCount(orgSaleId) < 1);
-				} else {
-					isEBTAccepted = isEBTAccepted && !user.hasEBTAlert() && (user.getOrderHistory().getUnSettledEBTOrderCount() < 1);
-				}
+				isEBTAccepted = isOrderEbtAccepted(user);
 			}
 			user.setEbtAccepted(isEBTAccepted);
 		}
+	}
+	
+	public static boolean checkEbtAccepted(FDUserI user, String zipCode) throws FDResourceException {
+		boolean isEBTAccepted = false;
+		if (null != zipCode) {
+			isEBTAccepted = isZipCodeEbtAccepted(zipCode);
+			if (isEBTAccepted) {
+				isEBTAccepted = isOrderEbtAccepted(user);
+			}
+			user.setEbtAccepted(isEBTAccepted);
+		}
+		return isEBTAccepted;
+	}
+	
+	private static boolean isZipCodeEbtAccepted(String zipCode) throws FDResourceException {
+		boolean isEBTAccepted = false;
+		if (zipCode != null) {
+			DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkZipCode(zipCode);
+			isEBTAccepted = null != serviceResult ? serviceResult.isEbtAccepted() : false;
+		}
+		return isEBTAccepted;
+	}
+	
+	private static boolean isOrderEbtAccepted(FDUserI user) throws FDResourceException {
+		boolean isEBTAccepted = false;
+		FDCartModel cart = user.getShoppingCart();
+		if (cart instanceof FDModifyCartModel) {
+			String orgSaleId = ((FDModifyCartModel) cart).getOriginalOrder().getErpSalesId();
+			isEBTAccepted = isEBTAccepted && !user.hasEBTAlert() && (user.getOrderHistory().getUnSettledEBTOrderCount(orgSaleId) < 1);
+		} else {
+			isEBTAccepted = isEBTAccepted && !user.hasEBTAlert() && (user.getOrderHistory().getUnSettledEBTOrderCount() < 1);
+		}
+		return isEBTAccepted;
 	}
 
 	/**

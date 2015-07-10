@@ -203,5 +203,6 @@ public interface SystemMessageList {
 	public final static String MSG_TIMEOUT_ERROR = "We apologise for the inconvenience, There was a problem with the gateway, Please try again later.";
 	
 	public final static String MSG_INVALID_CAPTCHA = "Captcha is not valid. Please select captcha";
+	public static final String MSG_INVALID_NON_EBT_ADDRESS_FOR_EBT_PAYMENTH_METHOD = "This delivery address is not valid for an EBT payment method.";
 	
 }

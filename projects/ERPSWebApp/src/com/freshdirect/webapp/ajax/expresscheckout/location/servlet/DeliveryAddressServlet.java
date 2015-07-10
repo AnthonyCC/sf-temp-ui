@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.ajax.expresscheckout.location.servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,11 +59,18 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
 					cartChanged = true;
 				} else if ("selectDeliveryAddressMethod".equals(action)) {
 					String deliveryAddressId = FormDataService.defaultService().get(deliveryAddressRequest, "id");
-					String pickupPhone = FormDataService.defaultService().get(deliveryAddressRequest, deliveryAddressId +  "_phone");
-					List<ValidationError> validationErrors = DeliveryAddressService.defaultService().selectDeliveryAddressMethod(deliveryAddressId, pickupPhone, action, request.getSession(), user);
-					PaymentService.defaultService().deselectEbtPayment(user, request.getSession());
+					String ebtPaymentRemovalApproved = FormDataService.defaultService().get(deliveryAddressRequest, "ebtPaymentRemovalApproved");
+					List<ValidationError> validationErrors = new ArrayList<ValidationError>();
+					if (ebtPaymentRemovalApproved == null) {
+						validationErrors.addAll(DeliveryAddressService.defaultService().checkEbtAddressPaymentSelection(user, deliveryAddressId));
+					}
+					if (validationErrors.isEmpty()) {
+						String pickupPhone = FormDataService.defaultService().get(deliveryAddressRequest, deliveryAddressId +  "_phone");
+						validationErrors = DeliveryAddressService.defaultService().selectDeliveryAddressMethod(deliveryAddressId, pickupPhone, action, request.getSession(), user);
+						PaymentService.defaultService().deselectEbtPayment(user, request.getSession());
+						cartChanged = true;
+					}
 					validationResult.getErrors().addAll(validationErrors);
-					cartChanged = true;
 				}
 				deliveryAddressResponse.getSubmitForm().setResult(SoyTemplateEngine.convertToMap(SinglePageCheckoutFacade.defaultFacade().load(user, request)));
 			}
