@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.common.pricing.EnumDiscountType"%>
 <%@ page import='com.freshdirect.fdstore.*,com.freshdirect.fdstore.customer.*,com.freshdirect.fdstore.content.*' %>
 <%@ page import="com.freshdirect.fdstore.promotion.PromotionI" %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
@@ -159,7 +160,7 @@ int idx = 0;
 		<%
 			String discountMsg = null;
 			String groupDiscountMsg = null;
-			if(cartLine.getDiscount() != null) {
+			if(cartLine.getDiscount() != null && !EnumDiscountType.FREE.equals(cartLine.getDiscount().getDiscountType())) {
 				Discount discount = cartLine.getDiscount();
 				PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
 				String skuMsg = "";
@@ -211,7 +212,10 @@ int idx = 0;
 				<display:FDCoupon coupon="<%= coupon %>" contClass="<%= couponClass %>" pastTense="<%= pastTense %>"></display:FDCoupon>
 				<% } %>
 			</td>
-            <% if(cartLine.getDiscount() != null || cartLine.getCouponDiscount()!=null) { %>
+			<% if(cartLine.getDiscount() != null && EnumDiscountType.FREE.equals(cartLine.getDiscount().getDiscountType())) { %>
+			<td width="70" align="right"><font color="#FF0000"></font></td>
+			<td align="right"><span class="text10bold"><font color="#FF0000">FREE</font></span></td>
+            <% } else if(cartLine.getDiscount() != null || cartLine.getCouponDiscount()!=null) { %>
 			<td width="70" align="right"><font color="#FF0000">(<%= cartLine.getUnitPrice() %>)</font></td>
 			<td align="right"><span class="text10bold"><font color="#FF0000"><%= JspMethods.formatPrice(cartLine.getPrice()) %></font></span></td>
             <% } else { %>

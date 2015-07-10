@@ -300,7 +300,9 @@ class SalesOrderHelper {
 
 		} else if (EnumDiscountType.FREE.equals(pt)) {
 			this.bapi.addCondition(posex, "ZD11", 100.0, ""); // base price
-			this.bapi.addCondition(posex, "ZVD0", 100.0, ""); // surcharge
+			if(null == orderLine){//no surcharge discount for orderlines
+				this.bapi.addCondition(posex, "ZVD0", 100.0, ""); // surcharge
+			}
 
 		} else if (EnumDiscountType.SAMPLE.equals(pt)) {
 			this.bapi.addCondition(posex, "ZF11", 100.0, "");
