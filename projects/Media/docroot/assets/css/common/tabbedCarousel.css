@@ -195,8 +195,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00c4c4be', e
 }
 
 .product-sample-carousel li.portrait-item.unavailable .portrait-item-header,
-.product-sample-carousel li.portrait-item.unavailable .portrait-item-header-name,
-.product-sample-carousel li.portrait-item.unavailable .portrait-item-header-configuration {
+.product-sample-carousel li.portrait-item.unavailable .portrait-item-header-name{
+	color: #999;
+	cursor: pointer;
+}
+
+.product-sample-carousel li.portrait-item.unavailable .portrait-item-header-configuration{
   	color: #999;
   	pointer-events: none;
    	cursor: default;
