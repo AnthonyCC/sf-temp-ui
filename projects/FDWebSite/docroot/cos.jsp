@@ -6,7 +6,6 @@
 		import="com.freshdirect.fdstore.FDReservation"
 		import="com.freshdirect.webapp.util.CCFormatter"
 		import="com.freshdirect.fdstore.FDTimeslot"
-		import="com.freshdirect.common.customer.EnumServiceType"
 		import="com.freshdirect.webapp.util.FDURLUtil"%><%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -93,21 +92,10 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 			<potato:recommender siteFeature="COS_HOME" name="deals" maxItems="24" cmEventSource="BROWSE" sendVariant="true" />
 			<soy:render template="common.ymalCarousel" data="${deals}" />
 		</div>
-		
-		
-<% if (!user.getSelectedServiceType().equals(EnumServiceType.HOME))
-{
-	%>
-
-
-       <div id="top-items" class="">
-             <potato:recommender siteFeature="TOP_ITEMS_QS" name="topItems" maxItems="24" cmEventSource="BROWSE" sendVariant="true" />
-            <soy:render template="common.yourTopItemsCarousel" data="${topItems}" /> 
-        </div>   
-        
-        <%
-}
-        %>
+        <div id="top-items" class="">
+            <potato:recommender siteFeature="TOP_ITEMS_QS" name="topItems" maxItems="24" cmEventSource="BROWSE" sendVariant="true" />
+            <soy:render template="common.yourTopItemsCarousel" data="${topItems}" />
+        </div>
 		<div id="categories">
 			<logic:iterate collection="<%= dept.getDeptNav() %>" id="cat" type="com.freshdirect.fdstore.content.CategoryModel">
 			<logic:equal name="cat" property="showSelf"  value="true" >
