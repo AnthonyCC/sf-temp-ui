@@ -361,22 +361,27 @@ public class CartDataService {
 					continue;
 				}
 				String deptDesc = cartLine.getDepartmentDesc();
-				boolean isReceipt = deptDesc.contains("Recipe");
-				SectionInfo sectionInfo = sectionInfos.get(deptDesc);
+				String sectionInfoKey;
+				if (cartLine.isWine()) {
+					sectionInfoKey = "wineSectionKey";
+				} else {
+					sectionInfoKey = deptDesc;
+				}
+				SectionInfo sectionInfo = sectionInfos.get(sectionInfoKey);
 				if (sectionInfo == null) {
 					sectionInfo = new SectionInfo();
-					sectionInfo.setWine(cartLine.isWine() && !isReceipt);
+					sectionInfo.setWine(cartLine.isWine());
 					if (sectionInfo.isWine()) {
 						sectionInfo.setSubTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getSubTotalOnlyWineAndSpirit(cart)));
 						sectionInfo.setTaxTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getTaxValueOnlyWineAndSpirit(cart)));
 					}
-					sectionInfos.put(deptDesc, sectionInfo);
+					sectionInfos.put(sectionInfoKey, sectionInfo);
 				}
-				sectionInfo.setSectionTitle(deptDesc);
+				sectionInfo.setSectionTitle(sectionInfoKey);
 				sectionInfo.setExternalGroup(cartLine.getExternalGroup());
-				sectionInfo.setRecipe(isReceipt);
+				sectionInfo.setRecipe(deptDesc.contains("Recipe"));
 				List<CartData.Item> sectionList = loadDepartmentSectionList(sectionMap, sectionInfo);
-				loadSectionHeaderImage(sectionHeaderImgMap, productNode, deptDesc);
+				loadSectionHeaderImage(sectionHeaderImgMap, productNode, sectionInfoKey);
 				CartData.Item item = populateCartDataItem(cartLine, fdProduct, itemCount, cart, recentIds, productNode, user);
 				sectionList.add(item);
 			}
