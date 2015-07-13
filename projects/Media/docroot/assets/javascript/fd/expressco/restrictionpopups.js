@@ -112,6 +112,33 @@ var FreshDirect = FreshDirect || {};
   });
 
   fd.modules.common.forms.register({
+    id: 'restriction_ebt_address',
+    submit: function () {
+      var addressData = fd.modules.common.forms.serialize('address');
+
+      addressData.ebtPaymentRemovalApproved = "true";
+
+      console.log('ebt address form submit: ', addressData);
+      DISPATCHER.signal('server', {
+        url: fd.modules.common.forms.getAjaxEndpoint('address', 'submit'),
+        method: 'POST',
+        data: {
+          data: JSON.stringify({
+            fdform: 'restriction_ebt_address',
+            formdata: addressData
+          })
+        }
+      });
+    },
+    cancel: function () {
+      restrictionpopup && restrictionpopup.close();
+    },
+    success: function () {
+      restrictionpopup && restrictionpopup.close();
+    }
+  });
+
+  fd.modules.common.forms.register({
     id: 'restriction_address',
     changemy: function () {
       restrictionpopup && restrictionpopup.close();

@@ -34,7 +34,7 @@ var FreshDirect = FreshDirect || {};
       }
     },
     errorHandlers: {
-      testErrorHandler: function (form, name, error) { // TODO
+      ebtAddressRestriction: function (form, name, error) {
         fd.expressco.restrictionpopup.open({}, 'ebt_address', null, {form: form, name: name, error: error});
 
         return true;
