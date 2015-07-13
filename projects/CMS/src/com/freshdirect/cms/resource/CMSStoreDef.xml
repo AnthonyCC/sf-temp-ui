@@ -217,8 +217,8 @@
 			<AttributeDef type="S" name="sdMerchantRecommenderTitle" label="Title"/>
 			<AttributeDef type="B" name="sdMerchantRecommenderRandomizeProducts" label="Randomize Products"/>
 			<AttributeDef type="B" name="hideGlobalNavDropDown" label="Hide Global Nav Drop Down"/>
-			<AttributeDef type="S" name="SEO_META_DESC" label="SEO Meta Description" inheritable="true"/>
-			<AttributeDef type="S" name="PAGE_TITLE" label="Page Title" inheritable="true"/>
+			<AttributeDef type="S" name="SEO_META_DESC" label="SEO Meta Description" inheritable="false"/>
+			<AttributeDef type="S" name="PAGE_TITLE" label="Page Title" inheritable="false"/>
 			<EnumDef type="S" name="bannerLocation"  label="SuperDepartment Banner Location">
 				<EnumValue value="TOP" label="TOP"/>
 				<EnumValue value="BOTTOM" label="BOTTOM"/>
@@ -381,8 +381,8 @@
 			<AttributeDef type="B" name="hideGlobalNavDropDown" label="Hide Global Nav Drop Down"/>
 			<AttributeDef type="B" name="disableCategoryYmalRecommender" label="Disable Category YMAL Recommender" inheritable="true"/>
 			<!--  SEO Changes -->
-			<AttributeDef name="SEO_META_DESC" type="S" label="SEO Meta Description" inheritable="true"/>
-			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" inheritable="true"/>
+			<AttributeDef name="SEO_META_DESC" type="S" label="SEO Meta Description" inheritable="false"/>
+			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" inheritable="false"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="categories" navigable="true" cardinality="Many">
@@ -643,8 +643,8 @@
 				<EnumValue value="OFF" label="Turned off"/>
 			</EnumDef>
 			<AttributeDef type="B" name="disableCategoryYmalRecommender" label="Disable Category YMAL Recommender" inheritable="true"/>
-			<AttributeDef name="SEO_META_DESC" type="S" label="SEO Meta Description" inheritable="true"/>
-			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" inheritable="true"/>
+			<AttributeDef name="SEO_META_DESC" type="S" label="SEO Meta Description" inheritable="false"/>
+			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" inheritable="false"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="ALTERNATE_CONTENT" label="Alternate Content">
@@ -1007,8 +1007,8 @@
 			</EnumDef>
 			
 			<!--  SEO Changes -->
-			<AttributeDef name="SEO_META_DESC" type="S" label="SEO Meta Description" inheritable="true"/>
-			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" inheritable="true"/>
+			<AttributeDef name="SEO_META_DESC" type="S" label="SEO Meta Description" inheritable="false"/>
+			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" inheritable="false"/>
 		</AttributeDefs>
 		
 		
