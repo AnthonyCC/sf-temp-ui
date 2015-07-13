@@ -208,7 +208,7 @@ public class ViewCartCarouselService {
 
 	public ProductSamplesCarousel populateViewCartPageProductSampleCarousel(HttpServletRequest request) throws Exception {
 		CarouselData carouselData = new CarouselData();
-		ProductSamplesCarousel tab = new ProductSamplesCarousel("Product Samples", "Product Samples", "", "", "");
+		ProductSamplesCarousel tab = new ProductSamplesCarousel(FDStoreProperties.getProductSamplesTitle(), "Product Samples", "", "", "");
 		tab.setCarouselData(carouselData);
 		FDSessionUser user = (FDSessionUser) getUserFromSession(request.getSession());
 		List<ProductData> sampleProducts = new ArrayList<ProductData>();
