@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.common.pricing.EnumDiscountType"%>
 <%@ page import="java.util.Iterator"%>
 <%@ page import="java.util.Arrays"%>
 <%@ page import="java.util.Map"%>
@@ -189,13 +190,13 @@
         <%=invoiceLine.getWeight()%>&nbsp;lb 
     <%}%>
     </td>
-    <%if(null!=cartLine.getDiscount() && cartLine.getDiscount().getDiscountType().toString().equals("Free item")){%>
+    <%if(null!=cartLine.getDiscount() && cartLine.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)){%>
     	<td align="right">&nbsp;</td>
     <%}else{%>    
     <td width="8%" align="center"><span <%= (cartLine.getDiscount() != null || cartLine.getCouponDiscount()!=null) ? "style=\"color: #CC0000;\"" : "" %>>(<%= cartLine.getUnitPrice() %>)</span></td>
     <%} %>
     <td width="6%" align="right"><%if(__cld_hasInvoice)%><%=invoiceLine.getCustomizationPrice() > 0 ? JspMethods.formatPrice(invoiceLine.getCustomizationPrice()) : ""%></td>
-    <%if(null!=cartLine.getDiscount() && cartLine.getDiscount().getDiscountType().toString().equals("Free item")){%>
+    <%if(null!=cartLine.getDiscount() && cartLine.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)){%>
     	<td align="right">Free</td>
     <%}
     else if(cartLine.getCouponDiscount() != null) { 
