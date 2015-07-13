@@ -1214,7 +1214,7 @@ public class FDStoreProperties {
         defaults.put(PROP_ORDER_HISTORY_QUERY_ID, "3");
                 
         defaults.put(PROP_TWO_MONTH_TRIAL_PASS_SKU, "MKT0072335");
-        defaults.put(PROP_TWO_MONTH_TRIAL_PASS_PRICE, "$59.00");
+        defaults.put(PROP_TWO_MONTH_TRIAL_PASS_PRICE, "$69.00");
         defaults.put(PROP_ONE_YEAR_DELIVERY_PASS_SKU, "mkt_dpass_auto14mo");
         defaults.put(PROP_SIX_MONTH_DELIVERY_PASS_SKU, "mkt_dpss_6m_autrnwl");
         defaults.put(PROP_ONE_MONTH_DELIVERY_PASS_SKU, "mkt_dpss_onemonth");
