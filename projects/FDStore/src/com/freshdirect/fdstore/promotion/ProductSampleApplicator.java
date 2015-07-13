@@ -8,6 +8,7 @@ import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -42,10 +43,13 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 				FDCartModel cart= context.getShoppingCart();
 				List<FDCartLineI> orderLines=cart.getOrderLines();
 				if(null !=orderLines && !orderLines.isEmpty()){
+					int eligibleQuantity = FDStoreProperties.getProductSamplesMaxQuantityLimit();
+					int quantity = 0;
 					for (FDCartLineI orderLine : orderLines) {
-						if(orderLine.getProductRef().equals(sampleProduct)){
+						if(orderLine.getProductRef().equals(sampleProduct) && quantity < eligibleQuantity){
 							orderLine.setDiscount(new Discount(promotionCode, EnumDiscountType.FREE, 1.0));
 							orderLine.setDepartmentDesc("FREE SAMPLE(S)");
+							quantity += orderLine.getQuantity();
 
 							try {
 								orderLine.refreshConfiguration();

@@ -13,10 +13,18 @@ import javax.servlet.jsp.JspException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDFactory;
+import com.freshdirect.fdstore.FDProduct;
+import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.ProductModelImpl;
 import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
 import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.EnumPromoChangeType;
@@ -363,8 +371,27 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 					}
 				}
 				if(!"".equalsIgnoreCase(promotion.getProductName())){
-					if(null == contentFactory.getContentNode(FDContentTypes.PRODUCT, promotion.getProductName().toLowerCase())){
+					ContentNodeModel contentNode =contentFactory.getContentNode(FDContentTypes.PRODUCT, promotion.getProductName().toLowerCase());
+					if(null == contentNode){
 						actionResult.addError(true, "invalidProductName", promotion.getProductName()+" is invalid product Id" );
+					} else{						
+						ProductModel pm =(ProductModelImpl)contentNode;
+						if(null !=pm && null !=pm.getDefaultSkuCode()){
+							try {
+								FDProductInfo fdProductInfo =FDCachedFactory.getProductInfo(pm.getDefaultSkuCode());
+								FDProduct fdProduct = FDCachedFactory.getProduct(fdProductInfo.getSkuCode(),fdProductInfo.getVersion());
+								if(fdProduct.isPricedByLb()){
+									actionResult.addError(true, "invalidProductName", promotion.getProductName()+" is sold by LBs, which can't be a Product Sample." );
+								}else if(fdProduct.isAlcohol()){
+									actionResult.addError(true, "invalidProductName", promotion.getProductName()+" is an Alcohol product, which can't be a Product Sample." );
+								} else if(!fdProduct.isAutoconfigurable(pm.isSoldBySalesUnits())){
+									actionResult.addError(true, "invalidProductName", promotion.getProductName()+" is a configurable product, which can't be a Product Sample." );
+								}
+							} catch (FDSkuNotFoundException e) {
+								//Ignore
+							}
+						}
+						
 					}
 				}
 					
