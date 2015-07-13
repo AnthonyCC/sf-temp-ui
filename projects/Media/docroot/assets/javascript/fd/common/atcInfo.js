@@ -81,19 +81,16 @@ var FreshDirect = FreshDirect || {};
             product.removeClass("hasErrors");
           }
           
-          if (item.status === "SUCCESS"){        	  
+          if (item.status === "SUCCESS"){
         	  // Dstillery Script Pixel
         	 //APPDEV-4287  
-        	  function asyncPixelWithTimeout() {
-        	  var img = new Image(1, 1);
-        	  img.src = '//action.media6degrees.com/orbserv/hbpix?pixId=26208&pcv=48';
-        	  setTimeout(function ()
-        	  { if (!img.complete) img.src = ''; //kill the request
-
-        	  }, 33);
-        	  };
-        	  asyncPixelWithTimeout();
-        	              
+        	  (function(){
+        		  var img = new Image(1, 1);
+            	  img.src = '//action.media6degrees.com/orbserv/hbpix?pixId=26208&pcv=48';
+            	  setTimeout(function ()
+	            	  { if (!img.complete) img.src = ''; //kill the request
+	            	  }, 33);
+        	  })();
               
         	  //Facebook Conversion Pixel
               (function() {
