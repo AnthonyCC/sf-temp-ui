@@ -12,6 +12,7 @@
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartModel"%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <script type="text/javascript" language="javascript" src="/assets/javascript/FD_PromoEligibility.js"></script>
 <%
@@ -24,34 +25,7 @@
 	 */
 	 
 	 List orderLines = invoicedView != null ? invoicedView.getOrderLines() : view.getOrderLines();
-	 Collections.sort(orderLines,new Comparator<FDCartLineI>() {
-			public int compare(FDCartLineI cartLine1, FDCartLineI cartLine2) {
-				// /order by Department and then by product.
-				int retValue = 0;
-				if (null != cartLine1.getDepartmentDesc()&& null != cartLine2.getDepartmentDesc()) {
-					retValue = cartLine1.getDepartmentDesc().compareTo(cartLine2.getDepartmentDesc());
-					if (cartLine1.getDepartmentDesc().compareTo(cartLine2.getDepartmentDesc()) == 0) {
-						retValue = cartLine1.getDescription().compareTo(cartLine2.getDescription());
-						if (retValue == 0) {
-							retValue = cartLine1.getConfigurationDesc().compareTo(cartLine2.getConfigurationDesc());
-							if (retValue == 0) { // dept * desc * configDesc
-													// matches, check quantity
-								if (cartLine1.getQuantity() <= cartLine2.getQuantity()) {
-									retValue = -1;
-								} else {
-									retValue = 1;
-								}
-							}
-						}
-					} else if (null != cartLine1.getDiscount() && cartLine1.getDiscount().getDiscountType().toString().equals("Free item")) {
-						retValue = 1;
-					} else if (null != cartLine2.getDiscount() && cartLine2.getDiscount().getDiscountType().toString().equals("Free item")) {
-						retValue = -1;
-					}
-				}
-				return retValue;
-			}
-		});
+	 Collections.sort(orderLines, FDCartModel.PRODUCT_SAMPLE_COMPARATOR);
 	
 	for (Iterator cit=orderLines.iterator(); cit.hasNext();) {
 		FDCartLineI cartLine = (FDCartLineI) cit.next();
