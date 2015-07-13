@@ -17,8 +17,7 @@ final int W_CHECKOUT_NAV_TOTAL = 970;
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-    	<title><tmpl:get name='title'/></title>
-		<%@ include file="/common/template/includes/metatags.jspf" %>
+    	<tmpl:get name="seoMetaTag"/>
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 		<fd:javascript src="/assets/javascript/timeslots.js"/>
 		

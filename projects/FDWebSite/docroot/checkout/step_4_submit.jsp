@@ -37,6 +37,9 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 	}
 %>
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
+<tmpl:put name="seoMetaTag" direct="true">
+	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
+</tmpl:put>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Review & Submit Order</tmpl:put>
 <tmpl:put name='content' direct='true'>
 

@@ -38,6 +38,9 @@ if (user.isEligibleForClientCodes()) {
 boolean showMinError = true;
 %>
 <tmpl:insert template='/common/template/no_nav.jsp'>
+<tmpl:put name="seoMetaTag" direct="true">
+	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
+</tmpl:put>
 <tmpl:put name='extraCss' direct='true'>
   <jwr:style src="/viewcart.css"/>
   <jwr:style src="/quickshop.css"/>
@@ -209,7 +212,7 @@ StringBuffer buffer = new StringBuffer(
 </form>
 
 
-<soy:render template="common.viewCartTabbedCarousel" data="${viewCartPotato}" /> 
+<soy:render template="common.viewCartTabbedCarousel" data="${viewCartPotato}" />
 
 <table border="0" cellspacing="0" cellpadding="0" width="<%= W_CHECKOUT_VIEW_CART_TOTAL %>">
     <tr valign=""top"">
