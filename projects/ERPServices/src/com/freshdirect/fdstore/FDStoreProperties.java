@@ -731,9 +731,9 @@ public class FDStoreProperties {
 	private static final String CATEGORY_TOP_ITEM_CACHE_SIZE = "fdstore.category.top.item.cache.size";
 	private static final String CATEGORY_TOP_ITEM_CACHE_MAXIMAL_SIZE = "fdstore.category.top.item.cache.maximal.size";
 	
-	private static final String PROP_PRODUCT_SAMPLES_MAX_BUY_LIMIT = "fdstore.product.samples.max.buy.limit";
+	private static final String PROP_PRODUCT_SAMPLES_MAX_BUY_PRODUCTS_LIMIT = "fdstore.product.samples.max.buy.products.limit";
 	private static final String PROP_PRODUCT_SAMPLES_TITLE = "fdstore.product.samples.title";
-	private static final String PROP_PRODUCT_SAMPLES_MAX_QUANTITY_LIMIT = "fdstore.product.samples.max.quantity.limit";
+	private static final String PROP_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT = "fdstore.product.samples.max.buy.quantity.limit";
 
     static {
         defaults.put(PROP_ROUTING_PROVIDER_URL, "t3://localhost:7001");
@@ -1452,8 +1452,8 @@ public class FDStoreProperties {
         
         defaults.put(CATEGORY_TOP_ITEM_CACHE_SIZE, "5");
         defaults.put(CATEGORY_TOP_ITEM_CACHE_MAXIMAL_SIZE, "10");
-        defaults.put(PROP_PRODUCT_SAMPLES_MAX_BUY_LIMIT, "2");
-        defaults.put(PROP_PRODUCT_SAMPLES_MAX_QUANTITY_LIMIT, "1");
+        defaults.put(PROP_PRODUCT_SAMPLES_MAX_BUY_PRODUCTS_LIMIT, "2");
+        defaults.put(PROP_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT, "1");
         defaults.put(PROP_PRODUCT_SAMPLES_TITLE, "Pick any two:");
        
 	
@@ -3649,12 +3649,12 @@ public class FDStoreProperties {
 		return Integer.parseInt(get(CATEGORY_TOP_ITEM_CACHE_MAXIMAL_SIZE));
 	}
 
-	public static int getProductSamplesMaxBuyLimit(){
-		return Integer.parseInt(get(PROP_PRODUCT_SAMPLES_MAX_BUY_LIMIT));
+	public static int getProductSamplesMaxBuyProductsLimit(){
+		return Integer.parseInt(get(PROP_PRODUCT_SAMPLES_MAX_BUY_PRODUCTS_LIMIT));
 	}
 	
 	public static int getProductSamplesMaxQuantityLimit(){
-		return Integer.parseInt(get(PROP_PRODUCT_SAMPLES_MAX_QUANTITY_LIMIT));
+		return Integer.parseInt(get(PROP_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT));
 	}
 	public static String getProductSamplesTitle(){
 		return get(PROP_PRODUCT_SAMPLES_TITLE);

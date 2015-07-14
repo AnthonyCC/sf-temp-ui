@@ -44,21 +44,22 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 				List<FDCartLineI> orderLines=cart.getOrderLines();
 				if(null !=orderLines && !orderLines.isEmpty()){
 					int eligibleQuantity = FDStoreProperties.getProductSamplesMaxQuantityLimit();
-					if(isMaxSampleReached(orderLines, eligibleQuantity)){
-					int quantity = 0;
-					for (FDCartLineI orderLine : orderLines) {
-						if(orderLine.getProductRef().equals(sampleProduct) && quantity < eligibleQuantity){
-							orderLine.setDiscount(new Discount(promotionCode, EnumDiscountType.FREE, 1.0));
-							orderLine.setDepartmentDesc("FREE SAMPLE(S)");
-							quantity += orderLine.getQuantity();
-
-							try {
-								orderLine.refreshConfiguration();
-							} catch (FDInvalidConfigurationException ex) {
-								throw new FDResourceException(ex);
+					int eligibleProducts = FDStoreProperties.getProductSamplesMaxBuyProductsLimit();
+					if(!isMaxSampleReached(orderLines, eligibleProducts)){
+						int quantity = 0;
+						for (FDCartLineI orderLine : orderLines) {
+							if(orderLine.getProductRef().equals(sampleProduct) && quantity < eligibleQuantity){
+								orderLine.setDiscount(new Discount(promotionCode, EnumDiscountType.FREE, 1.0));
+								orderLine.setDepartmentDesc("FREE SAMPLE(S)");
+								quantity += orderLine.getQuantity();
+	
+								try {
+									orderLine.refreshConfiguration();
+								} catch (FDInvalidConfigurationException ex) {
+									throw new FDResourceException(ex);
+								}
 							}
 						}
-					}
 					}
 				}
 			}
@@ -70,14 +71,14 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 	}
 
 	
-	private boolean isMaxSampleReached(List<FDCartLineI> orderLines, int eligibleQuantity) {
-		int numberOfFreeSamples = 0;
+	private boolean isMaxSampleReached(List<FDCartLineI> orderLines, int eligibleProducts) {
+		int numberOfFreeSampleProducts = 0;
 		for(FDCartLineI orderLine: orderLines){
 			if(orderLine.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)){
-				numberOfFreeSamples++;
+				numberOfFreeSampleProducts++;
 			}
 		}
-		if(numberOfFreeSamples >= eligibleQuantity){
+		if(numberOfFreeSampleProducts >= eligibleProducts){
 			return true;
 		}
 		return false;
