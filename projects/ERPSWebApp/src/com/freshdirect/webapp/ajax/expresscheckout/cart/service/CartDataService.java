@@ -360,12 +360,11 @@ public class CartDataService {
 					LOG.error("Failed to get fdproduct for " + cartLine.getCategoryName() + " / " + cartLine.getProductName() + ", skipping.");
 					continue;
 				}
-				String deptDesc = cartLine.getDepartmentDesc();
 				String sectionInfoKey;
 				if (cartLine.isWine()) {
 					sectionInfoKey = "wineSectionKey";
 				} else {
-					sectionInfoKey = deptDesc;
+					sectionInfoKey = cartLine.getDepartmentDesc();
 				}
 				SectionInfo sectionInfo = sectionInfos.get(sectionInfoKey);
 				if (sectionInfo == null) {
@@ -379,7 +378,7 @@ public class CartDataService {
 				}
 				sectionInfo.setSectionTitle(sectionInfoKey);
 				sectionInfo.setExternalGroup(cartLine.getExternalGroup());
-				sectionInfo.setRecipe(deptDesc.contains("Recipe"));
+				sectionInfo.setRecipe(sectionInfoKey.contains("Recipe"));
 				List<CartData.Item> sectionList = loadDepartmentSectionList(sectionMap, sectionInfo);
 				loadSectionHeaderImage(sectionHeaderImgMap, productNode, sectionInfoKey);
 				CartData.Item item = populateCartDataItem(cartLine, fdProduct, itemCount, cart, recentIds, productNode, user);

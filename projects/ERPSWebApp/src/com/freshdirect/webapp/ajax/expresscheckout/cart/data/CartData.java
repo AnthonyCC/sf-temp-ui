@@ -405,7 +405,7 @@ public class CartData extends AbstractCoremetricsResponse implements Serializabl
 		 * Is new?
 		 */
 		private boolean newItem;
-		
+
 		private boolean hasEstimatedPrice;
 		private boolean hasTax;
 		private boolean hasDepositValue;
@@ -785,9 +785,33 @@ public class CartData extends AbstractCoremetricsResponse implements Serializabl
 		}
 	};
 
+	public static final Comparator<Section> CART_DATA_COMPARATOR_BY_WINE_FLAG = new Comparator<Section>() {
+
+		@Override
+		public int compare(Section o1, Section o2) {
+			Boolean wine1 = null;
+			if (o1.getInfo() != null) {
+				wine1 = o1.getInfo().isWine();
+			}
+			Boolean wine2 = null;
+			if (o2.getInfo() != null) {
+				wine2 = o2.getInfo().isWine();
+			}
+			if (wine1 == null) {
+				if (wine2 == null) {
+					return 0;
+				} else {
+					return 1;
+				}
+			} else {
+				return wine1.compareTo(wine2);
+			}
+		}
+	};
+
 	@SuppressWarnings("unchecked")
-	public static final Comparator<Section> CART_DATA_SECTION_COMPARATOR_CHAIN_BY_EXTERNAL_GROUP_AND_TITLE = ComparatorChain.create(CART_DATA_SECTION_COMPARATOR_BY_EXTERNAL_GROUP,
-			CART_DATA_SECTION_COMPARATOR_BY_TITLE);
+	public static final Comparator<Section> CART_DATA_SECTION_COMPARATOR_CHAIN_BY_EXTERNAL_GROUP_AND_TITLE = ComparatorChain.create(CART_DATA_COMPARATOR_BY_WINE_FLAG,
+			CART_DATA_SECTION_COMPARATOR_BY_EXTERNAL_GROUP, CART_DATA_SECTION_COMPARATOR_BY_TITLE);
 
 	public ModifyCartData getModifyCartData() {
 		return modifyCartData;
