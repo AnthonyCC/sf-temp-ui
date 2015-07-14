@@ -234,6 +234,18 @@ h2.centerline span {
   width:8em;
 }
 
+#popupcart .content .cartline[data-freeproduct="true"] .qtyinput{
+	opacity: .5;
+	filter: alpha(opacity=50);
+	pointer-events: none;
+   	cursor: default;
+}
+
+#popupcart .content .cartline[data-freeproduct='true'] .price.product-sample-free{
+	color: #c00;
+	font-weight: bold;
+}
+
 /* }}} */
 
 /* {{{ page sections */

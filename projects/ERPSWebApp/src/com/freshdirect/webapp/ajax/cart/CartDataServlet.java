@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -241,6 +243,14 @@ public class CartDataServlet extends BaseJsonServlet {
 					item.setPrice( JspMethods.formatPrice( cartLine.getPrice() ) );
 					item.setDescr( cartLine.getDescription() );
 					item.setConfDescr( cartLine.getConfigurationDesc() );
+					
+					/* placeholder for marking products as free sample products
+					 * do the same logic here as view cart
+					 * */
+					Discount tempDisc = cartLine.getDiscount();
+					if (tempDisc != null && (EnumDiscountType.FREE).equals(tempDisc.getDiscountType())) {
+							item.setFreeSamplePromoProduct(true);
+					}
 					
 					
 					if ( cartLine.isSoldBySalesUnits() ) {

@@ -198,6 +198,8 @@ public class CartData implements Serializable {
 		 */
 		private boolean newItem;
 		
+		private boolean isFreeSamplePromoProduct;
+		
 		public int getId() {
 			return id;
 		}		
@@ -245,6 +247,12 @@ public class CartData implements Serializable {
 		}		
 		public void setSu( List<SalesUnit> su ) {
 			this.su = su;
+		}
+		public boolean isFreeSamplePromoProduct() {
+			return isFreeSamplePromoProduct;
+		}
+		public void setFreeSamplePromoProduct(boolean isFreeSamplePromoProduct) {
+			this.isFreeSamplePromoProduct = isFreeSamplePromoProduct;
 		}		
 	}
 	
