@@ -106,7 +106,7 @@ public class PaymentService {
 	public void deselectEbtPayment(FDUserI user, HttpSession session) {
 		FDCartModel cart = user.getShoppingCart();
 		ErpPaymentMethodI paymentMethod = cart.getPaymentMethod();
-		if (cart.getDeliveryAddress() != null && paymentMethod != null && !user.isEbtAccepted() && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {
+		if (cart.getDeliveryAddress() != null && paymentMethod != null && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {
 			cart.setPaymentMethod(null);
 			session.setAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED, Boolean.TRUE);
 		}
@@ -189,19 +189,23 @@ public class PaymentService {
 		List<ErpPaymentMethodI> paymentMethods = (List<ErpPaymentMethodI>) user.getPaymentMethods();
 		sortPaymentMethods(user, paymentMethods);
 		String selectedPaymentId = null;
+		Boolean cartPaymentSelectionDisabled = (Boolean) request.getSession().getAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
+		cartPaymentSelectionDisabled = cartPaymentSelectionDisabled == null ? false : cartPaymentSelectionDisabled;
+		
 		if (user.getShoppingCart().getPaymentMethod() == null) {
 			selectedPaymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
-			selectPaymentMethod(selectedPaymentId, "selectPaymentMethod", request);
+			if(!cartPaymentSelectionDisabled){	
+				selectPaymentMethod(selectedPaymentId, "selectPaymentMethod", request);
+			}
 		} else {
 			PrimaryKey paymentMethodPrimaryKey = user.getShoppingCart().getPaymentMethod().getPK();
 			if (paymentMethodPrimaryKey != null) {
 				selectedPaymentId = paymentMethodPrimaryKey.getId();
 			}
 		}
-		Boolean cartPaymentSelectionDisabled = (Boolean) request.getSession().getAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
 		for (int i = 0; i < paymentMethods.size(); i++) {
 			PaymentData paymentData = createPaymentData(paymentMethods.get(i));
-			if ((cartPaymentSelectionDisabled == null || !cartPaymentSelectionDisabled) && (paymentData.getId().equals(selectedPaymentId) || (selectedPaymentId == null && i == 0))) {
+			if (!cartPaymentSelectionDisabled && (paymentData.getId().equals(selectedPaymentId) || (selectedPaymentId == null && i == 0))) {
 				paymentData.setSelected(true);
 			}
 			paymentDatas.add(paymentData);

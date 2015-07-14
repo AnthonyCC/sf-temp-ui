@@ -428,7 +428,6 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 			if (isEBTAccepted) {
 				isEBTAccepted = isOrderEbtAccepted(user);
 			}
-			user.setEbtAccepted(isEBTAccepted);
 		}
 		return isEBTAccepted;
 	}
@@ -447,9 +446,9 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		FDCartModel cart = user.getShoppingCart();
 		if (cart instanceof FDModifyCartModel) {
 			String orgSaleId = ((FDModifyCartModel) cart).getOriginalOrder().getErpSalesId();
-			isEBTAccepted = isEBTAccepted && !user.hasEBTAlert() && (user.getOrderHistory().getUnSettledEBTOrderCount(orgSaleId) < 1);
+			isEBTAccepted = !user.hasEBTAlert() && (user.getOrderHistory().getUnSettledEBTOrderCount(orgSaleId) < 1);
 		} else {
-			isEBTAccepted = isEBTAccepted && !user.hasEBTAlert() && (user.getOrderHistory().getUnSettledEBTOrderCount() < 1);
+			isEBTAccepted = !user.hasEBTAlert() && (user.getOrderHistory().getUnSettledEBTOrderCount() < 1);
 		}
 		return isEBTAccepted;
 	}
