@@ -74,7 +74,7 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 	private boolean isMaxSampleReached(List<FDCartLineI> orderLines, int eligibleProducts) {
 		int numberOfFreeSampleProducts = 0;
 		for(FDCartLineI orderLine: orderLines){
-			if(orderLine.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)){
+			if(null !=orderLine.getDiscount() && orderLine.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)){
 				numberOfFreeSampleProducts++;
 			}
 		}
