@@ -116,14 +116,23 @@ public class DeliveryAddressService {
 	public List<ValidationError> selectDeliveryAddressMethod(String deliveryAddressId, String contactNumber, String actionName, HttpSession session, FDUserI user) throws FDResourceException,
 			JspException, RedirectToPage {
 		List<ValidationError> validationErrors = new ArrayList<ValidationError>();
-		ErpAddressModel deliveryAddress = user.getShoppingCart().getDeliveryAddress();
-		if (deliveryAddress == null || deliveryAddress.getId() == null || user.getShoppingCart().getZoneInfo() == null || !deliveryAddress.getId().equals(deliveryAddressId)) {
+		if (selectionIsNeeded(deliveryAddressId, user)) {
 			ActionResult actionResult = new ActionResult();
 			DeliveryAddressManipulator.performSetDeliveryAddress(session, user, deliveryAddressId, contactNumber, null, actionName, true, actionResult, null, null, null, null, null, null);
 			TimeslotService.defaultService().releaseTimeslot(user);
 			processErrors(validationErrors, actionResult);
 		}
 		return validationErrors;
+	}
+
+	private boolean selectionIsNeeded(String deliveryAddressId, FDUserI user){
+		boolean selectionIsNeeded = false;
+		ErpAddressModel deliveryAddress = user.getShoppingCart().getDeliveryAddress();
+		if (deliveryAddress instanceof ErpDepotAddressModel){
+			ErpDepotAddressModel depotDeliveryAddress = (ErpDepotAddressModel)deliveryAddress;
+			selectionIsNeeded = selectionIsNeeded || (depotDeliveryAddress.getZoneCode() == null);
+		}
+		return selectionIsNeeded || deliveryAddress == null || deliveryAddress.getId() == null || user.getShoppingCart().getZoneInfo() == null || !deliveryAddress.getId().equals(deliveryAddressId);
 	}
 
 	private void processErrors(List<ValidationError> validationErrors, ActionResult actionResult) {
@@ -152,12 +161,13 @@ public class DeliveryAddressService {
 
 		return locationDatas;
 	}
-	
+
 	public List<ValidationError> checkEbtAddressPaymentSelection(FDUserI user, String addressId) throws FDResourceException {
 		List<ValidationError> result = new ArrayList<ValidationError>();
 		FDCartModel cart = user.getShoppingCart();
 		ErpPaymentMethodI paymentMethod = cart.getPaymentMethod();
-		if (cart.getDeliveryAddress() != null && paymentMethod != null && cart.getDeliveryAddress().getId() != null && addressId != null && !cart.getDeliveryAddress().getId().equals(addressId) && user.isEbtAccepted() && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {
+		if (cart.getDeliveryAddress() != null && paymentMethod != null && cart.getDeliveryAddress().getId() != null && addressId != null && !cart.getDeliveryAddress().getId().equals(addressId)
+				&& user.isEbtAccepted() && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {
 			ErpAddressModel requestedAddress = FDCustomerManager.getAddress(user.getIdentity(), addressId);
 			if (requestedAddress != null) {
 				String zipCode = requestedAddress.getZipCode();
