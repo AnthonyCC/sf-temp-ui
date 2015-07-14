@@ -26,10 +26,6 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.delivery.DlvZoneInfoModel;
-import com.freshdirect.delivery.EnumReservationType;
-import com.freshdirect.delivery.EnumZipCheckResponses;
-import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
@@ -38,10 +34,11 @@ import com.freshdirect.delivery.restriction.RecurringRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.aspects.BaseAspect;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDCompositeAvailability;
@@ -63,6 +60,9 @@ import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.giftcard.ErpGiftCardModel;
+import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
+import com.freshdirect.logistics.delivery.model.EnumReservationType;
+import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.webapp.util.StandingOrderUtil;
 
 public class ServiceTest extends MockObjectTestCase {
@@ -72,7 +72,7 @@ public class ServiceTest extends MockObjectTestCase {
 
 	// AddressModel address;
 	ErpPaymentMethodI paymentMethod;
-	DlvZoneInfoModel zoneInfo;
+	FDDeliveryZoneInfo zoneInfo;
 	
 	Date	expiration;
 	
@@ -95,7 +95,7 @@ public class ServiceTest extends MockObjectTestCase {
 		paymentMethod = new ErpGiftCardModel();
 		
 		
-		zoneInfo = new DlvZoneInfoModel("CODE1", "ZONE1", "REGION1", EnumZipCheckResponses.DELIVER, true, true);
+		zoneInfo = new FDDeliveryZoneInfo("CODE1", "ZONE1", "REGION1", EnumZipCheckResponses.DELIVER);
 		
 		expiration = new Date(System.currentTimeMillis() + 1000);
 
@@ -161,19 +161,19 @@ public class ServiceTest extends MockObjectTestCase {
 		Calendar cal = Calendar.getInstance();
 		
 		
-		DlvTimeslotModel dtm = new DlvTimeslotModel();
+		FDTimeslot dtm = new FDTimeslot();
 		
-		dtm.setBaseDate(cal.getTime());
+		dtm.setDeliveryDate(cal.getTime());
 
 		cal.set(Calendar.HOUR_OF_DAY, 10);
 		cal.set(Calendar.MINUTE, 0);
-		dtm.setStartTime(new TimeOfDay(cal.getTime()));
+		dtm.setDlvStartTime(new TimeOfDay(cal.getTime()));
 
 		cal.set(Calendar.HOUR_OF_DAY, 12);
 		cal.set(Calendar.MINUTE, 0);
-		dtm.setEndTime(new TimeOfDay(cal.getTime()));
+		dtm.setDlvEndTime(new TimeOfDay(cal.getTime()));
 
-		return new FDTimeslot(dtm);
+		return dtm;
 	}
 
 	
@@ -189,7 +189,7 @@ public class ServiceTest extends MockObjectTestCase {
 			new PrimaryKey("1"), timeSlot, expirationDT,
 			EnumReservationType.STANDARD_RESERVATION,
 			customerID, addressID,
-			false, false, null, false, null, 20,null,null,null,0, timeSlot.getRegionSvcType());
+			false, null, 20,null,false, EnumRegionServiceType.HOME);
 		return reservation;
 
 	}
@@ -504,7 +504,7 @@ class StandingOrdersServiceSessionBeanMockup extends StandingOrdersServiceSessio
 
 	public FDCartModel buildCart(FDCustomerList soList,
 			ErpPaymentMethodI paymentMethod, AddressModel deliveryAddressModel,
-			List<FDTimeslot> timeslots, DlvZoneInfoModel zoneInfo,
+			List<FDTimeslot> timeslots, FDDeliveryZoneInfo zoneInfo,
 			FDReservation reservation, ProcessActionResult vr)
 			throws FDResourceException {
 		return StandingOrderUtil.buildCart(soList, paymentMethod, deliveryAddressModel, timeslots,
@@ -610,7 +610,7 @@ class MockRuleContext implements FDRuleContextI {
 
 	public Date getDeliveryDate() {
 		// TODO Auto-generated method stub
-		return user.getShoppingCart().getDeliveryReservation().getTimeslot().getBaseDate();
+		return user.getShoppingCart().getDeliveryReservation().getTimeslot().getDeliveryDate();
 	}
 
 	@Override

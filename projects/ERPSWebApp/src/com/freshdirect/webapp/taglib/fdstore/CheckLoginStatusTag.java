@@ -22,8 +22,7 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.customer.ServiceTypeUtil;
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.delivery.DlvServiceSelectionResult;
-import com.freshdirect.delivery.EnumDeliveryStatus;
+import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -40,11 +39,11 @@ import com.freshdirect.fdstore.iplocator.IpLocatorException;
 import com.freshdirect.fdstore.iplocator.IpLocatorUtil;
 import com.freshdirect.fdstore.sempixel.FDSemPixelCache;
 import com.freshdirect.fdstore.sempixel.SemPixelModel;
-
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.webapp.util.RequestClassifier;
 import com.freshdirect.webapp.util.RequestUtil;
 import com.freshdirect.webapp.util.RobotRecognizer;
@@ -387,7 +386,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         ActionResult result = new ActionResult();
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
-        DlvServiceSelectionResult serviceResult = null;
+        FDDeliveryServiceSelectionResult serviceResult = null;
 
         try {
             serviceResult = checkByZipCode(request, result);
@@ -532,7 +531,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         CookieMonster.clearCookie((HttpServletResponse) pageContext.getResponse());
     }
 
-    private DlvServiceSelectionResult checkByZipCode(
+    private FDDeliveryServiceSelectionResult checkByZipCode(
         HttpServletRequest request, ActionResult result)
         throws FDResourceException {
         this.populate(request);
@@ -543,7 +542,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         }
 
         return FDDeliveryManager.getInstance()
-                                .checkZipCode(this.address.getZipCode());
+                                .getDeliveryServicesByZipCode(this.address.getZipCode());
     }
 
     private void populate(HttpServletRequest request) {
@@ -747,7 +746,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
 	    	newSession();
 	    	address = new AddressModel();
 	    	address.setZipCode(zipCode);
-	    	Set<EnumServiceType> availableServices = FDDeliveryManager.getInstance().checkZipCode(zipCode).getAvailableServices();
+	    	Set<EnumServiceType> availableServices = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode).getAvailableServices();
 	    	
 	    	//FDCustomerManager.createNewUser() inside createUser() will only use zipCode and resolve location based on that.
 	    	//City and State information will be appended to user.address.

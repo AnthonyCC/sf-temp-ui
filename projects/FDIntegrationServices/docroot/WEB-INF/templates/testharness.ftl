@@ -705,6 +705,18 @@ function loadStuff() {
   	$("#url").val("/home/all/"); 
   	$("#payload").val(""); 	
   	
+  }  else if (  loaddata == "socialrecognize") {
+  	$("#url").val("/social/recognize/"); 
+  	$("#payload").val(""); 	
+  	
+  } else if (  loaddata == "socialmerge") {
+  	$("#url").val("/social/merge/"); 
+  	$("#payload").val(""); 	
+  	
+  } else if (  loaddata == "socialregister") {
+  	$("#url").val("/social/register/"); 
+  	$("#payload").val(""); 	
+  	
   } 
   $("#result").JSONView({});  	
   $("#payload").focus();
@@ -944,7 +956,11 @@ function doStuff() {
   <option value="featuredCategories"> Home - Featured Categories </option>
   <option value="getHomeAndCategories"> Home - Get Home And Categories </option>
   
-
+ <option value=""> ========== Social Login ========== </option>
+  <option value="socialrecognize"> Social - Recognize</option>
+  <option value="socialmerge"> Social - Merge </option>
+  <option value="socialregister"> Social - Register </option>
+ 
   </select>
   
   <input value="Go" type="button" onclick='javascript:doStuff()'>

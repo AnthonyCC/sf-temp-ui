@@ -1,6 +1,6 @@
-<%@tag 	import="com.freshdirect.fdstore.FDReservation"
+<%@tag 	import="com.freshdirect.fdlogistics.model.FDReservation"
 		import="com.freshdirect.webapp.util.CCFormatter"
-		import="com.freshdirect.fdstore.FDTimeslot"%><%@ 
+		import="com.freshdirect.fdlogistics.model.FDTimeslot"%><%@ 
 	
 	attribute name="user" required="true" rtexprvalue="true" type="com.freshdirect.fdstore.customer.FDUserI"
 %><% 

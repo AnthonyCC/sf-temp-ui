@@ -1,4 +1,4 @@
-<%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
+
 
 <% //expanded page dimensions
 final int W_DEPOT_LOCATIONS_TOTAL = 970;
@@ -70,7 +70,7 @@ if( request.getRequestURI().indexOf("depot") > -1){
 <% int cnt = 0;
     Date now = new Date();
 %>	
-	<logic:iterate id="location" collection="<%= locations %>" type="com.freshdirect.delivery.depot.DlvLocationModel" indexId="index">
+	<logic:iterate id="location" collection="<%= locations %>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel" indexId="index">
 <%
     //
     // skip this location if it is not currently in use

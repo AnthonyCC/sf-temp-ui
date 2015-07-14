@@ -1,6 +1,5 @@
 package com.freshdirect.webapp.taglib.callcenter;
 
-import java.io.StringWriter;
 import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -38,13 +37,7 @@ import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpTransactionException;
-import com.freshdirect.delivery.DlvAddressGeocodeResponse;
-import com.freshdirect.delivery.DlvAddressVerificationResponse;
 import com.freshdirect.delivery.DlvRestrictionManager;
-import com.freshdirect.delivery.DlvZoneInfoModel;
-import com.freshdirect.delivery.EnumAddressVerificationResult;
-import com.freshdirect.delivery.EnumRestrictedAddressReason;
-import com.freshdirect.delivery.EnumZipCheckResponses;
 import com.freshdirect.delivery.model.RestrictedAddressModel;
 import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
@@ -56,20 +49,23 @@ import com.freshdirect.delivery.restriction.RecurringRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.enums.RestrictionWeekDay;
-import com.freshdirect.enums.WeekDay;
+import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
+import com.freshdirect.fdlogistics.model.FDDeliveryAddressGeocodeResponse;
+import com.freshdirect.fdlogistics.model.FDDeliveryAddressVerificationResponse;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.customer.ExtendDPDiscountModel;
@@ -89,6 +85,9 @@ import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
 import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionApplicatorI;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
+import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
+import com.freshdirect.fdstore.temails.ejb.TEmailInfoSB;
+import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.NVL;
@@ -99,16 +98,14 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.ActionWarning;
 import com.freshdirect.giftcard.ErpGiftCardUtil;
 import com.freshdirect.giftcard.InvalidCardException;
+import com.freshdirect.logistics.delivery.model.EnumAddressVerificationResult;
+import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
+import com.freshdirect.temails.TEmailRuntimeException;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
-import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
-import com.freshdirect.fdstore.temails.ejb.TEmailInfoSB;
-import com.freshdirect.framework.core.ServiceLocator;
-import com.freshdirect.framework.mail.TEmailI;
-import com.freshdirect.temails.TEmailRuntimeException;
 
 
 public class AdminToolsControllerTag extends AbstractControllerTag {
@@ -491,7 +488,13 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 	private void performAddressCheck(HttpServletRequest request, ActionResult actionResult, AddressModel dlvAddress) throws FDResourceException {
 
 
-		DlvAddressVerificationResponse verifyResponse = FDDeliveryManager.getInstance().scrubAddress(dlvAddress);
+		FDDeliveryAddressVerificationResponse verifyResponse;
+		try {
+			verifyResponse = FDDeliveryManager.getInstance().scrubAddress(dlvAddress);
+		} catch (FDInvalidAddressException iae) {
+			actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
+			return;
+		}
 
 		
 		//
@@ -499,7 +502,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 		//
 		dlvAddress = verifyResponse.getAddress();
 
-		EnumAddressVerificationResult  verificationResult = verifyResponse.getResult();
+		EnumAddressVerificationResult  verificationResult = verifyResponse.getVerifyResult();
 		
 		LOGGER.debug("verifyResponse11 :"+verificationResult); 
 
@@ -510,14 +513,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 			// geocode address
 			//
 			String geocodeResult=null;
-			try {
-				DlvAddressGeocodeResponse geocodeResponse = FDDeliveryManager.getInstance().geocodeAddress(dlvAddress);
-				geocodeResult = geocodeResponse.getResult();				
-				
-			} catch (FDInvalidAddressException iae) {
-				actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
-				return;
-			}
+			geocodeResult = verifyResponse.getGeocodeResult();
 
 			addGeocodeResultErrors(geocodeResult, actionResult);
 
@@ -1217,9 +1213,9 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 	        	}
 	        	//Set Delivery Region Info
 	        	FDTimeslot selectedTimeslot = modCart.getDeliveryReservation().getTimeslot();
-	        	DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(modCart.getDeliveryAddress(), selectedTimeslot.getBegDateTime(), null, modCart.getDeliveryReservation().getRegionSvcType());
+	        	FDDeliveryZoneInfo zInfo = FDDeliveryManager.getInstance().getZoneInfo(modCart.getDeliveryAddress(), selectedTimeslot.getStartDateTime(), null, modCart.getDeliveryReservation().getRegionSvcType());
 	        	if(zInfo != null){
-		        	DlvZoneInfoModel zoneInfo = new DlvZoneInfoModel(originalOrder.getDeliveryZone(), null, zInfo.getRegionId(), EnumZipCheckResponses.DELIVER,false,false);
+	        		FDDeliveryZoneInfo zoneInfo = new FDDeliveryZoneInfo(originalOrder.getDeliveryZone(), null, zInfo.getRegionId(), EnumZipCheckResponses.DELIVER);
 		        	modCart.setZoneInfo(zoneInfo);
 	        	}
 	        	FDActionInfo info = AccountActivityUtil.getActionInfo(session);

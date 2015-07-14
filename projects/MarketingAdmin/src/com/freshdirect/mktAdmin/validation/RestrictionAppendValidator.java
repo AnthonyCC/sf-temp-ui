@@ -4,13 +4,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+
 import com.freshdirect.mktAdmin.model.CompetitorAddressModel;
 import com.freshdirect.mktAdmin.model.RestrictionListAppendBean;
 
+@Component
 public class RestrictionAppendValidator implements Validator {
 
 	public boolean supports(Class clazz) {

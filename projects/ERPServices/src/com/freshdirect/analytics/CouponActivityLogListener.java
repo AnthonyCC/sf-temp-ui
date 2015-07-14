@@ -9,16 +9,16 @@ import javax.jms.ObjectMessage;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.ecoupon.FDCouponActivityLogDAO;
 import com.freshdirect.fdstore.ecoupon.model.FDCouponActivityLogModel;
+import com.freshdirect.framework.core.MessageDrivenBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 /**
  * 
  * @author ksriram
  *
  */
-public class CouponActivityLogListener extends EventListener{
+public class CouponActivityLogListener extends MessageDrivenBeanSupport {
 
 	private static final long serialVersionUID = -5755200116155367468L;
 	

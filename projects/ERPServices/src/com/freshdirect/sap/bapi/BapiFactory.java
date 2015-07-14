@@ -43,20 +43,7 @@ public abstract class BapiFactory {
 	public abstract BapiMaterialAvailability getMaterialAvailabilityBuilder()
 			throws SapException;
 
-	/**
-	 * @return BapiTruckMasterInfo
-	 * @throws SapException
-	 */
-	public abstract BapiTruckMasterInfo getBapiTruckMasterInfoBuilder()
-			throws SapException;
-
-	/**
-	 * @return BapiRouteMasterInfo
-	 * @throws SapException
-	 */
-	public abstract BapiRouteMasterInfo getBapiRouteMasterInfoBuilder()
-			throws SapException;
-
+	
 	/**
 	 * @return BapiSalesOrderSimulate
 	 * @throws SapException
@@ -109,19 +96,6 @@ public abstract class BapiFactory {
 	 * @throws SapException
 	 */
 	public abstract BapiSendEmployeeInfo getSendEmployeeInfoSender()
-			throws SapException;
-
-	/**
-	 * @return BapiSendHandOff
-	 * @throws SapException
-	 */
-	public abstract BapiSendHandOff getHandOffSender() throws SapException;
-
-	/**
-	 * @return BapiSendPhysicalTruckInfo
-	 * @throws SapException
-	 */
-	public abstract BapiSendPhysicalTruckInfo getHandOffPhysicalTruckInfoSender()
 			throws SapException;
 
 	/**

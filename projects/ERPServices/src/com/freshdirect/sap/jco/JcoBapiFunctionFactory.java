@@ -9,18 +9,14 @@ import com.freshdirect.sap.bapi.BapiFactory;
 import com.freshdirect.sap.bapi.BapiMaterialAvailability;
 import com.freshdirect.sap.bapi.BapiPostReturnI;
 import com.freshdirect.sap.bapi.BapiProductPromotionPreviewI;
-import com.freshdirect.sap.bapi.BapiRouteMasterInfo;
 import com.freshdirect.sap.bapi.BapiRouteStatusInfo;
 import com.freshdirect.sap.bapi.BapiSalesOrderCancel;
 import com.freshdirect.sap.bapi.BapiSalesOrderChange;
 import com.freshdirect.sap.bapi.BapiSalesOrderCreate;
 import com.freshdirect.sap.bapi.BapiSalesOrderSimulate;
 import com.freshdirect.sap.bapi.BapiSendEmployeeInfo;
-import com.freshdirect.sap.bapi.BapiSendHandOff;
-import com.freshdirect.sap.bapi.BapiSendPhysicalTruckInfo;
 import com.freshdirect.sap.bapi.BapiSendSettlement;
 import com.freshdirect.sap.bapi.BapiSendSettlementByCommand;
-import com.freshdirect.sap.bapi.BapiTruckMasterInfo;
 import com.freshdirect.sap.ejb.SapException;
 import com.sap.conn.jco.JCoException;
 
@@ -70,15 +66,6 @@ public class JcoBapiFunctionFactory extends BapiFactory {
 			return new JcoBapiMaterialAvailability();
 		} 
 		catch (JCoException e) {
-			throw new SapException(e);
-		}
-	}
-	
-	public BapiTruckMasterInfo getBapiTruckMasterInfoBuilder() throws SapException {
-		try {
-			return new JcoBapiTruckMasterInfo();
-		} catch (JCoException e)
-		{
 			throw new SapException(e);
 		}
 	}
@@ -158,45 +145,11 @@ public class JcoBapiFunctionFactory extends BapiFactory {
 		}
 	}
 
-	public BapiRouteMasterInfo getBapiRouteMasterInfoBuilder() throws SapException
-	{
-		try 
-		{
-			return new JcoBapiRouteMasterInfo();
-		} catch (JCoException e)
-		{
-			throw new SapException(e);
-		}
-	}
-	
 	public BapiSendEmployeeInfo getSendEmployeeInfoSender() throws SapException
 	{
 		try
 		{
 			return new JcoBapiSendEmployeeInfo();
-		} catch (JCoException e)
-		{
-			throw new SapException(e);
-		}
-	}
-	
-	public BapiSendHandOff getHandOffSender() throws SapException
-	{
-		try 
-		{
-			return new JcoBapiSendHandOff();
-		} catch (JCoException e)
-		{
-			throw new SapException(e);
-		}
-	}
-	
-	@Override
-	public BapiSendPhysicalTruckInfo getHandOffPhysicalTruckInfoSender() throws SapException
-	{
-		try
-		{
-			return new JcoBapiSendPhysicalTruckInfo();
 		} catch (JCoException e)
 		{
 			throw new SapException(e);

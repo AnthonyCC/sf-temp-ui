@@ -558,7 +558,7 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
 </tr> 
 <tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td></tr>
     <%  if(user.isDepotUser()){
-            com.freshdirect.delivery.depot.DlvDepotModel depot = FDDepotManager.getInstance().getDepot(user.getDepotCode());
+            com.freshdirect.fdlogistics.model.FDDeliveryDepotModel depot = FDDeliveryManager.getInstance().getDepot(user.getDepotCode());
             if (depot.getRequireEmployeeId()) { %>
 <tr>
 	<td colspan="2" align="right" style="padding-right:5px;" class="text12"><label>* Employee Id</label></td>

@@ -11,7 +11,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Category;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -19,6 +28,7 @@ import com.freshdirect.mktAdmin.constants.EnumCompetitorType;
 import com.freshdirect.mktAdmin.exception.MktAdminApplicationException;
 import com.freshdirect.mktAdmin.exception.MktAdminSystemException;
 import com.freshdirect.mktAdmin.model.CompetitorAddressModel;
+import com.freshdirect.mktAdmin.validation.CompetitorFormValidator;
 
 
 /**
@@ -26,80 +36,92 @@ import com.freshdirect.mktAdmin.model.CompetitorAddressModel;
  *
  * @author Gopal
  */
+
+@Controller
+@RequestMapping("/editCompetitor.do")
+@SessionAttributes("command")
 public class EditCompInfoForm extends AbstractMktAdminForm {
+	
+	@Autowired
+	private CompetitorFormValidator competitorFormValidator;	
 
 	private final static Category LOGGER = LoggerFactory.getInstance(EditCompInfoForm.class);
 	
-	public EditCompInfoForm() {
-		// OK to start with a blank command object
-		setCommandClass(CompetitorAddressModel.class);
-		// activate session form mode to allow for detection of duplicate submissions
-		setSessionForm(true);
-	}
+
 	
-	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+	@RequestMapping(method = RequestMethod.GET)
+	protected String initForm(ModelMap model, 
+			@RequestParam(value = "competitorId", required = false) String competitorId) throws ServletException {
 		// get the Pet referred to by id in the request
-		try {
-		String competitorId=request.getParameter("competitorId");
-		LOGGER.debug("EditCompInfoForm:formBackingObject:"+competitorId);		
-			return getMarketAdminService().getCompetitorInformation(competitorId);
+		try {		
+		LOGGER.debug("EditCompInfoForm:formBackingObject:"+competitorId);
+			model.addAttribute("command", marketAdminService.getCompetitorInformation(competitorId));
+			referenceData(model);
+			return "editCompetitorForm";
 		} catch (MktAdminApplicationException e) {
 			// TODO Auto-generated catch block
 			throw new MktAdminSystemException("1001",e);
 		}
 	}
 	
-	protected Map referenceData(HttpServletRequest request) throws ServletException {
-		Map refData = new HashMap();		
+	protected void referenceData(ModelMap refData) throws ServletException {				
 		refData.put("competitorTypes", EnumCompetitorType.getEnumList());		
-		return refData;
 	}
 	
-	protected void onBind(HttpServletRequest request, Object command) {
-		CompetitorAddressModel model = (CompetitorAddressModel) command;
-		String priviledgeType=request.getParameter("competitorType");
+	protected void onBind(CompetitorAddressModel command, String priviledgeType) {		
 		//System.out.println(" priviledgeType :"+priviledgeType);
 		if(priviledgeType!=null){ 
 			EnumCompetitorType enmCmpType =EnumCompetitorType.getEnum(priviledgeType);
 			if(enmCmpType!=null){
-				model.setCompetitorType(enmCmpType);
+				command.setCompetitorType(enmCmpType);
 			}
 		}				
 	}
 		
 	
 	/** Method inserts a new <code>User</code>. */
-	protected ModelAndView onSubmit(  HttpServletRequest request,
-	        HttpServletResponse response,
-	        Object command,
-	        BindException errors) throws Exception{
-		CompetitorAddressModel model = (CompetitorAddressModel) command;
+	@RequestMapping(method = RequestMethod.POST)
+	protected String processSubmit(@ModelAttribute("command") CompetitorAddressModel command,
+	        BindingResult result, @RequestParam(value = "competitorId", required = false) String competitorId,
+	        @RequestParam(value = "competitorType", required = false) String priviledgeType,
+	        ModelMap model) throws Exception{
+		
+		onBind(command, priviledgeType);
+		
+		competitorFormValidator.validate(command, result);
+		
+		if(result.hasErrors()) {
+			referenceData(model);
+			return "editCompetitorForm";
+		}
+		
 		// delegate the insert to the Business layer
-			List modelList=new ArrayList();
-			modelList.add(model);
+		List modelList=new ArrayList();
+		modelList.add(command);
 		try{
-			getMarketAdminService().storeCompetitorInformation(modelList);
+			marketAdminService.storeCompetitorInformation(modelList);
 		} catch (MktAdminApplicationException exception) {
 			// TODO Auto-generated catch block
 			if(exception.getExceptionList()!=null){    		     
    		     Iterator iterator=exception.getExceptionList().iterator();
    		     while(iterator.hasNext()){
    		    	 MktAdminApplicationException e=(MktAdminApplicationException)iterator.next();    		    	     		    	     		    	 
-   		    	 errors.rejectValue("address1", "app.error.110",e.getPlaceHolders()," lot of address are not proper");
+   		    	 result.rejectValue("address1", "app.error.110",e.getPlaceHolders()," lot of address are not proper");
    		     }
    		}else{
-   			errors.rejectValue("address1", exception.getErrorCode(),
+   			result.rejectValue("address1", exception.getErrorCode(),
                    exception.getPlaceHolders(), "General application error");
    		}
-    		
-    		return showForm(request,response,errors);
-		}		
-		return new ModelAndView(getSuccessView(), "roleId", model.getId());
+    		referenceData(model);
+    		return "editCompetitorForm";
+		}
+		model.addAttribute("roleId", command.getId());
+		return "competitorRedirect";
 	}
 
-	protected ModelAndView handleInvalidSubmit(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		return disallowDuplicateFormSubmission(request, response);
-	}
+//	protected ModelAndView handleInvalidSubmit(HttpServletRequest request, HttpServletResponse response)
+//			throws Exception {
+//		return disallowDuplicateFormSubmission(request, response);
+//	}
 
 }

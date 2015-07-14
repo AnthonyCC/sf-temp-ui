@@ -5,6 +5,7 @@
 <%@ page import='com.freshdirect.fdstore.content.sort.*' %>
 <%@ page import='com.freshdirect.fdstore.content.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.fdlogistics.model.*' %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ taglib uri='template' prefix='tmpl'%>
 <%@ taglib uri='logic' prefix='logic'%>

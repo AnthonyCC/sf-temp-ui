@@ -8,7 +8,7 @@ import java.util.List;
 
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.fdstore.FDReservation;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
@@ -186,7 +186,7 @@ public class FDStandingOrder extends ModelSupport {
 	public void setupDelivery(FDReservation r) {
 		setStartTime(r.getStartTime());
 		setEndTime(r.getEndTime());
-		calculateNextDeliveryDate( r.getTimeslot().getBaseDate() );
+		calculateNextDeliveryDate( r.getTimeslot().getDeliveryDate() );
 	}
 
 	/**

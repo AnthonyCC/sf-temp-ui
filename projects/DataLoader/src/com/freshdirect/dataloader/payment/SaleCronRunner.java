@@ -12,16 +12,12 @@ package com.freshdirect.dataloader.payment;
  */
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.ejb.CreateException;
 import javax.mail.MessagingException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -32,11 +28,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.dataloader.payment.ejb.SaleCronHome;
 import com.freshdirect.dataloader.payment.ejb.SaleCronSB;
-import com.freshdirect.delivery.DlvResourceException;
-import com.freshdirect.delivery.ejb.DlvManagerHome;
-import com.freshdirect.delivery.ejb.DlvManagerSB;
-import com.freshdirect.delivery.model.DlvReservationModel;
-import com.freshdirect.delivery.model.UnassignedDlvReservationModel;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -81,8 +72,6 @@ public class SaleCronRunner {
 					LOGGER.debug("Sending report for " + cal.getTime() + "...");
 					CallCenterServices.emailCutoffTimeReport(cal.getTime());
 					}
-				emailUnassigned();
-				emailResolvedReservationIssues();
 			}
 			//First clear pending reverse auth for cancelled orders.
 			sb.reverseAuthorizeSales(authTimeout);
@@ -123,100 +112,6 @@ public class SaleCronRunner {
 		return new InitialContext(h);
 	}
 	
-	private static void emailUnassigned()
-	{
-		Context ctx = null;
-		try
-		{
-			
-			ctx = getInitialContext();
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DATE, 1);
-			
-			DlvManagerSB dlvManager = null;
-			DlvManagerHome dlh =(DlvManagerHome) ctx.lookup("freshdirect.delivery.DeliveryManager");
-			dlvManager = dlh.create();
-			List<UnassignedDlvReservationModel> _unassignedReservations = dlvManager.getUnassignedReservations(cal.getTime(),true);
-			if(_unassignedReservations.size()>0)
-				email(_unassignedReservations, cal.getTime());
-		}
-		catch(NamingException e)
-		{
-			e.printStackTrace();
-		} catch (DlvResourceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CreateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		finally {
-			try {
-				if (ctx != null) {
-					ctx.close();
-					ctx = null;
-				}
-			} catch (NamingException ne) {
-
-				// TODO Auto-generated catch block
-				ne.printStackTrace();
-			
-			}
-		}
-	}
-	
-	private static void emailResolvedReservationIssues()
-	{
-		Context ctx = null;
-		try
-		{
-			
-			ctx = getInitialContext();
-			
-			DlvManagerSB dlvManager = null;
-			DlvManagerHome dlh =(DlvManagerHome) ctx.lookup("freshdirect.delivery.DeliveryManager");
-			dlvManager = dlh.create();
-			List<List<DlvReservationModel>> reservations = new ArrayList<List<DlvReservationModel>>();
-			List<DlvReservationModel> unconfirmedReservations = dlvManager.getUnconfirmedReservations();
-			reservations.add(unconfirmedReservations);
-			List<DlvReservationModel> confirmedReservationsCancelledOrders = dlvManager.getConfirmedRsvForCancelledOrders();
-			reservations.add(confirmedReservationsCancelledOrders);
-			List<DlvReservationModel> cancelledReservationsInUPS = dlvManager.getCancelledRsvInUPS();
-			reservations.add(cancelledReservationsInUPS);
-			List<DlvReservationModel> ordersWithCancelledRsv = dlvManager.getOrdersWithCancelledRsv();
-			reservations.add(ordersWithCancelledRsv);
-			List<DlvReservationModel> reservationsNotInUPS = dlvManager.getReservationsNotInUPS();
-			reservations.add(reservationsNotInUPS);
-			
-			email(reservations);
-		}
-		catch(NamingException e)
-		{
-			e.printStackTrace();
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CreateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (DlvResourceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		finally {
-			try {
-				if (ctx != null) {
-					ctx.close();
-					ctx = null;
-				}
-			} catch (NamingException ne) {// TODO Auto-generated catch block
-				ne.printStackTrace();}
-		}
-	}
-	
 	private static void email(Date processDate, String exceptionMsg) {
 		// TODO Auto-generated method stub
 		try {
@@ -244,123 +139,5 @@ public class SaleCronRunner {
 		
 	}
 	
-	private static void email(List<UnassignedDlvReservationModel> reservations, Date deliveryDate) {
-		// TODO Auto-generated method stub
-		try {
-			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
-			String subject="Unassigned Reservations for the delivery date "+dateFormatter.format(deliveryDate);
-
-			StringBuffer buf = new StringBuffer();
-
-			buf.append("<html>").append("<body>");			
-			buf.append("<table border=\"1\" valign=\"top\" align=\"left\" cellpadding=\"0\" cellspacing=\"0\">");
-			buf.append("<tr>").append("<th>").append("Delivery Date").append("</th>")
-							.append("<th>").append("Cutoff").append("</th>")
-							.append("<th>").append("Zone").append("</th>")
-							.append("<th>").append("Order ID").append("</th>")
-							.append("<th>").append("Status Code").append("</th>")
-							.append("<th>").append("Reservation Type").append("</th>")
-							.append("<th>").append("Reserved Size").append("</th>")
-							.append("<th>").append("Reserved Service Time").append("</th>")
-							.append("<th>").append("Unassigned Action").append("</th>")
-							.append("<th>").append("Update status").append("</th>")
-							.append("</tr>");
-			String cutoff=null;
-			for(Iterator<UnassignedDlvReservationModel> i = reservations.iterator(); i.hasNext();){
-				UnassignedDlvReservationModel info =  i.next();
-				 
-				 
-					buf.append("<tr><td>")
-					.append(info.getDeliveryDate()).append("</td><td>")
-					.append(info.getCutoff()).append("</td><td>")
-					.append(info.getZoneCode()).append("</td><td>")
-					.append(info.getOrderId()).append("</td><td>")
-					.append(info.getStatusCode()).append("</td><td>")
-					.append(info.getReservationType().getName()).append("</td><td>")
-					.append(info.getReservedOrderSize()).append("</td><td>")
-					.append(info.getReservedServiceTime()).append("</td><td>")
-					.append((info.getUnassignedActivityType()==null)?"":info.getUnassignedActivityType()).append("</td><td>")
-					.append(info.getUpdateStatus()).append("</td></tr>");
-					cutoff = info.getCutoff();
-					
-				 
-
-			}
-
-			
-			buf.append("</table>").append("</body>").append("</html>");
-			//System.out.println(buf.toString());
-			ErpMailSender mailer = new ErpMailSender();
-			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
-					ErpServicesProperties.getCronFailureMailTo(),"",
-					subject, buf.toString(), true, "");
-			
-		}catch (MessagingException e) {
-			LOGGER.warn("Error Sending Unassigned Reservation Cron report email: ", e);
-		}
-		
-	}
 	
-	
-	final static String[] labels = {"UnConfirmed Reservations in UPS", "Cancelled Orders in Storefront/Confirmed in UPS",
-			"Cancelled Reservation in Storefront/Not Cancelled in UPS","Orders with Cancelled Reservations", "Reservations Not in UPS for dynamic timeslot"};
-	
-	private static void email(List<List<DlvReservationModel>> reservations) {
-		// TODO Auto-generated method stub
-		try {
-			String subject="Reservation Issue Resolver";
-			StringBuffer buf = new StringBuffer();
-			buf.append("<html>").append("<body>");
-			int index=0;
-			for(List<DlvReservationModel> reservation: reservations)
-			{
-				if(reservation.size()>0) buf.append(emailBody(reservation, index));
-				index++;
-			}
-			buf.append("</body>").append("</html>");
-			
-			ErpMailSender mailer = new ErpMailSender();
-			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
-					ErpServicesProperties.getCronFailureMailTo(),"",
-					subject, buf.toString(), true, "");
-			
-		}catch (MessagingException e) {
-			LOGGER.warn("Error Sending Reservation resolver Cron report email: ", e);
-		}
-		
-	}
-	
-	private static String emailBody(List<DlvReservationModel> reservation, int idx)
-	{
-		StringBuffer buf = new StringBuffer();
-		buf.append("<br><br><br><p><b>").append(labels[idx]).append("</b></p>");
-		
-		buf.append("<table border=\"1\" valign=\"top\" align=\"left\" cellpadding=\"0\" cellspacing=\"2\">");
-		buf.append("<tr>").append("<th>").append("Delivery Date").append("</th>")
-						.append("<th>").append("Zone").append("</th>")
-						.append("<th>").append("Reservation ID").append("</th>")
-						.append("<th>").append("Order ID").append("</th>")
-						.append("<th>").append("Status Code").append("</th>")
-						.append("<th>").append("Reservation Type").append("</th>")
-						.append("<th>").append("Unassigned Action").append("</th>")
-						.append("<th>").append("Expiration Date").append("</th>")
-						.append("</tr>");
-		for(Iterator<DlvReservationModel> i = reservation.iterator(); i.hasNext();){
-			DlvReservationModel info =  i.next();
-				buf.append("<tr><td>")
-				.append(info.getDeliveryDate()).append("</td><td>")
-				.append(info.getZoneCode()).append("</td><td>")
-				.append(info.getId()).append("</td><td>")
-				.append(info.getOrderId()).append("</td><td>")
-				.append(info.getStatusCode()).append("</td><td>")
-				.append(info.getReservationType().getName()).append("</td><td>")
-				.append((info.getUnassignedActivityType()==null)?"":info.getUnassignedActivityType()).append("</td><td>")
-				.append(info.getExpirationDateTime()).append("</td></tr>");
-		}
-		buf.append("</table>");
-		
-		return buf.toString();
-	
-	}
-
 }

@@ -1,7 +1,7 @@
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%><%@page 
 import="com.freshdirect.webapp.taglib.fdstore.FDSessionUser"%><%@page 
 import="com.freshdirect.webapp.taglib.fdstore.SessionName"%><%@page 
-import="com.freshdirect.delivery.EnumDeliveryStatus"%><%@page 
+import="com.freshdirect.logistics.delivery.model.EnumDeliveryStatus"%><%@page 
 import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%><%@page 
 import="com.freshdirect.common.address.AddressModel"%><%
 FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);

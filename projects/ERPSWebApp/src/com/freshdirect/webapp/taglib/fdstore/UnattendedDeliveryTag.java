@@ -12,14 +12,11 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
-
-import com.freshdirect.delivery.DlvZoneInfoModel;
-
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.lists.FDCustomerRecipeList;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
@@ -79,12 +76,11 @@ public class UnattendedDeliveryTag extends AbstractGetterTag {
 		this.date = date;
 	}
 	
-	private DlvZoneInfoModel getAddressZone(ErpAddressModel thisAddress) throws FDResourceException, FDInvalidAddressException {
+	private FDDeliveryZoneInfo getAddressZone(ErpAddressModel thisAddress) throws FDResourceException, FDInvalidAddressException {
 		return FDDeliveryManager.getInstance().getZoneInfo(thisAddress, date != null ? date : new Date(), null, null);
 	}
 	
-	// NUll Point check added.
-	private boolean checkZone(DlvZoneInfoModel zoneInfo, ErpAddressModel thisAddress)  {
+	private boolean checkZone(FDDeliveryZoneInfo zoneInfo, ErpAddressModel thisAddress)  {
 		if(zoneInfo !=null && thisAddress !=null)
 		{
 			if (zoneInfo.isUnattended() || (checkUserOptions && !EnumUnattendedDeliveryFlag.NOT_SEEN.equals(thisAddress.getUnattendedDeliveryFlag())))
@@ -106,7 +102,7 @@ public class UnattendedDeliveryTag extends AbstractGetterTag {
 			
 			if (address != null) {
 				// don't care whose address
-				DlvZoneInfoModel zoneInfo = getAddressZone(address);				
+				FDDeliveryZoneInfo zoneInfo = getAddressZone(address);				
 				if (checkZone(zoneInfo,address)) return zoneInfo;
 				
 			} else if (addressId != null){
@@ -120,7 +116,7 @@ public class UnattendedDeliveryTag extends AbstractGetterTag {
 				for(Iterator i = shippingAddresses.iterator(); i.hasNext();) {
 					ErpAddressModel thisAddress = (ErpAddressModel)i.next();
 					if (addressId.equals(thisAddress.getPK().getId())) {
-						DlvZoneInfoModel zoneInfo = getAddressZone(thisAddress);
+						FDDeliveryZoneInfo zoneInfo = getAddressZone(thisAddress);
 						if (checkZone(zoneInfo,thisAddress)) return zoneInfo;
 					}
 				}
@@ -143,7 +139,7 @@ public class UnattendedDeliveryTag extends AbstractGetterTag {
 
 	public static class TagEI extends AbstractGetterTag.TagEI {
 		protected String getResultType() {
-			return DlvZoneInfoModel.class.getName();
+			return FDDeliveryZoneInfo.class.getName();
 		}
 	}
 

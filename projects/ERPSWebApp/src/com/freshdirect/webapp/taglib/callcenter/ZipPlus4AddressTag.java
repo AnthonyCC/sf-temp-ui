@@ -4,10 +4,7 @@
  */
 package com.freshdirect.webapp.taglib.callcenter;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -17,27 +14,24 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.address.EnumAddressType;
-import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmAgentModel;
-import com.freshdirect.delivery.AddressScrubber;
-import com.freshdirect.delivery.DlvAddressGeocodeResponse;
-import com.freshdirect.delivery.DlvAddressVerificationResponse;
-import com.freshdirect.delivery.DlvApartmentRange;
-import com.freshdirect.delivery.DlvServiceSelectionResult;
-import com.freshdirect.delivery.DlvZoneInfoModel;
-import com.freshdirect.delivery.EnumAddressExceptionReason;
-import com.freshdirect.delivery.EnumAddressVerificationResult;
-import com.freshdirect.delivery.EnumDeliveryStatus;
-import com.freshdirect.delivery.ExceptionAddress;
-import com.freshdirect.delivery.InvalidAddressException;
+import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.delivery.helper.RequestContextUtil;
+import com.freshdirect.fdlogistics.model.FDDeliveryAddressCheckResponse;
+import com.freshdirect.fdlogistics.model.FDDeliveryAddressVerificationResponse;
+import com.freshdirect.fdlogistics.model.FDDeliveryApartmentRange;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.delivery.model.EnumAddressExceptionReason;
+import com.freshdirect.logistics.delivery.model.EnumAddressVerificationResult;
+import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
+import com.freshdirect.logistics.delivery.model.ExceptionAddress;
+import com.freshdirect.logistics.delivery.model.InvalidAddressException;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
@@ -57,7 +51,7 @@ public class ZipPlus4AddressTag extends AbstractControllerTag implements Session
 	List<AddressModel> suggestions; // a holder for suggested addresses if the original address is not unique
 	EnumAddressVerificationResult verificationResult;
 	String geocodeResult;
-	List<DlvApartmentRange> aptRanges;
+	List<FDDeliveryApartmentRange> aptRanges;
 
 	public void setId(String id) {
 		this.id = id;
@@ -97,80 +91,65 @@ public class ZipPlus4AddressTag extends AbstractControllerTag implements Session
 		populateAddress(request);
 		validateAddress(actionResult);
 
-		DlvAddressVerificationResponse verifyResponse = FDDeliveryManager.getInstance().scrubAddress(dlvAddress);
+		CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
+		
+		FDDeliveryAddressCheckResponse verifyResponse;
+		try {
+			verifyResponse = FDDeliveryManager.getInstance().checkAddress(dlvAddress/*, 
+					RequestContextUtil.getRequestContext(agent.getUserId(), EnumTransactionSource.CUSTOMER_REP.name())*/);
+		} catch (FDInvalidAddressException iae) {
+			actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
+			return;
+		}
 
 		//
 		// set to scrubbed address
 		//
 		dlvAddress = verifyResponse.getAddress();
 
-		verificationResult = verifyResponse.getResult();
+		verificationResult = verifyResponse.getVerifyResult();
 
 		addVerificationResultErrors(verificationResult, actionResult);
 		
 		if (!EnumAddressVerificationResult.ADDRESS_BAD.equals(verificationResult)) {
-			//
-			// geocode address
-			//
-			try {
-				DlvAddressGeocodeResponse geocodeResponse = FDDeliveryManager.getInstance().geocodeAddress(this.dlvAddress);
-				this.geocodeResult = geocodeResponse.getResult();
-				this.dlvAddress = geocodeResponse.getAddress();
-				
-			} catch (FDInvalidAddressException iae) {
-				actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
-				return;
-			}
-
-			addGeocodeResultErrors(geocodeResult, actionResult);
-
+		
+		this.geocodeResult = verifyResponse.getGeocodeResult();
+			
+		addGeocodeResultErrors(geocodeResult, actionResult);
 		}
 
 		if (EnumAddressVerificationResult.ADDRESS_NOT_UNIQUE.equals(verificationResult)) {
-			//
-			// get a list of suggestions to use instead of the non-unique address entered by the user
-			//
-			try {
-				suggestions = FDDeliveryManager.getInstance().findSuggestionsForAmbiguousAddress(dlvAddress);
-				pageContext.setAttribute("suggestions", suggestions);
-			} catch (FDInvalidAddressException iae) {
-				actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
-				return;
-			}
+		suggestions = verifyResponse.getSuggestions();
+		
+		pageContext.setAttribute("suggestions", suggestions);
 		} else if (
-			EnumAddressVerificationResult.ADDRESS_OK.equals(verificationResult)
-				|| EnumAddressVerificationResult.APT_WRONG.equals(verificationResult)) {
-			//
-			// get building apartments
-			//
-			try {
-				aptRanges = FDDeliveryManager.getInstance().findApartmentRanges(dlvAddress);
-				pageContext.setAttribute("aptRanges", aptRanges);
+				EnumAddressVerificationResult.ADDRESS_OK.equals(verificationResult)
+					|| EnumAddressVerificationResult.APT_WRONG.equals(verificationResult)) {
+				//
+				// get building apartments
+				//
+		try {
+		
+		aptRanges = verifyResponse.getAptRanges();
+		
+		pageContext.setAttribute("aptRanges", aptRanges);
 				
-				DlvServiceSelectionResult serviceResult=FDDeliveryManager.getInstance().checkAddress(dlvAddress);
-				EnumDeliveryStatus status=serviceResult.getServiceStatus(dlvAddress.getServiceType());
-				pageContext.setAttribute("deliveryStatus", status);
+		pageContext.setAttribute("deliveryStatus", EnumDeliveryStatus.getEnum(verifyResponse.getDeliveryStatus()));
 				
-				Calendar date = new GregorianCalendar();
-				date.add(Calendar.DATE, 7);
-				List<DlvZoneInfoModel> zoneInfo=FDDeliveryManager.getInstance().getAllZoneInfo(dlvAddress, date.getTime());
-				pageContext.setAttribute("zoneInfo", zoneInfo);
+		pageContext.setAttribute("zoneInfo", verifyResponse.getZoneInfo());
 				
-				String county = FDDeliveryManager.getInstance().getCounty(dlvAddress.getCity(), dlvAddress.getState());
-				pageContext.setAttribute("county", county);
+		pageContext.setAttribute("county", verifyResponse.getCounty());
 				
-				Set<EnumServiceType> availServices = FDDeliveryManager.getInstance().checkAddress(dlvAddress).getAvailableServices();
-				pageContext.setAttribute("availServices", availServices);
-			} catch (InvalidAddressException iae) {
-				actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
-				return;
-			} catch (FDInvalidAddressException fdiae) {
-				actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
-				return;
+		pageContext.setAttribute("availServices", verifyResponse.getAvailServices());
+			} 
+		catch (Exception fdiae)
+			{
+					actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
+					return;
 			}
 		}
-
-		if (!actionResult.isSuccess()) {
+		if (!actionResult.isSuccess()) 
+		{
 			return;
 		}
 
@@ -181,18 +160,14 @@ public class ZipPlus4AddressTag extends AbstractControllerTag implements Session
 		this.populateAddress(request);
 		this.validateAddress(actionResult);
 		
-		FDDeliveryManager.getInstance().scrubAddress(dlvAddress);
-		
-		String county = FDDeliveryManager.getInstance().getCounty(dlvAddress.getCity(), dlvAddress.getState());
-		if(county == null){
-			actionResult.addError(new ActionError(EnumUserInfoName.DLV_CITY.getCode(), "Please enter a valid city, state combination"));
-		}
-		
-		if (actionResult.isSuccess()) {
-			try {
+		try {
 				String streetAddress = dlvAddress.getAddress1();
 				if(dlvAddress.getScrubbedStreet() == null){
-					streetAddress = AddressScrubber.standardizeForUSPS(dlvAddress.getAddress1());
+					FDDeliveryAddressVerificationResponse response = FDDeliveryManager.getInstance().scrubAddress(dlvAddress);
+					streetAddress = response.getAddress().getAddress1();
+				}
+				if(dlvAddress.getAddressInfo().getCounty() == null){
+					actionResult.addError(new ActionError(EnumUserInfoName.DLV_CITY.getCode(), "Please enter a valid city, state combination"));
 				}
 				
 				CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
@@ -202,19 +177,18 @@ public class ZipPlus4AddressTag extends AbstractControllerTag implements Session
 				ex.setAptNumLow(this.dlvAddress.getApartment());
 				ex.setAptNumHigh(this.dlvAddress.getApartment());
 				ex.setZip(this.dlvAddress.getZipCode());
-				ex.setAddressType(EnumAddressType.HIGHRISE);
+				ex.setAddressType(com.freshdirect.logistics.delivery.model.EnumAddressType.HIGHRISE);
 				ex.setReason(EnumAddressExceptionReason.ADD_APT);
 				ex.setUserId(agent.getUserId());
-				ex.setCounty(county);
+				ex.setCounty(dlvAddress.getAddressInfo().getCounty());
 				ex.setState(this.dlvAddress.getState());
 				ex.setCity(this.dlvAddress.getCity());
 				
 				FDDeliveryManager.getInstance().addExceptionAddress(ex);
-			} catch (InvalidAddressException e) {
+			} catch (FDInvalidAddressException e) {
 				e.printStackTrace();
 				actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
 			}
-		}
 		
 	}
 

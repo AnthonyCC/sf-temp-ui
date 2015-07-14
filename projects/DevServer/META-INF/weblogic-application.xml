@@ -25,6 +25,11 @@
   <listener>
     <listener-class>com.freshdirect.dataloader.productpromotion.WLSSapProductPromotionServer</listener-class>
   </listener>
-  -->  
+  
+  
+  <listener>
+    <listener-class>com.freshdirect.dataloader.disablemod.WLSSapDisableOrderModification</listener-class>
+  </listener>
+   --> 
 </weblogic-application>
 

@@ -5,8 +5,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
-import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
 
 public class TimeslotList {

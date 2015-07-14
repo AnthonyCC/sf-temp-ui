@@ -1,7 +1,6 @@
 package com.freshdirect.fdstore.promotion;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,10 +10,9 @@ import java.util.Map;
 
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.delivery.EnumDeliveryOption;
-import com.freshdirect.delivery.model.DlvTimeslotModel;
-import com.freshdirect.fdstore.FDReservation;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.DateUtil;
@@ -100,9 +98,9 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 						if(e && null !=dlvTimeSlots && !dlvTimeSlots.isEmpty()){
 							List<PromotionDlvTimeSlot> dlvTimeSlotList = dlvTimeSlots.get(day);
 							if(null != dlvTimeSlotList) {								
-								if((!(dlvReservation.getTimeslot().getDlvTimeslot().isPremiumSlot() && promotionCode.startsWith("WS_"))
+								if((!(dlvReservation.getTimeslot().isPremiumSlot() && promotionCode.startsWith("WS_"))
 										|| FDStoreProperties.allowDiscountsOnPremiumSlots())
-										&& checkDlvTimeSlots(dlvReservation.getTimeslot().getDlvTimeslot(), dlvTimeSlotList, null, context.getUser(), true))
+										&& checkDlvTimeSlots(dlvReservation.getTimeslot(), dlvTimeSlotList, null, context.getUser(), true))
 									return ALLOW;
 								else{
 									context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode());
@@ -137,23 +135,21 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 			int _rootTSRadius = -1;
 			while(_tsItr.hasNext()) {
 				FDTimeslot _ts = _tsItr.next();
-				if(_ts.getDlvTimeslot().getRoutingSlot() != null && _ts.getDlvTimeslot().getRoutingSlot().getDeliveryCost() != null) {					
-					if(_rootTSRadius != -1 && _ts.getDlvTimeslot().getRoutingSlot().getDeliveryCost().getAdditionalDistance() < _rootTSRadius) {
-						_rootTSRadius = _ts.getDlvTimeslot().getRoutingSlot().getDeliveryCost().getAdditionalDistance();
+					if(_rootTSRadius != -1 && _ts.getAdditionalDistance() < _rootTSRadius) {
+						_rootTSRadius = _ts.getAdditionalDistance();
 					} else if (_rootTSRadius == -1) {
-						_rootTSRadius = _ts.getDlvTimeslot().getRoutingSlot().getDeliveryCost().getAdditionalDistance();
+						_rootTSRadius = _ts.getAdditionalDistance();
 					}
-					if(!tsRadiusMap.containsKey(_ts.getDlvTimeslot().getRoutingSlot().getDeliveryCost().getAdditionalDistance())){
-						tsRadiusMap.put(_ts.getDlvTimeslot().getRoutingSlot().getDeliveryCost().getAdditionalDistance(), new ArrayList<FDTimeslot>());
+					if(!tsRadiusMap.containsKey(_ts.getAdditionalDistance())){
+						tsRadiusMap.put(_ts.getAdditionalDistance(), new ArrayList<FDTimeslot>());
 					}
-					tsRadiusMap.get(_ts.getDlvTimeslot().getRoutingSlot().getDeliveryCost().getAdditionalDistance()).add(_ts);
-				}
+					tsRadiusMap.get(_ts.getAdditionalDistance()).add(_ts);
 			}
 			
 			List<FDTimeslot> tsRadiusLst = tsRadiusMap.get(_rootTSRadius);
 			if(tsRadiusLst != null){
 				for(FDTimeslot _slot : tsRadiusLst){
-					if(dlvStartTimeOfDay.equals(_slot.getDlvTimeslot().getStartTime()) && dlvEndTimeOfDay.equals(_slot.getDlvTimeslot().getEndTime())){
+					if(dlvStartTimeOfDay.equals(_slot.getStartTime()) && dlvEndTimeOfDay.equals(_slot.getEndTime())){
 						foundSlot = true;
 						break;
 					}
@@ -163,7 +159,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		return foundSlot;		
 	}
 	
-	private boolean checkSteeringDiscountFlag(FDUserI user, DlvTimeslotModel dlvTimeslotModel) {
+	private boolean checkSteeringDiscountFlag(FDUserI user, FDTimeslot dlvTimeslotModel) {
 		if(user.getShoppingCart() != null && user.getShoppingCart().getDeliveryReservation() != null){
 			if(dlvTimeslotModel.getId().equals(user.getShoppingCart().getDeliveryReservation().getTimeslotId())) {
 				return user.getShoppingCart().getDeliveryReservation().hasSteeringDiscount();
@@ -172,11 +168,11 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		return false;
 	}
 	
-	private boolean checkDlvTimeSlots(DlvTimeslotModel dlvTimeslotModel, List<PromotionDlvTimeSlot> dlvTimeSlotList, Map<Double, List<FDTimeslot>> tsWindowMap, FDUserI user, boolean radiusEvaluated) {
+	private boolean checkDlvTimeSlots(FDTimeslot dlvTimeslotModel, List<PromotionDlvTimeSlot> dlvTimeSlotList, Map<Double, List<FDTimeslot>> tsWindowMap, FDUserI user, boolean radiusEvaluated) {
 		boolean isOK = false;
 		if(null != dlvTimeslotModel) {
-			TimeOfDay dlvStartTimeOfDay = dlvTimeslotModel.getStartTime();
-			TimeOfDay dlvEndTimeOfDay = dlvTimeslotModel.getEndTime();
+			TimeOfDay dlvStartTimeOfDay = dlvTimeslotModel.getDlvStartTime();
+			TimeOfDay dlvEndTimeOfDay = dlvTimeslotModel.getDlvEndTime();
 			for (Iterator<PromotionDlvTimeSlot> iterator = dlvTimeSlotList.iterator(); iterator.hasNext();) {
 				PromotionDlvTimeSlot promoDlvTimeSlot = iterator.next();
 				String[] windowType = promoDlvTimeSlot.getWindowTypes();
@@ -226,7 +222,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		boolean isOK = false;
 		if(null != dlvReservation){
 			
-			Date dlvSlotBaseDate = DateUtil.truncate(dlvReservation.getTimeslot().getDlvTimeslot().getBaseDate());
+			Date dlvSlotBaseDate = DateUtil.truncate(dlvReservation.getTimeslot().getDeliveryDate());
 			//Calendar cal =Calendar.getInstance();
 			//cal.setTime(dlvSlotBaseDate);
 			isOK = checkBaseDateRange(dlvSlotBaseDate);
@@ -238,7 +234,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		boolean isOK = false;
 		if(null != ts){
 			
-			Date dlvSlotBaseDate = DateUtil.truncate(ts.getDlvTimeslot().getBaseDate());
+			Date dlvSlotBaseDate = DateUtil.truncate(ts.getDeliveryDate());
 			//Calendar cal =Calendar.getInstance();
 			//cal.setTime(dlvSlotBaseDate);
 			isOK = checkBaseDateRange(dlvSlotBaseDate);
@@ -274,7 +270,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		int day = ts.getDayOfWeek();
 		boolean e = dlvDays.contains(String.valueOf(day));
 		if(e && null != dlvDates && !dlvDates.isEmpty()){
-			e = checkBaseDateRange(ts.getDlvTimeslot().getBaseDate());
+			e = checkBaseDateRange(ts.getDeliveryDate());
 		}
 		if(e && null != dlvDayRedemtions && !dlvDayRedemtions.isEmpty()){
 			e = checkDayMaxRedemtions(ts, promotionCode);
@@ -282,7 +278,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		if(e && null !=dlvTimeSlots && !dlvTimeSlots.isEmpty()){
 			List<PromotionDlvTimeSlot> dlvTimeSlotList = dlvTimeSlots.get(day);
 			if(null!= dlvTimeSlotList){
-				return checkDlvTimeSlots(ts.getDlvTimeslot(), dlvTimeSlotList, tsWindowMap, user, false);
+				return checkDlvTimeSlots(ts, dlvTimeSlotList, tsWindowMap, user, false);
 			}
 		}
 		return e;
@@ -293,7 +289,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		if(null != dlvDayRedemtions && !dlvDayRedemtions.isEmpty()){
 			PromotionDlvDay dlvDay = dlvDayRedemtions.get(ts.getDayOfWeek());
 			if(dlvDay != null) {
-				int redeemCnt = PromotionFactory.getInstance().getRedemptions(promotionCode, ts.getBaseDate());
+				int redeemCnt = PromotionFactory.getInstance().getRedemptions(promotionCode, ts.getDeliveryDate());
 				if(redeemCnt < dlvDay.getRedeemCnt()) {
 					return true;	
 				}
@@ -346,12 +342,8 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 	private class TimeSlotComparator implements Comparator<FDTimeslot> {
 
 		public int compare(FDTimeslot ts1, FDTimeslot ts2) {
-			if(ts1.getDlvTimeslot().getRoutingSlot() != null &&  ts2.getDlvTimeslot().getRoutingSlot() != null) {
-				if(ts1.getDlvTimeslot().getRoutingSlot().getDeliveryCost() != null && ts2.getDlvTimeslot().getRoutingSlot().getDeliveryCost() != null){
-					return ts1.getDlvTimeslot().getRoutingSlot().getDeliveryCost().getAdditionalDistance() - ts2.getDlvTimeslot().getRoutingSlot().getDeliveryCost().getAdditionalDistance();
-				}
-			}
-			return 0;
+			return ts1.getAdditionalDistance() - ts2.getAdditionalDistance();
+
 		}
 	}
 	

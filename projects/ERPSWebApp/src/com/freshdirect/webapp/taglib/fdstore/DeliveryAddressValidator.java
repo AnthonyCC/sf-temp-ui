@@ -7,16 +7,15 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.EnumAddressType;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.delivery.DlvAddressGeocodeResponse;
-import com.freshdirect.delivery.DlvServiceSelectionResult;
-import com.freshdirect.delivery.EnumDeliveryStatus;
+import com.freshdirect.fdlogistics.model.FDDeliveryAddressGeocodeResponse;
+import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 
 /**
  * Utility class to validate a delivery address. 
@@ -36,7 +35,7 @@ public class DeliveryAddressValidator {
 
 	// scrubbed address
 	private AddressModel scrubbedAddress;
-	private DlvServiceSelectionResult serviceResult;
+	private FDDeliveryServiceSelectionResult serviceResult;
 
 
 	public DeliveryAddressValidator(AddressModel address) {
@@ -92,7 +91,7 @@ public class DeliveryAddressValidator {
 			}
 			
 			// [3] since address looks alright need geocode
-			DlvAddressGeocodeResponse geocodeResponse = doGeocodeAddress(scrubbedAddress);		
+			FDDeliveryAddressGeocodeResponse geocodeResponse = doGeocodeAddress(scrubbedAddress);		
 		    geocodeResult = geocodeResponse.getResult();
 		    
 			if ( !"GEOCODE_OK".equalsIgnoreCase( geocodeResult ) ) {
@@ -144,7 +143,7 @@ public class DeliveryAddressValidator {
 	}
 
 
-	public DlvServiceSelectionResult getServiceResult() {
+	public FDDeliveryServiceSelectionResult getServiceResult() {
 		return serviceResult;
 	}
 
@@ -161,11 +160,11 @@ public class DeliveryAddressValidator {
 		return AddressUtil.scrubAddress(addr, result);
 	}
 
-	protected DlvServiceSelectionResult doCheckAddress(AddressModel addr) throws FDResourceException, FDInvalidAddressException {
-		return FDDeliveryManager.getInstance().checkAddress(addr);
+	protected FDDeliveryServiceSelectionResult doCheckAddress(AddressModel addr) throws FDResourceException, FDInvalidAddressException {
+		return FDDeliveryManager.getInstance().getDeliveryServicesByAddress(addr);
 	}
 
-	protected DlvAddressGeocodeResponse doGeocodeAddress(AddressModel addr) throws FDResourceException, FDInvalidAddressException {
+	protected FDDeliveryAddressGeocodeResponse doGeocodeAddress(AddressModel addr) throws FDResourceException, FDInvalidAddressException {
 		 return FDDeliveryManager.getInstance().geocodeAddress(addr);		
 	}
 }

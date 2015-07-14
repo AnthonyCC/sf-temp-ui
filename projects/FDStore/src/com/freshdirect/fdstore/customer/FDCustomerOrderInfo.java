@@ -15,7 +15,7 @@ import java.util.Date;
 
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
-import com.freshdirect.delivery.EnumReservationType;
+import com.freshdirect.logistics.delivery.model.EnumReservationType;
 
 /**
  * Lightweight information about a Sale.

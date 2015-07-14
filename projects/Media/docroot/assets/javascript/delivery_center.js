@@ -46,7 +46,10 @@
 				jsonrpcClient.manager.getSmsMessages(smsCallBack, orderNo);
 			}
 			
-			function smsCallBack(smsResult){
+			function smsCallBack(smsResult, error){
+				console.log(error);
+				if(error!=null) return;
+				
 				var result='';
 				if  (smsResult != null) { 
 					var smsrows=smsResult.list;
@@ -69,7 +72,10 @@
 				$jq('#smsInfo').html("<table>"  + result + "</table>");
 			}
 
-			function callLogCallBack(callLogResult){
+			function callLogCallBack(callLogResult, error){
+				console.log(error);
+				if(error!=null) return;
+				
 				var result = '';
 				var calllog = callLogResult.list;
 				for(var i=0;i < calllog.length;i++){
@@ -91,25 +97,30 @@
 			}
 			
 			
-			function nextelCallBack(nextelResult){
-				var result = '';
-				var nextels = nextelResult.list;
-				for(var i=0;i < nextels.length;i++){
-						if( i % 2 != 0){
-							result += "<tr class=\"list_odd_row\">"; 
-						} else {
-							result += "<tr>";
-						}
-						result += "<td><input id=\""+ nextels[i].nextel+"\" type=\"checkbox\" name=\""+ nextels[i].nextel+"\" /></td>";
-						result += "<td width=\"115\">" + nextels[i].nextel + "</td>";
-						result += "<td width=\"205\">"+ nextels[i].employee + "</td>";
-						result += "<td width=\"117\">"+ nextels[i].empId + "</td>";
-						result += "</tr>";
-				}
-				$jq('#nextelInfo').html("<table id=\"nextel_table\">" + result + "</table>");
+			function nextelCallBack(nextelResult, error){
+				console.log(error);
+				if(error!=null) return;
+					var result = '';
+					var nextels = nextelResult.list;
+					for(var i=0;i < nextels.length;i++){
+							if( i % 2 != 0){
+								result += "<tr class=\"list_odd_row\">"; 
+							} else {
+								result += "<tr>";
+							}
+							result += "<td><input id=\""+ nextels[i].nextel+"\" type=\"checkbox\" name=\""+ nextels[i].nextel+"\" /></td>";
+							result += "<td width=\"115\">" + nextels[i].nextel + "</td>";
+							result += "<td width=\"205\">"+ nextels[i].employee + "</td>";
+							result += "<td width=\"117\">"+ nextels[i].empId + "</td>";
+							result += "</tr>";
+					}
+					$jq('#nextelInfo').html("<table id=\"nextel_table\">" + result + "</table>");
 			}
 
-			function cartonScanHistoryCallBack(cartonScanResult){
+			function cartonScanHistoryCallBack(cartonScanResult, error){
+				console.log(error);
+				if(error!=null) return;
+				
 				var result = '';
 				var cartons = cartonScanResult.list;
 				var temp = false;
@@ -149,7 +160,10 @@
 				$jq('#cartonScanInfo').html("<table>" + result + "</table>");
 			}
 
-			function airClicMsgCallBack(msgResult) {
+			function airClicMsgCallBack(msgResult, error) {
+				console.log(error);
+				if(error!=null) return;
+				
 				var result = '';
 				var messages = msgResult.list;
 				for(var j=0;j < messages.length;j++){

@@ -33,7 +33,6 @@ import java.util.StringTokenizer;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
-import javax.ejb.FinderException;
 import javax.mail.MessagingException;
 import javax.naming.NamingException;
 
@@ -44,7 +43,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
@@ -70,7 +68,6 @@ import com.freshdirect.customer.EnumTransactionType;
 import com.freshdirect.customer.EnumVSStatus;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpActivityRecord;
-import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpCaptureModel;
 import com.freshdirect.customer.ErpChargeLineModel;
@@ -92,13 +89,7 @@ import com.freshdirect.customer.ejb.ErpComplaintManagerSB;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
-import com.freshdirect.delivery.DlvZoneInfoModel;
-import com.freshdirect.delivery.EnumRegionServiceType;
-import com.freshdirect.delivery.ejb.DlvManagerDAO;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
-import com.freshdirect.delivery.ejb.DlvManagerSB;
-import com.freshdirect.delivery.model.DlvReservationModel;
-import com.freshdirect.delivery.model.SectorVO;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDlvPassExtendReason;
@@ -106,7 +97,6 @@ import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.meal.MealModel;
@@ -121,7 +111,6 @@ import com.freshdirect.fdstore.customer.FDComplaintReportCriteria;
 import com.freshdirect.fdstore.customer.FDCreditSummary;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
-import com.freshdirect.fdstore.customer.FDCustomerReservationInfo;
 import com.freshdirect.fdstore.customer.FDCutoffTimeInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderI;
@@ -971,7 +960,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
             ErpSaleModel _order=customerManagerSB.getOrder(new PrimaryKey(saleId));
             ErpAbstractOrderModel order =_order.getCurrentOrder();
             ErpDeliveryInfoModel dlvInfo=order.getDeliveryInfo();
-             
+            //@TODO Logistics ReIntegration Task - Need to determine if SAP is using the region send as part of Create/Change Sales Order. If not this logic will be removed. 
+            /*
+             * 
             EnumRegionServiceType serviceType  = null;
             if(!(dlvInfo.getDeliveryReservationId() == null || "1".equals(dlvInfo.getDeliveryReservationId()))){
             DlvManagerSB sb = this.getDlvManagerHome().create();
@@ -979,8 +970,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
   			if(_reservation!=null)
   				serviceType = _reservation.getRegionSvcType();
             }
-            DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(dlvInfo.getDeliveryAddress(),dlvInfo.getDeliveryStartTime(), null, serviceType);
-            customerManagerSB.resubmitOrder(saleId, cra,saleType,zInfo.getRegionId());
+            FDDeliveryZoneInfo zInfo = FDDeliveryManager.getInstance().getZoneInfo(dlvInfo.getDeliveryAddress(),dlvInfo.getDeliveryStartTime(), null, serviceType);
+            */
+            customerManagerSB.resubmitOrder(saleId, cra, saleType, dlvInfo.getDeliveryRegionId());
               
               if(!EnumSaleType.REGULAR.equals(saleType) && EnumSaleStatus.NEW.equals(_order.getStatus())) {
             	  FDCustomerManager.authorizeSale(saleId);
@@ -990,11 +982,11 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
               throw new FDResourceException(ce);
         } catch (RemoteException re) {
               throw new FDResourceException(re);
-        } catch (FDInvalidAddressException e) {
+        } /*catch (FDInvalidAddressException e) {
               throw new FDResourceException(e);
         } catch (FinderException fe) {
         	throw new FDResourceException(fe);
-		}
+		}*/
   }
   
 	
@@ -1113,15 +1105,11 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private static final String CUTOFF_REPORT_QUERY = "select s.status, case when t.premium_cutoff_time is null then to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') " +
-			"else to_date(to_char(t.base_date, 'MM/DD/YY ') || to_char(t.premium_cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM')  end as cutofftime " +
-			" , count(*) as order_count from cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation r, dlv.timeslot t " +
+	private static final String CUTOFF_REPORT_QUERY = "select s.status, di.handofftime " +
+			" , count(*) as order_count from cust.sale s, cust.salesaction sa, cust.deliveryinfo di " +
 			"where s.id=sa.sale_id and sa.id=di.salesaction_id and s.type<>'SUB' and sa.action_type in ('CRO','MOD') and sa.requested_date=? and s.type = 'REG' " +
 			"and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD')) and di.starttime > ? " +
-			"and di.starttime < ? and DI.RESERVATION_ID = r.id and R.TIMESLOT_ID = t.id group by s.status, " +
-			"case when t.premium_cutoff_time is null then to_date(to_char(t.base_date-1, 'MM/DD/YY ') || to_char(t.cutoff_time, 'HH:MI:SS AM'), " +
-			"'MM/DD/YY HH:MI:SS AM') else to_date(to_char(t.base_date, 'MM/DD/YY ') || to_char(t.premium_cutoff_time, 'HH:MI:SS AM'), " +
-			"'MM/DD/YY HH:MI:SS AM')  end order by cutofftime, s.status";
+			"and di.starttime < ? group by s.status, di.handofftime order by di.handofftime, s.status";
 
 	public List getCutoffTimeReport(java.util.Date day) throws FDResourceException {
 		Connection conn = null;
@@ -1140,7 +1128,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 			while (rs.next()) {
 				EnumSaleStatus s = EnumSaleStatus.getSaleStatus(rs.getString("STATUS"));
-				ret.add(new FDCutoffTimeInfo(s, rs.getTimestamp("CUTOFFTIME"), rs.getInt("ORDER_COUNT")));
+				ret.add(new FDCutoffTimeInfo(s, rs.getTimestamp("handofftime"), rs.getInt("ORDER_COUNT")));
 			}
 			ps.close();
 			rs.close();
@@ -1917,109 +1905,10 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 
 	public int cancelReservations(GenericSearchCriteria resvCriteria, String initiator, String notes) throws FDResourceException{
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			/*
-			 * Get the reservations for the given search criteria for
-			 * logging into the activity log after deleting the reservations.
-			 */
-
-			List reservations = doGenericSearch(resvCriteria);
-			//cancel reservations for the given criteria.
-			int updateCount = DlvManagerDAO.cancelReservations(conn, resvCriteria);
-			//Create Activity Log.
-			AdminToolsDAO.logCancelledReservations(conn, reservations, initiator, notes);
-			
-			postMassCancellation(reservations, null);
-			
-			return updateCount;
-		} catch (SQLException e) {
-			LOGGER.error("SQL Error occurred while creating activity logs after cancelling reservations.");
-			throw new EJBException(e);
-		}finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after cancelReservations", e);
-				}
-			}
-		}
+				
+		return FDDeliveryManager.getInstance().cancelReservations(resvCriteria, initiator, notes);
 	}
-	
-	public int cancelReservations(Set<String> reservationIds, String agent) throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			/*
-			 * Get the reservations for the given reservationIds for
-			 * logging into the activity log after deleting the reservations.
-			 */
-			List<FDCustomerReservationInfo> reservations = getReservationsById(reservationIds);
-			//cancel reservations for the given criteria.
-			int updateCount = DlvManagerDAO.cancelReservations(conn, reservationIds);
-			//Create Activity Log.
-			AdminToolsDAO.logCancelledReservations(conn, reservations, agent, null);
-			
-			postMassCancellation(reservations, EnumTransactionSource.ADMINISTRATOR);
-			
-			return updateCount;
-		} catch (SQLException e) {
-			LOGGER.error("SQL Error occurred while creating activity logs after cancelling reservations.");
-			throw new EJBException(e);
-		}finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after cancelReservations", e);
-				}
-			}
-		}
-	}
-	
-	public List getReservationsById(Set<String> reservationIds) throws FDResourceException {
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			return GenericSearchDAO.findReservationsById(conn, reservationIds);
-		} catch (SQLException e) {
-			throw new FDResourceException(e, "Could not find reservations matching criteria entered.");
-		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					LOGGER.warn("Trouble closing connection after searchCustomerReservations", e);
-				}
-			}
-		}
-	}
-	private void postMassCancellation(List reservations, EnumTransactionSource transactionSource) {
-		TimeslotEventModel event = new TimeslotEventModel(transactionSource == null ? EnumTransactionSource.CUSTOMER_REP.getCode(): transactionSource.getCode(), 
-				false,0.00, false, false, null);
-		for (Iterator i = reservations.iterator(); i.hasNext();) {
-			FDCustomerReservationInfo info = (FDCustomerReservationInfo)i.next();
-			try {
-				Collection<ErpAddressModel> addressList= FDCustomerManager.getShipToAddresses(info.getIdentity());
-				for (ErpAddressModel address : addressList) {
-					if(address.getId().equals(info.getAddress().getId())) {
-						info.getAddress().setFrom(address, info.getFirstName(), info.getLastName(), info.getIdentity().getErpCustomerPK());
-						SectorVO sectorInfo = FDDeliveryManager.getInstance().getSectorInfo(address);
-						if(sectorInfo != null){
-							event.setSector(sectorInfo.getName());
-						}
-						FDDeliveryManager.getInstance().removeReservationEx(info.getId(), info.getAddress(), event);
-					}						
-				}
-			} catch(Exception e) {
-				e.printStackTrace();
-				//For Dynamic Async Phase 1 will be changed in Dynamic Routing Phase2
-			}
-		}
-	}
-
+		
 	public int fixBrokenAccounts() throws FDResourceException {
 		Connection conn = null;
 		try {

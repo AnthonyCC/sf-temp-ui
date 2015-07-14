@@ -12,7 +12,6 @@ import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
-import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.sms.SMSAlertManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -116,10 +115,10 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 				} catch (ErpInvalidPasswordException e) {
 					actionResult.addError(true, "password", "Please enter a password that is at least six characters long.");
 					return true;
-				} catch (DlvResourceException e) {
+				}/* catch (FDResourceException e) {
 					actionResult.addError(true, "mobile_number", "Error with SMS Registration please verify the mobile Number");
 					return true;
-				}
+				}*/
 			}
 		}
 		return true;
@@ -184,7 +183,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 		}
 	}
 	
-	public void updateCustomerInfo() throws ErpDuplicateUserIdException, FDResourceException, ErpInvalidPasswordException, DlvResourceException {
+	public void updateCustomerInfo() throws ErpDuplicateUserIdException, FDResourceException, ErpInvalidPasswordException {
 		FDUserI user = this.getUser();		
 		ErpCustomerModel customer = FDCustomerFactory.getErpCustomer(user.getIdentity());
 		ErpCustomerInfoModel info = customer.getCustomerInfo();
@@ -290,7 +289,7 @@ public class CrmCustomerInfoControllerTag extends AbstractControllerTag {
 					}
 			}
 			if(!isSent){
-				throw new DlvResourceException();
+				throw new FDResourceException();
 			}
 		}
 		if (customerInfo.isRecieveFdNews() != info.isReceiveNewsletter()

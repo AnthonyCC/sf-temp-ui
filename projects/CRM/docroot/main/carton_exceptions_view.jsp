@@ -5,7 +5,7 @@
 
 <%@ page import="com.freshdirect.delivery.ejb.AirclicManager"%>
 <%@ page import="com.metaparadigm.jsonrpc.JSONRPCBridge"%>
-<%@ page import="com.freshdirect.delivery.model.DeliverySummaryModel"%>
+<%@ page import="com.freshdirect.logistics.delivery.model.DeliverySummary"%>
 <%@ page import="com.freshdirect.crm.CrmAgentModel" %>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession" %>
 <%@ page import="com.freshdirect.fdstore.customer.*" %>
@@ -34,7 +34,7 @@
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="order">
 	<%
 		List cartonInfo = ((FDOrderAdapter)order).getCartonContents();
-		DeliverySummaryModel model = AirclicManager.getInstance().lookUpDeliverySummary(order.getErpSalesId(),shippingInfo.getTruckNumber(), CCFormatter.defaultFormatDate(order.getDeliveryReservation().getStartTime()));
+		DeliverySummary model = AirclicManager.getInstance().lookUpDeliverySummary(order.getErpSalesId(),shippingInfo.getTruckNumber(), CCFormatter.defaultFormatDate(order.getDeliveryReservation().getStartTime()));
 		Map<String, List<String>> cartonExceptionMap = model.getExceptions();
 		
 		if( (cartonInfo != null) && (cartonInfo.size() > 0) ) { 

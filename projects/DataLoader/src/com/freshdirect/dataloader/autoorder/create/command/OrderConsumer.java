@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
@@ -24,26 +23,24 @@ import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.dataloader.autoorder.create.util.DateUtil;
 import com.freshdirect.dataloader.autoorder.create.util.IConstants;
 import com.freshdirect.dataloader.autoorder.create.util.ResourceUtil;
-import com.freshdirect.delivery.DlvZoneInfoModel;
-import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
-import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -57,6 +54,10 @@ import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
+import com.freshdirect.framework.util.DateRange;
+import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
+import com.freshdirect.logistics.delivery.model.EnumReservationType;
 
 
 public class OrderConsumer implements IConsumer {
@@ -168,18 +169,21 @@ public class OrderConsumer implements IConsumer {
 
 			//System.out.println("-------> find timeslots from " + begCal.getTime() + " to " + endCal.getTime());
 
-			DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date(), null, null);
+			FDDeliveryZoneInfo zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date(), null, null);
 			System.out.println("zone id is : " + zInfo.getZoneId());
 			
-			List timeSlots =
-				FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(begCal.getTime(), endCal.getTime(), null, address, null, null).getTimeslots();
-
+			List<DateRange> dateranges = new ArrayList<DateRange>();
+			dateranges.add(new DateRange(begCal.getTime(), endCal.getTime()));
+			
+			List timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(dateranges, null, address, null)
+					.getTimeslotList().get(0).getTimeslots();
+				
 			FDTimeslot slot = null;
 
 			int c = 0;
 			while ((timeSlots.size() > 0) && (slot == null) && (c < 15)) {
 				FDTimeslot fdts = (FDTimeslot) timeSlots.get((int) (Math.random() * timeSlots.size()));
-				if (fdts.getDlvTimeslot().getCapacity() > 0) {
+				if (fdts.hasNormalAvailCapacity()) {
 					slot = fdts;
 					//System.out.println("timeslot id is : " + slot.getTimeslotId());
 					//System.out.println("timeslot is : " + slot.getBegDateTime());
@@ -195,12 +199,12 @@ public class OrderConsumer implements IConsumer {
 
 			
 
-			TimeslotEventModel event = new TimeslotEventModel(EnumTransactionSource.SYSTEM.getCode(), 
-					false, 0.00, false, Util.isZoneCtActive(zInfo.getZoneId()), null);
+			TimeslotEvent event = new TimeslotEvent(EnumTransactionSource.SYSTEM.getCode(), 
+					false, 0.00, false, false, null, EnumCompanyCode.fd.name());
 
 			
 			FDReservation reservation = FDDeliveryManager.getInstance()
-											.reserveTimeslot(slot, identity.getErpCustomerPK(), 1000
+											.reserveTimeslot(slot.getId(), identity.getErpCustomerPK()
 														, EnumReservationType.STANDARD_RESERVATION, address, false,null, false, event, false);
 			cart.setDeliveryReservation(reservation);
 

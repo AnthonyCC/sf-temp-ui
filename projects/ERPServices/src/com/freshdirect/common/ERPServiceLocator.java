@@ -8,7 +8,6 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.analytics.ejb.EventProcessorHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
@@ -170,14 +169,6 @@ public class ERPServiceLocator extends ServiceLocator {
             throw new EJBException(e);
         }
     }
-    
-    public EventProcessorHome getEventProcessorHome() {
-        try {
-            return (EventProcessorHome) getRemoteHome("freshdirect.analytics.EventProcessor");
-        } catch (NamingException e) {
-            throw new EJBException(e);
-        }
-    }
-    
+     
 
 }

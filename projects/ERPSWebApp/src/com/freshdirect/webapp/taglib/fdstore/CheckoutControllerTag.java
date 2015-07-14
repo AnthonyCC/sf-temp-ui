@@ -13,7 +13,6 @@ import javax.servlet.jsp.PageContext;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
@@ -24,11 +23,11 @@ import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.delivery.ReservationException;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDTimeslot;
-import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
@@ -41,6 +40,8 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.action.HttpContext;
@@ -145,13 +146,10 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		final boolean isNotCallCenter = !"CALLCENTER".equals( app );
 		final FDSessionUser currentUser = (FDSessionUser) getUser();
 		FDCartModel cart = currentUser.getShoppingCart();
-		String zoneId = null;
-		if(cart!=null && cart.getZoneInfo()!=null)
-			zoneId = cart.getZoneInfo().getZoneId();
 		
-		TimeslotEventModel event = new TimeslotEventModel((currentUser.getApplication()!=null)?currentUser.getApplication().getCode():"",
+		TimeslotEvent event = new TimeslotEvent((currentUser.getApplication()!=null)?currentUser.getApplication().getCode():"",
 				(cart!=null)?cart.isDlvPassApplied():false, (cart!=null)?cart.getDeliverySurcharge():0.00,
-						(cart!=null)?cart.isDeliveryChargeWaived():false, Util.isZoneCtActive(zoneId), currentUser.getPrimaryKey());
+						(cart!=null)?cart.isDeliveryChargeWaived():false, (cart.getZoneInfo()!=null)?cart.getZoneInfo().isCtActive():false, currentUser.getPrimaryKey(), EnumCompanyCode.fd.name());
 		try {
 			if ( "setDeliveryAddress".equalsIgnoreCase( action ) ) {
 				try {
@@ -383,6 +381,9 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 					this.setSuccessPage( this.ageVerificationPage );
 				}
 			}
+		} catch(ReservationException ex) {	
+			LOGGER.error( "Error performing action " + action, ex );
+			result.addError(new ActionError("invalid_reservation", SystemMessageList.MSG_CHECKOUT_EXPIRED_RESERVATION));
 		} catch ( Exception ex ) {
 			ex.printStackTrace();
 			LOGGER.error( "Error performing action " + action, ex );
@@ -557,11 +558,11 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 
 
-	protected String performSetPaymentAndSubmit(HttpServletRequest request, ActionResult result) throws Exception {
+	protected String performSetPaymentAndSubmit( HttpServletRequest request, ActionResult result ) throws Exception {
 		PaymentMethodManipulator m = new PaymentMethodManipulator(pageContext, result, getActionName());
 		m.setPaymentMethod();
-
-		if (result.isSuccess()) {
+		
+		if ( result.isSuccess() ) {
 			return performSubmitOrder(result);
 		}
 		return Action.ERROR;
@@ -569,14 +570,14 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 
 
-	protected void configureAction(Action action, ActionResult result) {
+	protected void configureAction( Action action, ActionResult result ) {
 		configureAction(action, result, pageContext.getSession(), (HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse());
-	}
+		}
 
 	protected String performSubmitOrder(ActionResult result) throws Exception {
 		return performSubmitOrder(getUser(), getActionName(), result, pageContext.getSession(), (HttpServletRequest) pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), authCutoffPage, ccdProblemPage, ccdAddCardPage, gcFraudPage);
-	}
-	
+		}
+
 	public static String performSubmitOrder(FDUserI user, String actionName, ActionResult result, HttpSession session, HttpServletRequest request, HttpServletResponse response, String authCutoffPage, String ccdProblemPage, String ccdAddCardPage, String gcFraudPage) throws Exception {
 		SubmitOrderAction soa = new SubmitOrderAction();
 		configureAction( soa, result, session, request, response);

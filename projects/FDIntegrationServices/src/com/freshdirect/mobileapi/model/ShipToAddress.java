@@ -2,7 +2,7 @@ package com.freshdirect.mobileapi.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
@@ -11,17 +11,14 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.delivery.DlvZoneInfoModel;
-import com.freshdirect.delivery.EnumRestrictedAddressReason;
+import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
+import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
-import com.freshdirect.mobileapi.model.tagwrapper.DeliveryTimeSlotTagWrapper;
-import com.freshdirect.mobileapi.model.tagwrapper.ReserveTimeslotControllerTagWrapper;
-import com.freshdirect.webapp.taglib.fdstore.Result;
 
 public class ShipToAddress extends DeliveryAddress {
 
@@ -126,16 +123,6 @@ public class ShipToAddress extends DeliveryAddress {
         } else {
             return new StringBuilder(address.getFirstName()).append(" ").append(address.getLastName()).toString();
         }
-    }
-
-    /**
-     * @see com.freshdirect.mobileapi.model.DeliveryAddress
-     * @return
-     * @throws FDResourceException
-     * @throws FDInvalidAddressException
-     */
-    public ShipToAddress getAddressGeocode() throws FDResourceException, FDInvalidAddressException {
-        return ShipToAddress.wrap((ErpAddressModel) getAddressGeocode(address));
     }
 
     /**
@@ -246,7 +233,7 @@ public class ShipToAddress extends DeliveryAddress {
         address.setUnattendedDeliveryInstructions(code);
     }
 
-    public static AddressModel setZoningInfoOnAddress(DlvZoneInfoModel dlvResponse, AddressModel address) {
+    public static AddressModel setZoningInfoOnAddress(FDDeliveryZoneInfo dlvResponse, AddressModel address) {
         AddressInfo info = address.getAddressInfo();
         if (info == null) {
             info = new AddressInfo();

@@ -8,10 +8,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.delivery.ReservationException;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.customer.FDCartI;
@@ -20,6 +20,8 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 import com.freshdirect.webapp.action.fdstore.ChooseTimeslotAction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
@@ -55,14 +57,18 @@ public class TimeslotService {
 	}
 
 	public List<ValidationError> reserveDeliveryTimeSlot(FormDataRequest timeslotRequestData, HttpSession session) throws FDResourceException {
-		List<ValidationError> validationErrors = new ArrayList<ValidationError>();
-		String deliveryTimeSlotId = FormDataService.defaultService().get(timeslotRequestData, "deliveryTimeslotId");
-		ActionResult actionResult = new ActionResult();
-		ChooseTimeslotAction.reserveDeliveryTimeSlot(session, deliveryTimeSlotId, null, actionResult);
-		for (ActionError error : actionResult.getErrors()) {
-			validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
+		try {
+			List<ValidationError> validationErrors = new ArrayList<ValidationError>();
+			String deliveryTimeSlotId = FormDataService.defaultService().get(timeslotRequestData, "deliveryTimeslotId");
+			ActionResult actionResult = new ActionResult();
+			ChooseTimeslotAction.reserveDeliveryTimeSlot(session, deliveryTimeSlotId, null, actionResult);
+			for (ActionError error : actionResult.getErrors()) {
+				validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
+			}
+			return validationErrors;
+		} catch (ReservationException e) {
+			throw new FDResourceException(e);
 		}
-		return validationErrors;
 	}
 	
 	public void releaseTimeslot(FDUserI user) throws FDResourceException {
@@ -71,12 +77,9 @@ public class TimeslotService {
 		if (timeslotReservation != null) {
 			String rsvId = timeslotReservation.getPK().getId();
 			ErpAddressModel erpAddress = cart.getDeliveryAddress();
-			String zoneId = null;
-			if (cart != null && cart.getZoneInfo() != null) {
-				zoneId = cart.getZoneInfo().getZoneId();
-			}
-			TimeslotEventModel event = new TimeslotEventModel((user.getApplication() != null) ? user.getApplication().getCode() : "", cart.isDlvPassApplied(), cart.getDeliverySurcharge(),
-					cart.isDeliveryChargeWaived(), Util.isZoneCtActive(zoneId), user.getPrimaryKey());
+			
+			TimeslotEvent event = new TimeslotEvent((user.getApplication() != null) ? user.getApplication().getCode() : "", cart.isDlvPassApplied(), cart.getDeliverySurcharge(),
+					cart.isDeliveryChargeWaived(), (cart.getZoneInfo()!=null)?cart.getZoneInfo().isCtActive():false, user.getPrimaryKey(), EnumCompanyCode.fd.name());
 			FDDeliveryManager.getInstance().releaseReservation(rsvId, erpAddress, event, true);
 			cart.setDeliveryReservation(null);
 		}
@@ -87,7 +90,7 @@ public class TimeslotService {
 		return (deliveryReservation != null && deliveryReservation.getTimeslotId() != null);
 	}
 
-	public TimeslotEventModel createTimeslotEventModel(FDUserI user) {
+	public TimeslotEvent createTimeslotEventModel(FDUserI user) {
 		FDCartModel cart = user.getShoppingCart();
 		String zoneId = null;
 		if (cart != null && cart.getZoneInfo() != null)
@@ -98,7 +101,8 @@ public class TimeslotService {
 		double deliveryCharge = (cart != null) ? cart.getDeliverySurcharge() : 0.00;
 		boolean deliveryChargeWaived = (cart != null) ? cart.isDeliveryChargeWaived() : false;
 
-		return new TimeslotEventModel(transactionSource, dlvPassApplied, deliveryCharge, deliveryChargeWaived, Util.isZoneCtActive(zoneId), user.getPrimaryKey());
+		return new TimeslotEvent(transactionSource, dlvPassApplied, deliveryCharge, deliveryChargeWaived, 
+				(cart.getZoneInfo()!=null)?cart.getZoneInfo().isCtActive():false, user.getPrimaryKey(), EnumCompanyCode.fd.name());
 	}
 
 	private String format(Date startDate, Date endDate) {

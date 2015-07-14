@@ -11,7 +11,7 @@
 <%@ page import='com.freshdirect.customer.*' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
-<%@ page import='com.freshdirect.fdstore.FDReservation'%>
+<%@ page import='com.freshdirect.fdlogistics.model.FDReservation'%>
 <%@ page import='com.freshdirect.fdstore.customer.FDCartModel'%>
 <%@ page import='com.freshdirect.common.customer.EnumServiceType'%>
 <%@ page import='com.freshdirect.framework.util.DateUtil'%>

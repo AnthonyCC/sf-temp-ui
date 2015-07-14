@@ -1,11 +1,11 @@
-<%@page import="com.freshdirect.delivery.depot.DlvLocationModel"%>
+<%@page import="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel"%>
 <%@page import="com.freshdirect.common.customer.EnumServiceType"%>
 <%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@page import="com.freshdirect.webapp.taglib.location.LocationHandlerTag"%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import='com.freshdirect.common.address.AddressModel' %>
-<%@ page import='com.freshdirect.delivery.EnumDeliveryStatus' %>
+<%@ page import='com.freshdirect.logistics.delivery.model.EnumDeliveryStatus' %>
 <%@ page import='com.freshdirect.customer.ErpAddressModel' %>
 <%@ page import='java.util.List' %>
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -26,7 +26,7 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 	if(user!=null && user.getLevel() != FDUserI.GUEST) {
 		List<ErpAddressModel> allHomeAddresses = user.getAllHomeAddresses();
 		List<ErpAddressModel> allCorporateAddresses = user.getAllCorporateAddresses();
-		List<DlvLocationModel> allPickupDepots = (List<DlvLocationModel>) pageContext.getAttribute(LocationHandlerTag.ALL_PICKUP_DEPOTS_ATTR);
+		List<FDDeliveryDepotLocationModel> allPickupDepots = (List<FDDeliveryDepotLocationModel>) pageContext.getAttribute(LocationHandlerTag.ALL_PICKUP_DEPOTS_ATTR);
 		
 		if( allHomeAddresses.size() + allCorporateAddresses.size() + allPickupDepots.size() > 1 && (disabled == null || !disabled)) {
 			%><tmpl:put name="address"><select id="selectAddressList" name="selectAddressList"><%
@@ -46,7 +46,7 @@ Boolean disabled = (Boolean)pageContext.getAttribute(LocationHandlerTag.DISABLED
 				<%}
 				if(allPickupDepots.size()>0){%>
 				<optgroup label="Pickup">
-					<logic:iterate id="pickupDepot" collection="<%=allPickupDepots%>" type="com.freshdirect.delivery.depot.DlvLocationModel">
+					<logic:iterate id="pickupDepot" collection="<%=allPickupDepots%>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel">
 						<option<%= selectedPickupId!=null && selectedPickupId.equalsIgnoreCase(pickupDepot.getId()) ? " selected='selected'" : "" %> value="DEPOT_<%=pickupDepot.getId()%>"><%=LocationHandlerTag.formatAddressText(pickupDepot.getAddress())%></option>
 					</logic:iterate>
 				</optgroup>

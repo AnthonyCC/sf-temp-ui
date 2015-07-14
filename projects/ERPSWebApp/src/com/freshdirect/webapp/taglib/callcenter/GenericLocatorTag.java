@@ -1,5 +1,6 @@
  package com.freshdirect.webapp.taglib.callcenter;
 
+import java.rmi.RemoteException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,6 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import javax.ejb.CreateException;
+import javax.ejb.EJBException;
 import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -19,31 +22,25 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.delivery.EnumReservationType;
-import com.freshdirect.delivery.EnumRestrictedAddressReason;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionType;
+import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.BulkModifyOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
-import com.freshdirect.fdstore.customer.ejb.AdminToolsDAO;
-
+import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
+import com.freshdirect.fdstore.temails.ejb.TEmailInfoSB;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.EnumSearchType;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.temails.TEmailRuntimeException;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
-import com.freshdirect.fdstore.temails.ejb.TEmailInfoHome;
-import com.freshdirect.fdstore.temails.ejb.TEmailInfoSB;
-import javax.ejb.CreateException;
-import javax.ejb.EJBException;
-
-import java.rmi.RemoteException;
 
 public class GenericLocatorTag extends AbstractControllerTag {
 	

@@ -5,7 +5,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.webapp.taglib.callcenter.GenericLocatorTag"%>
-<%@ page import="com.freshdirect.delivery.EnumRestrictedAddressReason"%>
+<%@ page import="com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason"%>
 <%@ page import="com.freshdirect.delivery.model.RestrictedAddressModel"%>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri="crm" prefix="crm" %>
@@ -60,7 +60,7 @@ function addAddressRestriction() {
             <%
 			List enumAddrReasons=EnumRestrictedAddressReason.getEnumList();
 			%>
-			<logic:iterate collection="<%= enumAddrReasons %>" id="enumReason1" type="com.freshdirect.delivery.EnumRestrictedAddressReason">
+			<logic:iterate collection="<%= enumAddrReasons %>" id="enumReason1" type="com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason">
 			<%  
 				EnumRestrictedAddressReason eReason1=(EnumRestrictedAddressReason)enumReason1;
 			%>

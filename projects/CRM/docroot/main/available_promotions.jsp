@@ -1,6 +1,6 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import='com.freshdirect.fdstore.*' %>
-<%@ page import="com.freshdirect.delivery.depot.*" %>
+<%@ page import="com.freshdirect.fdlogistics.model.*" %>
 <%@ page import="java.util.*" %>
 <%@ page import="java.text.*" %>
 <%@ page import="com.freshdirect.fdstore.promotion.*" %>

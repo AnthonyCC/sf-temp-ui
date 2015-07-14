@@ -27,7 +27,6 @@ import com.freshdirect.dataloader.payment.ejb.SaleCronHome;
 import com.freshdirect.dataloader.payment.ejb.SaleCronSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class CaptureCronRunner {
 

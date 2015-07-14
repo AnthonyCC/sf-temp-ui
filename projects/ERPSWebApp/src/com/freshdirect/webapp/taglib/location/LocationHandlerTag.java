@@ -17,20 +17,21 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.customer.ServiceTypeUtil;
 import com.freshdirect.customer.ErpDepotAddressModel;
-import com.freshdirect.delivery.DlvServiceSelectionResult;
-import com.freshdirect.delivery.depot.DlvDepotModel;
-import com.freshdirect.delivery.depot.DlvLocationModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDDepotManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.StateCounty;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.controller.data.PickupData;
+import com.freshdirect.logistics.controller.data.PickupLocationData;
+import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.checkout.RedirectToPage;
@@ -128,7 +129,7 @@ public class LocationHandlerTag extends SimpleTagSupport {
 				address.setCity(WordUtils.capitalizeFully(stateCounty.getCity()));
 			}
 			//no error check needed here, front end will display no delivery error if needed
-			handleNewServiceResult(FDDeliveryManager.getInstance().checkZipCode(zipCode));
+			handleNewServiceResult(FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode));
 			user.setAddress(address);
 			handleNewAddressSet();
 			user.updateUserState(); //based on DeliveryAddressManipulator.performSetDeliveryAddress()
@@ -152,7 +153,7 @@ public class LocationHandlerTag extends SimpleTagSupport {
 		}
 		if(result.isSuccess()){
 			try {
-				handleNewServiceResult(FDDeliveryManager.getInstance().checkAddress(address));
+				handleNewServiceResult(FDDeliveryManager.getInstance().getDeliveryServicesByAddress(address));
 				user.setAddress(address);
 				handleNewAddressSet();
 				CmRegistrationTag.setPendingAddressChangeEvent(ctx.getSession()); //send CM tag after reload
@@ -184,7 +185,7 @@ public class LocationHandlerTag extends SimpleTagSupport {
 		return zipCode;
 	}
 
-	private void handleNewServiceResult(DlvServiceSelectionResult serviceResult) throws FDResourceException{
+	private void handleNewServiceResult(FDDeliveryServiceSelectionResult serviceResult) throws FDResourceException{
 
 		Set<EnumServiceType> availableServices = serviceResult.getAvailableServices();
 		user.setAvailableServices(availableServices);
@@ -252,19 +253,14 @@ public class LocationHandlerTag extends SimpleTagSupport {
 			ctx.setAttribute(SELECTED_PICKUP_DEPOT_ID_ATTR, ((ErpDepotAddressModel)selectedAddress).getLocationId());
 		}
 		
-		List<DlvLocationModel> allPickupDepots = new ArrayList<DlvLocationModel>();
-		for (Object pickupDepotObj : FDDepotManager.getInstance().getPickupDepots()){
-			if (pickupDepotObj instanceof DlvDepotModel){
-				DlvDepotModel pickupDepot = (DlvDepotModel) pickupDepotObj;
+		List<FDDeliveryDepotLocationModel> allPickupDepots = new ArrayList<FDDeliveryDepotLocationModel>();
+		for (FDDeliveryDepotModel pickupDepot : FDDeliveryManager.getInstance().getPickupDepots()){
 				if (!"HAM".equalsIgnoreCase(pickupDepot.getDepotCode()) && !pickupDepot.isDeactivated()) { //based on i_pickup_depot_locations.jspf
-					for (Object locationObj : pickupDepot.getLocations()){
-						if (locationObj instanceof DlvLocationModel){
-							allPickupDepots.add((DlvLocationModel) locationObj);
-						}
+					for (FDDeliveryDepotLocationModel location : pickupDepot.getLocations()){
+						allPickupDepots.add(location);
 					}
 				}
 			}
-		}
 		ctx.setAttribute(ALL_PICKUP_DEPOTS_ATTR, allPickupDepots);
 		
 		String uri = request.getRequestURI().toLowerCase();

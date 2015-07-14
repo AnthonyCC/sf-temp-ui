@@ -5,11 +5,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.restriction.RestrictionI;
-import com.freshdirect.fdstore.FDReservation;
+import com.freshdirect.fdlogistics.model.FDDeliveryTimeslots;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
+import com.freshdirect.logistics.delivery.model.DlvZoneModel;
 
 public class FDDeliveryTimeslotModel implements Serializable{
 	
@@ -292,5 +293,10 @@ public class FDDeliveryTimeslotModel implements Serializable{
 	}
 	public void setMinOrderReqd(boolean minOrderReqd) {
 		this.minOrderReqd = minOrderReqd;
+	}
+	
+	public void apply(FDDeliveryTimeslots t) {
+		this.setComments(t.getComments());
+		this.setPreReserveSlotId(t.getPreselectedTimeslotId());
 	}
 }

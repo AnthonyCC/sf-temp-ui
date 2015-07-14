@@ -12,10 +12,9 @@ import java.util.Map;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.Discount;
-import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpDiscountLineModel;
-import com.freshdirect.fdstore.FDReservation;
-import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -115,9 +114,9 @@ public class FDPromotionZoneRulesEngine implements Serializable {
 		        	ZoneCondition con=(ZoneCondition)c.get(0);
 		       
 		        	if(con.getZones()!=null&&con.getZones().contains(timeSlot.getZoneCode())
-			    	   &&con.getStartTimeDay()!=null&&con.getStartTimeDay().equals(timeSlot.getDlvTimeslot().getStartTime())
-			    	   &&con.getEndTimeDay()!=null&&con.getEndTimeDay().equals(timeSlot.getDlvTimeslot().getEndTime())
-			    	   &&con.getDay()!=null&&con.getDay().equalsIgnoreCase(format.format(timeSlot.getBaseDate()))
+			    	   &&con.getStartTimeDay()!=null&&con.getStartTimeDay().equals(timeSlot.getDlvStartTime())
+			    	   &&con.getEndTimeDay()!=null&&con.getEndTimeDay().equals(timeSlot.getDlvEndTime())
+			    	   &&con.getDay()!=null&&con.getDay().equalsIgnoreCase(format.format(timeSlot.getDeliveryDate()))
 			    	  )
 			    	{
 			    		promo=(String)r.getOutcome();
@@ -151,9 +150,9 @@ public class FDPromotionZoneRulesEngine implements Serializable {
 		        	ZoneCondition con=(ZoneCondition)c.get(0);
 		       
 			    	if(con.getZones()!=null&&con.getZones().contains(timeSlot.getZoneCode())
-			    	   &&con.getStartTimeDay()!=null&&con.getStartTimeDay().equals(timeSlot.getDlvTimeslot().getStartTime())
-			    	   &&con.getEndTimeDay()!=null&&con.getEndTimeDay().equals(timeSlot.getDlvTimeslot().getEndTime())
-			    	   &&con.getDay()!=null&&con.getDay().equalsIgnoreCase(format.format(timeSlot.getBaseDate()))
+			    	   &&con.getStartTimeDay()!=null&&con.getStartTimeDay().equals(timeSlot.getDlvStartTime())
+			    	   &&con.getEndTimeDay()!=null&&con.getEndTimeDay().equals(timeSlot.getDlvEndTime())
+			    	   &&con.getDay()!=null&&con.getDay().equalsIgnoreCase(format.format(timeSlot.getDeliveryDate()))
 			    	  )
 			    	{
 			    		String promoCode=(String)r.getOutcome();

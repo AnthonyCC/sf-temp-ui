@@ -1,7 +1,7 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ page import='com.freshdirect.fdstore.FDDepotManager' %>
-<%@ page import='com.freshdirect.delivery.depot.DlvDepotModel' %>
-<%@ page import='com.freshdirect.delivery.depot.DlvLocationModel' %>
+<%@ page import='com.freshdirect.fdstore.FDDeliveryManager' %>
+<%@ page import='com.freshdirect.fdlogistics.model.FDDeliveryDepotModel' %>
+<%@ page import='com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel' %>
 <%@ page import='java.util.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -48,12 +48,12 @@
 	
 	params.put("location", request.getParameter("location"));
 	
-	DlvDepotModel depotModel = FDDepotManager.getInstance().getDepot(request.getParameter("depotCode"));
+	FDDeliveryDepotModel depotModel = FDDeliveryManager.getInstance().getDepot(request.getParameter("depotCode"));
 	if (depotModel != null) {
 		params.put("depotModel", depotModel);
 		/* get location */
 		%>
-		<logic:iterate id="location" collection="<%= depotModel.getLocations() %>" type="com.freshdirect.delivery.depot.DlvLocationModel">
+		<logic:iterate id="location" collection="<%= depotModel.getLocations() %>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel">
 		<%
 			if ((request.getParameter("locaId")).equals(location.getPK().getId())) {
 				params.put("locationModel", location);

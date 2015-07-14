@@ -4,13 +4,13 @@
 <%@ page import='java.util.*' %>
 <%@ page import='java.text.DateFormat' %>
 <%@ page import='java.text.SimpleDateFormat' %>
-<%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
+<%@ page import='com.freshdirect.fdlogistics.model.*' %>
 <%@ page import="com.freshdirect.fdstore.util.TimeslotContext" %>
 <%@ page import="com.freshdirect.fdstore.util.AddressFinder" %>
 <%@ page import="com.freshdirect.fdstore.util.AddressFinder" %>
-<%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.fdlogistics.model.*' %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
-<%@ page import="com.freshdirect.delivery.EnumReservationType" %>
+<%@ page import="com.freshdirect.logistics.delivery.model.EnumReservationType" %>
 <%@ page import="com.freshdirect.customer.ErpCustomerInfoModel"%>
 <%@ page import="com.freshdirect.framework.webapp.ActionResult"%>
 

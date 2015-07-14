@@ -3,19 +3,18 @@ package com.freshdirect.mktAdmin.validation;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.mktAdmin.constants.EnumFileType;
-import com.freshdirect.mktAdmin.dao.oracle.OracleMarketAdminDAOImpl;
 import com.freshdirect.mktAdmin.model.ReferralAdminModel;
 
+@Component
 public class ReferralFormValidator implements Validator {
 
 	public boolean supports(Class clazz) {

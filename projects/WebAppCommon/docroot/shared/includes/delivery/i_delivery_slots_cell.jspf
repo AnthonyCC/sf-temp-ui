@@ -15,29 +15,13 @@
 <%
 	stringBuffer.append("						<tr id=\""+"co_d"+dayIndex+"_ts"+slotIndex+"_tr"+"\" class=\"cutoff_tr\""+((slotIndex!=0)?" style=\"display: none;\"":"")+">\n");
 
-	boolean isPreReservedSlotId = slot.getTimeslotId().equals(preReserveSlotId);
-	boolean isSelectedSlotId = slot.getTimeslotId().equals(selectedSlotId);
+	boolean isPreReservedSlotId = slot.getId().equals(preReserveSlotId);
+	boolean isSelectedSlotId = slot.getId().equals(selectedSlotId);
 	if (!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()) {
 		request.setAttribute("shownCTSlot", "TRUE");
 	}
-	boolean soldOut = false;
-
-	if ( !__genericTsTable &&
-		!slot.hasAvailCTCapacity() && !(isSelectedSlotId || (isPreReservedSlotId && hasPreReserved)) 
-		&& (
-				!isForce || 
-				(
-				slot.getDlvTimeslot() != null && slot.getDlvTimeslot().getRoutingSlot() != null 
-				&& (slot.getDlvTimeslot().getRoutingSlot().isManuallyClosed() || !slot.getDlvTimeslot().getRoutingSlot().isDynamicActive())
-				)
-			)
-	) {
-		soldOut = true;
-	}
-	if (__genericTsTable && slot.isTimeslotRestricted()){
-		soldOut = true;
-	}
-
+	boolean soldOut = slot.isSoldOut();
+	
 	/* cutoff data */
 	boolean displayCutoffMessage = cutoffTime == null
 			||
@@ -49,11 +33,12 @@
 
 		String inner = "";
 		
-		if(!slot.getDlvTimeslot().isPremiumSlot())
+		if(slot.isPremiumSlot() || slot.isFdxSlot())
+			inner = __genericTsTable ? "" : "<b>Order&nbsp;by&nbsp;<span id=\"premCOtime\">"+TimeslotPageUtil.getCutoffTimeDisplay(slot.getCutoffNormalDateTime())+"</span>&nbsp;"+TimeslotPageUtil.getSDSCutoffDay(day)+"</b>";
+		else 
 			inner = __genericTsTable ? "" : "<b>Order&nbsp;by&nbsp;"+TimeslotPageUtil.getCutoffTimeDisplay(slot.getCutoffNormalDateTime())+"&nbsp;"+TimeslotPageUtil.getCutoffDay(day)+"</b>";
-		else
-			inner = __genericTsTable ? "" : "<b>Order&nbsp;by&nbsp;<span id=\"premCOtime\">"+TimeslotPageUtil.getCutoffTimeDisplay(slot.getCutoffNormalDateTime())+"</span>&nbsp;"+TimeslotPageUtil.getPremiumCutoffDay(day)+"</b>";
-				 
+		
+				
 			
 		stringBuffer.append("							<td class=\"cutoff\">\n")
 					.append("								<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\" style=\"display: none;\">\n")
@@ -138,8 +123,8 @@
 											" value=\""+
 											(
 												(isForce && !slot.hasAvailCTCapacity())
-													? ("f_"+ slot.getTimeslotId())
-													: slot.getTimeslotId()
+													? ("f_"+ slot.getId())
+													: slot.getId()
 											)+"\" />"
 										);
 						}
@@ -151,7 +136,7 @@
 					(
 						(soldOut||slot.isUnavailable())
 							? "tsSoldoutC"
-							: (slot.getDlvTimeslot().isPremiumSlot() && slot.getPremiumAmount()>0)
+							: (slot.isPremiumSlot() && slot.getPremiumAmount()>0)
 								? "tsPremiumTimeC"
 								: (isSelectedSlotId)
 									? "tsContentSelC"
@@ -169,7 +154,7 @@
 					)+"\">"+slot.getDisplayString(true)+"</div>\n");
 	
 	/* add hidden ts info */
-	stringBuffer.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_timeInfo\" style=\"display: none;\" >"+slot.getBegDateTime().getTime()+"-"+slot.getEndDateTime().getTime()+"</div>");
+	stringBuffer.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_timeInfo\" style=\"display: none;\" >"+slot.getStartDateTime().getTime()+"-"+slot.getEndDateTime().getTime()+"</div>");
 
 	/* START Timeslot promotion display */
 	if ((!soldOut||!slot.isUnavailable()) && deliveryModel.isAlcoholDelivery() && slot.isAlcoholRestricted()) {
@@ -227,7 +212,7 @@
 							.append("<img src=\"/media_stat/images/timeslots/check_mark.gif\" width=\"17\" height=\"13\" border=\"0\">")
 						.append("</div>\n")
 					.append("									</div>\n");
-	} else if (slot.getDlvTimeslot().isPremiumSlot() && slot.getPremiumAmount()>0 && ( deliveryModel.getShoppingCart() != null 
+	} else if (slot.isPremiumSlot() && slot.getPremiumAmount()>0 && ( deliveryModel.getShoppingCart() != null 
 																		&& deliveryModel.getShoppingCart().getDeliveryPremium() == 0.0)) {
 					stringBuffer.append("						<div class=\"tsPremiumPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\">")
 					.append("										<div>")

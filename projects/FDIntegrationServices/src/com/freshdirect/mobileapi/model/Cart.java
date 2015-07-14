@@ -13,23 +13,22 @@ import java.util.Map;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.Discount;
-import com.freshdirect.customer.EnumATCContext;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.delivery.DlvZoneInfoModel;
-import com.freshdirect.delivery.depot.DlvDepotModel;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.deliverypass.DlvPassAvailabilityInfo;
-import com.freshdirect.fdstore.FDDepotManager;
+import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDProduct;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.NullAvailability;
@@ -151,7 +150,7 @@ public class Cart {
     //        }
     //    }
 
-    public void setZoneInfo(DlvZoneInfoModel zoneInfo) {
+    public void setZoneInfo(FDDeliveryZoneInfo zoneInfo) {
         ((FDCartModel) cart).setZoneInfo(zoneInfo);
     }
 
@@ -494,7 +493,7 @@ public class Cart {
 
             if (pickupOrder) {
                 String locationId = ((ErpDepotAddressModel) dlvAddress).getLocationId();
-                DlvDepotModel dm = FDDepotManager.getInstance().getDepotByLocationId(locationId);
+                FDDeliveryDepotModel dm = FDDeliveryManager.getInstance().getDepotByLocationId(locationId);
                 Depot depot = Depot.wrap(dm);
                 DepotLocation location = new DepotLocation(depot.getDepotLocation(locationId));
                 checkoutDetail.setDeliveryAddress(location);

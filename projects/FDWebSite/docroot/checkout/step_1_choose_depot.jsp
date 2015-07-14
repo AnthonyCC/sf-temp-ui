@@ -98,7 +98,7 @@ final int W_CHECKOUT_STEP_1_CHOOSE_DEPOT_TOTAL = 970;
 <fd:GetDepots id='depots' >
 		<select STYLE="width:230px" CLASS="text12" name="depotCode">
 			<option value="001">CHOOSE A DEPOT LOCATION
-			<logic:iterate id="depot" collection="<%= depots %>" type="com.freshdirect.delivery.depot.DlvDepotModel">
+			<logic:iterate id="depot" collection="<%= depots %>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotModel">
 				<option value="<%=depot.getDepotCode()%>" <%= depot.getDepotCode().equals(request.getParameter("depotCode")) ? "SELECTED" : "" %>><%=depot.getName()%>
 			</logic:iterate>
 		</select>

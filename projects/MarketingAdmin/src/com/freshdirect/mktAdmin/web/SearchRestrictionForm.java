@@ -4,70 +4,83 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Category;
-import org.springframework.validation.BindException;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mktAdmin.exception.MktAdminApplicationException;
 import com.freshdirect.mktAdmin.exception.MktAdminSystemException;
 import com.freshdirect.mktAdmin.model.RestrictionSearchBean;
+import com.freshdirect.mktAdmin.service.MarketAdminServiceIntf;
 
 
 /**
  * JavaBean form controller that is used to add a new <code>Owner</code> to the system.
  *
  * @author Gopal
+ * 
+ * 
  */
+
+
+@Controller
+@RequestMapping("/searchRestriction.do")
+@SessionAttributes("command")
 public class SearchRestrictionForm extends AbstractMktAdminForm {
+	
+	@Autowired
+	private MarketAdminServiceIntf marketAdminService;
+
 
 	private final static Category LOGGER = LoggerFactory.getInstance(SearchRestrictionForm.class);
-	
-	public SearchRestrictionForm() {
-		// OK to start with a blank command object
-		setCommandClass(RestrictionSearchBean.class);
-		// activate session form mode to allow for detection of duplicate submissions
-		//setSessionForm(true);
-	}
-	
-	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+
+	@RequestMapping(method = RequestMethod.GET)
+	protected String initForm(ModelMap model,
+			@RequestParam(value = "promotionCode", required = false) String promotionCode,
+			@RequestParam(value = "action_type", required = false) String actionType,
+			@RequestParam(value = "customerId", required = false) String customerId,
+			@RequestParam(value = "email", required = false) String email) throws ServletException {
 		// get the Pet referred to by id in the request
-		
-		String promotionCode=request.getParameter("promotionCode");
-		LOGGER.debug("SearchRestrictionForm:formBackingObject:"+promotionCode);
+				
+		LOGGER.debug("SearchRestrictionForm:initForm:"+promotionCode);
 		RestrictionSearchBean form=new RestrictionSearchBean();
 		if(promotionCode!=null && promotionCode.trim().length()>0){
 			try {	
-			Collection promoModelList=getMarketAdminService().getPromotionModel(new String[]{promotionCode});
+			Collection promoModelList=marketAdminService.getPromotionModel(new String[]{promotionCode});
 			Iterator iterator=promoModelList.iterator();
 			if(iterator.hasNext()){
 				form.setPromotion((FDPromotionNewModel)iterator.next());	
 			}				
-			//form.setSearchCount(100);
-			String actionType=request.getParameter("action_type"); 
-			if(actionType!=null && actionType.trim().length()>0 && actionType.equalsIgnoreCase("DELETE")){
-				String customerId=request.getParameter("customerId");				
-				String email = request.getParameter("email");
-			    getMarketAdminService().removeRestrictedCustomers(promotionCode,customerId, email);	
+			//form.setSearchCount(100);			 
+			if(actionType!=null && actionType.trim().length()>0 && actionType.equalsIgnoreCase("DELETE")){				
+			    marketAdminService.removeRestrictedCustomers(promotionCode,customerId, email);	
 			}
 
 			form.setSerachKey("");
-			form.setPromotionList(getMarketAdminService().getRestrictedCustomers(form));			
+			form.setPromotionList(marketAdminService.getRestrictedCustomers(form));			
 			} catch (MktAdminApplicationException e) {
 				// TODO Auto-generated catch block
 				throw new MktAdminSystemException("1001",e);
 			}
 			
+			model.addAttribute("command", form);			
 		}
 		else{
 			throw new MktAdminSystemException("1003",new IllegalArgumentException("promotionCode parameter is required"));
 		}
-		return form;
+		return "searchRestrictionForm";
 	}
+		
 	
 	public Object getDefaultBackingObject() {
 		return new RestrictionSearchBean();
@@ -81,13 +94,11 @@ public class SearchRestrictionForm extends AbstractMktAdminForm {
 	}*/
 
 	
-	protected void onBind(HttpServletRequest request, Object command) {
-		RestrictionSearchBean model = (RestrictionSearchBean) command;
-		String promotionCode=request.getParameter("promotionCode");
-		//System.out.println(" priviledgeType :"+priviledgeType);
+	protected void onBind(Object command, String promotionCode) {
+		RestrictionSearchBean model = (RestrictionSearchBean) command;		
 		try{
 		if(promotionCode!=null){		
-			Collection promoModelList=getMarketAdminService().getPromotionModel(new String[]{promotionCode});			
+			Collection promoModelList=marketAdminService.getPromotionModel(new String[]{promotionCode});			
 			Iterator iterator=promoModelList.iterator();
 			if(iterator.hasNext()){
 				model.setPromotion((FDPromotionNewModel)iterator.next());	
@@ -101,27 +112,33 @@ public class SearchRestrictionForm extends AbstractMktAdminForm {
 		
 	
 	/** Method inserts a new <code>User</code>. */
-	protected ModelAndView onSubmit(  HttpServletRequest request,
-	        HttpServletResponse response,
-	        Object command,
-	        BindException errors) throws Exception{
-		Collection restCustomerList=null; 
-		RestrictionSearchBean model = (RestrictionSearchBean) command;				
+	@RequestMapping(method = RequestMethod.POST)
+	protected String processSubmit(@ModelAttribute("command") RestrictionSearchBean command,
+			BindingResult result, @RequestParam(value = "promotionCode", required = false) String promotionCode,
+			@RequestParam(value = "action_type", required = false) String actionType,
+			@RequestParam(value = "customerId", required = false) String customerId,
+			@RequestParam(value = "email", required = false) String email,
+			ModelMap model) throws Exception{
+		
+		
+		onBind(command, promotionCode);
+		Collection restCustomerList=null;						
 		
 		try{
-			restCustomerList=getMarketAdminService().getRestrictedCustomers(model);
-			model.setPromotionList(restCustomerList);
+			restCustomerList=marketAdminService.getRestrictedCustomers(command);
+			command.setPromotionList(restCustomerList);
 		} catch (MktAdminApplicationException exception) {
 			// TODO Auto-generated catch block			    		
-    		return showForm(request,response,errors);
+    		return "searchRestrictionForm";
 		}		
 		//request.setAttribute("promotionList",restCustomerList);
-		return new ModelAndView(getFormView(), "command", model);
+		model.addAttribute("command", command);
+		return "searchRestrictionForm";
 	}
 
-	protected ModelAndView handleInvalidSubmit(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		return disallowDuplicateFormSubmission(request, response);
-	}
+//	protected ModelAndView handleInvalidSubmit(HttpServletRequest request, HttpServletResponse response)
+//			throws Exception {
+//		return disallowDuplicateFormSubmission(request, response);
+//	}
 
 }

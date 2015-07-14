@@ -42,16 +42,15 @@ import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.dataloader.subscriptions.DeliveryPassRenewalCron;
-import com.freshdirect.delivery.DlvZoneInfoModel;
-import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DlvPassConstants;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
@@ -80,6 +79,7 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.webapp.ajax.cart.ModifyOrderHelper;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.util.FDEventUtil;
@@ -624,7 +624,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				//String regionName = (session.getAttribute(SessionName.DELIVERY_REGION) == null) ? "URBAN" : (String) session.getAttribute(SessionName.DELIVERY_REGION);
 				Calendar date = new GregorianCalendar();
 				date.add(Calendar.DATE, 7);
-				DlvZoneInfoModel zoneInfo = AddressUtil.getZoneInfo(request, modCart.getDeliveryAddress(), results, date.getTime(), null, 
+				FDDeliveryZoneInfo zoneInfo = AddressUtil.getZoneInfo(request, modCart.getDeliveryAddress(), results, date.getTime(), null, 
 						modCart.getDeliveryReservation().getRegionSvcType());
 				if ( results.isSuccess() ) {
 					String zoneId = zoneInfo.getZoneCode();
@@ -1048,7 +1048,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 	private static FDReservation getFDReservation(String customerID, String addressID) {
 		Date expirationDT = new Date(System.currentTimeMillis() + 1000);
 		FDTimeslot timeSlot=null;
-		FDReservation reservation=new FDReservation(new PrimaryKey("1"), timeSlot, expirationDT, EnumReservationType.STANDARD_RESERVATION, customerID, addressID, false,false, null,false,null,20,null,null,null,0,null);
+		FDReservation reservation=new FDReservation(new PrimaryKey("1"), timeSlot, expirationDT, 
+				EnumReservationType.STANDARD_RESERVATION, customerID, addressID,false, null,20,null,false,null);
 		return reservation;
 		
 	}

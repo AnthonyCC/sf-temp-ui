@@ -11,16 +11,15 @@
 <%@ page import="com.freshdirect.fdstore.*" %>
 <%@ page import="com.freshdirect.fdstore.util.ClickToCallUtil" %>
 <%@ page import="com.freshdirect.fdstore.util.TimeslotLogic" %>
-<%@ page import="com.freshdirect.delivery.model.DlvZoneModel" %>
-<%@ page import="com.freshdirect.delivery.DlvZoneInfoModel" %>
+<%@ page import="com.freshdirect.logistics.delivery.model.DlvZoneModel" %>
+<%@ page import="com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
-<%@ page import="com.freshdirect.fdstore.util.CTDeliveryCapacityLogic" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="com.freshdirect.delivery.restriction.RestrictionI" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.Calendar" %>
-<%@ page import="com.freshdirect.routing.model.*" %>
-<%@ page import="com.freshdirect.delivery.EnumDayShift" %>
+<%@ page import="com.freshdirect.logistics.delivery.model.EnumDayShift" %>
+<%@ page import="com.freshdirect.logistics.delivery.model.EnumReservationType" %>
 <%@ taglib uri='logic' prefix='logic' %>
 
 <%--
@@ -158,12 +157,12 @@ if (timeslots.size() > 0) {
 		
 		var timeslotChooserFunctions = {};
 		var varminslots = varminslots || {};
-		<logic:iterate id="slot" indexId="idx" collection="<%= timeslots.getTimeslotsFlat() %>" type="com.freshdirect.fdstore.FDTimeslot">varminslots['<%= slot.getTimeslotId() %>'] = "<%= slot.getMinOrderAmt()+ " "+slot.isMinOrderMet() %>";</logic:iterate>
+		<logic:iterate id="slot" indexId="idx" collection="<%= timeslots.getTimeslotsFlat() %>" type="com.freshdirect.fdlogistics.model.FDTimeslot">varminslots['<%= slot.getId() %>'] = "<%= slot.getMinOrderAmt()+ " "+slot.isMinOrderMet() %>";</logic:iterate>
 		
 		<% if (CrmSession.getCurrentAgent(session) != null || user.getMasqueradeAgent() != null) { 
 			/* do nothing */
 		} else { %>
-			<logic:iterate id="slot" indexId="idx" collection="<%= timeslots.getTimeslotsFlat() %>" type="com.freshdirect.fdstore.FDTimeslot">timeslotChooserFunctions['<%= slot.getTimeslotId() %>'] = <fd:CmElement wrapIntoFunction="true" elementCategory="timeslot_chooser" soType="<%= soType %>" timeSlot="<%= slot %>" /></logic:iterate>
+			<logic:iterate id="slot" indexId="idx" collection="<%= timeslots.getTimeslotsFlat() %>" type="com.freshdirect.fdlogistics.model.FDTimeslot">timeslotChooserFunctions['<%= slot.getId() %>'] = <fd:CmElement wrapIntoFunction="true" elementCategory="timeslot_chooser" soType="<%= soType %>" timeSlot="<%= slot %>" /></logic:iterate>
 		<% } %>
 		var timeslot_info = <%=isStaticSlot%>;
 		var dayIndex = 0;
@@ -232,7 +231,7 @@ if (timeslots.size() > 0) {
 
 	if(!isForAdvOrdSlots && !isForNewAdvOrdSlots && !cutOffpassed){
 		cutOffpassed = true;
-		DlvZoneInfoModel tmpZoneModel = null;
+		FDDeliveryZoneInfo tmpZoneModel = null;
 		if(address != null){
 			tmpZoneModel = FDDeliveryManager.getInstance().getZoneInfo(address, nextDayVal.getTime(), user.getHistoricOrderSize(), user.getRegionSvcType(address.getId()));
 		}
@@ -313,7 +312,7 @@ if (timeslots.size() > 0) {
 	//keep in sync with AbstractCmTag.checkContext()
 %>
 
-<logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDayAndShift(day,EnumDayShift.DAY_SHIFT_AM.getName()) %>" type="com.freshdirect.fdstore.FDTimeslot">
+<logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDayAndShift(day,EnumDayShift.DAY_SHIFT_AM.getName()) %>" type="com.freshdirect.fdlogistics.model.FDTimeslot">
 <%@ include file="/shared/includes/delivery/i_delivery_slots_cell.jspf"  %>
 </logic:iterate><%
 
@@ -447,7 +446,7 @@ if (timeslots.size() > 0) {
 	}
 /* START PM SLOT ITERATOR */
 	__isAm = false;
-%><logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDayAndShift(day,EnumDayShift.DAY_SHIFT_PM.getName()) %>" type="com.freshdirect.fdstore.FDTimeslot">
+%><logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDayAndShift(day,EnumDayShift.DAY_SHIFT_PM.getName()) %>" type="com.freshdirect.fdlogistics.model.FDTimeslot">
 <%@ include file="/shared/includes/delivery/i_delivery_slots_cell.jspf" %>
 </logic:iterate><%
 
@@ -612,7 +611,7 @@ if (timeslots.size() > 0) {
 
 	if (address != null) {
 		try { 
-			DlvZoneInfoModel tmpModel = FDDeliveryManager.getInstance().getZoneInfo(address, nextDayVal.getTime(), user.getHistoricOrderSize(),  user.getRegionSvcType(address.getId()));
+			FDDeliveryZoneInfo tmpModel = FDDeliveryManager.getInstance().getZoneInfo(address, nextDayVal.getTime(), user.getHistoricOrderSize(),  user.getRegionSvcType(address.getId()));
 			if(tmpModel != null) {
 				String defZoneCode = tmpModel.getZoneCode();
 				if (defZoneCode != null) {

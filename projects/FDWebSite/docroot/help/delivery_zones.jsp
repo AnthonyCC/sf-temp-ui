@@ -1,6 +1,6 @@
 <%@ page import="com.freshdirect.fdstore.FDDeliveryManager"%>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
-<%@ page import="com.freshdirect.delivery.DlvZipInfoModel" %>
+<%@ page import="com.freshdirect.fdlogistics.model.FDDeliveryZipInfo" %>
 <%@ page import='java.util.*' %>
 
 <%@ taglib uri="template" prefix="tmpl" %>
@@ -24,7 +24,7 @@
 		String[] valueArray = request.getParameterValues(key);  
 		 
 		for(int i = 0; i > valueArray.length; i++){
-			params.put(key+valueArray[i], valueArray[i]);
+	params.put(key+valueArray[i], valueArray[i]);
 		}  
 	}
 
@@ -36,21 +36,21 @@
 	params.put("fromZipCheck", fromZipCheck);
 	
 	/* deliverable zips */
-	List<DlvZipInfoModel> zipCodesUnsortedH = FDDeliveryManager.getInstance().getDeliverableZipCodes(EnumServiceType.HOME);
-	TreeMap<String, DlvZipInfoModel> zipCodesSortedH = new TreeMap<String, DlvZipInfoModel>();
-	for (DlvZipInfoModel zipInfoH : zipCodesUnsortedH) {
+	List<FDDeliveryZipInfo> zipCodesUnsortedH = FDDeliveryManager.getInstance().getDeliverableZipCodes(EnumServiceType.HOME);
+	TreeMap<String, FDDeliveryZipInfo> zipCodesSortedH = new TreeMap<String, FDDeliveryZipInfo>();
+	for (FDDeliveryZipInfo zipInfoH : zipCodesUnsortedH) {
 		zipCodesSortedH.put(zipInfoH.getZipCode()+(zipInfoH.getCoverage() <= 0.9 ? "*" : ""), zipInfoH);
 	}
-	List<DlvZipInfoModel> zipCodesH = new ArrayList<DlvZipInfoModel>(zipCodesSortedH.values());
+	List<FDDeliveryZipInfo> zipCodesH = new ArrayList<FDDeliveryZipInfo>(zipCodesSortedH.values());
 	
 	params.put("zipsHome", zipCodesH);
 	
-	List<DlvZipInfoModel> zipCodesUnsortedC = FDDeliveryManager.getInstance().getDeliverableZipCodes(EnumServiceType.CORPORATE);
-	TreeMap<String, DlvZipInfoModel> zipCodesSortedC = new TreeMap<String, DlvZipInfoModel>();
-	for (DlvZipInfoModel zipInfoC : zipCodesUnsortedC) {
+	List<FDDeliveryZipInfo> zipCodesUnsortedC = FDDeliveryManager.getInstance().getDeliverableZipCodes(EnumServiceType.CORPORATE);
+	TreeMap<String, FDDeliveryZipInfo> zipCodesSortedC = new TreeMap<String, FDDeliveryZipInfo>();
+	for (FDDeliveryZipInfo zipInfoC : zipCodesUnsortedC) {
 		zipCodesSortedC.put(zipInfoC.getZipCode()+(zipInfoC.getCoverage() <= 0.9 ? "*" : ""), zipInfoC);
 	}
-	List<DlvZipInfoModel> zipCodesC = new ArrayList<DlvZipInfoModel>(zipCodesSortedC.values());
+	List<FDDeliveryZipInfo> zipCodesC = new ArrayList<FDDeliveryZipInfo>(zipCodesSortedC.values());
 	
 	params.put("zipsCorp", zipCodesC);
 	

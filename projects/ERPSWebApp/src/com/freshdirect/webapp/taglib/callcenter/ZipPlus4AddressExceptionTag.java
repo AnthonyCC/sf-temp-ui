@@ -5,16 +5,15 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.EnumAddressType;
-import com.freshdirect.delivery.AddressScrubber;
-import com.freshdirect.delivery.EnumAddressExceptionReason;
-import com.freshdirect.delivery.ExceptionAddress;
-import com.freshdirect.delivery.InvalidAddressException;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.delivery.model.ExceptionAddress;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -41,10 +40,14 @@ public class ZipPlus4AddressExceptionTag extends AbstractControllerTag implement
 			}else {
 				setSuccessPage(null);
 			}
-			return true;
-		} catch (FDResourceException e) {
+			
+		} /*catch (FDInvalidAddressException e) {
+			e.printStackTrace();
+			actionResult.addError(true, "streetAddress", e.getMessage());
+		}*/ catch (FDResourceException e) {
 			throw new JspException(e);
 		}
+		return true;
 	}
 
 	public ExceptionAddress populateException(HttpServletRequest request) throws FDResourceException {
@@ -55,8 +58,8 @@ public class ZipPlus4AddressExceptionTag extends AbstractControllerTag implement
 		ex.setAptNumHigh(request.getParameter("aptNumHigh"));
 		ex.setCity(request.getParameter("city"));
 		ex.setZip(request.getParameter("zip"));
-		ex.setAddressType(EnumAddressType.getEnum(request.getParameter("aptType")));
-		ex.setReason(EnumAddressExceptionReason.getEnum(request.getParameter("reason")));
+		ex.setAddressType(com.freshdirect.logistics.delivery.model.EnumAddressType.getEnum(request.getParameter("aptType")));
+		ex.setReason(com.freshdirect.logistics.delivery.model.EnumAddressExceptionReason.getEnum(request.getParameter("reason")));
 		ex.setState(request.getParameter("state"));
 		ex.setUserId(CrmSession.getCurrentAgent(request.getSession()).getUserId());
 
@@ -68,12 +71,7 @@ public class ZipPlus4AddressExceptionTag extends AbstractControllerTag implement
 	private void validateAddress(ExceptionAddress ex, ActionResult result) throws JspException {
 		result.addError(ex.getStreetAddress().equals(""), "streetAddress", SystemMessageList.MSG_REQUIRED);
 
-		try {
-			ex.setStreetAddress(AddressScrubber.standardizeForUSPS(ex.getStreetAddress()));
-		} catch (InvalidAddressException e) {
-			e.printStackTrace();
-			result.addError(true, "streetAddress", e.getMessage());
-		}
+	
 
 		result.addError(ex.getAddressType() != null
 			&& ((ex.getAddressType().equals(EnumAddressType.HIGHRISE) && (ex.getAptNumLow().equals("") || ex

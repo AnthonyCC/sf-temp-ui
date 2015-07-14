@@ -15,21 +15,20 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.EnumAddressType;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.delivery.DlvServiceSelectionResult;
-import com.freshdirect.delivery.EnumDeliveryStatus;
+import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUser;
-import com.freshdirect.fdstore.ecoupon.model.FDCustomerCouponWallet;
 import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.action.HttpContext;
 import com.freshdirect.webapp.action.fdstore.RegistrationAction;
@@ -153,7 +152,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 						return doRedirect(successPage);
 					}
 				} else if ("checkByZipCode".equalsIgnoreCase(action)) {
-					DlvServiceSelectionResult serviceResult = checkByZipCode(request, result);
+					FDDeliveryServiceSelectionResult serviceResult = checkByZipCode(request, result);
 					if(serviceResult!=null)
 						setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
 					
@@ -284,7 +283,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					doPrereg(request, result);
 				} else if ("signupLite".equalsIgnoreCase(action)) {
 					HttpSession session = this.pageContext.getSession();
-					DlvServiceSelectionResult serviceResult = checkSLiteZipCode(request, result);
+					FDDeliveryServiceSelectionResult serviceResult = checkSLiteZipCode(request, result);
 					if(serviceResult!=null)
 						setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
 					
@@ -450,7 +449,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		}
 	}
 
-	private DlvServiceSelectionResult checkByZipCode(HttpServletRequest request, ActionResult result) throws FDResourceException {
+	private FDDeliveryServiceSelectionResult checkByZipCode(HttpServletRequest request, ActionResult result) throws FDResourceException {
 		this.populate(request);
 		this.validate(result, false);
 
@@ -462,10 +461,10 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			return null;
 		}
 
-		return FDDeliveryManager.getInstance().checkZipCode(this.address.getZipCode());
+		return FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(this.address.getZipCode());
 	}
 	
-	private DlvServiceSelectionResult checkSLiteZipCode(HttpServletRequest request, ActionResult result) throws FDResourceException {
+	private FDDeliveryServiceSelectionResult checkSLiteZipCode(HttpServletRequest request, ActionResult result) throws FDResourceException {
 		//populate address
 		this.address = new AddressModel();
 		String sType = request.getParameter("serviceType");
@@ -501,7 +500,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			return null;
 		}
 		
-		return FDDeliveryManager.getInstance().checkZipCode(this.address.getZipCode());
+		return FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(this.address.getZipCode());
 	}
 
 	/** keep in sync with LocationHandlerTag.doSetMoreInfoAction() */
@@ -599,7 +598,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 
 			EnumServiceType altServiceType = EnumServiceType.HOME.equals(this.serviceType) ? EnumServiceType.CORPORATE : EnumServiceType.HOME;
 			
-			DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkAddress(this.address);
+			FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByAddress(this.address);
 			//request.setAttribute(REQUESTED_SERVICE_TYPE_DLV_STATUS, serviceResult.getServiceStatus(this.serviceType));
 			setRequestedServiceTypeDlvStatus(serviceResult.getServiceStatus(this.serviceType));
 			EnumDeliveryStatus reqStatus = serviceResult.getServiceStatus(this.serviceType);

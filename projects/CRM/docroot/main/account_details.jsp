@@ -20,8 +20,8 @@
 <%@ page import="com.freshdirect.fdstore.customer.*" %>
 <%@ page import='com.freshdirect.webapp.util.*'%>
 <%@ page import='com.freshdirect.framework.util.*'%>
-<%@ page import="com.freshdirect.delivery.EnumRestrictedAddressReason"%>
-<%@ page import="com.freshdirect.fdstore.FDReservation" %>
+<%@ page import="com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason"%>
+<%@ page import="com.freshdirect.fdlogistics.model.FDReservation" %>
 <%@ page import="com.freshdirect.crm.CrmCaseTemplate" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
 <%@ page import="com.freshdirect.framework.core.PrimaryKey"  %>
@@ -358,7 +358,7 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
                             <td><b>Depot Info</b><br>
                                 <%if(user.isDepotUser()){%>
                                     <fd:GetDepots id="depots">
-                                    <logic:iterate collection="<%= depots %>" id="depot" type="com.freshdirect.delivery.depot.DlvDepotModel">
+                                    <logic:iterate collection="<%= depots %>" id="depot" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotModel">
                                         <%if (depot.getDepotCode().equals(user.getDepotCode())){%>
                                             <%=depot.getName()%> 
                                         <%}%>
@@ -536,7 +536,7 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
                             FDReservation rsv = user.getReservation();
                                 if (rsv != null && rsv.getAddressId().equals(address.getPK().getId())) {%>
                                 	<span style="color:#FF6600;">&raquo;</span> Reserved timeslot: <b><%=CCFormatter.formatShortDlvDate(rsv.getStartTime())%>, <%=CCFormatter.formatTime(rsv.getStartTime())%> - <%=CCFormatter.formatDeliveryTime(rsv.getEndTime())%></b> 
-                                		<% FDDeliveryManager.getInstance().geocodeAddress(address);
+                                		<% //FDDeliveryManager.getInstance().geocodeAddress(address);
                                 		   String zoneId = FDDeliveryManager.getInstance().getZoneInfo(address, Calendar.getInstance().getTime(), null, rsv.getRegionSvcType()).getZoneId();
                                 		
                                 		if(zoneId == null || !zoneId.equalsIgnoreCase(rsv.getZoneId())) { %>

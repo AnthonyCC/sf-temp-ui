@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.content.FilteringValue;
 import com.freshdirect.fdstore.content.SearchSortType;
 import com.freshdirect.fdstore.content.util.QueryParameterCollection;
@@ -157,11 +157,11 @@ public class ElementTagModelBuilder {
 	private void processTimeslot() throws SkipTagException{
 		
 		if(timeSlot!=null){
-			String elementId = DateUtil.formatDayOfWeek(timeSlot.getBaseDate())+"_"+DateUtil.formatCmTimeslot(timeSlot.getBegTime())+"_"+DateUtil.formatCmTimeslot(timeSlot.getEndTime());
+			String elementId = DateUtil.formatDayOfWeek(timeSlot.getDeliveryDate())+"_"+DateUtil.formatCmTimeslot(timeSlot.getStartTime())+"_"+DateUtil.formatCmTimeslot(timeSlot.getEndTime());
 			model.setElementId(elementId);
 			model.setElementCategory(elementCategory);	
-			model.getAttributesMaps().put(1, DateUtil.formatDayOfWeek(timeSlot.getBaseDate())+"|"+DateUtil.getDiffInMinutes(timeSlot.getEndTime(), timeSlot.getBegTime())/60+" h window");
-			model.getAttributesMaps().put(2, DateUtil.formatCmTimeslot(timeSlot.getBegTime())+"|"+DateUtil.formatCmTimeslot(timeSlot.getEndTime()));
+			model.getAttributesMaps().put(1, DateUtil.formatDayOfWeek(timeSlot.getDeliveryDate())+"|"+DateUtil.getDiffInMinutes(timeSlot.getEndTime(), timeSlot.getStartTime())/60+" h window");
+			model.getAttributesMaps().put(2, DateUtil.formatCmTimeslot(timeSlot.getStartTime())+"|"+DateUtil.formatCmTimeslot(timeSlot.getEndTime()));
 			model.getAttributesMaps().put(3, soType ? "so_template" : "regular");			
 		} else {
 			throw new SkipTagException("No timeslot found! Skipping tag.");

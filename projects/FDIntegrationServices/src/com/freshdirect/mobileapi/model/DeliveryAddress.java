@@ -1,30 +1,19 @@
 package com.freshdirect.mobileapi.model;
 
-import java.text.MessageFormat;
-import java.util.Date;
-
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.delivery.DlvAddressGeocodeResponse;
-import com.freshdirect.delivery.DlvZoneInfoModel;
-import com.freshdirect.delivery.EnumZipCheckResponses;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.mobileapi.model.DeliveryTimeslots.TimeSlotCalculationResult;
 import com.freshdirect.mobileapi.model.tagwrapper.DeliveryTimeSlotTagWrapper;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
-import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
-import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.Result;
-import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
 public class DeliveryAddress {
 
@@ -85,33 +74,6 @@ public class DeliveryAddress {
 
     protected static String getCounty(AddressModel address) throws FDResourceException {
         return FDDeliveryManager.getInstance().getCounty(address);
-    }
-
-    /*
-     * ============================================
-     * Friendly
-     * ============================================
-     */
-    /**
-     * Helper method for performing geocoding of address.
-     * 
-     * @param address
-     * @return geocoded location. if geocoding fails, original address object is returned
-     * @throws FDResourceException
-     * @throws FDInvalidAddressException
-     */
-    static AddressModel getAddressGeocode(AddressModel address) throws FDResourceException, FDInvalidAddressException {
-        DlvAddressGeocodeResponse geocodeResponse = FDDeliveryManager.getInstance().geocodeAddress(address);
-        String geocodeResult = geocodeResponse.getResult();
-        if (!"GEOCODE_OK".equalsIgnoreCase(geocodeResult)) {
-            // since geocoding is not happening silently ignore it  
-            LOGGER.warn("GEOCODE FAILED FOR ADDRESS :" + address);
-            //actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
-        } else {
-            LOGGER.debug("setRegularDeliveryAddress : geocodeResponse.getAddress() :" + geocodeResponse.getAddress());
-            address = geocodeResponse.getAddress();
-        }
-        return address;
     }
 
     public TimeSlotCalculationResult getDeliveryTimeslot(SessionUser user, boolean preReservationMode) throws FDException {

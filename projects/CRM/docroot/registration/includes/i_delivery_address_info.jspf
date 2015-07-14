@@ -2,7 +2,6 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.AddressName"%>
 <%@ page import="com.freshdirect.fdstore.FDDeliveryManager"%>
 <%@ page import="java.util.ArrayList"%>
-<%@ page import="com.freshdirect.delivery.EnumAddressVerificationResult"%>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Iterator"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName"%>
@@ -49,7 +48,6 @@
 		String addressMessage = "";
 		List<AddressModel> suggestions = null; // a holder for suggested addresses if the original address is not unique
 		FDDeliveryManager dlvManager = FDDeliveryManager.getInstance();
-		EnumAddressVerificationResult addressResult = null;
 		AddressModel address = new AddressModel();
 
 		address.setAddress1(fldAddress1);
@@ -207,7 +205,7 @@
 			<td width="2%"></td>
 			<fd:GetDepotLocations id='locations' depotCode='<%=user.getDepotCode()%>'>
 				<% Date now = new Date(); %>
-				<logic:iterate id="location" collection="<%= locations %>" type="com.freshdirect.delivery.depot.DlvLocationModel" indexId="count">
+				<logic:iterate id="location" collection="<%= locations %>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel" indexId="count">
 					<%  
 						boolean checkedAddress = ("DEPOT_"+location.getPK().getId()).equalsIgnoreCase(request.getParameter("selectAddressList"));
 						//

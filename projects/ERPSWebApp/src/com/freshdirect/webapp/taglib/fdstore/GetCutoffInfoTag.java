@@ -5,11 +5,11 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import com.freshdirect.delivery.DlvZoneCapacityInfo;
-import com.freshdirect.delivery.DlvZoneCutoffInfo;
-import com.freshdirect.delivery.DlvZoneInfoModel;
+import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdlogistics.model.FDZoneCutoffInfo;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -19,8 +19,8 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.TimeOfDay;
+import com.freshdirect.logistics.delivery.model.DlvZoneCapacityInfo;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
-import com.freshdirect.customer.ErpAddressModel;
 
 public class GetCutoffInfoTag extends AbstractGetterTag {
 
@@ -74,7 +74,7 @@ public class GetCutoffInfoTag extends AbstractGetterTag {
 
 		Date tomorrow = DateUtil.addDays(new Date(), 1);
 
-		DlvZoneInfoModel zoneInfo = cart.getZoneInfo();
+		FDDeliveryZoneInfo zoneInfo = cart.getZoneInfo();
 
 		if (zoneInfo == null && address != null) {
 			zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, tomorrow, user.getHistoricOrderSize(),  null);
@@ -93,7 +93,7 @@ public class GetCutoffInfoTag extends AbstractGetterTag {
 				return null;
 			}
 			
-			DlvZoneCutoffInfo nextCutoff = this.getNextCutoff(cutoffTimes, today);
+			FDZoneCutoffInfo nextCutoff = this.getNextCutoff(cutoffTimes, today);
 			
 			if(nextCutoff == null) {
 				nextCutoff = this.getLastElapsedCutoff(cutoffTimes, today);
@@ -115,7 +115,7 @@ public class GetCutoffInfoTag extends AbstractGetterTag {
 			cutoffInfo.setNextEarliestTimeslot(nextCutoff.getStartTime());
 			cutoffInfo.setNextLatestTimeslot(nextCutoff.getEndTime());
 			
-			DlvZoneCutoffInfo lastCutoff = (DlvZoneCutoffInfo) cutoffTimes.get(cutoffTimes.size() - 1);
+			FDZoneCutoffInfo lastCutoff = (FDZoneCutoffInfo) cutoffTimes.get(cutoffTimes.size() - 1);
 			cutoffInfo.setLastCutoff(lastCutoff.getCutoffTime());
 			
 			if(capacity.getRemainingCapacity() <= 0 && cutoffInfo.displayWarning()) {
@@ -127,10 +127,10 @@ public class GetCutoffInfoTag extends AbstractGetterTag {
 		return null;
 	}
 	
-	private DlvZoneCutoffInfo getNextCutoff(List cInfos, TimeOfDay now) {
+	private FDZoneCutoffInfo getNextCutoff(List cInfos, TimeOfDay now) {
 		
 		for(Iterator i = cInfos.iterator(); i.hasNext(); ){
-			DlvZoneCutoffInfo info = (DlvZoneCutoffInfo) i.next();
+			FDZoneCutoffInfo info = (FDZoneCutoffInfo) i.next();
 			if(info.getCutoffTime().after(now)){
 				return info;
 			}
@@ -139,10 +139,10 @@ public class GetCutoffInfoTag extends AbstractGetterTag {
 		return null;
 	}
 	
-	private DlvZoneCutoffInfo getLastElapsedCutoff(List cInfos, TimeOfDay now) {
-		DlvZoneCutoffInfo info = null;
+	private FDZoneCutoffInfo getLastElapsedCutoff(List cInfos, TimeOfDay now) {
+		FDZoneCutoffInfo info = null;
 		for(Iterator i = cInfos.iterator(); i.hasNext(); ) {
-			DlvZoneCutoffInfo tmpInfo = (DlvZoneCutoffInfo) i.next();
+			FDZoneCutoffInfo tmpInfo = (FDZoneCutoffInfo) i.next();
 			if(info == null || (tmpInfo.getCutoffTime().after(info.getCutoffTime()) && tmpInfo.getCutoffTime().before(now))){
 				info = tmpInfo;
 			}

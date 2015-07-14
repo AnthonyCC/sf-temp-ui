@@ -67,7 +67,7 @@ final int W_SIGNUP_TOTAL = 970;
 %>
 		<%if(userx.isDepotUser()){
 
-			String depotName = com.freshdirect.fdstore.FDDepotManager.getInstance().getInstance().getDepot(userx.getDepotCode()).getName();
+			String depotName = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getInstance().getDepot(userx.getDepotCode()).getName();
 		%>	
 			<span class="title18">FreshDirect <%=depotName%> Depot Sign Up</span><br /><span class="space4pix"><br /></span>
 				Sign up now and get $<%=promoValue%> off your first order! Please note: This service is only available to current <%=depotName%> employees. To find out more about FreshDirect Depot service <a href="javascript:popup('/help/faq_index.jsp?show=delivery_depot','large')">click here</a>.

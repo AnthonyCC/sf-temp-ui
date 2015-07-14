@@ -1,7 +1,7 @@
 <%@ page import="java.util.*" %>
 <%@ page import='java.text.*' %>
 <%@ page import="com.freshdirect.common.address.EnumAddressType" %>
-<%@ page import="com.freshdirect.delivery.EnumAddressExceptionReason" %>
+<%@ page import="com.freshdirect.logistics.delivery.model.EnumAddressExceptionReason" %>
 <%@ page import="com.freshdirect.customer.EnumSaleStatus" %>
 
 <%@ taglib uri='template' prefix='tmpl' %>

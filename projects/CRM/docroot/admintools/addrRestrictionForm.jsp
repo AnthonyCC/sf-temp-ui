@@ -6,7 +6,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import="com.freshdirect.delivery.model.RestrictedAddressModel"%>
-<%@ page import="com.freshdirect.delivery.EnumRestrictedAddressReason"%>
+<%@ page import="com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason"%>
 <%@ page import="com.freshdirect.framework.util.DateUtil" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -79,7 +79,7 @@
             <%
 			List enumReasons=EnumRestrictedAddressReason.getEnumList();
 			%>
-			<logic:iterate collection="<%= enumReasons %>" id="enumReason" type="com.freshdirect.delivery.EnumRestrictedAddressReason">
+			<logic:iterate collection="<%= enumReasons %>" id="enumReason" type="com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason">
 			<%  
 				EnumRestrictedAddressReason eReason=(EnumRestrictedAddressReason)enumReason;
 			%>

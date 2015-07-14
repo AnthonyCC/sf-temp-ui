@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.FDCouponProperties;
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
 import com.freshdirect.customer.ErpOrderLineModel;
-import com.freshdirect.fdstore.FDReservation;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -509,7 +509,7 @@ public class FDCustomerCouponUtil implements Serializable {
 		boolean isValid= true;
 		FDReservation reservation =user.getShoppingCart().getDeliveryReservation();
 		if(null !=reservation && null != couponInfo){
-			if(null !=reservation.getTimeslot() && reservation.getTimeslot().getBaseDate().after(couponInfo.getFdExpirationDate())){
+			if(null !=reservation.getTimeslot() && reservation.getTimeslot().getDeliveryDate().after(couponInfo.getFdExpirationDate())){
 				isValid = false;
 			}
 		}

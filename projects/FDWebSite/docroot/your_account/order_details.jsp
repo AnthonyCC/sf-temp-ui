@@ -2,6 +2,7 @@
 <%@ page import = "com.freshdirect.customer.EnumSaleStatus" %>
 <%@ page import ='com.freshdirect.fdstore.customer.*'%>
 <%@ page import ='com.freshdirect.fdstore.*'%>
+<%@ page import ='com.freshdirect.fdlogistics.model.*'%>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>

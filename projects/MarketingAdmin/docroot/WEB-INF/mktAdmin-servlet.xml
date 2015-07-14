@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
-<!--
-  - DispatcherServlet application context for PetClinic's web tier.
-  -->
-<beans>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
 	<!-- ========================= MESSAGE SOURCE DEFINITION ========================= -->
 
@@ -13,9 +15,31 @@
 		- Could also reside in the root application context, as it is generic,
 		- but is currently just used within PetClinic's web tier.
     -->
+    <context:component-scan base-package="com.freshdirect.mktAdmin.web, com.freshdirect.mktAdmin.validation" />
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basename" value="messages"/>
 	</bean>
+	
+	
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<mvc:annotation-driven>
+		<!--  <mvc:message-converters  register-defaults="false">
+			<bean id="mappingJackson2"
+			class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+			<property name="objectMapper" ref="objectMapper" />
+			</bean>
+			
+			<bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter">
+			            <property name="supportedMediaTypes">
+			                <list>
+			                    <value>image/jpeg</value>
+			                     <value>image/png</value>
+			                </list>
+			            </property>
+			</bean>
+		</mvc:message-converters>-->
+	</mvc:annotation-driven>
+	
 
 
 	<!-- ========================= MAPPING DEFINITIONS ========================= -->
@@ -56,23 +80,13 @@
 			<props>
  		 	    <prop key="/welcome.do">mktAdminController</prop>
 				<prop key="/uploadView.do">mktAdminController</prop>
-				<prop key="/competitorView.do">mktAdminController</prop>
-				<prop key="/upload.do">fileUploadController</prop>
-                <prop key="/editCompetitor.do">editCompetitorFormContoller</prop>
-                <prop key="/addCompetitor.do">addCompetitorFormContoller</prop>
+				<prop key="/competitorView.do">mktAdminController</prop>				
                 <prop key="/deleteCompetitor.do">mktAdminController</prop>
-                <prop key="/promotions.do">mktAdminController</prop>
-                <prop key="/searchRestriction.do">searchRestrictionFormController</prop>
+                <prop key="/promotions.do">mktAdminController</prop>                
                 <prop key="/editRestrictionView.do">mktAdminController</prop>
-                <prop key="/editRestriction.do">restrictionListUploadController</prop>
-                <prop key="/appendRestriction.do">appendRestrictionFormController</prop>
                 <prop key="/downloadRestriction.do">mktAdminController</prop>
                 <prop key="/deleteRestriction.do">mktAdminController</prop>
-				<prop key="/upsOutage.do">mktAdminController</prop>
-				<prop key="/createRefPromo.do">createReferralAdminController</prop>
-				<prop key="/viewRefPromo.do">viewReferralAdminController</prop>
-				<prop key="/editRefPromo.do">editReferralAdminController</prop>
-				<prop key="/viewCustList.do">viewRefCustController</prop>
+				<prop key="/upsOutage.do">mktAdminController</prop>				
 			</props>
 		</property>
 	</bean>
@@ -115,7 +129,7 @@
 	  - This bean is a MultiActionController that manages general View rendering.
 	  - It uses the "clinicControllerResolver" bean below for method name resolution.
 	  -->
-	<bean id="fileUploadController" class="com.freshdirect.mktAdmin.web.FileUploadController">
+	<!--  <bean id="fileUploadController" class="com.freshdirect.mktAdmin.web.FileUploadController">
         <property name="commandClass" value="com.freshdirect.mktAdmin.model.FileUploadBean"/>
         <property name="formView" value="fileuploadform"/>
         <property name="successView" value="uploadRedirect"/>
@@ -200,7 +214,7 @@
 
 	<bean id="competitorFormValidator" class="com.freshdirect.mktAdmin.validation.CompetitorFormValidator"/>
 	
-	<bean id="referralFormValidator" class="com.freshdirect.mktAdmin.validation.ReferralFormValidator"/>
+	<bean id="referralFormValidator" class="com.freshdirect.mktAdmin.validation.ReferralFormValidator"/>-->
 
 
 </beans>

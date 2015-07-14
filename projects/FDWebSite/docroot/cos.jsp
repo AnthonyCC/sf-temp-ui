@@ -3,9 +3,9 @@
 		import="com.freshdirect.fdstore.content.DepartmentModel"
 		import="com.freshdirect.fdstore.content.ContentFactory"
 		import="com.freshdirect.fdstore.FDStoreProperties"
-		import="com.freshdirect.fdstore.FDReservation"
+		import="com.freshdirect.fdlogistics.model.FDReservation"
 		import="com.freshdirect.webapp.util.CCFormatter"
-		import="com.freshdirect.fdstore.FDTimeslot"
+		import="com.freshdirect.fdlogistics.model.FDTimeslot"
 		import="com.freshdirect.webapp.util.FDURLUtil"%><%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>

@@ -80,21 +80,21 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 				result.addError( true, "referencedOrder", "Reference Order number is required for a make good order" );
 				return;
 			}
-		} else if (cart.getSelectedGiftCards() == null || cart.getSelectedGiftCards().size() == 0) {
-			result.addError(new ActionError("paymentMethodList", "You must select a payment method."));
+		}else if (cart.getSelectedGiftCards() == null || cart.getSelectedGiftCards().size() == 0){
+			result.addError( new ActionError( "paymentMethodList", "You must select a payment method." ) );
 			return;
 		}
-		
+
 		setNoPaymentMethod(session, getUser(), cart, getActionName(), billingRef, referencedOrder, makeGoodOrder, result);
 	}
-	
+
 	public static void setNoPaymentMethod(HttpSession session, FDUserI user, FDCartModel cart, String actionName, String billingRef, String referencedOrder, boolean makeGoodOrderEnabled,
 			ActionResult result) throws FDResourceException {
 		ErpPaymentMethodI paymentMethod = PaymentMethodUtil.createGiftCardPaymentMethod(user);
-		paymentMethod.setBillingRef(billingRef);
+		paymentMethod.setBillingRef( billingRef );
 		paymentMethod.setPaymentType(makeGoodOrderEnabled ? EnumPaymentType.MAKE_GOOD : EnumPaymentType.REGULAR);
-		paymentMethod.setReferencedOrder(referencedOrder);
-		cart.setPaymentMethod(paymentMethod);
+		paymentMethod.setReferencedOrder( referencedOrder );
+		cart.setPaymentMethod( paymentMethod );
 		setCart(cart, user, actionName, session);
 		user.setPostPromoConflictEnabled(true);
 		user.updateUserState();
@@ -178,20 +178,20 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		}
 			
 		if (!FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user) || result.isSuccess()) {
-			paymentMethod.setBillingRef(billingRef);
-			paymentMethod.setPaymentType(makeGoodOrder ? EnumPaymentType.MAKE_GOOD : EnumPaymentType.REGULAR);
-			paymentMethod.setReferencedOrder(referencedOrder);
-			cart.setPaymentMethod(paymentMethod);
+		paymentMethod.setBillingRef( billingRef );
+		paymentMethod.setPaymentType( makeGoodOrder ? EnumPaymentType.MAKE_GOOD : EnumPaymentType.REGULAR );
+		paymentMethod.setReferencedOrder( referencedOrder );
+		cart.setPaymentMethod( paymentMethod );
 			setCart(cart, user, actionName, session);
 
-			//
+		//
 			// set default payment method and check for unique billing address,
 			// if
-			// required
-			//
-			FDActionInfo info = AccountActivityUtil.getActionInfo(session);
-			final PrimaryKey pmPK = ((ErpPaymentMethodModel) paymentMethod).getPK();
-			FDCustomerManager.setDefaultPaymentMethod(info, pmPK);
+		// required
+		//
+		FDActionInfo info = AccountActivityUtil.getActionInfo( session );
+		final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethod ).getPK();
+		FDCustomerManager.setDefaultPaymentMethod( info, pmPK );
 
 			/*
 			 * if ( user.isDepotUser() ) { if (
@@ -207,10 +207,10 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 			 */
 
 			FDSessionUser currentUser = (FDSessionUser) user;
-			currentUser.setPostPromoConflictEnabled(true);
-			currentUser.updateUserState();
-			session.setAttribute(SessionName.USER, currentUser);
-		}
+		currentUser.setPostPromoConflictEnabled( true );
+		currentUser.updateUserState();
+		session.setAttribute( SessionName.USER, currentUser );
+	}
 	}
 
 	public void performSetPaymentMethod() throws FDResourceException {
@@ -271,14 +271,14 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 	}
 
 	public void performAddPaymentMethod() throws FDResourceException {
-		ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm(request, result, getIdentity());
-		if (result.isSuccess()) {
-			PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, result, getUser(), true, EnumAccountActivityType.ADD_PAYMENT_METHOD);
+		ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm( request, result, getIdentity() );
+		if ( result.isSuccess() ) {
+			PaymentMethodUtil.validatePaymentMethod( request, paymentMethod, result, getUser(),true,EnumAccountActivityType.ADD_PAYMENT_METHOD );
 			String terms = request.getParameter(PaymentMethodName.TERMS);
-			if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
-				result.addError(terms == null || terms.length() <= 0, PaymentMethodName.TERMS, SystemMessageList.MSG_REQUIRED);
-				if (result.isSuccess() && !PaymentMethodUtil.hasECheckAccount(getUser().getIdentity())) {
-					paymentMethod.setIsTermsAccepted(true);
+			if ( EnumPaymentMethodType.ECHECK.equals( paymentMethod.getPaymentMethodType() ) ) {
+				result.addError( terms == null || terms.length() <= 0, PaymentMethodName.TERMS, SystemMessageList.MSG_REQUIRED );
+				if ( result.isSuccess() && !PaymentMethodUtil.hasECheckAccount( getUser().getIdentity() ) ) {
+					paymentMethod.setIsTermsAccepted( true );
 				}
 			}
 			performAddPaymentMethod(paymentMethod, result, request, getUser());
@@ -286,10 +286,10 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 	}
 
 	public static void performAddPaymentMethod(ErpPaymentMethodI paymentMethod, ActionResult result, HttpServletRequest request, FDUserI user) throws FDResourceException {
-		if (result.isSuccess()) {
-			PaymentMethodUtil.addPaymentMethod(request, result, paymentMethod);
+			if ( result.isSuccess() ) {
+				PaymentMethodUtil.addPaymentMethod( request, result, paymentMethod );
+			}
 		}
-	}
 
 	public void performEditPaymentMethod() throws FDResourceException {
     	ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processEditForm(request, result, getIdentity());	            	

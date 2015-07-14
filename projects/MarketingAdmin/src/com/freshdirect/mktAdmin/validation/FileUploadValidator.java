@@ -2,6 +2,7 @@ package com.freshdirect.mktAdmin.validation;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -9,6 +10,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.mktAdmin.constants.EnumFileType;
 import com.freshdirect.mktAdmin.model.FileUploadBean;
 
+@Component
 public class FileUploadValidator implements Validator {
 
 	public boolean supports(Class clazz) {

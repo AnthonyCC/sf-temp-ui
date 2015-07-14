@@ -25,7 +25,6 @@ import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.routing.util.RoutingServicesProperties;
 
 /**@author ekracoff on May 12, 2004*/
 public class MissingInvoiceCron extends DBReportCreator {

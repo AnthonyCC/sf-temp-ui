@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
 
-import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.framework.util.DateRange;
 
 
@@ -119,7 +119,7 @@ public class DeliveryInterval {
 		Date reqStart = start.getTime();
 		Date reqEnd = end.getTime();
 		
-		Date tsStart = timeslot.getBegDateTime();
+		Date tsStart = timeslot.getStartDateTime();
 		Date tsEnd = timeslot.getEndDateTime();
 		Date cutoffTime = timeslot.getCutoffDateTime();
 
@@ -143,7 +143,7 @@ public class DeliveryInterval {
 
 				FDTimeslot ts = i.next();
 
-				DateRange tsWindowRange = new DateRange(ts.getBegDateTime(),
+				DateRange tsWindowRange = new DateRange(ts.getStartDateTime(),
 						ts.getEndDateTime());
 
 				if (tsWindowRange.overlaps(templateWindowRange)
@@ -163,7 +163,7 @@ public class DeliveryInterval {
 	
 	private Comparator<FDTimeslot> timeslotComparator = new Comparator<FDTimeslot>() {
 		public int compare(FDTimeslot ts1, FDTimeslot ts2) {
-			return ts1.getBegDateTime().compareTo(ts2.getBegDateTime());
+			return ts1.getStartDateTime().compareTo(ts2.getStartDateTime());
 		}
 	};
 }

@@ -8,30 +8,32 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
-import com.freshdirect.delivery.depot.DlvDepotModel;
-import com.freshdirect.delivery.depot.DlvLocationModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel;
+import com.freshdirect.fdlogistics.services.helper.LogisticsDataDecoder;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDUser;
+import com.freshdirect.logistics.controller.data.PickupData;
+import com.freshdirect.logistics.controller.data.PickupLocationData;
 
 public class DepotLocation extends DeliveryAddress {
 
-    private DlvLocationModel location;
+    private FDDeliveryDepotLocationModel location;
 
     private DeliveryAddressType type;
 
     private DepotLocation() {
     }
 
-    public static List<DepotLocation> wrap(List<DlvLocationModel> locations, boolean isPickup) {
+    public static List<DepotLocation> wrap(List<FDDeliveryDepotLocationModel> list, boolean isPickup) {
         List<DepotLocation> newList = new ArrayList<DepotLocation>();
-        for (DlvLocationModel location : locations) {
+        for (FDDeliveryDepotLocationModel location : list) {
             newList.add(DepotLocation.wrap(location, isPickup));
         }
         return newList;
     }
 
-    public static DepotLocation wrap(DlvLocationModel location, boolean isPickup) {
+    public static DepotLocation wrap(FDDeliveryDepotLocationModel location, boolean isPickup) {
         DepotLocation newInstance = new DepotLocation();
         newInstance.location = location;
         if (isPickup) {
@@ -52,7 +54,7 @@ public class DepotLocation extends DeliveryAddress {
     }
 
     public String getId() {
-        return location.getId();
+        return location.getAddress().getId();
     }
 
     public DeliveryAddressType getType() {
@@ -102,12 +104,12 @@ public class DepotLocation extends DeliveryAddress {
      * @return
      * @throws FDResourceException
      */
-    ErpDepotAddressModel createDepotAddress(AddressModel depotAddress, DlvDepotModel depot, FDUser user, PhoneNumber contactPhone)
+    ErpDepotAddressModel createDepotAddress(AddressModel depotAddress, PickupData depot, FDUser user, PhoneNumber contactPhone)
             throws FDResourceException {
         ErpDepotAddressModel address = new ErpDepotAddressModel(depotAddress);
         address.setRegionId(depot.getRegionId());
         address.setZoneCode(location.getZoneCode());
-        address.setLocationId(location.getPK().getId());
+        address.setLocationId(location.getAddress().getId());
         address.setFacility(location.getFacility());
         if (user.isCorporateUser()) {
             //Dead code since "corpDlvInstructions" used in depot page and depot's been retired

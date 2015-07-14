@@ -20,7 +20,7 @@ public class DlvRestrictionDAOTestCase extends DbTestCaseSupport {
 	}
 
 	protected String[] getAffectedTables() {
-		return new String[] {"DLV.RESTRICTED_DAYS", "DLV.MUNICIPALITY_INFO", "DLV.MUNICIPALITY_RESTRICTION_DATA"};
+		return new String[] {"CUST.RESTRICTED_DAYS", "CUST.MUNICIPALITY_INFO", "CUST.MUNICIPALITY_RESTRICTION_DATA"};
 	}
 
 	public void testDlvRestrictions() throws Exception {

@@ -2,20 +2,25 @@ package com.freshdirect.mktAdmin.web;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Category;
-import org.springframework.validation.BindException;
-import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mktAdmin.constants.EnumListUploadActionType;
@@ -23,36 +28,43 @@ import com.freshdirect.mktAdmin.exception.MktAdminApplicationException;
 import com.freshdirect.mktAdmin.exception.MktAdminSystemException;
 import com.freshdirect.mktAdmin.model.RestrictionListUploadBean;
 import com.freshdirect.mktAdmin.service.MarketAdminServiceIntf;
+import com.freshdirect.mktAdmin.validation.RestrictionListUploadValidator;
 
+
+@Controller
+@RequestMapping("/editRestriction.do")
+@SessionAttributes("command")
 public class RestrictionListUploadForm extends AbstractMktAdminForm {
-
-	private MarketAdminServiceIntf marketAdminService=null;
 	
+	
+	@Autowired
+	private MarketAdminServiceIntf marketAdminService;
+	
+	
+	@Autowired
+	private RestrictionListUploadValidator restrictionListUploadValidator;
+
+
 	private final static Category LOGGER = LoggerFactory.getInstance(RestrictionListUploadForm.class);
 	
-	public RestrictionListUploadForm()
-	{
-		setCommandClass(RestrictionListUploadBean.class);
-		// activate session form mode to allow for detection of duplicate submissions
-		setSessionForm(true);
-
-	}
 	
-	
-	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+	@RequestMapping(method = RequestMethod.GET)
+	protected String initForm(ModelMap model, 
+			@RequestParam(value = "promotionCode", required = false) String promotionCode) throws ServletException {
 		// get the Pet referred to by id in the request		
 			//request.setAttribute("actionTypes", EnumListUploadActionType.getEnumList());
-		    RestrictionListUploadBean command=new RestrictionListUploadBean();
-			String promotionCode=request.getParameter("promotionCode");
+		    RestrictionListUploadBean command=new RestrictionListUploadBean();			
 			System.out.println("INSIDE1 formBackingObject1 :"+promotionCode);
 			if(promotionCode==null) throw new MktAdminSystemException("1003",new IllegalArgumentException("promotionCode parameter is required"));															
 			command.setPromotionCode(promotionCode);
-			return command;			
+			model.addAttribute("command", command);
+			referenceData(model, promotionCode);
+			return "restListUploadform";			
 	}
 	
 	
-	private List getActionType(HttpServletRequest request){
-		String promotionCode=request.getParameter("promotionCode");
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private List getActionType(String promotionCode){		
 		System.out.println("INSIDE1 getActionType :"+promotionCode);
 		List list=null;
 		//if(promotionCode==null) throw new MktAdminSystemException("1001",new IllegalArgumentException("promotionCode parameter is required"));
@@ -83,15 +95,13 @@ public class RestrictionListUploadForm extends AbstractMktAdminForm {
 		return list;
 	}
 	
-	protected Map referenceData(HttpServletRequest request) throws ServletException {
-		Map refData = new HashMap();				
-		refData.put("actionTypes", getActionType(request));		       		
-		return refData;
+	@SuppressWarnings("unchecked")
+	protected void referenceData(ModelMap refData, String promotionCode) throws ServletException {			
+		refData.put("actionTypes", getActionType(promotionCode));		
 	}
 	
-	protected void onBind(HttpServletRequest request, Object command) {
+	protected void onBind(Object command, String fileContentType) {
 		RestrictionListUploadBean model = (RestrictionListUploadBean) command;
-		String fileContentType=request.getParameter("actionType");
 		if(fileContentType!=null){ 
 			EnumListUploadActionType enmFileContentType =EnumListUploadActionType.getEnum(fileContentType);
 			if(enmFileContentType!=null){
@@ -100,19 +110,30 @@ public class RestrictionListUploadForm extends AbstractMktAdminForm {
 		}				
 	}
 	
-    protected ModelAndView onSubmit(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        Object command,
-        BindException errors) throws Exception {
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(method = RequestMethod.POST)
+    protected String processSubmit(@ModelAttribute("command") Object command,
+        BindingResult result, @RequestParam(value = "promotionCode", required = false) String promotionCode,
+        @RequestParam(value = "actionType", required = false) String actionType,
+        ModelMap model, HttpServletRequest request) throws Exception {
     	RestrictionListUploadBean bean=null;    	
     	try
-    	{    		
+    	{
+    		onBind(command, actionType);
+    		
+    		restrictionListUploadValidator.validate(command, result);
+    		
+    		if (result.hasErrors()) {
+
+    			model.addAllAttributes(result.getModel());
+    			referenceData(model,promotionCode);
+    			return "restListUploadform";
+    		}
+        
 	         // cast the bean
 	        bean = (RestrictionListUploadBean) command;
 	       	        
-	        byte[] file = bean.getBytes();
-	        String s=null;
+	        byte[] file = bean.getBytes();	        
 	        LOGGER.debug("file size"+file.length+"file name :"+bean.getName());        
 	        Collection collection=marketAdminService.parseMktAdminFile(bean);	                                              	        
 	        LOGGER.debug("file size"+file.length+"file name :"+bean.getName()+"colect"+collection);	        
@@ -122,19 +143,21 @@ public class RestrictionListUploadForm extends AbstractMktAdminForm {
     		     Iterator iterator=exception.getExceptionList().iterator();
     		     while(iterator.hasNext()){
     		    	 MktAdminApplicationException e=(MktAdminApplicationException)iterator.next();    		    	 
-    		    	 errors.rejectValue("file", e.getErrorCode(),e.getPlaceHolders()," lot of address are not proper");
+    		    	 result.rejectValue("file", e.getErrorCode(),e.getPlaceHolders()," lot of address are not proper");
     		     }
     		}else{
-    		errors.rejectValue("file", exception.getErrorCode(),
+    			result.rejectValue("file", exception.getErrorCode(),
                     exception.getPlaceHolders(), "General application error");
     		}    		    		
     		setActionMessage(request,bean);
-    		return showForm(request,response,errors);
+    		referenceData(model, promotionCode);
+    		return "restListUploadform";
     	}    	
     	setActionMessage(request,bean);
     	
-    	request.setAttribute("actionTypes", getActionType(request));
-        return new ModelAndView(getSuccessView(),"command",bean);
+    	request.setAttribute("actionTypes", getActionType(promotionCode));
+    	model.addAttribute("command",bean);
+        return "restListUploadform";
     }
     
     private void setActionMessage(HttpServletRequest request,RestrictionListUploadBean bean){
@@ -148,7 +171,9 @@ public class RestrictionListUploadForm extends AbstractMktAdminForm {
     		request.setAttribute("success","success.listcreate");
     }
 
-    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder)
+    
+    @InitBinder
+    protected void initBinder(WebDataBinder binder)
         throws ServletException {
         // to actually be able to convert Multipart instance to byte[]
         // we have to register a custom editor
@@ -157,13 +182,7 @@ public class RestrictionListUploadForm extends AbstractMktAdminForm {
         // now Spring knows how to handle multipart object and convert them
     }
 
-	public MarketAdminServiceIntf getMarketAdminService() {
-		return marketAdminService;
-	}
-
-	public void setMarketAdminService(MarketAdminServiceIntf marketAdminService) {
-		this.marketAdminService = marketAdminService;
-	}
+	
 
 }
 

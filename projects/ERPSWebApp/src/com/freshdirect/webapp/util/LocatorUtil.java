@@ -82,7 +82,7 @@ public class LocatorUtil {
                                 newSession(session, request, response);
                                 address = new AddressModel(); // was this. from CheckLoginStatusTag
                                 address.setZipCode(zipCode);
-                                Set<EnumServiceType> availableServices = FDDeliveryManager.getInstance().checkZipCode(zipCode).getAvailableServices();
+                                Set<EnumServiceType> availableServices = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode).getAvailableServices();
                                 
                                 //FDCustomerManager.createNewUser() inside createUser() will only use zipCode and resolve location based on that.
                                 //City and State information will be appended to user.address.

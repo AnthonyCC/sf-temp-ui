@@ -33,7 +33,7 @@
 								<select class="pulldown" name="depotCode">
 									<option value="">Depot name</option>
 									<fd:GetDepots id="depots">
-										<logic:iterate collection="<%= depots %>" id="depot" type="com.freshdirect.delivery.depot.DlvDepotModel">
+										<logic:iterate collection="<%= depots %>" id="depot" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotModel">
 											<%if(!depot.isDeactivated()){%>
 												<option value="<%= depot.getDepotCode() %>" <%=depot.getDepotCode().equals(user.getDepotCode()) ? "selected" : ""%>><%= depot.getName() %></option>
 											<%}%>

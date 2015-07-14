@@ -4,7 +4,7 @@
 		import="java.util.List"
 		import="com.freshdirect.fdstore.customer.FDOrderInfoI"
 		import="java.text.SimpleDateFormat"
-		import="com.freshdirect.fdstore.FDTimeslot"
+		import="com.freshdirect.fdlogistics.model.FDTimeslot"
 		import="java.util.Date"
 		import="com.freshdirect.fdstore.content.util.DeliveryDateComparator"%><%@ 
 		

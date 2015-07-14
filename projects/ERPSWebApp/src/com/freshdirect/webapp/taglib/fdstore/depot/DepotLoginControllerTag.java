@@ -12,7 +12,7 @@ import javax.servlet.jsp.JspException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.fdstore.FDDepotManager;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -61,7 +61,7 @@ public class DepotLoginControllerTag extends AbstractControllerTag implements Se
 			return;
 		}
 
-		if (!FDDepotManager.getInstance().checkAccessCode(depotCode, accessCode)) {
+		if (!FDDeliveryManager.getInstance().checkAccessCode(depotCode, accessCode)) {
 			actionResult.addError(
 				new ActionError(EnumUserInfoName.DLV_DEPOT_REG_CODE.getCode(), 
             		MessageFormat.format(SystemMessageList.MSG_DEPOT_WRONGCODE, 

@@ -1,8 +1,8 @@
 package com.freshdirect.fdstore.coremetrics.builder;
 
 import com.freshdirect.customer.ErpDiscountLineModel;
-import com.freshdirect.fdstore.FDReservation;
-import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.coremetrics.tagmodel.OrderTagModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;

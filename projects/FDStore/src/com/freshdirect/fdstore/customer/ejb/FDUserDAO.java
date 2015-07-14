@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,10 +21,9 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpOrderLineModel;
-import com.freshdirect.delivery.ejb.GeographyDAO;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.StateCounty;
 import com.freshdirect.fdstore.customer.ExternalCampaign;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
@@ -43,8 +40,9 @@ import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.SqlUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
+import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.sms.EnumSMSAlertStatus;
-import com.freshdirect.sms.SmsPrefereceFlag;
 
 public class FDUserDAO {
 
@@ -120,7 +118,7 @@ public class FDUserDAO {
 	private static void setAddressbyZipCode(Connection conn,
 			String zipCode, FDUser user) {
 		if(user.getAddress()!=null){
-			StateCounty stateCounty= getStateCountyByZipcode(conn, zipCode);
+			StateCounty stateCounty= FDDeliveryManager.getInstance().getStateCountyByZipcode(zipCode);
 			if (stateCounty!=null) {
 				user.getAddress().setState(WordUtils.capitalizeFully(stateCounty.getState()));
 				user.getAddress().setCity(WordUtils.capitalizeFully(stateCounty.getCity()));
@@ -128,19 +126,6 @@ public class FDUserDAO {
 		}
 	}
 
-	private static StateCounty getStateCountyByZipcode(Connection conn, String zipCode) {
-		GeographyDAO dao = new GeographyDAO();
-		try{
-			StateCounty stateCounty= dao.lookupStateCountyByZip(conn, zipCode);
-			if (null !=stateCounty && stateCounty.getState()!=null) {
-				return stateCounty;
-			}
-		} catch (SQLException e) {
-			LOGGER.info("State information not found for zipcode:"+zipCode);
-		} 
-		return null;
-	}
-	
 	
 	private static List<ErpOrderLineModel> convertToErpOrderlines(List<FDCartLineI> cartlines) throws FDResourceException {
 
@@ -938,5 +923,36 @@ public class FDUserDAO {
 		
 		return isFeatureEnabled;
 	}
+	
+	private static final String ORDERSIZE_ESTIMATION_QUERY = "select Ceil(Avg(tbl.NUM_REGULAR_CARTONS)) CCOUNT, " +
+			"Ceil(Avg(tbl.NUM_FREEZER_CARTONS)) FCOUNT, Ceil(Avg(tbl.NUM_ALCOHOL_CARTONS)) ACOUNT " +
+			"from (select NUM_REGULAR_CARTONS, NUM_FREEZER_CARTONS, NUM_ALCOHOL_CARTONS from cust.sale s " +
+			"where s.CUSTOMER_ID = ? and s.STATUS = 'STL' and s.TYPE = 'REG' order by s.CROMOD_DATE desc) tbl where rownum <= ?";
+	
+	
+	public static CustomerAvgOrderSize getHistoricOrderSize(Connection conn, String customerId)  throws SQLException{
+		
+		
+PreparedStatement ps =
+   conn.prepareStatement(ORDERSIZE_ESTIMATION_QUERY);
+ps.setString(1, customerId);
+ps.setInt(2, 5);
+
+
+		ResultSet rs = ps.executeQuery();
+	
+			if (rs.next()) {
+				CustomerAvgOrderSize model = new CustomerAvgOrderSize();
+		    		model.setNoOfCartons(rs.getInt("CCOUNT")+ rs.getInt("ACOUNT"));
+		    		model.setNoOfFreezers(rs.getInt("FCOUNT")); 
+		    		return model;
+		    	
+			}
+			rs.close();
+			ps.close();
+		
+		return null;
+	}
+	
 	
 }

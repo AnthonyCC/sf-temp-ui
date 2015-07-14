@@ -15,6 +15,7 @@ import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.PaymentManager;
@@ -39,18 +40,18 @@ public class DlvPaymentManager {
 		
 	}
 	
-	public static DlvPaymentManager getInstance() throws DlvResourceException {
+	public static DlvPaymentManager getInstance() throws FDResourceException {
 		if(instance == null){
 			try{
 				instance = new DlvPaymentManager();
 			}catch(NamingException e){
-				throw new DlvResourceException (e);
+				throw new FDResourceException (e);
 			}
 		}
 		return instance;
 	}
 	
-	public synchronized void updateSaleDlvStatus(List delivered, List redelivery, List refused) throws DlvResourceException {		
+	public synchronized void updateSaleDlvStatus(List delivered, List redelivery, List refused) throws FDResourceException {		
 		try{
 			PaymentGatewaySB sb = this.getPaymentGatewaySB();
 			String saleId = null;
@@ -76,12 +77,12 @@ public class DlvPaymentManager {
 					
 		}catch(RemoteException re){
 			LOGGER.warn("RemoteException: ", re);
-			throw new DlvResourceException(re, "Cannot talk to SB");
+			throw new FDResourceException(re, "Cannot talk to SB");
 		}
 		
 	}
 	
-	public synchronized List getOrdersByTruckNumber(String truckNumber, Date deliveryDate) throws DlvResourceException {
+	public synchronized List getOrdersByTruckNumber(String truckNumber, Date deliveryDate) throws FDResourceException {
 		try{
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
 			List ret = sb.getOrdersByTruckNumber(truckNumber, deliveryDate);
@@ -89,128 +90,128 @@ public class DlvPaymentManager {
 			return ret;
 		}catch(RemoteException re){
 			LOGGER.warn("RemoteException: ", re);
-			throw new DlvResourceException(re, "Cannot talk to SB");
+			throw new FDResourceException(re, "Cannot talk to SB");
 		}	
 	}
 
-	public synchronized void deliveryConfirm(String orderNumber) throws DlvResourceException {
+	public synchronized void deliveryConfirm(String orderNumber) throws FDResourceException {
 		try{
 			PaymentManager paymentManager = new PaymentManager();
 			paymentManager.deliveryConfirm(orderNumber);
 		}catch(ErpTransactionException te){
-			throw new DlvResourceException(te, "Sale is not in the right state to be confirmed");
+			throw new FDResourceException(te, "Sale is not in the right state to be confirmed");
 		}
 	} 
 	
-	public synchronized void captureAuthorization(String orderNumber) throws DlvResourceException {
+	public synchronized void captureAuthorization(String orderNumber) throws FDResourceException {
 		try{
 			PaymentManager paymentManager = new PaymentManager();
 			paymentManager.captureAuthorization(orderNumber);
 		}catch(ErpTransactionException te){
-			throw new DlvResourceException(te, "Sale is not in the right state to be confirmed");
+			throw new FDResourceException(te, "Sale is not in the right state to be confirmed");
 		}
 	} 
 	
-	public synchronized ErpDeliveryInfoModel getDeliveryInfo(String orderNumber) throws DlvResourceException, ErpSaleNotFoundException {
+	public synchronized ErpDeliveryInfoModel getDeliveryInfo(String orderNumber) throws FDResourceException, ErpSaleNotFoundException {
 		try{
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
 			return sb.getDeliveryInfo(orderNumber);
 		}catch(RemoteException re){
-			throw new DlvResourceException(re, "Cannot talk to SB");
+			throw new FDResourceException(re, "Cannot talk to SB");
 		}
 	}
 	
-	public synchronized DlvSaleInfo getSaleInfo(String orderNumber) throws DlvResourceException, ErpSaleNotFoundException {
+	public synchronized DlvSaleInfo getSaleInfo(String orderNumber) throws FDResourceException, ErpSaleNotFoundException {
 		try{
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
 			return sb.getDlvSaleInfo(orderNumber);
 		}catch(RemoteException re){
-			throw new DlvResourceException (re, "Cannot talk to SB");
+			throw new FDResourceException (re, "Cannot talk to SB");
 		}
 	}
 	
-	public synchronized void createCaseForSale(String orderNumber, String reason) throws DlvResourceException, ErpSaleNotFoundException {
+	public synchronized void createCaseForSale(String orderNumber, String reason) throws FDResourceException, ErpSaleNotFoundException {
 		try{
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
 			sb.createCaseForSale(orderNumber, reason);
 		}catch(RemoteException re){
-			throw new DlvResourceException(re, "Cannot talk to SB");
+			throw new FDResourceException(re, "Cannot talk to SB");
 		}
 	}
 	
-	public synchronized void addReturn(String orderNumber, boolean fullReturn, boolean alcoholOnly) throws DlvResourceException, ErpSaleNotFoundException {
+	public synchronized void addReturn(String orderNumber, boolean fullReturn, boolean alcoholOnly) throws FDResourceException, ErpSaleNotFoundException {
 		try{
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
 			sb.markAsReturn(orderNumber, fullReturn, alcoholOnly);
 		}catch(RemoteException re){
-			throw new DlvResourceException(re, "Cannot talk to SB");
+			throw new FDResourceException(re, "Cannot talk to SB");
 		}catch(ErpTransactionException te){
-			throw new DlvResourceException(te, "Order is not in right status to add RETURN");
+			throw new FDResourceException(te, "Order is not in right status to add RETURN");
 		}
 	}
 	
-	public synchronized void addRedelivery(String orderNumber) throws DlvResourceException, ErpSaleNotFoundException{
+	public synchronized void addRedelivery(String orderNumber) throws FDResourceException, ErpSaleNotFoundException{
 		try{
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
 			sb.markAsRedelivery(orderNumber);
 		}catch(RemoteException re){
-			throw new DlvResourceException(re, "Cannot talk to SB");
+			throw new FDResourceException(re, "Cannot talk to SB");
 		}catch(ErpTransactionException te){
-			throw new DlvResourceException(te, "Order is not in right status to add RETURN");
+			throw new FDResourceException(te, "Order is not in right status to add RETURN");
 		}
 	}
 	
-	public synchronized List getRedeliveries(Date date) throws DlvResourceException {
+	public synchronized List getRedeliveries(Date date) throws FDResourceException {
 		try{
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
 			return sb.getRedeliveries(date);
 		}catch(RemoteException re){
-			throw new DlvResourceException(re, "Cannot talk to SB");
+			throw new FDResourceException(re, "Cannot talk to SB");
 		}
 	}
 	
-	public synchronized List getOrdersForDateAndAddress(Date date, String address, String zipcode) throws DlvResourceException {
+	public synchronized List getOrdersForDateAndAddress(Date date, String address, String zipcode) throws FDResourceException {
 		try{
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerSB();
 			return sb.getOrdersForDateAndAddress(date, address, zipcode);
 		}catch(RemoteException e){
-			throw new DlvResourceException(e, "Cannot talk to SB");
+			throw new FDResourceException(e, "Cannot talk to SB");
 		}
 	}
 	
-	public synchronized void unconfirmOrder(String saleId) throws DlvResourceException {
+	public synchronized void unconfirmOrder(String saleId) throws FDResourceException {
 		try{
 			PaymentManager paymentManager = new PaymentManager();
 			paymentManager.unconfirm(saleId);
 		}catch(ErpTransactionException te){
-			throw new DlvResourceException(te, te.getMessage());
+			throw new FDResourceException(te, te.getMessage());
 		}
 	}
 			
 	
-	private PaymentGatewaySB getPaymentGatewaySB() throws DlvResourceException {
+	private PaymentGatewaySB getPaymentGatewaySB() throws FDResourceException {
 		try {
 			PaymentGatewayHome home = (PaymentGatewayHome)serviceLocator.getRemoteHome(DlvProperties.getPaymentGatewayHome());
 			return home.create(); 
 		} catch (NamingException e) {
-			throw new DlvResourceException(e);
+			throw new FDResourceException(e);
 		}catch (CreateException e){
-			throw new DlvResourceException(e);
+			throw new FDResourceException(e);
 		}catch(RemoteException e){
-			throw new DlvResourceException(e);
+			throw new FDResourceException(e);
 		}
 	}
 	
-	private ErpCustomerManagerSB getErpCustomerManagerSB() throws DlvResourceException {
+	private ErpCustomerManagerSB getErpCustomerManagerSB() throws FDResourceException {
 		try {
 			ErpCustomerManagerHome home = (ErpCustomerManagerHome)serviceLocator.getRemoteHome(DlvProperties.getCustomerManagerHome());
 			return home.create();
 		} catch (NamingException ne) {
-			throw new DlvResourceException(ne);
+			throw new FDResourceException(ne);
 		}catch (CreateException e){
-			throw new DlvResourceException(e);
+			throw new FDResourceException(e);
 		}catch(RemoteException e){
-			throw new DlvResourceException(e);
+			throw new FDResourceException(e);
 		}
 	}	
 }

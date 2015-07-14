@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,8 +19,6 @@ import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.customer.EnumSaleStatus;
-import com.freshdirect.delivery.EnumReservationType;
-import com.freshdirect.delivery.EnumRestrictedAddressReason;
 import com.freshdirect.delivery.model.RestrictedAddressModel;
 import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
@@ -28,18 +27,25 @@ import com.freshdirect.delivery.restriction.EnumDlvRestrictionType;
 import com.freshdirect.delivery.restriction.OneTimeRestriction;
 import com.freshdirect.delivery.restriction.OneTimeReverseRestriction;
 import com.freshdirect.delivery.restriction.RecurringRestriction;
+import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.BulkModifyOrderInfo;
 import com.freshdirect.fdstore.customer.FDBrokenAccountInfo;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerReservationInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDUserCouponUtil;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.EnumSearchType;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.TimeOfDay;
-import com.freshdirect.framework.util.TimeOfDayRange;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.controller.data.request.SearchRequest;
+import com.freshdirect.logistics.delivery.model.EnumReservationStatus;
+import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.payment.SettlementBatchInfo;
 
 public class GenericSearchDAO {
@@ -48,7 +54,7 @@ public class GenericSearchDAO {
 	//.put(EnumSearchType.COMPANY_SEARCH.getName(), CUSTOMER_QUERY);
 	private static Category LOGGER = LoggerFactory.getInstance(GenericSearchDAO.class);
 	
-	public static List genericSearch(Connection conn, GenericSearchCriteria criteria) throws SQLException {
+	public static List genericSearch(Connection conn, GenericSearchCriteria criteria) throws SQLException, FDResourceException {
 		List searchResults = null;
 		if(criteria == null || criteria.isBlank()){
 			return Collections.emptyList();
@@ -58,9 +64,9 @@ public class GenericSearchDAO {
 		} else if(EnumSearchType.EXEC_SUMMARY_SEARCH.equals(criteria.getSearchType())){
 			searchResults = orderSummaryByDate(conn, criteria);
 		} else if(EnumSearchType.RESERVATION_SEARCH.equals(criteria.getSearchType())){
-			CriteriaBuilder builder = buildSQLFromCriteria(criteria);
 			//Fetch uncommitted pre reservations based on given criteria.
-			searchResults= findReservationsByCriteria(conn, criteria, builder);
+			searchResults = findReservationsByCriteria(conn, criteria);
+			
 		} else if(EnumSearchType.ORDERS_BY_RESV_SEARCH.equals(criteria.getSearchType())){			
 			//Fetch the orders that has standard and pre reservations based on the given criteria.
 			CriteriaBuilder builder = buildOrderSearchForResv(criteria);
@@ -100,6 +106,65 @@ public class GenericSearchDAO {
 		
 		return searchResults;
 		
+	}
+
+	private static List findReservationsByCriteria(
+			Connection conn, GenericSearchCriteria criteria) throws FDResourceException {
+		
+		try{
+			
+			List<String> types = new ArrayList<String>();
+			types.add("WRR");
+			types.add("OTR");
+			criteria.setCriteriaMap("types", types);
+			criteria.setCriteriaMap("statusCode", EnumReservationStatus.RESERVED.getCode());
+			List<FDReservation> reservations = FDDeliveryManager.getInstance().getReservationsByCriteria(
+					new SearchRequest(criteria.getSearchType().getName(), criteria.getCriteriaMap()));
+			
+			if(reservations == null || reservations.isEmpty()) {
+				List<FDCustomerReservationInfo> rsvInfo = new ArrayList<FDCustomerReservationInfo>();
+				return rsvInfo;
+				}
+			
+			Set<String> customerIds = new HashSet<String>();
+			Map<String, FDCustomerReservationInfo> custMap = new HashMap<String, FDCustomerReservationInfo>();
+			for(FDReservation rsv: reservations){
+				customerIds.add(rsv.getCustomerId());
+			}
+			List<FDCustomerReservationInfo> customers = findCustomersById(conn, customerIds);
+			for(FDCustomerReservationInfo cust: customers){
+				custMap.put(cust.getIdentity().getErpCustomerPK(), cust);
+			}		
+			
+			return addReservationInfo(reservations, custMap);
+		}catch(SQLException e){
+			throw new FDResourceException(e);
+		}
+		
+	}
+
+	private static List addReservationInfo(List<FDReservation> reservations,
+			Map<String, FDCustomerReservationInfo> custMap) {
+		
+		List<FDCustomerReservationInfo> rsvInfo = new ArrayList<FDCustomerReservationInfo>();
+		for(FDReservation rsv: reservations){
+			FDCustomerReservationInfo info = custMap.get(rsv.getCustomerId());
+			if(info==null){
+				rsvInfo.add(new FDCustomerReservationInfo(rsv.getId(), rsv.getDeliveryDate(), rsv.getCutoffTime(), 
+						"", "", new FDIdentity(rsv.getCustomerId()), "", 
+						"", "", "",
+						rsv.getStartTime(), rsv.getEndTime(), rsv.getZoneCode(), rsv.getType()));
+			}
+			else{
+				rsvInfo.add(new FDCustomerReservationInfo(rsv.getId(), rsv.getDeliveryDate(), rsv.getCutoffTime(), 
+						info.getFirstName(), info.getLastName(), info.getIdentity(), info.getEmail(), 
+						info.getPhone(), info.getAltPhone(), info.getBusinessPhone(),
+						rsv.getStartTime(), rsv.getEndTime(), rsv.getZoneCode(), rsv.getType()));
+			}
+			
+		}
+		
+		return rsvInfo;
 	}
 
 	private static CriteriaBuilder buildSQLFromCriteria(GenericSearchCriteria criteria) {
@@ -375,35 +440,39 @@ public class GenericSearchDAO {
 		return lst;
 	}
 	
-	private static String RESERVATION_SEARCH_QUERY = 
+	private static String CUSTOMER_SEARCH_QUERY = 
 			"SELECT "
 			+ "ci.customer_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
-			+ "ci.cell_phone, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ze.zone_code, rs.id, rs.type, rs.address_id  "
-			+ "from dlv.reservation rs, dlv.timeslot ts, dlv.zone ze, cust.customerinfo ci, cust.customer c "
-			+ "where ts.id = rs.timeslot_id and ze.id = ts.zone_id and rs.customer_id = c.id and ci.customer_id = c.id and rs.status_code = 5 "
-			+ "and rs.type in ('WRR','OTR')";
+			+ "ci.cell_phone "
+			+ "from cust.customerinfo ci, cust.customer c "
+			+ "where ci.customer_id = c.id and c.id in (";
 	
-	public static List findReservationsByCriteria(Connection conn, GenericSearchCriteria criteria, CriteriaBuilder builder) throws SQLException {
-		String query = RESERVATION_SEARCH_QUERY + " and " + builder.getCriteria();
-		PreparedStatement ps = conn.prepareStatement(query);
-		Object[] obj = builder.getParams();
-		for(int i = 0; i < obj.length; i++) {
-			ps.setObject(i+1, obj[i]);
+	public static List<FDCustomerReservationInfo> findCustomersById(Connection conn, Set<String> customerIds) throws SQLException {
+		StringBuffer updateQ = new StringBuffer();
+		if(customerIds != null && customerIds.size() > 0) {			
+			updateQ.append(CUSTOMER_SEARCH_QUERY);
+			int intCount = 0;
+			for(String rsvId : customerIds) {
+				updateQ.append("'").append(rsvId).append("'");
+				intCount++;
+				if(intCount != customerIds.size()) {
+					updateQ.append(",");
+				}
+			}
+			updateQ.append(")");
 		}
+		PreparedStatement ps = conn.prepareStatement(updateQ.toString());
 		ResultSet rs = ps.executeQuery();
-		List lst = processReservationResultSet(rs);
+		List<FDCustomerReservationInfo> lst = processReservationResultSet(rs);
 		rs.close();
 		ps.close();
 		return lst;
 
 	}
 	
-	private static List processReservationResultSet(ResultSet rs) throws SQLException {
-		List lst = new ArrayList();
+	private static List<FDCustomerReservationInfo> processReservationResultSet(ResultSet rs) throws SQLException {
+		List<FDCustomerReservationInfo> lst = new ArrayList<FDCustomerReservationInfo>();
 		while (rs.next()) {
-			String id = rs.getString("ID");
-			Date baseDate = rs.getDate("BASE_DATE");
-			java.util.Date cutoffTime = rs.getTimestamp("CUTOFF_TIME");
 			String firstName = rs.getString("FIRST_NAME");
 			String lastName = rs.getString("LAST_NAME");
 			FDIdentity identity  = new FDIdentity(rs.getString("CUSTOMER_ID"));
@@ -416,19 +485,7 @@ public class GenericSearchDAO {
 				altPhone = NVL.apply(bizPhone, "");
 			}
 
-			java.util.Date startTime = rs.getTimestamp("START_TIME");
-			java.util.Date endTime = rs.getTimestamp("END_TIME");
-			String zone = rs.getString("ZONE_CODE");
-			EnumReservationType rsvType = EnumReservationType.getEnum(rs.getString("TYPE"));
-			
-			ContactAddressModel address = new ContactAddressModel();
-			address.setId(rs.getString("ADDRESS_ID"));
-			
-			FDCustomerReservationInfo rInfo = new FDCustomerReservationInfo(id,
-					baseDate, cutoffTime, firstName, lastName, identity, email,
-					phone, altPhone, bizPhone, startTime, endTime, zone,
-					rsvType);
-			rInfo.setAddress(address);
+      	FDCustomerReservationInfo rInfo = new FDCustomerReservationInfo(firstName, lastName, identity, email,phone, altPhone, bizPhone);
 			lst.add(rInfo);
 		}
 		return lst;
@@ -559,11 +616,11 @@ public class GenericSearchDAO {
 		"SELECT "
 		+ "c.id customer_id, fdc.id fdc_id, ci.first_name, ci.last_name, c.user_id, ci.home_phone, ci.business_phone, "
 		+ "ci.cell_phone, decode(ci.email_plain_text, 'X', 'TEXT', 'HTML') email_type, s.id, sa.requested_date, s.status, sa.amount, di.starttime, di.endtime, s.wave_number, s.truck_number "
-		+ "from cust.customer c, cust.fdcustomer fdc, cust.customerinfo ci, cust.sale s, cust.salesaction sa, cust.deliveryinfo di, dlv.reservation rs "
+		+ "from cust.customer c, cust.fdcustomer fdc, cust.customerinfo ci, cust.sale s, cust.salesaction sa, cust.deliveryinfo di "
 		+ "where c.id = ci.customer_id and c.id = fdc.erp_customer_id and c.id = s.customer_id and s.id = sa.sale_id and sa.action_type IN ('CRO', 'MOD') "
 		+ "and s.status = 'REF' and sa.action_date = "
 		+ "(SELECT MAX(action_date) FROM cust.salesaction WHERE sale_id = s.id AND action_type IN ('CRO', 'MOD')) "
-		+ "and sa.id = di.salesaction_id and rs.id = di.reservation_id";
+		+ "and sa.id = di.salesaction_id";
 	
 	public static List findOrderForReturnsByCriteria(Connection conn, GenericSearchCriteria criteria, CriteriaBuilder builder) throws SQLException {
 		String query = ORDER_SEARCH_FOR_RETURNS + " and " + builder.getCriteria();
@@ -783,7 +840,7 @@ public class GenericSearchDAO {
 	}
 	
 	private static String DELIVERY_RESTRICTIONS_RETURN = 
-		"select ID,TYPE,NAME,DAY_OF_WEEK,START_TIME,END_TIME,REASON,MESSAGE,CRITERION,MEDIA_PATH FROM dlv.restricted_days";
+		"select ID,TYPE,NAME,DAY_OF_WEEK,START_TIME,END_TIME,REASON,MESSAGE,CRITERION,MEDIA_PATH FROM CUST.restricted_days";
 
 	private static List processDeliveryRestriction(Connection conn, GenericSearchCriteria criteria, CriteriaBuilder builder) throws SQLException {
 		List restrictions=new ArrayList();		
@@ -885,7 +942,7 @@ public class GenericSearchDAO {
 	
 	private static final String GET_ALCOHOL_RESTRICTION = "select  r.ID,r.TYPE,r.NAME,r.START_TIME,r.END_TIME,r.REASON,r.MESSAGE,r.CRITERION,r.MEDIA_PATH, "+
 											"D.DAY_OF_WEEK, D.RES_START_TIME,D.RES_END_TIME, M.ID MUNICIPALITY_ID,M.STATE,M.COUNTY,M.CITY,M.ALCOHOL_RESTRICTED "+ 
-											"from dlv.restricted_days r,DLV.RESTRICTION_DETAIL d, DLV.MUNICIPALITY_INFO m, DLV.MUNICIPALITY_RESTRICTION_DATA mr "+
+											"from CUST.restricted_days r,CUST.RESTRICTION_DETAIL d, CUST.MUNICIPALITY_INFO m, CUST.MUNICIPALITY_RESTRICTION_DATA mr "+
 											"where R.ID = D.RESTRICTION_ID(+) "+
 											"and R.ID = MR.RESTRICTION_ID "+
 											"and M.ID = MR.MUNICIPALITY_ID ";
@@ -1044,7 +1101,7 @@ public class GenericSearchDAO {
 	}
 	
 	private static String ADDRESS_RESTRICTIONS_RETURN = 
-		"select scrubbed_address, apartment, zipcode, reason, date_modified, modified_by from dlv.restricted_address ";
+		"select scrubbed_address, apartment, zipcode, reason, date_modified, modified_by from CUST.restricted_address ";
 
 	
 	private static List processAddressRestriction(Connection conn, GenericSearchCriteria criteria, CriteriaBuilder builder) throws SQLException {

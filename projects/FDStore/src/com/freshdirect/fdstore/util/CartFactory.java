@@ -10,13 +10,19 @@ import javax.naming.NamingException;
 
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.delivery.DlvZoneInfoModel;
-import com.freshdirect.delivery.EnumReservationType;
-import com.freshdirect.delivery.model.DlvTimeslotModel;
-import com.freshdirect.fdstore.*;
-import com.freshdirect.fdstore.customer.*;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.warmup.ejb.InventoryWarmupHome;
 import com.freshdirect.fdstore.warmup.ejb.InventoryWarmupSB;
+import com.freshdirect.logistics.delivery.model.EnumReservationType;
 
 public class CartFactory {
 
@@ -43,14 +49,14 @@ public class CartFactory {
         //FDDeliveryManager.getInstance().scrubAddress(dlvAddress);
             
         try {
-            DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date(), null, null);
+            FDDeliveryZoneInfo zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date(), null, null);
             
 			FDReservation deliveryReservation =
 				new FDReservation(
 					null,
-					new FDTimeslot(new DlvTimeslotModel()),
+					new FDTimeslot(),
 					endCal.getTime(), EnumReservationType.STANDARD_RESERVATION, identity.getErpCustomerPK(), 
-					null, false,false, null,false,null,20,null,null,null,0,null);
+					null, false, null,20,null,false,null);
             
             cart.setZoneInfo(zInfo);
             cart.setDeliveryReservation(deliveryReservation);

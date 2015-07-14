@@ -16,8 +16,6 @@ import javax.servlet.http.HttpSessionBindingListener;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.analytics.EventLog;
-import com.freshdirect.analytics.SessionEvent;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -29,14 +27,13 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.OrderHistoryI;
-import com.freshdirect.delivery.EnumDeliveryStatus;
-import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDProductInfo;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -72,12 +69,13 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.EnumGiftCardType;
-import com.freshdirect.routing.model.IPackagingModel;
+import com.freshdirect.logistics.analytics.model.SessionEvent;
+import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
+import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
+import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
 import com.freshdirect.smartstore.SessionImpressionLogEntry;
 import com.freshdirect.smartstore.fdstore.SessionImpressionLog;
 import com.freshdirect.webapp.ajax.cart.data.AddToCartItem;
-import com.freshdirect.webapp.listeners.FDEventProcessor;
-import com.freshdirect.webapp.listeners.FDEventProcessorI;
 
 
 public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
@@ -264,7 +262,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		        		sessionEvent.setLogoutTime(new Date());
 		        		sessionEvent.setClientIp(user.getClientIp());
 		        		sessionEvent.setServerName(user.getServerName());
-		        		EventLog.getInstance().logEvent(sessionEvent);
+		        		FDDeliveryManager.getInstance().logSessionEvent(sessionEvent);
 	        		}
 	        	}
 	        	}
@@ -274,12 +272,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	        		  e.printStackTrace();
 	        	}
 			}
-	                
-	        if(FDStoreProperties.isRealTimeAnalysisEnabled())
-			{
-	        	FDEventProcessorI processor = new FDEventProcessor();
-	        	processor.process(this.user, event.getSession());
-			}
+	     
 	        // clear masquerade agent, and log this event
 	        String masqueradeAgent = getMasqueradeAgent();
 	        
@@ -546,7 +539,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return this.user.getOrderHistory();
 	}
 
-	public IPackagingModel getHistoricOrderSize() throws FDResourceException {
+	public CustomerAvgOrderSize getHistoricOrderSize() throws FDResourceException {
 		return this.user.getHistoricOrderSize();
 	}
 	

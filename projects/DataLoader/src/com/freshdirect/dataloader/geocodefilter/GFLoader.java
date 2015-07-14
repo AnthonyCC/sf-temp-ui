@@ -15,7 +15,6 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.SynchronousParserClient;
-import com.freshdirect.delivery.ejb.DlvManagerSessionBean;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class GFLoader implements SynchronousParserClient {
@@ -24,7 +23,6 @@ public class GFLoader implements SynchronousParserClient {
 	private String filename;
 	private String destination;
     //private StringBuffer results;
-    private DlvManagerSessionBean dlvManager;
     private final BlockingQueue<Object> queue = new LinkedBlockingQueue<Object>();
     
 	private int count = 0;
@@ -73,7 +71,6 @@ public class GFLoader implements SynchronousParserClient {
 	
 	public void load() {
         try {
-        	dlvManager = new DlvManagerSessionBean();
         	
             LOGGER.info("\n----- GeocodeFilter starting -----");
             startTime = System.currentTimeMillis();
@@ -82,7 +79,7 @@ public class GFLoader implements SynchronousParserClient {
             for(int i = 0; i < numThreads; i++){
             	new Thread(new Consumer(queue)).start();
             }
-            validator.initialize(dlvManager);
+            validator.initialize();
             parser.parseFile(filename);
             
             if (parser.getExceptions().size() > 0) {

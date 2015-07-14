@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
-import com.freshdirect.analytics.SessionEvent;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
@@ -16,14 +15,12 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.OrderHistoryI;
-import com.freshdirect.delivery.EnumDeliveryStatus;
-import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDProductInfo;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.EnumWinePrice;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -41,7 +38,10 @@ import com.freshdirect.fdstore.promotion.SignupDiscountRule;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.giftcard.EnumGiftCardType;
-import com.freshdirect.routing.model.IPackagingModel;
+import com.freshdirect.logistics.analytics.model.SessionEvent;
+import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
+import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
+import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
 
 
 public interface FDUserI extends java.io.Serializable {
@@ -585,7 +585,7 @@ public interface FDUserI extends java.io.Serializable {
 	
 	public String getDefaultListId();
 	public void setDefaultListId( String listId );
-	public IPackagingModel getHistoricOrderSize() throws FDResourceException;
+	public CustomerAvgOrderSize getHistoricOrderSize() throws FDResourceException;
 	public EnumRegionServiceType getRegionSvcType(String addressId);
 	public boolean isPaymentechEnabled();
 	public void applyOrderMinimum();

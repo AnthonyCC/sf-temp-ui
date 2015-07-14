@@ -14,12 +14,5 @@
         <context-root>MrktAdmin</context-root>
       </web>
     </module>
-    
-    <module>
-      <web>
-        <web-uri>TransportAdmin.war</web-uri>
-        <context-root>TrnAdmin</context-root>
-      </web>
-    </module>	
 	
   </application>

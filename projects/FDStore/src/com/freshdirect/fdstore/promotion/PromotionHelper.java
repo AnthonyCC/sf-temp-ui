@@ -13,11 +13,11 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.delivery.DlvZoneInfoModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -62,7 +62,7 @@ public class PromotionHelper {
 		 
 		 Map<Double, List<FDTimeslot>> tsWindowMap = new HashMap<Double, List<FDTimeslot>>();
 		 for(FDTimeslot ts : dayTimeslots){
-			 double windowDuration = TimeOfDay.getDurationAsMinutes(ts.getDlvTimeslot().getStartTime(), ts.getDlvTimeslot().getEndTime());
+			 double windowDuration = TimeOfDay.getDurationAsMinutes(ts.getDlvStartTime(), ts.getDlvEndTime());
 			 if(!tsWindowMap.containsKey(windowDuration)){
 				 tsWindowMap.put(windowDuration, new ArrayList<FDTimeslot>());
 			 }
@@ -125,7 +125,7 @@ public class PromotionHelper {
 				Calendar date = new GregorianCalendar();
 				date.add( Calendar.DATE, 7 );
 				try {
-					DlvZoneInfoModel zoneInfo =  FDDeliveryManager.getInstance().getZoneInfo(shippingAddress, date.getTime(), user.getHistoricOrderSize(),  user.getRegionSvcType(shippingAddress.getId()));
+					FDDeliveryZoneInfo zoneInfo =  FDDeliveryManager.getInstance().getZoneInfo(shippingAddress, date.getTime(), user.getHistoricOrderSize(),  user.getRegionSvcType(shippingAddress.getId()));
 					if(null != zoneInfo){
 						for (Iterator<PromotionStrategyI> i = promotion.getStrategies().iterator(); i.hasNext();) {
 							PromotionStrategyI strategy = i.next();

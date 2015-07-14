@@ -17,15 +17,15 @@ import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.delivery.DlvZoneCutoffInfo;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.RestrictionI;
+import com.freshdirect.fdlogistics.model.FDZoneCutoffInfo;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.TimeOfDay;
@@ -47,7 +47,12 @@ public class FDTimeslotUtil implements Serializable {
 
 	private int responseTime; 
 	private boolean advanced;
-	public FDTimeslotUtil( List<FDTimeslot> timeslots, Calendar startCal, Calendar endCal, DlvRestrictionsList restrictions, int responseTime, boolean advanced ) {
+	public FDTimeslotUtil( List<FDTimeslot> timeslots, Date startDate, Date endDate, DlvRestrictionsList restrictions, int responseTime, boolean advanced ) {
+		Calendar startCal = Calendar.getInstance();
+		startCal.setTime(startDate);
+		Calendar endCal = Calendar.getInstance();
+		endCal.setTime(endDate);
+		
 		Collections.sort( timeslots );
 		
 		for ( FDTimeslot timeslot : timeslots ) {
@@ -55,7 +60,7 @@ public class FDTimeslotUtil implements Serializable {
 			List<FDTimeslot> shiftTimeslotList = null;
 			Map<String,List<FDTimeslot>> shiftMap = null;
 			
-			shiftMap = timeslotMap.get(timeslot.getBaseDate());
+			shiftMap = timeslotMap.get(timeslot.getDeliveryDate());
 			if(null == shiftMap){
 				shiftMap = new HashMap<String, List<FDTimeslot>>();
 			}else{
@@ -67,7 +72,7 @@ public class FDTimeslotUtil implements Serializable {
 			}
 			shiftTimeslotList.add(timeslot);
 			shiftMap.put(timeslot.getTimeslotShift(), shiftTimeslotList);
-			timeslotMap.put(timeslot.getBaseDate(), shiftMap);
+			timeslotMap.put(timeslot.getDeliveryDate(), shiftMap);
 			
 		}
 		
@@ -184,14 +189,13 @@ public class FDTimeslotUtil implements Serializable {
 	
 	public Date getMaxCutoffForDate( String zoneCode, Date day ) {
 		Date cutOff = null;
-		List<DlvZoneCutoffInfo> cutoffInfo = null;
+		List<FDZoneCutoffInfo> cutoffInfo = null;
 		List<Date> cTimes = new ArrayList<Date>();
 		try {
 			cutoffInfo = FDDeliveryManager.getInstance().getCutofftimeForZone(zoneCode, day);
 			
-			for(DlvZoneCutoffInfo zoneCutoff : cutoffInfo){
-				TimeOfDay timeOfday = zoneCutoff.getCutoffTime();
-				cTimes.add(timeOfday.getAsDate());
+			for(FDZoneCutoffInfo zoneCutoff : cutoffInfo){
+				cTimes.add(zoneCutoff.getCutoffTime().getAsDate());
 			}
 			if(cTimes.size() > 0){
 				Collections.sort(cTimes);
@@ -306,7 +310,7 @@ public class FDTimeslotUtil implements Serializable {
 		for ( List<FDTimeslot> lst : mapCutOff.values()) {
 			if ( lst != null ) {
 				for ( FDTimeslot slot : lst ) {
-					if ( slot.getTimeslotId().equals(timeslotId) ) {
+					if ( slot.getId().equals(timeslotId) ) {
 						return true;
 					}			
 				}

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.fdstore.FDDeliveryETAModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryETAModel;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;

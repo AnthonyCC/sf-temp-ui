@@ -1,4 +1,4 @@
-<%@ page import='com.freshdirect.delivery.depot.*'%>
+<%@ page import='com.freshdirect.fdlogistics.model.*'%>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import='com.freshdirect.payment.EnumPaymentMethodType'%>
 <%@ page import='com.freshdirect.customer.EnumUnattendedDeliveryFlag'%>
@@ -94,7 +94,7 @@
     
 	if (isDepotAddress && depotAddress!=null) {
 		if(depotAddress.isPickup()){
-			DlvDepotModel depotModel = com.freshdirect.fdstore.FDDepotManager.getInstance().getDepotByLocationId(depotAddress.getLocationId());
+			FDDeliveryDepotModel depotModel = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getDepotByLocationId(depotAddress.getLocationId());
 			if (depotModel!=null) {
 				depotName = depotModel.getName();
 				depotCode = depotModel.getDepotCode();

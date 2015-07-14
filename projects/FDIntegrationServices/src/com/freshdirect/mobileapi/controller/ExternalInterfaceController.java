@@ -10,7 +10,6 @@ import org.apache.log4j.Category;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.crm.CallLogModel;
-import com.freshdirect.delivery.constants.EnumDeliveryMenuOption;
 import com.freshdirect.delivery.sms.SMSAlertManager;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDException;
@@ -20,6 +19,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.delivery.model.EnumDeliveryMenuOption;
 import com.freshdirect.mobileapi.controller.data.Message;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.NoSessionException;

@@ -11,13 +11,13 @@ import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.customer.ErpZoneMasterInfo;
-import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.erp.ejb.ProductPromotionInfoManager;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.StoreModel;
+import com.freshdirect.logistics.delivery.model.DlvZoneModel;
 
 public class ErpProductPromotionUtil {
 

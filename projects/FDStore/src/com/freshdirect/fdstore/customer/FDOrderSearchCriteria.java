@@ -4,14 +4,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
-import com.freshdirect.delivery.depot.DlvDepotModel;
-import com.freshdirect.delivery.depot.DlvLocationModel;
-import com.freshdirect.fdstore.FDDepotManager;
+import com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.logistics.controller.data.PickupData;
+import com.freshdirect.logistics.controller.data.PickupLocationData;
 
 public class FDOrderSearchCriteria extends FDSearchCriteria {
 
@@ -108,13 +111,11 @@ public class FDOrderSearchCriteria extends FDSearchCriteria {
 		}
 		
 		if (this.depotLocationIds != null && depotLocationIds.size() == 1) {
-	        FDDepotManager dmgr = FDDepotManager.getInstance();
-	        for (Iterator dIter = dmgr.getDepots().iterator(); dIter.hasNext(); ) {
-	            DlvDepotModel dm = (DlvDepotModel) dIter.next();
-	            for (Iterator lIter = dm.getLocations().iterator(); lIter.hasNext(); ) {
-	                DlvLocationModel dlm = (DlvLocationModel) lIter.next();
-	                if (this.getDepotLocationId().equals(dlm.getPK().getId())) {
-	                    m.put("Depot", dlm.getFacility());
+			List<FDDeliveryDepotModel> depots = FDDeliveryManager.getInstance().getPickupDepots();
+			for (FDDeliveryDepotModel pickup: depots) {
+	            for (FDDeliveryDepotLocationModel location: pickup.getLocations()) {
+	                if (this.getDepotLocationId().equals(location.getAddress().getId())) {
+	                    m.put("Depot", location.getFacility());
 	                }
 	            }
 	        }

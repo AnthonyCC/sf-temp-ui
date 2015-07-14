@@ -26,8 +26,6 @@ import org.apache.log4j.Category;
 
 import weblogic.auddi.util.Logger;
 
-import com.freshdirect.analytics.TimeslotEventModel;
-import com.freshdirect.common.address.AddressI;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmClick2CallModel;
@@ -54,7 +52,6 @@ import com.freshdirect.customer.ErpCreateOrderModel;
 import com.freshdirect.customer.ErpCustomerAlertModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
-import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.customer.ErpDuplicateDisplayNameException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
@@ -75,16 +72,7 @@ import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.customer.ejb.ActivityLogHome;
 import com.freshdirect.customer.ejb.ActivityLogSB;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
-import com.freshdirect.delivery.DlvServiceSelectionResult;
-import com.freshdirect.delivery.DlvZoneInfoModel;
-import com.freshdirect.delivery.EnumDeliveryStatus;
-import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.ReservationException;
-import com.freshdirect.delivery.depot.DlvDepotModel;
-import com.freshdirect.delivery.depot.DlvLocationModel;
-import com.freshdirect.delivery.model.DlvZoneModel;
-import com.freshdirect.delivery.routing.ejb.RoutingGatewayHome;
-import com.freshdirect.delivery.routing.ejb.RoutingGatewaySB;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DeliveryPassInfo;
 import com.freshdirect.deliverypass.DeliveryPassModel;
@@ -93,14 +81,13 @@ import com.freshdirect.deliverypass.DlvPassUsageInfo;
 import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDDepotManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.FDTimeslot;
-import com.freshdirect.fdstore.FDZoneNotFoundException;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDCompositeAvailability;
@@ -139,11 +126,13 @@ import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.giftcard.ServiceUnavailableException;
+import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
+import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
+import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.routing.model.IOrderModel;
-import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 import com.freshdirect.sms.EnumSMSAlertStatus;
@@ -161,7 +150,6 @@ public class FDCustomerManager {
 
 	private static FDCustomerManagerHome managerHome = null;
 	private static MailerGatewayHome mailerHome = null;
-	private static RoutingGatewayHome routingGatewayHome = null;
 	private static FDServiceLocator LOCATOR = FDServiceLocator.getInstance();
 
 	/**
@@ -326,20 +314,9 @@ public class FDCustomerManager {
 		ErpAddressModel address = user.getShoppingCart().getDeliveryAddress();
 		if(address != null) {
 			Date day = DateUtil.truncate(DateUtil.addDays(new Date(), 1));
-			if(address instanceof ErpDepotAddressModel) {
-				ErpDepotAddressModel depotAddress = (ErpDepotAddressModel)address;
-				DlvDepotModel depot = FDDepotManager.getInstance().getDepotByLocationId(depotAddress.getLocationId());
-				if(depot != null) {
-					DlvLocationModel location = depot.getLocation(depotAddress.getLocationId());
-					if(location != null) {
-						DlvZoneInfoModel info = FDDeliveryManager.getInstance().getZoneInfoForDepot(depot.getRegionId(), location.getZoneCode(), day);
-						user.getShoppingCart().setZoneInfo(info);
-					}
-				}
-			} else {
-				try {
+			try {
 					user.getShoppingCart().setZoneInfo(FDDeliveryManager.getInstance().getZoneInfo(address, day,user.getHistoricOrderSize(), null));
-				} catch (FDInvalidAddressException e) {
+			} catch (FDInvalidAddressException e) {
 					LOGGER.info("Encountered InvalidAddressException while getting zoneInfo for address: "
 						+ address.getAddress1() 
 						+ " " 
@@ -351,7 +328,6 @@ public class FDCustomerManager {
 						+ " "
 						+ address.getZipCode());
 				}
-			}
 		}
 	}
 	
@@ -403,7 +379,7 @@ public class FDCustomerManager {
 			availableServices.add(EnumServiceType.DEPOT);
 		}
 		
-		DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkZipCode(user.getZipCode());
+		FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(user.getZipCode());
 		EnumDeliveryStatus status = serviceResult.getServiceStatus(lastServiceType);
 		availableServices.addAll(serviceResult.getAvailableServices());
 		
@@ -792,7 +768,7 @@ public class FDCustomerManager {
 		FDIdentity identity,
 		FDReservation reservation,
 		EnumReservationType rsvType,
-		FDActionInfo aInfo, TimeslotEventModel event)
+		FDActionInfo aInfo, TimeslotEvent event)
 		throws FDResourceException {
 		lookupManagerHome();
 
@@ -813,7 +789,7 @@ public class FDCustomerManager {
 		String timeslotId,
 		EnumReservationType rsvType,
 		String addressId,
-		FDActionInfo aInfo, boolean chefsTable, TimeslotEventModel event,boolean isForced)
+		FDActionInfo aInfo, boolean chefsTable, TimeslotEvent event,boolean isForced)
 		throws FDResourceException, ReservationException {
 		lookupManagerHome();
 		try {
@@ -843,31 +819,6 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static FDReservation changeReservation(
-		FDIdentity identity,
-		FDReservation oldReservation,
-		String timeslotId,
-		EnumReservationType rsvType,
-		String addressId,
-		FDActionInfo aInfo,
-		boolean chefstable,TimeslotEventModel event)
-		throws FDResourceException, ReservationException {
-		lookupManagerHome();
-
-		try {
-			FDCustomerManagerSB sb = managerHome.create();
-
-			return sb.changeReservation(identity, oldReservation, timeslotId, rsvType, addressId, aInfo, chefstable,event);
-		} catch (RemoteException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error talking to session bean");
-		} catch (CreateException e) {
-			invalidateManagerHome();
-			throw new FDResourceException(e, "Error creating session bean");
-		}
-
-	}
-
 	public static void updateRecurringReservation(
 		FDIdentity identity,
 		Date startTime,
@@ -890,84 +841,10 @@ public class FDCustomerManager {
 
 	}
 
-	public static FDReservation validateReservation(FDUserI user, FDReservation reservation, TimeslotEventModel event) throws FDResourceException {
+	public static FDReservation validateReservation(FDUserI user, FDReservation reservation, TimeslotEvent event) throws FDResourceException {
 		//TODO have to implement this method correctly with Depot and COS handling
 		ErpAddressModel address = getAddress(user.getIdentity(), reservation.getAddressId());
-		if (address == null) {
-			FDDeliveryManager.getInstance().removeReservation(reservation.getPK().getId(),address, event);
-			if (EnumReservationType.RECURRING_RESERVATION.equals(reservation.getReservationType())) {
-				updateRecurringReservation(user.getIdentity(), null, null, null, "CUSTOMER",user.getPrimaryKey());
-			}
-			return null;
-		}
-		
-		try {
-			DlvZoneInfoModel zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, reservation.getStartTime(), user.getHistoricOrderSize(), reservation.getRegionSvcType());
-			if (reservation.getZoneId().equals(zoneInfo.getZoneId())) {
-				return reservation;
-			}
-			
-			Calendar endCal = Calendar.getInstance();
-			endCal.setTime(reservation.getStartTime());
-			endCal.add(Calendar.DATE, 1);
-			
-			DlvZoneModel dlvZoneModel = null;
-			try 
-			{
-				dlvZoneModel = FDDeliveryManager.getInstance().findZoneById(zoneInfo.getZoneId());
-			} 
-			catch (FDResourceException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			catch (FDZoneNotFoundException e) {
-				e.printStackTrace();
-			}
-			List<FDReservation> reservations = new ArrayList<FDReservation>();
-			reservations.add(reservation);
-			
-			List<FDTimeslot> timeslots =
-				FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
-					reservation.getStartTime(),
-					endCal.getTime(),event,
-					address, user.getHistoricOrderSize(), reservations).getTimeslots();
-			FDTimeslot matchingTimeslot = null;
-			for ( FDTimeslot t : timeslots ) {
-				if (t.getBegDateTime().equals(reservation.getStartTime())
-					&& t.getEndDateTime().equals(reservation.getEndTime())
-					&& t.getCutoffDateTime().equals(reservation.getCutoffTime())
-					&& t.getTotalAvailable() > 0) {
-					matchingTimeslot = t;
-					break;
-				}
-			}
-			FDDeliveryManager.getInstance().removeReservation(reservation.getPK().getId(),address, event);
-			if (EnumReservationType.RECURRING_RESERVATION.equals(reservation.getReservationType())) {
-				updateRecurringReservation(user.getIdentity(), null, null, null, "CUSTOMER", user.getPrimaryKey());
-			}
-			if (matchingTimeslot != null) {
-				long duration = Math.abs(System.currentTimeMillis() - reservation.getCutoffTime().getTime());
-				FDReservation rsv = FDDeliveryManager.getInstance().reserveTimeslot(
-					matchingTimeslot,
-					user.getIdentity().getErpCustomerPK(),
-					duration,
-					reservation.getReservationType(),
-					address,
-					reservation.isChefsTable(),
-					null, false, event, false);
-				//TimeslotLogic.applyOrderMinimum(user, rsv.getTimeslot());
-				return rsv;
-			}
-			
-			return null;
-			
-		} catch (FDInvalidAddressException e) {
-			//TODO have to fix the exception handling in this case
-			throw new FDResourceException(e);
-		} catch (ReservationException e) {
-			//TODO have to fix the exception handling in this case
-			throw new FDResourceException(e);
-		}
+		return FDDeliveryManager.getInstance().validateReservation(user.getHistoricOrderSize(), reservation, address, event);
 	}
 
 	public static void updateUserId(FDActionInfo info, String userId) throws FDResourceException, ErpDuplicateUserIdException {
@@ -1082,7 +959,7 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			boolean result =  sb.updateShipToAddress(info, checkUniqueness, address);
 
-			sendShippingAddress(address);
+			FDDeliveryManager.getInstance().sendShippingAddress(address);
 
 			return result;
 		} catch (CreateException ce) {
@@ -1092,40 +969,6 @@ public class FDCustomerManager {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
-	}
-
-	private static void sendShippingAddress(AddressI address) throws FDResourceException {
-
-		if(!FDStoreProperties.isUPSBlackholeEnabled()) {
-			lookupRoutingGatewayHome();
-
-			try {
-				RoutingGatewaySB routingSB = routingGatewayHome.create();
-				routingSB.sendShippingAddress(address);
-
-			} catch (CreateException ce) {
-				invalidateRoutingGatewayHome();
-				throw new FDResourceException(ce, "Error creating session bean");
-			} catch (RemoteException re) {
-				invalidateRoutingGatewayHome();
-				throw new FDResourceException(re, "Error creating session bean");
-			} 
-			/* GeographyServiceProxy proxy = new GeographyServiceProxy();
-			
-			try {
-				proxy.locateAddress(address.getAddress1(), address.getAddress2()
-																		, address.getApartment()
-																		, address.getCity()
-																		, address.getState()
-																		, address.getZipCode()
-																		, address.getCountry());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				// Sending address shouldn't be a problem even if failed will get picked up in batch routing
-				e.printStackTrace();
-			} */
-		}	
-
 	}
 
 	/**
@@ -3080,34 +2923,6 @@ public class FDCustomerManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-
-	private static void invalidateRoutingGatewayHome() {
-		routingGatewayHome = null;
-	}
-
-	private static void lookupRoutingGatewayHome() throws FDResourceException {
-		if (routingGatewayHome != null) {
-			return;
-		}
-		Context ctx = null;
-		try {
-
-			ctx = FDStoreProperties.getInitialContext();
-			routingGatewayHome = (RoutingGatewayHome) ctx
-					.lookup("freshdirect.routing.Gateway");
-		} catch (NamingException ne) {
-			throw new FDResourceException(ne);
-		} finally {
-			try {
-				if (ctx != null) {
-					ctx.close();
-				}
-			} catch (NamingException ne) {
-				LOGGER.warn("Cannot close Context while trying to cleanup", ne);
-			}
-		}
-	}
-
 	
 	/**
 	 * @return ErpAddressModel for the specified user and addressId, null if the address is not found.
@@ -3977,6 +3792,9 @@ public class FDCustomerManager {
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			sb.storeMobilePreferences(customerId, mobileNumber, textOffers, textDelivery, orderNotices, orderExceptions, offers, partnerMessages);
+			FDDeliveryManager.getInstance().addSubscriptions(customerId,
+					mobileNumber, textOffers, textDelivery, orderNotices,
+					orderExceptions, offers, partnerMessages,cm.getSmsOptinDate());
 			logSmsActivity(customerId, orderNotices, orderExceptions, offers, cm);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
@@ -4275,13 +4093,13 @@ public class FDCustomerManager {
 	
 	}
 
-	public static IPackagingModel getHistoricOrderSize(IOrderModel order)  throws FDResourceException {
+	public static CustomerAvgOrderSize getHistoricOrderSize(String customerId)  throws FDResourceException {
 		
 		lookupManagerHome();
 
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			return sb.getHistoricOrderSize(order);
+			return sb.getHistoricOrderSize(customerId);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

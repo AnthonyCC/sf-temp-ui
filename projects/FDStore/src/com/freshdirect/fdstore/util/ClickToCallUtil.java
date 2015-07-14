@@ -5,21 +5,22 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmClick2CallTimeModel;
-import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.enums.WeekDay;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 
 public class ClickToCallUtil {
 
@@ -116,7 +117,7 @@ public class ClickToCallUtil {
 					address = FDCustomerManager.getAddress(user.getIdentity(), addrId);
 				}
 				if(null != address){
-					DlvZoneInfoModel dlvZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, date, user.getHistoricOrderSize(), null);
+					FDDeliveryZoneInfo dlvZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, date, user.getHistoricOrderSize(), null);
 					if(null != dlvZoneInfo && null !=dlvZoneInfo.getZoneCode()){
 						List dlvZonesList =Arrays.asList(dlvZones);
 						if(dlvZonesList.contains(dlvZoneInfo.getZoneCode())){
@@ -196,16 +197,21 @@ public class ClickToCallUtil {
 				Calendar endCal = Calendar.getInstance();
 				endCal.add(Calendar.DATE, 2);
 				endCal = DateUtil.truncate(endCal);
-				TimeslotEventModel event = null; 
-				DlvZoneInfoModel zoneInfo = null;
+				TimeslotEvent event = null; 
+				FDDeliveryZoneInfo zoneInfo = null;
 				try{
 					zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, begCal.getTime(), 
 						user.getHistoricOrderSize(), null);
 				}catch(FDInvalidAddressException ie){
 					throw new FDResourceException(ie);
 				}
-				List<FDTimeslot> timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(begCal.getTime()
-							, endCal.getTime(), event, (ContactAddressModel)address, user.getHistoricOrderSize(), null).getTimeslots();
+				List<DateRange> ranges = new java.util.ArrayList<DateRange>();
+				ranges.add(new DateRange(begCal.getTime(), endCal.getTime()));
+				
+				List<FDTimeslot> timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone
+						(ranges, event, (ContactAddressModel)address, user.getHistoricOrderSize())
+						.getTimeslotList().get(0).getTimeslots();
+				
 				if(null == timeSlots || timeSlots.size()==0){
 					displayClick2CallInfo = true;
 				}else{

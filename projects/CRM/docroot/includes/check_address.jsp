@@ -4,9 +4,12 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*" %>
 <%@ page import="com.freshdirect.delivery.*" %>
+<%@ page import="com.freshdirect.logistics.delivery.model.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import='com.freshdirect.webapp.crm.security.*' %>
+<%@ page import='com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo' %>
+<%@ page import='com.freshdirect.fdlogistics.model.FDDeliveryApartmentRange' %>
 
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='crm' prefix='crm' %>
@@ -157,11 +160,11 @@ if (suggestions != null) {  %>
 <%      }   %>
 </table>
 <% } %>
-<% List<DlvZoneInfoModel> zoneInfo=(List<DlvZoneInfoModel>)pageContext.getAttribute("zoneInfo");
+<% List<FDDeliveryZoneInfo> zoneInfo=(List<FDDeliveryZoneInfo>)pageContext.getAttribute("zoneInfo");
    String county=(String)pageContext.getAttribute("county");
    String COSStatus="", zoneCode="", bulkZone="";
    if(zoneInfo!=null){
-	   for(DlvZoneInfoModel zInfo : zoneInfo){
+	   for(FDDeliveryZoneInfo zInfo : zoneInfo){
 			if(!zInfo.isBulkZone()){ 
 	 				if(zInfo.getZoneCode()!=null && !" ".equals(zInfo.getZoneCode())){
 	 					zoneCode = zInfo.getZoneCode();
@@ -215,7 +218,7 @@ if (suggestions != null) {  %>
     <tr><td colspan="5" align="center">Valid Apartment Number Ranges:</td></tr>
     <tr><td>&nbsp;&nbsp;</td><td align="center">LOW</td><td>&nbsp;&nbsp;</td><td align="center">HIGH</td><td>&nbsp;&nbsp;</td><td align="center">TYPE</td><td>&nbsp;&nbsp;</td></tr>
 <%      	for (Iterator rIter = aptRanges.iterator(); rIter.hasNext(); ) {
-            	DlvApartmentRange range = (DlvApartmentRange) rIter.next(); %>
+            	FDDeliveryApartmentRange range = (FDDeliveryApartmentRange) rIter.next(); %>
      <tr><td>&nbsp;&nbsp;</td><td align="right"><%= range.getLow() %></td>
          <td>&nbsp;&nbsp;</td><td align="right"><%= range.getHigh() %></td>
            <% if(range.getAddressTypeDetailed() != null) { %>

@@ -2,7 +2,7 @@ package com.freshdirect.webapp.taglib.coremetrics;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.content.util.QueryParameterCollection;
 import com.freshdirect.fdstore.coremetrics.builder.ElementTagModelBuilder;
 import com.freshdirect.fdstore.coremetrics.builder.SkipTagException;

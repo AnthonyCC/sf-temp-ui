@@ -5,6 +5,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.*' %>
 <%@ taglib uri="http://jawr.net/tags" prefix="jwr" %>
 
 

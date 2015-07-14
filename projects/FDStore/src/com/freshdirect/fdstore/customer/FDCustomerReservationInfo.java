@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.freshdirect.common.address.ContactAddressModel;
-import com.freshdirect.delivery.EnumReservationType;
+import com.freshdirect.logistics.delivery.model.EnumReservationType;
 
 /**
  * Lightweight information about a Sale.
@@ -34,7 +34,7 @@ public class FDCustomerReservationInfo implements Serializable {
 	private Date startTime;
 	private Date endTime;
 	private String zone;
-	private final EnumReservationType type;
+	private EnumReservationType type;
 	
 	private ContactAddressModel address;
 		
@@ -67,6 +67,18 @@ public class FDCustomerReservationInfo implements Serializable {
 		this.zone = zone;
 		this.type = type;
 		
+	}
+	
+	public FDCustomerReservationInfo(String firstName, String lastName,
+			FDIdentity identity, String email, String phone,
+			String altPhone, String businessPhone) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.identity = identity;
+		this.email = email;
+		this.phone = phone;
+		this.altPhone = altPhone;
+		this.businessPhone = businessPhone;
 	}
 	public String getAltPhone() {
 		return altPhone;

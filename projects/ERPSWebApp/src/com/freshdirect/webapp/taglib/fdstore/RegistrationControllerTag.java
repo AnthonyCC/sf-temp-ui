@@ -17,7 +17,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
-import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.customer.EnumAccountActivityType;
@@ -31,14 +30,11 @@ import com.freshdirect.customer.ErpDuplicateDisplayNameException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpInvalidPasswordException;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
-import com.freshdirect.delivery.DlvResourceException;
-import com.freshdirect.delivery.DlvServiceSelectionResult;
 import com.freshdirect.delivery.sms.SMSAlertManager;
+import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDDepotManager;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.Util;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
@@ -52,6 +48,8 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.action.HttpContext;
@@ -100,15 +98,13 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			FDCartModel cart = null;
 			if(user != null)
 				cart = user.getShoppingCart();
-			String zoneId = null;
-			if(cart!=null && cart.getZoneInfo()!=null)
-				zoneId = cart.getZoneInfo().getZoneId();
 			
-			TimeslotEventModel event = null;
+			TimeslotEvent event = null;
 			if(user!=null){
-					event = new TimeslotEventModel((user.getApplication()!=null)?user.getApplication().getCode():"",
+					event = new TimeslotEvent((user.getApplication()!=null)?user.getApplication().getCode():"",
 					(cart!=null)?cart.isDlvPassApplied():false, (cart!=null)?cart.getDeliverySurcharge():0.00,
-							(cart!=null)?cart.isDeliveryChargeWaived():false, Util.isZoneCtActive(zoneId), user.getPrimaryKey());
+							(cart!=null)?cart.isDeliveryChargeWaived():false, 
+									(cart.getZoneInfo()!=null)?cart.getZoneInfo().isCtActive():false, user.getPrimaryKey(), EnumCompanyCode.fd.name());
 			}
 			
 			
@@ -435,7 +431,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			} else{
 				optOut=true;
 			}
-		} catch (DlvResourceException e) {
+		} catch (FDResourceException e) {
 			LOGGER.error("Error from mobile preferences", e);
 			actionResult.addError(true, "mobile_number", SystemMessageList.MSG_TIMEOUT_ERROR);
 			return;
@@ -471,7 +467,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		}
 	}
 
-	protected void performDeleteDeliveryAddress(HttpServletRequest request, ActionResult actionResult, TimeslotEventModel event) throws FDResourceException {
+	protected void performDeleteDeliveryAddress(HttpServletRequest request, ActionResult actionResult, TimeslotEvent event) throws FDResourceException {
 		String shipToAddressId = request.getParameter("deleteShipToAddressId");
 		AddressUtil.deleteShipToAddress(getIdentity(), shipToAddressId, actionResult, request);
 		//check that if this address had any outstanding reservations.
@@ -508,7 +504,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		}
 	
 		AddressModel scrubbedAddress = validator.getScrubbedAddress(); // get 'normalized' address
-		DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(scrubbedAddress.getZipCode());
+		FDDeliveryServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(scrubbedAddress.getZipCode());
 		boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
 		if (validator.isAddressDeliverable()) {
 			FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
@@ -559,7 +555,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 	}
 
 
-	protected void performEditDeliveryAddress(HttpServletRequest request, ActionResult actionResult, TimeslotEventModel event) throws FDResourceException {
+	protected void performEditDeliveryAddress(HttpServletRequest request, ActionResult actionResult, TimeslotEvent event) throws FDResourceException {
 		HttpSession session = (HttpSession) pageContext.getSession();
 		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);
 
@@ -771,7 +767,9 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode(),
 				SystemMessageList.MSG_REQUIRED);
 
-			com.freshdirect.delivery.depot.DlvDepotModel depot = FDDepotManager.getInstance().getDepot(user.getDepotCode());
+			//TODO LOGISTICS REINTEGRATION TASK
+			
+			/*com.freshdirect.delivery.depot.DlvDepotModel depot = FDDepotManager.getInstance().getDepot(user.getDepotCode());
 			if (depot.getRequireEmployeeId()) {
 
 				result.addError(
@@ -779,7 +777,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 					EnumUserInfoName.DLV_EMPLOYEE_ID.getCode(),
 					SystemMessageList.MSG_REQUIRED);
 
-			}
+			}*/
 
 		}
 
@@ -962,7 +960,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 			boolean isSent=false;
 				try {
 					isSent = SMSAlertManager.getInstance().smsOptIn(identity.getErpCustomerPK(),mobile_number);
-				} catch (DlvResourceException e) {
+				} catch (FDResourceException e) {
 					LOGGER.error("Error from mobile preferences", e);
 					actionResult.addError(true, "mobile_number", SystemMessageList.MSG_TIMEOUT_ERROR);
 					return;

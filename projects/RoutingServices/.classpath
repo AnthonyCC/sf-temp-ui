@@ -9,7 +9,6 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-lang-2.3.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/JFEP-0.1.0.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-dbcp-1.2.1.jar"/>
@@ -28,5 +27,11 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jsonrpc-1.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/telargoservices.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/axis2-transport-http-1.5.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-aop-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-beans-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-context-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-core-4.0.1.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-jdbc-4.0.0.RELEASE.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring-tx-4.0.0.RELEASE.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

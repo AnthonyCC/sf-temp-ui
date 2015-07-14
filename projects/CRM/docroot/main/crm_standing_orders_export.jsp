@@ -12,7 +12,7 @@
 <%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrderInfo" %>
 <%@ page import="com.freshdirect.enums.WeekDay" %>
 <%@ page import="com.freshdirect.framework.util.DateUtil" %>
-<%@ page import="com.freshdirect.fdstore.FDTimeslot" %>
+<%@ page import="com.freshdirect.fdlogistics.model.FDTimeslot" %>
 <%@ page import='com.freshdirect.framework.util.*'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>

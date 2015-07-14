@@ -4,7 +4,7 @@
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.*'%>
-<%@ page import='com.freshdirect.fdstore.FDReservation'%>
+<%@ page import='com.freshdirect.fdlogistics.model.FDReservation'%>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>

@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.Date;
 
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.delivery.EnumRestrictedAddressReason;
+import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
 
 public class RestrictedAddressModel extends AddressModel {
 	

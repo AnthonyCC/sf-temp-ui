@@ -4,22 +4,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.address.EnumAddressType;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.customer.EnumAlertType;
 import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
-import com.freshdirect.delivery.DlvServiceSelectionResult;
+import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.NVL;
-import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
@@ -171,7 +168,7 @@ public class CrmAddressControllerTag extends AbstractControllerTag {
 				
 			
 				AddressModel scrubbedAddress = validator.getScrubbedAddress(); // get 'normalized' address
-				DlvServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().checkZipCode(scrubbedAddress.getZipCode());
+				FDDeliveryServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(scrubbedAddress.getZipCode());
 				boolean isEBTAccepted = null !=serviceResult ? serviceResult.isEbtAccepted():false;
 				if (validator.isAddressDeliverable()) {
 					FDSessionUser user = (FDSessionUser)CrmSession.getUser(pageContext.getSession());

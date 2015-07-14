@@ -2,14 +2,17 @@ package com.freshdirect.mktAdmin.validation;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+
 
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.mktAdmin.constants.EnumFileType;
 import com.freshdirect.mktAdmin.model.FileUploadBean;
 import com.freshdirect.mktAdmin.model.RestrictionListUploadBean;
 
+@Component
 public class RestrictionListUploadValidator implements Validator {
 
 	public boolean supports(Class clazz) {

@@ -12,10 +12,10 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
@@ -24,7 +24,6 @@ import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.standingorders.DeliveryInterval;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
-import com.freshdirect.framework.util.DateRange;
 
 /**
  * Helper class for standing orders, any static method which has no place anywhere else should be here.
@@ -170,10 +169,10 @@ public class StandingOrderHelper {
 
 			int _curWeek = c.get(Calendar.WEEK_OF_YEAR);
 
-			c.setTime( ts.getBaseDate() );
+			c.setTime( ts.getDeliveryDate() );
 			this.day = c.get(Calendar.DAY_OF_WEEK);
 			
-			c.setTime( ts.getBegDateTime());
+			c.setTime( ts.getStartDateTime());
 			this.startHour = c.get(Calendar.HOUR_OF_DAY);
 			this.startMinute = c.get(Calendar.MINUTE);
 			
@@ -332,7 +331,7 @@ public class StandingOrderHelper {
 					// this time slot matches to SO template window, and is within the cutoff time
 					LOGGER.info( "Found matched timeslot: " + ts.toString() );
 					_tmpTimeslot = ts;
-					__so_timeslotId = ts.getTimeslotId();
+					__so_timeslotId = ts.getId();
 					if(ts.isTimeslotRestricted()) ts.setTimeslotRestricted(false);
 					break;
 				}
@@ -346,7 +345,7 @@ public class StandingOrderHelper {
 				for ( FDTimeslot ts : altTimeslots ) {
 					// starting bound falls within time slot
 					LOGGER.debug(" ===> " + ts + " (overlap)");
-					__so_timeslotId = ts.getTimeslotId();
+					__so_timeslotId = ts.getId();
 					if(ts.isTimeslotRestricted()) ts.setTimeslotRestricted(false);
 					break;
 				}

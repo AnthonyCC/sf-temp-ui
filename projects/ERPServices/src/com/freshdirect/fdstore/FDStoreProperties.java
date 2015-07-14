@@ -26,6 +26,7 @@ import com.freshdirect.framework.util.ConfigHelper;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 
 
 public class FDStoreProperties {
@@ -704,11 +705,18 @@ public class FDStoreProperties {
 		
     // [APPDEV-3438] Unit Price Display
     private final static String UNIT_PRICE_DISPLAY_ENABLED = "fdstore.unitprice.enabled";
-	
+
 	//Recaptcha
     private final static String PROP_RECAPTCHA_PUBLIC_KEY = "fdstore.recaptcha.publickey";
     private final static String PROP_RECAPTCHA_PRIVATE_KEY = "fdstore.recaptcha.privatekey";
     
+	private static final String PROP_LOGISTICS_API_URL = "fdstore.logisticsapi.url";
+	private static final String PROP_OMS_API_URL = "fdstore.omsapi.url";
+	private static final String PROP_LOGISTICS_COMPANY_CODE = "fdstore.logistics.companycode";
+
+	private static final String PROP_LOGISTICS_CONNECTION_TIMEOUT = "fdstore.logistics.conn.timeout";
+	private static final String PROP_LOGISTICS_CONN_READ_TIMEOUT = "fdstore.logistics.conn.read.timeout";
+
     //Max Invalid Login counts for Recaptcha
     private final static String PROP_MAX_INVALID_LOGIN_ATTEMPT = "fdstore.max.invalid.login.count";
 
@@ -722,7 +730,7 @@ public class FDStoreProperties {
 	private static final String PROP_TIP_RANGE_CONFIG = "fdstore.tip.range.config";
 	
 	private static final String PROP_PRODUCTFAMILY = "fdstore.productfamily";
-	
+
 	// APPDEV - 4159 - Creating of variables for maximum size of columns in promo table
 	
 	private static final String PROMO_OLDCOLUMN_MAX_LIMIT = "fdstore.promopublish.oldValuecolumn.maxsize";
@@ -1445,6 +1453,8 @@ public class FDStoreProperties {
 		
 		 //Product Family 
         defaults.put(PROP_PRODUCTFAMILY, "true");
+        defaults.put(PROP_LOGISTICS_API_URL, "http://ny1ldlogistics02.nyc1.freshdirect.com:8080/");
+        defaults.put(PROP_OMS_API_URL, "http://crm01.crm.stdev10.nyc1.freshdirect.com:7001/");
         
         // APPDEV - 4159 - Setting default values for maximum size of columns in promo table
         defaults.put(PROMO_OLDCOLUMN_MAX_LIMIT, "2999");
@@ -1455,12 +1465,16 @@ public class FDStoreProperties {
         defaults.put(PROP_PRODUCT_SAMPLES_MAX_BUY_PRODUCTS_LIMIT, "2");
         defaults.put(PROP_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT, "1");
         defaults.put(PROP_PRODUCT_SAMPLES_TITLE, "Pick any two:");
-       
 	
+
 
         defaults.put("feature.rollout.checkout1_0", "GLOBAL:ENABLED,true;");
         defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,true;");
 		
+		refresh();
+        defaults.put(PROP_LOGISTICS_COMPANY_CODE, EnumCompanyCode.fd.name());
+        
+	
 		refresh();
     }
 
@@ -3403,7 +3417,7 @@ public class FDStoreProperties {
 	public static boolean isPaymentechGatewayEnabled() {
 	        return Boolean.valueOf(get(PROP_PAYMENTECH_GATEWAY_ENABLED)).booleanValue();
 	}
-	
+
 	//APPDEV-2817 Link to DeliveryPass category from top nav of Delivery Info page
     public static boolean doDpDeliveryInfoLink() {
         return (Boolean.valueOf(get(SHOW_DLVPASS_LINK_ON_DELINFO))).booleanValue();
@@ -3575,6 +3589,34 @@ public class FDStoreProperties {
 	public static boolean isUnitPriceDisplayEnabled() {
 		return (Boolean.valueOf(get(UNIT_PRICE_DISPLAY_ENABLED))).booleanValue();
 	}
+	
+	public static String getLogisticsAPIUrl() {
+		return get(PROP_LOGISTICS_API_URL);
+	}
+	public static String getOMSAPIUrl() {
+		return get(PROP_OMS_API_URL);
+	}
+	
+	public static String getLogisticsCompanyCode() {
+		return get(PROP_LOGISTICS_COMPANY_CODE);
+	}
+	
+	public static int getLogisticsConnectionTimeout() {
+		try{
+	   		return Integer.parseInt(get(PROP_LOGISTICS_CONNECTION_TIMEOUT));
+	   	} catch(Exception e){
+	   		return 30;
+	   	}
+	}
+	
+	public static int getLogisticsConnectionReadTimeout() {
+		try{
+	   		return Integer.parseInt(get(PROP_LOGISTICS_CONN_READ_TIMEOUT));
+	   	} catch(Exception e){
+	   		return 30;
+	   	}
+	}
+		
 	
 	// Recaptcha getter methods
 	 public static String getRecaptchaPublicKey() {

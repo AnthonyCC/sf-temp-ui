@@ -80,8 +80,10 @@ public class DeliveryTimeslots extends CheckoutResponse {
             timeSlots.addAll(Timeslot.initWithList(slotList.getTimeslots(result.isUserChefTable())));
         }
         List<String> restrictionMessages = result.getMessages();
-        for (String restrictionMessage : restrictionMessages) {
-            this.restrictions.add(new Restriction(restrictionMessage));
+        if(restrictionMessages != null) {
+	        for (String restrictionMessage : restrictionMessages) {
+	            this.restrictions.add(new Restriction(restrictionMessage));
+	        }
         }
         this.selectedTimeslotId = result.getPreselectedTimeslotId();
         this.reservedTimeslotId = result.getReservationTimeslotId();

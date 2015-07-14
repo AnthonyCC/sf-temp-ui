@@ -2,7 +2,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.*" %>
 <%@ page import="com.freshdirect.fdstore.*" %>
 <%@ page import="com.freshdirect.customer.*" %>
-<%@ page import="com.freshdirect.delivery.depot.*" %>
+<%@ page import="com.freshdirect.fdlogistics.model.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.crm.CrmAgentRole"%>

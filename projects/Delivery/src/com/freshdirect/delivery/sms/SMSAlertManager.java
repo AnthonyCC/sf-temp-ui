@@ -14,12 +14,11 @@ import javax.naming.NamingException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
-
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.delivery.DlvProperties;
-import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.sms.ejb.SmsAlertsHome;
 import com.freshdirect.delivery.sms.ejb.SmsAlertsSB;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -54,9 +53,9 @@ public class SMSAlertManager {
 	/**
 	 * This method check sends in the opt-in alerts to the  given mobile number
 	 * @param alerts
-	 * @throws DlvResourceException 
+	 * @throws FDResourceException 
 	 */
-	public boolean smsOptIn(String customerId,String mobileNumber) throws DlvResourceException{
+	public boolean smsOptIn(String customerId,String mobileNumber) throws FDResourceException{
 		boolean isSent=false;
 		// we need to format the mobile number to fit the request
 		PhoneNumber phone = new PhoneNumber(mobileNumber);
@@ -70,18 +69,18 @@ public class SMSAlertManager {
 			LOGGER.debug("calling smsAlertSB.smsOptIn()");
 			isSent = smsAlertSB.smsOptIn(customerId,mobileNumber);
 		}catch (NamingException e) {
-			throw new DlvResourceException(e);
+			throw new FDResourceException(e);
 		} catch (RemoteException e) {
-			throw new DlvResourceException(e);
+			throw new FDResourceException(e);
 		} catch (CreateException e) {
-			throw new DlvResourceException(e);
+			throw new FDResourceException(e);
 		}
 		
 		
 		return isSent;
 	}
 	
-	public void captureMessageRelayed(String mobileNumber, String shortCode, String carrierName, String receivedDate, String message) throws DlvResourceException{
+	public void captureMessageRelayed(String mobileNumber, String shortCode, String carrierName, String receivedDate, String message) throws FDResourceException{
 		
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		try {
@@ -93,11 +92,11 @@ public class SMSAlertManager {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (NamingException e) {
-			throw new DlvResourceException(e);
+			throw new FDResourceException(e);
 		} catch (RemoteException e) {
-			throw new DlvResourceException(e);
+			throw new FDResourceException(e);
 		} catch (CreateException e) {
-			throw new DlvResourceException(e);
+			throw new FDResourceException(e);
 		}
 		
 	}

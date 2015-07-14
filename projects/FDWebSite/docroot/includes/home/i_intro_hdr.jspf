@@ -4,7 +4,7 @@
 		<% if (user.getLevel() < FDUserI.RECOGNIZED) { %>
 		     <td>
 		     <% if(user.isDepotUser()){
-		               String depotName = com.freshdirect.fdstore.FDDepotManager.getInstance().getDepot(user.getDepotCode()).getName(); %>
+		               String depotName = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getDepot(user.getDepotCode()).getName(); %>
 		               <font class="title14">Welcome to FreshDirect <%=depotName%> Depot.</font>
 		     <% } else { %>
 		               <font class="title16">Welcome to FreshDirect!</font>

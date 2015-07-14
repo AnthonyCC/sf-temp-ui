@@ -9,12 +9,12 @@
 
 package com.freshdirect.webapp.taglib.fdstore.depot;
 
-import java.util.Collection;
 import java.util.Collections;
 
-import com.freshdirect.delivery.depot.DlvDepotModel;
-import com.freshdirect.fdstore.FDDepotManager;
+import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.logistics.controller.data.PickupData;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 /**
@@ -31,7 +31,7 @@ public class GetDepotLocationsTag extends AbstractGetterTag {
 	}
 
 	protected Object getResult() throws FDResourceException {
-		DlvDepotModel depot = FDDepotManager.getInstance().getDepot( this.depotCode );
+		FDDeliveryDepotModel depot = FDDeliveryManager.getInstance().getDepot( this.depotCode );
 		return (depot != null ? depot.getLocations() : Collections.EMPTY_LIST);
 	}
 

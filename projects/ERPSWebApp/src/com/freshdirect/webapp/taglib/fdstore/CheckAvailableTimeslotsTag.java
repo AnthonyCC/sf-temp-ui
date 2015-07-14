@@ -7,19 +7,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.address.EnumAddressType;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.delivery.DlvAddressGeocodeResponse;
-import com.freshdirect.delivery.DlvServiceSelectionResult;
-import com.freshdirect.delivery.EnumDeliveryStatus;
+import com.freshdirect.fdlogistics.model.FDDeliveryAddressGeocodeResponse;
+import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.WebFormI;
+import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 
 
@@ -44,7 +43,7 @@ public class CheckAvailableTimeslotsTag extends AbstractControllerTag {
 
 		 		try {
 		 			
-		 			DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkAddress(form.getAddress());
+		 			FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByAddress(form.getAddress());
 			 		EnumDeliveryStatus status = serviceResult.getServiceStatus(form.dlvServiceType);
 			 		
 			 		AddressModel deliveryAddress = form.getAddress();
@@ -66,7 +65,7 @@ public class CheckAvailableTimeslotsTag extends AbstractControllerTag {
 	 		if(result.isSuccess()){
 
 	 			FDSessionUser user = (FDSessionUser) pageContext.getSession().getAttribute(SessionName.USER);
-	 			DlvAddressGeocodeResponse response=null;
+	 			FDDeliveryAddressGeocodeResponse response=null;
 	 			try{
 	 				response=FDDeliveryManager.getInstance().geocodeAddress(form.getAddress());
 	 			} catch (FDInvalidAddressException fdiae) {

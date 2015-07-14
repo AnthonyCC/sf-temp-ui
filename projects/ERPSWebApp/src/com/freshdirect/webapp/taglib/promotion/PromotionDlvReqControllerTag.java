@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -23,7 +22,6 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.delivery.EnumDeliveryOption;
-import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.enums.WeekDay;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
@@ -46,6 +44,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.delivery.model.DlvZoneModel;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 

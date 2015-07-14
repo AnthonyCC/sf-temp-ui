@@ -6,26 +6,20 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.delivery.EnumReservationType;
-import com.freshdirect.delivery.model.DlvZoneModel;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdlogistics.model.FDZoneNotFoundException;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDTimeslot;
-import com.freshdirect.fdstore.FDZoneNotFoundException;
 import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.delivery.model.DlvZoneModel;
+import com.freshdirect.logistics.delivery.model.EnumReservationType;
 
 public class Timeslot {
 
     private static Category LOGGER = LoggerFactory.getInstance(Timeslot.class);
 
-    private DlvZoneModel zoneModel = null;
-
     private boolean chefTableUser = false;
-
-    private int availCapacity = 0;
-
-    private int normalAvailCapacity = 0;
 
     private boolean chefsTable = false;
         
@@ -43,47 +37,21 @@ public class Timeslot {
      * @return
      */
     public static Timeslot wrap(FDTimeslot slot, boolean chefTableUser) {
-        FDDeliveryManager deliveryManager = FDDeliveryManager.getInstance();
         Timeslot newInstance = new Timeslot();
         newInstance.slot = slot;
         newInstance.chefTableUser = chefTableUser;
-
-        try {
-            newInstance.zoneModel = deliveryManager.findZoneById(slot.getZoneId());
-        } catch (FDResourceException e) {
-            LOGGER.warn("FDResourceException while trying to fetch zoneModel.", e);
-        } catch (FDZoneNotFoundException e) {
-            LOGGER.warn("FDZoneNotFoundException while trying to fetch zoneModel.", e);
-        }
-
-        //Since we're doing availability calculation on instantiation, instead of "gets". there are chance of
-        //steal data
-
-        Date now = new Date();
-        if (newInstance.zoneModel != null) {
-            if (chefTableUser) {
-                newInstance.availCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, TimeslotLogic.PAGE_CHEFSTABLE,
-                		slot.getDlvTimeslot().isPremiumSlot()?newInstance.zoneModel.getPremiumCtReleaseTime():newInstance.zoneModel.getCtReleaseTime()) ? 1 : 0;
-            } else {
-                newInstance.availCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, TimeslotLogic.PAGE_NORMAL,
-                		slot.getDlvTimeslot().isPremiumSlot()?newInstance.zoneModel.getPremiumCtReleaseTime():newInstance.zoneModel.getCtReleaseTime()) ? 1 : 0;
-            }
-            newInstance.normalAvailCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, TimeslotLogic.PAGE_NORMAL,
-            		slot.getDlvTimeslot().isPremiumSlot()?newInstance.zoneModel.getPremiumCtReleaseTime():newInstance.zoneModel.getCtReleaseTime()) ? 1 : 0;
-            newInstance.chefsTable = (newInstance.normalAvailCapacity < 1 && newInstance.availCapacity > 0);
-        }
-                
+        newInstance.chefsTable = (!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity());   
         return newInstance;
     }
 
     private FDTimeslot slot;
 
     public String getTimeslotId() {
-        return slot.getTimeslotId();
+        return slot.getId();
     }
 
     public Date getBegDateTime() {
-        return slot.getBegDateTime();
+        return slot.getStartDateTime();
     }
 
     public Date getEndDateTime() {
@@ -97,48 +65,15 @@ public class Timeslot {
     public boolean isFull() {
         boolean full = false;
         if (chefTableUser) {
-            full = (availCapacity < 1);
+            full = !(slot.hasAvailCTCapacity());
         } else {
-            full = (normalAvailCapacity < 1);
+            full = !(slot.hasNormalAvailCapacity());
         }
         return full;
     }
 
     public boolean isChefsTable() {
-        /*
-        DUP: Chef table determination appears to be in multiple places:
-        1) in JSP i_delivery_slots.jsp 
-        
-        int availCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, timeslot_page_type, zoneModel.getCtReleaseTime());
-        int normalAvailCapacity = availCapacity;
-
-        if (TimeslotLogic.PAGE_CHEFSTABLE == timeslot_page_type) {
-             normalAvailCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, TimeslotLogic.PAGE_NORMAL, zoneModel.getCtReleaseTime());
-        }
-
-        if (normalAvailCapacity < 1 && availCapacity > 0) {
-             request.setAttribute("shownCTSlot", "TRUE");
-        }
-        
-        2) in com.freshdirect.fdstore.FDTimeslot
-         public int getChefsTableAvailable() {
-                 return dlvTimeslot.getChefsTableAvailable();
-         }
-         
-         This class duplicates to #1           
-        */
-
-        boolean isChefsTable = false;
-        if (zoneModel != null) {
-            //This below commented out portion is executed in constructor.
-            //            int availCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, TimeslotLogic.PAGE_CHEFSTABLE, zoneModel
-            //                    .getCtReleaseTime());
-            //            int normalAvailCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, TimeslotLogic.PAGE_NORMAL, zoneModel
-            //                    .getCtReleaseTime());
-            isChefsTable = (normalAvailCapacity < 1 && availCapacity > 0);
-        }
-
-        return isChefsTable;
+    	return !slot.hasNormalAvailCapacity() & slot.hasAvailCTCapacity();
     }
 
     public static String getTimeslotReservationTypeCode() {
@@ -154,7 +89,7 @@ public class Timeslot {
 	}
 	
 	public boolean isPremiumSlot() {
-		return slot.getDlvTimeslot().isPremiumSlot();
+		return slot.isPremiumSlot();
 	}
 	
 	public boolean isUnavailable() {

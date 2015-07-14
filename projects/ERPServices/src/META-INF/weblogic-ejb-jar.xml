@@ -217,22 +217,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <jndi-name>freshdirect.customer.ActivityLog</jndi-name>
     </weblogic-enterprise-bean>
     <weblogic-enterprise-bean>
-      <ejb-name>EventProcessor</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>10</max-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <transaction-descriptor></transaction-descriptor>
-      <resource-description>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <jndi-name>fddatasource</jndi-name>
-      </resource-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>freshdirect.analytics.EventProcessor</jndi-name>
-    </weblogic-enterprise-bean>
-    <weblogic-enterprise-bean>
       <ejb-name>ZoneInfoManager</ejb-name>
       <stateless-session-descriptor>
         <pool>
@@ -1107,23 +1091,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <jndi-name>freshdirect.ticketservice</jndi-name>
     </weblogic-enterprise-bean>
     <weblogic-enterprise-bean>
-      <ejb-name>TimeslotEventListener</ejb-name>
-      <message-driven-descriptor>
-        <pool>
-          <max-beans-in-free-pool>10</max-beans-in-free-pool>
-        </pool>
-        <destination-jndi-name>
-        logMetricQueue</destination-jndi-name>
-      </message-driven-descriptor>
-      <resource-description>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <jndi-name>fddatasource</jndi-name>
-      </resource-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>
-      freshdirect.analytics.TimeslotEventListener</jndi-name>
-    </weblogic-enterprise-bean>
-    <weblogic-enterprise-bean>
       <ejb-name>CouponActivityLogListener</ejb-name>
       <message-driven-descriptor>
         <pool>
@@ -1139,22 +1106,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
       <enable-call-by-reference>true</enable-call-by-reference>
       <jndi-name>
       freshdirect.analytics.CouponActivityLogListener</jndi-name>
-    </weblogic-enterprise-bean>
-    <weblogic-enterprise-bean>
-      <ejb-name>OrderRate</ejb-name>
-      <stateless-session-descriptor>
-        <pool>
-          <max-beans-in-free-pool>1</max-beans-in-free-pool>
-        </pool>
-        <stateless-clustering></stateless-clustering>
-      </stateless-session-descriptor>
-      <transaction-descriptor></transaction-descriptor>
-      <resource-description>
-        <res-ref-name>jdbc/dbpool</res-ref-name>
-        <jndi-name>fddatasource</jndi-name>
-      </resource-description>
-      <enable-call-by-reference>true</enable-call-by-reference>
-      <jndi-name>freshdirect.analytics.OrderRate</jndi-name>
     </weblogic-enterprise-bean>
     <weblogic-enterprise-bean>
       <ejb-name>ProductPromotionInfoManager</ejb-name>

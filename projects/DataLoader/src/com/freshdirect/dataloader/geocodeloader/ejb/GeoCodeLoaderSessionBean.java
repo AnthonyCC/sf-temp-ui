@@ -15,9 +15,9 @@ import org.apache.log4j.Logger;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.dataloader.geocodeloader.GeoCodeFailedException;
-import com.freshdirect.delivery.DlvAddressGeocodeResponse;
+import com.freshdirect.fdlogistics.model.FDDeliveryAddressGeocodeResponse;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -142,7 +142,7 @@ public class GeoCodeLoaderSessionBean extends SessionBeanSupport {
 	
 	private void geoCodeAddress(AddressModel dlvAddress) throws GeoCodeFailedException, FDResourceException{		
 		try {
-			DlvAddressGeocodeResponse geocodeResponse = FDDeliveryManager.getInstance().geocodeAddress(dlvAddress);
+			FDDeliveryAddressGeocodeResponse geocodeResponse = FDDeliveryManager.getInstance().geocodeAddress(dlvAddress);
 		    String geocodeResult = geocodeResponse.getResult();
 		    if(!"GEOCODE_OK".equalsIgnoreCase(geocodeResult))
 		    {

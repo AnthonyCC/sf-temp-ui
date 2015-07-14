@@ -32,7 +32,7 @@ if(user != null) {
     String validURLForButton = "/registration/signup.jsp";
     String depotName = "";
     if(user.isDepotUser()){
-        depotName = com.freshdirect.fdstore.FDDepotManager.getInstance().getDepot(user.getDepotCode()).getName();
+        depotName = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getDepot(user.getDepotCode()).getName();
     }
     
     

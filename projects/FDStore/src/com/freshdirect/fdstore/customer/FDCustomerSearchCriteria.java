@@ -1,12 +1,15 @@
 package com.freshdirect.fdstore.customer;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.freshdirect.delivery.depot.DlvDepotModel;
-import com.freshdirect.fdstore.FDDepotManager;
+import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.logistics.controller.data.PickupData;
+import com.freshdirect.logistics.controller.data.PickupLocationData;
 
 public class FDCustomerSearchCriteria extends FDSearchCriteria {
 
@@ -82,14 +85,14 @@ public class FDCustomerSearchCriteria extends FDSearchCriteria {
 		
 		if (this.depotCode != null && !"".equals(this.depotCode.trim())) {
 			if (depotCode != null && !depotCode.equals("")) {
-				FDDepotManager dmgr = FDDepotManager.getInstance();
-				for (Iterator dIter = dmgr.getDepots().iterator(); dIter.hasNext();) {
-					DlvDepotModel dm = (DlvDepotModel) dIter.next();
-					if (depotCode.equals(dm.getDepotCode())) {
-						m.put("Depot", dm.getName());
-						break;
-					}
-				}
+				
+				List<FDDeliveryDepotModel> depots = FDDeliveryManager.getInstance().getPickupDepots();
+				for (FDDeliveryDepotModel pickup: depots) {
+		            if (depotCode.equals(pickup.getDepotCode())) {
+		                    m.put("Depot", pickup.getName());
+		                    break;
+		            }
+		        }
 			}
 		}
 		

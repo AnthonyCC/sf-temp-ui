@@ -12,7 +12,7 @@ package com.freshdirect.webapp.taglib.fdstore.depot;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.fdstore.FDDepotManager;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
@@ -30,9 +30,9 @@ public class GetDepotsTag extends AbstractGetterTag {
 	}
 
 	protected Object getResult() throws FDResourceException {
-		List allDepots = new ArrayList(FDDepotManager.getInstance().getDepots());
+		List allDepots = new ArrayList(FDDeliveryManager.getInstance().getDepots());
 		if(includeCorpDepots){
-			allDepots.addAll(FDDepotManager.getInstance().getCorporateDepots());
+			allDepots.addAll(FDDeliveryManager.getInstance().getCorporateDepots());
 		}
 		return allDepots;
 	}

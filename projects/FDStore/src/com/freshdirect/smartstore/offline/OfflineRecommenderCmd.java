@@ -16,15 +16,12 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.smartstore.ejb.OfflineRecommenderHome;
 import com.freshdirect.smartstore.ejb.OfflineRecommenderSB;
 

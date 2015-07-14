@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 
-import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 
 
 public class FDStandingOrderInfo implements Serializable  {

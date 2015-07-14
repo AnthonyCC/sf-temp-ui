@@ -7,7 +7,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.fdstore.FDDepotManager;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -34,7 +34,7 @@ public class CrmDepotMembershipControllerTag extends AbstractControllerTag {
 						String accessCode = NVL.apply(request.getParameter("accessCode"), "").trim();
 						actionResult.addError("".equals(accessCode), "accessCode", "required");
 						if(actionResult.isSuccess()){
-							actionResult.addError(!FDDepotManager.getInstance().checkAccessCode(depotCode, accessCode), "accessCode", "Access Code is incorrect");
+							actionResult.addError(!FDDeliveryManager.getInstance().checkAccessCode(depotCode, accessCode), "accessCode", "Access Code is incorrect");
 						}
 					}
 					if (actionResult.isSuccess()) {

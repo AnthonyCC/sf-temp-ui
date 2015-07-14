@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
@@ -15,10 +14,9 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.FDTimeslotUtil;
-import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.delivery.model.DlvZoneModel;
 import com.freshdirect.mobileapi.model.tagwrapper.CheckoutControllerTagWrapper;
-import com.freshdirect.webapp.taglib.fdstore.Result;
 
 /**
  * Rich domain object to encapsulate business logic for reservation / delivery timeslot.

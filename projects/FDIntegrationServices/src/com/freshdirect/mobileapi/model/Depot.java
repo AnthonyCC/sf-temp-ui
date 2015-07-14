@@ -4,16 +4,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.freshdirect.delivery.depot.DlvDepotModel;
-import com.freshdirect.fdstore.FDDepotManager;
+import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.logistics.controller.data.PickupData;
+import com.freshdirect.logistics.delivery.model.Pickup;
 
 public class Depot {
 
     private static final String HAMPTONS_DEPOT_CODE = "HAM";
 
-    private DlvDepotModel depot;
+    private FDDeliveryDepotModel depot;
 
     private List<DepotLocation> depotLocations = new ArrayList<DepotLocation>();
 
@@ -28,9 +30,9 @@ public class Depot {
 
         boolean theHamptonsIsOn = FDStoreProperties.isSummerServiceEnabled();
 
-        Collection<DlvDepotModel> pickupDepots = FDDepotManager.getInstance().getPickupDepots();
+        Collection<FDDeliveryDepotModel> pickupDepots = FDDeliveryManager.getInstance().getPickupDepots();
         List<Depot> newList = new ArrayList<Depot>();
-        for (DlvDepotModel pickupDepot : pickupDepots) {
+        for (FDDeliveryDepotModel pickupDepot : pickupDepots) {
             //if ((!theHamptonsIsOn) && (HAMPTONS_DEPOT_CODE.equalsIgnoreCase(pickupDepot.getDepotCode()))) {
         	// Filtering Hamptons pickup forever use the previous if hamtopns pickup needs to be handled
         	if (HAMPTONS_DEPOT_CODE.equalsIgnoreCase(pickupDepot.getDepotCode()) || pickupDepot.isDeactivated()) {
@@ -42,10 +44,10 @@ public class Depot {
         return newList;
     }
 
-    public static Depot wrap(DlvDepotModel depot) {
+    public static Depot wrap(FDDeliveryDepotModel pickupDepot) {
         Depot newInstance = new Depot();
-        newInstance.depot = depot;
-        newInstance.depotLocations = DepotLocation.wrap(depot.getLocations(), depot.isPickup());
+        newInstance.depot = pickupDepot;
+        newInstance.depotLocations = DepotLocation.wrap(pickupDepot.getLocations(), pickupDepot.isPickup());
         return newInstance;
     }
 

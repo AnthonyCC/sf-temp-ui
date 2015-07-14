@@ -4,10 +4,13 @@ import java.text.NumberFormat;
 import java.util.Iterator;
 import java.util.Locale;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.delivery.DlvAddressVerificationResponse;
+import com.freshdirect.fdlogistics.model.FDDeliveryAddressVerificationResponse;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -19,16 +22,20 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSessionBean;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 
 public class ShoppingListValidator {
 	
 	protected final static NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance(Locale.US);
+
+	private final static Logger LOGGER = LoggerFactory.getInstance(ShoppingListValidator.class);
 
 	public static void validateShoppingList(FDStandingOrder standingOrder, FDUserI user, ErpAddressModel deliveryAddress,
 			ActionResult result) throws FDResourceException {
@@ -128,13 +135,18 @@ public class ShoppingListValidator {
 	}
 
 	protected static double getMinimumOrderAmount(ErpAddressModel deliveryAddress) throws FDResourceException {
-		DlvAddressVerificationResponse davResponse = FDDeliveryManager.getInstance().scrubAddress(deliveryAddress, true);
-		AddressModel address = davResponse.getAddress();
-		String county = FDDeliveryManager.getInstance().getCounty(address);
-		if ("SUFFOLK".equalsIgnoreCase(county)) {
-			return 100.0;
-		}
+		try {
+			FDDeliveryAddressVerificationResponse davResponse = FDDeliveryManager.getInstance().scrubAddress(deliveryAddress, true);
+			AddressModel address = davResponse.getAddress();
+			String county = FDDeliveryManager.getInstance().getCounty(address);
+			if ("SUFFOLK".equalsIgnoreCase(county)) {
+				return 100.0;
+			}
 
+		} catch (FDInvalidAddressException e) {
+			//throw new FDResourceException(e);
+			LOGGER.info("ignore invalid address exception");
+		}
 		return EnumServiceType.CORPORATE.equals(deliveryAddress.getServiceType()) ? FDUserI.MIN_CORP_ORDER_AMOUNT : FDUserI.MINIMUM_ORDER_AMOUNT;
 	}
 }

@@ -4,10 +4,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -18,8 +16,6 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
-import sun.security.action.GetLongAction;
-
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAuthenticationException;
@@ -27,13 +23,13 @@ import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmManager;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.delivery.ejb.AirclicManager;
-import com.freshdirect.delivery.model.DeliveryExceptionModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.mail.ErpMailSender;
 
 public class DeliveryCaseCreateCron {
@@ -50,10 +46,10 @@ public class DeliveryCaseCreateCron {
 		try	
 		{
 			loginAgent = getLoginAgent();
-			Map<String, DeliveryExceptionModel> result =  AirclicManager.getInstance().getCartonScanInfo();
+			Map<String, DeliveryException> result =  AirclicManager.getInstance().getCartonScanInfo();
 			if(result != null){
-				for(Map.Entry<String, DeliveryExceptionModel> orderEntry : result.entrySet()){
-					DeliveryExceptionModel model = orderEntry.getValue();
+				for(Map.Entry<String, DeliveryException> orderEntry : result.entrySet()){
+					DeliveryException model = orderEntry.getValue();
 					LOGGER.debug("Creatng case for order # " + model.getOrderId());
 					try {
 						if(model.getOrderId() != null) {

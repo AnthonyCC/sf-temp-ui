@@ -10,10 +10,10 @@
 <%@ page import='com.freshdirect.fdstore.util.TimeslotLogic'%>
 <%@ page import="com.freshdirect.framework.util.*"%>
 <%@ page import='com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine' %>
-<%@ page import='com.freshdirect.delivery.DlvZoneInfoModel' %>
+<%@ page import='com.freshdirect.fdlogistics.model.*' %>
 <%@ page import='com.freshdirect.fdstore.FDDeliveryManager' %>
-<%@ page import='com.freshdirect.delivery.EnumReservationType' %>
-<%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
+<%@ page import='com.freshdirect.logistics.delivery.model.EnumReservationType' %>
+
 <%@ page import='com.freshdirect.webapp.crm.security.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>

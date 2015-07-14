@@ -545,7 +545,7 @@ function numbersonly(myfield, e, dec)
 					<td> Zone: &nbsp;&nbsp;
 						<select id="zone" name="zone" class="h10px w200px">
 							<option value="">Select Zone</option>
-		 					<logic:iterate id="zoneModel" collection="<%= availableDeliveryZones %>" type="com.freshdirect.delivery.model.DlvZoneModel" indexId="idx">
+		 					<logic:iterate id="zoneModel" collection="<%= availableDeliveryZones %>" type="com.freshdirect.logistics.delivery.model.DlvZoneModel" indexId="idx">
 		 						<% if(zoneModel.getZoneDescriptor().getZoneCode().equals(selectedZoneId)) {%>
 								 <option value="<%= zoneModel.getZoneDescriptor().getZoneCode() %>" selected><%= zoneModel.getZoneDescriptor().getZoneCode() %> <%= zoneModel.getName() %>  </option>
 								 <% } else { %>

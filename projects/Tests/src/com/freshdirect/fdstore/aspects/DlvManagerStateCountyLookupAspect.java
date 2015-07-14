@@ -2,8 +2,8 @@ package com.freshdirect.fdstore.aspects;
 
 import org.mockejb.interceptor.InvocationContext;
 
-import com.freshdirect.fdstore.StateCounty;
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
+import com.freshdirect.logistics.fdstore.StateCounty;
 
 public class DlvManagerStateCountyLookupAspect extends BaseAspect {
 

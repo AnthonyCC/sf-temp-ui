@@ -1,35 +1,30 @@
 package com.freshdirect.dataloader.geocodefilter;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.delivery.EnumDeliveryStatus;
-import com.freshdirect.delivery.EnumRestrictedAddressReason;
-import com.freshdirect.delivery.InvalidAddressException;
-import com.freshdirect.delivery.ejb.DlvManagerDAO;
-import com.freshdirect.delivery.ejb.DlvManagerSessionBean;
+import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
+import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 
 public abstract class GFBaseValidator implements IGeoValidator{
 	
-	private DlvManagerSessionBean dlvManager;
-	 
-	public void initialize(DlvManagerSessionBean dlvManager) {
-		this.dlvManager = dlvManager;
-		initialize();
-	}
-	public boolean validateAddress(Connection conn,Object object, boolean filterRestricted) throws SQLException,InvalidAddressException {
+	public boolean validateAddress(Connection conn,Object object, boolean filterRestricted) throws FDResourceException, FDInvalidAddressException {
 		
 		GFRecord record = (GFRecord) object;
 		
-		AddressModel address = getAddressModel(record);				
+		AddressModel address = getAddressModel(record);		
+		FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByAddress(address);
 		
-		EnumDeliveryStatus result = dlvManager.getServiceStatus(DlvManagerDAO.checkAddress(conn, address, EnumServiceType.HOME));
-		EnumDeliveryStatus resultCorp = dlvManager.getServiceStatus(DlvManagerDAO.checkAddress(conn, address, EnumServiceType.CORPORATE));
+		EnumDeliveryStatus result = serviceResult.getServiceStatus(EnumServiceType.HOME);
+		EnumDeliveryStatus resultCorp = serviceResult.getServiceStatus(EnumServiceType.CORPORATE);
 		boolean addressGood = isAddressValid(EnumDeliveryStatus.DELIVER.equals(result), EnumDeliveryStatus.DELIVER.equals(resultCorp));
 		if(addressGood && filterRestricted){
-			addressGood = EnumRestrictedAddressReason.NONE.equals(DlvManagerDAO.isAddressRestricted(conn, address));
+			addressGood = EnumRestrictedAddressReason.NONE.equals(serviceResult.getRestrictionReason().NONE);
 		}
 		if (addressGood) {
 			addResult(record, EnumDeliveryStatus.DELIVER.equals(result), EnumDeliveryStatus.DELIVER.equals(resultCorp));

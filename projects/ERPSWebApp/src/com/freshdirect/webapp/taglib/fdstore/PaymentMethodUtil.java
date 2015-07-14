@@ -28,10 +28,10 @@ import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
-import com.freshdirect.delivery.DlvAddressVerificationResponse;
-import com.freshdirect.delivery.EnumAddressVerificationResult;
+import com.freshdirect.fdlogistics.model.FDDeliveryAddressVerificationResponse;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -43,6 +43,7 @@ import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.delivery.model.EnumAddressVerificationResult;
 import com.freshdirect.payment.BillingCountryInfo;
 import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
@@ -579,60 +580,67 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     
     private static AddressModel scrubAddress(AddressModel address, ActionResult result,boolean isFiftyStateValidationReqd) throws FDResourceException {
 
-		result.addError(address.getCity() == null || "".equals(address.getCity()),
-				EnumUserInfoName.BIL_CITY.getCode(), SystemMessageList.MSG_REQUIRED);
+		try {
+			result.addError(address.getCity() == null || "".equals(address.getCity()),
+					EnumUserInfoName.BIL_CITY.getCode(), SystemMessageList.MSG_REQUIRED);
 
-		result.addError(address.getState() == null || "".equals(address.getState()) || !AddressUtil.validateState(address.getState()),
-		EnumUserInfoName.BIL_STATE.getCode(), SystemMessageList.MSG_UNRECOGNIZE_STATE);
-        
-		result.addError(address.getZipCode() == null || "".equals(address.getZipCode()),
-				 EnumUserInfoName.BIL_ZIPCODE.getCode(), SystemMessageList.MSG_ZIP_CODE);
-		
-		if(!AddressUtil.validateTriState(address.getState())){
-			//If its a non-tri state address there is no way validate it currently. Accept the address as is.
-			return address;
+			result.addError(address.getState() == null || "".equals(address.getState()) || !AddressUtil.validateState(address.getState()),
+			EnumUserInfoName.BIL_STATE.getCode(), SystemMessageList.MSG_UNRECOGNIZE_STATE);
+			
+			result.addError(address.getZipCode() == null || "".equals(address.getZipCode()),
+					 EnumUserInfoName.BIL_ZIPCODE.getCode(), SystemMessageList.MSG_ZIP_CODE);
+			
+			if(!AddressUtil.validateTriState(address.getState())){
+				//If its a non-tri state address there is no way validate it currently. Accept the address as is.
+				return address;
+			}
+			
+			// this work is temp stalled since qa got problem
+			//if(!isFiftyStateValidationReqd) return address;
+			
+			FDDeliveryAddressVerificationResponse response = FDDeliveryManager.getInstance().scrubAddress(address);
+			String apartment = address.getApartment();
+			
+			LOGGER.debug("Scrubbing response: " + response.getVerifyResult());
+			if (!EnumAddressVerificationResult.ADDRESS_OK.equals(response.getVerifyResult())) {
+			    
+			    result.addError(EnumAddressVerificationResult.NOT_VERIFIED.equals(response.getVerifyResult()),
+			    EnumUserInfoName.BIL_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
+			    
+			    result.addError(EnumAddressVerificationResult.ADDRESS_BAD.equals(response.getVerifyResult()),
+				EnumUserInfoName.BIL_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
+			    
+			    result.addError(EnumAddressVerificationResult.STREET_WRONG .equals(response.getVerifyResult()),
+				EnumUserInfoName.BIL_ADDRESS_1.getCode(), SystemMessageList.MSG_UNRECOGNIZE_ADDRESS);
+			    
+			    result.addError(EnumAddressVerificationResult.BUILDING_WRONG.equals(response.getVerifyResult()),
+				EnumUserInfoName.BIL_ADDRESS_1.getCode(), SystemMessageList.MSG_UNRECOGNIZE_STREET_NUMBER);
+			    
+			    result.addError(EnumAddressVerificationResult.APT_WRONG.equals(response.getVerifyResult()),
+				EnumUserInfoName.BIL_APARTMENT.getCode(),
+			    ((apartment == null) || (apartment.length() < 1)) ? SystemMessageList.MSG_APARTMENT_REQUIRED : SystemMessageList.MSG_UNRECOGNIZE_APARTMENT_NUMBER
+			    );
+			    
+			    result.addError(EnumAddressVerificationResult.ADDRESS_NOT_UNIQUE.equals(response.getVerifyResult()),
+				EnumUserInfoName.BIL_ADDRESS_1.getCode(), SystemMessageList.MSG_UNRECOGNIZE_ADDRESS);
+			    
+			    //
+			    // return original broken address is there was an error
+			    //
+			    return address;
+			}
+			//
+			// all's well, return fixed/cleaned corrected address
+			//
+			address.setAddress1(response.getAddress().getAddress1());
+			address.setAddress2(response.getAddress().getAddress2());
+			
+		} catch (FDInvalidAddressException e) {
+			//throw new FDResourceException(e);
+			//ignore the invalid address exception
+			LOGGER.warn(e.getMessage());
 		}
-		
-		// this work is temp stalled since qa got problem
-		//if(!isFiftyStateValidationReqd) return address;
-		
-		DlvAddressVerificationResponse response = FDDeliveryManager.getInstance().scrubAddress(address);
-        String apartment = address.getApartment();
-        
-        LOGGER.debug("Scrubbing response: " + response.getResult());
-        if (!EnumAddressVerificationResult.ADDRESS_OK.equals(response.getResult())) {
-            
-            result.addError(EnumAddressVerificationResult.NOT_VERIFIED.equals(response.getResult()),
-            EnumUserInfoName.BIL_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
-            
-            result.addError(EnumAddressVerificationResult.ADDRESS_BAD.equals(response.getResult()),
-			EnumUserInfoName.BIL_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);
-            
-            result.addError(EnumAddressVerificationResult.STREET_WRONG .equals(response.getResult()),
-			EnumUserInfoName.BIL_ADDRESS_1.getCode(), SystemMessageList.MSG_UNRECOGNIZE_ADDRESS);
-            
-            result.addError(EnumAddressVerificationResult.BUILDING_WRONG.equals(response.getResult()),
-			EnumUserInfoName.BIL_ADDRESS_1.getCode(), SystemMessageList.MSG_UNRECOGNIZE_STREET_NUMBER);
-            
-            result.addError(EnumAddressVerificationResult.APT_WRONG.equals(response.getResult()),
-			EnumUserInfoName.BIL_APARTMENT.getCode(),
-            ((apartment == null) || (apartment.length() < 1)) ? SystemMessageList.MSG_APARTMENT_REQUIRED : SystemMessageList.MSG_UNRECOGNIZE_APARTMENT_NUMBER
-            );
-            
-            result.addError(EnumAddressVerificationResult.ADDRESS_NOT_UNIQUE.equals(response.getResult()),
-			EnumUserInfoName.BIL_ADDRESS_1.getCode(), SystemMessageList.MSG_UNRECOGNIZE_ADDRESS);
-            
-            //
-            // return original broken address is there was an error
-            //
-            return address;
-        }
-        //
-        // all's well, return fixed/cleaned corrected address
-        //
-        address.setAddress1(response.getAddress().getAddress1());
-        address.setAddress2(response.getAddress().getAddress2());
-        return address;
+		return address;
     }
     
         

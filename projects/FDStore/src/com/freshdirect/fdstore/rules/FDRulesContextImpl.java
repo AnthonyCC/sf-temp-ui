@@ -4,15 +4,15 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
-import com.freshdirect.delivery.depot.DlvDepotModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDDepotManager;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ProfileModel;
+import com.freshdirect.logistics.controller.data.PickupData;
+import com.freshdirect.logistics.delivery.model.Pickup;
 import com.freshdirect.rules.RulesRuntimeException;
 
 /**
@@ -93,7 +93,7 @@ public class FDRulesContextImpl implements FDRuleContextI {
 		}
 		ErpDepotAddressModel location = (ErpDepotAddressModel)address;
 		try {
-			DlvDepotModel depot = FDDepotManager.getInstance().getDepotByLocationId(location.getLocationId());
+			FDDeliveryDepotModel depot = FDDeliveryManager.getInstance().getDepotByLocationId(location.getLocationId());
 			return depot.getDepotCode();
 		} catch (FDResourceException e) {
 			throw new RulesRuntimeException("Cannot find depot for location: "+location.getLocationId());

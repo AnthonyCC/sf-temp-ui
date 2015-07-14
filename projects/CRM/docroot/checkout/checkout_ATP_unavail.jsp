@@ -11,7 +11,7 @@
 <%@ page import="com.freshdirect.delivery.restriction.FDRestrictedAvailabilityInfo" %>
 <%@ page import="com.freshdirect.fdstore.atp.FDStockAvailabilityInfo" %>
 <%@ page import='com.freshdirect.fdstore.util.TimeslotLogic'%>
-
+<%@ page import='com.freshdirect.fdlogistics.model.*'%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>

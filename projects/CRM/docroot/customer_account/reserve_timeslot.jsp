@@ -1,15 +1,15 @@
 <%@ page import='java.util.*' %>
 <%@ page import="com.freshdirect.customer.ErpAddressModel"%>
 <%@ page import="com.freshdirect.customer.ErpDepotAddressModel"%>
-<%@ page import="com.freshdirect.delivery.depot.DlvLocationModel"%>
-<%@ page import="com.freshdirect.delivery.depot.DlvDepotModel"%>
-<%@ page import="com.freshdirect.delivery.EnumReservationType"%>
+<%@ page import="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel"%>
+<%@ page import="com.freshdirect.fdlogistics.model.FDDeliveryDepotModel"%>
+<%@ page import="com.freshdirect.logistics.delivery.model.EnumReservationType"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
-<%@ page import="com.freshdirect.fdstore.FDReservation"%>
+<%@ page import="com.freshdirect.fdlogistics.model.FDReservation"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName"%>
-<%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
+
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.customer.ErpCustomerInfoModel"%>
 <%@ page import="com.freshdirect.fdstore.util.TimeslotContext" %>

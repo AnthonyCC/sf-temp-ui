@@ -29,5 +29,8 @@
 	<classpathentry kind="var" path="FD_LIBS/testing/jmock-2.5.1/cglib-nodep-2.1_3.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/jmock-2.5.1/jmock-legacy-2.5.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/jmock-2.5.1/objenesis-1.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Delivery"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/logistics-data-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/FDLogisticsIntegration"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

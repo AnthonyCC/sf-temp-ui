@@ -6,8 +6,8 @@ package com.freshdirect.webapp.taglib.callcenter;
 
 import java.util.Collections;
 
-import com.freshdirect.delivery.ExceptionAddress;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.logistics.delivery.model.ExceptionAddress;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 

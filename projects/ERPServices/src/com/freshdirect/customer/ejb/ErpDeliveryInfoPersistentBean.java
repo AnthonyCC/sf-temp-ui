@@ -90,12 +90,11 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		"INSERT INTO CUST.DELIVERYINFO (SALESACTION_ID, RESERVATION_ID, STARTTIME, ENDTIME, CUTOFFTIME, ZONE, DEPOTLOCATION_ID," +
 		" FIRST_NAME, LAST_NAME, ADDRESS1, ADDRESS2, APARTMENT, CITY, STATE, ZIP, COUNTRY, PHONE, PHONE_EXT, DELIVERY_INSTRUCTIONS," +
 		"SCRUBBED_ADDRESS, ALT_DEST, ALT_FIRST_NAME, ALT_LAST_NAME, ALT_APARTMENT, ALT_PHONE, ALT_PHONE_EXT, DELIVERY_TYPE," +
-		"ALT_CONTACT_PHONE, ALT_CONTACT_EXT, GEOLOC, UNATTENDED_INSTR,CHARITY_NAME,COMPANY_NAME, PHONE_TYPE, ALT_CONTACT_TYPE) " +
+		"ALT_CONTACT_PHONE, ALT_CONTACT_EXT, GEOLOC, UNATTENDED_INSTR,CHARITY_NAME,COMPANY_NAME, PHONE_TYPE, ALT_CONTACT_TYPE, HANDOFFTIME, DLVREGION_ID) " +
         " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')')," +
         "' '),'-'),'.'),?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.')," +
         "?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?," +
-        "MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL),?,?,?,?,?)";
-		
+        "MDSYS.SDO_GEOMETRY(2001, 8265, MDSYS.SDO_POINT_TYPE (?, ?,NULL),NULL,NULL),?,?,?,?,?,?,?)";		
 	public PrimaryKey create(Connection conn) throws SQLException {
 		//String id = this.getNextId(conn);
 		PreparedStatement ps = conn.prepareStatement(STORE_DELIVERY_INFO);
@@ -145,7 +144,7 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
         	ps.setString(36, address.getAltContactPhone().getType());
         }else{
 			ps.setString(28, "");
-			ps.setString(29, "");
+			ps.setString(29, "");				
 			ps.setString(36, "");
 		}
         
@@ -164,7 +163,10 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		ps.setString(34, address.getCompanyName());
 		ps.setString(35, address.getPhone().getType());
 //		ps.setString(35, address.isOptInForDonation()?"Y":"N");
-
+		
+		//storing this information in deliveyrinfo to remove some of the dependency with logistics. 
+		ps.setTimestamp(37, new java.sql.Timestamp(this.model.getDeliveryCutoffTime().getTime()));
+		ps.setString(38, this.model.getDeliveryRegionId());
         
 		
 		try {
@@ -189,7 +191,8 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		"'('||substr(PHONE,1,3)||') '||substr(PHONE,4,3)||'-'||substr(PHONE,7,4) as PHONE, PHONE_EXT, DELIVERY_INSTRUCTIONS," +
 		"SCRUBBED_ADDRESS, ALT_DEST, ALT_FIRST_NAME, ALT_LAST_NAME, ALT_APARTMENT, " +
 		"'('||substr(ALT_PHONE,1,3)||') '||substr(ALT_PHONE,4,3)||'-'||substr(ALT_PHONE,7,4) AS ALT_PHONE, ALT_PHONE_EXT, " +
-		"DELIVERY_TYPE, ALT_CONTACT_PHONE, ALT_CONTACT_EXT, UNATTENDED_INSTR, PHONE_TYPE, ALT_CONTACT_TYPE, COMPANY_NAME FROM CUST.DELIVERYINFO WHERE SALESACTION_ID=?";
+		"DELIVERY_TYPE, ALT_CONTACT_PHONE, ALT_CONTACT_EXT, UNATTENDED_INSTR, PHONE_TYPE, ALT_CONTACT_TYPE,COMPANY_NAME, HANDOFFTIME, DLVREGION_ID FROM CUST.DELIVERYINFO WHERE SALESACTION_ID=?";
+		
 	public void load(Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(LOAD_DELIVERY_INFO);
 		ps.setString(1, this.getPK().getId());
@@ -257,7 +260,9 @@ public class ErpDeliveryInfoPersistentBean extends ErpReadOnlyPersistentBean {
 		}
 		address.setCompanyName(rs.getString("COMPANY_NAME"));
 				
-
+		// added as part of logistics reintegration
+		this.model.setDeliveryRegionId(rs.getString("DLVREGION_ID"));
+		this.model.setDeliveryHandoffTime(rs.getTimestamp("HANDOFFTIME"));
 		// load children here
 		this.unsetModified();
 	}

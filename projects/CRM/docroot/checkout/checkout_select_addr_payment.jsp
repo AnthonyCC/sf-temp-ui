@@ -5,11 +5,11 @@
 <%@ page import="com.freshdirect.fdstore.customer.*" %>
 <%@ page import="com.freshdirect.payment.*" %>
 <%@ page import="com.freshdirect.payment.fraud.*" %>
-<%@ page import="com.freshdirect.fdstore.FDDepotManager"%>
+<%@ page import="com.freshdirect.fdstore.FDDeliveryManager"%>
 <%@ page import="com.freshdirect.framework.webapp.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
-<%@ page import="com.freshdirect.fdstore.FDReservation" %>
+<%@ page import="com.freshdirect.fdlogistics.model.FDReservation" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDOrderHistory" %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -443,7 +443,7 @@ user.setAddressVerificationError(false);
     <tr VALIGN="TOP">
     <fd:GetDepotLocations id='locations' depotCode='<%=user.getDepotCode()%>'>
     <%  Date now = new Date();  %>
-    <logic:iterate id="location" collection="<%= locations %>" type="com.freshdirect.delivery.depot.DlvLocationModel" indexId="locationCounter">
+    <logic:iterate id="location" collection="<%= locations %>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel" indexId="locationCounter">
         <%
             checkedAddress = ("DEPOT_"+location.getPK().getId()).equalsIgnoreCase(request.getParameter("selectAddressList"));
             
@@ -503,7 +503,7 @@ user.setAddressVerificationError(false);
 <%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~ START PICKUP LOCATION SECTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~ --%>
 <%  if (user.isPickupUser()) { 
 
-	Collection pickups = FDDepotManager.getInstance().getPickupDepots();
+	Collection pickups = FDDeliveryManager.getInstance().getPickupDepots();
 	String  defaultDepotLocation = "";
 	if (user !=null && user.getIdentity() != null){
 	 	defaultDepotLocation = FDCustomerManager.getDefaultDepotLocationPK(user.getIdentity() );
@@ -528,8 +528,8 @@ user.setAddressVerificationError(false);
 <%  cellCounter = 0; %>
     <tr VALIGN="TOP">
     <%  Date now = new Date();  %>
-    <logic:iterate id="depot" collection="<%= FDDepotManager.getInstance().getPickupDepots() %>" type="com.freshdirect.delivery.depot.DlvDepotModel">
-    <logic:iterate id="location" collection="<%= depot.getLocations() %>" type="com.freshdirect.delivery.depot.DlvLocationModel" indexId="locationCounter">
+    <logic:iterate id="depot" collection="<%= FDDeliveryManager.getInstance().getPickupDepots() %>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotModel">
+    <logic:iterate id="location" collection="<%= depot.getLocations() %>" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel" indexId="locationCounter">
         <%
             if (location.getPK().getId().equalsIgnoreCase(fldDepotLocation) || (user.isPickupOnly() && pickups.size() == 1)) {
 				checkedAddress = true;

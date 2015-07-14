@@ -1,23 +1,27 @@
 package com.freshdirect.mktAdmin.web;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Category;
-import org.springframework.validation.BindException;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mktAdmin.constants.EnumCompetitorType;
 import com.freshdirect.mktAdmin.exception.MktAdminApplicationException;
 import com.freshdirect.mktAdmin.model.CompetitorAddressModel;
+import com.freshdirect.mktAdmin.validation.CompetitorFormValidator;
 
 
 /**
@@ -25,70 +29,92 @@ import com.freshdirect.mktAdmin.model.CompetitorAddressModel;
  *
  * @author Gopal
  */
+
+
+@Controller
+@RequestMapping("/addCompetitor.do")
+@SessionAttributes("command")
 public class AddCompInfoForm extends AbstractMktAdminForm {
 
 	private final static Category LOGGER = LoggerFactory.getInstance(AddCompInfoForm.class);
 	
-	public AddCompInfoForm() {
-		// OK to start with a blank command object
-		setCommandClass(CompetitorAddressModel.class);
-		// activate session form mode to allow for detection of duplicate submissions
-		setSessionForm(true);
-	}
+	@Autowired
+	private CompetitorFormValidator competitorFormValidator;
+
 		
 	
-	protected Map referenceData(HttpServletRequest request) throws ServletException {
-		Map refData = new HashMap();		
+	protected void referenceData(ModelMap refData) throws ServletException {				
 		refData.put("competitorTypes", EnumCompetitorType.getEnumList());		
-		return refData;
 	}
 	
-	protected void onBind(HttpServletRequest request, Object command) {
-		CompetitorAddressModel model = (CompetitorAddressModel) command;
-		String priviledgeType=request.getParameter("competitorType");
-		//System.out.println(" priviledgeType :"+priviledgeType);
+	protected void onBind(CompetitorAddressModel command, String priviledgeType) {
+		CompetitorAddressModel model = (CompetitorAddressModel) command;				
 		if(priviledgeType!=null){ 
-			EnumCompetitorType enmCmpType =EnumCompetitorType.getEnum(priviledgeType);
+			EnumCompetitorType enmCmpType = EnumCompetitorType.getEnum(priviledgeType);
 			if(enmCmpType!=null){
 				model.setCompetitorType(enmCmpType);
 			}
 		}				
 	}
+	
+	
+	@RequestMapping(method = RequestMethod.GET)
+	protected String initForm(ModelMap model) throws ServletException {
+		
+		model.addAttribute("command", new CompetitorAddressModel());
+		referenceData(model);
+		return "addCompetitorForm";
+	}
 		
 	
 
 	/** Method inserts a new <code>User</code>. */
-	protected ModelAndView onSubmit(  HttpServletRequest request,
-	        HttpServletResponse response,
-	        Object command,
-	        BindException errors) throws Exception{
-			CompetitorAddressModel model = (CompetitorAddressModel) command;
-			// delegate the insert to the Business layer
-			List modelList=new ArrayList();
-			modelList.add(model);
+	@RequestMapping(method = RequestMethod.POST)
+	protected String processSubmit(@ModelAttribute("command") CompetitorAddressModel command, BindingResult result,
+			@RequestParam(value = "competitorType", required = false) String priviledgeType,
+	        ModelMap model) throws Exception{
+		
+		
+		onBind(command, priviledgeType);
+		
+		competitorFormValidator.validate(command, result);
+		
+		if(result.hasErrors()) {
+			model.addAttribute("command", command);
+    		referenceData(model);
+    		return "addCompetitorForm";
+		}
+		
+		// delegate the insert to the Business layer
+		List modelList=new ArrayList();
+		modelList.add(command);
 		try{
-			getMarketAdminService().addCompetitorInformation(modelList);
+			marketAdminService.addCompetitorInformation(modelList);
 		}     	catch(MktAdminApplicationException exception){        		
     		LOGGER.debug("inside MktAdminApplicationException :"+exception.getExceptionList());    		
     		if(exception.getExceptionList()!=null){    		     
     		     Iterator iterator=exception.getExceptionList().iterator();
     		     while(iterator.hasNext()){
     		    	 MktAdminApplicationException e=(MktAdminApplicationException)iterator.next();    		    	     		    	     		    	 
-    		    	 errors.rejectValue("address1", e.getErrorCode(),e.getPlaceHolders()," lot of address are not proper");
+    		    	 result.rejectValue("address1", e.getErrorCode(),e.getPlaceHolders()," lot of address are not proper");
     		     }
     		}else{
-    		errors.rejectValue("address1", exception.getErrorCode(),
+    		result.rejectValue("address1", exception.getErrorCode(),
                     exception.getPlaceHolders(), "General application error");
     		}
-    		return showForm(request,response,errors);
+    		model.addAttribute("command", command);
+    		referenceData(model);
+    		return "addCompetitorForm";
     	}
 		
-		return new ModelAndView(getSuccessView());
+		
+		
+		return "competitorRedirect";
 	}
 
-	protected ModelAndView handleInvalidSubmit(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		return disallowDuplicateFormSubmission(request, response);
-	}
+//	protected ModelAndView handleInvalidSubmit(HttpServletRequest request, HttpServletResponse response)
+//			throws Exception {
+//		return disallowDuplicateFormSubmission(request, response);
+//	}
 
 }

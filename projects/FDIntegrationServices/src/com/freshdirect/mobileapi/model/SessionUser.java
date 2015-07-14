@@ -15,11 +15,11 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.OrderHistoryI;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
@@ -443,7 +443,7 @@ public class SessionUser {
                         for (Iterator j = timeslots.getTimeslotsForDate(day).iterator(); j.hasNext();) {
                             FDTimeslot slot = (FDTimeslot) j.next();
                             if (slot.isMatching(cal.getTime(), customerInfo.getRsvStartTime(), customerInfo.getRsvEndTime())) {
-                                foundId = slot.getTimeslotId();
+                                foundId = slot.getId();
                                 break OUTTER;
                             }
                         }

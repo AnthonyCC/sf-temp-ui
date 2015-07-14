@@ -1,7 +1,7 @@
 package com.freshdirect.fdstore.rules;
 
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.customer.FDUserI;
 
 public interface FDRuleContextI {

@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ErpCustomerInfoModel;
-import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.sms.SMSAlertManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -61,10 +60,7 @@ public class TextMessageAlertService {
 			}
 		} catch (FDResourceException e) {
 			LOGGER.error("Error while store text message alert preferences.", e);
-		} catch (DlvResourceException e) {
-			LOGGER.error("Error while sending text message to customer", e);
-		}
-
+		} 
 		return isSent;
 	}
 

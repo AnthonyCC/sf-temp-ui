@@ -26,7 +26,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.Category;
 
 import com.freshdirect.FDCouponProperties;
-import com.freshdirect.analytics.SessionEvent;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.context.UserContext;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -48,20 +47,17 @@ import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.OrderHistoryI;
-import com.freshdirect.delivery.DlvServiceSelectionResult;
-import com.freshdirect.delivery.EnumDeliveryStatus;
-import com.freshdirect.delivery.EnumRegionServiceType;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDDepotManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDProductInfo;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -114,9 +110,10 @@ import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.EnumGiftCardType;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
-import com.freshdirect.routing.model.IOrderModel;
-import com.freshdirect.routing.model.IPackagingModel;
-import com.freshdirect.routing.model.OrderModel;
+import com.freshdirect.logistics.analytics.model.SessionEvent;
+import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
+import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
+import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
 import com.freshdirect.smartstore.fdstore.CohortSelector;
 import com.freshdirect.smartstore.fdstore.DatabaseScoreFactorProvider;
 
@@ -163,7 +160,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
     private transient ErpCustomerInfoModel customerInfoModel;
     private transient OrderHistoryI cachedOrderHistory;
-    private transient IPackagingModel historicOrderSize;
+    private transient CustomerAvgOrderSize historicOrderSize;
     private transient FDCustomerModel cachedFDCustomer;
 	protected transient FDPromotionEligibility promotionEligibility;
 	private transient Boolean checkEligible;
@@ -602,11 +599,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 	   return FDCustomerManager.getOrderHistoryInfo(this.identity);
     }*/
 
-   public IPackagingModel getHistoricOrderSize() throws FDResourceException {
+   public CustomerAvgOrderSize getHistoricOrderSize() throws FDResourceException {
        if (this.historicOrderSize==null && this.identity!=null) {
-    	   IOrderModel order = new OrderModel();
-    	   order.setCustomerNumber(this.identity.getErpCustomerPK());
-    	   this.historicOrderSize = FDCustomerManager.getHistoricOrderSize(order);
+    	   this.historicOrderSize = FDCustomerManager.getHistoricOrderSize(this.identity.getErpCustomerPK());
        }
        return this.historicOrderSize;
    }
@@ -1036,7 +1031,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public String getCustomerServiceEmail() throws FDResourceException {
 		String serviceEmail = SERVICE_EMAIL;
 		if (isDepotUser()){
-			serviceEmail = FDDepotManager.getInstance().getCustomerServiceEmail(getDepotCode());
+			serviceEmail = FDDeliveryManager.getInstance().getCustomerServiceEmail(getDepotCode());
 		} else if(isCorporateUser()){
 			serviceEmail = "corporateservice@freshdirect.com";
 		}
@@ -2594,20 +2589,20 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	@Override
 	public EnumDeliveryStatus getDeliveryStatus() throws FDResourceException{
-		DlvServiceSelectionResult serviceResult = null;
+		FDDeliveryServiceSelectionResult serviceResult = null;
 		
 		AddressModel selectedAddress = getSelectedAddress();
 		String address1 = selectedAddress.getAddress1();
 		if (address1!=null && address1.length()>0){ //only check by address if necessary
 			try {
-				serviceResult = FDDeliveryManager.getInstance().checkAddress(selectedAddress);
+				serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByAddress(selectedAddress);
 			} catch (FDInvalidAddressException e) {
 				//this should never occur as address has already been validated
 				LOGGER.error("invalid address, fallback to zip code check",e);
 			}
 		}
 		if (serviceResult==null){
-			serviceResult = FDDeliveryManager.getInstance().checkZipCode(selectedAddress.getZipCode());
+			serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(selectedAddress.getZipCode());
 		}
 	
 		return serviceResult.getServiceStatus(getUserServiceType());

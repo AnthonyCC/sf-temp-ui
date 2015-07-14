@@ -1,4 +1,4 @@
-<%@ page import="com.freshdirect.delivery.model.AirclicMessageVO"%>
+<%@ page import="com.freshdirect.logistics.delivery.model.AirclicMessage"%>
 <%@ page import="com.freshdirect.delivery.ejb.AirclicManager"%>
 <%@ page import="com.metaparadigm.jsonrpc.JSONRPCBridge"%>
 
@@ -194,9 +194,9 @@ cellspacing:10px;
             <%
 			List messages=AirclicManager.getInstance().getMessages();
 			%>
-			<logic:iterate collection="<%= messages %>" id="message" type="com.freshdirect.delivery.model.AirclicMessageVO">
+			<logic:iterate collection="<%= messages %>" id="message" type="com.freshdirect.logistics.delivery.model.AirclicMessage">
 			<%  
-			AirclicMessageVO msg=(AirclicMessageVO)message;
+			AirclicMessage msg=(AirclicMessage)message;
 			%>
 				<option value="<%= msg.getDescription().replace("Stop X","Stop "+shippingInfo.getStopSequence()) %>"><%= msg.getMessage() %></option>
 			</logic:iterate>

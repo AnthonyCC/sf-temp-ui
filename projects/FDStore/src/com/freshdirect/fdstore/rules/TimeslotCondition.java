@@ -32,10 +32,10 @@ public class TimeslotCondition implements ConditionI {
 		FDRuleContextI context = (FDRuleContextI) target;
 		
 		if(getStartTimeEx()!=null && 
-				(getStartTimeEx().before(context.getTimeslot().getDlvTimeslot().getStartTime()) || getStartTimeEx().equals(context.getTimeslot().getDlvTimeslot().getStartTime()))
+				(getStartTimeEx().before(context.getTimeslot().getDlvStartTime()) || getStartTimeEx().equals(context.getTimeslot().getDlvStartTime()))
 				   && getEndTimeEx()!=null && 
-				   (getEndTimeEx().after(context.getTimeslot().getDlvTimeslot().getEndTime()) || (getEndTimeEx().equals(context.getTimeslot().getDlvTimeslot().getEndTime())))
-				   && day!=null && day.equalsIgnoreCase(DateUtil.formatDayOfWeek(context.getTimeslot().getBaseDate()))) {
+				   (getEndTimeEx().after(context.getTimeslot().getDlvEndTime()) || (getEndTimeEx().equals(context.getTimeslot().getDlvEndTime())))
+				   && day!=null && day.equalsIgnoreCase(DateUtil.formatDayOfWeek(context.getTimeslot().getDeliveryDate()))) {
 			return true;
 		} 
 		return false;

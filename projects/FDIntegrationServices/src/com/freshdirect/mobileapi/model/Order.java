@@ -15,12 +15,12 @@ import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.delivery.depot.DlvDepotModel;
-import com.freshdirect.fdstore.FDDepotManager;
+import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -32,6 +32,7 @@ import com.freshdirect.fdstore.customer.QuickCart;
 import com.freshdirect.fdstore.ecoupon.EnumCouponContext;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.controller.data.PickupData;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
 import com.freshdirect.mobileapi.controller.data.response.CreditCard;
 import com.freshdirect.mobileapi.controller.data.response.DepotLocation;
@@ -128,7 +129,7 @@ public class Order {
 
             if (pickupOrder) {
                 String locationId = ((ErpDepotAddressModel) dlvAddress).getLocationId();
-                DlvDepotModel dm = FDDepotManager.getInstance().getDepotByLocationId(locationId);
+                FDDeliveryDepotModel dm = FDDeliveryManager.getInstance().getDepotByLocationId(locationId);
                 Depot depot = Depot.wrap(dm);
                 DepotLocation location = new DepotLocation(depot.getDepotLocation(locationId));
                 orderDetail.setDeliveryAddress(location);

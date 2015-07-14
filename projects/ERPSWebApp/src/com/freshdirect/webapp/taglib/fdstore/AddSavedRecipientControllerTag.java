@@ -12,8 +12,7 @@ import javax.servlet.jsp.JspWriter;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.delivery.DlvServiceSelectionResult;
-import com.freshdirect.delivery.EnumDeliveryStatus;
+import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -25,6 +24,7 @@ import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.giftcard.EnumGCDeliveryMode;
 import com.freshdirect.giftcard.EnumGiftCardType;
+import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.util.JspMethods;
 
@@ -94,7 +94,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
         	fs_user.setSelectedServiceType(GIFTCARD_DEFAULT_SERVICE_TYPE);
     		//Added the following line for zone pricing to keep user service type up-to-date.
     		user.setZPServiceType(GIFTCARD_DEFAULT_SERVICE_TYPE);
-        	DlvServiceSelectionResult s_result=new DlvServiceSelectionResult();
+        	FDDeliveryServiceSelectionResult s_result=new FDDeliveryServiceSelectionResult();
     		//result.addServiceStatus(EnumServiceType.HOME, EnumDeliveryStatus.DELIVER);
         	s_result.addServiceStatus(GIFTCARD_DEFAULT_SERVICE_TYPE, EnumDeliveryStatus.DELIVER);
         	fs_user.setAvailableServices(s_result.getAvailableServices());					

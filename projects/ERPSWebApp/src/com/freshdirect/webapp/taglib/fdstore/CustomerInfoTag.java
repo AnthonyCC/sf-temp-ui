@@ -6,22 +6,37 @@
 
 package com.freshdirect.webapp.taglib.fdstore;
 
-import java.util.*;
-import java.io.*;
-import javax.servlet.http.*;
-import javax.servlet.jsp.*;
+import java.io.IOException;
+import java.util.Iterator;
 
-import org.apache.log4j.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+
+import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
-import com.freshdirect.customer.*;
-import com.freshdirect.fdstore.*;
-import com.freshdirect.fdstore.customer.*;
+import com.freshdirect.customer.EnumDeliverySetting;
+import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpCustomerInfoModel;
+import com.freshdirect.customer.ErpCustomerModel;
+import com.freshdirect.customer.ErpDuplicateAddressException;
+import com.freshdirect.customer.ErpDuplicateUserIdException;
+import com.freshdirect.customer.ErpInvalidPasswordException;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDCustomerFactory;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDCustomerModel;
+import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.webapp.*;
-import com.freshdirect.webapp.util.*;
+import com.freshdirect.framework.webapp.ActionError;
+import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.webapp.util.JspMethods;
 
 public class CustomerInfoTag extends com.freshdirect.framework.webapp.BodyTagSupport implements SessionName { //, AddressName
 
@@ -289,7 +304,9 @@ public class CustomerInfoTag extends com.freshdirect.framework.webapp.BodyTagSup
         if(passwordHint==null || passwordHint.length() < 1) {
             result.addError(new ActionError("password_hint", "Invalid or missing password hint"));
         }
-        if (user.isDepotUser()) {
+        
+        //TODO Logistics ReIntegration Task - Depot Logic is not required.
+        /*if (user.isDepotUser()) {
             if ((workdept == null) || workdept.length() < 1) {
                 result.addError(new ActionError("workDepartment", "Invalid or missing work department."));
             }
@@ -314,7 +331,7 @@ public class CustomerInfoTag extends com.freshdirect.framework.webapp.BodyTagSup
             if ((businessphone == null) || businessphone.length() <10) {
                 result.addError(new ActionError("busphone", "Invalid or missing work phone number."));
             }
-        }      
+        }  */    
 
     } // method validateCustomerInfo
     
@@ -432,7 +449,9 @@ public class CustomerInfoTag extends com.freshdirect.framework.webapp.BodyTagSup
         //
         // set depot status
         //
-        if ((depotCode != null) && !"".equals(depotCode)) {
+      //TODO Logistics ReIntegration Task - Depot Logic is not required.
+        
+      /*  if ((depotCode != null) && !"".equals(depotCode)) {
             if (FDDepotManager.getInstance().checkAccessCode(depotCode, depotAccessCode)) {
                 user.setDepotCode(depotCode);
                 FDIdentity identity = user.getIdentity();
@@ -440,7 +459,7 @@ public class CustomerInfoTag extends com.freshdirect.framework.webapp.BodyTagSup
                 	FDCustomerManager.setDepotCode(identity, depotCode);
                 }
             }
-        }
+        }*/
         //
         //
         // Done with set up, now update the information

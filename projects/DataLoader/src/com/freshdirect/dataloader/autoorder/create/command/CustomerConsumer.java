@@ -19,8 +19,8 @@ import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.dataloader.autoorder.create.util.Card;
 import com.freshdirect.dataloader.autoorder.create.util.CardUtil;
 import com.freshdirect.dataloader.autoorder.create.util.IConstants;
-import com.freshdirect.delivery.InvalidAddressException;
-import com.freshdirect.delivery.ejb.GeographyDAO;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -44,10 +44,8 @@ public class CustomerConsumer implements IConsumer  {
 		}
 	}
 	
-	public static void createCustomers(Connection conn, OrderBean orderBean) throws SQLException, InvalidAddressException {
+	public static void createCustomers(Connection conn, OrderBean orderBean) throws FDResourceException, FDInvalidAddressException, SQLException {
         
-		GeographyDAO dao = new GeographyDAO();
-		
 		AddressModel address = new AddressModel();
 		address.setAddress1(orderBean.getAddress1());
        	address.setAddress2(orderBean.getAddress2());
@@ -56,7 +54,7 @@ public class CustomerConsumer implements IConsumer  {
        	address.setState(orderBean.getState());
        	address.setZipCode(orderBean.getZip());
        	
-		dao.geocode(address,true, conn, false);
+		FDDeliveryManager.getInstance().geocodeAddress(address);//dao.geocode(address,true, conn, false);
 		
 		ErpCustomerInfoModel erpCustInfo = new ErpCustomerInfoModel();
         erpCustInfo.setTitle("Mr.");

@@ -1,6 +1,6 @@
 <%@ page import="com.freshdirect.fdstore.util.FDTimeslotUtil"%>
-<%@ page import="com.freshdirect.delivery.model.DlvZoneModel"%>
-<%@ page import='com.freshdirect.delivery.depot.*' %>
+<%@ page import="com.freshdirect.logistics.delivery.model.DlvZoneModel"%>
+<%@ page import='com.freshdirect.fdlogistics.model.*' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.customer.ErpAddressModel'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -28,7 +28,7 @@
 %>
 <%
 		String depotCode = ((FDUserI)session.getAttribute(SessionName.USER)).getDepotCode();
-		DlvDepotModel depot = FDDepotManager.getInstance().getDepot(depotCode);
+		FDDeliveryDepotModel depot = FDDeliveryManager.getInstance().getDepot(depotCode);
 		ErpDepotAddressModel depotAddress = new ErpDepotAddressModel(location.getAddress());
 		depotAddress.setRegionId(depot.getRegionId());
 		depotAddress.setZoneCode(location.getZoneCode());
@@ -59,13 +59,13 @@
 		Calendar startTimeCal = new GregorianCalendar();
 		Calendar endTimeCal = new GregorianCalendar();
 		FDTimeslot firstSlot = (FDTimeslot)timeslotLst.get(0);
-		startTimeCal.setTime(firstSlot.getBegDateTime());
+		startTimeCal.setTime(firstSlot.getStartDateTime());
 		FDTimeslot lastSlot = (FDTimeslot)timeslotLst.get(timeslotLst.size()-1);
 		endTimeCal.setTime(lastSlot.getEndDateTime());
 		out.print(getTimeslotString(startTimeCal));
 		out.print(" - " + getTimeslotString(endTimeCal));
 		if (firstSlot.getTotalAvailable() == 0) {
-			out.print(" ( <b>delivery not available on " + unavailableFormatter.format(firstSlot.getBegDateTime()) + "</b> ) ");
+			out.print(" ( <b>delivery not available on " + unavailableFormatter.format(firstSlot.getStartDateTime()) + "</b> ) ");
 		}
 		out.print("<br>");
 %>

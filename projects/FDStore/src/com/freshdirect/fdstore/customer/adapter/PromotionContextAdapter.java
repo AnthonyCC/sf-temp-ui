@@ -19,9 +19,9 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
-import com.freshdirect.delivery.depot.DlvDepotModel;
-import com.freshdirect.fdstore.FDDepotManager;
-import com.freshdirect.fdstore.FDReservation;
+import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -42,6 +42,7 @@ import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.SignupDiscountRule;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.controller.data.PickupData;
 
 public class PromotionContextAdapter implements PromotionContextI {
 
@@ -166,9 +167,9 @@ public class PromotionContextAdapter implements PromotionContextI {
 		ErpAddressModel addr = this.user.getShoppingCart().getDeliveryAddress();
 		if (addr != null && addr instanceof ErpDepotAddressModel) {
 			String locationId = ((ErpDepotAddressModel) addr).getLocationId();
-			DlvDepotModel depot;
+			FDDeliveryDepotModel depot;
 			try {
-				depot = FDDepotManager.getInstance().getDepotByLocationId(locationId);
+				depot = FDDeliveryManager.getInstance().getDepotByLocationId(locationId);
 			} catch (FDResourceException e) {
 				throw new FDRuntimeException(e);
 			}
@@ -180,9 +181,9 @@ public class PromotionContextAdapter implements PromotionContextI {
 	public String getDepotCode(AddressModel addr) {		
 		if (addr != null && addr instanceof ErpDepotAddressModel) {
 			String locationId = ((ErpDepotAddressModel) addr).getLocationId();
-			DlvDepotModel depot;
+			FDDeliveryDepotModel depot;
 			try {
-				depot = FDDepotManager.getInstance().getDepotByLocationId(locationId);
+				depot = FDDeliveryManager.getInstance().getDepotByLocationId(locationId);
 			} catch (FDResourceException e) {
 				throw new FDRuntimeException(e);
 			}

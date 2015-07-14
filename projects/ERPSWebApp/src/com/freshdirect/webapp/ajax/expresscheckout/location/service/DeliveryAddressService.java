@@ -12,7 +12,6 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -22,13 +21,12 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.delivery.DlvZoneInfoModel;
-import com.freshdirect.delivery.depot.DlvDepotModel;
-import com.freshdirect.delivery.depot.DlvLocationModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDDepotManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.customer.FDCartI;
@@ -43,6 +41,7 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.DeliveryLocationData;
@@ -99,7 +98,7 @@ public class DeliveryAddressService {
 			String deliveryAddressId = FormDataService.defaultService().get(deliveryAddressRequest, "id");
 			String action = FormDataService.defaultService().get(deliveryAddressRequest, "action");
 			ActionResult actionResult = new ActionResult();
-			TimeslotEventModel event = TimeslotService.defaultService().createTimeslotEventModel(user);
+			TimeslotEvent event = TimeslotService.defaultService().createTimeslotEventModel(user);
 			DeliveryAddressManipulator.performEditDeliveryAddress(event, (FDSessionUser) user, actionResult, session, user.getShoppingCart(), action, erpAddressModel, addressModel, deliveryAddressId);
 			processErrors(validationErrors, actionResult);
 		}
@@ -109,7 +108,7 @@ public class DeliveryAddressService {
 	public void deleteDeliveryAddressMethod(FormDataRequest deliveryAddressRequest, HttpSession session, FDUserI user) throws FDResourceException {
 		String deliveryAddressId = FormDataService.defaultService().get(deliveryAddressRequest, "id");
 		ActionResult actionResult = new ActionResult();
-		TimeslotEventModel event = TimeslotService.defaultService().createTimeslotEventModel(user);
+		TimeslotEvent event = TimeslotService.defaultService().createTimeslotEventModel(user);
 		DeliveryAddressManipulator.performDeleteDeliveryAddress(user, session, deliveryAddressId, actionResult, event);
 	}
 
@@ -144,9 +143,9 @@ public class DeliveryAddressService {
 	public List<LocationData> loadDeliveryAddressById(FDUserI user, String addressId) throws FDResourceException {
 		final List<LocationData> locationDatas = new ArrayList<LocationData>();
 
-		DlvDepotModel depotModel = FDDepotManager.getInstance().getDepotByLocationId(addressId);
+		FDDeliveryDepotModel depotModel = FDDeliveryManager.getInstance().getDepotByLocationId(addressId);
 		if (depotModel != null) {
-			DlvLocationModel locationModel = depotModel.getLocation(addressId);
+			FDDeliveryDepotLocationModel locationModel = depotModel.getLocation(addressId);
 
 			if (depotModel.isPickup()) {
 				final ErpCustomerInfoModel customerInfoModel = FDCustomerFactory.getErpCustomerInfo(user.getIdentity());
@@ -216,9 +215,9 @@ public class DeliveryAddressService {
 			}
 
 			if (user.isDepotUser()) {
-				for (Object deliveryLocationModel : FDDepotManager.getInstance().getDepot(user.getDepotCode()).getLocations()) {
-					if (deliveryLocationModel instanceof DlvLocationModel) {
-						final DlvLocationModel pickupDeliveryLocationModel = (DlvLocationModel) deliveryLocationModel;
+				for (Object deliveryLocationModel : FDDeliveryManager.getInstance().getDepot(user.getDepotCode()).getLocations()) {
+					if (deliveryLocationModel instanceof FDDeliveryDepotLocationModel) {
+						final FDDeliveryDepotLocationModel pickupDeliveryLocationModel = (FDDeliveryDepotLocationModel) deliveryLocationModel;
 						LocationData depoAddress = convertDepotLocationModelToLocationData(pickupDeliveryLocationModel);
 						if (depoAddress.getId().equals(selectedDeliveryAddressId)) {
 							depoAddress.setSelected(true);
@@ -251,13 +250,13 @@ public class DeliveryAddressService {
 				selectDeliveryAddressMethod(addresses.get(0).getId(), "", "selectDeliveryAddressMethod", session, user);
 				addresses.get(0).setSelected(true);
 			}
-
+			
 			if (user.isPickupUser()) {
 				final ErpCustomerInfoModel customerInfoModel = FDCustomerFactory.getErpCustomerInfo(user.getIdentity());
-				for (final DlvDepotModel pickupDeliveryDepotModel : loadFilteredPickupDepotModel()) {
+				for (final FDDeliveryDepotModel pickupDeliveryDepotModel : loadFilteredPickupDepotModel()) {
 					for (Object deliveryLocationModel : pickupDeliveryDepotModel.getLocations()) {
-						if (deliveryLocationModel instanceof DlvLocationModel) {
-							final DlvLocationModel pickupDeliveryLocationModel = (DlvLocationModel) deliveryLocationModel;
+						if (deliveryLocationModel instanceof FDDeliveryDepotLocationModel) {
+							final FDDeliveryDepotLocationModel pickupDeliveryLocationModel = (FDDeliveryDepotLocationModel) deliveryLocationModel;
 							PickupLocationData pickupAddress = convertPickupLocationModelToLocationData(pickupDeliveryLocationModel, pickupDeliveryDepotModel, customerInfoModel);
 							if (pickupAddress.getId().equals(selectedDeliveryAddressId)) {
 								pickupAddress.setSelected(true);
@@ -288,11 +287,11 @@ public class DeliveryAddressService {
 		if (deliveryAddress instanceof ErpDepotAddressModel) {
 			ErpDepotAddressModel depotAddress = (ErpDepotAddressModel) deliveryAddress;
 			if (depotAddress.isPickup()) {
-				DlvDepotModel depotModel = com.freshdirect.fdstore.FDDepotManager.getInstance().getDepotByLocationId(depotAddress.getLocationId());
+				FDDeliveryDepotModel depotModel = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getDepotByLocationId(depotAddress.getLocationId());
 				if (depotModel != null) {
 					for (Object deliveryLocationModel : depotModel.getLocations()) {
-						if (deliveryLocationModel instanceof DlvLocationModel) {
-							final DlvLocationModel pickupDeliveryLocationModel = (DlvLocationModel) deliveryLocationModel;
+						if (deliveryLocationModel instanceof FDDeliveryDepotLocationModel) {
+							final FDDeliveryDepotLocationModel pickupDeliveryLocationModel = (FDDeliveryDepotLocationModel) deliveryLocationModel;
 							LocationData deliveryLocationData = convertPickupLocationModelToLocationData(pickupDeliveryLocationModel, depotModel, customerInfoModel);
 							deliveryLocationData.setSelected(true);
 							depotLocationDatas.add(deliveryLocationData);
@@ -302,13 +301,13 @@ public class DeliveryAddressService {
 				}
 			}
 		} else {
-			EnumServiceType selectedServiceType = user.getSelectedServiceType();
-			if (EnumServiceType.HOME.equals(selectedServiceType) || EnumServiceType.CORPORATE.equals(selectedServiceType)) {
-				String deliveryAddressId = NVL.apply(deliveryAddress.getId(), DEFAULT_DELIVERY_ADDRESS_ID);
-				LocationData deliveryLocationData = convertDeliveryAddressModelToLocationData(deliveryAddressId, deliveryAddress, selectedServiceType, isDeliveryAddressUnattended(deliveryAddress));
-				deliveryLocationData.setSelected(true);
-				depotLocationDatas.add(deliveryLocationData);
-			}
+		EnumServiceType selectedServiceType = user.getSelectedServiceType();
+		if (EnumServiceType.HOME.equals(selectedServiceType) || EnumServiceType.CORPORATE.equals(selectedServiceType)) {
+			String deliveryAddressId = NVL.apply(deliveryAddress.getId(), DEFAULT_DELIVERY_ADDRESS_ID);
+			LocationData deliveryLocationData = convertDeliveryAddressModelToLocationData(deliveryAddressId, deliveryAddress, selectedServiceType, isDeliveryAddressUnattended(deliveryAddress));
+			deliveryLocationData.setSelected(true);
+			depotLocationDatas.add(deliveryLocationData);
+		}
 		}
 
 		return depotLocationDatas;
@@ -349,7 +348,7 @@ public class DeliveryAddressService {
 		boolean isUnatteded = false;
 
 		try {
-			DlvZoneInfoModel deliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddress, new Date(), null, null);
+			FDDeliveryZoneInfo deliveryZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddress, new Date(), null, null);
 			isUnatteded = deliveryZoneInfo.isUnattended() && isDeliveryAddressUnattended(deliveryAddress);
 		} catch (FDInvalidAddressException e) {
 			LOGGER.error("Can not find zone info of delivery address.", e);
@@ -408,14 +407,14 @@ public class DeliveryAddressService {
 				deliveryLocationData.setBackupDeliveryFirstName(deliveryAddress.getAltFirstName());
 				deliveryLocationData.setBackupDeliveryLastName(deliveryAddress.getAltLastName());
 				if (deliveryAddress.getAlternateAddress() != null) {
-					deliveryLocationData.setBackupDeliveryAddress(deliveryAddress.getAlternateAddress().getAddress1());
-					deliveryLocationData.setBackupDeliveryApartment(deliveryAddress.getAlternateAddress().getApartment());
+				deliveryLocationData.setBackupDeliveryAddress(deliveryAddress.getAlternateAddress().getAddress1());
+				deliveryLocationData.setBackupDeliveryApartment(deliveryAddress.getAlternateAddress().getApartment());
 				}
 				if (deliveryAddress.getAltPhone() != null) {
-					deliveryLocationData.setBackupDeliveryPhone(deliveryAddress.getAltPhone().getPhone());
-					deliveryLocationData.setBackupDeliveryPhoneExtension(deliveryAddress.getAltPhone().getExtension());
-				}
+				deliveryLocationData.setBackupDeliveryPhone(deliveryAddress.getAltPhone().getPhone());
+				deliveryLocationData.setBackupDeliveryPhoneExtension(deliveryAddress.getAltPhone().getExtension());
 			}
+		}
 		}
 
 		if (isBackupDeliveryUnattended) {
@@ -426,7 +425,7 @@ public class DeliveryAddressService {
 		return deliveryLocationData;
 	}
 
-	private PickupLocationData convertPickupLocationModelToLocationData(DlvLocationModel pickupLocationModel, DlvDepotModel deliveryDepotModel, ErpCustomerInfoModel customerInfoModel) {
+	private PickupLocationData convertPickupLocationModelToLocationData(FDDeliveryDepotLocationModel pickupLocationModel, FDDeliveryDepotModel deliveryDepotModel, ErpCustomerInfoModel customerInfoModel) {
 		final PickupLocationData pickupDepotLocationData = new PickupLocationData();
 		String addressId = pickupLocationModel.getId();
 		pickupDepotLocationData.setId(addressId);
@@ -448,7 +447,7 @@ public class DeliveryAddressService {
 		return pickupDepotLocationData;
 	}
 
-	private LocationData convertDepotLocationModelToLocationData(DlvLocationModel deliveryLocationModel) {
+	private LocationData convertDepotLocationModelToLocationData(FDDeliveryDepotLocationModel deliveryLocationModel) {
 		final LocationData depotLocationData = new LocationData();
 		depotLocationData.setId(deliveryLocationModel.getId());
 		depotLocationData.setSelected(false);
@@ -468,14 +467,18 @@ public class DeliveryAddressService {
 		return String.format(PICKUP_DELIVERY_POPUP, depotCode, addressId);
 	}
 
-	private List<DlvDepotModel> loadFilteredPickupDepotModel() throws FDResourceException {
-		final List<DlvDepotModel> pickupDepotModels = new ArrayList<DlvDepotModel>();
-		for (Object pickupDepotObj : FDDepotManager.getInstance().getPickupDepots()) {
-			final DlvDepotModel pickupDepotModel = (DlvDepotModel) pickupDepotObj;
+	private List<FDDeliveryDepotModel> loadFilteredPickupDepotModel() throws FDResourceException {
+		final List<FDDeliveryDepotModel> pickupDepotModels = new ArrayList<FDDeliveryDepotModel>();
+		for (Object pickupDepotObj : FDDeliveryManager.getInstance().getPickupDepots()) {
+			final FDDeliveryDepotModel pickupDepotModel = (FDDeliveryDepotModel) pickupDepotObj;
 			if (!(HAMPTON_DEPOT_CODE.equalsIgnoreCase(pickupDepotModel.getDepotCode()) || pickupDepotModel.isDeactivated()))
 				pickupDepotModels.add(pickupDepotModel);
 		}
 		return pickupDepotModels;
+	}
+
+	private boolean isDepotCodeEqualsHampton(final FDDeliveryDepotModel pickupDepotModel) {
+		return HAMPTON_DEPOT_CODE.equalsIgnoreCase(pickupDepotModel.getDepotCode());
 	}
 
 	private AddressModel parseDeliveryAddressForm(FormDataRequest addressRequestData) {

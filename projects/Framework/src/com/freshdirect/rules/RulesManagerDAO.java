@@ -19,7 +19,7 @@ public class RulesManagerDAO {
 	private final static Category LOGGER = LoggerFactory.getInstance(RulesDAO.class);
 
 	private static final String LOAD_QUERY = "select id, name, start_date, end_date, priority, conditions, outcome, subsystem "
-		+ "from dlv.rules where subsystem = ? ";
+		+ "from cust.rules where subsystem = ? ";
 
 	public static Map<String, Rule> loadRules(Connection conn, String subsystem) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(LOAD_QUERY);
@@ -38,7 +38,7 @@ public class RulesManagerDAO {
 	}
 
 	private static final String GET_QUERY = "select id, name, start_date, end_date, priority, conditions, outcome, subsystem "
-		+ "from dlv.rules where id = ? ";
+		+ "from cust.rules where id = ? ";
 
 	public static Rule getRule(Connection conn, String id) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(GET_QUERY);
@@ -74,7 +74,7 @@ public class RulesManagerDAO {
 		return r;
 	}
 
-	private static final String ADD_QUERY = "insert into dlv.rules (id, name, start_date, end_date, priority, conditions, outcome, subsystem) "
+	private static final String ADD_QUERY = "insert into cust.rules (id, name, start_date, end_date, priority, conditions, outcome, subsystem) "
 		+ "values(?, ?, ?, ?, ?, ?, ?, ?) ";
 
 	public static void addRule(Connection conn, Rule rule) throws SQLException {
@@ -94,7 +94,7 @@ public class RulesManagerDAO {
 		ps.close();
 	}
 
-	private static final String UPDATE_QUERY = "update dlv.rules set name=?, start_date=?, end_date=?, priority=?, conditions=?, outcome=?, subsystem=? "
+	private static final String UPDATE_QUERY = "update cust.rules set name=?, start_date=?, end_date=?, priority=?, conditions=?, outcome=?, subsystem=? "
 		+ "where id = ? ";
 
 	public static void storeRule(Connection conn, Rule rule) throws SQLException {
@@ -126,7 +126,7 @@ public class RulesManagerDAO {
 		}
 	}
 
-	private static final String DELETE_QUERY = "delete from dlv.rules where id = ? ";
+	private static final String DELETE_QUERY = "delete from cust.rules where id = ? ";
 
 	public static void deleteRule(Connection conn, String ruleId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(DELETE_QUERY);

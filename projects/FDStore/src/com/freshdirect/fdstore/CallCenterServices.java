@@ -740,23 +740,7 @@ public class CallCenterServices {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-	
-	public static int cancelReservations(Set<String> reservationIds, String agent) throws FDResourceException {
-		if(callCenterHome == null) {
-			lookupManagerHome();
-		}
-		try {
-			CallCenterManagerSB sb = callCenterHome.create();
-			return sb.cancelReservations(reservationIds, agent);
-		} catch (CreateException ce) {
-			callCenterHome = null;
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			callCenterHome = null;
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
-	
+
 	public static int fixBrokenAccounts() throws FDResourceException {
 		if(callCenterHome == null) {
 			lookupManagerHome();

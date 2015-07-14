@@ -6,11 +6,15 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.EJBException;
+
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.delivery.model.RestrictedAddressModel;
 import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
+import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -19,6 +23,68 @@ public class DlvRestrictionManagerSessionBean  extends SessionBeanSupport {
 
 	private static Category LOGGER = LoggerFactory.getInstance(DlvRestrictionManagerSessionBean.class);
 	
+
+	public boolean checkForAlcoholDelivery(String scrubbedAddress, String zipcode, String apartment) {
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			return DlvRestrictionDAO.isAlcoholDeliverable(conn, scrubbedAddress, zipcode, apartment);
+		} catch (SQLException ex) {
+			throw new EJBException(ex);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+					conn = null;
+				}
+			} catch (SQLException ex) {
+				LOGGER.warn("Exception while trying to cleanup", ex);
+			}
+		}
+	}
+
+	public EnumRestrictedAddressReason checkAddressForRestrictions(AddressModel address) {
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			return DlvRestrictionDAO.isAddressRestricted(conn, address);
+		} catch (SQLException ex) {
+			throw new EJBException(ex);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+					conn = null;
+				}
+			} catch (SQLException ex) {
+				LOGGER.warn("Exception while trying to cleanup", ex);
+			}
+		}
+	}
+
+
+	
+	public List<RestrictionI> getDlvRestrictions() throws FDResourceException {
+
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return DlvRestrictionDAO.getDlvRestrictions(conn);
+		} catch (SQLException e) {
+			LOGGER.error("SQL Error occurred while getting the Dlv Restriction.");
+			throw new FDResourceException(e, "Could not get the Dlv Restriction due to SQL Error.");
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					LOGGER.warn("Trouble closing connection after getting the Dlv Restriction.", e);
+				}
+			}
+		}
+	
+	}
+
 	public RestrictionI getDlvRestriction(String restrictionId) throws FDResourceException, RemoteException
 	{
 		Connection conn = null;

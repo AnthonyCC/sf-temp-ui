@@ -1,16 +1,16 @@
 package com.freshdirect.delivery.ejb;
 
 import java.rmi.RemoteException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJBObject;
 
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.delivery.model.RestrictedAddressModel;
 import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
+import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
 import com.freshdirect.fdstore.FDResourceException;
 
 public interface DlvRestrictionManagerSB extends EJBObject {
@@ -47,5 +47,12 @@ public interface DlvRestrictionManagerSB extends EJBObject {
 	public void storeAlcoholRestriction(AlcoholRestriction restriction)  throws FDResourceException, RemoteException;
 	
 	public String addAlcoholRestriction(AlcoholRestriction restriction)  throws FDResourceException, RemoteException;
+
+	public List<RestrictionI> getDlvRestrictions() throws FDResourceException, RemoteException;
+	
+	public boolean checkForAlcoholDelivery(String scrubbedAddress, String zipcode, String apartment) throws RemoteException;
+	
+    public EnumRestrictedAddressReason checkAddressForRestrictions(AddressModel address) throws RemoteException;
+    
 
 }

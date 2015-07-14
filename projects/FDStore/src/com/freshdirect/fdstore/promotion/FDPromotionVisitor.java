@@ -15,14 +15,8 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
-import com.freshdirect.common.pricing.ZonePromoDiscount;
-import com.freshdirect.customer.ErpDiscountLineModel;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.FDTimeslot;
-import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDPromotionEligibility;
-import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.adapter.PromoVariantHelper;
 import com.freshdirect.framework.util.log.LoggerFactory;
 

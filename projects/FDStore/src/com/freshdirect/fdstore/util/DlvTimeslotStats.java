@@ -4,30 +4,33 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import com.freshdirect.delivery.model.DlvZoneModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryTimeslots;
 import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.logistics.delivery.model.DlvZoneModel;
 
 public class DlvTimeslotStats {
-	List<String> messages = new ArrayList<String>();
-	List<String> comments = new ArrayList<String>();
+	
+	private List<String> messages = new ArrayList<String>();
+	private List<String> comments = new ArrayList<String>();
 
-	boolean hasCapacity = true;
-	boolean isKosherSlotAvailable = false;
-	boolean ctActive = false;
-	double maxDiscount = 0.0;
-	int ctSlots = 0;
-	int alcoholSlots = 0;
-	int ecoFriendlySlots = 0;
-	int neighbourhoodSlots = 0;
-	double soldOut = 0.0;
-	double totalSlots = 0.0;
-	Date sameDayCutoff;
-	String sameDayCutoffUTC;
-	HashMap<String, DlvZoneModel> zonesMap = new HashMap<String, DlvZoneModel>();
-	boolean isAlcoholDelivery = false;
-	int earlyAmSlots=0;
+	private boolean hasCapacity = true;
+	private boolean isKosherSlotAvailable = false;
+	private boolean ctActive = false;
+	private double maxDiscount = 0.0;
+	private int ctSlots = 0;
+	private int alcoholSlots = 0;
+	private int ecoFriendlySlots = 0;
+	private int neighbourhoodSlots = 0;
+	private double soldOut = 0.0;
+	private double totalSlots = 0.0;
+	private Date sameDayCutoff;
+	private String sameDayCutoffUTC;
+	private Map<String, DlvZoneModel> zonesMap = new HashMap<String, DlvZoneModel>();
+	private boolean isAlcoholDelivery = false;
+	private int earlyAmSlots=0;
 	
 	
 	public boolean isAlcoholDelivery() {
@@ -46,11 +49,11 @@ public class DlvTimeslotStats {
 		return comments;
 	}
 	
-	public HashMap<String, DlvZoneModel> getZonesMap() {
+	public Map<String, DlvZoneModel> getZonesMap() {
 		return zonesMap;
 	}
 	
-	public void setZonesMap(HashMap<String, DlvZoneModel> zonesMap) {
+	public void setZonesMap(Map<String, DlvZoneModel> zonesMap) {
 		this.zonesMap = zonesMap;
 	}
 
@@ -58,28 +61,8 @@ public class DlvTimeslotStats {
 		this.ctActive = ctActive;
 	}
 	
-	public void incrementCtSlots() {
-		ctSlots++;
-	}
-
 	public void incrementAlcoholSlots() {
 		alcoholSlots++;
-	}
-
-	public void incrementEcoFriendlySlots() {
-		ecoFriendlySlots++;
-	}
-	
-	public void incrementNeighbourhoodSlots() {
-		neighbourhoodSlots++;
-	}
-	
-	public void incrementSoldOutSlots() {
-		soldOut++;
-	}
-	
-	public void incrementTotalSlots() {
-		totalSlots++;
 	}
 	
 	public void setMaximumDiscount(double discount) {
@@ -89,10 +72,6 @@ public class DlvTimeslotStats {
 	
 	public void updateKosherSlotAvailable(boolean flag) {
 		isKosherSlotAvailable = isKosherSlotAvailable || flag;
-	}
-	
-	public void updateHasCapacity(boolean flag) {
-		hasCapacity = hasCapacity || flag;
 	}
 	
 	public void incrementEarlyAMSlots(){
@@ -108,18 +87,14 @@ public class DlvTimeslotStats {
 	public void apply(FDDeliveryTimeslotModel deliveryModel) {
 		deliveryModel.setAlcoholDelivery(isAlcoholDelivery);
 		// deliveryModel.setTimeslotList(timeslotList);
-		deliveryModel.setZones(zonesMap);
-		deliveryModel.setZoneCtActive(ctActive);
-		deliveryModel.setHasCapacity(hasCapacity);
 		deliveryModel.setKosherSlotAvailable(isKosherSlotAvailable);
-		deliveryModel.setGeoRestrictionmessages(messages);
 		deliveryModel.setMaxDiscount(maxDiscount);
 		deliveryModel.setAlcoholRestrictedCount(alcoholSlots);
-		deliveryModel.setEcoFriendlyCount(ecoFriendlySlots);
-		deliveryModel.setNeighbourhoodCount(neighbourhoodSlots);
 		deliveryModel.setPercSlotsSold(totalSlots > 0 ? Math
 				.round((soldOut / totalSlots) * 100) : 0.0);
 		deliveryModel.setEarlyAMCount(earlyAmSlots);
+		deliveryModel.setZones(zonesMap);
+		deliveryModel.setHasCapacity(hasCapacity);
 	}
 
 	/**
@@ -148,6 +123,66 @@ public class DlvTimeslotStats {
 
 	public void setSameDayCutoffUTC(String sameDayCutoffUTC) {
 		this.sameDayCutoffUTC = sameDayCutoffUTC;
+	}
+
+	public void apply(FDDeliveryTimeslots t) {
+		this.setZonesMap(t.getZones());
+		this.setMessages(t.getGeoRestrictionmessages());
+		this.setSameDayCutoff(t.getSameDayCutoff());
+		this.setCtActive(t.isCtActive());
+		this.setCtSlots(t.getCtSlots());
+		this.setEcoFriendlySlots(t.getEcoFriendlySlots());
+		this.setNeighbourhoodSlots(t.getNeighbourhoodSlots());
+		this.setTotalSlots(t.getTotalSlots());
+		this.setHasCapacity(t.isHasCapacity());
+	}
+
+	public void setMessages(List<String> messages) {
+		this.messages = messages;
+	}
+
+	public int getCtSlots() {
+		return ctSlots;
+	}
+
+	public void setCtSlots(int ctSlots) {
+		this.ctSlots = ctSlots;
+	}
+
+	public int getEcoFriendlySlots() {
+		return ecoFriendlySlots;
+	}
+
+	public void setEcoFriendlySlots(int ecoFriendlySlots) {
+		this.ecoFriendlySlots = ecoFriendlySlots;
+	}
+
+	public int getNeighbourhoodSlots() {
+		return neighbourhoodSlots;
+	}
+
+	public void setNeighbourhoodSlots(int neighbourhoodSlots) {
+		this.neighbourhoodSlots = neighbourhoodSlots;
+	}
+
+	public double getTotalSlots() {
+		return totalSlots;
+	}
+
+	public void setTotalSlots(double totalSlots) {
+		this.totalSlots = totalSlots;
+	}
+
+	public boolean isHasCapacity() {
+		return hasCapacity;
+	}
+
+	public void setHasCapacity(boolean hasCapacity) {
+		this.hasCapacity = hasCapacity;
+	}
+
+	public boolean isCtActive() {
+		return ctActive;
 	}
 
 }

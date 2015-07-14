@@ -43,7 +43,7 @@
 						<select name="depotCode" class="pulldown">
     					<option value="" class="inactive" selected>Company Name</option>
 						<fd:GetDepots id="depots" includeCorpDepots="true">
-                            <logic:iterate collection="<%= depots %>" id="depot" type="com.freshdirect.delivery.depot.DlvDepotModel">
+                            <logic:iterate collection="<%= depots %>" id="depot" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotModel">
                             <option value="<%= depot.getDepotCode() %>"><%= depot.getName() %></option>
                             </logic:iterate>
                        	</fd:GetDepots>

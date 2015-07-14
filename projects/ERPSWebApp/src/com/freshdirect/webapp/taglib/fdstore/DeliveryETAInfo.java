@@ -2,7 +2,7 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import java.util.Date;
 
-import com.freshdirect.fdstore.FDDeliveryETAModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryETAModel;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.framework.util.TimeOfDay;
 

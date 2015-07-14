@@ -27,7 +27,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpCustomerEmailModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
-import com.freshdirect.fdstore.FDDepotManager;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.BookRetailer;
@@ -397,7 +397,7 @@ public class FDEmailFactory {
 			return GENERAL_CS_EMAIL;
 		}
 		try {
-			return FDDepotManager.getInstance().getCustomerServiceEmail(depotCode);
+			return FDDeliveryManager.getInstance().getCustomerServiceEmail(depotCode);
 		} catch (FDResourceException re) {
 			LOGGER.warn("Could not get the correct email", re);
 			return GENERAL_CS_EMAIL;

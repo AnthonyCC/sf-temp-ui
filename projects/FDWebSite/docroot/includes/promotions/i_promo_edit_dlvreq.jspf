@@ -214,7 +214,7 @@
 												<td><img width="0" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 												<td class="pad8">
 													<select id="edit_dlvreq_available" name="edit_dlvreq_available" class="h120px w200px" size="2" multiple>
-														<logic:iterate id="zoneModel" collection="<%= availableDeliveryZones %>" type="com.freshdirect.delivery.model.DlvZoneModel" indexId="idx">
+														<logic:iterate id="zoneModel" collection="<%= availableDeliveryZones %>" type="com.freshdirect.logistics.delivery.model.DlvZoneModel" indexId="idx">
 															<% if(!selected.contains(zoneModel.getZoneDescriptor().getZoneCode())){ %>
 															 <option value="<%= zoneModel.getZoneDescriptor().getZoneCode() %>"><%= zoneModel.getZoneDescriptor().getZoneCode() %> <%= zoneModel.getName() %>  </option>
 															 <% } %>
@@ -228,7 +228,7 @@
 												</td>
 												<td class="pad8 BG_cfc">
 													<select id="edit_dlvreq_selected" name="edit_dlvreq_selected" class="h120px w200px" size="2" multiple>
-														 <logic:iterate id="zoneModel" collection="<%= availableDeliveryZones %>" type="com.freshdirect.delivery.model.DlvZoneModel" indexId="idx">
+														 <logic:iterate id="zoneModel" collection="<%= availableDeliveryZones %>" type="com.freshdirect.logistics.delivery.model.DlvZoneModel" indexId="idx">
  															<% if(selected.contains(zoneModel.getZoneDescriptor().getZoneCode())){ %>
 															 <option value="<%= zoneModel.getZoneDescriptor().getZoneCode() %>"><%= zoneModel.getZoneDescriptor().getZoneCode() %> <%= zoneModel.getName() %>  </option>
 															 <% } %>

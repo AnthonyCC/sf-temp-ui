@@ -1,13 +1,11 @@
 package com.freshdirect.webapp.action.fdstore;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.address.EnumAddressType;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.EnumAccountActivityType;
@@ -18,18 +16,13 @@ import com.freshdirect.customer.ErpDuplicatePaymentMethodException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
 import com.freshdirect.customer.ErpPaymentMethodException;
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.delivery.DlvServiceSelectionResult;
-import com.freshdirect.delivery.EnumDeliveryStatus;
-import com.freshdirect.delivery.depot.DlvDepotModel;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDDepotManager;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.StateCounty;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.RegistrationResult;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.referral.FDReferralManager;
@@ -44,13 +37,13 @@ import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.webapp.action.WebActionSupport;
 import com.freshdirect.webapp.taglib.coremetrics.CmRegistrationTag;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
-import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.DeliveryAddressValidator;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
@@ -58,7 +51,6 @@ import com.freshdirect.webapp.taglib.fdstore.PaymentMethodName;
 import com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
-import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.util.AccountUtil;
 
 public class RegistrationAction extends WebActionSupport {
@@ -357,13 +349,13 @@ public class RegistrationAction extends WebActionSupport {
 			// VALIDATE DELIVERY ADDRESS to see if service restricted
 		
 			address.setServiceType(user.getSelectedServiceType());
-			DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkAddress(address);
+			FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByAddress(address);
 			
 			this.reclassifyUser(user, address, serviceType, serviceResult);
 		} else {
 			//Directly from Zip Check page
 			String zipCode = user.getZipCode();
-			DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkZipCode(zipCode);
+			FDDeliveryServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode);
 	        AddressModel addr = new AddressModel();
 	        addr.setZipCode(zipCode);
         	this.reclassifyUser(user, addr,serviceType , serviceResult);
@@ -479,7 +471,7 @@ public class RegistrationAction extends WebActionSupport {
 		FDSessionUser user,
 		AddressModel address,
 		EnumServiceType serviceType,
-		DlvServiceSelectionResult serviceResult) throws FDResourceException {
+		FDDeliveryServiceSelectionResult serviceResult) throws FDResourceException {
 		
 		HttpSession session = this.getWebActionContext().getSession();
 
@@ -622,7 +614,8 @@ public class RegistrationAction extends WebActionSupport {
 			actionResult.addError(!validatePhoneNumber(this.workPhone), EnumUserInfoName.DLV_WORK_PHONE.getCode(), SystemMessageList.MSG_NUM_REQ );
 			actionResult.addError(!validatePhoneNumber(this.cellPhone),  EnumUserInfoName.DLV_ALT_PHONE.getCode(), SystemMessageList.MSG_NUM_REQ );
 
-			if (regType == AccountUtil.DEPOT_USER) {
+			//TODO Logistics ReIntegration Task Check Depot Logic still valid.
+			/*if (regType == AccountUtil.DEPOT_USER) {
 				actionResult.addError("".equals(this.department), "workDepartment", SystemMessageList.MSG_REQUIRED);
 				try {
 					//getUser().getDepotCode();
@@ -635,7 +628,7 @@ public class RegistrationAction extends WebActionSupport {
 					LOGGER.error("Difficulty looking up depot details", fdre);
 					actionResult.addError(new ActionError("technical_difficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
 				}
-			}
+			}*/
 		}
 		
 		public void validateEx(ActionResult actionResult) {

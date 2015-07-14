@@ -48,17 +48,14 @@ import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpSubmitFailedModel;
 import com.freshdirect.customer.ErpTransactionI;
 import com.freshdirect.customer.ErpTransactionModel;
-import com.freshdirect.delivery.EnumReservationType;
-import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.deliverypass.DlvPassAvailabilityInfo;
 import com.freshdirect.deliverypass.DlvPassConstants;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDDepotManager;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.customer.FDBulkRecipientList;
 import com.freshdirect.fdstore.customer.FDBulkRecipientModel;
@@ -86,6 +83,8 @@ import com.freshdirect.giftcard.ErpGiftCardDlvConfirmModel;
 import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.ErpGiftCardUtil;
 import com.freshdirect.giftcard.ErpRecipentModel;
+import com.freshdirect.logistics.controller.data.response.Timeslot;
+import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 public class FDOrderAdapter implements FDOrderI {
@@ -129,20 +128,21 @@ public class FDOrderAdapter implements FDOrderI {
 			deliveryReservation = FDDeliveryManager.getInstance().getReservation(delInfo.getDeliveryReservationId(), sale.getId());
 			if (deliveryReservation == null) {
 				//!!! this is just a temporary fix until pre-reserve slots is completely implemented
-				DlvTimeslotModel t = new DlvTimeslotModel();
+				FDTimeslot t = new FDTimeslot();
 				ErpDeliveryInfoModel info = getDeliveryInfo();
-				t.setBaseDate(info.getDeliveryStartTime());
-				t.setStartTime(new TimeOfDay(info.getDeliveryStartTime()));
-				t.setEndTime(new TimeOfDay(info.getDeliveryEndTime()));
+				t.setDeliveryDate(info.getDeliveryStartTime());
+				t.setDlvStartTime(new TimeOfDay(info.getDeliveryStartTime()));
+				t.setDlvEndTime(new TimeOfDay(info.getDeliveryEndTime()));
 				t.setCutoffTime(new TimeOfDay(info.getDeliveryCutoffTime()));
 
 				deliveryReservation = new FDReservation(
 					null,
-					new FDTimeslot(t),
+					t,
 					info.getDeliveryCutoffTime(),
 					EnumReservationType.STANDARD_RESERVATION,
 					getCustomerId(),
-					null, false,false, sale.getId(),false,null,20,null,null,null,0,null);
+					null,false, sale.getId(),20,null,false,null);
+				
 			}
 		} catch (FDResourceException ex) {
 			throw new FDRuntimeException(ex);
@@ -592,7 +592,7 @@ public class FDOrderAdapter implements FDOrderI {
 			return "";
 		}
 		try {
-			return FDDepotManager.getInstance().getDepotFacility(depotLocationId);
+			return FDDeliveryManager.getInstance().getDepotFacility(depotLocationId);
 		} catch (FDResourceException fdre) {
 			LOGGER.error("Unable to look up a depot location", fdre);
 		}

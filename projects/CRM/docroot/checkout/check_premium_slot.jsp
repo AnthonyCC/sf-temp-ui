@@ -3,7 +3,7 @@
 <%@ page import='org.json.JSONObject' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName' %>
 <%@ page import='com.freshdirect.fdstore.customer.FDUserI' %>
-<%@ page import='com.freshdirect.fdstore.FDTimeslot' %>
+<%@ page import='com.freshdirect.fdlogistics.model.FDTimeslot' %>
 <%@ page import='com.freshdirect.fdstore.FDDeliveryManager' %>
 <% 
 boolean result = true;

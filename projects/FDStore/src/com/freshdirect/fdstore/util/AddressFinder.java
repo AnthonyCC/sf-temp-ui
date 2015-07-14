@@ -2,15 +2,14 @@ package com.freshdirect.fdstore.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -72,7 +71,7 @@ public class AddressFinder {
 
 	//get amount for zone promotion
 	public static double getZonePromoAmount(FDUserI user, ErpAddressModel erpAddress, TimeslotContext timeslotCtx) throws FDResourceException {
-		DlvZoneInfoModel zInfo = null;
+		FDDeliveryZoneInfo zInfo = null;
 		double zonePromoAmount=0.0;
 		if(erpAddress!=null){
 			try {

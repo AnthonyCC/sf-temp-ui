@@ -1,20 +1,18 @@
 package com.freshdirect.webapp.taglib.callcenter;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
 import com.freshdirect.crm.CrmAgentModel;
-import com.freshdirect.delivery.AddressScrubber;
-import com.freshdirect.delivery.ExceptionAddress;
-import com.freshdirect.delivery.InvalidAddressException;
+import com.freshdirect.fdlogistics.model.DuplicateKeyException;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.delivery.model.ExceptionAddress;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -43,9 +41,12 @@ public class GeocodeExceptionTag extends AbstractControllerTag implements Sessio
 				setSuccessPage(null);
 			}
 			
+		} catch (DuplicateKeyException e) {
+			actionResult.addError(new ActionError("mainError", "Duplicate entry exists, record not saved"));
+		} catch (FDInvalidAddressException e) {
+			actionResult.addError(true, "streetAddress", e.getMessage());
 		} catch (FDResourceException e) {
             if (e.getMessage().indexOf("unique constraint") > -1) {
-            	actionResult.addError(new ActionError("mainError", "Duplicate entry exists, record not saved"));
             } else {
             	throw new FDRuntimeException(e);
             }
@@ -57,13 +58,6 @@ public class GeocodeExceptionTag extends AbstractControllerTag implements Sessio
 		ExceptionAddress ex = new ExceptionAddress();
 		ex.setScrubbedAddress(NVL.apply(request.getParameter("streetAddress"), ""));
 		result.addError("".equals(ex.getScrubbedAddress()), "streetAddress", SystemMessageList.MSG_REQUIRED);
-	
-		try {
-			ex.setScrubbedAddress(AddressScrubber.standardizeForGeocode(ex.getScrubbedAddress()));
-		} catch (InvalidAddressException e) {
-			result.addError(true, "streetAddress", e.getMessage());
-		}
-		
 		ex.setZip(NVL.apply(request.getParameter("zip"), ""));
 		result.addError("".equals(ex.getZip()), "zip", SystemMessageList.MSG_REQUIRED);
 		

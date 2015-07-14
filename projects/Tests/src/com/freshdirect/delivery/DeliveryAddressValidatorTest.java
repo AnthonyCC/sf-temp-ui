@@ -6,9 +6,12 @@ import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.EnumAddressType;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.fdstore.FDInvalidAddressException;
+import com.freshdirect.fdlogistics.model.FDDeliveryAddressGeocodeResponse;
+import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.delivery.model.EnumDeliveryStatus;
 import com.freshdirect.webapp.taglib.fdstore.DeliveryAddressValidator;
 
 public class DeliveryAddressValidatorTest extends TestCase {
@@ -21,8 +24,8 @@ public class DeliveryAddressValidatorTest extends TestCase {
 		super.tearDown();
 	}
 
-	private DlvServiceSelectionResult createServiceResult(boolean homeDeliverable, boolean corpDeliverable, boolean pickupDeliverable) {
-		DlvServiceSelectionResult r = new DlvServiceSelectionResult();
+	private FDDeliveryServiceSelectionResult createServiceResult(boolean homeDeliverable, boolean corpDeliverable, boolean pickupDeliverable) {
+		FDDeliveryServiceSelectionResult r = new FDDeliveryServiceSelectionResult();
 		r.addServiceStatus(EnumServiceType.HOME, homeDeliverable ? EnumDeliveryStatus.DELIVER : EnumDeliveryStatus.DONOT_DELIVER);
 		r.addServiceStatus(EnumServiceType.CORPORATE, corpDeliverable ? EnumDeliveryStatus.DELIVER : EnumDeliveryStatus.DONOT_DELIVER);
 		r.addServiceStatus(EnumServiceType.PICKUP, pickupDeliverable ? EnumDeliveryStatus.DELIVER : EnumDeliveryStatus.DONOT_DELIVER);
@@ -31,13 +34,13 @@ public class DeliveryAddressValidatorTest extends TestCase {
 	
 	private void assertAddressValidation(String scenario,
 			boolean expectedValid, AddressModel address,
-			DlvServiceSelectionResult serviceResult) throws FDResourceException {
+			FDDeliveryServiceSelectionResult serviceResult) throws FDResourceException {
 
 		ActionResult r = new ActionResult();
 		
 		TestDeliveryAddressValidator v = new TestDeliveryAddressValidator(address);
 		v.setTestSelectionResult(serviceResult);
-		v.setTestGeocodeResponse(new DlvAddressGeocodeResponse(address, "result1"));
+		v.setTestGeocodeResponse(new FDDeliveryAddressGeocodeResponse(address, "result1"));
 
 		assertEquals(scenario, expectedValid, v.validateAddress(r));
 	}
@@ -97,24 +100,24 @@ public class DeliveryAddressValidatorTest extends TestCase {
 
 
 class TestDeliveryAddressValidator extends DeliveryAddressValidator {
-	public DlvServiceSelectionResult testSelectionResult;
-	public DlvAddressGeocodeResponse testGeocodeResponse;
+	public FDDeliveryServiceSelectionResult testSelectionResult;
+	public FDDeliveryAddressGeocodeResponse testGeocodeResponse;
 
 
 	
-	public DlvServiceSelectionResult getTestSelectionResult() {
+	public FDDeliveryServiceSelectionResult getTestSelectionResult() {
 		return testSelectionResult;
 	}
 
-	public void setTestSelectionResult(DlvServiceSelectionResult testSelectionResult) {
+	public void setTestSelectionResult(FDDeliveryServiceSelectionResult testSelectionResult) {
 		this.testSelectionResult = testSelectionResult;
 	}
 
-	public DlvAddressGeocodeResponse getTestGeocodeResponse() {
+	public FDDeliveryAddressGeocodeResponse getTestGeocodeResponse() {
 		return testGeocodeResponse;
 	}
 
-	public void setTestGeocodeResponse(DlvAddressGeocodeResponse testGeocodeResponse) {
+	public void setTestGeocodeResponse(FDDeliveryAddressGeocodeResponse testGeocodeResponse) {
 		this.testGeocodeResponse = testGeocodeResponse;
 	}
 
@@ -139,7 +142,7 @@ class TestDeliveryAddressValidator extends DeliveryAddressValidator {
 	}
 
 	// mocked external service call
-	protected DlvServiceSelectionResult doCheckAddress(AddressModel addr) throws FDResourceException, FDInvalidAddressException {
+	protected FDDeliveryServiceSelectionResult doCheckAddress(AddressModel addr) throws FDResourceException, FDInvalidAddressException {
 		if (testSelectionResult == null) {
 			throw new FDInvalidAddressException();
 		}
@@ -147,7 +150,7 @@ class TestDeliveryAddressValidator extends DeliveryAddressValidator {
 	}
 
 	// mocked external service call
-	protected DlvAddressGeocodeResponse doGeocodeAddress(AddressModel addr) throws FDResourceException, FDInvalidAddressException {
+	protected FDDeliveryAddressGeocodeResponse doGeocodeAddress(AddressModel addr) throws FDResourceException, FDInvalidAddressException {
 		if (testGeocodeResponse == null) {
 			throw new FDInvalidAddressException();
 		}

@@ -9,17 +9,31 @@ package com.freshdirect.webapp.taglib.callcenter;
  *
  *  @author knadeem
  */
-import java.util.*;
-import javax.servlet.http.*;
-import javax.servlet.jsp.*;
+import java.util.Date;
 
-import com.freshdirect.framework.webapp.*;
-import com.freshdirect.fdstore.*;
-import com.freshdirect.fdstore.customer.*;
-import com.freshdirect.customer.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.JspException;
 
-import com.freshdirect.webapp.taglib.*;
-import com.freshdirect.webapp.taglib.fdstore.*;
+import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpDeliveryInfoModel;
+import com.freshdirect.customer.ErpRedeliveryModel;
+import com.freshdirect.customer.ErpSaleNotFoundException;
+import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdstore.CallCenterServices;
+import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.webapp.ActionError;
+import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.framework.webapp.WebFormI;
+import com.freshdirect.webapp.taglib.AbstractControllerTag;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class RedeliveryControllerTag extends AbstractControllerTag implements SessionName {
 	
@@ -100,7 +114,7 @@ public class RedeliveryControllerTag extends AbstractControllerTag implements Se
 			deliveryInfo.setDeliveryAddress(order.getDeliveryAddress());
 			deliveryInfo.setDeliveryCutoffTime(timeslot.getCutoffDateTime());
 			deliveryInfo.setDeliveryEndTime(timeslot.getEndDateTime());
-			deliveryInfo.setDeliveryStartTime(timeslot.getBegDateTime());
+			deliveryInfo.setDeliveryStartTime(timeslot.getStartDateTime());
 			deliveryInfo.setDeliveryReservationId(reservation.getPK().getId());
 			deliveryInfo.setDeliveryZone(order.getDeliveryZone());
 			deliveryInfo.setDepotLocationId(order.getDepotFacility());

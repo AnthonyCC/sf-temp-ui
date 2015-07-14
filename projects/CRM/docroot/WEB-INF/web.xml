@@ -142,10 +142,7 @@
     <servlet-name>PromoPublishServlet</servlet-name>
     <servlet-class>com.freshdirect.fdstore.promotion.pxp.PromoPublishServlet</servlet-class>
   </servlet>
-  <servlet>
-    <servlet-name>CrisisManagerServlet</servlet-name>
-    <servlet-class>com.freshdirect.fdstore.admin.pxp.CrisisManagerServlet</servlet-class>
-  </servlet>
+  
   <servlet>
     <servlet-name>JavascriptServlet</servlet-name>
     <servlet-class>net.jawr.web.servlet.JawrServlet</servlet-class>
@@ -184,6 +181,40 @@
     <servlet-name>excelExportServlet</servlet-name>
     <servlet-class>com.freshdirect.webapp.ajax.standingorder.ExcelExportServlet</servlet-class>
   </servlet> 
+  
+  
+  <!-- START  Logistics Integration Configuration -->
+  <!--  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>/WEB-INF/spring/logistics-integrationservices.xml</param-value>
+  </context-param>
+        -->
+ <!--  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+   -->
+  <servlet>
+    <servlet-name>fdlogistics</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>/WEB-INF/spring/fdlogistics-servlet.xml</param-value>
+    </init-param>
+    <init-param>
+            <param-name>throwExceptionIfNoHandlerFound</param-name>
+            <param-value>true</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>fdlogistics</servlet-name>
+    <url-pattern>/fdlogistics/*</url-pattern>
+  </servlet-mapping>
+  
+  <!-- END  Logistics Integration Configuration -->
+  
+  
   <servlet-mapping>
     <servlet-name>JavascriptServlet</servlet-name>
     <url-pattern>/jawr/js/*</url-pattern>
@@ -255,10 +286,6 @@
   <servlet-mapping>
     <servlet-name>PromoPublishServlet</servlet-name>
     <url-pattern>/promo_publish</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>CrisisManagerServlet</servlet-name>
-    <url-pattern>/admin_service</url-pattern>
   </servlet-mapping>
    <servlet-mapping>
     <servlet-name>skuReplaceServlet</servlet-name>
@@ -339,6 +366,7 @@
       <url-pattern>/ccassets/*</url-pattern>
       <url-pattern>/resource/*</url-pattern>
       <url-pattern>/api/*</url-pattern>
+      <url-pattern>/fdlogistics/*</url-pattern>
       <url-pattern>/images/*</url-pattern>
       <url-pattern>/login.jsp</url-pattern>
       <url-pattern>/no_auth.jsp</url-pattern>

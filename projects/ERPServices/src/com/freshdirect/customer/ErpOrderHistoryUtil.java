@@ -245,7 +245,7 @@ public class ErpOrderHistoryUtil {
 			Date deliveryDate = saleInfo.getRequestedDate();
 
 			if (!saleInfo.isMakeGood()&&deliveryDate.after(beginDate) && deliveryDate.before(endDate) && 
-					!saleInfo.getDeliveryType().equals(EnumDeliveryType.CORPORATE) &&
+					saleInfo.getDeliveryType()!=null && !saleInfo.getDeliveryType().equals(EnumDeliveryType.CORPORATE) &&
 					!saleInfo.getStatus().equals(EnumSaleStatus.CANCELED) &&
 					!saleInfo.getSaleType().equals(EnumSaleType.SUBSCRIPTION)) {
 				orderCount++;
@@ -269,7 +269,7 @@ public class ErpOrderHistoryUtil {
 			ErpSaleInfo saleInfo = (ErpSaleInfo) i.next(); 			
 			Date deliveryDate = saleInfo.getRequestedDate();
 			if (!saleInfo.isMakeGood()&& deliveryDate.after(beginDate) && deliveryDate.before(endDate) && 
-					!saleInfo.getDeliveryType().equals(EnumDeliveryType.CORPORATE) &&
+					saleInfo.getDeliveryType()!=null && !saleInfo.getDeliveryType().equals(EnumDeliveryType.CORPORATE) &&
 					!saleInfo.getStatus().equals(EnumSaleStatus.CANCELED) &&
 					//!saleInfo.getPaymentType().equals(EnumPaymentType.MAKE_GOOD) &&
 					!saleInfo.getSaleType().equals(EnumSaleType.SUBSCRIPTION)) {

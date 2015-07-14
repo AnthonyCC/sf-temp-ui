@@ -12,7 +12,7 @@
 <%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus"%>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus"%>
-<%@ page import="com.freshdirect.delivery.model.DlvZoneModel"%>
+<%@ page import="com.freshdirect.logistics.delivery.model.DlvZoneModel"%>
 <%@ page import="com.freshdirect.fdstore.FDDeliveryManager"%>
 <%@ page import="com.freshdirect.framework.util.FormatterUtil"%>
 <%@ page import="com.freshdirect.framework.util.NumberUtil"%>

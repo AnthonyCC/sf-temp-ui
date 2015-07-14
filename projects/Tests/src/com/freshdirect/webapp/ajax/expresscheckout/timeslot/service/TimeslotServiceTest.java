@@ -5,7 +5,7 @@ import java.util.Date;
 import org.jmock.Expectations;
 
 import com.freshdirect.Fixture;
-import com.freshdirect.fdstore.FDReservation;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.data.FormTimeslotData;
 

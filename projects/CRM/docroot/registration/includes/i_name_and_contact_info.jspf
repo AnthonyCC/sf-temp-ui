@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdlogistics.model.*"%>
 <table width="100%" cellpadding="0" cellspacing="0" border="0" align="center" class="register_header" style="padding: 3px; margin-bottom: 4px;">
 	<tr>
 		<td width="35%">&nbsp;&nbsp;Name &amp; Contact Info</td>
@@ -58,7 +59,7 @@
 						<td width="65%"><input type="text" SIZE="15" name="workDepartment" value="<%=request.getParameter("workDepartment")%>"><fd:ErrorHandler result='<%=result%>' name='workDepartment' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
 					</tr>
 					<%
-						com.freshdirect.delivery.depot.DlvDepotModel depot = FDDepotManager.getInstance().getDepot(user.getDepotCode());
+					FDDeliveryDepotModel depot = FDDeliveryManager.getInstance().getDepot(user.getDepotCode());
 						if (depot.getRequireEmployeeId()) { %>
 							<tr>
 								<td width="35%" align="right">*&nbsp;Employee Id:&nbsp;</td>
@@ -184,7 +185,7 @@
 						<td width="30%" align="right">Company:&nbsp;</td>
 						<td width="70%">
 							<fd:GetDepots id="depots">
-								<logic:iterate collection="<%= depots %>" id="depot" type="com.freshdirect.delivery.depot.DlvDepotModel">
+								<logic:iterate collection="<%= depots %>" id="depot" type="com.freshdirect.fdlogistics.model.FDDeliveryDepotModel">
 									<% if (depot.getDepotCode().equals(user.getDepotCode())) { out.print(depot.getName()); } %>
 								</logic:iterate>
 							</fd:GetDepots>

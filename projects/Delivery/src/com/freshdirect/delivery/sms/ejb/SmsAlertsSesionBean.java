@@ -21,11 +21,11 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.delivery.DlvProperties;
-import com.freshdirect.delivery.sms.NextStopSmsInfo;
-import com.freshdirect.delivery.sms.OrderDlvInfo;
 import com.freshdirect.delivery.sms.SmsAlertETAInfo;
 import com.freshdirect.delivery.sms.SmsCustInfo;
 import com.freshdirect.delivery.sms.SmsUtil;
+import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -41,8 +41,6 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	private static Category LOGGER = LoggerFactory.getInstance(SmsAlertsSesionBean.class);
 
 	private static final String OPT_IN_MESSAGE = "Reply YES to get automated FreshDirect marketing msgs. Consent not required 2 purchase. Up to 5msgs/order.Msg&Data rates apply. Reply HELP 4 help, STOP 2 cancel";
-	private static final String NEXT_STOP_TEXT = "Good news! Your FreshDirect order is scheduled to be delivered next. Can't wait to see you! Questions? www.freshdirect.com/help";
-	//private static final String NEXT_STOP_TEXT_2 = " will be there soon.";
 	private static final String OPTIN_ALERT_TYPE = "OPTIN";
 	private static final String OPTOUT_ALERT_TYPE = "OPTOUT";
 	private static final String HELP_ALERT_TYPE = "HELP";
@@ -56,11 +54,7 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	private static final String OPTOUT_SUCCESS_MESSAG = "FreshDirect: You are unsubscribed and will not receive additional messages from FreshDirect. Reply HELP for help.";
 	private static final String HELP_MESSAGE = "FreshDirect: For more Help call 866-283-7374 or visit www.freshdirect.com/help. Up to 5msgs/order. Msg&Data rates may apply. Reply STOP to cancel.";
 	private static final String WRONG_RESPONSE_MESSAGE = "FreshDirect: Sorry, we didn't understand your response. Reply HELP for help, STOP to cancel.";
-	private static final String ETA_MESSAGE_TEXT_1 = "Hello! Your FreshDirect order is getting a few finishing touches, and will be delivered between ";
-	private static final String ETA_MESSAGE_TEXT_2 = ". Questions? www.freshdirect.com/help";
-	private static final String UATTENDED_OR_DOORMAN_DELIVERY_TEXT = "Special delivery! Your FreshDirect order is waiting for you. We hope you love it! Questions? www.freshdirect.com/help";
-	private static final String DLV_ATTEMPTED_TEXT = "We just missed you! An attempt was made to deliver your FreshDirect order. Questions? www.freshdirect.com/help";
-	
+
 
 	/**
 	 * This method sends the optin sms message to customer when he enrolls
@@ -241,7 +235,8 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 	}
 	
 	private void updateSmsMessagesReceived(String mobileNumber, String shortCode,
-			String carrierName, Date receivedDate, String message, SmsCustInfo customerInfo, Connection con, String confirmed) throws SQLException, SmsServiceException {
+			String carrierName, Date receivedDate, String message, SmsCustInfo customerInfo, Connection con, String confirmed) 
+					throws SQLException, SmsServiceException, FDResourceException {
 		
 		PreparedStatement ps=null, ps1 = null;
 		try{
@@ -279,6 +274,13 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			ps1.setString(6, customerId);
 			ps1.executeUpdate();
 			
+			FDDeliveryManager.getInstance().addSubscriptions(customerId,
+					mobileNumber, offer.equals(EnumSMSAlertStatus.PENDING.value()) ? EnumSMSAlertStatus.SUBSCRIBED.value() : offer, 
+					null, notice.equals(EnumSMSAlertStatus.PENDING.value()) ? EnumSMSAlertStatus.SUBSCRIBED.value() : notice,
+					exceptions.equals(EnumSMSAlertStatus.PENDING.value()) ? EnumSMSAlertStatus.SUBSCRIBED.value(): exceptions, 
+					null, pMessage.equals(EnumSMSAlertStatus.PENDING.value()) ? EnumSMSAlertStatus.SUBSCRIBED.value() : pMessage,
+							receivedDate);
+			
 			STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, OPTIN_CONFIRMATION_SUCCESS_MESSAGE);
 			smsResponseModel.setDate(new Date());
 			updateSmsAlertCaptured(con, smsResponseModel, OPTIN_ALERT_TYPE, customerId);
@@ -293,6 +295,13 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 			ps1.setTimestamp(5, new java.sql.Timestamp(receivedDate.getTime()));
 			ps1.setString(6, customerId);
 			ps1.executeUpdate();
+			
+			FDDeliveryManager.getInstance().addSubscriptions(customerId,
+					null, EnumSMSAlertStatus.NONE.value(), 
+					null, EnumSMSAlertStatus.NONE.value(),
+					EnumSMSAlertStatus.NONE.value(), 
+					null, EnumSMSAlertStatus.NONE.value(),
+					receivedDate);
 			
 			STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(mobileNumber, OPTOUT_SUCCESS_MESSAG);
 			smsResponseModel.setDate(new Date());
@@ -319,191 +328,14 @@ public class SmsAlertsSesionBean extends SessionBeanSupport {
 		
 	}
 
-	/**
-	 * This method populates the table dlv.next_stop_sms from the view
-	 * dlv.transit and updates the successful imports in sms_transit_imports and
-	 * starts sending sms messages to the next stops in the time window.
-	 * 
-	 */
-	public void sendNextStopSms() {
 
-		SmsDAO smsDAO = new SmsDAO();
-		Connection con = null;
-
-		try {
-			con = this.getConnection();
-			List<NextStopSmsInfo> nextStopSmsInfo = smsDAO.getNextStopSmsInfo(con);
-
-			for (NextStopSmsInfo entry : nextStopSmsInfo) {
-				String customerId=entry.getCustomerId();
-				boolean isSubscribedForOrderNotices = isSubscribed(con, NEXT_STOP_ALERT_TYPE, customerId);
-				if (isSubscribedForOrderNotices) {
-					//String dlvManagerName = getDlvManagerName(con, entry.getDlvManager()).toUpperCase();
-					STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(entry.getMobileNumber(),NEXT_STOP_TEXT);
-					smsResponseModel.setDate(new Date());
-					smsResponseModel.setOrderId(entry.getOrderId());
-
-					updateSmsAlertCaptured(con, smsResponseModel, NEXT_STOP_ALERT_TYPE, customerId);
-				}
-			}
-		} catch (Exception e) {
-			LOGGER.warn(e);
-
-			throw new EJBException(e);
-		} finally {
-			try {
-				if (con != null) {
-					con.close();
-					con = null;
-				}
-			} catch (SQLException se) {
-				LOGGER.warn("Exception while trying to cleanup", se);
-			}
-		}
-
-	}
-
-	/**
-	 * This method sends the ETA sms to all the customers enrolled in
-	 * order_notices every day.
-	 */
-	public void sendETASms() {
-
-		
-		Connection con = null;
-		try {
-			Date toTime=new Date();
-			List<SmsAlertETAInfo> etaInfoList = getETAInfo();
-			List<STSmsResponse> etaSmsUpdateList = sendSmsToGateway(etaInfoList);
-			SmsDAO smsDao = new SmsDAO();
-			con = this.getConnection();
-			smsDao.batchSmsResponseUpdate(con, etaSmsUpdateList);
-			smsDao.updateLastExport(con, ETA_ALERT_TYPE,toTime);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		} finally {
-			try {
-				if (con != null) {
-					con.close();
-					con = null;
-				}
-			} catch (SQLException se) {
-				LOGGER.warn("Exception while trying to cleanup", se);
-			}
-		}
-
-	}
 	
 	public List<STSmsResponse> sendSmsToGateway(List<SmsAlertETAInfo> etaInfoList){
 		List<STSmsResponse> etaSmsUpdateList = SmsUtil.getEtaSmsUpdateList(etaInfoList);
 		return etaSmsUpdateList;
 	}
 	
-	private List<SmsAlertETAInfo> getETAInfo(){
-		Connection con = null;
-		SmsDAO smsDAO = new SmsDAO();
-		List<SmsAlertETAInfo> etaInfoList = new ArrayList<SmsAlertETAInfo>();
-		try {
-			con = this.getConnection();
-			etaInfoList = smsDAO.getETAInfo(con);
-			
-		}catch (Exception e) {
 
-			e.printStackTrace();
-		} finally {
-			try {
-				if (con != null) {
-					con.close();
-					con = null;
-				}
-			} catch (SQLException se) {
-				LOGGER.warn("Exception while trying to cleanup", se);
-			}
-		}
-		return etaInfoList;
-	}
-	
-	
-	
-	
-
-	/**
-	 * This method sends the Unattended or doorman delivery sms messages to the
-	 * subscribed customers
-	 * 
-	 */
-	public void sendUnattendedDoormanDlvSms() {
-
-		SmsDAO smsDAO = new SmsDAO();
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			List<OrderDlvInfo> unattendedDoormanDlvInfo = smsDAO
-					.getUnattendedDoormanDlvInfo(con);
-			for (OrderDlvInfo entry : unattendedDoormanDlvInfo) {
-
-				boolean isSubscribed = isSubscribed(con, UNATTENDED_OR_DOORMAN_ALERT_TYPE, entry.getCustomerId());
-				
-				if (isSubscribed) {
-					STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(entry.getMobileNumber(), UATTENDED_OR_DOORMAN_DELIVERY_TEXT);
-					smsResponseModel.setDate(new Date());
-					smsResponseModel.setOrderId(entry.getOrderId());
-					updateSmsAlertCaptured(con, smsResponseModel, UNATTENDED_OR_DOORMAN_ALERT_TYPE, entry.getCustomerId());
-				}
-			}
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		} finally {
-			try {
-				if (con != null) {
-					con.close();
-					con = null;
-				}
-			} catch (SQLException se) {
-				LOGGER.warn("Exception while trying to cleanup", se);
-			}
-		}
-
-	}
-
-	/**
-	 * This method checks any delivery attempted SMS are to be sent and sends
-	 * them to the respective customers.
-	 * 
-	 */
-	public void sendDlvAttemptedSms() {
-		SmsDAO smsDAO = new SmsDAO();
-		Connection con = null;
-		try {
-			con = this.getConnection();
-			List<OrderDlvInfo> dlvAttemptedInfo = smsDAO.getDlvAttemptedInfo(con);
-			
-			for (OrderDlvInfo entry : dlvAttemptedInfo) {
-				if (isSubscribed(con, DLV_ATTEMPTED_ALERT_TYPE, entry.getCustomerId())) {
-					STSmsResponse smsResponseModel = FDSmsGateway.sendSMS(entry.getMobileNumber(), DLV_ATTEMPTED_TEXT);
-					smsResponseModel.setDate(new Date());
-					smsResponseModel.setOrderId(entry.getOrderId());
-					updateSmsAlertCaptured(con, smsResponseModel, DLV_ATTEMPTED_ALERT_TYPE, entry.getCustomerId());
-				}
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (con != null) {
-					con.close();
-					con = null;
-				}
-			} catch (SQLException se) {
-				LOGGER.warn("Exception while trying to cleanup", se);
-			}
-		}
-
-	}
 
 	/**
 	 * updated the sms_alerts_capture with sms sent to the customer

@@ -1,9 +1,9 @@
 <%@ page import="com.freshdirect.delivery.*" %>
-<%@ page import="com.freshdirect.delivery.depot.*" %>
+<%@ page import="com.freshdirect.fdlogistics.model.*" %>
 <%@ page import="com.freshdirect.common.address.AddressModel" %>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
-<%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
+
 <%@ page import='com.freshdirect.fdstore.survey.*' %>
 
 <% //expanded page dimensions
@@ -168,7 +168,7 @@ if (fldZipCode==null && user!=null && user.getZipCode() !=null){//quite odd. we 
 	</td>
 </tr>
 <%
-    DlvDepotModel depot = FDDepotManager.getInstance().getDepot(user.getDepotCode());
+    FDDeliveryDepotModel depot = FDDeliveryManager.getInstance().getDepot(user.getDepotCode());
     if (depot != null && depot.getRequireEmployeeId()) { 
 	%>
 <tr valign="middle">

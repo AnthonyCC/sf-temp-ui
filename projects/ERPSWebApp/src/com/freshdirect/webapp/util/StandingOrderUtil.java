@@ -6,10 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,10 +18,10 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.analytics.TimeslotEventModel;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.address.ContactAddressModel;
+import com.freshdirect.common.pricing.ZoneInfo;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -34,32 +32,27 @@ import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpTransactionException;
-import com.freshdirect.delivery.DlvServiceSelectionResult;
-import com.freshdirect.delivery.DlvZoneInfoModel;
-import com.freshdirect.delivery.EnumDeliveryStatus;
-import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.FDRestrictedAvailabilityInfo;
-import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.deliverypass.DeliveryPassException;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdlogistics.model.FDTimeslotList;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDProductInfo;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDCompositeAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDMuniAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
-import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
-import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.coremetrics.mobileanalytics.CJVFContextHolder;
 import com.freshdirect.fdstore.coremetrics.mobileanalytics.CreateCMRequest;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -101,6 +94,9 @@ import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
+import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
@@ -142,7 +138,7 @@ public class StandingOrderUtil {
 	 * @throws FDResourceException
 	 * 
 	 */
-	public static SOResult.Result process( FDStandingOrder so, FDStandingOrderAltDeliveryDate altDateInfo, TimeslotEventModel event, FDActionInfo info
+	public static SOResult.Result process( FDStandingOrder so, FDStandingOrderAltDeliveryDate altDateInfo, TimeslotEvent event, FDActionInfo info
 					, MailerGatewayHome mailerHome, boolean forceCapacity, boolean createIfSoiExistsForWeek, boolean isSendReminderNotificationEmail) throws FDResourceException {
 		
 		LOGGER.info( "Processing Standing Order : " + so );
@@ -308,13 +304,13 @@ public class StandingOrderUtil {
 			LOGGER.warn( "No delivery address found for this ID. ["+deliveryAddressId+"]" );
 			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.NO_ADDRESS );
 		}
-		
+			
 		DeliveryAddressValidator addressValidator = new DeliveryAddressValidator( deliveryAddressModel );
 		ActionResult addressValidatorResult = new ActionResult();
 		
 		try { 
 			addressValidator.validateAddress( addressValidatorResult );
-		} catch (FDResourceException e) {
+		}catch (FDResourceException e) {
 			LOGGER.warn( "Address validation failed with FDResourceException ", e );
 			return SOResult.createTechnicalError( so, "Address validation failed with FDResourceException." );
 		}
@@ -392,10 +388,14 @@ public class StandingOrderUtil {
 		//   Validate Timeslot reservation
 		// ==================================
 		
-		//Allowing COS customers to use HOME zone capacity for the configured set of HOME zones
-		AddressModel clonedDeliveryAddressModel = performCosResidentialMerge(deliveryAddressModel);
 		// WARNING: getAllTimeslotsForDateRange-s select will ignore houre:minute in start/end dates!
-		List<FDTimeslot> timeslots = FDDeliveryManager.getInstance().getAllTimeslotsForDateRange( deliveryTimes.getDayStart(), deliveryTimes.getDayEnd(), clonedDeliveryAddressModel, customerUser.getHistoricOrderSize(), null);
+		List<DateRange> ranges = new ArrayList<DateRange>();
+		ranges.add(new DateRange(deliveryTimes.getDayStart(), deliveryTimes.getDayEnd()));
+		FDTimeslotList timeslotList = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone
+				(ranges, null, (ContactAddressModel)deliveryAddressModel , customerUser.getHistoricOrderSize())
+				.getTimeslotList().get(0);
+		
+		List<FDTimeslot> timeslots = timeslotList.getTimeslots();
 				
 		if ( timeslots == null || timeslots.size() == 0 ) {
 			LOGGER.info( "No timeslots for this day: " + new SimpleDateFormat(FDStandingOrder.DATE_FORMAT).format( deliveryTimes.getDayStart() ) );
@@ -413,9 +413,6 @@ public class StandingOrderUtil {
 		FDTimeslot selectedTimeslot = null;
 		ErpAddressModel deliveryAddress = null;
 		TimeslotReservationInfo _windowInfo = null;
-		//Geo-Restrictions
-		List<GeographyRestriction> geographicRestrictions = new ArrayList<GeographyRestriction>();
-		geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictions(deliveryAddressModel);
 				
 		FDTimeslot _tmpTimeslot = null;
 		for ( FDTimeslot timeslot : timeslots ) {		
@@ -424,8 +421,7 @@ public class StandingOrderUtil {
 				LOGGER.info( "Found matched timeslot: " + timeslot.toString() );
 				_tmpTimeslot = timeslot;
 				
-				_windowInfo = new TimeslotReservationInfo(geographicRestrictions,
-														timeslot, deliveryTimes,
+				_windowInfo = new TimeslotReservationInfo(timeslot, deliveryTimes,
 														event, deliveryAddress,
 														customer, deliveryAddressId,
 														customerUser, reservation,
@@ -451,8 +447,7 @@ public class StandingOrderUtil {
 			List<FDTimeslot> altTimeslots = deliveryTimes.getAltTimeslots(timeslots);
 			for ( FDTimeslot timeslot : altTimeslots ) {
 				
-				_windowInfo = new TimeslotReservationInfo(geographicRestrictions,
-														timeslot, deliveryTimes,
+				_windowInfo = new TimeslotReservationInfo(timeslot, deliveryTimes,
 														event, deliveryAddress,
 														customer, deliveryAddressId,
 														customerUser, reservation,
@@ -483,9 +478,9 @@ public class StandingOrderUtil {
 		//    Extra validations
 		// ==========================
 		
-		DlvZoneInfoModel zoneInfo = null;
+		FDDeliveryZoneInfo zoneInfo = null;
 		try {
-			zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddressModel, selectedTimeslot.getBegDateTime(), customerUser.getHistoricOrderSize(), (reservation!=null)?reservation.getRegionSvcType():null);
+			zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddressModel, selectedTimeslot.getStartDateTime(), customerUser.getHistoricOrderSize(), (reservation!=null)?reservation.getRegionSvcType():null);
 		} catch (FDInvalidAddressException e) {
 			LOGGER.info( "Invalid zone info. - FDInvalidAddressException", e );
 			return SOResult.createUserError( so, customer, customerInfo, ErrorCode.ADDRESS );
@@ -755,7 +750,7 @@ public class StandingOrderUtil {
 	}
 
 
-	public static FDCartModel buildCart(FDCustomerList soList, ErpPaymentMethodI paymentMethod, AddressModel deliveryAddressModel, List<FDTimeslot> timeslots, DlvZoneInfoModel zoneInfo, FDReservation reservation, ProcessActionResult vr) throws FDResourceException {
+	public static FDCartModel buildCart(FDCustomerList soList, ErpPaymentMethodI paymentMethod, AddressModel deliveryAddressModel, List<FDTimeslot> timeslots, FDDeliveryZoneInfo zoneInfo, FDReservation reservation, ProcessActionResult vr) throws FDResourceException {
 		FDCartModel cart = new FDTransientCartModel();
 		
 		if ( ! isValidCustomerList( soList.getLineItems() ) ) {
@@ -1043,37 +1038,6 @@ public class StandingOrderUtil {
 	}
 	
 	
-	private static AddressModel performCosResidentialMerge(AddressModel address)	throws FDResourceException {
-		AddressModel timeslotAddress = address;
-		if(address!=null){
-			if(EnumServiceType.CORPORATE.equals(address.getServiceType())){
-				try{
-					DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkAddress(address);
-			 		EnumDeliveryStatus status = serviceResult.getServiceStatus(address.getServiceType());
-			 		if(EnumDeliveryStatus.COS_ENABLED.equals(status)){	
-			 			//Clone the address model object
-			 			timeslotAddress = cloneAddress(address);
-			 			timeslotAddress.setServiceType(EnumServiceType.HOME);
-			 			LOGGER.info("Address "+address+" is COS Enabled. ServiceType set to HOME.");
-			 		}
-			 		
-				}catch (FDInvalidAddressException iae) {
-					LOGGER
-					.warn("GEOCODE FAILED FOR ADDRESS setRegularDeliveryAddress  FDInvalidAddressException :"
-							+ address + "EXCEPTION :" + iae);
-				}
-			}
-		}
-		return timeslotAddress;
-	}
-	
-	private static AddressModel cloneAddress(AddressModel address) {
-		ErpAddressModel model = new ErpAddressModel(address);		
-		return model;
-	}
-
-	
-	
 	/**
 	 * Create a new standing order template
 	 * 
@@ -1198,12 +1162,9 @@ class TimeslotReservationInfo {
 	
 	private final static Category LOGGER = LoggerFactory.getInstance(TimeslotReservationInfo.class);
 	
-	private final static long RESERVATION_MILLISECONDS = 45 * 60 * 1000; // 45 minutes
-	
-	private List<GeographyRestriction> geographicRestrictions;
 	private FDTimeslot timeslot;
 	private DeliveryInterval deliveryTimes;
-	private TimeslotEventModel event;
+	private TimeslotEvent event;
 	private ErpAddressModel deliveryAddress;
 	private FDIdentity customer;
 	private String deliveryAddressId;
@@ -1213,14 +1174,12 @@ class TimeslotReservationInfo {
 	private boolean forceCapacity;		
 	
 	public TimeslotReservationInfo(
-			List<GeographyRestriction> geographicRestrictions,
 			FDTimeslot timeslot, DeliveryInterval deliveryTimes,
-			TimeslotEventModel event, ErpAddressModel deliveryAddress,
+			TimeslotEvent event, ErpAddressModel deliveryAddress,
 			FDIdentity customer, String deliveryAddressId,
 			FDUserI customerUser, FDReservation reservation,
 			FDTimeslot selectedTimeslot, boolean forceCapacity) {
 		super();
-		this.geographicRestrictions = geographicRestrictions;
 		this.timeslot = timeslot;
 		this.deliveryTimes = deliveryTimes;
 		this.event = event;
@@ -1239,24 +1198,19 @@ class TimeslotReservationInfo {
 		this.selectedTimeslot = selectedTimeslot;
 	}
 	public boolean isTimeSlotGeoRestricted() {
-		//check if time slot is Geo-Restricted.
-		if(GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions,timeslot, new ArrayList<String>(),new DateRange(deliveryTimes.getDayStart(),deliveryTimes.getDayEnd()),new ArrayList<String>())){
-			// this time slot is geo-restricted, skip it				
-			return true;
-		}
-		return false;
+		return timeslot.isGeoRestricted();
 	}
 
 	public FDReservation reserveTimeslot() throws FDResourceException {			
 		
 		if ( event == null ) {
-			event = new TimeslotEventModel(EnumTransactionSource.STANDING_ORDER.getCode(), false, 0.00, false, false,(customerUser!=null)?customerUser.getPrimaryKey():null);
+			event = new TimeslotEvent(EnumTransactionSource.STANDING_ORDER.getCode(), false, 0.00, false, 
+					false,(customerUser!=null)?customerUser.getPrimaryKey():null, EnumCompanyCode.fd.name());
 		}	
 		deliveryAddress = FDCustomerManager.getAddress(customer, deliveryAddressId);
 		try { 
 			LOGGER.info( "Trying to make reservation for timeslot: " + timeslot.toString() );
-			reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot, customer.getErpCustomerPK(),
-					RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
+			reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot.getId(), customer.getErpCustomerPK(), EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
 					null, false, event, false);
 			
 			selectedTimeslot = timeslot;
@@ -1264,8 +1218,7 @@ class TimeslotReservationInfo {
 		} catch ( ReservationException e ) {
 			if(forceCapacity){
 				try {
-					reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot, customer.getErpCustomerPK(),
-							RESERVATION_MILLISECONDS, EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
+					reservation = FDDeliveryManager.getInstance().reserveTimeslot(timeslot.getId(), customer.getErpCustomerPK(), EnumReservationType.STANDARD_RESERVATION, deliveryAddress, false,
 							null, forceCapacity, event, false);
 					
 				} catch (ReservationException e1) {						

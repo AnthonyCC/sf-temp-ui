@@ -20,21 +20,15 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.customer.EnumUnattendedDeliveryFlag;
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.delivery.TimeslotCapacityContext;
-import com.freshdirect.delivery.TimeslotCapacityWrapper;
-import com.freshdirect.delivery.model.DlvTimeslotModel;
-import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
-import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
-import com.freshdirect.delivery.restriction.TimeslotRestriction;
+import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.model.FDTimeslot;
+import com.freshdirect.fdlogistics.model.FDTimeslotList;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.FDTimeslot;
-import com.freshdirect.fdstore.FDZoneNotFoundException;
 import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.promotion.PromotionHelper;
@@ -42,10 +36,8 @@ import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.rules.OrderMinimumCalculator;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
-import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.routing.model.IDeliverySlot;
-import com.freshdirect.routing.model.IDeliveryWindowMetrics;
+import com.freshdirect.logistics.delivery.model.DlvZoneModel;
 
 /**
  * Utility to calculate available capacity in given circumstances.
@@ -61,56 +53,6 @@ public class TimeslotLogic {
 
 	/** chefstable page (CT cust only) */
 	public static final int PAGE_CHEFSTABLE = 1;
-
-	/**
-	 * Calculate the available capacity for a page.
-	 * 
-	 * @param timeslotModel
-	 *            the timeslot that should be checked
-	 * @param currentTime
-	 *            the date of the request
-	 * @param page
-	 *            one of {@link PAGE_NORMAL}, {@link PAGE_CHEFSTABLE}
-	 * @param autoRelease
-	 *            the number of minutes the auto-release occurs before the
-	 *            cutoffTime
-	 * @return the number of available orders.
-	 */
-	public static boolean getAvailableCapacity(DlvTimeslotModel timeslotModel,
-			Date currentTime, int page, int autoRelease) {
-		
-		TimeslotCapacityContext context = new TimeslotCapacityContext();
-		context.setChefsTable(PAGE_CHEFSTABLE == page);
-		context.setCurrentTime(currentTime);
-		
-		TimeslotCapacityWrapper capacityProvider = new TimeslotCapacityWrapper(timeslotModel, context);
-		return capacityProvider.isAvailable();	
-	}
-	
-		
-	public static IDeliveryWindowMetrics recalculateCapacity(DlvTimeslotModel timeslotModel) {
-		
-		IDeliveryWindowMetrics _metrics = null;
-		if(timeslotModel != null ) {
-			
-			if(timeslotModel.getRoutingSlot() != null 
-										&& timeslotModel.getRoutingSlot().getDeliveryMetrics() != null ) {
-				TimeslotCapacityContext context = new TimeslotCapacityContext();
-								
-				TimeslotCapacityWrapper capacityProvider = new TimeslotCapacityWrapper(timeslotModel, context);
-				
-				_metrics = timeslotModel.getRoutingSlot().getDeliveryMetrics();
-				
-				_metrics.setOrderCapacity(capacityProvider.getCalculatedDynamicCapacity());
-				_metrics.setOrderCtCapacity(capacityProvider.getCalculatedDynamicCTCapacity());
-				_metrics.setOrderPremiumCapacity(capacityProvider.getCalculatedDynamicPremiumCapacity());
-				_metrics.setOrderPremiumCtCapacity(capacityProvider.getCalculatedDynamicPremiumCTCapacity());
-			}
-		}
-		return _metrics;
-	}
-
-
 
 	/**
 	 * Utility method to filter time slot lists according to various restriction sets.
@@ -133,21 +75,19 @@ public class TimeslotLogic {
 	 * @throws FDResourceException
 	 */
 	public static DlvTimeslotStats filterDeliveryTimeSlots(final FDUserI user,
-			final DateRange geoRestrictionRange,
 			final DlvRestrictionsList restrictions,
-			final List<TimeslotRestriction> tsRestrictions,
 			final List<FDTimeslotUtil> timeslotList,
 			final Set<String> retainTimeslotIds,
-			final List<GeographyRestriction> geographicRestrictions,
 			final FDDeliveryTimeslotModel deliveryModel,
 			final List<RestrictionI> alcoholRestrictions, final boolean forceorder,
 			final ErpAddressModel address, 
-			final boolean genericTimeslots)
+			final boolean genericTimeslots,
+			final DlvTimeslotStats stats)
 			throws FDResourceException {
 
 
-		final DlvTimeslotStats stats = new DlvTimeslotStats();
-		HashMap<String, DlvZoneModel> _zonesMap = new HashMap<String, DlvZoneModel>();
+		Map<String, DlvZoneModel> _zonesMap = stats.getZonesMap();
+		
 		final double premiumFee = user.getShoppingCart().getPremiumFee(new FDRulesContextImpl(user));
 		final boolean isAlcoholDlv = FDDeliveryManager.getInstance()
 				.checkForAlcoholDelivery(address);
@@ -170,85 +110,39 @@ public class TimeslotLogic {
 		
 		for (FDTimeslotUtil list : timeslotList) {
 			for (Collection<FDTimeslot> col : list.getTimeslots()) {
-				for (FDTimeslot timeslot : col) {
+				for (FDTimeslot _ts : col) {
 					// holiday restricted timeslot
-					if (!genericTimeslots && list.getHolidays().contains(timeslot.getBaseDate())) {
-						timeslot.setHolidayRestricted(true);
-						timeslot.setStoreFrontAvailable("R");
-						if(timeslot.getDlvTimeslot().isPremiumSlot()) deliveryModel.setShowPremiumSlots(false);
+					if (!genericTimeslots && list.getHolidays().contains(_ts.getDeliveryDate())) {
+						_ts.setHolidayRestricted(true);
+						_ts.setStoreFrontAvailable("R");
+						if(_ts.isPremiumSlot()) deliveryModel.setShowPremiumSlots(false);
 						continue;
 					} else {
 						// ... available for store front
-						timeslot.setStoreFrontAvailable("A");
+						_ts.setStoreFrontAvailable("A");
 					}
 
-					final DlvTimeslotModel _ts = timeslot.getDlvTimeslot();
 					boolean _remove = false;
 					
-					// Apply geo restrictions and
-					// mark timeslot for removal if restricted
-					{
-						boolean geoRestricted = GeographyRestriction
-								.isTimeSlotGeoRestricted(
-										geographicRestrictions, timeslot,
-										stats.getMessages(), geoRestrictionRange, stats.getComments());
-						timeslot.setGeoRestricted(geoRestricted);
-						if ((_ts.getCapacity() <= 0 || geoRestricted)
-								&& !retainTimeslotIds.contains(_ts.getId())) {
-							LOGGER.debug("Timeslot Removed By Tag :" + _ts);
-							timeslot.setStoreFrontAvailable("H");
-							timeslot.setTimeslotRemoved(true);
-							_remove = true;
-						}
-					}
-					
-					// Apply timeslot restrictions and
-					// mark timeslot for removal if restricted
-					if (genericTimeslots) {
-						boolean tsRestricted = TimeslotRestriction
-								.isTimeSlotRestricted(tsRestrictions, timeslot,
-										 geoRestrictionRange);
-						timeslot.setTimeslotRestricted(tsRestricted);
-					}
-					
-					// Build zone map
-					{
-						String zoneCode = timeslot.getZoneId();
-						if (!_zonesMap.containsKey(zoneCode)) {
-							try {
-								FDDeliveryManager deliveryManager = FDDeliveryManager
-										.getInstance();
-								DlvZoneModel zoneModel = deliveryManager
-										.findZoneById(zoneCode);
-								if (zoneModel.isCtActive()) {
-									stats.setCtActive(true);
-								}
-								_zonesMap.put(zoneCode, zoneModel);
-							} catch (FDZoneNotFoundException e) {
-								LOGGER.error("Referenced zone not found, database error. Zone:"
-										+ zoneCode
-										+ " timeslot id:"
-										+ timeslot.getTimeslotId());
-							}
-						}
-					}
-					
-					if (timeslot.isEarlyAM()
+					if (_ts.isEarlyAM()
 							&& (EnumUnattendedDeliveryFlag.OPT_OUT
 									.equals(address.getUnattendedDeliveryFlag()) || 
 									(!EnumUnattendedDeliveryFlag.OPT_OUT.equals(address.getUnattendedDeliveryFlag()) && 
-									!_zonesMap.get(timeslot.getZoneId()).getZoneDescriptor().isUnattended()))) {
-						timeslot.setStoreFrontAvailable("E");
-						timeslot.setTimeslotRemoved(true);
+									!_zonesMap.get(_ts.getZoneId()).getZoneDescriptor().isUnattended()))) {
+						_ts.setStoreFrontAvailable("E");
+						_ts.setTimeslotRemoved(true);
 						_remove = true;
 					}
+					
+					
+					
 					
 					Calendar cal = Calendar.getInstance();
 					Date now = cal.getTime();
 					//Remove the same day slots that are passed cutoff
-					if(timeslot.getDlvTimeslot().isPremiumSlot() && timeslot.getCutoffDateTime().before(now))
+					if(_ts.isPremiumSlot() && _ts.getCutoffDateTime().before(now))
 					{
-						timeslot.setUnavailable(true);
+						_ts.setUnavailable(true);
 						_remove = true;
 					}
 					
@@ -261,17 +155,17 @@ public class TimeslotLogic {
 									_ts.setPremiumAmount(0);
 							else
 									_ts.setPremiumAmount(premiumFee);
-							stats.setSameDayCutoffUTC(DateUtil.getUTCDate(_ts.getCutoffTimeAsDate()));
-							stats.setSameDayCutoff(_ts.getCutoffTimeAsDate());
+							stats.setSameDayCutoffUTC(DateUtil.getUTCDate(_ts.getHandoffDateTime()));
+							stats.setSameDayCutoff(_ts.getHandoffDateTime());
 						}
 						else if(!_ts.isPremiumSlot() || (_ts.isPremiumSlot() && FDStoreProperties.allowDiscountsOnPremiumSlots()))
 						{
-							steeringDiscount = PromotionHelper.getDiscount(user, timeslot, timeslotMap.get(timeslot.getDayOfWeek()), deliveryModel, forceorder);
+							steeringDiscount = PromotionHelper.getDiscount(user, _ts, timeslotMap.get(_ts.getDayOfWeek()), deliveryModel, forceorder);
 							_ts.setSteeringDiscount(steeringDiscount);
 						}
 					}
 
-				
+			
 
 
 					if (_remove)
@@ -280,82 +174,26 @@ public class TimeslotLogic {
 					stats.setMaximumDiscount(steeringDiscount);
 
 
-					// Check timeslot capacity
-					checkTimeslotCapacity(user, _zonesMap, timeslot);
-
-
 					/* Update various slot counters */
 					if (isAlcoholDlv
 							&& isTimeslotAlcoholRestricted(
-									alcoholRestrictions, timeslot)) {
-						timeslot.setAlcoholRestricted(true);
+									alcoholRestrictions, _ts)) {
+						_ts.setAlcoholRestricted(true);
 						stats.incrementAlcoholSlots();
 					}
 
-					// -- Chef's table-- //
-					if (!timeslot.hasNormalAvailCapacity()
-							&& timeslot.hasAvailCTCapacity())
-						stats.incrementCtSlots();
-
-					if (!timeslot.isDepot() && timeslot.isEcoFriendly())
-						stats.incrementEcoFriendlySlots();
-					
 					// Early AM TimeSlot
-					if(timeslot.isEarlyAM()){
+					if(_ts.isEarlyAM()){
 						stats.incrementEarlyAMSlots();
 					}
 
-					if (!genericTimeslots && timeslot.isDepot() && timeslot.isEcoFriendly())
-						stats.incrementNeighbourhoodSlots();
-
-
-					if (!genericTimeslots) {
-						// -- Sold-Out -- //
-						final IDeliverySlot routingSlot = _ts != null ? _ts.getRoutingSlot() : null;
-						final boolean isTSPreserved =
-								timeslot.getTimeslotId().equals(deliveryModel.getTimeSlotId())
-								||
-								(	timeslot.getTimeslotId().equals(deliveryModel.getPreReserveSlotId())
-									&&
-									deliveryModel.isPreReserved()
-								);
-						if (!timeslot.hasAvailCTCapacity()
-								&& !isTSPreserved
-								&&
-								(	!forceorder
-									||
-									(
-										routingSlot != null
-										&&
-										(	routingSlot.isManuallyClosed()
-											||
-											!routingSlot.isDynamicActive()
-										)
-									)
-								)
-						) {
-							timeslot.setStoreFrontAvailable("S");
-							stats.incrementSoldOutSlots();
-						}
-					}
-
-					stats.incrementTotalSlots();
-					
-					minOrderReqd = applyOrderMinimum(user, timeslot) || minOrderReqd;
+					minOrderReqd = applyOrderMinimum(user, _ts) || minOrderReqd;
 				}
 			}
 		
 			deliveryModel.setMinOrderReqd(minOrderReqd);
-		
-
 			stats.updateKosherSlotAvailable(list.isKosherSlotAvailable(restrictions));
-			if (!genericTimeslots)
-				stats.updateHasCapacity(list.hasCapacity());
 		}
-
-		if (genericTimeslots)
-			stats.updateHasCapacity(true);
-		stats.setZonesMap(_zonesMap);
 
 		return stats;
 	}
@@ -403,7 +241,7 @@ public class TimeslotLogic {
 	}
 	private static boolean isTimeslotAlcoholRestricted(List<RestrictionI> alcoholRestrictions, FDTimeslot slot) {
 		if(alcoholRestrictions.size()>0 && slot != null){
-			DateRange slotRange = new DateRange(slot.getBegDateTime(),slot.getEndDateTime());
+			DateRange slotRange = new DateRange(slot.getStartDateTime(),slot.getEndDateTime());
 			for (RestrictionI r : alcoholRestrictions) {
 				if (r instanceof AlcoholRestriction) {
 					AlcoholRestriction ar = (AlcoholRestriction) r;
@@ -414,45 +252,6 @@ public class TimeslotLogic {
 		return false;
 	}
 
-
-
-	private static void checkTimeslotCapacity(FDUserI user, Map<String, DlvZoneModel> zonesMap,
-			FDTimeslot timeslot) {
-		DlvZoneModel tempZoneModel = null;
-		try {
-			int pageType_ct = user.isChefsTable() ? TimeslotLogic.PAGE_CHEFSTABLE
-					: TimeslotLogic.PAGE_NORMAL;
-			// Check the timeslot capacity
-			tempZoneModel = zonesMap.get(timeslot.getZoneId());
-
-			boolean isCTCapacity = false;
-			if (CTDeliveryCapacityLogic.isEligible(user, timeslot) != null) {
-				pageType_ct = TimeslotLogic.PAGE_CHEFSTABLE;
-				isCTCapacity = true;
-			}
-
-			boolean availCapacity = getAvailableCapacity(
-					timeslot.getDlvTimeslot(), new Date(), pageType_ct,
-					timeslot.getDlvTimeslot().isPremiumSlot()?tempZoneModel.getPremiumCtReleaseTime():tempZoneModel.getCtReleaseTime());
-			boolean normalAvailCapacity = availCapacity;
-
-			if (TimeslotLogic.PAGE_CHEFSTABLE == pageType_ct && !isCTCapacity) {
-				normalAvailCapacity = getAvailableCapacity(
-						timeslot.getDlvTimeslot(), new Date(),
-						TimeslotLogic.PAGE_NORMAL,
-						timeslot.getDlvTimeslot().isPremiumSlot()?tempZoneModel.getPremiumCtReleaseTime():tempZoneModel.getCtReleaseTime());
-			}
-
-			timeslot.setNormalAvailCapacity(normalAvailCapacity);
-			timeslot.setAvailCTCapacity(availCapacity);
-		} catch (Exception ex) {
-			LOGGER.error(ex);
-		}
-	}
-
-	
-	
-	
 	/**
 	 * Utility method to purge marked items from timeslot list
 	 * 
@@ -505,57 +304,29 @@ public class TimeslotLogic {
 	
 	public static boolean isTSMinOrderNotMet(FDTimeslot slot, FDReservation rsv, FDDeliveryTimeslotModel deliveryModel){
 		
-		return (!slot.isMinOrderMet() && !(rsv!=null && !rsv.isMinOrderMet() && rsv.getTimeslotId().equals(slot.getTimeslotId())
+		return (!slot.isMinOrderMet() && !(rsv!=null && !rsv.isMinOrderMet() && rsv.getTimeslotId().equals(slot.getId())
 				&& ((deliveryModel.getTimeSlotId()!=null && deliveryModel.getTimeSlotId().equals(rsv.getTimeslotId())) ||
 						(deliveryModel.getPreReserveSlotId()!=null && deliveryModel.getPreReserveSlotId().equals(rsv.getTimeslotId()) && deliveryModel.isPreReserved())) ));
 	}
 	
 	public static boolean isTSRsvOrderNotMet(FDTimeslot slot, FDReservation rsv, FDDeliveryTimeslotModel deliveryModel){
 	
-		return (rsv!=null && !rsv.isMinOrderMet() && rsv.getTimeslotId().equals(slot.getTimeslotId())
+		return (rsv!=null && !rsv.isMinOrderMet() && rsv.getTimeslotId().equals(slot.getId())
 			&& ((deliveryModel.getTimeSlotId()!=null && deliveryModel.getTimeSlotId().equals(rsv.getTimeslotId()))||
 					(deliveryModel.getPreReserveSlotId()!=null && deliveryModel.getPreReserveSlotId().equals(rsv.getTimeslotId()) && deliveryModel.isPreReserved())));
 	}
 
+	public static boolean hasPremiumSlots(List<FDTimeslotUtil> timeslotList){
 
-	/**
-	 * Utility method to purge SameDay items from timeslot list
-	 * 
-	 * @param timeslotList
-	 */
-	public static void purgeSDSlots(Collection<FDTimeslotUtil> timeslotList) {
 		for (FDTimeslotUtil list : timeslotList) {
 			for (Collection<FDTimeslot> col : list.getTimeslots()) {
 				for (Iterator<FDTimeslot> k = col.iterator(); k.hasNext(); ) {
 					FDTimeslot timeslot = k.next();
-					if (timeslot.getDlvTimeslot().isPremiumSlot())
-						k.remove();
+					if (timeslot.isPremiumSlot())
+						return true;
 				}
 			}
 		}
-	}
-	public static boolean hasPremiumSlots(List<FDTimeslotUtil> timeslotList, Date startDate, Date endDate)
-	{
-		Iterator<FDTimeslotUtil> it = timeslotList.iterator();
-		FDTimeslotUtil fdTsu;List<FDTimeslot> fdTsList;
-		for(;it.hasNext();)
-		{
-			fdTsu = it.next();
-			fdTsList = fdTsu.getTimeslotsForDate(startDate);
-			if(fdTsList==null || fdTsList.size()==0 )
-			{
-				fdTsu.removeTimeslots(startDate);
-				startDate = DateUtil.addDays(startDate, 1);
-				fdTsList = fdTsu.getTimeslotsForDate(startDate);
-				return hasPremiumSlot(fdTsList);
-			}
-			else if(fdTsList!=null && fdTsList.size()>0 )
-			{
-				fdTsu.removeTimeslots(endDate);
-				return hasPremiumSlot(fdTsList);
-			}
-		}
-		
 		return false;
 	}
 	
@@ -577,7 +348,7 @@ public class TimeslotLogic {
 	
 	public static boolean hasPremiumSlot(FDTimeslot fdT)
 	{
-		return fdT.getDlvTimeslot().isPremiumSlot();
+		return fdT.isPremiumSlot();
 	}
 	
 	public static boolean isTimeslotPurged(FDTimeslot ts) {
@@ -589,17 +360,22 @@ public class TimeslotLogic {
 	
 	public static boolean isTimeslotSoldout(FDTimeslot ts, FDDeliveryTimeslotModel deliveryModel, boolean isForce) {
 		
-		if ( !ts.hasAvailCTCapacity() && !(ts.getTimeslotId().equals(deliveryModel.getTimeSlotId()) || (ts.getTimeslotId().equals(deliveryModel.getPreReserveSlotId()) && deliveryModel.isPreReserved())) 
-				&& (
-						!isForce || 
-						(
-								ts.getDlvTimeslot() != null && ts.getDlvTimeslot().getRoutingSlot() != null 
-								&& (ts.getDlvTimeslot().getRoutingSlot().isManuallyClosed() || !ts.getDlvTimeslot().getRoutingSlot().isDynamicActive())
-						)
-					)
-			) {
+		if (ts.isSoldOut()) {
 				return true;
 			}
 		return false;
 	}
+
+	public static void purgeSDSlots(List<FDTimeslotUtil> timeslotList) {
+		for (FDTimeslotUtil list : timeslotList) {
+			for (Collection<FDTimeslot> col : list.getTimeslots()) {
+				for (Iterator<FDTimeslot> k = col.iterator(); k.hasNext(); ) {
+					FDTimeslot timeslot = k.next();
+					if (timeslot.isPremiumSlot())
+						k.remove();
+				}
+			}
+		}
+	}
+	
 }

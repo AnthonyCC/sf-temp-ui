@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.freshdirect.delivery.ejb.AirclicManager;
-import com.freshdirect.delivery.model.SignatureVO;
+import com.freshdirect.logistics.delivery.model.DeliverySignature;
 
 public class SignatureServlet extends HttpServlet {
 	
@@ -21,7 +21,7 @@ public class SignatureServlet extends HttpServlet {
 		try {
 			if(type == null || type.trim().length() == 0) {
 				response.setContentType("text/html");
-				SignatureVO signatureVO = AirclicManager.getInstance().getSignatureDetails(order);
+				DeliverySignature signatureVO = AirclicManager.getInstance().getSignatureDetails(order);
 				if (signatureVO == null) { 
 					out.println("<table><tr><td>Signature not found in the system</td></tr></table>"); 
 				}

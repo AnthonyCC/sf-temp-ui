@@ -8,13 +8,13 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
-<%@ page import='com.freshdirect.delivery.depot.*' %>
+<%@ page import='com.freshdirect.fdlogistics.model.*' %>
 <%@ page import="com.freshdirect.delivery.restriction.DlvRestrictionsList"%>
-<%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
+
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ page import="com.freshdirect.framework.util.*"%>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
-<%@ page import="com.freshdirect.delivery.EnumReservationType"%>
+<%@ page import="com.freshdirect.logistics.delivery.model.EnumReservationType"%>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import="com.freshdirect.fdstore.promotion.PromotionHelper" %>
 <%@ page import="com.freshdirect.fdstore.standingorders.DeliveryInterval"%>
@@ -91,7 +91,7 @@ int page_type = TimeslotLogic.PAGE_NORMAL;
 	if(address instanceof ErpDepotAddressModel){
 		isDepotAddress = true;
 		depotAddress =  (ErpDepotAddressModel) address;
-		depotCode = com.freshdirect.fdstore.FDDepotManager.getInstance().getDepotByLocationId(depotAddress.getLocationId()).getDepotCode();
+		depotCode = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getDepotByLocationId(depotAddress.getLocationId()).getDepotCode();
 	}
 	
 	boolean unattededChecked=false;
@@ -471,7 +471,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 			if ( deliveryInterval != null && deliveryInterval.isWithinDeliveryWindow() ) {
 				for ( FDTimeslot tsl : timeslots.getTimeslotsFlat() ) {
 					if ( deliveryInterval.checkTimeslot( tsl ) ) {
-						deliveryModel.setTimeSlotId(tsl.getTimeslotId());
+						deliveryModel.setTimeSlotId(tsl.getId());
 						//out.print("timeslot has been selected :" + tsl +"<br/>");
 						break;
 					}
@@ -552,7 +552,7 @@ if(TimeslotLogic.isTSPreReserved(rsv, deliveryModel)){%>
 							if ( deliveryInterval != null && deliveryInterval.isWithinDeliveryWindow() ) {
 								for ( FDTimeslot tsl : timeslots.getTimeslotsFlat() ) {
 									if ( deliveryInterval.checkTimeslot( tsl ) ) {
-										timeSlotId = tsl.getTimeslotId();
+										timeSlotId = tsl.getId();
 										//out.print("timeslot has been selected :" + tsl +"<br/>");
 										break;
 									}

@@ -35,17 +35,16 @@ import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.FDRestrictedAvailabilityInfo;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.DlvPassAvailabilityInfo;
 import com.freshdirect.deliverypass.DlvPassConstants;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDGroup;
-import com.freshdirect.fdstore.FDProduct;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -214,7 +213,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 
 	private ErpPaymentMethodI paymentMethod;
 
-	private DlvZoneInfoModel zoneInfo;
+	private FDDeliveryZoneInfo zoneInfo;
 
 	private String customerServiceMessage;
 	private String marketingMessage;
@@ -1037,14 +1036,14 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		return FormatterUtil.formatToTwoDecimal(getCustomerCreditsValue());
 	}
 
-	public DlvZoneInfoModel getZoneInfo() {
+	public FDDeliveryZoneInfo getZoneInfo() {
 		return this.zoneInfo;
 	}
 
 	/**
 	 * Set the zone info, update delivery charge from zoneInfo.
 	 */
-	public void setZoneInfo(DlvZoneInfoModel zoneInfo) {
+	public void setZoneInfo(FDDeliveryZoneInfo zoneInfo) {
 		this.zoneInfo = zoneInfo;
 		//this.setChargeAmount(EnumChargeType.DELIVERY, zoneInfo == null ? 0.0 : zoneInfo.getDeliveryCharges());
 	}
@@ -1142,7 +1141,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 
 		return subTotal;
 	}
-	
+
 	public double getSubTotalWithoutWineAndSpirit() {
 		double subTotal = 0.0;
 		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
@@ -1163,7 +1162,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			}
 		}
 	}
-	
+
 	public void removeWineAndSpiritLines() {
 		for (ListIterator<FDCartLineI> i = this.orderLines.listIterator(); i.hasNext();) {
 			FDCartLineI line = i.next();

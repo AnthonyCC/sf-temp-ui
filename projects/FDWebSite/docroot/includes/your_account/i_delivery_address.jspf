@@ -1,5 +1,5 @@
 <%-- Host page must provide standingOrderDependencyIds variable --%>
-<%@ page import="com.freshdirect.delivery.DlvZoneInfoModel" %>
+<%@ page import="com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo" %>
 <%@ page import="com.freshdirect.customer.EnumUnattendedDeliveryFlag" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <% //expanded page dimensions

@@ -1647,6 +1647,11 @@ public class Product {
     public boolean isAutoConfigurable() {
         return product.getProductModel().isAutoconfigurable();
     }
+    
+  /*  public String getFreshness() {
+        return this.product.getProductInfo().getFreshness();
+    }*/
+
 
     /**
      * If applicable, returns autoconfigured sales unit.
@@ -1662,6 +1667,8 @@ public class Product {
         }
         return autoConfiguredSalesUnit;
     }
+    
+    
 
     public double getPrice(Sku sku, SalesUnit salesUnit, double quantity, Map<String, String> options) throws PricingException {
         double price = 0.0;

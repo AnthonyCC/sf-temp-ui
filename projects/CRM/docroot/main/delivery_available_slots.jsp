@@ -1,7 +1,7 @@
 <%@ page import='com.freshdirect.customer.ErpAddressModel'%>
 <%@ page import='com.freshdirect.customer.ErpDepotAddressModel'%>
-<%@ page import='com.freshdirect.delivery.depot.DlvLocationModel' %>
-<%@ page import='com.freshdirect.delivery.depot.DlvDepotModel' %>
+<%@ page import='com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel' %>
+<%@ page import='com.freshdirect.fdlogistics.model.FDDeliveryDepotModel' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.delivery.*'%>
@@ -10,9 +10,9 @@
 <%@ page import='java.text.SimpleDateFormat' %>
 <%@ page import='com.freshdirect.fdstore.util.TimeslotLogic'%>
 <%@ page import='com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine' %>
-<%@ page import='com.freshdirect.delivery.DlvZoneInfoModel' %>
+<%@ page import='com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-<%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
+
 <%@ page import='com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine' %>
 <%@ page import="com.freshdirect.customer.ErpCustomerInfoModel"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerFactory"%>
@@ -22,6 +22,7 @@
 <%@ page import="com.freshdirect.framework.webapp.ActionResult"%>
 
 <%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.fdlogistics.model.*' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>

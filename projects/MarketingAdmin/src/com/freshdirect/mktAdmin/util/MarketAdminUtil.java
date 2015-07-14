@@ -3,13 +3,11 @@ package com.freshdirect.mktAdmin.util;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.delivery.DlvAddressGeocodeResponse;
-import com.freshdirect.delivery.DlvAddressVerificationResponse;
-import com.freshdirect.delivery.EnumAddressVerificationResult;
+import com.freshdirect.fdlogistics.model.*;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.delivery.model.EnumAddressVerificationResult;
 import com.freshdirect.mktAdmin.exception.MktAdminApplicationException;
 import com.freshdirect.mktAdmin.exception.MktAdminSystemException;
 import com.freshdirect.mktAdmin.model.CustomerAddressModel;
@@ -39,7 +37,7 @@ public class MarketAdminUtil {
 		AddressModel dlvAddressTmp=null;
 		try {
 			LOGGER.debug("----------- START performAddressCheck ------------------"+dlvAddress);
-			DlvAddressVerificationResponse verifyResponse = FDDeliveryManager.getInstance().scrubAddress(dlvAddress);
+			FDDeliveryAddressVerificationResponse verifyResponse = FDDeliveryManager.getInstance().scrubAddress(dlvAddress);
 
 			//
 			// set to scrubbed address
@@ -48,7 +46,7 @@ public class MarketAdminUtil {
 			
 			LOGGER.debug("----------- AFTER SCRUB ------------------"+dlvAddressTmp);
 			
-			EnumAddressVerificationResult verificationResult = verifyResponse.getResult();
+			EnumAddressVerificationResult verificationResult = verifyResponse.getVerifyResult();
 			
 			LOGGER.debug("----------- SCRUB RESULT------------------"+verificationResult);
 			
@@ -56,11 +54,8 @@ public class MarketAdminUtil {
 				//
 				// geocode address
 				//
-				try {
-					LOGGER.debug("----------- START GEOCODE------------------");
-					DlvAddressGeocodeResponse geocodeResponse = FDDeliveryManager.getInstance().geocodeAddress(dlvAddressTmp);					
-				    String geocodeResult = geocodeResponse.getResult();
-				    LOGGER.debug("----------- GEOCODE RESPONSE------------------"+geocodeResult+"\n"+geocodeResponse);
+					String geocodeResult = verifyResponse.getGeocodeResult();
+				    LOGGER.debug("----------- GEOCODE RESPONSE------------------"+geocodeResult+"\n");
 				    if(!"GEOCODE_OK".equalsIgnoreCase(geocodeResult))
 				    {
 				    	if(dlvAddressTmp.getCompanyName()==null){
@@ -73,10 +68,12 @@ public class MarketAdminUtil {
 				    	  throw new MktAdminApplicationException("110",new String[]{dlvAddressTmp.getAddress1(),dlvAddressTmp.getCompanyName()});
 				    	}
 				    }
-				    AddressModel addrModel=geocodeResponse.getAddress();
+				    AddressModel addrModel=verifyResponse.getAddress();
 				    dlvAddress.setFrom(addrModel);
 					LOGGER.debug(dlvAddress+"\n----------- GEOCODE UTIL COMPLETE------------------");
-				} catch (FDInvalidAddressException iae) {
+				} 
+
+		}catch (FDInvalidAddressException iae) {
 					LOGGER.debug("----------- INVALID ADDRESS EXCEPTIOn------------------");	
 					if(dlvAddressTmp.getCompanyName()==null){
 			    		CustomerAddressModel model=(CustomerAddressModel)dlvAddressTmp;
@@ -85,12 +82,7 @@ public class MarketAdminUtil {
 			    	else{
 			    		throw new MktAdminApplicationException("108",new String[]{dlvAddressTmp.getAddress1(),dlvAddressTmp.getCompanyName()});
 			    	}
-				}			
-
-			}
-
-			
-		} catch (FDResourceException e) {
+				} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
 			throw new MktAdminSystemException("1001",e);
 		} 

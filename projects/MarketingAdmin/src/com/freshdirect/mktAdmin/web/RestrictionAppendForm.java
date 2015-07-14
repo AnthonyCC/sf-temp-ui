@@ -1,54 +1,61 @@
 package com.freshdirect.mktAdmin.web;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Category;
-import org.springframework.validation.BindException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mktAdmin.constants.EnumFileContentType;
 import com.freshdirect.mktAdmin.exception.MktAdminApplicationException;
 import com.freshdirect.mktAdmin.exception.MktAdminSystemException;
-import com.freshdirect.mktAdmin.model.FileUploadBean;
 import com.freshdirect.mktAdmin.model.RestrictionListAppendBean;
-import com.freshdirect.mktAdmin.model.RestrictionListUploadBean;
 import com.freshdirect.mktAdmin.service.MarketAdminServiceIntf;
+import com.freshdirect.mktAdmin.validation.RestrictionAppendValidator;
 
-public class RestrictionAppendForm extends SimpleFormController {
 
-	private MarketAdminServiceIntf marketAdminService=null;
+@Controller
+@RequestMapping("/appendRestriction.do")
+public class RestrictionAppendForm  {
+	
+	@Autowired
+	private MarketAdminServiceIntf marketAdminService;	
+	@Autowired
+	private RestrictionAppendValidator restrictionListAppenddValidator;
+	
+	
+
+	
 	
 	private final static Category LOGGER = LoggerFactory.getInstance(RestrictionAppendForm.class);
 	
-	public RestrictionAppendForm()
-	{
-		setCommandClass(RestrictionListAppendBean.class);
-		// activate session form mode to allow for detection of duplicate submissions
-		//setSessionForm(true);
 
-	}
-	
-	protected Object formBackingObject(HttpServletRequest request) throws ServletException {
+	@RequestMapping(method = RequestMethod.GET)
+	protected String initForm(ModelMap model, 
+			@RequestParam(value = "promotionCode", required = false) String promotionCode) throws ServletException {
 		// get the Pet referred to by id in the request		
 			//request.setAttribute("actionTypes", EnumListUploadActionType.getEnumList());
-			RestrictionListAppendBean command=new RestrictionListAppendBean();
-			String promotionCode=request.getParameter("promotionCode");
+			RestrictionListAppendBean command=new RestrictionListAppendBean();			
 			System.out.println("INSIDE1 formBackingObject1 :"+promotionCode);
 			if(promotionCode==null) throw new MktAdminSystemException("1003",new IllegalArgumentException("promotionCode parameter is required"));
 			//if(promotionCode!=null)			     
 			command.setPromotionCode(promotionCode);
-			return command;			
+			model.addAttribute("command", command);
+			return "restAppendform";			
 	}
 	
 	
@@ -64,12 +71,22 @@ public class RestrictionAppendForm extends SimpleFormController {
 //		}				
 	}
 	
-    protected ModelAndView onSubmit(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        Object command,
-        BindException errors) throws Exception {
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(method = RequestMethod.POST)
+    protected String processSubmit(@ModelAttribute("command") RestrictionListAppendBean command,
+        BindingResult result, ModelMap model, HttpServletRequest request) throws Exception {
     	RestrictionListAppendBean bean=null;    	
+    	
+    	 onBind(request,command);
+    	 
+    	 restrictionListAppenddValidator.validate(command, result);
+ 		
+ 		if (result.hasErrors()) {
+
+ 			model.addAllAttributes(result.getModel());
+ 			return "restAppendform";
+ 		}
+ 		
     	try
     	{    		
 	         // cast the beani
@@ -81,19 +98,21 @@ public class RestrictionAppendForm extends SimpleFormController {
     		     Iterator iterator=exception.getExceptionList().iterator();
     		     while(iterator.hasNext()){
     		    	 MktAdminApplicationException e=(MktAdminApplicationException)iterator.next();    		    	 
-    		    	 errors.rejectValue("customerIds", e.getErrorCode(),e.getPlaceHolders()," lot of customer Ids are not proper");
+    		    	 result.rejectValue("customerIds", e.getErrorCode(),e.getPlaceHolders()," lot of customer Ids are not proper");
     		     }
     		}else{
-    		errors.rejectValue("customerIds", exception.getErrorCode(),
+    			result.rejectValue("customerIds", exception.getErrorCode(),
                     exception.getPlaceHolders(), "General application error");
     		}
-    		return showForm(request,response,errors);
+    		return "restAppendform";
     	}
     	
     	request.setAttribute("success","success.listappend");
-        return new ModelAndView(getSuccessView(),"command",bean);
+    	model.addAttribute("command", bean);
+        return "restAppendform";
     }
 
+	@InitBinder
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder)
         throws ServletException {
         // to actually be able to convert Multipart instance to byte[]
@@ -103,13 +122,7 @@ public class RestrictionAppendForm extends SimpleFormController {
         // now Spring knows how to handle multipart object and convert them
     }
 
-	public MarketAdminServiceIntf getMarketAdminService() {
-		return marketAdminService;
-	}
-
-	public void setMarketAdminService(MarketAdminServiceIntf marketAdminService) {
-		this.marketAdminService = marketAdminService;
-	}
+	
 
 }
 

@@ -1,7 +1,7 @@
 <%@ page import='java.util.*' %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import='com.freshdirect.fdstore.*' %>
-<%@ page import="com.freshdirect.delivery.depot.*" %>
+<%@ page import="com.freshdirect.fdlogistics.model.*" %>
 <%@ page import="java.util.Calendar" %>
 <%@ page import="java.text.DateFormatSymbols" %>
 <%@ page import='com.freshdirect.webapp.util.CCFormatter'%>
@@ -92,12 +92,12 @@
                             <option value="" class="inactive" selected>Company Location</option>
                             <%
                                 LinkedList dList = new LinkedList();
-                                dList.addAll(FDDepotManager.getInstance().getDepots());
-                                dList.addAll(FDDepotManager.getInstance().getPickupDepots());
+                                dList.addAll(FDDeliveryManager.getInstance().getDepots());
+                                dList.addAll(FDDeliveryManager.getInstance().getPickupDepots());
                                 for (Iterator dIter = dList.iterator(); dIter.hasNext(); ) {
-                                    DlvDepotModel depot = (DlvDepotModel) dIter.next();
+                                    FDDeliveryDepotModel depot = (FDDeliveryDepotModel) dIter.next();
                                     for (Iterator lIter = depot.getLocations().iterator(); lIter.hasNext(); ) {
-                                        DlvLocationModel location = (DlvLocationModel) lIter.next();
+                                        FDDeliveryDepotLocationModel location = (FDDeliveryDepotLocationModel) lIter.next();
                             %>
                             <option value="<%= location.getPK().getId() %>"><%= location.getFacility() %></option>
                             <%

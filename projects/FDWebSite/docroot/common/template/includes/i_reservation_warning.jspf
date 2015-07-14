@@ -1,4 +1,4 @@
-<%@ page import="com.freshdirect.fdstore.FDReservation" %>
+<%@ page import="com.freshdirect.fdlogistics.model.FDReservation" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
 <%@ page import="com.freshdirect.framework.util.DateUtil" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>

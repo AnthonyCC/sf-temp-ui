@@ -1,10 +1,5 @@
 package com.freshdirect.webapp.taglib.giftcard;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -14,24 +9,15 @@ import org.apache.log4j.Category;
 
 import weblogic.auddi.util.Logger;
 
-import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.customer.ActivityLog;
-import com.freshdirect.customer.ErpActivityRecord;
-import com.freshdirect.delivery.DlvServiceSelectionResult;
-import com.freshdirect.delivery.EnumDeliveryStatus;
+import com.freshdirect.fdlogistics.model.FDDeliveryServiceSelectionResult;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
-import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
-import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.taglib.fdstore.CookieMonster;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -111,7 +97,7 @@ public class CreateNewGCUserTag  extends com.freshdirect.framework.webapp.BodyTa
 	
 	private void createGCUser(HttpServletRequest request,HttpServletResponse response) throws FDResourceException {
 		
-		DlvServiceSelectionResult result=FDDeliveryManager.getInstance().checkZipCode(GIFTCARD_DEFAULT_ZPCOD);//new DlvServiceSelectionResult();
+		FDDeliveryServiceSelectionResult result=FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(GIFTCARD_DEFAULT_ZPCOD);//new DlvServiceSelectionResult();
 		//result.addServiceStatus(EnumServiceType.HOME, EnumDeliveryStatus.DELIVER);
 //		result.addServiceStatus(GIFTCARD_DEFAULT_SERVICE_TYPE, EnumDeliveryStatus.DELIVER);				
 		FDUser fduser=FDCustomerManager.createNewUser(GIFTCARD_DEFAULT_ZPCOD, GIFTCARD_DEFAULT_SERVICE_TYPE);

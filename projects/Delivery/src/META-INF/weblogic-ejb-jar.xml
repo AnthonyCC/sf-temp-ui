@@ -1,19 +1,6 @@
 <weblogic-ejb-jar xmlns="http://xmlns.oracle.com/weblogic/weblogic-ejb-jar" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd http://xmlns.oracle.com/weblogic/weblogic-ejb-jar http://xmlns.oracle.com/weblogic/weblogic-ejb-jar/1.2/weblogic-ejb-jar.xsd">
     <!--weblogic-version:10.3.6-->
-  <weblogic-enterprise-bean>
-    <ejb-name>SessionAuditor</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>50</max-beans-in-free-pool>
-      </pool>
-    </stateless-session-descriptor>
-    <resource-description>
-      <res-ref-name>jdbc/dbpool</res-ref-name>
-      <jndi-name>fddatasource</jndi-name>
-    </resource-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.SessionAuditor</jndi-name>
-  </weblogic-enterprise-bean>
+ 
   <!-- sms Alerts -->
   <weblogic-enterprise-bean>
     <ejb-name>SmsAlerts</ejb-name>
@@ -41,31 +28,10 @@
       <res-ref-name>jdbc/dbpool</res-ref-name>
       <jndi-name>fddatasource</jndi-name>
     </resource-description>
-    <resource-description>
-      <res-ref-name>jms/QueueFactory</res-ref-name>
-      <jndi-name>queueFactory</jndi-name>
-    </resource-description>
-    <resource-env-description>
-      <resource-env-ref-name>jms/Queue</resource-env-ref-name>
-      <jndi-name>./logMetricQueue</jndi-name>
-    </resource-env-description>
     <enable-call-by-reference>true</enable-call-by-reference>
     <jndi-name>freshdirect.delivery.DeliveryManager</jndi-name>
   </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
-    <ejb-name>AirclicManager</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>10</max-beans-in-free-pool>
-      </pool>
-    </stateless-session-descriptor>
-    <resource-description>
-      <res-ref-name>jdbc/dbpool</res-ref-name>
-      <jndi-name>fddatasource</jndi-name>
-    </resource-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.delivery.AirclicManager</jndi-name>
-  </weblogic-enterprise-bean>
+ 
   <weblogic-enterprise-bean>
     <ejb-name>DlvRestrictionManager</ejb-name>
     <stateless-session-descriptor>
@@ -80,108 +46,7 @@
     <enable-call-by-reference>true</enable-call-by-reference>
     <jndi-name>freshdirect.delivery.DeliveryRestrictionManager</jndi-name>
   </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
-    <ejb-name>DlvAdminManager</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>50</max-beans-in-free-pool>
-      </pool>
-    </stateless-session-descriptor>
-    <resource-description>
-      <res-ref-name>jdbc/dbpool</res-ref-name>
-      <jndi-name>fddatasource</jndi-name>
-    </resource-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.delivery.AdminManager</jndi-name>
-  </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
-    <ejb-name>CapacitySnapshot</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>1</max-beans-in-free-pool>
-      </pool>
-    </stateless-session-descriptor>
-    <resource-description>
-      <res-ref-name>jdbc/dbpool</res-ref-name>
-      <jndi-name>fddatasource</jndi-name>
-    </resource-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.delivery.CapacitySnapshot</jndi-name>
-  </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
-    <ejb-name>DlvMapper</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>50</max-beans-in-free-pool>
-      </pool>
-    </stateless-session-descriptor>
-    <resource-description>
-      <res-ref-name>jdbc/dbpool</res-ref-name>
-      <jndi-name>fddatasource</jndi-name>
-    </resource-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.delivery.Mapper</jndi-name>
-  </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
-    <ejb-name>DlvTemplateManager</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>50</max-beans-in-free-pool>
-      </pool>
-    </stateless-session-descriptor>
-    <resource-description>
-      <res-ref-name>jdbc/dbpool</res-ref-name>
-      <jndi-name>fddatasource</jndi-name>
-    </resource-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.delivery.TemplateManager</jndi-name>
-  </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
-    <ejb-name>DlvDepotManager</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>50</max-beans-in-free-pool>
-      </pool>
-    </stateless-session-descriptor>
-    <resource-description>
-      <res-ref-name>jdbc/dbpool</res-ref-name>
-      <jndi-name>fddatasource</jndi-name>
-    </resource-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.delivery.DepotManager</jndi-name>
-  </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
-    <ejb-name>DlvDepot</ejb-name>
-    <entity-descriptor>
-      <pool>
-        <max-beans-in-free-pool>50</max-beans-in-free-pool>
-      </pool>
-    </entity-descriptor>
-    <resource-description>
-      <res-ref-name>jdbc/dbpool</res-ref-name>
-      <jndi-name>fddatasource</jndi-name>
-    </resource-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.delivery.Depot</jndi-name>
-  </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
-    <ejb-name>RoutingGateway</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>50</max-beans-in-free-pool>
-      </pool>
-    </stateless-session-descriptor>
-    <resource-description>
-      <res-ref-name>jms/QueueFactory</res-ref-name>
-      <jndi-name>queueFactory</jndi-name>
-    </resource-description>
-    <resource-env-description>
-      <resource-env-ref-name>jms/Queue</resource-env-ref-name>
-      <jndi-name>./routingQueue</jndi-name>
-    </resource-env-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.routing.Gateway</jndi-name>
-  </weblogic-enterprise-bean>
+  
   <weblogic-enterprise-bean>
     <ejb-name>RoutingLoadListener</ejb-name>
     <message-driven-descriptor>
@@ -193,34 +58,7 @@
     <enable-call-by-reference>true</enable-call-by-reference>
     <jndi-name>freshdirect.routing.RoutingLoadListener</jndi-name>
   </weblogic-enterprise-bean>
-  <weblogic-enterprise-bean>
-    <ejb-name>DispatchVolume</ejb-name>
-    <stateless-session-descriptor>
-      <pool>
-        <max-beans-in-free-pool>1</max-beans-in-free-pool>
-      </pool>
-      <stateless-clustering></stateless-clustering>
-    </stateless-session-descriptor>
-    <transaction-descriptor></transaction-descriptor>
-    <resource-description>
-      <res-ref-name>jdbc/dbpool</res-ref-name>
-      <jndi-name>fddatasource</jndi-name>
-    </resource-description>
-    <enable-call-by-reference>true</enable-call-by-reference>
-    <jndi-name>freshdirect.analytics.DispatchVolume</jndi-name>
-  </weblogic-enterprise-bean>
-  <transaction-isolation>
-    <isolation-level>TransactionReadCommitted</isolation-level>
-    <method>
-      <ejb-name>RoutingGateway</ejb-name>
-      <method-intf>Remote</method-intf>
-      <method-name>*</method-name>
-    </method>
-    <method>
-      <ejb-name>DlvDepot</ejb-name>
-      <method-name>*</method-name>
-    </method>
-  </transaction-isolation>
+  
   <weblogic-compatibility>
     <entity-always-uses-transaction>true</entity-always-uses-transaction>
   </weblogic-compatibility>

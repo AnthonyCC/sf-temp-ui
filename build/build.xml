@@ -15,12 +15,12 @@
 	<property name="release.dir"			value="release" />
 
     <property name="jdk.home"				value="/opt/fdbin/bea/jdk160_05" />
-	<property name="javac.debug"			value="on" />
+   <property name="javac.debug"			value="on" />
 	<property name="javac.optimize"			value="off" />
 	<property name="javac.deprecation"		value="on" />
 	<property name="javac.source"			value="1.6" />
     <property name="weblogic.home"			value="/opt/fdbin/bea/wlserver_10.3" />
-	<property name="thirdparty.home"		value="${basedir}/lib/thirdparty" />
+	 <property name="thirdparty.home"		value="${basedir}/lib/thirdparty" />
 	<property name="testing.home"			value="${basedir}/lib/testing" />
 	<property name="checkout.delete_projects"			value="true" />
 	<property name="selenium.server_host"	value="localhost" />
@@ -109,6 +109,7 @@
 		<pathelement location="${thirdparty.home}/soy-latest.jar"/>
 		<pathelement location="${thirdparty.home}/commons-vfs2-2.0.jar"/>
 		<pathelement location="${thirdparty.home}/zip4j_1.3.2.jar"/>
+		<pathelement location="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar"/>
 	</path>
 
 	<path id="testing.classpath">
@@ -129,6 +130,7 @@
 		<pathelement location="${testing.home}/jmock-2.5.1/hamcrest-core-1.1.jar"/>
 		<pathelement location="${testing.home}/jmock-2.5.1/hamcrest-library-1.1.jar"/>
 		<pathelement location="${testing.home}/selenium-server-2.0a7.jar"/>
+		<pathelement location="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar"/>
 	</path>
 
 	<!--  EMMA  -->
@@ -244,21 +246,17 @@
 		<checkoutLabeled dir="projects/DataLoader/src"/>
 		<checkoutLabeled dir="projects/ERPSWebApp/src"/>
 		<checkoutLabeled dir="projects/RulesAdmin"/>
-		<checkoutLabeled dir="projects/DlvAdmin"/>
-		<checkoutLabeled dir="projects/DlvConfirm"/>
 		<checkoutLabeled dir="projects/ERPSAdmin"/>
 		<checkoutLabeled dir="projects/FDWebSite"/>
 		<checkoutLabeled dir="projects/CRM/docroot"/>
 		<checkoutLabeled dir="projects/Tools/src"/>
 		<checkoutLabeled dir="projects/Tests"/>
     	<checkoutLabeled dir="projects/MarketingAdmin"/>
-    	<checkoutLabeled dir="projects/TransportationAdmin"/>
-    	<checkoutLabeled dir="projects/RoutingServices"/>
+    	<checkoutLabeled dir="projects/FDLogisticsIntegration"/>
 		<checkoutLabeled dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->
 		<checkoutLabeled dir="projects/StandingOrdersService"/> <!-- Standing Orders background service -->
 		<checkoutLabeled dir="projects/CoremetricsService"/> <!-- Coremetrics background service -->
 		<checkoutLabeled dir="projects/BazaarvoiceService"/> <!-- Bazaarvoice background service -->
-		<checkoutLabeled dir="projects/FDServices"/>
 		<checkoutLabeled dir="projects/Athena"/>
 		<checkoutLabeled dir="applications"/>
 		<!--	<checkoutLabeled dir="release"/> -->
@@ -303,21 +301,17 @@
 		<checkoutLatest dir="projects/DataLoader/src"/>
 		<checkoutLatest dir="projects/ERPSWebApp/src"/>
 		<checkoutLatest dir="projects/RulesAdmin"/>
-		<checkoutLatest dir="projects/DlvAdmin"/>
-		<checkoutLatest dir="projects/DlvConfirm"/>
 		<checkoutLatest dir="projects/ERPSAdmin"/>
 		<checkoutLatest dir="projects/FDWebSite"/>
 		<checkoutLatest dir="projects/CRM/docroot"/>
 		<checkoutLatest dir="projects/Tools/src"/>
 		<checkoutLatest dir="projects/Tests"/>
         <checkoutLatest dir="projects/MarketingAdmin"/>
-        <checkoutLatest dir="projects/TransportationAdmin"/>
-        <checkoutLatest dir="projects/RoutingServices"/>
+        <checkoutLatest dir="projects/FDLogisticsIntegration"/>
 		<checkoutLatest dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->        	
 		<checkoutLatest dir="projects/StandingOrdersService"/>
 		<checkoutLatest dir="projects/CoremetricsService"/>
 		<checkoutLatest dir="projects/BazaarvoiceService"/>
-		<checkoutLatest dir="projects/FDServices"/>
 		<checkoutLatest dir="projects/Athena"/>
 		<checkoutLatest dir="applications"/>
 		<!--	<checkoutLatest dir="release"/> -->
@@ -354,17 +348,9 @@
 			rootlocalfolder="${basedir}/${release.dir}/applications"
 		/>
 
-		<!--
-		<starteam quiet="false"
-			cmd="checkin" label="${build.label}"
-			folder='"${starteam.url}/lib"'
-			dest="." force="true" reason="Automated build ${build.label}"
-			filenames="Framework.jar;ERPServicesEJB-WL.jar;DeliveryEJB-WL.jar;CMSEJB-WL.jar;FDStoreEJB-WL.jar;DataLoaderEJB-WL.jar;ERPSWebApp.jar;FDTools.jar;DlvAdmin.war;FDWebSite.war;CRM.war"
-		/>
-		-->
 	</target>
 
-	<target name="webapps" depends="fdwebsite,crm,erpsadmin,dlvadmin,rulesadmin,dlvconfirm,cms-gwt,mrktAdmin,transportAdmin,fdintegrationservices" description="Build all WAR files">
+	<target name="webapps" depends="fdwebsite,crm,erpsadmin,rulesadmin,cms-gwt,mrktAdmin,fdintegrationservices" description="Build all WAR files">
 	</target>
 
 	<target name="all" depends="clean,prereq,build" description="Build everything, no checkout, no tests">
@@ -394,9 +380,7 @@
 		<mkdir dir="${work.dir}/FDWebSite" />
 		<mkdir dir="${work.dir}/CRM" />
 		<mkdir dir="${work.dir}/RulesAdmin" />
-		<mkdir dir="${work.dir}/DlvAdmin" />
 		<mkdir dir="${work.dir}/ERPSAdmin" />
-		<mkdir dir="${work.dir}/DlvConfirm" />
 		<mkdir dir="${work.dir}/Tools" />
 		<mkdir dir="${work.dir}/Tests" />
 		<mkdir dir="${work.dir}/FunctionalTests" />
@@ -406,22 +390,18 @@
 		<mkdir dir="${work.dir}/perf-logs" />
 		<mkdir dir="${work.dir}/docs" />
 		<mkdir dir="${work.dir}/MrktAdmin"/>
-		<mkdir dir="${work.dir}/TransportationAdmin"/>
-		<mkdir dir="${work.dir}/RoutingServices"/>
+		<mkdir dir="${work.dir}/FDLogisticsIntegration"/>
 		<mkdir dir="${work.dir}/cms-gwt"/>
 		<mkdir dir="${work.dir}/StandingOrdersService"/>
 		<mkdir dir="${work.dir}/CoremetricsService"/>
 		<mkdir dir="${work.dir}/BazaarvoiceService"/>
-    		<mkdir dir="${work.dir}/FDServices"/>
     		<mkdir dir="${work.dir}/Athena"/>
 	</target>
 
     <target name= "copy_shared_dirs"
             description = "copy directories that are shared among projects">
 
-        <delete dir="${basedir}/projects/DlvAdmin/docroot/WEB-INF/shared"/>
         <delete dir="${basedir}/projects/FDWebSite/docroot/WEB-INF/shared"/>
-        <delete dir="${basedir}/projects/DlvConfirm/docroot/WEB-INF/shared"/>
         <delete dir="${basedir}/projects/CRM/docroot/WEB-INF/shared"/>
         <delete dir="${basedir}/projects/ERPSAdmin/docroot/WEB-INF/shared"/>
         <delete dir="${basedir}/projects/CRM/docroot/help"/>
@@ -443,15 +423,10 @@
 		  <delete dir="${basedir}/projects/ERPSAdmin/docroot/assets"/>
 
 
-        <copy todir="${basedir}/projects/DlvAdmin/docroot/WEB-INF/shared">
-            <fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared"/>
-        </copy>
         <copy todir="${basedir}/projects/FDWebSite/docroot/WEB-INF/shared">
             <fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared"/>
         </copy>
-        <copy todir="${basedir}/projects/DlvConfirm/docroot/WEB-INF/shared">
-            <fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared"/>
-        </copy>
+      
         <copy todir="${basedir}/projects/CRM/docroot/WEB-INF/shared">
             <fileset dir="${basedir}/projects/WebAppCommon/docroot/WEB-INF/shared"/>
         </copy>
@@ -514,7 +489,7 @@
         </copy>
     </target>
 
-	<target name="build" depends="framework,erpservices,routing,delivery,cms,fdstore,dataloader,erpswebapp,tools,StandingOrdersService,CoremetricsService,BazaarvoiceService,FDServices,Athena" description="Build everything">
+	<target name="build" depends="framework,erpservices,FDLogisticsIntegration,delivery,cms,fdstore,dataloader,erpswebapp,tools,StandingOrdersService,CoremetricsService,BazaarvoiceService,Athena" description="Build everything">
 	</target>
 
 	<target name="test" depends="tests_compile" description="Run unit tests">
@@ -535,7 +510,7 @@
 					<fileset dir="${work.dir}" includes="FDStore.jar" />
 					<fileset dir="${work.dir}" includes="DataLoader.jar" />
 					<fileset dir="${dest.dir}" includes="ERPSWebApp.jar" />
-					<fileset dir="${work.dir}" includes="RoutingServices.jar" />
+					<fileset dir="${work.dir}" includes="FDLogisticsIntegration.jar" />
 					<fileset dir="${work.dir}" includes="StandingOrdersService.jar" />
 					<fileset dir="${work.dir}" includes="CoremetricsService.jar" />
 					<fileset dir="${work.dir}" includes="BazaarvoiceService.jar" />
@@ -570,7 +545,7 @@
 		                <pathelement location="${work.dir}/FDStore-emma.jar"/>
 		                <pathelement location="${work.dir}/DataLoader-emma.jar"/>
 		                <pathelement location="${work.dir}/ERPSWebApp-emma.jar"/>
-		                <pathelement location="${work.dir}/RoutingServices-emma.jar"/>
+		                <pathelement location="${work.dir}/FDLogisticsIntegration-emma.jar"/>
 						<pathelement location="${work.dir}/StandingOrdersService-emma.jar"/>
 						<pathelement location="${work.dir}/CoremetricsService-emma.jar"/>
 						<pathelement location="${work.dir}/BazaarvoiceService-emma.jar"/>
@@ -613,7 +588,7 @@
 		   				<pathelement location="${work.dir}/FDStore.jar"/>
 		   				<pathelement location="${work.dir}/DataLoader.jar"/>
 		   				<pathelement location="${work.dir}/ERPSWebApp.jar"/>
-		   				<pathelement location="${work.dir}/RoutingServices.jar"/>
+		   				<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 						<pathelement location="${work.dir}/StandingOrdersService.jar"/>
 						<pathelement location="${work.dir}/CoremetricsService.jar"/>
 						<pathelement location="${work.dir}/BazaarvoiceService.jar"/>
@@ -684,7 +659,7 @@
 						<path refid="common.classpath"/>
 						<path refid="testing.classpath"/>
 						<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-						<pathelement path="${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/RoutingServices.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar"/>
+						<pathelement path="${work.dir}/Framework.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/FDLogisticsIntegration.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar"/>
 					</classpath>
 				</javac>
 				<record name="${work.dir}/func-logs/log.txt" action="stop"/>
@@ -720,7 +695,7 @@
 				<pathelement location="${thirdparty.home}/lcc.jar"/>
 				<pathelement location="${work.dir}/Framework.jar"/>
 				<pathelement location="${work.dir}/ERPServices.jar"/>
-				<pathelement location="${work.dir}/RoutingServices.jar"/>
+				<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 				<pathelement location="${work.dir}/Delivery.jar"/>
 				<pathelement location="${work.dir}/CMS.jar"/>
 				<pathelement location="${work.dir}/FDStore.jar"/>
@@ -759,7 +734,7 @@
 						<path refid="common.classpath"/>
 						<path refid="testing.classpath"/>
 						<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-						<pathelement path="${work.dir}/FunctionalTests;${work.dir}/Framework.jar;${work.dir}/RoutingServices.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar"/>
+						<pathelement path="${work.dir}/FunctionalTests;${work.dir}/Framework.jar;${work.dir}/FDLogisticsIntegration.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar"/>
 					</classpath>
 				</javac>
 				<record name="${work.dir}/perf-logs/log.txt" action="stop"/>
@@ -800,7 +775,7 @@
 			<path refid="common.classpath"/>
 			<path refid="testing.classpath"/>
 			<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/RoutingServices.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar"/>
+			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/FDLogisticsIntegration.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar"/>
 			</classpath>
 		</java>
 		<java classname="com.freshdirect.tools.monitor.WebStatsReport" output="${work.dir}/perf-logs/webstats-reset.log">
@@ -811,7 +786,7 @@
 			<path refid="common.classpath"/>
 			<path refid="testing.classpath"/>
 			<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/RoutingServices.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar"/>
+			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/FDLogisticsIntegration.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar"/>
 			</classpath>
 		</java>
 		<junit fork="yes" jvm="${jdk15.executable}">
@@ -836,7 +811,7 @@
 				<path refid="testing.classpath"/>
 				<pathelement location="${thirdparty.home}/lcc.jar"/>
 				<pathelement location="${work.dir}/Framework.jar"/>
-				<pathelement location="${work.dir}/RoutingServices.jar"/>
+				<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 				<pathelement location="${work.dir}/ERPServices.jar"/>
 				<pathelement location="${work.dir}/Delivery.jar"/>
 				<pathelement location="${work.dir}/CMS.jar"/>
@@ -854,7 +829,7 @@
 			<path refid="common.classpath"/>
 			<path refid="testing.classpath"/>
 			<pathelement path="${thirdparty.home}/lcc.jar;${thirdparty.home}/ognl-2.3.0-opt.jar"/>
-			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/RoutingServices.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar"/>
+			<pathelement path="${work.dir}/Tools.jar;${work.dir}/Framework.jar;${work.dir}/FDLogisticsIntegration.jar;${work.dir}/ERPServicesEJB-WL.jar;${work.dir}/DeliveryEJB-WL.jar;${work.dir}/CMS.jar;${work.dir}/FDStoreEJB-WL.jar;${work.dir}/DataLoaderEJB-WL.jar;${work.dir}/ERPSWebApp.jar"/>
 			</classpath>
 		</java>
 
@@ -1264,8 +1239,19 @@
                     <include name="wsdl4j-1.5.1.jar"/>
                     <include name="xml-apis.jar"/>
 					<include name="commons-discovery-0.2.jar"/>					
-					<include name="jaxrpc.jar"/>								
-					<include name="spring.jar"/>
+					<include name="jaxrpc.jar"/>
+					
+					<include name="spring-aop-4.0.1.RELEASE.jar"/>	
+					<include name="spring-beans-4.0.1.RELEASE.jar"/>
+					<include name="spring-context-4.0.1.RELEASE.jar"/>
+					<include name="spring-core-4.0.1.RELEASE.jar"/>
+					<include name="spring-expression-4.0.1.RELEASE.jar"/>
+					<include name="spring-jdbc-4.0.0.RELEASE.jar"/>
+					<include name="spring-tx-4.0.0.RELEASE.jar"/>
+					<include name="spring-web-4.0.1.RELEASE.jar"/>
+					<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
+					<include name="gson-1.7.1.jar"/>
+								
 					<include name="JFEP-0.1.0.jar"/>
 					<include name="roadnetservices.jar"/>
 					<include name="httpcore-4.0.1.jar"/>
@@ -1288,6 +1274,7 @@
 					<include name="PaymentechSDK.jar"/>
 					<include name="regexp.jar"/>
 					<include name="sunrsasign.jar"/>
+					<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
 						
 					<lib/>
 				</zipfileset>
@@ -1414,6 +1401,7 @@
 					<include name="PaymentechSDK.jar"/>
 					<include name="regexp.jar"/>
 					<include name="sunrsasign.jar"/>
+					<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
 					<lib/>
 				</zipfileset>
 				<extra/>
@@ -1542,7 +1530,7 @@
 		<path id="delivery.classpath">
 			<pathelement location="${work.dir}/Framework.jar"/>
 			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
-            <pathelement location="${work.dir}/RoutingServices.jar"/>
+            <pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 		</path>
 
 		<makeEjbProject
@@ -1550,43 +1538,31 @@
 			classpathref="delivery.classpath"/>
 	</target>
 	
-	<target name="routing" description="Build Routing">
-			<path id="routing.classpath">
+	<target name="FDLogisticsIntegration" description="Build FDLogisticsIntegration">
+			<path id="FDLogisticsIntegration.classpath">
 				<pathelement location="${work.dir}/Framework.jar"/>
 				<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
 				<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
 				<pathelement location="${thirdparty.home}/commons-discovery-0.2.jar"/>
 				<pathelement location="${thirdparty.home}/commons-logging-1.1.1.jar"/>
-				<pathelement location="${thirdparty.home}/ctah-api-client.jar"/>				
-				<pathelement location="${thirdparty.home}/jaxrpc.jar"/>
 				<pathelement location="${thirdparty.home}/${log4j.jar}"/>				
-				<pathelement location="${thirdparty.home}/spring.jar"/>
-				<pathelement location="${thirdparty.home}/JFEP-0.1.0.jar"/>
-				<pathelement location="${thirdparty.home}/XmlSchema-1.4.3.jar"/>  
-				<pathelement location="${thirdparty.home}/axis2-transport-http-1.5.jar"/>  
-				<pathelement location="${thirdparty.home}/axiom-dom-1.2.8.jar"/>
-				<pathelement location="${thirdparty.home}/axiom-api-1.2.8.jar"/> 
-				<pathelement location="${thirdparty.home}/axiom-impl-1.2.8.jar"/>
-				<pathelement location="${thirdparty.home}/axis2-kernel-1.5.jar"/>  
-				<pathelement location="${thirdparty.home}/axis2-transport-local-1.5.jar"/> 
-				<pathelement location="${thirdparty.home}/axis2-transport-http-1.5.jar"/>
-				<pathelement location="${thirdparty.home}/commons-httpclient-3.1.jar"/>  
-				<pathelement location="${thirdparty.home}/activation-1.1.jar"/>  
-				<pathelement location="${thirdparty.home}/axis2-adb-1.5.jar"/>  
-				<pathelement location="${thirdparty.home}/neethi-2.0.4.jar"/>  
-				<pathelement location="${thirdparty.home}/wstx-asl-3.2.4.jar"/>
-				<pathelement location="${thirdparty.home}/wsdl4j-1.5.1.jar"/>
-				<pathelement location="${thirdparty.home}/xml-apis.jar"/>
-				<pathelement location="${thirdparty.home}/lpsolve55j.jar"/>
-				<pathelement location="${thirdparty.home}/guava-12.0.jar"/>
-				<pathelement location="${thirdparty.home}/gwt/gwt-dev-oophm.jar"/>
-				<pathelement location="${thirdparty.home}/jsonrpc-1.0.jar"/>
-				<pathelement location="${thirdparty.home}/telargoservices.jar"/>
+				<pathelement location="${thirdparty.home}/commons-lang-2.3.jar"/>
+				<pathelement location="${thirdparty.home}/spring-aop-4.0.1.RELEASE.jar"/>	
+				<pathelement location="${thirdparty.home}/spring-beans-4.0.1.RELEASE.jar"/>
+				<pathelement location="${thirdparty.home}/spring-context-4.0.1.RELEASE.jar"/>
+				<pathelement location="${thirdparty.home}/spring-core-4.0.1.RELEASE.jar"/>
+				<pathelement location="${thirdparty.home}/spring-expression-4.0.1.RELEASE.jar"/>
+				<pathelement location="${thirdparty.home}/spring-jdbc-4.0.0.RELEASE.jar"/>
+				<pathelement location="${thirdparty.home}/spring-tx-4.0.0.RELEASE.jar"/>
+				<pathelement location="${thirdparty.home}/spring-web-4.0.1.RELEASE.jar"/>
+				<pathelement location="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar"/>
+				<pathelement location="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<pathelement location="${thirdparty.home}/gson-1.7.1.jar"/>
 			</path>
 	
 			<makeProject
-				project="RoutingServices"
-	            	classpathref="routing.classpath"/>
+				project="FDLogisticsIntegration"
+	            	classpathref="FDLogisticsIntegration.classpath"/>
 	</target>
 	
 	<target name="cms" description="Build CMS">
@@ -1615,7 +1591,7 @@
 			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
 			<pathelement location="${work.dir}/CMS.jar"/>
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
-			<pathelement location="${work.dir}/RoutingServices.jar"/>
+			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
 		</path>
 
@@ -1649,7 +1625,20 @@
 			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/FDStore.jar"/>
-			<pathelement location="${thirdparty.home}/spring.jar"/>
+			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
+			
+			<pathelement location="${thirdparty.home}/commons-lang-2.3.jar"/>
+			<pathelement location="${thirdparty.home}/spring-aop-4.0.1.RELEASE.jar"/>	
+			<pathelement location="${thirdparty.home}/spring-beans-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-context-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-core-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-expression-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-jdbc-4.0.0.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-tx-4.0.0.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-web-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/gson-1.7.1.jar"/>
+						
       		<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/> 
        		<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
        		<pathelement location="${thirdparty.home}/extremecomponents-1.0.1.jar"/>
@@ -1722,7 +1711,7 @@
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/CMS.jar"/>
 			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
-			<pathelement location="${work.dir}/RoutingServices.jar"/>
+			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 			<pathelement location="${work.dir}/MarketingAdmin.war"/>			
             		<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
             		<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
@@ -1746,7 +1735,7 @@
 			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
 			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
 			<pathelement location="${work.dir}/CMS.jar"/>
-			<pathelement location="${work.dir}/RoutingServices.jar"/>
+			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
          <pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
@@ -1770,7 +1759,7 @@
 			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
-			<pathelement location="${work.dir}/RoutingServices.jar"/>
+			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 			<pathelement location="${work.dir}/StandingOrdersService.jar"/>
 			<pathelement location="${work.dir}/CoremetricsService.jar"/>
 			<pathelement location="${work.dir}/BazaarvoiceService.jar"/>
@@ -1798,91 +1787,27 @@
 			<pathelement location="${work.dir}/FDStoreEJB-WL.jar"/>
 			<pathelement location="${work.dir}/DataLoaderEJB-WL.jar"/>
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
-			<pathelement location="${work.dir}/RoutingServices.jar"/>
+			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 			<pathelement location="${thirdparty.home}/struts.jar"/>
             <pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
+			<pathelement location="${thirdparty.home}/spring-aop-4.0.1.RELEASE.jar"/>	
+			<pathelement location="${thirdparty.home}/spring-beans-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-context-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-core-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-expression-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-jdbc-4.0.0.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-tx-4.0.0.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-web-4.0.1.RELEASE.jar"/>
+			<pathelement location="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar"/>
+			<path refid="j2ee.classpath"/>
+			
 		</path>
 		<makeWebProject
 			project="CRM"
 			classpathref="crm.classpath"/>
-	</target>
-
-	<target name="dlvadmin" description="Build DlvAdmin">
-		<!-- directory for compiled stuff -->
-		<mkdir dir="${work.dir}/DlvAdmin/WEB-INF/classes" />
-
-		<!-- compile tapestry components -->
-		<path id="admin.classpath">
-			<path refid="j2ee.classpath"/>
-			<path refid="common.classpath"/>
-			<path refid="oracle.classpath"/>
-			<path refid="tapestry.classpath"/>
-			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
-			<pathelement location="${work.dir}/Framework.jar" />
-			<pathelement location="${work.dir}/RoutingServices.jar" />
-		</path>
-		<trycatch>
-			<try>
-				<record name="${work.dir}/logs/log.txt" action="start" append="yes" loglevel="info"/>
-				<tstamp>
-					<format property="compileStart" pattern="MM/dd/yyyy HH:mm" />
-				</tstamp>
-				<echo message="Started Compiling DlvAdmin at:${compileStart}"/>
-				<javac
-			srcdir="${projects.dir}/DlvAdmin/src"
-			destdir="${work.dir}/DlvAdmin/WEB-INF/classes"
-  			deprecation="${javac.deprecation}"
-			optimize="${javac.optimize}"
-			debug="${javac.debug}"
-  			source="${javac.source}">
-					<classpath>
-						<path refid="admin.classpath"/>
-					</classpath>
-				</javac>
-				<record name="${work.dir}/logs/log.txt" action="stop"/>
-			</try>
-			<catch>
-				<record name="${work.dir}/logs/log.txt" action="stop"/>
-				<!-- send email...compilation failed -->
-				<emailCompilationError projectName="DlvAdmin"/>
-				<fail/>
-			</catch>
-		</trycatch>
-
-		<!-- copy JSPs, html, etc... -->
-		<copy todir="${work.dir}/DlvAdmin/">
-			<fileset dir="${projects.dir}/DlvAdmin/docroot">
-			</fileset>
-		</copy>
-
-		<!-- copy tapestry xml files and other resources  Not needed for tap 4
-  		<copy todir="${work.dir}/DlvAdmin/WEB-INF/classes">
-			<fileset dir="${projects.dir}/DlvAdmin/tapestry"></fileset>
-  		</copy>
-      -->
-		<!-- copy dependent jar files 
-  		<copy todir="${work.dir}/DlvAdmin/WEB-INF/lib">
-			<fileset refid="tapestry.webapp.fileset" />
-		</copy>
-		-->
-
-		<!-- create .war file -->
-		<jar destfile="${work.dir}/DlvAdmin.war">
-            <manifest>
-                <attribute name="Specification-Version" value="${build.counter}"/>
-                <attribute name="Specification-Vendor" value="FreshDirect LLC"/>
-                <attribute name="Implementation-Title" value="DlvAdmin"/>
-                <attribute name="Implementation-Version" value="${build.counter}"/>
-                <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-                <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
-            </manifest>
-			<fileset dir="${work.dir}/DlvAdmin">
-			</fileset>
-		</jar>
-
 	</target>
 
     <macrodef name="gwt-compile">
@@ -1974,19 +1899,6 @@
 			classpathref="rulesadmin.classpath"/>
 	</target>
 
-	<target name="dlvconfirm" description="Build DlvConfirm .war file">
-		<path id="dlvconfirm.classpath">
-			<pathelement location="${work.dir}/Framework.jar"/>
-			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
-			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
-			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
-			<pathelement location="${thirdparty.home}/struts.jar"/>
-		</path>
-		<makeWebProject
-			project="DlvConfirm"
-			classpathref="dlvconfirm.classpath"/>
-	</target>
-
 	<target name="erpsadmin" description="Build ERPSAdmin .war file">
 		<path id="erpsadmin.classpath">
 			<pathelement location="${work.dir}/Framework.jar"/>
@@ -2004,107 +1916,12 @@
 			classpathref="erpsadmin.classpath"/>
 	</target>
 
-	<target name="transportAdmin" description="Build Transportation Admin">
-		<!-- directory for compiled stuff -->
-		<mkdir dir="${work.dir}/TransportationAdmin/WEB-INF/classes" />
-
-		<!-- compile spring components -->
-		<path id="admin.classpath">
-			<path refid="j2ee.classpath"/>
-			<path refid="common.classpath"/>
-			<path refid="oracle.classpath"/>
-			<pathelement location="${work.dir}/Framework.jar"/>
-			<pathelement location="${work.dir}/RoutingServices.jar"/>
-            <pathelement location="${work.dir}/ERPServices.jar"/>
-			<pathelement location="${thirdparty.home}/spring.jar"/>
-			<pathelement location="${thirdparty.home}/extremecomponents-1.0.1.jar"/>  
-			<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/>
-			<pathelement location="${thirdparty.home}/fop-0.20.5.jar"/>
-			<pathelement location="${thirdparty.home}/lpsolve55j.jar"/>
-			<pathelement location="${thirdparty.home}/guava-12.0.jar"/>
-			<pathelement location="${thirdparty.home}/telargoservices.jar"/>
-			<pathelement location="${thirdparty.home}/freemarker-2.3.15.jar"/>
-			<pathelement location="${thirdparty.home}/jackson-core-2.2.0.jar"/>
-			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
-			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
-			<pathelement location="${thirdparty.home}/opencsv-1.8.jar"/>
-		</path>
-		<trycatch>
-			<try>
-				<record name="${work.dir}/logs/log.txt" action="start" append="yes" loglevel="info"/>
-				<tstamp>
-					<format property="compileStart" pattern="MM/dd/yyyy HH:mm" />
-				</tstamp>
-				<echo message="Started Compiling Transportation Admin at:${compileStart}"/>
-				<javac
-						srcdir="${projects.dir}/TransportationAdmin/src"
-						destdir="${work.dir}/TransportationAdmin/WEB-INF/classes"
-			  			deprecation="${javac.deprecation}"
-						optimize="${javac.optimize}"
-						debug="${javac.debug}"
-			  			source="${javac.source}">
-					<classpath>
-						<path refid="admin.classpath"/>
-					</classpath>
-				</javac>
-				<record name="${work.dir}/logs/log.txt" action="stop"/>
-			</try>
-			<catch>
-				<record name="${work.dir}/logs/log.txt" action="stop"/>
-				<!-- send email...compilation failed -->
-				<emailCompilationError projectName="TransportationAdmin"/>
-				<fail/>
-			</catch>
-		</trycatch>
-		
-		<!-- copy non-java resources -->
-		<copy todir="${work.dir}/TransportationAdmin/WEB-INF/classes">
-			<fileset dir="${projects.dir}/TransportationAdmin/src" excludes="**/*.java"/>
-		</copy>
-
-		<!-- copy JSPs, html, etc... -->
-		<copy todir="${work.dir}/TransportationAdmin/">
-			<fileset dir="${projects.dir}/TransportationAdmin/docroot">
-			</fileset>
-		</copy>
-
-		<!-- copy dependent jar files -->
-  		<copy todir="${work.dir}/TransportationAdmin/WEB-INF/lib">
-			<fileset dir="${thirdparty.home}" includes="extremecomponents-1.0.1.jar" />
-			<fileset dir="${work.dir}" includes="RoutingServices.jar" />
-			<fileset dir="${thirdparty.home}" includes="lpsolve55j.jar" />
-			<fileset dir="${thirdparty.home}" includes="guava-12.0.jar" />
-			<fileset dir="${thirdparty.home}" includes="telargoservices.jar" />
-			<fileset dir="${thirdparty.home}" includes="freemarker-2.3.15.jar"/>
-			<fileset dir="${thirdparty.home}" includes="jackson-core-2.2.0.jar"/>
-			<fileset dir="${thirdparty.home}" includes="jackson-databind-2.2.0.jar"/>
-			<fileset dir="${thirdparty.home}" includes="jackson-annotations-2.2.0.jar"/>
-			<fileset dir="${thirdparty.home}" includes="urlrewrite-2.6.0.jar"/>
-			<fileset dir="${thirdparty.home}" includes="opencsv-1.8.jar"/>
-		</copy>
-
-		<!-- create .war file -->
-		<jar destfile="${work.dir}/TransportAdmin.war">
-            <manifest>
-                <attribute name="Specification-Version" value="${build.counter}"/>
-                <attribute name="Specification-Vendor" value="FreshDirect LLC"/>
-                <attribute name="Implementation-Title" value="TransportationAdmin"/>
-                <attribute name="Implementation-Version" value="${build.counter}"/>
-                <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-                <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
-            </manifest>
-			<fileset dir="${work.dir}/TransportationAdmin">
-			</fileset>
-		</jar>
-
-	</target>
-
 	<target name="StandingOrdersService" description="Build Standing Orders Service">
 		<path id="StandingOrdersService.classpath">
 			<pathelement location="${work.dir}/Framework.jar"/>
 			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
-			<pathelement location="${work.dir}/RoutingServices.jar"/>
+			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 			<pathelement location="${work.dir}/CMS.jar"/>
 			<pathelement location="${work.dir}/FDStore.jar"/>
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
@@ -2120,7 +1937,7 @@
 			<pathelement location="${work.dir}/Framework.jar"/>
 			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
-			<pathelement location="${work.dir}/RoutingServices.jar"/>
+			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 			<pathelement location="${work.dir}/CMS.jar"/>
 			<pathelement location="${work.dir}/FDStore.jar"/>
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
@@ -2136,7 +1953,7 @@
 			<pathelement location="${work.dir}/Framework.jar"/>
 			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
 			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
-			<pathelement location="${work.dir}/RoutingServices.jar"/>
+			<pathelement location="${work.dir}/FDLogisticsIntegration.jar"/>
 			<pathelement location="${work.dir}/CMS.jar"/>
 			<pathelement location="${work.dir}/FDStore.jar"/>
 			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
@@ -2146,31 +1963,6 @@
 		<!--makeEjbProject
 			project="BazaarvoiceService"
 			classpathref="BazaarvoiceService.classpath"/-->
-	</target>
-
-	
-	<target name="FDServices" description="Build FD services project">
-		<echo message="${thirdparty.home}"/>
-		<path id="FDServices.classpath">
-			
-			<fileset dir="${thirdparty.home}">
-				<include name="log4j.jar"/>
-				<include name="commons-logging-1.1.1.jar"/>
-				<include name="axiom-api-1.2.8.jar"/>
-				<include name="axiom-dom-1.2.8.jar"/>
-				<include name="axiom-impl-1.2.8.jar"/>
-				<include name="axis.jar"/>
-				<include name="axis2-adb-1.5.jar"/>
-				<include name="axis2-kernel-1.5.jar"/>
-				<include name="spring-2.5.jar"/>
-			</fileset>
-		</path>
-		
-		<makeAxisProject
-					project="FDServices" 
-					application="FDServices" 
-					classpathref="FDServices.classpath"
-					service-name="FDService"/>
 	</target>
 	
 	<target name="Athena" description="Build Athena">
@@ -2262,15 +2054,6 @@
 	
 	</target>
 	
-	
-	<target name="deployDlvAdmin" description="Build and Deploy dlvadmin" depends="dlvadmin">
-		<copy todir="${weblogic.home}/config/freshdirect/applications/">
-			<fileset dir="${work.dir}">
-				<include name="DlvAdmin.war"/>
-			</fileset>
-		</copy>
-	</target>
-
 	<target name="tools" description="Build Tools" depends="framework,cms,fdstore">
 		<path id="tools.classpath">
             <pathelement location="${work.dir}/Framework.jar"/>
@@ -2315,7 +2098,7 @@
 						<pathelement path="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
 						<pathelement path="${thirdparty.home}/lucene-snowball-${lucene.version}.jar"/>
 						<pathelement path="${work.dir}/Framework.jar"/>
-						<pathelement path="${work.dir}/RoutingServices.jar"/>
+						<pathelement path="${work.dir}/FDLogisticsIntegration.jar"/>
 						<pathelement path="${work.dir}/ERPServicesEJB-WL.jar"/>
 						<pathelement path="${work.dir}/DeliveryEJB-WL.jar"/>
 						<pathelement path="${work.dir}/CMS.jar"/>
@@ -2355,7 +2138,7 @@
 			<libraries>
 				<include name="Framework.jar"/>
 				<include name="CMS.jar"/>
-				<include name="RoutingServices.jar"/>
+				<include name="FDLogisticsIntegration.jar"/>
 				<include name="ERPSWebApp.jar"/>
 			</libraries>
 			<lib>
@@ -2374,6 +2157,7 @@
 				<include name="jackson-core-2.2.0.jar"/>
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
+				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2390,7 +2174,7 @@
 			<libraries>
 				<include name="Framework.jar"/>
 				<include name="CMS.jar"/>
-				<include name="RoutingServices.jar"/>
+				<include name="FDLogisticsIntegration.jar"/>
 			</libraries>
 			<lib>
 				<!-- <include name="oscache-2.4.jar"/> -->
@@ -2409,6 +2193,7 @@
 				<include name="jackson-core-2.2.0.jar"/>
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
+				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2426,7 +2211,7 @@
 				<include name="CMS.jar"/>
 				<include name="FDStoreEJB-WL.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
-				<include name="RoutingServices.jar"/>
+				<include name="FDLogisticsIntegration.jar"/>
 				<include name="StandingOrdersService.jar"/>
 				<include name="CoremetricsService.jar"/>
 				<include name="BazaarvoiceService.jar"/>
@@ -2450,6 +2235,20 @@
 				<include name="jackson-core-2.2.0.jar"/>
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
+				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				
+				<include name="commons-lang-2.3.jar"/>
+								<include name="spring-aop-4.0.1.RELEASE.jar"/>	
+												<include name="spring-beans-4.0.1.RELEASE.jar"/>
+												<include name="spring-context-4.0.1.RELEASE.jar"/>
+												<include name="spring-core-4.0.1.RELEASE.jar"/>
+												<include name="spring-expression-4.0.1.RELEASE.jar"/>
+												<include name="spring-jdbc-4.0.0.RELEASE.jar"/>
+												<include name="spring-tx-4.0.0.RELEASE.jar"/>
+												<include name="spring-web-4.0.1.RELEASE.jar"/>
+												<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
+												<include name="gson-1.7.1.jar"/>
+				
 			</lib>
 		</makeEar>
 	</target>
@@ -2467,7 +2266,7 @@
 				<include name="Framework.jar"/>
 				<include name="ERPSWebApp.jar"/>
 				<include name="CMS.jar"/>				
-				<include name="RoutingServices.jar"/>
+				<include name="FDLogisticsIntegration.jar"/>
 			</libraries>
 			<lib>
 				<include name="lcc.jar"/>
@@ -2491,6 +2290,20 @@
 				<include name="jackson-core-2.2.0.jar"/>
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
+				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				
+				<include name="commons-lang-2.3.jar"/>
+				<include name="spring-aop-4.0.1.RELEASE.jar"/>	
+								<include name="spring-beans-4.0.1.RELEASE.jar"/>
+								<include name="spring-context-4.0.1.RELEASE.jar"/>
+								<include name="spring-core-4.0.1.RELEASE.jar"/>
+								<include name="spring-expression-4.0.1.RELEASE.jar"/>
+								<include name="spring-jdbc-4.0.0.RELEASE.jar"/>
+								<include name="spring-tx-4.0.0.RELEASE.jar"/>
+								<include name="spring-web-4.0.1.RELEASE.jar"/>
+								<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
+								<include name="gson-1.7.1.jar"/>
+				
 			</lib>
 		</makeEar>
 	</target>
@@ -2499,7 +2312,6 @@
 		<makeFDAdminEar application="FDAdmin">
 			<ejbs>
 				<include name="MarketingAdmin.war"/>
-				<include name="TransportAdmin.war"/>
 			</ejbs>
 			<libraries>
 				<include name="Framework.jar"/>
@@ -2515,7 +2327,19 @@
 				<include name="sapjco3.jar"/>
 				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
-				<include name="spring.jar"/>
+				
+
+				<include name="spring-aop-4.0.1.RELEASE.jar"/>	
+				<include name="spring-beans-4.0.1.RELEASE.jar"/>
+				<include name="spring-context-4.0.1.RELEASE.jar"/>
+				<include name="spring-core-4.0.1.RELEASE.jar"/>
+				<include name="spring-expression-4.0.1.RELEASE.jar"/>
+				<include name="spring-jdbc-4.0.0.RELEASE.jar"/>
+				<include name="spring-tx-4.0.0.RELEASE.jar"/>
+				<include name="spring-web-4.0.1.RELEASE.jar"/>
+				<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
+				<include name="gson-1.7.1.jar"/>
+				
 				<include name="jstl-api-1.2.jar"/>
 				<include name="jstl-impl-1.2.jar"/>
 				<include name="poi-3.5-FINAL-20090928.jar"/>
@@ -2539,44 +2363,12 @@
 				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="freemarker-2.3.15.jar"/>
 				<include name="urlrewrite-2.6.0.jar"/>
+				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
 				
 			</lib>
 		</makeFDAdminEar>
 	</target>
-
-
-	<target name="dlv-app" description="EAR that contains the all the code and resources for the dlv applications">
-		<makeEar application="Delivery">
-			<ejbs>
-				<include name="DlvAdmin.war"/>
-				<include name="DlvConfirm.war"/>
-			</ejbs>
-			<libraries>
-				<include name="Framework.jar"/>
-				<include name="ERPSWebApp.jar"/>
-				<include name="ERPServicesEJB-WL.jar"/>
-				<include name="DeliveryEJB-WL.jar"/>
-				<include name="FDStoreEJB-WL.jar"/>
-				<include name="RoutingServices.jar"/>
-			</libraries>
-			<lib>
-				<include name="struts.jar"/>
-				<include name="net.sf.tapestry-2.3.jar"/>
-				<include name="net.sf.tapestry.contrib-2.3.jar"/>
-				<include name="tapestry-4.0.2.jar"/>
-				<include name="tapestry-contrib-4.0.2.jar"/>
-				<include name="tacos-core-4.0.2-20070420.095420-14.jar"/>
-				<include name="myworkspace-0.2.jar"/>
-				<include name="Zql.jar"/>
-				<include name="xercesImpl.jar"/>
-				<include name="antlr-2.7.5H3.jar"/>
-				<include name="jackson-core-2.2.0.jar"/>
-				<include name="jackson-databind-2.2.0.jar"/>
-				<include name="jackson-annotations-2.2.0.jar"/>
-			</lib>
-		</makeEar>
-	</target>
-
+	
 	<target name="erps-app" description="EAR that contains the all the code and resources for the ERPSAdmin application">
 		<makeEar application="ERPSAdmin">
 			<ejbs>
@@ -2590,7 +2382,7 @@
 				<include name="FDStoreEJB-WL.jar"/>
 				<include name="CMS.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
-				<include name="RoutingServices.jar"/>
+				<include name="FDLogisticsIntegration.jar"/>
 			</libraries>
 			<lib>
 				<!-- <include name="oscache-2.4.jar"/> -->
@@ -2602,6 +2394,7 @@
 				<include name="jackson-core-2.2.0.jar"/>
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
+				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2622,7 +2415,7 @@
 				<include name="CMS.jar"/>
 				<include name="ERPSWebApp.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
-				<include name="RoutingServices.jar"/>
+				<include name="FDLogisticsIntegration.jar"/>
 				<include name="ERPServicesEJB-WL.jar"/>
 				<include name="DeliveryEJB-WL.jar"/>
 				<include name="FDStoreEJB-WL.jar"/>
@@ -2653,7 +2446,18 @@
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
 
-				<include name="spring.jar"/>
+
+				<include name="spring-aop-4.0.1.RELEASE.jar"/>	
+				<include name="spring-beans-4.0.1.RELEASE.jar"/>
+				<include name="spring-context-4.0.1.RELEASE.jar"/>
+				<include name="spring-core-4.0.1.RELEASE.jar"/>
+				<include name="spring-expression-4.0.1.RELEASE.jar"/>
+				<include name="spring-jdbc-4.0.0.RELEASE.jar"/>
+				<include name="spring-tx-4.0.0.RELEASE.jar"/>
+				<include name="spring-web-4.0.1.RELEASE.jar"/>
+				<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
+				<include name="gson-1.7.1.jar"/>
+				
 				<include name="opencsv-1.8.jar"/>
 				<include name="commons-discovery-0.2.jar"/>
 				<include name="commons-logging-1.1.1.jar"/>
@@ -2661,6 +2465,7 @@
 				<include name="JFEP-0.1.0.jar"/>
 				<include name="antlr-2.7.5H3.jar"/>
 				<include name="urlrewrite-2.6.0.jar"/>
+				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
 			</lib>
 			<extra>	 
 				<zipfileset dir="${thirdparty.home}/slide" prefix="APP-INF/lib" includes="*.jar"/>	 
@@ -2669,7 +2474,7 @@
 	</target>
 
 	<target name="ears" description="build all apps"
-		depends="backend-app,sap-app,storefront-app,crm-app,dlv-app,erps-app,cms-app,fdadmin-app,fdintegrationservices-app,wpjar">
+		depends="backend-app,sap-app,storefront-app,crm-app,erps-app,cms-app,fdadmin-app,fdintegrationservices-app,wpjar">
 	</target>
 
 	<target name="wpjar" description="make wordpress redistributable package">
@@ -2730,8 +2535,8 @@
 			<zipfileset src="${thirdparty.home}/commons-collections-3.1.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-httpclient-2.0.2.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/commons-net-1.0.jar" excludes="META-INF/*"/>
-
-
+			<zipfileset src="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar" excludes="META-INF/*"/>
+						
 			<zipfileset src="${thirdparty.home}/lucene-core-${lucene.version}.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/lucene-queries-${lucene.version}.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/lucene-snowball-${lucene.version}.jar" excludes="META-INF/*"/>
@@ -2764,7 +2569,7 @@
 			<zipfileset src="${work.dir}/CMS.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*"/>
-            <zipfileset src="${work.dir}/RoutingServices.jar" excludes="META-INF/*"/>
+            <zipfileset src="${work.dir}/FDLogisticsIntegration.jar" excludes="META-INF/*"/>
             <zipfileset src="${work.dir}/StandingOrdersService.jar" excludes="META-INF/*"/>
             <zipfileset src="${work.dir}/CoremetricsService.jar" excludes="META-INF/*"/>
 				<zipfileset src="${work.dir}/BazaarvoiceService.jar" excludes="META-INF/*"/>
@@ -2806,6 +2611,7 @@
 			<zipfileset src="${thirdparty.home}/jakarta-oro-2.0.5.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/${log4j.jar}" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/sapjco3.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar" excludes="META-INF/*"/>
 			<zipfileset src="${weblogic.home}/server/ext/jdbc/oracle/920/ojdbc14.jar" excludes="META-INF/*"/>
 			<!-- FD classes -->
 			<zipfileset src="${work.dir}/Framework.jar"/>
@@ -2813,7 +2619,8 @@
 			<zipfileset src="${work.dir}/DeliveryEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*"/>
-			<zipfileset src="${work.dir}/RoutingServices.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/FDLogisticsIntegration.jar" excludes="META-INF/*"/>
+			
 		</jar>
 	</target>
 
@@ -2850,6 +2657,7 @@
 			<zipfileset src="${thirdparty.home}/${log4j.jar}" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/sapjco3.jar" excludes="META-INF/*"/>
 			<zipfileset src="${thirdparty.home}/opencsv-1.8.jar" excludes="META-INF/*"/>
+			<zipfileset src="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar" excludes="META-INF/*"/>
 			<zipfileset src="${weblogic.home}/server/ext/jdbc/oracle/10g/ojdbc14_g.jar" excludes="META-INF/*"/>
 			<zipfileset src="${weblogic.home}/server/lib/weblogic.jar" excludes="META-INF/*"/>			
 			<!-- FD classes -->
@@ -2858,7 +2666,7 @@
 			<zipfileset src="${work.dir}/DeliveryEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*"/>	
-			<zipfileset src="${work.dir}/RoutingServices.jar" excludes="META-INF/*"/>
+			<zipfileset src="${work.dir}/FDLogisticsIntegration.jar" excludes="META-INF/*"/>
 		</jar>
 	</target>
 
@@ -2952,7 +2760,6 @@
 			<group title="Delivery">
 				<package name="com.freshdirect.delivery"/>
 				<package name="com.freshdirect.delivery.*"/>
-				<package name="com.freshdirect.dlvadmin.*"/>
 			</group>
 	
 			<group title="Framework">
@@ -3007,9 +2814,21 @@
 			<pathelement location="${thirdparty.home}/jackson-databind-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/jackson-annotations-2.2.0.jar"/>
 			<pathelement location="${thirdparty.home}/javawebparts-filter-1.2.jar"/>
-			<pathelement location="${thirdparty.home}/spring-2.5.jar"/>
-			<pathelement location="${thirdparty.home}/spring-webmvc.jar"/>
-      		<pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
+			
+							<pathelement location="${thirdparty.home}/spring-aop-4.0.1.RELEASE.jar"/>	
+							<pathelement location="${thirdparty.home}/spring-beans-4.0.1.RELEASE.jar"/>
+							<pathelement location="${thirdparty.home}/spring-context-4.0.1.RELEASE.jar"/>
+							<pathelement location="${thirdparty.home}/spring-core-4.0.1.RELEASE.jar"/>
+							<pathelement location="${thirdparty.home}/spring-expression-4.0.1.RELEASE.jar"/>
+							<pathelement location="${thirdparty.home}/spring-jdbc-4.0.0.RELEASE.jar"/>
+							<pathelement location="${thirdparty.home}/spring-tx-4.0.0.RELEASE.jar"/>
+							<pathelement location="${thirdparty.home}/spring-web-4.0.1.RELEASE.jar"/>
+							<pathelement location="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar"/>
+							<pathelement location="${thirdparty.home}/spring-context-support-4.0.1.RELEASE.jar"/>
+							<pathelement location="${thirdparty.home}/gson-1.7.1.jar"/>
+						
+			
+			<pathelement location="${thirdparty.home}/oscache-2.4.1.jar"/>
       		<pathelement location="${thirdparty.home}/commons-lang-2.3.jar"/>
       		<pathelement location="${thirdparty.home}/junit-4.10.jar"/>			
 		</path>
@@ -3054,17 +2873,13 @@
 		<!-- copy dependent jar files -->
   	<copy todir="${work.dir}/FDIntegrationServices/WEB-INF/lib">
 			
-			<fileset dir="${thirdparty.home}"           includes="freemarker-2.3.15.jar"/>
+			<fileset dir="${thirdparty.home}" includes="freemarker-2.3.15.jar"/>
 			<fileset dir="${thirdparty.home}" includes="jackson-core-2.2.0.jar"/>
 			<fileset dir="${thirdparty.home}" includes="jackson-databind-2.2.0.jar"/>
 			<fileset dir="${thirdparty.home}" includes="jackson-annotations-2.2.0.jar"/>
 			<fileset dir="${thirdparty.home}" includes="javawebparts-filter-1.2.jar"/>
-			<fileset dir="${thirdparty.home}" includes="spring-2.5.jar"/>
-			<fileset dir="${thirdparty.home}" includes="spring-webmvc.jar"/>
-      <fileset dir="${thirdparty.home}" includes="oscache-2.4.1.jar"/>
-      <fileset dir="${thirdparty.home}" includes="commons-lang-2.3.jar"/>
-      <fileset dir="${thirdparty.home}" includes="urlrewrite-2.6.0.jar"/>
-		</copy>
+  			<fileset dir="${thirdparty.home}" includes="commons-lang-2.3.jar"/>
+    	</copy>
 
 		<!-- create .war file -->
 		<jar destfile="${work.dir}/FDIntegrationServices.war">
@@ -3096,14 +2911,25 @@
 				<include name="FDStoreEJB-WL.jar"/>
 				<include name="FDStore.jar"/>
 				<include name="CMS.jar"/>
-				<include name="RoutingServices.jar"/>
+				<include name="FDLogisticsIntegration.jar"/>
 			</libraries>
 			<lib>
 				<include name="lcc.jar"/>
 				<include name="sapjco3.jar"/>
 				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
-				<include name="spring.jar"/>
+				<include name="spring-aop-4.0.1.RELEASE.jar"/>	
+								<include name="spring-beans-4.0.1.RELEASE.jar"/>
+								<include name="spring-context-4.0.1.RELEASE.jar"/>
+								<include name="spring-core-4.0.1.RELEASE.jar"/>
+								<include name="spring-expression-4.0.1.RELEASE.jar"/>
+								<include name="spring-jdbc-4.0.0.RELEASE.jar"/>
+								<include name="spring-tx-4.0.0.RELEASE.jar"/>
+								<include name="spring-web-4.0.1.RELEASE.jar"/>
+								<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
+								<include name="spring-context-support-4.0.1.RELEASE.jar"/>
+				
+								<include name="gson-1.7.1.jar"/>
 				<include name="jstl-api-1.2.jar"/>
 				<include name="jstl-impl-1.2.jar"/>
 				<include name="poi-3.5-FINAL-20090928.jar"/>
@@ -3135,6 +2961,7 @@
 				<include name="jackson-annotations-2.2.0.jar"/>
 				
 				<include name="freemarker-2.3.15.jar"/>
+				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
 
 			</lib>
 		

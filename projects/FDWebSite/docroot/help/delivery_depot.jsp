@@ -23,7 +23,7 @@ serviceAreaLink = "javascript:linkTo('/index.jsp')";
 scheduleWidth = "110";
 
 	if(user.isDepotUser()){
-		depotName = com.freshdirect.fdstore.FDDepotManager.getInstance().getInstance().getDepot(user.getDepotCode()).getName();
+		depotName = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getInstance().getDepot(user.getDepotCode()).getName();
 	}
 
 }%>

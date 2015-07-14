@@ -4,6 +4,25 @@ import java.io.Serializable;
 
 public class AddressInfo implements Serializable {
 
+	public AddressInfo() {
+		super();
+	}
+
+	public AddressInfo(String zoneCode, double longitude,
+			double latitude, String scrubbedStreet,
+			EnumAddressType addressType, String county, String buildingId,
+			String locationId) {
+		super();
+		this.zoneCode = zoneCode;
+		this.longitude = longitude;
+		this.latitude = latitude;
+		this.scrubbedStreet = scrubbedStreet;
+		this.addressType = addressType;
+		this.county = county;
+		this.buildingId = buildingId;
+		this.locationId = locationId;
+	}
+
 	private String zoneId;
 	private String zoneCode;
 	private double longitude;

@@ -13,8 +13,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.FDDepotManager;
+
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.TagSupport;

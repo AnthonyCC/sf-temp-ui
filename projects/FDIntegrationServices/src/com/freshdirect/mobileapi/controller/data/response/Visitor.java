@@ -1,7 +1,6 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.mobileapi.controller.data.Message;
 
 public class Visitor extends Message {

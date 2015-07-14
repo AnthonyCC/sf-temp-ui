@@ -5,9 +5,10 @@
 <%@page import="com.freshdirect.customer.ErpAddressModel"%>
 <%@page import="com.freshdirect.customer.ErpDepotAddressModel"%>
 <%@page import="com.freshdirect.common.address.AddressModel"%>
-<%@page import="com.freshdirect.delivery.depot.DlvLocationModel"%>
-<%@page import="com.freshdirect.fdstore.FDDepotManager"%>
-<%@page import="com.freshdirect.delivery.depot.DlvDepotModel"%><%@ taglib uri='freshdirect' prefix='fd' %>
+<%@page import="com.freshdirect.fdlogistics.model.FDDeliveryDepotLocationModel"%>
+<%@page import="com.freshdirect.fdstore.FDDeliveryManager"%>
+<%@page import="com.freshdirect.fdlogistics.model.FDDeliveryDepotModel"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='org.json.JSONObject' %>
 <%@ page import='java.text.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.PromotionHelper' %>
@@ -48,8 +49,8 @@ if(null != promotion ){//&& user.getPromotionEligibility().isEligible(promotion.
 		
 		if ( addressOrLocation.startsWith( "DEPOT_" ) ) {
 			String locationId = addressOrLocation.substring( "DEPOT_".length() );
-			DlvDepotModel depot = FDDepotManager.getInstance().getDepotByLocationId( locationId );
-			DlvLocationModel location = depot.getLocation( locationId );
+			FDDeliveryDepotModel depot = FDDeliveryManager.getInstance().getDepotByLocationId( locationId );
+			FDDeliveryDepotLocationModel location = depot.getLocation( locationId );
 			if ( depot != null ) {
 				AddressModel addrModel = location.getAddress();
 				ErpDepotAddressModel depotAddress = new ErpDepotAddressModel(addrModel);

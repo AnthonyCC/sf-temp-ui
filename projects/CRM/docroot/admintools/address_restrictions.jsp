@@ -7,7 +7,7 @@
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import="com.freshdirect.framework.util.DateUtil" %>
 <%@ page import="com.freshdirect.webapp.taglib.callcenter.AdminToolsControllerTag" %>
-<%@ page import="com.freshdirect.delivery.EnumRestrictedAddressReason" %>
+<%@ page import="com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason" %>
 <%@ page import="com.freshdirect.delivery.restriction.EnumDlvRestrictionType" %>
 
 <%@ taglib uri='template' prefix='tmpl' %>

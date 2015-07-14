@@ -20,11 +20,11 @@ import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.util.GroupScaleUtil;
 import com.freshdirect.customer.ErpCouponDiscountLineModel;
-import com.freshdirect.delivery.DlvZoneInfoModel;
-import com.freshdirect.delivery.EnumZipCheckResponses;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdstore.FDGroup;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
+import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 
 /**
  *
@@ -58,8 +58,8 @@ public class FDModifyCartModel extends FDCartModel {
 		this.setDeliveryReservation(originalOrder.getDeliveryReservation());
 
 		// !!! partially reconstruct the original zoneInfo (we don't need the full state, as it will be set later)
-		DlvZoneInfoModel zoneInfo = new DlvZoneInfoModel(originalOrder.getDeliveryZone(), null, null, 
-				EnumZipCheckResponses.DELIVER,false,false, originalOrder.getDeliveryReservation().getRegionSvcType());
+		FDDeliveryZoneInfo zoneInfo = new FDDeliveryZoneInfo(originalOrder.getDeliveryZone(), null, null, 
+				EnumZipCheckResponses.DELIVER, originalOrder.getDeliveryReservation().getRegionSvcType());
 		this.setZoneInfo(zoneInfo);
 
 		this.setCustomerServiceMessage(originalOrder.getCustomerServiceMessage());

@@ -19,6 +19,8 @@ public class ErpDeliveryInfoModel extends ModelSupport {
     private ErpAddressModel deliveryAddress;
     private EnumDeliveryType deliveryType;
     private String deliveryRegionId;
+    private Date deliveryHandoffTime;
+    
    
     public String getDeliveryReservationId() { return deliveryReservationId; }
     public void setDeliveryReservationId(String deliveryReservationId) { this.deliveryReservationId = deliveryReservationId; }
@@ -46,5 +48,9 @@ public class ErpDeliveryInfoModel extends ModelSupport {
 
     public String getDeliveryRegionId(){ return deliveryRegionId; }
     public void setDeliveryRegionId(String deliveryRegionId){ this.deliveryRegionId = deliveryRegionId; }
+    
+	public Date getDeliveryHandoffTime() { return deliveryHandoffTime; }
+	public void setDeliveryHandoffTime(Date deliveryHandoffTime) { this.deliveryHandoffTime = deliveryHandoffTime; }
+
     
 }

@@ -37,7 +37,7 @@ import com.freshdirect.customer.ejb.ActivityLogHome;
 import com.freshdirect.customer.ejb.ActivityLogSB;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
-import com.freshdirect.fdstore.FDDepotManager;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
@@ -180,8 +180,10 @@ public class ReferralCreditCron {
 				    FDCustomerInfo fdCustInfo = fdsb.getCustomerInfo(new FDIdentity(referral_customer_id, model.getFDCustomerId()));
 				    String depotCode = fdCustInfo.getDepotCode();
 				    String fromEmail = FDStoreProperties.getCustomerServiceEmail();
+				    
+				    // Most of the customers dont have the depot code populated. Removing this logic for now as logistics is not going to provide depot API
 				    if(depotCode != null) {
-				    	fromEmail = FDDepotManager.getInstance().getCustomerServiceEmail(depotCode);
+				    	fromEmail = FDDeliveryManager.getInstance().getCustomerServiceEmail(depotCode);
 				    }
 				    
 				    FDReferAFriendCreditEmail xemail = (FDReferAFriendCreditEmail) FDEmailFactory.getInstance().createReferAFriendCreditEmail(referralCm.getFirstName(), message);

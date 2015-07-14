@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <%@page import='java.util.*' %>
-<%@page import="com.freshdirect.fdstore.FDDepotManager"%>
+<%@page import="com.freshdirect.fdstore.FDDeliveryManager"%>
 <%@page import="com.freshdirect.framework.mail.EmailAddress"%>
 <%@page import="com.freshdirect.fdstore.mail.FDStandingOrderEmail"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCustomerInfo"%>
@@ -140,7 +140,7 @@
 			else
 			{
 				String depotCode = ci.getDepotCode();
-				from = depotCode != null ? FDDepotManager.getInstance().getCustomerServiceEmail(depotCode) : FDStoreProperties.getCustomerServiceEmail();
+				from = depotCode != null ? FDDeliveryManager.getInstance().getCustomerServiceEmail(depotCode) : FDStoreProperties.getCustomerServiceEmail();
 			}
 			
 			String to = null;

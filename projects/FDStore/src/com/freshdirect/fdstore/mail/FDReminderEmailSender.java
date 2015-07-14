@@ -14,7 +14,6 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
-import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class FDReminderEmailSender {
 

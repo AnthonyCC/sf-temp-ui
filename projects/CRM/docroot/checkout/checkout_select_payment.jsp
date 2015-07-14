@@ -5,11 +5,11 @@
 <%@ page import="com.freshdirect.payment.*" %>
 <%@ page import="com.freshdirect.payment.fraud.*" %>
 <%@ page import="com.freshdirect.fdstore.customer.*" %>
-<%@ page import="com.freshdirect.fdstore.FDDepotManager"%>
+<%@ page import="com.freshdirect.fdstore.FDDeliveryManager"%>
 <%@ page import="com.freshdirect.framework.webapp.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
-<%@ page import="com.freshdirect.fdstore.FDReservation" %>
+<%@ page import="com.freshdirect.fdlogistics.model.FDReservation" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDOrderHistory" %>
 <%@ page import="com.freshdirect.webapp.util.JspLogger"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>

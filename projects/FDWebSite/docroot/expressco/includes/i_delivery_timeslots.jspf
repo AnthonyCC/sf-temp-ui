@@ -94,7 +94,7 @@ if ( EnumCheckoutMode.NORMAL == user.getCheckoutMode() || EnumCheckoutMode.CREAT
 			if ( deliveryInterval != null && deliveryInterval.isWithinDeliveryWindow() ) {
 				for ( FDTimeslot tsl : timeslots.getTimeslotsFlat() ) {
 					if ( deliveryInterval.checkTimeslot( tsl ) ) {
-						deliveryModel.setTimeSlotId(tsl.getTimeslotId());
+						deliveryModel.setTimeSlotId(tsl.getId());
 						//out.print("timeslot has been selected :" + tsl +"<br/>");
 						break;
 					}

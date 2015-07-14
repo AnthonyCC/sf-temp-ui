@@ -5,7 +5,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.customer.*' %>
-<%@ page import='com.freshdirect.fdstore.FDReservation'%>
+<%@ page import='com.freshdirect.fdlogistics.model.FDReservation'%>
 <%@ page import='com.freshdirect.framework.util.DateUtil'%>
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='java.text.DateFormat'%>

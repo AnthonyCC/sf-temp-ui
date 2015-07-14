@@ -16,10 +16,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.delivery.EnumRestrictedAddressReason;
+import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.delivery.announcement.EnumPlacement;
+import com.freshdirect.delivery.announcement.EnumUserDeliveryStatus;
+import com.freshdirect.delivery.announcement.EnumUserLevel;
+import com.freshdirect.delivery.announcement.SiteAnnouncement;
 import com.freshdirect.delivery.model.RestrictedAddressModel;
 import com.freshdirect.delivery.restriction.AlcoholRestriction;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
@@ -29,6 +34,7 @@ import com.freshdirect.delivery.restriction.OneTimeRestriction;
 import com.freshdirect.delivery.restriction.OneTimeReverseRestriction;
 import com.freshdirect.delivery.restriction.RecurringRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
+import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.TimeOfDay;
@@ -40,7 +46,7 @@ public class DlvRestrictionDAO {
 	private static Category LOGGER = LoggerFactory.getInstance(DlvRestrictionDAO.class);
 	
 	private static String DELIVERY_RESTRICTIONS_RETURN = 
-		"select ID,TYPE,NAME,DAY_OF_WEEK,START_TIME,END_TIME,REASON,MESSAGE,CRITERION,MEDIA_PATH FROM dlv.restricted_days where id=?";
+		"select ID,TYPE,NAME,DAY_OF_WEEK,START_TIME,END_TIME,REASON,MESSAGE,CRITERION,MEDIA_PATH FROM CUST.restricted_days where id=?";
 	
 	public static RestrictionI getDlvRestriction(Connection conn, String restrictionId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(DELIVERY_RESTRICTIONS_RETURN);									
@@ -112,7 +118,7 @@ public class DlvRestrictionDAO {
 	
 	private static final String GET_ALCOHOL_RESTRICTION = "select  r.ID,r.TYPE,r.NAME,r.START_TIME,r.END_TIME,r.REASON,r.MESSAGE,r.CRITERION,r.MEDIA_PATH, "+
 											"D.DAY_OF_WEEK, D.RES_START_TIME,D.RES_END_TIME, M.ID MUNICIPALITY_ID,M.STATE,M.COUNTY,M.CITY,M.ALCOHOL_RESTRICTED "+ 
-											"from dlv.restricted_days r,DLV.RESTRICTION_DETAIL d, DLV.MUNICIPALITY_INFO m, DLV.MUNICIPALITY_RESTRICTION_DATA mr "+
+											"from CUST.restricted_days r,CUST.RESTRICTION_DETAIL d, CUST.MUNICIPALITY_INFO m, CUST.MUNICIPALITY_RESTRICTION_DATA mr "+
 											"where R.ID = D.RESTRICTION_ID(+) "+
 											"and R.ID = MR.RESTRICTION_ID "+
 											"and M.ID = MR.MUNICIPALITY_ID "+
@@ -206,7 +212,7 @@ public class DlvRestrictionDAO {
 	}
 
 
-	private static final String PLATTER_RESTRICTION_RETURN="select * from dlv.restricted_days where reason=? and type=? and CRITERION=? order by day_of_week";
+	private static final String PLATTER_RESTRICTION_RETURN="select * from CUST.restricted_days where reason=? and type=? and CRITERION=? order by day_of_week";
 
 	
 	
@@ -281,7 +287,7 @@ public class DlvRestrictionDAO {
 
 	}
 
-	private static final String ADDRESS_RESTRICTION_RETURN="select scrubbed_address, apartment, zipcode, reason, date_modified, modified_by from dlv.restricted_address  where  scrubbed_address =UPPER(?)  AND  zipcode =?";
+	private static final String ADDRESS_RESTRICTION_RETURN="select scrubbed_address, apartment, zipcode, reason, date_modified, modified_by from CUST.restricted_address  where  scrubbed_address =UPPER(?)  AND  zipcode =?";
 	
 	public static RestrictedAddressModel getAddressRestriction(Connection conn,String address1,String apartment,String zipCode) throws SQLException {
 	
@@ -332,7 +338,7 @@ public class DlvRestrictionDAO {
 	private final static String DEFAULT_RECURRING_DATE = "01/01/2004 ";
 	private static final SimpleDateFormat format=new SimpleDateFormat("MM/dd/yyyy hh:mm a");
 	
-	private static final String DELIVERY_RESTRICTIONS_UPDATE="update dlv.restricted_days set type=?, NAME= ?, REASON=?, MESSAGE=?, MEDIA_PATH=?, CRITERION=?, DAY_OF_WEEK=? , START_TIME=?, END_TIME=? where ID=?";
+	private static final String DELIVERY_RESTRICTIONS_UPDATE="update CUST.restricted_days set type=?, NAME= ?, REASON=?, MESSAGE=?, MEDIA_PATH=?, CRITERION=?, DAY_OF_WEEK=? , START_TIME=?, END_TIME=? where ID=?";
 	
 	public static void updateDeliveryRestriction(Connection conn, RestrictionI restriction) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(DELIVERY_RESTRICTIONS_UPDATE);
@@ -386,7 +392,7 @@ public class DlvRestrictionDAO {
 	
 	
 	
-    private static final String ADDRESS_RESTRICTIONS_UPDATE="update dlv.restricted_address set scrubbed_address=?, apartment=?, zipCode=?, reason=?,date_modified=sysdate,modified_by=? where scrubbed_address=? and zipCode=?";
+    private static final String ADDRESS_RESTRICTIONS_UPDATE="update CUST.restricted_address set scrubbed_address=?, apartment=?, zipCode=?, reason=?,date_modified=sysdate,modified_by=? where scrubbed_address=? and zipCode=?";
 	
 	public static void updateAddressRestriction(Connection conn, RestrictedAddressModel restriction,String address1,String apartment,String zipCode) throws SQLException {
 		
@@ -420,7 +426,7 @@ public class DlvRestrictionDAO {
 	
 	
 	private static String DELIVERY_RESTRICTIONS_DELETE = 
-		"DELETE FROM dlv.restricted_days where ID=?";
+		"DELETE FROM CUST.restricted_days where ID=?";
 
 	public static void deleteDeliveryRestriction(Connection conn, String restrictionId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(DELIVERY_RESTRICTIONS_DELETE);
@@ -435,7 +441,7 @@ public class DlvRestrictionDAO {
 	}
 	
 	private static String ADDRESS_RESTRICTIONS_DELETE = 
-		"delete from dlv.restricted_address where scrubbed_address=? and zipcode=?";
+		"delete from CUST.restricted_address where scrubbed_address=? and zipcode=?";
 
 	public static void deleteAddressRestriction(Connection conn, String address1,String apartment,String zipCode) throws SQLException {
 		String sql=ADDRESS_RESTRICTIONS_DELETE;
@@ -464,7 +470,7 @@ public class DlvRestrictionDAO {
 		ps.close();				
 	}
 	
-	private static final String DELIVERY_RESTRICTION_INSERT="insert into dlv.restricted_days(ID,TYPE,NAME,REASON,MESSAGE,CRITERION,DAY_OF_WEEK,START_TIME,END_TIME,MEDIA_PATH)"+ 
+	private static final String DELIVERY_RESTRICTION_INSERT="insert into CUST.restricted_days(ID,TYPE,NAME,REASON,MESSAGE,CRITERION,DAY_OF_WEEK,START_TIME,END_TIME,MEDIA_PATH)"+ 
                                                             "values(?,?,?,?,?,?,?,?,?,?)";
 	
 	public static void insertDeliveryRestriction(Connection conn, RestrictionI restriction) throws SQLException {
@@ -507,7 +513,7 @@ public class DlvRestrictionDAO {
 		ps.close();						
 	}
 	
-	private static final String ADDRESS_RESTRICTION_INSERT="insert into dlv.restricted_address(SCRUBBED_ADDRESS, APARTMENT,ZIPCODE,REASON,DATE_MODIFIED,MODIFIED_BY) values (?,?,?,?,sysdate,?)";
+	private static final String ADDRESS_RESTRICTION_INSERT="insert into CUST.restricted_address(SCRUBBED_ADDRESS, APARTMENT,ZIPCODE,REASON,DATE_MODIFIED,MODIFIED_BY) values (?,?,?,?,sysdate,?)";
 	
 	public static void insertAddressRestriction(Connection conn, RestrictedAddressModel restriction) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(ADDRESS_RESTRICTION_INSERT);		
@@ -527,15 +533,12 @@ public class DlvRestrictionDAO {
 		ps.close();						
 	}
 	
-	private static final String ALCOHOL_RESTRICTION_INSERT="insert into dlv.restricted_days(ID,TYPE,NAME,REASON,MESSAGE,CRITERION,DAY_OF_WEEK," +
+	private static final String ALCOHOL_RESTRICTION_INSERT="insert into CUST.restricted_days(ID,TYPE,NAME,REASON,MESSAGE,CRITERION,DAY_OF_WEEK," +
 															" START_TIME,END_TIME,MEDIA_PATH) values(?,?,?,?,?,?,?,?,?,?)";
 
-	private static final String ALCOHOL_RESTRICTION_DETAIL_INSERT="insert into DLV.RESTRICTION_DETAIL(ID, RESTRICTION_ID, DAY_OF_WEEK, RES_START_TIME, RES_END_TIME) " +
-																	"values(?,?,?,?,?)";
-	
-//	private static String muniSql = "select ID from dlv.municipality_info where state = ?  ";
-	
-	private static final String ALCOHOL_MUNICIPALITY_RESTRICTION_INSERT="insert into DLV.MUNICIPALITY_RESTRICTION_DATA(ID, MUNICIPALITY_ID, RESTRICTION_ID) " +
+	private static final String ALCOHOL_RESTRICTION_DETAIL_INSERT="insert into CUST.RESTRICTION_DETAIL(ID, RESTRICTION_ID, DAY_OF_WEEK, RES_START_TIME, RES_END_TIME) " +
+																	"values(?,?,?,?,?)";	
+	private static final String ALCOHOL_MUNICIPALITY_RESTRICTION_INSERT="insert into CUST.MUNICIPALITY_RESTRICTION_DATA(ID, MUNICIPALITY_ID, RESTRICTION_ID) " +
 	"values(?,?,?)";
 
 	public static String insertAlcoholRestriction(Connection conn, AlcoholRestriction restriction) throws SQLException {
@@ -625,9 +628,9 @@ public class DlvRestrictionDAO {
 		}
 	}
 	
-	private static final String ALCOHOL_RESTRICTION_UPDATE="update dlv.restricted_days set TYPE=?, NAME=?, REASON=?, MESSAGE=?, CRITERION=?, START_TIME=?, END_TIME=?, MEDIA_PATH=? WHERE ID = ?";
+	private static final String ALCOHOL_RESTRICTION_UPDATE="update CUST.restricted_days set TYPE=?, NAME=?, REASON=?, MESSAGE=?, CRITERION=?, START_TIME=?, END_TIME=?, MEDIA_PATH=? WHERE ID = ?";
 
-	private static final String ALCOHOL_RESTRICTION_DETAIL_DELETE="delete from DLV.RESTRICTION_DETAIL where RESTRICTION_ID = ?";
+	private static final String ALCOHOL_RESTRICTION_DETAIL_DELETE="delete from CUST.RESTRICTION_DETAIL where RESTRICTION_ID = ?";
 	
 
 	public static void updateAlcoholRestriction(Connection conn, AlcoholRestriction restriction) throws SQLException {
@@ -687,8 +690,8 @@ public class DlvRestrictionDAO {
 		}
 	}
 
-	private static final String ALCOHOL_RESTRICTION_DELETE="delete from dlv.restricted_days where ID = ?";
-	private static final String ALCOHOL_MUNICIPALITY_RESTRICTION_DELETE="delete from DLV.MUNICIPALITY_RESTRICTION_DATA where RESTRICTION_ID=?";
+	private static final String ALCOHOL_RESTRICTION_DELETE="delete from CUST.restricted_days where ID = ?";
+	private static final String ALCOHOL_MUNICIPALITY_RESTRICTION_DELETE="delete from CUST.MUNICIPALITY_RESTRICTION_DATA where RESTRICTION_ID=?";
 	
 	public static void deleteAlcoholRestriction(Connection conn, String restrictionId) throws SQLException {
 		PreparedStatement ps = null;
@@ -717,7 +720,7 @@ public class DlvRestrictionDAO {
 		}
 	}
 
-	private static final String UPDATE_ALCOHOL_RESTRICTED_FLAG = "update dlv.MUNICIPALITY_INFO set ALCOHOL_RESTRICTED = ? where ID = ?";
+	private static final String UPDATE_ALCOHOL_RESTRICTED_FLAG = "update CUST.MUNICIPALITY_INFO set ALCOHOL_RESTRICTED = ? where ID = ?";
 
 	
 
@@ -742,7 +745,7 @@ public class DlvRestrictionDAO {
 		}
 	}
 	
-	private static final String GET_MUNICIPALITY_STATE_COUNTIES = "select state, county from  DLV.MUNICIPALITY_INFO order by state";
+	private static final String GET_MUNICIPALITY_STATE_COUNTIES = "select state, county from  CUST.MUNICIPALITY_INFO order by state";
 
 	public static Map<String, List<String>> getMunicipalityStateCounties(Connection conn) throws SQLException {
 		PreparedStatement ps = null;
@@ -772,6 +775,284 @@ public class DlvRestrictionDAO {
 			if(ps != null) ps.close();
 		}
 		return stateCounties;
+	}
+
+	public static List<RestrictionI> getDlvRestrictions(Connection conn) throws SQLException {
+
+		PreparedStatement ps = conn
+			.prepareStatement("select id,criterion, type, name, message, day_of_week, start_time, end_time, reason, media_path from CUST.restricted_days " +
+					"where reason not in ('WIN','BER','ACL') order by type") ;
+		ResultSet rs = ps.executeQuery();
+		List<RestrictionI> restrictions = new ArrayList<RestrictionI>();
+		while (rs.next()) {
+
+			String id = rs.getString("ID");
+			String name = rs.getString("NAME");
+			String msg = rs.getString("MESSAGE");
+			String mediaPath = rs.getString("MEDIA_PATH");
+			EnumDlvRestrictionCriterion criterion = EnumDlvRestrictionCriterion.getEnum(rs.getString("CRITERION"));
+			if (criterion == null) {
+				// skip unknown criteria
+				continue;
+			}
+           
+			
+			EnumDlvRestrictionReason reason = EnumDlvRestrictionReason.getEnum(rs.getString("REASON"));
+			if (reason == null) {
+				// skip unknown reasons
+				continue;
+			}
+
+			Date startDate = new Date(rs.getTimestamp("START_TIME").getTime());
+			Date endDate = new Date(rs.getTimestamp("END_TIME").getTime());
+			int dayOfWeek = rs.getInt("DAY_OF_WEEK");
+
+			String typeCode = rs.getString("TYPE");
+			EnumDlvRestrictionType type = EnumDlvRestrictionType.getEnum(typeCode);
+			if (type == null && "PTR".equals(typeCode)) {
+				type = EnumDlvRestrictionType.RECURRING_RESTRICTION;
+			}
+
+			if (EnumDlvRestrictionType.ONE_TIME_RESTRICTION.equals(type)) {
+
+				endDate = DateUtil.roundUp(endDate);
+
+				// FIXME one-time reverse restrictions should have a different EnumDlvRestrictionType 
+				if (reason.isSpecialHoliday()) {
+					restrictions.add(new OneTimeReverseRestriction(id,criterion, reason, name, msg, startDate, endDate,mediaPath));
+				} else {
+					restrictions.add(new OneTimeRestriction(id,criterion, reason, name, msg, startDate, endDate,mediaPath));
+				}
+
+			} else if (EnumDlvRestrictionType.RECURRING_RESTRICTION.equals(type)) {
+
+				TimeOfDay startTime = new TimeOfDay(startDate);
+				TimeOfDay endTime = new TimeOfDay(endDate);
+				// round up 11:59 to next midnight
+				if (JUST_BEFORE_MIDNIGHT.equals(endTime)) {
+					endTime = TimeOfDay.NEXT_MIDNIGHT;
+				}
+				restrictions.add(new RecurringRestriction(id,criterion, reason, name, msg, dayOfWeek, startTime, endTime, mediaPath));
+
+			} else {
+				// ignore	
+			}
+
+		}
+		rs.close();
+		ps.close();
+		//Add the the alcohol restrictions.
+		restrictions.addAll(getAlcoholRestrictions(conn));
+		return restrictions;
+	}
+	
+	private static final String GET_ALCOHOL_RESTRICTIONS = "select  r.ID,r.TYPE,r.NAME,r.START_TIME,r.END_TIME,r.REASON,r.MESSAGE,r.CRITERION,r.MEDIA_PATH, "+
+										"D.DAY_OF_WEEK, D.RES_START_TIME,D.RES_END_TIME, M.ID MUNICIPALITY_ID,M.STATE,M.COUNTY,M.CITY,M.ALCOHOL_RESTRICTED "+ 
+										"from CUST.restricted_days r,CUST.RESTRICTION_DETAIL d, CUST.MUNICIPALITY_INFO m, CUST.MUNICIPALITY_RESTRICTION_DATA mr "+
+										"where R.ID = D.RESTRICTION_ID(+) "+
+										"and R.ID = MR.RESTRICTION_ID "+
+										"and M.ID = MR.MUNICIPALITY_ID " +
+										"and R.REASON IN ('ACL','WIN','BER') " +
+										"and M.ALCOHOL_RESTRICTED is NULL ORDER BY R.ID";
+	private static List<AlcoholRestriction> getAlcoholRestrictions(Connection conn) throws SQLException {
+		List<AlcoholRestriction> restrictions=new ArrayList<AlcoholRestriction>();		
+
+		PreparedStatement ps = conn.prepareStatement(GET_ALCOHOL_RESTRICTIONS);
+
+		String restrictionId = "";
+		String name = null;
+		String msg = null;
+		String path =null;
+		EnumDlvRestrictionReason reason = null;
+		EnumDlvRestrictionCriterion criterion = null;
+		EnumDlvRestrictionType type = null;
+		java.util.Date startDate = null;
+		java.util.Date endDate = null;
+		String state = null;
+		String county = null;
+		String municipalityId = null;
+		boolean alcoholRestricted = false;
+
+		ResultSet rs = ps.executeQuery();
+		Map<Integer, List<TimeOfDayRange>> timeRangeMap = new HashMap<Integer, List<TimeOfDayRange>>();
+		while (rs.next()) {
+			if(restrictionId.length() == 0 || restrictionId.equals(rs.getString("ID"))){
+				restrictionId = rs.getString("ID");
+				name = rs.getString("NAME");
+				msg = rs.getString("MESSAGE");
+				path = rs.getString("MEDIA_PATH");
+				criterion = EnumDlvRestrictionCriterion.getEnum(rs.getString("CRITERION"));
+				if (criterion == null) {
+					// skip unknown criteria
+					continue;
+				}
+				reason = EnumDlvRestrictionReason.getEnum(rs.getString("REASON"));
+				if (reason == null) {
+					// skip unknown reasons
+					continue;
+				}
+
+				startDate = new java.util.Date(rs.getTimestamp("START_TIME").getTime());
+				endDate = new java.util.Date(rs.getTimestamp("END_TIME").getTime());
+				String typeCode = rs.getString("TYPE");
+				type = EnumDlvRestrictionType.getEnum(typeCode);
+				if (type == null && "PTR".equals(typeCode)) {
+					type = EnumDlvRestrictionType.RECURRING_RESTRICTION;
+				}
+				state = rs.getString("state");
+				county = rs.getString("county");
+				municipalityId = rs.getString("MUNICIPALITY_ID");
+				alcoholRestricted = Boolean.getBoolean(rs.getString("ALCOHOL_RESTRICTED"));
+				
+				String startTimeText = rs.getString("RES_START_TIME");
+				if(startTimeText == null || startTimeText.length() == 0){
+					//no timeslot defined.
+					continue;
+				}
+				TimeOfDay startTime = new TimeOfDay(startTimeText);
+				TimeOfDay endTime = new TimeOfDay(rs.getString("RES_END_TIME"));
+
+				int dayOfWeek = rs.getInt("DAY_OF_WEEK");
+				Integer key = new Integer(dayOfWeek);
+				if(timeRangeMap.get(key) == null) {
+					List<TimeOfDayRange> timeRanges = new ArrayList<TimeOfDayRange>();
+					timeRanges.add(new TimeOfDayRange(startTime, endTime));
+					timeRangeMap.put(key, timeRanges);
+				} else {
+					List<TimeOfDayRange> timeRanges = timeRangeMap.get(key);
+					timeRanges.add(new TimeOfDayRange(startTime, endTime));
+					timeRangeMap.put(key, timeRanges);
+				}
+			} else {
+				AlcoholRestriction restriction = new AlcoholRestriction(restrictionId, criterion, reason, name, msg, startDate, endDate,type,
+						path, state, county, null, municipalityId, alcoholRestricted);
+				restriction.setTimeRangeMap(new HashMap<Integer, List<TimeOfDayRange>>(timeRangeMap));
+				restrictions.add(restriction);
+				timeRangeMap.clear();
+				restrictionId = rs.getString("ID");
+				name = rs.getString("NAME");
+				msg = rs.getString("MESSAGE");
+				path = rs.getString("MEDIA_PATH");
+				criterion = EnumDlvRestrictionCriterion.getEnum(rs.getString("CRITERION"));
+				if (criterion == null) {
+					// skip unknown criteria
+					continue;
+				}
+
+				reason = EnumDlvRestrictionReason.getEnum(rs.getString("REASON"));
+				if (reason == null) {
+					// skip unknown reasons
+					continue;
+				}
+
+				startDate = new java.util.Date(rs.getTimestamp("START_TIME").getTime());
+				endDate = new java.util.Date(rs.getTimestamp("END_TIME").getTime());
+
+				String typeCode = rs.getString("TYPE");
+				type = EnumDlvRestrictionType.getEnum(typeCode);
+				if (type == null && "PTR".equals(typeCode)) {
+					type = EnumDlvRestrictionType.RECURRING_RESTRICTION;
+				}
+				state = rs.getString("state");
+				county = rs.getString("county");
+				municipalityId = rs.getString("MUNICIPALITY_ID");
+				alcoholRestricted = Boolean.getBoolean(rs.getString("ALCOHOL_RESTRICTED"));
+				
+				String startTimeText = rs.getString("RES_START_TIME");
+				if(startTimeText == null || startTimeText.length() == 0){
+					//no timeslot defined.
+					continue;
+				}
+				TimeOfDay startTime = new TimeOfDay(startTimeText);
+				TimeOfDay endTime = new TimeOfDay(rs.getString("RES_END_TIME"));
+
+				int dayOfWeek = rs.getInt("DAY_OF_WEEK");
+				Integer key = new Integer(dayOfWeek);
+				if(timeRangeMap.get(key) == null) {
+					List<TimeOfDayRange> timeRanges = new ArrayList<TimeOfDayRange>();
+					timeRanges.add(new TimeOfDayRange(startTime, endTime));
+					timeRangeMap.put(key, timeRanges);
+				} else {
+					List<TimeOfDayRange> timeRanges = timeRangeMap.get(key);
+					timeRanges.add(new TimeOfDayRange(startTime, endTime));
+					timeRangeMap.put(key, timeRanges);
+				}
+
+			}
+		}
+		if(restrictionId.length() > 0) {
+			//Add the last one.
+			AlcoholRestriction restriction = new AlcoholRestriction(restrictionId, criterion, reason, name, msg, startDate, endDate,type,
+					path, state, county, null, municipalityId, alcoholRestricted);
+			restriction.setTimeRangeMap(new HashMap<Integer, List<TimeOfDayRange>>(timeRangeMap));
+			restrictions.add(restriction);
+		}
+		
+		LOGGER.debug("restrictions size :"+restrictions.size());
+		rs.close();
+		ps.close();
+
+		return restrictions;
+	}	
+
+	
+
+	public static boolean isAlcoholDeliverable(Connection conn,
+			String scrubbedAddress, String zipcode, String apartment) throws SQLException {
+
+		PreparedStatement ps = conn
+				.prepareStatement("SELECT * FROM DLV.RESTRICTED_ADDRESS WHERE SCRUBBED_ADDRESS = ? AND APARTMENT = ? AND ZIPCODE = ? AND REASON = ?");
+		ps.setString(1, scrubbedAddress);
+		if (apartment == null || "".equals(apartment)) {
+			ps.setNull(2, Types.VARCHAR);
+		} else {
+			ps.setString(2, apartment);
+		}
+		ps.setString(3, zipcode);
+		ps.setString(4, EnumRestrictedAddressReason.ALCOHOL.getCode());
+		ResultSet rs = ps.executeQuery();
+		if (rs.next()) {
+			return false;
+		}
+
+		rs.close();
+		ps.close();
+
+		return true;
+	}
+
+	public static EnumRestrictedAddressReason isAddressRestricted(
+			Connection conn, AddressModel address) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn
+					.prepareStatement("SELECT APARTMENT, REASON FROM CUST.RESTRICTED_ADDRESS WHERE SCRUBBED_ADDRESS = ? AND ZIPCODE = ? and REASON <> ?");
+			ps.setString(1, address.getScrubbedStreet());
+			ps.setString(2, address.getZipCode());
+			ps.setString(3, EnumRestrictedAddressReason.ALCOHOL.getCode());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				String apt = rs.getString("APARTMENT");
+				if (rs.wasNull() || "".equals(apt)) {
+					String reason = rs.getString("REASON");
+					return EnumRestrictedAddressReason
+							.getRestrictionReason(reason);
+				}
+
+				if (apt.equalsIgnoreCase(address.getApartment())) {
+					String reason = rs.getString("REASON");
+					return EnumRestrictedAddressReason
+							.getRestrictionReason(reason);
+				}
+			}
+			return EnumRestrictedAddressReason.NONE;
+		} finally {
+			if (rs != null)
+				rs.close();
+			if (ps != null)
+				ps.close();
+		}
 	}
 
 }

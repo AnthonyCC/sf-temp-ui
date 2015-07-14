@@ -7,19 +7,18 @@ import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.delivery.DlvAddressGeocodeResponse;
-import com.freshdirect.delivery.DlvAddressVerificationResponse;
-import com.freshdirect.delivery.DlvZoneInfoModel;
-import com.freshdirect.delivery.EnumAddressVerificationResult;
-import com.freshdirect.delivery.EnumRestrictedAddressReason;
-import com.freshdirect.delivery.EnumZipCheckResponses;
+import com.freshdirect.fdlogistics.model.EnumRestrictedAddressReason;
+import com.freshdirect.fdlogistics.model.FDDeliveryAddressVerificationResponse;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
+import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDDeliveryManager;
-import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.logistics.delivery.model.EnumAddressVerificationResult;
+import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 
 public class DeliveryAddressValidator {
 	
@@ -39,30 +38,34 @@ public class DeliveryAddressValidator {
 		}
 
 		// scrubbing
-		DlvAddressVerificationResponse davResponse = FDDeliveryManager.getInstance().scrubAddress(shippingAddress, true);
-		if (!EnumAddressVerificationResult.ADDRESS_OK.equals(davResponse.getResult())) {
-			result.addError(EnumAddressVerificationResult.NOT_VERIFIED.equals(davResponse.getResult()),
+		FDDeliveryAddressVerificationResponse davResponse;
+		try {
+			davResponse = FDDeliveryManager.getInstance().scrubAddress(shippingAddress, true);
+		
+		if (!EnumAddressVerificationResult.ADDRESS_OK.equals(davResponse.getVerifyResult())) {
+			result.addError(EnumAddressVerificationResult.NOT_VERIFIED.equals(davResponse.getVerifyResult()),
 					Validations.DELIVERY_ADDRESS, "service unavailable at this address");
 
-			result.addError(EnumAddressVerificationResult.ADDRESS_BAD.equals(davResponse.getResult()),
+			result.addError(EnumAddressVerificationResult.ADDRESS_BAD.equals(davResponse.getVerifyResult()),
 					Validations.DELIVERY_ADDRESS, "unrecognized address");
 
-			result.addError(EnumAddressVerificationResult.STREET_WRONG.equals(davResponse.getResult()),
+			result.addError(EnumAddressVerificationResult.STREET_WRONG.equals(davResponse.getVerifyResult()),
 					Validations.DELIVERY_ADDRESS, "unknown street");
 
-			result.addError(EnumAddressVerificationResult.BUILDING_WRONG.equals(davResponse.getResult()),
+			result.addError(EnumAddressVerificationResult.BUILDING_WRONG.equals(davResponse.getVerifyResult()),
 					Validations.DELIVERY_ADDRESS, "unknown building number");
 
 			String apartment = davResponse.getAddress().getApartment();
-			result.addError(EnumAddressVerificationResult.APT_WRONG.equals(davResponse.getResult()), Validations.DELIVERY_ADDRESS,
+			result.addError(EnumAddressVerificationResult.APT_WRONG.equals(davResponse.getVerifyResult()), Validations.DELIVERY_ADDRESS,
 					((apartment == null) || (apartment.length() < 1)) ? "missing apartment number" : "unknown apartment number");
 
-			result.addError(EnumAddressVerificationResult.ADDRESS_NOT_UNIQUE.equals(davResponse.getResult()),
+			result.addError(EnumAddressVerificationResult.ADDRESS_NOT_UNIQUE.equals(davResponse.getVerifyResult()),
 					Validations.DELIVERY_ADDRESS, "multiple geographic locations match with this address");
 
 			result.addError(result.isSuccess(), Validations.DELIVERY_ADDRESS, "address is invalid from unknown reason");
 			return null;
 		}
+		
 		AddressModel address = davResponse.getAddress();
 
 		// for Hamptons customer altContactNumber is mandatory
@@ -77,28 +80,22 @@ public class DeliveryAddressValidator {
 			result.addError(true, Validations.DELIVERY_ADDRESS, "address is restricted (" + reason.getDescription().toLowerCase() + ")");
 			return null;
 		}
-
-		try {
-			DlvAddressGeocodeResponse geocodeResponse = FDDeliveryManager.getInstance().geocodeAddress(address);
-			String geocodeResult = geocodeResponse.getResult();
+		
+		String geocodeResult = davResponse.getGeocodeResult();
 
 			if ("GEOCODE_OK".equalsIgnoreCase(geocodeResult)) {
-				address = geocodeResponse.getAddress();
+			//	address = geocodeResponse.getAddress();
 			} else {
 				result.addError(true, Validations.DELIVERY_ADDRESS, "failed to find geographic location for this address");
 				return null;
 			}
-		} catch (FDInvalidAddressException iae) {
-			result.addError(true, Validations.DELIVERY_ADDRESS, "error when finding the geographic location for this address");
-			return null;
-		}
+		
 
 		Calendar date = new GregorianCalendar();
 		date.add(Calendar.DATE, 7);
 
-		DlvZoneInfoModel dlvResponse;
-		try {
-			dlvResponse = FDDeliveryManager.getInstance().getZoneInfo(address, date.getTime(), user.getHistoricOrderSize(),  user.getRegionSvcType(address.getId()));
+		FDDeliveryZoneInfo dlvResponse;
+		dlvResponse = FDDeliveryManager.getInstance().getZoneInfo(address, date.getTime(), user.getHistoricOrderSize(),  user.getRegionSvcType(address.getId()));
 			result.addError((!EnumZipCheckResponses.DELIVER.equals(dlvResponse.getResponse())), Validations.DELIVERY_ADDRESS,
 					"service unavailable in this zone");
 			if (result.isFailure())
@@ -119,7 +116,7 @@ public class DeliveryAddressValidator {
 				return shippingAddress;
 			else
 				return null;
-		} catch (FDInvalidAddressException e) {
+		}catch (FDInvalidAddressException e) {
 			result.addError(true, Validations.DELIVERY_ADDRESS, "invalid address detected");
 			return null;
 		}

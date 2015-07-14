@@ -1,5 +1,5 @@
 <%@ page import='java.text.*, java.util.*' %>
-<%@ page import='com.freshdirect.delivery.depot.*' %>
+<%@ page import='com.freshdirect.fdlogistics.model.*' %>
 <%@ page import='com.freshdirect.payment.EnumPaymentMethodType' %>
 <%@ page import='com.freshdirect.customer.EnumUnattendedDeliveryFlag' %>
 <%@ page import='com.freshdirect.framework.util.NVL'%>

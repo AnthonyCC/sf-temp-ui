@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumWebServiceType;
@@ -33,8 +32,8 @@ import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.EnumCheckoutMode;
-import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -48,9 +47,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
-import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.FDUser;
-import com.freshdirect.fdstore.customer.QuickCart;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
@@ -62,7 +59,6 @@ import com.freshdirect.fdstore.referral.FDReferralManager;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
-import com.freshdirect.fdstore.util.CTDeliveryCapacityLogic;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.EnumGiftCardType;
@@ -70,7 +66,6 @@ import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.webapp.action.WebActionSupport;
-import com.freshdirect.webapp.taglib.coremetrics.CmConversionEventTag;
 import com.freshdirect.webapp.taglib.coremetrics.CmShop9Tag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
@@ -81,7 +76,6 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.taglib.fdstore.UserValidationUtil;
-import com.freshdirect.webapp.util.QuickCartCache;
 import com.freshdirect.webapp.util.ShoppingCartUtil;
 import com.freshdirect.webapp.util.StandingOrderUtil;
 
@@ -634,8 +628,6 @@ public class SubmitOrderAction extends WebActionSupport {
 					return ERROR;
 				}
 				FDActionInfo info=AccountActivityUtil.getActionInfo(session, "Order Modified");
-				boolean isPR1=CTDeliveryCapacityLogic.isPR1(user,reservation.getTimeslot());
-				info.setPR1(isPR1);
 				FDCustomerManager.modifyOrder(
 					info,
 					modCart,
@@ -649,9 +641,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			} else {
 				// new order -> place it
 				FDActionInfo info=AccountActivityUtil.getActionInfo(session, "Order Created");
-				boolean isPR1=CTDeliveryCapacityLogic.isPR1(user,reservation.getTimeslot());
-				info.setPR1(isPR1);
-
+				
 				orderNumber = FDCustomerManager.placeOrder(info, cart, appliedPromos, sendEmail,cra,status );
 			}
 

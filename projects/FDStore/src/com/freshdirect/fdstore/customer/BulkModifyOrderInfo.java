@@ -8,14 +8,7 @@
  */
 package com.freshdirect.fdstore.customer;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Comparator;
 import java.util.Date;
-
-import com.freshdirect.customer.EnumPaymentType;
-import com.freshdirect.customer.EnumSaleStatus;
-import com.freshdirect.delivery.EnumReservationType;
 
 /**
  * Lightweight information about a Sale.
