@@ -76,6 +76,7 @@ import com.freshdirect.customer.ErpCustomerAlertModel;
 import com.freshdirect.customer.ErpCustomerEmailModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
+import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;
 import com.freshdirect.customer.ErpDuplicateDisplayNameException;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
@@ -861,7 +862,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			rs = ps.executeQuery();
 			ErpAddressModel address = null;
 			if (rs.next()) {
-				address = this.loadAddressFromResultSet(rs);
+				address = this.loadDeliveryAddressFromResultSet(rs);
 				address.setPK(new PrimaryKey(rs.getString("ID")));
 				address.setCompanyName(rs.getString("COMPANY_NAME"));
 				address.setServiceType(EnumServiceType.getEnum(rs
@@ -913,8 +914,43 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	private ErpAddressModel loadAddressFromResultSet(ResultSet rs) throws SQLException {
+		ErpAddressModel address;
+		if (rs.getString("DEPOTLOCATION_ID") == null){
+			address = loadDeliveryAddressFromResultSet(rs);
+		}else {
+			address = loadDepotAddressFromResultSet(rs);
+		}
+		return address;
+	}
+	
+	private ErpAddressModel loadDeliveryAddressFromResultSet(ResultSet rs) throws SQLException {
 		ErpAddressModel address = new ErpAddressModel();
+		address.setFirstName(rs.getString("FIRST_NAME"));
+		address.setLastName(rs.getString("LAST_NAME"));
+		address.setAddress1(rs.getString("ADDRESS1"));
+		address.setAddress2(rs.getString("ADDRESS2"));
+		address.setApartment(rs.getString("APARTMENT"));
+		address.setCity(rs.getString("CITY"));
+		address.setState(rs.getString("STATE"));
+		address.setZipCode(rs.getString("ZIP"));
+		address.setCountry(rs.getString("COUNTRY"));
+		address.setPhone(new PhoneNumber(rs.getString("PHONE")));
+		address.setAltFirstName(rs.getString("ALT_FIRST_NAME"));
+		address.setAltLastName(rs.getString("ALT_LAST_NAME"));
+		address.setAltApartment(rs.getString("ALT_APARTMENT"));
+		address.setAltPhone(new PhoneNumber(rs.getString("ALT_PHONE")));
+		address.setAltContactPhone(new PhoneNumber(rs
+				.getString("ALT_CONTACT_PHONE")));
+		address.setInstructions(rs.getString("DELIVERY_INSTRUCTIONS"));
+		address.setAltDelivery(EnumDeliverySetting.getDeliverySetting(rs
+				.getString("ALT_DEST")));
 
+		return address;
+	}
+	
+	private ErpDepotAddressModel loadDepotAddressFromResultSet(ResultSet rs) throws SQLException {
+		ErpDepotAddressModel address = new ErpDepotAddressModel();
+		address.setLocationId( rs.getString("DEPOTLOCATION_ID"));
 		address.setFirstName(rs.getString("FIRST_NAME"));
 		address.setLastName(rs.getString("LAST_NAME"));
 		address.setAddress1(rs.getString("ADDRESS1"));
