@@ -281,7 +281,7 @@ var FreshDirect = FreshDirect || {};
   fd.modules.common.utils.register("modules.header", "Cart", cartContext , fd);
   
   //[APPDEV-4203] - Product Sampling for your cart popup
-  $(document).ready('hover', '#sidecartbuttons', function() {
+  $(document).on('hover', '#sidecartbuttons', function() {
 	  $("#popupcart .content .cartline[data-freeproduct='true'] .price").text("FREE");
 	  $("#popupcart .content .cartline[data-freeproduct='true'] .price").addClass("product-sample-free");
   });
