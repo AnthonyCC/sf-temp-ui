@@ -115,8 +115,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00c4c4be', e
 	color: #333;
 	font-size: 20px;
 	font-weight: bold;
-	padding: 18px 14px;	
-	margin: 0px;
+	padding: 15px 14px 10px;
+  	margin-bottom: 20px;
 	line-height: 20px;
 	text-align: left;
 	background: #f0f5e1;
@@ -153,18 +153,18 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00c4c4be', e
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#26000000', endColorstr='#00000000',GradientType=0);
 }
 
+.product-sample-carousel [data-component="carousel-mask"]{
+	margin-bottom: 30px;
+}
+
+.product-sample-carousel [data-component="carousel"] ul.pager{
+	bottom: 20px;
+}
+
 .product-sample-carousel .product-sample-carousel-bottom{
-	height: 16px;
+	height: 1px;
 	width: 100%;
-	margin-bottom: 25px;
-	background: #c8c8c6;
-	background: -moz-linear-gradient(top,  #c8c8c6 0%, #e7ecd9 7%, #e5e9d6 13%, #f0f5e1 40%, #f0f5e1 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#c8c8c6), color-stop(7%,#e7ecd9), color-stop(13%,#e5e9d6), color-stop(40%,#f0f5e1), color-stop(100%,#f0f5e1));
-	background: -webkit-linear-gradient(top,  #c8c8c6 0%,#e7ecd9 7%,#e5e9d6 13%,#f0f5e1 40%,#f0f5e1 100%);
-	background: -o-linear-gradient(top,  #c8c8c6 0%,#e7ecd9 7%,#e5e9d6 13%,#f0f5e1 40%,#f0f5e1 100%);
-	background: -ms-linear-gradient(top,  #c8c8c6 0%,#e7ecd9 7%,#e5e9d6 13%,#f0f5e1 40%,#f0f5e1 100%);
-	background: linear-gradient(to bottom,  #c8c8c6 0%,#e7ecd9 7%,#e5e9d6 13%,#f0f5e1 40%,#f0f5e1 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c8c8c6', endColorstr='#f0f5e1',GradientType=0 );
+	background: #D7D9CE;
 }
 
 .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li {

@@ -1464,7 +1464,7 @@ public class FDStoreProperties {
         defaults.put(CATEGORY_TOP_ITEM_CACHE_MAXIMAL_SIZE, "10");
         defaults.put(PROP_PRODUCT_SAMPLES_MAX_BUY_PRODUCTS_LIMIT, "2");
         defaults.put(PROP_PRODUCT_SAMPLES_MAX_BUY_QUANTITY_LIMIT, "1");
-        defaults.put(PROP_PRODUCT_SAMPLES_TITLE, "Pick any two:");
+        defaults.put(PROP_PRODUCT_SAMPLES_TITLE, "Choose 2.");
 	
 
 
