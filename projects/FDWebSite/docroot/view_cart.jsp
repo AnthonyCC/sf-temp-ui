@@ -44,6 +44,9 @@ if (user.isEligibleForClientCodes()) {
 }
 %>
 <tmpl:insert template='/common/template/no_nav.jsp'>
+<tmpl:put name="seoMetaTag" direct="true">
+	<fd:SEOMetaTag pageId=""></fd:SEOMetaTag>
+</tmpl:put>
 <tmpl:put name='extraCss' direct='true'>
   <jwr:style src="/viewcart.css"/>
   <jwr:style src="/quickshop.css"/>
