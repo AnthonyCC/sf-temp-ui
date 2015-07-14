@@ -296,8 +296,16 @@ public class CartDataServlet extends BaseJsonServlet {
 				Collections.sort( sections, new Comparator<CartData.Section>() {
 					@Override
 					public int compare( CartData.Section o1, CartData.Section o2 ) {
+						int compareTitles = 0;
+						if(o1.getTitle().equals("FREE SAMPLE(S)")){
+							return 1;
+						}
+						else if(o2.getTitle().equals("FREE SAMPLE(S)")){
+							return -1;
+						}
+						else
 						return o1.getTitle().compareTo( o2.getTitle() );
-					}				
+					}					
 				});
 				
 				cartData.setCartSections( sections );
