@@ -33,6 +33,20 @@
     </script>
 
   </tmpl:put>
+  
+  
+		 <!-- APPDEV-4287  Dstillery pixel -->
+        <script type="text/javascript" async>
+		function asyncPixelWithTimeout() {
+		var img = new Image(1, 1);
+		img.src = '//action.media6degrees.com/orbserv/hbpix?pixId=26209&pcv=49';
+		setTimeout(function ()
+		{ if (!img.complete) img.src = ''; /*kill the request*/ }
+
+		, 33);
+		};
+		asyncPixelWithTimeout();
+		</script>
 
   <tmpl:put name="globalnav">
     <soy:render template="expressco.checkoutheader" data="${singlePageCheckoutPotato}" />
@@ -63,7 +77,8 @@
             </form>
           </div>
         </div>
-
+		
+		
         <div id="modifyorder">
           <soy:render template="expressco.modifyorder" data="${cartDataPotato}" />
         </div>
@@ -72,7 +87,8 @@
         <%-- TODO: render soy here --%>
         <div id="ec-drawer">
         </div>
-
+        
+       
         <div class="checkout-contentheader">
           <h2>Cart Details</h2>
           <a href="/expressco/view_cart.jsp">Make Changes</a>
