@@ -623,7 +623,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	 * Sort orderlines with default comparator.
 	 */
 	public void sortOrderLines() {
-		Collections.sort(this.orderLines, LINE_COMPARATOR);
+		Collections.sort(this.orderLines, PRODUCT_SAMPLE_COMPARATOR);
 	}
 
 	public boolean isEstimatedPrice() {
