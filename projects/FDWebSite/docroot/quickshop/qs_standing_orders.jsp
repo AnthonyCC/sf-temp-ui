@@ -26,10 +26,13 @@
 <%  //--------OAS Page Variables-----------------------
         request.setAttribute("sitePage", "www.freshdirect.com/quickshop");
         request.setAttribute("listPos", "QSBottom,SystemMessage,LittleRandy,QSTopRight");
+        
 %>
+
 <tmpl:insert template='/quickshop/includes/qs_template.jsp'>
     <tmpl:put name="soytemplates"><soy:import packageName="quickshop"/></tmpl:put>
     <tmpl:put name='title' direct='true'>FreshDirect - Standing Orders</tmpl:put>
+    
     <tmpl:put name="seoMetaTag" direct="true">
 		<fd:SEOMetaTag pageId="standing_orders"></fd:SEOMetaTag>
 	</tmpl:put>
@@ -45,11 +48,18 @@
     	var firstTab = $('[data-component="tabbedRecommender"] [data-tabname]:first-child');
     	fd.common.tabbedRecommender.selectTab($('[data-component="tabbedRecommender"]'),firstTab.data('tabname'),firstTab);
     }(FreshDirect));
+    
+    //Show the OAS AD APPDEV-4294 
+    $jq(function()
+    {
+    	showStandardAds();
+    });
+    
     </script></tmpl:put>
-
+	
     <tmpl:put name='containerClass'>qs-so</tmpl:put>
     <tmpl:put name='soSelected'>selected</tmpl:put>
-
+				   
     <tmpl:put name='extraJs'><%@ include file="/shared/template/includes/ccl.jspf" %> <%-- FIXME: absolute horror, currently needed for some functionality on standing orders pages, an extreme cleanup or replacement would be essential here ... --%>
     </tmpl:put>
 
@@ -75,11 +85,13 @@
     </tmpl:put>
 
     <tmpl:put name='content' direct='true'>
-
+    
+	
 		<div id="inner-container">
 			
 			<img style="margin: 35px 0px 20px 0px" src="/media_stat/images/template/quickshop/about_so.png" width="328" height="32" alt="About Standing Order">			
 			<div style="margin: 0px 6px 30px 6px">
+			
 				<div style="margin-bottom: 1em">FreshDirect's Standing Orders let you get the foods you love without lifting a finger. They're simple to set up and update anytime. We automatically submit your order seven days before the Modify Next Delivery Only, and send you an email notification. That way you have plenty of time to make changes.</div>
 				<div style="margin-bottom: 1em">Once your first Standing Order has been delivered, you can come back to "Reorder" and make changes for future deliveries. And if you ever need help, you can always <a href="/help/index.jsp">contact us</a>.</div>
 				<div><b>Create a new Standing Order below!</b></div>
@@ -87,7 +99,7 @@
 
 
 			<% if (user.isEligibleForStandingOrders()) { %>			
-			
+				
 				<fd:ManageStandingOrders id="sorders">
 					<% 
 					boolean firstSO = true;

@@ -7,6 +7,7 @@
 #quickshop .header {
 	margin-right:25px;
 	padding: 10px 0;
+	float:left;
 }
 [data-feature-quickshop="2_0"] #quickshop .header {
 	width: 171px;
@@ -69,8 +70,8 @@
 #quickshop .oas-cnt {
 	width: 774px;
 	height: 95px;
-	float: right;
-	text-align: right;
+	float: left;
+	/*text-align: right;*/
 	margin-top: 12px;
 }
 

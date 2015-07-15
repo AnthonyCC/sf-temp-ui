@@ -29,8 +29,16 @@
         <jwr:style src="/quickshop.css" media="all" />
         <tmpl:get name="extraJs"/>
         <%@ include file="/shared/template/includes/i_head_end.jspf" %>
+        
+        <script type="text/javascript">
+        	function showStandardAds(){		
+        		$jq('#QSTop').show();
+        	}
+        	
+        </script>
+        
     </head>
-    <body data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}">
+    <body data-feature-quickshop="${isQS20 ? "2_0" : "2_2"}"  >
     <%@ include file="/shared/template/includes/i_body_start.jspf" %>
     <%@ include file="/common/template/includes/globalnav.jspf" %>
 
@@ -46,22 +54,27 @@
                     <li><a href="/quickshop/qs_shop_from_list.jsp">Your Lists</a></li>
                     <li><a href="/quickshop/qs_fd_lists.jsp">Recommended Lists</a></li>
                     <% if (user.isEligibleForStandingOrders()) { %>
-                        <li><a href="/quickshop/qs_standing_orders.jsp">Recurring Orders</a></li></li>
+                        <li><a href="/quickshop/qs_standing_orders.jsp">Recurring Orders</a></li></li>                     
                     <%} %>
                 </ul>
                 </div>
-                <div class="oas-cnt" id="QSTop"><script type="text/javascript">OAS_AD('QSTop');</script></div>
+               <!-- <div  class="oas-cnt" id="QSTop"><script type="text/javascript">OAS_AD('QSTop');</script></div>-->
               </c:when>
               <c:otherwise>
                 <div class="header">
-                  <h1 class='qs-title icon-reorder-icon-before notext'>Reorder</h1><span class="qs-subtitle"><strong>Smart shopping</strong> from <strong>past orders &amp; lists</strong></span>
+                  <h1 class='qs-title icon-reorder-icon-before notext'>Reorder</h1><span class="qs-subtitle"><strong>Smart shopping</strong> from <strong>past orders &amp; lists</strong></span>      
                 </div>
-              </c:otherwise>
+              </c:otherwise>       
             </c:choose>
+            
+             <!--  Standing orders Ad - AAPDEV-4294-->
+            
+             <div style="display:none"  class="oas-cnt" id="QSTop" ><script type="text/javascript">OAS_AD('QSTop');</script></div> 
+            
             <ul class="tabs qs-tabs clearfix">
                 <c:if test="${!isQS20}">
-                <li><a href="/quickshop/qs_top_items.jsp" class="<tmpl:get name='tiSelected'/>"><strong>Your Top Items</strong> <span class="count" data-component="tabMeta" data-tabMeta="topitems"></span></a></li>
-                <li><a href="/quickshop/qs_past_orders.jsp" class="<tmpl:get name='poSelected'/>"><strong>Your Past Orders</strong> <span class="count" data-component="tabMeta" data-tabMeta="pastorders"></span></a></li>
+                <li><a href="/quickshop/qs_top_items.jsp" class="<tmpl:get name='tiSelected'/>" ><strong>Your Top Items</strong> <span class="count" data-component="tabMeta" data-tabMeta="topitems"></span></a></li>
+                <li><a href="/quickshop/qs_past_orders.jsp" class="<tmpl:get name='poSelected'/>" ><strong>Your Past Orders</strong> <span class="count" data-component="tabMeta" data-tabMeta="pastorders"></span></a></li>
                 <li><a href="/quickshop/qs_shop_from_list.jsp" class="<tmpl:get name='listSelected'/>"><strong>Your Shopping Lists</strong> <span class="count" data-component="tabMeta" data-tabMeta="lists"></span></a></li>
                 </c:if>
                 <c:if test="${isQS20}">
@@ -70,7 +83,7 @@
                 <li><a href="/quickshop/qs_fd_lists.jsp" class="<tmpl:get name='fdSelected'/>"><strong>shop<span class="fd"> FD </span>lists</strong> <span class="count" data-component="tabMeta" data-tabMeta="fd_lists"></span></a></li>
                 </c:if>
                 <% if (user.isEligibleForStandingOrders()) { %>
-                <li><a href="/quickshop/qs_standing_orders.jsp" class="<tmpl:get name='soSelected'/>"><strong>standing orders</strong> <span class="count" data-component="tabMeta" data-tabMeta="so"></span></a></li>
+                <li><a href="/quickshop/qs_standing_orders.jsp" class="<tmpl:get name='soSelected'/>" ><strong>standing orders</strong> <span class="count" data-component="tabMeta" data-tabMeta="so"></span></a></li>
                 <%} %>
             </ul>
             <div class="qs-loader">
