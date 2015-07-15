@@ -20,6 +20,19 @@
     <jwr:script src="/expressco.js" useRandomParam="false" />
   </tmpl:put>
 
+<!-- APPDEV-4287 Dstillery pixel swap -->
+<script type="text/javascript" async>
+function asyncPixelWithTimeout() {
+var img = new Image(1, 1);
+img.src = '//action.media6degrees.com/orbserv/hbpix?pixId=26209&pcv=49';
+setTimeout(function ()
+{ if (!img.complete) img.src = ''; /*kill the request*/ }
+
+, 33);
+};
+asyncPixelWithTimeout();
+</script>	
+	
   <tmpl:put name="globalnav">
     <%@ include file="/common/template/includes/globalnav.jspf" %>
   </tmpl:put>
