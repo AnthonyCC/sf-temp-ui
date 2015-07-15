@@ -69,9 +69,11 @@ public class FDOrderTranslator {
 			order.setSelectedGiftCards(cart.getSelectedGiftCards());
 			FDReservation deliveryReservation = cart.getDeliveryReservation();
 			ErpDeliveryInfoModel deliveryInfo = new ErpDeliveryInfoModel();
-			deliveryInfo.setDeliveryReservationId(deliveryReservation.getPK().getId());
+			if (deliveryReservation!=null){ //this may be null in express checkout flow
+				deliveryInfo.setDeliveryReservationId(deliveryReservation.getPK().getId());
+			}
 			deliveryInfo.setDeliveryAddress(cart.getDeliveryAddress());
-			if(deliveryReservation.getTimeslot()!=null) {
+			if(deliveryReservation!=null && deliveryReservation.getTimeslot()!=null) {
 				deliveryInfo.setDeliveryStartTime(deliveryReservation.getStartTime());
 				deliveryInfo.setDeliveryEndTime(deliveryReservation.getEndTime());
 				deliveryInfo.setDeliveryCutoffTime(deliveryReservation.getCutoffTime());

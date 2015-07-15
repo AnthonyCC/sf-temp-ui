@@ -103,6 +103,22 @@ public class PaymentService {
 		return validationErrors;
 	}
 
+	
+	public List<ValidationError> setNoPaymentMethod(FDUserI user, HttpServletRequest request) throws FDResourceException{
+		List<ValidationError> validationErrors = new ArrayList<ValidationError>();
+		ActionResult result = new ActionResult();
+		String billingRef = null; // TODO: needed? CORPORATE with zero payment
+		String referencedOrder = null; //is this ok?
+		boolean makeGoodOrder = false; //is this ok?
+		PaymentMethodManipulator.setNoPaymentMethod(request.getSession(), user, user.getShoppingCart(), "setNoPaymentMethod", billingRef, referencedOrder, makeGoodOrder, result);
+
+		for (ActionError error : result.getErrors()) {
+			validationErrors.add(new ValidationError(error.getType(), error.getDescription()));
+		}
+		//TODO anything else?
+		return validationErrors;
+	}
+
 	public void deselectEbtPayment(FDUserI user, HttpSession session) {
 		FDCartModel cart = user.getShoppingCart();
 		ErpPaymentMethodI paymentMethod = cart.getPaymentMethod();

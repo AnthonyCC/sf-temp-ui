@@ -6,6 +6,24 @@ public class FormPaymentData {
 
 	private String selected;
 	private List<PaymentData> payments;
+	private boolean coveredByGiftCard;
+	private boolean backupPaymentRequiredForGiftCard;
+
+	public boolean isCoveredByGiftCard() {
+		return coveredByGiftCard;
+	}
+
+	public void setCoveredByGiftCard(boolean coveredByGiftCard) {
+		this.coveredByGiftCard = coveredByGiftCard;
+	}
+
+	public boolean isBackupPaymentRequiredForGiftCard() {
+		return backupPaymentRequiredForGiftCard;
+	}
+
+	public void setBackupPaymentRequiredForGiftCard(boolean backupPaymentRequiredForGiftCard) {
+		this.backupPaymentRequiredForGiftCard = backupPaymentRequiredForGiftCard;
+	}
 
 	public String getSelected() {
 		return selected;

@@ -248,7 +248,7 @@ public class CartSubTotalBoxService {
 			CartSubTotalFieldData data = new CartSubTotalFieldData();
 			data.setId(CREDITS_ID);
 			data.setText(CREDITS_TEXT);
-			data.setValue("(-" + JspMethods.formatPrice(cart.getCustomerCreditsValue()) + ")");
+			data.setValue("-" + JspMethods.formatPrice(cart.getCustomerCreditsValue()) );
 			subTotalBox.add(data);
 		}
 	}
@@ -272,7 +272,7 @@ public class CartSubTotalBoxService {
 			CartSubTotalFieldData data = new CartSubTotalFieldData();
 			data.setId("giftcardbalance");
 			data.setText("Gift Card Balance");
-			data.setValue("(-" + JspMethods.formatPrice(user.getGiftcardBalance()) + ")");
+			data.setValue("-" + JspMethods.formatPrice(user.getGiftcardBalance()) );
 			subTotalBox.add(data);
 		}
 	}

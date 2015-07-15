@@ -3,18 +3,44 @@
 /**
  * @param? selected
  * @param payments
+ * @param coveredByGiftCard
+ * @param backupPaymentRequiredForGiftCard
  */
 {template .paymentmethodpreview autoescape="false"}
-{if $selected}
-  {foreach $payment in $payments}
-    {if $payment.selected}
-      {call .paymentmethodpreviewitem data="$payment"}{/call}
-    {/if}
-  {/foreach}
+{if $coveredByGiftCard}
+  <p class="drawer__item__title">NO PAYMENT NECESSARY...</p>
+  <div class="drawer__previewitem__section">
+    <p class="section__title">YOUR TOTAL IS COVERED BY YOUR GIFT CARD.</p>
+    <div class="section__body">
+      Good news: you do not need to select a Payment Method because the Gift Card you applied to this order is greater than the order total, 
+      including any estimated prices. Please click the orange Place Order button. Enjoy your free food!
+    </div>
+  </div>
 {else}
-<div class="drawer__previewitem__button__section">
-<button class='cssbutton green' data-component="addpaymentmethodbutton">Add a Method</button>
-</div>
+  {if $selected}
+    {foreach $payment in $payments}
+      {if $payment.selected}
+        {call .paymentmethodpreviewitem data="$payment"}{/call}
+      {/if}
+    {/foreach}
+  {else}
+  <div class="drawer__previewitem__button__section">
+  <button class='cssbutton green' data-component="addpaymentmethodbutton">Add a Method</button>
+  </div>
+  {/if}
+  {if $backupPaymentRequiredForGiftCard}
+    <div class="drawer__previewitem__section">
+      <p class="section__title">
+      	PLEASE NOTE: A BACKUP PAYMENT METHOD IS REQUIRED FOR THIS ORDER.
+      </p>
+      <div class="section__body">
+        <p>Because your Estimated Total is close to the balance of the Gift Card you entered, we require a second form of payment.
+        This is to cover changes in price that may occur when we weigh your perishable items and fulfill your order.
+        We guarantee that you'll always pay the true price for the actual weight of your products.</p>
+        <a href="/help/estimated_price.jsp" data-ifrpopup-height="400" data-ifrpopup-width="500" data-ifrpopup="/help/estimated_price.jsp">Learn about Estimated Totals</a>.
+      </div>
+  	</div>
+  {/if}
 {/if}
 {/template}
 

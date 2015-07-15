@@ -10,15 +10,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.template.TemplateException;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
@@ -47,6 +52,8 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class SinglePageCheckoutFacade {
 
+	private static final Category LOGGER = LoggerFactory.getInstance(SinglePageCheckoutFacade.class);
+	
 	public static SinglePageCheckoutFacade defaultFacade() {
 		return INSTANCE;
 	}
@@ -178,6 +185,58 @@ public class SinglePageCheckoutFacade {
 		return validationErrors;
 	}
 
+	/** based on step_3_choose.jsp */ 
+	private void processGiftCards(FDUserI user, HttpServletRequest request, FormPaymentData formPaymentData){
+		
+		try {
+			// [APPDEV-2149] SO template only checkout => no order, no dlv timeslot, no giftcard magic
+			final boolean isSOTMPL = EnumCheckoutMode.MODIFY_SO_TMPL.equals(user.getCheckoutMode());
+			FDCartModel cart = user.getShoppingCart();
+			
+			/*
+		        * Apply Customer credit -- This is done here for knowing the final order amount before displaying
+		        * the payment selection
+		        * If Gift card is used on the order Also calculate the 25% perishable buffer amount to decide if
+		        * another mode of payment is needed.
+		    */    
+		    if (!isSOTMPL){
+			    FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
+		    }
+		    
+			double gcSelectedBalance = isSOTMPL ? 0 : user.getGiftcardBalance()- cart.getTotalAppliedGCAmount();
+			double gcBufferAmount=0;
+			double ccBufferAmount=0;
+			double perishableBufferAmount = isSOTMPL ? 0 : FDCustomerManager.getPerishableBufferAmount((FDCartModel)cart);
+			double outStandingBalance = isSOTMPL ? 0 : FDCustomerManager.getOutStandingBalance(cart);
+			
+			if(!isSOTMPL && perishableBufferAmount > 0){
+		    	if(cart.getTotalAppliedGCAmount()> 0){
+		    		if(outStandingBalance >0){
+	        			gcBufferAmount = gcSelectedBalance;
+	        			ccBufferAmount = perishableBufferAmount - gcSelectedBalance;    			
+		        	} else {
+		    			gcBufferAmount = perishableBufferAmount;
+		    		}
+		    	}else{
+		    		ccBufferAmount = perishableBufferAmount;
+		    	}    	
+		    }
+
+            /* No additional payment type is needed, covered by Giftcards */
+			if (!isSOTMPL && cart.getSelectedGiftCards() != null && cart.getSelectedGiftCards().size() > 0 && outStandingBalance <= 0.0){
+				formPaymentData.setCoveredByGiftCard(true);
+			
+			} else if (cart.getSelectedGiftCards() != null && cart.getSelectedGiftCards().size() > 0 && gcBufferAmount > 0 && ccBufferAmount > 0) {
+				formPaymentData.setBackupPaymentRequiredForGiftCard(true);
+			}
+
+		} catch (FDResourceException e){
+			LOGGER.error("processIfCoveredByGiftCard() failed because of FDResourceException", e);
+		}
+		
+	}
+
+	
 	private FormLocationData loadCartAddress(FDCartI cart, final FDUserI user) throws FDResourceException {
 		List<LocationData> cartDeliveryAddresses = deliveryAddressService.loadSuccessLocations(cart, user);
 
@@ -224,13 +283,20 @@ public class SinglePageCheckoutFacade {
 	}
 
 	private FormPaymentData loadUserPaymentMethods(FDUserI user, HttpServletRequest request) throws FDResourceException {
-		List<PaymentData> userPaymentMethods = paymentService.loadUserPaymentMethods(user, request);
+
 		FormPaymentData formPaymentData = new FormPaymentData();
-		formPaymentData.setPayments(userPaymentMethods);
-		for (PaymentData data : userPaymentMethods) {
-			if (data.isSelected()) {
-				formPaymentData.setSelected(data.getId());
-				break;
+		processGiftCards(user, request, formPaymentData);
+		
+		if (formPaymentData.isCoveredByGiftCard()){
+			 paymentService.setNoPaymentMethod(user, request);
+		} else {
+			List<PaymentData> userPaymentMethods = paymentService.loadUserPaymentMethods(user, request);
+			formPaymentData.setPayments(userPaymentMethods);
+			for (PaymentData data : userPaymentMethods) {
+				if (data.isSelected()) {
+					formPaymentData.setSelected(data.getId());
+					break;
+				}
 			}
 		}
 		return formPaymentData;
