@@ -162,9 +162,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00c4c4be', e
 }
 
 .product-sample-carousel .product-sample-carousel-bottom{
-	height: 1px;
 	width: 100%;
-	background: #D7D9CE;
+  	padding-top: 10px;
+  	border-bottom: 1px solid #996;
 }
 
 .product-sample-carousel [data-component="carousel"] [data-component="carousel-mask"] ul li {
