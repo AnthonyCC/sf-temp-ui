@@ -33,7 +33,6 @@ var FreshDirect = FreshDirect || {};
         height: Math.max(maxheight || 0, bodyHeight)
       });
 
-      console.log(windowHeight, windowHeight*.95, bodyHeight);
       if (bodyHeight >= windowHeight * .95) {
         $container.height('95%');
       } else {

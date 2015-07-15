@@ -118,7 +118,6 @@ var FreshDirect = FreshDirect || {};
 
       addressData.ebtPaymentRemovalApproved = "true";
 
-      console.log('ebt address form submit: ', addressData);
       DISPATCHER.signal('server', {
         url: fd.modules.common.forms.getAjaxEndpoint('address', 'submit'),
         method: 'POST',
