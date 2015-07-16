@@ -93,7 +93,8 @@ public class LogisticsDataDecoder {
 				model.getLatitude(), model.getScrubbedStreet(), 
 				com.freshdirect.common.address.EnumAddressType.getEnum(model.getAddressType()), 
 				model.getCounty(), model.getBuildingId(), model.getLocationId()));
-		//address.setId(model.getId());
+		
+		if(null!=model.getId())address.setId(model.getId());
 		return address;
 		
 	}

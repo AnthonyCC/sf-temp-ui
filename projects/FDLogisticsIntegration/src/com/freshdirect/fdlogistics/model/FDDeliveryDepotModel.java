@@ -129,8 +129,8 @@ public class FDDeliveryDepotModel implements Serializable {
 	
 	public FDDeliveryDepotLocationModel getLocation(String locationId){
 		for(FDDeliveryDepotLocationModel location : this.getLocations()){
-			if(location.getAddress()!=null && 
-					location.getAddress().getId().equals(locationId)){
+			if(location.getPK()!=null && 
+					location.getPK().getId().equals(locationId)){
 				return location;
 			}
 		}

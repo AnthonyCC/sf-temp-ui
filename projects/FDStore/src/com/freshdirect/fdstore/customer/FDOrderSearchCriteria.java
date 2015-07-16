@@ -114,7 +114,7 @@ public class FDOrderSearchCriteria extends FDSearchCriteria {
 			List<FDDeliveryDepotModel> depots = FDDeliveryManager.getInstance().getPickupDepots();
 			for (FDDeliveryDepotModel pickup: depots) {
 	            for (FDDeliveryDepotLocationModel location: pickup.getLocations()) {
-	                if (this.getDepotLocationId().equals(location.getAddress().getId())) {
+	                if (location.getPK()!=null && this.getDepotLocationId().equals(location.getPK().getId())) {
 	                    m.put("Depot", location.getFacility());
 	                }
 	            }

@@ -965,7 +965,8 @@ public class FDDeliveryManager {
 		List<FDDeliveryDepotModel> pickupList = getAllDepots();
 			for(FDDeliveryDepotModel pickup: pickupList){
 				for(FDDeliveryDepotLocationModel location : pickup.getLocations()){
-					if(location.getAddress().getId().equals(locationId))
+					if(location.getPK()!=null && 
+							location.getPK().getId().equals(locationId))
 						return pickup;
 				}
 			}
