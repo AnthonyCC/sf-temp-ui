@@ -150,22 +150,73 @@ var FreshDirect = FreshDirect || {};
         this.popup.clicked = true;
 
         this.noscroll(true);
-
-        textalertform.validate();
       }
     }
   });
 
   textalertconfirmpopup.render();
 
+  var textalertcancelconfirmpopup = Object.create(POPUPWIDGET,{
+    headerContent: {
+      value: ""
+    },
+    customClass: {
+      value: 'textalertconfirmpopup'
+    },
+    hideHelp: {
+      value: true
+    },
+    hasClose: {
+      value: false
+    },
+    bodySelector:{
+      value: '.ec-popup-content'
+    },
+    scrollCheck: {
+      value: '.ec-popup'
+    },
+    template: {
+      value: expressco.eccenterpopup
+    },
+    bodyTemplate: {
+      value: expressco.textalertcancelconfirmpopup
+    },
+    popupId: {
+      value: 'textalertcancelconfirmpopup'
+    },
+    popupConfig: {
+      value: {
+        zIndex: 2001,
+        openonclick: true,
+        overlayExtraClass: 'centerpopupoverlay',
+        align: false
+      }
+    },
+    open: {
+      value: function (e) {
+        var $t = e && $(e.currentTarget) || $(document.body);
+
+        this.refreshBody();
+        this.popup.show($t);
+        this.popup.clicked = true;
+
+        this.noscroll(true);
+      }
+    }
+  });
+
+  textalertcancelconfirmpopup.render();
+
   $(document).on('click', textalertpopup.trigger, textalertpopup.open.bind(textalertpopup));
   $(document).on('click', '#' + textalertpopup.popupId + ' [fdform-button="cancel"]', textalertpopup.close.bind(textalertpopup));
   $(document).on('click', '#' + textalertpopup.popupId + ' .close', textalertpopup.close.bind(textalertpopup));
   $(document).on('click', '#' + textalertpopup.popupId + ' [data-go]', textalertpopup.displayContent.bind(textalertpopup));
   $(document).on('click', '#' + textalertconfirmpopup.popupId + ' .close', textalertconfirmpopup.close.bind(textalertconfirmpopup));
+  $(document).on('click', '#' + textalertcancelconfirmpopup.popupId + ' .close', textalertcancelconfirmpopup.close.bind(textalertcancelconfirmpopup));
 
   fd.modules.common.utils.register('expressco', 'textalertpopup', textalertpopup, fd);
   fd.modules.common.utils.register('expressco', 'textalertconfirmpopup', textalertconfirmpopup, fd);
+  fd.modules.common.utils.register('expressco', 'textalertcancelconfirmpopup', textalertcancelconfirmpopup, fd);
 
   // form
   textalertform = {
@@ -207,6 +258,7 @@ var FreshDirect = FreshDirect || {};
     id: "textalertcancel",
     success: function () {
       textalertpopup.close();
+      textalertcancelconfirmpopup.open();
     }
   });
 

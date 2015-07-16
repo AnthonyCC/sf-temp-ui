@@ -35,8 +35,18 @@
  */
 {template .textalertconfirmpopup autoescape="false"}
 <h3>We've just sent a text to {if $data.phone}{$data.phone}{else}your phone{/if}. Please check your messages to complete the sign up process!</h3>
-<div>Your preference have been updated.</div>
+<div>Your preferences have been updated.</div>
 <div>You can update your preferences or change your mobile number any time - simply go to <a href="/your_account/signin_information.jsp">My Account</a></div>
+<div class="buttons">
+  <button class="cssbutton close orange">Close</button>
+</div>
+{/template}
+
+/**
+ */
+{template .textalertcancelconfirmpopup autoescape="false"}
+<h3>Your preferences have been updated.</h3>
+<div>You can update your preferences any time by heading to <a href="/your_account/signin_information.jsp">My Account</a></div>
 <div class="buttons">
   <button class="cssbutton close orange">Close</button>
 </div>
