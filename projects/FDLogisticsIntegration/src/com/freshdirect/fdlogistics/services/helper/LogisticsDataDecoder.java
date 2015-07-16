@@ -80,8 +80,6 @@ import com.freshdirect.logistics.delivery.model.EnumReservationClass;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.logistics.delivery.model.ExceptionAddress;
-import com.freshdirect.logistics.delivery.model.ReservationException;
-import com.freshdirect.logistics.delivery.model.SystemMessageList;
 
 public class LogisticsDataDecoder {
 

@@ -477,10 +477,6 @@ public class DeliveryAddressService {
 		return pickupDepotModels;
 	}
 
-	private boolean isDepotCodeEqualsHampton(final FDDeliveryDepotModel pickupDepotModel) {
-		return HAMPTON_DEPOT_CODE.equalsIgnoreCase(pickupDepotModel.getDepotCode());
-	}
-
 	private AddressModel parseDeliveryAddressForm(FormDataRequest addressRequestData) {
 		AddressModel deliveryAddressModel = new AddressModel();
 		return decorateAddressModel(deliveryAddressModel, addressRequestData);
