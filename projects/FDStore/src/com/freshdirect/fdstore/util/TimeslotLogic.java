@@ -30,6 +30,7 @@ import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.promotion.PromotionHelper;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
@@ -38,6 +39,9 @@ import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.delivery.model.DlvZoneModel;
+import com.freshdirect.logistics.delivery.model.EnumOrderAction;
+import com.freshdirect.logistics.delivery.model.EnumOrderType;
+import com.freshdirect.logistics.delivery.model.OrderContext;
 
 /**
  * Utility to calculate available capacity in given circumstances.
@@ -376,6 +380,39 @@ public class TimeslotLogic {
 				}
 			}
 		}
+	}
+
+	public static OrderContext getOrderContext(EnumOrderAction action , String id, EnumOrderType type) {
+			OrderContext context = new OrderContext();
+			context.setAction(action);
+			context.setOrderId(id);
+			context.setType(type);
+			return context;
+	}
+	
+	public static OrderContext getDefaultOrderContext(String id) {
+		OrderContext context = new OrderContext();
+		context.setAction(EnumOrderAction.CREATE);
+		context.setOrderId(id);
+		context.setType(EnumOrderType.REGULAR);
+		return context;
+}
+
+	public static OrderContext getOrderContext(FDUserI user) {
+		OrderContext context = new OrderContext();
+			context.setOrderId(user.getIdentity().getErpCustomerPK());
+			if(user != null && user.getShoppingCart() != null){
+				if(user.getShoppingCart() instanceof FDModifyCartModel){
+					context.setAction(EnumOrderAction.MODIFY);
+					context.setType(EnumOrderType.REGULAR);
+					context.setOrderId(((FDModifyCartModel)user.getShoppingCart()).getOriginalOrder().getErpSalesId());
+				}else{
+					context.setAction(EnumOrderAction.CREATE);
+					context.setType(EnumOrderType.REGULAR);
+				}
+			}
+			return context;
+
 	}
 	
 }

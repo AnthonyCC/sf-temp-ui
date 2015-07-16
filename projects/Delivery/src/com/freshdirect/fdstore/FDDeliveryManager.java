@@ -482,23 +482,24 @@ public class FDDeliveryManager {
 	}
 	
 	public FDDeliveryTimeslots getTimeslotsForDateRangeAndZone(List<DateRange> dateranges,  TimeslotEvent event,
-			ContactAddressModel address, CustomerAvgOrderSize orderSize) throws FDResourceException {
+			ContactAddressModel address, CustomerAvgOrderSize orderSize, OrderContext context) throws FDResourceException {
 		
-		return getTimeslotsForDateRangeAndZone(dateranges, event, address, orderSize, false, false);
+		return getTimeslotsForDateRangeAndZone(dateranges, event, address, orderSize, false, false, context);
 	}
 
 	public FDDeliveryTimeslots getTimeslotsForDateRangeAndZone(List<DateRange> dateranges,  TimeslotEvent event,
-			ContactAddressModel address, CustomerAvgOrderSize orderSize, boolean forceOrder, boolean deliveryInfo) throws FDResourceException{
+			ContactAddressModel address, CustomerAvgOrderSize orderSize, boolean forceOrder, boolean deliveryInfo, OrderContext context) throws FDResourceException{
 		return getTimeslotsForDateRangeAndZone(dateranges, event,
-			 address, orderSize, null, forceOrder, deliveryInfo);
+			 address, orderSize, null, forceOrder, deliveryInfo, context);
 	}
 
 	public FDDeliveryTimeslots getTimeslotsForDateRangeAndZone(List<DateRange> dateranges,  TimeslotEvent event,
-			ContactAddressModel address, CustomerAvgOrderSize orderSize, List<FDReservation> reservations, boolean forceOrder, boolean deliveryInfo) throws FDResourceException {
+			ContactAddressModel address, CustomerAvgOrderSize orderSize, List<FDReservation> reservations, boolean forceOrder, boolean deliveryInfo,
+			OrderContext context) throws FDResourceException {
 		try {			
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			DeliveryTimeslots response = logisticsService.getTimeslots(LogisticsDataEncoder.encodeTimeslotRequest(dateranges, event,
-					 address, orderSize, forceOrder, deliveryInfo));
+					 address, orderSize, forceOrder, deliveryInfo, context));
 			FDDeliveryTimeslots result = LogisticsDataDecoder.decodeDeliveryTimeslots(response);
 			return result;
 			

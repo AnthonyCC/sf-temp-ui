@@ -54,9 +54,12 @@ import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
+import com.freshdirect.fdstore.util.TimeslotLogic;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
+import com.freshdirect.logistics.delivery.model.EnumOrderAction;
+import com.freshdirect.logistics.delivery.model.EnumOrderType;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 
 
@@ -175,7 +178,11 @@ public class OrderConsumer implements IConsumer {
 			List<DateRange> dateranges = new ArrayList<DateRange>();
 			dateranges.add(new DateRange(begCal.getTime(), endCal.getTime()));
 			
-			List timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(dateranges, null, address, null)
+			TimeslotEvent event = new TimeslotEvent(EnumTransactionSource.SYSTEM.getCode(), 
+					false, 0.00, false, false, null, EnumCompanyCode.fd.name());
+			
+			List timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(dateranges, event, address, null, 
+					TimeslotLogic.getDefaultOrderContext(identity.getErpCustomerPK()))
 					.getTimeslotList().get(0).getTimeslots();
 				
 			FDTimeslot slot = null;
@@ -199,8 +206,7 @@ public class OrderConsumer implements IConsumer {
 
 			
 
-			TimeslotEvent event = new TimeslotEvent(EnumTransactionSource.SYSTEM.getCode(), 
-					false, 0.00, false, false, null, EnumCompanyCode.fd.name());
+			
 
 			
 			FDReservation reservation = FDDeliveryManager.getInstance()

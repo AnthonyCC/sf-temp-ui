@@ -95,6 +95,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
+import com.freshdirect.logistics.delivery.model.EnumOrderAction;
+import com.freshdirect.logistics.delivery.model.EnumOrderType;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
@@ -391,7 +393,8 @@ public class StandingOrderUtil {
 		List<DateRange> ranges = new ArrayList<DateRange>();
 		ranges.add(new DateRange(deliveryTimes.getDayStart(), deliveryTimes.getDayEnd()));
 		FDTimeslotList timeslotList = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone
-				(ranges, null, (ContactAddressModel)deliveryAddressModel , customerUser.getHistoricOrderSize())
+				(ranges, null, (ContactAddressModel)deliveryAddressModel , customerUser.getHistoricOrderSize(), 
+						TimeslotLogic.getOrderContext(EnumOrderAction.CREATE, customer.getErpCustomerPK(), EnumOrderType.REGULAR))
 				.getTimeslotList().get(0);
 		
 		List<FDTimeslot> timeslots = timeslotList.getTimeslots();

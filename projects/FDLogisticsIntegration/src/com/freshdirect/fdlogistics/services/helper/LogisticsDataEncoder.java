@@ -166,7 +166,7 @@ public static Address encodeAddress(ContactAddressModel model) {
 
 	public static TimeslotRequest encodeTimeslotRequest(List<com.freshdirect.framework.util.DateRange> dateranges,
 			TimeslotEvent event, ContactAddressModel address,
-			CustomerAvgOrderSize orderSize, boolean forceOrder, boolean deliveryInfo) {
+			CustomerAvgOrderSize orderSize, boolean forceOrder, boolean deliveryInfo, OrderContext context) {
 		List<DateRange> ranges = new ArrayList<DateRange>();
 		for(com.freshdirect.framework.util.DateRange daterange: dateranges){
 			DateRange range = new DateRange(daterange.getStartDate(), daterange.getEndDate());
@@ -175,7 +175,7 @@ public static Address encodeAddress(ContactAddressModel model) {
 		}
 		
 		TimeslotRequest request = new TimeslotRequest(ranges, encodeCustomer(address, null), 
-				encodeCart(event), encodeOrderContext(address.getCustomerId()), forceOrder, deliveryInfo , 
+				encodeCart(event), context, forceOrder, deliveryInfo , 
 				(address.getServiceType()!=null)?address.getServiceType().getName():EnumServiceType.HOME.name(), encodeTimeslotContext());
 		return request;
 		
@@ -184,15 +184,7 @@ public static Address encodeAddress(ContactAddressModel model) {
 	private static TimeslotContext encodeTimeslotContext() {
 		return TimeslotContext.CHECK_AVAILABLE_TIMESLOTS;
 	}
-
-	private static OrderContext encodeOrderContext(String customerId) {
-		OrderContext context = new OrderContext();
-		context.setAction(EnumOrderAction.CREATE);
-		context.setOrderId(customerId);
-		context.setType(EnumOrderType.REGULAR);
-		return context;
-	}
-
+	
 	public static TimeslotIdRequest encodeTimeslotRequest(String timeslotId,
 			String buildingId, boolean checkPremium) {
 		

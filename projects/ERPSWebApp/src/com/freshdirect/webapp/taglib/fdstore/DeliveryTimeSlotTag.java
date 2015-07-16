@@ -57,6 +57,8 @@ import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
+import com.freshdirect.logistics.delivery.model.EnumOrderAction;
+import com.freshdirect.logistics.delivery.model.EnumOrderType;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 import com.freshdirect.webapp.util.StandingOrderHelper;
@@ -336,9 +338,14 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		FDDeliveryTimeslots deliveryTimeslots = null;
 		{
 
+			TimeslotEvent event = new TimeslotEvent((user.getApplication()!=null)?user.getApplication().getCode():"",
+					cart.isDlvPassApplied(),cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(),
+					(cart.getZoneInfo()!=null)?cart.getZoneInfo().isCtActive():false, user.getPrimaryKey(), EnumCompanyCode.fd.name());
+			
 			// Fetch time slots
 			deliveryTimeslots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
-					ranges, null, address, user.getHistoricOrderSize());
+					ranges, event, address, user.getHistoricOrderSize(), 
+					TimeslotLogic.getOrderContext(EnumOrderAction.CREATE, user.getIdentity().getErpCustomerPK(), EnumOrderType.SO_TEMPLATE));
 			
 			FDTimeslotList tsList = deliveryTimeslots.getTimeslotList().get(0);
 			
@@ -403,7 +410,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		int responseTime;
 		
 		FDDeliveryTimeslots deliveryTimeslots = FDDeliveryManager.getInstance().
-					getTimeslotsForDateRangeAndZone(dateRanges, event, address, user.getHistoricOrderSize(), forceOrder, deliveryInfo);
+					getTimeslotsForDateRangeAndZone(dateRanges, event, address, user.getHistoricOrderSize(), forceOrder, deliveryInfo, 
+							TimeslotLogic.getOrderContext(user));
 			
 		for(FDTimeslotList timeslotList : deliveryTimeslots.getTimeslotList()) {	
 			
