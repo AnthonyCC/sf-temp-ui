@@ -2,7 +2,6 @@ package com.freshdirect.webapp.ajax.expresscheckout.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +21,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -66,7 +66,6 @@ public class SinglePageCheckoutFacade {
 	private AvailabilityService availabilityService;
 	private ContentFactoryService contentFactoryService;
 	private TextMessageAlertService textMessageAlertService;
-
 	private DeliveryAddressService deliveryAddressService;
 
 	private SinglePageCheckoutFacade() {
@@ -124,18 +123,6 @@ public class SinglePageCheckoutFacade {
 		return result;
 	}
 
-	private String getPaymentIdBasedOnModifyCartPaymentAccountNumber(FDUserI user) throws FDResourceException {
-		String paymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
-		Collection<ErpPaymentMethodI> paymentMethods = FDCustomerManager.getPaymentMethods(user.getIdentity());
-		for (ErpPaymentMethodI paymentMethod : paymentMethods) {
-			if (user.getShoppingCart().getPaymentMethod() != null && paymentMethod.getAccountNumber().equals(user.getShoppingCart().getPaymentMethod().getAccountNumber())) {
-				paymentId = paymentMethod.getPK().getId();
-				break;
-			}
-		}
-		return paymentId;
-	}
-
 	private String getSelectedAddressId(final List<LocationData> deliveryAddresses) {
 		String selectedAddressId = null;
 		for (LocationData deliveryAddress : deliveryAddresses) {
@@ -169,7 +156,9 @@ public class SinglePageCheckoutFacade {
 				ActionResult actionResult = new ActionResult();
 				String selectDeliveryAddressActionName = "selectDeliveryAddressMethod";
 				DeliveryAddressManipulator.performSetDeliveryAddress(session, user, addressId, null, null, selectDeliveryAddressActionName, true, actionResult, null, null, null, null, null, null);
-				String paymentId = getPaymentIdBasedOnModifyCartPaymentAccountNumber(user);
+				FDOrderAdapter order = ((FDModifyCartModel) cart).getOriginalOrder();
+				ErpPaymentMethodI paymentMethod=order.getPaymentMethod();
+				String paymentId = paymentMethod.getPK().getId();
 				String selectPaymentMethodActionName = "selectPaymentMethod";
 				PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, selectPaymentMethodActionName);
 				for (ActionError error : actionResult.getErrors()) {
