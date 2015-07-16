@@ -27,19 +27,6 @@
       }());
     </script>
 
-    <!-- APPDEV-4287 Dstillery Pixel swap -->
-    <script type="text/javascript" async>
-    function asyncPixelWithTimeout() {
-    var img = new Image(1, 1);
-    img.src = '//action.media6degrees.com/orbserv/hbpix?pixId=26210&pcv=42';
-    setTimeout(function ()
-    { if (!img.complete) img.src = ''; /*kill the request*/ }
-
-    , 33);
-    };
-    asyncPixelWithTimeout();
-    </script>
-
   </tmpl:put>
 
   <tmpl:put name="globalnav">
