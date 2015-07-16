@@ -3607,7 +3607,7 @@ public class FDStoreProperties {
 		try{
 	   		return Integer.parseInt(get(PROP_LOGISTICS_CONNECTION_TIMEOUT));
 	   	} catch(Exception e){
-	   		return 30;
+	   		return 300;
 	   	}
 	}
 	
@@ -3615,7 +3615,7 @@ public class FDStoreProperties {
 		try{
 	   		return Integer.parseInt(get(PROP_LOGISTICS_CONN_READ_TIMEOUT));
 	   	} catch(Exception e){
-	   		return 30;
+	   		return 300;
 	   	}
 	}
 		

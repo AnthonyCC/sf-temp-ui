@@ -43,7 +43,7 @@ public abstract class AbstractLogisticsService {
 		restTemplate = new RestTemplate(converters);
 		
 		SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-	    requestFactory.setReadTimeout(FDStoreProperties.getLogisticsConnectionReadTimeout()*1000);
+	    //requestFactory.setReadTimeout(FDStoreProperties.getLogisticsConnectionReadTimeout()*1000);
 	    requestFactory.setConnectTimeout(FDStoreProperties.getLogisticsConnectionTimeout()*1000);
 	    restTemplate.setRequestFactory(requestFactory);
 
