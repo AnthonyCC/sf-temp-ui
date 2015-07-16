@@ -221,6 +221,7 @@
   background-color: #fff;
   border: 1px solid #aaa;
   width:140px;
+  box-sizing: content-box;
 }
 
 .promotion-item .promotion-input ~ button,
