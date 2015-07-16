@@ -9,6 +9,7 @@ var FreshDirect = FreshDirect || {};
   var POPUPWIDGET = fd.modules.common.popupWidget;
   var DISPATCHER = fd.common.dispatcher;
 
+  var textalertform;
   var textalertpopup = Object.create(POPUPWIDGET,{
     headerContent: {
       value: ''
@@ -149,6 +150,8 @@ var FreshDirect = FreshDirect || {};
         this.popup.clicked = true;
 
         this.noscroll(true);
+
+        textalertform.validate();
       }
     }
   });
@@ -165,9 +168,15 @@ var FreshDirect = FreshDirect || {};
   fd.modules.common.utils.register('expressco', 'textalertconfirmpopup', textalertconfirmpopup, fd);
 
   // form
-  fd.modules.common.forms.register({
+  textalertform = {
     id: "textalert",
     nothanksEndpoint: "/api/expresscheckout/textalert/cancel",
+    validate: function () {
+      var errors = [];
+
+      errors = errors.concat(fd.modules.common.forms.validateDefault(this));
+      return errors;
+    },
     success: function () {
       textalertpopup.close();
       textalertconfirmpopup.open();
@@ -190,13 +199,19 @@ var FreshDirect = FreshDirect || {};
 
       textalertpopup.close();
     }
-  });
+  };
+
+  fd.modules.common.forms.register(textalertform);
 
   fd.modules.common.forms.register({
     id: "textalertcancel",
     success: function () {
       textalertpopup.close();
     }
+  });
+
+  $(document).on('change', '#textalertpopup input[required],#textalertpopup input[fdform-v-onerequired]', function () {
+    fd.modules.common.forms.validate(textalertform);
   });
 
   openAfterPageRender();
