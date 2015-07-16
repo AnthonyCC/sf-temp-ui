@@ -13,7 +13,7 @@ var FreshDirect = FreshDirect || {};
       value: 'items'
     },
     defaultViewType: {
-      value: 'grid'
+      value: 'list'
     },
     getViewType: {
       value: function () {
