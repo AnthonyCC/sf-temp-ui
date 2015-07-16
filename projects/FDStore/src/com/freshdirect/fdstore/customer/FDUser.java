@@ -2874,11 +2874,12 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	@Override
 	public boolean isProductSample(ProductReference prodRef) {
-		for(ProductReference prod :getProductSamples()){
-		if(prod.equals(prodRef)){
-			return true;
-		}
-			
+		List<ProductReference> productSamples =getProductSamples();
+		if(null != productSamples && !productSamples.isEmpty())
+			for(ProductReference prod :productSamples){
+			if(null !=prod && prod.equals(prodRef)){
+				return true;
+			}			
 		}
 		return false;
 	}
