@@ -480,7 +480,7 @@ asyncPixelWithTimeout();
 			
 			</td>
             <% if(cartLine.getDiscount() != null || cartLine.getCouponDiscount() != null) { %>
-				<td width="70" align="right"><font color="#FF0000"><%= isFreeProd ? "" : "("%><%= isFreeProd ? "" : cartLine.getUnitPrice() %><%= isFreeProd ? "" : "("%></font></td>				
+				<td width="70" align="right"><font color="#FF0000"><%= isFreeProd ? "" : "("%><%= isFreeProd ? "" : cartLine.getUnitPrice() %><%= isFreeProd ? "" : ")"%></font></td>				
 				<td width="60" align="right"><span class="text10bold"><font color="#FF0000"><%= isFreeProd ? "FREE" : JspMethods.formatPrice(cartLine.getPrice()) %></font></span></td>
             <% } else { %>
   			<td width="70" align="right">(<%= cartLine.getUnitPrice() %>)</td>
