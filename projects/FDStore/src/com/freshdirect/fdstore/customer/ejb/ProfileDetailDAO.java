@@ -31,7 +31,7 @@ public class ProfileDetailDAO extends SessionBeanSupport{
 				LOGGER.info( "Profile Value # # #: " + profileValue);
 
 			}
-			LOGGER.info( "Profile Value # # #: " + rs.getString("PROFILE_VALUE"));
+//			LOGGER.info( "Profile Value # # #: " + rs.getString("PROFILE_VALUE"));
 			
 			rs.close();
 			ps.close();
