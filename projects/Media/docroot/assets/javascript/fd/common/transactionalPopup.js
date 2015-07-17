@@ -330,9 +330,11 @@ var FreshDirect = FreshDirect || {};
     // APPDEV-4203 - Product Sampling
     if(typeof ProductSamplesMaxQuantityLimit  !== "undefined" && ProductSamplesMaxQuantityLimit == 1){
 		if(jQuery("#transactionalPopup .portrait-item div.portrait-item-burst_wrapper img.burst").hasClass("free")){
-			jQuery("#transactionalPopup").find(".qtyinput").css("display","none");
-			jQuery("#transactionalPopup").find(".qtyinput").before("<div class='product-sample-qty-one'>Quantity: 1</div>");				
+			jQuery("#transactionalPopup").find(".qtyinput").css("display","none").before("<div class='product-sample-qty-one'>Quantity: 1</div>");
 		}
+	}    
+    if(jQuery("#transactionalPopup .portrait-item div.portrait-item-burst_wrapper img.burst").hasClass("free")){
+    	jQuery("#transactionalPopup").find(".portrait-item-atl").empty().css("display","none");
 	}
    
    });
