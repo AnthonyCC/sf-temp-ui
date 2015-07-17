@@ -475,8 +475,15 @@ public class FDDeliveryManager {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			DeliveryServices response = logisticsService.getDeliveryServices(LogisticsDataEncoder.encodeAddress(address));
 			FDDeliveryServiceSelectionResult result = LogisticsDataDecoder.decodeDeliveryServices(response);
+			
+			DlvRestrictionManagerSB sb = getDlvRestrictionManagerHome().create();
+			result.setRestrictionReason(sb.checkAddressForRestrictions(address));
 			return result;
-		}catch (FDLogisticsServiceException e) {
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (FDLogisticsServiceException e) {
 			throw new FDResourceException(e);
 		} 
 	}
