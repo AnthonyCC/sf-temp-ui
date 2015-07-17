@@ -300,7 +300,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			conn = this.getConnection();
 			Date fromTime = getLastExport(conn, LATEORDER_FEED_TYPE);
 			
-			ps = conn.prepareStatement("SELECT LO.SALE_ID FROM CUST.LATEISSUE L, CUST.LATEISSUE_ORDERS LO WHERE L.ID = LO.LATEISSUE_ID AND L.REPORTED_BY" +
+			ps = conn.prepareStatement("SELECT LO.SALE_ID FROM CUST.LATEISSUE L, CUST.LATEISSUE_ORDERS LO WHERE L.ID = LO.LATEISSUE_ID AND L.REPORTED_AT" +
 					" BETWEEN to_date(?,'MM/DD/YYYY HH:MI:SS AM') AND to_date(?,'MM/DD/YYYY HH:MI:SS AM')");
 			
 			ps.setString(1, sdf.format(fromTime));
