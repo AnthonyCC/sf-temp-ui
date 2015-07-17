@@ -80,7 +80,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		ErpAddressModel erpAddress = cart.getDeliveryAddress();
 		String addressId = "";
 		if (!(erpAddress instanceof ErpDepotAddressModel)) {
-			FDDeliveryZoneInfo zoneInfo = AddressUtil.getZoneInfo(user, erpAddress, actionResult, timeSlot.getStartDateTime(), user.getHistoricOrderSize(), null);
+			FDDeliveryZoneInfo zoneInfo = AddressUtil.getZoneInfo(user, erpAddress, actionResult, timeSlot.getStartDateTime(), user.getHistoricOrderSize(), timeSlot.getRegionSvcType());
 			cart.setZoneInfo(zoneInfo);
 			addressId = erpAddress.getPK().getId();
 		} else {

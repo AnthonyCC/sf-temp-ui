@@ -12,6 +12,7 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.delivery.model.EnumDayShift;
+import com.freshdirect.logistics.delivery.model.EnumRegionServiceType;
 
 /**
  * @version $Revision:3$
@@ -32,7 +33,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 			boolean isUnavailable, boolean isEcoFriendly, boolean isSoldOut, boolean isDepot, 
 			boolean isPremiumSlot, double totalAvailable, double baseAvailable, double chefsTableAvailble,
 			boolean hasSteeringRadius, String travelZone, double minDurationForModStart, double minDurationForModification,
-			int additionalDistance)
+			int additionalDistance, EnumRegionServiceType regionSvcType)
 	{
 		super();
 		this.id = id;
@@ -64,6 +65,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 		this.travelZone = travelZone;
 		this.minDurationForModStart = minDurationForModStart;
 		this.minDurationForModification = minDurationForModification;
+		this.regionSvcType = regionSvcType;
 	}
 
 	private static final long serialVersionUID = 4180048326412481300L;
@@ -123,6 +125,8 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	private String travelZone;
 	private double minDurationForModStart;
 	private double minDurationForModification;
+	private EnumRegionServiceType regionSvcType;
+	
 
 	private static final DecimalFormat premiumAmountFmt = new DecimalFormat(
 			"#.##");
@@ -586,5 +590,10 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 		this.isFdxSlot = isFdxSlot;
 	}
 
-
+	public EnumRegionServiceType getRegionSvcType() {
+		return regionSvcType;
+	}
+	public void setRegionSvcType(EnumRegionServiceType regionSvcType) {
+		this.regionSvcType = regionSvcType;
+	}
 }

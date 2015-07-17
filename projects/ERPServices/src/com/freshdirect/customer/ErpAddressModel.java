@@ -41,8 +41,6 @@ public class ErpAddressModel extends ContactAddressModel {
 	//For Robin Hood - Donation.
 	private String charityName;
 	
-	private String companyName;
-	
 	private boolean optInForDonation;
 
 	//This field is used for storing specific service type when service type is WEB.
@@ -248,20 +246,6 @@ public class ErpAddressModel extends ContactAddressModel {
 	 */
 	public void setCharityName(String charityName) {
 		this.charityName = charityName;
-	}
-
-	/**
-	 * @return the companyName
-	 */
-	public String getCompanyName() {
-		return companyName;
-	}
-
-	/**
-	 * @param companyName the companyName to set
-	 */
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
 	}
 
 	/**
