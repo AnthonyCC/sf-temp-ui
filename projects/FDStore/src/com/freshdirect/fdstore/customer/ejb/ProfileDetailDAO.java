@@ -77,7 +77,7 @@ public class ProfileDetailDAO extends SessionBeanSupport{
 				LOGGER.info( "Profile County # # #: " + county);
 			}
 						
-			LOGGER.info( "Profile county # # #: " + rs.getString("county"));
+//			LOGGER.info( "Profile county # # #: " + rs.getString("county"));
 			
 			rs.close();
 			ps.close();
