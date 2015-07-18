@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.widget.form.Time;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsManager;
@@ -37,6 +38,9 @@ public class TranslatorFromGwt {
 		}
 		if ( value instanceof EnumModel ) {
 			return ( (EnumModel)value ).getKey();
+		}
+		if ( value instanceof Time ) {
+			return ((Time)value).getDate();
 		}
 		if ( value instanceof List ) {
 			List<Object> result = new ArrayList<Object>();

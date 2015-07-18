@@ -53,7 +53,21 @@ public class Renderers {
         }
     };
 
-    
+    public final static GridCellRenderer<OneToManyModel> GRID_ICON_RENDERER = new GridCellRenderer<OneToManyModel>() {
+
+    	@Override
+		public Object render(OneToManyModel model, String property,
+				ColumnData config, int rowIndex, int colIndex,
+				ListStore<OneToManyModel> store, Grid<OneToManyModel> grid) {
+			return model.renderIconLinkComponent();
+		}
+		
+		@Override
+	    public String toString() {
+	        return "...";
+	    }
+    };
+
     /**
      * Renders a link to a content node model, which stored as the property of
      * the model.
@@ -68,6 +82,4 @@ public class Renderers {
             }
         }
     };
-
-
 }

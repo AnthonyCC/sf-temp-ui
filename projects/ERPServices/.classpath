@@ -36,7 +36,7 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jsse.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/regexp.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/sunrsasign.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/ehcache-core-2.5.0.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/ehcache-2.10.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/httpclient-4.2.6.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/httpcore-4.2.5.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/httpmime-4.2.6.jar"/>

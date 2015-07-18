@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Wrapper;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -15,6 +17,9 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.sql.DataSource;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentType;
@@ -29,6 +34,7 @@ import com.freshdirect.cms.meta.ContentTypeDef;
 import com.freshdirect.cms.meta.ContentTypeUtil;
 import com.freshdirect.cms.meta.EnumDef;
 import com.freshdirect.cms.meta.RelationshipDef;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * {@link com.freshdirect.cms.application.ContentTypeServiceI} implementation
@@ -46,7 +52,8 @@ import com.freshdirect.cms.meta.RelationshipDef;
 public class DbTypeService extends AbstractTypeService implements ContentTypeServiceI {
 
 	private DataSource dataSource = null;
-
+	private static final Logger LOGGER = LoggerFactory.getInstance(DbTypeService.class); 
+	
 	public DbTypeService() {
 		super();
 	}
@@ -221,22 +228,85 @@ public class DbTypeService extends AbstractTypeService implements ContentTypeSer
 		return typeDef;
 	}
 
-	private LinkedHashMap loadLookup(Connection conn, EnumAttributeType type, String lookupCode) throws SQLException {
-		LinkedHashMap m = new LinkedHashMap();
-		PreparedStatement ps = conn.prepareStatement("select code, label from cms_lookup where lookuptype_code=? order by ordinal");
-		ps.setString(1, lookupCode);
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			Object value = ContentTypeUtil.coerce(type, rs.getString("code"));
-			m.put(value, rs.getString("label"));
+	private Map loadLookup(Connection conn, EnumAttributeType type, String lookupCode) throws SQLException {
+		Map m = new LinkedHashMap();
+		String lookupSource = null;
+		String query = null;
+		
+		try{
+			PreparedStatement lookupTypeStmt = conn.prepareStatement("select code, name, lookup_source, query from cms_lookuptype where code=?");
+			lookupTypeStmt.setString(1, lookupCode);
+			ResultSet typeResultSet = lookupTypeStmt.executeQuery();
+			while(typeResultSet.next()){
+				lookupSource = typeResultSet.getString("lookup_source");
+				query = typeResultSet.getString("query");
+			}
+			closeQuietly(typeResultSet);
+			closeQuietly(typeResultSet);
+		} catch(Exception e){
+			System.out.println(query);
+			e.printStackTrace();
+			LOGGER.error("Error Executing Query:"+query,e);
 		}
-
-		rs.close();
-		ps.close();
-
+		
+		
+		if("EXTERNAL".equals(lookupSource) && query != null){
+			System.out.println(query);
+			LOGGER.error("Query:"+query);
+			PreparedStatement ps = null;
+			ResultSet rs = null;
+			try{
+				ps = conn.prepareStatement(query);
+				rs = ps.executeQuery();
+				while(rs.next()){
+					Object value = ContentTypeUtil.coerce(type, rs.getString(1));
+					m.put(value, rs.getString(2));
+				}
+			} catch(Exception e){
+				e.printStackTrace();
+				LOGGER.error("Error Executing Query:"+query, e);
+			} finally{
+				closeQuietly(rs);
+				closeQuietly(ps);
+			}
+		} else {
+			PreparedStatement ps = conn.prepareStatement("select code, label from cms_lookup where lookuptype_code=? order by ordinal");
+			ps.setString(1, lookupCode);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				Object value = ContentTypeUtil.coerce(type, rs.getString("code"));
+				m.put(value, rs.getString("label"));
+			}
+			closeQuietly(rs);
+			closeQuietly(ps);	
+		}
 		return m;
 	}
-
+	
+	public static void closeQuietly(Connection connection){
+		try{
+			connection.close();
+		} catch(Exception e){
+			LOGGER.error("Error closing connection", e);
+		}
+	}
+	
+	public static void closeQuietly(ResultSet resultSet){
+		try{
+			resultSet.close();
+		} catch(Exception e){
+			LOGGER.error("Error closing resultset", e);
+		}
+	}
+	
+	public static void closeQuietly(Statement statement){
+		try{
+			statement.close();
+		} catch(Exception e){
+			LOGGER.error("Error closing statement", e);
+		}
+	}
+	
 	private static boolean stringToBoolean(String s) {
 		if (s==null || "".equals(s.trim()))
 			return false;

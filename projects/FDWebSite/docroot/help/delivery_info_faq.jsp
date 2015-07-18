@@ -13,6 +13,9 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
+	<tmpl:put name="seoMetaTag" direct="true">
+		<fd:SEOMetaTag pageId="delivery_info_faq"></fd:SEOMetaTag>
+	</tmpl:put>
 	<tmpl:put name='title' direct='true'>Delivery FAQs</tmpl:put>
 		<tmpl:put name='content' direct='true'><br>
 <%@ include file="/help/delivery_home.jsp" %>

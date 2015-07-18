@@ -47,6 +47,9 @@ final int W_YA_DELIVERY_INFO_CHKSLOTS = 970;
 
 %>
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
+	<tmpl:put name="seoMetaTag" direct="true">
+		<fd:SEOMetaTag pageId="delivery_info_check"></fd:SEOMetaTag>
+	</tmpl:put>
 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 <table width="<%= W_YA_DELIVERY_INFO_CHKSLOTS %>" cellpadding="0" cellspacing="0" border="0">

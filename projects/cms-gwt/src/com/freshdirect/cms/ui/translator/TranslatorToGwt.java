@@ -2,7 +2,9 @@ package com.freshdirect.cms.ui.translator;
 
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -16,6 +18,7 @@ import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 
+import com.extjs.gxt.ui.client.widget.form.Time;
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
@@ -55,6 +58,7 @@ import com.freshdirect.cms.ui.model.TabDefinition;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
 import com.freshdirect.cms.ui.model.attributes.EnumAttribute;
 import com.freshdirect.cms.ui.model.attributes.ModifiableAttributeI;
+import com.freshdirect.cms.ui.model.attributes.MultiEnumAttribute;
 import com.freshdirect.cms.ui.model.attributes.OneToManyAttribute;
 import com.freshdirect.cms.ui.model.attributes.OneToOneAttribute;
 import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute;
@@ -72,7 +76,6 @@ import com.freshdirect.cms.validation.ContentValidationDelegate;
 import com.freshdirect.cms.validation.ContentValidatorI;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
-
 /**
  * Static class for converting server-side CMS data types to client-side serializable data types for Gwt.
  * 
@@ -207,7 +210,7 @@ public class TranslatorToGwt {
 					
 					if ( !"CmsField".equals( attrType ) ) {
 						
-						if ( "CmsGridField".equals( attrType ) ) {
+						if ( "CmsGridField".equals( attrType )) {
 							// we have to figure out, what type .. it must be a Relationship ...
 							RelationshipDefI attributeDef = (RelationshipDefI)typeDef.getAttributeDef( attributeKey );
 							
@@ -215,13 +218,23 @@ public class TranslatorToGwt {
 								throw new ServerException( "Relation from " + typeDef.getName() + "::" + attributeKey
 										+ " contains more than 1 type: " + attributeDef.getContentTypes() );
 							}
-							CustomFieldDefinition cfd = new CustomFieldDefinition( CustomFieldDefinition.Type.Grid );
-
+							CustomFieldDefinition cfd = new CustomFieldDefinition(CustomFieldDefinition.Type.Grid);
 							List<ContentKey> values = (List<ContentKey>)attr.getAttributeValue("columns");
 							for ( ContentKey k : values ) {
 								cfd.addColumn( (String)k.getContentNode().getAttributeValue("attribute"));
 							}
 
+							tabDef.addCustomFieldDefinition( attributeKey, cfd );
+						}
+						
+						if("CmsMultiColumnField".equals(attrType)) {
+							// we have to figure out, what type .. it must be a Relationship ...
+							CustomFieldDefinition cfd = new CustomFieldDefinition(CustomFieldDefinition.Type.CmsMultiColumnField);
+							List<ContentKey> values = (List<ContentKey>)attr.getAttributeValue("columns");
+							int position = 0;
+							for ( ContentKey k : values ) {
+								cfd.addColumn( (String)k.getContentNode().getAttributeValue("attribute"));
+							}
 							tabDef.addCustomFieldDefinition( attributeKey, cfd );
 						}
 						if ( "CmsCustomField".equals( attrType ) ) {
@@ -231,7 +244,7 @@ public class TranslatorToGwt {
 				}
 			}
 		}
-		return tabDef;
+		return tabDef;	
 	}
 	
 	
@@ -328,22 +341,27 @@ public class TranslatorToGwt {
             attr = new SimpleAttribute<String>("text", (String) value, name);
         } else if (type == EnumAttributeType.DOUBLE) {
             attr = new SimpleAttribute<Double>("double", (Double) value, name);
-            
         } else if (type == EnumAttributeType.INTEGER) {
             attr = new SimpleAttribute<Integer>("integer", (Integer) value, name);
-            
         } else if (type == EnumAttributeType.DATE) {
             attr = new SimpleAttribute<Date>("date", (Date) value, name);
-            
+        } else if (type == EnumAttributeType.TIME) {
+        	Time time = new Time(0,0);
+        	if(value != null){
+        		time = new Time((Date) value);
+        	} 
+        	attr = new SimpleAttribute<Time>("time", time, name);
         } else if (type == EnumAttributeType.BOOLEAN) {
         	if ( !definition.isInheritable() && value == null ) {
         		value = Boolean.FALSE;
         	}
             attr = new SimpleAttribute<Boolean>("boolean", (Boolean) value, name);
-            
         } else if (type == EnumAttributeType.ENUM) {
-        	attr = translateEnumDefToEnumAttribute( (EnumDef)definition, name, (Serializable)value );
-        	
+        	if(value instanceof String && value!= null && ((String)value).contains(",")){
+        		attr = translateEnumDefToEnumMultiAttribute( (EnumDef)definition, name, (Serializable)value );
+        	} else {
+        		attr = translateEnumDefToEnumAttribute( (EnumDef)definition, name, (Serializable)value );
+        	}
 		} else if ( type == EnumAttributeType.RELATIONSHIP ) {
         	
             RelationshipDefI relD = (RelationshipDefI) definition;
@@ -395,7 +413,7 @@ public class TranslatorToGwt {
                             if (customFieldDefinition != null) {
                                 if (customFieldDefinition.getGridColumns() != null) {
                                     for (String col : customFieldDefinition.getGridColumns()) {
-                                        Object attrValue = contentNode.getAttributeValue(col);
+                                        Object attrValue = translateColumn(contentNode,col);
                                         model.set(col, attrValue);
                                     }
                                 }
@@ -429,7 +447,45 @@ public class TranslatorToGwt {
         return attr;
     }
     
-    private static EnumAttribute translateEnumDefToEnumAttribute( EnumDef enumD, String name, Serializable currValue ) {    	
+    private static Object translateColumn(ContentNodeI contentNode, String col) {
+    	String childColumnName = null;
+    	if(col.contains("$")){
+    		String[] columnName = col.split("\\$");
+    		col = columnName[0];
+    		childColumnName = columnName[1];
+    	}
+    	    	
+    	AttributeI attribute = contentNode.getAttribute(col);
+    	
+    	Object attrValue = contentNode.getAttributeValue(col);
+    	EnumAttributeType attributeType = attribute.getDefinition().getAttributeType();
+        if(EnumAttributeType.DATE.equals(attributeType)){
+        	try{
+        		DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        		attrValue = format.format((Date)attrValue);
+        	} catch (Exception e){
+        		//Do not throw exception if not transformed
+        	}
+        } else if (EnumAttributeType.TIME.equals(attributeType)){
+        	try{
+        		DateFormat format = new SimpleDateFormat("HH:mm");
+        		attrValue = format.format((Date)attrValue);
+        	} catch (Exception e){
+        		//Do not throw exception if not transformed
+        	}
+        } else if (attrValue instanceof ContentKey){
+        	ContentKey key = (ContentKey)attrValue;
+        	ContentNodeI childNode = key.getContentNode();
+        	if(childColumnName != null){
+        		attrValue = childNode.getAttributeValue(childColumnName);
+        	} else {
+        		attrValue = null;
+        	}
+        }
+        return attrValue;
+	}
+
+	private static EnumAttribute translateEnumDefToEnumAttribute( EnumDef enumD, String name, Serializable currValue ) {    	
         EnumAttribute enumA = new EnumAttribute();
         enumA.setLabel(name);
         for ( Map.Entry<Object, String> e : enumD.getValues().entrySet() ) {
@@ -437,8 +493,30 @@ public class TranslatorToGwt {
 	        	Serializable key = (Serializable)e.getKey();
 	        	String value = e.getValue();
 	            enumA.addValue(key, value);
-	            if (key.equals(currValue)) {
-	                enumA.setValue(key, value);
+	            if(key.equals(currValue)){
+	            	enumA.setValue(currValue, value);
+	            }
+        	}
+        }
+        return enumA;    	
+    }
+    
+    private static MultiEnumAttribute translateEnumDefToEnumMultiAttribute( EnumDef enumD, String name, Serializable currValue ) {    	
+    	MultiEnumAttribute enumA = new MultiEnumAttribute();
+        enumA.setLabel(name);
+        for ( Map.Entry<Object, String> e : enumD.getValues().entrySet() ) {
+        	if ( e.getKey() instanceof Serializable ) {
+	        	Serializable key = (Serializable)e.getKey();
+	        	String value = e.getValue();
+	            enumA.addValue(key, value);
+	            
+	            List<Serializable> list = Arrays.asList(currValue);
+	            if(currValue instanceof String){
+	            	list = Arrays.<Serializable>asList(((String) currValue).split(","));
+	            }
+	            
+	            if (list.contains(key)) {
+	                enumA.addSelectedValue(key, value);
 	            }
         	}
         }

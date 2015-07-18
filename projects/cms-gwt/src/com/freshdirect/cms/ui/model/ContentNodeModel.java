@@ -214,4 +214,30 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 		return sb.toString();
 	}
 
+
+	public String renderIconLink() {
+		StringBuilder sb = new StringBuilder( 1024 );
+        sb.append("<table class=\"content-label\"><tr>");
+        sb.append("<td><a href=\"#");
+        sb.append(getKey());
+        sb.append("\">");
+        sb.append("<img src=\"img/icons/");
+        sb.append(getType());
+        sb.append(".gif\">");
+        sb.append("</a></td></tr></table>");
+        return sb.toString();
+	}
+	
+	public Widget renderIconLinkComponent() {
+		if (getType() == null) {
+			return null;
+		}
+		HtmlContainer container = new HtmlContainer(renderIconLink());
+		String tooltip = getPreviewToolTip();
+		if (tooltip != null && tooltip.trim().length() > 0) {
+			container.setToolTip(tooltip);
+		}
+		return container;
+	}
+
 }

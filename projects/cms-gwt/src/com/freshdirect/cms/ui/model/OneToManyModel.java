@@ -70,5 +70,21 @@ public class OneToManyModel extends ContentNodeModel {
         }
         return super.renderLinkComponent();
     }
+    
+    @Override
+    public Widget renderIconLinkComponent() {
+        if (isNewlyCreated()) {
+            Anchor a = new Anchor(getLabel());
+            a.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    NewContentNodePopup ncn = new NewContentNodePopup(OneToManyModel.this.newNodeData, null);
+                    ncn.show();
+                }
+            });
+            return a;
+        }
+        return super.renderIconLinkComponent();
+    }
 
 }

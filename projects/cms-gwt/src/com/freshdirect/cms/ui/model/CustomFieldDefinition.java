@@ -7,14 +7,14 @@ import java.util.List;
 public class CustomFieldDefinition implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     public enum Type {
-        ProductConfigEditor, PrimaryHomeSelection, VariationMatrix, Grid, GmapsLocation, MonthDay
+        ProductConfigEditor, PrimaryHomeSelection, VariationMatrix, Grid, GmapsLocation, MonthDay, CmsMultiColumnField
     }
 
     Type                        type;
-
-    List<String> gridColumns;
+    
+    List<String> gridColumns;    
 
     /** just for the serialization */
     public CustomFieldDefinition() {
@@ -38,7 +38,6 @@ public class CustomFieldDefinition implements Serializable {
         }
         gridColumns.add(columnName);
     }
-    
     
     public Type getType() {
         return type;

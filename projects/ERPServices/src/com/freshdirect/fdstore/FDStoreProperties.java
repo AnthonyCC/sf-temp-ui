@@ -1472,7 +1472,7 @@ public class FDStoreProperties {
         defaults.put("feature.rollout.checkout2_0", "GLOBAL:ENABLED,true;");
 		
 		refresh();
-        defaults.put(PROP_LOGISTICS_COMPANY_CODE, EnumCompanyCode.fd.name());
+        //defaults.put(PROP_LOGISTICS_COMPANY_CODE, EnumCompanyCode.fd.name());
         defaults.put(PROP_LOGISTICS_CONNECTION_TIMEOUT, 120);
         defaults.put(PROP_LOGISTICS_CONN_READ_TIMEOUT, 120);
         

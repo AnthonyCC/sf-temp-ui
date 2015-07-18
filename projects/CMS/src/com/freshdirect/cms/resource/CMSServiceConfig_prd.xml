@@ -78,6 +78,32 @@
 		</invoke-factory>
 	</service-point>
 	
+	<!-- DB Content Service for the feed-->
 	
-
+	<service-point id="DBStoreContent" interface="com.freshdirect.cms.application.ContentServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.db.DbContentService" service-id-property="name" initialize-method="initialize">
+				<set-service property="contentTypeService" service-id="DBStoreDef" />
+				<set-service property="dataSource" service-id="cmsdatasource" />
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	<service-point id="DBStoreDef" interface="com.freshdirect.cms.application.ContentTypeServiceI">
+		<invoke-factory>
+			<construct class="com.freshdirect.cms.application.service.db.DbTypeService" initialize-method="initialize">
+				<set-service property="dataSource" service-id="cmsdatasource" />
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
+	
+	<service-point id="cmsdatasource" interface="javax.sql.DataSource">
+		<invoke-factory>
+			<construct class="com.freshdirect.framework.conf.JndiDataSource">
+				<string>fddatasource</string>
+			</construct>
+		</invoke-factory>
+	</service-point>
+	
 </module>

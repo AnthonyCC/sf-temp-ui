@@ -50,6 +50,12 @@
 				<DestinationDef contentType="SearchSuggestionGroup" />
 				<DestinationDef contentType="RecipeTag" />
 				<DestinationDef contentType="WebPage"/>
+				<DestinationDef contentType="Section"/>
+				<DestinationDef contentType="Anchor"/>
+				<DestinationDef contentType="TextComponent"/>
+				<DestinationDef contentType="ImageBanner"/>
+				<DestinationDef contentType="PickList"/>
+				<DestinationDef contentType="PickListItem"/>
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -2458,11 +2464,116 @@
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
+	
 	<ContentTypeDef name="WebPage" generateId="false">
 		<AttributeDefs>
 			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" required="false"/>
 			<AttributeDef name="SEO_META_DESC" type="S" label="SEO Meta Description" required="false"/>
 			<AttributeDef name="URL" type="S" label="URL of the  page" required="false"/>
 		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="WebPageSection" label="Sections">
+				<DestinationDef contentType="Section"/>
+			</RelationshipDef>
+			<RelationshipDef name="WebPageSchedule" label="Sections">
+				<DestinationDef contentType="Schedule"/>
+			</RelationshipDef>
+		</RelationshipDefs>
 	</ContentTypeDef>
+	
+	<ContentTypeDef name="Section" generateId="false">
+		<AttributeDefs>
+			<AttributeDef name="Type" type="S" label="Type" required="false"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="SectionComponent" label="Components">
+				<DestinationDef contentType="Anchor"/>
+				<DestinationDef contentType="ImageBanner"/>
+				<DestinationDef contentType="PickList"/>
+				<DestinationDef contentType="TextComponent"/>
+			</RelationshipDef>
+			<RelationshipDef name="SectionSchedule" label="Schedule">
+				<DestinationDef contentType="Schedule"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	<ContentTypeDef name="Anchor" generateId="false">
+		<AttributeDefs>
+			<AttributeDef name="Url" type="S" label="Url" required="false"/>
+			<AttributeDef name="Text" type="S" label="Text" required="false"/>
+			<AttributeDef name="Type" type="S" label="Type" required="false"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="Target" label="Target">
+				<DestinationDef contentType="Category"/>
+				<DestinationDef contentType="Department"/>
+				<DestinationDef contentType="PickList"/>
+				<DestinationDef contentType="Product"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	<ContentTypeDef name="TextComponent" generateId="false">
+		<AttributeDefs>
+			<AttributeDef name="Text" type="S" label="Text" required="false"/>
+		</AttributeDefs>
+	</ContentTypeDef>
+	
+	<ContentTypeDef name="ImageBanner" generateId="false">
+		<AttributeDefs>
+		    <AttributeDef name="Name" type="S" label="Name" required="false"/>
+			<AttributeDef name="Type" type="S" label="Type" required="false"/>
+			<AttributeDef name="Description" type="S" label="Description" required="false"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="ImageBannerImage" label="Image">
+				<DestinationDef contentType="Image"/>
+			</RelationshipDef>
+			<RelationshipDef name="ImageBannerLink" label="Links">
+				<DestinationDef contentType="Anchor"/>
+			</RelationshipDef>
+			<RelationshipDef name="ImageBannerBurst" label="Burst">
+				<DestinationDef contentType="Image"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<ContentTypeDef name="PickList" generateId="false">
+		<AttributeDefs>
+		    <AttributeDef name="Name" type="S" label="Name" required="false"/>
+			<AttributeDef name="PricingZone" type="S" label="Pricing Zone" required="false"/>
+			<AttributeDef name="DistributionChannel" type="S" label="Distribution Channel" required="false"/>
+			<AttributeDef name="SalesOrganization" type="S" label="Sales Organization" required="false"/>
+			<AttributeDef name="DisplayName" type="S" label="Display Name" required="false"/>
+			<AttributeDef name="Type" type="S" label="Type" required="false"/>
+			<AttributeDef name="Description" type="S" label="Description" required="false"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="PickListPickListItem" label="PickList Items">
+				<DestinationDef contentType="PickListItem"/>
+			</RelationshipDef>
+			<RelationshipDef name="PickListMedia" label="Image Banners">
+				<DestinationDef contentType="ImageBanner"/>
+			</RelationshipDef>
+			<RelationshipDef name="PickListSchedule" label="Schedule">
+				<DestinationDef contentType="Schedule"/>
+			</RelationshipDef>
+			<RelationshipDef name="PickListPickList" label="Pick List">
+				<DestinationDef contentType="PickList"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	<ContentTypeDef name="PickListItem" generateId="false">
+		<AttributeDefs>
+		    <AttributeDef name="Default" type="S" label="Default" required="false"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="PickListItemProduct" label="Product">
+				<DestinationDef contentType="Product"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+		
 </CMSDef>

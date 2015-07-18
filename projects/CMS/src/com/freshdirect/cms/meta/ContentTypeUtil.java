@@ -27,7 +27,8 @@ import com.freshdirect.cms.application.ContentTypeServiceI;
  */
 public class ContentTypeUtil {
 
-	private static final DateFormat	dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	public static final DateFormat	dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	public static final DateFormat	timeFormat = new SimpleDateFormat("HH:mm");
 
 	private ContentTypeUtil() {
 	}
@@ -104,8 +105,8 @@ public class ContentTypeUtil {
 			String str = (String)value;
 			if (EnumAttributeType.STRING.equals(type)) {
 				return str;
-                        } else if (EnumAttributeType.LONG_TEXT.equals(type)) {
-                            return str;
+            } else if (EnumAttributeType.LONG_TEXT.equals(type)) {
+            	return str;
 			} else if (EnumAttributeType.BOOLEAN.equals(type)) {
 				return Boolean.valueOf(str);
 			} else if (EnumAttributeType.INTEGER.equals(type)) {
@@ -122,6 +123,12 @@ public class ContentTypeUtil {
 				}
 			} else if (EnumAttributeType.WYSIWYG.equals(type)){
 				return str;
+			} else if (EnumAttributeType.TIME.equals(type)){
+				try{
+					return timeFormat.parse(str);
+				} catch (ParseException e){
+					throw new IllegalArgumentException(e.toString());
+				}
 			}
 			throw new IllegalArgumentException(
 					"Unable to convert value value [" + value + "] ("
@@ -192,6 +199,8 @@ public class ContentTypeUtil {
     public static String attributeToString(AttributeDefI atrDef, Object value) {
         if (EnumAttributeType.DATE.equals(atrDef.getAttributeType())) {
             return dateFormat.format((Date) value);
+        } else if (EnumAttributeType.TIME.equals(atrDef.getAttributeType())) {
+            return timeFormat.format((Date) value);
         }
         return String.valueOf(value);
     }

@@ -717,7 +717,11 @@ function loadStuff() {
   	$("#url").val("/social/register/"); 
   	$("#payload").val(""); 	
   	
-  } 
+  } else if ( loaddata == "getPage"){
+  	$("#url").val("/home/getPage/");
+  	var postData = '{"pageName": "Feed", "date" : "2015-07-16T12:12:00.000Z"}';
+  	$("#payload").val(postData);
+  }
   $("#result").JSONView({});  	
   $("#payload").focus();
 }
@@ -955,8 +959,8 @@ function doStuff() {
   <option value="getAllHome"> Home - Get All</option>
   <option value="featuredCategories"> Home - Featured Categories </option>
   <option value="getHomeAndCategories"> Home - Get Home And Categories </option>
-  
- <option value=""> ========== Social Login ========== </option>
+  <option value="getPage"> Home - Get Page </option>
+  <option value=""> ========== Social Login ========== </option>
   <option value="socialrecognize"> Social - Recognize</option>
   <option value="socialmerge"> Social - Merge </option>
   <option value="socialregister"> Social - Register </option>

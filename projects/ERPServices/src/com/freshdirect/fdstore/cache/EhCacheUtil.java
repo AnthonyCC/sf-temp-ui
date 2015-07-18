@@ -53,7 +53,7 @@ public class EhCacheUtil {
 		}
 	}
 	
-	private static Ehcache getCache( String cacheName ) {
+	public static Ehcache getCache( String cacheName ) {
 		if ( manager != null ) {
 			return manager.getCache( cacheName );
 		}
@@ -138,5 +138,9 @@ public class EhCacheUtil {
 	
 	public static void removeFromCache(CacheEntryIdentifier cacheEntryIdentifier) {
 		removeFromCache(cacheEntryIdentifier.getCacheName(), cacheEntryIdentifier.getEntryKey());
+	}
+
+	public static void clearCache(String cacheName) {
+		getCache(cacheName).removeAll();
 	}
 }

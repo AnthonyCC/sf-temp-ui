@@ -12,5 +12,6 @@
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/lucene-queries-3.0.3.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/lucene-snowball-3.0.3.jar"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Delivery"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/ehcache-2.10.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

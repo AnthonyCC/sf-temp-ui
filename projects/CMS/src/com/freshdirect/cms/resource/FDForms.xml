@@ -1985,6 +1985,7 @@
 			</CmsPage>
 		</pages>
 	</CmsEditor>
+	
 	<CmsEditor id="WebPage">
 		<contentType>WebPage</contentType>
 		<pages>
@@ -1999,8 +2000,205 @@
 							<CmsField><attribute>URL</attribute></CmsField>
 						</fields>
 					</CmsSection>
+					<CmsSection>
+						<title>Section and Schedule</title>
+						<fields>
+						    <CmsMultiColumnField>
+								<attribute>WebPageSchedule</attribute>
+								<columns>
+								    <CmsField><attribute>Day</attribute></CmsField>
+									<CmsField><attribute>StartDate</attribute></CmsField>
+									<CmsField><attribute>EndDate</attribute></CmsField>
+									<CmsField><attribute>StartTime</attribute></CmsField>
+									<CmsField><attribute>EndTime</attribute></CmsField>
+								</columns>
+							</CmsMultiColumnField>
+							<CmsField><attribute>WebPageSection</attribute></CmsField>
+						</fields>
+					</CmsSection>
 				</sections>
 			</CmsPage>
 		</pages>
 	</CmsEditor>
+	
+	<CmsEditor id="PickList">
+		<contentType>PickList</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+				    <CmsSection>
+						<title>Header</title>
+						<fields>
+							<CmsField><attribute>Name</attribute></CmsField>
+							<CmsField><attribute>DisplayName</attribute></CmsField>
+							<CmsField><attribute>Description</attribute></CmsField>
+							<CmsField><attribute>PickListMedia</attribute></CmsField>
+							<CmsField><attribute>DistributionChannel</attribute></CmsField>
+							<CmsField><attribute>SalesOrganization</attribute></CmsField>
+							<CmsField><attribute>PricingZone</attribute></CmsField>
+							<CmsField><attribute>Type</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Schedule</title>
+						<fields>
+						    <CmsMultiColumnField>
+						        <attribute>PickListSchedule</attribute>
+						        <columns>
+									<CmsField><attribute>Day</attribute></CmsField>
+									<CmsField><attribute>StartDate</attribute></CmsField>
+									<CmsField><attribute>EndDate</attribute></CmsField>
+									<CmsField><attribute>StartTime</attribute></CmsField>
+									<CmsField><attribute>EndTime</attribute></CmsField>
+								</columns>
+						    </CmsMultiColumnField>
+						 </fields>
+					</CmsSection>
+					<CmsSection>
+						<title>Categories</title>
+						<fields>
+						    <CmsMultiColumnField>
+						    	<attribute>PickListPickListItem</attribute>
+						    	<columns>
+						    		<CmsField><attribute>PickListItemProduct$FULL_NAME</attribute></CmsField>
+						    	</columns>
+						    </CmsMultiColumnField> 
+						    <!-- <CmsField><attribute>PickListPickListItem</attribute></CmsField> -->
+							<CmsField><attribute>PickListPickList</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+	
+	<CmsEditor id="PickListItem">
+		<contentType>PickListItem</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Item</title>
+						<fields>
+							<CmsField><attribute>PickListItemProduct</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+	
+	<CmsEditor id="section">
+		<contentType>Section</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>CORE</title>
+						<fields>
+							<CmsField><attribute>SectionComponent</attribute></CmsField>
+							<CmsField><attribute>Type</attribute></CmsField>
+							<CmsMultiColumnField>
+						        <attribute>SectionSchedule</attribute>
+						        <columns>
+									<CmsField><attribute>Day</attribute></CmsField>
+									<CmsField><attribute>StartDate</attribute></CmsField>
+									<CmsField><attribute>EndDate</attribute></CmsField>
+									<CmsField><attribute>StartTime</attribute></CmsField>
+									<CmsField><attribute>EndTime</attribute></CmsField>
+								</columns>
+						    </CmsMultiColumnField>							
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+
+	<CmsEditor id="textComponent">
+		<contentType>TextComponent</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>CORE</title>
+						<fields>
+							<CmsField>
+								<attribute>Text</attribute>
+							</CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+
+	<CmsEditor id="anchor">
+		<contentType>Anchor</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>CORE</title>
+						<fields>
+							<CmsField><attribute>Text</attribute></CmsField>
+							<CmsField><attribute>Target</attribute></CmsField>
+							<CmsField><attribute>Url</attribute></CmsField>
+							<CmsField><attribute>Type</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+	
+	<CmsEditor id="imageBanner">
+		<contentType>ImageBanner</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>CORE</title>
+						<fields>
+							<CmsField><attribute>Name</attribute></CmsField>
+							<CmsField><attribute>ImageBannerImage</attribute></CmsField>  
+							<CmsField><attribute>ImageBannerLink</attribute></CmsField>  
+							<CmsField><attribute>Description</attribute></CmsField>
+							<CmsField><attribute>Type</attribute></CmsField>
+							<CmsField><attribute>BurstText</attribute></CmsField> 
+							<CmsField><attribute>Burst</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
+	
+	<CmsEditor id="schedule">
+    	<contentType>Schedule</contentType>
+		<pages>
+			<CmsPage>
+                	<title>Core Attributes</title>
+                    <sections>
+						<CmsSection>
+							<title>CORE</title>
+							<fields>
+								<CmsField><attribute>Day</attribute></CmsField>
+								<CmsField><attribute>StartDate</attribute></CmsField>
+								<CmsField><attribute>EndDate</attribute></CmsField>           
+								<CmsField><attribute>StartTime</attribute></CmsField>   
+								<CmsField><attribute>EndTime</attribute></CmsField>          
+							</fields>
+						</CmsSection>
+					</sections>
+				</CmsPage>
+              </pages>
+	</CmsEditor>
+	
 </Content>

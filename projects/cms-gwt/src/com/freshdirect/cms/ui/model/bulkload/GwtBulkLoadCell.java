@@ -34,7 +34,7 @@ public class GwtBulkLoadCell extends BaseModelData implements Serializable {
 		// "_U" is a special value denoting unsupported types
 		if ("S".equals(attributeType) || "TXT".equals(attributeType) || "WY".equals(attributeType) || "R".equals(attributeType) || "_K".equals(attributeType) || "E".equals(attributeType)
 				|| "I".equals(attributeType) || "D".equals(attributeType) || "B".equals(attributeType)
-				|| "DT".equals(attributeType) || "_U".equals(attributeType) || "_RR".equals(attributeType)) {
+				|| "DT".equals(attributeType) || "_U".equals(attributeType) || "_RR".equals(attributeType) || "TS".equals(attributeType)) {
 			this.columnName = columnName;
 			this.attributeName = attributeName;
 			this.attributeType = attributeType;
@@ -44,6 +44,11 @@ public class GwtBulkLoadCell extends BaseModelData implements Serializable {
 				parsedValue = fillWithZeros(date.getYear() + 1900, 4) + "-" + fillWithZeros(date.getMonth() + 1, 2) + "-"
 						+ fillWithZeros(date.getDate(), 2);
 			}
+			if ("TS".equals(attributeType)) {
+				Date date = (Date) parsedValue;
+				parsedValue = fillWithZeros(date.getHours(), 2) + ":" + fillWithZeros(date.getMinutes(), 2);
+			}
+			
 			if ("_RR".equals(attributeType)) {
 				parsedValue = parsedValue != null ? ((BulkLoadReverseRelationship) parsedValue).name() : null;
 			}
@@ -91,7 +96,7 @@ public class GwtBulkLoadCell extends BaseModelData implements Serializable {
 				return Integer.toString((Integer) value);
 			else if ("D".equals(type))
 				return Double.toString((Double) value);
-			else if ("_K".equals(type) || "S".equals(type) || "TXT".equals(type) || "E".equals(type) || "DT".equals(type) || "_U".equals(type)
+			else if ("_K".equals(type) || "S".equals(type) || "TXT".equals(type) || "E".equals(type) || "DT".equals(type) || "_U".equals(type) || "TS".equals(type) || "WY".equals(type)
 					|| "_RR".equals(type))
 				return value.toString();
 			else if ("R".equals(type))

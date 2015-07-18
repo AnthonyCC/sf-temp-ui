@@ -23,6 +23,9 @@ final int W_DELIVERY_FIRE_ISLAND_RIGHT = 191;
 <fd:CheckLoginStatus id="user" />
 
 <tmpl:insert template='/common/template/delivery_info_nav.jsp'>
+	<tmpl:put name="seoMetaTag" direct="true">
+		<fd:SEOMetaTag pageId="delivery_fire_island"></fd:SEOMetaTag>
+	</tmpl:put>
 	<tmpl:put name='title' direct='true'>Delivery Information</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 <table width="<%=W_DELIVERY_FIRE_ISLAND_TOTAL%>" border="0" cellpadding="0" cellspacing="0">

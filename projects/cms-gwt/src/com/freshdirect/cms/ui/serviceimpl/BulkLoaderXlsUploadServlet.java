@@ -74,6 +74,8 @@ public class BulkLoaderXlsUploadServlet extends FileUploadServlet {
 	private static final Logger LOGGER = LoggerFactory.getInstance(BulkLoaderXlsUploadServlet.class);
 
 	private static final DateFormat YYYY_MM_DD = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+	
+	private static final DateFormat HH_MM = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
 
 	private static Set<String> contentTypeNames;
 
@@ -647,7 +649,12 @@ public class BulkLoaderXlsUploadServlet extends FileUploadServlet {
 								if (dateValue != null) {
 									parsedValue = handleSimpleValue(attributeName, dateValue, status, rowStatus);
 								}
-							} else if (attributeType == EnumAttributeType.ENUM) {
+							} else if (attributeType == EnumAttributeType.TIME) {
+								Date dateValue = parseTimeValue(cell, type, stringValue, status);
+								if (dateValue != null) {
+									parsedValue = handleSimpleValue(attributeName, dateValue, status, rowStatus);
+								}
+							}else if (attributeType == EnumAttributeType.ENUM) {
 								EnumDefI enumDef = (EnumDefI) attributeDef;
 								if (enumDef.getValueType() == EnumAttributeType.INTEGER) {
 									Integer integerValue = parseIntegerValue(stringValue);
@@ -894,6 +901,20 @@ public class BulkLoaderXlsUploadServlet extends FileUploadServlet {
 			}
 		}
 		return dateValue;
+	}
+	
+	private Date parseTimeValue(Cell cell, int type, String value, GwtBulkLoadPreviewStatus status) {
+		Date timeValue = null;
+		if (type == Cell.CELL_TYPE_NUMERIC)
+			timeValue = cell.getDateCellValue();
+		else {
+			try {
+				timeValue = HH_MM.parse(value);
+			} catch (ParseException e) {
+				status.setStateWithMessage(ERROR_CELL, "cannot parse date (yyyy-MM-dd)");
+			}
+		}
+		return timeValue;
 	}
 
 	private ContentNodeI parseContentNodeId(int type, String stringValue, GwtBulkLoadPreviewStatus status) {

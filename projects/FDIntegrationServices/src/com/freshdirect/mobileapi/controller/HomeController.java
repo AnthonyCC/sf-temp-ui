@@ -12,24 +12,31 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.util.PublishId;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.content.BannerModel;
+import com.freshdirect.fdstore.content.CMSContentFactory;
+import com.freshdirect.fdstore.content.CMSPageRequest;
+import com.freshdirect.fdstore.content.CMSWebPageModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.StoreModel;
+import com.freshdirect.fdstore.content.WebPageModel;
 import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.rollout.FeatureRolloutArbiter;
 import com.freshdirect.fdstore.util.Buildver;
 import com.freshdirect.mobileapi.controller.data.BrowseResult;
 import com.freshdirect.mobileapi.controller.data.request.BrowseQuery;
+import com.freshdirect.mobileapi.controller.data.request.WebPageRequest;
 import com.freshdirect.mobileapi.controller.data.response.Configuration;
 import com.freshdirect.mobileapi.controller.data.response.FeaturedCategoriesResponse;
 import com.freshdirect.mobileapi.controller.data.response.HomeGetAllResponse;
 import com.freshdirect.mobileapi.controller.data.response.HomeResponse;
 import com.freshdirect.mobileapi.controller.data.response.Idea;
+import com.freshdirect.mobileapi.controller.data.response.WebPageResponse;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.model.Category;
 import com.freshdirect.mobileapi.model.FeaturedCategory;
@@ -41,9 +48,9 @@ public class HomeController extends BaseController {
 	private static final String ACTION_GET_ALL = "getAll";
 	private static final String ACTION_GET_FEATURED_CATEGORIES = "getFeaturedCategories";
 	private static final String ACTION_GET_All_DETAILS = "getAllDetails";
+	private static final String ACTION_GET_CMS_PAGE = "getPage";
 	public static final Integer DEFAULT_PAGE = 1;
-	public static final Integer DEFAULT_MAX = 998;
-	
+	public static final Integer DEFAULT_MAX = 998;	
 	@Override
 	protected ModelAndView processRequest(HttpServletRequest request,
 			HttpServletResponse response, ModelAndView model, String action,
@@ -55,6 +62,8 @@ public class HomeController extends BaseController {
 			return featuredCategories(model, user);
 		} else if(ACTION_GET_All_DETAILS.equals(action)){
 			return getAllDetails(model, user, request);
+		} else if (ACTION_GET_CMS_PAGE.equals(action)){
+			return getCMSPage(model, user, request, response);
 		}
 		throw new UnsupportedOperationException();
 	}
@@ -191,4 +200,21 @@ public class HomeController extends BaseController {
         setResponseMessage(model, response, user);
 		return model;
 	}
+	
+	private ModelAndView getCMSPage(ModelAndView model, SessionUser user, HttpServletRequest request, HttpServletResponse response) throws JsonException {
+		WebPageResponse pageResponse = new WebPageResponse();
+		CMSPageRequest pageRequest = parseRequestObject(request, response, CMSPageRequest.class);
+		if(pageRequest != null){
+			if(pageRequest.getDate() == null){
+				pageResponse.setPage(CMSContentFactory.getInstance().getCMSPageByName(pageRequest.getPageName()));
+			} else {
+				List<CMSWebPageModel> pages = CMSContentFactory.getInstance().getCMSPageByParameters(pageRequest);
+				if(pages != null && !pages.isEmpty()){
+					pageResponse.setPage(pages.get(0));
+				}
+			}
+		}
+		setResponseMessage(model,pageResponse,user);
+		return model;
+	}	
 }

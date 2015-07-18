@@ -47,6 +47,7 @@
 				<DestinationDef contentType="CmsField" />
 				<DestinationDef contentType="CmsGridField" />
 				<DestinationDef contentType="CmsCustomField" />
+				<DestinationDef contentType="CmsMultiColumnField" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -63,8 +64,19 @@
 			<AttributeDef type="S" name="component" />
 		</AttributeDefs>
 	</ContentTypeDef>
-	
+		
 	<ContentTypeDef name="CmsGridField">
+		<AttributeDefs>
+			<AttributeDef type="S" name="attribute" />
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="columns" navigable="true" cardinality="Many">
+				<DestinationDef contentType="CmsField" />
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+	
+	<ContentTypeDef name="CmsMultiColumnField">
 		<AttributeDefs>
 			<AttributeDef type="S" name="attribute" />
 		</AttributeDefs>

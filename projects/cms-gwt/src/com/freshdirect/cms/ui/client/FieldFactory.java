@@ -5,15 +5,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.Time;
+import com.extjs.gxt.ui.client.widget.form.TimeField;
+import com.freshdirect.cms.ui.client.fields.CmsMultiColumnField;
 import com.freshdirect.cms.ui.client.fields.CustomGridField;
 import com.freshdirect.cms.ui.client.fields.EnumField;
+import com.freshdirect.cms.ui.client.fields.EnumMultiSelectField;
 import com.freshdirect.cms.ui.client.fields.FieldResetPlugin;
 import com.freshdirect.cms.ui.client.fields.InheritanceField;
 import com.freshdirect.cms.ui.client.fields.LocationField;
@@ -34,6 +40,7 @@ import com.freshdirect.cms.ui.model.GwtNodeData;
 import com.freshdirect.cms.ui.model.OneToManyModel;
 import com.freshdirect.cms.ui.model.attributes.ContentNodeAttributeI;
 import com.freshdirect.cms.ui.model.attributes.EnumAttribute;
+import com.freshdirect.cms.ui.model.attributes.MultiEnumAttribute;
 import com.freshdirect.cms.ui.model.attributes.OneToManyAttribute;
 import com.freshdirect.cms.ui.model.attributes.OneToOneAttribute;
 import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute;
@@ -66,7 +73,6 @@ public final class FieldFactory {
 	public static Field<Serializable> createInnerField( GwtNodeData nodeData, String key, boolean readonly, Serializable value ) {
     	final GwtContentNode aNode = nodeData.getNode();
         ContentNodeAttributeI attribute = aNode.getOriginalAttribute(key);
-        
 
 		CustomFieldDefinition customFieldDefinition = nodeData.getTabDefinition() == null ? null : nodeData.getTabDefinition().getCustomFieldDefinition( key );
 
@@ -152,7 +158,20 @@ public final class FieldFactory {
 				field.setValue((Boolean) value);
 				aField = field;
 			} else if ("enum".equals(type)) {
+				/* Following field can be used to select multiple items in the enum dropdown.
+				EnumMultiSelectField field = new EnumMultiSelectField((MultiEnumAttribute)attribute);
+				*/
 				aField = new EnumField((EnumAttribute)attribute, (EnumModel) value );
+				
+			} else if ("time".equals(type)) {
+				TimeField field = new TimeField();
+				field.setTriggerAction(TriggerAction.ALL);
+				if( value instanceof Time){
+					Time time = field.findModel(((Time)value).getDate());
+					field.select(time);
+					field.setValue(time);
+				}
+				aField = field;
 			} else if ("onetoone".equals(type)) {
 				OneToOneAttribute attr = (OneToOneAttribute) attribute;
 				OneToOneRelationField field = new OneToOneRelationField( attr.getAllowedTypes(), readonly );
@@ -166,8 +185,9 @@ public final class FieldFactory {
 				if (customFieldDefinition!=null) {
 				    if (customFieldDefinition.getType() == CustomFieldDefinition.Type.VariationMatrix) {
 				        field = new VariationMatrixField(key, attr.getAllowedTypes(), readonly, aNode);
-				    }
-				    if (customFieldDefinition.getGridColumns() != null) {
+				    } else if (customFieldDefinition.getType() == CustomFieldDefinition.Type.CmsMultiColumnField) {
+				    	field = new CmsMultiColumnField(key, attr.getAllowedTypes(), attr.isNavigable(), customFieldDefinition, readonly, nodeData.getNode().getType());
+				    } else if (customFieldDefinition.getGridColumns() != null) {
 				        field = new CustomGridField(key, attr.getAllowedTypes(), attr.isNavigable(), customFieldDefinition, readonly, nodeData.getNode().getType());
 				    }
 				} 
