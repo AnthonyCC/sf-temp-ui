@@ -1207,7 +1207,8 @@
 					<include name="asm.jar"/>
 					<include name="asm-attrs.jar"/>
 					<include name="cglib-2.1.jar"/>
-					<include name="ehcache-core-2.5.0.jar"/>
+					<include name="ehcache-2.10.0.jar"/>
+					<!--include name="ehcache-core-2.5.0.jar"/-->
 					<include name="slf4j-api-1.6.6.jar"/>
 					<include name="slf4j-jdk14-1.6.6.jar"/>
 					<include name="jug-lgpl-2.0.0.jar"/>
