@@ -112,6 +112,8 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 	
 	private static final String GET_TIMESLOT_BYID_API ="/timeslots/get/";
 	
+	private static final String GET_RESERVATION_BYID_API ="/reservation/get/";
+	
 	private static final String GET_PICKUPLOCATIONS_API ="/delivery/pickuplocations";
 	
 	private static final String GET_EMPLOYEES_API ="/delivery/resource/employees";
@@ -313,6 +315,15 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 		String inputJson = buildRequest(request);
 		DeliveryZoneCapacity response =  getData(inputJson, getEndPoint(GET_ZONE_CAPACITY), DeliveryZoneCapacity.class);
 		return response;
+	}
+	
+	@Override
+	public DeliveryReservations getReservationById(String rsvId)
+			throws FDLogisticsServiceException {
+
+		DeliveryReservations response =  getData(null, getEndPoint(GET_RESERVATION_BYID_API+rsvId), DeliveryReservations.class);
+		return response;
+	
 	}
 	
 	@Override

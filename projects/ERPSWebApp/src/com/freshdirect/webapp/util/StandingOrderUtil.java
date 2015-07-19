@@ -20,7 +20,6 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -390,10 +389,18 @@ public class StandingOrderUtil {
 		// ==================================
 		
 		// WARNING: getAllTimeslotsForDateRange-s select will ignore houre:minute in start/end dates!
+		
+		ErpAddressModel contactAddress = (ErpAddressModel)deliveryAddressModel;
+		
+		if ( event == null ) {
+			event = new TimeslotEvent(EnumTransactionSource.STANDING_ORDER.getCode(), false, 0.00, false, 
+					false,(customerUser!=null)?customerUser.getPrimaryKey():null, EnumCompanyCode.fd.name());
+		}	
+		//contactAddress.setFrom(deliveryAddressModel, customerUser.getFirstName(), customerUser.getLastName(), customer.getErpCustomerPK());
 		List<DateRange> ranges = new ArrayList<DateRange>();
 		ranges.add(new DateRange(deliveryTimes.getDayStart(), deliveryTimes.getDayEnd()));
 		FDTimeslotList timeslotList = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone
-				(ranges, null, (ContactAddressModel)deliveryAddressModel , customerUser.getHistoricOrderSize(), 
+				(ranges, event, contactAddress, customerUser.getHistoricOrderSize(), 
 						TimeslotLogic.getOrderContext(EnumOrderAction.CREATE, customer.getErpCustomerPK(), EnumOrderType.REGULAR))
 				.getTimeslotList().get(0);
 		

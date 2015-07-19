@@ -2,7 +2,6 @@ package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -62,13 +61,11 @@ import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.TimedLruCache;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.logistics.analytics.model.LateIssueOrder;
 import com.freshdirect.logistics.analytics.model.SessionEvent;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.controller.data.Depots;
 import com.freshdirect.logistics.controller.data.Result;
 import com.freshdirect.logistics.controller.data.request.SearchRequest;
-import com.freshdirect.logistics.controller.data.request.UpdateOrderSizeRequest;
 import com.freshdirect.logistics.controller.data.response.AddressCheckResponse;
 import com.freshdirect.logistics.controller.data.response.AddressExceptionResponse;
 import com.freshdirect.logistics.controller.data.response.AddressVerificationResponse;
@@ -86,7 +83,6 @@ import com.freshdirect.logistics.controller.data.response.ListOfObjects;
 import com.freshdirect.logistics.controller.data.response.Timeslot;
 import com.freshdirect.logistics.delivery.dto.Address;
 import com.freshdirect.logistics.delivery.dto.CustomerAvgOrderSize;
-import com.freshdirect.logistics.delivery.model.ActualOrderSizeInfo;
 import com.freshdirect.logistics.delivery.model.DlvZoneCapacityInfo;
 import com.freshdirect.logistics.delivery.model.DlvZoneModel;
 import com.freshdirect.logistics.delivery.model.EnumApplicationException;
@@ -296,7 +292,7 @@ public class FDDeliveryManager {
 			AddressVerificationResponse response = logisticsService.verifyAddress(address);
 			
 			FDDeliveryAddressVerificationResponse verifyResponse =  
-					LogisticsDataDecoder.decodeAddressVerificationResponse(response);
+					LogisticsDataDecoder.decodeAddressVerificationResponse(addressModel, response);
 			
 			return verifyResponse;
 		
@@ -330,7 +326,7 @@ public class FDDeliveryManager {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			Address address = LogisticsDataEncoder.encodeAddress(addressModel);
 			AddressCheckResponse response = logisticsService.checkAddress(address);
-			return LogisticsDataDecoder.decodeAddressCheckResponse(response);
+			return LogisticsDataDecoder.decodeAddressCheckResponse(addressModel, response);
 		
 		} catch (FDLogisticsServiceException ce) {
 			throw new FDResourceException(ce);
@@ -381,7 +377,7 @@ public class FDDeliveryManager {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			Address address = LogisticsDataEncoder.encodeAddress(addressModel);
 			AddressVerificationResponse response = logisticsService.geocodeAddress(address);
-			FDDeliveryAddressGeocodeResponse geocode = LogisticsDataDecoder.decodeAddressGeocodeResponse(response);
+			FDDeliveryAddressGeocodeResponse geocode = LogisticsDataDecoder.decodeAddressGeocodeResponse(addressModel, response);
 			return geocode;
 		} catch (FDLogisticsServiceException ce) {
 			throw new FDResourceException(ce);
@@ -629,7 +625,10 @@ public class FDDeliveryManager {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			Result response = logisticsService.cancelReservation(LogisticsDataEncoder.encodeCancelReservationRequest(rsvId, addressModel, event, restoreReservation));
 			LogisticsDataDecoder.decodeResult(response);	
-			return true;
+			if(response!=null && response.getDebug()!=null && response.getDebug().containsKey("restored")){
+				return Boolean.getBoolean(response.getDebug().get("restored"));
+			}
+			return false;
 		}  catch (FDLogisticsServiceException ex) {
 			throw new FDResourceException(ex);
 		}
@@ -654,7 +653,7 @@ public class FDDeliveryManager {
 			
 
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
-			DeliveryReservations response = logisticsService.getReservationsByCriteria(LogisticsDataEncoder.encodeReservationByIdRequest(rsvId));
+			DeliveryReservations response = logisticsService.getReservationById(rsvId);
 			List<FDReservation> fdReservations =  LogisticsDataDecoder.decodeReservations(response);
 			FDReservation fdReservation = null;
 			if(fdReservations!=null && fdReservations.size()>0){

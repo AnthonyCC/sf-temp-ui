@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -94,7 +96,7 @@ public class LogisticsDataDecoder {
 				com.freshdirect.common.address.EnumAddressType.getEnum(model.getAddressType()), 
 				model.getCounty(), model.getBuildingId(), model.getLocationId()));
 		
-		if(null!=model.getId())address.setId(model.getId());
+		if(StringUtils.isNotEmpty(model.getId())) address.setId(model.getId());
 		return address;
 		
 	}
@@ -170,7 +172,7 @@ public class LogisticsDataDecoder {
 	}
 	
 	public static FDDeliveryAddressVerificationResponse decodeAddressVerificationResponse(
-			AddressVerificationResponse response) throws FDResourceException,
+			AddressModel addressModel, AddressVerificationResponse response) throws FDResourceException,
 			FDInvalidAddressException {
 
 		if (response.getStatus() == null
@@ -180,7 +182,7 @@ public class LogisticsDataDecoder {
 		decodeAddressExceptions(response);
 		FDDeliveryAddressVerificationResponse result = 
 				new FDDeliveryAddressVerificationResponse(
-						decodeAddress(response.getAddress()),
+						copyScrubbedAddress(addressModel, decodeAddress(response.getAddress())),
 						decodeActionResult(response),
 						EnumAddressVerificationResult.getEnum(response.getScrubResult()),
 						decodeDeliveryServices(response.getServices()),
@@ -205,9 +207,9 @@ public class LogisticsDataDecoder {
 	}
 
 	public static FDDeliveryAddressGeocodeResponse decodeAddressGeocodeResponse(
-			AddressVerificationResponse response) throws FDResourceException, FDInvalidAddressException {
+			AddressModel addressModel, AddressVerificationResponse response) throws FDResourceException, FDInvalidAddressException {
 		decodeAddressExceptions(response);
-		FDDeliveryAddressGeocodeResponse result = new FDDeliveryAddressGeocodeResponse(decodeAddress(response.getAddress()), response.getGeocodeResult());
+		FDDeliveryAddressGeocodeResponse result = new FDDeliveryAddressGeocodeResponse(copyScrubbedAddress(addressModel, decodeAddress(response.getAddress())), response.getGeocodeResult());
 		return result;
 	}
 
@@ -350,11 +352,11 @@ public class LogisticsDataDecoder {
 	}
 
 	public static FDDeliveryAddressCheckResponse decodeAddressCheckResponse(
-			AddressCheckResponse response) throws FDResourceException, FDInvalidAddressException  {
+			AddressModel addressModel, AddressCheckResponse response) throws FDResourceException, FDInvalidAddressException  {
 		decodeAddressExceptions(response);
 		FDDeliveryAddressCheckResponse result = new FDDeliveryAddressCheckResponse();
 		if(response.getAddress() != null) {
-			result.setAddress(decodeAddress(response.getAddress()));
+			result.setAddress(copyScrubbedAddress(addressModel, decodeAddress(response.getAddress()))); // this is required to retain some of the properties in ErpAddressModel.
 		}
 		result.setAddressOk(response.getAddressOk());
 		result.setAptRanges(decodeDeliveryApartmentRange(response.getAptRanges()));
@@ -369,6 +371,16 @@ public class LogisticsDataDecoder {
 		return result;
 	}
 
+	public static AddressModel copyScrubbedAddress(AddressModel address, AddressModel scrubbedAddress){
+		address.setAddress1(scrubbedAddress.getAddress1());
+		address.setAddress2(scrubbedAddress.getAddress2());
+		address.setApartment(scrubbedAddress.getApartment());
+		address.setCity(scrubbedAddress.getCity());
+		address.setState(scrubbedAddress.getState());
+		address.setZipCode(scrubbedAddress.getZipCode());
+		address.setAddressInfo(scrubbedAddress.getAddressInfo());
+		return address;
+	}
 	private static List<FDDeliveryZoneInfo> decodeDeliveryZoneInfo(
 			List<DeliveryZone> zones) {
 		List<FDDeliveryZoneInfo> result = new ArrayList<FDDeliveryZoneInfo>();
@@ -468,9 +480,9 @@ public class LogisticsDataDecoder {
 		decodeResult(pickups);
 		List<FDDeliveryDepotModel> depots = new ArrayList<FDDeliveryDepotModel>();
 		for(PickupData p: pickups.getPickupDepots()){
-			depots.add(new FDDeliveryDepotModel(p.getName(), null, p.getRegionId(), 
+			depots.add(new FDDeliveryDepotModel(p.getName(), p.getRegistrationCode(), p.getRegionId(), 
 					decodePickupLocationAddresses(p.getDepotLocations()), p.getDepotCode(), 
-					null, false, p.isPickup(), false, false));
+					p.getCustServiceEmail(), p.isRequireEmployeeId(), p.isPickup(), p.isCorporateDepot(), p.isDeactivated()));
 		}
 		return depots;
 	}

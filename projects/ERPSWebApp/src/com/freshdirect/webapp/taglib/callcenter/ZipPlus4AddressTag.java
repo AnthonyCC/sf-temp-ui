@@ -245,7 +245,7 @@ public class ZipPlus4AddressTag extends AbstractControllerTag implements Session
 	}
 
 	private void addGeocodeResultErrors(String result, ActionResult actionResult) {
-		if (!result.equals("GEOCODE_OK")) {
+		if (result!=null && !result.equals("GEOCODE_OK")) {
 			actionResult.addError(true, "dlv_address_geocode", result);
 		}
 	}
