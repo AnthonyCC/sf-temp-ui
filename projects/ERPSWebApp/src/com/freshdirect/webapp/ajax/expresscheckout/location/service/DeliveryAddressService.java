@@ -112,26 +112,18 @@ public class DeliveryAddressService {
 		DeliveryAddressManipulator.performDeleteDeliveryAddress(user, session, deliveryAddressId, actionResult, event);
 	}
 
-	public List<ValidationError> selectDeliveryAddressMethod(String deliveryAddressId, String contactNumber, String actionName, HttpSession session, FDUserI user) throws FDResourceException,
-			JspException, RedirectToPage {
+	public List<ValidationError> selectDeliveryAddressMethod(String deliveryAddressId, String contactNumber, String actionName, HttpSession session, FDUserI user)
+			throws FDResourceException, JspException, RedirectToPage {
 		List<ValidationError> validationErrors = new ArrayList<ValidationError>();
-		if (selectionIsNeeded(deliveryAddressId, user)) {
+		ErpAddressModel deliveryAddress = user.getShoppingCart().getDeliveryAddress();
+		if (deliveryAddress == null || ((deliveryAddress instanceof ErpDepotAddressModel) && ((ErpDepotAddressModel) deliveryAddress).getZoneCode() == null) || deliveryAddress.getId() == null
+				|| user.getShoppingCart().getZoneInfo() == null || !deliveryAddress.getId().equals(deliveryAddressId)) {
 			ActionResult actionResult = new ActionResult();
 			DeliveryAddressManipulator.performSetDeliveryAddress(session, user, deliveryAddressId, contactNumber, null, actionName, true, actionResult, null, null, null, null, null, null);
 			TimeslotService.defaultService().releaseTimeslot(user);
 			processErrors(validationErrors, actionResult);
 		}
 		return validationErrors;
-	}
-
-	private boolean selectionIsNeeded(String deliveryAddressId, FDUserI user){
-		boolean selectionIsNeeded = false;
-		ErpAddressModel deliveryAddress = user.getShoppingCart().getDeliveryAddress();
-		if (deliveryAddress instanceof ErpDepotAddressModel){
-			ErpDepotAddressModel depotDeliveryAddress = (ErpDepotAddressModel)deliveryAddress;
-			selectionIsNeeded = selectionIsNeeded || (depotDeliveryAddress.getZoneCode() == null);
-		}
-		return selectionIsNeeded || deliveryAddress == null || deliveryAddress.getId() == null || user.getShoppingCart().getZoneInfo() == null || !deliveryAddress.getId().equals(deliveryAddressId);
 	}
 
 	private void processErrors(List<ValidationError> validationErrors, ActionResult actionResult) {
