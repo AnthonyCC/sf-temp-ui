@@ -2368,6 +2368,9 @@
 				<include name="freemarker-2.3.15.jar"/>
 				<include name="urlrewrite-2.6.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<include name="httpclient-4.2.6.jar"/>
+				<include name="httpcore-4.2.5.jar"/>
+				<include name="httpmime-4.2.6.jar"/>
 				
 			</lib>
 		</makeFDAdminEar>
@@ -2399,6 +2402,9 @@
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
+				<include name="httpclient-4.2.6.jar"/>
+				<include name="httpcore-4.2.5.jar"/>
+				<include name="httpmime-4.2.6.jar"/>
 			</lib>
 		</makeEar>
 	</target>
