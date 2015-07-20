@@ -30,10 +30,6 @@ public class FDCartModelService {
 				taxValue += item.getTaxValue();
 			}
 		}
-		for (Iterator<ErpChargeLineModel> i = cart.getCharges().iterator(); i.hasNext();) {
-			ErpChargeLineModel c = i.next();
-			taxValue += c.getTotalAmount() * c.getTaxRate();
-		}
 		return taxValue;
 	}
 
@@ -44,10 +40,6 @@ public class FDCartModelService {
 			if (item.isWine()) {
 				taxValue += item.getTaxValue();
 			}
-		}
-		for (Iterator<ErpChargeLineModel> i = cart.getCharges().iterator(); i.hasNext();) {
-			ErpChargeLineModel c = i.next();
-			taxValue += c.getTotalAmount() * c.getTaxRate();
 		}
 		return taxValue;
 	}
