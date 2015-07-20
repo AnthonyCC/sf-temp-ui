@@ -6,11 +6,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.CoreConnectionPNames;
+import org.apache.log4j.Category;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
@@ -23,6 +29,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -32,6 +39,7 @@ public abstract class AbstractLogisticsService {
 	private static final String OMS_API_CONTEXT = "/fdlogistics/v/1/";
 	
 	private static final RestTemplate restTemplate;
+	private static final Category LOGGER = LoggerFactory.getInstance(AbstractLogisticsService.class);
 
 	static {
 	    
@@ -42,7 +50,14 @@ public abstract class AbstractLogisticsService {
 		converters.add(getMappingJackson2HttpMessageConverter());
 		restTemplate = new RestTemplate(converters);
 		
-		SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+		PoolingClientConnectionManager connectionManager = new PoolingClientConnectionManager();
+		connectionManager.setMaxTotal(FDStoreProperties.getConnectionPoolSize());
+		
+		BasicHttpParams httpParams=new BasicHttpParams();
+		httpParams.setParameter(CoreConnectionPNames.SO_TIMEOUT, FDStoreProperties.getLogisticsConnectionTimeout()*1000);
+		httpParams.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, FDStoreProperties.getLogisticsConnectionTimeout()*1000);
+		HttpClient defaultHttpClient = new DefaultHttpClient(connectionManager, httpParams);
+		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(defaultHttpClient);
 	    //requestFactory.setReadTimeout(FDStoreProperties.getLogisticsConnectionReadTimeout()*1000);
 	    requestFactory.setConnectTimeout(FDStoreProperties.getLogisticsConnectionTimeout()*1000);
 	    restTemplate.setRequestFactory(requestFactory);
@@ -58,12 +73,14 @@ public abstract class AbstractLogisticsService {
 					entity, clazz);
 			return response.getBody();
 		} catch (RestClientException e) {
-			throw new FDLogisticsServiceException(e);
+			LOGGER.info(e.getMessage());
+			throw new FDLogisticsServiceException("API connection failure");
 		} catch (URISyntaxException e) {
-			throw new FDLogisticsServiceException(e);
+			LOGGER.info(e.getMessage());
+			throw new FDLogisticsServiceException("API syntax error");
 		}
 	}
-	
+
 	protected RestTemplate getRestTemplate(){
 		return restTemplate;
 	}

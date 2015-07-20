@@ -1559,6 +1559,9 @@
 				<pathelement location="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar"/>
 				<pathelement location="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar"/>
 				<pathelement location="${thirdparty.home}/gson-1.7.1.jar"/>
+				<pathelement location="${thirdparty.home}/httpclient-4.2.6.jar"/>
+				<pathelement location="${thirdparty.home}/httpcore-4.2.5.jar"/>
+				<pathelement location="${thirdparty.home}/httpmime-4.2.6.jar"/>
 			</path>
 	
 			<makeProject
