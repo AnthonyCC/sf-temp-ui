@@ -11,7 +11,6 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartI;
@@ -21,7 +20,6 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -152,15 +150,11 @@ public class SinglePageCheckoutFacade {
 		if (cart instanceof FDModifyCartModel) {
 			Boolean modifyCartPreSelectionCompleted = (Boolean) session.getAttribute("modifyCartPreSelectionCompleted");
 			if (modifyCartPreSelectionCompleted == null) {
-				String addressId = cart.getDeliveryReservation().getAddressId();
 				ActionResult actionResult = new ActionResult();
-				String selectDeliveryAddressActionName = "selectDeliveryAddressMethod";
-				DeliveryAddressManipulator.performSetDeliveryAddress(session, user, addressId, null, null, selectDeliveryAddressActionName, true, actionResult, null, null, null, null, null, null);
-				FDOrderAdapter order = ((FDModifyCartModel) cart).getOriginalOrder();
-				ErpPaymentMethodI paymentMethod=order.getPaymentMethod();
-				String paymentId = paymentMethod.getPK().getId();
-				String selectPaymentMethodActionName = "selectPaymentMethod";
-				PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, selectPaymentMethodActionName);
+				String addressId = cart.getDeliveryReservation().getAddressId();
+				DeliveryAddressManipulator.performSetDeliveryAddress(session, user, addressId, null, null, "selectDeliveryAddressMethod", true, actionResult, null, null, null, null, null, null);
+				String paymentId = ((FDModifyCartModel) cart).getOriginalOrder().getPaymentMethod().getPK().getId();
+				PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, "selectPaymentMethod");
 				for (ActionError error : actionResult.getErrors()) {
 					validationErrors.add(new ValidationError(error));
 				}
