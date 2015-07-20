@@ -28,7 +28,8 @@ public class DepartmentModel extends ProductContainer {
     
     private final List<CategorySectionModel> categorySections = new ArrayList<CategorySectionModel>();
 	
-    private final List<BannerModel> tabletNoPurchaseSuggestions = new ArrayList<BannerModel>();
+    private final List<BannerModel> tabletNoPurchaseSuggestions = new ArrayList<BannerModel>();    
+    private final List<ImageBanner> heroCarousel = new ArrayList<ImageBanner>();
 	
 	public DepartmentModel(ContentKey cKey) {
 		super(cKey);
@@ -281,4 +282,16 @@ public class DepartmentModel extends ProductContainer {
 	public BannerModel getTabletHeaderBanner() {
 		return FDAttributeFactory.lookup(this, "tabletHeaderBanner", null);
 	}
+
+
+
+	public List<ImageBanner> getHeroCarousel() {
+		ContentNodeModelUtil.refreshModels(this, "heroCarousel", heroCarousel, false);
+		return new ArrayList<ImageBanner>(heroCarousel);
+	}
+
+
+
+	
+	
 }

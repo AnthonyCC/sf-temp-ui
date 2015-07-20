@@ -126,6 +126,7 @@ public class ContentNodeModelUtil {
         TYPE_MODEL_MAP.put("Banner", BannerModel.class);
         TYPE_MODEL_MAP.put("SearchSuggestionGroup", SearchSuggestionGroupModel.class);
         TYPE_MODEL_MAP.put("RecipeTag", RecipeTagModel.class);
+        TYPE_MODEL_MAP.put("ImageBanner", ImageBanner.class);
 	}
 
 	/**

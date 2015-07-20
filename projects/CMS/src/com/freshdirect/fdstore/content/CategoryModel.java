@@ -54,6 +54,8 @@ public class CategoryModel extends ProductContainer {
 	
 	private static final long FIVE_MINUTES = 5l * 60l * 1000l;
 	
+	private final List<ImageBanner> heroCarousel = new ArrayList<ImageBanner>();
+	
 	private final class RecommendedProductsRef extends BalkingExpiringReference<List<ProductModel>> {
 	    String zoneId;
 
@@ -1304,4 +1306,10 @@ public class CategoryModel extends ProductContainer {
 	public final Image getTabletThumbnailImage() {
 		return FDAttributeFactory.constructImage(this, "tabletThumbnailImage");
 	}
+	
+	public List<ImageBanner> getHeroCarousel() {
+		ContentNodeModelUtil.refreshModels(this, "heroCarousel", heroCarousel, false);
+		return new ArrayList<ImageBanner>(heroCarousel);
+	}
+
 }
