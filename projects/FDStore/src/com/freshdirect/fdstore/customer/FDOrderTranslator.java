@@ -19,6 +19,7 @@ import com.freshdirect.customer.ErpDeliveryInfoModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpOrderLineModel;
+import com.freshdirect.fdlogistics.model.FDDeliveryZoneInfo;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
@@ -72,7 +73,6 @@ public class FDOrderTranslator {
 			if (deliveryReservation!=null){ //this may be null in express checkout flow
 				deliveryInfo.setDeliveryReservationId(deliveryReservation.getPK().getId());
 			}
-			deliveryInfo.setDeliveryAddress(cart.getDeliveryAddress());
 			if(deliveryReservation!=null && deliveryReservation.getTimeslot()!=null) {
 				deliveryInfo.setDeliveryStartTime(deliveryReservation.getStartTime());
 				deliveryInfo.setDeliveryEndTime(deliveryReservation.getEndTime());
@@ -90,27 +90,35 @@ public class FDOrderTranslator {
 				order.setRequestedDate(startTime.getTime());
 				deliveryInfo.setDeliveryCutoffTime(cutOffTime.getTime());
 			}
-			deliveryInfo.setDeliveryZone(cart.getZoneInfo().getZoneCode());
-			deliveryInfo.setDeliveryRegionId(cart.getZoneInfo().getRegionId());
-			if (cart.getDeliveryAddress() instanceof ErpDepotAddressModel) {
-				ErpDepotAddressModel depotAddress = (ErpDepotAddressModel) cart.getDeliveryAddress();
-				deliveryInfo.setDepotLocationId(depotAddress.getLocationId());
-				if (depotAddress.isPickup()) {
-					deliveryInfo.setDeliveryType(EnumDeliveryType.PICKUP);
-				}else{
-					deliveryInfo.setDeliveryType(EnumDeliveryType.DEPOT);
-				}
-			} else {
-				ErpAddressModel address = cart.getDeliveryAddress();
-				if(EnumServiceType.WEB.equals(address.getServiceType())){
-					EnumWebServiceType webServiceType = address.getWebServiceType();
-					deliveryInfo.setDeliveryType(EnumDeliveryType.getDeliveryType(webServiceType.getName()));
-				} else if(EnumServiceType.CORPORATE.equals(address.getServiceType())){
-					deliveryInfo.setDeliveryType(EnumDeliveryType.CORPORATE);
+			ErpAddressModel deliveryAddress = cart.getDeliveryAddress();
+			if (deliveryAddress != null){ //this may be null in express checkout flow
+				deliveryInfo.setDeliveryAddress(deliveryAddress);
+				order.setGlCode(lookupGLCode(deliveryAddress));
+				if (deliveryAddress instanceof ErpDepotAddressModel) {
+					ErpDepotAddressModel depotAddress = (ErpDepotAddressModel) deliveryAddress;
+					deliveryInfo.setDepotLocationId(depotAddress.getLocationId());
+					if (depotAddress.isPickup()) {
+						deliveryInfo.setDeliveryType(EnumDeliveryType.PICKUP);
+					} else {
+						deliveryInfo.setDeliveryType(EnumDeliveryType.DEPOT);
+					}
 				} else {
-					deliveryInfo.setDeliveryType(EnumDeliveryType.HOME);
+					if (EnumServiceType.WEB.equals(deliveryAddress.getServiceType())){
+						EnumWebServiceType webServiceType = deliveryAddress.getWebServiceType();
+						deliveryInfo.setDeliveryType(EnumDeliveryType.getDeliveryType(webServiceType.getName()));
+					} else if (EnumServiceType.CORPORATE.equals(deliveryAddress.getServiceType())){
+						deliveryInfo.setDeliveryType(EnumDeliveryType.CORPORATE);
+					} else {
+						deliveryInfo.setDeliveryType(EnumDeliveryType.HOME);
+					}
 				}
 			}
+			FDDeliveryZoneInfo zoneInfo = cart.getZoneInfo();
+			if (zoneInfo != null) { //this may be null in express checkout flow
+				deliveryInfo.setDeliveryZone(zoneInfo.getZoneCode());
+				deliveryInfo.setDeliveryRegionId(zoneInfo.getRegionId());
+			}
+			
 			order.setDeliveryInfo(deliveryInfo);
 			order.setPricingDate(Calendar.getInstance().getTime());
 			
@@ -120,9 +128,6 @@ public class FDOrderTranslator {
 			//order.setSubTotal(cart.getSubTotal());
 			order.setSubTotal(cart.getActualSubTotal());
 			
-			
-			order.setGlCode(lookupGLCode(cart.getDeliveryAddress()));
-
 			List<ErpOrderLineModel> orderLines = new ArrayList<ErpOrderLineModel>();
 			translateOrderLines(cart, skipModifyLines, sameDeliveryDate,orderLines);
 			order.setOrderLines(orderLines);
