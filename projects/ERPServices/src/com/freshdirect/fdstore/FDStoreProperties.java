@@ -716,7 +716,6 @@ public class FDStoreProperties {
 
 	private static final String PROP_LOGISTICS_CONNECTION_TIMEOUT = "fdstore.logistics.conn.timeout";
 	private static final String PROP_LOGISTICS_CONN_READ_TIMEOUT = "fdstore.logistics.conn.read.timeout";
-	private static final String PROP_LOGISTICS_POOL_SIZE = "fdstore.logistics.conn.pool.size";
 
     //Max Invalid Login counts for Recaptcha
     private final static String PROP_MAX_INVALID_LOGIN_ATTEMPT = "fdstore.max.invalid.login.count";
@@ -3620,14 +3619,6 @@ public class FDStoreProperties {
 	   	}
 	}
 		
-	public static int getConnectionPoolSize() {
-		try{
-	   		return Integer.parseInt(get(PROP_LOGISTICS_POOL_SIZE));
-	   	} catch(NumberFormatException e){
-	   		return 5;
-	   	}
-	}
-	
 	
 	// Recaptcha getter methods
 	 public static String getRecaptchaPublicKey() {

@@ -6,17 +6,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.CoreConnectionPNames;
 import org.apache.log4j.Category;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
@@ -50,14 +45,7 @@ public abstract class AbstractLogisticsService {
 		converters.add(getMappingJackson2HttpMessageConverter());
 		restTemplate = new RestTemplate(converters);
 		
-		PoolingClientConnectionManager connectionManager = new PoolingClientConnectionManager();
-		connectionManager.setMaxTotal(FDStoreProperties.getConnectionPoolSize());
-		
-		BasicHttpParams httpParams=new BasicHttpParams();
-		httpParams.setParameter(CoreConnectionPNames.SO_TIMEOUT, FDStoreProperties.getLogisticsConnectionTimeout()*1000);
-		httpParams.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, FDStoreProperties.getLogisticsConnectionTimeout()*1000);
-		HttpClient defaultHttpClient = new DefaultHttpClient(connectionManager, httpParams);
-		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(defaultHttpClient);
+		SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
 	    //requestFactory.setReadTimeout(FDStoreProperties.getLogisticsConnectionReadTimeout()*1000);
 	    requestFactory.setConnectTimeout(FDStoreProperties.getLogisticsConnectionTimeout()*1000);
 	    restTemplate.setRequestFactory(requestFactory);
@@ -80,7 +68,7 @@ public abstract class AbstractLogisticsService {
 			throw new FDLogisticsServiceException("API syntax error");
 		}
 	}
-
+	
 	protected RestTemplate getRestTemplate(){
 		return restTemplate;
 	}
