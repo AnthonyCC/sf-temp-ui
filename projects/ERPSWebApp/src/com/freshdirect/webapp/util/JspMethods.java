@@ -913,7 +913,7 @@ public class JspMethods {
 	}
 
 	public static String formatPriceWithNegativeSign(double price) {
-		return "(-" + formatPrice(price) + ")";
+		return "-" + formatPrice(price);
 	}
 	
 	public static String formatPrice(double price) {
