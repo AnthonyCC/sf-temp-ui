@@ -115,6 +115,17 @@
   white-space: nowrap;
 }
 
+[data-receipt-id="automaticheaderdiscount"] .receipt-price,
+[data-receipt-id="redemptionPromo"] .receipt-price,
+[data-receipt-id="ssOrderTotal"] .receipt-price,
+[data-receipt-id="freefood"] .receipt-price,
+[data-receipt-id="discount"] .receipt-price,
+[data-receipt-id="redemptionfailure"] .receipt-price,
+[data-receipt-id="giftcardbalance"] .receipt-price,
+[data-receipt-id="credits"] .receipt-price {
+  color: #693;
+}
+
 #successpage h2.inyourorder {
   font-weight: bold;
   line-height: 44px;

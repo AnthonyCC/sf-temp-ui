@@ -9,9 +9,6 @@ import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
-import com.freshdirect.fdstore.promotion.EnumPromotionType;
-import com.freshdirect.fdstore.promotion.PromotionFactory;
-import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartSubTotalFieldData;
 import com.freshdirect.webapp.ajax.expresscheckout.receipt.data.ReceiptData;
 import com.freshdirect.webapp.util.JspMethods;
@@ -43,8 +40,6 @@ public class ReceiptBoxService {
 	private static final String CREDITS_ID = "credits";
 	private static final String DISCOUNT_TEXT = "Discount";
 	private static final String DISCOUNT_ID = "discount";
-	private static final String FREE_FOOD_TEXT = "";
-	private static final String FREE_FOOD_ID = "freefood";
 	private static final String REMOVE_URL_KEY = "removeUrl";
 	private static final String DELIVERY_PREMIUM_HAMPTONS_WAIVED_NAME = "Delivery Premium (Hamptons) (waived)";
 	private static final String DELIVERY_PREMIUM_HAMPTONS_NAME = "Delivery Premium (Hamptons)";
@@ -184,20 +179,11 @@ public class ReceiptBoxService {
 			final List<ErpDiscountLineModel> discountLineModels = order.getDiscounts();
 			for (ErpDiscountLineModel discountLineModel : discountLineModels) {
 				Discount discount = discountLineModel.getDiscount();
-				PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
-				String desc = EnumPromotionType.SIGNUP.equals(promotion.getPromotionType()) ? "Free Food" : promotion.getDescription();
-
 				CartSubTotalFieldData discountLine = new CartSubTotalFieldData();
 				discountLine.setId(DISCOUNT_ID);
 				discountLine.setText(DISCOUNT_TEXT);
 				discountLine.setValue(JspMethods.formatPriceWithNegativeSign(discount.getAmount()));
 				receiptBox.add(discountLine);
-
-				CartSubTotalFieldData freeFoodLine = new CartSubTotalFieldData();
-				freeFoodLine.setId(FREE_FOOD_ID);
-				freeFoodLine.setText(FREE_FOOD_TEXT);
-				freeFoodLine.setValue(desc);
-				receiptBox.add(freeFoodLine);
 			}
 		}
 	}
