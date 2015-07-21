@@ -35,6 +35,7 @@ import com.freshdirect.webapp.util.JspMethods;
 
 public class CartSubTotalBoxService {
 
+
 	private static final CartSubTotalBoxService INSTANCE = new CartSubTotalBoxService();
 
 	private static final String SIGNUP_PROMOTION_INFO_ID = "signupPromotionInfo";
@@ -183,14 +184,14 @@ public class CartSubTotalBoxService {
 				CartSubTotalFieldData freeFood = new CartSubTotalFieldData();
 				freeFood.setId(FREE_FOOD_ID);
 				freeFood.setText(FREE_FOOD_TEXT);
-				freeFood.setValue("-" + JspMethods.formatPrice(discount.getAmount()));
+				freeFood.setValue(JspMethods.formatPriceWithNegativeSign(discount.getAmount()));
 				subTotalBox.add(freeFood);
 			} else if (isRedemptionApplied && promoCode.equalsIgnoreCase(discount.getPromotionCode())) {
 				removeLinkDisplayed = true;
 				CartSubTotalFieldData redemptionPromoData = new CartSubTotalFieldData();
 				redemptionPromoData.setId(REDEMPTION_PROMO_ID);
 				redemptionPromoData.setText(redemptionPromo.getDescription());
-				redemptionPromoData.setValue("-" + JspMethods.formatPrice(discount.getAmount()));
+				redemptionPromoData.setValue(JspMethods.formatPriceWithNegativeSign(discount.getAmount()));
 				Map<String, Object> other = redemptionPromoData.getOther();
 				other.put(PROMO_CODE_KEY, promoCode);
 				other.put("removeCode", "Remove");
@@ -203,7 +204,7 @@ public class CartSubTotalBoxService {
 				Map<String, Object> other = automaticHeaderDiscount.getOther();
 				other.put(PROMO_CODE_KEY, promotion.getPromotionCode());
 				automaticHeaderDiscount.setText(promotion.getDescription());
-				automaticHeaderDiscount.setValue("-" + JspMethods.formatPrice(discount.getAmount()));
+				automaticHeaderDiscount.setValue(JspMethods.formatPriceWithNegativeSign(discount.getAmount()));
 				subTotalBox.add(automaticHeaderDiscount);
 			}
 		}
@@ -248,7 +249,7 @@ public class CartSubTotalBoxService {
 			CartSubTotalFieldData data = new CartSubTotalFieldData();
 			data.setId(CREDITS_ID);
 			data.setText(CREDITS_TEXT);
-			data.setValue("-" + JspMethods.formatPrice(cart.getCustomerCreditsValue()) );
+			data.setValue(JspMethods.formatPriceWithNegativeSign(cart.getCustomerCreditsValue()));
 			subTotalBox.add(data);
 		}
 	}
@@ -272,7 +273,7 @@ public class CartSubTotalBoxService {
 			CartSubTotalFieldData data = new CartSubTotalFieldData();
 			data.setId("giftcardbalance");
 			data.setText("Gift Card Balance");
-			data.setValue("-" + JspMethods.formatPrice(user.getGiftcardBalance()) );
+			data.setValue(JspMethods.formatPriceWithNegativeSign(user.getGiftcardBalance()));
 			subTotalBox.add(data);
 		}
 	}
@@ -370,7 +371,7 @@ public class CartSubTotalBoxService {
 		if (redemptionPromo.isSampleItem()) {
 			data.setValue("FREE!");
 		} else {
-			data.setValue("-" + JspMethods.formatPrice(redemptionAmt));
+			data.setValue(JspMethods.formatPriceWithNegativeSign(redemptionAmt));
 		}
 		data.getOther().put("removeCode", "Remove");
 		subTotalBox.add(data);
@@ -401,7 +402,7 @@ public class CartSubTotalBoxService {
 			if (redemptionPromo.isSampleItem()) {
 				data.setValue("FREE!");
 			} else {
-				data.setValue("-" + JspMethods.formatPrice(redemptionPromo.getHeaderDiscountTotal()));
+				data.setValue(JspMethods.formatPriceWithNegativeSign(redemptionPromo.getHeaderDiscountTotal()));
 			}
 			Map<String, Object> other = data.getOther();
 			other.put(PROMO_CODE_KEY, promoCode);
@@ -518,5 +519,5 @@ public class CartSubTotalBoxService {
 			additionalInfo.add(data);
 		}
 	}
-
+	
 }

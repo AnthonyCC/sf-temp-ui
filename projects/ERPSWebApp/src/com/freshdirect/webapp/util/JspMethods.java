@@ -912,6 +912,10 @@ public class JspMethods {
 		return c;
 	}
 
+	public static String formatPriceWithNegativeSign(double price) {
+		return "(-" + formatPrice(price) + ")";
+	}
+	
 	public static String formatPrice(double price) {
 		return currencyFormatter.get().format(price);
 	}

@@ -190,7 +190,7 @@ public class ReceiptBoxService {
 				CartSubTotalFieldData discountLine = new CartSubTotalFieldData();
 				discountLine.setId(DISCOUNT_ID);
 				discountLine.setText(DISCOUNT_TEXT);
-				discountLine.setValue("-" + JspMethods.formatPrice(discount.getAmount()));
+				discountLine.setValue(JspMethods.formatPriceWithNegativeSign(discount.getAmount()));
 				receiptBox.add(discountLine);
 
 				CartSubTotalFieldData freeFoodLine = new CartSubTotalFieldData();
@@ -238,7 +238,7 @@ public class ReceiptBoxService {
 			CartSubTotalFieldData data = new CartSubTotalFieldData();
 			data.setId(CREDITS_ID);
 			data.setText(CREDITS_TEXT);
-			data.setValue("-" + JspMethods.formatPrice(customerCreditsValue));
+			data.setValue(JspMethods.formatPriceWithNegativeSign(customerCreditsValue));
 			receiptBox.add(data);
 		}
 	}
