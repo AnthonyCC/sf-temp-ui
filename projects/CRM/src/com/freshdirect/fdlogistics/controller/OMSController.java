@@ -258,9 +258,9 @@ public class OMSController extends BaseController  {
 				request.getStartTime(), request.getEndTime(), request.getInitiator());
 		
 		if(result != null){
-			return Result.createSuccessMessage("standing order instance created successfully");
+			return Result.createFailureMessage(result.getErrorHeader());
 		}
-		return Result.createFailureMessage("standing order instance created failed");
+		return Result.createSuccessMessage("Standing order instance created successfully");
 	}
 	
 	@RequestMapping(value = "/delivery/confirm/", method = RequestMethod.POST)
