@@ -21,7 +21,7 @@
 <%-- SEO meta content --%>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8" lang="${language}"/>
 <c:if test="${empty metaDescription}">
-	<c:set var="metaDescription" value="Online grocer providing high quality fresh foods and popular grocery and  household items at incredible prices delivered to the New York area."/>
+	<c:set var="metaDescription" value="FreshDirect is the leading online grocery shopping service. We provide fast grocery delivery to your home and office. Order today for delivery tomorrow!"/>
 	<c:if test="${not empty pageId}">
 	<%
 		ContentKey key = new ContentKey(FDContentTypes.WEBPAGE, pageId); 
