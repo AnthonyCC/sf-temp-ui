@@ -26,7 +26,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	}
 
 	public FDTimeslot(String id, Date deliveryDate, TimeOfDay dlvStartTime,
-			TimeOfDay dlvEndTime, TimeOfDay cutoffTime, TimeOfDay premiumCutoffTime, 
+			TimeOfDay dlvEndTime, TimeOfDay cutoffTime, TimeOfDay premiumCutoffTime, Date cutoffDateTime, Date premiumCutoffDateTime, 
 			String zoneId, String zoneCode,
 			boolean normalAvailCapacity, boolean availCTCapacity,
 			boolean isGeoRestricted, boolean isTimeslotRestricted,
@@ -42,6 +42,9 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 		this.dlvEndTime = dlvEndTime;
 		this.cutoffTime = cutoffTime;
 		this.premiumCutoffTime = premiumCutoffTime;
+		
+		this.cutoffDateTime = cutoffDateTime;
+		this.premiumCutoffDateTime = premiumCutoffDateTime;
 		
 		this.zoneId = zoneId;
 		this.zoneCode = zoneCode;
@@ -80,6 +83,8 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	private TimeOfDay dlvEndTime;
 	private TimeOfDay premiumCutoffTime;
 	private TimeOfDay cutoffTime;
+	private Date cutoffDateTime;
+	private Date premiumCutoffDateTime;
 
 	private String zoneId;
 	private String zoneCode;
@@ -273,11 +278,7 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	}
 
 	public Date getCutoffDateTime() {
-		return getCutoffTimeAsDate();
-	}
-
-	private Date getPremiumCutoffAsDate() {
-		return getPremiumCutoffTime().getAsDate(getDeliveryDate());
+		return cutoffDateTime;
 	}
 
 	public TimeOfDay getPremiumCutoffTime() {
@@ -288,12 +289,8 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 		this.premiumCutoffTime = premiumCutoffTime;
 	}
 
-	private Date getCutoffTimeAsDate() {
-		return getCutoffTime().getAsDate(getDeliveryDate());
-		}
-
 	public Date getPremiumCutoffDateTime() {
-		return getPremiumCutoffAsDate();
+		return premiumCutoffDateTime;
 	}
 
 	public Date getCutoffNormalDateTime() {

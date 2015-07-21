@@ -164,6 +164,7 @@ public class LogisticsDataDecoder {
 		FDTimeslot t = 
 				new FDTimeslot(timeslot.getId(), timeslot.getDeliveryDate(), new TimeOfDay(timeslot.getStartTime()), new TimeOfDay(timeslot.getEndTime()), 
 				new TimeOfDay(timeslot.getCutoffTime()), timeslot.getPremiumCutoffTime()!=null ? new TimeOfDay(timeslot.getPremiumCutoffTime()): null,
+				timeslot.getCutoffDateTime(), timeslot.getPremiumCutoffDateTime(),
 				timeslot.getZoneId(), timeslot.getZoneCode(), timeslot.isNormalAvailCapacity(), timeslot.isAvailCTCapacity(), timeslot.getGeoRestricted(), 
 				timeslot.isTimeslotRestricted(), timeslot.isUnavailable(), timeslot.getEcoFriendly(), timeslot.isSoldOut(), timeslot.isDepot(), timeslot.isSameDaySlot(),
 				timeslot.getTotalAvailable(), timeslot.getBaseAvailable(), timeslot.getChefsTableAvailble(), timeslot.isRadius(), timeslot.getTravelZone(), 
