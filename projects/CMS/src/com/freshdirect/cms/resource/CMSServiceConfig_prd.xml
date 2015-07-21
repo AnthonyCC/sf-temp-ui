@@ -80,7 +80,7 @@
 	
 	<!-- DB Content Service for the feed-->
 	
-	<service-point id="DBStoreContent" interface="com.freshdirect.cms.application.ContentServiceI">
+	<!-- <service-point id="DBStoreContent" interface="com.freshdirect.cms.application.ContentServiceI">
 		<invoke-factory>
 			<construct class="com.freshdirect.cms.application.service.db.DbContentService" service-id-property="name" initialize-method="initialize">
 				<set-service property="contentTypeService" service-id="DBStoreDef" />
@@ -104,6 +104,6 @@
 				<string>fddatasource</string>
 			</construct>
 		</invoke-factory>
-	</service-point>
+	</service-point> -->
 	
 </module>
