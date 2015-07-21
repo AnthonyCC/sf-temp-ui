@@ -8,6 +8,10 @@ final int W_UNSUPPORTED_TOTAL = 765;
 <fd:CheckLoginStatus guestAllowed="true" />
 <tmpl:insert template='/common/template/right_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Unsupported browser</tmpl:put>
+<tmpl:put name="seoMetaTag" direct="true">
+	<fd:SEOMetaTag title="FreshDirect - Unsupported browser"></fd:SEOMetaTag>
+</tmpl:put>
+
 <tmpl:put name='content' direct='true'>
 
 <%

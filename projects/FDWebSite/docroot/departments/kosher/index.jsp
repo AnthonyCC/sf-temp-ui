@@ -12,7 +12,9 @@ final int W_KOSHER_INDEX_TOTAL = 765;
 
 <tmpl:insert template='/common/template/right_nav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Kosher - Coming Soon!<%--= department.getFullName() --%></tmpl:put>
-    
+    <tmpl:put name="seoMetaTag" direct="true">
+		<fd:SEOMetaTag title="FreshDirect - Kosher - Coming Soon!"></fd:SEOMetaTag>
+	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	
 	<table width="<%=W_KOSHER_INDEX_TOTAL%>" cellpadding="0" cellspacing="6" border="0">
