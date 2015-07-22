@@ -5,7 +5,7 @@ import java.util.List;
 public class CMSPickListModel extends CMSPickListItemModel{
 	private boolean displayName;
 	private String description;
-	private CMSImageModel image;
+	private CMSImageBannerModel image;
 	private List<CMSScheduleModel> schedules;
 	private List<CMSPickListItemModel> items;
 	
@@ -21,10 +21,10 @@ public class CMSPickListModel extends CMSPickListItemModel{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public CMSImageModel getImage() {
+	public CMSImageBannerModel getImage() {
 		return image;
 	}
-	public void setImage(CMSImageModel image) {
+	public void setImage(CMSImageBannerModel image) {
 		this.image = image;
 	}
 	public List<CMSScheduleModel> getSchedules() {
