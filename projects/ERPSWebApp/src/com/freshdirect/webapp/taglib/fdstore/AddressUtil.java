@@ -137,12 +137,13 @@ public class AddressUtil {
         //
         // all's well, return fixed/cleaned corrected address
         //
+        return response.getAddress();
        } catch (FDInvalidAddressException e) {
 		LOGGER.info("FDInvalidAddressException thrown during address scrub");
 			//throw new FDResourceException(e);//TODO ignore this exception for address scrub.
        }
 	
-		return response.getAddress();
+		return address;
 			
     }
 
