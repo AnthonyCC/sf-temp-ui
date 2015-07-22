@@ -43,7 +43,7 @@ public class CMSContentFactory {
 	public static void init(){
 		instance = new CMSContentFactory();
 		pageTimer = new Timer();
-		
+		pickListTimer = new Timer();
 		
 		contentService = (ContentServiceI) FDRegistry.getInstance().getService("com.freshdirect.cms.CompositeService", ContentServiceI.class);
 		
@@ -67,7 +67,7 @@ public class CMSContentFactory {
 			try{
 				instance.cacheAllPages();
 			} catch (Exception e){
-				e.printStackTrace();
+				LOG.error(e);
 			}
 		}
 	}
@@ -92,8 +92,12 @@ public class CMSContentFactory {
 			LOG.debug("Loading PickList"+ new Date());
 			CMSPageRequest request = new CMSPageRequest();
 			List<CMSPickListItemModel> items = getPickListByParameter(request);
-			for(CMSPickListItemModel pickList: items){
-				EhCacheUtil.putObjectToCache(FEED_CACHE, pickList.getName(),pickList);
+			if(items != null){
+				for(CMSPickListItemModel pickList: items){
+					if(pickList != null){
+						EhCacheUtil.putObjectToCache(FEED_CACHE, pickList.getName(),pickList);
+					}
+				}
 			}
 		}
 		
@@ -124,6 +128,8 @@ public class CMSContentFactory {
 				//Return all the pages if page name is null in request.
 				if(pageRequest.getPageName() != null && ! pageRequest.getPageName().equals(page.getTitle())){
 					addToResponse = false;
+				} else {
+					addToResponse = true;
 				}
 				if(addToResponse){
 					response.add(page);
@@ -154,7 +160,7 @@ public class CMSContentFactory {
 			}
 			
 			List<CMSSectionModel> sections = getPageSections(contentNode, request);
-			if(!sections.isEmpty()){
+			if(sections != null && !sections.isEmpty()){
 				webPage.setSections(sections);
 			}
 		}
@@ -255,13 +261,16 @@ public class CMSContentFactory {
 	}
 	
 	private CMSImageBannerModel createImageBanner(ContentNodeI componentNode) {
-		CMSImageBannerModel banner = new CMSImageBannerModel();
-		banner.setComponentType(CMSComponentType.BANNER);
-		banner.setName((String)componentNode.getAttributeValue("Name"));
-		banner.setDescription((String)componentNode.getAttributeValue("Description"));
-		banner.setType((String)componentNode.getAttributeValue("Type"));
-		banner.setImage(createImage((ContentKey)componentNode.getAttributeValue("ImageBannerImage")));
-		banner.setAnchors(createAnchor((List<ContentKey>)componentNode.getAttributeValue("ImageBannerLink")));
+		CMSImageBannerModel banner = null;
+		if(componentNode != null){
+			banner = new CMSImageBannerModel();
+			banner.setComponentType(CMSComponentType.BANNER);
+			banner.setName((String)componentNode.getAttributeValue("Name"));
+			banner.setDescription((String)componentNode.getAttributeValue("Description"));
+			banner.setType((String)componentNode.getAttributeValue("Type"));
+			banner.setImage(createImage((ContentKey)componentNode.getAttributeValue("ImageBannerImage")));
+			banner.setAnchors(createAnchor((List<ContentKey>)componentNode.getAttributeValue("ImageBannerLink")));
+		}
 		return banner;
 	}
 
@@ -289,14 +298,16 @@ public class CMSContentFactory {
 					pickList.setComponentType(CMSComponentType.PICKLIST);
 					pickList.setName((String)contentNode.getAttributeValue("Name"));
 					pickList.setDescription((String)contentNode.getAttributeValue("Description"));
+					
+					ContentKey pickListMedia = (ContentKey)contentNode.getAttributeValue("PickListMedia");
+					pickList.setImage(createImageBanner(getContentNodeByKey(pickListMedia)));
 					pickList.setItems(createPickList((List<ContentKey>)contentNode.getAttributeValue("PickListPickListItem"), request));
 				} 
 				return pickList;
 			} else if ("PickListItem".equals(contentNode.getKey().getType().getName())) {
 				CMSPickListItemModel pickListItem = new CMSPickListItemModel();
 				ContentKey key = (ContentKey)contentNode.getAttributeValue("PickListItemProduct");
-				ContentNodeI productNode = getContentNodeByKey(key);
-				String fullName = (String)productNode.getAttributeValue("FULL_NAME");
+				String fullName = key.getId();
 				pickListItem.setProduct(fullName);
 				return pickListItem;
 			} 
@@ -342,7 +353,7 @@ public class CMSContentFactory {
 						schedules.add(schedule);
 					}
 				}catch(Exception e){
-					e.printStackTrace();
+					LOG.error(e);
 				}
 			}
 		}
@@ -354,7 +365,7 @@ public class CMSContentFactory {
 		try{
 			contentNodeI =  contentService.getContentNode(key);
 		} catch(Exception e){
-			LOG.error("Error in getting node "+key.getEncoded(),e);
+			LOG.error("Error in getting node "+key,e);
 		}
 		return contentNodeI;
 	}
