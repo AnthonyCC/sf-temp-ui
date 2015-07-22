@@ -672,7 +672,7 @@ public class FDUserDAO {
 			ps.setString(1, customerId);
 			rs = ps.executeQuery();
 			if (rs.next()) {
-				goGreen = rs.getBoolean(1);
+				goGreen = "Y".equals(rs.getString(1));
 			}
 		} catch (Exception e) {
 			LOGGER.error("Error updating mobile preferences", e);
