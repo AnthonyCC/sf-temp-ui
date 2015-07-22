@@ -3859,6 +3859,20 @@ public class FDCustomerManager {
 		}
 	}
 	
+	public static boolean loadGoGreenPreference(String customerId) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.loadGoGreenPreference(customerId);
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}
+	}
+	
 	public static void storeMobilePreferencesNoThanks(String customerId) throws FDResourceException {
 		lookupManagerHome();
 		try {

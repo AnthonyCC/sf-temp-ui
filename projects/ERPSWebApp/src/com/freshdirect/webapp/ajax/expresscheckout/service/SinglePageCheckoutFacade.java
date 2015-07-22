@@ -2,6 +2,7 @@ package com.freshdirect.webapp.ajax.expresscheckout.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,11 @@ import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
+import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
+import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
+import com.freshdirect.webapp.ajax.expresscheckout.cart.service.CartDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.checkout.service.CheckoutService;
 import com.freshdirect.webapp.ajax.expresscheckout.content.service.ContentFactoryService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutData;
@@ -46,18 +51,30 @@ import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationErr
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.checkout.PaymentMethodManipulator;
 import com.freshdirect.webapp.checkout.RedirectToPage;
+import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
 public class SinglePageCheckoutFacade {
 
+	private static final String SUB_TOTAL_BOX_JSON_KEY = "subTotalBox";
+	private static final String REDIRECT_URL_JSON_KEY = "redirectUrl";
+	private static final String ATP_FAILURE_JSON_KEY = "atpFailure";
+	private static final String TIMESLOT_JSON_KEY = "timeslot";
+	private static final String PAYMENT_JSON_KEY = "payment";
+	private static final String ADDRESS_JSON_KEY = "address";
+	private static final String RESTRICTION_JSON_KEY = "restriction";
+	private static final String WARNING_MESSAGE_LABEL = "warning_message";
+	private static final String EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL = "/expressco/view_cart.jsp";
+	private static final String CART_DATA_JSON_KEY = "cartData";
+
 	private static final Category LOGGER = LoggerFactory.getInstance(SinglePageCheckoutFacade.class);
-	
+
 	public static SinglePageCheckoutFacade defaultFacade() {
 		return INSTANCE;
 	}
 
 	private static final SinglePageCheckoutFacade INSTANCE = new SinglePageCheckoutFacade();
-	
+
 	private PaymentService paymentService;
 	private ReceiptService receiptService;
 	private TimeslotService timeslotService;
@@ -78,18 +95,74 @@ public class SinglePageCheckoutFacade {
 
 	public SinglePageCheckoutData load(final FDUserI user, HttpServletRequest request) throws FDResourceException, IOException, TemplateException, JspException, RedirectToPage {
 		SinglePageCheckoutData result = new SinglePageCheckoutData();
-		List<ValidationError> modifyCartPreSelectionErrors = handleModifyCartPreSelections(user, request);
-		// TODO: set modifyCartPreSelectionErrors into the potato
-		Map<String, Object> preCheckOrderResult = CheckoutService.defaultService().preCheckOrder(user);
+		handleModifyCartPreSelections(user, request);
 		result.setHeaderData(SinglePageCheckoutHeaderService.defaultService().populateHeader(user));
 		result.setDrawer(DrawerService.defaultService().loadDrawer());
-		result.setAddress(loadAddress(user,request.getSession()));
+		result.setAddress(loadAddress(user, request.getSession()));
 		result.setPayment(loadUserPaymentMethods(user, request));
-		result.setAtpFailure(CheckoutService.defaultService().getAtpFailureFromOrderPreCheckResult(preCheckOrderResult));
 		result.setFormMetaData(FormMetaDataService.defaultService().populateFormMetaData(user));
 		result.setTimeslot(TimeslotService.defaultService().loadCartTimeslot(user.getShoppingCart()));
-		result.setRestriction(CheckoutService.defaultService().getRestrictionFromOrderPreCheckResult(preCheckOrderResult));
-		result.setRedirectUrl(RedirectService.defaultService().populateRedirectUrl("/expressco/view_cart.jsp", "warning_message", availabilityService.selectWarningType(user)));
+		result.setRestriction(CheckoutService.defaultService().preCheckOrder(user));
+		result.setRedirectUrl(RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL, availabilityService.selectWarningType(user)));
+		return result;
+	}
+
+	public Map<String, Object> loadByPageAction(FDUserI user, HttpServletRequest request, PageAction pageAction) throws FDResourceException, IOException, TemplateException, JspException,
+			RedirectToPage, HttpErrorResponse {
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put(RESTRICTION_JSON_KEY, CheckoutService.defaultService().preCheckOrder(user));
+		switch (pageAction) {
+		case ADD_DELIVERY_ADDRESS_METHOD:
+			//$FALL-THROUGH$
+		case EDIT_DELIVERY_ADDRESS_METHOD:
+			//$FALL-THROUGH$
+		case DELETE_DELIVERY_ADDRESS_METHOD:
+			result.put(ADDRESS_JSON_KEY, loadAddress(user, request.getSession()));
+			result.put(REDIRECT_URL_JSON_KEY, RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL, availabilityService.selectWarningType(user)));
+			result.put(SUB_TOTAL_BOX_JSON_KEY, CartDataService.defaultService().loadCartDataSubTotalBox(request, user));
+			break;
+		case SELECT_DELIVERY_ADDRESS_METHOD:
+			result.put(ADDRESS_JSON_KEY, loadAddress(user, request.getSession()));
+			Boolean cartPaymentSelectionDisabled = (Boolean) request.getSession().getAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
+			if (cartPaymentSelectionDisabled != null && cartPaymentSelectionDisabled) {
+				result.put(PAYMENT_JSON_KEY, loadUserPaymentMethods(user, request));
+			}
+			result.put(REDIRECT_URL_JSON_KEY, RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL, availabilityService.selectWarningType(user)));
+			break;
+		case ADD_PAYMENT_METHOD:
+			//$FALL-THROUGH$
+		case EDIT_PAYMENT_METHOD:
+			//$FALL-THROUGH$
+		case DELETE_PAYMENT_METHOD:
+			//$FALL-THROUGH$
+		case SELECT_PAYMENT_METHOD:
+			result.put(PAYMENT_JSON_KEY, loadUserPaymentMethods(user, request));
+			break;
+		case SELECT_DELIVERY_TIMESLOT:
+			result.put(TIMESLOT_JSON_KEY, TimeslotService.defaultService().loadCartTimeslot(user.getShoppingCart()));
+			result.put(ATP_FAILURE_JSON_KEY, CheckoutService.defaultService().applyAtpCheck(user));
+			break;
+		case REMOVE_ALCOHOL_FROM_CART:
+			//$FALL-THROUGH$
+		case REMOVE_WINE_AND_SPIRITS_FROM_CART:
+			//$FALL-THROUGH$
+		case REMOVE_EBT_INELIGIBLE_ITEMS_FROM_CART: {
+			result.put(ATP_FAILURE_JSON_KEY, CheckoutService.defaultService().applyAtpCheck(user));
+			String orderMinimumType = AvailabilityService.defaultService().selectAlcoholicOrderMinimumType(user, pageAction);
+			result.put(REDIRECT_URL_JSON_KEY, RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL, orderMinimumType));
+			CartData loadCartData = CartDataService.defaultService().loadCartData(request, user);
+			result.put(CART_DATA_JSON_KEY, SoyTemplateEngine.convertToMap(loadCartData));
+			break;
+		}
+		case APPLY_AGE_VERIFICATION_FOR_ALCOHOL_IN_CART: {
+			result.put(ATP_FAILURE_JSON_KEY, CheckoutService.defaultService().applyAtpCheck(user));
+			String orderMinimumType = AvailabilityService.defaultService().selectAlcoholicOrderMinimumType(user, pageAction);
+			result.put(REDIRECT_URL_JSON_KEY, RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL, orderMinimumType));
+			break;
+		}
+		default:
+			break;
+		}
 		return result;
 	}
 
@@ -148,13 +221,14 @@ public class SinglePageCheckoutFacade {
 		List<ValidationError> validationErrors = new ArrayList<ValidationError>();
 		HttpSession session = request.getSession();
 		if (cart instanceof FDModifyCartModel) {
-			Boolean modifyCartPreSelectionCompleted = (Boolean) session.getAttribute("modifyCartPreSelectionCompleted");
+			Boolean modifyCartPreSelectionCompleted = (Boolean) session.getAttribute(SessionName.MODIFY_CART_PRESELECTION_COMPLETED);
 			if (modifyCartPreSelectionCompleted == null) {
 				ActionResult actionResult = new ActionResult();
 				String addressId = cart.getDeliveryReservation().getAddressId();
-				DeliveryAddressManipulator.performSetDeliveryAddress(session, user, addressId, null, null, "selectDeliveryAddressMethod", true, actionResult, null, null, null, null, null, null);
+				DeliveryAddressManipulator.performSetDeliveryAddress(session, user, addressId, null, null, PageAction.SELECT_DELIVERY_ADDRESS_METHOD.actionName, true, actionResult, null, null, null,
+						null, null, null);
 				String paymentId = ((FDModifyCartModel) cart).getOriginalOrder().getPaymentMethod().getPK().getId();
-				PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, "selectPaymentMethod");
+				PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, PageAction.SELECT_PAYMENT_METHOD.actionName);
 				for (ActionError error : actionResult.getErrors()) {
 					validationErrors.add(new ValidationError(error));
 				}
@@ -168,58 +242,58 @@ public class SinglePageCheckoutFacade {
 		return validationErrors;
 	}
 
-	/** based on step_3_choose.jsp */ 
-	private void processGiftCards(FDUserI user, HttpServletRequest request, FormPaymentData formPaymentData){
-		
+	/** based on step_3_choose.jsp */
+	private void processGiftCards(FDUserI user, HttpServletRequest request, FormPaymentData formPaymentData) {
+
 		try {
-			// [APPDEV-2149] SO template only checkout => no order, no dlv timeslot, no giftcard magic
+			// [APPDEV-2149] SO template only checkout => no order, no dlv
+			// timeslot, no giftcard magic
 			final boolean isSOTMPL = EnumCheckoutMode.MODIFY_SO_TMPL.equals(user.getCheckoutMode());
 			FDCartModel cart = user.getShoppingCart();
-			
-			/*
-		        * Apply Customer credit -- This is done here for knowing the final order amount before displaying
-		        * the payment selection
-		        * If Gift card is used on the order Also calculate the 25% perishable buffer amount to decide if
-		        * another mode of payment is needed.
-		    */    
-		    if (!isSOTMPL){
-			    FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
-		    }
-		    
-			double gcSelectedBalance = isSOTMPL ? 0 : user.getGiftcardBalance()- cart.getTotalAppliedGCAmount();
-			double gcBufferAmount=0;
-			double ccBufferAmount=0;
-			double perishableBufferAmount = isSOTMPL ? 0 : FDCustomerManager.getPerishableBufferAmount((FDCartModel)cart);
-			double outStandingBalance = isSOTMPL ? 0 : FDCustomerManager.getOutStandingBalance(cart);
-			
-			if(!isSOTMPL && perishableBufferAmount > 0){
-		    	if(cart.getTotalAppliedGCAmount()> 0){
-		    		if(outStandingBalance >0){
-	        			gcBufferAmount = gcSelectedBalance;
-	        			ccBufferAmount = perishableBufferAmount - gcSelectedBalance;    			
-		        	} else {
-		    			gcBufferAmount = perishableBufferAmount;
-		    		}
-		    	}else{
-		    		ccBufferAmount = perishableBufferAmount;
-		    	}    	
-		    }
 
-            /* No additional payment type is needed, covered by Giftcards */
-			if (!isSOTMPL && cart.getSelectedGiftCards() != null && cart.getSelectedGiftCards().size() > 0 && outStandingBalance <= 0.0){
+			/*
+			 * Apply Customer credit -- This is done here for knowing the final
+			 * order amount before displaying the payment selection If Gift card
+			 * is used on the order Also calculate the 25% perishable buffer
+			 * amount to decide if another mode of payment is needed.
+			 */
+			if (!isSOTMPL) {
+				FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
+			}
+
+			double gcSelectedBalance = isSOTMPL ? 0 : user.getGiftcardBalance() - cart.getTotalAppliedGCAmount();
+			double gcBufferAmount = 0;
+			double ccBufferAmount = 0;
+			double perishableBufferAmount = isSOTMPL ? 0 : FDCustomerManager.getPerishableBufferAmount((FDCartModel) cart);
+			double outStandingBalance = isSOTMPL ? 0 : FDCustomerManager.getOutStandingBalance(cart);
+
+			if (!isSOTMPL && perishableBufferAmount > 0) {
+				if (cart.getTotalAppliedGCAmount() > 0) {
+					if (outStandingBalance > 0) {
+						gcBufferAmount = gcSelectedBalance;
+						ccBufferAmount = perishableBufferAmount - gcSelectedBalance;
+					} else {
+						gcBufferAmount = perishableBufferAmount;
+					}
+				} else {
+					ccBufferAmount = perishableBufferAmount;
+				}
+			}
+
+			/* No additional payment type is needed, covered by Giftcards */
+			if (!isSOTMPL && cart.getSelectedGiftCards() != null && cart.getSelectedGiftCards().size() > 0 && outStandingBalance <= 0.0) {
 				formPaymentData.setCoveredByGiftCard(true);
-			
+
 			} else if (cart.getSelectedGiftCards() != null && cart.getSelectedGiftCards().size() > 0 && gcBufferAmount > 0 && ccBufferAmount > 0) {
 				formPaymentData.setBackupPaymentRequiredForGiftCard(true);
 			}
 
-		} catch (FDResourceException e){
+		} catch (FDResourceException e) {
 			LOGGER.error("processIfCoveredByGiftCard() failed because of FDResourceException", e);
 		}
-		
+
 	}
 
-	
 	private FormLocationData loadCartAddress(FDCartI cart, final FDUserI user) throws FDResourceException {
 		List<LocationData> cartDeliveryAddresses = deliveryAddressService.loadSuccessLocations(cart, user);
 
@@ -269,9 +343,9 @@ public class SinglePageCheckoutFacade {
 
 		FormPaymentData formPaymentData = new FormPaymentData();
 		processGiftCards(user, request, formPaymentData);
-		
-		if (formPaymentData.isCoveredByGiftCard()){
-			 paymentService.setNoPaymentMethod(user, request);
+
+		if (formPaymentData.isCoveredByGiftCard()) {
+			paymentService.setNoPaymentMethod(user, request);
 		} else {
 			List<PaymentData> userPaymentMethods = paymentService.loadUserPaymentMethods(user, request);
 			formPaymentData.setPayments(userPaymentMethods);

@@ -21,6 +21,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.freshdirect.webapp.util.JspMethods;
@@ -97,15 +98,19 @@ public class AvailabilityService {
 		return warningMessages;
 	}
 
-	public String selectAlcoholicOrderMinimumType(FDUserI user, String action) throws FDResourceException {
+	public String selectAlcoholicOrderMinimumType(FDUserI user, PageAction action) throws FDResourceException {
 		String warningType = null;
 		if (!user.isOrderMinimumMet()) {
-			if ("removeWineAndSpirit".equalsIgnoreCase(action)) {
+			switch (action) {
+			case REMOVE_WINE_AND_SPIRITS_FROM_CART:
 				warningType = ALCOHOL_PICKUP_BELOW_MINIMAL_ORDER;
-			} else if ("removeAlcohol".equalsIgnoreCase(action)) {
+				break;
+			case REMOVE_ALCOHOL_FROM_CART:
 				warningType = ALCOHOL_BELOW_MINIMAL_ORDER;
-			} else {
+				break;
+			default:
 				warningType = BELOW_MINIMAL_ORDER;
+				break;
 			}
 		}
 		return warningType;

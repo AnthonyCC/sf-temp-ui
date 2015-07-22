@@ -786,6 +786,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public void storeMobilePreferences(String customerId, String mobileNumber, String textOffers, String textDelivery, String orderNotices, String orderExceptions, String offers, String partnerMessages) throws FDResourceException, RemoteException;
 	
 	public void storeGoGreenPreferences(String customerId, String goGreen) throws FDResourceException, RemoteException;
+	public boolean loadGoGreenPreference(String customerId) throws FDResourceException, RemoteException;
 	
 	public void storeMobilePreferencesNoThanks(String customerId) throws FDResourceException, RemoteException;
 	public void storeSmsPreferencesNoThanks(String customerId) throws FDResourceException, RemoteException;

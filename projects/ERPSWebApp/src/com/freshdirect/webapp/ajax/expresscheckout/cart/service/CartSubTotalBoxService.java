@@ -170,7 +170,7 @@ public class CartSubTotalBoxService {
 		}
 	}
 
-	public void populateDiscountsToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart, CartData cartData, FDUserI user, String requestURI) {
+	public void populateDiscountsToBox(List<CartSubTotalFieldData> subTotalBox, FDCartI cart, CartData cartData, FDUserI user) {
 		PromotionI redemptionPromo = user.getRedeemedPromotion();
 		String promoCode = redemptionPromo != null ? redemptionPromo.getPromotionCode() : "";
 		boolean isRedemptionApplied = (redemptionPromo != null && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode()));

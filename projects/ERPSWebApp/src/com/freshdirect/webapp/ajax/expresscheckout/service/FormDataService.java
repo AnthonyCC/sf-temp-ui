@@ -3,7 +3,11 @@ package com.freshdirect.webapp.ajax.expresscheckout.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
+import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
+import com.freshdirect.webapp.ajax.expresscheckout.data.SubmitForm;
+import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
 
 public class FormDataService {
 
@@ -31,5 +35,21 @@ public class FormDataService {
 	@SuppressWarnings("unchecked")
 	public <T> T getComplexObject(FormDataRequest data, String key, Class<T> klass) {
 		return (T) data.getFormData().get(key);
+	}
+	
+	public PageAction getPageAction(FormDataRequest data) {
+		String action = get(data, "action");
+		return PageAction.parse(action);
+	}
+	
+	public FormDataResponse prepareFormDataResponse(final FormDataRequest formDataRequest, final ValidationResult formValidation) {
+		final FormDataResponse paymentResponse = new FormDataResponse();
+		final SubmitForm submitForm = new SubmitForm();
+		submitForm.setFormId(formDataRequest.getFormId());
+		submitForm.setSuccess(formValidation.getErrors().isEmpty());
+		paymentResponse.setFormSubmit(submitForm);
+		paymentResponse.setValidationResult(formValidation);
+		formValidation.setFdform(formDataRequest.getFormId());
+		return paymentResponse;
 	}
 }

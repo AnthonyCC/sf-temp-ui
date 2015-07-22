@@ -2,6 +2,7 @@ package com.freshdirect.webapp.ajax.expresscheckout.timeslot.servlet;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,16 +12,15 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
+import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
-import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutData;
-import com.freshdirect.webapp.ajax.expresscheckout.data.SubmitForm;
+import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.service.TimeslotService;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
 import com.freshdirect.webapp.checkout.RedirectToPage;
-import com.freshdirect.webapp.soy.SoyTemplateEngine;
 
 public class TimeslotServlet extends BaseJsonServlet {
 
@@ -30,13 +30,8 @@ public class TimeslotServlet extends BaseJsonServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response, FDUserI user) throws HttpErrorResponse {
 		try {
 			FormDataRequest timeslotRequestData = parseRequestData(request, FormDataRequest.class);
-			FormDataResponse responseData = new FormDataResponse();
-			SubmitForm submitForm = new SubmitForm();
-			submitForm.setFormId(timeslotRequestData.getFormId());
-			responseData.setFormSubmit(submitForm);
 			ValidationResult validationResult = new ValidationResult();
-			validationResult.setFdform(timeslotRequestData.getFormId());
-			responseData.setValidationResult(validationResult);
+			FormDataResponse responseData = FormDataService.defaultService().prepareFormDataResponse(timeslotRequestData, validationResult);
 			try {
 				List<ValidationError> timeslotReservationErrors = TimeslotService.defaultService().reserveDeliveryTimeSlot(timeslotRequestData, request.getSession());
 				validationResult.getErrors().addAll(timeslotReservationErrors);
@@ -45,8 +40,8 @@ public class TimeslotServlet extends BaseJsonServlet {
 			}
 			if (validationResult.getErrors().isEmpty()) {
 				try {
-					SinglePageCheckoutData checkoutData = SinglePageCheckoutFacade.defaultFacade().load(user, request);
-					submitForm.setResult(SoyTemplateEngine.convertToMap(checkoutData));
+					Map<String, Object> checkoutData = SinglePageCheckoutFacade.defaultFacade().loadByPageAction(user, request, PageAction.SELECT_DELIVERY_TIMESLOT);
+					responseData.getSubmitForm().setResult(checkoutData);
 				} catch (FDResourceException e) {
 					validationResult.getErrors().add(new ValidationError("technical_difficulty", "Could not load checkout data due to technical difficulty."));
 				} catch (JspException e) {
@@ -55,7 +50,7 @@ public class TimeslotServlet extends BaseJsonServlet {
 					validationResult.getErrors().add(new ValidationError("technical_difficulty", "Could not load checkout data due to technical difficulty."));
 				}
 			}
-			submitForm.setSuccess(validationResult.getErrors().isEmpty());
+			responseData.getSubmitForm().setSuccess(validationResult.getErrors().isEmpty());
 			writeResponseData(response, responseData);
 		} catch (IOException e) {
 			returnHttpError(500, "Failed to load Learn More media for restriction message.", e);

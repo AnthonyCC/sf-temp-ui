@@ -110,6 +110,20 @@ public class CartDataService {
 		}
 		return cartData;
 	}
+	
+	public Map<String, List<CartSubTotalFieldData>> loadCartDataSubTotalBox(HttpServletRequest request, FDUserI user) throws HttpErrorResponse, FDResourceException, JspException {
+		String userId = loadUser(user);
+		updateUserAndCart(request, user);
+		FDCartModel cart = loadUserShoppingCart(user, userId);
+		if(user.getIdentity() != null){
+			FDCustomerCreditUtil.applyCustomerCredit(cart, user.getIdentity());
+		}
+		CartData cartData = new CartData();
+		synchronized (cart) {
+			populateSubTotalBox(cartData, cart, user, request);
+		}
+		return cartData.getSubTotalBox();
+	}
 
 	public CartData loadCartSuccessData(HttpServletRequest request, FDUserI user, String orderId) throws HttpErrorResponse, FDResourceException {
 		String userId = loadUser(user);
@@ -342,7 +356,6 @@ public class CartDataService {
 	}
 
 	private void populateCartOrderData(FDUserI user, HttpServletRequest request, String userId, FDCartI cart, CartData cartData, Set<Integer> recentIds) throws HttpErrorResponse {
-		String requestURI = request.getRequestURI();
 		try {
 			List<FDCartLineI> cartLines = loadCartOrderLines(userId, cart);
 			Map<SectionInfo, List<CartData.Item>> sectionMap = new HashMap<SectionInfo, List<CartData.Item>>();
@@ -391,7 +404,7 @@ public class CartDataService {
 			cartData.setItemCount(itemCount.getValue());
 			cartData.setSubTotal(JspMethods.formatPrice(cart.getSubTotal()));
 			cartData.setEstimatedTotal(JspMethods.formatPrice(cart.getTotal()));
-			populateSubTotalBox(cartData, cart, user, requestURI, request);
+			populateSubTotalBox(cartData, cart, user, request);
 			populateSubTotalBoxForNonAlcoholSections(cart, sections);
 			if (FDUserI.GUEST < user.getLevel()) {
 				cartData.setUserRecognized(true);
@@ -479,14 +492,14 @@ public class CartDataService {
 		return recentIds;
 	}
 
-	private void populateSubTotalBox(CartData cartData, FDCartI cart, FDUserI user, String requestURI, ServletRequest request) throws FDResourceException {
+	private void populateSubTotalBox(CartData cartData, FDCartI cart, FDUserI user, ServletRequest request) throws FDResourceException {
 		List<CartSubTotalFieldData> subTotalBox = new ArrayList<CartSubTotalFieldData>();
 		cartData.getSubTotalBox().put("subTotalBox", subTotalBox);
 		CartSubTotalBoxService.defaultService().populateSubTotalToBox(subTotalBox, cart.getSubTotal());
 		CartSubTotalBoxService.defaultService().populateTaxToBox(subTotalBox, cart);
 		CartSubTotalBoxService.defaultService().populateDepositValueToBox(subTotalBox, cart.getDepositValue());
 		CartSubTotalBoxService.defaultService().populateFuelSurchargeToBox(subTotalBox, cart);
-		CartSubTotalBoxService.defaultService().populateDiscountsToBox(subTotalBox, cart, cartData, user, requestURI);
+		CartSubTotalBoxService.defaultService().populateDiscountsToBox(subTotalBox, cart, cartData, user);
 		CartSubTotalBoxService.defaultService().populateCustomerCreditsToBox(subTotalBox, cart);
 		CartSubTotalBoxService.defaultService().populateGiftBalanceToBox(subTotalBox, user);
 		CartSubTotalBoxService.defaultService().populateDeliveryFeeToBox(subTotalBox, cart, user, cartData);

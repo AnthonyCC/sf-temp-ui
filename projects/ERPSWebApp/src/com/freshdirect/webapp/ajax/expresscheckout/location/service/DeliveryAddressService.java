@@ -43,6 +43,7 @@ import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.payment.EnumPaymentMethodType;
+import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.DeliveryLocationData;
 import com.freshdirect.webapp.ajax.expresscheckout.location.data.LocationData;
@@ -81,9 +82,13 @@ public class DeliveryAddressService {
 		if (validationErrors.isEmpty()) {
 			AddressModel addressModel = parseDeliveryAddressForm(deliveryAddressRequest);
 			ErpAddressModel erpAddressModel = parseErpDeliveryAddressForm(deliveryAddressRequest);
-			String action = FormDataService.defaultService().get(deliveryAddressRequest, "action");
+			PageAction pageAction = FormDataService.defaultService().getPageAction(deliveryAddressRequest);
 			ActionResult actionResult = new ActionResult();
-			DeliveryAddressManipulator.performAddAndSetDeliveryAddress((FDSessionUser) user, actionResult, session, user.getShoppingCart(), action, erpAddressModel, addressModel);
+			if (!checkEbtAddressPaymentSelectionByZipCode(user, erpAddressModel.getZipCode()).isEmpty()) {
+				DeliveryAddressManipulator.performAddDeliveryAddress((FDSessionUser) user, session, actionResult, user.getShoppingCart(), pageAction.actionName, erpAddressModel, addressModel);
+			} else {
+				DeliveryAddressManipulator.performAddAndSetDeliveryAddress((FDSessionUser) user, actionResult, session, user.getShoppingCart(), pageAction.actionName, erpAddressModel, addressModel);
+			}
 			processErrors(validationErrors, actionResult);
 		}
 		return validationErrors;
@@ -96,10 +101,10 @@ public class DeliveryAddressService {
 			AddressModel addressModel = parseDeliveryAddressForm(deliveryAddressRequest);
 			ErpAddressModel erpAddressModel = parseErpDeliveryAddressForm(deliveryAddressRequest);
 			String deliveryAddressId = FormDataService.defaultService().get(deliveryAddressRequest, "id");
-			String action = FormDataService.defaultService().get(deliveryAddressRequest, "action");
+			PageAction pageAction = FormDataService.defaultService().getPageAction(deliveryAddressRequest);
 			ActionResult actionResult = new ActionResult();
 			TimeslotEvent event = TimeslotService.defaultService().createTimeslotEventModel(user);
-			DeliveryAddressManipulator.performEditDeliveryAddress(event, (FDSessionUser) user, actionResult, session, user.getShoppingCart(), action, erpAddressModel, addressModel, deliveryAddressId);
+			DeliveryAddressManipulator.performEditDeliveryAddress(event, (FDSessionUser) user, actionResult, session, user.getShoppingCart(), pageAction.actionName, erpAddressModel, addressModel, deliveryAddressId);
 			processErrors(validationErrors, actionResult);
 		}
 		return validationErrors;
@@ -112,8 +117,8 @@ public class DeliveryAddressService {
 		DeliveryAddressManipulator.performDeleteDeliveryAddress(user, session, deliveryAddressId, actionResult, event);
 	}
 
-	public List<ValidationError> selectDeliveryAddressMethod(String deliveryAddressId, String contactNumber, String actionName, HttpSession session, FDUserI user)
-			throws FDResourceException, JspException, RedirectToPage {
+	public List<ValidationError> selectDeliveryAddressMethod(String deliveryAddressId, String contactNumber, String actionName, HttpSession session, FDUserI user) throws FDResourceException,
+			JspException, RedirectToPage {
 		List<ValidationError> validationErrors = new ArrayList<ValidationError>();
 		ErpAddressModel deliveryAddress = user.getShoppingCart().getDeliveryAddress();
 		if (deliveryAddress == null || ((deliveryAddress instanceof ErpDepotAddressModel) && ((ErpDepotAddressModel) deliveryAddress).getZoneCode() == null) || deliveryAddress.getId() == null
@@ -153,19 +158,25 @@ public class DeliveryAddressService {
 		return locationDatas;
 	}
 
-	public List<ValidationError> checkEbtAddressPaymentSelection(FDUserI user, String addressId) throws FDResourceException {
+	public List<ValidationError> checkEbtAddressPaymentSelectionByAddressId(FDUserI user, String addressId) throws FDResourceException {
+		List<ValidationError> result = new ArrayList<ValidationError>();
+		ErpAddressModel requestedAddress = FDCustomerManager.getAddress(user.getIdentity(), addressId);
+		if (requestedAddress != null) {
+			String zipCode = requestedAddress.getZipCode();
+			result.addAll(checkEbtAddressPaymentSelectionByZipCode(user, zipCode));
+		}
+		return result;
+	}
+	
+	public List<ValidationError> checkEbtAddressPaymentSelectionByZipCode(FDUserI user, String zipCode) throws FDResourceException {
 		List<ValidationError> result = new ArrayList<ValidationError>();
 		FDCartModel cart = user.getShoppingCart();
 		ErpPaymentMethodI paymentMethod = cart.getPaymentMethod();
-		if (cart.getDeliveryAddress() != null && paymentMethod != null && cart.getDeliveryAddress().getId() != null && addressId != null && !cart.getDeliveryAddress().getId().equals(addressId)
-				&& user.isEbtAccepted() && EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {
-			ErpAddressModel requestedAddress = FDCustomerManager.getAddress(user.getIdentity(), addressId);
-			if (requestedAddress != null) {
-				String zipCode = requestedAddress.getZipCode();
-				boolean ebtAccepted = DeliveryAddressManipulator.checkEbtAccepted(user, zipCode);
-				if (!ebtAccepted) {
-					result.add(new ValidationError("ebtAddressRestriction", SystemMessageList.MSG_INVALID_NON_EBT_ADDRESS_FOR_EBT_PAYMENTH_METHOD));
-				}
+		if (cart.getDeliveryAddress() != null && paymentMethod != null && cart.getDeliveryAddress().getId() != null && user.isEbtAccepted()
+				&& EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {
+			boolean ebtAccepted = DeliveryAddressManipulator.checkEbtAccepted(user, zipCode);
+			if (!ebtAccepted) {
+				result.add(new ValidationError("ebtAddressRestriction", SystemMessageList.MSG_INVALID_NON_EBT_ADDRESS_FOR_EBT_PAYMENTH_METHOD));
 			}
 		}
 		return result;
@@ -242,7 +253,7 @@ public class DeliveryAddressService {
 				selectDeliveryAddressMethod(addresses.get(0).getId(), "", "selectDeliveryAddressMethod", session, user);
 				addresses.get(0).setSelected(true);
 			}
-			
+
 			if (user.isPickupUser()) {
 				final ErpCustomerInfoModel customerInfoModel = FDCustomerFactory.getErpCustomerInfo(user.getIdentity());
 				for (final FDDeliveryDepotModel pickupDeliveryDepotModel : loadFilteredPickupDepotModel()) {
@@ -293,13 +304,13 @@ public class DeliveryAddressService {
 				}
 			}
 		} else {
-		EnumServiceType selectedServiceType = user.getSelectedServiceType();
-		if (EnumServiceType.HOME.equals(selectedServiceType) || EnumServiceType.CORPORATE.equals(selectedServiceType)) {
-			String deliveryAddressId = NVL.apply(deliveryAddress.getId(), DEFAULT_DELIVERY_ADDRESS_ID);
-			LocationData deliveryLocationData = convertDeliveryAddressModelToLocationData(deliveryAddressId, deliveryAddress, selectedServiceType, isDeliveryAddressUnattended(deliveryAddress));
-			deliveryLocationData.setSelected(true);
-			depotLocationDatas.add(deliveryLocationData);
-		}
+			EnumServiceType selectedServiceType = user.getSelectedServiceType();
+			if (EnumServiceType.HOME.equals(selectedServiceType) || EnumServiceType.CORPORATE.equals(selectedServiceType)) {
+				String deliveryAddressId = NVL.apply(deliveryAddress.getId(), DEFAULT_DELIVERY_ADDRESS_ID);
+				LocationData deliveryLocationData = convertDeliveryAddressModelToLocationData(deliveryAddressId, deliveryAddress, selectedServiceType, isDeliveryAddressUnattended(deliveryAddress));
+				deliveryLocationData.setSelected(true);
+				depotLocationDatas.add(deliveryLocationData);
+			}
 		}
 
 		return depotLocationDatas;
@@ -399,14 +410,14 @@ public class DeliveryAddressService {
 				deliveryLocationData.setBackupDeliveryFirstName(deliveryAddress.getAltFirstName());
 				deliveryLocationData.setBackupDeliveryLastName(deliveryAddress.getAltLastName());
 				if (deliveryAddress.getAlternateAddress() != null) {
-				deliveryLocationData.setBackupDeliveryAddress(deliveryAddress.getAlternateAddress().getAddress1());
-				deliveryLocationData.setBackupDeliveryApartment(deliveryAddress.getAlternateAddress().getApartment());
+					deliveryLocationData.setBackupDeliveryAddress(deliveryAddress.getAlternateAddress().getAddress1());
+					deliveryLocationData.setBackupDeliveryApartment(deliveryAddress.getAlternateAddress().getApartment());
 				}
 				if (deliveryAddress.getAltPhone() != null) {
-				deliveryLocationData.setBackupDeliveryPhone(deliveryAddress.getAltPhone().getPhone());
-				deliveryLocationData.setBackupDeliveryPhoneExtension(deliveryAddress.getAltPhone().getExtension());
+					deliveryLocationData.setBackupDeliveryPhone(deliveryAddress.getAltPhone().getPhone());
+					deliveryLocationData.setBackupDeliveryPhoneExtension(deliveryAddress.getAltPhone().getExtension());
+				}
 			}
-		}
 		}
 
 		if (isBackupDeliveryUnattended) {
@@ -417,7 +428,8 @@ public class DeliveryAddressService {
 		return deliveryLocationData;
 	}
 
-	private PickupLocationData convertPickupLocationModelToLocationData(FDDeliveryDepotLocationModel pickupLocationModel, FDDeliveryDepotModel deliveryDepotModel, ErpCustomerInfoModel customerInfoModel) {
+	private PickupLocationData convertPickupLocationModelToLocationData(FDDeliveryDepotLocationModel pickupLocationModel, FDDeliveryDepotModel deliveryDepotModel,
+			ErpCustomerInfoModel customerInfoModel) {
 		final PickupLocationData pickupDepotLocationData = new PickupLocationData();
 		String addressId = pickupLocationModel.getId();
 		pickupDepotLocationData.setId(addressId);

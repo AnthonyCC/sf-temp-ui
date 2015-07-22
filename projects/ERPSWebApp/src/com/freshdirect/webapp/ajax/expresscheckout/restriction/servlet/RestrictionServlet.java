@@ -12,23 +12,18 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.template.TemplateException;
 import com.freshdirect.webapp.ajax.BaseJsonServlet;
-import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
-import com.freshdirect.webapp.ajax.expresscheckout.cart.data.CartData;
-import com.freshdirect.webapp.ajax.expresscheckout.cart.service.CartDataService;
+import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
-import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutData;
-import com.freshdirect.webapp.ajax.expresscheckout.data.SubmitForm;
 import com.freshdirect.webapp.ajax.expresscheckout.restriction.service.RestrictionService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
-import com.freshdirect.webapp.ajax.expresscheckout.service.RedirectService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
 import com.freshdirect.webapp.checkout.RedirectToPage;
-import com.freshdirect.webapp.soy.SoyTemplateEngine;
 import com.freshdirect.webapp.util.FDEventUtil;
 
 public class RestrictionServlet extends BaseJsonServlet {
+
 
 	private static final long serialVersionUID = -7582639712245761241L;
 
@@ -37,51 +32,32 @@ public class RestrictionServlet extends BaseJsonServlet {
 		try {
 			final FormDataRequest restrictionRequestData = BaseJsonServlet.parseRequestData(request, FormDataRequest.class);
 			String formId = restrictionRequestData.getFormId();
-			String action = FormDataService.defaultService().get(restrictionRequestData, "action");
+			PageAction action = FormDataService.defaultService().getPageAction(restrictionRequestData);
 			ValidationResult validationResult = new ValidationResult();
-			validationResult.setFdform(restrictionRequestData.getFormId());
-			final FormDataResponse restrictionResponse = createRestrictionResponse(restrictionRequestData, validationResult);
-
-			boolean cartChanged = false;
+			final FormDataResponse restrictionResponse = FormDataService.defaultService().prepareFormDataResponse(restrictionRequestData, validationResult);
 			if ("restriction_ageverification".equals(formId)) {
-				if ("removeAlcohol".equalsIgnoreCase(action)) {
+				if (PageAction.REMOVE_ALCOHOL_FROM_CART.equals(action)) {
 					user.getShoppingCart().removeAlcoholicLines();
-					cartChanged = true;
-				} else if ("applyAgeVerification".equals(action)) {
+				} else if (PageAction.APPLY_AGE_VERIFICATION_FOR_ALCOHOL_IN_CART.equals(action)) {
 					RestrictionService.defaultService().applyAgeVerificationForAlcohol(user);
 				}
-			} else if ("restriction_outside_ny".equals(formId) && "removeAlcohol".equalsIgnoreCase(action)) {
+			} else if ("restriction_outside_ny".equals(formId) && PageAction.REMOVE_ALCOHOL_FROM_CART.equals(action)) {
 				user.getShoppingCart().removeAlcoholicLines();
-				cartChanged = true;
-			} else if ("restriction_address".equals(formId) && "removeAlcohol".equalsIgnoreCase(action)) {
+			} else if ("restriction_address".equals(formId) && PageAction.REMOVE_ALCOHOL_FROM_CART.equals(action)) {
 				user.getShoppingCart().removeAlcoholicLines();
-				cartChanged = true;
-			} else if ("restriction_pickup".equals(formId) && "removeWineAndSpirit".equalsIgnoreCase(action)) {
+			} else if ("restriction_pickup".equals(formId) && PageAction.REMOVE_WINE_AND_SPIRITS_FROM_CART.equals(action)) {
 				user.getShoppingCart().removeWineAndSpiritLines();
-				cartChanged = true;
-			} else if ("restriction_timeslot".equals(formId) && "removeAlcohol".equalsIgnoreCase(action)) {
+			} else if ("restriction_timeslot".equals(formId) && PageAction.REMOVE_ALCOHOL_FROM_CART.equals(action)) {
 				user.getShoppingCart().removeAlcoholicLines();
-				cartChanged = true;
-			} else if ("restriction_ebt".equals(formId) && "removeEbtIneligibleItems".equalsIgnoreCase(action)) {
+			} else if ("restriction_ebt".equals(formId) && PageAction.REMOVE_EBT_INELIGIBLE_ITEMS_FROM_CART.equals(action)) {
 				FDCartModel cart = user.getShoppingCart();
 				for (FDCartLineI cartLine : cart.getEbtIneligibleOrderLines()) {
 					cart.removeOrderLineById(cartLine.getRandomId());
 					// Create FD remove cart event.
 					FDEventUtil.logRemoveCartEvent(cartLine, request);
 				}
-				cartChanged = true;
 			}
-			if (cartChanged) {
-				CartData loadCartData = CartDataService.defaultService().loadCartData(request, user);
-				restrictionResponse.getSubmitForm().getResult().put("cartData", SoyTemplateEngine.convertToMap(loadCartData));
-			}
-			SinglePageCheckoutData checkoutData = SinglePageCheckoutFacade.defaultFacade().load(user, request);
-			restrictionResponse.getSubmitForm().getResult().put("restriction", checkoutData.getRestriction());
-			restrictionResponse.getSubmitForm().getResult().put("atpFailure", checkoutData.getAtpFailure());
-			String orderMinimumType = AvailabilityService.defaultService().selectAlcoholicOrderMinimumType(user, action);
-			String redirectUrl = RedirectService.defaultService().populateRedirectUrl("/expressco/view_cart.jsp", "warning_message", orderMinimumType);
-			restrictionResponse.getSubmitForm().getResult().put("redirectUrl", redirectUrl);
-
+			restrictionResponse.getSubmitForm().setResult(SinglePageCheckoutFacade.defaultFacade().loadByPageAction(user, request, action));
 			restrictionResponse.getSubmitForm().setSuccess(restrictionResponse.getValidationResult().getErrors().isEmpty());
 			writeResponseData(response, restrictionResponse);
 		} catch (FDResourceException e) {
@@ -100,15 +76,6 @@ public class RestrictionServlet extends BaseJsonServlet {
 	@Override
 	protected int getRequiredUserLevel() {
 		return FDUserI.SIGNED_IN;
-	}
-
-	private FormDataResponse createRestrictionResponse(final FormDataRequest restrictionRequest, final ValidationResult validationResult) {
-		final FormDataResponse restrictionResponse = new FormDataResponse();
-		final SubmitForm submitForm = new SubmitForm();
-		submitForm.setFormId(restrictionRequest.getFormId());
-		restrictionResponse.setFormSubmit(submitForm);
-		restrictionResponse.setValidationResult(validationResult);
-		return restrictionResponse;
 	}
 
 	@Override

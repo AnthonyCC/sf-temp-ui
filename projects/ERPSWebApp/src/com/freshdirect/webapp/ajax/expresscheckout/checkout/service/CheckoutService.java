@@ -1,9 +1,7 @@
 package com.freshdirect.webapp.ajax.expresscheckout.checkout.service;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +9,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.coremetrics.builder.PageViewTagModelBuilder;
@@ -51,9 +48,6 @@ public class CheckoutService {
 
 	private static final Logger LOGGER = LoggerFactory.getInstance(CheckoutService.class);
 
-	private static final String ATPFAILURE_KEY = "atpfailure";
-	private static final String RESTRICTION_KEY = "restriction";
-
 	private CheckoutService() {
 	}
 
@@ -61,35 +55,28 @@ public class CheckoutService {
 		return INSTANCE;
 	}
 
-	public Map<String, Object> preCheckOrder(FDUserI user) throws FDResourceException, IOException, TemplateException {
-		Map<String, Object> result = new HashMap<String, Object>();
+	public FormRestriction preCheckOrder(FDUserI user) throws FDResourceException, IOException, TemplateException {
 		FDCartModel cart = user.getShoppingCart();
-		boolean applyAtpCheck = false;
+		FormRestriction restriction = null;
 		if (cart.containsAlcohol()) {
-			FormRestriction restriction = RestrictionService.defaultService().verifyRestriction(user);
-			result.put(RESTRICTION_KEY, restriction);
-			if (restriction == null || restriction.isPassed()) {
-				applyAtpCheck = true;
-			}
-		} else {
-			FDReservation timeslotReservation = cart.getDeliveryReservation();
-			if (timeslotReservation != null) {
-				applyAtpCheck = true;
-			}
+			restriction = RestrictionService.defaultService().verifyRestriction(user);
 		}
-		if (cart.getDeliveryAddress() != null && cart.getDeliveryReservation() != null && applyAtpCheck) {
+		return restriction;
+	}
+
+	public UnavailabilityData applyAtpCheck(FDUserI user) throws FDResourceException {
+		UnavailabilityData atpFailureData = null;
+		FDCartModel cart = user.getShoppingCart();
+		if (cart.getDeliveryAddress() != null && cart.getDeliveryReservation() != null) {
 			AvailabilityService.defaultService().checkCartAtpAvailability(user);
-			UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
-			
+			atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
 			PageViewTagModel pvTagModel = new PageViewTagModel();
 			pvTagModel.setCategoryId(CustomCategory.CHECKOUT.toString());
 			pvTagModel.setPageId("unavailability");
 			PageViewTagModelBuilder.decoratePageIdWithCatId(pvTagModel);
 			atpFailureData.addCoremetrics(pvTagModel.toStringList());
-
-			result.put(ATPFAILURE_KEY, atpFailureData);
 		}
-		return result;
+		return atpFailureData;
 	}
 
 	public FormRestriction checkPlaceOrder(FDUserI user) throws FDResourceException, FDSkuNotFoundException, HttpErrorResponse {
@@ -103,18 +90,21 @@ public class CheckoutService {
 		boolean checkoutPageReloadNeeded = false;
 		if ("atpAdjust".equals(actionName)) {
 			List<String> removeCartLineIds = (List<String>) requestData.getFormData().get("removableStockUnavailabilityCartLineIds");
-			AvailabilityService.defaultService().adjustCartAvailability(request, removeCartLineIds , user);
+			AvailabilityService.defaultService().adjustCartAvailability(request, removeCartLineIds, user);
 			String errorMessage = AvailabilityService.defaultService().checkCartAvailabilityAdjustResult(user);
 			if (errorMessage.isEmpty()) {
 				AvailabilityService.defaultService().checkCartAtpAvailability(user);
 			}
 		}
-		Map<String, Object> orderPreCheckResult = preCheckOrder(user);
-		FormRestriction restriction = (FormRestriction) orderPreCheckResult.get(RESTRICTION_KEY);
-		UnavailabilityData atpFailureData = (UnavailabilityData) orderPreCheckResult.get(ATPFAILURE_KEY);
+		FormRestriction restriction = preCheckOrder(user);
+		UnavailabilityData atpFailureData = null;
+		if (restriction == null || restriction.isPassed()) {
+			atpFailureData = applyAtpCheck(user);
+		}
 		FormRestriction checkPlaceOrderResult = null;
 		ActionResult actionResult = new ActionResult();
-		if (restriction == null && atpFailureData != null && atpFailureData.getNonReplaceableLines().isEmpty() && atpFailureData.getReplaceableLines().isEmpty() && atpFailureData.getNotMetMinAmount() == null) {
+		if (restriction == null && atpFailureData != null && atpFailureData.getNonReplaceableLines().isEmpty() && atpFailureData.getReplaceableLines().isEmpty()
+				&& atpFailureData.getNotMetMinAmount() == null) {
 			checkPlaceOrderResult = checkPlaceOrder(user);
 			if (checkPlaceOrderResult.isPassed()) {
 				FDCartModel cart = user.getShoppingCart();
@@ -155,14 +145,6 @@ public class CheckoutService {
 			}
 		}
 		return responseData;
-	}
-
-	public FormRestriction getRestrictionFromOrderPreCheckResult(Map<String, Object> orderPreCheckResult) {
-		return (FormRestriction) orderPreCheckResult.get(RESTRICTION_KEY);
-	}
-
-	public UnavailabilityData getAtpFailureFromOrderPreCheckResult(Map<String, Object> orderPreCheckResult) {
-		return (UnavailabilityData) orderPreCheckResult.get(ATPFAILURE_KEY);
 	}
 
 	private FormDataResponse createResponseData(FormDataRequest requestData) {

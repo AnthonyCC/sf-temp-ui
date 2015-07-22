@@ -24,12 +24,8 @@ import java.util.TreeSet;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
-import javax.ejb.EJBHome;
-import javax.ejb.EJBObject;
 import javax.ejb.FinderException;
-import javax.ejb.Handle;
 import javax.ejb.ObjectNotFoundException;
-import javax.ejb.RemoveException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -6791,6 +6787,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		try {
 			conn = getConnection();
 			FDUserDAO.storeGoGreenPreferences(conn, customerId, goGreen);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+			close(conn);
+		}
+	}
+	
+	public boolean loadGoGreenPreference(String customerId) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return FDUserDAO.loadGoGreenPreferences(conn, customerId);
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {

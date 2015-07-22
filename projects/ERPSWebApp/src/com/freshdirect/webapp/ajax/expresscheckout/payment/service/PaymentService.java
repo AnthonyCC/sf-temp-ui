@@ -33,6 +33,7 @@ import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.PaymentManager;
+import com.freshdirect.webapp.ajax.data.PageAction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.payment.data.PaymentData;
 import com.freshdirect.webapp.ajax.expresscheckout.payment.data.PaymentEditData;
@@ -206,14 +207,15 @@ public class PaymentService {
 		sortPaymentMethods(user, paymentMethods);
 		String selectedPaymentId = null;
 		Boolean cartPaymentSelectionDisabled = (Boolean) request.getSession().getAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
-		
-		if (user.getShoppingCart().getPaymentMethod() == null) {
-			selectedPaymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
-			selectPaymentMethod(selectedPaymentId, "selectPaymentMethod", request);
-		} else {
-			PrimaryKey paymentMethodPrimaryKey = user.getShoppingCart().getPaymentMethod().getPK();
-			if (paymentMethodPrimaryKey != null) {
-				selectedPaymentId = paymentMethodPrimaryKey.getId();
+		if (cartPaymentSelectionDisabled == null || !cartPaymentSelectionDisabled) {
+			if (user.getShoppingCart().getPaymentMethod() == null) {
+				selectedPaymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
+				selectPaymentMethod(selectedPaymentId, PageAction.SELECT_PAYMENT_METHOD.actionName, request);
+			} else {
+				PrimaryKey paymentMethodPrimaryKey = user.getShoppingCart().getPaymentMethod().getPK();
+				if (paymentMethodPrimaryKey != null) {
+					selectedPaymentId = paymentMethodPrimaryKey.getId();
+				}
 			}
 		}
 		for (int i = 0; i < paymentMethods.size(); i++) {
