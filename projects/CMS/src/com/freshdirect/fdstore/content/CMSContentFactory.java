@@ -42,8 +42,8 @@ public class CMSContentFactory {
 	
 	public static void init(){
 		instance = new CMSContentFactory();
-		pageTimer = new Timer();
-		pickListTimer = new Timer();
+		//pageTimer = new Timer();
+		//pickListTimer = new Timer();
 		
 		contentService = (ContentServiceI) FDRegistry.getInstance().getService("com.freshdirect.cms.CompositeService", ContentServiceI.class);
 		
@@ -55,8 +55,8 @@ public class CMSContentFactory {
 		calendar.set(Calendar.HOUR, 0);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.MINUTE, 0);
-		pageTimer.scheduleAtFixedRate(instance.new PageLoaderTask(), calendar.getTime(), 15 * 60 *1000);
-		pickListTimer.scheduleAtFixedRate(instance.new PickListLoaderTask(), calendar.getTime(), 15 * 60 *1000);
+		//pageTimer.scheduleAtFixedRate(instance.new PageLoaderTask(), calendar.getTime(), 15 * 60 *1000);
+		//pickListTimer.scheduleAtFixedRate(instance.new PickListLoaderTask(), calendar.getTime(), 15 * 60 *1000);
 	}
 	
 	
