@@ -838,8 +838,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				}
 			}
 			if (address != null) {
-				FDDeliveryAddressVerificationResponse response = FDDeliveryManager.getInstance().scrubAddress(address);
-				//address  = new ErpAddressModel(response.getAddress());
+				try{
+					FDDeliveryManager.getInstance().scrubAddress(address);
+				}catch (FDInvalidAddressException e) {
+					//TODO Ignore the Invalid Address Exception for scrub logic
+					LOGGER.info("Exception while geocoding the address");
+					//throw new FDResourceException(e);
+				}
 			}
 			return address;
 		} catch (FinderException fe) {
@@ -848,11 +853,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(re);
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
-		} catch (FDInvalidAddressException e) {
-			//TODO Ignore the Invalid Address Exception for scrub logic
-			LOGGER.info("Exception while geocoding the address");
-			throw new FDResourceException(e);
-		}
+		} 
 	}
 
 	private static final String SHIP_TO_ADDRESS_QUERY = "SELECT * FROM CUST.ADDRESS WHERE ID = ?";
