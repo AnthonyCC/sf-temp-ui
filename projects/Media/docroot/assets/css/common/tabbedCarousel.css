@@ -186,7 +186,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00c4c4be', e
   	display:none;
 }
 
-.portrait-item.unavailable .portrait-item-price{
+.product-sample-carousel .portrait-item.unavailable .portrait-item-price{
 	display: block;
 	opacity: .5;
 	filter: alpha(opacity=50);
