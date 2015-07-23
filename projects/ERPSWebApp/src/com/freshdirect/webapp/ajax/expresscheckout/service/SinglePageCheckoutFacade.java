@@ -118,11 +118,13 @@ public class SinglePageCheckoutFacade {
 			//$FALL-THROUGH$
 		case DELETE_DELIVERY_ADDRESS_METHOD:
 			result.put(ADDRESS_JSON_KEY, loadAddress(user, request.getSession()));
+			result.put(TIMESLOT_JSON_KEY, TimeslotService.defaultService().loadCartTimeslot(user.getShoppingCart()));
 			result.put(REDIRECT_URL_JSON_KEY, RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL, availabilityService.selectWarningType(user)));
 			result.put(SUB_TOTAL_BOX_JSON_KEY, CartDataService.defaultService().loadCartDataSubTotalBox(request, user));
 			break;
 		case SELECT_DELIVERY_ADDRESS_METHOD:
 			result.put(ADDRESS_JSON_KEY, loadAddress(user, request.getSession()));
+			result.put(TIMESLOT_JSON_KEY, TimeslotService.defaultService().loadCartTimeslot(user.getShoppingCart()));
 			Boolean cartPaymentSelectionDisabled = (Boolean) request.getSession().getAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
 			if (cartPaymentSelectionDisabled != null && cartPaymentSelectionDisabled) {
 				result.put(PAYMENT_JSON_KEY, loadUserPaymentMethods(user, request));
