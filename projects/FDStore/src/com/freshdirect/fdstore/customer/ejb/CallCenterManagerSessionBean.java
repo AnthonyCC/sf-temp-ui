@@ -1105,11 +1105,11 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private static final String CUTOFF_REPORT_QUERY = "select s.status, di.handofftime " +
+	private static final String CUTOFF_REPORT_QUERY = "select s.status, di.CUTOFFTIME " +
 			" , count(*) as order_count from cust.sale s, cust.salesaction sa, cust.deliveryinfo di " +
 			"where s.id=sa.sale_id and sa.id=di.salesaction_id and s.type<>'SUB' and sa.action_type in ('CRO','MOD') and sa.requested_date=? and s.type = 'REG' " +
 			"and sa.action_date=(select max(action_date) from cust.salesaction where sale_id=s.id and action_type in ('CRO','MOD')) and di.starttime > ? " +
-			"and di.starttime < ? group by s.status, di.handofftime order by di.handofftime, s.status";
+			"and di.starttime < ? group by s.status, di.CUTOFFTIME order by di.CUTOFFTIME, s.status";
 
 	public List getCutoffTimeReport(java.util.Date day) throws FDResourceException {
 		Connection conn = null;
@@ -1128,7 +1128,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 			while (rs.next()) {
 				EnumSaleStatus s = EnumSaleStatus.getSaleStatus(rs.getString("STATUS"));
-				ret.add(new FDCutoffTimeInfo(s, rs.getTimestamp("handofftime"), rs.getInt("ORDER_COUNT")));
+				ret.add(new FDCutoffTimeInfo(s, rs.getTimestamp("CUTOFFTIME"), rs.getInt("ORDER_COUNT")));
 			}
 			ps.close();
 			rs.close();

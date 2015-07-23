@@ -830,6 +830,8 @@ public interface FDCustomerManagerSB extends EJBObject {
 	//4125 coremetrics
     public String getCustomersProfileValue(String CustomerId) throws FDResourceException, RemoteException;
 	public String getCustomersCounty(String CustomerID) throws FDResourceException, RemoteException;
+
+	public List<String> getUsedReservations(String customerId) throws FDResourceException, RemoteException;
 	
 }
 

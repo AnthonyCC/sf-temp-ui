@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.standingorders;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -7,7 +8,7 @@ import java.util.Date;
 
 import com.freshdirect.framework.util.DateUtil;
 
-public class FDStandingOrderFilterCriteria {
+public class FDStandingOrderFilterCriteria implements Serializable {
 
 	private String id;
 	private Integer frequency;

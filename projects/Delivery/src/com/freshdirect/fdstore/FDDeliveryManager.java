@@ -465,6 +465,15 @@ public class FDDeliveryManager {
 		}
 		return null; 
 	}
+	
+	public boolean isZipCodeEbtAccepted(String zipCode) throws FDResourceException {
+		boolean isEBTAccepted = false;
+		if (zipCode != null) {
+			FDDeliveryServiceSelectionResult serviceResult =FDDeliveryManager.getInstance().getDeliveryServicesByZipCode(zipCode);		
+			isEBTAccepted = null != serviceResult ? serviceResult.isEbtAccepted() : false;
+		}
+		return isEBTAccepted;
+	}
 
 	public FDDeliveryServiceSelectionResult getDeliveryServicesByAddress(AddressModel address) throws FDResourceException, FDInvalidAddressException {
 		try {

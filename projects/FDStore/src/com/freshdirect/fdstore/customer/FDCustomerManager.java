@@ -356,16 +356,38 @@ public class FDCustomerManager {
 		if (identity != null) {
 			List<FDReservation> rsvList = FDDeliveryManager.getInstance().getReservationsForCustomer(identity.getErpCustomerPK());
 			for ( FDReservation rsv : rsvList ) {
+				
 				//TimeslotLogic.applyOrderMinimum(user, rsv.getTimeslot());
-				if (EnumReservationType.STANDARD_RESERVATION.equals(rsv.getReservationType())) {
-					user.getShoppingCart().setDeliveryReservation(rsv);
-				} else {
-					user.setReservation(rsv);
+				//TODO check if the reservation is already used by an order from the same customer
+				List<String> rsvIds = getUsedReservations(identity.getErpCustomerPK());
+				if(!rsvIds.contains(rsv.getId())){
+					if (EnumReservationType.STANDARD_RESERVATION.equals(rsv.getReservationType())) {
+						user.getShoppingCart().setDeliveryReservation(rsv);
+					} else {
+						user.setReservation(rsv);
+					}
 				}
 			}
 		}
 	}
 	
+	
+	public static List<String> getUsedReservations(String customerId) throws FDResourceException {
+		lookupManagerHome();
+
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.getUsedReservations(customerId);
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+
 	private static void classifyUser(FDUser user) throws FDResourceException {
 
 		Set<EnumServiceType> availableServices = new HashSet<EnumServiceType>();

@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -3391,6 +3392,36 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		}
+	}
+	
+	public List<String> getUsedReservations(String customerId) throws FDResourceException{
+
+		Connection conn = null;
+		try {
+			conn = getConnection();
+
+			PreparedStatement ps = conn
+					.prepareStatement("SELECT DI.RESERVATION_ID  FROM CUST.SALE S, CUST.SALESACTION SA, CUST.DELIVERYINFO DI WHERE S.ID = SA.SALE_ID AND " +
+							" S.CROMOD_DATE = SA.ACTION_DATE AND SA.ACTION_TYPE IN ('CRO','MOD') AND SA.REQUESTED_DATE > SYSDATE " +
+							" AND S.TYPE ='REG' AND S.STATUS <> 'CAN'  AND DI.SALESACTION_ID = SA.ID AND S.CUSTOMER_ID = ?");
+			ps.setString(1, customerId);
+			ResultSet rs = ps.executeQuery();
+
+			Set<String> rsvIds = new HashSet<String>();
+			while (rs.next()) {
+				rsvIds.add(rs.getString("RESERVATION_ID"));
+			}
+
+			rs.close();
+			ps.close();
+
+			return new ArrayList<String>(rsvIds);
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			close(conn);
+		}
+	
 	}
 
 	public List<DlvSaleInfo> getOrdersByTruck(String truckNumber, Date dlvDate) throws FDResourceException {

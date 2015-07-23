@@ -1001,7 +1001,7 @@ public class DlvRestrictionDAO {
 			String scrubbedAddress, String zipcode, String apartment) throws SQLException {
 
 		PreparedStatement ps = conn
-				.prepareStatement("SELECT * FROM DLV.RESTRICTED_ADDRESS WHERE SCRUBBED_ADDRESS = ? AND APARTMENT = ? AND ZIPCODE = ? AND REASON = ?");
+				.prepareStatement("SELECT * FROM CUST.RESTRICTED_ADDRESS WHERE SCRUBBED_ADDRESS = ? AND APARTMENT = ? AND ZIPCODE = ? AND REASON = ?");
 		ps.setString(1, scrubbedAddress);
 		if (apartment == null || "".equals(apartment)) {
 			ps.setNull(2, Types.VARCHAR);
