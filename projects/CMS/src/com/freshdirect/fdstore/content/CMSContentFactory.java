@@ -44,9 +44,7 @@ public class CMSContentFactory {
 		instance = new CMSContentFactory();
 		//pageTimer = new Timer();
 		//pickListTimer = new Timer();
-		
-		contentService = (ContentServiceI) FDRegistry.getInstance().getService("com.freshdirect.cms.CompositeService", ContentServiceI.class);
-		
+		contentService = (ContentServiceI) FDRegistry.getInstance().getService("com.freshdirect.cms.CmsManager", ContentServiceI.class);
 		//Run first time during initialization
 		instance.cacheAllPages();
 		
