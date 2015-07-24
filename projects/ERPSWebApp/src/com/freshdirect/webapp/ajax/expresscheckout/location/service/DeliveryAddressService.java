@@ -61,6 +61,7 @@ import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
 public class DeliveryAddressService {
 
+	private static final String EBT_ADDRESS_RESTRICTION_JSON_KEY = "ebtAddressRestriction";
 	private static final String DEFAULT_DELIVERY_ADDRESS_ID = "addressId";
 	private static final String HAMPTON_DEPOT_CODE = "HAM";
 	private static final String PICKUP_DELIVERY_POPUP = "/delivery_popup.jsp?depotCode=%s&locaId=%s";
@@ -176,7 +177,7 @@ public class DeliveryAddressService {
 				&& EnumPaymentMethodType.EBT.equals(paymentMethod.getPaymentMethodType())) {
 			boolean ebtAccepted = DeliveryAddressManipulator.checkEbtAccepted(user, zipCode);
 			if (!ebtAccepted) {
-				result.add(new ValidationError("ebtAddressRestriction", SystemMessageList.MSG_INVALID_NON_EBT_ADDRESS_FOR_EBT_PAYMENTH_METHOD));
+				result.add(new ValidationError(EBT_ADDRESS_RESTRICTION_JSON_KEY, SystemMessageList.MSG_INVALID_NON_EBT_ADDRESS_FOR_EBT_PAYMENTH_METHOD));
 			}
 		}
 		return result;
@@ -192,13 +193,13 @@ public class DeliveryAddressService {
 				if (user.getShoppingCart().getDeliveryAddress() == null) {
 					selectedDeliveryAddressId = FDCustomerManager.getDefaultDepotLocationPK(user.getIdentity());
 					if (selectedDeliveryAddressId != null) {
-						selectDeliveryAddressMethod(selectedDeliveryAddressId, "", "selectDeliveryAddressMethod", session, user);
+						selectDeliveryAddressMethod(selectedDeliveryAddressId, "", PageAction.SELECT_DELIVERY_ADDRESS_METHOD.actionName, session, user);
 					}
 				} else {
 					ErpAddressModel deliveryAddress = user.getShoppingCart().getDeliveryAddress();
 					if (deliveryAddress instanceof ErpDepotAddressModel) {
 						selectedDeliveryAddressId = user.getShoppingCart().getDeliveryAddress().getLocationId();
-						selectDeliveryAddressMethod(selectedDeliveryAddressId, "", "selectDeliveryAddressMethod", session, user);
+						selectDeliveryAddressMethod(selectedDeliveryAddressId, "", PageAction.SELECT_DELIVERY_ADDRESS_METHOD.actionName, session, user);
 					}
 				}
 			}

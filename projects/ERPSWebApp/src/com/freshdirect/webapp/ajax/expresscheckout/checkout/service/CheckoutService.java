@@ -30,6 +30,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormRestriction;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SinglePageCheckoutData;
 import com.freshdirect.webapp.ajax.expresscheckout.data.SubmitForm;
+import com.freshdirect.webapp.ajax.expresscheckout.location.service.DeliveryAddressService;
 import com.freshdirect.webapp.ajax.expresscheckout.restriction.service.RestrictionService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.FormDataService;
 import com.freshdirect.webapp.ajax.expresscheckout.service.SinglePageCheckoutFacade;
@@ -103,11 +104,12 @@ public class CheckoutService {
 		}
 		FormRestriction checkPlaceOrderResult = null;
 		ActionResult actionResult = new ActionResult();
+		FDCartModel cart = user.getShoppingCart();
+		List<ValidationError> checkEbtAddressPaymentSelectionError = DeliveryAddressService.defaultService().checkEbtAddressPaymentSelectionByZipCode(user, cart.getDeliveryAddress().getZipCode());
 		if (restriction == null && atpFailureData != null && atpFailureData.getNonReplaceableLines().isEmpty() && atpFailureData.getReplaceableLines().isEmpty()
-				&& atpFailureData.getNotMetMinAmount() == null) {
+				&& atpFailureData.getNotMetMinAmount() == null && checkEbtAddressPaymentSelectionError.isEmpty()) {
 			checkPlaceOrderResult = checkPlaceOrder(user);
 			if (checkPlaceOrderResult.isPassed()) {
-				FDCartModel cart = user.getShoppingCart();
 				LOGGER.debug("AVAILABILITY IS: " + cart.getAvailability());
 				String outcome = null;
 				if (cart.isAvailabilityChecked()) {
@@ -143,6 +145,7 @@ public class CheckoutService {
 			for (ActionError error : actionResult.getErrors()) {
 				responseData.getValidationResult().getErrors().add(new ValidationError("orderSubmit", error.getDescription()));
 			}
+			responseData.getValidationResult().getErrors().addAll(checkEbtAddressPaymentSelectionError);
 		}
 		return responseData;
 	}
