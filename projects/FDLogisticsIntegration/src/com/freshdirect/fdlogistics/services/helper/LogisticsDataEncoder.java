@@ -115,6 +115,7 @@ public static Address encodeAddress(ContactAddressModel model) {
 		customer.setAlternateCustomerId(custId);
 		customer.setFirstName(address.getFirstName());
 		customer.setLastName(address.getLastName());
+		customer.setServiceType(address.getServiceType().getName());
 		customer.setOrderSize(new CustomerAvgOrderSize(0,0,0));
 		return customer;
 	}
