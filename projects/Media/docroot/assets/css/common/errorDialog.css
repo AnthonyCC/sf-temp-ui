@@ -34,6 +34,15 @@
 
 }
 
+[data-component="errorDialog.message"] .internalerror {
+  font-size: 16px;
+}
+
+[data-component="errorDialog.message"] .internalerrormessage {
+  font-size: 12px;
+  color: #888;
+}
+
 [data-component="errorDialog"] .unauthorized {
 	font-size:14px;
 	text-align:left;

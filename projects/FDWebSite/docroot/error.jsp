@@ -3,10 +3,33 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <% //expanded page dimensions
 final int W_ERROR_TOTAL = 970;
-%>
 
-<% 
 try {
+
+if ("XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"))) {
+  // AJAX errors
+	response.setStatus(500);
+
+	response.setHeader( "Cache-Control", "no-cache" );
+	response.setHeader( "Pragma", "no-cache" );
+	response.setContentType( "application/json" );
+
+  String message = "unknown error";
+
+  if (exception != null) {
+    message = exception.getMessage();
+    if (message != null) {
+      message = message.replace("\"", "'");
+    } else {
+      message = "unknown error";
+    }
+  }
+
+%>
+{"error": "<%= message %>"}
+<%
+} else {
+// standard JSP errors
 response.setStatus(500); %> 
 <tmpl:insert template='/common/template/no_space_border.jsp'>
 	<tmpl:put name='title' direct='true'>FreshDirect</tmpl:put>
@@ -85,6 +108,7 @@ response.setStatus(500); %>
 </tmpl:put>
 </tmpl:insert>
 <% 
+} // end of standard JSP error page
 } catch (Exception fatalError) { %>
 	<% JspLogger.GENERIC.error("FatalError in error page", fatalError);  %>
 	<%=  String.valueOf(fatalError) %>

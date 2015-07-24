@@ -7,7 +7,20 @@ var FreshDirect = FreshDirect || {};
   var $ = fd.libs.$;
   var DISPATCHER = fd.common.dispatcher;
   var errorMessages={
-      "401":'<div class="unauthorized">Session expired, please refresh!</div>'
+      "401": '<div class="unauthorized">Session expired, please refresh!</div>',
+      "500": function (e) {
+        var result = e.responseText,
+            message = "Internal Error";
+
+        try {
+          message = JSON.parse(result).error;
+        } catch (err) {
+        }
+
+        message = '<div class="internalerrorheader">Internal error occured, please refresh the page!</div><div class="internalerror">If that does not work, contact FreshDirect customer service at 1-212-796-8002. We apologize for any inconvenience.</div><div class="internalerrormessage">Error message: '+message+'</div>';
+
+        return message;
+      }
   };
   var DEFAULT_SPINNER_CONFIG = {
     top: "20%"
@@ -23,17 +36,23 @@ var FreshDirect = FreshDirect || {};
 
   var successHandler = function( data ){
     try{
-      Object.keys( data ).forEach( _signalWidgets, data );      
+      Object.keys( data ).forEach( _signalWidgets, data );
     } catch(e){
       // console.log(e);
     }
   };
 
   var errorHandler = function( e ){
-    var status = e.status;
+    var status = e.status,
+        message = errorMessages[status];
+
+    if (typeof message === 'function') {
+      message = message(e);
+    }
+
     if (status) {
       DISPATCHER.signal('errorDialog',{
-        message:errorMessages[status]
+        message: message
       });
     }
 
