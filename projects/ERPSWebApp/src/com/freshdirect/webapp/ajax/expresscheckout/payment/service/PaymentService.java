@@ -207,10 +207,11 @@ public class PaymentService {
 		sortPaymentMethods(user, paymentMethods);
 		String selectedPaymentId = null;
 		Boolean cartPaymentSelectionDisabled = (Boolean) request.getSession().getAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
+		List<ValidationError> selectionError = new ArrayList<ValidationError>();
 		if (cartPaymentSelectionDisabled == null || !cartPaymentSelectionDisabled) {
 			if (user.getShoppingCart().getPaymentMethod() == null) {
 				selectedPaymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
-				selectPaymentMethod(selectedPaymentId, PageAction.SELECT_PAYMENT_METHOD.actionName, request);
+				selectionError = selectPaymentMethod(selectedPaymentId, PageAction.SELECT_PAYMENT_METHOD.actionName, request);
 			} else {
 				PrimaryKey paymentMethodPrimaryKey = user.getShoppingCart().getPaymentMethod().getPK();
 				if (paymentMethodPrimaryKey != null) {
@@ -220,7 +221,7 @@ public class PaymentService {
 		}
 		for (int i = 0; i < paymentMethods.size(); i++) {
 			PaymentData paymentData = createPaymentData(paymentMethods.get(i));
-			if ((cartPaymentSelectionDisabled == null || !cartPaymentSelectionDisabled) && (paymentData.getId().equals(selectedPaymentId) || (selectedPaymentId == null && i == 0))) {
+			if ((cartPaymentSelectionDisabled == null || !cartPaymentSelectionDisabled) && (paymentData.getId().equals(selectedPaymentId) || (selectedPaymentId == null && i == 0)) && selectionError.isEmpty()) {
 				paymentData.setSelected(true);
 			}
 			paymentDatas.add(paymentData);
