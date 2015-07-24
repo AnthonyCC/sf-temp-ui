@@ -106,6 +106,12 @@
 							<CmsField><attribute>tabletHeaderBanner</attribute></CmsField>
 						</fields>
 					</CmsSection>
+					<CmsSection>
+						<title>HERO CAROUSEL</title>
+						<fields>
+							<CmsField><attribute>heroCarousel</attribute></CmsField>
+						</fields>
+					</CmsSection>
 				</sections>
 			</CmsPage>
 			<CmsPage>
@@ -381,6 +387,12 @@
 						<fields>
 							<CmsField><attribute>tabletCallToActionBanner</attribute></CmsField>
 							<CmsField><attribute>tabletThumbnailImage</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					<CmsSection>
+						<title>HERO CAROUSEL</title>
+						<fields>
+							<CmsField><attribute>heroCarousel</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>
@@ -2166,13 +2178,16 @@
 					<CmsSection>
 						<title>CORE</title>
 						<fields>
-							<CmsField><attribute>Name</attribute></CmsField>
-							<CmsField><attribute>ImageBannerImage</attribute></CmsField>  
-							<CmsField><attribute>ImageBannerLink</attribute></CmsField>  
-							<CmsField><attribute>Description</attribute></CmsField>
 							<CmsField><attribute>Type</attribute></CmsField>
-							<CmsField><attribute>BurstText</attribute></CmsField> 
-							<CmsField><attribute>Burst</attribute></CmsField>
+							<CmsField><attribute>Name</attribute></CmsField>
+							<CmsField><attribute>Description</attribute></CmsField>
+							<CmsField><attribute>FlagText</attribute></CmsField>
+							<CmsField><attribute>FlagColor</attribute></CmsField>
+							<CmsField><attribute>Price</attribute></CmsField>
+							<CmsField><attribute>ImageBannerImage</attribute></CmsField>
+							<CmsField><attribute>ImageBannerLink</attribute></CmsField>
+							<CmsField><attribute>ImageBannerBurst</attribute></CmsField>
+							<CmsField><attribute>ImageBannerProduct</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>
