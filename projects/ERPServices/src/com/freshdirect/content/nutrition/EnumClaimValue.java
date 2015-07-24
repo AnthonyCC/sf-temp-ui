@@ -92,7 +92,9 @@ public class EnumClaimValue implements NutritionValueEnum {
         types.add(new EnumClaimValue("LO_CALR", "Low Calorie", 1));
         types.add(new EnumClaimValue("LO_CARB", "Low Carbohydrate", 1));
         types.add(new EnumClaimValue("LO_CHOL", "Low Cholesterol", 1));
-		types.add(new EnumClaimValue("LO_SUGR", "Low Sugar", 1));
+		// as per the JIRA APPDEV-4176 changing Low sugar to vegan
+		//types.add(new EnumClaimValue("LO_SUGR", "Low Sugar", 1));
+        types.add(new EnumClaimValue("VE_GAN", "Vegan", 1));
         
         types.add(new EnumClaimValue("RD_FAT",  "Reduced Fat", 1));
         types.add(new EnumClaimValue("RD_SODM", "Reduced Sodium", 1));
@@ -114,16 +116,21 @@ public class EnumClaimValue implements NutritionValueEnum {
 		
 		types.add( VEGGY );
 		types.add(new EnumClaimValue("ATKINS",    "Atkins", 1));
-		types.add(new EnumClaimValue("NET_CARBS", "Net Carbs", 1));
+		// as per the JIRA APPDEV-4176 changing Net carbs to  Grass-Fed
+		//types.add(new EnumClaimValue("NET_CARBS", "Net Carbs", 1));
+		types.add(new EnumClaimValue("GRASS_FED", "Grass-Fed", 1));
 		types.add(new EnumClaimValue("NOS",       "Naturally Occurring Sulfites", 1));
 		types.add(new EnumClaimValue("SOY",       "Soy Free", 1));
 		types.add(OAN_ORGANIC);
 		types.add(KOSHER_FOR_PASSOVER);
 		
 		types.add(new EnumClaimValue("KOS_NOPAS", "Not certified for Passover.", 1));
-
-		types.add(new EnumClaimValue("PEANUTS", "Produced in our bakery, where tree nuts and peanuts are used.", 1));
-		types.add(new EnumClaimValue("LEGAL","Please note: FreshDirect's kitchen uses eggs, fish, milk, shellfish, soy, peanuts, tree nuts and wheat ingredients.",1));
+		//As per the JIIRA APPDEV-4176 changing Produced in our bakery to Not tested on animal
+		//types.add(new EnumClaimValue("PEANUTS", "Produced in our bakery, where tree nuts and peanuts are used.", 1));
+		types.add(new EnumClaimValue("NOT_TESTED_ANIMAL", "Not Tested On animals", 1));
+		//As per the JIIRA APPDEV-4176 changing FreshDirect's kitchen eggs to Fair Trade
+		//types.add(new EnumClaimValue("LEGAL","Please note: FreshDirect's kitchen uses eggs, fish, milk, shellfish, soy, peanuts, tree nuts and wheat ingredients.",1));
+		types.add(new EnumClaimValue("FAIR_TRADE","Fair Trade",1));
 
 		// 4mm nutrition claims
 		types.add( NUTRITION_4MM_LOWCALORIE );
