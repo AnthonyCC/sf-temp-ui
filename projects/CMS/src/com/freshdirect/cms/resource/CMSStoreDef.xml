@@ -504,6 +504,9 @@
 			<RelationshipDef name="tabletHeaderBanner" label="Tablet Header Banner">
 				<DestinationDef contentType="Banner" />
 			</RelationshipDef>
+			<RelationshipDef name="heroCarousel" label="Tablet Thumbnail Image">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
 	
@@ -841,6 +844,9 @@
 				<DestinationDef contentType="Banner" />
 			</RelationshipDef>
 			<RelationshipDef name="tabletThumbnailImage" label="Tablet Thumbnail Image">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="heroCarousel" label="Tablet Thumbnail Image">
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
 		</RelationshipDefs>
@@ -2525,6 +2531,9 @@
 		    <AttributeDef name="Name" type="S" label="Name" required="false"/>
 			<AttributeDef name="Type" type="S" label="Type" required="false"/>
 			<AttributeDef name="Description" type="S" label="Description" required="false"/>
+			 <AttributeDef name="FlagText" type="S" label="Flag Text" required="false"/>
+			<AttributeDef name="FlagColor" type="S" label="Flag Color" required="false"/>
+			<AttributeDef name="Price" type="S" label="Price" required="false"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="ImageBannerImage" label="Image">
@@ -2535,6 +2544,15 @@
 			</RelationshipDef>
 			<RelationshipDef name="ImageBannerBurst" label="Burst">
 				<DestinationDef contentType="Image"/>
+			</RelationshipDef>
+			<RelationshipDef name="ImageBannerProduct" label="Product">
+				<DestinationDef contentType="Product"/>
+			</RelationshipDef>
+			<RelationshipDef name="Target" label="Target">
+				<DestinationDef contentType="Product"/>
+				<DestinationDef contentType="PickList"/>
+				<DestinationDef contentType="Category"/>
+				<DestinationDef contentType="Department"/>
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
