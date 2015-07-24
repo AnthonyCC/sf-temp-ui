@@ -25,7 +25,6 @@ import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
-import com.freshdirect.fdlogistics.model.FDTimeslotList;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -38,6 +37,8 @@ import com.freshdirect.fdstore.rules.OrderMinimumCalculator;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.logistics.analytics.model.SessionEvent;
+import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.delivery.model.DlvZoneModel;
 import com.freshdirect.logistics.delivery.model.EnumOrderAction;
 import com.freshdirect.logistics.delivery.model.EnumOrderType;
@@ -413,6 +414,101 @@ public class TimeslotLogic {
 			}
 			return context;
 
+	}
+	
+	public static void logTimeslotSessionInfo(FDUserI user,
+			ErpAddressModel address, boolean deliveryInfo, List<FDTimeslotUtil> timeslotList, TimeslotEvent event){
+		try {
+
+			SessionEvent sessionEvent = null;
+			if (user.getSessionEvent() != null) {
+				sessionEvent = user.getSessionEvent();
+			} else {
+				sessionEvent = new SessionEvent();
+			}
+			sessionEvent.setSameDay(event.getSameDay());
+			for (FDTimeslotUtil timeslots : timeslotList) {
+				if (timeslots != null) {
+					int availCount = 0, soldCount = 0, hiddenCount = 0;
+					String zone = "";
+					if (DateUtil.diffInDays(timeslots.getStartDate(),
+							DateUtil.getCurrentTime()) < 7) {
+						sessionEvent.setLastTimeslot(timeslots.getEventPk());
+						Date nextDay = DateUtil.getNextDate();
+						List<FDTimeslot> tempSlots = timeslots
+								.getTimeslotsForDate(DateUtil.getNextDate()), tempSlots1 = null;
+						if (tempSlots != null && tempSlots.size() == 0) {
+							nextDay = DateUtil.addDays(nextDay, 1);
+							tempSlots1 = timeslots.getTimeslotsForDate(nextDay);
+							if (tempSlots1 != null && tempSlots1.size() > 0) {
+								Date maxCutoff = null;
+								for (FDTimeslot slot1 : tempSlots1) {
+									if (maxCutoff == null)
+										maxCutoff = slot1.getCutoffDateTime();
+									else if (slot1.getCutoffDateTime()
+											.compareTo(maxCutoff) > 0)
+										maxCutoff = slot1.getCutoffDateTime();
+								}
+								if (maxCutoff != null
+										&& DateUtil.addDays(maxCutoff, -1)
+												.before(DateUtil
+														.getCurrentTime())
+										&& DateUtil.getCurrentTime().before(
+												DateUtil.getEOD())) {
+									tempSlots = tempSlots1;
+								}
+							}
+						}
+						if (tempSlots != null && tempSlots.size() > 0) {
+							Iterator<FDTimeslot> slotIterator = tempSlots
+									.iterator();
+							while (slotIterator.hasNext()) {
+								FDTimeslot slot = slotIterator.next();
+								if ("A".equals(slot.getStoreFrontAvailable()))
+									availCount++;
+								else if ("S".equals(slot
+										.getStoreFrontAvailable()))
+									soldCount++;
+								else if ("H".equals(slot
+										.getStoreFrontAvailable()))
+									hiddenCount++;
+								zone = slot.getZoneCode();
+								if (DateUtil.getCurrentTime().before(
+										slot.getCutoffDateTime())) {
+									if (sessionEvent.getCutOff() != null
+											&& sessionEvent.getCutOff().after(
+													slot.getCutoffDateTime()))
+										sessionEvent.setCutOff(slot
+												.getCutoffDateTime());
+									else if (sessionEvent.getCutOff() == null)
+										sessionEvent.setCutOff(slot
+												.getCutoffDateTime());
+								}
+
+							}
+
+							sessionEvent
+									.setPageType((deliveryInfo) ? "DELIVERYINFO"
+											: "CHECKOUT");
+							if (user.getShoppingCart() != null
+									&& user.getShoppingCart() instanceof FDModifyCartModel) {
+								sessionEvent.setPageType("MODIFYORDER");
+							}
+							sessionEvent.setZone(zone);
+							sessionEvent.setAvailCount(availCount);
+							sessionEvent.setSoldCount(soldCount);
+							sessionEvent.setHiddenCount(hiddenCount);
+							sessionEvent.setSector(event.getSector());
+							sessionEvent.setCompanyCode(FDStoreProperties.getLogisticsCompanyCode());
+							user.setSessionEvent(sessionEvent);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error("Exception while logging the timeslots session info",
+					e);
+		}
 	}
 	
 }

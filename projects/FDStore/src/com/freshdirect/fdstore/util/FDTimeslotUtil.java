@@ -47,7 +47,9 @@ public class FDTimeslotUtil implements Serializable {
 
 	private int responseTime; 
 	private boolean advanced;
-	public FDTimeslotUtil( List<FDTimeslot> timeslots, Date startDate, Date endDate, DlvRestrictionsList restrictions, int responseTime, boolean advanced ) {
+	private String eventPk;
+	
+	public FDTimeslotUtil( List<FDTimeslot> timeslots, Date startDate, Date endDate, DlvRestrictionsList restrictions, int responseTime, boolean advanced, String eventPk ) {
 		Calendar startCal = Calendar.getInstance();
 		startCal.setTime(startDate);
 		Calendar endCal = Calendar.getInstance();
@@ -96,7 +98,7 @@ public class FDTimeslotUtil implements Serializable {
 		}	
 		this.setAdvanced(advanced);
 		this.setResponseTime(responseTime);
-		
+		this.setEventPk(eventPk);
 		this.parseSpecialMsgsProp();
 	}
 	
@@ -370,5 +372,13 @@ public class FDTimeslotUtil implements Serializable {
 				}
 			} //end split ";"
 		}
+	}
+
+	public String getEventPk() {
+		return eventPk;
+	}
+
+	public void setEventPk(String eventPk) {
+		this.eventPk = eventPk;
 	}
 }

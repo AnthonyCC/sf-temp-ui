@@ -21,6 +21,8 @@ public class FDTimeslotList implements Serializable {
 	private int responseTime;
 	
 	private boolean isAdvanced;
+	
+	private String eventPk;
 
 	public List<FDTimeslot> getTimeslots() {
 		return timeslots;
@@ -61,6 +63,14 @@ public class FDTimeslotList implements Serializable {
 
 	public void setAdvanced(boolean isAdvanced) {
 		this.isAdvanced = isAdvanced;
+	}
+
+	public String getEventPk() {
+		return eventPk;
+	}
+
+	public void setEventPk(String eventPk) {
+		this.eventPk = eventPk;
 	}
 	
 	

@@ -345,6 +345,7 @@ public class LogisticsDataDecoder {
 				model.setResponseTime(tsList.getResponseTime());
 				model.setError(tsList.getError());	
 				model.setRange(new DateRange(tsList.getRange().getStartDate(), tsList.getRange().getEndDate()));
+				model.setEventPk(tsList.getEventPk());
 				result.add(model);
 			}
 		}

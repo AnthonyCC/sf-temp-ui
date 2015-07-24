@@ -195,6 +195,12 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 				cart.isDlvPassApplied(),cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(),
 				(cart.getZoneInfo()!=null)?cart.getZoneInfo().isCtActive():false, user.getPrimaryKey(), EnumCompanyCode.fd.name());
 		
+		event.setLogged(false);
+		if("GET".equalsIgnoreCase(request.getMethod()) ||
+		"Y".equals(request.getParameter("addressChange"))){
+			event.setLogged(true);
+		}
+		
 		EnumDlvRestrictionReason specialHoliday = getNextHoliday(restrictions, baseRange, FDStoreProperties
 				.getHolidayLookaheadDays());
 
@@ -253,7 +259,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 				deliveryModel, alcoholRestrictions,
 				forceOrder, address, generic, stats);
 
-/*		// TimeSlot event specific block
+		// TimeSlot event specific block
 		{
 			if (deliveryModel.getRsv()!=null && deliveryModel.isPreReserved())
 				event.setReservationId(deliveryModel.getRsv().getId());
@@ -273,7 +279,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 						"Y".equals(request.getParameter("addressChange")))
 					)
 			{
-				logTimeslotSessionInfo(user, timeslotList, event);
+				TimeslotLogic.logTimeslotSessionInfo(user, address, deliveryInfo, timeslotList, event);
 			}
 			
 		}
@@ -287,7 +293,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		if(timeSlotContext!=null && !timeSlotContext.equals(TimeslotContext.CHECKOUT_TIMESLOTS)){
 			TimeslotLogic.clearVariableMinimum(user, timeslotList);
 			deliveryModel.setMinOrderReqd(false);
-		}*/
+		}
 
 		deliveryModel.setTimeslotList(timeslotList);
 		
@@ -311,6 +317,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		
 		return result;
 	}
+	
+	
 	
 	private Result getGenericTimeslots() throws FDResourceException {
 		final FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
@@ -341,6 +349,12 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			TimeslotEvent event = new TimeslotEvent((user.getApplication()!=null)?user.getApplication().getCode():"",
 					cart.isDlvPassApplied(),cart.getDeliverySurcharge(), cart.isDeliveryChargeWaived(),
 					(cart.getZoneInfo()!=null)?cart.getZoneInfo().isCtActive():false, user.getPrimaryKey(), EnumCompanyCode.fd.name());
+
+			event.setLogged(false);
+			if("GET".equalsIgnoreCase(request.getMethod()) ||
+			"Y".equals(request.getParameter("addressChange"))){
+				event.setLogged(true);
+			}
 			
 			// Fetch time slots
 			deliveryTimeslots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
@@ -349,7 +363,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 			
 			FDTimeslotList tsList = deliveryTimeslots.getTimeslotList().get(0);
 			
-			tsu = new FDTimeslotUtil(tsList.getTimeslots(), range.getStartDate(), range.getEndDate(), restrictions, tsList.getResponseTime(),range.isAdvanced());
+			tsu = new FDTimeslotUtil(tsList.getTimeslots(), range.getStartDate(), range.getEndDate(), restrictions, tsList.getResponseTime(),range.isAdvanced(), null);
 			singleTSset.add( tsu );
 		}
 
@@ -428,7 +442,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 				
 			tsuList.add(new FDTimeslotUtil(timeslots, timeslotList.getRange().getStartDate(),
 					timeslotList.getRange().getEndDate(), restrictions, responseTime, 
-					timeslotList.isAdvanced()));
+					timeslotList.isAdvanced(), timeslotList.getEventPk()));
 			
 		}
 		

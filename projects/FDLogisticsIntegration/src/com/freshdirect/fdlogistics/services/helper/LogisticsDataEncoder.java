@@ -176,7 +176,7 @@ public static Address encodeAddress(ContactAddressModel model) {
 		
 		TimeslotRequest request = new TimeslotRequest(ranges, encodeCustomer(address, null, orderSize), 
 				encodeCart(event), context, forceOrder, deliveryInfo , 
-				(address.getServiceType()!=null)?address.getServiceType().getName():EnumServiceType.HOME.name(), encodeTimeslotContext());
+				(address.getServiceType()!=null)?address.getServiceType().getName():EnumServiceType.HOME.name(), encodeTimeslotContext(), event.isLogged());
 		return request;
 		
 	}
