@@ -110,6 +110,8 @@ public class ChooseTimeslotAction extends WebActionSupport {
 				} else {
 					setSODeliveryTimeslot(session, advRsv);
 				}
+				
+				LOGGER.info(">>CANCEL STANDARD RESERVATION IN CART AND KEEP THE ONE TIME RESERVATION "+advRsv);
 					} else {
 						if (dlvRsv == null || !deliveryTimeSlotId.equals(dlvRsv.getTimeslotId()) || (addressId != null && !addressId.equals(dlvRsv.getAddressId()))) {
 				// new reservation or different timeslot selected
@@ -145,6 +147,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 				} else {
 					setSODeliveryTimeslot(session, timeSlotResrv);
 				}
+				LOGGER.info(">>RESERVE TIMESLOT AND SET IT IN CART "+timeSlotResrv);
 			}
 					}
 		} catch (ReservationUnavailableException re) {

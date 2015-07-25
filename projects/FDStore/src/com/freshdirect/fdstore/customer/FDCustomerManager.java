@@ -355,16 +355,20 @@ public class FDCustomerManager {
 		FDIdentity identity = user.getIdentity();
 		if (identity != null) {
 			List<FDReservation> rsvList = FDDeliveryManager.getInstance().getReservationsForCustomer(identity.getErpCustomerPK());
-			for ( FDReservation rsv : rsvList ) {
-				
-				//TimeslotLogic.applyOrderMinimum(user, rsv.getTimeslot());
-				//TODO check if the reservation is already used by an order from the same customer
-				List<String> rsvIds = getUsedReservations(identity.getErpCustomerPK());
-				if(!rsvIds.contains(rsv.getId())){
-					if (EnumReservationType.STANDARD_RESERVATION.equals(rsv.getReservationType())) {
-						user.getShoppingCart().setDeliveryReservation(rsv);
-					} else {
-						user.setReservation(rsv);
+			if(rsvList!=null){
+				for ( FDReservation rsv : rsvList ) {
+					
+					//TimeslotLogic.applyOrderMinimum(user, rsv.getTimeslot());
+					//TODO check if the reservation is already used by an order from the same customer
+					List<String> rsvIds = getUsedReservations(identity.getErpCustomerPK());
+					if(!rsvIds.contains(rsv.getId())){
+						if (EnumReservationType.STANDARD_RESERVATION.equals(rsv.getReservationType())) {
+							user.getShoppingCart().setDeliveryReservation(rsv);
+							LOGGER.info(">>> Reservation is set to the cart "+rsv);
+						} else {
+							user.setReservation(rsv);
+							LOGGER.info(">>> Reservation is set to the user "+rsv);
+						}
 					}
 				}
 			}
@@ -1379,6 +1383,8 @@ public class FDCustomerManager {
 					info.getAgent() == null ? null : info.getAgent().getRole(),
 					status
 				);
+			
+			LOGGER.info(">>> Reservation "+cart.getDeliveryReservation().getPK().getId()+" "+" Order "+ orderId);
 
 			//invalidate quickshop past orders cache
 			EhCacheUtil.removeFromCache(EhCacheUtil.QS_PAST_ORDERS_CACHE_NAME, info.getIdentity().getErpCustomerPK());

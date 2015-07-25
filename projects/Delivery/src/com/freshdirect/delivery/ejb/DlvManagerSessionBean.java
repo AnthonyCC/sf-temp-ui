@@ -30,16 +30,21 @@ import javax.ejb.EJBException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.MunicipalityInfo;
+import com.freshdirect.delivery.ReservationException;
+import com.freshdirect.delivery.ReservationUnavailableException;
 import com.freshdirect.delivery.announcement.EnumPlacement;
 import com.freshdirect.delivery.announcement.EnumUserDeliveryStatus;
 import com.freshdirect.delivery.announcement.EnumUserLevel;
 import com.freshdirect.delivery.announcement.SiteAnnouncement;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
+import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.services.ILogisticsService;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataDecoder;
+import com.freshdirect.fdlogistics.services.helper.LogisticsDataEncoder;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
@@ -48,9 +53,15 @@ import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.analytics.model.LateIssueOrder;
+import com.freshdirect.logistics.analytics.model.TimeslotEvent;
 import com.freshdirect.logistics.controller.data.Result;
 import com.freshdirect.logistics.controller.data.request.UpdateOrderSizeRequest;
+import com.freshdirect.logistics.controller.data.response.DeliveryReservations;
 import com.freshdirect.logistics.delivery.model.ActualOrderSizeInfo;
+import com.freshdirect.logistics.delivery.model.EnumApplicationException;
+import com.freshdirect.logistics.delivery.model.EnumReservationType;
+import com.freshdirect.logistics.delivery.model.OrderContext;
+import com.freshdirect.logistics.delivery.model.SystemMessageList;
 
 public class DlvManagerSessionBean extends SessionBeanSupport {
 	
@@ -404,5 +415,70 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
+	public FDReservation reserveTimeslot(String timeslotId, String customerId,
+			EnumReservationType type, ContactAddressModel address,
+			boolean chefsTable, String ctDeliveryProfile, boolean isForced,
+			TimeslotEvent event, boolean hasSteeringDiscount) throws FDResourceException, ReservationException{
+	try {
+
+		ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+		DeliveryReservations response = logisticsService.reserveTimeslot(LogisticsDataEncoder.encodeReserveTimeslotRequest(
+				 timeslotId,
+				 customerId,
+				 type,
+				 address,
+				 chefsTable,
+				 ctDeliveryProfile,
+				 isForced,  event, hasSteeringDiscount));
+		
+		if(response.getErrorCode() == EnumApplicationException.ReservationUnavailableException.getValue()){
+			this.getSessionContext().setRollbackOnly();
+			throw new ReservationUnavailableException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
+		}
+		else if(response.getErrorCode() == EnumApplicationException.ReservationException.getValue()){
+			this.getSessionContext().setRollbackOnly();
+			throw new ReservationException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
+		}
+		List<FDReservation> reservations = LogisticsDataDecoder.decodeReservations(response);
+		
+		if(reservations!=null && !reservations.isEmpty())
+			return reservations.get(0);
+		else
+			throw new ReservationException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
+	}catch (FDResourceException ex) {
+		this.getSessionContext().setRollbackOnly();
+		throw ex;
+	}catch (FDLogisticsServiceException ex) {
+		throw new FDResourceException(ex);
+	} 
+	
+	}
+	
+	public void commitReservation(String rsvId, String customerId,
+			OrderContext context, ContactAddressModel address, boolean pr1,
+			TimeslotEvent event) throws ReservationException, FDResourceException{
+
+		try {
+
+			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			Result response = logisticsService.confirmReservation(LogisticsDataEncoder.
+					encodeConfirmReservationRequest(rsvId, customerId, context, address, pr1, event));
+			if(response.getErrorCode() == EnumApplicationException.ReservationUnavailableException.getValue()){
+				this.getSessionContext().setRollbackOnly();
+				throw new ReservationUnavailableException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
+			}
+			else if(response.getErrorCode() == EnumApplicationException.ReservationException.getValue()){
+				this.getSessionContext().setRollbackOnly();
+				throw new ReservationException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
+			}
+			LogisticsDataDecoder.decodeResult(response);
+		}catch (FDResourceException ex) {
+			this.getSessionContext().setRollbackOnly();
+			throw ex;
+		}catch (FDLogisticsServiceException ex) {
+			throw new FDResourceException(ex);
+		}
+
+	}
 	
 }

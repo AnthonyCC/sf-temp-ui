@@ -554,35 +554,22 @@ public class FDDeliveryManager {
 		String ctDeliveryProfile,
 		boolean isForced, TimeslotEvent event, boolean hasSteeringDiscount) throws FDResourceException, ReservationException {
 		
-		try {
 
-			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
-			DeliveryReservations response = logisticsService.reserveTimeslot(LogisticsDataEncoder.encodeReserveTimeslotRequest(
+		try {
+			DlvManagerSB sb = getDlvManagerHome().create();
+			return sb.reserveTimeslot(
 					 timeslotId,
 					 customerId,
 					 type,
 					 address,
 					 chefsTable,
 					 ctDeliveryProfile,
-					 isForced,  event, hasSteeringDiscount));
-			
-			if(response.getErrorCode() == EnumApplicationException.ReservationUnavailableException.getValue()){
-				throw new ReservationUnavailableException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
-			}
-			else if(response.getErrorCode() == EnumApplicationException.ReservationException.getValue()){
-				throw new ReservationException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
-			}
-			List<FDReservation> reservations = LogisticsDataDecoder.decodeReservations(response);
-			
-			if(!reservations.isEmpty())
-				return reservations.get(0);
-			else
-				throw new ReservationException(SystemMessageList.DELIVERY_SLOT_RSVERROR);
-		}  catch (FDLogisticsServiceException ex) {
-			throw new FDResourceException(ex);
-		}
-
-	
+					 isForced,  event, hasSteeringDiscount);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		}	
 	
 	}
 
@@ -617,15 +604,13 @@ public class FDDeliveryManager {
 	public void commitReservation(String rsvId, String customerId, OrderContext context, ContactAddressModel address,boolean pr1, TimeslotEvent event) throws ReservationException, FDResourceException {
 
 		try {
-
-			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
-			Result response = logisticsService.confirmReservation(LogisticsDataEncoder.
-					encodeConfirmReservationRequest(rsvId, customerId, context, address, pr1, event));
-			LogisticsDataDecoder.decodeResult(response);
-		}  catch (FDLogisticsServiceException ex) {
-			throw new FDResourceException(ex);
-		}
-
+			DlvManagerSB sb = getDlvManagerHome().create();
+			sb.commitReservation(rsvId, customerId, context, address, pr1, event);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		}	
 	}
 
 	public boolean releaseReservation(String rsvId, ContactAddressModel addressModel, TimeslotEvent event, boolean restoreReservation) throws FDResourceException {
@@ -996,7 +981,7 @@ public class FDDeliveryManager {
 				DeliveryReservations response = logisticsService.getReservationsByCriteria(LogisticsDataEncoder.encodeReservationByIdRequest(reservationId));
 				List<FDReservation> fdReservations =  LogisticsDataDecoder.decodeReservations(response);
 				FDReservation fdReservation = null;
-				if(fdReservations.size()>0){
+				if(fdReservations!=null && fdReservations.size()>0){
 					fdReservation = fdReservations.get(0);
 				}
 			

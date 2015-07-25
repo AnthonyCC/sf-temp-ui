@@ -131,6 +131,9 @@ public class LogisticsDataDecoder {
 	public static List<FDReservation> decodeReservations(
 			DeliveryReservations d) throws FDResourceException {
 		decodeResult(d);
+		if(EnumApplicationException.FinderException.getValue() == d.getErrorCode()){
+			return null;
+		}
 		List<FDReservation> fdReservations = new ArrayList<FDReservation>();
 		if(d.getReservations()!=null){
 			for (Reservation reservation : d.getReservations()) {
@@ -161,6 +164,7 @@ public class LogisticsDataDecoder {
 		return fdtList;
 	}
 	public static FDTimeslot decodeTimeslot(Timeslot timeslot) {
+		
 		FDTimeslot t = 
 				new FDTimeslot(timeslot.getId(), timeslot.getDeliveryDate(), new TimeOfDay(timeslot.getStartTime()), new TimeOfDay(timeslot.getEndTime()), 
 				new TimeOfDay(timeslot.getCutoffTime()), timeslot.getPremiumCutoffTime()!=null ? new TimeOfDay(timeslot.getPremiumCutoffTime()): null,
@@ -287,7 +291,7 @@ public class LogisticsDataDecoder {
 
 	public static FDDeliveryServiceSelectionResult decodeDeliveryServices(
 			DeliveryServices response) throws FDResourceException, FDInvalidAddressException {
-	
+		decodeResult(response);
 		FDDeliveryServiceSelectionResult result = new FDDeliveryServiceSelectionResult();
 		if(response!=null){
 			decodeAddressExceptions(response);

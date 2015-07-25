@@ -72,6 +72,7 @@ public class DlvRestrictionManagerSessionBean  extends SessionBeanSupport {
 			return DlvRestrictionDAO.getDlvRestrictions(conn);
 		} catch (SQLException e) {
 			LOGGER.error("SQL Error occurred while getting the Dlv Restriction.");
+			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(e, "Could not get the Dlv Restriction due to SQL Error.");
 		} finally {
 			if (conn != null) {
