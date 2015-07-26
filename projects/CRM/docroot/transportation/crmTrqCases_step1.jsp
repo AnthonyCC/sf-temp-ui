@@ -67,10 +67,12 @@ String successPage = "/transportation/crmTrqCases.jsp?dlvDate="+fmtDlvDate+"&rou
 	var routeArray = new Array();
 			var cnt=0;
 <%          for (Iterator r =routesForDate.iterator(); r.hasNext(); ) { 
-			  	  ErpTruckInfo ti= (ErpTruckInfo) r.next();          %>
+			  	  ErpTruckInfo ti= (ErpTruckInfo) r.next();   
+			  	  if(ti.getTruckNumber()!=null){ %>
 			      routeArray[cnt]="<%=Integer.parseInt(ti.getTruckNumber())%>"
 			      cnt++;
-<%			}    %>
+<%			}  
+			  	  }%>
 
 </script>
 <div class="sub_nav">

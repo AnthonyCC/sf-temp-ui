@@ -4139,25 +4139,21 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			FDActionInfo actionInfo, TimeslotEvent event) throws FDResourceException {
 
 		if (reservation != null) {
-			this.logActivity(getReservationActivityLog(reservation
-					.getTimeslot(), actionInfo,
-					EnumAccountActivityType.CANCEL_PRE_RESERVATION, reservation
-							.getReservationType()));
+
+			ErpAddressModel address = getAddress(identity,
+					reservation.getAddressId());
+
+			// restore reservation is false
+			FDDeliveryManager.getInstance().releaseReservation(
+					reservation.getId(), address, event, false);
+
+		
+			this.logActivity(getReservationActivityLog(
+					reservation.getTimeslot(), actionInfo,
+					EnumAccountActivityType.CANCEL_PRE_RESERVATION,
+					reservation.getReservationType()));
 		}
 
-		if (reservation != null) {
-			
-			ErpAddressModel address = getAddress(identity, reservation
-					.getAddressId());
-			
-			//restore reservation is false
-			FDDeliveryManager.getInstance().releaseReservation(reservation.getId(), address , event, false);
-		
-			this.logActivity(getReservationActivityLog(reservation
-					.getTimeslot(), actionInfo,
-					EnumAccountActivityType.CANCEL_PRE_RESERVATION, reservation
-							.getReservationType()));
-		}
 		/*
 		 * catch (RemoteException e) { throw new FDResourceException(e); } catch
 		 * (CreateException e) { throw new FDResourceException(e); }

@@ -544,7 +544,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 	}
 	
 	private void addGeocodeResultErrors(String result, ActionResult actionResult) {
-		if (!result.equals("GEOCODE_OK")) {
+		if (result!=null && !result.equals("GEOCODE_OK")) {
 			actionResult.addError(true, "GLOBAL_ERROR", result);
 		}
 	}
