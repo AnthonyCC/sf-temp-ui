@@ -716,6 +716,10 @@ public class FDStoreProperties {
 
 	private static final String PROP_LOGISTICS_CONNECTION_TIMEOUT = "fdstore.logistics.conn.timeout";
 	private static final String PROP_LOGISTICS_CONN_READ_TIMEOUT = "fdstore.logistics.conn.read.timeout";
+	private static final String PROP_LOGISTICS_CONNECTION_REQUEST_TIMEOUT = "fdstore.logistics.conn.request.timeout";
+	
+	private static final String PROP_LOGISTICS_CONNECTION_POOL = "fdstore.logistics.conn.pool";
+
 
     //Max Invalid Login counts for Recaptcha
     private final static String PROP_MAX_INVALID_LOGIN_ATTEMPT = "fdstore.max.invalid.login.count";
@@ -1474,7 +1478,9 @@ public class FDStoreProperties {
 		refresh();
         defaults.put(PROP_LOGISTICS_COMPANY_CODE, EnumCompanyCode.fd.name());
         defaults.put(PROP_LOGISTICS_CONNECTION_TIMEOUT, 120);
+        defaults.put(PROP_LOGISTICS_CONNECTION_POOL, 15);
         defaults.put(PROP_LOGISTICS_CONN_READ_TIMEOUT, 120);
+        defaults.put(PROP_LOGISTICS_CONNECTION_REQUEST_TIMEOUT, 60);
         
 	
 		refresh();
@@ -3607,7 +3613,15 @@ public class FDStoreProperties {
 		try{
 	   		return Integer.parseInt(get(PROP_LOGISTICS_CONNECTION_TIMEOUT));
 	   	} catch(NumberFormatException e){
-	   		return 300;
+	   		return 60;
+	   	}
+	}
+
+	public static int getLogisticsConnectionPool() {
+		try{
+	   		return Integer.parseInt(get(PROP_LOGISTICS_CONNECTION_POOL));
+	   	} catch(NumberFormatException e){
+	   		return 10;
 	   	}
 	}
 	
@@ -3619,6 +3633,13 @@ public class FDStoreProperties {
 	   	}
 	}
 		
+	public static int getLogisticsConnectionRequestTimeout() {
+		try{
+	   		return Integer.parseInt(get(PROP_LOGISTICS_CONNECTION_REQUEST_TIMEOUT));
+	   	} catch(NumberFormatException e){
+	   		return 60;
+	   	}
+	}
 	
 	// Recaptcha getter methods
 	 public static String getRecaptchaPublicKey() {

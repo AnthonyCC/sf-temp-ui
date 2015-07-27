@@ -6,12 +6,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.log4j.Category;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
@@ -45,8 +49,22 @@ public abstract class AbstractLogisticsService {
 		converters.add(getMappingJackson2HttpMessageConverter());
 		restTemplate = new RestTemplate(converters);
 		
-		SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-	    //requestFactory.setReadTimeout(FDStoreProperties.getLogisticsConnectionReadTimeout()*1000);
+		PoolingHttpClientConnectionManager cManager = new PoolingHttpClientConnectionManager();
+		cManager.setMaxTotal(FDStoreProperties.getLogisticsConnectionPool());
+		RequestConfig requestConfig = RequestConfig.custom()
+			       .setSocketTimeout(FDStoreProperties.getLogisticsConnectionTimeout()*1000)
+			       .setConnectTimeout(FDStoreProperties.getLogisticsConnectionTimeout()*1000)
+			       .setConnectionRequestTimeout(FDStoreProperties.getLogisticsConnectionRequestTimeout()*1000)
+			       .build();
+		CloseableHttpClient httpClient = HttpClients
+				.custom()
+				.setDefaultRequestConfig(requestConfig)
+				.setConnectionManager(cManager)
+			    .build();
+		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(httpClient);
+		
+	 
+	    requestFactory.setReadTimeout(FDStoreProperties.getLogisticsConnectionReadTimeout()*1000);
 	    requestFactory.setConnectTimeout(FDStoreProperties.getLogisticsConnectionTimeout()*1000);
 	    restTemplate.setRequestFactory(requestFactory);
 

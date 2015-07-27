@@ -79,12 +79,12 @@
 		<pathelement location="${thirdparty.home}/jsonrpc-1.0.jar"/>
 		<pathelement location="${thirdparty.home}/bsh-2.0b4.jar"/>
 		<pathelement location="${thirdparty.home}/jxl.jar"/>
-	       	<pathelement location="${thirdparty.home}/jasypt-1.5.jar"/>
-	        <pathelement location="${thirdparty.home}/iText-2.0.8.jar"/>
-	       	<pathelement location="${thirdparty.home}/core-renderer.jar"/>
-		<pathelement location="${thirdparty.home}/httpclient-4.2.6.jar"/>
-		<pathelement location="${thirdparty.home}/httpcore-4.2.5.jar"/>
-		<pathelement location="${thirdparty.home}/httpmime-4.2.6.jar"/>
+	    <pathelement location="${thirdparty.home}/jasypt-1.5.jar"/>
+	    <pathelement location="${thirdparty.home}/iText-2.0.8.jar"/>
+	    <pathelement location="${thirdparty.home}/core-renderer.jar"/>
+		<pathelement location="${thirdparty.home}/httpclient-4.5.jar"/>
+		<pathelement location="${thirdparty.home}/httpcore-4.4.1.jar"/>
+		<pathelement location="${thirdparty.home}/httpmime-4.5.jar"/>
 		<pathelement location="${thirdparty.home}/aws-java-sdk-1.7.12.jar"/>
 		<pathelement location="${thirdparty.home}/${scarab.jar}"/>
 		<pathelement location="${thirdparty.home}/jtidy-r938.jar"/>
@@ -1515,9 +1515,9 @@
 			<pathelement location="${thirdparty.home}/regexp.jar"/>
 			<pathelement location="${thirdparty.home}/sunrsasign.jar"/>
 			<pathelement location="${thirdparty.home}/commons-httpclient-3.1.jar"/>
-			<pathelement location="${thirdparty.home}/httpclient-4.2.6.jar"/>
-			<pathelement location="${thirdparty.home}/httpcore-4.2.5.jar"/>
-			<pathelement location="${thirdparty.home}/httpmime-4.2.6.jar"/>
+			<pathelement location="${thirdparty.home}/httpclient-4.5.jar"/>
+			<pathelement location="${thirdparty.home}/httpcore-4.4.1.jar"/>
+			<pathelement location="${thirdparty.home}/httpmime-4.5.jar"/>
 		
 		</path>
 
@@ -1558,9 +1558,9 @@
 				<pathelement location="${thirdparty.home}/spring-webmvc-4.0.1.RELEASE.jar"/>
 				<pathelement location="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar"/>
 				<pathelement location="${thirdparty.home}/gson-1.7.1.jar"/>
-				<pathelement location="${thirdparty.home}/httpclient-4.2.6.jar"/>
-				<pathelement location="${thirdparty.home}/httpcore-4.2.5.jar"/>
-				<pathelement location="${thirdparty.home}/httpmime-4.2.6.jar"/>
+				<pathelement location="${thirdparty.home}/httpclient-4.5.jar"/>
+				<pathelement location="${thirdparty.home}/httpcore-4.4.1.jar"/>
+				<pathelement location="${thirdparty.home}/httpmime-4.5.jar"/>
 			</path>
 	
 			<makeProject
@@ -2153,9 +2153,9 @@
 				<include name="lucene-core-${lucene.version}.jar"/>
 				<include name="lucene-queries-${lucene.version}.jar"/>
 				<include name="lucene-snowball-${lucene.version}.jar"/>
-				<include name="httpclient-4.2.6.jar"/>
-				<include name="httpcore-4.2.5.jar"/>
-				<include name="httpmime-4.2.6.jar"/>
+				<include name="httpclient-4.5.jar"/>
+				<include name="httpcore-4.4.1.jar"/>
+				<include name="httpmime-4.5.jar"/>
 				<include name="aws-java-sdk-1.7.12.jar"/>
 				<include name="jackson-core-2.2.0.jar"/>
 				<include name="jackson-databind-2.2.0.jar"/>
@@ -2189,9 +2189,9 @@
 				<!-- scarab runtime dependencies -->
 				<include name="lucene-queries-${lucene.version}.jar"/>
 				<include name="lucene-snowball-${lucene.version}.jar"/>
-				<include name="httpclient-4.2.6.jar"/>
-				<include name="httpcore-4.2.5.jar"/>
-				<include name="httpmime-4.2.6.jar"/>
+				<include name="httpclient-4.5.jar"/>
+				<include name="httpcore-4.4.1.jar"/>
+				<include name="httpmime-4.5.jar"/>
 				<include name="aws-java-sdk-1.7.12.jar"/>
 				<include name="jackson-core-2.2.0.jar"/>
 				<include name="jackson-databind-2.2.0.jar"/>
@@ -2231,9 +2231,9 @@
 
 				<include name="${scarab.jar}"/>
 				<!-- scarab runtime dependencies -->
-				<include name="httpclient-4.2.6.jar"/>
-				<include name="httpcore-4.2.5.jar"/>
-				<include name="httpmime-4.2.6.jar"/>
+				<include name="httpclient-4.5.jar"/>
+				<include name="httpcore-4.4.1.jar"/>
+				<include name="httpmime-4.5.jar"/>
 				<include name="aws-java-sdk-1.7.12.jar"/>
 				<include name="jackson-core-2.2.0.jar"/>
 				<include name="jackson-databind-2.2.0.jar"/>
@@ -2279,9 +2279,9 @@
 		                <include name="givexclient.jar"/>
 		                <include name="${scarab.jar}"/>
 				<!-- scarab runtime dependencies -->
-				<include name="httpclient-4.2.6.jar"/>
-				<include name="httpcore-4.2.5.jar"/>
-				<include name="httpmime-4.2.6.jar"/> 
+				<include name="httpclient-4.5.jar"/>
+				<include name="httpcore-4.4.1.jar"/>
+				<include name="httpmime-4.5.jar"/>
 				<include name="aws-java-sdk-1.7.12.jar"/>
 				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
@@ -2367,9 +2367,9 @@
 				<include name="freemarker-2.3.15.jar"/>
 				<include name="urlrewrite-2.6.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
-				<include name="httpclient-4.2.6.jar"/>
-				<include name="httpcore-4.2.5.jar"/>
-				<include name="httpmime-4.2.6.jar"/>
+				<include name="httpclient-4.5.jar"/>
+				<include name="httpcore-4.4.1.jar"/>
+				<include name="httpmime-4.5.jar"/>
 				
 			</lib>
 		</makeFDAdminEar>
@@ -2401,9 +2401,9 @@
 				<include name="jackson-databind-2.2.0.jar"/>
 				<include name="jackson-annotations-2.2.0.jar"/>
 				<include name="logistics-data-0.0.1-SNAPSHOT.jar"/>
-				<include name="httpclient-4.2.6.jar"/>
-				<include name="httpcore-4.2.5.jar"/>
-				<include name="httpmime-4.2.6.jar"/>
+				<include name="httpclient-4.5.jar"/>
+				<include name="httpcore-4.4.1.jar"/>
+				<include name="httpmime-4.5.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2447,9 +2447,9 @@
 				<include name="jstl-impl-1.2.jar"/>
 				<include name="${scarab.jar}"/>
 				<!-- scarab runtime dependencies -->
-				<include name="httpclient-4.2.6.jar"/>
-				<include name="httpcore-4.2.5.jar"/>
-				<include name="httpmime-4.2.6.jar"/>
+				<include name="httpclient-4.5.jar"/>
+				<include name="httpcore-4.4.1.jar"/>
+				<include name="httpmime-4.5.jar"/>
 				<include name="aws-java-sdk-1.7.12.jar"/>
 				<include name="jackson-core-2.2.0.jar"/>
 				<include name="jackson-databind-2.2.0.jar"/>
@@ -2949,9 +2949,9 @@
 				<include name="${scarab.jar}"/>
 				<!-- scarab runtime dependencies -->
 
-				<include name="httpclient-4.2.6.jar"/>
-				<include name="httpcore-4.2.5.jar"/>
-				<include name="httpmime-4.2.6.jar"/>
+				<include name="httpclient-4.5.jar"/>
+				<include name="httpcore-4.4.1.jar"/>
+				<include name="httpmime-4.5.jar"/>
 				<include name="aws-java-sdk-1.7.12.jar"/>
 						
 				<include name="opencsv-1.8.jar"/>
