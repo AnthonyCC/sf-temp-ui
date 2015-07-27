@@ -719,7 +719,7 @@ function loadStuff() {
   	
   } else if ( loaddata == "getPage"){
   	$("#url").val("/home/getPage/");
-  	var postData = '{"pageType": "Feed", "requestedDate" : "2015-07-16T12:12:00.000Z"}';
+  	var postData = '{"pageType": "Feed", "requestedDate" : "2015-07-16T12:12:00.000-04:00"}';
   	$("#payload").val(postData);
   }
   $("#result").JSONView({});  	
