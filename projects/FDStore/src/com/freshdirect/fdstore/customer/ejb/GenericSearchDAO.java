@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,7 +16,6 @@ import java.util.Set;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -36,7 +36,6 @@ import com.freshdirect.fdstore.customer.FDBrokenAccountInfo;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerReservationInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDUserCouponUtil;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.EnumSearchType;
 import com.freshdirect.framework.util.GenericSearchCriteria;
@@ -118,6 +117,10 @@ public class GenericSearchDAO {
 			types.add("OTR");
 			criteria.setCriteriaMap("types", types);
 			criteria.setCriteriaMap("statusCode", EnumReservationStatus.RESERVED.getCode());
+			if(criteria.getCriteriaMap().get("zoneArray")!=null){
+				String[] zoneArray = (String[])criteria.getCriteriaMap().get("zoneArray");
+				criteria.getCriteriaMap().put("zoneArray", Arrays.asList(zoneArray));
+			}
 			List<FDReservation> reservations = FDDeliveryManager.getInstance().getReservationsByCriteria(
 					new SearchRequest(criteria.getSearchType().getName(), criteria.getCriteriaMap()));
 			
