@@ -134,6 +134,7 @@ var FreshDirect = FreshDirect || {};
     },
     success: function () {
       restrictionpopup && restrictionpopup.close();
+      fd.expressco.drawer && fd.expressco.drawer.reset('address');
     }
   });
 

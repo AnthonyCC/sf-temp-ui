@@ -48,6 +48,7 @@ import com.freshdirect.webapp.ajax.expresscheckout.textmessagealert.data.TextMes
 import com.freshdirect.webapp.ajax.expresscheckout.textmessagealert.service.TextMessageAlertService;
 import com.freshdirect.webapp.ajax.expresscheckout.timeslot.service.TimeslotService;
 import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationError;
+import com.freshdirect.webapp.ajax.expresscheckout.validation.data.ValidationResult;
 import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.checkout.PaymentMethodManipulator;
 import com.freshdirect.webapp.checkout.RedirectToPage;
@@ -107,7 +108,7 @@ public class SinglePageCheckoutFacade {
 		return result;
 	}
 
-	public Map<String, Object> loadByPageAction(FDUserI user, HttpServletRequest request, PageAction pageAction) throws FDResourceException, IOException, TemplateException, JspException,
+	public Map<String, Object> loadByPageAction(FDUserI user, HttpServletRequest request, PageAction pageAction, ValidationResult validationResult) throws FDResourceException, IOException, TemplateException, JspException,
 			RedirectToPage, HttpErrorResponse {
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(RESTRICTION_JSON_KEY, CheckoutService.defaultService().preCheckOrder(user));
@@ -123,6 +124,7 @@ public class SinglePageCheckoutFacade {
 			result.put(SUB_TOTAL_BOX_JSON_KEY, CartDataService.defaultService().loadCartDataSubTotalBox(request, user));
 			break;
 		case SELECT_DELIVERY_ADDRESS_METHOD:
+			if(validationResult != null && validationResult.getErrors().isEmpty()){
 			result.put(ADDRESS_JSON_KEY, loadAddress(user, request.getSession()));
 			result.put(TIMESLOT_JSON_KEY, TimeslotService.defaultService().loadCartTimeslot(user.getShoppingCart()));
 			Boolean cartPaymentSelectionDisabled = (Boolean) request.getSession().getAttribute(SessionName.CART_PAYMENT_SELECTION_DISABLED);
@@ -130,6 +132,7 @@ public class SinglePageCheckoutFacade {
 				result.put(PAYMENT_JSON_KEY, loadUserPaymentMethods(user, request));
 			}
 			result.put(REDIRECT_URL_JSON_KEY, RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL, availabilityService.selectWarningType(user)));
+			}
 			break;
 		case ADD_PAYMENT_METHOD:
 			//$FALL-THROUGH$

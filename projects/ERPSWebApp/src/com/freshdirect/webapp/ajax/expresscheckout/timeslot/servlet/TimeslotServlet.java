@@ -40,7 +40,7 @@ public class TimeslotServlet extends BaseJsonServlet {
 			}
 			if (validationResult.getErrors().isEmpty()) {
 				try {
-					Map<String, Object> checkoutData = SinglePageCheckoutFacade.defaultFacade().loadByPageAction(user, request, PageAction.SELECT_DELIVERY_TIMESLOT);
+					Map<String, Object> checkoutData = SinglePageCheckoutFacade.defaultFacade().loadByPageAction(user, request, PageAction.SELECT_DELIVERY_TIMESLOT, validationResult);
 					responseData.getSubmitForm().setResult(checkoutData);
 				} catch (FDResourceException e) {
 					validationResult.getErrors().add(new ValidationError("technical_difficulty", "Could not load checkout data due to technical difficulty."));

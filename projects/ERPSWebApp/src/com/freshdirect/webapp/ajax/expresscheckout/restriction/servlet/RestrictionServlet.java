@@ -57,7 +57,7 @@ public class RestrictionServlet extends BaseJsonServlet {
 					FDEventUtil.logRemoveCartEvent(cartLine, request);
 				}
 			}
-			restrictionResponse.getSubmitForm().setResult(SinglePageCheckoutFacade.defaultFacade().loadByPageAction(user, request, action));
+			restrictionResponse.getSubmitForm().setResult(SinglePageCheckoutFacade.defaultFacade().loadByPageAction(user, request, action, validationResult));
 			restrictionResponse.getSubmitForm().setSuccess(restrictionResponse.getValidationResult().getErrors().isEmpty());
 			writeResponseData(response, restrictionResponse);
 		} catch (FDResourceException e) {

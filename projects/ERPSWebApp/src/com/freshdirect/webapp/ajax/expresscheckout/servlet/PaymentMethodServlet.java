@@ -77,7 +77,7 @@ public class PaymentMethodServlet extends BaseJsonServlet {
 				}
 				paymentSubmitResponse.getSubmitForm().setSuccess(paymentSubmitResponse.getValidationResult().getErrors().isEmpty());
 				if (changed && paymentSubmitResponse.getSubmitForm().isSuccess()) {
-					Map<String, Object> singlePageCheckoutData = SinglePageCheckoutFacade.defaultFacade().loadByPageAction(user, request, pageAction);
+					Map<String, Object> singlePageCheckoutData = SinglePageCheckoutFacade.defaultFacade().loadByPageAction(user, request, pageAction, validationResult);
 					paymentSubmitResponse.getSubmitForm().setResult(singlePageCheckoutData);
 				}
 			}

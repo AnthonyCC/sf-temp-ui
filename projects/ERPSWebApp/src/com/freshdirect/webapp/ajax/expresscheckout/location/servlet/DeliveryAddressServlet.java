@@ -78,7 +78,7 @@ public class DeliveryAddressServlet extends BaseJsonServlet {
 					break;
 				}
 				if (!PageAction.GET_DELIVERY_ADDRESS_METHOD.equals(pageAction)) {
-					deliveryAddressResponse.getSubmitForm().setResult(SinglePageCheckoutFacade.defaultFacade().loadByPageAction(user, request, pageAction));
+					deliveryAddressResponse.getSubmitForm().setResult(SinglePageCheckoutFacade.defaultFacade().loadByPageAction(user, request, pageAction, validationResult));
 				}
 			}
 			deliveryAddressResponse.getSubmitForm().setSuccess(validationResult.getErrors().isEmpty());
