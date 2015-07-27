@@ -19,6 +19,8 @@
   margin:20px 0 20px 0;
   text-align:center;
   clear:both;
+  position: relative;
+  padding: 0 80px;
 }
 
 .textalertpopup .subtitle{
@@ -111,7 +113,8 @@ label.remindme input[type=checkbox]{
 
 .textalert-back{
   font-size:14px;
-  float:left;
+  position: absolute;
+  left: 0;
 }
 
 #textalert_terms .terms-body{
