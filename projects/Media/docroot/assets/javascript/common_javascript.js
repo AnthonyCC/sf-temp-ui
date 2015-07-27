@@ -33,9 +33,8 @@ window.reallyClose = function (ev) {
 // works in other browsers
 window.close = window.reallyClose;
 
-if ($jq) {
-  // iframe resize
-  $jq(document).ready(function () {
+try {
+  document.addEventListener("DOMContentLoaded", function () {
     if (window.parent &&
         window.parent.FreshDirect &&
         window.parent.FreshDirect.components &&
@@ -43,7 +42,7 @@ if ($jq) {
       window.parent.FreshDirect.components.ifrPopup.reposition();
     }
   });
-}
+} catch (e) {}
 
 function soon() { alert("Coming soon"); }
 

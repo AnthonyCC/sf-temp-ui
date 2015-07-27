@@ -42,7 +42,7 @@
   <tmpl:put name="bottomnav">
     <div class="container checkout__footer">
         <p class="checkout__footer-rights">&copy; 2002 - 2015 Fresh Direct, LLC. All Rights Reserved.</p>
-        <p class="checkout__footer-links"><a href='/help/privacy_policy.jsp'>Privacy Policy</a> | <a href="/help/terms_of_service.jsp">Customer Agreement</a></p>
+        <p class="checkout__footer-links"><a href='/help/privacy_policy.jsp' data-ifrpopup="/help/privacy_policy.jsp?type=popup" data-ifrpopup-width="600">Privacy Policy</a> | <a href="/help/terms_of_service.jsp" data-ifrpopup="/help/terms_of_service.jsp?type=popup" data-ifrpopup-width="600">Customer Agreement</a></p>
     </div>
   </tmpl:put>
 
