@@ -25,7 +25,11 @@
     {/foreach}
   {else}
   <div class="drawer__previewitem__button__section">
-  <button class='cssbutton green' data-component="addpaymentmethodbutton">Add a Method</button>
+    {if $payments and length($payments) > 0}
+    <button class='cssbutton green' data-component="pickmethodbutton">Pick a Method</button>
+    {else}
+    <button class='cssbutton green' data-component="addpaymentmethodbutton">Add a Method</button>
+    {/if}
   </div>
   {/if}
   {if $backupPaymentRequiredForGiftCard}

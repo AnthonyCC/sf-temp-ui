@@ -103,6 +103,10 @@ var FreshDirect = FreshDirect || {};
   $(document).on('change', '#' + addpaymentmethodpopup.popupId + ' .formselector input',
     addpaymentmethodpopup.selectForm.bind(addpaymentmethodpopup));
 
+  $(document).on('click', "[data-component='pickmethodbutton']", function(){
+     fd.expressco.drawer && fd.expressco.drawer.activate("payment");
+  });
+
   fd.modules.common.utils.register('expressco', 'addpaymentmethodpopup', addpaymentmethodpopup, fd);
 }(FreshDirect));
 
