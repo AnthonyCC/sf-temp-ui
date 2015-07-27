@@ -268,7 +268,7 @@ public class ViewCartCarouselService {
 					}
 					
 					ProductDetailPopulator.postProcessPopulate( user, pd, pd.getSkuCode() );
-					
+					pd.getQuantity().setqMax(FDStoreProperties.getProductSamplesMaxQuantityLimit());
 					
 				} catch (FDSkuNotFoundException e) {
 					LOGGER.warn( "Sku not found: "+ skuCode, e );
