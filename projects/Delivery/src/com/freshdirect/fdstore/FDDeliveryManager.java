@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -25,7 +27,6 @@ import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.MunicipalityInfoWrapper;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.ReservationException;
-import com.freshdirect.delivery.ReservationUnavailableException;
 import com.freshdirect.delivery.announcement.SiteAnnouncement;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
@@ -91,7 +92,6 @@ import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.ExceptionAddress;
 import com.freshdirect.logistics.delivery.model.GeoLocation;
 import com.freshdirect.logistics.delivery.model.OrderContext;
-import com.freshdirect.logistics.delivery.model.SystemMessageList;
 import com.freshdirect.logistics.fdstore.StateCounty;
 
 /**
@@ -104,21 +104,26 @@ public class FDDeliveryManager {
 	private final ServiceLocator serviceLocator;
 	private static FDDeliveryManager dlvManager = null;
 
-	/** cache zipCode -> DlvServiceSelectionResult */
-	private static TimedLruCache<String,FDDeliveryServiceSelectionResult> zipCheckCache = 
-		new TimedLruCache<String,FDDeliveryServiceSelectionResult>(200, 60 * 60 * 1000);
+	/** cache zipCode -> FDDeliveryServiceSelectionResult */
+	private static TimedLruCache<String, FDDeliveryServiceSelectionResult> zipCheckCache = new TimedLruCache<String,FDDeliveryServiceSelectionResult>(200, 60 * 60 * 1000);
 	
 	/** 1 hr cache state -> List of state county */
-	private static TimedLruCache<String,Set<StateCounty>>  countiesByState =
-		new TimedLruCache<String,Set<StateCounty>>(200, 60 * 60 * 1000);
+	private static TimedLruCache<String,Set<StateCounty>>  countiesByState = new TimedLruCache<String,Set<StateCounty>>(50, 60 * 60 * 1000);
 
-	/** 1 hr cache zoneCode -> List of cutoff-times for next day (DlvZoneCutoffInfo)*/
-	private static TimedLruCache<String,List<FDZoneCutoffInfo>> zoneCutoffCache = 
-		new TimedLruCache<String,List<FDZoneCutoffInfo>>(200, 60 * 60 * 1000);
+	/** 1 hr cache zoneCode -> List of cutoff-times for next day (FDZoneCutoffInfo)*/
+	private static TimedLruCache<String,List<FDZoneCutoffInfo>> zoneCutoffCache = new TimedLruCache<String,List<FDZoneCutoffInfo>>(200, 60 * 60 * 1000);
 
 	/** 5 min cache zoneCode -> remaining Capacity for next day (DlvZoneCapacityInfo)*/
-	private static TimedLruCache<String,DlvZoneCapacityInfo> zoneCapacityCache = 
-		new TimedLruCache<String,DlvZoneCapacityInfo>(200, 5 * 60 * 1000);
+	private static TimedLruCache<String,DlvZoneCapacityInfo> zoneCapacityCache = new TimedLruCache<String,DlvZoneCapacityInfo>(200, 5 * 60 * 1000);
+	
+	/* 5 hr delivery zip codes cache*/
+	private static TimedLruCache<EnumServiceType, List<FDDeliveryZipInfo>> zipCodesCache = new TimedLruCache<EnumServiceType, List<FDDeliveryZipInfo>>(100, 5 * 60 * 60 * 1000);
+	
+	/* 5 hr delivery eta cache*/
+	private static TimedLruCache<String, FDDeliveryETAModel> deliveryETACache = new TimedLruCache<String, FDDeliveryETAModel>(300, 60 * 60 * 1000);
+	
+	/* 5 hr cutoff times cache*/
+	private static TimedLruCache<Date, List<Date>> cutoffTimesCache = new TimedLruCache<Date, List<Date>>(100, 5 * 60 * 60 * 1000);
 
 	private DlvRestrictionsList dlvRestrictions = null;
 	private long REFRESH_PERIOD = 1000 * 60 * 5; // 5 minutes
@@ -437,15 +442,22 @@ public class FDDeliveryManager {
 	}
 
 	public List<FDDeliveryZipInfo> getDeliverableZipCodes(EnumServiceType serviceType) throws FDResourceException {
-
+		
+		List<FDDeliveryZipInfo>  result = zipCodesCache.get(serviceType);
 		try {
-			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
-			DeliveryZips response = logisticsService.getDeliverableZipCodes(LogisticsDataEncoder.encodeDeliveryZipRequest(serviceType));
-			return LogisticsDataDecoder.decodeDeliveryZips(response);
+			if(result == null){
+				ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+				DeliveryZips response = logisticsService.getDeliverableZipCodes(LogisticsDataEncoder.encodeDeliveryZipRequest(serviceType));
+				result = LogisticsDataDecoder.decodeDeliveryZips(response);
+				if(result!=null && !result.isEmpty()){
+					zipCodesCache.put(serviceType, result);
+				}
+			}
 		
 		} catch (FDLogisticsServiceException e) {
 			throw new FDResourceException(e);
-		} 
+		}
+		return result;
 	}
 
 	public FDDeliveryServiceSelectionResult getDeliveryServicesByZipCode(String zipCode) throws FDResourceException {
@@ -536,13 +548,21 @@ public class FDDeliveryManager {
 	}
 	
 	public FDDeliveryETAModel getETAWindowBySaleId(String saleId) throws FDResourceException {
+		FDDeliveryETAModel result = deliveryETACache.get(saleId);
+		
 		try {
+			if(result == null){
 			IAirclicService logisticsService = LogisticsServiceLocator.getInstance().getAirclicService();
 			DeliveryETA response = logisticsService.getDeliveryETA(saleId);
-			return LogisticsDataDecoder.decodeDeliveryETA(response);
+			result = LogisticsDataDecoder.decodeDeliveryETA(response);
+			if(result!=null){
+				deliveryETACache.put(saleId, result);
+			}
+			}
 		} catch (FDLogisticsServiceException ex) {
 			throw new FDResourceException(ex);
 		}
+		return result;
 	}
 
 	public FDReservation reserveTimeslot(
@@ -721,10 +741,12 @@ public class FDDeliveryManager {
 		try{
 			Set<StateCounty> stateCounty = countiesByState.get(state);
 			if(stateCounty == null){
-			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
-			Map<String, Set<StateCounty>> scMap = logisticsService.getCountiesByState();
-			stateCounty = scMap.get(state);
-			countiesByState.put(state, stateCounty);
+				ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+				Map<String, Set<StateCounty>> scMap = logisticsService.getCountiesByState();
+				stateCounty = scMap.get(state);
+				if(stateCounty!=null){
+					countiesByState.put(state, stateCounty);
+				}
 			}
 			for(StateCounty sc : stateCounty){
 				if(sc.getCity().equalsIgnoreCase(city)){
@@ -765,7 +787,9 @@ public class FDDeliveryManager {
 			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 			Map<String, Set<StateCounty>> scMap = logisticsService.getCountiesByState();
 			stateCounty = scMap.get(state);
-			countiesByState.put(state, stateCounty);
+			if(stateCounty!=null){
+				countiesByState.put(state, stateCounty);
+			}
 			}
 			List<String> counties = new ArrayList<String>();
 			for(StateCounty sc : stateCounty){
@@ -857,9 +881,8 @@ public class FDDeliveryManager {
 
 	}
 
-	private Map<String, StateCounty> stateCountyByZip = new HashMap<String, StateCounty>();
+	private ConcurrentMap<String, StateCounty> stateCountyByZip = new ConcurrentHashMap<String, StateCounty>();
 	public StateCounty lookupStateCountyByZip(String zipcode) throws FDResourceException{
-		synchronized(stateCountyByZip){
 			try {
 				StateCounty sc = stateCountyByZip.get(zipcode);
 				if(sc == null){
@@ -867,14 +890,13 @@ public class FDDeliveryManager {
 					ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
 					sc = logisticsService.lookupStateCountyByZip(zipcode);
 					if(sc != null){
-						stateCountyByZip.put(zipcode, sc);
+						stateCountyByZip.putIfAbsent(zipcode, sc);
 					}
 				}
 				return sc;
 			} catch(FDLogisticsServiceException e){
 				throw new FDResourceException(e);
 			}
-		}
 	}
 
 	public String lookupStateByZip(String zipcode) throws FDResourceException{
@@ -896,17 +918,23 @@ public class FDDeliveryManager {
 	}
 
 	public List<Date> getCutofftimesByDate(Date day) throws FDResourceException {
-
+		List<Date> result = cutoffTimesCache.get(day);
+		
 		try{
-			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
-			ListOfDates dates = logisticsService.getDateCutoffs(day);
-			LogisticsDataDecoder.decodeResult(dates);
-			return dates.getCutoffs();
+			if(result==null){
+				ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+				ListOfDates dates = logisticsService.getDateCutoffs(day);
+				LogisticsDataDecoder.decodeResult(dates);
+				result = dates.getCutoffs();
+				if(result!=null){
+					cutoffTimesCache.put(day, result);
+				}
+			}
 			
 		}catch(FDLogisticsServiceException e){
 			throw new FDResourceException(e);
 		}
-	
+		return result;
 	}
 	
 	public List<String> getActiveZoneCodes() throws FDResourceException{
@@ -962,8 +990,8 @@ public class FDDeliveryManager {
 	public FDDeliveryDepotModel getDepotByLocationId(
 			String locationId) throws FDResourceException {
 		
-		List<FDDeliveryDepotModel> pickupList = getAllDepots();
-			for(FDDeliveryDepotModel pickup: pickupList){
+		Map<String, FDDeliveryDepotModel> depotMap = getDepotMap();
+			for(FDDeliveryDepotModel pickup: depotMap.values()){
 				for(FDDeliveryDepotLocationModel location : pickup.getLocations()){
 					if(location.getPK()!=null && 
 							location.getPK().getId().equals(locationId))

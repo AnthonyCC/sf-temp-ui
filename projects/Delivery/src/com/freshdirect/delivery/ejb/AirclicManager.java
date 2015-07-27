@@ -15,6 +15,7 @@ import com.freshdirect.fdlogistics.services.IAirclicService;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataDecoder;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.framework.util.TimedLruCache;
 import com.freshdirect.logistics.controller.data.Result;
 import com.freshdirect.logistics.controller.data.response.DeliveryManifest;
 import com.freshdirect.logistics.controller.data.response.ListOfObjects;
@@ -25,7 +26,6 @@ import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.DeliverySignature;
 import com.freshdirect.logistics.delivery.model.DeliverySummary;
 import com.freshdirect.logistics.delivery.model.RouteNextel;
-import com.freshdirect.sms.CrmSmsDisplayInfo;
 
 public class AirclicManager {
 
@@ -34,16 +34,33 @@ public class AirclicManager {
 	private long lastRefresh = 0;
 	private List<AirclicMessage> messages;
 
+	/** cache orderId -> DeliverySignature */
+	private static TimedLruCache<String, DeliverySignature> signatureCache = new TimedLruCache<String, DeliverySignature>(100, 60 * 60 * 1000);
+	
+	/** cache orderId -> Carton History */
+	private static TimedLruCache<String, List<AirclicCartonInfo>> cartonHistoryCache = new TimedLruCache<String, List<AirclicCartonInfo>>(100, 10 * 60 * 1000);
+	
+	/** cache orderId -> Manifest */
+	private static TimedLruCache<String, DeliveryManifest> deliveryManifestCache = new TimedLruCache<String, DeliveryManifest>(100, 10 * 60 * 1000);
+	
+	/** cache orderId -> Summary */
+	private static TimedLruCache<String, DeliverySummary> deliverySummaryCache = new TimedLruCache<String, DeliverySummary>(100, 10 * 60 * 1000);
+	
+	
 	public DeliverySignature getSignatureDetails(String orderId)
 			throws FDResourceException {
+		DeliverySignature result = signatureCache.get(orderId);
 		try {
-			IAirclicService airclicService = LogisticsServiceLocator
-					.getInstance().getAirclicService();
-			return LogisticsDataDecoder.decodeDeliverySignature(airclicService.getSignatureDetails(orderId));
-
+			if(result == null){
+				IAirclicService airclicService = LogisticsServiceLocator
+						.getInstance().getAirclicService();
+				result = LogisticsDataDecoder.decodeDeliverySignature(airclicService.getSignatureDetails(orderId));
+				signatureCache.put(orderId, result);
+			}
 		} catch (FDLogisticsServiceException e) {
 			throw new FDResourceException(e);
 		}
+		return result;
 	}
 
 	public byte[] getSignature(String orderId) throws FDResourceException {
@@ -108,24 +125,27 @@ public class AirclicManager {
 
 	public List<AirclicCartonInfo> lookupCartonScanHistory(String orderId)
 			throws FDResourceException {
+		List<AirclicCartonInfo> cartons = cartonHistoryCache.get(orderId);
 		try {
-			IAirclicService airclicService = LogisticsServiceLocator
-					.getInstance().getAirclicService();
-			List<AirclicCartonInfo> cartons = new ArrayList<AirclicCartonInfo>();
-			
-			if (!ErpServicesProperties.isAirclicBlackhole()) {
-				ListOfObjects<String> cartonList = airclicService.getCartonList(orderId);
-				LogisticsDataDecoder.decodeResult(cartonList);
-				cartons = LogisticsDataDecoder.decodeAirclicCartonInfo(airclicService.getCartonScanHistory(cartonList.getData()));
-				if (cartons != null) {
-					Collections.sort(cartons, new CartonComparator());
+			if(cartons == null || cartons.isEmpty()){
+				IAirclicService airclicService = LogisticsServiceLocator
+						.getInstance().getAirclicService();
+				
+				if (!ErpServicesProperties.isAirclicBlackhole()) {
+					ListOfObjects<String> cartonList = airclicService.getCartonList(orderId);
+					LogisticsDataDecoder.decodeResult(cartonList);
+					cartons = LogisticsDataDecoder.decodeAirclicCartonInfo(airclicService.getCartonScanHistory(cartonList.getData()));
+					if (cartons != null) {
+						Collections.sort(cartons, new CartonComparator());
+					}
 				}
+				cartonHistoryCache.put(orderId, cartons);
 			}
-
-			return cartons;
+			
 		} catch (FDLogisticsServiceException e) {
 			throw new FDResourceException(e);
 		}
+		return cartons;
 	}
 
 	public List<AirclicTextMessage> lookupAirclicMessages(String orderId)
@@ -149,15 +169,20 @@ public class AirclicManager {
 
 	public DeliveryManifest getDeliveryManifest(String orderId, String date)
 			throws FDResourceException {
+		
+		DeliveryManifest result = deliveryManifestCache.get(orderId);
 		try {
-			IAirclicService airclicService = LogisticsServiceLocator
-					.getInstance().getAirclicService();
-			return airclicService.getDeliveryManifest(orderId, date);
-
+			if(result == null){
+				IAirclicService airclicService = LogisticsServiceLocator
+						.getInstance().getAirclicService();
+				result = airclicService.getDeliveryManifest(orderId, date);
+				deliveryManifestCache.put(orderId, result);
+			}
 		} catch (FDLogisticsServiceException e) {
 			e.printStackTrace();
 			throw new FDResourceException(e);
 		}
+		return result;
 	}
 
 	public List<RouteNextel> lookupNextels(String orderId, String route,
@@ -193,17 +218,18 @@ public class AirclicManager {
 
 	public DeliverySummary lookUpDeliverySummary(String orderId,
 			String routeNo, String date) throws FDResourceException {
-		DeliverySummary response = new DeliverySummary();
+		DeliverySummary response = deliverySummaryCache.get(orderId);
 		try {
-
-			IAirclicService airclicService = LogisticsServiceLocator
-					.getInstance().getAirclicService();
-			//IOrderService orderService = LogisticsServiceLocator
-				//	.getInstance().getOrderService();
-			if (!ErpServicesProperties.isAirclicBlackhole()) {
-				response = LogisticsDataDecoder.decodDeliverySummary(airclicService.getDeliverySummary(orderId, routeNo, date));
-				//response = orderService.getDeliverySummary(response, orderId);
-				
+			if(response == null){
+				IAirclicService airclicService = LogisticsServiceLocator
+						.getInstance().getAirclicService();
+				//IOrderService orderService = LogisticsServiceLocator
+					//	.getInstance().getOrderService();
+				if (!ErpServicesProperties.isAirclicBlackhole()) {
+					response = LogisticsDataDecoder.decodDeliverySummary(airclicService.getDeliverySummary(orderId, routeNo, date));
+					//response = orderService.getDeliverySummary(response, orderId);
+					deliverySummaryCache.put(orderId, response);	
+				}
 			}
 			return response;
 			
@@ -253,7 +279,7 @@ public class AirclicManager {
 					.getInstance().getAirclicService();
 
 			if (!ErpServicesProperties.isAirclicBlackhole()) {
-				smsInfo = airclicService.getSmsInfo();
+				smsInfo = airclicService.getSmsInfo(orderId);
 			}
 			return smsInfo;
 

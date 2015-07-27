@@ -112,7 +112,10 @@ public class StateCountyStrategy implements PromotionStrategyI {
 			if (context.getShoppingCart().getDeliveryAddress() != null) {
 				state =context.getShoppingCart().getDeliveryAddress().getState();
 				String city = context.getShoppingCart().getDeliveryAddress().getCity();
-				if(city != null && state != null) {
+				if(context.getShoppingCart().getDeliveryAddress().getAddressInfo()!=null){
+				 county = context.getShoppingCart().getDeliveryAddress().getAddressInfo().getCounty();
+				}
+				if(county == null && city != null && state != null) {
 					try {
 						county = com.freshdirect.fdstore.FDDeliveryManager.getInstance().getCounty(city, state);
 					} catch (Exception e) {

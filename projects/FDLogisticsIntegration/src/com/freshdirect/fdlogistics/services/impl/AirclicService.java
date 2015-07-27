@@ -315,9 +315,12 @@ public class AirclicService extends AbstractLogisticsService implements IAirclic
 	}	
 	
 	@Override
-	public List<CrmSmsDisplayInfo> getSmsInfo()
+	public List<CrmSmsDisplayInfo> getSmsInfo(String orderId)
 			throws FDLogisticsServiceException {
-		ListOfObjects<CrmSmsDisplayInfo> result =  (ListOfObjects<CrmSmsDisplayInfo>)getData(null, getEndPoint(SMS_API), ListOfObjects.class);
+		DeliverySignatureRequest request = new DeliverySignatureRequest();
+		request.setOrderId(orderId);
+		String inputJson = buildRequest(request);
+		ListOfObjects<CrmSmsDisplayInfo> result =  (ListOfObjects<CrmSmsDisplayInfo>)getData(inputJson, getEndPoint(SMS_API), ListOfObjects.class);
 		return result.getData();
 	}	
 }

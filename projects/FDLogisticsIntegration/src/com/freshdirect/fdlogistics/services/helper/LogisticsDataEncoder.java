@@ -50,20 +50,18 @@ public class LogisticsDataEncoder {
 
 public static Address encodeAddress(ContactAddressModel model) {
 		
-		Address address = new Address(model.getId(), model.getAddress1(), model.getApartment(), model.getCity(), model.getState(), model.getZipCode());
-		address.setServiceType(model.getServiceType().getName());
-		address.setAddress2(model.getAddress2());
-		address.setCompanyName(model.getCompanyName());
+		Address address = new Address(model.getId(), model.getAddress1(), model.getAddress2(), model.getApartment(), model.getCity(), model.getState(), model.getZipCode(),
+				model.getCountry(), model.getFirstName(), model.getLastName(), model.getScrubbedStreet(), model.getLongitude(), model.getLatitude(), model.getServiceType().getName(),
+				model.getCompanyName());
 		return address;
 		
 	}
 
 	public static Address encodeAddress(AddressModel model) {
 		
-		Address address = new Address(model.getId(), model.getAddress1(), model.getApartment(), model.getCity(), model.getState(), model.getZipCode());
-		address.setServiceType(model.getServiceType().getName());
-		address.setAddress2(model.getAddress2());
-		address.setCompanyName(model.getCompanyName());
+		Address address = new Address(model.getId(), model.getAddress1(), model.getAddress2(), model.getApartment(), model.getCity(), model.getState(), model.getZipCode(),
+				model.getCountry(), "", "", model.getScrubbedStreet(), model.getLongitude(), model.getLatitude(), model.getServiceType().getName(),
+				model.getCompanyName());
 		return address;
 		
 	}
