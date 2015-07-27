@@ -2015,6 +2015,7 @@
 					<CmsSection>
 						<title>Section and Schedule</title>
 						<fields>
+						    <CmsField><attribute>WebPageType</attribute></CmsField>
 						    <CmsMultiColumnField>
 								<attribute>WebPageSchedule</attribute>
 								<columns>

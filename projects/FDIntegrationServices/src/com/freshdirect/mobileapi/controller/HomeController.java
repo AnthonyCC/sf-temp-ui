@@ -202,8 +202,8 @@ public class HomeController extends BaseController {
 		WebPageResponse pageResponse = new WebPageResponse();
 		CMSPageRequest pageRequest = parseRequestObject(request, response, CMSPageRequest.class);
 		if(pageRequest != null){
-			if(pageRequest.getDate() == null){
-				pageResponse.setPage(CMSContentFactory.getInstance().getCMSPageByName(pageRequest.getPageName()));
+			if(pageRequest.getRequestedDate() == null){
+				pageResponse.setPage(CMSContentFactory.getInstance().getCMSPageByName(pageRequest.getPageType()));
 			} else {
 				List<CMSWebPageModel> pages = CMSContentFactory.getInstance().getCMSPageByParameters(pageRequest);
 				if(pages != null && !pages.isEmpty()){

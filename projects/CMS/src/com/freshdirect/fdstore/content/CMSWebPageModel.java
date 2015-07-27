@@ -6,6 +6,7 @@ public class CMSWebPageModel{
 
 	private String seoMetaDescription;
 	private String title;
+	private String type;
 	private List<CMSSectionModel> sections;
 	private List<CMSScheduleModel> schedule;
 
@@ -39,5 +40,13 @@ public class CMSWebPageModel{
 
 	public void setSchedule(List<CMSScheduleModel> schedule) {
 		this.schedule = schedule;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }

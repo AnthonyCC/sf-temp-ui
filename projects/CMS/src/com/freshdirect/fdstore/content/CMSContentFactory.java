@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.Timer;
 import java.util.TimerTask;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -18,17 +17,15 @@ import org.joda.time.DateTime.Property;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.fdstore.cache.EhCacheUtil;
-import com.freshdirect.framework.conf.FDRegistry;
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CMSContentFactory {
 	
 	private static final String FEED_CACHE = "cmsPageCache";
-	private static ContentServiceI contentService;
-	private static Timer pageTimer;
-	private static Timer pickListTimer;
 	private static CMSContentFactory instance = null;
 	
 	private static final Category LOG = LoggerFactory.getInstance(CMSContentFactory.class);
@@ -44,7 +41,6 @@ public class CMSContentFactory {
 		instance = new CMSContentFactory();
 		//pageTimer = new Timer();
 		//pickListTimer = new Timer();
-		contentService = (ContentServiceI) FDRegistry.getInstance().getService("com.freshdirect.cms.CmsManager", ContentServiceI.class);
 		//Run first time during initialization
 		instance.cacheAllPages();
 		
@@ -103,8 +99,8 @@ public class CMSContentFactory {
 	
 	public final List<CMSPickListItemModel> getPickListByParameter(CMSPageRequest request){
 		List<CMSPickListItemModel> pickLists = new ArrayList<CMSPickListItemModel>();
-		Set<ContentKey> contentKeys = contentService.getContentKeysByType(ContentType.get("PickList"));
-		Map<ContentKey,ContentNodeI> contentNodes = contentService.getContentNodes(contentKeys);
+		Set<ContentKey> contentKeys = getContentService().getContentKeysByType(ContentType.get("PickList"));
+		Map<ContentKey,ContentNodeI> contentNodes = getContentService().getContentNodes(contentKeys);
 		for(Entry<ContentKey, ContentNodeI> contentNodeEntry: contentNodes.entrySet()){
 			ContentNodeI contentNode = contentNodeEntry.getValue();
 			CMSPickListItemModel pickList = createPickList(contentNode, request);
@@ -115,16 +111,16 @@ public class CMSContentFactory {
 	
 	
 	public final List<CMSWebPageModel> getCMSPageByParameters(CMSPageRequest pageRequest){
-		Set<ContentKey> contentKeys = contentService.getContentKeysByType(ContentType.get("WebPage"));
+		Set<ContentKey> contentKeys = getContentService().getContentKeysByType(ContentType.get("WebPage"));
 		List<CMSWebPageModel> response = new ArrayList<CMSWebPageModel>();
-		Map<ContentKey,ContentNodeI> contentNodes = contentService.getContentNodes(contentKeys);
+		Map<ContentKey,ContentNodeI> contentNodes = getContentService().getContentNodes(contentKeys);
 		for(Entry<ContentKey, ContentNodeI> contentNodeEntry: contentNodes.entrySet()){
 			ContentNodeI contentNode = contentNodeEntry.getValue();
 			CMSWebPageModel page = getCMSPage(contentNode, pageRequest);
 			if(page != null){
 				boolean addToResponse = true;
 				//Return all the pages if page name is null in request.
-				if(pageRequest.getPageName() != null && ! pageRequest.getPageName().equals(page.getTitle())){
+				if(pageRequest.getPageType() != null && ! pageRequest.getPageType().equals(page.getType())){
 					addToResponse = false;
 				} else {
 					addToResponse = true;
@@ -149,6 +145,7 @@ public class CMSContentFactory {
 			webPage = new CMSWebPageModel();
 			webPage.setTitle((String)contentNode.getAttributeValue("PAGE_TITLE"));
 			webPage.setSeoMetaDescription((String)contentNode.getAttributeValue("SEO_META_DESCRIPTION"));
+			webPage.setType((String)contentNode.getAttributeValue("WebPageType"));
 			List<CMSScheduleModel> schedules = createSchedule(contentNode,"WebPageSchedule");
 			
 			boolean matchingSchedule = isSchedulesMatches(schedules, request);
@@ -216,6 +213,13 @@ public class CMSContentFactory {
 						addComponentsToSection(components,pickList);
 					} else if("ImageBanner".equals(componentKey.getType().getName())){
 						addComponentsToSection(components,createImageBanner(componentNode));
+					} else {
+						//Send as raw component with id.
+						String componentType = componentKey.getType().getName();
+						CMSComponentModel component = new CMSComponentModel();
+						component.setId(componentKey.getId());
+						component.setComponentType(CMSComponentType.valueOf(componentType.toUpperCase()));
+						addComponentsToSection(components,component);
 					}
 				}
 			}
@@ -298,7 +302,9 @@ public class CMSContentFactory {
 					pickList.setDescription((String)contentNode.getAttributeValue("Description"));
 					
 					ContentKey pickListMedia = (ContentKey)contentNode.getAttributeValue("PickListMedia");
-					pickList.setImage(createImageBanner(getContentNodeByKey(pickListMedia)));
+					if(pickListMedia != null){
+						pickList.setImage(createImageBanner(getContentNodeByKey(pickListMedia)));
+					}
 					pickList.setItems(createPickList((List<ContentKey>)contentNode.getAttributeValue("PickListPickListItem"), request));
 				} 
 				return pickList;
@@ -361,7 +367,7 @@ public class CMSContentFactory {
 	public ContentNodeI getContentNodeByKey(ContentKey key){
 		ContentNodeI contentNodeI = null;
 		try{
-			contentNodeI =  contentService.getContentNode(key);
+			contentNodeI =  getContentService().getContentNode(key);
 		} catch(Exception e){
 			LOG.error("Error in getting node "+key,e);
 		}
@@ -387,21 +393,22 @@ public class CMSContentFactory {
 	public boolean isScheduleMatches(CMSScheduleModel schedule, CMSPageRequest request){
 		
 		Calendar currentDate = Calendar.getInstance();
-		
-		if(request.getDate()!= null){
-			currentDate.setTime(request.getDate());
+		TimeOfDay currentTime = new TimeOfDay(currentDate.getTime());
+		if(request.getRequestedDate()!= null){
+			currentTime = new TimeOfDay(request.getRequestedDate());
+			currentDate.setTime(request.getRequestedDate());
 		}
 		
-		boolean isMatchingSchedule = false;
+		boolean isMatchingSchedule = true;
 		if("AllDay".equalsIgnoreCase(schedule.getDay()) || getCurrentDay().equalsIgnoreCase(schedule.getDay())){
 			Calendar endDateCalendar = getCalendar(schedule.getEndDate(),1, null);
 			Calendar startDateCalendar = getCalendar(schedule.getStartDate(),0, null);
 			if(startDateCalendar != null && endDateCalendar != null && currentDate.after(startDateCalendar) && currentDate.before(endDateCalendar)){
 				
 				if(schedule.getStartTime() != null && schedule.getEndTime() != null){
-					Calendar todaysStartingTime = getCalendar(currentDate.getTime(), 0, schedule.getStartTime());
-					Calendar todaysEndingTime = getCalendar(currentDate.getTime(), 0, schedule.getEndTime());	
-					if(currentDate.after(todaysStartingTime) && currentDate.before(todaysEndingTime)){
+					TimeOfDay startingTime = new TimeOfDay(schedule.getStartTime());
+					TimeOfDay endingTime = new TimeOfDay(schedule.getEndTime());
+					if(currentTime.after(startingTime) && currentTime.before(endingTime)){
 						isMatchingSchedule = true;
 					}
 				} else {
@@ -441,5 +448,9 @@ public class CMSContentFactory {
 		DateTime now = new DateTime();
 		Property property = now.dayOfWeek();
 		return property.getAsText();
+	}
+	
+	private ContentServiceI getContentService(){
+		return CmsManager.getInstance();
 	}
 }

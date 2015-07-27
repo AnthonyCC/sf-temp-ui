@@ -2476,6 +2476,10 @@
 			<AttributeDef name="PAGE_TITLE" type="S" label="Page Title" required="false"/>
 			<AttributeDef name="SEO_META_DESC" type="S" label="SEO Meta Description" required="false"/>
 			<AttributeDef name="URL" type="S" label="URL of the  page" required="false"/>
+			<EnumDef type="S" name="WebPageType"  label="WebPage Type">
+				<EnumValue value="FEED" label="FEED"/>
+				<EnumValue value="TODAYSPICK" label="TODAYSPICK"/>
+			</EnumDef>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="WebPageSection" label="Sections">

@@ -5,5 +5,9 @@ public enum CMSComponentType {
 	BUTTON,
 	BANNER,
 	PICKLIST, 
-	TEXT
+	TEXT,
+	PRODUCT,
+	CATEGORY,
+	DEPARTMENT,
+	UNKNOWN
 }

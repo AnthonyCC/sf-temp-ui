@@ -3,22 +3,22 @@ package com.freshdirect.fdstore.content;
 import java.util.Date;
 
 public class CMSPageRequest {
-	private String pageName;
-	private Date date;
+	private String pageType;
+	private Date requestedDate;
 	
-	public String getPageName() {
-		return pageName;
+	public String getPageType() {
+		return pageType;
 	}
-	
-	public void setPageName(String pageName) {
-		this.pageName = pageName;
+
+	public void setPageType(String pageType) {
+		this.pageType = pageType;
 	}
-	
-	public Date getDate() {
-		return date;
+
+	public Date getRequestedDate() {
+		return requestedDate;
 	}
-	
-	public void setDate(Date date) {
-		this.date = date;
+
+	public void setRequestedDate(Date requestedDate) {
+		this.requestedDate = requestedDate;
 	}
 }
