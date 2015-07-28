@@ -232,7 +232,7 @@ public class SinglePageCheckoutFacade {
 				String addressId = cart.getDeliveryReservation().getAddressId();
 				DeliveryAddressManipulator.performSetDeliveryAddress(session, user, addressId, null, null, PageAction.SELECT_DELIVERY_ADDRESS_METHOD.actionName, true, actionResult, null, null, null,
 						null, null, null);
-				String paymentId = ((FDModifyCartModel) cart).getOriginalOrder().getPaymentMethod().getPK().getId();
+                String paymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
 				PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, PageAction.SELECT_PAYMENT_METHOD.actionName);
 				for (ActionError error : actionResult.getErrors()) {
 					validationErrors.add(new ValidationError(error));
@@ -269,7 +269,7 @@ public class SinglePageCheckoutFacade {
 			double gcSelectedBalance = isSOTMPL ? 0 : user.getGiftcardBalance() - cart.getTotalAppliedGCAmount();
 			double gcBufferAmount = 0;
 			double ccBufferAmount = 0;
-			double perishableBufferAmount = isSOTMPL ? 0 : FDCustomerManager.getPerishableBufferAmount((FDCartModel) cart);
+			double perishableBufferAmount = isSOTMPL ? 0 : FDCustomerManager.getPerishableBufferAmount(cart);
 			double outStandingBalance = isSOTMPL ? 0 : FDCustomerManager.getOutStandingBalance(cart);
 
 			if (!isSOTMPL && perishableBufferAmount > 0) {
