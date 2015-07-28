@@ -287,6 +287,7 @@ public class CartData extends AbstractCoremetricsResponse implements Serializabl
 		private boolean wine;
 		private String subTotal;
 		private String taxTotal;
+		private String subTotalText;
 
 		@Override
 		public int hashCode() {
@@ -359,6 +360,14 @@ public class CartData extends AbstractCoremetricsResponse implements Serializabl
 
 		public void setTaxTotal(String taxTotal) {
 			this.taxTotal = taxTotal;
+		}
+
+		public String getSubTotalText() {
+			return subTotalText;
+		}
+
+		public void setSubTotalText(String subTotalText) {
+			this.subTotalText = subTotalText;
 		}
 	}
 
