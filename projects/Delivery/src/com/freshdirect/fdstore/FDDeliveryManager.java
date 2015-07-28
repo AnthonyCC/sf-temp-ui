@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -791,11 +792,11 @@ public class FDDeliveryManager {
 				countiesByState.put(state, stateCounty);
 			}
 			}
-			List<String> counties = new ArrayList<String>();
+			Set<String> counties = new HashSet<String>();
 			for(StateCounty sc : stateCounty){
 				counties.add(sc.getCounty());
 			}
-			return counties;
+			return new ArrayList<String>(counties);
 		}catch(FDLogisticsServiceException e){
 			throw new FDResourceException(e);
 		}
