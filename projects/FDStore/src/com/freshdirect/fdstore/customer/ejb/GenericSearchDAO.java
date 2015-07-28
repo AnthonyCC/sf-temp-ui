@@ -119,7 +119,8 @@ public class GenericSearchDAO {
 			criteria.setCriteriaMap("statusCode", EnumReservationStatus.RESERVED.getCode());
 			if(criteria.getCriteriaMap().get("zoneArray")!=null){
 				String[] zoneArray = (String[])criteria.getCriteriaMap().get("zoneArray");
-				criteria.getCriteriaMap().put("zoneArray", Arrays.asList(zoneArray));
+				List<String> zones = Arrays.asList(zoneArray);
+				criteria.getCriteriaMap().put("zoneArray", zones);
 			}
 			List<FDReservation> reservations = FDDeliveryManager.getInstance().getReservationsByCriteria(
 					new SearchRequest(criteria.getSearchType().getName(), criteria.getCriteriaMap()));
