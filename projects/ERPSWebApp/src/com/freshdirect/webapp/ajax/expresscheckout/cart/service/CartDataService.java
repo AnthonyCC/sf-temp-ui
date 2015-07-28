@@ -381,7 +381,6 @@ public class CartDataService {
                 if (cartLine.isEstimatedPrice()) {
                     cartHasEstimatedLines = true;
                 }
-                ;
                 String sectionInfoKey;
                 if (cartLine.isWine()) {
                     cartHasWine = true;
