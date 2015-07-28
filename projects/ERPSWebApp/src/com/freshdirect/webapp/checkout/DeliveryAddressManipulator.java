@@ -406,7 +406,16 @@ public class DeliveryAddressManipulator extends CheckoutManipulator {
 		return erpAddress;
 	}
 
-	private static void checkAndSetEbtAccepted(String zipCode, FDUserI user, FDCartModel cart) throws FDResourceException {
+	/**
+	 * Order is EBT accepted => zipcode for cart's deliveryAddress is ebt accepted 
+	 * 					AND => user does not have any kind of EBT alerts
+	 * 					AND => user does not have any unsettled EBT order from before
+	 * @param zipCode
+	 * @param user
+	 * @param cart
+	 * @throws FDResourceException
+	 */
+	public static void checkAndSetEbtAccepted(String zipCode, FDUserI user, FDCartModel cart) throws FDResourceException {
 		if(null != zipCode){
 			boolean isEBTAccepted = isZipCodeEbtAccepted(zipCode);
 			if(null !=cart.getDeliveryAddress()){
