@@ -156,11 +156,11 @@
     </div>
     <div>
       <input name="cardNum" placeholder='Account Number'
-        value="{if $data.cardNum}{$data.cardNum}{/if}" fdform-fieldname="Account Number" required {if $data.id}disabled{/if}/>
+        value="{if $data.cardNum}{$data.cardNum}{/if}" fdform-fieldname="Account Number" {if $data.id}disabled fdform-hidden{else}required{/if}/>
     </div>
     <div>
       <input name="cardNumVerify" placeholder='Enter Account Number Again'
-        value="{if $data.cardNumVerify}{$data.cardNumVerify}{/if}" fdform-fieldname="Account Number Again" required/>
+        value="{if $data.cardNumVerify}{$data.cardNumVerify}{/if}" fdform-fieldname="Account Number Again" {if $data.id}disabled fdform-hidden{else}required{/if}/>
     </div>
     <div>
       <input name="abaRouteNumber" placeholder='Routing Number'
@@ -212,8 +212,8 @@
       <input name="phone" placeholder="(xxx) xxx xxxx" fdform-formatter="phone"
         value="{if $data.phone}{$data.phone}{/if}" required />
     </div>
-    <div class='agreement'>
-      <label><input type="checkbox" name="terms" required />
+    <div class='agreement' {if $data.id}fdform-hidden{/if}>
+      <label><input type="checkbox" name="terms" {if $data.id}disabled{else}required{/if} />
       I have read and agree to the <a href='/registration/checkacct_terms.jsp' data-ifrpopup='/registration/checkacct_terms.jsp' data-ifrpopup-width='585' data-ifrpopup-height='400'>Customer Agreement (print)</a></label>
     </div>
   </div>

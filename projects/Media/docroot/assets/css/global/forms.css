@@ -22,3 +22,8 @@
   background:grey;
   cursor:default;
 }
+
+.ec-popup [fdform] input[fdform-hidden],
+[fdform] [fdform-hidden]{
+  display:none;
+}
