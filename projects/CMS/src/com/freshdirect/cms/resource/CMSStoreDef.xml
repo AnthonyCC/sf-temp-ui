@@ -504,7 +504,7 @@
 			<RelationshipDef name="tabletHeaderBanner" label="Tablet Header Banner">
 				<DestinationDef contentType="Banner" />
 			</RelationshipDef>
-			<RelationshipDef name="heroCarousel" label="Tablet Thumbnail Image">
+			<RelationshipDef cardinality="Many" name="heroCarousel" label="Tablet Thumbnail Image">
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
 		</RelationshipDefs>
@@ -846,7 +846,7 @@
 			<RelationshipDef name="tabletThumbnailImage" label="Tablet Thumbnail Image">
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
-			<RelationshipDef name="heroCarousel" label="Tablet Thumbnail Image">
+			<RelationshipDef cardinality="Many" name="heroCarousel" label="Tablet Thumbnail Image">
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
 		</RelationshipDefs>
@@ -2482,10 +2482,10 @@
 			</EnumDef>
 		</AttributeDefs>
 		<RelationshipDefs>
-			<RelationshipDef name="WebPageSection" label="Sections">
+			<RelationshipDef cardinality="Many" name="WebPageSection" label="Sections">
 				<DestinationDef contentType="Section"/>
 			</RelationshipDef>
-			<RelationshipDef name="WebPageSchedule" label="Sections">
+			<RelationshipDef cardinality="Many" name="WebPageSchedule" label="Sections">
 				<DestinationDef contentType="Schedule"/>
 			</RelationshipDef>
 		</RelationshipDefs>
@@ -2496,13 +2496,13 @@
 			<AttributeDef name="Type" type="S" label="Type" required="false"/>
 		</AttributeDefs>
 		<RelationshipDefs>
-			<RelationshipDef name="SectionComponent" label="Components">
+			<RelationshipDef cardinality="Many" name="SectionComponent" label="Components">
 				<DestinationDef contentType="Anchor"/>
 				<DestinationDef contentType="ImageBanner"/>
 				<DestinationDef contentType="PickList"/>
 				<DestinationDef contentType="TextComponent"/>
 			</RelationshipDef>
-			<RelationshipDef name="SectionSchedule" label="Schedule">
+			<RelationshipDef cardinality="Many" name="SectionSchedule" label="Schedule">
 				<DestinationDef contentType="Schedule"/>
 			</RelationshipDef>
 		</RelationshipDefs>
@@ -2512,10 +2512,13 @@
 		<AttributeDefs>
 			<AttributeDef name="Url" type="S" label="Url" required="false"/>
 			<AttributeDef name="Text" type="S" label="Text" required="false"/>
-			<AttributeDef name="Type" type="S" label="Type" required="false"/>
+			<EnumDef type="S" name="Type"  label="Anchor Type">
+				<EnumValue value="Button" label="Button"/>
+				<EnumValue value="Link" label="Link"/>
+			</EnumDef>
 		</AttributeDefs>
 		<RelationshipDefs>
-			<RelationshipDef name="Target" label="Target">
+			<RelationshipDef cardinality="One" name="Target" label="Target">
 				<DestinationDef contentType="Category"/>
 				<DestinationDef contentType="Department"/>
 				<DestinationDef contentType="PickList"/>
@@ -2527,6 +2530,7 @@
 	<ContentTypeDef name="TextComponent" generateId="false">
 		<AttributeDefs>
 			<AttributeDef name="Text" type="S" label="Text" required="false"/>
+			<AttributeDef name="Default" type="B" label="Default" required="false"/>
 		</AttributeDefs>
 	</ContentTypeDef>
 	
@@ -2535,24 +2539,24 @@
 		    <AttributeDef name="Name" type="S" label="Name" required="false"/>
 			<AttributeDef name="Type" type="S" label="Type" required="false"/>
 			<AttributeDef name="Description" type="S" label="Description" required="false"/>
-			 <AttributeDef name="FlagText" type="S" label="Flag Text" required="false"/>
+			<AttributeDef name="FlagText" type="S" label="Flag Text" required="false"/>
 			<AttributeDef name="FlagColor" type="S" label="Flag Color" required="false"/>
 			<AttributeDef name="Price" type="S" label="Price" required="false"/>
 		</AttributeDefs>
 		<RelationshipDefs>
-			<RelationshipDef name="ImageBannerImage" label="Image">
+			<RelationshipDef cardinality="One" name="ImageBannerImage" label="Image">
 				<DestinationDef contentType="Image"/>
 			</RelationshipDef>
-			<RelationshipDef name="ImageBannerLink" label="Links">
+			<RelationshipDef cardinality="Many" name="ImageBannerLink" label="Links">
 				<DestinationDef contentType="Anchor"/>
 			</RelationshipDef>
-			<RelationshipDef name="ImageBannerBurst" label="Burst">
+			<RelationshipDef cardinality="Many" name="ImageBannerBurst" label="Burst">
 				<DestinationDef contentType="Image"/>
 			</RelationshipDef>
-			<RelationshipDef name="ImageBannerProduct" label="Product">
+			<RelationshipDef cardinality="One" name="ImageBannerProduct" label="Product">
 				<DestinationDef contentType="Product"/>
 			</RelationshipDef>
-			<RelationshipDef name="Target" label="Target">
+			<RelationshipDef cardinality="One" name="Target" label="Target">
 				<DestinationDef contentType="Product"/>
 				<DestinationDef contentType="PickList"/>
 				<DestinationDef contentType="Category"/>
@@ -2572,16 +2576,16 @@
 			<AttributeDef name="Description" type="S" label="Description" required="false"/>
 		</AttributeDefs>
 		<RelationshipDefs>
-			<RelationshipDef name="PickListPickListItem" label="PickList Items">
+			<RelationshipDef cardinality="Many" name="PickListPickListItem" label="PickList Items">
 				<DestinationDef contentType="PickListItem"/>
 			</RelationshipDef>
-			<RelationshipDef name="PickListMedia" label="Image Banners">
+			<RelationshipDef cardinality="One" name="PickListMedia" label="Image Banners">
 				<DestinationDef contentType="ImageBanner"/>
 			</RelationshipDef>
-			<RelationshipDef name="PickListSchedule" label="Schedule">
+			<RelationshipDef cardinality="Many" name="PickListSchedule" label="Schedule">
 				<DestinationDef contentType="Schedule"/>
 			</RelationshipDef>
-			<RelationshipDef name="PickListPickList" label="Pick List">
+			<RelationshipDef cardinality="Many" name="PickListPickList" label="Pick List">
 				<DestinationDef contentType="PickList"/>
 			</RelationshipDef>
 		</RelationshipDefs>
@@ -2592,7 +2596,7 @@
 		    <AttributeDef name="Default" type="S" label="Default" required="false"/>
 		</AttributeDefs>
 		<RelationshipDefs>
-			<RelationshipDef name="PickListItemProduct" label="Product">
+			<RelationshipDef cardinality="One" name="PickListItemProduct" label="Product">
 				<DestinationDef contentType="Product"/>
 			</RelationshipDef>
 		</RelationshipDefs>
