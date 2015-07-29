@@ -504,7 +504,7 @@
 			<RelationshipDef name="tabletHeaderBanner" label="Tablet Header Banner">
 				<DestinationDef contentType="Banner" />
 			</RelationshipDef>
-			<RelationshipDef cardinality="Many" name="heroCarousel" label="Tablet Thumbnail Image">
+			<RelationshipDef cardinality="Many" name="heroCarousel" label="Hero Carousel">
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
 		</RelationshipDefs>
@@ -846,7 +846,7 @@
 			<RelationshipDef name="tabletThumbnailImage" label="Tablet Thumbnail Image">
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
-			<RelationshipDef cardinality="Many" name="heroCarousel" label="Tablet Thumbnail Image">
+			<RelationshipDef cardinality="Many" name="heroCarousel" label="Hero Carousel">
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
 		</RelationshipDefs>

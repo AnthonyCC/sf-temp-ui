@@ -2189,6 +2189,7 @@
 							<CmsField><attribute>ImageBannerLink</attribute></CmsField>
 							<CmsField><attribute>ImageBannerBurst</attribute></CmsField>
 							<CmsField><attribute>ImageBannerProduct</attribute></CmsField>
+							<CmsField><attribute>Target</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>
