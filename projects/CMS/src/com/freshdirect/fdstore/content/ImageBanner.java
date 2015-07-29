@@ -38,8 +38,8 @@ public class ImageBanner extends ContentNodeModelImpl {
 	}
 	
 	
-	public ProductModelImpl getImageBannerProduct() {	
-		return FDAttributeFactory.lookup(this, "ImageBannerProduct", null);
+	public ContentNodeModelImpl getTarget() {	
+		return FDAttributeFactory.lookup(this, "Target", null);
 	}
 
 }
