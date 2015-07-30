@@ -430,6 +430,7 @@ public class CartData extends AbstractCoremetricsResponse implements Serializabl
 		private boolean couponDisplay;
 		private boolean couponClipped;
 		private String couponStatusText;
+        private boolean isFreeSamplePromoProduct;
 
 		public int getId() {
 			return id;
@@ -591,7 +592,15 @@ public class CartData extends AbstractCoremetricsResponse implements Serializabl
 			this.hasScaledPricing = hasScaledPricing;
 		}
 
-		public static class Discount implements Serializable {
+		public boolean isFreeSamplePromoProduct() {
+            return isFreeSamplePromoProduct;
+        }
+
+        public void setFreeSamplePromoProduct(boolean isFreeSamplePromoProduct) {
+            this.isFreeSamplePromoProduct = isFreeSamplePromoProduct;
+        }
+
+        public static class Discount implements Serializable {
 
 			private static final long serialVersionUID = 8370395169692317105L;
 

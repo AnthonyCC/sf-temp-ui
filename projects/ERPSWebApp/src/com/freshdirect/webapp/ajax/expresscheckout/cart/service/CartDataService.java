@@ -23,6 +23,7 @@ import javax.servlet.jsp.JspException;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
@@ -304,6 +305,10 @@ public class CartDataService {
         item.setPrice(JspMethods.formatPrice(cartLine.getPrice()));
         item.setDescr(cartLine.getDescription());
         item.setConfDescr(cartLine.getConfigurationDesc());
+        Discount tempDisc = cartLine.getDiscount();
+        if (tempDisc != null && EnumDiscountType.FREE.equals(tempDisc.getDiscountType())) {
+            item.setFreeSamplePromoProduct(true);
+        }
         CartData.Item.Discount discount = populateDiscount(cartLine);
         item.setDiscount(discount);
         ProductData productData = populateCouponInfo(cartLine, user);
