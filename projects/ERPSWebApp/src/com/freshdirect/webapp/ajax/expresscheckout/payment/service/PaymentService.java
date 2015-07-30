@@ -151,7 +151,7 @@ public class PaymentService {
                 lastUsedPaymentMethod = null;
             }
         }
-        Collections.sort(paymentMethods, PAYMENT_COMPARATOR_BY_ID_REVERSED);
+        sortPaymentMethodsByIdReserved(paymentMethods);
         if (lastUsedPaymentMethod != null) {
             paymentMethods.add(0, lastUsedPaymentMethod);
         }
@@ -170,6 +170,10 @@ public class PaymentService {
 
     private static final Comparator<ErpPaymentMethodI> PAYMENT_COMPARATOR_BY_ID_REVERSED = ComparatorChain.<ErpPaymentMethodI> reverseOrder(ComparatorChain
             .create(PAYMENT_COMPARATOR_BY_ID));
+
+    public void sortPaymentMethodsByIdReserved(List<ErpPaymentMethodI> paymentMethods) {
+        Collections.sort(paymentMethods, PAYMENT_COMPARATOR_BY_ID_REVERSED);
+    }
 
     private PaymentEditData populatePaymentEditData(ErpPaymentMethodI paymentMethod) {
         PaymentEditData data = new PaymentEditData();
