@@ -749,9 +749,11 @@ public class FDDeliveryManager {
 					countiesByState.put(state, stateCounty);
 				}
 			}
-			for(StateCounty sc : stateCounty){
-				if(sc.getCity().equalsIgnoreCase(city)){
-					return sc.getCounty();
+			if(stateCounty!=null){
+				for(StateCounty sc : stateCounty){
+					if(sc!=null && sc.getCity()!=null && sc.getCity().equalsIgnoreCase(city)){
+						return sc.getCounty();
+					}
 				}
 			}
 		}catch(FDLogisticsServiceException e){
@@ -793,8 +795,12 @@ public class FDDeliveryManager {
 			}
 			}
 			Set<String> counties = new HashSet<String>();
-			for(StateCounty sc : stateCounty){
-				counties.add(sc.getCounty());
+			if(stateCounty!=null){
+				for(StateCounty sc : stateCounty){
+					if(sc!=null && sc.getCounty()!=null){
+						counties.add(sc.getCounty());
+					}
+				}
 			}
 			return new ArrayList<String>(counties);
 		}catch(FDLogisticsServiceException e){
