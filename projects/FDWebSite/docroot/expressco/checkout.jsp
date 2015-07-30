@@ -8,7 +8,7 @@
   request.setAttribute("sitePage", "www.freshdirect.com/expressco/checkout/");
   request.setAttribute("listPos", "SystemMessage"); // TODO
 %>
-<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
+<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage="/checkout/signup_ckt.jsp" />
 <potato:pendingExternalAtcItem/>
 <potato:singlePageCheckout />
 <potato:cartData />
