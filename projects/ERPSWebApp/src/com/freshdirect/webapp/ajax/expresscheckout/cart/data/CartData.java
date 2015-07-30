@@ -10,6 +10,7 @@ import java.util.Map;
 import com.freshdirect.fdstore.content.ComparatorChain;
 import com.freshdirect.fdstore.ecoupon.FDCustomerCoupon;
 import com.freshdirect.webapp.ajax.AbstractCoremetricsResponse;
+import com.freshdirect.webapp.ajax.viewcart.data.ProductSamplesCarousel;
 
 /**
  * Simple java bean for cart contents. Class structure is representing the resulting JSON structure.
@@ -78,6 +79,8 @@ public class CartData extends AbstractCoremetricsResponse implements Serializabl
 	private String couponMessage;
 
 	private ModifyCartData modifyCartData;
+
+    private ProductSamplesCarousel productSamplesTab;
 
 	public String getErrorMessage() {
 		return errorMessage;
@@ -838,5 +841,13 @@ public class CartData extends AbstractCoremetricsResponse implements Serializabl
 	public void setModifyCartData(ModifyCartData modifyCartData) {
 		this.modifyCartData = modifyCartData;
 	}
+
+    public ProductSamplesCarousel getProductSamplesTab() {
+        return productSamplesTab;
+    }
+
+    public void setProductSamplesTab(ProductSamplesCarousel productSamplesTab) {
+        this.productSamplesTab = productSamplesTab;
+    }
 
 }
