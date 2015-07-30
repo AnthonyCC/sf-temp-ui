@@ -1,69 +1,77 @@
 package com.freshdirect.webapp.ajax.viewcart.data;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.webapp.ajax.browse.data.CarouselData;
 
 public class ProductSamplesCarousel {
 
-	private String title;
-	private String siteFeature;
-	private CarouselData carouselData;
-	private String parentImpressionId;
-	private String impressionId;
-	private String parentVariantId;
-	
-	public ProductSamplesCarousel(String title, String siteFeature, String parentImpressionId, String impressionId, String parentVariantId) {
-		this.title = title;
-		this.siteFeature = siteFeature;
-		this.parentImpressionId = parentImpressionId;
-		this.impressionId = impressionId;
-		this.parentVariantId = parentVariantId;
-	}
+    private String title;
+    private String siteFeature;
+    private CarouselData carouselData;
+    private String parentImpressionId;
+    private String impressionId;
+    private String parentVariantId;
+    final private String productSamplesMaxQuantityLimit;
 
-	public String getTitle() {
-		return title;
-	}
+    public ProductSamplesCarousel(String title, String siteFeature, String parentImpressionId, String impressionId, String parentVariantId) {
+        this.title = title;
+        this.siteFeature = siteFeature;
+        this.parentImpressionId = parentImpressionId;
+        this.impressionId = impressionId;
+        this.parentVariantId = parentVariantId;
+        productSamplesMaxQuantityLimit = Integer.toString(FDStoreProperties.getProductSamplesMaxQuantityLimit());
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public String getSiteFeature() {
-		return siteFeature;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public void setSiteFeature(String siteFeature) {
-		this.siteFeature = siteFeature;
-	}
+    public String getSiteFeature() {
+        return siteFeature;
+    }
 
-	public CarouselData getCarouselData() {
-		return carouselData;
-	}
+    public void setSiteFeature(String siteFeature) {
+        this.siteFeature = siteFeature;
+    }
 
-	public void setCarouselData(CarouselData carouselData) {
-		this.carouselData = carouselData;
-	}
+    public CarouselData getCarouselData() {
+        return carouselData;
+    }
 
-	public String getParentImpressionId() {
-		return parentImpressionId;
-	}
+    public void setCarouselData(CarouselData carouselData) {
+        this.carouselData = carouselData;
+    }
 
-	public void setParentImpressionId(String parentImpressionId) {
-		this.parentImpressionId = parentImpressionId;
-	}
+    public String getParentImpressionId() {
+        return parentImpressionId;
+    }
 
-	public String getImpressionId() {
-		return impressionId;
-	}
+    public void setParentImpressionId(String parentImpressionId) {
+        this.parentImpressionId = parentImpressionId;
+    }
 
-	public void setImpressionId(String impressionId) {
-		this.impressionId = impressionId;
-	}
+    public String getImpressionId() {
+        return impressionId;
+    }
 
-	public String getParentVariantId() {
-		return parentVariantId;
-	}
+    public void setImpressionId(String impressionId) {
+        this.impressionId = impressionId;
+    }
 
-	public void setParentVariantId(String parentVariantId) {
-		this.parentVariantId = parentVariantId;
-	}
+    public String getParentVariantId() {
+        return parentVariantId;
+    }
+
+    public void setParentVariantId(String parentVariantId) {
+        this.parentVariantId = parentVariantId;
+    }
+
+    public String getProductSamplesMaxQuantityLimit() {
+        return productSamplesMaxQuantityLimit;
+    }
+
 }
