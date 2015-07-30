@@ -95,7 +95,6 @@ import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.product.data.SkuData;
 import com.freshdirect.webapp.ajax.quickshop.QuickShopHelper;
 import com.freshdirect.webapp.ajax.quickshop.data.QuickShopLineItem;
-import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.display.ProductSavingTag;
 import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.JspMethods;
@@ -853,6 +852,7 @@ public class ProductDetailPopulator {
 		// determine what to display
 		if(isFree){
 			item.setBadge("free");
+            item.setFreeSamplePromoProduct(isFree);
 		}else if ( useFavBurst && isYourFave ) {
 			item.setBadge( "fav" );
 		} else if ( isNew ) {
@@ -1497,8 +1497,8 @@ public class ProductDetailPopulator {
 		Map<String,Object> parameters = new HashMap<String,Object>();
 		
 		/* pass user/sessionUser by default, so it doesn't need to be added every place this tag is used. */
-		parameters.put("user", (FDUserI)user);
-		parameters.put("sessionUser", (FDSessionUser)user);
+		parameters.put("user", user);
+		parameters.put("sessionUser", user);
 		
 		StringWriter out = new StringWriter();
 				
