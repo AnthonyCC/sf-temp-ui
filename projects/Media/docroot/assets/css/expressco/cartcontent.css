@@ -660,6 +660,10 @@
   text-align:left;
 }
 
+.cartheader__questions .product-sample-carousel {
+  margin-top: 25px;
+}
+
 [gogreen-status="true"] [fdform="gogreen"] {
   display: none;
 }
