@@ -600,20 +600,27 @@ class FDCustomerListDAO {
 			
 			List<FDQsProductListLineItem> result = new ArrayList<FDQsProductListLineItem>(100);
 			while (rs.next()) {
-				ProductModel productModel = PopulatorUtil.getProduct(rs.getString("SKU_CODE"));
-				double minQty = productModel.getQuantityMinimum();
-				FDQsProductListLineItem item = new FDQsProductListLineItem(
-						rs.getString("SKU_CODE"),
-						new FDConfiguration(minQty, rs.getString("SALES_UNIT"), ErpOrderLineUtil.convertStringToHashMap(rs.getString("CONFIGURATION"))),
-						rs.getString("RECIPE_SOURCE_ID")
-				);
-				
-				item.setDeliveryStartDate(getTimestamp(rs, "STARTTIME"));
-				item.setOrderId(rs.getString("SALE_ID"));
-				item.setOrderLineId(rs.getString("ORDERLINE_ID"));
-				item.setSaleStatus(EnumSaleStatus.getSaleStatus(rs.getString("STATUS")));
-				
-				result.add(item);
+				ProductModel productModel = null;
+				try {
+					productModel = PopulatorUtil.getProduct(rs.getString("SKU_CODE"));
+				} catch (FDSkuNotFoundException e) {
+					LOGGER.warn(e);
+				}
+				if(null != productModel){
+					double minQty = productModel.getQuantityMinimum();
+					FDQsProductListLineItem item = new FDQsProductListLineItem(
+							rs.getString("SKU_CODE"),
+							new FDConfiguration(minQty, rs.getString("SALES_UNIT"), ErpOrderLineUtil.convertStringToHashMap(rs.getString("CONFIGURATION"))),
+							rs.getString("RECIPE_SOURCE_ID")
+					);
+					
+					item.setDeliveryStartDate(getTimestamp(rs, "STARTTIME"));
+					item.setOrderId(rs.getString("SALE_ID"));
+					item.setOrderLineId(rs.getString("ORDERLINE_ID"));
+					item.setSaleStatus(EnumSaleStatus.getSaleStatus(rs.getString("STATUS")));
+					
+					result.add(item);
+				}
 			}
 
 			rs.close();
