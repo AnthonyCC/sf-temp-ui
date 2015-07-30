@@ -165,7 +165,7 @@
  */
 {template .potatoGridItem autoescape="false"}
 {let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) /}
-<li class="portrait-item {not $available ? 'unavailable' : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}">
+<li class="portrait-item {not $available or ($quantity and $inCartAmount >= $quantity.qMax) ? 'unavailable' : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}">
   <div class="portrait-item-productimage_wrapper">
     <div class="portrait-item-burst_wrapper">
       <img src="{$productImage}" alt="" class="portrait-item-productimage">
@@ -287,7 +287,7 @@
  */
 {template .potatoTransactionalGridItem autoescape="false"}
 {let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) + ($listId ? '_'+$listId : '') + ($originalLineId ? '_'+$originalLineId : '') /}
-<li class="portrait-item {not $available ? 'unavailable' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}>
+<li class="portrait-item {not $available or ($quantity and $inCartAmount >= $quantity.qMax) ? 'unavailable' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}>
   <div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
     <div class="portrait-item-burst_wrapper">
       <img src="{$productImage}" alt="" class="portrait-item-productimage" data-product-url="{$productPageUrl}">
