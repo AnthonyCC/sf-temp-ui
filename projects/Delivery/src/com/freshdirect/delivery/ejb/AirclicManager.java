@@ -32,7 +32,7 @@ public class AirclicManager {
 	private static AirclicManager instance;
 	private long REFRESH_PERIOD = 1000 * 60 * 10; // 10 minutes
 	private long lastRefresh = 0;
-	private List<AirclicMessage> messages;
+	private List<AirclicMessage> messages = new ArrayList<AirclicMessage>();
 
 	/** cache orderId -> DeliverySignature */
 	private static TimedLruCache<String, DeliverySignature> signatureCache = new TimedLruCache<String, DeliverySignature>(100, 60 * 60 * 1000);
