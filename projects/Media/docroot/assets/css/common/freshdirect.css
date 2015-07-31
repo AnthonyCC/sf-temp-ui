@@ -155,6 +155,7 @@ h2.centerline span {
 .qtyinput {
   line-height: 27px;
   vertical-align: middle;
+  -webkit-user-select: none;
 }
 
 .qtyinput.small {

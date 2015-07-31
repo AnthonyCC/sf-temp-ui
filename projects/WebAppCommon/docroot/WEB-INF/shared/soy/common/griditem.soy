@@ -43,6 +43,7 @@
   {param brandName:$item.brandName /}
   {param productNameNoBrand:$item.productNameNoBrand /}
   {param itemId:$item.itemId /}
+  {param freeSamplePromoProduct:$item.freeSamplePromoProduct /}
 {/call}
 {/template}
 
@@ -121,6 +122,7 @@
   {param itemId:$item.itemId /}
   {param useReplacement:$item.useReplacement /}
   {param replacement:$item.replacement /}
+  {param freeSamplePromoProduct:$item.freeSamplePromoProduct /}
 {/call}
 {/template}
 
@@ -162,10 +164,11 @@
  * @param brandName
  * @param? itemId atc item id
  * @param productNameNoBrand
+ * @param? freeSamplePromoProduct free sample product
  */
 {template .potatoGridItem autoescape="false"}
 {let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) /}
-<li class="portrait-item {not $available or ($quantity and $inCartAmount >= $quantity.qMax) ? 'unavailable' : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}">
+<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $inCartAmount >= $quantity.qMax) ? 'unavailable' : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}">
   <div class="portrait-item-productimage_wrapper">
     <div class="portrait-item-burst_wrapper">
       <img src="{$productImage}" alt="" class="portrait-item-productimage">
@@ -284,10 +287,11 @@
  * @param? itemId atc item id
  * @param? replacement replacement item
  * @param? useReplacement use replacement item
+ * @param? freeSamplePromoProduct free sample product
  */
 {template .potatoTransactionalGridItem autoescape="false"}
 {let $atcItemId: $itemId ? $itemId : 'atc_' + ($productId ? $productId : '') + '_' + ($skuCode ? $skuCode : '') + '_' +($catId ? $catId : '' ) + ($listId ? '_'+$listId : '') + ($originalLineId ? '_'+$originalLineId : '') /}
-<li class="portrait-item {not $available or ($quantity and $inCartAmount >= $quantity.qMax) ? 'unavailable' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}>
+<li class="portrait-item {not $available or ($quantity and $freeSamplePromoProduct and $inCartAmount >= $quantity.qMax) ? 'unavailable' : ''} {$useReplacement ? 'useReplacement' : ''} {$extraClass ? $extraClass : ''}" data-component="product" data-transactional-trigger="true" data-product-id="{$productId ? $productId : ''}" data-cat-id="{$catId ? $catId : ''}" {$replacement ? 'data-replacement-id="'+$replacement.productId+'"': ''}>
   <div class="portrait-item-productimage_wrapper {$extraClass ? $extraClass + '-image_wrapper' : ''}">
     <div class="portrait-item-burst_wrapper">
       <img src="{$productImage}" alt="" class="portrait-item-productimage" data-product-url="{$productPageUrl}">
@@ -391,11 +395,13 @@
     {param productPageUrl:$productPageUrl /}
     {param cmEventSource:$cmEventSource /}
     {param listId:$listId /}
+    {param freeSamplePromoProduct:$freeSamplePromoProduct /}
   {/call}
   {call common.atcInCart}
     {param amount:$inCartAmount /}
     {param atcItemId:$atcItemId /}
   {/call}
+  {if not $freeSamplePromoProduct}
   <div class="portrait-item-atl">
     <span class="{if $customizePopup and not $showConfig}{if $hasTerms}hidden{/if}fake{/if}addtolist cssbutton purple icon-file2-before" {if not $customizePopup or $showConfig}data-component="addToListButton" data-alignpopup="tc-bc-c"{else}data-component="customizeButton" data-alignpopupfunction="transactionalCustomize"{/if}>Save to List</span>
     {if $listId and $originalLineId}
@@ -405,6 +411,7 @@
     <input type="hidden" data-component="productData" data-productdata-name="lineId" name="lineId" value="{$originalLineId}" />
     {/if}
   </div>
+  {/if}
   {if $replacement}
   <div class="portrait-item-replacement">
     {if $useReplacement}
@@ -534,6 +541,7 @@
  * @param? productPageUrl
  * @param? cmEventSource optional coremetrics event source
  * @param? listId list id
+ * @param? freeSamplePromoProduct free sample product
  */
 {template .potatoTransactionalGridItemControls autoescape="false"}
   <div class="portrait-item-controls" data-component="product-controls">
@@ -548,6 +556,7 @@
           {param soldBySalesUnit:$soldBySalesUnit /}
           {param salesUnit:$salesUnit /}
           {param quantity:$quantity /}
+          {param freeSamplePromoProduct:$freeSamplePromoProduct /}
         {/call}
       {/if}
       <div class="portrait-item-addtocart" {if $cmEventSource}data-cmeventsource="{$cmEventSource}"{/if}>

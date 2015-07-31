@@ -62,6 +62,10 @@
   margin-top:20px;
 }
 
+.cartline-quantity .free-sample-quantity {
+  font-size: 15px;
+}
+
 .cartsection__cartline .cartline-price{
   width:100px;
   text-align:right;

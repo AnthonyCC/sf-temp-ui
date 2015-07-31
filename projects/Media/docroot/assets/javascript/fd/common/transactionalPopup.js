@@ -1,4 +1,4 @@
-/*global jQuery,common*/
+/*global common*/
 var FreshDirect = FreshDirect || {};
 
 (function (fd) {
@@ -93,7 +93,7 @@ var FreshDirect = FreshDirect || {};
 
             if (Math.abs(bottom - imgBottom) < 10 && maxImageSize < +h) {
               maxImageSize = +h;
-            } 
+            }
           });
 
           $(pimg).css({
@@ -311,8 +311,8 @@ var FreshDirect = FreshDirect || {};
   };
 
    $(document).on('mouseover','.transactional [data-transactional-trigger] *',function(event){
-   
-    // block popup open if we force it in browseMain 
+
+    // block popup open if we force it in browseMain
     if($('.browseContent').hasClass('no-transactional')){
       event.stopPropagation();
       return false;
@@ -324,31 +324,21 @@ var FreshDirect = FreshDirect || {};
         element: element,
         productId:element.data('productId'),
         catId:element.data('catId')
-      });      
+      });
     }
-    
-    // APPDEV-4203 - Product Sampling
-    if(typeof ProductSamplesMaxQuantityLimit  !== "undefined" && ProductSamplesMaxQuantityLimit == 1){
-		if(jQuery("#transactionalPopup .portrait-item div.portrait-item-burst_wrapper img.burst").hasClass("free")){
-			jQuery("#transactionalPopup").find(".qtyinput").css("display","none").before("<div class='product-sample-qty-one'>Quantity: 1</div>");
-		}
-	}    
-    if(jQuery("#transactionalPopup .portrait-item div.portrait-item-burst_wrapper img.burst").hasClass("free")){
-    	jQuery("#transactionalPopup").find(".portrait-item-atl").empty().css("display","none");
-	}
-   
+
    });
-  $(document).on('mouseout','.transactional [data-transactional-trigger]',function(event){
+  $(document).on('mouseout','.transactional [data-transactional-trigger]',function(){
     // don't show popup
     transactionalPopup.popup.clearDelay();
   });
-  
+
   $(document).on('click', '#'+transactionalPopup.popupId+' button.close', transactionalPopup.close.bind(transactionalPopup));
 
   $(document).on('click', '#'+transactionalPopup.popupId+' [data-product-url]', function (e) {
     window.location.href = $(e.currentTarget).data('product-url');
   });
-  
+
 
   fd.modules.common.utils.register("popups.alignment", "transactionalCustomize", transactionalCustomize, fd);
   fd.modules.common.utils.register("common", "transactionalPopup", transactionalPopup, fd);

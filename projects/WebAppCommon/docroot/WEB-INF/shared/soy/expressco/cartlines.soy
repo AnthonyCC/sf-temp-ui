@@ -185,6 +185,7 @@
  * @param? hasTax Boolean
  * @param? hasDepositValue Boolean
  * @param? hasScaledPricing Boolean
+ * @param? freeSamplePromoProduct Boolean free sample product
  */
 {deltemplate expressco.cartline autoescape="false" variant="'YOUR_CART'"}
 <div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
@@ -202,14 +203,18 @@
       {if $confDescr}
       <p class='cartline-descriptor'>({$confDescr})</a>
       {/if}
-      {if $discount and $discount.discountPrice}
-        {if $discount.skuLimit}
-        <p class='cartline-discount'>{if $discount.description}{$discount.description} {/if}<span class="red">(You Saved {$discount.discountPrice} on {$discount.skuLimit} item{if $discount.skuLimit>1}s{/if})</span></p>
-        {else}
-        <p class='cartline-discount'><strong>Group Discount</strong> <span class="red">(You Saved {$discount.discountPrice})</span></p>
+      {if $freeSamplePromoProduct}
+        <p class='cartline-discount'><span class="red">Free Sample</span></p>
+      {else}
+        {if $discount and $discount.discountPrice}
+          {if $discount.skuLimit}
+          <p class='cartline-discount'>{if $discount.description}{$discount.description} {/if}<span class="red">(You Saved {$discount.discountPrice} on {$discount.skuLimit} item{if $discount.skuLimit>1}s{/if})</span></p>
+          {else}
+          <p class='cartline-discount'><strong>Group Discount</strong> <span class="red">(You Saved {$discount.discountPrice})</span></p>
+          {/if}
         {/if}
       {/if}
-      {if $coupon}
+      {if $coupon and not $freeSamplePromoProduct}
       <div class="cartline-coupon {if not $couponClipped}triangle-red triangle-right{/if}">
         {call common.ecoupon}
           {param coupon:$coupon /}
@@ -227,13 +232,21 @@
       <img src="/media_stat/images/icon-trash.png" alt="Delete" class='cartline-delete-image' />Delete</a>
   </div>
   <div class='cartline-quantity cartline-box'>
-    {if $qu}{call common.quantitybox}{param quantity:$qu /}{/call}{/if}
-    {if $su}{call common.salesunit}{param options:$su /}{/call}{/if}
+    {if $freeSamplePromoProduct}
+      {if $qu}<span class="free-sample-quantity">{$qu.quantity}</span>{/if}
+    {else}
+      {if $qu}{call common.quantitybox}{param quantity:$qu /}{/call}{/if}
+      {if $su}{call common.salesunit}{param options:$su /}{/call}{/if}
+    {/if}
   </div>
   <div class='cartline-price cartline-box'>
     <div class='cartline-pricewrapper'>
-      <p class='cartline-price-value'>{$price}</p>
-      {if $unitPrice}<p class='cartline-unitprice'>({$unitPrice}/{$unitScale})</p>{/if}
+      {if $freeSamplePromoProduct}
+        <p class='cartline-price-value'>FREE</p>
+      {else}
+        <p class='cartline-price-value'>{$price}</p>
+        {if $unitPrice}<p class='cartline-unitprice'>({$unitPrice}/{$unitScale})</p>{/if}
+      {/if}
     </div>
   </div>
   <div class="cartline-legend cartline-box">
@@ -268,6 +281,7 @@
  * @param? hasTax Boolean
  * @param? hasDepositValue Boolean
  * @param? hasScaledPricing Boolean
+ * @param? freeSamplePromoProduct Boolean free sample product
  */
 {deltemplate expressco.cartline autoescape="false" variant="'CHECKOUT'"}
 <div class='cartsection__cartline' data-component='cartline' data-cartlineid='{$id}'>
@@ -293,13 +307,17 @@
       <span class="new">(new)</span>
       {/if}
       {if $confDescr}<p class='cartline-descriptor'>({$confDescr})</a>{/if}
-      {if $discount and $discount.discountPrice}
-        {if $discount.skuLimit}
-        <p class='cartline-discount'>{if $discount.description}{$discount.description} {/if}<span class="red">(You Saved {$discount.discountPrice} on {$discount.skuLimit} item{if $discount.skuLimit>1}s{/if})</span></p>
-        {else}
-        <p class='cartline-discount'><strong>Group Discount</strong> <span class="red">(You Saved {$discount.discountPrice})</span></p>
+      {if $freeSamplePromoProduct}
+        <p class='cartline-discount'><span class="red">Free Sample</span></p>
+      {else}
+        {if $discount and $discount.discountPrice}
+          {if $discount.skuLimit}
+          <p class='cartline-discount'>{if $discount.description}{$discount.description} {/if}<span class="red">(You Saved {$discount.discountPrice} on {$discount.skuLimit} item{if $discount.skuLimit>1}s{/if})</span></p>
+          {else}
+          <p class='cartline-discount'><strong>Group Discount</strong> <span class="red">(You Saved {$discount.discountPrice})</span></p>
+          {/if}
         {/if}
-      {/if}
+      {/if}  
       {if $coupon and $couponClipped}
       <div class="cartline-coupon">
         {call common.ecoupon}
@@ -326,8 +344,12 @@
   </div>
   <div class='cartline-price cartline-box'>
     <div class='cartline-pricewrapper'>
-      <p class='cartline-price-value'>{$price}</p>
-      {if $unitPrice}<p class='cartline-unitprice'>({$unitPrice}/{$unitScale})</p>{/if}
+      {if $freeSamplePromoProduct}
+        <p class='cartline-price-value'>FREE</p>
+      {else}
+        <p class='cartline-price-value'>{$price}</p>
+        {if $unitPrice}<p class='cartline-unitprice'>({$unitPrice}/{$unitScale})</p>{/if}
+      {/if}
     </div>
   </div>
   <div class="cartline-legend cartline-box">
