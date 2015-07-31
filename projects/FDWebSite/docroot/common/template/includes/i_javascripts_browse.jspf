@@ -59,6 +59,18 @@
 		}
 		initJQuery();
 	</script>
+	
+	<fd:javascript src="/assets/javascript/jquery/libs/jquery.smartbanner.js"/> 
+	<script>
+	(function ($) {
+		$(function () {
+			
+			$.smartbanner({daysHidden: 0, daysReminder: 0,author:'FreshDirect',button: 'VIEW'});
+		
+		});
+	})($jq);
+	</script> 
+	
   <%-- it would be very nice to be able to remove this, but the login box uses "changeType", this may be refactored later --%>
   <fd:javascript src="/assets/javascript/common_javascript.js"/>
 

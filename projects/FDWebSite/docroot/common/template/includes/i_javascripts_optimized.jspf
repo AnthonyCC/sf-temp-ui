@@ -69,7 +69,17 @@
 		}
 		initJQuery();
 	</script>
-	
+<fd:javascript src="/assets/javascript/libs/jquery.smartbanner.js"/> 
+	<script>
+	(function ($) {
+		$(function () {
+			
+			$.smartbanner({daysHidden: 0, daysReminder: 0,author:'FreshDirect',button: 'VIEW'});
+		
+		});
+	})($jq);
+	</script>
+	 
 	<jwr:script src="/fdmisc.js" useRandomParam="false" />
 	
 	<%-- if (request.getRequestURI().indexOf("brownie_points.jsp") == -1)  { --%>

@@ -75,6 +75,8 @@
 <meta name="verify-v1" content="2MXiorvt33Hqj6QEBylmr/TwpVMfiUQArG0etUIxV2c=" />
 <meta name="msvalidate.01" content="2E163086C8383686A98EE1B694357FE7" />
 <meta name="p:domain_verify" content="d522a86369f72195972bf60549401f4d"/>
+<meta name="apple-itunes-app" content="app-id=346631494"/>
+<meta name="google-play-app" content="app-id=com.freshdirect.android"/>
 
 <meta http-equiv="x-dns-prefetch-control" content="off" />
 <link rel="dns-prefetch" href="//accounts.google.com" />
@@ -103,5 +105,14 @@
 <link rel="dns-prefetch" href="//youtube.com" />
 <link rel="dns-prefetch" href="//4394129.fls.doubleclick.net" />
 <link rel="dns-prefetch" href="//insight.adsrvr.org" />
-
+<link rel="stylesheet" href="/assets/css/jquery.smartbanner.css" type="text/css" media="screen">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon-precomposed" href="http://freshdirect.com//media/mobile/mobile_web/images/App-Icon.jpg" />
+<link rel="apple-touch-icon" sizes="57x57" href="http://freshdirect.com//media/mobile/mobile_web/images/App-Icon.jpg" />
+<link rel="apple-touch-icon" sizes="114x114" href="http://freshdirect.com//media/mobile/mobile_web/images/App-Icon.jpg" />
+ 
 <script src="//cdn.optimizely.com/js/325803703.js" type="text/javascript"></script>
+
+
+
+

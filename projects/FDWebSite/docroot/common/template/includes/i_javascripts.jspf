@@ -67,6 +67,17 @@
 		initJQuery();
 	</script>
 	
+<fd:javascript src="/assets/javascript/jquery/libs/jquery.smartbanner.js"/> 
+	<script>
+	(function ($) {
+		$(function () {
+			
+			$.smartbanner({daysHidden: 0, daysReminder: 0,author:'FreshDirect',button: 'VIEW'});
+		
+		});
+	})($jq);
+	</script> 
+	
 	<% if (request.getRequestURI().indexOf("/checkout/step_1_choose.jsp") == -1)  { %>
 		<fd:javascript src="/assets/javascript/prototype.js"/>
 		<%-- when upgrading scriptaculous please create a new directory for the version --%>
