@@ -21,6 +21,7 @@
 		<input type="hidden" name="salesUnit" value="{$salesUnit[0].id}" data-component="productData" data-productdata-name="salesUnit">
 		{/if}
     {if $freeSamplePromoProduct and ($quantity and $quantity.qMax <= 1)}
+      <input type="hidden" value="1" data-productdata-name="quantity" data-component="productData">
       <div class="product-sample-qty-one">Quantity: 1</div> 
     {else}
       {call common.quantitybox}

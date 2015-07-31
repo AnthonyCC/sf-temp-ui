@@ -83,6 +83,10 @@
   margin:0;
 }
 
+.cartsection__cartline .cartline-price-value.product-sample-free {
+  color: #c00;
+}
+
 .cartsection__cartline .cartline-unitprice{
   font-size:12px;
   color:#888;
