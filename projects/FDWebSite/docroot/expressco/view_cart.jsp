@@ -56,7 +56,7 @@
       </div>
 
       <%-- cart content --%>
-      <div id="cartcontent" class="view_cart" data-ec-linetemplate="expressco.viewcartlines">
+      <div id="cartcontent" fd-toggle="product-sample-carousel" class="view_cart" data-ec-linetemplate="expressco.viewcartlines">
       </div>
     </div>
 

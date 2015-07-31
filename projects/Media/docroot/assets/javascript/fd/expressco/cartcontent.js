@@ -164,6 +164,9 @@ var FreshDirect = FreshDirect || {};
           }
 
           fd.expressco.checkout.coFlowChecker.checkFlow();
+          try {
+            fd.common.transactionalPopup.close();
+          } catch (e) {}
         });
       }
     },

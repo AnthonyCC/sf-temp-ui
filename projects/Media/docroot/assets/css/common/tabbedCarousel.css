@@ -149,7 +149,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00c4c4be', e
   transition: transform .5s;
 }
 
-.product-sample-carousel[fd-toggle-state="enabled"] h2.product-sample-header:after {
+[fd-toggle="product-sample-carousel"][fd-toggle-state="enabled"] .product-sample-carousel h2.product-sample-header:after {
   transform: rotate(90deg);
 }
 
@@ -183,7 +183,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00c4c4be', e
   margin: 20px 0 10px;
 }
 
-.product-sample-carousel[fd-toggle-state="enabled"] [data-component="carousel"] {
+[fd-toggle="product-sample-carousel"][fd-toggle-state="enabled"] .product-sample-carousel [data-component="carousel"] {
   max-height: 400px;
 }
 
@@ -201,7 +201,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00c4c4be', e
   border-bottom: 1px solid #996;
 }
 
-.product-sample-carousel[fd-toggle-state="enabled"] .product-sample-carousel-bottom {
+[fd-toggle="product-sample-carousel"][fd-toggle-state="enabled"] .product-sample-carousel .product-sample-carousel-bottom {
   display: block;
 }
 
