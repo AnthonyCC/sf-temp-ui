@@ -6,6 +6,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import='com.freshdirect.fdstore.rollout.EnumRolloutFeature' %>
 <%@ page import='com.freshdirect.fdstore.rollout.FeatureRolloutArbiter' %>
+<%@ page import='com.freshdirect.webapp.features.service.FeaturesService' %>
 
 <% //expanded page dimensions
 final int W_CHECKOUTNAV_TOTAL = 970;
@@ -175,6 +176,15 @@ String step1link = response.encodeURL("/checkout/step_1_choose.jsp");
 String step2link = response.encodeURL("/checkout/step_2_select.jsp");
 String step3link = response.encodeURL("/checkout/step_3_choose.jsp");
 %>
+
+<%if(FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), (FDUserI)session.getAttribute(SessionName.USER)) && !modOrder && !standingOrder){%>
+	<div class="globalNavigation">
+		<div class="menu only-text-skin green-skin">
+			New user? Sign Up required.
+		</div>
+	</div>
+<%} else {%>
+
 <% if (FeatureRolloutArbiter.isFeatureRolledOut(EnumRolloutFeature.leftnav2014, (FDUserI)session.getAttribute(SessionName.USER))) { /* new globalnav, please change when we no longer need the old one */ %>
   <div class="globalNavigation">
    <ul class="menu basic-skin <% if (modOrder){ %>blue-skin <% }else if(standingOrder){ %>purple-skin <%} else{ %>green-skin <% } %>">
@@ -235,3 +245,5 @@ String step3link = response.encodeURL("/checkout/step_3_choose.jsp");
   </tr></table>
 <%}%>
 <!-- end of checkoutnav -->
+
+<%}%>

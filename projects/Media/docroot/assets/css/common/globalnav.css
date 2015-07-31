@@ -855,6 +855,15 @@ ul.subdepartments {
   text-align:left;
 }
 
+.globalNavigation .only-text-skin{
+  color:#FFF;
+  box-shadow: 0 2px 3px rgba(79,79,79,.68);
+  text-shadow: 1px 1px 0 rgb(116,145,76);
+  text-align:left;
+  font: 25px/50px 'TradeGothic', 'Trebuchet MS', Trebuchet, 'Lucida Grande', sans-serif;
+  padding-left: 10px;
+}
+
 .globalNavigation .green-skin{
   background-color:#88a75c;
 }
