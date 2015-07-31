@@ -321,32 +321,36 @@
     </div>
     {/if}
   </div>
-  <div class="portrait-item-price">
-  {call common.price}
-    {param wasPrice:$wasPrice /}
-    {param price:$price /}
-    {param scaleUnit:$scaleUnit /}
-    {param aboutPriceText:$aboutPriceText /}
-  {/call}
-  {if $dealInfo}
-    {if $grpLink}
-    <a href="{$grpLink}" class="portrait-item-price-deal">{$dealInfo}</a>
-    {else}
-    <div class="portrait-item-price-deal">{$dealInfo}</div>
+  {if $freeSamplePromoProduct}
+    <div class="portrait-item-price product-sample-free">FREE</div>
+  {else}
+    <div class="portrait-item-price">
+    {call common.price}
+      {param wasPrice:$wasPrice /}
+      {param price:$price /}
+      {param scaleUnit:$scaleUnit /}
+      {param aboutPriceText:$aboutPriceText /}
+    {/call}
+    {if $dealInfo}
+      {if $grpLink}
+      <a href="{$grpLink}" class="portrait-item-price-deal">{$dealInfo}</a>
+      {else}
+      <div class="portrait-item-price-deal">{$dealInfo}</div>
+      {/if}
     {/if}
-  {/if}
-  {if $savingString}
-    {if $grpLink}
-    <a href="{$grpLink}" class="portrait-item-price-deal">{$savingString}</a>
-    {else}
-    <div class="portrait-item-price-deal">{$savingString}</div>
+    {if $savingString}
+      {if $grpLink}
+      <a href="{$grpLink}" class="portrait-item-price-deal">{$savingString}</a>
+      {else}
+      <div class="portrait-item-price-deal">{$savingString}</div>
+      {/if}
     {/if}
+    {if $utPrice}
+      <span class="portrait-item-unit-price">(${$utPrice}/{$utSalesUnit})</span>
+    {/if}
+    {if $mixNMatch}<div class="portrait-item-price-deal mixnmatch">Mix'n'Match</div>{/if}
+    </div>
   {/if}
-  {if $utPrice}
-    <span class="portrait-item-unit-price">(${$utPrice}/{$utSalesUnit})</span>
-  {/if}
-  {if $mixNMatch}<div class="portrait-item-price-deal mixnmatch">Mix'n'Match</div>{/if}
-  </div>
   {if $showConfig}
   <div class="portrait-item-configuration">
     {if $quantity and $quantity.quantity}

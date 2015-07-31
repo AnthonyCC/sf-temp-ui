@@ -228,11 +228,5 @@ StringBuffer buffer = new StringBuffer(
   window.FreshDirect.viewcart.data = <fd:ToJSON object="${viewCartPotato}" noHeaders="true"/>;
 </script>
 
-<script>
-	// APPDEV-4203 Product Sampling
-	jQuery(".product-sample-carousel .portrait-item .portrait-item-price").text("FREE");
-	jQuery(".product-sample-carousel .portrait-item .portrait-item-price").addClass("product-sample-free");
-</script>
-
 </tmpl:put>
 </tmpl:insert>
