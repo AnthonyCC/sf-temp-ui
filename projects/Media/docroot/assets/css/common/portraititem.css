@@ -355,7 +355,7 @@
   position: relative;
   background: #ffe7cf;
   border: 1px solid #f2c69b;
-  margin: 4px 0;
+  margin: 15px 0 4px;
   padding: 4px 4px 4px 4px;
   text-align: left;
   font-size: 9px;
@@ -399,11 +399,14 @@
 
 .portrait-item-coupon span[data-component="ecoupon-status"] {
   display: block;
-  height: 15px;
   line-height: 15px;
 }
 
-.portrait-item-coupon .fdCoupon_data {
+.portrait-item-coupon .fdCoupon_data{
+	display: none;
+}
+
+#transactionalPopup .portrait-item-coupon .fdCoupon_data {
   display: inline-block;
   padding-left: 18px;
 }
@@ -831,7 +834,7 @@ a.portrait-item-header-name:link {
   width: auto;
   display: block;
   position: relative;
-  margin: 10px auto;
+  margin: 20px auto 10px;
   height: 34px;
   max-width: 140px;
 }
@@ -960,7 +963,6 @@ a.portrait-item-header-name:link {
   display: none;
 }
 
-/* Changes in order to decrease heights*/
 .configDescr {
     font-size: 10px;
 	line-height: 10px;
@@ -972,6 +974,32 @@ a.portrait-item-header-name:link {
 
 .portrait-item-burst_wrapper{
 	padding-bottom: 0px;
+}
+
+.portrait-item .portrait-item-header .product-name-no-brand .ellip {
+  display: block;
+  height: 100%;
+}
+
+.portrait-item .portrait-item-header .product-name-no-brand .ellip-line{
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: normal;
+  max-width: 100%;
+  vertical-align:top
+}
+
+.portrait-item .portrait-item-header .product-name-no-brand .ellip,
+.portrait-item .portrait-item-header .product-name-no-brand .ellip-line{
+  position: relative;
+  overflow: hidden;
+}
+
+#transactionalPopup .portrait-item .portrait-item-header .product-name-no-brand .ellip-line{
+	display: block;
+    text-overflow: inherit;
+    white-space: normal;
 }
 
 .qs-content .lineitems22 .itemlist-item-controls{

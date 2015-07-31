@@ -206,7 +206,7 @@
     {call common.rating.expert}{param ratingValue:$expertRating /}{/call}
     {call common.rating.wine}{param ratingValue:$wineRating /}{/call}
     {if $brandName and $productNameNoBrand}
-      <a href="{$productPageUrl}" class="portrait-item-header-name"><b>{$brandName}</b> {$productNameNoBrand}</a>
+      <a href="{$productPageUrl}" class="portrait-item-header-name"><b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div></a>
     {else}
       <a href="{$productPageUrl}" class="portrait-item-header-name">{$productName}</a>
     {/if}
@@ -300,7 +300,7 @@
   </div>
   <div class="portrait-item-header">
     {if $brandName and $productNameNoBrand}
-      <a href="{$productPageUrl}" class="portrait-item-header-name"><b>{$brandName}</b> {$productNameNoBrand}</a>
+      <a href="{$productPageUrl}" class="portrait-item-header-name"><b>{$brandName}</b> <div class="product-name-no-brand">{$productNameNoBrand}</div></a>
     {else}
       <a href="{$productPageUrl}" class="portrait-item-header-name">{$productName}</a>
     {/if}

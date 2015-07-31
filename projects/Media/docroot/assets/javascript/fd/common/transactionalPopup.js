@@ -310,6 +310,8 @@ var FreshDirect = FreshDirect || {};
 
   };
 
+  $(".product-name-no-brand").ellipsis({ lines: 4 });
+  
    $(document).on('mouseover','.transactional [data-transactional-trigger] *',function(event){
 
     // block popup open if we force it in browseMain
