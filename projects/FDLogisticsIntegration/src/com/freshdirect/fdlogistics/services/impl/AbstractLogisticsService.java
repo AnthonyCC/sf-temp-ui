@@ -24,13 +24,13 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonGenerator.Feature;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 public abstract class AbstractLogisticsService {
 	
@@ -101,6 +101,7 @@ public abstract class AbstractLogisticsService {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ"));
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		mapper.getFactory().configure(Feature.ESCAPE_NON_ASCII, true);
 		return mapper;
 	}
 
@@ -111,10 +112,13 @@ public abstract class AbstractLogisticsService {
 		return entity;
 	}
 	
-	protected String buildRequest(Object object){
-		GsonBuilder builder = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mmZ");
-		Gson gson = builder.create();
-		return gson.toJson(object);
+	protected String buildRequest(Object object) throws FDLogisticsServiceException{
+		try {
+			return getMapper().writeValueAsString(object);
+		} catch (JsonProcessingException e) {
+			LOGGER.info(e.getMessage());
+			throw new FDLogisticsServiceException("Unable to process the request.");
+		} 
 	}
 
 	public String getEndPoint(String path){
