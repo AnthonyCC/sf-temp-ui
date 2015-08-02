@@ -106,7 +106,7 @@ public class ZipPlus4AddressTag extends AbstractControllerTag implements Session
 		// set to scrubbed address
 		//
 		dlvAddress = verifyResponse.getAddress();
-
+		
 		verificationResult = verifyResponse.getVerifyResult();
 
 		addVerificationResultErrors(verificationResult, actionResult);
@@ -166,7 +166,8 @@ public class ZipPlus4AddressTag extends AbstractControllerTag implements Session
 					FDDeliveryAddressVerificationResponse response = FDDeliveryManager.getInstance().scrubAddress(dlvAddress);
 					streetAddress = response.getAddress().getAddress1();
 				}
-				if(dlvAddress.getAddressInfo().getCounty() == null){
+				String county = FDDeliveryManager.getInstance().getCounty(dlvAddress.getCity(), dlvAddress.getState());
+				if(county == null){
 					actionResult.addError(new ActionError(EnumUserInfoName.DLV_CITY.getCode(), "Please enter a valid city, state combination"));
 				}
 				
@@ -180,7 +181,7 @@ public class ZipPlus4AddressTag extends AbstractControllerTag implements Session
 				ex.setAddressType(com.freshdirect.logistics.delivery.model.EnumAddressType.HIGHRISE);
 				ex.setReason(EnumAddressExceptionReason.ADD_APT);
 				ex.setUserId(agent.getUserId());
-				ex.setCounty(dlvAddress.getAddressInfo().getCounty());
+				ex.setCounty(county);
 				ex.setState(this.dlvAddress.getState());
 				ex.setCity(this.dlvAddress.getCity());
 				

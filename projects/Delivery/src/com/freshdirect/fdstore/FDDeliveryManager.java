@@ -890,6 +890,7 @@ public class FDDeliveryManager {
 
 	private ConcurrentMap<String, StateCounty> stateCountyByZip = new ConcurrentHashMap<String, StateCounty>();
 	public StateCounty lookupStateCountyByZip(String zipcode) throws FDResourceException{
+		if(zipcode!=null){
 			try {
 				StateCounty sc = stateCountyByZip.get(zipcode);
 				if(sc == null){
@@ -904,6 +905,8 @@ public class FDDeliveryManager {
 			} catch(FDLogisticsServiceException e){
 				throw new FDResourceException(e);
 			}
+		}
+		return null;
 	}
 
 	public String lookupStateByZip(String zipcode) throws FDResourceException{
