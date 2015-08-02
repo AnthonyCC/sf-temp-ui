@@ -1,5 +1,6 @@
 package com.freshdirect.delivery.ejb;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -7,6 +8,11 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import javax.ejb.CreateException;
+import javax.ejb.EJBException;
+import javax.naming.NamingException;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.crm.CallLogModel;
@@ -14,7 +20,11 @@ import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.services.IAirclicService;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataDecoder;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.TimedLruCache;
 import com.freshdirect.logistics.controller.data.Result;
 import com.freshdirect.logistics.controller.data.response.DeliveryManifest;
@@ -26,9 +36,11 @@ import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.DeliverySignature;
 import com.freshdirect.logistics.delivery.model.DeliverySummary;
 import com.freshdirect.logistics.delivery.model.RouteNextel;
+import com.freshdirect.logistics.fdstore.StateCounty;
 
 public class AirclicManager {
 
+	private final ServiceLocator serviceLocator;
 	private static AirclicManager instance;
 	private long REFRESH_PERIOD = 1000 * 60 * 10; // 10 minutes
 	private long lastRefresh = 0;
@@ -46,6 +58,13 @@ public class AirclicManager {
 	/** cache orderId -> Summary */
 	private static TimedLruCache<String, DeliverySummary> deliverySummaryCache = new TimedLruCache<String, DeliverySummary>(100, 10 * 60 * 1000);
 	
+	public DlvManagerHome getDlvManagerHome() {
+		try {
+			return (DlvManagerHome) serviceLocator.getRemoteHome(FDStoreProperties.getDeliveryManagerHome());
+		} catch (NamingException ne) {
+			throw new EJBException(ne);
+		}
+	}
 	
 	public DeliverySignature getSignatureDetails(String orderId)
 			throws FDResourceException {
@@ -73,9 +92,17 @@ public class AirclicManager {
 		}
 	}
 
+	private AirclicManager() throws NamingException {
+		this.serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
+	}
+
 	public static AirclicManager getInstance() {
 		if (instance == null) {
-			instance = new AirclicManager();
+			try {
+				instance = new AirclicManager();
+			} catch (NamingException e) {
+				throw new FDRuntimeException(e);
+			}
 		}
 		return instance;
 	}
@@ -252,21 +279,15 @@ public class AirclicManager {
 
 	public Map<String, DeliveryException> getCartonScanInfo()
 			throws FDResourceException {
-
-		Map<String, DeliveryException> response = new HashMap<String, DeliveryException>();
-		try {
-
-			IAirclicService airclicService = LogisticsServiceLocator
-					.getInstance().getAirclicService();
-
-			if (!ErpServicesProperties.isAirclicBlackhole()) {
-				response = airclicService.getCartonScanInfo();
-			}
+		try{
+			DlvManagerSB sb = getDlvManagerHome().create();
+			Map<String, DeliveryException> response =  sb.getCartonScanInfo();
 			return response;
-
-		} catch (FDLogisticsServiceException e) {
-			throw new FDResourceException(e);
-		}
+		}catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		}	
 	}
 
 	public List<com.freshdirect.logistics.delivery.sms.model.CrmSmsDisplayInfo> getSmsMessages(String orderId)

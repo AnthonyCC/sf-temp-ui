@@ -70,6 +70,7 @@ import com.freshdirect.framework.util.FormatterUtil;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpGiftCardModel;
+import com.freshdirect.logistics.fdstore.StateCounty;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 /**
@@ -1360,7 +1361,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			String county = fdMan.getCounty(deliveryAddress);
 			mi = miw.getMunicipalityInfo(deliveryAddress.getState(), county, deliveryAddress.getCity());
 		} else {
-			mi = miw.getMunicipalityInfo(fdMan.lookupStateByZip(zipcode), fdMan.lookupCountyByZip(zipcode), null);
+			StateCounty stateCounty = fdMan.getStateCountyByZipcode(zipcode);
+			mi = miw.getMunicipalityInfo(stateCounty.getState(), stateCounty.getCounty(), null);
 		}
 		
 		if(mi != null ){

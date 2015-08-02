@@ -742,9 +742,8 @@ public class FDDeliveryManager {
 		try{
 			Set<StateCounty> stateCounty = countiesByState.get(state);
 			if(stateCounty == null){
-				ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
-				Map<String, Set<StateCounty>> scMap = logisticsService.getCountiesByState();
-				stateCounty = scMap.get(state);
+				DlvManagerSB sb = getDlvManagerHome().create();
+				stateCounty =  sb.getCountiesByState(state);
 				if(stateCounty!=null){
 					countiesByState.put(state, stateCounty);
 				}
@@ -756,9 +755,11 @@ public class FDDeliveryManager {
 					}
 				}
 			}
-		}catch(FDLogisticsServiceException e){
-			throw new FDResourceException(e);
-		}
+		}catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		}	
 		return null;
 	
 	}
@@ -894,16 +895,17 @@ public class FDDeliveryManager {
 			try {
 				StateCounty sc = stateCountyByZip.get(zipcode);
 				if(sc == null){
-					
-					ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
-					sc = logisticsService.lookupStateCountyByZip(zipcode);
+					DlvManagerSB sb = getDlvManagerHome().create();
+					sc =  sb.lookupStateCountyByZip(zipcode);
 					if(sc != null){
 						stateCountyByZip.putIfAbsent(zipcode, sc);
 					}
 				}
 				return sc;
-			} catch(FDLogisticsServiceException e){
-				throw new FDResourceException(e);
+			} catch (CreateException e) {
+				throw new FDResourceException(e, "Cannot create SessionBean");
+			} catch (RemoteException e) {
+				throw new FDResourceException(e, "Cannot talk to the SessionBean");
 			}
 		}
 		return null;

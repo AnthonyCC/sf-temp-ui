@@ -21,8 +21,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -30,6 +32,7 @@ import javax.ejb.EJBException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.pricing.EnumTaxationType;
 import com.freshdirect.common.pricing.MunicipalityInfo;
@@ -42,6 +45,7 @@ import com.freshdirect.delivery.announcement.SiteAnnouncement;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.model.FDDeliveryDepotModel;
 import com.freshdirect.fdlogistics.model.FDReservation;
+import com.freshdirect.fdlogistics.services.IAirclicService;
 import com.freshdirect.fdlogistics.services.ILogisticsService;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataDecoder;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataEncoder;
@@ -58,10 +62,12 @@ import com.freshdirect.logistics.controller.data.Result;
 import com.freshdirect.logistics.controller.data.request.UpdateOrderSizeRequest;
 import com.freshdirect.logistics.controller.data.response.DeliveryReservations;
 import com.freshdirect.logistics.delivery.model.ActualOrderSizeInfo;
+import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.EnumApplicationException;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.OrderContext;
 import com.freshdirect.logistics.delivery.model.SystemMessageList;
+import com.freshdirect.logistics.fdstore.StateCounty;
 
 public class DlvManagerSessionBean extends SessionBeanSupport {
 	
@@ -479,6 +485,50 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			throw new FDResourceException(ex);
 		}
 
+	}
+	
+	public Set<StateCounty> getCountiesByState(String state) throws FDResourceException{
+
+		try {
+			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			Map<String, Set<StateCounty>> scMap = logisticsService.getCountiesByState();
+			Set<StateCounty> stateCounty = scMap.get(state);
+			return stateCounty;
+			
+		}catch (FDLogisticsServiceException ex) {
+			throw new FDResourceException(ex);
+		}
+
+	}
+
+	public StateCounty lookupStateCountyByZip(String zipcode) throws FDResourceException{
+
+		try {
+			ILogisticsService logisticsService = LogisticsServiceLocator.getInstance().getLogisticsService();
+			StateCounty sc = logisticsService.lookupStateCountyByZip(zipcode);
+			return sc;
+		}catch (FDLogisticsServiceException ex) {
+			throw new FDResourceException(ex);
+		}
+	}
+	
+	public Map<String, DeliveryException> getCartonScanInfo()
+			throws FDResourceException {
+
+		Map<String, DeliveryException> response = new HashMap<String, DeliveryException>();
+		try {
+
+			IAirclicService airclicService = LogisticsServiceLocator
+					.getInstance().getAirclicService();
+
+			if (!ErpServicesProperties.isAirclicBlackhole()) {
+				response = airclicService.getCartonScanInfo();
+			}
+			return response;
+
+		} catch (FDLogisticsServiceException e) {
+			throw new FDResourceException(e);
+		}
 	}
 	
 }

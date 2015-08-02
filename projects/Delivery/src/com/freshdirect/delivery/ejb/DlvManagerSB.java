@@ -7,6 +7,8 @@ package com.freshdirect.delivery.ejb;
  */
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.EJBObject;
 
@@ -17,8 +19,10 @@ import com.freshdirect.delivery.announcement.SiteAnnouncement;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.logistics.analytics.model.TimeslotEvent;
+import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.OrderContext;
+import com.freshdirect.logistics.fdstore.StateCounty;
 
 public interface DlvManagerSB extends EJBObject {
 
@@ -34,5 +38,7 @@ public interface DlvManagerSB extends EJBObject {
 	public void commitReservation(String rsvId, String customerId,
 			OrderContext context, ContactAddressModel address, boolean pr1,
 			TimeslotEvent event) throws RemoteException, ReservationException, FDResourceException;
-	
+	public Set<StateCounty> getCountiesByState(String state) throws RemoteException, FDResourceException;
+	public StateCounty lookupStateCountyByZip(String zipcode) throws RemoteException, FDResourceException;
+	public Map<String, DeliveryException> getCartonScanInfo() throws RemoteException;
 }   
