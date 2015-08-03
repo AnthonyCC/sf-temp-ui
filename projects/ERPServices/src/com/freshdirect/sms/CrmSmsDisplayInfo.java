@@ -1,10 +1,11 @@
 package com.freshdirect.sms;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class CrmSmsDisplayInfo {
+public class CrmSmsDisplayInfo implements Serializable {
 	
 	private Date timeSent;
 	private String alertType;
