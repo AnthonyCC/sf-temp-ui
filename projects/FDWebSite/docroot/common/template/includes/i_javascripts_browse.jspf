@@ -60,7 +60,6 @@
 		initJQuery();
 	</script>
 	
-	<fd:javascript src="/assets/javascript/jquery/libs/jquery.smartbanner.js"/> 
 	<script>
 	(function ($) {
 		$(function () {
