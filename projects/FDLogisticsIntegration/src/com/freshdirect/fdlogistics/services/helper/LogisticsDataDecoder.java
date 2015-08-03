@@ -530,14 +530,18 @@ public class LogisticsDataDecoder {
 	}
 
 	private static List<AirclicTextMessage> decodeTextMessages(List<TextMessage> airclicTextMessages) throws FDResourceException {
-		List<AirclicTextMessage> m = new ArrayList<AirclicTextMessage>();
+		List<AirclicTextMessage> list = new ArrayList<AirclicTextMessage>();
 		if(airclicTextMessages!=null){
 			for(TextMessage message: airclicTextMessages){
-				m.add(new AirclicTextMessage(message.getDeliveryDate(), message.getRoute(), message.getStop(), message.getMessage(), 
-						message.getSource(), message.getSender(), message.getOrderId(), message.getCustomerId()));
+				AirclicTextMessage msg = new AirclicTextMessage(message.getDeliveryDate(), message.getRoute(), message.getStop(), message.getMessage(), 
+						message.getSource(), message.getSender(), message.getOrderId(), message.getCustomerId());
+				msg.setCreateDate(message.getCreateDate());
+				msg.setSentToAirclic(message.getSentToAirclic());
+				list.add(msg);
+				
 			}
 		}
-		return m;
+		return list;
 	}
 	
 	public static List<com.freshdirect.logistics.delivery.model.RouteNextel> decodeRouteNextels(

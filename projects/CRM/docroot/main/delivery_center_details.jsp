@@ -187,13 +187,13 @@
 											<td colspan="6"><b>IVR DETAILS</b></td><td align="right"><input type="button" onclick="lookupOrderCallLog();" class="button" value="Refresh" name="Refresh Calllog"></td>
 										</tr>
 										<tr class="gc_colHeader">
-											<td>Caller ID</td>
-											<td>Call Start</td>
-											<td>Call Duration</td>
-											<td>Talk Time</td>
-											<td>Phone Number</td>
-											<td>Menu Option</td>
-											<td>Call Result</td>
+											<td  width="100">Caller ID</td>
+											<td width="115">Call Start</td>
+											<td width="115">Call Duration</td>
+											<td width="115">Talk Time</td>
+											<td width="115">Phone Number</td>
+											<td width="115">Menu Option</td>
+											<td width="115">Call Result</td>
 										</tr>
 										<tr>
 											<td colspan="7"><div id="callLogInfo" style="overflow-y:auto;height:200px;"></div></td>
