@@ -1799,13 +1799,13 @@
 						</fields>
 					</CmsSection>
 					<CmsSection>
-						<title>Fields for type 'ERPSy Flag' (see &lt;a target="_blank" href="/test/migration/erps_allergen_codes.jsp"&gt;allergen&lt;/a&gt;, &lt;a target="_blank" href="/test/migration/erps_claim_codes.jsp"&gt;claim&lt;/a&gt;, &lt;a target="_blank" href="/test/migration/erps_organic_codes.jsp"&gt;organic&lt;/a&gt; codes)</title>
+						<title>Fields for type 'ERPSy Flag' (see &lt;a target="_blank" href="http://cmsfdpreview.nyc1.freshdirect.com/test/migration/erps_allergen_codes.jsp"&gt;allergen&lt;/a&gt;, &lt;a target="_blank" href="http://cmsfdpreview.nyc1.freshdirect.com/test/migration/erps_claim_codes.jsp"&gt;claim&lt;/a&gt;, &lt;a target="_blank" href="http://cmsfdpreview.nyc1.freshdirect.com/test/migration/erps_organic_codes.jsp"&gt;organic&lt;/a&gt; codes)</title>
 						<fields>
 							<CmsField><attribute>erpsyFlagCode</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
-						<title>Fields for type 'Range' (see &lt;a target="_blank" href="/test/migration/erps_nutrition_codes.jsp"&gt;nutrition&lt;/a&gt; codes)</title>
+						<title>Fields for type 'Range' (see &lt;a target="_blank" href="http://cmsfdpreview.nyc1.freshdirect.com/test/migration/erps_nutrition_codes.jsp"&gt;nutrition&lt;/a&gt; codes)</title>
 						<fields>
 							<CmsField><attribute>fromValue</attribute></CmsField>
 							<CmsField><attribute>toValue</attribute></CmsField>
