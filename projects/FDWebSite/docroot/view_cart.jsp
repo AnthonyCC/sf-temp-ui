@@ -131,7 +131,7 @@ StringBuffer buffer = new StringBuffer(
 
 %>
 
-<form name="viewcart" id="viewcart" method="post" action="/view_cart.jsp" style="margin:0px ! important">
+<form name="viewcart" id="viewcart" method="post" action="/view_cart.jsp" style="margin:0px ! important" fd-toggle="product-sample-carousel">
 	<div class="groupScaleBox" style="display:none"><!--  -->
 		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="groupScaleBoxContent" id="groupScaleBox" >
 			<tr>
