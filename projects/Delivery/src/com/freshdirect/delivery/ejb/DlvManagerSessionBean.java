@@ -455,6 +455,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		this.getSessionContext().setRollbackOnly();
 		throw ex;
 	}catch (FDLogisticsServiceException ex) {
+		this.getSessionContext().setRollbackOnly();
 		throw new FDResourceException(ex);
 	} 
 	
@@ -482,6 +483,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			this.getSessionContext().setRollbackOnly();
 			throw ex;
 		}catch (FDLogisticsServiceException ex) {
+			this.getSessionContext().setRollbackOnly();
 			throw new FDResourceException(ex);
 		}
 
