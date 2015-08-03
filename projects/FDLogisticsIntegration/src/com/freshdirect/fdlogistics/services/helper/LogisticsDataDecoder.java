@@ -59,6 +59,7 @@ import com.freshdirect.logistics.controller.data.response.DeliveryZoneCapacity;
 import com.freshdirect.logistics.controller.data.response.DeliveryZoneCutoff;
 import com.freshdirect.logistics.controller.data.response.DeliveryZoneCutoffs;
 import com.freshdirect.logistics.controller.data.response.DeliveryZones;
+import com.freshdirect.logistics.controller.data.response.ListOfObjects;
 import com.freshdirect.logistics.controller.data.response.Reservation;
 import com.freshdirect.logistics.controller.data.response.RouteNextel;
 import com.freshdirect.logistics.controller.data.response.RouteNextelResponse;
@@ -82,6 +83,7 @@ import com.freshdirect.logistics.delivery.model.EnumReservationClass;
 import com.freshdirect.logistics.delivery.model.EnumReservationType;
 import com.freshdirect.logistics.delivery.model.EnumZipCheckResponses;
 import com.freshdirect.logistics.delivery.model.ExceptionAddress;
+import com.freshdirect.sms.CrmSmsDisplayInfo;
 
 public class LogisticsDataDecoder {
 
@@ -578,6 +580,24 @@ public class LogisticsDataDecoder {
 		decodeResult(s);
 		return new com.freshdirect.logistics.delivery.model.DeliverySignature(s.getOrderNo(), s.getDeliveredTo(), 
 				s.getRecipient(), s.isContainsAlcohol(), s.getSignatureTime());
+	}
+
+	public static List<CrmSmsDisplayInfo> decodeSmsInfo(
+			ListOfObjects<com.freshdirect.logistics.delivery.sms.model.CrmSmsDisplayInfo> listOfObjects) throws FDResourceException {
+		decodeResult(listOfObjects);
+		List<CrmSmsDisplayInfo> infoList = new ArrayList<CrmSmsDisplayInfo>();
+		if(listOfObjects.getData()!=null){
+			for(com.freshdirect.logistics.delivery.sms.model.CrmSmsDisplayInfo object : listOfObjects.getData()){
+				CrmSmsDisplayInfo info = new CrmSmsDisplayInfo();
+				info.setAlertType(object.getAlertType());
+				info.setMessage(object.getMessage());
+				info.setMobileNumber(object.getMobileNumber());
+				info.setStatus(object.getStatus());
+				info.setTimeSent(object.getTimeSent());
+				infoList.add(info);
+			}
+		}
+		return infoList;
 	}
 
 }

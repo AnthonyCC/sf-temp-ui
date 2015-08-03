@@ -97,7 +97,7 @@ public abstract class AbstractLogisticsService {
 		return converter;
 	}
 	
-	private static ObjectMapper getMapper() {
+	public static ObjectMapper getMapper() {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ"));
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

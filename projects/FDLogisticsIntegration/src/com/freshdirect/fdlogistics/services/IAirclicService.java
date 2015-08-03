@@ -62,7 +62,7 @@ public interface IAirclicService {
 
 	public ListOfObjects<String> getScanReportedLates() throws FDLogisticsServiceException;
 
-	List<CrmSmsDisplayInfo> getSmsInfo(String orderId) throws FDLogisticsServiceException;
+	ListOfObjects<CrmSmsDisplayInfo> getSmsInfo(String orderId) throws FDLogisticsServiceException;
 
 	
  }

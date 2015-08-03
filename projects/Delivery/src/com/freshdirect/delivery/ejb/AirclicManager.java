@@ -5,10 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -20,7 +18,6 @@ import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.services.IAirclicService;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataDecoder;
 import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
-import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -36,7 +33,7 @@ import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.DeliverySignature;
 import com.freshdirect.logistics.delivery.model.DeliverySummary;
 import com.freshdirect.logistics.delivery.model.RouteNextel;
-import com.freshdirect.logistics.fdstore.StateCounty;
+import com.freshdirect.sms.CrmSmsDisplayInfo;
 
 public class AirclicManager {
 
@@ -290,9 +287,9 @@ public class AirclicManager {
 		}	
 	}
 
-	public List<com.freshdirect.logistics.delivery.sms.model.CrmSmsDisplayInfo> getSmsMessages(String orderId)
+	public List<CrmSmsDisplayInfo> getSmsMessages(String orderId)
 			throws FDResourceException {
-		List<com.freshdirect.logistics.delivery.sms.model.CrmSmsDisplayInfo> smsInfo = new ArrayList<com.freshdirect.logistics.delivery.sms.model.CrmSmsDisplayInfo>();
+		List<CrmSmsDisplayInfo> smsInfo = new ArrayList<CrmSmsDisplayInfo>();
 
 		try {
 
@@ -300,7 +297,7 @@ public class AirclicManager {
 					.getInstance().getAirclicService();
 
 			if (!ErpServicesProperties.isAirclicBlackhole()) {
-				smsInfo = airclicService.getSmsInfo(orderId);
+				smsInfo = LogisticsDataDecoder.decodeSmsInfo(airclicService.getSmsInfo(orderId));
 			}
 			return smsInfo;
 

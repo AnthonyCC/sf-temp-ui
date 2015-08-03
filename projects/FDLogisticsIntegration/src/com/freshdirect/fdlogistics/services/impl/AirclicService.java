@@ -1,11 +1,14 @@
 package com.freshdirect.fdlogistics.services.impl;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Category;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.services.IAirclicService;
@@ -303,8 +306,14 @@ public class AirclicService extends AbstractLogisticsService implements IAirclic
 	@Override
 	public ListOfObjects<CallLogModel> getOrderCallLog(String orderId)
 			throws FDLogisticsServiceException {
-		ListOfObjects<CallLogModel> response =  getData(null, getOMSEndPoint(IVR_CALLLOG_API)+orderId, ListOfObjects.class);
-		return response;
+		String response =  getData(null, getOMSEndPoint(IVR_CALLLOG_API)+orderId, String.class);
+		ListOfObjects<CallLogModel> info = new ListOfObjects<CallLogModel>();
+		try{
+			info = getMapper().readValue(response, new TypeReference<ListOfObjects<CallLogModel>>() { });
+		}catch(Exception e){
+			LOGGER.info("Exception converting {} to ListOfObjects"+response);
+		}
+		return info;
 	}
 
 	@Override
@@ -315,12 +324,28 @@ public class AirclicService extends AbstractLogisticsService implements IAirclic
 	}	
 	
 	@Override
-	public List<CrmSmsDisplayInfo> getSmsInfo(String orderId)
+	public ListOfObjects<CrmSmsDisplayInfo> getSmsInfo(String orderId)
 			throws FDLogisticsServiceException {
 		DeliverySignatureRequest request = new DeliverySignatureRequest();
 		request.setOrderId(orderId);
 		String inputJson = buildRequest(request);
-		ListOfObjects<CrmSmsDisplayInfo> result =  (ListOfObjects<CrmSmsDisplayInfo>)getData(inputJson, getEndPoint(SMS_API), ListOfObjects.class);
-		return result.getData();
+		String result = getData(inputJson, getEndPoint(SMS_API), String.class);
+		ListOfObjects<CrmSmsDisplayInfo> info = new ListOfObjects<CrmSmsDisplayInfo>();
+		try{
+			info = getMapper().readValue(result , new TypeReference<ListOfObjects<CrmSmsDisplayInfo>>() { });
+		}catch(Exception e){
+			LOGGER.info("Exception converting {} to ListOfObjects"+result);
+		}
+		return info;
 	}	
+	
+	/*public static void main(String s[]){
+		try{
+			ListOfObjects<CrmSmsDisplayInfo> info = getMapper().readValue(new File("file.json"), new TypeReference<ListOfObjects<CrmSmsDisplayInfo>>() { });
+			System.err.println(info.getData());
+		}catch(Exception e){
+			e.printStackTrace();
+			LOGGER.info("Exception converting {} to ListOfObjects");
+		}
+	}*/
 }
