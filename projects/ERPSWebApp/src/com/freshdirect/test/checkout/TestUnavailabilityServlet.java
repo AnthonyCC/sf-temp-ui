@@ -86,7 +86,9 @@ public class TestUnavailabilityServlet extends HttpServlet {
 
 		cart.setAvailability(new FDCompositeAvailability(invs));
 
-		cart.getDeliveryReservation().getTimeslot().setMinOrderAmt(100000);
+        if (cart.getDeliveryReservation() != null) {
+            cart.getDeliveryReservation().getTimeslot().setMinOrderAmt(100000);
+        }
 
 		if ("true".equals(request.getParameter("xc"))) {
 			response.sendRedirect("/expressco/checkout.jsp");

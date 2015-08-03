@@ -66,37 +66,31 @@ public class CheckoutService {
 	}
 
 	public UnavailabilityData applyAtpCheck(FDUserI user) throws FDResourceException {
-		UnavailabilityData atpFailureData = null;
+        UnavailabilityData unavailabilityData = null;
 		FDCartModel cart = user.getShoppingCart();
 		if (cart.getDeliveryAddress() != null && cart.getDeliveryReservation() != null) {
-			AvailabilityService.defaultService().checkCartAtpAvailability(user);
-			atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
+            AvailabilityService.defaultService().checkCartAtpAvailability(user);
+            UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
 			PageViewTagModel pvTagModel = new PageViewTagModel();
 			pvTagModel.setCategoryId(CustomCategory.CHECKOUT.toString());
 			pvTagModel.setPageId("unavailability");
 			PageViewTagModelBuilder.decoratePageIdWithCatId(pvTagModel);
 			atpFailureData.addCoremetrics(pvTagModel.toStringList());
+            if (!atpFailureData.getNonReplaceableLines().isEmpty() || !atpFailureData.getReplaceableLines().isEmpty() || atpFailureData.getNotMetMinAmount() != null) {
+                unavailabilityData = atpFailureData;
+            }
 		}
-		return atpFailureData;
+        return unavailabilityData;
 	}
 
 	public FormRestriction checkPlaceOrder(FDUserI user) throws FDResourceException, FDSkuNotFoundException, HttpErrorResponse {
 		return RestrictionService.defaultService().verifyEbtPaymentRestriction(user);
 	}
 
-	@SuppressWarnings("unchecked")
 	public FormDataResponse submitOrder(FDUserI user, FormDataRequest requestData, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		FormDataResponse responseData = createResponseData(requestData);
 		String actionName = FormDataService.defaultService().get(requestData, "action");
 		boolean checkoutPageReloadNeeded = false;
-		if ("atpAdjust".equals(actionName)) {
-			List<String> removeCartLineIds = (List<String>) requestData.getFormData().get("removableStockUnavailabilityCartLineIds");
-			AvailabilityService.defaultService().adjustCartAvailability(request, removeCartLineIds, user);
-			String errorMessage = AvailabilityService.defaultService().checkCartAvailabilityAdjustResult(user);
-			if (errorMessage.isEmpty()) {
-				AvailabilityService.defaultService().checkCartAtpAvailability(user);
-			}
-		}
 		FormRestriction restriction = preCheckOrder(user);
 		UnavailabilityData atpFailureData = null;
 		if (restriction == null || restriction.isPassed()) {

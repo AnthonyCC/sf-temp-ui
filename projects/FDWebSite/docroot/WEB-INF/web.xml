@@ -381,6 +381,14 @@
      <servlet-name>RestrictionServlet</servlet-name>
      <url-pattern>/api/expresscheckout/restriction</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>AtpRestrictionServlet</servlet-name>
+    <servlet-class>com.freshdirect.webapp.ajax.expresscheckout.availability.servlet.AtpRestrictionServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AtpRestrictionServlet</servlet-name>
+    <url-pattern>/api/expresscheckout/atpfailure</url-pattern>
+  </servlet-mapping>
 
 	<servlet>
 	   <servlet-name>CmsChangePropagatorServlet</servlet-name>

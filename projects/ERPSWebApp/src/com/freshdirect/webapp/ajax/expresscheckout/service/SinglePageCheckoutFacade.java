@@ -174,6 +174,14 @@ public class SinglePageCheckoutFacade {
                         .populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL, orderMinimumType));
                 break;
             }
+            case ATP_ADJUST: {
+                result.put(ATP_FAILURE_JSON_KEY, CheckoutService.defaultService().applyAtpCheck(user));
+                result.put(REDIRECT_URL_JSON_KEY, RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
+                        availabilityService.selectWarningType(user)));
+                CartData loadCartData = CartDataService.defaultService().loadCartData(request, user);
+                result.put(CART_DATA_JSON_KEY, SoyTemplateEngine.convertToMap(loadCartData));
+                break;
+            }
             default:
                 break;
         }
