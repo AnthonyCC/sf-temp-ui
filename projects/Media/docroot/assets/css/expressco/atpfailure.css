@@ -227,3 +227,7 @@
 #atpfailure [data-component="carousel"]{
   padding-bottom:15px;
 }
+
+#atpfailure .text-right{
+  text-align:right;
+}

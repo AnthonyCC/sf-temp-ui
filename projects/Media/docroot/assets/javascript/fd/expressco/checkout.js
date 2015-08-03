@@ -83,23 +83,8 @@ var FreshDirect = FreshDirect || {};
   fd.modules.common.forms.register({
     id: "checkout",
     submit: function (e) {
-      var atpRemovedLines = fd.expressco.atpFailure.serialize(),
-          action = atpRemovedLines.length !== 0 ? 'atpAdjust' : 'placeOrder',
-          formdata;
-
       e.preventDefault();
       e.stopPropagation();
-
-      if (action === 'atpAdjust') {
-        formdata = {
-          action: action,
-          removableStockUnavailabilityCartLineIds: atpRemovedLines
-        };
-      } else {
-        formdata = {
-          action: action
-        };
-      }
 
       DISPATCHER.signal("server", {
         url: "/api/expresscheckout",
@@ -107,7 +92,9 @@ var FreshDirect = FreshDirect || {};
         data: {
           data: JSON.stringify({
             fdform: "checkout",
-            formdata: formdata
+            formdata: {
+              action: 'placeOrder'
+            }
           })
         }
       });
