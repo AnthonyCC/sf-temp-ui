@@ -1,6 +1,17 @@
 {namespace expressco}
 
 /**
+* @param? atpFailure
+*/
+{template .atpFailure}
+<div id="atpfailure" class="checkout-atpfailure">
+{if $atpFailure}
+  {call .atpFailureInner data="$atpFailure"}{/call}
+{/if}
+</div>
+{/template}
+
+/**
 * @param? notMetMinAmount
 * @param? deliveryDate
 * @param? deliveryTimeSlot
@@ -8,16 +19,12 @@
 * @param? replaceableLines
 * @param? passes
 */
-{template .atpFailure}
-{if $notMetMinAmount or $deliveryDate}
-<div id="atpfailure" class="checkout-atpfailure">
+{template .atpFailureInner}
   {call .deliveryTime data="all"}{/call}
   {call .unavailableNonReplaceableLines data="all"}{/call}
   {call .replaceableWrapper data="all"}{/call}
   {call .deliveryPasses data="all"}{/call}
   <form fdform="atpfail" action="#" class="text-right"><button class="cssbutton orange footer__button">Save Changes</button></form>
-</div>
-{/if}
 {/template}
 
 /**
