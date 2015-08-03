@@ -138,7 +138,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	private final static String QUERY_SALE_IN_CPG_STATUS_NO_BIND_EBT_ONLY =
 		"select distinct s.id from cust.sale s, cust.salesaction sa where sa.sale_id=s.id and ((s.status = 'CPG'   "
 		+ "   and   (sa.action_type='RET' or sa.action_type='DLC'    "
-		+ "  or sa.action_type='GCD' )) or (s.status='ENR' and  exists(select 1 from CUST.SALE_SIGNATURE ss where ss.sale_id=S.ID)   ))  "
+		+ "  or sa.action_type='GCD' )) or (s.status='ENR' and  exists(select 1 from DLV.SALE_SIGNATURE ss where ss.sale_id=S.ID)   ))  "
 		+ "  and exists (select sa1.sale_id from cust.salesaction sa1,cust.paymentinfo pi where SA1.SALE_ID=s.id and SA1.ACTION_DATE=S.CROMOD_DATE and SA1.ACTION_TYPE in('CRO','MOD')  "
 		+ "   and sa1.id=pi.salesaction_id and PI.CARD_TYPE='EBT')"; 
             
@@ -162,7 +162,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	private final static String QUERY_SALE_IN_POG_STATUS_NO_BIND_EBT_ONLY =
 		"select distinct s.id from cust.sale s, cust.salesaction sa where sa.sale_id=s.id and ((s.status = 'POG' " 
 		+"and   (sa.action_type='RET' or sa.action_type='DLC'   "
-		+" or sa.action_type='GCD' )) or (s.status='ENR' and  exists(select 1 from CUST.SALE_SIGNATURE ss where ss.sale_id=S.ID)   )) "
+		+" or sa.action_type='GCD' )) or (s.status='ENR' and  exists(select 1 from DLV.SALE_SIGNATURE ss where ss.sale_id=S.ID)   )) "
 		+" and exists (select sa1.sale_id from cust.salesaction sa1,cust.paymentinfo pi where SA1.SALE_ID=s.id and SA1.ACTION_DATE=S.CROMOD_DATE and SA1.ACTION_TYPE in('CRO','MOD') "
 		+"and sa1.id=pi.salesaction_id and PI.CARD_TYPE='EBT')"; 
     

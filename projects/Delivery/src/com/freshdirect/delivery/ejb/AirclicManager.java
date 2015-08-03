@@ -32,6 +32,7 @@ import com.freshdirect.logistics.delivery.model.AirclicTextMessage;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.DeliverySignature;
 import com.freshdirect.logistics.delivery.model.DeliverySummary;
+import com.freshdirect.logistics.delivery.model.EnumApplicationException;
 import com.freshdirect.logistics.delivery.model.RouteNextel;
 import com.freshdirect.sms.CrmSmsDisplayInfo;
 
@@ -116,6 +117,9 @@ public class AirclicManager {
 			IAirclicService airclicService = LogisticsServiceLocator
 					.getInstance().getAirclicService();
 			Result response = airclicService.sendMessage(data, nextelList);
+			if(EnumApplicationException.FinderException.getValue() == response.getErrorCode()){
+				return response.getStatus()+ ": "+" Order not in Airclic";
+			}
 			return response.getStatus();
 
 		} catch (FDLogisticsServiceException e) {

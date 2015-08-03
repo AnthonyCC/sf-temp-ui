@@ -39,7 +39,7 @@ public class AirclicService extends AbstractLogisticsService implements IAirclic
 	private final static Category LOGGER = LoggerFactory
 			.getInstance(AirclicService.class);
 
-	private static final String SIGNATURE_DETAIL_API = "/delivery/signature";
+	private static final String SIGNATURE_DETAIL_API = "/delivery/resource/signature";
 	private static final String SIGNATURE_API = "/delivery/resource/signature/";
 	private static final String SEND_MESSAGE_API = "/delivery/message/send";
 	private static final String GET_CARTON_API = "/delivery/cartoninfo";
@@ -278,7 +278,7 @@ public class AirclicService extends AbstractLogisticsService implements IAirclic
 	@Override
 	public byte[] getSignature(String orderId) throws FDLogisticsServiceException {
 
-		return getData(null, SIGNATURE_API+orderId, byte[].class);
+		return getData(null, getEndPoint(SIGNATURE_API)+orderId, byte[].class);
 			
 	}
 

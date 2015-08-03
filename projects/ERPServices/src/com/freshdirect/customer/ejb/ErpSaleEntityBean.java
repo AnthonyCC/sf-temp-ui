@@ -540,7 +540,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		{
 			
 			pstmt = conn.prepareStatement(
-				"SELECT 1 FROM CUST.SALE_SIGNATURE WHERE SALE_ID=?");
+				"SELECT 1 FROM DLV.SALE_SIGNATURE WHERE SALE_ID=?");
 			pstmt.setString(1, getPK().getId());
 			resultSet = pstmt.executeQuery();
 			
