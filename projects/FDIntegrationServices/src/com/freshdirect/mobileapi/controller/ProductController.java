@@ -281,8 +281,22 @@ public class ProductController extends BaseController {
         Message responseMessage;
         if (!user.isHealthWarningAcknowledged() && product.isAlcoholProduct()) {
             responseMessage = new Message();
-            responseMessage.setStatus(Message.STATUS_FAILED);
-            responseMessage.addErrorMessage(ERR_HEALTH_WARNING, MobileApiProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
+            
+            //APPDEV-4300 - Alcohol Products - No Details Returned if User Not Logged In 
+     		if (!user.isLoggedIn()) {
+ 				responseMessage = new Product(product);
+ 				if (null != ((Product) responseMessage).getProductTerms()) {
+ 					try {
+ 						((Product) responseMessage).setProductTerms(getProductWrappedTerms(((Product) responseMessage).getProductTerms()));
+ 					} catch (IOException e) {
+ 						throw new FDException(e);
+ 					} catch (TemplateException e) {
+ 						throw new FDException(e);
+ 					}
+ 				}
+ 			}
+             responseMessage.setStatus(Message.STATUS_FAILED);
+             responseMessage.addErrorMessage(ERR_HEALTH_WARNING, MobileApiProperties.getMediaPath() + MobileApiProperties.getAlcoholHealthWarningMediaPath());
         } else {
             try {
                 responseMessage = new Product(product);
