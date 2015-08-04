@@ -115,7 +115,7 @@ public class DataPotatoField {
 		try {
 			
 			// first get a ProductData for product level attributes
-			ProductData productData = ProductDetailPopulator.createProductData( user, product );
+			ProductData productData = ProductDetailPopulator.createProductDataForCarousel( user, product );
 			if (variantId != null) {
 				productData.setVariantId(variantId);
 				productData.setProductPageUrl( FDURLUtil.getNewProductURI(product, variantId) );

@@ -27,6 +27,7 @@ request.setAttribute("noyui", true);
 	DepartmentModel dept = (DepartmentModel) ContentFactory.getInstance().getContentNode("Department", "COS");
     request.setAttribute("sitePage", "www.freshdirect.com/cos.jsp");
     String trkCode = "dpage";
+    int validOrderCount = user.getAdjustedValidOrderCount();
 %>
 
 <tmpl:insert template='/common/template/no_shell_optimized.jsp'>
@@ -88,14 +89,25 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 			hpBottomMiddle="HPMiddleBottom"
 			hpBottomRight="HPRightBottom"
 		/>
-		<div id="most-popular" class="">
-			<potato:recommender siteFeature="COS_HOME" name="deals" maxItems="24" cmEventSource="BROWSE" sendVariant="true" />
-			<soy:render template="common.ymalCarousel" data="${deals}" />
-		</div>
-        <div id="top-items" class="">
-            <potato:recommender siteFeature="TOP_ITEMS_QS" name="topItems" maxItems="24" cmEventSource="BROWSE" sendVariant="true" />
-            <soy:render template="common.yourTopItemsCarousel" data="${topItems}" />
-        </div>
+        
+        <% 
+        
+        	   			if (validOrderCount<=3){
+%>
+		   			<div id="most-popular" class="">
+		   				<potato:recommender siteFeature="FAVORITES" name="deals" maxItems="24" cmEventSource="BROWSE"  sendVariant="true" />
+		   				<soy:render template="common.ymalCarousel" data="${deals}" />
+		   			</div>
+<%
+          } else  {
+          %>
+             <div id="top-items" class="">
+                <potato:recommender siteFeature="TOP_ITEMS_QS" name="topItems" maxItems="24" cmEventSource="BROWSE" sendVariant="true" />
+                <soy:render template="common.yourTopItemsCarousel" data="${topItems}" />
+            </div> 
+          <%
+          }
+        %>
 		<div id="categories">
 			<logic:iterate collection="<%= dept.getDeptNav() %>" id="cat" type="com.freshdirect.fdstore.content.CategoryModel">
 			<logic:equal name="cat" property="showSelf"  value="true" >

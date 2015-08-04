@@ -129,7 +129,7 @@ if (location2Media) { %><comp:location2Media user="<%= user %>" /><% }
 	   			ConfigurationStrategy confStrat = new DefaultProductConfigurationStrategy();
 	   			String trkCode = "favorites";
 	   			request.setAttribute("trk",trkCode);
-	   			if (validOrderCount<=2){
+	   			if (validOrderCount<=3){
 %>
 		   			<div id="most-popular" class="">
 		   				<potato:recommender siteFeature="FAVORITES" name="deals" maxItems="24" cmEventSource="BROWSE"  sendVariant="true" />

@@ -264,6 +264,79 @@ public class ProductDetailPopulator {
 		return data;
 	}
 	
+	
+	/**
+	 * Carousel Product  -- APPDEV-4251
+	 *  
+	 * @param user
+	 * @param product
+	 * @return
+	 * @throws HttpErrorResponse
+	 * @throws FDResourceException
+	 * @throws FDSkuNotFoundException 
+	 */
+	public static ProductData createProductDataForCarousel( FDUserI user, ProductModel product, SkuModel sku, FDProductSelectionI lineData, boolean showCouponStatus ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+
+		if ( product == null ) {
+			BaseJsonServlet.returnHttpError( 500, "product not found" );
+		}
+		
+		if ( sku == null ) {
+			BaseJsonServlet.returnHttpError( 500, "sku not found" );
+		}
+		
+		if ( !(product instanceof ProductModelPricingAdapter) ) {
+			// wrap it into a pricing adapter if naked
+			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getPricingContext() );
+		}
+		
+		FDProductInfo productInfo = sku.getProductInfo();
+		if ( productInfo == null ) {
+			BaseJsonServlet.returnHttpError( 500, "productInfo does not exist for this product" );
+		}
+		
+		FDProduct fdProduct = sku.getProduct();		
+		if ( fdProduct == null ) {
+			BaseJsonServlet.returnHttpError( 500, "fdProduct does not exist for this product" );
+		}
+		
+		PriceCalculator priceCalculator = product.getPriceCalculator();		
+		if ( priceCalculator == null ) {
+			BaseJsonServlet.returnHttpError( 500, "priceCalculator does not exist for this product" );
+		}
+		
+		if ( lineData == null ) {
+			lineData = new FDProductSelection( fdProduct, product, getProductConfiguration( product, fdProduct ), user.getPricingContext().getZoneId() );		
+			try {
+				lineData.refreshConfiguration();
+			} catch (FDInvalidConfigurationException e) {
+				LOG.warn( "Invalid configuration" + e.getMessage() );
+			}
+		}
+
+				
+		// Create response data object
+		ProductData data = new ProductData();
+		
+		// Populate product basic-level data
+		populateBasicProductData( data, user, product );
+		
+		// Populate product level data
+		populateProductData( data, user, product, sku, fdProduct, priceCalculator, lineData, false, false );
+		
+		// Populate pricing data
+		populatePricing( data, fdProduct, productInfo, priceCalculator );
+		
+		// Populate sku-level data for the default sku only
+		populateSkuData( data, user, product, sku, fdProduct );
+		
+		// Populate transient-data
+		postProcessPopulate( user, data, sku.getSkuCode(), showCouponStatus, lineData );
+
+		return data;
+	}
+	
+	
 	/**
 	 * Create generic product data from ProductModel using default sku
 	 * 
@@ -299,6 +372,29 @@ public class ProductDetailPopulator {
 		}
 		
 		return createProductData( user, product, sku, null, false );
+	}
+	// APPDEV-4251
+	public static ProductData createProductDataForCarousel( FDUserI user, ProductModel product ) throws HttpErrorResponse, FDResourceException, FDSkuNotFoundException {
+		
+		if ( product == null ) {
+			BaseJsonServlet.returnHttpError( 500, "product not found" );
+		}
+		
+		if ( !(product instanceof ProductModelPricingAdapter) ) {
+			// wrap it into a pricing adapter if naked
+			product = ProductPricingFactory.getInstance().getPricingAdapter( product, user.getPricingContext() );
+		}
+		
+		if (PopulatorUtil.isProductIncomplete(product)) {
+			return createProductDataLight(user, product);
+		}
+		
+		SkuModel sku = PopulatorUtil.getDefSku( product );
+		if ( sku == null ) {
+			BaseJsonServlet.returnHttpError( 500, "default sku does not exist for this product: " + product.getContentName() );
+		}
+		
+		return createProductDataForCarousel( user, product, sku, null, false );
 	}
 
 	public static ProductData populateBrowseRecommendation(FDUserI user, ProductData data, ProductModel product) throws FDResourceException, FDSkuNotFoundException, HttpErrorResponse {
