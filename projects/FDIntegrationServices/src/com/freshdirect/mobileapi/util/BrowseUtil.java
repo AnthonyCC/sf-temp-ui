@@ -709,4 +709,46 @@ public class BrowseUtil {
 	    	
 	    	
 	    }
+	    
+	    
+		/**
+		 * @Desc Method will return list of all new products.  
+		 * @param user
+		 * @param request
+		 * @return
+		 */
+		public static List<Product> getAllNewProductList(SessionUser user,HttpServletRequest request) {
+			List<Product> products = new ArrayList<Product>();
+			List<ProductModel> items = new ArrayList<ProductModel>();
+			// Get All new Products
+			Map<ProductModel, Date> newProducts = ContentFactory.getInstance().getNewProducts();
+			for (Entry<ProductModel, Date> entry : newProducts.entrySet()) {
+				items.add(entry.getKey());
+			}
+			newProducts = ContentFactory.getInstance().getBackInStockProducts();
+
+			for (Entry<ProductModel, Date> entry : newProducts.entrySet()) {
+				items.add(entry.getKey());
+			}
+
+			// Now we need to wrap the product Model
+			if (items != null && !items.isEmpty()) {
+				// So we do have the products wrap them and add.
+				for (ProductModel productModel : items) {
+					try {
+						if (passesFilter(productModel, request)) {
+							Product product = Product.wrap(productModel, user.getFDSessionUser().getUser(), null,EnumCouponContext.PRODUCT);
+							products.add(product);
+						}
+					} catch (Exception e) {
+						// Don't let one rotten egg ruin it for the bunch
+						LOG.error("ModelException encountered. Product ID= "+ productModel.getFullName(), e);
+					}
+
+				}
+			}
+
+			return products;
+		}
+
 }

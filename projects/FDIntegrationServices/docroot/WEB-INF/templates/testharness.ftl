@@ -655,7 +655,10 @@ function loadStuff() {
 	var postdata = '{"category": "picks_gltnfr_condi", "page" : "1", "max" : "25"}';
   	$("#payload").val(postdata);
   	
-  } else if (loaddata == "IvrEmail") {
+  }else if (  loaddata == "GetNewProducts") {
+  	$("#url").val("/product/getnewproducts/"); 
+  	$("#payload").val("");
+  }else if (loaddata == "IvrEmail") {
   	$("#url").val("/ext/t001");
   	$("#payload").val("2202928245,applicationdevelopment@freshdirect.com,qa@freshdirect.com");
   	
@@ -881,6 +884,9 @@ function doStuff() {
   <option value="BrowseCouponCategory">BROWSE COUPON - CATEGORY</option>
   <option value="BrowseCouponCategoryContent">BROWSE COUPON - CATEGORYCONTENT</option>
   <option value="BrowseCouponCategoryContentProductOnly">BROWSE COUPON - CATEGORYCONTENT(Product Only)</option>
+  
+  <option value=""> ========== New Products ========== </option>
+  <option value="GetNewProducts">NEW PRODUCTS - GET ALL NEW PRODUCTS</option>  
   
   <option value=""> ========== PRODUCT ========== </option>
   <option value="ProductDetail">PRODUCT - Product Detail</option>

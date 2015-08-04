@@ -89,7 +89,10 @@
 
 	<bean id="userController" class="com.freshdirect.mobileapi.controller.UserController"
 		parent="baseController" />
-				
+
+	<bean id="newProductController" class="com.freshdirect.mobileapi.controller.NewProductController"
+		parent="baseController" />
+						
 	<bean id="urlMapping"
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="mappings">
@@ -120,6 +123,7 @@
 				<prop key="**/register.do">registerController</prop>
 				<prop key="**/user.do">userController</prop>
 				<prop key="**/fdinterface.do">externalInterfaceController</prop>
+				<prop key="**/newproduct.do">newProductController</prop>
 			</props>
 		</property>
 	</bean>
