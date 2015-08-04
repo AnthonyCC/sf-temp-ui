@@ -100,8 +100,7 @@ public class CheckoutService {
 		ActionResult actionResult = new ActionResult();
 		FDCartModel cart = user.getShoppingCart();
 		List<ValidationError> checkEbtAddressPaymentSelectionError = DeliveryAddressService.defaultService().checkEbtAddressPaymentSelectionByZipCode(user, cart.getDeliveryAddress().getZipCode());
-		if (restriction == null && atpFailureData != null && atpFailureData.getNonReplaceableLines().isEmpty() && atpFailureData.getReplaceableLines().isEmpty()
-				&& atpFailureData.getNotMetMinAmount() == null && checkEbtAddressPaymentSelectionError.isEmpty()) {
+        if (restriction == null && atpFailureData == null && checkEbtAddressPaymentSelectionError.isEmpty()) {
 			checkPlaceOrderResult = checkPlaceOrder(user);
 			if (checkPlaceOrderResult.isPassed()) {
 				LOGGER.debug("AVAILABILITY IS: " + cart.getAvailability());
