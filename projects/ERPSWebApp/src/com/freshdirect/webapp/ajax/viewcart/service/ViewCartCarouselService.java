@@ -30,6 +30,7 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
+import com.freshdirect.fdstore.rollout.EnumRolloutFeature;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.CartTabRecommender;
@@ -47,6 +48,7 @@ import com.freshdirect.webapp.ajax.product.data.ProductData;
 import com.freshdirect.webapp.ajax.viewcart.data.ProductSamplesCarousel;
 import com.freshdirect.webapp.ajax.viewcart.data.RecommendationTab;
 import com.freshdirect.webapp.ajax.viewcart.data.ViewCartCarouselData;
+import com.freshdirect.webapp.features.service.FeaturesService;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.smartstore.Impression;
@@ -222,8 +224,17 @@ public class ViewCartCarouselService {
                 }
             }
         }
-        tab.setProductSamplesReacedMaximumItemQuantity(productSamplesInCart.size() >= FDStoreProperties.getProductSamplesMaxBuyProductsLimit());
-        for (ProductReference productReference : user.getProductSamples()) {
+        List<ProductReference> productSamples = new ArrayList<ProductReference>();
+        boolean productSamplesMaxBuyProductsLimitReaced = productSamplesInCart.size() >= FDStoreProperties.getProductSamplesMaxBuyProductsLimit();
+        if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user)) {
+            tab.setProductSamplesReacedMaximumItemQuantity(productSamplesMaxBuyProductsLimitReaced);
+            productSamples = user.getProductSamples();
+        } else {
+            if (!productSamplesMaxBuyProductsLimitReaced) {
+                productSamples = user.getProductSamples();
+            }
+        }
+        for (ProductReference productReference : productSamples) {
             ProductModel productModel = productReference.lookupProductModel();
             ProductData pd = new ProductData();
             SkuModel skuModel = null;
@@ -254,6 +265,9 @@ public class ViewCartCarouselService {
                     pd.getQuantity().setqMax(FDStoreProperties.getProductSamplesMaxQuantityLimit());
                 } catch (FDSkuNotFoundException e) {
                     LOGGER.warn("Sku not found: " + skuCode, e);
+                }
+                if (FeaturesService.defaultService().isFeatureActive(EnumRolloutFeature.checkout2_0, request.getCookies(), user)) {
+                    pd.setAvailable(!productSamplesMaxBuyProductsLimitReaced);
                 }
                 sampleProducts.add(pd);
             }
