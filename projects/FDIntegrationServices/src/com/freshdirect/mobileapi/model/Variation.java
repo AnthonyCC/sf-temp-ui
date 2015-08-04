@@ -1,5 +1,11 @@
 package com.freshdirect.mobileapi.model;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,8 +15,10 @@ import java.util.Locale;
 import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.content.attributes.EnumAttributeName;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
+import com.freshdirect.webapp.util.MediaUtils;
 
 public class Variation {
 
@@ -31,6 +39,8 @@ public class Variation {
     private String name;
 
     private String description;
+    
+    private String helpNote;
 
     public void removeUnavailableOptions() {
         for (Iterator<VariationOption> it = options.iterator(); it.hasNext();) {
@@ -82,9 +92,45 @@ public class Variation {
         result.underLabel = variation.getUnderLabel();
         result.name = variation.getName();
         result.description = variation.getDescription();
+        result.helpNote="";
+        
+        
+        try {
+        String charFileName = "media/editorial/fd_defs/characteristics/"+variation.getName().toLowerCase()+ ".html";
+    	URL url = MediaUtils.resolve( FDStoreProperties.getMediaPath(), charFileName );
+    	result.helpNote = readContent(url);
+        }
+    	
+    	catch ( Exception ex ) { 
+			
+			System.out.println(ex);
+		} 
+        
 
         return result;
     }
+    
+    
+    public static String readContent(URL url) throws IOException {
+        //LOG.debug("Reading content from: " + url.toString());
+        Writer out = new StringWriter();
+        InputStream in = null;
+        in = url.openStream();
+
+        if (in == null) {
+            throw new FileNotFoundException();
+        }
+
+        byte[] buf = new byte[4096];
+        int i;
+        while ((i = in.read(buf)) != -1) {
+            out.write(new String(buf, 0, i));
+        }
+        in.close();
+        return out.toString();
+    }
+
+    
 
     public boolean isOptional() {
         return optional;
@@ -145,5 +191,13 @@ public class Variation {
     public void setDescription(String description) {
         this.description = description;
     }
+
+	public String getHelpNote() {
+		return helpNote;
+	}
+
+	public void setHelpNote(String helpNote) {
+		this.helpNote = helpNote;
+	}
 
 }
