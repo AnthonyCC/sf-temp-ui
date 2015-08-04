@@ -119,6 +119,7 @@ import com.freshdirect.fdlogistics.model.FDInvalidAddressException;
 import com.freshdirect.fdlogistics.model.FDReservation;
 import com.freshdirect.fdlogistics.model.FDTimeslot;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -3214,6 +3215,49 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			ErpCreateOrderModel createOrder, long timeout)
 			throws FDResourceException {
 		try {
+			
+			// APPDEV:3392 - Consolidated material number quantities STARTING 
+			
+			// Updating the quantity
+			Map<String,Double> materialMap = new HashMap<String, Double>(); 
+			
+			for(ErpOrderLineModel erpOrderLineModel:createOrder.getOrderLines()){
+				if(materialMap.containsKey(erpOrderLineModel.getMaterialNumber())){
+					Double qty = materialMap.get(erpOrderLineModel.getMaterialNumber());
+					Double updatedQuantity = qty.doubleValue() + erpOrderLineModel.getQuantity();
+					materialMap.put(erpOrderLineModel.getMaterialNumber(),updatedQuantity);
+				}
+				else{			
+					materialMap.put(erpOrderLineModel.getMaterialNumber(),erpOrderLineModel.getQuantity());
+				}
+			}
+			
+			List<String> orderLineSent = new ArrayList<String>();
+			List<ErpOrderLineModel> newErpOrderLineModel = new ArrayList<ErpOrderLineModel>(createOrder.getOrderLines().size());
+			
+			// Consolidate the Orderlines by removing the duplicate orderlines and set it to the order
+			
+			for(ErpOrderLineModel erpOrderLineModel:createOrder.getOrderLines()){
+				
+				String materialNumber = erpOrderLineModel.getMaterialNumber();
+				System.out.println("Material number for sap orders " + materialNumber);
+				Double updatedqty = materialMap.get(materialNumber);
+				
+				if(!orderLineSent.contains(materialNumber)){
+					orderLineSent.add(materialNumber);
+					FDConfiguration configuration = erpOrderLineModel.getConfiguration();
+					FDConfiguration conf = new FDConfiguration(updatedqty,configuration.getSalesUnit(),configuration.getOptions());
+					erpOrderLineModel.setConfiguration(conf);
+					newErpOrderLineModel.add(erpOrderLineModel);
+				}
+			}
+			// Set the updated Orderlines into order
+			if(newErpOrderLineModel != null && !newErpOrderLineModel.isEmpty()){
+				createOrder.setOrderLines(newErpOrderLineModel);
+			}
+				
+			// APPDEV: 3392 - Consolidated material number quantities code ENDING 
+			
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			Map<String,List<ErpInventoryModel>> erpInvs = sb.checkAvailability(new PrimaryKey(identity
 					.getErpCustomerPK()), createOrder, timeout);
