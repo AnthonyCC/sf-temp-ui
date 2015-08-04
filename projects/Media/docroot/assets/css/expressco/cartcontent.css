@@ -691,3 +691,16 @@
   opacity: .8;
   z-index: 1000;
 }
+
+.view_cart .product-sample-carousel [data-component="carousel-list"]{
+	text-align:center;
+}
+
+.view_cart .product-sample-carousel[product-count="1"] [data-component="carousel-prev"],
+.view_cart .product-sample-carousel[product-count="1"] [data-component="carousel-next"],
+.view_cart .product-sample-carousel[product-count="2"] [data-component="carousel-prev"],
+.view_cart .product-sample-carousel[product-count="2"] [data-component="carousel-next"],
+.view_cart .product-sample-carousel[product-count="3"] [data-component="carousel-prev"],
+.view_cart .product-sample-carousel[product-count="3"] [data-component="carousel-next"]{
+  background:none;
+}

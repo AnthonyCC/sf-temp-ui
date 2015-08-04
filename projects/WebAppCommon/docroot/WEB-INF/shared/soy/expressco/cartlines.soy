@@ -131,7 +131,9 @@
 {/if}
 <div class='cartheader__questions'>
   {if $productSamplesTab}
+  <div fd-toggle="product-sample-carousel" fd-toggle-state="{if $productSamplesTab.productSamplesReacedMaximumItemQuantity}disabled{else}enabled{/if}">
     {call common.productSampleCarousel data="$productSamplesTab" /}
+  </div>
   {/if}
   <div class='questions__left'>
     <strong>Questions?</strong> <a href='/help/index.jsp' class='questions__link'>Get help online</a> or call 1-212-796-8002
