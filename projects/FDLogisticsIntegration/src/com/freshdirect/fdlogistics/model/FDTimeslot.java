@@ -593,4 +593,8 @@ public class FDTimeslot implements Serializable, Comparable<FDTimeslot> {
 	public void setRegionSvcType(EnumRegionServiceType regionSvcType) {
 		this.regionSvcType = regionSvcType;
 	}
+
+	public void setCutoffDateTime(Date cutoffDateTime) {
+		this.cutoffDateTime = cutoffDateTime;
+	}
 }

@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.customer.adapter;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -134,7 +135,16 @@ public class FDOrderAdapter implements FDOrderI {
 				t.setDlvStartTime(new TimeOfDay(info.getDeliveryStartTime()));
 				t.setDlvEndTime(new TimeOfDay(info.getDeliveryEndTime()));
 				t.setCutoffTime(new TimeOfDay(info.getDeliveryCutoffTime()));
-
+				
+				try{
+					Calendar cutoffCal = t.getCutoffTime().getAsCalendar(t.getDeliveryDate());
+					cutoffCal.add(Calendar.DATE, -1);
+					t.setCutoffDateTime(cutoffCal.getTime());
+				}catch(Exception e){
+					LOGGER.info("failed to fetch cutoff datetime "+e);
+					t.setCutoffDateTime(info.getDeliveryCutoffTime());
+				}
+				
 				deliveryReservation = new FDReservation(
 					null,
 					t,
