@@ -12,7 +12,7 @@ var FreshDirect = FreshDirect || {};
   // checkout flow drawer enabler/disabler
   var coFlowChecker = Object.create(fd.common.signalTarget, {
     signal: {
-      value: ['address','timeslot','payment']
+      value: ['address','timeslot','payment','atpFailure']
     },
     callback: {
       value: function (data, sig) {
@@ -38,11 +38,13 @@ var FreshDirect = FreshDirect || {};
       value: function () {
         var address = FORMS.serialize('address').id,
             timeslot = $('[timeslot-id]').attr('timeslot-id'),
-            payment = FORMS.serialize('payment').id;
+            payment = FORMS.serialize('payment').id,
+            atpfailure = fd.expressco.atpFailure && fd.expressco.atpFailure.serialize(),
+            atpfailure = atpfailure && atpfailure.length;
 
         if (address) {
           this.enableTimeslot();
-          if (timeslot && payment) {
+          if (timeslot && payment && !atpfailure) {
             this.enableCheckout();
           } else {
             this.disableCheckout();
