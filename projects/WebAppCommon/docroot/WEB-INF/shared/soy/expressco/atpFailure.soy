@@ -24,7 +24,9 @@
   {call .unavailableNonReplaceableLines data="all"}{/call}
   {call .replaceableWrapper data="all"}{/call}
   {call .deliveryPasses data="all"}{/call}
-  <form fdform="atpfail" action="#" class="text-right"><button class="cssbutton orange footer__button">Save Changes</button></form>
+  <form fdform="atpfail" action="#" class="text-right" fdform-disable-resubmit="true" fdform-disable-resubmit-selector=".cssbutton.orange">
+   <button class="cssbutton orange footer__button">Save Changes</button>
+  </form>
 {/template}
 
 /**
