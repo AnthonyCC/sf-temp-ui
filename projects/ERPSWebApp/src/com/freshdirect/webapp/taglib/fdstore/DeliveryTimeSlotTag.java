@@ -223,6 +223,25 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 		
 		DlvTimeslotStats stats = new DlvTimeslotStats();
 		
+		// saving the reservation in the timeslot event 
+		
+		try{
+			if (deliveryModel.getRsv()!=null && deliveryModel.isPreReserved())
+				event.setReservationId(deliveryModel.getRsv().getId());
+			
+			if (cart instanceof FDModifyCartModel
+					&& deliveryModel.getRsv() != null
+					&& (address.getPK() != null
+							&& address.getPK().getId() != null && address
+							.getPK().getId()
+							.equals(deliveryModel.getRsv().getAddressId())))
+				event.setReservationId(deliveryModel.getRsv().getId());
+		}catch(Exception e){
+			//eat it
+			LOGGER.info("reservation capture in timeslot event failed");
+		}
+
+		
 		List<FDTimeslotUtil> timeslotList = getFDTimeslotListForDateRange(restrictions, dateRanges,
 				result, address, user, deliveryModel, event, stats);
 		
@@ -261,18 +280,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag<Result> {
 
 		// TimeSlot event specific block
 		{
-			if (deliveryModel.getRsv()!=null && deliveryModel.isPreReserved())
-				event.setReservationId(deliveryModel.getRsv().getId());
-			
-			if (cart instanceof FDModifyCartModel
-					&& deliveryModel.getRsv() != null
-					&& (address.getPK() != null
-							&& address.getPK().getId() != null && address
-							.getPK().getId()
-							.equals(deliveryModel.getRsv().getAddressId())))
-				event.setReservationId(deliveryModel.getRsv().getId());
-
-			// log timeslot
+		
+			// build session event
 			if (FDStoreProperties.isSessionLoggingEnabled() && result.isSuccess() &&
 					(
 						"GET".equalsIgnoreCase(request.getMethod()) ||
