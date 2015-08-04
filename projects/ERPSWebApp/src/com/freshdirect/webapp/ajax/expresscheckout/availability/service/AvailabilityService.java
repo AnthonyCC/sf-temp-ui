@@ -140,7 +140,7 @@ public class AvailabilityService {
                 if (info instanceof FDStockAvailabilityInfo) {
                     FDStockAvailabilityInfo sInfo = (FDStockAvailabilityInfo) info;
 
-                    if (sInfo.getQuantity() == 0 || (removeCartLineIds.contains(key) && cartIndex > -1)) {
+                    if (sInfo.getQuantity() == 0) {
                         // remove
                         cart.removeOrderLine(cartIndex);
                         // Create FD remove cart event.
@@ -170,6 +170,20 @@ public class AvailabilityService {
                     FDEventUtil.logRemoveCartEvent(cartline, request);
                 }
                 unavailPasses.clear();
+            }
+
+            // remove those which were explicitly selected for removal and the ones that are not available
+            // (if unavMap is empty because of ATC this will remove unavailable items)
+            if (removeCartLineIds != null) {
+                for (String removeCartLineId : removeCartLineIds) {
+                    int cartLineIdInt = Integer.parseInt(removeCartLineId);
+                    int cartIndex = cart.getOrderLineIndex(cartLineIdInt);
+                    if (cartIndex > -1) {
+                        FDCartLineI cartline = cart.getOrderLineById(cartLineIdInt);
+                        cart.removeOrderLine(cartIndex);
+                        FDEventUtil.logRemoveCartEvent(cartline, request);
+                    }
+                }
             }
         }
         refreshCartAndUser(user, cart);
