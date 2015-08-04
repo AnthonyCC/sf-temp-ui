@@ -288,6 +288,7 @@ public class CartData extends AbstractCoremetricsResponse implements Serializabl
 		private String externalGroup;
 		private boolean recipe;
 		private boolean wine;
+        private boolean freeSample;
 		private String subTotal;
 		private String taxTotal;
 		private String subTotalText;
@@ -349,7 +350,15 @@ public class CartData extends AbstractCoremetricsResponse implements Serializabl
 			this.wine = wine;
 		}
 
-		public String getSubTotal() {
+        public boolean isFreeSample() {
+            return freeSample;
+        }
+
+        public void setFreeSample(boolean freeSample) {
+            this.freeSample = freeSample;
+        }
+
+        public String getSubTotal() {
 			return subTotal;
 		}
 
@@ -829,6 +838,30 @@ public class CartData extends AbstractCoremetricsResponse implements Serializabl
 			}
 		}
 	};
+
+    public static final Comparator<Section> CART_DATA_COMPARATOR_BY_FREE_SAMPLE_FLAG = new Comparator<Section>() {
+
+        @Override
+        public int compare(Section o1, Section o2) {
+            Boolean freeSample1 = null;
+            if (o1.getInfo() != null) {
+                freeSample1 = o1.getInfo().isFreeSample();
+            }
+            Boolean freeSample2 = null;
+            if (o2.getInfo() != null) {
+                freeSample2 = o2.getInfo().isFreeSample();
+            }
+            if (freeSample1 == null) {
+                if (freeSample2 == null) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            } else {
+                return freeSample1.compareTo(freeSample2);
+            }
+        }
+    };
 
 	@SuppressWarnings("unchecked")
 	public static final Comparator<Section> CART_DATA_SECTION_COMPARATOR_CHAIN_BY_EXTERNAL_GROUP_AND_TITLE = ComparatorChain.create(CART_DATA_COMPARATOR_BY_WINE_FLAG,
