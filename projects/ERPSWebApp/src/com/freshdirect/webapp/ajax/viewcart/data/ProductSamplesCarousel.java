@@ -12,6 +12,7 @@ public class ProductSamplesCarousel {
     private String impressionId;
     private String parentVariantId;
     final private String productSamplesMaxQuantityLimit;
+    private boolean productSamplesReacedMaximumItemQuantity;
 
     public ProductSamplesCarousel(String title, String siteFeature, String parentImpressionId, String impressionId, String parentVariantId) {
         this.title = title;
@@ -72,6 +73,14 @@ public class ProductSamplesCarousel {
 
     public String getProductSamplesMaxQuantityLimit() {
         return productSamplesMaxQuantityLimit;
+    }
+
+    public boolean isProductSamplesReacedMaximumItemQuantity() {
+        return productSamplesReacedMaximumItemQuantity;
+    }
+
+    public void setProductSamplesReacedMaximumItemQuantity(boolean productSamplesReacedMaximumItemQuantity) {
+        this.productSamplesReacedMaximumItemQuantity = productSamplesReacedMaximumItemQuantity;
     }
 
 }

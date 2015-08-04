@@ -211,7 +211,6 @@ public class ViewCartCarouselService {
         FDSessionUser user = (FDSessionUser) getUserFromSession(request.getSession());
         List<ProductData> sampleProducts = new ArrayList<ProductData>();
         Map<Integer, FDCartLineI> productSamplesInCart = new HashMap<Integer, FDCartLineI>();
-        List<ProductReference> tempProducts = null;
         FDCartModel cart = user.getShoppingCart();
         List<FDCartLineI> orderLines = cart.getOrderLines();
         int i = 0;
@@ -223,39 +222,27 @@ public class ViewCartCarouselService {
                 }
             }
         }
-        if (productSamplesInCart.size() >= FDStoreProperties.getProductSamplesMaxBuyProductsLimit()) {
-            tempProducts = new ArrayList<ProductReference>();
-        } else {
-            tempProducts = user.getProductSamples();
-        }
-
-        for (ProductReference productReference : tempProducts) {
-
+        tab.setProductSamplesReacedMaximumItemQuantity(productSamplesInCart.size() >= FDStoreProperties.getProductSamplesMaxBuyProductsLimit());
+        for (ProductReference productReference : user.getProductSamples()) {
             ProductModel productModel = productReference.lookupProductModel();
             ProductData pd = new ProductData();
             SkuModel skuModel = null;
-
             if (!(productModel instanceof ProductModelPricingAdapter)) {
                 // wrap it into a pricing adapter if naked
                 productModel = ProductPricingFactory.getInstance().getPricingAdapter(productModel, user.getPricingContext());
             }
-
             if (skuModel == null) {
                 skuModel = productModel.getDefaultSku();
             }
             if (skuModel != null) {
                 String skuCode = skuModel.getSkuCode();
-
                 try {
                     FDProductInfo productInfo_fam = skuModel.getProductInfo();
                     FDProduct fdProduct = skuModel.getProduct();
-
                     PriceCalculator priceCalculator = productModel.getPriceCalculator();
-
                     ProductDetailPopulator.populateBasicProductData(pd, user, productModel);
                     ProductDetailPopulator.populateProductData(pd, user, productModel, skuModel, fdProduct, priceCalculator, null, true, true);
                     ProductDetailPopulator.populatePricing(pd, fdProduct, productInfo_fam, priceCalculator);
-
                     try {
                         ProductDetailPopulator.populateSkuData(pd, user, productModel, skuModel, fdProduct);
                     } catch (FDSkuNotFoundException e) {
@@ -263,14 +250,11 @@ public class ViewCartCarouselService {
                     } catch (HttpErrorResponse e) {
                         LOGGER.error("Failed to populate sku data", e);
                     }
-
                     ProductDetailPopulator.postProcessPopulate(user, pd, pd.getSkuCode());
                     pd.getQuantity().setqMax(FDStoreProperties.getProductSamplesMaxQuantityLimit());
-
                 } catch (FDSkuNotFoundException e) {
                     LOGGER.warn("Sku not found: " + skuCode, e);
                 }
-
                 sampleProducts.add(pd);
             }
         }
