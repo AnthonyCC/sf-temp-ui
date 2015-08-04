@@ -129,6 +129,7 @@ public static Address encodeAddress(ContactAddressModel model) {
 		cart.setDlvchargewaived(event.isDeliveryChargeWaived());
 		cart.setDlvfee(event.getDeliveryCharge());
 		cart.setDlvpassapplied(event.isDlvPassApplied());
+		cart.setReservationId(event.getReservationId());
 		return cart;
 	}
 
