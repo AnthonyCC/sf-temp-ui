@@ -12,10 +12,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.Date;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -243,17 +246,21 @@ public class BrowseUtil {
 					boolean remove = removeCategoryToMatchStorefront(categorySections, categoryModel, category);
 					category.setNoOfProducts(0);
 					//Change this as well.
-					if(!categoryModel.getSubcategories().isEmpty())
-						category.setBottomLevel(false);
-					else
-						category.setBottomLevel(true);
-						
-					if(!remove){
-						categories.add(category);
-					}
-            		categoryIDs.add(categoryModel.getContentKey().getId());
-            	}
-            }
+						if(!categoryModel.getSubcategories().isEmpty())
+							category.setBottomLevel(false);
+						else
+							category.setBottomLevel(true);
+						if(!remove){
+							//categories.add(category);
+							//APPDEV 4231
+							if(hasProduct(categoryModel)){
+								categories.add(category);
+							}
+						}
+						categoryIDs.add(categoryModel.getContentKey().getId());
+				}
+			
+           }
         }
         
         Map<String, SortedSet<String>> filters = result.getFilters();
@@ -286,10 +293,43 @@ public class BrowseUtil {
         }
         
         result.setBottomLevel(nextLevelIsBottom);
-        
         return result;
 		
 	}
+	
+	//APPDEV 4231 Start
+	private static boolean isProductAvailable(List<ProductModel> prodList){
+		boolean result = false;
+		
+		for(ProductModel model:prodList){
+			if(!(model.isUnavailable() || model.isDiscontinued())){
+				result = true;
+				break;
+			}
+		}
+		return result;
+	}
+	
+	private static boolean hasProduct(CategoryModel categoryModel){
+		boolean hasProduct = false;
+		
+		if(!categoryModel.getSubcategories().isEmpty())
+		{
+			List<CategoryModel> subCategories = categoryModel.getSubcategories();
+			for (CategoryModel m1 : subCategories) {
+				boolean result = hasProduct(m1);
+				if(result){
+					return result; 
+				}
+			}
+		}
+		if(categoryModel.getProducts().size()>0)
+		{
+			return isProductAvailable(categoryModel.getProducts());
+		}else
+			return false;
+	}
+	//APPDEV 4231 END
 	
 	private static Map<String, String> getQueryMap(String url) {
 		Map<String, String> map = new HashMap<String, String>();
