@@ -130,6 +130,7 @@ public class CheckoutService {
 		}
 		if (checkoutPageReloadNeeded) {
 			SinglePageCheckoutData checkoutData = SinglePageCheckoutFacade.defaultFacade().load(user, request);
+            checkoutData.setAtpFailure(atpFailureData);
 			if (checkPlaceOrderResult != null && !checkPlaceOrderResult.isPassed()) {
 				checkoutData.setRestriction(checkPlaceOrderResult);
 			}
