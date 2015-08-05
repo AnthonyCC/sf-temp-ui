@@ -33,7 +33,7 @@ import com.freshdirect.mktAdmin.validation.RestrictionListUploadValidator;
 
 @Controller
 @RequestMapping("/editRestriction.do")
-@SessionAttributes("command")
+
 public class RestrictionListUploadForm extends AbstractMktAdminForm {
 	
 	
@@ -112,7 +112,7 @@ public class RestrictionListUploadForm extends AbstractMktAdminForm {
 	
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(method = RequestMethod.POST)
-    protected String processSubmit(@ModelAttribute("command") Object command,
+    protected String processSubmit(@ModelAttribute("command") RestrictionListUploadBean command,
         BindingResult result, @RequestParam(value = "promotionCode", required = false) String promotionCode,
         @RequestParam(value = "actionType", required = false) String actionType,
         ModelMap model, HttpServletRequest request) throws Exception {
