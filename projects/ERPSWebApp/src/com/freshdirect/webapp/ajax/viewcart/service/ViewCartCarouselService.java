@@ -262,7 +262,14 @@ public class ViewCartCarouselService {
                         LOGGER.error("Failed to populate sku data", e);
                     }
                     ProductDetailPopulator.postProcessPopulate(user, pd, pd.getSkuCode());
-                    pd.getQuantity().setqMax(FDStoreProperties.getProductSamplesMaxQuantityLimit());
+                    int eligibleQuantity = FDStoreProperties.getProductSamplesMaxQuantityLimit();
+                    pd.getQuantity().setqMax(eligibleQuantity);
+                    if (pd.getInCartAmount() > eligibleQuantity) {
+                        pd.setInCartAmount(0.0);
+                    }
+                    if (pd.getInCartAmount() == eligibleQuantity) {
+                        pd.setInCartAmount(eligibleQuantity);
+                    }
                 } catch (FDSkuNotFoundException e) {
                     LOGGER.warn("Sku not found: " + skuCode, e);
                 }

@@ -46,12 +46,13 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 					int eligibleQuantity = FDStoreProperties.getProductSamplesMaxQuantityLimit();
 					int eligibleProducts = FDStoreProperties.getProductSamplesMaxBuyProductsLimit();
 					if(!isMaxSampleReached(orderLines, eligibleProducts)){
-						int quantity = 0;
+                        int quantity = 0;
 						for (FDCartLineI orderLine : orderLines) {
-							if(orderLine.getProductRef().getContentKey().equals(sampleProduct.getContentKey()) && quantity < eligibleQuantity){
-								orderLine.setDiscount(new Discount(promotionCode, EnumDiscountType.FREE, 1.0));
+                            if (orderLine.getProductRef().getContentKey().equals(sampleProduct.getContentKey()) && quantity < eligibleQuantity
+                                    && orderLine.getQuantity() <= eligibleQuantity) {
+                                orderLine.setDiscount(new Discount(promotionCode, EnumDiscountType.FREE, orderLine.getQuantity()));
 								orderLine.setDepartmentDesc("FREE SAMPLE(S)");
-								quantity += orderLine.getQuantity();
+                                quantity += orderLine.getQuantity();
 	
 								try {
 									orderLine.refreshConfiguration();
