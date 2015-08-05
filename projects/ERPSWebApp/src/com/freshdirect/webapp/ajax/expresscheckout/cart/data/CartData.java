@@ -864,8 +864,8 @@ public class CartData extends AbstractCoremetricsResponse implements Serializabl
     };
 
 	@SuppressWarnings("unchecked")
-	public static final Comparator<Section> CART_DATA_SECTION_COMPARATOR_CHAIN_BY_EXTERNAL_GROUP_AND_TITLE = ComparatorChain.create(CART_DATA_COMPARATOR_BY_WINE_FLAG,
-			CART_DATA_SECTION_COMPARATOR_BY_EXTERNAL_GROUP, CART_DATA_SECTION_COMPARATOR_BY_TITLE);
+    public static final Comparator<Section> CART_DATA_SECTION_COMPARATOR_CHAIN_BY_WINE_FREE_SAMPLE_EXTERNAL_GROUP_TITLE = ComparatorChain.create(CART_DATA_COMPARATOR_BY_WINE_FLAG,
+            CART_DATA_COMPARATOR_BY_FREE_SAMPLE_FLAG, CART_DATA_SECTION_COMPARATOR_BY_EXTERNAL_GROUP, CART_DATA_SECTION_COMPARATOR_BY_TITLE);
 
 	public ModifyCartData getModifyCartData() {
 		return modifyCartData;

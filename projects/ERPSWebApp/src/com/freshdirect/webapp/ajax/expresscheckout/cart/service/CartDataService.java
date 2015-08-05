@@ -414,7 +414,7 @@ public class CartDataService {
                 sectionList.add(item);
             }
             List<CartData.Section> sections = populateCartDataSections(sectionMap, sectionHeaderImgMap);
-            Collections.sort(sections, CartData.CART_DATA_SECTION_COMPARATOR_CHAIN_BY_EXTERNAL_GROUP_AND_TITLE);
+            Collections.sort(sections, CartData.CART_DATA_SECTION_COMPARATOR_CHAIN_BY_WINE_FREE_SAMPLE_EXTERNAL_GROUP_TITLE);
             cartData.setCartSections(sections);
             removeRecipePrefixFromSectionTitles(sections);
             cartData.setItemCount(itemCount.getValue());
