@@ -1,0 +1,31 @@
+{namespace expressco}
+
+/**
+ * @param? title
+ * @param? carouselData
+ */
+{template .productSampleCarousel autoescape="false"}
+{let $len: length($carouselData.products) /}
+{if $len != 0}
+<div class="product-sample-carousel" product-count="{length($carouselData.products)}">
+  <h2 class="product-sample-header" fd-toggle-trigger="product-sample-carousel">Congrats, you've qualified for a <span class="product-sample-free">FREE</span> Sample! {if $title}{$title}{/if}</h2>
+  <h3 class="carousel-subhead">Add it to your cart</h3>
+  <div data-component="carousel" data-cmeventsource="view_cart" data-apiendpoint="/api/qs/ymal">
+    <div data-component="carousel-mask" class="transactional light-carousel">
+      <ul data-component="carousel-list" data-carousel-page="0">
+        {foreach $item in $carouselData.products}
+          {call common.transactionalGridItem data="$item"}
+            {param extraClass: 'carouselTransactionalItem productSample' + $len /}
+            {param cmEventSource:'view_cart' /}
+            {param item:$item /}
+          {/call}
+        {/foreach}
+      </ul>
+    </div>
+    <div data-component="carousel-prev" data-carousel-nav="prev">previous</div>
+    <div data-component="carousel-next" data-carousel-nav="next">next</div>
+  </div>
+  <div class="product-sample-carousel-bottom"></div>
+</div>
+{/if}
+{/template}
