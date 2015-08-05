@@ -1990,6 +1990,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 								.getName());
 			}
 			//End apply delivery pass extension promotion.
+			LOGGER.info("Before commiting the reservation "+reservationId);
+			FDDeliveryManager.getInstance().commitReservation(reservationId, 
+					identity.getErpCustomerPK(), 
+					getOrderContext(EnumOrderAction.CREATE, EnumOrderType.REGULAR, pk.getId()),
+					createOrder.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
+			LOGGER.info("After commiting the reservation "+reservationId);
 			
 			if (null != createOrder.getSelectedGiftCards()
 					&& createOrder.getSelectedGiftCards().size() > 0) {
@@ -2057,12 +2063,6 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				LOGGER.warn("Error submitting the coupons order to vendor: ", e);
 			}
 			//Moving the commit reservation section to the end of place order flow as reservation can be committed to logistics and still place order fails because of the auth.
-			LOGGER.info("Before commiting the reservation "+reservationId);
-			FDDeliveryManager.getInstance().commitReservation(reservationId, 
-					identity.getErpCustomerPK(), 
-					getOrderContext(EnumOrderAction.CREATE, EnumOrderType.REGULAR, pk.getId()),
-					createOrder.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
-			LOGGER.info("After commiting the reservation "+reservationId);
 			
 			return pk.getId();
 
@@ -2626,6 +2626,25 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 								.getName());
 			}
 			//End apply delivery pass extension promotion.
+
+			// Deal with Reservation in DLV
+						String newReservationId = order.getDeliveryInfo()
+								.getDeliveryReservationId();
+						if (!newReservationId.equals(oldReservationId)) {
+							// DlvManagerSB dlvSB = this.getDlvManagerHome().create();
+
+							// reservation has changed so release old reservation
+							FDDeliveryManager.getInstance().releaseReservation(
+									oldReservationId, fdOrder.getDeliveryAddress(), event, true);
+							// now commit the new Reservation
+							// dlvSB.commitReservation(newReservationId,
+							// identity.getErpCustomerPK(), saleId);
+							
+							FDDeliveryManager.getInstance().commitReservation(
+									newReservationId, identity.getErpCustomerPK(), 
+									getOrderContext(EnumOrderAction.MODIFY, EnumOrderType.REGULAR, saleId),
+									order.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
+						}
 		
 			if (order.getSelectedGiftCards() != null
 					&& order.getSelectedGiftCards().size() > 0) {
@@ -2692,26 +2711,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			} catch (Exception e) {
 				LOGGER.warn("Error submitting the coupons order to vendor: ", e);
 			}
-			
 			//Moving the commit reservation section to the end of modify order flow as reservation can be committed to logistics and still modify order fails because of the auth.
-			// Deal with Reservation in DLV
-						String newReservationId = order.getDeliveryInfo()
-								.getDeliveryReservationId();
-						if (!newReservationId.equals(oldReservationId)) {
-							// DlvManagerSB dlvSB = this.getDlvManagerHome().create();
-
-							// reservation has changed so release old reservation
-							FDDeliveryManager.getInstance().releaseReservation(
-									oldReservationId, fdOrder.getDeliveryAddress(), event, true);
-							// now commit the new Reservation
-							// dlvSB.commitReservation(newReservationId,
-							// identity.getErpCustomerPK(), saleId);
-							
-							FDDeliveryManager.getInstance().commitReservation(
-									newReservationId, identity.getErpCustomerPK(), 
-									getOrderContext(EnumOrderAction.MODIFY, EnumOrderType.REGULAR, saleId),
-									order.getDeliveryInfo().getDeliveryAddress(), info.isPR1(), event);
-						}
 
 		} catch (DeliveryPassException de) {
 			throw de;
