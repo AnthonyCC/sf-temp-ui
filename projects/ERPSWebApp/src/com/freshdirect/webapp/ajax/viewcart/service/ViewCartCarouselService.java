@@ -212,15 +212,15 @@ public class ViewCartCarouselService {
         tab.setCarouselData(carouselData);
         FDSessionUser user = (FDSessionUser) getUserFromSession(request.getSession());
         List<ProductData> sampleProducts = new ArrayList<ProductData>();
-        Map<Integer, FDCartLineI> productSamplesInCart = new HashMap<Integer, FDCartLineI>();
+        List<FDCartLineI> productSamplesInCart = new ArrayList<FDCartLineI>();
+        Map<String, Double> orderLinesSkuCodeWithQuantity = new HashMap<String, Double>();
         FDCartModel cart = user.getShoppingCart();
         List<FDCartLineI> orderLines = cart.getOrderLines();
-        int i = 0;
         if (null != orderLines && !orderLines.isEmpty()) {
             for (FDCartLineI orderLine : orderLines) {
+                orderLinesSkuCodeWithQuantity.put(orderLine.getProductRef().lookupProductModel().getDefaultSku().getSkuCode(), orderLine.getQuantity());
                 if (null != orderLine.getDiscount() && orderLine.getDiscount().getDiscountType().equals(EnumDiscountType.FREE)) {
-                    productSamplesInCart.put(i, orderLine);
-                    i++;
+                    productSamplesInCart.add(orderLine);
                 }
             }
         }
@@ -262,14 +262,8 @@ public class ViewCartCarouselService {
                         LOGGER.error("Failed to populate sku data", e);
                     }
                     ProductDetailPopulator.postProcessPopulate(user, pd, pd.getSkuCode());
-                    int eligibleQuantity = FDStoreProperties.getProductSamplesMaxQuantityLimit();
-                    pd.getQuantity().setqMax(eligibleQuantity);
-                    if (pd.getInCartAmount() > eligibleQuantity) {
-                        pd.setInCartAmount(0.0);
-                    }
-                    if (pd.getInCartAmount() == eligibleQuantity) {
-                        pd.setInCartAmount(eligibleQuantity);
-                    }
+                    pd.getQuantity().setqMax(FDStoreProperties.getProductSamplesMaxQuantityLimit());
+                    populateCartAmountByProductSample(pd, orderLinesSkuCodeWithQuantity.get(skuCode));
                 } catch (FDSkuNotFoundException e) {
                     LOGGER.warn("Sku not found: " + skuCode, e);
                 }
@@ -283,6 +277,16 @@ public class ViewCartCarouselService {
         tab.setCarouselData(carouselData);
 
         return tab;
+    }
+
+    private void populateCartAmountByProductSample(ProductData pd, Double quantity) {
+        if (pd.getInCartAmount() > FDStoreProperties.getProductSamplesMaxQuantityLimit()) {
+            if (quantity <= FDStoreProperties.getProductSamplesMaxQuantityLimit()) {
+                pd.setInCartAmount(quantity);
+            } else {
+                pd.setInCartAmount(0.0);
+            }
+        }
     }
 
     private void collectRequestId(HttpServletRequest request, Recommendations recommendations, FDUserI user) {
