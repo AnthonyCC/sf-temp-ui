@@ -4,11 +4,9 @@
 * @param? atpFailure
 */
 {template .atpFailure}
-<div id="atpfailure" class="checkout-atpfailure">
 {if $atpFailure}
   {call .atpFailureInner data="$atpFailure"}{/call}
 {/if}
-</div>
 {/template}
 
 /**

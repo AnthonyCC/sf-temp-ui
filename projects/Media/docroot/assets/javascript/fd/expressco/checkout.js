@@ -39,8 +39,7 @@ var FreshDirect = FreshDirect || {};
         var address = FORMS.serialize('address').id,
             timeslot = $('[timeslot-id]').attr('timeslot-id'),
             payment = FORMS.serialize('payment').id,
-            atpfailure = fd.expressco.atpFailure && fd.expressco.atpFailure.serialize(),
-            atpfailure = atpfailure && atpfailure.length;
+            atpfailure = $('#atpfailure').children().length;
 
         if (address) {
           this.enableTimeslot();

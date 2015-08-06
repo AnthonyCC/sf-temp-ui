@@ -93,7 +93,9 @@
           <a href="/expressco/view_cart.jsp">Make Changes</a>
         </div>
 
-        <soy:render template="expressco.atpFailure" data="${singlePageCheckoutPotato}" />
+        <div id="atpfailure" class="checkout-atpfailure">
+          <soy:render template="expressco.atpFailure" data="${singlePageCheckoutPotato}" />
+        </div>
 
         <%-- cart content --%>
         <div id="cartcontent" class="checkout" data-ec-linetemplate="expressco.checkoutlines" data-drawer-disabled>
