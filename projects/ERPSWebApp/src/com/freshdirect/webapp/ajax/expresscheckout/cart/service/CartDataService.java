@@ -397,7 +397,10 @@ public class CartDataService {
                 SectionInfo sectionInfo = sectionInfos.get(sectionInfoKey);
                 if (sectionInfo == null) {
                     sectionInfo = new SectionInfo();
-                    sectionInfo.setFreeSample(EnumDiscountType.FREE.equals(cartLine.getDiscount().getDiscountType()));
+                    Discount discount = cartLine.getDiscount();
+                    if (discount != null) {
+                        sectionInfo.setFreeSample(EnumDiscountType.FREE.equals(discount.getDiscountType()));
+                    }
                     sectionInfo.setWine(cartLine.isWine());
                     if (sectionInfo.isWine()) {
                         sectionInfo.setSubTotal(JspMethods.formatPrice(FDCartModelService.defaultService().getSubTotalOnlyWineAndSpirit(cart)));
