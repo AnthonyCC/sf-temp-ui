@@ -313,8 +313,8 @@
         <p class='cartline-discount'><span class="red">Free Sample</span></p>
       {else}
         {if $discount and $discount.discountPrice}
-          {if $discount.skuLimit}
-          <p class='cartline-discount'>{if $discount.description}{$discount.description} {/if}<span class="red">(You Saved {$discount.discountPrice} on {$discount.skuLimit} item{if $discount.skuLimit>1}s{/if})</span></p>
+          {if $discount.description}
+          <p class='cartline-discount'>{$discount.description} <span class="red">(You Saved {$discount.discountPrice}{if $discount.skuLimit} on {$discount.skuLimit} item{if $discount.skuLimit>1}s{/if}{/if})</span></p>
           {else}
           <p class='cartline-discount'><strong>Group Discount</strong> <span class="red">(You Saved {$discount.discountPrice})</span></p>
           {/if}
