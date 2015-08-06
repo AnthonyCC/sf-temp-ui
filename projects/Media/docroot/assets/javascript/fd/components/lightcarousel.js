@@ -91,6 +91,11 @@ var FreshDirect = FreshDirect || {};
         if (direction) {
           changePage(carousel, direction);
         }
+      },
+      initialize:function(){
+        $('[data-component="carousel"]').each(function (i, el) {
+          changePage($(el), null);
+        });
       }
   };
   

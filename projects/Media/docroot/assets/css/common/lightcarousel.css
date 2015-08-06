@@ -136,3 +136,6 @@
   min-height: 0;
 }
 
+[data-component="carousel"] [data-component="carousel-list"]{
+  text-align:center;
+}

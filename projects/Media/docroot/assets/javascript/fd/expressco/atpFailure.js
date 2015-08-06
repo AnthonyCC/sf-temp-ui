@@ -34,6 +34,7 @@ var FreshDirect = FreshDirect || {};
         callback:{
           value:function( value ) {
             this.render({ "atpFailure": value });
+            fd.components.carousel && fd.components.carousel.initialize();
           }
         }
     });
