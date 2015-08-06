@@ -74,9 +74,8 @@ public class PaymentService {
         validationErrors.addAll(PaymentValidationDataService.defaultService().prepareAndValidate(paymentRequestData));
         if (validationErrors.isEmpty()) {
             ErpPaymentMethodI paymentMethod = parsePaymentMethodForm(paymentRequestData, user);
-            paymentMethod.setAvsCkeckFailed(false);
             ActionResult actionResult = new ActionResult();
-            PaymentMethodUtil.editPaymentMethod(request, actionResult, paymentMethod);
+            PaymentMethodManipulator.performEditPaymentMethod(request, paymentMethod, actionResult, user);
             processErrors(validationErrors, actionResult);
         }
         return validationErrors;
@@ -84,7 +83,7 @@ public class PaymentService {
 
     public void deletePaymentMethod(FormDataRequest paymentRequestData, HttpServletRequest request) throws FDResourceException {
         String paymentId = FormDataService.defaultService().get(paymentRequestData, "id");
-        PaymentMethodUtil.deletePaymentMethod(request, null, paymentId);
+        PaymentMethodManipulator.performDeletePaymentMethod(request, null, paymentId);
     }
 
     public List<ValidationError> selectPaymentMethod(String paymentId, String actionName, HttpServletRequest request) throws FDResourceException {

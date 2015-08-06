@@ -132,7 +132,7 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		//
 		// set payment in cart and store cart if valid payment found
 		//
-		//PaymentMethodUtil.validatePaymentMethod( request, paymentMethod, result, getUser(),false );
+        PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, result, user, false, EnumAccountActivityType.PAYMENT_METHOD_VERIFICATION);
 
 		//Checking for CC a/c's or at least one valid CC. If NO, restricting the customer to place order using E-check
 		String app = (String) session.getAttribute( SessionName.APPLICATION);
@@ -237,83 +237,95 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		// add the payment method
 		//
 		FDIdentity identity = getIdentity();
+		if ( identity == null ) {
+		    result.addError( new ActionError( "unexpected_error", "User Identity cannot be Null" ) );
+		    return;
+		}
 
 		ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm( request, result, identity );
 		if ( result.isSuccess() ) {
-			PaymentMethodUtil.validatePaymentMethod( request, paymentMethod, result, getUser(),true,EnumAccountActivityType.ADD_PAYMENT_METHOD );
-			if ( EnumPaymentMethodType.ECHECK.equals( paymentMethod.getPaymentMethodType() ) ) {
-				String terms = request.getParameter( PaymentMethodName.TERMS );
-				result.addError( terms == null || terms.length() <= 0, PaymentMethodName.TERMS, SystemMessageList.MSG_REQUIRED );
-				if ( result.isSuccess() && !PaymentMethodUtil.hasECheckAccount( getUser().getIdentity() ) ) {
-					paymentMethod.setIsTermsAccepted( true );
-				}
-			}
-			if ( result.isSuccess() && identity != null ) {
-				PaymentMethodUtil.addPaymentMethod( request, result, paymentMethod );
-				//
-				// return the ID of the payment method (should only be one)
-				//
-				List<ErpPaymentMethodI> payMethods = FDCustomerFactory.getErpCustomer( identity ).getPaymentMethods();
-				String paymentId = null;
-				if( payMethods.size() ==1 ) {
-					paymentId = payMethods.get(0).getPK().getId();
-				}
-				if(paymentId != null) {
-					setPaymentMethod( request, session, getUser(), result, actionName, paymentId, request.getParameter( "billingRef" ), false, "" );
-				}
-				if ( result.isSuccess() ) {
-					applyCustomerCredits();
-				}				
-			}
-			
-		}
-		if ( identity == null ) {
-			result.addError( new ActionError( "unexpected_error", "User Identity cannot be Null" ) );
-			return;
+            performAddAndSetPaymentMethod(request, session, getUser(), result, paymentMethod, actionName);
 		}
 
 
 	}
 
+    public static void performAddAndSetPaymentMethod(HttpServletRequest request, HttpSession session, FDUserI user, ActionResult result, ErpPaymentMethodI paymentMethod,
+            String actionName) throws FDResourceException {
+        PaymentMethodUtil.validatePaymentMethod( request, paymentMethod, result, user,true,EnumAccountActivityType.ADD_PAYMENT_METHOD );
+        if ( EnumPaymentMethodType.ECHECK.equals( paymentMethod.getPaymentMethodType() ) ) {
+            String terms = request.getParameter( PaymentMethodName.TERMS );
+            result.addError( terms == null || terms.length() <= 0, PaymentMethodName.TERMS, SystemMessageList.MSG_REQUIRED );
+            if ( result.isSuccess() && !PaymentMethodUtil.hasECheckAccount( user.getIdentity() ) ) {
+                paymentMethod.setIsTermsAccepted( true );
+            }
+        }
+        if ( result.isSuccess() && user.getIdentity() != null ) {
+            PaymentMethodUtil.addPaymentMethod( request, result, paymentMethod );
+            //
+            // return the ID of the payment method (should only be one)
+            //
+            List<ErpPaymentMethodI> payMethods = FDCustomerFactory.getErpCustomer( user.getIdentity() ).getPaymentMethods();
+            String paymentId = null;
+            if( payMethods.size() ==1 ) {
+                paymentId = payMethods.get(0).getPK().getId();
+            }
+            if(paymentId != null) {
+                setPaymentMethod(request, session, user, result, actionName, paymentId, request.getParameter("billingRef"), false, "");
+            }
+            if ( result.isSuccess() ) {
+                applyCustomerCredits(actionName, user, session);
+            }               
+        }
+        
+	}
 	public void performAddPaymentMethod() throws FDResourceException {
 		ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processForm( request, result, getIdentity() );
 		if ( result.isSuccess() ) {
-			PaymentMethodUtil.validatePaymentMethod( request, paymentMethod, result, getUser(),true,EnumAccountActivityType.ADD_PAYMENT_METHOD );
-			String terms = request.getParameter(PaymentMethodName.TERMS);
-			if ( EnumPaymentMethodType.ECHECK.equals( paymentMethod.getPaymentMethodType() ) ) {
-				result.addError( terms == null || terms.length() <= 0, PaymentMethodName.TERMS, SystemMessageList.MSG_REQUIRED );
-				if ( result.isSuccess() && !PaymentMethodUtil.hasECheckAccount( getUser().getIdentity() ) ) {
-					paymentMethod.setIsTermsAccepted( true );
-				}
-			}
 			performAddPaymentMethod(paymentMethod, result, request, getUser());
 		}
 	}
 
-	public static void performAddPaymentMethod(ErpPaymentMethodI paymentMethod, ActionResult result, HttpServletRequest request, FDUserI user) throws FDResourceException {
-			if ( result.isSuccess() ) {
-				PaymentMethodUtil.addPaymentMethod( request, result, paymentMethod );
-			}
-		}
-
-	public void performEditPaymentMethod() throws FDResourceException {
-    	ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processEditForm(request, result, getIdentity());	            	
-        if(result.isSuccess()){
-            PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, result, getUser(),true, EnumAccountActivityType.UPDATE_PAYMENT_METHOD);
-            if(result.isSuccess()){
-            	paymentMethod.setAvsCkeckFailed(false);
-                PaymentMethodUtil.editPaymentMethod(request, result, paymentMethod);
+    public static void performAddPaymentMethod(ErpPaymentMethodI paymentMethod, ActionResult result, HttpServletRequest request, FDUserI user) throws FDResourceException {
+        PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, result, user, true, EnumAccountActivityType.ADD_PAYMENT_METHOD);
+        String terms = request.getParameter(PaymentMethodName.TERMS);
+        if (EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
+            result.addError(terms == null || terms.length() <= 0, PaymentMethodName.TERMS, SystemMessageList.MSG_REQUIRED);
+            if (result.isSuccess() && !PaymentMethodUtil.hasECheckAccount(user.getIdentity())) {
+                paymentMethod.setIsTermsAccepted(true);
             }
         }
-	}
+        if (result.isSuccess()) {
+            PaymentMethodUtil.addPaymentMethod(request, result, paymentMethod);
+        }
+    }
+
+    public void performEditPaymentMethod() throws FDResourceException {
+        ErpPaymentMethodI paymentMethod = PaymentMethodUtil.processEditForm(request, result, getIdentity());
+        if(result.isSuccess()){
+            performEditPaymentMethod(request, paymentMethod, result, getUser());
+        }
+    }
+
+    public static void performEditPaymentMethod(HttpServletRequest request, ErpPaymentMethodI paymentMethod, ActionResult result, FDUserI user) throws FDResourceException {
+        PaymentMethodUtil.validatePaymentMethod(request, paymentMethod, result, user, true, EnumAccountActivityType.UPDATE_PAYMENT_METHOD);
+        if (result.isSuccess()) {
+            paymentMethod.setAvsCkeckFailed(false);
+            PaymentMethodUtil.editPaymentMethod(request, result, paymentMethod);
+        }
+    }
+
 	public void performDeletePaymentMethod() throws FDResourceException {
 		String paymentId = request.getParameter( "deletePaymentId" );
 		if ( paymentId == null || paymentId.length() <= 0 ) {
 			throw new FDResourceException( "deletePaymentId not specified" );
 		}
-		PaymentMethodUtil.deletePaymentMethod( request, result, paymentId );
+        performDeletePaymentMethod(request, result, paymentId);
 	}
 
+    public static void performDeletePaymentMethod(HttpServletRequest request, ActionResult result, String paymentId) throws FDResourceException {
+        PaymentMethodUtil.deletePaymentMethod(request, result, paymentId);
+    }
 
 
 

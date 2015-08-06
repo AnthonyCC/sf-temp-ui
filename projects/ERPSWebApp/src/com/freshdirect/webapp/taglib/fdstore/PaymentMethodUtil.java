@@ -68,10 +68,6 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     private final static int DISCOVER			= 3;
     private final static String NAME_REGEX      ="^[^\\n]*[A-Za-z]+[^\\n]*$";//"^[\\w.-_@(){}/?#$&!+%*<>=,\\s:;'|\"\\\\/`~]*[A-Za-z]+[\\w.-_@(){}/?#$&!+%*<>=,\\s:;'|\"\\\\/`~]*$"; 
     
-    private static final String ADD_PAYMENT_METHOD="addPaymentMethod";
-	private static final String EDIT_PAYMENT_METHOD="editPaymentMethod";
-	private static final String DELETE_PAYMENT_METHOD="deletePaymentMethod";
-	
     private PaymentMethodUtil() {
     }
     
@@ -131,7 +127,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
             throw new FDResourceException("Payment method not found");
         }
         
-        processForm(request, result, identity, paymentMethod,EDIT_PAYMENT_METHOD);
+        processForm(request, result, identity, paymentMethod, EnumAccountActivityType.UPDATE_PAYMENT_METHOD);
         return paymentMethod;
     }
     
@@ -140,11 +136,12 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     	ErpPaymentMethodI paymentMethod = null;
 		EnumPaymentMethodType paymentMethodType = EnumPaymentMethodType.getEnum(RequestUtil.getRequestParameter(request,PaymentMethodName.PAYMENT_METHOD_TYPE));
 		paymentMethod = PaymentManager.createInstance(paymentMethodType);
-        processForm(request, result, identity, paymentMethod,ADD_PAYMENT_METHOD);
+        processForm(request, result, identity, paymentMethod, EnumAccountActivityType.ADD_PAYMENT_METHOD);
         return paymentMethod;
     }
     
-    private static void processForm(HttpServletRequest request, ActionResult result, FDIdentity identity, ErpPaymentMethodI paymentMethod,String actionName) throws FDResourceException {
+    private static void processForm(HttpServletRequest request, ActionResult result, FDIdentity identity, ErpPaymentMethodI paymentMethod, EnumAccountActivityType activityType)
+            throws FDResourceException {
         String month = RequestUtil.getRequestParameter(request,PaymentMethodName.CARD_EXP_MONTH);
         String year = RequestUtil.getRequestParameter(request,PaymentMethodName.CARD_EXP_YEAR);
         String cardType = RequestUtil.getRequestParameter(request,PaymentMethodName.CARD_BRAND);
@@ -168,7 +165,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	             );
 	     //Fix END 
         
-        if(EDIT_PAYMENT_METHOD.equalsIgnoreCase(actionName)&& EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())){
+        if (EnumAccountActivityType.UPDATE_PAYMENT_METHOD.equals(activityType) && EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())) {
 			accountNumber = paymentMethod.getAccountNumber();
 			verifyBankAccountNumber = false;
 		}
