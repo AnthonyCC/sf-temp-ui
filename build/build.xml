@@ -131,9 +131,9 @@
 		<pathelement location="${testing.home}/jmock-2.5.1/hamcrest-library-1.1.jar"/>
 		<pathelement location="${testing.home}/selenium-server-2.0a7.jar"/>
 		<pathelement location="${thirdparty.home}/logistics-data-0.0.1-SNAPSHOT.jar"/>
-		<pathelement location="${testing.home}/testing/jmock-2.5.1/cglib-nodep-2.1_3.jar"/>
-		<pathelement location="${testing.home}/testing/jmock-2.5.1/jmock-legacy-2.5.1.jar"/>
-		<pathelement location="${testing.home}/testing/jmock-2.5.1/objenesis-1.0.jar"/>
+		<pathelement location="${testing.home}/jmock-2.5.1/cglib-nodep-2.1_3.jar"/>
+		<pathelement location="${testing.home}/jmock-2.5.1/jmock-legacy-2.5.1.jar"/>
+		<pathelement location="${testing.home}/jmock-2.5.1/objenesis-1.0.jar"/>
 	</path>
 
 	<!--  EMMA  -->
