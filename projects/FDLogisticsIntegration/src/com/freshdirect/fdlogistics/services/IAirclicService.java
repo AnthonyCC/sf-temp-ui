@@ -8,6 +8,7 @@ import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.logistics.controller.data.Result;
 import com.freshdirect.logistics.controller.data.request.DeliverySignatureRequest;
+import com.freshdirect.logistics.controller.data.request.TextMessageRequest;
 import com.freshdirect.logistics.controller.data.response.AirclicCartonScanHistory;
 import com.freshdirect.logistics.controller.data.response.AirclicTextMessages;
 import com.freshdirect.logistics.controller.data.response.CartonStatusesResponse;
@@ -19,13 +20,12 @@ import com.freshdirect.logistics.controller.data.response.DeliverySignature;
 import com.freshdirect.logistics.controller.data.response.DeliverySummary;
 import com.freshdirect.logistics.controller.data.response.ListOfObjects;
 import com.freshdirect.logistics.controller.data.response.RouteNextelResponse;
-import com.freshdirect.logistics.delivery.model.AirclicCartonInfo;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.sms.model.CrmSmsDisplayInfo;
 
 public interface IAirclicService {
 
-	public Result sendMessage(String[] data, List<String> nextelList) throws FDLogisticsServiceException;
+	public Result sendMessage(TextMessageRequest textMessageRequest) throws FDLogisticsServiceException;
 
 	public AirclicTextMessages getMessages(String orderId) throws FDLogisticsServiceException;
 

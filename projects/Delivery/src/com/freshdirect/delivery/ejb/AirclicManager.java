@@ -1,10 +1,14 @@
 package com.freshdirect.delivery.ejb;
 
 import java.rmi.RemoteException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -12,8 +16,19 @@ import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.naming.NamingException;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.crm.CallLogModel;
+import com.freshdirect.crm.CrmCaseAction;
+import com.freshdirect.crm.CrmCaseActionType;
+import com.freshdirect.crm.CrmCaseInfo;
+import com.freshdirect.crm.CrmCaseModel;
+import com.freshdirect.crm.CrmCaseOrigin;
+import com.freshdirect.crm.CrmCasePriority;
+import com.freshdirect.crm.CrmCaseState;
+import com.freshdirect.crm.CrmCaseSubject;
+import com.freshdirect.crm.CrmManager;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.services.IAirclicService;
 import com.freshdirect.fdlogistics.services.helper.LogisticsDataDecoder;
@@ -21,9 +36,12 @@ import com.freshdirect.fdlogistics.services.impl.LogisticsServiceLocator;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.TimedLruCache;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.logistics.controller.data.Result;
+import com.freshdirect.logistics.controller.data.request.TextMessageRequest;
 import com.freshdirect.logistics.controller.data.response.DeliveryManifest;
 import com.freshdirect.logistics.controller.data.response.ListOfObjects;
 import com.freshdirect.logistics.delivery.model.AirclicCartonInfo;
@@ -55,6 +73,8 @@ public class AirclicManager {
 	
 	/** cache orderId -> Summary */
 	private static TimedLruCache<String, DeliverySummary> deliverySummaryCache = new TimedLruCache<String, DeliverySummary>(100, 10 * 60 * 1000);
+	
+	private static final Category LOGGER = LoggerFactory.getInstance(AirclicManager.class);
 	
 	public DlvManagerHome getDlvManagerHome() {
 		try {
@@ -116,7 +136,16 @@ public class AirclicManager {
 			}
 			IAirclicService airclicService = LogisticsServiceLocator
 					.getInstance().getAirclicService();
-			Result response = airclicService.sendMessage(data, nextelList);
+			int stop = 0;
+			if(data[2]!=null) stop = Integer.parseInt(data[2]);
+								
+			TextMessageRequest request = new TextMessageRequest(data[0], data[1], stop ,
+					data[3], data[4], data[5], data[6], data[7]);
+			request.setNextTelList(nextelList);
+			Result response = airclicService.sendMessage(request);
+		
+			createCase(request);
+			
 			if(EnumApplicationException.FinderException.getValue() == response.getErrorCode()){
 				return response.getStatus()+ ": "+" Order not in Airclic";
 			}
@@ -127,6 +156,57 @@ public class AirclicManager {
 		}
 	}
 
+	private void createCase(TextMessageRequest request) {
+
+		try {
+			DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+			Date deliveryDate = df.parse(request.getDeliveryDate());
+			createCase(new AirclicTextMessage(deliveryDate, request.getRoute(), request.getStop(), request.getMessage(), 
+					request.getSource(), request.getSender(), request.getOrderId(), request.getCustomerId()));
+		} catch (ParseException e) {
+			LOGGER.info("ERROR WHILE CREATING THE CASE FOR SENT MESSAGE TO AIRCLIC");
+			e.printStackTrace();
+		}
+	}
+
+	private void createCase(AirclicTextMessage textMessage)
+	{
+		try
+		{
+			CrmCaseInfo caseInfo = new CrmCaseInfo();
+			caseInfo.setOrigin(CrmCaseOrigin.getEnum(CrmCaseOrigin.CODE_SYS)); // FIXME: ...
+			CrmCaseSubject subject = CrmCaseSubject.getEnum(CrmCaseSubject.CODE_ORDER_ENROUTE_SPL_INSTRUCTION);
+			caseInfo.setSubject(subject);
+			caseInfo.setPriority(CrmCasePriority.getEnum(CrmCasePriority.CODE_LOW));
+			caseInfo.setSummary("Message sent to delivery team");
+			
+			caseInfo.setAssignedAgentPK(new PrimaryKey(textMessage.getSender()));
+			caseInfo.setCustomerPK((textMessage.getCustomerId()!=null)? new PrimaryKey(textMessage.getCustomerId()):null);
+			caseInfo.setSalePK((textMessage.getOrderId()!=null)?new PrimaryKey(textMessage.getOrderId()):null);
+			
+			CrmCaseModel newCase = new CrmCaseModel(caseInfo);
+			newCase.setState(CrmCaseState.getEnum(CrmCaseState.CODE_OPEN));
+			newCase.setCrmCaseMedia("other");
+			
+			{
+				CrmCaseAction caseAction = new CrmCaseAction();
+				caseAction.setType(CrmCaseActionType.getEnum( CrmCaseActionType.CODE_NOTE ) );
+				caseAction.setTimestamp(new Date());
+				caseAction.setAgentPK(caseInfo.getAssignedAgentPK());
+	
+				caseAction.setNote(textMessage.getMessage());
+				newCase.addAction(caseAction);																		
+			}
+			
+			CrmManager.getInstance().createCase(newCase);
+		}
+		catch(Exception e)
+		{
+			LOGGER.warn("AirclicManagerSB createCase: Exception while creating case: " + e);
+		}
+
+	}
+	
 	public synchronized List<AirclicMessage> getMessages()
 			throws FDResourceException {
 		if (System.currentTimeMillis() - lastRefresh > REFRESH_PERIOD) {

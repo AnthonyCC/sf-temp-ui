@@ -65,18 +65,11 @@ public class AirclicService extends AbstractLogisticsService implements IAirclic
 	
 	
 	@Override
-	public Result sendMessage(String[] data, List<String> nextTelList) throws FDLogisticsServiceException {
+	public Result sendMessage(TextMessageRequest request) throws FDLogisticsServiceException {
 
-		int stop = 0;
-		if(data[2]!=null) stop = Integer.parseInt(data[2]);
-							
-		TextMessageRequest textMessageRequest = new TextMessageRequest(data[0], data[1], stop ,
-				data[3], data[4], data[5], data[6], data[7]);
-		textMessageRequest.setNextTelList(nextTelList);
-		String inputJson = buildRequest(textMessageRequest);
+		String inputJson = buildRequest(request);
 		Result result =  getData(inputJson, getEndPoint(SEND_MESSAGE_API), Result.class);
-		return result;
-		
+		return result;		
 	
 	}
 
