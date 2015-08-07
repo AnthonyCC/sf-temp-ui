@@ -9,7 +9,6 @@
 {if $len != 0}
 <div class="product-sample-carousel" product-count="{length($carouselData.products)}">
   <h2 class="product-sample-header" fd-toggle-trigger="product-sample-carousel">Congrats, you've qualified for a <span class="product-sample-free">FREE</span> Sample! {if $title}{$title}{/if}</h2>
-  <h3 class="carousel-subhead">Add it to your cart</h3>
   <div data-component="carousel" data-cmeventsource="view_cart" data-apiendpoint="/api/qs/ymal">
     <div data-component="carousel-mask" class="transactional light-carousel">
       <ul data-component="carousel-list" data-carousel-page="0">

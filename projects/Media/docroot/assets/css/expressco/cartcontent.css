@@ -696,24 +696,6 @@
 	text-align:center;
 }
 
-.view_cart .product-sample-carousel .carousel-subhead{
-  font-size:20px;
-  font-family:Verdana, Arial, sans-serif;
-  text-align:left;
-  padding:18px 0 18px 14px;
-  background: -moz-linear-gradient(top,  rgba(237,237,237,1) 0%, rgba(237,237,237,0.01) 50%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(237,237,237,1)), color-stop(50%,rgba(237,237,237,0.01))); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top,  rgba(237,237,237,1) 0%,rgba(237,237,237,0.01) 50%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top,  rgba(237,237,237,1) 0%,rgba(237,237,237,0.01) 50%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top,  rgba(237,237,237,1) 0%,rgba(237,237,237,0.01) 50%); /* IE10+ */
-  background: linear-gradient(to bottom,  rgba(237,237,237,1) 0%,rgba(237,237,237,0.01) 50%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#00000000',GradientType=0 ); /* IE6-8 */
-}
-
-.view_cart [fd-toggle-state="disabled"] .carousel-subhead{
-  display:none;
-}
-
 .view_cart .product-sample-carousel[product-count="1"] [data-component="carousel-prev"],
 .view_cart .product-sample-carousel[product-count="1"] [data-component="carousel-next"],
 .view_cart .product-sample-carousel[product-count="2"] [data-component="carousel-prev"],
@@ -731,26 +713,14 @@
   padding-left:0;
 }
 
-.view_cart .product-sample-carousel h2.product-sample-header{
-  font-size:22px;
-  font-weight:normal;
-  line-height:53px;
-  padding:0;
-  padding-left:14px;
-}
-
-.view_cart .product-sample-carousel h2.product-sample-header:after{
-  top:20px;
-}
-
-.view_cart .product-sample-carousel .product-sample-carousel-bottom{
-  background: #f0f5e1;
-  height:17px;
-}
-
 .view_cart .product-sample-carousel [data-component="carousel"]{
   margin:0;
 }
+
+.view_cart .product-sample-carousel [data-component="carousel-mask"]{
+	margin-top: 20px;
+}
+
 
 /* carousel & popup items for more than 3 items */
 .productSamplingItem.portrait-item{
