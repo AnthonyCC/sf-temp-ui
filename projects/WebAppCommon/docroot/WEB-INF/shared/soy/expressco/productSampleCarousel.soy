@@ -15,7 +15,7 @@
       <ul data-component="carousel-list" data-carousel-page="0">
         {foreach $item in $carouselData.products}
           {call common.transactionalGridItem data="$item"}
-            {param extraClass: 'carouselTransactionalItem productSample' + $len /}
+            {param extraClass: 'carouselTransactionalItem productSamplingItem item-count' + $len /}
             {param cmEventSource:'view_cart' /}
             {param item:$item /}
           {/call}
