@@ -104,13 +104,13 @@ public class SinglePageCheckoutFacade {
         result.setFormMetaData(FormMetaDataService.defaultService().populateFormMetaData(user));
         result.setTimeslot(TimeslotService.defaultService().loadCartTimeslot(user.getShoppingCart()));
         result.setRestriction(CheckoutService.defaultService().preCheckOrder(user));
-        result.setRedirectUrl(RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
-                availabilityService.selectWarningType(user)));
+        result.setRedirectUrl(
+                RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL, availabilityService.selectWarningType(user)));
         return result;
     }
 
-    public Map<String, Object> loadByPageAction(FDUserI user, HttpServletRequest request, PageAction pageAction, ValidationResult validationResult) throws FDResourceException,
-            IOException, TemplateException, JspException, RedirectToPage, HttpErrorResponse {
+    public Map<String, Object> loadByPageAction(FDUserI user, HttpServletRequest request, PageAction pageAction, ValidationResult validationResult)
+            throws FDResourceException, IOException, TemplateException, JspException, RedirectToPage, HttpErrorResponse {
         Map<String, Object> result = new HashMap<String, Object>();
         result.put(RESTRICTION_JSON_KEY, CheckoutService.defaultService().preCheckOrder(user));
         switch (pageAction) {
@@ -121,10 +121,8 @@ public class SinglePageCheckoutFacade {
             case DELETE_DELIVERY_ADDRESS_METHOD:
                 result.put(ADDRESS_JSON_KEY, loadAddress(user, request.getSession()));
                 result.put(TIMESLOT_JSON_KEY, TimeslotService.defaultService().loadCartTimeslot(user.getShoppingCart()));
-                result.put(
-                        REDIRECT_URL_JSON_KEY,
-                        RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
-                                availabilityService.selectWarningType(user)));
+                result.put(REDIRECT_URL_JSON_KEY, RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
+                        availabilityService.selectWarningType(user)));
                 result.put(SUB_TOTAL_BOX_JSON_KEY, CartDataService.defaultService().loadCartDataSubTotalBox(request, user));
                 break;
             case SELECT_DELIVERY_ADDRESS_METHOD:
@@ -135,10 +133,8 @@ public class SinglePageCheckoutFacade {
                     if (cartPaymentSelectionDisabled != null && cartPaymentSelectionDisabled) {
                         result.put(PAYMENT_JSON_KEY, loadUserPaymentMethods(user, request));
                     }
-                    result.put(
-                            REDIRECT_URL_JSON_KEY,
-                            RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
-                                    availabilityService.selectWarningType(user)));
+                    result.put(REDIRECT_URL_JSON_KEY, RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL,
+                            availabilityService.selectWarningType(user)));
                 }
                 break;
             case ADD_PAYMENT_METHOD:
@@ -161,8 +157,8 @@ public class SinglePageCheckoutFacade {
             case REMOVE_EBT_INELIGIBLE_ITEMS_FROM_CART: {
                 result.put(ATP_FAILURE_JSON_KEY, CheckoutService.defaultService().applyAtpCheck(user));
                 String orderMinimumType = AvailabilityService.defaultService().selectAlcoholicOrderMinimumType(user);
-                result.put(REDIRECT_URL_JSON_KEY, RedirectService.defaultService()
-                        .populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL, orderMinimumType));
+                result.put(REDIRECT_URL_JSON_KEY,
+                        RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL, orderMinimumType));
                 CartData loadCartData = CartDataService.defaultService().loadCartData(request, user);
                 result.put(CART_DATA_JSON_KEY, SoyTemplateEngine.convertToMap(loadCartData));
                 break;
@@ -170,8 +166,8 @@ public class SinglePageCheckoutFacade {
             case APPLY_AGE_VERIFICATION_FOR_ALCOHOL_IN_CART: {
                 result.put(ATP_FAILURE_JSON_KEY, CheckoutService.defaultService().applyAtpCheck(user));
                 String orderMinimumType = AvailabilityService.defaultService().selectAlcoholicOrderMinimumType(user);
-                result.put(REDIRECT_URL_JSON_KEY, RedirectService.defaultService()
-                        .populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL, orderMinimumType));
+                result.put(REDIRECT_URL_JSON_KEY,
+                        RedirectService.defaultService().populateRedirectUrl(EXPRESS_CHECKOUT_VIEW_CART_PAGE_URL, WARNING_MESSAGE_LABEL, orderMinimumType));
                 break;
             }
             case ATP_ADJUST: {
@@ -180,6 +176,13 @@ public class SinglePageCheckoutFacade {
                         availabilityService.selectWarningType(user)));
                 CartData loadCartData = CartDataService.defaultService().loadCartData(request, user);
                 result.put(CART_DATA_JSON_KEY, SoyTemplateEngine.convertToMap(loadCartData));
+                break;
+            }
+            case APPLY_PROMOTION:
+                //$FALL-THROUGH$
+            case REMOVE_PROMOTION: {
+                CartData cartData = CartDataService.defaultService().loadCartData(request, user);
+                result.put(CART_DATA_JSON_KEY, SoyTemplateEngine.convertToMap(cartData));
                 break;
             }
             default:
@@ -247,8 +250,8 @@ public class SinglePageCheckoutFacade {
             if (modifyCartPreSelectionCompleted == null) {
                 ActionResult actionResult = new ActionResult();
                 String addressId = cart.getDeliveryReservation().getAddressId();
-                DeliveryAddressManipulator.performSetDeliveryAddress(session, user, addressId, null, null, PageAction.SELECT_DELIVERY_ADDRESS_METHOD.actionName, true,
-                        actionResult, null, null, null, null, null, null);
+                DeliveryAddressManipulator.performSetDeliveryAddress(session, user, addressId, null, null, PageAction.SELECT_DELIVERY_ADDRESS_METHOD.actionName, true, actionResult,
+                        null, null, null, null, null, null);
                 String paymentId = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
                 PaymentMethodManipulator.setPaymentMethod(paymentId, null, request, session, actionResult, PageAction.SELECT_PAYMENT_METHOD.actionName);
                 for (ActionError error : actionResult.getErrors()) {

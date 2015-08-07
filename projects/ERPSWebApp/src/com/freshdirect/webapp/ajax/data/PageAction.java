@@ -9,7 +9,8 @@ public enum PageAction {
 	SELECT_DELIVERY_TIMESLOT(Module.EXPRESS_CHECKOUT, "selectDeliveryTimeslot"),
 	ATP_ADJUST(Module.EXPRESS_CHECKOUT, "atpAdjust"), PLACE_ORDER(Module.EXPRESS_CHECKOUT, "placeOrder"),
 	REMOVE_ALCOHOL_FROM_CART(Module.EXPRESS_CHECKOUT, "removeAlcohol"), APPLY_AGE_VERIFICATION_FOR_ALCOHOL_IN_CART(Module.EXPRESS_CHECKOUT, "applyAgeVerification"),
-	REMOVE_WINE_AND_SPIRITS_FROM_CART(Module.EXPRESS_CHECKOUT, "removeWineAndSpirit"), REMOVE_EBT_INELIGIBLE_ITEMS_FROM_CART(Module.EXPRESS_CHECKOUT, "removeEbtIneligibleItems");
+	REMOVE_WINE_AND_SPIRITS_FROM_CART(Module.EXPRESS_CHECKOUT, "removeWineAndSpirit"), REMOVE_EBT_INELIGIBLE_ITEMS_FROM_CART(Module.EXPRESS_CHECKOUT, "removeEbtIneligibleItems"),
+	APPLY_PROMOTION(Module.EXPRESS_CHECKOUT, "applyPromotion"), REMOVE_PROMOTION(Module.EXPRESS_CHECKOUT, "removePromotion");
 
 	public final Module module;
 	public final String actionName;
