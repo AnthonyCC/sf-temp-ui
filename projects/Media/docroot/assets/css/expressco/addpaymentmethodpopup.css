@@ -85,6 +85,10 @@
   width: 360px;
 }
 
+#addpaymentmethodpopup [fdform-error]{
+  max-width:360px;
+}
+
 #addpaymentmethod_creditcard select[name="cardMonth"]{
   margin-left:20px;
 }
