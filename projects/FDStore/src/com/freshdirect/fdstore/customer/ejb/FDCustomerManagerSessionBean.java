@@ -2073,9 +2073,15 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			LOGGER.warn("Cannot Create ErpCustomerManagerSessionBean", ce);
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
-			
+			try{
+				FDDeliveryManager.getInstance().releaseReservation(reservationId, createOrder.getDeliveryInfo().getDeliveryAddress(), event, true);// release the reservation that is committed but auth failed becuase of AVS as this causes transaction rollback
+			}catch(Exception e){
+				LOGGER.info("There was an error releasing the reservation" + reservationId);
+			}
 			Exception ex=(Exception)re.getCause();
-			if(ex instanceof ErpAddressVerificationException) throw (ErpAddressVerificationException)ex;
+			if(ex instanceof ErpAddressVerificationException){
+				throw (ErpAddressVerificationException)ex;
+			}
 			
 			throw new FDResourceException(re);
 		}
@@ -2718,9 +2724,18 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
+			try{
+				if (order.getDeliveryInfo().getDeliveryReservationId()!= null && !order.getDeliveryInfo().getDeliveryReservationId().equals(oldReservationId)){
+					FDDeliveryManager.getInstance().releaseReservation(order.getDeliveryInfo().getDeliveryReservationId(), 
+						order.getDeliveryInfo().getDeliveryAddress(), event, true);// release the reservation that is committed but auth failed becuase of AVS as this causes transaction rollback
+				}
+			}catch(Exception e){
+				LOGGER.info("There was an exception releasing the reservation.");
+			}
 			Exception ex=(Exception)re.getCause();
-			if(ex instanceof ErpAddressVerificationException) throw (ErpAddressVerificationException)ex;
-			
+			if(ex instanceof ErpAddressVerificationException){
+				throw (ErpAddressVerificationException)ex;
+			}
 			throw new FDResourceException(re);
 		} catch (ReservationException re) {
 			throw new FDResourceException(re);
