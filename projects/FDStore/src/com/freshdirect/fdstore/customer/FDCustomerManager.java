@@ -3825,7 +3825,7 @@ public class FDCustomerManager {
 			sb.storeMobilePreferences(customerId, mobileNumber, textOffers, textDelivery, orderNotices, orderExceptions, offers, partnerMessages);
 			FDDeliveryManager.getInstance().addSubscriptions(customerId,
 					mobileNumber, textOffers, textDelivery, orderNotices,
-					orderExceptions, offers, partnerMessages,cm.getSmsOptinDate());
+					orderExceptions, offers, partnerMessages,new Date());
 			logSmsActivity(customerId, orderNotices, orderExceptions, offers, cm);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
