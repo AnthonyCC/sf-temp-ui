@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,7 @@ import com.freshdirect.logistics.controller.data.response.ListOfObjects;
 import com.freshdirect.logistics.delivery.model.AirclicCartonInfo;
 import com.freshdirect.logistics.delivery.model.AirclicMessage;
 import com.freshdirect.logistics.delivery.model.AirclicTextMessage;
+import com.freshdirect.logistics.delivery.model.CartonInfo;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.DeliverySignature;
 import com.freshdirect.logistics.delivery.model.DeliverySummary;
@@ -240,9 +242,22 @@ public class AirclicManager {
 						.getInstance().getAirclicService();
 				
 				if (!ErpServicesProperties.isAirclicBlackhole()) {
-					ListOfObjects<String> cartonList = airclicService.getCartonList(orderId);
+					ListOfObjects<CartonInfo> cartonList = airclicService.getCartonList(orderId);
 					LogisticsDataDecoder.decodeResult(cartonList);
-					cartons = LogisticsDataDecoder.decodeAirclicCartonInfo(airclicService.getCartonScanHistory(cartonList.getData()));
+					
+					Map<String, CartonInfo> cartonMap = new HashMap<String, CartonInfo>();
+					
+					for(CartonInfo cartonInfo : cartonList.getData()){
+						cartonMap.put(cartonInfo.getCartonNumber(), cartonInfo);
+					}
+					List<String> cartonIDs = new ArrayList<String>(cartonMap.keySet());
+							
+					cartons = LogisticsDataDecoder.decodeAirclicCartonInfo(airclicService.getCartonScanHistory(cartonIDs));
+					
+					for(AirclicCartonInfo ac: cartons){
+						if(cartonMap.containsKey(ac.getCartonNumber()))
+							ac.setCartonType(cartonMap.get(ac.getCartonNumber()).getCartonType());
+					}
 					if (cartons != null) {
 						Collections.sort(cartons, new CartonComparator());
 					}

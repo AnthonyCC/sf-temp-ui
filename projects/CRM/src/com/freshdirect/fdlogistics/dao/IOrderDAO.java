@@ -49,4 +49,6 @@ public interface IOrderDAO {
 
 	public void saveCartonInfo(List<CartonInfo> data);
 
+	public List<CartonInfo> getCartonInfo(String orderId);
+
 }

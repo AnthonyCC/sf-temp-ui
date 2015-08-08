@@ -65,6 +65,7 @@ import com.freshdirect.logistics.delivery.dto.OrderDTO;
 import com.freshdirect.logistics.delivery.dto.OrdersDTO;
 import com.freshdirect.logistics.delivery.dto.OrdersSummaryDTO;
 import com.freshdirect.logistics.delivery.model.ActionError;
+import com.freshdirect.logistics.delivery.model.CartonInfo;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.EnumCompanyCode;
 import com.freshdirect.logistics.delivery.model.SystemMessageList;
@@ -657,6 +658,22 @@ private static MailerGatewayHome mailerHome	= null;
 		} 
 		return result;
 	}
+	
+	@RequestMapping(value = "/cartonsV2/{orderId}",  method = {RequestMethod.POST, RequestMethod.GET})
+	public @ResponseBody ListOfObjects<CartonInfo> getCartonsV2( @PathVariable("orderId") String orderId) {
+		ListOfObjects<CartonInfo> result = new ListOfObjects<CartonInfo>();
+		try {
+			List<CartonInfo> cartonList =  orderService.getCartonInfo(orderId);
+			result.setData(cartonList);
+			result.setSuccessMessage("records retrieved successfully");
+		} catch (FDLogisticsServiceException e) {
+			result.setStatus(Result.STATUS_FAILED);
+			result.addErrorMessages(new ActionError("technical_difficulty",
+				SystemMessageList.MSG_TECHNICAL_ERROR));
+		} 
+		return result;
+	}
+	
 	
 	@RequestMapping(value = "/manifest/{orderId}",  method = {RequestMethod.POST, RequestMethod.GET})
 	public @ResponseBody DeliveryManifest getDeliveryManifest( @PathVariable("orderId") String orderId) {

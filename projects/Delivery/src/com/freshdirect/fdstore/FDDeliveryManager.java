@@ -125,6 +125,10 @@ public class FDDeliveryManager {
 	
 	/* 5 hr cutoff times cache*/
 	private static TimedLruCache<Date, List<Date>> cutoffTimesCache = new TimedLruCache<Date, List<Date>>(100, 5 * 60 * 60 * 1000);
+	
+	/* State County by Zip cache */
+	private static TimedLruCache<String, StateCounty> stateCountyByZip = new TimedLruCache<String, StateCounty>(100, 60 * 60 * 60 * 1000);
+
 
 	private DlvRestrictionsList dlvRestrictions = null;
 	private long REFRESH_PERIOD = 1000 * 60 * 5; // 5 minutes
@@ -889,7 +893,6 @@ public class FDDeliveryManager {
 
 	}
 
-	private ConcurrentMap<String, StateCounty> stateCountyByZip = new ConcurrentHashMap<String, StateCounty>();
 	public StateCounty lookupStateCountyByZip(String zipcode) throws FDResourceException{
 		if(zipcode!=null){
 			try {
@@ -898,7 +901,7 @@ public class FDDeliveryManager {
 					DlvManagerSB sb = getDlvManagerHome().create();
 					sc =  sb.lookupStateCountyByZip(zipcode);
 					if(sc != null){
-						stateCountyByZip.putIfAbsent(zipcode, sc);
+						stateCountyByZip.put(zipcode, sc);
 					}
 				}
 				return sc;

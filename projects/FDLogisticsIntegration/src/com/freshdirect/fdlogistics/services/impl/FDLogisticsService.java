@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.log4j.Category;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.services.ILogisticsService;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -527,8 +528,14 @@ public class FDLogisticsService extends AbstractLogisticsService implements ILog
 		AddressVerificationRequest request = new AddressVerificationRequest();
 		request.setAddress(address);
 		String inputJson = buildRequest(request);
-		ListOfObjects<Address> response =  getData(inputJson, getEndPoint(ADDRESS_SUGGESTIONS_API), ListOfObjects.class);
-		return response;	
+		String response =  getData(inputJson, getEndPoint(ADDRESS_SUGGESTIONS_API), String.class);
+		ListOfObjects<Address> info = new ListOfObjects<Address>();
+		try{
+			info = getMapper().readValue(response, new TypeReference<ListOfObjects<Address>>() { });
+		}catch(Exception e){
+			LOGGER.info("Exception converting {} to ListOfObjects "+response);
+		}
+		return info;	
 	
 	}
 	

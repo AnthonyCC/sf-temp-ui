@@ -134,6 +134,8 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 			+ " and sa.id = di.salesaction_id and sa.requested_date = ? and di.delivery_type <> 'X' ";
 
 	private static final String GET_CARTONS_BYORDER = "SELECT CARTON_NUMBER FROM CUST.CARTON_INFO WHERE SALE_ID = ?";
+	
+	private static final String GET_CARTONINFO_BYORDER = "SELECT SALE_ID, CARTON_NUMBER, SAP_NUMBER, CARTON_TYPE FROM CUST.CARTON_INFO WHERE SALE_ID = ?";
 
 	/*
 	 * (non-Javadoc)
@@ -650,6 +652,33 @@ public class OrderDAO extends BaseDAO implements IOrderDAO {
 			public void processRow(ResultSet rs) throws SQLException {
 				do {
 					cartonList.add(rs.getString("CARTON_NUMBER"));
+				} while (rs.next());
+			}
+		});
+		return cartonList;
+
+	}
+
+	
+
+	@Override
+	public List<CartonInfo> getCartonInfo(final String orderId) {
+
+		final List<CartonInfo> cartonList = new ArrayList<CartonInfo>();
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(
+					Connection connection) throws SQLException {
+				PreparedStatement ps = connection
+						.prepareStatement(GET_CARTONINFO_BYORDER);
+				ps.setString(1, orderId);
+				return ps;
+			}
+		};
+
+		jdbcTemplate.query(creator, new RowCallbackHandler() {
+			public void processRow(ResultSet rs) throws SQLException {
+				do {
+					cartonList.add(new CartonInfo(rs.getString("SALE_ID"), rs.getString("SAP_NUMBER"), rs.getString("CARTON_NUMBER"), rs.getString("CARTON_TYPE")));
 				} while (rs.next());
 			}
 		});

@@ -20,6 +20,7 @@ import com.freshdirect.logistics.controller.data.response.DeliverySignature;
 import com.freshdirect.logistics.controller.data.response.DeliverySummary;
 import com.freshdirect.logistics.controller.data.response.ListOfObjects;
 import com.freshdirect.logistics.controller.data.response.RouteNextelResponse;
+import com.freshdirect.logistics.delivery.model.CartonInfo;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.sms.model.CrmSmsDisplayInfo;
 
@@ -56,7 +57,7 @@ public interface IAirclicService {
 
 	public DeliveryETAWindow getDeliveryETAWindow(String orderId) throws FDLogisticsServiceException;
 
-	public ListOfObjects<String> getCartonList(String orderId) throws FDLogisticsServiceException;
+	public ListOfObjects<CartonInfo> getCartonList(String orderId) throws FDLogisticsServiceException;
 
 	public ListOfObjects<CallLogModel> getOrderCallLog(String orderId) throws FDLogisticsServiceException;
 

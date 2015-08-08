@@ -59,4 +59,6 @@ public interface IOrderService {
 
 	public void saveCartonInfo(List<CartonInfo> data) throws FDLogisticsServiceException;
 
+	public List<CartonInfo> getCartonInfo(String orderId) throws FDLogisticsServiceException;
+
 }

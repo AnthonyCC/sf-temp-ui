@@ -186,4 +186,13 @@ public class OrderService implements IOrderService {
 			throw new FDLogisticsServiceException(e);
 		}
 	}
+	
+	@Override
+	public List<CartonInfo> getCartonInfo(String orderId) throws FDLogisticsServiceException {
+		try {
+			return orderDAO.getCartonInfo(orderId);
+		} catch (Exception e) {
+			throw new FDLogisticsServiceException(e);
+		}
+	}
 }

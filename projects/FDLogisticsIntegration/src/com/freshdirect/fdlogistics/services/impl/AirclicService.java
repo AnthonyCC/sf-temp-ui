@@ -1,6 +1,5 @@
 package com.freshdirect.fdlogistics.services.impl;
 
-import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +7,6 @@ import java.util.Map;
 import org.apache.log4j.Category;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.freshdirect.crm.CallLogModel;
 import com.freshdirect.fdlogistics.exception.FDLogisticsServiceException;
 import com.freshdirect.fdlogistics.services.IAirclicService;
@@ -30,6 +28,7 @@ import com.freshdirect.logistics.controller.data.response.DeliverySignature;
 import com.freshdirect.logistics.controller.data.response.DeliverySummary;
 import com.freshdirect.logistics.controller.data.response.ListOfObjects;
 import com.freshdirect.logistics.controller.data.response.RouteNextelResponse;
+import com.freshdirect.logistics.delivery.model.CartonInfo;
 import com.freshdirect.logistics.delivery.model.DeliveryException;
 import com.freshdirect.logistics.delivery.model.EnumDeliveryMenuOption;
 import com.freshdirect.logistics.delivery.sms.model.CrmSmsDisplayInfo;
@@ -56,6 +55,7 @@ public class AirclicService extends AbstractLogisticsService implements IAirclic
 	
 	private static final String IVR_CALLLOG_API = "/orders/ivrlog/";
 	private static final String CARTON_LIST_API = "/orders/cartons/";
+	private static final String CARTON_INFO_API = "/orders/cartonsV2/";
 	private static final String GET_ORDER_MANIFEST_API = "/orders/manifest/";
 	
 	/* (non-Javadoc)
@@ -191,8 +191,13 @@ public class AirclicService extends AbstractLogisticsService implements IAirclic
 		String inputJson = buildRequest(request);
 		DeliverySummary response =  getData(inputJson, getEndPoint(GET_DELIVERYSUMMARY_API), DeliverySummary.class);
 		
-		ListOfObjects<CallLogModel> modelList  =  getData(null, getOMSEndPoint(GET_DELIVERYREQ_API+orderId), ListOfObjects.class);
-		
+		String ivr_response  =  getData(null, getOMSEndPoint(GET_DELIVERYREQ_API+orderId), String.class);
+		ListOfObjects<CallLogModel> modelList = new ListOfObjects<CallLogModel>();
+		try{
+			modelList = getMapper().readValue(ivr_response, new TypeReference<ListOfObjects<CallLogModel>>() { });
+		}catch(Exception e){
+			LOGGER.info("Exception converting {} to ListOfObjects "+ivr_response);
+		}
 		
 		Date maxDlvAccessCallTime = null;
         Date maxEarlyDlvCallTime = null;
@@ -291,9 +296,15 @@ public class AirclicService extends AbstractLogisticsService implements IAirclic
 	}
 
 	@Override
-	public ListOfObjects getCartonList(String orderId) throws FDLogisticsServiceException {
-		ListOfObjects<String> response =  getData(null, getOMSEndPoint(CARTON_LIST_API)+orderId, ListOfObjects.class);
-		return response;
+	public ListOfObjects<CartonInfo> getCartonList(String orderId) throws FDLogisticsServiceException {
+		String response =  getData(null, getOMSEndPoint(CARTON_INFO_API)+orderId, String.class);
+		ListOfObjects<CartonInfo> info = new ListOfObjects<CartonInfo>();
+		try{
+			info = getMapper().readValue(response, new TypeReference<ListOfObjects<CartonInfo>>() { });
+		}catch(Exception e){
+			LOGGER.info("Exception converting {} to ListOfObjects "+response);
+		}
+		return info;
 	}
 
 	@Override
@@ -304,16 +315,22 @@ public class AirclicService extends AbstractLogisticsService implements IAirclic
 		try{
 			info = getMapper().readValue(response, new TypeReference<ListOfObjects<CallLogModel>>() { });
 		}catch(Exception e){
-			LOGGER.info("Exception converting {} to ListOfObjects"+response);
+			LOGGER.info("Exception converting {} to ListOfObjects "+response);
 		}
 		return info;
 	}
 
 	@Override
-	public ListOfObjects getScanReportedLates()
+	public ListOfObjects<String> getScanReportedLates()
 			throws FDLogisticsServiceException {
-		ListOfObjects result =  getData(null, getEndPoint(SCAN_LATE_API), ListOfObjects.class);
-		return result;
+		String response =  getData(null, getEndPoint(SCAN_LATE_API), String.class);
+		ListOfObjects<String> info = new ListOfObjects<String>();
+		try{
+			info = getMapper().readValue(response, new TypeReference<ListOfObjects<String>>() { });
+		}catch(Exception e){
+			LOGGER.info("Exception converting {} to ListOfObjects "+response);
+		}
+		return info;
 	}	
 	
 	@Override
@@ -327,7 +344,7 @@ public class AirclicService extends AbstractLogisticsService implements IAirclic
 		try{
 			info = getMapper().readValue(result , new TypeReference<ListOfObjects<CrmSmsDisplayInfo>>() { });
 		}catch(Exception e){
-			LOGGER.info("Exception converting {} to ListOfObjects"+result);
+			LOGGER.info("Exception converting {} to ListOfObjects "+result);
 		}
 		return info;
 	}	
