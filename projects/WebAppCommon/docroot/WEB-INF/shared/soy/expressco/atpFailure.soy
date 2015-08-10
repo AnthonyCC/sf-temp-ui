@@ -49,7 +49,7 @@
 * @param price
 * @param imageUrl
 */
-{template .product}
+{template .product autoescape="false"}
   {if $name}<h1>{$name}</h1>{/if}
   {if $recipe}<p class='strong'>RECIPE: {$recipe}</p>{/if}
   {if $quantity}<p>Quantity: {$quantity}</p>{/if}
@@ -136,7 +136,7 @@
 * @param deliveryDate
 * @param deliveryTimeSlot
 */
-{template .unavailableNonReplaceableLines}
+{template .unavailableNonReplaceableLines autoescape="false"}
   {if $nonReplaceableLines and length($nonReplaceableLines) > 0}
   <div class="warningBox">
     <div class="warningTitle">Delivery Restriction for {$deliveryDate} {$deliveryTimeSlot}</div>
@@ -159,7 +159,7 @@
 /**
 * @param? passes List of ATP failed Delivery Passes
 */
-{template .deliveryPasses}
+{template .deliveryPasses autoescape="false"}
 <!-- TODO: rewrite this if we can test how it looks like -->
 {if $passes and length($passes) > 0}
 <table>

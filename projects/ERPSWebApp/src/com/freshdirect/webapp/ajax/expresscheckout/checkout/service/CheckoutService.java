@@ -24,7 +24,6 @@ import com.freshdirect.webapp.action.Action;
 import com.freshdirect.webapp.ajax.BaseJsonServlet.HttpErrorResponse;
 import com.freshdirect.webapp.ajax.checkout.UnavailabilityPopulator;
 import com.freshdirect.webapp.ajax.checkout.data.UnavailabilityData;
-import com.freshdirect.webapp.ajax.expresscheckout.availability.service.AvailabilityService;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataRequest;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormDataResponse;
 import com.freshdirect.webapp.ajax.expresscheckout.data.FormRestriction;
@@ -69,7 +68,7 @@ public class CheckoutService {
         UnavailabilityData unavailabilityData = null;
 		FDCartModel cart = user.getShoppingCart();
 		if (cart.getDeliveryAddress() != null && cart.getDeliveryReservation() != null) {
-            AvailabilityService.defaultService().checkCartAtpAvailability(user);
+            // AvailabilityService.defaultService().checkCartAtpAvailability(user);
             UnavailabilityData atpFailureData = UnavailabilityPopulator.createUnavailabilityData((FDSessionUser) user);
 			PageViewTagModel pvTagModel = new PageViewTagModel();
 			pvTagModel.setCategoryId(CustomCategory.CHECKOUT.toString());
