@@ -949,6 +949,12 @@
 	   <div class="link"><a href="/test/reports/ebt_products.jsp">/test/reports/ebt_products.jsp</a></div>
 	   <div class="pageDesc">List of ineligible EBT products</div>
 	</div>
+		
+	<div class="tag CSS express_checkout product_sampling_carousel">
+	   <div class="pageName"><span>Product Sampling Carousel Desing at XC/View Cart page</span></div>
+	   <div class="link"><a href="/test/express_checkout/product_sample_carousel.jsp">/test/express_checkout/product_sample_carousel.jsp</a></div>
+	   <div class="pageDesc">Product Sampling Carousel Desing at XC/View Cart page</div>
+	</div>
 
 	<hr />
 </div>
