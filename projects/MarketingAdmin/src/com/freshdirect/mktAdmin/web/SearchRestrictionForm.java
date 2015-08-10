@@ -35,7 +35,6 @@ import com.freshdirect.mktAdmin.service.MarketAdminServiceIntf;
 
 @Controller
 @RequestMapping("/searchRestriction.do")
-@SessionAttributes("command")
 public class SearchRestrictionForm extends AbstractMktAdminForm {
 	
 	@Autowired
