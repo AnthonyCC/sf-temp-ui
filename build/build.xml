@@ -2468,6 +2468,8 @@
 				<include name="spring-tx-4.0.0.RELEASE.jar"/>
 				<include name="spring-web-4.0.1.RELEASE.jar"/>
 				<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
+				<include name="spring-context-support-4.0.1.RELEASE.jar"/>				
+				
 				<include name="gson-1.7.1.jar"/>
 				
 				<include name="opencsv-1.8.jar"/>
@@ -2931,17 +2933,17 @@
 				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
 				<include name="spring-aop-4.0.1.RELEASE.jar"/>	
-								<include name="spring-beans-4.0.1.RELEASE.jar"/>
-								<include name="spring-context-4.0.1.RELEASE.jar"/>
-								<include name="spring-core-4.0.1.RELEASE.jar"/>
-								<include name="spring-expression-4.0.1.RELEASE.jar"/>
-								<include name="spring-jdbc-4.0.0.RELEASE.jar"/>
-								<include name="spring-tx-4.0.0.RELEASE.jar"/>
-								<include name="spring-web-4.0.1.RELEASE.jar"/>
-								<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
-								<include name="spring-context-support-4.0.1.RELEASE.jar"/>
-				
-								<include name="gson-1.7.1.jar"/>
+				<include name="spring-beans-4.0.1.RELEASE.jar"/>
+				<include name="spring-context-4.0.1.RELEASE.jar"/>
+				<include name="spring-core-4.0.1.RELEASE.jar"/>
+				<include name="spring-expression-4.0.1.RELEASE.jar"/>
+				<include name="spring-jdbc-4.0.0.RELEASE.jar"/>
+				<include name="spring-tx-4.0.0.RELEASE.jar"/>
+				<include name="spring-web-4.0.1.RELEASE.jar"/>
+				<include name="spring-webmvc-4.0.1.RELEASE.jar"/>
+				<include name="spring-context-support-4.0.1.RELEASE.jar"/>
+
+				<include name="gson-1.7.1.jar"/>
 				<include name="jstl-api-1.2.jar"/>
 				<include name="jstl-impl-1.2.jar"/>
 				<include name="poi-3.5-FINAL-20090928.jar"/>
