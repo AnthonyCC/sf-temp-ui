@@ -19,7 +19,7 @@
    boolean evaluated = false;
    FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
    if (user != null) {
-      FDPromotionVisitor.applyPromotions(new PromotionContextAdapter(user.getUser()));
+      FDPromotionVisitor.applyPromotions(new PromotionContextAdapter(user.getUser()), user.getUser().getPromotionEligibility());
       evaluated = true;
    }
 %>
