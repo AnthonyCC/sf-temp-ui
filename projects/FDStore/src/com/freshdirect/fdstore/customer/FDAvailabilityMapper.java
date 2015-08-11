@@ -1,10 +1,8 @@
 package com.freshdirect.fdstore.customer;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,7 +13,6 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.MunicipalityInfoWrapper;
 import com.freshdirect.customer.ErpCreateOrderModel;
-import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
@@ -65,49 +62,6 @@ class FDAvailabilityMapper {
 		}
 
 		int pos = 0;
-		// APPDEV:3392 - Consolidated material number quantities STARTING 
-		
-		List<FDCartLineI> cartLineIs = cart.getOrderLines();
-		List<FDCartLineI> cartLineIsNew = new ArrayList<FDCartLineI>(cartLineIs.size());
-
-		// materialMap is used to store the material number and quantity of the Products
-		Map<String,Double> materialMap = new HashMap<String, Double>();
-		Map<String,FDCartLineI> newCartLine = new HashMap<String, FDCartLineI>();
-		
-		// List<String> newCartLine1 = new ArrayList<String>(map.size());
-
-		// Iterating the orderline and creating the materialmap with material and quantity
-		for(ErpOrderLineModel erpOrderLineModel:order.getOrderLines()){
-			if(materialMap.containsKey(erpOrderLineModel.getMaterialNumber())){
-				Double qty = materialMap.get(erpOrderLineModel.getMaterialNumber());
-				Double updatedQuantity = qty.doubleValue() + erpOrderLineModel.getQuantity();
-				materialMap.put(erpOrderLineModel.getMaterialNumber(),updatedQuantity);
-			}
-			else{			
-				materialMap.put(erpOrderLineModel.getMaterialNumber(),erpOrderLineModel.getQuantity());
-			}
-		}
-		/**
-		 * APPDEV:3392
-		 * Iterating the Cart order lines
-		 * Checking the Material Numbers in the MaterialMap
-		 * If not contains will add the qty of that material to the newCartLine object
-		 * Finally Add it to the cart	
-		 */
-		for(FDCartLineI cartline : cart.getOrderLines() ){ 
-			
-			String materialNumber = cartline.getMaterialNumber();
-			
-			if(materialMap.containsKey(materialNumber)){
-				if(!newCartLine.containsKey(materialNumber)){
-					cartline.setQuantity(materialMap.get(materialNumber));
-					newCartLine.put(materialNumber, cartline);
-					cartLineIsNew.add(cartline);
-				}
-			}
-		}
-		cart.setOrderLines(cartLineIsNew);
-		// APPDEV:3392 - Consolidated material number quantities ENDING 
 		for ( FDCartLineI cartline : cart.getOrderLines() ) {
 			String posex = PosexUtil.getPosex(pos);
 			int orderlineSize = cartline.getErpOrderLineSize();

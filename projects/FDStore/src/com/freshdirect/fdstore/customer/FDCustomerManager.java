@@ -1761,27 +1761,24 @@ public class FDCustomerManager {
 			if (LOGGER.isInfoEnabled()) {
 				int unavCount = 0;
 				for ( String key : invs.keySet() ) {
-					if(invs.containsKey(key) && invs.get(key) != null){
-						FDAvailabilityI inv = (FDAvailabilityI) invs.get(key);
-						FDReservation deliveryReservation = cart.getDeliveryReservation();
-						DateRange requestedRange = new DateRange(deliveryReservation.getStartTime(), deliveryReservation.getEndTime());
-						FDAvailabilityInfo info = inv.availableCompletely(requestedRange);
-						if (!info.isAvailable()) {
-							unavCount++;
-							FDCartLineI cartLine = cart.getOrderLineById(new Integer(key));
-							LOGGER.info(
-								"User "
-									+ identity
-									+ " requested "
-									+ cartLine.getQuantity()
-									+ " "
-									+ cartLine.getSalesUnit()
-									+ " "
-									+ cartLine.getSkuCode()
-									+ " confirmed "
-									+ (info instanceof FDStockAvailabilityInfo ? ((FDStockAvailabilityInfo) info).getQuantity() : 0));
-						}
-					
+					FDAvailabilityI inv = (FDAvailabilityI) invs.get(key);
+					FDReservation deliveryReservation = cart.getDeliveryReservation();
+					DateRange requestedRange = new DateRange(deliveryReservation.getStartTime(), deliveryReservation.getEndTime());
+					FDAvailabilityInfo info = inv.availableCompletely(requestedRange);
+					if (!info.isAvailable()) {
+						unavCount++;
+						FDCartLineI cartLine = cart.getOrderLineById(new Integer(key));
+						LOGGER.info(
+							"User "
+								+ identity
+								+ " requested "
+								+ cartLine.getQuantity()
+								+ " "
+								+ cartLine.getSalesUnit()
+								+ " "
+								+ cartLine.getSkuCode()
+								+ " confirmed "
+								+ (info instanceof FDStockAvailabilityInfo ? ((FDStockAvailabilityInfo) info).getQuantity() : 0));
 					}
 				}
 
