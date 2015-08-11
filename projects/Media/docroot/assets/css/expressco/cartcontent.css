@@ -689,10 +689,6 @@
   z-index: 1000;
 }
 
-.#productsamplecarousel .product-sample-carousel [data-component="carousel-list"]{
-	text-align:center;
-}
-
 #productsamplecarousel .product-sample-carousel[product-count="1"] [data-component="carousel-prev"],
 #productsamplecarousel .product-sample-carousel[product-count="1"] [data-component="carousel-next"],
 #productsamplecarousel .product-sample-carousel[product-count="2"] [data-component="carousel-prev"],
