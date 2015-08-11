@@ -8,6 +8,7 @@
 <%@page import="com.freshdirect.fdstore.customer.FDUser"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
 <%@page import="com.freshdirect.fdstore.promotion.FDPromotionVisitor"%>
+<%@page import="com.freshdirect.fdstore.customer.FDPromotionEligibility"%>
 <%@page import="com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter"%>
 
 <html>
@@ -19,7 +20,8 @@
    boolean evaluated = false;
    FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
    if (user != null) {
-      FDPromotionVisitor.evaluateAndApplyPromotions(new PromotionContextAdapter(user.getUser()), user.getUser().getPromotionEligibility());
+	  FDPromotionEligibility promotionEligibility = new FDPromotionEligibility();
+      FDPromotionVisitor.evaluateAndApplyPromotions(new PromotionContextAdapter(user.getUser()), promotionEligibility);
       evaluated = true;
    }
 %>
