@@ -108,6 +108,9 @@ public class FDPromotionNewModel extends ModelSupport {
 	private String batchNumber;
 	private String batchId;
 	private boolean batchPromo = false;
+	private String DcpdMinSubtotal;
+
+
 	/*
 	 * Number of successful publishes
 	 */
@@ -1210,6 +1213,14 @@ public class FDPromotionNewModel extends ModelSupport {
 	
 	public void setBatchPromo(boolean batchPromo) {
 		this.batchPromo = batchPromo;
+	}
+	
+	public String getDcpdMinSubtotal() {
+		return DcpdMinSubtotal;
+	}
+
+	public void setDcpdMinSubtotal(String dcpdMinSubtotal) {
+		DcpdMinSubtotal = dcpdMinSubtotal;
 	}
 	
 }
