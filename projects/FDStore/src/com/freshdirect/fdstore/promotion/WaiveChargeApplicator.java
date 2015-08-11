@@ -11,6 +11,7 @@ public class WaiveChargeApplicator implements PromotionApplicatorI {
 	private final double minSubtotal;
 	private DlvZoneStrategy zoneStrategy;
 	private boolean fuelSurcharge;
+	private CartStrategy cartStrategy;
 	
 	public double getMinSubtotal() {
 		return minSubtotal;
@@ -31,6 +32,9 @@ public class WaiveChargeApplicator implements PromotionApplicatorI {
 	public boolean apply(String promotionCode, PromotionContextI context) {
 		//If delivery zone strategy is applicable please evaluate before applying the promotion.
 		int e = zoneStrategy != null ? zoneStrategy.evaluate(promotionCode, context) : PromotionStrategyI.ALLOW;
+		if(e == PromotionStrategyI.DENY) return false;
+		
+		e = cartStrategy != null ? cartStrategy.evaluate(promotionCode, context, true) : PromotionStrategyI.ALLOW;
 		if(e == PromotionStrategyI.DENY) return false;
 		
 		PromotionI promo = PromotionFactory.getInstance().getPromotion(promotionCode);
@@ -56,6 +60,14 @@ public class WaiveChargeApplicator implements PromotionApplicatorI {
 
 	public DlvZoneStrategy getDlvZoneStrategy() {
 		return this.zoneStrategy;
+	}
+	@Override
+	public void setCartStrategy(CartStrategy cartStrategy) {
+		this.cartStrategy = cartStrategy;
+	}
+	@Override
+	public CartStrategy getCartStrategy() {
+		return this.cartStrategy;
 	}
 
 }

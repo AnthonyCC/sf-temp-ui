@@ -417,6 +417,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			String needDryGoods = NVL.apply(request.getParameter("edit_cartreq_needDryGoods"), "").trim();			
 			String skuQuantity = NVL.apply(request.getParameter("skuQuantity"), "").trim();
 			String excFromSubtotal = NVL.apply(request.getParameter("excFromSubtotal"), "").trim();
+			String dcpdMinSubtotal = NVL.apply(request.getParameter("dcpdSubTotal"), "").trim();
 			this.promotion.setSubTotalExcludeSkus(excFromSubtotal);
 			populateDcpdData(request);
 			validateDcpdData(request, actionResult);
@@ -453,6 +454,12 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				actionResult.addError(true, "subtotalNumber", " Subtotal value should be a number.");
 			}else{
 				this.promotion.setMinSubtotal(FormatterUtil.formatToTwoDecimal(Double.parseDouble(subTotal)));
+			}
+			if(!NumberUtil.isDouble(dcpdMinSubtotal)){
+				this.promotion.setDcpdMinSubtotal(dcpdMinSubtotal);			
+				actionResult.addError(true, "subtotalNumber", " Subtotal value should be a number.");
+			}else{
+				this.promotion.setDcpdMinSubtotal(FormatterUtil.formatToTwoDecimal(Double.parseDouble(dcpdMinSubtotal)));
 			}
 			this.promotion.setNeedDryGoods("YES".equalsIgnoreCase(needDryGoods));
 			

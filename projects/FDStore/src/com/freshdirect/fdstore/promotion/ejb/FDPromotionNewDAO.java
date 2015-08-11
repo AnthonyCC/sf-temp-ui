@@ -52,6 +52,7 @@ import com.freshdirect.fdstore.promotion.MaxRedemptionStrategy;
 import com.freshdirect.fdstore.promotion.PercentOffApplicator;
 import com.freshdirect.fdstore.promotion.PerishableLineItemStrategy;
 import com.freshdirect.fdstore.promotion.ProductSampleApplicator;
+import com.freshdirect.fdstore.promotion.MinimumSubtotalStrategy;
 import com.freshdirect.fdstore.promotion.ProfileAttributeStrategy;
 import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.fdstore.promotion.PromoVariantModelImpl;
@@ -210,6 +211,8 @@ public class FDPromotionNewDAO {
 			//TODO This needs to replaced by Cart strategy 	
 			decorateSampleStrategy(rs, promo);
 			
+//			loadProductSampleStrategy(rs, promo);
+			
 			//Load the profile strategy
 			PromotionStrategyI profStrategy = profileStrategies.get(pk);
 			if (profStrategy != null) {
@@ -240,6 +243,7 @@ public class FDPromotionNewDAO {
 				CartStrategy cartStrategy = (CartStrategy)cartStrategyI;
 				cartStrategy.setNeedDryGoods("X".equalsIgnoreCase(rs.getString("NEEDDRYGOODS"))?true:false);
 				cartStrategy.setMinSkuQuantity(rs.getInt("HASSKUQUANTITY"));
+				cartStrategy.setTotalDcpdSubtotal(rs.getDouble("DCPD_MIN_SUBTOTAL"));
 				promo.addStrategy(cartStrategy);				
 			}
 			
@@ -251,10 +255,12 @@ public class FDPromotionNewDAO {
 				promo.addStrategy(scStrategy);				
 			}
 			
+			
+			
 			//PromotionApplicatorI applicator = loadApplicator(rs, conn, promo);
 			PromotionStrategyI dlvZoneStrategyI = dlvZoneStrategies.get(pk.getId());
 			DCPDLineItemStrategy dcpdStrategy = dcpdData.get(pk);
-			loadApplicator(rs, conn, promo, dlvZoneStrategyI, dcpdStrategy);
+			loadApplicator(rs, conn, promo, dlvZoneStrategyI, dcpdStrategy,(CartStrategy)cartStrategyI);
 			/*
 			//Set the zone strategy if applicable.
 			if(null != applicator && null != dlvZoneStrategyI){
@@ -286,6 +292,12 @@ public class FDPromotionNewDAO {
 		return promos;
 	}
 	
+	private static void loadMinSubtotalStrategy(ResultSet rs, Promotion promo) throws SQLException {
+		double minSubtotal = rs.getDouble("min_subtotal");
+		MinimumSubtotalStrategy minimumSubtotalStrategy = new MinimumSubtotalStrategy(minSubtotal);	
+		promo.addStrategy(minimumSubtotalStrategy);
+	}
+
 	private final static String getAllActiveAutomaticPromotionCodes = "SELECT CODE, MODIFY_DATE FROM CUST.PROMOTION_NEW p where p.status STATUSES and " +
 		"(p.expiration_date > (sysdate-7) or p.expiration_date is null) and p.redemption_code is null " +
 		"and (p.REFERRAL_PROMO = 'N' or p.REFERRAL_PROMO is null)";
@@ -523,6 +535,7 @@ public class FDPromotionNewDAO {
 			CartStrategy cartStrategy = (CartStrategy)cartStrategyI;
 			cartStrategy.setNeedDryGoods("X".equalsIgnoreCase(rs.getString("NEEDDRYGOODS"))?true:false);
 			cartStrategy.setMinSkuQuantity(rs.getInt("HASSKUQUANTITY"));
+			cartStrategy.setTotalDcpdSubtotal(rs.getDouble("DCPD_MIN_SUBTOTAL"));
 			promo.addStrategy(cartStrategy);				
 		}
 		
@@ -530,7 +543,7 @@ public class FDPromotionNewDAO {
 		//Set the zone strategy if applicable.
 		PromotionStrategyI dlvZoneStrategyI = loadDlvZoneStrategy(conn, promoId);
 		DCPDLineItemStrategy strategy = loadDCPDData(conn, promoId);
-		loadApplicator(rs, conn, promo, dlvZoneStrategyI, strategy);
+		loadApplicator(rs, conn, promo, dlvZoneStrategyI, strategy, (CartStrategy)cartStrategyI);
 		/*
 		if(applicator != null && null != dlvZoneStrategyI){
 			DlvZoneStrategy dlvZoneStrategy = (DlvZoneStrategy)dlvZoneStrategyI;
@@ -646,7 +659,7 @@ public class FDPromotionNewDAO {
 		return strings;
 	}
 
-	private static void loadApplicator(ResultSet rs, Connection conn, Promotion promo, PromotionStrategyI dlvZoneStrategyI, DCPDLineItemStrategy dcpdStrategy) throws SQLException {
+	private static void loadApplicator(ResultSet rs, Connection conn, Promotion promo, PromotionStrategyI dlvZoneStrategyI, DCPDLineItemStrategy dcpdStrategy, CartStrategy cartStrategy) throws SQLException {
 
 		//
 		// header discount applicator
@@ -769,7 +782,9 @@ public class FDPromotionNewDAO {
 		if(!wasNull){
 			if ("SAMPLE".equals(rs.getString("CAMPAIGN_CODE"))) {
 				promo.addApplicator( new SampleLineApplicator(new ProductReference(categoryName, productName), minSubtotal));
-			}else{
+			}else
+			if("PRODUCT_SAMPLE".equals(rs.getString("CAMPAIGN_CODE"))){
+				loadMinSubtotalStrategy(rs, promo);
 				promo.addApplicator(new ProductSampleApplicator(new ProductReference(categoryName, productName), minSubtotal));
 			}
 		}
@@ -781,6 +796,17 @@ public class FDPromotionNewDAO {
 				for (Iterator<PromotionApplicatorI> i = promo.getApplicatorList().iterator(); i.hasNext();) {
 					PromotionApplicatorI _applicator = i.next();
 					_applicator.setZoneStrategy(dlvZoneStrategy);
+				}
+			}
+		}
+		
+		//Set the zone strategy if applicable.
+		if((promo.getApplicatorList() != null && promo.getApplicatorList().size() > 0) && null != cartStrategy){
+			
+			if(null != cartStrategy.getTotalDcpdSubtotal() && cartStrategy.getTotalDcpdSubtotal() > 0){			
+				for (Iterator<PromotionApplicatorI> i = promo.getApplicatorList().iterator(); i.hasNext();) {
+					PromotionApplicatorI _applicator = i.next();
+					_applicator.setCartStrategy(cartStrategy);
 				}
 			}
 		}

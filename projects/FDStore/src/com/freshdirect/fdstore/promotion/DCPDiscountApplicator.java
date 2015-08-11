@@ -71,4 +71,16 @@ public class DCPDiscountApplicator  implements PromotionApplicatorI {
 	public DlvZoneStrategy getDlvZoneStrategy() {
 		return null;
 	}
+
+	@Override
+	public void setCartStrategy(CartStrategy cartStrategy) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public CartStrategy getCartStrategy() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

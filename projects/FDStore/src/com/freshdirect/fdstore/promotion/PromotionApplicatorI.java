@@ -10,4 +10,8 @@ public interface PromotionApplicatorI extends Serializable {
 	public void setZoneStrategy(DlvZoneStrategy zoneStrategy);
 	
 	public DlvZoneStrategy getDlvZoneStrategy() ;
+	
+	public void setCartStrategy(CartStrategy cartStrategy);
+	
+	public CartStrategy getCartStrategy();
 }

@@ -1,11 +1,13 @@
 package com.freshdirect.fdstore.promotion;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -21,8 +23,19 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 	private boolean needDryGoods;	
 	private int minSkuQuantity;
 	private Map<EnumDCPDContentType, Set<String>> dcpdData = new HashMap<EnumDCPDContentType, Set<String>>();//Will contain only SKU and BRAND types.
+	private Double totalDcpdSubtotal;
+	private Double cartDcpdSubtotal = 0.0;
+	private FDMinDCPDTotalPromoData minDcpdTotalPromoData = new FDMinDCPDTotalPromoData();
 	
 	
+	public Double getTotalDcpdSubtotal() {
+		return totalDcpdSubtotal;
+	}
+
+	public void setTotalDcpdSubtotal(Double totalDcpdSubtotal) {
+		this.totalDcpdSubtotal = totalDcpdSubtotal;
+	}
+
 	@Override
 	public int evaluate(String promotionCode, PromotionContextI context) {
 		int qualifiedSku=0;
@@ -41,7 +54,7 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 						for (Iterator<FDCartLineI> iterator = orderLines.iterator(); iterator.hasNext();) {
 							FDCartLineI cartLine = iterator.next();
 							if(contentKeys.size() > 0)
-								allowORdeny = evaluate(cartLine, promotionCode, context);							
+								allowORdeny = evaluate(cartLine, promotionCode, context);
 							if(PromotionStrategyI.ALLOW != allowORdeny){
 								Set<String> skuSet =dcpdData.get(EnumDCPDContentType.SKU);
 								if(null != skuSet && skuSet.contains(cartLine.getSkuCode())){
@@ -69,6 +82,7 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 		
 		return allowORdeny;
 	}
+	
 
 	@Override
 	public int evaluate(FDCartLineI lineItem, String promotionCode,
@@ -137,4 +151,72 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 		this.minSkuQuantity = minSkuQuantity;
 	}
 
+	public Double getCartDcpdSubtotal() {
+		return cartDcpdSubtotal;
+	}
+
+	public void setCartDcpdSubtotal(Double cartDcpdSubtotal) {
+		this.cartDcpdSubtotal = cartDcpdSubtotal;
+	}
+
+	public FDMinDCPDTotalPromoData getMinDcpdTotalPromoData() {
+		return minDcpdTotalPromoData;
+	}
+
+	public int evaluate(String promotionCode, PromotionContextI context, boolean dcpdMinSubtotalCheck) {
+		cartDcpdSubtotal=0.0;
+		int allowORdeny = PromotionStrategyI.RESET;
+		DCPDPromoProductCache dcpdCache = context.getUser().getDCPDPromoProductCache();
+		if(!dcpdMinSubtotalCheck){
+			return evaluate(promotionCode, context);
+		}else{
+			allowORdeny = evaluate(promotionCode, context);
+			if(PromotionStrategyI.ALLOW == allowORdeny){
+				FDCartModel cart = context.getShoppingCart();
+				List<FDCartLineI> orderLines = cart.getOrderLines();
+				if(null != orderLines && !orderLines.isEmpty()){
+				for (Iterator<FDCartLineI> iterator = orderLines.iterator(); iterator.hasNext();) {
+					FDCartLineI cartLine = iterator.next();
+					if(contentKeys.size() > 0 || null !=dcpdData.get(EnumDCPDContentType.BRAND)){
+						int lAllowORdeny = evaluate(cartLine, promotionCode, context);
+						if(PromotionStrategyI.ALLOW == lAllowORdeny){
+							cartDcpdSubtotal = cartDcpdSubtotal+cartLine.getPrice();
+							ProductModel model = cartLine.getProductRef().lookupProductModel();
+							String productId = null !=model ?model.getContentKey().getId():"";
+							minDcpdTotalPromoData.getDcpdCartLines().add(cartLine);
+							/*if(dcpdCache.isEligible(productId, promotionCode)){
+								minDcpdTotalPromoModel.setContentKey((ContentKey)contentKeys.toArray()[0]);
+							}else{
+								minDcpdTotalPromoModel.setBrandNames(getBrands());
+							}*/
+						}else{
+							Set<String> skuSet =dcpdData.get(EnumDCPDContentType.SKU);
+							if(null != skuSet && skuSet.contains(cartLine.getSkuCode())){
+								cartDcpdSubtotal = cartDcpdSubtotal+cartLine.getPrice();
+								minDcpdTotalPromoData.getDcpdCartLines().add(cartLine);
+							}
+						}
+						if(cartDcpdSubtotal >= totalDcpdSubtotal){
+							allowORdeny = PromotionStrategyI.ALLOW;
+							//cartDcpdOrderLines.clear();//No need to store the matched orderlines if the promotion is applied
+							break;
+						}
+						else{
+							allowORdeny = PromotionStrategyI.DENY;
+						}
+					}
+						
+					}
+				}
+				/*if(cartDcpdSubtotal < totalDcpdSubtotal){
+					//Set the balance required for messaging
+					double balanceRequired = totalDcpdSubtotal - cartDcpdSubtotal;
+					//TODO: construct required UI message and set in Context.
+					
+				}*/
+			}
+			
+		}
+		return allowORdeny;
+	}
 }

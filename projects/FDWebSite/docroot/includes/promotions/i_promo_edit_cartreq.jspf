@@ -16,7 +16,7 @@
 				<tr><td colspan="2">&nbsp;</td></tr>
 				<% } %>
 				<tr>
-					<td class="promo_detail_label">Subtotal >=</td>
+					<td class="promo_detail_label">Order Subtotal >=</td>
 					<td class="alignL vTop padL8R16"><span class="gray">$ </span><input type="text" id="subTotal" name="subTotal" class="w50px" value="<%= (promotion.getMinSubtotal() != null && !"".equals(promotion.getMinSubtotal())) ?  promotion.getMinSubtotal(): "" %>"/></td>
 				</tr>
 				<tr>
@@ -34,6 +34,20 @@
 				<tr>
 					<td class="promo_detail_label">Need Dry Goods:</td>
 					<td class="alignL vTop padL8R16"><input type="radio" id="dryGoods" name="edit_cartreq_needDryGoods" value="YES" <%= (promotion.isNeedDryGoods()) ? "checked " : "" %>/><span class="padL4R16">Yes</span><input type="radio" id="" name="edit_cartreq_needDryGoods" value="NO"<%= (!promotion.isNeedDryGoods()) ? "checked " : "" %>/><span class="padL4R16">No</span></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td class="alignL vTop padL8R16"><span class="grayIta8pt">AND</span></td>
+				</tr>
+				<tr>
+					<td colspan="2" class="bordBotLgrayDashed"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">DCPD Subtotal >=</td>
+					<td class="alignL vTop padL8R16"><span class="gray">$ </span><input type="text" id="dcpdSubTotal" name="dcpdSubTotal" class="w50px" value="<%= (promotion.getDcpdMinSubtotal() != null && !"".equals(promotion.getDcpdMinSubtotal())) ?  promotion.getDcpdMinSubtotal(): "" %>"/></td>
 				</tr>
 				<tr>
 					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
@@ -76,6 +90,7 @@
 						<div class="fleft"><textarea id="eligibleSku" name="eligibleSku" rows="3" cols="30" class="w600px"><%= elgSkusCart.toString() %></textarea></div><div class="grayIta8pt fleft padL4">Enter comma-separated SKUs</div>
 					</td>
 				</tr>
+				
 			</table>
 		</td>
 		<%-- no contents, filler --%>

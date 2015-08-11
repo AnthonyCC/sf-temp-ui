@@ -15,6 +15,7 @@ public class ExtendDeliveryPassApplicator implements PromotionApplicatorI {
 	private final int extendDays;
 	private DlvZoneStrategy zoneStrategy;
 	private final double minSubtotal;
+	private CartStrategy cartStrategy;
 
 	/**
 	 * @param percentOff between 0 and 1
@@ -28,6 +29,9 @@ public class ExtendDeliveryPassApplicator implements PromotionApplicatorI {
 	public boolean apply(String promoCode, PromotionContextI context) {
 		//If delivery zone strategy is applicable please evaluate before applying the promotion.
 		int e = zoneStrategy != null ? zoneStrategy.evaluate(promoCode, context) : PromotionStrategyI.ALLOW;
+		if(e == PromotionStrategyI.DENY) return false;
+		
+		e = cartStrategy != null ? cartStrategy.evaluate(promoCode, context, true) : PromotionStrategyI.ALLOW;
 		if(e == PromotionStrategyI.DENY) return false;
 		
 		PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
@@ -57,5 +61,17 @@ public class ExtendDeliveryPassApplicator implements PromotionApplicatorI {
 	
 	public double getMinSubtotal() {
 		return this.minSubtotal;
+	}
+
+
+	@Override
+	public void setCartStrategy(CartStrategy cartStrategy) {
+		this.cartStrategy = cartStrategy;		
+	}
+
+
+	@Override
+	public CartStrategy getCartStrategy() {
+		return this.cartStrategy;
 	}
 }

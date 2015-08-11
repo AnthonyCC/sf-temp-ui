@@ -31,6 +31,7 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 	 * applying discount.
 	 */
 	private List lineItemStrategies = new ArrayList();
+	private CartStrategy cartStrategy;
 	
 	public LineItemDiscountApplicator(double minAmount,double percentoff, double maxPercentageDiscount) { //, int maxItemCount,boolean applyHeaderDiscount){
 		this.minSubTotal=minAmount;
@@ -78,6 +79,9 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 	public boolean apply(String promotionCode, PromotionContextI context) {
 		//If delivery zone strategy is applicable please evaluate before applying the promotion.
 		int ev = zoneStrategy != null ? zoneStrategy.evaluate(promotionCode, context) : PromotionStrategyI.ALLOW;
+		if(ev == PromotionStrategyI.DENY) return false;
+		
+		ev = cartStrategy != null ? cartStrategy.evaluate(promotionCode, context, true) : PromotionStrategyI.ALLOW;
 		if(ev == PromotionStrategyI.DENY) return false;
 		
 		PromotionI promo = PromotionFactory.getInstance().getPromotion(promotionCode);
@@ -368,5 +372,15 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 
 	public int getSkuLimit() {
 		return skuLimit;
+	}
+
+	@Override
+	public void setCartStrategy(CartStrategy cartStrategy) {
+		this.cartStrategy = cartStrategy;
+	}
+
+	@Override
+	public CartStrategy getCartStrategy() {
+		return this.cartStrategy;
 	}
 }

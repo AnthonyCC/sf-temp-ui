@@ -1,7 +1,11 @@
 package com.freshdirect.fdstore.promotion;
 
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.promotion.management.FDPromoDollarDiscount;
 
 
@@ -12,7 +16,7 @@ public class HeaderDiscountApplicator implements PromotionApplicatorI {
 
 	private final HeaderDiscountRule discountRule;
 	private DlvZoneStrategy zoneStrategy;
-	
+	private CartStrategy cartStrategy;
 	/**
 	 * minSubTotal > amount
 	 */
@@ -25,6 +29,26 @@ public class HeaderDiscountApplicator implements PromotionApplicatorI {
 		int e = zoneStrategy != null ? zoneStrategy.evaluate(promoCode, context) : PromotionStrategyI.ALLOW;
 		if(e == PromotionStrategyI.DENY) return false;
 		
+		e = cartStrategy != null ? cartStrategy.evaluate(promoCode, context, true) : PromotionStrategyI.ALLOW;
+		if(e == PromotionStrategyI.DENY){
+			if(cartStrategy.getCartDcpdSubtotal()>0 && cartStrategy.getTotalDcpdSubtotal() > 0 && cartStrategy.getCartDcpdSubtotal() < cartStrategy.getTotalDcpdSubtotal()){
+				//Set the following details for messaging
+				double amount = Math.min(context.getShoppingCart().getPreDeductionTotal(), this.discountRule.getMaxAmount());
+				if(null !=cartStrategy.getContentKeys() && cartStrategy.getContentKeys().size() > 0){
+					cartStrategy.getMinDcpdTotalPromoData().setContentKey((ContentKey)cartStrategy.getContentKeys().toArray()[0]);
+				}else{
+					cartStrategy.getMinDcpdTotalPromoData().setBrandNames(cartStrategy.getDcpdData().get(EnumDCPDContentType.BRAND));
+				}
+				cartStrategy.getMinDcpdTotalPromoData().setPromotionCode(promoCode);
+				cartStrategy.getMinDcpdTotalPromoData().setDcpdMinTotal(cartStrategy.getTotalDcpdSubtotal());
+				cartStrategy.getMinDcpdTotalPromoData().setCartDcpdTotal(cartStrategy.getCartDcpdSubtotal());
+				cartStrategy.getMinDcpdTotalPromoData().setHeaderDiscAmount(amount);
+//				String message="Spend $"+balanceRequired+" more on promotional products to save $"+amount;
+				context.getUser().getPromotionEligibility().getMinDCPDTotalPromos().put(promoCode, cartStrategy.getMinDcpdTotalPromoData());
+			}
+			return false;
+		}
+					
 		PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
 		double subTotal = context.getSubTotal(promo.getExcludeSkusFromSubTotal());
 		
@@ -76,6 +100,14 @@ public class HeaderDiscountApplicator implements PromotionApplicatorI {
 		return this.zoneStrategy;
 	}
 	
+	public CartStrategy getCartStrategy() {
+		return cartStrategy;
+	}
+
+	public void setCartStrategy(CartStrategy cartStrategy) {
+		this.cartStrategy = cartStrategy;
+	}
+
 	public String toString() {
 		return "HeaderDiscountApplicator[" + this.discountRule + "]";
 	}

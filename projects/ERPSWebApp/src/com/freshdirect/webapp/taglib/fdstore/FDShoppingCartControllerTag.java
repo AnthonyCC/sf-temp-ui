@@ -648,6 +648,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 				// This method retains all product keys that are in the cart in the
 				// dcpd promo product info.
 				user.getDCPDPromoProductCache().retainAll(cart.getProductKeysForLineItems());
+				user.getPromotionEligibility().getMinDCPDTotalPromos().clear();
 	
 				user.updateUserState();
 	

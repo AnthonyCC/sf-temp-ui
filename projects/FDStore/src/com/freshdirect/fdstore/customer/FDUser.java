@@ -511,9 +511,9 @@ public class FDUser extends ModelSupport implements FDUserI {
 		
 		if(this.getShoppingCart().isCsrWaivedDeliveryPremium())
 			this.getShoppingCart().setChargeWaived(EnumChargeType.DLVPREMIUM, true, "DELIVERY");
-		
+		this.promotionEligibility = new FDPromotionEligibility();
 		// apply promotions
-		this.promotionEligibility = FDPromotionVisitor.applyPromotions(new PromotionContextAdapter(this));
+		FDPromotionVisitor.evaluateAndApplyPromotions(new PromotionContextAdapter(this), promotionEligibility);
 		//Add all applied promotion codes so far to this list. Used by MaxRedemptionStrategy
 		this.allAppliedPromos.addAll(promotionEligibility.getAppliedPromotionCodes());
     }

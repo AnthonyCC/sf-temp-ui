@@ -147,6 +147,10 @@ public class DCPDLineItemStrategy implements LineItemStrategyI {
 	public void setRecCategory(boolean recCategory) {
 		this.recCategory = recCategory;
 	}
+	public Set<ContentKey> getContentKeys() {
+		return contentKeys;
+	}
+
 	@Override
 	public String toString() {
 		return "DCPDLineItemStrategy [brands=" + brands + ", contentKeys="

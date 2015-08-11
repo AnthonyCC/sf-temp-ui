@@ -12,6 +12,7 @@ public class PercentOffApplicator implements PromotionApplicatorI {
 	private final double percentOff;
 	private DlvZoneStrategy zoneStrategy;
 	private final double maxPercentageDiscount;
+	private CartStrategy cartStrategy;
 	
 	/**
 	 * @param percentOff between 0 and 1
@@ -37,6 +38,9 @@ public class PercentOffApplicator implements PromotionApplicatorI {
 		//If delivery zone strategy is applicable please evaluate before applying the promotion.
 		int e = zoneStrategy != null ? zoneStrategy.evaluate(promoCode, context) : PromotionStrategyI.ALLOW;
 		if(e == PromotionStrategyI.DENY) return false;
+		
+		e = cartStrategy != null ? cartStrategy.evaluate(promoCode, context, true) : PromotionStrategyI.ALLOW;
+		if(e == PromotionStrategyI.DENY) return false;
 			
 		PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
 		double subTotal = context.getSubTotal(promo.getExcludeSkusFromSubTotal());
@@ -61,6 +65,16 @@ public class PercentOffApplicator implements PromotionApplicatorI {
 
 	public DlvZoneStrategy getDlvZoneStrategy() {
 		return this.zoneStrategy;
+	}
+
+	@Override
+	public void setCartStrategy(CartStrategy cartStrategy) {
+		this.cartStrategy = cartStrategy;		
+	}
+
+	@Override
+	public CartStrategy getCartStrategy() {
+		return this.cartStrategy;
 	}
 
 }

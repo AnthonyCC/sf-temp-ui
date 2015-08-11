@@ -23,6 +23,8 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 	private final ProductReference sampleProduct;
 	private final double minSubtotal;
 	private DlvZoneStrategy zoneStrategy;
+
+	private CartStrategy cartStrategy;
 	
 	public ProductSampleApplicator(ProductReference sampleProduct, double minSubtotal){
 		this.sampleProduct = sampleProduct;
@@ -34,6 +36,9 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 		//If delivery zone strategy is applicable please evaluate before applying the promotion.
 		try {
 			int e = zoneStrategy != null ? zoneStrategy.evaluate(promotionCode, context) : PromotionStrategyI.ALLOW;
+			if(e == PromotionStrategyI.DENY) return false;
+			
+			e = cartStrategy != null ? cartStrategy.evaluate(promotionCode, context, true) : PromotionStrategyI.ALLOW;
 			if(e == PromotionStrategyI.DENY) return false;
 			
 			PromotionI promo = PromotionFactory.getInstance().getPromotion(promotionCode);
@@ -100,6 +105,16 @@ public class ProductSampleApplicator implements PromotionApplicatorI {
 	
 	public ProductReference getProductReference() {
 	    return this.sampleProduct;
+	}
+
+	@Override
+	public void setCartStrategy(CartStrategy cartStrategy) {
+		this.cartStrategy = cartStrategy;
+	}
+
+	@Override
+	public CartStrategy getCartStrategy() {
+		return this.cartStrategy;
 	}
 	
 

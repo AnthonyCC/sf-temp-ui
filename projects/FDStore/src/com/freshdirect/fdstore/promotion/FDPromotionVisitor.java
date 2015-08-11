@@ -25,12 +25,12 @@ public class FDPromotionVisitor {
 
 	private static Category LOGGER = LoggerFactory.getInstance(FDPromotionVisitor.class);
 
-	public static FDPromotionEligibility applyPromotions(PromotionContextI context) {
+	public static FDPromotionEligibility evaluateAndApplyPromotions(PromotionContextI context, FDPromotionEligibility eligibilities) {
 		long startTime = System.currentTimeMillis();
 				
 		List ruleBasedPromotions = FDPromotionRulesEngine.getEligiblePromotions(context);
 		context.setRulePromoCode(ruleBasedPromotions);
-		FDPromotionEligibility eligibilities = evaluatePromotions(context);
+		eligibilities = evaluatePromotions(context, eligibilities);
 //		LOGGER.info("Promotion eligibility:after evaluate " + eligibilities);
 		resolveConflicts(eligibilities);
 		resolveLineItemConflicts(context, eligibilities);
@@ -81,7 +81,6 @@ public class FDPromotionVisitor {
         //Reconcile the discounts to make sure total header discounts does not exceed pre-deduction total(subtotal + dlv charge + tax).
         reconcileDiscounts(context, eligibilities, combinableOffers, redemptionValue);
         context.getUser().setProductSample(eligibilities.getEligibleProductSamples());
-
 		return eligibilities;
 	}
 
@@ -120,9 +119,8 @@ public class FDPromotionVisitor {
 	}
 
 	
-	 private static FDPromotionEligibility evaluatePromotions(PromotionContextI context) {
+	 private static FDPromotionEligibility evaluatePromotions(PromotionContextI context, FDPromotionEligibility eligibilities) {
          long startTime = System.currentTimeMillis();
-         FDPromotionEligibility eligibilities = new FDPromotionEligibility();
          int counter = 0;
          boolean apply_raf_promo = true;
          

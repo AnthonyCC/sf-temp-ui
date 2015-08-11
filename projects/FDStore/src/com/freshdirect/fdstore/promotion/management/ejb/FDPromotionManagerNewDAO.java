@@ -459,6 +459,7 @@ public class FDPromotionManagerNewDAO {
 		} else {
 			promotion.setMinSubtotal("");
 		}
+	
 		double maxAmount = rs.getDouble("MAX_AMOUNT");
 		if (!rs.wasNull()) {
 			promotion.setMaxAmount(FormatterUtil.formatToTwoDecimal(maxAmount));
@@ -532,6 +533,12 @@ public class FDPromotionManagerNewDAO {
 			promotion.setMaxPercentageDiscount("");
 		}
 		promotion.setBatchId(rs.getString("BATCH_ID"));
+		double dcpdMinSubtotal = rs.getDouble("DCPD_MIN_SUBTOTAL");
+		if (!rs.wasNull()) {
+			promotion.setDcpdMinSubtotal(String.valueOf(dcpdMinSubtotal));
+		} else {
+			promotion.setDcpdMinSubtotal("");
+		}
 		return promotion;
 	}
 
@@ -734,8 +741,8 @@ public class FDPromotionManagerNewDAO {
 								"AUDIENCE_DESC, TERMS, REDEEM_CNT, HASSKUQUANTITY, " +
 								"PERISHABLEONLY, NEEDDRYGOODS, NEEDCUSTOMERLIST, " +
 								"RULE_BASED, FAVORITES_ONLY, COMBINE_OFFER, " +
-								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE, INCL_FUEL_SURCHARGE , SKU_LIMIT, referral_promo, tsa_promo_code, radius, MAX_PERCENTAGE_DISCOUNT, batch_id)"
-						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?)");
+								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE, INCL_FUEL_SURCHARGE , SKU_LIMIT, referral_promo, tsa_promo_code, radius, MAX_PERCENTAGE_DISCOUNT, batch_id, DCPD_MIN_SUBTOTAL)"
+						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?,?)");
 
 		int i = 1;
 		ps.setString(i++, id); // 1
@@ -795,6 +802,11 @@ public class FDPromotionManagerNewDAO {
 			ps.setString(i++, promotion.getBatchId());
 		} else {
 			ps.setNull(i++, Types.VARCHAR);
+		}
+		if (!"".equals(promotion.getDcpdMinSubtotal()) && null !=promotion.getDcpdMinSubtotal()) {
+			ps.setDouble(i++, Double.parseDouble(promotion.getDcpdMinSubtotal())); // 10
+		} else {
+			ps.setNull(i++, Types.DOUBLE);
 		}
 		// Execute update
 		if (ps.executeUpdate() != 1) {
@@ -2690,7 +2702,7 @@ public class FDPromotionManagerNewDAO {
 			conn.prepareStatement(
 				"UPDATE CUST.PROMOTION_NEW"
 				+ " SET"
-				+ " MIN_SUBTOTAL = ?, HASSKUQUANTITY = ?, NEEDDRYGOODS = ?,EXCLUDE_SKU_SUBTOTAL =?, MODIFIED_BY =?, MODIFY_DATE =?"
+				+ " MIN_SUBTOTAL = ?, HASSKUQUANTITY = ?, NEEDDRYGOODS = ?,EXCLUDE_SKU_SUBTOTAL =?, MODIFIED_BY =?, MODIFY_DATE =?, DCPD_MIN_SUBTOTAL = ?"
 				+ " WHERE ID = ?");
 		int i = 1;
 //		i = setupPreparedStatement(ps, promotion, i);
@@ -2704,7 +2716,9 @@ public class FDPromotionManagerNewDAO {
 					.getModifiedDate().getTime()));
 		} else {
 			ps.setNull(i++, Types.DATE);
-		}				
+		}	
+		String dcpdMinSubtotal = ((null != promotion.getCartStrategies()) && promotion.getCartStrategies().size()>0)?promotion.getDcpdMinSubtotal():"";
+		ps.setString(i++, dcpdMinSubtotal);
 		ps.setString(i++, promotion.getPK().getId());
 		if (ps.executeUpdate() != 1) {
 			ps.close();
@@ -3812,7 +3826,7 @@ public class FDPromotionManagerNewDAO {
 			conn.prepareStatement(
 				"UPDATE CUST.PROMOTION_NEW"
 				+ " SET"
-				+ " MIN_SUBTOTAL = ?, HASSKUQUANTITY = ?, NEEDDRYGOODS = ?,EXCLUDE_SKU_SUBTOTAL =?, MODIFIED_BY =?, MODIFY_DATE =?"
+				+ " MIN_SUBTOTAL = ?, HASSKUQUANTITY = ?, NEEDDRYGOODS = ?,EXCLUDE_SKU_SUBTOTAL =?, MODIFIED_BY =?, MODIFY_DATE =?, DCPD_MIN_SUBTOTAL =?"
 				+ " WHERE batch_ID = ?");
 		int i = 1;
 		ps.setString(i++, promotion.getMinSubtotal());
@@ -3826,6 +3840,8 @@ public class FDPromotionManagerNewDAO {
 		} else {
 			ps.setNull(i++, Types.DATE);
 		}				
+		String dcpdMinSubtotal = ((null != promotion.getCartStrategies()) && promotion.getCartStrategies().size()>0)?promotion.getDcpdMinSubtotal():"";
+		ps.setString(i++, dcpdMinSubtotal);
 		ps.setString(i++, promotion.getBatchId());
 		if (ps.executeUpdate() < 0) {
 			ps.close();

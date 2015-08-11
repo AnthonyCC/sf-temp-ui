@@ -28,7 +28,12 @@
 <%@ page import="com.freshdirect.common.pricing.EnumDiscountType"%>
 <%@ page import="com.freshdirect.fdstore.ecoupon.*"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SystemMessageList" %>
+<%@ page import="com.freshdirect.fdstore.promotion.FDMinDCPDTotalPromoData" %>
 <%@ page import="com.freshdirect.framework.util.NVL"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="java.util.HashMap"%>
+<%@ page import="java.util.Iterator"%>
+<%@ page import="java.lang.Math"%>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
@@ -155,6 +160,7 @@ asyncPixelWithTimeout();
 			<td width="20" align="right"><a href="<%= request.getRequestURI() %>?remove=1" name="remove_all" onClick='return confirm("Are you sure that you want to delete all items from your cart?");'><img src="/media_stat/images/icon-trash.png" alt="Delete All Items" /></a></td>
 	</tr>
 </table>
+
 <div id="clicode_testbox" class="text10" style="position: absolute; top: -2000px; left: -2000px; height: 24px; padding: 0px; color: #999999; border-top: 1px solid #999999; visibility: hidden;">
 </div>
 <div id="i_viewcart">
@@ -177,6 +183,7 @@ asyncPixelWithTimeout();
 	boolean hadKosherRestriction = false;
 	boolean hadPlatterRestriction = false;
   	boolean lastWasRecipe = false;
+  	List<String> usedDcpdDiscounts = new ArrayList<String>();
   
  	Collections.sort(orderLines, FDCartModel.EXTERNAL_GROUPS_IN_FRONT_COMPARATOR);
  	Collections.sort(orderLines, FDCartModel.PRODUCT_SAMPLE_COMPARATOR);
@@ -641,8 +648,51 @@ asyncPixelWithTimeout();
 			<% 
 			hadKosherRestriction = false;
 		}
+		 
+		Map<String, FDMinDCPDTotalPromoData> dcpdMinPromo = user.getPromotionEligibility().getMinDCPDTotalPromos();
+		String dcpdMinMessage = "";
+		String promoKey = "";
+	
+		if(null!=dcpdMinPromo && dcpdMinPromo.size()>0){
+	
+		for(Iterator<String> iter = dcpdMinPromo.keySet().iterator(); iter.hasNext();){			
+			promoKey = iter.next();
 		
+			if(!usedDcpdDiscounts.contains(promoKey)){
+				FDMinDCPDTotalPromoData dcpdPromoModel = dcpdMinPromo.get(promoKey);
+				List<FDCartLineI> dcpdCartLines = dcpdPromoModel.getDcpdCartLines();
+			
+					for(FDCartLineI dcpdCartLine:dcpdCartLines){
+						if(cartLine.equals(dcpdCartLine) && (dcpdPromoModel.getCartDcpdTotal() < dcpdPromoModel.getDcpdMinTotal())){
+							StringBuffer sb = new StringBuffer();
+							sb.append("Spend $"+Math.round(100*(dcpdPromoModel.getDcpdMinTotal() - dcpdPromoModel.getCartDcpdTotal()))/100d +" more on");
+							
+							String id =(null!= dcpdPromoModel.getContentKey())?dcpdPromoModel.getContentKey().getId():"";
+							if(id.equals("") && dcpdPromoModel.getBrandNames().size()>0){
+								id = dcpdPromoModel.getBrandNames().toArray()[0].toString();
+							}
+							if(null==id || "".equals(id)){
+								sb.append(" promotional products");
+							}
+							else{
+							sb.append(" <a href="+request.getContextPath()+"/browse.jsp?id="+ id+"style='color:(255,0,0)'> promotional products</a>");
+							}
+							sb.append(" to save $"+Math.round(100*dcpdPromoModel.getHeaderDiscAmount())/100d);
+							dcpdMinMessage = sb.toString();
+							%>
+							<tr>
+							<td colspan="3">&nbsp;</td>
+							<td colspan="7"><span class="text11rbold"><%= dcpdMinMessage%></span></td>				
+							<% 
+							usedDcpdDiscounts.add(promoKey);
+							break;
+						}
+					}
+				}
+			}
+		}
 		%>
+		</tr>
 	</logic:iterate>
   <%
     if (lastWasRecipe) {
