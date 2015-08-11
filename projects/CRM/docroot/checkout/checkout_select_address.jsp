@@ -280,25 +280,16 @@
                     <td ALIGN="left" colspan="2" class="order_detail"><b>Special delivery instructions:</b><br><%=dlvAddress.getInstructions()%></td>
                 </tr>
             </table>
-<%          }  %>
-		<fd:UnattendedDelivery id='zone' address="<%= dlvAddress %>" checkUserOptions="true">
-       <%  if (zone.isUnattended() && EnumUnattendedDeliveryFlag.OPT_IN.equals(dlvAddress.getUnattendedDeliveryFlag())) { %>
+<%          } 
+          if (EnumUnattendedDeliveryFlag.OPT_IN.equals(dlvAddress.getUnattendedDeliveryFlag())) { %>
             <table width="100%" cellpadding="0" cellspacing="0" border="0" ALIGN="CENTER" class="order">
                 <tr>
                     <td ALIGN="left" colspan="2" class="order_detail"><b>Unattended delivery instructions:</b><br>
-		    <% String instuctions = NVL.apply(dlvAddress.getUnattendedDeliveryInstructions(),"OK"); %>
-		    <% if ("".equals(instuctions)){  %>
-		    	OK
-		    <% } else { %>
-		    	<%= instuctions %>
-		    <% } %>
-		        </td>
+		        <%=NVL.apply(dlvAddress.getUnattendedDeliveryInstructions(),"OK")%></td>
                 </tr>
             </table>
-			<%  }  %>
-		</fd:UnattendedDelivery>
 
-<%
+<%        }
 
          if (dlvAddress.getAltDelivery() != null && dlvAddress.getAltDelivery().getId() > 0) { %>
             <table width="100%" cellpadding="0" cellspacing="0" border="0" ALIGN="CENTER" class="order">

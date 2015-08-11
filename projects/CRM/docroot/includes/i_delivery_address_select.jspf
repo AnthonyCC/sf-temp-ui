@@ -3,7 +3,6 @@
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import="com.freshdirect.customer.EnumUnattendedDeliveryFlag" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%-- **************************************************
     THIS FILE REQUIRES:
@@ -107,24 +106,15 @@ boolean isDepotLocation = (dlvAddress instanceof ErpDepotAddressModel);
           		      <tr>
             		        <td colspan="2" style="padding-left: 12px;"><b>Special delivery instructions</b><br><%=dlvAddress.getInstructions()%></td>
               		  </tr>
-   		<%  } %>
-   		<fd:UnattendedDelivery id='zone' address="<%= order.getDeliveryAddress() %>" checkUserOptions="true">
-   		<% if (zone.isUnattended() && EnumUnattendedDeliveryFlag.OPT_IN.equals(order.getDeliveryAddress().getUnattendedDeliveryFlag())) { %>
+   		<%  }  
+	        if (EnumUnattendedDeliveryFlag.OPT_IN.equals(order.getDeliveryAddress().getUnattendedDeliveryFlag())) { %>
 	     
                 <tr><td colspan="2" height="4"></td></tr>
 		<tr>
 		    <td colspan="2" style="padding-left: 12px;"><font color="blue"><b>Unattended Delivery:</b></font><br/>
-		    <% String instuctions = NVL.apply(order.getDeliveryAddress().getUnattendedDeliveryInstructions(),"OK"); %>
-		    <% if ("".equals(instuctions)){  %>
-		    	OK
-		    <% } else { %>
-		    	<%= instuctions %>
-		    <% } %>
-		    </td>
+		    <%= NVL.apply(order.getDeliveryAddress().getUnattendedDeliveryInstructions(),"OK") %></td>
 		</tr>
-	    <%	} %>
-	    </fd:UnattendedDelivery>
-	    <%
+	    <%	}
             
                 int orderCount = thisUser.getAdjustedValidOrderCount();
                 if ((orderCount < AddressName.DLV_ALTERNATE_THRESHHOLD) && !isDepotLocation) {
